@@ -2454,6 +2454,8 @@ The default value for the property is <b>False</b>.
 <link id="#lcl.stdctrls.TCustomLabel.WordWrap">TCustomLabel.WordWrap</link>
 </seealso>
 </element>
+
+<element link="#lcl.stdctrls.TCustomLabel.OptimalFill" name="TDBText.OptimalFill"/>
 <element link="#lcl.controls.TControl.OnClick" name="TDBText.OnClick"/>
 <element link="#lcl.controls.TControl.OnDblClick" name="TDBText.OnDblClick"/>
 <element link="#lcl.controls.TControl.OnDragDrop" name="TDBText.OnDragDrop"/>
@@ -2471,7 +2473,7 @@ The default value for the property is <b>False</b>.
 <element link="#lcl.controls.TControl.OnContextPopup" name="TDBText.OnContextPopup"/>
 <element link="#lcl.controls.TControl.OnResize" name="TDBText.OnResize"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBText.OnStartDrag"/>
-<element link="#lcl.stdctrls.TCustomLabel.OptimalFill" name="TDBText.OptimalFill"/>
+
 <element name="TCustomDBListBox">
 <short>Specifies a data-aware listbox control.</short>
 <descr>
@@ -3103,93 +3105,7 @@ called.
 <element link="#lcl.stdctrls.TCustomListBox.ItemHeight" name="TDBListBox.ItemHeight"/>
 <element name="TDBListBox.Items" link="#lcl.stdctrls.TCustomListBox.Items"/>
 <element link="#lcl.stdctrls.TCustomListBox.MultiSelect" name="TDBListBox.MultiSelect"/>
-<element link="#lcl.controls.TControl.OnClick" name="TDBListBox.OnClick"/>
-<element name="TDBLIstBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TDBListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBListBox.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBListBox.OnDragOver"/>
-<element name="TDBListBox.OnDrawItem">
-<short>
-Event handler signalled to draw an Item on the data-aware list box.
-</short>
-<descr>
-<p>
-<var>OnDrawItem</var> is an event handler used to draw an Item on the 
-data-aware list box.
-</p>
-<p>
-For example, selecting an item may require it to be highlighted or have its 
-font or background changed.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.stdctrls.TCustomListBox.OnDrawItem">TCustomListBox.OnDrawItem</link>
-</seealso>
-</element>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBListBox.OnEndDrag"/>
-<element link="#lcl.controls.TWinControl.OnEnter" name="TDBListBox.OnEnter"/>
-<element link="#lcl.controls.TWinControl.OnExit" name="TDBListBox.OnExit"/>
-<element name="TDBListBox.OnKeyPress">
-<short>
-Event handler signalled when a key is pressed while the control has focus.
-</short>
-<descr>
-<p>
-<var>OnKeyPress</var> differs from <link 
-id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key 
-needs to become pressed while the control has focus; with 
-<var>OnKeyDown</var> the key may have already been down when the control 
-received focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
-</seealso>
-</element>
-<element name="TDBListBox.OnKeyDown">
-<short>
-Event handler signalled when a key is down while the control has focus.
-</short>
-<descr>
-<p>
-<var>OnKeyDown</var> differs from <link 
-id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key 
-may have already been down when the control received focus; with 
-<var>OnKeyPress</var> the key needs to become pressed while the control has 
-focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
-</seealso>
-</element>
-<element name="TDBListBox.OnKeyUp">
-<short>
-Event handler signalled when a key is up (not pressed) while the control has 
-focus.
-</short>
-<descr>
-<p>
-In <var>OnKeyUp</var>, the key may already have been up when the control 
-received focus, or a pressed key may become released during the time the 
-control has focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
-</seealso>
-</element>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBListBox.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBListBox.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBListBox.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBListBox.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBListBox.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBListBox.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBListBox.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBListBox.OnMouseWheelUp"/>
-<element link="#lcl.controls.TControl.OnResize" name="TDBListBox.OnResize"/>
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBListBox.OnStartDrag"/>
-<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBListBox.OnUTF8KeyPress"/>
+
 <element name="TDBListBox.Options" link="#lcl.stdctrls.TCustomListBox.Options"/>
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBListBox.ParentBiDiMode"/>
 <element name="TDBListBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
@@ -3222,6 +3138,99 @@ IsVisible method to consider this and get the real visibility.
 <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
 </seealso>
 </element>
+
+<element link="#lcl.controls.TControl.OnClick" name="TDBListBox.OnClick"/>
+<element name="TDBLIstBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TDBListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBListBox.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBListBox.OnDragOver"/>
+
+<element name="TDBListBox.OnDrawItem">
+<short>
+Event handler signalled to draw an Item on the data-aware list box.
+</short>
+<descr>
+<p>
+<var>OnDrawItem</var> is an event handler used to draw an Item on the 
+data-aware list box.
+</p>
+<p>
+For example, selecting an item may require it to be highlighted or have its 
+font or background changed.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.stdctrls.TCustomListBox.OnDrawItem">TCustomListBox.OnDrawItem</link>
+</seealso>
+</element>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBListBox.OnEndDrag"/>
+<element link="#lcl.controls.TWinControl.OnEnter" name="TDBListBox.OnEnter"/>
+<element link="#lcl.controls.TWinControl.OnExit" name="TDBListBox.OnExit"/>
+
+<element name="TDBListBox.OnKeyPress">
+<short>
+Event handler signalled when a key is pressed while the control has focus.
+</short>
+<descr>
+<p>
+<var>OnKeyPress</var> differs from <link 
+id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key 
+needs to become pressed while the control has focus; with 
+<var>OnKeyDown</var> the key may have already been down when the control 
+received focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+</seealso>
+</element>
+
+<element name="TDBListBox.OnKeyDown">
+<short>
+Event handler signalled when a key is down while the control has focus.
+</short>
+<descr>
+<p>
+<var>OnKeyDown</var> differs from <link 
+id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key 
+may have already been down when the control received focus; with 
+<var>OnKeyPress</var> the key needs to become pressed while the control has 
+focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+</seealso>
+</element>
+
+<element name="TDBListBox.OnKeyUp">
+<short>
+Event handler signalled when a key is up (not pressed) while the control has 
+focus.
+</short>
+<descr>
+<p>
+In <var>OnKeyUp</var>, the key may already have been up when the control 
+received focus, or a pressed key may become released during the time the 
+control has focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
+</seealso>
+</element>
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBListBox.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBListBox.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBListBox.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBListBox.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBListBox.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBListBox.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBListBox.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBListBox.OnMouseWheelUp"/>
+<element link="#lcl.controls.TControl.OnResize" name="TDBListBox.OnResize"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBListBox.OnStartDrag"/>
+<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBListBox.OnUTF8KeyPress"/>
+
 <element name="TDBLookupListBox">
 <short>Implements a data-aware listbox control with database lookup 
 capabilities.
@@ -3734,6 +3743,35 @@ Value used as the empty field value in the DataField for the control.
 <descr/>
 <seealso/>
 </element>
+
+
+<element link="#lcl.stdctrls.TCustomListBox.Options" name="TDBLookupListBox.Options"/>
+<element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBLookupListBox.ParentBidiMode"/>
+<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBLookupListBox.ParentDoubleBuffered"/>
+<element link="#lcl.controls.TControl.ParentShowHint" name="TDBLookupListBox.ParentShowHint"/>
+<element link="#lcl.controls.TControl.PopupMenu" name="TDBLookupListBox.PopupMenu"/>
+<element link="#lcl.dbctrls.TCustomDBListBox.ReadOnly" name="TDBLookupListBox.ReadOnly"/>
+
+<element name="TDBLookupListBox.ScrollListDataset">
+<short>
+Indicates if the look-up data set is scrolled for a new value in the control.
+</short>
+<descr>
+<p>
+Indicates if the look-up data set is searched and scrolled when a new value 
+is selected in the control. The default value for the property is 
+<b>False</b>.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element link="#lcl.controls.TControl.ShowHint" name="TDBLookupListBox.ShowHint"/>
+<element link="#lcl.stdctrls.TCustomListBox.Sorted" name="TDBLookupListBox.Sorted"/>
+<element link="#lcl.controls.TWinControl.TabOrder" name="TDBLookupListBox.TabOrder"/>
+<element link="#lcl.controls.TWinControl.TabStop" name="TDBLookupListBox.TabStop"/>
+<element link="#lcl.stdctrls.TCustomListBox.TopIndex" name="TDBLookupListBox.TopIndex"/>
+<element link="#lcl.controls.TControl.Visible" name="TDBLookupListBox.Visible"/>
 <element link="#lcl.controls.TControl.OnClick" name="TDBLookupListBox.OnClick"/>
 <element name="TDBLookupListBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element link="#lcl.controls.TControl.OnDblClick" name="TDBLookupListBox.OnDblClick"/>
@@ -3758,31 +3796,7 @@ Value used as the empty field value in the DataField for the control.
 <element link="#lcl.controls.TControl.OnResize" name="TDBLookupListBox.OnResize"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBLookupListBox.OnStartDrag"/>
 <element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBLookupListBox.OnUTF8KeyPress"/>
-<element link="#lcl.stdctrls.TCustomListBox.Options" name="TDBLookupListBox.Options"/>
-<element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBLookupListBox.ParentBidiMode"/>
-<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBLookupListBox.ParentDoubleBuffered"/>
-<element link="#lcl.controls.TControl.ParentShowHint" name="TDBLookupListBox.ParentShowHint"/>
-<element link="#lcl.controls.TControl.PopupMenu" name="TDBLookupListBox.PopupMenu"/>
-<element link="#lcl.dbctrls.TCustomDBListBox.ReadOnly" name="TDBLookupListBox.ReadOnly"/>
-<element name="TDBLookupListBox.ScrollListDataset">
-<short>
-Indicates if the look-up data set is scrolled for a new value in the control.
-</short>
-<descr>
-<p>
-Indicates if the look-up data set is searched and scrolled when a new value 
-is selected in the control. The default value for the property is 
-<b>False</b>.
-</p>
-</descr>
-<seealso/>
-</element>
-<element link="#lcl.controls.TControl.ShowHint" name="TDBLookupListBox.ShowHint"/>
-<element link="#lcl.stdctrls.TCustomListBox.Sorted" name="TDBLookupListBox.Sorted"/>
-<element link="#lcl.controls.TWinControl.TabOrder" name="TDBLookupListBox.TabOrder"/>
-<element link="#lcl.controls.TWinControl.TabStop" name="TDBLookupListBox.TabStop"/>
-<element link="#lcl.stdctrls.TCustomListBox.TopIndex" name="TDBLookupListBox.TopIndex"/>
-<element link="#lcl.controls.TControl.Visible" name="TDBLookupListBox.Visible"/>
+
 <element name="TDBRadioGroup">
 <short>
 <var>TDBRadioGroup</var> is a data-aware version of <var>TRadioGroup,</var> 
@@ -4403,43 +4417,7 @@ selection (<var>ItemIndex</var>) in the control.
 </seealso>
 </element>
 
-<element name="TDBRadioGroup.OnChange">
-<short>Event Handler signalled when the Value for the control is changed.
-</short>
-<descr>
-<p>
-<var>OnChange</var> is a <var>TNotifyEvent</var> property which contains the 
-event handler signalled when the <var>Value</var> for the control is changed. 
-OnChange can be used in an application to perform actions needed after Value 
-(and <var>ItemIndex</var>) has been updated, and the corresponding radio 
-button has been set to the checked state.
-</p>
-<p>
-OnChange is signalled from the <var>Change</var> method.
-</p>
-</descr>
-<seealso>
-<link id="TDBRadioGroup.Change"/>
-<link id="TDBRadioGroup.ItemIndex"/>
-<link id="TDBRadioGroup.Value"/>
-</seealso>
-</element>
-<element link="#lcl.controls.TControl.OnChangeBounds" name="TDBRadioGroup.OnChangeBounds"/>
-<element link="#lcl.controls.TControl.OnClick" name="TDBRadioGroup.OnClick"/>
-<element name="TDBRadioGroup.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBRadioGroup.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBRadioGroup.OnDragOver"/>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBRadioGroup.OnEndDrag"/>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBRadioGroup.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBRadioGroup.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBRadioGroup.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBRadioGroup.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBRadioGroup.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBRadioGroup.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBRadioGroup.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBRadioGroup.OnMouseWheelUp"/>
-<element link="#lcl.controls.TControl.OnResize" name="TDBRadioGroup.OnResize"/>
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBRadioGroup.OnStartDrag"/>
+
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBRadioGroup.ParentBiDiMode"/>
 <element link="#lcl.controls.TControl.ParentColor" name="TDBRadioGroup.ParentColor"/>
 <element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBRadioGroup.ParentDoubleBuffered"/>
@@ -4496,6 +4474,7 @@ to be called after assigning the new property value.
 <link id="TDBRadioGroup.DataChange"/>
 </seealso>
 </element>
+
 <element name="TDBRadioGroup.Visible">
 <short>Indicates if the control is visible on its parent.</short>
 <descr>
@@ -4514,6 +4493,45 @@ IsVisible method to consider this and get real visibility.
 <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
 </seealso>
 </element>
+<element name="TDBRadioGroup.OnChange">
+<short>Event Handler signalled when the Value for the control is changed.
+</short>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TNotifyEvent</var> property which contains the 
+event handler signalled when the <var>Value</var> for the control is changed. 
+OnChange can be used in an application to perform actions needed after Value 
+(and <var>ItemIndex</var>) has been updated, and the corresponding radio 
+button has been set to the checked state.
+</p>
+<p>
+OnChange is signalled from the <var>Change</var> method.
+</p>
+</descr>
+<seealso>
+<link id="TDBRadioGroup.Change"/>
+<link id="TDBRadioGroup.ItemIndex"/>
+<link id="TDBRadioGroup.Value"/>
+</seealso>
+</element>
+
+<element link="#lcl.controls.TControl.OnChangeBounds" name="TDBRadioGroup.OnChangeBounds"/>
+<element link="#lcl.controls.TControl.OnClick" name="TDBRadioGroup.OnClick"/>
+<element name="TDBRadioGroup.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBRadioGroup.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBRadioGroup.OnDragOver"/>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBRadioGroup.OnEndDrag"/>
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBRadioGroup.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBRadioGroup.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBRadioGroup.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBRadioGroup.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBRadioGroup.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBRadioGroup.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBRadioGroup.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBRadioGroup.OnMouseWheelUp"/>
+<element link="#lcl.controls.TControl.OnResize" name="TDBRadioGroup.OnResize"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBRadioGroup.OnStartDrag"/>
+
 <element name="TDBCheckBox">
 <short>Implements a data-aware check box control.</short>
 <descr>
@@ -5118,23 +5136,8 @@ the linked dataset.
 <element link="#lcl.controls.TControl.Enabled" name="TDBCheckBox.Enabled"/>
 <element link="#lcl.controls.TControl.Font" name="TDBCheckBox.Font"/>
 <element link="#lcl.controls.TControl.Hint" name="TDBCheckBox.Hint"/>
-<element link="#lcl.stdctrls.TButtonControl.OnChange" name="TDBCheckBox.OnChange"/>
-<element link="#lcl.controls.TControl.OnClick" name="TDBCheckBox.OnClick"/>
-<element name="TDBCheckBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBCheckBox.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBCheckBox.OnDragOver"/>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBCheckBox.OnEndDrag"/>
-<element link="#lcl.controls.TWinControl.OnEnter" name="TDBCheckBox.OnEnter"/>
-<element link="#lcl.controls.TWinControl.OnExit" name="TDBCheckBox.OnExit"/>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBCheckBox.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBCheckBox.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBCheckBox.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBCheckBox.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBCheckBox.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBCheckBox.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBCheckBox.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBCheckBox.OnMouseWheelUp"/>
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBCheckBox.OnStartDrag"/>
+
+
 <element link="#lcl.controls.TControl.ParentShowHint" name="TDBCheckBox.ParentShowHint"/>
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBCheckBox.ParentBiDiMode"/>
 <element link="#lcl.controls.TControl.ParentColor" name="TDBCheckBox.ParentColor"/>
@@ -5142,6 +5145,7 @@ the linked dataset.
 <element link="#lcl.controls.TControl.ParentFont" name="TDBCheckBox.ParentFont"/>
 <element link="#lcl.controls.TControl.ParentShowHint" name="TDBCheckBox.ParentShowHint"/>
 <element link="#lcl.controls.TControl.PopupMenu" name="TDBCheckBox.PopupMenu"/>
+
 <element name="TDBCheckBox.ReadOnly">
 <short>
 <var>ReadOnly</var> - if <b>True</b>, data may be read but not written or 
@@ -5290,6 +5294,25 @@ IsVisible method to consider this and get real visibility.
 <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
 </seealso>
 </element>
+
+<element link="#lcl.stdctrls.TButtonControl.OnChange" name="TDBCheckBox.OnChange"/>
+<element link="#lcl.controls.TControl.OnClick" name="TDBCheckBox.OnClick"/>
+<element name="TDBCheckBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBCheckBox.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBCheckBox.OnDragOver"/>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBCheckBox.OnEndDrag"/>
+<element link="#lcl.controls.TWinControl.OnEnter" name="TDBCheckBox.OnEnter"/>
+<element link="#lcl.controls.TWinControl.OnExit" name="TDBCheckBox.OnExit"/>
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBCheckBox.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBCheckBox.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBCheckBox.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBCheckBox.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBCheckBox.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBCheckBox.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBCheckBox.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBCheckBox.OnMouseWheelUp"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBCheckBox.OnStartDrag"/>
+
 <element name="TCustomDBComboBox">
 <short>
 <var>TCustomDBComboBox</var> is a data-aware combo-box for displaying 
@@ -6030,81 +6053,7 @@ the property does not alter the existing value in Text.
 <link id="#lcl.stdctrls.TCustomComboBox.MaxLength">TCustomComboBox.MaxLength</link>
 </seealso>
 </element>
-<element link="#lcl.stdctrls.TCustomComboBox.OnChange" name="TDBComboBox.OnChange"/>
-<element link="#lcl.controls.TControl.OnChangeBounds" name="TDBComboBox.OnChangeBounds"/>
-<element link="#lcl.controls.TControl.OnClick" name="TDBComboBox.OnClick"/>
-<element name="TDBComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
-<element name="TDBComboBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element link="#lcl.controls.TControl.OnDblClick" name="TDBComboBox.OnDblClick"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBComboBox.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBComboBox.OnDragOver"/>
-<element link="#lcl.stdctrls.TCustomComboBox.OnDrawItem" name="TDBComboBox.OnDrawItem"/>
-<element link="#lcl.stdctrls.TCustomComboBox.OnDropDown" name="TDBComboBox.OnDropDown"/>
-<element link="#lcl.controls.TControl.OnEditingDone" name="TDBComboBox.OnEditingDone"/>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBComboBox.OnEndDrag"/>
-<element link="#lcl.controls.TWinControl.OnEnter" name="TDBComboBox.OnEnter"/>
-<element link="#lcl.controls.TWinControl.OnExit" name="TDBComboBox.OnExit"/>
-<element name="TDBComboBox.OnKeyDown">
-<short>
-Event handler signalled when a key is down while the control has focus.
-</short>
-<descr>
-<p>
-<var>OnKeyDown</var> differs from <link 
-id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key 
-may have already been down when the control received focus; with 
-<var>OnKeyPress</var> the key needs to become pressed while the control has 
-focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
-</seealso>
-</element>
-<element name="TDBComboBox.OnKeyPress">
-<short>
-Event handler signalled when a key is pressed while the control has focus.
-</short>
-<descr>
-<p>
-<var>OnKeyPress</var> differs from <link 
-id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key 
-needs to become pressed while the control has focus; with 
-<var>OnKeyDown</var> the key may have already been down when the control 
-received focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
-</seealso>
-</element>
-<element name="TDBComboBox.OnKeyUp">
-<short>
-Event handler signalled when when a key is released while the control has 
-focus.
-</short>
-<descr>
-<p>
-In <var>OnKeyUp</var>, the key may already have been up when the control 
-received focus, or a pressed key may become released during the time the 
-control has focus.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
-</seealso>
-</element>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBComboBox.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBComboBox.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBComboBox.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBComboBox.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBComboBox.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBComboBox.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBComboBox.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBComboBox.OnMouseWheelUp"/>
-<element link="#lcl.stdctrls.TCustomComboBox.OnSelect" name="TDBComboBox.OnSelect"/>
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBComboBox.OnStartDrag"/>
-<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBComboBox.OnUTF8KeyPress"/>
+
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBComboBox.ParentBiDiMode"/>
 <element link="#lcl.controls.TControl.ParentColor" name="TDBComboBox.ParentColor"/>
 <element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBComboBox.ParentDoubleBuffered"/>
@@ -6117,6 +6066,7 @@ control has focus.
 <element link="#lcl.stdctrls.TCustomComboBox.Style" name="TDBComboBox.Style"/>
 <element link="#lcl.controls.TWinControl.TabOrder" name="TDBComboBox.TabOrder"/>
 <element link="#lcl.controls.TWinControl.TabStop" name="TDBComboBox.TabStop"/>
+
 <element name="TDBComboBox.Visible">
 <short>Indicates if the control is visible on its parent.</short>
 <descr>
@@ -6135,6 +6085,87 @@ IsVisible method to consider this and get real visibility.
 <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
 </seealso>
 </element>
+
+<element link="#lcl.stdctrls.TCustomComboBox.OnChange" name="TDBComboBox.OnChange"/>
+<element link="#lcl.controls.TControl.OnChangeBounds" name="TDBComboBox.OnChangeBounds"/>
+<element link="#lcl.controls.TControl.OnClick" name="TDBComboBox.OnClick"/>
+<element name="TDBComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
+<element name="TDBComboBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element link="#lcl.controls.TControl.OnDblClick" name="TDBComboBox.OnDblClick"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBComboBox.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBComboBox.OnDragOver"/>
+<element link="#lcl.stdctrls.TCustomComboBox.OnDrawItem" name="TDBComboBox.OnDrawItem"/>
+<element link="#lcl.stdctrls.TCustomComboBox.OnDropDown" name="TDBComboBox.OnDropDown"/>
+<element link="#lcl.controls.TControl.OnEditingDone" name="TDBComboBox.OnEditingDone"/>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBComboBox.OnEndDrag"/>
+<element link="#lcl.controls.TWinControl.OnEnter" name="TDBComboBox.OnEnter"/>
+<element link="#lcl.controls.TWinControl.OnExit" name="TDBComboBox.OnExit"/>
+
+<element name="TDBComboBox.OnKeyDown">
+<short>
+Event handler signalled when a key is down while the control has focus.
+</short>
+<descr>
+<p>
+<var>OnKeyDown</var> differs from <link 
+id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key 
+may have already been down when the control received focus; with 
+<var>OnKeyPress</var> the key needs to become pressed while the control has 
+focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+</seealso>
+</element>
+
+<element name="TDBComboBox.OnKeyPress">
+<short>
+Event handler signalled when a key is pressed while the control has focus.
+</short>
+<descr>
+<p>
+<var>OnKeyPress</var> differs from <link 
+id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key 
+needs to become pressed while the control has focus; with 
+<var>OnKeyDown</var> the key may have already been down when the control 
+received focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+</seealso>
+</element>
+
+<element name="TDBComboBox.OnKeyUp">
+<short>
+Event handler signalled when when a key is released while the control has 
+focus.
+</short>
+<descr>
+<p>
+In <var>OnKeyUp</var>, the key may already have been up when the control 
+received focus, or a pressed key may become released during the time the 
+control has focus.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
+</seealso>
+</element>
+
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBComboBox.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBComboBox.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBComboBox.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBComboBox.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBComboBox.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBComboBox.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBComboBox.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBComboBox.OnMouseWheelUp"/>
+<element link="#lcl.stdctrls.TCustomComboBox.OnSelect" name="TDBComboBox.OnSelect"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBComboBox.OnStartDrag"/>
+<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBComboBox.OnUTF8KeyPress"/>
+
 <element name="TDBLookupComboBox">
 <short>
 <var>TDBLookupComboBox</var> is a data-aware combo-box for examining a lookup 
@@ -6666,6 +6697,45 @@ The EmptyValue and DisplayEmpty properties were added in revision 62844, and
 released in LCL version 2.0.8 and higher.
 </version>
 </element>
+
+
+<element name="TDBLookupComboBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element link="#lcl.controls.TControl.ParentColor" name="TDBLookupComboBox.ParentColor"/>
+<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBLookupComboBox.ParentDoubleBuffered"/>
+<element link="#lcl.controls.TControl.ParentFont" name="TDBLookupComboBox.ParentFont"/>
+<element link="#lcl.controls.TControl.ParentShowHint" name="TDBLookupComboBox.ParentShowHint"/>
+<element link="#lcl.controls.TControl.PopupMenu" name="TDBLookupComboBox.PopupMenu"/>
+<element link="#lcl.stdctrls.TCustomComboBox.ReadOnly" name="TDBLookupComboBox.ReadOnly"/>
+
+<element name="TDBLookupComboBox.ScrollListDataset">
+<short>
+Indicates if the Dataset in ListSource can be scrolled when loading/locating 
+key and display values.
+</short>
+<descr>
+<p>
+<var>ScrollListDataset</var> is a <var>Boolean</var> property which indicates 
+if the linked lookup dataset can be scrolled when loading values from the 
+fields identified in KeyField and ListField. The value in ScrollListDataset 
+is used in the implementation of the <var>Initialize</var> and 
+<var>UpdateData</var> methods.
+</p>
+</descr>
+<seealso>
+<link id="TDBLookup.KeyField"/>
+<link id="TDBLookup.ListField"/>
+<link id="TDBLookup.ListSource"/>
+<link id="TDBLookup.Initialize"/>
+<link id="TDBLookup.UpdateData"/>
+</seealso>
+</element>
+<element link="#lcl.controls.TControl.ShowHint" name="TDBLookupComboBox.ShowHint"/>
+<element link="#lcl.stdctrls.TCustomComboBox.Sorted" name="TDBLookupComboBox.Sorted"/>
+<element link="#lcl.stdctrls.TCustomComboBox.Style" name="TDBLookupComboBox.Style"/>
+<element link="#lcl.controls.TWinControl.TabOrder" name="TDBLookupComboBox.TabOrder"/>
+<element link="#lcl.controls.TWinControl.TabStop" name="TDBLookupComboBox.TabStop"/>
+<element link="#lcl.controls.TControl.Visible" name="TDBLookupComboBox.Visible"/>
+
 <element link="#lcl.stdctrls.TCustomComboBox.OnChange" name="TDBLookupComboBox.OnChange"/>
 <element link="#lcl.controls.TControl.OnChangeBounds" name="TDBLookupComboBox.OnChangeBounds"/>
 <element link="#lcl.controls.TControl.OnClick" name="TDBLookupComboBox.OnClick"/>
@@ -6696,41 +6766,7 @@ released in LCL version 2.0.8 and higher.
 <element link="#lcl.stdctrls.TCustomComboBox.OnSelect" name="TDBLookupComboBox.OnSelect"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBLookupComboBox.OnStartDrag"/>
 <element name="TDBLookupComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TDBLookupComboBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element link="#lcl.controls.TControl.ParentColor" name="TDBLookupComboBox.ParentColor"/>
-<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBLookupComboBox.ParentDoubleBuffered"/>
-<element link="#lcl.controls.TControl.ParentFont" name="TDBLookupComboBox.ParentFont"/>
-<element link="#lcl.controls.TControl.ParentShowHint" name="TDBLookupComboBox.ParentShowHint"/>
-<element link="#lcl.controls.TControl.PopupMenu" name="TDBLookupComboBox.PopupMenu"/>
-<element link="#lcl.stdctrls.TCustomComboBox.ReadOnly" name="TDBLookupComboBox.ReadOnly"/>
-<element name="TDBLookupComboBox.ScrollListDataset">
-<short>
-Indicates if the Dataset in ListSource can be scrolled when loading/locating 
-key and display values.
-</short>
-<descr>
-<p>
-<var>ScrollListDataset</var> is a <var>Boolean</var> property which indicates 
-if the linked lookup dataset can be scrolled when loading values from the 
-fields identified in KeyField and ListField. The value in ScrollListDataset 
-is used in the implementation of the <var>Initialize</var> and 
-<var>UpdateData</var> methods.
-</p>
-</descr>
-<seealso>
-<link id="TDBLookup.KeyField"/>
-<link id="TDBLookup.ListField"/>
-<link id="TDBLookup.ListSource"/>
-<link id="TDBLookup.Initialize"/>
-<link id="TDBLookup.UpdateData"/>
-</seealso>
-</element>
-<element link="#lcl.controls.TControl.ShowHint" name="TDBLookupComboBox.ShowHint"/>
-<element link="#lcl.stdctrls.TCustomComboBox.Sorted" name="TDBLookupComboBox.Sorted"/>
-<element link="#lcl.stdctrls.TCustomComboBox.Style" name="TDBLookupComboBox.Style"/>
-<element link="#lcl.controls.TWinControl.TabOrder" name="TDBLookupComboBox.TabOrder"/>
-<element link="#lcl.controls.TWinControl.TabStop" name="TDBLookupComboBox.TabStop"/>
-<element link="#lcl.controls.TControl.Visible" name="TDBLookupComboBox.Visible"/>
+
 <element name="TDBMemo">
 <short>
 <var>TDBMemo</var> is a data-aware Memo box to process the multi-line text of 
@@ -7329,37 +7365,12 @@ the linked dataset.
 <element link="#lcl.controls.TControl.Enabled" name="TDBMemo.Enabled"/>
 <element link="#lcl.controls.TControl.Font" name="TDBMemo.Font"/>
 <element link="#lcl.stdctrls.TCustomEdit.MaxLength" name="TDBMemo.MaxLength"/>
-<element link="#lcl.stdctrls.TCustomEdit.OnChange" name="TDBMemo.OnChange"/>
-<element link="#lcl.controls.TControl.OnClick" name="TDBMemo.OnClick"/>
-<element link="#lcl.controls.TControl.OnContextPopup" name="TDBMemo.OnContextPopup"/>
-<element link="#lcl.controls.TControl.OnDblClick" name="TDBMemo.OnDblClick"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBMemo.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBMemo.OnDragOver"/>
-<element link="#lcl.controls.TControl.OnEditingDone" name="TDBMemo.OnEditingDone"/>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBMemo.OnEndDrag"/>
-<element link="#lcl.controls.TWinControl.OnEnter" name="TDBMemo.OnEnter"/>
-<element link="#lcl.controls.TWinControl.OnExit" name="TDBMemo.OnExit"/>
-<element link="#lcl.controls.TWinControl.OnKeyDown" name="TDBMemo.OnKeyDown"/>
-<element link="#lcl.controls.TWinControl.OnKeyPress" name="TDBMemo.OnKeyPress"/>
-<element link="#lcl.controls.TWinControl.OnKeyUp" name="TDBMemo.OnKeyUp"/>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBMemo.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBMemo.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBMemo.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBMemo.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBMemo.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBMemo.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBMemo.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBMemo.OnMouseWheelUp"/>
-
-<element name="TDBMemo.OnResize" link="#lcl.controls.TControl.OnResize"/>
-
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBMemo.OnStartDrag"/>
-<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBMemo.OnUTF8KeyPress"/>
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBMemo.ParentBiDiMode"/>
 <element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBMemo.ParentDoubleBuffered"/>
 <element link="#lcl.controls.TControl.ParentFont" name="TDBMemo.ParentFont"/>
 <element link="#lcl.controls.TControl.ParentShowHint" name="TDBMemo.ParentShowHint"/>
 <element link="#lcl.controls.TControl.PopupMenu" name="TDBMemo.PopupMenu"/>
+
 <element name="TDBMemo.ReadOnly">
 <short>
 Indicates that the text in the control cannot be modified.
@@ -7395,6 +7406,33 @@ the target database table.
 <element link="#lcl.stdctrls.TCustomMemo.WantReturns" name="TDBMemo.WantReturns"/>
 <element link="#lcl.stdctrls.TCustomMemo.WantTabs" name="TDBMemo.WantTabs"/>
 <element link="#lcl.stdctrls.TCustomMemo.WordWrap" name="TDBMemo.WordWrap"/>
+
+
+<element link="#lcl.stdctrls.TCustomEdit.OnChange" name="TDBMemo.OnChange"/>
+<element link="#lcl.controls.TControl.OnClick" name="TDBMemo.OnClick"/>
+<element link="#lcl.controls.TControl.OnContextPopup" name="TDBMemo.OnContextPopup"/>
+<element link="#lcl.controls.TControl.OnDblClick" name="TDBMemo.OnDblClick"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBMemo.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBMemo.OnDragOver"/>
+<element link="#lcl.controls.TControl.OnEditingDone" name="TDBMemo.OnEditingDone"/>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBMemo.OnEndDrag"/>
+<element link="#lcl.controls.TWinControl.OnEnter" name="TDBMemo.OnEnter"/>
+<element link="#lcl.controls.TWinControl.OnExit" name="TDBMemo.OnExit"/>
+<element link="#lcl.controls.TWinControl.OnKeyDown" name="TDBMemo.OnKeyDown"/>
+<element link="#lcl.controls.TWinControl.OnKeyPress" name="TDBMemo.OnKeyPress"/>
+<element link="#lcl.controls.TWinControl.OnKeyUp" name="TDBMemo.OnKeyUp"/>
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBMemo.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBMemo.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBMemo.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBMemo.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBMemo.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBMemo.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBMemo.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBMemo.OnMouseWheelUp"/>
+<element name="TDBMemo.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBMemo.OnStartDrag"/>
+<element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBMemo.OnUTF8KeyPress"/>
+
 <element name="TDBGroupBox">
 <short>
 <var>TDBGroupBox</var> is a data-aware version of <var>TGroupBox,</var> 
@@ -7794,6 +7832,37 @@ the linked dataset.
 <element link="#lcl.controls.TControl.DragMode" name="TDBGroupBox.DragMode"/>
 <element link="#lcl.controls.TControl.Enabled" name="TDBGroupBox.Enabled"/>
 <element link="#lcl.controls.TControl.Font" name="TDBGroupBox.Font"/>
+<element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBGroupBox.ParentBiDiMode"/>
+<element link="#lcl.controls.TControl.ParentColor" name="TDBGroupBox.ParentColor"/>
+<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBGroupBox.ParentDoubleBuffered"/>
+<element link="#lcl.controls.TControl.ParentFont" name="TDBGroupBox.ParentFont"/>
+<element link="#lcl.controls.TControl.ParentShowHint" name="TDBGroupBox.ParentShowHint"/>
+<element link="#lcl.controls.TControl.PopupMenu" name="TDBGroupBox.PopupMenu"/>
+<element link="#lcl.controls.TControl.ShowHint" name="TDBGroupBox.ShowHint"/>
+<element link="#lcl.controls.TWinControl.TabOrder" name="TDBGroupBox.TabOrder"/>
+<element link="#lcl.controls.TWinControl.TabStop" name="TDBGroupBox.TabStop"/>
+
+<element name="TDBGroupBox.Visible">
+<short>
+Indicates if the control is visible on its parent.
+</short>
+<descr>
+<p>
+The Visible property represents the ability to see a visual control. If 
+Visible is <b>True</b> the control is shown, otherwise it is hidden. Calling 
+Show sets, among others, Visible to <b>True</b>. Setting Visible to 
+<b>False</b> is equivalent to calling Hide method.
+</p>
+<remark>
+The Visible property does not depend on control's parent visibility. Use 
+IsVisible method to consider this and get real visibility.
+</remark>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+</seealso>
+</element>
+
 <element link="#lcl.controls.TControl.OnClick" name="TDBGroupBox.OnClick"/>
 <element name="TDBGroupBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element link="#lcl.controls.TControl.OnDblClick" name="TDBGroupBox.OnDblClick"/>
@@ -7818,6 +7887,7 @@ the key needs to become pressed while the control has focus.
 <link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
 </seealso>
 </element>
+
 <element name="TDBGroupBox.OnKeyPress">
 <short>
 Event handler signalled when a key is being pressed while the control has 
@@ -7839,6 +7909,7 @@ received focus.
 <link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
 </seealso>
 </element>
+
 <element name="TDBGroupBox.OnKeyUp">
 <short>
 Event handler signalled when a key is up (not pressed) while the control has 
@@ -7858,6 +7929,7 @@ pressed key may become released during the time the control has focus.
 <link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
 </seealso>
 </element>
+
 <element link="#lcl.controls.TControl.OnMouseDown" name="TDBGroupBox.OnMouseDown"/>
 <element link="#lcl.controls.TControl.OnMouseEnter" name="TDBGroupBox.OnMouseEnter"/>
 <element link="#lcl.controls.TControl.OnMouseLeave" name="TDBGroupBox.OnMouseLeave"/>
@@ -7869,35 +7941,6 @@ pressed key may become released during the time the control has focus.
 <element link="#lcl.controls.TControl.OnResize" name="TDBGroupBox.OnResize"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBGroupBox.OnStartDrag"/>
 <element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TDBGroupBox.OnUTF8KeyPress"/>
-<element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBGroupBox.ParentBiDiMode"/>
-<element link="#lcl.controls.TControl.ParentColor" name="TDBGroupBox.ParentColor"/>
-<element link="#lcl.controls.TWinControl.ParentDoubleBuffered" name="TDBGroupBox.ParentDoubleBuffered"/>
-<element link="#lcl.controls.TControl.ParentFont" name="TDBGroupBox.ParentFont"/>
-<element link="#lcl.controls.TControl.ParentShowHint" name="TDBGroupBox.ParentShowHint"/>
-<element link="#lcl.controls.TControl.PopupMenu" name="TDBGroupBox.PopupMenu"/>
-<element link="#lcl.controls.TControl.ShowHint" name="TDBGroupBox.ShowHint"/>
-<element link="#lcl.controls.TWinControl.TabOrder" name="TDBGroupBox.TabOrder"/>
-<element link="#lcl.controls.TWinControl.TabStop" name="TDBGroupBox.TabStop"/>
-<element name="TDBGroupBox.Visible">
-<short>
-Indicates if the control is visible on its parent.
-</short>
-<descr>
-<p>
-The Visible property represents the ability to see a visual control. If 
-Visible is <b>True</b> the control is shown, otherwise it is hidden. Calling 
-Show sets, among others, Visible to <b>True</b>. Setting Visible to 
-<b>False</b> is equivalent to calling Hide method.
-</p>
-<remark>
-The Visible property does not depend on control's parent visibility. Use 
-IsVisible method to consider this and get real visibility.
-</remark>
-</descr>
-<seealso>
-<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
-</seealso>
-</element>
 
 <element name="TOnDBImageRead">
 <short>
@@ -8599,10 +8642,87 @@ the linked dataset.
 <element link="#lcl.controls.TControl.DragCursor" name="TDBImage.DragCursor"/>
 <element link="#lcl.controls.TControl.DragKind" name="TDBImage.DragKind"/>
 <element link="#lcl.controls.TControl.DragMode" name="TDBImage.DragMode"/>
-
 <element name="TDBImage.KeepOriginXWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginXWhenClipped"/>
-
 <element name="TDBImage.KeepOriginYWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginYWhenClipped"/>
+<element link="#lcl.controls.TControl.ParentShowHint" name="TDBImage.ParentShowHint"/>
+<element link="#lcl.controls.TControl.PopupMenu" name="TDBImage.PopupMenu"/>
+<element link="#lcl.extctrls.TCustomImage.Proportional" name="TDBImage.Proportional"/>
+
+<element name="TDBImage.QuickDraw">
+<short>
+<var>QuickDraw</var> - if <b>True</b>, quick drawing is implemented.
+</short>
+<descr>
+<p>
+QuickDraw is a Boolean property which indicates if QuickDraw is enabled for 
+the platform or OS. The default value for the property is <b>True</b>.
+</p>
+<remark>
+QuickDraw is not used in the current LCL implementation.
+</remark>
+</descr>
+<seealso/>
+</element>
+
+<element name="TDBImage.ReadOnly">
+<short>
+Indicates if the control cannot modify the image in the field for the linked 
+dataset.
+</short>
+<descr>
+<p>
+<var>ReadOnly</var> is a <var>Boolean</var> property which indicates if the 
+control cannot modify its <var>DataField</var> in the linked dataset. When 
+set to <b>True</b>, the underlying field value cannot be modified using the 
+control.
+</p>
+<p>
+Read and write access for the property value are redirected to the ReadOnly 
+property in the TFieldDataLink instance used in the control.
+</p>
+<remark>
+A value assigned to ReadOnly may be overridden by the Field definition in the 
+target database table.
+</remark>
+</descr>
+<seealso>
+<link id="TDBImage.DataField"/>
+<link id="TDBImage.DataSource"/>
+<link id="TDBImage.Field"/>
+<link id="#fcl.db.TDataLink.ReadOnly">TDataLink.ReadOnly</link>
+<link id="#fcl.db.TDataLink.DataSource">TDataLink.DataSource</link>
+<link id="#fcl.db.TDataLink.DataSet">TDataLink.DataSet</link>
+</seealso>
+</element>
+
+<element link="#lcl.controls.TControl.ShowHint" name="TDBImage.ShowHint"/>
+<element link="#lcl.extctrls.TCustomImage.Stretch" name="TDBImage.Stretch"/>
+<element name="TDBImage.StretchInEnabled" link="#lcl.extctrls.TCustomImage.StretchInEnabled"/>
+<element name="TDBImage.StretchOutEnabled" link="#lcl.extctrls.TCustomImage.StretchOutEnabled"/>
+<element link="#lcl.extctrls.TCustomImage.Transparent" name="TDBImage.Transparent"/>
+<element name="TDBImage.Visible" link="#lcl.controls.TControl.Visible"/>
+
+<element name="TDBImage.WriteHeader">
+<short>Write a header in the image stream.</short>
+<descr>
+<p>
+The <var>WriteHeader</var> property controls whether or not a header will be 
+written to the image stream. By default a header will be written. This helps 
+to efficiently identify the image format when loading. The writing of a 
+header in the image stream could be a problem if the database will be shared 
+with external applications that do not expect a header in the image stream. 
+In this case, set WriteHeader value to <b>False</b> in order to skip the 
+header writing.
+</p>
+<p>
+The default value is <b>True</b>.
+</p>
+<p>
+Note: The <var>WriteHeader</var> value is ignored if the 
+<var>OnDbImageWrite</var> event is implemented.
+</p>
+</descr>
+</element>
 
 <element name="TDBImage.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TDBImage.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -8645,6 +8765,7 @@ classes that implement the IsStreamFormatSupported method.
 </p>
 </descr>
 </element>
+
 <element name="TDBImage.OnDBImageWrite">
 <short>Event to write a custom header into image stream.</short>
 <descr>
@@ -8669,7 +8790,7 @@ property.
 </p>
 </descr>
 </element>
-<element link="#lcl.controls.TControl.PopupMenu" name="TDBImage.PopupMenu"/>
+
 <element link="#lcl.controls.TControl.OnDragDrop" name="TDBImage.OnDragDrop"/>
 <element link="#lcl.controls.TControl.OnDragOver" name="TDBImage.OnDragOver"/>
 <element link="#lcl.controls.TControl.OnEndDrag" name="TDBImage.OnEndDrag"/>
@@ -8683,85 +8804,7 @@ property.
 <element name="TDBImage.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TDBImage.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBImage.OnStartDrag"/>
-<element link="#lcl.controls.TControl.ParentShowHint" name="TDBImage.ParentShowHint"/>
-<element link="#lcl.extctrls.TCustomImage.Proportional" name="TDBImage.Proportional"/>
-<element name="TDBImage.QuickDraw">
-<short>
-<var>QuickDraw</var> - if <b>True</b>, quick drawing is implemented.
-</short>
-<descr>
-<p>
-QuickDraw is a Boolean property which indicates if QuickDraw is enabled for 
-the platform or OS. The default value for the property is <b>True</b>.
-</p>
-<remark>
-QuickDraw is not used in the current LCL implementation.
-</remark>
-</descr>
-<seealso/>
-</element>
-<element name="TDBImage.ReadOnly">
-<short>
-Indicates if the control cannot modify the image in the field for the linked 
-dataset.
-</short>
-<descr>
-<p>
-<var>ReadOnly</var> is a <var>Boolean</var> property which indicates if the 
-control cannot modify its <var>DataField</var> in the linked dataset. When 
-set to <b>True</b>, the underlying field value cannot be modified using the 
-control.
-</p>
-<p>
-Read and write access for the property value are redirected to the ReadOnly 
-property in the TFieldDataLink instance used in the control.
-</p>
-<remark>
-A value assigned to ReadOnly may be overridden by the Field definition in the 
-target database table.
-</remark>
-</descr>
-<seealso>
-<link id="TDBImage.DataField"/>
-<link id="TDBImage.DataSource"/>
-<link id="TDBImage.Field"/>
-<link id="#fcl.db.TDataLink.ReadOnly">TDataLink.ReadOnly</link>
-<link id="#fcl.db.TDataLink.DataSource">TDataLink.DataSource</link>
-<link id="#fcl.db.TDataLink.DataSet">TDataLink.DataSet</link>
-</seealso>
-</element>
 
-<element link="#lcl.controls.TControl.ShowHint" name="TDBImage.ShowHint"/>
-<element link="#lcl.extctrls.TCustomImage.Stretch" name="TDBImage.Stretch"/>
-
-<element name="TDBImage.StretchInEnabled" link="#lcl.extctrls.TCustomImage.StretchInEnabled"/>
-
-<element name="TDBImage.StretchOutEnabled" link="#lcl.extctrls.TCustomImage.StretchOutEnabled"/>
-
-<element link="#lcl.extctrls.TCustomImage.Transparent" name="TDBImage.Transparent"/>
-<element name="TDBImage.Visible" link="#lcl.controls.TControl.Visible"/>
-
-<element name="TDBImage.WriteHeader">
-<short>Write a header in the image stream.</short>
-<descr>
-<p>
-The <var>WriteHeader</var> property controls whether or not a header will be 
-written to the image stream. By default a header will be written. This helps 
-to efficiently identify the image format when loading. The writing of a 
-header in the image stream could be a problem if the database will be shared 
-with external applications that do not expect a header in the image stream. 
-In this case, set WriteHeader value to <b>False</b> in order to skip the 
-header writing.
-</p>
-<p>
-The default value is <b>True</b>.
-</p>
-<p>
-Note: The <var>WriteHeader</var> value is ignored if the 
-<var>OnDbImageWrite</var> event is implemented.
-</p>
-</descr>
-</element>
 <element name="TDBCalendar">
 <short>
 <var>TDBCalendar</var> - a data-aware version of <var>TCalendar</var>, for 
@@ -8930,6 +8973,7 @@ DataSource is set to Nil when the component is freed.
 <element name="TDBCalendar.Notification.Operation">
 <short>Operation for the notification.</short>
 </element>
+
 <element name="TDBCalendar.Create">
 <short>
 Constructor for the class instance.
@@ -8953,6 +8997,7 @@ handlers in the TFieldDataLink instance.
 <element name="TDBCalendar.Create.TheOwner">
 <short>Owner of the class instance.</short>
 </element>
+
 <element name="TDBCalendar.Destroy">
 <short>
 Destructor for the class instance.
@@ -8968,6 +9013,7 @@ instance in the class, and calls the inherited destructor.
 <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
 </seealso>
 </element>
+
 <element name="TDBCalendar.EditingDone">
 <short>
 Performs actions needed when the user has finished editing.
@@ -9019,6 +9065,7 @@ The return value is <b>True</b> if the action was executed in the method.
 <element name="TDBCalendar.ExecuteAction.AAction">
 <short>Action examined and executed in the method.</short>
 </element>
+
 <element name="TDBCalendar.UpdateAction">
 <short>
 Updates the specified action to reflect the current state in the linked 
@@ -9054,6 +9101,7 @@ could not be updated in the method.
 <element name="TDBCalendar.UpdateAction.AAction">
 <short>Action examined and updated in the method.</short>
 </element>
+
 <element name="TDBCalendar.Field">
 <short>
 Provides access to the field definition for the data-aware control.
@@ -9214,6 +9262,7 @@ the target database table.
 <element link="#LCL.Calendar.TCustomCalendar.OnMonthChanged" name="TDBCalendar.OnMonthChanged"/>
 <element link="#LCL.Calendar.TCustomCalendar.OnYearChanged" name="TDBCalendar.OnYearChanged"/>
 <element link="#lcl.controls.TControl.OnStartDrag" name="TDBCalendar.OnStartDrag"/>
+
 <element name="TDBNavGlyph">
 <short>Not used in the current LCL version.</short>
 <descr>Not used in the current LCL version</descr>
@@ -10211,26 +10260,6 @@ TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
 <element link="#lcl.dbctrls.TDBCustomNavigator.Flat" name="TDBNavigator.Flat"/>
 <element link="#lcl.controls.TControl.Font" name="TDBNavigator.Font"/>
 <element link="#lcl.dbctrls.TDBCustomNavigator.Hints" name="TDBNavigator.Hints"/>
-<element link="#lcl.dbctrls.TDBCustomNavigator.OnClick" name="TDBNavigator.OnClick"/>
-
-<element name="TDBNavigator.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-
-<element link="#lcl.controls.TControl.OnDblClick" name="TDBNavigator.OnDblClick"/>
-<element link="#lcl.controls.TControl.OnDragDrop" name="TDBNavigator.OnDragDrop"/>
-<element link="#lcl.controls.TControl.OnDragOver" name="TDBNavigator.OnDragOver"/>
-<element link="#lcl.controls.TControl.OnEndDrag" name="TDBNavigator.OnEndDrag"/>
-<element link="#lcl.controls.TWinControl.OnEnter" name="TDBNavigator.OnEnter"/>
-<element link="#lcl.controls.TWinControl.OnExit" name="TDBNavigator.OnExit"/>
-<element link="#lcl.controls.TControl.OnMouseDown" name="TDBNavigator.OnMouseDown"/>
-<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBNavigator.OnMouseEnter"/>
-<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBNavigator.OnMouseLeave"/>
-<element link="#lcl.controls.TControl.OnMouseMove" name="TDBNavigator.OnMouseMove"/>
-<element link="#lcl.controls.TControl.OnMouseUp" name="TDBNavigator.OnMouseUp"/>
-<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBNavigator.OnMouseWheel"/>
-<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBNavigator.OnMouseWheelDown"/>
-<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBNavigator.OnMouseWheelUp"/>
-<element link="#lcl.controls.TControl.OnResize" name="TDBNavigator.OnResize"/>
-<element link="#lcl.controls.TControl.OnStartDrag" name="TDBNavigator.OnStartDrag"/>
 <element link="#lcl.dbctrls.TDBCustomNavigator.Options" name="TDBNavigator.Options"/>
 <element link="#lcl.controls.TControl.ParentBiDiMode" name="TDBNavigator.ParentBiDiMode"/>
 <element link="#lcl.controls.TControl.ParentColor" name="TDBNavigator.ParentColor"/>
@@ -10256,6 +10285,26 @@ The default value for the property is <b>False</b> in TDBNavigator.
 <element link="#lcl.controls.TControl.Visible" name="TDBNavigator.Visible"/>
 <element link="#lcl.dbctrls.TDBCustomNavigator.VisibleButtons" name="TDBNavigator.VisibleButtons"/>
 <element link="#lcl.dbctrls.TDBCustomNavigator.Images" name="TDBNavigator.Images"/>
+
+<element link="#lcl.dbctrls.TDBCustomNavigator.OnClick" name="TDBNavigator.OnClick"/>
+<element name="TDBNavigator.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element link="#lcl.controls.TControl.OnDblClick" name="TDBNavigator.OnDblClick"/>
+<element link="#lcl.controls.TControl.OnDragDrop" name="TDBNavigator.OnDragDrop"/>
+<element link="#lcl.controls.TControl.OnDragOver" name="TDBNavigator.OnDragOver"/>
+<element link="#lcl.controls.TControl.OnEndDrag" name="TDBNavigator.OnEndDrag"/>
+<element link="#lcl.controls.TWinControl.OnEnter" name="TDBNavigator.OnEnter"/>
+<element link="#lcl.controls.TWinControl.OnExit" name="TDBNavigator.OnExit"/>
+<element link="#lcl.controls.TControl.OnMouseDown" name="TDBNavigator.OnMouseDown"/>
+<element link="#lcl.controls.TControl.OnMouseEnter" name="TDBNavigator.OnMouseEnter"/>
+<element link="#lcl.controls.TControl.OnMouseLeave" name="TDBNavigator.OnMouseLeave"/>
+<element link="#lcl.controls.TControl.OnMouseMove" name="TDBNavigator.OnMouseMove"/>
+<element link="#lcl.controls.TControl.OnMouseUp" name="TDBNavigator.OnMouseUp"/>
+<element link="#lcl.controls.TControl.OnMouseWheel" name="TDBNavigator.OnMouseWheel"/>
+<element link="#lcl.controls.TControl.OnMouseWheelDown" name="TDBNavigator.OnMouseWheelDown"/>
+<element link="#lcl.controls.TControl.OnMouseWheelUp" name="TDBNavigator.OnMouseWheelUp"/>
+<element link="#lcl.controls.TControl.OnResize" name="TDBNavigator.OnResize"/>
+<element link="#lcl.controls.TControl.OnStartDrag" name="TDBNavigator.OnStartDrag"/>
+
 <element name="ChangeDataSource">
 <short>
 Performs actions needed when the datasource in a control with the specified 
