@@ -1495,7 +1495,7 @@ begin
       exit(mrYes);
     end;
 
-    // check all required packages
+    // check all direct required packages (indirect required were already compiled above)
     Result:=PackageGraph.CheckCompileNeedDueToDependencies(AProject,
                                   AProject.FirstRequiredDependency,
                                   not (pfUseDesignTimePackages in AProject.Flags),

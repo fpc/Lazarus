@@ -335,7 +335,7 @@ type
                                   var TheMessage: TLMessage): Boolean; override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     function UniqueName(const BaseName: string): string; override;
-    Procedure RemovePersistentAndChilds(APersistent: TPersistent);
+    Procedure RemovePersistentAndChildren(APersistent: TPersistent);
     procedure Notification({%H-}AComponent: TComponent;
                            Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
@@ -2968,7 +2968,7 @@ begin
     while DeletingPersistent.Count>0 do begin
       APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
       //debugln(['TDesigner.DoDeleteSelectedComponents A ',dbgsName(APersistent),' ',(APersistent is TComponent) and (TheFormEditor.FindComponent(TComponent(APersistent))<>nil)]);
-      RemovePersistentAndChilds(APersistent);
+      RemovePersistentAndChildren(APersistent);
     end;
     MouseDownComponent := Nil;
   finally
@@ -3131,7 +3131,7 @@ Begin
   inherited Modified;
 end;
 
-procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
+procedure TDesigner.RemovePersistentAndChildren(APersistent: TPersistent);
 var
   i: integer;
   AWinControl: TWinControl;
@@ -3153,8 +3153,8 @@ Begin
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
       if ChildControl.Owner=FLookupRoot then begin
-        //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
-        RemovePersistentAndChilds(ChildControl);
+        //Debugln(['[TDesigner.RemoveComponentAndChildren] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
+        RemovePersistentAndChildren(ChildControl);
         // the component list of the form has changed -> restart the search
         i:=AWinControl.ControlCount-1;
       end else
@@ -3164,7 +3164,7 @@ Begin
   end;
   // remove component
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.RemovePersistentAndChilds] DoDeletePersistent ',dbgsName(APersistent));
+  DebugLn('[TDesigner.RemovePersistentAndChildren] DoDeletePersistent ',dbgsName(APersistent));
   {$ENDIF}
   DoDeletePersistent(APersistent,true);
 end;
