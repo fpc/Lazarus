@@ -1348,6 +1348,10 @@ use of glyphs.
 <element name="TButtonPanel.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TButtonPanel.DefaultButton" link="#lcl.buttonpanel.TCustomButtonPanel.DefaultButton"/>
 <element name="TButtonPanel.Spacing" link="#lcl.buttonpanel.TCustomButtonPanel.Spacing"/>
+<element name="TButtonPanel.ShowButtons" link="#lcl.buttonpanel.TCustomButtonPanel.ShowButtons"/>
+<element name="TButtonPanel.ShowGlyphs" link="#lcl.buttonpanel.TCustomButtonPanel.ShowGlyphs"/>
+<element name="TButtonPanel.ShowBevel" link="#lcl.buttonpanel.TCustomButtonPanel.ShowBevel"/>
+<element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
 <element name="TButtonPanel.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TButtonPanel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TButtonPanel.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
@@ -1366,10 +1370,6 @@ use of glyphs.
 <element name="TButtonPanel.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TButtonPanel.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TButtonPanel.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TButtonPanel.ShowButtons" link="#lcl.buttonpanel.TCustomButtonPanel.ShowButtons"/>
-<element name="TButtonPanel.ShowGlyphs" link="#lcl.buttonpanel.TCustomButtonPanel.ShowGlyphs"/>
-<element name="TButtonPanel.ShowBevel" link="#lcl.buttonpanel.TCustomButtonPanel.ShowBevel"/>
-<element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Registers the TButtonPanel class in the Lazarus IDE.</short>
