@@ -3098,6 +3098,17 @@ been assigned to the Parent for the control.
 </seealso>
 </element>
 
+<element name="TFrame.ParentBackground" link="#lcl.forms.TCustomFrame.ParentBackground"/>
+<element name="TFrame.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TFrame.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TFrame.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TFrame.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TFrame.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TFrame.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
+<element name="TFrame.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TFrame.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TFrame.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TFrame.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TFrame.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TFrame.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
 <element name="TFrame.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -3126,17 +3137,6 @@ been assigned to the Parent for the control.
 <element name="TFrame.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TFrame.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TFrame.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
-<element name="TFrame.ParentBackground" link="#lcl.forms.TCustomFrame.ParentBackground"/>
-<element name="TFrame.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TFrame.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TFrame.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TFrame.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TFrame.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TFrame.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
-<element name="TFrame.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TFrame.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TFrame.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TFrame.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TWindowMagnetOptions">
 <short>
@@ -9352,49 +9352,6 @@ widgetset class when its <var>Handle</var> has been allocated.
 <element name="TForm.Icon" link="#lcl.forms.TCustomForm.Icon"/>
 <element name="TForm.KeyPreview" link="#lcl.forms.TCustomForm.KeyPreview"/>
 <element name="TForm.Menu" link="#lcl.forms.TCustomForm.Menu"/>
-<element name="TForm.OnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>
-<element name="TForm.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TForm.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TForm.OnClose" link="#lcl.forms.TCustomForm.OnClose"/>
-<element name="TForm.OnCloseQuery" link="#lcl.forms.TCustomForm.OnCloseQuery"/>
-<element name="TForm.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
-<element name="TForm.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TForm.OnCreate" link="#lcl.forms.TCustomForm.OnCreate"/>
-<element name="TForm.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element name="TForm.OnDeactivate" link="#lcl.forms.TCustomForm.OnDeactivate"/>
-<element name="TForm.OnDestroy" link="#lcl.forms.TCustomForm.OnDestroy"/>
-<element name="TForm.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
-<element name="TForm.OnDockOver" link="#lcl.controls.TWinControl.OnDockOver"/>
-<element name="TForm.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TForm.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TForm.OnDropFiles" link="#lcl.forms.TCustomForm.OnDropFiles"/>
-<element name="TForm.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
-<element name="TForm.OnGetSiteInfo" link="#lcl.controls.TWinControl.OnGetSiteInfo"/>
-<element name="TForm.OnHelp" link="#lcl.forms.TCustomForm.OnHelp"/>
-<element name="TForm.OnHide" link="#lcl.forms.TCustomForm.OnHide"/>
-<element name="TForm.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
-<element name="TForm.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
-<element name="TForm.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
-<element name="TForm.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TForm.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TForm.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TForm.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TForm.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TForm.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TForm.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TForm.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TForm.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
-<element name="TForm.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
-<element name="TForm.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
-<element name="TForm.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
-<element name="TForm.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TForm.OnShortCut" link="#lcl.forms.TCustomForm.OnShortcut"/>
-<element name="TForm.OnShow" link="#lcl.forms.TCustomForm.OnShow"/>
-<element name="TForm.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
-<element name="TForm.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
-<element name="TForm.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
-<element name="TForm.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TForm.OnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
 <element name="TForm.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TForm.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
 <element name="TForm.ParentFont" link="#lcl.forms.TCustomForm.ParentFont"/>
@@ -9475,6 +9432,49 @@ Used to distinguish form streaming content for different versions of the LCL.
 <element name="TForm.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
 <element name="TForm.Visible" link="#lcl.forms.TCustomForm.Visible"/>
 <element name="TForm.WindowState" link="#lcl.forms.TCustomForm.WindowState"/>
+<element name="TForm.OnActivate" link="#lcl.forms.TCustomForm.OnActivate"/>
+<element name="TForm.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TForm.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TForm.OnClose" link="#lcl.forms.TCustomForm.OnClose"/>
+<element name="TForm.OnCloseQuery" link="#lcl.forms.TCustomForm.OnCloseQuery"/>
+<element name="TForm.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
+<element name="TForm.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TForm.OnCreate" link="#lcl.forms.TCustomForm.OnCreate"/>
+<element name="TForm.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TForm.OnDeactivate" link="#lcl.forms.TCustomForm.OnDeactivate"/>
+<element name="TForm.OnDestroy" link="#lcl.forms.TCustomForm.OnDestroy"/>
+<element name="TForm.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
+<element name="TForm.OnDockOver" link="#lcl.controls.TWinControl.OnDockOver"/>
+<element name="TForm.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TForm.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TForm.OnDropFiles" link="#lcl.forms.TCustomForm.OnDropFiles"/>
+<element name="TForm.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+<element name="TForm.OnGetSiteInfo" link="#lcl.controls.TWinControl.OnGetSiteInfo"/>
+<element name="TForm.OnHelp" link="#lcl.forms.TCustomForm.OnHelp"/>
+<element name="TForm.OnHide" link="#lcl.forms.TCustomForm.OnHide"/>
+<element name="TForm.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TForm.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TForm.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TForm.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TForm.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TForm.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TForm.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TForm.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TForm.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TForm.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TForm.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TForm.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+<element name="TForm.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+<element name="TForm.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
+<element name="TForm.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
+<element name="TForm.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TForm.OnShortCut" link="#lcl.forms.TCustomForm.OnShortcut"/>
+<element name="TForm.OnShow" link="#lcl.forms.TCustomForm.OnShow"/>
+<element name="TForm.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+<element name="TForm.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+<element name="TForm.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
+<element name="TForm.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+<element name="TForm.OnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
 
 <element name="TFormClass">
 <short>
