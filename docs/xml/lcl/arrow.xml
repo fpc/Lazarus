@@ -244,27 +244,6 @@ triangle.
 <element name="TArrow.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TArrow.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TArrow.Hint" link="#lcl.controls.TControl.Hint"/>
-<element name="TArrow.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TArrow.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TArrow.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TArrow.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element name="TArrow.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TArrow.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TArrow.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TArrow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TArrow.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TArrow.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TArrow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TArrow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TArrow.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TArrow.OnMouseWheelDown" link="#lcl.controls.TControl."/>
-<element name="TArrow.OnMouseWheelUp" link="#lcl.controls.TControl."/>
-<element name="TArrow.OnMouseWheelHorz" link="#lcl.controls.TControl."/>
-<element name="TArrow.OnMouseWheelLeft" link="#lcl.controls.TControl."/>
-<element name="TArrow.OnMouseWheelRight" link="#lcl.controls.TControl."/>
-<element name="TArrow.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
-<element name="TArrow.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TArrow.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TArrow.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
 <element name="TArrow.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TArrow.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -305,6 +284,27 @@ triangle.
 
 <element name="TArrow.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TArrow.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TArrow.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TArrow.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TArrow.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TArrow.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TArrow.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TArrow.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TArrow.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TArrow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TArrow.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TArrow.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TArrow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TArrow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TArrow.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TArrow.OnMouseWheelDown" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelUp" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelHorz" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelLeft" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnMouseWheelRight" link="#lcl.controls.TControl."/>
+<element name="TArrow.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
+<element name="TArrow.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TArrow.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <!-- procedure Visibility: default -->
 <element name="Register">
