@@ -2277,15 +2277,15 @@ begin
       if (APersistent is TComponent) then begin
         if TComponent(APersistent).Owner=nil then
           exit;
-        APersistent:=TComponent(APersistent).Owner
+        APersistent:=TComponent(APersistent).Owner;
       end else if APersistent is TCollection then begin
         if TCollection(APersistent).Owner=nil then
           exit;
-        APersistent:=TCollection(APersistent).Owner
+        APersistent:=TCollection(APersistent).Owner;
       end else if APersistent is TCollectionItem then begin
         if TCollectionItem(APersistent).Collection=nil then
           exit;
-        APersistent:=TCollectionItem(APersistent).Collection
+        APersistent:=TCollectionItem(APersistent).Collection;
       end else if APersistent is TCustomForm then begin
         Result := TCustomForm(APersistent);
         exit;
