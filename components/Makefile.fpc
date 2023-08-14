@@ -18,27 +18,56 @@ files=$(wildcard ./units/*$(OEXT)) \
       $(wildcard ./custom/*$(RSTEXT))
 
 [rules]
-.PHONY: help clean cleanall base bigide all
+.PHONY: help clean cleanall lazbuildpackages lazbuildlclpackages idepackages bigide all
 
 #-----------------------------------------------------------------------------
 help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
-	@$(ECHO) "   all         same as base + bigide"
+	@$(ECHO) "   all         same as lazbuildlclpackages idepackages bigide, requires lazbuildpackages and lcl"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
-	@$(ECHO) "   bigide      build the extra packages for the bigide"
-	@$(ECHO) "               requires lcl"
+	@$(ECHO)
+	@$(ECHO) "   lazbuildpackages build non lcl packages needed by lazbuild and"
+	@$(ECHO) "                    the minimal ide, requires packager registration"
+	@$(ECHO) "   lazbuildlclpackages build lcl packages needed by lazbuild and"
+	@$(ECHO) "                 the minimal ide, requires lazbuildpackages and lcl"
+	@$(ECHO) "   idepackages build packages of the minimal ide,"
+	@$(ECHO) "               requires lazbuildpackages and lcl"
+	@$(ECHO) "   bigide      build the extra packages for the bigide, requires lcl"
 
 #-----------------------------------------------------------------------------
-# build base packages, requires packager/registration, needed by lazbuild
-base:
+# build lazbuild non lcl packages, requires packager/registration
+lazbuildpackages:
 	$(MAKE) -C lazutils
 	$(MAKE) -C codetools
 	$(MAKE) -C buildintf
+	$(MAKE) -C lazdebuggers/lazdebuggerintf
+	$(MAKE) -C debuggerintf
 	$(MAKE) -C freetype
 
 #-----------------------------------------------------------------------------
-# build the extra packages needed by the bigide, requires lcl
+# build lazbuild lcl packages, requires lclbase and lazbuildpackages
+# Note: when building lazbuild the LCL_PLATFORM=nogui, when building the ide LCL_PLATFORM=
+lazbuildlclpackages:
+	$(MAKE) -C fpdebug
+	$(MAKE) -C lazcontrols
+	$(MAKE) -C ideintf
+	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase
+	$(MAKE) -C lazdebuggers/lazdebuggerlldb
+	$(MAKE) -C lazdebuggers/lazdebuggerfplldb
+	$(MAKE) -C lazdebuggers/lazdebuggerfp
+	$(MAKE) -C synedit
+
+#-----------------------------------------------------------------------------
+# build packages of the minimal ide, requires lazbuildpackages and lcl
+idepackages: lazbuildlclpackages
+	$(MAKE) -C lazdebuggergdbmi
+	$(MAKE) -C lazcontrols/design
+	$(MAKE) -C lclextensions
+	$(MAKE) -C virtualtreeview
+
+#-----------------------------------------------------------------------------
+# build the extra packages needed by the bigide, requires idepackages
 bigide:
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols
@@ -50,8 +79,6 @@ bigide:
 	$(MAKE) -C fpcunit
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates
-	$(MAKE) -C fpdebug
-	$(MAKE) -C lazdebuggers
 	$(MAKE) -C leakview
 	$(MAKE) -C memds
 	$(MAKE) -C sdf
@@ -71,7 +98,6 @@ bigide:
 	$(MAKE) -C PascalScript/Source
 	$(MAKE) -C macroscript
 	$(MAKE) -C lclextensions
-	$(MAKE) -C virtualtreeview
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C simplewebservergui
 	$(MAKE) -C projectgroups
@@ -80,11 +106,12 @@ bigide:
 	$(MAKE) -C charactermap
 	$(MAKE) -C charactermap/design
 
-all: base
+all: lazbuildlclpackages idepackages bigide
 
 clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
+	$(MAKE) -C codetools/ide clean
 	$(MAKE) -C freetype clean
 	$(MAKE) -C debuggerintf clean
 	$(MAKE) -C lazdebuggergdbmi clean
@@ -104,7 +131,11 @@ clean:
 	$(MAKE) -C fpcunit/ide clean
 	$(MAKE) -C projecttemplates clean
 	$(MAKE) -C fpdebug clean
-	$(MAKE) -C lazdebuggers clean
+	$(MAKE) -C lazdebuggers/lazdebuggerintf clean
+	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase clean
+	$(MAKE) -C lazdebuggers/lazdebuggerlldb clean
+	$(MAKE) -C lazdebuggers/lazdebuggerfplldb clean
+	$(MAKE) -C lazdebuggers/lazdebuggerfp clean
 	$(MAKE) -C leakview clean
 	$(MAKE) -C memds clean
 	$(MAKE) -C sdf clean
@@ -117,6 +148,7 @@ clean:
 	$(MAKE) -C mouseandkeyinput clean
 	$(MAKE) -C chmhelp/packages/help clean
 	$(MAKE) -C chmhelp/packages/idehelp clean
+	$(MAKE) -C chmhelp/lhelp clean
 	$(MAKE) -C instantfpc clean
 	$(MAKE) -C externhelp clean
 	$(MAKE) -C tdbf clean
@@ -158,7 +190,11 @@ distclean:
 	$(MAKE) -C fpcunit/ide distclean
 	$(MAKE) -C projecttemplates distclean
 	$(MAKE) -C fpdebug distclean
-	$(MAKE) -C lazdebuggers distclean
+	$(MAKE) -C lazdebuggers/lazdebuggerintf distclean
+	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase distclean
+	$(MAKE) -C lazdebuggers/lazdebuggerlldb distclean
+	$(MAKE) -C lazdebuggers/lazdebuggerfplldb distclean
+	$(MAKE) -C lazdebuggers/lazdebuggerfp distclean
 	$(MAKE) -C leakview distclean
 	$(MAKE) -C memds distclean
 	$(MAKE) -C sdf distclean
@@ -171,6 +207,7 @@ distclean:
 	$(MAKE) -C mouseandkeyinput distclean
 	$(MAKE) -C chmhelp/packages/help distclean
 	$(MAKE) -C chmhelp/packages/idehelp distclean
+	$(MAKE) -C chmhelp/lhelp distclean
 	$(MAKE) -C instantfpc distclean
 	$(MAKE) -C externhelp distclean
 	$(MAKE) -C tdbf distclean
