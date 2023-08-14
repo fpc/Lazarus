@@ -2756,6 +2756,11 @@ begin
   end;
 end;
 
+function TTreeNodes.IsUpdating: boolean;
+begin
+  Result:=FUpdateCount>0;
+end;
+
 procedure TTreeNodes.FreeAllNodeData;
 var
   i: Integer;

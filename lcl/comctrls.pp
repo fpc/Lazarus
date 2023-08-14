@@ -3268,13 +3268,14 @@ type
       Data: Pointer): TTreeNode;
     function IsMultiSelection: boolean;
     procedure Assign(Source: TPersistent); override;
-    procedure BeginUpdate;
-    procedure Clear;
+    procedure BeginUpdate; virtual;
+    procedure Clear; virtual;
     procedure ClearMultiSelection(ClearSelected: boolean = false);
-    procedure ConsistencyCheck;
-    procedure Delete(Node: TTreeNode);
-    procedure EndUpdate;
-    procedure FreeAllNodeData;
+    procedure ConsistencyCheck; virtual;
+    procedure Delete(Node: TTreeNode); virtual;
+    procedure EndUpdate; virtual;
+    function IsUpdating: boolean; virtual;
+    procedure FreeAllNodeData; virtual;
     procedure SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
     procedure SelectOnlyThis(Node: TTreeNode);
     procedure MultiSelect(Node: TTreeNode; ClearWholeSelection: Boolean);
@@ -3780,6 +3781,10 @@ type
   { TTreeView }
 
   TTreeView = class(TCustomTreeView)
+  public
+    property PathDelimiter;
+    property ScrolledLeft;
+    property ScrolledTop;
   published
     property Align;
     property Anchors;
