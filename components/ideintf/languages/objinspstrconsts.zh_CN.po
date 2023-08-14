@@ -454,7 +454,7 @@ msgstr "布尔"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr "组件(&m)"
+msgstr "组件(&M)"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
@@ -479,7 +479,7 @@ msgstr "更改类..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr "更改Parent"
+msgstr "更改 Parent"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -1197,7 +1197,7 @@ msgstr "主题搜索"
 
 #: objinspstrconsts.oistdactsearchfindfirstheadline
 msgid "F&ind First"
-msgstr "查找第一个(&i)"
+msgstr "查找第一个(&I)"
 
 #: objinspstrconsts.oistdactsearchfindfirsthint
 msgid "Find first"
@@ -1205,7 +1205,7 @@ msgstr "查找第一个"
 
 #: objinspstrconsts.oistdactsearchfindheadline
 msgid "&Find ..."
-msgstr "查找(&F)..."
+msgstr "查找(&F) ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
