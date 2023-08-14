@@ -32219,6 +32219,28 @@ Decrements the internal counter used to track active updates to the container.
 </seealso>
 </element>
 
+<element name="TTreeNodes.IsUpdating">
+<short>
+Indicates whether BeginUpdate has been called at the start of an update to the 
+node container.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTreeNodes.BeginUpdate"/>
+<link id="TTreeNodes.EndUpdate"/>
+</seealso>
+</element>
+<element name="TTreeNodes.IsUpdating.Result">
+<short>
+Returns <b>True</b> if the internal update counter for the container has a 
+non-zero value. Returns <b>False</b> when BeginUpdate has not been called, or 
+when EndUpdate has caused the internal update count to return to zero (0).
+</short>
+</element>
+
 <element name="TTreeNodes.FreeAllNodeData">
 <short>
 Frees the pointer in the Data property for each of the nodes in the container.
@@ -39153,6 +39175,11 @@ shown by their caption and an optional bitmap.
 <link id="#lcl.stdctrls.HowToUseStdCtrls">How To Use Standard Controls</link>
 </seealso>
 </element>
+
+<!-- public -->
+<element name="TTreeView.PathDelimiter" link="TCustomTreeView.PathDelimiter"/>
+<element name="TTreeView.ScrolledLeft" link="TCustomTreeView.ScrolledLeft"/>
+<element name="TTreeView.ScrolledTop" link="TCustomTreeView.ScrolledTop"/>
 
 <element name="TTreeView.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTreeView.Anchors" link="#lcl.controls.TControl.Anchors"/>
