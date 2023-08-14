@@ -3700,7 +3700,7 @@ begin
 
     if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
       //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
-      Note+='Dependencies will be rebuilt';
+      Note+='Dependencies will be rebuilt.'+LineEnding;
       DependenciesChanged:=true;
       exit(mrYes);
     end;
