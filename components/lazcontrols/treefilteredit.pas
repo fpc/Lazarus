@@ -72,6 +72,7 @@ type
   private
     fFilteredTreeview: TCustomTreeview; // A control showing the (filtered) data.
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
+    FScrolledPos: TPoint;
     fSelectionList: TStringList;    // Store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show directories / files as a tree structure.
     fBranches: TBranchList;         // Items under these nodes can be sorted.
@@ -108,6 +109,7 @@ type
     function DeleteBranch(ARootNode: TTreeNode): Boolean;
   public
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
+    property ScrolledPos: TPoint read FScrolledPos; // only valid if positive
     property SelectionList: TStringList read fSelectionList;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
   published
@@ -555,6 +557,15 @@ begin
   fFirstPassedNode:=Nil;
   ANode:=fFilteredTreeview.Selected;
   if (ANode=nil) then Exit;
+  if (not ANode.IsVisible) and (fFilteredTreeview is TTreeView) then
+  begin
+    // selected node is not in scrolled view -> store scroll position
+    FScrolledPos.X:=TTreeView(fFilteredTreeview).ScrolledLeft;
+    FScrolledPos.Y:=TTreeView(fFilteredTreeview).ScrolledTop;
+  end else begin
+    FScrolledPos.X:=-1;
+    FScrolledPos.Y:=-1;
+  end;
   if ANode=fFilteredTreeview.Items.GetFirstVisibleNode then Exit;
   fSelectionList.Clear;       // Clear old selection only if there is new one.
   fSelectionList.Add(ANode.Text);
@@ -590,6 +601,13 @@ begin
   else
     ANode:=fFilteredTreeview.Items.GetFirstVisibleNode; // Otherwise first node
   fFilteredTreeview.Selected:=ANode;
+  if fFilteredTreeview is TTreeView then
+  begin
+    if FScrolledPos.Y>=0 then
+      TTreeView(fFilteredTreeview).ScrolledTop:=FScrolledPos.Y;
+    if FScrolledPos.X>=0 then
+      TTreeView(fFilteredTreeview).ScrolledLeft:=FScrolledPos.X;
+  end;
 end;
 
 function TTreeFilterEdit.GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
