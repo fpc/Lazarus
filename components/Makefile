@@ -1949,7 +1949,6 @@ bigide:
 	$(MAKE) -C sqldb
 	$(MAKE) -C PascalScript/Source
 	$(MAKE) -C macroscript
-	$(MAKE) -C lclextensions
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C simplewebservergui
 	$(MAKE) -C projectgroups
