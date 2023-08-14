@@ -3534,7 +3534,7 @@ var
   ConfigChanged: boolean;
   DependenciesChanged: boolean;
   DefResult: TModalResult;
-  OldNeedBuildAllFlag: Boolean;
+  OldNeedBuildAllFlag, IsDefDirWritable: Boolean;
   OldOverride: String;
 begin
   Result:=mrYes;
@@ -3556,11 +3556,13 @@ begin
   end;
 
   // the current output directory needs compilation
+  OutputDir:=APackage.GetOutputDirectory(false);
+  IsDefDirWritable:=OutputDirectoryIsWritable(APackage,OutputDir,false);
+
   if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='' then
   begin
     // the last compile was put to the normal/default output directory
-    OutputDir:=APackage.GetOutputDirectory(false);
-    if OutputDirectoryIsWritable(APackage,OutputDir,false) then
+    if IsDefDirWritable then
     begin
       // the normal output directory is writable => keep using it
       exit;
@@ -3580,33 +3582,41 @@ begin
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
-    if not ConfigChanged then begin
-      // some source files have changed, not the compiler parameters
-      // => keep using the fallback directory
-      exit;
+
+    if not IsDefDirWritable then begin
+      if not ConfigChanged then begin
+        // some source files have changed, not the compiler parameters
+        // => keep using the fallback directory
+        exit;
+      end;
+      if DependenciesChanged then begin
+        // dependencies have changed
+        // => switching to the not writable default output directory is not possible
+        // => keep using the fallback directory
+        exit;
+      end;
+      // maybe the user switched the settings back to default
+      // => try using the default output directory
     end;
-    if DependenciesChanged then begin
-      // dependencies have changed
-      // => switching to the not writable default output directory is not possible
-      // => keep using the fallback directory
-      exit;
-    end;
-    // maybe the user switched the settings back to default
-    // => try using the default output directory
+
     OldOverride:=APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
+    if ConsoleVerbosity>=0 then
+      debugln(['Hint: (lazarus) trying the default output directory of package ',APackage.IDAsString]);
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,GroupCompile,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
-    if DefResult=mrNo then begin
-      // switching back to the not writable output directory requires no compile
+    if IsDefDirWritable or (DefResult=mrNo) then begin
+      // switching back to the default output directory
       debugln(['Hint: (lazarus) switching back to the normal output directory: "',APackage.GetOutputDirectory,'" Package ',APackage.IDAsString]);
-      Note+='Switching back to not writable output directory.'+LineEnding;
-      exit(mrNo);
+      Note+='Switching back to default output directory.'+LineEnding;
+      exit(DefResult);
     end;
     // neither the default nor the fallback is valid
     // => switch back to the fallback
+    if ConsoleVerbosity>=0 then
+      debugln(['Hint: (lazarus) switching back to fallback output directory package ',APackage.IDAsString]);
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=OldOverride;
     NeedBuildAllFlag:=OldNeedBuildAllFlag;
   end;
@@ -5388,36 +5398,14 @@ begin
   OutputDir:=APackage.GetOutputDirectory;
   //debugln(['TLazPackageGraph.PreparePackageOutputDirectory OutputDir="',OutputDir,'"']);
 
-  if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride<>'' then
-  begin
-    // package is using the fallback directory
-    NewOutputDir:=APackage.GetOutputDirectory(false);
-    if OutputDirectoryIsWritable(APackage,NewOutputDir,false) then begin
-      // default output directory is writable -> switch back to default
-      debugln(['Info: (lazarus) [TLazPackageGraph.PreparePackageOutputDirectory] switching ',APackage.IDAsString,' back to default output directory: ',NewOutputDir]);
-      APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
-      OutputDir:=NewOutputDir;
-    end;
-  end;
+  // Note: The OutputDirectoryOverride is set prior in CheckIfPackageNeedsCompilation
 
   DeleteAllFilesInOutputDir:=false;
   if not OutputDirectoryIsWritable(APackage,OutputDir,false) then
   begin
-    // the normal output directory is not writable
-    // => use the fallback directory
-    NewOutputDir:=GetFallbackOutputDir(APackage);
-    if (NewOutputDir=OutputDir) or (NewOutputDir='') then begin
-      debugln(['Error: (lazarus) [TLazPackageGraph.PreparePackageOutputDirectory] failed to create writable directory (',APackage.IDAsString,'): ',OutputDir]);
-      exit(mrCancel);
-    end;
-    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
-    OutputDir:=APackage.GetOutputDirectory;
-    if not OutputDirectoryIsWritable(APackage,OutputDir,true) then
-    begin
-      debugln(['Error: (lazarus) [TLazPackageGraph.PreparePackageOutputDirectory] failed to create writable directory (',APackage.IDAsString,'): ',OutputDir]);
-      Result:=mrCancel;
-    end;
-    DeleteAllFilesInOutputDir:=true;
+    // the output directory is not writable
+    debugln(['Error: (lazarus) [TLazPackageGraph.PreparePackageOutputDirectory] failed to create writable directory (',APackage.IDAsString,'): ',OutputDir]);
+    Result:=mrCancel;
   end else if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride<>''
   then
     // package is already using the fallback directory

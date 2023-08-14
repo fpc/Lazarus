@@ -3695,10 +3695,10 @@ begin
   FOutputDirectoryOverride:=AValue;
   if InvalidateParseOnChange then
     IncreaseCompilerParseStamp;// the output dir is used by other packages
-  if FOutputDirectoryOverride<>'' then
-    DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride New=',FOutputDirectoryOverride])
-  else
-    DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
+  //if FOutputDirectoryOverride<>'' then
+  //  DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride New=',FOutputDirectoryOverride])
+  //else
+  //  DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
 end;
 
 constructor TParsedCompilerOptions.Create(TheOwner: TObject);
