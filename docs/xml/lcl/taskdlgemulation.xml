@@ -91,18 +91,26 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <!-- private -->
 <element name="TLCLTaskDialog.RadioIndent"/>
 <element name="TLCLTaskDialog.ComboBoxHeight"/>
+<element name="TLCLTaskDialog.QueryEditHeight"/>
 <element name="TLCLTaskDialog.LargeImageSize"/>
 <element name="TLCLTaskDialog.SmallImageSize"/>
+<element name="TLCLTaskDialog.CommandLinkButtonHeight"/>
+<element name="TLCLTaskDialog.RadioVSpacing"/>
+<element name="TLCLTaskDialog.CommandLinkButtonVSpacing"/>
 
 <element name="TLCLTaskDialog.FDlg">
 <short>
-The task dialog structure which created the form.
+The task dialog instance which created the dialog form.
 </short>
 </element>
 
 <element name="TLCLTaskDialog.FVerifyChecked"/>
 <element name="TLCLTaskDialog.FExpanded"/>
-<element name="TLCLTaskDialog.FCommandLinkButtonWidth"/>
+<element name="TLCLTaskDialog.CommandLinkButtonWidth"/>
+<element name="TLCLTaskDialog.CommandLinkButtonMargin"/>
+<element name="TLCLTaskDialog.CommandLinkButtonSpacing"/>
+<element name="TLCLTaskDialog.ButtonHeight"/>
+<element name="TLCLTaskDialog.GlobalLeftMargin"/>
 <element name="TLCLTaskDialog.Timer"/>
 <element name="TLCLTaskDialog.TimerStartTime"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
@@ -218,7 +226,6 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddFooter.XB"/>
 <element name="TLCLTaskDialog.AddFooter.AFontHeight"/>
 <element name="TLCLTaskDialog.AddFooter.AWidth"/>
-<element name="TLCLTaskDialog.AddFooter.AGlobalLeftMargin"/>
 <element name="TLCLTaskDialog.AddFooter.AParent"/>
 
 <element name="TLCLTaskDialog.AddLabel"/>
@@ -457,13 +464,30 @@ Shift, Control, or Alt modifier for the key.
 </short>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.CreateNew">
 <short>
 Alternate constructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CreateNew</var> is an overridden constructor in <var>TLCLTaskDialog</var>. 
+It is the alternate constructor called when creating a form instance which does 
+not have an associated resource file (.lfm). It extends the inherited method to 
+assign the value in AOwner to the internal TTaskDialog member for the class 
+instance.
+</p>
+<p>
+CreateNew calls the inherited method to configure and initialize the dialog 
+form instance. It sets the default values for internal members and properties 
+like KeyPreview (<b>True</b>). It signals the OnDialogCreated event handler 
+(when assigned) in the TTaskDialog instance for the dialog form.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.dialogs.TTaskDialog.OnDialogCreated"/>
+<link id="#lcl.forms.TCustomForm.CreateNew">TCustomForm.CreateNew</link>
+<link id="#lcl.forms.TForm.KeyPreview">TForm.KeyPreview</link>
+</seealso>
 </element>
 <element name="TLCLTaskDialog.CreateNew.AOwner">
 <short>
