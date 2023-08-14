@@ -528,12 +528,14 @@ begin
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
+(* CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
+   the same functions to compare each part of the data *)
 var
   Item1: TIdentHistListItem absolute Data1;
   Item2: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareIdentifiers(PChar(Pointer(Item2.Identifier)),
-                             PChar(Pointer(Item1.Identifier)));
+  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),
+                                Pointer(Item1.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
@@ -541,6 +543,8 @@ begin
 end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
+(* CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
+   the same functions to compare each part of the data *)
 var
   IdentItem: TIdentifierListItem absolute Data1;
   HistItem: TIdentHistListItem absolute Data2;
@@ -550,7 +554,7 @@ begin
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
-  Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamTypeList);
+  Result:=CompareTextIgnoringSpace(HistItem.ParamList,IdentItem.ParamTypeList,false);
 end;
 
 function dbgs(Flag: TIdentifierListContextFlag): string;
