@@ -58,7 +58,7 @@ type
     procedure setWantsBestResolutionOpenGLSurface(bool: NSInteger); message 'setWantsBestResolutionOpenGLSurface:';
   end;
   NSScreenFix = objccategory external (NSScreen)
-     function backingScaleFactor: CGFloat ; message 'backingScaleFactor';
+    function backingScaleFactor: CGFloat ; message 'backingScaleFactor';
   end;
 
   { TCocoaOpenGLView }
@@ -208,7 +208,7 @@ begin
       SharedContext := nil;
     aNSOpenGLContext:=NSOpenGLContext(NSOpenGLContext.alloc).initWithFormat_shareContext(PixFmt,SharedContext);
     if aNSOpenGLContext  = nil then
-    	debugln(['LOpenGLCreateContext Error']);
+      debugln(['LOpenGLCreateContext Error']);
     View := TCocoaOpenGLView(TCocoaOpenGLView.alloc).initWithFrame_pixelFormat(ns,PixFmt);
     if not Assigned(View) then Exit;
   finally
@@ -240,7 +240,8 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean; MajorVersion,
   AUXBuffers: cardinal): NSOpenGLPixelFormatAttributePtr;
 var
   p: integer;
-procedure AddUInt32(i: NSOpenGLPixelFormatAttribute);
+
+  procedure AddUInt32(i: NSOpenGLPixelFormatAttribute);
   begin
     if Result<>nil then
       Result[p]:=i;
@@ -260,14 +261,14 @@ procedure AddUInt32(i: NSOpenGLPixelFormatAttribute);
     //AddUInt32(NSOpenGLProfileLegacy); // NSOpenGLProfileLegacy is default and sufficient, later versions depend on SDK we are building against
     AddUInt32(NSOpenGLPFAOpenGLProfile);
     if (MajorVersion>=4) and (MinorVersion>=1) then
-       AddUInt32(NSOpenGLProfileVersion4_1Core) //OpenGL 4.1, GLSL 4.1
+      AddUInt32(NSOpenGLProfileVersion4_1Core) //OpenGL 4.1, GLSL 4.1
     else if (MajorVersion>=3) and (MinorVersion>=2) then
-        AddUInt32(NSOpenGLProfileVersion3_2Core)
+      AddUInt32(NSOpenGLProfileVersion3_2Core)
     else
-        AddUInt32(NSOpenGLProfileLegacy); //OpenGL 2.1, GLSL 1.2
+      AddUInt32(NSOpenGLProfileLegacy); //OpenGL 2.1, GLSL 1.2
     AddUInt32(NSOpenGLPFAColorSize); AddUInt32(24);
     if DepthBits > 0 then begin
-       AddUInt32(NSOpenGLPFADepthSize);  AddUInt32(32);
+      AddUInt32(NSOpenGLPFADepthSize);  AddUInt32(32);
     end;
     if AlphaBits>0 then begin
       AddUInt32(NSOpenGLPFAAlphaSize);  AddUInt32(AlphaBits);
@@ -289,7 +290,6 @@ procedure AddUInt32(i: NSOpenGLPixelFormatAttribute);
     //if DoubleBuffered then //requires fix for nsGL
     //   AddUInt32(NSOpenGLPFADoubleBuffer); //this doen't work with Lazarus
     AddUInt32(NSOpenGLPFAMaximumPolicy); //allows future changes to make attributes more demanding, e.g. add multisampling
-
 
     AddUInt32(NSOpenGLPFANoRecovery); //see apple web page: "not generally useful" but might help with multisample
     AddUInt32(0); // end of list
@@ -530,7 +530,7 @@ begin
     if ctx = nil then
     begin
       // In macOS 10.14 (mojave) current context is nil
-      // we still can paint anything releated to OpenGL!
+      // we still can paint anything related to OpenGL!
       // todo: consider creating a dummy context (for a bitmap)
       FillChar(PS, SizeOf(TPaintStruct), 0);
       r := frame;
