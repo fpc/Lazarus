@@ -5819,7 +5819,7 @@ displayed at run-time is the native form for the platform. On older Windows
 versions, and other platforms, the TaskDialog API is not available or 
 supported. For these platforms, a standard LCL form is created and populated at 
 run-time to emulate the appearance and behaviors for the Windows 
-implementation. This occurs in the widgetget set class and uses the components 
+implementation. This occurs in the widget set class and uses the components 
 found in the <file>taskdlgemulation.pp</file> unit. It can be forced by 
 including a value in the Flags property for the class instance.
 </p>
@@ -7473,10 +7473,25 @@ Hyperlinks are automatically disabled when tfQuery or tfSimpleQuery are included
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnNavigated">
 <short/>
-<descr/>
+<descr>
+<p>
+<var>OnNavigated</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when a page of content is needed for the task dialog. It is 
+signalled (when assigned) from the DoOnNavigated method.
+</p>
+<p>
+See <url href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.taskdialogpage.navigate?view=windowsdesktop-7.0">
+TaskDialogPage.Navigate
+</url> for more information about the API implementation.
+</p>
+<p>
+Please note that the page instance used in the native Task Dialog API is not 
+available in the event handler. It might be implemented in a derived class, but 
+the event handler must be in base class for Delphi compatibility.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
@@ -7514,13 +7529,38 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs update after refactoring. -->
 <element name="TTaskDialog">
-<short>Creates a configurable, modal task dialog at run-time.</short>
+<short>
+Implements a configurable modal task dialog.
+</short>
 <descr>
 <p>
-A non-visual component which creates modal dialogs at run-time, with rich UI 
-elements. Like the Windows TaskDialog API. For example:
+<var>TTaskDialog</var> is a <var>TCustomTaskDialog</var> descendant which 
+implements a configurable, modal task dialog. It can be used to display and 
+edit information on a dialog form with more features than those available on a 
+standard message box.
+</p>
+<p>
+TTaskDialog sets the visibility for properties introduced in ancestor classes, 
+and provides a multi-platform implementation of the Windows TaskDialog API. It 
+provides properties which can be used to configure the task dialog at 
+design-time or at run-time. At run-time, the <var>Execute</var> method handles 
+converting properties and calling routines and methods in the widgetset which 
+implement the task dialog for a given platform.
+</p>
+<p>
+<b>Platform Support</b>
+</p>
+<p>
+The TaskDialog API, upon which TTaskDialog is based, is available only on 
+Windows Vista or later versions. On these platforms, the form displayed at 
+run-time is the native form for the platform. On older Windows versions, and 
+other platforms, the TaskDialog API is not available or supported. For these 
+platforms, a standard LCL form is created and populated at run-time to emulate 
+the appearance and behaviors for the Windows implementation. This occurs in the 
+widget set class and uses the components found in the 
+<file>taskdlgemulation.pp</file> unit. It can be forced by including a value in 
+the Flags property for the class instance.
 </p>
 <p>
 <b>Using TTaskDialog at Run-time.</b>
@@ -7560,7 +7600,8 @@ begin
     FooterIcon := tdiWarning;
     FooterText.Text := 'This is your &lt;a href="#terminus"&gt;final&lt;/a&gt; warning.';
 
-    Flags := [tfEnableHyperlinks, tfAllowDialogCancellation, tfExpandFooterArea, tfExpandedByDefault, tfVerificationFlagChecked, tfShowMarqueeProgressBar];
+    Flags := [tfEnableHyperlinks, tfAllowDialogCancellation, 
+      tfExpandedByDefault, tfVerificationFlagChecked];
 
     if Execute then ; // do something based on ModalResult
     Free;
@@ -7568,6 +7609,14 @@ begin
 end;
 </code>
 </descr>
+<version>
+Modified in LCL version 4.0. The implementation for the most part is rewritten, 
+and includes additional features not found in previous versions.
+</version>
+<seealso>
+<link id="TCustomTaskDialog"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
+</seealso>
 </element>
 
 <element name="TTaskDialog.Buttons" link="#lcl.dialogs.TCustomTaskDialog.Buttons"/>
@@ -7600,24 +7649,54 @@ end;
 <element name="TTaskDialog.OnRadioButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnRadioButtonClicked"/>
 <element name="TTaskDialog.OnHyperlinkClicked" link="#lcl.dialogs.TCustomTaskDialog.OnHyperlinkClicked"/>
 
-<!-- TODO: Needs content. -->
 <element name="TaskDialogFirstButtonIndex">
-<short/>
-<descr/>
+<short>
+Lowest index value for a button identifier used on a task dialog instance.  
+</short>
+<descr>
+<p>
+<var>TaskDialogFirstButtonIndex</var> is a constant which sets the lowest value 
+for a button identifier used on a task dialog instance. The value is used to 
+assign the modal result value for a new button when its identifier is added to 
+the Buttons collection in TTaskDialog.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.Buttons"/>
+<link id="TCustomTaskDialog.ButtonIDToModalResult"/>
+<link id="TTaskDialogButtonItem.ModalResult"/>
+<link id="TTaskDialogBaseButtonItem.Create"/>
+<link id="TaskDialogFirstRadioButtonIndex"/>
+<link id="#rtl.classes.TCollectionItem.ID">TCollectionItem.ID</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TaskDialogFirstRadioButtonIndex">
-<short/>
-<descr/>
+<short>
+Lowest index value for a radio button used on a TTaskDialog instance.
+</short>
+<descr>
+<p>
+<var>TaskDialogFirstRadioButtonIndex</var> is a constant with the initial value 
+for a radio button identifier used on a task dialog instance.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.RadioButton"/>
+<link id="TCustomTaskDialog.SetRadioButtonFromRadioIndex"/>
+<link id="TCustomTaskDialog.Execute"/>
+<link id="TCustomTaskDialog.DoExecute"/>
+<link id="TTaskDialogRadioButtonItem"/>
+<link id="TTaskDialogBaseButtonItem.Create"/>
+<link id="TaskDialogFirstButtonIndex"/>
+<link id="#rtl.classes.TCollectionItem.ID">TCollectionItem.ID</link>
+</seealso>
 </element>
 
 <element name="MinimumDialogButtonWidth">
@@ -9270,13 +9349,15 @@ TOpenOption enumeration value used to generate the formatted message.
 TOpenOptions set type with the options used to generate the formatted message.
 </short>
 </element>
-<!-- TODO: Needs content. -->
 <element name="DbgS.AFlag">
-<short/>
+<short>
+TTaskDIalogFlag value converted to a string in the formatted message.
+</short>
 </element>
-<!-- TODO: Needs content. -->
 <element name="DbgS.Flags">
-<short/>
+<short>
+TTaskDialogFlags value converted to a string in the formatted message.
+</short>
 </element>
 
 <element name="Register">
