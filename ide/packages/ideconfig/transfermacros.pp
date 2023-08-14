@@ -267,8 +267,6 @@ var
   MacroName, MacroStr, MacroParam: string;
   Handled, Abort: boolean;
   sLen, OldMacroLen: Integer;
-  i, InUse: Integer;
-  Busy: TStringList; // current working Macros, used for circle detection
 begin
   if Depth>10 then begin
     s:='(macro loop detected)'+s;
@@ -277,8 +275,6 @@ begin
   Result:=true;
   sLen:=length(s);
   MacroStart:=1;
-  Busy:=nil;
-  try
   repeat
     while (MacroStart<sLen) do begin
       if (s[MacroStart]<>'$') then
@@ -303,8 +299,6 @@ begin
       OldMacroLen:=MacroEnd-MacroStart;
       MacroStr:=copy(s,MacroStart,OldMacroLen);
       // Macro found
-      Handled:=false;
-      Abort:=false;
       if MacroName='' then begin
         // Macro variable
         MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
@@ -317,35 +311,23 @@ begin
       end;
       //if MacroName='PATH' then
       //  debugln(['TTransferMacroList.SubstituteStr START MacroName=',MacroName,' Param="',MacroParam,'"']);
-      // check for endless loop
-      InUse:=0;
-      if Busy<>nil then begin
-        for i:=0 to Busy.Count-1 do begin
-          if CompareText(Busy[i],MacroName)=0 then begin
-            inc(InUse);
-            if InUse>MaxUsePerMacro then begin
-              // cycle detected
-              Handled:=true;
-              MacroStr:='<MACRO-CYCLE:'+MacroName+'>';
-            end;
-          end;
-        end;
-      end;
-      if not Handled then begin
-        if Busy=nil then
-          Busy:=TStringList.Create;
-        Busy.Add(MacroName);
-        if MacroParam<>'' then begin
-          // substitute param
-          if not SubstituteStr(MacroParam,Data,Depth+1) then // Recursive call.
-            exit(false);
-        end;
-        // find macro and get value
-        ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
-        if Abort then
+      if MacroParam<>'' then begin
+        // substitute param
+        if not SubstituteStr(MacroParam,Data,Depth+1) then // Recursive call.
           exit(false);
-        MacroStr:=MacroParam;
       end;
+      // find macro and get value
+      Handled:=false;
+      Abort:=false;
+      ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+      if Abort then
+        exit(false);
+      MacroStr:=MacroParam;
+
+      // substitute result
+      if not SubstituteStr(MacroStr,Data,Depth+1) then // Recursive call.
+        exit(false);
+
       // mark unhandled macros
       if not Handled and MarkUnhandledMacros then begin
         MacroStr:=Format(lisTMunknownMacro, [MacroStr]);
@@ -355,15 +337,12 @@ begin
       if Handled then begin
         s:=copy(s,1,MacroStart-1)+MacroStr+copy(s,MacroEnd,length(s));
         sLen:=length(s);
-        // continue at replacement, because a macrovalue can contain macros
-        MacroEnd:=MacroStart;
+        // continue behind replacement
+        MacroEnd:=MacroStart+length(MacroStr);
       end;
     end;
     MacroStart:=MacroEnd;
   until false;
-  finally
-    Busy.Free;
-  end;
 
   // convert $$ chars
   MacroStart:=2;
