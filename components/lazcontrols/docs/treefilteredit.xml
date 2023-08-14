@@ -363,6 +363,7 @@ It uses the Visible property in the TTreeNode instances to show/hide it.
 <!-- private -->
 <element name="TTreeFilterEdit.fFilteredTreeview"/>
 <element name="TTreeFilterEdit.fImageIndexDirectory"/>
+<element name="TTreeFilterEdit.FScrolledPos"/>
 <element name="TTreeFilterEdit.fSelectionList"/>
 <element name="TTreeFilterEdit.fShowDirHierarchy"/>
 <element name="TTreeFilterEdit.fBranches"/>
@@ -742,6 +743,21 @@ to the SelectionList property.
 </short>
 <descr>
 <p>
+<var>StoreSelection</var> is an overridden method in <var>TTreeFilterEdit</var> 
+which implements the abstract virtual method introduced in 
+TCustomControlFilterEdit. StoreSelection ensures that ScrolledLeft and 
+ScrolledTop values from the tree view are used when the selected node is not 
+within the visible area for the tree view control. ScrolledLeft and ScrolledTop 
+are assumed to be -1 if the tree node is already visible on the 
+FilteredTreeview control.
+</p>
+<p>
+Values in SelectionList are cleared and reloaded if the selected tree node is 
+not the first node in the list; SelectionList will contain only the selected 
+tree node on exit. SelectionList is not changed if the selected node <b>is</b>  
+the first tree node in the selection list.
+</p>
+<p>
 No actions are performed in the method for the following conditions:
 </p>
 <ul>
@@ -749,9 +765,18 @@ No actions are performed in the method for the following conditions:
 <li>FilteredTreeview does not have a Selected tree node.</li>
 </ul>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the ScrolledLeft and ScrolledTop values from 
+the FilteredTreeView control.
+</version>
 <seealso>
 <link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="TTreeFilterEdit.RestoreSelection"/>
+<link id="TTreeFilterEdit.SelectionList"/>
+<link id="TTreeView.Selected"/>
+<link id="TTreeView.ScrolledLeft"/>
+<link id="TTreeView.ScrolledTop"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
 </seealso>
 </element>
 
@@ -762,6 +787,14 @@ FilteredTreeview control.
 </short>
 <descr>
 <p>
+<var>RestoreSelection</var> is an overridden method in 
+<var>TTreeFilterEdit</var> which implements the abstract virtual method 
+introduced in the TTreeFilterEdit ancestor. RestoreSelection ensures that the 
+ScrolledLeft and ScrolledTop properties in the FilteredTreeView control are 
+updated when the selected node in SelectionList is located on the tree view 
+control.
+</p>
+<p>
 No actions are performed in the method if FilteredTreeview has not been 
 assigned.
 </p>
@@ -770,8 +803,19 @@ Raises an assertion exception if SelectionList has more than one node in the
 list.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to update the ScrolledLeft and ScrolledTop 
+properties in the FilteredTreeView control.
+</version>
 <seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="TTreeFilterEdit.StoreSelection"/>
+<link id="TTreeFilterEdit.RestoreSelection"/>
+<link id="TTreeFilterEdit.SelectionList"/>
+<link id="TTreeView.Selected"/>
+<link id="TTreeView.ScrolledLeft"/>
+<link id="TTreeView.ScrolledTop"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.RestoreSelection">TCustomControlFilterEdit.RestoreSelection</link>
 </seealso>
 </element>
 
