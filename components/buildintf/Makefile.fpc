@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for BuildIntf 1.0
 #
-#   This file was generated on 30-6-23
+#   This file was generated on 14-8-23
 
 [package]
 name=buildintf
@@ -11,7 +11,7 @@ version=1.0
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+options=-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
 units=buildintf.pas

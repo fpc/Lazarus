@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SDFLaz 0.1.1
 #
-#   This file was generated on 30-6-23
+#   This file was generated on 14-8-23
 
 [package]
 name=sdflaz
@@ -11,7 +11,7 @@ version=0.1.1
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+options=-MObjFPC -Scgi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
 units=sdflaz.pas

@@ -73,7 +73,7 @@ cleartarget:
                 $(COMPILER_UNITTARGETDIR)/lcl$(OEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lcl.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) ../lcl$(PPUEXT) compiled
 

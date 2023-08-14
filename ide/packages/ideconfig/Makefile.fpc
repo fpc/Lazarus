@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IdeConfig 1.0
 #
-#   This file was generated on 14-7-23
+#   This file was generated on 14-8-23
 
 [package]
 name=ideconfig
@@ -12,7 +12,7 @@ version=1.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../components/buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=include include/$(OS_TARGET)
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+options=-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
 units=ideconfig.pas

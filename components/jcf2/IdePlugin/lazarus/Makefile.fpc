@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for jcfidelazarus 2.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 14-8-23
 
 [package]
 name=jcfidelazarus
@@ -12,7 +12,7 @@ version=2.0
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../Parse/UI ../../Ui/Settings ../../ReadWrite/UI ../../Utils/UI ../../Ui/UI ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lib/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 includedir=../../Include ../../Ui/Settings ../../Ui/UI
-options= -MObjFPC -Sgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dLAZARUS_PLUGIN $(DBG_OPTIONS)
+options=-MObjFPC -Sgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dLAZARUS_PLUGIN $(DBG_OPTIONS)
 
 [target]
 units=jcfidelazarus.pas
