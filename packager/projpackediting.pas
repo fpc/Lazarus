@@ -95,8 +95,28 @@ type
     );
   TPEFlags = set of TPEFlag;
 
+function dbgs(const Flag: TPEFlag): string; overload;
+function dbgs(const Flags: TPEFlags): string; overload;
 
 implementation
+
+function dbgs(const Flag: TPEFlag): string;
+begin
+  str(Flag,Result);
+end;
+
+function dbgs(const Flags: TPEFlags): string;
+var
+  f: TPEFlag;
+begin
+  Result:='';
+  for f in Flags do
+  begin
+    if Result<>'' then Result+=',';
+    Result+=dbgs(f);
+  end;
+  Result:='['+Result+']';
+end;
 
 { TPENodeData }
 

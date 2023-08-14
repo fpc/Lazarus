@@ -142,6 +142,18 @@ type
     iodaRestore
     );
 
+  { TPETVSelectedView }
+
+  TPETVSelectedView = record
+    NeedEndUpdate: boolean;
+    OldScrollLeft: integer;
+    OldScrollTop: integer;
+    OldNodePath: string;
+
+    RestoreFilter: boolean;
+    OldFilter: string;
+  end;
+
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
@@ -278,6 +290,8 @@ type
     procedure CreatePackageFileEditors;
     function TreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure UpdatePending;
+    procedure StoreItemsTVSelectedNode(out OldView: TPETVSelectedView; StoreFilter: boolean);
+    procedure RestoreItemsTVSelectedNode(const OldView: TPETVSelectedView);
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateFiles(Immediately: boolean = false);
@@ -2309,8 +2323,10 @@ begin
 end;
 
 procedure TPackageEditorForm.UpdatePending;
+var
+  OldView: TPETVSelectedView;
 begin
-  ItemsTreeView.BeginUpdate;
+  StoreItemsTVSelectedNode(OldView,false);
   try
     if pefNeedUpdateTitle in fFlags then
       UpdateTitle(true);
@@ -2332,8 +2348,65 @@ begin
       FPropGui.RegisteredPluginsGroupBox.Top  := ScaleDesignToForm(Height);
     IdleConnected:=false;
   finally
-    ItemsTreeView.EndUpdate;
+    RestoreItemsTVSelectedNode(OldView);
     fForcedFlags:=[];
+  end;
+end;
+
+procedure TPackageEditorForm.StoreItemsTVSelectedNode(out
+  OldView: TPETVSelectedView; StoreFilter: boolean);
+var
+  SelNode: TTreeNode;
+begin
+  if ItemsTreeView.Items.IsUpdating then
+  begin
+    OldView:=Default(TPETVSelectedView);
+  end else begin
+    ItemsTreeView.BeginUpdate;
+    OldView.NeedEndUpdate:=true;
+    OldView.OldScrollLeft:=ItemsTreeView.ScrolledLeft;
+    OldView.OldScrollTop:=ItemsTreeView.ScrolledTop;
+    OldView.OldNodePath:='';
+    SelNode:=ItemsTreeView.Selected;
+    if SelNode<>nil then
+      OldView.OldNodePath:=SelNode.GetTextPath;
+  end;
+
+  if StoreFilter and not OldView.RestoreFilter then
+  begin
+    OldView.RestoreFilter:=true;
+    OldView.OldFilter:=FilterEdit.ForceFilter('');
+  end;
+end;
+
+procedure TPackageEditorForm.RestoreItemsTVSelectedNode(
+  const OldView: TPETVSelectedView);
+var
+  SelNode: TTreeNode;
+begin
+  if not OldView.NeedEndUpdate then exit;
+
+  // restore selected node and scroll position
+  try
+    if OldView.RestoreFilter then
+    begin
+      FilterEdit.Filter:=OldView.OldFilter;
+      FilterEdit.InvalidateFilter;     // Needed when OldFilter = ''
+    end;
+
+    SelNode:=ItemsTreeView.Selected;
+    if (SelNode=nil) and (OldView.OldNodePath<>'') then
+      ItemsTreeView.Selected:=ItemsTreeView.Items.FindNodeWithTextPath(OldView.OldNodePath);
+    ItemsTreeView.ScrolledLeft:=OldView.OldScrollLeft;
+    ItemsTreeView.ScrolledTop:=OldView.OldScrollTop;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
+
+  if OldView.RestoreFilter then
+  begin
+    UpdatePEProperties;
+    UpdateButtons;
   end;
 end;
 
@@ -2358,39 +2431,38 @@ var
   FilesBranch: TTreeFilterBranch;
   Filename: String;
   NodeData: TPENodeData;
-  OldFilter : String;
+  OldView: TPETVSelectedView;
 begin
   if not CanUpdate(pefNeedUpdateFiles,Immediately) then exit;
-  OldFilter:=FilterEdit.ForceFilter('');
 
-  // files belonging to package
-  FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
-  FPropGui.FreeNodeData(penFile);
-  FilesBranch.ClearNodeData;
-  FilterEdit.SelectedPart:=nil;
-  FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
-  FilterEdit.SortData:=SortAlphabetically;
-  FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-  // collect and sort files
-  for i:=0 to LazPackage.FileCount-1 do begin
-    CurFile:=LazPackage.Files[i];
-    NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,false);
-    NodeData.FileType:=CurFile.FileType;
-    Filename:=CurFile.GetShortFilename(true);
-    if Filename='' then continue;
-    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile)
-    and (FNextSelectedPart.Name=NodeData.Name)
-    then
-      FilterEdit.SelectedPart:=NodeData;
-    FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
+  StoreItemsTVSelectedNode(OldView,true);
+  try
+    // files belonging to package
+    FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
+    FPropGui.FreeNodeData(penFile);
+    FilesBranch.ClearNodeData;
+    FilterEdit.SelectedPart:=nil;
+    FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
+    FilterEdit.SortData:=SortAlphabetically;
+    FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+    // collect and sort files
+    for i:=0 to LazPackage.FileCount-1 do begin
+      CurFile:=LazPackage.Files[i];
+      NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,false);
+      NodeData.FileType:=CurFile.FileType;
+      Filename:=CurFile.GetShortFilename(true);
+      if Filename='' then continue;
+      if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile)
+      and (FNextSelectedPart.Name=NodeData.Name)
+      then
+        FilterEdit.SelectedPart:=NodeData;
+      FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
+    end;
+    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
+      FreeAndNil(FNextSelectedPart);
+  finally
+    RestoreItemsTVSelectedNode(OldView);
   end;
-  if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
-    FreeAndNil(FNextSelectedPart);
-
-  FilterEdit.Filter:=OldFilter;
-  FilterEdit.InvalidateFilter;         // Needed when OldFilter = ''
-  UpdatePEProperties;
-  UpdateButtons;
 end;
 
 procedure TPackageEditorForm.UpdateRemovedFiles(Immediately: boolean = false);
@@ -2399,94 +2471,99 @@ var
   CurFile: TPkgFile;
   RemovedBranch: TTreeFilterBranch;
   NodeData: TPENodeData;
+  OldView: TPETVSelectedView;
 begin
   if not CanUpdate(pefNeedUpdateRemovedFiles,Immediately) then exit;
 
-  if LazPackage.RemovedFilesCount>0 then begin
-    // Create root node for removed files if not done yet.
-    if FRemovedFilesNode=nil then begin
-      FRemovedFilesNode:=ItemsTreeView.Items.Add(FRequiredPackagesNode,
-                                                 lisPckEditRemovedFiles);
-      FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
-      FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
+  StoreItemsTVSelectedNode(OldView,true);
+  try
+    if LazPackage.RemovedFilesCount>0 then begin
+      // Create root node for removed files if not done yet.
+      if FRemovedFilesNode=nil then begin
+        FRemovedFilesNode:=ItemsTreeView.Items.Add(FRequiredPackagesNode,
+                                                   lisPckEditRemovedFiles);
+        FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
+        FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
+      end;
+      RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedFilesNode);
+      RemovedBranch.ClearNodeData;
+      for i:=0 to LazPackage.RemovedFilesCount-1 do begin
+        CurFile:=LazPackage.RemovedFiles[i];
+        NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,true);
+        RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
+      end;
+      RemovedBranch.InvalidateBranch;
+    end
+    else begin
+      // No more removed files left -> delete the root node
+      if FRemovedFilesNode<>nil then begin
+        FilterEdit.DeleteBranch(FRemovedFilesNode);
+        FilterEdit.InvalidateFilter;
+        FreeAndNil(FRemovedFilesNode);
+      end;
     end;
-    RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedFilesNode);
-    RemovedBranch.ClearNodeData;
-    for i:=0 to LazPackage.RemovedFilesCount-1 do begin
-      CurFile:=LazPackage.RemovedFiles[i];
-      NodeData:=FPropGui.CreateNodeData(penFile,CurFile.Filename,true);
-      RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
-    end;
-    RemovedBranch.InvalidateBranch;
-  end
-  else begin
-    // No more removed files left -> delete the root node
-    if FRemovedFilesNode<>nil then begin
-      FilterEdit.DeleteBranch(FRemovedFilesNode);
-      FilterEdit.InvalidateFilter;
-      FreeAndNil(FRemovedFilesNode);
-    end;
+  finally
+    RestoreItemsTVSelectedNode(OldView);
   end;
-
-  UpdatePEProperties;
-  UpdateButtons;
 end;
 
 procedure TPackageEditorForm.UpdateRequiredPackages(Immediately: boolean);
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
-  OldFilter: String;
   NodeData: TPENodeData;
+  OldView: TPETVSelectedView;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
-  OldFilter:=FilterEdit.ForceFilter('');
-  // required packages
-  RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
-  RequiredBranch.ClearNodeData;
-  FPropGui.FreeNodeData(penDependency);
-  Dependency:=LazPackage.FirstRequiredDependency;
-  FilterEdit.SelectedPart:=nil;
-  while Dependency<>nil do begin
-    NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,false);
-    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
-    and (FNextSelectedPart.Name=NodeData.Name)
-    then
-      FilterEdit.SelectedPart:=NodeData;
-    RequiredBranch.AddNodeData(Dependency.AsString(False,True)+OPNote(Dependency), NodeData);
-    Dependency:=Dependency.NextRequiresDependency;
-  end;
-  if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
-    FreeAndNil(FNextSelectedPart);
-  RequiredBranch.InvalidateBranch;
 
-  // removed required packages
-  Dependency:=LazPackage.FirstRemovedDependency;
-  if Dependency<>nil then begin
-    if FRemovedRequiredNode=nil then begin
-      FRemovedRequiredNode:=ItemsTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
-      FRemovedRequiredNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
-      FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
-    end;
-    RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
-    RemovedBranch.ClearNodeData;
+  StoreItemsTVSelectedNode(OldView,true);
+  try
+    // required packages
+    RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
+    RequiredBranch.ClearNodeData;
+    FPropGui.FreeNodeData(penDependency);
+    Dependency:=LazPackage.FirstRequiredDependency;
+    FilterEdit.SelectedPart:=nil;
     while Dependency<>nil do begin
-      NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,true);
-      RemovedBranch.AddNodeData(Dependency.AsString(False,True)+OPNote(Dependency), NodeData);
+      NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,false);
+      if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
+      and (FNextSelectedPart.Name=NodeData.Name)
+      then
+        FilterEdit.SelectedPart:=NodeData;
+      RequiredBranch.AddNodeData(Dependency.AsString(False,True)+OPNote(Dependency), NodeData);
       Dependency:=Dependency.NextRequiresDependency;
     end;
-    RemovedBranch.InvalidateBranch;
-  end else begin
-    if FRemovedRequiredNode<>nil then begin
-      FilterEdit.DeleteBranch(FRemovedRequiredNode);
-      FreeAndNil(FRemovedRequiredNode);
+    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
+      FreeAndNil(FNextSelectedPart);
+    RequiredBranch.InvalidateBranch;
+
+    // removed required packages
+    Dependency:=LazPackage.FirstRemovedDependency;
+    if Dependency<>nil then begin
+      if FRemovedRequiredNode=nil then begin
+        FRemovedRequiredNode:=ItemsTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
+        FRemovedRequiredNode.ImageIndex:=FPropGui.ImageIndexRemovedRequired;
+        FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
+      end;
+      RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
+      RemovedBranch.ClearNodeData;
+      while Dependency<>nil do begin
+        NodeData:=FPropGui.CreateNodeData(penDependency,Dependency.PackageName,true);
+        RemovedBranch.AddNodeData(Dependency.AsString(False,True)+OPNote(Dependency), NodeData);
+        Dependency:=Dependency.NextRequiresDependency;
+      end;
+      RemovedBranch.InvalidateBranch;
+    end else begin
+      if FRemovedRequiredNode<>nil then begin
+        FilterEdit.DeleteBranch(FRemovedRequiredNode);
+        FreeAndNil(FRemovedRequiredNode);
+      end;
     end;
+    FNextSelectedPart:=nil;
+
+  finally
+    RestoreItemsTVSelectedNode(OldView);
   end;
-  FNextSelectedPart:=nil;
-  FilterEdit.Filter:=OldFilter;
-  FilterEdit.InvalidateFilter;     // Needed when OldFilter = ''
-  UpdatePEProperties;
-  UpdateButtons;
 end;
 
 procedure MergeMultiBool(var b: TMultiBool; NewValue: boolean);
@@ -2974,7 +3051,7 @@ end;
 
 procedure TPackageEditorForm.PackageListAvailable(Sender: TObject);
 begin
-  DebugLn(['TPackageEditorForm.PackageListAvailable: ', LazPackage.Name]);
+  //DebugLn(['TPackageEditorForm.PackageListAvailable: ', LazPackage.Name]);
   UpdateRequiredPackages;
 end;
 
