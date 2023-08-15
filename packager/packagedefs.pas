@@ -447,7 +447,7 @@ type
     podwWritable,
     podwNotWritable
     );
-  TPkgLastCompileStats = record
+  TPkgLastCompileStats = class
     StateFileLoaded: boolean;
     StateFileName: string; // the .compiled file
     StateFileDate: longint;
@@ -458,8 +458,8 @@ type
     MainPPUExists: boolean; // main ppu file was there after compile
     ViaMakefile: boolean;  // compiled via make
     DirectoryWritable: TPkgOutputDirWritable;
+    LazarusVersion: string;
   end;
-  PPkgLastCompileStats = ^TPkgLastCompileStats;
   TPkgOutputDir = (
     podDefault,
     podFallback // used when podDefault is not writable
@@ -2619,6 +2619,8 @@ begin
 end;
 
 constructor TLazPackage.Create;
+var
+  pod: TPkgOutputDir;
 begin
   inherited Create;
   FComponents:=TFPList.Create;
@@ -2638,6 +2640,8 @@ begin
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
+  for pod in TPkgOutputDir do
+    LastCompile[pod]:=TPkgLastCompileStats.Create;
   FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
 end;
 
@@ -2648,9 +2652,13 @@ begin
 end;
 
 destructor TLazPackage.Destroy;
+var
+  pod: TPkgOutputDir;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
+  for pod in TPkgOutputDir do
+    FreeAndNil(LastCompile[pod]);
   FreeAndNil(FOptionsBackup);
   FreeAndNil(fPublishOptions);
   FreeAndNil(FProvides);
