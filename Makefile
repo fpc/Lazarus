@@ -3044,13 +3044,11 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
-	@$(ECHO) "   lazutils       build package lazutils"
-	@$(ECHO) "   lcl            build package FreeType, LCLBase and LCL, requires lazutils"
-	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
-	@$(ECHO) "                  requires LCL with nogui widgetset"
 	@$(ECHO) "   basecomponents build buildintf, lazcontrols, ideintf, synedit, debuggerintf, lazdebuggergdbmi"
 	@$(ECHO) "                  for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
+	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
+	@$(ECHO) "                  requires LCL with nogui widgetset"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
 	@$(ECHO)
@@ -3063,9 +3061,9 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Usage examples:"
 	@$(ECHO)
-	@$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
+	@$(ECHO) " Updating git and build a minimal IDE, startlazarus and lazbuild:"
 	@$(ECHO) "   make clean"
-	@$(ECHO) "   svn up"
+	@$(ECHO) "   git pull"
 	@$(ECHO) "   make clean all"
 	@$(ECHO)
 	@$(ECHO) " Note: You can start lazarus with 'startlazarus'"
@@ -3091,28 +3089,12 @@ help:
 	@exit
 registration:
 	$(MAKE) -C packager/registration
-lazutils:
-	$(MAKE) -C components/lazutils
 lcl:
-	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
 basecomponents:
-	$(MAKE) -C components/buildintf
-	$(MAKE) -C components/lazdebuggers/lazdebuggerintf
-	$(MAKE) -C components/debuggerintf
-	$(MAKE) -C components/lazcontrols
+	$(MAKE) -C components lazbuildlclpackages
+	$(MAKE) -C components idepackages
 	$(MAKE) -C ide/packages/ideconfig
-	$(MAKE) -C components/ideintf
-	$(MAKE) -C components/synedit
-	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase
-	$(MAKE) -C components/lazdebuggergdbmi
-	$(MAKE) -C components/lazcontrols/design
-	$(MAKE) -C components/lclextensions
-	$(MAKE) -C components/virtualtreeview
-	$(MAKE) -C components/fpdebug
-	$(MAKE) -C components/lazdebuggers/lazdebuggerfp
-	$(MAKE) -C components/lazdebuggers/lazdebuggerlldb
-	$(MAKE) -C components/lazdebuggers/lazdebuggerfplldb
 	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
 	$(MAKE) -C components bigide
@@ -3141,20 +3123,12 @@ endif
 endif
 starter:
 	$(MAKE) -C ide starter
-lazbuild: registration lazutils
-	$(MAKE) -C components/codetools
-	$(MAKE) -C components/freetype
+lazbuild: registration
+	$(MAKE) -C components lazbuildpackages
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
+	$(MAKE) -C components lazbuildlclpackages LCL_PLATFORM=nogui
 	$(MAKE) -C tools
-	$(MAKE) -C components/lazdebuggers/lazdebuggerintf LCL_PLATFORM=nogui
-	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
-	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
-	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
-	$(MAKE) -C components/buildintf
 	$(MAKE) -C ide/packages/ideconfig LCL_PLATFORM=nogui
-	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
-	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase LCL_PLATFORM=nogui
-	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
@@ -3171,7 +3145,6 @@ cleanlaz: cleanide
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
 	$(MAKE) -C tools clean
-	$(MAKE) -C components/chmhelp/lhelp clean
 cleanbigide: clean
 purge:
 	$(MAKE) -C ide distclean
@@ -3181,7 +3154,6 @@ purge:
 	$(MAKE) -C ide/packages/ideconfig distclean
 	$(MAKE) -C ide/packages/idedebugger distclean
 	$(MAKE) -C tools distclean
-	$(MAKE) -C components/chmhelp/lhelp distclean
 cleanall: purge
 distclean: purge
 installbase:
@@ -3219,6 +3191,8 @@ else
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/nogui
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk2
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk3
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk4
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt5
 	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt6
