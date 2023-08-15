@@ -7598,7 +7598,7 @@ begin
     VerificationText := 'I agree to everything.';
 
     FooterIcon := tdiWarning;
-    FooterText.Text := 'This is your &lt;a href="#terminus"&gt;final&lt;/a&gt; warning.';
+    FooterText := 'This is your &lt;a href="#terminus"&gt;final&lt;/a&gt; warning.';
 
     Flags := [tfEnableHyperlinks, tfAllowDialogCancellation, 
       tfExpandedByDefault, tfVerificationFlagChecked];
