@@ -11,6 +11,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
+      <UseAppBundle Value="False"/>
     </General>
     <BuildModes Count="2">
       <Item1 Name="Debug" Default="True"/>
