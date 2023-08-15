@@ -56,36 +56,91 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <element name="Dialogs"/>
 <element name="DialogRes"/>
 
-<!-- TODO: Needs content. -->
 <element name="TTaskDialogElement">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents the textual display elements on a task dialog form.
+</short>
+<descr>
+<p>
+<var>TTaskDialogElement</var> is an enumerated type with values which represent 
+the display areas for elements on an emulated task dialog form. Values in 
+TTaskDialogElement are used in the implementation of TLCLTaskDialog as an index 
+for TLabel instances used on the dialog form.
+</p>
+</descr>
+<seealso>
+<link id="TLCLTaskDialog"/>
+<link id="TLCLTaskDialog.SetupControls"/>
+</seealso>
 </element>
 <element name="TTaskDialogElement.tdeContent">
-<short/>
+<short>
+Content area which contains the text for the task dialog.
+</short>
 </element>
 <element name="TTaskDialogElement.tdeExpandedInfo">
-<short/>
+<short>
+Area with the expanded text for a task dialog.
+</short>
 </element>
 <element name="TTaskDialogElement.tdeFooter">
-<short/>
+<short>
+Area displayed at the bottom of a task dialog with the footer text and icon.
+</short>
 </element>
 <element name="TTaskDialogElement.tdeMainInstruction">
-<short/>
+<short>
+Area with the title for a task dialog.
+</short>
 </element>
 <element name="TTaskDialogElement.tdeEdit">
-<short/>
+<short>
+Area used to display the query or simple query controls for a task dialog.
+</short>
 </element>
 <element name="TTaskDialogElement.tdeVerif">
-<short/>
+<short>
+Area used to display the check box with the verification text for a task dialog.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialog">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements an emulated (non-native) task dialog form.
+</short>
+<descr>
+<p>
+<var>TLCLTaskDialog</var> is a <var>TForm</var> descendant which implements the 
+dialog form displayed when an emulated (non-native) <var>TTaskDialog</var> is 
+executed. It imitates the content, layout, and behavior for the dialog 
+displayed for the Windows Task Dialog API.
+</p>
+<p>
+It provides support for use of TTaskDialog on platforms which do not implement 
+the Task Dialog API - including Windows versions prior to Windows Vista. Most 
+of the properties, methods, and members in the class are declared as private 
+and are available to the methods in the class instance. Application do not 
+normally create an instance of TLCLTaskDialog; it is created at run-time when 
+TTaskDialog calls its Execute method.
+</p>
+<p>
+TLCLTaskDialog allows the dialog form to be configured at run-time using the 
+settings specified in the TTaskDialog passed as the Owner of the form. The 
+Execute methods handles initializing the form instance, displaying the dialog, 
+capturing the modal result value, and returning changes to the TTaskDialog for 
+the emulated task dialog form.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TLCLTaskDialog.CreateNew"/>
+<link id="TLCLTaskDialog.Execute"/>
+<link id="ExecuteLCLTaskDialog"/>
+<link id="#lcl.dialogs.TTaskDialog.Flags">TTaskDialog.Flags</link>
+<link id="#lcl.forms.TForm">TForm</link>
+</seealso>
 </element>
 
 <!-- private -->
@@ -100,7 +155,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 
 <element name="TLCLTaskDialog.FDlg">
 <short>
-The task dialog instance which created the dialog form.
+The task dialog instance which created and is the owner of the dialog form.
 </short>
 </element>
 
@@ -130,7 +185,7 @@ The task dialog instance which created the dialog form.
 
 <element name="TLCLTaskDialog.Element">
 <short>
-The labels corresponding to the Task Dialog main elements.
+The labels corresponding to the Task Dialog display elements.
 </short>
 </element>
 
@@ -501,38 +556,111 @@ the Name for the class.
 </short>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.Destroy">
 <short>
 Destructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that the OnDialogDestroyed event handler in the TCustomTaskDialog 
+instance for the dialog form is signalled (when assigned). Destroy calls the
+inherited destructor (in TCustomForm) prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.dialogs.TCustomTaskDialog.DoOnDialogDestroyed">TCustomTaskDialog.DoOnDialogDestroyed</link>
+<link id="#lcl.forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.AfterConstruction">
 <short>
 Performs actions needed when a new instance of the class has been created.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AfterConstruction</var> is an overridden method in TLCLTaskDialog used to 
+perform actions needed when the form instance has been created. It calls the 
+inherited method on entry to set the bounds for the form, signal the OnCreate 
+event handler (when assigned), and to perform scaling when enabled in both the 
+application and the form.
+</p>
+<p>
+AfterConstruction signals the OnDialogConstructed event handler (when assigned) 
+in the TTaskDialog instance for the dialog form.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.dialogs.TCustomTaskDialog.DoOnDialogConstructed">TCustomTaskDialog.DoOnDialogConstructed</link>
+<link id="#lcl.forms.TCustomForm.AfterConstruction">TCustomForm.AfterConstruction</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialog.Execute">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Configures and displays the emulated task dialog and returns the modal result 
+value.
+</short>
+<descr>
+<p>
+<var>Execute</var> is an <var>Integer</var> function used to configure, 
+display, and capture the modal result value for the emulated task dialog. The 
+return value contains the modal result for the button used to close the dialog 
+form. No actions are performed in the method when the Owner of the form has not 
+been assigned or is not a TTaskDialog instance. In this situation, the return 
+value is -1.
+</p>
+<p>
+Execute calls the SetupControls method to configure and layout the elements on 
+the dialog form using the settings provided in the TTaskDialog instance.
+</p>
+<p>
+AParentWnd contains the handle for the form that is used as the parent for the 
+dialog form. The value is compared to the handles for the forms on the current 
+Screen. When found, the form instance is assigned to the PopupParent property 
+for the dialog form. When not found, the currently active form on the screen is 
+used as the PopupParent.
+</p>
+<p>
+Execute calls the ShowModal method (in TCustomForm) to manage modal display of  
+the dialog form in the application, and to start the processing loop for the 
+modal form. ShowModal sets the return value for the method.
+</p>
+<p>
+When ShowModal has been completed, values from the updated form are applied to 
+the TTaskDialog instance which created the dialog. This includes values like:
+</p>
+<ul>
+<li>The query result and query item index (when used).</li>
+<li>The value from the simple query control (when used).</li>
+<li>The verification check box state (when used).</li>
+<li>
+The identifier for the selected radio button returned in the ARadioRes argument.
+</li>
+</ul>
+</descr>
+<seealso>
+<link id="#lcl.dialogs.TTaskDialog.Flags">TTaskDialog.Flags</link>
+</seealso>
 </element>
 <element name="TLCLTaskDialog.Execute.Result">
-<short/>
+<short>
+Modal result value captured when ShowModal is called for the dialog form, or -1 
+when the owner is not a TTaskDialog instance.
+</short>
 </element>
 <element name="TLCLTaskDialog.Execute.AParentWnd">
-<short/>
+<short>
+Handle for the form which is the parent for the dialog form, or 0 to use the 
+active form on the screen.
+</short>
 </element>
 <element name="TLCLTaskDialog.Execute.ARadioRes">
-<short/>
+<short>
+Returns the identifier for the selected radio button on the form, or 0 when not 
+available.
+</short>
 </element>
 
 <!-- TODO: Needs content. -->
@@ -550,8 +678,8 @@ Performs actions needed when a new instance of the class has been created.
 
 <element name="TaskDialog_Translate">
 <short>
-Variable with the function used to translate strings used on an emulated task 
-dialog instance.
+Variable with the function used to translate strings on an emulated task dialog 
+instance.
 </short>
 <descr/>
 <notes>
@@ -566,94 +694,187 @@ using translations unit.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="ExecuteLCLTaskDialog">
-<short/>
-<descr/>
+<short>
+Executes an emulated task dialog for using the specified arguments.  
+</short>
+<descr>
+<p>
+<var>ExecuteLCLTaskDialog</var> is an <var>Integer</var> function used to 
+execute an emulated task dialog form for the specified 
+<var>TCustomTaskDialog</var> instance. It is a convenience routine called from 
+the Execute method in the widgetset class instance for those platforms which do 
+not support the native Task Dialog API.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="ExecuteLCLTaskDialog.Result">
-<short/>
+<short>
+Modal result value captured when the emulated task dialog form is executed.
+</short>
 </element>
 <element name="ExecuteLCLTaskDialog.ADlg">
-<short/>
+<short>
+TTaskDialog instance with the settings for the task dialog.
+</short>
 </element>
 <element name="ExecuteLCLTaskDialog.AParentWnd">
-<short/>
+<short>
+Handle for the form which is the parent for the task dialog form.
+</short>
 </element>
 <element name="ExecuteLCLTaskDialog.ARadioRes">
-<short/>
+<short>
+Returns the identifier for the selected radio button on the task dialog form.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialogIcon">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents the available main icons for an emulated task dialog.
+</short>
+<descr>
+<p>
+<var>TLCLTaskDialogIcon</var> is an enumerated type with values which represent 
+the icons available as the main icon on an emulated task dialog form.
+</p>
+</descr>
+<seealso>
+<link id="IconMessage"/>
+<link id="TF_DIALOGICON"/>
+<link id="#lcl.dialogs.TTaskDialogIcon">TTaskDialogIcon</link>
+</seealso>
 </element>
 <element name="TLCLTaskDialogIcon.tiBlank">
-<short/>
+<short>
+Indicates that an icon is not used on the dialog form.  
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiWarning">
-<short/>
+<short>
+Represents the Warning icon.
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiQuestion">
-<short/>
+<short>
+Represents the Question Mark icon.
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiError">
-<short/>
+<short>
+Represents the Error icon.
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiInformation">
-<short/>
+<short>
+Represents the Information icon.
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiNotUsed">
-<short/>
+<short>
+This value is not used.
+</short>
 </element>
 <element name="TLCLTaskDialogIcon.tiShield">
-<short/>
+<short>
+Represents the Shield icon.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialogFooterIcon">
-<short/>
-<descr/>
+<short>
+Represents the available footer icons for an emulated task dialog.
+</short>
+<descr>
+<p>
+<var>TLCLTaskDialogFooterIcon</var> is an enumerated type with values which 
+represent the icons available as the footer icon on an emulated task dialog 
+form.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiBlank">
-<short/>
+<short>
+Indicates that a footer icon is not used.  
+</short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiWarning">
-<short/>
+<short>
+Represents the Warning icon.
+</short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiQuestion">
-<short/>
+<short>
+Represents the Question Mark icon.
+</short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiError">
-<short/>
+<short>
+Represents the Error icon.
+</short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiInformation">
-<short/>
+<short>
+Represents the Information icon.
+</short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiShield">
-<short/>
+<short>
+Represents the Shield icon.
+</short>
 </element>
 
 <!-- TODO: Needs content. -->
 <element name="IconMessage">
 <short/>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IconMessage</var> is a <var>String</var> function used to get the title 
+displayed on an emulated task dialog for the specified icon. It is used in the 
+implementation of TLCLTaskDialog to retrieve the title on the emulated task 
+dialog when the value has not already been assigned. The return value contains 
+the translated resource string associated with the index value in the Icon 
+argument. For example:
+</p>
+<dl>
+<dt>tiWarning</dt>
+<dd>Returns rsMtWarning.</dd>
+<dt>tiQuestion</dt>
+<dd>Returns rsMtConfirmation.</dd>
+<dt>tiError</dt>
+<dd>Returns rsMtError.</dd>
+<dt>tiInformation, tiShield</dt>
+<dd>Returns rsMtInformation.</dd>
+<dt>Other values</dt>
+<dd>Returns an empty string ('').</dd>
+</dl>
+<p>
+IconMessage calls TD_Trans to localize the return value prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="TLCLTaskDialog"/>  
+<link id="#lcl.dialogs.TTaskDialogIcon">TTaskDialogIcon</link>
+</seealso>
 </element>
 <element name="IconMessage.Result">
-<short/>
+<short>
+Translated message content for the specified icon.
+</short>
 </element>
 <element name="IconMessage.Icon">
-<short/>
+<short>
+Specifies the icon for the translated message.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TF_DIALOGICON">
-<short/>
+<short>
+Converts the specified TTaskDialogIcon main icon to the corresponding value in 
+the TLCLTaskDialogIcon enumeration.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -664,9 +885,11 @@ using translations unit.
 <short/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TF_FOOTERICON">
-<short/>
+<short>
+Converts the specified TTaskDialogIcon footer icon to the corresponding value 
+in the TLCLTaskDialogFooterIcon enumeration.
+</short>
 <descr/>
 <seealso/>
 </element>
