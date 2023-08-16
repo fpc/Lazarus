@@ -6,11 +6,6 @@
 TaskDlgEmulation 
 ========================================================================
 -->
-<!-- 
-TODO: Added in df338fd867.
-Added in LCL version 4.0.
-Check for reusable content from the deprecated lcltaskdialog.xml file.
--->
 <module name="TaskDlgEmulation">
 <short>
 Implements an emulated task dialog for platforms where the Task Dialog API is 
@@ -18,14 +13,40 @@ not supported.
 </short>
 <descr>
 <p>
-<file>TaskDlgEmulation.pp</file> contains types, routines, and variable used to implement a non-native, emulated Task Dialog. It is used in widgetset classes for platforms where the task dialog API is not available, or not supported for a specific version of an operating system.
+<file>TaskDlgEmulation.pp</file> contains types, routines, and variable used to 
+implement a non-native, emulated Task Dialog. It is used in widgetset classes 
+for platforms where the task dialog API is not available, or not supported for 
+a specific version of an operating system. It emulates the functionality of 
+TaskDialogIndirect available on Windows Vista and later versions. It adds 
+capabilities that TaskDialogIndirect does not have, including:
+</p>
+<ul>
+<li>
+Query via combo-box.
+</li>
+<li>
+Query via single line edit, which supports masking the input for use with e.g. passwords.
+</li>
+</ul>
+<p>
+It contains TLCLTaskDialog - a dynamically configured form displayed when a 
+task dialog is executed using its configuration settings. The emulated dialog 
+does not aim to be visually (near) exactly the same as the Vista+ native dialog.
 </p>
 <p>
-It contains TLCLTaskDialog - a dynamically configured form displayed when a task dialog is executed using its configuration settings.
+This dialog is invoked by <var>Dialogs.TTaskDialog.Execute</var> on systems 
+that do not support the native Vista+ dialog, and it is also used as a fallback 
+in case the native Vista+ dialog fails (when passed invalid combination of 
+arguments). The dialog therefore uses the Flags property of 
+<var>Dialogs.TTaskDialog</var>, but not all of these flags are supported (yet) 
+in the emulated dialog.
 </p>
 <p>
 <file>TaskDlgEmulation.pp</file> is part of the Lazarus Component Library 
-(<b>LCL</b>).
+(<b>LCL</b>). This unit was originally a part of the freeware Synopse mORMot 
+framework, and licensed under a MPL/GPL/LGPL tri-license; version 1.19. It has 
+been relicensed with permission from Arnaud Bouchez, the original author, and 
+all contributors. The original name was SynTaskDialog.pas.
 </p>
 <remark>
 Added in LCL version 4.0 as replacement for the deprecated types in the 
