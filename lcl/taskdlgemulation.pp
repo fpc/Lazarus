@@ -1,4 +1,42 @@
+{
+ /***************************************************************************
+                            TaskDlgEmulation.pp
+                            -----------------
+
+ Implements TaskDialog Window on systems that do not support it natively
+ This unit was originally a part of the freeware Synopse mORMot framework,
+ licensed under a MPL/GPL/LGPL tri-license; version 1.19.
+ It has been relicensed with permission from Arnaud Bouchez, the original
+ author, and all contributors.
+
+ The original name is SynTaskDialog.pas
+
+ ***************************************************************************/
+
+ *****************************************************************************
+  This file is part of the Lazarus Component Library (LCL)
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+}
+
 unit TaskDlgEmulation;
+
+{
+  This unit tries to emulate the functionality of Windows Vista and higher TaskDialogIndirect.
+  It also adds capabilities that TaskDialogIndirect does not have, currently:
+    * Query via combobox
+    * Query via single line edit, which supports masking the input for use eith e.g. passwords
+
+  The emulated dialog does not aim to be visually (near) exactly the same as the Vista+ native dialog.
+
+  This dialog is invoked by Dialogs.TTaskDialog.Execute on systems that do not support
+  the native Vista+ dialog, and it is also used as a fallback in case the native
+  Vista+ dialog fails (when passed invalid combination of arguments).
+  The dialog therefore uses the Flags property of Dialogs.TTaskDialog, but not
+  all of these flags are supported (yet) in the emulated dialog.
+}
 
 {$mode ObjFPC}{$H+}
 
