@@ -172,7 +172,10 @@ Added in LCL version 4.0.
 <element name="TLCLTaskDialog.SmallImageSize"/>
 <element name="TLCLTaskDialog.CommandLinkButtonHeight"/>
 <element name="TLCLTaskDialog.RadioVSpacing"/>
+<element name="TLCLTaskDialog.LabelVSpacing"/>
 <element name="TLCLTaskDialog.CommandLinkButtonVSpacing"/>
+<element name="TLCLTaskDialog.BevelMargin"/>
+<element name="TLCLTaskDialog.BevelHeight"/>
 
 <element name="TLCLTaskDialog.FDlg">
 <short>
@@ -187,6 +190,7 @@ The task dialog instance which created and is the owner of the dialog form.
 <element name="TLCLTaskDialog.CommandLinkButtonSpacing"/>
 <element name="TLCLTaskDialog.ButtonHeight"/>
 <element name="TLCLTaskDialog.GlobalLeftMargin"/>
+<element name="TLCLTaskDialog.ExpandHeightRequired"/>
 <element name="TLCLTaskDialog.Timer"/>
 <element name="TLCLTaskDialog.TimerStartTime"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
@@ -202,7 +206,9 @@ The task dialog instance which created and is the owner of the dialog form.
 <element name="TLCLTaskDialog.TopPanel"/>
 <element name="TLCLTaskDialog.MidPanel"/>
 <element name="TLCLTaskDialog.BottomPanel"/>
-<element name="TLCLTaskDialog.Image"/>
+<element name="TLCLTaskDialog.MainImage"/>
+<element name="TLCLTaskDialog.FooterImage"/>
+<element name="TLCLTaskDialog.ExpandedTextBevel"/>
 
 <element name="TLCLTaskDialog.Element">
 <short>
@@ -296,6 +302,13 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddExpandButton.AWidth"/>
 <element name="TLCLTaskDialog.AddExpandButton.AParent"/>
 
+<element name="TLCLTaskDialog.AddBevel"/>
+<element name="TLCLTaskDialog.AddBevel.Result"/>
+<element name="TLCLTaskDialog.AddBevel.ATop"/>
+<element name="TLCLTaskDialog.AddBevel.AWidth"/>
+<element name="TLCLTaskDialog.AddBevel.AParent"/>
+<element name="TLCLTaskDialog.AddBevel.Hidden"/>
+
 <element name="TLCLTaskDialog.AddFooter"/>
 <element name="TLCLTaskDialog.AddFooter.ALeft"/>
 <element name="TLCLTaskDialog.AddFooter.ATop"/>
@@ -313,6 +326,7 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddLabel.AFontHeight"/>
 <element name="TLCLTaskDialog.AddLabel.AWidth"/>
 <element name="TLCLTaskDialog.AddLabel.AParent"/>
+<element name="TLCLTaskDialog.AddLabel.Hidden"/>
 
 <element name="TLCLTaskDialog.AddQueryCombo"/>
 <element name="TLCLTaskDialog.AddQueryCombo.ALeft"/>
