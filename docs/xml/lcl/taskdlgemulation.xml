@@ -826,9 +826,10 @@ Represents the Shield icon.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="IconMessage">
-<short/>
+<short>
+Gets the title displayed on the task dialog for the specified main icon.
+</short>
 <descr>
 <p>
 <var>IconMessage</var> is a <var>String</var> function used to get the title 
