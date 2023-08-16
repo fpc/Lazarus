@@ -7384,7 +7384,6 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs updates. -->
 <element name="TCustomTaskDialog.OnTimer">
 <short>
 Event handler signalled when the interval for the timer on the dialog has 
@@ -7393,8 +7392,22 @@ elapsed.
 <descr>
 <p>
 <var>OnTimer</var> is a <var>TTaskDlgTimerEvent</var> property with the event 
-handler signalled when the interval for a timer used to update a progress bar 
-on the dialog has elapsed.
+handler signalled when the interval for the timer in the task dialog has 
+elapsed. It is signalled (when assigned) from the DoOnTimer method and receives 
+values for the object instance, tick count since the timer was started, and a 
+reset flag.
+</p>
+<p>
+For the native Windows Task Dialog API, it occurs when the TDN_TIMER 
+notification is handled in the callback procedure for the dialog. For platforms 
+which use an emulated task dialog, it occurs when the handler routine for the 
+internal TTimer instance in TLCLTaskDialog has elapsed. The timer interval is 
+200ms.
+</p>
+<p>
+An application can implement and assign a handler using the signature in 
+TTaskDlgTimerEvent to perform actions needed when the notification occurs in 
+the class instance.
 </p>
 </descr>
 <version>
@@ -7403,8 +7416,8 @@ Added in LCL version 4.0.
 <seealso/>
 <notes>
 <note>
-There are no mechanisms to set the progress bar range or update the progress 
-bar position on the widget.
+There are no mechanisms to set the progress bar range (min, max) or update the 
+progress bar position on the widget.
 </note>
 </notes>
 </element>
