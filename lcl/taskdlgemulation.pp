@@ -68,7 +68,10 @@ type
       SmallImageSize = 16;
       CommandLinkButtonHeight = 40;
       RadioVSpacing = 16;
+      LabelVSpacing = 16;
       CommandLinkButtonVSpacing = 2;
+      BevelMargin = 2;
+      BevelHeight = 2;
   private
     /// the Task Dialog structure which created the form
     FDlg: TTaskDialog;
@@ -79,6 +82,7 @@ type
     CommandLinkButtonSpacing: Integer; //Height of TBitBtns
     ButtonHeight: Integer;  //Height of TButtons
     GlobalLeftMargin: Integer;
+    ExpandHeightRequired: Integer;
     Timer: TTimer;
     TimerStartTime: TTime;
     RadioButtonArray: array of TRadioButton;
@@ -92,7 +96,9 @@ type
     TopPanel: TPanel;
     MidPanel: TPanel;
     BottomPanel: TPanel;
-    Image: TImage;
+    MainImage: TImage;
+    FooterImage: TImage;
+    ExpandedTextBevel: TBevel;
     /// the labels corresponding to the Task Dialog main elements
     Element: array[tdeContent..tdeMainInstruction] of TLabel;
     /// the Task Dialog query selection list
@@ -115,8 +121,10 @@ type
     procedure AddButtons(const ALeft: Integer; var ATop, AButtonLeft: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
     procedure AddCheckBox(const ALeft: Integer; var ATop, XB: Integer; AWidth: Integer; APArent: TWinControl);
     procedure AddExpandButton(const ALeft: Integer; var ATop, XB: Integer; AWidth: Integer; APArent: TWinControl);
+    function AddBevel(var ATop: Integer; aWidth: Integer; AParent: TWinControl; Hidden: Boolean = False): TBevel;
     procedure AddFooter(const ALeft: Integer; var ATop, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
-    function AddLabel(const AText: string; BigFont: Boolean; const ALeft: Integer; var ATop: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
+    function AddLabel(const AText: string; BigFont: Boolean; const ALeft: Integer; var ATop: Integer; AFontHeight,
+                      AWidth: Integer; APArent: TWinControl; Hidden: Boolean = False): TLabel;
     procedure AddQueryCombo(const ALeft: Integer; var ATop: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure SetupTimer;
@@ -469,23 +477,23 @@ begin
   aDialogIcon := TF_DIALOGICON(FDlg.MainIcon);
   if (LCL_IMAGES[aDialogIcon]<>0) then
   begin
-    Image := TImage.Create(Self);
-    Image.Parent := AParent;
-    Image.Images := DialogGlyphs;
-    Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
-    Image.SetBounds(AGlobalLeftMargin, AGlobalLeftMargin, LargeImageSize, LargeImageSize);
-    Image.Stretch := True;
-    Image.StretchOutEnabled := False;
-    Image.Proportional := True;
-    Image.Center := True;
-    ALeft := Image.Width+AGlobalLeftMargin*2;
-    ATop := Image.Top;
+    MainImage := TImage.Create(Self);
+    MainImage.Parent := AParent;
+    MainImage.Images := DialogGlyphs;
+    MainImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
+    MainImage.SetBounds(AGlobalLeftMargin, AGlobalLeftMargin, LargeImageSize, LargeImageSize);
+    MainImage.Stretch := True;
+    MainImage.StretchOutEnabled := False;
+    MainImage.Proportional := True;
+    MainImage.Center := True;
+    ALeft := MainImage.Width+AGlobalLeftMargin*2;
+    ATop := MainImage.Top;
     if (tfEmulateClassicStyle in FDlg.Flags) then
       inc(ATop, 8);
   end
   else
   begin
-    Image := nil;
+    MainImage := nil;
     ALeft := AGlobalLeftMargin;
     ATop := AGlobalLeftMargin;
   end;
@@ -732,51 +740,69 @@ begin
   Inc(ATop, AHeight+8);
 end;
 
+function TLCLTaskDialog.AddBevel(var ATop: Integer; aWidth: Integer; AParent: TWinControl; Hidden: Boolean): TBevel;
+begin
+  Result := TBevel.Create(Self);
+  with Result do begin
+    Parent := AParent;
+    //if (FooterImage<>nil) and (ATop<FooterImage.Top+FooterImage.Height) then
+    //  BX := ALeft else
+    //  BX := BevelMargin;
+    SetBounds(BevelMargin,ATop,aWidth-2*BevelMargin,BevelHeight);
+    if Hidden then
+      Visible := False
+    else
+      Inc(ATop, BevelHeight);
+  end;
+end;
+
 procedure TLCLTaskDialog.AddFooter(const ALeft: Integer; var ATop, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
 var
   ALabelLeft: Integer;
 
+  (*
   procedure AddBevel;
   var
     BX: integer;
   begin
     with TBevel.Create(Self) do begin
       Parent := AParent;
-      if (Image<>nil) and (ATop<Image.Top+Image.Height) then
-        BX := ALeft else
-        BX := 2;
-      SetBounds(BX,ATop,aWidth-BX-2,2);
+      //if (FooterImage<>nil) and (ATop<FooterImage.Top+FooterImage.Height) then
+      //  BX := ALeft else
+      //  BX := BevelMargin;
+      SetBounds(BevelMargin,ATop,aWidth-2*BevelMargin,BevelHeight);
     end;
-    inc(ATop,16);
   end;
-
+  *)
 begin
-  if XB<>0 then
-    AddBevel
-  else
-    inc(ATop,16);
+  debugln(['AddFooterText: XB=',XB]);
+  //if XB<>0 then
+  AddBevel(ATop, aWidth, AParent);
+  inc(ATop,LabelVSPacing div 2);
   if (LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]<>0) then
   begin
-    Image := TImage.Create(Self);
-    Image.Parent := AParent;
-    Image.Images := DialogGlyphs;
-    Image.ImageWidth := 16;
-    Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]];
-    Image.Stretch := True;
-    Image.StretchOutEnabled := False;
-    Image.Proportional := True;
-    Image.Center := True;
-    Image.SetBounds(GlobalLeftMargin,ATop,SmallImageSize,SmallImageSize);
-    ALabelLeft := GlobalLeftMargin + Aleft + Image.Width;
+    FooterImage := TImage.Create(Self);
+    FooterImage.Parent := AParent;
+    FooterImage.Images := DialogGlyphs;
+    FooterImage.ImageWidth := 16;
+    FooterImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]];
+    FooterImage.Stretch := True;
+    FooterImage.StretchOutEnabled := False;
+    FooterImage.Proportional := True;
+    FooterImage.Center := True;
+    FooterImage.SetBounds(GlobalLeftMargin,ATop,SmallImageSize,SmallImageSize);
+    ALabelLeft := GlobalLeftMargin + Aleft + MainImage.Width;
   end
   else
   begin
     ALabelLeft := ALeft;//24;
   end;
   Element[tdeFooter] := AddLabel(FooterText, False, ALabelLeft, ATop, AFontHeight, AWidth, AParent);
+  Dec(ATop, LabelVSpacing div 2);
 end;
 
-function TLCLTaskDialog.AddLabel(const AText: string; BigFont: Boolean; const ALeft: Integer; var ATop: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
+function TLCLTaskDialog.AddLabel(const AText: string; BigFont: Boolean; const ALeft: Integer; var ATop: Integer; AFontHeight,
+                                 AWidth: Integer; APArent: TWinControl; Hidden: Boolean = False): TLabel;
 var
   R: TRect;
   W: integer;
@@ -811,7 +837,12 @@ begin
   Result.Parent := AParent;
   LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);
   Result.SetBounds(ALeft,ATop,W,R.Bottom);
-  inc(ATop,R.Bottom+RadioVSpacing);
+  if not Hidden then
+    inc(ATop,R.Bottom+LabelVSpacing)
+  else
+    Result.Visible := False;
+  //else
+  //  ExpandHeightRequired := R.Bottom+LabelVSpacing;
   //debugln(['TLCLTaskDialog.AddLabel End: X=',ALeft,', Result.Left=',Result.Left]);
 end;
 
@@ -928,14 +959,36 @@ end;
 
 procedure TLCLTaskDialog.ExpandDialog;
 begin
-  ExpandBtn.Caption := ExpandButtonCaption;
-  //ToDo: actually expand the dialog
+  ExpandBtn.Caption := CollapseButtonCaption;
+  if not (tfExpandFooterArea in FDlg.Flags) then
+  begin
+    Element[tdeExpandedInfo].Parent.Height := Element[tdeExpandedInfo].Parent.Height + ExpandHeightRequired;
+    Height := Height + ExpandHeightRequired;
+    Element[tdeExpandedInfo].Visible := True;
+  end
+  else
+  begin
+    Height := Height + ExpandHeightRequired;
+    ExpandedTextBevel.Visible := True;
+    Element[tdeExpandedInfo].Visible := True;
+  end;
 end;
 
 procedure TLCLTaskDialog.CollapseDialog;
 begin
-  ExpandBtn.Caption := CollapseButtonCaption;
-  //ToDo: actually collapse the dialog
+  ExpandBtn.Caption := ExpandButtonCaption;
+  if not (tfExpandFooterArea in FDlg.Flags) then
+  begin
+    Element[tdeExpandedInfo].Visible := False;
+    Element[tdeExpandedInfo].Parent.Height := Element[tdeExpandedInfo].Parent.Height - ExpandHeightRequired;
+    Height := Height - ExpandHeightRequired;
+  end
+  else
+  begin
+    ExpandedTextBevel.Visible := False;
+    Element[tdeExpandedInfo].Visible := False;
+    Height := Height - ExpandHeightRequired;
+  end;
 end;
 
 procedure TLCLTaskDialog.DoDialogConstructed;
@@ -1037,9 +1090,13 @@ begin
     // add main texts (DlgTitle, DlgText, Information)
     Element[tdeMainInstruction] := AddLabel(DlgTitle, True, ALeft, ATop, FontHeight, aWidth, CurrParent);
     Element[tdeContent] := AddLabel(DlgText, False, ALeft, ATop, FontHeight, aWidth, CurrParent);
-    if (ExpandedText <> '') then
-      // no information collapse/expand yet: it's always expanded
-      Element[tdeExpandedInfo] := AddLabel(ExpandedText, False, ALeft, ATop,  FontHeight, aWidth, CurrParent);
+    if (ExpandedText <> '')  and not (tfExpandFooterArea in FDlg.Flags) then
+    begin
+      Element[tdeExpandedInfo] := AddLabel(ExpandedText, False, ALeft, ATop,  FontHeight, aWidth, CurrParent, not (tfExpandedByDefault in Fdlg.Flags));
+      ExpandHeightRequired := Element[tdeExpandedInfo].Height + LabelVSPacing;
+      //debugln(['ExpandHeightRequired=',ExpandHeightRequired]);
+    end;
+
 
     TopPanel.Height := ATop;
     CurrParent := MidPanel;
@@ -1085,6 +1142,7 @@ begin
     //Add Expand button
     if (ExpandedText <> '') then
       AddExpandButton(GlobalLeftMargin, ATop, XB, aWidth, CurrParent);
+    FExpanded := (ExpandedText <> '') and (tfExpandedByDefault in FDlg.Flags);
 
     if (VerificationText <> '') then
       AddCheckBox(GlobalLeftMargin, ATop, XB, aWidth, CurrParent);
@@ -1096,20 +1154,31 @@ begin
     if (FooterText <> '') then
       AddFooter(GlobalLeftMargin, ATop, XB, FontHeight, aWidth, CurrParent);
 
-     ClientHeight := TopPanel.Height + MidPanel.Height + ATop;
+    if (ExpandedText <> '') and (tfExpandFooterArea in FDlg.Flags) then
+    begin
+      ExpandedTextBevel := AddBevel(ATop, aWidth, CurrParent, not FExpanded);
+      Inc(ATop, LabelVSpacing div 2);
+      Element[tdeExpandedInfo] := AddLabel(ExpandedText, False, ALeft, ATop,  FontHeight, aWidth, CurrParent, not FExpanded);
 
-     if (tfCallBackTimer in FDlg.Flags) then
-       SetupTimer;
+      ExpandHeightRequired := Element[tdeExpandedInfo].Height + BevelHeight + (LabelVSPacing {div 2});
+      //debugln(['ExpandHeightRequired=',ExpandHeightRequired]);
+      //if not FExpanded then
+      Dec(ATop, LabelVSpacing div 2);
+    end;
 
-     //AddButtons (which comes after adding query) may have set ActiveControl
-     //so do this here and not in AddQueryCombo or AddQueryEdit
-     if Assigned(QueryCombo) and (tfQueryFocused in FDlg.Flags) then
-       ActiveControl := QueryCombo
-     else
-       if Assigned(QueryEdit) and (tfQueryFocused in FDlg.Flags) then
-         ActiveControl := QueryEdit;
+    ClientHeight := TopPanel.Height + MidPanel.Height + ATop;
 
-     FExpanded := (tfExpandedByDefault in FDlg.Flags);
+    if (tfCallBackTimer in FDlg.Flags) then
+      SetupTimer;
+
+    //AddButtons (which comes after adding query) may have set ActiveControl
+    //so do this here and not in AddQueryCombo or AddQueryEdit
+    if Assigned(QueryCombo) and (tfQueryFocused in FDlg.Flags) then
+      ActiveControl := QueryCombo
+    else
+      if Assigned(QueryEdit) and (tfQueryFocused in FDlg.Flags) then
+        ActiveControl := QueryEdit;
+
   finally
     EnableAutoSizing;
   end;
