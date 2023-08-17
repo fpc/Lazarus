@@ -697,49 +697,6 @@ available.
 </short>
 </element>
 
-<element name="TTaskDialogTranslate">
-<short>
-Defines a function used to translate a caption used on a task dialog.
-</short>
-<descr>
-<p>
-TTaskDialogTranslate is the type used to implement the TaskDialog_Translate 
-variable.
-</p>
-</descr>
-<seealso>
-<link id="TaskDialog_Translate"/>
-</seealso>
-</element>
-<element name="TTaskDialogTranslate.Result">
-<short>
-Translated value for the specified caption.
-</short>
-</element>
-<element name="TTaskDialogTranslate.aString">
-<short>
-Caption value translated in the routine.
-</short>
-</element>
-
-<element name="TaskDialog_Translate">
-<short>
-Variable with the function used to translate strings on an emulated task dialog 
-instance.
-</short>
-<descr/>
-<notes>
-<note>
-Comment in source code: 
-Do we really need this? We already use resource strings that can be translated 
-using translations unit.
-</note>
-</notes>
-<seealso>
-<link id="TTaskDialogTranslate"/>
-</seealso>
-</element>
-
 <element name="ExecuteLCLTaskDialog">
 <short>
 Executes an emulated task dialog for using the specified arguments.  
@@ -897,9 +854,6 @@ argument. For example:
 <dt>Other values</dt>
 <dd>Returns an empty string ('').</dd>
 </dl>
-<p>
-IconMessage calls TD_Trans to localize the return value prior to exit.
-</p>
 </descr>
 <seealso>
 <link id="TLCLTaskDialog"/>  
@@ -913,7 +867,7 @@ Translated message content for the specified icon.
 </element>
 <element name="IconMessage.Icon">
 <short>
-Specifies the icon for the translated message.
+Specifies the icon used to identify the translated message in the return value.
 </short>
 </element>
 
