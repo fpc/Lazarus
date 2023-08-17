@@ -1807,10 +1807,16 @@ var
   const
     TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
       mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
-    TD_ICONS: array[TLCLTaskDialogIcon] of integer = (
-      0 {tiBlank}, 84 {tiWarning}, 99 {tiQuestion}, 98 {tiError}, 81 {tiInformation}, 0 {tiNotUsed}, 78 {tiShield});
+    //TD_ICONS: array[TLCLTaskDialogIcon] of integer = (
+    //  0 {tiBlank}, 84 {tiWarning}, 99 {tiQuestion}, 98 {tiError}, 81 {tiInformation}, 0 {tiNotUsed}, 78 {tiShield});
     TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
       0 {tfiBlank}, 84 {tfiWarning}, 99 {tfiQuestion}, 98 {tfiError}, 65533 {tfiInformation}, 65532 {tfiShield});
+
+    TD_QUESTION_ICON = MAKEINTRESOURCEW(Word(32514));  //source: https://www.vbarchiv.net/tipps/tipp_2224-vista-taskdialogindirect.html
+
+    TD_ICONS: array[TTaskDialogIcon] of MAKEINTRESOURCEW = (
+      nil, TD_WARNING_ICON, TD_ERROR_ICON, TD_INFORMATION_ICON, TD_SHIELD_ICON, TD_QUESTION_ICON
+    );
 
     procedure AddTaskDiakogButton(Btns: TTaskDialogButtons; var n: longword; firstID: integer);
     var
@@ -1920,13 +1926,15 @@ var
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
 
     if not (tfUseHIconMain in Flags) then
-      Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)]
+      //Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)]
+      Config.pszMainIcon := TD_ICONS[ADlg.MainIcon]
     else
       //ToDo: needs implemenation of TTaskDialog.CustomMainIcon
       Config.hMainIcon := 0;
 
     if not (tfUseHIconFooter in Flags) then
-      Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]
+      //Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]
+      Config.pszFooterIcon := TD_ICONS[ADlg.FooterIcon]
     else
       //ToDo: needs implemenation of TTaskDialog.CustomFooterIcon
       Config.hFooterIcon := 0;
