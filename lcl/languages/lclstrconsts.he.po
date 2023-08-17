@@ -641,6 +641,10 @@ msgstr "שגיאת מציג העזרה"
 msgid "No viewer was found for this type of help content"
 msgstr "לא נמצא מציג לעזרה"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "הדגשה"
@@ -1130,6 +1134,10 @@ msgstr "בחר צבע"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "בחר גופן"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

@@ -613,6 +613,10 @@ msgstr "Ohjeen katseluohjelman virhe"
 msgid "No viewer was found for this type of help content"
 msgstr "Ei löytänyt katseluohjelmaa tämän tyyppiselle ohjeen sisällölle"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Korosta"
@@ -1100,6 +1104,10 @@ msgstr "Valitse väri"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Valitse fontti"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

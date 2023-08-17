@@ -619,6 +619,10 @@ msgstr "Hilfebetrachterfehler"
 msgid "No viewer was found for this type of help content"
 msgstr "Hilfebetrachter nicht gefunden"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Hervorhebung"
@@ -1110,6 +1114,10 @@ msgstr "Farbe auswählen"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Schriftart auswählen"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

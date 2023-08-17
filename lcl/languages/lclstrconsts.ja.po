@@ -618,6 +618,10 @@ msgstr "ヘルプビューアエラー"
 msgid "No viewer was found for this type of help content"
 msgstr "このヘルプコンテンツタイプに対応するビューアが見つかりません。"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "選択した文字の背景色"
@@ -1109,6 +1113,10 @@ msgstr "色の選択"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "フォントの選択"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

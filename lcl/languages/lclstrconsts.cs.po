@@ -619,6 +619,10 @@ msgstr "Chyba prohlížeče nápovědy"
 msgid "No viewer was found for this type of help content"
 msgstr "Prohlížeč nápovědy nenalezen pro tento typ"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Zvýraznění"
@@ -1110,6 +1114,10 @@ msgstr "Zvolte barvu"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Zvolte písmo"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

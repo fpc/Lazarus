@@ -620,6 +620,10 @@ msgstr "Žinyno žiūryklės klaida"
 msgid "No viewer was found for this type of help content"
 msgstr "Nepavyko rasti žiūryklės šio tipo žinyno turiniui"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Paryškinimas"
@@ -1111,6 +1115,10 @@ msgstr "Pasirinkite spalvą"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Pasirinkite šriftą"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

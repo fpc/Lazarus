@@ -643,6 +643,10 @@ msgstr "Error del visor d'ajuda"
 msgid "No viewer was found for this type of help content"
 msgstr "Visor d'ajuda no trobat"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr ""
@@ -1128,6 +1132,10 @@ msgstr "Tria color"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Selecciona tipus de lletra"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

@@ -624,6 +624,10 @@ msgstr "Help Viewer Fout"
 msgid "No viewer was found for this type of help content"
 msgstr "Geen viewer gevonden voor dit type helpinhoud"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Highlight"
@@ -1115,6 +1119,10 @@ msgstr "Kies een kleur"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Kies een font"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 #, fuzzy

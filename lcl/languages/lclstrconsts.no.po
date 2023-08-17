@@ -643,6 +643,10 @@ msgstr "Hjelpeviser-feil"
 msgid "No viewer was found for this type of help content"
 msgstr "Hjelp-viser ikke funnet"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr ""
@@ -1131,6 +1135,10 @@ msgstr "Velg farge"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Velg skrift"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

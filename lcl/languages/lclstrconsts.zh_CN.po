@@ -619,6 +619,10 @@ msgstr "帮助查看器错误"
 msgid "No viewer was found for this type of help content"
 msgstr ""
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "高亮"
@@ -1110,6 +1114,10 @@ msgstr "Select color"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Select a font"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

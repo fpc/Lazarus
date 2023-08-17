@@ -611,6 +611,10 @@ msgstr "Ошибка программы просмотра справки"
 msgid "No viewer was found for this type of help content"
 msgstr "Программа просмотра справки для данного типа её содержимого не найдена"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Выделенное"
@@ -1090,6 +1094,10 @@ msgstr "Выбрать цвет"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Выбрать шрифт"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

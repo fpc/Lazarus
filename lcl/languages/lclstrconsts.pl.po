@@ -618,6 +618,10 @@ msgstr "Błąd przeglądarki pomocy"
 msgid "No viewer was found for this type of help content"
 msgstr "Nie znaleziono przeglądarki dla tego typu treści pomocy"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Podświetlenie"
@@ -1109,6 +1113,10 @@ msgstr "Wybierz kolor"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Wybierz czcionkę"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

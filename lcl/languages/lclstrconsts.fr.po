@@ -617,6 +617,10 @@ msgstr "Erreur de visionneuse d'aide"
 msgid "No viewer was found for this type of help content"
 msgstr "Aucune visionneuse d'aide disponible pour ce type de contenu"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Sélectionné"
@@ -1108,6 +1112,10 @@ msgstr "Choisir une couleur"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Choisir une police"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

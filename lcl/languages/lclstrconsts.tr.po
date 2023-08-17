@@ -611,6 +611,10 @@ msgstr "Yardım Görüntüleyici Hatası"
 msgid "No viewer was found for this type of help content"
 msgstr "Bu türdeki yardım içeriği için görüntüleyici bulunamadı"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Vurgulu"
@@ -1090,6 +1094,10 @@ msgstr "Renk seç"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Yazıtipi seç"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

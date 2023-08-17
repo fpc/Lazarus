@@ -690,9 +690,8 @@ begin
   begin
     if (CollapseButtonCaption = '') then
     begin
-      //ToDo: make this a resourcestring in LCLStrConsts unit
-      ExpandButtonCaption := 'Show details';
-      CollapseButtonCaption := 'Hide details';
+      ExpandButtonCaption := rsShowDetails;
+      CollapseButtonCaption := rsHideDetails;
     end
     else
       ExpandButtonCaption := CollapseButtonCaption;

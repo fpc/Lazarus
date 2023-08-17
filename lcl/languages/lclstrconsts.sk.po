@@ -613,6 +613,10 @@ msgstr "Chyba zobrazovača pomoci"
 msgid "No viewer was found for this type of help content"
 msgstr "Nenašiel sa zobrazovač pre tento typ obsahu pomoci"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Zvýraznenie"
@@ -1092,6 +1096,10 @@ msgstr "Výber farby"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Výber fontu"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

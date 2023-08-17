@@ -75,6 +75,10 @@ resourceString
 
   rsHelp = 'Help';
 
+  //TaskDialog
+  rsShowDetails = 'Show details';
+  rsHideDetails = 'Hide details';
+
   // DBGrid
   rsDeleteRecord = 'Delete record?';
 

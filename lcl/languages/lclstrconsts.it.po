@@ -621,6 +621,10 @@ msgstr "Errore nel visualizzatore dell'Help"
 msgid "No viewer was found for this type of help content"
 msgstr "Visualizzatore per questo tipo di aiuto non trovato"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Evidenziare"
@@ -1112,6 +1116,10 @@ msgstr "Selezionare un colore"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Selezionare un font"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

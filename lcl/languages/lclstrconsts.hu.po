@@ -617,6 +617,10 @@ msgstr "Súgó megjelenítő hiba"
 msgid "No viewer was found for this type of help content"
 msgstr "Nincs megjelenítő az ilyen típusú súgótartalomhoz"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Kiemelés"
@@ -1108,6 +1112,10 @@ msgstr "Szín kiválasztása"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Betűtípus kiválasztása"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"

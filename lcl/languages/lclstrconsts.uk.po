@@ -614,6 +614,10 @@ msgstr "Помилка переглядача довідки"
 msgid "No viewer was found for this type of help content"
 msgstr "Для цього типу довідки не знайдено переглядача"
 
+#: lclstrconsts.rshidedetails
+msgid "Hide details"
+msgstr ""
+
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
 msgstr "Підсвічений"
@@ -1093,6 +1097,10 @@ msgstr "Вибрати колір"
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
 msgstr "Вибрати шрифт"
+
+#: lclstrconsts.rsshowdetails
+msgid "Show details"
+msgstr ""
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
