@@ -312,7 +312,6 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddFooter"/>
 <element name="TLCLTaskDialog.AddFooter.ALeft"/>
 <element name="TLCLTaskDialog.AddFooter.ATop"/>
-<element name="TLCLTaskDialog.AddFooter.XB"/>
 <element name="TLCLTaskDialog.AddFooter.AFontHeight"/>
 <element name="TLCLTaskDialog.AddFooter.AWidth"/>
 <element name="TLCLTaskDialog.AddFooter.AParent"/>
