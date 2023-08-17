@@ -1809,8 +1809,8 @@ var
       mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
     //TD_ICONS: array[TLCLTaskDialogIcon] of integer = (
     //  0 {tiBlank}, 84 {tiWarning}, 99 {tiQuestion}, 98 {tiError}, 81 {tiInformation}, 0 {tiNotUsed}, 78 {tiShield});
-    TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
-      0 {tfiBlank}, 84 {tfiWarning}, 99 {tfiQuestion}, 98 {tfiError}, 65533 {tfiInformation}, 65532 {tfiShield});
+    //TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
+    //  0 {tfiBlank}, 84 {tfiWarning}, 99 {tfiQuestion}, 98 {tfiError}, 65533 {tfiInformation}, 65532 {tfiShield});
 
     TD_QUESTION_ICON = MAKEINTRESOURCEW(Word(32514));  //source: https://www.vbarchiv.net/tipps/tipp_2224-vista-taskdialogindirect.html
 
