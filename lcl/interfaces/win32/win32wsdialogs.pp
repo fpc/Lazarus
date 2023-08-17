@@ -1919,22 +1919,17 @@ var
       Exclude(Flags, tfUseCommandLinks);
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
 
-    Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)];
-    if IsConsole and (ADlg.MainIcon <> tdiNone) then
-    begin
-      writeln('PrepareTaskDialogConfig:');
-      writeln('  hMainIcon=',Config.hMainIcon);
-      writeln('  ADlg.MainIcon=',ADlg.MainIcon);
-      writeln('  TF_DIALOGICON(ADlg.MainIcon)=',TF_DIALOGICON(ADlg.MainIcon));
-    end;
-    Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)];
-    if IsConsole and (ADlg.FooterIcon <> tdiNone) then
-    begin
-      writeln('PrepareTaskDialogConfig:');
-      writeln('  hFooterIcon=',Config.hFooterIcon);
-      writeln('  ADlg.FooterIcon=',ADlg.FooterIcon);
-      writeln('  TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)=',TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]);
-    end;
+    if not (tfUseHIconMain in Flags) then
+      Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)]
+    else
+      //ToDo: needs implemenation of TTaskDialog.CustomMainIcon
+      Config.hMainIcon := 0;
+
+    if not (tfUseHIconFooter in Flags) then
+      Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]
+    else
+      //ToDo: needs implemenation of TTaskDialog.CustomFooterIcon
+      Config.hFooterIcon := 0;
 
     {
       Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)
