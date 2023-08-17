@@ -535,17 +535,31 @@ type
 type
   TCustomTaskDialog = class;
 
-  TTaskDialogFlag = (tfEnableHyperlinks, tfUseHiconMain,
-    tfUseHiconFooter, tfAllowDialogCancellation,
-    tfUseCommandLinks, tfUseCommandLinksNoIcon,
-    tfExpandFooterArea, tfExpandedByDefault,
-    tfVerificationFlagChecked, tfShowProgressBar,
-    tfShowMarqueeProgressBar, tfCallbackTimer,
-    tfPositionRelativeToWindow, tfRtlLayout,
-    tfNoDefaultRadioButton, tfCanBeMinimized,
-    tfNoSetForeGround, tfSizeToContent,
-    tfForceNonNative, tfEmulateClassicStyle,
-    tfQuery, tfSimpleQuery, tfQueryFixedChoices, tfQueryFocused);
+  TTaskDialogFlag = (
+    tfEnableHyperlinks,       //Native Vista+ only
+    tfUseHiconMain,           //Not functional
+    tfUseHiconFooter,         //Not functional
+    tfAllowDialogCancellation,
+    tfUseCommandLinks,
+    tfUseCommandLinksNoIcon,
+    tfExpandFooterArea,
+    tfExpandedByDefault,
+    tfVerificationFlagChecked,
+    tfShowProgressBar,        //Native Vista+ only, not fully functional
+    tfShowMarqueeProgressBar, //Native Vista+ only, not fully functional
+    tfCallbackTimer,
+    tfPositionRelativeToWindow,
+    tfRtlLayout,              //Native Vista+ only
+    tfNoDefaultRadioButton,
+    tfCanBeMinimized,
+    tfNoSetForeGround,        //Native Vista+ only
+    tfSizeToContent,          //Native Vista+ only
+    tfForceNonNative,
+    tfEmulateClassicStyle,    //this and following flags: Emulated dialog only
+    tfQuery,
+    tfSimpleQuery,
+    tfQueryFixedChoices,
+    tfQueryFocused);
   TTaskDialogFlags = set of TTaskDialogFlag;
 
   TTaskDialogCommonButton = (tcbOk, tcbYes, tcbNo, tcbCancel, tcbRetry, tcbClose);
