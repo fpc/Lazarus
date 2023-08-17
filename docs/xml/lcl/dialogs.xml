@@ -4952,19 +4952,21 @@ Modified in LCL 4.0 to include additional flag values in the enumeration.
 Allows HTML-like hyperlinks in the dialog (in Text, FooterText, and 
 ExpandedText) using the <b>'&lt;a href="target"&gt;Target&lt;/a&gt;'</b> 
 notation. For platforms that use an emulated (non-native) task dialog form, 
-the markup text and not a hyperlink is displayed.
+the markup text is displayed instead of a formatted hyperlink.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfUseHiconMain">
 <short>
 Uses the handle to the image in MainIcon as the primary image for the Task 
-dialog. Disables hyperlinks and expanded text areas.
+dialog. Disables hyperlinks and expanded text areas. Not used in the current 
+implementation.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfUseHiconFooter">
 <short>
 Uses the handle to the image in FooterIcon as the footer icon in the Task 
-dialog. Disables hyperlinks and expanded text areas.
+dialog. Disables hyperlinks and expanded text areas. Not used in the current 
+implementation.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfAllowDialogCancellation">
@@ -5005,12 +5007,14 @@ Displays the verification check-box using the checked state on entry.
 </element>
 <element name="TTaskDialogFlag.tfShowProgressBar">
 <short>
-Shows a progress bar on the dialog form.
+Shows a progress bar on the dialog form. Implemented for native Windows Vista 
+or later platforms.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfShowMarqueeProgressBar">
 <short>
-Shows a progress bar on the dialog form using the marquee style.
+Shows a progress bar on the dialog form using the marquee style. Implemented 
+for native Windows Vista or later platforms.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfCallbackTimer">
@@ -5025,7 +5029,10 @@ poScreenCenter.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfRtlLayout">
-<short>Use Right-to-Left layout for texts.</short>
+<short>
+Use Right-to-Left layout for texts. Implemented for native Windows Vista 
+or later platforms.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfNoDefaultRadioButton">
 <short>
@@ -5039,14 +5046,16 @@ Allows the dialog form to be minimized.
 </element>
 <element name="TTaskDialogFlag.tfNoSetForeGround">
 <short>
-Prevents bringing the dialog to the foreground when the dialog is activated.
+Prevents bringing the dialog to the foreground when the dialog is activated. 
+Implemented for native Windows Vista or later platforms.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfSizeToContent">
 <short>
 Indicates the width for the dialog is determined by the caption, title, or 
 lines of text in the the content areas areas. The flag is ignored if the 
-dialog width is not set to 0 (zero).
+dialog width is not set to 0 (zero). Implemented for native Windows Vista 
+or later platforms.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfForceNonNative">
@@ -5055,7 +5064,8 @@ dialog width is not set to 0 (zero).
 <element name="TTaskDialogFlag.tfEmulateClassicStyle">
 <short>
 Causes the dialog form to be displayed using a classic style where the content 
-areas use clForm as the background color instead of clWindow.
+areas use clForm as the background color instead of clWindow. Applies to 
+platforms which use an emulated task dialog only.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfQuery">
