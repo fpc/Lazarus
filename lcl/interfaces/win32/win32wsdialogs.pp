@@ -1808,9 +1808,9 @@ var
     TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
       mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
     TD_ICONS: array[TLCLTaskDialogIcon] of integer = (
-      0, 84, 99, 98, 81, 0, 78);
+      0 {tiBlank}, 84 {tiWarning}, 99 {tiQuestion}, 98 {tiError}, 81 {tiInformation}, 0 {tiNotUsed}, 78 {tiShield});
     TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
-      0, 84, 99, 98, 65533, 65532);
+      0 {tfiBlank}, 84 {tfiWarning}, 99 {tfiQuestion}, 98 {tfiError}, 65533 {tfiInformation}, 65532 {tfiShield});
 
     procedure AddTaskDiakogButton(Btns: TTaskDialogButtons; var n: longword; firstID: integer);
     var
@@ -1920,7 +1920,21 @@ var
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
 
     Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)];
+    if IsConsole and (ADlg.MainIcon <> tdiNone) then
+    begin
+      writeln('PrepareTaskDialogConfig:');
+      writeln('  hMainIcon=',Config.hMainIcon);
+      writeln('  ADlg.MainIcon=',ADlg.MainIcon);
+      writeln('  TF_DIALOGICON(ADlg.MainIcon)=',TF_DIALOGICON(ADlg.MainIcon));
+    end;
     Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)];
+    if IsConsole and (ADlg.FooterIcon <> tdiNone) then
+    begin
+      writeln('PrepareTaskDialogConfig:');
+      writeln('  hFooterIcon=',Config.hFooterIcon);
+      writeln('  ADlg.FooterIcon=',ADlg.FooterIcon);
+      writeln('  TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)=',TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]);
+    end;
 
     {
       Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)
@@ -1964,7 +1978,7 @@ begin
     end
     else
     begin
-      if IsConsole then writeln('TWin32WSTaskDialog.Execute: Call to TaskDialogIndirect failed, result was: ',LongInt(Res).ToHexString);
+      if IsConsole then writeln('TWin32WSTaskDialog.Execute: Call to TaskDialogIndirect failed, result was: ',LongInt(Res).ToHexString,'  [',Res,']');
       Result := inherited Execute(ADlg, AParentWnd, ARadioRes);  //probably illegal parameters: fallback to emulated taskdialog
     end;
   end;
