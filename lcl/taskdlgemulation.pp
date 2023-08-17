@@ -157,11 +157,6 @@ type
   end;
 
 
-type
-  TTaskDialogTranslate = function(const aString: string): string;
-var
-  TaskDialog_Translate: TTaskDialogTranslate;
-
 
 function ExecuteLCLTaskDialog(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 
@@ -263,17 +258,6 @@ begin
 end;
 
 
-//Note: do we really need this??
-//We already use resourcestrings that can be translated using
-//translations unit
-function TD_Trans(const aString: string): string;
-begin
-  if Assigned(TaskDialog_Translate) then
-    Result := TaskDialog_Translate(aString)
-  else
-    Result := aString;
-end;
-
 function IconMessage(Icon: TLCLTaskDialogIcon): string;
 begin
   case Icon of
@@ -283,7 +267,6 @@ begin
     tiInformation, tiShield: Result := rsMtInformation;
     else Result := '';
   end;
-  Result := TD_Trans(Result);
 end;
 
 
@@ -659,7 +642,7 @@ var
         ActiveControl := Result;
   end;
 begin
-  debugln(['TLCLTaskDialog.AddButtons: ALeft=',ALeft,', aWidth=',aWidth,', AParent=',DbgSName(AParent),', AParent.ClientWidth=',AParent.ClientWidth]);
+  //debugln(['TLCLTaskDialog.AddButtons: ALeft=',ALeft,', aWidth=',aWidth,', AParent=',DbgSName(AParent),', AParent.ClientWidth=',AParent.ClientWidth]);
   if MidPanel.ControlCount > 0 then
     CurrTabOrder := MidPanel.TabOrder
   else
@@ -672,13 +655,13 @@ begin
   for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
   begin
     if (Btn in CommonButtons) then
-      AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn],-1);
+      AddButton(LoadResString(TD_BTNS(Btn)), TD_BTNMOD[Btn],-1);
   end;
 end;
 
 procedure TLCLTaskDialog.AddCheckBox(const ALeft: Integer; var ATop, XB: Integer; AWidth: Integer; APArent: TWinControl);
 begin
-  debugln(['TLCLTaskDialog.AddCheckBox: ALeft=',ALeft]);
+  //debugln(['TLCLTaskDialog.AddCheckBox: ALeft=',ALeft]);
   VerifyCheckBox := TCheckBox.Create(Self);
   with VerifyCheckBox do
   begin
