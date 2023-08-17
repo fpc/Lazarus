@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
-msgstr "添加Assign方法"
+msgstr "添加 Assign 方法"
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign Method ..."
@@ -45,7 +45,7 @@ msgstr "已经定义在 %s"
 #: codystrconsts.crsandmoreidentifiers
 #, object-pascal-format
 msgid "... and %s more identifiers"
-msgstr "...和%s更多的标识符"
+msgstr "...和 %s 更多的标识符"
 
 #: codystrconsts.crsany
 msgid "Any"
@@ -53,7 +53,7 @@ msgstr "任何"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr ""
+msgstr "Lazarus IDE 的窗口。它可以像代码浏览器或 FPDoc 编辑器一样停靠，同时还会在“视图”菜单中创建一个菜单项和一个快捷方式。"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -65,12 +65,12 @@ msgstr "确定(&O)"
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
-msgstr "通过fpc.cfg"
+msgstr "通过 fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
 #, object-pascal-format
 msgid "Add Assign method to class %s"
-msgstr "添加Assign方法到类%s"
+msgstr "添加 Assign 方法到类 %s"
 
 #: codystrconsts.crscamcallinherited
 msgid "Call inherited"
@@ -82,7 +82,7 @@ msgstr ""
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
-msgstr "光标不在pascal类声明中"
+msgstr "光标不在 pascal 类定义中"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
@@ -131,7 +131,7 @@ msgstr "private"
 #: codystrconsts.crscamproperty
 #, object-pascal-format
 msgid "%s property"
-msgstr "%s属性"
+msgstr "%s 属性"
 
 #: codystrconsts.crscamprotected
 msgid "protected"
@@ -418,7 +418,7 @@ msgstr "标识符\"%s\"未找到在单元\"%s\".可能该标识符不存在对�
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
-msgstr "IDE窗体,可停靠"
+msgstr "可停靠的 IDE 窗口"
 
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"

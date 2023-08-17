@@ -1,35 +1,31 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: instantfpcregisterlaz.rsinstantfpcpr
 msgid "InstantFPC program"
-msgstr "InstantFPC程序"
+msgstr "InstantFPC 程序"
 
 #: instantfpcregisterlaz.rsinstantfpcsc
 msgid "InstantFPC script"
-msgstr "InstantFPC script"
+msgstr "InstantFPC 脚本"
 
 #: instantfpcregisterlaz.rssinglefilefr
-#, fuzzy
-#| msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
 msgid "Single file Free Pascal program executed by InstantFPC."
-msgstr "%s%s单行Free Pascal program由InstantFPC执行"
+msgstr "使用 InstantFPC 执行的单文件 Free Pascal 程序。"
 
 #: instantfpcregisterlaz.rssinglefilepr
-#, fuzzy
-#| msgid "%s%sSingle file program using InstantFPC to compile and execute"
 msgid "Single file program using InstantFPC to compile and execute."
-msgstr "%s%s单行program使用InstantFPC来编译和执行"
+msgstr "使用 InstantFPC 编译和执行的单文件 Free Pascal 程序。"
 

@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: buildstrconsts.lirsunit
+msgid "Pascal unit"
+msgstr "Pascal 单元"
+
+#: buildstrconsts.liscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "创建一个新的 pascal 单元。"
+
+#: buildstrconsts.lisshowalloutputlines
+msgid "Show all output lines"
+msgstr "显示所有输出行"
+
+#: buildstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
+msgid "Unable to find parser for tool \"%s\""
+msgstr "无法找到工具 \"%s\" 的解析器"
+
+#: buildstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
+msgid "Unable to find parser with name \"%s\""
+msgstr "无法找到名为 \"%s\" 的解析器"
+

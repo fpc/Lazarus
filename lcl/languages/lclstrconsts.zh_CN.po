@@ -1,40 +1,40 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
 msgid "Browser \"%s\" not executable."
-msgstr "浏览器\"%s\"不是可执行程序."
+msgstr "浏览器 \"%s\" 不是可执行程序。"
 
 #: lclstrconsts.hhshelpbrowsernotfound
 #, object-pascal-format
 msgid "Browser \"%s\" not found."
-msgstr "浏览器\"%s\"未找到."
+msgstr "浏览器 \"%s\" 未找到。"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 #, object-pascal-format
 msgid "Error while executing \"%s\":%s%s"
-msgstr "当执行\"%s\":%s%s时发生错误"
+msgstr "当执行 \"%s\" 时发生错误：%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr "不能找到一个HTML浏览器."
+msgstr "无法找到一个 HTML 浏览器。"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "没有HTML浏览器找到.%s请定义一个在  工具->选项->帮助->帮助选项"
+msgstr "无法找到 HTML 浏览器。%s请在工具 -> 选项 -> 帮助 -> 帮助选项中定义一个"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
@@ -132,10 +132,8 @@ msgid "Backward"
 msgstr "后退"
 
 #: lclstrconsts.rsbitmaps
-#, fuzzy
-#| msgid "Bitmaps"
 msgid "Bitmap Files"
-msgstr "位图"
+msgstr "位图文件"
 
 #: lclstrconsts.rsblackcolorcaption
 msgid "Black"
@@ -210,10 +208,8 @@ msgid "Cream"
 msgstr ""
 
 #: lclstrconsts.rscursor
-#, fuzzy
-#| msgid "Cursor"
 msgid "Cursor Files"
-msgstr "光标"
+msgstr "光标文件"
 
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
@@ -517,7 +513,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr ""
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "帮助"
@@ -572,7 +567,7 @@ msgstr ""
 #: lclstrconsts.rshelphelpkeywordnotfound
 #, object-pascal-format
 msgid "Help keyword \"%s\" not found."
-msgstr "帮助关键字\"%s\"未找到"
+msgstr "帮助关键字 \"%s\" 未找到。"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 #, object-pascal-format
@@ -636,16 +631,12 @@ msgid "Hot Light"
 msgstr ""
 
 #: lclstrconsts.rsicns
-#, fuzzy
-#| msgid "Mac OS X Icon"
 msgid "macOS Icon Files"
-msgstr "Mac OS X 图标"
+msgstr "macOS 图标文件"
 
 #: lclstrconsts.rsicon
-#, fuzzy
-#| msgid "Icon"
 msgid "Icon Files"
-msgstr "图标"
+msgstr "图标文件"
 
 #: lclstrconsts.rsiconimageempty
 msgid "Icon image cannot be empty"
@@ -697,11 +688,11 @@ msgstr "单元格索引超过范围[列=%d 行=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
-msgstr "info底色"
+msgstr "信息背景色"
 
 #: lclstrconsts.rsinfotextcolorcaption
 msgid "Info Text"
-msgstr "info文本"
+msgstr "信息文本"
 
 #: lclstrconsts.rsinsertrecordhint
 msgctxt "lclstrconsts.rsinsertrecordhint"
@@ -782,7 +773,7 @@ msgstr ""
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr "褐红"
+msgstr "栗色"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -795,7 +786,7 @@ msgstr "所有(&A)"
 #: lclstrconsts.rsmbcancel
 msgctxt "lclstrconsts.rsmbcancel"
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "取消(&C)"
 
 #: lclstrconsts.rsmbclose
 msgid "&Close"
@@ -815,11 +806,11 @@ msgstr "否(&N)"
 
 #: lclstrconsts.rsmbnotoall
 msgid "No to all"
-msgstr "没有所有(No to all)"
+msgstr "全部选否(&T)"
 
 #: lclstrconsts.rsmbok
 msgid "&OK"
-msgstr "&OK"
+msgstr "确定(&O)"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
@@ -851,7 +842,7 @@ msgstr "中灰色"
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
-msgstr "菜单条"
+msgstr "菜单栏"
 
 #: lclstrconsts.rsmenucolorcaption
 msgctxt "lclstrconsts.rsmenucolorcaption"
@@ -868,7 +859,7 @@ msgstr "菜单文本"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
-msgstr "  已修改"
+msgstr "  已修改 "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -910,7 +901,7 @@ msgstr "下一个"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
-msgstr "None"
+msgstr "无"
 
 #: lclstrconsts.rsnotavalidgridfile
 msgid "Not a valid grid file"
@@ -918,7 +909,7 @@ msgstr "不是有效的网格文件"
 
 #: lclstrconsts.rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "没有widgetset 合对象,请检查单元\"interfaces\"是否已添加到程序uses语句(clause)."
+msgstr "没有 widgetset 对象。请检查 \"interfaces\" 单元是否已添加到程序的 uses 子句中。"
 
 #: lclstrconsts.rsolivecolorcaption
 msgid "Olive"
@@ -926,25 +917,19 @@ msgstr "橄榄绿色"
 
 #: lclstrconsts.rspickdate
 msgid "Select a date"
-msgstr "Select a date"
+msgstr "选择一个日期"
 
 #: lclstrconsts.rspixmap
-#, fuzzy
-#| msgid "Pixmap"
 msgid "Pixmap Files"
-msgstr "像素图"
+msgstr "像素图文件"
 
 #: lclstrconsts.rsportablenetworkgraphic
-#, fuzzy
-#| msgid "Portable Network Graphic"
 msgid "PNG Files"
-msgstr "便携式网络图形(PNG)"
+msgstr "PNG 文件"
 
 #: lclstrconsts.rsportablepixmap
-#, fuzzy
-#| msgid "Portable PixMap"
 msgid "Portable Pixmap Files"
-msgstr "便携式像素图"
+msgstr "便携式像素图文件"
 
 #: lclstrconsts.rspostrecordhint
 msgid "Post"
@@ -1125,7 +1110,7 @@ msgstr "银白色"
 
 #: lclstrconsts.rssize
 msgid "  size "
-msgstr "  大小"
+msgstr "  大小 "
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
@@ -1210,12 +1195,12 @@ msgstr ""
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 #, object-pascal-format
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr "警告:这里有%d 剩余的信息在队列中!我将释放它们"
+msgstr " 警告：队列中还有 %d 条信息！我将释放它们"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 #, object-pascal-format
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr "警告:这里有%d 剩余的TimerInfo结构 在队列中!我将释放它们"
+msgstr " 警告：还剩 %d 个 TimerInfo 结构，我将释放它们"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 #, object-pascal-format, fuzzy, badformat
@@ -1308,7 +1293,7 @@ msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr "BackSpace(退格)"
+msgstr "BkSp"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
@@ -1316,21 +1301,21 @@ msgstr "Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr "Delete(删除)"
+msgstr "Del"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr "下"
+msgstr "Down"
 
 #: lclstrconsts.smkcend
 msgctxt "lclstrconsts.smkcend"
 msgid "End"
-msgstr "End(结束)"
+msgstr "End"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr "Enter(回车)"
+msgstr "Enter"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
@@ -1339,33 +1324,33 @@ msgstr "Esc"
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
 msgid "Home"
-msgstr "用户主目录"
+msgstr "Home"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr "Insert(插入)"
+msgstr "Ins"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
 msgid "Left"
-msgstr "左"
+msgstr "Left"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
-msgstr ""
+msgstr "Meta+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr "PageDown(下一页)"
+msgstr "PgDn"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr "PageUp(上一页)"
+msgstr "PgUp"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
 msgid "Right"
-msgstr "右"
+msgstr "Right"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
@@ -1373,7 +1358,7 @@ msgstr "Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr "空格"
+msgstr "Space"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
@@ -1383,7 +1368,7 @@ msgstr "Tab"
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
-msgstr "上"
+msgstr "Up"
 
 #: lclstrconsts.snotimers
 msgid "No timers available"
@@ -1500,7 +1485,7 @@ msgstr ""
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr "  大小"
+msgstr "大小"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"

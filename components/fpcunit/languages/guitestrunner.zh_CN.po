@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: guitestrunner.rsalltests
@@ -19,66 +19,66 @@ msgstr "所有测试"
 #: guitestrunner.rserrors
 #, object-pascal-format
 msgid "%s    Errors: %s"
-msgstr "%s错误:%s"
+msgstr "%s    错误：%s"
 
 #: guitestrunner.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr "异常:%s"
+msgstr "异常：%s"
 
 #: guitestrunner.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr "异常类: %s"
+msgstr "异常类：%s"
 
 #: guitestrunner.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr "异常信息: %s"
+msgstr "异常消息：%s"
 
 #: guitestrunner.rsfailures
 #, object-pascal-format
 msgid "%s     Failures: %s"
-msgstr "%s失败:%s"
+msgstr "%s     失败：%s"
 
 #: guitestrunner.rslinenumber
 #, object-pascal-format
 msgid "Line number: %s"
-msgstr "行号: %s"
+msgstr "行号：%s"
 
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
-msgstr "信息: %s"
+msgstr "消息：%s"
 
 #: guitestrunner.rsmethodname
 #, object-pascal-format
 msgid "Method name: %s"
-msgstr "Method名称: %s"
+msgstr "方法名：%s"
 
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr "执行测试的次数: %s经过时间: %s"
+msgstr "执行测试的次数：%s  经过时间：%s"
 
 #: guitestrunner.rsrun
 msgid "Run "
-msgstr "运行"
+msgstr "运行 "
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
 msgid "Running %s"
-msgstr "运行%s"
+msgstr "运行 %s"
 
 #: guitestrunner.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr "运行:%s%s"
+msgstr "运行：%s%s"
 
 #: guitestrunner.rsunitname
 #, object-pascal-format
 msgid "Unit name: %s"
-msgstr "Unit名称: %s"
+msgstr "单元名称：%s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -110,7 +110,7 @@ msgstr "运行所有(&R)"
 
 #: guitestrunner.sactrunactionh
 msgid "Run all checked tests"
-msgstr "运行所有选择的(检查的)测试"
+msgstr "运行所有选择的测试"
 
 #: guitestrunner.sactrunhighlightedtest
 msgctxt "guitestrunner.sactrunhighlightedtest"
@@ -127,7 +127,7 @@ msgstr "保存结果"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr "保存XML结果到文件"
+msgstr "保存 XML 结果到文件"
 
 #: guitestrunner.sactuncheckall
 msgid "Deselect all tests"
@@ -152,7 +152,7 @@ msgstr "运行高亮的测试"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr "FPCUnit-运行unit测试"
+msgstr "FPCUnit - 运行单元测试"
 
 #: guitestrunner.smiactions
 msgid "Actions"
@@ -168,9 +168,9 @@ msgstr "测试树"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
-msgstr "产生XML"
+msgstr "结果 XML"
 
 #: guitestrunner.stshtree
 msgid "Testcase tree"
-msgstr "Testcase树"
+msgstr "测试用例树"
 
