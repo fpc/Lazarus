@@ -1,58 +1,52 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
-msgstr "创建unit"
+msgstr "创建单元"
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
-msgstr "创建Setup Method"
+msgstr "创建 Setup 方法"
 
 #: strtestcaseopts.schktear
 msgid "Create TearDown method"
-msgstr "创建TearDown method"
+msgstr "创建 TearDown 方法"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
-msgstr "FPCUnit控制台测试应用程序"
+msgstr "FPCUnit 控制台测试应用程序"
 
 #: strtestcaseopts.sfpcunconsoletestdesc
-#, fuzzy
-#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases in console mode."
-msgstr "FPCUnit控制台测试应用程序%s一个应用程序在控制台模式中来运行FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+msgstr "一个运行 FPCUnit 测试用例的控制台应用程序。"
 
 #: strtestcaseopts.sfpcuntestapp
 msgid "FPCUnit Test Application"
-msgstr "FPCUnit测试应用程序"
+msgstr "FPCUnit 测试应用程序"
 
 #: strtestcaseopts.sfpcuntestappdesc
-#, fuzzy
-#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases."
-msgstr "FPCUnit测试应用程序%s一个应用程序来运行 FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+msgstr "一个运行 FPCUnit 测试用例的应用程序。"
 
 #: strtestcaseopts.sfpcuntestcase
 msgid "FPCUnit Test Case"
-msgstr "FPCUnit Test Case"
+msgstr "FPCUnit 测试用例"
 
 #: strtestcaseopts.sfpcuntestcasedesc
-#, fuzzy
-#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgid "A unit containing a FPCUnit Test Case."
-msgstr "FPCUnit Test Case%s一个unit含有一个FPCUnit Test Case."
+msgstr "一个含有 FPCUnit 测试用例的单元。"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
@@ -60,7 +54,7 @@ msgstr "TestCase选择"
 
 #: strtestcaseopts.sgrpfixture
 msgid "Fixture"
-msgstr "Fixture(定位？)"
+msgstr "初始化设置"
 
 #: strtestcaseopts.sgrpnames
 msgid "Names"
@@ -72,5 +66,5 @@ msgstr "默认测试名称"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
-msgstr "编写你自己的测试"
+msgstr "编写您自己的测试"
 

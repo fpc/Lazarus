@@ -5104,7 +5104,7 @@ msgstr "应用程序类名(&A)"
 
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
-msgstr "一个图形化Free Pascal应用程序 使用跨平台LCL库用于它的图形用户界面."
+msgstr "一个使用跨平台 LCL 图形库的图形化 Free Pascal 应用程序。"
 
 #: lazarusidestrconsts.lisapply
 msgctxt "lazarusidestrconsts.lisapply"
@@ -7321,7 +7321,7 @@ msgstr "控制台应用程序"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr "一个Free Pascal 命令行程序使用TCustomApplication来简单的检查命令行选项,处理异常,等等."
+msgstr "一个使用 TCustomApplication 来轻松获取命令行选项、处理异常等的 Free Pascal 命令行程序。"
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -12035,10 +12035,8 @@ msgid "library path"
 msgstr "库路径"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-#, fuzzy
-#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
-msgstr "一个Free Pascal共享库(在Windows下.dll,在Linux下.so,在MacOS X下.dylib)."
+msgstr "一个 Free Pascal 共享库（在 Windows 下为 .dll，在 Linux 下为 .so，在 macOS 下为 .dylib）。"
 
 #: lazarusidestrconsts.lislink
 msgid "Link:"
@@ -13539,7 +13537,7 @@ msgstr "添加单元到 Uses 节点(&T) ..."
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
-msgstr "查看(&V)"
+msgstr "视图(&V)"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
@@ -14136,33 +14134,33 @@ msgstr "新建控制台应用程序"
 #: lazarusidestrconsts.lisnewdlgcreateaneweditorfilechooseatype
 #, object-pascal-format
 msgid "Create a new editor file.%sChoose a type."
-msgstr "创建一个新的编辑器文件.%s 选择类型."
+msgstr "创建一个新的编辑器文件。%s选择一个类型。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
-msgstr "创建一个新的空文本文件."
+msgstr "创建一个新的空文本文件。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 #, object-pascal-format
 msgid "Create a new project.%sChoose a type."
-msgstr "创建一个新的项目.%s选择类型."
+msgstr "创建一个新的项目。%s选择一个类型。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 #, object-pascal-format
 msgid "Create a new standard package.%sA package is a collection of units and components."
-msgstr "创建一个新的标准的软件包.%s软件包是单元和组件的集合."
+msgstr "创建一个新的标准的软件包。%s软件包是一个单元和组件的集合。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithadatamodule
 msgid "Create a new unit with a datamodule."
-msgstr "使用数据模块创建一个单元."
+msgstr "创建一个新的数据模块单元。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
 msgid "Create a new unit with a frame."
-msgstr "创建一个新单元带有框."
+msgstr "创建一个新的框架单元。"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
-msgstr "使用LCL窗体创建一个新单元."
+msgstr "创建一个新的 LCL 窗体单元。"
 
 #: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
 msgid "Inherit from a project form or component"
@@ -16373,7 +16371,7 @@ msgstr "程序检测"
 
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
-msgstr "一个Free Pascal命令行程序带有一些有用的设置添加."
+msgstr "一个带有一些有用的设置的 Free Pascal 命令行程序。"
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
@@ -16489,7 +16487,7 @@ msgstr "项目"
 
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
-msgstr "项目已经更改"
+msgstr "项目已更改"
 
 #: lazarusidestrconsts.lisprojectchangedondisk
 msgid "Project changed on disk"
@@ -17290,7 +17288,7 @@ msgstr "保存更改?"
 #: lazarusidestrconsts.lissavechangestoproject
 #, object-pascal-format
 msgid "Save changes to project %s?"
-msgstr "保存更改到项目%s?"
+msgstr "项目 %s 已更改，是否保存?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
@@ -17716,7 +17714,7 @@ msgstr "简单程序"
 
 #: lazarusidestrconsts.lissimpleprogramprogramdescriptor
 msgid "A most simple Free Pascal command line program."
-msgstr "一个最简单的Free Pascal命令行程序."
+msgstr "一个最简单的 Free Pascal 命令行程序。"
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple syntax"
