@@ -122,7 +122,7 @@ type
     procedure AddCheckBox(const ALeft: Integer; var ATop, XB: Integer; AWidth: Integer; APArent: TWinControl);
     procedure AddExpandButton(const ALeft: Integer; var ATop, XB: Integer; AWidth: Integer; APArent: TWinControl);
     function AddBevel(var ATop: Integer; aWidth: Integer; AParent: TWinControl; Hidden: Boolean = False): TBevel;
-    procedure AddFooter(const ALeft: Integer; var ATop, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+    procedure AddFooter(var ALeft: Integer; var ATop: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
     function AddLabel(const AText: string; BigFont: Boolean; const ALeft: Integer; var ATop: Integer; AFontHeight,
                       AWidth: Integer; APArent: TWinControl; Hidden: Boolean = False): TLabel;
     procedure AddQueryCombo(const ALeft: Integer; var ATop: Integer; AWidth: Integer; AParent: TWinControl);
@@ -756,27 +756,11 @@ begin
   end;
 end;
 
-procedure TLCLTaskDialog.AddFooter(const ALeft: Integer; var ATop, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
-var
-  ALabelLeft: Integer;
-
-  (*
-  procedure AddBevel;
-  var
-    BX: integer;
-  begin
-    with TBevel.Create(Self) do begin
-      Parent := AParent;
-      //if (FooterImage<>nil) and (ATop<FooterImage.Top+FooterImage.Height) then
-      //  BX := ALeft else
-      //  BX := BevelMargin;
-      SetBounds(BevelMargin,ATop,aWidth-2*BevelMargin,BevelHeight);
-    end;
-  end;
-  *)
+procedure TLCLTaskDialog.AddFooter(var ALeft: Integer; var ATop: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+//ALeft must be adjusted by AddFooter if FooterIcon exists, so that we can left-align
+//ExpandedText in the Footer area with the FooterText (in case of tfExpandFooterArea)
 begin
-  debugln(['AddFooterText: XB=',XB]);
-  //if XB<>0 then
+  //debugln(['AddFooterText: XB=',XB]);
   AddBevel(ATop, aWidth, AParent);
   inc(ATop,LabelVSPacing div 2);
   if (LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]<>0) then
@@ -791,13 +775,9 @@ begin
     FooterImage.Proportional := True;
     FooterImage.Center := True;
     FooterImage.SetBounds(GlobalLeftMargin,ATop,SmallImageSize,SmallImageSize);
-    ALabelLeft := GlobalLeftMargin + Aleft + MainImage.Width;
-  end
-  else
-  begin
-    ALabelLeft := ALeft;//24;
+    ALeft := GlobalLeftMargin + Aleft + FooterImage.Width;
   end;
-  Element[tdeFooter] := AddLabel(FooterText, False, ALabelLeft, ATop, AFontHeight, AWidth, AParent);
+  Element[tdeFooter] := AddLabel(FooterText, False, ALeft, ATop, AFontHeight, AWidth, AParent);
   Dec(ATop, LabelVSpacing div 2);
 end;
 
@@ -1152,7 +1132,10 @@ begin
 
     // add FooterText text with optional icon
     if (FooterText <> '') then
-      AddFooter(GlobalLeftMargin, ATop, XB, FontHeight, aWidth, CurrParent);
+    begin
+      ALeft := GlobalLeftMargin;
+      AddFooter(ALeft, ATop, FontHeight, aWidth, CurrParent);
+    end;
 
     if (ExpandedText <> '') and (tfExpandFooterArea in FDlg.Flags) then
     begin
