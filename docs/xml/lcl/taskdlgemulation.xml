@@ -698,17 +698,29 @@ available.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TTaskDialogTranslate">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines a function used to translate a caption used on a task dialog.
+</short>
+<descr>
+<p>
+TTaskDialogTranslate is the type used to implement the TaskDialog_Translate 
+variable.
+</p>
+</descr>
+<seealso>
+<link id="TaskDialog_Translate"/>
+</seealso>
 </element>
 <element name="TTaskDialogTranslate.Result">
-<short/>
+<short>
+Translated value for the specified caption.
+</short>
 </element>
-<element name="TTaskDialogTranslate.AString">
-<short/>
+<element name="TTaskDialogTranslate.aString">
+<short>
+Caption value translated in the routine.
+</short>
 </element>
 
 <element name="TaskDialog_Translate">
