@@ -1812,8 +1812,6 @@ var
     //TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
     //  0 {tfiBlank}, 84 {tfiWarning}, 99 {tfiQuestion}, 98 {tfiError}, 65533 {tfiInformation}, 65532 {tfiShield});
 
-    TD_QUESTION_ICON = MAKEINTRESOURCEW(Word(32514));  //source: https://www.vbarchiv.net/tipps/tipp_2224-vista-taskdialogindirect.html
-
     TD_ICONS: array[TTaskDialogIcon] of MAKEINTRESOURCEW = (
       nil, TD_WARNING_ICON, TD_ERROR_ICON, TD_INFORMATION_ICON, TD_SHIELD_ICON, TD_QUESTION_ICON
     );

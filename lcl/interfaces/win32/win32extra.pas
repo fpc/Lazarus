@@ -153,6 +153,7 @@ const
   TD_SHIELD_ERROR_ICON    = MAKEINTRESOURCEW(Word(-7));
   TD_SHIELD_OK_ICON       = MAKEINTRESOURCEW(Word(-8));
   TD_SHIELD_GRAY_ICON     = MAKEINTRESOURCEW(Word(-9));
+  TD_QUESTION_ICON        = MAKEINTRESOURCEW(Word(32514));  //source: https://www.vbarchiv.net/tipps/tipp_2224-vista-taskdialogindirect.html
 
   // _TASKDIALOG_COMMON_BUTTON_FLAGS enum
   TDCBF_OK_BUTTON            = $0001; // selected control return value IDOK
