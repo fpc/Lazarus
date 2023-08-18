@@ -745,7 +745,6 @@ the icons available as the main icon on an emulated task dialog form.
 </descr>
 <seealso>
 <link id="IconMessage"/>
-<link id="TF_DIALOGICON"/>
 <link id="#lcl.dialogs.TTaskDialogIcon">TTaskDialogIcon</link>
 </seealso>
 </element>
@@ -869,36 +868,6 @@ Translated message content for the specified icon.
 <short>
 Specifies the icon used to identify the translated message in the return value.
 </short>
-</element>
-
-<element name="TF_DIALOGICON">
-<short>
-Converts the specified TTaskDialogIcon main icon to the corresponding value in 
-the TLCLTaskDialogIcon enumeration.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TF_DIALOGICON.Result">
-<short/>
-</element>
-<element name="TF_DIALOGICON.AIcon">
-<short/>
-</element>
-
-<element name="TF_FOOTERICON">
-<short>
-Converts the specified TTaskDialogIcon footer icon to the corresponding value 
-in the TLCLTaskDialogFooterIcon enumeration.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TF_FOOTERICON.Result">
-<short/>
-</element>
-<element name="TF_FOOTERICON.AIcon">
-<short/>
 </element>
 
 </module>
