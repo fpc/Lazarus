@@ -1668,24 +1668,18 @@ begin
   Result:=mrCancel;
   if (Project1=nil) or (Project1.MainUnitID<0) then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
-
   // check if main unit is already open in source editor
   if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in FFlags)) then
   begin
     // already loaded -> switch to source editor
     SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
     SourceEditorManager.ShowActiveWindowOnTop(True);
-    Result:=mrOk;
-    exit;
+    exit(mrOk);
   end;
-
   // open file in source notebook
   Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo);
-  if Result<>mrOk then exit;
-
-  Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
-  debugln('[TFileOpener.OpenMainUnit] END');
+  debugln(['[TFileOpener.OpenMainUnit] END. Result=', Result]);
   {$ENDIF}
 end;
 
