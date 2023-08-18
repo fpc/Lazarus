@@ -28,17 +28,6 @@ interface
 uses 
   Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj, CommCtrl;
 
-{ Win32 API constants not included in windows.pp }
-const
-  // Layout orientation
-  LAYOUT_RTL                        = $00000001; // Right to left
-  LAYOUT_BTT                        = $00000002; // Bottom to top
-  LAYOUT_VBH                        = $00000004; // Vertical before horizontal
-  LAYOUT_ORIENTATIONMASK            = (LAYOUT_RTL or LAYOUT_BTT or LAYOUT_VBH);
-  LAYOUT_BITMAPORIENTATIONPRESERVED = $00000008;
-  // not defined in fpc 2.4.3
-  GCLP_HBRBACKGROUND                = -10;
-
 type
   tagMENUBARINFO = record
     cbSize: DWORD;
@@ -75,35 +64,6 @@ const
 // ==================== End TaskDialog =======================
 
 // File dialogs
-const
-  CLSID_FileOpenDialog: TGUID = '{DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7}';
-  CLSID_FileSaveDialog: TGUID = '{C0B4E2F3-BA21-4773-8DBA-335EC946EB8B}';
-
-  // GETPROPERTYSTOREFLAGS enum
-  GPS_DEFAULT	            = 0;
-  GPS_HANDLERPROPERTIESONLY = $1;
-  GPS_READWRITE	            = $2;
-  GPS_TEMPORARY	            = $4;
-  GPS_FASTPROPERTIESONLY    = $8;
-  GPS_OPENSLOWITEM	    = $10;
-  GPS_DELAYCREATION         = $20;
-  GPS_BESTEFFORT            = $40;
-  GPS_NO_OPLOCK	            = $80;
-  GPS_MASK_VALID            = $ff;
-
-  // SIATTRIBFLAGS enum
-  SIATTRIBFLAGS_AND       = $1;
-  SIATTRIBFLAGS_OR        = $2;
-  SIATTRIBFLAGS_APPCOMPAT = $3;
-  SIATTRIBFLAGS_MASK      = $3;
-  SIATTRIBFLAGS_ALLITEMS  = $4000;
-
-  // CDCONTROLSTATEF enum
-  CDCS_INACTIVE       = 0;
-  CDCS_ENABLED        = $1;
-  CDCS_VISIBLE        = $2;
-  CDCS_ENABLEDVISIBLE = $3;
-
 type
   GETPROPERTYSTOREFLAGS = DWord;
   SIATTRIBFLAGS = DWord;
