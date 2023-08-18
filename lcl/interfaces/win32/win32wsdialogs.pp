@@ -1856,7 +1856,7 @@ var
     end;
     MainInstruction := Utf8ToUtf16(ADlg.Title);
     if (MainInstruction = '') then
-      MainInstruction := Utf8ToUtf16(IconMessage(TF_DIALOGICON(ADlg.MainIcon)));
+      MainInstruction := Utf8ToUtf16(IconMessage(ADlg.MainIcon));
     Content := Utf8ToUtf16(ADlg.Text);
     VerificationText := Utf8ToUtf16(ADlg.VerificationText);
     if (AParentWnd = 0) then

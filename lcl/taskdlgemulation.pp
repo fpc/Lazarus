@@ -167,11 +167,7 @@ type
   TLCLTaskDialogFooterIcon = (
     tfiBlank, tfiWarning, tfiQuestion, tfiError, tfiInformation, tfiShield);
 
-function IconMessage(Icon: TLCLTaskDialogIcon): string;
-function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
-function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
-
-
+function IconMessage(Icon: TTaskDialogIcon): string;
 
 implementation
 
@@ -207,10 +203,10 @@ end;
 
 
 const
-  LCL_IMAGES: array[TLCLTaskDialogIcon] of Integer = (
-    0, idDialogWarning, idDialogConfirm, idDialogError, idDialogInfo, 0, idDialogShield);
-  LCL_FOOTERIMAGES: array[TLCLTaskDialogFooterIcon] of Integer = (
-    0, idDialogWarning, idDialogConfirm, idDialogError, idDialogInfo, idDialogShield);
+  LCL_IMAGES: array[TTaskDialogIcon] of Integer = (
+    0 {tdiNone}, idDialogWarning {tdiWarning}, idDialogError {tdiError}, idDialogInfo {tdiInformation}, idDialogShield {tdiShield}, idDialogConfirm {tdiQuestion});
+  //LCL_FOOTERIMAGES: array[TTaskDialogIcon] of Integer = (
+  //0 {tdiNone}, idDialogWarning {tdiWarning}, idDialogError {tdiError}, idDialogInfo {tdiInformation}, idDialogShield {tdiShield}, idDialogConfirm {tdiQuestion});
 
 const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
@@ -231,40 +227,40 @@ end;
 
 
 
-function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
-begin
-  case aIcon of
-    tdiWarning: Result := tiWarning;
-    tdiError: Result := tiError;
-    tdiInformation: Result := tiInformation;
-    tdiShield: Result := tiShield;
-    tdiQuestion: Result := tiQuestion;
-  else
-    Result := tiBlank;
-  end;
-end;
+//function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
+//begin
+//  case aIcon of
+//    tdiWarning: Result := tiWarning;
+//    tdiError: Result := tiError;
+//    tdiInformation: Result := tiInformation;
+//    tdiShield: Result := tiShield;
+//    tdiQuestion: Result := tiQuestion;
+//  else
+//    Result := tiBlank;
+//  end;
+//end;
 
-function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
-begin
-  case aIcon of
-    tdiWarning: Result := tfiWarning;
-    tdiError: Result := tfiError;
-    tdiInformation: Result := tfiInformation;
-    tdiShield: Result := tfiShield;
-    tdiQuestion: Result := tfiQuestion;
-  else
-    Result := tfiBlank;
-  end;
-end;
+//function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
+//begin
+//  case aIcon of
+//    tdiWarning: Result := tfiWarning;
+//    tdiError: Result := tfiError;
+//    tdiInformation: Result := tfiInformation;
+//    tdiShield: Result := tfiShield;
+//    tdiQuestion: Result := tfiQuestion;
+//  else
+//    Result := tfiBlank;
+//  end;
+//end;
 
 
-function IconMessage(Icon: TLCLTaskDialogIcon): string;
+function IconMessage(Icon: TTaskDialogIcon): string;
 begin
   case Icon of
-    tiWarning:   Result := rsMtWarning;
-    tiQuestion:  Result := rsMtConfirmation;
-    tiError:     Result := rsMtError;
-    tiInformation, tiShield: Result := rsMtInformation;
+    tdiWarning:   Result := rsMtWarning;
+    tdiQuestion:  Result := rsMtConfirmation;
+    tdiError:     Result := rsMtError;
+    tdiInformation, tdiShield: Result := rsMtInformation;
     else Result := '';
   end;
 end;
@@ -392,7 +388,7 @@ begin
    else
      DialogCaption := Application.MainForm.Caption;
  if (DlgTitle = '') then
-   DlgTitle := IconMessage(TF_DIALOGICON(FDlg.MainIcon));
+   DlgTitle := IconMessage(FDlg.MainIcon);
 end;
 
 procedure TLCLTaskDialog.InitGlobalDimensionsAndStyle(ACustomButtonsTextLength: Integer; out aWidth, aFontHeight: Integer);
@@ -455,10 +451,10 @@ end;
 
 procedure TLCLTaskDialog.AddIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
 var
-  aDialogIcon: TLCLTaskDialogIcon;
+  aDialogIcon: TTaskDialogIcon;
 begin
-  aDialogIcon := TF_DIALOGICON(FDlg.MainIcon);
-  if (LCL_IMAGES[aDialogIcon]<>0) then
+  aDialogIcon := FDlg.MainIcon;
+  if (LCL_IMAGES[FDlg.MainIcon]<>0) then
   begin
     MainImage := TImage.Create(Self);
     MainImage.Parent := AParent;
@@ -741,17 +737,20 @@ end;
 procedure TLCLTaskDialog.AddFooter(var ALeft: Integer; var ATop: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
 //ALeft must be adjusted by AddFooter if FooterIcon exists, so that we can left-align
 //ExpandedText in the Footer area with the FooterText (in case of tfExpandFooterArea)
+var
+  aFooterIcon: TTaskDialogIcon;
 begin
   //debugln(['AddFooterText: XB=',XB]);
   AddBevel(ATop, aWidth, AParent);
   inc(ATop,LabelVSPacing div 2);
-  if (LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]<>0) then
+  aFooterIcon := FDlg.FooterIcon;
+  if (LCL_IMAGES[aFooterIcon]<>0) then
   begin
     FooterImage := TImage.Create(Self);
     FooterImage.Parent := AParent;
     FooterImage.Images := DialogGlyphs;
     FooterImage.ImageWidth := 16;
-    FooterImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]];
+    FooterImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aFooterIcon]];
     FooterImage.Stretch := True;
     FooterImage.StretchOutEnabled := False;
     FooterImage.Proportional := True;
