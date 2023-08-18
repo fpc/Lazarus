@@ -1924,14 +1924,12 @@ var
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
 
     if not (tfUseHIconMain in Flags) then
-      //Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)]
       Config.pszMainIcon := TD_ICONS[ADlg.MainIcon]
     else
       //ToDo: needs implemenation of TTaskDialog.CustomMainIcon
       Config.hMainIcon := 0;
 
     if not (tfUseHIconFooter in Flags) then
-      //Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)]
       Config.pszFooterIcon := TD_ICONS[ADlg.FooterIcon]
     else
       //ToDo: needs implemenation of TTaskDialog.CustomFooterIcon
