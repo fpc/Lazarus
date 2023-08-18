@@ -204,9 +204,8 @@ end;
 
 const
   LCL_IMAGES: array[TTaskDialogIcon] of Integer = (
-    0 {tdiNone}, idDialogWarning {tdiWarning}, idDialogError {tdiError}, idDialogInfo {tdiInformation}, idDialogShield {tdiShield}, idDialogConfirm {tdiQuestion});
-  //LCL_FOOTERIMAGES: array[TTaskDialogIcon] of Integer = (
-  //0 {tdiNone}, idDialogWarning {tdiWarning}, idDialogError {tdiError}, idDialogInfo {tdiInformation}, idDialogShield {tdiShield}, idDialogConfirm {tdiQuestion});
+    0 {tdiNone}, idDialogWarning {tdiWarning}, idDialogError {tdiError}, idDialogInfo {tdiInformation},
+    idDialogShield {tdiShield}, idDialogConfirm {tdiQuestion});
 
 const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
@@ -225,33 +224,6 @@ begin
   end;
 end;
 
-
-
-//function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
-//begin
-//  case aIcon of
-//    tdiWarning: Result := tiWarning;
-//    tdiError: Result := tiError;
-//    tdiInformation: Result := tiInformation;
-//    tdiShield: Result := tiShield;
-//    tdiQuestion: Result := tiQuestion;
-//  else
-//    Result := tiBlank;
-//  end;
-//end;
-
-//function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
-//begin
-//  case aIcon of
-//    tdiWarning: Result := tfiWarning;
-//    tdiError: Result := tfiError;
-//    tdiInformation: Result := tfiInformation;
-//    tdiShield: Result := tfiShield;
-//    tdiQuestion: Result := tfiQuestion;
-//  else
-//    Result := tfiBlank;
-//  end;
-//end;
 
 
 function IconMessage(Icon: TTaskDialogIcon): string;
