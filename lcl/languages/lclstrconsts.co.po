@@ -6,10 +6,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: LCL in Corsican\n"
-"POT-Creation-Date: 2022-07-19 10:37\n"
-"PO-Revision-Date: 2022-07-21 20:38+0200\n"
+"POT-Creation-Date: 2023-08-17 17:20\n"
+"PO-Revision-Date: 2023-08-18 11:59+0200\n"
 "Language-Team: Patriccollu di Santa Maria è Sichè\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.3.2\n"
 "Last-Translator: Patriccollu di Santa Maria è Sichè <https://github.com/Patriccollu/Lingua_Corsa-Infurmatica/#readme>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: co\n"
@@ -616,7 +616,7 @@ msgstr "Ùn ci hè alcunu affissadore per stu tipu di cuntenutu d’aiutu"
 
 #: lclstrconsts.rshidedetails
 msgid "Hide details"
-msgstr ""
+msgstr "Piattà i detaglii"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -1100,7 +1100,7 @@ msgstr "Selezziunà una grafia"
 
 #: lclstrconsts.rsshowdetails
 msgid "Show details"
-msgstr ""
+msgstr "Affissà i detaglii"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
