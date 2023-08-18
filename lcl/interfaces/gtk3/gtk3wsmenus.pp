@@ -21,10 +21,11 @@ unit Gtk3WSMenus;
 interface
 
 uses
-  Classes, Types, LCLProc, LCLType,
+  Classes, Types,
   LazGObject2, LazGlib2, LazGdk3, LazGtk3, gtk3procs,
+  LazLoggerBase,
   WSLCLClasses, WSMenus,
-  LMessages, Graphics, Menus, Forms, LCLIntf;
+  LCLType, LMessages, Graphics, Menus, Forms, Controls, LCLIntf;
 
 type
 
@@ -255,6 +256,7 @@ var
   MenuItem: TGtk3MenuItem;
   ParentMenuWidget, ContainerMenu: PGtkWidget;
   NewMenu: TGtk3Menu;
+  AOwner: TControl;
   AForm: TCustomForm;
 begin
   if not AMenuItem.HandleAllocated then
@@ -290,7 +292,11 @@ begin
 
   if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
   begin
-    AForm := TCustomForm(AMenuItem.GetParentMenu.Owner);
+    AOwner := TControl(AMenuItem.GetParentMenu.Owner);
+    if AOwner is TFrame then
+      AForm := GetParentForm(AOwner)
+    else
+      AForm := TCustomForm(AOwner);
     PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
   end else
   (*
