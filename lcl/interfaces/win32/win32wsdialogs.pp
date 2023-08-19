@@ -603,6 +603,13 @@ begin
   end;
 end;
 
+function GetDefaultExt(AOpenDialog: TOpenDialog): String;
+begin
+  Result := AOpenDialog.DefaultExt;
+  if (Result<>'') and (Result[1]='.') then
+    System.Delete(Result, 1, 1);
+end;
+
 function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
 
   function GetFlagsFromOptions(Options: TOpenOptions): DWord;
@@ -640,13 +647,6 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
     AFilter := AFilter + #0;
   end;
 
-  function GetDefaultExt: String;
-  begin
-    Result := AOpenDialog.DefaultExt;
-    if (Result<>'') and (Result[1]='.') then
-      System.Delete(Result, 1, 1);
-  end;
-
 const
   FileNameBufferLen = 1000;
 var
@@ -670,7 +670,7 @@ begin
     FileName := '';
   end;
 
-  DefaultExt := GetDefaultExt;
+  DefaultExt := GetDefaultExt(AOpenDialog);
 
   FileNameWideBuffer := AllocMem(FileNameBufferLen * 2 + 2);
   FileNameWide := UTF8ToUTF16(FileName);
@@ -762,14 +762,6 @@ end;
 
 
 class procedure TWin32WSOpenDialog.SetupVistaFileDialog(ADialog: IFileDialog; const AOpenDialog: TOpenDialog);
-
-  function GetDefaultExt: String;
-  begin
-    Result := AOpenDialog.DefaultExt;
-    if (Result<>'') and (Result[1]='.') then
-      System.Delete(Result, 1, 1);
-  end;
-
 var
   I: Integer;
   FileName, InitialDir: String;
@@ -788,7 +780,7 @@ begin
   end;
   ADialog.SetTitle(PWideChar(UTF8ToUTF16(AOpenDialog.Title)));
   ADialog.SetFileName(PWideChar(UTF8ToUTF16(FileName)));
-  ADialog.SetDefaultExtension(PWideChar(UTF8ToUTF16(GetDefaultExt)));
+  ADialog.SetDefaultExtension(PWideChar(UTF8ToUTF16(GetDefaultExt(AOpenDialog))));
 
   if InitialDir <> '' then
   begin
