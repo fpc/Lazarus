@@ -57,7 +57,7 @@ type
 
 // ===================== Task Dialog =========================
 
-//Not yet defined in fpc 3.2.2
+//Not yet defined in fpc 3.2.2, addded in fpc 3.3.1
 const
   TD_QUESTION_ICON        = MAKEINTRESOURCEW(Word(32514));  //source: https://www.vbarchiv.net/tipps/tipp_2224-vista-taskdialogindirect.html
 
