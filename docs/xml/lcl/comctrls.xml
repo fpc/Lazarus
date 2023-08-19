@@ -1044,24 +1044,52 @@ when successful. Uses the <var>OnHint</var> event handler.
 
 <element name="TStatusBar.DrawPanel">
 <short>
-<var>DrawPanel</var> calls the <var>OnDrawPanel</var> event handler if 
-assigned.
+Signals the OnDrawPanel event handler (when assigned).
 </short>
+<descr>
+<p>
+<var>DrawPanel</var> is a method used to draw the status bar panel specified in 
+<var>Panel</var> to the specified rectangle (<var>Rect</var>) on the Canvas for 
+the control. It signals the OnDrawPanel event handler (when assigned) using 
+the values specified in the arguments. DrawPanel is called from the LMDrawItem 
+method and occurs when the LM_DRAWITEM message is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TStatusBar.OnDrawPanel"/>
+<link id="TStatusBar.LMDrawItem"/>
+<link id="TStatusPanel"/>
+<link id="TDrawPanelEvent"/>
+</seealso>
 </element>
 <element name="TStatusBar.DrawPanel.Panel">
-<short>Panel to draw in the method.</short>
+<short>Panel drawn in the method.</short>
 </element>
 <element name="TStatusBar.DrawPanel.Rect">
-<short>Display rectangle for the drawing operation.</short>
+<short>Rectangle for the drawing operation.</short>
 </element>
 
 <element name="TStatusBar.LMDrawItem">
 <short>
-<var>LMDrawItem</var> - LCL message handler for drawing the item on the 
-current canvas.</short>
+Draws the status bar panel when the specified LM_DRAWITEMS message is handled 
+for the control.  
+</short>
+<descr>
+<p>
+<var>LMDrawItem</var> is a method used to handle a TLMDrawItems message received for the status bar control. LMDrawItem retrieves the status bar panel 
+(by item position) and the rectangle where it is drawn from the drawing structure in the Message argument. It ensures that the handle for the control Canvas is set to the device context for the control and calls DrawPanel to render the status bar panel at the required coordinates. The Canvas handle is restored to its original value prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="TStatusBar.Canvas"/>
+<link id="TStatusBar.DrawPanel"/>
+<link id="#lcl.lmessages.TLMDrawItems">TLMDrawItems</link>
+</seealso>
 </element>
 <element name="TStatusBar.LMDrawItem.Message">
-<short>Message handled in the method.</short>
+<short>
+Message with the status bar panel and coordinates drawn in the method.
+</short>
 </element>
 
 <element name="TStatusBar.DoAutoAdjustLayout">
@@ -1334,7 +1362,45 @@ TStatusBar. The status bar is always transparent on the platform.
 <element name="TStatusBar.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TStatusBar.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TStatusBar.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TStatusBar.Font" link="#lcl.controls.TControl.Font"/>
+
+<element name="TStatusBar.Font">
+<short>
+Font used to display the content on the control.
+</short>
+<descr>
+<p>
+<var>Font</var> is a published <var>TFont</var> property in 
+<var>TStatusBar</var>. It contains the font settings used to display the 
+content on the control. This includes the value specified in SimpleText when 
+SimplePanel is enabled, and in Panels using the psText style when SimplePanel 
+is disabled.
+</p>
+<p>
+In TStatusBar, the default values in Font are set to the attributes specified 
+for the default system font. Changing values in the TFont instance or assigning 
+a different font to the property causes the control to be redrawn.
+</p>
+<p>
+Set ParentFont to <b>True</b> use the typeface and attributes assigned to the 
+Font property in the parent control. Please note that resetting ParentFont to 
+<b>False</b> does not restore the previous values in the Font property.
+</p>
+<remark>
+The UseSystemFont property has no effect in LCL; it is provided for code 
+compatibility with the Delphi VCL only.
+</remark>
+</descr>
+<seealso>
+<link id="TStatusBar.SimpleText"/>
+<link id="TStatusBar.SimplePanel"/>
+<link id="TStatusBar.Panels"/>
+<link id="TStatusBar.ParentFont"/>
+<link id="TStatusBar.UseSystemFont"/>
+<link id="TStatusPanels"/>
+<link id="TStatusPanel"/>
+<link id="#lcl.controls.TControl.Font">TControl.Font</link>
+</seealso>
+</element>
 
 <element name="TStatusBar.Panels">
 <short>
@@ -1354,6 +1420,14 @@ status bar. Or use the editor provided in the Lazarus IDE Object Inspector to
 maintain the items in the Panels collection at design-time.
 </p>
 </descr>
+<seealso>
+<link id="TStatusBar.SimplePanel"/>
+<link id="TStatusBar.SimpleText"/>
+<link id="TStatusBar.CreatePanel"/>
+<link id="TStatusPanels"/>
+<link id="TStatusPanel"/>
+</seealso>
+
 </element>
 
 <element name="TStatusBar.ParentBiDiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
@@ -1365,16 +1439,26 @@ maintain the items in the Panels collection at design-time.
 
 <element name="TStatusBar.SimpleText">
 <short>
-<var>SimpleText</var> - a character string containing the information to be 
-displayed in the Status Bar.
+Contains the text displayed on the status bar when SimplePanel is enabled.
 </short>
 <descr>
 <p>
-<var>SimpleText</var> - a character string containing the information to be 
-displayed in the Status Bar. This is displayed if <var>SimplePanel</var> is 
-<b>True</b>; otherwise the information in Panels is displayed.
+<var>SimpleText</var> is a <var>String</var> property containing the 
+information to be displayed in the Status Bar. It is displayed if 
+<var>SimplePanel</var> is <b>True</b>; otherwise the information defined in 
+Panels is displayed using the settings for the individual status bar panels.
+</p>
+<p>
+Changing the value for the property causes the control to be redrawn when the 
+handle has been allocated for the widgetset class instance.
 </p>
 </descr>
+<seealso>
+<link id="TStatusBar.SimplePanel"/>
+<link id="TStatusBar.Panels"/>
+<link id="TStatusPanels"/>
+<link id="TStatusPanel"/>
+</seealso>
 </element>
 
 <element name="TStatusBar.SimplePanel">
@@ -1397,6 +1481,13 @@ ellipsis (...) next to <var>Panels</var> is selected and allows insertion of
 an arbitrary number of sub-panels with their own strings.
 </p>
 </descr>
+<seealso>
+<link id="TStatusBar.SimpleText"/>
+<link id="TStatusBar.Panels"/>
+<link id="TStatusPanels"/>
+<link id="TStatusPanel"/>
+</seealso>
+
 </element>
 
 <element name="TStatusBar.SizeGrip">
@@ -1485,26 +1576,54 @@ provided by the <var>GetPanelClass</var> method.
 <element name="TStatusBar.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
 
 <element name="TStatusBar.OnDrawPanel">
-<short>Event handler signalled to draw a panel in the status bar.</short>
+<short>
+Event handler signalled to draw a panel in the status bar.
+</short>
 <descr>
 <p>
-<var>OnDrawPanel</var> is an event handler used to draw the specified panel 
-on the status bar. OnDrawPanel is signalled (when assigned) from the 
-DrawPanel method. Assign an object procedure using the signature in 
-TDrawPanelEvent to render the specified panel to the desired rectangle in the 
-status bar.
+<var>OnDrawPanel</var> is a <var>TDrawPanelEvent</var> property with the event 
+handler signalled to draw the specified panel on the status bar. OnDrawPanel is 
+signalled (when assigned) from the DrawPanel method, and occurs when the 
+TLMDrawItems message is handled for the control. Assign an object procedure 
+using the signature in TDrawPanelEvent to render the specified panel to a 
+rectangle on the Canvas for the status bar control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TStatusBar.DrawPanel"/>
+<link id="TDrawPanelEvent"/>
+<link id="#lcl.lmessages.TLMDrawItems">TLMDrawItems</link>
+</seealso>
 </element>
 
 <element name="TStatusBar.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
 <element name="TStatusBar.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
 
 <element name="TStatusBar.OnHint">
-<short>Event handler for showing a hint when required.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler used to get the text for a hint displayed on the status bar 
+control.
+</short>
+<descr>
+<p>
+<var>OnHint</var> is a <var>TNotifyEvent</var> property with the event handler 
+signalled to get hint text displayed on the status bar control. It is called 
+from the DoSetApplicationHint method (when assigned), and occurs when AutoHint 
+is enabled and a custom hint action is passed to the ExecuteAction method. The 
+handler can determine the content for the hint and the location where it is 
+displayed. If the handler returns False, the value passed from the application 
+is assigned to SimpleText (when SimplePanel is enabled), or used as the text 
+for the first defined panel in Panels (when SimplePanel is disabled).
+</p>
+</descr>
+<seealso>
+<link id="TStatusBar.ShowHint"/>
+<link id="TStatusBar.DoHint"/>
+<link id="TStatusBar.AutoHint"/>
+<link id="TStatusBar.DoSetApplicationHint"/>
+<link id="TStatusBar.ExecuteAction"/>
+<link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
+</seealso>
 </element>
 
 <element name="TStatusBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
