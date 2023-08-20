@@ -5851,6 +5851,8 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FCaption"/>
 <element name="TCustomTaskDialog.FCollapseButtonCaption"/>
 <element name="TCustomTaskDialog.FCommonButtons"/>
+<element name="TCustomTaskDialog.FCustomFooterIcon"/>
+<element name="TCustomTaskDialog.FCustomMainIcon"/>
 <element name="TCustomTaskDialog.FDefaultButton"/>
 <element name="TCustomTaskDialog.FExpandButtonCaption"/>
 <element name="TCustomTaskDialog.FExpanded"/>
@@ -5884,6 +5886,10 @@ and includes additional features not found in previous versions.
 
 <element name="TCustomTaskDialog.SetButtons"/>
 <element name="TCustomTaskDialog.SetButtons.Value"/>
+<element name="TCustomTaskDialog.SetCustomFooterIcon"/>
+<element name="TCustomTaskDialog.SetCustomFooterIcon.AValue"/>
+<element name="TCustomTaskDialog.SetCustomMainIcon"/>
+<element name="TCustomTaskDialog.SetCustomMainIcon.AValue"/>
 <element name="TCustomTaskDialog.SetFlags"/>
 <element name="TCustomTaskDialog.SetFlags.AValue"/>
 <element name="TCustomTaskDialog.SetQueryChoices"/>
@@ -6275,8 +6281,17 @@ Added in LCL version 4.0.
 <p>
 <var>Create</var> is the overridden constructor for the class instance, and 
 calls the inherited method on entry. Create allocates resources needed for 
-the <var>Buttons</var> and <var>RadioButtons</var> properties. It sets the 
-default values for the following properties:
+properties like:
+</p>
+<ul>
+<li>Buttons</li>
+<li>RadioButtons</li>
+<li>QueryChoices</li>
+<li>CustomMainIcon</li>
+<li>CustomFooterIcon</li>
+</ul>
+<p>
+Create sets the default values for the following properties:
 </p>
 <dl>
 <dt>CommonButtons</dt>
@@ -6293,12 +6308,13 @@ default values for the following properties:
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.Buttons"/>
-<link id="TCustomTaskDialog.RadioButtons"/>
 <link id="TCustomTaskDialog.CommonButtons"/>
 <link id="TCustomTaskDialog.DefaultButton"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.FooterIcon"/>
 <link id="TCustomTaskDialog.MainIcon"/>
+<link id="TCustomTaskDialog.QueryChoices"/>
+<link id="TCustomTaskDialog.RadioButtons"/>
 </seealso>
 </element>
 <element name="TCustomTaskDialog.Create.AOwner">
@@ -6310,14 +6326,17 @@ default values for the following properties:
 <descr>
 <p>
 <var>Destroy</var> is the overridden destructor for the class instance. It 
-frees resources allocated for the <var>Buttons</var> and 
-<var>RadioButtons</var> properties, and calls the inherited method prior to 
-exit.
+frees resources allocated for the Buttons, RadioButtons, QueryChoices, 
+CustomFooterIcon and CustomMainIcon properties. It calls the inherited method 
+prior to exit.
 </p>
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.Buttons"/>
 <link id="TCustomTaskDialog.RadioButtons"/>
+<link id="TCustomTaskDialog.QueryChoices"/>
+<link id="TCustomTaskDialog.CustomFooterIcon"/>
+<link id="TCustomTaskDialog.CustomMainIcon"/>
 </seealso>
 </element>
 
@@ -6487,6 +6506,100 @@ dialog.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCustomTaskDialog.CustomFooterIcon">
+<short>
+Contains a custom icon displayed in the footer area on the dialog.
+</short>
+<descr>
+<p>
+<var>CustomFooterIcon</var> is a <var>TIcon</var> property which contains the 
+custom icon used in the footer area on the task dialog. It allows an icon other 
+than one of the built-in resources in FooterIcon to be used in the content 
+area. The image content can be loaded at design-time using the property editor 
+in the Object Inspector, or assigned at run-time prior to calling Execute for 
+the task dialog.
+</p>
+<p>
+The property value is stored during component streaming when an icon has been 
+assigned to the property and its image data is not empty. Otherwise, it is 
+omitted from the LFM resource.
+</p>
+<p>
+The handle for the custom icon image is used when the execute method in the 
+widgetset class instance is called. Include the value tfUseHIconFooter in the 
+Flags property to enable use of the handle in the widget instance instead of a 
+handle for one of the built-in icon resources.
+</p>
+<p>
+Use FooterIcon to select one the standard built-in icons for use in the footer 
+the content area.
+</p>
+<p>
+Use MainIcon or CustomMainIcon to specify the icon displayed in the main 
+content area on the task dialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.FooterIcon"/>
+<link id="TCustomTaskDialog.MainIcon"/>
+<link id="TCustomTaskDialog.CustomMainIcon"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+<link id="#lcl.graphics.TIcon">TIcon</link>
+</seealso>
+</element>
+
+<element name="TCustomTaskDialog.CustomMainIcon">
+<short>
+Contains a custom icon displayed in the main content area on the dialog.
+</short>
+<descr>
+<p>
+<var>CustomMainIcon</var> is a <var>TIcon</var> property which contains the 
+custom icon used in the main content area on the task dialog. It allows an icon 
+other than one of the built-in resources in MainIcon to be used in the content 
+area. The image content can be loaded at design-time using the property editor 
+in the Object Inspector, or assigned at run-time prior to calling Execute for 
+the task dialog.
+</p>
+<p>
+The property value is stored during component streaming when an icon has been 
+assigned to the property and its image data is not empty. Otherwise, it is 
+omitted from the LFM resource.
+</p>
+<p>
+The handle for the custom icon image is used when the Execute method in the 
+widgetset class instance is called. Include the value tfUseHIconMain in the 
+Flags property to enable use of the handle in the widget instance instead of a 
+handle for one of the built-in icon resources.
+</p>
+<p>
+Use MainIcon to select one the standard built-in icons for use in the main 
+content area.
+</p>
+<p>
+Use FooterIcon or CustomFooterIcon to specify the icon displayed in the footer 
+content area on the task dialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.MainIcon"/>
+<link id="TCustomTaskDialog.FooterIcon"/>
+<link id="TCustomTaskDialog.CustomFooterIcon"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+<link id="#lcl.graphics.TIcon">TIcon</link>
+</seealso>
 </element>
 
 <element name="TCustomTaskDialog.CommonButtons">
@@ -7092,7 +7205,7 @@ Title can be localized using the Lazarus IDE translation facilities when
 enabled in the project, or by calling translation routines in LazUtils.
 </p>
 <p>
-Use Caption to assigned the value displayed on the window header for the  task 
+Use Caption to assigned the value displayed on the window header for the task 
 dialog form.
 </p>
 </descr>
@@ -7313,9 +7426,9 @@ occurs when the dialog form is created for the class instance.
 For native implementations using the Task Dialog API (supported Windows 
 versions), it occurs when the TDN_CREATED notification is handled in the 
 callback routine for the class instance. For emulated task dialog forms, it 
-occurs when the TLCLDialog.CreateNew  method is called. It is the last action 
-performed in the method, and allows the caller to be notified when the LCL form 
-instance is valid and available to the TTaskDialog owner.
+occurs when the TLCLTaskDialog.CreateNew method is called. It is the last 
+action performed in the method, and allows the caller to be notified when the 
+LCL form instance is valid and available to the TTaskDialog owner.
 </p>
 </descr>
 <version>
@@ -7342,7 +7455,7 @@ freed. It is signalled (when assigned) from the DoOnDialogDestroyed method.
 For native implementations using the Task Dialog API (supported Windows 
 versions), it occurs when the TDN_DESTROYED notification is handled in the 
 callback routine for the class instance. For emulated task dialog forms, it 
-occurs when the TLCLDialog.Destroy method is called. It is the first action 
+occurs when the TLCLTaskDialog.Destroy method is called. It is the first action 
 performed in the method, and occurs before the inherited destructor is called 
 for the LCL form instance.
 </p>
