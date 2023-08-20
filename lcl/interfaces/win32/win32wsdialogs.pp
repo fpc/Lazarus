@@ -1918,14 +1918,12 @@ var
     if not (tfUseHIconMain in Flags) then
       Config.pszMainIcon := TD_ICONS[ADlg.MainIcon]
     else
-      //ToDo: needs implemenation of TTaskDialog.CustomMainIcon
-      Config.hMainIcon := 0;
+      Config.hMainIcon := ADlg.CustomMainIcon.Handle;
 
     if not (tfUseHIconFooter in Flags) then
       Config.pszFooterIcon := TD_ICONS[ADlg.FooterIcon]
     else
-      //ToDo: needs implemenation of TTaskDialog.CustomFooterIcon
-      Config.hFooterIcon := 0;
+      Config.hFooterIcon := ADlg.CustomFooterIcon.Handle;
 
     {
       Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)

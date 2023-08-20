@@ -95,6 +95,9 @@ begin
   FMainIcon := tdiInformation;
 
   FQueryChoices := TStringList.Create;
+
+  FCustomFooterIcon := TIcon.Create;
+  FCustomMainIcon := TIcon.Create;
 end;
 
 function TCustomTaskDialog.ButtonIDToModalResult(const AButtonID: Integer
@@ -132,6 +135,8 @@ begin
   FButtons.Free;
   FRadioButtons.Free;
   FQueryChoices.Free;
+  FCustomFooterIcon.Free;
+  FCustomMainIcon.Free;
   inherited Destroy;
 end;
 
@@ -273,6 +278,16 @@ procedure TCustomTaskDialog.SetButtons(const Value: TTaskDialogButtons);
 begin
   if FButtons=Value then Exit;
   FButtons.Assign(Value);
+end;
+
+procedure TCustomTaskDialog.SetCustomFooterIcon(AValue: TIcon);
+begin
+  FCustomFooterIcon.Assign(AValue);
+end;
+
+procedure TCustomTaskDialog.SetCustomMainIcon(AValue: TIcon);
+begin
+  FCustomMainIcon.Assign(AValue);
 end;
 
 function DbgS(aFlag: TTaskDialogFlag): String; overload;

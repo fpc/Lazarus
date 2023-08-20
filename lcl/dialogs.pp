@@ -643,6 +643,8 @@ type
     FCaption: TTranslateString;
     FCollapseButtonCaption: TTranslateString;
     FCommonButtons: TTaskDialogCommonButtons;
+    FCustomFooterIcon: TIcon;
+    FCustomMainIcon: TIcon;
     FDefaultButton: TTaskDialogCommonButton;
     FExpandButtonCaption: TTranslateString;
     FExpanded: Boolean;
@@ -676,6 +678,8 @@ type
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
     procedure SetButtons(const Value: TTaskDialogButtons);
+    procedure SetCustomFooterIcon(AValue: TIcon);
+    procedure SetCustomMainIcon(AValue: TIcon);
     procedure SetFlags(AValue: TTaskDialogFlags);
     procedure SetQueryChoices(AValue: TStrings);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
@@ -707,6 +711,8 @@ type
     property Button: TTaskDialogButtonItem read FButton write FButton;
     property Buttons: TTaskDialogButtons read FButtons write SetButtons;
     property Caption: TTranslateString read FCaption write FCaption;
+    property CustomFooterIcon: TIcon read FCustomFooterIcon write SetCustomFooterIcon;
+    property CustomMainIcon: TIcon read FCustomMainIcon write SetCustomMainIcon;
     property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
     property CollapseButtonCaption: TTranslateString read FCollapseButtonCaption write FCollapseButtonCaption;
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
