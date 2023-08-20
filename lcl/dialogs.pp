@@ -537,8 +537,8 @@ type
 
   TTaskDialogFlag = (
     tfEnableHyperlinks,       //Native Vista+ only
-    tfUseHiconMain,           //Not functional
-    tfUseHiconFooter,         //Not functional
+    tfUseHiconMain,
+    tfUseHiconFooter,
     tfAllowDialogCancellation,
     tfUseCommandLinks,
     tfUseCommandLinksNoIcon,
