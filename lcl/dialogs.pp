@@ -677,6 +677,8 @@ type
     FVerificationText: TTranslateString;
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
+    function IsCustomFooterIconStored: Boolean;
+    function IsCustomMainIconStored: Boolean;
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetCustomFooterIcon(AValue: TIcon);
     procedure SetCustomMainIcon(AValue: TIcon);
@@ -711,8 +713,8 @@ type
     property Button: TTaskDialogButtonItem read FButton write FButton;
     property Buttons: TTaskDialogButtons read FButtons write SetButtons;
     property Caption: TTranslateString read FCaption write FCaption;
-    property CustomFooterIcon: TIcon read FCustomFooterIcon write SetCustomFooterIcon;
-    property CustomMainIcon: TIcon read FCustomMainIcon write SetCustomMainIcon;
+    property CustomFooterIcon: TIcon read FCustomFooterIcon write SetCustomFooterIcon stored IsCustomFooterIconStored;
+    property CustomMainIcon: TIcon read FCustomMainIcon write SetCustomMainIcon stored IsCustomMainIconStored;
     property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
     property CollapseButtonCaption: TTranslateString read FCollapseButtonCaption write FCollapseButtonCaption;
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
@@ -755,6 +757,8 @@ type
     property Caption;
     property CommonButtons;
     property CollapseButtonCaption;
+    property CustomFooterIcon;
+    property CustomMainIcon;
     property DefaultButton;
     property ExpandButtonCaption;
     property ExpandedText;

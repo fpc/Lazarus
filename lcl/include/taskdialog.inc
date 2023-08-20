@@ -280,6 +280,16 @@ begin
   FButtons.Assign(Value);
 end;
 
+function TCustomTaskDialog.IsCustomFooterIconStored: Boolean;
+begin
+  Result := Assigned(FCustomFooterIcon) and not FCustomFooterIcon.Empty;
+end;
+
+function TCustomTaskDialog.IsCustomMainIconStored: Boolean;
+begin
+  Result := Assigned(FCustomMainIcon) and not FCustomMainIcon.Empty;
+end;
+
 procedure TCustomTaskDialog.SetCustomFooterIcon(AValue: TIcon);
 begin
   FCustomFooterIcon.Assign(AValue);
