@@ -78,6 +78,7 @@ type
       ClipRect: PRect = nil): Boolean; override;
     function DoCollapsing(Node: PVirtualNode): Boolean; override;
     procedure DoExpanded(Node: PVirtualNode); override;
+    procedure DoStateChange(Enter: TVirtualTreeStates; Leave: TVirtualTreeStates = []); override;
     procedure ValidateNodeDataSize(var Size: Integer); override;
     procedure DoFreeNode(Node: PVirtualNode); override;
     function DetermineLineImageAndSelectLevel(Node: PVirtualNode;
@@ -417,7 +418,6 @@ begin
   n := GetFirstChildNoInit(Node);
   if n <> nil then
     RecursivelyHideControls(n);
-  CheckControlsVisible;
 
   Result := inherited DoCollapsing(Node);
 end;
@@ -426,6 +426,14 @@ procedure TDbgTreeView.DoExpanded(Node: PVirtualNode);
 begin
   inherited DoExpanded(Node);
   CheckControlsVisible;
+end;
+
+procedure TDbgTreeView.DoStateChange(Enter: TVirtualTreeStates;
+  Leave: TVirtualTreeStates);
+begin
+  inherited DoStateChange(Enter, Leave);
+  if tsToggling in Leave then
+    CheckControlsVisible;
 end;
 
 procedure TDbgTreeView.ValidateNodeDataSize(var Size: Integer);
