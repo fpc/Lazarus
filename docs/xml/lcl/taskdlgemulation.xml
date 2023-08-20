@@ -255,11 +255,11 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.GetGlobalLeftMargin"/>
 <element name="TLCLTaskDialog.GetGlobalLeftMargin.Result"/>
 
-<element name="TLCLTaskDialog.AddIcon"/>
-<element name="TLCLTaskDialog.AddIcon.ALeft"/>
-<element name="TLCLTaskDialog.AddIcon.ATop"/>
-<element name="TLCLTaskDialog.AddIcon.AGlobalLeftMargin"/>
-<element name="TLCLTaskDialog.AddIcon.AParent"/>
+<element name="TLCLTaskDialog.AddMainIcon"/>
+<element name="TLCLTaskDialog.AddMainIcon.ALeft"/>
+<element name="TLCLTaskDialog.AddMainIcon.ATop"/>
+<element name="TLCLTaskDialog.AddMainIcon.AGlobalLeftMargin"/>
+<element name="TLCLTaskDialog.AddMainIcon.AParent"/>
 
 <element name="TLCLTaskDialog.AddPanels"/>
 
@@ -657,7 +657,7 @@ for the dialog form. When not found, the currently active form on the screen is
 used as the PopupParent.
 </p>
 <p>
-Execute calls the ShowModal method (in TCustomForm) to manage modal display of  
+Execute calls the ShowModal method (in TCustomForm) to manage modal display of 
 the dialog form in the application, and to start the processing loop for the 
 modal form. ShowModal sets the return value for the method.
 </p>
@@ -699,7 +699,7 @@ available.
 
 <element name="ExecuteLCLTaskDialog">
 <short>
-Executes an emulated task dialog for using the specified arguments.  
+Executes an emulated task dialog for using the specified arguments.
 </short>
 <descr>
 <p>
@@ -750,7 +750,7 @@ the icons available as the main icon on an emulated task dialog form.
 </element>
 <element name="TLCLTaskDialogIcon.tiBlank">
 <short>
-Indicates that an icon is not used on the dialog form.  
+Indicates that an icon is not used on the dialog form.
 </short>
 </element>
 <element name="TLCLTaskDialogIcon.tiWarning">
@@ -799,7 +799,7 @@ form.
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiBlank">
 <short>
-Indicates that a footer icon is not used.  
+Indicates that a footer icon is not used.
 </short>
 </element>
 <element name="TLCLTaskDialogFooterIcon.tfiWarning">
@@ -855,7 +855,7 @@ argument. For example:
 </dl>
 </descr>
 <seealso>
-<link id="TLCLTaskDialog"/>  
+<link id="TLCLTaskDialog"/>
 <link id="#lcl.dialogs.TTaskDialogIcon">TTaskDialogIcon</link>
 </seealso>
 </element>
