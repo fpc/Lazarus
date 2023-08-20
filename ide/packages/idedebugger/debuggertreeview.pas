@@ -5,8 +5,8 @@ unit DebuggerTreeView;
 interface
 
 uses
-  Classes, SysUtils, Types, laz.VirtualTrees, SpinEx, LMessages, Controls,
-  ImgList;
+  Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, LMessages, Controls,
+  ImgList, LCLIntf;
 
 type
 
@@ -72,7 +72,7 @@ type
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
     procedure ChangeControl(Node: PVirtualNode; NData: PDbgTreeNodeData; AControl: TControl);
   protected
-    procedure CheckControlsVisible;
+    procedure CheckControlsVisible(SkipPos: boolean = False);
     procedure EndUpdate; override;
     function DoSetOffsetXY(Value: TPoint; Options: TScrollUpdateOptions;
       ClipRect: PRect = nil): Boolean; override;
@@ -342,23 +342,25 @@ begin
   end;
 end;
 
-procedure TDbgTreeView.CheckControlsVisible;
+procedure TDbgTreeView.CheckControlsVisible(SkipPos: boolean);
 var
   VNode: PVirtualNode;
-  Y, H: Integer;
+  Y, H, T, B: Integer;
   Ctrl: TControl;
   Chg: Boolean;
 begin
   if (FFirstControlNode = nil) or (UpdateCount > 0) then
     exit;
 
-  Y := OffsetY;
+  T := Header.Height;
+  B := ClientHeight - 1 + T; // subtracted by laz.VirtualTree
+  Y := OffsetY + T;
   Chg := False;
   for VNode in VisibleNoInitNodes do begin
     Ctrl := NodeControl[VNode];
     H := NodeHeight[VNode];
     if (Ctrl <> nil) then begin
-      if (Y < 0) or (Y + H >= ClientHeight) then begin
+      if (Y < T) or (Y >= B) then begin
         Chg := Chg or Ctrl.Visible;
         Ctrl.Visible := False;
       end
@@ -368,8 +370,10 @@ begin
                (Ctrl.Height  <> H) or
                (Ctrl.Visible <> True);
 
-        Ctrl.Top     := Y;
-        Ctrl.Height  := H;
+        if (not Ctrl.Visible) or (not SkipPos) then begin
+          Ctrl.Top     := Y;
+          Ctrl.Height  := Min(H, b - 1 - Y);
+        end;
         Ctrl.Visible := True;
       end;
     end;
@@ -392,6 +396,8 @@ begin
   Result := inherited DoSetOffsetXY(Value, Options, ClipRect);
   {$if defined(LCLGtk) or defined(LCLGtk2)}
   CheckControlsVisible;
+  {$else}
+  CheckControlsVisible(True);
   {$endif}
 end;
 
@@ -525,13 +531,15 @@ begin
   if NData^.Control <> nil then begin
     if PaintInfo.Column = 0 then begin
       r := GetDisplayRect(PaintInfo.Node, 0, True, False);
-      r.Right := ClientWidth - 1;
-      NData^.Control.BoundsRect := r;
-      NData^.Control.Visible := True;
-      if (r.Top < (r.Bottom - r.Height) * 2 + 5) or
-         (r.Bottom > ClientHeight - (r.Bottom - r.Height) * 2 - 5)
-      then
-        NData^.Control.Invalidate;
+      if r.Top >= Header.Height then begin
+        r.Right := ClientWidth - 1;
+        NData^.Control.BoundsRect := r;
+        NData^.Control.Visible := True;
+        if (r.Top < (r.Bottom - r.Height) * 2 + 5) or
+           (r.Bottom > ClientHeight - (r.Bottom - r.Height) * 2 - 5)
+        then
+          NData^.Control.Invalidate;
+      end;
     end;
     exit;
   end;
