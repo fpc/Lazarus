@@ -287,7 +287,7 @@ begin
 
   ExistingNode := FTreeView.GetFirstChildNoInit(AVNode);
   if ExistingNode <> nil then
-    FTreeView.NodeControl[ExistingNode].Free;
+    FTreeView.NodeControl[ExistingNode] := nil;
 
   AnchClass := '';
   if ResData.StructType <> dstRecord then
