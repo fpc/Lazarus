@@ -5884,6 +5884,10 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FWidth"/>
 <element name="TCustomTaskDialog.FOnButtonClicked"/>
 
+<element name="TCustomTaskDialog.IsCustomFooterIconStored"/>
+<element name="TCustomTaskDialog.IsCustomFooterIconStored.Result"/>
+<element name="TCustomTaskDialog.IsCustomMainIconStored"/>
+<element name="TCustomTaskDialog.IsCustomMainIconStored.Result"/>
 <element name="TCustomTaskDialog.SetButtons"/>
 <element name="TCustomTaskDialog.SetButtons.Value"/>
 <element name="TCustomTaskDialog.SetCustomFooterIcon"/>
@@ -7788,6 +7792,8 @@ and includes additional features not found in previous versions.
 <element name="TTaskDialog.Caption" link="#lcl.dialogs.TCustomTaskDialog.Caption"/>
 <element name="TTaskDialog.CommonButtons" link="#lcl.dialogs.TCustomTaskDialog.CommonButtons"/>
 <element name="TTaskDialog.CollapseButtonCaption" link="#lcl.dialogs.TCustomTaskDialog.CollapseButtonCaption"/>
+<element name="TTaskDialog.CustomFooterIcon" link="#lcl.dialogs.TCustomTaskDialog.CustomFooterIcon"/>
+<element name="TTaskDialog.CustomMainIcon" link="#lcl.dialogs.TCustomTaskDialog.CustomMainIcon"/>
 <element name="TTaskDialog.DefaultButton" link="#lcl.dialogs.TCustomTaskDialog.DefaultButton"/>
 <element name="TTaskDialog.ExpandButtonCaption" link="#lcl.dialogs.TCustomTaskDialog.ExpandButtonCaption"/>
 <element name="TTaskDialog.ExpandedText" link="#lcl.dialogs.TCustomTaskDialog.ExpandedText"/>
