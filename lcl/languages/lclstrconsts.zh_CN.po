@@ -87,11 +87,11 @@ msgstr "资源%s未找到"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
-msgstr "3D阴影"
+msgstr "3D 暗影"
 
 #: lclstrconsts.rs3dlightcolorcaption
 msgid "3D Light"
-msgstr "3D光线"
+msgstr "3D 光线"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
@@ -116,7 +116,7 @@ msgstr "应用程序工作区"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
-msgstr ""
+msgstr "湖绿色"
 
 #: lclstrconsts.rsascannothaveasparent
 #, object-pascal-format
@@ -149,11 +149,11 @@ msgstr "蓝色"
 
 #: lclstrconsts.rsbtnfacecolorcaption
 msgid "Button Face"
-msgstr "按钮表面"
+msgstr "按钮底色"
 
 #: lclstrconsts.rsbtnhighlightcolorcaption
 msgid "Button Highlight"
-msgstr "按钮高亮"
+msgstr "按钮突出"
 
 #: lclstrconsts.rsbtnshadowcolorcaption
 msgid "Button Shadow"
@@ -165,7 +165,7 @@ msgstr "按钮文本"
 
 #: lclstrconsts.rscalculator
 msgid "Calculator"
-msgstr "Calculator"
+msgstr "计算器"
 
 #: lclstrconsts.rscancelrecordhint
 msgctxt "lclstrconsts.rscancelrecordhint"
@@ -205,7 +205,7 @@ msgstr ""
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
-msgstr ""
+msgstr "奶油色"
 
 #: lclstrconsts.rscursor
 msgid "Cursor Files"
@@ -213,7 +213,7 @@ msgstr "光标文件"
 
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
-msgstr "自定义..."
+msgstr "自定义 ..."
 
 #: lclstrconsts.rsdatetoolarge
 #, object-pascal-format
@@ -235,7 +235,7 @@ msgstr "权限 用户 组 大小 日期 时间"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr "删除记?"
+msgstr "删除记录？"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
@@ -260,7 +260,7 @@ msgstr "粘贴"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
-msgstr ""
+msgstr "重复图标格式。"
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
@@ -366,7 +366,7 @@ msgstr "(过滤器)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
-msgstr "Find"
+msgstr "查找"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
@@ -378,11 +378,11 @@ msgstr "第一个"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols不能>ColCount"
+msgstr "FixedCols 不能大于 ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows不能> RowCount"
+msgstr "FixedRows 不能大于 RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -396,7 +396,7 @@ msgstr ""
 #: lclstrconsts.rsformstreamingerror
 #, object-pascal-format
 msgid "Form streaming \"%s\" error: %s"
-msgstr "窗体流\"%s\"错误:%s"
+msgstr "窗体流 \"%s\" 错误：%s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
@@ -426,11 +426,11 @@ msgstr "--g-fatal-warnings   由Gtk+/GDK 产生的警告和错误终止应用程
 
 #: lclstrconsts.rsgradientactivecaptioncolorcaption
 msgid "Gradient Active Caption"
-msgstr ""
+msgstr "渐变活动标题"
 
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
-msgstr ""
+msgstr "渐变非活动标题"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
@@ -628,7 +628,7 @@ msgstr "高亮文本"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr ""
+msgstr "热光"
 
 #: lclstrconsts.rsicns
 msgid "macOS Icon Files"
@@ -692,7 +692,7 @@ msgstr "信息背景色"
 
 #: lclstrconsts.rsinfotextcolorcaption
 msgid "Info Text"
-msgstr "信息文本"
+msgstr "信息文本色"
 
 #: lclstrconsts.rsinsertrecordhint
 msgctxt "lclstrconsts.rsinsertrecordhint"
@@ -738,7 +738,7 @@ msgstr "最后(Last)"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr "橙色"
+msgstr "青柠色"
 
 #: lclstrconsts.rslistindexexceedsbounds
 #, object-pascal-format
@@ -773,7 +773,7 @@ msgstr ""
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
-msgstr "栗色"
+msgstr "褐红色"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
@@ -1094,15 +1094,15 @@ msgstr "滚动条属性超出范围"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"
-msgstr "Select color"
+msgstr "选择颜色"
 
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
-msgstr "Select a font"
+msgstr "选择字体"
 
 #: lclstrconsts.rsshowdetails
 msgid "Show details"
-msgstr ""
+msgstr "显示详细信息"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
@@ -1229,7 +1229,7 @@ msgstr "窗口"
 
 #: lclstrconsts.rswindowframecolorcaption
 msgid "Window Frame"
-msgstr "窗口框架(Frame)"
+msgstr "窗口框架"
 
 #: lclstrconsts.rswindowtextcolorcaption
 msgid "Window Text"

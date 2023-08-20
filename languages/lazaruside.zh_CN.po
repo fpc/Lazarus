@@ -683,7 +683,7 @@ msgstr "照字母顺序排列地"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always keep caret in visible area of editor"
-msgstr ""
+msgstr "始终将光标保持在编辑器的可见区域内"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
@@ -699,7 +699,7 @@ msgstr "一个错误/警告/提示图标显示在消息前面.在任何情况下
 
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
-msgstr "Ansi (* *)"
+msgstr "标准 (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
 msgid "Application settings"
@@ -808,15 +808,15 @@ msgstr "在方法后"
 #: lazarusidestrconsts.dlgblockgroupoptions
 msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
-msgstr "选择"
+msgstr "选区"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent (spaces)"
-msgstr "语句块缩进(空格)"
+msgstr "块缩进（空格）"
 
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
-msgstr "语句块缩进"
+msgstr "块缩进"
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
@@ -824,7 +824,7 @@ msgstr "(编辑符号表)"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
-msgstr "空格/tab作为前一行"
+msgstr "空格/制表符作为上一行"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
@@ -835,18 +835,16 @@ msgid "Spaces"
 msgstr "空格"
 
 #: lazarusidestrconsts.dlgblockindenttypetabonly
-#, fuzzy
 msgid "Tabs, cut off"
-msgstr "在选区中转换 tab 为空格"
+msgstr "制表符，截断"
 
 #: lazarusidestrconsts.dlgblockindenttypetabspace
-#, fuzzy
 msgid "Tabs, then spaces"
-msgstr "在选区中转换 tab 为空格"
+msgstr "制表符，然后是空格"
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
-msgstr "语句块缩进(tabs)"
+msgstr "块缩进（制表符）"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
@@ -891,11 +889,11 @@ msgstr "移除额外的光标"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
-msgstr "插入符光标(文本光标)"
+msgstr "光标（文本光标）"
 
 #: lazarusidestrconsts.dlgcaretscrollgroupoptions
 msgid "Caret (Text Cursor) past end of line"
-msgstr ""
+msgstr "光标（文本光标）超过行尾"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1134,7 +1132,7 @@ msgstr "命令行参数 (没有应用程序名称)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
 msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
-msgstr ""
+msgstr "如果前缀基于第一注释行的注释起始位置，则新行的最大缩进量："
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
@@ -1142,7 +1140,7 @@ msgstr "限制缩进到"
 
 #: lazarusidestrconsts.dlgcommentcontinue
 msgid "Prefix comments on linebreak"
-msgstr "在断行之时前缀注释"
+msgstr "换行时的前缀注释"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
@@ -1150,7 +1148,7 @@ msgstr "匹配当前行"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
-msgstr "匹配文本包括记号(token) \"(*\"的\"*\""
+msgstr "匹配包含标记 \"(*\" 中 \"*\" 的文本"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
@@ -1159,12 +1157,12 @@ msgstr "匹配整行"
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 #, object-pascal-format
 msgid "Match text after token \"%s\""
-msgstr "匹配在记号(token)\"%s\"后的文本"
+msgstr "匹配标记 \"%s\" 之后的文本"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 #, object-pascal-format
 msgid "Match text including token \"%s\""
-msgstr "匹配文本包括记号(token)\"%s\""
+msgstr "匹配包含标记 \"%s\" 的文本"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
@@ -1172,11 +1170,11 @@ msgstr "前缀新行"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
 msgid "Align Prefix at indent of previous line"
-msgstr "在上一行的缩进处对齐前缀"
+msgstr "将前缀与上一行的缩进对齐"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
 msgid "Align Prefix below start of comment on first comment line"
-msgstr ""
+msgstr "将前缀与第一行注释的注释开头下方对齐"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindnone
 msgid "Do not indent prefix"
@@ -1187,23 +1185,20 @@ msgid "Comments and Strings"
 msgstr "注释和字符串"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
-#, fuzzy
 msgid "Extend if matched or not matched"
-msgstr "展开,假如匹配或不匹配"
+msgstr "如果匹配或不匹配，则扩展"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
-#, fuzzy
 msgid "Extend if matched or not matched (not at EOL)"
-msgstr "展开,假如匹配或不匹配(不是在EOL)"
+msgstr "如果匹配或不匹配（非 EOL 时），则扩展"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
-#, fuzzy
 msgid "Extend if matched"
-msgstr "展开,假如匹配"
+msgstr "如果匹配则扩展"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend if matched and caret in the middle of text (not at EOL)"
-msgstr ""
+msgstr "如果匹配且光标位于文本中间（不在 EOL 处），则进行扩展"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
 msgid "Compilation and Linking"
@@ -1252,11 +1247,11 @@ msgstr "分析"
 
 #: lazarusidestrconsts.dlgcopypastekeepfolds
 msgid "Copy/Paste with fold info"
-msgstr "复制/粘贴带有折叠信息"
+msgstr "复制/粘贴折叠信息"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy current word when no selection exists"
-msgstr ""
+msgstr "在没有选择时复制当前单词"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1346,7 +1341,7 @@ msgstr "创建新运行参数设置"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
-msgstr "大括号{ }"
+msgstr "大括号 { }"
 
 #: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
 msgid "Currently respected by messages window, jump history and search results."
@@ -1358,17 +1353,15 @@ msgstr "光标超过行末(EOL)"
 
 #: lazarusidestrconsts.dlgcursormoveclearsselection
 msgid "Caret left/right clears selection (no move)"
-msgstr ""
+msgstr "向左/向右移动光标清除选区（不移动）"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
-#, fuzzy
 msgid "Caret skips selection"
-msgstr "移除额外的光标"
+msgstr "光标跳过选区"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-#, fuzzy
 msgid "Caret skips tabs"
-msgstr "在选区中转换 tab 为空格"
+msgstr "光标跳过制表符"
 
 #: lazarusidestrconsts.dlgcustomext
 msgid "User defined extension (.pp.xxx)"
@@ -1640,7 +1633,7 @@ msgstr "斜体"
 
 #: lazarusidestrconsts.dlgeditexportbackcolor
 msgid "Use Background color in HTML export"
-msgstr ""
+msgstr "在 HTML 导出中使用背景色"
 
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
@@ -1653,7 +1646,7 @@ msgstr "编辑器选项"
 
 #: lazarusidestrconsts.dlgeditschemdefaults
 msgid "Scheme globals"
-msgstr "方案全局"
+msgstr "全局方案"
 
 #: lazarusidestrconsts.dlgedmisc
 msgctxt "lazarusidestrconsts.dlgedmisc"
@@ -1670,20 +1663,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedtabindent
 msgid "Tab and Indent"
-msgstr "Tab和缩进"
+msgstr "制表符和缩进"
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
 msgstr "下划线"
 
 #: lazarusidestrconsts.dlgelastictabs
-#, fuzzy
 msgid "Elastic tabs"
-msgstr "在选区中转换 tab 为空格"
+msgstr "弹性制表符"
 
 #: lazarusidestrconsts.dlgelastictabswidths
 msgid "Elastic min Widths"
-msgstr ""
+msgstr "最小弹性宽度"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
@@ -1691,7 +1683,7 @@ msgstr "元素属性"
 
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
-msgstr "End键跳到最近的end"
+msgstr "End 键跳转到最近的末尾"
 
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
@@ -2308,7 +2300,7 @@ msgstr "显示在主文件中示未使用单元的提示"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
-msgstr "Home键跳到最近的start"
+msgstr "Home 键跳转到最近的起点"
 
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
@@ -2397,7 +2389,7 @@ msgstr "缩进"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
 msgid "Tabs"
-msgstr "Tabs"
+msgstr "制表符"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2457,7 +2449,7 @@ msgstr "直接跳过方法体"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep caret X position when navigating up/down"
-msgstr "保持上尖号/插入符光标X位置 当上下导航时"
+msgstr "向上/向下导航时保持光标 X 位置"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
@@ -3094,25 +3086,23 @@ msgstr "警告"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Navigation keys move all carets (column-select)"
-msgstr ""
+msgstr "导航键移动所有光标（列选择）"
 
 #: lazarusidestrconsts.dlgmulticaretdelskipcr
 msgid "Skip delete key at EOL (do not join lines)"
-msgstr ""
+msgstr "在行尾跳过删除键（不连接行）"
 
 #: lazarusidestrconsts.dlgmulticaretgroupoptions
-#, fuzzy
 msgid "Multi-caret"
-msgstr "添加额外的光标"
+msgstr "多行光标"
 
 #: lazarusidestrconsts.dlgmulticaretmode
-#, fuzzy
 msgid "Navigation keys move all carets"
-msgstr "光标按键移动所有额外的光标"
+msgstr "导航键移动所有光标"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi-caret for column selection"
-msgstr ""
+msgstr "为列选择启用多行光标"
 
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
@@ -3260,7 +3250,7 @@ msgstr "页"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
-msgstr "覆盖语句块"
+msgstr "覆写块"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
 #, object-pascal-format
@@ -3323,19 +3313,19 @@ msgstr "仅\"String\""
 
 #: lazarusidestrconsts.dlgpersistentblock
 msgid "Persistent block"
-msgstr "反复出现的(Persistent)语句块"
+msgstr "持久块"
 
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Visible caret in unfocused editor"
-msgstr "显示编辑器工具栏"
+msgstr "非聚焦编辑器中显示光标"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
-msgstr ""
+msgstr "非聚焦编辑器中的光标不闪烁"
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
-msgstr "ANSI代码页是UTF-8 (Windows 10 1903+)"
+msgstr "ANSI 代码页是 UTF-8 (Windows 10 1903+)"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -3343,7 +3333,7 @@ msgstr "应用程序"
 
 #: lazarusidestrconsts.dlgpoasinvoker
 msgid "as invoker (asInvoker)"
-msgstr "作为invoker(asInvoker)"
+msgstr "作为调用者（asInvoker）"
 
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "&Clear Icon"
@@ -3364,27 +3354,27 @@ msgstr "加载默认(&D)"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr "DPI awareness(意识)"
+msgstr "DPI 意识"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
-msgstr "关(Off)"
+msgstr "关"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldoffnewpermonitor
 msgid "Vista-8: off, 8.1+: per monitor"
-msgstr "Vista-8: off(关), 8.1+: per monitor(每个监视器)"
+msgstr "Vista-8： 关，8.1+：每个监视器"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
-msgstr "Vista-8: on(开), 8.1+: per monitor(每个监视器)"
+msgstr "Vista-8： 开，8.1+：每个监视器"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr "Vista-8: on(开), 8.1/10++: per monitor/V2(每个监视器/V2)"
+msgstr "Vista-8： 开，8.1/10+：每个监视器/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
-msgstr ""
+msgstr "开"
 
 #: lazarusidestrconsts.dlgpoexecutionlevel
 msgid "Execution Level"
@@ -3395,9 +3385,8 @@ msgid "Forms"
 msgstr "窗体"
 
 #: lazarusidestrconsts.dlgpohighestavailable
-#, fuzzy
 msgid "highest available (highestAvailable)"
-msgstr "可用的"
+msgstr "高可用（highestAvailable）"
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -3405,7 +3394,7 @@ msgstr "国际化"
 
 #: lazarusidestrconsts.dlgpoicon
 msgid "Icon:"
-msgstr "图标:"
+msgstr "图标："
 
 #: lazarusidestrconsts.dlgpoicondesc
 #, object-pascal-format
@@ -3696,19 +3685,19 @@ msgstr "保存到"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolfixed
 msgid "Force 1024 columns minimum for horizontal scroll range"
-msgstr ""
+msgstr "强制水平滚动范围最小为 1024 列"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolnone
 msgid "Do not add any permanent space to horizontal scroll range"
-msgstr ""
+msgstr "不要在水平滚动范围内添加任何永久性空格"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolpage
 msgid "Always add one page to horizontal scroll range"
-msgstr ""
+msgstr "水平滚动范围总是增加一页"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
-msgstr "滚动较少一次"
+msgstr "少滚动一行"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
 msgid "Scrolling"
@@ -3721,23 +3710,20 @@ msgstr "显示滚动提示"
 
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
-msgstr "滚动到文件的结尾"
+msgstr "滚动至文件末尾"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#, fuzzy
-#| msgid "Allow caret to move past end of line"
 msgid "Allow Caret to move past the end of line"
-msgstr "光标符号超过行的结尾"
+msgstr "允许光标移动到行尾之后"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format
 msgid "Search directory \"%s\" not found."
-msgstr "搜索目录\"%s\"未找到."
+msgstr "搜索目录 \"%s\" 未找到。"
 
 #: lazarusidestrconsts.dlgsearchabort
-#, fuzzy
 msgid "Search terminated by user."
-msgstr "搜索鼠标按下的所有动"
+msgstr "用户中止搜索。"
 
 #: lazarusidestrconsts.dlgsearchcaption
 msgid "Searching ..."
@@ -3757,7 +3743,7 @@ msgstr "选择所有的子控件及其父类控件."
 
 #: lazarusidestrconsts.dlgselectallnoscroll
 msgid "Do not scroll on Select-All / Paragraph or To-Brace"
-msgstr ""
+msgstr "不要在全选、段落或对齐中滚动"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -3910,7 +3896,7 @@ msgstr "斜线 //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
-msgstr "智能tabs"
+msgstr "智能制表符"
 
 #: lazarusidestrconsts.dlgsmbbehind
 msgid "Symbol behind (.pp~)"
@@ -3964,7 +3950,7 @@ msgstr "在多少个错误数量后停止:"
 
 #: lazarusidestrconsts.dlgstringautoappend
 msgid "Append text to close string"
-msgstr "追加(Append)文本到关闭的字符串"
+msgstr "将文本添加到关闭字符串中"
 
 #: lazarusidestrconsts.dlgstringautoprefix
 msgid "Prefix string on new line"
@@ -3972,11 +3958,11 @@ msgstr "在新行前缀字符串"
 
 #: lazarusidestrconsts.dlgstringbreakindenttab
 msgid "String ''"
-msgstr "字符串''"
+msgstr "字符串 ''"
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
-msgstr "在断行之时扩展(Extend)字符串"
+msgstr "换行时扩展字符串"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
@@ -3988,7 +3974,7 @@ msgstr "语法选项"
 
 #: lazarusidestrconsts.dlgtabindent
 msgid "Tab indents blocks"
-msgstr "Tab缩进语句块(blocks)"
+msgstr "制表符缩进块"
 
 #: lazarusidestrconsts.dlgtabnumbersnotebook
 msgid "Show tab numbers in notebook"
@@ -3996,12 +3982,12 @@ msgstr "在notebook中显示标签号码"
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
-msgstr "Tabs到空格"
+msgstr "制表符显示空格数"
 
 #: lazarusidestrconsts.dlgtabwidths
 msgctxt "lazarusidestrconsts.dlgtabwidths"
 msgid "Tab widths"
-msgstr "Tab宽度"
+msgstr "制表符宽度"
 
 #: lazarusidestrconsts.dlgtargetcpufamily
 msgid "Target CPU family"
@@ -4039,7 +4025,7 @@ msgstr "搜索字符串(&T)"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
-msgstr ""
+msgstr "该元素使用（和编辑）方案："
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
@@ -4061,23 +4047,23 @@ msgstr "缩减空格样式"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
 msgid "Caret or Edit"
-msgstr "插入光标或编辑"
+msgstr "光标位置或编辑的行"
 
 #: lazarusidestrconsts.dlgtrimspacetypeeditline
 msgid "Line Edited"
-msgstr "行编辑"
+msgstr "编辑的行"
 
 #: lazarusidestrconsts.dlgtrimspacetypeleaveline
 msgid "Leave line"
-msgstr "离开行"
+msgstr "留下的行"
 
 #: lazarusidestrconsts.dlgtrimspacetypeposonly
 msgid "Position Only"
-msgstr "仅位置"
+msgstr "仅当前位置"
 
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr "缩减空格样式"
+msgstr "缩减尾部空格"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -4139,7 +4125,7 @@ msgstr "使用开始(launching)应用程序"
 
 #: lazarusidestrconsts.dlguseminimumime
 msgid "IME handled by System"
-msgstr "由系统处理的输入法"
+msgstr "由系统处理输入法"
 
 #: lazarusidestrconsts.dlguserschemeerror
 #, object-pascal-format
@@ -4148,7 +4134,7 @@ msgstr "未能加载用户方案文件%s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "- Scheme globals -"
-msgstr "- 方案全局(Scheme globals) -"
+msgstr "- 全局方案 -"
 
 #: lazarusidestrconsts.dlguseschemelocal
 msgid "selected language"
@@ -5142,7 +5128,7 @@ msgstr "一个使用跨平台 LCL 图形库的图形化 Free Pascal 应用程序
 #: lazarusidestrconsts.lisapply
 msgctxt "lazarusidestrconsts.lisapply"
 msgid "Apply"
-msgstr "应用"
+msgstr "应用(&A)"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -8965,37 +8951,35 @@ msgstr "重复单元"
 #: lazarusidestrconsts.lisduplicateunitin
 #, object-pascal-format
 msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "重复单元\"%s\"在\"%s\""
+msgstr "重复单元 \"%s\" 在 \"%s\""
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
-msgstr ""
+msgstr "滚动量"
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin2
-#, fuzzy
 msgid "Amount to scroll in (%)"
-msgstr "忽略空格字符的数量"
+msgstr "滚动量（%)"
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollinmax
-#, fuzzy
 msgid "Amount to scroll in (Max)"
-msgstr "滚动"
+msgstr "滚动量（最大）"
 
 #: lazarusidestrconsts.lisdynpkgautoscrollondeletepa
 msgid "Auto Scroll on delete past left border"
-msgstr "在删除超过左侧边框后自动滚动"
+msgstr "删除超过左边界时自动滚动"
 
 #: lazarusidestrconsts.lisdynpkgautoscrollontypepast
 msgid "Auto Scroll on type past right border"
-msgstr "在输入超过右侧边框后自动滚动"
+msgstr "输入超过右边界时自动滚动"
 
 #: lazarusidestrconsts.lisdynpkgtriggeronmincharsofw
 msgid "Trigger on min chars (% of width)"
-msgstr "触发 在最小可视字符后(%的宽度)"
+msgstr "以最小字符数触发（宽度的%）"
 
 #: lazarusidestrconsts.lisdynpkgtriggeronmincharsvis
 msgid "Trigger on min chars visible"
-msgstr "触发 在最小可视字符后"
+msgstr "以最小可见字符数触发"
 
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"

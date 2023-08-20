@@ -1,192 +1,189 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
-msgstr ""
+msgstr "允许改变大小"
 
 #: dockedstrconsts.sallowsizinghint
 msgid "Grips can change size in Anchor Editor"
-msgstr ""
+msgstr "在锚点编辑器中可用手柄改变大小"
 
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
-msgstr ""
+msgstr "底部锚点"
 
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
-msgstr ""
+msgstr "管理周围边界"
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
-msgstr ""
+msgstr "管理背景"
 
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
-msgstr ""
+msgstr "左侧锚点"
 
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
-msgstr ""
+msgstr "右侧锚点"
 
 #: dockedstrconsts.sanchors
 msgid "Anchors"
-msgstr ""
+msgstr "锚点"
 
 #: dockedstrconsts.sanchortabvisiblecaption
 msgid "Show Anchors Tab"
-msgstr ""
+msgstr "显示锚点标签页"
 
 #: dockedstrconsts.sanchortabvisiblehint
 msgid "Show Anchor Editor"
-msgstr ""
+msgstr "显示锚点编辑器"
 
 #: dockedstrconsts.sanchortargetcolorcaption
 msgid "Anchor Target"
-msgstr ""
+msgstr "锚点目标"
 
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
-msgstr ""
+msgstr "顶部锚点"
 
 #: dockedstrconsts.sargumentoutofrange
 msgctxt "dockedstrconsts.sargumentoutofrange"
 msgid "Argument out of range."
-msgstr ""
+msgstr "参数超出范围。"
 
 #: dockedstrconsts.sattachcontrol
 msgid "Attach Control"
-msgstr ""
+msgstr "连接控制"
 
 #: dockedstrconsts.sattachpoint
 msgid "Attach Control Sides"
-msgstr ""
+msgstr "连接控制面板"
 
 #: dockedstrconsts.sattachside
 msgid "Attach Control Side"
-msgstr ""
+msgstr "连接控制面板"
 
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
-msgstr ""
+msgstr "停靠窗体编辑器"
 
 #: dockedstrconsts.scapturedistancecaption
 msgid "Capture Distance"
-msgstr ""
+msgstr "捕捉距离"
 
 #: dockedstrconsts.scapturedistancehint
 msgid "Minimal distance to capture a control with mouse"
-msgstr ""
+msgstr "用鼠标捕捉控件的最小距离"
 
 #: dockedstrconsts.scirculardependency
 msgid "This will create a circular dependency."
-msgstr ""
+msgstr "这将产生循环依赖关系。"
 
 #: dockedstrconsts.scode
-#, fuzzy
 msgctxt "dockedstrconsts.scode"
 msgid "Code"
 msgstr "代码"
 
 #: dockedstrconsts.scolorscaption
 msgid "Colors"
-msgstr ""
+msgstr "颜色"
 
 #: dockedstrconsts.sdesigner
-#, fuzzy
-#| msgid "Designer"
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Form"
-msgstr "设计"
+msgstr "窗体"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
-msgstr ""
+msgstr "分离控制"
 
 #: dockedstrconsts.sdetachpoint
 msgid "Detach Control Sides"
-msgstr ""
+msgstr "分离控制面板"
 
 #: dockedstrconsts.sdetachside
 msgid "Detach Control Side"
-msgstr ""
+msgstr "分离控制面板"
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
-msgstr ""
+msgstr "强制刷新大小"
 
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
-msgstr ""
+msgstr "用户调整大小时强制刷新窗体"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
-msgstr ""
+msgstr "BorderSpacing 属性的鼠标指针系数"
 
 #: dockedstrconsts.smouseborderfactorhint
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
-msgstr ""
+msgstr "鼠标指针系数用于更精确地设置 BorderSpacing 属性"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
-msgstr ""
+msgstr "调整器颜色"
 
 #: dockedstrconsts.sresizercolorhint
 msgid "Color of resizer bars"
-msgstr ""
+msgstr "调整器栏的颜色"
 
 #: dockedstrconsts.stabpositionbottom
 msgid "Bottom"
-msgstr ""
+msgstr "下"
 
 #: dockedstrconsts.stabpositioncaption
 msgid "Tab Position"
-msgstr ""
+msgstr "标签页位置"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Form, Anchors tabs"
-msgstr ""
+msgstr "代码、窗体、锚点标签页位置"
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: dockedstrconsts.stabpositionright
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: dockedstrconsts.stabpositiontop
 msgid "Top"
-msgstr ""
+msgstr "上"
 
 #: dockedstrconsts.streataligncaption
 msgid "Automatically treat Align properties"
-msgstr ""
+msgstr "自动处理 Align 属性"
 
 #: dockedstrconsts.streatalignhint
 msgid "Automatically replace Align properties with appropriate Anchors"
-msgstr ""
+msgstr "用适当的锚点自动替换 Align 属性"
 
 #: dockedstrconsts.streatbordercaption
 msgid "Automatically treat BorderSpacing properties"
-msgstr ""
+msgstr "自动处理 BorderSpacing 属性"
 
 #: dockedstrconsts.streatborderhint
 msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
-msgstr ""
+msgstr "自动替换控件的 BorderSpacing.Around 属性，并根据需要调整 BorderSpacing.Left/Right/Top/Bottom 属性"
 
 #: dockedstrconsts.swarningcaption
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
