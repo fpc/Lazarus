@@ -1505,11 +1505,78 @@ end;
 function TIDEFPCParser.CheckForLinkerErrors(p: PChar): boolean;
 const
   patUndefinedSymbol: String = 'Undefined symbols for architecture';
-  patLD: String = '/usr/bin/ld: ';
+  patLD: String = '/usr/bin/ld';
+
+  function FindLeadingFilename(MinP, FileEndP: PChar; out FileStartP: PChar): boolean;
+  begin
+    FileStartP:=FileEndP;
+    while FileStartP>MinP do
+    begin
+      dec(FileStartP);
+      if FileStartP^=':' then
+      begin
+        if FileStartP[1]=' ' then begin
+          // e.g.  "/usr/bin/ld: filename"
+          inc(FileStartP,2);
+          exit(FileStartP<FileEndP);
+        end else if (FileStartP>MinP) and (FileStartP[-1] in ['a'..'z','A'..'Z'])
+            and ((FileStartP-1=MinP)
+              or (FileStartP[-2] in [':',' ']))
+            and (FileStartP[1] in ['/','\']) then
+        begin
+          // e.g C:\filename
+          dec(FileStartP,2);
+          exit(true);
+        end else begin
+          inc(FileStartP);
+          exit(FileStartP<FileEndP);
+        end;
+      end;
+    end;
+    Result:=true;
+  end;
+
+  function FindFileLineNumberMsg(StartP: PChar; out FileStartP, FileEndP: PChar;
+    out LineNumber: Integer; out MsgStartP: PChar): boolean;
+  var
+    CurP: PChar;
+  begin
+    Result:=false;
+    FileStartP:=nil;
+    FileEndP:=nil;
+    LineNumber:=0;
+    MsgStartP:=nil;
+
+    CurP:=StartP;
+    while CurP^<>#0 do
+    begin
+      if (CurP^=':') and (CurP[1] in ['0'..'9']) then
+      begin
+        FileEndP:=CurP;
+        inc(CurP);
+        while (CurP^ in ['0'..'9']) do
+        begin
+          LineNumber:=LineNumber*10+ord(CurP^)-ord('0');
+          if LineNumber>1000000 then break;
+          inc(CurP);
+        end;
+        if (LineNumber>0) and (CurP^=':') and (CurP[1]=' ')
+            and FindLeadingFilename(p,FileEndP,FileStartP) then
+        begin
+          MsgStartP:=CurP+2;
+          exit(true);
+        end;
+      end else
+        inc(CurP);
+    end;
+  end;
+
 var
   MsgLine: TMessageLine;
   Urgency: TMessageLineUrgency;
   s: string;
+  FileStartP, FileEndP, MsgStartP: PChar;
+  LineNumber: Integer;
 begin
   if CompareMem(PChar(patUndefinedSymbol),p,length(patUndefinedSymbol)) then
   begin
@@ -1521,6 +1588,21 @@ begin
     inherited AddMsgLine(MsgLine);
     exit(true);
   end;
+
+  // check for "filename:linenumber: error message"
+  if FindFileLineNumberMsg(p,FileStartP,FileEndP,LineNumber,MsgStartP) then
+  begin
+    MsgLine:=CreateMsgLine;
+    MsgLine.MsgID:=0;
+    MsgLine.SubTool:=SubToolFPCLinker;
+    MsgLine.Urgency:=mluError;
+    MsgLine.Filename:=GetString(FileStartP,FileEndP-FileStartP);
+    MsgLine.Line:=LineNumber;
+    MsgLine.Msg:='linker: '+MsgStartP;
+    inherited AddMsgLine(MsgLine);
+    exit(true);
+  end;
+
   if CompareMem(PChar(patLD),p,length(patLD)) then
   begin
     MsgLine:=CreateMsgLine;
@@ -1540,6 +1622,7 @@ begin
     inherited AddMsgLine(MsgLine);
     exit(true);
   end;
+
   Result:=false;
 end;
 
