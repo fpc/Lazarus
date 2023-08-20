@@ -114,7 +114,7 @@ type
     procedure InitCaptions;
     procedure InitGlobalDimensionsAndStyle(ACustomButtonsTextLength: Integer; out aWidth, aFontHeight: Integer);
     function GetGlobalLeftMargin: Integer;
-    procedure AddIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
+    procedure AddMainIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
     procedure AddPanels;
     procedure AddRadios(const ARadioOffSet, AWidth, ARadioDef, AFontHeight, ALeft: Integer; var ATop: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(const ALeft: Integer; var ATop: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
@@ -421,17 +421,33 @@ begin
     Result := 16;
 end;
 
-procedure TLCLTaskDialog.AddIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
+procedure TLCLTaskDialog.AddMainIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
 var
   aDialogIcon: TTaskDialogIcon;
 begin
-  aDialogIcon := FDlg.MainIcon;
-  if (LCL_IMAGES[FDlg.MainIcon]<>0) then
+  MainImage := nil;
+  if not (tfUseHIconMain in FDlg.Flags) then
   begin
-    MainImage := TImage.Create(Self);
-    MainImage.Parent := AParent;
-    MainImage.Images := DialogGlyphs;
-    MainImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
+    aDialogIcon := FDlg.MainIcon;
+    if (LCL_IMAGES[aDialogIcon]<>0) then
+    begin
+      MainImage := TImage.Create(Self);
+      MainImage.Parent := AParent;
+      MainImage.Images := DialogGlyphs;
+      MainImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
+    end;
+  end
+  else
+  begin
+    if Assigned(FDlg.CustomMainIcon) and not (FDlg.CustomMainIcon.Empty) then
+    begin
+      MainImage := TImage.Create(Self);
+      MainImage.Parent := AParent;
+      MainImage.Picture.Assign(FDlg.CustomMainIcon);
+    end;
+  end;
+  if Assigned(MainImage) then
+  begin
     MainImage.SetBounds(AGlobalLeftMargin, AGlobalLeftMargin, LargeImageSize, LargeImageSize);
     MainImage.Stretch := True;
     MainImage.StretchOutEnabled := False;
@@ -444,7 +460,6 @@ begin
   end
   else
   begin
-    MainImage := nil;
     ALeft := AGlobalLeftMargin;
     ATop := AGlobalLeftMargin;
   end;
@@ -715,14 +730,31 @@ begin
   //debugln(['AddFooterText: XB=',XB]);
   AddBevel(ATop, aWidth, AParent);
   inc(ATop,LabelVSPacing div 2);
-  aFooterIcon := FDlg.FooterIcon;
-  if (LCL_IMAGES[aFooterIcon]<>0) then
+  FooterImage := nil;
+  if not (tfUseHIconFooter in FDlg.Flags) then
   begin
-    FooterImage := TImage.Create(Self);
-    FooterImage.Parent := AParent;
-    FooterImage.Images := DialogGlyphs;
-    FooterImage.ImageWidth := 16;
-    FooterImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aFooterIcon]];
+    aFooterIcon := FDlg.FooterIcon;
+    if (LCL_IMAGES[aFooterIcon]<>0) then
+    begin
+      FooterImage := TImage.Create(Self);
+      FooterImage.Parent := AParent;
+      FooterImage.Images := DialogGlyphs;
+      FooterImage.ImageWidth := SmallImageSize;
+      FooterImage.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aFooterIcon]];
+    end;
+  end
+  else
+  begin
+    if Assigned(FDlg.CustomFooterIcon) and not (FDlg.CustomFooterIcon.Empty) then
+    begin
+      FooterImage := TImage.Create(Self);
+      FooterImage.Parent := AParent;
+      FooterImage.ImageWidth := SmallImageSize;
+      FooterImage.Picture.Assign(FDlg.CustomFooterIcon);
+    end;
+  end;
+  if Assigned(FooterImage) then
+  begin
     FooterImage.Stretch := True;
     FooterImage.StretchOutEnabled := False;
     FooterImage.Proportional := True;
@@ -1014,7 +1046,7 @@ begin
 
     // handle main dialog icon
     GlobalLeftMargin := GetGlobalLeftMargin;
-    AddIcon(ALeft, ATop, GlobalLeftMargin, CurrParent);
+    AddMainIcon(ALeft, ATop, GlobalLeftMargin, CurrParent);
     //debugln('SetupControls');
     //debugln(['  GlobalLeftMargin=',GlobalLeftMargin]);
     //debugln(['  ALeft=',ALeft]);
