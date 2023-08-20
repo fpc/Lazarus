@@ -5909,55 +5909,68 @@ Added in LCL version 4.0.
 
 <element name="TCustomTaskDialog.DoExecute">
 <short>
-Performs actions to configure and execute the dialog using the wrapper in the 
-LCLTaskDialog unit.
+Performs actions to configure and execute the dialog.
 </short>
 <descr>
 <p>
-<var>DoExecute</var> is a dynamic <var>Boolean</var> function used to 
-initialize and execute the task dialog. It ensures that the index for the 
-default Buttons and RadioButtons are updated before executing the task 
-dialog. It also builds the delimited list of captions for each of the items 
-in Buttons and RadioButtons. The lists use the format needed for the task 
-dialog wrapper (#10 is the delimiter). Values in Flags are examined and 
-converted to the constants used in the task dialog wrapper.
+<var>DoExecute</var> is a <var>Boolean</var> function used to initialize and 
+execute the task dialog form. It is called from the Execute method and uses the 
+handle in ParentWnd as the parent form for the task dialog.
 </p>
 <p>
-Property values are copied to the members in the TTaskDialog instance, 
-including:
+DoExecute sets the default values for properties used as return values for the 
+dialog like ModalResult (mrNone) and QueryResult (''). It calls the Execute 
+method in the widgetset class instance to perform the actions needed for the 
+platform. On Windows Vista and later versions, this causes the native routines 
+in the Win32 Task Dialog API to be called. For other platforms, including 
+Windows versions prior to Vista, the emulated task dialog in TLCLTaskDialog is 
+used in the widget.
+</p>
+<p>
+Use the Flags property to specify which features or behaviors are enabled on 
+the task dialog form.
+</p>
+<p>
+DoExecute captures various return values from the widgetset class. These 
+include:
 </p>
 <ul>
-<li>Caption</li>
-<li>Title</li>
-<li>Text</li>
-<li>ExpandButtonCaption</li>
-<li>ExpandedText</li>
-<li>FooterText</li>
-<li>VerificationText</li>
+<li>
+The button identifier used to close the dialog form.
+</li>
+<li>
+The modal result value for the button identifier used to close the form.
+</li>
+<li>
+The optional radio button selected on the dialog.
+</li>
+<li>
+The value from a query control on the dialog and its index position in the 
+query choices.
+</li>
 </ul>
 <p>
-DoExecute calls the Execute method in the TTaskDialog wrapper. The return 
-value is <b>True</b> if the ModalResult value contains a valid button 
-identifier defined in the Buttons for the dialog.
+The return value is <b>False</b> if the button identifier returned from the 
+widget is a negative value. The return value is <b>True</b> if the dialog form 
+was successfully displayed, and a valid button identifier was used to close the 
+form - including when Esc, Alt+F4 or the Cancel button is used.
 </p>
-<p>
-DoExecute is called from the Execute method.
-</p>
+<remark>
+This behavior is different than other LCL dialogs where a ModalResult of 
+mrCancel would cause Execute / DoExecute to return <b>False</b>. This is 
+consistent with the task dialog behavior in the Delphi VCL; the Delphi 
+documentation states otherwise but it is incorrect.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.Execute"/>
 <link id="TCustomTaskDialog.Flags"/>
-<link id="TCustomTaskDialog.Buttons"/>
-<link id="TCustomTaskDialog.RadioButtons"/>
-<link id="TCustomTaskDialog.ExpandButtonCaption"/>
-<link id="TCustomTaskDialog.ExpandedText"/>
-<link id="TCustomTaskDialog.FooterText"/>
-<link id="TCustomTaskDialog.Text"/>
-<link id="TCustomTaskDialog.VerificationText"/>
-<link id="TCustomTaskDialog.Caption"/>
-<link id="TCustomTaskDialog.Title"/>
 <link id="TCustomTaskDialog.ModalResult"/>
-<link id="#lcl.lcltaskdialog.TTaskDialog">TTaskDialog</link>
+<link id="TCustomTaskDialog.QueryResult"/>
+<link id="TCustomTaskDialog.QueryItemIndex"/>
+<link id="TCustomTaskDialog.Button"/>
+<link id="TCustomTaskDialog.RadioButton"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
 </seealso>
 </element>
 <version>
@@ -5966,8 +5979,7 @@ Modified in version 3.0 to use the tfForceNonNative flag to determine whether
 an emulated dialog is displayed.
 </p>
 <p>
-Modified in LCL 4.0 to use tfNoSetForeGround and tfSizeToContent when included 
-in the flag values.
+Implementation modified in LCL 4.0.
 </p>
 </version>
 <element name="TCustomTaskDialog.DoExecute.Result">
@@ -6380,25 +6392,42 @@ method.
 </element>
 
 <element name="TCustomTaskDialog.Execute">
-<short>Displays the dialog and captures the modal result value.</short>
+<short>Displays the task dialog and captures the modal result value.</short>
 <descr>
 <p>
 <var>Execute</var> is an overloaded <var>Boolean</var> function used to 
-display the dialog and capture the modal result value using the wrapper in 
-the <file>LCLTaskDialog</file> unit. The return value is <b>True</b> if a 
-valid button identifier was selected in the wrapper.
+display the dialog and capture the value for the ModalResult property. The 
+parameterless variant is normally called to display and execute the dialog 
+form. It gets the handle for the active form which is used as the parent for 
+the task dialog form from the Screen singleton. If a TCustomForm has not been 
+assigned in Screen, the unassigned handle value (0) is used. The overloaded 
+variant is called using the handle value as an argument.
 </p>
 <p>
-Execute calls the <var>DoExecute</var> method to convert property values in 
-the class instance to the values expected in the <var>TTaskDialog</var> 
-record, and execute the dialog using the <file>LCLTaskDialog</file> wrapper. 
-The value in ModalResult is updated from the Button with the identifier 
-returned from the wrapper.
+Execute calls the <var>DoExecute</var> method to perform actions needed to 
+initialize and display the dialog form. It also processes return values used in 
+properties like ModalResult, QueryResult, QueryItemIndex, Button, and 
+RadioButton.
 </p>
+<p>
+The return value is <b>True</b> if the dialog was successfully displayed and a 
+valid button identifier was clicked to close the dialog - including when Esc, 
+Alt+F4 or the Cancel button is used.
+</p>
+<remark>
+This behavior is different than other LCL dialogs where a ModalResult of 
+mrCancel would cause Execute / DoExecute to return <b>False</b>. This is 
+consistent with the task dialog behavior in the Delphi VCL; the Delphi 
+documentation states otherwise but it is incorrect.
+</remark>
 </descr>
 <seealso>
+<link id="TCustomTaskDialog.DoExecute"/>
 <link id="TCustomTaskDialog.ModalResult"/>
 <link id="TCustomTaskDialog.Button"/>
+<link id="TCustomTaskDialog.RadioButton"/>
+<link id="TCustomTaskDialog.QueryResult"/>
+<link id="TCustomTaskDialog.QueryItemIndex"/>
 <link id="#lcl.lcltaskdialog.TTaskDialog">TTaskDialog</link>
 </seealso>
 </element>
@@ -7224,7 +7253,7 @@ executed.
 <p>
 <var>OnButtonClicked</var> is a <var>TTaskDlgClickEvent</var> property with the 
 event handler signalled (when assigned) after a button is clicked on the task 
-dialog during execution.  It is signalled from the DoOnButtonClicked method.
+dialog during execution. It is signalled from the DoOnButtonClicked method.
 </p>
 <p>
 Arguments passed to the TTaskDlgClickEvent event handler include the 
@@ -7674,7 +7703,7 @@ and includes additional features not found in previous versions.
 
 <element name="TaskDialogFirstButtonIndex">
 <short>
-Lowest index value for a button identifier used on a task dialog instance.  
+Lowest index value for a button identifier used on a task dialog instance.
 </short>
 <descr>
 <p>
