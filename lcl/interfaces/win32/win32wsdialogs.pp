@@ -1909,6 +1909,7 @@ var
       Exclude(Flags,tfVerificationFlagChecked);
     if (Config.cButtons=0) and (CommonButtons=[tcbOk]) then
       Include(Flags,tfAllowDialogCancellation); // just OK -> Esc/Alt+F4 close
+
     //while the MS docs say that this flag is ignored if Config.cButtons = 0,
     //in practice it will make TaskDialogIndirect fail with E_INVALIDARG
     if (ADlg.Buttons.Count = 0) then
@@ -1918,12 +1919,22 @@ var
     if not (tfUseHIconMain in Flags) then
       Config.pszMainIcon := TD_ICONS[ADlg.MainIcon]
     else
-      Config.hMainIcon := ADlg.CustomMainIcon.Handle;
+    begin
+      if Assigned(ADlg.CustomMainIcon) then
+        Config.hMainIcon := ADlg.CustomMainIcon.Handle
+      else
+        Config.hMainIcon := 0;
+    end;
 
     if not (tfUseHIconFooter in Flags) then
       Config.pszFooterIcon := TD_ICONS[ADlg.FooterIcon]
     else
-      Config.hFooterIcon := ADlg.CustomFooterIcon.Handle;
+    begin
+      if Assigned(ADlg.CustomFooterIcon) then
+        Config.hFooterIcon := ADlg.CustomFooterIcon.Handle
+      else
+        Config.hFooterIcon := 0;
+    end;
 
     {
       Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)
