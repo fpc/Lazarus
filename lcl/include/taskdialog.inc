@@ -98,6 +98,8 @@ begin
 
   FCustomFooterIcon := TIcon.Create;
   FCustomMainIcon := TIcon.Create;
+
+  FHandle := 0;
 end;
 
 function TCustomTaskDialog.ButtonIDToModalResult(const AButtonID: Integer
@@ -242,6 +244,11 @@ procedure TCustomTaskDialog.DoOnNavigated;
 begin
   if Assigned(FOnNavigated) then
     FOnNavigated(Self);
+end;
+
+procedure TCustomTaskDialog.InternalSetDialogHandle(AHandle: THandle);
+begin
+  FHandle := AHandle;
 end;
 
 procedure TCustomTaskDialog.SetRadioButtonFromRadioIndex(AIndex: Integer);

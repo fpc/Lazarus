@@ -652,6 +652,7 @@ type
     FFlags: TTaskDialogFlags;
     FFooterIcon: TTaskDialogIcon;
     FFooterText: TTranslateString;
+    FHandle: THandle;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
     FOnDialogConstructed: TNotifyEvent;
@@ -703,6 +704,8 @@ type
     //which might be implemented in a derived class, but the event handler must be in base class for Delphi compatibility.
     procedure DoOnNavigated; dynamic;
 
+    procedure InternalSetDialogHandle(AHandle: THandle);  //only to be called from the dialog window
+
     procedure SetRadioButtonFromRadioIndex(AIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;
@@ -724,6 +727,7 @@ type
     property FooterIcon: TTaskDialogIcon read FFooterIcon write FFooterIcon default tdiNone;
     property FooterText: TTranslateString read FFooterText write FFooterText;
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
+    property Handle: THandle read FHandle; //Handle to the dialog window
     property ModalResult: TModalResult read FModalResult write FModalResult;
     property QueryChoices: TStrings read FQueryChoices write SetQueryChoices;
     property QueryItemIndex: Integer read FQueryItemIndex write FQueryItemIndex;

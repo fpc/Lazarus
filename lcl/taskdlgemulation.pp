@@ -960,6 +960,7 @@ procedure TLCLTaskDialog.DoDialogConstructed;
 begin
   {$PUSH}
   {$ObjectChecks OFF}
+  {%H-}TTaskDialogAccess(FDlg).InternalSetDialogHandle(Handle);
   {%H-}TTaskDialogAccess(FDlg).DoOnDialogConstructed;
   {$POP}
 end;

@@ -1663,6 +1663,10 @@ begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
       {$PUSH}
       {$ObjectChecks OFF}
+      //testing shows that hwnd is the same in all notifications
+      //and since TDN_DIALOG_CONSTRUCTED comes first, just set it here
+      //so any OnTaskDialogxxx event will have access to the correct handle.
+      TTaskDialogAccess(Dlg).InternalSetDialogHandle(hwnd);
       TTaskDialogAccess(Dlg).DoOnDialogConstructed;
       {$POP}
     end;
