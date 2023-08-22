@@ -843,7 +843,7 @@ begin
   Result := 0;
   if ofAllowMultiSelect in Options then Result := Result or FOS_ALLOWMULTISELECT;
   if ofCreatePrompt in Options then Result := Result or FOS_CREATEPROMPT;
-  if not (ofExtensionDifferent in Options) then Result := Result or FOS_STRICTFILETYPES;
+  if ofExtensionDifferent in Options then Result := Result or FOS_STRICTFILETYPES;
   if ofFileMustExist in Options then Result := Result or FOS_FILEMUSTEXIST;
   if ofNoChangeDir in Options then Result := Result or FOS_NOCHANGEDIR;
   if ofNoDereferenceLinks in Options then Result := Result or FOS_NODEREFERENCELINKS;
