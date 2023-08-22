@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="fpvectorialpkg"/>
     <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
@@ -8,8 +8,13 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <ConfigFile>
+          <WriteConfigFilePath Value="$(PkgOutDir)/fpclaz.cfg"/>
+        </ConfigFile>
+      </Other>
     </CompilerOptions>
-    <Files Count="26">
+    <Files Count="27">
       <Item1>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
@@ -114,7 +119,12 @@
         <Filename Value="fpvectorial2canvas.pas"/>
         <UnitName Value="fpvectorial2canvas"/>
       </Item26>
+      <Item27>
+        <Filename Value="pdfvectorialwriter.pas"/>
+        <UnitName Value="pdfvectorialwriter"/>
+      </Item27>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LCL"/>

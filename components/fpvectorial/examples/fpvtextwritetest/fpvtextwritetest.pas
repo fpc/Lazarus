@@ -9,8 +9,13 @@ program fpvtextwritetest;
 
 {$mode objfpc}{$H+}
 
+{$define pdf_test}
+
 uses
-  fpvectorial, odtvectorialwriter, docxvectorialwriter, fpvutils;
+  fpvectorial,
+  odtvectorialwriter, docxvectorialwriter,
+  {$ifdef pdf_test} pdfvectorialwriter, {$endif}
+  fpvutils;
 
 {$R *.res}
 
@@ -58,6 +63,7 @@ begin
     CurParagraph.Style := Vec.StyleTextBody;
     // Lazarus provides a highly visual development environment for the creation of rich user interfaces, application logic, and other supporting code artifacts. Along with the customary project management features, the Lazarus IDE also provides features that includes but are not limited to:
 
+    {$ifndef pdf_test}
     CurList := Page.AddList();
     CurList.ListStyle := Vec.StyleBulletList;
     CurList.Style := Vec.StyleTextBody;
@@ -74,9 +80,13 @@ begin
     CurList.AddParagraph('Text resource manager for internationalization');
     CurList.AddParagraph('Automatic code formatting');
     CurList.AddParagraph('The ability to create custom components');
+    {$endif}
 
     Vec.WriteToFile('text_output.odt', vfODT);
     Vec.WriteToFile('text_output.docx', vfDOCX);
+    {$ifdef pdf_test}
+    Vec.WriteToFile('text_output.pdf', vfPDF);
+    {$endif}
   finally
     Vec.Free;
   end;

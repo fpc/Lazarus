@@ -15,7 +15,7 @@ uses
   rawvectorialreadwrite, svgvectorialreader_rsvg, svgvectorialwriter, 
   svgzvectorialreader, odtvectorialwriter, docxvectorialwriter, 
   htmlvectorialreader, svgvectorialreader, fpvWMF, wmfvectorialreader, 
-  wmfvectorialwriter, fpvectorial2canvas;
+  wmfvectorialwriter, fpvectorial2canvas, pdfvectorialwriter;
 
 implementation
 
