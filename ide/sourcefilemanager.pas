@@ -6796,13 +6796,15 @@ begin
       // is this ancestor a designer class?
       if not FindBaseComponentClass(ClsUnitInfo,AncestorClsName,ClsName,AncestorClass) then
       begin
-        DebugLn(['LoadAncestorDependencyHidden FindUnitComponentClass failed for AncsClsName=',AncestorClsName]);
+        DebugLn(['Error: (lazarus) [LoadAncestorDependencyHidden] FindBaseComponentClass failed for AncestorClsName=',AncestorClsName]);
         exit(mrCancel);
       end;
 
       if Assigned(AncestorClass) then
-        break
-      else begin
+      begin
+        // ancestor is a registered designer base class, e.g. TForm or TDataModule
+        break;
+      end else begin
         // immediately go to next ancestor
         ClsName:=AncestorClsName;
         continue;
@@ -6815,7 +6817,7 @@ begin
              OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,
              IgnoreBtnText);
     if Result<>mrOk then begin
-      DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed ClsUnitInfo=',ClsUnitInfo.Filename]);
+      DebugLn(['Error: (lazarus) [LoadAncestorDependencyHidden] LoadComponentDependencyHidden failed ClsUnitInfo=',ClsUnitInfo.Filename,' ClsName="',ClsName,'"']);
     end;
     case Result of
     mrAbort: exit;
@@ -6835,7 +6837,7 @@ begin
       ClsUnitInfo:= AncestorUnitInfo
     else begin
       // likely a bug: declaration is nowhere and was not caught by user interaction in LoadComponentDependencyHidden
-      DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden empty returns for ClsName=',ClsName, ' ClsUnitInfo=',ClsUnitInfo.Filename]);
+      DebugLn(['Error: (lazarus) [LoadAncestorDependencyHidden] LoadComponentDependencyHidden empty returns for ClsName=',ClsName, ' ClsUnitInfo=',ClsUnitInfo.Filename]);
       exit(mrCancel);
     end;
   until Assigned(AncestorClass) or (ClsName = '') or not Assigned(ClsUnitInfo);
@@ -6934,8 +6936,8 @@ var
     if FoundComponentClass=nil then
     begin
       RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
-      if (RegComp<>nil) and
-      not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+      if (RegComp<>nil)
+          and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
         FoundComponentClass:=RegComp.ComponentClass;
     end;
     if FoundComponentClass=nil then
@@ -6993,7 +6995,7 @@ var
     // read the LFM classname
     ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
     if LFMType='' then ;
-    if SysUtils.CompareText(LFMClassName,AClassName)<>0 then
+    if not SameLFMTypeName('',AClassName,LFMClassName) then
     begin
       {$IFDEF VerboseLFMSearch}
       debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" LFMClassName="',LFMClassName,'" does not match']);

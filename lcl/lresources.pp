@@ -527,6 +527,7 @@ procedure ReadLFMHeader(const LFMSource: string;
 function ReadLFMHeaderFromFile(const Filename: string;
                   out LFMType, LFMComponentName, LFMClassName: String): boolean;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
+function SameLFMTypeName(aUnitname, aTypename, LFMTypename: string): boolean;
 
 type
   TLRSStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
@@ -2171,6 +2172,22 @@ begin
     end;
   finally
     BinStream.Free;
+  end;
+end;
+
+function SameLFMTypeName(aUnitname, aTypename, LFMTypename: string): boolean;
+var
+  p: SizeInt;
+begin
+  p:=Pos('/',LFMTypename);
+  if p>0 then
+  begin
+    if aUnitname<>'' then
+      Result:=CompareText(aUnitname+'/'+aTypename,LFMTypename)=0
+    else
+      Result:=CompareText(aTypename,copy(LFMTypename,p+1,length(LFMTypename)))=0;
+  end else begin
+    Result:=CompareText(aTypename,LFMTypename)=0;
   end;
 end;
 
