@@ -1771,6 +1771,7 @@ begin
   KeyWordLists.Add(WordIsPredefinedFPCIdentifier);
   with WordIsPredefinedFPCIdentifier do begin
     // types
+    Add('ANSICHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN8'   ,{$ifdef FPC}@{$endif}AllwaysTrue);

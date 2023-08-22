@@ -232,6 +232,7 @@ type
     xtNone,        // undefined
     xtContext,     // a node
     xtChar,        // char
+    xtAnsiChar,    // ansichar
     xtWideChar,    // widechar
     xtReal,        // real
     xtSingle,      // single
@@ -288,6 +289,7 @@ var
     'None',
     'Context',
     'Char',
+    'AnsiChar',
     'WideChar',
     'Real',
     'Single',
@@ -357,7 +359,7 @@ const
   xtAllPointerTypes = [xtPointer, xtNil];
   xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtJSValue,xtNil];
 
-  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar,xtJSValue];
+  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar,xtAnsiChar,xtJSValue];
   xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
 
   xtAllIntegerConvertibles = xtAllIntegerTypes;
@@ -1252,7 +1254,7 @@ function StringTypesOrderList: TTypeAliasOrderList;
 begin
   if FStringTypesOrderList=nil then
     FStringTypesOrderList:=TTypeAliasOrderList.Create([
-       'string', 'AnsiString', 'WideString', 'ShortString', 'Char', 'WideChar', 'AnsiChar']);
+       'string', 'AnsiString', 'WideString', 'ShortString', 'Char', 'AnsiChar', 'WideChar']);
 
   Result := FStringTypesOrderList;
 end;
@@ -1335,8 +1337,10 @@ begin
     Result:=xtBoolean32
   else if CompareIdentifiers(Identifier,'BOOLEAN64')=0 then
     Result:=xtBoolean64
-  else if CompareIdentifiers(Identifier,'CHAR')=0 then
+  else if (CompareIdentifiers(Identifier,'CHAR')=0) then
     Result:=xtChar
+  else if (CompareIdentifiers(Identifier,'ANSICHAR')=0) then
+    Result:=xtAnsiChar
   else if CompareIdentifiers(Identifier,'WIDECHAR')=0 then
     Result:=xtWideChar
   else if CompareIdentifiers(Identifier,'REAL')=0 then
@@ -10801,7 +10805,7 @@ begin
     then begin
       Result.SubDesc:=Result.Desc;
       Result.Desc:=xtPointer;
-    end else if (Result.Desc=xtChar) then begin
+    end else if (Result.Desc in [xtChar,xtAnsiChar]) then begin
       Result.SubDesc:=xtNone;
       Result.Desc:=xtPChar
     end else begin
@@ -13080,6 +13084,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
           end;
         end;
       xtChar,
+      xtAnsiChar,
       xtSmallInt,
       xtShortInt,
       xtByte,
@@ -13844,6 +13849,7 @@ begin
       end;
 
     xtChar,
+    xtAnsiChar,
     xtWideChar,
     xtReal,
     xtSingle,
@@ -13862,6 +13868,7 @@ begin
       begin
         case ExprType.SubDesc of
         xtChar,
+        xtAnsiChar,
         xtWideChar,
         xtReal,
         xtSingle,
