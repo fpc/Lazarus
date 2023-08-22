@@ -5860,6 +5860,7 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FFlags"/>
 <element name="TCustomTaskDialog.FFooterIcon"/>
 <element name="TCustomTaskDialog.FFooterText"/>
+<element name="TCustomTaskDialog.FHandle"/>
 <element name="TCustomTaskDialog.FMainIcon"/>
 <element name="TCustomTaskDialog.FModalResult"/>
 <element name="TCustomTaskDialog.FOnDialogConstructed"/>
@@ -6237,6 +6238,36 @@ base class for Delphi compatibility.
 <seealso/>
 </element>
 
+<element name="TCustomTaskDialog.InternalSetDialogHandle">
+<short>
+Sets the value for the Handle property.
+</short>
+<descr>
+<p>
+<var>InternalSetDialogHandle</var> is called when the form instance for the 
+dialog is created. For platforms using a native task dialog (Windows Vista or 
+later), it is called from the callback routine in the widgetset when the 
+TDN_DIALOG_CONSTRUCTED is handled for the widget. For platforms using an 
+emulated task dialog, it is called when the TLCLTaskDialog instance executes 
+the AfterConstruction method in the form instance. It updates the value in 
+Handle before the OnDialogConstructed event is signalled for the class instance.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.Handle"/>
+<link id="TCustomTaskDialog.OnDialogConstructed"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.AfterConstruction">TLCLTaskDialog.AfterConstruction</link>
+</seealso>
+</element>
+<element name="TCustomTaskDialog.InternalSetDialogHandle.AHandle">
+<short>
+New value for the Handle property.
+</short>
+</element>
+
 <element name="TCustomTaskDialog.SetRadioButtonFromRadioIndex">
 <short>
 Makes the radio button with the specified identifier the active RadioButton on 
@@ -6308,6 +6339,8 @@ Create sets the default values for the following properties:
 <dd>Set to tdiNone.</dd>
 <dt>MainIcon</dt>
 <dd>Set to tdiInformation.</dd>
+<dt>Handle</dt>
+<dd>Set to the unassigned handle value (0).</dd>
 </dl>
 </descr>
 <seealso>
@@ -6895,6 +6928,35 @@ enumeration and their meanings.
 <link id="TCustomTaskDialog.FooterText"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogIcon"/>
+</seealso>
+</element>
+
+<element name="TCustomTaskDialog.Handle">
+<short>
+Handle for the form displayed for the task dialog.
+</short>
+<descr>
+<p>
+<var>Handle</var> is a read-only <var>THandle</var> property which contains the 
+handle for the dialog form displayed for the task dialog. The value for the 
+property is assigned when the form has been created in the widgetset class 
+instance. For platforms using a native task dialog (Windows Vista or later), it 
+is assigned when the TDN_DIALOG_CONSTRUCTED notification is handled in the 
+callback routine for the widget. For platforms using an emulated task dialog, 
+it is assigned when the AfterConstruction method for the TLCLTaskDialog instance
+is called.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<notes>
+<note>Should this use the TLCLHandle type?</note>
+</notes>
+<seealso>
+<link id="TCustomTaskDialog.InternalSetDialogHandle"/>
+<link id="TCustomTaskDialog.OnDialogConstructed"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.AfterConstruction">TLCLTaskDialog.AfterConstruction</link>
 </seealso>
 </element>
 
