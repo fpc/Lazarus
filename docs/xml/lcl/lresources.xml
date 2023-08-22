@@ -258,7 +258,7 @@ ValueType is stored in uppercase.
 <element name="TLResourceList.Find.Result">
 <short>
 TLResource instance for the resource found with the specified name and value 
-type.  
+type.
 </short>
 </element>
 <element name="TLResourceList.Find.Name">
@@ -1774,7 +1774,7 @@ with toFloat values subdivided into number, single, date or currency,
 according to FloatType.
 </p>
 <p>
-All other characters are returned literally.
+All other characters are returned verbatim.
 </p>
 </descr>
 <version>
@@ -3147,9 +3147,55 @@ include a unit name space such as 'ns.unit2/TForm2'.
 <short/>
 </element>
 
+<element name="SameLFMTypeName">
+<short>
+Indicates whether the specified LFM resource matches the specified unit and 
+type names.
+</short>
+<descr>
+<p>
+<var>SameLFMTypeName</var> is <var>Boolean</var> function used to determine 
+whether the type name specified in LFMTypeName refers to the same definition as 
+the one represented by the AUntiName and ATypeName arguments. It accounts for 
+optional unit information in LFMTypeName. If a unit name prefix is not included 
+in LFMTypeName, CompareText is called to perform a case-insensitive comparison 
+of the values in ATypeName and LFMTypeName. When unit information is present, 
+AUnitName is included in the comparision when it is not an empty string.
+</p>
+<p>
+SameLFMType is used in the implementation of the source code file manager in 
+the Lazarus IDE.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="SameLFMTypeName.Result">
+<short>
+<b>True</b> when the specified values refer to the same LFM resource.
+</short>
+</element>
+<element name="SameLFMTypeName.AUnitName">
+<short>
+Unit name used in the comparison.
+</short>
+</element>
+<element name="SameLFMTypeName.ATypeName">
+<short>
+Type name for the form resource used in the comparison.
+</short>
+</element>
+<element name="SameLFMTypeName.LFMTypeName">
+<short>
+Qualified LFM resource name compared to the unit and type arguments.
+</short>
+</element>
+
 <element name="TLRSStreamOriginalFormat">
 <short>
-Represent the LRS stream format offered as the original content for conversion 
+Represents the LRS stream format offered as the original content for conversion 
 routines like LRSObjectToText and LRSObjectResToText.
 </short>
 <descr/>
@@ -3731,7 +3777,7 @@ Writes the specified number of Null characters to a TStream instance.
 <descr>
 <p>
 An ASCII NUL character has the value #0.
-</p>  
+</p>
 </descr>
 <seealso/>
 </element>
