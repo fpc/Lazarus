@@ -4225,9 +4225,8 @@ begin
   if NewPos >= FControls.Count then
     NewPos := FControls.Count - 1;
   
-  if NewPos = OldPos then Exit;
-  
-  FControls.Move(OldPos, NewPos);
+  if NewPos <> OldPos then
+    FControls.Move(OldPos, NewPos);
   
   if IsWinControl then
   begin
