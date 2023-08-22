@@ -47,12 +47,12 @@ object HelpForm: THelpForm
   }
   KeyPreview = True
   Menu = MainMenu1
+  LCLVersion = '3.99.0.0'
+  Visible = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '2.3.0.0'
-  Visible = True
   object PageControl: TPageControl
     Left = 0
     Height = 496
@@ -60,14 +60,13 @@ object HelpForm: THelpForm
     Width = 751
     Align = alClient
     MultiLine = True
+    Options = [nboMultiLine]
     ParentFont = False
     ParentShowHint = False
-    ShowHint = True
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
     OnEnter = PageControlEnter
-    Options = [nboMultiLine]
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -87,9 +86,9 @@ object HelpForm: THelpForm
       Top = 0
       Caption = 'Go Home'
       ImageIndex = 0
-      OnClick = MiActionsGoHomeClick
       ParentShowHint = False
       ShowHint = True
+      OnClick = MiActionsGoHomeClick
     end
     object BackBttn: TToolButton
       Left = 73
@@ -97,9 +96,9 @@ object HelpForm: THelpForm
       Top = 0
       Caption = 'Go back'
       ImageIndex = 1
-      OnClick = MiActionsGoBackClick
       ParentShowHint = False
       ShowHint = True
+      OnClick = MiActionsGoBackClick
     end
     object ForwardBttn: TToolButton
       Left = 105
@@ -107,9 +106,9 @@ object HelpForm: THelpForm
       Top = 0
       Caption = 'Go forward'
       ImageIndex = 2
-      OnClick = MiActionsGoForwardClick
       ParentShowHint = False
       ShowHint = True
+      OnClick = MiActionsGoForwardClick
     end
     object FileButton: TToolButton
       Left = 1
