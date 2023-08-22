@@ -614,18 +614,22 @@ Performs actions needed when a new instance of the class has been created.
 </short>
 <descr>
 <p>
-<var>AfterConstruction</var> is an overridden method in TLCLTaskDialog used to 
-perform actions needed when the form instance has been created. It calls the 
-inherited method on entry to set the bounds for the form, signal the OnCreate 
-event handler (when assigned), and to perform scaling when enabled in both the 
-application and the form.
+<var>AfterConstruction</var> is an overridden method in 
+<var>TLCLTaskDialog</var> used to perform actions needed when the form instance 
+has been created. It calls the inherited method on entry to set the bounds for 
+the form, signal the OnCreate event handler (when assigned), and to perform 
+scaling when enabled in both the application and the form.
 </p>
 <p>
-AfterConstruction signals the OnDialogConstructed event handler (when assigned) 
-in the TTaskDialog instance for the dialog form.
+AfterConstruction ensures that the handle in the TTaskDialog instance is 
+updated to use the Handle value in the class instance. It signals the 
+OnDialogConstructed event handler (when assigned) in the TTaskDialog instance 
+for the dialog form.
 </p>
 </descr>
 <seealso>
+<link id="TLCLTaskDialog.AfterConstruction"/>
+<link id="#lcl.dialogs.TCustomTaskDialog.Handle">TCustomTaskDialog.Handle</link>
 <link id="#lcl.dialogs.TCustomTaskDialog.DoOnDialogConstructed">TCustomTaskDialog.DoOnDialogConstructed</link>
 <link id="#lcl.forms.TCustomForm.AfterConstruction">TCustomForm.AfterConstruction</link>
 </seealso>
