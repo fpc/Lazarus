@@ -280,8 +280,8 @@ begin
     Tags.Free;
     aMissing.Free;
   end;
-  if assigned(aEditor.Designer) then
-     aEditor.Designer.Modified;
+//  if assigned(aEditor.Designer) then
+//     aEditor.Designer.Modified;
 end;
 
 function FindActionEditor(AList: THTMLCustomElementActionList): THTMLActionListEditorForm;

@@ -44,7 +44,7 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
   end
-  object PageControl1: TPageControl
+  object PCAddRemove: TPageControl
     Left = 0
     Height = 328
     Top = 34

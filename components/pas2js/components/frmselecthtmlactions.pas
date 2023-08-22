@@ -37,7 +37,7 @@ type
     cbUseDBAware: TCheckBox;
     clbRemove: TCheckListBox;
     Label1: TLabel;
-    PageControl1: TPageControl;
+    PCAddRemove: TPageControl;
     pnlTop: TPanel;
     TSAdd: TTabSheet;
     TSRemove: TTabSheet;
@@ -163,7 +163,7 @@ begin
     end;
   if Assigned(FRemoveList) then
     For I:=CLBRemove.Count-1 downto 0 do
-      if CLBRemove.Checked[i] then
+      if not CLBRemove.Checked[i] then
         FRemoveList.Remove(CLBRemove.Items.Objects[i]);
 end;
 
