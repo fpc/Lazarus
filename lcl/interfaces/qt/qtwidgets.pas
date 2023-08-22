@@ -7020,6 +7020,9 @@ end;
 procedure TQtMainWindow.ChangeParent(NewParent: QWidgetH);
 var
   Flags: QtWindowFlags;
+  {$IFNDEF MSWINDOWS}
+  Flags2: QtWindowFlags;
+  {$ENDIF}
   Visible: Boolean;
 begin
   if NewParent <> Widget then
@@ -7027,6 +7030,15 @@ begin
     Visible := getVisible;
     Flags := windowFlags;
     setParent(NewParent);
+    {$IFNDEF MSWINDOWS}
+    //issue #40440
+    if NewParent <> nil then
+      Flags2 := QWidget_windowFlags(NewParent)
+    else
+      Flags2 := 0;
+    if (Flags and QtWindowStaysOnTopHint = 0) and (Flags2 and QtWindowStaysOnTopHint <> 0) then
+      Flags := Flags or QtWindowStaysOnTopHint;
+    {$ENDIF}
     setWindowFlags(Flags);
     setVisible(Visible);
   end;
