@@ -22939,11 +22939,11 @@ SetChildZPosition is used to implement the SetControlIndex method.
 </p>
 </descr>
 <seealso>
-<link id="TWinControll.Controls"/>
-<link id="TWinControll.ControlCount"/>
-<link id="TWinControll.Handle"/>
-<link id="TWinControll.SetControlIndex"/>
-<link id="TControll.InvalidateControl"/>
+<link id="TWinControl.Controls"/>
+<link id="TWinControl.ControlCount"/>
+<link id="TWinControl.Handle"/>
+<link id="TWinControl.SetControlIndex"/>
+<link id="TControl.InvalidateControl"/>
 </seealso>
 </element>
 <element name="TWinControl.SetChildZPosition.AChild">
