@@ -1999,13 +1999,17 @@ begin
   //We shouldn't however set CommCtrl.TaskDialogIndirect to nil, other (third party) code may rely on in not ever being nil.
 
   Res := TaskDialogIndirect(nil,nil,nil,nil);
-  if IsConsole then
-  begin
-    write('InitTaskDialogIndirect: TaskDialogIndirect(nil,nil,nil,nil)=$',LongInt(Res).ToHexString);
-    if (Res = E_INVALIDARG) then writeln(' (=E_INVALIDARG)') else writeln;
-  end;
+
+  {$IFDEF VerboseTaskDialog}
+  DebugLn('InitTaskDialogIndirect: TaskDialogIndirect(nil,nil,nil,nil)=$',LongInt(Res).ToHexString);
+  if (Res = E_INVALIDARG) then DebugLn(' (=E_INVALIDARG)') else writeln;
+  {$ENDIF}
+
   TaskDialogIndirectAvailable := (Res = E_INVALIDARG);//(Res <> E_NOTIMPL);
-  if IsConsole then writeln('InitTaskDialogIndirect: TaskDialogIndirectAvailable=',TaskDialogIndirectAvailable);
+
+  {$IFDEF VerboseTaskDialog}
+  DebugLn('InitTaskDialogIndirect: TaskDialogIndirectAvailable=',TaskDialogIndirectAvailable);
+  {$ENDIF}
 
   //OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
   //GetVersionEx(OSVersionInfo);
