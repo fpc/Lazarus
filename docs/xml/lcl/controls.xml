@@ -22900,8 +22900,51 @@ New value for the Color property.
 <short>
 Updates the position of the child control in the Z plane (i.e. front-to-back).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SetChildZPosition</var> repositions the child control in <var>AChild</var> 
+in the display order for the child Controls in the class instance. No actions 
+are performed in the method when:
+</p>
+<ul>
+<li>
+The Controls list has not been allocated.
+</li>
+<li>
+AChild has not been assigned (contains <b>Nil</b>).
+</li>
+<li>
+AChild is not stored in the child Controls for the class instance.
+</li>
+</ul>
+<p>
+<var>APosition</var> contains the new relative display order on the Z-axis for 
+the specified child control. A value in APosition must be in the range allowed 
+in Controls (0..Controls.Count-1). Smaller values in APosition move the child 
+control towards the front or top of the display order. Larger values move the 
+child control towards the bottom or back of the display order.
+</p>
+<p>
+SetChildZPosition calls the Move method in Controls to change the ordinal 
+position for the specified control in the list.
+</p>
+<p>
+If AChild is a TWinControl descendant, the SetChildZPosition method in the 
+widgetset class is used to notify the child controls which have a valid 
+handle. If AChild is a TControl instance, its InvalidateControl method is 
+called to redraw the control using its visibility and opacity settings.
+</p>
+<p>
+SetChildZPosition is used to implement the SetControlIndex method.
+</p>
+</descr>
+<seealso>
+<link id="TWinControll.Controls"/>
+<link id="TWinControll.ControlCount"/>
+<link id="TWinControll.Handle"/>
+<link id="TWinControll.SetControlIndex"/>
+<link id="TControll.InvalidateControl"/>
+</seealso>
 </element>
 <element name="TWinControl.SetChildZPosition.AChild">
 <short>Control to locate and move in the method.</short>
