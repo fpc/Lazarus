@@ -61,6 +61,71 @@ begin
   inherited SetItem(Index, Value);
 end;
 
+{ TTaskDialogProgressBar }
+
+procedure TTaskDialogProgressBar.SetMarqueeSpeed(AValue: Cardinal);
+begin
+  if FMarqueeSpeed = AValue then Exit;
+  FMarqueeSpeed := AValue;
+  //ToDo: send TDM_SET_PROGRESS_BAR_MARQUEE to Dlg
+end;
+
+procedure TTaskDialogProgressBar.SetMax(AValue: Integer);
+begin
+  if FMax = AValue then Exit;
+  FMax := AValue;
+  if (FMin > FMax) then
+    FMin := FMax;
+  //ToDo: send TDM_SET_PROGRESS_BAR_RANGE to Dlg
+end;
+
+procedure TTaskDialogProgressBar.SetMin(AValue: Integer);
+begin
+  if FMin = AValue then Exit;
+  FMin := AValue;
+  if (FMin > FMax) then
+    FMin := FMax;
+  //ToDo: send TDM_SET_PROGRESS_BAR_RANGE to Dlg
+end;
+
+procedure TTaskDialogProgressBar.SetPosition(AValue: Integer);
+begin
+  if FPosition = AValue then Exit;
+  FPosition := AValue;
+  if (FPosition < FMin) then
+    FPosition := FMIn
+  else
+    if (FPosition > FMax) then
+      FPosition := FMax;
+  //ToDo: send TDM_SET_PROGRESS_BAR_POS to Dlg
+  //Todo 2: test if Delphi raises an excpetion if FPosition is out of range
+end;
+
+procedure TTaskDialogProgressBar.SetState(AValue: TProgressBarState);
+begin
+  if FState = AValue then Exit;
+  FState := AValue;
+  //ToDo: send TDM_SET_PROGRESS_BAR_STATE to Dlg
+end;
+
+constructor TTaskDialogProgressBar.Create(ADialog: TCustomTaskDialog);
+begin
+  inherited Create;
+  Dlg := ADialog;
+  FMin := 0;
+  FMax := 100;
+  FMarqueeSpeed := 0;
+end;
+
+procedure TTaskDialogProgressBar.Initialize;
+//this should be invoked as soon as the dialog has been instatiated (so Dlg.Handle <> 0),
+//so probably in Dlg.DoOnConstructed??
+begin
+  //ToDo:
+  //  send TDM_SET_MARQUEE_PROGRESS_BAR to Dlg (differentiates between "normal" and marguee)
+  //  send range, position and state to dialog.
+end;
+
 { TTaskDialogRadioButtonItem }
 
 constructor TTaskDialogRadioButtonItem.Create(ACollection: TCollection);
@@ -98,6 +163,7 @@ begin
 
   FCustomFooterIcon := TIcon.Create;
   FCustomMainIcon := TIcon.Create;
+  FProgressBar := TTaskDialogProgressBar.Create(Self);
 
   FHandle := 0;
 end;
@@ -139,6 +205,7 @@ begin
   FQueryChoices.Free;
   FCustomFooterIcon.Free;
   FCustomMainIcon.Free;
+  FProgressBar.Free;
   inherited Destroy;
 end;
 
@@ -188,6 +255,7 @@ end;
 
 procedure TCustomTaskDialog.DoOnDialogConstructed;
 begin
+  FProgressBar.Initialize;
   if Assigned(FOnDialogConstructed) then
     FOnDialogConstructed(Self);
 end;

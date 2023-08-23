@@ -27,6 +27,7 @@ uses
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, {LCLTaskDialog,} DialogRes,
+  ComCtrls,
   // LazUtils
   GraphType, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
@@ -634,6 +635,35 @@ type
     property Items[Index: Integer]: TTaskDialogBaseButtonItem read GetItem write SetItem; default;
   end;
 
+  TProgressBarState = ComCtrls.TProgressBarState; //it's where Delphi defines this type, so we need to follow
+
+  { TTaskDialogProgressBar }
+
+  TTaskDialogProgressBar = class(TPersistent)
+  private
+    Dlg: TCustomTaskDialog;
+    FMarqueeSpeed: Cardinal;
+    FMax: Integer;
+    FMin: Integer;
+    FPosition: Integer;
+    FState: TProgressBarState;
+    procedure SetMarqueeSpeed(AValue: Cardinal);
+    procedure SetMax(AValue: Integer);
+    procedure SetMin(AValue: Integer);
+    procedure SetPosition(AValue: Integer);
+    procedure SetState(AValue: TProgressBarState);
+  public
+    constructor Create(ADialog: TCustomTaskDialog);
+    procedure Initialize;  //call after dialog has been instatiated to send message to the dialog window
+  published
+    property MarqueeSpeed: Cardinal read FMarqueeSpeed write SetMarqueeSpeed default 0;
+    property Max: Integer read FMax write SetMax default 100;
+    property Min: Integer read FMin write SetMin default 0;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property State: TProgressBarState read FState write SetState default pbsNormal;
+  end;
+
+
   { TCustomTaskDialog }
 
   TCustomTaskDialog = class(TLCLComponent)
@@ -665,6 +695,7 @@ type
     FOnRadioButtonClicked: TNotifyEvent;
     FOnTimer: TTaskDlgTimerEvent;
     FOnVerificationClicked: TNotifyEvent;
+    FProgressBar: TTaskDialogProgressBar;
     FQueryChoices: TStrings;
     FQueryResult: String;
     FQueryItemIndex: Integer;
@@ -729,6 +760,7 @@ type
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
     property Handle: THandle read FHandle; //Handle to the dialog window
     property ModalResult: TModalResult read FModalResult write FModalResult;
+    property ProgressBar: TTaskDialogProgressBar read FProgressBar write FProgressBar;
     property QueryChoices: TStrings read FQueryChoices write SetQueryChoices;
     property QueryItemIndex: Integer read FQueryItemIndex write FQueryItemIndex;
     property QueryResult: String read FQueryResult write FQueryResult;
@@ -770,6 +802,7 @@ type
     property FooterIcon;
     property FooterText;
     property MainIcon;
+    property ProgressBar;
     property RadioButtons;
     property QueryChoices;
     property QueryItemIndex;

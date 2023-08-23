@@ -1792,6 +1792,9 @@ type
 
   TProgressBarStyle = (pbstNormal, pbstMarquee);
 
+  //used by TTaskDialogProgressBar, but Delphi defines it in ComCtrls unit
+  TProgressBarState = (pbsNormal, pbsError, pbsPaused);
+
   { TCustomProgressBar }
   {
     @abstract(Simple progressbar.)
