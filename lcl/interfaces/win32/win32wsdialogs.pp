@@ -19,6 +19,8 @@ unit Win32WSDialogs;
 {$mode objfpc}{$H+}
 {$I win32defines.inc}
 
+{.$DEFINE VerboseTaskDialog}
+
 interface
 
 uses
@@ -1992,6 +1994,9 @@ procedure InitTaskDialogIndirect;
 var
   OSVersionInfo: TOSVersionInfo;
   Res: HRESULT;
+  {$IFDEF VerboseTaskDialog}
+  DbgOutput: string;
+  {$ENDIF}
 begin
   //There is no need to get the address of TaskDialogIndirect.
   //CommCtrl already has TaskDialogIndirect, which returns E_NOTIMPL if this function is not available in 'comctl32.dll'
@@ -2001,14 +2006,16 @@ begin
   Res := TaskDialogIndirect(nil,nil,nil,nil);
 
   {$IFDEF VerboseTaskDialog}
-  DebugLn('InitTaskDialogIndirect: TaskDialogIndirect(nil,nil,nil,nil)=$',LongInt(Res).ToHexString);
-  if (Res = E_INVALIDARG) then DebugLn(' (=E_INVALIDARG)') else writeln;
+  DbgOutput := 'InitTaskDialogIndirect: TaskDialogIndirect(nil,nil,nil,nil)=$' + LongInt(Res).ToHexString;
+  if (Res = E_INVALIDARG) then
+    DbgOutput := DbgOutput + ' (=E_INVALIDARG)';
+  DebugLn(DbgOutput);
   {$ENDIF}
 
   TaskDialogIndirectAvailable := (Res = E_INVALIDARG);//(Res <> E_NOTIMPL);
 
   {$IFDEF VerboseTaskDialog}
-  DebugLn('InitTaskDialogIndirect: TaskDialogIndirectAvailable=',TaskDialogIndirectAvailable);
+  DebugLn('InitTaskDialogIndirect: TaskDialogIndirectAvailable='+BoolToStr(TaskDialogIndirectAvailable, True));
   {$ENDIF}
 
   //OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
