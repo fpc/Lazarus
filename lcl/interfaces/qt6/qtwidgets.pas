@@ -6704,7 +6704,7 @@ begin
       try
         Result := SlotMouseWheel(Sender, AEvent);
       finally
-        QEvent_destroy(Event);
+        QEvent_destroy(AEvent);
       end;
       Result := False;
     end;
