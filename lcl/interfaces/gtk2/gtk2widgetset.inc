@@ -1895,8 +1895,12 @@ function TGtk2WidgetSet.CreateDummyWidgetFrame(const ALeft, ATop, AWidth,
   AHeight: integer): boolean;
 var
   ADummy: TDummyWidget;
+  WM: String;
 begin
   Result := False;
+  WM := GetWindowManager;
+  if (WM = '') or (WM = 'wayland') then
+    exit;
   ADummy := TDummyWidget.Create;
   ADummy.ShowDummyWidget(ALeft, ATop, AWidth, AHeight);
   FWSFrameRect := ADummy.GetWidgetFrame;
@@ -4584,7 +4588,7 @@ begin
             @unused, @data) = Success then
           begin
             if (typeReturned = WMAtom) and (formatReturned = 8) then
-              Result := LowerCase(StrPas(PWideChar(Data)));
+              Result := LowerCase(StrPas(PChar(Data)));
             if Data <> nil then
               XFree(Data);
             Data := nil;
@@ -6610,9 +6614,9 @@ begin
   if Result then
   begin
     if Gtk2WidgetSet.compositeManagerRunning then
-      AMaxLoops := 200000
+      AMaxLoops := 100000
     else
-      AMaxLoops := 20000;
+      AMaxLoops := 10000;
     {$IFDEF DEBUGGTK2FRAMESIZE}
     writeln('ShowDummyWidget(start) WindowManager="',Gtk2WidgetSet.GetWindowManager,'" Compositing enabled="',Gtk2WidgetSet.compositeManagerRunning,'" IsWayland="UNKNOWN" MaxLoops=',AMaxLoops);
     ATicks := GetTickCount64;
