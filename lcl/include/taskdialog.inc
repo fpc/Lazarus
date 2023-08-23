@@ -120,10 +120,50 @@ end;
 procedure TTaskDialogProgressBar.Initialize;
 //this should be invoked as soon as the dialog has been instatiated (so Dlg.Handle <> 0),
 //so probably in Dlg.DoOnConstructed??
+var
+  Res: LRESULT;
+  Err: Integer;
+  IsMarquee: BOOL;
 begin
   //ToDo:
   //  send TDM_SET_MARQUEE_PROGRESS_BAR to Dlg (differentiates between "normal" and marguee)
   //  send range, position and state to dialog.
+  if (Dlg.Handle <> 0) and (Dlg.Flags * [tfShowProgressBar,tfShowMarqueeProgressBar] <> []) then
+  begin
+    IsMarquee := (tfShowMarqueeProgressBar in Dlg.Flags);
+    writeln('TTaskDialogProgressBar.Initialize: IsMarquee=',IsMarquee);
+    //wParam = 0 (nonMarque) wParam != 0 (Marquee), lParam must be 0
+    //if Both Flags are set, Windows seems to intepret this a Marquee
+    Res := SendMessage(Dlg.Handle, TDM_SET_MARQUEE_PROGRESS_BAR, WPARAM(IsMarquee), 0);  //Result is ignored
+    writeln('TTaskDialogProgressBar.Initialize: TDM_SET_MARQUEE_PROGRESS_BAR: LResult=',PtrInt(Res));
+
+
+    if not IsMarquee then
+    begin
+    //wParam must be 0, lParam = MAKELPARAM(nMinRange, nMaxRange)
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero iindicates failure
+    debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_RANGE: LResult=',PtrInt(Res)]);
+    if (Res = 0) then
+    begin
+      Err := GetLastOSError;
+      debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+    end;
+
+    end//Not IsMarquee
+    else
+    begin //IsMarquee
+    end;
+
+    //wParam = new progress state, lParam must be 0
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_STATE, WPARAM(ProgressBarStateValues[FState]), 0);
+    debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_STATE: LResult=',PtrInt(Res)]);  //Zero iindicates failure
+    if (Res = 0) then
+    begin
+      Err := GetLastOSError;
+      debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+    end;
+
+  end;
 end;
 
 { TTaskDialogRadioButtonItem }
@@ -255,9 +295,9 @@ end;
 
 procedure TCustomTaskDialog.DoOnDialogConstructed;
 begin
-  FProgressBar.Initialize;
   if Assigned(FOnDialogConstructed) then
     FOnDialogConstructed(Self);
+  FProgressBar.Initialize;
 end;
 
 procedure TCustomTaskDialog.DoOnDialogCreated;

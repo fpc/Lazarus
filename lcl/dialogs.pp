@@ -639,8 +639,18 @@ type
 
   { TTaskDialogProgressBar }
 
+const
+  PBST_NORMAL             = $0001;
+  PBST_ERROR              = $0002;
+  PBST_PAUSED             = $0003;
+
+Type
+
   TTaskDialogProgressBar = class(TPersistent)
   private
+    const
+      ProgressBarStateValues: array[TProgressBarState] of Integer = (PBST_NORMAL,PBST_PAUSED,PBST_ERROR);
+    private
     Dlg: TCustomTaskDialog;
     FMarqueeSpeed: Cardinal;
     FMax: Integer;

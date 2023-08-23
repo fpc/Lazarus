@@ -239,6 +239,24 @@ const
   LM_PASTE             = $0302;
   LM_CLEAR             = $0303;
 
+  // _TASKDIALOG_MESSAGES enum
+  TDM_NAVIGATE_PAGE                   = LM_USER+101;
+  TDM_CLICK_BUTTON                    = LM_USER+102; // wParam = Button ID
+  TDM_SET_MARQUEE_PROGRESS_BAR        = LM_USER+103; // wParam = 0 (nonMarque) wParam != 0 (Marquee)
+  TDM_SET_PROGRESS_BAR_STATE          = LM_USER+104; // wParam = new progress state
+  TDM_SET_PROGRESS_BAR_RANGE          = LM_USER+105; // lParam = MAKELPARAM(nMinRange, nMaxRange)
+  TDM_SET_PROGRESS_BAR_POS            = LM_USER+106; // wParam = new position
+  TDM_SET_PROGRESS_BAR_MARQUEE        = LM_USER+107; // wParam = 0 (stop marquee), wParam != 0 (start marquee), lparam = speed (milliseconds between repaints)
+  TDM_SET_ELEMENT_TEXT                = LM_USER+108; // wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
+  TDM_CLICK_RADIO_BUTTON              = LM_USER+110; // wParam = Radio Button ID
+  TDM_ENABLE_BUTTON                   = LM_USER+111; // lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
+  TDM_ENABLE_RADIO_BUTTON             = LM_USER+112; // lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
+  TDM_CLICK_VERIFICATION              = LM_USER+113; // wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
+  TDM_UPDATE_ELEMENT_TEXT             = LM_USER+114; // wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
+  TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE = LM_USER+115; // wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
+  TDM_UPDATE_ICON                     = LM_USER+116; // wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
+
+
 {$I controlconsts.inc}
 
   //-------------
