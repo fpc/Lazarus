@@ -649,7 +649,7 @@ Type
   TTaskDialogProgressBar = class(TPersistent)
   private
     const
-      ProgressBarStateValues: array[TProgressBarState] of Integer = (PBST_NORMAL,PBST_PAUSED,PBST_ERROR);
+      ProgressBarStateValues: array[TProgressBarState] of Integer = (PBST_NORMAL,PBST_ERROR,PBST_PAUSED);
     private
     Dlg: TCustomTaskDialog;
     FMarqueeSpeed: Cardinal;
@@ -665,6 +665,7 @@ Type
   public
     constructor Create(ADialog: TCustomTaskDialog);
     procedure Initialize;  //call after dialog has been instatiated to send message to the dialog window
+    procedure SetRange(AMin, AMax: Integer);
   published
     property MarqueeSpeed: Cardinal read FMarqueeSpeed write SetMarqueeSpeed default 0;
     property Max: Integer read FMax write SetMax default 100;

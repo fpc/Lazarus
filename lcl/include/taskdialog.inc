@@ -67,28 +67,58 @@ procedure TTaskDialogProgressBar.SetMarqueeSpeed(AValue: Cardinal);
 begin
   if FMarqueeSpeed = AValue then Exit;
   FMarqueeSpeed := AValue;
-  //ToDo: send TDM_SET_PROGRESS_BAR_MARQUEE to Dlg
+  if (tfShowMarqueeProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+    SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_MARQUEE, WPARAM(TRUE), LPARAM(FMarqueeSpeed));
 end;
 
 procedure TTaskDialogProgressBar.SetMax(AValue: Integer);
 begin
-  if FMax = AValue then Exit;
-  FMax := AValue;
-  if (FMin > FMax) then
-    FMin := FMax;
-  //ToDo: send TDM_SET_PROGRESS_BAR_RANGE to Dlg
+  if (FMax = AValue) then Exit;
+  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+    SetRange(FMin, AValue)
+  else
+    FMax := AValue; //will be set in Initialize
 end;
 
 procedure TTaskDialogProgressBar.SetMin(AValue: Integer);
 begin
   if FMin = AValue then Exit;
-  FMin := AValue;
+  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+    SetRange(AValue, FMax)
+  else
+    FMin := AValue; //will be set in Initialize
+end;
+
+procedure TTaskDialogProgressBar.SetRange(AMin, AMax: Integer);
+var
+  Res: LRESULT;
+  Err: Integer;
+begin
+  if (AMin = FMin) and (AMax = FMax) then
+    Exit;
+  FMin := AMin;
+  FMax := FMax;
   if (FMin > FMax) then
     FMin := FMax;
-  //ToDo: send TDM_SET_PROGRESS_BAR_RANGE to Dlg
+  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+  begin
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero iindicates failure
+    debugln(['TTaskDialogProgressBar.SetRange: TDM_SET_PROGRESS_BAR_RANGE: LResult=',PtrInt(Res)]);
+    if (Res = 0) then
+    begin
+      Err := GetLastOSError;
+      debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+    end
+    else
+    begin
+      debugln(['Old Min=',LoWord(Res),', Old Max=',HiWord(Res)]);
+    end;
+  end;
 end;
 
 procedure TTaskDialogProgressBar.SetPosition(AValue: Integer);
+var
+  Res: LRESULT;
 begin
   if FPosition = AValue then Exit;
   FPosition := AValue;
@@ -97,15 +127,30 @@ begin
   else
     if (FPosition > FMax) then
       FPosition := FMax;
-  //ToDo: send TDM_SET_PROGRESS_BAR_POS to Dlg
-  //Todo 2: test if Delphi raises an excpetion if FPosition is out of range
+  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+  begin
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_POS, WPARAM(FPosition), 0);
+    debugln(['TTaskDialogProgressBar.SetPosition: old Position=',PtrInt(Res)]);
+  end;
 end;
 
 procedure TTaskDialogProgressBar.SetState(AValue: TProgressBarState);
+var
+  Res: LRESULT;
+  Err: Integer;
 begin
   if FState = AValue then Exit;
   FState := AValue;
-  //ToDo: send TDM_SET_PROGRESS_BAR_STATE to Dlg
+  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
+  begin
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_STATE, WPARAM(ProgressBarStateValues[FState]), 0);
+    debugln(['TTaskDialogProgressBar.SetState: LResult=',PtrInt(Res)]);  //Zero iindicates failure
+    if (Res = 0) then
+    begin
+      Err := GetLastOSError;
+      debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+    end;
+  end;
 end;
 
 constructor TTaskDialogProgressBar.Create(ADialog: TCustomTaskDialog);
@@ -137,21 +182,26 @@ begin
     Res := SendMessage(Dlg.Handle, TDM_SET_MARQUEE_PROGRESS_BAR, WPARAM(IsMarquee), 0);  //Result is ignored
     debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_MARQUEE_PROGRESS_BAR: LResult=',PtrInt(Res)]);
 
-
     if not IsMarquee then
     begin
-    //wParam must be 0, lParam = MAKELPARAM(nMinRange, nMaxRange)
-    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero iindicates failure
-    debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_RANGE: LResult=',PtrInt(Res)]);
-    if (Res = 0) then
-    begin
-      Err := GetLastOSError;
-      debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
-    end;
+      //wParam must be 0, lParam = MAKELPARAM(nMinRange, nMaxRange)
+      Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero indicates failure
+      debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_RANGE (FMin=,',FMin,', FMax=',FMax,'): LResult=',PtrInt(Res)]);
+      if (Res = 0) then
+      begin
+        Err := GetLastOSError;
+        debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+      end;
+
+      //wParam = new position, lParam must be 0, return value is previous position
+      Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_POS, WPARAM(FPosition), 0);
+      debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_POS: LResult=',PtrInt(Res)]);
 
     end//Not IsMarquee
     else
     begin //IsMarquee
+      // wParam = False (stop marquee), wParam = True (start marquee), lparam = speed (milliseconds between repaints) // Return value is ignored
+      SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_MARQUEE, WPARAM(TRUE), LPARAM(FMarqueeSpeed));
     end;
 
     //wParam = new progress state, lParam must be 0
