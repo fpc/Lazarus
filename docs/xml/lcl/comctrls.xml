@@ -18527,26 +18527,38 @@ indicates activity but does not reflect the completed portion of a task.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TProgressBarState">
-<short/>
+<short>
+Represents state values used when drawing a progress bar.
+</short>
 <descr>
-// used by TTaskDialogProgressBar, but Delphi defines it in ComCtrls unit
-#lcl.dialogs.TTaskDialogProgressBar.State
+<p>
+<var>TProgressBarState</var> is an enumerated type with values that represent 
+the states for a progress bar. TProgressBarState is the type used to implement 
+the State property in TTaskDialogProgressBar.
+</p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="#lcl.dialogs.TTaskDialogProgressBar.State">TTaskDialogProgressBar.State</link>
+</seealso>
 </element>
 <element name="TProgressBarState.pbsNormal">
-<short/>
+<short>
+Progress bar is rendered using the normal drawing style for the platform.
+</short>
 </element>
 <element name="TProgressBarState.pbsError">
-<short/>
+<short>
+Progress bar is drawn using a style which indicates an error condition. 
+</short>
 </element>
 <element name="TProgressBarState.pbsPaused">
-<short/>
+<short>
+Progress bar is drawn using a style which indicates that the bar is paused. 
+</short>
 </element>
 
 <element name="TCustomProgressBar">
