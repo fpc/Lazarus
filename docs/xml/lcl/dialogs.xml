@@ -75,6 +75,7 @@ The following components are added to the Lazarus IDE component palette:
 <element name="ClipBrd"/>
 <element name="Menus"/>
 <element name="DialogRes"/>
+<element name="ComCtrls"/>
 <element name="GraphType"/>
 <element name="FileUtil"/>
 <element name="LazFileUtils"/>
@@ -5757,6 +5758,291 @@ the class instance.
 <short>Ordinal position in the collection for the property value.</short>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TProgressBarState">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="#lcl.comctrls.TProgressBarState"/>
+</seealso>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TTaskDialogProgressBar">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TTaskDialogProgressBar.Dlg"/>
+<element name="TTaskDialogProgressBar.FMarqueeSpeed"/>
+<element name="TTaskDialogProgressBar.FMax"/>
+<element name="TTaskDialogProgressBar.FMin"/>
+<element name="TTaskDialogProgressBar.FPosition"/>
+<element name="TTaskDialogProgressBar.FState"/>
+
+<!-- private -->
+<element name="TTaskDialogProgressBar.SetMarqueeSpeed"/>
+<element name="TTaskDialogProgressBar.SetMarqueeSpeed.AValue"/>
+<element name="TTaskDialogProgressBar.SetMax"/>
+<element name="TTaskDialogProgressBar.SetMax.AValue"/>
+<element name="TTaskDialogProgressBar.SetMin"/>
+<element name="TTaskDialogProgressBar.SetMin.AValue"/>
+<element name="TTaskDialogProgressBar.SetPosition"/>
+<element name="TTaskDialogProgressBar.SetPosition.AValue"/>
+<element name="TTaskDialogProgressBar.SetState"/>
+<element name="TTaskDialogProgressBar.SetState.AValue"/>
+
+<!-- public -->
+<element name="TTaskDialogProgressBar.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance. It extends the 
+constructor to specify the task dialog where the progress bar information is 
+used in the <var>ADialog</var> argument. It sets the default values for 
+properties in the class instance, including: Min (0), Max (100), and 
+MarqueeSpeed (0 milliseconds).
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TTaskDialogProgressBar.Create.ADialog">
+<short>
+Task dialog where the progress bar is hosted.
+</short>
+</element>
+
+<element name="TTaskDialogProgressBar.Initialize">
+<short>
+Sends the initial values for the progress bar to the task dialog where it is 
+hosted.
+</short>
+<descr>
+<p>
+<var>Initialize</var> is a method used to apply the values in the progress bar 
+by notifying the task dialo and ultimately its widget. This includes setting 
+the progress bar display style, its minimum and maximum range values, the 
+current position, and the drawing state.
+</p>
+<p>
+Initialize is called from the DoOnDialogConstructed method in the task dialog 
+when the Handle for the task dialog has been assigned. No actions are performed 
+in the method if the Handle in the task dialog has not been assigned, or when a 
+progress bar has not been enabled using the flags for the task dialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.Handle"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.DoOnDialogConstructed"/>
+</seealso>
+</element>
+
+<!-- published -->
+<!-- TODO: Not used in the current version... yet. -->
+<element name="TTaskDialogProgressBar.MarqueeSpeed">
+<short>
+Contains the number of milliseconds between updates for a progress bar using 
+the marquee style.
+</short>
+<descr>
+<p>
+MarqueeSpeed is a Cardinal property. Until there are implementation details, 
+the usage of the value is undetermined.
+</p>
+<p>
+The default value for the property is 0.
+</p>
+<p>
+Changing the value for the property causes a TDM_SET_PROGRESS_BAR_RANGE message 
+top be sent using the Handle for the task dialog. It allows the widgetset class 
+to be notified when the marquee progress bar style is enabled, or when its 
+update interval has been changed.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+
+<element name="TTaskDialogProgressBar.Max">
+<short>
+Upper limit for the Position on the progress bar.
+</short>
+<descr>
+<p>
+<var>Max</var> is an <var>Integer</var> property which contains the upper limit 
+for the position on the progress bar; the value in Position must be in the 
+range Min..Max inclusive. The default value for the property is 100.
+</p>
+<p>
+The value in Min is normalized when a new value is assigned to Max; if Min is 
+larger than Max, Min is set to the new value for the Max property.
+</p>
+<p>
+Changing the property value causes a TDM_SET_PROGRESS_BAR_RANGE message to be 
+sent using the Handle for the task dialog. This allows the widgetset class to 
+be notified when the range for the progress bar has been updated.
+</p>
+<p>
+Use Min to set the lower limit for the value in Position.
+</p>
+<p>
+Use Position to set the current position for the progress bar.
+</p>
+<p>
+Position, Min, and Max are not used when the task dialog is configured to use 
+the marquee drawing style for its progress bar.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTaskDialogProgressBar.Min"/>
+<link id="TTaskDialogProgressBar.Position"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+
+<element name="TTaskDialogProgressBar.Min">
+<short>
+Lower limit for the Position on the progress bar.
+</short>
+<descr>
+<p>
+<var>Min</var> is an <var>Integer</var> property which contains the lower limit 
+for the position on the progress bar; the value in Position must be in the 
+range Min..Max inclusive. The default value for the property is 0.
+</p>
+<p>
+The value in Min is normalized when a new value is assigned; if Min is 
+larger than Max, Min is set to the value in the Max property.
+</p>
+<p>
+Changing the property value causes a TDM_SET_PROGRESS_BAR_RANGE message to be 
+sent using the Handle for the task dialog. This allows the widgetset class to 
+be notified when the range for the progress bar has been updated.
+</p>
+<p>
+Use Max to set the upper limit for the value in Position.
+</p>
+<p>
+Use Position to set the current position for the progress bar.
+</p>
+<p>
+Position, Min, and Max are not used when the task dialog is configured to use 
+the marquee drawing style for its progress bar.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTaskDialogProgressBar.Max"/>
+<link id="TTaskDialogProgressBar.Position"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+
+<element name="TTaskDialogProgressBar.Position">
+<short>
+Contains the current position for the progress bar.
+</short>
+<descr>
+<p>
+<var>Position</var> is an <var>Integer</var> property which indicates the 
+current position on the progress bar. Position and Max are used to calculate 
+the completion percentage for the progress bar. The default value for the 
+property is 0 (zero).
+</p>
+<p>
+The value in Position must be in the range Min..Max inclusive. If Position is 
+set to a value which exceeds the allowed range, its in normalized to the MNin 
+or Max value as needed.
+</p>
+<p>
+Changing the value in the property causes a TDM_SET_PROGRESS_BAR_POS message to 
+be sent using the Handle for the task dialog. This allows the widgetset class 
+to be notified when the progress bar needs to be redrawn.
+</p>
+<p>
+Use Min to set the lower limit for the value in Position.
+</p>
+<p>
+Use Max to set the upper limit for the value in Position.
+</p>
+<p>
+Position, Min, and Max are not used when the task dialog is configured to use 
+the marquee drawing style for its progress bar.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<notes>
+<note>
+Does Delphi raise an exception if Position is out of range?
+</note>
+</notes>
+<seealso>
+<link id="TTaskDialogProgressBar.Max"/>
+<link id="TTaskDialogProgressBar.Min"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+
+<!-- TODO: Needs update. -->
+<element name="TTaskDialogProgressBar.State">
+<short>
+Contains the current drawing state for the progress bar.
+</short>
+<descr>
+<p>
+<var>State</var> is a <var>TProgressBarState</var> property which indicates the 
+drawing style used to render the progress bar. The default value for the 
+property is pbsNormal and causes the default drawing style for the platform to 
+be used. 
+</p>
+<!-- 
+Changing the value for the property causes the TDM_SET_PROGRESS_BAR_STATE 
+message to be sent to the task dialog instance. This allows the task dialog and 
+its widget to be updated with the mew state for the progress bar.
+-->
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <element name="TCustomTaskDialog">
 <short>
 Defines a configurable, modal task dialog at run-time.
@@ -5873,6 +6159,7 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FOnRadioButtonClicked"/>
 <element name="TCustomTaskDialog.FOnTimer"/>
 <element name="TCustomTaskDialog.FOnVerificationClicked"/>
+<element name="TCustomTaskDialog.FProgressBar"/>
 <element name="TCustomTaskDialog.FQueryChoices"/>
 <element name="TCustomTaskDialog.FQueryResult"/>
 <element name="TCustomTaskDialog.FQueryItemIndex"/>
@@ -6077,7 +6364,10 @@ Signals the OnDialogConstructed event handler (when assigned).
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.OnDialogConstructed"/>
+<link id="TTaskDialogProgressBar.Initialize"/>
+</seealso>
 </element>
 
 <element name="TCustomTaskDialog.DoOnDialogCreated">
@@ -6324,6 +6614,7 @@ properties like:
 <li>QueryChoices</li>
 <li>CustomMainIcon</li>
 <li>CustomFooterIcon</li>
+<li>ProgressBar</li>
 </ul>
 <p>
 Create sets the default values for the following properties:
@@ -6352,6 +6643,7 @@ Create sets the default values for the following properties:
 <link id="TCustomTaskDialog.MainIcon"/>
 <link id="TCustomTaskDialog.QueryChoices"/>
 <link id="TCustomTaskDialog.RadioButtons"/>
+<link id="TCustomTaskDialog.ProgressBar"/>
 </seealso>
 </element>
 <element name="TCustomTaskDialog.Create.AOwner">
@@ -6364,8 +6656,8 @@ Create sets the default values for the following properties:
 <p>
 <var>Destroy</var> is the overridden destructor for the class instance. It 
 frees resources allocated for the Buttons, RadioButtons, QueryChoices, 
-CustomFooterIcon and CustomMainIcon properties. It calls the inherited method 
-prior to exit.
+CustomFooterIcon, CustomMainIcon, and ProgressBar properties. It calls the 
+inherited method prior to exit.
 </p>
 </descr>
 <seealso>
@@ -6374,6 +6666,7 @@ prior to exit.
 <link id="TCustomTaskDialog.QueryChoices"/>
 <link id="TCustomTaskDialog.CustomFooterIcon"/>
 <link id="TCustomTaskDialog.CustomMainIcon"/>
+<link id="TCustomTaskDialog.ProgressBar"/>
 </seealso>
 </element>
 
@@ -6976,6 +7269,34 @@ dialog was displayed, or <var>mrNone</var> if the dialog was cancelled.
 <link id="TCustomTaskDialog.Button"/>
 <link id="TCustomTaskDialog.DefaultButton"/>
 <link id="TCustomTaskDialog.Execute"/>
+</seealso>
+</element>
+
+<element name="TCustomTaskDialog.ProgressBar">
+<short>
+Contains information used to configure and update a progress bar enabled on the 
+task dialog.
+</short>
+<descr>
+<p>
+<var>ProgressBar</var> is a <var>TTaskDialogProgressBar</var> property which 
+contains range, position, and state information for a progress bar enabled on 
+the task dialog. Changes to property values in ProgressBar cause the widgetset 
+class to be updated and redrawn. The Handle for the dialog is used to send task 
+dialog messages to the widget with the new values for the members.
+</p>
+<p>
+Use the Flags property to enable a progress bar on the task dialog. 
+tfShowProgressBar enables a conventional progress bar which displays completion 
+percentage. tfShowMarqueeProgressBar enables the scrolling marquee-style 
+progress bar.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTaskDialogProgressBar"/>
 </seealso>
 </element>
 
@@ -7863,6 +8184,7 @@ and includes additional features not found in previous versions.
 <element name="TTaskDialog.FooterIcon" link="#lcl.dialogs.TCustomTaskDialog.FooterIcon"/>
 <element name="TTaskDialog.FooterText" link="#lcl.dialogs.TCustomTaskDialog.FooterText"/>
 <element name="TTaskDialog.MainIcon" link="#lcl.dialogs.TCustomTaskDialog.MainIcon"/>
+<element name="TTaskDialog.ProgressBar" link="#lcl.dialogs.TCustomTaskDialog.ProgressBar"/>
 <element name="TTaskDialog.RadioButtons" link="#lcl.dialogs.TCustomTaskDialog.RadioButtons"/>
 <element name="TTaskDialog.QueryChoices" link="#lcl.dialogs.TCustomTaskDialog.QueryChoices"/>
 <element name="TTaskDialog.QueryItemIndex" link="#lcl.dialogs.TCustomTaskDialog.QueryItemIndex"/>
