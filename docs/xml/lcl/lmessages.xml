@@ -870,6 +870,76 @@ System Menu Command.
 <descr/>
 </element>
 
+<element name="TDM_NAVIGATE_PAGE">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_CLICK_BUTTON">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_MARQUEE_PROGRESS_BAR">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_PROGRESS_BAR_STATE">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_PROGRESS_BAR_RANGE">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_PROGRESS_BAR_POS">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_PROGRESS_BAR_MARQUEE">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_ELEMENT_TEXT">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_CLICK_RADIO_BUTTON">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_ENABLE_BUTTON">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_CLICK_VERIFICATION">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_UPDATE_ELEMENT_TEXT">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE">
+<short/>
+<descr/>
+</element>
+
+<element name="TDM_UPDATE_ICON">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMDrawItems">
 <short/>
 <descr>
