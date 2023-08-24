@@ -5771,6 +5771,27 @@ Added in LCL version 4.0.
 </element>
 
 <!-- TODO: Needs content. -->
+<element name="PBST_NORMAL">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="PBST_ERROR">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="PBST_PAUSED">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
 <element name="TTaskDialogProgressBar">
 <short/>
 <descr/>
@@ -5781,6 +5802,7 @@ Added in LCL version 4.0.
 </element>
 
 <!-- private -->
+<element name="TTaskDialogProgressBar.ProgressBarStateValues"/>
 <element name="TTaskDialogProgressBar.Dlg"/>
 <element name="TTaskDialogProgressBar.FMarqueeSpeed"/>
 <element name="TTaskDialogProgressBar.FMax"/>
