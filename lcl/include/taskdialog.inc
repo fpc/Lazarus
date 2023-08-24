@@ -131,11 +131,11 @@ begin
   if (Dlg.Handle <> 0) and (Dlg.Flags * [tfShowProgressBar,tfShowMarqueeProgressBar] <> []) then
   begin
     IsMarquee := (tfShowMarqueeProgressBar in Dlg.Flags);
-    writeln('TTaskDialogProgressBar.Initialize: IsMarquee=',IsMarquee);
+    debugln(['TTaskDialogProgressBar.Initialize: IsMarquee=',IsMarquee]);
     //wParam = 0 (nonMarque) wParam != 0 (Marquee), lParam must be 0
     //if Both Flags are set, Windows seems to intepret this a Marquee
     Res := SendMessage(Dlg.Handle, TDM_SET_MARQUEE_PROGRESS_BAR, WPARAM(IsMarquee), 0);  //Result is ignored
-    writeln('TTaskDialogProgressBar.Initialize: TDM_SET_MARQUEE_PROGRESS_BAR: LResult=',PtrInt(Res));
+    debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_MARQUEE_PROGRESS_BAR: LResult=',PtrInt(Res)]);
 
 
     if not IsMarquee then
