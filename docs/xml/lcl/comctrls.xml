@@ -18527,6 +18527,28 @@ indicates activity but does not reflect the completed portion of a task.
 </short>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TProgressBarState">
+<short/>
+<descr>
+// used by TTaskDialogProgressBar, but Delphi defines it in ComCtrls unit
+#lcl.dialogs.TTaskDialogProgressBar.State
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TProgressBarState.pbsNormal">
+<short/>
+</element>
+<element name="TProgressBarState.pbsError">
+<short/>
+</element>
+<element name="TProgressBarState.pbsPaused">
+<short/>
+</element>
+
 <element name="TCustomProgressBar">
 <short>Implements the base class for progress bar controls.</short>
 <descr>
