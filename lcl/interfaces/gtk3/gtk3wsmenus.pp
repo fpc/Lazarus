@@ -256,7 +256,6 @@ var
   MenuItem: TGtk3MenuItem;
   ParentMenuWidget, ContainerMenu: PGtkWidget;
   NewMenu: TGtk3Menu;
-  AOwner: TControl;
   AForm: TCustomForm;
 begin
   if not AMenuItem.HandleAllocated then
@@ -290,13 +289,9 @@ begin
     ParentMenuWidget := TGtk3Widget(AMenuItem.Parent.Handle).Widget;
   end;
 
-  if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
+  if (not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu) then
   begin
-    AOwner := TControl(AMenuItem.GetParentMenu.Owner);
-    if AOwner is TFrame then
-      AForm := GetParentForm(AOwner)
-    else
-      AForm := TCustomForm(AOwner);
+    AForm := TCustomForm(AMenuItem.GetParentMenu.Parent);
     PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
   end else
   (*
