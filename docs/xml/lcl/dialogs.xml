@@ -5758,9 +5758,10 @@ the class instance.
 <short>Ordinal position in the collection for the property value.</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TProgressBarState">
-<short/>
+<short>
+Alias to the TProgressBarState type in <file>comctrls.pp</file>.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5770,35 +5771,68 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="PBST_NORMAL">
-<short/>
+<short>
+Numeric constant used in the Task Dialog API to represent pbsNormal from the 
+TProgressBarState enumeration.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TProgressBarState"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="PBST_ERROR">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- TODO: Needs content. -->
-<element name="PBST_PAUSED">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- TODO: Needs content. -->
-<element name="TTaskDialogProgressBar">
-<short/>
+<short>
+Numeric constant used in the Task Dialog API to represent pbsError from the 
+TProgressBarState enumeration.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TProgressBarState"/>
+</seealso></element>
+
+<element name="PBST_PAUSED">
+<short>
+Numeric constant used in the Task Dialog API to represent pbsPaused from the 
+TProgressBarState enumeration.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TProgressBarState"/>
+</seealso></element>
+
+<element name="TTaskDialogProgressBar">
+<short>
+Provides information about a progress bar displayed on a TTaskDialog instance.
+</short>
+<descr>
+<p>
+<var>TTaskDialogProgressBar</var> is a <var>TPersistent</var> descendant used 
+to represent information about a progress bar displayed on a task dialog. It 
+provides properties used to configure or update the progress bar, like: Min, 
+Max, Position, MarqueeSpeed, and State. It includes methods used to create the 
+progress bar on the task dialog, and to send its settings to the widgetset 
+class including its drawing state. It is not the actual progress bar control, 
+however.
+</p>
+<p>
+TTaskDialogProgressBar is the type used to implement the ProgressBar property 
+in TTaskDialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTaskDialog.ProgressBar"/>
+</seealso>
 </element>
 
 <!-- private -->
@@ -5877,7 +5911,7 @@ Added in LCL version 4.0.
 </element>
 
 <!-- published -->
-<!-- TODO: Not used in the current version... yet. -->
+<!-- TODO: Needs update. -->
 <element name="TTaskDialogProgressBar.MarqueeSpeed">
 <short>
 Contains the number of milliseconds between updates for a progress bar using 
@@ -5885,8 +5919,7 @@ the marquee style.
 </short>
 <descr>
 <p>
-MarqueeSpeed is a Cardinal property. Until there are implementation details, 
-the usage of the value is undetermined.
+<var>MarqueeSpeed</var> is a <var>Cardinal</var> property.
 </p>
 <p>
 The default value for the property is 0.
