@@ -47,7 +47,6 @@ type
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 function GetPixelsPerInch: Integer;
-function GetUtf8String(const S: String): WideString;
 
 implementation
 
@@ -90,13 +89,6 @@ begin
   Desc.MaskBitOrder := riboReversedBits;
   Desc.MaskBitsPerPixel := 1;
 //  Desc.MaskShift := 0;
-end;
-
-function GetUtf8String(const S: String): WideString;
-begin
-  Result := UTF8ToUTF16(S);
-  if Result = '' then
-    Result := S;
 end;
 
 {------------------------------------------------------------------------------

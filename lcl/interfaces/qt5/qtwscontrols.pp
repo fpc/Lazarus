@@ -362,7 +362,7 @@ begin
     Exit;
   Wdgt := TQtWidget(AWinControl.Handle);
   Wdgt.BeginUpdate;
-  Wdgt.setText(GetUtf8String(AText));
+  Wdgt.setText(AText{%H-});
   Wdgt.EndUpdate;
 end;
 

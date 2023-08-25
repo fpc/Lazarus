@@ -207,7 +207,7 @@ begin
   QtMainWindow.QtFormBorderStyle := Ord(AForm.BorderStyle);
   QtMainWindow.QtFormStyle := Ord(AForm.FormStyle);
 
-  Str := GetUtf8String(AWinControl.Caption);
+  Str := AWinControl{%H-}.Caption;
 
   QtMainWindow.SetWindowTitle(@Str);
 
