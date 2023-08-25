@@ -5808,6 +5808,30 @@ Added in LCL version 4.0.
 <link id="TProgressBarState"/>
 </seealso></element>
 
+<element name="PB_DEFMIN">
+<short>
+Numeric constant which defines the default value for the Min property in a 
+progress bar.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="PB_DEFMAX">
+<short>
+Numeric constant which defines the default value for the Max property in a 
+progress bar.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <element name="TTaskDialogProgressBar">
 <short>
 Provides information about a progress bar displayed on a TTaskDialog instance.
@@ -5866,14 +5890,22 @@ Constructor for the class instance.
 <var>Create</var> is the constructor for the class instance. It extends the 
 constructor to specify the task dialog where the progress bar information is 
 used in the <var>ADialog</var> argument. It sets the default values for 
-properties in the class instance, including: Min (0), Max (100), and 
-MarqueeSpeed (0 milliseconds).
+properties in the class instance, including: Min (PB_DEFMIN), Max (PB_DEFMAX), 
+and MarqueeSpeed (0 milliseconds).
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TTaskDialogProgressBar.Max"/>
+<link id="TTaskDialogProgressBar.Min"/>
+<link id="TTaskDialogProgressBar.MarqueeSpeed"/>
+<link id="PB_DEFMIN"/>
+<link id="PB_DEFMAX"/>
+<link id="TCustomTaskDialog"/>
+</seealso>
+
 </element>
 <element name="TTaskDialogProgressBar.Create.ADialog">
 <short>
@@ -5925,15 +5957,30 @@ in the class instance. No actions are performed in the method if the argument
 values are the same as the existing property values in the class instance.
 </p>
 <p>
-SetRange ensures that the new value in Min is normalized. Min is set to the 
-value in Max if it exceeds the upper limit.
+SetRange ensures that values in the AMin and AMax are in the range 0..High(
+Word) (32767). This is done to ensure that the values are valid for the 
+platforms and APIs where the value is used. If a valid is too small, it is set 
+to 0. If a value is too large, it is set to High(Word). If AMin is larger than 
+AMax, AMin is set to the value in the upper limit.
+</p>
+<p>
+SetRange also ensures that the value in Position is within the range specified 
+by Min..Max.
 </p>
 <p>
 SetRange updates the task dialog where the progress bar is displayed when the 
 Flags property in the dialog includes the value tfShowProgressBar and the 
 Handle for the dialog has been assigned. A TDM_SET_PROGRESS_BAR_RANGE message 
 is sent using the Handle for the dialog and the newly assigned values for Min 
-and / or Max.
+and Max.
+</p>
+<p>
+Use the Min and Max properties to set the lower and upper limits for the value 
+in Position.
+</p>
+<p>
+Set the value in Position to cause the completion percentage to be 
+recalculated and the progress bar control to be redrawn.
 </p>
 </descr>
 <version>
@@ -6004,14 +6051,9 @@ for the position on the progress bar; the value in Position must be in the
 range Min..Max inclusive. The default value for the property is 100.
 </p>
 <p>
-The value in Min is normalized when a new value is assigned to Max; if Min is 
-larger than Max, Min is set to the new value for the Max property.
-</p>
-<p>
 Changing the property value causes the SetRange method to be called. This 
 allows the task dialog and the widgetset class to be notified when the range 
-for the progress bar has been updated. This action is not performed if the 
-dialog does not have the value tfShowProgressBar in its Flags property.
+for the progress bar has been updated.
 </p>
 <p>
 Use Min to set the lower limit for the value in Position.
@@ -6031,9 +6073,6 @@ Added in LCL version 4.0.
 <link id="TTaskDialogProgressBar.Min"/>
 <link id="TTaskDialogProgressBar.Position"/>
 <link id="TTaskDialogProgressBar.SetRange"/>
-<link id="TCustomTaskDialog.Flags"/>
-<link id="TTaskDialogFlags"/>
-<link id="TTaskDialogFlag"/>
 </seealso>
 </element>
 
@@ -6048,14 +6087,9 @@ for the position on the progress bar; the value in Position must be in the
 range Min..Max inclusive. The default value for the property is 0.
 </p>
 <p>
-The value in Min is normalized when a new value is assigned; if Min is 
-larger than Max, Min is set to the value in the Max property.
-</p>
-<p>
 Changing the property value causes the SetRange method to be called. This 
 allows the task dialog and the widgetset class to be notified when the range 
-for the progress bar has been updated. This action is not performed if the 
-dialog does not have the value tfShowProgressBar in its Flags property.
+for the progress bar has been updated.
 </p>
 <p>
 Use Max to set the upper limit for the value in Position.
@@ -6075,9 +6109,6 @@ Added in LCL version 4.0.
 <link id="TTaskDialogProgressBar.Max"/>
 <link id="TTaskDialogProgressBar.Position"/>
 <link id="TTaskDialogProgressBar.SetRange"/>
-<link id="TCustomTaskDialog.Flags"/>
-<link id="TTaskDialogFlags"/>
-<link id="TTaskDialogFlag"/>
 </seealso>
 </element>
 
