@@ -10,7 +10,25 @@ uses
   // LCL
   Controls, ComCtrls, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
-  PairSplitter, WSLCLClasses, WSDialogs;
+  PairSplitter, WSLCLClasses, WSDialogs,
+  // gtk widgetset
+  Gtk2WSButtons,
+  Gtk2WSCalendar,
+  Gtk2WSCheckLst,
+  Gtk2WSComCtrls,
+  Gtk2WSControls,
+  Gtk2WSDialogs,
+  Gtk2WSExtCtrls,
+  Gtk2WSExtDlgs,
+  Gtk2WSForms,
+  Gtk2WSGrids,
+  {%H-}Gtk2WSImgList,
+  Gtk2WSMenus,
+  Gtk2WSSpin,
+  Gtk2WSStdCtrls,
+  Gtk2WSPairSplitter,
+  Gtk2WSPrivate,
+  UnityWSCtrls;
 
 
 // imglist
@@ -107,25 +125,6 @@ function RegisterCustomShellListView: Boolean;
 function RegisterLazDeviceAPIs: Boolean;
 
 implementation
-
-uses
-  Gtk2WSButtons,
-  Gtk2WSCalendar,
-  Gtk2WSCheckLst,
-  Gtk2WSComCtrls,
-  Gtk2WSControls,
-  Gtk2WSDialogs,
-  Gtk2WSExtCtrls,
-  Gtk2WSExtDlgs,
-  Gtk2WSForms,
-  Gtk2WSGrids,
-  {%H-}Gtk2WSImgList,
-  Gtk2WSMenus,
-  Gtk2WSSpin,
-  Gtk2WSStdCtrls,
-  Gtk2WSPairSplitter,
-  Gtk2WSPrivate,
-  UnityWSCtrls;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';

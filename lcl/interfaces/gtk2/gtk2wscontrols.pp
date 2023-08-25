@@ -38,7 +38,7 @@ uses
 
   Gtk2Globals, Gtk2Def,
   Gtk2Proc,
-  WSControls, WSProc, Gtk2WinapiWindow;
+  WSControls, WSProc, Gtk2WinapiWindow, Gtk2WSPrivate;
   
 
 type
@@ -151,7 +151,7 @@ var
 implementation
 
 uses
-  Gtk2Int, Gtk2WSPrivate;
+  Gtk2Int;
 
 { TGtk2WSWinControl }
 
