@@ -5943,7 +5943,7 @@ Added in LCL version 4.0.
 <link id="TTaskDialogProgressBar.Min"/>
 <link id="TTaskDialogProgressBar.Max"/>
 <link id="TTaskDialog.ProgressBar"/>
-<link id="TTaskDialog.Handle"/>
+<link id="TCustomTaskDialog.Handle"/>
 <link id="TTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -6074,8 +6074,8 @@ Added in LCL version 4.0.
 <seealso>
 <link id="TTaskDialogProgressBar.Max"/>
 <link id="TTaskDialogProgressBar.Position"/>
+<link id="TTaskDialogProgressBar.SetRange"/>
 <link id="TCustomTaskDialog.Flags"/>
-<link id="TCustomTaskDialog.SetRange"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
