@@ -313,7 +313,7 @@ end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox, TGtk2PrivateList);
+  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox, TGtk2ListBoxPrivateList);
 //  RegisterWSComponent(TListBox, TGtk2WSListBox);
   Result := True;
 end;
