@@ -45,14 +45,14 @@ uses
   {$if defined(UNIX) and not defined(OPENBSD)}
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
-  Types, Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math, DateUtils,
   // LCL
   LCLType, LCLIntf, LMessages, Controls, Graphics, Buttons, ExtCtrls, Forms, ComCtrls,
   Themes,
   // LazUtils
   LazUTF8, LazMethodList,
   // DateTimeCtrls
-  CalControlWrapper;
+  LCLCalWrapper, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -573,9 +573,6 @@ function IsNullDate(DT: TDateTime): Boolean;
 function dbgs(const Parts: TDateTimeParts): string; overload;
 
 implementation
-
-uses
-  DateUtils, LCLCalWrapper;
 
 const
   DefaultUpDownWidth = 15;
