@@ -569,15 +569,13 @@ begin
     Result := FLastMouseControl
   else
     Result := FindControlAtPosition(P, False);
-  
-  if Assigned(Result) and (csDesigning in Result.ComponentState) then
-    Result := nil;
-  if Assigned(Result) then
-  begin
-    FLastMouseControlValid := True;
-    FLastMousePos := p;
-    FLastMouseControl := Result;
-  end;
+
+  if not Assigned(Result) or (csDesigning in Result.ComponentState) then
+    Exit(nil);
+
+  FLastMouseControlValid := True;
+  FLastMousePos := p;
+  FLastMouseControl := Result;
 end;
 
 procedure TApplication.SetBidiMode(const AValue: TBiDiMode) ;
