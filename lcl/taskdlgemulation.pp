@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils,
   LazUTF8,
-  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils, Math,
+  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils, Math, ComCtrls,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes;
 
 
@@ -72,6 +72,8 @@ type
       CommandLinkButtonVSpacing = 2;
       BevelMargin = 2;
       BevelHeight = 2;
+      ProgressBarHeight = 20;
+      ProgressBarVSpacing = 16;
   private
     /// the Task Dialog structure which created the form
     FDlg: TTaskDialog;
@@ -109,6 +111,8 @@ type
     VerifyCheckBox: TCheckBox;
     /// the Expand/Collapse button
     ExpandBtn: TButton;
+    ///
+    ProgressBar: TProgressBar;
 
     procedure GetDefaultButtons(out aButtonDef, aRadioDef: TModalResult);
     procedure InitCaptions;
@@ -116,6 +120,7 @@ type
     function GetGlobalLeftMargin: Integer;
     procedure AddMainIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
     procedure AddPanels;
+    procedure AddProgressBar(const ALeft: Integer; var ATop: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddRadios(const ARadioOffSet, AWidth, ARadioDef, AFontHeight, ALeft: Integer; var ATop: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(const ALeft: Integer; var ATop: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtons(const ALeft: Integer; var ATop, AButtonLeft: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
@@ -507,6 +512,24 @@ begin
   BottomPanel.Name := 'BottomPanel'; //for debugging purposes
   BottomPanel.Caption := '';
 
+end;
+
+procedure TLCLTaskDialog.AddProgressBar(const ALeft: Integer; var ATop: Integer; AWidth: Integer; AParent: TWinControl);
+begin
+  Inc(ATop, ProgressBarVSpacing);
+  ProgressBar := TProgressBar.Create(Self);
+  if (tfShowMarqueeProgressBar in FDlg.Flags) then
+    ProgressBar.Style := pbstMarquee
+  else
+  begin
+    ProgressBar.Style := pbstNormal;
+    ProgressBar.Min := FDlg.ProgressBar.Min;
+    ProgressBar.Max := FDlg.ProgressBar.Max;
+    ProgressBar.Position := FDlg.ProgressBar.Position;
+  end;
+  ProgressBar.SetBounds(ALeft, ATop, AWidth-ALeft-GlobalLeftMargin, ProgressBarHeight);
+  Inc(ATop, ProgressBar.Height + ProgressBarVSpacing);
+  ProgressBar.Parent := AParent;
 end;
 
 procedure TLCLTaskDialog.AddRadios(const ARadioOffSet, AWidth, ARadioDef, AFontHeight, ALeft: Integer; var ATop: Integer; AParent: TWinControl);
@@ -1067,6 +1090,9 @@ begin
     TopPanel.Height := ATop;
     CurrParent := MidPanel;
     ATop := 0;
+    //Add ProgressBar
+    if ([tfShowProgressBar,tfShowMarqueeProgressBar] * FDlg.Flags <> []) then
+      AddProgressBar(ALeft, ATop, AWidth, CurrParent);
 
     // add radio CustomButtons
     if (FDlg.RadioButtons.Count > 0) then

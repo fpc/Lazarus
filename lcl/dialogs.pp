@@ -669,11 +669,11 @@ Type
     procedure Initialize;  //call after dialog has been instatiated to send message to the dialog window
     procedure SetRange(AMin, AMax: Integer);
   published
-    property MarqueeSpeed: Cardinal read FMarqueeSpeed write SetMarqueeSpeed default 0;
+    property MarqueeSpeed: Cardinal read FMarqueeSpeed write SetMarqueeSpeed default 0; //Vista+ native dialog only
     property Max: Integer read FMax write SetMax default 100;
     property Min: Integer read FMin write SetMin default 0;
     property Position: Integer read FPosition write SetPosition default 0;
-    property State: TProgressBarState read FState write SetState default pbsNormal;
+    property State: TProgressBarState read FState write SetState default pbsNormal; //Vista+ native dialog only
   end;
 
 
