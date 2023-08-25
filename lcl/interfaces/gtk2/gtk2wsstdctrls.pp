@@ -28,6 +28,7 @@ uses
   LazLoggerBase, LazTracer, LazStringUtils,
   // LCL
   Controls, Graphics, StdCtrls, LMessages, LCLType, LazUTF8,
+  LCLMessageGlue, Forms,
   // Widgetset
   WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,
@@ -392,9 +393,6 @@ type
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 
 implementation
-
-uses
-  LCLMessageGlue, Forms;
 
 const
   StaticBorderShadowMap: array[TStaticBorderStyle] of TGtkShadowType =

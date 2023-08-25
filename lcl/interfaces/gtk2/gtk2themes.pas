@@ -6,7 +6,7 @@ interface
 
 uses
   // rtl
-  Types, Classes, SysUtils,
+  Math, Types, Classes, SysUtils,
   // os
   glib2,  gdk2, gtk2, gdk2pixbuf,
   // lcl
@@ -133,7 +133,6 @@ const
   );
 
 implementation
-uses math;
 
 {$I gtk2stdpixmaps.inc}
 
