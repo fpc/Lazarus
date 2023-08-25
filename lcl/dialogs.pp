@@ -643,6 +643,8 @@ const
   PBST_NORMAL             = $0001;
   PBST_ERROR              = $0002;
   PBST_PAUSED             = $0003;
+  PB_DEFMIN               = 0;   //needed in TLCTaskDialog as well
+  PB_DEFMAX               = 100;
 
 Type
 
@@ -650,7 +652,7 @@ Type
   private
     const
       ProgressBarStateValues: array[TProgressBarState] of Integer = (PBST_NORMAL,PBST_ERROR,PBST_PAUSED);
-    private
+  private
     Dlg: TCustomTaskDialog;
     FMarqueeSpeed: Cardinal;
     FMax: Integer;

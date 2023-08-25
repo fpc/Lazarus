@@ -74,19 +74,13 @@ end;
 procedure TTaskDialogProgressBar.SetMax(AValue: Integer);
 begin
   if (FMax = AValue) then Exit;
-  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
-    SetRange(FMin, AValue)
-  else
-    FMax := AValue; //will be set in Initialize
+  SetRange(FMin, AValue);
 end;
 
 procedure TTaskDialogProgressBar.SetMin(AValue: Integer);
 begin
   if FMin = AValue then Exit;
-  if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
-    SetRange(AValue, FMax)
-  else
-    FMin := AValue; //will be set in Initialize
+  SetRange(AValue, FMax);
 end;
 
 procedure TTaskDialogProgressBar.SetRange(AMin, AMax: Integer);
@@ -97,13 +91,26 @@ begin
   if (AMin = FMin) and (AMax = FMax) then
     Exit;
   FMin := AMin;
-  FMax := FMax;
+  FMax := AMax;
+  //several sources indicate that FMax must be <= High(Word)
+  //testing reveals that FMin must be >= 0 (Vista+ native dialog)
+  FMax := EnsureRange(FMax, Integer(0), High(Word));
+  //if (FMax > High(Word)) then
+  //  FMax := High(Word);
+  FMin := EnsureRange(FMin, Integer(0), High(Word));
+  //if (FMin < 0) then
+  //  FMin := 0;
   if (FMin > FMax) then
     FMin := FMax;
+  FPosition := EnsureRange(FPosition, FMin, FMax);
+  //if (FPosition > FMax) then
+  //  FPosition := FMax;
+  //if (FPosition < FMin) then
+  //  FPosition := FMin;
   if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
   begin
-    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero iindicates failure
-    debugln(['TTaskDialogProgressBar.SetRange: TDM_SET_PROGRESS_BAR_RANGE: LResult=',PtrInt(Res)]);
+    Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(Word(FMin), Word(FMax)));   //Zero indicates failure
+    debugln(['TTaskDialogProgressBar.SetRange: TDM_SET_PROGRESS_BAR_RANGE, FMin=',FMin,', FMax=',FMax,', MAKELPARAM=',MAKELPARAM(Word(FMin), Word(FMax)),': LResult=',PtrInt(Res)]);
     if (Res = 0) then
     begin
       Err := GetLastOSError;
@@ -157,8 +164,8 @@ constructor TTaskDialogProgressBar.Create(ADialog: TCustomTaskDialog);
 begin
   inherited Create;
   Dlg := ADialog;
-  FMin := 0;
-  FMax := 100;
+  FMin := PB_DEFMIN;
+  FMax := PB_DEFMAX;
   FMarqueeSpeed := 0;
 end;
 
@@ -185,12 +192,16 @@ begin
     if not IsMarquee then
     begin
       //wParam must be 0, lParam = MAKELPARAM(nMinRange, nMaxRange)
-      Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(FMin, FMax));   //Zero indicates failure
+      Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(Word(FMin), Word(FMax)));   //Zero indicates failure
       debugln(['TTaskDialogProgressBar.Initialize: TDM_SET_PROGRESS_BAR_RANGE (FMin=,',FMin,', FMax=',FMax,'): LResult=',PtrInt(Res)]);
       if (Res = 0) then
       begin
         Err := GetLastOSError;
         debugln(['Err=',Err,': ',SysErrorMessage(Err)]);
+      end
+      else
+      begin
+        debugln(['Old Min=',LoWord(Res),', Old Max=',HiWord(Res)]);
       end;
 
       //wParam = new position, lParam must be 0, return value is previous position
