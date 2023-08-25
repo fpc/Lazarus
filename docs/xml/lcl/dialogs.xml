@@ -5889,9 +5889,10 @@ hosted.
 <descr>
 <p>
 <var>Initialize</var> is a method used to apply the values in the progress bar 
-by notifying the task dialo and ultimately its widget. This includes setting 
-the progress bar display style, its minimum and maximum range values, the 
-current position, and the drawing state.
+by notifying the task dialog and its widget. This includes setting the progress 
+bar display style, its minimum and maximum range values, the current position, 
+the drawing state, and the update frequency for a progress bar drawn using the 
+marquee style.
 </p>
 <p>
 Initialize is called from the DoOnDialogConstructed method in the task dialog 
@@ -5910,31 +5911,82 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- published -->
-<!-- TODO: Needs update. -->
-<element name="TTaskDialogProgressBar.MarqueeSpeed">
+<element name="TTaskDialogProgressBar.SetRange">
 <short>
-Contains the number of milliseconds between updates for a progress bar using 
-the marquee style.
+Applies the values in the Min and Max properties to the progress bar control on 
+a task dialog.
 </short>
 <descr>
 <p>
-<var>MarqueeSpeed</var> is a <var>Cardinal</var> property.
+<var>SetRange</var> is a method used to apply the values in the <var>AMin</var> 
+and <var>AMax</var> arguments to the progress bar control on a task dialog. 
+SetRange is called when the value for the Min or Max property has been updated 
+in the class instance. No actions are performed in the method if the argument 
+values are the same as the existing property values in the class instance.
 </p>
 <p>
-The default value for the property is 0.
+SetRange ensures that the new value in Min is normalized. Min is set to the 
+value in Max if it exceeds the upper limit.
 </p>
 <p>
-Changing the value for the property causes a TDM_SET_PROGRESS_BAR_RANGE message 
-top be sent using the Handle for the task dialog. It allows the widgetset class 
-to be notified when the marquee progress bar style is enabled, or when its 
-update interval has been changed.
+SetRange updates the task dialog where the progress bar is displayed when the 
+Flags property in the dialog includes the value tfShowProgressBar and the 
+Handle for the dialog has been assigned. A TDM_SET_PROGRESS_BAR_RANGE message 
+is sent using the Handle for the dialog and the newly assigned values for Min 
+and / or Max.
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
+<link id="TTaskDialogProgressBar.Min"/>
+<link id="TTaskDialogProgressBar.Max"/>
+<link id="TTaskDialog.ProgressBar"/>
+<link id="TTaskDialog.Handle"/>
+<link id="TTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+<element name="TTaskDialogProgressBar.SetRange.AMin">
+<short>
+Lower limit for the value in Position.
+</short>
+</element>
+<element name="TTaskDialogProgressBar.SetRange.AMax">
+<short>
+Upper limit for the value in Position.
+</short>
+</element>
+
+<!-- published -->
+<element name="TTaskDialogProgressBar.MarqueeSpeed">
+<short>
+Contains the number of milliseconds between updates for a progress bar using 
+the marquee display style.
+</short>
+<descr>
+<p>
+<var>MarqueeSpeed</var> is a <var>Cardinal</var> property which sets the update 
+interval for the progress bar. It specifies, in milliseconds, often a progress 
+bar using the marquee display style is updated. The default value for the 
+property is 0.
+</p>
+<p>
+Changing the value for the property causes a TDM_SET_PROGRESS_BAR_RANGE message 
+to be sent using the Handle for the task dialog. It allows the widgetset class 
+to be notified when the marquee progress bar style is enabled, or when its 
+update interval has been changed. The update is sent when 
+tfShowMarqueeProgressBar has been included in the Flags for the task dialog and 
+its Handle has been assigned.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.Handle"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -5956,9 +6008,10 @@ The value in Min is normalized when a new value is assigned to Max; if Min is
 larger than Max, Min is set to the new value for the Max property.
 </p>
 <p>
-Changing the property value causes a TDM_SET_PROGRESS_BAR_RANGE message to be 
-sent using the Handle for the task dialog. This allows the widgetset class to 
-be notified when the range for the progress bar has been updated.
+Changing the property value causes the SetRange method to be called. This 
+allows the task dialog and the widgetset class to be notified when the range 
+for the progress bar has been updated. This action is not performed if the 
+dialog does not have the value tfShowProgressBar in its Flags property.
 </p>
 <p>
 Use Min to set the lower limit for the value in Position.
@@ -5977,6 +6030,7 @@ Added in LCL version 4.0.
 <seealso>
 <link id="TTaskDialogProgressBar.Min"/>
 <link id="TTaskDialogProgressBar.Position"/>
+<link id="TTaskDialogProgressBar.SetRange"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -5998,9 +6052,10 @@ The value in Min is normalized when a new value is assigned; if Min is
 larger than Max, Min is set to the value in the Max property.
 </p>
 <p>
-Changing the property value causes a TDM_SET_PROGRESS_BAR_RANGE message to be 
-sent using the Handle for the task dialog. This allows the widgetset class to 
-be notified when the range for the progress bar has been updated.
+Changing the property value causes the SetRange method to be called. This 
+allows the task dialog and the widgetset class to be notified when the range 
+for the progress bar has been updated. This action is not performed if the 
+dialog does not have the value tfShowProgressBar in its Flags property.
 </p>
 <p>
 Use Max to set the upper limit for the value in Position.
@@ -6020,6 +6075,7 @@ Added in LCL version 4.0.
 <link id="TTaskDialogProgressBar.Max"/>
 <link id="TTaskDialogProgressBar.Position"/>
 <link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.SetRange"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
@@ -6038,13 +6094,15 @@ property is 0 (zero).
 </p>
 <p>
 The value in Position must be in the range Min..Max inclusive. If Position is 
-set to a value which exceeds the allowed range, its in normalized to the MNin 
+set to a value which exceeds the allowed range, it is normalized to the Min 
 or Max value as needed.
 </p>
 <p>
 Changing the value in the property causes a TDM_SET_PROGRESS_BAR_POS message to 
 be sent using the Handle for the task dialog. This allows the widgetset class 
-to be notified when the progress bar needs to be redrawn.
+to be notified when the progress bar needs to be redrawn. The message is not 
+sent to the dialog if tfShowProgressBar has not been included in its Flags 
+property or the Handle for the dialog has not been assigned.
 </p>
 <p>
 Use Min to set the lower limit for the value in Position.
@@ -6074,7 +6132,6 @@ Does Delphi raise an exception if Position is out of range?
 </seealso>
 </element>
 
-<!-- TODO: Needs update. -->
 <element name="TTaskDialogProgressBar.State">
 <short>
 Contains the current drawing state for the progress bar.
@@ -6083,14 +6140,33 @@ Contains the current drawing state for the progress bar.
 <p>
 <var>State</var> is a <var>TProgressBarState</var> property which indicates the 
 drawing style used to render the progress bar. The default value for the 
-property is pbsNormal and causes the default drawing style for the platform to 
-be used. 
+property is pbsNormal. Values in the property affect the drawing style used for 
+the completion indicator on the progress bar as follows:
 </p>
-<!-- 
+<dl>
+<dt>pbsNormal</dt>
+<dd>
+Causes the default drawing style for the platform to be applied to the 
+completion indicator.
+</dd>
+<dt>pbsError</dt>
+<dd>
+Causes the completion bar to be drawn with a red fill color to indicate an 
+error condition.
+</dd>
+<dt>pbsPaused</dt>
+<dd>
+Causes the completion bar to be drawn with an amber fill color to indicate 
+that the progress bar has been paused.
+</dd>
+</dl>
+<p>
 Changing the value for the property causes the TDM_SET_PROGRESS_BAR_STATE 
 message to be sent to the task dialog instance. This allows the task dialog and 
-its widget to be updated with the mew state for the progress bar.
--->
+its widget to be updated with the mew state for the progress bar. This action 
+is not performed if tfShowProgressBar has not been included in the flags for 
+the task dialog or its Handle has not been assigned.
+</p>
 </descr>
 <version>
 Added in LCL version 4.0.
