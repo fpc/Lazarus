@@ -66,6 +66,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <element name="LCLProc"/>
 <element name="DateUtils"/>
 <element name="Math"/>
+<element name="ComCtrls"/>
 <element name="LResources"/>
 <element name="Menus"/>
 <element name="Graphics"/>
@@ -176,6 +177,8 @@ Added in LCL version 4.0.
 <element name="TLCLTaskDialog.CommandLinkButtonVSpacing"/>
 <element name="TLCLTaskDialog.BevelMargin"/>
 <element name="TLCLTaskDialog.BevelHeight"/>
+<element name="TLCLTaskDialog.ProgressBarHeight"/>
+<element name="TLCLTaskDialog.ProgressBarVSpacing"/>
 
 <element name="TLCLTaskDialog.FDlg">
 <short>
@@ -240,6 +243,12 @@ The expand/collapse button (expando control) for the Task dialog.
 </short>
 </element>
 
+<element name="TLCLTaskDialog.ProgressBar">
+<short>
+The progress bar control for the Task dialog.
+</short>
+</element>
+
 <!-- private -->
 <element name="TLCLTaskDialog.GetDefaultButtons"/>
 <element name="TLCLTaskDialog.GetDefaultButtons.AButtonDef"/>
@@ -262,6 +271,12 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddMainIcon.AParent"/>
 
 <element name="TLCLTaskDialog.AddPanels"/>
+
+<element name="TLCLTaskDialog.AddProgressBar"/>
+<element name="TLCLTaskDialog.AddProgressBar.ALeft"/>
+<element name="TLCLTaskDialog.AddProgressBar.ATop"/>
+<element name="TLCLTaskDialog.AddProgressBar.AWidth"/>
+<element name="TLCLTaskDialog.AddProgressBar.AParent"/>
 
 <element name="TLCLTaskDialog.AddRadios"/>
 <element name="TLCLTaskDialog.AddRadios.ARadioOffSet"/>
@@ -423,6 +438,7 @@ Not used in the method.
 <element name="TLCLTaskDialog.DoOnHelp"/>
 
 <!-- protected -->
+<!-- TODO: Needs revision. -->
 <element name="TLCLTaskDialog.SetupControls">
 <short>
 Configures and initialize properties and controls used on the emulated task 
@@ -431,10 +447,13 @@ dialog form.
 <descr>
 <p>
 <var>SetupControls</var> is a method used to configure / initialize controls 
-on the emulated dialog form using the properties in the <var>TTaskDialog</var> 
-instance where the form is displayed. SetupControls performs actions needed to 
-set property values on the dialog form to match the settings and values on the 
-TTaskDialog instance. This includes:
+on the emulated dialog form using the properties from the 
+<var>TTaskDialog</var> instance where the form is displayed. 
+</p>
+<!--
+<p>
+SetupControls performs actions needed to set property values on the dialog form 
+to match the settings and values on the TTaskDialog instance. This includes: 
 </p>
 <ul>
 <li>
@@ -464,9 +483,6 @@ Content in the Verification text.
 Value for the Verification check-box.
 </li>
 <li>
-Captions displayed next to the expand / collapse indicator (expando button).
-</li>
-<li>
 Common buttons (and the default button) on the dialog form.
 </li>
 <li>
@@ -494,6 +510,7 @@ the timer used for progress bar display (when enabled in Flags).
 Finally, the ActiveControl on the form is updated for the enabled controls on 
 the dialog.
 </p>
+-->
 <p>
 SetupControls is called from the Execute method for the emulated task dialog.
 </p>
