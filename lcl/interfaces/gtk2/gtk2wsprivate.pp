@@ -18,8 +18,8 @@
   for details about the license.
  *****************************************************************************
 }
-
 unit Gtk2WSPrivate;
+
 {$mode objfpc}{$H+}
 
 interface
@@ -33,7 +33,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  Gtk2Def, Gtk2Proc, Gtk2WSControls;
+  Gtk2Extra, Gtk2Def, Gtk2Proc;
 
 
 type
@@ -270,8 +270,7 @@ procedure SetGlobalCursor(Cursor: HCURSOR);
 
 implementation
 
-uses
-  Gtk2Extra;
+uses Gtk2WSControls;
 
 {$I Gtk2PrivateWidget.inc}
 {$I Gtk2PrivateList.inc}

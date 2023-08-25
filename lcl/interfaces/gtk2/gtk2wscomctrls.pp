@@ -33,7 +33,8 @@ uses
   // GtkWidgetset
   Gtk2Def, Gtk2Globals, Gtk2Proc,
   // Gtk2Widgetset
-  Gtk2WSControls, Gtk2Int;
+  Gtk2WSControls, Gtk2Int, Gtk2Extra, Gtk2CellRenderer
+  {$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
 
 const
   TVItemCachePart = 1000;
@@ -293,8 +294,6 @@ type
 
 
 implementation
-
-uses Gtk2CellRenderer, Gtk2Extra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
 
 {$I gtk2pagecontrol.inc}
 
