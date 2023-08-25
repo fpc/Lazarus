@@ -31,7 +31,7 @@ uses
   {$ENDIF}
   // WS
   WSButtons, WSLCLClasses, WSProc,
-  Gtk2Def;
+  Gtk2Def, Gtk2Int, Gtk2Proc, Gtk2WSStdCtrls;
 
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;
@@ -78,9 +78,6 @@ type
 
 
 implementation
-
-uses
-  Gtk2Proc, Gtk2Int, Gtk2WSStdCtrls;
 
 const
   GtkStateToButtonState: array[GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE] of TButtonState =

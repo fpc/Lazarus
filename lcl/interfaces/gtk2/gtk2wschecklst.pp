@@ -33,7 +33,8 @@ uses
 ////////////////////////////////////////////////////
   CheckLst, StdCtrls, Controls, LCLType, LMessages, LCLProc,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses;
+  WSCheckLst, WSLCLClasses,
+  Gtk2WSControls, Gtk2Proc, Gtk2CellRenderer;
 
 type
 
@@ -58,9 +59,6 @@ type
 
 
 implementation
-
-uses
-  Gtk2WSControls, Gtk2Proc, Gtk2CellRenderer;
 
 const
   gtk2CLBState = 0; // byte

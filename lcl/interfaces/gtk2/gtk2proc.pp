@@ -43,7 +43,7 @@ uses
     {$endif}
   // Other units
   Math, // Math after gtk to get the correct Float type
-  Types,
+  Types, URIParser,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType, Graphics,
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
@@ -797,7 +797,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  Gtk2WSPrivate, URIParser, Gtk2Int, Gtk2WinApiWindow;
+  Gtk2WSPrivate, Gtk2Int, Gtk2WinApiWindow;
 
 const
   KCINFO_FLAG_SHIFT         = $01;

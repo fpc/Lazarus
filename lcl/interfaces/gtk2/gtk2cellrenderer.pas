@@ -30,7 +30,7 @@ uses
   gtk2, gdk2, glib2,
   // LCL
   LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  Gtk2Int, Gtk2Proc, Gtk2Def;
+  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra;
   
 type
   PLCLIntfCellRenderer = ^TLCLIntfCellRenderer;
@@ -69,9 +69,6 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
                                            data: gpointer); cdecl;
 
 implementation
-
-uses
-  Gtk2Extra;
 
 type
   TCustomListViewAccess = class(TCustomListView);
