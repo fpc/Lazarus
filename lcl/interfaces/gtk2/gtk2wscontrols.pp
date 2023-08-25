@@ -133,6 +133,16 @@ type
     VScroll: PGTKWidget;
   end;
 
+  { TGtk2ListBoxPrivateList }
+  { Private class for gtklists }
+
+  TGtk2ListBoxPrivateList = class(TGtkPrivateList)
+  private
+  protected
+  public
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
+  end;
+
   { TGtk2WSBaseScrollingWinControl }
 
   TGtk2WSBaseScrollingWinControl = class(TWSWinControl)
@@ -1097,6 +1107,30 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'Repaint')
   then Exit;
   gtk_widget_queue_draw({%H-}PGtkWidget(AWinControl.Handle));
+end;
+
+procedure Gtk2WS_ListBoxChange({%H-}Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
+var
+  Mess: TLMessage;
+begin
+  {$IFDEF EventTrace}
+  EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
+  {$ENDIF}
+  FillChar(Mess{%H-}, SizeOf(Mess), 0);
+  Mess.msg := LM_SELCHANGE;
+  DeliverMessage(WidgetInfo^.LCLObject, Mess);
+end;
+
+{ TGtk2ListBoxPrivateList }
+
+class procedure TGtk2ListBoxPrivateList.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+var
+  Selection: PGtkTreeSelection;
+begin
+  TGtk2WSBaseScrollingWinControl.SetCallbacks(AGtkWidget, AWidgetInfo);
+
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
+  SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
 
 { TGtk2WSBaseScrollingWinControl }

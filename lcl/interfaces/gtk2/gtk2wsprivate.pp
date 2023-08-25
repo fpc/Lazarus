@@ -222,16 +222,6 @@ type
     class procedure UpdateCursor(AInfo: PWidgetInfo); override;
   end;
   
-  { TGtk2PrivateList }
-  { Private class for gtklists }
-
-  TGtk2PrivateList = class(TGtkPrivateList)
-  private
-  protected
-  public
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
-  end;
-
   { TGtk2PrivateMemo }
   { Private class for gtkmemos }
 
@@ -269,8 +259,6 @@ procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo;
 procedure SetGlobalCursor(Cursor: HCURSOR);
 
 implementation
-
-uses Gtk2WSControls;
 
 {$I Gtk2PrivateWidget.inc}
 {$I Gtk2PrivateList.inc}
