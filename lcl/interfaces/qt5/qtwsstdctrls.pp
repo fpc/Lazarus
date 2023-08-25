@@ -756,7 +756,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') or (Length(AText) = 0) then
     Exit;
-  AStr := GetUtf8String(AText);
+  AStr := {%H-}AText;
   TQtTextEdit(ACustomMemo.Handle).BeginUpdate;
   TQtTextEdit(ACustomMemo.Handle).Append(AStr);
   TQtTextEdit(ACustomMemo.Handle).EndUpdate;
@@ -1390,7 +1390,7 @@ begin
   Text := TCustomComboBox(AWinControl).Text;
   QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
   QtComboBox.setCurrentIndex(ItemIndex);
-  QtComboBox.setText(GetUTF8String(Text));
+  QtComboBox.setText(Text{%H-});
   QtComboBox.setEditable((AParams.Style and CBS_DROPDOWN <> 0) or
     (AParams.Style and CBS_SIMPLE <> 0));
 

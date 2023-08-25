@@ -298,8 +298,7 @@ begin
   QtTabWidget.setUpdatesEnabled(False);
   QtTabWidget.BeginUpdate;
   try
-    QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
-      GetUtf8String(AChild.Caption));
+    QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget, AChild.Caption{%H-});
   finally
     QtTabWidget.EndUpdate;
     QtTabWidget.setUpdatesEnabled(True);
@@ -489,7 +488,7 @@ begin
   Index := AChild.PageIndex;
   if Index < 0 then
     Index := ATabControl.IndexOf(AChild);
-  TQtTabWidget(ATabControl.Handle).setTabText(Index, GetUtf8String(AText));
+  TQtTabWidget(ATabControl.Handle).setTabText(Index, AText{%H-});
 end;
 
 class procedure TQtWSCustomTabControl.SetTabPosition(

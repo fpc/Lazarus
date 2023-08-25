@@ -3048,7 +3048,7 @@ begin
           SetLength(Files, FilesList.Count);
         for i := 0 to High(Files) do
         begin
-          WStr := GetUTF8String(FilesList.Strings[i]);
+          WStr := FilesList{%H-}.Strings[i];
           Url := QUrl_create(@WStr);
           QUrl_toLocalFile(Url, @WStr);
           Files[i] := UTF16ToUTF8(WStr);
@@ -11302,7 +11302,7 @@ procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -11368,7 +11368,7 @@ var
 begin
   if (AIndex >= 0) and (AIndex < QComboBox_count(QComboBoxH(Widget))) then
   begin
-    Str := GetUTF8String(AText);
+    Str := {%H-}AText;
     QComboBox_setItemText(QComboBoxH(Widget), AIndex, @Str);
     {we must update our custom delegate}
     if (FDropList <> nil) and
@@ -12652,7 +12652,7 @@ begin
           end;
         end;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
 
         // reduce paint overhead by checking text
         v := QVariant_create();
@@ -13564,7 +13564,7 @@ procedure TQtListWidget.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -13717,7 +13717,7 @@ var
   Str: WideString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -13739,7 +13739,7 @@ var
   Str: WideString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -14785,7 +14785,7 @@ begin
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
         ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
         v := QVariant_create(PWideString(@WStr));
@@ -14907,7 +14907,7 @@ begin
             itemChild := QTreeWidgetItem_child(item, j);
             if itemChild <> nil then
             begin
-              WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
+              WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
               v := QVariant_create(PWideString(@WStr));
               v2 := QVariant_create;
               try
@@ -14927,7 +14927,7 @@ begin
         begin
           for j := 0 to TCustomListViewHack(LCLObject).Items[TopItem].SubItems.Count - 1 do
           begin
-            WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
+            WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
             v := QVariant_create(PWideString(@WStr));
             QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
 
@@ -17446,7 +17446,7 @@ var
   WStr: WideString;
 begin
   inherited InitializeAccessibility;
-  WStr := GetUtf8String(ClassName+':ViewPort');
+  WStr := UTF8ToUTF16(ClassName+':ViewPort');
   QWidget_setAccessibleName(viewPortWidget, @WStr);
 end;
 
@@ -19342,7 +19342,7 @@ begin
   try
     for i := 0 to AList.Count - 1 do
     begin
-      WStr := GetUTF8String(AList.Strings[i]);
+      WStr := AList{%H-}.Strings[i];
       QStringList_append(List, @WStr);
     end;
     QFileDialog_setHistory(QFileDialogH(Widget), List);

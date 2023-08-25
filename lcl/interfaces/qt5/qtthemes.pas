@@ -614,7 +614,7 @@ begin
   case Details.Element of
     teToolTip:
       begin
-        W := GetUTF8String(S);
+        W := {%H-}S;
         Context.save;
         AOldMode := Context.SetBkMode(TRANSPARENT);
         try
@@ -658,7 +658,7 @@ begin
             exit;
           end;
 
-          W := GetUTF8String(S);
+          W := {%H-}S;
           Context.save;
           try
             Context.SetBkMode(TRANSPARENT);
@@ -709,7 +709,7 @@ begin
 
     else
     begin // default text drawing for all !
-      W := GetUTF8String(S);
+      W := {%H-}S;
       Context.save;
       AOldMode := Context.SetBkMode(TRANSPARENT);
       if Context.Parent <> nil then

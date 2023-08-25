@@ -1674,7 +1674,7 @@ procedure TQtFont.setRawName(p1: string);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(p1);
+  Str := {%H-}p1;
 
   QFont_setRawName(FHandle, @Str);
 end;
@@ -1683,7 +1683,7 @@ procedure TQtFont.setFamily(p1: string);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(p1);
+  Str := {%H-}p1;
 
   QFont_setFamily(FHandle, @Str);
 end;
@@ -4795,7 +4795,7 @@ procedure TQtStringList.Insert(Index: Integer; const S: string);
 var
   W: WideString;
 begin
-  W := GetUtf8String(S);
+  W := {%H-}S;
   QStringList_insert(FHandle, Index, @W);
 end;
 
