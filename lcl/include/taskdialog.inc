@@ -95,18 +95,10 @@ begin
   //several sources indicate that FMax must be <= High(Word)
   //testing reveals that FMin must be >= 0 (Vista+ native dialog)
   FMax := EnsureRange(FMax, Integer(0), High(Word));
-  //if (FMax > High(Word)) then
-  //  FMax := High(Word);
   FMin := EnsureRange(FMin, Integer(0), High(Word));
-  //if (FMin < 0) then
-  //  FMin := 0;
   if (FMin > FMax) then
     FMin := FMax;
-  FPosition := EnsureRange(FPosition, FMin, FMax);
-  //if (FPosition > FMax) then
-  //  FPosition := FMax;
-  //if (FPosition < FMin) then
-  //  FPosition := FMin;
+  FPosition := EnsureRange(FPosition, FMin, FMax); //the actual progressbar in the dialog will adjust this as well
   if (tfShowProgressBar in Dlg.Flags) and (Dlg.Handle <> 0) then
   begin
     Res := SendMessage(Dlg.Handle, TDM_SET_PROGRESS_BAR_RANGE, 0, MAKELPARAM(Word(FMin), Word(FMax)));   //Zero indicates failure
