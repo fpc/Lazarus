@@ -60,10 +60,12 @@ DateTimeCtrls Package
 </descr>
 
 <!-- used units -->
+<element name="clocale"/>
 <element name="Types"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="Math"/>
+<element name="DateUtils"/>
 <element name="LCLType"/>
 <element name="LCLIntf"/>
 <element name="LMessages"/>
@@ -76,11 +78,12 @@ DateTimeCtrls Package
 <element name="Themes"/>
 <element name="LazUTF8"/>
 <element name="LazMethodList"/>
+<element name="LCLCalWrapper"/>
 <element name="CalControlWrapper"/>
 
 <element name="NullDate">
 <short>
-Contains the value used to represent a null or unspecified TDateTIme value.
+Contains the value used to represent a null or unspecified TDateTime value.
 </short>
 <descr/>
 <seealso/>
