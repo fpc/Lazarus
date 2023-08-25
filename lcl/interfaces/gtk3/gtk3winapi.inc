@@ -2849,7 +2849,7 @@ begin
       //h := AWindow^.get_height;
       AWindow^.get_frame_extents(@GRect);
       // R := RectFromGdkRect(GRect);
-      ARect := Bounds(0, 0, GRect.width, GRect.Height);
+      ARect := Bounds(x, Y, GRect.width, GRect.Height);
       Result := 1;
     end else
     begin
