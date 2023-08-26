@@ -201,6 +201,9 @@ type
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
+    function BeginMessageProcess: TLCLHandle; override;
+    procedure EndMessageProcess(context: TLCLHandle); override;
+
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
@@ -295,6 +298,22 @@ uses
 const
   // Lack of documentation, provisional definition
   LazarusApplicationDefinedSubtypeWakeup = 13579;
+
+procedure InternalInit;
+begin
+  // MacOSX 10.6 reports a lot of warnings during initialization process
+  // adding the autorelease pool for the whole Cocoa widgetset
+  MainPool := NSAutoreleasePool.alloc.init;
+end;
+
+procedure InternalFinal;
+begin
+  if Assigned(MainPool) then
+  begin
+    MainPool.release;
+    MainPool := nil;
+  end;
+end;
 
 procedure wakeupEventLoop;
 var
@@ -476,6 +495,8 @@ end;
 {$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
+  InternalFinal;   // MainPool Stage 1 final
+  InternalInit;    // MainPool Stage 2 init
   {$ifdef COCOAPPRUNNING_SETINTPROPERTY}
   setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   {$endif}
@@ -743,22 +764,6 @@ begin
 end;
 {$endif}
 
-procedure InternalInit;
-begin
-  // MacOSX 10.6 reports a lot of warnings during initialization process
-  // adding the autorelease pool for the whole Cocoa widgetset
-  MainPool := NSAutoreleasePool.alloc.init;
-end;
-
-procedure InternalFinal;
-begin
-  if Assigned(MainPool) then
-  begin
-    MainPool.release;
-    MainPool := nil;
-  end;
-end;
-
 type
   AppClassMethod = objccategory external (NSObject)
     function sharedApplication: NSApplication; message 'sharedApplication';
@@ -939,9 +944,10 @@ begin
 end;
 
 initialization
+  InternalInit;   // MainPool Stage 1 init
 //  {$I Cocoaimages.lrs}
 
 finalization
-  InternalFinal;
+  InternalFinal;  // MainPool Stage 2 Final
 
 end.
