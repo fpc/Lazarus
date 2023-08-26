@@ -8,7 +8,7 @@ Forms
 -->
 <module name="Forms">
 <short>
-Implements Forms, which are the basis for the LCL Graphical User Interface.
+Implements Forms which are the basis for the LCL Graphical User Interface.
 </short>
 <descr>
 <p>
@@ -15403,16 +15403,16 @@ members in P are screen coordinates.
 </p>
 <p>
 GetControlAtPos compares the coordinates in P to existing tracking members 
-used for the last active control in the application. When the members are both 
-valid and equivalent to P, the previous active control is used in the return 
-value. Otherwise, FindControlAtPos is called to locate the control under the 
+used for the last active mouse control in the application. If the control is 
+valid and uses the coordinates in P, it is used as the return value for the 
+method. Otherwise, FindControlAtPos is called to locate the control at the 
 position in P.
 </p>
 <p>
 The return value is <b>Nil</b> if a control is not found for the specified 
-position, or when called at design-time. When the return value is assigned, 
-the internal tracking members are updated for the last active control, its 
-position, and the valid state for the members.
+position, or when called at design-time. When the return value is assigned, the 
+internal tracking members are updated with the last active control and its 
+position.
 </p>
 <p>
 GetControlAtPos is used in the implementation of the GetControlAtMouse method, 
