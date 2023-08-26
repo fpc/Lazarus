@@ -201,6 +201,9 @@ type
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
+    function BeginMessageProcess: TLCLHandle; override;
+    procedure EndMessageProcess(context: TLCLHandle); override;
+
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;

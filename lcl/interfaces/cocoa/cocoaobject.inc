@@ -124,6 +124,17 @@ begin
   AppRunMessages(true, NSDate.distantFuture);
 end;
 
+function TCocoaWidgetSet.BeginMessageProcess: TLCLHandle;
+begin
+  Result := TLCLHandle(NSAutoreleasePool.alloc.init);
+end;
+
+procedure TCocoaWidgetSet.EndMessageProcess(context: TLCLHandle);
+begin
+  NSAutoreleasePool(context).release;
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.Create
 
