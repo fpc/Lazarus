@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils,
   LazUTF8,
-  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils, Math, ComCtrls,
+  LCLType, LCLStrConsts, LCLIntf, LMessages, InterfaceBase, ImgList, LCLProc, DateUtils, Math, ComCtrls,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes;
 
 
@@ -147,6 +147,10 @@ type
     procedure OnExpandButtonClicked(Sender: TObject);
     procedure DoOnHelp;
 
+    procedure SetProgressBarType(var Msg: TLMessage); message TDM_SET_MARQUEE_PROGRESS_BAR;
+    procedure SetProgressBarRange(var Msg: TLMessage); message TDM_SET_PROGRESS_BAR_RANGE;
+    procedure SetProgressBarPos(var Msg: TLMessage); message TDM_SET_PROGRESS_BAR_POS;
+
   protected
     procedure SetupControls;
   public
@@ -155,7 +159,7 @@ type
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
     destructor Destroy; override;
     procedure AfterConstruction; override;
-
+    procedure DoShow; override;
 
     function Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
   public
@@ -259,7 +263,6 @@ end;
 
 constructor TLCLTaskDialog.CreateNew(AOwner: TComponent; Num: Integer);
 begin
-  //debugln('TLCLTaskDialog.CreateNew: AOwner=',DbgSName(AOwner));
   if (AOwner is TCustomTaskDialog) then
   begin
     FDlg := TTaskDialog(AOwner);
@@ -272,7 +275,7 @@ begin
   FExpanded := False;
   CommandLinkButtonWidth := -1;
   KeyPreview := True;
-  DoDialogCreated;
+  //DoDialogCreated;
 end;
 
 destructor TLCLTaskDialog.Destroy;
@@ -284,8 +287,24 @@ end;
 procedure TLCLTaskDialog.AfterConstruction;
 begin
   inherited AfterConstruction;
-  DoDialogConstructed;
+  //DoDialogConstructed;
 end;
+
+procedure TLCLTaskDialog.DoShow;
+begin
+  inherited DoShow;
+  {
+    If we call GetHandle in AfterConstrucion this triggers a CreateWnd, but later on
+    (as a consequence of using CreateNew ??) the window gets destroyed and recreated
+    with a different handle, so we cannot call FDlg.InternalSetDialogHandle in CreateNew
+    or AfterConstruction.
+    And since we want to have a valid FDlg.Handle in all OnDialogXXX events, we do it here.
+  }
+  DoDialogConstructed;
+  DoDialogCreated;
+end;
+
+
 
 function TLCLTaskDialog.Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
@@ -916,6 +935,71 @@ begin
   {$ObjectChecks OFF}
   {%H-}TTaskDialogAccess(FDlg).DoOnHelp;
   {$POP}
+end;
+
+procedure TLCLTaskDialog.SetProgressBarType(var Msg: TLMessage);
+begin
+  debugln(['TLCLTaskDialog.SetProgressBarType']);
+  debugln(['  Msg.wParam=',Msg.wParam]);
+  debugln(['  Msg.lParam=',Msg.lParam]);
+  //if both tfShowMarqueeProgressBar and tfShowProgressBar are set, user can switch ProgressBar.Style
+  if Assigned(ProgressBar) and (Msg.lParam = 0) then
+  begin
+    if BOOL(Msg.wParam) then
+    begin
+      if (tfShowMarqueeProgressBar in FDlg.Flags) then
+      begin
+        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstMarquee');
+        ProgressBar.Style := pbstMarquee;
+      end;
+    end
+    else
+    begin
+      if (tfShowProgressBar in FDlg.Flags) then
+      begin
+        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstNormal');
+        ProgressBar.Style := pbstNormal;
+      end;
+    end;
+  end;
+  //Result is ignored
+end;
+
+procedure TLCLTaskDialog.SetProgressBarRange(var Msg: TLMessage);
+var
+  OldMin, OldMax: Integer;
+begin
+  debugln(['TLCLTaskDialog.SetProgressBarRange']);
+  debugln(['  Msg.wParam=',Msg.wParam]);
+  debugln(['  Msg.lParamLo=',Msg.lParamlo]);
+  debugln(['  Msg.lParamHi=',Msg.lParamhi]);
+  if Assigned(ProgressBar) and (Msg.wParam = 0) then
+  begin
+    OldMin := ProgressBar.Min;
+    OldMax := ProgressBar.Max;
+    ProgressBar.Min := Msg.lParamlo;
+    ProgressBar.Max := Msg.lParamhi;
+    Msg.Result := MAKELPARAM(OldMin,OldMax);
+  end
+  else
+    Msg.Result := 0;
+end;
+
+procedure TLCLTaskDialog.SetProgressBarPos(var Msg: TLMessage);
+var
+  OldPos: Integer;
+begin
+  debugln(['TLCLTaskDialog.SetProgressBarPos']);
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  if Assigned(ProgressBar) and (Msg.lParam = 0) then
+  begin
+    OldPos := ProgressBar.Position;
+    ProgressBar.Position := Msg.wParam;
+    Msg.Result := OldPos;
+  end
+  else
+    Msg.Result := 0;
 end;
 
 procedure TLCLTaskDialog.OnRadioButtonClick(Sender: TObject);
