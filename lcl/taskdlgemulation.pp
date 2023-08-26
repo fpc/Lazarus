@@ -971,14 +971,14 @@ var
 begin
   debugln(['TLCLTaskDialog.SetProgressBarRange']);
   debugln(['  Msg.wParam=',Msg.wParam]);
-  debugln(['  Msg.lParamLo=',Msg.lParamlo]);
-  debugln(['  Msg.lParamHi=',Msg.lParamhi]);
+  debugln(['  Msg.lParam LoWord=',Msg.lParam and $FFFF]);
+  debugln(['  Msg.lParam HiWord=',(Msg.lParam and $FFFF0000) shr 16]);
   if Assigned(ProgressBar) and (Msg.wParam = 0) then
   begin
     OldMin := ProgressBar.Min;
     OldMax := ProgressBar.Max;
-    ProgressBar.Min := Msg.lParamlo;
-    ProgressBar.Max := Msg.lParamhi;
+    ProgressBar.Min := Msg.lParam and $FFFF;
+    ProgressBar.Max := (Msg.lParam and $FFFF0000) shr 16;
     Msg.Result := MAKELPARAM(OldMin,OldMax);
   end
   else
