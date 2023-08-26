@@ -61,6 +61,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <element name="LCLType"/>
 <element name="LCLStrConsts"/>
 <element name="LCLIntf"/>
+<element name="LMessages"/>
 <element name="InterfaceBase"/>
 <element name="ImgList"/>
 <element name="LCLProc"/>
@@ -437,6 +438,13 @@ Not used in the method.
 
 <element name="TLCLTaskDialog.DoOnHelp"/>
 
+<element name="TLCLTaskDialog.SetProgressBarType"/>
+<element name="TLCLTaskDialog.SetProgressBarType.Msg"/>
+<element name="TLCLTaskDialog.SetProgressBarRange"/>
+<element name="TLCLTaskDialog.SetProgressBarRange.Msg"/>
+<element name="TLCLTaskDialog.SetProgressBarPos"/>
+<element name="TLCLTaskDialog.SetProgressBarPos.Msg"/>
+
 <!-- protected -->
 <!-- TODO: Needs revision. -->
 <element name="TLCLTaskDialog.SetupControls">
@@ -585,12 +593,10 @@ instance.
 <p>
 CreateNew calls the inherited method to configure and initialize the dialog 
 form instance. It sets the default values for internal members and properties 
-like KeyPreview (<b>True</b>). It signals the OnDialogCreated event handler 
-(when assigned) in the TTaskDialog instance for the dialog form.
+like KeyPreview (<b>True</b>).
 </p>
 </descr>
 <seealso>
-<link id="#lcl.dialogs.TTaskDialog.OnDialogCreated"/>
 <link id="#lcl.forms.TCustomForm.CreateNew">TCustomForm.CreateNew</link>
 <link id="#lcl.forms.TForm.KeyPreview">TForm.KeyPreview</link>
 </seealso>
@@ -632,23 +638,52 @@ Performs actions needed when a new instance of the class has been created.
 <descr>
 <p>
 <var>AfterConstruction</var> is an overridden method in 
-<var>TLCLTaskDialog</var> used to perform actions needed when the form instance 
-has been created. It calls the inherited method on entry to set the bounds for 
-the form, signal the OnCreate event handler (when assigned), and to perform 
-scaling when enabled in both the application and the form.
+<var>TLCLTaskDialog</var> used to perform actions needed when the emulated 
+dialog form instance has been created. It calls the inherited method on entry 
+to set the bounds for the form, signal the OnCreate event handler (when 
+assigned), and to perform scaling when enabled in both the application and the 
+form.
 </p>
 <p>
-AfterConstruction ensures that the handle in the TTaskDialog instance is 
-updated to use the Handle value in the class instance. It signals the 
-OnDialogConstructed event handler (when assigned) in the TTaskDialog instance 
-for the dialog form.
+Use the OnDialogConstructed event handler in the TTaskDialog instance to 
+perform actions needed when the Handle for the dialog form has been realized.
 </p>
 </descr>
 <seealso>
 <link id="TLCLTaskDialog.AfterConstruction"/>
 <link id="#lcl.dialogs.TCustomTaskDialog.Handle">TCustomTaskDialog.Handle</link>
-<link id="#lcl.dialogs.TCustomTaskDialog.DoOnDialogConstructed">TCustomTaskDialog.DoOnDialogConstructed</link>
+<link id="#lcl.dialogs.TCustomTaskDialog.OnDialogConstructed">TCustomTaskDialog.OnDialogConstructed</link>
 <link id="#lcl.forms.TCustomForm.AfterConstruction">TCustomForm.AfterConstruction</link>
+</seealso>
+</element>
+
+<!-- TODO: Added in 5aab1a7b. -->
+<element name="TLCLTaskDialog.DoShow">
+<short>
+Performs actions needed when the dialog form is initially displayed.
+</short>
+<descr>
+<p>
+<var>DoShow</var> is an overridden method in <var>TLCLTaskDialog</var> used to 
+perform actions needed when the task dialog form is displayed for the first 
+time. DoShow is called when queued OnResize or OnChangeBounds event handlers 
+are executed, or when the Showing property is set to <b>True</b>.
+</p>
+<p>
+DoShow calls the inherited method on entry to signal the OnShow event handler 
+(when assigned). It ensures that the Handle for the task dialog form is 
+allocated before any dialog-specific event handlers are signalled, like 
+OnDialogConstructed or OnDialogCreated.
+</p>
+</descr>
+<seealso>
+<link id="TLCLTaskDialog.CreateNew"/>
+<link id="TLCLTaskDialog.AfterConstruction"/>
+<link id="#lcl.dialogs.TCustomTaskDialog.OnDialogConstructed">TCustomTaskDialog.OnDialogConstructed</link>
+<link id="#lcl.dialogs.TCustomTaskDialog.OnDialogCreated">TCustomTaskDialog.OnDialogCreated</link>
+<link id="#lcl.forms.TCustomForm.DoShow">TCustomForm.DoShow</link>
+<link id="#lcl.forms.TCustomForm.OnShow">TCustomForm.OnShow</link>
+<link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
 </seealso>
 </element>
 
