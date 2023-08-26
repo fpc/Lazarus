@@ -15836,7 +15836,7 @@ end;
 // QReal Array Access from c-code
 function GetQRealArrayAddr(var PArr : TQRealArray): PPtrInt; cdecl; export;
 begin
-  Result := @PArr[0];
+  Result := PPtrInt(@PArr[0]);
 end;
 
 function GetQRealArrayLength(var PArr: TQRealArray): Integer; cdecl; export;
