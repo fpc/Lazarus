@@ -31,8 +31,6 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
-  InternalInit;
-
   WakeMainThread := @OnWakeMainThread;
   ScreenInfo.PixelsPerInchX := CocoaBasePPI;
   ScreenInfo.PixelsPerInchY := CocoaBasePPI;
