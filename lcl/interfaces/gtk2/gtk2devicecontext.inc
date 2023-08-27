@@ -681,6 +681,8 @@ begin
 
   FWithChildWindows := ASource.FWithChildWindows;
   FDrawable := ASource.FDrawable;
+  if Assigned(ASource.FPixbuf) then gdk_pixbuf_ref(ASource.FPixbuf);
+  if Assigned(FPixbuf) then gdk_pixbuf_unref(FPixbuf);
   FPixbuf := ASource.Pixbuf;
   FOriginalDrawable := ASource.FOriginalDrawable;
 
