@@ -5832,6 +5832,53 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
+<!-- TODO: Added in b7d34812. -->
+<element name="TDE_CONTENT">
+<short>
+Numeric constant which identifies the text in the main content area on a task 
+dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="TDE_EXPANDED_INFORMATION">
+<short>
+Numeric constant which identifies the expandable text area for a task dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="TDE_FOOTER">
+<short>
+Numeric constant which identifies the footer text area for a task dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="TDE_MAIN_INSTRUCTION">
+<short>
+Numeric constant which identifies the title in the main content areas on a task 
+dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <element name="TTaskDialogProgressBar">
 <short>
 Provides information about a progress bar displayed on a TTaskDialog instance.
