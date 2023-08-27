@@ -468,7 +468,6 @@ Not used in the method.
 <element name="TLCLTaskDialog.EnableRadioButton"/>
 <element name="TLCLTaskDialog.EnableRadioButton.Msg"/>
 
-<!-- TODO: Added in b7d34812. -->
 <element name="TLCLTaskDialog.UpdateElementText"/>
 <element name="TLCLTaskDialog.UpdateElementText.Msg"/>
 
