@@ -170,7 +170,7 @@ begin
   TextEdit := TQtTextEdit(FOwner.Handle);
   if ABlockSignals then
     TextEdit.BeginUpdate;
-  W := GetUtf8String(AStr);
+  W := AStr;
   if AClear then
   begin
     // never trigger changed signal when clearing text here.
@@ -276,7 +276,7 @@ begin
   {$endif}
   if FTextChanged then InternalUpdate;
   FStringList[Index] := S;
-  W := GetUTF8String(S);
+  W := {%H-}S;
   TQtTextEdit(FOwner.Handle).setLineText(Index, W);
 end;
 
@@ -288,7 +288,7 @@ begin
   WriteLn('TQtMemoStrings.SetTextStr Value=',Value);
   {$endif}
   SetInternalText(Value);
-  W := GetInternalText;
+  W := {%H-}GetInternalText;
   ExternalUpdate(W, True, False);
   FTextChanged := False;
 end;
@@ -432,9 +432,9 @@ begin
   begin
     Index := FStringList.Add(S);
     if FHasTrailingLineBreak then
-      W := GetUTF8String(S + LineBreak)
+      W := UTF8ToUTF16(S + LineBreak)
     else
-      W := GetUTF8String(S);
+      W := UTF8ToUTF16(S);
     if FHasTrailingLineBreak then
     begin
       //issue #39444
@@ -452,7 +452,7 @@ begin
   end else
   begin
     FStringList.Insert(Index, S);
-    W := GetUTF8String(S);
+    W := UTF8ToUTF16(S);
     TQtTextEdit(FOwner.Handle).insertLine(Index, W);
   end;
   FTextChanged := False; // FStringList is already updated, no need to update from WS.

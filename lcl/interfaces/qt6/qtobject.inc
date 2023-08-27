@@ -508,7 +508,7 @@ procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
 var
   W: WideString;
 begin
-  W := GetUtf8String(ATitle);
+  W := {%H-}ATitle;
   QCoreApplication_setApplicationName(@W);
 end;
 
