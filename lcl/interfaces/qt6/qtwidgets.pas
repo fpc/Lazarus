@@ -3046,7 +3046,7 @@ begin
           SetLength(Files, FilesList.Count);
         for i := 0 to High(Files) do
         begin
-          WStr := GetUTF8String(FilesList.Strings[i]);
+          WStr := FilesList{%H-}.Strings[i];
           Url := QUrl_create(@WStr);
           QUrl_toLocalFile(Url, @WStr);
           Files[i] := UTF16ToUTF8(WStr);
@@ -5732,11 +5732,8 @@ begin
 end;
 
 function TQtWidget.GetStyleSheet: WideString;
-var
-  WStr: WideString;
 begin
-  QWidget_styleSheet(Widget, @WStr);
-  Result := UTF16ToUTF8(WStr);
+  QWidget_styleSheet(Widget, @Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -5817,11 +5814,8 @@ begin
 end;
 
 procedure TQtWidget.SetStyleSheet(const AValue: WideString);
-var
-  WStr: WideString;
 begin
-  WStr := GetUTF8String(AValue);
-  QWidget_setStyleSheet(Widget, @WStr);
+  QWidget_setStyleSheet(Widget, @AValue);
 end;
 
 procedure TQtWidget.SetWidget(const AValue: QWidgetH);
@@ -11335,7 +11329,7 @@ procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -11401,7 +11395,7 @@ var
 begin
   if (AIndex >= 0) and (AIndex < QComboBox_count(QComboBoxH(Widget))) then
   begin
-    Str := GetUTF8String(AText);
+    Str := {%H-}AText;
     QComboBox_setItemText(QComboBoxH(Widget), AIndex, @Str);
     {we must update our custom delegate}
     if (FDropList <> nil) and
@@ -12685,7 +12679,7 @@ begin
           end;
         end;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
 
         // reduce paint overhead by checking text
         v := QVariant_create();
@@ -13598,7 +13592,7 @@ procedure TQtListWidget.insertItem(AIndex: Integer; AText: String);
 var
   Str: WideString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -13751,7 +13745,7 @@ var
   Str: WideString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -13773,7 +13767,7 @@ var
   Str: WideString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -14819,7 +14813,7 @@ begin
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
         ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
         v := QVariant_create(PWideString(@WStr));
@@ -14941,7 +14935,7 @@ begin
             itemChild := QTreeWidgetItem_child(item, j);
             if itemChild <> nil then
             begin
-              WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
+              WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
               v := QVariant_create(PWideString(@WStr));
               v2 := QVariant_create;
               try
@@ -14961,7 +14955,7 @@ begin
         begin
           for j := 0 to TCustomListViewHack(LCLObject).Items[TopItem].SubItems.Count - 1 do
           begin
-            WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
+            WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
             v := QVariant_create(PWideString(@WStr));
             QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
 
@@ -17478,7 +17472,7 @@ var
   WStr: WideString;
 begin
   inherited InitializeAccessibility;
-  WStr := GetUtf8String(ClassName+':ViewPort');
+  WStr := UTF8ToUTF16(ClassName+':ViewPort');
   QWidget_setAccessibleName(viewPortWidget, @WStr);
 end;
 
@@ -19386,7 +19380,7 @@ begin
   try
     for i := 0 to AList.Count - 1 do
     begin
-      WStr := GetUTF8String(AList.Strings[i]);
+      WStr := AList{%H-}.Strings[i];
       QStringList_append(List, @WStr);
     end;
     QFileDialog_setHistory(QFileDialogH(Widget), List);
@@ -19699,11 +19693,11 @@ begin
       else
         ATitle := 'error file';
       if path <> nil then
-        ATitle := Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+        ATitle := {%H-}Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
       QLabel_setText(FTextWidget, @ATitle);
       ATitle := ExtractFileName(path^);
       QWidget_setToolTip(FTextWidget, @ATitle);
-      ATitle := ATitle + LineEnding + Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+      ATitle := ATitle + LineEnding + {%H-}Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
       QWidget_setToolTip(FPreviewWidget, @ATitle);
       ANewPixmap := QPixmap_create;
       // QPixmap_scaled(APixmap, ANewPixmap,
@@ -20034,35 +20028,23 @@ begin
 end;
 
 procedure TQtMessageBox.setDetailText(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(AValue);
-  QMessageBox_setDetailedText(QMessageBoxH(Widget), @Str);
+  QMessageBox_setDetailedText(QMessageBoxH(Widget), @AValue);
 end;
 
 function TQtMessageBox.getMessageStr: WideString;
-var
-  Str: WideString;
 begin
-  QMessageBox_text(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  QMessageBox_text(QMessageBoxH(Widget), @Result);
 end;
 
 function TQtMessageBox.getDetailText: WideString;
-var
-  Str: WideString;
 begin
-  QMessageBox_detailedText(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  QMessageBox_detailedText(QMessageBoxH(Widget), @Result);
 end;
 
 procedure TQtMessageBox.setMessageStr(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(AValue);
-  QMessageBox_setText(QMessageBoxH(Widget), @Str);
+  QMessageBox_setText(QMessageBoxH(Widget), @AValue);
 end;
 
 procedure TQtMessageBox.setMsgBoxType(const AValue: QMessageBoxIcon);
@@ -20079,7 +20061,7 @@ procedure TQtMessageBox.setTitle(const AValue: WideString);
 begin
   if AValue <> FTitle then
   begin
-    FTitle := GetUTF8String(AValue);
+    FTitle := AValue;
     QMessageBox_setWindowTitle(QMessageBoxH(Widget), @FTitle);
   end;
 end;
@@ -20183,22 +20165,16 @@ end;
 
 function TQtMessageBox.AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton;
    AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean): QPushButtonH;
-var
-  Str: WideString;
 begin
   Result := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
-  Str := GetUTF8String(ACaption);
-  QAbstractButton_setText(Result, @Str);
+  QAbstractButton_setText(Result, @ACaption);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
 function TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
   const AEscapeBtn: Boolean): QPushButtonH;
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(ACaption);
-  Result := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
+  Result := QMessageBox_addButton(QMessageBoxH(Widget), @ACaption, QMessageBoxActionRole);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
