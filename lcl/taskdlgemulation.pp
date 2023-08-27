@@ -158,6 +158,7 @@ type
     procedure ClickRadioButton(var Msg: TLMessage); message TDM_CLICK_RADIO_BUTTON;
     procedure EnableButton(var Msg: TLMessage); message TDM_ENABLE_BUTTON;
     procedure EnableRadioButton(var Msg: TLMessage); message TDM_ENABLE_RADIO_BUTTON;
+    procedure UpdateElementText(var Msg: TLMessage); message TDM_UPDATE_ELEMENT_TEXT;
 
   protected
     procedure SetupControls;
@@ -1364,7 +1365,7 @@ begin
   // Return value is ignored
   debugln('TLCLTaskDialog.ClickButton');
   debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
 
   if (Msg.lPARAM = 0) then
   begin
@@ -1383,8 +1384,8 @@ begin
   // lParam: Must be zero.
   // Return value is ignored
   debugln('TLCLTaskDialog.ClickRadioButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
-  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
   if (Msg.lParam = 0) and (FDlg.RadioButtons.Count > 0) then
   begin
     RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
@@ -1401,8 +1402,8 @@ begin
   // lParam: 0: disable the button, otherwise enable
   // Return value is ignored
   debugln('TLCLTaskDialog.EnableButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
-  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
   Btn := FindButtonByButtonID(Msg.wParam);
   if Assigned(Btn) then
     Btn.Enabled := (Msg.lParam <> 0);
@@ -1415,12 +1416,58 @@ begin
   // wParam: An int value that specifies the ID of the radio button to be enabled/disabled.
   // lParam: 0: disable the button, otherwise enable
   // Return value is ignored
-  debugln('TLCLTaskDialog.EnableButton');
+  debugln('TLCLTaskDialog.EnableRadioButton');
   debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
   debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
   RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
   if Assigned(RadioBtn) then
     RadioBtn.Enabled := (Msg.lParam <> 0);
+end;
+
+procedure TLCLTaskDialog.UpdateElementText(var Msg: TLMessage);
+var
+  NewText: String;
+  Lbl: TLabel;
+  //ARect: TRect;
+begin
+  // wParam: Indicates the element to update.
+  // lParam: Pointer to a Unicode string that contains the new text.
+  // Return value is ignored.
+  debugln('TLCLTaskDialog.UpdateElementText');
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  NewText := Utf16ToUtf8(Unicodestring(PWideChar(Msg.lParam)));
+  debugln('  NewText=',NewText);
+  //It seems to be that the native Vista+ dialog does not adjust heights (properly),
+  //if new label height is bigger, then e.g. FooterText may end up falling off the dialog...
+  // ToDo: do this properly:
+  // - calculate new BoundsRect, adjust height of panles and dialog and reserved height for expanding
+  if (Msg.wParam in [TDE_CONTENT..TDE_MAIN_INSTRUCTION]) then
+  begin
+    case Msg.wParam of
+      TDE_CONTENT: //FDlg.Text;
+      begin
+        Lbl := Element[tdeContent];
+        //ARect := Lbl.BoundsRect;
+        if Assigned(lbl) then Lbl.Caption := NewText;
+      end;
+      TDE_EXPANDED_INFORMATION: //FDlg.ExpandedText
+      begin
+        Lbl := Element[tdeExpandedInfo];
+        if Assigned(lbl) then Lbl.Caption := NewText;
+      end;
+      TDE_FOOTER: //FDlg.FooterText
+      begin
+        Lbl := Element[tdeFooter];
+        if Assigned(lbl) then Lbl.Caption := NewText;
+      end;
+      TDE_MAIN_INSTRUCTION: //FDlg.Title
+      begin
+        Lbl := Element[tdeMainInstruction];
+        if Assigned(lbl) then Lbl.Caption := NewText;
+      end;
+    end;
+  end;
 end;
 
 { ------------- end message handling ------------}

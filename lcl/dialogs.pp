@@ -640,11 +640,16 @@ type
   { TTaskDialogProgressBar }
 
 const
-  PBST_NORMAL             = $0001;
-  PBST_ERROR              = $0002;
-  PBST_PAUSED             = $0003;
-  PB_DEFMIN               = 0;   //needed in TLCTaskDialog as well
-  PB_DEFMAX               = 100;
+  PBST_NORMAL              = $0001;
+  PBST_ERROR               = $0002;
+  PBST_PAUSED              = $0003;
+  PB_DEFMIN                = 0;   //needed in TLCTaskDialog as well
+  PB_DEFMAX                = 100;
+  TDE_CONTENT              = 0;  //TTaskDialog.Text
+  TDE_EXPANDED_INFORMATION = 1;  //TTaskDialog.ExpandedText
+  TDE_FOOTER               = 2;  //TTaskDialog.FooterText
+  TDE_MAIN_INSTRUCTION     = 3;  //TTaskDialog.Title
+
 
 Type
 
