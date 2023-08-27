@@ -446,85 +446,90 @@ Not used in the method.
 <element name="TLCLTaskDialog.SetProgressBarPos.Msg"/>
 
 <!-- protected -->
-<!-- TODO: Needs revision. -->
 <element name="TLCLTaskDialog.SetupControls">
 <short>
-Configures and initialize properties and controls used on the emulated task 
+Configures and initializes properties and controls used on the emulated task 
 dialog form.
 </short>
 <descr>
 <p>
 <var>SetupControls</var> is a method used to configure / initialize controls 
-on the emulated dialog form using the properties from the 
-<var>TTaskDialog</var> instance where the form is displayed. 
-</p>
-<!--
-<p>
-SetupControls performs actions needed to set property values on the dialog form 
-to match the settings and values on the TTaskDialog instance. This includes: 
+and content on the emulated task dialog. Values from the <var>TTaskDialog</var> 
+owner are copied to the dialog form, including:
 </p>
 <ul>
 <li>
-Default button in the Buttons property (when assigned).
+Buttons
 </li>
 <li>
-Default radio button in the RadioButtons property (when assigned).
+CommonButtons
 </li>
 <li>
-Dialog caption using the title from the main form or application when none is 
-assigned.
+RadioButtons
 </li>
 <li>
-Dialog title using the default message for the associated main icon when a 
-value has not been assigned.
+Caption (application title or main form caption when omitted)
 </li>
 <li>
-Values in the text, expanded text, and footer text properties.
+Title (or the IconMessage when omitted)
 </li>
 <li>
-Value for the expand / collapse button on the dialog.
+Text
 </li>
 <li>
-Content in the Verification text.
+ExpandButtonCaption
 </li>
 <li>
-Value for the Verification check-box.
+CollapseButtonCaption
 </li>
 <li>
-Common buttons (and the default button) on the dialog form.
+ExpandedText
 </li>
 <li>
-Applies value in Flags using the settings in the TTaskDialog instance. May 
-include setting the border icons when the dialog can be cancelled.
+FooterText
 </li>
 <li>
-Sets the Position for the dialog form using flag values.
-</li>
-<li>
-Uses the default system font on the dialog when emulating the classic style.
-</li>
-<li>
-Calculates the width for the dialog form using values in the title, caption, 
-and buttons for the dialog. Size constraints are applied and the resulting 
-width is normally in the range 120..480 pixels.
+VerificationText
 </li>
 </ul>
 <p>
-SetupControls creates and populates controls needed to display the various UI 
-elements enabled for the dialog form. It also calls SetupTimer to initialize 
-the timer used for progress bar display (when enabled in Flags).
+Values from the Flags property in TTaskDIalog are used to determine which 
+content and UI elements are enabled on the dialog form.
 </p>
 <p>
-Finally, the ActiveControl on the form is updated for the enabled controls on 
-the dialog.
+SetupControls calls private method in the class to layout and align the 
+elements on the dialog form. This includes setting the border style, border 
+icons, and position for the dailog form. The font typeface and size used on the 
+dialog are assigned in the method.
 </p>
--->
 <p>
-SetupControls is called from the Execute method for the emulated task dialog.
+It create and populates three (3) panels with the controls needed for the 
+dialog. The top panel holds the main icon, title, text, and expanded text. The 
+middle panel contains any radio buttons, command link buttons, query controls, 
+or the progress bar for the dialog. The bottom panel contains the remainder of 
+the controls on the dialog form including the expand /collapse button, 
+verification check box, and footer text.
+</p>
+<p>
+A timer enabled for the form is created, initialized, and started in the method.
+</p>
+<p>
+SetupControls calculates the width needed for the dialog form. It uses the 
+length of common elements (like Title, Text, and the cumlative length for 
+button captions) when an explict Width has not been assigned for the task 
+dialog. A minimum width of 120 pixels is assumed, but common calculated widths 
+include 300, 420, amd 480 pixels. A minimum height of 200 pixels is assumed.
+</p>
+<p>
+SetupControls is called from the Execute method before the ShowModal method is 
+called for the emulated task dialog.
 </p>
 </descr>
 <seealso>
 <link id="TLCLTaskDialog.Execute"/>
+<link id="#lcl.dialogs.TCustomTaskDialog">TCustomTaskDialog</link>
+<link id="#lcl.dialogs.TTaskDialog">TTaskDialog</link>
+<link id="#lcl.forms.TCustomForm.ShowModal">TCustomForm.ShowModal</link>
 </seealso>
 </element>
 
