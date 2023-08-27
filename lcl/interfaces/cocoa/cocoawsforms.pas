@@ -852,6 +852,7 @@ begin
     // it should be removed from "parentWindow"
     if Assigned(win.parentWindow) then
       win.parentWindow.removeChildWindow(win);
+    win.setLevel(NSNormalWindowLevel);
     win.close;
     win.setContentView(nil);
     cb := win.lclGetCallback();
