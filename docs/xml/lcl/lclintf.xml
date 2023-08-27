@@ -4573,6 +4573,46 @@ has a zero or negative width or height.
 <short>The timer ID.</short>
 </element>
 
+<!-- TODO: Added in c70e6b32. -->
+<element name="LParamExtractLoHiWord">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="LParamExtractLoHiWord.AParam">
+<short/>
+</element>
+<element name="LParamExtractLoHiWord.LoWord">
+<short/>
+</element>
+<element name="LParamExtractLoHiWord.HiWord">
+<short/>
+</element>
+
+<element name="LParamHiWord">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="LParamHiWord.Result">
+<short/>
+</element>
+<element name="LParamHiWord.AParam">
+<short/>
+</element>
+
+<element name="LParamLoWord">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="LParamLoWord.Result">
+<short/>
+</element>
+<element name="LParamLoWord.AParam">
+<short/>
+</element>
+
 <element name="MakeLong">
 <short>Copies two words into a double word.</short>
 <descr/>
