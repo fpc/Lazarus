@@ -336,6 +336,10 @@ function MakeWParam(l, h: Word): WPARAM; inline;
 function MakeLParam(l, h: Word): LPARAM; inline;
 function MakeLResult(l, h: Word): LRESULT; inline;
 
+procedure LParamExtractLoHiWord(const aParam: LPARAM; out LoWord, HiWord: Word);
+function LParamHiWord(const aParam: LPARAM): Word; inline;
+function LParamLoWord(const aParam: LPARAM): Word; inline;
+
 // Deprecated in version 2.3, 2023-06.
 function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; deprecated 'Use Types.OffsetRect instead';
 

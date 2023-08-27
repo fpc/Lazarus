@@ -1515,6 +1515,24 @@ function MakeWParam(l, h: Word): WPARAM; inline;
 begin
   Result := MakeLong(l, h);
 end;
+{
+  Does the reverse of the MakeLParam function
+}
+procedure LParamExtractLoHiWord(const aParam: LPARAM; out LoWord, HiWord: Word);
+begin
+  LoWord := aParam and $FFFF;
+  HiWord := (aParam and $FFFF0000) shr 16;
+end;
+
+function LParamHiWord(const aParam: LPARAM): Word;
+begin
+  Result := (aParam and $FFFF0000) shr 16;
+end;
+
+function LParamLoWord(const aParam: LPARAM): Word;
+begin
+  Result := aParam and $FFFF;
+end;
 
 {------------------------------------------------------------------------------
   Function: OffsetRect
