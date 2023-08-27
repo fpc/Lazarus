@@ -417,7 +417,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.ProcessMessages;
 var
-  context: TLCLHandle;
+  context: THandle;
 begin
   if Self=nil then begin
     // when the programmer did a mistake, avoid getting strange errors
@@ -1277,7 +1277,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleMessage;
 var
-  context: TLCLHandle;
+  context: THandle;
 begin
   context := WidgetSet.BeginMessageProcess;
   try

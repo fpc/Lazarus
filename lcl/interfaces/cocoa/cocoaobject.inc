@@ -122,12 +122,12 @@ begin
   AppRunMessages(true, NSDate.distantFuture);
 end;
 
-function TCocoaWidgetSet.BeginMessageProcess: TLCLHandle;
+function TCocoaWidgetSet.BeginMessageProcess: THandle;
 begin
-  Result := TLCLHandle(NSAutoreleasePool.alloc.init);
+  Result := THandle(NSAutoreleasePool.alloc.init);
 end;
 
-procedure TCocoaWidgetSet.EndMessageProcess(context: TLCLHandle);
+procedure TCocoaWidgetSet.EndMessageProcess(context: THandle);
 begin
   NSAutoreleasePool(context).release;
 end;

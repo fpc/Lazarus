@@ -152,8 +152,8 @@ type
     // resources during message processing.
     // for example, on Cocoa, it needs to be used to release AutoReleasePool
     // to avoid resource leaks.
-    function  BeginMessageProcess: TLCLHandle; virtual;
-    procedure EndMessageProcess(context: TLCLHandle); virtual;
+    function  BeginMessageProcess: THandle; virtual;
+    procedure EndMessageProcess(context: THandle); virtual;
 
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;

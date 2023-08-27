@@ -201,8 +201,8 @@ type
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
-    function BeginMessageProcess: TLCLHandle; override;
-    procedure EndMessageProcess(context: TLCLHandle); override;
+    function BeginMessageProcess: THandle; override;
+    procedure EndMessageProcess(context: THandle); override;
 
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
