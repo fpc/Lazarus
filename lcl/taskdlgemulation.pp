@@ -137,6 +137,9 @@ type
     procedure ExpandDialog;
     procedure CollapseDialog;
 
+    function FindButtonByButtonID(ID: Integer): TCustomButton;
+    function FindRadioButtonByButtonID(ID: Integer): TRadioButton;
+
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
     procedure DoDialogDestroyed;
@@ -150,6 +153,11 @@ type
     procedure SetProgressBarType(var Msg: TLMessage); message TDM_SET_MARQUEE_PROGRESS_BAR;
     procedure SetProgressBarRange(var Msg: TLMessage); message TDM_SET_PROGRESS_BAR_RANGE;
     procedure SetProgressBarPos(var Msg: TLMessage); message TDM_SET_PROGRESS_BAR_POS;
+    procedure ClickVerification(var Msg: TLMessage); message TDM_CLICK_VERIFICATION;
+    procedure ClickButton(var Msg: TLMessage); message TDM_CLICK_BUTTON;
+    procedure ClickRadioButton(var Msg: TLMessage); message TDM_CLICK_RADIO_BUTTON;
+    procedure EnableButton(var Msg: TLMessage); message TDM_ENABLE_BUTTON;
+    procedure EnableRadioButton(var Msg: TLMessage); message TDM_ENABLE_RADIO_BUTTON;
 
   protected
     procedure SetupControls;
@@ -937,70 +945,6 @@ begin
   {$POP}
 end;
 
-procedure TLCLTaskDialog.SetProgressBarType(var Msg: TLMessage);
-begin
-  debugln(['TLCLTaskDialog.SetProgressBarType']);
-  debugln(['  Msg.wParam=',Msg.wParam]);
-  debugln(['  Msg.lParam=',Msg.lParam]);
-  //if both tfShowMarqueeProgressBar and tfShowProgressBar are set, user can switch ProgressBar.Style
-  if Assigned(ProgressBar) and (Msg.lParam = 0) then
-  begin
-    if BOOL(Msg.wParam) then
-    begin
-      if (tfShowMarqueeProgressBar in FDlg.Flags) then
-      begin
-        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstMarquee');
-        ProgressBar.Style := pbstMarquee;
-      end;
-    end
-    else
-    begin
-      if (tfShowProgressBar in FDlg.Flags) then
-      begin
-        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstNormal');
-        ProgressBar.Style := pbstNormal;
-      end;
-    end;
-  end;
-  //Result is ignored
-end;
-
-procedure TLCLTaskDialog.SetProgressBarRange(var Msg: TLMessage);
-var
-  OldMin, OldMax: Integer;
-begin
-  debugln(['TLCLTaskDialog.SetProgressBarRange']);
-  debugln(['  Msg.wParam=',Msg.wParam]);
-  debugln(['  Msg.lParam LoWord=',Msg.lParam and $FFFF]);
-  debugln(['  Msg.lParam HiWord=',(Msg.lParam and $FFFF0000) shr 16]);
-  if Assigned(ProgressBar) and (Msg.wParam = 0) then
-  begin
-    OldMin := ProgressBar.Min;
-    OldMax := ProgressBar.Max;
-    ProgressBar.Min := Msg.lParam and $FFFF;
-    ProgressBar.Max := (Msg.lParam and $FFFF0000) shr 16;
-    Msg.Result := MAKELPARAM(OldMin,OldMax);
-  end
-  else
-    Msg.Result := 0;
-end;
-
-procedure TLCLTaskDialog.SetProgressBarPos(var Msg: TLMessage);
-var
-  OldPos: Integer;
-begin
-  debugln(['TLCLTaskDialog.SetProgressBarPos']);
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
-  if Assigned(ProgressBar) and (Msg.lParam = 0) then
-  begin
-    OldPos := ProgressBar.Position;
-    ProgressBar.Position := Msg.wParam;
-    Msg.Result := OldPos;
-  end
-  else
-    Msg.Result := 0;
-end;
 
 procedure TLCLTaskDialog.OnRadioButtonClick(Sender: TObject);
 var
@@ -1063,6 +1007,41 @@ begin
   end;
 end;
 
+function TLCLTaskDialog.FindButtonByButtonID(ID: Integer): TCustomButton;
+var
+  i: Integer;
+  Btn: TCustomButton;
+begin
+  Result := nil;
+  for i := 0 to ComponentCount -1 do
+  begin
+    if (Components[i] is TCustomButton) then
+    begin
+      Btn := TCustomButton(Components[i]);
+      if (Btn.ModalResult = ID) then
+      begin
+        Result := Btn;
+        Break;
+      end;
+    end;
+  end;
+end;
+
+function TLCLTaskDialog.FindRadioButtonByButtonID(ID: Integer): TRadioButton;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := Low(RadioButtonArray) to High(RadioButtonArray) do
+  begin
+    if (RadioButtonArray[i].Tag = ID) then
+    begin
+      Result := RadioButtonArray[i];
+      Break;
+    end;
+  end;
+end;
+
 procedure TLCLTaskDialog.DoDialogConstructed;
 begin
   {$PUSH}
@@ -1105,9 +1084,9 @@ begin
   {$PUSH}
   {$ObjectChecks OFF}
   {%H-}TTaskDialogAccess(FDlg).DoOnButtonClicked(FDlg.ButtonIDToModalResult(Btn.ModalResult), CanClose);
-  if not CanClose then
-    ModalResult := mrNone;
   {$POP}
+  if not CanClose then
+    ModalResult := mrNone
 end;
 
 
@@ -1281,6 +1260,171 @@ begin
   end;
   inherited KeyDown(Key, Shift);
 end;
+
+{ ------------- message handling ------------}
+
+procedure TLCLTaskDialog.SetProgressBarType(var Msg: TLMessage);
+begin
+  // wParam: TRUE turns on marquee mode, FALSE turns off marquee mode.
+  // lParam: Must be zero.
+  // The return value is ignored
+  debugln(['TLCLTaskDialog.SetProgressBarType']);
+  debugln(['  Msg.wParam=',Msg.wParam]);
+  debugln(['  Msg.lParam=',Msg.lParam]);
+  //if both tfShowMarqueeProgressBar and tfShowProgressBar are set, user can switch ProgressBar.Style
+  if Assigned(ProgressBar) and (Msg.lParam = 0) then
+  begin
+    if BOOL(Msg.wParam) then
+    begin
+      if (tfShowMarqueeProgressBar in FDlg.Flags) then
+      begin
+        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstMarquee');
+        ProgressBar.Style := pbstMarquee;
+      end;
+    end
+    else
+    begin
+      if (tfShowProgressBar in FDlg.Flags) then
+      begin
+        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstNormal');
+        ProgressBar.Style := pbstNormal;
+      end;
+    end;
+  end;
+end;
+
+procedure TLCLTaskDialog.SetProgressBarRange(var Msg: TLMessage);
+var
+  OldMin, OldMax: Integer;
+begin
+  // wParam: must be zero
+  // lParam: The LOWORD specifies the minimum value. The HIWORD specifies the maximum value.
+  // Returns the previous range if sucessfull, zero otherwise
+  debugln(['TLCLTaskDialog.SetProgressBarRange']);
+  debugln(['  Msg.wParam=',Msg.wParam]);
+  debugln(['  Msg.lParam LoWord=',LParamLoWord(Msg.lParam)]);
+  debugln(['  Msg.lParam HiWord=',LParamHiWord(Msg.lParam)]);
+  if Assigned(ProgressBar) and (Msg.wParam = 0) then
+  begin
+    OldMin := ProgressBar.Min;
+    OldMax := ProgressBar.Max;
+    ProgressBar.Min := LParamLoWord(Msg.lParam);
+    ProgressBar.Max := LParamHiWord(Msg.lParam);
+    Msg.Result := MAKELPARAM(OldMin,OldMax);
+  end
+  else
+    Msg.Result := 0;
+end;
+
+procedure TLCLTaskDialog.SetProgressBarPos(var Msg: TLMessage);
+var
+  OldPos: Integer;
+begin
+  // wParam: An int that specifies the new position.
+  // lParam: Must be zero
+  // Returns the previous position
+  debugln(['TLCLTaskDialog.SetProgressBarPos']);
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  if Assigned(ProgressBar) and (Msg.lParam = 0) then
+  begin
+    OldPos := ProgressBar.Position;
+    ProgressBar.Position := Msg.wParam;
+    Msg.Result := OldPos;
+  end
+  else
+    Msg.Result := 0;
+end;
+
+procedure TLCLTaskDialog.ClickVerification(var Msg: TLMessage);
+begin
+  // wParam: TRUE to set the state of the checkbox to be checked; FALSE to set it to be unchecked.
+  // lParam  TRUE to set the keyboard focus to the checkbox; FALSE otherwise.
+  // Return value is ignored
+  debugln('TLCLTaskDialog.ClickVerification');
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  if Assigned(VerifyCheckBox) then
+  begin
+    VerifyCheckBox.Checked := BOOL(Msg.wParam);
+    if BOOL(Msg.lParam) then
+      if VerifyCheckBox.CanSetFocus then
+        VerifyCheckBox.SetFocus;
+  end;
+end;
+
+procedure TLCLTaskDialog.ClickButton(var Msg: TLMessage);
+var
+  i: Integer;
+  Btn: TCustomButton;
+  BitBtn: TBitBtn;
+begin
+  // wParam: An int value that specifies the ID of the button to be clicked.
+  // lParam: Must be zero.
+  // Return value is ignored
+  debugln('TLCLTaskDialog.ClickButton');
+  debugln(['  Msg.wParam=',(Msg.wParam)]);
+  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+
+  if (Msg.lPARAM = 0) then
+  begin
+    Btn := FindButtonByButtonID(Msg.wParam);
+    if Assigned(Btn) and Btn.Enabled then
+      Btn.Click;
+  end;
+end;
+
+procedure TLCLTaskDialog.ClickRadioButton(var Msg: TLMessage);
+var
+  i: Integer;
+  RadioBtn: TRadioButton;
+begin
+  // wParam: An int value that specifies the ID of the radio button to be clicked.
+  // lParam: Must be zero.
+  // Return value is ignored
+  debugln('TLCLTaskDialog.ClickRadioButton');
+  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
+  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  if (Msg.lParam = 0) and (FDlg.RadioButtons.Count > 0) then
+  begin
+    RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
+    if Assigned(RadioBtn) and (RadioBtn.Enabled) then
+      RadioBtn.Checked := True;
+  end;
+end;
+
+procedure TLCLTaskDialog.EnableButton(var Msg: TLMessage);
+var
+  Btn: TCustomButton;
+begin
+  // wParam: An int value that specifies the ID of the button to be enabled/disabled.
+  // lParam: 0: disable the button, otherwise enable
+  // Return value is ignored
+  debugln('TLCLTaskDialog.EnableButton');
+  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
+  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  Btn := FindButtonByButtonID(Msg.wParam);
+  if Assigned(Btn) then
+    Btn.Enabled := (Msg.lParam <> 0);
+end;
+
+procedure TLCLTaskDialog.EnableRadioButton(var Msg: TLMessage);
+var
+  RadioBtn: TRadioButton;
+begin
+  // wParam: An int value that specifies the ID of the radio button to be enabled/disabled.
+  // lParam: 0: disable the button, otherwise enable
+  // Return value is ignored
+  debugln('TLCLTaskDialog.EnableButton');
+  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
+  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
+  if Assigned(RadioBtn) then
+    RadioBtn.Enabled := (Msg.lParam <> 0);
+end;
+
+{ ------------- end message handling ------------}
+
 
 finalization
   if assigned(LDefaultFont) then
