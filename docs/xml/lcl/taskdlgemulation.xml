@@ -363,6 +363,14 @@ The progress bar control for the Task dialog.
 
 <element name="TLCLTaskDialog.CollapseDialog"/>
 
+<element name="TLCLTaskDialog.FindButtonByButtonID"/>
+<element name="TLCLTaskDialog.FindButtonByButtonID.Result"/>
+<element name="TLCLTaskDialog.FindButtonByButtonID.ID"/>
+
+<element name="TLCLTaskDialog.FindRadioButtonByButtonID"/>
+<element name="TLCLTaskDialog.FindRadioButtonByButtonID.Result"/>
+<element name="TLCLTaskDialog.FindRadioButtonByButtonID.ID"/>
+
 <element name="TLCLTaskDialog.DoDialogConstructed"/>
 
 <element name="TLCLTaskDialog.DoDialogCreated"/>
@@ -444,6 +452,25 @@ Not used in the method.
 <element name="TLCLTaskDialog.SetProgressBarRange.Msg"/>
 <element name="TLCLTaskDialog.SetProgressBarPos"/>
 <element name="TLCLTaskDialog.SetProgressBarPos.Msg"/>
+
+<element name="TLCLTaskDialog.ClickVerification"/>
+<element name="TLCLTaskDialog.ClickVerification.Msg"/>
+
+<element name="TLCLTaskDialog.ClickButton"/>
+<element name="TLCLTaskDialog.ClickButton.Msg"/>
+
+<element name="TLCLTaskDialog.ClickRadioButton"/>
+<element name="TLCLTaskDialog.ClickRadioButton.Msg"/>
+
+<element name="TLCLTaskDialog.EnableButton"/>
+<element name="TLCLTaskDialog.EnableButton.Msg"/>
+
+<element name="TLCLTaskDialog.EnableRadioButton"/>
+<element name="TLCLTaskDialog.EnableRadioButton.Msg"/>
+
+<!-- TODO: Added in b7d34812. -->
+<element name="TLCLTaskDialog.UpdateElementText"/>
+<element name="TLCLTaskDialog.UpdateElementText.Msg"/>
 
 <!-- protected -->
 <element name="TLCLTaskDialog.SetupControls">
@@ -662,7 +689,6 @@ perform actions needed when the Handle for the dialog form has been realized.
 </seealso>
 </element>
 
-<!-- TODO: Added in 5aab1a7b. -->
 <element name="TLCLTaskDialog.DoShow">
 <short>
 Performs actions needed when the dialog form is initially displayed.
