@@ -209,7 +209,7 @@ begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtRadioGroup;
 
-  Str := GetUtf8String(AWinControl.Caption);
+  Str := AWinControl{%H-}.Caption;
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;
@@ -235,7 +235,7 @@ begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtCheckGroup;
 
-  Str := GetUtf8String(AWinControl.Caption);
+  Str := AWinControl{%H-}.Caption;
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;

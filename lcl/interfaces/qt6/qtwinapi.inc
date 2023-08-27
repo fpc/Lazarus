@@ -1373,9 +1373,9 @@ begin
   QtDC :=TQtDeviceContext(DC);
 
   if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
+    WideStr := {%H-}Copy(Str, 1, Count)
   else
-    WideStr := GetUtf8String(Str);
+    WideStr := Str;
 
   ClipRect := Rect(0, 0, 0, 0);
   B := QtDC.getClipping;
@@ -2188,16 +2188,12 @@ var
     while CurCount > 0 do
     begin
       CharLen := UTF8CodepointSize(CurStr);
+      W := {%H-}Copy(CurStr, 1, CharLen);
       if AClipped then
-      begin
-        W := GetUTF8String(Copy(CurStr, 1, CharLen));
         QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
-          QtTextDontClip, @W);
-      end else
-      begin
-        W := GetUTF8String(Copy(CurStr, 1, CharLen));
+          QtTextDontClip, @W)
+      else
         QtDC.drawText(CurX, Y, @W);
-      end;
       inc(CurX, CurDx^);
       inc(CurDx);
       inc(CurStr, CharLen);
@@ -2218,9 +2214,9 @@ begin
   if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
   begin
     if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
+      WideStr := {%H-}Copy(Str, 1, Count)
     else
-      WideStr := GetUtf8String(Str);
+      WideStr := Str;
 
     R := QtDC.getClipRegion.getBoundingRect;
     QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WideStr);
@@ -2242,9 +2238,9 @@ begin
     if Options and ETO_RTLREADING <> 0 then
       QPainter_setLayoutDirection(QtDC.Widget, QtRightToLeft);
     if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
+      WideStr := {%H-}Copy(Str, 1, Count)
     else
-      WideStr := GetUtf8String(Str);
+      WideStr := Str;
 
     if (Options and ETO_CLIPPED <> 0) then
     begin
@@ -4217,7 +4213,7 @@ begin
     if Str = nil then
       AStr := ''
     else
-      AStr := GetUtf8String(Str);
+      AStr := Str;
     Size.cx := 0;
     Size.cY := Font.Metrics.Height;
     if (AStr = '') then
@@ -4304,7 +4300,7 @@ begin
   Size.cy := 0;
   if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
-  WideStr := GetUtf8String(Str);
+  WideStr := {%H-}Str;
   {$warning fixme Qt6}
   Size.cx := QtDC.Metrics.width(@WideStr, Count);
   Size.cy := QtDC.Metrics.height;
@@ -4552,6 +4548,7 @@ begin
 
   if (TQtWidget(Handle) is TQtMainWindow) and (not TQtMainWindow(Handle).IsMdiChild) then
   begin
+    ARect := Rect(0,0,0,0);
     GetClientRect(Handle, ARect);
     Width := ARect.Width;
     Height := ARect.Height;
@@ -5228,8 +5225,8 @@ var
   {$ENDIF}
 begin
   Result := 0;
-  Str := GetUtf8String(lpText);
-  TitleStr := GetUtf8String(lpCaption);
+  Str := lpText;
+  TitleStr := lpCaption;
   //TODO: TRANSLATIONS for buttons text, use TQtMessageBox
   if HWND <> 0 then
     AParent := TQtWidget(Hwnd).Widget
@@ -7250,9 +7247,9 @@ begin
   if not IsValidDC(DC) then Exit;
 
   if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
+    WideStr := {%H-}Copy(Str, 1, Count)
   else
-    WideStr := GetUtf8String(Str);
+    WideStr := Str;
 
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
 

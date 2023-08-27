@@ -112,7 +112,7 @@ begin
   Result.setHasSubmenu(AMenuItem.Count > 0);
   if not AMenuItem.IsLine then
   begin
-    Result.setText(GetUtf8String(AMenuItem.Caption));
+    Result.setText(AMenuItem.Caption{%H-});
     Result.setEnabled(AMenuItem.Enabled);
 
     {issue #37741}
@@ -283,7 +283,7 @@ begin
     if ACaption = cLineCaption then
       TQtMenu(Widget).setText('')
     else
-      TQtMenu(Widget).setText(GetUtf8String(ACaption));
+      TQtMenu(Widget).setText(ACaption{%H-});
   end;
 end;
 

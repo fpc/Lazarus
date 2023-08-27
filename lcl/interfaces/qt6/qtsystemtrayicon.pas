@@ -340,8 +340,8 @@ var
   WHint: WideString;
   WTitle: WideString;
 begin
-  WHint := GetUTF8String(AHint);
-  WTitle := GetUTF8String(ATitle);
+  WHint := {%H-}AHint;
+  WTitle := {%H-}ATitle;
   QSystemTrayIcon_showMessage(QSystemTrayIconH(TheObject), @WTitle, @WHint, AFlag, ATimeOut);
 end;
 
