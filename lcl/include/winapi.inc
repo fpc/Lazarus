@@ -1520,13 +1520,13 @@ end;
 }
 procedure LParamExtractLoHiWord(const aParam: LPARAM; out LoWord, HiWord: Word);
 begin
-  LoWord := aParam and $FFFF;
-  HiWord := (aParam and $FFFF0000) shr 16;
+  LoWord := LParamLoWord(aParam);
+  HiWord := LParamHiWord(aParam);
 end;
 
 function LParamHiWord(const aParam: LPARAM): Word;
 begin
-  Result := (aParam and $FFFF0000) shr 16;
+  Result := (aParam shr 16) and $FFFF;
 end;
 
 function LParamLoWord(const aParam: LPARAM): Word;

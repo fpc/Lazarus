@@ -1472,7 +1472,6 @@ end;
 
 { ------------- end message handling ------------}
 
-
 finalization
   if assigned(LDefaultFont) then
     LDefaultFont.Free;
