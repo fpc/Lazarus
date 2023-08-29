@@ -83,7 +83,7 @@ void QTimer_singleShot3(int msec, void (*TimeoutEvent)())
 
 void QTimer_singleShot4(int msec, const QObjectH context, void (*TimeoutEvent)())
 {
-  #if (QT_VERSION >= QT_VERSION_CHECK(5, 12, 0))
+  #if (QT_VERSION >= QT_VERSION_CHECK(5, 9, 0))
   QTimer::singleShot(msec, (const QObject*)context, TimeoutEvent);
   #else
   QTimer::singleShot(msec, TimeoutEvent);
