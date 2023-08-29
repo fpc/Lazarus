@@ -4339,16 +4339,7 @@ begin
     TM.tmDescent := QtFontMetrics.descent;
     TM.tmInternalLeading := 0;
     TM.tmExternalLeading := QtFontMetrics.leading;
-    {this is due qt bug in fontmetrics::averageCharWidth() under Mac
-     http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
-    {$IFDEF DARWIN}
-    if (QtVersionMajor = 5) and (QtVersionMinor >= 2) then
-      TM.tmAveCharWidth := QtFontMetrics.averageCharWidth
-    else
-      TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-    {$ELSE}
     TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
-    {$ENDIF}
 
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
     FontWeight := QtDC.font.getWeight;
