@@ -47,7 +47,7 @@ type
 
   TPieSlice = object
     FBase: TPoint;
-    FFlags: Integer;  // 1: 1st part, 2: 2nd part of diviced slice
+    FFlags: Integer;  // 1: 1st part, 2: 2nd part of divided slice
     FLabel: TLabelParams;
     FOrigIndex: Integer;
     FPrevAngle, FNextAngle: Double; // in CCW direction
@@ -224,13 +224,13 @@ uses
   TAChartStrConsts, TATypes, TACustomSource, TAGeometry, TAGraph;
 
 const
-  TWO_PI = 2 * pi;
-  PI_1_2 = pi / 2;
-  PI_3_2 = (3 / 2) * pi;
-  PI_1_4 = pi / 4;
-  PI_3_4 = (3 / 4) * pi;
-  PI_5_4 = (5 / 4) * pi;
-  PI_7_4 = (7 / 4) * pi;
+  TWO_PI = Double(pi) * Double(2.0);   // Avoid double/extended issues
+  PI_1_2 = Double(pi) * Double(0.5);
+  PI_3_2 = Double(pi) * Double(1.5);
+  PI_1_4 = Double(pi) * Double(0.25);
+  PI_3_4 = Double(pi) * Double(0.75);
+  PI_5_4 = Double(pi) * Double(1.25);
+  PI_7_4 = Double(pi) * Double(1.75);
 
 { TPieSlice }
 
@@ -1037,10 +1037,12 @@ var
   i, j: Integer;
   compareFunc: TAngleFunc;
 begin
-  SetLength(ASlices{%H-}, Length(FSlices) + 1);
+  ASlices := nil;
+  SetLength(ASlices, Length(FSlices) + 1);
   j := 0;
   for i:=0 to High(FSlices) do begin
-    if FSlices[i].Angle >= pi then begin
+    if FSlices[i].Angle > pi then
+    begin
       ASlices[j] := FSlices[i];
       ASlices[j].FNextAngle := FSlices[i].CenterAngle;
       ASlices[j].FFlags := 1;    // 1st piece of divided slice
