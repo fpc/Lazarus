@@ -3885,7 +3885,7 @@ begin
         {$endif}
       end;
     SM_CMONITORS:
-      Result := QGuiApplication_screenCount; {$warning fixme Qt6} //QDesktopWidget_numScreens(QApplication_desktop());
+      Result := QGuiApplication_screenCount;
     SM_CMOUSEBUTTONS:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
@@ -4321,8 +4321,7 @@ begin
   if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
   WideStr := {%H-}Str;
-  {$warning fixme Qt6}
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
+  Size.cx := QtDC.Metrics.width(@WideStr, UTF8Length(Str, Count));
   Size.cy := QtDC.Metrics.height;
 
   Result := True;
