@@ -24,7 +24,11 @@ procedure EnsureOrder(var A, B: Double); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
 
+function GreaterEqual(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+function GreaterThan(X, Y: Double; AEpsilon: Double = 0.0): boolean;
 function InRangeUlps(AX, ALo, AHi: Double; AMaxUlps: Word): Boolean;
+function LessEqual(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+function LessThan(X, Y: Double; AEpsilon: Double = 0.0): boolean;
 
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
@@ -143,9 +147,29 @@ begin
   AHi += d * ACoeff;
 end;
 
+function GreaterEqual(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+begin
+  Result := (X > Y) or SameValue(X, Y, AEpsilon);
+end;
+
+function GreaterThan(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+begin
+  Result := (X > Y) and not SameValue(X, Y, AEpsilon);
+end;
+
 function InRangeUlps(AX, ALo, AHi: Double; AMaxUlps: Word): Boolean;
 begin
   Result := InRange(Ulps(AX), Ulps(ALo) - AMaxUlps, Ulps(AHi) + AMaxUlps);
+end;
+
+function LessEqual(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+begin
+  Result := (X < Y) or SameValue(X, Y, AEpsilon);
+end;
+
+function LessThan(X, Y: Double; AEpsilon: Double = 0.0): boolean;
+begin
+  Result := (X < Y) and not SameValue(X, Y, AEpsilon);
 end;
 
 function SafeInfinity: Double;
