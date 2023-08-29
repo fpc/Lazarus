@@ -5832,7 +5832,6 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Added in b7d34812. -->
 <element name="TDE_CONTENT">
 <short>
 Numeric constant which identifies the text in the main content area on a task 
@@ -5847,7 +5846,7 @@ Added in LCL version 4.0.
 
 <element name="TDE_EXPANDED_INFORMATION">
 <short>
-Numeric constant which identifies the expandable text area for a task dialog.
+Numeric constant which identifies the expandable text for a task dialog.
 </short>
 <descr/>
 <version>
@@ -5858,7 +5857,7 @@ Added in LCL version 4.0.
 
 <element name="TDE_FOOTER">
 <short>
-Numeric constant which identifies the footer text area for a task dialog.
+Numeric constant which identifies the footer text for a task dialog.
 </short>
 <descr/>
 <version>
