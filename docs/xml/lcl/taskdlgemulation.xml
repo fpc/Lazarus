@@ -525,11 +525,11 @@ content and UI elements are enabled on the dialog form.
 <p>
 SetupControls calls private method in the class to layout and align the 
 elements on the dialog form. This includes setting the border style, border 
-icons, and position for the dailog form. The font typeface and size used on the 
+icons, and position for the dialog form. The font typeface and size used on the 
 dialog are assigned in the method.
 </p>
 <p>
-It create and populates three (3) panels with the controls needed for the 
+It creates and populates three (3) panels with the controls needed for the 
 dialog. The top panel holds the main icon, title, text, and expanded text. The 
 middle panel contains any radio buttons, command link buttons, query controls, 
 or the progress bar for the dialog. The bottom panel contains the remainder of 
@@ -795,8 +795,19 @@ execute an emulated task dialog form for the specified
 the Execute method in the widgetset class instance for those platforms which do 
 not support the native Task Dialog API.
 </p>
+<p>
+ExecuteLCLTaskDialog creates a temporary instance of TLCLTaskDialog and calls 
+its Execute method using the arguments to the routine. The return value 
+contains the result from the Execute method in the dialog form; -1 indicates 
+that ADlg did not contain a valid TCustomTaskDialog instance. Otherwise, it 
+contains the modal result from the dialog form.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLCLTaskDialog.Execute"/>
+<link id="#lcl.dialogs.TCustomTaskDialog.Execute">TCustomTaskDialog.Execute</link>
+<link id="#lcl.dialogs.TCustomTaskDialog.ModalResult">TCustomTaskDialog.ModalResult</link>
+</seealso>
 </element>
 <element name="ExecuteLCLTaskDialog.Result">
 <short>
