@@ -905,7 +905,10 @@ end;
 
 procedure THelpSelectorDialog.NodesTreeViewDblClick(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  if (GetSelectedNodeQuery <> Nil) then
+    ModalResult := mrOk
+  else
+    ModalResult := mrNone;
 end;
 
 procedure THelpSelectorDialog.NodesTreeViewSelectionChanged(Sender: TObject);
