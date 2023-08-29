@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TACustomSeries, TADrawUtils, TALegend, TAStyles;
+  TAChartUtils, TAMath, TACustomSeries, TADrawUtils, TALegend, TAStyles;
 
 type
 
@@ -224,7 +224,8 @@ uses
   TAChartStrConsts, TATypes, TACustomSource, TAGeometry, TAGraph;
 
 const
-  TWO_PI = Double(pi) * Double(2.0);   // Avoid double/extended issues
+  ONE_PI = Double(pi);                  // Avoid double/extended issues
+  TWO_PI = Double(pi) * Double(2.0);
   PI_1_2 = Double(pi) * Double(0.5);
   PI_3_2 = Double(pi) * Double(1.5);
   PI_1_4 = Double(pi) * Double(0.25);
@@ -391,7 +392,7 @@ var
       poHorizontal:
         Result := not InRange(ASlice.FPrevAngle, PI_1_2, PI_3_2);
       poVertical:
-        Result := InRange(ASlice.FPrevAngle, 0, pi);
+        Result := InRange(ASlice.FPrevAngle, 0, ONE_PI);
     end;
     if Result then begin
       prev := PrevSlice(ASlice);
@@ -409,7 +410,7 @@ var
       poHorizontal:
         Result := InRange(ASlice.FNextAngle, PI_1_2, PI_3_2);
       poVertical:
-        Result := InRange(ASlice.FNextAngle, pi, TWO_PI);
+        Result := InRange(ASlice.FNextAngle, ONE_PI, TWO_PI);
     end;
     if Result then begin
       next := NextSlice(ASlice);
@@ -468,6 +469,8 @@ var
 
   { Draws the arc of a 3D slice }
   procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
+  const
+    EPS = DEFAULT_EPSILON;
   var
     i, numSteps: Integer;
     p: Array of TPoint = nil;
@@ -480,7 +483,7 @@ var
     if AInside and (FInnerRadiusPercent = 0) then
       exit;
 
-    if ASlice.Angle >= pi then
+    if ASlice.Angle >= ONE_PI then
       isVisible := true        // this case should not happen with drawslices
     else
     if AInside then
@@ -489,8 +492,8 @@ var
           isVisible := InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4) or
                        InRange(ASlice.FNextAngle, PI_3_4, PI_7_4);
         poHorizontal:
-          isVisible := InRange(ASlice.FPrevAngle, 0, pi) or
-                       InRange(ASlice.FNextAngle, 0, pi);
+          isVisible := InRange(ASlice.FPrevAngle, 0, ONE_PI) or
+                       InRange(ASlice.FNextAngle, 0, ONE_PI);
         poVertical:
           isVisible := InRange(ASlice.FPrevAngle, PI_1_2, PI_3_2) or
                        InRange(ASlice.FNextAngle, PI_1_2, PI_3_2);
@@ -498,14 +501,18 @@ var
     else
       case FOrientation of
         poNormal:
-          isVisible := (ASlice.FPrevAngle >= PI_7_4) or (ASlice.FPrevAngle <= PI_3_4) or
-                       (ASlice.FNextAngle >= PI_7_4) or (ASlice.FNextAngle <= PI_3_4);
+          isVisible := GreaterThan(ASlice.FPrevAngle, PI_7_4, EPS) or
+                         LessThan(ASlice.FPrevAngle, PI_3_4, EPS) or
+                       GreaterThan(ASlice.FNextAngle, PI_7_4, EPS) or
+                         LessThan(ASlice.FNextAngle, PI_3_4, EPS);
         poHorizontal:
-          isVisible := InRange(ASlice.FPrevAngle, pi, TWO_PI) or
-                       InRange(ASlice.FNextAngle, pi, TWO_PI);
+          isVisible := InRange(ASlice.FPrevAngle, ONE_PI, TWO_PI) or
+                       InRange(ASlice.FNextAngle, ONE_PI, TWO_PI);
         poVertical:
-          isVisible := (ASlice.FPrevAngle >= PI_3_2) or (ASlice.FPrevAngle <= PI_1_2) or
-                       (ASlice.FNextAngle >= PI_3_2) or (ASlice.FNextAngle <= PI_1_2);
+          isVisible := GreaterThan(ASlice.FPrevAngle, PI_3_2, EPS) or
+                         LessThan(ASlice.FPrevAngle, PI_1_2, EPS) or
+                       GreaterThan(ASlice.FNextAngle, PI_3_2, EPS) or
+                         LessThan(ASlice.FNextAngle, PI_1_2, EPS);
       end;
     if not isVisible then
       exit;
@@ -515,18 +522,18 @@ var
       case FOrientation of
         poNormal:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), ASlice.FPrevAngle, PI_3_4);
-            angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), ASlice.FNextAngle, PI_7_4);
+            angle1 := IfThen(InRangeWithLimits(ASlice.FPrevAngle, PI_3_4, PI_7_4, EPS), ASlice.FPrevAngle, PI_3_4);
+            angle2 := IfThen(InRangeWithLimits(ASlice.FNextAngle, PI_3_4, PI_7_4, EPS), ASlice.FNextAngle, PI_7_4);
           end;
         poHorizontal:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, 0, pi), ASlice.FPrevAngle, 0);
-            angle2 := IfThen(InRange(ASlice.FNextAngle, 0, pi), ASlice.FNextAngle, pi);
+            angle1 := IfThen(InRangeWithLimits(ASlice.FPrevAngle, 0, ONE_PI, EPS), ASlice.FPrevAngle, 0);
+            angle2 := IfThen(InRangeWithLimits(ASlice.FNextAngle, 0, ONE_PI, EPS), ASlice.FNextAngle, ONE_PI);
           end;
         poVertical:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_1_2, PI_3_2), ASlice.FPrevAngle, PI_1_2);
-            angle2 := IfThen(InRange(ASlice.FNextAngle, PI_1_2, PI_3_2), ASlice.FNextAngle, PI_3_2);
+            angle1 := IfThen(InRangeWithLimits(ASlice.FPrevAngle, PI_1_2, PI_3_2, EPS), ASlice.FPrevAngle, PI_1_2);
+            angle2 := IfThen(InRangeWithLimits(ASlice.FNextAngle, PI_1_2, PI_3_2, EPS), ASlice.FNextAngle, PI_3_2);
           end;
       end;
     end else begin
@@ -534,18 +541,18 @@ var
       case FOrientation of
         poNormal:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), PI_7_4, ASlice.FPrevAngle);
-            angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), PI_3_4, ASlice.FNextAngle);
+            angle1 := IfThen(InRangeWithoutLimits(ASlice.FPrevAngle, PI_3_4, PI_7_4, EPS), PI_7_4, ASlice.FPrevAngle);
+            angle2 := IfThen(InRangeWithoutLimits(ASlice.FNextAngle, PI_3_4, PI_7_4, EPS), PI_3_4, ASlice.FNextAngle);
           end;
         poHorizontal:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, 0, pi), pi, ASlice.FPrevAngle);
-            angle2 := Ifthen(InRange(ASlice.FNextAngle, 0, pi), TWO_PI, ASlice.FNextAngle);
+            angle1 := IfThen(InRangeWithoutLimits(ASlice.FPrevAngle, 0, ONE_PI, EPS), ONE_PI, ASlice.FPrevAngle);
+            angle2 := Ifthen(InRangeWithoutLimits(ASlice.FNextAngle, 0, ONE_PI, EPS), TWO_PI, ASlice.FNextAngle);
           end;
         poVertical:
           begin
-            angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_1_2, PI_3_2), PI_3_2, ASlice.FPrevAngle);
-            angle2 := IfThen(InRange(ASlice.FNextAngle, PI_1_2, PI_3_2), PI_1_2, ASlice.FNextAngle);
+            angle1 := IfThen(InRangeWithoutLimits(ASlice.FPrevAngle, PI_1_2, PI_3_2, EPS), PI_3_2, ASlice.FPrevAngle);
+            angle2 := IfThen(InRangeWithoutLimits(ASlice.FNextAngle, PI_1_2, PI_3_2, EPS), PI_1_2, ASlice.FNextAngle);
           end;
       end;
     end;
@@ -606,12 +613,12 @@ var
   { Draws the 3D parts of the slice: the radial edges and the arc }
   procedure DrawSlice3D(ASlice: TPieSlice);
   begin
-    if EndEdgeVisible(ASlice) then
-      DrawEdge3D(ASlice, ASlice.FNextAngle, spEndSide);
     if ASlice.FVisible then begin
       DrawArc3D(ASlice, false);
       DrawArc3D(ASlice, true);
     end;
+    if EndEdgeVisible(ASlice) then
+      DrawEdge3D(ASlice, ASlice.FNextAngle, spEndSide);
     if StartEdgeVisible(ASlice) then
       DrawEdge3D(ASlice, ASlice.FPrevAngle, spStartSide);
   end;
@@ -960,7 +967,7 @@ begin
   if InRange(ASlice.FPrevAngle, PI_1_4, PI_5_4) and InRange(next_angle, PI_5_4, TWO_PI + PI_1_4)
   then
     // Slice crossing the 225° point --> must be first slice to draw
-    Result := pi
+    Result := ONE_PI
   else
     Result := IfThen(InRange(ASlice.FPrevAngle, PI_1_4, PI_5_4), ASlice.FPrevAngle, next_angle) - PI_1_4;
 end;
@@ -971,7 +978,7 @@ begin
      InRange(ASlice.FNextAngle, PI_1_2, PI_3_2)
   then
     // Most backward slice --> must be first to draw
-    Result := pi
+    Result := ONE_PI
   else
   if InRange(ASlice.FPrevAngle, PI_1_2, PI_3_2) and
      (InRange(ASlice.FNextAngle, PI_3_2, TWO_PI) or InRange(ASlice.FNextAngle, 0, PI_1_2))
@@ -988,15 +995,15 @@ var
   next_angle: Double;
 begin
   next_angle := ASlice.FixedNextAngle;
-  if (ASlice.FPrevAngle <= pi) and (ASlice.FNextAngle > pi) then
+  if (ASlice.FPrevAngle <= ONE_PI) and (ASlice.FNextAngle > ONE_PI) then
     // Slice crossing the 180° point, most backward slice --> first to draw
-    Result := pi
+    Result := ONE_PI
   else
-  if (ASlice.FPrevAngle >= pi) and (ASlice.FNextAngle < pi) then
+  if (ASlice.FPrevAngle >= ONE_PI) and (ASlice.FNextAngle < ONE_PI) then
     // Slice crossing the 0° point, most foreward slice --> last to draw
     Result := 0
   else
-    Result :=IfThen(ASlice.FPrevAngle > pi, ASlice.FPrevAngle, next_angle);
+    Result :=IfThen(ASlice.FPrevAngle > ONE_PI, ASlice.FPrevAngle, next_angle);
 end;
 
 procedure TCustomPieSeries.SortSlices(out ASlices: TSliceArray);
@@ -1041,7 +1048,7 @@ begin
   SetLength(ASlices, Length(FSlices) + 1);
   j := 0;
   for i:=0 to High(FSlices) do begin
-    if FSlices[i].Angle > pi then
+    if FSlices[i].Angle > ONE_PI then
     begin
       ASlices[j] := FSlices[i];
       ASlices[j].FNextAngle := FSlices[i].CenterAngle;
