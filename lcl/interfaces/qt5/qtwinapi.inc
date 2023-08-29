@@ -4306,7 +4306,7 @@ begin
   if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
   WideStr := Str;
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
+  Size.cx := QtDC.Metrics.width(@WideStr, UTF8Length(Str, Count));
   Size.cy := QtDC.Metrics.height;
 
   Result := True;
