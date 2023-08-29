@@ -4573,44 +4573,75 @@ has a zero or negative width or height.
 <short>The timer ID.</short>
 </element>
 
-<!-- TODO: Added in c70e6b32. -->
 <element name="LParamExtractLoHiWord">
-<short/>
-<descr/>
+<short>
+Converts an Integer parameter value into low-order and high-order Word values.
+</short>
+<descr>
+<p>
+<var>LParamExtractLoHiWord</var> is a routine used to separate the value in 
+<var>AParam</var> into low- and high-order Word values in <var>LoWord</var> and 
+<var>HiWord</var>. It is the reverse of MakeLParam function. 
+LParamExtractLoHiWord calls the LParamLoWord and LParamHiWord functions to get 
+the values for the output arguments.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
 <seealso/>
 </element>
 <element name="LParamExtractLoHiWord.AParam">
-<short/>
+<short>
+Pointer to the Integer value separated into low-order and high-order Word 
+(16-bit) values.
+</short>
 </element>
 <element name="LParamExtractLoHiWord.LoWord">
-<short/>
+<short>
+Returns the Word value for the low-order Word in AParam.
+</short>
 </element>
 <element name="LParamExtractLoHiWord.HiWord">
-<short/>
+<short>
+Returns the Word value for the high-order Word in AParam.
+</short>
 </element>
 
 <element name="LParamHiWord">
-<short/>
+<short>
+Gets the high-order Word value stored in the specified Integer pointer.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="LParamHiWord.Result">
-<short/>
+<short>
+High-order Word (16-bit) value stored in AParam.
+</short>
 </element>
 <element name="LParamHiWord.AParam">
-<short/>
+<short>
+Pointer to the Integer value examined in the routine.
+</short>
 </element>
 
 <element name="LParamLoWord">
-<short/>
+<short>
+Gets the low-order Word value stored in the specified Integer pointer.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="LParamLoWord.Result">
-<short/>
+<short>
+Low-order Word (16-bit) value stored in AParam.
+</short>
 </element>
 <element name="LParamLoWord.AParam">
-<short/>
+<short>
+Pointer to the Integer value examined in the routine.
+</short>
 </element>
 
 <element name="MakeLong">
