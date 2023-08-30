@@ -306,6 +306,7 @@ procedure math_stroke.calc_cap(
            len : double );
 var
  dx1 ,dy1 ,dx2 ,dy2 ,da ,a1 : double;
+ sina1, cosa1: Double;
 
  i ,n : int;
 
@@ -349,10 +350,11 @@ begin
 
      while i < n do
       begin
+       sincos(a1, sina1, cosa1);
        add_vertex(
         vc ,
-        v0.x + Cos(a1 ) * m_width ,
-        v0.y + Sin(a1 ) * m_width );
+        v0.x + cosa1 * m_width ,
+        v0.y + sina1 * m_width );
 
        a1:=a1 + da;
 
@@ -369,10 +371,11 @@ begin
 
      while i < n do
       begin
+       sincos(a1, sina1, cosa1);
        add_vertex(
         vc ,
-        v0.x + Cos(a1 ) * m_width ,
-        v0.y + Sin(a1 ) * m_width );
+        v0.x + cosa1 * m_width ,
+        v0.y + sina1 * m_width );
 
        a1:=a1 - da;
 
@@ -551,6 +554,7 @@ procedure math_stroke.calc_arc(
            x ,y ,dx1 ,dy1 ,dx2 ,dy2 : double );
 var
  a1 ,a2 ,da : double;
+ sina1, cosa1: double;
 
  i ,n : int;
 
@@ -574,7 +578,8 @@ begin
 
    while i < n do
     begin
-     add_vertex(vc ,x + Cos(a1 ) * m_width ,y + Sin(a1 ) * m_width );
+     sincos(a1, sina1, cosa1);
+     add_vertex(vc ,x + cosa1 * m_width, y + sina1 * m_width );
 
      a1:=a1 + da;
 
@@ -741,6 +746,7 @@ var
  pt : point_type;
 
  a1 ,a2 ,da : double;
+ sina1, cosa1: double;
 
  ccw : boolean;
 
@@ -784,8 +790,9 @@ begin
 
    while a1 < a2 do
     begin
-     pt.x:=x + Cos(a1 ) * width;
-     pt.y:=y + Sin(a1 ) * width;
+     sincos(a1, sina1, cosa1);
+     pt.x:=x + cosa1 * width;
+     pt.y:=y + sina1 * width;
 
      out_vertices.add(@pt );
 
@@ -804,8 +811,9 @@ begin
 
    while a1 > a2 do
     begin
-     pt.x:=x + Cos(a1 ) * width;
-     pt.y:=y + Sin(a1 ) * width;
+     sincos(a1, sina1, cosa1);
+     pt.x:=x + cosa1 * width;
+     pt.y:=y + sina1 * width;
 
      out_vertices.add(@pt );
 
@@ -950,6 +958,7 @@ var
  dx2 ,dy2 ,
 
  a1 ,a2 ,da : double;
+ sina1, cosa1: double;
 
 begin
  out_vertices.remove_all;
@@ -1002,8 +1011,9 @@ begin
 
    while a1 < a2 do
     begin
-     pt.x:=v0.x + Cos(a1 ) * width;
-     pt.y:=v0.y + Sin(a1 ) * width;
+     sincos(a1, sina1, cosa1);
+     pt.x:=v0.x + cosa1 * width;
+     pt.y:=v0.y + sina1 * width;
 
      out_vertices.add(@pt );
 

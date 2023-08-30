@@ -2010,7 +2010,7 @@ end;
 procedure Agg2D.star(cx ,cy ,r1 ,r2 ,startAngle : double; numRays : int );
 var
  da ,a ,x ,y : double;
-
+ cosa, sina: Double;
  i : int;
 
 begin
@@ -2022,9 +2022,10 @@ begin
  i:=0;
 
  while i < numRays do
-  begin
-   x:=Cos(a ) * r2 + cx;
-   y:=Sin(a ) * r2 + cy;
+ begin
+   sincos(a, sina, cosa);
+   x:=cosa * r2 + cx;
+   y:=sina * r2 + cy;
 
    if i <> 0 then
     m_path.line_to(x ,y )
@@ -2032,8 +2033,8 @@ begin
     m_path.move_to(x ,y );
 
    a:=a + da;
-
-   m_path.line_to(Cos(a ) * r1 + cx ,Sin(a ) * r1 + cy );
+   sincos(a, sina, cosa);
+   m_path.line_to(cosa * r1 + cx, sina * r1 + cy );
 
    a:=a + da;
 

@@ -2391,6 +2391,7 @@ end;
 procedure TAgg2D.Star(cx ,cy ,r1 ,r2 ,startAngle : double; numRays : integer );
 var
  da ,a ,x ,y : double;
+ sina, cosa: Double;
 
  i : int;
 
@@ -2404,8 +2405,9 @@ begin
 
  while i < numRays do
   begin
-   x:=Cos(a ) * r2 + cx;
-   y:=Sin(a ) * r2 + cy;
+   sincos(a, sina, cosa);
+   x:=cosa * r2 + cx;
+   y:=sina * r2 + cy;
 
    if i <> 0 then
     m_path.line_to(x ,y )
@@ -2413,8 +2415,9 @@ begin
     m_path.move_to(x ,y );
 
    a:=a + da;
+   sincos(a, sina, cosa);
 
-   m_path.line_to(Cos(a ) * r1 + cx ,Sin(a ) * r1 + cy );
+   m_path.line_to(cosa * r1 + cx, sina * r1 + cy );
 
    a:=a + da;
 

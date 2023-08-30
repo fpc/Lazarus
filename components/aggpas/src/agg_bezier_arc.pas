@@ -113,8 +113,7 @@ var
  px ,py : array[0..3 ] of double;
 
 begin
- x0:=Cos(sweep_angle / 2.0 );
- y0:=Sin(sweep_angle / 2.0 );
+ sincos(sweep_angle / 2.0, y0, x0);
  tx:=(1.0 - x0 ) * 4.0 / 3.0;
  ty:=y0 - tx * x0 / y0;
 
@@ -127,8 +126,7 @@ begin
  px[3 ]:=x0;
  py[3 ]:=y0;
 
- sn:=Sin(start_angle + sweep_angle / 2.0 );
- cs:=Cos(start_angle + sweep_angle / 2.0 );
+ sincos(start_angle + sweep_angle / 2.0, sn, cs);
 
  for i:=0 to 3 do
   begin
@@ -166,6 +164,7 @@ var
  total_sweep ,
  local_sweep ,
  prev_sweep  : double;
+ sinangle, cosangle: double;
 
  done : boolean;
 
@@ -187,10 +186,12 @@ begin
 
    m_cmd:=path_cmd_line_to;
 
-   m_vertices[0 ]:=x + rx * Cos(start_angle );
-   m_vertices[1 ]:=y + ry * Sin(start_angle );
-   m_vertices[2 ]:=x + rx * Cos(start_angle + sweep_angle );
-   m_vertices[3 ]:=y + ry * Sin(start_angle + sweep_angle );
+   sincos(start_angle, sinangle, cosangle);
+   m_vertices[0 ]:=x + rx * cosangle;
+   m_vertices[1 ]:=y + ry * sinangle;
+   sincos(start_angle + sweep_angle, sinangle, cosangle);
+   m_vertices[2 ]:=x + rx * cosangle;
+   m_vertices[3 ]:=y + ry * sinangle;
 
    exit;
 
@@ -358,8 +359,7 @@ begin
  dy2:=(y0 - y2 ) / 2.0;
 
 // Convert angle from degrees to radians
- cos_a:=Cos(angle );
- sin_a:=Sin(angle );
+ sincos(angle, sin_a, cos_a);
 
 // Calculate (x1, y1)
  x1:= cos_a * dx2 + sin_a * dy2;

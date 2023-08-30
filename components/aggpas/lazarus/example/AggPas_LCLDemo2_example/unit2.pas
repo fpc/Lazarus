@@ -34,10 +34,10 @@ uses LazFileUtils;
 procedure TForm1.FormCreate(Sender: TObject);
 var
   HasFont: Boolean;
-  FontFilename: String;
+  FontFilename: String = '';
   s: String;
-  TxtW: integer;
-  TxtH: integer;
+  TxtW: integer = 0;
+  TxtH: integer = 0;
   TxtX: Integer;
   TxtY: Integer;
 begin

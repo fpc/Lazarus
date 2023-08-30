@@ -156,6 +156,7 @@ end;
 function arc.vertex;
 var
  pf : unsigned;
+ sinangle, cosangle: Double;
 
 begin
  if is_stop(m_path_cmd ) then
@@ -164,8 +165,9 @@ begin
  else
   if (m_angle < m_end - m_da / 4 ) <> m_ccw then
    begin
-    x^:=m_x + Cos(m_end ) * m_rx;
-    y^:=m_y + Sin(m_end ) * m_ry;
+    sincos(m_end, sinangle, cosangle);
+    x^:=m_x + cosangle * m_rx;
+    y^:=m_y + sinangle * m_ry;
 
     m_path_cmd:=path_cmd_stop;
 
@@ -174,8 +176,9 @@ begin
    end
   else
    begin
-    x^:=m_x + Cos(m_angle ) * m_rx;
-    y^:=m_y + Sin(m_angle ) * m_ry;
+    sincos(m_angle, sinangle, cosangle);
+    x^:=m_x + cosangle * m_rx;
+    y^:=m_y + sinangle * m_ry;
 
     m_angle:=m_angle + m_da;
 

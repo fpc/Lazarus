@@ -15,7 +15,7 @@ uses
  {$IFDEF LCLGtk2}
  pango, LCLType, Gtk2Proc, Gtk2Def, gtk2,
  {$ENDIF}
- agg_arc, GraphMath, agg_fpimage, agg_basics;
+ agg_arc, Math, GraphMath, agg_fpimage, agg_basics;
 
 type
 
@@ -503,7 +503,7 @@ procedure TAggLCLCanvas.RadialPie(x1, y1, x2, y2, StartAngle16Deg,
 }
 var
   cx, cy, rx, ry: double;
-  a, da, startangle, endangle: Double;
+  a, da, startangle, endangle, sina, cosa: Double;
 begin
   if Angle16DegLength=0 then exit;
   Path.m_path.remove_all;
@@ -523,10 +523,12 @@ begin
   Path.m_path.move_to(cx,cy);
   a:=startangle;
   while a<endangle do begin
-    Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+    sincos(a, sina, cosa);
+    Path.m_path.line_to(cx+rx*cosa,cy+ry*sina);
     a:=a+da;
   end;
-  Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
+  sincos(endangle, sina, cosa);
+  Path.m_path.line_to(cx+rx*cosa,cy+ry*sina);
 
   AggClosePolygon;
   AggDrawPath(AGG_FillAndStroke);
@@ -542,7 +544,7 @@ procedure TAggLCLCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX,
 var
   cx, cy, rx, ry: double;
   StartAngle16deg, AngleLength16deg: extended;
-  a, da, startangle, endangle: Double;
+  a, da, startangle, endangle, sina, cosa: Double;
 begin
   Coords2Angles(EllipseX1, EllipseY1, EllipseX2-EllipseX1, EllipseY2-EllipseY1,
                 StartX, StartY, EndX, EndY,
@@ -566,10 +568,12 @@ begin
   Path.m_path.move_to(cx,cy);
   a:=startangle;
   while a<endangle do begin
-    Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+    sincos(a, sina, cosa);
+    Path.m_path.line_to(cx+rx*cosa,cy+ry*sina);
     a:=a+da;
   end;
-  Path.m_path.line_to(cx+rx*cos(endangle),cy+ry*sin(endangle));
+  sincos(endangle, sina, cosa);
+  Path.m_path.line_to(cx+rx*cosa,cy+ry*sina);
 
   AggClosePolygon;
   AggDrawPath(AGG_FillAndStroke);
@@ -695,11 +699,12 @@ var
 
   procedure AddArc(cx, cy, startangle, endangle: double);
   var
-    a: Double;
+    a, sina, cosa: Double;
   begin
     a:=startangle;
     while a<endangle do begin
-      Path.m_path.line_to(cx+rx*cos(a),cy+ry*sin(a));
+      sincos(a, sina, cosa);
+      Path.m_path.line_to(cx+rx*cosa,cy+ry*sina);
       a:=a+da;
     end;
   end;

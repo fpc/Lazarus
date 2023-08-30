@@ -768,8 +768,7 @@ var
  ca ,sa ,t0 ,t2 ,t4 : double;
 
 begin
- ca:=Cos(a);
- sa:=Sin(a);
+ sincos(a, sa, ca);
  t0:=m0 * ca - m1 * sa;
  t2:=m2 * ca - m3 * sa;
  t4:=m4 * ca - m5 * sa;
@@ -815,8 +814,11 @@ end;
 
 { CONSTRUCT }
 constructor trans_affine_rotation.Construct;
+var
+ sina, cosa: Double;
 begin
- inherited Construct(Cos(a ) ,Sin(a ) ,-Sin(a ) ,Cos(a ) ,0 ,0 );
+ sincos(a, sina, cosa);
+ inherited Construct(cosa, sina, -sina, cosa ,0 ,0 );
 
 end;
 
@@ -893,8 +895,11 @@ end;
 
 { CONSTRUCT }
 constructor trans_affine_reflection.Construct(a : double );
+var
+ sina, cosa: Double;
 begin
- inherited Construct(Cos(a ) ,Sin(a ) );
+ sincos(a, sina, cosa);
+ inherited Construct(cosa, sina);
 
 end;
 

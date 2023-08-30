@@ -150,6 +150,7 @@ end;
 function ellipse.vertex;
 var
  angle : double;
+ sinangle, cosangle: double;
 
 begin
  if m_step = m_num then
@@ -175,8 +176,9 @@ begin
  if m_cw then
   angle:=2.0 * pi - angle;
 
- x^:=m_x + Cos(angle ) * m_rx;
- y^:=m_y + Sin(angle ) * m_ry;
+ sincos(angle, sinangle, cosangle);
+ x^:=m_x + cosangle * m_rx;
+ y^:=m_y + sinangle * m_ry;
 
  inc(m_step );
 

@@ -560,6 +560,7 @@ end;
 procedure gradient_radial_focus.update_values;
 var
  dist ,r ,a : double;
+ sina, cosa: Double;
 
 begin
 // For use in the quadratic equation
@@ -577,9 +578,10 @@ begin
   // clamp focus to radius
   // x = r cos theta, y = r sin theta
    a:=ArcTan2(m_focus_y ,m_focus_x );
+   sincos(a, sina, cosa);
 
-   m_focus_x:=trunc(r * Cos(a ) );
-   m_focus_y:=trunc(r * Sin(a ) );
+   m_focus_x:=trunc(r * cosa);
+   m_focus_y:=trunc(r * sina);
 
   end;
 
