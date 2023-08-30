@@ -352,6 +352,9 @@ begin
     else
       AFilename:=AFilename+DefaultExt;
   end;
+  if (not {already} (ofExtensionDifferent in FOptions)) and (DefaultExt <> '')
+      and (CompareFileNames(DefaultExt,ExtractFileExt(AFilename)) <> 0) then
+      Include(FOptions, ofExtensionDifferent);
   //ofOverwritePrompt -> is done in the interface
   if (ofPathMustExist in Options)
   and (not DirPathExists(ExtractFileDir(AFilename))) then begin
@@ -430,6 +433,7 @@ end;
  ------------------------------------------------------------------------------}
 function TOpenDialog.DoExecute: boolean;
 begin
+  Options := Options - [ofExtensionDifferent]; //clear, it'll be set by WS or in CheckFile
   Result:=inherited DoExecute;
   if not (ofNoResolveLinks in Options) then
     ResolveLinks;
