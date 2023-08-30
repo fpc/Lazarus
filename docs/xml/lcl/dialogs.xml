@@ -1388,15 +1388,15 @@ Allows file names with invalid characters.
 </element>
 <element name="TOpenOption.ofExtensionDifferent">
 <short>
-Allows a file name with an extension which does not match the filters or 
-default extension in a file dialog.
+Indicates that a non-blank extension which differs from the default extension 
+was entered using a file open dialog.
 </short>
 </element>
 <element name="TOpenOption.ofPathMustExist">
-<short>Shows an error message if selected path does not exist.</short>
+<short>Shows an error message if an entered file path does not exist.</short>
 </element>
 <element name="TOpenOption.ofFileMustExist">
-<short>Shows an error message if selected file does not exist.</short>
+<short>Shows an error message if an entered file does not exist.</short>
 </element>
 <element name="TOpenOption.ofCreatePrompt">
 <short>
@@ -1482,6 +1482,111 @@ set, it is enabled during execution of the dialog.
 <link id="TOpenOption"/>
 <link id="DefaultOpenDialogOptions"/>
 </seealso>
+</element>
+
+<element name="TOpenOptionEx">
+<short>
+Widgetset-specific open options which cannot be mapped to the standard values 
+in TOpenOptions.
+</short>
+<descr>
+<p>
+Values from <var>TOpenOptionEx</var> are stored in the TOpenOptionsEx set type 
+used to implement the OptionsEx property in TOpenDialog.
+</p>
+<p>
+The current implementation contains values that are specific to the IFileDialog 
+options available in Windows Vista or later versions.
+</p>
+<p>
+Values which are intentionally not supported include: ofDefaultNoMiniMode and  
+ofHideMruPlaces. These values are not supported as of Windows 7.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TOpenOptionsEx"/>
+<link id="TOpenDialog.OptionsEx"/>
+</seealso>
+</element>
+<element name="TOpenOptionEx.ofHidePinnedPlaces">
+<short>
+Hides items shown by default in the view's navigation pane. (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofForcePreviewPaneOn">
+<short>
+Indicates to the Open dialog box that the preview pane should always be displayed. (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofStrictFileTypes">
+<short>
+In a Save dialog, restrict the file extension to a file type available in the Filter property for the dialog. (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofPickFolders">
+<short>
+Turns the dialog into a TSelectDirectoryDialog. (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofOkButtonNeedsInteraction">
+<short>
+The OK button will be disabled until the user navigates the view or edits the 
+filename (if applicable). (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofForceFileSystem">
+<short>
+Ensures that returned items are file system items. (Windows Vista+)
+</short>
+</element>
+<element name="TOpenOptionEx.ofAllNonStorageItems">
+<short>
+Allows the user to choose any item in the Shell namespace, not just those with 
+SFGAO_STREAM or SFGAO_FILESYSTEM attributes. This flag cannot be combined with 
+FOS_FORCEFILESYSTEM. (Windows Vista+)
+</short>
+</element>
+
+<element name="TOpenOptionsEx">
+<short>
+Set type used to store values from the TOpenOptionEx enumeration.
+</short>
+<descr>
+<p>
+<var>TOpenOptionsEx</var> is a set type used to store zero (0) or more values 
+from the <var>TOpenOptionEx</var> enumeration. It is the type used to implement 
+the OptionsEx property in TOpenDialog, and contains the widgetset-specific 
+options enabled for a dialog.
+</p>
+<p>
+In the current implementation, TOpenOptionsEx contains values specific to 
+Windows Vista or later versions. It contains values which cannot be mapped 
+directly to values in the TOpenOption enumeration.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TOpenOptionEx"/>
+<link id="TOpenOption"/>
+<link id="TOpenOptions"/>
+<link id="TOpenDialog.OptionsEx"/>
+<link id="TOpenDialog.Options"/>
+</seealso>
+</element>
+
+<element name="ofExNoPlacesBar">
+<short>
+Mapped to the ofHidePinnedPlaces option in TOpenOptionEx. Maintains code 
+compatibility with older Delphi versions.
+</short>
+<version>
+Added in LCL version 4.0.
+</version>
 </element>
 
 <element name="DefaultOpenDialogOptions">
@@ -1991,6 +2096,31 @@ method is used to apply changes from the widgetset class instance.
 <link id="TOpenOptions"/>
 <link id="TOpenOption"/>
 <link id="DefaultOpenDialogOptions"/>
+</seealso>
+</element>
+
+<element name="TOpenDialog.OptionsEx">
+<short>
+Widgetset-specific options enabled for the dialog.
+</short>
+<descr>
+<p>
+<var>OptionsEx</var> is a <var>TOpenOptionsEx</var> property which contains the 
+widgetset-specific options enabled when the dialog is executed. It can contain 
+zero (0) or more values from the TOpenOptionEx enumeration. The default value 
+for the property is an empty set ([]).
+</p>
+<p>
+OptionsEx is used in the widgetset class instance to apply values which cannot 
+be represented using TOpenOptions and TOpenOption, which are used on all of the 
+supported LCL platforms. In the current LCL version, OptionsEx is used for the 
+Windows platform and supports Windows Vista or later version.
+</p>
+</descr>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenOptionsEx"/>
+<link id="TOpenOptionEx"/>
 </seealso>
 </element>
 
