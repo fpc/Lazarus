@@ -8097,7 +8097,7 @@ end;
 function ShowSaveProjectAsDialog: TModalResult;
 var
   SaveDialog: TSaveDialog;
-  NewProgramName, LCProgramName: String;
+  NewProgramName: String;
   NewPath, NewLPIFilename, NewProgramFN: String;
   AFilename, Ext, AText, ACaption, OldProjectDir: string;
 begin
@@ -8123,6 +8123,7 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Title := Format(lisSaveProject, [Project1.GetTitleOrName, Ext]);
+      // apply naming conventions, suggest lowercased name if user wants so
       if EnvironmentOptions.LowercaseDefaultFilename then
         SaveDialog.FileName := LowerCase(AFilename)
       else
@@ -8154,19 +8155,15 @@ begin
         end;
 
         NewPath := ExtractFilePath(AFilename);
-        LCProgramName := NewProgramName;
-        // apply naming conventions, suggest lowercased name if user wants so
-        if EnvironmentOptions.LowercaseDefaultFilename then
-          LCProgramName := LowerCase(LCProgramName);
         // append default extension
-        NewLPIFilename := NewPath + LCProgramName + '.lpi';
+        NewLPIFilename := NewPath + NewProgramName + '.lpi';
 
         if Project1.MainUnitID >= 0 then
         begin
           // check mainunit filename
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
           Assert(Ext<>'', 'ShowSaveProjectAsDialog: Ext is empty');
-          NewProgramFN := NewPath + LCProgramName + Ext;
+          NewProgramFN := NewPath + NewProgramName + Ext;
           if CompareFilenames(NewLPIFilename, NewProgramFN) = 0 then
           begin
             ACaption:=lisChooseADifferentName;
