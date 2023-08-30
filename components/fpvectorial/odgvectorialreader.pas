@@ -921,6 +921,7 @@ procedure TvODGVectorialReader.ConvertPathStringToTPath(AStr: string;
 var
   x1, y1, x2, y2: double;
   t1, t2, lSrcX, lSrcY, lDestX, lDestY: Double;
+  sin1, cos1, sin2, cos2: Double;
   j: Integer;
   lTokenizer: TSVGPathTokenizer;
   CurToken: TSVGToken;
@@ -1013,10 +1014,12 @@ begin
         ConvertViewBoxDeltaToFPVDelta(AInfo, x2, y2, x2, y2);
 
         // Parametrized Ellipse equation
-        lSrcX := x2 * Cos(t1) + x1;
-        lSrcY := y2 * Sin(t1) + y1;
-        lDestX := x2 * Cos(t2) + x1;
-        lDestY := y2 * Sin(t2) + y1;
+        SinCos(t1, sin1, cos1);
+        SinCos(t2, sin2, cos2);
+        lSrcX := x2 * cos1 + x1;
+        lSrcY := y2 * sin1 + y1;
+        lDestX := x2 * cos2 + x1;
+        lDestY := y2 * sin2 + y1;
 
         // See http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
         ADest.AppendMoveToSegment(lSrcX, lSrcY);

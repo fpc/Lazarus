@@ -327,25 +327,28 @@ procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double;
   var P1, P2, P3, P4: T3DPoint);
 var
   halfLength, arcLength, alfa: Double;
+  sinStartAngle, cosStartAngle, sinEndAngle, cosEndAngle: Double;
 begin
   arcLength := endAngle - startAngle;
   halfLength := (endAngle - startAngle) / 2;
   alfa := sin(arcLength) * (Sqrt(4 + 3*sqr(tan(halfLength))) - 1) / 3;
 
   // Start point
-  P1.X := Xc + Rx * cos(startAngle);
-  P1.Y := Yc + Ry * sin(startAngle);
+  SinCos(startAngle, sinStartAngle, cosStartAngle);
+  P1.X := Xc + Rx * cosStartAngle;
+  P1.Y := Yc + Ry * sinStartAngle;
 
   // End point
-  P4.X := Xc + Rx * cos(endAngle);
-  P4.Y := Yc + Ry * sin(endAngle);
+  SinCos(endAngle, sinEndAngle, cosEndAngle);
+  P4.X := Xc + Rx * cosEndAngle;
+  P4.Y := Yc + Ry * sinEndAngle;
 
   // Control points
-  P2.X := P1.X + alfa * -1 * Rx * sin(startAngle);
-  P2.Y := P1.Y + alfa * Ry * cos(startAngle);
+  P2.X := P1.X + alfa * -1 * Rx * sinStartAngle;
+  P2.Y := P1.Y + alfa * Ry * cosStartAngle;
 
-  P3.X := P4.X - alfa * -1 * Rx * sin(endAngle);
-  P3.Y := P4.Y - alfa * Ry * cos(endAngle);
+  P3.X := P4.X - alfa * -1 * Rx * sinEndAngle;
+  P3.Y := P4.Y - alfa * Ry * cosEndAngle;
 end;
 
 // (x2,y2)=(x1+L⋅cos(a),y1+L⋅sin(a)).
@@ -353,12 +356,14 @@ end;
 function LineEquation_GetPointAndTangentForLength(AStart, AEnd: T3DPoint; ADistance: Double; out AX, AY, ATangentAngle: Double): Boolean;
 var
   lLineAngle: Double; // to X axis
+  sinAngle, cosAngle: Double;
 begin
   Result := False;
 //  lLineAngle := arctan((AEnd.Y-AStart.Y) / (AEnd.X - AStart.X));
   lLineAngle := arctan2(AEnd.Y - AStart.Y, AEnd.X - AStart.X);
-  AX := AStart.X + ADistance * Cos(lLineAngle);
-  AY := AStart.Y + ADistance * Sin(lLineAngle);
+  SinCos(lLineAngle, sinAngle, cosAngle);
+  AX := AStart.X + ADistance * cosAngle;
+  AY := AStart.Y + ADistance * sinAngle;
 end;
 
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1,

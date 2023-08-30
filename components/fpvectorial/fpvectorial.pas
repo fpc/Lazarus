@@ -2881,10 +2881,12 @@ function T2DEllipticalArcSegment.AlignedEllipseCenterEquationT1(
   AParam: Double): Double;
 var
   lLeftSide, lRightSide, lArg: Double;
+  sinParam, cosParam: Double;
 begin
   // E1.Y - RY*sin(t1) = E2.Y - RY*sin(arccos((- E1.X + RX*cos(t1) + E2.X)/RX))
-  lLeftSide := E1.Y - RY*sin(AParam);
-  lArg := (- E1.X + RX*cos(AParam) + E2.X)/RX;
+  SinCos(AParam, sinParam, cosParam);
+  lLeftSide := E1.Y - RY*sinParam;
+  lArg := (- E1.X + RX*cosParam + E2.X)/RX;
   if (lArg > 1) or (lArg < -1) then Exit($FFFFFFFF);
   lRightSide := E2.Y - RY*sin(arccos(lArg));
   Result := lLeftSide - lRightSide;
@@ -3027,6 +3029,7 @@ procedure T2DEllipticalArcSegment.CalculateCenter;
 var
   XStart, YStart, lT1: Double;
   CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
+  Sin0, Cos0, SinXRot, CosXRot, SinLT1, CosLT1: Double;
   RotatedCenter: T3DPoint;
 begin
   if CenterSetByUser then Exit;
@@ -3040,8 +3043,10 @@ begin
 
   if Previous = nil then
   begin
-    CX := X - RX*Cos(0)*Cos(XRotation) + RY*Sin(0)*Sin(XRotation);
-    CY := Y - RY*Sin(0)*Cos(XRotation) - RX*Cos(0)*Sin(XRotation);
+    SinCos(0.0, Sin0, Cos0);
+    SinCos(XRotation, SinXRot, CosXRot);
+    CX := X - RX*Cos0*CosXRot + RY*Sin0*SinXRot;
+    CY := Y - RY*Sin0*CosXRot - RX*Cos0*SinXRot;
     Exit;
   end;
 
@@ -3069,9 +3074,10 @@ begin
   // SolveNumerically
 
   lT1 := SolveNumericallyAngle(@AlignedEllipseCenterEquationT1, 0.0001, 20);
+  SinCos(lT1, SinLT1, CosLT1);
 
-  CX1 := E1.X - RX*cos(lt1);
-  CY1 := E1.Y - RY*sin(lt1);
+  CX1 := E1.X - RX*CosLT1;
+  CY1 := E1.Y - RY*SinLT1;
 
   // Rotate back!
   RotatedCenter := Rotate3DPointInXY(Make3DPoint(CX1,CY1), Make3DPoint(0,0),XRotation);
@@ -3122,6 +3128,7 @@ var
   t1, t2, t3: Double;
   x1, x2, x3: Double;
   y1, y2, y3: Double;
+  SinXRot, CosXRot, SinT1, CosT1, SinT2, CosT2: Double;
 begin
   ALeft := 0;
   ATop := 0;
@@ -3171,8 +3178,12 @@ begin
     t2 := arctan(-RY*tan(XRotation)/RX) + pi; //Pi/2;    // why add pi/2 ??
 //    t3 := arctan(-RY*tan(XRotation)/RX) + Pi;
 
-    x1 := Cx + RX*Cos(t1)*Cos(XRotation)-RY*Sin(t1)*Sin(XRotation);
-    x2 := Cx + RX*Cos(t2)*Cos(XRotation)-RY*Sin(t2)*Sin(XRotation);
+    SinCos(t1, SinT1, CosT1);
+    SinCos(t2, SinT2, CosT2);
+    SinCos(XRotation, SinXRot, CosXRot);
+
+    x1 := Cx + RX*CosT1*CosXRot - RY*SinT1*SinXRot;
+    x2 := Cx + RX*CosT2*CosXRot - RY*SinT2*SinXRot;
 //    x3 := Cx + RX*Cos(t3)*Cos(XRotation)-RY*Sin(t3)*Sin(XRotation);
 
     ALeft := Min(x1, x2);
@@ -3187,8 +3198,11 @@ begin
     t2 := arctan(RY*cotan(XRotation)/RX) + pi; //Pi/2;   // why add pi/2 ??
 //    t3 := arctan(RY*cotan(XRotation)/RX) + 3*Pi/2;
 
-    y1 := CY + RY*Sin(t1)*Cos(XRotation)+RX*Cos(t1)*Sin(XRotation);
-    y2 := CY + RY*Sin(t2)*Cos(XRotation)+RX*Cos(t2)*Sin(XRotation);
+    SinCos(t1, SinT1, CosT1);
+    SinCos(t2, SinT2, CosT2);
+
+    y1 := CY + RY*SinT1*CosXRot + RX*CosT1*SinXRot;
+    y2 := CY + RY*SinT2*CosXRot + RX*CosT2*SinXRot;
 //    y3 := CY + RY*Sin(t3)*Cos(XRotation)+RX*Cos(t3)*Sin(XRotation);
 
     ATop := Max(y1, y2);
@@ -4133,6 +4147,8 @@ procedure TvEntityWithPenAndBrush.DrawPolygonBrushLinearGradient(
   var ARenderInfo: TvRenderInfo;
   const APoints: TPointsArray; const APolyStarts: TIntegerDynArray;
   ARect: TRect; AGradientStart, AGradientEnd: T2DPoint);
+const
+  sinPi4 = sin(pi/4);
 var
   ADest: TFPCustomCanvas absolute ARenderInfo.Canvas;
   //
@@ -4141,7 +4157,7 @@ var
   pf: Double;          // fraction of path travelled along gradient vector
   px, py: Double;
   phi: Double;
-  sinphi, cosphi: float;
+  sinphi, cosphi: Double;
   coord, coord1, coord2, dcoord: Double;
   coordIsX: Boolean;
   p1, p2: T2dPoint;
@@ -4203,7 +4219,7 @@ begin
       begin  // Run along gradient vector, lines perpendicular to gradient vector
         phi := arctan2(gv.y, gv.x);
         Sincos(phi, sinphi, cosphi);
-        coordIsX := (abs(sinphi) <= sin(pi/4));
+        coordIsX := (abs(sinphi) <= sinPi4);  // sinPi4 = sin(pi/4)
         if not coordIsX then begin
           phi := -(pi/2 - phi);
           Sincos(phi, sinphi, cosphi);
@@ -6132,6 +6148,7 @@ procedure TvEllipse.CalculateBoundingBox(constref ARenderInfo: TvRenderInfo;
   out ALeft, ATop, ARight, ABottom: Double);
 var
   t, tmp: Double;
+  sint, cost, sinAngle, cosAngle: Double;
 begin
   { To calculate the bounding rectangle we can do this:
 
@@ -6157,11 +6174,14 @@ begin
   if Angle <> 0.0 then
   begin
     t := arctan(-VertHalfAxis*tan(Angle)/HorzHalfAxis);
-    tmp := abs(HorzHalfAxis*cos(t)*cos(Angle) - VertHalfAxis*sin(t)*sin(Angle));
+    SinCos(t, sint, cost);
+    SinCos(Angle, sinAngle, cosAngle);
+    tmp := abs(HorzHalfAxis*cost*cosAngle - VertHalfAxis*sint*sinAngle);
     ALeft := X - Round(tmp);
     ARight := X + Round(tmp);
     t := arctan(VertHalfAxis*cot(Angle) / HorzHalfAxis);
-    tmp := abs(VertHalfAxis*sin(t)*cos(Angle) + HorzHalfAxis*cos(t)*sin(Angle));
+    SinCos(t, sint, cost);
+    tmp := abs(VertHalfAxis*sint*cosAngle + HorzHalfAxis*cost*sinAngle);
     tmp := tmp * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
     ATop := Y - Round(tmp);
     ABottom := Y + Round(tmp);
@@ -6932,6 +6952,7 @@ var
   Points: array of TPoint = nil;
   lTriangleCenter, lTriangleCorner: T3DPoint;
   txt: String;
+  sinAngle, cosAngle: Double;
 begin
   ADest.Pen.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Pen.Width := 1;
@@ -6957,8 +6978,9 @@ begin
 
   // Left Arrow
   Points[0] := Point(CoordToCanvasX(ArcLeft.X), CoordToCanvasY(ArcLeft.Y));
-  lTriangleCenter.X := Cos(AngleLeft+Pi/2) * -(ArcRadius/10) + ArcLeft.X;
-  lTriangleCenter.Y := Sin(AngleLeft+Pi/2) * -(ArcRadius/10) + ArcLeft.Y;
+  SinCos(AngleLeft + pi/2, SinAngle, CosAngle);
+  lTriangleCenter.X := CosAngle * -(ArcRadius/10) + ArcLeft.X;
+  lTriangleCenter.Y := SinAngle * -(ArcRadius/10) + ArcLeft.Y;
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcLeft, Pi * 10 / 180);
   Points[1] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcLeft, - Pi * 10 / 180);
@@ -6968,8 +6990,9 @@ begin
 
   // Right Arrow
   Points[0] := Point(CoordToCanvasX(ArcRight.X), CoordToCanvasY(ArcRight.Y));
-  lTriangleCenter.X := Cos(AngleRight+Pi/2) * (ArcRadius/10) + ArcRight.X;
-  lTriangleCenter.Y := Sin(AngleRight+Pi/2) * (ArcRadius/10) + ArcRight.Y;
+  SinCos(AngleRight + Pi/2, SinAngle, CosAngle);
+  lTriangleCenter.X := CosAngle * (ArcRadius/10) + ArcRight.X;
+  lTriangleCenter.Y := SinAngle * (ArcRadius/10) + ArcRight.Y;
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcRight, Pi * 10 / 180);
   Points[1] := Point(CoordToCanvasX(lTriangleCorner.X), CoordToCanvasY(lTriangleCorner.Y));
   lTriangleCorner := Rotate3DPointInXY(lTriangleCenter, ArcRight, - Pi * 10 / 180);
@@ -6990,6 +7013,8 @@ begin
 end;
 
 procedure TvArcDimension.CalculateExtraArcInfo;
+var
+  SinAngle, CosAngle: Double;
 begin
   // Line equation of the Left line
   AngleLeft := arctan(Abs(BaseLeft.Y-DimensionLeft.Y)/Abs(BaseLeft.X-DimensionLeft.X));
@@ -7008,10 +7033,12 @@ begin
   AngleBase.Y := al * AngleBase.X + bl;
 
   //  And also now the left and right points of the arc
-  ArcLeft.X := Cos(AngleLeft) * ArcRadius + AngleBase.X;
-  ArcLeft.Y := Sin(AngleLeft) * ArcRadius + AngleBase.Y;
-  ArcRight.X := Cos(AngleRight) * ArcRadius + AngleBase.X;
-  ArcRight.Y := Sin(AngleRight) * ArcRadius + AngleBase.Y;
+  SinCos(AngleLeft, SinAngle, CosAngle);
+  ArcLeft.X := CosAngle * ArcRadius + AngleBase.X;
+  ArcLeft.Y := SinAngle * ArcRadius + AngleBase.Y;
+  SinCos(AngleRight, SinAngle, CosAngle);
+  ArcRight.X := CosAngle * ArcRadius + AngleBase.X;
+  ArcRight.Y := SinAngle * ArcRadius + AngleBase.Y;
 end;
 
 function TvArcDimension.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
@@ -7276,6 +7303,7 @@ var
   lPointD, lPointE, lPointF: T3DPoint;
   lPoints: array[0..2] of TPoint;
   AlfaAngle: Double;
+  SinAlfa, CosAlfa: Double;
 begin
   ApplyPenToCanvas(ARenderInfo);
   ApplyBrushToCanvas(ARenderInfo);
@@ -7329,12 +7357,13 @@ begin
     AlfaAngle := 0
   else
     AlfaAngle := ArcTan((Base.Y - Y) / (Base.X - X));
-  lPointD.Y := Sin(AlfaAngle) * ArrowLength + Y;
-  lPointD.X := Cos(AlfaAngle) * ArrowLength + X;
-  lPointE.X := Sin(AlfaAngle) * (ArrowBaseLength/2) + lPointD.X;
-  lPointE.Y := Cos(AlfaAngle) * (ArrowBaseLength/2) + lPointD.Y;
-  lPointF.X := - Sin(AlfaAngle) * (ArrowBaseLength/2) + lPointD.X;
-  lPointF.Y := - Cos(AlfaAngle) * (ArrowBaseLength/2) + lPointD.Y;
+  SinCos(AlfaAngle, SinAlfa, CosAlfa);
+  lPointD.Y := SinAlfa * ArrowLength + Y;
+  lPointD.X := CosAlfa * ArrowLength + X;
+  lPointE.X := SinAlfa * (ArrowBaseLength/2) + lPointD.X;
+  lPointE.Y := CosAlfa * (ArrowBaseLength/2) + lPointD.Y;
+  lPointF.X := - SinAlfa * (ArrowBaseLength/2) + lPointD.X;
+  lPointF.Y := - CosAlfa * (ArrowBaseLength/2) + lPointD.Y;
   lPoints[1].X := CoordToCanvasX(lPointE.X);
   lPoints[1].Y := CoordToCanvasY(lPointE.Y);
   lPoints[2].X := CoordToCanvasX(lPointF.X);
