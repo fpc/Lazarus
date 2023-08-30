@@ -460,6 +460,7 @@ begin
   inherited Create(TheOwner);
   fCompStyle:=csOpenFileDialog;
   FOptions := DefaultOpenDialogOptions;
+  FOptionsEx := [];
 end;
 
 procedure TOpenDialog.DoCanClose(var CanClose: Boolean);

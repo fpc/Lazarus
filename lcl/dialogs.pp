@@ -192,7 +192,7 @@ type
     ofShowHelp,        // show a help button
     ofNoValidate,
     ofAllowMultiSelect,// allow multiselection
-    ofExtensionDifferent,
+    ofExtensionDifferent, // set after the dialog is executed (so, don't set it yourself) if DefaultExt <> '' and Extension <> DefaultExt
     ofPathMustExist,   // shows an error message if selected path does not exist
     ofFileMustExist,   // shows an error message if selected file does not exist
     ofCreatePrompt,
@@ -212,6 +212,24 @@ type
     ofAutoPreview      // details are OS and interface dependent
     );
   TOpenOptions = set of TOpenOption;
+
+  // WS specific options that cannot be (more or less) mapped to the standard TOpenOptions
+  // Currently just Windows Vista+ (IFileDialog) options
+  TOpenOptionEx = (
+    ofHidePinnedPlaces,         //Windows Vista+ Hide items shown by default in the view's navigation pane.
+    ofForcePreviewPaneOn,       //Windows Vista+ Indicates to the Open dialog box that the preview pane should always be displayed (a NARG/NARL option IMHO)
+    ofStrictFileTypes,          //Windows Vista+ In the Save dialog, only allow the user to choose a file that has one of the file name extensions specified through Filter property
+    ofPickFolders,              //Windows Vista+ Turns the dialog into a TSelectDirectoryDialog
+    ofOkButtonNeedsInteraction, //Windows Vista+ The OK button will be disabled until the user navigates the view or edits the filename (if applicable).
+    ofForceFileSystem,          //Windows Vista+ Ensures that returned items are file system items
+    ofAllNonStorageItems        //Windows Vista+ Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes.
+                                //               This flag cannot be combined with FOS_FORCEFILESYSTEM.
+    // Intentionally not supported: ofDefaultNoMiniMode, ofHideMruPlaces: these values are not supported as of Windows 7.
+  );
+  TOpenOptionsEx = set of TOpenOptionEx;
+  //Old Delpi OpenOptionEx, mapped to ofHidePinnedPlaces
+const
+  ofExNoPlacesBar = ofHidePinnedPlaces;
   
 const
   DefaultOpenDialogOptions = [ofEnableSizing, ofViewDetail];
@@ -223,6 +241,7 @@ type
     FOnFolderChange: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
     FOptions: TOpenOptions;
+    FOptionsEx: TOpenOptionsEx;
     FLastSelectionChangeFilename: string;
   protected
     class procedure WSRegisterClass; override;
@@ -240,6 +259,7 @@ type
     procedure IntfSetOption(const AOption: TOpenOption; const AValue: Boolean);
   published
     property Options: TOpenOptions read FOptions write FOptions default DefaultOpenDialogOptions;
+    property OptionsEx: TOpenOptionsEx read FOptionsEx write FOptionsEx default [];
     property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
