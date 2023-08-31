@@ -4698,8 +4698,9 @@ var
 begin
   if FAreaList.Count = 0 then
     BuildAreaList;
-  SetRectEmpty(R);
-  for i := 0 to Pred(FAreaList.Count) do
+
+  R := PRect(FAreaList[0])^;
+  for i := 1 to Pred(FAreaList.Count) do
     UnionRect(R, R, PRect(FAreaList[i])^);
 
   Owner.MakeVisible(R, true);
