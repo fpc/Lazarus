@@ -1716,10 +1716,6 @@ extension when AFilename does not already include one. The file extension is
 appended to the value in AFilename.
 </p>
 <p>
-Options is updated to include the value ofExtensionDifferent if a non-blank 
-extension was entered that does not match the value in the DefaultExt property.
-</p>
-<p>
 Values in Options are used to determine if the file name is usable, including:
 </p>
 <dl>
@@ -1857,13 +1853,13 @@ Performs actions needed to display the dialog and capture its result.
 <p>
 <var>DoExecute</var> is an overridden <var>Boolean</var> function in 
 <var>TOpenDialog</var>. It ensures that the value ofExtensionDifferent is 
-excluded from Options prior to executing the dialog. The value will be included 
-in the CheckFile method if a file extension is entered that does not match the 
-DefaultExt property.
+excluded from the Options property prior to executing the dialog. It calls the 
+inherited method (in TCommonDialog) to display the dialog form and to get the 
+UserChoice used to complete execution of the dialog.
 </p>
 <p>
-DoExecute calls the inherited method, and extends the execution loop 
-for the dialog to use the Options enabled for the dialog including:
+DoExecute extends the execution loop for the dialog to use the Options enabled 
+for the dialog, including:
 </p>
 <dl>
 <dt>ofNoResolveLinks</dt>
@@ -1873,18 +1869,35 @@ Calls ResolveLinks to follow symbolic links when ofNoResolveLinks has been
 </dd>
 <dt>ofNoChangeDir</dt>
 <dd>
-Updates the InitialDir property when a path in FileName or Files is changed 
-and ofNoChangeDir has been <b>omitted</b>.
+Updates the InitialDir property when a path in FileName or Files has been 
+changed and ofNoChangeDir has been <b>omitted</b>.
 </dd>
 </dl>
+<p>
+The return value is <b>True</b> when all of the steps are successfully 
+completed. The return value is <b>False</b> if any mechanism other than the OK
+button was used to close the dialog.
+</p>
 <p>
 If execution of the inherited method was successfully completed, the 
 CheckAllFiles method is called to validate the values in the FileName and 
 Files properties.
 </p>
 <p>
-The return value is <b>True</b> when all of these steps are successfully 
-completed.
+The return value is set to <b>True</b> if the selected FileName or Files is/are 
+valid for the dialog. Options is updated to exclude the value 
+ofExtensionDifferent when Files contains more than 1 (one) file entry. This  
+avoids the erratic behavior displayed when multiple file selections are enabled 
+and used on the dialog, and mimics the behavior used in Delphi 7.
+</p>
+<p>
+If a single file is selected on the dialog, and has an extension which does not 
+match the assigned value in DefaultExt, the value ofExtensionDifferent is 
+included in Options to indicate the condition.
+</p>
+<p>
+DoExecute is called from the Execute method in the TCommonDialog ancestor, and 
+occurs immediately before the Close method is called.
 </p>
 </descr>
 <seealso>
@@ -1895,7 +1908,9 @@ completed.
 <link id="TFileDialog.FileName"/>
 <link id="TFileDialog.Files"/>
 <link id="TCommonDialog.DoExecute"/>
+<link id="TCommonDialog.Execute"/>
 <link id="TOpenOption"/>
+<link id="TOpenOptions"/>
 </seealso>
 </element>
 <element name="TOpenDialog.DoExecute.Result">
