@@ -1389,7 +1389,9 @@ Allows file names with invalid characters.
 <element name="TOpenOption.ofExtensionDifferent">
 <short>
 Indicates that a non-blank extension which differs from the default extension 
-was entered using a file open dialog.
+was entered using a file open dialog. Included in the option values if the 
+condition occurs during execution of a dialog. Specifically excluded from the 
+options prior to executing a dialog.
 </short>
 </element>
 <element name="TOpenOption.ofPathMustExist">
@@ -1714,6 +1716,10 @@ extension when AFilename does not already include one. The file extension is
 appended to the value in AFilename.
 </p>
 <p>
+Options is updated to include the value ofExtensionDifferent if a non-blank 
+extension was entered that does not match the value in the DefaultExt property.
+</p>
+<p>
 Values in Options are used to determine if the file name is usable, including:
 </p>
 <dl>
@@ -1850,9 +1856,14 @@ Performs actions needed to display the dialog and capture its result.
 <descr>
 <p>
 <var>DoExecute</var> is an overridden <var>Boolean</var> function in 
-<var>TOpenDialog</var>, and calls the inherited method on entry. It extends 
-the execution loop for the dialog to use the Options enabled for the dialog, 
-including:
+<var>TOpenDialog</var>. It ensures that the value ofExtensionDifferent is 
+excluded from Options prior to executing the dialog. The value will be included 
+in the CheckFile method if a file extension is entered that does not match the 
+DefaultExt property.
+</p>
+<p>
+DoExecute calls the inherited method, and extends the execution loop 
+for the dialog to use the Options enabled for the dialog including:
 </p>
 <dl>
 <dt>ofNoResolveLinks</dt>
@@ -1879,6 +1890,7 @@ completed.
 <seealso>
 <link id="TOpenDialog.Options"/>
 <link id="TOpenDialog.CheckAllFiles"/>
+<link id="TOpenDialog.CheckFile"/>
 <link id="TOpenDialog.ResolveLinks"/>
 <link id="TFileDialog.FileName"/>
 <link id="TFileDialog.Files"/>
