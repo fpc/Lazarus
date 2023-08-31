@@ -833,8 +833,10 @@ end;
 
 class function TWin32WSOpenDialog.GetVistaOptions(Options: TOpenOptions;
   OptionsEx: TOpenOptionsEx; SelectFolder: Boolean): FileOpenDialogOptions;
+{$if fpc_fullversion < 30301}
 const
   FOS_OKBUTTONNEEDSINTERACTION = $200000; //not yet in ShlObj
+{$endif fpc_fullversion < 30301}
 begin
   Result := 0;
   if ofAllowMultiSelect in Options then Result := Result or FOS_ALLOWMULTISELECT;
