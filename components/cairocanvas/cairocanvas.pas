@@ -635,6 +635,8 @@ end;
 
 //C* - center, R* - halfaxis
 procedure TCairoPrinterCanvas.EllipseArcPath(CX, CY, RX, RY: Double; Angle1, Angle2: Double; Clockwise, Continuous: Boolean);
+var
+  sinAngle1, cosAngle1: Double;
 begin
   if (RX=0) or (RY=0) then //cairo_scale do not likes zero params
     Exit;
@@ -643,7 +645,10 @@ begin
     cairo_translate(cr, SX(CX), SY(CY));
     cairo_scale(cr, SX2(RX), SY2(RY));
     if not Continuous then
-      cairo_move_to(cr, cos(Angle1), sin(Angle1)); //Move to arcs starting point
+    begin
+      SinCos(Angle1, sinAngle1, cosAngle1);
+      cairo_move_to(cr, cosAngle1, sinAngle1); //Move to arcs starting point
+    end;
     if Clockwise then
       cairo_arc(cr, 0, 0, 1, Angle1, Angle2)
     else

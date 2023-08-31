@@ -268,7 +268,7 @@ var
   OuterCnt: integer;
   centerx, centery: single;
   i: Integer;
-  Ang: single;
+  Ang, sinAng, cosAng: single;
   OuterRadiusX, OuterRadiusY, InnerRadiusX, InnerRadiusY: single;
   Points: array of TPoint;
   j: Integer;
@@ -286,16 +286,18 @@ begin
   for i:=0 to OuterCnt do begin
     Ang:=StartAngle+((EndAngle-StartAngle)/OuterCnt)*single(i);
     Ang:=(Ang/FullCircle16)*2*pi;
-    Points[j].x:=round(centerx+cos(Ang)*OuterRadiusX);
-    Points[j].y:=round(centery-sin(Ang)*OuterRadiusY);
+    SinCos(Ang, sinAng, cosAng);
+    Points[j].x:=round(centerx+cosAng*OuterRadiusX);
+    Points[j].y:=round(centery-sinAng*OuterRadiusY);
     inc(j);
   end;
   // inner arc
   for i:=OuterCnt downto 0 do begin
     Ang:=StartAngle+((EndAngle-StartAngle)/OuterCnt)*single(i);
     Ang:=(Ang/FullCircle16)*2*pi;
-    Points[j].x:=round(centerx+cos(Ang)*InnerRadiusX);
-    Points[j].y:=round(centery-sin(Ang)*InnerRadiusY);
+    SinCos(Ang, sinAng, cosAng);
+    Points[j].x:=round(centerx+cosAng*InnerRadiusX);
+    Points[j].y:=round(centery-sinAng*InnerRadiusY);
     inc(j);
   end;
   Canvas.Polygon(Points);

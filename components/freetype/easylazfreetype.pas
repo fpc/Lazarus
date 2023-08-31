@@ -1559,7 +1559,7 @@ var
   g: TFreeTypeGlyph;
   prevCharcode, glyphIndex: integer;
   txmatrix: TT_Matrix;
-  angle: single;
+  angle, sin_angle, cos_angle: single;
   outline: ^TT_Outline;
   vector: TT_Vector;
   corrX, corrY: single;
@@ -1571,10 +1571,11 @@ begin
   if Orientation<>0 then
   begin
     angle := Orientation * PI / 1800;
-    txmatrix.xx :=  Round( cos( angle ) * $10000 );
-    txmatrix.xy := -Round( sin( angle ) * $10000 );
-    txmatrix.yx :=  Round( sin( angle ) * $10000 );
-    txmatrix.yy :=  Round( cos( angle ) * $10000 );
+    SinCos(angle, sin_angle, cos_angle);
+    txmatrix.xx :=  Round( cos_angle * $10000 );
+    txmatrix.xy := -Round( sin_angle * $10000 );
+    txmatrix.yx :=  Round( sin_angle * $10000 );
+    txmatrix.yy :=  Round( cos_angle * $10000 );
   end;
 
   while idx <> 0 do

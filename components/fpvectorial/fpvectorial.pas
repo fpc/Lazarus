@@ -3029,7 +3029,7 @@ procedure T2DEllipticalArcSegment.CalculateCenter;
 var
   XStart, YStart, lT1: Double;
   CX1, CY1, CX2, CY2, LeftMostX, LeftMostY, RightMostX, RightMostY: Double;
-  Sin0, Cos0, SinXRot, CosXRot, SinLT1, CosLT1: Double;
+  SinXRot, CosXRot, SinLT1, CosLT1: Double;
   RotatedCenter: T3DPoint;
 begin
   if CenterSetByUser then Exit;
@@ -3043,10 +3043,13 @@ begin
 
   if Previous = nil then
   begin
-    SinCos(0.0, Sin0, Cos0);
     SinCos(XRotation, SinXRot, CosXRot);
+    {
     CX := X - RX*Cos0*CosXRot + RY*Sin0*SinXRot;
     CY := Y - RY*Sin0*CosXRot - RX*Cos0*SinXRot;
+    }
+    CX := X - RX*CosXRot;
+    CY := Y - RX*SinXRot;
     Exit;
   end;
 

@@ -70,7 +70,7 @@ interface
 {$I lr_vers.inc}
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  SysUtils, Math, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
   TBarcodeType = (bcCode_2_5_interleaved,
@@ -230,8 +230,7 @@ function Rotate2D(p: TPoint; alpha: double): TPoint;
 var
   sinus, cosinus: extended;
 begin
-  sinus := sin(alpha);
-  cosinus := cos(alpha);
+  SinCos(alpha, sinus, cosinus);
   Result.x := Round(p.x * cosinus + p.y * sinus);
   Result.y := Round(-p.x * sinus + p.y * cosinus);
 end;

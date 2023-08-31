@@ -10,7 +10,7 @@ unit vtmain;
 
 interface
 
-uses              lazlogger,
+uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, fpimage, fpvectorial, Types;
 
@@ -596,7 +596,7 @@ var
   isReversed, isClockwise, isEllipse, isRotated: Boolean;
   p: T3dPoint;
   x1, y1, x2, y2, rx, ry: Double;
-  startAngle, endAngle, phi: Double;
+  startAngle, endAngle, phi, sinAngle, cosAngle: Double;
   arc: TPath;
   txt1, txt2: TvText;
 begin
@@ -611,10 +611,12 @@ begin
 
   startAngle := DegToRad((AIntParam and $000F) * 45);  //  0°,  45°,  90°, ...
   endAngle := startAngle + pi/2;                       // 90°, 135°, 180°, ...
-  x1 := CX + rx * cos(startAngle);
-  y1 := CY + ry * sin(startAngle);
-  x2 := CX + rx * cos(endAngle);
-  y2 := CY + ry * sin(endAngle);
+  SinCos(startAngle, sinAngle, cosAngle);
+  x1 := CX + rx * cosAngle;
+  y1 := CY + ry * sinAngle;
+  SinCos(endAngle, sinAngle, cosAngle);
+  x2 := CX + rx * cosAngle;
+  y2 := CY + ry * sinAngle;
   if isRotated then begin
     p := Rotate3DPointInXY(Make3DPoint(x1, y1), Make3DPoint(CX, CY), -phi);
     // See comment at Rotate3DPointInXY regarding the negative sign of phi

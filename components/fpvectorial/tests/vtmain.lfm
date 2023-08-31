@@ -6,11 +6,11 @@ object MainForm: TMainForm
   Caption = 'Visual fpvectorial test'
   ClientHeight = 700
   ClientWidth = 900
+  ShowHint = True
+  LCLVersion = '3.99.0.0'
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  ShowHint = True
-  LCLVersion = '2.3.0.0'
   object GbTree: TGroupBox
     Left = 8
     Height = 684
@@ -37,12 +37,12 @@ object MainForm: TMainForm
       ReadOnly = True
       StateImages = ImageList
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnCustomDrawItem = TreeCustomDrawItem
       OnDeletion = TreeDeletion
       OnGetImageIndex = TreeGetImageIndex
       OnGetSelectedIndex = TreeGetSelectedIndex
       OnSelectionChanged = TreeSelectionChanged
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object ScrollBox1: TScrollBox
@@ -231,9 +231,9 @@ object MainForm: TMainForm
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 8
           Caption = 'Save as ref'
-          OnClick = BtnSaveAsRefClick
           ParentFont = False
           TabOrder = 2
+          OnClick = BtnSaveAsRefClick
         end
       end
       object gbReferenceImageTest: TGroupBox
@@ -408,8 +408,8 @@ object MainForm: TMainForm
             BorderSpacing.Right = 4
             BorderSpacing.Bottom = 6
             Caption = 'Ext viewer...'
-            OnClick = BtnViewImageClick
             TabOrder = 0
+            OnClick = BtnViewImageClick
           end
           object WRBottomLeftPaintbox: TPaintBox
             AnchorSideLeft.Control = gbWRBottomLeft
@@ -469,11 +469,11 @@ object MainForm: TMainForm
             'svg'
             'wmf'
           )
-          OnChange = CbFileFormatChange
           ParentFont = False
           Style = csDropDownList
           TabOrder = 1
           Text = 'svg'
+          OnChange = CbFileFormatChange
         end
         object Label1: TLabel
           AnchorSideLeft.Control = LblReadWriteInstructions
@@ -505,9 +505,9 @@ object MainForm: TMainForm
           BorderSpacing.Right = 8
           BorderSpacing.Bottom = 6
           Caption = 'Save && load'
-          OnClick = BtnSaveToFilesClick
           ParentFont = False
           TabOrder = 2
+          OnClick = BtnSaveToFilesClick
         end
         object gbWRTopLeft: TGroupBox
           AnchorSideLeft.Control = gbWRBottomLeft
@@ -541,8 +541,8 @@ object MainForm: TMainForm
             BorderSpacing.Right = 4
             BorderSpacing.Bottom = 6
             Caption = 'Ext. viewer...'
-            OnClick = BtnViewImageClick
             TabOrder = 0
+            OnClick = BtnViewImageClick
           end
           object WRTopLeftPaintbox: TPaintBox
             AnchorSideLeft.Control = gbWRTopLeft
@@ -589,10 +589,10 @@ object MainForm: TMainForm
           BorderSpacing.Bottom = 8
           Caption = 'unknown'
           Checked = True
-          OnChange = ResultStateChange
           ParentFont = False
           TabOrder = 2
           TabStop = True
+          OnChange = ResultStateChange
         end
         object imgUnknown: TImage
           AnchorSideLeft.Control = rbUnknown
@@ -620,9 +620,9 @@ object MainForm: TMainForm
           Width = 54
           BorderSpacing.Left = 32
           Caption = 'passed'
-          OnChange = ResultStateChange
           ParentFont = False
           TabOrder = 0
+          OnChange = ResultStateChange
         end
         object ImgPassed: TImage
           AnchorSideLeft.Control = rbPassed
@@ -651,9 +651,9 @@ object MainForm: TMainForm
           Width = 47
           BorderSpacing.Left = 32
           Caption = 'failed'
-          OnChange = ResultStateChange
           ParentFont = False
           TabOrder = 1
+          OnChange = ResultStateChange
         end
         object ImgFailed: TImage
           AnchorSideLeft.Control = rbFailed
