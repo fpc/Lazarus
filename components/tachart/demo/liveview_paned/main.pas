@@ -83,8 +83,7 @@ begin
 
   t := (Now() - FStartTime) * SecsPerDay;
   exp_factor := exp(-t/td);
-  sin_factor := sin(TWO_PI * t / t0);
-  cos_factor := cos(TWO_PI * t / t0);
+  SinCols(TWO_PI * t / t0, sin_factor, cos_factor);
 
   // Position: an exponentially damped sinusoidal motion
   x := A0 * sin_factor * exp_factor;

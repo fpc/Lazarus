@@ -1383,6 +1383,7 @@ function TPolarSeries.GetNearestPoint(const AParams: TNearestPointParams;
 var
   dist: Integer;
   gp: TDoublePoint;
+  sin_gpx, cos_gpx: Double;
   i: Integer;
 begin
   Result := false;
@@ -1406,9 +1407,10 @@ begin
     if dist >= AResults.FDist then
       continue;
 
+    SinCos(gp.x, sin_gpx, cos_gpx);
     AResults.FDist := dist;
     AResults.FIndex := i;
-    AResults.FValue := DoublePoint(gp.y*cos(gp.x), gp.y*sin(gp.x));
+    AResults.FValue := DoublePoint(gp.y*cos_gpx, gp.y*sin_gpx);
     AResults.FImg := ParentChart.GraphToImage(gp);
     if dist = 0 then break;
   end;

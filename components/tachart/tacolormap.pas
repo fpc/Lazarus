@@ -21,7 +21,6 @@ type
     FInterpolate: Boolean;
     FNumXCountNeeded: Integer;
     FNumYCountNeeded: Integer;
-    FOwnerSeries: TCustomChartSeries;
     FPaletteMax: Double;
     FPaletteMin: Double;
     FOnChanged: TNotifyEvent;

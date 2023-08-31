@@ -893,12 +893,16 @@ procedure TGenericChartMarks.DrawLink(
   ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint);
 var
   phi: Double;
+  sinPhi, cosPhi: Double;
 begin
   if ADataPoint = ALabelCenter then exit;
 
   with (ADataPoint - ALabelCenter) do phi := ArcTan2(Y, X);
   if (FLinkDistance <> 0) then
-    ADataPoint := ADataPoint + Point(round(FLinkDistance*cos(phi)), -round(FLinkDistance*sin(phi)));
+  begin
+    SinCos(phi, sinPhi, cosPhi);
+    ADataPoint := ADataPoint + Point(round(FLinkDistance*cosPhi), -round(FLinkDistance*sinPhi));
+  end;
 
   inherited;
 
