@@ -446,12 +446,10 @@ begin
   //This behaviour is completely irratic when multiple files are selected, it can be on or off given the same input
   //Delphi 7 seems to not include the ofExtensionDifferent flag if multiple files are selected, regardless of their extensions
   //So, we unset the ofExtensionDifferent if multiple files are selected
-  if Result then
-  begin
+  if Result then begin
     if (Files.Count > 1) then
       Exclude(FOptions, ofExtensionDifferent)
-    else
-    begin
+    else begin
     if (DefaultExt <> '') and (CompareFileNames(DefaultExt,ExtractFileExt(Filename)) <> 0) then
       Include(FOptions, ofExtensionDifferent);
     end;
