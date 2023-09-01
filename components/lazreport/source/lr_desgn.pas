@@ -213,6 +213,17 @@ type
     procedure NPEraseSelection;
 
   protected
+    FPaint: TBitmap;
+    FZMul: Integer;
+    FZDiv: Integer;
+
+    function Z(C: Integer): Integer; overload; inline;
+    function Z(R: TRect): TRect; overload;
+    function UnZ(C: Integer): Integer; inline;
+    function IsZoomed: Boolean; inline;
+
+    procedure DoOnResize; override;
+
     procedure Paint; override;
     procedure WMEraseBkgnd(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
@@ -224,6 +235,8 @@ type
     procedure SetPage;
     procedure GetMultipleSelected;
     procedure CheckGuides;
+
+    procedure Zoom(AMul, ADiv: Integer);
   end;
 
   TPaintTimeStatusItem = (ptsFocusRect);
@@ -282,12 +295,79 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    AlB1: TSpeedButton;
+    AlB2: TSpeedButton;
+    AlB3: TSpeedButton;
+    AlB4: TSpeedButton;
+    AlB5: TSpeedButton;
+    AlB6: TSpeedButton;
+    AlB7: TSpeedButton;
+    AlB8: TSpeedButton;
+    btnGuides: TSpeedButton;
+    btnZ: TSpeedButton;
+    C2: TComboBox;
+    C3: TComboBox;
+    ClB1: TSpeedButton;
+    ClB2: TSpeedButton;
+    ClB3: TSpeedButton;
+    CopyB: TSpeedButton;
+    CutB: TSpeedButton;
+    E1: TEdit;
     edtRedo: TAction;
     edtUndo: TAction;
-    btnGuides: TSpeedButton;
+    ExitB: TSpeedButton;
+    FileBtn1: TSpeedButton;
+    FileBtn2: TSpeedButton;
+    FileBtn3: TSpeedButton;
+    FileBtn4: TSpeedButton;
+    FnB1: TSpeedButton;
+    FnB2: TSpeedButton;
+    FnB3: TSpeedButton;
+    FrB1: TSpeedButton;
+    FrB2: TSpeedButton;
+    FrB3: TSpeedButton;
+    FrB4: TSpeedButton;
+    FrB5: TSpeedButton;
+    FrB6: TSpeedButton;
+    frDock1: TFlowPanel;
+    frTBPanel1: TPanel;
+    frTBPanel2: TPanel;
+    frTBSeparator1: TPanel;
+    frTBSeparator10: TPanel;
+    frTBSeparator11: TPanel;
+    frTBSeparator14: TPanel;
+    frTBSeparator15: TPanel;
+    frTBSeparator2: TPanel;
+    frTBSeparator3: TPanel;
+    frTBSeparator4: TPanel;
+    frTBSeparator5: TPanel;
+    frTBSeparator6: TPanel;
+    frTBSeparator7: TPanel;
+    frTBSeparator8: TPanel;
+    frTBSeparator9: TPanel;
+    GB1: TSpeedButton;
+    GB2: TSpeedButton;
+    GB3: TSpeedButton;
+    HelpBtn: TSpeedButton;
+    HlB1: TSpeedButton;
     MenuItem2: TMenuItem;
     IEPopupMenu: TPopupMenu;
     IEButton: TSpeedButton;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel6: TPanel;
+    Panel8: TPanel;
+    PgB1: TSpeedButton;
+    PgB2: TSpeedButton;
+    PgB3: TSpeedButton;
+    PgB4: TSpeedButton;
+    PstB: TSpeedButton;
+    RedoB: TSpeedButton;
+    SB1: TSpeedButton;
+    SB2: TSpeedButton;
+    SelAllB: TSpeedButton;
+    StB1: TSpeedButton;
     tlsDBFields: TAction;
     FileBeforePrintScript: TAction;
     FileOpen: TAction;
@@ -311,11 +391,9 @@ type
     OB7: TSpeedButton;
     panTab: TPanel;
     panForDlg: TPanel;
-    PgB4: TSpeedButton;
     Tab1: TTabControl;
     ScrollBox1: TScrollBox;
     StatusBar1: TStatusBar;
-    frDock1: TPanel;
     frDock2: TPanel;
     Popup1: TPopupMenu;
     N1: TMenuItem;
@@ -359,59 +437,6 @@ type
     N42: TMenuItem;
     MastMenu: TMenuItem;
     N16: TMenuItem;
-    Panel2: TPanel;
-    FileBtn1: TSpeedButton;
-    FileBtn2: TSpeedButton;
-    FileBtn3: TSpeedButton;
-    FileBtn4: TSpeedButton;
-    CutB: TSpeedButton;
-    CopyB: TSpeedButton;
-    PstB: TSpeedButton;
-    ZB1: TSpeedButton;
-    ZB2: TSpeedButton;
-    SelAllB: TSpeedButton;
-    PgB1: TSpeedButton;
-    PgB2: TSpeedButton;
-    PgB3: TSpeedButton;
-    GB1: TSpeedButton;
-    GB2: TSpeedButton;
-    ExitB: TSpeedButton;
-    Panel3: TPanel;
-    AlB1: TSpeedButton;
-    AlB2: TSpeedButton;
-    AlB3: TSpeedButton;
-    AlB4: TSpeedButton;
-    AlB5: TSpeedButton;
-    FnB1: TSpeedButton;
-    FnB2: TSpeedButton;
-    FnB3: TSpeedButton;
-    ClB2: TSpeedButton;
-    HlB1: TSpeedButton;
-    AlB6: TSpeedButton;
-    AlB7: TSpeedButton;
-    Panel1: TPanel;
-    FrB1: TSpeedButton;
-    FrB2: TSpeedButton;
-    FrB3: TSpeedButton;
-    FrB4: TSpeedButton;
-    ClB1: TSpeedButton;
-    ClB3: TSpeedButton;
-    FrB5: TSpeedButton;
-    FrB6: TSpeedButton;
-    frTBSeparator1: TPanel;
-    frTBSeparator2: TPanel;
-    frTBSeparator3: TPanel;
-    frTBSeparator4: TPanel;
-    frTBSeparator5: TPanel;
-    frTBPanel1: TPanel;
-    C3: TComboBox;
-    C2: TComboBox;
-    frTBPanel2: TPanel;
-    frTBSeparator6: TPanel;
-    frTBSeparator7: TPanel;
-    frTBSeparator8: TPanel;
-    frTBSeparator9: TPanel;
-    frTBSeparator10: TPanel;
     N37: TMenuItem;
     Pan2: TMenuItem;
     Pan3: TMenuItem;
@@ -439,28 +464,15 @@ type
     frDock4: TPanel;
     HelpMenu: TMenuItem;
     N34: TMenuItem;
-    GB3: TSpeedButton;
     N46: TMenuItem;
     N47: TMenuItem;
-    UndoB: TSpeedButton;
-    frTBSeparator14: TPanel;
-    AlB8: TSpeedButton;
-    RedoB: TSpeedButton;
     N48: TMenuItem;
     OB6: TSpeedButton;
-    frTBSeparator15: TPanel;
-    Panel6: TPanel;
     Pan7: TMenuItem;
     N14: TMenuItem;
     Panel7: TPanel;
     PBox1: TPaintBox;
     N17: TMenuItem;
-    E1: TEdit;
-    Panel8: TPanel;
-    SB1: TSpeedButton;
-    SB2: TSpeedButton;
-    HelpBtn: TSpeedButton;
-    frTBSeparator11: TPanel;
     N18: TMenuItem;
     N22: TMenuItem;
     N35: TMenuItem;
@@ -468,10 +480,13 @@ type
     N41: TMenuItem;
     N43: TMenuItem;
     N44: TMenuItem;
-    StB1: TSpeedButton;
+    UndoB: TSpeedButton;
+    ZB1: TSpeedButton;
+    ZB2: TSpeedButton;
     procedure acDuplicateExecute(Sender: TObject);
     procedure acToggleFramesExecute(Sender: TObject);
     procedure btnGuidesClick(Sender: TObject);
+    procedure btnZClick(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
     procedure edtRedoExecute(Sender: TObject);
     procedure edtUndoExecute(Sender: TObject);
@@ -826,7 +841,7 @@ var
 begin
   if (px<>nil) then
   begin
-    r := Rect(px^-4, 0 , px^+4, fOwner.ClientHeight-1);
+    r := Rect(fOwner.Z(px^-4), 0 , fOwner.Z(px^+4), fOwner.ClientHeight-1);
     InvalidateRect(fOwner.Handle, @r, false);
   end;
 end;
@@ -837,7 +852,7 @@ var
 begin
   if (py<>nil) then
   begin
-    r := Rect(0, py^-4, fOwner.ClientWidth-1, py^+4);
+    r := Rect(0, fOwner.Z(py^-4), fOwner.ClientWidth-1, fOwner.Z(py^+4));
     InvalidateRect(fOwner.Handle, @r, false);
   end;
 end;
@@ -1173,6 +1188,7 @@ var
 begin
   R := fFocusRect;
   fOwner.NormalizeRect(R);
+  R := fOwner.Z(R);
   InvalidateFrame(fOwner.Handle, @R, false, 1);
 end;
 
@@ -1197,7 +1213,7 @@ var
       fOwner.Canvas.Draw(x-bdx, y-bdy, Bullet)
     else
     begin
-      r := rect(x-bdx,y-bdy,x+bdx+1,y+bdy+1);
+      r := fOwner.Z(rect(x-bdx,y-bdy,x+bdx+1,y+bdy+1));
       InvalidateRect(fOwner.Handle, @r, false);
     end;
   end;
@@ -1293,10 +1309,15 @@ begin
   EnableEvents;
   fPaintSel   := TPaintSel.Create(self);
   fGuides     := TAlignGuides.Create(self);
+
+  FPaint := Nil;
+  FZDiv := 1;
+  FZMul := 1;
 end;
 
 destructor TfrDesignerPage.destroy;
 begin
+  FPaint.Free;
   fGuides.Free;
   fPaintSel.Free;
   inherited destroy;
@@ -1327,8 +1348,8 @@ begin
   end
   else
   begin
-    Pgw := FDesigner.Page.PrnInfo.Pgw;
-    Pgh := FDesigner.Page.PrnInfo.Pgh;
+    Pgw := Z(FDesigner.Page.PrnInfo.Pgw);
+    Pgh := Z(FDesigner.Page.PrnInfo.Pgh);
     if Pgw > Parent.Width then
       SetBounds(10, 10, Pgw, Pgh)
     else
@@ -1337,12 +1358,38 @@ begin
 end;
 
 procedure TfrDesignerPage.Paint;
+var
+  OldCanvas: TCanvas;
+  Zm: Boolean;
 begin
+  Zm := IsZoomed;
   fPainting := true;
-  Draw(10000, 0);
-  fGuides.Paint;
-  fPaintSel.Paint;
-  fPainting := false;
+  try
+    if Zm then
+    begin
+      if not Assigned(FPaint) then
+      begin
+        FPaint := TBitmap.Create;
+        FPaint.SetSize(Width, Height);
+      end;
+      OldCanvas := Canvas;
+      Canvas := FPaint.Canvas;
+    end;
+    try
+      Draw(10000, 0);
+      fGuides.Paint;
+      fPaintSel.Paint;
+    finally
+      if Zm then
+      begin
+        Canvas := OldCanvas;
+        Canvas.CopyRect(Rect(0, 0, Width, Height), FPaint.Canvas,
+          Rect(0, 0, UnZ(FPaint.Width), UnZ(FPaint.Height)));
+      end;
+    end;
+  finally
+    fPainting := false;
+  end;
 end;
 
 procedure TfrDesignerPage.WMEraseBkgnd(var Message: TLMEraseBkgnd);
@@ -1932,6 +1979,20 @@ begin
     fGuides.HideGuides;
 end;
 
+procedure TfrDesignerPage.Zoom(AMul, ADiv: Integer);
+begin
+  if (AMul = FZMul) and (ADiv = FZDiv) then
+    Exit;
+  if AMul = 0
+    then FZMul := 1
+    else FZMul := AMul;
+  if ADiv = 0
+    then FZDiv := 1
+    else FZDiv := ADiv;
+  SetPage;
+  Invalidate;
+end;
+
 procedure TfrDesignerPage.MDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -1940,6 +2001,9 @@ var
   t: TfrView;
   p: TPoint;
 begin
+  X := UnZ(X);
+  Y := UnZ(Y);
+
   {$IFDEF DebugLR}
   DebugLnEnter('TfrDesignerPage.MDown(X=%d,Y=%d) INIT',[x,y]);
   DebugLn('Down=%s RFlag=%s',[dbgs(Down),dbgs(RFlag)]);
@@ -2184,6 +2248,9 @@ var
   end;
 
 begin
+  X := UnZ(X);
+  Y := UnZ(Y);
+
   {$IFDEF DebugLR}
   DebugLnEnter('TfrDesignerPage.MUp INIT Button=%d Cursor=%d RFlag=%s',
     [ord(Button),Cursor,dbgs(RFlag)]);
@@ -2602,6 +2669,9 @@ var
   end;
 
 begin
+  X := UnZ(X);
+  Y := UnZ(Y);
+
   {$IFDEF DebugLR}
   DebugLnEnter('TfrDesignerPage.MMove(X=%d,Y=%d)  INIT',[x,y]);
   {$ENDIF}
@@ -3203,6 +3273,7 @@ var
   R: HRGN;
   t: TfrView;
   i: Integer;
+  RBox: TRect;
 {$endif}
 begin
   {$ifdef ppaint}
@@ -3220,7 +3291,14 @@ begin
     end;
   end;
 
-  InvalidateRgn(Handle, Rgn, false);
+  if IsZoomed then
+  begin
+    GetRgnBox(Rgn, @RBox);
+    RBox := Z(RBox);
+    InvalidateRect(Handle, @RBox, False);
+  end
+  else
+    InvalidateRgn(Handle, Rgn, false);
 
   DeleteObject(Rgn);
   if Rgn=ClipRgn then
@@ -3258,6 +3336,32 @@ begin
   {$else}
   DrawPage(dmSelection);
   {$endif}
+end;
+
+function TfrDesignerPage.Z(C: Integer): Integer;
+begin
+  Result := C * FZMul div FZDiv;
+end;
+
+function TfrDesignerPage.Z(R: TRect): TRect;
+begin
+  Result := Rect(Z(R.Left), Z(R.Top), Z(R.Right), Z(R.Bottom));
+end;
+
+function TfrDesignerPage.UnZ(C: Integer): Integer;
+begin
+  Result := C * FZDiv div FZMul;
+end;
+
+function TfrDesignerPage.IsZoomed: Boolean;
+begin
+  Result := FZMul <> FZDiv;
+end;
+
+procedure TfrDesignerPage.DoOnResize;
+begin
+  FreeAndNil(FPaint);
+  inherited DoOnResize;
 end;
 
 procedure TfrDesignerPage.NPRedrawViewCheckBand(t: TfrView);
@@ -3958,6 +4062,14 @@ end;
 procedure TfrDesignerForm.btnGuidesClick(Sender: TObject);
 begin
   ShowGuides := btnGuides.Down;
+end;
+
+procedure TfrDesignerForm.btnZClick(Sender: TObject);
+begin
+  if btnZ.Down
+    then PageView.Zoom(2, 1)
+    else PageView.Zoom(1, 1);
+  UpdScrollbars;
 end;
 
 procedure TfrDesignerForm.FormShow(Sender: TObject);
