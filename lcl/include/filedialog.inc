@@ -443,7 +443,7 @@ begin
   if not Result then exit;
   Result:=CheckAllFiles;
   //The behavour of ofExtensionDifferent is based upon the workings of Windows LPOPENFILENAME behaviour
-  //This behaviour is completely irratic when multiple files are selected, it can be on or off given the same input
+  //This behaviour is completely erratic when multiple files are selected, it can be on or off given the same input
   //Delphi 7 seems to not include the ofExtensionDifferent flag if multiple files are selected, regardless of their extensions
   //So, we unset the ofExtensionDifferent if multiple files are selected
   if Result then begin
