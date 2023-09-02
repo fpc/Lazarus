@@ -157,6 +157,9 @@ type
     function RetainToCollect: Integer;
     procedure ReleaseToCollect(fromIdx: integer);
 
+    function nextEvent(const eventExpDate: NSDate): NSEvent;
+    function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
+
     procedure SyncClipboard();
 
     function PromptUser(const DialogCaption, DialogMessage: String;

@@ -77,6 +77,34 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.nextEvent(const eventExpDate: NSDate): NSEvent;
+begin
+  {$ifdef BOOLFIX}
+  Result := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
+  {$else}
+  Result := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
+  {$endif}
+end;
+
+// before entering RunLoop (TCocoaWidgetSet.AppRun), APP may call
+// TApplication.ProcessMessages (for example, to display Splash Form in IDE).
+// because it has not yet entered the message processing loop, nextEvent should
+// be called multiple times to ensure various asynchronous callback situations.
+// otherwise, it will cause some strange problems, and it is difficult to find
+// the reason, such as the display problem of Splash Form.
+// see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40484
+function TCocoaWidgetSet.nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
+var
+  i: Integer;
+begin
+  for i := 1 to 3 do
+  begin
+    Result := nextEvent(eventExpDate);
+    if Assigned(Result) then
+      break;
+  end;
+end;
+
 procedure TCocoaWidgetSet.AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
 var
   event: NSEvent;
@@ -84,11 +112,10 @@ var
 begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
-    {$ifdef BOOLFIX}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
-    {$else}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
-    {$endif}
+    if Assigned(TCocoaApplication(NSApp).aloop) or Assigned(eventExpDate) then
+      event := nextEvent(eventExpDate)
+    else
+      event := nextEventBeforeRunLoop(eventExpDate);
     if event <> nil then
     begin
       NSApp.sendEvent(event);
