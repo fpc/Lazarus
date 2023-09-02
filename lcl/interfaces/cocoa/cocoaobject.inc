@@ -73,7 +73,36 @@ begin
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;
+    DropWaitingFiles;
     NSApp.run();
+  end;
+end;
+
+function TCocoaWidgetSet.nextEvent(const eventExpDate: NSDate): NSEvent;
+begin
+  {$ifdef BOOLFIX}
+  Result := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
+  {$else}
+  Result := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
+  {$endif}
+end;
+
+// before entering RunLoop (TCocoaWidgetSet.AppRun), APP may call
+// TApplication.ProcessMessages (for example, to display Splash Form in IDE).
+// because it has not yet entered the message processing loop, nextEvent should
+// be called multiple times to ensure various asynchronous callback situations.
+// otherwise, it will cause some strange problems, and it is difficult to find
+// the reason, such as the display problem of Splash Form.
+// see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40484
+function TCocoaWidgetSet.nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
+var
+  i: Integer;
+begin
+  for i := 1 to 3 do
+  begin
+    Result := nextEvent(eventExpDate);
+    if Assigned(Result) then
+      break;
   end;
 end;
 
@@ -84,11 +113,10 @@ var
 begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
-    {$ifdef BOOLFIX}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, Ord(true));
-    {$else}
-    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, eventExpDate, NSDefaultRunLoopMode, true);
-    {$endif}
+    if Assigned(TCocoaApplication(NSApp).aloop) or Assigned(eventExpDate) then
+      event := nextEvent(eventExpDate)
+    else
+      event := nextEventBeforeRunLoop(eventExpDate);
     if event <> nil then
     begin
       NSApp.sendEvent(event);
@@ -144,6 +172,7 @@ begin
   inherited Create;
   FTerminating := False;
   FCaptureControl:= 0;
+  FWaitingDropFiles := NSMutableArray.alloc.init;
 
   NSMessageWnd := NSStringUTF8('HWND');
   NSMessageMsg := NSStringUTF8('MSG');
@@ -175,6 +204,8 @@ destructor TCocoaWidgetSet.Destroy;
 begin
   ReleaseToCollect(0);
   inherited Destroy;
+
+  FWaitingDropFiles.release;
 
   FreeStockItems;
 
@@ -493,6 +524,44 @@ begin
 
 end;
 
+procedure TCocoaWidgetSet.DropWaitingFiles;
+var
+  lFiles: array of string;
+  lNSStr: NSString;
+  i: Integer;
+begin
+  if FWaitingDropFiles.count = 0 then
+    exit;
+
+  SetLength(lFiles, FWaitingDropFiles.count);
+  for i := 0 to FWaitingDropFiles.count-1 do
+  begin
+    lNSStr := NSString(FWaitingDropFiles.objectAtIndex(i));
+    lFiles[i] := NSStringToString(lNSStr);
+  end;
+  Application.IntfDropFiles(lFiles);
+  if Application.MainForm<>nil then
+    Application.MainForm.IntfDropFiles(lFiles);
+
+  FWaitingDropFiles.removeAllObjects;
+end;
+
+// on MacOS, the system notifies the APP to open the files by calling
+// TAppDelegate.application_openFiles(). for example, double-click
+// the associated files in Finder to open the APP.
+// at this time, the MainForm may not have been created, and the notifies
+// information about the files will be lost.
+// including Lazarus IDE itself will also be affected by this issue on startup.
+// so save it in FWaitingDropFiles first, DropWaitingFiles() will be called
+// in TCocoaWidgetSet.AppRun().
+procedure TCocoaWidgetSet.DropFiles(filenames: NSArray);
+begin
+  FWaitingDropFiles.addObjectsFromArray(filenames);
+  if Assigned(TCocoaApplication(NSApp).aloop) then
+    DropWaitingFiles;
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.LCLPlatform
   Returns: lpCocoa - enum value for Cocoa widgetset
@@ -516,20 +585,8 @@ begin
 end;
 
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
-var
-  lFiles: array of string;
-  lNSStr: NSString;
-  i: Integer;
 begin
-  SetLength(lFiles, filenames.count);
-  for i := 0 to filenames.count-1 do
-  begin
-    lNSStr := NSString(filenames.objectAtIndex(i));
-    lFiles[i] := NSStringToString(lNSStr);
-  end;
-  Application.IntfDropFiles(lFiles);
-  if Application.MainForm<>nil then
-    Application.MainForm.IntfDropFiles(lFiles);
+  TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
 end;
 
 procedure TAppDelegate.applicationDidHide(notification: NSNotification);
