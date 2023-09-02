@@ -8893,7 +8893,7 @@ begin
       ProjectName := Project1.GetTitleOrName;
       if ProjectName <> '' then
       begin
-        if EnvironmentGuiOpts.Desktop.IDEProjectDirectoryInIdeTitle then
+        if EnvironmentGuiOpts.Desktop.IDETitleShowsProjectDir then
         begin
           DirName := ExtractFileDir(Project1.ProjectInfoFile);
           if DirName <> '' then
@@ -8903,7 +8903,7 @@ begin
       else
         ProjectName := lisnewProject;
       NewTitle := AddToCaption(NewCaption, ProjectName);
-      if EnvironmentGuiOpts.Desktop.IDETitleIncludesBuildMode
+      if EnvironmentGuiOpts.Desktop.IDETitleShowsBuildMode
       and (Project1.BuildModes.Count > 1) then
         ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
       NewCaption := AddToCaption(NewCaption, ProjectName);

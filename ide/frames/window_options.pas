@@ -44,13 +44,13 @@ type
     AutoAdjustIDEHeightFullCompPalCheckBox: TCheckBox;
     ProjectInspectorShowPropsCheckBox: TCheckBox;
     lblShowingWindows: TDividerBevel;
-    NameForDesignedFormList: TCheckBox;
+    NameForDesignedFormListCheckBox: TCheckBox;
     AutoAdjustIDEHeightCheckBox: TCheckBox;
-    TitleIncludesBuildMode: TCheckBox;
+    TitleShowsBuildModeCheckBox: TCheckBox;
     HideIDEOnRunCheckBox: TCheckBox;
     SingleTaskBarButtonCheckBox: TCheckBox;
     TitleStartsWithProjectCheckBox: TCheckBox;
-    ProjectDirInIdeTitleCheckBox: TCheckBox;
+    TitleShowsProjectDirCheckBox: TCheckBox;
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -82,16 +82,16 @@ begin
   HideIDEOnRunCheckBox.Hint := dlgHideIDEOnRunHint;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
-  TitleIncludesBuildMode.Caption:=lisIDETitleShowsBuildMode;
-  TitleIncludesBuildMode.Hint:=lisBuildModeInTitleInExample;
-  NameForDesignedFormList.Caption:=lisWindowMenuWithNameForDesignedForm;
-  NameForDesignedFormList.Hint:=lisWindowMenuWithNameForDesignedFormHint;
+  TitleShowsBuildModeCheckBox.Caption:=lisIDETitleShowsBuildMode;
+  TitleShowsBuildModeCheckBox.Hint:=lisBuildModeInTitleInExample;
+  TitleShowsProjectDirCheckBox.Caption:=lisIDETitleShowsProjectDir;
+  TitleShowsProjectDirCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
+  NameForDesignedFormListCheckBox.Caption:=lisWindowMenuWithNameForDesignedForm;
+  NameForDesignedFormListCheckBox.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
   AutoAdjustIDEHeightCheckBox.Hint:=lisAutoAdjustIDEHeightHint;
   AutoAdjustIDEHeightFullCompPalCheckBox.Caption:=lisAutoAdjustIDEHeightFullComponentPalette;
   AutoAdjustIDEHeightFullCompPalCheckBox.Hint:=lisAutoAdjustIDEHeightFullComponentPaletteHint;
-  ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
-  ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
   ProjectInspectorShowPropsCheckBox.Caption:=lisProjectInspectorShowProps;
 end;
 
@@ -107,13 +107,13 @@ begin
     // window minimizing and hiding
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
-    TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
-    TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
-    NameForDesignedFormList.Checked:=IDENameForDesignedFormList;
-    AutoAdjustIDEHeightCheckBox.Checked:=AutoAdjustIDEHeight;
-    AutoAdjustIDEHeightFullCompPalCheckBox.Checked:=AutoAdjustIDEHeightFullCompPal;
-    ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
-    ProjectInspectorShowPropsCheckBox.Checked:=ProjectInspectorShowProps;
+    TitleStartsWithProjectCheckBox.Checked := IDETitleStartsWithProject;
+    TitleShowsBuildModeCheckBox.Checked := IDETitleShowsBuildMode;
+    TitleShowsProjectDirCheckBox.Checked := IDETitleShowsProjectDir;
+    NameForDesignedFormListCheckBox.Checked := IDENameForDesignedFormList;
+    AutoAdjustIDEHeightCheckBox.Checked := AutoAdjustIDEHeight;
+    AutoAdjustIDEHeightFullCompPalCheckBox.Checked := AutoAdjustIDEHeightFullCompPal;
+    ProjectInspectorShowPropsCheckBox.Checked := ProjectInspectorShowProps;
   end;
 end;
 
@@ -128,14 +128,14 @@ begin
   begin
     // window minimizing
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
-    HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
-    IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
-    IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
-    IDENameForDesignedFormList := NameForDesignedFormList.Checked;
+    HideIDEOnRun := HideIDEOnRunCheckBox.Checked;
+    IDETitleStartsWithProject := TitleStartsWithProjectCheckBox.Checked;
+    IDETitleShowsBuildMode := TitleShowsBuildModeCheckBox.Checked;
+    IDETitleShowsProjectDir := TitleShowsProjectDirCheckBox.Checked;
+    IDENameForDesignedFormList := NameForDesignedFormListCheckBox.Checked;
     AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;
     AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;
-    IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
-    ProjectInspectorShowProps:=ProjectInspectorShowPropsCheckBox.Checked;
+    ProjectInspectorShowProps := ProjectInspectorShowPropsCheckBox.Checked;
   end;
 end;
 

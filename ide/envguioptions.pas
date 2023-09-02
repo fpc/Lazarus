@@ -148,8 +148,8 @@ type
     FCompletionWindowHeight: Integer;
     // title
     FIDETitleStartsWithProject: boolean;
-    FIDETitleIncludesBuildMode: boolean;
-    FIDEProjectDirectoryInIdeTitle: boolean;
+    FIDETitleShowsBuildMode: boolean;
+    FIDETitleShowsProjectDir: boolean;
     // IDE Coolbar
     FIDECoolBarOptions: TIDECoolBarOptions;
     // Editor Toolbar
@@ -187,10 +187,10 @@ type
     property CompletionWindowHeight: Integer read FCompletionWindowHeight write FCompletionWindowHeight;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
-    property IDETitleIncludesBuildMode: boolean read FIDETitleIncludesBuildMode
-                                               write FIDETitleIncludesBuildMode;
-    property IDEProjectDirectoryInIdeTitle: boolean read FIDEProjectDirectoryInIdeTitle
-                                                    write FIDEProjectDirectoryInIdeTitle;
+    property IDETitleShowsBuildMode: boolean read FIDETitleShowsBuildMode
+                                            write FIDETitleShowsBuildMode;
+    property IDETitleShowsProjectDir: boolean read FIDETitleShowsProjectDir
+                                             write FIDETitleShowsProjectDir;
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
@@ -568,9 +568,9 @@ begin
   FCompletionWindowWidth := 320 * Screen.PixelsPerInch div 96;
   FCompletionWindowHeight := 6;
   // title
-  FIDETitleStartsWithProject:=false;
-  FIDETitleIncludesBuildMode:=false;
-  FIDEProjectDirectoryInIdeTitle:=false;
+  FIDETitleStartsWithProject:=true;
+  FIDETitleShowsBuildMode:=true;
+  FIDETitleShowsProjectDir:=true;
   // IDE Coolbar
   FIDECoolBarOptions:=TIDECoolBarOptions.Create;
   // Editor Toolbar
@@ -636,8 +636,8 @@ begin
   FCompletionWindowHeight := Source.FCompletionWindowHeight;
   // title
   FIDETitleStartsWithProject := Source.FIDETitleStartsWithProject;
-  FIDETitleIncludesBuildMode := Source.FIDETitleIncludesBuildMode;
-  FIDEProjectDirectoryInIdeTitle := Source.FIDEProjectDirectoryInIdeTitle;
+  FIDETitleShowsBuildMode := Source.FIDETitleShowsBuildMode;
+  FIDETitleShowsProjectDir := Source.FIDETitleShowsProjectDir;
   // IDE Coolbar
   FIDECoolBarOptions.Assign(Source.FIDECoolBarOptions);
   // Editor Toolbar
@@ -668,9 +668,9 @@ begin
   // Window menu
   FIDENameForDesignedFormList:=FXMLCfg.GetValue(Path+'IDENameForDesignedFormList/Value',false);
   // title
-  FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',false);
-  FIDETitleIncludesBuildMode:=FXMLCfg.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
-  FIDEProjectDirectoryInIdeTitle:=FXMLCfg.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
+  FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',true);
+  FIDETitleShowsBuildMode:=FXMLCfg.GetValue(Path+'IDETitleShowsBuildMode/Value',true);
+  FIDETitleShowsProjectDir:=FXMLCfg.GetValue(Path+'IDETitleShowsProjectDir/Value',true);
   // CompletionWindow
   FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Width/Value', FCompletionWindowWidth);
   FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Height/Value', 6);
@@ -720,9 +720,9 @@ begin
   // Window menu
   FXMLCfg.SetDeleteValue(Path+'IDENameForDesignedFormList/Value',FIDENameForDesignedFormList,false);
   // title
-  FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,false);
-  FXMLCfg.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
-  FXMLCfg.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
+  FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,true);
+  FXMLCfg.SetDeleteValue(Path+'IDETitleShowsBuildMode/Value',FIDETitleShowsBuildMode,true);
+  FXMLCfg.SetDeleteValue(Path+'IDETitleShowsProjectDir/Value',FIDETitleShowsProjectDir,true);
   // CompletionWindow
   FXMLCfg.SetValue(Path+'CompletionWindowOptions/Width/Value',FCompletionWindowWidth);
   FXMLCfg.SetDeleteValue(Path+'CompletionWindowOptions/Height/Value',FCompletionWindowHeight, 6);
