@@ -149,6 +149,8 @@ type
     procedure SetStyleSheet(const AValue: WideString);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
+    procedure setInitialColor;
+    procedure setInitialFontColor;
   protected
     // IUnknown implementation
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -284,7 +286,6 @@ type
     procedure setFocusProxy(const AWidget: QWidgetH);
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); virtual;
-    procedure setInitialFontColor(AControl: TWinControl); virtual;
     procedure setLayoutDirection(ADirection: QtLayoutDirection);
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMask(AMask: QBitmapH); overload;
@@ -2138,7 +2139,7 @@ begin
   QWidget_setMouseTracking(Widget, True);
 
   if Assigned(LCLObject) and FWidgetNeedFontColorInitialization then
-    setInitialFontColor(LCLObject);
+    setInitialFontColor;
   if (FParams.Style and WS_VISIBLE) = 0 then
     QWidget_hide(Widget)
   else
@@ -2552,7 +2553,10 @@ begin
               if not getEnabled then
                 Palette.setTextColor(@Palette.DisabledTextColor)
               else
-                setInitialFontColor(LCLObject);
+              begin
+                setInitialColor;
+                setInitialFontColor;
+              end;
             end;
           end;
         QEventShow:
@@ -5016,12 +5020,29 @@ begin
   QWidget_setGeometry(Widget, @ARect);
 end;
 
-procedure TQtWidget.setInitialFontColor(AControl: TWinControl);
+procedure TQtWidget.setInitialColor;
+var
+  AColorRef: TColorRef;
+  QColor: TQColor;
+begin
+  // issue #40471
+  if LCLObject.Color <> clDefault then
+  begin
+    BeginUpdate;
+    Palette.ForceColor := True;
+    AColorRef := ColorToRGB(LCLObject.Color);
+    QColor_fromRgb(@QColor,Red(AColorRef),Green(AColorRef),Blue(AColorRef));
+    setColor(@QColor);
+    EndUpdate;
+  end;
+end;
+
+procedure TQtWidget.setInitialFontColor;
 var
   QColor: TQColor;
   ColorRef: TColorRef;
 begin
-  if AControl.Font.Color = clDefault then
+  if LCLObject.Font.Color = clDefault then
   begin
     BeginUpdate;
     Palette.ForceColor := True;
@@ -5031,7 +5052,7 @@ begin
   end
   else
   begin
-    ColorRef := ColorToRGB(AControl.Font.Color);
+    ColorRef := ColorToRGB(LCLObject.Font.Color);
     QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
     BeginUpdate;
     Palette.ForceColor := True;
