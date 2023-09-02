@@ -2539,7 +2539,6 @@ function QTimer_isSingleShot(handle: QTimerH): Boolean; cdecl; external Qt5PasLi
 procedure QTimer_singleShot(msec: Integer; receiver: QObjectH; member: PAnsiChar); cdecl; external Qt5PasLib name 'QTimer_singleShot';
 procedure QTimer_singleShot(msec: Integer; timerType: QtTimerType; receiver: QObjectH; member: PAnsiChar); cdecl; external Qt5PasLib name 'QTimer_singleShot2';
 procedure QTimer_singleShot(msec: Integer; timeoutEvent: QTimer_timeout_Event); cdecl; external Qt5PasLib name 'QTimer_singleShot3';
-procedure QTimer_singleShot(msec: Integer; context: QObjectH; timeoutEvent: QTimer_timeout_Event); cdecl; external Qt5PasLib name 'QTimer_singleShot4';
 procedure QTimer_start(handle: QTimerH; msec: Integer); cdecl; external Qt5PasLib name 'QTimer_start';
 procedure QTimer_start(handle: QTimerH); cdecl; external Qt5PasLib name 'QTimer_start2';
 procedure QTimer_stop(handle: QTimerH); cdecl; external Qt5PasLib name 'QTimer_stop';
