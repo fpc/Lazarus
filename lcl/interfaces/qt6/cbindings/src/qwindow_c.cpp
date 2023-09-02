@@ -551,12 +551,12 @@ void QWindow_requestUpdate(QWindowH handle)
   ((QWindow *)handle)->requestUpdate();
 }
 
-bool QWindow_startSytemMove(QWindowH handle)
+bool QWindow_startSystemMove(QWindowH handle)
 {
   return (bool) ((QWindow *)handle)->startSystemMove();
 }
 
-bool QWindow_startSytemResize(QWindowH handle, Qt::Edges edges)
+bool QWindow_startSystemResize(QWindowH handle, Qt::Edges edges)
 {
   return (bool) ((QWindow *)handle)->startSystemResize((Qt::Edges)edges);
 }
