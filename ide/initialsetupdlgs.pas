@@ -57,7 +57,7 @@ uses
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDEProcs,
   // IDE
-  LazarusIDEStrConsts, AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc,
+  LazarusIDEStrConsts, IDETranslations, BaseBuildManager, InitialSetupProc,
   GenerateFppkgConfigurationDlg, InitialSetupDlgDebuggerFrame, IdeDebuggerOpts;
   
 type
@@ -674,7 +674,7 @@ end;
 
 procedure TInitialSetupDialog.UpdateCaptions;
 begin
-  Caption:=SimpleFormat(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
+  Caption:=SimpleFormat(lisWelcomeToLazarusIDE, [LazarusVersionStr]);
 
   StartIDEBitBtn.Caption:=lisStartIDE;
 

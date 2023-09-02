@@ -45,7 +45,7 @@ uses
   // IdeIntf
   IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
-  AboutFrm, LazarusIDEStrConsts, Project, SourceEditor, InitialSetupProc,
+  LazarusIDEStrConsts, Project, SourceEditor, InitialSetupProc,
   PackageSystem, PackageDefs;
 
 type
@@ -255,9 +255,9 @@ end;
 
 procedure TIDEInfoDialog.GatherIDEVersion(sl: TStrings);
 begin
-  sl.Add('Lazarus version: '+GetLazarusVersionString);
+  sl.Add('Lazarus version: '+LazarusVersionStr);
   sl.Add('Lazarus revision: '+LazarusRevisionStr);
-  sl.Add('Lazarus build date: '+{$I %date%});
+  sl.Add('Lazarus build date: '+LazarusBuildDateStr+' '+LazarusBuildTimeStr);
   sl.Add('Lazarus was compiled for '+FPCAdds.GetCompiledTargetCPU+'-'+FPCAdds.GetCompiledTargetOS);
   sl.Add('Lazarus was compiled with FPC '+{$I %FPCVERSION%});
   sl.Add('');

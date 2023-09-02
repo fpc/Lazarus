@@ -61,7 +61,6 @@ uses
   LazConf, IDEGuiCmdLine,
   Splash,
   Main,
-  AboutFrm,
   LazDebuggerFpLldb, LazDebuggerFp, laz.virtualtreeview_package,
   LazControlDsgn,
   // use the custom IDE static packages AFTER 'main'
@@ -105,6 +104,8 @@ begin
   // end of build flags
   
   LazarusRevisionStr:=RevisionStr;
+  LazarusBuildDateStr:={$I %date%};
+  LazarusBuildTimeStr:={$I %time%};
   {$IFDEF EnableWriteLazRev}
   writeln('[20180608074905] lazarus.pp ide/revision.inc: ',LazarusRevisionStr);
   {$ENDIF}

@@ -52,6 +52,10 @@ uses
 
 const
   LazarusVersionStr = {$I version.inc};
+var
+  LazarusRevisionStr: string;
+  LazarusBuildDateStr: string;
+  LazarusBuildTimeStr: string;
 
 function CompareLazarusVersion(V1, V2: string): integer;
 

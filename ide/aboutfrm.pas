@@ -25,7 +25,7 @@ unit AboutFrm;
 interface
 
 uses
-  Classes, SysUtils, StrUtils,
+  Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
   LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
@@ -113,12 +113,6 @@ type
 
 function ShowAboutForm: TModalResult;
 
-var
-  LazarusRevisionStr: string;
-  
-function GetLazarusVersionString: string;
-function GetLazarusRevision: string;
-
 implementation
 
 {$R *.lfm}
@@ -135,42 +129,14 @@ begin
   AboutForm.Free;
 end;
 
-function GetLazarusVersionString: string;
-begin
-  Result:=LazarusVersionStr;
-end;
-
-function GetLazarusRevision: string;
-begin
-  Result:=LazarusRevisionStr;
-end;
-
 // Compiler generated date string is in form y/m/d and time string in hh:mm:ss.
 // This function gives a custom string respresentation.
 function GetCustomBuildDate: string;
 var
-  s: string;
-  SlashPos1, SlashPos2: integer;
-  Dt, Tm: TDateTime;
+  Parts: TStringArray;
 begin
-  // Date
-  s := {$I %date%};
-  SlashPos1 := Pos('/',s);
-  SlashPos2 := PosEx('/',s,SlashPos1+1);
-  Dt := EncodeDate(StrToWord(Copy(s,1,SlashPos1-1)),
-                   StrToWord(Copy(s,SlashPos1+1,SlashPos2-SlashPos1-1)),
-                   StrToWord(Copy(s,SlashPos2+1,Length(s)-SlashPos2)));
-  // Time
-  s := {$I %time%};
-  SlashPos1 := Pos(':',s);
-  SlashPos2 := PosEx(':',s,SlashPos1+1);
-  Tm := EncodeTime(StrToWord(Copy(s,1,SlashPos1-1)),
-                   StrToWord(Copy(s,SlashPos1+1,SlashPos2-SlashPos1-1)),
-                   0, 0); // Keep seconds = 0 here.
-
-  Result := FormatDateTime('yyyy-mm-dd  hh":"nn', Dt+Tm); // Custom separators.
-  //FormatDateTime('yyyy/mm/dd  hh:nn', Dt+Tm); // Separators from DefaultFormatSettings.
-  //FormatDateTime('c', Dt+Tm); // Use ShortDateFormat and ShortTimeFormat.
+  Parts := (LazarusBuildDateStr+'-'+LazarusBuildTimeStr).Split(['/','-',':']);
+  Result := Parts[0]+'-'+Parts[1]+'-'+Parts[2]+'  '+Parts[3]+':'+Parts[4];
 end;
 
 { TAboutForm }
@@ -181,7 +147,7 @@ const
 begin
   Notebook.PageIndex:=0;
   Caption:=lisAboutLazarus;
-  VersionLabel.Caption := lisVersion+': '+ GetLazarusVersionString;
+  VersionLabel.Caption := lisVersion+': '+LazarusVersionStr;
   RevisionLabel.Caption := lisRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisBuildDate+': '+GetCustomBuildDate;
   FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
@@ -208,7 +174,7 @@ begin
 
   LoadContributors;
   LoadAcknowledgements;
-  CloseButton.Caption:=lisBtnClose;
+  CloseButton.Caption := lisBtnClose;
 
   CopyToClipboardButton.Caption := '';
   CopyToClipboardButton.Images := IDEImages.Images_16;
@@ -474,6 +440,11 @@ begin
   FTimer.Free;
   FBuffer.Free;
   inherited Destroy;
+end;
+
+function GetLazarusRevision: string;
+begin
+  result := LazarusRevisionStr;
 end;
 
 initialization

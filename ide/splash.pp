@@ -112,7 +112,6 @@ procedure TSplashForm.ImagePaint(Sender: TObject);
 var
   ATextRect: TRect;
 begin
-  // GetLazarusVersionString is too long => use LazarusVersionStr
   ATextRect := Rect(
     Image.Left,
     Image.Height - Image.Canvas.TextHeight('Hg')*5 div 4,

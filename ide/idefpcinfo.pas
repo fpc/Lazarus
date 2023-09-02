@@ -40,9 +40,9 @@ uses
   // IdeIntf
   IDEWindowIntf, LazIDEIntf,
   // IdeConfig
-  EnvironmentOpts, TransferMacros,
+  EnvironmentOpts, TransferMacros, LazConf,
   // Other
-  BaseBuildManager, Project, LazarusIDEStrConsts, AboutFrm;
+  BaseBuildManager, Project, LazarusIDEStrConsts;
 
 type
 
@@ -226,9 +226,9 @@ end;
 
 procedure TIDEFPCInfoDialog.GatherIDEVersion(sl: TStrings);
 begin
-  sl.Add('Lazarus version: '+GetLazarusVersionString);
+  sl.Add('Lazarus version: '+LazarusVersionStr);
   sl.Add('Lazarus revision: '+LazarusRevisionStr);
-  sl.Add('Lazarus build date: '+{$I %date%});
+  sl.Add('Lazarus build date: '+LazarusBuildDateStr+' '+LazarusBuildTimeStr);
   sl.Add('Lazarus was compiled for '+GetCompiledTargetCPU+'-'+GetCompiledTargetOS);
   sl.Add('Lazarus was compiled with FPC '+{$I %FPCVERSION%});
   sl.Add('');
