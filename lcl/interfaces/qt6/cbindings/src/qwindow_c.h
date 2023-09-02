@@ -8,7 +8,7 @@
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 //******************************************************************************
 
-/* TODO startSystemMove(), startSystemResize(), setFlag(), parent(params), setWindowStates() , windowStates() */
+/* TODO setFlag(), parent(params), setWindowStates() , windowStates() */
 
 #ifndef QWINDOW_C_H
 #define QWINDOW_C_H
@@ -121,5 +121,7 @@ C_EXPORT void QWindow_setMaximumWidth(QWindowH handle, int w);
 C_EXPORT void QWindow_setMaximumHeight(QWindowH handle, int h);
 C_EXPORT void QWindow_alert(QWindowH handle, int msec);
 C_EXPORT void QWindow_requestUpdate(QWindowH handle);
+C_EXPORT bool QWindow_startSytemMove(QWindowH handle);
+C_EXPORT bool QWindow_startSytemResize(QWindowH handle, Qt::Edges edges);
 
 #endif
