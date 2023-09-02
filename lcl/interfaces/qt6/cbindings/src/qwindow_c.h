@@ -121,7 +121,7 @@ C_EXPORT void QWindow_setMaximumWidth(QWindowH handle, int w);
 C_EXPORT void QWindow_setMaximumHeight(QWindowH handle, int h);
 C_EXPORT void QWindow_alert(QWindowH handle, int msec);
 C_EXPORT void QWindow_requestUpdate(QWindowH handle);
-C_EXPORT bool QWindow_startSytemMove(QWindowH handle);
-C_EXPORT bool QWindow_startSytemResize(QWindowH handle, Qt::Edges edges);
+C_EXPORT bool QWindow_startSystemMove(QWindowH handle);
+C_EXPORT bool QWindow_startSystemResize(QWindowH handle, Qt::Edges edges);
 
 #endif
