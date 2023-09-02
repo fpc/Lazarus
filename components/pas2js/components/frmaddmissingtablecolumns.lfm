@@ -1,0 +1,129 @@
+object AddMissingTableColumsForm: TAddMissingTableColumsForm
+  Left = 468
+  Height = 326
+  Top = 287
+  Width = 588
+  Caption = 'Add Columns'
+  ClientHeight = 326
+  ClientWidth = 588
+  LCLVersion = '3.99.0.0'
+  object BPFields: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 282
+    Width = 576
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object pnlTop: TPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 588
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'The following columns are missing'
+    TabOrder = 1
+  end
+  object sgFields: TStringGrid
+    Left = 0
+    Height = 158
+    Top = 40
+    Width = 588
+    Align = alClient
+    AutoFillColumns = True
+    Columns = <    
+      item
+        ReadOnly = True
+        SizePriority = 0
+        Title.Caption = 'Field'
+        Width = 200
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        SizePriority = 0
+        Title.Caption = 'Add'
+        Width = 40
+      end    
+      item
+        ButtonStyle = cbsPickList
+        SizePriority = 0
+        Title.Caption = 'Type'
+        Width = 120
+      end    
+      item
+        SizePriority = 0
+        Title.Caption = 'Width'
+        Width = 50
+      end    
+      item
+        Title.Caption = 'Title'
+        Width = 176
+      end>
+    ExtendedSelect = False
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowMoving, goEditing, goRowSelect, goSmoothScroll]
+    TabOrder = 2
+    ColWidths = (
+      200
+      40
+      120
+      50
+      176
+    )
+  end
+  object pnlAction: TPanel
+    Left = 0
+    Height = 78
+    Top = 198
+    Width = 588
+    Align = alBottom
+    ClientHeight = 78
+    ClientWidth = 588
+    TabOrder = 3
+    object cbAddAction: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 12
+      Width = 197
+      Caption = 'Add actions column for field'
+      TabOrder = 0
+    end
+    object cbActionField: TComboBox
+      Left = 248
+      Height = 28
+      Top = 9
+      Width = 321
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object cbAddSelect: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 49
+      Width = 220
+      Caption = 'Add select field field for column'
+      TabOrder = 2
+    end
+    object cbSelectField: TComboBox
+      Left = 248
+      Height = 28
+      Top = 46
+      Width = 321
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 3
+    end
+  end
+end

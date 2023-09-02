@@ -13,7 +13,7 @@ type
 
   TCustomDBBootstrapTableWidget = Class;
 
-  TColumnRenderMode = (crmText, crmNumeric, crmDateTime, crmTransformedValue, crmCheckBox, crmButton, crmCustom);
+  TColumnRenderMode = (crmText, crmNumeric, crmDateTime, crmTransformedValue, crmCheckBox, crmButton, crmCustom, crmAction);
   TColumnButtonType = (cbtInfo, cbtEdit, cbtDelete, cbtCustom);
 
   TDataTablesFieldMap = Class(TObject)
@@ -53,8 +53,45 @@ type
 
   { TBSTableColumn }
 
+  { TBSActionColumn }
+
+  { TBSColumnAction }
+
+  TBSColumnAction = class(TCollectionItem)
+  private
+    FButtonIconClass: String;
+    FButtonType: TColumnButtonType;
+    FButtonURL: string;
+    FButtonURLTarget: string;
+    FExtraAttributes: String;
+  Public
+    procedure Assign(Source: TPersistent); override;
+
+  Published
+    property ButtonType: TColumnButtonType read FButtonType write FButtonType;
+    // When buttontype is btCustom, use the following class (in <i class="">)
+    Property ButtonIconClass: String Read FButtonIconClass Write FButtonIconClass;
+    // URL to use when the button is clicked
+    property ButtonURL: string read FButtonURL write FButtonURL;
+    // Target of button URL
+    property ButtonURLTarget: string read FButtonURLTarget write FButtonURLTarget;
+    // Add extra attributes to the contents of the column if needed
+    property ExtraAttributes: String read FExtraAttributes write FExtraAttributes;
+  end;
+
+  { TBSColumnActionList }
+
+  TBSColumnActionList = class(TCollection)
+  private
+    function GetAction(aIndex : Integer): TBSColumnAction;
+    procedure SetAction(aIndex : Integer; AValue: TBSColumnAction);
+  Public
+    Property Actions[aIndex : Integer] : TBSColumnAction Read GetAction Write SetAction;
+  end;
+
   TBSTableColumn = class(TCollectionItem)
   private
+    FActions: TBSColumnActionList;
     FFieldName: string;
     FFormatting: string;
     FSelectable: Boolean;
@@ -75,18 +112,24 @@ type
     FOnGetValue: TOnCustomValueEvent;
     FExtraAttributes: String;
     FWidthUnits: String;
+    function GetActionsStored: Boolean;
     function GetTitle: string;
+    procedure SetActions(AValue: TBSColumnActionList);
   protected
     function GetDisplayName: String; override;
+    function CreateActions: TBSColumnActionList; virtual;
     { private declarations }
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create(aOwner: TCollection); override;
+    destructor Destroy; override;
   published
     // Fieldname for this column
     property FieldName: string read FFieldName write FFieldName;
     // Title for this column
     property Title: string read GetTitle write FTitle;
+    // Action column actions
+    Property Actions : TBSColumnActionList Read FActions Write SetActions stored GetActionsStored;
     // Render mode: text, numer, checkbox, button custom render
     property RenderMode: TColumnRenderMode read FRenderMode write FRenderMode;
     // When rendermode is rmButton, what button ?
@@ -319,6 +362,35 @@ begin
     inherited Assign(Source);
 end;
 
+{ TBSColumnAction }
+
+procedure TBSColumnAction.Assign(Source: TPersistent);
+var
+  aSource: TBSColumnAction absolute Source;
+begin
+  if Source is TBSColumnAction then
+  begin
+    ExtraAttributes:=aSource.ExtraAttributes;
+    ButtonURLTarget:=aSource.ButtonURLTarget;
+    ButtonURL:=aSource.ButtonURL;
+    ButtonType:=aSource.ButtonType;
+    ButtonIconClass:=aSource.ButtonIconClass;
+  end else
+    inherited Assign(Source);
+end;
+
+{ TBSColumnActionList }
+
+function TBSColumnActionList.GetAction(aIndex : Integer): TBSColumnAction;
+begin
+  Result:=Items[aIndex] as TBSColumnAction;
+end;
+
+procedure TBSColumnActionList.SetAction(aIndex : Integer; AValue: TBSColumnAction);
+begin
+  Items[aIndex]:=aValue;
+end;
+
 
   { TBSTableColumn }
 
@@ -345,6 +417,7 @@ begin
     Formatting := Src.Formatting;
     OnGetSortValue := Src.OnGetSortValue;
     ExtraAttributes := Src.ExtraAttributes;
+    Actions:=Src.Actions;
   end
   else
     inherited;
@@ -357,6 +430,19 @@ begin
   FVisible := True;
   FSortable := True;
   FSearchable := True;
+  Factions:=CreateActions;
+end;
+
+destructor TBSTableColumn.Destroy;
+
+begin
+  Factions.Free;
+  Inherited;
+end;
+
+function TBSTableColumn.CreateActions:TBSColumnActionList;
+begin
+  Result:=TBSColumnActionList.Create(TBSColumnAction);
 end;
 
 function TBSTableColumn.GetDisplayName: String;
@@ -373,6 +459,17 @@ begin
   Result := FTitle;
   if Result='' then
     Result:=FieldName;
+end;
+
+function TBSTableColumn.GetActionsStored: Boolean;
+begin
+  Result:=(RenderMode=crmAction);
+end;
+
+procedure TBSTableColumn.SetActions(AValue: TBSColumnActionList);
+begin
+  if FActions=AValue then Exit;
+  FActions.Assign(AValue);
 end;
 
 { TBSTableColumns }

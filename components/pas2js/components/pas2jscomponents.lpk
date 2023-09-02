@@ -134,6 +134,10 @@
         <Filename Value="pas2jscompedits.pas"/>
         <UnitName Value="pas2jscompedits"/>
       </Item>
+      <Item>
+        <Filename Value="frmaddmissingtablecolumns.pas"/>
+        <UnitName Value="frmaddmissingtablecolumns"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

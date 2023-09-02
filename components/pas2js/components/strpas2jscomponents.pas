@@ -39,6 +39,9 @@ Resourcestring
   rsEditingHTMLProp = 'Editing HTML property: %s';
   rsEditTemplate = 'Edit Template';
 
+  rsCreateMissingColumns = 'Create missing columns';
+  rsColumnsForAllFields = 'There is already a column for all fields.';
+
   rsStandardHTMLAction = 'Standard HTML Element action.';
   rsDBEditHTMLAction = 'Standard Data-Aware HTML Element action.';
   rsDBHTMLAction = 'Standard Data-Aware HTML read-only Element action.';

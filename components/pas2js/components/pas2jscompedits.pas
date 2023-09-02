@@ -51,6 +51,21 @@ Type
     procedure ExecuteVerb({%H-}Index: Integer); override;
   end;
 
+  { TBootstrapTableWidgetComponentEditor }
+
+  TBootstrapTableWidgetComponentEditor = class(TComponentEditor)
+  private
+    FTable: TDBBootstrapTableWidget;
+  Public
+    Procedure CreateMissingColumns;
+    constructor Create(AComponent: TComponent;
+                       ADesigner: TComponentEditorDesigner); override;
+    destructor Destroy; override;
+    property Table : TDBBootstrapTableWidget read FTable write FTable;
+    function GetVerbCount: Integer; override;
+    function GetVerb({%H-}Index: Integer): string; override;
+    procedure ExecuteVerb({%H-}Index: Integer); override;
+  end;
 
   { TPas2JSRPCClientComponentEditor }
 
@@ -192,7 +207,7 @@ uses
   Types, IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
   idehtmltools,
   frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, frmpas2jsedithtml, p2jselementactions,
-  frmcreaterpcserviceclient;
+  frmcreaterpcserviceclient, frmaddmissingtablecolumns;
 
 { TDBHTMLElementActionFieldProperty }
 
@@ -407,6 +422,112 @@ begin
     0 : EditTemplate;
   else
     inherited ExecuteVerb(Index);
+  end;
+end;
+
+{ TBootstrapTableWidgetComponentEditor }
+
+procedure TBootstrapTableWidgetComponentEditor.CreateMissingColumns;
+
+  procedure AddNewColumns(Cols : TColumnDataArray);
+
+  var
+    C : TColumnData;
+    BC: TBSTableColumn;
+
+  begin
+    For C in Cols do
+      begin
+      BC:=Table.Columns.Add;
+      BC.RenderMode:=C.Render;
+      BC.Width:=C.Width;
+      BC.WidthUnits:='px';
+      BC.FieldName:=C.FieldName;
+      BC.Title:=C.Title;
+      end;
+  end;
+
+  procedure AddActionColumn(aField : String);
+
+  var
+    BC: TBSTableColumn;
+
+  begin
+    if aField='' then exit;
+    BC:=Table.Columns.Add;
+    BC.FieldName:=aField;
+    BC.RenderMode:=crmAction;
+    BC.Title:='Actions';
+  end;
+
+  procedure AddSelectColumn(aField : String);
+
+  var
+    BC: TBSTableColumn;
+
+  begin
+    if aField='' then exit;
+    BC:=Table.Columns.Add;
+    BC.FieldName:=aField;
+    BC.RenderMode:=crmAction;
+    BC.Title:='?';
+  end;
+
+Var
+  Frm : TAddMissingTableColumsForm;
+
+
+begin
+  With TAddMissingTableColumsForm do
+    if Length(GetMissingFields(Self.Table,GetFieldNames(Self.Table)))=0 then
+      begin
+      ShowMessage(rsColumnsForAllFields);
+      Exit;
+      end;
+  Frm:=TAddMissingTableColumsForm.Create(Nil);
+  try
+    Frm.Table:=Self.Table;
+    if Frm.ShowModal=mrOK then
+      begin
+      AddSelectColumn(Frm.SelectColumn);
+      AddNewColumns(Frm.NewColumns);
+      AddActionColumn(Frm.ActionColumn);
+      Modified;
+      end;
+  finally
+    Frm.Free;
+  end;
+
+end;
+
+constructor TBootstrapTableWidgetComponentEditor.Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+  FTable:=aComponent as TDBBootstrapTableWidget;
+end;
+
+destructor TBootstrapTableWidgetComponentEditor.Destroy;
+begin
+  FTable:=Nil;
+  inherited Destroy;
+end;
+
+function TBootstrapTableWidgetComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
+function TBootstrapTableWidgetComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Case Index of
+    0 : Result:=rsCreateMissingColumns;
+  end;
+end;
+
+procedure TBootstrapTableWidgetComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  Case Index of
+    0 : CreateMissingColumns;
   end;
 end;
 

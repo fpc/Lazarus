@@ -88,6 +88,7 @@ procedure TIDEPas2JSRestCommandHandler.RegisterCommands;
 begin
   // Form designer menu
   mnuCompRestSection:=RegisterIDESubMenu(DesignerMenuSectionCustomDynamic,'comPas2JSRest',rsPas2JSRest,Nil,Nil);
+//  DesignerMenuSectionCustomDynamic.AddHandlerOnShow(@CheckDataset);
   mnuCompRestSection.AddHandlerOnShow(@CheckDataset);
 //  RegisterIDEMenuCommand(mnuCompDDSection,'ddeditfields',SMenuDatadictApply,@IDEDDC.ApplyDD,Nil,Nil);
   CmdShowData:=RegisterIDEMenuCommand(mnuCompRestSection,'showData',rsMenuRestShowData,@ShowData,Nil,Nil);
@@ -105,7 +106,9 @@ Var
 begin
   DS:=GetDataset;
   OK:=(DS<>Nil) and (DS.Connection<>Nil) and (DS.ResourceName<>'');
+  mnuCompRestSection.Enabled:=OK;
   CmdShowData.Enabled:=OK ;
+  CmdGetParamDefs.Enabled:=OK;
   CmdGetFieldDefs.Enabled:=OK and (DS.Connection.MetaDataResourceName<>'');
 end;
 

@@ -176,6 +176,7 @@ Procedure RegisterComponentEditors;
 begin
   RegisterComponentEditor(THTMLElementActionList,THTMLElementActionListComponentEditor);
   RegisterComponentEditor(TBootstrapModal,TBootstrapModalComponentEditor);
+  RegisterComponentEditor(TDBBootstrapTableWidget,TBootstrapTableWidgetComponentEditor);
   RegisterComponentEditor(TPas2JSRPCClient,TPas2JSRPCClientComponentEditor);
 end;
 
