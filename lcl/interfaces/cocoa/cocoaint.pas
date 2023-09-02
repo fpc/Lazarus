@@ -128,6 +128,7 @@ type
     FNSApp: TCocoaApplication;
     FNSApp_Delegate: TAppDelegate;
     FCaptureControl: HWND;
+    FWaitingDropFiles: NSMutableArray;
 
   protected
     FStockNullBrush: HBRUSH;
@@ -161,6 +162,8 @@ type
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
 
     procedure SyncClipboard();
+    procedure DropWaitingFiles;
+    procedure DropFiles(filenames: NSArray);
 
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
