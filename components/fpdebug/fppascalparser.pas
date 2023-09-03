@@ -5191,6 +5191,12 @@ begin
   if SlicePart.FCurrentIndex <> AIndex then begin
     SlicePart.FCurrentIndex := AIndex;
     FArraySlice.ResetEvaluationForIndex;
+
+    // Some evaluation errors (such as deref nil) are marked on the Expression,
+    // rather than on the value(s).
+    // If this code is called, the Expression should have been valid before.
+    FExpressionPart.Expression.FValid := True;
+    FExpressionPart.Expression.FError := nil;
   end;
   Result := FArraySlice.Items[0].ResultValue;
 
