@@ -66,5 +66,13 @@
 		<issue name="TTrackBar.ScalePos">
 			<short>Trackbar ScalePos does not apply to QT</short>
 		</issue>
+		<issue name="TComboBox.AdjustDropDown">
+			<short>Not supported.</short>
+			<descr>Requires SetComboMinDropDownSize in the widget.</descr>
+		</issue>
+		<issue name="TComboBox.ItemWidth">
+			<short>Not supported.</short>
+			<descr>Calls AdjustDropDown which is not implemented.</descr>
+		</issue>
 	</widgetset>
 </package>
