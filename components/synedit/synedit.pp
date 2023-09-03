@@ -944,7 +944,9 @@ type
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;              // 1-based byte pos of first selected char
+      deprecated 'Use "BlockBegin" / SynMemo compatibility - very slow / SynEdit operates on x/y';
     property SelEnd: Integer read GetSelEnd write SetSelEnd;                    // 1-based byte pos of first char after selction end
+      deprecated 'Use "BlockEnd" / SynMemo compatibility - very slow / SynEdit operates on x/y';
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
