@@ -289,8 +289,15 @@ begin
     if InString then
       Continue;
 
-    if p^ in ['@', '^', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then
+    if p^ in ['@', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then
       MaybeBeforeRange := False  // after operator. A [1..5] would be a set of byte
+
+    else
+    if (p - s >= 2) and
+       (p[-2] in [#1..#32]) and (p[-1] in ['i', 'I']) and
+       (p^ in ['n', 'N']) and  (p[1] in [#1..#32])
+    then
+      MaybeBeforeRange := False  // after IN operator. A [1..5] would be a set of byte
 
     else
     if p^ in ['a'..'z', 'A'..'Z', '_', ')', ']'] then
