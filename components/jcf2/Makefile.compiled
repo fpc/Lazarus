@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Makefile Value="2"/>
-  <Params Value="-FuParse;Parse/PreProcessor;Process;Process/Align;Process/Capitalisation;Process/Indent;Process/Info;Process/Obfuscate;Process/Onceoffs;Process/Returns;Process/Spacing;Process/Transform;Process/Warnings;ReadWrite;Settings;Settings/Streams;Ui;Utils;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);. -FiInclude -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq jcfbase.pas"/>
+  <Params Value="-Fu.;Parse;Parse/PreProcessor;Process;Process/Align;Process/Capitalisation;Process/Indent;Process/Info;Process/Obfuscate;Process/Onceoffs;Process/Returns;Process/Spacing;Process/Transform;Process/Warnings;ReadWrite;Settings;Settings/Streams;Ui;Utils;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) -FiInclude -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq jcfbase.pas"/>
 </CONFIG>
