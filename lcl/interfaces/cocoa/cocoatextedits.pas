@@ -300,6 +300,8 @@ type
   { TCocoaReadOnlyComboBoxList }
 
   TCocoaReadOnlyComboBoxList = class(TCocoaComboBoxList)
+  private
+    FId: Integer;
   protected
     FOwner: TCocoaReadOnlyComboBox;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
@@ -498,7 +500,10 @@ begin
   if not FOwner.isComboBoxEx then
     astr := NSStringUtf8(S)
   else
-    astr := NSStringUtf8(Index.ToString);
+  begin
+    astr := NSStringUtf8(FId.ToString);
+    inc(FId);
+  end;
   mn.setTitle(astr);
   astr.release;
 
