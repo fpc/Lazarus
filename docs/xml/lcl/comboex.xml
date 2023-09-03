@@ -1579,13 +1579,17 @@ AnObject is an object with the data stored in the new TComboExItem instance.
 </p>
 <p>
 AddItem calls <var>Insert</var> to create, update, and store the item in the 
-<var>ItemsEx</var> property.
+<var>ItemsEx</var> property. The value in <var>AnObject</var> is stored to the 
+Data property in the extended combo-box item appended to ItemsEx.
 </p>
 </descr>
 <seealso>
 <link id="TCustomComboBoxEx.ItemsEx"/>
 <link id="TListControlItem.Caption"/>
 <link id="TListControlItem.Data"/>
+<link id="TComboExItems"/>
+<link id="TComboExItem"/>
+<link id="TListControlItems"/>
 </seealso>
 </element>
 <element name="TCustomComboBoxEx.AddItem.Item">
