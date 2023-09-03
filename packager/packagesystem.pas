@@ -1864,10 +1864,9 @@ begin
     APackage:=Packages[i];
     if APackage.IsVirtual then continue;
     // source directories + unit path without inherited paths + base directory + output directory
-    if SrcDirInPath(APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
+    if SrcDirInPath(APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false,true))
     or SrcDirInPath(APackage.SourceDirectories.CreateSearchPathFromAllFiles)
     or SrcDirInPath(APackage.GetOutputDirectory)
-    or SrcDirInPath(APackage.Directory)
     then
       OwnerList.Add(APackage);
   end;

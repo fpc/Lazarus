@@ -2343,7 +2343,10 @@ begin
   coptUnparsed:
     Result:=GetUnparsedPath(Option,InheritedOption,RelativeToBaseDir);
   coptParsed:
-    Result:=GetParsedPath(Option,InheritedOption,RelativeToBaseDir);
+    begin
+      Result:=GetParsedPath(Option,InheritedOption,RelativeToBaseDir,WithBaseDir);
+      exit;
+    end;
   coptParsedPlatformIndependent:
     Result:=GetParsedPIPath(Option,InheritedOption,RelativeToBaseDir);
   else
@@ -2355,7 +2358,7 @@ begin
     else
       AddPath:=BaseDirectory;
     if AddPath<>'' then
-      Result:=MergeSearchPaths(Result,AddPath);
+      Result:=MergeSearchPaths(AddPath,Result);
   end;
 end;
 
@@ -2365,9 +2368,12 @@ function TBaseCompilerOptions.GetParsedPath(Option: TParsedCompilerOptString;
 var
   CurrentPath: String;
   InheritedPath: String;
-  ParsedBaseDir: String;
 begin
   // the first path is searched first
+
+  Result:='';
+  if AddBaseDir then
+    Result:=ParsedOpts.GetParsedValue(pcosBaseDir);
 
   // current path
   if Option<>pcosNone then begin
@@ -2385,8 +2391,8 @@ begin
     if Option=pcosUnitPath then
       debugln('TBaseCompilerOptions.GetParsedPath Absolute/Relative=',dbgs(RelativeToBaseDir),' SearchPath ',dbgsName(Self),' CurrentPath="',CurrentPath,'" BaseDirectory="',BaseDirectory,'"');
     {$ENDIF}
-  end else begin
-    CurrentPath:='';
+
+    Result:=MergeSearchPaths(Result,CurrentPath);
   end;
 
   // inherited path
@@ -2397,18 +2403,11 @@ begin
       debugln('TBaseCompilerOptions.GetParsedPath Inherited ',dbgsName(Self),' InheritedPath="',InheritedPath,'"');
     {$ENDIF}
 
-    Result:=MergeSearchPaths(CurrentPath,InheritedPath);
+    Result:=MergeSearchPaths(Result,InheritedPath);
     {$IFDEF VerbosePkgUnitPath}
     if Option=pcosUnitPath then
       debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' Result="',Result,'"');
     {$ENDIF}
-  end else
-    Result:=CurrentPath;
-
-  if AddBaseDir then begin
-    ParsedBaseDir:=ParsedOpts.GetParsedValue(pcosBaseDir);
-    if ParsedBaseDir<>'' then
-      Result:=MergeSearchPaths(Result,ParsedBaseDir);
   end;
 end;
 
