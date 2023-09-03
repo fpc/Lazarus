@@ -300,6 +300,8 @@ type
   { TCocoaReadOnlyComboBoxList }
 
   TCocoaReadOnlyComboBoxList = class(TCocoaComboBoxList)
+  private
+    FId: Integer;
   protected
     FOwner: TCocoaReadOnlyComboBox;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
@@ -323,6 +325,7 @@ type
 
     isOwnerDrawn: Boolean;
     isOwnerMeasure: Boolean;
+    isComboBoxEx: Boolean;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
@@ -491,7 +494,16 @@ begin
   mn := FOwner.itemAtIndex(Index);
   if not Assigned(mn) then Exit;
 
-  astr := NSStringUtf8(S);
+  // for TComboBoxEx, the parameter S passed in is always emtpy,
+  // and NSPopUpButton always automatically sets the itemIndex according to
+  // the title, so a unique title needs to be set.
+  if not FOwner.isComboBoxEx then
+    astr := NSStringUtf8(S)
+  else
+  begin
+    astr := NSStringUtf8(FId.ToString);
+    inc(FId);
+  end;
   mn.setTitle(astr);
   astr.release;
 

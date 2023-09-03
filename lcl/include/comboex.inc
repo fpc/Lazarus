@@ -301,7 +301,7 @@ end;
 procedure TCustomComboBoxEx.AddItem(const Item: String; AnObject: TObject);
 begin
   Insert(ItemsEx.Count, Item);
-  ItemsEx[ItemsEx.Count].Data:=AnObject;
+  ItemsEx[ItemsEx.Count-1].Data:=AnObject;
 end;
 
 procedure TCustomComboBoxEx.AssignItemsEx(AItemsEx: TComboExItems);
