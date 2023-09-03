@@ -154,6 +154,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestXmlOpts"/>
       </Unit>
+      <Unit>
+        <Filename Value="testvarious.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestVarious"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
