@@ -769,6 +769,9 @@ const
 var
   Flags: DWord;
 begin
+  if csDesigning in AWinControl.ComponentState then
+    Windows.ShowWindow(AWinControl.Handle, SW_SHOWNORMAL)
+  else
   if AWinControl.HandleObjectShouldBeVisible then
   begin
     Flags := WindowStateToFlags[TCustomForm(AWinControl).WindowState];
