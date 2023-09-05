@@ -2197,8 +2197,6 @@ var
 begin
   Result := 0;
 
-  Result := 0;
-
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
