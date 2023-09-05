@@ -3,12 +3,15 @@
   <Package Version="5">
     <Name Value="SimpleWebServerGUI"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mattias Gärtner"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
+    <Description Value="A web server used by Pas2js (Pascal to JavaScript transpiler)."/>
+    <License Value="GPL-2"/>
     <Version Major="1"/>
     <Files>
       <Item>

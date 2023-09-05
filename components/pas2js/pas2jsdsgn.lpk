@@ -15,7 +15,7 @@
         </SyntaxOptions>
       </Parsing>
     </CompilerOptions>
-    <Description Value="Adds a Lazarus project for pas2js browser applications."/>
+    <Description Value="Adds a Lazarus project for pas2js (Pascal to JavaScript transpiler) browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
     <Files Count="20">
