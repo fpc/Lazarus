@@ -932,14 +932,6 @@ type
     QtBottomLeftCorner = $00002,
     QtBottomRightCorner = $00003 );
 
-  QtEdge = (  //Qt::Edge (2)
-    QtTopEdge = $00001,
-    QtLeftEdge = $00002,
-    QtRightEdge = $00004,
-    QtBottomEdge = $00008 );
-
-  QtEdges = set of QtEdge;
-
   QtConnectionType = (  //Qt::ConnectionType (2)
     QtAutoConnection,
     QtDirectConnection,
@@ -978,6 +970,15 @@ const
   QtImhUrlCharactersOnly =   $400000;
   QtImhLatinOnly =   $800000;
   QtImhExclusiveInputMask =   $ffff0000;
+
+type
+  QtEdge = cardinal;
+
+const
+  QtTopEdge = $00001;
+  QtLeftEdge = $00002;
+  QtRightEdge = $00004;
+  QtBottomEdge = $00008;
 
 
 type
@@ -5912,7 +5913,7 @@ procedure QWindow_setMaximumHeight(handle: QWindowH; h: integer); cdecl; externa
 procedure QWindow_alert(handle: QWindowH; msec: integer); cdecl; external Qt6PasLib name 'QWindow_alert';
 procedure QWindow_requestUpdate(handle: QWindowH); cdecl; external Qt6PasLib name 'QWindow_requestUpdate';
 function QWindow_startSystemMove(handle: QWindowH): boolean; cdecl; external Qt6PasLib name 'QWindow_startSystemMove';
-function QWindow_startSystemResize(handle: QWindowH; edges: QtEdges): boolean; cdecl; external Qt6PasLib name 'QWindow_startSystemResize';
+function QWindow_startSystemResize(handle: QWindowH; edges: QtEdge): boolean; cdecl; external Qt6PasLib name 'QWindow_startSystemResize';
 
 type
   QWindow_screenChanged_Event = procedure (screen: QScreenH) of object cdecl;
