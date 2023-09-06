@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="lcl">
 	<widgetset name="qt5">
-		<issue name="TCheckBox.Alignment">
-			<short>CheckBox Alignment property is not supported</short>
-			<descr>Use BiDiMode = bdRightToLeft as a workaround</descr>
-		</issue>
-		<issue name="TRadioButton.Alignment">
-			<short>RadioButton Alignment property is not supported</short>
-			<descr>Use BiDiMode = bdRightToLeft as a workaround</descr>
-		</issue>
 		<issue name="TEdit.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
@@ -62,14 +54,6 @@
 		</issue>
 		<issue name="TTrackBar.ScalePos">
 			<short>Trackbar ScalePos does not apply to QT</short>
-		</issue>
-		<issue name="TComboBox.AdjustDropDown">
-			<short>Not supported.</short>
-			<descr>Requires SetComboMinDropDownSize in the widget.</descr>
-		</issue>
-		<issue name="TComboBox.ItemWidth">
-			<short>Not supported.</short>
-			<descr>Calls AdjustDropDown which is not implemented.</descr>
 		</issue>
 	</widgetset>
 </package>
