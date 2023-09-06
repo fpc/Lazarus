@@ -406,6 +406,7 @@ msgid "%sAt line %s col %s"
 msgstr "%sTies eilutę %s, bei stulpeliu  %s"
 
 #: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
 msgid "Error"
 msgstr "Klaida"
 
@@ -432,6 +433,12 @@ msgstr "%s greta %s"
 #, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Tipas: %s%s"
+
+#: jcfuiconsts.liserroract
+#, fuzzy
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "Klaida"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
@@ -486,6 +493,10 @@ msgstr ""
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "Versija, kuria įrašutas šis failas: %s"
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
+msgstr ""
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -931,6 +942,10 @@ msgstr "Pakeisti"
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
 msgstr "Naudojami moduliai"
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
+msgstr ""
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

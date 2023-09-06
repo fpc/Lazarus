@@ -69,10 +69,21 @@ begin
 end;
 
 procedure TfComments.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  i: Integer;
 begin
   cbRemoveEmptyDoubleSlashComments.Caption := lisCommentsRemoveEmptySlashComments;
   cbRemoveEmptyCurlyBraceComments.Caption := lisCommentsRemoveEmptyCurlyBracesComments;
   FormattingSettings.Comments.GetImbalancedCommentActions(rgImbalancedCommentAction.Items);
+  rgImbalancedCommentAction.Caption := lisImbalancedCommentAct;
+  for i := 0 to rgImbalancedCommentAction.Items.Count - 1 do
+  begin
+    if rgImbalancedCommentAction.Items[i] = 'Error' then
+      rgImbalancedCommentAction.Items[i] := lisErrorAct
+    else
+      if rgImbalancedCommentAction.Items[i] = 'Warn' then
+        rgImbalancedCommentAction.Items[i] := lisWarnAct;
+  end;
 end;
 
 procedure TfComments.ReadSettings(AOptions: TAbstractIDEOptions);

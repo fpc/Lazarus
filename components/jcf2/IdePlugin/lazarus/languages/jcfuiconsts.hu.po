@@ -406,6 +406,7 @@ msgid "%sAt line %s col %s"
 msgstr "%s itt: %s. sor, %s. oszlop"
 
 #: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
 msgid "Error"
 msgstr "Hiba"
 
@@ -432,6 +433,12 @@ msgstr "%s a következőnél: %s"
 #, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Típus: %s%s"
+
+#: jcfuiconsts.liserroract
+#, fuzzy
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "Hiba"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
@@ -487,6 +494,10 @@ msgstr "A beállítási fájl:"
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "A fájlt író változat: %s"
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
+msgstr ""
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -932,6 +943,10 @@ msgstr "Csere"
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
 msgstr "Uses"
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
+msgstr ""
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

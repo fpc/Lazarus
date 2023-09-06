@@ -406,6 +406,7 @@ msgid "%sAt line %s col %s"
 msgstr "%s（行 %s、列 %s）"
 
 #: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
 msgid "Error"
 msgstr "エラー"
 
@@ -432,6 +433,12 @@ msgstr "%s（%s の近辺）"
 #, object-pascal-format
 msgid "Type: %s%s"
 msgstr "型名：%s%s"
+
+#: jcfuiconsts.liserroract
+#, fuzzy
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "エラー"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
@@ -486,6 +493,10 @@ msgstr ""
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "このファイルが書かれたバージョン：%s"
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
+msgstr ""
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -931,6 +942,10 @@ msgstr "置換"
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
 msgstr "uses 節"
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
+msgstr ""
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

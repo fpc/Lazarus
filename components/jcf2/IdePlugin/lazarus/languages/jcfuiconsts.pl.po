@@ -407,6 +407,7 @@ msgid "%sAt line %s col %s"
 msgstr ""
 
 #: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
 msgid "Error"
 msgstr "Błąd"
 
@@ -433,6 +434,12 @@ msgstr ""
 #, object-pascal-format
 msgid "Type: %s%s"
 msgstr ""
+
+#: jcfuiconsts.liserroract
+#, fuzzy
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "Błąd"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
@@ -486,6 +493,10 @@ msgstr ""
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
+msgstr ""
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
 msgstr ""
 
 #: jcfuiconsts.lisindentblockindentationspaces
@@ -929,6 +940,10 @@ msgstr "Zastąp"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
+msgstr ""
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
 msgstr ""
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed

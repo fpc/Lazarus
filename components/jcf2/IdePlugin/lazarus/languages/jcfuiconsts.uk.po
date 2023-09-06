@@ -409,6 +409,7 @@ msgid "%sAt line %s col %s"
 msgstr "%sВ рядку %s стовп. %s"
 
 #: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
 msgid "Error"
 msgstr "Помилка"
 
@@ -435,6 +436,12 @@ msgstr "%s близько %s"
 #, object-pascal-format
 msgid "Type: %s%s"
 msgstr "Тип: %s%s"
+
+#: jcfuiconsts.liserroract
+#, fuzzy
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "Помилка"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
@@ -489,6 +496,10 @@ msgstr "Файл налаштувань є:"
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "Файл записаний версією: %s"
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
+msgstr ""
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -932,6 +943,10 @@ msgstr "Замінити"
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
 msgstr "Uses"
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
+msgstr ""
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"
