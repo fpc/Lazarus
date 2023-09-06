@@ -12,7 +12,9 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
+#, fuzzy
+#| msgid "&About"
+msgid "&About ..."
 msgstr "&Névjegy"
 
 #: jcfuiconsts.format_category_idecmd
@@ -44,7 +46,9 @@ msgid "&All Files in Project"
 msgstr "Minden fájl a projektben"
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
+#, fuzzy
+#| msgid "&Format Settings"
+msgid "&Format Settings ..."
 msgstr "Formázás beállításai"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -65,8 +69,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ez a program még fejlesztés alatt van. Az alapos tesztelés és a bejelentett hibák javítás ellenére, nincs garancia semmire. Készítsen biztonsági másolatot, vagy még inkább használjon forráskód kezelő rendszert!"
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+#, object-pascal-format, fuzzy
+#| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Változat: $VERSION$%s$DATE$%s%sEz a program megpróbálja egységesen és olvashatóan elrendezni a Delphi Object-Pascal forráskódokat.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign

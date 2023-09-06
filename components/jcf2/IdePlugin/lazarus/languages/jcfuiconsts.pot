@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
+msgid "&About ..."
 msgstr ""
 
 #: jcfuiconsts.format_category_idecmd
@@ -30,7 +30,7 @@ msgid "&All Files in Project"
 msgstr ""
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
+msgid "&Format Settings ..."
 msgstr ""
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -52,7 +52,7 @@ msgstr ""
 
 #: jcfuiconsts.lisaboutversion
 #, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr ""
 
 #: jcfuiconsts.lisalignalign

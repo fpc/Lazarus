@@ -12,7 +12,9 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
+#, fuzzy
+#| msgid "&About"
+msgid "&About ..."
 msgstr "&À propos"
 
 #: jcfuiconsts.format_category_idecmd
@@ -44,7 +46,9 @@ msgid "&All Files in Project"
 msgstr "Tous les fichiers d&ans le projet"
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
+#, fuzzy
+#| msgid "&Format Settings"
+msgid "&Format Settings ..."
 msgstr "Paramètres de &formatage"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -65,8 +69,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ce programme est encore en développement. En dépit de tests approfondis et de l'élimination des bogues rapportés, aucune garantie n'est donnée. Veuillez faire des sauvegardes, ou mieux encore utiliser un système de contrôle de code source."
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+#, object-pascal-format, fuzzy
+#| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Version $VERSION$%s$DATE$%s%sCe programme tente d'uniformiser et de rendre lisible la disposition de tout code source Delphi Object-Pascal.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign

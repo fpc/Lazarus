@@ -12,8 +12,8 @@ msgstr ""
 "X-Generator: Poedit 2.2.4\n"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
-msgstr "&О программе"
+msgid "&About ..."
+msgstr "&О программе ..."
 
 #: jcfuiconsts.format_category_idecmd
 msgctxt "jcfideregister.format_category_idecmd"
@@ -44,8 +44,8 @@ msgid "&All Files in Project"
 msgstr "Все файлы &проекта"
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
-msgstr "П&араметры форматирования"
+msgid "&Format Settings ..."
+msgstr "П&араметры форматирования ..."
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -66,8 +66,8 @@ msgstr "Эта программа находится в стадии разра�
 
 #: jcfuiconsts.lisaboutversion
 #, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr "Версия $VERSION$%s$DATE$%s%sЭта программа пытается стандартизовать и сделать более читаемым любой код на Объектном Паскале Delphi.%s%s(C) Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Версия $VERSION$%s$DATE$%s%sЭта программа пытается стандартизовать и сделать более читаемым любой код на Объектном Паскале.%s%s(C) Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -959,3 +959,4 @@ msgstr "Предупреждения"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "Включить &предупреждения"
+

@@ -11,7 +11,9 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
+#, fuzzy
+#| msgid "&About"
+msgid "&About ..."
 msgstr "O Jedi Code Format"
 
 #: jcfuiconsts.format_category_idecmd
@@ -43,7 +45,9 @@ msgid "&All Files in Project"
 msgstr "&Všechny soubory v Projektu"
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
+#, fuzzy
+#| msgid "&Format Settings"
+msgid "&Format Settings ..."
 msgstr "Nastavení &Formátu"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -64,8 +68,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Tento program je stále ve vývoji. Z tohoto důvodu nejsou dávány žádné garance. Prosím, dělejte zálohy, nebo lépe, používejte verzovací systém,"
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+#, object-pascal-format, fuzzy
+#| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Verze $VERSION$%s$DATE$%s%sTento program se pokusí standardizovat a udělat čitelný jakýkoli Delphi (Object Pascal) zdrojový kód.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign

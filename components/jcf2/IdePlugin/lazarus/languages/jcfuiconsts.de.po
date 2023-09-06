@@ -10,7 +10,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: jcfuiconsts.format_about_menu
-msgid "&About"
+#, fuzzy
+#| msgid "&About"
+msgid "&About ..."
 msgstr "Über"
 
 #: jcfuiconsts.format_category_idecmd
@@ -42,7 +44,9 @@ msgid "&All Files in Project"
 msgstr "&Alle Dateien im Projekt"
 
 #: jcfuiconsts.format_settings_menu
-msgid "&Format Settings"
+#, fuzzy
+#| msgid "&Format Settings"
+msgid "&Format Settings ..."
 msgstr "&Formatierungseinstellungen"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
@@ -64,7 +68,7 @@ msgstr ""
 
 #: jcfuiconsts.lisaboutversion
 #, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr ""
 
 #: jcfuiconsts.lisalignalign
