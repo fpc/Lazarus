@@ -905,6 +905,25 @@ begin
   QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierException], do_error);
 end;
 
+function TQtWidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+var
+  ACombo: QComboBoxH;
+  AView: QAbstractItemViewH;
+begin
+  Result := False;
+  if not IsValidHandle(Handle) then
+    exit;
+  ACombo := QComboBoxH(TQtComboBox(Handle).Widget);
+  AView := QListWidgetH(QComboBox_view(ACombo));
+  if Assigned(AView) then
+  begin
+    QWidget_setMinimumWidth(AView, MinItemsWidth);
+    QWidget_setMinimumHeight(AView, MinItemsHeight);
+    QComboBox_setMaxVisibleItems(ACombo, MinItemCount);
+    Result := True;
+  end;
+end;
+
 procedure TQtWidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
 begin
   if ARubberBand = 0 then
