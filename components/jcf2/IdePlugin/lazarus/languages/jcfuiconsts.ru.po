@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: jcfuiconsts.format_about_menu
 msgid "&About ..."
@@ -66,8 +66,8 @@ msgstr "Эта программа находится в стадии разра�
 
 #: jcfuiconsts.lisaboutversion
 #, object-pascal-format
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr "Версия $VERSION$%s$DATE$%s%sЭта программа пытается стандартизовать и сделать более читаемым любой код на Объектном Паскале.%s%s(C) Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Версия $VERSION$%s%sЭта программа пытается стандартизовать и сделать более читаемым любой код на Объектном Паскале.%s%s(C) Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"

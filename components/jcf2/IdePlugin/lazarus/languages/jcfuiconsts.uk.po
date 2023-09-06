@@ -72,9 +72,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ця програма ще знаходиться в стадії розробки. Незважаючи на ретельне тестування і усунення виявлених помилок, гарантій її коректної роботи не дається. Робіть резервні копії, а ще краще - використовуйте систему контролю версій."
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Версія $VERSION$%s$DATE$%s%sЦя програма намагається стандартизувати і зробити більш читабельним будь-який код на Delphi Object-Pascal.%s%s(C) Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign

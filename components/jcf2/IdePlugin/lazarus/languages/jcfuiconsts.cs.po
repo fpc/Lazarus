@@ -68,9 +68,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Tento program je stále ve vývoji. Z tohoto důvodu nejsou dávány žádné garance. Prosím, dělejte zálohy, nebo lépe, používejte verzovací systém,"
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
 msgstr "Verze $VERSION$%s$DATE$%s%sTento program se pokusí standardizovat a udělat čitelný jakýkoli Delphi (Object Pascal) zdrojový kód.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign

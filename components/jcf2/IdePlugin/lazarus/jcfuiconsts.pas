@@ -300,7 +300,7 @@ resourcestring
 
   //About dialog
   lisAboutAboutJEDICodeFormat = 'About JEDI Code Format';
-  lisAboutVersion = 'Version $VERSION$%s$DATE$%s%sThis program attempts to '
+  lisAboutVersion = 'Version $VERSION$%s%sThis program attempts to '
     +'standardise and make readable the layout of any Object Pascal '
     +'source code.%s%sCopyright Anthony Steele 1999-2008';
   lisAboutThisProgramIsStillUnderDevelopment = 'This program is still under '

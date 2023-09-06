@@ -93,14 +93,13 @@ begin
 
   Caption := lisAboutAboutJEDICodeFormat;
   mWhat.Text := Format(lisAboutVersion, [NativeLineBreak, NativeLineBreak,
-    NativeLineBreak, NativeLineBreak, NativeLineBreak]);
+    NativeLineBreak, NativeLineBreak]);
   mWarning.Text := lisAboutThisProgramIsStillUnderDevelopment;
   lblMPL.Caption := lisAboutThisProgramIsOpenSource;
 
   // show the version from the program constant
   ls := mWhat.Text;
   StrReplace(ls, '$VERSION$', PROGRAM_VERSION);
-  StrReplace(ls, '$DATE$', PROGRAM_DATE);
   mWhat.Text := string(ls);
 
   hlHomePage.Caption := Format(lisAboutFindMoreInformationOnTheWebAt,
