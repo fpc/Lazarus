@@ -51,6 +51,8 @@ type
     procedure ImagePaint(Sender: TObject);
   private
     procedure LoadSplash;
+  protected
+    procedure DoFirstShow; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,6 +105,11 @@ begin
   SplashForm := nil;
 end;
 
+procedure TSplashForm.Show;
+begin
+
+end;
+
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: boolean);
 begin
   Hide;
@@ -127,9 +134,9 @@ begin
   Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
 end;
 
-procedure TSplashForm.Show;
+procedure TSplashForm.DoFirstShow;
 begin
-  inherited;
+  inherited DoFirstShow;
 
   LoadSplash;
   ScaleImg(Image.Picture.Bitmap, Width, Height);

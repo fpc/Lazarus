@@ -137,11 +137,8 @@ begin
   if Application.Terminated then exit;
 
   // Show splashform
-  if ShowSplashScreen then begin
-    SplashForm := TSplashForm.Create(nil);
-    SplashForm.Show;
-    Application.ProcessMessages; // process splash paint message
-  end;
+  if ShowSplashScreen then
+    Application.CreateForm(TSplashForm,SplashForm);
 
   TMainIDE.Create(Application);
   if not Application.Terminated then
