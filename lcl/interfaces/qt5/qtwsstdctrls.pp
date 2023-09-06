@@ -216,7 +216,8 @@ type
 
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-
+    class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
   end;
 
@@ -270,7 +271,7 @@ type
 
 
 implementation
-uses qtint;
+uses qtint, LCLProc;
 
 const
   QtMaxEditLength = 32767;
@@ -1230,6 +1231,49 @@ begin
   QtCheckBox.EndUpdate;
 end;
 
+class procedure TQtWSCustomCheckBox.SetAlignment(
+  const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight);
+begin
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetAlignment') then
+    Exit;
+  TQtCheckBox(ACustomCheckBox.Handle).BeginUpdate;
+  if NewAlignment = taLeftJustify then
+    QWidget_setLayoutDirection(TQtCheckBox(ACustomCheckBox.Handle).Widget, QtRightToLeft)
+  else
+    QWidget_setLayoutDirection(TQtCheckBox(ACustomCheckBox.Handle).Widget, QtLeftToRight);
+  TQtCheckBox(ACustomCheckBox.Handle).EndUpdate;
+end;
+
+class procedure TQtWSCustomCheckBox.ShowHide(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'ShowHide') then
+    Exit;
+
+  Widget := TQtWidget(AWinControl.Handle);
+  Widget.BeginUpdate;
+  // issue #28437, #30966 - regression from r53365: when FontChanged() is called
+  // here handle is recreated inside LCL, so we are dead - SEGFAULT.
+  if AWinControl.HandleObjectShouldBeVisible and
+    IsFontNameDefault(AWinControl.Font.Name) then
+  begin
+    if AWinControl.IsParentFont and Assigned(AWinControl.Parent) then
+      SetFont(AWinControl, AWinControl.Parent.Font) {DO NOT TOUCH THIS PLEASE !}
+    else
+      SetFont(AWinControl, AWinControl.Font); {DO NOT TOUCH THIS PLEASE !}
+  end;
+
+  if TCustomCheckBox(AWinControl).Alignment = taLeftJustify then
+    QWidget_setLayoutDirection(TQtCheckBox(AWinControl.Handle).Widget, QtRightToLeft)
+  else
+    QWidget_setLayoutDirection(TQtCheckBox(AWinControl.Handle).Widget, QtLeftToRight);
+
+  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+
+  Widget.EndUpdate;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomCheckBox.CreateHandle
   Params:  None
@@ -1243,6 +1287,7 @@ var
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
   QtCheckBox.setTriState(TCustomCheckBox(AWinControl).AllowGrayed);
+
   QtCheckBox.AttachEvents;
 
   Result := TLCLIntfHandle(QtCheckBox);
