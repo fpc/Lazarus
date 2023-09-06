@@ -73,6 +73,7 @@ procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
+function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
