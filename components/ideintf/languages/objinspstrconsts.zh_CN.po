@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,7 @@ msgstr "\"%s\"项目已经列出.还要添加它?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
-msgstr "CheckGroup编辑器"
+msgstr "CheckGroup 编辑器(&C)"
 
 #: objinspstrconsts.cgcolumns
 msgid "Columns:"
@@ -269,7 +269,7 @@ msgstr "类型:(&T)"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "FlowPanel 编辑器(&F)"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -347,27 +347,27 @@ msgstr ""
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
-msgstr "添加页"
+msgstr "添加页(&A)"
 
 #: objinspstrconsts.nbcesdeletepage
 msgid "Delete Page"
-msgstr "删除页"
+msgstr "删除页(&D)"
 
 #: objinspstrconsts.nbcesinsertpage
 msgid "Insert Page"
-msgstr "插入页"
+msgstr "插入页(&I)"
 
 #: objinspstrconsts.nbcesmovepageleft
 msgid "Move Page Left"
-msgstr "移动到页面左侧"
+msgstr "左移页(&L)"
 
 #: objinspstrconsts.nbcesmovepageright
 msgid "Move Page Right"
-msgstr "移动到页面右侧"
+msgstr "右移页(&R)"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show Page"
-msgstr "显示页"
+msgstr "显示页(&S)"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -408,7 +408,7 @@ msgstr "动作"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr "动作列表编辑器...(&L)"
+msgstr "动作列表编辑器(&L) ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
@@ -521,7 +521,7 @@ msgstr "复制(&C)"
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
-msgstr "创建默认的事件"
+msgstr "创建默认的事件(&E)"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
@@ -1570,7 +1570,7 @@ msgstr "新子项"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr "编辑掩码编辑器..."
+msgstr "掩码编辑器(&M) ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1578,7 +1578,7 @@ msgstr "面板编辑器"
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
-msgstr "编辑 StringGrid..."
+msgstr "编辑 StringGrid(&S) ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"

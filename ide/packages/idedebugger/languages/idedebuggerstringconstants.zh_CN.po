@@ -105,44 +105,42 @@ msgid "Unsigned"
 msgstr "Unsigned(无符号整型)"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "动作"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
-msgstr ""
+msgstr "添加(&A)"
 
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
 msgid "Backend Converter"
-msgstr ""
+msgstr "后台转换器"
 
 #: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
 msgid "Match types by name"
-msgstr ""
+msgstr "通过名称匹配类型"
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "名称"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
-msgstr ""
+msgstr "移除(&R)"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
 msgid "Backend Converter:"
-msgstr ""
+msgstr "后台转换器："
 
 #: idedebuggerstringconstants.dlgbackendconvoptdefault
 msgid "- Default -"
-msgstr ""
+msgstr "- 默认 -"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
-msgstr ""
+msgstr "- 禁用 -"
 
 #: idedebuggerstringconstants.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -165,11 +163,11 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
-msgstr ""
+msgstr "输入名称"
 
 #: idedebuggerstringconstants.dlgidedbgnewitem
 msgid "New Item"
-msgstr ""
+msgstr "新建项目"
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
@@ -375,14 +373,13 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
-msgstr ""
+msgstr "在评估时运行所有线程"
 
 #: idedebuggerstringconstants.drssuspend
 msgid "Suspend"
-msgstr ""
+msgstr "暂停"
 
 #: idedebuggerstringconstants.drsusefunctioncalls
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
 msgid "Function"
 msgstr "函数"
@@ -392,13 +389,11 @@ msgid "Allow function calls"
 msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
 msgstr "实例"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
 msgstr "使用实例类类型"
@@ -415,7 +410,7 @@ msgstr "检查窗格"
 
 #: idedebuggerstringconstants.dsrevalusedebugconverter
 msgid "Use Backend Converter"
-msgstr ""
+msgstr "使用后台转换器"
 
 #: idedebuggerstringconstants.histdlgbtnclearhint
 msgid "Clear all snapshots"
