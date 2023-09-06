@@ -326,6 +326,9 @@ resourcestring
   lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi = 'JEDI Code Format of'
     +' %sAre you sure that you want to format all %s files in the project?';
   lisJEDICodeFormatAllOpenWindow = 'JEDI Code Format of all open windows?';
+  lisImbalancedCommentAct = 'Imbalanced comment action';
+  lisErrorAct = 'Error';
+  lisWarnAct = 'Warn';
 
 implementation
 
