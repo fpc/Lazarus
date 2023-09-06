@@ -1498,10 +1498,11 @@ used to implement the OptionsEx property in TOpenDialog.
 </p>
 <p>
 The current implementation contains values that are specific to the IFileDialog 
-options available in Windows Vista or later versions.
+interface (ShlObj) and represent dialog options available in Windows Vista or 
+later versions.
 </p>
 <p>
-Values which are intentionally not supported include: ofDefaultNoMiniMode and  
+Values which are intentionally not supported include: ofDefaultNoMiniMode and 
 ofHideMruPlaces. These values are not supported as of Windows 7.
 </p>
 </descr>
@@ -1520,12 +1521,14 @@ Hides items shown by default in the view's navigation pane. (Windows Vista+)
 </element>
 <element name="TOpenOptionEx.ofForcePreviewPaneOn">
 <short>
-Indicates to the Open dialog box that the preview pane should always be displayed. (Windows Vista+)
+Indicates an Open dialog should always display the preview pane. (Windows 
+Vista+)
 </short>
 </element>
 <element name="TOpenOptionEx.ofStrictFileTypes">
 <short>
-In a Save dialog, restrict the file extension to a file type available in the Filter property for the dialog. (Windows Vista+)
+In a Save dialog, restrict the file extension to a file type available in the 
+Filter property for the dialog. (Windows Vista+)
 </short>
 </element>
 <element name="TOpenOptionEx.ofPickFolders">
