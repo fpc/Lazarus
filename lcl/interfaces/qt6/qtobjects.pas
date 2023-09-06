@@ -4246,17 +4246,46 @@ var
   Data: QByteArrayH;
   p: PAnsiChar;
   s: Integer;
+  {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
+  i: integer;
+  WStr: WideString;
+  AFormats: QStringListH;
+  {$ENDIF}
 begin
   Result := False;
   QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
   MimeType := UTF8ToUTF16(FormatToMimeType(FormatID));
+
+  {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
+  //issue #40423
+  if (MimeType = 'text/plain') then // do not translate
+  begin
+    QGuiApplication_platformName(@WStr);
+    if CompareText(Copy(UTF16ToUTF8(WStr), 1, 7),'wayland') = 0 then  // do not translate
+    begin
+      AFormats := QStringList_Create;
+      QMimeData_formats(QtMimeData, AFormats);
+      for i := 0 to QStringList_size(AFormats) - 1 do
+      begin
+        QStringList_at(AFormats, @WStr, i);
+        if WStr = 'text/plain;charset=utf-8' then // do not translate
+        begin
+          MimeType := WStr;
+          break;
+        end;
+      end;
+      QStringlist_destroy(AFormats);
+    end;
+  end;
+  {$ENDIF}
   Data := QByteArray_create();
   QMimeData_data(QtMimeData, Data, @MimeType);
   s := QByteArray_size(Data);
-  p := QByteArray_data(Data);
+  p := QByteArray_constData(Data);
   Stream.Write(p^, s);
   // what to do with p? FreeMem or nothing?
   QByteArray_destroy(Data);
+
   Result := True;
 end;
 
