@@ -2247,29 +2247,31 @@ begin
     if (FCreatingForm=nil) and (Instance is TForm) then
       FCreatingForm:=TForm(Instance);
     Instance.Create(Self);
+
+    if (Instance is TForm) then
+    begin
+      AForm := TForm(Instance);
+      UpdateMainForm(AForm);
+      if FMainForm = AForm then
+        AForm.HandleNeeded;
+      if AForm.FormStyle = fsSplash then
+      begin
+        // show the splash form and handle the paint message
+        AForm.Show;
+        AForm.Invalidate;
+        ProcessMessages;
+      end;
+    end;
+
     ok:=true;
   finally
     if not ok then begin
       TComponent(Reference) := nil;
-      if FCreatingForm=Instance then
-        FCreatingForm:=nil;
     end;
+    if FCreatingForm=Instance then
+      FCreatingForm:=nil;
   end;
 
-  if (Instance is TForm) then
-  begin
-    AForm := TForm(Instance);
-    UpdateMainForm(AForm);
-    if FMainForm = AForm then
-      AForm.HandleNeeded;
-    if AForm.FormStyle = fsSplash then
-    begin
-      // show the splash form and handle the paint message
-      AForm.Show;
-      AForm.Invalidate;
-      ProcessMessages;
-    end;
-  end;
   {$IFDEF AfterConstructionDataModuleNotWorking}
   if (Instance is TDataModule) then
   begin
