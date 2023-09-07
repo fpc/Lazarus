@@ -1511,6 +1511,8 @@ begin
       LineTextLower := LowerCase(LineText);
 
       LineLen := Min(Length(LineTextLower), AEndPoint.x-1);
+      if AEndPoint.X <= LineLen then
+        LineLen := AEndPoint.x - 1;
       if (AStartPoint.y = AEndPoint.y) and (AStartPoint.x > 1) then begin
         x := AStartPoint.x - 1;
         LineLen := Max(0, LineLen - x);
@@ -1549,7 +1551,7 @@ begin
       LineText := Lines[AStartPoint.y-1];
       LineTextLower := LowerCase(LineText);
 
-      LineLen := Length(LineTextLower);
+      LineLen := Length(LineTextLower) + 1 - AStartPoint.x;
       if AStartPoint.y = AEndPoint.y then
         LineLen := Min(LineLen, AEndPoint.x - AStartPoint.x + 1);
 
