@@ -9,11 +9,11 @@ License: Public Domain
 Program fpvtextwritetest2;
 
 {$mode objfpc}{$H+}
+{.$define pdf_test}
 
 Uses
   fpvectorial,
-  odtvectorialwriter,
-  docxvectorialwriter,
+  odtvectorialwriter, docxvectorialwriter, {$ifdef pdf_test}pdfvectorialwriter,{$endif}
   fpvutils,
   SysUtils, FPImage;
 
@@ -153,6 +153,7 @@ Begin
     CurParagraph.AddText('Lazarus ').Style := BoldTextStyle;
     CurParagraph.AddText('features:');
 
+    {$ifndef pdf_test}
     // Simple List
     List := Page.AddList();
     List.Style := ListParaStyle;
@@ -171,11 +172,11 @@ Begin
     List.AddParagraph('Text resource manager for internationalization');
     List.AddParagraph('Automatic code formatting');
     List.AddParagraph('The ability to create custom components');
+    {$endif}
 
     // Empty line
     CurParagraph := Page.AddParagraph();
     CurParagraph.Style := Vec.StyleTextBody;
-
 
     // Second page sequence
     Page := Vec.AddTextPageSequence();
@@ -191,7 +192,6 @@ Begin
     CurParagraph := Page.AddParagraph();
     CurParagraph.Style := Vec.StyleHeading2;
     CurParagraph.AddText('Testing Strings');
-
 
     // Test for XML tags
     CurParagraph := Page.AddParagraph();
@@ -243,6 +243,7 @@ Begin
     CurText := CurParagraph.AddText('Testing Lists');
 
     // Indented numbered List
+    {$ifndef pdf_test}
     List := Page.AddList();
     List.Style := ListParaStyle;
     List.ListStyle := Vec.StyleNumberList;
@@ -282,6 +283,7 @@ Begin
     SubList.AddParagraph('Bullet Level 2, Item 1 (new SubList added to same upper List)');
     SubList.AddParagraph('Bullet Level 2, Item 2 (new SubList added to same upper List)');
     SubList.AddParagraph('Bullet Level 2, Item 3 (new SubList added to same upper List)');
+    {$endif}
 
     // Third page sequence
     Page := Vec.AddTextPageSequence();
@@ -499,6 +501,11 @@ Begin
     Vec.WriteToFile('text_output_odt', vfODT);
     WriteLn('Native odt writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
 
+    {$ifdef pdf_test}
+    dtTime := Now;
+    Vec.WriteToFile('text_output_pdf', vfPDF);
+    WriteLn('Native pdf writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
+    {$endif}
 
   Finally
     Vec.Free;
