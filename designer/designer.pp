@@ -489,6 +489,8 @@ begin
       exit;
     if csNoDesignSelectable in Control.ControlStyle then
       exit;
+    if Control.Perform(CM_IRREGULARSHAPEHITTEST,0,Longint(SmallPoint(AtPos.X, AtPos.Y)))>0 then
+      exit;
   end
   else
     Control := nil;

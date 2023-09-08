@@ -100,6 +100,8 @@ const
   CM_INPUTLANGCHANGE             = CM_BASE + 86 unimplemented;
   CM_TABLETOPTIONSCHANGED        = CM_BASE + 87 unimplemented;
   CM_PARENTTABLETOPTIONSCHANGED  = CM_BASE + 88 unimplemented;
+  // implemented by controls with an irregular shape to check if a point belongs to a shape
+  CM_IRREGULARSHAPEHITTEST       = CM_BASE + 89;
   // LCL only
   CM_APPSHOWBTNGLYPHCHANGED  = CM_BASE + CM_LCLOFFSET + 68;
   CM_APPSHOWMENUGLYPHCHANGED = CM_BASE + CM_LCLOFFSET + 69;

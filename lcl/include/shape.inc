@@ -18,10 +18,13 @@ begin
   FPen.OnChange := @StyleChanged;
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
+  FBitmapCopy := TBitmap.Create;
+  FBitmapCopy.Monochrome := True;
 end;
 
 destructor TShape.Destroy;
 begin
+  FreeAndNil(FBitmapCopy);
   FreeThenNil(FPen);
   FreeThenNil(FBrush);
   inherited Destroy;
@@ -70,6 +73,17 @@ var
   RadiusBig, RadiusBig2, RadiusSm, i: Integer;
   PCenter: TPoint;
 begin
+  FBitmapCopy.Clear;
+  FBitmapCopy.Canvas.Clear;
+  FBitmapCopy.Width:=Width;
+  FBitmapCopy.Height:=Height;
+  FBitmapCopy.Canvas.Brush := Brush;
+  FBitmapCopy.Canvas.Pen := Pen;
+  FBitmapCopy.Canvas.Brush.Color:=clWhite;
+  FBitmapCopy.Canvas.Pen.Color:=clBlack;
+  FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
+  FBitmapCopy.Canvas.Brush.Color:=clBlack;
+
   with Canvas do
   begin
     Pen := FPen;
@@ -94,12 +108,18 @@ begin
     end;
 
     case FShape of
-      stRectangle, stSquare:
+      stRectangle, stSquare: begin
         Rectangle(PaintRect);
-      stRoundRect, stRoundSquare:
+        FBitmapCopy.Canvas.Rectangle(PaintRect);
+      end;
+      stRoundRect, stRoundSquare: begin
         RoundRect(PaintRect, MinSize div 4, MinSize div 4);
-      stCircle, stEllipse:
+        FBitmapCopy.Canvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
+      end;
+      stCircle, stEllipse: begin
         Ellipse(PaintRect);
+        FBitmapCopy.Canvas.Ellipse(PaintRect);
+      end;
       stSquaredDiamond, stDiamond:
         begin
           P[0].x := PaintRect.Left;
@@ -111,6 +131,7 @@ begin
           P[3].x := P[1].x;
           P[3].y := PaintRect.Bottom - 1;
           Polygon(P);
+          FBitmapCopy.Canvas.Polygon(P);
         end;
       stTriangle:
         begin
@@ -125,6 +146,7 @@ begin
             P[3].x := P[0].x;
             P[3].y := P[0].y;
             Polygon(P);
+            FBitmapCopy.Canvas.Polygon(P);
           end;
         end;
       stTriangleDown:
@@ -140,6 +162,7 @@ begin
             P[3].x := P[0].x;
             P[3].y := P[0].y;
             Polygon(P);
+            FBitmapCopy.Canvas.Polygon(P);
           end;
         end;
       stTriangleLeft:
@@ -155,6 +178,7 @@ begin
             P[3].x := P[0].x;
             P[3].y := P[0].y;
             Polygon(P);
+            FBitmapCopy.Canvas.Polygon(P);
           end;
         end;
       stTriangleRight:
@@ -170,6 +194,7 @@ begin
             P[3].x := P[0].x;
             P[3].y := P[0].y;
             Polygon(P);
+            FBitmapCopy.Canvas.Polygon(P);
           end;
         end;
       stStar,
@@ -215,10 +240,12 @@ begin
 
             PStar[10] := PStar[0];
             Polygon(PStar);
+            FBitmapCopy.Canvas.Polygon(PStar);
           end;
         end;
     end;
   end;
+
   // to fire OnPaint event
   inherited Paint;
 end;
@@ -261,5 +288,38 @@ class function TShape.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 65;
   Result.CY := 65;
+end;
+
+procedure TShape.Click;
+var
+  Msg: TCMHittest;
+  p: TPoint;
+begin
+  inherited Click;
+  if Assigned(OnShapeClicked) then
+  begin
+    //p.x := ?;  ToDo: Get the clicked point.
+    //p.y := ?;
+    if (p.x >= 0) and (p.x < FBitmapCopy.Width) and
+       (p.y >= 0) and (p.y < FBitmapCopy.Height) and
+       (FBitmapCopy.Canvas.Pixels[p.X,p.Y] = clBlack)
+    then
+      OnShapeClicked(Self);
+  end;
+end;
+
+procedure TShape.CMShapeHitTest(var Message: TCMHittest);
+var
+  p: TPoint;
+begin
+  p := ParentToClient(Point(Message.XPos, Message.YPos),GetDesignerForm(Self));
+  Assert(Assigned(FBitmapCopy), 'FBitmapCopy=Nil');
+  if (p.x >= 0) and (p.x < FBitmapCopy.Width) and
+     (p.y >= 0) and (p.y < FBitmapCopy.Height) and
+     (FBitmapCopy.Canvas.Pixels[p.X,p.Y] = clBlack)
+  then
+    Message.Result := 0
+  else
+    Message.Result := 1;
 end;
 

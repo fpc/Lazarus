@@ -273,12 +273,16 @@ type
     FPen: TPen;
     FBrush: TBrush;
     FShape: TShapeType;
+    FBitmapCopy: TBitmap; // For testing if a mouse click is on the actual shape.
+    FOnShapeClicked: TNotifyEvent;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
   protected
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure Click; override;
+    procedure CMShapeHitTest(var Message: TCMHittest); message CM_IRREGULARSHAPEHITTEST;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -320,6 +324,7 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
+    property OnShapeClicked: TNotifyEvent read FOnShapeClicked write FOnShapeClicked;
   end;
 
 
