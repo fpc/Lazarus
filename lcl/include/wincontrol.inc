@@ -5159,7 +5159,7 @@ var
   LControl: TControl;
   ClientBounds: TRect;
 
-  function GetControlAtPos(AControl: TControl): Boolean;
+  function ControlIsHit(AControl: TControl): Boolean;
   var
     ControlPos: TPoint;
   begin
@@ -5172,29 +5172,19 @@ var
       if Result and (capfOnlyClientAreas in Flags) then
         Result := PtInRect(ClientRect, ControlPos);
 
-      Result := Result
-        and (
-             (
-              (csDesigning in ComponentState)
-               and not (csNoDesignVisible in ControlStyle)
-               // Here was a VCL bug: VCL checks if control is Visible,
-               // which should be ignored at designtime
-             )
-             or
-             (
-              (not (csDesigning in ComponentState))
-              and
-              (Visible)
-              and
-              (Enabled or (capfAllowDisabled in Flags))
-              and
-              (Perform(CM_HITTEST, 0,
-                       LParam(Integer(PointToSmallPointNoChecks(ControlPos)))) <> 0)
-             )
-            );
+      if Result then
+        if csDesigning in ComponentState then
+          // Here was a VCL bug: VCL checks if control is Visible,
+          // which should be ignored at designtime
+          Result := not (csNoDesignVisible in ControlStyle)
+        else
+          Result := Visible
+              and (Enabled or (capfAllowDisabled in Flags))
+              and (Perform(CM_HITTEST, 0,
+                    LParam(Integer(PointToSmallPointNoChecks(ControlPos)))) <> 0);
       {$IFDEF VerboseMouseBugfix}
       //if Result then
-      DebugLn(['GetControlAtPos ',Name,':',ClassName,
+      DebugLn(['ControlIsHit ',Name,':',ClassName,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
       ' ControlPos=',dbgs(ControlPos),
@@ -5249,13 +5239,13 @@ begin
     if (capfAllowWinControls in Flags) then
       for I := FControls.Count - 1 downto 0 do
         if (TObject(FControls[i]) is TWinControl)
-        and GetControlAtPos(TControl(FControls[I])) then
+        and ControlIsHit(TControl(FControls[I])) then
           Break;
     // check controls
     if (LControl = nil) and not(capfOnlyWinControls in Flags) then
       for I := FControls.Count - 1 downto 0 do
         if (not (TObject(FControls[i]) is TWinControl))
-        and GetControlAtPos(TControl(FControls[I])) then
+        and ControlIsHit(TControl(FControls[I])) then
           Break;
   end;
   Result := LControl;
