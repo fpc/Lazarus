@@ -2001,8 +2001,8 @@ This is <b>not</b> the standard RTL Date function.
 
 <element name="TCalendarDialog.DisplaySettings">
 <short>
-<var>DisplaySettings</var> - the user-selected settings determining the 
-appearance of the display.
+The user-specified settings determining the appearance of the calendar on the 
+dialog.
 </short>
 <descr>
 <p>
@@ -2012,7 +2012,7 @@ determine the appearance for the calendar displayed in the dialog.
 <p>
 DisplaySettings is a set type which may contain zero or more settings. 
 Possible values include: ShowHeadings,ShowDayNames, NoMonthChange, 
-ShowWeekNumbers, StartMonday.
+ShowWeekNumbers.
 </p>
 </descr>
 <seealso/>
