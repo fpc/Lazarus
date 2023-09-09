@@ -274,7 +274,7 @@ type
     FBrush: TBrush;
     FShape: TShapeType;
     FBitmapCopy: TBitmap; // For testing if a mouse click is on the actual shape.
-    FOnShapeClicked: TNotifyEvent;
+    FOnShapeClick: TNotifyEvent;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
@@ -286,6 +286,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function HitTest(const P: TPoint): Boolean;
     procedure Paint; override;
     procedure StyleChanged(Sender: TObject);
   published
@@ -305,6 +306,7 @@ type
     property Visible;
 
     property OnChangeBounds;
+    property OnClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDock;
@@ -324,7 +326,7 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property OnShapeClicked: TNotifyEvent read FOnShapeClicked write FOnShapeClicked;
+    property OnShapeClick: TNotifyEvent read FOnShapeClick write FOnShapeClick;
   end;
 
 

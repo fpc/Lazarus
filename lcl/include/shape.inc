@@ -30,6 +30,15 @@ begin
   inherited Destroy;
 end;
 
+function TShape.HitTest(const P: TPoint): Boolean;
+// Return True if point P is inside the actual shape.
+begin
+  Assert(Assigned(FBitmapCopy), 'FBitmapCopy=Nil');
+  Result := (P.X >= 0) and (P.X < FBitmapCopy.Width)
+        and (P.Y >= 0) and (P.Y < FBitmapCopy.Height)
+        and (FBitmapCopy.Canvas.Pixels[P.X, P.Y] = clBlack);
+end;
+
 // Angle of 5-angled star is function(N=0..9, Down) = pi/5 * N + pi/2 * IfThen(Down, -1, 1);
 const
   CosStarBig: array[0..4, Boolean] of Single = (
@@ -73,16 +82,14 @@ var
   RadiusBig, RadiusBig2, RadiusSm, i: Integer;
   PCenter: TPoint;
 begin
-  FBitmapCopy.Clear;
-  FBitmapCopy.Canvas.Clear;
-  FBitmapCopy.Width:=Width;
-  FBitmapCopy.Height:=Height;
-  FBitmapCopy.Canvas.Brush := Brush;
-  FBitmapCopy.Canvas.Pen := Pen;
+  FBitmapCopy.SetSize(Width, Height);
+  FBitmapCopy.Canvas.Brush.Style:=bsSolid;
   FBitmapCopy.Canvas.Brush.Color:=clWhite;
-  FBitmapCopy.Canvas.Pen.Color:=clBlack;
   FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
+  FBitmapCopy.Canvas.Brush := Brush;
   FBitmapCopy.Canvas.Brush.Color:=clBlack;
+  FBitmapCopy.Canvas.Pen := Pen;
+  FBitmapCopy.Canvas.Pen.Color:=clBlack;
 
   with Canvas do
   begin
@@ -291,21 +298,11 @@ begin
 end;
 
 procedure TShape.Click;
-var
-  Msg: TCMHittest;
-  p: TPoint;
 begin
   inherited Click;
-  if Assigned(OnShapeClicked) then
-  begin
-    //p.x := ?;  ToDo: Get the clicked point.
-    //p.y := ?;
-    if (p.x >= 0) and (p.x < FBitmapCopy.Width) and
-       (p.y >= 0) and (p.y < FBitmapCopy.Height) and
-       (FBitmapCopy.Canvas.Pixels[p.X,p.Y] = clBlack)
-    then
-      OnShapeClicked(Self);
-  end;
+  if Assigned(OnShapeClick)
+  and HitTest(ScreenToClient(Mouse.CursorPos)) then
+    OnShapeClick(Self);
 end;
 
 procedure TShape.CMShapeHitTest(var Message: TCMHittest);
@@ -313,11 +310,7 @@ var
   p: TPoint;
 begin
   p := ParentToClient(Point(Message.XPos, Message.YPos),GetDesignerForm(Self));
-  Assert(Assigned(FBitmapCopy), 'FBitmapCopy=Nil');
-  if (p.x >= 0) and (p.x < FBitmapCopy.Width) and
-     (p.y >= 0) and (p.y < FBitmapCopy.Height) and
-     (FBitmapCopy.Canvas.Pixels[p.X,p.Y] = clBlack)
-  then
+  if HitTest(p) then
     Message.Result := 0
   else
     Message.Result := 1;
