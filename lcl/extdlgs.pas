@@ -198,6 +198,7 @@ type
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
     FCalendar: TCalendar;
+    FFirstDayOfWeek: TCalDayOfWeek;
     okButton: TButton;
     cancelButton: TButton;
     panel: TPanel;
@@ -221,6 +222,7 @@ type
   published
     property Date: TDateTime read FDate write FDate;
     property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
+    property FirstDayOfWeek: TCalDayOfWeek read FFirstDayOfWeek write FFirstDayOfWeek default dowDefault;
     property OKCaption: TCaption read FOKCaption write FOKCaption;
     property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
 
@@ -694,6 +696,7 @@ constructor TCalendarDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DisplaySettings := DefaultDisplaySettings;
+  FirstDayOfWeek := dowDefault;
   Date := trunc(Now);
   OKCaption := rsMbOK;
   CancelCaption := rsMbCancel;
@@ -853,6 +856,7 @@ begin
       DateTime:=Self.Date;
       TabStop:=True;
       DisplaySettings:=Self.DisplaySettings;
+      FirstDayOfWeek:=Self.FirstDayOfWeek;
       OnDayChanged:=@CalendarDayChanged;
       OnMonthChanged:=@CalendarMonthChanged;
       OnYearChanged:=@CalendarYearChanged;
