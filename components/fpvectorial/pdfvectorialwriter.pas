@@ -5,7 +5,7 @@ unit pdfvectorialwriter;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, Graphics, Math, fpvectorial, fpPDF, fpTTF;
+  Classes, SysUtils, StrUtils, Types, Graphics, Math, fpvectorial, fpPDF, fpTTF;
 
 const
   {$IFDEF WINDOWS}
@@ -23,20 +23,20 @@ const
 
 type
   {
-            T
-        ____v____
-        |       |
-        |       |
-    L > |       | < R
-        |       |
-        |_______|
-            ^
-            B
+              T
+          ____v____
+          |       |
+          |       |
+      L > |       | < R
+          |       |
+          |_______|
+              ^
+              B
 
-  every entity being rendered should have a bound box
-  limiting the space it can use. Those limits are set by
-  left, top, right, bottom spacings (in mm). X and Y
-  shall be used as cursors to add padding and navigate
+    Every entity being rendered should have a bound box
+    limiting the space it can use. Those limits are set by
+    left, top, right, bottom spacings (in mm). X and Y
+    shall be used as cursors to add padding and navigate
 
   }
   TvBoundBox = record
@@ -46,11 +46,32 @@ type
 
   TvEntityKind = (ekParagraph, ekList, ekTable, ekText, ekField, ekImage, ekNone);
 
+  {
+    This record contains the entity kind for faster
+    checking, a bounding box for that entity and the
+    exact height and width (not yet for all entities).
+
+    Height and width shall be the exact measurements of a
+    given entity while the bounding box should be the
+    space the entity theoretically has to it's disposition.
+
+    This should enable future line wrapping if width is
+    larger than the available space.
+  }
   TvEntityInfo = record
     Kind: TvEntityKind;
     Box: TvBoundBox;
+    Height: Double;
   end;
 
+  {
+    This record summarises all font information needed.
+    The TvFont contains all relevant font information for
+    drawing, the Cache contains a cache item used to
+    calculate height and width of texts.
+    The ID contains the font identifier to access the
+    font from the pdf document.
+  }
   TvPDFFont = record
     Font: TvFont;
     Cache: TFPFontCacheItem;
@@ -85,6 +106,7 @@ type
     function GetFontIDnew(AName: String; IsBold, IsItalic: Boolean): Integer;
     function GetFont(AName: String; IsBold, IsItalic: Boolean): TvPDFFont;
     function TabsToSpaces(AText: String): String;
+    function GetListNum(ANum: TIntegerDynArray): String;
 
     { entity measurements }
     function GetHeight(Entity, AParent: TvEntity): Double;
@@ -105,9 +127,9 @@ type
 
     { add entities }
     procedure AddFonts(AData: TvVectorialDocument);
-    function AddPage(APage: TvTextPageSequence; AData: TvVectorialDocument): TvBoundBox;
-    procedure AddParagraph(APara: TvParagraph; APage: TvTextPageSequence; AData: TvVectorialDocument; ABox: TvBoundBox);
-    procedure AddList(AList: TvList; var Box: TvBoundBox);
+    function AddPage(APage: TvTextPageSequence): TvBoundBox;
+    procedure AddParagraph(APara: TvParagraph; ABox: TvBoundBox);
+    procedure AddList(AList: TvList; ABox: TvBoundBox; ANum: TIntegerDynArray = nil);
     procedure AddTable(ATable: TvTable; APage: TvTextPageSequence; AData: TvVectorialDocument; ABox: TvBoundBox);
     procedure AddText(AText: TvText; APara: TvParagraph; ABox: TvBoundBox);
     procedure AddField(AField: TvField; ABox: TvBoundBox);
@@ -167,7 +189,8 @@ begin
     Result.Kind := ekField
   else if (AEntity is TvRasterImage) then
     Result.Kind := ekImage;
-  Result.Box.B := Result.Box.T + GetHeight(AEntity, AParent, Result.Kind);
+  Result.Height := GetHeight(AEntity, AParent, Result.Kind);
+  Result.Box.B := Result.Box.T + Result.Height;
   Result.Box.R := GetWidth(AEntity, AParent, Result.Kind, Result.Box);
   Result.Box.X := Result.Box.L;
   Result.Box.Y := Result.Box.T;
@@ -190,6 +213,16 @@ begin
     AText := AText.Replace(AText.Substring(0, TabPos) + #9, Tmp);
   end;
   Result := AText;
+end;
+
+function TvPDFVectorialWriter.GetListNum(ANum: TIntegerDynArray): String;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 0 to Length(ANum) - 1 do
+    Result := Result + ANum[i].ToString + '.';
+  Result := TrimRightSet(Result, ['.']);
 end;
 
 function TvPDFVectorialWriter.GetHeight(AEntity, AParent: TvEntity; AKind: TvEntityKind): Double;
@@ -289,8 +322,22 @@ begin
 end;
 
 function TvPDFVectorialWriter.GetListHeight(AList: TvList): Double;
+var
+  i: Integer;
+  Entity: TvEntity;
 begin
-  Result := 0;  // TODO: add list height
+  Result := 0;
+  if not Assigned(AList.Style) then
+    raise Exception.Create('PDFVectorialWriter: List.Style not set');
+  if not Assigned(AList.ListStyle) then
+    raise Exception.Create('PDFVectorialWriter: List.ListStyle not set');
+  for i := 0 to AList.GetEntitiesCount - 1 do
+  begin
+    Entity := AList.GetEntity(i);
+    Inc(Result, GetHeight(Entity, AList));
+    if (Entity is TvParagraph) then
+      Inc(Result, AList.Style.MarginTop + AList.Style.MarginBottom);
+  end;
 end;
 
 function TvPDFVectorialWriter.GetTableHeight(ATable: TvTable): Double;
@@ -443,7 +490,7 @@ begin
 end;
 
 // add pdf page to document
-function TvPDFVectorialWriter.AddPage(APage: TvTextPageSequence; AData: TvVectorialDocument): TvBoundBox;
+function TvPDFVectorialWriter.AddPage(APage: TvTextPageSequence): TvBoundBox;
 begin
   // add new page
   FPage := FDocument.Pages.AddPage;
@@ -463,14 +510,23 @@ begin
   Result.Y := Result.T;
 end;
 
-procedure TvPDFVectorialWriter.AddParagraph(APara: TvParagraph; APage: TvTextPageSequence; AData: TvVectorialDocument; ABox: TvBoundBox);
+procedure TvPDFVectorialWriter.AddParagraph(APara: TvParagraph; ABox: TvBoundBox);
 var
   Info: TvEntityInfo;
   Entity: TvEntity;
-  i: Integer;
+  i, di: Integer;
 begin
   if APara.Style = nil then APara.Style := FStyle;
-  for i := 0 to APara.GetEntitiesCount - 1 do
+  if APara.Style.Alignment = vsaRight then
+  begin
+    i := APara.GetEntitiesCount - 1;
+    di := -1;
+  end else
+  begin
+    i := 0;
+    di := +1;
+  end;
+  while (i >= 0) and (i < APara.GetEntitiesCount) do
   begin
     Entity := APara.GetEntity(i);
     Info := GetEntityInfo(Entity, APara, ABox);
@@ -483,6 +539,7 @@ begin
                 Info.Box.R := ABox.R;
                 Info.Box.L := ABox.R - TvText(Entity).Style.MarginRight - GetFontWidth(TvText(Entity));
                 Info.Box.X := Info.Box.L;
+                ABox.R := Info.Box.L;
               end;
             vsaCenter:
               begin
@@ -501,6 +558,7 @@ begin
                 Info.Box.R := ABox.R;
                 Info.Box.L := ABox.R - GetImageWidth(TvRasterImage(Entity));
                 Info.Box.X := Info.Box.L;
+                ABox.R := Info.Box.L;
               end;
             vsaCenter:
               begin
@@ -513,13 +571,80 @@ begin
     end;
     // move to the right
     ABox.L := Info.Box.R;
+    i := i + di;  // di is negative for right alignment.
   end;
 end;
 
-procedure TvPDFVectorialWriter.AddList(AList: TvList; var Box: TvBoundBox);
+procedure TvPDFVectorialWriter.AddList(AList: TvList; ABox: TvBoundBox; ANum: TIntegerDynArray);
+var
+  LevelStyle: TvListLevelStyle;
+  Info, Text: TvEntityInfo;
+  Para: TvParagraph;
+  Entity: TvEntity;
+  Bullet: String;
+  X, Y: Double;
+  i: Integer;
 begin
-  // TODO: add support for lists
-  raise Exception.Create('Unsupported Entity: TvList');
+  if Length(ANum) > 0 then
+  begin  // only needed for numeric bullet style
+    SetLength(ANum, Length(ANum) + 1);
+    ANum[Length(ANum)] := 0;
+  end
+  else
+  begin
+    SetLength(ANum, 1);
+    ANum[0] := 0;
+  end;
+  for i := 0 to AList.GetEntitiesCount - 1 do
+  begin
+    Entity := AList.GetEntity(i);
+    Info := GetEntityInfo(Entity, AList, ABox);
+    case Info.Kind of
+      ekParagraph:
+        begin
+          Para := TvParagraph(Entity);
+          if not Assigned(Para.Style) then
+            Para.Style := AList.Style;
+
+          // get bullet style
+          ANum[Length(ANum) - 1] := ANum[Length(ANum) - 1] + 1;
+          LevelStyle := AList.ListStyle.GetListLevelStyle(AList.GetLevel);
+          case LevelStyle.Kind of
+            vlskBullet: Bullet := LevelStyle.Bullet;
+            vlskNumeric: Bullet := LevelStyle.Prefix + GetListNum(ANum) + LevelStyle.Suffix;
+          end;
+
+          // add margin
+          Inc(Info.Box.B, AList.Style.MarginTop + AList.Style.MarginBottom);
+          Inc(Info.Box.T, AList.Style.MarginTop);
+          Inc(Info.Box.L, LevelStyle.MarginLeft);
+          Info.Box.X := Info.Box.L;
+          Info.Box.Y := Info.Box.T;
+
+          // write bullet
+          if (Para.GetEntitiesCount > 0) and (Para.GetEntity(0) is TvText) then  // Text
+          begin
+            Text := GetEntityInfo(Para.GetEntity(0), Para, Info.Box);
+            X := Info.Box.L - LevelStyle.HangingIndent;
+            Y := Info.Box.T + Text.Height / 2 + 0.9;
+          end
+          else  // Text is not the first entity (-> centered bullet)
+          begin
+            X := Info.Box.L - LevelStyle.HangingIndent;
+            Y := Info.Box.T + Info.Height / 2 + 0.9;
+          end;
+
+          if Bullet = '&#183;' then  // point (this char can't be printed to pdf)
+            FPage.DrawEllipse(X, Y - 0.25, 1, 1, 1)  // default bullet char
+          else
+            FPage.WriteText(X, Y, Bullet);
+
+          AddParagraph(Para, Info.Box);
+        end;
+      ekList: AddList(TvList(Entity), ABox, ANum);
+    end;
+    ABox.T := Info.Box.B;  // next item
+  end;
 end;
 
 procedure TvPDFVectorialWriter.AddTable(ATable: TvTable; APage: TvTextPageSequence; AData: TvVectorialDocument; ABox: TvBoundBox);
@@ -568,7 +693,8 @@ begin
           for k := 1 to Cell.SpannedCols - 1 do
             Inc(CBox.R, UnitToMM(ATable.ColWidths[l + k], ATable.ColWidthsUnits, ABox));
         end
-        else Inc(CBox.R, CWidth * (Cell.SpannedCols - 1));
+        else
+          Inc(CBox.R, CWidth * (Cell.SpannedCols - 1));
       end;
 
       // top border
@@ -606,7 +732,7 @@ begin
         EBox.B := EBox.B - Cell.SpacingBottom;
         Info := GetEntityInfo(Entity, Cell, EBox);
         case Info.Kind of
-          ekParagraph: AddParagraph(TvParagraph(Entity), APage, AData, EBox);
+          ekParagraph: AddParagraph(TvParagraph(Entity), EBox);
           ekList: AddList(TvList(Entity), EBox);
           ekTable: AddTable(TvTable(Entity), APage, AData, EBox);
         end;
@@ -720,13 +846,13 @@ begin
   for i := 0 to AData.GetPageCount - 1 do  // iterate through pages
   begin
     TextPage := AData.GetPageAsText(i);
-    Empty := AddPage(TextPage, AData);
+    Empty := AddPage(TextPage);
     for j := 0 to TextPage.GetEntitiesCount - 1 do  // iterate through entities
     begin
       Entity := TextPage.GetEntity(j);
       Info := GetEntityInfo(Entity, nil, Empty);
       case Info.Kind of
-        ekParagraph: AddParagraph(TvParagraph(Entity), TextPage, AData, Info.Box);
+        ekParagraph: AddParagraph(TvParagraph(Entity), Info.Box);
         ekList: AddList(TvList(Entity), Info.Box);
         ekTable: AddTable(TvTable(Entity), TextPage, AData, Info.Box);
         else raise Exception.Create('Unsupported Entity');

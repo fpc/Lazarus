@@ -9,7 +9,7 @@ License: Public Domain
 Program fpvtextwritetest2;
 
 {$mode objfpc}{$H+}
-{.$define pdf_test}
+{$define pdf_test}
 
 Uses
   fpvectorial,
@@ -89,6 +89,7 @@ Begin
     CurParagraph.Style := CenterParagraphStyle;
     CurParagraph.AddText('Introduction to Lazarus and FreePascal').Style := BoldTextStyle;
 
+    {$ifndef pdf_test}
     // Set the Footer
     CurParagraph := Page.Footer.AddParagraph;
     CurParagraph.Style := CenterParagraphStyle;
@@ -100,6 +101,7 @@ Begin
     CurParagraph.AddField(vfkNumPages).Style := BoldTextStyle;
     CurParagraph.AddText(#09);
     CurParagraph.AddField(vfkDateCreated).Style := BoldTextStyle;
+    {$endif}
 
     // Title
     CurParagraph := Page.AddParagraph();
@@ -212,6 +214,7 @@ Begin
     CurParagraph.Style := Vec.StyleHeading2;
     CurText := CurParagraph.AddText('Testing Fields');
 
+    {$ifndef pdf_test}
     CurParagraph := Page.AddParagraph();
     CurParagraph.Style := Vec.StyleTextBody;
     CurParagraph.AddText('Page Count: ');
@@ -236,6 +239,7 @@ Begin
     CurParagraph.Style := Vec.StyleTextBody;
     CurParagraph.AddText('Date: ');
     CurParagraph.AddField(vfkDate);
+    {$endif}
 
     // Add a simple heading
     CurParagraph := Page.AddParagraph();
@@ -243,7 +247,6 @@ Begin
     CurText := CurParagraph.AddText('Testing Lists');
 
     // Indented numbered List
-    {$ifndef pdf_test}
     List := Page.AddList();
     List.Style := ListParaStyle;
     List.ListStyle := Vec.StyleNumberList;
@@ -283,7 +286,6 @@ Begin
     SubList.AddParagraph('Bullet Level 2, Item 1 (new SubList added to same upper List)');
     SubList.AddParagraph('Bullet Level 2, Item 2 (new SubList added to same upper List)');
     SubList.AddParagraph('Bullet Level 2, Item 3 (new SubList added to same upper List)');
-    {$endif}
 
     // Third page sequence
     Page := Vec.AddTextPageSequence();
@@ -300,6 +302,7 @@ Begin
     CurParagraph.Style := Vec.StyleHeading2;
     CurParagraph.AddText('Manual Table');
 
+    {$ifndef pdf_test}
     CurTable := Page.AddTable;
     CurTable.PreferredWidth := Dimension(100, dimPercent);
 
@@ -476,6 +479,7 @@ Begin
           CurParagraph.AddText(Format('(%d x %d)', [i, j]));
       end;
     end;
+    {$endif}
 (*
     // Fourth page sequence
     Page := Vec.AddTextPageSequence();
