@@ -1627,6 +1627,7 @@ updated when a calendar date is selected while the form is active.
 <element name="TCalendarDialog.FOKCaption"/>
 <element name="TCalendarDialog.FCancelCaption"/>
 <element name="TCalendarDialog.FCalendar"/>
+<element name="TCalendarDialog.FFirstDayOfWeek"/>
 <element name="TCalendarDialog.okButton"/>
 <element name="TCalendarDialog.cancelButton"/>
 <element name="TCalendarDialog.panel"/>
@@ -2028,6 +2029,41 @@ ShowWeekNumbers.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCalendarDialog.FirstDayOfWeek">
+<short>
+Indicates the day of the week used in the first column for the calendar control 
+on the dialog.
+</short>
+<descr>
+<p>
+<var>FirstDayOfWeek</var> is a <var>TCalDayOfWeek</var> property which 
+indicates the first day of the week displayed on the calendar component used on 
+the dialog.
+</p>
+<p>
+FirstDayOfWeek contains one of the values from the TCalDayOfWeek enumeration 
+like dowMonday, dowSunday, et. al. The default value for the property is 
+dowDefault and causes the default day of the week setting for the platform to 
+be used. Please note that this is not compatible with the dowLocaleDefault 
+value used in Delphi.
+</p>
+<p>
+The value is assigned to the FirstDayOfWeek property in the internal TCalendar 
+instance when the Execute method is called. It configures the calendar 
+instance to display the selected day of the week as the first column for the 
+day grid used on the calendar control.
+</p>
+</descr>
+<version>
+Added in LCL 4.0.
+</version>
+<seealso>
+<link id="TCalendarDialog.Execute"/>
+<link id="#lcl.calendar.TCalendar.FirstDayOfWeek">TCalendar.FirstDayOfWeek</link>
+<link id="#lcl.calendar.TCalDayOfWeek">TCalDayOfWeek</link>
+</seealso>
 </element>
 
 <element name="TCalendarDialog.OKCaption">
