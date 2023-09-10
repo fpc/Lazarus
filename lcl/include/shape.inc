@@ -86,7 +86,6 @@ begin
   FBitmapCopy.Canvas.Brush.Style:=bsSolid;
   FBitmapCopy.Canvas.Brush.Color:=clWhite;
   FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
-  FBitmapCopy.Canvas.Brush := Brush;
   FBitmapCopy.Canvas.Brush.Color:=clBlack;
   FBitmapCopy.Canvas.Pen := Pen;
   FBitmapCopy.Canvas.Pen.Color:=clBlack;
