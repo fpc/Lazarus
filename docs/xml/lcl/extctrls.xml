@@ -1523,9 +1523,12 @@ It can be displayed using the <var>Paint</var> method, or the
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TShape.FPen"/>
 <element name="TShape.FBrush"/>
 <element name="TShape.FShape"/>
+<element name="TShape.FBitmapCopy"/>
+<element name="TShape.FOnShapeClick"/>
 
 <element name="TShape.SetBrush">
 <short>Sets the value for the Brush property.</short>
@@ -1560,6 +1563,7 @@ It can be displayed using the <var>Paint</var> method, or the
 <short>New value for the property.</short>
 </element>
 
+<!-- protected -->
 <element name="TShape.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TShape.GetControlClassDefaultSize">
@@ -1585,14 +1589,28 @@ TSize instance with the dimensions for instances of the control class.
 </short>
 </element>
 
+<!-- public -->
 <element name="TShape.Create">
 <short>
-<var>Create</var> - constructor for <var>TShape</var>: calls inherited 
-<var>Create</var>, sets default styles and bounds, creates pen and brush.
+Constructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited constructor on entry to instantiate and configure the 
+control including its Canvas. It sets the initial bounds for the control using 
+the default size for the class type. Create allocates resources needed for the 
+Pen and Brush in the control, and assigns the OnChange handlers notified when 
+the members have been changed.
+</p>
+</descr>
 <seealso>
+<link id="TShape.Brush"/>
+<link id="TShape.Pen"/>
+<link id="TShape.GetControlClassDefaultSize"/>
+<link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Create">TGraphicControl.Create</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
 </seealso>
 </element>
 <element name="TShape.Create.TheOwner">
@@ -1601,13 +1619,73 @@ TSize instance with the dimensions for instances of the control class.
 
 <element name="TShape.Destroy">
 <short>
-<var>Destroy</var> - destructor for <var>TShape</var>: frees pen and brush, 
-then calls inherited <var>Destroy</var>.
+Destructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that resources allocated in the class instance, including the Pen and 
+Brush, are freed. It calls the inherited destructor prior to exit to free the 
+Canvas and other resources allocated in ancestor classes.
+</p>
+</descr>
 <seealso>
+<link id="TShape.Brush"/>
+<link id="TShape.Pen"/>
+<link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
+<link id="#lcl.controls.TControl.Destroy">TControl.Destroy</link>
 </seealso>
+</element>
+
+<element name="TShape.HitTest">
+<short>
+Determines whether the coordinates for the specified Point are within the area 
+for the shaped control.
+</short>
+<descr>
+<p>
+<var>HitTest</var> uses a temporary TBitmap instance to determine whether the 
+coordinates in P are within the interior of the shaped control. The Bitmap 
+contains a monochrome variant of the filled shape where the pixels inside the 
+shape have the color clBlack. Pixels outside of the filled interior area have 
+the mask color for the monochrome bitmap.
+</p>
+<p>
+The return value is <b>True</b> if the pixel located at the X and Y coordinates 
+in <var>P</var> has the color clBlack. False indicates that the parent control 
+(or a partially obstructed sibling control) was the target under the specified 
+mouse position.
+</p>
+<p>
+HitTest is used in the Click method to determine whether an assigned 
+OnShapeClick event handler is signalled for the mouse position on the control. 
+It is also called when CMShapeHitTest handles a TCMHittest message received for 
+the control design surface.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso>
+<link id="TShape.Click"/>
+<link id="TShape.OnShapeClick"/>
+<link id="TShape.CMShapeHitTest"/>
+<link id="#lcl.graphics.TBitmap">TBitmap</link>
+<link id="#rtl.classes.TPoint">TPoint</link>
+</seealso>
+</element>
+<element name="TShape.HitTest.Result">
+<short>
+Returns <b>True</b> if the specified coordinates are within the interior of the 
+shape.
+</short>
+</element>
+<element name="TShape.HitTest.P">
+<short>
+TPoint instance with the horizontal (X) and vertical (Y) coordinates tested in 
+the method.
+</short>
 </element>
 
 <element name="TShape.Paint">
@@ -1684,6 +1762,7 @@ values that can be assigned to the property.
 <element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TShape.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TShape.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TShape.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TShape.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
 <element name="TShape.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
@@ -1703,6 +1782,39 @@ values that can be assigned to the property.
 <element name="TShape.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TShape.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TShape.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+
+<element name="TShape.OnShapeClick">
+<short>
+Event handler signalled for a mouse click within the shaped control.
+</short>
+<descr>
+<p>
+<var>OnShapeClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled if a mouse click occurs on the shaped control.
+</p>
+<p>
+OnShapeClick is signalled (when assigned) from the Click method, and occurs 
+after the OnClick handler has been signalled and an optional Action assigned to 
+the control has been executed. The event handler is <b>not</b> signalled if 
+HitTest indicates that the mouse click did not occur within the interior
+of the shape on the control.
+</p>
+<p>
+An application must implement and assign a routine to the handler to respond to 
+the event notification.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShape.Click"/>
+<link id="TShape.HitTest"/>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+<link id="#lcl.controls.TControl.Action">TControl.Action</link>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
 
 <element name="TResizeStyle">
 <short>
