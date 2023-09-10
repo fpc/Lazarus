@@ -8,7 +8,7 @@ interface
 uses
   classes,
   MacOSAll, CocoaAll, Cocoa_Extra,
-  SysUtils, Types, LCLType, LCLClasses, LCLProc, Unix,
+  SysUtils, Types, LCLType, LCLClasses, LCLProc,
   Graphics, Math, GraphType;
 
 var
@@ -147,8 +147,6 @@ function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
 var
-  NSSTR_AppleLocale: NSString;
-
   NSSTR_DARK_NAME: NSString;
   NSSTR_DARK_NAME_VIBRANT: NSString;
   NSSTR_LINE_FEED: NSString;
@@ -1260,27 +1258,13 @@ begin
   img.release;
 end;
 
-function setenv(const name:PAnsiChar; const value:PAnsiChar; overwrite:cint): cint; cdecl; external clib;
-
-procedure FIX_LANG_ENV_VAR;
-var
-  nsLang: NSString;
-begin
-  nsLang:= NSUserDefaults.standardUserDefaults.stringForKey( NSSTR_AppleLocale );
-  if not Assigned(nsLang) then
-    exit;
-  setenv( 'LANG', nsLang.UTF8String, 0 );
-end;
-
 initialization
-  NSSTR_AppleLocale:= NSSTR('AppleLocale');
   NSSTR_DARK_NAME:= NSSTR(DarkName);
   NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
   NSSTR_LINE_FEED:= NSStr(#10);
   NSSTR_CARRIAGE_RETURN:= NSStr(#13);
   NSSTR_LINE_SEPARATOR:= StrToNSString(#$E2#$80#$A8, false);
   NSSTR_PARAGRAPH_SEPARATOR:= StrToNSString(#$E2#$80#$A9, false);
-  FIX_LANG_ENV_VAR;
 
 finalization;
   NSSTR_LINE_SEPARATOR.release;

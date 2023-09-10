@@ -225,6 +225,11 @@ uses
   Windows;
 {$ENDIF}
 
+{$IFDEF DARWIN}
+uses
+  MacOSAll, Unix;
+{$ENDIF}
+
 function IsKey(Txt, Key: PChar): boolean;
 begin
   if Txt=nil then exit(false);
@@ -1906,6 +1911,26 @@ begin
     MF.Free;
   end;
 end;
+
+{$IFDEF DARWIN}
+function setenv(const name:PAnsiChar; const value:PAnsiChar; overwrite:cint): cint; cdecl; external clib;
+
+procedure FIX_MACOS_LANG_ENV_VAR;
+var
+  cfLang: CFPropertyListRef;
+  lang: array[0..49] of char;
+begin
+  cfLang:= CFPreferencesCopyAppValue( CFSTR('AppleLocale'), CFSTR('') );
+  if not Assigned(cfLang) then
+    exit;
+  CFStringGetCString( cfLang, lang, SizeOf(lang), kCFStringEncodingUTF8 );
+  setenv( 'LANG', lang, 0 );
+  CFRelease( cfLang );
+end;
+
+initialization
+  FIX_MACOS_LANG_ENV_VAR;
+{$ENDIF}
 
 end.
 
