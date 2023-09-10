@@ -697,7 +697,10 @@ begin
   end;
   // Try to quit
   if not Cancel then
-    Application.MainForm.Close;
+    if Assigned(Application.MainForm) then
+      Application.MainForm.Close
+    else
+      Application.Terminate;
   // Let caller know if the shutdown was cancelled
   if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
     replyEvent.setParamDescriptor_forKeyword(NSAppleEventDescriptor.descriptorWithInt32(userCanceledErr), keyErrorNumber);

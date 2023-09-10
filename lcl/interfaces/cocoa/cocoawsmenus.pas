@@ -563,8 +563,12 @@ begin
   // The following if statement prevents "double" form close
   if LoopHiJackEnded then Exit;
   {$endif}
-  // Should be used instead of Application.Terminate to allow events to be sent, see bug 32148
-  Application.MainForm.Close;
+  // Should be used instead of Application.Terminate when possible
+  // to allow events to be sent, see bug 32148
+  if Assigned(Application.MainForm) then
+    Application.MainForm.Close
+  else
+    Application.Terminate;
 end;
 
 { TCocoaWSMenu }
