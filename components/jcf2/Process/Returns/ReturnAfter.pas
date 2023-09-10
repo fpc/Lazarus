@@ -163,6 +163,7 @@ end;
 function NeedsBlankLine(const pt, ptNext: TSourceToken): boolean;
 var
   lcPrev: TSourceToken;
+  lcPt: TSourceToken;
 begin
   Result := False;
 
@@ -184,11 +185,20 @@ begin
     exit(True);
 
   { semicolon that ends a proc or is between procs e.g. end of uses clause }
-  if (pt.TokenType = ttSemiColon) then
+
+  { keep comment in the same line.}
+  if (pt.TokenType = ttSemiColon) and (pt.NextTokenTypeWithExclusions([ttWhiteSpace]) = ttComment) then
+    Exit(False);
+
+  lcPt := pt;
+  if (pt.TokenType = ttComment) and (pt.PriorTokenTypeWithExclusions([ttWhiteSpace])=ttSemiColon) then
+    lcPt:= pt.PriorTokenWithExclusions([ttWhiteSpace]);  // use the ';' token before the comment for tests.
+
+  if lcPt.TokenType = ttSemiColon  then
   begin
-    if ( not pt.HasParentNode(ProcedureNodes)) and
-      (BlockLevel(pt) = 0) and
-      ( not pt.HasParentNode(nDeclSection))
+    if ( not lcPt.HasParentNode(ProcedureNodes)) and
+      (BlockLevel(lcPt) = 0) and
+      ( not lcPt.HasParentNode(nDeclSection))
     then
       exit(True);
 
@@ -200,19 +210,19 @@ begin
 
        procedure foo;
     }
-    if pt.HasParentNode([nVarSection, nConstSection]) and
+    if lcPt.HasParentNode([nVarSection, nConstSection]) and
       (ptNext.TokenType in ProcedureWords) and
-      (not pt.HasParentNode([nClassType,nRecordType]))   // not in class methods
+      (not lcPt.HasParentNode([nClassType,nRecordType]))   // not in class methods
     then
       exit(True);
 
     // at the end of type block with a proc next. but not in a class def
-    if pt.HasParentNode(nTypeSection) and (ptNext.TokenType in ProcedureWords)
-    and ( not pt.HasParentNode(ObjectBodies + [nRecordType]))
+    if lcPt.HasParentNode(nTypeSection) and (ptNext.TokenType in ProcedureWords)
+    and ( not lcPt.HasParentNode(ObjectBodies + [nRecordType]))
     then
       exit(True);
 
-    lcPrev := pt.PriorToken;
+    lcPrev := lcPt.PriorToken;
     { 'end' at end of type def or proc
       There can be hint directives between the type/proc and the 'end'
     }
@@ -220,7 +230,7 @@ begin
       lcPrev.HasParentNode(nHintDirectives, 2) do
       lcPrev := lcPrev.PriorToken;
 
-    if (lcPrev.TokenType = ttEnd) and (pt.TokenType <> ttDot) then
+    if (lcPrev.TokenType = ttEnd) and (lcPt.TokenType <> ttDot) then
       if EndsObjectType(lcPrev) or EndsProcedure(lcPrev) then
         exit(True);
   end;
@@ -391,15 +401,12 @@ begin
     lcNext:=pt.NextTokenWithExclusions([ttWhiteSpace]);
     if (lcNext<>nil) and (lcNext.TokenType<>ttReturn) then
     begin
-      if (lcNext <> nil) then
+      if (lcNext.TokenType <> ttConditionalCompilationRemoved) then
+        result:=true
+      else
       begin
-        if (lcNext.TokenType <> ttConditionalCompilationRemoved) then
-          result:=true
-        else
-        begin
-          if StrStartsWithLineEnd(lcNext.SourceCode)=false then
-            result:=true;
-        end;
+        if StrStartsWithLineEnd(lcNext.SourceCode)=false then
+          result:=true;
       end;
     end;
     exit;
