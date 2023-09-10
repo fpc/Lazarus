@@ -82,6 +82,8 @@ type
     function PriorSolidTokenType: TTokenType;
     function NextTokenWithExclusions(const peExclusions: TTokenTypeSet): TSourceToken;
     function PriorTokenWithExclusions(const peExclusions: TTokenTypeSet): TSourceToken;
+    function NextTokenTypeWithExclusions(const peExclusions: TTokenTypeSet): TTokenType;
+    function PriorTokenTypeWithExclusions(const peExclusions: TTokenTypeSet): TTokenType;
 
     procedure GeneratePreProcessorData;
 
@@ -254,6 +256,28 @@ begin
   if lc <> nil then
     Result := lc.TokenType;
 end;
+
+function TSourceToken.NextTokenTypeWithExclusions(const peExclusions: TTokenTypeSet): TTokenType;
+var
+  lc: TSourceToken;
+begin
+  Result := ttUnknown;
+  lc := NextTokenWithExclusions(peExclusions);
+  if lc <> nil then
+    Result := lc.TokenType;
+end;
+
+function TSourceToken.PriorTokenTypeWithExclusions(const peExclusions: TTokenTypeSet): TTokenType;
+var
+  lc: TSourceToken;
+begin
+  Result := ttUnknown;
+  lc := PriorTokenWithExclusions(peExclusions);
+  if lc <> nil then
+    Result := lc.TokenType;
+end;
+
+
 
 function TSourceToken.SolidChildCount: integer;
 begin
