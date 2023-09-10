@@ -91,166 +91,149 @@ begin
   FBitmapCopy.Canvas.Pen := Pen;
   FBitmapCopy.Canvas.Pen.Color:=clBlack;
 
-  with Canvas do
+  Canvas.Pen := FPen;
+  Canvas.Brush := FBrush;
+
+  PenInc := Canvas.Pen.Width div 2;
+  PenDec := (Canvas.Pen.Width - 1) div 2;
+
+  PaintRect := Rect(PenInc, PenInc, Width - PenDec, Height - PenDec);
+  if PaintRect.Left = PaintRect.Right then
+    PaintRect.Right := PaintRect.Right + 1;
+  if PaintRect.Top = PaintRect.Bottom then
+    PaintRect.Bottom := PaintRect.Bottom + 1;
+
+  MinSize := Min(PaintRect.Right - PaintRect.Left, PaintRect.Bottom - PaintRect.Top);
+  if FShape in [stSquare, stRoundSquare, stCircle, stSquaredDiamond] then
   begin
-    Pen := FPen;
-    Brush := FBrush;
+    PaintRect.Left := PaintRect.Left + ((PaintRect.Right - PaintRect.Left) - MinSize) div 2;
+    PaintRect.Top := PaintRect.Top + ((PaintRect.Bottom - PaintRect.Top) - MinSize) div 2;
+    PaintRect.Right := PaintRect.Left + MinSize;
+    PaintRect.Bottom := PaintRect.Top + MinSize;
+  end;
 
-    PenInc := Pen.Width div 2;
-    PenDec := (Pen.Width - 1) div 2;
-
-    PaintRect := Rect(PenInc, PenInc, Self.Width - PenDec, Self.Height - PenDec);
-    if PaintRect.Left = PaintRect.Right then
-      PaintRect.Right := PaintRect.Right + 1;
-    if PaintRect.Top = PaintRect.Bottom then
-      PaintRect.Bottom := PaintRect.Bottom + 1;
-
-    MinSize := Min(PaintRect.Right - PaintRect.Left, PaintRect.Bottom - PaintRect.Top);
-    if FShape in [stSquare, stRoundSquare, stCircle, stSquaredDiamond] then
-    begin
-      PaintRect.Left := PaintRect.Left + ((PaintRect.Right - PaintRect.Left) - MinSize) div 2;
-      PaintRect.Top := PaintRect.Top + ((PaintRect.Bottom - PaintRect.Top) - MinSize) div 2;
-      PaintRect.Right := PaintRect.Left + MinSize;
-      PaintRect.Bottom := PaintRect.Top + MinSize;
-    end;
-
-    case FShape of
-      stRectangle, stSquare: begin
-        Rectangle(PaintRect);
+  case FShape of
+    stRectangle, stSquare:
+      begin
+        Canvas.Rectangle(PaintRect);
         FBitmapCopy.Canvas.Rectangle(PaintRect);
       end;
-      stRoundRect, stRoundSquare: begin
-        RoundRect(PaintRect, MinSize div 4, MinSize div 4);
+    stRoundRect, stRoundSquare:
+      begin
+        Canvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
         FBitmapCopy.Canvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
       end;
-      stCircle, stEllipse: begin
-        Ellipse(PaintRect);
+    stCircle, stEllipse:
+      begin
+        Canvas.Ellipse(PaintRect);
         FBitmapCopy.Canvas.Ellipse(PaintRect);
       end;
-      stSquaredDiamond, stDiamond:
-        begin
-          P[0].x := PaintRect.Left;
-          P[0].y := (PaintRect.Top + PaintRect.Bottom) div 2;
-          P[1].x := (PaintRect.Left + PaintRect.Right) div 2;
-          P[1].y := PaintRect.Top;
-          P[2].x := PaintRect.Right - 1;
-          P[2].y := P[0].y;
-          P[3].x := P[1].x;
-          P[3].y := PaintRect.Bottom - 1;
-          Polygon(P);
-          FBitmapCopy.Canvas.Polygon(P);
-        end;
-      stTriangle:
-        begin
-          with Self do
-          begin
-            P[0].x := (Width - 1) div 2;
-            P[0].y := PenInc;
-            P[1].x := Width - PenInc - 1;
-            P[1].y := Height - PenInc - 1;
-            P[2].x := PenInc;
-            P[2].y := Height - PenInc - 1;
-            P[3].x := P[0].x;
-            P[3].y := P[0].y;
-            Polygon(P);
-            FBitmapCopy.Canvas.Polygon(P);
-          end;
-        end;
-      stTriangleDown:
-        begin
-          with Self do
-          begin
-            P[0].x := (Width - 1) div 2;
-            P[0].y := Height - PenInc - 1;
-            P[1].x := Width - PenInc - 1;
-            P[1].y := PenInc;
-            P[2].x := PenInc;
-            P[2].y := PenInc;
-            P[3].x := P[0].x;
-            P[3].y := P[0].y;
-            Polygon(P);
-            FBitmapCopy.Canvas.Polygon(P);
-          end;
-        end;
-      stTriangleLeft:
-        begin
-          with Self do
-          begin
-            P[0].x := PenInc;
-            P[0].y := Height div 2;
-            P[1].x := Width - PenInc - 1;
-            P[1].y := PenInc;
-            P[2].x := Width - PenInc - 1;
-            P[2].y := Height - PenInc - 1;
-            P[3].x := P[0].x;
-            P[3].y := P[0].y;
-            Polygon(P);
-            FBitmapCopy.Canvas.Polygon(P);
-          end;
-        end;
-      stTriangleRight:
-        begin
-          with Self do
-          begin
-            P[0].x := Width - PenInc - 1;
-            P[0].y := Height div 2;
-            P[1].x := PenInc;
-            P[1].y := PenInc;
-            P[2].x := PenInc;
-            P[2].y := Height - PenInc - 1;
-            P[3].x := P[0].x;
-            P[3].y := P[0].y;
-            Polygon(P);
-            FBitmapCopy.Canvas.Polygon(P);
-          end;
-        end;
-      stStar,
-      stStarDown:
-        begin
-          with Self do
-          begin
-            //radius if star scaled by height
-            RadiusBig := Trunc((Height-Pen.Width) / (1+cos(pi/5)));
-            //radius if star scaled by width
-            RadiusBig2 := Trunc((Width-Pen.Width) / (2*sin(pi*2/5)));
+    stSquaredDiamond, stDiamond:
+      begin
+        P[0].x := PaintRect.Left;
+        P[0].y := (PaintRect.Top + PaintRect.Bottom) div 2;
+        P[1].x := (PaintRect.Left + PaintRect.Right) div 2;
+        P[1].y := PaintRect.Top;
+        P[2].x := PaintRect.Right - 1;
+        P[2].y := P[0].y;
+        P[3].x := P[1].x;
+        P[3].y := PaintRect.Bottom - 1;
+        Canvas.Polygon(P);
+        FBitmapCopy.Canvas.Polygon(P);
+      end;
+    stTriangle:
+      begin
+        P[0].x := (Width - 1) div 2;
+        P[0].y := PenInc;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := Height - PenInc - 1;
+        P[2].x := PenInc;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Canvas.Polygon(P);
+        FBitmapCopy.Canvas.Polygon(P);
+      end;
+    stTriangleDown:
+      begin
+        P[0].x := (Width - 1) div 2;
+        P[0].y := Height - PenInc - 1;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := PenInc;
+        P[2].x := PenInc;
+        P[2].y := PenInc;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Canvas.Polygon(P);
+        FBitmapCopy.Canvas.Polygon(P);
+      end;
+    stTriangleLeft:
+      begin
+        P[0].x := PenInc;
+        P[0].y := Height div 2;
+        P[1].x := Width - PenInc - 1;
+        P[1].y := PenInc;
+        P[2].x := Width - PenInc - 1;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Canvas.Polygon(P);
+        FBitmapCopy.Canvas.Polygon(P);
+      end;
+    stTriangleRight:
+      begin
+        P[0].x := Width - PenInc - 1;
+        P[0].y := Height div 2;
+        P[1].x := PenInc;
+        P[1].y := PenInc;
+        P[2].x := PenInc;
+        P[2].y := Height - PenInc - 1;
+        P[3].x := P[0].x;
+        P[3].y := P[0].y;
+        Canvas.Polygon(P);
+        FBitmapCopy.Canvas.Polygon(P);
+      end;
+    stStar, stStarDown:
+      begin
+        //radius if star scaled by height
+        RadiusBig := Trunc((Height-Pen.Width) / (1+cos(pi/5)));
+        //radius if star scaled by width
+        RadiusBig2 := Trunc((Width-Pen.Width) / (2*sin(pi*2/5)));
 
-            if RadiusBig<=RadiusBig2 then
-            begin
-              if FShape=stStar then
-                PCenter.Y := RadiusBig+PenDec
-              else
-                PCenter.Y := Height-RadiusBig-PenDec;
-            end
-            else
-            begin
-              RadiusBig := RadiusBig2;
-              PCenter.Y := Height div 2;
-            end;
-            PCenter.X := Width div 2;
-            RadiusSm := RadiusBig * 57 div 150;
-
-            for i := 0 to 4 do
-            begin
-              PStar[i*2].x := PCenter.X + Round(RadiusBig*CosStarBig[i, FShape=stStarDown]);
-              PStar[i*2].y := PCenter.Y - Round(RadiusBig*SinStarBig[i, FShape=stStarDown]);
-              PStar[i*2+1].x := PCenter.X + Round(RadiusSm*CosStarSmall[i, FShape=stStarDown]);
-              PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*SinStarSmall[i, FShape=stStarDown]);
-            end;
-
-            // Fix 1 pixel error of horizontal lines, adjust point on small radius to the point on big one
-            for i := 0 to 4 do
-              if Abs(PStar[i*2].y - PStar[i*2+1].y) <= cStarError then
-                PStar[i*2+1].y := PStar[i*2].y;
-            for i := 1 to 4 do
-              if Abs(PStar[i*2].y - PStar[i*2-1].y) <= cStarError then
-                PStar[i*2-1].y := PStar[i*2].y;
-
-            PStar[10] := PStar[0];
-            Polygon(PStar);
-            FBitmapCopy.Canvas.Polygon(PStar);
-          end;
+        if RadiusBig<=RadiusBig2 then
+        begin
+          if FShape=stStar then
+            PCenter.Y := RadiusBig+PenDec
+          else
+            PCenter.Y := Height-RadiusBig-PenDec;
+        end
+        else begin
+          RadiusBig := RadiusBig2;
+          PCenter.Y := Height div 2;
         end;
-    end;
+        PCenter.X := Width div 2;
+        RadiusSm := RadiusBig * 57 div 150;
+
+        for i := 0 to 4 do
+        begin
+          PStar[i*2].x := PCenter.X + Round(RadiusBig*CosStarBig[i, FShape=stStarDown]);
+          PStar[i*2].y := PCenter.Y - Round(RadiusBig*SinStarBig[i, FShape=stStarDown]);
+          PStar[i*2+1].x := PCenter.X + Round(RadiusSm*CosStarSmall[i, FShape=stStarDown]);
+          PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*SinStarSmall[i, FShape=stStarDown]);
+        end;
+
+        // Fix 1 pixel error of horizontal lines, adjust point on small radius to the point on big one
+        for i := 0 to 4 do
+          if Abs(PStar[i*2].y - PStar[i*2+1].y) <= cStarError then
+            PStar[i*2+1].y := PStar[i*2].y;
+        for i := 1 to 4 do
+          if Abs(PStar[i*2].y - PStar[i*2-1].y) <= cStarError then
+            PStar[i*2-1].y := PStar[i*2].y;
+
+        PStar[10] := PStar[0];
+        Canvas.Polygon(PStar);
+        FBitmapCopy.Canvas.Polygon(PStar);
+      end;
   end;
 
   // to fire OnPaint event
@@ -259,8 +242,8 @@ end;
 
 procedure TShape.StyleChanged(Sender: TObject);
 begin
-  if (Parent <> nil) and (Visible or (csDesigning in ComponentState)) and
-     Parent.HandleAllocated then
+  if (Parent <> nil) and (Visible or (csDesigning in ComponentState))
+  and Parent.HandleAllocated then
     Invalidate;
 end;
 
