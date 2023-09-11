@@ -18,8 +18,6 @@ begin
   FPen.OnChange := @StyleChanged;
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
-  FBitmapCopy := TBitmap.Create;
-  FBitmapCopy.Monochrome := True;
 end;
 
 destructor TShape.Destroy;
@@ -79,6 +77,8 @@ var
   P: array[0..3] of TPoint;
   PStar: array[0..10] of TPoint;
   PenInc, PenDec: Integer;
+  PolygonPts: array of TPoint;
+  PolygonWinding: Boolean;
   RadiusBig, RadiusBig2, RadiusSm, i: Integer;
   PCenter: TPoint;
 begin
@@ -207,6 +207,15 @@ begin
         PStar[10] := PStar[0];
         ACanvas.Polygon(PStar);
       end;
+    stPolygon:
+      if Assigned(FOnShapePoints) then
+      begin
+        PolygonPts := nil;
+        PolygonWinding := false;
+        FOnShapePoints(Self, PolygonPts, PolygonWinding);
+        if Length(PolygonPts) > 2 then
+          ACanvas.Polygon(PolygonPts, PolygonWinding);
+      end;
   end;
 end;
 
@@ -248,6 +257,12 @@ procedure TShape.SetBrush(Value: TBrush);
 begin
   if Value <> Brush then
     FBrush.Assign(Value);
+end;
+
+procedure TShape.SetOnShapePoints(Value: TShapePointsEvent);
+begin
+  FOnShapePoints := Value;
+  Invalidate;
 end;
 
 procedure TShape.SetPen(Value: TPen);

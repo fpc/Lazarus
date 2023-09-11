@@ -266,7 +266,12 @@ type
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
     stEllipse, stCircle, stSquaredDiamond, stDiamond,
     stTriangle, stTriangleLeft, stTriangleRight, stTriangleDown,
-    stStar, stStarDown);
+    stStar, stStarDown, stPolygon);
+
+  TShapePoints = array of TPoint;
+
+  TShapePointsEvent = procedure (Sender: TObject; var Points: TShapePoints;
+    var Winding: Boolean) of object;
 
   TShape = class(TGraphicControl)
   private
@@ -275,9 +280,11 @@ type
     FShape: TShapeType;
     FBitmapCopy: TBitmap; // For testing if a mouse click is on the actual shape.
     FOnShapeClick: TNotifyEvent;
+    FOnShapePoints: TShapePointsEvent;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
+    procedure SetOnShapePoints(Value: TShapePointsEvent);
   protected
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
@@ -329,6 +336,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnShapeClick: TNotifyEvent read FOnShapeClick write FOnShapeClick;
+    property OnShapePoints: TShapePointsEvent read FOnShapePoints write SetOnShapePoints;
   end;
 
 
