@@ -4,7 +4,6 @@
     <Name Value="pas2jscomponents"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
-    <AutoUpdate Value="Manually"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
