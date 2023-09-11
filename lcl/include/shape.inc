@@ -30,7 +30,7 @@ begin
   inherited Destroy;
 end;
 
-function TShape.HitTest(const P: TPoint): Boolean;
+function TShape.PtInShape(const P: TPoint): Boolean;
 // Return True if point P is inside the actual shape.
 begin
   Assert(Assigned(FBitmapCopy), 'FBitmapCopy=Nil');
@@ -83,12 +83,12 @@ var
   PCenter: TPoint;
 begin
   FBitmapCopy.SetSize(Width, Height);
-  FBitmapCopy.Canvas.Brush.Style:=bsSolid;
-  FBitmapCopy.Canvas.Brush.Color:=clWhite;
+  FBitmapCopy.Canvas.Brush.Style := bsSolid;
+  FBitmapCopy.Canvas.Brush.Color := clWhite;
   FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
-  FBitmapCopy.Canvas.Brush.Color:=clBlack;
+  FBitmapCopy.Canvas.Brush.Color := clBlack;
   FBitmapCopy.Canvas.Pen := Pen;
-  FBitmapCopy.Canvas.Pen.Color:=clBlack;
+  FBitmapCopy.Canvas.Pen.Color := clBlack;
 
   Canvas.Pen := FPen;
   Canvas.Brush := FBrush;
@@ -283,7 +283,7 @@ procedure TShape.Click;
 begin
   inherited Click;
   if Assigned(OnShapeClick)
-  and HitTest(ScreenToClient(Mouse.CursorPos)) then
+  and PtInShape(ScreenToClient(Mouse.CursorPos)) then
     OnShapeClick(Self);
 end;
 
@@ -292,7 +292,7 @@ var
   p: TPoint;
 begin
   p := ParentToClient(Point(Message.XPos, Message.YPos),GetDesignerForm(Self));
-  if HitTest(p) then
+  if PtInShape(p) then
     Message.Result := 0
   else
     Message.Result := 1;

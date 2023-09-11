@@ -282,11 +282,11 @@ type
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure Click; override;
-    procedure CMShapeHitTest(var Message: TCMHittest); message CM_IRREGULARSHAPEHITTEST;
+    procedure CMShapeHitTest(var Message: TCMHittest); message CM_MASKHITTEST;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function HitTest(const P: TPoint): Boolean;
+    function PtInShape(const P: TPoint): Boolean;
     procedure Paint; override;
     procedure StyleChanged(Sender: TObject);
   published
