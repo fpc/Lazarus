@@ -1969,59 +1969,24 @@ class procedure TCocoaWSWinControl.SetChildZPosition(const AWinControl,
   );
 var
   pr : NSView;
-  ch : NSView;
-  ab : NSView;
-  c  : TObject;
-  i  : integer;
 begin
   if (not AWinControl.HandleAllocated) or (not AChild.HandleAllocated) then Exit;
 
   pr := NSView(AWinControl.Handle).lclContentView;
 
-  //todo: sorting might be a better option than removing / adding a view
-  //      (whenever a focused (firstrepsonder view) is moved to front, focus is lost.
-  //      if that's not the case for sorting, then sorting *must* be used
-  //      current problem, is that during sorting a new order needs to be determined
-  //      (the desired order is given in AChildren list).
-  //      however, on every comparison, an index must be searched withing a list.
-  //      and that might be very slow! (if a lot of sibling controls is present)
-  //      instead of a search, it's beter to store the desired sorting order with a view
-  //      itself. However, that requires adding additional methods  lclSetNewOrder and lclGetNewOrder
-  //
-  //pr.sortSubviewsUsingFunction_context(@SortHandles, AChildren);
-  //
-  // if sorting is used, all code below is not needed
+  if pr.subviews.count <= 1 then exit;
 
-  ch:=NSView(AChild.Handle);
-
-  // The way of changing the order in an array of views
-  // is to remove a view and then reinstert it at the new spot
-  ch.retain();
-  try
-    ch.removeFromSuperview();
-    if ANewPos=0 then
-    begin
-      pr.addSubview_positioned_relativeTo(ch, NSWindowBelow, nil)
-    end
-    else
-    begin
-      i:=AChildren.Count-ANewPos;
-      c:=TObject(AChildren[i]);
-      if c is TWinControl then
-      begin
-        c:=TObject(AChildren[i]);
-        ab:=NSView(TWinControl(c).Handle);
-      end
-      else
-        ab:=nil;
-      pr.addSubview_positioned_relativeTo(ch, NSWindowAbove, ab);
-    end;
-  finally
-    ch.release();
-  end;
-
-  //NSView(AChild.Handle).moveDown
-  //inherited SetChildZPosition(AWinControl, AChild, AOldPos, ANewPos, AChildren);
+  // 1. sorting is a better option than removing / adding a view.
+  //    whenever a focused (firstrepsonder view) is removed and added to front,
+  //    focus is lost. the issue was exposed by
+  //    https://gitlab.com/freepascal.org/lazarus/lazarus/-/commit/853461fed65fed2ce1614bcc06eca5b880810f0e
+  //    <LCL: fixed TWinControl.SetChildZPosition, WS must be informed about change of order in any case. issue #40450>
+  // 2. regarding performance, though on every comparison an index must be
+  //    searched withing a list, but performance still does not need to be
+  //    paid too much attention to.
+  // 3. it's because SetChildZPosition() rarely needs to be called at runtime,
+  //    and usually there are only a few sibling controls.
+  pr.sortSubviewsUsingFunction_context(@SortHandles, AChildren);
 end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);

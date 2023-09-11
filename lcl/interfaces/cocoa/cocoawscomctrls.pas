@@ -99,6 +99,9 @@ type
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
+
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
+      const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
   end;
 
   { TCocoaWSPageControl }
@@ -952,6 +955,13 @@ begin
     cb := lTabControl.lclGetCallback;
     if Assigned(cb) then cb.frameDidChange(lTabControl);
   end;
+end;
+
+class procedure TCocoaWSCustomTabControl.SetChildZPosition(const AWinControl, AChild: TWinControl;
+  const AOldPos, ANewPos: Integer; const AChildren: TFPList);
+begin
+  // subviews of NSTabView do not need to be resorted, Cocoa will take of it.
+  // avoid unnecessary performance loss.
 end;
 
 { TCocoaWSCustomListView }
