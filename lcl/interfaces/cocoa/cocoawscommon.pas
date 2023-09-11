@@ -1974,6 +1974,8 @@ begin
 
   pr := NSView(AWinControl.Handle).lclContentView;
 
+  if pr.subviews.count <= 1 then exit;
+
   // 1. sorting is a better option than removing / adding a view.
   //    whenever a focused (firstrepsonder view) is removed and added to front,
   //    focus is lost. the issue was exposed by
