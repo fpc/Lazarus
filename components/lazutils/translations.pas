@@ -225,6 +225,11 @@ uses
   Windows;
 {$ENDIF}
 
+{$IFDEF DARWIN}
+uses
+  MacOSAll;
+{$ENDIF}
+
 function IsKey(Txt, Key: PChar): boolean;
 begin
   if Txt=nil then exit(false);
@@ -535,6 +540,10 @@ function GetLanguageID: TLanguageID;
   procedure GetLanguage;
   var
     EnvVarContents: string;
+    {$IFDEF DARWIN}
+    cfLang: CFPropertyListRef;
+    lang: array[0..49] of char;
+    {$ENDIF}
   begin
     EnvVarContents := GetEnvironmentVariable('LC_ALL');
     if Length(EnvVarContents) = 0 then
@@ -543,6 +552,21 @@ function GetLanguageID: TLanguageID;
       if Length(EnvVarContents) = 0 then
         EnvVarContents := GetEnvironmentVariable('LANG');
     end;
+    {$IFDEF DARWIN}
+    // macOS does not set environment variables for GUI applications which are not started from terminal.
+    // Obtain language identifier in a different (but independent on settings in Application Bundle) way.
+    // AppleLocale property is expected to contain values in ISO formats, like `ru_RU`, `zh_CN`, `it_IT`.
+    if Length(EnvVarContents) = 0 then
+    begin
+      cfLang:= CFPreferencesCopyAppValue( CFSTR('AppleLocale'), CFSTR('') );
+      if Assigned(cfLang) then
+      begin
+        CFStringGetCString( cfLang, lang, SizeOf(lang), kCFStringEncodingUTF8 );
+        EnvVarContents := lang;
+        CFRelease( cfLang );
+      end;
+    end;
+    {$ENDIF}
     // Even empty EnvVarContents is processed in order to return normalized ID
     Result := GetLanguageIDFromLocaleName(EnvVarContents);
   end;
