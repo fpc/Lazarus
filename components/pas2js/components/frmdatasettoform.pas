@@ -149,7 +149,8 @@ begin
   if C<>Nil then
     begin
     FFormatter:=C.Create(Self);
-    FGenerator.FormGenerator:=FFormatter;
+    if Assigned(FGenerator) then
+      FGenerator.FormGenerator:=FFormatter;
     tpgFormat.TIObject:=FFormatter;
     FillFields;
     end;
@@ -159,6 +160,8 @@ procedure TfrmDatasetToHTMLForm.SetGenerator(AValue: TDatasetHTMLGenerator);
 begin
   if FGenerator=AValue then Exit;
   FGenerator:=AValue;
+  if Assigned(FGenerator) and Assigned(FFormatter) then
+    FGenerator.FormGenerator:=FFormatter;
   FillFields;
 end;
 
