@@ -163,6 +163,14 @@ Don't assume that language code is always two-letters (ISO 639-1), it can have
 a bigger length (e. g. three letters, like in ISO 639-2).
 </li>
 <li>
+Provides support for locale information on Darwin platforms. macOS does not 
+set language environment variables for GUI applications which are not started 
+from a terminal. This routine ensures that locale information is available for 
+both console applications and GUI applications, independent of environment 
+variables like LC_ALL / LC_MESSAGES / LANG, or Application bundle settings. The 
+locale information uses ISO formats like `ru_RU`, `zh_CN`, or `it_IT`.
+</li>
+<li>
 Returns the locale information in a record type. This allows additional fields 
 in a backwards-compatible manner. Currently it contains language ID, language 
 code and country code.
