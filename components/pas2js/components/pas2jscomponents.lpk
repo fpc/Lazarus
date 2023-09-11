@@ -4,6 +4,7 @@
     <Name Value="pas2jscomponents"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
+    <AutoUpdate Value="Manually"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -138,8 +139,23 @@
         <Filename Value="frmaddmissingtablecolumns.pas"/>
         <UnitName Value="frmaddmissingtablecolumns"/>
       </Item>
+      <Item>
+        <Filename Value="datasettoform.pas"/>
+        <UnitName Value="datasettoform"/>
+      </Item>
+      <Item>
+        <Filename Value="bootstrapformgen.pas"/>
+        <UnitName Value="bootstrapformgen"/>
+      </Item>
+      <Item>
+        <Filename Value="frmdatasettoform.pas"/>
+        <UnitName Value="frmdatasettoform"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="RunTimeTypeInfoControls"/>
+      </Item>
       <Item>
         <PackageName Value="weblaz"/>
       </Item>

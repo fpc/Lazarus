@@ -13,7 +13,7 @@ type
 
   TCustomDBBootstrapTableWidget = Class;
 
-  TColumnRenderMode = (crmText, crmNumeric, crmDateTime, crmTransformedValue, crmCheckBox, crmButton, crmCustom, crmAction);
+  TColumnRenderMode = (crmText, crmNumeric, crmDateTime, crmTransformedValue, crmCheckBox, crmButton, crmCustom, crmSelect, crmAction);
   TColumnButtonType = (cbtInfo, cbtEdit, cbtDelete, cbtCustom);
 
   TDataTablesFieldMap = Class(TObject)

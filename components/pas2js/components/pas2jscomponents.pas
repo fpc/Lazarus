@@ -12,7 +12,8 @@ uses
   stub.htmlactions, pas2jsrestutils, pas2jsrestcmd, frmRestData, stub.webwidget, Stub.JS, stub.web, stub.bootstrapwidgets, 
   frmpas2jsedithtml, p2jselementactions, Stub.Data.HTMLActions, frmselecthtmlactions, stub.jsondataset, stub.bootstraptablewidget, 
   stub.dbwebwidget, stub.dbhtmlwidgets, stub.htmlwidgets, stub.bulmawidgets, stub.fprpcclient, iderpccodegen, 
-  frmcreaterpcserviceclient, pas2jscompedits, frmaddmissingtablecolumns, LazarusPackageIntf;
+  frmcreaterpcserviceclient, pas2jscompedits, frmaddmissingtablecolumns, datasettoform, bootstrapformgen, frmdatasettoform, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -219,6 +219,7 @@ begin
 
   RegisterPropertyEditor(TypeInfo(string),TDBSelectWidget, 'ItemField', TFieldProperty);
   RegisterPropertyEditor(TypeInfo(string),TDBSelectWidget, 'ValueField', TFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string),TDBHTMLElementAction, 'FieldName', TFieldProperty);
   RegisterPropertyEditor(TypeInfo(String),TDBSelectWidget,'ParentID',TElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TDBSelectWidget,'ElementID',TElementIDPropertyEditor);
 end;

@@ -106,6 +106,7 @@ Type
   
   TCustomDBSelectWidget = class(TCustomSelectWidget)
   Private
+    FItemTemplate: String;
     FLink : TSelectLink;
     FItemField: String;
     FNullIsNotValue: Boolean;
@@ -114,6 +115,7 @@ Type
     procedure SetDatasource(AValue: TDatasource);
     function GetDatasource: TDatasource;
     procedure SetItemField(AValue: String);
+    procedure SetItemTemplate(AValue: String);
     procedure SetNullIsNotValue(AValue: Boolean);
     procedure SetValueField(AValue: String);
   Protected
@@ -121,6 +123,7 @@ Type
     Property ItemField : String Read FItemField Write SetItemField;
     Property ValueField : String Read FValueField Write SetValueField;
     Property NullIsNotValue : Boolean Read FNullIsNotValue Write SetNullIsNotValue;
+    Property ItemTemplate : String Read FItemTemplate Write SetItemTemplate;
   Public
     Constructor Create(aOwner : TComponent); override;
     Destructor Destroy; override;
@@ -138,6 +141,7 @@ Type
     property SelectedIndex;
     Property Multiple;
     Property Value;
+    Property ItemTemplate;
   end;
 
 
@@ -170,6 +174,12 @@ procedure TCustomDBSelectWidget.SetItemField(AValue: String);
 begin
   if FItemField=AValue then Exit;
   FItemField:=AValue;
+end;
+
+procedure TCustomDBSelectWidget.SetItemTemplate(AValue: String);
+begin
+  if FItemTemplate=AValue then Exit;
+  FItemTemplate:=AValue;
 end;
 
 procedure TCustomDBSelectWidget.SetNullIsNotValue(AValue: Boolean);

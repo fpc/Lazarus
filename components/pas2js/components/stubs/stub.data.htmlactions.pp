@@ -111,7 +111,7 @@ Type
 
 
   { TDBCustomHTMLButtonElementAction }
-  TDBButtonAction = (baFirst,baPrior,baNext,baLast,baEdit,baAppend,baInsert,baPost,baCancel,baApplyUpdates);
+  TDBButtonAction = (baFirst,baPrior,baNext,baLast,baEdit,baAppend,baInsert,baPost,baCancel,baDelete,baApplyUpdates);
   TDBButtonActions = Set of TDBButtonAction;
 
   TDBCustomHTMLButtonElementAction = class(THTMLCustomElementAction)
