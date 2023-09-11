@@ -74,10 +74,8 @@ const
 var
   PaintRect: TRect;
   MinSize: Longint;
-  P: array[0..3] of TPoint;
-  PStar: array[0..10] of TPoint;
+  P: array of TPoint;
   PenInc, PenDec: Integer;
-  PolygonPts: array of TPoint;
   PolygonWinding: Boolean;
   RadiusBig, RadiusBig2, RadiusSm, i: Integer;
   PCenter: TPoint;
@@ -109,6 +107,7 @@ begin
       ACanvas.Ellipse(PaintRect);
     stSquaredDiamond, stDiamond:
       begin
+        SetLength(P, 4);
         P[0].x := PaintRect.Left;
         P[0].y := (PaintRect.Top + PaintRect.Bottom) div 2;
         P[1].x := (PaintRect.Left + PaintRect.Right) div 2;
@@ -121,50 +120,46 @@ begin
       end;
     stTriangle:
       begin
+        SetLength(P, 3);
         P[0].x := (Width - 1) div 2;
         P[0].y := PenInc;
         P[1].x := Width - PenInc - 1;
         P[1].y := Height - PenInc - 1;
         P[2].x := PenInc;
         P[2].y := Height - PenInc - 1;
-        P[3].x := P[0].x;
-        P[3].y := P[0].y;
         ACanvas.Polygon(P);
       end;
     stTriangleDown:
       begin
+        SetLength(P, 3);
         P[0].x := (Width - 1) div 2;
         P[0].y := Height - PenInc - 1;
         P[1].x := Width - PenInc - 1;
         P[1].y := PenInc;
         P[2].x := PenInc;
         P[2].y := PenInc;
-        P[3].x := P[0].x;
-        P[3].y := P[0].y;
         ACanvas.Polygon(P);
       end;
     stTriangleLeft:
       begin
+        SetLength(P, 3);
         P[0].x := PenInc;
         P[0].y := Height div 2;
         P[1].x := Width - PenInc - 1;
         P[1].y := PenInc;
         P[2].x := Width - PenInc - 1;
         P[2].y := Height - PenInc - 1;
-        P[3].x := P[0].x;
-        P[3].y := P[0].y;
         ACanvas.Polygon(P);
       end;
     stTriangleRight:
       begin
+        SetLength(P, 3);
         P[0].x := Width - PenInc - 1;
         P[0].y := Height div 2;
         P[1].x := PenInc;
         P[1].y := PenInc;
         P[2].x := PenInc;
         P[2].y := Height - PenInc - 1;
-        P[3].x := P[0].x;
-        P[3].y := P[0].y;
         ACanvas.Polygon(P);
       end;
     stStar, stStarDown:
@@ -188,33 +183,33 @@ begin
         PCenter.X := Width div 2;
         RadiusSm := RadiusBig * 57 div 150;
 
+        SetLength(P, 10);
         for i := 0 to 4 do
         begin
-          PStar[i*2].x := PCenter.X + Round(RadiusBig*CosStarBig[i, FShape=stStarDown]);
-          PStar[i*2].y := PCenter.Y - Round(RadiusBig*SinStarBig[i, FShape=stStarDown]);
-          PStar[i*2+1].x := PCenter.X + Round(RadiusSm*CosStarSmall[i, FShape=stStarDown]);
-          PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*SinStarSmall[i, FShape=stStarDown]);
+          P[i*2].x := PCenter.X + Round(RadiusBig*CosStarBig[i, FShape=stStarDown]);
+          P[i*2].y := PCenter.Y - Round(RadiusBig*SinStarBig[i, FShape=stStarDown]);
+          P[i*2+1].x := PCenter.X + Round(RadiusSm*CosStarSmall[i, FShape=stStarDown]);
+          P[i*2+1].y := PCenter.Y - Round(RadiusSm*SinStarSmall[i, FShape=stStarDown]);
         end;
 
         // Fix 1 pixel error of horizontal lines, adjust point on small radius to the point on big one
         for i := 0 to 4 do
-          if Abs(PStar[i*2].y - PStar[i*2+1].y) <= cStarError then
-            PStar[i*2+1].y := PStar[i*2].y;
+          if Abs(P[i*2].y - P[i*2+1].y) <= cStarError then
+            P[i*2+1].y := P[i*2].y;
         for i := 1 to 4 do
-          if Abs(PStar[i*2].y - PStar[i*2-1].y) <= cStarError then
-            PStar[i*2-1].y := PStar[i*2].y;
+          if Abs(P[i*2].y - P[i*2-1].y) <= cStarError then
+            P[i*2-1].y := P[i*2].y;
 
-        PStar[10] := PStar[0];
-        ACanvas.Polygon(PStar);
+        ACanvas.Polygon(P);
       end;
     stPolygon:
       if Assigned(FOnShapePoints) then
       begin
-        PolygonPts := nil;
+        SetLength(P, 0);
         PolygonWinding := false;
-        FOnShapePoints(Self, PolygonPts, PolygonWinding);
-        if Length(PolygonPts) > 2 then
-          ACanvas.Polygon(PolygonPts, PolygonWinding);
+        FOnShapePoints(Self, P, PolygonWinding);
+        if Length(P) > 2 then
+          ACanvas.Polygon(P, PolygonWinding);
       end;
   end;
 end;
