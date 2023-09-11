@@ -90,8 +90,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
-    // other
-    procedure resetCursorRects; override;
   end;
 
 function GetCGLContextObj(OpenGLControlHandle: HWND): CGLContextObj;
@@ -509,12 +507,6 @@ begin
   if Assigned(callback)
     then callback.scrollWheel(event)
     else inherited scrollWheel(event);
-end;
-
-procedure TCocoaOpenGLView.resetCursorRects;
-begin
-  if not Assigned(callback) or not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaOpenGLView.drawRect(dirtyRect: NSRect);
