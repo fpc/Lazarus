@@ -33,7 +33,7 @@ end;
 function TShape.PtInShape(const P: TPoint): Boolean;
 // Return True if point P is inside the actual shape.
 begin
-  Assert(Assigned(FBitmapCopy), 'FBitmapCopy=Nil');
+  UpdateMask;
   Result := (P.X >= 0) and (P.X < FBitmapCopy.Width)
         and (P.Y >= 0) and (P.Y < FBitmapCopy.Height)
         and (FBitmapCopy.Canvas.Pixels[P.X, P.Y] = clBlack);
@@ -70,7 +70,7 @@ const
     (Sin(9*pi/5 + pi/2), Sin(9*pi/5 - pi/2))
     );
 
-procedure TShape.Paint;
+procedure TShape.DrawToCanvas(ACanvas: TCanvas);
 const
   cStarError = 2; // Detect N pixels error for 5-star horizontal lines
 var
@@ -82,19 +82,8 @@ var
   RadiusBig, RadiusBig2, RadiusSm, i: Integer;
   PCenter: TPoint;
 begin
-  FBitmapCopy.SetSize(Width, Height);
-  FBitmapCopy.Canvas.Brush.Style := bsSolid;
-  FBitmapCopy.Canvas.Brush.Color := clWhite;
-  FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
-  FBitmapCopy.Canvas.Brush.Color := clBlack;
-  FBitmapCopy.Canvas.Pen := Pen;
-  FBitmapCopy.Canvas.Pen.Color := clBlack;
-
-  Canvas.Pen := FPen;
-  Canvas.Brush := FBrush;
-
-  PenInc := Canvas.Pen.Width div 2;
-  PenDec := (Canvas.Pen.Width - 1) div 2;
+  PenInc := ACanvas.Pen.Width div 2;
+  PenDec := (ACanvas.Pen.Width - 1) div 2;
 
   PaintRect := Rect(PenInc, PenInc, Width - PenDec, Height - PenDec);
   if PaintRect.Left = PaintRect.Right then
@@ -113,20 +102,11 @@ begin
 
   case FShape of
     stRectangle, stSquare:
-      begin
-        Canvas.Rectangle(PaintRect);
-        FBitmapCopy.Canvas.Rectangle(PaintRect);
-      end;
+      ACanvas.Rectangle(PaintRect);
     stRoundRect, stRoundSquare:
-      begin
-        Canvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
-        FBitmapCopy.Canvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
-      end;
+      ACanvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
     stCircle, stEllipse:
-      begin
-        Canvas.Ellipse(PaintRect);
-        FBitmapCopy.Canvas.Ellipse(PaintRect);
-      end;
+      ACanvas.Ellipse(PaintRect);
     stSquaredDiamond, stDiamond:
       begin
         P[0].x := PaintRect.Left;
@@ -137,8 +117,7 @@ begin
         P[2].y := P[0].y;
         P[3].x := P[1].x;
         P[3].y := PaintRect.Bottom - 1;
-        Canvas.Polygon(P);
-        FBitmapCopy.Canvas.Polygon(P);
+        ACanvas.Polygon(P);
       end;
     stTriangle:
       begin
@@ -150,8 +129,7 @@ begin
         P[2].y := Height - PenInc - 1;
         P[3].x := P[0].x;
         P[3].y := P[0].y;
-        Canvas.Polygon(P);
-        FBitmapCopy.Canvas.Polygon(P);
+        ACanvas.Polygon(P);
       end;
     stTriangleDown:
       begin
@@ -163,8 +141,7 @@ begin
         P[2].y := PenInc;
         P[3].x := P[0].x;
         P[3].y := P[0].y;
-        Canvas.Polygon(P);
-        FBitmapCopy.Canvas.Polygon(P);
+        ACanvas.Polygon(P);
       end;
     stTriangleLeft:
       begin
@@ -176,8 +153,7 @@ begin
         P[2].y := Height - PenInc - 1;
         P[3].x := P[0].x;
         P[3].y := P[0].y;
-        Canvas.Polygon(P);
-        FBitmapCopy.Canvas.Polygon(P);
+        ACanvas.Polygon(P);
       end;
     stTriangleRight:
       begin
@@ -189,8 +165,7 @@ begin
         P[2].y := Height - PenInc - 1;
         P[3].x := P[0].x;
         P[3].y := P[0].y;
-        Canvas.Polygon(P);
-        FBitmapCopy.Canvas.Polygon(P);
+        ACanvas.Polygon(P);
       end;
     stStar, stStarDown:
       begin
@@ -230,10 +205,33 @@ begin
             PStar[i*2-1].y := PStar[i*2].y;
 
         PStar[10] := PStar[0];
-        Canvas.Polygon(PStar);
-        FBitmapCopy.Canvas.Polygon(PStar);
+        ACanvas.Polygon(PStar);
       end;
   end;
+end;
+
+procedure TShape.UpdateMask;
+begin
+  if FBitmapCopy = nil then
+  begin
+    FBitmapCopy := TBitmap.Create;
+    FBitmapCopy.Monochrome := true;
+  end;
+  FBitmapCopy.SetSize(Width, Height);
+  FBitmapCopy.Canvas.Brush.Style := bsSolid;
+  FBitmapCopy.Canvas.Brush.Color := clWhite;
+  FBitmapCopy.Canvas.FillRect(0,0,Width,Height);
+  FBitmapCopy.Canvas.Brush.Color := clBlack;
+  FBitmapCopy.Canvas.Pen := Pen;
+  FBitmapCopy.Canvas.Pen.Color := clBlack;
+  DrawToCanvas(FBitmapCopy.Canvas);
+end;
+
+procedure TShape.Paint;
+begin
+  Canvas.Pen := FPen;
+  Canvas.Brush := FBrush;
+  DrawToCanvas(Canvas);
 
   // to fire OnPaint event
   inherited Paint;

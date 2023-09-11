@@ -283,6 +283,8 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure Click; override;
     procedure CMShapeHitTest(var Message: TCMHittest); message CM_MASKHITTEST;
+    procedure DrawToCanvas(ACanvas: TCanvas);
+    procedure UpdateMask;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
