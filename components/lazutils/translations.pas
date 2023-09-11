@@ -227,7 +227,7 @@ uses
 
 {$IFDEF DARWIN}
 uses
-  MacOSAll, Unix;
+  MacOSAll;
 {$ENDIF}
 
 function IsKey(Txt, Key: PChar): boolean;
@@ -540,6 +540,10 @@ function GetLanguageID: TLanguageID;
   procedure GetLanguage;
   var
     EnvVarContents: string;
+    {$IFDEF DARWIN}
+    cfLang: CFPropertyListRef;
+    lang: array[0..49] of char;
+    {$ENDIF}
   begin
     EnvVarContents := GetEnvironmentVariable('LC_ALL');
     if Length(EnvVarContents) = 0 then
@@ -548,6 +552,21 @@ function GetLanguageID: TLanguageID;
       if Length(EnvVarContents) = 0 then
         EnvVarContents := GetEnvironmentVariable('LANG');
     end;
+    {$IFDEF DARWIN}
+    // macOS does not set environment variables for GUI applications which are not started from terminal.
+    // Obtain language identifier in a different (but independent on settings in Application Bundle) way.
+    // AppleLocale property is expected to contain values in ISO formats, like `ru_RU`, `zh_CN`, `it_IT`.
+    if Length(EnvVarContents) = 0 then
+    begin
+      cfLang:= CFPreferencesCopyAppValue( CFSTR('AppleLocale'), CFSTR('') );
+      if Assigned(cfLang) then
+      begin
+        CFStringGetCString( cfLang, lang, SizeOf(lang), kCFStringEncodingUTF8 );
+        EnvVarContents := lang;
+        CFRelease( cfLang );
+      end;
+    end;
+    {$ENDIF}
     // Even empty EnvVarContents is processed in order to return normalized ID
     Result := GetLanguageIDFromLocaleName(EnvVarContents);
   end;
@@ -1911,26 +1930,6 @@ begin
     MF.Free;
   end;
 end;
-
-{$IFDEF DARWIN}
-function setenv(const name:PAnsiChar; const value:PAnsiChar; overwrite:cint): cint; cdecl; external clib;
-
-procedure FIX_MACOS_LANG_ENV_VAR;
-var
-  cfLang: CFPropertyListRef;
-  lang: array[0..49] of char;
-begin
-  cfLang:= CFPreferencesCopyAppValue( CFSTR('AppleLocale'), CFSTR('') );
-  if not Assigned(cfLang) then
-    exit;
-  CFStringGetCString( cfLang, lang, SizeOf(lang), kCFStringEncodingUTF8 );
-  setenv( 'LANG', lang, 0 );
-  CFRelease( cfLang );
-end;
-
-initialization
-  FIX_MACOS_LANG_ENV_VAR;
-{$ENDIF}
 
 end.
 
