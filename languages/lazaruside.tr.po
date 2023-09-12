@@ -6352,6 +6352,10 @@ msgstr "Temizle ve derle"
 msgid "Clean up and build project"
 msgstr "Temizle ve projeyi derle"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7130,6 +7134,10 @@ msgstr "Derle ve tekrar sorma"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Aşağıdaki modları derleyin"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -11770,6 +11778,10 @@ msgstr "Lazarus dil adı (ör. Ingilizce, türkçe)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [seçenekler] <proje-dosya adı>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12134,6 +12146,10 @@ msgstr "Ana ünite Pascal kaynağı"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Pascal'ı .pas / .pp son ekiyle bitmese bile varsayın."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -18306,6 +18322,11 @@ msgstr "Lazarus dizini IDE kaynaklarını ve LCL paket dosyalarını ve birçok 
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "\"%s\" Lazarus dizini doğru görünmüyor: %s %s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."

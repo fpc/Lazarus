@@ -6423,6 +6423,10 @@ msgstr "Limpar e construir"
 msgid "Clean up and build project"
 msgstr "Limpar e construir projeto"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7201,6 +7205,10 @@ msgstr "Compilar e não perguntar novamente"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Compilar os seguintes modos"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -11845,6 +11853,10 @@ msgstr "Nome de idioma do Lazarus (ex. inglês, alemão)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opções] <nome-de-arquivo-do-projeto>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12220,6 +12232,10 @@ msgstr "Unidade principal é fonte Pascal"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Assume Pascal mesmo que não termine com sufixo .pas/.pp."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -18447,6 +18463,11 @@ msgstr "O diretório Lazarus contém os fontes da IDE e os arquivos de pacotes d
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "O diretório do Lazarus \"%s\" parece incorreto:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."

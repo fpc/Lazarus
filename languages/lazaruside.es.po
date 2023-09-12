@@ -6517,6 +6517,10 @@ msgstr "Limpiar y construir"
 msgid "Clean up and build project"
 msgstr "Limpiar y construir proyecto"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7306,6 +7310,10 @@ msgstr "Compilar y no preguntar de nuevo"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Compilar los siguientes modos"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -12051,6 +12059,10 @@ msgstr "Nombre de idioma de Lazarus (por ejemplo: inglés, holandés)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opciones] <nombre-proyecto>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12425,6 +12437,10 @@ msgstr "La unidad principal es una fuente Pascal"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Asumir Pascal incluso si no finaliza con los sufijos .pas/.pp."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 #, fuzzy
@@ -18697,6 +18713,11 @@ msgstr "El directorio Lazarus contiene las fuentes del IDE y los archivos del pa
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "El directorio de Lazarus \"%s\" no se ve bien:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 #, fuzzy

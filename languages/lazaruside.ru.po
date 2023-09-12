@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-09-12 18:16+0300\n"
+"PO-Revision-Date: 2023-09-12 20:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6377,6 +6377,10 @@ msgstr "Очистить и собрать"
 msgid "Clean up and build project"
 msgstr "Очистка и сборка проекта"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr "Очистить и собрать с lazbuild"
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7150,6 +7154,10 @@ msgstr "Компилировать и больше не спрашивать"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Компилировать в следующих режимах"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr "Собрать как обычно"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -11777,6 +11785,10 @@ msgstr "Название языка Lazarus (пример: английский,
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметры] <имя файла проекта>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr "Собрать с lazbuild"
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12147,6 +12159,10 @@ msgstr "Главный модуль является исходным кодом
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Предполагать, что файл содержит исходный код на Паскале, даже если он не имеет расширения .pas/.pp"
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr "Обнаружены значительные изменения"
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -18361,6 +18377,11 @@ msgstr "Каталог Lazarus содержит исходный код IDE, а 
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Каталог Lazarus \"%s\", вероятно, некорректен:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr "Исходный код Lazarus использует отличающийся набор базовых пакетов.%sРекомендуется собрать IDE с помощью lazbuild, проведя перед этим очистку."
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."

@@ -6385,6 +6385,10 @@ msgstr "Очистити і зібрати"
 msgid "Clean up and build project"
 msgstr "Очистити і зібрати проєкт"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7161,6 +7165,10 @@ msgstr "Компілювати і не питати більше"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "Компілювати в таких режимах"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -11801,6 +11809,10 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметри] <назва файлу проєкту>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12171,6 +12183,10 @@ msgstr "Головний модуль у сирцях Паскаля"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Вважати, що файл містить код на Pascal, навіть якщо він не має розширення .pas/.pp"
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -18385,6 +18401,11 @@ msgstr "Тека Lazarus містить сирцеві коди ІСР, файл
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Тека Lazarus \"%s\" виглядає неправильною:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."

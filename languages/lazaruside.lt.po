@@ -6515,6 +6515,10 @@ msgstr "Išvalyti ir daryti"
 msgid "Clean up and build project"
 msgstr "Išvalyti ir daryti projektą"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7304,6 +7308,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
+msgstr ""
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
 msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
@@ -11979,6 +11987,10 @@ msgstr "Lazarus kalbos pavadinimas (t.y. anglų, vokiečių, lietuvių, …)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [parinktys] <projekto_failo_pavadinimas>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12364,6 +12376,10 @@ msgstr "Pagrindinis modulis yra Paskalio pirminis kodas"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Laikyti, kad tai Paskalis, nors jis ir nesibaigia „.pas“ ar „.pp“ galūne."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 #, fuzzy
@@ -18680,6 +18696,11 @@ msgstr "Lazarus aplanke yra IKA pirminis kodas, LCL ir daugelio tipinių paketų
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Lazarus aplankas „%s“ nepanašus į tinkamą:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 #, fuzzy

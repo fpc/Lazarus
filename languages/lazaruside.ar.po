@@ -6391,6 +6391,10 @@ msgstr "نضّف وإبن"
 msgid "Clean up and build project"
 msgstr "نضّف وإبن المشروع"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7168,6 +7172,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
+msgstr ""
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
 msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
@@ -11768,6 +11776,10 @@ msgstr ""
 msgid "lazarus [options] <project-filename>"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12128,6 +12140,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
+msgstr ""
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
 msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
@@ -18331,6 +18347,11 @@ msgstr ""
 #: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
 msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis

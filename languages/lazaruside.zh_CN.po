@@ -6386,6 +6386,10 @@ msgstr "清理和构建"
 msgid "Clean up and build project"
 msgstr "清理并构建项目"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7163,6 +7167,10 @@ msgstr "编译并不再询问"
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
 msgstr "编译下面的模式"
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
+msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -11806,6 +11814,10 @@ msgstr "Lazarus 语言名称 (例如 英语、德语)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [选项] <项目-文件名>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12177,6 +12189,10 @@ msgstr "主单元是 Pascal 代码"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "假设是Pascal 即使它没有以.pas/.pp后缀为结尾."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -18387,6 +18403,11 @@ msgstr "Lazarus目录包含IDE的源文件、LCL的软件包文件、很多的�
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "该Lazarus目录\"%s\"看起来不正确:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
