@@ -3,7 +3,7 @@
 
    fpmake.pp for SynEdit 1.0
 
-   This file was generated on 31.12.2018
+   This file was generated on 12/09/2023
 }
 
 {$ifndef ALLPACKAGES} 
@@ -18,20 +18,26 @@ procedure add_SynEdit(const ADirectory: string);
 var
   P : TPackage;
   T : TTarget;
+  D : TDependency;
 
 begin
   with Installer do
     begin
     P:=AddPackage('synedit');
-    P.Version:='1.0';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
 
+    P.Author:='Lazarus Team, SynEdit';
+    P.License:='MPL-1.1 or GPL-2 at the users choice'#13#10''#13#10'SynEdit and all it''s units are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use these files except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/'#13#10''#13#10'Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.'#13#10''#13#10'Alternatively, the contents of these files may be used under the terms of the GNU General Public License Version 2 or later (the "GPL"), in which case the provisions of the GPL are applicable instead of those above.'#13#10'If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.';
+    P.Description:='SynEdit is a line-based editing component with support for syntax-highlighting.'#13#10''#13#10'Originally based on the Synedit project at http://sourceforge.net/projects/synedit, it was ported to LCL and heavily extended by the Lazarus developers.';
+
     P.Flags.Add('LazarusDsgnPkg');
 
-    P.Dependencies.Add('fcl-registry');
-    P.Dependencies.Add('regexpr');
-    P.Dependencies.Add('lcl');
+    D := P.Dependencies.Add('lazedit');
+    D := P.Dependencies.Add('fcl-registry');
+    D := P.Dependencies.Add('regexpr');
+    D := P.Dependencies.Add('lcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-CR');
@@ -40,7 +46,7 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
-    P.Options.Add('-vm5024,4055');
+    P.Options.Add('-vm6058,5024,4055');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCLWidgetType)');
     P.Options.Add('-CR');
@@ -129,6 +135,15 @@ begin
     t.Dependencies.AddUnit('synpluginmulticaret');
     t.Dependencies.AddUnit('synhighlighterpike');
     t.Dependencies.AddUnit('syneditmarkupfoldcoloring');
+    t.Dependencies.AddUnit('syneditviewedlinemap');
+    t.Dependencies.AddUnit('syneditwrappedview');
+    t.Dependencies.AddUnit('synbeautifierpascal');
+    t.Dependencies.AddUnit('lazsyngtk2imm');
+    t.Dependencies.AddUnit('lazsyncocoaimm');
+    t.Dependencies.AddUnit('lazsynimmbase');
+    t.Dependencies.AddUnit('synpopupmenu');
+    t.Dependencies.AddUnit('synedittextdyntabexpander');
+    t.Dependencies.AddUnit('syntextmatesyn');
 
     T:=P.Targets.AddUnit('synbeautifier.pas');
     T:=P.Targets.AddUnit('syncompletion.pas');
@@ -212,9 +227,19 @@ begin
     T:=P.Targets.AddUnit('synpluginmulticaret.pp');
     T:=P.Targets.AddUnit('synhighlighterpike.pas');
     T:=P.Targets.AddUnit('syneditmarkupfoldcoloring.pas');
+    T:=P.Targets.AddUnit('syneditviewedlinemap.pp');
+    T:=P.Targets.AddUnit('syneditwrappedview.pp');
+    T:=P.Targets.AddUnit('synbeautifierpascal.pas');
+    P.Targets.AddImplicitUnit('lazsyngtk2imm.pas');
+    P.Targets.AddImplicitUnit('lazsyncocoaimm.pas');
+    T:=P.Targets.AddUnit('lazsynimmbase.pas');
+    T:=P.Targets.AddUnit('synpopupmenu.pas');
+    T:=P.Targets.AddUnit('synedittextdyntabexpander.pas');
+    T:=P.Targets.AddUnit('syntextmatesyn.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.InstallFiles.Add('SynEdit.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('synedit.compiled');
+    P.InstallFiles.Add('synedit.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;
