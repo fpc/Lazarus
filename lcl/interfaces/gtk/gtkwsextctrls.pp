@@ -46,9 +46,9 @@ type
   published
   end;
 
-  { TGtkWSShape }
+  { TGtkWSCustomShape }
 
-  TGtkWSShape = class(TWSShape)
+  TGtkWSCustomShape = class(TWSCustomShape)
   published
   end;
 

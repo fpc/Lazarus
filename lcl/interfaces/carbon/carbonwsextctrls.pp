@@ -51,9 +51,9 @@ type
   published
   end;
 
-  { TCarbonWSShape }
+  { TCarbonWSCustomShape }
 
-  TCarbonWSShape = class(TWSShape)
+  TCarbonWSCustomShape = class(TWSCustomShape)
   published
   end;
 

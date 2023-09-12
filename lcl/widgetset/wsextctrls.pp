@@ -57,9 +57,9 @@ type
       const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
-  { TWSShape }
+  { TWSCustomShape }
 
-  TWSShape = class(TWSGraphicControl)
+  TWSCustomShape = class(TWSGraphicControl)
   published
   end;
 
@@ -162,7 +162,7 @@ type
 
   { WidgetSetRegistration }
 
-  procedure RegisterShape;
+  procedure RegisterCustomShape;
   procedure RegisterCustomSplitter;
   procedure RegisterPaintBox;
   procedure RegisterCustomImage;
@@ -224,14 +224,14 @@ end;
 
 { WidgetSetRegistration }
 
-procedure RegisterShape;
+procedure RegisterCustomShape;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterShape;
-//  if not WSRegisterShape then
-//    RegisterWSComponent(TShape, TWSShape);
+  WSRegisterCustomShape;
+//  if not WSRegisterCustomShape then
+//    RegisterWSComponent(TCustomShape, TWSCustomShape);
   Done := True;
 end;
 

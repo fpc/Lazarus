@@ -47,9 +47,9 @@ type
   published
   end;
 
-  { TWin32WSShape }
+  { TWin32WSCustomShape }
 
-  TWin32WSShape = class(TWSShape)
+  TWin32WSCustomShape = class(TWSCustomShape)
   published
   end;
 

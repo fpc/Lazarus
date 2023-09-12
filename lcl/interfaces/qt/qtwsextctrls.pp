@@ -44,9 +44,9 @@ type
   published
   end;
 
-  { TQtWSShape }
+  { TQtWSCustomShape }
 
-  TQtWSShape = class(TWSShape)
+  TQtWSCustomShape = class(TWSCustomShape)
   published
   end;
 

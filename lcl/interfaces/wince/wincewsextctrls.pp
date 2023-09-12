@@ -50,9 +50,9 @@ type
   public
   end;
 
-  { TWinCEWSShape }
+  { TWinCEWSCustomShape }
 
-  TWinCEWSShape = class(TWSShape)
+  TWinCEWSCustomShape = class(TWSCustomShape)
   private
   protected
   public

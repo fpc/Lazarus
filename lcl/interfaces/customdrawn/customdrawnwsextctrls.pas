@@ -51,9 +51,9 @@ type
   published
   end;
 
-  { TCDWSShape }
+  { TCDWSCustomShape }
 
-  TCDWSShape = class(TWSShape)
+  TCDWSCustomShape = class(TWSCustomShape)
   published
   end;
 

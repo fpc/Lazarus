@@ -8,7 +8,7 @@
  *****************************************************************************
 }
 
-constructor TShape.Create(TheOwner: TComponent);
+constructor TCustomShape.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   with GetControlClassDefaultSize do
@@ -20,7 +20,7 @@ begin
   FBrush.OnChange := @StyleChanged;
 end;
 
-destructor TShape.Destroy;
+destructor TCustomShape.Destroy;
 begin
   FreeAndNil(FBitmapCopy);
   FreeThenNil(FPen);
@@ -28,7 +28,7 @@ begin
   inherited Destroy;
 end;
 
-function TShape.PtInShape(const P: TPoint): Boolean;
+function TCustomShape.PtInShape(const P: TPoint): Boolean;
 // Return True if point P is inside the actual shape.
 begin
   UpdateMask;
@@ -68,7 +68,7 @@ const
     (Sin(9*pi/5 + pi/2), Sin(9*pi/5 - pi/2))
     );
 
-procedure TShape.DrawToCanvas(ACanvas: TCanvas);
+procedure TCustomShape.DrawToCanvas(ACanvas: TCanvas);
 const
   cStarError = 2; // Detect N pixels error for 5-star horizontal lines
 var
@@ -229,7 +229,7 @@ begin
   end;
 end;
 
-procedure TShape.UpdateMask;
+procedure TCustomShape.UpdateMask;
 begin
   if FBitmapCopy = nil then
   begin
@@ -246,7 +246,7 @@ begin
   DrawToCanvas(FBitmapCopy.Canvas);
 end;
 
-procedure TShape.Paint;
+procedure TCustomShape.Paint;
 begin
   Canvas.Pen := FPen;
   Canvas.Brush := FBrush;
@@ -256,32 +256,32 @@ begin
   inherited Paint;
 end;
 
-procedure TShape.StyleChanged(Sender: TObject);
+procedure TCustomShape.StyleChanged(Sender: TObject);
 begin
   if (Parent <> nil) and (Visible or (csDesigning in ComponentState))
   and Parent.HandleAllocated then
     Invalidate;
 end;
 
-procedure TShape.SetBrush(Value: TBrush);
+procedure TCustomShape.SetBrush(Value: TBrush);
 begin
   if Value <> Brush then
     FBrush.Assign(Value);
 end;
 
-procedure TShape.SetOnShapePoints(Value: TShapePointsEvent);
+procedure TCustomShape.SetOnShapePoints(Value: TShapePointsEvent);
 begin
   FOnShapePoints := Value;
   Invalidate;
 end;
 
-procedure TShape.SetPen(Value: TPen);
+procedure TCustomShape.SetPen(Value: TPen);
 begin
   if Value <> Pen then
     FPen.Assign(Value);
 end;
 
-procedure TShape.SetShape(Value: TShapeType);
+procedure TCustomShape.SetShape(Value: TShapeType);
 begin
   if FShape <> Value then
   begin
@@ -290,19 +290,19 @@ begin
   end;
 end;
 
-class procedure TShape.WSRegisterClass;
+class procedure TCustomShape.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterShape;
+  RegisterCustomShape;
 end;
 
-class function TShape.GetControlClassDefaultSize: TSize;
+class function TCustomShape.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 65;
   Result.CY := 65;
 end;
 
-procedure TShape.Click;
+procedure TCustomShape.Click;
 begin
   inherited Click;
   if Assigned(OnShapeClick)
@@ -310,7 +310,7 @@ begin
     OnShapeClick(Self);
 end;
 
-procedure TShape.CMShapeHitTest(var Message: TCMHittest);
+procedure TCustomShape.CMShapeHitTest(var Message: TCMHittest);
 var
   p: TPoint;
 begin

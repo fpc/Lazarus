@@ -273,7 +273,7 @@ type
   TShapePointsEvent = procedure (Sender: TObject; var Points: TShapePoints;
     var Winding: Boolean) of object;
 
-  TShape = class(TGraphicControl)
+  TCustomShape = class(TGraphicControl)
   private
     FPen: TPen;
     FBrush: TBrush;
@@ -298,22 +298,29 @@ type
     function PtInShape(const P: TPoint): Boolean;
     procedure Paint; override;
     procedure StyleChanged(Sender: TObject);
+    property Brush: TBrush read FBrush write SetBrush;
+    property Pen: TPen read FPen write SetPen;
+    property Shape: TShapeType read FShape write SetShape default stRectangle;
+    property OnShapeClick: TNotifyEvent read FOnShapeClick write FOnShapeClick;
+    property OnShapePoints: TShapePointsEvent read FOnShapePoints write SetOnShapePoints;
+  end;
+
+  TShape = class(TCustomShape)
   published
     property Align;
     property Anchors;
     property BorderSpacing;
-    property Brush: TBrush read FBrush write SetBrush;
+    property Brush;
     property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
     property ParentShowHint;
-    property Pen: TPen read FPen write SetPen;
-    property Shape: TShapeType read FShape write SetShape default stRectangle;
+    property Pen;
+    property Shape;
     property ShowHint;
     property Visible;
-
     property OnChangeBounds;
     property OnClick;
     property OnDragDrop;
@@ -335,8 +342,8 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property OnShapeClick: TNotifyEvent read FOnShapeClick write FOnShapeClick;
-    property OnShapePoints: TShapePointsEvent read FOnShapePoints write SetOnShapePoints;
+    property OnShapeClick;
+    property OnShapePoints;
   end;
 
 

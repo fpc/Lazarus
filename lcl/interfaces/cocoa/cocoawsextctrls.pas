@@ -51,9 +51,9 @@ type
   public
   end;
 
-  { TCocoaWSShape }
+  { TCocoaWSCustomShape }
 
-  TCocoaWSShape = class(TWSShape)
+  TCocoaWSCustomShape = class(TWSCustomShape)
   private
   protected
   public

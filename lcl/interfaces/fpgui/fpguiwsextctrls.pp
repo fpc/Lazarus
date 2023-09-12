@@ -47,9 +47,9 @@ type
   public
   end;
 
-  { TFpGuiWSShape }
+  { TFpGuiWSCustomShape }
 
-  TFpGuiWSShape = class(TWSShape)
+  TFpGuiWSCustomShape = class(TWSCustomShape)
   private
   protected
   public

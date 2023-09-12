@@ -79,7 +79,7 @@ function WSRegisterCustomLabel: Boolean;       external name 'WSRegisterCustomLa
 // extctrls
 function WSRegisterCustomPage: Boolean;        external name 'WSRegisterCustomPage';
 function WSRegisterCustomNotebook: Boolean;    external name 'WSRegisterCustomNotebook';
-function WSRegisterShape: Boolean;             external name 'WSRegisterShape';
+function WSRegisterCustomShape: Boolean;       external name 'WSRegisterCustomShape';
 function WSRegisterCustomSplitter: Boolean;    external name 'WSRegisterCustomSplitter';
 function WSRegisterPaintBox: Boolean;          external name 'WSRegisterPaintBox';
 function WSRegisterCustomImage: Boolean;       external name 'WSRegisterCustomImage';

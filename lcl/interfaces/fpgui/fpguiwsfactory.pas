@@ -57,7 +57,7 @@ function RegisterCustomLabel: Boolean;
 // extctrls
 function RegisterCustomPage: Boolean;
 function RegisterCustomNotebook: Boolean;
-function RegisterShape: Boolean;
+function RegisterCustomShape: Boolean;
 function RegisterCustomSplitter: Boolean;
 function RegisterPaintBox: Boolean;
 function RegisterCustomImage: Boolean;
@@ -356,7 +356,7 @@ begin
   Result := false;
 end;
 
-function RegisterShape: Boolean; alias : 'WSRegisterShape';
+function RegisterCustomShape: Boolean; alias : 'WSRegisterCustomShape';
 begin
   Result := False;
 end;

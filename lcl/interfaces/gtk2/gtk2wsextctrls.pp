@@ -50,9 +50,9 @@ type
   published
   end;
 
-  { TGtk2WSShape }
+  { TGtk2WSCustomShape }
 
-  TGtk2WSShape = class(TWSShape)
+  TGtk2WSCustomShape = class(TWSCustomShape)
   published
   end;
 
