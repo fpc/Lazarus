@@ -1502,6 +1502,62 @@ Draws a five-point star shape (center angle points down) in the client area
 for a TShape control.
 </short>
 </element>
+<element name="TShapeType.stPolygon">
+<short>
+Draws a shape with user-specified vertices in the client area for a TShape 
+control.
+</short>
+</element>
+
+<element name="TShapePoints">
+<short>
+Array type used to store dynamically allocated TPoint instances.
+</short>
+<descr>
+<p>
+Passed as an argument to an implementations of the TShapePointsEvent object 
+procedure, and assigned to the OnShapePoints event handler in TShape.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShapePointsEvent"/>
+<link id="TShape.OnShapePoints"/>
+</seealso>
+</element>
+
+<element name="TShapePointsEvent">
+<short>
+Specifies an event handler used to get an array of user-specified vertices for 
+a polygonal shape in TShape,
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShapePoints"/>
+<link id="TShape.OnShapePoints"/>
+</seealso>
+</element>
+<element name=" TShapePointsEvent.Sender">
+<short>
+Object instance (TShape) for the event notification.
+</short>
+</element>
+<element name="TShapePointsEvent.Points">
+<short>
+Returns the TPoint instances for the vertices on a polygonal shape.
+</short>
+</element>
+<element name="TShapePointsEvent.Winding">
+<short>
+Returns <b>True</b> if Winding order was used for the TPoint instances in 
+Points.
+</short>
+</element>
 
 <element name="TShape">
 <short>
@@ -1529,6 +1585,7 @@ It can be displayed using the <var>Paint</var> method, or the
 <element name="TShape.FShape"/>
 <element name="TShape.FBitmapCopy"/>
 <element name="TShape.FOnShapeClick"/>
+<element name="TShape.FOnShapePoints"/>
 
 <element name="TShape.SetBrush">
 <short>Sets the value for the Brush property.</short>
@@ -1563,6 +1620,24 @@ It can be displayed using the <var>Paint</var> method, or the
 <short>New value for the property.</short>
 </element>
 
+<element name="TShape.SetOnShapePoints">
+<short>
+Updates the shaped control when a new value is assigned to the OnShapePoints 
+event handler.
+</short>
+<descr/>
+<seealso>
+<link id="TShape.OnShapePoints"/>
+<link id="TShapePointsEvent"/>
+</seealso>
+
+</element>
+<element name="TShape.SetOnShapePoints.Value">
+<short>
+New value for the OnShapePoints event handler.
+</short>
+</element>
+
 <!-- protected -->
 <element name="TShape.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
@@ -1587,6 +1662,175 @@ used to set the initial value in the <var>Bounds</var> for the control.
 <short>
 TSize instance with the dimensions for instances of the control class.
 </short>
+</element>
+
+<element name="TShape.Click">
+<short>
+Performs actions needed when a mouse click event occurs on the shaped control.
+</short>
+<descr>
+<p>
+<var>Click</var> is an overridden method in <var>TShape</var>. It calls the 
+inherited method (in TControl) to signal an assigned OnClick event handler, and/
+or execute and assigned Action when the control has been clicked. It extends 
+the method to signal the OnShapeClick event handler (when assigned) if the 
+mouse was positioned within the interior for the Shape on the control. 
+</p>
+<p>
+Click is activated (in the ancestor class) when the left mouse button is 
+released.
+</p>
+</descr>
+<seealso>
+<link id="TShape.OnShapeClick"/>
+<link id="#lcl.controls.TControl.Click">TControl.Click</link>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+</seealso>
+</element>
+
+<element name="TShape.CMShapeHitTest">
+<short>
+Handles a CM_MASKHITTEST message for the control.
+</short>
+<descr>
+<p>
+Converts the parent screen coordinates in <var>Message</var> to client 
+coordinates for the control. It calls PtInShape and updates the Result member 
+in Message to indicate whether the mouse click occurred on the interior of the 
+shape on the control. 0 indicates that the mouse event was inside or on the 
+Shape. 1 indicates that the event was outside of the area for the Shape.
+</p>
+</descr>
+<seealso>
+<link id="TShape.PtInShape"/>
+<link id="#lcl.controls.TControl.ParentToClient">TControl.ParentToClient</link>
+<link id="#lcl.controls.TCMHitTest">TCMHitTest</link>
+</seealso>
+</element>
+<element name="TShape.CMShapeHitTest.Message">
+<short>
+Control message with the parent screen coordinates for the mouse event.
+</short>
+</element>
+
+<element name="TShape.DrawToCanvas">
+<short>
+Draws the Shape for the control on the specified canvas.
+</short>
+<descr>
+<p>
+<var>DrawToCanvas</var> is a method used to draw the shaped control on the 
+TCanvas instance specified in the <var>ACanvas</var> argument. It calculates 
+the drawing area (TRect) needed using the control Width and Height, the width 
+of the Pen on the canvas, and the Shape for the control.
+</p>
+<p>
+The Brush style and color for the canvas are set in the calling routine. This 
+allows the same method to be used to draw either the content for the shaped 
+control or its Monochrome mask - depending on the settings in the canvas.
+</p>
+<p>
+DrawToCanvas calls methods in ACanvas to perform drawing operations needed for 
+the value in Shape. For example:
+</p>
+<dl>
+<dt>stRectangle, stSquare</dt>
+<dd>
+Calls the Rectangle method.
+</dd>
+<dt>stRoundRect, stRoundSquare</dt>
+<dd>
+Calls the RoundRect method.
+</dd>
+<dt>stCircle, stEllipse</dt>
+<dd>
+Calls the Ellipse method.
+</dd>
+<dt>stSquaredDiamond, stDiamond</dt>
+<dd>
+Allocates TPoint instances with the four (4) vertices needed for the shape and 
+calls the Polygon method.
+</dd>
+<dt>stTriangle, stTriangleDown, stTriangleLeft, stTriangleRight</dt>
+<dd>
+Allocates TPoint instances with the three (3) vertices needed for the shape and 
+calls the Polygon method.
+</dd>
+<dt>stStar, stStarDown</dt>
+<dd>
+Calculates the center point and radii needed to scale the width or height for 
+the shape. Allocates the elevent (11) vertices needed for the shape and calls 
+the Polyon method.
+</dd>
+<dt>stPolygon</dt>
+<dd>
+Signals the OnShapePoints event handler (when assigned) to get the vertices and 
+polygon winding for a user-specified or irregular polygonal shape. If the event 
+handler returns more than 2 vertices, the Polygon method is called using the 
+points. No actions are performed if 2 (or fewer points) are returned as 
+vertices for the polygon.
+</dd>
+</dl>
+<p>
+DrawToCanvas is called from the UpdateMask and Paint methods.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShape.Shape"/>
+<link id="TShape.Pen"/>
+<link id="TShape.OnShapePoints"/>
+<link id="TShape.UpdateMask"/>
+<link id="TShape.Paint"/>
+<link id="#lcl.graphics.TCanvas">TCanvas</link>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Height">TControl.Height</link>
+<link id="#rtl.classes.TRect">TRect</link>
+<link id="#rtl.classes.TPoint">TPoint</link>
+</seealso>
+</element>
+<element name="`TShape.DrawToCanvas.ACanvas">
+<short>
+TCanvas instance where the shaped control is drawn.
+</short>
+</element>
+
+<element name="TShape.UpdateMask">
+<short>
+Updates the internal Monochrome bitmap used as a mask to detect mouse click 
+events on the shaped control.
+</short>
+<descr>
+<p>
+<var>UpdateMask</var> ensures that the internal TBitmap instance used in the 
+class is allocated and configured (when not already assigned). It is configured 
+as a Monochrome image where pixels outside of the area for the Shape use the 
+color clWhite. Pixels which are inside of (or on an edge) for the Shape use the 
+color clBlack.
+</p>
+<p>
+UpdateMask calls the DrawToCanvas method to draw the image for the shaped 
+control on the canvas for the bitmap.
+</p>
+<p>
+UpdateMask is called from the PtInShape method prior to checking where the 
+mouse pointer was located when a click event occured.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShape.DrawToCanvas"/>
+<link id="TShape.PtInShape"/>
+<link id="TShape.Pen"/>
+<link id="#lcl.graphics.TCanvas">TCanvas</link>
+<link id="#lcl.graphics.TBitmap">TBitmap</link>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Height">TControl.Height</link>
+</seealso>
 </element>
 
 <!-- public -->
@@ -1665,7 +1909,7 @@ the control design surface.
 </p>
 </descr>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TShape.Click"/>
@@ -1813,6 +2057,45 @@ Added in LCL version 4.0.
 <link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 <link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
+</element>
+
+<element name="TShape.OnShapePoints">
+<short>
+Event handler signalled to get a custom vertices for the shape drawn on the 
+control.
+</short>
+<descr>
+<p>
+<var>OnShapePoints</var> is a <var>TShapePointsEvent</var> property with the 
+event handler signalled to get user-specified vertices for a polygonal Shape on 
+the control. It allows a custom shape to defined for the control, or an 
+irregular variant of one of the predefined values in TShapeType. For example: a 
+parallelogram, an isocoles triangle, or an octagon.
+</p>
+<p>
+An application can implement and assign a handler routine using the signature 
+in TShapePointsEvent to respond to the event notification. The handler can 
+poulate its array with the number of TPoint instances needed for the vertices 
+on the polygon. It can also indicate whether Winding order was used for the 
+returned vertices.
+</p>
+<p>
+Changing the routine assigned to the handler causes the control to be redrawn.
+</p>
+<p>
+OnShapePoints is signalled (when assigned) from the DrawToCanvas method when 
+the Shape property is set to stPolygon.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TShape.Shape"/>
+<link id="TShape.DrawToCanvas"/>
+<link id="TShapePointsEvent"/>
+<link id="TShapeType"/>
 </seealso>
 </element>
 
