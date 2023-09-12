@@ -1901,6 +1901,7 @@ help:
 	@$(ECHO) "   bigide      build the extra packages for the bigide, requires lcl"
 lazbuildpackages:
 	$(MAKE) -C lazutils
+	$(MAKE) -C lazedit
 	$(MAKE) -C codetools
 	$(MAKE) -C buildintf
 	$(MAKE) -C lazdebuggers/lazdebuggerintf
@@ -1959,6 +1960,7 @@ bigide:
 all: lazbuildlclpackages idepackages bigide
 clean:
 	$(MAKE) -C lazutils clean
+	$(MAKE) -C lazedit clean
 	$(MAKE) -C codetools clean
 	$(MAKE) -C codetools/ide clean
 	$(MAKE) -C freetype clean
@@ -2016,6 +2018,7 @@ clean:
 cleanall: clean
 distclean:
 	$(MAKE) -C lazutils distclean
+	$(MAKE) -C lazedit distclean
 	$(MAKE) -C codetools distclean
 	$(MAKE) -C codetools/ide distclean
 	$(MAKE) -C freetype distclean

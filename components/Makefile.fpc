@@ -39,6 +39,7 @@ help:
 # build lazbuild non lcl packages, requires packager/registration
 lazbuildpackages:
 	$(MAKE) -C lazutils
+	$(MAKE) -C lazedit
 	$(MAKE) -C codetools
 	$(MAKE) -C buildintf
 	$(MAKE) -C lazdebuggers/lazdebuggerintf
@@ -109,6 +110,7 @@ all: lazbuildlclpackages idepackages bigide
 
 clean:
 	$(MAKE) -C lazutils clean
+	$(MAKE) -C lazedit clean
 	$(MAKE) -C codetools clean
 	$(MAKE) -C codetools/ide clean
 	$(MAKE) -C freetype clean
@@ -168,6 +170,7 @@ cleanall: clean
 
 distclean:
 	$(MAKE) -C lazutils distclean
+	$(MAKE) -C lazedit distclean
 	$(MAKE) -C codetools distclean
 	$(MAKE) -C codetools/ide distclean
 	$(MAKE) -C freetype distclean
