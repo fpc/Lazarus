@@ -775,7 +775,7 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
     inc(Cnt);
   end;
-  if InstallTreeView.Items.TopLvlCount<>Cnt then
+  if InstalledFilterEdit.GetExistingBranch(nil).Items.Count<>Cnt then
     ListChanged:=true;
   SaveAndExitButton.Enabled:=ListChanged;
   SaveAndRebuildButton.Enabled:=ListChanged;
