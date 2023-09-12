@@ -309,6 +309,7 @@ type
     FAllowBraceWithoutMin: boolean;
     FAllowUnsafeLookBehind: boolean;
     FAllowLiteralBraceWithoutRange: boolean;
+    FMatchesCleared: Boolean;
     GrpBounds: TRegExprBoundsArray;
     GrpIndexes: array [0 .. RegexMaxGroups - 1] of integer; // map global group index to _capturing_ group index
     GrpNames: array [0 .. RegexMaxGroups - 1] of RegExprString; // names of groups, if non-empty
@@ -892,7 +893,7 @@ uses
 const
   // TRegExpr.VersionMajor/Minor return values of these constants:
   REVersionMajor = 1;
-  REVersionMinor = 163;
+  REVersionMinor = 164;
 
   OpKind_End = REChar(1);
   OpKind_MetaClass = REChar(2);
@@ -5869,6 +5870,8 @@ begin
           if regRecursion < RegexMaxRecursion then
           begin
             Inc(regRecursion);
+            FillChar(GrpBounds[regRecursion].GrpStart, SizeOf(GrpBounds[0].GrpStart[regRecursion])*regNumBrackets, 0);
+            FillChar(GrpBounds[regRecursion].GrpEnd,   SizeOf(GrpBounds[0].GrpEnd[regRecursion])  *regNumBrackets, 0);
             bound1 := MatchPrim(regCodeWork);
             Dec(regRecursion);
           end
@@ -5890,6 +5893,8 @@ begin
             saveSubCalled := GrpSubCalled[no];
             GrpSubCalled[no] := True;
             Inc(regRecursion);
+            FillChar(GrpBounds[regRecursion].GrpStart, SizeOf(GrpBounds[0].GrpStart[regRecursion])*regNumBrackets, 0);
+            FillChar(GrpBounds[regRecursion].GrpEnd,   SizeOf(GrpBounds[0].GrpEnd[regRecursion])  *regNumBrackets, 0);
             bound1 := MatchPrim(save);
             Dec(regRecursion);
             GrpSubCalled[no] := saveSubCalled;
@@ -5976,14 +5981,18 @@ end;
 
 procedure TRegExpr.ClearMatches;
 begin
-  FillChar(GrpBounds, SizeOf(GrpBounds), 0);
-  FillChar(GrpSubCalled, SizeOf(GrpSubCalled), 0);
+  if FMatchesCleared then
+    exit;
+  FMatchesCleared := True;
+  FillChar(GrpBounds[0].GrpStart, SizeOf(GrpBounds[0].GrpStart[0])*regNumBrackets, 0);
+  FillChar(GrpBounds[0].GrpEnd,   SizeOf(GrpBounds[0].GrpEnd[0])  *regNumBrackets, 0);
+  FillChar(GrpSubCalled[0], SizeOf(GrpSubCalled[0])*regNumBrackets, 0);
 end;
 
 procedure TRegExpr.ClearInternalExecData;
 begin
   fLastError := reeOk;
-  FillChar(GrpBacktrackingAsAtom, SizeOf(GrpBacktrackingAsAtom), 0);
+  FillChar(GrpBacktrackingAsAtom[0], SizeOf(GrpBacktrackingAsAtom[0])*regNumBrackets, 0);
   IsBacktrackingGroupAsAtom := False;
   {$IFDEF ComplexBraces}
   // no loops started
@@ -5996,9 +6005,8 @@ procedure TRegExpr.ClearInternalIndexes;
 var
   i: integer;
 begin
-  FillChar(GrpBounds, SizeOf(GrpBounds), 0);
+  FillChar(GrpBounds[0], SizeOf(GrpBounds[0]), 0);
   FillChar(GrpAtomic, SizeOf(GrpAtomic), 0);
-  FillChar(GrpSubCalled, SizeOf(GrpSubCalled), 0);
   FillChar(GrpOpCodes, SizeOf(GrpOpCodes), 0);
 
   for i := 0 to RegexMaxGroups - 1 do
@@ -6060,6 +6068,7 @@ begin
       if StrLPos(fInputStart, PRegExprChar(regMustString), fInputEnd - fInputStart, length(regMustString)) = nil then
         exit;
 
+  FMatchesCleared := False;
   // ATryOnce or anchored match (it needs to be tried only once).
   if (ATryMatchOnlyStartingBefore = AOffset + 1) or (regAnchored in [raBOL, raOnlyOnce, raContinue]) then
   begin
