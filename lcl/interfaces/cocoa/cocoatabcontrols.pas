@@ -67,6 +67,7 @@ type
     class function alloc: id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
+    procedure setTabViewType(newValue: NSTabViewType); override;
     // lcl
     function lclIsEnabled: Boolean; override;
     procedure lclSetEnabled(AEnabled: Boolean); override;
@@ -215,10 +216,6 @@ begin
   aview.prevarr.setAction( ObjCSelector('extTabPrevButtonClick:'));
   aview.nextarr.setTarget(aview);
   aview.nextarr.setAction( ObjCSelector('extTabNextButtonClick:'));
-
-
-  PlaceButton(true, aview.prevarr, aview);
-  PlaceButton(false, aview.nextarr, aview);
 end;
 
 // only missing ViewItems inserted, RemoveAllTabs() is no longer needed,
@@ -266,6 +263,9 @@ var
 begin
   ShowPrev := false;
   ShowNext := false;
+
+  // ReviseTabs() supports tpTop and tpBottom only
+  if (aview.tabViewType=NSLeftTabsBezelBorder) or (aview.tabViewType=NSRightTabsBezelBorder) then exit;
 
   if aview.fulltabs.count=0 then exit;
 
@@ -337,17 +337,23 @@ var
 begin
   ReviseTabs(aview, showPrev, showNExt);
   if Assigned(aview.prevarr) then
+  begin
+    PlaceButton(true, aview.prevarr, aview);
     {$ifdef BOOLFIX}
     aview.prevarr.setHidden_(Ord(not showPrev));
     {$else}
     aview.prevarr.setHidden(not showPrev);
     {$endif}
+  end;
   if Assigned(aview.nextarr) then
+  begin
+    PlaceButton(false, aview.nextarr, aview);
     {$ifdef BOOLFIX}
     aview.nextarr.setHidden_(Ord(not showNext));
     {$else}
     aview.nextarr.setHidden(not showNext);
     {$endif}
+  end;
 end;
 
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
@@ -444,6 +450,12 @@ begin
   if not Assigned(nextarr) then
     AllocPrevNext( self );
 
+  UpdateTabAndArrowVisibility(self);
+end;
+
+procedure TCocoaTabControl.setTabViewType(newValue: NSTabViewType);
+begin
+  Inherited;
   UpdateTabAndArrowVisibility(self);
 end;
 
