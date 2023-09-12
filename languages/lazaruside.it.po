@@ -6453,6 +6453,10 @@ msgstr "Ripulisci e costruisci"
 msgid "Clean up and build project"
 msgstr "Ripulisci e costruisci il progetto"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7240,6 +7244,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
+msgstr ""
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
 msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
@@ -11994,6 +12002,10 @@ msgstr "Nome della lingua Lazarus (e.g. english, deutsch)"
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opzioni] <nomefile-progetto>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12381,6 +12393,10 @@ msgstr "La unit principale è sorgente Pascal"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Assumi che sia Pascal, anche se non termina con un suffisso .pas/.pp."
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 #, fuzzy
@@ -18653,6 +18669,11 @@ msgstr "La cartella Lazarus contiene i sorgenti dell'IDE, i pacchetti dell'LCL e
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "La cartella Lazarus \"%s\" non sembra corretta:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 #, fuzzy

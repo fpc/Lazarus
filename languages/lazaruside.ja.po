@@ -6437,6 +6437,10 @@ msgstr "掃除して構築"
 msgid "Clean up and build project"
 msgstr "掃除してプロジェクトを構築"
 
+#: lazarusidestrconsts.liscleanuplazbuild
+msgid "Clean up + lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
 msgid "Clean up package \"%s\"."
@@ -7226,6 +7230,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
+msgstr ""
+
+#: lazarusidestrconsts.liscompilenormally
+msgid "Compile normally"
 msgstr ""
 
 #: lazarusidestrconsts.liscompileproject
@@ -11887,6 +11895,10 @@ msgstr "Lazarus言語名(例: english, deutsch)"
 msgid "lazarus [options] <project-filename>"
 msgstr "Lazarus [オプション]<プロジェクト-ファイル名>"
 
+#: lazarusidestrconsts.lislazbuild
+msgid "lazbuild"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
 msgid "Action"
@@ -12270,6 +12282,10 @@ msgstr "メインユニットは Pascal ソース"
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "たとえそれが.pas/.pp接尾辞で終わっていなくともPascalと仮定"
+
+#: lazarusidestrconsts.lismajorchangesdetected
+msgid "Major changes detected"
+msgstr ""
 
 #: lazarusidestrconsts.lismakecurrent
 #, fuzzy
@@ -18564,6 +18580,11 @@ msgstr "そのLazarusディレクトリはIDEのソースとLCLのパッケー�
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "そのLazarusディレクトリ\"%s\" は正しくないようです:%s%s"
+
+#: lazarusidestrconsts.listhelazarussourcesuse
+#, object-pascal-format
+msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
+msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 #, fuzzy
