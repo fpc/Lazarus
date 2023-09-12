@@ -268,9 +268,7 @@ type
     stTriangle, stTriangleLeft, stTriangleRight, stTriangleDown,
     stStar, stStarDown, stPolygon);
 
-  TShapePoints = array of TPoint;
-
-  TShapePointsEvent = procedure (Sender: TObject; var Points: TShapePoints;
+  TShapePointsEvent = procedure (Sender: TObject; var Points: TPointArray;
     var Winding: Boolean) of object;
 
   TCustomShape = class(TGraphicControl)
