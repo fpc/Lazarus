@@ -1638,14 +1638,14 @@ Canvas and other resources allocated in ancestor classes.
 </seealso>
 </element>
 
-<element name="TShape.HitTest">
+<element name="TShape.PtInShape">
 <short>
 Determines whether the coordinates for the specified Point are within the area 
 for the shaped control.
 </short>
 <descr>
 <p>
-<var>HitTest</var> uses a temporary TBitmap instance to determine whether the 
+<var>PtInShape</var> uses a temporary TBitmap instance to determine whether the 
 coordinates in P are within the interior of the shaped control. The Bitmap 
 contains a monochrome variant of the filled shape where the pixels inside the 
 shape have the color clBlack. Pixels outside of the filled interior area have 
@@ -1658,7 +1658,7 @@ in <var>P</var> has the color clBlack. False indicates that the parent control
 mouse position.
 </p>
 <p>
-HitTest is used in the Click method to determine whether an assigned 
+PtInShape is used in the Click method to determine whether an assigned 
 OnShapeClick event handler is signalled for the mouse position on the control. 
 It is also called when CMShapeHitTest handles a TCMHittest message received for 
 the control design surface.
@@ -1675,13 +1675,13 @@ Added in LCL version 4.0.
 <link id="#rtl.classes.TPoint">TPoint</link>
 </seealso>
 </element>
-<element name="TShape.HitTest.Result">
+<element name="TShape.PtInShape.Result">
 <short>
 Returns <b>True</b> if the specified coordinates are within the interior of the 
 shape.
 </short>
 </element>
-<element name="TShape.HitTest.P">
+<element name="TShape.PtInShape.P">
 <short>
 TPoint instance with the horizontal (X) and vertical (Y) coordinates tested in 
 the method.
@@ -1796,7 +1796,7 @@ handler signalled if a mouse click occurs on the shaped control.
 OnShapeClick is signalled (when assigned) from the Click method, and occurs 
 after the OnClick handler has been signalled and an optional Action assigned to 
 the control has been executed. The event handler is <b>not</b> signalled if 
-HitTest indicates that the mouse click did not occur within the interior
+PtInShape indicates that the mouse click did not occur within the interior
 of the shape on the control.
 </p>
 <p>
@@ -1809,7 +1809,7 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TShape.Click"/>
-<link id="TShape.HitTest"/>
+<link id="TShape.PtInShape"/>
 <link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 <link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
