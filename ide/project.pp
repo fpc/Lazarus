@@ -1387,8 +1387,9 @@ begin
                      XMLConfig.GetValue(Path+'CursorPos/Y',1));
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);
-  FSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
-  XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
+  if IdeSyntaxHighlighters <> nil then
+    FSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
+                     XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
                      IdeSyntaxHighlighters.Names[UnitInfo.DefaultSyntaxHighlighter]));
 end;
 
@@ -1406,7 +1407,8 @@ begin
     XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
   else
     XMLConfig.DeletePath(Path+'FoldState');
-  XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
+  if IdeSyntaxHighlighters <> nil then
+    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
                            IdeSyntaxHighlighters.Names[fSyntaxHighlighter],
                            IdeSyntaxHighlighters.Names[UnitInfo.DefaultSyntaxHighlighter]);
 end;
@@ -1891,7 +1893,8 @@ begin
                              RunFileIfActive,false);
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
-    XMLConfig.SetDeleteValue(Path+'DefaultSyntaxHighlighter/Value',
+    if IdeSyntaxHighlighters <> nil then
+      XMLConfig.SetDeleteValue(Path+'DefaultSyntaxHighlighter/Value',
                              IdeSyntaxHighlighters.Names[FDefaultSyntaxHighlighter],
                              IdeSyntaxHighlighters.Names[IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal)]);
   end;
@@ -1944,8 +1947,9 @@ begin
   end;
 
   // session data
-  FDefaultSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
-    XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
+  if IdeSyntaxHighlighters <> nil then
+    FDefaultSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
+      XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
                        IdeSyntaxHighlighters.Names[IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal)]));
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
