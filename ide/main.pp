@@ -7934,10 +7934,10 @@ begin
     ErrMsg:=PackageGraph.SrcBasePackagesNeedLazbuild;
     if ErrMsg<>'' then
     begin
-      r:=IDEQuestionDialog('Major changes detected',
-        'The Lazarus sources use a different list of base packages.'+LineEnding
-        +'It is recommended to compile the IDE clean using lazbuild.',
-        mtConfirmation,[mrYes,'Clean up + lazbuild',21,'lazbuild',mrIgnore,'Compile normally',mrCancel]);
+      r:=IDEQuestionDialog(lisMajorChangesDetected,
+        Format(lisTheLazarusSourcesUse, [LineEnding]),
+        mtConfirmation, [mrYes, lisCleanUpLazbuild, 21, lisLazbuild, mrIgnore,
+          lisCompileNormally, mrCancel]);
       case r of
       mrYes:
         exit(fBuilder.MakeIDEUsingLazbuild(true));
