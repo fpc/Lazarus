@@ -95,6 +95,7 @@ type
     FExecuteCommands: boolean;
     FLazarusDir: string;
     FLinksDir: string;
+    FPCP: string;
     FPkgDir: string;
     FQuiet: Boolean;
     FVerbose: Boolean;
@@ -119,6 +120,7 @@ type
     function GetDefaultPkgDirectory: string;
     function GetDefaultLinksDirectory: string;
     property LazarusDir: string read FLazarusDir write FLazarusDir;
+    property PCP: string read FPCP write FPCP; // primary-config-path, with trailing PathDelim
     property PkgDir: string read FPkgDir write FPkgDir;
     property LinksDir: string read FLinksDir write FLinksDir;
     property Verbose: Boolean read FVerbose write FVerbose;
@@ -217,6 +219,8 @@ procedure TLPLUpdate.ScanPackages(Dir: string; Packages: TPackages);
 var
   FileInfo: TSearchRec;
 begin
+  if (PCP<>'') and (CompareFilenames(PCP,Dir)=0) then exit;
+
   if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then
   begin
     repeat
@@ -529,15 +533,46 @@ begin
 end;
 
 function TLPLUpdate.GetDefaultLazarusDir: string;
+var
+  LazCfgFilename, Line, BaseDir, ParamName, ParamValue: String;
+  sl: TStringList;
+  i: Integer;
+  p: SizeInt;
 begin
   if GetEnvironmentVariableUTF8('LAZARUSDIR')<>'' then
     Result:=GetEnvironmentVariableUTF8('LAZARUSDIR')
   else begin
     Result:=ChompPathDelim(GetCurrentDirUTF8);
     if (ExtractFileName(Result)='tools')
-    and (DirPathExists(ExtractFilePath(Result)+'packager')) then begin
+        and (DirPathExists(ExtractFilePath(Result)+'packager')) then
+    begin
       // common mistake: lplupdate started in tools
       Result:=ExtractFilePath(Result)
+    end;
+
+    BaseDir:=AppendPathDelim(Result);
+    LazCfgFilename:=BaseDir+'lazarus.cfg';
+    if FileExists(LazCfgFilename) then
+    begin
+      // read lazarus.cfg
+      sl:=TStringList.Create;
+      try
+        sl.LoadFromFile(LazCfgFilename);
+        for i:=0 to sl.Count-1 do begin
+          Line:=sl[i];
+          p:=Pos('=',Line);
+          if p<1 then continue;
+          ParamName:=lowercase(LeftStr(Line,p-1));
+          ParamValue:=copy(Line,p+1,length(Line));
+          case ParamName of
+          '--pcp',
+          '--primary-config-path':
+            PCP:=AppendPathDelim(ExpandFileNameUTF8(ParamValue,BaseDir));
+          end;
+        end;
+      finally
+        sl.Free;
+      end;
     end;
   end;
   Result:=CleanAndExpandDirectory(Result);
