@@ -1768,7 +1768,9 @@ Signals the OnShapePoints event handler (when assigned) to get the vertices and
 polygon winding for a user-specified or irregular polygonal shape. If the event 
 handler returns more than 2 vertices, the Polygon method is called using the 
 points. No actions are performed if 2 (or fewer points) are returned as 
-vertices for the polygon.
+vertices for the polygon. Please note that the Shape is not drawn on the 
+control canvas at design-time; a rectangle with a dashed border and a red 'X' 
+are drawn to the corners of the designer surface.
 </dd>
 </dl>
 <p>
