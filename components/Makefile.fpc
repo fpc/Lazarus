@@ -70,7 +70,6 @@ idepackages: lazbuildlclpackages
 #-----------------------------------------------------------------------------
 # build the extra packages needed by the bigide, requires idepackages
 bigide:
-	$(MAKE) -C lazedit
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas

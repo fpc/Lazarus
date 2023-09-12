@@ -1922,7 +1922,6 @@ idepackages: lazbuildlclpackages
 	$(MAKE) -C lclextensions
 	$(MAKE) -C virtualtreeview
 bigide:
-	$(MAKE) -C lazedit
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas
