@@ -426,6 +426,7 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenPos: Integer; override;
+    function GetTokenKind: integer; override;
     procedure Next; override;
   end;
 
@@ -7602,6 +7603,11 @@ begin
 end;
 
 function TIDESynTextSyn.GetTokenPos: Integer;
+begin
+  Result := 0;
+end;
+
+function TIDESynTextSyn.GetTokenKind: integer;
 begin
   Result := 0;
 end;
