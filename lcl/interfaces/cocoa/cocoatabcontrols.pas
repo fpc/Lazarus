@@ -191,8 +191,15 @@ var
 begin
   if not assigned(abtn) then Exit;
 
-  if isPrev then org:=NSMakePoint(arrow_hofs, arrow_vofs)
-  else org:=NSMakePoint(dst.frame.size.width - abtn.frame.size.width - arrow_hofs , arrow_vofs);
+  if dst.tabViewType = NSTopTabsBezelBorder then
+    org.y := arrow_vofs
+  else
+    org.y := dst.frame.size.height - abtn.frame.size.height - arrow_vofs;
+
+  if isPrev then
+    org.x := arrow_hofs
+  else
+    org.x := dst.frame.size.width - abtn.frame.size.width - arrow_hofs;
 
   abtn.setFrameOrigin(org);
 end;
