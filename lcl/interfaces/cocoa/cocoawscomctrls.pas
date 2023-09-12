@@ -911,12 +911,11 @@ end;
 class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 var
   lTabControl: TCocoaTabControl = nil;
-  lOldTabStyle, lTabStyle: NSTabViewType;
+  lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
-  lOldTabStyle := lTabControl.tabViewType();
   lTabStyle := LCLTabPosToNSTabStyle(ATabControl.ShowTabs, ATabControl.BorderWidth, ATabPosition);
   lTabControl.setTabViewType(lTabStyle);
 end;
