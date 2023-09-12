@@ -850,6 +850,12 @@ resourcestring
   lisNotNow = 'Not now';
   lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You cannot build '
     +'Lazarus while debugging or compiling.';
+  lisMajorChangesDetected = 'Major changes detected';
+  lisTheLazarusSourcesUse = 'The Lazarus sources use a different list of base '
+    +'packages.%sIt is recommended to compile the IDE clean using lazbuild.';
+  lisCleanUpLazbuild = 'Clean up + lazbuild';
+  lisLazbuild = 'lazbuild';
+  lisCompileNormally = 'Compile normally';
   lisReadError = 'Read Error';
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFile2 = 'Unable to read file "%s".';
