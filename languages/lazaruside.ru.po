@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-08-02 17:27+0300\n"
+"PO-Revision-Date: 2023-09-12 18:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1119,6 +1119,44 @@ msgstr "Исходный"
 msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "Цвета"
+
+#: lazarusidestrconsts.dlgcolorstml
+msgid "TML Setup"
+msgstr "Параметры TML"
+
+#: lazarusidestrconsts.dlgcolorstmlbadsampletxtfile
+#, object-pascal-format
+msgid "Sample text file not found: %1:s"
+msgstr "Файл с текстом-образцом не найден: %1:s"
+
+#: lazarusidestrconsts.dlgcolorstmlerror
+msgid "Error:"
+msgstr "Ошибка:"
+
+#: lazarusidestrconsts.dlgcolorstmlfromfile
+msgid "File:"
+msgstr "Файл:"
+
+#: lazarusidestrconsts.dlgcolorstmlinfo
+#, object-pascal-format
+msgid "Below is a list of Highlighter (Textmate) found in the folder %1:s.%0:sThis list may include files with errors and files not yet active in the IDE.%0:sTo activate newly added/changed files restart the IDE.%0:sThe \"Reload\" button will update the list below, checking if any errors were fixed."
+msgstr "Ниже представлен список модулей подсветки (Textmate), найденных в каталоге %1:s.%0:sЭтот список может содержать файлы, которые имеют ошибки либо ещё не подключены в IDE.%0:sДля подключения вновь созданных либо изменённых файлов требуется перезапуск IDE.%0:sКнопка \"Обновить\" позволит привести список в актуальное состояние и проверить, были ли исправлены какие-либо ошибки."
+
+#: lazarusidestrconsts.dlgcolorstmlnofilesfound
+msgid "No files found."
+msgstr "Файлов не найдено."
+
+#: lazarusidestrconsts.dlgcolorstmlnosampletxt
+msgid "No sample text configured"
+msgstr "Тексты-образцы не заданы"
+
+#: lazarusidestrconsts.dlgcolorstmlok
+msgid "OK"
+msgstr "ОК"
+
+#: lazarusidestrconsts.dlgcolorstmlrefresh
+msgid "Reload"
+msgstr "Обновить"
 
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"

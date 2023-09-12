@@ -1129,6 +1129,44 @@ msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
 msgstr "Couleurs"
 
+#: lazarusidestrconsts.dlgcolorstml
+msgid "TML Setup"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlbadsampletxtfile
+#, object-pascal-format
+msgid "Sample text file not found: %1:s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlerror
+msgid "Error:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlfromfile
+msgid "File:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlinfo
+#, object-pascal-format
+msgid "Below is a list of Highlighter (Textmate) found in the folder %1:s.%0:sThis list may include files with errors and files not yet active in the IDE.%0:sTo activate newly added/changed files restart the IDE.%0:sThe \"Reload\" button will update the list below, checking if any errors were fixed."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlnofilesfound
+msgid "No files found."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlnosampletxt
+msgid "No sample text configured"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlok
+msgid "OK"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcolorstmlrefresh
+msgid "Reload"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
 msgstr "Paramètres de la ligne de commande (sans le nom de l'application)"
