@@ -1425,7 +1425,7 @@ standard geometric shapes. TShapeType is the type used to implement the
 </p>
 </descr>
 <seealso>
-<link id="TShape.Shape"/>
+<link id="TCustomShape.Shape"/>
 </seealso>
 </element>
 <element name="TShapeType.stRectangle">
@@ -1524,7 +1524,7 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TShapePointsEvent"/>
-<link id="TShape.OnShapePoints"/>
+<link id="TCustomShape.OnShapePoints"/>
 </seealso>
 </element>
 
@@ -1539,7 +1539,7 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TShapePoints"/>
-<link id="TShape.OnShapePoints"/>
+<link id="TCustomShape.OnShapePoints"/>
 </seealso>
 </element>
 <element name=" TShapePointsEvent.Sender">
@@ -1559,89 +1559,96 @@ Points.
 </short>
 </element>
 
-<element name="TShape">
+<element name="TCustomShape">
 <short>
-<var>TShape</var> draws an arbitrary geometric shape.
+Defines a shaped control with an arbitrary geometric shape.
 </short>
 <descr>
 <p>
-<var>TShape</var> is a TGraphicControl descendant used to draw an arbitrary 
-geometric shape. It may be one of a series of standard shapes defined in the 
-<var>TShapeType</var> enumeration.
+<var>TCustomShape</var> is a <var>TGraphicControl</var> descendant used to draw 
+the control with an arbitrary geometric shape. The Shape property determines 
+which geometric shape is displayed, and can be one of a series of standard 
+shapes defined in the <var>TShapeType</var> enumeration. The Brush and Pen 
+properties control the fill and line attributes for the shaped control.
 </p>
 <p>
-It can be displayed using the <var>Paint</var> method, or the 
-<var>Brush</var> and <var>Pen</var> tools.
+TCustomShape is the base class for TShape. Do not create instances of 
+TCustomShape; use TShape instead.
 </p>
 </descr>
+<version>
+Added in LCL version 4.0 as the base class for TShape.
+</version>
 <seealso>
+<link id="TShape"/>
 <link id="TShapeType"/>
+<link id="#lcl.controls.TGraphicControl">TGraphicControl</link>
 </seealso>
 </element>
 
 <!-- private -->
-<element name="TShape.FPen"/>
-<element name="TShape.FBrush"/>
-<element name="TShape.FShape"/>
-<element name="TShape.FBitmapCopy"/>
-<element name="TShape.FOnShapeClick"/>
-<element name="TShape.FOnShapePoints"/>
+<element name="TCustomShape.FPen"/>
+<element name="TCustomShape.FBrush"/>
+<element name="TCustomShape.FShape"/>
+<element name="TCustomShape.FBitmapCopy"/>
+<element name="TCustomShape.FOnShapeClick"/>
+<element name="TCustomShape.FOnShapePoints"/>
 
-<element name="TShape.SetBrush">
+<element name="TCustomShape.SetBrush">
 <short>Sets the value for the Brush property.</short>
 <descr/>
 <seealso>
-<link id="TShape.Brush"/>
+<link id="TCustomShape.Brush"/>
 </seealso>
 </element>
-<element name="TShape.SetBrush.Value">
+<element name="TCustomShape.SetBrush.Value">
 <short>New value for the property.</short>
 </element>
 
-<element name="TShape.SetPen">
+<element name="TCustomShape.SetPen">
 <short>Sets the value for the Pen property.</short>
 <descr/>
 <seealso>
-<link id="TShape.Pen"/>
+<link id="TCustomShape.Pen"/>
 </seealso>
 </element>
-<element name="TShape.SetPen.Value">
+<element name="TCustomShape.SetPen.Value">
 <short>New value for the property.</short>
 </element>
 
-<element name="TShape.SetShape">
+<element name="TCustomShape.SetShape">
 <short>Sets the value for the Shape property.</short>
 <descr/>
 <seealso>
-<link id="TShape.Shape"/>
+<link id="TCustomShape.Shape"/>
 </seealso>
 </element>
-<element name="TShape.SetShape.Value">
+<element name="TCustomShape.SetShape.Value">
 <short>New value for the property.</short>
 </element>
 
-<element name="TShape.SetOnShapePoints">
+<element name="TCustomShape.SetOnShapePoints">
 <short>
 Updates the shaped control when a new value is assigned to the OnShapePoints 
 event handler.
 </short>
 <descr/>
 <seealso>
-<link id="TShape.OnShapePoints"/>
+<link id="TCustomShape.OnShapePoints"/>
 <link id="TShapePointsEvent"/>
 </seealso>
 
 </element>
-<element name="TShape.SetOnShapePoints.Value">
+<element name="TCustomShape.SetOnShapePoints.Value">
 <short>
 New value for the OnShapePoints event handler.
 </short>
 </element>
 
 <!-- protected -->
-<element name="TShape.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+<element name="TCustomShape.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-<element name="TShape.GetControlClassDefaultSize">
+<element name="TCustomShape.GetControlClassDefaultSize">
 <short>Gets the default size for instances of the control.</short>
 <descr>
 <p>
@@ -1658,13 +1665,13 @@ used to set the initial value in the <var>Bounds</var> for the control.
 <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
 </seealso>
 </element>
-<element name="TShape.GetControlClassDefaultSize.Result">
+<element name="TCustomShape.GetControlClassDefaultSize.Result">
 <short>
 TSize instance with the dimensions for instances of the control class.
 </short>
 </element>
 
-<element name="TShape.Click">
+<element name="TCustomShape.Click">
 <short>
 Performs actions needed when a mouse click event occurs on the shaped control.
 </short>
@@ -1682,13 +1689,13 @@ released.
 </p>
 </descr>
 <seealso>
-<link id="TShape.OnShapeClick"/>
+<link id="TCustomShape.OnShapeClick"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
 <link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 </seealso>
 </element>
 
-<element name="TShape.CMShapeHitTest">
+<element name="TCustomShape.CMShapeHitTest">
 <short>
 Handles a CM_MASKHITTEST message for the control.
 </short>
@@ -1702,18 +1709,18 @@ Shape. 1 indicates that the event was outside of the area for the Shape.
 </p>
 </descr>
 <seealso>
-<link id="TShape.PtInShape"/>
+<link id="TCustomShape.PtInShape"/>
 <link id="#lcl.controls.TControl.ParentToClient">TControl.ParentToClient</link>
 <link id="#lcl.controls.TCMHitTest">TCMHitTest</link>
 </seealso>
 </element>
-<element name="TShape.CMShapeHitTest.Message">
+<element name="TCustomShape.CMShapeHitTest.Message">
 <short>
 Control message with the parent screen coordinates for the mouse event.
 </short>
 </element>
 
-<element name="TShape.DrawToCanvas">
+<element name="TCustomShape.DrawToCanvas">
 <short>
 Draws the Shape for the control on the specified canvas.
 </short>
@@ -1781,11 +1788,11 @@ DrawToCanvas is called from the UpdateMask and Paint methods.
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShape.Shape"/>
-<link id="TShape.Pen"/>
-<link id="TShape.OnShapePoints"/>
-<link id="TShape.UpdateMask"/>
-<link id="TShape.Paint"/>
+<link id="TCustomShape.Shape"/>
+<link id="TCustomShape.Pen"/>
+<link id="TCustomShape.OnShapePoints"/>
+<link id="TCustomShape.UpdateMask"/>
+<link id="TCustomShape.Paint"/>
 <link id="#lcl.graphics.TCanvas">TCanvas</link>
 <link id="#lcl.controls.TControl.Width">TControl.Width</link>
 <link id="#lcl.controls.TControl.Height">TControl.Height</link>
@@ -1799,7 +1806,7 @@ TCanvas instance where the shaped control is drawn.
 </short>
 </element>
 
-<element name="TShape.UpdateMask">
+<element name="TCustomShape.UpdateMask">
 <short>
 Updates the internal Monochrome bitmap used as a mask to detect mouse click 
 events on the shaped control.
@@ -1818,16 +1825,16 @@ control on the canvas for the bitmap.
 </p>
 <p>
 UpdateMask is called from the PtInShape method prior to checking where the 
-mouse pointer was located when a click event occured.
+mouse pointer was located when a click event occurred.
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShape.DrawToCanvas"/>
-<link id="TShape.PtInShape"/>
-<link id="TShape.Pen"/>
+<link id="TCustomShape.DrawToCanvas"/>
+<link id="TCustomShape.PtInShape"/>
+<link id="TCustomShape.Pen"/>
 <link id="#lcl.graphics.TCanvas">TCanvas</link>
 <link id="#lcl.graphics.TBitmap">TBitmap</link>
 <link id="#lcl.controls.TControl.Width">TControl.Width</link>
@@ -1836,7 +1843,7 @@ Added in LCL version 4.0.
 </element>
 
 <!-- public -->
-<element name="TShape.Create">
+<element name="TCustomShape.Create">
 <short>
 Constructor for the class instance.
 </short>
@@ -1851,19 +1858,19 @@ the members have been changed.
 </p>
 </descr>
 <seealso>
-<link id="TShape.Brush"/>
-<link id="TShape.Pen"/>
-<link id="TShape.GetControlClassDefaultSize"/>
+<link id="TCustomShape.Brush"/>
+<link id="TCustomShape.Pen"/>
+<link id="TCustomShape.GetControlClassDefaultSize"/>
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Create">TGraphicControl.Create</link>
 <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
 </seealso>
 </element>
-<element name="TShape.Create.TheOwner">
+<element name="TCustomShape.Create.TheOwner">
 <short>Owner of the class instance.</short>
 </element>
 
-<element name="TShape.Destroy">
+<element name="TCustomShape.Destroy">
 <short>
 Destructor for the class instance.
 </short>
@@ -1876,15 +1883,15 @@ Canvas and other resources allocated in ancestor classes.
 </p>
 </descr>
 <seealso>
-<link id="TShape.Brush"/>
-<link id="TShape.Pen"/>
+<link id="TCustomShape.Brush"/>
+<link id="TCustomShape.Pen"/>
 <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
 <link id="#lcl.controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
 <link id="#lcl.controls.TControl.Destroy">TControl.Destroy</link>
 </seealso>
 </element>
 
-<element name="TShape.PtInShape">
+<element name="TCustomShape.PtInShape">
 <short>
 Determines whether the coordinates for the specified Point are within the area 
 for the shaped control.
@@ -1914,27 +1921,27 @@ the control design surface.
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShape.Click"/>
-<link id="TShape.OnShapeClick"/>
-<link id="TShape.CMShapeHitTest"/>
+<link id="TCustomShape.Click"/>
+<link id="TCustomShape.OnShapeClick"/>
+<link id="TCustomShape.CMShapeHitTest"/>
 <link id="#lcl.graphics.TBitmap">TBitmap</link>
 <link id="#rtl.classes.TPoint">TPoint</link>
 </seealso>
 </element>
-<element name="TShape.PtInShape.Result">
+<element name="TCustomShape.PtInShape.Result">
 <short>
 Returns <b>True</b> if the specified coordinates are within the interior of the 
 shape.
 </short>
 </element>
-<element name="TShape.PtInShape.P">
+<element name="TCustomShape.PtInShape.P">
 <short>
 TPoint instance with the horizontal (X) and vertical (Y) coordinates tested in 
 the method.
 </short>
 </element>
 
-<element name="TShape.Paint">
+<element name="TCustomShape.Paint">
 <short>Draws the shape for the control on its Canvas.</short>
 <descr>
 <p>
@@ -1950,53 +1957,80 @@ assigned in the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TShape.Pen"/>
-<link id="TShape.Brush"/>
+<link id="TCustomShape.Pen"/>
+<link id="TCustomShape.Brush"/>
 <link id="TGraphicControl.Canvas"/>
 <link id="TShapeType"/>
 <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
 </seealso>
 </element>
 
-<element name="TShape.StyleChanged">
+<element name="TCustomShape.StyleChanged">
 <short>
-<var>StyleChanged</var> - method for handling change of style by Sender.
+Implements an OnChange event handler signalled when the Brush or the Pen on the 
+control has been changed.
+</short>
+<descr>
+<p>
+<var>StyleChanged</var> is a method used to perform actions needed when the 
+Brush or Pen for the shaped control has been changed. StyleChanged is assigned 
+to the OnChanged event handler (in both Brush and Pen) in the Create 
+constructor.
+</p>
+<p>
+<var>Sender</var> contains the object instance for the event notification, but 
+it is not used in the implementation.
+</p>
+<p>
+StyleChanged ensures that the control has an assigned Parent with a valid 
+Handle before calling Invalidate to redraw the control. No actions are 
+performed in the handler if Parent is <b>Nil</b>, when the control is not 
+Visible, or at design-time.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShape.Brush"/>
+<link id="TCustomShape.Pen"/>
+<link id="TCustomShape.Create"/>
+<link id="#lcl.graphics.TBrush">TBrush</link>
+<link id="#lcl.graphics.TPen">TPen</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
+</element>
+<element name="TCustomShape.StyleChanged.Sender">
+<short>Object for the event notification.</short>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomShape.Brush">
+<short>
+The Brush used to fill the shaped control.
 </short>
 <descr/>
 <seealso/>
 </element>
-<element name="TShape.StyleChanged.Sender">
-<short>Object for the event notification.</short>
-</element>
 
-<element name="TShape.Align" link="#lcl.controls.TControl.Align"/>
-<element name="TShape.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TShape.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-
-<element name="TShape.Brush">
-<short>The Brush to be used for coloring this shape.</short>
+<!-- TODO: Needs content. -->
+<element name="TCustomShape.Pen">
+<short>
+The Pen used to draw lines on the shaped control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<element name="TShape.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TShape.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
-<element name="TShape.DragKind" link="#lcl.controls.TControl.DragKind"/>
-<element name="TShape.DragMode" link="#lcl.controls.TControl.DragMode"/>
-<element name="TShape.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TShape.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-
-<element name="TShape.Pen">
-<short>The Pen to be used for drawing this shape.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TShape.Shape">
-<short>Indicates the geometric shape drawn in the control.</short>
+<!-- TODO: Needs more content. -->
+<element name="TCustomShape.Shape">
+<short>
+Indicates the geometric shape drawn on the shaped control.
+</short>
 <descr>
 <p>
 <var>Shape</var> is a <var>TShapeType</var> property that specifies the 
-geometric shape drawn in the control. See <link id="TShapeType"/> for the 
+geometric shape drawn on the control. See <link id="TShapeType"/> for the 
 values that can be assigned to the property.
 </p>
 </descr>
@@ -2005,31 +2039,7 @@ values that can be assigned to the property.
 </seealso>
 </element>
 
-<element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TShape.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TShape.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TShape.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TShape.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TShape.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
-<element name="TShape.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TShape.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TShape.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TShape.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TShape.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TShape.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TShape.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TShape.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TShape.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TShape.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
-<element name="TShape.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
-<element name="TShape.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
-<element name="TShape.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
-<element name="TShape.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TShape.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
-<element name="TShape.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-
-<element name="TShape.OnShapeClick">
+<element name="TCustomShape.OnShapeClick">
 <short>
 Event handler signalled for a mouse click within the shaped control.
 </short>
@@ -2054,15 +2064,15 @@ the event notification.
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShape.Click"/>
-<link id="TShape.PtInShape"/>
+<link id="TCustomShape.Click"/>
+<link id="TCustomShape.PtInShape"/>
 <link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 <link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
 </seealso>
 </element>
 
-<element name="TShape.OnShapePoints">
+<element name="TCustomShape.OnShapePoints">
 <short>
 Event handler signalled to get a custom vertices for the shape drawn on the 
 control.
@@ -2094,12 +2104,73 @@ the Shape property is set to stPolygon.
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShape.Shape"/>
-<link id="TShape.DrawToCanvas"/>
+<link id="TCustomShape.Shape"/>
+<link id="TCustomShape.DrawToCanvas"/>
 <link id="TShapePointsEvent"/>
 <link id="TShapeType"/>
 </seealso>
 </element>
+
+<element name="TShape">
+<short>
+Implements a shaped control with an arbitrary geometric shape.
+</short>
+<descr>
+<p>
+<var>TShape</var> is a <var>TCustomShape</var> descendant 
+used to draw the control with an arbitrary geometric shape. The Shape property 
+determines which geometric shape is displayed, and can be one of a series of 
+standard shapes defined in the <var>TShapeType</var> enumeration. The Brush and 
+Pen properties control the fill and line attributes for the shaped control.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to be a TCustomShape descendant.
+</version>
+<seealso>
+<link id="TCustomShape"/>
+<link id="TShapeType"/>
+</seealso>
+</element>
+
+<!-- published -->
+<element name="TShape.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TShape.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TShape.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TShape.Brush" link="TCustomShape.Brush"/>
+<element name="TShape.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TShape.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+<element name="TShape.DragKind" link="#lcl.controls.TControl.DragKind"/>
+<element name="TShape.DragMode" link="#lcl.controls.TControl.DragMode"/>
+<element name="TShape.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TShape.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TShape.Pen" link="TCustomShape.Pen"/>
+<element name="TShape.Shape" link="TCustomShape.Shape"/>
+<element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TShape.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TShape.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TShape.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TShape.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TShape.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+<element name="TShape.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TShape.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TShape.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TShape.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TShape.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TShape.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TShape.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TShape.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TShape.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TShape.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+<element name="TShape.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+<element name="TShape.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
+<element name="TShape.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
+<element name="TShape.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TShape.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+<element name="TShape.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+<element name="TShape.OnShapeClick" link="TCustomShape.OnShapeClick"/>
+<element name="TShape.OnShapePoints" link="TCustomShape.OnShapePoints"/>
 
 <element name="TResizeStyle">
 <short>
