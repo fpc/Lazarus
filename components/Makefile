@@ -1901,7 +1901,6 @@ help:
 	@$(ECHO) "   bigide      build the extra packages for the bigide, requires lcl"
 lazbuildpackages:
 	$(MAKE) -C lazutils
-	$(MAKE) -C lazedit
 	$(MAKE) -C codetools
 	$(MAKE) -C buildintf
 	$(MAKE) -C lazdebuggers/lazdebuggerintf
@@ -1915,6 +1914,7 @@ lazbuildlclpackages:
 	$(MAKE) -C lazdebuggers/lazdebuggerlldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfplldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfp
+	$(MAKE) -C lazedit
 	$(MAKE) -C synedit
 idepackages: lazbuildlclpackages
 	$(MAKE) -C lazdebuggergdbmi
@@ -1922,6 +1922,7 @@ idepackages: lazbuildlclpackages
 	$(MAKE) -C lclextensions
 	$(MAKE) -C virtualtreeview
 bigide:
+	$(MAKE) -C lazedit
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas

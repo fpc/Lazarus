@@ -39,7 +39,6 @@ help:
 # build lazbuild non lcl packages, requires packager/registration
 lazbuildpackages:
 	$(MAKE) -C lazutils
-	$(MAKE) -C lazedit
 	$(MAKE) -C codetools
 	$(MAKE) -C buildintf
 	$(MAKE) -C lazdebuggers/lazdebuggerintf
@@ -57,6 +56,7 @@ lazbuildlclpackages:
 	$(MAKE) -C lazdebuggers/lazdebuggerlldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfplldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfp
+	$(MAKE) -C lazedit
 	$(MAKE) -C synedit
 
 #-----------------------------------------------------------------------------
@@ -70,6 +70,7 @@ idepackages: lazbuildlclpackages
 #-----------------------------------------------------------------------------
 # build the extra packages needed by the bigide, requires idepackages
 bigide:
+	$(MAKE) -C lazedit
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C cairocanvas
