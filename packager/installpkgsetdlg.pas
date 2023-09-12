@@ -759,6 +759,7 @@ var
   Dependency: TPkgDependency;
   s: String;
   ListChanged: Boolean;
+  FilteredBranch: TTreeFilterBranch;
 begin
   UninstallButton.Enabled:=InstallTreeView.Selected<>nil;
   AddToInstallButton.Enabled:=AvailableTreeView.Selected<>nil;
@@ -775,7 +776,8 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
     inc(Cnt);
   end;
-  if InstalledFilterEdit.GetExistingBranch(nil).Items.Count<>Cnt then
+  FilteredBranch:=InstalledFilterEdit.GetExistingBranch(nil);
+  if Assigned(FilteredBranch) and (FilteredBranch.Items.Count<>Cnt) then
     ListChanged:=true;
   SaveAndExitButton.Enabled:=ListChanged;
   SaveAndRebuildButton.Enabled:=ListChanged;
