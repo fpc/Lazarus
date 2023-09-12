@@ -66,7 +66,7 @@ type
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
     procedure ClickCheck; virtual;
-    procedure ItemClick(const AIndex: Integer); virtual;  deprecated 'Use ClickCheck instead';  // to be removed in V4.99
+    procedure ItemClick(const AIndex: Integer); virtual;  deprecated 'Use ClickCheck instead';  // deprecated in V3.99
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure FontChanged(Sender: TObject); override;
   public
@@ -84,7 +84,7 @@ type
     property ItemEnabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property State[AIndex: Integer]: TCheckBoxState read GetState write SetState;
     property OnClickCheck: TNotifyEvent read FOnClickCheck write FOnClickCheck;
-    property OnItemClick: TCheckListClicked read FOnItemClick write FOnItemClick; deprecated 'Use OnClickCheck instead';  // to be removed in V4.99
+    property OnItemClick: TCheckListClicked read FOnItemClick write FOnItemClick; deprecated 'Use OnClickCheck instead';  // deprecated in V3.99
   end;
   
   
@@ -137,7 +137,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnItemClick;   deprecated 'Use OnClickCheck instead';  // to be removed in V4.99
+    property OnItemClick; deprecated 'Use OnClickCheck instead';  // deprecated in V4.99
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
@@ -266,7 +266,7 @@ procedure TCustomCheckListBox.DoChange(var Msg: TLMessage);
 begin
   //DebugLn(['TCustomCheckListBox.DoChange ',DbgSName(Self),' ',Msg.WParam]);
   ClickCheck;
-  ItemClick(Msg.WParam);    // deprecated; to be removed in V4.99
+  ItemClick(Msg.WParam);    // deprecated in V3.99
 end;
 
 function TCustomCheckListBox.GetCachedDataSize: Integer;
@@ -337,9 +337,7 @@ begin
       Index := ItemIndex;
       Checked[Index] := not Checked[Index];
       ClickCheck;
-      //ToDo: does Delphi fire OnItemClick and in the same order?
-      //-- wp: Delphi fires: OnKeyDown - OnClickCheck - OnKeyPress - OnKeyUp
-      ItemClick(Index);    // deprecated; to be removed in V4.99
+      ItemClick(Index);    // deprecated in V3.99
     end;
   end;
 end;
