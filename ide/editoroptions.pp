@@ -335,7 +335,8 @@ type
     constructor CreateWithDefColor(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       IsSchemeDefault: Boolean);
     constructor CreateFromXml(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
-      aXMLConfig: TRttiXMLConfig; const aPath: String; IsSchemeDefault: Boolean);
+      aXMLConfig: TRttiXMLConfig; const aPath: String; IsSchemeDefault: Boolean;
+      aPascalScheme: TColorSchemeLanguage = nil; MappedAttributes: TStringList = nil);
     destructor  Destroy; override;
     procedure Clear;
     procedure Assign(Src: TColorSchemeLanguage); reintroduce;
@@ -2982,9 +2983,9 @@ procedure TEditOptLangList.Init;
 var
   NewInfo: TEditOptLanguageInfo;
   FileList: TStringList;
-  i: Integer;
+  i, j: Integer;
   tmlHighlighter: TSynTextMateSyn;
-  dir: String;
+  dir, n: String;
   StrLoader: TStringStream;
 begin
   { - Create the meta information for each available highlighter.
@@ -3718,8 +3719,21 @@ begin
       with NewInfo do
       begin
 //        AddAttrSampleLines[ahaTextBlock] := 12;
-//        MappedAttributes := TStringList.Create;
         CaretXY := Point(1,1);
+        MappedAttributes := TStringList.Create;
+        for j := 0 to tmlHighlighter.AttrCount - 1 do begin
+          n := tmlHighlighter.Attribute[j].StoredName;
+          if strlicomp(pchar(n), pchar('comment.'), 8) = 0           then MappedAttributes.Add(n+'=Comment');
+          if strlicomp(pchar(n), pchar('string.'), 7) = 0            then MappedAttributes.Add(n+'=String');
+          if strlicomp(pchar(n), pchar('constant.numeric.'), 17) = 0 then MappedAttributes.Add(n+'=Number');
+          if strlicomp(pchar(n), pchar('number.'), 7) = 0            then MappedAttributes.Add(n+'=Number');
+          if strlicomp(pchar(n), pchar('keyword.'), 8) = 0           then MappedAttributes.Add(n+'=Reserved word');
+          if strlicomp(pchar(n), pchar('key.'), 4) = 0               then MappedAttributes.Add(n+'=Reserved word');
+          if strlicomp(pchar(n), pchar('entity.name.'), 12) = 0      then MappedAttributes.Add(n+'=Identifier');
+          if strlicomp(pchar(n), pchar('identifier.'), 11) = 0       then MappedAttributes.Add(n+'=Identifier');
+
+          if strlicomp(pchar(n), pchar('comment.'), 8) = 0           then MappedAttributes.Add(n+'=Comment');
+        end;
       end;
       Add(NewInfo);
 
@@ -6765,12 +6779,14 @@ end;
 
 constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
   AIdeHighlighterID: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig;
-  const aPath: String; IsSchemeDefault: Boolean);
+  const aPath: String; IsSchemeDefault: Boolean;
+  aPascalScheme: TColorSchemeLanguage; MappedAttributes: TStringList);
 var
   hla: TSynHighlighterAttributes;
-  csa: TColorSchemeAttribute;
+  csa, pasattr: TColorSchemeAttribute;
   aha: TAdditionalHilightAttribute;
   FormatVersion, i: Integer;
+  TmpPath, n: String;
 begin
   CreateWithDefColor(AGroup, AIdeHighlighterID, IsSchemeDefault); // don't call inherited Create
 
@@ -6794,6 +6810,23 @@ begin
     FAttributes.AddObject(csa.StoredName, csa);
   end;
   FAttributes.Sorted := true;
+
+  if (not FIsSchemeDefault) and (aPascalScheme <> nil) and (MappedAttributes <> nil) then begin
+    TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/';
+    if not aXMLConfig.HasPath(TmpPath, False) then begin
+      for i := 0 to FAttributes.Count - 1 do begin
+        csa := TColorSchemeAttribute(FAttributes.Objects[i]);
+        n := MappedAttributes.Values[csa.StoredName];
+        if (n <> '') then begin
+          pasattr := aPascalScheme.Attribute[n];
+          if pasattr <> nil then
+            csa.Assign(pasattr);
+        end;
+      end;
+      exit;
+    end;
+  end;
+
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
 end;
@@ -7300,14 +7333,19 @@ constructor TColorScheme.CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, 
 var
   i: integer;
   n: String;
+  PascalScheme: TColorSchemeLanguage;
 begin
   Create(AName);
   FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, IdeHighlighterNoneID, aXMLConfig,
                                                        aPath + 'Globals/', True);
+  PascalScheme := nil;
   for i := IdeHighlighterStartId to HighlighterList.Count - 1 do begin
     n := HighlighterList.SharedSynInstances[i].LanguageName;
     if FColorSchemes.IndexOf(n) < 0 then
-      FColorSchemes[n] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig, aPath, False);
+      FColorSchemes[n] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig,
+        aPath, False, PascalScheme, HighlighterList[i].MappedAttributes);
+    if i = IdeHighlighterStartId then
+      PascalScheme := FColorSchemes[n];
    end;
 end;
 
