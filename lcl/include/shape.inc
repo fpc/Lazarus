@@ -203,6 +203,21 @@ begin
         ACanvas.Polygon(P);
       end;
     stPolygon:
+      if (csDesigning in ComponentState) then
+      begin
+        if Assigned(FBitmapCopy) and (ACanvas <> FBitmapCopy.Canvas) then
+        begin
+          ACanvas.Brush.Color := Parent.Color;
+          ACanvas.Brush.Style := bsSolid;
+          ACanvas.Pen.Style := psDash;
+          ACanvas.Pen.Color := clWindowText;
+          ACanvas.Rectangle(PaintRect);
+          ACanvas.Pen.Color := clRed;
+          ACanvas.Line(0, 0, Width-1, Height-1);
+          ACanvas.Line(0, Height-1, Width-1, 0);
+        end else
+          ACanvas.Rectangle(PaintRect);
+      end else
       if Assigned(FOnShapePoints) then
       begin
         SetLength(P, 0);
