@@ -804,7 +804,8 @@ begin
   if FListing.FileTimeStamp=Pool.FileTimeStamp then exit;
   FListing.Clear;
   FListing.FileTimeStamp:=Pool.FileTimeStamp;
-  if Directory='' then exit;// virtual directory
+  if not FilenameIsAbsolute(Directory) then
+    exit;// virtual directory
   
   // Note: do not add a 'if not DirectoryExistsUTF8 then exit'.
   // This will not work on automounted directories. You must use FindFirstUTF8.
@@ -936,8 +937,11 @@ constructor TCTDirectoryCache.Create(const TheDirectory: string;
   end;
   
 begin
-  FDirectory:=AppendPathDelim(TrimFilename(TheDirectory));
-  if FDirectory='.' then FDirectory:='';
+  FDirectory:=TrimFilename(TheDirectory);
+  if FDirectory='.' then
+    FDirectory:=''
+  else
+    FDirectory:=AppendPathDelim(FDirectory);
   if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
     RaiseDirNotAbsolute;
   FListing:=TCTDirectoryListing.Create;
@@ -2244,7 +2248,8 @@ begin
   if FListing.FileTimeStamp=Pool.FileTimeStamp then exit;
   FListing.Clear;
   FListing.FileTimeStamp:=Pool.FileTimeStamp;
-  if Directory='' then exit;// virtual directory
+  if not FilenameIsAbsolute(Directory) then
+    exit;// virtual directory
 
   // gather all sub dirs and files
   SortMap:=nil;
