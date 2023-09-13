@@ -538,7 +538,7 @@ begin
       Result.Right := 0;
     end;
   else
-    Result.Bottom := -10;
+    Result.Bottom := -4;
     Result.Top := 6;
     Result.Left := 7;
     Result.Right := -7;
