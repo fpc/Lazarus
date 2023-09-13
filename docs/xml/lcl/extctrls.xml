@@ -1509,25 +1509,6 @@ control.
 </short>
 </element>
 
-<element name="TShapePoints">
-<short>
-Array type used to store dynamically allocated TPoint instances.
-</short>
-<descr>
-<p>
-Passed as an argument to an implementations of the TShapePointsEvent object 
-procedure, and assigned to the OnShapePoints event handler in TShape.
-</p>
-</descr>
-<version>
-Added in LCL version 4.0.
-</version>
-<seealso>
-<link id="TShapePointsEvent"/>
-<link id="TCustomShape.OnShapePoints"/>
-</seealso>
-</element>
-
 <element name="TShapePointsEvent">
 <short>
 Specifies an event handler used to get an array of user-specified vertices for 
@@ -1538,8 +1519,8 @@ a polygonal shape in TShape,
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TShapePoints"/>
 <link id="TCustomShape.OnShapePoints"/>
+<link id="#lazutils.graphtype.TPointArray">TPointArray</link>
 </seealso>
 </element>
 <element name=" TShapePointsEvent.Sender">
@@ -2004,25 +1985,78 @@ Visible, or at design-time.
 <short>Object for the event notification.</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomShape.Brush">
 <short>
 The Brush used to fill the shaped control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Brush</var> is a <var>TBrush</var> property which contains the attributes 
+used to fill the shaped control. Its Color property can be used to control the 
+fill color for the shaped control. Its Style property determines whether the 
+fill Color is opaque or transparent.
+</p>
+<p>
+Resources allocated to Brush are managed by the class instance in the Create 
+and Destroy methods. Setting a new value for the property causes Invalidate to 
+be called to redraw the control.
+</p>
+<p>
+Brush and Pen are used in the DrawToCanvas method, and in UpdateMask when the 
+internal mask image is created for the shaped control.
+</p>
+<p>
+Use Pen to set attributes applied to the lines drawn for the Shape on the 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShape.Pen"/>
+<link id="TCustomShape.Create"/>
+<link id="TCustomShape.Destroy"/>
+<link id="TCustomShape.DrawToCanvas"/>
+<link id="TCustomShape.UpdateMask"/>
+<link id="#lcl.graphics.TBrush">TBrush</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomShape.Pen">
 <short>
 The Pen used to draw lines on the shaped control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Pen is a TPen property which contains the attributes used to draw lines for the 
+shape on the control. Its Color property can be used to control the fill color 
+for the lines. Its Style property determines the line drawing style like solid, 
+dotted, or dashed.
+</p>
+<p>
+Resources allocated to Pen are managed by the class instance in the Create 
+and Destroy methods. Setting a new value for the property causes Invalidate to 
+be called to redraw the control.
+</p>
+<p>
+Brush and Pen are used in the DrawToCanvas method, and in UpdateMask when the 
+internal mask image is created for the shaped control.
+</p>
+<p>
+Use Brush to set attributes like the fill color and opacity for the Shape on 
+the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShape.Brush"/>
+<link id="TCustomShape.Create"/>
+<link id="TCustomShape.Destroy"/>
+<link id="TCustomShape.DrawToCanvas"/>
+<link id="TCustomShape.UpdateMask"/>
+<link id="#lcl.graphics.TPen">TPen</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs more content. -->
 <element name="TCustomShape.Shape">
 <short>
 Indicates the geometric shape drawn on the shaped control.
@@ -2030,12 +2064,59 @@ Indicates the geometric shape drawn on the shaped control.
 <descr>
 <p>
 <var>Shape</var> is a <var>TShapeType</var> property that specifies the 
-geometric shape drawn on the control. See <link id="TShapeType"/> for the 
-values that can be assigned to the property.
+geometric shape drawn on the control. Shape is used in the DrawToCanvas method. 
+It and determines the number of vertices needed for the shape, and their 
+locations on the control. It also determines the drawing operations performed 
+to draw the Shape on the control Canvas. For example:
+</p>
+<dl>
+<dt>stRectangle, stSquare</dt>
+<dd>
+Calls the Rectangle method for the canvas.
+</dd>
+<dt>stRoundRect, stRoundSquare</dt>
+<dd>
+Calls the RoundRect method for the canvas.
+</dd>
+<dt>stCircle, stEllipse</dt>
+<dd>
+Calls the Ellipse method for the canvas.
+</dd>
+<dt>stSquaredDiamond, stDiamond</dt>
+<dd>
+Allocates TPoint instances with the four (4) vertices needed for the shape and 
+calls the Polygon method for the canvas.
+</dd>
+<dt>stTriangle, stTriangleDown, stTriangleLeft, stTriangleRight</dt>
+<dd>
+Allocates TPoint instances with the three (3) vertices needed for the shape and 
+calls the Polygon method for the canvas.
+</dd>
+<dt>stStar, stStarDown</dt>
+<dd>
+Calculates the center point and radii needed to scale the width or height for 
+the shape. Allocates the elevent (11) vertices needed for the shape and calls 
+the Polyon method for the canvas.
+</dd>
+<dt>stPolygon</dt>
+<dd>
+Signals the OnShapePoints event handler (when assigned) to get the vertices and 
+polygon winding for a user-specified or irregular polygonal shape. Line 
+segments are drawn betwwen the vertices to render the shape for the control.
+</dd>
+</dl>
+<p>
+Use Brush and Pen to control the color and drawing style for the background and 
+lines on the shaped control.
 </p>
 </descr>
 <seealso>
+<link id="TCustomShape.DrawToCanvas"/>
+<link id="TCustomShape.OnShapePoints"/>
+<link id="TCustomShape.Brush"/>
+<link id="TCustomShape.Pen"/>
 <link id="TShapeType"/>
+<link id="#lcl.graphics.TCanvas">TCanvas</link>
 </seealso>
 </element>
 
@@ -2081,7 +2162,7 @@ control.
 <p>
 <var>OnShapePoints</var> is a <var>TShapePointsEvent</var> property with the 
 event handler signalled to get user-specified vertices for a polygonal Shape on 
-the control. It allows a custom shape to defined for the control, or an 
+the control. It allows a custom shape to be defined for the control, or an 
 irregular variant of one of the predefined values in TShapeType. For example: a 
 parallelogram, an isocoles triangle, or an octagon.
 </p>
@@ -2108,6 +2189,7 @@ Added in LCL version 4.0.
 <link id="TCustomShape.DrawToCanvas"/>
 <link id="TShapePointsEvent"/>
 <link id="TShapeType"/>
+<link id="#lazutils.graphtype.TPointArray">TPointArray</link>
 </seealso>
 </element>
 
