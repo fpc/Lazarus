@@ -2219,15 +2219,15 @@ Modified in LCL version 4.0 to be a TCustomShape descendant.
 <element name="TShape.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TShape.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TShape.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TShape.Brush" link="TCustomShape.Brush"/>
+<element name="TShape.Brush" link="#lcl.extctrls.TCustomShape.Brush"/>
 <element name="TShape.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TShape.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TShape.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TShape.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TShape.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TShape.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TShape.Pen" link="TCustomShape.Pen"/>
-<element name="TShape.Shape" link="TCustomShape.Shape"/>
+<element name="TShape.Pen" link="#lcl.extctrls.TCustomShape.Pen"/>
+<element name="TShape.Shape" link="#lcl.extctrls.TCustomShape.Shape"/>
 <element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TShape.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
@@ -2251,8 +2251,8 @@ Modified in LCL version 4.0 to be a TCustomShape descendant.
 <element name="TShape.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TShape.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TShape.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TShape.OnShapeClick" link="TCustomShape.OnShapeClick"/>
-<element name="TShape.OnShapePoints" link="TCustomShape.OnShapePoints"/>
+<element name="TShape.OnShapeClick" link="#lcl.extctrls.TCustomShape.OnShapeClick"/>
+<element name="TShape.OnShapePoints" link="#lcl.extctrls.TCustomShape.OnShapePoints"/>
 
 <element name="TResizeStyle">
 <short>
