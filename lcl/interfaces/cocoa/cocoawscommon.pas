@@ -1355,8 +1355,11 @@ begin
     wheelDelta := round(-event.scrollingDeltaX * 120);
   end
   else
+  begin
     // Filter out empty events - See bug 28491
+    Result := true;
     Exit;
+  end;
 
   // Filter scrolls that affect both X and Y towards whatever the last scroll was
   FLastWheelWasHorz := (Msg.Msg = LM_MOUSEHWHEEL);
