@@ -5512,6 +5512,10 @@ begin
       Perform(LM_VSCROLL, MAKELONG(SB_LINEDOWN, 0), 0)
     else
       Perform(LM_VSCROLL, MAKELONG(SB_LINEUP, 0), 0);
+
+  // should always return true to confirm that
+  // the MouseWheel Event is handled by TIpHtmlInternalPanel
+  Result:= true;
 end;
 
 procedure TIpHtmlInternalPanel.Paint;
@@ -5900,13 +5904,19 @@ end;
 procedure TIpHtmlInternalPanel.WMHScroll(var Message: TLMHScroll);
 begin
   if HScroll.Visible then
+  begin
     HScroll.ScrollMessage(Message);
+    Message.Result := 1;
+  end;
 end;
 
 procedure TIpHtmlInternalPanel.WMVScroll(var Message: TLMVScroll);
 begin
   if VScroll.Visible then
+  begin
     VScroll.ScrollMessage(Message);
+    Message.Result := 1;
+  end;
 end;
 
 procedure TIpHtmlInternalPanel.AsyncHotInvoke(data: ptrint);
