@@ -5503,11 +5503,13 @@ begin
 end;
 
 function TIpHtmlInternalPanel.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+const
+  WHEEL_DELTA = 120;
 var
   i: Integer;
 begin
-  Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
-  for i := 0 to Mouse.WheelScrollLines-1 do
+  inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  for i := abs(Mouse.WheelScrollLines * WheelDelta div WHEEL_DELTA) downto 0 do
     if WheelDelta < 0 then
       Perform(LM_VSCROLL, MAKELONG(SB_LINEDOWN, 0), 0)
     else
