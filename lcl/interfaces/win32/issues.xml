@@ -48,5 +48,12 @@
 			<short>The format of generated file is system dependant</short>
 			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format.</descr>
 		</issue>
+		<issue name="TListBox.OnSelectionChange">
+			<short>This event on Windows is fired each time the user clicks on an item, regradles wether or not that item was already selected.</short>
+			<descr>
+        Windows sends the LBN_SELCHANGE message on each mouse click (or when traversing the list using the keyboard).
+        There's  nothing we can do about that and we cannot query the WS for the previously selected item.
+      </descr>
+		</issue>
 	</widgetset>
 </package>
