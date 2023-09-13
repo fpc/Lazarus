@@ -1937,7 +1937,7 @@ Indicates whether an emulated TextHint can be displayed for the control.
 <var>CanShowEmulatedTextHint</var> is a <var>Boolean</var> function which 
 indicates whether an emulated text hint can be displayed for the control. 
 Emulated text hints are the fallback mechanism used when text hints are not 
-natively supported for a platform /  widgetset.
+natively supported for a platform / widgetset.
 </p>
 <p>
 The return value is <b>True</b> when <b>all</b> of the following conditions 
@@ -3067,7 +3067,7 @@ the event handler signalled when the value in the edit box has been changed.
 <p>
 The event applies to interactive changes to <var>Text</var> made by the user, 
 not those made programmatically. Note that this differs from how other 
-OnChange events work. For example:  TEdit.OnChange is triggered by text 
+OnChange events work. For example: TEdit.OnChange is triggered by text 
 changes that occur in code. This event is also triggered when the item 
 selection is changed using the drop-down list in the combo-box.
 </p>
@@ -3419,13 +3419,13 @@ ordinal position in Items where the value in <var>AValue</var> is stored.
 <p>
 MatchListItem uses the <var>TComboBoxAutoCompleteText</var> settings in 
 <var>AutoCompleteText</var> to locate the position for the specified value. If 
-cbactSearchCaseSensitive  is included in AutoCompleteText, a case-sensitive 
+cbactSearchCaseSensitive is included in AutoCompleteText, a case-sensitive 
 search is used to locate the value. Otherwise, AValue is converted to 
 uppercase and a case-insensitive search is performed in Items.
 </p>
 <p>
 The search direction in Items is determined using the cbactSearchAscending 
-value in  AutoCompleteText. When present, the search starts at the first value 
+value in AutoCompleteText. When present, the search starts at the first value 
 in Items (position 0) and continues until a match is found or all Items have 
 been checked. When omitted, the search starts at the last value in Items 
 (Count-1) and continues until a match is found or all Items have been checked.
@@ -3526,7 +3526,7 @@ text, differing in case.
 <var>Items</var> property for the control. Clear calls the Clear method in 
 Items to removed the strings and any associated objects stored in the 
 <var>TStrings</var> property. Clear sets the value in <var>Text</var> to an 
-empty string (<b>''</b>)  which forces the value in ItemIndex to be changed 
+empty string (<b>''</b>) which forces the value in ItemIndex to be changed 
 to <b>-1</b>.
 </p>
 <p>
@@ -4423,10 +4423,19 @@ Specifies an event handler for change notifications from a list box control.
 <descr>
 <p>
 <var>TSelectionChangeEvent</var> is an object procedure type which specifies 
-an event handler signalled when the select is changed in a list box control. 
+an event handler signalled when a selection is changed for a list box control. 
 Arguments passed to the handler identify the list box control, and the origin 
-of the change notification.
+for the change notification.
 </p>
+<p>
+The <var>User</var> argument is <b>True</b> when the action performed includes 
+one of the following:
+</p>
+<ul>
+<li>An alpha-numeric key is pressed.</li>
+<li>A cursor navigation key is pressed.</li>
+<li>The Home, End, Page Up, or Page Down key is pressed.</li>
+</ul>
 <p>
 TSelectionChangeEvent is the type used to implement the 
 <var>OnSelectionChange</var> property in <var>TCustomListBox</var>. The 
@@ -4441,8 +4450,9 @@ for the handler to respond to the event notification.
 </element>
 <element name="TSelectionChangeEvent.User">
 <short>
-<b>True</b> if the user changed the selection, <b>False</b> if changed by 
-code.
+<b>True</b> on entry if the change was caused by user interaction with the 
+control. <b>False</b> if the selection was changed in program code, like 
+setting the selected item index for the list box control.
 </short>
 </element>
 
@@ -6107,8 +6117,8 @@ the value derived in the event handler.
 <descr>
 <p>
 <var>OnSelectionChange</var> is a <var>TSelectionChangeEvent</var> property 
-with the event handler signalled when a selection is changed in the list box 
-control. OnSelectionChange is signalled (when assigned) from the 
+with the event handler signalled when an item selection on the control has been 
+changed. OnSelectionChange is signalled (when assigned) from the 
 <var>DoSelectionChange</var> method, and occurs prior to calling the 
 <var>Click</var> method for the control.
 </p>
@@ -6117,10 +6127,26 @@ The <var>User</var> argument indicates whether the selection change results
 from user interaction with the control (<b>True</b>), or from code or methods 
 called at run-time (<b>False</b>).
 </p>
+<remark>
+On the Windows platform, OnSelectionChange is signalled when the user clicks on 
+a list item that is already selected. It is also signalled when a mouse click 
+occurs on an unused area on the list box control. These behaviors are built in 
+to the native control on the platform, and are not configurable.
+</remark>
+<p>
+Use OnClick to perform actions when the mouse is clicked on an item on the list 
+box control.
+</p>
+<p>
+Use ClickOnSelChange to indicate whether Click / OnClick are called when the 
+left mouse button is released during a click action or when OnSelectionChanged 
+is performed for the control.
+</p>
 </descr>
 <seealso>
 <link id="TCustomListBox.DoSelectionChange"/>
 <link id="TCustomListBox.Click"/>
+<link id="TCustomListBox.OnClick"/>
 <link id="TCustomListBox.ClickOnSelChange"/>
 <link id="TCustomListBox.SelectRange"/>
 <link id="TCustomListBox.MultiSelect"/>
@@ -7901,7 +7927,7 @@ widgetset class. Otherwise, the property value is determined by calling the
 <descr>
 <p>
 CaretPos is a TPoint property which contains the coordinates for the caret 
-(or editing cursor)  in the control. The coordinates reflects logical (UTF-8) 
+(or editing cursor) in the control. The coordinates reflects logical (UTF-8) 
 characters and lines.
 </p>
 <dl>
@@ -8121,7 +8147,7 @@ Indicates if the edit control accepts numeric values only.
 whether Text is limited to characters which represent numeric digits. The 
 default value for the property is <b>False</b>, and allows any character 
 valid for the type to be entered. When set to <b>True</b>, only the 
-characters '0'..'9' are accepted in Text. '+', '-',  ',', and '.' are 
+characters '0'..'9' are accepted in Text. '+', '-', ',', and '.' are 
 <b>not</b> numeric digits.
 </p>
 <p>
@@ -12322,7 +12348,7 @@ the control.
 </p>
 <p>
 TCustomLabel is the ancestor class for <var>TLabel</var>. Do not create 
-instances of TCustomLabel;  use the TLabel descendant.
+instances of TCustomLabel; use the TLabel descendant.
 </p>
 <p>
 Use TStaticText to display static text and respond to keyboard input directly 
@@ -13411,7 +13437,7 @@ The text displayed for the control.
 <descr>
 <p>
 <var>Caption</var> is a <var>TCaption</var> property with the text displayed 
-for the control. By default, Caption  has the same value as the Name property 
+for the control. By default, Caption has the same value as the Name property 
 used for the control. An explicit value can be assigned at design-time using 
 the Object Inspector, or by the developer in program code.
 </p>
@@ -13467,7 +13493,7 @@ control to be given focus.
 </seealso>
 </element>
 
-<element name="TLabel.Color"  link="#lcl.stdctrls.TCustomLabel.Color"/>
+<element name="TLabel.Color" link="#lcl.stdctrls.TCustomLabel.Color"/>
 <element name="TLabel.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TLabel.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TLabel.DragKind" link="#lcl.controls.TControl.DragKind"/>
