@@ -55,6 +55,7 @@ implementation of the type and assign to the event handler to respond to the
 event notification.
 </p>
 </descr>
+<notes><note>TCheckListBox.OnItemClick was deprecated in 3.99.</note></notes>
 <seealso>
 <link id="TCheckListBox.OnItemClick"/>
 </seealso>
@@ -92,6 +93,8 @@ item is toggled.
 <element name="TCustomCheckListBox.FHeaderColor"/>
 <element name="TCustomCheckListBox.FItemDataOffset"/>
 <element name="TCustomCheckListBox.FOnClickCheck"/>
+
+<!-- deprecated in 3.99 -->
 <element name="TCustomCheckListBox.FOnItemClick"/>
 
 <element name="TCustomCheckListBox.GetChecked">
@@ -499,8 +502,8 @@ ItemIndex is not enabled.
 
 <element name="TCustomCheckListBox.ItemClick">
 <short>
-Performs actions when the specified check box has been changed using the 
-mouse or the keyboard.
+Deprecated. Performs actions when the specified check box has been changed 
+using the mouse or the keyboard.
 </short>
 <descr>
 <p>
@@ -525,6 +528,9 @@ ItemClick is not called for the key event when the check box item in
 ItemIndex is not enabled.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.99; use ClickCheck instead.
+</version>
 <seealso>
 <link id="TCustomCheckListBox.OnItemClick"/>
 <link id="TCustomCheckListBox.ClickCheck"/>
@@ -1052,8 +1058,8 @@ the affected check box in the control.
 
 <element name="TCustomCheckListBox.OnItemClick">
 <short>
-Event handler signalled when the check box state for a specific item has been 
-changed.
+Deprecated. Event handler signalled when the check box state for a specific 
+item has been changed.
 </short>
 <descr>
 <p>
@@ -1093,6 +1099,9 @@ Use <var>OnClickCheck</var> to perform control-level actions needed when a
 check box is changed.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.99; use OnClickCheck instead.
+</version>
 <seealso>
 <link id="TCustomCheckListBox.ItemClick"/>
 <link id="TCustomCheckListBox.KeyDown"/>
