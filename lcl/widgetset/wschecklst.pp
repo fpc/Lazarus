@@ -123,6 +123,11 @@ begin
   WSRegisterCustomCheckListBox;
 //  if not WSRegisterCustomCheckListBox then
 //    RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
+
+  { added in v3.99: activate the following line when the deprecated property OnItemClick is removed.
+  RegisterPropertyToSkip(TCustomCheckBox, 'OnItemClick', 'Duplicate of VCL-compatible OnClickCheck', '');
+  }
+
   Done := True;
 end;
 
