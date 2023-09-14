@@ -40,7 +40,7 @@ type
     FHeaderColor: TColor;
     FItemDataOffset: Integer;
     FOnClickCheck : TNotifyEvent;
-    FOnItemClick: TCheckListClicked;
+    FOnItemClick: TCheckListClicked;   // deprecated in v3.99
     function GetChecked(const AIndex: Integer): Boolean;
     function GetHeader(AIndex: Integer): Boolean;
     function GetItemEnabled(AIndex: Integer): Boolean;
@@ -137,7 +137,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnItemClick; deprecated 'Use OnClickCheck instead';  // deprecated in V4.99
+    property OnItemClick; deprecated 'Use OnClickCheck instead';  // deprecated in v3.99
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
