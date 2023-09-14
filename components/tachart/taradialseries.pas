@@ -1357,7 +1357,13 @@ begin
 
   case Legend.Multiplicity of
     lmSingle:
-      AItems.Add(TLegendItemLinePointer.Create(LinePen, p, LegendTextSingle));
+      if Filled then begin
+        if ShowPoints then
+          AItems.Add(TLegendItemLinePointerBrush.Create(LinePen, Brush, p, LegendTextSingle))
+        else
+          AItems.Add(TLegendItemBrushPenRect.Create(Brush, LinePen, LegendTextSingle));
+      end else
+        AItems.Add(TLegendItemLinePointer.Create(LinePen, p, LegendTextSingle));
     lmPoint:
       for i := 0 to Count - 1 do begin
         li := TLegendItemLinePointer.Create(LinePen, p, LegendTextPoint(i));

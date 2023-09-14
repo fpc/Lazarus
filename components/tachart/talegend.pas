@@ -101,6 +101,17 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
+  { TLegendItemLinePointerBrush }
+
+  TLegendItemLinePointerBrush = class(TLegendItemLinePointer)
+  strict protected
+    FUseBrush: Boolean;
+  public
+    constructor Create(APen: TPen; ABrush: TBrush; APointer: TSeriesPointer;
+      const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
   { TLegendItemBrushRect }
 
   TLegendItemBrushRect = class(TLegendItem)
@@ -515,6 +526,29 @@ begin
     ADrawer.SetBrush(FBrush);
   FPointer.DrawSize(ADrawer, c, sz, Color, 0.0, FPresetBrush);
 end;
+
+
+{ TLegendItemLinePointerBrush }
+
+constructor TLegendItemLinePointerBrush.Create(APen: TPen; ABrush: TBrush;
+  APointer: TSeriesPointer; const AText: String);
+begin
+  CreateWithBrush(APen, ABrush, APointer, AText);
+end;
+
+procedure TLegendItemLinePointerBrush.Draw(
+  ADrawer: IChartDrawer; const ARect: TRect);
+begin
+  ADrawer.SetBrush(FBrush);
+  if Assigned(FPointer) then
+  begin
+    ADrawer.FillRect(ARect.Left, (ARect.Top + ARect.Bottom) div 2, ARect.Right, ARect.Bottom);
+    FPresetBrush := false;
+    ADrawer.SetBrush(FPointer.Brush);
+  end;
+  inherited;
+end;
+
 
 { TLegendItemBrushRect }
 
