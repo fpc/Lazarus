@@ -719,14 +719,14 @@ begin
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
 
-  cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
-  cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
   cnt.callback := cb;
   doc.wincallback := cb;
   doc.callback := cb;
   cnt.wincallback := cb;
   cnt.isCustomRange := true;
 
+  cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
+  cnt.setHorizontalScrollElasticity(NSScrollElasticityNone);
   cnt.setDocumentView(doc);
   cnt.setDrawsBackground(false); // everything is covered anyway
   doc.setHidden(false);
