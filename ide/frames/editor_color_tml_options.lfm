@@ -53,6 +53,7 @@ object TEditorColorOptionsTMLFrame: TTEditorColorOptionsTMLFrame
     Align = alClient
     BorderSpacing.Around = 6
     ReadOnly = True
+    ScrollBars = ssAutoVertical
     TabOrder = 1
   end
 end

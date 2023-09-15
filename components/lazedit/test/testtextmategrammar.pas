@@ -5,12 +5,14 @@ unit TestTextMateGrammar;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
+  Classes, SysUtils, fgl, fpcunit, testutils, testregistry,
   TextMateGrammar, LazLoggerBase;
 
 type
   TCaptIdx = (c0, c1, c2, c3, c4, c5, c6);
   TCaptSet = set of TCaptIdx;
+
+  TGrammarMap = specialize TFPGMapObject<string, TTextMateGrammar>;
 
   { TTestTextMateGrammar }
 
@@ -18,6 +20,9 @@ type
   private
     procedure DoCheckAttributeInfo(Sender: TTextMatePattern;
       const AnAttribInfo: TSynAttributeInfo; out AnUseId, AnUseObject: Boolean);
+    function DoGetIncludedGrammar(Sender: TTextMateGrammar; AScopeName: string
+      ): TTextMateGrammar;
+//TODO: separate FNames for each grammar
     procedure DoPopulateAttributeInfo(Sender: TTextMateGrammar;
       APattern: TTextMatePattern; AContextName: String;
       var AnAttribInfo: TSynAttributeInfo);
@@ -39,29 +44,36 @@ type
     function GetTestNest(ASubPatterns: array of String): String;
 
     function  Join(const APatterns: array of String): String;
-    function  Include(const AName: String): String;
+    function  Include(const AName: String; SkipHash: Boolean = False): String;
     function  BuildPatterns(const APatterns: array of String; AMore: String = ''; LeadComma: boolean = True): String;
     procedure SetGrammar(AText: String);
     procedure SetGrammar(const ARootPatterns, ARepository: array of String);
+    procedure SetGrammar(const AScopeName: String; ARootPatterns, ARepository: array of String);
 
     function RunGrammar(ATestName, ATextLine: String; out LastPatternIndex: Integer; AStartPatternIndex: integer = -1): String;
     procedure RunNextToEol(ATestName, ATextLine: String; out LastPatternIndex: Integer; AStartPatternIndex: integer = -1);
     function TestLine(ATestName, ATextLine, Expect: String; AStartPatternIndex: integer = -1): Integer;
     function TestLine(ATestName, ATextLine, Expect: String; AStartPatternName: String): Integer;
 
+  private
+    FNewScopeName: String;
+    FGrammarMap: TGrammarMap;
   protected
     FGrammar: TTextMateGrammar;
     FGrammarText: String;
     FNames: TStringList;
     procedure SetUp; override;
     procedure TearDown; override;
+    procedure ResetGramarMap;
   published
     procedure TestFlatNested;
+    procedure TestInclude;
     procedure TestBeginEnd;
     procedure TestBeginEndInCapture;
     procedure TestWhile;
     procedure TestForwarder;
     procedure TestRecurse;
+    procedure TestIncludeOtherGrammar;
     procedure TestVarious;
   end;
 
@@ -72,6 +84,14 @@ procedure TTestTextMateGrammar.DoCheckAttributeInfo(Sender: TTextMatePattern;
 begin
   AnUseId := True;
   AnUseObject := True;
+end;
+
+function TTestTextMateGrammar.DoGetIncludedGrammar(Sender: TTextMateGrammar;
+  AScopeName: string): TTextMateGrammar;
+begin
+  Result := nil;
+  if FGrammarMap.IndexOf(AScopeName) >= 0 then
+    Result := FGrammarMap[AScopeName];
 end;
 
 procedure TTestTextMateGrammar.DoPopulateAttributeInfo(
@@ -285,9 +305,13 @@ begin
   end;
 end;
 
-function TTestTextMateGrammar.Include(const AName: String): String;
+function TTestTextMateGrammar.Include(const AName: String; SkipHash: Boolean
+  ): String;
 begin
-  Result := '{ "include": "#'+AName+'" }';
+  if SkipHash or (pos('#', AName) > 0) or (pos('$', AName) > 0) then
+    Result := '{ "include": "'+AName+'" }'
+  else
+    Result := '{ "include": "#'+AName+'" }';
 end;
 
 function TTestTextMateGrammar.BuildPatterns(const APatterns: array of String;
@@ -305,6 +329,7 @@ begin
   FGrammar.ClearGrammar;
   FGrammarText := AText;
   FGrammar.ParseGrammar(AText);
+  AssertTrue('no missing includes', FGrammar.MissingIncludes = '');
 
 if FGrammar.ParserError = '' then
 debugln(FGrammar.DebugDump());
@@ -324,13 +349,33 @@ begin
 
   SetGrammar(
     '{ "name": "root",'+
-    '  "scopeName": "source" '+
+    '  "scopeName": "'+FNewScopeName+'" '+
     BuildPatterns(ARootPatterns) +
     ' , "repository": {' +
     RepoPtn +
     '  }' +
     '}'
   );
+end;
+
+procedure TTestTextMateGrammar.SetGrammar(const AScopeName: String;
+  ARootPatterns, ARepository: array of String);
+var
+  t: TTextMateGrammar;
+begin
+  t := FGrammar;
+
+  FNewScopeName := 'source.'+AScopeName;
+  FGrammar := TTextMateGrammar.Create;
+  FGrammarMap.Add(FNewScopeName, FGrammar);
+  FGrammar.OnPopulateAttributeInfo := @DoPopulateAttributeInfo;
+  FGrammar.OnCheckAttributeInfo := @DoCheckAttributeInfo;
+  FGrammar.OnGetIncludedGrammar := @DoGetIncludedGrammar;
+
+  SetGrammar(ARootPatterns, ARepository);
+
+  FGrammar := t;
+  FNewScopeName := 'source.maintest';
 end;
 
 function TTestTextMateGrammar.RunGrammar(ATestName, ATextLine: String; out
@@ -421,17 +466,28 @@ end;
 procedure TTestTextMateGrammar.SetUp;
 begin
   inherited SetUp;
+  FNewScopeName := 'source.maintest';
+  FGrammarMap := TGrammarMap.Create(True);
   FGrammar := TTextMateGrammar.Create;
+  FGrammarMap.Add(FNewScopeName, FGrammar);
   FGrammar.OnPopulateAttributeInfo := @DoPopulateAttributeInfo;
   FGrammar.OnCheckAttributeInfo := @DoCheckAttributeInfo;
+  FGrammar.OnGetIncludedGrammar := @DoGetIncludedGrammar;
   FNames := TStringList.Create;
 end;
 
 procedure TTestTextMateGrammar.TearDown;
 begin
   inherited TearDown;
-  FGrammar.Free;
+  //FGrammar.Free;
+  FGrammarMap.Free;
   FNames.Free;
+end;
+
+procedure TTestTextMateGrammar.ResetGramarMap;
+begin
+  TearDown;
+  SetUp;
 end;
 
 procedure TTestTextMateGrammar.TestFlatNested;
@@ -470,6 +526,67 @@ begin
                'Y1', GetTestNest( [GetTestC1([]), Include('X1')] )
              ]);
   AssertFalse('got error', FGrammar.ParserError = '');
+
+end;
+
+procedure TTestTextMateGrammar.TestInclude;
+begin
+  SetGrammar(
+    [ Include('Foo') ],
+    [ 'Foo', GetTestA1(False, [Include('Bar')]),
+      'Bar', GetTestC1([])
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+
+  SetGrammar(
+    [ Include('$self#Foo') ],
+    [ 'Foo', GetTestA1(False, [Include('$self#Bar')]),
+      'Bar', GetTestC1([])
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+
+  SetGrammar(
+    [ Include('$base#Foo') ],
+    [ 'Foo', GetTestA1(False, [Include('$base#Bar')]),
+      'Bar', GetTestC1([])
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+
+
+  // Forward include
+  SetGrammar(
+    [ Include('FooX') ],
+    [ 'AFoo', Include('Foo'),
+      'Foo',  GetTestA1(False, [Include('BarX')]),
+      'FooX', Include('AFoo'),
+      'ABar', Include('Bar'),
+      'Bar',  GetTestC1([]),
+      'BarX', Include('ABar')
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+
+
+  // Full self include
+  SetGrammar(
+    [ Include('Foo'), GetTestC1([]) ],
+    [ 'Foo', GetTestA1(False, [Include('$self')])
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+  TestLine('simple',         'a<a1><a1>', '1:-,2:a1,6:a1/a1/2');
+
+  SetGrammar(
+    [ Include('Foo'), GetTestC1([]) ],
+    [ 'Foo', GetTestA1(False, [Include('$base')])
+    ]
+  );
+  TestLine('simple',         'a<a1><c1></c1></a1>c', '1:-,2:a1,6:c1,15:a1,20:-/root/0');
+  TestLine('simple',         'a<a1><a1>', '1:-,2:a1,6:a1/a1/2');
+
 
 end;
 
@@ -893,6 +1010,96 @@ begin
     ]
   );
 
+
+end;
+
+procedure TTestTextMateGrammar.TestIncludeOtherGrammar;
+begin
+  SetGrammar(
+    [ Include('source.foo', True)
+    ],
+    [ 'Main1', Include('source.foo#FooA1', True),
+      'Main2', Include('source.foo#FooA2', True),
+      'RepoC1', GetTestC1([])
+    ]
+  );
+
+  SetGrammar('foo',
+    [ Include('source.maintest#Main1', True)
+    ],
+    [ 'FooA1', Include('source.maintest#Main2', True),
+      'FooA2', Include('source.maintest#RepoC1', True),
+      'RepoA1', GetTestA1(False, [])
+    ]
+  );
+  FGrammar.ResolveExternalIncludes;
+  AssertTrue('no missing includes', FGrammar.MissingIncludes = '');
+writeln( '###########');
+writeln( FGrammar.DebugDump());
+
+  TestLine('', '<a1><c1>',  '1:-,5:c1/c1/1');
+
+
+
+
+  ///////////////
+  /// miss incl
+  ResetGramarMap;
+  SetGrammar(
+    [ Include('source.foo', True), GetTestC1([])  ],
+    []
+  );
+  FGrammar.ResolveExternalIncludes;
+  AssertTrue('missing includes', pos('source.foo',FGrammar.MissingIncludes) > 0);
+
+
+  ResetGramarMap;
+  SetGrammar(
+    [ Include('source.foo#Bar', True), GetTestC1([])  ],
+    []
+  );
+  SetGrammar('foo',
+    [ GetTestC1([]) ],
+    [ 'RepoA1', GetTestA1(False, [])
+    ]
+  );
+  FGrammar.ResolveExternalIncludes;
+  AssertTrue('missing includes', pos('source.foo#Bar',FGrammar.MissingIncludes) > 0);
+
+
+  ResetGramarMap;
+  SetGrammar(
+    [ Include('source.foo#RepoA1', True), GetTestC1([])  ],
+    []
+  );
+  SetGrammar('foo',
+    [ GetTestC1([]) ],
+    [ 'RepoA1', GetTestA1(False, [Include('source.foo#What', True)])
+    ]
+  );
+  FGrammar.ResolveExternalIncludes;
+  AssertTrue('missing includes', pos('source.foo#What',FGrammar.MissingIncludes) > 0);
+
+  ///////////////
+  /// recursions
+
+  ResetGramarMap;
+  SetGrammar(
+    [ Include('source.foo#RepoA1', True)
+    ],
+    [ 'RepoA1', Include('source.foo', True),
+      'RepoB1', Include('source.foo#RepoB1', True)
+    ]
+  );
+  SetGrammar('foo',
+    [ Include('#RepoB1', True)
+    ],
+    [ 'RepoA1', Include('source.maintest#RepoB1', True),
+      'RepoB1', Include('source.maintest#RepoA1', True)
+    ]
+  );
+  FGrammar.ResolveExternalIncludes;
+  AssertTrue('Got error', FGrammar.ParserError <> '');
 
 end;
 

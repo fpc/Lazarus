@@ -42,6 +42,23 @@ var
   i: Integer;
   tmlHighlighter: TSynTextMateSyn;
 begin
+  Memo1.Clear;
+  for i := 0 to HighlighterList.Count - 1 do begin
+
+    if (HighlighterList.SharedInstances[i] is TSynTextMateSyn) and
+       (TSynTextMateSyn(HighlighterList.SharedInstances[i]).TextMateGrammar.MissingIncludes <> '')
+    then
+      Memo1.Lines.Add(Format('"%2:s" (%3:s) - '+dlgColorsTmlMissingInclude, [LineEnding+'',
+        TSynTextMateSyn(HighlighterList.SharedInstances[i]).TextMateGrammar.MissingIncludes,
+        TSynTextMateSyn(HighlighterList.SharedInstances[i]).TextMateGrammar.LanguageName,
+        TSynTextMateSyn(HighlighterList.SharedInstances[i]).TextMateGrammar.LanguageScopeName
+        ]));
+  end;
+  if Memo1.Lines.Count > 1 then begin
+    Memo1.Lines.Add('----------');
+    Memo1.Lines.Add('');
+  end;
+
   dir := AppendPathDelim(UserSchemeDirectory(False)) + 'tml';
   FileList := nil;
   if DirectoryExistsUTF8(dir) then
@@ -52,7 +69,6 @@ begin
     exit;
   end;
 
-  Memo1.Clear;
   for i := 0 to FileList.Count - 1 do begin
     tmlHighlighter := TSynTextMateSyn.Create(nil);
     tmlHighlighter.LoadGrammar(FileList[i], '');

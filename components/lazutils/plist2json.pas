@@ -24,20 +24,25 @@ begin
   i := 0;
 
   Result := CreateJSONObject([]);
-  while i < c do begin
-    keyNd := AnNode.ChildNodes[i];
-    if LowerCase(keyNd.NodeName) <> 'key' then
-      raise Exception.Create('Expected <key>, but got ' + keyNd.NodeName);
-    key := Trim(keyNd.TextContent);
-    inc(i);
+  try
+    while i < c do begin
+      keyNd := AnNode.ChildNodes[i];
+      if LowerCase(keyNd.NodeName) <> 'key' then
+        raise Exception.Create('Expected <key>, but got ' + keyNd.NodeName);
+      key := Trim(keyNd.TextContent);
+      inc(i);
 
-    if i = c then
-      raise Exception.Create('Expected value for key '+key);
+      if i = c then
+        raise Exception.Create('Expected value for key '+key);
 
-    val := Xml2Json(AnNode.ChildNodes[i]);
-    inc(i);
+      val := Xml2Json(AnNode.ChildNodes[i]);
+      inc(i);
 
-    TJSONObject(Result).Add(key, val)
+      TJSONObject(Result).Add(key, val)
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -46,10 +51,15 @@ var
   CN: TDOMNode;
 begin
   Result := CreateJSONArray([]);
-  CN := AnNode.FirstChild;
-  while CN <> nil do begin
-    TJSONArray(Result).Add(Xml2Json(CN));
-    CN := CN.NextSibling;
+  try
+    CN := AnNode.FirstChild;
+    while CN <> nil do begin
+      TJSONArray(Result).Add(Xml2Json(CN));
+      CN := CN.NextSibling;
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 

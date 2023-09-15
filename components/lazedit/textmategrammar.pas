@@ -29,7 +29,7 @@ uses
   // LazUtils
   Laz2_DOM, Laz2_XMLRead, PList2JSon,
   //LazLoggerBase,
-  LazLoggerDummy,
+  LazLoggerDummy, LazClasses,
   // LazEdit
   xregexpr;
 
@@ -52,6 +52,9 @@ type
   end;
 
   TTextMatePattern = class;
+  TTextMatePatternClass = class of TTextMatePattern;
+  TTextMatePatternList  = specialize TFPGObjectList<TTextMatePattern>;
+  TTextMatePatternMap   = specialize TFPGMapObject<string, TTextMatePattern>;
   TTextMatePatternArray = array of TTextMatePattern;
   TTextMatePatternBaseNested = class;
   TTextMateGrammar = class;
@@ -66,6 +69,7 @@ type
   TCheckAttributeInfoProc = procedure (Sender: TTextMatePattern;
     const AnAttribInfo: TSynAttributeInfo;
     out AnUseId, AnUseObject: Boolean) of object;
+  TGetIncludedGrammar = function(Sender: TTextMateGrammar; AScopeName: string): TTextMateGrammar of object;
 
 
   TTextMateFoundCaptureBounds = record
@@ -167,7 +171,9 @@ type
 
   protected
     function  GetForwardTarget: TTextMatePatternBaseNested; virtual;
-    procedure FlattenNested; virtual;
+    procedure FlattenNested(AGrammar: TTextMateGrammar; ARemoveMissingIncludes: boolean); virtual;
+    class function GetCopyFor(AnOther:TTextMatePattern; AnIndexOffset: Integer; ANewList: TTextMatePatternList): TTextMatePattern;
+    procedure CopyFrom(AnOther:TTextMatePattern; AnIndexOffset: Integer; ANewList: TTextMatePatternList); virtual;
     procedure DoInitRegex(var ARegEx: TRegExpr; const AText: string; AnErrKey: String);
   public
     procedure InitRegEx; virtual;
@@ -195,7 +201,7 @@ type
   private
     FParent: TTextMatePattern; // TTextMatePatternState.Parent takes precedence
     FRecurseMatchPos: integer;
-    Patterns: TTextMatePatternArray;
+    Patterns, UnFlatPatterns: TTextMatePatternArray;
   protected
     procedure InitStates(const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState;
       AParent: TTextMatePattern; const AText: String; ADepth: Integer); override;
@@ -210,7 +216,9 @@ type
       AMatchMustStartBefore: integer = 0): Boolean; override;
 
     function GetForwardTarget: TTextMatePatternBaseNested; override;
-    procedure FlattenNested; override;
+    procedure FlattenNested(AGrammar: TTextMateGrammar; ARemoveMissingIncludes: boolean); override;
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
   public
     procedure NextToken(var AStates: TTextMatePatternState; const AText: String;
       ACurTokenPos: integer; out ANextTokenPos: integer;
@@ -223,11 +231,30 @@ type
   { TTextMatePatternNested }
 
   TTextMatePatternNested = class(TTextMatePatternBaseNested)
+  end;
+
+  { TTextMatePatternNestedList }
+
+  TTextMatePatternNestedList = class(TTextMatePatternNested)
   protected
     procedure InitStates(const AGrammar: TTextMateGrammar;
       var AStates: TTextMatePatternState; AParent: TTextMatePattern;
       const AText: String; ADepth: Integer); override;
-    procedure FlattenNested; override;
+    procedure FlattenNested(AGrammar: TTextMateGrammar; ARemoveMissingIncludes: boolean); override;
+  end;
+
+  //TTextMatePatternInclude = class(TTextMatePatternNestedList)
+  TTextMatePatternInclude = class(TTextMatePattern)
+  protected
+    FSourceScope, FSourceKey: String;
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
+  protected
+    function GetFirstMatchPos(const AText: String;
+      const ATextStartOffset: integer;
+      AStateEntryP: PTextMatePatternStateEntry; out APattern: TTextMatePattern;
+      out AFoundStartPos: integer; AMatchMustStartBefore: integer = 0
+      ): Boolean; override;
   end;
 
   { TTextMatePatternCapture }
@@ -249,6 +276,8 @@ type
       ATextStartOffset: integer;
       const AFoundCapturePosList: TTextMateFoundCaptureBoundsArray;
       out ACaptureInfo: TTextMateMatchInfo): boolean;
+    procedure CopyFrom(AnOther: TTextMatePatternCaptures; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList);
   end;
 
   { TTextMatePatternMatch }
@@ -258,6 +287,9 @@ type
     FRegExMatch: TRegExpr;
     Match: String;
     Captures: TTextMatePatternCaptures;
+  protected
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
   protected
     procedure InitStates(const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState; AParent: TTextMatePattern;
       const AText: String; ADepth: Integer); override;
@@ -285,6 +317,9 @@ type
     EndPatternLast: Boolean;
     Captures, CapturesBegin, CapturesEnd: TTextMatePatternCaptures;
   protected
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
+  protected
     procedure InitStates(const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState; AParent: TTextMatePattern;
       const AText: String; ADepth: Integer); override;
     function GetFirstMatchPos(const AText: String; const ATextStartOffset: integer;
@@ -309,6 +344,9 @@ type
     ContentAttribInfo: TSynAttributeInfo;
     Captures, CapturesBegin, CapturesWhile: TTextMatePatternCaptures;
   protected
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
+  protected
     procedure InitStates(const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState; AParent: TTextMatePattern;
       const AText: String; ADepth: Integer); override;
     procedure InitStateAfterAdded(AStateEntry: PTextMatePatternStateEntry); override;
@@ -326,8 +364,10 @@ type
 
   { TTextMatePatternRoot }
 
-  TTextMatePatternRoot = class(TTextMatePatternBaseNested)
+  TTextMatePatternRoot = class(TTextMatePatternNested)
   protected
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
     procedure InitStates(const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState; AParent: TTextMatePattern;
       const AText: String; ADepth: Integer); override;
   public
@@ -339,6 +379,9 @@ type
   TTextMatePatternForwarder = class(TTextMatePatternBaseNested)
   private
     FForwardTo: TTextMatePatternBaseNested;
+  protected
+    procedure CopyFrom(AnOther: TTextMatePattern; AnIndexOffset: Integer;
+      ANewList: TTextMatePatternList); override;
   protected
     procedure ClearDeepestRecurseData; override;
     function  GetForwardTarget: TTextMatePatternBaseNested; override;
@@ -357,13 +400,11 @@ type
     function DebugDump(AnIndent: Integer = 2; AnIncludeNested: Boolean = True; APrefix: string = ''): string; override;
   end;
 
-  TTextMatePatternClass = class of TTextMatePattern;
-  TTextMatePatternList  = specialize TFPGObjectList<TTextMatePattern>;
-  TTextMatePatternMap   = specialize TFPGMapObject<string, TTextMatePattern>;
-
   { TTextMateGrammar }
 
-  TTextMateGrammar = class
+  TTextMateGrammar = class(TFreeNotifyingObject)
+  private type
+    TOtherGrammarMap = specialize TFPGMapObject<string, TTextMateGrammar>;
   private
     FOnCheckAttributeInfo: TCheckAttributeInfoProc;
     FOnPopulateAttributeInfo: TPopulateAttributeInfoProc;
@@ -372,18 +413,24 @@ type
     FSampleTextFile: String;
     FLangName: string;
 
+    FMainPatternCount: integer;
     FMainPatternList: TTextMatePatternList;
     FPatternRepo: TTextMatePatternMap;
     FRootPattern: TTextMatePatternRoot;
+    FTheEmptyPattern: TTextMatePattern;
+    FOtherGrammars: TOtherGrammarMap;
+
 
     procedure ClearAttributeInfo(var AnAttribInfo: TSynAttributeInfo);
     function  CreatePatternObject(AClass: TTextMatePatternClass): TTextMatePattern;
+    procedure DoOtherGrammarFreed(Sender: TObject);
 
     function  GetJson(AGrammarDef: String): TJSONObject;
     procedure ParseLanguage(ALangDef: TJSONData);
     function  IsInclude(APatternJson: TJSONObject): boolean;
-    function  IncludeName(APatternJson: TJSONObject): string;
+    function  IncludeName(APatternJson: TJSONObject; out AnOtherScopeName: string): string;
     function  ResolveInclude(APatternJson: TJSONObject): TTextMatePattern;
+    procedure CopyPatterns(AnOtherGrammar: TTextMateGrammar; AnIncludeName: String);
     function  CreatePattern(AParent: TTextMatePattern; APatternJson: TJSONObject; AllowPatternOnly: Boolean = False): TTextMatePattern;
     procedure ReadPattern(APattern: TTextMatePattern; APatternJson: TJSONObject);
     function  ParsePattern(AParent: TTextMatePattern; APatternJson: TJSONObject): TTextMatePattern;
@@ -392,10 +439,13 @@ type
   private
     FCurrentPattern: TTextMatePattern;
     FCurrentState: TTextMatePatternState;
+    FLanguageScopeName: String;
     FLineText: String;
     FCurrentTokenPos, FNextTokenPos: Integer;
+    FMissingIncludes: String;
     FCurrentTokenKind: integer;
     FCurrentAttrib: TObject;
+    FOnGetIncludedGrammar: TGetIncludedGrammar;
     function GetCurrentPatternIndex: Integer;
     function GetCurrentTokenLen: integer; inline;
 
@@ -403,6 +453,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure ParseGrammar(AGrammarDef: String);
+    // ResolveExternalIncludes: Call only what all other grammars have done the initial ParseGrammar
+    procedure ResolveExternalIncludes;
     procedure ClearGrammar;
     function DebugDump(AnIndent: Integer = 2; AnIncludeNested: Boolean = True): string;
 
@@ -422,15 +474,18 @@ type
     property CurrentState: TTextMatePatternState read FCurrentState;
 
     property LanguageName: String read FLangName write FLangName;
+    property LanguageScopeName: String read FLanguageScopeName;
     property SampleText: String read FSampleText write FSampleText;
     property SampleTextFile: String read FSampleTextFile;
     property ParserError: String read FParserError;
+    property MissingIncludes: String read FMissingIncludes;
 
     property RootPattern: TTextMatePatternRoot read FRootPattern;
     property MainPatternList: TTextMatePatternList read FMainPatternList;
 
     property OnPopulateAttributeInfo: TPopulateAttributeInfoProc read FOnPopulateAttributeInfo write FOnPopulateAttributeInfo;
     property OnCheckAttributeInfo: TCheckAttributeInfoProc read FOnCheckAttributeInfo write FOnCheckAttributeInfo;
+    property OnGetIncludedGrammar: TGetIncludedGrammar read FOnGetIncludedGrammar write FOnGetIncludedGrammar;
   end;
 
 implementation
@@ -855,9 +910,28 @@ begin
   //Result := Self;
 end;
 
-procedure TTextMatePattern.FlattenNested;
+procedure TTextMatePattern.FlattenNested(AGrammar: TTextMateGrammar;
+  ARemoveMissingIncludes: boolean);
 begin
   //
+end;
+
+class function TTextMatePattern.GetCopyFor(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList): TTextMatePattern;
+begin
+  Result := nil;
+  if AnOther = nil then
+    exit;
+  Result := ANewList[AnOther.Index + AnIndexOffset];
+end;
+
+procedure TTextMatePattern.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+begin
+  FComment    := AnOther.FComment;
+  FName       := AnOther.FName;
+  FDebugName  := AnOther.FDebugName;
+  FAttribInfo := AnOther.FAttribInfo;
 end;
 
 procedure TTextMatePattern.DoInitRegex(var ARegEx: TRegExpr;
@@ -868,6 +942,8 @@ begin
   ARegEx.Free;
   ARegEx := TRegExpr.Create(AText);
   ARegEx.AllowBraceWithoutMin := True;
+  ARegEx.AllowLiteralBraceWithoutRange := True;
+  //ARegEx.AllowUnsafeLookBehind := True;
   try
     ARegEx.Compile;
   except
@@ -911,7 +987,6 @@ begin
     exit;
 
   if ATextStartOffset = FRecurseMatchPos then begin
-debugln('########################xxxxxxxxxxxxxxx');
     {$IFDEF TMATE_MATCHING} debugln(['FindPatternForNextMatchPos - Recurse at ', ATextStartOffset, ' -- ', DebugName]); {$ENDIF}
     exit;
   end;
@@ -961,38 +1036,104 @@ begin
   Result := Self;
 end;
 
-procedure TTextMatePatternBaseNested.FlattenNested;
+procedure TTextMatePatternBaseNested.FlattenNested(AGrammar: TTextMateGrammar;
+  ARemoveMissingIncludes: boolean);
 var
   NewPtnList: TTextMatePatternArray;
   NewPtnIdx: integer;
 
   procedure InsertInto(ASrcList: TTextMatePatternArray);
   var
-    i: Integer;
-    p: TTextMatePatternNested;
+    i, j: Integer;
+    PNest: TTextMatePatternNested;
+    PIncl: TTextMatePatternInclude;
+    Src: TTextMatePattern;
+    k: String;
   begin
     SetLength(NewPtnList, Length(NewPtnList) + Length(ASrcList) - 1);
     for i := 0 to Length(ASrcList) - 1 do begin
-      if ASrcList[i] is TTextMatePatternNested then begin
-        p := TTextMatePatternNested(ASrcList[i]);
-        if p.FParent = Self then
+      Src := ASrcList[i];
+      PNest := nil;
+      if (Src is TTextMatePatternInclude) then begin
+        j := 0;
+        repeat
+          PIncl := TTextMatePatternInclude(Src);
+          if (PIncl.FSourceScope = '$base') or (PIncl.FSourceScope = AGrammar.FLanguageScopeName) then
+            k := PIncl.FSourceKey
+          else
+            k := PIncl.FSourceScope + '#' + PIncl.FSourceKey;
+
+          if k = '' then begin
+            Src := AGrammar.FRootPattern;
+            Break;
+          end;
+          if AGrammar.FPatternRepo.IndexOf(k) >= 0 then begin
+            Src := AGrammar.FPatternRepo[k];
+            if Src is TTextMatePatternInclude then begin
+              inc(j);
+              if j > AGrammar.MainPatternList.Count then
+                raise TTextMateGrammarException.Create('Invalid nested pattern');
+              continue;
+            end;
+          end
+          else begin
+            if (ARemoveMissingIncludes) then begin
+              Src := nil;
+              if (AGrammar.FOtherGrammars.IndexOf(PIncl.FSourceScope) >= 0) and
+                 (AGrammar.FOtherGrammars[PIncl.FSourceScope] <> nil)
+              then begin
+                if AGrammar.FMissingIncludes <> '' then AGrammar.FMissingIncludes := AGrammar.FMissingIncludes + ', ';
+                AGrammar.FMissingIncludes := AGrammar.FMissingIncludes + k;
+              end;
+            end;
+          end;
+          break;
+        until False;
+      end;
+      if Src is TTextMatePatternNested then begin
+        PNest := TTextMatePatternNested(Src);
+      end;
+
+      if PNest <> nil then begin
+        if PNest.FParent = Self then
           raise TTextMateGrammarException.Create('Invalid nested pattern');
-        p.FParent := Self;
-        InsertInto(p.Patterns);
-        p.FParent := nil;
+        PNest.FParent := Self;
+        InsertInto(PNest.Patterns);
+        PNest.FParent := nil;
       end
-      else begin
-        NewPtnList[NewPtnIdx] := ASrcList[i];
+      else
+      if Src <> nil then begin
+        NewPtnList[NewPtnIdx] := Src;
         inc(NewPtnIdx);
       end;
     end;
   end;
 
 begin
+  if UnFlatPatterns = nil then
+    UnFlatPatterns := Patterns;
   SetLength(NewPtnList, 1);
   NewPtnIdx := 0;
-  InsertInto(Patterns);
+  InsertInto(UnFlatPatterns);
+  SetLength(NewPtnList, NewPtnIdx);
   Patterns := NewPtnList
+end;
+
+procedure TTextMatePatternBaseNested.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternBaseNested absolute AnOther;
+  i: Integer;
+  Src: TTextMatePatternArray;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  FParent := GetCopyFor(TheOther.FParent, AnIndexOffset, ANewList);
+  Src := TTextMatePatternBaseNested(AnOther).UnFlatPatterns;
+  if Src = nil then
+    Src := TTextMatePatternBaseNested(AnOther).Patterns;
+  SetLength(Patterns, Length(Src));
+  for i := 0 to Length(Src) - 1 do
+    Patterns[i] :=  GetCopyFor(Src[i], AnIndexOffset, ANewList);
 end;
 
 procedure TTextMatePatternBaseNested.NextToken(
@@ -1061,24 +1202,45 @@ begin
   if AnIncludeNested then begin
     l := Patterns;
     Patterns := nil;
-    for i := 0 to Length(Patterns) - 1 do
-      Result := Result + Patterns[i].DebugDump(AnIndent + 2, AnIncludeNested, APrefix);
+    for i := 0 to Length(l) - 1 do
+      Result := Result + l[i].DebugDump(AnIndent + 2, AnIncludeNested, APrefix);
     Patterns := l;
   end;
 end;
 
-{ TTextMatePatternNested }
+{ TTextMatePatternNestedList }
 
-procedure TTextMatePatternNested.InitStates(const AGrammar: TTextMateGrammar;
+procedure TTextMatePatternNestedList.InitStates(const AGrammar: TTextMateGrammar;
   var AStates: TTextMatePatternState; AParent: TTextMatePattern;
   const AText: String; ADepth: Integer);
 begin
-  assert(False, 'TTextMatePatternNested.InitStates: False');
+  assert(False, 'TTextMatePatternNestedList.InitStates: False');
 end;
 
-procedure TTextMatePatternNested.FlattenNested;
+procedure TTextMatePatternNestedList.FlattenNested(AGrammar: TTextMateGrammar;
+  ARemoveMissingIncludes: boolean);
 begin
   //
+end;
+
+{ TTextMatePatternInclude }
+
+procedure TTextMatePatternInclude.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternInclude absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  FSourceScope := TheOther.FSourceScope;
+  FSourceKey   := TheOther.FSourceKey;
+end;
+
+function TTextMatePatternInclude.GetFirstMatchPos(const AText: String;
+  const ATextStartOffset: integer; AStateEntryP: PTextMatePatternStateEntry;
+  out APattern: TTextMatePattern; out AFoundStartPos: integer;
+  AMatchMustStartBefore: integer): Boolean;
+begin
+  Result := False;
 end;
 
 { TTextMatePatternCapture }
@@ -1132,7 +1294,29 @@ begin
   {$ENDIF}
 end;
 
+procedure TTextMatePatternCaptures.CopyFrom(AnOther: TTextMatePatternCaptures;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  i: Integer;
+begin
+  SetLength(CaptureArray, Length(AnOther.CaptureArray));
+  for i := 0 to Length(AnOther.CaptureArray) - 1 do
+    CaptureArray[i] :=  TTextMatePatternCapture(TTextMatePattern.GetCopyFor(AnOther.CaptureArray[i], AnIndexOffset, ANewList));
+
+end;
+
 { TTextMatePatternMatch }
+
+procedure TTextMatePatternMatch.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternMatch absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  Captures.CopyFrom(TheOther.Captures, AnIndexOffset, ANewList);
+  Match := TheOther.Match;
+  DoInitRegex(FRegExMatch, Match, 'match');
+end;
 
 procedure TTextMatePatternMatch.InitStates(const AGrammar: TTextMateGrammar;
   var AStates: TTextMatePatternState; AParent: TTextMatePattern;
@@ -1246,6 +1430,24 @@ begin
 end;
 
 { TTextMatePatternBeginEnd }
+
+procedure TTextMatePatternBeginEnd.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternBeginEnd absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  ContentName := TheOther.ContentName;
+  ContentAttribInfo := TheOther.ContentAttribInfo;
+  EndPatternLast := TheOther.EndPatternLast;
+  Captures.CopyFrom(TheOther.Captures, AnIndexOffset, ANewList);
+  CapturesBegin.CopyFrom(TheOther.CapturesBegin, AnIndexOffset, ANewList);
+  CapturesEnd.CopyFrom(TheOther.CapturesEnd, AnIndexOffset, ANewList);
+  MatchBegin := TheOther.MatchBegin;
+  MatchEnd := TheOther.MatchEnd;
+  DoInitRegex(FRegExMatchBegin, MatchBegin, 'matchBegin');
+  DoInitRegex(FRegExMatchEnd, MatchEnd, 'matchEnd');
+end;
 
 procedure TTextMatePatternBeginEnd.InitStates(const AGrammar: TTextMateGrammar;
   var AStates: TTextMatePatternState; AParent: TTextMatePattern;
@@ -1501,6 +1703,23 @@ end;
 
 { TTextMatePatternBeginWhile }
 
+procedure TTextMatePatternBeginWhile.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternBeginWhile absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  ContentName := TheOther.ContentName;
+  ContentAttribInfo := TheOther.ContentAttribInfo;
+  Captures.CopyFrom(TheOther.Captures, AnIndexOffset, ANewList);
+  CapturesBegin.CopyFrom(TheOther.CapturesBegin, AnIndexOffset, ANewList);
+  CapturesWhile.CopyFrom(TheOther.CapturesWhile, AnIndexOffset, ANewList);
+  MatchBegin := TheOther.MatchBegin;
+  MatchWhile := TheOther.MatchWhile;
+  DoInitRegex(FRegExMatchBegin, MatchBegin, 'matchBegin');
+  DoInitRegex(FRegExMatchWhile, MatchWhile, 'MatchWhile');
+end;
+
 procedure TTextMatePatternBeginWhile.InitStates(
   const AGrammar: TTextMateGrammar; var AStates: TTextMatePatternState;
   AParent: TTextMatePattern; const AText: String; ADepth: Integer);
@@ -1655,6 +1874,15 @@ end;
 
 { TTextMatePatternRoot }
 
+procedure TTextMatePatternRoot.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternRoot absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  ScopeName := TheOther.ScopeName;
+end;
+
 procedure TTextMatePatternRoot.InitStates(const AGrammar: TTextMateGrammar;
   var AStates: TTextMatePatternState; AParent: TTextMatePattern;
   const AText: String; ADepth: Integer);
@@ -1698,6 +1926,15 @@ begin
     APattern := Self;
 end;
 
+procedure TTextMatePatternForwarder.CopyFrom(AnOther: TTextMatePattern;
+  AnIndexOffset: Integer; ANewList: TTextMatePatternList);
+var
+  TheOther: TTextMatePatternForwarder absolute AnOther;
+begin
+  inherited CopyFrom(AnOther, AnIndexOffset, ANewList);
+  FForwardTo := TTextMatePatternForwarder(GetCopyFor(TheOther.FForwardTo, AnIndexOffset, ANewList));
+end;
+
 procedure TTextMatePatternForwarder.ClearDeepestRecurseData;
 begin
   inherited ClearDeepestRecurseData;
@@ -1738,8 +1975,17 @@ begin
     FMainPatternList.Capacity := FMainPatternList.Capacity +
     Min(Max(250, FMainPatternList.Capacity shr 2), 8000);
   Result := AClass.Create;
-  //Result.FMainIndex := FMainPatternList.Count;
   Result.FMainIndex := FMainPatternList.Add(Result);
+end;
+
+procedure TTextMateGrammar.DoOtherGrammarFreed(Sender: TObject);
+var
+  i: Integer;
+begin
+  ClearGrammar;
+  i := FOtherGrammars.IndexOfData(TTextMateGrammar(Sender));
+  if i >= 0 then
+    FOtherGrammars.Delete(i);
 end;
 
 function TTextMateGrammar.GetJson(AGrammarDef: String): TJSONObject;
@@ -1804,43 +2050,84 @@ begin
   Result := APatternJson.IndexOfName('include') >= 0;
 end;
 
-function TTextMateGrammar.IncludeName(APatternJson: TJSONObject): string;
+function TTextMateGrammar.IncludeName(APatternJson: TJSONObject; out
+  AnOtherScopeName: string): string;
 var
   j: TJSONData;
+  i: SizeInt;
 begin
   j := APatternJson['include'];
   if not (j is TJSONString) then
     raise TTextMateGrammarException.Create('include is not string', 'include');
   Result := TJSONString(APatternJson['include']).AsString;
-  if Result = '' then
+
+  i := pos('#', Result);
+  if i < 1 then i := Length(Result)+1;
+  AnOtherScopeName := copy(Result, 1, i-1);
+  system.Delete(Result, 1, i);
+  if (Result = '') and (AnOtherScopeName = '') then
     raise TTextMateGrammarException.Create('invalid include without ref', 'include');
+  if AnOtherScopeName = '$self' then
+    AnOtherScopeName := '';
+  if (AnOtherScopeName <> '') and (FOtherGrammars.IndexOf(AnOtherScopeName) < 0) then
+    FOtherGrammars.Add(AnOtherScopeName);
 end;
 
 function TTextMateGrammar.ResolveInclude(APatternJson: TJSONObject
   ): TTextMatePattern;
 var
-  n: String;
+  n, OtherScopeName: String;
 begin
   Result := nil;
-  n := IncludeName(APatternJson);
-  if n = '$self' then begin
+  n := IncludeName(APatternJson, OtherScopeName);
+  if OtherScopeName <> '' then begin
+    Result := CreatePatternObject(TTextMatePatternInclude);
+    TTextMatePatternInclude(Result).FSourceScope := OtherScopeName;
+    TTextMatePatternInclude(Result).FSourceKey := n;
+    exit
+  end;
+
+  if n = '' then begin
     Result := FRootPattern;
   end
   else
-  if n[1] = '#' then begin
-    Delete(n,1,1);
-    if FPatternRepo.IndexOf(n) >= 0 then
-      Result := FPatternRepo[n];
-  end
-  else
-  if StrLIComp(@n[1], PChar('$self#'), 6) = 0 then begin
-    Delete(n,1,6);
+  begin
     if FPatternRepo.IndexOf(n) >= 0 then
       Result := FPatternRepo[n];
   end;
-  if Result = nil then
-Result := FRootPattern;
-    //raise TTextMateGrammarException.Create('unknown include ' + jsKeyAsString(APatternJson, 'include'), 'include');
+  if Result = nil then begin
+    debugln('unknown include ' + n);
+
+    if FTheEmptyPattern = nil then
+      FTheEmptyPattern := TTextMatePatternNestedList.Create;
+    Result := FTheEmptyPattern;
+    if FMissingIncludes <> '' then FMissingIncludes := FMissingIncludes + ', ';
+    FMissingIncludes := FMissingIncludes + n;
+  end;
+end;
+
+procedure TTextMateGrammar.CopyPatterns(AnOtherGrammar: TTextMateGrammar;
+  AnIncludeName: String);
+var
+  InsPos, i: Integer;
+  k: String;
+  o: TTextMatePattern;
+begin
+  InsPos := FMainPatternList.Count;
+  for i := 0 to AnOtherGrammar.FMainPatternCount - 1 do
+    CreatePatternObject(TTextMatePatternClass(AnOtherGrammar.FMainPatternList[i].ClassType));
+
+  for i := 0 to AnOtherGrammar.FMainPatternCount - 1 do
+    FMainPatternList[InsPos + i].CopyFrom(AnOtherGrammar.FMainPatternList[i], InsPos, FMainPatternList);
+
+  FPatternRepo.Add(AnIncludeName+'#', AnOtherGrammar.RootPattern);
+  for i := 0 to AnOtherGrammar.FPatternRepo.Count - 1 do begin
+    k := AnOtherGrammar.FPatternRepo.Keys[i];
+    if pos('#', k) > 0 then
+      continue;
+    o := TTextMatePattern.GetCopyFor(AnOtherGrammar.FPatternRepo.Data[i], InsPos, FMainPatternList);
+    FPatternRepo.Add(AnIncludeName+'#'+k, o);
+  end;
 end;
 
 function TTextMateGrammar.CreatePattern(AParent: TTextMatePattern;
@@ -1863,7 +2150,7 @@ begin
   end
   else
   if AllowPatternOnly and (APatternJson.IndexOfName('patterns') >= 0) then begin
-    Result := CreatePatternObject(TTextMatePatternNested);
+    Result := CreatePatternObject(TTextMatePatternNestedList);
   end
   else
     raise TTextMateGrammarException.Create('invalid pattern');
@@ -1954,7 +2241,7 @@ begin
       ReadCaptures(APattern, ptrnM.Captures.CaptureArray, APatternJson, 'captures', Length(ptrnM.Match));
   end
   else
-  if APattern is TTextMatePatternNested then begin
+  if APattern is TTextMatePatternNestedList then begin
     // no exception
   end
   else
@@ -2035,15 +2322,23 @@ begin
   FMainPatternList := TTextMatePatternList.Create(True);
   FPatternRepo := TTextMatePatternMap.Create(False);
   FCurrentState.InitForDepth(0);
+  FOtherGrammars := TOtherGrammarMap.Create(False);
 end;
 
 destructor TTextMateGrammar.Destroy;
+var
+  i: Integer;
 begin
-  FLangName := '';
+  for i := 0 to FOtherGrammars.Count-1 do
+    if FOtherGrammars.Data[i] <> nil then
+      FOtherGrammars.Data[i].RemoveFreeNotification(@DoOtherGrammarFreed);
+  inherited Destroy;
+
   ClearGrammar;
   FMainPatternList.Free;
   FPatternRepo.Free;
-  inherited Destroy;
+  FTheEmptyPattern.Free;
+  FOtherGrammars.Free;
 end;
 
 procedure TTextMateGrammar.ParseGrammar(AGrammarDef: String);
@@ -2052,7 +2347,7 @@ type
 var
   JSonDef, RepoJson, EntryJSon: TJSONObject;
   i, j: Integer;
-  EntryName, InclName: String;
+  EntryName, InclName, SourceName: String;
   p: TTextMatePattern;
   InclList: TIndexNameMap;
 begin
@@ -2071,8 +2366,8 @@ begin
     FSampleText       := jsKeyAsString(JSonDef, 'sampleText');
     FSampleTextFile   := jsKeyAsString(JSonDef, 'sampleTextFile');
 
-    FRootPattern.FName      := jsKeyAsString(JSonDef, 'name');
-    FRootPattern.ScopeName := jsKeyAsString(JSonDef, 'scopedName');
+    FRootPattern.FName     := jsKeyAsString(JSonDef, 'name');
+    FRootPattern.ScopeName := jsKeyAsString(JSonDef, 'scopeName');
 
     // language file?
     if JSonDef.IndexOfName('contributes') >= 0 then begin
@@ -2105,8 +2400,8 @@ begin
             end;
 
             // include
-            InclName := IncludeName(EntryJSon);
-            if InclName[1] <> '#' then begin
+            InclName := IncludeName(EntryJSon, SourceName);
+            if SourceName <> '' then begin
               try
                 FPatternRepo.Add(EntryName, ResolveInclude(EntryJSon));
               except
@@ -2117,11 +2412,12 @@ begin
             end;
 
             // # other entry from repo
-            Delete(InclName, 1, 1);
-            p := FPatternRepo[InclName];
-            if p <> nil then begin
-              FPatternRepo.Add(EntryName, p);
-              continue;
+            if FPatternRepo.IndexOf(InclName) >=0 then begin
+              p := FPatternRepo[InclName];
+              if p <> nil then begin
+                FPatternRepo.Add(EntryName, p);
+                continue;
+              end;
             end;
 
             InclList.Add(EntryName, InclName);
@@ -2132,11 +2428,13 @@ begin
             for i := InclList.Count - 1 downto 0 do begin
               EntryName := InclList.Keys[i];
               InclName  := InclList.Data[i];
-              p := FPatternRepo[InclName];
-              if p <> nil then begin
-                FPatternRepo.Add(EntryName, p);
-                InclList.Delete(i);
-                continue;
+              if FPatternRepo.IndexOf(InclName) >=0 then begin
+                p := FPatternRepo[InclName];
+                if p <> nil then begin
+                  FPatternRepo.Add(EntryName, p);
+                  InclList.Delete(i);
+                  continue;
+                end;
               end;
             end;
             if j = InclList.Count then
@@ -2179,7 +2477,7 @@ begin
     end;
 
     for i := 0 to FMainPatternList.Count - 1 do
-      FMainPatternList[i].FlattenNested;
+      FMainPatternList[i].FlattenNested(Self, False);
     FParserError := '';
   except
     on E: TTextMateGrammarException do begin
@@ -2189,13 +2487,48 @@ begin
       FParserError := 'Error: ' + E.message;
     end;
   end;
-if FParserError <> '' then writeln('TTextMateGrammar.ParseGrammar #### ', FRootPattern.FName, '/',FRootPattern.ScopeName, ' : ', FParserError)
-else writeln('++++ OK +++++ ', FRootPattern.FName, ' / ',FRootPattern.ScopeName, ' ++++++ ');
-  if (FRootPattern <> nil) and (FRootPattern.FName <> '') then FLangName := FRootPattern.FName;
+  if (FRootPattern <> nil) then begin
+    FLangName := FRootPattern.FName;
+    FLanguageScopeName := FRootPattern.ScopeName;
+    FMainPatternCount := FMainPatternList.Count;
+  end;
   if FParserError <> '' then
     ClearGrammar;
 
   JSonDef.Free;
+end;
+
+procedure TTextMateGrammar.ResolveExternalIncludes;
+var
+  o: TTextMateGrammar;
+  i: Integer;
+begin
+  if (OnGetIncludedGrammar = nil) or (FOtherGrammars.Count = 0) then
+    exit;
+
+  try
+    for i := 0 to FOtherGrammars.Count - 1 do begin
+      o := FOnGetIncludedGrammar(Self, FOtherGrammars.Keys[i]);
+      if o = nil then begin
+        if FMissingIncludes <> '' then FMissingIncludes := FMissingIncludes + ', ';
+        FMissingIncludes := FMissingIncludes + FOtherGrammars.Keys[i];
+        continue;
+      end;
+      o.AddFreeNotification(@DoOtherGrammarFreed);
+      FOtherGrammars.Data[i] := o;
+      CopyPatterns(o, FOtherGrammars.Keys[i]);
+    end;
+
+    for i := 0 to FMainPatternList.Count - 1 do
+      FMainPatternList[i].FlattenNested(Self, True);
+  except
+    on E: TTextMateGrammarException do begin
+      FParserError := 'Error: ' + E.FullError;
+    end;
+    on E: Exception do begin
+      FParserError := 'Error: ' + E.message;
+    end;
+  end;
 end;
 
 procedure TTextMateGrammar.ClearGrammar;
@@ -2203,7 +2536,9 @@ begin
   FCurrentState.InitForDepth(0);
   FRootPattern := nil;
   FMainPatternList.Clear;
+  FMainPatternCount := 0;
   FPatternRepo.Clear;
+  FMissingIncludes := '';
 end;
 
 function TTextMateGrammar.DebugDump(AnIndent: Integer; AnIncludeNested: Boolean

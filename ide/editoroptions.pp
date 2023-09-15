@@ -69,7 +69,8 @@ uses
   // BuildIntf
   IDEOptionsIntf, MacroIntf,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs, EditorSyntaxHighlighterDef,
+  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs,
+  EditorSyntaxHighlighterDef, TextMateGrammar,
   // IdeConfig
   LazConf,
   // IDE
@@ -812,6 +813,8 @@ type
 
   TEditOptLangList = class(TList, TIdeSyntaxHighlighterList)
   private
+    function DoGetTMLGrammar(Sender: TTextMateGrammar; AScopeName: string
+      ): TTextMateGrammar;
     function GetLazSyntaxHighlighterType(AnId: TIdeSyntaxHighlighterID): TLazSyntaxHighlighter; deprecated '(to be removed in 4.99) -- Only temporary for StrToLazSyntaxHighlighter';
     function GetInfos(Index: Integer): TEditOptLanguageInfo;
     function GetSharedSynInstances(AnID: TIdeSyntaxHighlighterID): TSrcIDEHighlighter;
@@ -2827,6 +2830,20 @@ end;
 
 { TEditOptLangList }
 
+function TEditOptLangList.DoGetTMLGrammar(Sender: TTextMateGrammar;
+  AScopeName: string): TTextMateGrammar;
+var
+  i: Integer;
+begin
+  for i := 1 to Count - 1 do begin
+    if (SharedInstances[i] is TSynTextMateSyn) and
+       (TSynTextMateSyn(SharedInstances[i]).TextMateGrammar.LanguageScopeName = AScopeName)
+    then
+      exit(TSynTextMateSyn(SharedInstances[i]).TextMateGrammar);
+  end;
+  Result := nil;
+end;
+
 function TEditOptLangList.GetLazSyntaxHighlighterType(
   AnId: TIdeSyntaxHighlighterID): TLazSyntaxHighlighter;
 begin
@@ -3703,6 +3720,7 @@ begin
           StrLoader.Free;
         end;
       end;
+      tmlHighlighter.TextMateGrammar.OnGetIncludedGrammar := @DoGetTMLGrammar;
 
       NewInfo := TEditOptLanguageTextMateInfo.Create;
       TEditOptLanguageTextMateInfo(NewInfo).FileName := FileList[i];
@@ -3740,6 +3758,11 @@ begin
 
     end;
     FileList.Free;
+  end;
+
+  for i := 1 to Count - 1 do begin
+    if SharedInstances[i] is TSynTextMateSyn then
+      TSynTextMateSyn(SharedInstances[i]).TextMateGrammar.ResolveExternalIncludes;
   end;
 
 end;

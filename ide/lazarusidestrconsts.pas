@@ -1946,6 +1946,7 @@ resourcestring
     'To activate newly added/changed files restart the IDE.%0:s' +
     'The "Reload" button will update the list below, checking if any errors were fixed.';
   dlgColorsTmlNoFilesFound = 'No files found.';
+  dlgColorsTmlMissingInclude = 'Did not find all includes: %1:s';
   dlgColorsTmlFromFile = 'File:';
   dlgColorsTmlNoSampleTxt = 'No sample text configured';
   dlgColorsTmlBadSampleTxtFile = 'Sample text file not found: %1:s';
