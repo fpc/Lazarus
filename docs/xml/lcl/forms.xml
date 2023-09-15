@@ -15815,28 +15815,96 @@ Calls the AppBringToFront method in the widgetset class.
 </element>
 
 <element name="TApplication.CreateForm">
-<short>Creates a Form or component, owned by Application.</short>
+<short>
+Creates a Form or component owned by the Application instance.
+</short>
 <descr>
 <remark>
 The method name is slightly misleading, and kept only for Delphi 
 compatibility. The method can actually create any kind of component.
 </remark>
 <p>
-CreateForm creates a Component instance of the given class, and sets the 
-pointer to the component variable. If it is a form, it will be added to the 
-list of forms in the application.
+<var>CreateForm</var> creates a new Component instance of the given class, and 
+sets the pointer to the component variable in <var>Reference</var>. If 
+InstanceClass is a TForm descendant, it will be added to the list of forms in 
+the application. It is assigned as the MainForm in Application if a form has 
+not already been assigned to the property. A form with its FormStyle property 
+set to fsMDIChild or fsSplash is not used as the MainForm for the Application.
 </p>
 <p>
-A splash form is shown immediately.
+If the new form instance is a splash form (FormStyle=fsSplash), it is displayed 
+immediately and a message processing loop is started for the form instance.
 </p>
+<p>
+<b>Use in a .lpr Project File</b>
+</p>
+<p>
+The most common use of CreateForm is in the project (.lpr) program file. It is 
+used to initialize the auto-created form instances for the project. For example:
+</p>
+<code>
+program PoFileMaintenance;
+
+{$mode objfpc}{$H+}
+
+uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
+  {$IFDEF HASAMIGA}
+  athreads,
+  {$ENDIF}
+  Interfaces, Forms, PotFile, Unit1, 
+  { you can add units after this };
+
+{$R *.res}
+
+begin
+  RequireDerivedFormResource := True;
+  Application.Scaled := True;
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.
+</code>
+<p>
+<b>Use in Program Code</b>
+</p>
+<p>
+Another common use of CreateForm is to allocate a dynamic, temporary form 
+instance as needed in program code. For example:
+</p>
+<code>
+function ShowDialog(FormClass: TFormClass): Boolean;
+var
+  Dlg: TForm;
+begin
+  Application.CreateForm(FormClass, Dlg);
+  try
+    Result := Dlg.ShowModal in [mrOk, mrYes];
+  finally
+    Dlg.Free;
+  end;
+end;
+</code>
 </descr>
-<seealso/>
+<seealso>
+<link id="TApplication.MainForm"/>
+<link id="TApplication.UpdateMainForm"/>
+<link id="TApplication.ProcessMessages"/>
+<link id="TCustomForm.FormStyle"/>
+<link id="TCustomForm.Show"/>
+</seealso>
 </element>
 <element name="TApplication.CreateForm.InstanceClass">
-<short>The class type used to create the new instance.</short>
+<short>
+The class type used to create the new class instance.
+</short>
 </element>
 <element name="TApplication.CreateForm.Reference">
-<short>The variable for the new component reference.</short>
+<short>
+The output parameter used to return the new component reference.
+</short>
 </element>
 
 <element name="TApplication.UpdateMainForm">
