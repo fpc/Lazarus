@@ -719,6 +719,8 @@ begin
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cb := TLCLWindowCallback.Create(doc, AWinControl, cnt);
 
+  cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
+  cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
   cnt.callback := cb;
   doc.wincallback := cb;
   doc.callback := cb;
