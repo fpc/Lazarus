@@ -134,6 +134,7 @@ type
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -143,6 +144,7 @@ type
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     {class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;}
@@ -2448,6 +2450,15 @@ begin
   Result := LCLGetItemRect(view, Index, 0, ARect);
 end;
 
+class function TCocoaWSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
+var
+  view: TCocoaTableListView;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit(0);
+  Result := view.ScrollWidth;
+end;
+
 class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 var
   view: TCocoaTableListView;
@@ -2545,6 +2556,27 @@ begin
   begin
     list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
     list.scrollRowToVisible(AIndex);
+  end;
+end;
+
+class procedure TCocoaWSCustomListBox.SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+var
+  view: TCocoaTableListView;
+  column: NSTableColumn;
+begin
+  view := GetListBox(ACustomListBox);
+  if not Assigned(view) then Exit;
+  view.ScrollWidth := AScrollWidth;
+  column := NSTableColumn(view.tableColumns.objectAtIndex(0));
+  if AScrollWidth = 0 then
+  begin
+    column.setResizingMask(NSTableColumnAutoresizingMask);
+    view.sizeLastColumnToFit;
+  end
+  else
+  begin
+    column.setResizingMask(NSTableColumnNoResizing);
+    column.setWidth(AScrollWidth);
   end;
 end;
 
