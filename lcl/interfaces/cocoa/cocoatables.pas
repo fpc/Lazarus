@@ -81,6 +81,7 @@ type
     isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
+    ScrollWidth: Integer;
 
     smallimages : NSMutableDictionary;
 
