@@ -97,11 +97,6 @@ const
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToString(AString: CFStringRef): String;
 
-// Missing things from NSTableColumns.inc
-const
-  NSTableColumnAutoresizingMask = 1 shl 0;
-  NSTableColumnUserResizingMask = 1 shl 1;
-
 function VirtualKeyCodeToMacString(AKey: Word): NSString;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);

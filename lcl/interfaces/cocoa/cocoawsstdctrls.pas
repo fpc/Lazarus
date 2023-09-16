@@ -2383,10 +2383,10 @@ begin
   list.callback := cb;
 
   column := NSTableColumn.alloc.init.autorelease;
-  if TCustomListBox(AWinControl).ScrollWidth > 0 then
+  if lclListBox.ScrollWidth > 0 then
   begin
     column.setResizingMask(NSTableColumnNoResizing);
-    column.setWidth(TCustomListBox(AWinControl).ScrollWidth);
+    column.setWidth(lclListBox.ScrollWidth);
   end;
   list.addTableColumn(column);
 
