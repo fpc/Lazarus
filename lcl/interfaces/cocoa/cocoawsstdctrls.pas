@@ -2365,6 +2365,7 @@ class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLHandle;
 var
   list    : TCocoaTableListView;
+  column  : NSTableColumn;
   scroll  : TCocoaScrollView;
   lclListBox: TCustomListBox absolute AWinControl;
   cb  : TLCLListBoxCallback;
@@ -2375,9 +2376,18 @@ begin
     Result := 0;
     Exit;
   end;
+
   cb := TLCLListBoxCallback.CreateWithView(list, AWinControl);
   list.callback := cb;
-  list.addTableColumn(NSTableColumn.alloc.init.autorelease);
+
+  column := NSTableColumn.alloc.init.autorelease;
+  if TCustomListBox(AWinControl).ScrollWidth > 0 then
+  begin
+    column.setResizingMask(NSTableColumnNoResizing);
+    column.setWidth(TCustomListBox(AWinControl).ScrollWidth);
+  end;
+  list.addTableColumn(column);
+
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
@@ -2403,6 +2413,7 @@ begin
   cb.HandleFrame := scroll;
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
+  scroll.setHasHorizontalScroller(true);
   scroll.setAutohidesScrollers(true);
   ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
   UpdateFocusRing(list, lclListBox.BorderStyle);
