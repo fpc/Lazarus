@@ -1072,7 +1072,7 @@ method and occurs when the LM_DRAWITEM message is handled for the control.
 <element name="TStatusBar.LMDrawItem">
 <short>
 Draws the status bar panel when the specified LM_DRAWITEMS message is handled 
-for the control.  
+for the control.
 </short>
 <descr>
 <p>
@@ -39415,7 +39415,7 @@ Class reference used to create new THeaderSection instances.
 
 <element name="THeaderSections">
 <short>
-Implements a collection for section in a TCustomHeaderControl control.
+Implements a collection for sections in a TCustomHeaderControl control.
 </short>
 <descr>
 <p>
@@ -39686,15 +39686,47 @@ header section.
 
 <element name="TCustomHCCreateSectionClassEvent">
 <short>
-<var>TCustomHCCreateSectionClassEvent</var> - generic event handler method 
-for custom creation of header control.
+Specifies the event handler signalled to get the class type for a new section 
+on a THeaderControl instance.
 </short>
+<descr>
+<p>
+<var>TCustomHCCreateSectionClassEvent</var> is an object procedure type which 
+specifies an event handler signalled when a new section is created for 
+THeaderControl. It is the type used for the OnCreateSectionClass property in 
+TCustomHeaderControl.
+</p>
+<p>
+An application can implement and assign a method using the method signature to 
+respond to the event notification. Arguments to the handler include the 
+TCustomHeaderControl for the event notification (Sender) and the class type 
+needed to create a new section for the control (SectionClass).
+</p>
+<p>
+TCustomHCCreateSectionClassEvent allows a class other than THeaderSection to be 
+used to create a section collection item. The type should, however, be a 
+descendant of THeaderSection as it is the base type expected in the 
+THeaderSections collection.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSections"/>
+<link id="THeaderSections.Add"/>
+<link id="THeaderSections.AddItem"/>
+<link id="TCustomHeaderControl.OnCreateSectionClass"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.CreateSection"/>
+</seealso>
 </element>
 <element name="TCustomHCCreateSectionClassEvent.Sender">
-<short/>
+<short>
+Object (TCustomHeaderControl) for the event notification.
+</short>
 </element>
 <element name="TCustomHCCreateSectionClassEvent.SectionClass">
-<short/>
+<short>
+Returns the class type used to create a new section on a THeaderControl.
+</short>
 </element>
 
 <element name="TCustomHeaderControl">
@@ -39807,8 +39839,38 @@ Original position (ignoring visibility) in the Sections property.
 <short>
 Creates a new header section for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CreateSection</var> is a <var>THeaderSection</var> function used to create 
+a new value in the Sections collection for the control. The return value 
+contains an instance of THeaderSection (or a descendant class) created in the 
+method with the Sections collection as the owner of the item.
+</p>
+<p>
+The OnCreateSectionClass event handler is signalled (when assigned) at run-time 
+to allow a custom item class to be used to create the collection item. The 
+handler returns the class type instantiated in the method. By default, the 
+class type is THeaderSection but can be overridden in OnCreateSectionClass to 
+use a THeaderSection descendant.
+</p>
+<p>
+OnCreateSectionClass is not signalled at design-time; THeaderSection is always 
+used as the item class when added to the Sections property using the Object 
+Inspector property editor.
+</p>
+<p>
+CreateSection is called from the AddItem method in the Sections 
+(THeaderSections) collection, and occurs when an item class instance is not 
+passed as an argument to the collection method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.OnCreateSectionClass"/>
+<link id="THeaderSections.AddItem"/>
+<link id="THeaderSections.Items"/>
+<link id="THeaderSection"/>
+</seealso>
 </element>
 <element name="TCustomHeaderControl.CreateSection.Result">
 <short>THeaderSection instance created in the method.</short>
@@ -39816,10 +39878,14 @@ Creates a new header section for the control.
 
 <element name="TCustomHeaderControl.CreateSections">
 <short>
-Creates the collection used to store header sections defined in the control.
+Creates the collection used to store header sections defined for the control.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="THeaderSections"/>
+<link id="THeaderSection"/>
+</seealso>
 </element>
 <element name="TCustomHeaderControl.CreateSections.Result">
 <short>THeaderSections instance created in the method.</short>
@@ -40278,9 +40344,41 @@ separator between sections.
 
 <element name="TCustomHeaderControl.OnCreateSectionClass">
 <short>
-<var>OnCreateSectionClass</var> - event handler for creating a new section 
-class.
+Event handler signalled to get the class type used to create a new section for 
+the header control.
 </short>
+<descr>
+<p>
+<var>OnCreateSectionClass</var> is a 
+<var>TCustomHCCreateSectionClassEvent</var> property with the event handler 
+signalled to get the class type for a new section on the control.
+</p>
+<p>
+OnCreateSectionClass is signalled (when assigned) from the CreateSection 
+method, and allows the class type for a new section to be determined. The 
+variable SectionClass argument for the event handler is used to return the 
+class type. The return value is used in CreateSection to create the collection 
+item added to the Sections on the control.
+</p>
+<p>
+If OnCreateSectionClass is not assigned, the THeaderSection class type is used.
+</p>
+<p>
+OnCreateSectionClass is signalled at run-time when the Add or AddItem method in 
+the Sections collection is called. OnCreateSectionClass is not signalled at 
+design-time when the Object Inspector property editor is used to maintain the 
+Sections property. The THeaderSection class type is always used at design-time 
+as the item class for the Sections collection.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.CreateSection"/>
+<link id="TCustomHeaderControl.CreateSections"/>
+<link id="THeaderSections.Add"/>
+<link id="THeaderSections.AddItem"/>
+<link id="THeaderSections.Create"/>
+<link id="TCustomHCCreateSectionClassEvent"/>
+</seealso>
 </element>
 
 <element name="THeaderControl">
