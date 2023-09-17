@@ -521,8 +521,16 @@ begin
   kw := app.keyWindow;
 
   // mouse move was consumed by the focused window
-  if Assigned(kw) and NSPointInRect( theEvent.mouseLocation, kw.frame) then
+  p := theEvent.mouseLocation;
+  if Assigned(kw) and NSPointInRect(p, kw.frame) then
+  begin
+    wfr := kw.contentRectForFrameRect(kw.frame);
+    // if mouse in the keyWindow and not in content frame (eg. in the titlebar)
+    // Cursor should be forced to default.
+    if not NSPointInRect(p, wfr) then
+      CursorHelper.ForceSetDefaultCursor;
     Exit;
+  end;
 
   for w in app.windows do
   begin
