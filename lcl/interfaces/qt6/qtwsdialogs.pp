@@ -497,6 +497,10 @@ begin
       FileDialog.UserChoice := mrCancel;
     {$else}
 
+    {$IFDEF HASX11}
+    Clipboard.BeginX11SelectionLock;
+    {$ENDIF}
+
     QFileDialog_setOption(QFileDialogH(QtFileDialog.Widget),
       QFileDialogOptionDontConfirmOverwrite,
       not (ofOverwritePrompt in TSaveDialog(FileDialog).Options));
@@ -525,6 +529,10 @@ begin
     finally
       QStringList_destroy(ReturnList);
     end;
+
+    {$IFDEF HASX11}
+    Clipboard.EndX11SelectionLock;
+    {$ENDIF}
     {$endif}
   end else
   begin
@@ -611,6 +619,9 @@ begin
     end else
       FileDialog.UserChoice := mrCancel;
     {$else}
+    {$IFDEF HASX11}
+    Clipboard.BeginX11SelectionLock;
+    {$ENDIF}
     FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
     ReturnList := QStringList_create;
     try
@@ -635,6 +646,9 @@ begin
     finally
       QStringList_destroy(ReturnList);
     end;
+    {$IFDEF HASX11}
+    Clipboard.EndX11SelectionLock;
+    {$ENDIF}
     {$endif}
   end;
   if ActiveWin <> 0 then
@@ -806,6 +820,9 @@ begin
   end else
     FileDialog.UserChoice := mrCancel;
   {$else}
+  {$IFDEF HASX11}
+  Clipboard.BeginX11SelectionLock;
+  {$ENDIF}
   FileDialog.UserChoice := QtDialogCodeToModalResultMap[QDialogDialogCode(QtFileDialog.exec)];
   ReturnList := QStringList_create;
   try
@@ -830,6 +847,10 @@ begin
   finally
     QStringList_destroy(ReturnList);
   end;
+  {$IFDEF HASX11}
+  Clipboard.EndX11SelectionLock;
+  {$ENDIF}
+
   {$endif}
 end;
 
@@ -889,6 +910,9 @@ begin
 
   FillCustomColors;
 
+  {$IFDEF HASX11}
+  Clipboard.BeginX11SelectionLock;
+  {$ENDIF}
   ATitle := UTF8ToUTF16(ACommonDialog.Title);
   ARetColor := Default(TQColor);
   ReturnBool := QColorDialog_getColor(@ARetColor, @AQColor, TQtWSCommonDialog.GetDialogParent(ACommonDialog), @ATitle, QColorDialogShowAlphaChannel);
@@ -902,6 +926,7 @@ begin
   else
     ACommonDialog.UserChoice := mrCancel;
   {$IFDEF HASX11}
+  Clipboard.EndX11SelectionLock;
   if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
   begin
     AWND := HwndFromWidgetH(QApplication_activeModalWidget());
@@ -946,7 +971,9 @@ begin
     Code to call the dialog
    ------------------------------------------------------------------------------}
   CurrentFont := TQtFont(TFontDialog(ACommonDialog).Font.Reference.Handle).FHandle;
-
+  {$IFDEF HASX11}
+  Clipboard.BeginX11SelectionLock;
+  {$ENDIF}
   ReturnFont := QFont_create;
   try
     QFontDialog_getFont(ReturnFont, @ReturnBool, CurrentFont,
@@ -981,6 +1008,9 @@ begin
    
   finally
     QFont_destroy(ReturnFont);
+    {$IFDEF HASX11}
+    Clipboard.EndX11SelectionLock;
+    {$ENDIF}
   end;
 
   if ReturnBool then
