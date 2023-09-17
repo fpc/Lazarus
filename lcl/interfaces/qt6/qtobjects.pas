@@ -1466,7 +1466,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtImage.bits: PByte;
 begin
-  Result := QImage_bits(FHandle);
+  Result := QImage_constBits(FHandle);
 end;
 
 {------------------------------------------------------------------------------

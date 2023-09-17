@@ -2496,7 +2496,7 @@ begin
     if Count < Result then
       Result := Count;
     if Result > 0 then
-      Move(QImage_bits(Image)^, Bits^, Result);
+      Move(QImage_constBits(Image)^, Bits^, Result);
   finally
     QImage_destroy(Image);
   end;
