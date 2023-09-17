@@ -1897,12 +1897,25 @@ class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 var
   control: TControl;
+  topParent: TControl;
 begin
   //debugln('SetCursor '+AWinControl.name+' '+dbgs(ACursor));
 
   // screen cursor has higher priority than control cursor.
   if Screen.Cursor<>crDefault
     then exit;
+
+  // control cursor only should be set when mouse in the keyWindow.
+  // for the MacOS system automatic restore cursor feature(also an issue),
+  // it is more appropriate to set the default cursor when the mouse is out
+  // of the keyWindow, which has been set in TLCLCommonCallback.MouseMove().
+  // the keyWindow here refers to the Client Frame, excluding TitleBar.
+  topParent:= AWinControl.GetTopParent;
+  if topParent is TCustomForm then
+  begin
+    if NSView(TCustomForm(topParent).handle).window <> NSApp.keyWindow then
+      exit;
+  end;
 
   // control cursor only need be set when mouse in AWinControl.
   // suppose there is a Button, which is to set a Cursor of a ListBox.
