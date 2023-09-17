@@ -778,7 +778,7 @@ var
   begin
     ARawImage.DataSize := QImage_numBytes(AImage);
     ARawImage.Data := GetMem(ARawImage.DataSize);
-    Move(QImage_bits(AImage)^, ARawImage.Data^, ARawImage.DataSize);
+    Move(QImage_constBits(AImage)^, ARawImage.Data^, ARawImage.DataSize);
     ARawImage.Mask := nil;
   end;
   
