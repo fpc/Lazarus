@@ -24,6 +24,7 @@ type
     _lastCursor: NSCursor;
   public
     procedure SetNewCursor( newCursor:TCocoaCursor );
+    procedure ForceSetDefaultCursor;
   public
     class procedure SetCursorOnActive;
     class procedure SetCursorAtMousePos;
@@ -378,6 +379,15 @@ begin
     newCursor.SetCursor;
     _lastCursor:= newCursor.Cursor;
   end;
+end;
+
+procedure TCursorHelper.ForceSetDefaultCursor;
+var
+  newCursor: TCocoaCursor;
+begin
+  newCursor:= TCocoaCursor(Screen.Cursors[crDefault]);
+  newCursor.SetCursor;
+  _lastCursor:= newCursor.Cursor;
 end;
 
 class procedure TCursorHelper.SetCursorOnActive;
