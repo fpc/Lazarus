@@ -39327,16 +39327,42 @@ default values for properties in the class instance.
 
 <element name="THeaderSection.Assign">
 <short>
-<var>Assign</var> - if <var>Source</var> is of correct type, copies 
-properties directly, otherwise calls inherited <var>Assign</var> which 
-probably raises an exception.
+Implements object persistence for the THeaderSection type.
 </short>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in <var>THeaderSection</var>. It 
+extends the inherited method to provide support for persistent objects using 
+the THeaderSection type.
+</p>
+<p>
+If <var>Source</var> is a THeaderSection instance, the following properties are 
+copied into the current class instance:
+</p>
+<ul>
+<li>ImageIndex</li>
+<li>Text</li>
+<li>Width</li>
+</ul>
+<p>
+The Changed method is called to notify the collection that the current item has 
+been updated.
+</p>
+<p>
+If Source is not derived from THeaderSection, the inherited method (in 
+TPersistent) is called using Source as an argument. An EConvertError exception 
+is raised in the inherited method if Source has not been assigned.
+</p>
+</descr>
 <seealso>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
 <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
 </seealso>
 </element>
 <element name="THeaderSection.Assign.Source">
-<short/>
+<short>
+Persistent object with the property values copied to the current class instance.
+</short>
 </element>
 
 <element name="THeaderSection.Left">
@@ -39359,29 +39385,197 @@ selected) or pressed (selected).
 <var>Alignment</var> - whether text is to be left or right justified or 
 centered.
 </short>
+<descr>
+<p>
+<var>Alignment</var> is a <var>TAlignment</var> property which indicates the 
+horizontal alignment used to display the Text for the header section. The 
+default value for the property is taLeftJustify as assigned in the Create 
+constructor. See <link id="#rtl.classes.TAlignment">TAlignment</link> for the 
+values allowed in the property.
+</p>
+<p>
+Changing the value for the property causes the Changed method to be called to 
+update the item in its collection.
+</p>
+<p>
+Alignment is used in the PaintSection method in TCustomHeaderControl when the 
+image, text, and drawing state are used to render the section on the control 
+canvas.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSection.Text"/>
+<link id="THeaderSection.ImageIndex"/>
+<link id="THeaderSection.State"/>
+<link id="THeaderSection.Create"/>
+<link id="TCustomHeaderControl.PaintSection"/>
+<link id="TCustomHeaderControl.Paint"/>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
 </element>
 
 <element name="THeaderSection.ImageIndex">
-<short>Index of the image in the imagelist.</short>
+<short>
+Ordinal position for the image displayed for the header section.
+</short>
+<descr>
+<p>
+<var>ImageIndex</var> is a <var>TImageIndex</var> property with the ordinal 
+position for an image displayed on the header section. The default value for 
+the property is -1 and indicates that a value has not been assigned for the 
+property. Changing the value for the property causes the Changed method to be 
+called to update the item in its collection.
+</p>
+<p>
+ImageIndex refers to the position in the Images property in an associated 
+THeaderControl. It is used, along with Text and Alignment, in the PaintSection 
+method in TCustomHeaderControl / THeaderControl. The values control the content 
+rendered for the header section on the control canvas.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Images"/>
+<link id="TCustomHeaderControl.PaintSection"/>
+</seealso>
 </element>
 
 <element name="THeaderSection.MaxWidth">
-<short>Maximum permissible width of a section.</short>
+<short>
+Maximum width in pixels allowed for the header section.
+</short>
+<descr>
+<p>
+<var>MaxWidth</var> is an <var>Integer</var> property with the maximum size in 
+pixels for the content displayed for the section on the header control. It 
+includes the image, text, and any padding used between the elements for the 
+section.
+</p>
+<p>
+The default value for the property is an arbitrarily large value (10000). 
+Changing the property causes the new value to be validated; it cannot exceed 
+10000 and cannot be smaller than the value in the MinWidth property. The value 
+in the Width property is range-limited to the new values in MinWidth and 
+MaxWidth. The collection is updated when MaxWidth has been changed in the 
+collection item.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSection.MinWidth"/>
+<link id="THeaderSection.Width"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+</seealso>
 </element>
 
 <element name="THeaderSection.MinWidth">
-<short>Minimum permissible width of a section (default = 0).</short>
+<short>
+Minimum width in pixels allowed for the header section.
+</short>
+<descr>
+<p>
+<var>MinWidth</var> is an <var>Integer</var> property with the minimum width in 
+pixels allowed for the content displayed for the section on the header control. 
+The default value for the property is 0 (zero). 
+</p>
+<p>
+Changing the property value causes the new value to be validated; it cannot be 
+less than 0 and cannot exceed the value in the MaxWidth property. The value in 
+the Width property is range-limited to the new values in MinWidth and MaxWidth. 
+The collection is updated when MinWidth has been changed in the collection item.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSection.MaxWidth"/>
+<link id="THeaderSection.Width"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+</seealso>
 </element>
 
 <element name="THeaderSection.Text">
-<short>The text string that is to appear in the section.</short>
+<short>
+The text displayed on the header section.
+</short>
+<descr>
+<p>
+<var>Text</var> is a <var>TCaption</var> property which contains the textual 
+value displayed on the header section.  Along with the image specified in 
+ImageIndex, it determines the content drawn for the section in the PaintSection 
+method of the THeaderControl.
+</p>
+<p>
+Changing the value for the property causes the collection item to be updated in 
+its collection.
+</p>
+<p>
+Use Alignment to set the horizontal alignment for the value in Text.
+</p>
+<p>
+Use ImageIndex to specify the position for the image drawn on the header 
+section.
+</p>
+<p>
+Use Visible to indicate whether the header section is visible on the header 
+control.
+</p>
+<p>
+Use Width to specify the cumulative width for the image and text on the header 
+section.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSection.Alignment"/>
+<link id="THeaderSection.ImageIndex"/>
+<link id="THeaderSection.Width"/>
+<link id="THeaderSection.MaxWidth"/>
+<link id="THeaderSection.MinWidth"/>
+<link id="THeaderSection.Visible"/>
+<link id="TCustomHeaderControl.PaintSection"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="#rtl.classes.TCollectionItem">TCollectionItem</link>
+<link id="#rtl.classes.TCollection">TCollection</link>
+</seealso>
 </element>
 
 <element name="THeaderSection.Width">
 <short>
-The <var>Width</var> of the section that appears on the 
-<var>THeaderControl</var>.
+Total width in pixels for the text and image on the header section.
 </short>
+<descr>
+<p>
+<var>Width</var> is an <var>Integer</var> property with the number of pixels 
+allocated for the text and image on the header section. It does not indicate 
+the actual width of the content - only the size allocated for its display.
+</p>
+<p>
+The Width property always returns 0 (zero) when Visible is set to <b>False</b>.
+</p>
+<p>
+Setting a new value for the property causes it to be range-limited to the 
+values in MinWidth and MaxWidth. The item is updated in its collection when 
+Width has been changed.
+</p>
+<p>
+The value in the property may be automatically scaled for high DPI displays in 
+the DoAutoAdjustLayout and ChangeScale methods for the header control.
+</p>
+<p>
+Width is updated at design-time when the divider between adjacent header 
+sections is dragged.
+</p>
+<p>
+Use MinWidth and MaxWidth to specify the smallest and largest sizes allowed for 
+the header section.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSection.MaxWidth"/>
+<link id="THeaderSection.MinWidth"/>
+<link id="THeaderSection.Text"/>
+<link id="THeaderSection.ImageIndex"/>
+<link id="TCustomHeaderControl.PaintSection"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.ChangeScale"/>
+<link id="TCustomHeaderControl.DoAutoAdjustLayout"/>
+</seealso>
 </element>
 
 <element name="THeaderSection.Visible">
@@ -39391,7 +39585,7 @@ The <var>Width</var> of the section that appears on the
 <var>Visible</var> is a <var>Boolean</var> property which indicates if the 
 header section is visible in the header control. When set to <b>False</b>, 
 the section cannot be drawn using the TCustomHeaderControl.PaintSection 
-method.
+method, and the Width for the section is 0.
 </p>
 <p>
 The default value for the property is <b>True</b>, as set in the constructor 
@@ -39402,9 +39596,27 @@ for the class instance.
 
 <element name="THeaderSection.OriginalIndex">
 <short>
-<var>OriginalIndex</var> - index which doesn't change when the user reorders 
-the sections.
+Index position which does not change when the user reorders the sections on a 
+header control.
 </short>
+<descr>
+<p>
+<var>OriginalIndex</var> is an <var>Integer</var> property which contains the 
+index order for the section when it was added to its Owner collection. The 
+property value is assigned when the class instance is created in the AddItem 
+method in THeaderSections. It normally contains the value in Index unless the 
+value is already in use in the collection.
+</p>
+<p>
+OriginalIndex may be updated when Delete in the THeaderSections is used to 
+remove a header section from the collection.
+</p>
+</descr>
+<seealso>
+<link id="THeaderSections.AddItem"/>
+<link id="THeaderSections.Delete"/>
+<link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
+</seealso>
 </element>
 
 <element name="THeaderSectionClass">
@@ -39522,10 +39734,12 @@ the change.
 <short>Creates a new header section and adds it to the collection.</short>
 <descr>
 <p>
-Adds calls the AddItem method to get the return value for the method.
+Add calls the AddItem method to get the return value for the method.
 </p>
 </descr>
 <seealso>
+<link id="THeaderSections.AddItem"/>  
+<link id="THeaderSections.Delete"/>  
 <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
 </seealso>
 </element>
