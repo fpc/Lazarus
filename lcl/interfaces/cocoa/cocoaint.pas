@@ -528,7 +528,12 @@ begin
     // if mouse in the keyWindow and not in content frame (eg. in the titlebar)
     // Cursor should be forced to default.
     if not NSPointInRect(p, wfr) then
-      CursorHelper.ForceSetDefaultCursor;
+    begin
+      if Screen.Cursor=crDefault then
+        CursorHelper.ForceSetDefaultCursor
+      else
+        CursorHelper.SetScreenCursor;
+    end;
     Exit;
   end;
 
