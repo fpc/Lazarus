@@ -521,13 +521,12 @@ var
   windowNumber : NSNumber;
 begin
   kw := app.keyWindow;
-
-  // mouse move was consumed by the focused window
   p := theEvent.mouseLocation;
-  if Assigned(kw) and NSPointInRect(p, kw.frame) then
+
+  if Assigned(kw) then
   begin
     wfr := kw.contentRectForFrameRect(kw.frame);
-    // if mouse in the keyWindow and not in content frame (eg. in the titlebar)
+    // if mouse outside of ClientFrame of keyWindow,
     // Cursor should be forced to default.
     if not NSPointInRect(p, wfr) then
     begin
@@ -536,8 +535,11 @@ begin
       else
         CursorHelper.SetScreenCursor;
     end;
-    Exit;
   end;
+
+  // mouse move was consumed by the focused window
+  if Assigned(kw) and NSPointInRect(p, kw.frame) then
+    exit;
 
   // windowNumbersWithOptions() shoulde be used here.
   // because windowNumbersWithOptions() return windowsNumber of visible windows
