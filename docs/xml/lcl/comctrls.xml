@@ -40035,18 +40035,46 @@ Original position (ignoring visibility) in the Sections property.
 </element>
 
 <element name="TCustomHeaderControl.UpdateSection">
-<short>Updates the control by calling Repaint.</short>
-<descr/>
-<seealso/>
+<short>
+Updates the header section at the specified position on the header control.
+</short>
+<descr>
+<p>
+<var>UpdateSection</var> is called from the THeaderSections.Update method when 
+a collection item (THeaderSection) is passed as an argument to the method.
+</p>
+<p>
+In the current LCL implementation, all sections are redrawn on the header 
+control by calling the Repaint method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.UpdateSections"/>
+<link id="THeaderSections.Update"/>
+</seealso>
 </element>
 <element name="TCustomHeaderControl.UpdateSection.Index">
-<short/>
+<short>
+Ignored in the current implementation.
+</short>
 </element>
 
 <element name="TCustomHeaderControl.UpdateSections">
-<short>Updates all Sections in the control by calling Repaint.</short>
-<descr/>
-<seealso/>
+<short>
+Updates all header Sections on the control by calling Repaint.
+</short>
+<descr>
+<p>
+<var>UpdateSections</var> calls the Repaint method to redraw the Sections 
+defined on the header control. It is called from the THeaderSections.Update 
+method when a collection item (THeaderSection) is <b>not</b> passed as an 
+argument to the method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.UpdateSection"/>
+<link id="THeaderSections.Update"/>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.CreateSection">
@@ -40094,10 +40122,14 @@ passed as an argument to the collection method.
 <short>
 Creates the collection used to store header sections defined for the control.
 </short>
-<descr/>
+<descr>
+CreateSections is called from the TCustomHeaderControl.Create constructor to 
+allocate the collection used to store the Sections defined for the control.
+</descr>
 <seealso>
 <link id="TCustomHeaderControl.Sections"/>
-<link id="THeaderSections"/>
+<link id="TCustomHeaderControl.Create"/>
+<link id="THeaderSections.Create"/>
 <link id="THeaderSection"/>
 </seealso>
 </element>
@@ -40105,7 +40137,23 @@ Creates the collection used to store header sections defined for the control.
 <short>THeaderSections instance created in the method.</short>
 </element>
 
-<element name="TCustomHeaderControl.Loaded" link="#lcl.controls.TWinControl.Loaded"/>
+<element name="TCustomHeaderControl.Loaded">
+<short>
+Performs actions when the component has been loaded during LCL component 
+streaming.
+</short>
+<descr/>
+<p>
+<var>Loaded</var> is an overridden method in <var>TCustomHeaderControl</var>. 
+It calls the inherited method (in TWinControl) on entry into the method. 
+It extends the inherited method to ensure that the internal member used to 
+track the cursor shape for the control is initialized to the value in Cursor.
+</p>
+<seealso>
+<link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
+<link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
+</seealso>
+</element>
 
 <element name="TCustomHeaderControl.Notification">
 <short>
@@ -40211,28 +40259,81 @@ occurs when mouse tracking has been enabled for the header control.
 
 <element name="TCustomHeaderControl.SectionEndDrag">
 <short>
-<var>SectionEndDrag</var> - method for emulating the 
-<var>OnSectionEndDrag</var> event.
+Signals the OnSectionEndDrag event handler (when assigned).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SectionEndDrag</var> is called from the MouseUp method when the a mouse 
+button is released during a drag operation for a header section on the control. 
+It is called after the selected header section has been reordered by updating 
+its Index property.
+</p>
+<p>
+Use OnSectionEndDrag to perform any actions needed when the section order has 
+been updated in a drag operation.
+</p>
+<p>
+Use DragReorder to enable or disable drag operations for the Sections on 
+the header control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.OnSectionEndDrag"/>
+<link id="TCustomHeaderControl.Mouseup"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.DragReorder"/>
+<link id="THeaderSection.OriginalIndex"/>
+<link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.SectionDrag">
 <short>
-<var>SectionDrag</var> - method to emulate the <var>OnSectionDrag</var> event.
+Signals the OnSectionDrag event handler (when assigned and enabled).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SectionDrag</var> is a <var>Boolean</var> function used to signal the 
+OnSectionDrag event handler when a drag operation is started for a section on 
+the header control. The return value is <b>True</b> if the DragReorder 
+property is enabled, and the OnSectionDrag event handler has been assigned and 
+allows the drag operation for the specified source and destination sections.
+</p>
+<p>
+No actions are performed in the method if DragReorder is set to <b>False</b>.
+</p>
+<p>
+Update the AllowDrag argument in the TSectionDragEvent handler to indicate 
+whether the section in FromSection can be dragged to the position for the 
+section in ToSection.
+</p>
+<p>
+SectionDrag is called from the MouseMove method when a Shift+Left mouse button 
+event is detected on one of the Sections for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.OnSectionDrag"/>
+<link id="TCustomHeaderControl.DragReorder"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.MouseMove"/>
+<link id="TSectionDragEvent"/>
+</seealso>
 </element>
 <element name="TCustomHeaderControl.SectionDrag.Result">
-<short/>
+<short>
+<b>True</b> if the drag operation can be performed the selected section.
+</short>
 </element>
 <element name="TCustomHeaderControl.SectionDrag.FromSection">
-<short/>
+<short>
+Section to be dragged on the header control.
+</short>
 </element>
 <element name="TCustomHeaderControl.SectionDrag.ToSection">
-<short/>
+<short>
+Section that is the potential drop target for the drag operation.
+</short>
 </element>
 
 <element name="TCustomHeaderControl.MouseEnter" link="#lcl.controls.TControl.MouseEnter"/>
@@ -40243,10 +40344,40 @@ occurs when mouse tracking has been enabled for the header control.
 
 <element name="TCustomHeaderControl.UpdateState">
 <short>
-<var>UpdateState</var> - bring the state of the control up-to-date.
+Updates the State property in one or more of the Sections on the header 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>UpdateState</var> is a method used to update the drawing state for one or 
+more of the Sections on the header control. When Enabled is set to <b>True</b>, 
+it ensures that the selected section on the control has its State property set 
+to the Up (hsNormal) or Down (hsPressed) drawing style as required. If a mouse 
+down event has not reported for the control, the section under the mouse 
+pointer is updated to use hsHot in its State property.
+</p>
+<p>
+UpdateState visits each of the THeaderSection instances in Sections, and sets 
+their State property to hsNormal if it is not the selected or highlighted 
+section on the control.
+</p>
+<p>
+UpdateState is called from the MouseEnter and MouseLeave methods when the 
+control gains or loses mouse capture for the control. It is also called from 
+MouseDown, MouseMove, and MouseUp when mouse events are handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.MouseEnter"/>
+<link id="TCustomHeaderControl.MouseLeave"/>
+<link id="TCustomHeaderControl.MouseMove"/>
+<link id="TCustomHeaderControl.MouseDown"/>
+<link id="TCustomHeaderControl.MouseUp"/>
+<link id="THeaderSection.State"/>
+<link id="THeaderSectionState"/>
+<link id="#lcl.controls.TControl.Enabled">TControl.Enabled</link>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.GetControlClassDefaultSize">
@@ -40266,29 +40397,51 @@ Gets the default size for new instances of the class.
 Applies an automatic layout policy to the control using the specified scaling 
 factors.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoAutoAdjustLayout</var> calls the inherited method (in TControl) to apply 
+adjusts to the dimensions, border spacing, and anchoring common to all 
+controls. It extends the inherited method to adjust the Width for the Sections 
+defined on the control using the AXProportion argument.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="THeaderSection.Width"/>
+<link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+</seealso>
 </element>
 <element name="TCustomHeaderControl.DoAutoAdjustLayout.AMode">
-<short/>
+<short>
+Layout adjustment policy applied in the method.
+</short>
 </element>
 <element name="TCustomHeaderControl.DoAutoAdjustLayout.AXProportion">
-<short/>
+<short>
+Scaling factor for horizontal adjustments applied in the method.
+</short>
 </element>
 <element name="TCustomHeaderControl.DoAutoAdjustLayout.AYProportion">
-<short/>
+<short>
+Scaling factor for vertical adjustments applied in the method.
+</short>
 </element>
 
 <element name="TCustomHeaderControl.SectionFromOriginalIndex">
 <short>
-<var>SectionFromOriginalIndex</var> - the section as defined by the original 
-(unchanged) index.
+Gets a header section by its original position in the Sections collection.
 </short>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomHeaderControl.SectionFromOriginalIndex.OriginalIndex">
-<short/>
+<element name="TCustomHeaderControl.SectionFromOriginalIndex.Result">
+<short>
+Header section located in Sections with the specified original index value.
+</short>
+</element><element name="TCustomHeaderControl.SectionFromOriginalIndex.OriginalIndex">
+<short>
+Value used to locate the header section in the return value.
+</short>
 </element>
 
 <element name="TCustomHeaderControl.Create">
@@ -40464,9 +40617,22 @@ and divisor to scale the section width.
 
 <element name="TCustomHeaderControl.DragReorder">
 <short>
-<var>DragReorder</var> - find out if the sections are allowed to be 
-re-ordered by dragging.
+Enables or disables reordering of header sections on the control using drag and 
+drop.
 </short>
+<descr>
+<p>
+<var>DragReorder</var> is used in the SectionDrag method to control whether 
+drag and drop is enabled for header sections. It also determines whether the 
+OnSectionDrag event handler is signalled to allow or disallow the source and 
+destination section targets.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.SectionDrag"/>
+<link id="TCustomHeaderControl.OnSectionDrag"/>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.Images">
@@ -40518,42 +40684,110 @@ layout, content, appearance, and state for each header section.
 
 <element name="TCustomHeaderControl.OnSectionDrag">
 <short>
-<var>OnSectionDrag</var> - event handler for dragging the section of header.
+Event handler signalled to determine whether a header section can be dragged 
+and dropped at a new position on the control.
 </short>
+<descr>
+<p>
+<var>OnSectionDrag</var> is a <var>TSectionDragEvent</var> property with the 
+event handler signalled when a drag and drop operation for a section header is 
+requested.
+</p>
+<p>
+Arguments passed to the TSectionDragEvent routine include the Sender object 
+(TCustomHeaderControl) for the event notification, and THeaderSection instances 
+representing the dragged section and the section that is the target for the 
+drag request. The AllowDrag variable parameter is used to indicate whether the 
+drag and drop operation using the specified source and destination is allowed. 
+Setting AllowDrag to <b>False</b> in the handler prevents the drag and drop 
+operation for the specified sections.
+</p>
+<p>
+OnSectionDrag is signalled (when assigned) from the SectionDrag method, and 
+occurs if DragReorder has been enabled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.DragReorder"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.SectionDrag"/>
+<link id="TSectionDragEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.OnSectionEndDrag">
 <short>
-<var>OnSectionEndDrag</var> - event handler for ending the drag process for 
-this section.
+Event handler signalled when a drag and drop operation for a section is 
+completed.
 </short>
+<descr>
+<p>
+<var>OnSectionEndDrag</var> is signalled (when assigned) from the 
+SectionEndDrag method called when the left mouse button is released for a 
+dragged header section. An application can implement and assign a handler 
+routine to perform actions needed when the drag and drop operation is 
+completed. The Sender argument for the handler contains the 
+TCustomHeaderControl instance for the event notification.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.OnSectionDrag"/>
+<link id="TCustomHeaderControl.DragReorder"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.OnSectionClick">
 <short>
-<var>OnSectionClick</var> - event handler for mouse click on this section of 
-header.
+Event handler signalled when a mouse click event occurs in a section header on 
+the control.
 </short>
+<descr>
+<p>
+<var>OnSectionClick</var> is a <var>TCustomSectionNotifyEvent</var> property 
+with the event handler signalled when a mouse click is handled for the header 
+control. It is signalled (when assigned) from the SectionClick method using 
+the THeaderSection instance where the mouse click occurred as an argument to 
+the handler routine. On SectionClick is not signalled if the mouse click was on 
+an unused part of the header control not covered by a header section.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.SectionClick"/>
+<link id="TCustomHeaderControl.Click"/>
+<link id="TCustomHeaderControl.GetSectionAt"/>
+<link id="TCustomSectionNotifyEvent"/>
+</seealso>
 </element>
 
+<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionResize">
 <short>
-<var>OnSectionResize</var> - event handler for re-sizing this section of the 
-header.
+Event handler signalled when a resize operation for a header section has been 
+completed.
 </short>
+<descr/>
+<seealso/>
 </element>
 
+<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionTrack">
 <short>
-<var>OnSectionTrack</var> - event handler for tracking this section.
+Event handler signalled when drag tracking/resizing is activated for the 
+selected header section on the control.
 </short>
+<descr/>
+<seealso/>
 </element>
 
+<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionSeparatorDblClick">
 <short>
-<var>OnSectionSeparatorDblClick</var> - event handler for double-click on the 
-separator between sections.
+Event handler signalled when a separator between header sections on the 
+control is double-clicked.
 </short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TCustomHeaderControl.OnCreateSectionClass">
