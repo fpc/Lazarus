@@ -40658,34 +40658,111 @@ an unused part of the header control not covered by a header section.
 </seealso>
 </element>
 
-<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionResize">
 <short>
 Event handler signalled when a resize operation for a header section has been 
 completed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnSectionResize</var> is a <var>TCustomSectionNotifyEvent</var> property 
+with the event handler signalled when one of the header Sections has been 
+resized by dragging the  separator for the section. It is signalled (when 
+assigned) in the SectionResize method with arguments that identify the header 
+control and the header section for the event notification.
+</p>
+<p>
+SectionResize / OnSectionResize occur when the left mouse button is released to 
+complete a resizing operation. An application can implement and assign a 
+handler routine using the signature in TCustomSectionNotifyEvent to perform 
+actions related to the resize event for the selected section.
+</p>
+<p>
+Use OnSectionSeparatorDblClick to handle a mouse double-click event on the 
+section separator.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.SectionResize"/>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.MouseUp"/>
+<link id="TCustomHeaderControl.OnSectionSeparatorDblClick"/>
+<link id="TCustomSectionNotifyEvent"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionTrack">
 <short>
 Event handler signalled when drag tracking/resizing is activated for the 
 selected header section on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnSectionTrack</var> is a <var>TCustomSectionTrackEvent</var> property 
+with the event handler signalled when resize tracking is activated for one of 
+the Sections on the header control. It is signalled (when assigned) from the 
+SectionTrack method. The event occurs when MouseDown, MouseMove, and MouseUp 
+methods handle Shift+Left mouse button events on the control.
+</p>
+<p>
+An application can implement and assign a handler routine using the signature 
+in TCustomSectionTrackEvent to perform actions related to the resize tracking 
+operation. Arguments passed to the handler routine include the header control 
+and the header section for the notification. The Width and tracking state for 
+the section are also included.
+</p>
+<p>
+Use OnSectionResize to performs action needed when a resize operation has been 
+completed for one of the header Sections.
+</p>
+<p>
+Use OnSectionSeparatorDblClick to perform actions when the separator for a 
+header section is double-clicked.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.SectionTrack"/>
+<link id="TCustomHeaderControl.MouseDown"/>
+<link id="TCustomHeaderControl.MouseMove"/>
+<link id="TCustomHeaderControl.MouseUp"/>
+<link id="TCustomHeaderControl.OnSectionResize"/>
+<link id="TCustomHeaderControl.OnSectionSeparatorDblClick"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs content and see also links. -->
 <element name="TCustomHeaderControl.OnSectionSeparatorDblClick">
 <short>
 Event handler signalled when a separator between header sections on the 
 control is double-clicked.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnSectionSeparatorDblClick</var> is a <var>TCustomSectionNotifyEvent</var> 
+property with the event handler signalled when the separator for a header 
+section has been double-clicked. It is signalled (when assigned) from the 
+SectionSeparatorDblClick method. It occurs when the DblClick method handles the 
+mouse event when resize tracking has been enabled by hovering the mouse over 
+the separator for the section.
+</p>
+<p>
+An application can implement and assign a routine using the signature in 
+TCustomSectionNotifyEvent to respond to the event notification. Arguments 
+passed to the handler include the header control and the header section 
+affected in the event.
+</p>
+<p>
+Use OnSectionTrack and OnSectionResize to perform actions needed then resize 
+tracking is activated or completed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomHeaderControl.Sections"/>
+<link id="TCustomHeaderControl.DblClick"/>
+<link id="TCustomHeaderControl.OnSectionTrack"/>
+<link id="TCustomHeaderControl.OnSectionResize"/>
+<link id="TCustomSectionNotifyEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomHeaderControl.OnCreateSectionClass">
@@ -40835,7 +40912,7 @@ Represents the selection changing notification message for tab controls.
 </element>
 
 <element name="CompareExpandedNodes">
-<short>Function to compare the node text in two nodes.</short>
+<short>Function to compare the node text in two tree nodes.</short>
 <descr>
 <p>
 This function does an ANSICompare on the NodeText of two nodes. The 
@@ -40870,7 +40947,7 @@ The nodetext from the first node is higher than the nodetext from the second.
 
 <element name="CompareTextWithExpandedNode">
 <short>
-Function to compare the given text with the nodetext of the specified node.
+Function to compare the given text with the nodetext of the specified tree node.
 </short>
 <descr>
 <p>
