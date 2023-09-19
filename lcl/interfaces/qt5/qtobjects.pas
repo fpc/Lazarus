@@ -554,6 +554,7 @@ type
     FSelTimer: TQtTimer; // timer for keyboard X11 selection
     FSelFmtCount: Integer;
     FLockX11Selection: Integer;
+    class var FX11Delay: boolean; {small delay to stop freezing clipboard under x11 in some circumstances. eg gtk2/gtk3 platform theme dialogs.}
     {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
@@ -587,6 +588,7 @@ type
     procedure EndX11SelectionLock;
     function InX11SelectionLock: Boolean;
     procedure signalSelectionChanged; cdecl;
+    procedure X11DelayTimeOut; cdecl;
     procedure selectionTimer;
     {$ENDIF}
   end;
@@ -3803,6 +3805,7 @@ begin
   FClipBoardFormats.Add('foo'); // 0 is reserved
   TheObject := QGUIApplication_clipBoard;
   {$IFDEF HASX11}
+  FX11Delay := false;
   FLockX11Selection := 0;
   FSelTimer := TQtTimer.CreateTimer(10, @selectionTimer, TheObject);
   {$ENDIF}
@@ -3864,6 +3867,16 @@ end;
 procedure TQtClipboard.EndX11SelectionLock;
 begin
   dec(FLockX11Selection);
+  if (FLockX11Selection = 0) and not FX11Delay then
+  begin
+    FX11Delay := True;
+    QTimer_singleShot(10, @X11DelayTimeOut);
+  end;
+end;
+
+procedure TQtClipboard.X11DelayTimeOut; cdecl;
+begin
+  FX11Delay := False;
 end;
 
 function TQtClipboard.InX11SelectionLock: Boolean;
@@ -4046,7 +4059,12 @@ end;
 
 function TQtClipboard.getMimeData(AMode: QClipboardMode): QMimeDataH;
 begin
-  Result := QClipboard_mimeData(Clipboard, AMode);
+  {$IFDEF HASX11}
+  if InX11SelectionLock or FX11Delay then
+    Result := nil
+  else
+  {$ENDIF}
+    Result := QClipboard_mimeData(Clipboard, AMode);
 end;
 
 procedure TQtClipboard.setMimeData(AMimeData: QMimeDataH; AMode: QClipboardMode);
@@ -4093,6 +4111,8 @@ var
 begin
   Result := False;
   QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+  if QtMimeData = nil then
+    exit;
   MimeType := UTF8ToUTF16(FormatToMimeType(FormatID));
 
   {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
@@ -4141,6 +4161,9 @@ begin
   List := nil;
 
   QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+
+  if QtMimeData = nil then
+    exit;
 
   QtList := QStringList_create;
   QMimeData_formats(QtMimeData, QtList);
