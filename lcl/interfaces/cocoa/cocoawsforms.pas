@@ -793,6 +793,8 @@ begin
     // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
     // while the first didn't finish yet, instead delay the call
     cnt.popup_parent := AParams.WndParent;
+
+    win.makeFirstResponder(doc);
   end
   else
   begin
