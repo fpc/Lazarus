@@ -3741,7 +3741,7 @@ begin
         CaretXY := Point(1,1);
         MappedAttributes := TStringList.Create;
         for j := 0 to tmlHighlighter.AttrCount - 1 do begin
-          n := tmlHighlighter.Attribute[j].StoredName;
+          n := tmlHighlighter.Attribute[j].StoredName+'.';
           if strlicomp(pchar(n), pchar('comment.'), 8) = 0           then MappedAttributes.Add(n+'=Comment');
           if strlicomp(pchar(n), pchar('string.'), 7) = 0            then MappedAttributes.Add(n+'=String');
           if strlicomp(pchar(n), pchar('constant.numeric.'), 17) = 0 then MappedAttributes.Add(n+'=Number');
@@ -3750,8 +3750,6 @@ begin
           if strlicomp(pchar(n), pchar('key.'), 4) = 0               then MappedAttributes.Add(n+'=Reserved word');
           if strlicomp(pchar(n), pchar('entity.name.'), 12) = 0      then MappedAttributes.Add(n+'=Identifier');
           if strlicomp(pchar(n), pchar('identifier.'), 11) = 0       then MappedAttributes.Add(n+'=Identifier');
-
-          if strlicomp(pchar(n), pchar('comment.'), 8) = 0           then MappedAttributes.Add(n+'=Comment');
         end;
       end;
       Add(NewInfo);

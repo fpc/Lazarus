@@ -413,6 +413,10 @@ type
     FSampleTextFile: String;
     FLangName: string;
 
+    FRegExMatchFoldBegin, FRegExMatchFoldEnd: TRegExpr;
+    MatchFoldBegin, MatchFoldEnd: String;
+
+
     FMainPatternCount: integer;
     FMainPatternList: TTextMatePatternList;
     FPatternRepo: TTextMatePatternMap;
@@ -463,6 +467,8 @@ type
     procedure Next;
     function  IsAtEol: boolean;
     procedure NextToEol;
+    function  IsFoldBegin: boolean;
+    function  IsFoldEnd: boolean;
 
     property CurrentTokenPos: integer read FCurrentTokenPos;
     property NextTokenPos: integer read FNextTokenPos;
@@ -2339,6 +2345,8 @@ begin
   FPatternRepo.Free;
   FTheEmptyPattern.Free;
   FOtherGrammars.Free;
+  FRegExMatchFoldBegin.Free;
+  FRegExMatchFoldEnd.Free;
 end;
 
 procedure TTextMateGrammar.ParseGrammar(AGrammarDef: String);
@@ -2368,6 +2376,14 @@ begin
 
     FRootPattern.FName     := jsKeyAsString(JSonDef, 'name');
     FRootPattern.ScopeName := jsKeyAsString(JSonDef, 'scopeName');
+
+
+    MatchFoldBegin := jsKeyAsString(JSonDef, 'foldingStartMarker');
+    MatchFoldEnd := jsKeyAsString(JSonDef, 'foldingStopMarker');
+    if MatchFoldBegin <> '' then
+      FRootPattern.DoInitRegex(FRegExMatchFoldBegin, MatchFoldBegin, 'foldingStartMarker');
+    if MatchFoldEnd <> '' then
+      FRootPattern.DoInitRegex(FRegExMatchFoldEnd, MatchFoldEnd, 'foldingStopMarker');
 
     // language file?
     if JSonDef.IndexOfName('contributes') >= 0 then begin
@@ -2623,6 +2639,30 @@ begin
   end;
   FCurrentPattern := FCurrentState.Pattern[0];
   FCurrentTokenPos := Length(FLineText) + 1;
+end;
+
+function TTextMateGrammar.IsFoldBegin: boolean;
+begin
+  if MatchFoldBegin = '' then
+    exit(false);
+  try
+    FRegExMatchFoldBegin.InputString := FLineText;
+    Result := FRegExMatchFoldBegin.Exec;
+  except
+    Result := False;
+  end;
+end;
+
+function TTextMateGrammar.IsFoldEnd: boolean;
+begin
+  if MatchFoldEnd = '' then
+    exit(false);
+  try
+    FRegExMatchFoldEnd.InputString := FLineText;
+    Result := FRegExMatchFoldEnd.Exec;
+  except
+    Result := False;
+  end;
 end;
 
 end.

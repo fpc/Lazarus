@@ -13,12 +13,28 @@ uses
   // LazEdit
   TextMateGrammar,
   // SynEdit
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes;
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 
 type
 
   TNameAttributesMap   = specialize TFPGMapObject<string, TSynHighlighterAttributes>;
   TGrammarLoadEvent = procedure(AGrammarFile, AGrammarPath: String; out AGrammarDef: String);
+
+ TSynTextMateRangeInfo = record
+    FoldLevel: Smallint;
+  end;
+
+  { TSynHighlighterTextMateRangeList }
+
+  TSynHighlighterTextMateRangeList = class(TSynHighlighterRangeList)
+  private
+    FItemOffset: integer;
+    function GetRangeInfo(Index: Integer): TSynTextMateRangeInfo;
+    procedure SetRangeInfo(Index: Integer; AValue: TSynTextMateRangeInfo);
+  public
+    constructor Create;
+    property RangeInfo[Index: Integer]: TSynTextMateRangeInfo read GetRangeInfo write SetRangeInfo;
+  end;
 
   { TSynTextMateSyn }
 
@@ -41,6 +57,7 @@ type
       const AnAttribInfo: TSynAttributeInfo; out AnUseId, AnUseObject: Boolean);
   private
     FCurrentRange: Integer;
+    FRangeInfo: TSynTextMateRangeInfo;
     FCurrentTokenPos, FCurrentTokenLen: Integer;
     FCurrentTokenKind: integer;
     FCurrentAttrib: TSynHighlighterAttributes;
@@ -48,6 +65,8 @@ type
 
   protected
     function GetInstanceLanguageName: string; override;
+    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -70,13 +89,8 @@ type
     procedure ResetRange; override;
     function GetRange: Pointer; override;
 
-
-    function FoldBlockOpeningCount(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
-    function FoldBlockClosingCount(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockEndLevel(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
     function FoldBlockMinLevel(ALineIndex: TLineIdx; const AFilter: TSynFoldBlockFilter): integer; override; overload;
-    function FoldBlockNestedTypes(ALineIndex: TLineIdx; ANestIndex: Integer;
-      out AType: Pointer; const AFilter: TSynFoldBlockFilter): boolean; override; overload;
 
     property OnLoadGrammarFile: TGrammarLoadEvent read FOnLoadGrammarFile write FOnLoadGrammarFile;
     property GrammarPath: String read FGrammarPath write SetGrammarPath;
@@ -85,6 +99,30 @@ type
   end;
 
 implementation
+
+{ TSynHighlighterTextMateRangeList }
+
+function TSynHighlighterTextMateRangeList.GetRangeInfo(Index: Integer
+  ): TSynTextMateRangeInfo;
+begin
+  if (Index < 0) or (Index >= Count) then
+    Result := Default(TSynTextMateRangeInfo)
+  else
+    Result := TSynTextMateRangeInfo((ItemPointer[Index] + FItemOffset)^);
+end;
+
+procedure TSynHighlighterTextMateRangeList.SetRangeInfo(Index: Integer;
+  AValue: TSynTextMateRangeInfo);
+begin
+  TSynTextMateRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
+end;
+
+constructor TSynHighlighterTextMateRangeList.Create;
+begin
+  inherited;
+  FItemOffset := ItemSize;
+  ItemSize := FItemOffset + SizeOf(TSynTextMateRangeInfo);
+end;
 
 { TSynTextMateSyn }
 
@@ -131,6 +169,23 @@ end;
 function TSynTextMateSyn.GetInstanceLanguageName: string;
 begin
   Result := FTextMateGrammar.LanguageName;
+end;
+
+function TSynTextMateSyn.CreateRangeList(ALines: TSynEditStringsBase
+  ): TSynHighlighterRangeList;
+begin
+  Result := TSynHighlighterTextMateRangeList.Create;
+end;
+
+function TSynTextMateSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+var
+  r: TSynTextMateRangeInfo;
+begin
+  Result := inherited;
+  r := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index];
+  Result := Result
+        or (FRangeInfo.FoldLevel <> r.FoldLevel);
+  TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index] := FRangeInfo;
 end;
 
 procedure TSynTextMateSyn.DoPopulateAttributeInfo(
@@ -191,6 +246,8 @@ end;
 
 procedure TSynTextMateSyn.SetLine(const NewValue: String;
   LineNumber: Integer);
+var
+  nd: TSynFoldNodeInfo;
 begin
   inherited SetLine(NewValue, LineNumber);
 
@@ -200,6 +257,38 @@ begin
 
   FTextMateGrammar.SetLine(CurrentLineText, FCurrentRange);
   FCurrentRange := -2;
+
+  if FTextMateGrammar.IsFoldBegin then begin
+    if not FTextMateGrammar.IsFoldEnd then begin
+      inc(FRangeInfo.FoldLevel);
+      if IsCollectingNodeInfo then begin
+        nd := Default(TSynFoldNodeInfo);
+        nd.LineIndex := LineIndex;
+        nd.FoldGroup := 1;
+        nd.FoldLvlStart := FRangeInfo.FoldLevel - 1;
+        nd.FoldLvlEnd := FRangeInfo.FoldLevel;
+        nd.NestLvlStart := FRangeInfo.FoldLevel - 1;
+        nd.NestLvlEnd := FRangeInfo.FoldLevel;
+        nd.FoldAction := [sfaFold, sfaFoldFold, sfaOpen, sfaOpenFold];
+        CollectingNodeInfoList.Add(nd);
+      end;
+    end;
+  end
+  else
+  if FTextMateGrammar.IsFoldEnd and (FRangeInfo.FoldLevel > 0) then begin
+    dec(FRangeInfo.FoldLevel);
+    if IsCollectingNodeInfo then begin
+      nd := Default(TSynFoldNodeInfo);
+      nd.LineIndex := LineIndex;
+      nd.FoldGroup := 1;
+      nd.FoldLvlStart := FRangeInfo.FoldLevel + 1;
+      nd.FoldLvlEnd := FRangeInfo.FoldLevel;
+      nd.NestLvlStart := FRangeInfo.FoldLevel + 1;
+      nd.NestLvlEnd := FRangeInfo.FoldLevel;
+      nd.FoldAction := [sfaFold, sfaFoldFold, sfaClose, sfaCloseFold];
+      CollectingNodeInfoList.Add(nd);
+    end;
+  end;
 
   if IsScanning then begin
     FTextMateGrammar.NextToEol;
@@ -266,11 +355,13 @@ end;
 procedure TSynTextMateSyn.SetRange(Value: Pointer);
 begin
   FCurrentRange := PtrUInt(Value);
+  FRangeInfo := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[LineIndex-1];
 end;
 
 procedure TSynTextMateSyn.ResetRange;
 begin
   FCurrentRange := -1;
+  FRangeInfo := Default(TSynTextMateRangeInfo);
 end;
 
 function TSynTextMateSyn.GetRange: Pointer;
@@ -279,35 +370,25 @@ begin
   Result := Pointer(PtrUInt(FCurrentRange));
 end;
 
-function TSynTextMateSyn.FoldBlockOpeningCount(ALineIndex: TLineIdx;
-  const AFilter: TSynFoldBlockFilter): integer;
-begin
-  Result := 0;
-end;
-
-function TSynTextMateSyn.FoldBlockClosingCount(ALineIndex: TLineIdx;
-  const AFilter: TSynFoldBlockFilter): integer;
-begin
-  Result := 0;
-end;
-
 function TSynTextMateSyn.FoldBlockEndLevel(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
+var
+  RangeInfo: TSynTextMateRangeInfo;
 begin
-  Result := 0;
+  RangeInfo := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[ALineIndex];
+  Result := RangeInfo.FoldLevel;
 end;
 
 function TSynTextMateSyn.FoldBlockMinLevel(ALineIndex: TLineIdx;
   const AFilter: TSynFoldBlockFilter): integer;
+var
+  RangeInfo: TSynTextMateRangeInfo;
 begin
-  Result := 0;
-end;
-
-function TSynTextMateSyn.FoldBlockNestedTypes(ALineIndex: TLineIdx;
-  ANestIndex: Integer; out AType: Pointer; const AFilter: TSynFoldBlockFilter
-  ): boolean;
-begin
-  Result := False;
+  RangeInfo := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[ALineIndex-1];
+  Result := RangeInfo.FoldLevel;
+  RangeInfo := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[ALineIndex];
+  if Result > RangeInfo.FoldLevel then
+    Result := RangeInfo.FoldLevel;
 end;
 
 end.
