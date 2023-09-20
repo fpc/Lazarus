@@ -517,21 +517,47 @@ var
   ev  : NSEvent;
   p   : NSPoint;
   wfr : NSRect;
+  windowNumbers : NSArray;
+  windowNumber : NSNumber;
 begin
   kw := app.keyWindow;
+  p := theEvent.mouseLocation;
+
+  if Assigned(kw) then
+  begin
+    wfr := kw.contentRectForFrameRect(kw.frame);
+    // if mouse outside of ClientFrame of keyWindow,
+    // Cursor should be forced to default.
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
+    if not NSPointInRect(p, wfr) then
+    begin
+      if Screen.Cursor=crDefault then
+        CursorHelper.ForceSetDefaultCursor
+      else
+        CursorHelper.SetScreenCursor;
+    end;
+  end;
 
   // mouse move was consumed by the focused window
-  if Assigned(kw) and NSPointInRect( theEvent.mouseLocation, kw.frame) then
-    Exit;
+  if Assigned(kw) and NSPointInRect(p, kw.frame) then
+    exit;
 
-  for w in app.windows do
+  // windowNumbersWithOptions() shoulde be used here.
+  // because windowNumbersWithOptions() return windowsNumber of visible windows
+  // from front to back, and NSAPP.windows return all windows not ordered.
+  windowNumbers := NSWindow.windowNumbersWithOptions(0);
+  for windowNumber in windowNumbers do
   begin
-    if w = kw then Continue;
-    if not w.isVisible then Continue;
-    // todo: check for enabled windows? modal windows?
+    w := app.windowWithWindowNumber(windowNumber.integerValue);
+    if not Assigned(w) then
+      continue;
 
     wfr := w.frame;
-    if not NSPointInRect( theEvent.mouseLocation, wfr) then Continue;
+    if not NSPointInRect( theEvent.mouseLocation, wfr) then
+      continue;
+
+    if not w.isKindOfClass(TCocoaWindow) then
+      break;
 
     p := theEvent.mouseLocation;
     p.x := p.x - w.frame.origin.x;
@@ -548,6 +574,7 @@ begin
       theEvent.pressure
     );
     w.sendEvent(ev);
+    break;
   end;
 end;
 

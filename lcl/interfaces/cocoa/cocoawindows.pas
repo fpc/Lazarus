@@ -1019,15 +1019,15 @@ begin
 end;
 
 // return proper focused responder by kind of class of NSResponder
-function getProperFocusedResponder( const aResponder : NSResponder ): NSResponder;
+function getProperFocusedResponder( const win : NSWindow; const aResponder : NSResponder ): NSResponder;
 begin
   if aResponder<>nil then
     Result := aResponder
   else
-    Result:= NSApp.keyWindow;
+    Result:= win;
 
-  if Result.isKindOfClass(NSWindow) then
-    Result:= TCocoaWindowContent(NSWindow(Result).contentView).documentView;
+  if Result.isKindOfClass(TCocoaWindow) then
+    Result:= TCocoaWindowContent(TCocoaWindow(Result).contentView).documentView;
 end;
 
 // return responder callback by kind of class of NSResponder
@@ -1080,7 +1080,7 @@ begin
   inc( makeFirstResponderCount );
   try
     lastResponder := self.firstResponder;
-    newResponder := getProperFocusedResponder( aResponder );
+    newResponder := getProperFocusedResponder( self, aResponder );
     if lastResponder = newResponder then exit;
 
     // do toggle Focused Control

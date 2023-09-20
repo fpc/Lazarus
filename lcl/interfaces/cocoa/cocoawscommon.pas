@@ -24,11 +24,12 @@ type
     _lastCursor: NSCursor;
   public
     procedure SetNewCursor( newCursor:TCocoaCursor );
+    procedure ForceSetDefaultCursor;
+    procedure SetCursorOnActive;
+    procedure SetScreenCursor;
+    procedure SetScreenCursorWhenNotDefault;
   public
-    class procedure SetCursorOnActive;
     class procedure SetCursorAtMousePos;
-    class procedure SetScreenCursor;
-    class procedure SetScreenCursorWhenNotDefault;
   end;
 
   { TLCLCommonCallback }
@@ -380,9 +381,18 @@ begin
   end;
 end;
 
-class procedure TCursorHelper.SetCursorOnActive;
+procedure TCursorHelper.ForceSetDefaultCursor;
+var
+  newCursor: TCocoaCursor;
 begin
-  CursorHelper._lastCursor:= nil;
+  newCursor:= TCocoaCursor(Screen.Cursors[crDefault]);
+  newCursor.SetCursor;
+  _lastCursor:= newCursor.Cursor;
+end;
+
+procedure TCursorHelper.SetCursorOnActive;
+begin
+  _lastCursor:= NSCursor.arrowCursor;
   if Screen.Cursor<>crDefault then
     SetScreenCursor
   else
@@ -411,15 +421,16 @@ begin
             rect.origin, 0, 0,
             window.windowNumber, nil, 0, 0, 0);
 
-  window.lclGetCallback.MouseMove(event);
+  NSApp.postEvent_atStart(event, true);
 end;
 
-class procedure TCursorHelper.SetScreenCursor;
+procedure TCursorHelper.SetScreenCursor;
 begin
+  _lastCursor:= nil;
   TCocoaCursor(Screen.Cursors[Screen.Cursor]).SetCursor;
 end;
 
-class procedure TCursorHelper.SetScreenCursorWhenNotDefault;
+procedure TCursorHelper.SetScreenCursorWhenNotDefault;
 begin
   if Screen.Cursor<>crDefault then
     SetScreenCursor;
@@ -1887,12 +1898,26 @@ class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 var
   control: TControl;
+  topParent: TControl;
 begin
   //debugln('SetCursor '+AWinControl.name+' '+dbgs(ACursor));
 
   // screen cursor has higher priority than control cursor.
   if Screen.Cursor<>crDefault
     then exit;
+
+  // control cursor only should be set when mouse in the keyWindow.
+  // for the MacOS system automatic restore cursor feature(also an issue),
+  // it is more appropriate to set the default cursor when the mouse is out
+  // of the keyWindow, which has been set in TLCLCommonCallback.MouseMove().
+  // the keyWindow here refers to the Client Frame, excluding TitleBar.
+  // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
+  topParent:= AWinControl.GetTopParent;
+  if topParent is TCustomForm then
+  begin
+    if NSView(TCustomForm(topParent).handle).window <> NSApp.keyWindow then
+      exit;
+  end;
 
   // control cursor only need be set when mouse in AWinControl.
   // suppose there is a Button, which is to set a Cursor of a ListBox.

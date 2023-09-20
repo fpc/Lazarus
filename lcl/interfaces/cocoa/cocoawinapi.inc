@@ -2526,8 +2526,10 @@ end;
 
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
-  if ACursor = 0 then ACursor:= Screen.Cursors[crDefault];
-  TCocoaCursor(ACursor).SetCursor;
+  if (ACursor=0) or (ACursor=Screen.Cursors[crDefault]) then
+    CursorHelper.SetCursorAtMousePos
+  else
+    CursorHelper.SetNewCursor( TCocoaCursor(ACursor) );
   Result := 0;
 end;
 
