@@ -550,8 +550,6 @@ begin
     w := app.windowWithWindowNumber(windowNumber.integerValue);
     if not Assigned(w) then
       continue;
-    if w=kw then
-      break;
 
     wfr := w.frame;
     if not NSPointInRect( theEvent.mouseLocation, wfr) then
