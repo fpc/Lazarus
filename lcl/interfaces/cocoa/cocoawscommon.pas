@@ -25,8 +25,8 @@ type
   public
     procedure SetNewCursor( newCursor:TCocoaCursor );
     procedure ForceSetDefaultCursor;
+    procedure SetCursorOnActive;
   public
-    class procedure SetCursorOnActive;
     class procedure SetCursorAtMousePos;
     class procedure SetScreenCursor;
     class procedure SetScreenCursorWhenNotDefault;
@@ -390,9 +390,9 @@ begin
   _lastCursor:= newCursor.Cursor;
 end;
 
-class procedure TCursorHelper.SetCursorOnActive;
+procedure TCursorHelper.SetCursorOnActive;
 begin
-  CursorHelper._lastCursor:= nil;
+  _lastCursor:= NSCursor.arrowCursor;
   if Screen.Cursor<>crDefault then
     SetScreenCursor
   else
@@ -421,7 +421,7 @@ begin
             rect.origin, 0, 0,
             window.windowNumber, nil, 0, 0, 0);
 
-  window.lclGetCallback.MouseMove(event);
+  NSApp.postEvent_atStart(event, true);
 end;
 
 class procedure TCursorHelper.SetScreenCursor;
