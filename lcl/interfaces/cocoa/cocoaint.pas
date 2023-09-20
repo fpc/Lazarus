@@ -528,6 +528,7 @@ begin
     wfr := kw.contentRectForFrameRect(kw.frame);
     // if mouse outside of ClientFrame of keyWindow,
     // Cursor should be forced to default.
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
     if not NSPointInRect(p, wfr) then
     begin
       if Screen.Cursor=crDefault then

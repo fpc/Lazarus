@@ -1911,6 +1911,7 @@ begin
   // it is more appropriate to set the default cursor when the mouse is out
   // of the keyWindow, which has been set in TLCLCommonCallback.MouseMove().
   // the keyWindow here refers to the Client Frame, excluding TitleBar.
+  // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
   topParent:= AWinControl.GetTopParent;
   if topParent is TCustomForm then
   begin
