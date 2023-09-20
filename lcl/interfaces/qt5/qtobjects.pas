@@ -588,7 +588,7 @@ type
     procedure EndX11SelectionLock;
     function InX11SelectionLock: Boolean;
     procedure signalSelectionChanged; cdecl;
-    procedure X11DelayTimeOut; cdecl;
+    class procedure X11DelayTimeOut; cdecl;
     procedure selectionTimer;
     {$ENDIF}
   end;
@@ -3874,7 +3874,7 @@ begin
   end;
 end;
 
-procedure TQtClipboard.X11DelayTimeOut; cdecl;
+class procedure TQtClipboard.X11DelayTimeOut; cdecl;
 begin
   FX11Delay := False;
 end;
