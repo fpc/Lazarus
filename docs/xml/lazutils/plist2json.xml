@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+<!-- plist2json -->
+<module name="plist2json">
+<!-- TODO: Needs module overview content. -->
+<short/>
+<descr/>
+
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Laz2_DOM"/>
+<element name="fpjson"/>
+
+<element name="PListXml2Json">
+<short>
+Converts the parameter list in the specified XML document to it representation 
+using JSON (JavaScript Object Notation).
+</short>
+<descr>
+<p>
+Used in the implementation of the TextMate Grammer parser in the LazEdit 
+package.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.  
+</version>
+<seealso/>
+</element>
+<element name="PListXml2Json.Result">
+<short>
+TJSON instance with the content for the XML document.
+</short>
+</element>
+<element name="PListXml2Json.AnXml">
+<short>
+TXMLDocument with the grammar definitions converted in the routine.
+</short>
+</element>
+
+</module>
+<!-- plist2json -->
+</package>
+</fpdoc-descriptions>
