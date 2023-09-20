@@ -1139,6 +1139,11 @@ msgstr ""
 msgid "Below is a list of Highlighter (Textmate) found in the folder %1:s.%0:sThis list may include files with errors and files not yet active in the IDE.%0:sTo activate newly added/changed files restart the IDE.%0:sThe \"Reload\" button will update the list below, checking if any errors were fixed."
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolorstmlmissinginclude
+#, object-pascal-format
+msgid "Did not find all includes: %1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorstmlnofilesfound
 msgid "No files found."
 msgstr ""

@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-09-12 20:12+0300\n"
+"PO-Revision-Date: 2023-09-20 02:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -1141,6 +1141,11 @@ msgstr "Файл:"
 #, object-pascal-format
 msgid "Below is a list of Highlighter (Textmate) found in the folder %1:s.%0:sThis list may include files with errors and files not yet active in the IDE.%0:sTo activate newly added/changed files restart the IDE.%0:sThe \"Reload\" button will update the list below, checking if any errors were fixed."
 msgstr "Ниже представлен список модулей подсветки (Textmate), найденных в каталоге %1:s.%0:sЭтот список может содержать файлы, которые имеют ошибки либо ещё не подключены в IDE.%0:sДля подключения вновь созданных либо изменённых файлов требуется перезапуск IDE.%0:sКнопка \"Обновить\" позволит привести список в актуальное состояние и проверить, были ли исправлены какие-либо ошибки."
+
+#: lazarusidestrconsts.dlgcolorstmlmissinginclude
+#, object-pascal-format
+msgid "Did not find all includes: %1:s"
+msgstr "Не удалось найти все включаемые элементы: %1:s"
 
 #: lazarusidestrconsts.dlgcolorstmlnofilesfound
 msgid "No files found."
