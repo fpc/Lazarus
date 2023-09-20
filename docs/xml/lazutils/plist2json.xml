@@ -15,12 +15,12 @@
 
 <element name="PListXml2Json">
 <short>
-Converts the parameter list in the specified XML document to it representation 
+Converts the content in the specified XML document to its representation 
 using JSON (JavaScript Object Notation).
 </short>
 <descr>
 <p>
-Used in the implementation of the TextMate Grammer parser in the LazEdit 
+Used in the implementation of the TextMate grammar parser in the LazEdit 
 package.
 </p>
 </descr>
