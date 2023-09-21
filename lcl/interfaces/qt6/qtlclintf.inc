@@ -489,11 +489,12 @@ begin
       //issue #39878
       //Actually setting premultiplied format for x11 and win32 does not harm
       //so darwin ifdef should be removed after testing under x11 and win32.
-      {.$IFDEF DARWIN}
+      //check not skipmask and masksize only for darwin. issue #40516
+      {$IFDEF DARWIN}
       if not ASkipMask and (ARawImage.MaskSize > 0) then
         ImageFormat := QImageFormat_ARGB32_Premultiplied
       else
-      {.$ENDIF}
+      {$ENDIF}
         ImageFormat := QImageFormat_ARGB32;
     end;
   else
