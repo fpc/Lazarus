@@ -463,6 +463,8 @@ function NSViewCanFocus(v: NSView): Boolean;
 
 implementation
 
+uses CocoaWSCommon;
+
 function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
 begin
   if obj.isKindOfClass(NSView) then
@@ -862,6 +864,8 @@ end;
 
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
+  window.disableCursorRects;
+
   if not Assigned(callback) or not callback.MouseMove(event) then
     // calling inherited causes the drag event to be passed to the
     // parent controls
@@ -905,6 +909,13 @@ end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);
 begin
+  if not window.areCursorRectsEnabled then
+  begin
+    window.enableCursorRects;
+    window.resetCursorRects;
+    CursorHelper.SetCursorAtMousePos;
+  end;
+
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
 end;
