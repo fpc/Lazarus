@@ -946,8 +946,10 @@ var
 begin
   Result:=false;
   try
-    if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass])) or (AMethodName='')
-    or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then begin
+    if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass]))
+        or (AMethodName='')
+        or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then
+    begin
       debugln(['TEventsCodeTool.CreateMethod failed, missing parameter']);
       exit;
     end;

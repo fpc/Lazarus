@@ -1441,12 +1441,12 @@ var
   s: String;
 begin
   if GetIdentLen(AnUnitName)=0 then exit;
-  if CompareIdentifiers(AnUnitName,'System')=0 then exit;
-  if (CompareIdentifiers(AnUnitName,'ObjPas')=0)
+  if CompareDottedIdentifiers(AnUnitName,'System')=0 then exit;
+  if (CompareDottedIdentifiers(AnUnitName,'ObjPas')=0)
   and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
   and (Scanner.PascalCompiler=pcFPC) then
     exit;
-  if (CompareIdentifiers(AnUnitName,'MacPas')=0)
+  if (CompareDottedIdentifiers(AnUnitName,'MacPas')=0)
   and (Scanner.CompilerMode=cmMacPas)
   and (Scanner.PascalCompiler=pcFPC) then
     exit;
@@ -1456,6 +1456,7 @@ begin
   //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection AnUnitName="',AnUnitName,'"']);
   if fNewMainUsesSectionUnits.Find(AnUnitName)<>nil then exit;
   s:=StrPas(AnUnitName);
+  //debugln(['TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection Unit="',s,'"']);
   fNewMainUsesSectionUnits.Add(Pointer(s));
   Pointer(s):=nil;
 end;
@@ -8263,7 +8264,7 @@ var
   CurSourceName: String;
   SectionNode: TCodeTreeNode;
   NewUsesTerm: String;
-  NewUnitName: String;
+  NewUnitName, CurUnitName: String;
   InsertPos: LongInt;
 begin
   Result:=true;
@@ -8280,15 +8281,16 @@ begin
     repeat
       ReadNextAtom; // read name
       if AtomIsChar(';') then break;
-      RemoveNewMainUsesSectionUnit(@Src[CurPos.StartPos]);
+      CurUnitName:=ExtractUsedUnitNameAtCursor();
+      RemoveNewMainUsesSectionUnit(PChar(CurUnitName));
       if fNewMainUsesSectionUnits.Count=0 then exit;
       ReadNextAtom;
-      if UpAtomIs('IN') then begin
+      while AtomIsChar('.') do
+      begin
         ReadNextAtom;
         ReadNextAtom;
       end;
-      while AtomIsChar('.') do
-      begin
+      if UpAtomIs('IN') then begin
         ReadNextAtom;
         ReadNextAtom;
       end;
@@ -8303,7 +8305,7 @@ begin
   while AVLNode<>nil do begin
     if NewUsesTerm<>'' then
       NewUsesTerm:=NewUsesTerm+', ';
-    NewUnitName:=GetIdentifier(PChar(AVLNode.Data));
+    NewUnitName:=GetDottedIdentifier(PChar(AVLNode.Data));
     //DebugLn(['TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection NewUnitName=',NewUnitName]);
     NewUsesTerm:=NewUsesTerm+NewUnitName;
     AVLNode:=fNewMainUsesSectionUnits.FindSuccessor(AVLNode);
