@@ -268,7 +268,7 @@ procedure CompleteUnitComponent(AnUnitInfo: TUnitInfo;
 function RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;
 function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
 function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
-
+function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
 
 // These are local functions. Forward reference is needed for most of them.
 //  function AskToSaveEditors(EditorList: TList): TModalResult;
@@ -2287,12 +2287,16 @@ begin
           LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
           CodeToolBoss.CreateFile(LRSFilename);
         end;
-        if ((NewUnitInfo.Component is TCustomForm) or (NewUnitInfo.Component is TDataModule))
+        //debugln(['NewFile custom LFM: ',DbgSName(NewUnitInfo.Component),' NewFileDescriptor.UseCreateFormStatements=',NewFileDescriptor.UseCreateFormStatements,' NewUnitInfo.IsPartOfProject=',NewUnitInfo.IsPartOfProject,' AProject.AutoCreateForms=',AProject.AutoCreateForms,' pfMainUnitHasCreateFormStatements=',pfMainUnitHasCreateFormStatements in AProject.Flags,' DesignerClassCanAppCreateForm=',(NewUnitInfo.Component<>nil) and (FormEditingHook.DesignerClassCanAppCreateForm(TComponentClass(NewUnitInfo.Component.ClassType)))]);
+
+        if (NewUnitInfo.Component<>nil)
         and NewFileDescriptor.UseCreateFormStatements
         and NewUnitInfo.IsPartOfProject
         and AProject.AutoCreateForms
-        and (pfMainUnitHasCreateFormStatements in AProject.Flags) then
-        begin
+        and (pfMainUnitHasCreateFormStatements in AProject.Flags)
+        and FormEditingHook.DesignerClassCanAppCreateForm(
+                               TComponentClass(NewUnitInfo.Component.ClassType))
+        then begin
           AProject.AddCreateFormToProjectFile(NewUnitInfo.Component.ClassName,
                                               NewUnitInfo.Component.Name);
         end;
@@ -4586,6 +4590,7 @@ begin
   and (csSetCaption in TControl(NewComponent).ControlStyle) then
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
+  NewUnitInfo.ResourceBaseClassname:=GetDsgnComponentBaseClassname(NewComponent.ClassType);
   MainIDE.CreateDesignerForComponent(NewUnitInfo,NewComponent);
   if NewComponent is TCustomDesignControl then
   begin
@@ -4595,11 +4600,13 @@ begin
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
+  //debugln(['CreateNewForm: ',DbgSName(NewUnitInfo.Component),' UseCreateFormStatements=',UseCreateFormStatements,' NewUnitInfo.IsPartOfProject=',NewUnitInfo.IsPartOfProject,' AProject.AutoCreateForms=',Project1.AutoCreateForms,' pfMainUnitHasCreateFormStatements=',pfMainUnitHasCreateFormStatements in Project1.Flags,' DesignerClassCanAppCreateForm=',(NewUnitInfo.Component<>nil) and (FormEditingHook.DesignerClassCanAppCreateForm(TComponentClass(NewUnitInfo.Component.ClassType)))]);
   if UseCreateFormStatements
-  and ((NewComponent is TCustomForm) or (NewComponent is TDataModule))
   and NewUnitInfo.IsPartOfProject
   and Project1.AutoCreateForms
-  and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+  and (pfMainUnitHasCreateFormStatements in Project1.Flags)
+  and FormEditor1.DesignerClassCanAppCreateForm(
+                      TComponentClass(NewComponent.ClassType)) then
   begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
@@ -6267,6 +6274,8 @@ begin
 
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
+        if NewComponent<>nil then
+          AnUnitInfo.ResourceBaseClassname:=GetDsgnComponentBaseClassname(NewComponent.ClassType);
         if (AncestorUnitInfo<>nil) then
           AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
         if NewComponent<>nil then begin
@@ -8318,6 +8327,27 @@ begin
   end else begin
     SaveChanges(AEditor);
   end;
+end;
+
+function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
+var
+  i: Integer;
+begin
+  Result:='';
+  if aCompClass=nil then exit;
+  if aCompClass.InheritsFrom(TForm) then
+    exit(DefaultResourceBaseClassnames[pfcbcForm])
+  else if aCompClass=TCustomForm then
+    exit(DefaultResourceBaseClassnames[pfcbcCustomForm])
+  else if aCompClass.InheritsFrom(TFrame) then
+    exit(DefaultResourceBaseClassnames[pfcbcFrame])
+  else if aCompClass=TCustomFrame then
+    exit('TCustomFrame')
+  else if aCompClass.InheritsFrom(TDataModule) then
+    exit(DefaultResourceBaseClassnames[pfcbcDataModule]);
+  i:=FormEditingHook.IndexOfDesignerBaseClass(TComponentClass(aCompClass.ClassType));
+  if i<0 then exit;
+  Result:=FormEditingHook.DesignerBaseClasses[i].ClassName;
 end;
 
 function ReplaceUnitUse(OldFilename, OldUnitName, NewFilename, NewUnitName: string;

@@ -113,7 +113,8 @@ type
     pfcbcForm,      // is TForm
     pfcbcFrame,     // is TFrame
     pfcbcDataModule,// is TDataModule
-    pfcbcCustomForm // is TCustomForm (not TForm)
+    pfcbcCustomForm,// is TCustomForm (not TForm)
+    pfcbcOther      // is a designer base class, see ResourceBaseClassname
     );
     
 const
@@ -122,9 +123,18 @@ const
     'Form',
     'Frame',
     'DataModule',
-    'CustomForm'
+    'CustomForm',
+    ''
     );
-    
+  DefaultResourceBaseClassnames: array[TPFComponentBaseClass] of string = (
+    '',
+    'TForm',
+    'TFrame',
+    'TDataModule',
+    'TCustomForm',
+    ''
+    );
+
 function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
 function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
 
@@ -150,6 +160,7 @@ type
     fFullFilenameStamp: integer;
     FPackage: TLazPackage;
     FResourceBaseClass: TPFComponentBaseClass;
+    FResourceBaseClassname: string;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     function GetAddToUsesPkgSection: boolean;
@@ -196,8 +207,8 @@ type
                        read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
-    property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
-                                                      write FResourceBaseClass;
+    property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass write FResourceBaseClass;
+    property ResourceBaseClassname: string read FResourceBaseClassname write FResourceBaseClassname;
     property ComponentPriority: TComponentPriority read FComponentPriority
                                                    write FComponentPriority;
     property Components[Index: integer]: TPkgComponent read GetComponents;// registered components
@@ -1113,7 +1124,9 @@ begin
   else if aClass.InheritsFrom(TDataModule) then
     Result:=pfcbcDataModule
   else if aClass.InheritsFrom(TCustomForm) then
-    Result:=pfcbcCustomForm;
+    Result:=pfcbcCustomForm
+  else
+    Result:=pfcbcOther;
 end;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
@@ -1677,6 +1690,8 @@ begin
   end;
   FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
+  FResourceBaseClassname:=XMLConfig.GetValue(Path+'ResourceBaseClassname/Value',
+                        DefaultResourceBaseClassnames[FResourceBaseClass]);
 
   Config:=TXMLOptionsStorage.Create(XMLConfig);
   try
@@ -1707,6 +1722,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                            PFComponentBaseClassNames[FResourceBaseClass],
                            PFComponentBaseClassNames[pfcbcNone]);
+  XMLConfig.SetDeleteValue(Path+'ResourceBaseClassname/Value',
+                           FResourceBaseClassname,
+                           DefaultResourceBaseClassnames[FResourceBaseClass]);
 
   Config:=TXMLOptionsStorage.Create(XMLConfig);
   try

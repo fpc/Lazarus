@@ -295,6 +295,7 @@ type
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
+    FResourceBaseClassname: string;
     FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
     fSource: TCodeBuffer;
     FSourceLFM: TCodeBuffer;
@@ -465,6 +466,7 @@ type
     property ComponentState: TWindowState read FComponentState write FComponentState;
     property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
                                                       write FResourceBaseClass;
+    property ResourceBaseClassname: string read FResourceBaseClassname write FResourceBaseClassname;
     property ComponentLastBinStreamSize: TStreamSeekType
              read FComponentLastBinStreamSize write FComponentLastBinStreamSize;
     property ComponentLastLRSStreamSize: TStreamSeekType
@@ -1107,7 +1109,7 @@ type
                                                 write SetActiveBuildMode;
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
                                                write FActiveWindowIndexAtStart;
-    property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
+    property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms; // add CreateForm for new forms
     property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled
                                                     write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
@@ -1852,6 +1854,9 @@ begin
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
+    XMLConfig.SetDeleteValue(Path+'ResourceBaseClassname/Value',
+                             FResourceBaseClassname,
+                             DefaultResourceBaseClassnames[FResourceBaseClass]);
     s:=FUnitName;
     if (s<>'') and (ExtractFileNameOnly(Filename)=s) then s:=''; // only save if UnitName differs from filename
     XMLConfig.SetDeleteValue(Path+'UnitName/Value',s,'');
@@ -1926,6 +1931,8 @@ begin
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
+    FResourceBaseClassname:=XMLConfig.GetValue(Path+'ResourceBaseClassname/Value',
+                          DefaultResourceBaseClassnames[FResourceBaseClass]);
     if not IgnoreIsPartOfProject then
       IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');

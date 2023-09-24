@@ -191,13 +191,13 @@ type
   private
     FNonFormProxyDesignerFormClass: array[0..1] of TNonFormProxyDesignerFormClass;
   protected
-    function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
-    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
-    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract;
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
+    function GetDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     function GetDesignerMediators(Index: integer): TDesignerMediatorClass; virtual; abstract;
     function GetNonFormProxyDesignerForm(Index: Integer): TNonFormProxyDesignerFormClass; virtual;
+    function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; virtual; abstract;
     procedure SetNonFormProxyDesignerForm(Index: Integer; AValue: TNonFormProxyDesignerFormClass); virtual;
+    procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); virtual; abstract;
   public
     constructor Create;
     // persistent
@@ -245,6 +245,8 @@ type
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; virtual; abstract;
+    function DesignerClassCanAppCreateForm(AClass: TComponentClass; CheckInherited: boolean = true): boolean; virtual; abstract;
+    procedure SetDesignerBaseClassCanAppCreateForm(AClass: TComponentClass; Value: boolean); virtual; abstract;
 
     property StandardDesignerBaseClasses[Index: integer]: TComponentClass read GetStandardDesignerBaseClasses
                                                                          write SetStandardDesignerBaseClasses;

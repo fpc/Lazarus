@@ -69,7 +69,7 @@ uses
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  IdeIntfStrConsts, MenuIntf, InputHistory,
+  IdeIntfStrConsts, MenuIntf, FormEditingIntf, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
   // IDE
@@ -315,6 +315,15 @@ implementation
 {$R *.lfm}
 
 function UpdateUnitInfoResourceBaseClass(AnUnitInfo: TUnitInfo; Quiet: boolean): boolean;
+
+  procedure ClearUnitResInfo;
+  begin
+    AnUnitInfo.ResourceBaseClass:=pfcbcNone;
+    AnUnitInfo.ResourceBaseClassname:='';
+    AnUnitInfo.ComponentName:='';
+    AnUnitInfo.ComponentResourceName:='';
+  end;
+
 var
   LFMFilename, LFMType, Ancestor, LFMClassName, LFMComponentName: String;
   LFMCode, Code: TCodeBuffer;
@@ -325,6 +334,7 @@ var
   ListOfPFindContext: TFPList;
   i: Integer;
   Context: PFindContext;
+  CompClass, aDesignerBaseClass: TComponentClass;
 begin
   Result:=false;
   if AnUnitInfo.Component<>nil then
@@ -343,18 +353,14 @@ begin
       exit(true); // no lfm -> clear info
   finally
     if ClearOldInfo then begin
-      AnUnitInfo.ResourceBaseClass:=pfcbcNone;
-      AnUnitInfo.ComponentName:='';
-      AnUnitInfo.ComponentResourceName:='';
+      ClearUnitResInfo;
     end;
   end;
   try
     if not FilenameExtIs(LFMFilename,'lfm',true) then
       exit(true);          // no lfm format -> keep old info
     // clear old info
-    AnUnitInfo.ResourceBaseClass:=pfcbcNone;
-    AnUnitInfo.ComponentName:='';
-    AnUnitInfo.ComponentResourceName:='';
+    ClearUnitResInfo;
     // load lfm
     LoadFileFlags:=[lbfUpdateFromDisk,lbfCheckIfText];
     if Quiet then
@@ -376,6 +382,7 @@ begin
     CodeToolBoss.Explore(Code,Tool,false,true);
     if Tool=nil then
       exit; // pas load error
+    aDesignerBaseClass:=nil;
     try
       Node:=Tool.FindDeclarationNodeInInterface(LFMClassName,true);
       if Node=nil then
@@ -391,37 +398,59 @@ begin
       for i:=0 to ListOfPFindContext.Count-1 do begin
         Context:=PFindContext(ListOfPFindContext[i]);
         Ancestor:=UpperCase(Context^.Tool.ExtractClassName(Context^.Node,false));
-        if (Ancestor='TFORM') then begin
-          AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+        case Ancestor of
+        'TFORM':
+          begin
+            AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+            aDesignerBaseClass:=TForm;
+          end;
+        'TCUSTOMFORM':
+          begin
+            AnUnitInfo.ResourceBaseClass:=pfcbcCustomForm;
+            aDesignerBaseClass:=TCustomForm;
+          end;
+        'TDATAMODULE':
+          begin
+            AnUnitInfo.ResourceBaseClass:=pfcbcDataModule;
+            aDesignerBaseClass:=TDataModule;
+          end;
+        'TFRAME':
+          begin
+            AnUnitInfo.ResourceBaseClass:=pfcbcFrame;
+            aDesignerBaseClass:=TFrame;
+          end;
+        'TCUSTOMFRAME':
+          begin
+            AnUnitInfo.ResourceBaseClass:=pfcbcFrame;
+            aDesignerBaseClass:=TCustomFrame;
+          end;
+        'TCOMPONENT':
+          begin
+            CompClass:=FormEditingHook.FindDesignerBaseClassByName(Ancestor,false);
+            if CompClass<>nil then
+            begin
+              AnUnitInfo.ResourceBaseClass:=pfcbcOther;
+              aDesignerBaseClass:=CompClass;
+            end;
+          end;
+        end;
+        if aDesignerBaseClass<>nil then
+        begin
+          AnUnitInfo.ResourceBaseClassname:=aDesignerBaseClass.ClassName;
           Result:=true;
-          Break;
-        end else if (Ancestor='TCUSTOMFORM') then begin
-          AnUnitInfo.ResourceBaseClass:=pfcbcCustomForm;
-          Result:=true;
-          Break;
-        end else if Ancestor='TDATAMODULE' then begin
-          AnUnitInfo.ResourceBaseClass:=pfcbcDataModule;
-          Result:=true;
-          Break;
-        end else if (Ancestor='TFRAME') or (Ancestor='TCUSTOMFRAME') then begin
-          AnUnitInfo.ResourceBaseClass:=pfcbcFrame;
-          Result:=true;
-          Break;
-        end else if Ancestor='TCOMPONENT' then begin
-          Result:=true;
-          Break;
+          break;
         end;
       end;
+      if aDesignerBaseClass=nil then exit;
     except
       exit; // syntax error or unit not found
     end;
-    if not Result then exit;
 
     // Maybe auto-create it
-    //   (pfMainUnitHasCreateFormStatements in Project1.Flags)
-    //   and Project1.AutoCreateForms are checked by caller.
-    if (AnUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcCustomForm,pfcbcDataModule])
-    and (LFMComponentName<>'')
+    if (LFMComponentName<>'')
+    and (pfMainUnitHasCreateFormStatements in Project1.Flags)
+    and Project1.AutoCreateForms
+    and FormEditingHook.DesignerClassCanAppCreateForm(aDesignerBaseClass)
     and (IDEMessageDialog(lisAddToStartupComponents,
                           Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS,
                                  [LFMComponentName]),

@@ -76,6 +76,7 @@ type
     FDesignerBaseClasses: TFPList; // list of TComponentClass
     FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
+    FDesignerBaseClassesCanCreateForm: TFPList; // list of TComponentClass
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAvlTreeNode;
@@ -181,6 +182,10 @@ type
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override; // can be UnitName/ClassName
+    function DesignerClassCanAppCreateForm(AClass: TComponentClass;
+      CheckInherited: boolean=true): boolean; override;
+    procedure SetDesignerBaseClassCanAppCreateForm(AClass: TComponentClass;
+      AValue: boolean); override;
 
     function StandardDesignerBaseClassesCount: Integer; override;
     // designers
@@ -497,6 +502,7 @@ begin
   FNonFormForms := TAvlTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
+  FDesignerBaseClassesCanCreateForm:=TFPList.Create;
   FDesignerMediatorClasses:=TFPList.Create;
   for l:=0 to StandardDesignerBaseClassesCount - 1 do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
@@ -529,6 +535,7 @@ begin
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
   FreeAndNil(FDesignerMediatorClasses);
+  FreeAndNil(FDesignerBaseClassesCanCreateForm);
   FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FSelection);
   FreeAndNil(FNonFormForms);
@@ -1878,11 +1885,19 @@ begin
 end;
 
 function TCustomFormEditor.DescendFromDesignerBaseClass(AClass: TComponentClass): integer;
+var
+  i: Integer;
 begin
-  Result:=FDesignerBaseClasses.Count-1;
-  while (Result>=0)
-  and (not AClass.InheritsFrom(TClass(FDesignerBaseClasses[Result]))) do
-    dec(Result);
+  Result:=-1;
+  for i:=0 to FDesignerBaseClasses.Count-1 do
+  begin
+    if AClass.InheritsFrom(TClass(FDesignerBaseClasses[i])) then
+    begin
+      if (Result<0)
+          or (TClass(FDesignerBaseClassesCanCreateForm[i]).InheritsFrom(TClass(FDesignerBaseClasses[Result]))) then
+        Result:=i;
+    end;
+  end;
 end;
 
 function TCustomFormEditor.FindDesignerBaseClassByName(
@@ -2201,6 +2216,41 @@ begin
                [CompClassName, LineEnding, E.Message]),
         mtError,[mbOk]);
     end;
+  end;
+end;
+
+function TCustomFormEditor.DesignerClassCanAppCreateForm(
+  AClass: TComponentClass; CheckInherited: boolean): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if AClass=nil then exit;
+  // check standard classes
+  if (AClass=TCustomForm) or (AClass=TDataModule) then
+    exit(true);
+  if CheckInherited and (AClass.InheritsFrom(TCustomForm) or AClass.InheritsFrom(TDataModule)) then
+    exit(true);
+  // check addons
+  Result:=FDesignerBaseClassesCanCreateForm.IndexOf(AClass)>=0;
+  if CheckInherited then
+  begin
+    for i:=0 to FDesignerBaseClassesCanCreateForm.Count-1 do
+      if AClass.InheritsFrom(TComponentClass(FDesignerBaseClassesCanCreateForm[i])) then
+        exit(true);
+  end;
+end;
+
+procedure TCustomFormEditor.SetDesignerBaseClassCanAppCreateForm(
+  AClass: TComponentClass; AValue: boolean);
+begin
+  if AValue then
+  begin
+    if FDesignerBaseClassesCanCreateForm.IndexOf(AClass)>=0 then exit;
+    FDesignerBaseClassesCanCreateForm.Add(AClass);
+  end else begin
+    if FDesignerBaseClassesCanCreateForm.IndexOf(AClass)<0 then exit;
+    FDesignerBaseClassesCanCreateForm.Remove(AClass);
   end;
 end;
 
