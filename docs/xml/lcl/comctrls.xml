@@ -11875,6 +11875,11 @@ used for the <var>ViewStyle</var> property in <var>TCustomListView</var>.
 </descr>
 <seealso>
 <link id="TCustomListView.ViewStyle"/>
+<link id="TCustomListView.Columns"/>
+<link id="TCustomListView.Column"/>
+<link id="TCustomListView.Items"/>
+<link id="TListItem.Caption"/>
+<link id="TListItem.SubItems"/>
 </seealso>
 </element>
 <element name="TViewStyle.vsIcon">
@@ -11897,9 +11902,11 @@ items are arranged in columns.
 </element>
 <element name="TViewStyle.vsReport">
 <short>
-Displays a each list item as a series of columns with a small icon on the 
-left-hand side of the row. Each columns has a header at the top of the list 
-view control.
+Displays each list item as a series of columns with a small icon on the 
+left-hand side of the row. The Caption text for the list item is displayed in 
+the first column, with the text for additional columns coming from the Caption 
+for the SubItems in the list item. Each column has a header at the top of the 
+list view control.
 </short>
 </element>
 
@@ -16008,10 +16015,11 @@ full width), Icon (big icons), Small Icon (small icons, 16x16).
 </short>
 <descr>
 <p>
-ViewStyle is a TViewStyle which controls the appearance and layout for the 
-list items on the control. The default value for the property is vsList, and 
-causes an icon and caption to displayed for each list item. List items are 
-arranged in columns, filled from top to bottom and then left to right.
+<var>ViewStyle</var> is a <var>TViewStyle</var> property which controls the 
+appearance and layout for the list items on the control. The default value for 
+the property is vsList, and causes an icon and caption to be displayed for each 
+list item. List items are arranged in columns, filled from top to bottom and 
+then left to right.
 </p>
 <p>
 See <link id="TViewStyle">TViewStyle</link> for a description of the view 
@@ -16023,6 +16031,11 @@ updated when its handle has been allocated.
 </p>
 </descr>
 <seealso>
+<link id="TCustomListView.Items"/>
+<link id="TCustomListView.Columns"/>
+<link id="TCustomListView.Column"/>
+<link id="TListItem.Caption"/>
+<link id="TListItem.SubItems"/>
 <link id="TViewStyle"/>
 </seealso>
 </element>
