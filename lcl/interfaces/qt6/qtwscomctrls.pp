@@ -51,9 +51,6 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLHandle; override;
-    class function GetDefaultClientRect(const AWinControl: TWinControl;
-             const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
-             ): boolean; override;
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl;
