@@ -2499,6 +2499,8 @@ end;
 
 procedure TAnchorDockMaster.ScreenFormAdded(Sender: TObject; Form: TCustomForm);
 begin
+  if Form is THintWindow then
+    exit;
   FFormStyles.AddForm(Form);
   Form.AddHandlerFirstShow(@FormFirstShow);
 end;
