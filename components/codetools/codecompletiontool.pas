@@ -8281,19 +8281,9 @@ begin
     repeat
       ReadNextAtom; // read name
       if AtomIsChar(';') then break;
-      CurUnitName:=ExtractUsedUnitNameAtCursor();
+      CurUnitName:=ExtractUsedUnitNameAtCursor(); // moves cursor behind used unit and InFilename
       RemoveNewMainUsesSectionUnit(PChar(CurUnitName));
       if fNewMainUsesSectionUnits.Count=0 then exit;
-      ReadNextAtom;
-      while AtomIsChar('.') do
-      begin
-        ReadNextAtom;
-        ReadNextAtom;
-      end;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        ReadNextAtom;
-      end;
       if AtomIsChar(';') then break;
       if not AtomIsChar(',') then break;
     until (CurPos.StartPos>SrcLen);
