@@ -242,7 +242,7 @@ type
     function DesignerBaseClassCount: Integer; virtual; abstract;
     property DesignerBaseClasses[Index: integer]: TComponentClass read GetDesignerBaseClasses;
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); virtual; abstract;
-    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
+    function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract; // search exact match
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; virtual; abstract;
     function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; virtual; abstract;
     function DesignerClassCanAppCreateForm(AClass: TComponentClass; CheckInherited: boolean = true): boolean; virtual; abstract;

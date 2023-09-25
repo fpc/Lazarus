@@ -124,7 +124,7 @@ const
     'Frame',
     'DataModule',
     'CustomForm',
-    ''
+    'Other'
     );
   DefaultResourceBaseClassnames: array[TPFComponentBaseClass] of string = (
     '',

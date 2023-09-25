@@ -8345,7 +8345,7 @@ begin
     exit('TCustomFrame')
   else if aCompClass.InheritsFrom(TDataModule) then
     exit(DefaultResourceBaseClassnames[pfcbcDataModule]);
-  i:=FormEditingHook.IndexOfDesignerBaseClass(TComponentClass(aCompClass.ClassType));
+  i:=FormEditingHook.DescendFromDesignerBaseClass(TComponentClass(aCompClass.ClassType));
   if i<0 then exit;
   Result:=FormEditingHook.DesignerBaseClasses[i].ClassName;
 end;
