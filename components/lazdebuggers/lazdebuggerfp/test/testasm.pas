@@ -233,6 +233,9 @@ begin
   TestDis('add [esi*4+edx+$123456],eax', #$67#$01#$84#$b2#$56#$34#$12#$00,     'add [esi*4+edx+$123456],eax');
   TestDis('add [esi*4+edx+$123456],rax', #$67#$48#$01#$84#$b2#$56#$34#$12#$00, 'add [esi*4+edx+$123456],rax');
 
+  TestDis('xadd [rdi],ax',                #$66#$0f#$c1#$07,                    'xadd [rdi],ax');
+  TestDis('lock xadd [rdi],ax',           #$f0#$66#$0f#$c1#$07,                'lock xadd [rdi],ax');
+
   TestDis('mov [$0000001a],al ',   #$a2#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],al');
   TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],ax');
   TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],eax');
@@ -330,6 +333,9 @@ begin
   TestDis('add [esi*4+edx+$123456],ah',  #$00#$a4#$b2#$56#$34#$12#$00,         'add [esi*4+edx+$123456],ah');
   TestDis('add [esi*4+edx+$123456],ax',  #$66#$01#$84#$b2#$56#$34#$12#$00,     'add [esi*4+edx+$123456],ax');
   TestDis('add [esi*4+edx+$123456],eax', #$01#$84#$b2#$56#$34#$12#$00,         'add [esi*4+edx+$123456],eax');
+
+  TestDis('xadd [edi],ax',                #$66#$0f#$c1#$07,                    'xadd [edi],ax');
+  TestDis('lock xadd [edi],ax',           #$f0#$66#$0f#$c1#$07,                'lock xadd [edi],ax');
 
   TestDis('mov [$0000001a],al ',   #$a2#$1a#$00#$00#$00,         'mov [$0000001a],al');
   TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00,     'mov [$0000001a],ax');
