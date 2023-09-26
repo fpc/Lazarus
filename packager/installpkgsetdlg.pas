@@ -90,6 +90,7 @@ type
     function FilterEditGetImageIndex({%H-}Str: String; {%H-}Data: TObject;
       var {%H-}AIsEnabled: Boolean): Integer;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure InstallTreeViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -155,6 +156,8 @@ type
     procedure PkgInfosChanged;
     procedure ChangePkgVersion(PkgInfo: TLPKInfo; NewVersion: TPkgVersion);
     function FindOnlinePackageLink(const AName: String): TPackageLink;
+    function IsBasePkg(aPkgID: TLazPackageID): boolean;
+    function IsBasePkg(aPkgName: string): boolean;
   public
     function GetNewInstalledPackages: TObjectList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
@@ -283,9 +286,11 @@ end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
 begin
-  if not CheckSelection then exit;
-  RebuildIDE:=true;
-  ModalResult:=mrOk;
+  if SaveAndRebuildButton.Enabled and CheckSelection then
+  begin
+    RebuildIDE := true;
+    ModalResult := mrOk;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.AvailableTreeViewSelectionChanged(Sender: TObject);
@@ -304,6 +309,7 @@ begin
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.InitialDir:=GetPrimaryConfigPath;
     SaveDialog.Title:=lisExportPackageListXml;
+    SaveDialog.Filter:='XML-files|*.xml|Plain text|*.txt|All files|*.*';
     SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
@@ -332,6 +338,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=GetPrimaryConfigPath;
     OpenDialog.Title:=lisImportPackageListXml;
+    OpenDialog.Filter:='Package list files|*.xml;*.txt|All files|*.*';
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
@@ -362,7 +369,26 @@ end;
 procedure TInstallPkgSetDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  // don't close until parsing is complete
+  if LPKParsingTimer.Enabled then
+  begin
+    CloseAction := caNone;
+    exit;
+  end;
+
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TInstallPkgSetDialog.FormDropFiles(Sender: TObject;
+  const FileNames: array of string);
+var
+  lFilename: String;
+begin
+  if length(FileNames) = 1 then // only one file
+  begin
+    lFilename := CleanAndExpandFilename(FileNames[0]);
+    LoadPackageListFromFile(lFilename);
+  end;
 end;
 
 procedure TInstallPkgSetDialog.FormKeyDown(Sender: TObject; var Key: Word;
@@ -372,7 +398,48 @@ begin
   begin
     Close;
     Key := 0;
-  end;
+  end
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    SaveAndRebuildButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_S) and (Shift = [ssCtrl]) then
+  begin
+    SaveAndExitButtonClick(Sender);
+    Key := 0;
+  end
+  // import and export
+  else if (Key = VK_E) and (Shift = [ssCtrl]) then
+  begin
+    ExportButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_I) and (Shift = [ssCtrl]) then
+  begin
+    ImportButtonClick(Sender);
+    Key := 0;
+  end
+  // scroll description
+  else if (Key = VK_DOWN) and (Shift = [ssCtrl]) then
+  begin
+    PkgInfoMemo.VertScrollBar.Position := PkgInfoMemo.VertScrollBar.Position + 1;
+    Key := 0;
+  end
+  else if (Key = VK_UP) and (Shift = [ssCtrl]) then
+  begin
+    PkgInfoMemo.VertScrollBar.Position := PkgInfoMemo.VertScrollBar.Position - 1;
+    Key := 0;
+  end
+  // switch focus
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    if AvailableFilterEdit.Focused then
+      InstalledFilterEdit.SetFocus
+    else
+      AvailableFilterEdit.SetFocus;
+    Key := 0;
+  end
 end;
 
 procedure TInstallPkgSetDialog.InstallTreeViewKeyDown(Sender: TObject;
@@ -487,9 +554,11 @@ end;
 
 procedure TInstallPkgSetDialog.SaveAndExitButtonClick(Sender: TObject);
 begin
-  if not CheckSelection then exit;
-  RebuildIDE:=false;
-  ModalResult:=mrOk;
+  if SaveAndExitButton.Enabled and CheckSelection then
+  begin
+    RebuildIDE := false;
+    ModalResult := mrOk;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.SetOldInstalledPackages(const AValue: TPkgDependency);
@@ -591,6 +660,29 @@ begin
   PackageLink := OPMInterface.FindOnlineLink(PkgName);
   if PackageLink <> nil then
     Result := PackageLink;
+end;
+
+// returns false on error or if the package is not base
+function TInstallPkgSetDialog.IsBasePkg(aPkgID: TLazPackageID): boolean;
+var
+  lPkg: TLazPackage;
+begin
+  lPkg := PackageGraph.FindPackageWithID(aPkgID); // no need to free
+  result := (lPkg <> nil) and PackageGraph.IsCompiledInBasePackage(lPkg.Name);
+end;
+
+// returns false on error or if the package is not base
+function TInstallPkgSetDialog.IsBasePkg(aPkgName: string): boolean;
+var
+  lPkgID: TLazPackageID;
+begin
+  result := false;
+  lPkgID := TLazPackageID.Create;
+  try
+    result := lPkgID.StringToID(aPkgName) and IsBasePkg(lPkgID);
+  finally
+    lPkgID.Free;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
@@ -785,7 +877,8 @@ procedure TInstallPkgSetDialog.UpdateButtonStates;
 begin
   SaveAndRebuildButton.Enabled := ChangesFound;
   SaveAndExitButton   .Enabled := SaveAndRebuildButton.Enabled;
-  UninstallButton     .Enabled := InstallTreeView.Selected <> nil;
+  UninstallButton     .Enabled := (InstallTreeView.Selected <> nil) and
+                                  not IsBasePkg(InstallTreeView.Selected.Text);
   AddToInstallButton  .Enabled := AvailableTreeView.Selected <> nil;
 end;
 
@@ -1183,24 +1276,6 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.AddToUninstall(Sender: TObject);
-
-  function SelectionOk(aPackageID: TLazPackageID): Boolean;
-  var
-    APackage: TLazPackage;
-  begin
-    APackage:=PackageGraph.FindPackageWithID(aPackageID);
-    if APackage<>nil then begin
-      // check if package is a base package
-      if PackageGraph.IsCompiledInBasePackage(APackage.Name) then begin
-        MessageDlg(lisUninstallImpossible,
-          Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
-            APackage.Name]), mtError, [mbCancel], 0);
-        exit(false);
-      end;
-    end;
-    Result:=true;
-  end;
-
 var
   i, j: Integer;
   NewSelectedIndex, LastNonSelectedIndex: Integer;
@@ -1228,12 +1303,17 @@ begin
       NewSelectedIndex:=i+1; // Will have the next index after the selected one.
       PkgName:=TVNode.Text;
       if not DelPackageID.StringToID(PkgName) then begin
-        TVNode.Selected:=false;
         debugln('TInstallPkgSetDialog.AddToUninstall invalid ID: ', PkgName);
         continue;
       end;
-      if not SelectionOk(DelPackageID) then begin
-        TVNode.Selected:=false;
+      if IsBasePkg(DelPackageID) then begin
+        MessageDlg(
+          lisUninstallImpossible,
+          Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [PkgName]),
+          mtError,
+          [mbCancel],
+          0
+        );
         exit;
       end;
       // ok => add to deletions
