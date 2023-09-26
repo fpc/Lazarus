@@ -3474,8 +3474,10 @@ begin
     end;
     $C1: begin
       DecodeSIMD([soNone]);
-      if SimdOpcode = soNone
-      then begin SetOpcode(OPxadd); AddEv; AddGv; CheckLock; end;
+      case SimdOpcode of
+        soNone: begin SetOpcode(OPxadd); AddEv; AddGv; CheckLock; end;
+        so66:   begin SetOpcode(OPxadd); AddEw; AddGw; CheckLock; end;
+      end;
     end;
     $C2: begin
       DecodeSIMD;
