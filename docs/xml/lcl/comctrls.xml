@@ -11885,28 +11885,33 @@ used for the <var>ViewStyle</var> property in <var>TCustomListView</var>.
 <element name="TViewStyle.vsIcon">
 <short>
 Displays a large icon and the caption for each list view item. The icon is 
-centered above the caption text.
+centered above the caption text. List items are displayed from left to right, 
+and wrap to a new row when space is not available at the right edge of the 
+control.
 </short>
 </element>
 <element name="TViewStyle.vsSmallIcon">
 <short>
-Displays a small icon and caption text for each list view item. Caption text 
-on the right-hand side of the icon.
+Displays a small icon and caption text for each list view item. Caption text is 
+aligned to the right-hand side of the icon. List items are displayed from left 
+to right, and wrap to a new row when space is not available at the right edge 
+of the control.
 </short>
 </element>
 <element name="TViewStyle.vsList">
 <short>
-Displays a small icon with caption text to its right-hand side. The list 
-items are arranged in columns.
+Displays a small icon with caption text to its right-hand side. The list items 
+are arranged in columns filled from top to bottom, and then left to right.
 </short>
 </element>
 <element name="TViewStyle.vsReport">
 <short>
 Displays each list item as a series of columns with a small icon on the 
 left-hand side of the row. The Caption text for the list item is displayed in 
-the first column, with the text for additional columns coming from the Caption 
-for the SubItems in the list item. Each column has a header at the top of the 
-list view control.
+the first column, with the text for subsequent columns coming from the Caption 
+property in the SubItems in the list item. Each column has a header at the top 
+of the list view control. List items are displayed from top to bottom on the 
+control.
 </short>
 </element>
 
@@ -15610,30 +15615,42 @@ class to be updated when its Handle has been allocated.
 
 <element name="TCustomListView.LargeImages">
 <short>
-ImageList object, which contains "big" icons for one if ListView layouts.
+Image list which contains "big" icons displayed for view styles on the control.
 </short>
 <descr>
 <p>
-A typical application might have two ImageLists: one of 
-<var>LargeImages</var> and one of <var>SmallImages</var> containing two 
-versions of the same collection of images, in large and small format; the 
-index positions in the first image list should correspond to those in the 
-second image list.
+A typical application might have two ImageLists: one of <var>LargeImages</var> 
+and one of <var>SmallImages</var> containing two versions of the same 
+collection of images, in large and small format. The index numbers for images 
+in the first list would correspond to the same image with another size in the 
+second list. LargeImages are used when the view style is set to vsIcon.
 </p>
 <p>
-SmallImages could be displayed beside the text strings in the list view and 
-the programmer would supply code to ensure that when an item with its 
-associated SmallImage was selected, the corresponding LargeImage would be 
-displayed in another window.
+The <var>TImageList</var> instance can be created and populated at design-time 
+using the editor available on the content menu in the form designer. It can 
+also be created, populated, and assigned at run-time if needed. 
 </p>
 <p>
-A <var>TImageList</var> control needs to be selected and pasted on to the 
-Form Designer and the ImageList Editor can be opened from the pop-up menu 
-obtained by right-clicking on <var>TImageList</var> icon in the Form 
-Designer. Then in the StringList editor for <var>Items</var> the correct 
-<var>ImageIndex</var> must be allocated to each entry in the list.
+Use the LargeImagesWidth property to specify the width for the images in the 
+list.
+</p>
+<p>
+Use the Items property to access and maintain the ImageIndex used for each of 
+the list items.
+</p>
+<p>
+Use ViewStyle to control the layout and content for the list items on the 
+control.
 </p>
 </descr>
+<seealso>
+<link id="TCustomListView.LargeImagesWidth"/>
+<link id="TCustomListView.SmallImages"/>
+<link id="TCustomListView.Items"/>
+<link id="TCustomListView.ViewStyle"/>
+<link id="TListItem.ImageIndex"/>
+<link id="TViewStyle"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.LargeImagesWidth">
@@ -15720,8 +15737,8 @@ when its Handle has been assigned.
 <p>
 <var>ShowColumnHeaders</var> is a <var>Boolean</var> property which indicates 
 whether column headers are displayed for the Report view style (ViewStyle = 
-vsReport). When enabled, the captions for the list <var>Items</var> are 
-displayed as column headers. The default value for the property is 
+vsReport). When enabled, the captions for the Columns defined for the control 
+are displayed as column headers. The default value for the property is 
 <b>True</b>.
 </p>
 <p>
@@ -15733,10 +15750,10 @@ causes the widgetset class to be updated with the new value.
 </p>
 </descr>
 <seealso>
-<link id="TCustomListView.Items"/>
-<link id="TListItem.Caption"/>
+<link id="TCustomListView.Columns"/>
 <link id="TListViewProperties"/>
 <link id="TListViewProperty"/>
+<link id="TListColumn.Caption"/>
 </seealso>
 </element>
 
@@ -15768,31 +15785,44 @@ Work areas are not implemented (for any platform) in the current LCL version.
 
 <element name="TCustomListView.SmallImages">
 <short>
-ImageList object, which contains "small" icons for one if ListView layouts.
+Image list which contains "small" icons used for view styles.
 </short>
 <descr>
 <p>
 A typical application might have two ImageLists: one of 
 <var>LargeImages</var> and one of <var>SmallImages</var> containing two 
-versions of the same collection of images, in large and small format; the 
-index numbers of the first list would correspond with those in the second 
+versions of the same collection of images, in large and small format. The 
+index numbers for images in the first list would correspond to the same image 
+with another size in the second list. SmallImages are displayed beside the text 
+strings in the list view, and are used for the vsSmallIcon, vsList, and 
+vsReport view styles.
+</p>
+<p>
+The <var>TImageList</var> instance can be created and populated at design-time 
+using the editor available on the content menu in the form designer. It can 
+also be created, populated, and assigned at run-time if needed. 
+</p>
+<p>
+Use the SmallImagesWidth property to specify the width for the images in the 
 list.
 </p>
 <p>
-SmallImages could be displayed beside the text strings in the list view and 
-the programmer would supply code to ensure that when an item with its 
-associated SmallImage was selected, the corresponding LargeImage would be 
-displayed in another window.
+Use the Items property to access and maintain the ImageIndex used for each of 
+the list items.
 </p>
 <p>
-A <var>TImageList</var> control needs to be selected and pasted on to the 
-Form Designer and the ImageList Editor can be opened from the pop-up menu 
-obtained by right-clicking on <var>TImageList</var> icon in the Form 
-Designer. Then in the StringList editor for <var>Items</var> the correct 
-<var>ImageIndex</var> must be allocated to each entry in the list.
+Use ViewStyle to control the layout and content for the list items on the 
+control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomListView.SmallImagesWidth"/>
+<link id="TCustomListView.LargeImages"/>
+<link id="TCustomListView.Items"/>
+<link id="TCustomListView.ViewStyle"/>
+<link id="TListItem.ImageIndex"/>
+<link id="TViewStyle"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.SmallImagesWidth">
@@ -24269,7 +24299,9 @@ the display name for the collection item.
 </seealso>
 </element>
 <element name="TCoolBand.GetDisplayName.Result">
-<short/>
+<short>
+Display name for the Cool Band collection item.
+</short>
 </element>
 
 <element name="TCoolBand.Create">
@@ -39510,7 +39542,7 @@ The text displayed on the header section.
 <descr>
 <p>
 <var>Text</var> is a <var>TCaption</var> property which contains the textual 
-value displayed on the header section.  Along with the image specified in 
+value displayed on the header section. Along with the image specified in 
 ImageIndex, it determines the content drawn for the section in the PaintSection 
 method of the THeaderControl.
 </p>
@@ -39751,8 +39783,8 @@ Add calls the AddItem method to get the return value for the method.
 </p>
 </descr>
 <seealso>
-<link id="THeaderSections.AddItem"/>  
-<link id="THeaderSections.Delete"/>  
+<link id="THeaderSections.AddItem"/>
+<link id="THeaderSections.Delete"/>
 <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
 </seealso>
 </element>
