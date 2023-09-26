@@ -5210,10 +5210,10 @@ resourcestring
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
   lisInstallUninstallPackages = 'Install/Uninstall Packages';
   lisMenuEditInstallPkgs = 'Install/Uninstall Packages ...';
-  lisExportList = 'Export...';
+  lisExportList = 'Export ...';
   lisAvailableForInstallation = 'Available for installation';
   lisPkgsInstalled = 'Installed';
-  lisImportList = 'Import...';
+  lisImportList = 'Import ...';
   lisUninstallSelection = 'Uninstall selection';
   lisInstallSelection = 'Install selection';
   lisPackageInfo = 'Package info';
