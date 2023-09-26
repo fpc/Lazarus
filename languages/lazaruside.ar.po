@@ -1934,6 +1934,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -8808,6 +8812,7 @@ msgid "Export ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
@@ -9625,11 +9630,12 @@ msgid "Export / Import"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr ""
 
 #: lazarusidestrconsts.lisexportselected
@@ -10735,11 +10741,12 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
@@ -17280,11 +17287,11 @@ msgid "Save All/Original Messages to File ..."
 msgstr ""
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveas

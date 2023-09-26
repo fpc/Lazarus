@@ -1936,6 +1936,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Lazarus unit"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -9643,11 +9647,16 @@ msgid "Export / Import"
 msgstr "Exportálás / Importálás"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Lista exportálása"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Csomaglista exportálása (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10775,11 +10784,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Az építési módok importálása nincs támogatva csomagok esetén."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Lista importálása"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Csomaglista importálása (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17377,11 +17391,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Összes/Eredeti üzenetek mentése fájlba ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Mentés és bezárás"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Mentés és IDE újraépítése"
 
 #: lazarusidestrconsts.lissaveas

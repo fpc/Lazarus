@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-09-20 02:57+0300\n"
+"PO-Revision-Date: 2023-09-26 18:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -1922,6 +1922,10 @@ msgstr "Сеанс работы в Lazarus"
 msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Модуль Lazarus"
+
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr "Файлы списков пакетов"
 
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
@@ -9600,12 +9604,13 @@ msgid "Export / Import"
 msgstr "Экспорт / импорт"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
-msgstr "Экспортировать список"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
+msgstr "Экспортировать ..."
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
-msgstr "Список экспортируемых пакетов (*.xml)"
+msgid "Export package list"
+msgstr "Экспорт списка пакетов"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
@@ -10718,12 +10723,13 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Импорт режимов сборки не поддерживается для пакетов."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
-msgstr "Импортировать список"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
+msgstr "Импортировать ..."
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
-msgstr "Список импортируемых пакетов (*.xml)"
+msgid "Import package list"
+msgstr "Импорт списка пакетов"
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -17310,12 +17316,12 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Сохранить все/исходные сообщения в файл ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
-msgstr "Сохранить и выйти из диалога"
+msgid "Only Save"
+msgstr "Только сохранить"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
-msgstr "Сохранить и перезапустить IDE"
+msgid "Rebuild IDE"
+msgstr "Пересобрать IDE"
 
 #: lazarusidestrconsts.lissaveas
 msgctxt "lazarusidestrconsts.lissaveas"

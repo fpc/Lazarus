@@ -1901,6 +1901,10 @@ msgstr "Lazarus oturumu"
 msgid "Lazarus unit"
 msgstr "Lazarus birimi"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgid "Pascal file"
 msgstr "Pascal dosyası"
@@ -9582,11 +9586,16 @@ msgid "Export / Import"
 msgstr "Dışa/İçe aktar"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Listeyi dışa aktar"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Paket listesini dışa aktar (* .xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10713,11 +10722,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Yapı Modellerini İçe Aktarma, paketler için desteklenmiyor."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "İçe aktarma listesi"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Paketi listesi içe aktar (* .xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17261,11 +17275,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Tümünü Kaydet/Orijinal İletileri Dosyaya Kaydet ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Kaydet ve dialoğu kapat"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Kaydet ve IDE'yi yeniden oluştur"
 
 #: lazarusidestrconsts.lissaveas

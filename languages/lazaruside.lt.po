@@ -1984,6 +1984,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "„Lazarus modulis"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -9766,11 +9770,16 @@ msgid "Export / Import"
 msgstr "Eksportas / importas"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Eksportuoti sąrašą"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Eksportuoti paketų sąrašą (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10911,11 +10920,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "„BuildModes“ importavimas paketams nėra palaikomas."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Importuoti sąrašą"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Importuoti paketų sąrašą (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17622,11 +17636,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Visus ar originalius pranešimus įrašyti failan…"
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Įrašyti ir uždaryti"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Įrašyti ir daryti IKA"
 
 #: lazarusidestrconsts.lissaveas

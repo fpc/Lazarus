@@ -1912,6 +1912,10 @@ msgstr "Lazarus istunto"
 msgid "Lazarus unit"
 msgstr "Lazarus-käännösyksikkö"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgid "Pascal file"
 msgstr "Pascal-tiedosto"
@@ -8796,10 +8800,12 @@ msgid "Edit ..."
 msgstr "Muokkaa ..."
 
 #: lazarusidestrconsts.lisdlgexport
+msgctxt "lazarusidestrconsts.lisdlgexport"
 msgid "Export ..."
 msgstr "Vie ..."
 
 #: lazarusidestrconsts.lisdlgimport
+msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Tuo ..."
 
@@ -9615,11 +9621,16 @@ msgid "Export / Import"
 msgstr "Vie / Tuo"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Vie luettelo"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Vie pakettiluettelo (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10735,11 +10746,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Koontamoodien tuontia paketteihin ei tueta."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Tuo luettelo"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Tuo pakettiluettelo (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17259,11 +17275,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Tallenna kaikki/alkuperäiset viestit tiedostoon ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Tallenna ja poistu"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Tallenna ja kokoa uudelleen"
 
 #: lazarusidestrconsts.lissaveas

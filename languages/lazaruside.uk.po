@@ -1925,6 +1925,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Модуль Lazarus"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -9611,11 +9615,16 @@ msgid "Export / Import"
 msgstr "Експорт / Імпорт"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Список експорту"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Експортувати список пакунків (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10743,11 +10752,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Імпорт режимів збирання не підтримується для пакунків."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Список імпорту"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Імпортувати список пакунків (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17334,11 +17348,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Зберегти всі/початкові повідомлення у файл ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Зберегти і вийти з діалогу"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Зберегти і перезібрати ІСР"
 
 #: lazarusidestrconsts.lissaveas

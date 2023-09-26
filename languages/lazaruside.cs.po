@@ -1950,6 +1950,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Jednotka Lazarusu"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -9689,11 +9693,16 @@ msgid "Export / Import"
 msgstr "Exportovat / Importovat"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Exportovat seznam"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Exportovat seznam balíčků (*.xml)"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10831,11 +10840,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Importování BuildModes není podporováno pro balíčky."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Importovat seznam"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Importovat seznam balíčků (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17452,11 +17466,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Uložit Všechny/Původní Zprávy do Souboru..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Uložit a ukončovací dialog"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Uložit a znovu sestavit IDE"
 
 #: lazarusidestrconsts.lissaveas

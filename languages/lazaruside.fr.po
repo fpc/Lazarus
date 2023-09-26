@@ -1938,6 +1938,10 @@ msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Unité Lazarus"
 
+#: lazarusidestrconsts.dlgfilterpackagelistfiles
+msgid "Package list files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
@@ -9632,11 +9636,16 @@ msgid "Export / Import"
 msgstr "Exporter / Importer"
 
 #: lazarusidestrconsts.lisexportlist
-msgid "Export list"
+#, fuzzy
+#| msgid "Export list"
+msgctxt "lazarusidestrconsts.lisexportlist"
+msgid "Export ..."
 msgstr "Liste d'exportation"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-msgid "Export package list (*.xml)"
+#, fuzzy
+#| msgid "Export package list (*.xml)"
+msgid "Export package list"
 msgstr "Exporter la liste des paquets (\"*.xml\")"
 
 #: lazarusidestrconsts.lisexportselected
@@ -10765,11 +10774,16 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "L'importation des modes de construction n'est pas autorisée pour les paquets."
 
 #: lazarusidestrconsts.lisimportlist
-msgid "Import list"
+#, fuzzy
+#| msgid "Import list"
+msgctxt "lazarusidestrconsts.lisimportlist"
+msgid "Import ..."
 msgstr "Importer la liste"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-msgid "Import package list (*.xml)"
+#, fuzzy
+#| msgid "Import package list (*.xml)"
+msgid "Import package list"
 msgstr "Importer la liste de paquets (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
@@ -17370,11 +17384,15 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Tout enregistrer ou les messages d'origine dans le fichier..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-msgid "Save and exit dialog"
+#, fuzzy
+#| msgid "Save and exit dialog"
+msgid "Only Save"
 msgstr "Enregistrer et quitter le dialogue"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-msgid "Save and rebuild IDE"
+#, fuzzy
+#| msgid "Save and rebuild IDE"
+msgid "Rebuild IDE"
 msgstr "Enregistrer et recréer l'EDI"
 
 #: lazarusidestrconsts.lissaveas
