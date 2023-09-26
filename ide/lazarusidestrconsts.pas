@@ -1604,6 +1604,7 @@ resourcestring
   dlgFilterImagesPng = 'PNG images';
   dlgFilterImagesBitmap = 'Bitmap images';
   dlgFilterImagesPixmap = 'Pixmap images';
+  dlgFilterPackageListFiles = 'Package list files';
 
   // editor options
   dlgEdMisc = 'Miscellaneous';

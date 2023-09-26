@@ -309,7 +309,7 @@ begin
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.InitialDir:=GetPrimaryConfigPath;
     SaveDialog.Title:=lisExportPackageListXml;
-    SaveDialog.Filter:='XML-files|*.xml|Plain text|*.txt|All files|*.*';
+    SaveDialog.Filter:=dlgFilterPackageListFiles+'|*.xml;*.txt|'+dlgFilterAll+'|*.*';
     SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
@@ -338,7 +338,7 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=GetPrimaryConfigPath;
     OpenDialog.Title:=lisImportPackageListXml;
-    OpenDialog.Filter:='Package list files|*.xml;*.txt|All files|*.*';
+    OpenDialog.Filter:=dlgFilterPackageListFiles+'|*.xml;*.txt|'+dlgFilterAll+'|*.*';
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
