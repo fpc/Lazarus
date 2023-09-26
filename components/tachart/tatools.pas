@@ -1191,21 +1191,30 @@ procedure TBasicZoomTool.DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
   procedure ValidateNewSize(LimitLo, LimitHi: TZoomDirection;
     const PrevSize, NewSize, MaxSize, ImageMaxSize: Double; out Scale: Double;
     out AllowProportionalAdjustment: Boolean);
+  var
+    SizeDiff, Half: Double;
   begin
+    Scale := 1;
+
     // if new size is only a bit different than previous size, this may be due to
     // limited precision of floating-point calculations, so - if change in size
-    // is smaller than half of the pixel - set Scale to 0, disable proportional
+    // is smaller than half of the pixel - set Scale to 1, disable proportional
     // adjustments and exit; in this case, change in size will be reverted for
     // the current dimension, and adjusting the other dimension will be performed
     // independently
-    if (NewSize > PrevSize * (1 - 0.5 / abs(ImageMaxSize))) and
-       (NewSize < PrevSize * (1 + 0.5 / abs(ImageMaxSize))) then begin
-      Scale := 0;
+    SizeDiff := (NewSize - PrevSize) * abs(ImageMaxSize);
+    Half := PrevSize * 0.5;
+    { equivalent to:
+       NewSize-PrevSize              0.5 px
+       ----------------  <-->  --------------------
+           PrevSize            abs(ImageMaxSize) px
+    }
+    if (SizeDiff > -Half) and (SizeDiff < Half) then
+    begin
       AllowProportionalAdjustment := false;
       exit;
     end;
 
-    Scale := 1;
     AllowProportionalAdjustment := true;
 
     // if there is no both-sides extent limitation - allow change
