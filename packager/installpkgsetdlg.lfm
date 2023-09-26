@@ -10,9 +10,11 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   ClientWidth = 607
   Constraints.MinHeight = 400
   Constraints.MinWidth = 450
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
+  OnKeyDown = FormKeyDown
   OnResize = InstallPkgSetDialogResize
   OnShow = InstallPkgSetDialogShow
   Position = poScreenCenter
@@ -96,21 +98,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       OnClick = HelpButtonClick
       TabOrder = 0
     end
-    object CancelButton: TBitBtn
-      Left = 164
-      Height = 29
-      Top = 6
-      Width = 83
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      TabOrder = 1
-    end
     object SaveAndExitButton: TBitBtn
       Left = 442
       Height = 29
@@ -121,6 +108,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'SaveAndExitButton'
       Constraints.MinWidth = 75
+      Enabled = False
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -158,7 +146,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         FF00FFFFFF00FFFFFF00FFFFFF006D9CD4896A9AD2FB6697CFEE
       }
       OnClick = SaveAndExitButtonClick
-      TabOrder = 3
+      TabOrder = 2
     end
     object SaveAndRebuildButton: TBitBtn
       Left = 253
@@ -170,6 +158,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'SaveAndRebuildButton'
       Constraints.MinWidth = 75
+      Enabled = False
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
         2000000000000004000064000000640000000000000000000000000000000000
@@ -207,7 +196,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         0000000000000000000000000000000000000000000000000000
       }
       OnClick = SaveAndRebuildButtonClick
-      TabOrder = 2
+      TabOrder = 1
     end
   end
   object Splitter1: TSplitter
@@ -293,8 +282,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         ShowRoot = False
         TabOrder = 1
         OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
-        OnDblClick = InstallTreeViewDblClick
-        OnKeyPress = InstallTreeViewKeyPress
+        OnDblClick = AddToUninstall
+        OnKeyDown = InstallTreeViewKeyDown
         OnSelectionChanged = InstallTreeViewSelectionChanged
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
       end
@@ -312,7 +301,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         BorderSpacing.Bottom = 6
         Caption = 'UninstallButton'
         Layout = blGlyphRight
-        OnClick = UninstallButtonClick
+        OnClick = AddToUninstall
         TabOrder = 2
       end
       object InstalledFilterEdit: TTreeFilterEdit
@@ -422,8 +411,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         ShowRoot = False
         TabOrder = 1
         OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
-        OnDblClick = AvailableTreeViewDblClick
-        OnKeyPress = AvailableTreeViewKeyPress
+        OnDblClick = AddToInstall
+        OnKeyDown = AvailableTreeViewKeyDown
         OnSelectionChanged = AvailableTreeViewSelectionChanged
         Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
       end
@@ -441,7 +430,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 6
         Caption = 'AddToInstallButton'
-        OnClick = AddToInstallButtonClick
+        OnClick = AddToInstall
         TabOrder = 2
       end
       object AvailableFilterEdit: TTreeFilterEdit

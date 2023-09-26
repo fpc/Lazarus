@@ -459,21 +459,12 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 var
   RebuildIDE: Boolean;
   PkgIDList: TObjectList;
-  Flags: TPkgInstallInIDEFlags;
 begin
-  RebuildIDE:=false;
-  PkgIDList:=nil;
-  try
-    if ShowEditInstallPkgsDialog(PackageGraph.FirstInstallDependency,
-      PkgIDList,RebuildIDE)<>mrOk
-    then exit;
-
-    Flags:=[piiifSkipChecks,piiifClear];
-    if RebuildIDE then Include(Flags,piiifRebuildIDE);
-    InstallPackages(PkgIDList,Flags);
-  finally
-    PkgIDList.Free;
-  end;
+  if ShowEditInstallPkgsDialog(PackageGraph.FirstInstallDependency, PkgIDList, RebuildIDE) then
+    if RebuildIDE
+      then InstallPackages(PkgIDList, [piiifSkipChecks, piiifClear, piiifRebuildIDE])
+      else InstallPackages(PkgIDList, [piiifSkipChecks, piiifClear]);
+  FreeThenNil(PkgIDList);
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
