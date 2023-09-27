@@ -2,89 +2,89 @@ object ProjectWizardDialog: TProjectWizardDialog
   Left = 298
   Height = 294
   Top = 322
-  Width = 571
+  Width = 572
   ActiveControl = btnNewProject
   BorderIcons = [biSystemMenu]
   Caption = 'Project Wizard '
   ClientHeight = 294
-  ClientWidth = 571
+  ClientWidth = 572
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
   object btnNewProject: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 31
+    Height = 29
     Top = 11
-    Width = 368
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'New Project'
     ModalResult = 1
-    OnClick = btnNewProjectClick
     TabOrder = 0
+    OnClick = btnNewProjectClick
   end
   object btnOpenProject: TBitBtn
     AnchorSideTop.Control = gbRecent
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 31
+    Height = 29
     Top = 126
-    Width = 368
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'Open Project'
     ModalResult = 1
-    OnClick = btnOpenProjectClick
     TabOrder = 2
+    OnClick = btnOpenProjectClick
   end
   object btnConvertProject: TBitBtn
     AnchorSideTop.Control = btnExamples
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 31
-    Top = 210
-    Width = 368
+    Height = 29
+    Top = 206
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'Convert Delphi Project'
     ModalResult = 1
-    OnClick = btnConvertProjectClick
     TabOrder = 4
+    OnClick = btnConvertProjectClick
   end
   object btnCloseIDE: TBitBtn
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 7
-    Height = 31
-    Top = 252
-    Width = 368
+    Height = 29
+    Top = 254
+    Width = 558
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'Close Lazarus'
     ModalResult = 1
-    OnClick = btnCloseIDEClick
     TabOrder = 5
+    OnClick = btnCloseIDEClick
   end
   object gbRecent: TGroupBox
     AnchorSideTop.Control = btnNewProject
     Left = 7
     Height = 56
     Top = 53
-    Width = 368
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 25
     BorderSpacing.Around = 17
     Caption = 'Open Recent Project'
-    ClientHeight = 33
-    ClientWidth = 364
+    ClientHeight = 26
+    ClientWidth = 554
     TabOrder = 1
     object cbRecentProjects: TComboBox
       AnchorSideLeft.Control = gbRecent
@@ -93,15 +93,15 @@ object ProjectWizardDialog: TProjectWizardDialog
       AnchorSideRight.Control = gbRecent
       AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 29
-      Top = 5
-      Width = 362
+      Height = 32
+      Top = -1
+      Width = 552
       Anchors = [akLeft, akRight]
       BorderSpacing.Around = 1
-      OnSelect = cbRecentProjectsSelect
       ItemHeight = 18
       Style = csDropDownList
       TabOrder = 0
+      OnSelect = cbRecentProjectsSelect
     end
   end
   object btnExamples: TBitBtn
@@ -109,15 +109,15 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 31
-    Top = 168
-    Width = 368
+    Height = 29
+    Top = 166
+    Width = 558
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'View Example Projects'
     ModalResult = 1
-    OnClick = btnExamplesClick
     TabOrder = 3
+    OnClick = btnExamplesClick
   end
 end
