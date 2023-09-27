@@ -2363,7 +2363,7 @@ var
   end;
   
 var
-  Width, Height, H, W, D: cardinal;
+  Width, Height, H, W, D: gint;
   Image: PGdkImage;
   R: TRect;
 begin

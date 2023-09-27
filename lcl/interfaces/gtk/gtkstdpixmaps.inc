@@ -53,7 +53,7 @@ const
   );
 
 var
-  PixmapArray: array[1..3] of PPgchar =
+  PixmapArray: array[1..3] of Pointer =
   (
 {1 - MDIMINBUTTON}
   @XPM_MDIMINBUTTON,

@@ -2043,8 +2043,8 @@ begin
 
     GetColorMask(Img, Msk, @ImgBits[0], @MskBits[0], W, H);
 
-    srcbitmap := gdk_bitmap_create_from_data(nil, @ImgBits[0], W, H);
-    mskbitmap := gdk_bitmap_create_from_data(nil, @MskBits[0], W, H);
+    srcbitmap := gdk_bitmap_create_from_data(nil, Pgchar(@ImgBits[0]), W, H);
+    mskbitmap := gdk_bitmap_create_from_data(nil, Pgchar(@MskBits[0]), W, H);
 
     // white
     fg.red := $FFFF;

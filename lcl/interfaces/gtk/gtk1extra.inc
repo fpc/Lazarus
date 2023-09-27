@@ -197,7 +197,7 @@ begin
 
   XGetWindowProperty(XDisplay, XWindow, _NET_WM_STATE,
              0, MaxInt, False, XA_ATOM, @atomtype, @format, @nitems,
-             @bytes_after, @state_array);
+             @bytes_after, gpointer(@state_array));
   if (atomtype = XA_ATOM) and (format = 32) and  (nitems > 0) then
   begin
     // Check to see if the window is already minimized...

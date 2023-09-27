@@ -494,7 +494,7 @@ begin
   then begin
     // screen: ToDo: multiple desktops
     {$ifdef gtk1}
-    FDrawable := @gdk_root_parent;
+    FDrawable := PGDKDrawable(@gdk_root_parent);
     {$else}
     FDrawable := gdk_screen_get_root_window(gdk_screen_get_default);
     {$endif}
