@@ -1548,7 +1548,7 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
-  
+
   procedure CheckListSelection;
   var
     List: PGlist;
@@ -1590,13 +1590,53 @@ var
   DesignOnlySignal: boolean;
   AWinControl: TWinControl;
   {$IFDEF GTK1}
-  CaptureWidget, W: PGtkWidget;
-  EventXY: TPoint;
-  MappedXY, CursorPos: TPoint;
-  Info: PWidgetInfo;
-  Old: TObject;
-  Msg: TLMContextMenu;
+  CaptureWidget: PGtkWidget;
+  MappedXY, EventXY: TPoint;
   {$ENDIF}
+
+  // Send LM_CONTEXTMENU to the first control that responds to it
+  function SendContextMenuMessage: Boolean;
+  var
+    CursorPos: TPoint;
+    Info: PWidgetInfo;
+    Old: TObject;
+    Msg: TLMContextMenu;
+    W: PGtkWidget;
+  begin
+    Result:=False;
+    W := Widget;
+    CursorPos := Mouse.CursorPos;
+    Old := nil;
+    while W <> nil do
+    begin
+      Info := GetWidgetInfo(W);
+      if (Info <> nil) and (Info^.LCLObject <> Old) then
+      begin
+        Old := Info^.LCLObject;
+        FillChar(Msg{%H-}, SizeOf(Msg), #0);
+        Msg.Msg := LM_CONTEXTMENU;
+        Msg.hWnd := {%H-}HWND(W);
+        Msg.XPos := CursorPos.X;
+        Msg.YPos := CursorPos.Y;
+
+        Result := DeliverMessage(Old, Msg) <> 0;
+        if Result then begin
+          g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+          Break;
+        end;
+      end;
+      W := W^.parent;
+    end;
+    // how to skip default right click handling? LCL can tell only on mouse up
+    // if handling can be skiped but gtk needs on mouse down
+    if ((AWinControl.PopupMenu <> nil) or
+      (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
+      if (TControl(Data) is TCustomTabControl) then
+        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+      Result := True;
+    end;
+  end;
+
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
@@ -1643,43 +1683,16 @@ begin
     end
     else
     if (Event^.button = 3) then begin
-      // Send LM_CONTEXTMENU to the first control that responds to it
-      W := Widget;
-      CursorPos := Mouse.CursorPos;
-      Old := nil;
-      while W <> nil do
-      begin
-        Info := GetWidgetInfo(W);
-        if (Info <> nil) and (Info^.LCLObject <> Old) then
-        begin
-          Old := Info^.LCLObject;
-          FillChar(Msg{%H-}, SizeOf(Msg), #0);
-          Msg.Msg := LM_CONTEXTMENU;
-          Msg.hWnd := {%H-}HWND(W);
-          Msg.XPos := CursorPos.X;
-          Msg.YPos := CursorPos.Y;
-
-          Result := DeliverMessage(Old, Msg) <> 0;
-          if Result then begin
-            g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
-            Break;
-          end;
-        end;
-        W := W^.parent;
-      end;
-      // how to skip default right click handling? LCL can tell only on mouse up
-      // if handling can be skiped but gtk needs on mouse down
-      if ((AWinControl.PopupMenu <> nil) or
-        (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
-        if (TControl(Data) is TCustomTabControl) then
-          g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
-        Result := True;
-      end;
+      if SendContextMenuMessage then Result := True;
     end;
   end else begin
     if (event^.Button=1) and (TControl(Data) is TCustomTabControl) then
     begin
       // clicks on the notebook should be handled by the gtk (switching page)
+    end
+    else
+    if (Event^.button = 3) then begin
+      if SendContextMenuMessage then Result := True;
     end
     else
     begin
