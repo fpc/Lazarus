@@ -9585,13 +9585,6 @@ msgstr "HTML olarak dışa aktarma"
 msgid "Export / Import"
 msgstr "Dışa/İçe aktar"
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Listeyi dışa aktar"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10720,13 +10713,6 @@ msgstr "Dosyayı İçe Aktar"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "Yapı Modellerini İçe Aktarma, paketler için desteklenmiyor."
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "İçe aktarma listesi"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy

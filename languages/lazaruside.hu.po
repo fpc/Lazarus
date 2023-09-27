@@ -9646,13 +9646,6 @@ msgstr "Exportálás HTML-ként"
 msgid "Export / Import"
 msgstr "Exportálás / Importálás"
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Lista exportálása"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10782,13 +10775,6 @@ msgstr "Importálás fájlból"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "Az építési módok importálása nincs támogatva csomagok esetén."
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Lista importálása"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy

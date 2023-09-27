@@ -9769,13 +9769,6 @@ msgstr "Eksportuoti HTML formatu"
 msgid "Export / Import"
 msgstr "Eksportas / importas"
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Eksportuoti sąrašą"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10918,13 +10911,6 @@ msgstr "Importuoti iš failo"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "„BuildModes“ importavimas paketams nėra palaikomas."
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Importuoti sąrašą"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy

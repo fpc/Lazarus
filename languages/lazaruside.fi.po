@@ -9620,13 +9620,6 @@ msgstr "Vie HTML:nä"
 msgid "Export / Import"
 msgstr "Vie / Tuo"
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Vie luettelo"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10744,13 +10737,6 @@ msgstr "Tuo tiedostosta"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "Koontamoodien tuontia paketteihin ei tueta."
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Tuo luettelo"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy

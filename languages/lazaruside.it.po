@@ -9800,13 +9800,6 @@ msgstr "Esportare come HTML"
 msgid "Export / Import"
 msgstr ""
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Esporta elenco"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10950,13 +10943,6 @@ msgstr "Importare da file"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr ""
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Importa elenco"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy

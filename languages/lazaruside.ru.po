@@ -9603,11 +9603,6 @@ msgstr "Экспортировать в HTML"
 msgid "Export / Import"
 msgstr "Экспорт / импорт"
 
-#: lazarusidestrconsts.lisexportlist
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Экспортировать ..."
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list"
 msgstr "Экспорт списка пакетов"
@@ -10721,11 +10716,6 @@ msgstr "Импортировать из файла"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "Импорт режимов сборки не поддерживается для пакетов."
-
-#: lazarusidestrconsts.lisimportlist
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Импортировать ..."
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 msgid "Import package list"

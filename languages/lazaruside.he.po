@@ -10078,13 +10078,6 @@ msgstr ""
 msgid "Export / Import"
 msgstr ""
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "ייצא רשימה"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list"
 msgstr ""
@@ -11232,13 +11225,6 @@ msgstr ""
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr ""
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "ייבא רשימה"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 msgid "Import package list"

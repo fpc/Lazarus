@@ -9621,11 +9621,6 @@ msgstr ""
 msgid "Export / Import"
 msgstr ""
 
-#: lazarusidestrconsts.lisexportlist
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 msgid "Export package list"
 msgstr ""
@@ -10732,11 +10727,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
-msgstr ""
-
-#: lazarusidestrconsts.lisimportlist
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportpackagelistxml

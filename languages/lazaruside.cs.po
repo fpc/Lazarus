@@ -9692,13 +9692,6 @@ msgstr "Exportovat jako HTML"
 msgid "Export / Import"
 msgstr "Exportovat / Importovat"
 
-#: lazarusidestrconsts.lisexportlist
-#, fuzzy
-#| msgid "Export list"
-msgctxt "lazarusidestrconsts.lisexportlist"
-msgid "Export ..."
-msgstr "Exportovat seznam"
-
 #: lazarusidestrconsts.lisexportpackagelistxml
 #, fuzzy
 #| msgid "Export package list (*.xml)"
@@ -10838,13 +10831,6 @@ msgstr "Importovat ze Souboru"
 #: lazarusidestrconsts.lisimportingbuildmodesnotsupported
 msgid "Importing BuildModes is not supported for packages."
 msgstr "Importování BuildModes není podporováno pro balíčky."
-
-#: lazarusidestrconsts.lisimportlist
-#, fuzzy
-#| msgid "Import list"
-msgctxt "lazarusidestrconsts.lisimportlist"
-msgid "Import ..."
-msgstr "Importovat seznam"
 
 #: lazarusidestrconsts.lisimportpackagelistxml
 #, fuzzy
