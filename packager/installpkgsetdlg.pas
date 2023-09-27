@@ -50,7 +50,7 @@ uses
   // BuildIntf
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
-  IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf, InputHistory,
+  IDEImagesIntf, IdeIntfStrConsts, IDEHelpIntf, IDEDialogs, IDEWindowIntf, InputHistory,
   // IdeConfig
   LazConf,
   // IDE
@@ -226,14 +226,15 @@ begin
   Self                .Caption := lisInstallUninstallPackages;
   NoteLabel           .Caption := lisIDECompileAndRestart;
   AvailablePkgGroupBox.Caption := lisAvailableForInstallation;
-  ExportButton        .Caption := lisExportList;
-  ImportButton        .Caption := lisImportList;
+  ExportButton        .Caption := lisExport;
+  ImportButton        .Caption := lisImport;
   UninstallButton     .Caption := lisUninstallSelection;
   InstallPkgGroupBox  .Caption := lisPckEditInstall;
   AddToInstallButton  .Caption := lisInstallSelection;
   PkgInfoGroupBox     .Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption := lisSaveAndRebuildIDE;
   SaveAndExitButton   .Caption := lisSaveAndExitDialog;
+  CancelButton        .Caption := lisCancel;
   HelpButton          .Caption := lisMenuHelp;
 
   { Images }

@@ -163,15 +163,15 @@ begin
   cbPaletteVisible.Caption := lisCmpPaletteVisible;
   // Component pages
   PagesGroupBox.Caption := lisCmpPages;
-  AddPageButton.Caption := lisBtnDlgAdd;
+  AddPageButton.Caption := lisBtnAdd;
   IDEImages.AssignImage(AddPageButton, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
   IDEImages.AssignImage(RestoreButton, 'restore_defaults');
   ImportDividerBevel.Caption := lisExportImport;
   IDEImages.AssignImage(ImportButton, 'laz_open');
-  ImportButton.Caption := lisDlgImport;
+  ImportButton.Caption := lisImport;
   IDEImages.AssignImage(ExportButton, 'laz_save');
-  ExportButton.Caption := lisDlgExport;
+  ExportButton.Caption := lisExport;
   // File dialogs
   ImportDialog.Title := lisImport;
   ImportDialog.Filter := Format('%s|*.xml|%s|%s|', [dlgFilterXML, dlgFilterAll, GetAllFilesMask]);
