@@ -100,6 +100,21 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       OnClick = HelpButtonClick
       TabOrder = 0
     end
+    object CancelButton: TBitBtn
+      Left = 164
+      Height = 29
+      Top = 6
+      Width = 83
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 1
+    end
     object SaveAndExitButton: TBitBtn
       Left = 442
       Height = 29
@@ -148,7 +163,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         FF00FFFFFF00FFFFFF00FFFFFF006D9CD4896A9AD2FB6697CFEE
       }
       OnClick = SaveAndExitButtonClick
-      TabOrder = 2
+      TabOrder = 3
     end
     object SaveAndRebuildButton: TBitBtn
       Left = 253
@@ -198,7 +213,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         0000000000000000000000000000000000000000000000000000
       }
       OnClick = SaveAndRebuildButtonClick
-      TabOrder = 1
+      TabOrder = 2
     end
   end
   object Splitter1: TSplitter

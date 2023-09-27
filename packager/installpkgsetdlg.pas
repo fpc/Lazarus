@@ -66,6 +66,7 @@ type
     AvailablePkgGroupBox: TGroupBox;
     MiddleBevel: TBevel;
     HelpButton: TBitBtn;
+    CancelButton: TBitBtn;
     ExportButton: TButton;
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
