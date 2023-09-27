@@ -2,14 +2,14 @@ object ProjectWizardDialog: TProjectWizardDialog
   Left = 298
   Height = 294
   Top = 322
-  Width = 382
+  Width = 571
   ActiveControl = btnNewProject
   BorderIcons = [biSystemMenu]
   Caption = 'Project Wizard '
   ClientHeight = 294
-  ClientWidth = 382
+  ClientWidth = 571
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object btnNewProject: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -98,8 +98,9 @@ object ProjectWizardDialog: TProjectWizardDialog
       Width = 362
       Anchors = [akLeft, akRight]
       BorderSpacing.Around = 1
-      ItemHeight = 0
       OnSelect = cbRecentProjectsSelect
+      ItemHeight = 18
+      Style = csDropDownList
       TabOrder = 0
     end
   end
