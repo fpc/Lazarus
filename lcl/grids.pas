@@ -960,7 +960,6 @@ type
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: TCursor; ASaveCurrentCursor: Boolean = true);
     function TitleFontIsStored: Boolean;
-    function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure TryScrollTo(aCol,aRow: Integer; ClearColOff, ClearRowOff: Boolean);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
@@ -1201,6 +1200,7 @@ type
     procedure StartPushCell;
     procedure TopLeftChanged; virtual;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
+    function  TrySmoothScrollBy(aColDelta, aRowDelta: Integer): Boolean;
     procedure UnLockEditor;
     procedure UnprepareCellHints; virtual;
     procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage,aPos: Integer); virtual;
