@@ -279,6 +279,8 @@ function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     EscapeResult: Longint;
     sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
 
+function GetCocoaWindowAtPos(p: NSPoint): TCocoaWindow;
+
 // The function tries to initialize the proper application class.
 // The desired application class can be specified in info.plit
 // by specifying NSPrincipalClass property.
@@ -509,6 +511,34 @@ begin
   aloop();
 end;
 {$endif}
+
+// ensure that gets the correct window at mouse pos
+// 1. in Z-Order
+// 2. on the active Space
+// 3. in current App
+// 4. is visible window
+// 5. is not the misc window like Menu Bar
+function GetCocoaWindowAtPos(p: NSPoint): TCocoaWindow;
+var
+  windowNumber: NSInteger;
+  windowNumbers: NSArray;
+  window: NSWindow;
+begin
+  Result := nil;
+
+  // ensure 1
+  windowNumber := NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
+  windowNumbers := NSWindow.windowNumbersWithOptions(0);
+
+  // ensure 2, 3, 4
+  if not windowNumbers.containsObject(NSNumber.numberWithInt(windowNumber)) then
+    exit;
+
+  // ensure 5
+  window := NSApp.windowWithWindowNumber(windowNumber);
+  if Assigned(window) and window.isKindOfClass(TCocoaWindow) then
+    Result := TCocoaWindow(window);
+end;
 
 procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
 var
