@@ -9235,17 +9235,6 @@ Indicates if the existing cursor shape is stored for later reuse.
 </short>
 </element>
 
-<element name="TCustomGrid.TrySmoothScrollBy">
-<short>
-Scroll the grid origin by the specified relative columns and rows as needed.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomGrid.TrySmoothScrollBy.Result"/>
-<element name="TCustomGrid.TrySmoothScrollBy.aColDelta"/>
-<element name="TCustomGrid.TrySmoothScrollBy.aRowDelta"/>
-
 <element name="TCustomGrid.TryScrollTo">
 <short>
 Attempts to scroll the grid until the specified coordinates are at the origin 
@@ -15643,17 +15632,29 @@ Scrolls the non-fixed area for the control by the specified delta values.
 </short>
 <descr>
 <p>
-Calls ScrollWindowEx to perform the scrolling operation for the non-fixed 
-client area in the control. No scrolling is performed when both DeltaX and 
-DeltaY contain 0 (zero).
+<var>ScrollBy</var> us an overridden method in <var>TCustomGrid</var>. No 
+actions are performed in the method when both DeltaX and DeltaY contain 0 
+(zero).
 </p>
 <p>
-Updates the visible grid area in the cached information for the control, and 
-recalculates the scroll bar ranges.
+ScrollBy calls ScrollWindowEx to perform the scrolling operation for the 
+non-fixed client area on the control. It updates the visible grid area in the 
+cached information for the control, and recalculates the scroll bar ranges.
+</p>
+<p>
+ScrollBy is called from the TrySmoothScrollBy method, and occurs when scroll 
+bar messages or mouse wheel events are handled for the grid control.
 </p>
 </descr>
 <seealso>
+<link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.FixedRows"/>
+<link id="TCustomGrid.TrySmoothScrollBy"/>
+<link id="TCustomGrid.LeftCol"/>
+<link id="TCustomGrid.TopRow"/>
+<link id="TCustomGrid.GridMouseWheel"/>
 <link id="#lcl.controls.TWinControl.ScrollBy">TWinControl.ScrollBy</link>
+<link id="#lcl.controls.TControl.ClientRect">TControl.ClientRect</link>
 </seealso>
 </element>
 <element name="TCustomGrid.ScrollBy.DeltaX">
@@ -16171,6 +16172,85 @@ Column offset or number for the selection.
 <element name="TCustomGrid.TryMoveSelection.DRow">
 <short>
 Row offset or number for the selection.
+</short>
+</element>
+
+<element name="TCustomGrid.TrySmoothScrollBy">
+<short>
+Scrolls the grid origin by the specified relative amounts.
+</short>
+<descr>
+<p>
+<var>TrySmoothScrollBy</var> is an <var>Integer</var> function used to scroll 
+the grid control by the specified horizontal and vertical amounts (Deltas). 
+TrySmoothScrollBy ensures that the internal cache for the control is updated to 
+reflect the visible area for the control after the scroll operation.
+</p>
+<p>
+TrySmoothScrollBy is called from methods that handle scroll bar or the event 
+handler for mouse wheel messages, and occurs when the user interacts with the 
+the grid control. For example: WMHScroll, WMVScroll, and GridMouseWheel. In is 
+not intended for use in end-user code - but it's not expressly forbidden either.
+</p>
+<p>
+<var>AColDelta</var> and <var>ARowDelta</var> contain the number of pixels that 
+the control content should be scrolled in the horizontal and vertical 
+directions. Positive values indicate that the content should scroll towards the 
+right or bottom of the control. Negative values indicate that the content 
+should scroll towards the left or top of the control.
+</p>
+<p>
+No actions are performed in the method when both AColDelta and ARowDelta are 
+set to 0 (zero).
+</p>
+<p>
+TrySmoothScrollBy uses the coordinates for the visible cell at the top and left 
+coordinates on the control for the scroll operation. It also uses values in 
+ColWidths and RowHeights to determine when a cells become visible (or hidden) 
+on the control canvas and in its cache. When goScrollKeepVisible has been 
+included in Options, the selection on the control is extended to include the 
+scrolled area. The ScrollBy method is called using the calculated X and Y 
+offsets for the new top and left coordinates on the control.
+</p>
+<p>
+The return value is <b>True</b> if the scroll operation was successfully 
+completed in the method. The return value is <b>False</b> if the operation 
+failed due to cell that is too tall or too wide for the requested scroll 
+value(s). This can occur when goSmoothScroll is <b>not</b> included in the grid 
+Options.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to have protected visibility.
+</version>
+<seealso>
+<link id="TCustomGrid.ColWidths"/>
+<link id="TCustomGrid.GCache"/>
+<link id="TCustomGrid.GetPxTopLeft"/>
+<link id="TCustomGrid.GetSmoothScroll"/>
+<link id="TCustomGrid.GridMouseWheel"/>
+<link id="TCustomGrid.MoveNextSelectable"/>
+<link id="TCustomGrid.Options"/>
+<link id="TCustomGrid.RowHeights"/>
+<link id="TCustomGrid.ScrollBy"/>
+<link id="TCustomGrid.TopLeftChanged"/>
+<link id="TCustomDrawGrid.GridMouseWheel"/>
+<link id="TGridOption"/>
+</seealso>
+</element>
+<element name="TCustomGrid.TrySmoothScrollBy.Result">
+<short>
+<b>True</b> on successful completion of the scroll operation.
+</short>
+</element>
+<element name="TCustomGrid.TrySmoothScrollBy.aColDelta">
+<short>
+Indicates the direction and number of pixels for a horizontal scroll request.
+</short>
+</element>
+<element name="TCustomGrid.TrySmoothScrollBy.aRowDelta">
+<short>
+Indicates the direction and number of pixels for a vertical scroll request.
 </short>
 </element>
 
