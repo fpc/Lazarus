@@ -945,12 +945,9 @@ end;
 class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: Integer);
 var
-  res : Boolean;
-  mnu : NSMenuItem;
   view : NSView;
   w : NSWindow;
   px, py: Integer;
-  wi: NSUInteger;
 begin
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
@@ -967,30 +964,10 @@ begin
     py := y;
     view := nil;
     w :=NSApp.keyWindow;
-    if not Assigned(w) and (NSApp.windows.count>0) then
-    begin
+    if not Assigned(w) then
       // in macOS it's possible to "rightclick" without focusing a window
       // so let's try to find the window
-      for wi := 0 to NSApp.windows.count-1 do
-      begin
-        w := NSWindow(NSApp.windows.objectAtIndex(wi));
-        if not w.isVisible then Continue;
-        view := w.contentView;
-        view.lclScreenToLocal(px, py);
-        if (px >= 0) and (py >= 0)
-          and (px<=Round(view.frame.size.width))
-          and (py<=Round(view.frame.size.height))
-        then
-        begin
-          px := X;
-          py := Y;
-          Break;
-        end;
-        w := nil;
-        px := X;
-        py := Y;
-      end;
-    end;
+      w := GetCocoaWindowAtPos( NSMakePoint(px, py) );
 
     if Assigned(w) then
     begin
@@ -1003,8 +980,10 @@ begin
         if not view.isFlipped then
           py := Round(view.frame.size.height - py);
       end;
-    end;
-    res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
+    end
+    else
+      py := Round(NSScreenZeroHeight - py);
+    TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
       nil, NSMakePoint(px, py), view);
     APopupMenu.Close; // notify LCL popup menu
   end;

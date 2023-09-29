@@ -793,7 +793,7 @@ begin
   if Assigned(callback) then
     callback.Activate;
 
-  performSelector_withObject_afterDelay( ObjCSelector('DoWindowDidBecomeKey'), nil, 0.1 );
+  performSelector_withObject_afterDelay( ObjCSelector('DoWindowDidBecomeKey'), nil, 0 );
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
