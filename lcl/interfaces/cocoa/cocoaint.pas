@@ -547,8 +547,6 @@ var
   ev  : NSEvent;
   p   : NSPoint;
   wfr : NSRect;
-  windowNumbers : NSArray;
-  windowNumber : NSNumber;
 begin
   kw := app.keyWindow;
   p := theEvent.mouseLocation;
@@ -568,44 +566,24 @@ begin
     end;
   end;
 
-  // mouse move was consumed by the focused window
-  if Assigned(kw) and NSPointInRect(p, kw.frame) then
+  w := GetCocoaWindowAtPos(p);
+  if (not Assigned(w)) or (w=kw) then
     exit;
 
-  // windowNumbersWithOptions() shoulde be used here.
-  // because windowNumbersWithOptions() return windowsNumber of visible windows
-  // from front to back, and NSAPP.windows return all windows not ordered.
-  windowNumbers := NSWindow.windowNumbersWithOptions(0);
-  for windowNumber in windowNumbers do
-  begin
-    w := app.windowWithWindowNumber(windowNumber.integerValue);
-    if not Assigned(w) then
-      continue;
-
-    wfr := w.frame;
-    if not NSPointInRect( theEvent.mouseLocation, wfr) then
-      continue;
-
-    if not w.isKindOfClass(TCocoaWindow) then
-      break;
-
-    p := theEvent.mouseLocation;
-    p.x := p.x - w.frame.origin.x;
-    p.y := p.y - w.frame.origin.y;
-    ev := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-      theEvent.type_,
-      p,
-      theEvent.modifierFlags,
-      theEvent.timestamp,
-      w.windowNumber,
-      theEvent.context,
-      theEvent.eventNumber,
-      theEvent.clickCount,
-      theEvent.pressure
-    );
-    w.sendEvent(ev);
-    break;
-  end;
+  p.x := p.x - w.frame.origin.x;
+  p.y := p.y - w.frame.origin.y;
+  ev := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+    theEvent.type_,
+    p,
+    theEvent.modifierFlags,
+    theEvent.timestamp,
+    w.windowNumber,
+    theEvent.context,
+    theEvent.eventNumber,
+    theEvent.clickCount,
+    theEvent.pressure
+  );
+  w.sendEvent(ev);
 end;
 
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
