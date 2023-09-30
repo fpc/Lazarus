@@ -112,6 +112,7 @@ begin
   if (Style and $1) <> 0 then Result := Result + [fsItalic];
   if (Style and $2) <> 0 then Result := Result + [fsBold];
   if (Style and $4) <> 0 then Result := Result + [fsUnderLine];
+  if (Style and $8) <> 0 then Result := Result + [fsStrikeOut];
 end;
 
 function frGetFontStyle(Style: TFontStyles): Integer;
@@ -120,6 +121,7 @@ begin
   if fsItalic in Style then Result := Result or $1;
   if fsBold in Style then Result := Result or $2;
   if fsUnderline in Style then Result := Result or $4;
+  if fsStrikeOut in Style then Result := Result or $8;
 end;
 
 procedure RemoveQuotes(var s: String);
