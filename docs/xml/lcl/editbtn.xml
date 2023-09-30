@@ -1352,7 +1352,9 @@ Added in LCL version 3.0.
 </seealso>
 </element>
 <element name="TCustomControlFilterEdit.InternalSetFilter.AValue">
-<short/>
+<short>
+New filter value applied in the method.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.DoDefaultFilterItem">
