@@ -1457,26 +1457,41 @@ any actions needed when editing has been completed in the BaseEditor control.
 
 <element name="TCustomAbstractGroupedEdit.EditEndDrag">
 <short>Signals the OnEditEndDrag event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the internal end drag handler routine assigned to the BaseEditor 
+for the grouped edit control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnEditEndDrag"/>
+<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+<link id="#lcl.controls.TControl.OnEndDrag">TControl.OnEndDrag</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditEndDrag.Target">
-<short/>
+<short>
+Object instance which is the drop target for the drag operation.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditEndDrag.X">
-<short/>
+<short>
+Horizontal mouse coordinate where the mouse button was released.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditEndDrag.Y">
-<short/>
+<short>
+Vertical mouse coordinate where the mouse button was released.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditEnter">
 <short>Signals the OnEnter event handler (when assigned).</short>
 <descr/>
 <seealso>
+<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
 <link id="TCustomAbstractGroupedEdit.OnEnter"/>
 <link id="TCustomAbstractGroupedEdit.OnExit"/>
-<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
 <link id="TCustomAbstractGroupedEdit.Create"/>
 <link id="#lcl.controls.TWinControl.OnEnter">TWinControl.OnEnter</link>
 </seealso>
@@ -1496,23 +1511,45 @@ any actions needed when editing has been completed in the BaseEditor control.
 
 <element name="TCustomAbstractGroupedEdit.EditKeyDown">
 <short>Signals the OnKeyDown event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the internal key down handler routine assigned to the BaseEditor 
+for the grouped edit control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+<link id="TCustomAbstractGroupedEdit.OnKeyDown"/>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditKeyDown.Key">
-<short/>
+<short>
+Virtual key code for the key down event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditKeyDown.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the key code in the key down event 
+notification.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditKeyPress">
 <short>Signals the OnKeyPress event handler (when assigned).</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the internal key press handler routine assigned to the BaseEditor 
+for the grouped edit control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnKeyPress"/>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditKeyPress.Key">
-<short/>
+<short>
+Character with the value for the key press notification.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditKeyUp">
@@ -1521,10 +1558,14 @@ any actions needed when editing has been completed in the BaseEditor control.
 <seealso/>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditKeyUp.Key">
-<short/>
+<short>
+Virtual key code for the key up event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditKeyUp.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the key code in the key up event notification.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseDown">
@@ -1533,109 +1574,181 @@ any actions needed when editing has been completed in the BaseEditor control.
 <seealso/>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseDown.Button">
-<short/>
+<short>
+Mouse button for the mouse down event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseDown.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse button down event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseDown.X">
-<short/>
+<short>
+Horizontal mouse coordinate for the mouse button down event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseDown.Y">
-<short/>
+<short>
+Vertical mouse coordinate for the mouse button down event notification.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseUp">
 <short>Signals the OnMouseUp event handler (when assigned).</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseUp"/>
+<link id="#lcl.controls.TControl.OnMouseUp">TControl.OnMouseUp</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseUp.Button">
-<short/>
+<short>
+Mouse button for the button up event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseUp.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse button up event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseUp.X">
-<short/>
+<short>
+Horizontal mouse coordinate where the mouse button up event occurred.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseUp.Y">
-<short/>
+<short>
+Vertical mouse coordinate where the mouse button up event occurred.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseEnter">
 <short>Signals the OnMouseEnter event handler (when assigned).</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseEnter"/>
+<link id="#lcl.controls.TControl.OnMouseEnter">TControl.OnMouseEnter</link>
+</seealso>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseLeave">
 <short>Signals the OnMouseLeave event handler (when assigned).</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseLeave"/>
+<link id="#lcl.controls.TControl.OnMouseLeave">TControl.OnMouseLeave</link>
+</seealso>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseMove">
 <short>Signals the OnMouseMove event handler (when assigned).</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseMove"/>
+<link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseMove.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse move notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseMove.X">
-<short/>
+<short>
+Horizontal mouse coordinate for the mouse event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseMove.Y">
-<short/>
+<short>
+Vertical mouse coordinate for the mouse event.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseWheel">
-<short>Signals the OnMouseWheel event handler (when assigned).</short>
+<short>
+Signals the OnMouseWheel event handler (when assigned).
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseWheel"/>
+<link id="#lcl.controls.TControl.OnMouseWheel">TControl.OnMouseWheel</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheel.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse wheel event notification.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheel.WheelDelta">
-<short/>
+<short>
+Number of units (or notches) that the mouse wheel was moved in the notification 
+event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheel.MousePos">
-<short/>
+<short>
+TPoint instance with the coordinates for the mouse pointer in the notification 
+event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheel.Handled">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event is handled by the control.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp">
-<short>Signals the OnMouseWheelUp event handler (when assigned).</short>
+<short>
+Signals the OnMouseWheelUp event handler (when assigned).
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseWheelUp"/>
+<link id="#lcl.controls.TControl.OnMouseWheelUp">TControl.OnMouseWheelUp</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.MousePos">
-<short/>
+<short>
+TPoint instance with the coordinates for the mouse pointer in the notification 
+event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelUp.Handled">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event is handled by the control.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown">
-<short>Signals the OnMouseWheelDown event handler (when assigned).</short>
+<short>
+Signals the OnMouseWheelDown event handler (when assigned).
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.OnMouseWheelDown"/>
+<link id="#lcl.controls.TControl.OnMouseWheelDown">TControl.OnMouseWheelDown</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Shift">
-<short/>
+<short>
+Ctrl, Alt, or Shift modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.MousePos">
-<short/>
-</element>
+<short>
+TPoint instance with the coordinates for the mouse pointer in the notification 
+event.
+</short></element>
 <element name="TCustomAbstractGroupedEdit.EditMouseWheelDown.Handled">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event is handled by the control.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditUtf8KeyPress">
@@ -1687,11 +1800,29 @@ Forwards a CheckCursor method call to the BaseEditor for the control.
 <short>
 Handles the control message received when the ParentColor property is changed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CMParentColorChanged</var> is method used to handle the 
+CM_PARENTCOLORCHANGED control message for the grouped edit control. It 
+reimplements the method introduced in the TControl ancestor to ensure that 
+values in the ParentColor and Color properties are updated for the composite 
+control. When ParentColor is enabled, the Color value from the Parent control 
+is applied to the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomAbstractGroupedEdit.Color"/>
+<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+<link id="#lcl.controls.TCustomControl.SetColor">TCustomControl.SetColor</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+<link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+</seealso>
 </element>
 <element name="TCustomAbstractGroupedEdit.CMParentColorChanged.Message">
-<short/>
+<short>
+Message instance received by the control and handled in the method.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.EditCanModify">
@@ -1700,7 +1831,9 @@ Handles the control message received when the ParentColor property is changed.
 <seealso/>
 </element>
 <element name="TCustomAbstractGroupedEdit.EditCanModify.Result">
-<short/>
+<short>
+Contains the value returned from the EditCanModify method in BaseEditor.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.GetSel">
@@ -1804,10 +1937,14 @@ AWidth is set to <b>True</b> in TCustomAbstractGroupedEdit. AHeight is set to
 <seealso/>
 </element>
 <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AWidth">
-<short/>
+<short>
+Returns <b>True</b> in TCustomAbstractGroupedEdit.
+</short>
 </element>
 <element name="TCustomAbstractGroupedEdit.ShouldAutoAdjust.AHeight">
-<short/>
+<short>
+Returns <b>True</b> if AutoSize is not enabled for the grouped edit control.
+</short>
 </element>
 
 <element name="TCustomAbstractGroupedEdit.AutoSelect">
@@ -1870,7 +2007,7 @@ method.
 </element>
 
 <element name="TCustomAbstractGroupedEdit.Color">
-<short>Background color for the BaseEdit in the control.</short>
+<short>Background color for the BaseEditor on the control.</short>
 <descr>
 <p>
 Does not apply to the Buddy control (button); buttons always used the 
@@ -1878,6 +2015,7 @@ system-defined color for the button surface.
 </p>
 </descr>
 <seealso>
+<link id="TCustomAbstractGroupedEdit.BaseEditor"/>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
 </seealso>
 </element>
