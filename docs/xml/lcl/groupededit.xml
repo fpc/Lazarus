@@ -1464,7 +1464,7 @@ for the grouped edit control.
 </p>
 </descr>
 <seealso>
-<link id="TCustomAbstractGroupedEdit.OnEditEndDrag"/>
+<link id="TCustomAbstractGroupedEdit.OnEndDrag"/>
 <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
 <link id="#lcl.controls.TControl.OnEndDrag">TControl.OnEndDrag</link>
 </seealso>
