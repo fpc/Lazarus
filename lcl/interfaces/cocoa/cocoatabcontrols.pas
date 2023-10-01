@@ -107,9 +107,11 @@ type
   TCocoaTabControlArrow = objcclass(NSButton)
   private
     _tabControl: TCocoaTabControl;
+    _lastMouseDownTime: NSDate;
   private
-    function speedUp(): Boolean; message 'speedUp';
+    function shouldSpeedUp(): Boolean; message 'shouldSpeedUp';
   public
+    procedure mouseDown(theEvent: NSEvent); override;
     procedure prevClick(sender: id); message 'prevClick:';
     procedure nextClick(sender: id); message 'nextClick:';
   end;
@@ -783,7 +785,14 @@ end;
 
 { TCocoaTabControlArrow }
 
-function TCocoaTabControlArrow.speedUp(): Boolean;
+procedure TCocoaTabControlArrow.mouseDown(theEvent: NSEvent);
+begin
+  _lastMouseDownTime := NSDate.date;
+  inherited;
+  _lastMouseDownTime := nil;
+end;
+
+function TCocoaTabControlArrow.shouldSpeedUp(): Boolean;
 const
   FOUR_MODIFIER_FLAGS = NSShiftKeyMask
                      or NSControlKeyMask
@@ -791,6 +800,8 @@ const
                      or NSCommandKeyMask;
 begin
   if (NSApp.currentEvent.modifierFlags and FOUR_MODIFIER_FLAGS)<>0 then
+    exit(true);
+  if NSDate.date.timeIntervalSinceDate(_lastMouseDownTime) > NSEvent.doubleClickInterval then
     exit(true);
   Result := false;
 end;
@@ -802,7 +813,7 @@ begin
   currentIndex := _tabControl.currentIndex;
   if currentIndex = 0 then
     Exit;
-  if speedUp() then
+  if shouldSpeedUp() then
     currentIndex := 0
   else
     dec(currentIndex);
@@ -816,7 +827,7 @@ begin
   currentIndex := _tabControl.currentIndex;
   if currentIndex = _tabControl.fulltabs.count - 1 then
     Exit;
-  if speedUp() then
+  if shouldSpeedUp() then
     currentIndex := _tabControl.fulltabs.count - 1
   else
     inc(currentIndex);
