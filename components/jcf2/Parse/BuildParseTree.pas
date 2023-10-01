@@ -1588,6 +1588,7 @@ end;
   is there a semicolon first or a comma
 
   Array of records can be "((f: 1), (f: 2))"
+    or in Delphi mode     "[(f: 1), (f: 2)]"
   and if it is an array with one element then it is "((f: x))"
 
   Is  more deeply nested comma valid in non-array expressions?
@@ -1597,25 +1598,24 @@ function TBuildParseTree.ArrayConstantNext: boolean;
 var
   liIndex: integer;
   liBracketLevel: integer;
+  liMaxBracketLevel: integer;
   tt:      TTokenType;
 begin
   Result := False;
 
-  if fcTokenList.FirstSolidTokenType <> ttOpenBracket then
+  if not (fcTokenList.FirstSolidTokenType in [ttOpenBracket,ttOpenSquareBracket]) then
     exit;
 
   liBracketLevel := 0;
+  liMaxBracketLevel := 0;
   liIndex := fcTokenList.CurrentTokenIndex;
   // scan past the open bracket
-  while fcTokenList.SourceTokens[liIndex].TokenType <> ttOpenBracket do
+  while not (fcTokenList.SourceTokens[liIndex].TokenType in [ttOpenBracket,ttOpenSquareBracket]) do
     Inc(liIndex);
+  Inc(liBracketLevel);
+  Inc(liMaxBracketLevel);
+  Inc(liIndex);
 
-  if fcTokenList.SourceTokens[liIndex].TokenType = ttOpenBracket then
-  begin
-    inc(liBracketLevel);
-    Inc(liIndex);
-  end;
-  
   // look forward to find the first comma or semicolon
   while True do
   begin
@@ -1624,9 +1624,12 @@ begin
 
     tt := fcTokenList.SourceTokens[liIndex].TokenType;
 
-    if tt = ttOpenBracket then
-      Inc(liBracketLevel)
-    else if tt = ttCloseBracket then
+    if tt in [ttOpenBracket,ttOpenSquareBracket] then
+    begin
+      Inc(liBracketLevel);
+      Inc(liMaxBracketLevel);
+    end
+    else if tt in [ttCloseBracket,ttCloseSquareBracket] then
       Dec(liBracketLevel)
     else if (tt = ttComma) then // and (liBracketLevel = 1) then
     begin
@@ -1651,7 +1654,7 @@ begin
 
     if (liBracketLevel = 0)  then
     begin
-      Result := False;
+      Result := liMaxBracketLevel >= 2;
       break;
     end;
   end;
@@ -1675,7 +1678,7 @@ begin
     You can't look for the word 'array' in the just-parsed text
     as an alias type could be used
    }
-  if (fcTokenList.FirstSolidTokenType = ttOpenBracket) and
+  if (fcTokenList.FirstSolidTokenType in [ttOpenBracket,ttOpenSquareBracket]) and
     (fcTokenList.SolidWordType(2) in IdentifierTypes) and
     (fcTokenList.SolidTokenType(3) = ttColon) then
   begin
@@ -1695,7 +1698,7 @@ begin
 
   PushNode(nArrayConstant);
 
-  Recognise(ttOpenBracket);
+  Recognise([ttOpenBracket,ttOpenSquareBracket]);
 
   RecogniseTypedConstant;
   while (fcTokenList.FirstSolidTokenType = ttComma) do
@@ -1704,7 +1707,7 @@ begin
     RecogniseTypedConstant;
   end;
 
-  Recognise(ttCloseBracket);
+  Recognise([ttCloseBracket,ttCloseSquareBracket]);
 
   PopNode;
 end;
