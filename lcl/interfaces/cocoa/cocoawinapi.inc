@@ -1032,7 +1032,7 @@ end;
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
   nCmdShow:
-    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var

@@ -1097,41 +1097,47 @@ begin
 end;
 
 class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
+const
+  WindowStateToFlags: array[TWindowState] of Integer = (
+    { wsNormal     } SW_SHOWNORMAL,
+    { wsMinimized  } SW_SHOWMINIMIZED,
+    { wsMaximized  } SW_SHOWMAXIMIZED,
+    { wsFullScreen } SW_SHOWFULLSCREEN );
 var
-  lShow : Boolean;
   w : NSWindow;
+  form: TCustomForm absolute AWinControl;
 begin
-  lShow := AWinControl.HandleObjectShouldBeVisible;
-  // TCustomForm class of LCL doesn't do anything specific about first time showing
-  // of wsFullScreen window. Thus it should be taken care of in WS size
-  if lShow and (TCustomForm(AWinControl).WindowState = wsFullScreen) then
+  if csDesigning in AWinControl.ComponentState then
   begin
-    w := NSView(AWinControl.Handle).window;
-    if Assigned(w) and (w.isKindOfClass(TCocoaWindow)) then
-      TCocoaWindow(w).lclSwitchFullScreen(true);
+    CocoaWidgetSet.ShowWindow(AWinControl.Handle, SW_SHOWNORMAL);
+    exit;
+  end;
+
+  w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+  if not Assigned(w) then
+    exit;
+
+  if AWinControl.HandleObjectShouldBeVisible then
+  begin
+    CocoaWidgetSet.ShowWindow(AWinControl.Handle, WindowStateToFlags[form.WindowState] );
+    if form.WindowState<>wsMinimized then;
+      TCocoaWSWinControl.ShowHide(AWinControl);
+    // ShowHide() also actives (sets focus to) the window
+    if not w.isKindOfClass(NSPanel) then
+      w.makeKeyWindow;
+    ArrangeTabOrder(AWinControl);
   end
   else
   begin
-    w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-    if not lShow then
-    begin
-      // macOS 10.6. If a window with a parent window is hidden, then parent is also hidden.
-      // Detaching from the parent first!
-      if Assigned(w) and Assigned(w.parentWindow) then
-        w.parentWindow.removeChildWindow(w);
-      // if the same control needs to be shown again, it will be redrawn
-      // without this invalidation, Cocoa might should the previously cached contents
-      TCocoaWindowContent(AWinControl.Handle).documentView.setNeedsDisplay_(true);
-    end;
+    // macOS 10.6. If a window with a parent window is hidden, then parent is also hidden.
+    // Detaching from the parent first!
+    if Assigned(w.parentWindow) then
+      w.parentWindow.removeChildWindow(w);
+    // if the same control needs to be shown again, it will be redrawn
+    // without this invalidation, Cocoa might should the previously cached contents
+    TCocoaWindowContent(AWinControl.Handle).documentView.setNeedsDisplay_(true);
     TCocoaWSWinControl.ShowHide(AWinControl);
-
-    // ShowHide() also actives (sets focus to) the window
-    if lShow and Assigned(w) and not (w.isKindOfClass(NSPanel)) then
-      w.makeKeyWindow;
   end;
-
-  if (lShow) then
-    ArrangeTabOrder(AWinControl);
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(
