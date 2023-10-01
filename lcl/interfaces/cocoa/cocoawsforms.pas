@@ -1107,6 +1107,11 @@ var
   w : NSWindow;
   form: TCustomForm absolute AWinControl;
 begin
+  if csDesigning in AWinControl.ComponentState then
+  begin
+    CocoaWidgetSet.ShowWindow(AWinControl.Handle, SW_SHOWNORMAL);
+    exit;
+  end;
 
   w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
   if not Assigned(w) then
