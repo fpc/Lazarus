@@ -1008,6 +1008,7 @@ end;
 class function TCocoaWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
+  lclStaticText: TCustomStaticText absolute AWinControl;
   field: NSTextField;
 begin
   field := NSTextField(AllocTextField(AWinControl, AParams));
@@ -1022,6 +1023,7 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
+  field.setAlignment( AlignmentLCLToCocoa(lclStaticText.Alignment) );
   Result:=TLCLHandle(field);
 end;
 
