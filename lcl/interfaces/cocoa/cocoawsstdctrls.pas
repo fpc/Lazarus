@@ -342,7 +342,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
-//    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
@@ -1025,6 +1025,14 @@ begin
   {$endif}
   field.setAlignment( AlignmentLCLToCocoa(lclStaticText.Alignment) );
   Result:=TLCLHandle(field);
+end;
+
+class procedure TCocoaWSCustomStaticText.SetAlignment(
+  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+  if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
+    exit;
+  NSTextField(ACustomStaticText.Handle).setAlignment( AlignmentLCLToCocoa(NewAlignment) );
 end;
 
 { TCocoaWSCustomEdit }
