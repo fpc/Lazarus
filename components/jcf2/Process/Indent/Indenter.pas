@@ -128,6 +128,16 @@ begin
   Result := True;
 end;
 
+function HasEmptyLineAfterComment(const pt: TSourceToken): Boolean;
+var
+  pnext: TSourceToken;
+begin
+  result:=false;
+  pnext:=pt.NextTokenWithExclusions([ttWhiteSpace]);  //End of current line
+  if (pnext<>nil) and (pnext.TokenType=ttReturn) then
+    result:= pnext.NextTokenTypeWithExclusions([ttWhiteSpace])=ttReturn;
+end;
+
 function IsIndented(const pt: TSourceToken): Boolean;
 begin
   Result := IsFirstSolidTokenOnLine(pt);
@@ -668,6 +678,21 @@ begin
       end;
     end;
   end;
+
+ // last comments in var, const,... sections belongs to the next procedure/function.
+ if (pt.TokenType=ttComment) and pt.HasParentNode([nTypeSection,nVarSection,nConstSection,nUses])
+   and (pt.NextSolidTokenType in ProcedureWords)
+   and ( not pt.HasParentNode(ObjectBodies + [nRecordType]))
+   //not followed by a blank line.
+   and not HasEmptyLineAfterComment(pt)  then
+ begin
+   Result:=0;
+   if FormattingSettings.Indent.IndentLibraryProcs then
+   begin
+     if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then
+       Result:=1;
+   end;
+ end;
 
 end;
 
