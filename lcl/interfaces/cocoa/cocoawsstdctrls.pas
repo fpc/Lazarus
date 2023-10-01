@@ -342,7 +342,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
@@ -1008,6 +1008,7 @@ end;
 class function TCocoaWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
+  lclStaticText: TCustomStaticText absolute AWinControl;
   field: NSTextField;
 begin
   field := NSTextField(AllocTextField(AWinControl, AParams));
@@ -1022,7 +1023,16 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
+  field.setAlignment( AlignmentLCLToCocoa(lclStaticText.Alignment) );
   Result:=TLCLIntfHandle(field);
+end;
+
+class procedure TCocoaWSCustomStaticText.SetAlignment(
+  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+begin
+  if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
+    exit;
+  NSTextField(ACustomStaticText.Handle).setAlignment( AlignmentLCLToCocoa(NewAlignment) );
 end;
 
 { TCocoaWSCustomEdit }
