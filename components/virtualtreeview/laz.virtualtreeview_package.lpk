@@ -97,12 +97,56 @@ end;"/>
       <Item>
         <Filename Value="laz.vtaccessibility.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="laz.TAccessibility"/>
+        <UnitName Value="laz.vtaccessibility"/>
       </Item>
       <Item>
         <Filename Value="laz.vtlogger.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="laz.VTLogger"/>
+      </Item>
+      <Item>
+        <Filename Value="include/intf/gtk2/laz.olemethods.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="include/intf/gtk2/laz.vtgraphicsi.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="include/intf/gtk2/laz.vtvdragmanager.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="include/intf/laz.dummydragmanager.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="include/intf/laz.dummyolemethods.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="units/gtk2/laz.fakeactivex.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="laz.FakeActiveX"/>
+      </Item>
+      <Item>
+        <Filename Value="units/gtk2/laz.fakemmsystem.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="laz.FakeMMSystem"/>
+      </Item>
+      <Item>
+        <Filename Value="units/gtk2/laz.virtualdragmanager.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="laz.VirtualDragManager"/>
+      </Item>
+      <Item>
+        <Filename Value="units/gtk2/laz.virtualpanningwindow.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="laz.VirtualPanningWindow"/>
+      </Item>
+      <Item>
+        <Filename Value="units/laz.dummyactivex.inc"/>
+        <Type Value="Include"/>
       </Item>
     </Files>
     <i18n>
