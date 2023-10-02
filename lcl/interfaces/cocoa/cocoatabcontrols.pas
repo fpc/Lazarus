@@ -98,12 +98,22 @@ type
       message 'exttabRemoveTabViewItem:';
     function exttabIndexOfTabViewItem(lTabPage: NSTabViewItem): NSInteger;
       message 'exttabIndexOfTabViewItem:';
-    procedure extTabPrevButtonClick(sender: id);
-      message 'extTabPrevButtonClick:';
-    procedure extTabNextButtonClick(sender: id);
-      message 'extTabNextButtonClick:';
     procedure extselectTabViewItemAtIndex(index: NSInteger);
       message 'extselectTabViewItemAtIndex:';
+  end;
+
+  { TCocoaTabControlArrow }
+
+  TCocoaTabControlArrow = objcclass(NSButton)
+  private
+    _tabControl: TCocoaTabControl;
+    _lastMouseDownTime: NSDate;
+  private
+    function shouldSpeedUp(): Boolean; message 'shouldSpeedUp';
+  public
+    procedure mouseDown(theEvent: NSEvent); override;
+    procedure prevClick(sender: id); message 'prevClick:';
+    procedure nextClick(sender: id); message 'nextClick:';
   end;
 
   { TCocoaTabPageView }
@@ -159,18 +169,19 @@ begin
   Result:=false;
 end;
 
-function AllocArrowButton(isPrev: Boolean): NSButton;
+function AllocArrowButton(tabControl:TCocoaTabControl; isPrev:Boolean): NSButton;
 var
-  btn : NSButton;
+  btn : TCocoaTabControlArrow;
 begin
-  btn:=NSButton(NSButton.alloc).initWithFrame(NSZeroRect);
+  btn := TCocoaTabControlArrow.alloc.initWithFrame(NSZeroRect);
+  btn._tabControl := tabControl;
   btn.setBezelStyle(NSRegularSquareBezelStyle);
   btn.setButtonType(NSMomentaryLightButton);
 
   if isPrev then
     btn.setTitle( StrToNSString('◀') )
   else
-     btn.setTitle( StrToNSString('▶') );
+    btn.setTitle( StrToNSString('▶') );
 
   {$ifdef BOOLFIX}
   btn.setBordered_(Ord(false));
@@ -208,14 +219,15 @@ end;
 
 procedure AllocPrevNext(aview: TCocoaTabControl);
 begin
-  aview.prevarr := AllocArrowButton(true);
+  aview.prevarr := AllocArrowButton(aview, true);
   aview.addSubview(aview.prevarr);
-  aview.nextarr := AllocArrowButton(false);
+  aview.prevarr.setTarget(aview.prevarr);
+  aview.prevarr.setAction( ObjCSelector('prevClick:') );
+
+  aview.nextarr := AllocArrowButton(aview, false);
   aview.addSubview(aview.nextarr);
-  aview.prevarr.setTarget(aview);
-  aview.prevarr.setAction( ObjCSelector('extTabPrevButtonClick:'));
-  aview.nextarr.setTarget(aview);
-  aview.nextarr.setAction( ObjCSelector('extTabNextButtonClick:'));
+  aview.nextarr.setTarget(aview.nextarr);
+  aview.nextarr.setAction( ObjCSelector('nextClick:') );
 end;
 
 // only missing ViewItems inserted, RemoveAllTabs() is no longer needed,
@@ -771,18 +783,56 @@ begin
   Result := fulltabs.indexOfObject(lTabPage);
 end;
 
-procedure TCocoaTabControl.extTabPrevButtonClick(sender: id);
+{ TCocoaTabControlArrow }
+
+procedure TCocoaTabControlArrow.mouseDown(theEvent: NSEvent);
 begin
-  if currentIndex = 0 then Exit;
-  extselectTabViewItemAtIndex( currentIndex-1 );
+  _lastMouseDownTime := NSDate.date;
+  inherited;
+  _lastMouseDownTime := nil;
 end;
 
-procedure TCocoaTabControl.extTabNextButtonClick(sender: id);
+function TCocoaTabControlArrow.shouldSpeedUp(): Boolean;
+const
+  FOUR_MODIFIER_FLAGS = NSShiftKeyMask
+                     or NSControlKeyMask
+                     or NSAlternateKeyMask
+                     or NSCommandKeyMask;
 begin
-  if currentIndex = fulltabs.count - 1 then Exit;
-  extselectTabViewItemAtIndex( currentIndex+1 );
+  if (NSApp.currentEvent.modifierFlags and FOUR_MODIFIER_FLAGS)<>0 then
+    exit(true);
+  if NSDate.date.timeIntervalSinceDate(_lastMouseDownTime) > NSEvent.doubleClickInterval then
+    exit(true);
+  Result := false;
 end;
 
+procedure TCocoaTabControlArrow.prevClick(sender: id);
+var
+  currentIndex: Integer;
+begin
+  currentIndex := _tabControl.currentIndex;
+  if currentIndex = 0 then
+    Exit;
+  if shouldSpeedUp() then
+    currentIndex := 0
+  else
+    dec(currentIndex);
+  _tabControl.extselectTabViewItemAtIndex(currentIndex);
+end;
+
+procedure TCocoaTabControlArrow.nextClick(sender: id);
+var
+  currentIndex: Integer;
+begin
+  currentIndex := _tabControl.currentIndex;
+  if currentIndex = _tabControl.fulltabs.count - 1 then
+    Exit;
+  if shouldSpeedUp() then
+    currentIndex := _tabControl.fulltabs.count - 1
+  else
+    inc(currentIndex);
+  _tabControl.extselectTabViewItemAtIndex(currentIndex);
+end;
 
 end.
 
