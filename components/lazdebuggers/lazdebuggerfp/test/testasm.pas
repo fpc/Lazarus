@@ -241,6 +241,13 @@ begin
   TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],eax');
   TestDis('mov [$0000001a],rax',   #$48#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],rax');
 
+  TestDis('vmovmskpd ecx,xmm1',     #$C5#$F9#$50#$C9,             'vmovmskpd ecx,xmm1');
+  TestDis('vmovmskpd ecx,ymm1',     #$C5#$FD#$50#$C9,             'vmovmskpd ecx,ymm1');
+  TestDis('vmovmskps ecx,xmm1',     #$C5#$F8#$50#$C9,             'vmovmskps ecx,xmm1');
+  TestDis('vmovmskps ecx,ymm1',     #$C5#$FC#$50#$C9,             'vmovmskps ecx,ymm1');
+  TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
+  TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
+
 
   Process.NewMode := dm32;
 
@@ -341,6 +348,12 @@ begin
   TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00,     'mov [$0000001a],ax');
   TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00,         'mov [$0000001a],eax');
 
+  TestDis('vmovmskpd ecx,xmm1',     #$C5#$F9#$50#$C9,             'vmovmskpd ecx,xmm1');
+  TestDis('vmovmskpd ecx,ymm1',     #$C5#$FD#$50#$C9,             'vmovmskpd ecx,ymm1');
+  TestDis('vmovmskps ecx,xmm1',     #$C5#$F8#$50#$C9,             'vmovmskps ecx,xmm1');
+  TestDis('vmovmskps ecx,ymm1',     #$C5#$FC#$50#$C9,             'vmovmskps ecx,ymm1');
+  TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
+  TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
 
   Process.NewMode := dm64;
 
