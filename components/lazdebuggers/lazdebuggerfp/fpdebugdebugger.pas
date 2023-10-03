@@ -880,7 +880,7 @@ begin
         if c <> '' then
           c := c + '.';
         FCallstackEntry.Init(FAnAddress, nil, c + FFunctionName + FParamAsString,
-          FSourceFile, '', FLine, ddsValid);
+          ExtractFileName(FSourceFile), FSourceFile, FLine, ddsValid);
       end;
     end;
 
