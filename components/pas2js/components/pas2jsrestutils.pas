@@ -167,7 +167,7 @@ Var
 begin
   Buf:=TLocalBufDataset.Create(Self);
   try
-    LoadDataset(Buf,AConnection,aConnection.ConnectionsResourceName);
+    if not LoadDataset(Buf,AConnection,aConnection.ConnectionsResourceName) then exit;
     Buf.Open;
     While not Buf.EOF do
       begin

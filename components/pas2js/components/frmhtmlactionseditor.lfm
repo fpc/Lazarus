@@ -9,14 +9,14 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
   ClientHeight = 315
   ClientWidth = 404
   KeyPreview = True
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnClose = ActionListEditorClose
   OnCreate = FormCreate
   OnHide = FormHide
   OnKeyDown = ActionListEditorKeyDown
   OnKeyPress = ActionListEditorKeyPress
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -45,13 +45,13 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     Width = 404
     Align = alClient
     ItemHeight = 0
+    PopupMenu = PopMenuActions
+    TabOrder = 1
+    TopIndex = -1
     OnClick = lstActionNameClick
     OnDblClick = lstActionNameDblClick
     OnKeyDown = lstActionNameKeyDown
     OnMouseDown = lstActionNameMouseDown
-    PopupMenu = PopMenuActions
-    TabOrder = 1
-    TopIndex = -1
   end
   object tbActions: TToolBar
     Left = 0
@@ -102,26 +102,26 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     Top = 64
     object ActDelete: TAction
       Category = 'AddDelete'
+      ShortCut = 46
       OnExecute = ActDeleteExecute
       OnUpdate = ActDeleteUpdate
-      ShortCut = 46
     end
     object ActNew: TAction
       Category = 'AddDelete'
-      OnExecute = ActNewExecute
       ShortCut = 45
+      OnExecute = ActNewExecute
     end
     object ActMoveUp: TAction
       Category = 'MoveUpDown'
+      ShortCut = 16422
       OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveUpUpdate
-      ShortCut = 16422
     end
     object ActMoveDown: TAction
       Category = 'MoveUpDown'
+      ShortCut = 16424
       OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveDownUpdate
-      ShortCut = 16424
     end
     object ActPanelDescr: TAction
       Category = 'Panels'

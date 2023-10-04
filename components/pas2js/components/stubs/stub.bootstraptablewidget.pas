@@ -56,6 +56,7 @@ type
   { TBSActionColumn }
 
   { TBSColumnAction }
+  TBSActionClickEvent = Procedure(Sender : TObject; Event : TJSObject; aRowData : TJSObject; aRowIndex : Integer) of Object;
 
   TBSColumnAction = class(TCollectionItem)
   private
@@ -63,11 +64,15 @@ type
     FButtonType: TColumnButtonType;
     FButtonURL: string;
     FButtonURLTarget: string;
-    FExtraAttributes: String;
+    FExtraAttributes: string;
+    FName: string;
+    FOnClick: TBSActionClickEvent;
+  Protected
+    function GetDisplayName: string; override;
   Public
     procedure Assign(Source: TPersistent); override;
-
   Published
+    Property Name : string Read FName Write FName;
     property ButtonType: TColumnButtonType read FButtonType write FButtonType;
     // When buttontype is btCustom, use the following class (in <i class="">)
     Property ButtonIconClass: String Read FButtonIconClass Write FButtonIconClass;
@@ -76,7 +81,9 @@ type
     // Target of button URL
     property ButtonURLTarget: string read FButtonURLTarget write FButtonURLTarget;
     // Add extra attributes to the contents of the column if needed
-    property ExtraAttributes: String read FExtraAttributes write FExtraAttributes;
+    property ExtraAttributes: string read FExtraAttributes write FExtraAttributes;
+    // When clicked
+    Property OnClick : TBSActionClickEvent Read FOnClick Write FOnClick;
   end;
 
   { TBSColumnActionList }
@@ -88,12 +95,14 @@ type
   Public
     Property Actions[aIndex : Integer] : TBSColumnAction Read GetAction Write SetAction;
   end;
+  TBSColumnClickEvent = Procedure(Sender : TObject; Event : TJSObject; aRowData : TJSObject; aRowIndex : Integer) of Object;
 
   TBSTableColumn = class(TCollectionItem)
   private
     FActions: TBSColumnActionList;
     FFieldName: string;
     FFormatting: string;
+    FOnButtonClick: TBSColumnClickEvent;
     FSelectable: Boolean;
     FTitle: string;
     FRenderMode: TColumnRenderMode;
@@ -168,6 +177,8 @@ type
     property ExtraAttributes: String read FExtraAttributes write FExtraAttributes;
     // Selectable ? This is a native bootstrap-table select column
     Property Selectable : Boolean Read FSelectable Write FSelectable;
+    // On click. Sender will be this column
+    Property OnButtonClick : TBSColumnClickEvent Read FOnButtonClick Write FOnButtonClick;
 
   end;
 
@@ -336,7 +347,7 @@ end;
 constructor TStylingClasses.Create(aWidget: TCustomDBBootstrapTableWidget);
 begin
   FWidget:=aWidget;
-  ButtonClass:='btn btn-secondary btn-sm btn-outline';
+  ButtonClass:='btn btn-outline-secondary btn-sm';
   EditClass:='bi bi-pencil';
   DeleteClass:='bi bi-trash';
   InfoClass:='bi bi-info-circle';
@@ -364,6 +375,13 @@ end;
 
 { TBSColumnAction }
 
+function TBSColumnAction.GetDisplayName: string;
+begin
+  Result:=FName;
+  if Result='' then
+    Result:=inherited GetDisplayName;
+end;
+
 procedure TBSColumnAction.Assign(Source: TPersistent);
 var
   aSource: TBSColumnAction absolute Source;
@@ -375,6 +393,8 @@ begin
     ButtonURL:=aSource.ButtonURL;
     ButtonType:=aSource.ButtonType;
     ButtonIconClass:=aSource.ButtonIconClass;
+    Name:=aSource.Name;
+    OnClick:=aSource.OnClick;
   end else
     inherited Assign(Source);
 end;
@@ -417,6 +437,8 @@ begin
     Formatting := Src.Formatting;
     OnGetSortValue := Src.OnGetSortValue;
     ExtraAttributes := Src.ExtraAttributes;
+    Selectable:=Src.Selectable;
+    FOnButtonClick:=Src.OnButtonClick;
     Actions:=Src.Actions;
   end
   else

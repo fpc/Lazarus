@@ -6,16 +6,16 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
   Caption = 'Add HTML Actions'
   ClientHeight = 412
   ClientWidth = 514
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '3.99.0.0'
   object pnlTop: TPanel
     Left = 0
-    Height = 34
+    Height = 42
     Top = 0
     Width = 514
     Align = alTop
-    ClientHeight = 34
+    ClientHeight = 42
     ClientWidth = 514
     TabOrder = 0
     object cbUseDBAware: TCheckBox
@@ -24,8 +24,18 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
       Top = 6
       Width = 127
       Caption = 'Use Data Actions'
-      OnChange = cbUseDBAwareChange
       TabOrder = 0
+      OnChange = cbUseDBAwareChange
+    end
+    object cbDatasources: TComboBox
+      Left = 224
+      Height = 30
+      Top = 4
+      Width = 152
+      ItemHeight = 0
+      Style = csDropDownList
+      TabOrder = 1
+      OnChange = cbDatasourcesChange
     end
   end
   object bpHTMLActions: TButtonPanel
@@ -46,8 +56,8 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
   end
   object PCAddRemove: TPageControl
     Left = 0
-    Height = 328
-    Top = 34
+    Height = 320
+    Top = 42
     Width = 514
     ActivePage = TSAdd
     Align = alClient
@@ -55,11 +65,11 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
     TabOrder = 2
     object TSAdd: TTabSheet
       Caption = 'Add actions'
-      ClientHeight = 298
+      ClientHeight = 290
       ClientWidth = 504
       object VLEClasses: TValueListEditor
         Left = 0
-        Height = 298
+        Height = 290
         Top = 0
         Width = 504
         Align = alClient
@@ -81,11 +91,11 @@ object frmSelectHTMLActionClasses: TfrmSelectHTMLActionClasses
     end
     object TSRemove: TTabSheet
       Caption = 'Remove actions'
-      ClientHeight = 298
+      ClientHeight = 290
       ClientWidth = 504
       object clbRemove: TCheckListBox
         Left = 0
-        Height = 242
+        Height = 234
         Top = 56
         Width = 504
         Align = alClient

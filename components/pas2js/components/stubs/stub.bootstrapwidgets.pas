@@ -114,6 +114,7 @@ Type
     FFocus: Boolean;
     FKeyBoard: Boolean;
     FOnHide: TOnModalHideEvent;
+    FOnShow: TNotifyEvent;
     FShowOnRender: Boolean;
     FTemplate: String;
     FTemplateLoader: TCustomTemplateLoader;
@@ -136,6 +137,7 @@ Type
     Property TemplateName : String Read FTemplateName Write SetTemplateName;
     Property TemplateLoader : TCustomTemplateLoader Read FTemplateLoader Write SetTemplateLoader;
     Property OnHide : TOnModalHideEvent Read FOnHide Write FOnHide;
+    Property OnShow : TNotifyEvent Read FOnShow Write FOnShow;
     Property References : TModalReferences Read GetModalReferences Write SetModalReferences;
   end;
 

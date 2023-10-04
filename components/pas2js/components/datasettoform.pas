@@ -334,13 +334,14 @@ var
 
 begin
   With AEntry do
-    Result:=Indent+Format('<select %s class="%s" %s>',[aBaseAttributes,aClasses, aExtraAttributes])+LF;
+    Result:=Format('<select %s class="%s" %s>',[aBaseAttributes,aClasses, aExtraAttributes])+LF;
+  // For the other lines we must manage indent ourselves.
   IncIndent;
   for I:=0 to aEntry.Items.Count-1 do
     begin
     S:=GetOptionTag(aEntry,aEntry.Items[i]);
     if S<>'' then
-      Result:=Result+'  '+S+LF;
+      Result:=Result+S+LF;
     end;
   DecIndent;
   Result:=Result+Indent+'</select>'
@@ -424,8 +425,8 @@ begin
   aExtra:=GetExtraAttributes(aEntry);
   aClasses:=GetInputClasses(aEntry);
   Case aEntry.InputType of
-    itSelect : Result:=GetSelectTag(aEntry, aBaseAttributes, aExtra, aClasses);
-    itTextArea : Result:=GetTextAreaTag(aEntry, aBaseAttributes, aExtra, aClasses);
+    itSelect : Result:=GetSelectTag(aEntry, aBaseAttributes, aClasses,aExtra);
+    itTextArea : Result:=GetTextAreaTag(aEntry, aBaseAttributes, aClasses, aExtra);
   else
     aExtra:=GetExtraAttributes(aEntry);
     aClasses:=GetInputClasses(aEntry);

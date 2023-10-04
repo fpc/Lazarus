@@ -147,16 +147,24 @@ procedure TIDEPas2JSRestCommandHandler.CheckDataset(Sender: TObject);
 
 Var
   DS : TSQLDBRestDataset;
-  MDOK,OK : Boolean;
+  MDOK,OK,HaveFields : Boolean;
 
 begin
   DS:=GetDataset;
   OK:=(DS<>Nil) and (DS.Connection<>Nil) and (DS.ResourceName<>'');
-  MDOK:=OK and (DS.Connection.MetaDataResourceName<>'');
-  mnuCompRestSection.Enabled:=OK;
+  if OK then
+    begin
+    MDOK:=OK and (DS.Connection.MetaDataResourceName<>'');
+    HaveFields:=((DS.FieldDefs.Count>0) or (DS.Fields.Count>0));
+    end
+  else
+    begin
+    MDOK:=False;
+    HaveFields:=False;
+    end;
   CmdShowData.Enabled:=OK ;
   CmdGetParamDefs.Enabled:=OK;
-  CmdGenHTML.Enabled:=OK and ((DS.FieldDefs.Count>0) or (DS.Fields.Count>0));
+  CmdGenHTML.Enabled:=OK and HaveFields;
   CmdGetFieldDefs.Enabled:=MDOK;
 end;
 

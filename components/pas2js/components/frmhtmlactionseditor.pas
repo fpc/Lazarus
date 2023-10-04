@@ -121,13 +121,31 @@ Function GetActionsWithoutID(aList : THTMLCustomElementActionList; aMissing : TF
 
 implementation
 
-uses strpas2jscomponents, Types, idehtml2class, idehtmltools, frmselecthtmlactions;
+uses db, strpas2jscomponents, typinfo, Types, idehtml2class, idehtmltools, frmselecthtmlactions;
 
 {$R *.lfm}
 
 var
   EditorForms : TFPList = nil;
   
+Function GetDatasourceList(aComp : TComponent) : TDatasourceArray;
+
+var
+  I,aCount : Integer;
+
+begin
+  aComp:=aComp.Owner;
+  aCount:=0;
+  SetLength(Result,aComp.ComponentCount);
+  For I:=0 to aComp.ComponentCount-1 do
+    if aComp.Components[i] is TDatasource then
+      begin
+      Result[aCount]:=aComp.Components[i] as TDatasource;
+      Inc(aCount);
+      end;
+  SetLength(Result,aCount);
+end;
+
 procedure InitFormsList;
 begin
   EditorForms:=TFPList.Create;
@@ -218,17 +236,47 @@ begin
   end;
 end;
 
+function CreateActionFromTag(aEditor: TComponentEditor;aList: THTMLCustomElementActionList; aEl : TelementInfo) : THTMLCustomElementAction;
+
+var
+  aAction : THTMLCustomElementAction;
+  aName : string;
+  DS : TDataset;
+
+begin
+  Result:=Nil;
+  if aEl.ActionClass=Nil then
+    exit;
+  aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
+  aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
+  if aList.Owner.FindComponent(aName)<>Nil then
+    aName:=aEditor.Designer.CreateUniqueComponentName(aName);
+  aAction.Name:=aName;
+  aAction.ElementID:=aEl.ElementID;
+  if aEl.DataSource<>Nil then
+    if IsPublishedProp(aAction,'Datasource') then
+      begin
+      SetObjectProp(aAction,'Datasource',aEl.DataSource);
+      if (aEl.InputName<>'') and IsPublishedProp(aAction,'FieldName') then
+        begin
+        DS:=aEl.Datasource.DataSet;
+        If DS.FindField(aEl.InputName)<>Nil then
+          SetStrProp(aAction,'FieldName',aEl.InputName);
+        end;
+      end;
+end;
+
 function CreateMissingActions(aEditor: TComponentEditor;
   aList: THTMLCustomElementActionList; PreferDB : Boolean = False): Integer;
 
 Var
-  aName, FN : String;
+  FN : String;
   I : Integer;
   Tags : TElementInfoList;
-  aEl : TElementInfo;
   aAction : THTMLCustomElementAction;
   aMissing : TFPList;
   aHook : TPropertyEditorHook;
+  DS : TDatasourceArray;
 
 begin
   Result:=-1;
@@ -254,22 +302,17 @@ begin
       exit;
       end;
     // Now select
-    if SelectHTMLActionClasses(Tags,PreferDB,aMissing) then
+    DS:=GetDatasourceList(aList);
+    if SelectHTMLActionClasses(Tags,DS,PreferDB,aMissing) then
       begin
       DeleteActionsWithoutID(aEditor,aMissing);
       Result:=0;
       aEditor.Designer.ClearSelection;
       For I:=0 to Tags.Count-1 do
         begin
-        aEl:=Tags[i];
-        if aEl.ActionClass=Nil then
+        aAction:=CreateActionFromTag(aEditor,aList,Tags[i]);
+        if aAction=Nil then
           continue;
-        aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
-        aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
-        if aList.Owner.FindComponent(aName)<>Nil then
-          aName:=aEditor.Designer.CreateUniqueComponentName(aName);
-        aAction.Name:=aName;
-        aAction.ElementID:=aEl.ElementID;
         aHook:=aEditor.Designer.PropertyEditorHook;
         if assigned(aHook) then
           aHook.PersistentAdded(aAction,True);

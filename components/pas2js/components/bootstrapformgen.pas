@@ -91,8 +91,6 @@ end;
 function TBootstrapFormGenerator.GetRowColEnd(aEntry: TDataFieldEntryItem): String;
 begin
   Decindent;
-  Result:=Indent+'</div>  <!-- .col -->'+LF;
-  Decindent;
   Result:=Indent+'</div> <!-- .row -->'+Lf;
 end;
 

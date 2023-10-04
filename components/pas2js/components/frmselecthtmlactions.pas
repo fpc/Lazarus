@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ButtonPanel, stub.htmlactions, idehtml2class, ValEdit, ComCtrls, CheckLst;
+  ButtonPanel, stub.htmlactions, idehtml2class, ValEdit, ComCtrls, CheckLst, db;
 
 type
 
@@ -15,9 +15,11 @@ type
   TElementInfo = Class(TTagInfoItem)
   private
     FActionClass: THTMLCustomElementActionClass;
+    FDataSource: TDatasource;
   Public
     Procedure Assign(aSource : TPersistent); override;
     Property ActionClass : THTMLCustomElementActionClass Read FActionClass Write FActionClass;
+    Property DataSource : TDatasource Read FDataSource Write FDataSource;
   end;
 
   { TElementInfoList }
@@ -30,18 +32,22 @@ type
     Property Infos[aIndex : Integer] : TElementInfo Read GetInfo; default;
   end;
 
+  TDatasourceArray = array of TDatasource;
+
   { TfrmSelectHTMLActionClasses }
 
   TfrmSelectHTMLActionClasses = class(TForm)
     bpHTMLActions: TButtonPanel;
     cbUseDBAware: TCheckBox;
     clbRemove: TCheckListBox;
+    cbDatasources: TComboBox;
     Label1: TLabel;
     PCAddRemove: TPageControl;
     pnlTop: TPanel;
     TSAdd: TTabSheet;
     TSRemove: TTabSheet;
     VLEClasses: TValueListEditor;
+    procedure cbDatasourcesChange(Sender: TObject);
     procedure cbUseDBAwareChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -60,13 +66,14 @@ type
     procedure SetTags(AValue: TElementInfoList);
 
   public
+    procedure AddDatasource(DS : TDatasource);
     Property PreferDB : Boolean Read FPreferDB Write SetPreferDB;
     Property Tags : TElementInfoList Read FTags Write SetTags;
     // On entry, list of actions that can be removed. On close, actions that should actually be removed.
     Property RemoveList : TFPList Read FRemoveList Write SetRemoveList;
   end;
 
-Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
+Function SelectHTMLActionClasses(aTags : TElementInfoList; Datasources : TDatasourceArray; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
 
 implementation
 
@@ -75,13 +82,18 @@ uses strutils, p2jselementactions, stub.data.HTMLActions, strpas2jscomponents;
 
 {$R *.lfm}
 
-Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
+Function SelectHTMLActionClasses(aTags : TElementInfoList; Datasources : TDatasourceArray; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
+
+var
+  DS : TDataSource;
 
 begin
   With  TfrmSelectHTMLActionClasses.Create(Application) do
     try
       PreferDB:=aPreferDB;
       Tags:=aTags;
+      for DS in Datasources do
+        AddDatasource(DS);
       RemoveList:=aRemoveList;
       Result:=ShowModal=mrOK
     finally
@@ -127,6 +139,22 @@ procedure TfrmSelectHTMLActionClasses.cbUseDBAwareChange(Sender: TObject);
 begin
   FPreferDB:=cbUseDBAware.Checked;
   AllocateDefaultClasses;
+end;
+
+procedure TfrmSelectHTMLActionClasses.cbDatasourcesChange(Sender: TObject);
+
+var
+  I : Integer;
+  DS : TDatasource;
+
+begin
+  I:=cbDatasources.ItemIndex;
+  if I=-1 then
+    DS:=Nil
+  else
+    DS:=cbDatasources.Items.Objects[I] as TDatasource;
+  For I:=0 to FTags.Count-1 do
+    FTags[i].DataSource:=DS;
 end;
 
 procedure TfrmSelectHTMLActionClasses.FormClose(Sender: TObject;
@@ -180,7 +208,14 @@ begin
   Result:=THTMLElementAction;
   if PreferDB then
     if {%H-}IndexText(aEl.TagName,['input','select','textarea'])<>-1 then
-      Result:=TDBHTMLInputElementAction
+      begin
+      if SameText(aEl.TagName,'input') and (IndexText(aEl.TagName,['submit','reset'])<>-1) then
+        Result:=TDBHTMLButtonElementAction
+      else
+        Result:=TDBHTMLInputElementAction
+      end
+    else if SameText(aEl.TagName,'button') then
+      Result:=TDBHTMLButtonElementAction
     else
       Result:=TDBHTMLElementAction;
 end;
@@ -243,6 +278,11 @@ begin
   if FTags=AValue then Exit;
   FTags:=AValue;
   AllocateDefaultClasses;
+end;
+
+procedure TfrmSelectHTMLActionClasses.AddDatasource(DS: TDatasource);
+begin
+  cbDatasources.Items.AddObject(DS.Name,DS);
 end;
 
 end.
