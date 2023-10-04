@@ -123,7 +123,7 @@ function ProcedureHasBody(const pt: TParseTreeNode): boolean;
 function FirstSolidChild(const pt: TParseTreeNode): TParseTreeNode;
 
 function InFilesUses(const pt: TParseTreeNode): boolean;
-
+function NextTokenIsCommentInNewLine(const pt:TSourceToken):boolean;
 
 function Root(const pt: TParseTreeNode): TParseTreeNode;
 
@@ -909,5 +909,16 @@ begin
       Result:=True;
   end;
 end;
+
+function NextTokenIsCommentInNewLine(const pt:TSourceToken):boolean;
+var
+  lcNext:TSourceToken;
+begin
+  result:=false;
+  lcNext:=pt.NextTokenWithExclusions([ttWhiteSpace,ttReturn]);
+  if (lcNext<>nil) and (lcNext.TokenType=ttComment) {and (lcNext.CommentStyle=eCompilerDirective)} then
+    result:=true;
+end;
+
 
 end.
