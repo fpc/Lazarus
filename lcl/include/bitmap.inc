@@ -125,25 +125,31 @@ var
 begin
   if AStream is TResourceStream then
   begin
-    FillChar(Header, SizeOf(Header), 0);
+    if TestStreamIsBMP(AStream) then
+      { Handle the special case of an RC_RTDATA resource which contains a
+        complete, functional TBitmap structure (BitmapFileHeader+BitmapInfoHeader). }
+      inherited LoadFromStream(AStream, ASize)
+    else
+    begin
+      { Normal case of an RT_BITMAP resource lacking the BitmapFileHeader }
+      FillChar(Header, SizeOf(Header), 0);
+      { Create a BMP header ordered as it would be on disc, noting that if the CPU
+        is big-endian this will be the "wrong way round" for numeric operations. }
+      {$IFNDEF ENDIAN_BIG}
+      Header.bfType := $4d42;
+      Header.bfSize := SizeOf(Header) + ASize;
+      {$ELSE}
+      Header.bfType := $424d;
+      Header.bfSize := swap(SizeOf(Header) + ASize);
+      {$ENDIF}
+      //Header.bfOffBits := 0; //data follow immediately
 
-{ Create a BMP header ordered as it would be on disc, noting that if the CPU
-  is big-endian this will be the "wrong way round" for numeric operations.      }
-
-    {$IFNDEF ENDIAN_BIG}
-    Header.bfType := $4d42;
-    Header.bfSize := SizeOf(Header) + ASize;
-    {$ELSE}
-    Header.bfType := $424d;
-    Header.bfSize := swap(SizeOf(Header) + ASize);
-    {$ENDIF} 
-    //Header.bfOffBits := 0; //data imediately follows
-
-    S := THeaderStream.Create(AStream, @Header, SizeOf(Header));
-    try
-      inherited LoadFromStream(S, SizeOf(Header) + ASize);
-    finally
-      S.Free;
+      S := THeaderStream.Create(AStream, @Header, SizeOf(Header));
+      try
+        inherited LoadFromStream(S, SizeOf(Header) + ASize);
+      finally
+        S.Free;
+      end;
     end;
   end
   else
