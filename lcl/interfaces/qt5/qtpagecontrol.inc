@@ -219,6 +219,7 @@ class function TQtWSCustomTabControl.GetDefaultClientRect(
     QTabWidget_setTabPosition(ANewTabW, QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
     QTabWidget_setTabsClosable(ANewTabW, nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
     setTabSizeInternal(QWidgetH(ANewTabW), TCustomTabControl(AWinControl).TabHeight, TCustomTabControl(AWinControl).TabWidth);
+    QWidget_setVisible(QTabWidget_tabBar(ANewTabW), TCustomTabControl(AWinControl).ShowTabs);
     QTabWidget_addTab(ANewTabW, QWidget_Create(nil), @WStr);
     QTabWidget_setCurrentIndex(ANewTabW, 0);
     QWidget_show(ANewTabW);
