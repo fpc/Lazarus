@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  lresources, db, sqldbrestbridge, sqldbRestSchema, SynEdit, SynHighlighterSQL,
+  lresources, Menus, db, sqldbrestbridge, sqldbRestSchema, SynEdit, SynHighlighterSQL,
   sqldbschemaedittools, frasqldbresourcefields, frasqldbresourceparams;
 
 
@@ -16,6 +16,13 @@ type
   { TSQLDBRestResourceEditFrame }
 
   TSQLDBRestResourceEditFrame = class(TBaseEditFrame)
+    AInsertAdditonalWhere: TAction;
+    AInsertLimit: TAction;
+    aInsertOrderBy: TAction;
+    AInsertFullOrderBy: TAction;
+    AInsertOptionalWhere: TAction;
+    AInsertRequiredWhere: TAction;
+    AInsertFullWhere: TAction;
     AUpdateParams: TAction;
     AUpdateFields: TAction;
     AValidateSQL: TAction;
@@ -36,12 +43,26 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     pnlParambuttons: TPanel;
     PCResource: TPageControl;
     PButtons: TPanel;
     PButtons1: TPanel;
     fraFields: TResourceFieldsEditFrame;
     fraParameters: TResourceParametersEditFrame;
+    PMEdit: TPopupMenu;
     SESelect: TSynEdit;
     SEInsert: TSynEdit;
     SEupdate: TSynEdit;
@@ -54,6 +75,12 @@ type
     TabSheet3: TTabSheet;
     TSDelete: TTabSheet;
     procedure AGenerateSQLExecute(Sender: TObject);
+    procedure AInsertFullOrderByExecute(Sender: TObject);
+    procedure AInsertFullWhereExecute(Sender: TObject);
+    procedure AInsertLimitExecute(Sender: TObject);
+    procedure AInsertOptionalWhereExecute(Sender: TObject);
+    procedure aInsertOrderByExecute(Sender: TObject);
+    procedure AInsertRequiredWhereExecute(Sender: TObject);
     procedure AUpdateFieldsExecute(Sender: TObject);
     procedure AUpdateFieldsUpdate(Sender: TObject);
     procedure AUpdateParamsExecute(Sender: TObject);
@@ -68,9 +95,12 @@ type
     function GetOnFieldSelected: TNotifyEvent;
     function GetOnParameterSelected: TNotifyEvent;
     function HaveSelectSQL: Boolean;
+    procedure InsertInSelect(const aPlaceholder: string);
+    procedure InsertInSynedit(aSyn: TSynedit; const aPlaceHolder: string);
     procedure SetOnFieldSelected(AValue: TNotifyEvent);
     procedure SetOnParameterSelected(AValue: TNotifyEvent);
     procedure SetResource(AValue: TSQLDBRestResource);
+    procedure SetTableNames;
   Protected
     procedure FieldsChanged;
     Procedure UpdateFieldList;
@@ -106,6 +136,48 @@ uses dialogs, sqldb, TypInfo;
 procedure TSQLDBRestResourceEditFrame.AGenerateSQLExecute(Sender: TObject);
 begin
   SESelect.Lines.Text:=Resource.GenerateDefaultSQL(skSelect);
+end;
+
+procedure TSQLDBRestResourceEditFrame.AInsertFullOrderByExecute(Sender: TObject);
+begin
+  InsertInSelect('%FULLORDERBY%');
+end;
+
+procedure TSQLDBRestResourceEditFrame.AInsertFullWhereExecute(Sender: TObject);
+begin
+  InsertInSelect('%FULLWHERE%');
+end;
+
+procedure TSQLDBRestResourceEditFrame.InsertInSynedit(aSyn : TSynedit; const aPlaceHolder : string);
+
+begin
+  aSyn.SelText:=aPlaceHolder;
+end;
+
+procedure TSQLDBRestResourceEditFrame.InsertInSelect(const aPlaceholder : string);
+
+begin
+  InsertInSynedit(SESelect,aPlaceHolder);
+end;
+
+procedure TSQLDBRestResourceEditFrame.AInsertLimitExecute(Sender: TObject);
+begin
+  InsertInSelect('%LIMIT%');
+end;
+
+procedure TSQLDBRestResourceEditFrame.AInsertOptionalWhereExecute(Sender: TObject);
+begin
+  InsertInSelect('%OPTIONALWHERE%');
+end;
+
+procedure TSQLDBRestResourceEditFrame.aInsertOrderByExecute(Sender: TObject);
+begin
+  InsertInSelect('%ORDERBY%');
+end;
+
+procedure TSQLDBRestResourceEditFrame.AInsertRequiredWhereExecute(Sender: TObject);
+begin
+  InsertInSelect('%REQUIREDWHERE%');
 end;
 
 procedure TSQLDBRestResourceEditFrame.AUpdateFieldsExecute(Sender: TObject);
@@ -190,7 +262,37 @@ begin
   FResource:=AValue;
   fraFields.Resource:=Resource;
   fraParameters.Resource:=Resource;
+  SetTableNames;
   ShowResource;
+end;
+
+
+procedure TSQLDBRestResourceEditFrame.SetTableNames;
+
+Var
+  L : TSQLDBRestResourceList;
+  aTables : TStringList;
+  I : integer;
+  TN : String;
+
+begin
+  if not Assigned(FResource) then exit;
+  if not (FResource.Collection is TSQLDBRestResourceList) then exit;
+  L:=FResource.Collection as TSQLDBRestResourceList;
+  aTables:=TStringList.Create;
+  Try
+    aTables.Sorted:=true;
+    aTables.Duplicates:=dupIgnore;
+    for I:=0 to L.Count-1 do
+      begin
+      TN:=L[i].TableName;
+      if TN<>'' then
+        aTables.Add(TN);
+      end;
+    SynSQLSyn1.TableNames:=aTables;
+  finally
+    aTables.Free;
+  end;
 end;
 
 procedure TSQLDBRestResourceEditFrame.FieldsChanged;
