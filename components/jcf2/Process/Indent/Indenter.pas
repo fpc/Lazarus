@@ -128,14 +128,29 @@ begin
   Result := True;
 end;
 
-function HasEmptyLineAfterComment(const pt: TSourceToken): Boolean;
+function HasEmptyLineOrDirectiveAfterComments(const pt: TSourceToken): Boolean;
 var
   pnext: TSourceToken;
 begin
   result:=false;
   pnext:=pt.NextTokenWithExclusions([ttWhiteSpace]);  //End of current line
-  if (pnext<>nil) and (pnext.TokenType=ttReturn) then
-    result:= pnext.NextTokenTypeWithExclusions([ttWhiteSpace])=ttReturn;
+  while (pnext<>nil) and (pnext.TokenType=ttReturn) do
+  begin
+    pnext:= pnext.NextTokenWithExclusions([ttWhiteSpace]);
+    if pnext<>nil then
+    begin
+      if pnext.TokenType=ttReturn then
+        Exit(true);
+      if pnext.TokenType=ttComment then
+      begin
+        if pnext.CommentStyle=eCompilerDirective then
+          Exit(true);
+        pnext:=pnext.NextTokenWithExclusions([ttWhiteSpace]);  //End of current line
+      end
+      else
+        Exit(false);
+    end;
+  end;
 end;
 
 function IsIndented(const pt: TSourceToken): Boolean;
@@ -684,7 +699,7 @@ begin
    and (pt.NextSolidTokenType in ProcedureWords)
    and ( not pt.HasParentNode(ObjectBodies + [nRecordType]))
    //not followed by a blank line.
-   and not HasEmptyLineAfterComment(pt)  then
+   and not HasEmptyLineOrDirectiveAfterComments(pt) then
  begin
    Result:=0;
    if FormattingSettings.Indent.IndentLibraryProcs then

@@ -190,6 +190,9 @@ begin
   if (pt.TokenType = ttSemiColon) and (pt.NextTokenTypeWithExclusions([ttWhiteSpace]) = ttComment) then
     Exit(False);
 
+  if (pt.TokenType = ttSemiColon) and NextTokenIsCommentInNewLine(pt) then
+    Exit(False);
+
   lcPt := pt;
   if (pt.TokenType = ttComment) and (pt.PriorTokenTypeWithExclusions([ttWhiteSpace])=ttSemiColon) then
     lcPt:= pt.PriorTokenWithExclusions([ttWhiteSpace]);  // use the ';' token before the comment for tests.
