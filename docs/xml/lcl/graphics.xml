@@ -14833,37 +14833,29 @@ Loads image data for the bitmap from the specified stream.
 <p>
 <var>LoadFromStream</var> is an overridden method used to read data for the 
 bitmap image from the <var>TStream</var> instance specified in 
-<var>AStream</var>. <var>ASize</var> contains the number of bytes to read in 
+<var>AStream</var>. <var>ASize</var> contains the number of bytes to read in
 the method.
 </p>
 <p>
-LoadFromStream provides supported for loading image data from a resource 
-stream. When AStream is a TResourceStream instance, image headers present in 
-the stream are handled in the method. This allows resources created using 
-either the RT_BITMAP or the RT_RCDATA resource types to be handled. If both a 
-BMP file and BMP image header are found in the stream (RT_RCDATA), the 
-inherited method is called to load the image content. If the BMP file header is 
-omitted (RT_BITMAP), the header is created and populated with the endian-ness 
-for the platform and the size for the stream data. A temporary stream instance 
-which includes the constructed header is used to load the image content in the 
-inherited method.
-</p>
-<p>
-If AStream is not a TResourceStream instance, the inherited method is called to 
-read the information in the stream using the specified size.
+The inherited method has been adapted for reading from a TResourceStream 
+instance which can contain data as RT_BITMAP or RT_RCDATA resource types having 
+slightly different binary structures.
 </p>
 <p>
 LoadFromStream is called when the ReadData method is executed (in the 
-TRasterImage ancestor).
+TRasterImage ancestor) or when a TBitmap instance calls LoadFromResourceName or
+LoadFromResourceID.
 </p>
 </descr>
 <version>
 Modified in LCL version 3.0 to provide support for loading image data from a 
-stream with content using either the RT_RCDATA or RT_BITMAP resource types.
+resource stream containing either the RT_RCDATA or RT_BITMAP resource types.
 </version>
 <seealso>
 <link id="TRasterImage.LoadFromStream"/>
 <link id="TRasterImage.ReadData"/>
+<link id="TGraphic.LoadFromResoureName"/>
+<link id="TGraphic.LoadFromResoureID"/>
 <link id="#lcl.lcltype.TBitmapFileHeader">TBitmapFileHeader</link>
 <link id="#lcl.lcltype.TResourceType">TResourceType</link>
 <link id="#lcl.lcltype.RT_BITMAP">RT_BITMAP</link>
