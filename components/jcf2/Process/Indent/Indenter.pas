@@ -694,20 +694,19 @@ begin
     end;
   end;
 
- // last comments in var, const,... sections belongs to the next procedure/function.
- if (pt.TokenType=ttComment) and pt.HasParentNode([nTypeSection,nVarSection,nConstSection,nUses])
-   and (pt.NextSolidTokenType in ProcedureWords)
-   and ( not pt.HasParentNode(ObjectBodies + [nRecordType]))
-   //not followed by a blank line.
-   and not HasEmptyLineOrDirectiveAfterComments(pt) then
- begin
-   Result:=0;
-   if FormattingSettings.Indent.IndentLibraryProcs then
-   begin
-     if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then
-       Result:=1;
-   end;
- end;
+  // last comments in var, const,... sections belongs to the next procedure/function.
+  if (pt.TokenType = ttComment) and pt.HasParentNode([nTypeSection, nVarSection, nConstSection, nUses]) and
+    (pt.NextSolidTokenType in ProcedureWords) and (not pt.HasParentNode(ObjectBodies + [nRecordType]))
+    //not followed by a blank line.
+    and not HasEmptyLineOrDirectiveAfterComments(pt) then
+  begin
+    Result := 0;
+    if FormattingSettings.Indent.IndentLibraryProcs then
+    begin
+      if pt.HasParentNode([nLibrary, nProgram]) and (liIndentCount >= 1) then
+        Result := FormattingSettings.Indent.SpacesForIndentLevel(1);
+    end;
+  end;
 
 end;
 
