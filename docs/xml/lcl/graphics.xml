@@ -14826,27 +14826,48 @@ type identifier for the image format. GetResourceType returns the value in the
 </element>
 
 <element name="TBitmap.LoadFromStream">
-<short>Loads image data from the specified stream.</short>
+<short>
+Loads image data for the bitmap from the specified stream.
+</short>
 <descr>
 <p>
 <var>LoadFromStream</var> is an overridden method used to read data for the 
-image from the <var>TStream</var> instance specified in <var>AStream</var>. 
-<var>ASize</var> contains the number of bytes to read in the method.
+bitmap image from the <var>TStream</var> instance specified in 
+<var>AStream</var>. <var>ASize</var> contains the number of bytes to read in 
+the method.
 </p>
 <p>
-LoadFromStream provides supported for reading the image data from a resource 
-stream. When AStream is a TResourceStream instance, an image header included 
-in the stream is handled. This includes allocating additional storage for the 
-header, and setting the type and size of the image header using the correct 
-endian handling for bytes as needed for the platform.
+LoadFromStream provides supported for loading image data from a resource 
+stream. When AStream is a TResourceStream instance, image headers present in 
+the stream are handled in the method. This allows resources created using 
+either the RT_BITMAP or the RT_RCDATA resource types to be handled. If both a 
+BMP file and BMP image header are found in the stream (RT_RCDATA), the 
+inherited method is called to load the image content. If the BMP file header is 
+omitted (RT_BITMAP), the header is created and populated with the endian-ness 
+for the platform and the size for the stream data. A temporary stream instance 
+which includes the constructed header is used to load the image content in the 
+inherited method.
 </p>
 <p>
-LoadFromStream calls the inherited method to read the image data (including 
-the header for a resource stream).
+If AStream is not a TResourceStream instance, the inherited method is called to 
+read the information in the stream using the specified size.
+</p>
+<p>
+LoadFromStream is called when the ReadData method is executed (in the 
+TRasterImage ancestor).
 </p>
 </descr>
+<version>
+Modified in LCL version 3.0 to provide support for loading image data from a 
+stream with content using either the RT_RCDATA or RT_BITMAP resource types.
+</version>
 <seealso>
 <link id="TRasterImage.LoadFromStream"/>
+<link id="TRasterImage.ReadData"/>
+<link id="#lcl.lcltype.TBitmapFileHeader">TBitmapFileHeader</link>
+<link id="#lcl.lcltype.TResourceType">TResourceType</link>
+<link id="#lcl.lcltype.RT_BITMAP">RT_BITMAP</link>
+<link id="#lcl.lcltype.RT_RCDATA">RT_RCDATA</link>
 <link id="#rtl.classes.TResourceStream">TResourceStream</link>
 </seealso>
 </element>
@@ -14854,7 +14875,7 @@ the header for a resource stream).
 <short>Stream instance with the image data loaded in the method.</short>
 </element>
 <element name="TBitmap.LoadFromStream.ASize">
-<short>Number of bytes to read in the method.</short>
+<short>Number of bytes to read from the stream.</short>
 </element>
 
 <element name="TSharedPixmap">
