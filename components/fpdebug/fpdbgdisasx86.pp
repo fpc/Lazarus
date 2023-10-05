@@ -568,6 +568,9 @@ type
 
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
       AnIsOutsideFrame: Boolean): Boolean; override;
+    function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; override;
+    // Only Modify the values if result is true
+    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean): boolean; override;
   end;
 
 implementation
@@ -5169,6 +5172,288 @@ begin
   then begin // mov rbp,rsp // AFTER push ebp
     // Need 1 byte before, to check for "push ebp"
     exit;
+  end;
+end;
+
+function TX86AsmDecoder.IsAfterCallInstruction(AnAddress: TDBGPtr): boolean;
+const
+  MAX_RET_LEN = 10;
+var
+  BytesRead: Cardinal;
+  i: Integer;
+  instr: TDbgAsmInstruction;
+begin
+  BytesRead := MAX_RET_LEN;
+  Result := (AnAddress > MAX_RET_LEN) and ReadCodeAt(AnAddress - MAX_RET_LEN, BytesRead) and
+     (BytesRead = MAX_RET_LEN);
+  if not Result then begin
+    BytesRead := 5;
+    Result := (AnAddress > MAX_RET_LEN) and ReadCodeAt(AnAddress - MAX_RET_LEN, BytesRead) and
+       (BytesRead = MAX_RET_LEN);
+  end;
+  if not Result then
+    exit;
+
+  // can be a false positive
+  Result := (FCodeBin[MAX_RET_LEN-3] in [$9A, $E8]) or (FCodeBin[MAX_RET_LEN-5] in [$9A, $E8]);
+  if Result then
+    exit;
+
+  for i := 2 to 6 do
+    if (FCodeBin[MAX_RET_LEN - i] = $FF) and
+       (FCodeBin[MAX_RET_LEN + 1 - i] and $38 in [$10, $18])
+    then begin
+      instr := GetInstructionInfo(AnAddress - i);
+      Result := instr.IsCallInstruction;
+      exit;
+    end;
+  if (FCodeBin[MAX_RET_LEN-10] = $FF) and
+     (FCodeBin[MAX_RET_LEN + 1 - 10] and $38 in [$10, $18])
+  then begin
+    instr := GetInstructionInfo(AnAddress-10);
+    Result := instr.IsCallInstruction;
+    exit;
+  end;
+end;
+
+function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
+  AFramePtr: TDBGPtr; AQuick: boolean): boolean;
+
+  function IsRegister(Val, Reg: String): boolean;
+  begin
+    Result := (Length(val) >= 2) and (val[1] in ['r', 'e']) and (strlcomp(@Val[2], PChar(Reg), Length(Reg)) = 0);
+  end;
+  function RegisterSize(Reg: String): Cardinal;
+  begin
+    Result := 4;
+    if (Reg <> '') and (Reg[1] = 'r') then
+      Result := 8;
+  end;
+
+const
+  MAX_SEARCH_ADDR = 1000;
+  MAX_SEARCH_CNT = 80;
+var
+  NewAddr, NewStack, NewFrame, MaxAddr, StartStack: TDBGPtr;
+  Cnt: Integer;
+  instr: TX86AsmInstruction;
+  RSize: Cardinal;
+  Val: Int64;
+  CurAddr: PByte;
+begin
+  Result := False;
+  NewAddr := AnAddress;
+  NewStack := AStackPtr;
+  StartStack := AStackPtr;
+  NewFrame := AFramePtr;
+
+  {$PUSH}{$R-}{$Q-}
+  MaxAddr := AnAddress + MAX_SEARCH_ADDR;
+  {$POP}
+  Cnt := MAX_SEARCH_CNT;
+  if AQuick then Cnt := 10;
+
+  while (NewAddr < MaxAddr) and (Cnt > 0) do begin
+    dec(Cnt);
+    instr := TX86AsmInstruction(GetInstructionInfo(NewAddr));
+    if instr.InstructionLength <= 0 then
+      exit;
+    NewAddr := NewAddr + instr.InstructionLength;
+    CurAddr := @instr.FCodeBin[0];
+
+    case instr.X86OpCode of
+      OPret:
+        begin
+          if instr.X86Instruction.OperCnt > 1 then
+            exit;
+
+          Val := 0;
+          if instr.X86Instruction.OperCnt = 1 then
+            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
+          NewAddr := 0;
+          if FProcess.Mode = dm32 then begin
+            if not FProcess.ReadData(NewStack, 4, NewAddr, RSize) then
+              exit;
+            inc(NewStack, 4 + Val);
+          end
+          else begin
+            if not FProcess.ReadData(NewStack, 8, NewAddr, RSize) then
+              exit;
+            inc(NewStack, 8 + Val);
+          end;
+          Result := True;
+          AnAddress := NewAddr;
+          AStackPtr := NewStack;
+          AFramePtr := NewFrame;
+          exit;
+        end;
+      OPpush:
+        begin
+          if AQuick then
+            exit;
+          if (instr.X86Instruction.OperCnt <> 1) or
+             IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') or
+             IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
+          then begin
+            exit; // false
+          end;
+          {$PUSH}{$R-}{$Q-}
+          NewStack := NewStack - RegisterSize(instr.X86Instruction.Operand[1].Value);
+          {$POP}
+        end;
+      OPpusha, OPpushf:
+        exit; // false
+      OPpopa, OPpopad:
+        exit; // false
+      OPpop:
+        begin
+          if instr.X86Instruction.OperCnt <> 1 then
+            exit;
+          if not(instr.X86Instruction.Operand[1].Value[1] in ['e', 'r'])
+          then
+            exit; // false
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
+          then begin
+            if NewStack < StartStack then
+              exit;
+            NewFrame := 0;
+            RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
+            if not FProcess.ReadData(NewStack, RSize, NewFrame, RSize) then
+              exit;
+          end;
+          {$PUSH}{$R-}{$Q-}
+          NewStack := NewStack + RegisterSize(instr.X86Instruction.Operand[1].Value);
+          {$POP}
+        end;
+      OPleave:
+        begin
+          NewStack := NewFrame;
+          NewFrame := 0;
+          if FProcess.Mode = dm32 then begin
+            if not FProcess.ReadData(NewStack, 4, NewFrame, RSize) then
+              exit;
+            inc(NewStack, 4);
+          end
+          else begin
+            if not FProcess.ReadData(NewStack, 8, NewFrame, RSize) then
+              exit;
+            inc(NewStack, 8);
+          end;
+        end;
+      OPmov:
+        begin
+          if instr.X86Instruction.OperCnt <> 2 then
+            exit;
+
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
+          then begin
+            if (not IsRegister(instr.X86Instruction.Operand[2].Value, 'bp')) or
+               (Instr.X86Instruction.Operand[2].ByteCount <> 0) or
+               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
+               (ofMemory in Instr.X86Instruction.Operand[2].Flags)
+            then
+              exit;
+            NewStack := NewFrame;
+          end;
+        end;
+      OPlea:
+        begin
+          if instr.X86Instruction.OperCnt <> 2 then
+            exit;
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
+          then begin
+            if (not IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) or
+               (Instr.X86Instruction.Operand[2].ByteCount = 0) or
+               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
+               not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
+            then
+              exit;
+
+            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
+            {$PUSH}{$R-}{$Q-}
+            NewFrame := NewFrame + Val;
+            {$POP}
+          end;
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
+          then begin
+            if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
+               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
+               not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
+            then
+              exit;
+
+            if (IsRegister(instr.X86Instruction.Operand[2].Value, 'sp%s')) then begin
+              Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
+              {$PUSH}{$R-}{$Q-}
+              NewStack := NewStack + Val;
+              {$POP}
+            end
+            else
+            if (IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) then begin
+              Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
+              {$PUSH}{$R-}{$Q-}
+              NewStack := NewFrame + Val;
+              {$POP}
+            end
+            else
+              exit;
+          end;
+        end;
+      OPadd:
+        begin
+          if instr.X86Instruction.OperCnt <> 2 then
+            exit;
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
+          then begin
+            if (instr.X86Instruction.Operand[2].Value <> '%s') or
+               (Instr.X86Instruction.Operand[2].ByteCount = 0) or
+               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
+               (ofMemory in Instr.X86Instruction.Operand[2].Flags)
+            then
+              exit;
+
+            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
+            {$PUSH}{$R-}{$Q-}
+            NewStack := NewStack + Val;
+            {$POP}
+          end;
+        end;
+      OPjmp:
+        begin
+          if AQuick then
+            exit;
+          if instr.X86Instruction.OperCnt <> 1 then
+            exit;
+          if (instr.X86Instruction.Operand[1].Value <> '%s') then
+            exit; // false
+          if (Instr.X86Instruction.Operand[1].ByteCount = 0) or
+             (Instr.X86Instruction.Operand[1].ByteCount > 2) or
+             (Instr.X86Instruction.Operand[1].ByteCount2 <> 0)
+          then
+            exit;
+
+          Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
+          if Val <= 0 then
+            exit;
+
+          {$PUSH}{$R-}{$Q-}
+          NewAddr := NewAddr + Val
+          {$POP}
+        end;
+      OPjmpe, OPint, OPint1, OPint3:
+        exit; // false
+      else
+        begin
+          if (instr.X86Instruction.OperCnt >= 1) and
+             (not(ofMemory in Instr.X86Instruction.Operand[1].Flags)) and
+             ( IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') or
+               IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
+             )
+          then begin
+            exit; // false
+          end;
+        end;
+    end;
   end;
 end;
 

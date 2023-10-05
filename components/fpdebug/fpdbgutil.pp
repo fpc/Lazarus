@@ -206,6 +206,7 @@ function QuickUtf8UpperCase(const AText: String): String;
 function QuickUtf8LowerCase(const AText: String): String;
 
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
+function ValueFromMem(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): Int64;
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
 function FormatAddress(const AAddress): String;
 
@@ -434,6 +435,28 @@ end;
 function FormatAddress(const AAddress): String;
 begin
   Result := HexValue(AAddress, DBGPTRSIZE[GMode], [hvfIncludeHexchar]);
+end;
+
+function ValueFromMem(const AValue; ASize: Byte; AFlags: THexValueFormatFlags
+  ): Int64;
+var
+  p: PByte;
+begin
+  Result := 0;
+  if ASize > 8 then
+    Exit;
+  if ASize = 0 then
+    Exit;
+
+  p := @AValue;
+  if p[ASize - 1] < $80
+  then Exclude(AFlags, hvfSigned);
+
+  if hvfSigned in AFlags
+  then Result := -1
+  else Result := 0;
+
+  Move(AValue, Result, ASize);
 end;
 
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
