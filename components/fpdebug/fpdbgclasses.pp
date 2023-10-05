@@ -655,6 +655,8 @@ type
 
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
+    function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; virtual;
+    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean): boolean; virtual;
 
     property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
     property MaxInstructionSize: integer read GetMaxInstrSize;  // abstract
@@ -1871,6 +1873,17 @@ end;
 
 function TDbgAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+function TDbgAsmDecoder.IsAfterCallInstruction(AnAddress: TDBGPtr): boolean;
+begin
+  Result := True; // if we don't know, then assume yes
+end;
+
+function TDbgAsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
+  AFramePtr: TDBGPtr; AQuick: boolean): boolean;
 begin
   Result := False;
 end;
@@ -3299,6 +3312,7 @@ const
   MAX_FRAMES = 150000; // safety net
 var
   Address, FrameBase, LastFrameBase, Dummy: QWord;
+  PrevAddress, PrevFrameBase, PrevStackPtr: QWord;
   Size, CountNeeded, IP, BP, CodeReadErrCnt, SP, i,
     PrevStmtAddressOffs: integer;
   AnEntry, NewEntry: TDbgCallstackEntry;
@@ -3310,6 +3324,37 @@ var
   Row: TDwarfCallFrameInformationRow;
   CIE: TDwarfCIE;
   CU: TDwarfCompilationUnit;
+
+  procedure CheckFrame(var NextEntry: TDbgCallstackEntry; AForce: boolean = False);
+  begin
+    if (not AForce) and (NextEntry <> nil) and Process.Disassembler.IsAfterCallInstruction(Address) then
+      exit;
+
+    if not Process.Disassembler.UnwindFrame(PrevAddress, PrevStackPtr, PrevFrameBase, False) then
+      exit;
+
+    if (NextEntry <> nil) and
+       (Address = PrevAddress) and (FrameBase = PrevFrameBase) and (StackPtr = PrevStackPtr)
+    then
+      exit;
+    if not Process.Disassembler.IsAfterCallInstruction(PrevAddress) then
+      exit;
+
+    Address := PrevAddress;
+    FrameBase := PrevFrameBase;
+    StackPtr := PrevStackPtr;
+    NextEntry.Free;
+    NextEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
+    NextEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
+    NextEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(FrameBase, IntToStr(FrameBase),Size, BP);
+    NextEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+    LastFrameBase := FrameBase;
+    {$PUSH}{$R-}{$Q-}
+    if LastFrameBase > 0 then
+      LastFrameBase := LastFrameBase - 1;
+    {$POP}
+  end;
+
 begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
@@ -3385,8 +3430,13 @@ begin
   CodeReadErrCnt := 0;
   while (CountNeeded > 0) do
   begin
+    PrevAddress := Address;
+    PrevFrameBase := FrameBase;
+    PrevStackPtr := StackPtr;
+    {$PUSH}{$R-}{$Q-}
     if (Process.DbgInfo as TFpDwarfInfo).FindCallFrameInfo(Address - PrevStmtAddressOffs, CIE, Row) and
        TDwarfCallFrameInformation.TryObtainNextCallFrame(AnEntry, CIE, Size, NextIdx, Self, Row, Process, NewEntry)
+    {$POP}
     then begin
       PrevStmtAddressOffs := 1;
       if not Assigned(NewEntry) then begin
@@ -3396,7 +3446,6 @@ begin
           Break;
       end
       else begin
-        FCallStackEntryList.Add(NewEntry);
         Address := NewEntry.AnAddress;
         StackReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
         FrameReg := NewEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
@@ -3406,6 +3455,8 @@ begin
           FrameBase := FrameReg.FNumValue;
         end;
         AnEntry := NewEntry;
+        CheckFrame(NewEntry);
+        FCallStackEntryList.Add(NewEntry);
         Dec(CountNeeded);
         inc(NextIdx);
         If (NextIdx > MAX_FRAMES) then
@@ -3415,6 +3466,33 @@ begin
       end;
     end;
     PrevStmtAddressOffs := 1;
+
+    if Process.Disassembler.UnwindFrame(PrevAddress, PrevStackPtr, PrevFrameBase, True) and
+       Process.Disassembler.IsAfterCallInstruction(PrevAddress)
+    then begin
+      Address := PrevAddress;
+      FrameBase := PrevFrameBase;
+      StackPtr := PrevStackPtr;
+      AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(FrameBase, IntToStr(FrameBase),Size, BP);
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+      FCallStackEntryList.Add(AnEntry);
+      Dec(CountNeeded);
+      inc(NextIdx);
+      CodeReadErrCnt := 0;
+      If (NextIdx > MAX_FRAMES) then
+        break;
+      LastFrameBase := FrameBase;
+      {$PUSH}{$R-}{$Q-}
+      if LastFrameBase > 0 then
+        LastFrameBase := LastFrameBase - 1;
+      {$POP}
+      continue;
+    end;
+    Address := PrevAddress;
+    FrameBase := PrevFrameBase;
+    StackPtr := PrevStackPtr;
 
     if (FrameBase <> 0) and (FrameBase > LastFrameBase)
     then begin
@@ -3446,7 +3524,8 @@ begin
         else begin
           {$PUSH}{$R-}{$Q-}
           StackPtr := StackPtr + 1 * Size; // After popping return-addr from "StackPtr"
-          LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
+          if LastFrameBase > 0 then
+            LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
           {$POP}
           // last stack has no frame
           //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',Size, BP);
@@ -3463,6 +3542,7 @@ begin
       AnEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
       AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(FrameBase, IntToStr(FrameBase),Size, BP);
       AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+      CheckFrame(AnEntry, FrameBase < StackPtr);
       FCallStackEntryList.Add(AnEntry);
       Dec(CountNeeded);
       inc(NextIdx);
@@ -3471,7 +3551,14 @@ begin
         break;
     end
     else
-      Break;
+    begin
+      AnEntry := nil;
+      CheckFrame(AnEntry);
+      if AnEntry <> nil then
+        FCallStackEntryList.Add(AnEntry)
+      else
+        Break;
+    end;
   end;
   if CountNeeded > 0 then // there was an error / not possible to read more frames
     FCallStackEntryList.SetHasReadAllAvailableFrames;
