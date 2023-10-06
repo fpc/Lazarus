@@ -14854,8 +14854,8 @@ resource stream containing either the RT_RCDATA or RT_BITMAP resource types.
 <seealso>
 <link id="TRasterImage.LoadFromStream"/>
 <link id="TRasterImage.ReadData"/>
-<link id="TGraphic.LoadFromResoureName"/>
-<link id="TGraphic.LoadFromResoureID"/>
+<link id="TGraphic.LoadFromResourceName"/>
+<link id="TGraphic.LoadFromResourceID"/>
 <link id="#lcl.lcltype.TBitmapFileHeader">TBitmapFileHeader</link>
 <link id="#lcl.lcltype.TResourceType">TResourceType</link>
 <link id="#lcl.lcltype.RT_BITMAP">RT_BITMAP</link>
