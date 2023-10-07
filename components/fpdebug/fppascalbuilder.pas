@@ -1415,6 +1415,7 @@ begin
         else begin
           APrintedValue := 'Cannot read memory at address '+ IntToHex(MemAddr.Address, AnAddressSize*2);
         end;
+        Result := True;
         exit;
       end;
     end;
