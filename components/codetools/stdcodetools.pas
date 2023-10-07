@@ -3775,11 +3775,12 @@ end;
 function TStandardCodeTool.FindApplicationStatement(const APropertyUpCase: string;
   out StartPos, ConstStartPos, EndPos: integer): boolean;
 // Find statement "Application.APropertyUpCase:=XYZ;" and return True if found.
-//  Also return its positions (Start, const "XYZ" and End) in out parameters.
+// Also return its positions (Start, const "XYZ" and End) in out parameters.
 // If not found, out parameters get a good position to insert such a statement.
 var
   MainBeginNode: TCodeTreeNode;
   AppPos, FirstAppPos: Integer;
+  Last: TCommonAtomFlag;
 begin
   Result:=false;
   StartPos:=-1;
@@ -3791,48 +3792,54 @@ begin
   if (MainBeginNode=nil) or (MainBeginNode.StartPos<1) then exit;
   MoveCursorToCleanPos(MainBeginNode.StartPos);
   repeat
+    Last:=CurPos.Flag;
     ReadNextAtom;
-    if UpAtomIs('APPLICATION') then
-    begin
-      AppPos:=CurPos.StartPos;
-      if FirstAppPos=-1 then
-        FirstAppPos:=AppPos;
-      ReadNextAtom;
-      if AtomIsChar('.') then
-      begin                    // Application.APropertyUpCase:=XYZ;
-        if ReadNextUpAtomIs(APropertyUpCase) and ReadNextUpAtomIs(':=') then
+    case CurPos.Flag of
+    cafWord:
+      if UpAtomIs('APPLICATION')
+        and ((Last=cafSemicolon)
+          or ((Last=cafWord) and LastAtomIs(1,'begin'))) then
+      begin
+        AppPos:=CurPos.StartPos;
+        if FirstAppPos=-1 then
+          FirstAppPos:=AppPos;
+        ReadNextAtom;
+        if CurPos.Flag=cafPoint then
         begin
-          StartPos:=AppPos;
-          repeat               // read till semicolon or end
+          if ReadNextUpAtomIs(APropertyUpCase) and ReadNextUpAtomIs(':=') then
+          begin
+            // Found Application.APropertyUpCase:=
+            StartPos:=AppPos;
             ReadNextAtom;
-            if ConstStartPos<1 then
-              ConstStartPos:=CurPos.StartPos;
+            ConstStartPos:=CurPos.StartPos;
+            // find end of assignment
+            ReadTilStatementEnd(true,false);
             EndPos:=CurPos.EndPos;
-            if CurPos.Flag in [cafEnd,cafSemicolon] then
-              exit(true);
-          until CurPos.StartPos>SrcLen;
-        end;
-      end
-      else                     // Application:=TMyApplication.Create(nil);
-      if UpAtomIs(':=') and ReadNextUpAtomIs('TMYAPPLICATION')
-      and ReadNextAtomIsChar('.') and ReadNextUpAtomIs('CREATE') then
-        repeat                 // read till semicolon or end
-          ReadNextAtom;
-          StartPos:=CurPos.EndPos; // Insert point behind the TMyApplication.Create line.
+            exit(true);
+          end;
+        end
+        else // Application:=TMyApplication.Create(nil);
+        if CurPos.Flag=cafAssignment then begin
+          // Application:=
+          ReadTilStatementEnd(true,false);
           if CurPos.Flag in [cafEnd,cafSemicolon] then
-            break;
-        until CurPos.StartPos>SrcLen;
+            StartPos:=CurPos.EndPos;
+        end;
+      end;
+    cafRoundBracketOpen,cafEdgedBracketOpen:
+      ReadTilBracketCloseOrUnexpected(true,[]);
     end;  // UpAtomIs('APPLICATION')
   until (CurPos.StartPos>SrcLen);
   // The statement was not found. Return a good place for insertion.
-  if StartPos=-1 then
-    if FirstAppPos <> -1 then
+  if StartPos=-1 then begin
+    if FirstAppPos>0 then
       StartPos:=FirstAppPos // Before first Application statement if there is one
     else begin
       MoveCursorToNodeStart(MainBeginNode);
       ReadNextAtom;
       StartPos:=CurPos.EndPos; // or after the main Begin.
     end;
+  end;
   EndPos:=StartPos;     // Both StartPos and EndPos return the same insert point.
 end;
 

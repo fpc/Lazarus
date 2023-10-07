@@ -45,6 +45,7 @@ type
     procedure TestCTAddWarn5025_Program;
     procedure TestCTAddWarn5025_ProgramNoName;
     procedure TestCTAddWarn5025_Unit;
+    procedure TestCTSetApplicationTitleStatement;
   end;
 
 implementation
@@ -510,6 +511,92 @@ begin
   ,'{$WARN 5025 off}'
   ,'interface'
   ,'end.'],'5025','',false);
+end;
+
+procedure TTestCTStdCodetools.TestCTSetApplicationTitleStatement;
+
+  procedure TestSrc(NewTitle, OldBeginEnd, NewBeginEnd: string);
+  var
+    Header, OldSrc, ExpectedSrc, ActualSrc: String;
+    Code: TCodeBuffer;
+  begin
+    Header:='program TestStdCodeTools;'+LineEnding;
+    OldSrc:=Header+OldBeginEnd;
+    ExpectedSrc:=Header+NewBeginEnd;
+    Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+    Code.Source:=OldSrc;
+    if not CodeToolBoss.SetApplicationTitleStatement(Code,NewTitle) then
+    begin
+      writeln('Src=[');
+      writeln(OldSrc,']');
+      AssertEquals('SetApplicationTitleStatement failed: '+CodeToolBoss.ErrorMessage,true,false);
+    end else begin
+      ActualSrc:=Code.Source;
+      if ActualSrc=ExpectedSrc then exit;
+      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement OldSrc:');
+      writeln(OldSrc);
+      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement NewTitle="',NewTitle,'" ExpectedSrc:');
+      writeln(ExpectedSrc);
+      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement But found NewSrc:');
+      writeln(ActualSrc);
+      Fail('SetApplicationTitleStatement with Title="'+NewTitle+'"');
+    end;
+  end;
+
+  procedure TestLines(NewTitle: string; OldBeginEnd, NewBeginEnd: array of string);
+  var
+    OldSrc, NewSrc: String;
+    i: Integer;
+  begin
+    OldSrc:='';
+    for i:=Low(OldBeginEnd) to High(OldBeginEnd) do
+      OldSrc+=OldBeginEnd[i]+LineEnding;
+    NewSrc:='';
+    for i:=Low(NewBeginEnd) to High(NewBeginEnd) do
+      NewSrc+=NewBeginEnd[i]+LineEnding;
+    TestSrc(NewTitle,OldSrc,NewSrc);
+  end;
+
+begin
+  TestLines('TitleNew',
+  ['begin',
+   'end.'],
+   ['begin',
+    '  Application.Title:=''TitleNew'';',
+    'end.']);
+
+  // test replace
+  TestLines('TitleNew',
+  ['begin',
+   '  Application.Title:=''TitleOld'';',
+   'end.'],
+   ['begin',
+    '  Application.Title:=''TitleNew'';',
+    'end.']);
+
+  // test add, ignoring Application as param
+  TestLines('TitleNew',
+  ['begin',
+    '  Client:=TClient.Create(Application);',
+    '  if not Client.ReadParams then exit;',
+   'end.'],
+   ['begin',
+    '  Application.Title:=''TitleNew'';',
+    '  Client:=TClient.Create(Application);',
+    '  if not Client.ReadParams then exit;',
+    'end.']);
+
+  // test add, behind Application:=Something; statement
+  TestLines('TitleNew',
+  ['begin',
+    '  Application:=TMyApplication.Create;',
+    '  if not Client.ReadParams then exit;',
+   'end.'],
+   ['begin',
+    '  Application:=TMyApplication.Create;',
+    '  Application.Title:=''TitleNew'';',
+    '  if not Client.ReadParams then exit;',
+    'end.']);
 end;
 
 initialization
