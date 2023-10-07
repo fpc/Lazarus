@@ -5221,7 +5221,7 @@ function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
 
   function IsRegister(Val, Reg: String): boolean;
   begin
-    Result := (Length(val) >= 2) and (val[1] in ['r', 'e']) and (strlcomp(@Val[2], PChar(Reg), Length(Reg)) = 0);
+    Result := (Length(Val) = Length(Reg) + 1) and (Length(val) >= 2) and (val[1] in ['r', 'e']) and (strlcomp(@Val[2], PChar(Reg), Length(Reg)) = 0);
   end;
   function RegisterSize(Reg: String): Cardinal;
   begin
@@ -5258,7 +5258,9 @@ begin
     instr := TX86AsmInstruction(GetInstructionInfo(NewAddr));
     if instr.InstructionLength <= 0 then
       exit;
+    {$PUSH}{$R-}{$Q-}
     NewAddr := NewAddr + instr.InstructionLength;
+    {$POP}
     CurAddr := @instr.FCodeBin[0];
 
     case instr.X86OpCode of
