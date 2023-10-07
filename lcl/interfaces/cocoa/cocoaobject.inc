@@ -658,6 +658,7 @@ end;
 procedure TAppDelegate.applicationDidResignActive(notification: NSNotification);
 begin
   Application.IntfAppDeactivate;
+  Application.DoBeforeMouseMessage(nil);
 end;
 
 procedure TAppDelegate.applicationDidChangeScreenParameters(notification: NSNotification);
