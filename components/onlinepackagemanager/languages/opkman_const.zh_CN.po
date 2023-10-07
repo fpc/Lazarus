@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr "取消"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
 msgid "Close the dialog"
-msgstr "关闭此对话框"
+msgstr "关闭对话框"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
@@ -28,19 +28,19 @@ msgstr "确定"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_hint
 msgid "Close the dialog and create the package"
-msgstr "关闭此对话框并创建包"
+msgstr "关闭对话框并创建软件包"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
-msgstr "添加存储库包"
+msgstr "添加存储库软件包"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
-msgstr "添加已存在的存储库包从文件"
+msgstr "从文件添加现有的存储库软件包"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
-msgstr "创建一个新的存储库包"
+msgstr "创建一个新的存储库软件包"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -71,7 +71,7 @@ msgstr "列出支持的控件集"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
 msgid "Please select (check) one or more items"
-msgstr "请选择（检查）一个或更多项目"
+msgstr "请选择一个或多个项目"
 
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
@@ -132,7 +132,7 @@ msgstr "链接到软件包的 zip 文件"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
-msgstr "请检查一个存储库软件包！"
+msgstr "请检查存储库软件包！"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
 msgid "Please check only one repository package!"
@@ -144,7 +144,7 @@ msgstr "请输入一个有效的 URL！"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message3
 msgid "Please check at least one package file!"
-msgstr "请检查至少有一个软件包文件!"
+msgstr "请勾选至少有一个软件包文件!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message4
 msgid "JSON for updates successfully created."
@@ -153,11 +153,11 @@ msgstr "成功创建更新 JSON。"
 #: opkman_const.rscreaterepositoryfrm_badd_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
 msgid "Add"
-msgstr "增加"
+msgstr "添加"
 
 #: opkman_const.rscreaterepositoryfrm_badd_hint
 msgid "Add package to the current repository"
-msgstr "增加软件包到当前存储库"
+msgstr "在当前存储库增加软件包"
 
 #: opkman_const.rscreaterepositoryfrm_bcancel_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
@@ -167,7 +167,7 @@ msgstr "取消"
 #: opkman_const.rscreaterepositoryfrm_bcancel_hint
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
 msgid "Close this dialog"
-msgstr "关闭此对话框"
+msgstr "关闭对话框"
 
 #: opkman_const.rscreaterepositoryfrm_bcreate_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_caption"
@@ -218,7 +218,7 @@ msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
-"不能打开私有存储库：\"%s\"：错误消息：\n"
+"不能打开私有存储库：\"%s\"。错误消息：\n"
 "\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error3
@@ -245,7 +245,7 @@ msgid ""
 "The following directory: \"%s\" is not empty.\n"
 "It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
-"下面的目录：\"%s\" 不是空的。\n"
+"以下目录：\"%s\" 不是空的。\n"
 "建议保存该存储库到一个空目录，是否继续？"
 
 #: opkman_const.rscreaterepositoryfrm_info3
@@ -254,7 +254,7 @@ msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
-"在该当前存储库中已存在下面的软件包：\"%s\"。\n"
+"在当前存储库中已存在以下软件包：\"%s\"。\n"
 "每个存储库和 Lazarus 软件包必需是独一无二的！"
 
 #: opkman_const.rscreaterepositoryfrm_info5
@@ -263,7 +263,7 @@ msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
-"在该当前存储库已存在下面的 Lazarus 软件包：\"%s\"。\n"
+"在当前存储库已存在以下 Lazarus 软件包：\"%s\"。\n"
 "每个存储库和 Lazarus 软件包必需是独一无二的！"
 
 #: opkman_const.rscreaterepositoryfrm_info7
@@ -272,7 +272,7 @@ msgstr "成功地添加软件包到存储库。"
 
 #: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
 msgid "Edit repository details"
-msgstr "编辑存储库细节"
+msgstr "编辑存储库详情"
 
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
@@ -326,7 +326,7 @@ msgstr "更新链接 (JSON)"
 #: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
-msgstr "FPC兼容性"
+msgstr "FPC 兼容性"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_homepageurl
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_homepageurl"
@@ -376,17 +376,17 @@ msgstr "在这之后可用"
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash"
 msgid "Repository filehash"
-msgstr "存储库文件 hash"
+msgstr "文件校验码"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename"
 msgid "Repository filename"
-msgstr "存储库文件名"
+msgstr "文件名"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize"
 msgid "Repository filesize"
-msgstr "存储库文件大小"
+msgstr "文件大小"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets"
@@ -406,7 +406,7 @@ msgstr "取消"
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_hint
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_hint"
 msgid "Close this dialog"
-msgstr "关闭此对话框"
+msgstr "关闭对话框"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
@@ -521,7 +521,7 @@ msgstr "请输入软件包支持的 Lazarus 版本："
 
 #: opkman_const.rscreaterepositorypackagefrm_message10
 msgid "Cancelling upload. Please wait..."
-msgstr "取消上传，请等候..."
+msgstr "正在取消上传，请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
@@ -529,20 +529,20 @@ msgstr "请输入软件包支持的 FPC 版本："
 
 #: opkman_const.rscreaterepositorypackagefrm_message3
 msgid "Please enter supported widgetsets for package:"
-msgstr "请输入软件包支持的构建集："
+msgstr "请输入软件包支持的控件集："
 
 #: opkman_const.rscreaterepositorypackagefrm_message4
 msgid "Compressing package. Please wait..."
-msgstr "压缩软件包中，请稍后..."
+msgstr "压缩软件包中，请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_message5
 msgid "Creating JSON. Please wait..."
-msgstr "正在创建JSON，请稍后..."
+msgstr "正在创建JSON，请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_message6
 msgctxt "opkman_const.rscreaterepositorypackagefrm_message6"
 msgid "Creating JSON for updates. Please wait..."
-msgstr "创建更新JSON中，请稍后..."
+msgstr "创建更新JSON中，请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_message7
 msgctxt "opkman_const.rscreaterepositorypackagefrm_message7"
@@ -552,7 +552,7 @@ msgstr "存储库软件包创建成功。"
 #: opkman_const.rscreaterepositorypackagefrm_message8
 #, object-pascal-format
 msgid "Sending files (\"%s\"). Please wait..."
-msgstr "发送文件中(\"%s\")，请稍后..."
+msgstr "发送文件中(\"%s\")，请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
 msgid ""
@@ -582,7 +582,7 @@ msgstr "数据"
 
 #: opkman_const.rscreaterepositorypackagefrm_pnmessage_caption
 msgid "Please wait..."
-msgstr "请稍后..."
+msgstr "请稍后……"
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitledst
 msgid "Save repository package to..."
@@ -602,15 +602,15 @@ msgstr "返回"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
-msgstr "全部/没有"
+msgstr "全选"
 
 #: opkman_const.rsmainfrm_cball_hint
 msgid "Check/Uncheck packages"
-msgstr "检查/不检查软件包"
+msgstr "全选/不选软件包"
 
 #: opkman_const.rsmainfrm_cbfilterby_hint
 msgid "Filter package list by:"
-msgstr "过滤器包列表："
+msgstr "按以下方式筛选软件包列表："
 
 #: opkman_const.rsmainfrm_edfilter_hint
 msgid "Type filter text"
@@ -717,46 +717,50 @@ msgstr "已存在相同名称的软件包！"
 
 #: opkman_const.rsmainfrm_packageupdate0
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr ""
+msgstr "以下存储库软件包无法从外部获取。将跳过这些软件包，是否继续？"
 
 #: opkman_const.rsmainfrm_packageupdate1
 msgid ""
 "None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
 "Options->General->Check for package updates."
 msgstr ""
+"已选择的存储库软件包均不可从外部获取。请确保已默认启用软件包更新：\n"
+"选项->常规->检查软件包更新。"
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?"
 msgstr ""
+"从外部链接安装软件包并非没有风险！\n"
+"只有在信任软件包维护者的情况下才能安装。是否继续？"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 #, object-pascal-format
 msgid "%s packages successfully loaded from file!"
-msgstr "%s软件包成功地加载从文件!"
+msgstr "成功从文件中加载 %s 软件包！"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 #, object-pascal-format
 msgid "%s packages successfully saved to file!"
-msgstr "%s软件包成功地保存到文件!"
+msgstr "%s 软件包已成功保存到文件中！"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 #, object-pascal-format
 msgid "Cannot create directory \"%s\". Operation aborted."
-msgstr "不能创建目录\"%s\".操作放弃(aborted)."
+msgstr "无法创建目录 \"%s\"，操作中止。"
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
-msgstr "更改存储库.请等候..."
+msgstr "正在更改存储库，请稍后……"
 
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
-msgstr "下载包列表.请等候..."
+msgstr "正在下载软件包列表，请稍后……"
 
 #: opkman_const.rsmainfrm_rsmessageerror0
 msgid "Cannot download package list. Error message:"
-msgstr "不能下载包列表.错误信息:"
+msgstr "无法下载软件包列表，错误信息："
 
 #: opkman_const.rsmainfrm_rsmessageerror1
 msgid "Invalid JSON file."
@@ -768,84 +772,77 @@ msgstr "无法访问远程服务器。"
 
 #: opkman_const.rsmainfrm_rsmessagenopackage
 msgid "No packages to show."
-msgstr "没有可显示的包。"
+msgstr "没有可显示的软件包。"
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
-#, fuzzy
-#| msgid ""
-#| "Remote package repository not configured.\n"
-#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?"
 msgstr ""
-"远程软件包存储库未配置.\n"
-"你想要现在配置它吗?\n"
+"远程软件包存储库未配置。\n"
+"您想要现在配置它吗？"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr "请检查至少一个包!"
+msgstr "请勾选至少一个软件包！"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
-msgstr ""
+msgstr "未安装软件包，请先安装至少一个软件包。"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
-msgstr "分析JSON.请等候..."
+msgstr "分析 JSON 中，请稍后……"
 
 #: opkman_const.rsmainfrm_rsnopackagetodownload
 msgid "Please check one or more packages!"
-msgstr "请检查一个包或更多软件包!"
+msgstr "请勾选一个或多个软件包！"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
 #, object-pascal-format
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
-msgstr "软件包\"%s\"依赖于软件包\"%s\".解决依赖关系?"
+msgstr "软件包 \"%s\" 依赖于软件包 \"%s\" ，是否解决依赖关系？"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr ""
+msgstr "不解决软件包依赖可能导致安装失败，是否继续？"
 
 #: opkman_const.rsmainfrm_rspackageinformation
 #, object-pascal-format
 msgid "Quick package information for \"%s\""
-msgstr ""
+msgstr "\"%s\" 的快速软件包信息"
 
 #: opkman_const.rsmainfrm_rspackagerating
 #, object-pascal-format
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
-msgstr "你投票软件包\"%s\"是:%s.谢谢你的投票!"
+msgstr "您为软件包 \"%s\" 投票：%s，谢谢您的投票！"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup0
 msgid "This will delete all non-installed packages from local repository. Continue?"
-msgstr "这将删除所有非安装的软件包从本地存储库.继续?"
+msgstr "这将从本地存储库中删除所有未安装的软件包，是否继续？"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
 #, object-pascal-format
 msgid "%s packages deleted!"
-msgstr "%s包删除!"
+msgstr "软件包 %s 已删除！"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "%sAre you sure you wish to uninstall the checked packages?\n"
-#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+#, object-pascal-format
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
-"%s你确定希望卸载被核对的软件包(checked packages)?\n"
-"请注意:为了更改生效 你必须重新构建IDE.\n"
+"%s您确定要卸载选中的软件包吗？\n"
+"请注意：您必须重新构建 IDE 才能让更改生效。"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 #, object-pascal-format
 msgid "Cannot uninstall package \"%s\"!"
-msgstr "不能卸载包 \"%s\"!"
+msgstr "不能卸载软件包 \"%s\"!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr ""
+msgstr "选中的软件包都没有安装，未卸载任何软件包。"
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -853,11 +850,11 @@ msgstr "清理过滤器文本"
 
 #: opkman_const.rsmainfrm_spcollapse_hint
 msgid "Collapse package tree"
-msgstr "折叠包树"
+msgstr "折叠软件包树"
 
 #: opkman_const.rsmainfrm_spexpand_hint
 msgid "Expand package tree"
-msgstr "展开包树"
+msgstr "展开软件包树"
 
 #: opkman_const.rsmainfrm_tbcleanup_caption
 msgid "Cleanup"
@@ -873,7 +870,7 @@ msgstr "下载"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
 msgid "Download packages"
-msgstr "下载包"
+msgstr "下载软件包"
 
 #: opkman_const.rsmainfrm_tbhelp_caption
 msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
@@ -882,7 +879,7 @@ msgstr "帮助"
 
 #: opkman_const.rsmainfrm_tbhelp_hint
 msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
-msgstr "帮助(http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr "帮助（http://wiki.freepascal.org/Online_Package_Manager）"
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
@@ -890,14 +887,12 @@ msgstr "安装"
 
 #: opkman_const.rsmainfrm_tbinstall_hint
 msgid "Install packages"
-msgstr "安装包"
+msgstr "安装软件包"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
-#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Local repo"
-msgstr "打开"
+msgstr "本地存储库"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
@@ -918,7 +913,7 @@ msgstr "刷新"
 
 #: opkman_const.rsmainfrm_tbrefresh_hint
 msgid "Refresh package list"
-msgstr "刷新包列表"
+msgstr "刷新软件包列表"
 
 #: opkman_const.rsmainfrm_tbrepository_caption
 msgctxt "opkman_const.rsmainfrm_tbrepository_caption"
@@ -927,7 +922,7 @@ msgstr "创建"
 
 #: opkman_const.rsmainfrm_tbrepository_hint
 msgid "Create package or repository"
-msgstr "创建包或存储库"
+msgstr "创建软件包或存储库"
 
 #: opkman_const.rsmainfrm_tbuninstall_caption
 msgid "Uninstall"
@@ -935,7 +930,7 @@ msgstr "卸载"
 
 #: opkman_const.rsmainfrm_tbuninstall_hint
 msgid "Uninstall packages"
-msgstr "卸载包"
+msgstr "卸载软件包"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
@@ -944,7 +939,7 @@ msgstr "更新"
 
 #: opkman_const.rsmainfrm_tbupdate_hint
 msgid "Update packages from external URL"
-msgstr "更新软件包从外部URL"
+msgstr "从外部 URL 更新软件包"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_data
 msgid "Status/Data"
@@ -953,11 +948,11 @@ msgstr "状态/数据"
 #: opkman_const.rsmainfrm_vstheadercolumn_installed
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_installed"
 msgid "Installed"
-msgstr "已经安装"
+msgstr "已安装"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package (.lpk)"
-msgstr "Lazarus包(.lpk)"
+msgstr "Lazarus 软件包（.lpk）"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
@@ -968,26 +963,22 @@ msgid "Rating"
 msgstr "评价"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
-#, fuzzy
-#| msgid "Repository"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "OPM repository"
-msgstr "存储库"
+msgstr "官方存储库"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
 msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
-msgstr ""
+msgstr "软件包在官方存储库（https://packages.lazarus-ide.org/）中的版本"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "External"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External repository"
-msgstr "外部"
+msgstr "外部存储库"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update_hint
 msgid "Packages available at the developer's webpage (see node \"External link (JSON)\" for more details)"
-msgstr ""
+msgstr "软件包在开发者网页（详见节点”外部链接（JSON）”）中的版本"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -1001,20 +992,20 @@ msgstr "分类"
 
 #: opkman_const.rsmainfrm_vsttext_comdesc
 msgid "Community description for metapackage"
-msgstr ""
+msgstr "元软件包的社区描述"
 
 #: opkman_const.rsmainfrm_vsttext_communitydescription
 msgid "Community description"
-msgstr ""
+msgstr "社区描述"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
 msgid "Dependencies"
-msgstr "依赖(Dependencies)"
+msgstr "依赖"
 
 #: opkman_const.rsmainfrm_vsttext_desc
 msgid "Description for package"
-msgstr "包描述"
+msgstr "软件包描述"
 
 #: opkman_const.rsmainfrm_vsttext_description
 msgctxt "opkman_const.rsmainfrm_vsttext_description"
@@ -1024,20 +1015,20 @@ msgstr "描述"
 #: opkman_const.rsmainfrm_vsttext_downloadurl
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "外部链接 (JSON)"
+msgstr "外部链接（JSON）"
 
 #: opkman_const.rsmainfrm_vsttext_externaldeps
 msgid "External dependencies"
-msgstr ""
+msgstr "外部依赖"
 
 #: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
 msgid "External dependencies for metapackage"
-msgstr ""
+msgstr "元软件包外部依赖"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
-msgstr "FPC兼容性"
+msgstr "FPC 兼容性"
 
 #: opkman_const.rsmainfrm_vsttext_homepageurl
 msgctxt "opkman_const.rsmainfrm_vsttext_homepageurl"
@@ -1056,16 +1047,16 @@ msgstr "是"
 
 #: opkman_const.rsmainfrm_vsttext_install2
 msgid "Partially"
-msgstr "部分地(Partially)"
+msgstr "部分"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_lazcompatibility"
 msgid "Lazarus compatibility"
-msgstr "Lazarus兼容性"
+msgstr "Lazarus 兼容性"
 
 #: opkman_const.rsmainfrm_vsttext_lic
 msgid "License info for package"
-msgstr "包许可信息"
+msgstr "软件包许可信息"
 
 #: opkman_const.rsmainfrm_vsttext_license
 msgctxt "opkman_const.rsmainfrm_vsttext_license"
@@ -1073,36 +1064,34 @@ msgid "License"
 msgstr "协议"
 
 #: opkman_const.rsmainfrm_vsttext_open
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open"
 msgid "Open"
 msgstr "打开"
 
 #: opkman_const.rsmainfrm_vsttext_open_error
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
 msgid "Cannot open package file."
-msgstr "不能打开包文件."
+msgstr "不能打开软件包文件。"
 
 #: opkman_const.rsmainfrm_vsttext_open_notfound
 msgid "Package file not found."
-msgstr ""
+msgstr "软件包文件未找到。"
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage1
 msgid "Orphaned package"
-msgstr ""
+msgstr "已废弃的软件包"
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage2
 msgid "currently has no active maintainer"
-msgstr ""
+msgstr "目前没有活跃的维护者"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
-msgstr "包分类"
+msgstr "软件包分类"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory0
 msgid "Charts and Graphs"
-msgstr ""
+msgstr "图表"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory1
 msgid "Cryptography"
@@ -1110,15 +1099,15 @@ msgstr "密码学"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory10
 msgid "Indicators and Gauges"
-msgstr ""
+msgstr "指示器和仪表"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory11
 msgid "Labels"
-msgstr "标签(Labels)"
+msgstr "标签"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory12
 msgid "LazIDEPlugins"
-msgstr "LazIDEPlugins(插件)"
+msgstr "Lazarus IDE 插件"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory13
 msgid "List and Combo Boxes"
@@ -1126,7 +1115,7 @@ msgstr "列表和组合框"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory14
 msgid "ListViews and TreeViews"
-msgstr "列表视图(ListViews)和 树视图 (TreeViews)"
+msgstr "列表视图和树视图"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory15
 msgid "Menus"
@@ -1138,11 +1127,11 @@ msgstr "多媒体"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory17
 msgid "Networking"
-msgstr "网络系统"
+msgstr "网络"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory18
 msgid "Panels"
-msgstr "控制板"
+msgstr "面板"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory19
 msgid "Reporting"
@@ -1150,7 +1139,7 @@ msgstr "报告"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory2
 msgid "DataControls"
-msgstr ""
+msgstr "数据控件"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory20
 msgid "Science"
@@ -1162,11 +1151,11 @@ msgstr "安全"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory22
 msgid "Shapes"
-msgstr "形状(Shapes)"
+msgstr "形状"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
 msgid "Sizers and Scrollers"
-msgstr ""
+msgstr "尺寸调节器和滚动器"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
 msgid "System"
@@ -1174,7 +1163,7 @@ msgstr "系统"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory25
 msgid "Tabbed Components"
-msgstr "Tabbed组件"
+msgstr "标签化组件"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory26
 msgid "Other"
@@ -1194,7 +1183,7 @@ msgstr "对话框"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
 msgid "Edit and Memos"
-msgstr "编辑和备忘录(Memos)"
+msgstr "文本编辑框"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
 msgid "Files and Drives"
@@ -1202,7 +1191,7 @@ msgstr "文件和驱动器"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory7
 msgid "GUIContainers"
-msgstr ""
+msgstr "界面容器"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory8
 msgid "Graphics"
@@ -1210,11 +1199,11 @@ msgstr "图像"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory9
 msgid "Grids"
-msgstr "Grids(网格)"
+msgstr "网格"
 
 #: opkman_const.rsmainfrm_vsttext_packageinfo
 msgid "Package info"
-msgstr "包信息"
+msgstr "软件包信息"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate0
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate0"
@@ -1223,20 +1212,20 @@ msgstr "存储库"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate1
 msgid "Downloaded"
-msgstr "下载"
+msgstr "已下载"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate2
 msgid "Extracted"
-msgstr "提取"
+msgstr "已解压"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate3
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate3"
 msgid "Installed"
-msgstr "已经安装"
+msgstr "已安装"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate4
 msgid "Up to date"
-msgstr "到目前为止"
+msgstr "最新"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
@@ -1245,16 +1234,16 @@ msgstr "新版本可用"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr ""
+msgstr "先于在线软件包管理器"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
-msgstr "包状态"
+msgstr "软件包状态"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype
 msgctxt "opkman_const.rsmainfrm_vsttext_packagetype"
 msgid "Package type"
-msgstr "包类型"
+msgstr "软件包类型"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype0
 msgctxt "opkman_const.rsmainfrm_vsttext_packagetype0"
@@ -1274,32 +1263,32 @@ msgstr "运行时"
 #: opkman_const.rsmainfrm_vsttext_packagetype3
 msgctxt "opkman_const.rsmainfrm_vsttext_packagetype3"
 msgid "Runtime only, cannot be installed in IDE"
-msgstr "仅运行时,不能被安装在IDE"
+msgstr "仅运行时，不能在 IDE 中安装"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfiledate
 msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfiledate"
 msgid "Available since"
-msgstr "自从...以后可用"
+msgstr "更新时间"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilehash
 msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilehash"
 msgid "Repository filehash"
-msgstr "存储库文件hash"
+msgstr "文件校验码"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilename
 msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilename"
 msgid "Repository filename"
-msgstr "存储库文件名称"
+msgstr "文件名称"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilesize
 msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilesize"
 msgid "Repository filesize"
-msgstr "存储库文件大小"
+msgstr "文件大小"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
 msgctxt "opkman_const.rsmainfrm_vsttext_supportedwidgetsets"
 msgid "Supported widgetsets"
-msgstr "支持的widgetsets"
+msgstr "支持的控件集"
 
 #: opkman_const.rsmainfrm_vsttext_svnurl
 msgctxt "opkman_const.rsmainfrm_vsttext_svnurl"
@@ -1313,39 +1302,37 @@ msgstr "版本"
 
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
-msgstr "在线软件包管理(&O) ..."
+msgstr "在线软件包管理器(&O) ..."
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
 msgstr "否"
 
 #: opkman_const.rsopensslfrm_bp_okbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
 msgid "Yes"
 msgstr "是"
 
 #: opkman_const.rsopensslfrm_caption
 msgid "Download OpenSSL libraries"
-msgstr ""
+msgstr "下载 OpenSSL 库"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr ""
+msgstr "不要再问这个问题了"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries."
-msgstr ""
+msgstr "为了正常工作，在线软件包管理器需要 OpenSSL 库。"
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
-msgstr ""
+msgstr "从 \"https://packages.lazarus-ide.org/\" 下载这些文件？"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
-msgstr ""
+msgstr "为了使更改生效，您必须重新构建 IDE。现在重新构建？"
 
 #: opkman_const.rsopmintfpackagelistfrm_caption
 msgid "Install online packages"
@@ -1353,7 +1340,7 @@ msgstr "安装在线软件包"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr "请检查在安装前:Lazarus/FPC兼容性, widgetset支持,许可和版本信息"
+msgstr "请在安装前检查：Lazarus/FPC 兼容性、控件集支持情况、许可和版本信息"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
@@ -1362,7 +1349,7 @@ msgstr "数据"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr "Lazarus包"
+msgstr "Lazarus 软件包"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
@@ -1390,7 +1377,7 @@ msgstr "恢复默认"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
-msgstr "每隔几分钟"
+msgstr "每几分钟"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item1
 msgid "Every hour"
@@ -1398,7 +1385,7 @@ msgstr "每小时"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item2
 msgid "Once per day"
-msgstr "每天一次"
+msgstr "每天"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item3
 msgid "Weekly"
@@ -1415,27 +1402,27 @@ msgstr "从不"
 
 #: opkman_const.rsoptions_cbdelete_caption
 msgid "Delete downloaded zip files after installation/update"
-msgstr "删除下载的zip文件在安装/更新后"
+msgstr "在安装/更新后删除下载的 zip 文件"
 
 #: opkman_const.rsoptions_cbdelete_hint
 msgid "If this option is checked the downloaded zip file is always deleted after installation"
-msgstr ""
+msgstr "如果选中该选项，下载的 zip 文件在安装后始终会被删除"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_caption
 msgid "Always force download and extract"
-msgstr "总是强制下载和提取(extract)"
+msgstr "总是强制下载和解压"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
-msgstr ""
+msgstr "如果选中该选项，安装前会重新下载/解压软件包"
 
 #: opkman_const.rsoptions_cbloadjsonlocally_caption
 msgid "If available, parse the JSON from local source"
-msgstr ""
+msgstr "如果有，从本地源解析 JSON 文件"
 
 #: opkman_const.rsoptions_cbloadjsonlocally_hint
 msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
-msgstr ""
+msgstr "如果选中此选项，JSON 将从本地源解析（在互联网连接速度慢时非常有用）。本地解析 25 次后，在线软件包管理器将尝试在线更新。"
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
@@ -1447,7 +1434,7 @@ msgstr "最近添加的软件包，在安装后显示正常图标"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
-msgstr "选择一个最适合你的profile"
+msgstr "选择一个最适合您的配置文件"
 
 #: opkman_const.rsoptions_cbselectprofile_item0
 msgctxt "opkman_const.rsoptions_cbselectprofile_item0"
@@ -1457,23 +1444,23 @@ msgstr "普通用户"
 #: opkman_const.rsoptions_cbselectprofile_item1
 msgctxt "opkman_const.rsoptions_cbselectprofile_item1"
 msgid "Package maintainer"
-msgstr "包维护者"
+msgstr "软件包维护者"
 
 #: opkman_const.rsoptions_cbusedefaulttheme_caption
 msgid "Use default theme manager"
-msgstr "使用默认主题(theme)管理器"
+msgstr "使用默认主题管理器"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
-msgstr ""
+msgstr "从远程存储库下载 zip 文件的文件夹"
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr "提取/安装存储库软件包的文件家"
+msgstr "解压/安装版本库软件包的文件夹"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
-msgstr ""
+msgstr "从软件包维护者网页下载压缩文件的文件夹"
 
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
@@ -1486,37 +1473,37 @@ msgstr "代理设置"
 
 #: opkman_const.rsoptions_inputbox_caption
 msgid "Add new exclusion"
-msgstr "添加新排除(exclusion)"
+msgstr "添加新的排除项"
 
 #: opkman_const.rsoptions_inputbox_conf0
 #, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
-msgstr "删除选择扩展名(\"%s\")?"
+msgstr "删除选择的扩展名（\"%s\"）？"
 
 #: opkman_const.rsoptions_inputbox_conf1
 #, object-pascal-format
 msgid "Delete selected folder (\"%s\")?"
-msgstr "删除选择文件夹(\"%s\")?"
+msgstr "删除选择的文件夹（\"%s\"）？"
 
 #: opkman_const.rsoptions_inputbox_info0
 msgid "Please select a file extension!"
-msgstr "请选择一个文件扩展名!"
+msgstr "请选择一个文件扩展名！"
 
 #: opkman_const.rsoptions_inputbox_info1
 msgid "Please select a folder!"
-msgstr "请选择一个文件夹!"
+msgstr "请选择一个文件夹！"
 
 #: opkman_const.rsoptions_inputbox_text0
 msgid "Type the extension name:"
-msgstr "键入(Type)扩展名名称:"
+msgstr "键入扩展名名称："
 
 #: opkman_const.rsoptions_inputbox_text1
 msgid "Type the folder name:"
-msgstr "键入(Type)文件夹名称:"
+msgstr "键入文件夹名称："
 
 #: opkman_const.rsoptions_invaliddirectory_info
 msgid "Please enter a valid directory!"
-msgstr "请输入一个有效的目录!"
+msgstr "请输入一个有效的目录！"
 
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
@@ -1524,40 +1511,38 @@ msgid "never"
 msgstr "从不"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
-#, fuzzy
-#| msgid "Check for package updates"
 msgid "Check external repositories for package updates"
-msgstr "检查包更新"
+msgstr "检查软件包更新"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
-msgstr "连接超时(秒):"
+msgstr "连接超时（秒）："
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr ""
+msgstr "软件包管理器中断连接的秒数"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr "最近添加的软件包,在多少天内显示不同的图标(天数):"
+msgstr "为新添加的软件包显示不同的图标（天数）："
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
 msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "这些来自存储库软件包文件将被排除(查看:\"创建存储库软件包\")"
+msgstr "这些文件将被排除在存储库软件包之外（参见：\"创建存储库软件包）"
 
 #: opkman_const.rsoptions_lbexcludefolders_hint
 msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
 msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "这些来自存储库软件包文件夹将被排除(查看:\"创建存储库软件包\")"
+msgstr "这些文件夹将被排除在存储库软件包之外（参见：\"创建存储库软件包）"
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
-msgstr "排除文件夹(包)"
+msgstr "排除文件夹（软件包）"
 
 #: opkman_const.rsoptions_lbfilterfiles_caption
 msgid "Excluded files (packages)"
-msgstr "排除文件(包)"
+msgstr "排除文件（软件包）"
 
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
@@ -1589,7 +1574,7 @@ msgstr "远程存储库"
 
 #: opkman_const.rsoptions_lbselectprofile_caption
 msgid "Select profile"
-msgstr "选择profile"
+msgstr "选择配置文件"
 
 #: opkman_const.rsoptions_lbserver_caption
 msgid "Server"
@@ -1601,43 +1586,43 @@ msgstr "用户名"
 
 #: opkman_const.rsoptions_proxyport_info
 msgid "Please enter the proxy server port!"
-msgstr "请输入代理服务器端口!"
+msgstr "请输入代理服务器端口！"
 
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
-msgstr "请输入代理服务器地址!"
+msgstr "请输入代理服务器地址！"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
-msgstr "快速信息对于存储库软件包"
+msgstr "存储库软件包的快速信息"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
-msgstr ""
+msgstr "行为与普通提示窗口相同"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr ""
+msgstr "它由 SHIFT 键触发，随鼠标移动"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
-msgstr "关"
+msgstr "不显示"
 
 #: opkman_const.rsoptions_rbopenssl_caption
 msgid "OpenSSL libraries (required for connection to remote repository)"
-msgstr ""
+msgstr "OpenSSL 库（连接远程存储库所需）"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
-msgstr ""
+msgstr "自动从 \"https://packages.lazarus-ide.org/\" 下载文件"
 
 #: opkman_const.rsoptions_rbopenssl_item1
 msgid "Show confirmation dialog before download"
-msgstr ""
+msgstr "下载前显示确认对话框"
 
 #: opkman_const.rsoptions_rbopenssl_item2
 msgid "Never download files"
-msgstr ""
+msgstr "从不下载文件"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1645,7 +1630,7 @@ msgstr "请输入远程存储库地址！"
 
 #: opkman_const.rsoptions_restoredefaults_conf
 msgid "This will restore the default settings. Continue?"
-msgstr "这将恢复默认设置.继续?"
+msgstr "这将恢复默认设置，是否继续？"
 
 #: opkman_const.rsoptions_tsfolders_caption
 msgid "Folders"
@@ -1653,11 +1638,11 @@ msgstr "文件夹"
 
 #: opkman_const.rsoptions_tsgeneral_caption
 msgid "General"
-msgstr "一般"
+msgstr "常规"
 
 #: opkman_const.rsoptions_tsprofiles_caption
 msgid "Profiles"
-msgstr "Profiles"
+msgstr "配置文件"
 
 #: opkman_const.rsoptions_tsproxy_caption
 msgid "Proxy"
@@ -1665,19 +1650,19 @@ msgstr "代理"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
 msgid "Warn me about already installed packages"
-msgstr ""
+msgstr "警告我已安装的软件包"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr ""
+msgstr "如果软件包已安装，在线软件包管理器将显示警告信息"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible/untested packages"
-msgstr ""
+msgstr "警告我不兼容/未经测试的软件包"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr ""
+msgstr "如果软件包与当前控件集或 Lazarus/FPC 版本不兼容，在线软件包管理器会显示一条警告信息"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -1696,76 +1681,76 @@ msgstr "是"
 
 #: opkman_const.rspackagelistfrm_caption0
 msgid "Installed package list"
-msgstr "安装包列表"
+msgstr "已安装软件包列表"
 
 #: opkman_const.rspackagelistfrm_caption1
 msgid "Downloaded package list"
-msgstr "下载包列表"
+msgstr "下载软件包列表"
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
-msgstr "更新包列表"
+msgstr "更新软件包列表"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr ""
+msgstr "不兼容软件包列表"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
-msgstr ""
+msgstr "当前 FPC 版本： "
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr ""
+msgstr "当前 Lazarus 版本： "
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
-msgstr ""
+msgstr "当前控件集： "
 
 #: opkman_const.rspackagelistfrm_incompatible
 msgid "Not tested"
-msgstr ""
+msgstr "未经测试"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr ""
+msgstr "提示：将鼠标移至有问题的一栏，了解更多详情。"
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
-msgstr ""
+msgstr "支持的 FPC 版本： "
 
 #: opkman_const.rspackagelistfrm_suplazvers
 msgid "Supported Lazarus versions: "
-msgstr ""
+msgstr "支持的 Lazarus 版本： "
 
 #: opkman_const.rspackagelistfrm_supwss
 msgid "Supported widgetsets: "
-msgstr ""
+msgstr "支持的控件集： "
 
 #: opkman_const.rspackagesfound
 #, object-pascal-format
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(%s存储库软件包找到,包含%s lpk文件,全部大小%s)"
+msgstr "（已找到 %s 个存储库软件包，包含 %s 个 lpk 文件，总大小 %s）"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
-msgstr "下载包"
+msgstr "正在下载软件包"
 
 #: opkman_const.rsprogressfrm_caption1
 msgid "Extracting packages"
-msgstr "解压包"
+msgstr "正在解压软件包"
 
 #: opkman_const.rsprogressfrm_caption2
 msgid "Installing packages"
-msgstr "安装包"
+msgstr "正在安装软件包"
 
 #: opkman_const.rsprogressfrm_caption3
 msgid "Updating packages"
-msgstr "更新包"
+msgstr "正在更新软件包"
 
 #: opkman_const.rsprogressfrm_caption4
 msgid ". Please wait..."
-msgstr ".请等候..."
+msgstr "， 请稍后……"
 
 #: opkman_const.rsprogressfrm_caption5
 msgid "Unknown"
@@ -1785,7 +1770,7 @@ msgstr "继续下一个?"
 
 #: opkman_const.rsprogressfrm_error0
 msgid "Cannot download package:"
-msgstr "不能下载包:"
+msgstr "不能下载软件包："
 
 #: opkman_const.rsprogressfrm_error1
 msgid "Error message:"
@@ -1793,107 +1778,107 @@ msgstr "错误信息："
 
 #: opkman_const.rsprogressfrm_error2
 msgid "Cannot extract package:"
-msgstr "不能提取(extract)包:"
+msgstr "不能解压软件包："
 
 #: opkman_const.rsprogressfrm_error3
 msgid "Cannot install package:"
-msgstr "不能安装包:"
+msgstr "不能安装软件包："
 
 #: opkman_const.rsprogressfrm_error4
 #, object-pascal-format
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
-msgstr "依赖\"%s\"未找到!"
+msgstr "依赖 \"%s\" 未找到！"
 
 #: opkman_const.rsprogressfrm_error5
 msgctxt "opkman_const.rsprogressfrm_error5"
 msgid "Cannot contact download site"
-msgstr "不能与下载站点通讯"
+msgstr "无法联络到下载网站"
 
 #: opkman_const.rsprogressfrm_error6
 msgid "No valid download link found."
-msgstr "没有有效的下载链接找到."
+msgstr "未找到有效的下载链接。"
 
 #: opkman_const.rsprogressfrm_error7
 msgctxt "opkman_const.rsprogressfrm_error7"
 msgid "Cannot open package file."
-msgstr "不能打开包文件."
+msgstr "不能打开软件包文件。"
 
 #: opkman_const.rsprogressfrm_error8
 msgid "Cannot compile package."
-msgstr "不能编译包."
+msgstr "不能编译软件包。"
 
 #: opkman_const.rsprogressfrm_error9
 msgid "Cannot install package."
-msgstr "不能安装包."
+msgstr "不能安装软件包。"
 
 #: opkman_const.rsprogressfrm_info0
 msgctxt "opkman_const.rsprogressfrm_info0"
 msgid "Installing package:"
-msgstr "(正在)安装包:"
+msgstr "正在安装软件包："
 
 #: opkman_const.rsprogressfrm_info1
 msgctxt "opkman_const.rsprogressfrm_info1"
 msgid "Success."
-msgstr "成功."
+msgstr "成功。"
 
 #: opkman_const.rsprogressfrm_info2
 #, object-pascal-format
 msgid "Contacting download site for \"%s\" (%s)"
-msgstr "联络(Contacting)下载站点对于\"%s\" (%s)"
+msgstr "正在为 \"%s\" (%s) 联络下载站点"
 
 #: opkman_const.rsprogressfrm_info3
 msgid "Preparing to download. Please wait..."
-msgstr "准备下载.请等候..."
+msgstr "正在准备下载，请稍后……"
 
 #: opkman_const.rsprogressfrm_info4
 msgid "Canceling. Please wait..."
-msgstr "取消.请等候..."
+msgstr "正在取消，请稍后……"
 
 #: opkman_const.rsprogressfrm_info5
 msgid "Opening package:"
-msgstr "打开包:"
+msgstr "打开软件包："
 
 #: opkman_const.rsprogressfrm_info6
 msgctxt "opkman_const.rsprogressfrm_info6"
 msgid "Compiling package:"
-msgstr "编译包:"
+msgstr "编译软件包："
 
 #: opkman_const.rsprogressfrm_lbelapsed_caption
 msgid "Elapsed:"
-msgstr "经过时间:"
+msgstr "已用时："
 
 #: opkman_const.rsprogressfrm_lbpackage_caption
 msgid "Package:"
-msgstr "包:"
+msgstr "软件包："
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption0
 msgid "Received (total):"
-msgstr "收到(总计)"
+msgstr "已接收（总计）："
 
 #: opkman_const.rsprogressfrm_lbreceivedtotal_caption1
 msgid "Unzipped (total):"
-msgstr "解压缩(全部):"
+msgstr "已解压（总计）："
 
 #: opkman_const.rsprogressfrm_lbreceived_caption0
 msgid "Received:"
-msgstr "收到:"
+msgstr "已接收："
 
 #: opkman_const.rsprogressfrm_lbreceived_caption1
 msgid "Unzipped:"
-msgstr "解压缩:"
+msgstr "已解压："
 
 #: opkman_const.rsprogressfrm_lbremaining_caption
 msgid "Remaining:"
-msgstr "剩余:"
+msgstr "剩余时间："
 
 #: opkman_const.rsprogressfrm_lbspeedcalc_caption
 msgid "Estimating. Please wait..."
-msgstr "估计.请等候..."
+msgstr "计算中，请稍后……"
 
 #: opkman_const.rsprogressfrm_lbspeed_caption
 msgid "Speed:"
-msgstr "速度:"
+msgstr "速度："
 
 #: opkman_const.rsrepositories_badd_caption
 msgctxt "opkman_const.rsrepositories_badd_caption"
@@ -1927,12 +1912,12 @@ msgstr "存储库"
 #: opkman_const.rsrepositories_confirmation0
 #, object-pascal-format
 msgid "Delete selected repository \"%s\"?"
-msgstr "删除选择存储库\"%s\"?"
+msgstr "删除选择的存储库 \"%s\" ？"
 
 #: opkman_const.rsrepositories_info1
 #, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
-msgstr "下面的存储库:\"%s\"已经在列表."
+msgstr "以下存储库：\"%s\" 已在列表中。"
 
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
@@ -1944,7 +1929,7 @@ msgstr "编辑存储库"
 
 #: opkman_const.rsrepositories_inputbox_text
 msgid "Type the repository address:"
-msgstr "键入该存储库地址:"
+msgstr "输入存储库地址："
 
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
@@ -1966,15 +1951,15 @@ msgstr "确定"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_hint
 msgid "Save and close the dialog"
-msgstr "保存且关闭对话框"
+msgstr "保存并关闭对话框"
 
 #: opkman_const.rsrepositorydetailsfrm_caption
 msgid "Repository details"
-msgstr "存储库细节"
+msgstr "存储库详情"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "输入存储库地址(例如:\"http://localhost/packages/\")"
+msgstr "输入存储库地址（例如：\"http://localhost/packages/\"）"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgid "Enter the repository name"
@@ -1982,7 +1967,7 @@ msgstr "输入存储库名称"
 
 #: opkman_const.rsrepositorydetailsfrm_info1
 msgid "Please enter the repository name."
-msgstr "请输入该存储库名称."
+msgstr "请输入存储库名称。"
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
@@ -2000,5 +1985,5 @@ msgstr "名称"
 
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgid "Enter the repository description"
-msgstr "请输入该存储库描述"
+msgstr "输入存储库描述"
 

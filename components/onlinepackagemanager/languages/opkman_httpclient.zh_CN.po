@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: opkman_httpclient.serrchunklineendmissing
 msgid "Chunk line end missing"
-msgstr "分块末端丢失"
+msgstr "丢失分块行末"
 
 #: opkman_httpclient.serrchunktoobig
 msgid "Chunk too big"
