@@ -517,26 +517,22 @@ begin
   UpdateTabAndArrowVisibility(self);
 end;
 
-procedure TCocoaTabControl.extselectTabViewItemAtIndex(index: NSInteger);
+procedure TCocoaTabControl.extselectTabViewItemAtIndex( index:NSInteger );
 var
-  idx : integer;
-  itm : NSTabViewItem;
-  i   : NSUInteger;
+  itm: NSTabViewItem;
+  visibleIndex: NSInteger;
 begin
   if (index<0) or (index>=fulltabs.count) then Exit;
   currentIndex := index;
 
-  itm := NSTabViewItem(fulltabs.objectAtIndex(index));
-
-  i := tabViewItems.indexOfObject(itm);
-  if i <> NSNotFound then
-  begin
-    inherited selectTabViewItemAtIndex(NSInteger(i));
-  end
-  else begin
-    UpdateTabAndArrowVisibility(self);
-    i := tabViewItems.indexOfObject(itm);
-    inherited selectTabViewItemAtIndex(NSInteger(i));
+  itm := NSTabViewItem( fulltabs.objectAtIndex(index) );
+  visibleIndex := indexOfTabViewItem( itm );
+  if visibleIndex <> NSNotFound then begin
+    inherited selectTabViewItemAtIndex( visibleIndex );
+  end else begin
+    UpdateTabAndArrowVisibility( self );
+    visibleIndex:= indexOfTabViewItem( itm );
+    inherited selectTabViewItemAtIndex( visibleIndex );
   end;
 end;
 
