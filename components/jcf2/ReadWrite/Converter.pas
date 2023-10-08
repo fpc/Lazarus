@@ -191,6 +191,7 @@ begin
         { if there was a parse error, the rest of the unit was not parsed
          there may still be tokens in the list
          Free them or face a small but annoying memory leak. }
+        lcTokenList.OwnsObjects := True;
         lcTokenList.Clear;
       end;
 
