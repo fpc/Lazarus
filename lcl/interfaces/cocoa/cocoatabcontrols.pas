@@ -59,6 +59,9 @@ type
 
   public
     currentIndex : Integer;     // index of the current tab shown
+    procedure attachAllTabs; message 'attachAllTabs';
+
+  public
     callback: ITabControlCallback;
 
     fulltabs : NSMutableArray;  // the full list of NSTabViewItems
@@ -439,6 +442,28 @@ begin
 end;
 
 { TCocoaTabControl }
+
+// by ensuring that selectedTabViewItem cannot be removed
+// and tabView_didSelectTabViewItem is not triggered anymore
+procedure TCocoaTabControl.attachAllTabs;
+var
+  i : integer;
+  itm: NSTabViewItem;
+begin
+  // only selectedItem reserved
+  for itm{%H-} in tabViewItems do begin
+    if itm <> selectedTabViewItem then
+      removeTabViewItem( itm );
+  end;
+
+  // insert all tabs in the order of fulltabs again
+  i:= 0;
+  for itm{%H-} in fulltabs do begin
+    if itm <> selectedTabViewItem then
+      insertTabViewItem_atIndex( itm, i );
+    inc( i );
+  end;
+end;
 
 class function TCocoaTabControl.alloc: id;
 begin
