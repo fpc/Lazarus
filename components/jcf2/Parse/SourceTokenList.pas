@@ -112,7 +112,7 @@ uses
 constructor TSourceTokenList.Create;
 begin
   fiCurrentTokenIndex := 0;
-  OwnsObjects := True;
+  OwnsObjects := False;
   inherited Create(False);
 end;
 
