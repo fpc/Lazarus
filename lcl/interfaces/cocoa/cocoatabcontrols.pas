@@ -103,6 +103,8 @@ type
     // lcl
     procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; index: integer);
       message 'exttabInsertTabViewItem:atIndex:';
+    procedure exttabMoveTabViewItem_toIndex(lTabPage: NSTabViewItem; NewIndex: integer);
+      message 'exttabMoveTabViewItem:toIndex:';
     procedure exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
       message 'exttabRemoveTabViewItem:';
     function exttabIndexOfTabViewItem(lTabPage: NSTabViewItem): NSInteger;
@@ -797,6 +799,37 @@ begin
 
   if Assigned(callback) then callback.MouseMove(event);
   inherited mouseMoved(event);
+end;
+
+procedure TCocoaTabControl.exttabMoveTabViewItem_toIndex(
+  lTabPage: NSTabViewItem; NewIndex: integer);
+var
+  isMovingCurrentPage: Boolean;
+  OldIndex: Integer;
+begin
+  if fulltabs.count=0 then
+    Exit;
+  if NewIndex > fulltabs.count then
+    NewIndex:= fulltabs.count;
+
+  OldIndex := exttabIndexOfTabViewItem( lTabPage );
+  isMovingCurrentPage := (OldIndex=currentIndex);
+
+  fulltabs.removeObjectAtIndex( OldIndex );
+  fulltabs.insertObject_atIndex( lTabPage, NewIndex );
+
+  if isMovingCurrentPage then begin
+    currentIndex:= NewIndex;
+    leftKeepAmount:= currentIndex - visibleLeftIndex;
+    selectTabViewItem( lTabPage );
+  end else begin
+    if (OldIndex<currentIndex) and (NewIndex>currentIndex) then
+      dec( currentIndex )
+    else if (OldIndex>currentIndex) and (NewIndex<=currentIndex) then
+      inc( currentIndex );
+  end;
+
+  UpdateTabAndArrowVisibility( self );
 end;
 
 procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
