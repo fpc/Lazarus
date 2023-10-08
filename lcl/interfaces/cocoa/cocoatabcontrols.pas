@@ -58,8 +58,14 @@ type
     nextarr  : NSButton;
 
   public
-    currentIndex : Integer;     // index of the current tab shown
+    { various indexes in fulltabs }
+    currentIndex : Integer;     // index of the current tab
+    visibleLeftIndex: Integer;  // index shown in TabView on the left
+    visibleRightIndex: Integer; // index shown in TabView on the right
+    leftKeepAmount: Integer;    // left tab amount to keep, equals currentIndex-visibleLeftIndex
+
     procedure attachAllTabs; message 'attachAllTabs';
+    procedure updateVariousIndex; message 'updateVariousIndex';
 
   public
     callback: ITabControlCallback;
@@ -462,6 +468,19 @@ begin
     if itm <> selectedTabViewItem then
       insertTabViewItem_atIndex( itm, i );
     inc( i );
+  end;
+end;
+
+procedure TCocoaTabControl.updateVariousIndex;
+begin
+  if numberOfTabViewItems > 0 then begin
+    visibleLeftIndex:= fulltabs.indexOfObject( tabViewItemAtIndex(0) );
+    visibleRightIndex:= visibleLeftIndex + numberOfTabViewItems - 1;
+    leftKeepAmount:= currentIndex - visibleLeftIndex;
+  end else begin
+    visibleLeftIndex:= -1;
+    visibleRightIndex:= -1;
+    leftKeepAmount:= 0;
   end;
 end;
 
