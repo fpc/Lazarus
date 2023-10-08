@@ -101,7 +101,7 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     // lcl
-    procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; AIndex: integer);
+    procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; index: integer);
       message 'exttabInsertTabViewItem:atIndex:';
     procedure exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
       message 'exttabRemoveTabViewItem:';
@@ -800,12 +800,15 @@ begin
 end;
 
 procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
-  lTabPage: NSTabViewItem; AIndex: integer);
+  lTabPage:NSTabViewItem; index:integer );
 begin
-  if AIndex>fulltabs.count then AIndex:=fulltabs.count;
-  fulltabs.insertObject_atIndex(lTabPage, AIndex);
+  if index > fulltabs.count then
+    index:= fulltabs.count;
+  fulltabs.insertObject_atIndex( lTabPage, index );
+  if index < currentIndex then
+    inc( currentIndex );
 
-  UpdateTabAndArrowVisibility(self);
+  UpdateTabAndArrowVisibility( self );
 end;
 
 procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
