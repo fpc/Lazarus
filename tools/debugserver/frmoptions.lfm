@@ -1,83 +1,89 @@
 object OptionsForm: TOptionsForm
   Left = 390
-  Height = 275
+  Height = 548
   Top = 239
-  Width = 390
+  Width = 841
   Caption = 'Options'
-  ClientHeight = 275
-  ClientWidth = 390
+  ClientHeight = 548
+  ClientWidth = 841
+  DesignTimePPI = 192
   Position = poMainFormCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '3.99.0.0'
   object ButtonPanel1: TButtonPanel
-    Left = 6
-    Height = 35
-    Top = 234
-    Width = 378
+    Left = 12
+    Height = 67
+    Top = 469
+    Width = 817
+    BorderSpacing.Around = 12
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
   object GBWindow: TGroupBox
-    Left = 16
-    Height = 81
-    Top = 16
-    Width = 300
+    Left = 32
+    Height = 162
+    Top = 32
+    Width = 600
     Caption = 'Show message window'
-    ClientHeight = 59
-    ClientWidth = 296
+    ClientHeight = 118
+    ClientWidth = 598
     TabOrder = 1
     object CBShowOnStartUp: TCheckBox
-      Left = 14
-      Height = 21
-      Top = 9
-      Width = 126
+      Left = 28
+      Height = 47
+      Top = 18
+      Width = 302
       Caption = 'Show on startup'
       TabOrder = 0
     end
     object CBShowOnMessage: TCheckBox
-      Left = 13
-      Height = 21
-      Top = 37
-      Width = 164
+      Left = 26
+      Height = 47
+      Top = 74
+      Width = 408
       Caption = 'Show on new message'
       TabOrder = 1
     end
   end
   object GBMessages: TGroupBox
-    Left = 16
-    Height = 115
-    Top = 109
-    Width = 300
+    Left = 32
+    Height = 230
+    Top = 218
+    Width = 600
     Caption = 'Messages'
-    ClientHeight = 93
-    ClientWidth = 296
+    ClientHeight = 186
+    ClientWidth = 598
     TabOrder = 2
     object CBNewAtBottom: TCheckBox
-      Left = 13
-      Height = 21
-      Top = 5
-      Width = 216
+      Left = 26
+      Height = 47
+      Top = 10
+      Width = 552
       Caption = 'Show new messages at bottom'
       TabOrder = 0
     end
     object CBNewVisible: TCheckBox
-      Left = 14
-      Height = 21
-      Top = 29
-      Width = 206
+      Left = 28
+      Height = 47
+      Top = 58
+      Width = 536
       Caption = 'Scroll new messages into view'
       TabOrder = 1
     end
     object CBCleanLogOnNewProcess: TCheckBox
-      Left = 14
-      Height = 21
-      Top = 55
-      Width = 179
+      Left = 28
+      Height = 47
+      Top = 110
+      Width = 454
       Caption = 'Clean log on new process'
       TabOrder = 2
     end
