@@ -54,7 +54,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils,
+  JcfStringUtils, Math,
   SourceToken, Nesting, FormatFlags, JcfSettings, TokenUtils,
   Tokens, ParseTreeNode, ParseTreeNodeType, SettingsTypes;
 
@@ -336,9 +336,82 @@ begin
   end;
 end;
 
+function CalculateIndent(const pt: TSourceToken;aAlignPreprocessor:boolean=true): integer;forward;
 
+//Align {$ENDIF}/{$IFEND}/{$ELSE}/{$ELSEIF} with his  {$IF}/{$IFDEF}/{$$IFNDEF}/{$IFOPT}
+//find minimal ident level of all conditional directives.
+function AlignConditionalDirectives(const pt: TSourceToken; aSpaces: integer): integer;
+var
+  lLevel: integer;
+  liMinPos: integer;
+  liPos: integer;
+  pToken: TSourceToken;
+const
+  BEGIN_CONDIDIONAL = [ppIfDef, ppIfNotDef, ppIfOpt, ppIfExpr];
+  END_CONDITIONAL = [ppEndIf, ppIfEnd];
+  ALL_CONDITIONAL = [ppIfDef, ppIfNotDef, ppIfOpt, ppIfExpr, ppElse, ppElseIf, ppEndIf, ppIfEnd];
+begin
+  Result := aSpaces;
+  if pt.PreprocessorSymbol in ALL_CONDITIONAL then
+  begin
+    liMinPos := aSpaces;
+    // scan backwards until IFDEF/IFNDEF/IFOPT/IF
+    pToken := pt;
+    if (pToken <> nil) and (not (pToken.PreprocessorSymbol in BEGIN_CONDIDIONAL)) then
+    begin
+      pToken := pToken.PriorToken;
+      lLevel := 1;
+      while pToken <> nil do
+      begin
+        if pToken.PreprocessorSymbol in ALL_CONDITIONAL then
+        begin
+          if pToken.PreprocessorSymbol in END_CONDITIONAL then
+            Dec(lLevel);
+          if lLevel = 1 then
+          begin
+            if pToken.SolidTokenOnLineIndex = 0 then  // is first token in the line.
+            begin
+              liPos := CalculateIndent(pToken, False);
+              liMinPos := min(liMinPos, liPos);
+            end;
+            if pToken.PreprocessorSymbol in BEGIN_CONDIDIONAL then
+              Break;
+          end;
+          if pToken.PreprocessorSymbol in END_CONDITIONAL then
+            Inc(lLevel);
+        end;
+        pToken := pToken.PriorToken;
+      end;
+    end;
+    // scan from token until ENDIF/IFEND
+    pToken := pt;
+    lLevel := 0;
+    while pToken <> nil do
+    begin
+      if pToken.PreprocessorSymbol in ALL_CONDITIONAL then
+      begin
+        if pToken.PreprocessorSymbol in BEGIN_CONDIDIONAL then
+          Inc(lLevel);
+        if lLevel = 1 then
+        begin
+          if pToken.SolidTokenOnLineIndex = 0 then  // is first token in the line.
+          begin
+            liPos := CalculateIndent(pToken, False);
+            liMinPos := min(liMinPos, liPos);
+          end;
+          if pToken.PreprocessorSymbol in END_CONDITIONAL then
+            Break;
+        end;
+        if pToken.PreprocessorSymbol in END_CONDITIONAL then
+          Dec(lLevel);
+      end;
+      pToken := pToken.NextToken;
+    end;
+    Result := liMinPos;
+  end;
+end;
 
-function CalculateIndent(const pt: TSourceToken): integer;
+function CalculateIndent(const pt: TSourceToken;aAlignPreprocessor:boolean=true): integer;
 var
   liIndentCount: integer;
   lbHasIndentedRunOnLine: boolean;
@@ -707,7 +780,12 @@ begin
         Result := FormattingSettings.Indent.SpacesForIndentLevel(1);
     end;
   end;
-
+  // Align {$ELSE},{$ENDIF},... with {$IF}...
+  if (pt.TokenType=ttComment) and (pt.CommentStyle=eCompilerDirective) then
+  begin
+    if aAlignPreprocessor then
+      Result:=AlignConditionalDirectives(pt,Result);
+  end;
 end;
 
 constructor TIndenter.Create;
