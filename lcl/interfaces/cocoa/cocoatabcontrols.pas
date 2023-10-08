@@ -241,20 +241,6 @@ begin
   aview.nextarr.setAction( ObjCSelector('nextClick:') );
 end;
 
-// only missing ViewItems inserted, RemoveAllTabs() is no longer needed,
-// and tabView_didSelectTabViewItem is not triggered anymore
-procedure AttachAllTabs(aview: TCocoaTabControl);
-var
-  i : integer;
-  itm: NSTabViewItem;
-begin
-  for i := 0 to aview.fulltabs.count - 1 do begin
-    itm := NSTabViewItem( aview.fulltabs.objectAtIndex(i) );
-    if aview.indexOfTabViewItem(itm) = NSNotFound then
-      aview.insertTabViewItem_atIndex( itm, i);
-  end;
-end;
-
 // by fine-tuning the algorithm, guarantee that the `selectedTabViewItem`
 // remains unchanged when TabControl is not wide enough,
 // so as to avoid a lot of useless `tabView_didSelectTabViewItem` events are triggered
@@ -283,6 +269,9 @@ var
   ofs : integer;
   frw: double;
   v : NSView;
+
+  tryToKeepIndex : NSInteger;
+  leftIndex : Integer;
 begin
   ShowPrev := false;
   ShowNext := false;
@@ -292,10 +281,13 @@ begin
 
   if aview.fulltabs.count=0 then exit;
 
+  tryToKeepIndex:= aview.currentIndex - aview.leftKeepAmount;
+
   // AttachAllTabs() has been modified to not remove the selectedTabViewItem first,
   // and no longer trigger tabView_didSelectTabViewItem
-  if (aview.fulltabs.count>aview.tabViewItems.count) then
-    AttachAllTabs(aview);
+  // regardless of whether aview.fulltabs.count>aview.tabViewItems.count,
+  // tabs need to be attached because the order may have been adjusted.
+  aview.attachAllTabs;
 
   minw := aview.minimumSize.width;
   if (minw<aview.frame.size.width) then Exit;
@@ -328,7 +320,19 @@ begin
   //    selectedTabViewItem is guaranteed to remain in the updated tabViewItems
   xd := lwid[ofs];
 
-  // 2. try to keep the tabs on the right side until it's not wide enough
+  // 2. try to keep the tabs on the left side, the amount not exceed leftKeepAmount,
+  //    in order to fix the position of currentTab.
+  leftIndex := ofs;
+  for i := ofs-1 downto tryToKeepIndex do begin
+    if xd + lwid[i] > frw then begin
+      ShowPrev := true;
+      Break;
+    end;
+    xd := xd + lwid[i];
+    leftIndex := i;
+  end;
+
+  // 3. try to keep the tabs on the right side until it's not wide enough
   //    and ShowNext if necessary
   for i := ofs+1 to length(lwid)-1 do begin
     if xd + lwid[i] > frw then begin
@@ -340,17 +344,20 @@ begin
     xd := xd + lwid[i];
   end;
 
-  // 3. try to keep the tabs on the left side until it's not wide enough
+  // 4. try to keep the tabs on the left side until it's not wide enough
   //    and ShowPrev if necessary
-  for i := ofs-1 downto 0 do begin
+  if leftIndex <= 0 then
+    exit;
+  for i := leftIndex-1 downto 0 do begin
     if xd + lwid[i] > frw then begin
-      for j:=i downto 0 do
-        aview.removeTabViewItem( arr.objectAtIndex(j));
       ShowPrev := true;
       Break;
     end;
     xd := xd + lwid[i];
+    leftIndex := i;
   end;
+  for j:=leftIndex-1 downto 0 do
+    aview.removeTabViewItem( arr.objectAtIndex(j));
 end;
 
 procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
