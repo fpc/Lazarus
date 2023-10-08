@@ -434,6 +434,7 @@ var
   sourceCodeLowerCase: string;
   lcStartIndex, lcEndIndex: integer;
   hasInterface, hasImplementation: boolean;
+  liInterfacePos,liImplementationPos:integer;
 
   procedure AddFakeUnit;
   begin
@@ -441,17 +442,39 @@ var
   end;
 
   procedure AddFakeInterface;
+  var
+    liUsesPos:integer;
   begin
     sourceCode := sourceCode + 'interface{:*_*:}' + #10;
-    sourceCode := sourceCode + 'type' + #10;        // if there is only a class selected this is required
-    sourceCode := sourceCode + 'faketjcfifc=' + END_MARK_INTERFACE + #10;
+    liUsesPos:=PosEx('uses',sourceCodeLowerCase,1);
+    if (liUsesPos>0) and (liImplementationPos>0) and (liUsesPos<liImplementationPos)
+      and (length(sourceCodeLowerCase)>=liUsesPos+4) and CharIsWhiteSpace(sourceCodeLowerCase[liUsesPos+4]) then
+    begin
+      sourceCode := sourceCode + '// ' + END_MARK_INTERFACE + #10;
+    end
+    else
+    begin
+      sourceCode := sourceCode + 'type' + #10;        // if there is only a class selected this is required
+      sourceCode := sourceCode + 'faketjcfifc=' + END_MARK_INTERFACE + #10;
+    end;
   end;
 
   procedure AddFakeImplementation;
+  var
+    liUsesPos:integer;
   begin
     sourceCode := sourceCode + 'implementation{:*_*:}' + #10;
-    sourceCode := sourceCode + 'type' + #10;
-    sourceCode := sourceCode + 'faketjcfimpl=' + END_MARK_IMPLEMENTATION + #10;
+    liUsesPos:=PosEx('uses',sourceCodeLowerCase,1);
+    if ((not hasInterface) and (not hasImplementation)) and (liUsesPos>0)
+      and (length(sourceCodeLowerCase)>=liUsesPos+4) and CharIsWhiteSpace(sourceCodeLowerCase[liUsesPos+4]) then
+    begin
+      sourceCode := sourceCode + '// ' + END_MARK_IMPLEMENTATION + #10;
+    end
+    else
+    begin
+      sourceCode := sourceCode + 'type' + #10;
+      sourceCode := sourceCode + 'faketjcfimpl=' + END_MARK_IMPLEMENTATION + #10;
+    end;
   end;
 
   procedure AddFakeEnd;
@@ -462,8 +485,8 @@ var
 begin
   //WRAPPING the inputCode in a fake unit
   sourceCodeLowerCase := LowerCase(fsInputCode);
-  hasInterface := HasStringAtLineStart(sourceCodeLowerCase, 'interface');
-  hasImplementation := HasStringAtLineStart(sourceCodeLowerCase, 'implementation');
+  hasInterface := HasStringAtLineStart(sourceCodeLowerCase, 'interface', liInterfacePos);
+  hasImplementation := HasStringAtLineStart(sourceCodeLowerCase, 'implementation', liImplementationPos);
   sourceCode := '';
   AddFakeUnit;
   if hasInterface = False then

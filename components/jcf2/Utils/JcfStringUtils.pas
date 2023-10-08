@@ -154,7 +154,7 @@ procedure FindLineOffsets(const aStr: string; aLineStart, aLineEnd: integer;
                       out aLineStartOffset: integer; out aLineEndOffset:integer);
 function SkipLeftSpaces(const aStr: string; aPos: integer): integer;
 function SkipToNextLine(const aStr: string; aPos: integer): integer;
-function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
+function HasStringAtLineStart(const aSourceCode: string; const aStr: string;var aStringPos:integer): boolean;
 function StrTrimLastEndOfLine(const aStr:string):string;
 // string starts with LF, CR, ignores prior spaces
 function StrStartsWithLineEnd(const aStr:string):boolean;
@@ -660,11 +660,12 @@ begin
   Result := aPos;
 end;
 
-function HasStringAtLineStart(const aSourceCode: string; const aStr: string): boolean;
+function HasStringAtLineStart(const aSourceCode: string; const aStr: string;var aStringPos:integer): boolean;
 var
   index, stringStart: integer;
 begin
   index := 1;
+  aStringPos := -1;
   while (index > 0) and (index < length(aSourceCode)) do
   begin
     stringStart := PosEx(aStr, aSourceCode, index);
@@ -672,7 +673,10 @@ begin
     begin
       index := SkipLeftSpaces(aSourceCode, stringStart);
       if (index > 0) and ((index = 1) or (aSourceCode[index] in [#10, #13])) then
+      begin
+        aStringPos:=stringStart;
         exit(True);
+      end;
       index := stringStart + length(aStr);
     end
     else
