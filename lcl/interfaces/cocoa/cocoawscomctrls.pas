@@ -766,8 +766,7 @@ begin
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
-  lTabControl.exttabremoveTabViewItem(lTabPage);
-  lTabControl.exttabinsertTabViewItem_atIndex(lTabPage, NewIndex);
+  lTabControl.exttabMoveTabViewItem_toIndex( lTabPage, NewIndex );
 end;
 
 class procedure TCocoaWSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer);

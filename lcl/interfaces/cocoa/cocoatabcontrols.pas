@@ -359,6 +359,7 @@ var
   showPrev : Boolean;
 begin
   ReviseTabs(aview, showPrev, showNExt);
+  aview.updateVariousIndex;
   if Assigned(aview.prevarr) then
   begin
     PlaceButton(true, aview.prevarr, aview);
