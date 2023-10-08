@@ -24,7 +24,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, //CocoaGDIObjects,
@@ -844,17 +844,20 @@ begin
   UpdateTabAndArrowVisibility( self );
 end;
 
-procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+procedure TCocoaTabControl.exttabRemoveTabViewItem( lTabPage: NSTabViewItem );
 var
-  idx : NSInteger;
+  removedIndex: Integer;
 begin
-  idx := indexOfTabViewItem(lTabPage);
-  if (idx>=0) and (idx<>NSNotFound) then
-    removeTabViewItem(lTabPage);
-
-  fulltabs.removeObject(lTabPage);
-
-  UpdateTabAndArrowVisibility(self);
+  removedIndex := exttabIndexOfTabViewItem( lTabPage );
+  fulltabs.removeObject( lTabPage );
+  if InRange(removedIndex, visibleLeftIndex, visibleRightIndex) then begin
+    removeTabViewItem( lTabPage );
+    leftKeepAmount:= currentIndex - visibleLeftIndex;
+  end else begin
+    if removedIndex < currentIndex then
+      dec( currentIndex );
+  end;
+  UpdateTabAndArrowVisibility( self );
 end;
 
 function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
