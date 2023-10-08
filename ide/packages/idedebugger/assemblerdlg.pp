@@ -127,6 +127,7 @@ type
     FCurrentLocation: TDBGPtr; // current view location (lines are relative to this location)
     FLocation: TDBGPtr;  // the actual PC, green "=>" execution mark
     FMouseIsDown: Boolean;
+    FMouseDownX, FMouseDownY: Integer;
     FLinkLine, FTargetLine: integer;
     FIsVScrollTrack: Boolean;
     FVScrollCounter, FVScrollPos: Integer;
@@ -575,6 +576,8 @@ begin
   debugln(['TAssemblerDlg.pbAsmClick ',dbgs(p)]);
   if P.x > FGutterWidth then exit;
   Line := P.Y div FLineHeight;
+  if FMouseIsDown and (FMouseDownY <> Line) then
+    exit;
 
   if not (FLineMap[Line].State in [lmsStatement, lmsSource])
   then exit;
@@ -650,10 +653,13 @@ begin
   case Button of
     mbLeft: begin
       FMouseIsDown := True;
+      FMouseDownX := X;
+      FMouseDownY := Y;
       if FLinkLine >= 0 then
         Invalidate;
       FTargetLine := -1;
       FLinkLine := -1;
+      if X <= FGutterWidth then exit;
       if not(ssCtrl in Shift) then begin
         SetSelection(FTopLine + Y, False, ssShift in Shift);
       end
@@ -678,13 +684,14 @@ begin
   y := Y div FLineHeight;
   case FMouseIsDown of
     True: begin
-      if (FLinkLine < 0) and (y >= 0) and (y < FLineCount)
+      if (FLinkLine < 0) and (y >= 0) and (y < FLineCount) and (FMouseDownX > FGutterWidth)
       then SetSelection(FTopLine + Y, False, True);
     end;
     False: begin
       if (ssCtrl in Shift) and
          (Y >= 0) and (y <= FLineCount) and
-         (FLineMap[y].TargetAddr <> 0) and (FDebugger <> nil)
+         (FLineMap[y].TargetAddr <> 0) and (FDebugger <> nil) and
+         (X > FGutterWidth)
       then begin
         if (FLinkLine <> y) then
           Invalidate;
@@ -709,7 +716,8 @@ begin
 
   if (ssCtrl in Shift) and (FLinkLine = y div FLineHeight) and
      (FLinkLine >= 0) and (FLinkLine <= FLineCount) and
-     (FLineMap[FLinkLine].TargetAddr <> 0) and (FDebugger <> nil)
+     (FLineMap[FLinkLine].TargetAddr <> 0) and (FDebugger <> nil) and
+     (X > FGutterWidth) and (FMouseDownX > FGutterWidth)
   then begin
     SetLocation(FDebugger, FLineMap[FLinkLine].TargetAddr);
   end;
