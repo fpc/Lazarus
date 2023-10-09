@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: uconst.rsdefault
+msgid "Default"
+msgstr "默认"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr "示例所在目录"
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr "类别"
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr "关闭"
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr "关键字"
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr "名称"
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr "打开"
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr "路径"
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr "示例项目"
+
+#: uconst.rsexamplerefresh
+msgid "Refresh"
+msgstr "刷新"
+
+#: uconst.rsexampleview
+msgid "View in Browser"
+msgstr "在浏览器中查看"
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr "正在复制项目……"
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr "正在下载项目……"
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr "GitLab 网络错误"
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr "项目文件未找到。"
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr "项目复制到"
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr "项目下载到"
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr "正在示例中搜索……"
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr "在此搜索"
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr "未能将文件复制到"
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr "找到 %d 个示例项目"
+
+#: uconst.rsgeneral
+msgid "General"
+msgstr "常规"
+
+#: uconst.rsgrouphint
+msgid "Double click inverts selection"
+msgstr "双击可反转选择"
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr "刷新现有示例？"
+

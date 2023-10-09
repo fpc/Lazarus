@@ -1,0 +1,326 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: simplewebsrvstrconsts.rsswadd
+msgid "Add"
+msgstr "添加"
+
+#: simplewebsrvstrconsts.rsswaddcustomserver
+msgid "Add Custom Server"
+msgstr "添加自定义服务器"
+
+#: simplewebsrvstrconsts.rsswaddextracommandlineoptionsforthecommandwhichstarts
+msgid "Add extra command-line options for the command which starts the webserver."
+msgstr "为启动网站服务器的命令添加额外的命令行选项。"
+
+#: simplewebsrvstrconsts.rsswaddlocation
+msgid "Add Location"
+msgstr "添加路径"
+
+#: simplewebsrvstrconsts.rsswaddsimplewebserverlocation
+msgid "Add Simple Web Server Location"
+msgstr "添加简易网站服务器路径"
+
+#: simplewebsrvstrconsts.rsswanarbitrarynamefortheurlsubfolder
+msgid "An arbitrary name for the URL subfolder"
+msgstr "URL 子文件夹的任意名称"
+
+#: simplewebsrvstrconsts.rsswbindingofsocketfailed
+msgid "Binding of socket failed"
+msgstr "套接字绑定失败"
+
+#: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
+msgid "Browser to open HTML page, macro $(SWSBrowser)"
+msgstr "打开 HTML 页面的浏览器，宏 $(SWSBrowser)"
+
+#: simplewebsrvstrconsts.rsswcannotfindbrowsersee
+msgid "Cannot find browser. See"
+msgstr "无法找到浏览器，详见"
+
+#: simplewebsrvstrconsts.rsswcommandlineparameters
+msgid "Command line parameters"
+msgstr "命令行参数"
+
+#: simplewebsrvstrconsts.rsswconfigure
+msgid "Configure"
+msgstr "配置"
+
+#: simplewebsrvstrconsts.rsswcopylocation
+msgid "Copy Location"
+msgstr "复制路径"
+
+#: simplewebsrvstrconsts.rsswcopyorigin
+msgid "Copy Origin"
+msgstr "复制来源"
+
+#: simplewebsrvstrconsts.rsswcopyurl
+msgid "Copy URL"
+msgstr "复制 URL"
+
+#: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
+msgid "Copy Working Directory Path"
+msgstr "复制工作目录"
+
+#: simplewebsrvstrconsts.rsswcustomserver
+msgid "Custom Server"
+msgstr "自定义服务器"
+
+#: simplewebsrvstrconsts.rsswdelete
+msgid "Delete?"
+msgstr "是否删除？"
+
+#: simplewebsrvstrconsts.rsswdelete2
+msgid "Delete"
+msgstr "删除"
+
+#: simplewebsrvstrconsts.rsswdeletelocation
+#, object-pascal-format
+msgid "Delete location \"%s\"?"
+msgstr "是否删除路径 \"%s\" ？"
+
+#: simplewebsrvstrconsts.rsswdeleteserverat
+#, object-pascal-format
+msgid "Delete server at \"%s\"?"
+msgstr "是否删除位于 \"%s\" 的服务器？"
+
+#: simplewebsrvstrconsts.rsswdirectorynotfound
+msgid "Directory not found."
+msgstr "目录未找到。"
+
+#: simplewebsrvstrconsts.rsswerror
+msgid "Error"
+msgstr "错误"
+
+#: simplewebsrvstrconsts.rsswerrorcheckingwhichprocessusestcpport
+#, object-pascal-format
+msgid "Error checking which process uses TCP port %s:"
+msgstr "在检查哪个进程使用 TCP 端口 %s 时出错："
+
+#: simplewebsrvstrconsts.rsswerrorcreatingdirectory
+msgid "Error creating directory"
+msgstr "创建目录出错"
+
+#: simplewebsrvstrconsts.rsswerrorfindingfreetcpport
+msgid "Error finding free TCP port:"
+msgstr "查找可用 TCP 端口出错："
+
+#: simplewebsrvstrconsts.rsswerrorkillingprocess
+#, object-pascal-format
+msgid "Error killing process %s:"
+msgstr "杀死 %s 进程出错："
+
+#: simplewebsrvstrconsts.rsswerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\":"
+msgstr "写入 \"%s\" 时出错："
+
+#: simplewebsrvstrconsts.rsswexecutable
+msgid "Executable"
+msgstr "可执行"
+
+#: simplewebsrvstrconsts.rsswfilenotfound
+#, object-pascal-format
+msgid "File not found: \"%s\""
+msgstr "未找到文件： \"%s\""
+
+#: simplewebsrvstrconsts.rsswinvalidmacrosee
+msgid "Invalid macro. See"
+msgstr "宏无效，详见"
+
+#: simplewebsrvstrconsts.rsswinvalidport
+msgid "Invalid Port."
+msgstr "端口无效。"
+
+#: simplewebsrvstrconsts.rsswkillpid
+#, object-pascal-format
+msgid "Kill PID %s"
+msgstr "杀死 PID %s"
+
+#: simplewebsrvstrconsts.rsswkillprocess
+msgid "Kill process?"
+msgstr "是否杀死进程？"
+
+#: simplewebsrvstrconsts.rsswlocaldirectory
+msgid "Local Directory"
+msgstr "本地目录"
+
+#: simplewebsrvstrconsts.rsswlocaldirectorynotfound
+msgid "Local directory not found:"
+msgstr "本地目录未找到："
+
+#: simplewebsrvstrconsts.rsswlocation
+msgid "Location"
+msgstr "路径"
+
+#: simplewebsrvstrconsts.rsswlocationalreadyused
+msgid "Location already used."
+msgstr "路径已被使用。"
+
+#: simplewebsrvstrconsts.rsswmissingcontroller
+msgid "missing controller"
+msgstr "缺少控制器"
+
+#: simplewebsrvstrconsts.rsswmissinglocaldirectory
+msgid "Missing local directory."
+msgstr "缺少本地目录。"
+
+#: simplewebsrvstrconsts.rsswmissinglocation
+msgid "Missing Location."
+msgstr "缺少路径。"
+
+#: simplewebsrvstrconsts.rsswmissingserverexecutable
+msgid "Missing server executable."
+msgstr "缺少服务器可执行文件。"
+
+#: simplewebsrvstrconsts.rsswnote
+msgid "Note"
+msgstr "备注"
+
+#: simplewebsrvstrconsts.rssworigin
+msgid "Origin"
+msgstr "来源"
+
+#: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
+msgid "Parameters (please use macro $(port))"
+msgstr "参数（请使用宏 $(port)）"
+
+#: simplewebsrvstrconsts.rsswport
+msgid "Port"
+msgstr "端口"
+
+#: simplewebsrvstrconsts.rsswportalreadyused
+msgid "Port already used."
+msgstr "端口已使用。"
+
+#: simplewebsrvstrconsts.rsswsaddress
+msgid "Address"
+msgstr "地址"
+
+#: simplewebsrvstrconsts.rsswsbindany
+msgid "Bind Any"
+msgstr "绑定任意地址"
+
+#: simplewebsrvstrconsts.rsswselectdirectory
+msgid "Select Directory"
+msgstr "选择目录"
+
+#: simplewebsrvstrconsts.rsswserverdirectorynotfound
+#, object-pascal-format
+msgid "Server directory \"%s\" not found."
+msgstr "未找到服务器目录 \"%s\"。"
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfound
+msgid "Server executable not found."
+msgstr "未找到服务器可执行文件。"
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath
+#, object-pascal-format
+msgid "Server executable \"%s\" not found in PATH."
+msgstr "在 PATH 中未找到服务器可执行文件 \"%s\"。"
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath2
+msgid "Server executable not found in PATH."
+msgstr "在 PATH 中找不到服务器可执行文件。"
+
+#: simplewebsrvstrconsts.rsswserverexeisnotexecutable
+#, object-pascal-format
+msgid "Server exe is not executable: \"%s\""
+msgstr "服务器程序不是可执行文件：\"%s\""
+
+#: simplewebsrvstrconsts.rsswserverexeisnotexecutable2
+msgid "Server exe is not executable."
+msgstr "服务器程序不是可执行文件。"
+
+#: simplewebsrvstrconsts.rsswserverextracommandlineoptionsoneperline
+msgid "Server extra command-line options (one per line)"
+msgstr "服务器额外命令行选项（每行一个）"
+
+#: simplewebsrvstrconsts.rsswsimplewebserveraddress
+msgid "Simple Web Server Address"
+msgstr "简易网站服务器地址"
+
+#: simplewebsrvstrconsts.rsswsimplewebserverexecutable
+msgid "Simple Web Server Executable"
+msgstr "简易网站服务器可执行文件"
+
+#: simplewebsrvstrconsts.rsswsimplewebserverport
+msgid "Simple Web Server Port"
+msgstr "简易网站服务器端口"
+
+#: simplewebsrvstrconsts.rsswspathofcompileserver
+msgid "Path of compileserver, macro $(SWSExe)"
+msgstr "compileserver 的路径，宏 $(SWSExe)"
+
+#: simplewebsrvstrconsts.rsswsportmacro
+msgctxt "simplewebsrvstrconsts.rsswsportmacro"
+msgid "Port, macro $(SWSPort)"
+msgstr "端口，宏 $(SWSPort)"
+
+#: simplewebsrvstrconsts.rsswstartserver
+msgid "Start Server"
+msgstr "启动服务"
+
+#: simplewebsrvstrconsts.rsswstitle
+msgid "Simple Web Server"
+msgstr "简易网站服务器"
+
+#: simplewebsrvstrconsts.rsswstopserver
+msgid "Stop Server"
+msgstr "停止服务"
+
+#: simplewebsrvstrconsts.rsswsuserorigin
+msgid "User"
+msgstr "用户"
+
+#: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
+msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
+msgstr "TCP 端口 1024 ~ 65535（以下参数可使用宏 $(port)）"
+
+#: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
+msgid "The following process already listens:"
+msgstr "已监听下面的进程："
+
+#: simplewebsrvstrconsts.rsswthereisalreadyaserveronportoriginpath
+#, object-pascal-format
+msgid "There is already a server on port %s:%sOrigin: %sPath: %s"
+msgstr "端口 %s 上已有服务器：%s来源: %s路径：%s"
+
+#: simplewebsrvstrconsts.rsswtoolsoptionssimplewebserverbrowser
+msgid "Tools / Options / Simple Web Server / Browser"
+msgstr "工具 / 选项 / 简易网站服务器 / 浏览器"
+
+#: simplewebsrvstrconsts.rsswtryanotherport
+msgid "Try another port"
+msgstr "尝试另一个端口"
+
+#: simplewebsrvstrconsts.rsswunabletoaddlocation
+msgid "Unable to add location:"
+msgstr "无法添加路径："
+
+#: simplewebsrvstrconsts.rsswusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
+msgstr "在打开网站浏览器项目的 URL 或 HTML 文件时使用该浏览器"
+
+#: simplewebsrvstrconsts.rsswworkingdirectory
+msgid "Working Directory"
+msgstr "工作目录"
+
+#: simplewebsrvstrconsts.rsswworkingdirectoryondiskusuallywheretheserverfetches
+msgid "Working directory on disk, usually where the server fetches files from"
+msgstr "磁盘上的工作目录，通常是服务器获取文件的地方"
+
+#: simplewebsrvstrconsts.rsswwrongcompileserverexe
+#, object-pascal-format
+msgid "Wrong compileserver exe: %s"
+msgstr "错误的 compileserver exe：%s"
+
