@@ -5536,51 +5536,174 @@ var
 const
   MAX_SEARCH_ADDR = 8000;
   MAX_SEARCH_CNT = 400;
+  MAX_ADDR_DONE_BLOCKS = 10;
+  MAX_FORWARD_ADDR = 5;
 var
-  MaxAddr, MaxAddr2, StartAddr, StartStack, Tmp: TDBGPtr;
-  ConditionalForwardAddr, BackwardJumpAddress: TDBGPtr;
+  AddressDoneBlocks: array [0..MAX_ADDR_DONE_BLOCKS] of record
+    First, Last: TDBGPtr;
+  end;
+  CurAddressDoneBlock: integer;
+  MaxAddrCurrentBlock: TDBGPtr;
+  ConditionalForwardAddr: array [0..MAX_FORWARD_ADDR+1] of TDBGPtr;
+  CurConditionalForwardAddr: integer;
+
+  function AddrWasDone(AnAddr: TDBGPtr): boolean; inline;
+  var
+    i: Integer;
+  begin
+    i := CurAddressDoneBlock;
+    Result := (AnAddr >= AddressDoneBlocks[i].First) and (AnAddr < NewAddr);
+    while (not Result) and (i > 0) do begin
+      dec(i);
+      Result := (AnAddr >= AddressDoneBlocks[i].First) and (AnAddr < AddressDoneBlocks[i].Last);
+    end;
+  end;
+
+  function NextDoneAddrFor(AnAddr: TDBGPtr): TDBGPtr; inline;
+  var
+    i: Integer;
+  begin
+    Result := high(TDBGPtr);
+    i := CurAddressDoneBlock - 1;
+    while (i >= 0) do begin
+      if (AnAddr < AddressDoneBlocks[i].First) and
+         (Result > AddressDoneBlocks[i].First)
+      then
+        Result := AddressDoneBlocks[i].First;
+      dec(i);
+    end;
+  end;
+
+  procedure FinishCurAddrBlock; inline;
+  begin
+    if CurAddressDoneBlock < MAX_ADDR_DONE_BLOCKS then begin
+      AddressDoneBlocks[CurAddressDoneBlock].Last :=  NewAddr;
+      inc(CurAddressDoneBlock);
+      AddressDoneBlocks[CurAddressDoneBlock].First :=  high(TDBGPtr);
+    end
+    else
+    if NewAddr > AddressDoneBlocks[CurAddressDoneBlock].Last then begin
+      AddressDoneBlocks[CurAddressDoneBlock].Last :=  NewAddr;
+    end;
+  end;
+  procedure StartNextAddrBlock; inline;
+  begin
+    if CurAddressDoneBlock < MAX_ADDR_DONE_BLOCKS then
+      AddressDoneBlocks[CurAddressDoneBlock].First :=  NewAddr
+    else
+      if NewAddr < AddressDoneBlocks[CurAddressDoneBlock].First then
+        AddressDoneBlocks[CurAddressDoneBlock].First :=  NewAddr;
+
+    MaxAddrCurrentBlock := NextDoneAddrFor(NewAddr);
+  end;
+
+  procedure CheckConditionalForwAddr; inline;
+  var
+    j, i: Integer;
+  begin
+    j := 0;
+    for i := 0 to CurConditionalForwardAddr do
+      if (ConditionalForwardAddr[i] >=  NewAddr) or
+         (ConditionalForwardAddr[i] < AddressDoneBlocks[CurAddressDoneBlock].First)
+      then begin
+        ConditionalForwardAddr[j] := ConditionalForwardAddr[i];
+        inc(j);
+      end;
+    CurConditionalForwardAddr := j - 1;
+  end;
+
+  procedure AddConditionalForwAddr(AnAddr: TDBGPtr); inline;
+  var
+    i, j: Integer;
+  begin
+    i := CurConditionalForwardAddr;
+    while (i >= 0) and (AnAddr <> ConditionalForwardAddr[i]) do
+      dec(i);
+    if i >= 0 then
+      exit;
+
+    if CurConditionalForwardAddr < MAX_FORWARD_ADDR then begin
+      inc(CurConditionalForwardAddr);
+      ConditionalForwardAddr[CurConditionalForwardAddr] := AnAddr;
+    end
+    else begin
+      j := 0;
+      for i := 0 to CurConditionalForwardAddr do
+        if (ConditionalForwardAddr[i] >=  NewAddr) or
+           (ConditionalForwardAddr[i] < AddressDoneBlocks[CurAddressDoneBlock].First)
+        then begin
+          ConditionalForwardAddr[j] := ConditionalForwardAddr[i];
+          inc(j);
+        end;
+      CurConditionalForwardAddr := j - 1;
+      if CurConditionalForwardAddr < MAX_FORWARD_ADDR then
+        inc(CurConditionalForwardAddr);
+      ConditionalForwardAddr[CurConditionalForwardAddr] := AnAddr;
+    end;
+  end;
+
+var
+  MaxAddr, StartStack, Tmp: TDBGPtr;
+  BackwardJumpAddress: TDBGPtr;
   Cnt: Integer;
   instr: TX86AsmInstruction;
   RSize: Cardinal;
   Val: Int64;
-  ClearRecValList: Boolean;
+  ClearRecValList, ForceDifferentBranch: Boolean;
   FullName: String;
 begin
   Result := False;
   NewAddr    := AnAddress;
   NewStack   := AStackPtr;
   NewFrame   := AFramePtr;
-  StartAddr  := AnAddress;
   StartStack := AStackPtr;
-  ConditionalForwardAddr := 0;
+  CurConditionalForwardAddr := -1;
   BackwardJumpAddress := 0;
 
   {$PUSH}{$R-}{$Q-}
   MaxAddr := AnAddress + MAX_SEARCH_ADDR;
   {$POP}
-  MaxAddr2 := MaxAddr;
   Cnt := MAX_SEARCH_CNT;
   if AQuick then Cnt := 10;
 
+  CurAddressDoneBlock := 0;
+  AddressDoneBlocks[CurAddressDoneBlock].First := AnAddress;
+  MaxAddrCurrentBlock := MaxAddr;
+
   ClearRecValList := False;
-  while (NewAddr < MaxAddr) and (Cnt > 0) do begin
+  ForceDifferentBranch := False;
+  while (Cnt > 0) do begin
     if ClearRecValList then ARegisterValueList.Clear;
 
-    if NewAddr > MaxAddr2 then begin
-      if (ConditionalForwardAddr > 0) and (BackwardJumpAddress > 0) and
-         (ConditionalForwardAddr >= BackwardJumpAddress)
-      then begin
-        NewAddr := ConditionalForwardAddr;
-        MaxAddr2 := MaxAddr;
+    if ForceDifferentBranch or (NewAddr >= MaxAddr) or( NewAddr > MaxAddrCurrentBlock) then begin
+      CheckConditionalForwAddr;
+      FinishCurAddrBlock;
+      while (CurConditionalForwardAddr >= 0) and
+            AddrWasDone(ConditionalForwardAddr[CurConditionalForwardAddr])
+      do
+        dec(CurConditionalForwardAddr);
+      if (CurConditionalForwardAddr >= 0) then begin
+        NewAddr := ConditionalForwardAddr[CurConditionalForwardAddr];
+        dec(CurConditionalForwardAddr);
+      end
+      else
+      if (BackwardJumpAddress > 0) and (not AddrWasDone(BackwardJumpAddress)) then begin
+        NewAddr := BackwardJumpAddress;
+        BackwardJumpAddress := 0;
       end
       else
         exit;
+      StartNextAddrBlock;
+      ARegisterValueList.Clear;
     end;
+    ForceDifferentBranch := False;
 
     dec(Cnt);
     instr := TX86AsmInstruction(GetInstructionInfo(NewAddr));
-    if instr.InstructionLength <= 0 then
-      exit;
+    if instr.InstructionLength <= 0 then begin
+      ForceDifferentBranch := True;
+      continue;
+    end;
     {$PUSH}{$R-}{$Q-}
     NewAddr := NewAddr + instr.InstructionLength;
     {$POP}
@@ -5624,7 +5747,8 @@ begin
              IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') or
              IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
           then begin
-            exit; // false
+            ForceDifferentBranch := True;
+            continue;
           end;
           {$PUSH}{$R-}{$Q-}
           NewStack := NewStack - RegisterSize(instr.X86Instruction.Operand[1].Value);
@@ -5633,8 +5757,10 @@ begin
       OPpusha:
         begin
           ClearRecValList := False;
-          if (FProcess.Mode <> dm32) or (instr.X86Instruction.OpCode.Suffix <> OPSx_d) then
-            exit;
+          if (FProcess.Mode <> dm32) or (instr.X86Instruction.OpCode.Suffix <> OPSx_d) then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           // push 8 registers
           {$PUSH}{$R-}{$Q-}
           NewStack := NewStack - (8*4);
@@ -5643,19 +5769,28 @@ begin
       OPpushf:
         begin
           ClearRecValList := False;
-          exit; // false
+          ForceDifferentBranch := True;
+          continue;
         end;
       OPpopa, OPpopad:
-        exit; // false
+        begin
+          ClearRecValList := False;
+          ForceDifferentBranch := True;
+          continue;
+        end;
       OPpop:
         begin
-          if instr.X86Instruction.OperCnt <> 1 then
-            exit;
+          if instr.X86Instruction.OperCnt <> 1 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           ClearRecValList := False;
           ClearRegister(instr.X86Instruction.Operand[1].Value);
           if not(instr.X86Instruction.Operand[1].Value[1] in ['e', 'r'])
-          then
-            exit; // false
+          then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
           then begin
             if NewStack < StartStack then
@@ -5696,15 +5831,19 @@ begin
         end;
       OPmov:
         begin
-          if instr.X86Instruction.OperCnt <> 2 then
-            exit;
+          if instr.X86Instruction.OperCnt <> 2 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           ClearRecValList := False;
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             NewStack := Tmp;
           end
           else
@@ -5728,16 +5867,20 @@ begin
         end;
       OPlea:
         begin
-          if instr.X86Instruction.OperCnt <> 2 then
-            exit;
+          if instr.X86Instruction.OperCnt <> 2 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           ClearRecValList := False;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
           then begin
             if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
                (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
                not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
-            then
-              exit;
+            then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
 
             Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'sp%s')) then begin
@@ -5762,8 +5905,10 @@ begin
             if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
                (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
                not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
-            then
-              exit;
+            then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
 
             Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'sp%s')) then begin
@@ -5781,8 +5926,10 @@ begin
             if ValueFromOperand(instr.X86Instruction.Operand[2], Tmp, True) then begin
               NewStack := Tmp;
             end
-            else
-              exit;
+            else begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
           end
           else begin
             FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
@@ -5803,16 +5950,20 @@ begin
         end;
       OPadd:
         begin
-          if instr.X86Instruction.OperCnt <> 2 then
-            exit;
+          if instr.X86Instruction.OperCnt <> 2 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           ClearRecValList := False;
           ClearRegister(instr.X86Instruction.Operand[1].Value);
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             {$PUSH}{$R-}{$Q-}
             NewStack := NewStack + int64(Tmp);
             {$POP}
@@ -5820,8 +5971,10 @@ begin
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             {$PUSH}{$R-}{$Q-}
             NewFrame := NewFrame + int64(Tmp);
             {$POP}
@@ -5829,16 +5982,20 @@ begin
         end;
       OPsub:
         begin
-          if instr.X86Instruction.OperCnt <> 2 then
-            exit;
+          if instr.X86Instruction.OperCnt <> 2 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           ClearRecValList := False;
           ClearRegister(instr.X86Instruction.Operand[1].Value);
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             {$PUSH}{$R-}{$Q-}
             NewStack := NewStack - int64(Tmp);
             {$POP}
@@ -5846,8 +6003,10 @@ begin
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             {$PUSH}{$R-}{$Q-}
             NewFrame := NewFrame - int64(Tmp);
             {$POP}
@@ -5862,47 +6021,74 @@ begin
         then
         begin
           Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
+          {$PUSH}{$R-}{$Q-}
+          Tmp := NewAddr + Val;
+          {$POP}
           if Val > 0 then begin
-            {$PUSH}{$R-}{$Q-}
-            Tmp := NewAddr + Val;
-            {$POP}
-            if (Tmp > ConditionalForwardAddr) and (Tmp < MaxAddr) then
-              ConditionalForwardAddr := Tmp;
+            if (Tmp < MaxAddr) and (not AddrWasDone(Tmp)) then
+              AddConditionalForwAddr(Tmp);
+          end
+          else begin
+            if ((BackwardJumpAddress = 0) or (Tmp < BackwardJumpAddress)) and
+               (not AddrWasDone(Tmp))
+            then
+              BackwardJumpAddress := Tmp;
           end;
         end;
       OPjmp:
         begin
           if AQuick then
             exit;
-          if instr.X86Instruction.OperCnt <> 1 then
-            exit;
-          if (instr.X86Instruction.Operand[1].Value <> '%s') then
-            exit; // false
+          if instr.X86Instruction.OperCnt <> 1 then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
+          if (instr.X86Instruction.Operand[1].Value <> '%s') then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
           if (Instr.X86Instruction.Operand[1].ByteCount = 0) or
              (Instr.X86Instruction.Operand[1].ByteCount2 <> 0)
-          then
-            exit;
+          then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
 
           Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
           {$PUSH}{$R-}{$Q-}
           Tmp := NewAddr + Val;
           {$POP}
           if (Val < 0) then begin
-            if ConditionalForwardAddr >= NewAddr then begin
-              NewAddr := ConditionalForwardAddr;
+            CheckConditionalForwAddr;
+            if (CurConditionalForwardAddr >= 0) then begin
+              FinishCurAddrBlock;
+              NewAddr := ConditionalForwardAddr[CurConditionalForwardAddr];
+              dec(CurConditionalForwardAddr);
+              StartNextAddrBlock;
+              ClearRecValList := True;
+
+              if ((BackwardJumpAddress = 0) or (Tmp < BackwardJumpAddress)) and
+                 (not AddrWasDone(Tmp))
+              then
+                BackwardJumpAddress := Tmp;
               continue;
             end;
 
-            if (Tmp > StartAddr) or (Tmp < StartAddr - MAX_SEARCH_ADDR) then
-              exit;
-            MaxAddr2 := StartAddr;
-            BackwardJumpAddress := NewAddr;
           end;
 
+          if AddrWasDone(Tmp) then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
+
+          FinishCurAddrBlock;
           NewAddr := Tmp;
+          StartNextAddrBlock;
         end;
-      OPjmpe, OPint, OPint1, OPint3:
-        exit; // false
+      OPjmpe, OPint, OPint1, OPint3: begin
+          ForceDifferentBranch := True;
+          continue;
+        end;
       OPtest, OPtpause, OPnop, OPcmp, OPcmps:
         ClearRecValList := False;
       else
@@ -5913,7 +6099,8 @@ begin
                IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
              )
           then begin
-            exit; // false
+            ForceDifferentBranch := True;
+            continue;
           end;
         end;
     end;
