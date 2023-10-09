@@ -3309,9 +3309,9 @@ begin
     $7E: begin
       DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
-        soNone: begin SetOpcode(OPmov, OPSx_d      ); AddEy; AddPy; end;
-        so66:   begin SetOpcode(OPmov, OPSx_d, True); AddEy; AddVy; end;
-        soF3:   begin SetOpcode(OPmov, OPSx_q, True); AddVq; AddWq; end;
+        soNone: begin SetOpcode(OPmov, OPS_d_q      ); AddEy; AddPy; end;
+        so66:   begin SetOpcode(OPmov, OPS_d_q, True); AddEy; AddVy; end;
+        soF3:   begin SetOpcode(OPmov, OPSx_q , True); AddVq; AddWq; end;
       end;
     end;
     $7F: begin
