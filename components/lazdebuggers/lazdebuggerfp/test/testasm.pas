@@ -248,6 +248,18 @@ begin
   TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
   TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
 
+  TestDis('movd mm1,edi',     #$0F#$6E#$CF,             'movd mm1,edi');
+  TestDis('movq mm1,rdi',     #$48#$0F#$6E#$CF,         'movq mm1,rdi');
+  TestDis('movd edi,mm1',     #$0F#$7E#$CF,             'movd edi,mm1');
+  TestDis('movq rdi,mm1',     #$48#$0F#$7E#$CF,         'movq rdi,mm1');
+  TestDis('movd xmm1,edi',    #$66#$0F#$6E#$CF,         'movd xmm1,edi');
+  TestDis('movq xmm1,rdi',    #$66#$48#$0F#$6E#$CF,     'movq xmm1,rdi');
+  TestDis('movd edi,xmm1',    #$66#$0F#$7E#$CF,         'movd edi,xmm1');
+  TestDis('movq rdi,xmm1',    #$66#$48#$0F#$7E#$CF,     'movq rdi,xmm1');
+  TestDis('vmovd [rax],xmm0', #$C4#$E1#$79#$7E#$00,     'vmovd [rax],xmm0');
+  TestDis('vmovq [rax],xmm0', #$C4#$E1#$F9#$7E#$00,     'vmovq [rax],xmm0');
+
+
 
   Process.NewMode := dm32;
 
@@ -355,9 +367,15 @@ begin
   TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
   TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
 
+  TestDis('movd mm1,edi',     #$0F#$6E#$CF,             'movd mm1,edi');
+  TestDis('movd edi,mm1',     #$0F#$7E#$CF,             'movd edi,mm1');
+  TestDis('movd xmm1,edi',    #$66#$0F#$6E#$CF,         'movd xmm1,edi');
+  TestDis('movd edi,xmm1',    #$66#$0F#$7E#$CF,         'movd edi,xmm1');
+  TestDis('vmovd [eax],xmm0', #$C4#$E1#$79#$7E#$00,     'vmovd [eax],xmm0');
+
+
+
   Process.NewMode := dm64;
-
-
 
   TestDis('push rax', #$50, 'push rax'); // push rax
   TestDis('push rcx', #$51, 'push rcx'); // push rcx
