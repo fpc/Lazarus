@@ -728,7 +728,7 @@ end;
 
 procedure TAssemblerDlg.pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 var
-  i, j: LongInt;
+  j: LongInt;
 begin
   if not ToolButtonPower.Down then exit;
   Handled := True;
@@ -740,10 +740,8 @@ begin
     exit;
 
   FWheelAccu := FWheelAccu - j * 120;
-  i := FTopLine ;
-  if FSelectLine <> MaxInt
-  then SetSelection(FSelectLine - j, False, ssShift in Shift);
-  SetTopline(i - j);
+  SetTopLine(FTopLine - j);
+  pbAsm.Invalidate;
 end;
 
 procedure TAssemblerDlg.pbAsmPaint(Sender: TObject);
