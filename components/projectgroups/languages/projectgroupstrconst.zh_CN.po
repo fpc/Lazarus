@@ -1,39 +1,39 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
-msgstr "取消"
+msgstr "中止"
 
 #: projectgroupstrconst.lisabortloadingprojectgroup
 msgid "Abort loading project group"
-msgstr "取消(Abort)加载工程组"
+msgstr "中止加载项目组"
 
 #: projectgroupstrconst.lisactivetarget
 #, object-pascal-format
 msgid "Target: %s"
-msgstr "目标:%s"
+msgstr "目标：%s"
 
 #: projectgroupstrconst.lisaddallfromdirectorycaption
 msgctxt "projectgroupstrconst.lisaddallfromdirectorycaption"
 msgid "Add all from directory recursively"
-msgstr ""
+msgstr "递归添加目录中的所有内容"
 
 #: projectgroupstrconst.lisaddallfromdirectoryhint
 msgctxt "projectgroupstrconst.lisaddallfromdirectoryhint"
 msgid "Add all existing targets from directory and its subdirectories to project group"
-msgstr ""
+msgstr "将目录及其子目录中的所有现有目标添加到项目组中"
 
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
@@ -41,17 +41,17 @@ msgstr "所有文件"
 
 #: projectgroupstrconst.lisbepatient
 msgid "Be patient!"
-msgstr "要有耐心!"
+msgstr "要有耐心！"
 
 #: projectgroupstrconst.lisbuildmode
 #, object-pascal-format
 msgid ", build mode \"%s\""
-msgstr ",构建模式\"%s\""
+msgstr "，构建模式 \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
 #, object-pascal-format
 msgid "Build Mode \"%s\""
-msgstr "构建模式%s"
+msgstr "构建模式 %s"
 
 #: projectgroupstrconst.lisbuildmodenotfound
 msgid "Build mode not found"
@@ -60,74 +60,70 @@ msgstr "构建模式未找到"
 #: projectgroupstrconst.lisbuildmodenotfound2
 #, object-pascal-format
 msgid "Build mode \"%s\" not found."
-msgstr "构建模式\"%s\"未找到"
+msgstr "未找到构建模式 \"%s\"。"
 
 #: projectgroupstrconst.lischangesgetlostatreload
 msgid "There are unsaved changes that get lost if you reload the project group. Do you really want to reload?"
-msgstr ""
+msgstr "如果重新加载项目组，一些未保存的更改就会丢失。你真的想重新加载吗？"
 
 #: projectgroupstrconst.liscompileandbuildcompiletarget
 msgid "\"Compile\" and \"Build\" compile target"
-msgstr ""
+msgstr "\"编译 \"和 \"构建 \"编译目标"
 
 #: projectgroupstrconst.liscompilepackage
 #, object-pascal-format
 msgid "Compile Package %s"
-msgstr "编译包%s"
+msgstr "编译软件包 %s"
 
 #: projectgroupstrconst.liscompileproject
 #, object-pascal-format
 msgid "Compile Project %s"
-msgstr "编译工程%s"
+msgstr "编译项目 %s"
 
 #: projectgroupstrconst.lisdiscard
 msgid "Discard changes"
-msgstr "放弃(Discard)更改"
+msgstr "放弃更改"
 
 #: projectgroupstrconst.lisenabletoshowtargetfilenameswithpaths
 msgid "Enable to show target filenames with paths."
-msgstr ""
+msgstr "启用以显示带路径的目标文件名。"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
 "What do you want to do?"
 msgstr ""
-"不能找到目标(target)文件\n"
+"不能找到目标文件\n"
 "\"%s\"\n"
-"你想做什么?\n"
+"你想要做什么？"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr "仅目标(target)类型\"工程组\"被允许用于root工程组."
+msgstr "根项目组只允许使用目标类型 \"projectgroup\"。"
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 #, object-pascal-format
 msgid "Error reading project group file \"%s\"%s%s"
-msgstr "错误 读取工程组文件\"%s\"%s%s"
+msgstr "读取项目组文件 \"%s\" 时出错%s%s"
 
 #: projectgroupstrconst.liserrtargetdoesnotexist
 msgid "Target does not exist. Remove?"
-msgstr "目标(Target)不存在.移除?"
+msgstr "目标不存在。删除？"
 
 #: projectgroupstrconst.lisidecommandscompileandbuildinvokecompilebuildselect
 msgid "IDE commands \"Compile\" and \"Build\" invoke compile/build selected target in project group editor"
-msgstr ""
+msgstr "IDE 命令 \"编译\" 和 \"构建\" 会调用项目组编辑器中的编译/构建选定目标"
 
 #: projectgroupstrconst.lisinfo
 msgctxt "projectgroupstrconst.lisinfo"
 msgid "Info"
-msgstr ""
+msgstr "信息"
 
 #: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
 msgid "Invalid cycle. A project group cannot have itself as target."
-msgstr "无效循环.一个工程组不能由它自身作为目标(target)组成."
+msgstr "无效循环。项目组不能将自身作为目标。"
 
 #: projectgroupstrconst.lisinvalidfile
 msgid "Invalid File"
@@ -136,27 +132,27 @@ msgstr "无效文件"
 #: projectgroupstrconst.lisinvalidxmlfilename
 #, object-pascal-format
 msgid "Invalid XML file name \"%s\"."
-msgstr "无效XML 文件名称\"%s\"."
+msgstr "无效 XML 文件名 \"%s\"。"
 
 #: projectgroupstrconst.lislazaruspackageslpk
 msgid "Lazarus packages (*.lpk)"
-msgstr "Lazarus包(*.lpk)"
+msgstr "Lazarus 软件包 (*.lpk)"
 
 #: projectgroupstrconst.lislazarusprojectgroupslpg
 msgid "Lazarus project groups (*.lpg)"
-msgstr "Lazarus工程组(*.lpg)"
+msgstr "Lazarus 项目组 (*.lpg)"
 
 #: projectgroupstrconst.lislazarusprojectslpi
 msgid "Lazarus projects (*.lpi)"
-msgstr "Lazarus工程(*.lpi)"
+msgstr "Lazarus 项目 (*.lpi)"
 
 #: projectgroupstrconst.lislazarussupportedinprojectgroups
 msgid "Lazarus files (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
-msgstr ""
+msgstr "Lazarus 文件 (*.lpi;*.lpk;*.lpg;*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lislazbuildnotfound
 msgid "lazbuild not found"
-msgstr "lazbuild未找到"
+msgstr "lazbuild 未找到"
 
 #: projectgroupstrconst.lismore
 msgid "More"
@@ -165,11 +161,11 @@ msgstr "更多"
 #: projectgroupstrconst.lisnewprojectgroup
 msgctxt "projectgroupstrconst.lisnewprojectgroup"
 msgid "New project group"
-msgstr "新工程组"
+msgstr "新建项目组"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
 msgid "New Project group ..."
-msgstr "新工程组..."
+msgstr "新建项目组 ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
@@ -177,7 +173,7 @@ msgstr "构建模式"
 
 #: projectgroupstrconst.lisnodedependencies
 msgid "Dependencies"
-msgstr "依赖(Dependencies)"
+msgstr "依赖"
 
 #: projectgroupstrconst.lisnodefiles
 msgid "Files"
@@ -185,7 +181,7 @@ msgstr "文件"
 
 #: projectgroupstrconst.lisnoderemoveddependencies
 msgid "Removed dependencies"
-msgstr "移除依赖(dependencies)"
+msgstr "移除的依赖"
 
 #: projectgroupstrconst.lisnoderemovedfiles
 msgid "Removed files"
@@ -193,91 +189,88 @@ msgstr "移除的文件"
 
 #: projectgroupstrconst.lisnoderemovedtargets
 msgid "Removed targets"
-msgstr "移除目标(targets)"
+msgstr "移除的目标"
 
 #: projectgroupstrconst.lisnodetargets
 msgid "Targets"
-msgstr "目标(Targets)"
+msgstr "目标"
 
 #: projectgroupstrconst.lisonidestartreopenlastopengroup
 msgid "On IDE start reopen last open group."
-msgstr ""
+msgstr "在 IDE 启动时，重新打开上次打开的组。"
 
 #: projectgroupstrconst.lisopenlastgrouponstart
 msgid "Open last group on start"
-msgstr ""
+msgstr "启动时打开上次打开的组"
 
 #: projectgroupstrconst.lisopenprojectgroup
 msgid "Open Project Group ..."
-msgstr "打开工程组..."
+msgstr "打开项目组 ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
 msgid "Open Recent Project Group"
-msgstr "打开最近工程组"
+msgstr "打开最近项目组"
 
 #: projectgroupstrconst.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "选项"
 
 #: projectgroupstrconst.lisotherproject
 msgid "Other Project"
-msgstr "其他工程"
+msgstr "其他项目"
 
 #: projectgroupstrconst.lispackage
 msgid "Package"
-msgstr "包"
+msgstr "软件包"
 
 #: projectgroupstrconst.lispackagenotfound
 msgid "Package not found"
-msgstr "包未找到"
+msgstr "软件包未找到"
 
 #: projectgroupstrconst.lispackagenotfound2
 #, object-pascal-format
 msgid "Package \"%s\" not found."
-msgstr "包\"%s\"未找到."
+msgstr "软件包 \"%s\" 未找到。"
 
 #: projectgroupstrconst.lispascalfilepasppp
 msgid "Pascal files (*.pas;*.pp;*.p)"
-msgstr "Pascal文件(*.pas;*.pp;*.p)"
+msgstr "Pascal 文件 (*.pas;*.pp;*.p)"
 
 #: projectgroupstrconst.lisprojectgroup
 #, object-pascal-format
 msgid "Project group %s"
-msgstr "工程组%s"
+msgstr "项目组 %s"
 
 #: projectgroupstrconst.lisprojectgroup2
 #, object-pascal-format
 msgid "Project Group: %s"
-msgstr "工程组:%s"
+msgstr "项目组：%s"
 
 #: projectgroupstrconst.lisprojectgroupaddcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupaddcaption"
 msgid "Add"
 msgstr "添加"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojectcaption
 msgid "Add current project"
-msgstr ""
+msgstr "添加当前项目"
 
 #: projectgroupstrconst.lisprojectgroupaddcurrentprojecthint
 msgid "Add current project to project group"
-msgstr ""
+msgstr "在项目组中添加当前项目"
 
 #: projectgroupstrconst.lisprojectgroupaddexistingcaption
-#, fuzzy
-#| msgid "Add"
 msgctxt "projectgroupstrconst.lisprojectgroupaddexistingcaption"
 msgid "Add from file"
-msgstr "添加"
+msgstr "从文件添加"
 
 #: projectgroupstrconst.lisprojectgroupaddexistinghint
 msgid "Add existing target to project group"
-msgstr "添加存在的目标(target)到工程组"
+msgstr "添加已存在的目标到项目组"
 
 #: projectgroupstrconst.lisprojectgroupaddhint
 msgid "Add targets to project group"
-msgstr ""
+msgstr "添加目标到项目组"
 
 #: projectgroupstrconst.lisprojectgroupaddnewcaption
 msgctxt "projectgroupstrconst.lisprojectgroupaddnewcaption"
@@ -286,7 +279,7 @@ msgstr "新建"
 
 #: projectgroupstrconst.lisprojectgroupaddnewhint
 msgid "Add new target to project group"
-msgstr "添加新目标(target)到工程组"
+msgstr "添加新目标到项目组"
 
 #: projectgroupstrconst.lisprojectgroupdeletecaption
 msgid "Remove"
@@ -294,35 +287,30 @@ msgstr "移除"
 
 #: projectgroupstrconst.lisprojectgroupdeletehint
 msgid "Remove target from project group"
-msgstr "移除目标(target)从工程组"
+msgstr "从项目组中移除目标"
 
 #: projectgroupstrconst.lisprojectgroupmodified
 msgid "Project group modified"
-msgstr "工程组已修改"
+msgstr "项目组已修改"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Project group \"%s\" is modified.\n"
-#| "What do you want to do?\n"
+#, object-pascal-format
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
-"工程组\"%s\"被修改.\n"
-"你想做什么?\n"
+"项目组 \"%s\"已修改。\n"
+"您想要做什么？"
 
 #: projectgroupstrconst.lisprojectgroupnewcaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewcaption"
 msgid "New"
 msgstr "新建"
 
 #: projectgroupstrconst.lisprojectgroupnewhint
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
-msgstr "新工程组"
+msgstr "新建项目组"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
@@ -330,7 +318,7 @@ msgstr "重新加载"
 
 #: projectgroupstrconst.lisprojectgroups
 msgid "Project Groups"
-msgstr "工程组"
+msgstr "项目组"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
@@ -338,7 +326,7 @@ msgstr "另存为 ..."
 
 #: projectgroupstrconst.lisprojectgroupsaveashint
 msgid "Save project group with a new name"
-msgstr "保存工程组带有一个新名称"
+msgstr "用新名称保存项目组"
 
 #: projectgroupstrconst.lisprojectgroupsavecaption
 msgid "Save"
@@ -347,11 +335,11 @@ msgstr "保存"
 #: projectgroupstrconst.lisprojectgroupsavehint
 msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
 msgid "Save project group"
-msgstr "保存工程组"
+msgstr "保存项目组"
 
 #: projectgroupstrconst.lisprojectgroupssourcepaths
 msgid "Project group's source paths"
-msgstr ""
+msgstr "项目组的源路径"
 
 #: projectgroupstrconst.lisreaderror
 msgid "Read error"
@@ -359,42 +347,42 @@ msgstr "读取错误"
 
 #: projectgroupstrconst.lisredo
 msgid "Redo"
-msgstr ""
+msgstr "重做"
 
 #: projectgroupstrconst.lisremovetarget
 msgctxt "projectgroupstrconst.lisremovetarget"
 msgid "Remove target"
-msgstr "移除目标(target)"
+msgstr "移除目标"
 
 #: projectgroupstrconst.lissavepg
 msgctxt "projectgroupstrconst.lissavepg"
 msgid "Save project group"
-msgstr "保存工程组"
+msgstr "保存项目组"
 
 #: projectgroupstrconst.lissaveprojectgroup
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
-msgstr "保存工程组"
+msgstr "保存项目组"
 
 #: projectgroupstrconst.lissaveprojectgroupas
 msgid "Save Project Group As ..."
-msgstr "保存工程组为..."
+msgstr "保存项目组为 ..."
 
 #: projectgroupstrconst.lisshowtargetpaths
 msgid "Show target paths"
-msgstr ""
+msgstr "显示目标路径"
 
 #: projectgroupstrconst.lisskipalltargets
 msgid "Remove all invalid targets"
-msgstr "移除所有无效目标(targets)"
+msgstr "移除所有无效目标"
 
 #: projectgroupstrconst.lissourcedirectoriesofprojectgroup
 msgid "Source directories of project group:"
-msgstr ""
+msgstr "项目组的源目录："
 
 #: projectgroupstrconst.listargetactivate
 msgid "Activate target"
-msgstr "激活目标(target)"
+msgstr "激活目标"
 
 #: projectgroupstrconst.listargetactivatecaption
 msgid "Activate"
@@ -402,11 +390,11 @@ msgstr "激活"
 
 #: projectgroupstrconst.listargetactivatehint
 msgid "Activate selected target"
-msgstr "激活选择目标(target)"
+msgstr "激活选择的目标"
 
 #: projectgroupstrconst.listargetadd
 msgid "Add target"
-msgstr "添加目标(target)"
+msgstr "添加目标"
 
 #: projectgroupstrconst.listargetcompile
 msgctxt "projectgroupstrconst.listargetcompile"
@@ -430,43 +418,41 @@ msgstr "编译清理"
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
-msgstr "编译选择的目标(target)清理"
+msgstr "编译选择的目标清理"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
-msgstr "编译从这里"
+msgstr "从这里编译"
 
 #: projectgroupstrconst.listargetcompilehint
 msgid "Compile selected target"
-msgstr "编译选择的目标(target)"
+msgstr "编译选择的目标"
 
 #: projectgroupstrconst.listargetcopyfilename
-#, fuzzy
-#| msgid "Copy file name"
 msgid "Copy Filename"
-msgstr "复制文件名称"
+msgstr "复制文件名"
 
 #: projectgroupstrconst.listargetcount
 #, object-pascal-format
 msgid "%d targets"
-msgstr "%d目标(targets)"
+msgstr "%d 目标"
 
 #: projectgroupstrconst.listargetearlier
 msgid "Compile target earlier"
-msgstr "编译目标(target)早期的(earlier)"
+msgstr "更早编译目标"
 
 #: projectgroupstrconst.listargetearliercaption
 msgid "Earlier"
-msgstr "早期的(Earlier)"
+msgstr "更早"
 
 #: projectgroupstrconst.listargetearlierhint
 msgid "Build target earlier"
-msgstr "构建目标(target)早期的(earlier)"
+msgstr "更早构建目标"
 
 #: projectgroupstrconst.listargetinfocaption
 msgctxt "projectgroupstrconst.listargetinfocaption"
 msgid "Info ..."
-msgstr ""
+msgstr "信息 ..."
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -480,23 +466,23 @@ msgstr "安装"
 
 #: projectgroupstrconst.listargetinstallhint
 msgid "Install selected target"
-msgstr "安装选择的目标(target)"
+msgstr "安装选择的目标"
 
 #: projectgroupstrconst.listargetlater
 msgid "Compile target later"
-msgstr "编译目标(target)后期的(later)"
+msgstr "稍后编译目标"
 
 #: projectgroupstrconst.listargetlatercaption
 msgid "Later"
-msgstr "后期的(Later)"
+msgstr "稍后"
 
 #: projectgroupstrconst.listargetlaterhint
 msgid "Build target later"
-msgstr "构建目标(target)后期的(later)"
+msgstr "稍后构建目标"
 
 #: projectgroupstrconst.listargetopen
 msgid "Open Target"
-msgstr "打开目标(Target)"
+msgstr "打开目标"
 
 #: projectgroupstrconst.listargetopencaption
 msgid "Open"
@@ -504,11 +490,11 @@ msgstr "打开"
 
 #: projectgroupstrconst.listargetopenhint
 msgid "Open selected target"
-msgstr "安装载选择的目标(target)"
+msgstr "打开选择的目标"
 
 #: projectgroupstrconst.listargetproperties
 msgid "Target properties"
-msgstr "目标(Target)属性"
+msgstr "目标属性"
 
 #: projectgroupstrconst.listargetpropertiescaption
 msgid "Properties"
@@ -516,16 +502,16 @@ msgstr "属性"
 
 #: projectgroupstrconst.listargetpropertieshint
 msgid "Show property dialog for selected target"
-msgstr "显示属性对话框对于选择的目标(target)"
+msgstr "显示所选目标的属性对话框"
 
 #: projectgroupstrconst.listargetremove
 msgctxt "projectgroupstrconst.listargetremove"
 msgid "Remove target"
-msgstr "移除目标(target)"
+msgstr "移除目标"
 
 #: projectgroupstrconst.listargetrun
 msgid "Run Target"
-msgstr "运行目标(target)"
+msgstr "运行目标"
 
 #: projectgroupstrconst.listargetruncaption
 msgid "Run"
@@ -533,7 +519,7 @@ msgstr "运行"
 
 #: projectgroupstrconst.listargetrunhint
 msgid "Run selected target"
-msgstr "运行选择的目标(target)"
+msgstr "运行选择的目标"
 
 #: projectgroupstrconst.listargetuninstall
 msgctxt "projectgroupstrconst.listargetuninstall"
@@ -547,35 +533,35 @@ msgstr "卸载"
 
 #: projectgroupstrconst.listargetuninstallhint
 msgid "Uninstall selected target"
-msgstr "卸载选择的目标(target)"
+msgstr "卸载选择的目标"
 
 #: projectgroupstrconst.listhelazbuildwasnotfound
 #, object-pascal-format
 msgid "The lazbuild%s was not found."
-msgstr "lazbuild%s未找到."
+msgstr "lazbuild%s 未找到。"
 
 #: projectgroupstrconst.listhereisstillanotherbuildinprogress
 msgid "There is still another build in progress."
-msgstr "这里仍然有另一个构建在进程中."
+msgstr "这里仍然有另一个构建在进行中."
 
 #: projectgroupstrconst.lisunabletocreatefile
 #, object-pascal-format
 msgid "Unable to create file \"%s\": %s"
-msgstr "不能创建文件\"%s\": %s"
+msgstr "不能创建文件 \"%s\"：%s"
 
 #: projectgroupstrconst.lisunabletoloadfile
 #, object-pascal-format
 msgid "Unable to load file \"%s\""
-msgstr "不能加载文件\"%s\""
+msgstr "不能加载文件 \"%s\""
 
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
-msgstr "不能写入工程组文件\"%s\"%s%s"
+msgstr "不能写入项目组文件 \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
-msgstr ""
+msgstr "撤销"
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
@@ -584,5 +570,5 @@ msgstr "写入错误"
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 #, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
-msgstr "XML语法错误在文件\"%s\": %s"
+msgstr "文件 \"%s\" 中的 XML 语法错误：%s"
 

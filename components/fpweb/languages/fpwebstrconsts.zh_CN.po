@@ -1,158 +1,136 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: fpwebstrconsts.rsapachemodule
 msgid "Apache Module"
-msgstr "Apache模块"
+msgstr "Apache 模块"
 
 #: fpwebstrconsts.rsapachemodule2
-#, fuzzy
-#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
-msgstr "Apache模块%s一个Apache加载模块在Free Pascal使用webmodules中.这个主库文件是由Lazarus自动地维护"
+msgstr "用 Free Pascal 及其 webmodules 编写的 Apache 可加载模块。主库文件由 Lazarus 自动维护。"
 
 #: fpwebstrconsts.rscgiapplicati
 msgid "CGI Application"
-msgstr "CGI应用程序"
+msgstr "CGI 应用程序"
 
 #: fpwebstrconsts.rscgiapplicati2
-#, fuzzy
-#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "CGI应用%s一个CGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+msgstr "用 Free Pascal 及其 webmodules 编写的 CGI（Common Gateway Interface）程序。"
 
 #: fpwebstrconsts.rscustomcgiapp
 msgid "Custom CGI Application"
-msgstr "自定义CGI应用程序"
+msgstr "自定义 CGI 应用程序"
 
 #: fpwebstrconsts.rscustomcgiapp2
-#, fuzzy
-#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Custom CGI应用%s一个CGI (通用网关接口)程序在Free Pasca中.这个程序的source是由Lazarus自动地维护"
+msgstr "用 Free Pascal 编写的 CGI（Common Gateway Interface）程序。"
 
 #: fpwebstrconsts.rscustomfastcg
 msgid "Custom FastCGI Application"
-msgstr "自定义FastCGI应用程序"
+msgstr "自定义 FastCGI 应用程序"
 
 #: fpwebstrconsts.rscustomfastcg2
-#, fuzzy
-#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
-msgstr "自定义FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中.这个程序的source是由Lazarus自动地维护."
+msgstr "用 Free Pascal 编写的 FastCGI（Common Gateway Interface）程序。"
 
 #: fpwebstrconsts.rsfastcgiappli
 msgid "FastCGI Application"
-msgstr "FastCGI应用程序"
+msgstr "FastCGI 应用程序"
 
 #: fpwebstrconsts.rsfastcgiappli2
-#, fuzzy
-#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
+msgstr "用 Free Pascal 及其 webmodules 编写的 FastCGI（Common Gateway Interface）程序。"
 
 #: fpwebstrconsts.rsfilemodule
 msgid "File serving Module"
-msgstr ""
+msgstr "文件服务模块"
 
 #: fpwebstrconsts.rsfilemodule2
 msgid "A datamodule to help serving files from the filesystem in WEB (HTTP) applications."
-msgstr ""
+msgstr "数据模块，用于帮助在 WEB（HTTP）应用程序中从文件系统提供文件。"
 
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
-msgstr "HTML Web模块"
+msgstr "HTML Web 模块"
 
 #: fpwebstrconsts.rshtmlwebmodul2
-#, fuzzy
-#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgid "A Web datamodule for producing strict HTML."
-msgstr "HTML WEB模块%s一个Web datamodule用于产生静态HTML."
+msgstr "用于生成严格 HTML 的 Web 数据模块。"
 
 #: fpwebstrconsts.rshttpappli
 msgid "HTTP server Application"
-msgstr "HTTP server应用程序"
+msgstr "HTTP 服务器应用程序"
 
 #: fpwebstrconsts.rshttpappli2
-#, fuzzy
-#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
-msgstr "HTTP server应用.完整的HTTP Server程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
+msgstr "使用 Free Pascal 及其 webmodules 编写的完整 HTTP 服务器程序。"
 
 #: fpwebstrconsts.rsnomodule
 msgid "Do not create a web module"
-msgstr ""
+msgstr "不创建 web 模块"
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
-msgstr "Web DataProvider模块"
+msgstr "Web DataProvider 模块"
 
 #: fpwebstrconsts.rswebdataprovi2
-#, fuzzy
-#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr "WEB DataProvider模块%s一个datamodule使用WebDataProvider组件来处理数据请求用于 WEB (HTTP)应用."
+msgstr "数据模块，用于使用 WebDataProvider 组件处理 WEB（HTTP）应用程序的数据请求。"
 
 #: fpwebstrconsts.rswebextdirect
 msgid "Web Ext.Direct Module"
-msgstr "Web Ext.Direct模块"
+msgstr "Web Ext.Direct 模块"
 
 #: fpwebstrconsts.rswebextdirect2
-#, fuzzy
-#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "WEB Ext.Direct模块%s一个datamodule使用TJSONRPCHandler组件来发出Ext.Direct请求在WEB (HTTP)应用中."
+msgstr "在 WEB（HTTP）应用程序中使用 TJSONRPCHandler 组件调度 Ext.Direct 请求的数据模块。"
 
 #: fpwebstrconsts.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
-msgstr "Web JSON-RPC模块"
+msgstr "Web JSON-RPC 模块"
 
 #: fpwebstrconsts.rswebjsonrpcmo2
-#, fuzzy
-#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "WEB JSON-RPC模块%s一个datamodule使用TJSONRPCHandler组件来发出JSON-RPCt请求在WEB (HTTP)应用中."
+msgstr "在 WEB（HTTP）应用程序中使用 TJSONRPCHandler 组件调度 JSON-RPC 请求的数据模块。"
 
 #: fpwebstrconsts.rswebmodule
 msgid "Web Module"
-msgstr "Web模块"
+msgstr "Web 模块"
 
 #: fpwebstrconsts.rswebmoduleada
-#, fuzzy
-#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgid "A datamodule for WEB (HTTP) applications."
-msgstr "WEB模块%s一个datamodule用于WEB (HTTP)应用程序."
+msgstr "用于 WEB（HTTP）应用程序的数据模块。"
 
 #: fpwebstrconsts.scaption
 msgid "Create a new JSON-RPC module"
-msgstr "创建一个新的JSON-RPC module"
+msgstr "创建一个新的 JSON-RPC 模块"
 
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
-msgstr "CSS文件"
+msgstr "CSS 文件"
 
 #: fpwebstrconsts.scssfiledesc
 msgid "Create new CSS file ..."
-msgstr "创建新CSS文件..."
+msgstr "创建新的 CSS 文件"
 
 #: fpwebstrconsts.scsssource
 msgid "Enter your classes/style definitions here"
-msgstr "输入你的类/样式定义"
+msgstr "在此输入您的类/样式定义"
 
 #: fpwebstrconsts.sdefaultrouteservesfiles
 msgid "Serve files from default location"
-msgstr ""
+msgstr "从默认位置提供文件"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
@@ -160,43 +138,43 @@ msgstr "目录(&D)"
 
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text ..."
-msgstr "输入你的文本..."
+msgstr "输入您的文本 ..."
 
 #: fpwebstrconsts.sfileserving
 msgid "File serving"
-msgstr ""
+msgstr "文件服务"
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
-msgstr "Html &作者- <meta name=\"作者\">"
+msgstr "Html &author - <meta name=\"author\">"
 
 #: fpwebstrconsts.shtmlcharset
 msgid "HTML chars&et"
-msgstr "HTML字符集(&e)"
+msgstr "HTML 字符集(&E)"
 
 #: fpwebstrconsts.shtmlcopyright
 msgid "Html cop&yright - meta name=\"copyright\">"
-msgstr "Html版权 - meta name=\"版权\">(&y)"
+msgstr "Html cop&yright - <meta name=\"copyright\">"
 
 #: fpwebstrconsts.shtmlcssfile
 msgid "&CSS file"
-msgstr "CSS文件(&C)"
+msgstr "CSS 文件(&C)"
 
 #: fpwebstrconsts.shtmldesign
 msgid "HTML design"
-msgstr "HTML设计"
+msgstr "HTML 设计"
 
 #: fpwebstrconsts.shtmlfile
 msgid "HTML file"
-msgstr "HTML文件"
+msgstr "HTML 文件"
 
 #: fpwebstrconsts.shtmlfiledesc
 msgid "Create new HTML file ..."
-msgstr "创建新HTML文件..."
+msgstr "创建新的 HTML 文件"
 
 #: fpwebstrconsts.shtmlinputformaccesskey
 msgid "Access key"
-msgstr "存取关键字"
+msgstr "访问秘钥"
 
 #: fpwebstrconsts.shtmlinputformalign
 msgid "Align"
@@ -208,11 +186,11 @@ msgstr "Alt"
 
 #: fpwebstrconsts.shtmlinputformcaption
 msgid "Tag property: INPUT"
-msgstr "Tag属性: INPUT"
+msgstr "标签属性：INPUT"
 
 #: fpwebstrconsts.shtmlinputformimagesrc
 msgid "Image src"
-msgstr "Image src"
+msgstr "图片路径"
 
 #: fpwebstrconsts.shtmlinputformmaxlen
 msgid "Max length"
@@ -220,7 +198,7 @@ msgstr "最大长宽"
 
 #: fpwebstrconsts.shtmlinputformname
 msgid "Name"
-msgstr "称"
+msgstr "名称"
 
 #: fpwebstrconsts.shtmlinputformsize
 msgid "Size"
@@ -228,7 +206,7 @@ msgstr "大小"
 
 #: fpwebstrconsts.shtmlinputformtabindex
 msgid "Tab Index"
-msgstr "Tab索引"
+msgstr "Tab 索引"
 
 #: fpwebstrconsts.shtmlinputformtype
 msgid "Type"
@@ -240,19 +218,19 @@ msgstr "值"
 
 #: fpwebstrconsts.shtmljsfile
 msgid "&Javascript file"
-msgstr "Javascript文件(&J)"
+msgstr "Javascript 文件(&J)"
 
 #: fpwebstrconsts.shtmltableformborderwidth
 msgid "Border width"
-msgstr "边宽度"
+msgstr "边框宽度"
 
 #: fpwebstrconsts.shtmltableformcaption
 msgid "New HTML table ..."
-msgstr "新建HTML table ..."
+msgstr "新建 HTML 表格 ..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
 msgid "Cell padding"
-msgstr "单元格填充(Cell padding)"
+msgstr "单元格填充"
 
 #: fpwebstrconsts.shtmltableformcellspacing
 msgid "Cell spacing"
@@ -260,19 +238,19 @@ msgstr "单元格间距"
 
 #: fpwebstrconsts.shtmltableformcolumncount
 msgid "Column count"
-msgstr "列统计"
+msgstr "列数"
 
 #: fpwebstrconsts.shtmltableformheaderbgcolor
 msgid "Header bg color"
-msgstr "Header bg颜色"
+msgstr "标题背景颜色"
 
 #: fpwebstrconsts.shtmltableformrowcount
 msgid "Row count"
-msgstr "行统计"
+msgstr "行数"
 
 #: fpwebstrconsts.shtmltableformuseheader
 msgid "Use header row"
-msgstr "使用header行"
+msgstr "使用标题行"
 
 #: fpwebstrconsts.shtmltableformwidth
 msgid "Width"
@@ -289,19 +267,19 @@ msgstr "提交"
 #: fpwebstrconsts.shtmltagproperty
 #, object-pascal-format
 msgid "Tag property: %s"
-msgstr "Tag属性: %s"
+msgstr "标签属性：%s"
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
-msgstr "Html &标题-<title>"
+msgstr "Html &title - <title>"
 
 #: fpwebstrconsts.shttppath
 msgid "HTTP Path"
-msgstr "HTTP路径"
+msgstr "HTTP 路径"
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
-msgstr "端口监听请求(&P)"
+msgstr "监听请求的端口(&P)"
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -309,95 +287,95 @@ msgstr "Javascript 文件"
 
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
-msgstr "创建新javascript文件..."
+msgstr "创建新的 javascript 文件"
 
 #: fpwebstrconsts.sjsonclass
 msgid "JSON-RPC class"
-msgstr "JSON-RPC类"
+msgstr "JSON-RPC 类"
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
-msgstr "在这儿输入你的javascript代码"
+msgstr "在这儿输入你的 javascript 代码"
 
 #: fpwebstrconsts.smihtmleditor
 msgid "HTML Editor"
-msgstr "HTML编辑器"
+msgstr "HTML 编辑器"
 
 #: fpwebstrconsts.smihtmlformbuttton
 msgid "Insert Button control"
-msgstr "插入Button控制"
+msgstr "插入按钮控件"
 
 #: fpwebstrconsts.smihtmlformcheckbox
 msgid "Insert CheckBox control"
-msgstr "插入CheckBox控制"
+msgstr "插入复选框控件"
 
 #: fpwebstrconsts.smihtmlformfieldset
 msgid "Insert HTML FIELDSET tag"
-msgstr "插入HTML FIELDSET标签"
+msgstr "插入 HTML FIELDSET 标签"
 
 #: fpwebstrconsts.smihtmlformlegend
 msgid "Insert HTML LEGEND tag"
-msgstr "插入HTML LEGEND标签"
+msgstr "插入 HTML LEGEND 标签"
 
 #: fpwebstrconsts.smihtmlformradiobtn
 msgid "Insert RadioBtn control"
-msgstr "插入RadioBtn控制"
+msgstr "插入单选框控件"
 
 #: fpwebstrconsts.smihtmlforms
 msgid "Forms"
-msgstr "Forms(窗体?)"
+msgstr "表单"
 
 #: fpwebstrconsts.smihtmlformselect
 msgid "Insert Select control"
-msgstr "插入Select控制"
+msgstr "插入下拉菜单控件"
 
 #: fpwebstrconsts.smihtmlformselectopt
 msgid "Insert Select options"
-msgstr "插入选择选项"
+msgstr "插入下拉菜单选项"
 
 #: fpwebstrconsts.smihtmlformselectoptwd
 msgid "Insert Select options with dialog"
-msgstr "插入带对话框的选择选项"
+msgstr "插入带对话框的下拉菜单选项"
 
 #: fpwebstrconsts.smihtmlinsertbr
 msgid "Insert new line"
-msgstr "插入新建行"
+msgstr "插入新行"
 
 #: fpwebstrconsts.smihtmlinsertcolor
 msgid "Insert HTML color value"
-msgstr "插入HTML color值"
+msgstr "插入 HTML 颜色值"
 
 #: fpwebstrconsts.smihtmlinsertcomment
 msgid "Insert HTML comment"
-msgstr "插入HTML注释"
+msgstr "插入 HTML 注释"
 
 #: fpwebstrconsts.smihtmlinsertdivblock
 msgid "Insert HTML DIV tag"
-msgstr "插入HTML DIV标签"
+msgstr "插入 HTML DIV 标签"
 
 #: fpwebstrconsts.smihtmlinsertform
 msgid "Insert HTML Form"
-msgstr "插入HTML Form"
+msgstr "插入 HTML 表单"
 
 #: fpwebstrconsts.smihtmlinsertheader1level
 msgid "Insert HTML level 1 header"
-msgstr "插入HTML level 1 header"
+msgstr "插入 HTML 一级标题"
 
 #: fpwebstrconsts.smihtmlinsertheader2level
 msgid "Insert HTML level 2 header"
-msgstr "插入HTML level 2 header"
+msgstr "插入 HTML 二级标题"
 
 #: fpwebstrconsts.smihtmlinsertheader3level
 msgid "Insert HTML level 3 header"
-msgstr "插入HTML level 3 header"
+msgstr "插入 HTML 三级标题"
 
 #: fpwebstrconsts.smihtmlinsertheader4level
 msgid "Insert HTML level 4 header"
-msgstr "插入HTML level 4 header"
+msgstr "插入 HTML 四级标题"
 
 #: fpwebstrconsts.smihtmlinsertheader5level
 msgid "Insert HTML level 5 header"
-msgstr "插入HTML level 5 header"
+msgstr "插入 HTML 五级标题"
 
 #: fpwebstrconsts.smihtmlinserthr
 msgid "Insert horizontal line"
@@ -405,67 +383,67 @@ msgstr "插入水平线"
 
 #: fpwebstrconsts.smihtmlinsertimg
 msgid "Insert image"
-msgstr "插入image"
+msgstr "插入图片"
 
 #: fpwebstrconsts.smihtmlinsertinput
 msgid "Insert HTML INPUT tag"
-msgstr "插入HTML INPUT标签"
+msgstr "插入HTML INPUT 标签"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
 msgid "Insert \"Reset\" button"
-msgstr "插入\"Reset\"按钮"
+msgstr "插入\"重置\"按钮"
 
 #: fpwebstrconsts.smihtmlinsertinputsubmit
 msgid "Insert \"Submit\" button "
-msgstr "插入\"Submit\"按钮"
+msgstr "插入\"提交\"按钮"
 
 #: fpwebstrconsts.smihtmlinsertlink
 msgid "Insert link (HREF)"
-msgstr "插入链接 (HREF)"
+msgstr "插入链接"
 
 #: fpwebstrconsts.smihtmlinsertlist
 msgid "Insert HTML list"
-msgstr "插入HTML列表"
+msgstr "插入 HTML 列表"
 
 #: fpwebstrconsts.smihtmlinsertnbsp
 msgid "Insert Non Breaking Space"
-msgstr "插入Non Breaking Space"
+msgstr "插入空格"
 
 #: fpwebstrconsts.smihtmlinsertpre
 msgid "Insert HTML PRE tag"
-msgstr "插入HTML INPUT标签"
+msgstr "插入 HTML PRE 标签"
 
 #: fpwebstrconsts.smihtmlinsertspantext
 msgid "Insert HTML SPAN tag"
-msgstr "插入HTML SPAN标签"
+msgstr "插入 HTML SPAN 标签"
 
 #: fpwebstrconsts.smihtmlinsertsub
 msgid "Insert Subscript"
-msgstr "插入Subscript"
+msgstr "插入下标"
 
 #: fpwebstrconsts.smihtmlinsertsuper
 msgid "Insert Superscript"
-msgstr "插入Superscript"
+msgstr "插入上标"
 
 #: fpwebstrconsts.smihtmlinserttable
 msgid "Insert HTML table"
-msgstr "插入HTML表"
+msgstr "插入 HTML 表格"
 
 #: fpwebstrconsts.smihtmlinserttabledata
 msgid "Insert HTML table data"
-msgstr "插入HTML table数据"
+msgstr "插入 HTML 表格数据"
 
 #: fpwebstrconsts.smihtmlinserttabledatawd
 msgid "Insert HTML table data with dialog"
-msgstr "插入带对话框的HTML table数据"
+msgstr "插入带对话框的 HTML 表格数据"
 
 #: fpwebstrconsts.smihtmlinserttablerow
 msgid "Insert HTML table row"
-msgstr "插入HTML table行"
+msgstr "插入 HTML 表格行"
 
 #: fpwebstrconsts.smihtmlinserttablerowwd
 msgid "Insert HTML table row with dialog"
-msgstr "插入带对话框的HTML table行"
+msgstr "插入带对话框的 HTML 表格行"
 
 #: fpwebstrconsts.smihtmllists
 msgid "Lists"
@@ -485,7 +463,7 @@ msgstr "样式"
 
 #: fpwebstrconsts.smihtmltables
 msgid "Tables"
-msgstr "Tables"
+msgstr "表格"
 
 #: fpwebstrconsts.smihtmltextaligncenter
 msgid "Text align center"
@@ -521,33 +499,33 @@ msgstr "插入文件名"
 
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"
-msgstr "新建Html文件属性"
+msgstr "新建 Html 文件属性"
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
-msgstr "新建HTTP应用"
+msgstr "新建 HTTP 应用程序"
 
 #: fpwebstrconsts.snofiles
 msgid "Do not serve files"
-msgstr ""
+msgstr "不提供文件"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
-msgstr "注册位置以服务文件从(&R)"
+msgstr "注册从哪个位置提供文件(&R)"
 
 #: fpwebstrconsts.sregisterjson
 msgid "Register JSON-RPC handlers in factory"
-msgstr "在工厂注册JSON-RPC handlers"
+msgstr "在工厂中注册 JSON-RPC 处理程序"
 
 #: fpwebstrconsts.sregisterwebm
 msgid "Register web module"
-msgstr "注册web module"
+msgstr "注册 web 模块"
 
 #: fpwebstrconsts.sstandardmodule
 msgid "Web module to create:"
-msgstr ""
+msgstr "创建 Web 模块："
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
-msgstr "使用线程来服务要求在(&t)"
+msgstr "使用线程来服务请求在(&T)"
 
