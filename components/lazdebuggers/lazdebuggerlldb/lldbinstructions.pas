@@ -1107,17 +1107,27 @@ begin
     exit;
   end;
 
+  // error: use of undeclared identifier 'i'
+  // (int) $0 = 133
+  // (LONGINT) I = 99
+  // (ANSISTRING) $1 = 0x005aac80
   if StrMatches(AData, ['(', ')', ' = ', ''], found) then begin
     FRes := AData;
     FCurly := 0;
     if ParseStruct(found[2]) then
       SetContentReceieved;
     exit;
+  end
+  else
+  // (char *) 0x0000000111246cd8 "\"\" is not a valid boolean."
+  // (unsigned long) 0x0000000106e6f8a0
+  if StrMatches(AData, ['(', ') ', ''], found) then begin
+    FRes := AData;
+    FCurly := 0;
+    if ParseStruct(found[1]) then
+      SetContentReceieved;
+    exit;
   end;
-// error: use of undeclared identifier 'i'
-// (int) $0 = 133
-// (LONGINT) I = 99
-// (ANSISTRING) $1 = 0x005aac80
   Result := inherited ProcessInputFromDbg(AData);
 end;
 
