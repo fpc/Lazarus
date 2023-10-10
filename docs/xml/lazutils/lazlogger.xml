@@ -552,7 +552,6 @@ value.
 <short>TObject instance examined in the routine.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="dbgObjMem">
 <short>
 Generates a message with the hexadecimal-encoded memory content for the 
@@ -570,13 +569,17 @@ String with hexadecimal-encoded values for the specified object instance.
 <short>Object instance examined in the routine.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="dbghex">
 <short>
 Generates a message with the hexadecimal representation for the specified 
-Int64 value.
+numeric value.
 </short>
-<descr/>
+<descr>
+<p>
+dbghex is an overloaded String function. The overloaded variants allow either 
+an Int64 or a qword value to be specified in the <var>i</var> argument.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="dbghex.Result">
@@ -585,7 +588,7 @@ String with the hexadecimal representation for the specified value.
 </short>
 </element>
 <element name="dbghex.i">
-<short>Int64 value converted in the routine.</short>
+<short>Numeric value converted to hexadecimal in the routine.</short>
 </element>
 
 <element name="DbgSTime">
