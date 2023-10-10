@@ -509,6 +509,23 @@ begin
   {$ENDIF}
 end;
 
+function dbghex(i: qword): string;
+{$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+const
+  Hex = '0123456789ABCDEF';
+{$ENDIF}
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  Result:='';
+  repeat
+    Result:=Hex[(i mod 16)+1]+Result;
+    i:=i div 16;
+  until i=0;
+  {$ELSE}
+  Result := '';
+  {$ENDIF}
+end;
+
 function DbgSTime(): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}

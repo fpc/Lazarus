@@ -109,6 +109,7 @@ function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function dbgObjMem(AnObject: TObject): string; overload;
 function dbghex(i: Int64): string; overload;
+function dbghex(i: qword): string; overload;
 
 function DbgSTime(): string;
 
