@@ -664,42 +664,43 @@ LazLoggerDummy
 <short></short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="dbgObjMem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Generates a message with the hexadecimal-encoded memory content for the 
+specified object instance.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="dbgObjMem.Result">
-<short></short>
+<short>
+String with hexadecimal-encoded values for the specified object instance.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="dbgObjMem.AnObject">
-<short></short>
+<short>Object instance examined in the routine.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="dbghex">
-<short></short>
+<short>
+Generates a message with the hexadecimal representation for the specified 
+numeric value.
+</short>
 <descr>
+<p>
+dbghex is an overloaded String function. The overloaded variants allow either 
+an Int64 or a qword value to be specified in the <var>i</var> argument.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 <element name="dbghex.Result">
-<short></short>
+<short>
+String with the hexadecimal representation for the specified value.
+</short>
 </element>
 <element name="dbghex.i">
-<short></short>
+<short>Numeric value converted to hexadecimal in the routine.</short>
 </element>
 
 <element name="DbgSTime">
