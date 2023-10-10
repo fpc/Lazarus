@@ -529,18 +529,20 @@ procedure TCocoaTabControl.extselectTabViewItemAtIndex( index:NSInteger );
 var
   itm: NSTabViewItem;
   visibleIndex: NSInteger;
+  oldKeepAmount: Integer;
 begin
   if (index<0) or (index>=fulltabs.count) then Exit;
-  currentIndex := index;
 
-  itm := NSTabViewItem( fulltabs.objectAtIndex(index) );
-  visibleIndex := indexOfTabViewItem( itm );
+  itm:= NSTabViewItem( fulltabs.objectAtIndex(index) );
+  visibleIndex:= indexOfTabViewItem( itm );
   if visibleIndex <> NSNotFound then begin
     inherited selectTabViewItemAtIndex( visibleIndex );
   end else begin
+    oldKeepAmount:= leftKeepAmount;
+    attachAllTabs;
+    inherited selectTabViewItemAtIndex( index );
+    leftKeepAmount:= oldKeepAmount;
     UpdateTabAndArrowVisibility( self );
-    visibleIndex:= indexOfTabViewItem( itm );
-    inherited selectTabViewItemAtIndex( visibleIndex );
   end;
 end;
 
@@ -632,6 +634,7 @@ begin
   //it's called together with "willSelect"
 
   currentIndex:= IndexOfTab( self, tabViewItem );
+  leftKeepAmount:= currentIndex - visibleLeftIndex;
 
   if Assigned(callback) then
   begin
