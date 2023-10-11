@@ -58,6 +58,8 @@ type
     nextarr  : NSButton;
 
   public
+    triggeringByLCL: Boolean;
+
     { various indexes in fulltabs }
     currentIndex : Integer;     // index of the current tab
     visibleLeftIndex: Integer;  // index shown in TabView on the left
@@ -633,6 +635,9 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
 begin
   //it's called together with "willSelect"
 
+  if triggeringByLCL then
+    exit;
+
   currentIndex:= IndexOfTab( self, tabViewItem );
   leftKeepAmount:= currentIndex - visibleLeftIndex;
 
@@ -858,61 +863,66 @@ var
   nextTabPage: NSTabViewItem;
   prevTabPage: NSTabViewItem;
 begin
-  removedIndex := exttabIndexOfTabViewItem( removedTabPage );
-  isRemovingCurrentPage:= (removedIndex=currentIndex);
+  triggeringByLCL:= true;
+  try
+    removedIndex := exttabIndexOfTabViewItem( removedTabPage );
+    isRemovingCurrentPage:= (removedIndex=currentIndex);
 
-  if fulltabs.count=1 then begin
-    // there is only one Page, so must be removing current Page,
-    // the selectedItem must be lost
-    fulltabs.removeObjectAtIndex( removedIndex );
-    removeTabViewItem( removedTabPage );
-  end else if isRemovingCurrentPage then begin
-    // removing current Page, and there is at least one other Page.
-    // to keep the Page position stable and reduce selection changed events:
-    // 1. if the current page is on the rightmost of the visible TabView,
-    //    try add the Next Page to the visible TabView first
-    // 2. then look at the TabView again and if it still only has one page,
-    //    that means there is no Next Page, then there must be a prev Page,
-    //    insert it into the TabView
-    // 3. if there is the next Page, select it, thne removedPage will be auto
-    //    removed in UpdateTabAndArrowVisibility(), otherwise remove the
-    //    removedPage directly, and the prev Page will be auto selected.
-    // 4. finally remove the Page to be removed in fulltabs
-    if currentIndex < fulltabs.count-1 then
-      nextTabPage:= NSTabViewItem( fulltabs.objectAtIndex(currentIndex+1) )
-    else
-      nextTabPage:= nil;
-    if (currentIndex=visibleRightIndex) and Assigned(nextTabPage) then begin // 1
-      addTabViewItem( nextTabPage );
-      inc( visibleRightIndex );
-    end;
-    if numberOfTabViewItems=1 then begin                                     // 2
-      prevTabPage:= NSTabViewItem( fulltabs.objectAtIndex(currentIndex-1) );
-      insertTabViewItem_atIndex( prevTabPage, 0 );
-    end;
-    if Assigned(nextTabPage) then begin                                      // 3
-      selectTabViewItem( nextTabPage );
-    end else begin
+    if fulltabs.count=1 then begin
+      // there is only one Page, so must be removing current Page,
+      // the selectedItem must be lost
+      fulltabs.removeObjectAtIndex( removedIndex );
       removeTabViewItem( removedTabPage );
+    end else if isRemovingCurrentPage then begin
+      // removing current Page, and there is at least one other Page.
+      // to keep the Page position stable and reduce selection changed events:
+      // 1. if the current page is on the rightmost of the visible TabView,
+      //    try add the Next Page to the visible TabView first
+      // 2. then look at the TabView again and if it still only has one page,
+      //    that means there is no Next Page, then there must be a prev Page,
+      //    insert it into the TabView
+      // 3. if there is the next Page, select it, thne removedPage will be auto
+      //    removed in UpdateTabAndArrowVisibility(), otherwise remove the
+      //    removedPage directly, and the prev Page will be auto selected.
+      // 4. finally remove the Page to be removed in fulltabs
+      if currentIndex < fulltabs.count-1 then
+        nextTabPage:= NSTabViewItem( fulltabs.objectAtIndex(currentIndex+1) )
+      else
+        nextTabPage:= nil;
+      if (currentIndex=visibleRightIndex) and Assigned(nextTabPage) then begin // 1
+        addTabViewItem( nextTabPage );
+        inc( visibleRightIndex );
+      end;
+      if numberOfTabViewItems=1 then begin                                     // 2
+        prevTabPage:= NSTabViewItem( fulltabs.objectAtIndex(currentIndex-1) );
+        insertTabViewItem_atIndex( prevTabPage, 0 );
+      end;
+      if Assigned(nextTabPage) then begin                                      // 3
+        selectTabViewItem( nextTabPage );
+      end else begin
+        removeTabViewItem( removedTabPage );
+      end;
+      fulltabs.removeObjectAtIndex( removedIndex );                            // 4
+      if removedIndex <= currentIndex then begin
+        dec( currentIndex );
+        dec( leftKeepAmount );
+      end;
+    end else begin
+      // not removing current page
+      // only fulltabs need to be changed,
+      // visible TabView auto updated in UpdateTabAndArrowVisibility()
+      fulltabs.removeObjectAtIndex( removedIndex );
+      if removedIndex < currentIndex then begin
+        dec( currentIndex );
+        if (removedIndex=visibleLeftIndex) and (removedIndex=currentIndex) then
+          leftKeepAmount:= 0;
+      end;
     end;
-    fulltabs.removeObjectAtIndex( removedIndex );                            // 4
-    if removedIndex <= currentIndex then begin
-      dec( currentIndex );
-      dec( leftKeepAmount );
-    end;
-  end else begin
-    // not removing current page
-    // only fulltabs need to be changed,
-    // visible TabView auto updated in UpdateTabAndArrowVisibility()
-    fulltabs.removeObjectAtIndex( removedIndex );
-    if removedIndex < currentIndex then begin
-      dec( currentIndex );
-      if (removedIndex=visibleLeftIndex) and (removedIndex=currentIndex) then
-        leftKeepAmount:= 0;
-    end;
-  end;
 
-  UpdateTabAndArrowVisibility( self );
+    UpdateTabAndArrowVisibility( self );
+  finally
+    triggeringByLCL:= false;
+  end;
 end;
 
 function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
