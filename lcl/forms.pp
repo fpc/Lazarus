@@ -113,6 +113,7 @@ type
     FTracking: Boolean;
     FVisible: Boolean;
     FOldScrollInfo: TScrollInfo;
+    FOldVisible: Boolean;
     FOldScrollInfoValid: Boolean;
   protected
     FControl: TWinControl;

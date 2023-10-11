@@ -230,14 +230,18 @@ begin
     if (not FOldScrollInfoValid) or (not CompareMem(@ScrollInfo, @FOldScrollInfo, SizeOf(TScrollInfo))) then
     begin
       FOldScrollInfo := ScrollInfo;
-      FOldScrollInfoValid := True;
       SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, NewVisible);
       // update policy too
       ScrollInfo.fMask := SIF_UPDATEPOLICY;
       ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
       SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, NewVisible);
-    end;
-    ShowScrollBar(ControlHandle, IntfBarKind[Kind], NewVisible);
+      ShowScrollBar(ControlHandle, IntfBarKind[Kind], NewVisible);
+    end
+    else
+    if (not FOldScrollInfoValid) or (FOldVisible <> NewVisible) then
+      ShowScrollBar(ControlHandle, IntfBarKind[Kind], NewVisible);
+    FOldVisible := NewVisible;
+    FOldScrollInfoValid := True;
     {$IFDEF VerboseScrollingWinControl}
     //if DebugCondition then
       DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' ',dbgs(Kind),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible,' IsVisible=',IsScrollBarVisible]);
