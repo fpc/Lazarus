@@ -71,6 +71,7 @@ type
     destructor Destroy; override;
 
     procedure DoFormatSelection(Sender: TObject);
+    procedure DoFormatIncludeFile(Sender: TObject);
     procedure DoFormatCurrentIDEWindow(Sender: TObject);
     procedure DoFormatProject(Sender: TObject);
     procedure DoFormatOpen(Sender: TObject);
@@ -83,7 +84,7 @@ type
 implementation
 
 uses
-  diffmerge;
+  diffmerge, lazfileutils;
 
 function FileIsAllowedType(const psFileName: string): boolean;
 const
@@ -135,7 +136,12 @@ begin
       lsMsg := Format(lisJEDICodeFormatOfStartFormatting,
                 [SourceEditorManagerIntf.ActiveEditor.FileName + NativeLineBreak]);
       if CanFormat(lsMsg) then
-        ConvertEditor(SourceEditorManagerIntf.ActiveEditor)
+      begin
+        if FilenameExtIs(SourceEditorManagerIntf.ActiveEditor.FileName,'inc') then
+          DoFormatIncludeFile(Sender)
+        else
+          ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
+      end;
     end;
   end;
 end;
@@ -324,6 +330,49 @@ begin
         outputstr:=StrTrimLastEndOfLine(fcConverter.OutputCode);
         DiffMergeEditor(srcEditor,outputstr,BlockBegin.Y,EndY);
       end;
+    end;
+  finally
+    fcConverter.Free;
+  end;
+end;
+
+procedure TJcfIdeMain.DoFormatIncludeFile(Sender: TObject);
+var
+  srcEditor: TSourceEditorInterface;
+  sourceCode: string;
+  BlockBegin, BlockEnd: TPoint;
+  fcConverter: TConverter;
+  outputstr: string;
+begin
+  if (SourceEditorManagerIntf = nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
+  begin
+    LogIdeMessage('', 'No current window', mtInputError, -1, -1);
+    exit;
+  end;
+  srcEditor := SourceEditorManagerIntf.ActiveEditor;
+  if srcEditor.ReadOnly then
+    Exit;
+  sourceCode := srcEditor.GetText(False);   //get ALL editor text.
+  BlockBegin.X := 1;
+  BlockBegin.Y := 1;
+  //Find position of the last character in editor.
+  BlockEnd := Point(1, srcEditor.Lines.Count);
+  if BlockEnd.y > 0 then
+    Inc(BlockEnd.x, Length(srcEditor.Lines[BlockEnd.y - 1]))
+  else
+    BlockEnd.y := 1;
+  fcConverter := TConverter.Create;
+  try
+    fcConverter.OnStatusMessage := LogIDEMessage;
+    fcConverter.InputCode := sourceCode;
+    //try formating wrapping the code in fake unit.
+    ClearToolMessages;
+    fcConverter.GuiMessages := True;
+    fcConverter.ConvertUsingFakeUnit;
+    if not fcConverter.ConvertError then
+    begin
+      outputstr := StrTrimLastEndOfLine(fcConverter.OutputCode);
+      DiffMergeEditor(srcEditor, outputstr, BlockBegin.Y, BlockEnd.Y);
     end;
   finally
     fcConverter.Free;
