@@ -413,6 +413,7 @@ negative.
 <element name="TControlScrollBar.FTracking" link="#lcl.forms.TControlScrollBar.Tracking"/>
 <element name="TControlScrollBar.FVisible" link="#lcl.forms.TControlScrollBar.Visible"/>
 <element name="TControlScrollBar.FOldScrollInfo"/>
+<element name="TControlScrollBar.FOldVisible"/>
 <element name="TControlScrollBar.FOldScrollInfoValid"/>
 <element name="TControlScrollBar.FControl">
 <short>The associated TScrollingWinControl instance.</short>
@@ -701,48 +702,55 @@ scroll messages.
 <element name="TControlScrollBar.SetVisible.AValue">
 <short>New value for the property.</short>
 </element>
+
 <element name="TControlScrollBar.UpdateScrollBar">
 <short>
-Updates the state and position for the scroll bar in the associated Control.
+Updates the state and position for the scroll bar on the associated control.
 </short>
 <descr>
 <p>
 <var>UpdateScrollBar</var> is a procedure used to update the state and 
-position for the scroll bar in the associated <var>Control</var>.
+position for the scroll bar on the associated control.
 </p>
 <p>
-When <var>Control</var> is a <var>TScrollingWinControl</var> instance, 
-<var>TScrollInfo</var> is captured using the <var>Range</var>, 
-<var>Position</var>, and <var>Page</var> properties. The scroll bar 
-information is applied to the associated control by calling 
-<var>SetScrollInfo</var>.
+If the associated control is a <var>TScrollingWinControl</var> instance, 
+<var>TScrollInfo</var> is captured using the Range, Position, and Page  
+properties. The scroll bar information is applied to the associated control by 
+calling SetScrollInfo. The visibility for the scroll bar is updated by calling 
+ShowScrollBar.
 </p>
 <remark>
-<var>TScrollInfo</var> values are not applied when a handle has not been 
-allocated for the control, or when <var>Control</var> is not a 
-<var>TScrollingWinControl</var> class instance.
+TScrollInfo values and visibility are not applied when a handle has not been 
+allocated for the control, when the scroll information has not been changed, or 
+when when the control is not a TScrollingWinControl class instance.
 </remark>
 <p>
-<var>UpdateScrollBar</var> calls <var>SetPosition</var> to apply the current 
-value in <var>Position</var> to a visible scroll bar in the class instance. 
-When <var>Control</var> is a <var>TScrollingWinControl</var> instance, the 
-<var>Smooth</var> property is used to determine if <var>Increment</var> needs 
-to be adjusted to a value that is 10% of the <var>Page</var> size for the 
-control.
+UpdateScrollBar applies the current value in Position to a visible scroll bar 
+in the class instance. If the associated control is a TScrollingWinControl 
+instance, the Smooth property is used to determine whether Increment needs to 
+be adjusted to a value that is 10% of the Page size for the control. Increment 
+is not modified if Smooth is set to <b>False</b>.
 </p>
 <p>
-<var>UpdateScrollBar</var> is used in the implementation of the 
-<var>ControlUpdateScrollBars</var> method.
+UpdateScrollBar is used in the implementation of the ControlUpdateScrollBars 
+method.
 </p>
 </descr>
+<version>
+Modified in LCL version 3.0 to omit updates to scroll bar information if the 
+values have not been changed.
+</version>
 <seealso>
 <link id="TControlScrollBar.Increment"/>
 <link id="TControlScrollBar.Page"/>
+<link id="TControlScrollBar.Position"/>
 <link id="TControlScrollBar.Smooth"/>
 <link id="TControlScrollBar.Range"/>
+<link id="TControlScrollBar.Visible"/>
 <link id="TControlScrollBar.ControlUpdateScrollBars"/>
 </seealso>
 </element>
+
 <element name="TControlScrollBar.InvalidateScrollInfo">
 <short>Renders scroll information invalid for the control.</short>
 <descr>
