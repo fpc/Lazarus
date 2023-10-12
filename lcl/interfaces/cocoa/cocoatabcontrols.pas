@@ -821,6 +821,7 @@ var
 begin
   if fulltabs.count=0 then
     Exit;
+
   if NewIndex > fulltabs.count then
     NewIndex:= fulltabs.count;
 
@@ -833,9 +834,8 @@ begin
   if isMovingCurrentPage then begin
     currentIndex:= NewIndex;
     leftKeepAmount:= currentIndex - visibleLeftIndex;
-    selectTabViewItem( lTabPage );
   end else begin
-    if (OldIndex<currentIndex) and (NewIndex>currentIndex) then
+    if (OldIndex<currentIndex) and (NewIndex>=currentIndex) then
       dec( currentIndex )
     else if (OldIndex>currentIndex) and (NewIndex<=currentIndex) then
       inc( currentIndex );
@@ -850,7 +850,7 @@ begin
   if index > fulltabs.count then
     index:= fulltabs.count;
   fulltabs.insertObject_atIndex( lTabPage, index );
-  if index < currentIndex then
+  if index <= currentIndex then
     inc( currentIndex );
 
   UpdateTabAndArrowVisibility( self );
