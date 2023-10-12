@@ -347,13 +347,12 @@ begin
       begin
       APropInfo:=APropList^[i];
       if Assigned(PPropInfo(APropInfo)^.GetProc) and
-         Assigned(APropInfo^.PropType) and
-         Assigned(PPropInfo(APropInfo)^.SetProc) then
+         Assigned(APropInfo^.PropType) then
         case APropInfo^.PropType^.Kind of
           tkSString,
           tkLString,
           tkAString:
-            if APropInfo^.PropType=TypeInfo(TTranslateString) then
+            if (Assigned(PPropInfo(APropInfo)^.SetProc)) and (APropInfo^.PropType=TypeInfo(TTranslateString)) then
             begin
               TmpStr := GetStrProp(AnInstance, APropInfo);
               {$IFDEF VerbosePOTranslator}
