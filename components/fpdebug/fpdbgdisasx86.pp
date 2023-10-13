@@ -3274,6 +3274,7 @@ begin
       then begin
         if flagVex in Flags
         then begin
+          Exclude(Flags,flagModRM);
           if Vex.VectorLength = os128
           then SetOpcode(OPvzeroupper)
           else SetOpcode(OPvzeroall);
@@ -4351,7 +4352,7 @@ begin
       $A9: begin
         SetOpcode(OPtest);
         AddReg(regGeneral, OperandSize, REG_A);
-        AddIv;
+        AddIz;
       end;
       $AA: begin
         SetOpcode(OPstos, OPSx_b); CheckRepeat;
