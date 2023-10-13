@@ -373,6 +373,7 @@ type
     FSize: TSize;
     FViewPortOfs: TPoint;
     FWindowOfs: TPoint;
+    boxview : NSBox; // the view is used to draw Frame3d
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBkColor(AValue: TColor);
@@ -428,6 +429,7 @@ type
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     procedure Frame(const R: TRect);
+    procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
     procedure DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
     function DrawImageRep(dstRect: NSRect; const srcRect: NSRect; ImageRep: NSBitmapImageRep): Boolean;
@@ -1488,6 +1490,7 @@ begin
       CGContextRestoreGState(CGContext());
     ctx.release;
     end;
+  if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
 
@@ -1989,6 +1992,49 @@ end;
 procedure TCocoaContext.Frame(const R: TRect);
 begin
   Rectangle(R.Left, R.Top, R.Right + 1, R.Bottom + 1, False, nil);
+  AttachedBitmap_SetModified();
+end;
+
+procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+var
+  dx,dy: integer;
+  ns : NSRect;
+  r  : TRect;
+  yy : double;
+begin
+  if Style = bvNone then Exit;
+
+  if (Style = bvRaised) or (Style = bvLowered) then
+  begin
+    if not Assigned(boxview) then
+    begin
+      boxview := NSBox.alloc.initWithFrame(NSMakeRect(0,0,0,0));
+      boxview.setTitle(NSString.string_);
+      boxview.setTitlePosition(NSNoTitle);
+    end;
+
+    dx:=3; // layout<->frame adjustement for the box
+    dy:=3; // (should be aquired using 10.7 apis)
+    if Style=bvRaised then
+      boxview.setBoxType(NSBoxPrimary)
+    else
+      boxview.setBoxType(NSBoxSecondary);
+    r:=ARect;
+    InflateRect(r, dx, dy);
+    ns := RectToNSRect(r);
+    // used for size only, position is ignored
+    boxview.setFrame(ns);
+    yy := ns.size.height+ns.origin.y+1;
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, yy);
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+
+    boxview.displayRectIgnoringOpacity_inContext(
+      NSMakeRect(0,0,ns.size.width, ns.size.height)
+      , ctx);
+
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x,-yy);
+  end;
   AttachedBitmap_SetModified();
 end;
 
