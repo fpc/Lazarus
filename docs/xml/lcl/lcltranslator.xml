@@ -82,38 +82,58 @@ TPOTranslator classes.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TUpdateTranslator.FStackPath"/>
+<element name="TUpdateTranslator.IntUpdateTranslation"/>
+<element name="TUpdateTranslator.IntUpdateTranslation.AnInstance"/>
+<element name="TUpdateTranslator.IntUpdateTranslation.Level"/>
 
-<element name="TUpdateTranslator.IntUpdateTranslation">
-<short>
-Performs action required to update string translations for persistent objects 
-using RTTI.
-</short>
-<descr></descr>
-<seealso>
-<link id="TUpdateTranslator.UpdateTranslation"/>
-</seealso>
-</element>
-<element name="TUpdateTranslator.IntUpdateTranslation.AnInstance">
-<short>Persistent object updated in the method.</short>
-</element>
-
+<!-- public -->
 <element name="TUpdateTranslator.UpdateTranslation">
-<short>Updates string translations for persistent objects.</short>
+<short>
+Updates translations for string properties in a persistent object.
+</short>
 <descr>
 <p>
-<var>UpdateTranslation</var> is procedure used to translate string properties 
-in the specified persistent object instance. UpdateTranslation uses RTTI (Run 
-Time Type Information) to update the value for translatable properties in 
-Lazarus resources. This requires properties to be a TPersistent descendant 
-with RTTI enabled, and have a setter (write access) procedure. Strings, 
-Classes, Components and the sub-Components are handled in the method.
+<var>UpdateTranslation</var> is method used to translate string properties 
+in the specified persistent object instance. UpdateTranslation uses RTTI 
+(Run-Time Type Information) to access and update the values for translatable 
+properties found in the object instance.
+</p>
+<p>
+<var>AnInstance</var> is a TPersistent descendant with the RTTI used to access 
+the values for readable properties and other members in the class instance.
+</p>
+<p>
+UpdateTranslation ensures that translation is performed for writable string 
+properties defined using the TTranslateString type. Translation is not 
+performed for a property if it does not have a setter routine (write access 
+specifier).
+</p>
+<p>
+UpdateTranslation recursively checks for translatable properties in members 
+defined using TCollection, TPersistent, TComponent, or TCustomFrame types.
+</p>
+<p>
+UpdateTranslation is called from the SetDefaultLang routine and occurs when 
+translations are updated after setting a new default language value.
 </p>
 </descr>
-<seealso></seealso>
+<version>
+Modified in LCL version 3.0 to ensure that read-only members are checked for 
+translatable properties. Write access is checked before a property is 
+translated and updated with the new value.
+</version>
+<seealso>
+<link id="TDefaultTranslator.TranslateStringProperty"/>
+<link id="TPOTranslator.TranslateStringProperty"/>
+<link id="SetDefaultLang"/>
+</seealso>
 </element>
 <element name="TUpdateTranslator.UpdateTranslation.AnInstance">
-<short>Persistent object updated in the method.</short>
+<short>
+Persistent object with properties translated in the method.
+</short>
 </element>
 
 <element name="TDefaultTranslator">
@@ -140,8 +160,10 @@ Object</b>) file format.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TDefaultTranslator.FMOFile"/>
 
+<!-- public -->
 <element name="TDefaultTranslator.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -153,7 +175,7 @@ to convert any UTF-8-encoded values in MOFileName to the default encoding
 used for the platform or OS.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TDefaultTranslator.Create.MOFileName">
 <short>.mo file used in the class instance.</short>
@@ -168,7 +190,7 @@ Destroy ensures that resources allocated to an internal TMOFile member are
 freed prior to calling the inherited destructor.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 
 <element name="TDefaultTranslator.TranslateStringProperty">
@@ -201,7 +223,7 @@ No actions are performed in the method if a .mo file was not found with the
 required file name.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TDefaultTranslator.TranslateStringProperty.Sender">
 <short>Class instance calling the method.</short>
@@ -240,8 +262,10 @@ Use TDefaultTranslator to translate string properties using the .mo
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TPOTranslator.FPOFile"/>
 
+<!-- public -->
 <element name="TPOTranslator.Create">
 <short>
 Constructor for the class instance.
@@ -263,7 +287,7 @@ aPOFile is the TPPOFile class instance which contains the translated values
 for strings.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TPOTranslator.Create.POFileName">
 <short>.po file name to use for translated string values.</short>
@@ -281,7 +305,7 @@ Destroy ensures that resources allocated to the internal TPOFile member in
 the class instance are freed. Destroy calls the inherited destructor.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 
 <element name="TPOTranslator.TranslateStringProperty">
@@ -399,7 +423,7 @@ specified language and path.
 <var>TranslateUnitResourceStringsEx</var> is a convenience routine used to 
 translate string constants in a specified source file to a given language. It 
 provides arguments which identify the source file, the path to localization 
-files, and the language requested.            
+files, and the language requested.
 </p>
 <p>
 <var>Lang</var> contains the optional language identifier requested for the 
@@ -426,7 +450,7 @@ LocaleFileName is an empty string ('').
 with the string constants translated in the routine. An empty string 
 (<b>''</b>) causes the value in LocaleFileName to be used as the base source 
 code file name.
-</p>        
+</p>
 <p>
 TranslateUnitResourceStringsEx calls the FindLocaleFileName implementation 
 routine to resolve the requested language identifier, and the path and file 
@@ -476,7 +500,7 @@ Optional path to the localization files used in the translation.
 <short>
 Optional base name of the unit with strings translated in the routine.
 </short>
-</element>     
+</element>
 
 <element name="SetDefaultLang">
 <short>
@@ -521,7 +545,7 @@ default value for the argument is an empty string (<b>''</b>) and causes the
 base name for the application executable to be used, like 'project1' for 
 'project1.exe'.
 </p>
-<p>            
+<p>
 When combined with the language identifier and the '.po' or '.mo' file 
 extension, it forms the complete file name with the localized string values. 
 For example: 'lazaruside.ru.po', 'debuggerstrconst.zh_CN.po', or 
