@@ -53,7 +53,7 @@ codeBytes, '  ', asmInstr,
 
     r := TRegExpr.Create('(\$)0+([0-9a-fA-F])');
 
-    s := LowerCase(asmInstr);
+    s := Trim(LowerCase(asmInstr));
     s := StringReplace(s, '  ', ' ', [rfReplaceAll]);  // space
     s := StringReplace(s, ',  ', ',', [rfReplaceAll]); // space
     s := r.Replace(s, '$1$2', True);
@@ -259,6 +259,11 @@ begin
   TestDis('vmovd [rax],xmm0', #$C4#$E1#$79#$7E#$00,     'vmovd [rax],xmm0');
   TestDis('vmovq [rax],xmm0', #$C4#$E1#$F9#$7E#$00,     'vmovq [rax],xmm0');
 
+  TestDis('test rax,$FFFFFEFE', #$48#$A9#$FE#$FE#$FF#$FF,       'test rax,$FFFFFEFE');
+  TestDis('test eax,$FFFFFEFE', #$A9#$FE#$FE#$FF#$FF,           'test eax,$FFFFFEFE');
+  TestDis('vzeroupper',         #$C5#$F8#$77,                   'vzeroupper');
+  TestDis('vzeroall',           #$C5#$FC#$77,                   'vzeroall');
+
 
 
   Process.NewMode := dm32;
@@ -372,6 +377,10 @@ begin
   TestDis('movd xmm1,edi',    #$66#$0F#$6E#$CF,         'movd xmm1,edi');
   TestDis('movd edi,xmm1',    #$66#$0F#$7E#$CF,         'movd edi,xmm1');
   TestDis('vmovd [eax],xmm0', #$C4#$E1#$79#$7E#$00,     'vmovd [eax],xmm0');
+
+  TestDis('test eax,$FFFFFEFE', #$A9#$FE#$FE#$FF#$FF,           'test eax,$FFFFFEFE');
+  TestDis('vzeroupper',         #$C5#$F8#$77,                   'vzeroupper');
+  TestDis('vzeroall',           #$C5#$FC#$77,                   'vzeroall');
 
 
 
