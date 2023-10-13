@@ -1563,6 +1563,7 @@ begin
   if Assigned(FContext) then
     Exit;
   FContext := TCocoaContext.Create(ControlContext);
+  FContext.Control := FTarget;
   FContext.isControlDC := True;
   try
     // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));

@@ -347,6 +347,7 @@ type
   TCocoaBitmapContext = class;
   TCocoaContext = class(TObject)
   private
+    FControl: TWinControl;
     FBkBrush: TCocoaBrush;
     FBkColor: TColor;
     FBkMode: Integer;
@@ -447,6 +448,8 @@ type
     function GetClipRect: TRect;
     function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
     function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
+
+    property Control: TWinControl read FControl write FControl;
 
     property Clipped: Boolean read FClipped;
     property Flipped: Boolean read FFlipped;

@@ -966,14 +966,35 @@ const
 var
   I: Integer;
   rect: TRect;
+  ctx: TCocoaContext;
+  control: TWinControl;
+  is3dStyle: Boolean;
 begin
-  Result := FrameWidth > 0;
-  if not Result then exit;
-  rect:= ARect;
-  for I := 0 to FrameWidth - 1 do
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then
+    exit;
+
+  control := ctx.control;
+  if Assigned(control) then
+    is3dStyle := csParentBackground in control.ControlStyle
+  else
+    is3dStyle := true;
+
+  if is3dStyle then
   begin
-    Result := Boolean(DrawEdge(DC, rect, Edge[Style], BF_RECT or BF_ADJUST));
-    InflateRect(rect,-1,-1);
+    Result := FrameWidth > 0;
+    if not Result then exit;
+    rect:= ARect;
+    for I := 0 to FrameWidth - 1 do
+    begin
+      Result := Boolean(DrawEdge(DC, rect, Edge[Style], BF_RECT or BF_ADJUST));
+      InflateRect(rect,-1,-1);
+    end;
+  end
+  else
+  begin
+    if FrameWidth > 0 then
+      ctx.Frame3d(ARect, FrameWidth, Style);
   end;
 end;
 
