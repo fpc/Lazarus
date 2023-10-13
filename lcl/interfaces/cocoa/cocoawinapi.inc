@@ -564,89 +564,17 @@ begin
   end;
 end;
 
-procedure DrawEdgeRect(dst: TCocoaContext; const r: TRect; flags: Cardinal;
-  LTColor, BRColor: TColor);
-begin
-  dst.Pen.SetColor(LTColor, true);
-  dst.Pen.Apply(dst);
-  if flags and BF_LEFT > 0 then
-  begin
-    dst.MoveTo(r.Left, r.Bottom);
-    dst.LineTo(r.Left, r.Top);
-  end;
-  if flags and BF_TOP > 0 then
-  begin
-    dst.MoveTo(r.Left, r.Top);
-    dst.LineTo(r.Right, r.Top);
-  end;
-
-  dst.Pen.SetColor(BRColor, true);
-  dst.Pen.Apply(dst);
-  if flags and BF_RIGHT > 0 then
-  begin
-    dst.MoveTo(r.Right, r.Top);
-    dst.LineTo(r.Right, r.Bottom);
-  end;
-  if flags and BF_BOTTOM > 0 then
-  begin
-    dst.MoveTo(r.Right, r.Bottom);
-    // there's a missing pixel. Seems like it's accumulating an offset
-    dst.LineTo(r.Left-1, r.Bottom);
-  end;
-end;
-
 function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
   grfFlags: Cardinal): Boolean;
 var
   ctx: TCocoaContext;
-  r: TRect;
-  keepPen   : TCocoaPen;
-  edgePen   : TCocoaPen;
-  keepBrush : TCocoaBrush;
-  edgeBrush : TCocoaBrush;
-const
-  OutLT = cl3DLight;    // the next to hilight
-  OutBR = cl3DDkShadow; // the darkest (almost black)
-  InnLT = cl3DHiLight;  // the lightest (almost white)
-  InnBR = cl3DShadow;   // darker than light, lighter than dark shadow
 begin
+  Result := false;
   ctx := CheckDC(DC);
-  Result := Assigned(ctx);
-  if not Result then Exit;
+  if not Assigned(ctx) then
+    Exit;
 
-  keepPen := ctx.Pen;
-  keepBrush := ctx.Brush;
-  try
-    edgePen := TCocoaPen.Create($FFFFFF, psSolid, false, 1, pmCopy, pecRound, pjsRound);
-    edgeBrush := TCocoaBrush.Create(NSColor.whiteColor, false);
-    edgeBrush.Solid := false;
-    ctx.Pen := edgePen;
-    ctx.Brush := edgeBrush;
-
-    r := Rect;
-    if (edge and BDR_OUTER > 0) then
-    begin
-      if edge and BDR_RAISEDOUTER > 0 then
-        DrawEdgeRect(ctx, r, grfFlags, OutLT, OutBR)
-      else
-        DrawEdgeRect(ctx, r, grfFlags, InnBR, InnLT);
-      InflateRect(r, -1, -1);
-    end;
-
-    if (edge and BDR_INNER > 0) then
-    begin
-      if edge and BDR_RAISEDINNER > 0 then
-        DrawEdgeRect(ctx, r, grfFlags, InnLT, InnBR)
-      else
-        DrawEdgeRect(ctx, r, grfFlags, OutBR, OutLT);
-    end;
-
-  finally
-    ctx.Pen := keepPen;
-    ctx.Brush := keepBrush;
-    edgeBrush.Free;
-    edgePen.Free;
-  end;
+  ctx.DrawEdge(Rect, edge, grfFlags);
 
   Result := true;
 end;
@@ -955,47 +883,31 @@ end;
 
 function TCocoaWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
-const
-  Edge: array[TBevelCut] of Integer =
-  (
-    {bvNone   } 0,
-    {bvLowered} BDR_SUNKENOUTER,
-    {bvRaised } EDGE_RAISED,
-    {bvSpace  } 0
-  );
 var
-  I: Integer;
-  rect: TRect;
   ctx: TCocoaContext;
   control: TWinControl;
-  is3dStyle: Boolean;
+  is3dClassicStyle: Boolean;
 begin
+  Result := false;
+  if FrameWidth <= 0 then
+    Exit;
+
   ctx := CheckDC(DC);
   if not Assigned(ctx) then
-    exit;
+    Exit;
 
   control := ctx.control;
   if Assigned(control) then
-    is3dStyle := csParentBackground in control.ControlStyle
+    is3dClassicStyle := csParentBackground in control.ControlStyle
   else
-    is3dStyle := true;
+    is3dClassicStyle := true;
 
-  if is3dStyle then
-  begin
-    Result := FrameWidth > 0;
-    if not Result then exit;
-    rect:= ARect;
-    for I := 0 to FrameWidth - 1 do
-    begin
-      Result := Boolean(DrawEdge(DC, rect, Edge[Style], BF_RECT or BF_ADJUST));
-      InflateRect(rect,-1,-1);
-    end;
-  end
+  if is3dClassicStyle then
+    ctx.Frame3dClassic(ARect, FrameWidth, Style)
   else
-  begin
-    if FrameWidth > 0 then
-      ctx.Frame3d(ARect, FrameWidth, Style);
-  end;
+    ctx.Frame3dBox(ARect, FrameWidth, Style);
+
+  Result := true;
 end;
 
 function TCocoaWidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
