@@ -248,6 +248,19 @@ begin
   TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
   TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
 
+
+  TestDis('vmovss xmm1,dword ptr [rsi]', #$C5#$FA#$10#$0E,                 'vmovss xmm1,dword ptr [rsi]');
+  TestDis('vmovss [rsi],xmm1',           #$C5#$FA#$11#$0E,                 'vmovss [rsi],xmm1');
+  TestDis('vmovsd xmm1,qword ptr [rsi]', #$C5#$FB#$10#$0E,                 'vmovsd xmm1,qword ptr [rsi]');
+  TestDis('vmovsd [rsi],xmm1',           #$C5#$FB#$11#$0E,                 'vmovsd [rsi],xmm1');
+  TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
+  TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
+  TestDis('vmovsd xmm1,xmm2,xmm3',       #$C5#$EB#$10#$CB,                 'vmovsd xmm1,xmm2,xmm3');
+  TestDis('vmovsd xmm1,xmm2,xmm3',       #$C5#$EB#$10#$CB,                 'vmovsd xmm1,xmm2,xmm3');
+
+
+
+
   TestDis('movd mm1,edi',     #$0F#$6E#$CF,             'movd mm1,edi');
   TestDis('movq mm1,rdi',     #$48#$0F#$6E#$CF,         'movq mm1,rdi');
   TestDis('movd edi,mm1',     #$0F#$7E#$CF,             'movd edi,mm1');
@@ -371,6 +384,11 @@ begin
   TestDis('vmovmskps ecx,ymm1',     #$C5#$FC#$50#$C9,             'vmovmskps ecx,ymm1');
   TestDis('vroundsd xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0B#$CB#$07,     'vroundsd xmm1,xmm2,xmm3,$07');
   TestDis('vroundss xmm1,xmm2,xmm3,$07', #$C4#$E3#$69#$0A#$CB#$07,     'vroundss xmm1,xmm2,xmm3,$07');
+
+  TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
+  TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
+  TestDis('vmovsd xmm1,xmm2,xmm3',       #$C5#$EB#$10#$CB,                 'vmovsd xmm1,xmm2,xmm3');
+  TestDis('vmovsd xmm1,xmm2,xmm3',       #$C5#$EB#$10#$CB,                 'vmovsd xmm1,xmm2,xmm3');
 
   TestDis('movd mm1,edi',     #$0F#$6E#$CF,             'movd mm1,edi');
   TestDis('movd edi,mm1',     #$0F#$7E#$CF,             'movd edi,mm1');
