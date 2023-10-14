@@ -548,6 +548,9 @@ var
   p   : NSPoint;
   wfr : NSRect;
 begin
+  if not app.isActive then
+    exit;
+
   kw := app.keyWindow;
   p := theEvent.mouseLocation;
 
