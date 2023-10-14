@@ -24,7 +24,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, //CocoaGDIObjects,
@@ -58,7 +58,17 @@ type
     nextarr  : NSButton;
 
   public
-    currentIndex : Integer;     // index of the current tab shown
+    triggeringByLCL: Boolean;
+
+    { various indexes in fulltabs }
+    currentIndex : Integer;     // index of the current tab
+    visibleLeftIndex: Integer;  // index shown in TabView on the left
+    leftKeepAmount: Integer;    // left tab amount to keep, equals currentIndex-visibleLeftIndex
+
+    procedure attachAllTabs; message 'attachAllTabs';
+    procedure updateVariousIndex; message 'updateVariousIndex';
+
+  public
     callback: ITabControlCallback;
 
     fulltabs : NSMutableArray;  // the full list of NSTabViewItems
@@ -92,9 +102,11 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     // lcl
-    procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; AIndex: integer);
+    procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; index: integer);
       message 'exttabInsertTabViewItem:atIndex:';
-    procedure exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+    procedure exttabMoveTabViewItem_toIndex(lTabPage: NSTabViewItem; NewIndex: integer);
+      message 'exttabMoveTabViewItem:toIndex:';
+    procedure exttabRemoveTabViewItem(removedTabPage: NSTabViewItem);
       message 'exttabRemoveTabViewItem:';
     function exttabIndexOfTabViewItem(lTabPage: NSTabViewItem): NSInteger;
       message 'exttabIndexOfTabViewItem:';
@@ -230,20 +242,6 @@ begin
   aview.nextarr.setAction( ObjCSelector('nextClick:') );
 end;
 
-// only missing ViewItems inserted, RemoveAllTabs() is no longer needed,
-// and tabView_didSelectTabViewItem is not triggered anymore
-procedure AttachAllTabs(aview: TCocoaTabControl);
-var
-  i : integer;
-  itm: NSTabViewItem;
-begin
-  for i := 0 to aview.fulltabs.count - 1 do begin
-    itm := NSTabViewItem( aview.fulltabs.objectAtIndex(i) );
-    if aview.indexOfTabViewItem(itm) = NSNotFound then
-      aview.insertTabViewItem_atIndex( itm, i);
-  end;
-end;
-
 // by fine-tuning the algorithm, guarantee that the `selectedTabViewItem`
 // remains unchanged when TabControl is not wide enough,
 // so as to avoid a lot of useless `tabView_didSelectTabViewItem` events are triggered
@@ -272,6 +270,9 @@ var
   ofs : integer;
   frw: double;
   v : NSView;
+
+  tryToKeepIndex : NSInteger;
+  leftIndex : Integer;
 begin
   ShowPrev := false;
   ShowNext := false;
@@ -281,10 +282,13 @@ begin
 
   if aview.fulltabs.count=0 then exit;
 
+  tryToKeepIndex:= aview.currentIndex - aview.leftKeepAmount;
+
   // AttachAllTabs() has been modified to not remove the selectedTabViewItem first,
   // and no longer trigger tabView_didSelectTabViewItem
-  if (aview.fulltabs.count>aview.tabViewItems.count) then
-    AttachAllTabs(aview);
+  // regardless of whether aview.fulltabs.count>aview.tabViewItems.count,
+  // tabs need to be attached because the order may have been adjusted.
+  aview.attachAllTabs;
 
   minw := aview.minimumSize.width;
   if (minw<aview.frame.size.width) then Exit;
@@ -317,7 +321,19 @@ begin
   //    selectedTabViewItem is guaranteed to remain in the updated tabViewItems
   xd := lwid[ofs];
 
-  // 2. try to keep the tabs on the right side until it's not wide enough
+  // 2. try to keep the tabs on the left side, the amount not exceed leftKeepAmount,
+  //    in order to fix the position of currentTab.
+  leftIndex := ofs;
+  for i := ofs-1 downto tryToKeepIndex do begin
+    if xd + lwid[i] > frw then begin
+      ShowPrev := true;
+      Break;
+    end;
+    xd := xd + lwid[i];
+    leftIndex := i;
+  end;
+
+  // 3. try to keep the tabs on the right side until it's not wide enough
   //    and ShowNext if necessary
   for i := ofs+1 to length(lwid)-1 do begin
     if xd + lwid[i] > frw then begin
@@ -329,17 +345,20 @@ begin
     xd := xd + lwid[i];
   end;
 
-  // 3. try to keep the tabs on the left side until it's not wide enough
+  // 4. try to keep the tabs on the left side until it's not wide enough
   //    and ShowPrev if necessary
-  for i := ofs-1 downto 0 do begin
+  if leftIndex <= 0 then
+    exit;
+  for i := leftIndex-1 downto 0 do begin
     if xd + lwid[i] > frw then begin
-      for j:=i downto 0 do
-        aview.removeTabViewItem( arr.objectAtIndex(j));
       ShowPrev := true;
       Break;
     end;
     xd := xd + lwid[i];
+    leftIndex := i;
   end;
+  for j:=leftIndex-1 downto 0 do
+    aview.removeTabViewItem( arr.objectAtIndex(j));
 end;
 
 procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
@@ -348,6 +367,7 @@ var
   showPrev : Boolean;
 begin
   ReviseTabs(aview, showPrev, showNExt);
+  aview.updateVariousIndex;
   if Assigned(aview.prevarr) then
   begin
     PlaceButton(true, aview.prevarr, aview);
@@ -440,6 +460,39 @@ end;
 
 { TCocoaTabControl }
 
+// by ensuring that selectedTabViewItem cannot be removed
+// and tabView_didSelectTabViewItem is not triggered anymore
+procedure TCocoaTabControl.attachAllTabs;
+var
+  i : integer;
+  itm: NSTabViewItem;
+begin
+  // only selectedItem reserved
+  for itm{%H-} in tabViewItems do begin
+    if itm <> selectedTabViewItem then
+      removeTabViewItem( itm );
+  end;
+
+  // insert all tabs in the order of fulltabs again
+  i:= 0;
+  for itm{%H-} in fulltabs do begin
+    if itm <> selectedTabViewItem then
+      insertTabViewItem_atIndex( itm, i );
+    inc( i );
+  end;
+end;
+
+procedure TCocoaTabControl.updateVariousIndex;
+begin
+  if numberOfTabViewItems > 0 then begin
+    visibleLeftIndex:= fulltabs.indexOfObject( tabViewItemAtIndex(0) );
+    leftKeepAmount:= currentIndex - visibleLeftIndex;
+  end else begin
+    visibleLeftIndex:= -1;
+    leftKeepAmount:= 0;
+  end;
+end;
+
 class function TCocoaTabControl.alloc: id;
 begin
   Result := inherited alloc;
@@ -471,26 +524,24 @@ begin
   UpdateTabAndArrowVisibility(self);
 end;
 
-procedure TCocoaTabControl.extselectTabViewItemAtIndex(index: NSInteger);
+procedure TCocoaTabControl.extselectTabViewItemAtIndex( index:NSInteger );
 var
-  idx : integer;
-  itm : NSTabViewItem;
-  i   : NSUInteger;
+  itm: NSTabViewItem;
+  visibleIndex: NSInteger;
+  oldKeepAmount: Integer;
 begin
   if (index<0) or (index>=fulltabs.count) then Exit;
-  currentIndex := index;
 
-  itm := NSTabViewItem(fulltabs.objectAtIndex(index));
-
-  i := tabViewItems.indexOfObject(itm);
-  if i <> NSNotFound then
-  begin
-    inherited selectTabViewItemAtIndex(NSInteger(i));
-  end
-  else begin
-    UpdateTabAndArrowVisibility(self);
-    i := tabViewItems.indexOfObject(itm);
-    inherited selectTabViewItemAtIndex(NSInteger(i));
+  itm:= NSTabViewItem( fulltabs.objectAtIndex(index) );
+  visibleIndex:= indexOfTabViewItem( itm );
+  if visibleIndex <> NSNotFound then begin
+    inherited selectTabViewItemAtIndex( visibleIndex );
+  end else begin
+    oldKeepAmount:= leftKeepAmount;
+    attachAllTabs;
+    inherited selectTabViewItemAtIndex( index );
+    leftKeepAmount:= oldKeepAmount;
+    UpdateTabAndArrowVisibility( self );
   end;
 end;
 
@@ -581,7 +632,11 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
 begin
   //it's called together with "willSelect"
 
+  if triggeringByLCL then
+    exit;
+
   currentIndex:= IndexOfTab( self, tabViewItem );
+  leftKeepAmount:= currentIndex - visibleLeftIndex;
 
   if Assigned(callback) then
   begin
@@ -755,26 +810,87 @@ begin
   inherited mouseMoved(event);
 end;
 
-procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
-  lTabPage: NSTabViewItem; AIndex: integer);
+procedure TCocoaTabControl.exttabMoveTabViewItem_toIndex(
+  lTabPage: NSTabViewItem; NewIndex: integer);
+var
+  isMovingCurrentPage: Boolean;
+  OldIndex: Integer;
 begin
-  if AIndex>fulltabs.count then AIndex:=fulltabs.count;
-  fulltabs.insertObject_atIndex(lTabPage, AIndex);
+  if fulltabs.count=0 then
+    Exit;
 
-  UpdateTabAndArrowVisibility(self);
+  if NewIndex > fulltabs.count then
+    NewIndex:= fulltabs.count;
+
+  OldIndex := exttabIndexOfTabViewItem( lTabPage );
+  isMovingCurrentPage := (OldIndex=currentIndex);
+
+  fulltabs.removeObjectAtIndex( OldIndex );
+  fulltabs.insertObject_atIndex( lTabPage, NewIndex );
+
+  if isMovingCurrentPage then begin
+    currentIndex:= NewIndex;
+    leftKeepAmount:= currentIndex - visibleLeftIndex;
+  end else begin
+    if (OldIndex<currentIndex) and (NewIndex>=currentIndex) then
+      dec( currentIndex )
+    else if (OldIndex>currentIndex) and (NewIndex<=currentIndex) then
+      inc( currentIndex );
+  end;
+
+  UpdateTabAndArrowVisibility( self );
 end;
 
-procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
-var
-  idx : NSInteger;
+procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
+  lTabPage:NSTabViewItem; index:integer );
 begin
-  idx := indexOfTabViewItem(lTabPage);
-  if (idx>=0) and (idx<>NSNotFound) then
-    removeTabViewItem(lTabPage);
+  if index > fulltabs.count then
+    index:= fulltabs.count;
+  fulltabs.insertObject_atIndex( lTabPage, index );
+  if index <= currentIndex then
+    inc( currentIndex );
 
-  fulltabs.removeObject(lTabPage);
+  UpdateTabAndArrowVisibility( self );
+end;
 
-  UpdateTabAndArrowVisibility(self);
+procedure TCocoaTabControl.exttabRemoveTabViewItem( removedTabPage: NSTabViewItem );
+var
+  isRemovingCurrentPage: Boolean;
+  removedIndex: Integer;
+  nextTabPage: NSTabViewItem;
+  prevTabPage: NSTabViewItem;
+begin
+  triggeringByLCL:= true;
+  try
+    removedIndex := exttabIndexOfTabViewItem( removedTabPage );
+    isRemovingCurrentPage:= (removedIndex=currentIndex);
+
+    fulltabs.removeObjectAtIndex( removedIndex );
+
+    if isRemovingCurrentPage then begin
+      // removing current page
+      attachAllTabs;
+      if currentIndex = fulltabs.count then begin
+        dec( currentIndex );
+        removeTabViewItem( removedTabPage );
+      end else begin
+        selectTabViewItemAtIndex( currentIndex );
+      end;
+    end else begin
+      // not removing current page
+      // only fulltabs need to be changed,
+      // visible TabView auto updated in UpdateTabAndArrowVisibility()
+      if removedIndex < currentIndex then begin
+        dec( currentIndex );
+        if (removedIndex=visibleLeftIndex) and (removedIndex=currentIndex) then
+          leftKeepAmount:= 0;
+      end;
+    end;
+
+    UpdateTabAndArrowVisibility( self );
+  finally
+    triggeringByLCL:= false;
+  end;
 end;
 
 function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
