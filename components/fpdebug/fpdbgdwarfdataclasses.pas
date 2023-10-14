@@ -5386,6 +5386,8 @@ begin
   {$push}
   {$Q-}{$R-}
   Result := AValue + FOwner.RelocationOffset;
+  if FAddressSize = 4 then
+    Result := DWORD(Result);
   {$pop}
 end;
 

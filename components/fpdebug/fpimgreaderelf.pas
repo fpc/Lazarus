@@ -531,8 +531,8 @@ begin
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
           {$Q-}{$R-}
-            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+RelocationOffset),
-              Sect^.Address + Sect^.Size+RelocationOffset);
+            AfpSymbolInfo.Add(SymbolName, DWord(SymbolArr32^[i].st_value+RelocationOffset),
+              DWORD(Sect^.Address + Sect^.Size+RelocationOffset));
             end;
           {$pop}
         end
