@@ -347,6 +347,7 @@ type
   TCocoaBitmapContext = class;
   TCocoaContext = class(TObject)
   private
+    FControl: TWinControl;
     FBkBrush: TCocoaBrush;
     FBkColor: TColor;
     FBkMode: Integer;
@@ -373,6 +374,7 @@ type
     FSize: TSize;
     FViewPortOfs: TPoint;
     FWindowOfs: TPoint;
+    boxview : NSBox; // the view is used to draw Frame3d
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBkColor(AValue: TColor);
@@ -395,6 +397,7 @@ type
     procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
     procedure AttachedBitmap_SetModified(); virtual;
+    procedure DrawEdgeRect(const r: TRect; flags: Cardinal; LTColor, BRColor: TColor);
   public
     ctx: NSGraphicsContext;
     isControlDC: Boolean; // control DCs should never be freed by ReleaseDC as the control will free it by itself
@@ -427,7 +430,10 @@ type
     procedure BackgroundFill(dirtyRect:NSRect);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure DrawEdge(var Rect: TRect; edge: Cardinal; grfFlags: Cardinal);
     procedure Frame(const R: TRect);
+    procedure Frame3dClassic(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+    procedure Frame3dBox(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
     procedure DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
     function DrawImageRep(dstRect: NSRect; const srcRect: NSRect; ImageRep: NSBitmapImageRep): Boolean;
@@ -445,6 +451,8 @@ type
     function GetClipRect: TRect;
     function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
     function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
+
+    property Control: TWinControl read FControl write FControl;
 
     property Clipped: Boolean read FClipped;
     property Flipped: Boolean read FFlipped;
@@ -1488,6 +1496,7 @@ begin
       CGContextRestoreGState(CGContext());
     ctx.release;
     end;
+  if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
 
@@ -1986,9 +1995,154 @@ begin
   AttachedBitmap_SetModified();
 end;
 
+procedure TCocoaContext.DrawEdgeRect(const r: TRect; flags: Cardinal;
+  LTColor, BRColor: TColor);
+begin
+  Pen.SetColor(LTColor, true);
+  Pen.Apply(self);
+  if flags and BF_LEFT > 0 then
+  begin
+    MoveTo(r.Left, r.Bottom);
+    LineTo(r.Left, r.Top);
+  end;
+  if flags and BF_TOP > 0 then
+  begin
+    MoveTo(r.Left, r.Top);
+    LineTo(r.Right, r.Top);
+  end;
+
+  Pen.SetColor(BRColor, true);
+  Pen.Apply(self);
+  if flags and BF_RIGHT > 0 then
+  begin
+    MoveTo(r.Right, r.Top);
+    LineTo(r.Right, r.Bottom);
+  end;
+  if flags and BF_BOTTOM > 0 then
+  begin
+    MoveTo(r.Right, r.Bottom);
+    // there's a missing pixel. Seems like it's accumulating an offset
+    LineTo(r.Left-1, r.Bottom);
+  end;
+end;
+
+procedure TCocoaContext.DrawEdge(var Rect: TRect; edge: Cardinal;
+  grfFlags: Cardinal);
+var
+  r: TRect;
+  keepPen   : TCocoaPen;
+  edgePen   : TCocoaPen;
+  keepBrush : TCocoaBrush;
+  edgeBrush : TCocoaBrush;
+const
+  OutLT = cl3DLight;    // the next to hilight
+  OutBR = cl3DDkShadow; // the darkest (almost black)
+  InnLT = cl3DHiLight;  // the lightest (almost white)
+  InnBR = cl3DShadow;   // darker than light, lighter than dark shadow
+begin
+  keepPen := Pen;
+  keepBrush := Brush;
+  try
+    edgePen := TCocoaPen.Create($FFFFFF, psSolid, false, 1, pmCopy, pecRound, pjsRound);
+    edgeBrush := TCocoaBrush.Create(NSColor.whiteColor, false);
+    edgeBrush.Solid := false;
+    Pen := edgePen;
+    Brush := edgeBrush;
+
+    r := Rect;
+    if (edge and BDR_OUTER > 0) then
+    begin
+      if edge and BDR_RAISEDOUTER > 0 then
+        DrawEdgeRect(r, grfFlags, OutLT, OutBR)
+      else
+        DrawEdgeRect(r, grfFlags, InnBR, InnLT);
+      InflateRect(r, -1, -1);
+    end;
+
+    if (edge and BDR_INNER > 0) then
+    begin
+      if edge and BDR_RAISEDINNER > 0 then
+        DrawEdgeRect(r, grfFlags, InnLT, InnBR)
+      else
+        DrawEdgeRect(r, grfFlags, OutBR, OutLT);
+    end;
+
+  finally
+    Pen := keepPen;
+    Brush := keepBrush;
+    edgeBrush.Free;
+    edgePen.Free;
+  end;
+end;
+
 procedure TCocoaContext.Frame(const R: TRect);
 begin
   Rectangle(R.Left, R.Top, R.Right + 1, R.Bottom + 1, False, nil);
+  AttachedBitmap_SetModified();
+end;
+
+procedure TCocoaContext.Frame3dClassic(var ARect: TRect; const FrameWidth: integer;
+  const Style: TBevelCut);
+const
+  Edge: array[TBevelCut] of Integer =
+  (
+    {bvNone   } 0,
+    {bvLowered} BDR_SUNKENOUTER,
+    {bvRaised } EDGE_RAISED,
+    {bvSpace  } 0
+  );
+var
+  I: Integer;
+  rect: TRect;
+begin
+  rect:= ARect;
+  for I := 0 to FrameWidth - 1 do
+  begin
+    DrawEdge(rect, Edge[Style], BF_RECT or BF_ADJUST);
+    InflateRect(rect,-1,-1);
+  end;
+end;
+
+procedure TCocoaContext.Frame3dBox(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+var
+  dx,dy: integer;
+  ns : NSRect;
+  r  : TRect;
+  yy : double;
+begin
+  if Style = bvNone then Exit;
+
+  if (Style = bvRaised) or (Style = bvLowered) then
+  begin
+    if not Assigned(boxview) then
+    begin
+      boxview := NSBox.alloc.initWithFrame(NSMakeRect(0,0,0,0));
+      boxview.setTitle(NSString.string_);
+      boxview.setTitlePosition(NSNoTitle);
+    end;
+
+    dx:=3; // layout<->frame adjustement for the box
+    dy:=3; // (should be aquired using 10.7 apis)
+    if Style=bvRaised then
+      boxview.setBoxType(NSBoxPrimary)
+    else
+      boxview.setBoxType(NSBoxSecondary);
+    r:=ARect;
+    InflateRect(r, dx, dy);
+    ns := RectToNSRect(r);
+    // used for size only, position is ignored
+    boxview.setFrame(ns);
+    yy := ns.size.height+ns.origin.y+1;
+    CGContextTranslateCTM(ctx.lclCGContext, ns.origin.x, yy);
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+
+    boxview.displayRectIgnoringOpacity_inContext(
+      NSMakeRect(0,0,ns.size.width, ns.size.height)
+      , ctx);
+
+    CGContextScaleCTM(ctx.lclCGContext, 1, -1);
+    CGContextTranslateCTM(ctx.lclCGContext, -ns.origin.x,-yy);
+  end;
   AttachedBitmap_SetModified();
 end;
 
