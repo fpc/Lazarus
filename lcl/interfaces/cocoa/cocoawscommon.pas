@@ -1214,6 +1214,9 @@ var
   MouseTargetLookup: Boolean;
   srchPt: TPoint;
 begin
+  if not NSApp.isActive then
+    exit;
+
   if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
     Result := True; // Cocoa should not handle the message.
