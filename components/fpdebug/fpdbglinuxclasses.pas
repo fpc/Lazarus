@@ -1019,6 +1019,7 @@ var
   ProcMaps: TDbgLinuxMemoryMappingList;
   i: Integer;
   ProcMap: TDbgLinuxMemoryMapping;
+  AnId: TDbgPtr;
 begin
   Result := deInternalContinue;
   FLibMap.ClearAddedAndRemovedLibraries;
@@ -1036,7 +1037,8 @@ begin
       if (ProcMap.Offset = 0) and (ProcMap.FileName <> '') and (Copy(ProcMap.FileName,1,1) <> '[') then
         begin
         // Check if this library is already known.
-        if not (FLibMap.HasId(ProcMap.AddressFrom)) then
+        AnId := TDBGPtr(ProcMap.AddressFrom);
+        if not (FLibMap.HasId(AnId)) then
           begin
           // Add the library and trigger a deLoadLibrary event
           AddLib(tDbgLinuxLibrary.Create(Self, ProcMap.FileName, THandle(ProcMap.Inode), TDBGPtr(ProcMap.AddressFrom)));
