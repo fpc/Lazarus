@@ -124,6 +124,8 @@ const
   // Symbol-map section name
   _symbol        = '.symtab';
   _symbolstrings = '.strtab';
+  _symboldyn        = '.dynsym';
+  _symboldynstrings = '.dynstr';
 
 { TElfFile }
 
@@ -474,6 +476,11 @@ begin
   AfpSymbolInfo.SetAddressBounds(1, High(AFpSymbolInfo.HighAddr)); // always search / TODO: iterate all sections for bounds
   p := Section[_symbol];
   ps := Section[_symbolstrings];
+  if (p = nil) or (ps = nil) then begin
+    p := Section[_symboldyn];
+    ps := Section[_symboldynstrings];
+  end;
+
   if assigned(p) and assigned(ps) then
   begin
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
