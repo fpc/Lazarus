@@ -93,10 +93,52 @@ at:
 
 <element name="TCustomXMLPropStorage">
 <short>
-Implements the base class for the XML Form's Session Properties Storage.
+Implements the base class for XML storage of Form Session properties.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TCustomXMLPropStorage</var> is a <var>TFormPropertyStorage</var> 
+descendant used to save or restore properties values in an XML file. It 
+introduces new properties, methods, and members needed to read or write values 
+in an XML file.
+</p>
+<p>
+Values read or written using the class are defined in the SessionProperties for 
+a TForm or a TFrame instance. At design-time, use the SessionProperties 
+property editor in the Object Inspector to maintain the property names. At 
+run-time, the property names can be assigned using a string like:
+</p>
+<code>
+Form1.SessionProperties := 'Width;Height;Image1.Width';
+</code>
+<p>
+Use the FileName property to specify where the XML content is stored.
+</p>
+<p>
+Use the RootNodePath property to specify the path to a node in the XML document 
+where the XML content is stored.
+</p>
+<p>
+At run-time, default handler routines (attached to the parent form) are used to 
+Save or Restore the content in the XML file when the form is created or 
+destroyed.
+</p>
+<p>
+Use the StoredValues property to specify property names cannot be assigned 
+using the Object Inspector; this may be needed for properties which cannot be 
+represented as a singular value or does not have published visibility. Use the 
+OnSaveProperties and OnRestoreProperties event handlers to store or restore the 
+values for items in StoredValues.
+</p>
+<p>
+A demonstration program is located in the examples directory at:
+</p>
+<code>$(LazarusDir)/examples/propstorage</code>
+</descr>
+<seealso>
+<link id="TXMLPropStorage"/>
+<link id="#lcl.forms.TFormPropertyStorage">TFormPropertyStorage</link>
+</seealso>
 </element>
 
 <!-- private -->
@@ -116,8 +158,7 @@ Gets the value for the FileName property.
 </element>
 <element name="TCustomXMLPropStorage.GetXMLFileName.Result">
 <short>
-The current value in the 
-<link id="#lcl.xmlpropstorage.TCustomXMLPropStorage.FileName">TCustomXMLPropStorage.FileName</link> property.
+The current value for the FileName property.
 </short>
 </element> 
 
@@ -127,7 +168,7 @@ The current value in the
 <seealso/>
 </element>
 <element name="TCustomXMLPropStorage.RootSection.Result">
-<short>The current value of RootSection.</short>
+<short>The current value for the RootSection property.</short>
 </element>
 
 <element name="TCustomXMLPropStorage.FixPath">
@@ -147,52 +188,47 @@ Turns '.' notation into '/' notation for the XPATH-like implementation in
 
 <element name="TCustomXMLPropStorage.XMLConfig">
 <short>
-Property to access the <link 
-id="#lcl.xmlpropstorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>.
+Property to access the XML configuration file where the content is stored.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.xmlpropstorage.TPropStorageXMLConfig">TPropStorageXMLConfig</link>
+</seealso>
 </element>
 
 <element name="TCustomXMLPropStorage.StorageNeeded">
-<short>Ask the underlying storage object for an entry.</short>
+<short>Ensures the underlying storage object is allocated at run-time.</short>
 <descr/>
 <seealso/>
 </element>
-
 <element name="TCustomXMLPropStorage.StorageNeeded.ReadOnly">
-<short>If the item is read-only.</short>
+<short><b>True</b> if the item is read-only. Not used in the method.</short>
 </element>
 
 <element name="TCustomXMLPropStorage.FreeStorage">
-<short>Frees an entry from the underlying storage object.</short>
+<short>Frees the underlying storage object for the class instance.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomXMLPropStorage.DoReadString">
 <short>
-Implements the actual reading of a value from the underlying storage 
-container.
+Implements reading of a value from the underlying storage container.
 </short>
 <descr/>
 <seealso/>
 </element>
-
 <element name="TCustomXMLPropStorage.DoReadString.Result">
 <short>The value of the section/ident requested.</short>
 </element>
-
 <element name="TCustomXMLPropStorage.DoReadString.Section">
 <short>The section to be read.</short>
 </element>
-
 <element name="TCustomXMLPropStorage.DoReadString.Ident">
 <short>The ident to be read.</short>
 </element>
-
 <element name="TCustomXMLPropStorage.DoReadString.TheDefault">
-<short>If has no value then return this as default.</short>
+<short>If no value is available then return this as the default value.</short>
 </element>
 
 <element name="TCustomXMLPropStorage.DoWriteString">
@@ -202,15 +238,12 @@ Implements writing of a string value to the underlying storage container.
 <descr/>
 <seealso/>
 </element>
-
 <element name="TCustomXMLPropStorage.DoWriteString.Section">
 <short>The section to be written.</short>
 </element>
-
 <element name="TCustomXMLPropStorage.DoWriteString.Ident">
 <short>The ident to be written.</short>
 </element>
-
 <element name="TCustomXMLPropStorage.DoWriteString.Value">
 <short>The value to be written.</short>
 </element>
@@ -220,7 +253,6 @@ Implements writing of a string value to the underlying storage container.
 <descr/>
 <seealso/>
 </element>
-
 <element name="TCustomXMLPropStorage.DoEraseSections.ARootSection">
 <short>The path to the section that will be erased.</short>
 </element>
@@ -229,21 +261,67 @@ Implements writing of a string value to the underlying storage container.
 <short>
 Name of the file where the property data is saved in XML format.
 </short>
-<descr/>
+<descr>
+<p>
+Defaults to the application name with a '.xml' extension if no value is 
+specified in the property.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomXMLPropStorage.RootNodePath">
-<short>Name of the root object path on your XML file.</short>
-<descr/>
+<short>Name of the root object path in the XML file.</short>
+<descr>
+<p>
+Provides the name path to the XML node where the property values are stored in 
+FileName.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TXMLPropStorage">
 <short>
-Implements a class for XML Form Session Properties storage.
+Implements a class for XML storage of Form Session properties.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TXMLPropStorage</var> is a <var>TCustomXMLPropStorage</var> descendant 
+used to save or restore properties values using an XML file. It introduces new 
+properties, methods, and members needed to read or write values in an XML file.
+</p>
+<p>
+Values read or written using the class are defined in the SessionProperties for 
+a TForm or TFrame instance. At design-time, use the SessionProperties property 
+editor in the Object Inspector to maintain the property names. At run-time, the 
+property names can be assigned using a string like:
+</p>
+<code>
+Form1.SessionProperties := 'Width;Height;Image1.Width';
+</code>
+<p>
+Use the FileName property to specify where the XML content is stored.
+</p>
+<p>
+Use the RootNodePath property to specify the path to a node in the XML document 
+where the XML content is stored.
+</p>
+<p>
+At run-time, default handler routines (attached to the parent form) are used to Save or Restore the content in the XML file.
+</p>
+<p>
+Use the StoredValues property to specify property names cannot be assigned 
+using the Object Inspector; this may be needed for properties which cannot be 
+represented as a singular value or does not have published visibility. Use the 
+OnSaveProperties and OnRestoreProperties event handlers to store or restore the 
+values for items in StoredValues.
+</p>
+<p>
+A demonstration program is located in the examples directory at:
+</p>
+<code>$(LazarusDir)/examples/propstorage</code>
+</descr>
 <seealso>
 <link id="#lcl.forms.TForm">TForm.SessionProperties</link>
 <link id="#lcl.inipropstorage.TINIPropStorage">TINIPropStorage</link>
@@ -513,10 +591,13 @@ Saves the content in XMLConfig to the specified TStream instance.
 <element name="Register">
 <short>
 Registers 
-<link id="#lcl.xmlpropstorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component palette.
+<link id="#lcl.xmlpropstorage.TXMLPropStorage">TXMLPropStorage</link> 
+on the 'Misc' tab in the component palette.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.xmlpropstorage.TXMLPropStorage">TXMLPropStorage</link>
+</seealso>
 </element>
 
 </module>
