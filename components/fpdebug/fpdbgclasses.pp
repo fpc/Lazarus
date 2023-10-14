@@ -2787,6 +2787,10 @@ end;
 
 procedure TDbgProcess.AddLibrary(ALib: TDbgLibrary; AnID: TDbgPtr);
 begin
+  if FLibMap.HasId(AnID) then begin
+    debugln(DBG_VERBOSE or DBG_WARNINGS, ['Error: Attempt to add duplicate library ', AnID]);
+    exit;
+  end;
   FLibMap.Add(AnID, ALib);
 
   if (ALib.DbgInfo.HasInfo) or (ALib.SymbolTableInfo.HasInfo) then
