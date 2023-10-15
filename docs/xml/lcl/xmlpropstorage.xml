@@ -124,20 +124,44 @@ Save or Restore the content in the XML file when the form is created or
 destroyed.
 </p>
 <p>
-Use the StoredValues property to specify property names cannot be assigned 
-using the Object Inspector; this may be needed for properties which cannot be 
-represented as a singular value or does not have published visibility. Use the 
-OnSaveProperties and OnRestoreProperties event handlers to store or restore the 
-values for items in StoredValues.
+Use the StoredValues property to specify property names which cannot be 
+assigned to the form session properties using the Object Inspector. It can be 
+used for properties which cannot be represented as a singular value or do not 
+have published visibility. Use the OnSaveProperties and OnRestoreProperties 
+event handlers to store or restore (respectively) the values for these items in 
+StoredValues.
+</p>
+<p>
+The class can alo be used to save and restore properties for TFrame instances 
+on a form, but it requires some additional coding. The RootNodePath must be 
+specified to identify the path where the TFrame values are stored. In addition, 
+the SessionProperties for the frame must be assigned in an overridden 
+constructor and the Restore method must be called to reload the values. The 
+Save method method also be called in na overridden Destructor for the frame.
 </p>
 <p>
 A demonstration program is located in the examples directory at:
 </p>
 <code>$(LazarusDir)/examples/propstorage</code>
+<p>
+A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/TXMLPropStorage">
+https://wiki.lazarus.freepascal.org/TXMLPropStorage
+</url>
+</p>
+<p>
+Use TINIPropStorage or TJsonPropStorage components to save and restore session 
+properties using either a .INI file or a JSON (JavaScript Object Notation) file.
+</p>
 </descr>
 <seealso>
 <link id="TXMLPropStorage"/>
 <link id="#lcl.forms.TFormPropertyStorage">TFormPropertyStorage</link>
+<link id="#lcl.forms.TForm.SessionProperties">TForm.SessionProperties</link>
+<link id="#lcl.inipropstorage.TINIPropStorage">TINIPropStorage</link>
+<link id="#lcl.jsonpropstorage.TJSONPropStorage">TJSONPropStorage</link>
 </seealso>
 </element>
 
@@ -263,22 +287,38 @@ Name of the file where the property data is saved in XML format.
 </short>
 <descr>
 <p>
-Defaults to the application name with a '.xml' extension if no value is 
-specified in the property.
+A default file name derived from the application name is used if no value is 
+specified in the property. For Windows, the file has an '.xml' extension, and 
+is stored in the same directory as the application executable. For example: 
+'PROGRAMNAME.XML'. For Linux, the file (with a leading '.' and without an 
+extension) is stored in the home directory for the current user. For example: 
+'.PROGRAMNAME'.
 </p>
 </descr>
 <seealso/>
 </element>
 
 <element name="TCustomXMLPropStorage.RootNodePath">
-<short>Name of the root object path in the XML file.</short>
+<short>
+Path to the root node in the XML file.
+</short>
 <descr>
 <p>
 Provides the name path to the XML node where the property values are stored in 
-FileName.
+FileName. It overrides the inherited RootSection value when provided, and 
+determines the DOM node where property values are stored in the SaveProperties
+method.
+</p>
+<p>
+If the class is used for session properties on a TFrame instance, RootNodePath 
+must be specified with a path for the frame instance. For example: 
+'TApplication/Frame1'.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomXMLPropStorage.RootSection"/>
+<link id="TCustomPropertyStorage.SaveProperties"/>
+</seealso>
 </element>
 
 <element name="TXMLPropStorage">
@@ -311,19 +351,41 @@ where the XML content is stored.
 At run-time, default handler routines (attached to the parent form) are used to Save or Restore the content in the XML file.
 </p>
 <p>
-Use the StoredValues property to specify property names cannot be assigned 
-using the Object Inspector; this may be needed for properties which cannot be 
-represented as a singular value or does not have published visibility. Use the 
-OnSaveProperties and OnRestoreProperties event handlers to store or restore the 
-values for items in StoredValues.
+Use the StoredValues property to specify property names which cannot be 
+assigned to the form session properties using the Object Inspector. It can be 
+used for properties which cannot be represented as a singular value or do not 
+have published visibility. Use the OnSavingProperties and OnRestoreProperties 
+event handlers to store or restore (respectively) the values for these items in 
+StoredValues.
+</p>
+<p>
+TXMLPropStorage can alo be used to save and restore properties for TFrame 
+instances on a form, but it requires some additional coding. The RootNodePath 
+must be specified to identify the path where the TFrame values are stored. In 
+addition, the SessionProperties for the frame must be assigned in an overridden 
+constructor and the Restore method must be called to reload the values. The 
+Save method method also be called in na overridden Destructor for the frame.
 </p>
 <p>
 A demonstration program is located in the examples directory at:
 </p>
 <code>$(LazarusDir)/examples/propstorage</code>
+<p>
+A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/TXMLPropStorage">
+https://wiki.lazarus.freepascal.org/TXMLPropStorage
+</url>
+</p>
+<p>
+Use TINIPropStorage or TJsonPropStorage components to save and restore session 
+properties using either a .INI file or a JSON (JavaScript Object Notation) file.
+</p>
 </descr>
 <seealso>
-<link id="#lcl.forms.TForm">TForm.SessionProperties</link>
+<link id="TCustomXMLPropStorage"/>
+<link id="#lcl.forms.TForm.SessionProperties">TForm.SessionProperties</link>
 <link id="#lcl.inipropstorage.TINIPropStorage">TINIPropStorage</link>
 <link id="#lcl.jsonpropstorage.TJSONPropStorage">TJSONPropStorage</link>
 </seealso>
