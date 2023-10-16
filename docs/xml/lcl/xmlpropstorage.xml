@@ -317,7 +317,7 @@ must be specified with a path for the frame instance. For example:
 </descr>
 <seealso>
 <link id="TCustomXMLPropStorage.RootSection"/>
-<link id="TCustomPropertyStorage.SaveProperties"/>
+<link id="#lcl.propertystorage.TCustomPropertyStorage.SaveProperties">TCustomPropertyStorage.SaveProperties</link>
 </seealso>
 </element>
 
