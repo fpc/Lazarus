@@ -9111,7 +9111,7 @@ widgetset class when its <var>Handle</var> has been allocated.
 <element name="TForm.AlphaBlend" link="#lcl.forms.TCustomForm.AlphaBlend"/>
 <element name="TForm.AlphaBlendValue" link="#lcl.forms.TCustomForm.AlphaBlendValue"/>
 <element name="TForm.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TForm.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+<element name="TForm.AutoScroll" link="#lcl.forms.TCustomForm.AutoScroll"/>
 <element name="TForm.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 <element name="TForm.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TForm.BorderIcons" link="#lcl.forms.TCustomForm.BorderIcons"/>
