@@ -757,15 +757,21 @@ var
 begin
   // (char * ) $2 = 0x005c18d0 "\tException"
   // (char *) $10 = 0x00652d44 "\x04TXXX"
+  // (char *) $10 = 0x00652d44 "\U00000004TXXX"
   s := TLldbInstructionReadExpression(Sender).Res;
   i := pos('"', s);
   l := 255;
   if i > 0 then begin
-    if s[i+1] = '\' then begin
+    if (i + 2 < Length(s)) and (s[i+1] = '\') then begin
       inc(i, 2);
       if s[i] = 'x' then begin
         l := StrToIntDef('$'+copy(s, i+1, 2), 255);
         inc(i, 2);
+      end
+      else
+      if (i + 9 < Length(s)) and (s[i] = 'U') and  (s[i+1] = '0') then begin
+        l := StrToIntDef('$'+copy(s, i+1, 8), 255);
+        inc(i, 8);
       end
       else begin
         case s[i] of
