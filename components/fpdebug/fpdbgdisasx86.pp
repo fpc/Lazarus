@@ -4477,6 +4477,7 @@ begin
       $C3: begin
         Force64;
         SetOpcode(OPret);
+        CheckRepeat;
       end;
       $C4: begin
         DecodeModRM;
