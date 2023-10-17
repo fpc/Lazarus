@@ -1333,23 +1333,6 @@ begin
   Point.y := contentView.bounds.size.height - Point.y;
 end;
 
-procedure NSScreenGetRect(sc: NSScreen; mainScreenHeight: double; out r: TRect);
-var
-  fr : NSRect;
-begin
-  fr := sc.frame;
-  r := Bounds(
-    Round(fr.origin.x),
-    Round(fr.origin.y - fr.size.height + mainScreenHeight),
-    Round(fr.size.width), Round(fr.size.height)
-  );
-end;
-
-procedure NSScreenGetRect(sc: NSScreen; out r: TRect);
-begin
-  NSScreenGetRect(sc, NSScreen.mainScreen.frame.size.height, r);
-end;
-
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns : NSRect;
