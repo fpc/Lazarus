@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr "添加自定义服务器"
 
 #: simplewebsrvstrconsts.rsswaddextracommandlineoptionsforthecommandwhichstarts
 msgid "Add extra command-line options for the command which starts the webserver."
-msgstr "为启动网站服务器的命令添加额外的命令行选项。"
+msgstr "为启动网页服务器的命令添加额外的命令行选项。"
 
 #: simplewebsrvstrconsts.rsswaddlocation
 msgid "Add Location"
@@ -29,7 +29,7 @@ msgstr "添加路径"
 
 #: simplewebsrvstrconsts.rsswaddsimplewebserverlocation
 msgid "Add Simple Web Server Location"
-msgstr "添加简易网站服务器路径"
+msgstr "添加简易网页服务器路径"
 
 #: simplewebsrvstrconsts.rsswanarbitrarynamefortheurlsubfolder
 msgid "An arbitrary name for the URL subfolder"
@@ -247,15 +247,15 @@ msgstr "服务器额外命令行选项（每行一个）"
 
 #: simplewebsrvstrconsts.rsswsimplewebserveraddress
 msgid "Simple Web Server Address"
-msgstr "简易网站服务器地址"
+msgstr "简易网页服务器地址"
 
 #: simplewebsrvstrconsts.rsswsimplewebserverexecutable
 msgid "Simple Web Server Executable"
-msgstr "简易网站服务器可执行文件"
+msgstr "简易网页服务器可执行文件"
 
 #: simplewebsrvstrconsts.rsswsimplewebserverport
 msgid "Simple Web Server Port"
-msgstr "简易网站服务器端口"
+msgstr "简易网页服务器端口"
 
 #: simplewebsrvstrconsts.rsswspathofcompileserver
 msgid "Path of compileserver, macro $(SWSExe)"
@@ -272,7 +272,7 @@ msgstr "启动服务"
 
 #: simplewebsrvstrconsts.rsswstitle
 msgid "Simple Web Server"
-msgstr "简易网站服务器"
+msgstr "简易网页服务器"
 
 #: simplewebsrvstrconsts.rsswstopserver
 msgid "Stop Server"
@@ -297,7 +297,7 @@ msgstr "端口 %s 上已有服务器：%s来源: %s路径：%s"
 
 #: simplewebsrvstrconsts.rsswtoolsoptionssimplewebserverbrowser
 msgid "Tools / Options / Simple Web Server / Browser"
-msgstr "工具 / 选项 / 简易网站服务器 / 浏览器"
+msgstr "工具 / 选项 / 简易网页服务器 / 浏览器"
 
 #: simplewebsrvstrconsts.rsswtryanotherport
 msgid "Try another port"
@@ -309,7 +309,7 @@ msgstr "无法添加路径："
 
 #: simplewebsrvstrconsts.rsswusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
 msgid "Use this browser when opening the URL or HTML file of a web browser project"
-msgstr "在打开网站浏览器项目的 URL 或 HTML 文件时使用该浏览器"
+msgstr "在打开网页浏览器项目的 URL 或 HTML 文件时使用该浏览器"
 
 #: simplewebsrvstrconsts.rsswworkingdirectory
 msgid "Working Directory"

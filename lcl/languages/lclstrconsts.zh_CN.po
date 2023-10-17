@@ -1217,7 +1217,7 @@ msgstr "仅整个单词"
 
 #: lclstrconsts.rswin32error
 msgid "Error:"
-msgstr "错误:"
+msgstr "错误："
 
 #: lclstrconsts.rswin32warning
 msgid "Warning:"
