@@ -1172,7 +1172,7 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
-  Scr0Height:  CGFloat;
+  globalScreenHeight:  CGFloat;
   ScreenID: NSScreen;
   idx : NSUInteger;
 begin
@@ -1182,10 +1182,10 @@ begin
   Result := (idx < NSScreen.screens.count);
   if not Result then Exit;
 
-  Scr0Height := NSScreenZeroHeight;
+  globalScreenHeight := NSGlobalScreenHeight;
   ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
-  NSToLCLRect(ScreenID.frame, Scr0Height, lpmi^.rcMonitor);
-  NSToLCLRect(ScreenID.visibleFrame, Scr0Height, lpmi^.rcWork);
+  NSToLCLRect(ScreenID.frame, globalScreenHeight, lpmi^.rcMonitor);
+  NSToLCLRect(ScreenID.visibleFrame, globalScreenHeight, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if idx = 0 then
