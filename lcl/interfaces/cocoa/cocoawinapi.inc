@@ -1066,7 +1066,7 @@ begin
     SPI_GETWORKAREA:
     begin
       NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
-        , NSScreenZeroHeight
+        , NSPrimaryScreenHeight
         , TRect(pvParam^));
     end;
   else
