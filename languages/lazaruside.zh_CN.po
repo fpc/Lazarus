@@ -4938,7 +4938,7 @@ msgstr "一个带有名称\"%s\"的过滤器已经存在."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
 msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
-msgstr "在清理后(清理所有文件或清理常用文件),切换到自动清理"
+msgstr "清理（清理所有文件或清理常用文件）后，切换到自动清理"
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
@@ -5161,7 +5161,7 @@ msgstr "自动"
 
 #: lazarusidestrconsts.lisautomatically
 msgid "Automatically"
-msgstr "自动地"
+msgstr "自动"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
 msgid "Automatically convert .lfm files to .lrs resource files"
@@ -5590,7 +5590,7 @@ msgstr "错误"
 
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
-msgstr "错误: "
+msgstr "错误："
 
 #: lazarusidestrconsts.lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
@@ -5602,7 +5602,7 @@ msgstr "新建行符号(symbols)"
 
 #: lazarusidestrconsts.lisccohintmsg
 msgid "HINT: "
-msgstr "提示: "
+msgstr "提示： "
 
 #: lazarusidestrconsts.lisccoinvalidcompiler
 msgid "Invalid compiler"
@@ -6137,16 +6137,16 @@ msgstr "选择一个示例文件"
 
 #: lazarusidestrconsts.lischooseanfpcmessagefile
 msgid "Choose an FPC message file"
-msgstr "选择一个FPC信息文件"
+msgstr "选择一个 FPC 消息文件"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a Pascal file for indentation examples"
-msgstr "选择一个Pascal文件用于缩进示例"
+msgstr "选择一个用于缩进示例的 Pascal 文件"
 
 #: lazarusidestrconsts.lischoosecompilerexecutable
 #, object-pascal-format
 msgid "Choose compiler executable (%s)"
-msgstr "选择编译器可执行程序（%s）"
+msgstr "选择编译器可执行文件（%s）"
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
@@ -6158,15 +6158,15 @@ msgstr "选择调试器可执行文件"
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
-msgstr "选择Delphi软件包(*.dpk)"
+msgstr "选择 Delphi 软件包 (*.dpk)"
 
 #: lazarusidestrconsts.lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
-msgstr "选择Delphi项目(*.dpr)"
+msgstr "选择 Delphi 项目 (*.dpr)"
 
 #: lazarusidestrconsts.lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
-msgstr "选择Delphi单元(*.pas)"
+msgstr "选择 Delphi 单元 (*.pas)"
 
 #: lazarusidestrconsts.lischoosedirectory
 msgid "Choose directory"
@@ -6178,15 +6178,15 @@ msgstr "选择一个可执行文件"
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
-msgstr "选择FPC源代码目录"
+msgstr "选择 FPC 源代码目录"
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
-msgstr "选择Lazarus目录"
+msgstr "选择 Lazarus 目录"
 
 #: lazarusidestrconsts.lischoosemakeexecutable
 msgid "Choose \"make\" executable"
-msgstr "选择\"make\"可执行文件"
+msgstr "选择 \"make\" 可执行文件"
 
 #: lazarusidestrconsts.lischoosenameandtext
 msgid "Choose name and text"
@@ -6289,11 +6289,11 @@ msgstr "清理所有"
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
-msgstr "清理Lazarus源代码"
+msgstr "清理 Lazarus 源代码"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch after building to automatically"
-msgstr "在构建后自动地切换到"
+msgstr "构建后切换到自动"
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
@@ -8622,17 +8622,17 @@ msgstr "目录"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr "目录: "
+msgstr "目录："
 
 #: lazarusidestrconsts.lisdirectorynotfound
 #, object-pascal-format
 msgid "Directory \"%s\" not found."
-msgstr "目录\"%s\"未找到."
+msgstr "未找到目录 \"%s\"。"
 
 #: lazarusidestrconsts.lisdirectorynotfound2
 #, object-pascal-format
 msgid "directory %s not found"
-msgstr "目录%s未找到"
+msgstr "未找到目录 %s"
 
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -8777,7 +8777,7 @@ msgstr "对于这个项目不显示这个对话框"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
-msgstr "不再显示这个消息"
+msgstr "不再显示此信息(&N)"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
@@ -9271,7 +9271,7 @@ msgstr "选项在位置%d需要一个参数:%s"
 
 #: lazarusidestrconsts.liserror
 msgid "Error: "
-msgstr "错误: "
+msgstr "错误："
 
 #: lazarusidestrconsts.liserrorcreatingfile
 msgid "Error creating file"
@@ -9477,7 +9477,7 @@ msgstr "执行命令前"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
-msgstr "停止执行"
+msgstr "程序已停止"
 
 #: lazarusidestrconsts.lisexecutionstoppedexitcode
 #, object-pascal-format
@@ -9832,7 +9832,7 @@ msgstr "过滤器:%s"
 
 #: lazarusidestrconsts.lisfilterallmessagesofcertaintype
 msgid "Filter all messages of certain type"
-msgstr "过滤确定(certain)类型的所有信息"
+msgstr "过滤特定类型的所有消息"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 #, object-pascal-format
@@ -9880,9 +9880,8 @@ msgid "Filter the available options list"
 msgstr "过滤可用选项列表"
 
 #: lazarusidestrconsts.lisfilterverbosemessagesandbelow
-#, fuzzy
 msgid "Filter Verbose Messages and below"
-msgstr "过滤确定(certain)类型的所有信息"
+msgstr "过滤冗长消息及以下内容"
 
 #: lazarusidestrconsts.lisfilterwarningsandbelow
 #, fuzzy
@@ -11781,7 +11780,7 @@ msgstr "确认删除"
 
 #: lazarusidestrconsts.lislazbuilddebugide
 msgid "Debug IDE"
-msgstr "调试IDE"
+msgstr "调试的 IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -11848,7 +11847,7 @@ msgstr "选项传递到编译器"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to build"
-msgstr "配置文件来构建"
+msgstr "配置文件"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
@@ -11869,7 +11868,7 @@ msgstr "在构建 IDE 后自动重启 Lazarus （在构建其它部分时不起�
 
 #: lazarusidestrconsts.lislazbuildselectprofilestobuild
 msgid "Select profiles to build"
-msgstr "选择配置文件来构建"
+msgstr "选择构建用的配置文件"
 
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
 msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
@@ -11878,19 +11877,19 @@ msgstr "当直接从工具菜单中构建时显示确认对话框"
 
 #: lazarusidestrconsts.lislazbuildshowoptionsanddefinesforcommandline
 msgid "Show options and defines for command line"
-msgstr "显示选项和定义 对命令行"
+msgstr "显示命令行选项和定义"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
-msgstr "目标CPU:"
+msgstr "目标 CPU："
 
 #: lazarusidestrconsts.lislazbuildtargetdirectory
 msgid "Target directory:"
-msgstr "目标目录:"
+msgstr "目标目录："
 
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
-msgstr "目标操作系统:"
+msgstr "目标操作系统："
 
 #: lazarusidestrconsts.lislazbuildunabletowritefile
 #, object-pascal-format
@@ -11900,7 +11899,7 @@ msgstr "不能写入文件\"%s\":%s"
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
 msgid "Update revision.inc"
-msgstr "更新revision.inc"
+msgstr "更新 revision.inc"
 
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
@@ -11917,7 +11916,7 @@ msgstr "Lazarus版本(例如1.2.4)"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL widget type"
-msgstr "LCL widget类型"
+msgstr "LCL 控件类型："
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -18285,7 +18284,7 @@ msgstr "该FPC源代码目录\"%s\"看起来不正确:%s%s"
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
-msgstr "FreePascal 编译器可执行程序代表性地名称是 \"%s\"，您也可以使用像 \"%s\" 这样的特殊目标编译器，请提供完整的文件路径。"
+msgstr "FreePascal 编译器可执行文件名称通常是 \"%s\"，您也可以使用像 \"%s\" 这样的特殊目标编译器，请提供完整的文件路径。"
 
 #: lazarusidestrconsts.listheideisstillbuilding
 msgid "The IDE is still building."
@@ -18313,12 +18312,12 @@ msgstr "启动应用程序\"%s\"%s不存在或不是可执行的.%s查看 运行
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 #, object-pascal-format
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
-msgstr "Lazarus目录包含IDE的源文件、LCL的软件包文件、很多的标准软件包。例如，它包含文件\"ide%slazarus.lpi\"。翻译文件也位于这里。"
+msgstr "Lazarus 目录包含 IDE 、LCL 和标准软件包的源文件、翻译文件等。例如它包含文件 \"ide%slazarus.lpi\"。"
 
 #: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
-msgstr "该Lazarus目录\"%s\"看起来不正确:%s%s"
+msgstr "该 Lazarus 目录 \"%s\" 看起来不正确：%s%s"
 
 #: lazarusidestrconsts.listhelazarussourcesuse
 #, object-pascal-format
@@ -18332,12 +18331,12 @@ msgstr ""
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 #, object-pascal-format
 msgid "The macro \"%s\" does not begin with \"%s\"."
-msgstr "宏命令\"%s\"不是以\"%s\"开头的."
+msgstr "宏 \"%s\" 不是以 \"%s\" 开头的。"
 
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 #, object-pascal-format
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
-msgstr "\"make\"可执行文件代表性地有名称\"%s\".构建IDE被需要.请给予完整的文件路径."
+msgstr "\"make\" 可执行文件的名称通常为 \"%s\"，构建 IDE 时需要用到它，请提供完整的文件路径。"
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, object-pascal-format
@@ -18652,7 +18651,7 @@ msgstr "这些单元未找到:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 #, object-pascal-format
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
-msgstr "要求FreePascal的源文件,用于浏览和代码补全.例如,它有文件\"%s\"."
+msgstr "浏览和完成代码需要 Free Pascal 软件包的源代码，例如它有文件 \"%s\"。"
 
 #: lazarusidestrconsts.listhetargetdirectoryisafile
 #, object-pascal-format, fuzzy, badformat
@@ -19983,7 +19982,7 @@ msgstr "您可以通过项目查看器中的弹出菜单为单个窗体禁用这
 
 #: lazarusidestrconsts.lisyoucandownloadfpcandthefpcsourcesfromhttpsourcefor
 msgid "You can download FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?source=directory"
-msgstr "您可以从 http://sourceforge.net/projects/lazarus/?source=directory 下载FPC和FPC的源代码"
+msgstr "您可以从 http://sourceforge.net/projects/lazarus/?source=directory 下载 FPC 和 FPC 的源代码"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
