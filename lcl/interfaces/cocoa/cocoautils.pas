@@ -1,7 +1,7 @@
 unit CocoaUtils;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
@@ -43,6 +43,8 @@ procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function NSScreenZeroHeight: CGFloat;
+function NSPrimaryScreenHeight: CGFloat;
+function NSGlobalScreenHeight: CGFloat;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -754,6 +756,25 @@ end;
 function NSScreenZeroHeight: CGFloat;
 begin
   Result := NSScreen(NSScreen.screens.objectAtIndex(0)).frame.size.height;
+end;
+
+// the height of primary display
+function NSPrimaryScreenHeight: CGFloat;
+begin
+  Result := NSScreen(NSScreen.screens.objectAtIndex(0)).frame.size.height;
+end;
+
+// the height of global full virtual display
+function NSGlobalScreenHeight: CGFloat;
+var
+  globalFrame: NSRect;
+  screen: NSScreen;
+begin
+  globalFrame:= NSZeroRect;
+  for screen in NSScreen.screens do begin
+    globalFrame:= NSUnionRect( globalFrame, screen.frame );
+  end;
+  Result:= globalFrame.size.height;
 end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
