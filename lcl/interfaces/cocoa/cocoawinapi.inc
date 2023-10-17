@@ -1066,7 +1066,7 @@ begin
     SPI_GETWORKAREA:
     begin
       NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
-        , NSScreenZeroHeight
+        , NSPrimaryScreenHeight
         , TRect(pvParam^));
     end;
   else
@@ -1164,7 +1164,7 @@ begin
   begin
     lpPoint.x := Round(x);
     // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSScreenZeroHeight-y);
+    lpPoint.y := Round(NSGlobalScreenHeight-y);
   end;
   //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
@@ -1172,7 +1172,7 @@ end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
-  Scr0Height:  CGFloat;
+  globalScreenHeight:  CGFloat;
   ScreenID: NSScreen;
   idx : NSUInteger;
 begin
@@ -1182,10 +1182,10 @@ begin
   Result := (idx < NSScreen.screens.count);
   if not Result then Exit;
 
-  Scr0Height := NSScreenZeroHeight;
+  globalScreenHeight := NSGlobalScreenHeight;
   ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
-  NSToLCLRect(ScreenID.frame, Scr0Height, lpmi^.rcMonitor);
-  NSToLCLRect(ScreenID.visibleFrame, Scr0Height, lpmi^.rcWork);
+  NSToLCLRect(ScreenID.frame, globalScreenHeight, lpmi^.rcMonitor);
+  NSToLCLRect(ScreenID.visibleFrame, globalScreenHeight, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if idx = 0 then
@@ -1495,7 +1495,7 @@ begin
     Exit;
 
   p.x:=Point.X;
-  p.y:=NSScreenZeroHeight-Point.Y;
+  p.y:=NSGlobalScreenHeight-Point.Y;
   window := GetCocoaWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
