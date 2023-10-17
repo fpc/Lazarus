@@ -974,7 +974,8 @@ begin
     view := w.contentView;
     if Assigned(view) then
     begin
-      menuY := round(w.screen.frame.size.height - w.screen.visibleFrame.origin.y - menu.size.height) - 1;
+      // LCL Screen coordinate
+      menuY := round(NSGlobalScreenHeight - w.screen.visibleFrame.origin.y - menu.size.height) - 1;
       py := min(py, menuY);
       view.lclScreenToLocal(px, py);
       // have to flip again, because popUpMenuPositioningItem expects point
@@ -984,7 +985,7 @@ begin
     end;
   end
   else
-    py := Round(NSScreenZeroHeight - py);
+    py := Round(NSGlobalScreenHeight - py);
 
   menu.popUpMenuPositioningItem_atLocation_inView(nil, NSMakePoint(px, py), view);
   APopupMenu.Close; // notify LCL popup menu

@@ -480,7 +480,7 @@ begin
   begin
     //Window bounds should return "client rect" in screen coordinates
     if Assigned(window.screen) then
-      NSToLCLRect(window.frame, NSScreenZeroHeight, wfrm)
+      NSToLCLRect(window.frame, NSGlobalScreenHeight, wfrm)
     else
       wfrm := NSRectToRect(frame);
     Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
@@ -1278,7 +1278,7 @@ begin
   begin
     f:=frame;
     Left := Round(f.origin.x);
-    Top := Round(NSScreenZeroHeight - f.size.height - f.origin.y);
+    Top := Round(NSGlobalScreenHeight - f.size.height - f.origin.y);
     //debugln('Top:'+dbgs(Top));
   end;
 end;
@@ -1291,7 +1291,7 @@ begin
   begin
     f := frame;
     inc(X, Round(f.origin.x));
-    inc(Y, Round(NSScreenZeroHeight - f.size.height - f.origin.y));
+    inc(Y, Round(NSGlobalScreenHeight - f.size.height - f.origin.y));
   end;
 end;
 
@@ -1303,7 +1303,7 @@ begin
   begin
     f := frame;
     dec(X, Round(f.origin.x));
-    dec(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
+    dec(Y, Round(NSGlobalScreenHeight - f.size.height - f.origin.y));
   end;
 end;
 
@@ -1314,7 +1314,7 @@ begin
   else
   begin
     if Assigned(screen) then
-      NSToLCLRect(frame, NSScreenZeroHeight, Result)
+      NSToLCLRect(frame, NSGlobalScreenHeight, Result)
     else
       Result := NSRectToRect(frame);
   end;
@@ -1355,7 +1355,7 @@ var
   ns : NSRect;
   h  : integer;
 begin
-  LCLToNSRect(r, NSScreenZeroHeight, ns);
+  LCLToNSRect(r, NSGlobalScreenHeight, ns);
 
   // add topbar height
   h:=lclGetTopBarHeight;

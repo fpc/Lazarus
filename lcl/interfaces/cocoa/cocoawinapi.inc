@@ -1164,7 +1164,7 @@ begin
   begin
     lpPoint.x := Round(x);
     // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSScreenZeroHeight-y);
+    lpPoint.y := Round(NSGlobalScreenHeight-y);
   end;
   //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
@@ -1495,7 +1495,7 @@ begin
     Exit;
 
   p.x:=Point.X;
-  p.y:=NSScreenZeroHeight-Point.Y;
+  p.y:=NSGlobalScreenHeight-Point.Y;
   window := GetCocoaWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
