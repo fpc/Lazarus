@@ -384,6 +384,7 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
     ms: TMemoryStream;
     NewWidth, NewHeight: integer;
     R1, R2: TRect;
+    ReducedHeight, ReducedWidth: Boolean;
   begin
     if HintFont<>nil then
       HintRenderWindow.Font := HintFont;
@@ -412,9 +413,13 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
       R1 := HintRenderWindow.HintRect;
       HintRenderWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
       R2 := HintRenderWindow.HintRect;
-      if R1.Bottom-R1.Top>R2.Bottom-R2.Top then // the height was decreased -> scrollbar will be shown, increase width
-      begin
-        Inc(R2.Right, GetSystemMetrics(SM_CXVSCROLL));
+      ReducedWidth := R1.Right-R1.Left>R2.Right-R2.Left;
+      ReducedHeight := R1.Bottom-R1.Top>R2.Bottom-R2.Top;
+      if ReducedHeight <> ReducedWidth then begin // if both were reduced, they can't be increased
+        if ReducedWidth then // the width was decreased -> scrollbar will be shown, increase width
+          Inc(R2.Bottom, GetSystemMetrics(SM_CYHSCROLL));
+        if ReducedHeight then // the height was decreased -> scrollbar will be shown, increase width
+          Inc(R2.Right, GetSystemMetrics(SM_CXVSCROLL));
         HintRenderWindow.HintRect := R2;
         HintRenderWindow.OffsetHintRect(Point(0, 0), 0);
       end;
