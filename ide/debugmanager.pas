@@ -123,6 +123,7 @@ type
     procedure DebuggerBeforeChangeState(ADebugger: TDebuggerIntf; AOldState: TDBGState);
     procedure DebuggerChangeState(ADebugger: TDebuggerIntf; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+    procedure DoDebuggerCurrentLine(Sender: TObject);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
     procedure DebuggerConsoleOutput(Sender: TObject; const AText: String);
     function DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
@@ -147,6 +148,7 @@ type
     FStepping, FAsmStepping: Boolean;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
+    FCallStackNotification: TCallStackNotification;
     // last hit breakpoint
     FCurrentBreakpoint: TIDEBreakpoint;
     FAutoContinueTimer: TTimer;
@@ -1443,6 +1445,9 @@ begin
   if (FDebugger.State in [dsRun])
   then FCurrentBreakpoint := nil;
 
+  if not (FDebugger.State in [dsPause, dsInternalPause]) then
+    FCallStackNotification.OnChange := nil;
+
   if not((OldState = dsInternalPause) and (State = dsPause)) then begin
     // OldState=dsInternalPause means we already have a snapshot
     // Notify FSnapshots of new state (while dialogs still in updating)
@@ -1606,6 +1611,35 @@ begin
 end;
 
 procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+var
+  SrcLine, TId: Integer;
+begin
+  FCallStackNotification.OnChange := nil;
+  if (Sender<>FDebugger) or (Sender=nil) then exit;
+  if FDebugger.State = dsInternalPause then exit;
+  if Destroying then exit;
+
+  FCurrentLocation := ALocation;
+
+  SrcLine := FCurrentLocation.SrcLine;
+  if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
+                                       // SrcLine will be -2 after stepping (gdbmi)
+  then begin
+    TId := Threads.CurrentThreads.CurrentThreadId;
+    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(30) = nbUnknown then begin
+      FCallStackNotification.OnChange := @DoDebuggerCurrentLine;
+
+      if FDialogs[ddtAssembler] <> nil
+      then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, FCurrentLocation.Address);
+
+      exit;
+    end;
+  end;
+
+  DoDebuggerCurrentLine(nil);
+end;
+
+procedure TDebugManager.DoDebuggerCurrentLine(Sender: TObject);
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
 // if SrcLine < 1 then no source is available
@@ -1627,12 +1661,11 @@ var
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
   a: Boolean;
 begin
-  if (Sender<>FDebugger) or (Sender=nil) then exit;
+  FCallStackNotification.OnChange := nil;
   if FDebugger.State = dsInternalPause then exit;
   if Destroying then exit;
 
-  FCurrentLocation := ALocation;
-  SrcLine := ALocation.SrcLine;
+  SrcLine := FCurrentLocation.SrcLine;
   CurrentSourceUnitInfo := nil;
 
   if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
@@ -1642,12 +1675,19 @@ begin
     // TODO: Only below the frame supplied by debugger
     i:=0;
     TId := Threads.CurrentThreads.CurrentThreadId;
+    if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(30) = nbUnknown then begin
+      FCallStackNotification.OnChange := @DoDebuggerCurrentLine;
+      exit;
+    end;
+
     c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(30);
     while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
-      if StackEntry.Validity = ddsRequested then // not yet available
-        break;
+      if StackEntry.Validity = ddsRequested then begin// not yet available
+        FCallStackNotification.OnChange := @DoDebuggerCurrentLine;
+        exit;
+      end;
       if StackEntry.Line > 0
       then begin
         CurrentSourceUnitInfo := StackEntry.UnitInfo;
@@ -1660,14 +1700,14 @@ begin
     end;
   end
   else begin
-    CurrentSourceUnitInfo := FUnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
+    CurrentSourceUnitInfo := FUnitInfoProvider.GetUnitInfoFor(FCurrentLocation.SrcFile, FCurrentLocation.SrcFullName);
     CurrentSourceUnitInfo.AddReference;
   end;
 
   // TODO: do in DebuggerChangeState / Only currently State change locks execution of gdb
   // Must be after stack frame selection (for inspect)
   if FDialogs[ddtAssembler] <> nil
-  then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
+  then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, FCurrentLocation.Address);
 
   if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
      GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
@@ -2051,6 +2091,10 @@ begin
   FDisassembler := TIDEDisassembler.Create;
   FRegisters := TIdeRegistersMonitor.Create;
 
+  FCallStackNotification := TCallStackNotification.Create;
+  FCallStackNotification.AddReference;
+  FCallStack.AddNotification(FCallStackNotification);
+
   FSnapshots := TSnapshotManager.Create;
   FSnapshots.Threads := FThreads;
   FSnapshots.CallStack := FCallStack;
@@ -2101,6 +2145,9 @@ begin
 
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     DestroyDebugDialog(DialogType);
+
+  if FCallStackNotification <> nil then
+    FCallStackNotification.ReleaseReference;
 
   SetDebugger(nil);
 
