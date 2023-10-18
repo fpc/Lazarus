@@ -1466,7 +1466,16 @@ begin
 end;
 
 destructor TEditorColorOptionsFrame.Destroy;
+var
+  p: TEditorGeneralOptionsFrame;
+  i: Integer;
 begin
+  p := GeneralPage;
+  if p <> nil then
+    for i := Low(p.PreviewEdits) to High(p.PreviewEdits) do
+      if p.PreviewEdits[i] <> nil then
+        p.PreviewEdits[i].Highlighter := nil;
+
   FreeAndNil(FTempColorSchemeSettings);
   FFileExtensions.Free;
   FColorSchemes.Free;
@@ -1601,10 +1610,6 @@ procedure TEditorColorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   i, j: Integer;
 begin
-  with GeneralPage do
-    for i := Low(PreviewEdits) to High(PreviewEdits) do
-      PreviewEdits[i].Highlighter := nil;
-
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Down;
