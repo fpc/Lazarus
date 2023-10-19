@@ -44,6 +44,8 @@ procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function NSPrimaryScreen: NSScreen;
 function NSPrimaryScreenFrame: NSRect;
+function NSGlobalScreenFrame: NSRect;
+function NSGlobalScreenLCLFrame: NSRect;
 function NSGlobalScreenHeight: CGFloat;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
@@ -765,8 +767,8 @@ begin
   Result := NSPrimaryScreen.frame;
 end;
 
-// the height of global full virtual display
-function NSGlobalScreenHeight: CGFloat;
+// the frame of global full virtual display, in LCL coordinate (left,bottom)
+function NSGlobalScreenFrame: NSRect;
 var
   globalFrame: NSRect;
   screen: NSScreen;
@@ -775,7 +777,20 @@ begin
   for screen in NSScreen.screens do begin
     globalFrame:= NSUnionRect( globalFrame, screen.frame );
   end;
-  Result:= globalFrame.size.height;
+  Result:= globalFrame;
+end;
+
+// the frame of global full virtual display, in LCL coordinate (left,top)
+function NSGlobalScreenLCLFrame: NSRect;
+begin
+  Result:= NSGlobalScreenFrame;
+  Result.origin.y:= NSPrimaryScreenFrame.size.height - NSMaxY(Result);
+end;
+
+// the height of global full virtual display
+function NSGlobalScreenHeight: CGFloat;
+begin
+  Result:= NSGlobalScreenFrame.size.height;
 end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
