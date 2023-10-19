@@ -42,7 +42,8 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
-function NSPrimaryScreenHeight: CGFloat;
+function NSPrimaryScreen: NSScreen;
+function NSPrimaryScreenFrame: NSRect;
 function NSGlobalScreenHeight: CGFloat;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
@@ -752,10 +753,16 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
-// the height of primary display
-function NSPrimaryScreenHeight: CGFloat;
+// primary display
+function NSPrimaryScreen: NSScreen;
 begin
-  Result := NSScreen(NSScreen.screens.objectAtIndex(0)).frame.size.height;
+  Result := NSScreen(NSScreen.screens.objectAtIndex(0));
+end;
+
+// the frame of primary display
+function NSPrimaryScreenFrame: NSRect;
+begin
+  Result := NSPrimaryScreen.frame;
 end;
 
 // the height of global full virtual display

@@ -1065,9 +1065,9 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
-        , NSPrimaryScreenHeight
-        , TRect(pvParam^));
+      NSToLCLRect( NSPrimaryScreen.visibleFrame,
+                   NSPrimaryScreenFrame.size.height,
+                   TRect(pvParam^) );
     end;
   else
     Result := False;
@@ -2619,10 +2619,12 @@ begin
     SM_CXVSCROLL,
     SM_CYVSCROLL:
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
-    SM_CXSCREEN,
+    SM_CXSCREEN:
+      Result := Round(NSPrimaryScreenFrame.size.width);
     SM_CXVIRTUALSCREEN,
     SM_CXFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
-    SM_CYSCREEN,
+    SM_CYSCREEN:
+      Result := Round(NSPrimaryScreenFrame.size.height);
     SM_CYVIRTUALSCREEN,
     SM_CYFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
     SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
