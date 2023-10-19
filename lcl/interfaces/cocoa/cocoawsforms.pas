@@ -789,11 +789,6 @@ begin
     cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
-    // Don't call addChildWindow_ordered here because this function can cause
-    // events to arrive for this window, creating a second call to TCocoaWSCustomForm.CreateHandle
-    // while the first didn't finish yet, instead delay the call
-    cnt.popup_parent := AParams.WndParent;
-
     win.makeFirstResponder(doc);
   end
   else
@@ -944,11 +939,6 @@ begin
   fullscreen := ACustomForm.WindowState = wsFullScreen;
   if (not fullscreen) and (lWinContent.window.isKindOfClass(TCocoaWindow)) then
     fullscreen := TCocoaWindow(lWinContent.window).lclIsFullScreen;
-
-  // A window opening in full screen doesn't like to be added as someones popup
-  // Thus resolvePopupParent should only be used for non full-screens forms
-  //if (lWinContent <> nil) and (not fullscreen) then
-    //lWinContent.resolvePopupParent();
 
   CocoaWidgetSet.CurModalForm := lWinContent.lclOwnWindow;
   // LCL initialization code would cause the custom form to be disabled

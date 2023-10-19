@@ -218,9 +218,7 @@ type
     preventKeyOnShow: Boolean;
     ownwin: NSWindow;
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
-    popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
-    procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
@@ -422,37 +420,6 @@ begin
   end;
 
   Result := inherited performKeyEquivalent(event);
-end;
-
-procedure TCocoaWindowContent.resolvePopupParent();
-var
-  lWindow: NSWindow;
-  isfront: Boolean;
-begin
-  lWindow := nil;
-  if (popup_parent <> 0) then
-  begin
-    if (NSObject(popup_parent).isKindOfClass(TCocoaWindowContent)) then
-    begin
-      if (not TCocoaWindowContent(popup_parent).isembedded) then
-        lWindow := NSWindow(TCocoaWindowContent(popup_parent).window);
-    end
-    else
-    begin
-      lWindow := NSWindow(popup_parent);
-    end;
-  end;
-  if lWindow <> nil then
-  begin
-    isfront:=NSApplication(NSApp).mainWindow=self.window;
-
-    lWindow.addChildWindow_ordered(Self.window, NSWindowAbove);
-
-    // adding a window as a child, would bring the "child" form to the bottom
-    // of Zorder. need to restore the order.
-    if isfront then self.window.makeKeyAndOrderFront(nil);
-  end;
-  popup_parent := 0;
 end;
 
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
