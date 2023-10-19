@@ -1085,21 +1085,21 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
-  dx, dy: Integer;
+  contentView: TCocoaWindowContent;
 begin
-  if Handle <> 0 then
-  begin
-    ARect := NSObject(Handle).lclFrame;
-    if not NSObject(Handle).isKindOfClass_(NSWindow) then
-    begin
-      dx := 0;
-      dy := 0;
-      NSObject(Handle).lclLocalToScreen(dx, dy);
-      MoveRect(ARect, dx, dy);
-    end;
-    Result := 1;
-  end else
-    Result := 0;
+  Result := 0;
+  if Handle=0 then
+    exit;
+
+  if not NSObject(Handle).isKindOfClass(TCocoaWindowContent) then
+    exit;
+
+  contentView := TCocoaWindowContent(Handle);
+  if (not contentView.isembedded) and Assigned(contentView.window) then
+    NSToLCLRect(contentView.window.frame, NSGlobalScreenHeight, ARect)
+  else
+    ARect := contentView.lclFrame;
+  Result := 1;
 end;
 
 function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
@@ -1364,6 +1364,12 @@ begin
     NSObject(handle).lclRelativePos(Left, Top);
 end;
 
+// 1. not only for Window, but also for other controls
+// 2. for a Window, according to this function specification, Width and Height
+//    should be returned. but ClientWidth and ClientHeight were returned
+//    actually before.
+// 3. after the LCL FORM specification determined, corresponding modifications
+//    need to be made.
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
   r: TRect;
