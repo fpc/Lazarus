@@ -42,6 +42,10 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
+
 function NSPrimaryScreen: NSScreen;
 function NSPrimaryScreenFrame: NSRect;
 function NSGlobalScreenFrame: NSRect;
@@ -753,6 +757,36 @@ begin
   ns.origin.y:=ParentHeight-lcl.bottom;
   ns.size.width:=lcl.Right-lcl.Left;
   ns.size.height:=lcl.Bottom-lcl.Top;
+end;
+
+// According to the documentation of NSScreen.screen It's recommended
+// not to cache NSScreen objects stored in the array. As those might change.
+// However, according to the same documentation, the objects can change
+// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
+// services, it was identified that NSScreen object CAN change without any notification.
+// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// is used.
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+begin
+  if i = NSIntegerMax then Result := 0
+  else Result := i + 1;
+end;
+
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+begin
+  if h = 0 then Result := NSIntegerMax
+  else Result := NSUInteger(h)-1;
+end;
+
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
+var
+  index: NSUInteger;
+begin
+  Result:= nil;
+  index:= HMonitorToIndex( h );
+  if index>=NSScreen.screens.count then
+    Exit;
+  Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
 end;
 
 // primary display

@@ -140,6 +140,8 @@ function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
 
+function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; override;
+
 {function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;}
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 

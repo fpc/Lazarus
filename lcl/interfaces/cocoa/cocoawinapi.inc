@@ -740,25 +740,6 @@ begin
   end;
 end;
 
-// According to the documentation of NSScreen.screen It's recommended
-// not to cache NSScreen objects stored in the array. As those might change.
-// However, according to the same documentation, the objects can change
-// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
-// services, it was identified that NSScreen object CAN change without any notification.
-// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
-// is used.
-function IndexToHMonitor(i: NSUInteger): HMonitor;
-begin
-  if i = NSIntegerMax then Result := 0
-  else Result := i + 1;
-end;
-
-function HMonitorToIndex(h: HMonitor): NSUInteger;
-begin
-  if h = 0 then Result := NSIntegerMax
-  else Result := NSUInteger(h)-1;
-end;
-
 function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
@@ -1174,21 +1155,19 @@ function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo):
 var
   globalScreenHeight:  CGFloat;
   ScreenID: NSScreen;
-  idx : NSUInteger;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
-  idx := HMonitorToIndex(hMonitor);
-  Result := (idx < NSScreen.screens.count);
+  ScreenID := getScreenFromHMonitor( hMonitor );
+  Result := Assigned(ScreenID);
   if not Result then Exit;
 
   globalScreenHeight := NSGlobalScreenHeight;
-  ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
   NSToLCLRect(ScreenID.frame, globalScreenHeight, lpmi^.rcMonitor);
   NSToLCLRect(ScreenID.visibleFrame, globalScreenHeight, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
-  if idx = 0 then
+  if HMonitorToIndex(hMonitor) = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -1891,6 +1870,29 @@ begin
     Exit(ERROR);
   TCocoaRegion(RGN).Offset(nXOffset, nYOffset);
   Result := CocoaRegionTypeToWin32Map[TCocoaRegion(RGN).GetType];
+end;
+
+function TCocoaWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+var
+  point: NSPoint;
+  screen: NSScreen;
+  i: Integer;
+begin
+  Result:= 0;
+  point:= LCLToNSPoint( ptScreenCoords, NSGlobalScreenHeight );
+  if point.y>=1 then         // NSPointInRect is (upper,left) inside
+    point.y:= point.y-1;     // (lower,right) outside
+
+  for i := 0 to NSScreen.screens.count - 1 do begin
+    screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
+    if NSPointInRect(point, screen.frame) then begin
+      Result:= IndexToHMonitor( i );
+      Exit;
+    end;
+  end;
+
+  if dwFlags<>MONITOR_DEFAULTTONULL then
+    Result:= IndexToHMonitor( 0 );
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
