@@ -367,19 +367,15 @@ var
 begin
   Widgets := PTVWidgets(WidgetInfo^.UserData);
 
-  if Length(Widgets^.ItemCache)=0 then
+  List := gtk_icon_view_get_selected_items(AIconView);
+  if (List <> nil) then
   begin
-    List := gtk_icon_view_get_selected_items(AIconView);
-    if (List <> nil) then
-    begin
-      Path := PGtkTreePath(g_list_first(List)^.data);
-      Indices := gtk_tree_path_get_indices(path)^;
-      ChangeItemCache(Widgets, Indices, tvisUnselected);
-      g_list_free(List);
-    end else
-      exit;
+    Path := PGtkTreePath(g_list_first(List)^.data);
+    Indices := gtk_tree_path_get_indices(path)^;
+    ChangeItemCache(Widgets, Indices, tvisUnselected);
+    g_list_free(List);
   end else
-    Exit;
+    exit;
 
   // LCL already sent selection !
   if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
