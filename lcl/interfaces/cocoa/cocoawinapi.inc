@@ -954,9 +954,6 @@ var
   lCocoaWin: TCocoaWindow = nil;
   lWinContent: TCocoaWindowContent = nil;
   disableFS : Boolean;
-const
-  NSFullScreenWindowMask = 1 shl 14;
-
 begin
   Result:=true;
   {$ifdef VerboseCocoaWinAPI}
