@@ -218,9 +218,7 @@ type
     preventKeyOnShow: Boolean;
     ownwin: NSWindow;
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
-    popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
-    procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
@@ -424,37 +422,6 @@ begin
   Result := inherited performKeyEquivalent(event);
 end;
 
-procedure TCocoaWindowContent.resolvePopupParent();
-var
-  lWindow: NSWindow;
-  isfront: Boolean;
-begin
-  lWindow := nil;
-  if (popup_parent <> 0) then
-  begin
-    if (NSObject(popup_parent).isKindOfClass(TCocoaWindowContent)) then
-    begin
-      if (not TCocoaWindowContent(popup_parent).isembedded) then
-        lWindow := NSWindow(TCocoaWindowContent(popup_parent).window);
-    end
-    else
-    begin
-      lWindow := NSWindow(popup_parent);
-    end;
-  end;
-  if lWindow <> nil then
-  begin
-    isfront:=NSApplication(NSApp).mainWindow=self.window;
-
-    lWindow.addChildWindow_ordered(Self.window, NSWindowAbove);
-
-    // adding a window as a child, would bring the "child" form to the bottom
-    // of Zorder. need to restore the order.
-    if isfront then self.window.makeKeyAndOrderFront(nil);
-  end;
-  popup_parent := 0;
-end;
-
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
 begin
   if not isembedded then
@@ -479,10 +446,7 @@ begin
   if not isembedded then
   begin
     //Window bounds should return "client rect" in screen coordinates
-    if Assigned(window.screen) then
-      NSToLCLRect(window.frame, NSGlobalScreenHeight, wfrm)
-    else
-      wfrm := NSRectToRect(frame);
+    NSToLCLRect(window.frame, NSGlobalScreenHeight, wfrm);
     Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
@@ -1272,39 +1236,30 @@ end;
 
 procedure LCLWindowExtension.lclRelativePos(var Left, Top: Integer);
 var
-   f: NSRect;
+  f: NSRect;
 begin
-  if Assigned(screen) then
-  begin
-    f:=frame;
-    Left := Round(f.origin.x);
-    Top := Round(NSGlobalScreenHeight - f.size.height - f.origin.y);
-    //debugln('Top:'+dbgs(Top));
-  end;
+  f:=frame;
+  Left := Round(f.origin.x);
+  Top := Round(NSGlobalScreenHeight - NSMaxY(f));
+  //debugln('Top:'+dbgs(Top));
 end;
 
 procedure LCLWindowExtension.lclLocalToScreen(var X, Y:Integer);
 var
   f: NSRect;
 begin
-  if Assigned(screen) then
-  begin
-    f := frame;
-    inc(X, Round(f.origin.x));
-    inc(Y, Round(NSGlobalScreenHeight - f.size.height - f.origin.y));
-  end;
+  f := frame;
+  inc(X, Round(f.origin.x));
+  inc(Y, Round(NSGlobalScreenHeight - NSMaxY(f)));
 end;
 
 procedure LCLWindowExtension.lclScreenToLocal(var X, Y: Integer);
 var
   f: NSRect;
 begin
-  if Assigned(screen) then
-  begin
-    f := frame;
-    dec(X, Round(f.origin.x));
-    dec(Y, Round(NSGlobalScreenHeight - f.size.height - f.origin.y));
-  end;
+  f := frame;
+  dec(X, Round(f.origin.x));
+  dec(Y, Round(NSGlobalScreenHeight - NSMaxY(f)));
 end;
 
 function LCLWindowExtension.lclFrame: TRect;
@@ -1312,12 +1267,7 @@ begin
   if Assigned(contentView) then
     Result:=contentView.lclFrame
   else
-  begin
-    if Assigned(screen) then
-      NSToLCLRect(frame, NSGlobalScreenHeight, Result)
-    else
-      Result := NSRectToRect(frame);
-  end;
+    NSToLCLRect(frame, NSGlobalScreenHeight, Result);
 end;
 
 function LCLWindowExtension.lclGetTopBarHeight:integer;

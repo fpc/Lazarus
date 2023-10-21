@@ -1144,11 +1144,7 @@ begin
   params.isFirstCall:= not hasMarkedText();
 
   rect:= imeHandler.IMEGetTextBound( params );
-
-  if isFlipped then
-    Result:= RectToNSRect( rect )
-  else
-    LCLToNSRect( rect, NSScreen.mainScreen.frame.size.height, Result );
+  LCLToNSRect( rect, NSGlobalScreenHeight, Result );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;

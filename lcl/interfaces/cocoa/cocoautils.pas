@@ -42,7 +42,14 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
-function NSPrimaryScreenHeight: CGFloat;
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
+
+function NSPrimaryScreen: NSScreen;
+function NSPrimaryScreenFrame: NSRect;
+function NSGlobalScreenFrame: NSRect;
+function NSGlobalScreenLCLFrame: NSRect;
 function NSGlobalScreenHeight: CGFloat;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
@@ -752,14 +759,50 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
-// the height of primary display
-function NSPrimaryScreenHeight: CGFloat;
+// According to the documentation of NSScreen.screen It's recommended
+// not to cache NSScreen objects stored in the array. As those might change.
+// However, according to the same documentation, the objects can change
+// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
+// services, it was identified that NSScreen object CAN change without any notification.
+// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// is used.
+function IndexToHMonitor(i: NSUInteger): HMonitor;
 begin
-  Result := NSScreen(NSScreen.screens.objectAtIndex(0)).frame.size.height;
+  if i = NSIntegerMax then Result := 0
+  else Result := i + 1;
 end;
 
-// the height of global full virtual display
-function NSGlobalScreenHeight: CGFloat;
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+begin
+  if h = 0 then Result := NSIntegerMax
+  else Result := NSUInteger(h)-1;
+end;
+
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
+var
+  index: NSUInteger;
+begin
+  Result:= nil;
+  index:= HMonitorToIndex( h );
+  if index>=NSScreen.screens.count then
+    Exit;
+  Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
+end;
+
+// primary display
+function NSPrimaryScreen: NSScreen;
+begin
+  Result := NSScreen(NSScreen.screens.objectAtIndex(0));
+end;
+
+// the frame of primary display
+function NSPrimaryScreenFrame: NSRect;
+begin
+  Result := NSPrimaryScreen.frame;
+end;
+
+// the frame of global full virtual display, in LCL coordinate (left,bottom)
+function NSGlobalScreenFrame: NSRect;
 var
   globalFrame: NSRect;
   screen: NSScreen;
@@ -768,7 +811,20 @@ begin
   for screen in NSScreen.screens do begin
     globalFrame:= NSUnionRect( globalFrame, screen.frame );
   end;
-  Result:= globalFrame.size.height;
+  Result:= globalFrame;
+end;
+
+// the frame of global full virtual display, in LCL coordinate (left,top)
+function NSGlobalScreenLCLFrame: NSRect;
+begin
+  Result:= NSGlobalScreenFrame;
+  Result.origin.y:= NSPrimaryScreenFrame.size.height - NSMaxY(Result);
+end;
+
+// the height of global full virtual display
+function NSGlobalScreenHeight: CGFloat;
+begin
+  Result:= NSGlobalScreenFrame.size.height;
 end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;

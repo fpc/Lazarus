@@ -946,44 +946,28 @@ end;
 class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: Integer);
 var
-  menu : TCocoaMenu;
-  view : NSView;
-  w : NSWindow;
-  px, py: Integer;
-  menuY: Integer;
+  menu: TCocoaMenu;
+  point: TPoint;
+  screen: NSScreen;
+  mouseY: CGFloat;
+  menuY: CGFloat;
 begin
   if (not Assigned(APopupMenu)) or (APopupMenu.Handle=0) then
     exit;
 
-  px := x;
-  py := y;
   menu := TCocoaMenu(APopupMenu.Handle);
-  view := nil;
-  w :=NSApp.keyWindow;
-  // in macOS it's possible to "rightclick" without focusing a window
-  // so let's try to find the window
-  if not Assigned(w) then
-    w := GetCocoaWindowAtPos( NSMakePoint(px, Round(NSGlobalScreenHeight) - py) );
+  point:= TPoint.Create( x, y );
+  screen:= getScreenFromHMonitor( CocoaWidgetSet.MonitorFromPoint(point, MONITOR_DEFAULTTONULL) );
 
-  if Assigned(w) then
-  begin
-    view := w.contentView;
-    if Assigned(view) then
-    begin
-      // LCL Screen coordinate
-      menuY := Round(NSGlobalScreenHeight - w.screen.visibleFrame.origin.y - menu.size.height) - 1;
-      py := min(py, menuY);
-      view.lclScreenToLocal(px, py);
-      // have to flip again, because popUpMenuPositioningItem expects point
-      // to be in View coordinates and it does respect Flipped flag
-      if not view.isFlipped then
-        py := Round(view.frame.size.height) - py;
-    end;
-  end
-  else
-    py := Round(NSGlobalScreenHeight) - py;
+  mouseY:= NSGlobalScreenHeight - y;
+  if Assigned(screen) then begin
+    menuY:= screen.visibleFrame.origin.y + menu.size.height + 1;
+    menuY:= max( mouseY, MenuY );
+  end else begin
+    menuY:= mouseY;
+  end;
 
-  menu.popUpMenuPositioningItem_atLocation_inView(nil, NSMakePoint(px, py), view);
+  menu.popUpMenuPositioningItem_atLocation_inView(nil, NSMakePoint(x,menuY), nil);
   APopupMenu.Close; // notify LCL popup menu
 end;
 
