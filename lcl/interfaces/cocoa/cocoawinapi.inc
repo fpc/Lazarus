@@ -740,25 +740,6 @@ begin
   end;
 end;
 
-// According to the documentation of NSScreen.screen It's recommended
-// not to cache NSScreen objects stored in the array. As those might change.
-// However, according to the same documentation, the objects can change
-// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
-// services, it was identified that NSScreen object CAN change without any notification.
-// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
-// is used.
-function IndexToHMonitor(i: NSUInteger): HMonitor;
-begin
-  if i = NSIntegerMax then Result := 0
-  else Result := i + 1;
-end;
-
-function HMonitorToIndex(h: HMonitor): NSUInteger;
-begin
-  if h = 0 then Result := NSIntegerMax
-  else Result := NSUInteger(h)-1;
-end;
-
 function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
@@ -973,9 +954,6 @@ var
   lCocoaWin: TCocoaWindow = nil;
   lWinContent: TCocoaWindowContent = nil;
   disableFS : Boolean;
-const
-  NSFullScreenWindowMask = 1 shl 14;
-
 begin
   Result:=true;
   {$ifdef VerboseCocoaWinAPI}
@@ -1065,9 +1043,9 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect(NSScreen(NSScreen.screens.objectAtIndex(0)).visibleFrame
-        , NSPrimaryScreenHeight
-        , TRect(pvParam^));
+      NSToLCLRect( NSPrimaryScreen.visibleFrame,
+                   NSPrimaryScreenFrame.size.height,
+                   TRect(pvParam^) );
     end;
   else
     Result := False;
@@ -1085,21 +1063,21 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
-  dx, dy: Integer;
+  contentView: TCocoaWindowContent;
 begin
-  if Handle <> 0 then
-  begin
-    ARect := NSObject(Handle).lclFrame;
-    if not NSObject(Handle).isKindOfClass_(NSWindow) then
-    begin
-      dx := 0;
-      dy := 0;
-      NSObject(Handle).lclLocalToScreen(dx, dy);
-      MoveRect(ARect, dx, dy);
-    end;
-    Result := 1;
-  end else
-    Result := 0;
+  Result := 0;
+  if Handle=0 then
+    exit;
+
+  if not NSObject(Handle).isKindOfClass(TCocoaWindowContent) then
+    exit;
+
+  contentView := TCocoaWindowContent(Handle);
+  if (not contentView.isembedded) and Assigned(contentView.window) then
+    NSToLCLRect(contentView.window.frame, NSGlobalScreenHeight, ARect)
+  else
+    ARect := contentView.lclFrame;
+  Result := 1;
 end;
 
 function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
@@ -1174,21 +1152,19 @@ function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo):
 var
   globalScreenHeight:  CGFloat;
   ScreenID: NSScreen;
-  idx : NSUInteger;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
-  idx := HMonitorToIndex(hMonitor);
-  Result := (idx < NSScreen.screens.count);
+  ScreenID := getScreenFromHMonitor( hMonitor );
+  Result := Assigned(ScreenID);
   if not Result then Exit;
 
   globalScreenHeight := NSGlobalScreenHeight;
-  ScreenID := NSScreen(NSScreen.screens.objectAtIndex(idx));
   NSToLCLRect(ScreenID.frame, globalScreenHeight, lpmi^.rcMonitor);
   NSToLCLRect(ScreenID.visibleFrame, globalScreenHeight, lpmi^.rcWork);
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
-  if idx = 0 then
+  if HMonitorToIndex(hMonitor) = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -1364,6 +1340,12 @@ begin
     NSObject(handle).lclRelativePos(Left, Top);
 end;
 
+// 1. not only for Window, but also for other controls
+// 2. for a Window, according to this function specification, Width and Height
+//    should be returned. but ClientWidth and ClientHeight were returned
+//    actually before.
+// 3. after the LCL FORM specification determined, corresponding modifications
+//    need to be made.
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
   r: TRect;
@@ -1885,6 +1867,29 @@ begin
     Exit(ERROR);
   TCocoaRegion(RGN).Offset(nXOffset, nYOffset);
   Result := CocoaRegionTypeToWin32Map[TCocoaRegion(RGN).GetType];
+end;
+
+function TCocoaWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+var
+  point: NSPoint;
+  screen: NSScreen;
+  i: Integer;
+begin
+  Result:= 0;
+  point:= LCLToNSPoint( ptScreenCoords, NSGlobalScreenHeight );
+  if point.y>=1 then         // NSPointInRect is (upper,left) inside
+    point.y:= point.y-1;     // (lower,right) outside
+
+  for i := 0 to NSScreen.screens.count - 1 do begin
+    screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
+    if NSPointInRect(point, screen.frame) then begin
+      Result:= IndexToHMonitor( i );
+      Exit;
+    end;
+  end;
+
+  if dwFlags<>MONITOR_DEFAULTTONULL then
+    Result:= IndexToHMonitor( 0 );
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
@@ -2614,13 +2619,19 @@ begin
     SM_CYVSCROLL:
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN,
-    SM_CXFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
+    SM_CXFULLSCREEN:
+      Result := Round(NSPrimaryScreenFrame.size.width);
     SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN,
-    SM_CYFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
-    SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
-    SM_YVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.y);
+    SM_CYFULLSCREEN:
+      Result := Round(NSPrimaryScreenFrame.size.height);
+    SM_CXVIRTUALSCREEN:
+      Result := Round(NSGlobalScreenLCLFrame.size.width);
+    SM_CYVIRTUALSCREEN:
+      Result := Round(NSGlobalScreenLCLFrame.size.height);
+    SM_XVIRTUALSCREEN:
+      Result := Round(NSGlobalScreenLCLFrame.origin.x);
+    SM_YVIRTUALSCREEN:
+      Result := Round(NSGlobalScreenLCLFrame.origin.y);
     SM_CXSMICON,
     SM_CYSMICON:
       Result := 16;
