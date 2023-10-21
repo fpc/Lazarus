@@ -7183,10 +7183,8 @@ begin
 
   if (FMoveLast.X>=0) or (FMoveLast.Y>=0) then begin
     {$ifdef AlternativeMoveIndicator}
-    begin
-      if FMoveLast.X>=0 then InvalidateRow(0);
-      if FMoveLast.Y>=0 then InvalidateCol(0);
-    end;
+    if FMoveLast.X>=0 then InvalidateRow(0);
+    if FMoveLast.Y>=0 then InvalidateCol(0);
     {$else}
     Invalidate;
     {$endif}
@@ -10060,6 +10058,7 @@ begin
   FHeaderPushZones := [gzFixedCols];
   ResetHotCell;
   ResetPushedCell;
+  ResetLastMove;
   FSortOrder := soAscending;
   FSortColumn:=-1;
   FAscImgInd:=-1;
@@ -11210,11 +11209,10 @@ end;
 procedure TCustomDrawGrid.SetCheckboxState(const aCol, aRow: Integer;
   const aState: TCheckboxState);
 begin
-  if assigned(FOnSetCheckboxState) then begin
+  if assigned(FOnSetCheckboxState) then
     OnSetCheckboxState(self, aCol, aRow, aState);
-    if DefaultDrawing then
-      InvalidateCell(aCol, aRow);
-  end;
+  if DefaultDrawing then
+    InvalidateCell(aCol, aRow);
 end;
 
 function TCustomDrawGrid.CreateVirtualGrid: TVirtualGrid;
