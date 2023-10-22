@@ -140,6 +140,19 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
+  { TCocoaWSCustomFormHelper }
+
+  TCocoaWSCustomFormHelper=objcclass( NSObject )
+  private
+    _window: TCocoaWindow;
+  private
+    procedure doSetCollectionBehavior; message 'doSetCollectionBehavior';
+  public
+    class procedure delaySetCollectionBehavior(
+      const form: TCustomForm; const window: TCocoaWindow );
+      message 'delaySetCollectionBehavior:form:';
+  end;
+
   { TCocoaWSForm }
 
   TCocoaWSForm = class(TWSForm)
@@ -752,6 +765,7 @@ begin
     win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R,
       GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
     {$endif}
+    TCocoaWSCustomFormHelper.delaySetCollectionBehavior(Form, win);
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
     // For safety, it is better to not apply any setLevel & similar if the form is just a standard style
     // see issue http://bugs.freepascal.org/view.php?id=28473
@@ -1161,6 +1175,50 @@ begin
     //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
     TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange(NSObject(AWinControl.Handle));
+  end;
+end;
+
+{ TCocoaWSCustomFormHelper }
+
+// 1. on MacOS, when a FORM is full screen, it has its own separate Space.
+// 2. in this case, if a new FORM opened, no matter what's the properties of the
+//    FORM, Cocoa will automatically set this FORM to full screen,
+//    even if it is a Modal Form (ModalSession exactly).
+// 3. in order to still show according to the settings of the newly opened FORM,
+//    we need to:
+//    (1) first set the corresponding NSWindow.CollectionBehavior to
+//        NSWindowCollectionBehaviorFullScreenAuxiliary
+//    (2) after the FORM is shown, decide whether to set CollectionBehavior to
+//        NSWindowCollectionBehaviorFullScreenPrimary based on the properties of
+//        the FORM.
+class procedure TCocoaWSCustomFormHelper.delaySetCollectionBehavior(
+  const form: TCustomForm; const window: TCocoaWindow );
+var
+  helper: TCocoaWSCustomFormHelper;
+begin
+  if form.WindowState=wsFullScreen then
+    exit;
+
+  window.retain;                                 // release in doSetCollectionBehavior()
+  window.setCollectionBehavior( NSWindowCollectionBehaviorFullScreenAuxiliary );
+  helper:= TCocoaWSCustomFormHelper.alloc.init;  // release in doSetCollectionBehavior()
+  helper._window:= window;
+  helper.performSelector_withObject_afterDelay( ObjCSelector('doSetCollectionBehavior'), nil, 0 );
+end;
+
+procedure TCocoaWSCustomFormHelper.doSetCollectionBehavior;
+begin
+  try
+    if CocoaWidgetSet.isModalSession then
+      exit;
+    if (_window.styleMask and NSResizableWindowMask)=0 then
+      exit;
+    if _window.lclIsFullScreen then
+      exit;
+    _window.setCollectionBehavior( NSWindowCollectionBehaviorFullScreenPrimary );
+  finally
+    _window.release;
+    release;
   end;
 end;
 
