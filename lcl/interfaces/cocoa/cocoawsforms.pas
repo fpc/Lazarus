@@ -221,7 +221,7 @@ const
  { fsNormal          } False,
  { fsMDIChild        } False,
  { fsMDIForm         } False,
- { fsStayOnTop       } false,
+ { fsStayOnTop       } True,
  { fsSplash          } false,
  { fsSystemStayOnTop } False
   );
