@@ -603,18 +603,19 @@ procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
 var
   i : integer;
 begin
-  {$ifdef COCOA_ACTIVATION_REORDER}
   // Cocoa changes level and order of windows to it's liking
   // (it happens between Will- and DidBecomeActive)
   // for example Model windows becoming level 8,
   // even if LCL set them to level 0 before.
   // As a result the OrderedIndex also goes messed up.
   // It's being restored here
-  for i := orderArrayCount -1 downto 0 do
+  for i := orderArrayCount-1 downto 0 do
   begin
-    if not orderArray^[i].vis then continue;
+    if not orderArray^[i].vis then
+      continue;
+    if orderArray^[i].lvl=NSNormalWindowLevel then
+      continue;
     orderArray^[i].win.setLevel( orderArray^[i].lvl );
-    orderArray^[i].win.setOrderedIndex( orderArray^[i].ord );
     orderArray^[i].win.orderFrontRegardless;
   end;
   orderArrayCount := 0;
@@ -623,7 +624,6 @@ begin
     Freemem(orderArray);
     orderArray := nil;
   end;
-  {$endif}
 
   Application.IntfAppActivate;
 end;
@@ -631,14 +631,24 @@ end;
 procedure TAppDelegate.applicationWillResignActive(notification: NSNotification
   );
 var
+  baseWindowNumber: NSInteger;
   windows: NSArray;
   window: NSWindow;
   form: TObject;
   info: PWinLevelOrder;
 begin
   windows := NSApp.orderedWindows;
-  orderArrayCount := windows.count;
-  orderArray := GetMem(orderArrayCount * sizeof(TWinLevelOrder));
+
+  baseWindowNumber:= 0;
+  for window in windows do begin
+    if window.level=NSNormalWindowLevel then begin
+      baseWindowNumber:= window.windowNumber;
+      break;
+    end;
+  end;
+
+  orderArrayCount:= windows.count;
+  orderArray:= GetMem(orderArrayCount * sizeof(TWinLevelOrder));
 
   info:= orderArray^;
   for window in windows do begin
@@ -647,11 +657,15 @@ begin
     info^.ord := window.orderedIndex;
     info^.vis := window.isVisible;
     inc( info );
+  end;
 
+  for window in windows do begin
     form:= window.lclGetTarget;
     if form is TCustomForm then begin
-      if TCustomForm(form).FormStyle<>fsSystemStayOnTop then
+      if TCustomForm(form).FormStyle=fsStayOnTop then begin
         window.setLevel( NSNormalWindowLevel );
+        window.orderWindow_relativeTo( NSWindowAbove, baseWindowNumber );
+      end;
     end;
   end;
 end;
