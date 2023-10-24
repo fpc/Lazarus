@@ -1997,32 +1997,44 @@ end;
 
 procedure TCocoaContext.DrawEdgeRect(const r: TRect; flags: Cardinal;
   LTColor, BRColor: TColor);
+var
+  fixedRect: TRect;
 begin
+  // in LineTo(), 0.5 will be added to Right/Bottom,
+  // it will result in exceeding the frame,
+  // therefore, the frame needs to be shrunk first
+  // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40571
+  fixedRect:= r;
+  if fixedRect.Width>=1 then
+    dec( fixedRect.Right );
+  if fixedRect.Height>=1 then
+    dec( fixedRect.Bottom );
+
   Pen.SetColor(LTColor, true);
   Pen.Apply(self);
   if flags and BF_LEFT > 0 then
   begin
-    MoveTo(r.Left, r.Bottom);
-    LineTo(r.Left, r.Top);
+    MoveTo(fixedRect.Left, fixedRect.Bottom);
+    LineTo(fixedRect.Left, fixedRect.Top);
   end;
   if flags and BF_TOP > 0 then
   begin
-    MoveTo(r.Left, r.Top);
-    LineTo(r.Right, r.Top);
+    MoveTo(fixedRect.Left, fixedRect.Top);
+    LineTo(fixedRect.Right, fixedRect.Top);
   end;
 
   Pen.SetColor(BRColor, true);
   Pen.Apply(self);
   if flags and BF_RIGHT > 0 then
   begin
-    MoveTo(r.Right, r.Top);
-    LineTo(r.Right, r.Bottom);
+    MoveTo(fixedRect.Right, fixedRect.Top);
+    LineTo(fixedRect.Right, fixedRect.Bottom);
   end;
   if flags and BF_BOTTOM > 0 then
   begin
-    MoveTo(r.Right, r.Bottom);
+    MoveTo(fixedRect.Right, fixedRect.Bottom);
     // there's a missing pixel. Seems like it's accumulating an offset
-    LineTo(r.Left-1, r.Bottom);
+    LineTo(fixedRect.Left-1, fixedRect.Bottom);
   end;
 end;
 
@@ -2088,7 +2100,7 @@ const
   (
     {bvNone   } 0,
     {bvLowered} BDR_SUNKENOUTER,
-    {bvRaised } EDGE_RAISED,
+    {bvRaised } BDR_RAISEDINNER,
     {bvSpace  } 0
   );
 var
