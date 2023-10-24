@@ -655,6 +655,23 @@ begin
   Application.IntfAppActivate;
 end;
 
+procedure TAppDelegate.applicationWillResignActive(notification: NSNotification
+  );
+var
+  windows: NSArray;
+  window: NSWindow;
+  form: TObject;
+begin
+  windows := NSApp.orderedWindows;
+  for window in windows do begin
+    form:= window.lclGetTarget;
+    if form is TCustomForm then begin
+      if TCustomForm(form).FormStyle<>fsSystemStayOnTop then
+        window.setLevel( NSNormalWindowLevel );
+    end;
+  end;
+end;
+
 procedure TAppDelegate.applicationDidResignActive(notification: NSNotification);
 begin
   Application.IntfAppDeactivate;
