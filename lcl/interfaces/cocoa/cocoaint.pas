@@ -70,7 +70,6 @@ type
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
-    procedure applicationWillBecomeActive(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
     procedure applicationWillResignActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);

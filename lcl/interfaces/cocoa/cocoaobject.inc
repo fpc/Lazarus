@@ -599,33 +599,6 @@ begin
   Application.IntfAppRestore;
 end;
 
-procedure TAppDelegate.applicationWillBecomeActive(notification: NSNotification
-  );
-{$ifdef COCOA_ACTIVATION_REORDER}
-var
-  app : NSApplication;
-  i: integer;
-  vis: Boolean;
-  info: PWinLevelOrder;
-  ord: NSArray;
-{$endif}
-begin
-  {$ifdef COCOA_ACTIVATION_REORDER}
-  app := NSApplication(NSApp);
-  ord := app.orderedWindows;
-  orderArrayCount := ord.count;
-  orderArray := GetMem(orderArrayCount * sizeof(TWinLevelOrder));
-  for i := 0 to orderArrayCount - 1 do
-  begin
-    info := @orderArray^[i];
-    info^.win := ord.objectAtIndex(i);
-    info^.lvl := info^.win.level;
-    info^.ord := info^.win.orderedIndex;
-    info^.vis := info^.win.isVisible;
-  end;
-  {$endif}
-end;
-
 procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
 var
   i : integer;
@@ -661,9 +634,20 @@ var
   windows: NSArray;
   window: NSWindow;
   form: TObject;
+  info: PWinLevelOrder;
 begin
   windows := NSApp.orderedWindows;
+  orderArrayCount := windows.count;
+  orderArray := GetMem(orderArrayCount * sizeof(TWinLevelOrder));
+
+  info:= orderArray^;
   for window in windows do begin
+    info^.win := window;
+    info^.lvl := window.level;
+    info^.ord := window.orderedIndex;
+    info^.vis := window.isVisible;
+    inc( info );
+
     form:= window.lclGetTarget;
     if form is TCustomForm then begin
       if TCustomForm(form).FormStyle<>fsSystemStayOnTop then
