@@ -2105,13 +2105,11 @@ const
   );
 var
   I: Integer;
-  rect: TRect;
 begin
-  rect:= ARect;
   for I := 0 to FrameWidth - 1 do
   begin
-    DrawEdge(rect, Edge[Style], BF_RECT or BF_ADJUST);
-    InflateRect(rect,-1,-1);
+    DrawEdge(aRect, Edge[Style], BF_RECT);
+    InflateRect(aRect,-1,-1);
   end;
 end;
 
