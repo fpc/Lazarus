@@ -762,6 +762,9 @@ menu/menu_run_file_200.png
 menu/menu_run_parameters.png
 menu/menu_run_parameters_150.png
 menu/menu_run_parameters_200.png
+menu/menu_run_withdebugging.png
+menu/menu_run_withdebugging_150.png
+menu/menu_run_withdebugging_200.png
 menu/menu_run_withoutdebugging.png
 menu/menu_run_withoutdebugging_150.png
 menu/menu_run_withoutdebugging_200.png
