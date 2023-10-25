@@ -62,7 +62,9 @@ changed.
 </element>
 
 <element name="TCalculatorState">
-<short/>
+<short>
+Represents status values used in TCalculatorPanel.
+</short>
 <descr>
 <p>
 <var>TCalculatorState</var> is an enumerated type with values that represent 
@@ -76,19 +78,27 @@ type used to implement the <var>Status</var> property in
 </seealso>
 </element>
 <element name="TCalculatorState.csFirst">
-<short>Value on the First key press.</short>
+<short>
+Value when an initial key press or button click has not yet been detected and 
+applied to a calculator panel.
+</short>
 </element>
 <element name="TCalculatorState.csValid">
 <short>
-Value after the operation for the key has been applied successfully.
+Value after an operation for a key press or mouse click has been successfully 
+applied.
 </short>
 </element>
 <element name="TCalculatorState.csError">
-<short>Value when the operation resulted in an error.</short>
+<short>
+Value when an operation results in an error condition for a calculator panel.
+</short>
 </element>
 
 <element name="TCalculatorLayout">
-<short/>
+<short>
+Represents layouts used for panels on a TCalculatorForm instance. 
+</short>
 <descr>
 <p>
 <var>TCalculatorLayout</var> is an enumerated type with values that represent 
@@ -105,11 +115,15 @@ methods in <var>TCalculatorForm</var> and <var>TCalculatorPanel</var>.
 </element>
 <element name="TCalculatorLayout.clNormal">
 <short>
-The default layout with larger button sizes and more whitespace.
+The default layout with larger button sizes, more whitespace, and buttons for 
+common calculator operations like Back, Clear, Ok and Cancel.
 </short>
 </element>
 <element name="TCalculatorLayout.clSimple">
-<short>The compact layout with smaller button sizes.</short>
+<short>
+The compact layout with smaller buttons using equally sized sizes. Some buttons 
+like Back, Clear, Ok and Cancel are omitted in the simple layout.
+</short>
 </element>
 
 <element name="TCalculatorPanel">
@@ -160,29 +174,56 @@ Ensures that Text is updated and displayed when Status is csFirst.
 
 <element name="TCalculatorPanel.CalcKey">
 <short>
-Performs actions for a key press not handled by a button in the calculator 
-panel.
+Performs actions for a key press notification in the calculator panel.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.CalcKeyPress"/>
+<link id="TCalculatorForm.OnKeyPress"/>
+<link id="TCalculatorCalcKeyEvent"/>
+</seealso>
 </element>
 <element name="TCalculatorPanel.CalcKey.Key">
-<short/>
+<short>
+Character value for the key pressed.
+</short>
 </element>
 
 <element name="TCalculatorPanel.Clear">
 <short>Clears the display and operator in the calculator panel.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called when the Clear button on the panel is clicked, or when the 'C' key is 
+pressed. Sets the display text to '0/0' and causes the OnDisplayChange event 
+handler to be notified. Resets the OperatorChar property to '='.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.OnDisplayChange"/>
+<link id="TCalculatorPanel.OperatorChar"/>
+<link id="TCalculatorPanel.CalcKeyPress"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.Error">
 <short>
-Updates the calculator panel to reflect an error condition, and signals 
-OnError.
+Updates the calculator panel to reflect an error condition and signals the 
+OnError event handler.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Changes the text displayed on the panel to the value in the rsError resource 
+string and updates the Status property to csError. Calls ErrorBeep to produce 
+an error beep when enabled in BeepOnError. Signals the OnError event handler 
+(when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Status"/>
+<link id="TCalculatorPanel.ErrorBeep"/>
+<link id="TCalculatorPanel.BeepOnError"/>
+<link id="TCalculatorPanel.OnError"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.SetDisplay">
@@ -203,7 +244,9 @@ OnDisplayChange.
 <seealso/>
 </element>
 <element name="TCalculatorPanel.GetDisplay.Result">
-<short/>
+<short>
+Textual representation for DisplayValue using the Precision for the panel.
+</short>
 </element>
 
 <element name="TCalculatorPanel.FindButton">
@@ -249,43 +292,104 @@ Translates a mouse click on a button to the character key used in CalcKey.
 </element>
 
 <element name="TCalculatorPanel.ErrorBeep">
-<short/>
+<short>
+Produces an error tone when enabled using the BeepOnError property.
+</short>
 <descr>
-ErrorBeep is an empty implementation in the current LCL version.
+<p>
+ErrorBeep has an empty implementation in the current LCL version. No error tone 
+is produced.
+</p>
 </descr>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.TextChange">
 <short>
-Sets the display text for the associated control and signals OnTextChange.
+Sets the display text for the calculator panel and signals OnTextChange.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.OnTextChange"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.CreateLayout">
 <short>
 Initializes and configures the calculator panel using the specified layout.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CreateLayout</var> is a constructor for the class instance. It calls the 
+inherited Create constructor on entry, and sets the default values for 
+properties.
+</p>
+<p>
+<var>AOwner</var> is the component which owns the class instance (the 
+TCalculatorForm instance).
+</p>
+<p>
+<var>ALayout</var> specifies both the position and size for the buttons on the 
+panel. It affects the Width and Height for the panel as well.
+</p>
+<p>
+CreateLayout creates the calculator buttons and positions them on the panel for 
+the specified layout. When clNormal is used in ALayout, buttons are created for 
+Back, Clear, Ok and Cancel. clNormal also causes a panel used for Memory 
+display to be created and positioned.
+</p>
+<p>
+CreateLayout is called from the InitForm method in TCalculatorForm.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Memory"/>
+<link id="TCalculatorForm.InitForm"/>
+<link id="TCalculatorLayout"/>
+<link id="#lcl.extctrls.TCustomPanel.Create">TCustomPanel.Create</link>
+</seealso>
 </element>
 <element name="TCalculatorPanel.CreateLayout.AOwner">
-<short/>
+<short>
+Component which owns the class instance.
+</short>
 </element>
 <element name="TCalculatorPanel.CreateLayout.ALayout">
-<short/>
+<short>
+Layout applied to the panel and its buttons.
+</short>
 </element>
 
 <element name="TCalculatorPanel.CalcKeyPress">
 <short>
-Locates the button using the specified Key and perform its Click method.
+Applies a key or button press to the calculator panel.
 </short>
 <descr>
-CalcKey is called when a button is located using the specified Key.
+<p>
+CalcKeyPress is a method used to implement the OnKeyPress event handler for the 
+TCalculatorForm instance where the panel is displayed. 
+</p>
+<p>
+<var>Sender</var> is the object instance (TCalculatorForm) for the event 
+notification.
+</p>
+<p>
+<var>Key</var> is the character value for the key (or button) for the 
+notification. If Key is the caption for one of the buttons on the panel, its 
+Click method is called. Otherwise, the private CalcKey method is called to 
+apply the Key value.
+</p>
+<p>
+CalcKeyPress is called by a TCalculatorForm instance when its OnKeyPress event 
+handler is executed.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.OnCalcKey"/>
+<link id="TCalculatorForm.InitForm"/>
+<link id="#lcl.forms.TForm.OnKeyPress">TForm.OnKeyPress</link>
+<link id="#lcl.buttons.TCustomSpeedButton.Click">TCustomSpeedButton.Click</link>
+</seealso>
 </element>
 <element name="TCalculatorPanel.CalcKeyPress.Sender">
 <short>Object for the KeyPress event.</short>
@@ -295,48 +399,105 @@ CalcKey is called when a button is located using the specified Key.
 </element>
 
 <element name="TCalculatorPanel.Copy">
-<short>Loads the value in Text into the Clipboard as a text value.</short>
-<descr/>
-<seealso/>
+<short>Loads the value in Text into the Clipboard as plain text.</short>
+<descr>
+<p>
+Called when the Copy context menu item for a TCalculatorForm instance is 
+clicked.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Paste"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.Paste">
 <short>
 Pastes text from the Clipboard into the text display for the calculator panel.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called when the Paste context menu item for a TCalculatorForm instance is 
+clicked.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.DisplayValue"/>
+<link id="TCalculatorPanel.Copy"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.WorkingPrecision">
 <short>
-Gets the minimum number of precision digits allowable for the panel.
+Gets the minimum number of precision digits allowed for the DisplayValue on 
+the panel. 
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>WorkingPrecision</var> is an <var>Integer</var> function used to get the 
+number of decimal digits used to format the DisplayValue on the panel. The 
+minimum precision used for the floating point value is 2, but can be increased 
+by setting the value for the Precision property.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Precision"/>
+<link id="TCalculatorPanel.DisplayValue"/>
+</seealso>
 </element>
 <element name="TCalculatorPanel.WorkingPrecision.Result">
-<short/>
+<short>
+Number of decimal digits displayed for the floating point DisplayValue.
+</short>
 </element>
 
 <element name="TCalculatorPanel.UpdateMemoryLabel">
 <short>
-Updates the Memory indicator to reflect a non-zero value in the Memory 
+Updates the Memory indicator to reflect a non-zero value present in the Memory 
 property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Causes the character 'M' to be displayed when Memory has a non-zero value. 
+Otherwise, the Memory indicator is cleared.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Memory"/>
+</seealso>
+
 </element>
 
 <element name="TCalculatorPanel.DisplayValue">
-<short>Contains the Double value representing the Text in the panel.</short>
-<descr/>
-<seealso/>
+<short>
+Contains the Double value representing the result (and Text) displayed on the 
+calculator panel.
+</short>
+<descr>
+<p>
+<var>DisplayValue</var> is a <var>Double</var> property which contains the 
+result for a value entered or calculated using the calculator panel. The 
+property value is determined by calling StrToDouble to convert the value in 
+Text to a floating point value. The property value is 0.0 if Status contains 
+csError.
+</p>
+<p>
+Changing the value for the property causes Text to be updated. The Double value 
+is formatted using the Precision needed for the panel, and the OnDisplayChange 
+event handler is signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.Text"/>
+<link id="TCalculatorPanel.Precision"/>
+<link id="TCalculatorPanel.WorkingPrecision"/>
+<link id="TCalculatorPanel.Status"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.Memory">
 <short>
-Contains the Double value stored in the memory for the calculator.
+Contains the Double value stored as the memory for the calculator panel.
 </short>
 <descr/>
 <seealso/>
@@ -344,20 +505,25 @@ Contains the Double value stored in the memory for the calculator.
 
 <element name="TCalculatorPanel.Precision">
 <short>
-Maximum number of digits of precision allowed for the Double value in the 
-calculator.
+Number of digits used after the decimal for the Double value in the calculator 
+panel.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.WorkingPrecision"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.BeepOnError">
 <short>
-Indicates if a beep occurs when an error condition is detected in the 
+Indicates whether a beep occurs when an error condition is detected in the 
 calculator panel.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.Status"/>
+<link id="TCalculatorPanel.ErrorBeep"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.Status">
@@ -365,78 +531,162 @@ calculator panel.
 Contains the status or state for the calculator panel.
 </short>
 <descr>
+<p>
+<var>Status</var> is a <var>TCalculatorState</var> property which indicate the 
+state for the calculator panel. Values from the TCalculatorState enumeration 
+are applied to the property when the panel is updated for key presses or mouse 
+clicks.
+</p>
+<p>
+<var>csError</var> indicates an error condition was detected, and causes 0.0 to 
+be returned in the DisplayValue for the panel.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.CalcKeyPress"/>
+<link id="TCalculatorPanel.DisplayValue"/>
+<link id="TCalculatorPanel.BeepOnError"/>
+<link id="TCalculatorPanel.ErrorBeep"/>
+<link id="TCalculatorState"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.OperatorChar">
 <short>
-Character representing the last operator entered in the calculator panel.
+Character representing the last operator entered using the calculator panel.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCalculatorPanel.CalcKeyPress"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.Text">
-<short>Text representation for the Double value in the calculator.</short>
-<descr/>
-<seealso/>
+<short>
+Text representation for the Double display value on the calculator panel.
+</short>
+<descr>
+<p>
+<var>Text</var> is a read-only <var>String</var> property in 
+<var>TCalculatorPanel</var> with the textual representation for the 
+DisplayValue on the panel. It contains the text formatted using the Precision 
+needed for the DisplayValue. Text is updated when a new value is assigned to 
+DisplayValue, when CalcKeyPress is executed for the panel, or when methods for 
+Error or Clear buttons are called.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorPanel.DisplayValue"/>
+<link id="TCalculatorPanel.CalcKeyPress"/>
+</seealso>
 </element>
 
 <element name="TCalculatorPanel.OnOkClick">
-<short/>
+<short>
+Event handler signalled when the OK button on the calculator panel has been 
+clicked.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnCancelClick">
-<short/>
+<short>
+Event handler signalled when the Cancel button on the calculator form has been 
+clicked, or the form is closed using the Close window decoration or an 
+accelerator key.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnResultClick">
-<short/>
+<short>
+Event handler signalled when the Enter key, = or % operators are clicked on the 
+panel.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnError">
-<short/>
+<short>
+Event handler signalled when the Error method is called for the calculator 
+panel.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnTextChange">
-<short/>
+<short>
+Event handler signalled when a new value has been assigned to the Text for the 
+panel.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnCalcKey">
-<short/>
+<short>
+Event handler signalled when a key press is applied to the calculator panel.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.OnDisplayChange">
-<short/>
+<short>
+Event handler signalled following a change to the DisplayValue for the 
+calculator panel.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCalculatorPanel.Color">
-<short>Color for the calculator panel.</short>
-<descr/>
+<short>
+Background color for the calculator panel.
+</short>
+<descr>
+<p>
+<var>Color</var> is a <var>TColor</var> property with the background color used 
+for the calculator panel. It is redefined in TCalculatorPanel to use clBtnFace 
+as the default value for the property. Please note to ParentColor is ultimately 
+set to <b>True</b> for the panels on a TCalculatorForm instance.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCalculatorForm">
 <short>
-Implements the form used to display a calculator in a TCalculatorDialog.
+Implements the form used to display a calculator for a TCalculatorDialog 
+instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TCalculatorForm</var> is a <var>TForm</var> descendant which implements 
+the form used to display a calculator. It extends the ancestor class with 
+properties, methods, and events needed to configure and display the form 
+instance with UI elements needed for either a simple (compact) or a normal 
+calculator layout. Use the Create constructor to control the layout for the 
+calculator form instance.
+</p>
+<p>
+Use the Value property to set or get the value displayed on the calculator.
+</p>
+<p>
+Use the OnCalcKey and OnDisplayChange event handlers to perform actions needed 
+when keys are pressed or the display value is changed on the form instance.
+</p>
+</descr>
+<seealso>
+<link id="TCalculatorForm.Create"/>
+<link id="TCalculatorForm.Value"/>
+<link id="TCalculatorPanel"/>
+<link id="#lcl.forms.TForm">TForm</link>
+</seealso>
 </element>
 
 <element name="TCalculatorForm.FMainPanel"/>
@@ -485,7 +735,9 @@ Performs actions needed to handle OnKeyPress events in the calculator form.
 <seealso/>
 </element>
 <element name="TCalculatorForm.PasteItemClick.Sender">
-<short/>
+<short>
+Object instance for the click notification.
+</short>
 </element>
 
 <element name="TCalculatorForm.SetValue">
@@ -503,7 +755,9 @@ Performs actions needed to handle OnKeyPress events in the calculator form.
 <seealso/>
 </element>
 <element name="TCalculatorForm.OkClick.Sender">
-<short/>
+<short>
+Object instance for the click notification.
+</short>
 </element>
 
 <element name="TCalculatorForm.CancelClick">
@@ -566,7 +820,10 @@ Performs actions needed for a key received in the calculator form.
 </element>
 
 <element name="TCalculatorForm.MainPanel">
-<short/>
+<short>
+TPanel instance used as a container for the display and button panels on the 
+calculator form.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -608,11 +865,43 @@ Event handler signalled when the calculator display has been changed.
 </element>
 
 <element name="CreateCalculatorForm">
-<short>Creates and configures a new TCalculatorForm instance.</short>
-<descr/>
+<short>
+Creates, configures, and returns a new TCalculatorForm instance.
+</short>
+<descr>
+<p>
+<var>CreateCalculatorForm</var> is a <var>TCalculatorForm</var> function used 
+to create and configure a new calculator form instance using the arguments 
+passed to the routine.
+</p>
+<p>
+<var>ALayout</var> determines the number, type, position, and size for buttons 
+on the calculator form. It is passed as argument to the TCalculatorForm.Create 
+constructor used to instantiate the return value. See 
+<link id="TCalculatorLayout">TCalculatorLayout</link> for more information on 
+the layout values.
+</p>
+<p>
+AHelpContext contains the help context identifier assigned to the HelpContext 
+property in the form instance.
+</p>
+<p>
+CreateCalculatorForm ensures that the form instance is scaled to the PPI 
+setting for the Screen, and updates Left and Top to center the form on the 
+Screen display area. If an exception occurs during this operation the form 
+instance is freed, and the return value is <b>Nil</b>. The exception is 
+re-raised to perform exception handling enabled in the application.
+</p>
+<p>
+CreateCalculatorForm is called from methods in TCalcEdit and TCalculatorDialog 
+when the form instance is created for the controls.
+</p>
+</descr>
 <seealso>
 <link id="TCalculatorForm"/>
 <link id="TCalculatorLayout"/>
+<link id="#lcl.editbtn.TCalcEdit.RunDialog">TCalcEdit.RunDialog</link>
+<link id="#lcl.extdlgs.TCalculatorDialog.Execute">TCalculatorDialog.Execute</link>
 </seealso>
 </element>
 <element name="CreateCalculatorForm.Result">
@@ -624,9 +913,10 @@ Event handler signalled when the calculator display has been changed.
 <element name="CreateCalculatorForm.ALayout">
 <short>Layout for the calculator panel in the form instance.</short>
 </element>
-
 <element name="CreateCalculatorForm.AHelpContext">
-<short/>
+<short>
+Help context for the newly created form instance in the return value.
+</short>
 </element>
 
 <element name="cColorBtnDigits">
@@ -678,19 +968,19 @@ Event handler signalled when the calculator display has been changed.
 </element>
 
 <element name="cCalculatorFontName">
-<short>Font name used for buttons and displays in a calculator.</short>
+<short>Font name used for buttons and text displays in a calculator.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="cCalculatorFontSize">
-<short>Font size used for buttons and displays in a calculator.</short>
+<short>Font size used for buttons and text displays in a calculator.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="cCalculatorFontStyle">
-<short>Font style used for buttons and displays in a calculator.</short>
+<short>Font style used for buttons and text displays in a calculator.</short>
 <descr/>
 <seealso/>
 </element>
