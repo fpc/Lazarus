@@ -214,17 +214,6 @@ const
  { fsSplash          } kCGFloatingWindowLevelKey,
  { fsSystemStayOnTop } kCGFloatingWindowLevelKey  // NSModalPanelWindowLevel
   );
-  // Window levels make the form always stay on top, so if it is supposed to
-  // stay on top of the app only, then a workaround is to hide it while the app
-  // is deactivated
-  FormStyleToHideOnDeactivate: array[TFormStyle] of Boolean = (
- { fsNormal          } False,
- { fsMDIChild        } False,
- { fsMDIForm         } False,
- { fsStayOnTop       } True,
- { fsSplash          } false,
- { fsSystemStayOnTop } False
-  );
 
   HintWindowLevel = 11;  // NSPopUpMenuWindowLevel
 
@@ -241,11 +230,6 @@ var
   lvl : NSInteger;
 begin
   lvl := CGWindowLevelForKey(FormStyleToWindowLevelKey[AFormStyle]);
-  {$ifdef BOOLFIX}
-  win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
-  {$else}
-  win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
-  {$endif}
   win.setLevel(lvl);
   if win.isKindOfClass(TCocoaWindow) then
     TCocoaWindow(win).keepWinLevel := lvl;
