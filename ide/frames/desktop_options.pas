@@ -131,8 +131,8 @@ begin
   lblMouseAction.Caption := dlgMouseAction;
   PreferDoubleClickCheckBox.Caption := dlgPreferDoubleClickOverSingleClick;
   PreferDoubleClickCheckBox.Hint := dlgCurrentlyRespectedByMessagesWindow;
-  EmulateRightMouseButtonCheckBox.Caption := 'Emulate right button';
-  EmulateRightMouseButtonCheckBox.Hint := 'If enabled the messages window will show the popup menu on Ctrl+Left';
+  EmulateRightMouseButtonCheckBox.Caption := dlgEmulateRightButton;
+  EmulateRightMouseButtonCheckBox.Hint := dlgIfEnabledTheMessages;
 
   // hints
   lblHints.Caption := dlgDesktopHints;

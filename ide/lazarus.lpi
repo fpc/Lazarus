@@ -851,7 +851,9 @@
       <Unit>
         <Filename Value="buildlazdialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ConfigureBuildLazarusDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="BuildLazDialog"/>
       </Unit>
       <Unit>
