@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-09-26 18:24+0300\n"
+"PO-Revision-Date: 2023-10-27 20:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1717,6 +1717,10 @@ msgstr "Минимальная ширина эластичного ТАБа"
 msgid "Element Attributes"
 msgstr "Атрибуты элементов"
 
+#: lazarusidestrconsts.dlgemulaterightbutton
+msgid "Emulate right button"
+msgstr "Эмулировать правую кнопку"
+
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "End переводит к концу текста в строке"
@@ -2382,6 +2386,10 @@ msgstr "Неактивная директива $IFDEF"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Директива $IFDEF подключаемого условно активного кода"
+
+#: lazarusidestrconsts.dlgifenabledthemessages
+msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
+msgstr "Если параметр включён, окно сообщений покажет всплывающее меню при щелчке левой кнопкой мыши с удерживаемой клавишей Ctrl"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""

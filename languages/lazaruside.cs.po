@@ -1742,6 +1742,10 @@ msgstr ""
 msgid "Element Attributes"
 msgstr "Vlastnosti prvku"
 
+#: lazarusidestrconsts.dlgemulaterightbutton
+msgid "Emulate right button"
+msgstr ""
+
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "Klávesa End skočí k nejbližšímu konci"
@@ -2411,6 +2415,10 @@ msgstr "Neaktivní $IFDEF uzel"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Zahrnut $IFDEF uzel smíšeného stavu"
+
+#: lazarusidestrconsts.dlgifenabledthemessages
+msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
+msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 #, fuzzy

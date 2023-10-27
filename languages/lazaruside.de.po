@@ -1756,6 +1756,10 @@ msgstr ""
 msgid "Element Attributes"
 msgstr "Elementattribute"
 
+#: lazarusidestrconsts.dlgemulaterightbutton
+msgid "Emulate right button"
+msgstr ""
+
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "Ende-Taste springt zum nächsten Ende"
@@ -2430,6 +2434,10 @@ msgstr "Inaktiver $IFDEF Knoten"
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
+msgstr ""
+
+#: lazarusidestrconsts.dlgifenabledthemessages
+msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
 msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
