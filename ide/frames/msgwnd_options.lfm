@@ -1,9 +1,9 @@
 object MsgWndOptionsFrame: TMsgWndOptionsFrame
   Left = 0
-  Height = 422
+  Height = 521
   Top = 0
   Width = 520
-  ClientHeight = 422
+  ClientHeight = 521
   ClientWidth = 520
   TabOrder = 0
   DesignLeft = 386
@@ -14,9 +14,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MsgColorGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 13
-    Top = 352
-    Width = 80
+    Height = 16
+    Top = 311
+    Width = 104
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     BorderSpacing.Right = 10
@@ -30,7 +30,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 3
-    Top = 357
+    Top = 318
     Width = 60
   end
   object MWOptsRightBevel: TBevel
@@ -40,10 +40,10 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 160
+    Left = 184
     Height = 3
-    Top = 357
-    Width = 360
+    Top = 318
+    Width = 336
     Anchors = [akTop, akLeft, akRight]
   end
   object MWShowIconsCheckBox: TCheckBox
@@ -51,9 +51,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MWOptionsLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 371
-    Width = 135
+    Height = 18
+    Top = 333
+    Width = 166
     BorderSpacing.Left = 6
     Caption = 'MWShowIconsCheckBox'
     ParentShowHint = False
@@ -65,9 +65,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MWAlwaysDrawFocusedCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 405
-    Width = 111
+    Height = 18
+    Top = 369
+    Width = 139
     BorderSpacing.Left = 6
     Caption = 'MWFocusCheckBox'
     ParentShowHint = False
@@ -79,9 +79,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MWShowIconsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 388
-    Width = 182
+    Height = 18
+    Top = 351
+    Width = 221
     Caption = 'MWAlwaysDrawFocusedCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -92,9 +92,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = MWFocusCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 97
+    Left = 124
     Height = 21
-    Top = 422
+    Top = 387
     Width = 50
     BorderSpacing.Left = 2
     TabOrder = 5
@@ -104,9 +104,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MWMaxProcsSpinEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 13
-    Top = 426
-    Width = 89
+    Height = 16
+    Top = 389
+    Width = 116
     BorderSpacing.Left = 6
     Caption = 'MWMaxProcsLabel'
     ParentColor = False
@@ -117,14 +117,14 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 172
+    Height = 164
     Top = 0
     Width = 520
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'MWColorsGroupBox'
-    ClientHeight = 154
-    ClientWidth = 516
+    ClientHeight = 137
+    ClientWidth = 510
     TabOrder = 0
     object MWColorListBox: TColorListBox
       AnchorSideLeft.Control = MWColorsGroupBox
@@ -132,12 +132,12 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideRight.Control = MWSpeedSetColorsGroupBox
       AnchorSideBottom.Control = MWColorBox
       Left = 6
-      Height = 110
+      Height = 99
       Top = 6
-      Width = 325
+      Width = 288
       Style = [cbCustomColors]
       OnGetColors = MWColorListBoxGetColors
-      Anchors = [akTop, akLeft, akRight]
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = MWColorListBoxSelectionChange
@@ -151,21 +151,21 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideBottom.Control = MWColorsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 26
-      Top = 122
-      Width = 325
+      Height = 20
+      Top = 111
+      Width = 288
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-      Anchors = [akTop, akLeft, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 20
-      OnChange = MWColorBoxChange
       TabOrder = 1
+      OnChange = MWColorBoxChange
     end
     object MWSpeedSetColorsGroupBox: TGroupBox
-      Left = 337
-      Height = 142
+      Left = 300
+      Height = 125
       Top = 6
-      Width = 173
+      Width = 204
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -175,41 +175,41 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       ChildSizing.VerticalSpacing = 6
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 124
-      ClientWidth = 169
+      ClientHeight = 98
+      ClientWidth = 194
       TabOrder = 2
       object MWSetEditorColorsButton: TButton
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
+        Height = 20
         Top = 6
-        Width = 157
+        Width = 182
         AutoSize = True
         Caption = 'MWSetEditorColorsButton'
-        OnClick = MWSetEditorColorsButtonClick
         TabOrder = 0
+        OnClick = MWSetEditorColorsButtonClick
       end
       object MWSetDefaultColorsButton: TBitBtn
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 35
-        Width = 157
+        Height = 27
+        Top = 32
+        Width = 182
         AutoSize = True
         Caption = 'MWSetDefaultColorsButton'
-        OnClick = MWSetDefaultColorsButtonClick
         TabOrder = 1
+        OnClick = MWSetDefaultColorsButtonClick
       end
       object MWSetPastelColorsButton: TBitBtn
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 64
-        Width = 157
+        Height = 27
+        Top = 65
+        Width = 182
         AutoSize = True
         Caption = 'MWSetPastelColorsButton'
-        OnClick = MWSetPastelColorsButtonClick
         TabOrder = 2
+        OnClick = MWSetPastelColorsButtonClick
       end
     end
   end
@@ -220,21 +220,21 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 168
-    Top = 178
+    Height = 135
+    Top = 170
     Width = 520
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'MsgColorGroupBox'
-    ClientHeight = 150
-    ClientWidth = 516
+    ClientHeight = 108
+    ClientWidth = 510
     TabOrder = 1
     object MsgColorListBox: TColorListBox
       AnchorSideLeft.Control = MsgColorGroupBox
       AnchorSideTop.Control = MsgColorGroupBox
       Left = 6
-      Height = 110
+      Height = 70
       Top = 6
       Width = 303
       Style = [cbCustomColors]
@@ -251,16 +251,16 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideRight.Control = MsgColorListBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 122
+      Height = 20
+      Top = 82
       Width = 303
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor]
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 16
-      OnChange = MsgColorBoxChange
       TabOrder = 1
+      OnChange = MsgColorBoxChange
     end
   end
   object MWShowFPCMsgLinesCompiledCheckBox: TCheckBox
@@ -268,9 +268,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Control = MWMaxProcsSpinEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 453
-    Width = 214
+    Height = 18
+    Top = 418
+    Width = 267
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
     Caption = 'MWShowFPCMsgLinesCompiledCheckBox'

@@ -47,6 +47,7 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MWCtrlLeftActionComboBox: TComboBox;
     MsgColorBox: TColorBox;
     MsgColorListBox: TColorListBox;
     MsgColorGroupBox: TGroupBox;

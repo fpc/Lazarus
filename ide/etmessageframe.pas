@@ -126,6 +126,7 @@ type
   TMsgCtrlStates = set of TMsgCtrlState;
 
   TMsgCtrlOption = (
+    mcoCtrlLeftPopup, // true=ctrl-left shows popupmenu and alt-left toggles selection, false=ctrl-left toggles
     mcoSingleClickOpensFile, // otherwise double click
     mcoShowStats, // show numbers of errors, warnings and hints in view header line
     mcoShowTranslated, // show translation (e.g. messages from German message file)
@@ -258,7 +259,7 @@ type
     function Filters: TLMsgViewFilters; inline;
 
     // select, search
-    procedure AddToSelection(View: TLMsgWndView; LineNumber: integer);
+    procedure ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
     procedure ExtendSelection(View: TLMsgWndView; LineNumber: integer);
     function SearchNext(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
@@ -1784,16 +1785,25 @@ procedure TMessagesCtrl.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   View: TLMsgWndView;
   LineNumber: integer;
+  p: TPoint;
 begin
   if not Focused and CanFocus then
     SetFocus;
   inherited MouseDown(Button, Shift, X, Y);
   if GetLineAt(Y,View,LineNumber) then begin
     if not (Button in [mbLeft,mbRight]) then Exit;
-    if ssCtrl in Shift then
-      AddToSelection(View,LineNumber)
-    else if ssShift in Shift then
+    if (Button=mbLeft) and (ssCtrl in Shift) then begin
+      if mcoCtrlLeftPopup in FOptions then begin
+        p:=ClientToScreen(Point(X,Y));
+        PopupMenu.PopUp(p.X,p.Y);
+      end
+      else
+        ToggleSelectedLine(View,LineNumber);
+    end
+    else if (Button=mbLeft) and (ssShift in Shift) then
       ExtendSelection(View,LineNumber)
+    else if (Button=mbLeft) and (ssAlt in Shift) then
+      ToggleSelectedLine(View,LineNumber)
     else begin
       if (Button=mbLeft)
       or (View<>SelectedView) or (FSelectedLines.IndexOf(LineNumber)=-1) then
@@ -1806,11 +1816,12 @@ begin
           StoreSelectedAsSearchStart;
         end;
       end;
-      if (Button=mbRight) then Exit;
-      if ((ssDouble in Shift) and (not (mcoSingleClickOpensFile in FOptions)))
-      or ((mcoSingleClickOpensFile in FOptions) and ([ssDouble,ssTriple,ssQuad]*Shift=[]))
-      then
-        OpenSelection;
+      if (Button=mbLeft) then begin
+        if ((ssDouble in Shift) and (not (mcoSingleClickOpensFile in FOptions)))
+        or ((mcoSingleClickOpensFile in FOptions) and ([ssDouble,ssTriple,ssQuad]*Shift=[]))
+        then
+          OpenSelection;
+      end;
     end;
   end;
 end;
@@ -2022,7 +2033,7 @@ begin
   until not Next;
 end;
 
-procedure TMessagesCtrl.AddToSelection(View: TLMsgWndView; LineNumber: integer);
+procedure TMessagesCtrl.ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
 var
   i: Integer;
 begin
@@ -2619,6 +2630,7 @@ begin
   HeaderBackground[lmvtsFailed]:=EnvironmentGuiOpts.MsgViewColors[mwFailed];
   TextColor:=EnvironmentGuiOpts.MsgViewColors[mwTextColor];
   NewOptions:=Options;
+  SetOption(mcoCtrlLeftPopup,EnvironmentGuiOpts.EmulateRightMouseButton);
   SetOption(mcoSingleClickOpensFile,not EnvironmentGuiOpts.MsgViewDblClickJumps);
   SetOption(mcoShowMsgIcons,EnvironmentGuiOpts.ShowMessagesIcons);
   SetOption(mcoShowTranslated,EnvironmentGuiOpts.MsgViewShowTranslations);
