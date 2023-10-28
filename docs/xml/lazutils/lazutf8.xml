@@ -2848,12 +2848,8 @@ Deprecated in LazUtils version 2.3.0.
 <link id="#lazutils.translations.GetLanguageID"/>
 </seealso>
 </element>
-<element name="LazGetLanguageIDs.Lang">
-<short/>
-</element>
-<element name="LazGetLanguageIDs.FallbackLang">
-<short/>
-</element>
+<element name="LazGetLanguageIDs.Lang"/>
+<element name="LazGetLanguageIDs.FallbackLang"/>
 
 <element name="LazGetShortLanguageID">
 <short>
@@ -2868,9 +2864,7 @@ Deprecated in LazUtils version 2.3.0.
 <link id="#lazutils.translations.GetLanguageID"/>
 </seealso>
 </element>
-<element name="LazGetShortLanguageID.Lang">
-<short/>
-</element>
+<element name="LazGetShortLanguageID.Lang"/>
 
 <element name="FPUpChars">
 <short>
