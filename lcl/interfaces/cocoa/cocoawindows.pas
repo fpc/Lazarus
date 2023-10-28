@@ -446,7 +446,7 @@ begin
   if not isembedded then
   begin
     //Window bounds should return "client rect" in screen coordinates
-    NSToLCLRect(window.frame, NSGlobalScreenHeight, wfrm);
+    wfrm := ScreenRectFromNSToLCL(window.frame);
     Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
@@ -1250,7 +1250,7 @@ var
 begin
   f := frame;
   inc(X, Round(f.origin.x));
-  inc(Y, Round(NSGlobalScreenHeight - NSMaxY(f)));
+  inc(Y, Round(NSGlobalScreenBottom - NSMaxY(f)));
 end;
 
 procedure LCLWindowExtension.lclScreenToLocal(var X, Y: Integer);
@@ -1259,15 +1259,15 @@ var
 begin
   f := frame;
   dec(X, Round(f.origin.x));
-  dec(Y, Round(NSGlobalScreenHeight - NSMaxY(f)));
+  dec(Y, Round(NSGlobalScreenBottom - NSMaxY(f)));
 end;
 
 function LCLWindowExtension.lclFrame: TRect;
 begin
   if Assigned(contentView) then
-    Result:=contentView.lclFrame
+    Result:= contentView.lclFrame
   else
-    NSToLCLRect(frame, NSGlobalScreenHeight, Result);
+    Result:= ScreenRectFromNSToLCL( frame );
 end;
 
 function LCLWindowExtension.lclGetTopBarHeight:integer;
@@ -1288,12 +1288,12 @@ var
   ns : NSRect;
   h  : integer;
 begin
-  LCLToNSRect(r, NSGlobalScreenHeight, ns);
+  ns:= ScreenRectFromLCLToNS( r );
 
   // add topbar height
-  h:=lclGetTopBarHeight;
-  ns.size.height:=ns.size.height+h;
-  ns.origin.y:=ns.origin.y-h;
+  h:= lclGetTopBarHeight;
+  ns.size.height:= ns.size.height + h;
+  ns.origin.y:= ns.origin.y - h;
   {$ifdef BOOLFIX}
   setFrame_display_(ns, Ord(isVisible));
   {$else}

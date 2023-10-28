@@ -1074,7 +1074,7 @@ begin
 
   contentView := TCocoaWindowContent(Handle);
   if (not contentView.isembedded) and Assigned(contentView.window) then
-    NSToLCLRect(contentView.window.frame, NSGlobalScreenHeight, ARect)
+    ARect := ScreenRectFromNSToLCL( contentView.window.frame )
   else
     ARect := contentView.lclFrame;
   Result := 1;
@@ -1138,19 +1138,13 @@ end;
 
 function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  with NSEvent.mouseLocation do
-  begin
-    lpPoint.x := Round(x);
-    // cocoa returns cursor with inverted y coordinate
-    lpPoint.y := Round(NSGlobalScreenHeight-y);
-  end;
+  lpPoint:= ScreenPointFromNSToLCL( NSEvent.mouseLocation );
   //debugln('GetCursorPos='+DbgS(lpPoint));
   Result := True;
 end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
-  globalScreenHeight:  CGFloat;
   ScreenID: NSScreen;
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
@@ -1159,9 +1153,8 @@ begin
   Result := Assigned(ScreenID);
   if not Result then Exit;
 
-  globalScreenHeight := NSGlobalScreenHeight;
-  NSToLCLRect(ScreenID.frame, globalScreenHeight, lpmi^.rcMonitor);
-  NSToLCLRect(ScreenID.visibleFrame, globalScreenHeight, lpmi^.rcWork);
+  lpmi^.rcMonitor:= ScreenRectFromNSToLCL( ScreenID.frame );
+  lpmi^.rcWork:= ScreenRectFromNSToLCL( ScreenID.visibleFrame );
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if HMonitorToIndex(hMonitor) = 0 then
@@ -1477,7 +1470,7 @@ begin
     Exit;
 
   p.x:=Point.X;
-  p.y:=NSGlobalScreenHeight-Point.Y;
+  p.y:=NSGlobalScreenBottom-Point.Y;
   window := GetCocoaWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
@@ -1876,7 +1869,7 @@ var
   i: Integer;
 begin
   Result:= 0;
-  point:= LCLToNSPoint( ptScreenCoords, NSGlobalScreenHeight );
+  point:= ScreenPointFromLCLToNS( ptScreenCoords );
   if point.y>=1 then         // NSPointInRect is (upper,left) inside
     point.y:= point.y-1;     // (lower,right) outside
 

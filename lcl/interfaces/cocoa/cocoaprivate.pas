@@ -1144,7 +1144,7 @@ begin
   params.isFirstCall:= not hasMarkedText();
 
   rect:= imeHandler.IMEGetTextBound( params );
-  LCLToNSRect( rect, NSGlobalScreenHeight, Result );
+  LCLToNSRect( rect, NSGlobalScreenBottom, Result );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;
