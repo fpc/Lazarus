@@ -1326,13 +1326,6 @@ begin
     Result:=0;
 end;
 
-function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
-begin
-  Result := Handle <> 0;
-  if Result then
-    NSObject(handle).lclRelativePos(Left, Top);
-end;
-
 // 1. not only for Window, but also for other controls
 // 2. for a Window, according to this function specification, Width and Height
 //    should be returned. but ClientWidth and ClientHeight were returned

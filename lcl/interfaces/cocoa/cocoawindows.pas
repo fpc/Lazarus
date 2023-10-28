@@ -47,7 +47,6 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
     procedure lclUpdate; message 'lclUpdate'; reintroduce;
-    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
@@ -222,7 +221,6 @@ type
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
     function lclFrame: TRect; override;
-    procedure lclRelativePos(var Left, Top: Integer); override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
@@ -449,14 +447,6 @@ begin
     wfrm := ScreenRectFromNSToLCL(window.frame);
     Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
-end;
-
-procedure TCocoaWindowContent.lclRelativePos(var Left, Top: Integer);
-begin
-  if isembedded then
-    inherited lclRelativePos(Left, Top)
-  else
-    window.lclRelativePos(Left, Top);
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
@@ -1232,16 +1222,6 @@ end;
 procedure LCLWindowExtension.lclUpdate;
 begin
   contentView.lclUpdate;
-end;
-
-procedure LCLWindowExtension.lclRelativePos(var Left, Top: Integer);
-var
-  f: NSRect;
-begin
-  f:=frame;
-  Left := Round(f.origin.x);
-  Top := Round(NSGlobalScreenHeight - NSMaxY(f));
-  //debugln('Top:'+dbgs(Top));
 end;
 
 procedure LCLWindowExtension.lclLocalToScreen(var X, Y:Integer);
