@@ -51,7 +51,6 @@ function NSPrimaryScreen: NSScreen;
 function NSPrimaryScreenFrame: NSRect;
 function NSGlobalScreenFrame: NSRect;
 function NSGlobalScreenLCLFrame: NSRect;
-function NSGlobalScreenHeight: CGFloat;
 function NSGlobalScreenBottom: CGFloat;
 
 function IndexToHMonitor(i: NSUInteger): HMonitor;
@@ -826,12 +825,6 @@ function NSGlobalScreenLCLFrame: NSRect;
 begin
   Result:= NSGlobalScreenFrame;
   Result.origin.y:= NSPrimaryScreenFrame.size.height - NSMaxY(Result);
-end;
-
-// the height of global full virtual display
-function NSGlobalScreenHeight: CGFloat;
-begin
-  Result:= NSGlobalScreenFrame.size.height;
 end;
 
 // the bottom of global full virtual display
