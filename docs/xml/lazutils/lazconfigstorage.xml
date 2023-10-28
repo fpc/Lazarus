@@ -1360,10 +1360,15 @@ storage class instance.
 <seealso/>
 </element>
 <element name="TConfigMemStorage.SaveToConfig.Config">
-<short/>
+<short>
+Configuration storage instance where values are stored.  
+</short>
 </element>
 <element name="TConfigMemStorage.SaveToConfig.APath">
-<short/>
+<short>
+Path to the location in Config where values in the current class instance are 
+stored.
+</short>
 </element>
 
 <element name="TConfigMemStorage.LoadFromConfig">
@@ -1375,10 +1380,14 @@ class instance.
 <seealso/>
 </element>
 <element name="TConfigMemStorage.LoadFromConfig.Config">
-<short/>
+<short>
+Configuration storage instance with the values loaded into the current class.
+</short>
 </element>
 <element name="TConfigMemStorage.LoadFromConfig.APath">
-<short/>
+<short>
+Path to the values in Config which are loaded in the method.
+</short>
 </element>
 
 <element name="TConfigMemStorage.WriteDebugReport">
