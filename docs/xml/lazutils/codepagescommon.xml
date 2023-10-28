@@ -19,7 +19,9 @@ Array type which provides indexed access to UTF-8 codepoint pointers.
 </element>
 
 <element name="ArrayISO_8859_1ToUTF8">
-<short/>
+<short>
+Provides a mapping for ISO-8859-1 characters to UTF-8 codepoints.
+</short>
 <descr>
 <url href="https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT">
 https://unicode.org/Public/MAPPINGS/ISO8859/8859-1.TXT
@@ -443,7 +445,9 @@ https://unicode.org/Public/MAPPINGS/VENDORS/MISC/KOI8-U.TXT
 </element>
 
 <element name="ArrayMacintoshToUTF8">
-<short/>
+<short>
+Provides mappings for Apple macOS encoding to UTF-8 encoding.
+</short>
 <descr>
 <p>
 <url href="https://unicode.org/Public/MAPPINGS/VENDORS/APPLE/">
