@@ -963,7 +963,7 @@ begin
   point:= TPoint.Create( x, y );
   screen:= getScreenFromHMonitor( CocoaWidgetSet.MonitorFromPoint(point, MONITOR_DEFAULTTONULL) );
 
-  mouseY:= NSGlobalScreenHeight - y;
+  mouseY:= NSGlobalScreenBottom - y;
   if Assigned(screen) then begin
     menuY:= screen.visibleFrame.origin.y + menu.size.height + 1;
     menuY:= max( mouseY, MenuY );
