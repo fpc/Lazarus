@@ -22,6 +22,58 @@ reference counting.
 <element name="Classes"/>
 <element name="LazMethodList"/>
 
+<element name="TFreeNotifyingGeneric">
+<short>
+Generic implementation of the class used to implement objects which perform 
+free notifications.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TFreeNotifyingGeneric.FFreeNotificationList"/>
+
+<!-- protected -->
+<element name="TFreeNotifyingGeneric.DoDestroy">
+<short>
+Alternate destructor for the generic class type.  
+</short>
+<descr>
+<p>
+FPC issues an error and can not compile an overridden Destructor.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<!-- public -->
+<element name="TFreeNotifyingGeneric.AddFreeNotification">
+<short>
+Adds the specified notification to the notification list in the generic class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TFreeNotifyingGeneric.AddFreeNotification.ANotification">
+<short>
+The notification event handler added to the notification list.
+</short>
+</element>
+
+<element name="TFreeNotifyingGeneric.RemoveFreeNotification">
+<short>
+Removes the specified notification from the notification list in the generic class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TFreeNotifyingGeneric.RemoveFreeNotification.ANotification">
+<short>
+The notification event handler removed from the notification list.
+</short>
+</element>
+
 <element name="TFreeNotifyingObject">
 <short>
 Base class used to implement objects which perform free notifications.
@@ -59,7 +111,7 @@ Adds the specified method to the notification list in the class instance.
 <seealso/>
 </element>
 <element name="TFreeNotifyingObject.RemoveFreeNotification.ANotification">
-<short>The notification event handler removed form the internal list.</short>
+<short>The notification event handler removed from the internal list.</short>
 </element>
 
 <element name="TRefCountedObject">
@@ -189,10 +241,14 @@ the reference count.
 <seealso/>
 </element>
 <element name="TRefCountedObject.AddReference.DebugIdAdr">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 <element name="TRefCountedObject.AddReference.DebugIdTxt">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 
 <element name="TRefCountedObject.ReleaseReference">
@@ -220,10 +276,14 @@ the reference count.
 <seealso/>
 </element>
 <element name="TRefCountedObject.ReleaseReference.DebugIdAdr">
-<short/>
+<short>
+Debugging symbol.
+</short>  
 </element>
 <element name="TRefCountedObject.ReleaseReference.DebugIdTxt">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 
 <element name="TRefCountedObject.DbgRenameReference">
@@ -234,16 +294,24 @@ implemented when WITH_REFCOUNT_DEBUG is defined in the LCL.
 <seealso/>
 </element>
 <element name="TRefCountedObject.DbgRenameReference.DebugIdAdr">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 <element name="TRefCountedObject.DbgRenameReference.DebugIdTxt">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 <element name="TRefCountedObject.DbgRenameReference.OldDebugIdAdr">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 <element name="TRefCountedObject.DbgRenameReference.OldDebugIdTxt">
-<short/>
+<short>
+Debugging symbol.
+</short>
 </element>
 
 <element name="TRefCntObjList">
@@ -273,10 +341,14 @@ object in Ptr to be increased or decreased as needed for the value in Action.
 <seealso/>
 </element>
 <element name="TRefCntObjList.Notify.Ptr">
-<short/>
+<short>
+Pointer to the object instance for the notification.
+</short>
 </element>
 <element name="TRefCntObjList.Notify.Action">
-<short/>
+<short>
+Identifies the action that caused the list notification.
+</short>
 </element>
 
 <element name="ReleaseRefAndNil">
@@ -298,13 +370,19 @@ ARefCountedObject is derived from a class other than TRefCountedObject.
 <seealso/>
 </element>
 <element name="ReleaseRefAndNil.ARefCountedObject">
-<short/>
+<short>
+TRefCountedObject object instance examined and updated in the routine.
+</short>
 </element>
 <element name="ReleaseRefAndNil.DebugIdAdr">
-<short/>
+<short>
+Debugging symbol.  
+</short>
 </element>
 <element name="ReleaseRefAndNil.DebugIdTxt">
-<short/>
+<short>
+Debugging symbol.  
+</short>
 </element>
 
 <element name="NilThenReleaseRef">
@@ -327,13 +405,19 @@ ARefCountedObject is derived from a class other than TRefCountedObject.
 <seealso/>
 </element>
 <element name="NilThenReleaseRef.ARefCountedObject">
-<short/>
+<short>
+TRefCountedObject object instance examined and updated in the routine.
+</short>
 </element>
 <element name="NilThenReleaseRef.DebugIdAdr">
-<short/>
+<short>
+Debugging symbol.  
+</short>
 </element>
 <element name="NilThenReleaseRef.DebugIdTxt">
-<short/>
+<short>
+Debugging symbol.  
+</short>
 </element>
 
 </module>
