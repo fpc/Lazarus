@@ -1035,31 +1035,21 @@ the routine.
 </element>
 
 <element name="GetPart">
-<short/>
+<short>
+Implements formatting facilities in the debugger.  
+</short>
 <descr>
 GetPart is an overloaded String function.
 It is used to implement facilities in the debugger.
 </descr>
 <seealso/>
 </element>
-<element name="GetPart.Result">
-<short/>
-</element>
-<element name="GetPart.ASkipTo">
-<short/>
-</element>
-<element name="GetPart.AnEnd">
-<short/>
-</element>
-<element name="GetPart.ASource">
-<short/>
-</element>
-<element name="GetPart.AnIgnoreCase">
-<short/>
-</element>
-<element name="GetPart.AnUpdateSource">
-<short/>
-</element>
+<element name="GetPart.Result"/>
+<element name="GetPart.ASkipTo"/>
+<element name="GetPart.AnEnd"/>
+<element name="GetPart.ASource"/>
+<element name="GetPart.AnIgnoreCase"/>
+<element name="GetPart.AnUpdateSource"/>
 
 <element name="TextToSingleLine">
 <short>Converts a multi-line string to a single line of text.</short>
