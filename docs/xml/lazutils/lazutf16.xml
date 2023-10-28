@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-
 <!--
 ====================================================================
 lazutf16
 ====================================================================
 -->
-
 <module name="lazutf16">
 <short>
 Contains routines used for UTF-16 character and string operations.
@@ -30,7 +28,6 @@ a UTF-16 table, but it might be extended to include various UTF-16 routines.
 </p>
 </descr>
 
-<!-- function Visibility: default -->
 <element name="UTF16CharacterLength">
 <short>
 Gets the length of the UTF-16 character in the specified PWideChar value.
@@ -39,39 +36,45 @@ Gets the length of the UTF-16 character in the specified PWideChar value.
 Uses the endian-ness for the platform. Returns 0, 1, or 2.
 </descr>
 </element>
-<!-- function result Visibility: default -->
 <element name="UTF16CharacterLength.Result">
 <short>Length of the UTF-16 character in the value, or 0 when Nil.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16CharacterLength.p">
 <short>PWideChar value examined in the routine.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UTF16Length">
 <short>Gets the length for the specified value in UTF-16 characters.</short>
-<descr/>
+<descr>
+<p>
+Examines 16-UTF values in the specified Unicode string until the number of word 
+values is exceeded. Using zero (0) in WordCount causes no actions to be 
+performed in the routine, and the return value is 0.
+</p>
+</descr>
 <seealso/>
 </element>
-<!-- function result Visibility: default -->
 <element name="UTF16Length.Result">
-<short></short>
+<short>
+Number of UTF-16 codepoints in the examined value.
+</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16Length.s">
-<short></short>
+<short>
+Unicode string with the values examined in the routine.
+</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16Length.p">
-<short></short>
+<short>
+Pointer to the WideChar values examined in the routine.
+</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16Length.WordCount">
-<short></short>
+<short>
+Number of UTF-16 word values to examine in the Unicode string.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UTF16Copy">
 <short>
 Copies a number of UTF-16 characters at the given character position in the 
@@ -96,12 +99,19 @@ specified value.
 </element>
 
 <element name="UTF16CharStart">
-<short/>
+<short>
+Gets a pointer to the character (UTF-16 codepoint) at the specified position 
+(zero-based) in a WideChar value.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="UTF16CharStart.Result">
-<short/>
+<short>
+Pointer to the UTF-16 character at the specified position in the value, or 
+<b>Nil</b> if P is empty or a UTF-16 character is not found at the specified 
+ordinal position.
+</short>
 </element>
 <element name="UTF16CharStart.P">
 <short>PWideChar value with the values examined in the routine.</short>
@@ -177,20 +187,16 @@ when p contains an invalid UTF-16 code point.
 </descr>
 <seealso/>
 </element>
-<!-- function result Visibility: default -->
 <element name="UTF16CharacterToUnicode.Result">
 <short>Unicode code point for the values in p.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16CharacterToUnicode.p">
 <short>UTF-16 code points examined and converted in the routine.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF16CharacterToUnicode.CharLen">
 <short>Number of UTF-16 code points for the converted character.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UnicodeToUTF16">
 <short>
 Converts a Unicode character value to its UTF-16 equivalent as a WideString 
@@ -205,17 +211,18 @@ represent the UTF-16 code point.
 </descr>
 <seealso/>
 </element>
-<!-- function result Visibility: default -->
 <element name="UnicodeToUTF16.Result">
 <short>WideString value with UTF-16 code point the Unicode character.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UnicodeToUTF16.u">
 <short>Unicode character value converted in the routine.</short>
 </element>
 
 <element name="IsUTF16CharValid">
-<short></short>
+<short>
+Returns <b>True</b> if the specified values are a valid UTF-16 character 
+(codepoint).
+</short>
 <descr>
 <p>
 Based on the specification defined by the Unicode consortium, at:
@@ -235,19 +242,25 @@ any value in the range DC00 to DFFF not preceded by a value in the range
 D800 to DBFF. [AF]
 </p>
 <p>
-Use ANextChar = #0 to indicate that there is no next char.
+If ANextChar is set to #0 there is no next character.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="IsUTF16CharValid.Result">
-<short/>
+<short>
+Returns False if AChar is #0 or AChar and ANextChar are unpaired surrogates.
+</short>
 </element>
 <element name="IsUTF16CharValid.AChar">
-<short/>
+<short>
+First UTF-16 code examined in the method.
+</short>
 </element>
 <element name="IsUTF16CharValid.ANextChar">
-<short/>
+<short>
+Next UTF-16 code examined in the method.
+</short>
 </element>
 
 <element name="IsUTF16StringValid">
@@ -272,37 +285,55 @@ True if the specified WideString contains valid UTF-16 code points.
 </element>
 
 <element name="Utf16StringReplace">
-<short/>
+<short>
+Replaces a pattern in a Unicode string with another Unicode pattern.
+</short>
 <descr>
 <p>
 Same as <var>SysUtil.StringReplace</var> but for WideStrings and 
-UnicodeStrings, since it's not available in FPC yet.
+UnicodeStrings, since it is not available in FPC yet.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="#rtl.sysutils.StringReplace">StringReplace</link>
+<link id="#rtl.sysutils.TReplaceFlags">TReplaceFlags</link>
+</seealso>
 </element>
 <element name="Utf16StringReplace.Result">
-<short/>
+<short>
+Updated value for Unicode string after pattern replacement(s).
+</short>
 </element>
 <element name="Utf16StringReplace.S">
-<short/>
+<short>
+Unicode string value examined in the routine.
+</short>
 </element>
 <element name="Utf16StringReplace.OldPattern">
-<short/>
+<short>
+Unicode string with the pattern to locate in S.
+</short>
 </element>
 <element name="Utf16StringReplace.NewPattern">
-<short/>
+<short>
+Unicode string with the pattern used to replace the old pattern in S.
+</short>
 </element>
 <element name="Utf16StringReplace.Flags">
-<short/>
+<short>
+Set of replacement flags applied in the routine.
+</short>
 </element>
 <element name="Utf16StringReplace.Count">
-<short/>
+<short>
+Number of replacements performed in the routine.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UnicodeLowercase">
-<short>Converts a Unicode character value to its lowercase equivalent.</short>
+<short>
+Converts a Unicode character value to its lowercase equivalent.
+</short>
 <descr>
 <p>
 Uses internal tables to map Unicode character ranges common to both UTF-16 
@@ -311,32 +342,27 @@ and UTF-32.
 </descr>
 <seealso/>
 </element>
-<!-- function result Visibility: default -->
 <element name="UnicodeLowercase.Result">
 <short>Cardinal value for the lowercase equivalent of u.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UnicodeLowercase.u">
 <short>Unicode character vale converted to lowercase in the routine.</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UTF8LowerCaseViaTables">
 <short>
-Converts a UTF-8-encoded string to lowercase Unicode values using internal 
+Converts a UTF-8-encoded string to lowercase UTF-8 values using internal 
 case tables.
 </short>
 <descr/>
 <seealso/>
 </element>
-<!-- function result Visibility: default -->
 <element name="UTF8LowerCaseViaTables.Result">
-<short>String with the lowercase Unicode values for s.</short>
+<short>String with the lowercase UTF-8 values for s.</short>
 </element>
-<!-- argument Visibility: default -->
 <element name="UTF8LowerCaseViaTables.s">
 <short>
-String with UTF-8 values converted to lowercase Unicode in the routine.
+String with UTF-8 values converted to lowercase UTF-8 in the routine.
 </short>
 </element>
 
