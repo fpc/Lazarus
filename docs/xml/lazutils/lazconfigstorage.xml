@@ -71,7 +71,8 @@ in the class, like:
 </ul>
 <p>
 Methods are provided to get, set, or delete stored items using their path 
-notation. Methods are also provided to read or write published property values to or from persistent objects using RTTI.
+notation. Methods are also provided to read or write published property values 
+to or from persistent objects using RTTI.
 </p>
 <p>
 Do not create instances of TConfigStorage. Use of the descendent classes like 
@@ -94,7 +95,8 @@ TConfigMemStorage or TXMLConfigStorage.
 
 <element name="TConfigStorage.GetFullPathValue">
 <short>
-Specifies a method used to get a value or its default from the specified fully-qualified path.
+Specifies a method used to get a value or its default from the specified 
+fully-qualified path.
 </short>
 <descr>
 <p>
@@ -118,7 +120,8 @@ Value in the configuration storage for the specified value type.
 </element>
 <element name="TConfigStorage.GetFullPathValue.APath">
 <short>
-Fully-qualified path to the value. Includes both the base path and the name for the item.
+Fully-qualified path to the value. Includes both the base path and the name for 
+the item.
 </short>
 </element>
 <element name="TConfigStorage.GetFullPathValue.ADefault">
@@ -128,91 +131,339 @@ Default value returned when APath is not found in the configuration storage.
 </element>
 
 <element name="TConfigStorage.SetFullPathValue">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to resolve the specified node path prior to storing the 
+specified value.
+</short>
+<descr>
+<p>
+<var>SetFullPathValue</var> is an overloaded abstract virtual method in 
+<var>TConfigStorage</var>. It must be overridden in a descendent class to use 
+the node notation required for the underlying storage mechanism.
+</p>
+<p>
+SetFullPathValue is called from the SetValue method after ExtendPath has been 
+called to include the CurrentBasePath value at the start of the node path in 
+APath.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.SetFullPathValue"/>
+<link id="TConfigStorage.SetValue"/>
+<link id="TConfigStorage.ExtendPath"/>
+<link id="TConfigStorage.CurrentBasePath"/>
+<link id="TConfigMemStorage.SetFullPathValue"/>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage">TXMLConfigStorage</link>
+</seealso>
 </element>
 <element name="TConfigStorage.SetFullPathValue.APath">
-<short/>
+<short>
+Path to the node where the specified value is stored.
+</short>
 </element>
 <element name="TConfigStorage.SetFullPathValue.AValue">
-<short/>
+<short>
+Value stored in the specified node path. Overloaded variants allow AValue to be 
+specified using as either a String, an Integer, or a Boolean type.
+</short>
 </element>
 
 <element name="TConfigStorage.SetDeleteFullPathValue">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to delete the specified node path or to reset it to a 
+default value.
+</short>
+<descr>
+<p>
+<var>SetDeleteFullPathValue</var> is an overloaded abstract virtual method in 
+<var>TConfigStorage</var>. It must be overridden and implemented in a 
+descendent class to use the node notation required for the underlying storage 
+mechanism.
+</p>
+<p>
+Overloaded variants of the method allow the AValue and DefValue arguments to be 
+passed as either String, Integer, or Boolean types. Both arguments must use the 
+same type. The arguments determine whether the node is removed or updated with 
+a default value in the storage mechanism. When both arguments have the same 
+value, the node at APath is deleted from the storage. Otherwise, the value in 
+DefValue is stored for the specified node.
+</p>
+<p>
+SetDeleteFullPathValue is called from the SetDeleteValue method after 
+ExtendPath has been called to include the CurrentBasePath value at the start of 
+the node path in APath.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.SetDeleteValue"/>
+<link id="TConfigStorage.ExtendPath"/>
+<link id="TConfigStorage.CurrentBasePath"/>
+<link id="TConfigMemStorage.SetDeleteFullPathValue"/>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage">TXMLConfigStorage</link>
+</seealso>
 </element>
 <element name="TConfigStorage.SetDeleteFullPathValue.APath">
-<short/>
+<short>
+Path to the node updated or removed in the method.
+</short>
 </element>
 <element name="TConfigStorage.SetDeleteFullPathValue.AValue">
-<short/>
+<short>
+Value for the node to update or remove in the method. Causes the node to be 
+deleted when its value matches DefValue.
+</short>
 </element>
 <element name="TConfigStorage.SetDeleteFullPathValue.DefValue">
-<short/>
+<short>
+Default value stored in the node when AValue does not match DefValue.
+</short>
 </element>
 
 <element name="TConfigStorage.DeleteFullPath">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to remove the node at the specified path from the 
+configuration storage.
+</short>
+<descr>
+<p>
+<var>DeleteFullPath</var> is an abstract virtual method in 
+<var>TConfigStorage</var>. It must be implemented in a descendent class to 
+perform actions needed to remove the specified node from the storage mechanism 
+for the class instance.
+</p>
+<p>
+DeleteFullPath always physically removes the node at the specified path. Use 
+SetDeleteFullPathValue to update or remove a node using a value and default 
+value.
+</p>
+<p>
+DeleteFullPath is used to implement the DeletePath method.
+</p>
+</descr>
+<seealso>
+<link id="TConfigMemStorage.DeleteFullPath"/>
+</seealso>
 </element>
 <element name="TConfigStorage.DeleteFullPath.APath">
-<short/>
+<short>
+Path to the node deleted in the method.
+</short>
 </element>
 
 <element name="TConfigStorage.DeleteFullPathValue">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to delete the node with the specified full path name 
+from the configuration storage.
+</short>
+<descr>
+<p>
+<var>DeleteFullPathValue</var> is an abstract virtual method in 
+<var>TConfigStorage</var> used to delete the node with the path name specified 
+in <var>APath</var>. It must be implemented in a descendent class to access the 
+storage mechanism for the derived class instance.
+</p>
+<p>
+DeleteFullPathValue is used to implement the DeleteValue method.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.DeleteValue"/>
+</seealso>
 </element>
-
 <element name="TConfigStorage.DeleteFullPathValue.APath">
-<short/>
+<short>
+Fully-qualified path name for the node deleted in the method.
+</short>
 </element>
 
 <element name="TConfigStorage.WriteProperty">
-<short/>
-<descr/>
+<short>
+Stores one or more property values from an RTTI-enabled persistent object to 
+the specified path in the configuration storage.
+</short>
+<descr>
+<p>
+<var>WriteProperty</var> is based on the actions performed by the 
+<var>TWriter</var> class in the FPC RTL. Is uses the RTTI property information 
+passed in the PropInfo argument to access each of the properties in Instance. 
+No actions are performed for a given property if it does not provide both a 
+getter and a setter routine for the property value.
+</p>
+<p>
+<var>APath</var> contains the fully-qualified path where value(s) are stored in 
+the configuration storage.
+</p>
+<p>
+<var>Instance</var> is the RTTI-enabled persistent object with the value(s) 
+retrieved and written in the method.
+</p>
+<p>
+<var>PropInfo</var> in a pointer to type information for the persistent object 
+in Instance (and DefInstance). It is used to access each property, and to 
+convert and store each value in the storage mechanism by calling the SetValue 
+method.
+</p>
+<p>
+<var>OnlyProperty</var> contains an optional name for a single property name 
+stored in the method. When omitted (or set to an empty string), all of the 
+properties in the type information are stored starting at the specified path 
+using the Name for the property type as an identifier.
+</p>
+<p>
+DefInstance is a persistent object which contains values to be treated as the 
+default values for the corresponding properties in Instance. When a property 
+has the same value in both Instance and DefInstance, it is deleted from the 
+configuration storage. DefInstance can be <b>Nil</b> - but default property 
+values cannot be determined when omitted.
+</p>
+<p>
+WriteProperty handles values for the following type kinds in property type 
+information:
+</p>
+<ul>
+<li>tkInteger (including string identifiers for the value)</li>
+<li>tkChar</li>
+<li>tkEnumeration</li>
+<li>tkSet (as comma-delimited identifiers in the set)</li>
+<li>tkWChar</li>
+<li>tkFloat</li>
+<li>tkSString</li>
+<li>tkLString</li>
+<li>tkAString</li>
+<li>tkBool</li>
+</ul>
+<p>
+The following type kinds are <b>not</b> explicitly handled in the current LCL 
+version:
+</p>
+<ul>
+<li>tkWString</li>
+<li>tkInt64</li>
+<li>tkQWord</li>
+</ul>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.WriteProperty.Path">
-<short/>
+<short>
+Path where property value(s) from the specified object are stored.
+</short>
 </element>
 <element name="TConfigStorage.WriteProperty.Instance">
-<short/>
+<short>
+Persistent object with the property value(s) stored in the method.
+</short>
 </element>
 <element name="TConfigStorage.WriteProperty.PropInfo">
-<short/>
+<short>
+Pointer to the RTTI property information processed in the method.
+</short>
 </element>
 <element name="TConfigStorage.WriteProperty.DefInstance">
-<short/>
+<short>
+Persistent object with the default value(s) for properties processed in the 
+method.
+</short>
 </element>
 <element name="TConfigStorage.WriteProperty.OnlyProperty">
-<short/>
+<short>
+Specifies a single property name to the stored in the method. All properties in 
+PropInfo are stored when omitted (or set to '').
+</short>
 </element>
 
 <element name="TConfigStorage.ReadProperty">
-<short/>
-<descr/>
+<short>
+Reads value(s) from a path in the configuration storage into the specified 
+persistent object.
+</short>
+<descr>
+<p>
+<var>ReadProperty</var> is based on the actions performed by the 
+<var>TReader</var> class in the FPC RTL. Is uses the RTTI property information 
+passed in the <var>PropInfo</var> argument to store the property values in 
+<var>Instance</var>. No actions are performed if the property information does 
+not have both a getter and a setter routine for the property value.
+</p>
+<p>
+<var>APath</var> contains the fully-qualified path where value(s) are stored in 
+the configuration storage.
+</p>
+<p>
+<var>Instance</var> is the RTTI-enabled persistent object where value(s) read 
+from the configuration storage are stored in the method.
+</p>
+<p>
+<var>PropInfo</var> in a pointer to type information for the persistent object 
+in Instance (and DefInstance). It is used to access each property, and to 
+convert and store each value from the storage mechanism using RTTI routines.
+</p>
+<p>
+<var>OnlyProperty</var> contains an optional name for a single property name 
+handled in the method. When omitted (or set to an empty string), all of the 
+properties in the type information are read and stored in the properties 
+starting at the specified path.
+</p>
+<p>
+DefInstance is a persistent object which contains values to be treated as the 
+default values for the corresponding properties in Instance. If DefInstance is 
+not specified (or contains <b>Nil</b>), the Instance argument is assigned to 
+DefInstance.
+</p>
+<p>
+ReadProperty handles values for the following type kinds in property type 
+information:
+</p>
+<ul>
+<li>tkInteger (including integer which have a string identifier)</li>
+<li>tkChar</li>
+<li>tkEnumeration</li>
+<li>tkSet</li>
+<li>tkWChar</li>
+<li>tkFloat</li>
+<li>tkSString</li>
+<li>tkLString</li>
+<li>tkAString</li>
+<li>tkBool</li>
+</ul>
+<p>
+The following type kinds are <b>not</b> explicitly handled in the current LCL 
+version:
+</p>
+<ul>
+<li>tkWString</li>
+<li>tkInt64</li>
+<li>tkQWord</li>
+</ul>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.ReadProperty.Path">
-<short/>
+<short>
+Path where property value(s) are stored in the configuration storage.
+</short>
 </element>
 <element name="TConfigStorage.ReadProperty.Instance">
-<short/>
+<short>
+Persistent object where value(s) read from storage are stored in the method.
+</short>
 </element>
 <element name="TConfigStorage.ReadProperty.PropInfo">
-<short/>
+<short>
+Pointer to the RTTI property information processed in the method.
+</short>
 </element>
 <element name="TConfigStorage.ReadProperty.DefInstance">
-<short/>
+<short>
+Persistent object with the default value(s) for properties processed in the 
+method.
+</short>
 </element>
 <element name="TConfigStorage.ReadProperty.OnlyProperty">
-<short/>
+<short>
+Specifies a single property name to the stored in the method. All properties in 
+PropInfo are stored when omitted (or set to '').
+</short>
 </element>
 
 <element name="TConfigStorage.Create">
@@ -267,120 +518,300 @@ storage mechanism.
 </element>
 
 <element name="TConfigStorage.GetValue">
-<short/>
-<descr/>
+<short>
+Gets the value stored at the specified path relative to the base path in the 
+configuration storage.
+</short>
+<descr>
+<p>
+<var>GetValue</var> is an overloaded method in <var>TConfigStorage</var>. The 
+overloaded variants allow the value read from the specified path in the 
+configuration storage to be returned as one of the following types:
+</p>
+<ul>
+<li>String</li>
+<li>Integer</li>
+<li>Boolean</li>
+<li>TRect (returned in the output parameter)</li>
+<li>TPoint  (returned in the output parameter)</li>
+<li>TStrings  (returned in the output parameter)</li>
+</ul>
+<p>
+<var>ADefault</var> contains the default value returned if a value is not found 
+in the storage for the specified path. The argument uses the same type as the 
+return value for the overloaded methods.
+</p>
+<p>
+GetValue calls GetFullPathValue after using ExtendPath to insert the value 
+CurrentBasePath at the start of the value in APath. The value in ADefault
+is passed to GetFullPathValue as the default value.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.GetValue.Result">
-<short/>
+<short>
+Returns the value stored at the specified path.
+</short>
 </element>
 <element name="TConfigStorage.GetValue.APath">
-<short/>
+<short>
+Path in the configuration storage relative to CurrentBasePath where the value 
+is stored.
+</short>
 </element>
 <element name="TConfigStorage.GetValue.ADefault">
-<short/>
+<short>
+Default value used when a value is not found at the specified path.
+</short>
 </element>
 <element name="TConfigStorage.GetValue.ARect">
-<short/>
+<short>
+Returns the value read from the configuration storage as a TRect type.  
+</short>
 </element>
 <element name="TConfigStorage.GetValue.APoint">
-<short/>
+<short>
+Returns the value read from the configuration storage as a TPoint type.  
+</short>
 </element>
 <element name="TConfigStorage.GetValue.List">
-<short/>
+<short>
+Returns the value read from the configuration storage as a TStrings type.  
+</short>
 </element>
 
 <element name="TConfigStorage.SetValue">
-<short/>
-<descr/>
+<short>
+Stores a value at the specified path in the configuration storage.
+</short>
+<descr>
+<p>
+<var>SetValue</var> is an overloaded method in <var>TConfigStorage</var> used 
+to store the value specified in the <var>AValue</var> argument to the node path 
+in <var>APath</var>. The overloaded variants allow AValue to be specified using 
+String, Integer, Boolean, TRect, or TPoint types.
+</p>
+<p>
+APath contains the node path where the value is stored in the storage 
+mechanism. SetValue calls the ExtendPath method to include the value in 
+CurrentBasePath prior to the specified node path.
+</p>
+<p>
+The SetFullPathValue method is called to store AValue to the underlying storage 
+mechanism. Overloads for TRect and TPoint are decomposed and stored as the 
+members values for the types. For TRect: Left, Top, Right, and Bottom are 
+stored. For TPoint: X and Y are stored.
+</p>
+<p>
+Use GetValue to read a stored value for a specified node path.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.SetValue.APath">
-<short/>
+<short>
+Node path (relative to CurrentBasePath) where the specified value is stored.
+</short>
 </element>
 <element name="TConfigStorage.SetValue.AValue">
-<short/>
+<short>
+Value stored for the specified node path.
+</short>
 </element>
 
 <element name="TConfigStorage.SetDeleteValue">
-<short/>
-<descr/>
+<short>
+Updates the value for the specified node path, or deletes it when it contains a 
+default value.
+</short>
+<descr>
+<p>
+<var>SetDeleteValue</var> is an overloaded method in <var>TConfigStorage</var>. 
+The variants allow the method to be used to store a value using either a 
+String, Integer, Boolean, TRect, or TPoint type in the <var>AValue</var> 
+argument.
+</p>
+<p>
+<var>APath</var> is the path to the node where the value is stored. It is 
+specified with a value relative to the CurrentBasePath property. ExtendPath is 
+called to insert CurrentBasePath at the start of the node path.
+</p>
+<p>
+<var>DefValue</var> contains the value treated as the default value for the 
+node path. The overloaded variants use the same type as specified in the AValue 
+argument.
+</p>
+<p>
+SetDeleteValue calls the SetDeleteFullPathValue method to update or remove the 
+value at the specified path. When DefValue is equal to AValue, the node path in 
+APath to be removed from the configuration storage.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.SetDeleteValue.APath">
-<short/>
+<short>
+Path to the node value updated or removed in the method.  
+</short>
 </element>
 <element name="TConfigStorage.SetDeleteValue.AValue">
-<short/>
+<short>
+Value stored in the specified node.
+</short>
 </element>
 <element name="TConfigStorage.SetDeleteValue.DefValue">
-<short/>
+<short>
+Default value which triggers removal of the node when it is the same as AValue.
+</short>
 </element>
 
 <element name="TConfigStorage.DeletePath">
-<short/>
-<descr/>
+<short>
+Removes the configuration storage node with the specified path.
+</short>
+<descr>
+<p>
+Calls ExtendPath to resolve APath to the CurrentBasePath for the storage. Calls 
+DeleteFullPath to remove the resolved path to the storage node.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.DeletePath.APath">
-<short/>
+<short>
+Path to the node removed in the method.
+</short>
 </element>
 
 <element name="TConfigStorage.DeleteValue">
-<short/>
-<descr/>
+<short>
+Deletes the value stored for the specified path.
+</short>
+<descr>
+<p>
+Calls ExtendPath to resolve APath to the CurrentBasePath for the storage. Calls 
+DeleteFullPathValue to remove value for the resolved node path.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.DeleteValue.APath">
-<short/>
+<short>
+Relative path to the node removed in the method.
+</short>
 </element>
 
 <element name="TConfigStorage.CurrentBasePath">
-<short/>
-<descr/>
+<short>
+Contains the base node path where values are read or written in the storage 
+mechanism.
+</short>
+<descr>
+<p>
+<var>CurrentBasePath</var> is a read-only <var>String</var> property. Its value 
+is updated when the AppendBasePath and UndoAppendBasePath methods are called in 
+the class instance. The value is used when the ExtendPath method is called to 
+resolve a relative node path to its location in the storage mechanism.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TConfigStorage.ExtendPath">
-<short/>
-<descr/>
+<short>
+Resolves a relative node path to the current base path for the storage 
+mechanism.
+</short>  
+<descr>
+<p>
+Inserts the value in CurrentBasePath as a prefix for the value in APath.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.ExtendPath.Result">
-<short/>
+<short>
+Path to a node after it has been resolved to CurrentBasePath.
+</short>
 </element>
 <element name="TConfigStorage.ExtendPath.APath">
-<short/>
+<short>
+Relative node path extended with the value in CurrentBasePath.
+</short>
 </element>
 
 <element name="TConfigStorage.AppendBasePath">
-<short/>
-<descr/>
+<short>
+Appends the specified relative path to the existing value in CurrentBasePath.
+</short>  
+<descr>
+<p>
+<var>AppendBasePath</var> is a method used to append the relative path 
+specified for a node in Path to the value in the CurrentBasePath property. 
+AppendBasePath ensures that a trailing path delimiter ('/') is appended to the 
+value in CurrentBasePath when it not empty and does not already include the 
+delimiter.
+</p>
+<p>
+Use UndoAppendBasePath to remove a path node from the value in CurrentBasePath.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigStorage.AppendBasePath.Path">
-<short/>
+<short>
+Relative path added to the value in CurrentBasePath.
+</short>
 </element>
 
 <element name="TConfigStorage.UndoAppendBasePath">
-<short/>
+<short>
+Removes the last node path from the value in CurrentBasePath.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TConfigStorage.WriteToDisk">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to flush the values in the configuration storage to the 
+underlying storage mechanism.
+</short>
+<descr>
+<p>
+<var>WriteToDisk</var> is an abstract virtual method in 
+<var>TConfigStorage</var>. It must be implemented in a descendent class to 
+perform actions needed to store values to the mechanism used in a derived class.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage.WriteToDisk">TXMLConfigStorage.WriteToDisk</link>
+</seealso>
 </element>
 
 <element name="TConfigStorage.GetFilename">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Defines the method used to get the file name where configuration data is stored.
+</short>
+<descr>
+<p>
+<var>GetFileName</var> is an abstract virtual <var>String</var> function in <var
+>TConfigStorage</var>. It is used to retrieve the file name where configuration 
+data is stored when the WriteToDisk method is called. It must be implemented in 
+a descendent class which uses a file as the destination for the storage 
+mechanism.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage.GetFileName">TXMLConfigStorage.GetFileName</link>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage.WriteToDisk">TXMLConfigStorage.WriteToDisk</link>
+</seealso>
 </element>
 <element name="TConfigStorage.GetFilename.Result">
-<short/>
+<short>
+Returns the file name where the configuration data is stored.
+</short>
 </element>
 
 <element name="TConfigStorage.WriteObject">
@@ -412,7 +843,9 @@ WriteProperty method.
 WriteObject (and WriteProperty) rely on RTTI types and routines to get the 
 values from the persistent object. As such, only published properties can be 
 serialized; the FPC RTL does not provide RTTI type information for other 
-protected or public visibility at this time. The properties must have getter and setter routines (read and write specifiers); otherwise, they are omitted from the serialized values.
+protected or public visibility at this time. The properties must have getter 
+and setter routines (read and write specifiers); otherwise, they are omitted 
+from the serialized values.
 </p>
 <p>
 Use the <var>OnlyProperty</var> argument to specify the name for a single 
@@ -485,9 +918,15 @@ Name for a single property value read and stored in Obj.
 </element>
 
 <element name="TConfigStorageClass">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Class reference used to create new instances of TConfigStorage.
+</short>
+<descr>
+<p>
+TConfigStorageClass is the type used for the DefaultConfigClass variable in the 
+Lazarus IDE.
+</p> 
+</descr>
 </element>
 
 <element name="TConfigMemStorageNode">
@@ -495,7 +934,13 @@ Name for a single property value read and stored in Obj.
 Implements a storage node used in a memory-based configuration storage.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TConfigMemStorageNode.Parent"/>
+<link id="TConfigMemStorageNode.Children"/>
+<link id="TConfigMemStorage.Root"/>
+<link id="CompareConfigMemStorageNodes"/>
+<link id="ComparePCharWithConfigMemStorageNode"/>
+</seealso>
 </element>
 <element name="TConfigMemStorageNode.Name">
 <short>
@@ -538,7 +983,9 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the constructor for the class instance. It initializes values in the Parent and Name properties to the arguments passed to the constructor.
+<var>Create</var> is the constructor for the class instance. It initializes 
+values in the Parent and Name properties to the arguments passed to the 
+constructor.
 </p>
 </descr>
 <seealso/>
@@ -670,73 +1117,184 @@ New value stored at the specified path in the storage.
 </element>
 
 <element name="TConfigMemStorage.DeleteFullPath">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the method used to remove the node at the specified path from the 
+configuration storage.
+</short>
+<descr>
+<p>
+<var>DeleteFullPath</var> is an overridden method in 
+<var>TConfigMemStorage</var>. It must be implemented in a descendent class to 
+perform actions needed to remove the specified node from the storage mechanism 
+for the class instance. It calls a private method used to search nodes in the 
+memory-based storage for the specified node path. When found, the node is 
+removed.
+</p>
+<p>
+DeleteFullPath is called from the DeletePath method.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.DeletePath"/>
+</seealso>
 </element>
-
 <element name="TConfigMemStorage.DeleteFullPath.APath">
-<short/>
+<short>
+Path to the node removed in the method.
+</short>
 </element>
 
 <element name="TConfigMemStorage.DeleteFullPathValue">
-<short/>
-<descr/>
+<short>
+Deletes the node with the specified full path name from the configuration 
+storage.
+</short>
+<descr>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigMemStorage.DeleteFullPathValue.APath">
-<short/>
+<short>
+Fully-qualified path to the node removed in the method.
+</short>
 </element>
 
 <element name="TConfigMemStorage.GetFullPathValue">
-<short/>
-<descr/>
+<short>
+Gets the value from the specified node path with an optional default value when 
+not found.
+</short>
+<descr>
+<p>
+<var>GetFullPathValue</var> is an overloaded method in 
+<var>TConfigMemStorage</var>. It implements the abstract virtual methods 
+defined in the TConfigStorage ancestor. The variants allow the value in 
+<var>ADefault</var> to specified as either a String, Integer, or Boolean type. 
+Please note that TRect and TPoint are not handled in TConfigMemStorage.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TConfigMemStorage.GetFullPathValue.Result">
-<short/>
+<short>
+Value stored in the specified node path.
+</short>
 </element>
 <element name="TConfigMemStorage.GetFullPathValue.APath">
-<short/>
+<short>
+Path to the node where the value is stored.
+</short>
 </element>
 <element name="TConfigMemStorage.GetFullPathValue.ADefault">
-<short/>
+<short>
+Default value returned when the specified node path is not found in the storage.
+</short>
 </element>
 
 <element name="TConfigMemStorage.SetDeleteFullPathValue">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the method used to delete the specified node path or to reset it to 
+a default value.
+</short>
+<descr>
+<p>
+<var>SetDeleteFullPathValue</var> is an overloaded overridden method in 
+<var>TConfigMemStorage</var>. Overloaded variants of the method allow the 
+AValue and DefValue arguments to be passed as either String, Integer, or 
+Boolean types. Both arguments must use the same type. The arguments determine 
+whether the node is removed or updated with a default value in the storage 
+mechanism. When both arguments have the same value, the node at APath is 
+deleted from the storage. Otherwise, the value in DefValue is stored for the 
+specified node.
+</p>
+<p>
+SetDeleteFullPathValue is called from the SetDeleteValue method after 
+ExtendPath has been called to include the CurrentBasePath value at the start of 
+the node path in APath.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.SetDeleteFullPathValue"/>
+<link id="TConfigStorage.ExtendPath"/>
+<link id="TConfigStorage.CurrentBasePath"/>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage">TXMLConfigStorage</link>
+</seealso>
 </element>
 <element name="TConfigMemStorage.SetDeleteFullPathValue.APath">
-<short/>
+<short>
+Path to the node updated or removed in the method.
+</short>
 </element>
 <element name="TConfigMemStorage.SetDeleteFullPathValue.AValue">
-<short/>
+<short>
+Value for the node to update or remove in the method. Causes the node to be 
+deleted when its value matches DefValue.
+</short>
 </element>
 <element name="TConfigMemStorage.SetDeleteFullPathValue.DefValue">
-<short/>
+<short>
+Default value stored in the node when AValue does not match DefValue.
+</short>
 </element>
 
 <element name="TConfigMemStorage.SetFullPathValue">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the method used to resolve the specified node path prior to storing 
+the specified value.
+</short>
+<descr>
+<p>
+<var>SetFullPathValue</var> is an overloaded method in 
+<var>TConfigStorage</var>. It implements the abstract virtual method introduced 
+in the TConfigStorage ancestor. The overloaded variants convert 
+<var>AValue</var> to a String type (when needed) and stores the value in a 
+memory-based configuration node with the fully-qualified path specified in 
+<var>APath</var>.
+</p>
+<p>
+SetFullPathValue is called from the SetValue method after ExtendPath has been 
+called to include the CurrentBasePath value at the start of the node path in 
+APath.
+</p>
+</descr>
+<seealso>
+<link id="TConfigStorage.SetValue"/>
+<link id="TConfigStorage.SetFullPathValue"/>
+<link id="TConfigStorage.CurrentBasePath"/>
+<link id="TConfigStorage.ExtendPath"/>
+<link id="#lcl.xmlpropstorage.TXMLConfigStorage">TXMLConfigStorage</link>
+</seealso>
 </element>
 <element name="TConfigMemStorage.SetFullPathValue.APath">
-<short/>
+<short>
+Resolved path to the node where the specified value is stored.
+</short>
 </element>
 <element name="TConfigMemStorage.SetFullPathValue.AValue">
-<short/>
+<short>
+Value stored in the specified node path. Overloaded variants allow AValue to be 
+specified using as either a String, an Integer, or a Boolean type.
+</short>
 </element>
 
 <element name="TConfigMemStorage.Root">
 <short>
-TConfigMemStorageNode instance with the storage nodes are the configuration 
+TConfigMemStorageNode instance with the root node for the configuration 
 storage.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Root</var> is a <var>TConfigMemStorageNode</var> member with the root node 
+for the storage. The node is created (when needed) when a value is stored to 
+the memory-based configuration storage, and freed when the class instance is 
+destroyed. Nodes in the storage are accessed starting at the Root node, and 
+navigated by accessing the child nodes recursively. The node path reflects the 
+hierarchy of nodes accessed to reach a specific node.
+</p>
+</descr>
+<seealso>
+<link id="TConfigMemStorageNode"/>
+</seealso>
 </element>
 
 <element name="TConfigMemStorage.GetFilename">
@@ -834,7 +1392,7 @@ output.
 
 <element name="LoadStringToStringTree">
 <short>
-Loads names and values in the specified path from a configuration storage 
+Loads names and values at the specified path in a configuration storage 
 instance to the specified Tree.
 </short>
 <descr/>
@@ -852,23 +1410,37 @@ Path with the item names and values loaded from Config.
 </element>
 <element name="LoadStringToStringTree.Tree">
 <short>
-String map where the names and values for configuration items stored in the routine.
+String map where the names and values for configuration items stored in the 
+routine.
 </short>
 </element>
 
 <element name="SaveStringToStringTree">
-<short/>
-<descr/>
+<short>
+Not used in the current LCL version.  
+</short>
+<descr>
+<p>
+<var>SaveStringToStringTree</var> is a routine used to save values found in the 
+specified Tree structure to a TConfigStorage instance under the specified path.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="SaveStringToStringTree.Config">
-<short/>
+<short>
+Configuration storage where the value(s) in Tree are stored.
+</short>
 </element>
 <element name="SaveStringToStringTree.Path">
-<short/>
+<short>
+Path to the node in Config where the value(s) in Tree are stored.
+</short>
 </element>
 <element name="SaveStringToStringTree.Tree">
-<short/>
+<short>
+String map enumerator with the values stored in the routine.
+</short>
 </element>
 
 <element name="DateAsCfgStrFormat">
@@ -956,48 +1528,81 @@ Format used for the date/time value passed in the s argument.
 </element>
 
 <element name="CompareConfigMemStorageNames">
-<short/>
+<short>
+Compares the specified PChar values to determine the relative order for the 
+memory node paths.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="CompareConfigMemStorageNames.Result">
-<short/>
+<short>
+Returns 0 if the arguments have the same value (or both are empty).
+Returns -1 if p1 has a shorter path length than (comes before) p2.
+Returns 1 if p1 has a longer path length than (comes after) p2.
+</short>
 </element>
 <element name="CompareConfigMemStorageNames.p1">
-<short/>
+<short>
+Node path compared up to the first '/' or #0 character.  
+</short>
 </element>
 <element name="CompareConfigMemStorageNames.p2">
-<short/>
+<short>
+Node path compared up to the first '/' or #0 character.  
+</short>
 </element>
 
 <element name="CompareConfigMemStorageNodes">
-<short/>
+<short>
+Compares the names for the specified memory-based storage nodes to determine 
+their relative order.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="CompareConfigMemStorageNodes.Result">
-<short/>
+<short>
+Returns 0 if the node names have the same value (or both are empty).
+Returns -1 if Node1 has a node name shorter than (comes before) Node2.
+Returns 1 if Node1 has a node name longer than (comes before) Node2.
+</short>
 </element>
 <element name="CompareConfigMemStorageNodes.Node1">
-<short/>
+<short>
+Memory-based storage node compared in the routine.
+</short>
 </element>
 <element name="CompareConfigMemStorageNodes.Node2">
-<short/>
+<short>
+Memory-based storage node compared in the routine.
+</short>
 </element>
 
 <element name="ComparePCharWithConfigMemStorageNode">
-<short/>
+<short>
+Compares the specified string to the name for a the specified memory-based 
+storage nodes to determine their relative order.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="ComparePCharWithConfigMemStorageNode.Result">
-<short/>
+<short>
+Returns 0 if the string and the node name have the same value (or both are empty).
+Returns -1 if the string is shorter than (comes before) the node name in ANode.
+Returns 1 if the string is longer than (comes after) the node name in ANode.
+</short>
 </element>
 <element name="ComparePCharWithConfigMemStorageNode.aPChar">
-<short/>
+<short>
+Pointer to the null-terminated character values compared in the routine.
+</short>
 </element>
 <element name="ComparePCharWithConfigMemStorageNode.ANode">
-<short/>
+<short>
+Memory-based storage node with the name compared in the routine.  
+</short>
 </element>
 
 </module>
