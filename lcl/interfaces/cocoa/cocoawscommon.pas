@@ -536,8 +536,8 @@ begin
   if lWindow <> nil then
   begin
     f := lWindow.frame;
-    Point.x := Point.x+f.origin.x;
-    Point.y := lWindow.screen.frame.size.height- f.origin.y - Point.y;
+    Point.x := Point.x + f.origin.x;
+    Point.y := NSGlobalScreenBottom - ( Point.y + f.origin.y );
   end;
 end;
 

@@ -138,7 +138,6 @@ type
     // Returns the position of the view or window, in the immediate
     // parent (view or screen), relative to its client coordinates system
     // Left and Top are always returned in LCL coordinate system.
-    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::';
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::';
     function lclParent: id; message 'lclParent';
@@ -177,7 +176,6 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
     procedure lclUpdate; message 'lclUpdate'; reintroduce;
-    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
     function lclParent: id; message 'lclParent'; reintroduce;
@@ -1144,7 +1142,7 @@ begin
   params.isFirstCall:= not hasMarkedText();
 
   rect:= imeHandler.IMEGetTextBound( params );
-  LCLToNSRect( rect, NSGlobalScreenHeight, Result );
+  LCLToNSRect( rect, NSGlobalScreenBottom, Result );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;
@@ -1213,10 +1211,6 @@ begin
 end;
 
 procedure LCLObjectExtension.lclUpdate;
-begin
-end;
-
-procedure LCLObjectExtension.lclRelativePos(var Left,Top: Integer);
 begin
 end;
 
@@ -1479,22 +1473,6 @@ begin
   setNeedsDisplay_(True);
   {$endif}
   //display;
-end;
-
-procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
-var
-  sv : NSView;
-  fr : NSRect;
-begin
-  Left := Round(frame.origin.x);
-  sv := superview;
-  if Assigned(sv) and (not sv.isFlipped) then
-  begin
-    fr := frame;
-    Top := Round(sv.frame.size.height - fr.origin.y - fr.size.height);
-  end
-  else
-    Top := Round(frame.origin.y);
 end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);

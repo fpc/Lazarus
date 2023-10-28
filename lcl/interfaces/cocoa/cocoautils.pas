@@ -42,15 +42,20 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
-function IndexToHMonitor(i: NSUInteger): HMonitor;
-function HMonitorToIndex(h: HMonitor): NSUInteger;
-function getScreenFromHMonitor(h: HMonitor): NSScreen;
+function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
+function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
+function ScreenRectFromLCLToNS(const lclRect: TRect): NSRect;
+function ScreenRectFromNSToLCL(const cocoaRect: NSRect): TRect;
 
 function NSPrimaryScreen: NSScreen;
 function NSPrimaryScreenFrame: NSRect;
 function NSGlobalScreenFrame: NSRect;
 function NSGlobalScreenLCLFrame: NSRect;
-function NSGlobalScreenHeight: CGFloat;
+function NSGlobalScreenBottom: CGFloat;
+
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -759,34 +764,35 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
-// According to the documentation of NSScreen.screen It's recommended
-// not to cache NSScreen objects stored in the array. As those might change.
-// However, according to the same documentation, the objects can change
-// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
-// services, it was identified that NSScreen object CAN change without any notification.
-// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
-// is used.
-function IndexToHMonitor(i: NSUInteger): HMonitor;
+function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
 begin
-  if i = NSIntegerMax then Result := 0
-  else Result := i + 1;
+  Result.x:= lclPoint.x;
+  Result.y:= NSGlobalScreenBottom - lclPoint.y;
 end;
 
-function HMonitorToIndex(h: HMonitor): NSUInteger;
+function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
 begin
-  if h = 0 then Result := NSIntegerMax
-  else Result := NSUInteger(h)-1;
+  Result.x:= Round( cocoaPoint.x );
+  Result.y:= Round( NSGlobalScreenBottom - cocoaPoint.y );
 end;
 
-function getScreenFromHMonitor(h: HMonitor): NSScreen;
+function ScreenRectFromLCLToNS(const lclRect: TRect): NSRect;
+begin
+  Result.origin.x:= lclRect.left;
+  Result.origin.y:= NSGlobalScreenBottom - lclRect.bottom;
+  Result.size.width:= lclRect.Right - lclRect.Left;
+  Result.size.height:= lclRect.Bottom - lclRect.Top;
+end;
+
+function ScreenRectFromNSToLCL(const cocoaRect: NSRect): TRect;
 var
-  index: NSUInteger;
+  bottom: CGFloat;
 begin
-  Result:= nil;
-  index:= HMonitorToIndex( h );
-  if index>=NSScreen.screens.count then
-    Exit;
-  Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
+  bottom:= NSGlobalScreenBottom;
+  Result.Left:= Round( cocoaRect.origin.x );
+  Result.Top:= Round( bottom - NSMaxY(cocoaRect) );
+  Result.Right:= Round( cocoaRect.origin.x + cocoaRect.size.width );
+  Result.Bottom:= Round( bottom -  cocoaRect.origin.y );
 end;
 
 // primary display
@@ -821,10 +827,41 @@ begin
   Result.origin.y:= NSPrimaryScreenFrame.size.height - NSMaxY(Result);
 end;
 
-// the height of global full virtual display
-function NSGlobalScreenHeight: CGFloat;
+// the bottom of global full virtual display
+// for cocoa window/screen to lcl coordinate
+function NSGlobalScreenBottom: CGFloat;
 begin
-  Result:= NSGlobalScreenFrame.size.height;
+  Result:= NSMaxY( NSGlobalScreenFrame );
+end;
+
+// According to the documentation of NSScreen.screen It's recommended
+// not to cache NSScreen objects stored in the array. As those might change.
+// However, according to the same documentation, the objects can change
+// only with a notificatio sent out. BUT while using a macincloud (remote desktop)
+// services, it was identified that NSScreen object CAN change without any notification.
+// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// is used.
+function IndexToHMonitor(i: NSUInteger): HMonitor;
+begin
+  if i = NSIntegerMax then Result := 0
+  else Result := i + 1;
+end;
+
+function HMonitorToIndex(h: HMonitor): NSUInteger;
+begin
+  if h = 0 then Result := NSIntegerMax
+  else Result := NSUInteger(h)-1;
+end;
+
+function getScreenFromHMonitor(h: HMonitor): NSScreen;
+var
+  index: NSUInteger;
+begin
+  Result:= nil;
+  index:= HMonitorToIndex( h );
+  if index>=NSScreen.screens.count then
+    Exit;
+  Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
 end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
