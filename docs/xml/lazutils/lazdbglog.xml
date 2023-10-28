@@ -14,43 +14,61 @@ LazDbgLog
 </p>
 </descr>
 
-<!-- function Visibility: default -->
 <element name="MemSizeString">
-<short/>
+<short>
+Returns the memory size needed for the specified string value including a 4-byte Pointer for the string length.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="MemSizeString.Result">
-<short/>
+<short>
+PtrUInt value with the number of bytes needed for the string including its 
+length.
+</short>
 </element>
 <element name="MemSizeString.s">
-<short/>
+<short>
+String examined to get the Length of the memory used for the value.
+</short>  
 </element>
 
-<!-- function Visibility: default -->
 <element name="MemSizeFPList">
-<short/>
+<short>
+Returns the memory size needed for the specified TFPList instance, or 0 when 
+List is unassigned.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="MemSizeFPList.Result">
-<short/>
+<short>
+PtrUInt value with the number of bytes needed for the TFPList instance 
+including the Pointers needed for its current Capacity.
+</short>
 </element>
 <element name="MemSizeFPList.List">
-<short/>
+<short>
+TFPList instance examined in the routine.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="GetStringRefCount">
-<short/>
+<short>
+Returns the reference count for the specified String.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="GetStringRefCount.Result">
-<short/>
+<short>
+PtrInt value with the reference count for S, or -1 if S is an empty string ('').
+</short>
 </element>
 <element name="GetStringRefCount.s">
-<short/>
+<short>
+Constant string parameter examined in the routine.  
+</short>
 </element>
 
 </module>
