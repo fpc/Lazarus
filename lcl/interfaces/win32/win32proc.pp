@@ -956,7 +956,9 @@ begin
       EnumThreadWindows(GetWindowThreadProcessId(Application.MainFormHandle, nil),
         @EnumHidePopups, LPARAM(Info));
       for i := 0 to PopupOwnersList.Count - 1 do
-        ShowOwnedPopups(HWND(PopupOwnersList[i]), False);
+        Windows.SetWindowPos(HWND(PopupOwnersList[i]), HWND_TOP,
+                             0,0,0,0,
+                             SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_HIDEWINDOW);
     finally
       Dispose(Info);
     end;
@@ -970,7 +972,9 @@ begin
   if Assigned(PopupOwnersList) then
   begin
     for i := 0 to PopupOwnersList.Count - 1 do
-      ShowOwnedPopups(HWND(PopupOwnersList[i]), True);
+      Windows.SetWindowPos(HWND(PopupOwnersList[i]), HWND_TOP,
+                           0,0,0,0,
+                           SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE or SWP_NOZORDER or SWP_SHOWWINDOW);
     FreeAndNil(PopupOwnersList);
   end;
 end;

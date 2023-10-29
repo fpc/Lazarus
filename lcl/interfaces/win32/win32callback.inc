@@ -1032,9 +1032,12 @@ begin
     begin
       Windows.SetWindowPos(Window, HWND_TOP,
         Application.MainForm.Left, Application.MainForm.Top,
-        Application.MainForm.Width, 0, SWP_NOACTIVATE);
+        Application.MainForm.Width, 0, SWP_NOACTIVATE or SWP_NOZORDER);
+
       if Application.MainForm.HandleAllocated then
-        Windows.ShowWindow(Application.MainFormHandle, SW_HIDE);
+        Windows.SetWindowPos(Application.MainFormHandle, HWND_TOP,
+                             0,0,0,0,
+                             SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_HIDEWINDOW);
     end;
     PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
     WinProcess := False;
@@ -1065,7 +1068,9 @@ begin
     if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
     begin
       if Application.MainForm.HandleObjectShouldBeVisible then
-        Windows.ShowWindow(Application.MainFormHandle, SW_SHOWNA);
+        Windows.SetWindowPos(Application.MainFormHandle, HWND_TOP,
+                             0,0,0,0,
+                             SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE or SWP_NOZORDER or SWP_SHOWWINDOW);
       RestorePopups;
     end;
     Application.IntfAppRestore;
