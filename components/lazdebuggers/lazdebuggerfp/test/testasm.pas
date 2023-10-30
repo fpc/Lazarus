@@ -240,6 +240,9 @@ begin
   TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],ax');
   TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00#$00#$00#$00#$00,         'mov [$0000001a],eax');
   TestDis('mov [$0000001a],rax',   #$48#$a3#$1a#$00#$00#$00#$00#$00#$00#$00,     'mov [$0000001a],rax');
+  TestDis('mov    dh,ch',               #$88#$ee,                     'mov dh,ch');
+  TestDis('mov    ah,bh',               #$88#$fc,                     'mov ah,bh');
+  TestDis('mov    al,bl',               #$88#$d8,                     'mov al,bl');
 
   TestDis('vmovmskpd ecx,xmm1',     #$C5#$F9#$50#$C9,             'vmovmskpd ecx,xmm1');
   TestDis('vmovmskpd ecx,ymm1',     #$C5#$FD#$50#$C9,             'vmovmskpd ecx,ymm1');
@@ -343,6 +346,34 @@ begin
 
 
 
+  TestDis('dpps   xmm1,xmm2,$07',       #$66#$0f#$3a#$40#$ca#$07,             'dpps xmm1,xmm2,$07');
+  TestDis('dpps   xmm2,xmm3,$05',       #$66#$0f#$3a#$40#$d3#$05,             'dpps xmm2,xmm3,$05');
+  TestDis('vdpps  xmm1,xmm2,xmm3,$07',  #$c4#$e3#$69#$40#$cb#$07,             'vdpps xmm1,xmm2,xmm3,$07');
+  TestDis('vdpps  xmm3,xmm1,xmm3,$05',  #$c4#$e3#$71#$40#$db#$05,             'vdpps xmm3,xmm1,xmm3,$05');
+  TestDis('vdpps  ymm1,ymm2,ymm3,$07',  #$c4#$e3#$6d#$40#$cb#$07,             'vdpps ymm1,ymm2,ymm3,$07');
+  TestDis('vdpps  ymm3,ymm1,ymm3,$05',  #$c4#$e3#$75#$40#$db#$05,             'vdpps ymm3,ymm1,ymm3,$05');
+  TestDis('dpps   xmm1,[rdi],$07',      #$66#$0f#$3a#$40#$0f#$07,             'dpps xmm1,[rdi],$07');
+  TestDis('dpps   xmm2,[rdi],$05',      #$66#$0f#$3a#$40#$17#$05,             'dpps xmm2,[rdi],$05');
+  TestDis('dpps   xmm3,[rsi],$05',      #$66#$0f#$3a#$40#$1e#$05,             'dpps xmm3,[rsi],$05');
+  TestDis('vdpps  xmm1,xmm2,[rdi],$07', #$c4#$e3#$69#$40#$0f#$07,             'vdpps xmm1,xmm2,[rdi],$07');
+  TestDis('vdpps  xmm3,xmm4,[rdi],$05', #$c4#$e3#$59#$40#$1f#$05,             'vdpps xmm3,xmm4,[rdi],$05');
+  TestDis('vdpps  xmm3,xmm1,[rsi],$07', #$c4#$e3#$71#$40#$1e#$07,             'vdpps xmm3,xmm1,[rsi],$07');
+  TestDis('vdpps  ymm1,ymm2,[rdi],$07', #$c4#$e3#$6d#$40#$0f#$07,             'vdpps ymm1,ymm2,[rdi],$07');
+  TestDis('vdpps  ymm3,ymm4,[rdi],$07', #$c4#$e3#$5d#$40#$1f#$07,             'vdpps ymm3,ymm4,[rdi],$07');
+  TestDis('vdpps  ymm3,ymm1,[rsi],$07', #$c4#$e3#$75#$40#$1e#$07,             'vdpps ymm3,ymm1,[rsi],$07');
+  TestDis('dppd   xmm1,xmm2,$07',       #$66#$0f#$3a#$41#$ca#$07,             'dppd xmm1,xmm2,$07');
+  TestDis('dppd   xmm2,xmm3,$05',       #$66#$0f#$3a#$41#$d3#$05,             'dppd xmm2,xmm3,$05');
+  TestDis('vdppd  xmm1,xmm2,xmm3,$07',  #$c4#$e3#$69#$41#$cb#$07,             'vdppd xmm1,xmm2,xmm3,$07');
+  TestDis('vdppd  xmm3,xmm1,xmm3,$05',  #$c4#$e3#$71#$41#$db#$05,             'vdppd xmm3,xmm1,xmm3,$05');
+  TestDis('dppd   xmm1,[rdi],$07',      #$66#$0f#$3a#$41#$0f#$07,             'dppd xmm1,[rdi],$07');
+  TestDis('dppd   xmm2,[rdi],$05',      #$66#$0f#$3a#$41#$17#$05,             'dppd xmm2,[rdi],$05');
+  TestDis('dppd   xmm3,[rsi],$05',      #$66#$0f#$3a#$41#$1e#$05,             'dppd xmm3,[rsi],$05');
+  TestDis('vdppd  xmm1,xmm2,[rdi],$07', #$c4#$e3#$69#$41#$0f#$07,             'vdppd xmm1,xmm2,[rdi],$07');
+  TestDis('vdppd  xmm3,xmm4,[rdi],$05', #$c4#$e3#$59#$41#$1f#$05,             'vdppd xmm3,xmm4,[rdi],$05');
+  TestDis('vdppd  xmm3,xmm1,[rsi],$07', #$c4#$e3#$71#$41#$1e#$07,             'vdppd xmm3,xmm1,[rsi],$07');
+
+
+
 
   Process.NewMode := dm32;
 
@@ -442,6 +473,9 @@ begin
   TestDis('mov [$0000001a],al ',   #$a2#$1a#$00#$00#$00,         'mov [$0000001a],al');
   TestDis('mov [$0000001a],ax ',   #$66#$a3#$1a#$00#$00#$00,     'mov [$0000001a],ax');
   TestDis('mov [$0000001a],eax',   #$a3#$1a#$00#$00#$00,         'mov [$0000001a],eax');
+  TestDis('mov    dh,ch',               #$88#$ee,                     'mov dh,ch');
+  TestDis('mov    ah,bh',               #$88#$fc,                     'mov ah,bh');
+  TestDis('mov    al,bl',               #$88#$d8,                     'mov al,bl');
 
   TestDis('vmovmskpd ecx,xmm1',     #$C5#$F9#$50#$C9,             'vmovmskpd ecx,xmm1');
   TestDis('vmovmskpd ecx,ymm1',     #$C5#$FD#$50#$C9,             'vmovmskpd ecx,ymm1');
@@ -527,6 +561,33 @@ begin
   TestDis('movntss [esi],xmm2',        #$F3#$0F#$2B#$16,                 'movntss [esi],xmm2');
   TestDis('movntss [esi],xmm1',        #$F3#$0F#$2B#$0E,                 'movntss [esi],xmm1');
   TestDis('pause',                     #$F3#$90,                     'pause');
+
+
+  TestDis('dpps   xmm1,xmm2,$07',       #$66#$0f#$3a#$40#$ca#$07,             'dpps xmm1,xmm2,$07');
+  TestDis('dpps   xmm2,xmm3,$05',       #$66#$0f#$3a#$40#$d3#$05,             'dpps xmm2,xmm3,$05');
+  TestDis('vdpps  xmm1,xmm2,xmm3,$07',  #$c4#$e3#$69#$40#$cb#$07,             'vdpps xmm1,xmm2,xmm3,$07');
+  TestDis('vdpps  xmm3,xmm1,xmm3,$05',  #$c4#$e3#$71#$40#$db#$05,             'vdpps xmm3,xmm1,xmm3,$05');
+  TestDis('vdpps  ymm1,ymm2,ymm3,$07',  #$c4#$e3#$6d#$40#$cb#$07,             'vdpps ymm1,ymm2,ymm3,$07');
+  TestDis('vdpps  ymm3,ymm1,ymm3,$05',  #$c4#$e3#$75#$40#$db#$05,             'vdpps ymm3,ymm1,ymm3,$05');
+  TestDis('dpps   xmm1,[edi],$07',      #$66#$0f#$3a#$40#$0f#$07,             'dpps xmm1,[edi],$07');
+  TestDis('dpps   xmm2,[edi],$05',      #$66#$0f#$3a#$40#$17#$05,             'dpps xmm2,[edi],$05');
+  TestDis('dpps   xmm3,[esi],$05',      #$66#$0f#$3a#$40#$1e#$05,             'dpps xmm3,[esi],$05');
+  TestDis('vdpps  xmm1,xmm2,[edi],$07', #$c4#$e3#$69#$40#$0f#$07,             'vdpps xmm1,xmm2,[edi],$07');
+  TestDis('vdpps  xmm3,xmm4,[edi],$05', #$c4#$e3#$59#$40#$1f#$05,             'vdpps xmm3,xmm4,[edi],$05');
+  TestDis('vdpps  xmm3,xmm1,[esi],$07', #$c4#$e3#$71#$40#$1e#$07,             'vdpps xmm3,xmm1,[esi],$07');
+  TestDis('vdpps  ymm1,ymm2,[edi],$07', #$c4#$e3#$6d#$40#$0f#$07,             'vdpps ymm1,ymm2,[edi],$07');
+  TestDis('vdpps  ymm3,ymm4,[edi],$07', #$c4#$e3#$5d#$40#$1f#$07,             'vdpps ymm3,ymm4,[edi],$07');
+  TestDis('vdpps  ymm3,ymm1,[esi],$07', #$c4#$e3#$75#$40#$1e#$07,             'vdpps ymm3,ymm1,[esi],$07');
+  TestDis('dppd   xmm1,xmm2,$07',       #$66#$0f#$3a#$41#$ca#$07,             'dppd xmm1,xmm2,$07');
+  TestDis('dppd   xmm2,xmm3,$05',       #$66#$0f#$3a#$41#$d3#$05,             'dppd xmm2,xmm3,$05');
+  TestDis('vdppd  xmm1,xmm2,xmm3,$07',  #$c4#$e3#$69#$41#$cb#$07,             'vdppd xmm1,xmm2,xmm3,$07');
+  TestDis('vdppd  xmm3,xmm1,xmm3,$05',  #$c4#$e3#$71#$41#$db#$05,             'vdppd xmm3,xmm1,xmm3,$05');
+  TestDis('dppd   xmm1,[edi],$07',      #$66#$0f#$3a#$41#$0f#$07,             'dppd xmm1,[edi],$07');
+  TestDis('dppd   xmm2,[edi],$05',      #$66#$0f#$3a#$41#$17#$05,             'dppd xmm2,[edi],$05');
+  TestDis('dppd   xmm3,[esi],$05',      #$66#$0f#$3a#$41#$1e#$05,             'dppd xmm3,[esi],$05');
+  TestDis('vdppd  xmm1,xmm2,[edi],$07', #$c4#$e3#$69#$41#$0f#$07,             'vdppd xmm1,xmm2,[edi],$07');
+  TestDis('vdppd  xmm3,xmm4,[edi],$05', #$c4#$e3#$59#$41#$1f#$05,             'vdppd xmm3,xmm4,[edi],$05');
+  TestDis('vdppd  xmm3,xmm1,[esi],$07', #$c4#$e3#$71#$41#$1e#$07,             'vdppd xmm3,xmm1,[esi],$07');
 
 
   Process.NewMode := dm64;
