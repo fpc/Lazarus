@@ -346,8 +346,12 @@ begin
 end;
 
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
+var
+  cfgFileName: String;
 begin
-  FConfStore := TIniFile.Create(ExtractFileNameOnly(ParamStr(0)) + '.fpcunit.ini'); // Prevent ini file names conflict if tests are embedded in application
+  cfgFileName:= GetAppConfigDir(false) + ExtractFileNameOnly(ParamStr(0)) + '.fpcunit.ini';  // Prevent ini file names conflict if tests are embedded in application
+  FConfStore := TIniFile.Create(cfgFilename);
+
   barColor := clGreen;
   TestTree.Items.Clear;
   BuildTree(TestTree.Items.AddObject(nil, rsAllTests, GetTestRegistry),
