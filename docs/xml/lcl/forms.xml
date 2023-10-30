@@ -16211,8 +16211,32 @@ The icon can be one of:
 <short>
 Asks the widgetset to minimize the application.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls the <var>AppMinimize</var> method in the widgetset class to hide the 
+MainForm and update its WindowState property. Other forms and modal pop-up 
+windows for the application are also minimized.
+</p>
+<p>
+Use MainFormOnTaskbar to control whether the form is displayed on the Task bar 
+when the application has been minimized.
+</p>
+<p>
+Use Restore to display the application and its forms and dialogs using their 
+states before they were minimized.
+</p>
+</descr>
+<seealso>
+<link id="TApplication.MainForm"/>
+<link id="TApplication.MainFormOnTaskBar"/>
+<link id="TApplication.ModalLevel"/>
+<link id="TApplication.Restore"/>
+<link id="TCustomForm.FormState"/>
+<link id="TCustomForm.ShowInTaskBar"/>
+<link id="TCustomForm.WindowState"/>
+<link id="TCustomForm.Visible"/>
+<link id="TScreen.CustomFormsZOrdered"/>
+</seealso>
 </element>
 
 <element name="TApplication.ModalStarted">
@@ -16247,9 +16271,17 @@ Calls the <var>AppRestore</var> method in the widgetset class, which
 generally restores the main form for the application and re-focuses its 
 active control. It will also restore an active modal dialog.
 </p>
+<p>
+Use Minimize to hide the forms and dialogs for the application, and to 
+optionally display the minimized form(s) on the Task bar.
+</p>
 </descr>
 <seealso>
 <link id="TApplication.Minimize"/>
+<link id="TApplication.MainForm"/>
+<link id="TCustomForm.FormState"/>
+<link id="TCustomForm.WindowState"/>
+<link id="TCustomForm.Visible"/>
 </seealso>
 </element>
 
@@ -19553,7 +19585,7 @@ it is a design message.
 </element>
 <element name="TIDesigner.IsDesignMsg.Sender">
 <short>
-Object instance (TControl) where the specified messsage originated.
+Object instance (TControl) where the specified message originated.
 </short>
 </element>
 <element name="TIDesigner.IsDesignMsg.Message">
