@@ -1,65 +1,65 @@
 #include "ChineseSimplified_from_inno_6_0.isl"
-; Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+; Last-Translator: ACTom <i@actom.me>\n"
 [CustomMessages]
 
 
-DelUserConf=删除来自先前安装的所有用户配置文件
-CleanUp=清理:
+DelUserConf=删除以前安装的所有用户配置文件
+CleanUp=清理：
 
-InstallQtLocal=安装Qt4接口DLL
-InstallQt=全局安装Qt4接口DLL
-InstallQt5Local=安装Qt5接口DLL
-InstallQt5Global=全局安装Qt5接口DLL
-InstallChm=安装CHM帮助文件
-InstallOpenSSL=安装openssl库(在线软件包管理器 使用)
-InstallOpenSSLGlobal=全局安装openssl库
-AssociateGroup=关联文件拓展名
+InstallQtLocal=安装 Qt4 界面 DLL
+InstallQt=全局安装 Qt4 界面 DLL
+InstallQt5Local=安装 Qt5 界面 DLL
+InstallQt5Global=全局安装 Qt5 界面 DLL
+InstallChm=安装 CHM 帮助文件
+InstallOpenSSL=安装 openssl 库（在线软件包管理器需使用）
+InstallOpenSSLGlobal=全局安装 openssl 库
+AssociateGroup=关联文件扩展名
 
-CheckSecondClick=创建一个新的第二的安装
-CheckSecondInfo=一个第二的安装允许Lazarus的两个或更多版本来安装.每个版本将有它自己的配置.请在使用这个选项前阅读关于多个安装的FAQ.
+CheckSecondClick=创建新的辅助安装
+CheckSecondInfo=辅助安装允许安装两个或多个版本的 Lazarus。每个版本都有自己的配置。使用此选项前，请阅读有关多重安装的常见问题。
 
-FolderHasSpaces=选择的文件夹包含空格,请选择一个不带有空格的文件夹.
-FolderNotEmpty=目标文件夹不是空的.继续安装?
-FolderNotEmpty2=目标文件夹不是空的.
+FolderHasSpaces=所选文件夹包含空格，请选择不含空格的文件夹。
+FolderNotEmpty=目标文件夹不是空的，是否继续安装？
+FolderNotEmpty2=目标文件夹不是空的。
 
-FolderForSecondNoFile=目标文件夹不是空的,并不包含一个可升级的第二的Lazarus安装.%0:s请选择一个空文件夹,或者用于升级的带有一个存在的第二的Lazarus安装的一个文件夹.
-FolderForSecondBadFile=目标文件夹不是空的.安装器不能查出它是否包含一个可升级的第二的Lazarus安装.%0:s请选择一个空文件夹, 或者用于升级的带有一个存在的第二的Lazarus安装的一个文件夹.
-FolderForSecondUpgrading=目标文件夹不是空的.%0:s它包含一个第二的Lazarus安装，使用下面的文件夹用于配置:%0:s%1:s%0:s%0:s继续安装?
-FolderForSecondUpgradingPrimary=目标文件夹不是空的.%0:s它包含一个默认的(非第二的)Lazarus安装.%0:s如果你继续，它将更改到一个第二的安装.%0:s%0:s%0:s继续安装?
+FolderForSecondNoFile=目标文件夹不是空的，也不包含可升级的辅助 Lazarus 安装。%0:s请选择空文件夹，或包含现有辅助 Lazarus 安装的文件夹进行更新。
+FolderForSecondBadFile=目标文件夹不是空的。安装程序无法检测其中是否包含可升级的辅助 Lazarus 安装。%0:s请选择一个空文件夹，或一个包含现有辅助 Lazarus 安装的文件夹进行更新。
+FolderForSecondUpgrading=目标文件夹不是空的。%0:s 它包含一个使用以下文件夹进行配置的辅助 Lazarus 安装：%0:s%1:s%0:s%0:s%0:s是否继续安装？
+FolderForSecondUpgradingPrimary=目标文件夹不是空的。%0:s它包含一个默认的（非辅助）Lazarus 安装。%0:s如果您继续，它将变为辅助安装。%0:s%0:s%0:s是否继续安装？
 
-FolderForSecondBadUninstall=目标文件夹不是空的.安装器不能核实它是否是安全的来使用.%0:s请选择一个空文件夹,或一个带有存在的第二的Lazarus安装的，用于更新的一个文件夹.
+FolderForSecondBadUninstall=目标文件夹不是空的。安装程序无法验证使用该文件夹是否安全。%0:s请选择一个空文件夹，或一个已有辅助 Lazarus 安装的文件夹进行更新。
 
 SecondConfCapt=选择配置文件夹
-SecondConfCapt2=你希望这个Lazarus安装在哪里，存储它的配置?
-SecondConfBody=选择一个新的用于这个Lazarus安装的空文件夹来存储它的配置，然后使用'Next'继续.
+SecondConfCapt2=您希望在哪里存储配置？
+SecondConfBody=选择一个新的空文件夹来存储配置，然后点击"下一步"继续。
 
-FolderForConfig=配置用文件夹
+FolderForConfig=配置文件夹
 
-FolderForConfNotEmpty=选择的文件夹不是空的.
+FolderForConfNotEmpty=选择的文件夹不是空的。
 
-AskUninstallTitle1=先前的安装
-AskUninstallTitle2=你想要运行卸载器?
+AskUninstallTitle1=以前的安装
+AskUninstallTitle2=您想要运行卸载程序吗？
 BtnUninstall=卸载
 ChkContinue=继续而不卸载
 
-OldInDestFolder1=另一个%1:s的安装存在在目标文件夹.如果你想先卸载,请使用下面的按钮.
+OldInDestFolder1=目标文件夹中存在 %1:s 的另一个安装。如果您想先卸载，请使用下面的按钮。
 OldInDestFolder2=
 OldInDestFolder3=
 OldInDestFolder4=
 
-OldInOtherFolder1=另一个%1:s的安装被找到，在%2:s.现在请使用下面的按钮来卸载它.如果你想保持它，请打勾复选框来继续.
-OldInOtherFolder2=警告:这里可能在不同的安装之间冲突，并且它们可能没有令人满意的功能.
-OldInOtherFolder3=注意:你没有为这个安装选择一个专用的配置文件夹.
-OldInOtherFolder4=如果你想使用多个安装，请返回和打勾: "创建一个新的第二的安装".
+OldInOtherFolder1=在 %2:s 发现另一个 %1:s 的安装，请使用下面的按钮立即卸载它。如果希望保留，请勾选复选框继续。
+OldInOtherFolder2=警告：不同安装之间可能会有冲突，也可能无法正常运行。
+OldInOtherFolder3=注意：您没有为本次安装选择专用的配置文件夹。
+OldInOtherFolder4=如果您希望进行多次安装，请返回并勾选 "创建新的辅助安装"。
 
-OldInBadFolder1=警告:另一个%1:s的安装被找到，在%2:s,但是卸载器被找到，在%3:s. 请确保卸载器是正确的.
-OldInBadFolder2=警告:这里可能在不同的安装之间冲突，并且它们可能没有令人满意的功能.
-OldInBadFolder3=注意:如果你想使用多个安装，请返回和打勾: "创建一个新的第二的安装".
-OldInBadFolder4=现在请使用下面的按钮来卸载它.如果你想保持它,请打勾复选框来继续.
+OldInBadFolder1=警告：在 %2:s 发现了 %1:s 的另一个安装，但在 %3:s 发现了卸载程序，请确保卸载程序正确无误。
+OldInBadFolder2=警告：不同安装之间可能会有冲突，也可能无法正常运行。
+OldInBadFolder3=注意：如果您希望进行多次安装，请返回并勾选 "创建新的辅助安装"。
+OldInBadFolder4=请使用下面的按钮立即卸载。如果希望保留，请勾选复选框继续。
 
-OldSecondInDestFolder1=另一个%1:s安装存在在目标文件夹.如果你想先卸载,请使用下面的按钮.
+OldSecondInDestFolder1=目标文件夹中存在 %1:s 的另一个安装。如果您想先卸载，请使用下面的按钮。
 OldSecondInDestFolder2=
-OldSecondInDestFolder3=这是一个第二的安装，用于配置的文件夹是(并将被保持):
+OldSecondInDestFolder3=这是一个辅助安装，配置文件夹是（将来也会保留）：
 OldSecondInDestFolder4=%4:s
 
 OldSecondInOtherFolder1=
@@ -72,9 +72,9 @@ OldSecondInBadFolder2=
 OldSecondInBadFolder3=
 OldSecondInBadFolder4=
 
-SecondTaskUpdate=更新用于第二的安装的配置，在文件夹中:%0:s%1:s%2:s
-SecondTaskCreate=创建用于第二的安装的配置，在文件夹中:%0:s%1:s%2:s
+SecondTaskUpdate=更新辅助安装，其配置文件位于文件夹：%0:s%1:s%2:s
+SecondTaskCreate=创建辅助安装，其配置文件位于文件夹：%0:s%1:s%2:s
 
-DuringInstall=Lazarus中文翻译（QQ群：192903718）	我们常见问题解答的一些信息: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus是什么?%0:sLazarus是Pascal的一个跨平台IDE.它的目标是一次编写,到处编译.%0:s%0:s    如何减少exe文件的大小?%0:s默认二级制文件是非常大的,因为它们包括调试信息.对于发布版本,你可以在工程设置中切换取消这个.%0:s%0:s    许可:%0:s- LCL被许可为链接除外的LGPL.这允许你来创建带有任何你所想的许可的应用程序,包括专有的.%0:s- IDE被许可为GPL.如果你发布一个修改的IDE,你必需遵循GPL.%0:s- 其它的软件包和组件有各种各样的许可.看每个软件包的readme文件.
+DuringInstall=Lazarus 中文交流群（QQ 群：192903718）	常见问题: http://wiki.lazarus.freepascal.org/Lazarus_Faq%0:s%0:s    Lazarus 是什么？%0:sLazarus 是一个跨平台的 Pascal IDE。它的目标是一次编写，到处编译。%0:s%0:s    如何减小 exe 文件的大小？%0:s默认的二进制文件非常大，因为它们包含了调试信息。对于发布版本，您可以在项目设置中将其关闭。%0:s%0:s    协议：%0:s- LCL 采用除链接外的 LGPL 协议，这允许您使用任何协议创建应用程序，包括专有协议。%0:s- IDE 采用 GPL 协议，如果您发布修改过的 IDE，则必须遵循 GPL 协议。%0:s- 其他的软件包和组件有各自的协议，请参阅每个软件包的自述文件。
 
-UninstVerbose=即将从文件夹%0:s卸载%1:s.继续?
+UninstVerbose=即将从 %0:s 文件夹卸载 %1:s，是否继续？

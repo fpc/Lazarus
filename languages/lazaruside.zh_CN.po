@@ -4552,7 +4552,7 @@ msgstr "文件已经存在"
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
 #, object-pascal-format
 msgid "File \"%s\" already exists in the package."
-msgstr "文件\"%s\"已经存在在包中."
+msgstr "文件 \"%s\" 已经存在于软件包中。"
 
 #: lazarusidestrconsts.lisa2pfileisused
 msgid "File is used"
@@ -4742,19 +4742,19 @@ msgstr "单元名已经存在"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
-msgstr "丢弃更改？"
+msgstr "放弃修改？"
 
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
-msgstr "放弃所有"
+msgstr "中止所有"
 
 #: lazarusidestrconsts.lisabortallloading
 msgid "Abort all loading"
-msgstr "放弃所有加载"
+msgstr "中止所有加载"
 
 #: lazarusidestrconsts.lisaborted
 msgid "Aborted"
-msgstr "放弃"
+msgstr "中止"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
@@ -8733,7 +8733,7 @@ msgstr "禁用选项-Xg"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
-msgstr "放弃更改"
+msgstr "不保存(&N)"
 
 #: lazarusidestrconsts.lisdiscardchangesall
 msgid "Discard all changes"
@@ -9787,7 +9787,7 @@ msgstr "文件找到"
 #: lazarusidestrconsts.lisfilehaschangedsave
 #, object-pascal-format
 msgid "File \"%s\" has changed. Save?"
-msgstr "文件\"%s\"已经更改.保存？"
+msgstr "文件 \"%s\" 已修改，是否保存？"
 
 #: lazarusidestrconsts.lisfilehasnoproject
 msgid "File has no project"
@@ -17347,16 +17347,16 @@ msgstr "另存为"
 
 #: lazarusidestrconsts.lissavechangedfiles
 msgid "Save changed files?"
-msgstr "保存更改文件？"
+msgstr "你是否要保存已修改的文件？"
 
 #: lazarusidestrconsts.lissavechanges
 msgid "Save changes?"
-msgstr "保存更改?"
+msgstr "你是否要保存修改内容？"
 
 #: lazarusidestrconsts.lissavechangestoproject
 #, object-pascal-format
 msgid "Save changes to project %s?"
-msgstr "项目 %s 已更改，是否保存?"
+msgstr "项目 %s 已修改，是否保存?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
@@ -17364,11 +17364,11 @@ msgstr "保存当前编辑器文件"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
-msgstr "保存IDE设置"
+msgstr "与 IDE 设置一起保存"
 
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
-msgstr "保存项目会话"
+msgstr "与项目会话一起保存"
 
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
@@ -17377,7 +17377,7 @@ msgstr "文件另存为"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 #, object-pascal-format
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
-msgstr "保存文件\"%s\"%s在关闭窗体\"%s\"前 ?"
+msgstr "您是否要保存文件 \"%s\"%s在您关闭窗体 \"%s\" 之前？"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -17925,7 +17925,7 @@ msgstr "源代码编辑器窗口管理"
 
 #: lazarusidestrconsts.lissourcemodified
 msgid "Source modified"
-msgstr "源代码已经更改"
+msgstr "源代码已修改"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 #, object-pascal-format

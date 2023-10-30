@@ -727,10 +727,8 @@ msgid "%s is already associated with %s"
 msgstr "%s已经与%s相关联"
 
 #: lclstrconsts.rsjpeg
-#, fuzzy
-#| msgid "Joint Picture Expert Group"
 msgid "JPEG Files"
-msgstr "JPEG(联合图片专家组)"
+msgstr "JPEG 文件"
 
 #: lclstrconsts.rslastrecordhint
 msgid "Last"
@@ -775,9 +773,10 @@ msgstr ""
 msgid "Maroon"
 msgstr "褐红色"
 
+# 此处翻译为取消更合适，中止在这里表意不正确
 #: lclstrconsts.rsmbabort
 msgid "Abort"
-msgstr "放弃"
+msgstr "取消(&C)"
 
 #: lclstrconsts.rsmball
 msgid "&All"
