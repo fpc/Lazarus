@@ -357,7 +357,7 @@ type
     procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
-    function CheckIdentCompetitionValidity: Boolean;
+    function CheckIdentCompletionValidity: Boolean;
     procedure StartIdentCompletionBox(JumpToError, CanAutoComplete, CheckValidity: Boolean);
     procedure StartWordCompletionBox;
 
@@ -5333,7 +5333,7 @@ begin
   FSharedValues.CodeBuffer := NewCodeBuffer;
 end;
 
-function TSourceEditor.CheckIdentCompetitionValidity: Boolean;
+function TSourceEditor.CheckIdentCompletionValidity: Boolean;
 
   function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
   begin
@@ -5361,7 +5361,7 @@ begin
 
   Line := Self.FEditor.LineText;
   LogCaret := Self.FEditor.LogicalCaretXY;
-  //DebugLn(['CheckIdentCompetitionValidity Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
+  //DebugLn(['CheckIdentCompletionValidity Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
 
   // check if last character is a point
   if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
@@ -5372,7 +5372,7 @@ begin
   if not CheckCodeAttribute(LogCaret, CodeAttribute) then
     Exit;
 
-  //DebugLn('CheckIdentCompetitionValidity: ' + Self.GetWordFromCaret(LogCaret) + ' = ' + CodeAttribute) ;
+  //DebugLn('CheckIdentCompletionValidity: ' + Self.GetWordFromCaret(LogCaret) + ' = ' + CodeAttribute) ;
   if (CodeAttribute = SYNS_XML_AttrComment) or
      (CodeAttribute = SYNS_XML_AttrString) or
      (CodeAttribute = SYNS_XML_AttrNumber)
@@ -5404,7 +5404,7 @@ begin
   {$ENDIF}
   if (FEditor.ReadOnly) then exit;
   if CheckValidity then
-    if not CheckIdentCompetitionValidity then Exit;
+    if not CheckIdentCompletionValidity then Exit;
   Completion := Manager.DefaultCompletionForm;
   if (Completion.CurrentCompletionType<>ctNone) then exit;
   Completion.IdentCompletionJumpToError := JumpToError;
