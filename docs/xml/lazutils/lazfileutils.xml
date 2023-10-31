@@ -1243,42 +1243,48 @@ Base directory used to resolve a relative path reference in the file name.
 
 <element name="TryCreateRelativePath">
 <short>
-Attempts to create a path in Dest relative the path in Source.
+Attempts to create a path in Dest relative to the path in Source.
 </short>
 <descr>
 <p>
 Returns <b>True</b> if it is possible to create a relative path from Source 
-to Dest Function must be thread safe, so no expanding of filenames is done, 
+to Dest. The function must be thread safe, so no expansion of filenames is done 
 since this is not thread-safe (at least on Windows platform).
 </p>
 <ul>
 <li>
-Dest and Source must either be both absolute filenames, or relative
+Both Dest and Source must be either absolute filenames or relative file names.
 </li>
 <li>
-Dest and Source cannot contain '..' since no expanding is done by design
+Dest and Source cannot contain '..' since no expansion is done by design.
 </li>
-<li>Dest and Source must be on same drive or UNC path (Windows)</li>
+<li>
+Dest and Source must be on same drive or UNC path (Windows).
+</li>
 <li>
 If both Dest and Source are relative they must at least share their base 
-directory
+directory.
 </li>
 <li>
-Double PathDelims are ignored (unless they are part of the UNC convention)
+Double PathDelims are ignored (unless they are part of the UNC convention).
 </li>
 <li>
-If UsePointDirectory is <b>True</b> and Result is <b>True</b> then if RelPath 
-is Empty string, RelPath becomes '.'
+If UsePointDirectory is <b>True</b> and RelPath is an empty string (''), 
+RelPath is set to the current directory ('.').
 </li>
 <li>
 If AlwaysRequireSharedBaseFolder is <b>False</b> then Absolute filenames need 
-not share a basefolder
+not share a base folder.
 </li>
 <li>
-if the function succeeds RelPath contains the relative path from Source to 
-Dest, no PathDelimiter is appended to the end of RelPath
+If the function succeeds, RelPath contains the relative path from Source to 
+Dest. A PathDelimiter is not appended to the end of RelPath.
 </li>
 </ul>
+<remark>
+TryCreateRelativePath does not physically create any folders need for the 
+derived relative path to Dest.
+</remark>
 <p>
 <b>Examples:</b>
 </p>
@@ -1300,22 +1306,36 @@ Dest, no PathDelimiter is appended to the end of RelPath
 <seealso/>
 </element>
 <element name="TryCreateRelativePath.Result">
-<short/>
+<short>
+Returns <b>True</b> if the path from Source to Dest is a relative path that can 
+be derived using the arguments to the routine.
+</short>
 </element>
 <element name="TryCreateRelativePath.Dest">
-<short/>
+<short>
+Path to the destination directory (relative or absolute).
+</short>
 </element>
 <element name="TryCreateRelativePath.Source">
-<short/>
+<short>
+Path to the source directory (relative or absolute).
+</short>
 </element>
 <element name="TryCreateRelativePath.UsePointDirectory">
-<short/>
+<short>
+<b>True</b> if RelPath is set to '.' when an empty relative path ('') is 
+derived from Source to Dest.
+</short>
 </element>
 <element name="TryCreateRelativePath.AlwaysRequireSharedBaseFolder">
-<short/>
+<short>
+<b>False</b> requires use of absolute paths in both Source and Dest.
+</short>
 </element>
 <element name="TryCreateRelativePath.RelPath">
-<short/>
+<short>
+Returns the relative path from Source to Dest derived in the routine.
+</short>
 </element>
 
 <element name="CreateRelativePath">
@@ -1340,7 +1360,9 @@ CreateRelativePath is thread safe, and therefore, does not guarantee that the
 current directory is correct for file names like 'D:test.txt'.
 </remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TryCreateRelativePath"/>
+</seealso>
 </element>
 <element name="CreateRelativePath.Result">
 <short>Relative path from the base directory for the file name.</short>
@@ -3370,7 +3392,10 @@ C:\
 </element>
 
 <element name="GetDarwinSystemFilename">
-<short/>
+<short>
+Gets a file name using the Core Foundation CFStringGetFileSystemRepresentation 
+API on macOS.
+</short>
 <descr>
 <p>
 Implemented when the platform or OS includes the <b>darwin</b> compiler 
@@ -3381,15 +3406,28 @@ platform.
 <seealso/>
 </element>
 <element name="GetDarwinSystemFilename.Result">
-<short/>
+<short>
+UTF-8-encoded file name from the Core Foundation API.
+</short>
 </element>
 <element name="GetDarwinSystemFilename.Filename">
-<short/>
+<short>
+File name converted in the routine.
+</short>
 </element>
 
 <element name="GetDarwinNormalizedFilename">
-<short/>
+<short>
+Gets a normalized file name using the Core Foundation CFStringNormalizationForm 
+API on macOS.
+</short>
 <descr>
+<p>
+Normalizes the string in FileName into the specified form as described in 
+Unicode Technical Report #15. Supported normalization forms include 
+Compatibility Decomposition, and Canonical Decomposition followed by Canonical 
+Composition (default).
+</p>
 <p>
 Implemented when the platform or OS includes the <b>darwin</b> compiler 
 define. Handles canonical string normalization forms for file names on the 
@@ -3399,13 +3437,20 @@ Darwin platform.
 <seealso/>
 </element>
 <element name="GetDarwinNormalizedFilename.Result">
-<short/>
+<short>
+UTF-8-encoded value for the normalized file name.
+</short>
 </element>
 <element name="GetDarwinNormalizedFilename.Filename">
-<short/>
+<short>
+File name normalized in the routine.
+</short>
 </element>
 <element name="GetDarwinNormalizedFilename.nForm">
-<short/>
+<short>
+Normalization form requested in the routine. Default value is 2 (Canonical 
+Decomposition followed by Canonical Composition).
+</short>
 </element>
 
 <element name="SHGetFolderPathUTF8">
