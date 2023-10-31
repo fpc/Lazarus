@@ -518,7 +518,7 @@ begin
           dec(i);
         end;
         p1.x := x + i + 1;
-        p1 := FriendEdit.ClientToScreen(TSynEdit(FriendEdit).ScreenXYToPixels(
+        p1 := FriendEdit.ClientToScreen(TCustomSynEdit(FriendEdit).ScreenXYToPixels(
           FriendEdit.TextXYToScreenXY(p1)));
 
         cp^.pt.y := p1.y;
