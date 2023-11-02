@@ -141,6 +141,7 @@ type
     cfbtWhileDo,
     cfbtWithDo,
     cfbtIfElse,
+    cfbtRecordCase,
     cfbtAnonymousProcedure,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
@@ -162,7 +163,8 @@ const
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)]);
 
   PascalWordTripletRanges = TPascalCodeFoldBlockTypes(
-    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtAnonymousProcedure, cfbtClass, cfbtProgram, cfbtRecord,
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtAnonymousProcedure, cfbtClass, cfbtProgram,
+     cfbtRecord, cfbtRecordCase,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
      cfbtIfDef, cfbtRegion,
      cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo
@@ -225,10 +227,11 @@ const
       cfbtWhileDo,
       cfbtWithDo,
       cfbtIfElse,
+      cfbtRecordCase,
+      cfbtProcedure,
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
-      cfbtProcedure,
       cfbtNone
     );
 
@@ -380,6 +383,7 @@ type
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
     function GetPasCodeFoldRange: TSynPasSynRange;
+    function IsNestedRecordFoldBlock(tfb: TPascalCodeFoldBlockType): boolean;
     procedure PasDocAttrChanged(Sender: TObject);
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
@@ -1041,6 +1045,19 @@ begin
   Result := TSynPasSynRange(CodeFoldRange);
 end;
 
+function TSynPasSyn.IsNestedRecordFoldBlock(tfb: TPascalCodeFoldBlockType
+  ): boolean;
+begin
+  case tfb of
+    cfbtRecord:
+      Result := TopPascalCodeFoldBlockType(1) in [cfbtRecord, cfbtRecordCase];
+    cfbtRecordCase:
+      Result := TopPascalCodeFoldBlockType(2) in [cfbtRecord, cfbtRecordCase];
+    else
+      Result := False;
+  end;
+end;
+
 procedure TSynPasSyn.PasDocAttrChanged(Sender: TObject);
 begin
   FUsePasDoc := fPasDocKeyWordAttri.IsEnabled or
@@ -1089,10 +1106,13 @@ begin
 end;
 
 function TSynPasSyn.Func21: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
+  tfb := TopPascalCodeFoldBlockType;
   if KeyComp('Of') then begin
     Result := tkKey;
-    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) and
+    if (rsAfterClass in fRange) and (tfb = cfbtClass) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
@@ -1101,9 +1121,9 @@ begin
       //CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end
     else
-    if (TopPascalCodeFoldBlockType = cfbtCase) then begin
+    if (tfb in [cfbtCase, cfbtRecordCase]) then begin
       EndPascalCodeFoldBlock();
-      StartPascalCodeFoldBlock(cfbtCase, True);
+      StartPascalCodeFoldBlock(tfb, True);
       fRange := fRange + [rsAtCaseLabel];
     end;
   end
@@ -1120,16 +1140,24 @@ begin
     then begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsAfterClassMembers];
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      tfb := TopPascalCodeFoldBlockType;
+      if not IsNestedRecordFoldBlock(tfb) then
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       sl := fStringLen;
       // there may be more than on block ending here
-      tfb := TopPascalCodeFoldBlockType;
       fStringLen:=0;
       while (tfb in [cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]) do begin // no semicolon before end
         EndPascalCodeFoldBlock(True);
         tfb := TopPascalCodeFoldBlockType;
       end;
       fStringLen := sl;
+      if tfb = cfbtRecordCase then begin
+        EndPascalCodeFoldBlock;
+        fRange := fRange - [rsAtCaseLabel];
+        if TopPascalCodeFoldBlockType = cfbtRecord then
+          EndPascalCodeFoldBlock;
+      end
+      else
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtUnit then begin
@@ -1177,6 +1205,8 @@ begin
           fRange := fRange - [rsInObjcProtocol];
         end
         else
+        if TopPascalCodeFoldBlockType = cfbtRecordCase then
+          EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtRecord then
           EndPascalCodeFoldBlock;
       // After type declaration, allow "deprecated"?
@@ -1238,7 +1268,10 @@ begin
   end
   else if KeyComp('Case') then begin
     if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
-      StartPascalCodeFoldBlock(cfbtCase, True);
+      StartPascalCodeFoldBlock(cfbtCase, True)
+    else
+    if TopPascalCodeFoldBlockType = cfbtRecord then
+      StartPascalCodeFoldBlock(cfbtRecordCase, True);
     Result := tkKey;
   end
   else
@@ -2285,7 +2318,8 @@ begin
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) then begin
-        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        if not IsNestedRecordFoldBlock(TopPascalCodeFoldBlockType()) then
+          PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
         if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -2339,7 +2373,8 @@ begin
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) then begin
-        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        if not IsNestedRecordFoldBlock(TopPascalCodeFoldBlockType()) then
+          PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
         if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -2390,7 +2425,8 @@ begin
   begin
     if not(rsAfterEqualOrColon in fRange) then
     begin
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      if not IsNestedRecordFoldBlock(TopPascalCodeFoldBlockType()) then
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
@@ -2633,7 +2669,8 @@ begin
   begin
     if not(rsAfterEqualOrColon in fRange) then
     begin
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      if not IsNestedRecordFoldBlock(TopPascalCodeFoldBlockType()) then
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -2718,7 +2755,8 @@ var
 begin
   if KeyComp('Constructor') then begin
     if not(rsAfterEqualOrColon in fRange) then begin
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      if not IsNestedRecordFoldBlock(TopPascalCodeFoldBlockType()) then
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
@@ -3722,6 +3760,8 @@ begin
   Inc(Run);
 
   if (tfb = cfbtCase) then
+    fRange := fRange + [rsAtCaseLabel];
+  if (tfb = cfbtRecordCase) and (PasCodeFoldRange.BracketNestLevel = 0) then
     fRange := fRange + [rsAtCaseLabel];
 
   if (tfb in [cfbtClass, cfbtClassSection]) and
@@ -5138,6 +5178,8 @@ begin
       m := m;
     cfbtFirstPrivate..high(TPascalCodeFoldBlockType):
       m := [];
+    cfbtRecordCase:
+      m := [fmFold]; // no markup
     else
       m := [fmFold] + m;
   end;
