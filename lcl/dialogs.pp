@@ -988,9 +988,22 @@ const
   cLabelSpacing = 10;   // distance between icon & label
 
   DialogResult : Array[mrNone..mrLast] of Longint = (
-    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
-    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
-    idButtonYesToAll,idButtonClose);
+    -1, // mrNone
+    idButtonOK,
+    idButtonCancel,
+    idButtonAbort,
+    idButtonRetry,
+    idButtonIgnore,
+    idButtonYes,
+    idButtonNo,
+    idButtonAll,
+    idButtonNoToAll,
+    idButtonYesToAll,
+    {$IF FPC_FULLVERSION>30300}
+    idButtonContinue,
+    idButtonTryAgain,
+    {$ENDIF}
+    idButtonClose);
 
 
   DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (

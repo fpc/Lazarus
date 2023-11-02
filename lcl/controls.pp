@@ -60,6 +60,10 @@ const
   mrNoToAll = System.UITypes.mrNoToAll;
   mrYesToAll= System.UITypes.mrYesToAll;
   mrClose   = System.UITypes.mrClose;
+  {$IF FPC_FULLVERSION>30300}
+  mrContinue= System.UITypes.mrContinue;
+  mrTryAgain= System.UITypes.mrTryAgain;
+  {$ENDIF}
   mrLast    = System.UITypes.mrLast;
 
 //function GetModalResultStr(ModalResult: TModalResult): ShortString;

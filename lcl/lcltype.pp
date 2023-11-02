@@ -1830,6 +1830,8 @@ const
   idButtonOpen = idButtonBase + 13;
   idButtonSave = idButtonBase + 14;
   idButtonShield = idButtonBase + 15;
+  idButtonContinue = idButtonBase + 16;
+  idButtonTryAgain = idButtonBase + 17;
 
   idDialogBase = $FF;
   idDialogWarning = idDialogBase + 1;
