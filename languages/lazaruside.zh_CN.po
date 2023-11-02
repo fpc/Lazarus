@@ -2064,6 +2064,10 @@ msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Record"
 
+#: lazarusidestrconsts.dlgfoldpasrecordcase
+msgid "Record case"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
