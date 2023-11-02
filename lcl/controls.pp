@@ -68,6 +68,10 @@ const
   mrNoToAll = SysUITypes.mrNoToAll;
   mrYesToAll= SysUITypes.mrYesToAll;
   mrClose   = SysUITypes.mrClose;
+  {$IF FPC_FULLVERSION>30300}
+  mrContinue= SysUITypes.mrContinue;
+  mrTryAgain= SysUITypes.mrTryAgain;
+  {$ENDIF}
   mrLast    = SysUITypes.mrLast;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
