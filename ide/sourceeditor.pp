@@ -5352,10 +5352,6 @@ begin
 
   Result := False;
 
-  if not (Self.EditorComponent.Focused and
-     (ComparePoints(Self.EditorComponent.LogicalCaretXY, SourceCompletionCaretXY) = 0)) then
-    Exit;
-
   if not (Self.FEditor.Highlighter is TSynPasSyn) then
     Exit; // only start completion automatically for pascal sources
 
@@ -11678,8 +11674,12 @@ begin
   AutoStartCompletionBoxTimer.Enabled := False;
   AutoStartCompletionBoxTimer.AutoEnabled := False;
 
-  if ActiveEditor <> Nil then
-    ActiveEditor.StartIdentCompletionBox(False, False, True);
+  if ActiveEditor = nil then
+    Exit;
+  if not (ActiveEditor.EditorComponent.Focused and
+     (ComparePoints(ActiveEditor.EditorComponent.LogicalCaretXY, SourceCompletionCaretXY) = 0)) then
+    Exit;
+  ActiveEditor.StartIdentCompletionBox(False, False, True);
 
 end;
 
@@ -11963,4 +11963,3 @@ initialization
 finalization
   InternalFinal;
 end.
-
