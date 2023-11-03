@@ -450,7 +450,7 @@ Modified in LCL 3.0 to be an alias to mrNone in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrNone">mrNone</link>
 -->
@@ -465,7 +465,7 @@ Modified in LCL 3.0 to be an alias to mrOK in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrOK">mrOK</link>
 -->
@@ -480,7 +480,7 @@ Modified in LCL 3.0 to be an alias to mrCancel in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrCancel">mrCancel</link>
 -->
@@ -495,7 +495,7 @@ Modified in LCL 3.0 to be an alias to mrAbort in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrAbort">mrAbort</link>
 -->
@@ -510,7 +510,7 @@ Modified in LCL 3.0 to be an alias to mrRetry in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrRetry">mrRetry</link>
 -->
@@ -525,7 +525,7 @@ Modified in LCL 3.0 to be an alias to mrIgnore in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrIgnore">mrIgnore</link>
 -->
@@ -541,7 +541,7 @@ Modified in LCL 3.0 to be an alias to mrYes in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrYes">mrYes</link>
 -->
@@ -556,7 +556,7 @@ Modified in LCL 3.0 to be an alias to mrNo in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrNo">mrNo</link>
 -->
@@ -571,7 +571,7 @@ Modified in LCL 3.0 to be an alias to mrAll in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrAll">mrAll</link>
 -->
@@ -586,7 +586,7 @@ Modified in LCL 3.0 to be an alias to mrNoToAll in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrNoToAll">mrNoToAll</link>
 -->
@@ -601,7 +601,7 @@ Modified in LCL 3.0 to be an alias to mrYesToAll in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrYesToAll">mrYesToAll</link>
 -->
@@ -616,12 +616,45 @@ Modified in LCL 3.0 to be an alias to mrClose in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrClose">mrClose</link>
 -->
 </seealso>
 </element>
+
+<element name="mrContinue">
+<short>
+Modal result for the Continue button on a dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0 for FPC compiler version 3.3.1 or higher.
+</version>
+<seealso>
+<!--
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrContinue">mrContinue</link>
+-->
+</seealso>
+</element>
+
+<element name="mrTryAgain">
+<short>
+Modal result for the Tray Again button on a dialog.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0 for FPC compiler version 3.3.1 or higher.
+</version>
+<seealso>
+<!--
+Uncomment when the topic exists in the RTL documentation. 
+<link id="#rtl.system.uitypes.mrTryAgain">mrTryAgain</link>
+-->
+</seealso>
+</element>
+
 <element name="mrLast">
 <short>
 Last (highest) value of modal results.
@@ -631,7 +664,7 @@ Modified in LCL 3.0 to be an alias to mrLast in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mrLast">mrLast</link>
 -->
@@ -1058,7 +1091,7 @@ Modified in LCL 3.0 to be an alias to the TAnchorKind type in System.UITypes
 for FPC 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation.
 <link id="#rtl.system.uitypes.TAnchorKind">TAnchorKind</link>
 -->
@@ -1092,7 +1125,7 @@ for FPC 3.2.0 or higher.
 <seealso>
 <link id="TAnchorKind"/>
 <link id="TControl.Anchors"/>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation.
 <link id="#rtl.system.uitypes.TAnchors">TAnchors</link>
 -->
@@ -1109,7 +1142,7 @@ Modified in LCL 3.0 to be an alias to the TAnchorSideReference type in
 System.UITypes for FPC 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.TAnchorSideReference">TAnchorSideReference</link>
 -->
@@ -1135,7 +1168,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akLeft">akLeft</link>
 -->
@@ -1152,7 +1185,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akTop">akTop</link>
 -->
@@ -1169,7 +1202,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akRight">akRight</link>
 -->
@@ -1185,7 +1218,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.akBottom">akBottom</link>
 -->
@@ -1202,7 +1235,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrTop">asrTop</link>
 -->
@@ -1219,7 +1252,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrBottom">asrBottom</link>
 -->
@@ -1236,7 +1269,7 @@ Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.2.0 or
 higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.asrCenter">asrCenter</link>
 -->
@@ -1495,7 +1528,7 @@ Modified in LCL version 3.0 to be an alias for the TMouseButton type in
 System.UITypes for FPC 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.TMouseButton">TMouseButton</link> 
 -->
@@ -1535,7 +1568,7 @@ Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbLeft">mbLeft</link> 
 -->
@@ -1552,7 +1585,7 @@ Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbRight">mbRight</link> 
 -->
@@ -1569,7 +1602,7 @@ Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbMiddle">mbMiddle</link> 
 -->
@@ -1586,7 +1619,7 @@ Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbExtra1">mbExtra1</link> 
 -->
@@ -1603,7 +1636,7 @@ Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.2.0
 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documentation. 
 <link id="#rtl.system.uitypes.mbExtra2">mbExtra2</link> 
 -->
@@ -3396,7 +3429,7 @@ Modified in LCL 3.0 to be ab alias to TDragKind in System.UITypes for FPC
 </version>
 <seealso>
 <link id="TControl.DragKind"/>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragKind">TDragKind</link> 
 -->
@@ -3419,7 +3452,7 @@ Modified in LCL 3.0 to be an alias to TDragMode in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragMode">TDragMode</link> 
 -->
@@ -3447,7 +3480,7 @@ Modified in LCL 3.0 to be an alias to TDragState in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragState">TDragState</link> 
 -->
@@ -3490,7 +3523,7 @@ Modified in LCL 3.0 to be an alias to TDragMessage in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in RTL documentation. 
 <link id="#rtl.system.uitypes.TDragMessage">TDragMessage</link> 
 -->
@@ -7893,7 +7926,7 @@ Modified in LCL 3.0 to be an alias to TTabOrder in System.UITypes for FPC
 3.2.0 or higher.
 </version>
 <seealso>
-<!-- 
+<!--
 Uncomment when the topic exists in the RTL documenetation. 
 <link id="#rtl.system.uitypes.TTabOrder">TTabOrder</link>
 -->
@@ -28702,7 +28735,7 @@ Register can also be used to register the controls required by an application.
 </seealso>
 </element>
 
-<!-- 
+<!--
 
 TODO: For FPC 3.3.0+. Uncomment when FPC 3.3 docs are released.
 
