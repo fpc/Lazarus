@@ -357,7 +357,8 @@ type
     procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
-    procedure StartIdentCompletionBox(JumpToError, CanAutoComplete: boolean);
+    function CheckIdentCompletionValidity: Boolean;
+    procedure StartIdentCompletionBox(JumpToError, CanAutoComplete, CheckValidity: Boolean);
     procedure StartWordCompletionBox;
 
     function IsFirstShared(Sender: TObject): boolean;
@@ -4263,38 +4264,38 @@ Begin
   CheckActiveWindow;
 
   case Command of
-  ecMultiPaste:                MultiPasteText;
-  ecContextHelp:               FindHelpForSourceAtCursor;
-  ecSmartHint:                 ShowSmartHintForSourceAtCursor;
-  ecIdentCompletion: StartIdentCompletionBox(CodeToolsOpts.IdentComplJumpToError,true);
-  ecShowCodeContext: SourceNotebook.StartShowCodeContext(CodeToolsOpts.IdentComplJumpToError);
-  ecWordCompletion:            StartWordCompletionBox;
-  ecFind:                      StartFindAndReplace(false);
-  ecFindNext:                  FindNextUTF8;
-  ecFindPrevious:              FindPrevious;
-  ecIncrementalFind: if FSourceNoteBook<>nil then FSourceNoteBook.BeginIncrementalFind;
-  ecReplace:                   StartFindAndReplace(true);
-  ecGotoLineNumber:            ShowGotoLineDialog;
-  ecFindNextWordOccurrence:    FindNextWordOccurrence(true);
-  ecFindPrevWordOccurrence:    FindNextWordOccurrence(false);
-  ecSelectionEnclose:          EncloseSelection;
-  ecSelectionUpperCase:        UpperCaseSelection;
-  ecSelectionLowerCase:        LowerCaseSelection;
-  ecSelectionSwapCase:         SwapCaseSelection;
-  ecSelectionTabs2Spaces:      TabsToSpacesInSelection;
-  ecSelectionComment:          CommentSelection;
-  ecSelectionUnComment:        UncommentSelection;
-  ecToggleComment:             ToggleCommentSelection;
-  ecSelectionEncloseIFDEF:     ConditionalSelection;
-  ecSelectionSort:             SortSelection;
-  ecSelectionBreakLines:       BreakLinesInSelection;
-  ecInvertAssignment:          InvertAssignment;
-  ecSelectToBrace:             SelectToBrace;
-  ecSelectLine:                SelectLine;
-  ecSelectWord:                SelectWord;
-  ecSelectParagraph:           SelectParagraph;
-  ecInsertCharacter:           InsertCharacterFromMap;
-  ecInsertGPLNotice:           InsertGPLNotice(comtDefault,false);
+  ecMultiPaste:           MultiPasteText;
+  ecContextHelp:          FindHelpForSourceAtCursor;
+  ecSmartHint:            ShowSmartHintForSourceAtCursor;
+  ecIdentCompletion:      StartIdentCompletionBox(CodeToolsOpts.IdentComplJumpToError, True, False);
+  ecShowCodeContext:      SourceNotebook.StartShowCodeContext(CodeToolsOpts.IdentComplJumpToError);
+  ecWordCompletion:       StartWordCompletionBox;
+  ecFind:                 StartFindAndReplace(false);
+  ecFindNext:             FindNextUTF8;
+  ecFindPrevious:         FindPrevious;
+  ecIncrementalFind:      if FSourceNoteBook<>nil then FSourceNoteBook.BeginIncrementalFind;
+  ecReplace:              StartFindAndReplace(true);
+  ecGotoLineNumber:       ShowGotoLineDialog;
+  ecFindNextWordOccurrence: FindNextWordOccurrence(true);
+  ecFindPrevWordOccurrence: FindNextWordOccurrence(false);
+  ecSelectionEnclose:     EncloseSelection;
+  ecSelectionUpperCase:   UpperCaseSelection;
+  ecSelectionLowerCase:   LowerCaseSelection;
+  ecSelectionSwapCase:    SwapCaseSelection;
+  ecSelectionTabs2Spaces: TabsToSpacesInSelection;
+  ecSelectionComment:     CommentSelection;
+  ecSelectionUnComment:   UncommentSelection;
+  ecToggleComment:        ToggleCommentSelection;
+  ecSelectionEncloseIFDEF: ConditionalSelection;
+  ecSelectionSort:        SortSelection;
+  ecSelectionBreakLines:  BreakLinesInSelection;
+  ecInvertAssignment:     InvertAssignment;
+  ecSelectToBrace:        SelectToBrace;
+  ecSelectLine:           SelectLine;
+  ecSelectWord:           SelectWord;
+  ecSelectParagraph:      SelectParagraph;
+  ecInsertCharacter:      InsertCharacterFromMap;
+  ecInsertGPLNotice:      InsertGPLNotice(comtDefault,false);
   ecInsertGPLNoticeTranslated: InsertGPLNotice(comtDefault,true);
   ecInsertLGPLNotice:          InsertLGPLNotice(comtDefault,false);
   ecInsertLGPLNoticeTranslated:InsertLGPLNotice(comtDefault,true);
@@ -4302,20 +4303,20 @@ Begin
   ecInsertModifiedLGPLNoticeTranslated: InsertModifiedLGPLNotice(comtDefault,true);
   ecInsertMITNotice:           InsertMITNotice(comtDefault,false);
   ecInsertMITNoticeTranslated: InsertMITNotice(comtDefault,true);
-  ecInsertUserName:            InsertUsername;
-  ecInsertDateTime:            InsertDateTime;
-  ecInsertChangeLogEntry:      InsertChangeLogEntry;
-  ecInsertCVSAuthor:           InsertCVSKeyword('Author');
-  ecInsertCVSDate:             InsertCVSKeyword('Date');
-  ecInsertCVSHeader:           InsertCVSKeyword('Header');
-  ecInsertCVSID:               InsertCVSKeyword('ID');
-  ecInsertCVSLog:              InsertCVSKeyword('Log');
-  ecInsertCVSName:             InsertCVSKeyword('Name');
-  ecInsertCVSRevision:         InsertCVSKeyword('Revision');
-  ecInsertCVSSource:           InsertCVSKeyword('Source');
-  ecInsertGUID:                InsertGUID;
-  ecInsertFilename:            InsertFilename;
-  ecLockEditor:                IsLocked := not IsLocked;
+  ecInsertUserName:       InsertUsername;
+  ecInsertDateTime:       InsertDateTime;
+  ecInsertChangeLogEntry: InsertChangeLogEntry;
+  ecInsertCVSAuthor:      InsertCVSKeyword('Author');
+  ecInsertCVSDate:        InsertCVSKeyword('Date');
+  ecInsertCVSHeader:      InsertCVSKeyword('Header');
+  ecInsertCVSID:          InsertCVSKeyword('ID');
+  ecInsertCVSLog:         InsertCVSKeyword('Log');
+  ecInsertCVSName:        InsertCVSKeyword('Name');
+  ecInsertCVSRevision:    InsertCVSKeyword('Revision');
+  ecInsertCVSSource:      InsertCVSKeyword('Source');
+  ecInsertGUID:           InsertGUID;
+  ecInsertFilename:       InsertFilename;
+  ecLockEditor:           IsLocked := not IsLocked;
   ecSynMacroPlay: begin
       If ActiveEditorMacro = EditorMacroForRecording then begin
         if EditorMacroForRecording.State = emRecording
@@ -4386,7 +4387,7 @@ begin
 
       if FCodeCompletionState.State = ccsOnTypingScheduled then begin
         FCodeCompletionState.State := ccsOnTyping;
-        StartIdentCompletionBox(false,false);
+        StartIdentCompletionBox(False, False, True);
       end;
     end;
 
@@ -5332,8 +5333,60 @@ begin
   FSharedValues.CodeBuffer := NewCodeBuffer;
 end;
 
-procedure TSourceEditor.StartIdentCompletionBox(JumpToError,
-  CanAutoComplete: boolean);
+function TSourceEditor.CheckIdentCompletionValidity: Boolean;
+
+  function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
+  begin
+    Result := False;
+    dec(XY.X);
+    CodeAttri := Self.GetCodeAttributeName(XY);
+    Result := CodeAttri <> '';
+  end;
+
+var
+  Line: String;
+  LogCaret: TPoint;
+  CodeAttribute: String;
+
+begin
+
+  Result := False;
+
+  if not (Self.FEditor.Highlighter is TSynPasSyn) then
+    Exit; // only start completion automatically for pascal sources
+
+  Line := Self.FEditor.LineText;
+  LogCaret := Self.FEditor.LogicalCaretXY;
+  //DebugLn(['CheckIdentCompletionValidity Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
+
+  // check if last character is a point
+  if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
+  or ((Self.FCodeCompletionState.State = ccsDot) and (Line[LogCaret.X-1]<>'.'))
+  then
+    exit;
+
+  if not CheckCodeAttribute(LogCaret, CodeAttribute) then
+    Exit;
+
+  //DebugLn('CheckIdentCompletionValidity: ' + Self.GetWordFromCaret(LogCaret) + ' = ' + CodeAttribute) ;
+  if (CodeAttribute = SYNS_XML_AttrComment) or
+     (CodeAttribute = SYNS_XML_AttrString) or
+     (CodeAttribute = SYNS_XML_AttrNumber)
+  then
+    Exit;
+
+  // check if range operator '..'
+  if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
+    exit; // this is a double point ..
+
+  Result := True;
+
+  //if CheckTemplateCompletion then begin   // review: what is CheckTemplateCompletion?
+  //end;
+
+end;
+
+procedure TSourceEditor.StartIdentCompletionBox(JumpToError, CanAutoComplete, CheckValidity: Boolean);
 var
   I: Integer;
   TextS, TextS2: String;
@@ -5346,6 +5399,8 @@ begin
   debugln(['TSourceEditor.StartIdentCompletionBox JumpToError: ',JumpToError]);
   {$ENDIF}
   if (FEditor.ReadOnly) then exit;
+  if CheckValidity then
+    if not CheckIdentCompletionValidity then Exit;
   Completion := Manager.DefaultCompletionForm;
   if (Completion.CurrentCompletionType<>ctNone) then exit;
   Completion.IdentCompletionJumpToError := JumpToError;
@@ -11614,82 +11669,18 @@ begin
 end;
 
 procedure TSourceEditorManager.SourceCompletionTimer(Sender: TObject);
-
-  function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
-  var
-    SrcEdit: TSourceEditor;
-  begin
-    Result := False;
-
-    SrcEdit := ActiveEditor;
-    if SrcEdit = nil then exit;
-
-    dec(XY.X);
-    CodeAttri := SrcEdit.GetCodeAttributeName(XY);
-    Result := CodeAttri <> '';
-  end;
-
-  function CheckStartIdentCompletion: boolean;
-  var
-    Line: String;
-    LogCaret: TPoint;
-    SrcEdit: TSourceEditor;
-    CodeAttribute: String;
-  begin
-    Result := false;
-    SrcEdit := ActiveEditor;
-    if SrcEdit = nil then exit;
-    if not (SrcEdit.FEditor.Highlighter is TSynPasSyn) then
-      exit; // only start completion automatically for pascal sources
-
-    Line := SrcEdit.FEditor.LineText;
-    LogCaret := SrcEdit.FEditor.LogicalCaretXY;
-    //DebugLn(['CheckStartIdentCompletion Line="',Line,'" LogCaret=',dbgs(LogCaret)]);
-
-    // check if last character is a point
-    if (Line='') or (LogCaret.X<=1) or (LogCaret.X-1>length(Line))
-    or ((SrcEdit.FCodeCompletionState.State = ccsDot) and (Line[LogCaret.X-1]<>'.'))
-    then
-      exit;
-
-    if not CheckCodeAttribute(LogCaret, CodeAttribute) then
-      Exit;
-
-    if (CodeAttribute = SYNS_XML_AttrComment) or
-       (CodeAttribute = SYNS_XML_AttrString)
-    then
-      Exit;
-
-    // check if range operator '..'
-    if (LogCaret.X>2) and (Line[LogCaret.X-2]='.') then
-      exit; // this is a double point ..
-
-    // invoke identifier completion
-    SrcEdit.StartIdentCompletionBox(false,false);
-    Result:=true;
-  end;
-
-  function CheckTemplateCompletion: boolean;
-  begin
-    Result:=false;
-    // execute context sensitive templates
-    //FCodeTemplateModul.ExecuteCompletion(Value,GetActiveSE.EditorComponent);
-  end;
-
-var
-  TempEditor: TSourceEditor;
 begin
-  AutoStartCompletionBoxTimer.Enabled:=false;
-  AutoStartCompletionBoxTimer.AutoEnabled:=false;
-  TempEditor := ActiveEditor;
-  if (TempEditor <> nil) and TempEditor.EditorComponent.Focused and
-     (ComparePoints(TempEditor.EditorComponent.LogicalCaretXY, SourceCompletionCaretXY) = 0)
-  then begin
-    if CheckStartIdentCompletion then begin
-    end
-    else if CheckTemplateCompletion then begin
-    end;
-  end;
+
+  AutoStartCompletionBoxTimer.Enabled := False;
+  AutoStartCompletionBoxTimer.AutoEnabled := False;
+
+  if ActiveEditor = nil then
+    Exit;
+  if not (ActiveEditor.EditorComponent.Focused and
+     (ComparePoints(ActiveEditor.EditorComponent.LogicalCaretXY, SourceCompletionCaretXY) = 0)) then
+    Exit;
+  ActiveEditor.StartIdentCompletionBox(False, False, True);
+
 end;
 
 procedure TSourceEditorManager.SourceMarksAction(AMark: TSourceMark;
@@ -11972,4 +11963,3 @@ initialization
 finalization
   InternalFinal;
 end.
-
