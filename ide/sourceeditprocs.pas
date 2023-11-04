@@ -36,7 +36,7 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, RegExpr,
+  Classes, SysUtils, RegExpr, Types,
   // LCL
   LCLType, Graphics, Controls, LCLIntf,
   // LazUtils
@@ -180,6 +180,11 @@ var
   TextHilightColor: TColor;
   AllowFontColor: Boolean;
 
+  function GetPaddingScaled (APadding: Integer): Integer;
+  begin
+    aCompletion.TheForm.Scale96ToForm(APadding);
+  end;
+
   procedure SetFontColor(NewColor: TColor; Force: boolean = false);
   
     {procedure IncreaseDiff(var Value: integer; BaseValue: integer);
@@ -241,7 +246,7 @@ var
         Inc(Result.X, ACanvas.TextWidth(CurToken))
       else begin
         //debugln(['WriteToken ',CurToken,' ',ACanvas.Font.Color]);
-        ACanvas.TextOut(x+1, y, CurToken);
+        ACanvas.TextOut(x+GetPaddingScaled(1), y, CurToken);
       end;
       x := x + ACanvas.TextWidth(CurToken);
       //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height),' ',dbgs(ACanvas.TextWidth(CurToken)));
@@ -275,14 +280,14 @@ var
           if CurForeground=clNone then
             CurForeground:=TColor(ForegroundColor);
           SetFontColor(CurForeground);
-          ACanvas.TextOut(x+1+ACanvas.TextWidth(LeftText),y,s);
+          ACanvas.TextOut(x+GetPaddingScaled(1)+ACanvas.TextWidth(LeftText),y,s);
           LeftText += s;
         end;
         Highlighter.Next;
       end;
     end else begin
       SetFontColor(ForegroundColor);
-      ACanvas.TextOut(x+1,y,s);
+      ACanvas.TextOut(x+GetPaddingScaled(1),y,s);
     end;
   end;
 
@@ -297,12 +302,14 @@ var
   IsReadOnly: boolean;
   UseImages: boolean;
   ImageIndex, ImageIndexCC: longint;
+  ImageScaledSize: TSize;
   Token: String;
   PrefixPosition: Integer;
   HintModifiers: TPascalHintModifiers;
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
 begin
+
   SetBkMode(ACanvas.Handle, TRANSPARENT);
   if Colors<>nil then
   begin
@@ -342,7 +349,7 @@ begin
     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
     if IdentItem=nil then begin
       if not MeasureOnly then
-        ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools or misuse of PaintCompletionItem');
+        ACanvas.TextOut(x+GetPaddingScaled(1), y, 'PaintCompletionItem: BUG in codetools or misuse of PaintCompletionItem');
       exit;
     end;
     IdentItem.BeautifyIdentifier(CodeToolBoss.IdentifierList);
@@ -358,7 +365,7 @@ begin
     ctnVarDefinition, ctnRecordCase:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_variable', 16)
+          ImageIndexCC := IDEImages.LoadImage('cc_variable')
         else begin
           AColor:=clMaroon;
           s:='var';
@@ -374,17 +381,17 @@ begin
               ANode := IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
               case ANode.Desc of
                 ctnClass:
-                  ImageIndexCC := IDEImages.LoadImage('cc_class', 16);
+                  ImageIndexCC := IDEImages.LoadImage('cc_class');
                 ctnRecordType:
-                  ImageIndexCC := IDEImages.LoadImage('cc_record', 16);
+                  ImageIndexCC := IDEImages.LoadImage('cc_record');
                 ctnEnumerationType:
-                  ImageIndexCC := IDEImages.LoadImage('cc_enum', 16);
+                  ImageIndexCC := IDEImages.LoadImage('cc_enum');
                 else
-                  ImageIndexCC := IDEImages.LoadImage('cc_type', 16);
+                  ImageIndexCC := IDEImages.LoadImage('cc_type');
               end;
             end
           else
-            ImageIndexCC := IDEImages.LoadImage('cc_type', 16);
+            ImageIndexCC := IDEImages.LoadImage('cc_type');
         end
         else
         begin
@@ -398,7 +405,7 @@ begin
         AColor:=clOlive;
         s:='const';
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_constant', 16);
+          ImageIndexCC := IDEImages.LoadImage('cc_constant');
       end;
       
     ctnProcedure:
@@ -406,13 +413,13 @@ begin
         if UseImages then
         begin
           if IdentItem.IsFunction then
-            ImageIndexCC := IDEImages.LoadImage('cc_function', 16)
+            ImageIndexCC := IDEImages.LoadImage('cc_function')
           else if IdentItem.IsConstructor then
-            ImageIndexCC := IDEImages.LoadImage('cc_constructor', 16)
+            ImageIndexCC := IDEImages.LoadImage('cc_constructor')
           else if IdentItem.IsDestructor then
-            ImageIndexCC := IDEImages.LoadImage('cc_destructor', 16)
+            ImageIndexCC := IDEImages.LoadImage('cc_destructor')
           else
-            ImageIndexCC := IDEImages.LoadImage('cc_procedure', 16);
+            ImageIndexCC := IDEImages.LoadImage('cc_procedure');
         end
         else
         begin
@@ -444,9 +451,9 @@ begin
         if UseImages then
           begin
             if IsReadOnly then
-              ImageIndexCC := IDEImages.LoadImage('cc_property_ro', 16)
+              ImageIndexCC := IDEImages.LoadImage('cc_property_ro')
             else
-              ImageIndexCC := IDEImages.LoadImage('cc_property', 16);
+              ImageIndexCC := IDEImages.LoadImage('cc_property');
           end
         else
           begin
@@ -460,7 +467,7 @@ begin
     ctnEnumIdentifier:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_enum', 16)
+          ImageIndexCC := IDEImages.LoadImage('cc_enum')
         else
           begin
             AColor:=clOlive;
@@ -471,7 +478,7 @@ begin
     ctnLabel:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_label', 16)
+          ImageIndexCC := IDEImages.LoadImage('cc_label')
         else
           begin
             AColor:=clOlive;
@@ -482,7 +489,7 @@ begin
     ctnUnit, ctnUseUnitClearName:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_unit', 16)
+          ImageIndexCC := IDEImages.LoadImage('cc_unit')
         else
           begin
             AColor:=clBlack;
@@ -493,7 +500,7 @@ begin
     ctnUseUnitNamespace:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_namespace', 16)
+          ImageIndexCC := IDEImages.LoadImage('cc_namespace')
         else
           begin
             AColor:=clBlack;
@@ -530,17 +537,17 @@ begin
       s:='';
     end;
 
+    ImageScaledSize := IDEImages.Images_16.SizeForPPI[16, aCompletion.TheForm.PixelsPerInch];
+
     if UseImages then
     begin
-     // drawing type image
+      // drawing type image
       if MeasureOnly then
-        Inc(Result.X, IDEImages.Images_16.Width + round(IDEImages.Images_16.Width / 4))
+        Inc(Result.X, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
       else
-        begin
-          if ImageIndexCC >= 0 then
-            IDEImages.Images_16.Draw(ACanvas, x+1, y+(Result.Y-IDEImages.Images_16.Height) div 2, ImageIndexCC);
-        end;
-      Inc(x,IDEImages.Images_16.Width + round(IDEImages.Images_16.Width / 4));
+        if ImageIndexCC >= 0 then
+          IDEImages.Images_16.DrawForPPI (ACanvas, x+GetPaddingScaled(1), y+(Result.Y-ImageScaledSize.Height) div 2, ImageIndexCC, 16, aCompletion.TheForm.PixelsPerInch, 1);
+      Inc(x, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
     end
     else
     begin
@@ -548,7 +555,7 @@ begin
       if MeasureOnly then
         Inc(Result.X, ACanvas.TextWidth('constructor '))
       else
-        ACanvas.TextOut(x+1,y,s);
+        ACanvas.TextOut(x+GetPaddingScaled(1),y,s);
       inc(x,ACanvas.TextWidth('constructor '));
     end;
 
@@ -571,19 +578,19 @@ begin
         begin
           // paint before prefix
           Token := Copy(s, 1, PrefixPosition-1);
-          ACanvas.TextOut(x+1,y,Token);
+          ACanvas.TextOut(x+GetPaddingScaled(1),y,Token);
           // paint highlight prefix
           SetFontColor(TextHilightColor);
           Token := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
-          ACanvas.TextOut(x+1+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1)),y,Token);
+          ACanvas.TextOut(x+GetPaddingScaled(1)+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1)),y,Token);
           // paint after prefix
           SetFontColor(ForegroundColor);
           Token := Copy(s, PrefixPosition+Length(aCompletion.CurrentString), High(Integer));
-          ACanvas.TextOut(x+1+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1+Length(aCompletion.CurrentString))),y,Token);
+          ACanvas.TextOut(x+GetPaddingScaled(1)+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1+Length(aCompletion.CurrentString))),y,Token);
         end else
-          ACanvas.TextOut(x+1,y,s);
+          ACanvas.TextOut(x+GetPaddingScaled(1),y,s);
       end else
-        ACanvas.TextOut(x+1,y,s);
+        ACanvas.TextOut(x+GetPaddingScaled(1),y,s);
       inc(x,ACanvas.TextWidth(s)+1);
       if x>MaxX then exit;
     end;
@@ -603,14 +610,13 @@ begin
     // paint icon
     if not UseImages then
     begin
-      if ImageIndex>=0 then begin
+      if ImageIndex>=0 then
         if MeasureOnly then
-          Inc(Result.X, 18)
-        else begin
-          IDEImages.Images_16.Draw(ACanvas,x+1,y+(Result.Y-16) div 2,ImageIndex);
-          inc(x,18);
-          if x>MaxX then exit;
-        end;
+          Inc(Result.X, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
+      else begin
+        IDEImages.Images_16.DrawForPPI (ACanvas, x+GetPaddingScaled(1), y+(Result.Y-ImageScaledSize.Height) div 2, ImageIndex, 16, aCompletion.TheForm.PixelsPerInch, 1);
+        Inc(x, ImageScaledSize.Width + (ImageScaledSize.Width div 4));
+        if x>MaxX then exit;
       end;
     end;
 
@@ -772,6 +778,7 @@ begin
     WriteToken(TokenStart,i);
   end;
   //debugln(['PaintCompletionItem END']);
+
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
@@ -1210,4 +1217,3 @@ finalization
   FreeAndNil(SynREEngine);
 
 end.
-
