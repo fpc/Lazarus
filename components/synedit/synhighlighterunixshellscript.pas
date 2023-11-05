@@ -71,6 +71,9 @@ type
   TProcTableProc = procedure of object;
 
 type
+
+  { TSynUNIXShellScriptSyn }
+
   TSynUNIXShellScriptSyn = class(TSynCustomHighlighter)
   private
     fRange: TRangeState;
@@ -100,7 +103,9 @@ type
     procedure NumberProc;
     procedure RoundOpenProc;
     procedure SlashProc;
+    procedure BackSlashProc;
     procedure SpaceProc;
+    procedure DoStringProc(AnEndChar: Char; AnEscape: Boolean);
     procedure StringProc;
     procedure UnknownProc;
     procedure MakeMethodTables;
@@ -216,7 +221,7 @@ begin
   end;  }
 end; { IsKeyWord }
 
-function TSynUNIXShellScriptSyn.IsSecondKeyWord(aToken: String): Boolean;
+function TSynUNIXShellScriptSyn.IsSecondKeyWord(aToken: string): Boolean;
 var
   I: Integer;
 begin
@@ -256,6 +261,7 @@ begin
       '0'..'9': fProcTable[I] := @NumberProc;
       '(': fProcTable[I] := @RoundOpenProc;
       '/': fProcTable[I] := @SlashProc;
+      '\': fProcTable[I] := @BackSlashProc;
       '$': fProcTable[i] := @DollarProc;
       #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
       #34, #39{!@#$#39}: fProcTable[I] := @StringProc;
@@ -439,19 +445,24 @@ begin
   if FLine[Run] = #0 then Exit;
   cc := FLine[Run];
   inc(Run);
-  if (cc = '{') then begin
-    // ${var}
-    while FLine[Run] in IdentChars do begin
-      case FLine[Run] of
-        #0, #10, #13: Break;
-      end;
-      inc(Run);
-    end;
-    if FLine[Run] = '}' then Inc(Run);
-  end else
-    // $var
-    while FLine[Run] in IdentChars do
-      inc(Run);
+  case cc of
+    '''': DoStringProc('''', True);
+    '"': DoStringProc('"', True);
+    '{': begin
+        // ${var}
+        while FLine[Run] in IdentChars do begin
+          case FLine[Run] of
+            #0, #10, #13: Break;
+          end;
+          inc(Run);
+        end;
+        if FLine[Run] = '}' then Inc(Run);
+      end
+    else
+      // $var
+      while FLine[Run] in IdentChars do
+        inc(Run);
+  end;
 end;
 
 procedure TSynUNIXShellScriptSyn.DotProc;
@@ -600,6 +611,14 @@ begin
   end;
 end;
 
+procedure TSynUNIXShellScriptSyn.BackSlashProc;
+begin
+  inc(Run);
+  if fLine[Run] <> #0 then
+    inc(Run);
+  fTokenID := tkUnKnown;
+end;
+
 procedure TSynUNIXShellScriptSyn.SpaceProc;
 begin
   inc(Run);
@@ -607,23 +626,31 @@ begin
   while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
+procedure TSynUNIXShellScriptSyn.DoStringProc(AnEndChar: Char; AnEscape: Boolean
+  );
+begin
+  fTokenID := tkString;
+
+  repeat
+    case FLine[Run] of
+      #0, #10, #13:
+        break;
+      '\':
+        if AnEscape then inc(Run);
+    end;
+    inc(Run);
+  until FLine[Run] = AnEndChar;
+  if FLine[Run] <> #0 then inc(Run);
+end;
+
 procedure TSynUNIXShellScriptSyn.StringProc;
 var
   QuoteChar: Char;
 begin
-// Single and Double Quotes.
-
-  fTokenID := tkString;
+  // Single and Double Quotes.
   QuoteChar := FLine[Run];      // either " or '
-  if (FLine[Run + 1] = QuoteChar) and (FLine[Run + 2] = QuoteChar)
-    then inc(Run, 2);
-  repeat
-    case FLine[Run] of
-      #0, #10, #13: break;
-    end;
-    inc(Run);
-  until FLine[Run] = QuoteChar;
-  if FLine[Run] <> #0 then inc(Run);
+  inc(Run);
+  DoStringProc(QuoteChar, QuoteChar = '"');
 end;
 
 procedure TSynUNIXShellScriptSyn.UnknownProc;
