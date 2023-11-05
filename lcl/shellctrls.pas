@@ -110,6 +110,7 @@ type
     function CanExpand(Node: TTreeNode): Boolean; override;
     procedure Collapse(Node: TTreeNode); override;
     function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
+    function Exists(APath: String): Boolean;
     function GetBuiltinIconSize: TSize; override;
     function NodeHasChildren(Node: TTreeNode): Boolean; override;
     property ExpandCollapseMode: TExpandCollapseMode read FExpandCollapseMode write FExpandCollapseMode default ecmRefreshedExpanding;
@@ -125,6 +126,7 @@ type
     function  GetPathFromNode(ANode: TTreeNode): string;
     procedure PopulateWithBaseFiles;
     procedure Refresh(ANode: TTreeNode); overload;
+    procedure UpdateView;
     property UseBuiltinIcons: Boolean read FUseBuiltinIcons write SetUseBuiltinIcons default true;
 
     { Properties }
@@ -257,6 +259,7 @@ type
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
     FUseBuiltInIcons: Boolean;
+    FLockUpdate: Integer;
     FOnAddItem: TAddItemEvent;
     FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
@@ -282,6 +285,7 @@ type
     destructor Destroy; override;
     { Methods specific to Lazarus }
     function GetPathFromItem(ANode: TListItem): string;
+    procedure UpdateView;
     { Properties }
     property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default true;
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
@@ -1231,9 +1235,111 @@ begin
   end;
 end;
 
+procedure TCustomShellTreeView.UpdateView;
+
+  procedure RecordNodeState(const ANode: TTreeNode; const AExpandedPaths: TStringList);
+  var
+    currentNode: TTreeNode;
+    firstChild: TTreeNode;
+  begin
+    currentNode := ANode;
+    while currentNode <> nil do
+    begin
+      if currentNode.Expanded then
+      begin
+        AExpandedPaths.Add(GetPathFromNode(currentNode));
+        firstChild := currentNode.GetFirstChild();
+        if firstChild <> nil then
+          RecordNodeState(firstChild, AExpandedPaths);
+      end;
+      currentNode := currentNode.GetNextSibling();
+    end;
+  end;
+
+  procedure RestoreNodeState(const ANode: TTreeNode; const ARefresh: boolean;
+    const AExpandedPaths: TStringList);
+  var
+    currentNode: TTreeNode;
+    firstChild: TTreeNode;
+  begin
+    currentNode := ANode;
+    while currentNode <> nil do
+    begin
+      if AExpandedPaths.IndexOf(GetPathFromNode(currentNode)) >= 0 then
+      begin
+        currentNode.Expanded := True;
+        if ARefresh then
+          Refresh(currentNode);
+        firstChild := currentNode.GetFirstChild();
+        if firstChild <> nil then
+          RestoreNodeState(firstChild, ARefresh, AExpandedPaths);
+      end
+      else
+        currentNode.Expanded := False;
+      currentNode := currentNode.GetNextSibling();
+    end;
+  end;
+
+var
+  node: TTreeNode;
+  topNodePath: String;
+  selectedPath: String;
+  selectedWasExpanded: Boolean = false;
+  expandedPaths: TStringList;
+begin
+  expandedPaths := TStringList.Create;
+  Items.BeginUpdate;
+  try
+    topNodePath := ChompPathDelim(GetPathFromNode(TopItem));
+    selectedPath := GetPathFromNode(Selected);
+    if Assigned(Selected) then
+      selectedWasExpanded := Selected.Expanded;
+
+    node := Items.GetFirstNode;
+    RecordNodeState(node, expandedPaths);
+    RestoreNodeState(node, true, expandedPaths);
+
+    if Exists(selectedPath) then
+    begin
+      Path := selectedPath;
+      // Setting the path expands the selected node --> apply the stored state.
+      Selected.Expanded := selectedWasExpanded;
+      // Avoid selected node to scroll away.
+      TopItem := Items.FindNodeWithTextPath(topNodePath);
+    end;
+
+    // Force synchronization of associated ShellListView
+    if Assigned(FShellListView) then
+      FShellListView.UpdateView;
+  finally
+    Items.EndUpdate;
+    expandedPaths.Free;
+  end;
+end;
+
 function TCustomShellTreeView.GetPath: string;
 begin
   Result := GetPathFromNode(Selected);
+end;
+
+function TCustomShellTreeView.Exists(APath: String): Boolean;
+// APath should be fully qualified
+var
+  Attr: LongInt;
+begin
+  Result := False;
+  Attr := FileGetAttrUtf8(APath);
+  {$ifdef debug_shellctrls}
+  debugln(['TCustomShellTreeView.SetPath.Exists: Attr = ', Attr]);
+  {$endif}
+  if (Attr = -1) then Exit;
+  if not (otNonFolders in FObjectTypes) then
+    Result := ((Attr and faDirectory) > 0)
+  else
+    Result := True;
+  {$ifdef debug_shellctrls}
+  debugln(['TCustomShellTreeView.SetPath.Exists: Result = ',Result]);
+  {$endif}
 end;
 
 {
@@ -1263,28 +1369,6 @@ var
         Result := FQRootPath;
     end
     else Result := ANode.Text;
-  end;
-
-  function Exists(Fn: String): Boolean;
-  //Fn should be fully qualified
-  var
-    Attr: LongInt;
-    Dirs: TStringList;
-    i: Integer;
-  begin
-    Result := False;
-    Attr := FileGetAttrUtf8(Fn);
-    {$ifdef debug_shellctrls}
-    debugln(['TCustomShellTreeView.SetPath.Exists: Attr = ', Attr]);
-    {$endif}
-    if (Attr = -1) then Exit;
-    if not (otNonFolders in FObjectTypes) then
-      Result := ((Attr and faDirectory) > 0)
-    else
-      Result := True;
-    {$ifdef debug_shellctrls}
-    debugln(['TCustomShellTreeView.SetPath.Exists: Result = ',Result]);
-    {$endif}
   end;
 
   function PathIsDriveRoot({%H-}Path: String): Boolean;  {$if not (defined(windows) and not defined(wince))}inline;{$endif}
@@ -1806,6 +1890,28 @@ end;
 function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
 begin
   Result := IncludeTrailingPathDelimiter(FRoot) + ANode.Caption;
+end;
+
+procedure TCustomShellListView.UpdateView;
+var
+  selectedItem: String = '';
+begin
+  if (FLockUpdate = 0) then
+  begin
+    if Assigned(Selected) then
+      selectedItem := Selected.Caption;
+    Clear;
+    PopulateWithRoot;
+    if selectedItem <> '' then
+      Selected := FindCaption(0, selectedItem, false, true, false);
+
+    inc(FLockUpdate);
+    try
+      ShellTreeView.UpdateView;
+    finally
+      dec(FLockUpdate);
+    end;
+  end;
 end;
 
 class procedure TCustomShellListView.WSRegisterClass;
