@@ -6335,38 +6335,34 @@ information.
 
 <element name="SPI_SETMOUSE">
 <short>
-System Parameter Info index used to set the threshold and acceleration values 
-for the mouse.
+Used to set the threshold and acceleration values for the mouse.
 </short>
 </element>
 
 <element name="SPI_GETBORDER">
 <short>
-System Parameter Info index used to get a factor applied to sizing borders for 
-a window.
+Used to get a factor applied to sizing borders for a window.
 </short>
 </element>
 
 <element name="SPI_SETBORDER">
 <short>
-System Parameter Info index used to set the factor applied to sizing borders 
-for a window.
+Used to set the factor applied to sizing borders for a window.
 </short>
 </element>
 
 <element name="SPI_GETKEYBOARDSPEED">
 <short>
-System Parameter Info index used to get the keyboard repeat rate setting in the 
-range 0 (approximately 2.5 repetitions per second) to 31 (approximately 30 
-repetitions per second).
+Used to get the keyboard repeat rate setting in the range 0 (approximately 2.5 
+repetitions per second) to 31 (approximately 30 repetitions per second).
 </short>
 </element>
 
 <element name="SPI_SETKEYBOARDSPEED">
 <short>
-System Parameter Info index used to set the keyboard repeat rate. The value 
-must be in the range 0 (approximately 2.5 repetitions per second) to 31 
-(approximately 30 repetitions per second).
+Used to set the keyboard repeat rate. The value must be in the range 0 
+(approximately 2.5 repetitions per second) to 31 (approximately 30 repetitions 
+per second).
 </short>
 </element>
 
@@ -6376,38 +6372,35 @@ must be in the range 0 (approximately 2.5 repetitions per second) to 31
 
 <element name="SPI_ICONHORIZONTALSPACING">
 <short>
-System Parameter Info index used to get or set the width (in pixels) for an 
-icon displayed in the large icon view. SM_CXICON gets the minimum width for an 
-icon.
+Used to get or set the width (in pixels) for an icon displayed in the large 
+icon view. SM_CXICON gets the minimum width for an icon.
 </short>
 </element>
 
 <element name="SPI_GETSCREENSAVETIMEOUT">
 <short>
-System Parameter Info index used to get the time-out value (in seconds) for a 
-screen saver. 
+Used to get the time-out value (in seconds) for a screen saver.
 </short>
 </element>
 
 <element name="SPI_SETSCREENSAVETIMEOUT">
 <short>
-System Parameter Info index used to set the time-out value (in seconds) for a 
-screen saver. 
+Used to set the time-out value (in seconds) for a screen saver. 
 </short>
 </element>
 
 <element name="SPI_GETSCREENSAVEACTIVE">
 <short>
-System Parameter Info index used to determine whether a screen saver is 
-enabled. Return value is version-dependent. TRUE is normally enabled - except 
-on Windows 7, Windows Server 2008, and Windows 2000 where TRUE is disabled.
+Used to determine whether a screen saver is enabled. Return value is 
+version-dependent. TRUE is normally enabled - except on Windows 7, Windows 
+Server 2008, and Windows 2000 where TRUE is disabled.
 </short>
 </element>
 
 <element name="SPI_SETSCREENSAVEACTIVE">
 <short>
-System Parameter Info index used to set the state for the screen saver. 
-Parameter value TRUE activates the screen saver, and FALSE deactivates it.
+Used to set the state for the screen saver. Parameter value TRUE activates the 
+screen saver, and FALSE deactivates it.
 </short>
 </element>
 
@@ -6421,113 +6414,111 @@ Parameter value TRUE activates the screen saver, and FALSE deactivates it.
 
 <element name="SPI_SETDESKWALLPAPER">
 <short>
-System Parameter Info index used to indicate that the system wallpaper has been 
-changed. The return value is <b>True</b> unless an error was detected.
+Used to indicate that the system wallpaper has been changed. The return value 
+is TRUE unless an error was detected.
 </short>
 </element>
 
 <element name="SPI_SETDESKPATTERN">
 <short>
-System Parameter Info index used to set the desktop pattern using the value 
-read from the WIN.INI file.
+Used to set the desktop pattern using the value read from the WIN.INI file.
 </short>
 </element>
 
 <element name="SPI_GETKEYBOARDDELAY">
 <short>
-System Parameter Info index used to get the repeat-delay setting for the 
-keyboard. The return value is in the range 0 (approximately 250 ms delay) to 3 
-(approximately 1 second delay). The actual delay rate is hardware-dependent.
+Used to get the repeat-delay setting for the keyboard. The return value is in 
+the range 0 (approximately 250 ms delay) to 3 (approximately 1 second delay). 
+The actual delay rate is hardware-dependent.
 </short>
 </element>
 
 <element name="SPI_SETKEYBOARDDELAY">
 <short>
-System Parameter Info index used to set the repeat-delay for the keyboard. The 
-new value must be in the range 0 (approximately 250 ms delay) to 3 
-(approximately 1 second delay). The actual delay rate is hardware-dependent.
+Used to set the repeat-delay for the keyboard. The new value must be in the 
+range 0 (approximately 250 ms delay) to 3 (approximately 1 second delay). The 
+actual delay rate is hardware-dependent.
 </short>
 </element>
 
 <element name="SPI_ICONVERTICALSPACING">
 <short>
-System Parameter Info index used to get or set the height (in pixels) for the 
-cell where an icon is displayed. SM_CYICON gets the minimum icon height.
+Used to get or set the height (in pixels) for the cell where an icon is 
+displayed. SM_CYICON gets the minimum icon height.
 </short>
 </element>
 
 <element name="SPI_GETICONTITLEWRAP">
 <short>
-System Parameter Info index used to determine whether word wrapping for the 
-caption text on an icon is enabled. Parameter value TRUE indicates word 
-wrapping is enabled.
+Used to determine whether word wrapping for the caption text on an icon is 
+enabled. Parameter value TRUE indicates word wrapping is enabled.
 </short>
 </element>
 
 <element name="SPI_SETICONTITLEWRAP">
 <short>
-System Parameter Info index used set to enable or disable word wrapping of the 
-caption text for an icon. Parameter value TRUE is enabled.
+Used set to enable or disable word wrapping of the caption text for an icon. 
+Parameter value TRUE is enabled.
 </short>
 </element>
 
 <element name="SPI_GETMENUDROPALIGNMENT">
 <short>
-System Parameter Info index used to determine whether a pop-up menu is 
-left-aligned or right-aligned to its menu bar item. TRUE is right-aligned.
+Used to determine whether a pop-up menu is left-aligned or right-aligned to its 
+menu bar item. TRUE is right-aligned.
 </short>
 </element>
 
 <element name="SPI_SETMENUDROPALIGNMENT">
 <short>
-System Parameter Info index used to set the alignment for a pop-up menu 
-relative to its menu bar item. FALSE is left-aligned. TRUE is right-aligned.
+Used to set the alignment for a pop-up menu relative to its menu bar item. 
+FALSE is left-aligned. TRUE is right-aligned.
 </short>
 </element>
 
 <element name="SPI_SETDOUBLECLKWIDTH">
 <short>
-System Parameter Info index used to set the width (in pixels) for the rectangle 
-around the first mouse click in a double-click sequence. The second mouse click 
-must be within the rectangle to be handled as a double-click event.
+Used to set the width (in pixels) for the rectangle around the first mouse 
+click in a double-click sequence. The second mouse click must be within the 
+rectangle to be handled as a double-click event.
 </short>
 </element>
 
 <element name="SPI_SETDOUBLECLKHEIGHT">
 <short>
-System Parameter Info index used to set the height (in pixels) for the 
-rectangle around the first mouse click in a double-click sequence. The second 
-mouse click must be within the rectangle to be handled as a double-click event.
+Used to set the height (in pixels) for the rectangle around the first mouse 
+click in a double-click sequence. The second mouse click must be within the 
+rectangle to be handled as a double-click event.
 </short>
 </element>
 
 <element name="SPI_GETICONTITLELOGFONT">
 <short>
-System Parameter Info index used to get the logical font information for icon 
-caption text. Used in the TWin32WidgetSet widgetset class.
+Used to get the logical font information for icon caption text. Used in the 
+TWin32WidgetSet widgetset class.
 </short>
 </element>
 
 <element name="SPI_SETDOUBLECLICKTIME">
 <short>
-System Parameter Info index used to set the mouse double-click time threshold. 
-The parameter value contains the maximum number of milliseconds between mouse 
-clicks treated as a double-click event. The maximum value for the setting is 
-5000 milliseconds (5 seconds).
+Used to set the mouse double-click time threshold. The parameter value contains 
+the maximum number of milliseconds between mouse clicks treated as a 
+double-click event. The maximum value for the setting is 5000 milliseconds 
+(5 seconds).
 </short>
 </element>
 
 <element name="SPI_SETMOUSEBUTTONSWAP">
 <short>
-System Parameter Info index used to swap or restore the actions performed for 
-the left and right mouse buttons. THe parameter value TRUE swaps the actions 
-performed for the buttons. FALSE restores the original behavior.
+Used to swap or restore the actions performed for the left and right mouse 
+buttons. The parameter value TRUE swaps the actions performed for the buttons. 
+FALSE restores the original behavior.
 </short>
 </element>
 
 <element name="SPI_SETICONTITLELOGFONT">
 <short>
-System Parameter Info index used to set the font used for icon caption text.
+Used to set the font used for icon caption text.
 </short>
 </element>
 
@@ -6541,79 +6532,77 @@ System Parameter Info index used to set the font used for icon caption text.
 
 <element name="SPI_SETDRAGFULLWINDOWS">
 <short>
-System Parameter Info index used to enable or disable full window dragging. The 
-parameter value TRUE enables full window dragging.
+Used to enable or disable full window dragging. The parameter value TRUE 
+enables full window dragging.
 </short>
 </element>
 
 <element name="SPI_GETDRAGFULLWINDOWS">
 <short>
-System Parameter Info index used to get the enabled state for full window 
-dragging. The return value TRUE indicates full window dragging is enabled.
+Used to get the enabled state for full window dragging. The return value TRUE 
+indicates full window dragging is enabled.
 </short>
 </element>
 
 <element name="SPI_GETNONCLIENTMETRICS">
 <short>
-System Parameter Info index used to get metrics for the non-client area on a 
-visible window. The return value contains size and font information for the 
-window, menu bar, status bar, borders, and fonts used on the window elements.
+Used to get metrics for the non-client area on a visible window. The return 
+value contains size and font information for the window, menu bar, status bar, 
+borders, and fonts used on the window elements.
 </short>
 </element>
 
 <element name="SPI_SETNONCLIENTMETRICS">
 <short>
-System Parameter Info index used to set metrics for the non-client area on a 
-visible window. The parameter value contains size and font information for the 
-window, menu bar, status bar, borders, and fonts applied to the window elements.
+Used to set metrics for the non-client area on a visible window. The parameter 
+value contains size and font information for the window, menu bar, status bar, 
+borders, and fonts applied to the window elements.
 </short>
 </element>
 
 <element name="SPI_GETMINIMIZEDMETRICS">
 <short>
-System Parameter Info index used to get metrics for a minimized window. The 
-return value includes information about the width of the minimized window and 
-the arrange order, direction, and gaps between adjacent minimized windows.
+Used to get metrics for a minimized window. The return value includes 
+information about the width of the minimized window and the arrange order, 
+direction, and gaps between adjacent minimized windows.
 </short>
 </element>
 
 <element name="SPI_SETMINIMIZEDMETRICS">
 <short>
-System Parameter Info index used to set metrics for a minimized window. The 
-parameter value includes information about the width of the minimized window 
-and the arrange order, direction, and gaps between adjacent minimized windows.
+Used to set metrics for a minimized window. The parameter value includes 
+information about the width of the minimized window and the arrange order, 
+direction, and gaps between adjacent minimized windows.
 </short>
 </element>
 
 <element name="SPI_GETICONMETRICS">
 <short>
-System Parameter Info index used to get metrics for icons. The return value 
-contains information about horizontal and vertical icon spacing, as well as 
-word wrapping status and logical font information for caption text.
+Used to get metrics for icons. The return value has information about 
+horizontal and vertical icon spacing, word wrapping status and logical font 
+information for caption text.
 </short>
 </element>
 
 <element name="SPI_SETICONMETRICS">
 <short>
-System Parameter Info index used to set metrics for icons. The parameter value 
-contains information about horizontal and vertical icon spacing, as well as 
-word wrapping status and logical font information for caption text.
+Used to set metrics for icons. The parameter value contains information about horizontal and vertical icon spacing, as well as word wrapping status and 
+logical font information for caption text.
 </short>
 </element>
 
 <element name="SPI_SETWORKAREA">
 <short>
-System Parameter Info index used to set the work area not obscured by the 
-taskbar or desktop toolbars. The parameter value contains the display rectangle 
-in virtual screen coordinates.
+Used to set the work area not obscured by the taskbar or desktop toolbars. The 
+parameter value contains the display rectangle in virtual screen coordinates.
 </short>
 </element>
 
 <element name="SPI_GETWORKAREA">
 <short>
-System Parameter Info index used to get the work area on the primary display 
-not obscured by the taskbar or desktop toolbars. The return value contains the 
-display rectangle in virtual screen coordinates.
+Used to get the work area on the primary display not obscured by the taskbar or 
+desktop toolbars. The return value contains the display rectangle in virtual 
+screen coordinates.
 </short>
 </element>
 
@@ -6623,93 +6612,86 @@ display rectangle in virtual screen coordinates.
 
 <element name="SPI_GETFILTERKEYS">
 <short>
-System Parameter Info index used to get information about the FilterKeys 
+Used to get information about the FilterKeys 
 accessibility feature.
 </short>
 </element>
 
 <element name="SPI_SETFILTERKEYS">
 <short>
-System Parameter Info index used to apply settings for the FilterKeys 
-accessibility feature.
+Used to apply settings for the FilterKeys accessibility feature.
 </short>
 </element>
 
 <element name="SPI_GETTOGGLEKEYS">
 <short>
-System Parameter Info index used to get information about the ToggleKeys 
-accessibility feature.
+Used to get information about the ToggleKeys accessibility feature.
 </short>
 </element>
 
 <element name="SPI_SETTOGGLEKEYS">
 <short>
-System Parameter Info index used to apply settings for the ToggleKeys 
-accessibility feature.
+Used to apply settings for the ToggleKeys accessibility feature.
 </short>
 </element>
 
 <element name="SPI_GETMOUSEKEYS">
 <short>
-System Parameter Info index used get information about the MouseKeys 
-accessibility feature.
+Used get information about the MouseKeys accessibility feature.
 </short>
 </element>
 
 <element name="SPI_SETMOUSEKEYS">
 <short>
-System Parameter Info index used to apply settings for the MouseKeys 
-accessibility feature.
+Used to apply settings for the MouseKeys accessibility feature.
 </short>
 </element>
 
 <element name="SPI_GETSHOWSOUNDS">
 <short>
-System Parameter Info index used to determine whether Show Sounds accessibility 
-flag is enabled. TRUE is enabled.
+Used to determine whether Show Sounds accessibility flag is enabled. TRUE is 
+enabled.
 </short>
 </element>
 
 <element name="SPI_SETSHOWSOUNDS">
 <short>
-System Parameter Info index used to enabled or disable the Show Sounds 
-Accessibility flag. TRUE is enabled.
+Used to enabled or disable the Show Sounds Accessibility flag. TRUE is enabled.
 </short>
 </element>
 
 <element name="SPI_GETSTICKYKEYS">
 <short>
-System Parameter Info index used to get information about the StickyKeys 
-accessibility feature. The return value contains a set of bit-flags with the 
-settings for the feature. Please note that numeric constants for these bit-flag 
-values are <b>not</b> defined in the current LCL version.
+Used to get information about the StickyKeys accessibility feature. The return 
+value contains a set of bit-flags with the settings for the feature. Please 
+note that numeric constants for these bit-flag values are <b>not</b> defined in 
+the current LCL version.
 </short>
 </element>
 
 <element name="SPI_SETSTICKYKEYS">
 <short>
-System Parameter Info index used to apply settings for the StickyKeys 
-accessibility feature. The parameter value contains a set of bit-flags with the 
-settings for the feature. Please note that numeric constants for these bit-flag 
-values are <b>not</b> defined in the current LCL version.
+Used to apply settings for the StickyKeys accessibility feature. The parameter 
+value contains a set of bit-flags with the settings for the feature. Please 
+note that numeric constants for these bit-flag values are <b>not</b> defined in 
+the current LCL version.
 </short>
 </element>
 
 <element name="SPI_GETACCESSTIMEOUT">
 <short>
-System Parameter Info index used to get information about the time-out 
-period for accessibility features. The return value contains the time-out 
-period (in milliseconds), and bit-flags for the enabled state and the audible 
-notification setting.
+Used to get information about the time-out period for accessibility features. 
+The return value contains the time-out period (in milliseconds), and bit-flags 
+for the enabled state and the audible notification setting.
 </short>
 </element>
 
 <element name="SPI_SETACCESSTIMEOUT">
 <short>
-System Parameter Info index used to apply settings for the time-out period for 
-accessibility features. The parameter value contains the time-out period (in 
-milliseconds), and bit-flags to enable or disable the accessibility time-out 
-feature and an audible notification for the condition.
+Used to apply settings for the time-out period for accessibility features. The 
+parameter value contains the time-out period (in milliseconds), and bit-flags 
+to enable or disable the accessibility time-out feature and an audible 
+notification for the condition.
 </short>
 </element>
 
@@ -6729,111 +6711,107 @@ controlled using the Control Panel.
 
 <element name="SPI_GETSOUNDSENTRY">
 <short>
-System Parameter Info index used to get information about the SoundSentry 
-accessibility feature. When enabled, a visual indication is displayed when a 
-sound is generated.
+Used to get information about the SoundSentry accessibility feature. When 
+enabled, a visual indication is displayed when a sound is generated.
 </short>
 </element>
 
 <element name="SPI_SETSOUNDSENTRY">
 <short>
-System Parameter Info index used to apply settings for the SoundSentry 
-accessibility feature. When enabled, a visual indication is displayed when a 
-sound is generated.
+Used to apply settings for the SoundSentry accessibility feature. When enabled, 
+a visual indication is displayed when a sound is generated.
 </short>
 </element>
 
 <element name="SPI_GETHIGHCONTRAST">
 <short>
-System Parameter Info index used to get settings for the HighContrast 
-accessibility feature. When enabled, the display theme is adjusted for maximum 
-visibility for a visually-impaired user.
+Used to get settings for the HighContrast accessibility feature. When enabled, 
+the display theme is adjusted for maximum visibility for a visually-impaired 
+user.
 </short>
 </element>
 
 <element name="SPI_SETHIGHCONTRAST">
 <short>
-System Parameter Info index used to apply settings for the HighContrast 
-accessibility feature. When enabled, the display theme is adjusted for maximum 
-visibility for a visually-impaired user.
+Used to apply settings for the HighContrast accessibility feature. When 
+enabled, the display theme is adjusted for maximum visibility for a 
+visually-impaired user.
 </short>
 </element>
 
 <element name="SPI_GETKEYBOARDPREF">
 <short>
-System Parameter Info index used to determine whether keyboard input and 
-interfaces are used in place of mouse counterparts. TRUE when keyboard input is 
-used.
+Used to determine whether keyboard input and interfaces are used in place of 
+mouse counterparts. TRUE when keyboard input is used.
 </short>
 </element>
 
 <element name="SPI_SETKEYBOARDPREF">
 <short>
-System Parameter Info index used to apply settings for keyboard preference. 
-TRUE indicates that keyboard input and interfaces are preferred to the 
-mouse-based equivalents.
+Used to apply settings for keyboard preference. TRUE indicates that keyboard 
+input and interfaces are preferred to the mouse-based equivalents.
 </short>
 </element>
 
 <element name="SPI_GETSCREENREADER">
 <short>
-System Parameter Info index used to determine whether a screen reader is 
-active. The return value is TRUE if the screen reviewer is running.
+Used to determine whether a screen reader is active. The return value is TRUE 
+if the screen reviewer is running.
 </short>
 </element>
 
 <element name="SPI_SETSCREENREADER">
 <short>
-System Parameter Info index used to apply the flag which indicates whether a 
-screen reader is active. TRUE indicates the screen reviewer is running.
+Used to apply the flag which indicates whether a screen reader is active. TRUE 
+indicates the screen reviewer is running.
 </short>
 </element>
 
 <element name="SPI_GETANIMATION">
 <short>
-System Parameter Info index used to get the animation effects enabled for user 
-actions, like minimize and restore animations.
+Used to get the animation effects enabled for user actions, like minimize and 
+restore animations.
 </short>
 </element>
 
 <element name="SPI_SETANIMATION">
 <short>
-System Parameter Info index used to apply settings for the animation effects 
-enabled for user actions, like minimize and restore animations.
+Used to apply settings for the animation effects enabled for user actions, like 
+minimize and restore animations.
 </short>
 </element>
 
 <element name="SPI_GETFONTSMOOTHING">
 <short>
-System Parameter Info index used to determine whether font smoothing is enabled 
-for the system. Font smoothing uses antialiasing to smooth curves using pixels 
-with different shades of gray. TRUE is enabled.
+Used to determine whether font smoothing is enabled for the system. Font 
+smoothing uses antialiasing to smooth curves using pixels with different shades 
+of gray. TRUE is enabled.
 </short>
 </element>
 
 <element name="SPI_SETFONTSMOOTHING">
 <short>
-System Parameter Info index used to apply the font smoothing setting for the 
-system. Font smoothing uses antialiasing to smooth curves using pixels 
-with different shades of gray. TRUE is enabled.
+Used to apply the font smoothing setting for the system. Font smoothing uses 
+antialiasing to smooth curves using pixels with different shades of gray. TRUE 
+is enabled.
 </short>
 </element>
 
 <element name="SPI_SETDRAGWIDTH">
 <short>
-System Parameter Info index used to set the width (in pixels) for the rectangle 
-used to detect the start of a drag operation. The value is the number of 
-horizontal pixels used as the threshold for the drag operation. The SM_CXDRAG 
-system metric gets the existing drag width value.
+Used to set the width (in pixels) for the rectangle used to detect the start of 
+a drag operation. The value is the number of horizontal pixels used as the 
+threshold for the drag operation. The SM_CXDRAG system metric gets the existing 
+drag width value.
 </short>
 </element>
 
 <element name="SPI_SETDRAGHEIGHT">
 <short>
-System Parameter Info index used to set the height (in pixels) for the 
-rectangle used to detect the start of a drag operation. The value is the number 
-of vertical pixels used as the threshold for the drag operation. The SM_CYDRAG 
-system metric gets the existing drag height value.
+Used to set the height (in pixels) for the rectangle used to detect the start 
+of a drag operation. The value is the number of vertical pixels used as the 
+threshold for the drag operation. The SM_CYDRAG system metric gets the existing 
+drag height value.
 </short>
 </element>
 
@@ -6843,97 +6821,93 @@ system metric gets the existing drag height value.
 
 <element name="SPI_GETLOWPOWERTIMEOUT">
 <short>
-System Parameter Info index used to get the time-out value the low-power 
-condition in a screen saver. Supported for 32-bit applications on Windows 
-Server 2003 and Windows XP/2000.
+Used to get the time-out value the low-power condition in a screen saver. 
+Supported for 32-bit applications on Windows Server 2003 and Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_GETPOWEROFFTIMEOUT">
 <short>
-System Parameter Info index used to get the time-out value the power-off 
-condition in a screen saver. Supported for 32-bit applications on Windows 
-Server 2003 and Windows XP/2000.
+Used to get the time-out value the power-off condition in a screen saver. 
+Supported for 32-bit applications on Windows Server 2003 and Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_SETLOWPOWERTIMEOUT">
 <short>
-System Parameter Info index used to set the time-out value (in seconds) for the 
-low-power condition in a screen saver. Supported for 32-bit applications on 
-Windows Server 2003 and Windows XP/2000.
+Used to set the time-out value (in seconds) for the low-power condition in a 
+screen saver. Supported for 32-bit applications on Windows Server 2003 and 
+Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_SETPOWEROFFTIMEOUT">
 <short>
-System Parameter Info index used to set the time-out value (in seconds) for the 
-power-off condition in a screen saver. Supported for 32-bit applications on 
-Windows Server 2003 and Windows XP/2000.
+Used to set the time-out value (in seconds) for the power-off condition in a 
+screen saver. Supported for 32-bit applications on Windows Server 2003 and 
+Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_GETLOWPOWERACTIVE">
 <short>
-System Parameter Info index used to determine whether the low-power condition 
-is enabled for a screen saver. Supported for 32-bit applications on Windows 
-Server 2003 and Windows XP/2000.
+Used to determine whether the low-power condition is enabled for a screen 
+saver. Supported for 32-bit applications on Windows Server 2003 and Windows 
+XP/2000.
 </short>
 </element>
 
 <element name="SPI_GETPOWEROFFACTIVE">
 <short>
-System Parameter Info index used to determine whether the power-off condition 
-is enabled for a screen saver. Supported for 32-bit applications on Windows 
-Server 2003 and Windows XP/2000.
+Used to determine whether the power-off condition is enabled for a screen 
+saver. Supported for 32-bit applications on Windows Server 2003 and Windows 
+XP/2000.
 </short>
 </element>
 
 <element name="SPI_SETLOWPOWERACTIVE">
 <short>
-System Parameter Info index used to enable or disable the low-power state 
-for a screen saver. 1 to activate, or 0 to deactivate. Supported for 32-bit 
-applications on Windows Server 2003 and Windows XP/2000.
+Used to enable or disable the low-power state for a screen saver. 1 to 
+activate, or 0 to deactivate. Supported for 32-bit applications on Windows 
+Server 2003 and Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_SETPOWEROFFACTIVE">
 <short>
-System Parameter Info index used to enable or disable the power-off state 
-for a screen saver. 1 to activate, or 0 to deactivate. Supported for 32-bit 
-applications on Windows Server 2003 and Windows XP/2000.
+Used to enable or disable the power-off state for a screen saver. 1 to 
+activate, or 0 to deactivate. Supported for 32-bit applications on Windows 
+Server 2003 and Windows XP/2000.
 </short>
 </element>
 
 <element name="SPI_SETCURSORS">
 <short>
-System Parameter Info index used to reload the system cursors.
+Used to reload the system cursors.
 </short>
 </element>
 
 <element name="SPI_SETICONS">
 <short>
-System Parameter Info index used to reload the system icons.
+Used to reload the system icons.
 </short>
 </element>
 
 <element name="SPI_GETDEFAULTINPUTLANG">
 <short>
-System Parameter Info index used to get the default input language for the 
-system.
+Used to get the default input language for the system.
 </short>
 </element>
 
 <element name="SPI_SETDEFAULTINPUTLANG">
 <short>
-System Parameter Info index used to set the default input language for the 
-system. 
+Used to set the default input language for the system.
 </short>
 </element>
 
 <element name="SPI_SETLANGTOGGLE">
 <short>
-System Parameter Info index used to set the hot keys which switch between input 
+Used to set the hot keys which switch between input 
 languages for the system.
 </short>
 </element>
@@ -6944,34 +6918,33 @@ languages for the system.
 
 <element name="SPI_SETMOUSETRAILS">
 <short>
-System Parameter Info index used to enable or disable the Mouse Trails feature. 
-Set the uiParam parameter to 0 or 1 to disable the feature. Use a value larger 
-than 1 to enable the feature (a higher value results in a longer trail). Not 
-supported on Windows 2000.
+Used to enable or disable the Mouse Trails feature. Set the uiParam parameter 
+to 0 or 1 to disable the feature. Use a value larger than 1 to enable the 
+feature (a higher value results in a longer trail). Not supported on Windows 
+2000.
 </short>
 </element>
 
 <element name="SPI_GETMOUSETRAILS">
 <short>
-System Parameter Info index used to determine whether the Mouse Trails feature 
-is enabled. The pvParam parameter returns the state and length for the mouse 
-trail. 0 or 1 is disabled. a value larger than 1 is the relative length for an 
-enabled mouse trail (a higher value indicates a longer trail). Not supported on 
-Windows 2000.
+Used to determine whether the Mouse Trails feature is enabled. The pvParam 
+parameter returns the state and length for the mouse trail. 0 or 1 is disabled. 
+a value larger than 1 is the relative length for an enabled mouse trail 
+(a higher value indicates a longer trail). Not supported on Windows 2000.
 </short>
 </element>
 
 <element name="SPI_GETSNAPTODEFBUTTON">
 <short>
-System Parameter Info index used to determine whether the "Snap to Default 
-Button" feature is enabled. The pvParam argument returns TRUE when enabled.
+Used to determine whether the "Snap to Default Button" feature is enabled. The 
+pvParam argument returns TRUE when enabled.
 </short>
 </element>
 
 <element name="SPI_SETSNAPTODEFBUTTON">
 <short>
-System Parameter Info index used to enable or disable the "Snap to Default 
-Button" feature. Set uiParam to TRUE to enable. 
+Used to enable or disable the "Snap to Default Button" feature. Set uiParam to 
+TRUE to enable.
 </short>
 </element>
 
@@ -6985,223 +6958,212 @@ Button" feature. Set uiParam to TRUE to enable.
 
 <element name="SPI_GETMOUSEHOVERWIDTH">
 <short>
-System Parameter Info index used to get the width (in pixels) for the 
-rectangle with the bounds for a mouse hover event. pvParam returns the 
-rectangle width.
+Used to get the width (in pixels) for the rectangle with the bounds for a mouse 
+hover event. pvParam returns the rectangle width.
 </short>
 </element>
 
 <element name="SPI_SETMOUSEHOVERWIDTH">
 <short>
-System Parameter Info index used to set the width (in pixels) for the rectangle 
-with the bounds for a mouse hover event. Use uiParam to set the width for the 
-rectangle.
+Used to set the width (in pixels) for the rectangle with the bounds for a mouse 
+hover event. Use uiParam to set the width for the rectangle.
 </short>
 </element>
 
 <element name="SPI_GETMOUSEHOVERHEIGHT">
 <short>
-System Parameter Info index used to get the height (in pixels) for the 
-rectangle with the bounds for a mouse hover event. pvParam returns the 
-rectangle height.
+Used to get the height (in pixels) for the rectangle with the bounds for a 
+mouse hover event. pvParam returns the rectangle height.
 </short>
 </element>
 
 <element name="SPI_SETMOUSEHOVERHEIGHT">
 <short>
-System Parameter Info index used to set the height (in pixels) for the 
-rectangle with the bounds for a mouse hover event. Use uiParam to set the 
-height for the rectangle.
+Used to set the height (in pixels) for the rectangle with the bounds for a 
+mouse hover event. Use uiParam to set the height for the rectangle.
 </short>
 </element>
 
 <element name="SPI_GETMOUSEHOVERTIME">
 <short>
-System Parameter Info index used to get the elapsed time (in milliseconds) 
-within a hover rectangle before a mouse hover event is generated. pvParam 
-contains the number of milliseconds for the hover time value.
+Used to get the elapsed time (in milliseconds) within a hover rectangle before 
+a mouse hover event is generated. pvParam contains the number of milliseconds 
+for the hover time value.
 </short>
 </element>
 
 <element name="SPI_SETMOUSEHOVERTIME">
 <short>
-System Parameter Info index used to set the elapsed time (in milliseconds) 
-within a hover rectangle before a mouse hover event is generated. uiParam 
-contains the number of milliseconds for the hover time value. Used when 
-HOVER_DEFAULT is passed to TrackMouseEvent.
+Used to set the elapsed time (in milliseconds) within a hover rectangle before 
+a mouse hover event is generated. uiParam contains the number of milliseconds 
+for the hover time value. Used when HOVER_DEFAULT is passed to TrackMouseEvent.
 </short>
 </element>
 
 <element name="SPI_GETWHEELSCROLLLINES">
 <short>
-System Parameter Info index used to get the number of lines scrolled when the 
-mouse wheel is moved. pvParam returns the unsigned Integer with the number of 
-lines.
+Used to get the number of lines scrolled when the mouse wheel is moved. pvParam 
+returns the unsigned Integer with the number of lines.
 </short>
 </element>
 
 <element name="SPI_SETWHEELSCROLLLINES">
 <short>
-System Parameter Info index used to set the number of lines scrolled when the 
-mouse wheel is moved. uiParam is the unsigned Integer with the suggested number 
-of lines when modifier keys are not used. 0 prevents scrolling with the mouse 
+Used to set the number of lines scrolled when the mouse wheel is moved. uiParam 
+is the unsigned Integer with the suggested number of lines when modifier keys 
+are not used. 0 prevents scrolling with the mouse
 wheel.
 </short>
 </element>
 
 <element name="SPI_GETMENUSHOWDELAY">
 <short>
-System Parameter Info index used to get the delay time (in milliseconds) before 
-the shortcut menu is displayed for a hovered menu item. pvParam returns the 
-DWORD value for the delay time.
+Used to get the delay time (in milliseconds) before the shortcut menu is 
+displayed for a hovered menu item. pvParam returns the DWORD value for the 
+delay time.
 </short>
 </element>
 
 <element name="SPI_SETMENUSHOWDELAY">
 <short>
-System Parameter Info index used to set the delay time (in milliseconds) before 
-the shortcut menu is displayed for a hovered menu item. Set uiParam to the 
-DWORD value for the delay time.
+Used to set the delay time (in milliseconds) before the shortcut menu is 
+displayed for a hovered menu item. Set uiParam to the DWORD value for the delay 
+time.
 </short>
 </element>
 
 <element name="SPI_GETSHOWIMEUI">
 <short>
-System Parameter Info index used to determine whether the IME status window is 
-visible. pvParam returns TRUE when the IME window is visible.
+Used to determine whether the IME status window is visible. pvParam returns 
+TRUE when the IME window is visible.
 </short>
 </element>
 
 <element name="SPI_SETSHOWIMEUI">
 <short>
-System Parameter Info index used to set the visibility for the IME status 
-window. Set uiParam to TRUE to display the IME window.
+Used to set the visibility for the IME status window. Set uiParam to TRUE to 
+display the IME window.
 </short>
 </element>
 
 <element name="SPI_GETMOUSESPEED">
 <short>
-System Parameter Info index used to get the relative pointer acceleration 
-applied when the mouse is moved. pvParam contains the Integer value in the 
-range 1 (slowest) to 20 (fastest).
+Used to get the relative pointer acceleration applied when the mouse is moved. 
+pvParam contains the Integer value in the range 1 (slowest) to 20 (fastest).
 </short>
 </element>
 
 <element name="SPI_SETMOUSESPEED">
 <short>
-System Parameter Info index used to set the relative pointer acceleration 
-applied when the mouse is moved. uiParam is the Integer value for the mouse 
-speed and must be in the range 1 (slowest) to 20 (fastest).
+Used to set the relative pointer acceleration applied when the mouse is moved. 
+uiParam is the Integer value for the mouse speed and must be in the range 
+1 (slowest) to 20 (fastest).
 </short>
 </element>
 
 <element name="SPI_GETSCREENSAVERRUNNING">
 <short>
-System Parameter Info index used to determine whether the screen saver is 
-running for a desktop session. pvParam is TRUE if a screen saver is running.
+Used to determine whether the screen saver is running for a desktop session. 
+pvParam is TRUE if a screen saver is running.
 </short>
 </element>
 
 <element name="SPI_GETDESKWALLPAPER">
 <short>
-System Parameter Info index used to get the fully-qualified path to the image 
-used as the desktop wallpaper. pvParam points to the buffer with the 
-null-terminated path value, or an empty string if a desktop wallpaper is not 
-used. Use uiParam to specify the size for the buffer in pvParam.
+Used to get the fully-qualified path to the image used as the desktop 
+wallpaper. pvParam points to the buffer with the null-terminated path value, or 
+an empty string if a desktop wallpaper is not used. Use uiParam to specify the 
+size for the buffer in pvParam.
 </short>
 </element>
 
 <element name="SPI_GETACTIVEWINDOWTRACKING">
 <short>
-System Parameter Info index used to determine whether active window tracking 
-(focus follows mouse) is enabled or disabled. pvParam returns TRUE when enabled.
+Used to determine whether active window tracking (focus follows mouse) is 
+enabled or disabled. pvParam returns TRUE when enabled.
 </short>
 </element>
 
 <element name="SPI_SETACTIVEWINDOWTRACKING">
 <short>
-System Parameter Info index used to enable or disable active window tracking 
-(focus follows mouse). Set uiParam to TRUE to enable the feature.
+Used to enable or disable active window tracking (focus follows mouse). Set 
+uiParam to TRUE to enable the feature.
 </short>
 </element>
 
 <element name="SPI_GETMENUANIMATION">
 <short>
-System Parameter Info index used to determine whether the menu animation 
-feature is enabled. pvParam is TRUE if menu animation is enabled. 
-SPI_GETMENUFADE indicates if menus use fade or slide animations.
+Used to determine whether the menu animation feature is enabled. pvParam is 
+TRUE if menu animation is enabled. SPI_GETMENUFADE indicates if menus use fade 
+or slide animations.
 </short>
 </element>
 
 <element name="SPI_SETMENUANIMATION">
 <short>
-System Parameter Info index used to enable or disable the menu animation 
-feature. Set pvParam to TRUE to enable menu animation. Use SPI_GETMENUFADE to 
-control whether fade or slide animations are used.
+Used to enable or disable the menu animation feature. Set pvParam to TRUE to 
+enable menu animation. Use SPI_GETMENUFADE to control whether fade or slide 
+animations are used.
 </short>
 </element>
 
 <element name="SPI_GETCOMBOBOXANIMATION">
 <short>
-System Parameter Info index used to determine whether the slide-open animation 
-effect is enabled for a combo-box. pvParam returns TRUE when the animation 
-effect is enabled.
+Used to determine whether the slide-open animation effect is enabled for a 
+combo-box. pvParam returns TRUE when the animation effect is enabled.
 </short>
 </element>
 
 <element name="SPI_SETCOMBOBOXANIMATION">
 <short>
-System Parameter Info index used to enable or disable the slide-open animation 
-effect for a combo-box. Set pvParam parameter to TRUE to enable the animation 
-effect.
+Used to enable or disable the slide-open animation effect for a combo-box. Set 
+pvParam parameter to TRUE to enable the animation effect.
 </short>
 </element>
 
 <element name="SPI_GETLISTBOXSMOOTHSCROLLING">
 <short>
-System Parameter Info index used to determine whether smooth scroll is enabled 
-or disabled in list box controls. pvParam returns TRUE when smooth scroll is 
-enabled.
+Used to determine whether smooth scroll is enabled or disabled in list box 
+controls. pvParam returns TRUE when smooth scroll is enabled.
 </short>
 </element>
 
 <element name="SPI_SETLISTBOXSMOOTHSCROLLING">
 <short>
-System Parameter Info index used to enable or disable smooth scroll in list box 
-controls. Set pvParam to TRUE to enable smooth scroll.
+Used to enable or disable smooth scroll in list box controls. Set pvParam to 
+TRUE to enable smooth scroll.
 </short>
 </element>
 
 <element name="SPI_GETGRADIENTCAPTIONS">
 <short>
-System Parameter Info index used to determine whether a gradient is drawn in 
-window title bars. pvParam returns TRUE if the gradient effect is enabled.
+Used to determine whether a gradient is drawn in window title bars. pvParam 
+returns TRUE if the gradient effect is enabled.
 </short>
 </element>
 
 <element name="SPI_SETGRADIENTCAPTIONS">
 <short>
-System Parameter Info index used to enable or disable the gradient effect in 
-window title bars. Set pvParam to TRUE to enabled the gradient effect on 
-displays with a color depth larger than 256.
+Used to enable or disable the gradient effect in window title bars. Set pvParam 
+to TRUE to enabled the gradient effect on displays with a color depth larger 
+than 256 colors.
 </short>
 </element>
 
 <element name="SPI_GETKEYBOARDCUES">
 <short>
-System Parameter Info index used to determine whether menu access keys are 
-drawn as accelerator keys (underlined). pvParam returns TRUE when menu access 
-keys are underlined, and FALSE if the underline appears after the menu has been 
-activated.
+Used to determine whether menu access keys are drawn as accelerator keys 
+(underlined). pvParam returns TRUE when menu access keys are underlined, and 
+FALSE if the underline appears after the menu has been activated.
 </short>
 </element>
 
 <element name="SPI_SETKEYBOARDCUES">
 <short>
-System Parameter Info index used to enable or disable drawing of menu access 
-keys as accelerator keys (underlined). Set pvParam to TRUE when menu access 
-keys are always underlined, and FALSE if the underline appears after the menu 
-has been activated using the keyboard.
+Used to enable or disable drawing of menu access keys as accelerator keys 
+(underlined). Set pvParam to TRUE when menu access keys are always underlined, 
+and FALSE if the underline appears after the menu has been activated using the 
+keyboard.
 </short>
 </element>
 
@@ -7215,227 +7177,365 @@ has been activated using the keyboard.
 
 <element name="SPI_GETACTIVEWNDTRKZORDER">
 <short>
-System Parameter Info index used to determine whether windows activated by 
-window tracking are brought to the top of the display order (Z-axis). pvParam 
-returns TRUE when enabled.
+Used to determine whether windows activated by window tracking are brought to 
+the top of the display order (Z-axis). pvParam returns TRUE when enabled.
 </short>
 </element>
 
 <element name="SPI_SETACTIVEWNDTRKZORDER">
 <short>
-System Parameter Info index used to enable or disable changes to the Z-order 
-for windows activated using window tracking. Set pvParam to TRUE to bring a 
-tracking activated window to the top of the display order (Z-axis).
+Used to enable or disable changes to the Z-order for windows activated using 
+window tracking. Set pvParam to TRUE to bring a tracking activated window to 
+the top of the display order (Z-axis).
 </short>
 </element>
 
 <element name="SPI_GETHOTTRACKING">
 <short>
-System Parameter Info index used to determine whether hot-tracking (or 
-hot-lighting) is enabled for UI elements. pvParam returns TRUE if hot-tracking 
-is enabled.
+Used to determine whether hot-tracking (or hot-lighting) is enabled for UI 
+elements. pvParam returns TRUE if hot-tracking is enabled.
 </short>
 </element>
 
 <element name="SPI_SETHOTTRACKING">
 <short>
-System Parameter Info index used to enable or disable hot-tracking (or 
-hot-lighting) for UI elements. Set pvParam to TRUE to enable hot-tracking.
+Used to enable or disable hot-tracking (or hot-lighting) for UI elements. Set 
+pvParam to TRUE to enable hot-tracking.
 </short>
 </element>
 
-<!-- WIP: Here -->
 <element name="SPI_GETMENUFADE">
-<short/>
+<short>
+Used to determine whether the menu fade animation effect is enabled. pvParam 
+returns TRUE if the animation effect is enabled. When set to FALSE, the menu 
+slide animation effect is used instead. Neither animation effect is displayed 
+when SPI_SETMENUANIMATION is disabled.
+</short>
 </element>
 
 <element name="SPI_SETMENUFADE">
-<short/>
+<short>
+Used to enable or disable the the menu fade animation effect on displays using 
+a color depth higher than 256. Set pvParam to TRUE to enable the menu fade 
+animation effect. Set pvParam to FALSE to enable the menu slide animation 
+effect instead. Use SPI_SETMENUANIMATION to enable or disable all animation 
+effects.
+</short>
 </element>
 
 <element name="SPI_GETSELECTIONFADE">
-<short/>
+<short>
+Used to determine whether the selection fade effect is enabled. pvParam returns 
+TRUE if the animation effect is enabled.
+</short>
 </element>
 
 <element name="SPI_SETSELECTIONFADE">
-<short/>
+<short>
+Used to enable or disable the selection fade effect for menu items on displays 
+with a color depth higher than 256 colors. Set pvParam to TRUE to enable the 
+selection fade effect.
+</short>
 </element>
 
 <element name="SPI_GETTOOLTIPANIMATION">
-<short/>
+<short>
+Used to determine whether ToolTip animation is enabled. pvParam returns TRUE if 
+the the animation effect is enabled. Use SPI_GETTOOLTIPFADE to control whether 
+fade or slide animation effects are used for ToolTip animations.
+</short>
 </element>
 
 <element name="SPI_SETTOOLTIPANIMATION">
-<short/>
+<short>
+Used to enable or disable ToolTip animation effects. Set pvParam to TRUE to 
+enable ToolTip animations. Use SPI_SETTOOLTIPFADE to specify whether the fade 
+or slide animation effect is used.
+</short>
 </element>
 
 <element name="SPI_GETTOOLTIPFADE">
-<short/>
+<short>
+Used to determine whether a ToolTip animation uses a fade effect or a slide 
+effect. pvParam return TRUE for the fade effect, or FALSE for the slide effect. 
+Use SPI_SETTOOLTIPANIMATION to enable or disable ToolTip animation effects.
+</short>
 </element>
 
 <element name="SPI_SETTOOLTIPFADE">
-<short/>
+<short>
+Used to indicate whether a ToolTip animation uses a fade effect or a slide 
+effect. Set pvParam to TRUE to use the fade animation or FALSE to use the slide 
+animation. Use SPI_SETTOOLTIPANIMATION to enable or disable ToolTip animation 
+effects.
+</short>
 </element>
 
 <element name="SPI_GETCURSORSHADOW">
-<short/>
+<short>
+Used to determine whether the cursor is displayed with a shadow. pvParam 
+returns TRUE if the shadow is enabled. Shown on displays with a color depth 
+larger than 256 colors.
+</short>
 </element>
 
 <element name="SPI_SETCURSORSHADOW">
-<short/>
+<short>
+Used to enable or disable a shadow for the cursor. Set pvParam to TRUE to 
+enable the cursor shadow. Shown on displays with a color depth larger than 256 
+colors.
+</short>
 </element>
 
 <element name="SPI_GETUIEFFECTS">
-<short/>
+<short>
+Used to determine whether UI effects are enabled or disabled. pvParam returns 
+TRUE if UI effects are enabled.
+</short>
 </element>
 
 <element name="SPI_SETUIEFFECTS">
-<short/>
+<short>
+Used to enable or disable UI effects. Set pvParam to TRUE to enable UI effects.
+</short>
 </element>
 
 <element name="SPI_GETFOREGROUNDLOCKTIMEOUT">
-<short/>
+<short>
+Used to get the time (in milliseconds) before an application can be brought to 
+the foreground. pvParam is the DWORD variable with the time value.
+</short>
 </element>
 
 <element name="SPI_SETFOREGROUNDLOCKTIMEOUT">
-<short/>
+<short>
+Used to set the time (in milliseconds) before an application can be brought to 
+the foreground. Set pvParam to the DWORD value with the time delay.
+</short>
 </element>
 
 <element name="SPI_GETACTIVEWNDTRKTIMEOUT">
-<short/>
+<short>
+Used to get the delay time (in milliseconds) before active window tracking is 
+engaged. pvParam is the DWORD value for the delay time.
+</short>
 </element>
 
 <element name="SPI_SETACTIVEWNDTRKTIMEOUT">
-<short/>
+<short>
+Used to set the delay time (in milliseconds) before active window tracking is 
+engaged. pvParam is the DWORD value with the new delay time.
+</short>
 </element>
 
 <element name="SPI_GETFOREGROUNDFLASHCOUNT">
-<short/>
+<short>
+Used to get the number of times a task bar button is flashed when a foreground 
+switch request is rejected. pvParam returns the DWORD value for the flash count.
+</short>
 </element>
 
 <element name="SPI_SETFOREGROUNDFLASHCOUNT">
-<short/>
+<short>
+Used to set the number of times a task bar button is flashed when a foreground 
+switch request is rejected. Set pvParam to the DWORD value with the number of 
+flashes.
+</short>
 </element>
 
 <element name="SPI_GETCARETWIDTH">
-<short/>
+<short>
+Used to get the width (in pixels) for the caret in an edit control. pvParam 
+returns the DWORD value with the caret width.
+</short>
 </element>
 
 <element name="SPI_SETCARETWIDTH">
-<short/>
+<short>
+Used to set the width (in pixels) for the caret in an edit control. Set pvParam 
+to the DWORD value with the caret width. The default value is 1 pixel.
+</short>
 </element>
 
 <element name="SPI_GETMOUSESONAR">
-<short/>
+<short>
+Used to determine whether the Mouse Sonar feature is enabled. pvParam returns 
+TRUE if the feature is enabled.
+</short>
 </element>
 
 <element name="SPI_SETMOUSESONAR">
-<short/>
+<short>
+Used to enable or disable the Mouse Sonar feature. Set pvParam to TRUE to 
+enable the feature, or FALSE to disable the feature.
+</short>
 </element>
 
 <element name="SPI_GETMOUSECLICKLOCK">
-<short/>
+<short>
+Used to determine whether the Mouse Click Lock feature is enabled. pvParam 
+returns TRUE if mouse clicks are locked until the timeout has elapsed, or FALSE 
+when unlocked. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETMOUSECLICKLOCK">
-<short/>
+<short>
+Used to enable or disable the Mouse Click Lock feature. Set pvParam to TRUE to 
+prevent mouse clicks until the timeout period has elapsed, or FALSE to disable 
+the feature. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETMOUSEVANISH">
-<short/>
+<short>
+Used to determine whether the Mouse Vanish feature is enabled or disabled. 
+pvParam returns TRUE if the feature is enabled. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETMOUSEVANISH">
-<short/>
+<short>
+Used to enable or disable the Mouse Vanish feature. Set pvParam to TRUE to 
+enable the feature. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETFLATMENU">
-<short/>
+<short>
+Used to determine whether native User menus have a flat appearance. pvParam 
+returns TRUE if menus are displayed using the flat style. Not supported on 
+Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETFLATMENU">
-<short/>
+<short>
+Used to enable or disable display of native User menus using a flat appearance. 
+Set pvParam to TRUE to enable use of the flat drawing style. Not supported on 
+Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETDROPSHADOW">
-<short/>
+<short>
+Used to determine whether the drop shadow effect is enabled or disabled in the 
+user interface. pvParam returns TRUE if drop shadows are enabled. Not supported 
+on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETDROPSHADOW">
-<short/>
+<short>
+Used to enable or disable the drop shadow effect in the user interface. Set 
+pvParam to TRUE to enable the drop shadow effect. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETBLOCKSENDINPUTRESETS">
-<short/>
+<short>
+Used determine whether an application can reset the screensaver time. pvParam 
+returns TRUE if SendInput cannot be used to send an input request, or FALSE 
+when unblocked.
+</short>
 </element>
 
 <element name="SPI_SETBLOCKSENDINPUTRESETS">
-<short/>
+<short>
+Used to control whether an application can reset the screensaver time. Set 
+uiParam to TRUE to prevent SendInput from deactivating the screensaver, or 
+FALSE if the screensaver is deactivated by SendInput.
+</short>
 </element>
 
 <element name="SPI_GETMOUSECLICKLOCKTIME">
-<short/>
+<short>
+Used to get the time delay (in milliseconds) before the primary mouse button is 
+locked. pvParam returns the DWORD value with the delay time. Enabled when 
+SPI_SETMOUSECLICKLOCK is set to TRUE. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETMOUSECLICKLOCKTIME">
-<short/>
+<short>
+Used to set the time delay (in milliseconds) before the primary mouse button is 
+locked. Set pvParam to the DWORD value with the delay time. Enabled when 
+SPI_SETMOUSECLICKLOCK is set to TRUE. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETFONTSMOOTHINGTYPE">
-<short/>
+<short>
+Used to get the font smoothing enabled for the system. pvParam returns either 
+FE_FONTSMOOTHINGSTANDARD or FE_FONTSMOOTHINGCLEARTYPE in the UINT value. Not 
+supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETFONTSMOOTHINGTYPE">
-<short/>
+<short>
+Used to set the font smoothing enabled for the system. Set pvParam to either 
+FE_FONTSMOOTHINGSTANDARD or FE_FONTSMOOTHINGCLEARTYPE. Not supported on Windows 
+2000.
+</short>
 </element>
 
 <element name="SPI_GETFONTSMOOTHINGCONTRAST">
-<short/>
+<short>
+Used to get the contrast value for ClearType font smoothing. pvParam returns a 
+UINT value in the range 1000 to 2200. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETFONTSMOOTHINGCONTRAST">
-<short/>
+<short>
+Used to set the contrast value for ClearType font smoothing. Set pvParam to a 
+UINT value in the range 1000 to 2200. Used when SPI_SETFONTSMOOTHINGTYPE is set 
+to FE_FONTSMOOTHINGCLEARTYPE. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_GETFOCUSBORDERWIDTH">
-<short/>
+<short>
+Used to get the width (in pixels) for the top or bottom edges on the focus 
+rectangle drawn in DrawFocusRect. pvParam returns the UINT value with the new 
+width for the border. Not supported on Windows 2000.
+</short>
 </element>
 
 <element name="SPI_SETFOCUSBORDERWIDTH">
 <short>
-System Parameter Info index used to set the width (in pixels) for the top or 
-bottom edges on the focus rectangle drawn in DrawFocusRect. Set pvParam to the 
-new width for the border. Not supported on Windows 2000.
+Used to set the width (in pixels) for the top or bottom edges on the focus 
+rectangle drawn in DrawFocusRect. Set pvParam to the new width for the border. 
+Not supported on Windows 2000.
 </short>
 </element>
 
 <element name="SPI_GETFOCUSBORDERHEIGHT">
 <short>
-System Parameter Info index used to get the height (in pixels) for the top or 
-bottom edges on the focus rectangle drawn in DrawFocusRect. pvParam returns 
-the height for the border. Not supported on Windows 2000.
+Used to get the height (in pixels) for the top or bottom edges on the focus 
+rectangle drawn in DrawFocusRect. pvParam returns the height for the border. 
+Not supported on Windows 2000.
 </short>
 </element>
 
 <element name="SPI_SETFOCUSBORDERHEIGHT">
 <short>
-System Parameter Info index used to set the height (in pixels) for the top or 
-bottom edges on the focus rectangle drawn in DrawFocusRect. Set pvParam to the 
-new height for the border. Not supported on Windows 2000.
+Used to set the height (in pixels) for the top or bottom edges on the focus 
+rectangle drawn in DrawFocusRect. Set pvParam to the new height for the border. 
+Not supported on Windows 2000.
 </short>
 </element>
 
 <element name="SPI_GETFONTSMOOTHINGORIENTATION">
 <short>
-System Parameter Info index used to get the orientation used for font smoothing 
-(RGB or BGR orientation).
+Used to get the orientation used for font smoothing (RGB or BGR orientation).
 </short>
 </element>
 
 <element name="SPI_SETFONTSMOOTHINGORIENTATION">
 <short>
-System Parameter Info index used to set the orientation used for font smoothing 
-(RGB or BGR orientation).
+Used to set the orientation used for font smoothing (RGB or BGR orientation).
 </short>
 </element>
 
