@@ -886,8 +886,8 @@ The value in <var>AutoExpand</var> is restored to its original value prior to
 exiting from the method.
 </p>
 <p>
-The entire update process is done in a BeginUpdate  / EndUpdate block to 
-reduce the number of screen refreshes in the method.
+The entire update process is done in a BeginUpdate / EndUpdate block to reduce 
+the number of screen refreshes in the method.
 </p>
 </descr>
 <seealso>
@@ -1005,6 +1005,49 @@ unit.
 </element>
 <element name="TCustomShellTreeView.DrawBuiltInIcon.ARect">
 <short>Rectangle where the icon is drawn.</short>
+</element>
+
+<element name="TCustomShellTreeView.Exists">
+<short>
+Checks whether the specified path is a valid file system object and type for 
+the tree view control.
+</short>
+<descr>
+<p>
+<var>Exists</var> is a <var>Boolean</var> function used to determine whether a 
+file system object at the path specified in <var>APath</var> can be displayed 
+on the tree view control.
+</p>
+<p>
+APath is a UTF-8-encoded fully-qualified path name. File attributes for the 
+argument are retrieved to check whether it exists on the local file system. 
+ObjectTypes is checked to determine whether the item is one of the object types 
+displayed on the tree view control.
+</p>
+<p>
+The return value is <b>False</b> if both conditions are not satisfied. The 
+return value is <b>True</b> if APath a valid file (or directory) on the local 
+file system.
+</p>
+<p>
+Exists is used in the UpdateView method when the Path and expanded state for a 
+Selected node are updated.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.ObjectTypes"/>
+<link id="TCustomShellTreeView.Path"/>
+<link id="TCustomShellTreeView.UpdateView"/>
+</seealso>
+</element>
+<element name="TCustomShellTreeView.Exists.Result">
+<short/>
+</element>
+<element name="TCustomShellTreeView.Exists.APath">
+<short/>
 </element>
 
 <element name="TCustomShellTreeView.GetBuiltinIconSize">
@@ -1459,6 +1502,49 @@ Refresh is called when a new value is assigned to the ObjectTypes property.
 Tree node with the initial path displayed in the shell control; Nil defaults 
 to the root directory.
 </short>
+</element>
+
+<element name="TCustomShellTreeView.UpdateView">
+<short>
+Reloads the nodes for tree view control and synchronizes an associated 
+ShellListView control.
+</short>
+<descr>
+<p>
+<var>UpdateView</var> is a method used to repopulate the nodes on a tree view 
+control. It ensures that Items contains the entries needed for the current 
+state of the local file system.
+</p>
+<p>
+UpdateView ensures that the Selected and expanded tree node(s) are captured, 
+and restored when the nodes in Items have been reloaded. TopItem is used to 
+restore the first visible tree node on the control. Selected provides the 
+selected tree node on the control.
+</p>
+<p>
+Updates to the Items in the control are enclosed by BeginUpdate and EndUpdate 
+method calls to reduce the number of updates while the control is reloaded.
+</p>
+<p>
+UpdateView causes an associated ShellListView control to call its UpdateView 
+method to synchronize the two controls. This action is omitted if ShellListView 
+has not been assigned.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.Items"/>
+<link id="TCustomShellTreeView.Refresh"/>
+<link id="TCustomShellTreeView.GetPathFromNode"/>
+<link id="TCustomShellTreeView.ShellListView"/>
+<link id="TCustomShellListView.UpdateView"/>
+<link id="#lcl.comctrls.TCustomTreeView.TopItem">TCustomTreeView.TopItem</link>
+<link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+<link id="#lcl.comctrls.TTreeNodes.BeginUpdate">TTreeNodes.BeginUpdate</link>
+<link id="#lcl.comctrls.TTreeNodes.EndUpdate">TTreeNodes.EndUpdate</link>
+</seealso>
 </element>
 
 <element name="TCustomShellTreeView.UseBuiltinIcons">
@@ -2140,6 +2226,7 @@ in the class.
 <element name="TCustomShellListView.FRoot"/>
 <element name="TCustomShellListView.FShellTreeView"/>
 <element name="TCustomShellListView.FUseBuiltInIcons"/>
+<element name="TCustomShellListView.FLockUpdate"/>
 <element name="TCustomShellListView.FOnAddItem"/>
 <element name="TCustomShellListView.FOnSortCompare"/>
 <element name="TCustomShellListView.FOnFileAdded"/>
@@ -2614,6 +2701,38 @@ path on the local file system for the list item specified in
 </element>
 <element name="TCustomShellListView.GetPathFromItem.ANode">
 <short>List item examined in the method.</short>
+</element>
+
+<element name="TCustomShellListView.UpdateView">
+<short>
+Reloads the contents for the list view control and restores the Selected item.
+</short>
+<descr>
+<p>
+<var>UpdateView</var> is a method used to repopulate the Items for the control. 
+It ensures that the Selected entry is captured and restored (if assigned) when 
+the file system entries have been reloaded in the method.
+</p>
+<p>
+UpdateView calls Clear to discard existing entries in Items, and 
+PopulateWithRoot to recreate the entries starting at the path in Root. 
+FindCaption is called to locate and restore the value in Selected.
+</p>
+<p>
+UpdateView ensures that an associated ShellTreeView control calls its 
+UpdateView method to synchronize the contents for the controls.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomShellListView.Root"/>
+<link id="TCustomShellListView.PopulateWithRoot"/>
+<link id="TCustomShellTreeView.UpdateView"/>
+<link id="#lcl.comctrls.TCustomListView.Clear">TCustomListView.Clear</link>
+<link id="#lcl.comctrls.TCustomListView.Selected">TCustomListView.Selected</link>
+</seealso>
 </element>
 
 <element name="TCustomShellListView.AutoSizeColumns">
