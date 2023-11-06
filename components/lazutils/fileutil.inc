@@ -767,6 +767,19 @@ begin
   if Assigned(FOnFileFound) then OnFileFound(Self);
 end;
 
+procedure TFileSearcher.DoQueryFileFound(const Fn: String; var Accept: Boolean);
+begin
+  if Assigned(FOnQueryFileFound) then
+    FOnQueryFileFound(Self, Fn, Accept);
+end;
+
+procedure TFileSearcher.DoQueryDirectoryFound(const Dir: String;
+  var Accept: Boolean);
+begin
+  if Assigned(FOnQueryDirectoryFound) then
+    FOnQueryDirectoryFound(Self, Dir, Accept);
+end;
+
 constructor TFileSearcher.Create;
 begin
   inherited Create;
@@ -785,12 +798,22 @@ var
   SearchDirectories: TStringList;
 
   procedure DoSearch(const APath: String; const ALevel: Integer);
+    function AcceptFile(const Fn: String): Boolean;
+    begin
+      Result := True;
+      DoQueryFileFound(Fn, Result);
+    end;
+    function AcceptDir(const Dir: String): Boolean;
+    begin
+      Result := True;
+      DoQueryDirectoryFound(Dir, Result);
+    end;
+
   var
     P: String;
     PathInfo: TSearchRec;
   begin
     P := APath + AllDirectoryEntriesMask;
-
     if FindFirstUTF8(P, FileAttribute, PathInfo) = 0 then
     try
       repeat
@@ -800,7 +823,7 @@ var
         // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
         begin             // File
-          if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
+          if ((MaskList = nil) or MaskList.Matches(PathInfo.Name)) and AcceptFile(PathInfo.Name) then
           begin
             FPath := APath;
             FLevel := ALevel;
@@ -809,10 +832,13 @@ var
           end;
         end
         else begin        // Directory
-          FPath := APath;
-          FLevel := ALevel;
-          FFileInfo := PathInfo;
-          DoDirectoryFound;
+          if AcceptDir(PathInfo.Name) then
+          begin
+            FPath := APath;
+            FLevel := ALevel;
+            FFileInfo := PathInfo;
+            DoDirectoryFound;
+          end;
         end;
 
       until (FindNextUTF8(PathInfo) <> 0) or not FSearching;
@@ -827,7 +853,8 @@ var
         repeat
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) or
-             (not FFollowSymLink and FileIsSymlink(APath + PathInfo.Name))
+             (not FFollowSymLink and FileIsSymlink(APath + PathInfo.Name)) or
+             (not AcceptDir(PathInfo.Name))
           then Continue;
 
           FPath := APath;
