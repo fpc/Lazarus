@@ -123,7 +123,8 @@ type
     goScrollToLastCol,   // Allow scrolling to last column (so that last column can be LeftCol)
     goScrollToLastRow,   // Allow scrolling to last row (so that last row can be TopRow)
     goEditorParentColor, // Set editor's ParentColor to True
-    goEditorParentFont   // Set editor's ParentFont to True
+    goEditorParentFont,  // Set editor's ParentFont to True
+    goCopyWithoutTrailingLinebreak  // Copy to clipboard without trailing linebreak
   );
   TGridOptions2 = set of TGridOption2;
 
@@ -11565,7 +11566,8 @@ begin
         SelStr := SelStr + #9;
     end;
 
-    SelStr := SelStr + sLineBreak;
+    if (aRow < R.Bottom) or not (goCopyWithoutTrailingLinebreak in FOptions2) then
+      SelStr := SelStr + sLineBreak;
     SelHTMLStr := SelHTMLStr + '</tr>' + #13#10;
   end;
   SelHTMLStr := SelHTMLStr + #13#10 + '</table>';
