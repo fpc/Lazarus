@@ -905,8 +905,14 @@ begin
 end;
 
 procedure TCustomAbstractGroupedEdit.SetPopupMenu(AValue: TPopupMenu);
+var
+  OldPopupMenu: TPopupMenu;
 begin
+  OldPopupMenu := FEdit.PopupMenu;
   FEdit.PopupMenu := AValue;
+  //users can assign a different popupmenu to the buddy if so desired, if that is the case, don't touch it
+  if (FBuddy.PopupMenu = OldPopupMenu) then
+    FBuddy.PopupMenu := AValue;
 end;
 
 procedure TCustomAbstractGroupedEdit.RealSetText(const AValue: TCaption);
