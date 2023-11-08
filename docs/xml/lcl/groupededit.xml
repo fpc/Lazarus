@@ -2666,9 +2666,7 @@ Modified in LCL 3.0 to update the pop-up menu in Buddy when needed.
 </version>
 <seealso>
 <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
-<link id="TCustomAbstractGroupedEdit.Buddy"/>
 <link id="#lcl.stdctrls.TCustomEdit.PopupMenu">TCustomEdit.PopupMenu</link>
-<link id="#lcl.controls.TControl.PopupMenu">TControl.PopupMenu</link>
 </seealso>
 </element>
 
