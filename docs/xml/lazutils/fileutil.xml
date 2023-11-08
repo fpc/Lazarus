@@ -1368,6 +1368,86 @@ File iterator with the directory information for the event.
 </short>
 </element>
 
+<!-- Added in 9ec85e5d. -->
+<element name="TQueryFileFoundEvent">
+<short>
+Specifies an event handler signalled when a file name matching a search 
+criteria is found in TFileSearcher.
+</short>
+<descr>
+<p>
+<var>TQueryFileFoundEvent</var> is the type used to implement the 
+OnQueryFileFound event handler in TFileSearcher. It allows a a file name to be 
+examined to determine whether it can be accepted in the file iterator. An 
+application must implement a handler routine using the signature in 
+TQueryFileFoundEvent to respond to the notification event.
+</p>
+<p>
+Set the Accept argument to <b>True</b> if the file name in <b>Fn</b> can be 
+used by the file iterator.
+</p>
+</descr>
+<seealso>
+<link id="TFileSearcher.OnQueryFileFound"/>
+<link id="TFileIterator"/>
+</seealso>
+</element>
+<element name="TQueryFileFoundEvent.FileIterator">
+<short>
+Iterator class instance (TFileIterator) for the notification.  
+</short>
+</element>
+<element name="TQueryFileFoundEvent.Fn">
+<short>
+File name for the notification.
+</short>
+</element>
+<element name="TQueryFileFoundEvent.Accept">
+<short>
+<b>True</b> to accept the file name. <b>False</b> to reject it.
+</short>
+</element>
+
+<!-- Added in 9ec85e5d. -->
+<element name="TQueryDirectoryFoundEvent">
+<short>
+Specifies an event handler signalled when a directory name matching a search 
+criteria is found in TFileSearcher.
+</short>
+<descr>
+<p>
+TQueryDirectoryFoundEvent is the type used to implement the OnQueryFileFound 
+event handler in TFileSearcher. It allows a a directory name to be 
+examined to determine whether it can be accepted in the iterator. An 
+application must implement a handler routine using the signature in
+TQueryDirectoryFoundEvent to respond to the notification event.
+</p>
+<p>
+Set the Accept argument to <b>True</b> if the file name in <b>Fn</b> can be 
+used by the file iterator.
+</p>
+</descr>
+<seealso>
+<link id="TFileSearcher.OnQueryDirectoryFound"/>
+<link id="TFileIterator"/>
+</seealso>
+</element>
+<element name="TQueryDirectoryFoundEvent.FileIterator">
+<short>
+Iterator class instance (TFileIterator) for the notification.  
+</short>
+</element>
+<element name="TQueryDirectoryFoundEvent.Dir">
+<short>
+Directory name for the notification.
+</short>
+</element>
+<element name="TQueryDirectoryFoundEvent.Accept">
+<short>
+<b>True</b> to accept the directory name. <b>False</b> to reject it.  
+</short>
+</element>
+
 <element name="TFileSearcher">
 <short>
 Implements an iterator used to search for files or directories.
@@ -1420,6 +1500,8 @@ TFileSearcher is the ancestor class for more specialized descendants like
 <element name="TFileSearcher.FOnDirectoryEnter"/>
 <element name="TFileSearcher.FFileAttribute"/>
 <element name="TFileSearcher.FDirectoryAttribute"/>
+<element name="TFileSearcher.FOnQueryFileFound"/>
+<element name="TFileSearcher.FOnQueryDirectoryFound"/>
 
 <element name="TFileSearcher.RaiseSearchingError">
 <short>
@@ -1443,6 +1525,87 @@ Signals the OnDirectoryFound event handler (when assigned).
 <element name="TFileSearcher.DoFileFound">
 <short>
 Signals the OnFileFound event handler (when assigned).
+</short>
+</element>
+
+<!-- Added in 9ec85e5d. -->
+<element name="TFileSearcher.DoQueryFileFound">
+<short>
+Performs actions needed to accept or reject a file name processed in the 
+Search method.
+</short>
+<descr>
+<p>
+<var>DoQueryFileFound</var> signals the OnQueryFileFound event handler (when 
+assigned) to allow the application to decide if the <var>Fn</var> argument 
+contains a file name which can be used in the class. An application must 
+implement and assign a handler routine to OnQueryFileFound to respond to the 
+notification.
+</p>
+<p>
+DoQueryFileFound is called during execution of the Search method when a file 
+name is found using the search path and search mask passed to the method. 
+Set <var>Accept</var> to <b>True</b> if the file name can be used in the class 
+to signal the OnFileFound event handler.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TFileSearcher.DoQueryFileFound.Fn">
+<short>
+File name passed to OnQueryFileFound event handler.
+</short>
+</element>
+<element name="TFileSearcher.DoQueryFileFound.Accept">
+<short>
+Returns <b>True</b> if the specified file name can be used. Returns 
+<b>False</b> if the specified file name should be omitted.
+</short>
+</element>
+
+<!-- Added in 9ec85e5d. -->
+<element name="TFileSearcher.DoQueryDirectoryFound">
+<short>
+Performs actions needed to accept or reject a directory name processed in the 
+Search method.
+</short>
+<descr>
+<p>
+<var>DoQueryDirectoryFound</var> signals the OnQueryDirectoryFound event 
+handler (when assigned) to allow the application to decide if the 
+<var>Dir</var> argument contains a directory name which can be used in the 
+class. An application must implement and assign a handler routine to 
+OnQueryDirectoryFound to respond to the notification.
+</p>
+<p>
+OnQueryDirectoryFound is called during execution of the Search method when a 
+directory name is found using the search path and search mask passed to the 
+method. Set <var>Accept</var> to <b>True</b> if the directory name can be used 
+in the class to signal the OnDirectoryFound event handler.
+</p>
+</descr>
+<seealso>
+<link id="TFileSearcher.OnQueryDirectoryFound"/>
+<link id="TFileSearcher.OnDirectoryFound"/>
+<link id="TFileSearcher.OnQueryFileFound"/>
+<link id="TFileSearcher.OnFileFound"/>
+<link id="TFileSearcher.FileAttribute"/>
+<link id="TFileSearcher.DirectoryAttribute"/>
+<link id="TFileSearcher.FollowSymLink"/>
+<link id="TFileSearcher.PathSeparator"/>
+<link id="TFileSearcher.MaskSeparator"/>
+<link id="TFileIterator.Stop"/>
+</seealso>
+</element>
+<element name="TFileSearcher.DoQueryDirectoryFound.Dir">
+<short>
+Directory name passed to the OnQueryDirectoryFound event handler.
+</short>
+</element>
+<element name="TFileSearcher.DoQueryDirectoryFound.Accept">
+<short>
+Returns <b>True</b> if the specified directory can be used. Returns 
+<b>False</b> if the specified directory should be omitted.
 </short>
 </element>
 
@@ -1474,10 +1637,11 @@ in the following properties:
 <seealso/>
 </element>
 
+<!-- Modified in 9ec85e5d. -->
 <element name="TFileSearcher.Search">
 <short>
-Searches for files or directories in the specified path(s) using the 
-specified options.
+Searches for files or directories in the specified path(s) using the specified 
+options.
 </short>
 <descr>
 <p>
@@ -1514,10 +1678,10 @@ part of the file specification. It is not trimmed, and will most likely prevent
 a match for the mask value.
 </p>
 <p>
-The value in the <var>CaseSensitive</var> argument is used to add or remove 
-mask options for the search mask in ASearchMask. Set CaseSensitive to 
-<b>True</b> before calling Search to perform file name comparisons with case 
-sensitivity.
+<var>ASearchPath</var> contains the locations examined in the method, and can 
+contain multiple path names separated by the <var>PathSeparator</var> 
+character. Each delimited path value in <var>ASearchPath</var> is resolved 
+using <var>ResolveDots</var> and processed in the method.
 </p>
 <p>
 <var>ASearchSubDirs</var> includes subdirectories found in ASearchPath in the 
@@ -1525,38 +1689,69 @@ search process when set to <b>True</b>. When set to <b>False</b> only the
 specified paths are searched and their subdirectories are ignored.
 </p>
 <p>
-Set the value in <var>FileAttribute</var> to control the file attributes 
+<var>CaseSensitive</var> determines whether case sensitive comparisons are 
+performed for paths, files, and directories processed in the method. The 
+default value is <b>False</b>.
+</p>
+<p>
+<var>ASearchSubDirs</var> determines whether subdirectories found in the search 
+path are processed in the method. The default value is <b>True</b> and includes 
+subdirectories.
+</p>
+<p>
+Use the <var>FileAttribute</var> property to control the file attributes 
 included in the search process. The default value (<var>faAnyFile</var>) 
 allows all files to be considered.
 </p>
 <p>
-Set the value in <var>DirectoryAttribute</var> to control whether directory 
+Use the <var>DirectoryAttribute</var> property to control whether directory 
 names are included in the search process. The default value 
-(<var>faDirectory</var>) includes directory names.
+(<var>faDirectory</var>) includes directories.
 </p>
 <p>
-Set the value in <var>FollowSymLink</var> to indicate whether symbolic links 
+Use the <var>FollowSymLink</var> property to indicate whether symbolic links 
 in the file system are followed in the method.
 </p>
 <p>
-When a matching file is found, the OnFileFound event is signalled. For 
-directories, the OnDirectoryFound event is signalled. When a new directory is 
-processed in the method, the OnDirectoryEnter events is signalled. 
-Applications must assign a handler for the events to respond to the 
+Search processes each of the path values found in ASearchPath. FindFirstUTF8 is 
+called to get file and directory attributes examined in the process. Values in 
+FileAttribute and DirectoryAttribute are checked to determine which directories 
+and files are available in the method.
+</p>
+<p>
+The OnQueryFileFound and OnQueryDirectoryFound events handlers are signalled 
+(when assigned) to allow the application to include or exclude each directory 
+or file found in the process.
+</p>
+<p>
+When a matching file is found, the OnFileFound event is signalled. When a 
+matching directory is found, the OnDirectoryFound event is signalled. When a 
+new directory is processed in the method, the OnDirectoryEnter events is 
+signalled. 
+</p>
+<p>
+Applications must assign a handler routine for these events to respond to the 
 notifications. You can abort the search process by calling the Stop method in 
 the handlers for these events.
+</p>
+<p>
+Search is used in the implement of convenience routines like CopyFile, 
+CopyDirTree, FindAllFiles, and FindAllDirectories.
 </p>
 </descr>
 <errors>
 <p>
-Calls RaiseSearchingError to raise an exception if the Search method has 
-already been called and has not completed.
+An Exception is raised if Search is called and a previous call to the method is 
+already running.
 </p>
 </errors>
 <seealso>
 <link id="TFileSearcher.OnFileFound"/>
 <link id="TFileSearcher.OnDirectoryFound"/>
-<link id="TFileSearcher.OnDirectoryEnter"/>
+<link id="TFileSearcher.OnQueryDirectoryFound"/>
+<link id="TFileSearcher.OnQueryFileFound"/>
+<link id="TFileSearcher.DoQueryDirectoryFound"/>
+<link id="TFileSearcher.DoQueryFileFound"/>
 <link id="TFileSearcher.FileAttribute"/>
 <link id="TFileSearcher.DirectoryAttribute"/>
 <link id="TFileSearcher.FollowSymLink"/>
@@ -1850,6 +2045,70 @@ in the Search method.
 <link id="TFileIterator.FileInfo"/>
 <link id="TFileIterator.Level"/>
 <link id="TDirectoryEnterEvent"/>
+</seealso>
+</element>
+
+<!-- Added in 9ec85e5d. -->
+<element name="TFileSearcher.OnQueryFileFound">
+<short>
+Event handler signalled to accept or reject a file name found using the class.
+</short>
+<descr>
+<p>
+<var>OnQueryFileFound</var> is a <var>TQueryFileFoundEvent</var> property with 
+the event handler signalled to accept or reject a specific file name found in 
+the Search method. OnQueryFileFound is signalled (when assigned) from the 
+DoQueryFileFound method called during execution of the Search method.
+</p>
+<p>
+An application can implement and assign a handler routine to respond to the 
+notification. Use the parameters in the <link id="TQueryFileFoundEvent">
+TQueryFileFoundEvent</link>  implementation to examine a specific file name, 
+and set the return value which indicates whether the file name is accepted or 
+rejected.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso>
+<link id="TFileSearcher.Search"/>
+<link id="TFileSearcher.DoQueryFileFound"/>
+<link id="TFileSearcher.OnFileFound"/>
+<link id="TQueryFileFoundEvent"/>
+</seealso>
+</element>
+
+<!-- Added in 9ec85e5d. -->
+<element name="TFileSearcher.OnQueryDirectoryFound">
+<short>
+Event handler signalled to accept or reject a directory name found using the 
+class.
+</short>
+<descr>
+<p>
+<var>OnQueryDirectoryFound</var> is a <var>TQueryDirectoryFoundEvent</var> 
+property with the event handler signalled to accept or reject a specific 
+directory path found in the Search method. OnQueryDirectoryFound is signalled 
+(when assigned) from the DoQueryDirectoryFound method called during execution 
+of the Search method.
+</p>
+<p>
+An application can implement and assign a handler routine to respond to the 
+notification. Use the parameters in the <link id="TQueryDirectoryFoundEvent">
+TQueryDirectoryFoundEvent</link>  implementation to examine a specific path 
+name (directory), and set the return value which indicates whether the 
+directory is accepted or rejected.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso>
+<link id="TFileSearcher.Search"/>
+<link id="TFileSearcher.DoQueryDirectoryFound"/>
+<link id="TFileSearcher.OnDirectoryFound"/>
+<link id="TQueryFileFoundEvent"/>
 </seealso>
 </element>
 
