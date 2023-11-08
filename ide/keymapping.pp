@@ -4375,12 +4375,18 @@ begin
       try
         xml := TXMLConfig.Create(fn[i]);
         exp := TKeyCommandRelationList.Create;
-        nm := xml.GetValue('Name/Value','');
-        if nm = '' then nm := ExtractFileName(fn[i]);
-        if (dst.IndexOf(nm)<0) then begin
-          exp.DefineCommandCategories; // default Relations
-          exp.LoadFromXMLConfig(xml, 'KeyMapping/', false);
-          dst.AddObject(nm, exp);
+        try
+          nm := xml.GetValue('Name/Value','');
+          if nm = '' then nm := ExtractFileName(fn[i]);
+          if (dst.IndexOf(nm)<0) then begin
+            exp.DefineCommandCategories; // default Relations
+            exp.LoadFromXMLConfig(xml, 'KeyMapping/', false);
+            dst.AddObject(nm, exp);
+            exp := nil;
+          end;
+        finally
+          xml.Free;
+          exp.Free;
         end;
       except
       end;
