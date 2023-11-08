@@ -91,12 +91,12 @@ begin
   IDECommand := nil;
   if IDECommandCategory <> nil then
   begin
-    IDECommand := RegisterIDECommand(IDECommandCategory, rsExampleProjects, rsExampleProjects, IDEShortCutX, nil, @IDEMenuSectionClicked);
+    IDECommand := RegisterIDECommand(IDECommandCategory, 'Example Projects', rsExampleProjects, IDEShortCutX, nil, @IDEMenuSectionClicked);
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
-  RegisterIDEMenuCommand(itmSecondaryTools, rsExampleProjects, rsExampleProjects + ' ...', nil, @IDEMenuSectionClicked, IDECommand, 'pkg_oep');
-  RegisterIDEMenuCommand(ComponentPalettePageDropDownExtraEntries, rsExampleProjects, rsExampleProjects + ' ...', nil, @IDEMenuSectionClicked, nil, 'pkg_oep');
+  RegisterIDEMenuCommand(itmSecondaryTools, 'Example Projects', rsExampleProjects + ' ...', nil, @IDEMenuSectionClicked, IDECommand, 'pkg_oep');
+  RegisterIDEMenuCommand(ComponentPalettePageDropDownExtraEntries, 'Example Projects', rsExampleProjects + ' ...', nil, @IDEMenuSectionClicked, nil, 'pkg_oep');
 
   ExWinOptionsFrameID := RegisterIDEOptionsEditor(ExWindowOptionsGroup, TExWinSettingsFrame, 9999)^.Index;  // AIndex = what ???
 
