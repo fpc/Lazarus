@@ -8,7 +8,6 @@ unit Lazcairo1;
 
 {$ifdef Unix}
 {$LINKLIB libcairo-gobject.so.2}
-{$LINKLIB libcairo.so.2}
 {$endif}
 interface
 uses
@@ -20,7 +19,6 @@ const
   {$else}
   Lazcairo1_library = 'libcairo-gobject.so.2';
   {$endif}
-  LIB_CAIRO = Lazcairo1_library;
 
 type
   Tcairo_status_t = (
@@ -288,32 +286,32 @@ type
 type
 
 
-  { Tcairo_t }
-  PPcairo_t = ^Pcairo_t;
-  Pcairo_t = ^Tcairo_t;
-  Tcairo_t = object
+  { TCairoContext }
+  PPCairoContext = ^PCairoContext;
+  PCairoContext = ^TCairoContext;
+  TCairoContext = object
   end;
 
 
-  { Tcairo_device_t }
-  PPcairo_device_t = ^Pcairo_device_t;
-  Pcairo_device_t = ^Tcairo_device_t;
-  Tcairo_device_t = object
+  { TCairoDevice }
+  PPCairoDevice = ^PCairoDevice;
+  PCairoDevice = ^TCairoDevice;
+  TCairoDevice = object
   end;
 
 
-  { Tcairo_surface_t }
-  PPcairo_surface_t = ^Pcairo_surface_t;
-  Pcairo_surface_t = ^Tcairo_surface_t;
-  Tcairo_surface_t = object
+  { TCairoSurface }
+  PPCairoSurface = ^PCairoSurface;
+  PCairoSurface = ^TCairoSurface;
+  TCairoSurface = object
   end;
 
 
-  { Tcairo_matrix_t }
-  PPcairo_matrix_t = ^Pcairo_matrix_t;
-  Pcairo_matrix_t = ^Tcairo_matrix_t;
+  { TcairoMatrix }
+  PPcairoMatrix = ^PcairoMatrix;
+  PcairoMatrix = ^TcairoMatrix;
 
-  Tcairo_matrix_t = record
+  TcairoMatrix = record
     xx : Double;
     yx : Double;
     xy : Double;
@@ -325,17 +323,17 @@ type
 
 
 
-  { Tcairo_pattern_t }
-  PPcairo_pattern_t = ^Pcairo_pattern_t;
-  Pcairo_pattern_t = ^Tcairo_pattern_t;
-  Tcairo_pattern_t = object
+  { TCairoPattern }
+  PPCairoPattern = ^PCairoPattern;
+  PCairoPattern = ^TCairoPattern;
+  TCairoPattern = object
   end;
 
 
-  { Tcairo_region_t }
-  PPcairo_region_t = ^Pcairo_region_t;
-  Pcairo_region_t = ^Tcairo_region_t;
-  Tcairo_region_t = object
+  { TCairoRegion }
+  PPCairoRegion = ^PCairoRegion;
+  PCairoRegion = ^TCairoRegion;
+  TCairoRegion = object
   end;
 
 
@@ -404,10 +402,10 @@ type
   Pcairo_hint_metrics_t = ^Tcairo_hint_metrics_t;
 
 
-  { Tcairo_font_options_t }
-  PPcairo_font_options_t = ^Pcairo_font_options_t;
-  Pcairo_font_options_t = ^Tcairo_font_options_t;
-  Tcairo_font_options_t = object
+  { TCairoFontOptions }
+  PPCairoFontOptions = ^PCairoFontOptions;
+  PCairoFontOptions = ^TCairoFontOptions;
+  TCairoFontOptions = object
   end;
 
 
@@ -456,38 +454,38 @@ type
   Pcairo_region_overlap_t = ^Tcairo_region_overlap_t;
 
 
-  { Tcairo_font_face_t }
-  PPcairo_font_face_t = ^Pcairo_font_face_t;
-  Pcairo_font_face_t = ^Tcairo_font_face_t;
-  Tcairo_font_face_t = object
+  { TCairoFontFace }
+  PPCairoFontFace = ^PCairoFontFace;
+  PCairoFontFace = ^TCairoFontFace;
+  TCairoFontFace = object
   end;
 
 
-  { Tcairo_scaled_font_t }
-  PPcairo_scaled_font_t = ^Pcairo_scaled_font_t;
-  Pcairo_scaled_font_t = ^Tcairo_scaled_font_t;
-  Tcairo_scaled_font_t = object
+  { TCairoScaledFont }
+  PPCairoScaledFont = ^PCairoScaledFont;
+  PCairoScaledFont = ^TCairoScaledFont;
+  TCairoScaledFont = object
   end;
 
 
-  { Tcairo_path_t }
-  PPcairo_path_t = ^Pcairo_path_t;
-  Pcairo_path_t = ^Tcairo_path_t;
+  { TcairoPath }
+  PPcairoPath = ^PcairoPath;
+  PcairoPath = ^TcairoPath;
 
-  Tcairo_path_t = record
+  TcairoPath = record
   end;
 
 
 
 
-  { Tcairo_rectangle_t }
-  PPcairo_rectangle_t = ^Pcairo_rectangle_t;
-  Pcairo_rectangle_t = ^Tcairo_rectangle_t;
+  { TCairoRectangle }
+  PPCairoRectangle = ^PCairoRectangle;
+  PCairoRectangle = ^TCairoRectangle;
 
 
   { cdouble }
   Pcdouble = ^cdouble;
-  Tcairo_rectangle_t = object
+  TCairoRectangle = object
     x: cdouble;
     y: cdouble;
     width: cdouble;
@@ -495,18 +493,18 @@ type
   end;
 
 
-  { Tcairo_rectangle_int_t }
-  PPcairo_rectangle_int_t = ^Pcairo_rectangle_int_t;
-  Pcairo_rectangle_int_t = ^Tcairo_rectangle_int_t;
+  { TCairoRectangleInt }
+  PPCairoRectangleInt = ^PCairoRectangleInt;
+  PCairoRectangleInt = ^TCairoRectangleInt;
 
 
-  { cint }
-  Pcint = ^cint;
-  Tcairo_rectangle_int_t = object
-    x: cint;
-    y: cint;
-    width: cint;
-    height: cint;
+  { cint32 }
+  Pcint32 = ^cint32;
+  TCairoRectangleInt = object
+    x: cint32;
+    y: cint32;
+    width: cint32;
+    height: cint32;
   end;
 
 function cairo_gobject_context_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_context_get_type';
@@ -521,6 +519,42 @@ function cairo_gobject_scaled_font_get_type: csize_t { TGType }; cdecl; external
 function cairo_gobject_surface_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_surface_get_type';
 procedure cairo_image_surface_create; cdecl; external Lazcairo1_library name 'cairo_image_surface_create';
 
+{**** Manually added types and functions ****}
+
+{$ifdef Unix}
+{$LINKLIB libcairo.so.2}
+{$endif}
+
+const
+  LIB_CAIRO = Lazcairo1_library;
+
+type
+  PPcairo_rectangle_int_t = PPCairoRectangleInt;
+  PPcairo_surface_t = PPCairoSurface;
+
+  Pcairo_t = PCairoContext;
+  Pcairo_device_t = PCairoDevice;
+  Pcairo_font_face_t = PCairoFontFace;
+  Pcairo_font_options_t = PCairoFontOptions;
+  Pcairo_matrix_t = PCairoMatrix;
+  Pcairo_pattern_t = PCairoPattern;
+  Pcairo_path_t = PCairoPath;
+  Pcairo_rectangle_int_t = PCairoRectangleInt;
+  Pcairo_region_t = PCairoRegion;
+  Pcairo_scaled_font_t = PCairoScaledFont;
+  Pcairo_surface_t = PCairoSurface;
+
+  Tcairo_t = TCairoContext;
+  Tcairo_device_t = TCairoDevice;
+  Tcairo_font_face_t = TCairoFontFace;
+  Tcairo_font_options_t = TCairoFontOptions;
+  Tcairo_matrix_t = TCairoMatrix;
+  Tcairo_pattern_t = TCairoPattern;
+  Tcairo_path_t = TCairoPath;
+  Tcairo_rectangle_int_t = TCairoRectangleInt;
+  Tcairo_region_t = TCairoRegion;
+  Tcairo_scaled_font_t = TCairoScaledFont;
+  Tcairo_surface_t = TCairoSurface;
 
 function cairo_version: LongInt; cdecl; external LIB_CAIRO;
 function cairo_version_string: PChar; cdecl; external LIB_CAIRO;
