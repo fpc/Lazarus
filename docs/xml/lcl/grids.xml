@@ -449,6 +449,9 @@ in TCustomGrid and descendent classes.
 Modified in version 3.0 to include goEditorParentColor and goEditorParentFont 
 options.
 </version>
+<version>
+Modified in version 4.0 to include the goCopyWithoutTrailingLinebreak options.
+</version>
 <seealso>
 <link id="TCustomGrid.Options2"/>
 </seealso>
@@ -471,6 +474,11 @@ Sets the color in a cell editor to the color for the parent control.
 <element name="TGridOption2.goEditorParentFont">
 <short>
 Sets the font in a cell editor to the font for the parent control.
+</short>
+</element>
+<element name="TGridOption2.goCopyWithoutTrailingLinebreak">
+<short>
+Copies cell(s) to the clipboard without trailing linebreak sequence.
 </short>
 </element>
 
@@ -23518,7 +23526,15 @@ values. Others are quietly discarded. HTML TABLE syntax is used to store the
 cell values copied in the method. LineEnd and HTML reserved characters are 
 translated into HTML-safe tags or HTML character entities.
 </remark>
+<p>
+Include goCopyWithoutTrailingLinebreak in the Options2 property to discard 
+a trailing end-of-line sequence at the end of rows in the the copied cell 
+rectangle.
+</p>
 </descr>
+<version>
+Modified in LCL version 4.0 to trim trailing line breaks when enabled.
+</version>
 <seealso/>
 </element>
 <element name="TCustomStringGrid.CopyCellRectToClipboard.R">
