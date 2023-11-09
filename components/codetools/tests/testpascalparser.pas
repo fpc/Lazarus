@@ -56,7 +56,8 @@ type
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
-    procedure TestParseMultilineString;
+    procedure TestParseMultilineStringFPC;
+    procedure TestParseMultilineStringDelphi;
     procedure TestParseUnderscoreIsSeparator;
     procedure TestParseDirective_IF_SizeOf_Char;
   end;
@@ -617,7 +618,7 @@ begin
   ParseModule;
 end;
 
-procedure TTestPascalParser.TestParseMultilineString;
+procedure TTestPascalParser.TestParseMultilineStringFPC;
 begin
   Add([
   'program test1;',
@@ -631,6 +632,24 @@ begin
   '`#10`',
   'line`;',
   '  c = ''''``;',
+  'begin',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseMultilineStringDelphi;
+begin
+  Add([
+  'program test1;',
+  '{$TEXTBLOCK Native comment: could be native/cr/lf/crlf}',
+  'const',
+  '  s = ''''''First',
+  '    Second''Lit', // skip single apostroph
+  '    Third''''Lit', // skip double apostroph
+  '    '''''';', // last line defines ignored indentation. here: cut 4
+  '  a = ''''''OneLine'''''';',
+  '  b = ''''; // empty string literal',
+  '  c = ''''''''; // string literal in string literal',
   'begin',
   '']);
   ParseModule;
