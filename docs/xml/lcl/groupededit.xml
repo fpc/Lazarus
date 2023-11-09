@@ -2637,10 +2637,26 @@ value is entered or displayed.
 
 <element name="TCustomAbstractGroupedEdit.PopupMenu">
 <short>PopupMenu for the control.</short>
-<descr/>
+<descr>
+<p>
+<var>PopupMenu</var> is a <var>TPopupMenu</var> property with the context menu 
+used for the BaseEditor in the grouped edit control. Read and write access for 
+the property value are redirected to the PopupMenu property in BaseEditor.
+</p>
+<p>
+When a new value is assigned to PopupMenu, the context menu is also assigned to 
+the Buddy control if it currently shares the same menu instance. Buddy is not 
+updated if BaseEditor and Buddy use different pop-up menus.
+</p>
+</descr>
+<version>
+Modified in LCL 3.0 to update the pop-up menu in Buddy when needed.
+</version>
 <seealso>
 <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
+<link id="TCustomAbstractGroupedEdit.Buddy"/>
 <link id="#lcl.stdctrls.TCustomEdit.PopupMenu">TCustomEdit.PopupMenu</link>
+<link id="#lcl.controls.TControl.PopupMenu">TControl.PopupMenu</link>
 </seealso>
 </element>
 
