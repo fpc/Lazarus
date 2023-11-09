@@ -182,7 +182,7 @@ var
 
   function GetPaddingScaled (APadding: Integer): Integer;
   begin
-    aCompletion.TheForm.Scale96ToForm(APadding);
+    Result := aCompletion.TheForm.Scale96ToForm(APadding);
   end;
 
   procedure SetFontColor(NewColor: TColor; Force: boolean = false);
