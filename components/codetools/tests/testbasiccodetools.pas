@@ -49,6 +49,7 @@ type
     procedure TestReIndent;
     procedure TestSimpleFormat;
     procedure TestStringToPascalConst;
+    procedure TestReadNextPascalAtom;
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
@@ -319,6 +320,36 @@ begin
   t('''Foo','''''''Foo''');
   t('Foo'#10,'''Foo''#10');
   t('Foo'#10'Bar','''Foo''#10''Bar''');
+end;
+
+procedure TTestBasicCodeTools.TestReadNextPascalAtom;
+
+  procedure t(const Src, ExpectedAtom: string; ExpectedAtomStart: integer = 1);
+  var
+    p, AtomStart: Integer;
+    ActualAtom: String;
+  begin
+    p:=1;
+    ActualAtom:=ReadNextPascalAtom(Src,p,AtomStart);
+    if AtomStart<>ExpectedAtomStart then begin
+      Fail('Src=['+DbgStr(Src)+'] expected AtomStart='+dbgs(ExpectedAtomStart)+', but got '+dbgs(AtomStart));
+    end;
+    if ActualAtom<>ExpectedAtom then begin
+      Fail('Src=['+DbgStr(Src)+'] expected Atom='+DbgStr(ExpectedAtom)+', but got '+DbgStr(ActualAtom));
+    end;
+  end;
+
+const
+  Apos = '''';
+  Apos2 = Apos+Apos;
+  Apos3 = Apos+Apos+Apos;
+begin
+  t('','',1);
+  t(Apos2+' ',Apos2,1); // ''
+  t('''a''+','''a''',1); // 'a'+
+  t('''''''a''+','''''''a''',1); // '''a'+
+  t(Apos3+#10+'First'+Apos3+';',Apos3+#10+'First'+Apos3,1); // '''#10First''';
+  t(Apos3+Apos2+#10+'First'+Apos3+Apos2+';',Apos3+Apos2+#10+'First'+Apos3+Apos2,1); // '''#10First''';
 end;
 
 procedure TTestBasicCodeTools.TestDateToCfgStr;

@@ -1971,7 +1971,7 @@ procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
   const SrcEnd: PChar; NestedComments: boolean; SkipDirectives: boolean);
 var
   c1,c2:char;
-  CommentLvl: Integer;
+  CommentLvl, Lvl, i: Integer;
   Src: PChar;
 begin
   Src:=Position;
@@ -2137,10 +2137,46 @@ begin
         '''':
           begin
             inc(Src);
-            while not (Src^ in ['''',#0,#10,#13]) do
-              inc(Src);
-            if Src^='''' then
-              inc(Src);
+            if (Src^='''') and (Src[1]='''') then begin
+              Lvl:=3;
+              inc(Src,2);
+              while Src^='''' do begin
+                inc(Lvl);
+                inc(Src);
+              end;
+              if Lvl and 1=1 then begin
+                if Src^ in [#10,#13] then begin
+                  // delphi multi line string literal
+                  while Src^<>#0 do begin
+                    if (Src^='''') and (Src[1]='''') then begin
+                      i:=2;
+                      inc(Src,2);
+                      while (Src^='''') and (i<Lvl) do begin
+                        inc(i);
+                        inc(Src);
+                      end;
+                      if i=Lvl then
+                        break;
+                    end else
+                      inc(Src);
+                  end;
+                end else begin
+                  // e.g. '''a or '''''b
+                  while not (Src^ in ['''',#0,#10,#13]) do
+                    inc(Src);
+                  if Src^='''' then
+                    inc(Src);
+                end;
+              end else begin
+                // e.g. '' or '''' or ''''''
+              end;
+            end else begin
+              // normal string literal
+              while not (Src^ in ['''',#0,#10,#13]) do
+                inc(Src);
+              if Src^='''' then
+                inc(Src);
+            end;
           end;
         '`':
           begin

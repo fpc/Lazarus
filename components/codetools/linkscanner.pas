@@ -4594,25 +4594,30 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
       inc(p);
       inc(lvl);
     end;
-    if (lvl and 1=1) and (p^ in [#10,#13]) then begin
-      // delphi 12 multiline string literal
-      while p^<>#0 do begin
-        if (p^='''') and (p[1]='''') then begin
-          i:=2;
-          inc(p,2);
-          while p^='''' do begin
-            inc(i);
-            if i=lvl then
-              exit;
-          end;
-        end else
+    if (lvl and 1=1) then begin
+      if (p^ in [#10,#13]) then begin
+        // delphi 12 multiline string literal
+        while p^<>#0 do begin
+          if (p^='''') and (p[1]='''') then begin
+            i:=2;
+            inc(p,2);
+            while p^='''' do begin
+              inc(i);
+              inc(p);
+              if i=lvl then
+                exit;
+            end;
+          end else
+            inc(p);
+        end;
+      end else begin
+        // e.g. '''a or '''''b
+        while not (p^ in ['''',#0,#10,#13]) do inc(p);
+        if p^='''' then
           inc(p);
       end;
     end else begin
-      // normal string literal
-      while not (p^ in ['''',#0,#10,#13]) do inc(p);
-      if p^='''' then
-        inc(p);
+      // e.g. '''' or ''''''
     end;
   end;
 
