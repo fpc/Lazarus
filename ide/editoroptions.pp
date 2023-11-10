@@ -5421,10 +5421,12 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
     // Key Mappings options
+    LoadCustomKeySchemas;
     fKeyMappingScheme :=
       XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme', KeyMapSchemeNames[kmsLazarus]);
-    fKeyMap.LoadFromXMLConfig(XMLConfig
-      , 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
+    if not fKeyMap.LoadFromXMLConfig(XMLConfig
+      , 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/') then
+      fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
 
     // Color options
     for i := IdeHighlighterStartId to HighlighterList.Count - 1 do

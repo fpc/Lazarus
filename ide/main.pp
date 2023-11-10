@@ -1791,6 +1791,7 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   IDECommandList := nil;
+  FreeThenNil(CustomKeySchemas);
   FreeThenNil(IDECommandScopes);
   // free control selection
   FreeThenNil(TheControlSelection);
