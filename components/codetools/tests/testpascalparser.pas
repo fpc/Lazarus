@@ -643,7 +643,8 @@ begin
   'program test1;',
   '{$TEXTBLOCK Native comment: could be native/cr/lf/crlf}',
   'const',
-  '  s = ''''''First',
+  '  s = ''''''',
+  '    First',
   '    Second''Lit', // skip single apostroph
   '    Third''''Lit', // skip double apostroph
   '    '''''';', // last line defines ignored indentation. here: cut 4

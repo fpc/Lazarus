@@ -4584,7 +4584,7 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
       +' New='+dbgs(ord(SkippingUntil)));
   end;
 
-  procedure SkipDelphiMultiLineLiteral(var p: PChar);
+  procedure SkipDelphiStringLiteral(var p: PChar);
   var
     lvl, i: Integer;
   begin
@@ -4594,19 +4594,24 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
       inc(p);
       inc(lvl);
     end;
-    if lvl and 1=0 then
-      exit; // even amount are apostrophs in string literal, e.g. ''''
-
-    while p^<>#0 do begin
-      if (p^='''') and (p[1]='''') then begin
-        i:=2;
-        inc(p,2);
-        while p^='''' do begin
-          inc(i);
-          if i=lvl then
-            exit;
-        end;
-      end else
+    if (lvl and 1=1) and (p^ in [#10,#13]) then begin
+      // delphi 12 multiline string literal
+      while p^<>#0 do begin
+        if (p^='''') and (p[1]='''') then begin
+          i:=2;
+          inc(p,2);
+          while p^='''' do begin
+            inc(i);
+            if i=lvl then
+              exit;
+          end;
+        end else
+          inc(p);
+      end;
+    end else begin
+      // normal string literal
+      while not (p^ in ['''',#0,#10,#13]) do inc(p);
+      if p^='''' then
         inc(p);
     end;
   end;
@@ -4664,7 +4669,7 @@ begin
           // skip string literal
           inc(p);
           if IsDelphiMode and (p^='''') and (p[1]='''') then begin
-            SkipDelphiMultiLineLiteral(p);
+            SkipDelphiStringLiteral(p);
           end else begin
             while not (p^ in ['''',#0,#10,#13]) do inc(p);
             if p^='''' then
