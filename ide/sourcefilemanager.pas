@@ -3145,7 +3145,7 @@ begin
     else
       SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
+    if SearchInPath(SearchPath,AFilename,Result) then exit;
 
     if not(fsfSkipPackages in Flags) then begin
       // search include file in source directories of all required packages
