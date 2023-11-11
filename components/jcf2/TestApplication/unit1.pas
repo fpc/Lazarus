@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  Menus, SynEdit, SynHighlighterPas, ConvertTypes, SynEditTypes;
+  Menus, SynEdit, SynHighlighterPas, ConvertTypes, SynEditTypes,LazFileUtils;
 
 type
 
@@ -25,6 +25,12 @@ type
     btnClearAndPaste: TButton;
     cbShowTree: TCheckBox;
     edFileName: TFileNameEdit;
+    edFileNameWithPath: TEdit;
+    edBaseDir: TEdit;
+    edIncludePaths: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     lbPos: TLabel;
     Memo3: TMemo;
     Memo1: TSynEdit;
@@ -45,12 +51,12 @@ type
     procedure miCutClick(Sender: TObject);
     procedure miPasteClick(Sender: TObject);
     procedure miSelectAllClick(Sender: TObject);
+    procedure OnIncludeFile(Sender:TObject;AIncludeFileName:string;var AFileContentOrErrorMessage:string;var AFileReaded:boolean);
   private
 
   public
     procedure LogIDEMessage(const psFile, psMessage: string; const peMessageType: TStatusMessageType; const piY, piX: integer);
   end;
-
 
 var
   Form1: TForm1;
@@ -191,6 +197,8 @@ begin
     fcConverter.InputCode := Memo1.Text;
     fcConverter.GuiMessages := True;
     fcConverter.ShowTree:=cbShowTree.Checked;
+    fcConverter.OnIncludeFile:= @OnIncludeFile;
+    fcConverter.FileName:= edFileNameWithPath.Text;
     fcConverter.Convert;
     if not fcConverter.ConvertError then
     begin
@@ -208,14 +216,25 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
+var
+  FullName:string;
 begin
+  FullName:=edFileName.Text;
   if Trim(edFileName.Text)<>'' then
-    Memo1.Lines.LoadFromFile(edFileName.Text);
+  begin
+    if ExtractFilePath(FullName)='' then
+      FullName:=ExtractFilePath(Application.ExeName) + FullName;
+    //Memo1.Lines.LoadFromFile(FullName);
+    Memo1.Text:=ReadFileToUTF8String(FullName);
+    edFileNameWithPath.Text:=FullName;
+  end;
 end;
 
 procedure TForm1.edFileNameAcceptFileName(Sender: TObject; var Value: string);
 begin
-  Memo1.Lines.LoadFromFile(Value);
+  //Memo1.Lines.LoadFromFile(Value);
+  Memo1.Text:=ReadFileToUTF8String(Value);
+  edFileNameWithPath.Text:=Value;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -263,6 +282,64 @@ begin
   //end;
   Memo3.Lines.Add(format('%d,%d : %s ', [piY, piX, psMessage]));
   //lazMessages.AddCustomMessage(Urgency,psMessage, psFile, piY, piX, 'JCF')
+end;
+
+procedure TForm1.OnIncludeFile(Sender: TObject; AIncludeFileName: string; var AFileContentOrErrorMessage: string; var AFileReaded: boolean);
+var
+  lsFile: string;
+  lsDir: string;
+  lbFileFound: boolean;
+  liStart, liEnd: integer;
+  lsPaths: string;
+  liPathsLen: integer;
+begin
+  lbFileFound := False;
+
+  if ExtractFilePath(AIncludeFileName) = '' then
+  begin
+    // seach in the same path as formated unit.
+    lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
+    lbFileFound := FileExists(lsFile);
+
+    // search in project include paths.  c:\p1\;c:\p2\;c:\p3\
+    liStart := 1;
+    liEnd := 1;
+    lsPaths := edIncludePaths.Text;
+    liPathsLen := length(lsPaths);
+    while (liStart <= liPathsLen) and (not lbFileFound) do
+    begin
+      liEnd := Pos(';', lsPaths, liStart);
+      if liEnd = 0 then
+        liEnd := liPathsLen + 1;
+      lsDir := IncludeTrailingPathDelimiter(Copy(lsPaths, liStart, liEnd - liStart + 1 - 1));
+      liStart := liEnd + 1;
+
+      if not FilenameIsAbsolute(lsDir) then
+      begin
+        lsDir:=CreateAbsolutePath(lsDir,IncludeTrailingPathDelimiter(edBaseDir.Text));
+      end;
+      lsFile := lsDir + AIncludeFileName;
+      lbFileFound := FileExists(lsFile);
+    end;
+  end
+  else
+  begin
+    if FilenameIsAbsolute(AIncludeFileName) then
+    begin
+      lsFile := AIncludeFileName;
+      lbFileFound := FileExists(lsFile);
+    end;
+  end;
+  if lbFileFound then
+  begin
+    AFileContentOrErrorMessage := ReadFileToUTF8String(lsFile);
+    AFileReaded := True;
+  end
+  else
+  begin
+    AFileReaded := False;
+    AFileContentOrErrorMessage := 'Include file not found: ' + AIncludeFileName;
+  end;
 end;
 
 end.

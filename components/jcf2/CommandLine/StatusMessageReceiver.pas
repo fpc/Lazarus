@@ -34,16 +34,22 @@ uses
 
 type
   TStatusMesssageReceiver = class(TObject)
+  protected
+    FIncludePaths:string;
   public
     procedure OnReceiveStatusMessage(const psFile, psMessage: string;
       const peMessageType: TStatusMessageType;
       const piY, piX: integer);
+    procedure OnIncludeFile(Sender: TObject; AIncludeFileName: string; var AFileContentOrErrorMessage: string; var AFileReaded: boolean);
+    // search paths for include files separated by ; like   c:\p1\;c:\p1\include\
+    property
+      IncludePaths:string read FIncludePaths write FIncludePaths;
   end;
 
 implementation
 
 uses
-  SysUtils;
+  SysUtils, converter, LazFileUtils, JcfMiscFunctions;
 
 { An attempt at an emacs version  }
 procedure TStatusMesssageReceiver.OnReceiveStatusMessage(const psFile, psMessage: string;
@@ -95,5 +101,63 @@ begin
   WriteLn(lsMessage);
 end;
 }
+
+procedure TStatusMesssageReceiver.OnIncludeFile(Sender: TObject; AIncludeFileName: string; var AFileContentOrErrorMessage: string; var AFileReaded: boolean);
+var
+  lsFile: string;
+  lsDir: string;
+  lbFileFound: boolean;
+  liStart, liEnd: integer;
+  lsPaths: string;
+  liPathsLen: integer;
+begin
+  lbFileFound := False;
+
+  if ExtractFilePath(AIncludeFileName) = '' then
+  begin
+    // search in the same path as formated unit.
+    lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
+    lbFileFound := FileExists(lsFile);
+
+    // search in project include paths.  c:\p1\;c:\p2\;c:\p3\
+    liStart := 1;
+    liEnd := 1;
+    lsPaths := IncludePaths;
+    liPathsLen := length(lsPaths);
+    while (liStart <= liPathsLen) and (not lbFileFound) do
+    begin
+      liEnd := Pos(';', lsPaths, liStart);
+      if liEnd = 0 then
+        liEnd := liPathsLen + 1;
+      lsDir := IncludeTrailingPathDelimiter(Copy(lsPaths, liStart, liEnd - liStart + 1 - 1));
+      liStart := liEnd + 1;
+
+      if not FilenameIsAbsolute(lsDir) then
+      begin
+        lsDir:=CreateAbsolutePath(lsDir,IncludeTrailingPathDelimiter(GetCurrentDir));
+      end;
+      lsFile := lsDir + AIncludeFileName;
+      lbFileFound := FileExists(lsFile);
+    end;
+  end
+  else
+  begin
+    if FilenameIsAbsolute(AIncludeFileName) then
+    begin
+      lsFile := AIncludeFileName;
+      lbFileFound := FileExists(lsFile);
+    end;
+  end;
+  if lbFileFound then
+  begin
+    AFileContentOrErrorMessage := ReadFileToUTF8String(lsFile);
+    AFileReaded := True;
+  end
+  else
+  begin
+    AFileReaded := False;
+    AFileContentOrErrorMessage := 'Include file not found: ' + AIncludeFileName;
+  end;
+end;
 
 end.

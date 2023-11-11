@@ -61,6 +61,7 @@ type
     fbGuiMessages: Boolean;
     fbAbort: boolean;
     fiConvertCount: integer;
+    fOnIncludeFile: TOnIncludeFile;
 
     procedure SendStatusMessage(const psUnit, psMessage: string;
       const peMessageType: TStatusMessageType;
@@ -107,6 +108,7 @@ type
     property OutFileName: string Read fsOutFileName;
 
     property OnStatusMessage: TStatusMessageProc read GetOnStatusMessage write SetOnStatusMessage;
+    property OnIncludeFile: TOnIncludeFile Read fOnIncludeFile Write fOnIncludeFile;
   end;
 
 implementation
@@ -210,6 +212,7 @@ begin
   fcConverter.FileName := psInputFileName;
   fcConverter.InputCode := lsSourceCode;
   fcConverter.GuiMessages := GuiMessages;
+  fcConverter.OnIncludeFile := OnIncludeFile;
   fcConverter.Convert;
 
   // was it converted ?

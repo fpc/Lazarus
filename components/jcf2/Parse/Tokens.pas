@@ -511,7 +511,7 @@ type
   TPreProcessorSymbolType = (ppNone,
     ppDefine, ppUndef,
     ppIfDef, ppIfNotDef, ppIfOpt, ppIfExpr, ppElseIf,
-    ppElse, ppEndIf, ppIfEnd);
+    ppElse, ppEndIf, ppIfEnd,ppI,ppInclude);
 
   TPreProcessorSymbolTypeSet = set of TPreProcessorSymbolType;
 
@@ -1153,7 +1153,9 @@ const
     '{$ELSEIF',
     '{$ELSE',
     '{$ENDIF',
-    '{$IFEND'
+    '{$IFEND',
+    '{$I',
+    '{$INCLUDE'
     );
 
 
@@ -1220,6 +1222,10 @@ begin
       Result := '$ENDIF';
     ppIfEnd:
       Result := '$IFEND';
+    ppI:
+      Result :='$I';
+    ppInclude:
+      Result :='$INCLUDE';
     else
       Assert(False);
   end;

@@ -524,6 +524,9 @@ begin
     raise TEParseError.Create('No source to parse', nil);
 
   lt := fcTokenList.FirstSolidTokenType;
+  if lt=ttUnknown then
+    raise TEParseError.Create('No source to parse', nil);
+
   WriteStr(s, lt);
   case lt of
     ttProgram:

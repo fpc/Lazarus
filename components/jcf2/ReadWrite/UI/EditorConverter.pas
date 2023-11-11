@@ -49,8 +49,8 @@ type
     fOnStatusMessage: TStatusMessageProc;
     fsCurrentUnitName: string;
     fiConvertCount: integer;
-
-    procedure SendStatusMessage(const psUnit, psMessage: string;
+    fOnIncludeFile: TOnIncludeFile;
+    prOcedure SendStatusMessage(const psUnit, psMessage: string;
       const peMessageType: TStatusMessageType;
       const piY, piX: integer);
 
@@ -77,6 +77,7 @@ type
     procedure AfterConvert;
 
     property OnStatusMessage: TStatusMessageProc read GetOnStatusMessage write SetOnStatusMessage;
+    property OnIncludeFile: TOnIncludeFile Read fOnIncludeFile Write fOnIncludeFile;
   end;
 
 
@@ -120,6 +121,7 @@ begin
 
   // now convert
   fcConverter.FileName := fsCurrentUnitName;
+  fcConverter.OnIncludeFile := OnIncludeFile;
   fcConverter.Convert;
   fsCurrentUnitName := '';
   if not ConvertError then

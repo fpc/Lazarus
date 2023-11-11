@@ -66,6 +66,7 @@ const
 
     ' Other options: ' + NativeLineBreak +
     ' -config=filename  To specify a named configuration file' + NativeLineBreak +
+    ' -ipaths=c:\path1;c:\path2 To specify the search paths for include files' + NativeLineBreak+
     ' -y Overwrite files without confirmation.' + NativeLineBreak +
     ' -? Display this help' + NativeLineBreak;
 

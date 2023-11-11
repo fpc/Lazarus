@@ -35,7 +35,10 @@ interface
 uses
   Classes, SysUtils,
   { local }
-  Tokens, SourceTokenList, SourceToken;
+  Tokens, SourceTokenList, SourceToken, Converter, ConvertTypes;
+
+const
+  MAX_INCLUDE_LEVEL = 10;  //< avoid posible infinite recursion
 
 type
   TPreProcessorParseTree = class(TObject)
@@ -47,7 +50,8 @@ type
     { state from the preprocessor statements }
     fbPreprocessorIncluded: boolean;
     fcDefinedSymbols: TStringList;
-
+    fOnIncludeFile:TOnIncludeFile;
+    fbUseParentDefinedSymbols:boolean;
     procedure ParseProcessorBlock;
 
     procedure ParseDefine(const psSymbol: string);
@@ -58,6 +62,7 @@ type
     procedure ParseIfExpr(const psExpr: string);
     procedure ParseElseIf(const psExpr: string; var pbAlreadyMatchedClause: boolean);
     procedure ParseElse(const pbAlreadyMatchedClause: boolean);
+    procedure ParseInclude(const psValue: string);
 
     procedure ParseNonPreProc(const peEndTokens: TPreProcessorSymbolTypeSet);
     procedure ParseOptTail(pbAlreadyMatchedClause: boolean);
@@ -76,28 +81,36 @@ type
 
     procedure NextToken;
   public
-    constructor Create;
+    Converter:TConverter;
+    constructor Create(aParentDefinedSymbols:TStringList=nil);
     destructor Destroy; override;
 
     procedure ProcessTokenList(const pcTokens: TSourceTokenList);
     function EvalPreProcessorExpression(const psExpression: string): boolean;
     procedure AddDefinedSymbol(const psSymbol: string);
+    property OnIncludeFile: TOnIncludeFile Read fOnIncludeFile Write fOnIncludeFile;
   end;
 
-procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
+procedure RemoveConditionalCompilation(AConverter:TConverter;const pcTokens: TSourceTokenList;aOnIncludeFile:TOnIncludeFile);
 
 implementation
 
 uses
   { local }
   PreProcessorExpressionTokenise, PreProcessorExpressionParser, StrUtils,
-  ParseError, JcfSettings, JcfUiTools, JcfStringUtils, TokenUtils, SettingsTypes;
+  ParseError, JcfSettings, JcfUiTools, JcfStringUtils, TokenUtils, SettingsTypes, BuildTokenList;
 
-procedure RemoveConditionalCompilation(const pcTokens: TSourceTokenList);
+var
+  giIncludeLevel:integer;
+
+procedure RemoveConditionalCompilation(AConverter:TConverter;const pcTokens: TSourceTokenList;aOnIncludeFile:TOnIncludeFile);
 var
   lcParser: TPreProcessorParseTree;
 begin
+  giIncludeLevel:=0;
   lcParser := TPreProcessorParseTree.Create;
+  lcParser.OnIncludeFile := aOnIncludeFile;
+  lcParser.Converter:=AConverter;
   try
     lcParser.ProcessTokenList(pcTokens);
   finally
@@ -153,24 +166,31 @@ end;
 }
 
 
-constructor TPreProcessorParseTree.Create;
+constructor TPreProcessorParseTree.Create(aParentDefinedSymbols:TStringList);
 begin
-  inherited;
+  inherited Create;
 
   fiCurrentTokenIndex := 0;
-
-  fcDefinedSymbols := TStringList.Create;      // Will compare with CompareText.
-  fcDefinedSymbols.UseLocale := False;
-  fcDefinedSymbols.Sorted := True;
-  fcDefinedSymbols.Duplicates := dupIgnore;
-
-  // import user settings 
-  fcDefinedSymbols.Assign(FormattingSettings.PreProcessor.DefinedSymbols);
+  if aParentDefinedSymbols=nil then
+  begin
+    fcDefinedSymbols := TStringList.Create;      // Will compare with CompareText.
+    fcDefinedSymbols.UseLocale := False;
+    fcDefinedSymbols.Sorted := True;
+    fcDefinedSymbols.Duplicates := dupIgnore;
+    // import user settings
+    fcDefinedSymbols.Assign(FormattingSettings.PreProcessor.DefinedSymbols);
+  end
+  else
+  begin
+    fcDefinedSymbols := aParentDefinedSymbols;
+    fbUseParentDefinedSymbols := true;
+  end;
 end;
 
 destructor TPreProcessorParseTree.Destroy;
 begin
-  FreeAndNil(fcDefinedSymbols);
+  if not fbUseParentDefinedSymbols then
+    FreeAndNil(fcDefinedSymbols);
 
   inherited;
 end;
@@ -267,6 +287,8 @@ begin
       ParseIfOpt(lcToken.PreProcessorText);
     ppIfExpr:
       ParseIfExpr(lcToken.PreProcessorText);
+    ppInclude, ppI:
+      ParseInclude(lcToken.PreProcessorText);
     ppNone:
     begin
       { do nothing. this could be a "$R *.dfm" or other compiler directive 
@@ -390,6 +412,70 @@ begin
   fbPreprocessorIncluded := lbWasIncluded;
 end;
 
+procedure TPreProcessorParseTree.ParseInclude(const psValue: string);
+var
+  lsTemp: string;
+  lbFileReaded: boolean;
+  lsFileContentOrError: string;
+  lcIncludedTokens: TSourceTokenList;
+  lcBTL: TBuildTokenList;
+  lPPT: TPreProcessorParseTree;
+begin
+  try
+    lsTemp := TrimLeft(psValue);
+    if lsTemp = '' then
+      Exit;
+    if lsTemp[1] = '%' then    // %DATE%  %var%
+      Exit;
+    if not Assigned(fOnIncludeFile) then
+      Exit;
+    if giIncludeLevel >= MAX_INCLUDE_LEVEL then
+      Exit;
+    Inc(giIncludeLevel);
+    lsFileContentOrError := '';
+    lbFileReaded := False;
+    fOnIncludeFile(Converter, lsTemp, lsFileContentOrError, lbFileReaded);
+    if lbFileReaded then
+    begin
+      try
+        try
+          lcBTL := nil;
+          lcIncludedTokens := nil;
+          lcBTL := TBuildTokenList.Create;
+          lcBTL.FileName := lsTemp;
+          LcBTL.SourceCode := lsFileContentOrError;
+          lcIncludedTokens := lcBTL.BuildTokenList([btlOnlyDirectives]);
+
+          lPPT := TPreProcessorParseTree.Create(fcDefinedSymbols);
+          try
+            lPPT.OnIncludeFile := OnIncludeFile;
+            lPPT.Converter := Converter;
+            lPPT.ProcessTokenList(lcIncludedTokens);
+          finally
+            lPPT.Free;
+          end;
+
+        finally
+          lcBTL.Free;
+          lcIncludedTokens.OwnsObjects := True;
+          lcIncludedTokens.Clear;
+          lcIncludedTokens.Free;
+        end;
+      except
+        // If there are errors in included files ignore and continue.
+      end;
+    end
+    else
+    begin
+      if lsFileContentOrError <> '' then
+        Converter.SendStatusMessage(Converter.FileName, 'Include file: ' + lsTemp + '  ' + lsFileContentOrError, mtCodeWarning, 0, 0);
+    end;
+    Dec(giIncludeLevel);
+  finally
+    NextToken;
+  end;
+end;
+
 procedure TPreProcessorParseTree.ParsePreProcessorDirective(
   const peSymbolType: TPreProcessorSymbolType);
 begin
@@ -404,8 +490,6 @@ const
   lExceptionMessage='Expected compiler directive ';
 begin
   lcToken := CurrentToken;
-  Assert(lcToken <> nil, 'nil token, expected ' +
-    PreProcSymbolTypeSetToString(peSymbolTypes));
 
   if lcToken=nil then
     raise TEParseError.Create(lExceptionMessage, LastSolidToken);

@@ -43,6 +43,8 @@ uses
 
 type
 
+  TOnIncludeFile=procedure(Sender:TObject;AIncludeFileName:string;var AFileContentOrErrorMessage:string;var AFileReaded:boolean) of object;
+
   TConverter = class(TObject)
   private
     { the strings for the in and out code }
@@ -66,12 +68,11 @@ type
     fbGuiMessages: Boolean;
     fbShowParseTree: Boolean;
 
+    fOnIncludeFile:TOnIncludeFile;
     function GetOnStatusMessage: TStatusMessageProc;
     procedure SetOnStatusMessage(const Value: TStatusMessageProc);
 
     procedure SendExceptionMessage(const pe: Exception);
-    { call this to report the current state of the proceedings }
-    procedure SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
     procedure ShowParseTree;
     function GetRoot: TParseTreeNode;
 
@@ -90,7 +91,8 @@ type
     procedure ConvertUsingFakeUnit;
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
-
+    { call this to report the current state of the proceedings }
+    procedure SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
     property InputCode: String Read fsInputCode Write fsInputCode;
     property OutputCode: String Read fsOutputCode Write fsOutputCode;
     property FileName: String Read fsFileName Write fsFileName;
@@ -103,7 +105,8 @@ type
 
     property OnStatusMessage: TStatusMessageProc Read GetOnStatusMessage Write SetOnStatusMessage;
     property SingleProcess: TTreeNodeVisitorType Read fcSingleProcess Write fcSingleProcess;
-    property ShowTree: boolean Read fbShowParseTree Write fbShowParseTree;	
+    property ShowTree: boolean Read fbShowParseTree Write fbShowParseTree;
+    property OnIncludeFile: TOnIncludeFile Read fOnIncludeFile Write fOnIncludeFile;
   end;
 
 implementation
@@ -168,7 +171,7 @@ begin
 
         // remove conditional compilation stuph
         if FormattingSettings.PreProcessor.Enabled then
-          RemoveConditionalCompilation(lcTokenList);
+          RemoveConditionalCompilation(Self,lcTokenList, fOnIncludeFile);
 
         // make a parse tree from it
         fcBuildParseTree.TokenList := lcTokenList;

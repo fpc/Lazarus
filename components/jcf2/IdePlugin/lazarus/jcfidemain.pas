@@ -66,6 +66,7 @@ type
     procedure ClearToolMessages;
     procedure ConvertEditor(const pciEditor: TSourceEditorInterface);
     function CanFormat(const AMsg: String): Boolean;
+    procedure OnIncludeFile(Sender:TObject;AIncludeFileName:string;var AFileContentOrErrorMessage:string;var AFileReaded:boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -84,7 +85,7 @@ type
 implementation
 
 uses
-  diffmerge, lazfileutils;
+  diffmerge, lazfileutils, JcfMiscFunctions;
 
 function FileIsAllowedType(const psFileName: string): boolean;
 const
@@ -225,6 +226,7 @@ begin
   begin
     fcFileConverter := TFileConverter.Create;
     fcFileConverter.OnStatusMessage := LogIDEMessage;
+    fcFileConverter.OnIncludeFile := OnIncludeFile;
   end;
 
   fcFileConverter.ProcessFile(psFileName);
@@ -276,6 +278,8 @@ begin
     fcConverter.OnStatusMessage := LogIDEMessage;
     fcConverter.InputCode := sourceCode;
     fcConverter.GuiMessages := false; //true;
+    fcConverter.FileName := SourceEditorManagerIntf.ActiveEditor.FileName;
+    fcConverter.OnIncludeFile := OnIncludeFile;
     FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
     fcConverter.ConvertPart(lineStartOffset, lineEndOffset, True);
     if not fcConverter.ConvertError then
@@ -324,6 +328,8 @@ begin
       srcEditor.SelectText(BlockBegin, BlockEnd); //extend selection to full lines.
       fcConverter.InputCode := srcEditor.GetText(True);  // only selected text.
       fcConverter.GuiMessages := true;
+      fcConverter.FileName := SourceEditorManagerIntf.ActiveEditor.FileName;
+      fcConverter.OnIncludeFile := OnIncludeFile;
       fcConverter.ConvertUsingFakeUnit;
       if not fcConverter.ConvertError then
       begin
@@ -368,6 +374,8 @@ begin
     //try formating wrapping the code in fake unit.
     ClearToolMessages;
     fcConverter.GuiMessages := True;
+    fcConverter.FileName := SourceEditorManagerIntf.ActiveEditor.FileName;
+    fcConverter.OnIncludeFile := OnIncludeFile;
     fcConverter.ConvertUsingFakeUnit;
     if not fcConverter.ConvertError then
     begin
@@ -441,6 +449,7 @@ begin
   begin
     fcEditorConverter := TEditorConverter.Create;
     fcEditorConverter.OnStatusMessage := LogIDEMessage;
+    fcEditorConverter.OnIncludeFile := OnIncludeFile;
   end;
   Assert(fcEditorConverter <> nil);
 end;
@@ -453,6 +462,71 @@ begin
   if lazMessages = nil then
     exit;
   lazMessages.Clear;
+end;
+
+procedure TJcfIdeMain.OnIncludeFile(Sender: TObject; AIncludeFileName: string; var AFileContentOrErrorMessage: string; var AFileReaded: boolean);
+var
+  lsFile: string;
+  lsDir: string;
+  lbFileFound: boolean;
+
+  function IsOnIdeEditor(AFileName: string): boolean;
+  var
+    lSEI: TSourceEditorInterface;
+  begin
+    Result := False;
+    lSEI := SourceEditorManagerIntf.SourceEditorIntfWithFilename(AFilename);
+    if lSEI <> nil then
+    begin
+      AFileContentOrErrorMessage := lSEI.GetText(False);
+      AFileReaded := True;
+      Result := True;
+    end;
+  end;
+
+begin
+  lbFileFound := False;
+
+  if ExtractFilePath(AIncludeFileName) = '' then
+  begin
+    // seach in the same path as formated unit.
+    lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
+    if IsOnIdeEditor(lsFile) then
+      Exit;
+    lbFileFound := FileExists(lsFile);
+  end
+  else
+  begin
+    if FilenameIsAbsolute(AIncludeFileName) then
+    begin
+      lsFile := AIncludeFileName;
+      if IsOnIdeEditor(lsFile) then
+        Exit;
+      lbFileFound := FileExists(lsFile);
+    end;
+  end;
+  // search in project dir and project include paths.
+  if not lbFileFound then
+  begin
+    lsDir := LazProject1.Directory;
+    lsFile := LazarusIDE.FindSourceFile(AIncludeFileName, lsDir, [fsfSearchForProject, fsfUseIncludePaths]);
+    lbFileFound := lsFile <> '';
+    if lsFile <> '' then
+    begin
+      if IsOnIdeEditor(lsFile) then
+        Exit;
+    end;
+  end;
+  if lbFileFound then
+  begin
+    AFileContentOrErrorMessage := ReadFileToUTF8String(lsFile);
+    AFileReaded := True;
+  end
+  else
+  begin
+    AFileReaded := False;
+    AFileContentOrErrorMessage := ' Include file not found: ' + AIncludeFileName;
+  end;
 end;
 
 end.

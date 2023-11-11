@@ -52,7 +52,7 @@ var
 
   fbHasNamedConfigFile: boolean;
   fsConfigFileName:     string;
-
+  fsIncludePaths: string;
   lcStatus:  TStatusMesssageReceiver;
 
   function StripParamPrefix(const ps: string): string;
@@ -151,6 +151,13 @@ var
       begin
         fbHasNamedConfigFile := True;
         fsConfigFileName     := StrAfter('=', lsOpt);
+      end
+      else if StrFind('ipaths', lsOpt) = 1 then
+      begin
+        fsIncludePaths := StrAfter('=', lsOpt);
+        fsIncludePaths := TrimLeft(fsIncludePaths);
+        fsIncludePaths := TrimRight(fsIncludePaths);
+        fsIncludePaths := StrTrimQuotes(fsIncludePaths);
       end
       else
       begin
@@ -257,6 +264,8 @@ var
       lcConvert.SourceMode := GetRegSettings.SourceMode;
       lcConvert.BackupMode := GetRegSettings.BackupMode;
       lcConvert.Input := GetRegSettings.Input;
+      lcStatus.IncludePaths := fsIncludePaths;
+      lcConvert.OnIncludeFile := lcStatus.OnIncludeFile;
       // do it!
       lcConvert.Convert;
 

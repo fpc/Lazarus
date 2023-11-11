@@ -36,6 +36,7 @@
       <Unit>
         <Filename Value="jcf.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="JCF"/>
       </Unit>
       <Unit>
         <Filename Value="..\CommandLineConstants.pas"/>
@@ -52,6 +53,7 @@
       <Unit>
         <Filename Value="..\..\Ui\jcfuitoolsnogui.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfUiToolsNoGUI"/>
       </Unit>
     </Units>
   </ProjectOptions>

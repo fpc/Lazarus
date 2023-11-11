@@ -1,26 +1,25 @@
 object Form1: TForm1
   Left = 261
-  Height = 594
+  Height = 612
   Top = 158
   Width = 1301
   Caption = 'JCF'
-  ClientHeight = 594
+  ClientHeight = 612
   ClientWidth = 1301
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Button1: TButton
     Left = 616
     Height = 25
     Top = 64
     Width = 75
     Caption = 'Format'
-    OnClick = Button1Click
     TabOrder = 0
+    OnClick = Button1Click
   end
   object Memo3: TMemo
     Left = 11
     Height = 90
-    Top = 491
+    Top = 509
     Width = 1277
     Anchors = [akLeft, akRight, akBottom]
     Lines.Strings = (
@@ -30,7 +29,7 @@ object Form1: TForm1
   end
   inline Memo1: TSynEdit
     Left = 16
-    Height = 424
+    Height = 421
     Top = 32
     Width = 592
     Anchors = [akTop, akLeft, akBottom]
@@ -601,8 +600,8 @@ object Form1: TForm1
   end
   inline Memo2: TSynEdit
     Left = 704
-    Height = 472
-    Top = 8
+    Height = 421
+    Top = 32
     Width = 587
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
@@ -1119,8 +1118,8 @@ object Form1: TForm1
     Top = 4
     Width = 75
     Caption = 'Load'
-    OnClick = Button2Click
     TabOrder = 5
+    OnClick = Button2Click
   end
   object cbShowTree: TCheckBox
     Left = 616
@@ -1136,17 +1135,65 @@ object Form1: TForm1
     Top = 4
     Width = 88
     Caption = 'Clear and Paste'
-    OnClick = btnClearAndPasteClick
     TabOrder = 7
+    OnClick = btnClearAndPasteClick
   end
   object lbPos: TLabel
     Left = 18
     Height = 15
-    Top = 465
+    Top = 457
     Width = 152
     Anchors = [akLeft, akBottom]
     AutoSize = False
     ParentColor = False
+  end
+  object Label1: TLabel
+    Left = 184
+    Height = 15
+    Top = 483
+    Width = 119
+    Anchors = [akLeft, akBottom]
+    Caption = 'Include Paths p1;p2;p3'
+  end
+  object Label2: TLabel
+    Left = 184
+    Height = 15
+    Top = 457
+    Width = 104
+    Anchors = [akLeft, akBottom]
+    Caption = 'File name with path'
+  end
+  object edFileNameWithPath: TEdit
+    Left = 313
+    Height = 23
+    Top = 454
+    Width = 327
+    Anchors = [akLeft, akBottom]
+    TabOrder = 8
+  end
+  object edIncludePaths: TEdit
+    Left = 313
+    Height = 23
+    Top = 480
+    Width = 511
+    Anchors = [akLeft, akBottom]
+    TabOrder = 9
+  end
+  object Label3: TLabel
+    Left = 656
+    Height = 15
+    Top = 457
+    Width = 41
+    Anchors = [akLeft, akBottom]
+    Caption = 'Base dir'
+  end
+  object edBaseDir: TEdit
+    Left = 704
+    Height = 23
+    Top = 456
+    Width = 327
+    Anchors = [akLeft, akBottom]
+    TabOrder = 10
   end
   object SynPasSyn1: TSynPasSyn
     Enabled = False

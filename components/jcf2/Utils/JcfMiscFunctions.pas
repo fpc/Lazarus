@@ -48,7 +48,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, SysUtils, JcfStringUtils;
+  Classes, SysUtils, JcfStringUtils, lconvencoding;
 
 
 function GetApplicationFolder: string;
@@ -64,6 +64,7 @@ function SetFileNameExtension(const psFileName, psExt: string): string;
 
 procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
+function ReadFileToUTF8String(AFilename: string): string;
 
 implementation
 
@@ -310,6 +311,22 @@ begin
     Result := Length(AString)
   else
     Result := Length(AString) - (Pos1 + Length(NativeLineBreak));
+end;
+
+function ReadFileToUTF8String(AFilename: string): string;
+var
+  lMs: TMemorystream;
+  lS: string;
+begin
+  lMs := TMemoryStream.Create;
+  try
+    lMs.LoadFromFile(AFileName);
+    SetLength(lS, lMs.Size);
+    lMs.ReadBuffer(lS[1], lMs.Size);
+    Result := ConvertEncoding(lS, GuessEncoding(lS), EncodingUTF8);
+  finally
+    lMs.Free;
+  end;
 end;
 
 end.

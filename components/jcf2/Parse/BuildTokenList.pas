@@ -44,6 +44,9 @@ uses
 
 type
 
+  TBuildTokenListFlag=(btlOnlyDirectives);
+  TBuildTokenListFlags = set of TBuildTokenListFlag;
+
   { TBuildTokenList }
 
   TBuildTokenList = class(TObject)
@@ -99,7 +102,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function BuildTokenList: TSourceTokenList;
+    function BuildTokenList(AFlags:TBuildTokenListFlags=[]): TSourceTokenList;
 
     property SourceCode: String read fsSourceCode write SetSourceCode;
     property FileName: string read fsFileName write fsFileName;
@@ -955,13 +958,14 @@ begin
   end;
 end;
 
-function TBuildTokenList.BuildTokenList: TSourceTokenList;
+function TBuildTokenList.BuildTokenList(AFlags:TBuildTokenListFlags=[]): TSourceTokenList;
 const
   UPDATE_INTERVAL = 4096; // big increments here, this goes faster than parsing
 var
   lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
   liCounter: integer;
+  lbIncludeToken: boolean;
 begin
   Assert(SourceCode <> '');
   liCounter := 0;
@@ -969,8 +973,17 @@ begin
 
   while not EndOfFile do
   begin
+    lbIncludeToken := True;
     lcNew := GetNextToken;
-    lcList.Add(lcNew);
+    if btlOnlyDirectives in AFlags then
+    begin
+      if not ((lcNew.TokenType=ttComment) and (lcNew.CommentStyle=eCompilerDirective)) then
+        lbIncludeToken := False;
+    end;
+    if lbIncludeToken then
+      lcList.Add(lcNew)
+    else
+      lcNew.Free;
     Inc(liCounter);
     GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
   end;
@@ -980,7 +993,10 @@ end;
 
 function TBuildTokenList.Current: Char;
 begin
-  Result := fsSourceCode[fiCurrentIndex];
+  if fiCurrentIndex<=Length(fsSourceCode) then
+    Result := fsSourceCode[fiCurrentIndex]
+  else
+    Result := #0;
 end;
 
 function TBuildTokenList.CurrentChars(const piCount: integer): String;
