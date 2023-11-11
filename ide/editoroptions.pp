@@ -1872,6 +1872,7 @@ procedure RepairEditorFontSize(var FontSize: integer);
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function HighlighterList: TEditOptLangList;
 function ColorSchemeFactory: TColorSchemeFactory;
+function UserKeySchemeDirectory(CreateIfNotExists: Boolean): String;
 function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
 procedure InitLocale;
 
@@ -2595,6 +2596,13 @@ begin
     end;
   end;
   Result := Singleton;
+end;
+
+function UserKeySchemeDirectory(CreateIfNotExists: Boolean): String;
+begin
+  Result := AppendPathDelim(GetPrimaryConfigPath) + KeyMappingSchemeConfigDirName;
+  If CreateIfNotExists and (not DirectoryExistsUTF8(Result)) then
+    CreateDirUTF8(Result);
 end;
 
 function UserSchemeDirectory(CreateIfNotExists: Boolean): String;

@@ -47,7 +47,6 @@ type
   TEditorKeymappingOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnPanel: TPanel;
     ExportButton: TButton;
-    ImportButton: TButton;
     ChooseSchemeButton: TBitBtn;
     ClearButton: TBitBtn;
     EditButton: TBitBtn;
@@ -71,7 +70,6 @@ type
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
-    procedure ImportButtonClick(Sender: TObject);
     procedure FilterEditAfterFilter(Sender: TObject);
     function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
     procedure FilterEditKeyPress(Sender: TObject; var {%H-}Key: char);
@@ -245,6 +243,7 @@ begin
   dlg := TSaveDialog.Create(Self);
   exp := TKeyCommandRelationList.Create;
   try
+    dlg.InitialDir := UserKeySchemeDirectory(True);
     dlg.DefaultExt:='xml';
     dlg.Filter := dlgFilterXML + '|*.xml|' + dlgFilterAll +'|'+GetAllFilesMask;
     dlg.FilterIndex := 0;
@@ -259,49 +258,6 @@ begin
       exp.Relations[i].DefaultShortcutB := CleanIDEShortCut;
     end;
     exp.SaveToXMLConfig(xml, 'KeyMapping/', true);
-  finally
-    exp.Free;
-    dlg.Free;
-    xml.Free;
-  end;
-end;
-
-
-procedure TEditorKeymappingOptionsFrame.ImportButtonClick(Sender: TObject);
-var
-  dlg : TOpenDialog;
-  xml : TXMLConfig;
-  exp : TKeyCommandRelationList;
-  src : TKeyCommandRelation;
-  dst : TKeyCommandRelation;
-  i   : integer;
-  nm  : string;
-begin
-  xml := nil;
-  dlg := TOpenDialog.Create(Self);
-  exp := TKeyCommandRelationList.Create;
-  try
-    dlg.Filter := dlgFilterXML + '|*.xml|' + dlgFilterAll +'|'+GetAllFilesMask;
-    dlg.FilterIndex := 0;
-    if not dlg.Execute then Exit;
-    xml := TXMLConfig.Create(dlg.FileName);
-    exp.DefineCommandCategories; // default Relations
-    nm := xml.GetValue('Name/Value','');
-    if nm = '' then nm := ExtractFileName(xml.FileName);
-    exp.LoadFromXMLConfig(xml, 'KeyMapping/', false);
-    for i:=0 to exp.RelationCount-1 do begin
-      src := exp.Relations[i];
-      dst := FEditingKeyMap.FindByCommand(src.Command);
-      if Assigned(dst) then begin
-        dst.ShortcutA := src.ShortcutA;
-        dst.ShortcutB := src.ShortcutB;
-      end;
-    end;
-    EditorOpts.KeyMappingScheme := Format(lisImported, [nm]);
-    FillKeyMappingTreeView;
-    fModified:=True;
-    UpdateSchemeLabel;
-    UpdateConflictTree;
   finally
     exp.Free;
     dlg.Free;
@@ -468,7 +424,6 @@ begin
   ClearButton.Caption := lisClear;
   EditMenuItem.Caption := lisEdit;
   ClearMenuItem.Caption := lisClear;
-  ImportButton.Caption := lisImport;
   ExportButton.Caption := lisExport;
 
   TreeView.Images := IDEImages.Images_16;
