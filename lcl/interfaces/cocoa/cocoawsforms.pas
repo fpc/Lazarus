@@ -1103,7 +1103,10 @@ begin
 
   w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
   if not Assigned(w) then
+  begin
+    TCocoaWSWinControl.ShowHide(AWinControl);
     exit;
+  end;
 
   if AWinControl.HandleObjectShouldBeVisible then
   begin
