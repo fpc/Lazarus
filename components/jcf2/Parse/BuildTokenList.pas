@@ -102,7 +102,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function BuildTokenList(AFlags:TBuildTokenListFlags=[]): TSourceTokenList;
+    procedure BuildTokenList(ASourceTokenList:TSourceTokenList;AFlags:TBuildTokenListFlags=[]);
 
     property SourceCode: String read fsSourceCode write SetSourceCode;
     property FileName: string read fsFileName write fsFileName;
@@ -220,9 +220,13 @@ begin
   begin
     lcNewToken := TSourceToken.Create;
     lcNewToken.FileName := FileName;
-    DoAllTheTries;
-
-    lcNewToken.WordType := WordTypeOfToken(lcNewToken.TokenType);
+    try
+      DoAllTheTries;
+      lcNewToken.WordType := WordTypeOfToken(lcNewToken.TokenType);
+    except
+      lcNewToken.Free;
+      raise;
+    end;
     Result := lcNewToken;
   end;
 end;
@@ -533,7 +537,6 @@ begin
     pcToken.TokenType := ttQuotedLiteralString;
   end;
 end;
-
 
 function TBuildTokenList.TryWord(const pcToken: TSourceToken): boolean;
 
@@ -958,37 +961,43 @@ begin
   end;
 end;
 
-function TBuildTokenList.BuildTokenList(AFlags:TBuildTokenListFlags=[]): TSourceTokenList;
+procedure TBuildTokenList.BuildTokenList(ASourceTokenList:TSourceTokenList;AFlags:TBuildTokenListFlags=[]);
 const
   UPDATE_INTERVAL = 4096; // big increments here, this goes faster than parsing
 var
-  lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
   liCounter: integer;
   lbIncludeToken: boolean;
 begin
   Assert(SourceCode <> '');
   liCounter := 0;
-  lcList    := TSourceTokenList.Create;
 
   while not EndOfFile do
   begin
     lbIncludeToken := True;
-    lcNew := GetNextToken;
-    if btlOnlyDirectives in AFlags then
-    begin
-      if not ((lcNew.TokenType=ttComment) and (lcNew.CommentStyle=eCompilerDirective)) then
-        lbIncludeToken := False;
-    end;
-    if lbIncludeToken then
-      lcList.Add(lcNew)
-    else
+    lcNew := nil;
+    try
+      lcNew := GetNextToken;
+      if lcNew<>nil then
+      begin
+        if btlOnlyDirectives in AFlags then
+        begin
+          if not ((lcNew.TokenType=ttComment) and (lcNew.CommentStyle=eCompilerDirective)) then
+            lbIncludeToken := False;
+        end;
+        if lbIncludeToken then
+          ASourceTokenList.Add(lcNew)
+        else
+          lcNew.Free;
+        lcNew := nil;
+      end;
+      Inc(liCounter);
+      GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
+    except
       lcNew.Free;
-    Inc(liCounter);
-    GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
+      raise;
+    end;
   end;
-
-  Result := lcList;
 end;
 
 function TBuildTokenList.Current: Char;

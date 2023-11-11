@@ -444,7 +444,8 @@ begin
           lcBTL := TBuildTokenList.Create;
           lcBTL.FileName := lsTemp;
           LcBTL.SourceCode := lsFileContentOrError;
-          lcIncludedTokens := lcBTL.BuildTokenList([btlOnlyDirectives]);
+          lcIncludedTokens := TSourceTokenList.Create;
+          lcBTL.BuildTokenList(lcIncludedTokens,[btlOnlyDirectives]);
 
           lPPT := TPreProcessorParseTree.Create(fcDefinedSymbols);
           try
