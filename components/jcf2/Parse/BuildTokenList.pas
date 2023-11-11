@@ -99,7 +99,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function BuildTokenList: TSourceTokenList;
+    procedure BuildTokenList(ASourceTokenList:TSourceTokenList);
 
     property SourceCode: String read fsSourceCode write SetSourceCode;
     property FileName: string read fsFileName write fsFileName;
@@ -217,9 +217,13 @@ begin
   begin
     lcNewToken := TSourceToken.Create;
     lcNewToken.FileName := FileName;
-    DoAllTheTries;
-
-    lcNewToken.WordType := WordTypeOfToken(lcNewToken.TokenType);
+    try
+      DoAllTheTries;
+      lcNewToken.WordType := WordTypeOfToken(lcNewToken.TokenType);
+    except
+      lcNewToken.Free;
+      raise;
+    end;
     Result := lcNewToken;
   end;
 end;
@@ -955,27 +959,31 @@ begin
   end;
 end;
 
-function TBuildTokenList.BuildTokenList: TSourceTokenList;
+procedure TBuildTokenList.BuildTokenList(ASourceTokenList:TSourceTokenList);
 const
   UPDATE_INTERVAL = 4096; // big increments here, this goes faster than parsing
 var
-  lcList:    TSourceTokenList;
   lcNew:     TSourceToken;
   liCounter: integer;
 begin
   Assert(SourceCode <> '');
   liCounter := 0;
-  lcList    := TSourceTokenList.Create;
 
   while not EndOfFile do
   begin
-    lcNew := GetNextToken;
-    lcList.Add(lcNew);
-    Inc(liCounter);
-    GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
+    lcNew := nil;
+    try
+      lcNew := GetNextToken;
+      if lcNew <> nil then
+        ASourceTokenList.Add(lcNew);
+      lcNew := nil;
+      Inc(liCounter);
+      GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
+    except
+      lcNew.Free;
+      raise;
+    end;
   end;
-
-  Result := lcList;
 end;
 
 function TBuildTokenList.Current: Char;

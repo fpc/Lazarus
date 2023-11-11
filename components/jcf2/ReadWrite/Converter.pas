@@ -160,7 +160,8 @@ begin
     // turn text into tokens
     fcTokeniser.SourceCode := InputCode;
     fcTokeniser.FileName   := FileName;
-    lcTokenList := fcTokeniser.BuildTokenList;
+    lcTokenList := TSourceTokenList.Create;
+    fcTokeniser.BuildTokenList(lcTokenList);
     try   { finally free the list  }
       try { show exceptions }
         fiTokenCount := lcTokenList.Count;
@@ -198,7 +199,7 @@ begin
       // should not be any tokens left
       Assert(lcTokenList.Count = 0, 'Surplus tokens');
     finally
-      lcTokenList.Free;
+      FreeAndNil(lcTokenList);
     end;
 
     try
@@ -226,6 +227,12 @@ begin
       end;
     end;
   finally
+    if lcTokenList<>nil then
+    begin
+      lcTokenList.OwnsObjects := True;
+      lcTokenList.Clear;
+      FreeAndNil(lcTokenList);
+    end;
     GetUI.RestoreCursorUI;
   end;
 end;
