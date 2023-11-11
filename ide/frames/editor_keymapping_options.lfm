@@ -46,8 +46,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     BorderSpacing.Left = 24
     BorderSpacing.Right = 2
     Caption = 'FindKeyButton'
-    OnClick = FindKeyButtonClick
     TabOrder = 1
+    OnClick = FindKeyButtonClick
   end
   object ResetKeyFilterBtn: TSpeedButton
     AnchorSideTop.Control = FindKeyButton
@@ -95,8 +95,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       RowSelect = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
-      OnMouseDown = ConflictsTreeViewMouseDown
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      OnMouseDown = ConflictsTreeViewMouseDown
     end
     object KeyMapSplitter: TSplitter
       Cursor = crVSplit
@@ -105,8 +105,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       Top = 247
       Width = 574
       Align = alBottom
-      OnMoved = KeyMapSplitterMoved
       ResizeAnchor = akBottom
+      OnMoved = KeyMapSplitterMoved
     end
     object TreeView: TTreeView
       Left = 0
@@ -122,10 +122,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       RowSelect = True
       ScrollBars = ssAutoBoth
       TabOrder = 2
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDblClick = TreeViewDblClick
       OnKeyPress = TreeViewKeyPress
       OnSelectionChanged = TreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object BtnPanel: TPanel
       Left = 0
@@ -149,8 +149,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         Width = 171
         AutoSize = True
         Caption = 'ChooseSchemeButton'
-        OnClick = ChooseSchemeButtonClick
         TabOrder = 0
+        OnClick = ChooseSchemeButtonClick
       end
       object SchemeLabel: TLabel
         AnchorSideLeft.Control = ChooseSchemeButton
@@ -163,7 +163,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         Width = 88
         BorderSpacing.Around = 8
         Caption = 'SchemeLabel'
-        Color = clDefault
         ParentColor = False
       end
       object ClearButton: TBitBtn
@@ -180,8 +179,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         BorderSpacing.Left = 8
         BorderSpacing.Bottom = 8
         Caption = 'ClearButton'
-        OnClick = ClearButtonClick
         TabOrder = 1
+        OnClick = ClearButtonClick
       end
       object EditButton: TBitBtn
         AnchorSideLeft.Control = CommandLabel
@@ -196,8 +195,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         BorderSpacing.Right = 8
         BorderSpacing.Bottom = 8
         Caption = 'EditButton'
-        OnClick = EditButtonClick
         TabOrder = 2
+        OnClick = EditButtonClick
       end
       object CommandLabel: TLabel
         AnchorSideLeft.Control = BtnPanel
@@ -209,7 +208,6 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         Width = 105
         BorderSpacing.Right = 8
         Caption = 'CommandLabel'
-        Color = clDefault
         ParentColor = False
       end
       object ExportButton: TButton
@@ -224,23 +222,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         AutoSize = True
         BorderSpacing.Left = 25
         Caption = 'ExportButton'
-        OnClick = ExportButtonClick
         TabOrder = 3
-      end
-      object ImportButton: TButton
-        AnchorSideLeft.Control = ExportButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = ExportButton
-        AnchorSideTop.Side = asrCenter
-        Left = 467
-        Height = 30
-        Top = 0
-        Width = 115
-        AutoSize = True
-        BorderSpacing.Left = 8
-        Caption = 'ImportButton'
-        OnClick = ImportButtonClick
-        TabOrder = 4
+        OnClick = ExportButtonClick
       end
     end
   end
