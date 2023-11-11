@@ -17,6 +17,7 @@
 
   Written by Martin Friebe 2023
 }
+
 unit TextMateGrammar;
 
 {$mode objfpc}{$H+}
@@ -130,7 +131,7 @@ type
     procedure Pop;
     procedure ClearRecurseData;
     procedure CallParentNextToken(const AText: String; ACurTokenPos: integer;
-      var ANextTokenPos: integer; // May be set by caller, so it can be kept unchanget if StateIdx = 0
+      out ANextTokenPos: integer; // May be set by caller, so it can be kept unchanget if StateIdx = 0
       AnInitInfoOnly: Boolean = False);
     property Parent[ADepth: integer]: TTextMatePattern read GetParent;
     property Pattern[ADepth: integer]: TTextMatePattern read GetPattern;
@@ -761,7 +762,7 @@ begin
 end;
 
 procedure TTextMatePatternState.CallParentNextToken(const AText: String;
-  ACurTokenPos: integer; var ANextTokenPos: integer; AnInitInfoOnly: Boolean);
+  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean);
 var
   st: PTextMatePatternStateEntry;
 begin
@@ -947,6 +948,7 @@ var
 begin
   ARegEx.Free;
   ARegEx := TRegExpr.Create(AText);
+  ARegEx.RaiseForRuntimeError := False;
   ARegEx.AllowBraceWithoutMin := True;
   ARegEx.AllowLiteralBraceWithoutRange := True;
   //ARegEx.AllowUnsafeLookBehind := True;
