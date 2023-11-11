@@ -155,6 +155,8 @@ end;
 
 function IsIndented(const pt: TSourceToken): Boolean;
 begin
+  if IsMultiLineQuotedString(pt) then
+    exit(False);
   Result := IsFirstSolidTokenOnLine(pt);
   if Result then
   begin

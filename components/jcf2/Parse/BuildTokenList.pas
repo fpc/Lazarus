@@ -79,6 +79,7 @@ type
     function TryWhiteSpace(const pcToken: TSourceToken): boolean;
     function TryLiteralString(const pcToken: TSourceToken;
       const pcDelimiter: Char): boolean;
+    function TryMultiLineLiteralString(const pcToken: TSourceToken): boolean;
 
     function TryNumber(const pcToken: TSourceToken): boolean;
     function TryHexNumber(const pcToken: TSourceToken): boolean;
@@ -177,6 +178,8 @@ var
       exit;
     { the rest }
     if TryWhiteSpace(lcNewToken) then
+      exit;
+    if TryMultiLineLiteralString(lcNewToken) then
       exit;
     if TryLiteralString(lcNewToken, NativeSingleQuote) then
       exit;
@@ -485,6 +488,51 @@ begin
   begin
     pcToken.SourceCode := pcToken.SourceCode + chNext;
     Consume;
+  end;
+end;
+
+{ delphi 12 multiline string }
+function TBuildTokenList.TryMultiLineLiteralString(const pcToken: TSourceToken): boolean;
+var
+  liCount:integer;
+  liCountEnd:integer;
+begin
+  Result := False;
+  liCount:=0;
+  while ForwardChar(liCount)=NativeSingleQuote do
+    Inc(liCount);
+
+  if (liCount>=3) and ((liCount and 1)= 1) then
+  begin
+    Result := True;
+    { read the opening '''  odd number  of single quotes }
+    pcToken.SourceCode := pcToken.SourceCode + CurrentChars(liCount);
+    Consume(liCount);
+    { read until the close ''' }
+    repeat
+      if Current = #0 then
+        Raise Exception.Create('Unterminated string: ' + pcToken.SourceCode);
+
+      if (Current = NativeSingleQuote) then
+      begin
+        liCountEnd:=0;
+        while ForwardChar(liCountEnd)=NativeSingleQuote do
+          Inc(liCountEnd);
+        pcToken.SourceCode := pcToken.SourceCode + CurrentChars(liCountEnd);
+        Consume(liCountEnd);
+        if liCountEnd=liCount then
+           break;
+      end
+      else
+      begin
+        { normal char, read it }
+        pcToken.SourceCode := pcToken.SourceCode + Current;
+        Consume;
+      end;
+
+    until False;
+
+    pcToken.TokenType := ttQuotedLiteralString;
   end;
 end;
 

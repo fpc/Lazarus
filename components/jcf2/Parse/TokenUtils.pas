@@ -112,6 +112,7 @@ function IsFormalParamOpenBracket(const pt: TSourceToken): boolean;
 
 function IsMultiLineComment(const pcToken: TSourceToken): boolean;
 function IsSingleLineComment(const pcToken: TSourceToken): boolean;
+function IsMultiLineQuotedString(const pcToken: TSourceToken): boolean;
 
 function IsBlankLineEnd(const pcToken: TSourceToken): boolean;
 
@@ -574,6 +575,21 @@ begin
     Result := False
   else
     Result := not IsMultiLineComment(pcToken);
+end;
+
+function IsMultiLineQuotedString(const pcToken: TSourceToken): boolean;
+var
+  liCount, liLen: integer;
+begin
+  Result := False;
+  if (pcToken = nil) or (pcToken.TokenType <> ttQuotedLiteralString) then
+    exit;
+  // starts with odd number of single quotes >= 3
+  liCount := 0;
+  liLen := Length(pcToken.SourceCode);
+  while (liCount < liLen) and (pcToken.SourceCode[liCount + 1] = NativeSingleQuote) do
+    Inc(liCount);
+  Result := (liCount >= 3) and ((liCount and 1) = 1);
 end;
 
 function IsBlankLineEnd(const pcToken: TSourceToken): boolean;
