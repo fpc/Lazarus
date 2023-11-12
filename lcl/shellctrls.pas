@@ -85,6 +85,7 @@ type
     FExpandCollapseMode: TExpandCollapseMode;
     FFileSortType: TFileSortType;
     FInitialRoot: String;
+    FUpdateLock: Integer;
     FUseBuiltinIcons: Boolean;
     FOnAddItem: TAddItemEvent;
     FOnSortCompare: TFileItemCompareEvent;
@@ -126,7 +127,7 @@ type
     function  GetPathFromNode(ANode: TTreeNode): string;
     procedure PopulateWithBaseFiles;
     procedure Refresh(ANode: TTreeNode); overload;
-    procedure UpdateView;
+    procedure UpdateView(AStartDir: String = '');
     property UseBuiltinIcons: Boolean read FUseBuiltinIcons write SetUseBuiltinIcons default true;
 
     { Properties }
@@ -1235,7 +1236,10 @@ begin
   end;
 end;
 
-procedure TCustomShellTreeView.UpdateView;
+{ Rebuilds the tree for all expanded nodes from the node corresponding to
+  AStartDir (or from root if AStartDir is empty) to react on changes in the
+  file system. Collapsed nodes will be updated anyway when they are expanded. }
+procedure TCustomShellTreeView.UpdateView(AStartDir: String = '');
 
   procedure RecordNodeState(const ANode: TTreeNode; const AExpandedPaths: TStringList);
   var
@@ -1282,11 +1286,15 @@ procedure TCustomShellTreeView.UpdateView;
 
 var
   node: TTreeNode;
+  firstNode: TTreeNode;
   topNodePath: String;
   selectedPath: String;
   selectedWasExpanded: Boolean = false;
   expandedPaths: TStringList;
 begin
+  if FUpdateLock <> 0 then
+    exit;
+
   expandedPaths := TStringList.Create;
   Items.BeginUpdate;
   try
@@ -1295,7 +1303,17 @@ begin
     if Assigned(Selected) then
       selectedWasExpanded := Selected.Expanded;
 
-    node := Items.GetFirstNode;
+    firstNode := Items.GetFirstNode;
+    if AStartDir = '' then
+      node := firstNode
+    else
+    begin
+      node := Items.FindNodeWithTextPath(ChompPathDelim(AStartDir));
+      // Avoid starting at a non-existing folder
+      while not Exists(GetPathFromNode(node)) and (node <> firstNode) do
+        node := node.Parent;
+    end;
+
     RecordNodeState(node, expandedPaths);
     RestoreNodeState(node, true, expandedPaths);
 
@@ -1310,7 +1328,14 @@ begin
 
     // Force synchronization of associated ShellListView
     if Assigned(FShellListView) then
-      FShellListView.UpdateView;
+    begin
+      inc(FUpdateLock);
+      try
+        FShellListView.UpdateView;
+      finally
+        dec(FUpdateLock);
+      end;
+    end;
   finally
     Items.EndUpdate;
     expandedPaths.Free;
@@ -1892,6 +1917,7 @@ begin
   Result := IncludeTrailingPathDelimiter(FRoot) + ANode.Caption;
 end;
 
+{ Re-reads the list to react on changes in the file system. }
 procedure TCustomShellListView.UpdateView;
 var
   selectedItem: String = '';
@@ -1905,11 +1931,14 @@ begin
     if selectedItem <> '' then
       Selected := FindCaption(0, selectedItem, false, true, false);
 
-    inc(FLockUpdate);
-    try
-      ShellTreeView.UpdateView;
-    finally
-      dec(FLockUpdate);
+    if Assigned(ShellTreeView) then
+    begin
+      inc(FLockUpdate);
+      try
+        ShellTreeView.UpdateView(FRoot);
+      finally
+        dec(FLockUpdate);
+      end;
     end;
   end;
 end;
