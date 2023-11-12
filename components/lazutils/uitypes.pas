@@ -102,7 +102,13 @@ const
     'mrAll',
     'mrNoToAll',
     'mrYesToAll',
-    'mrClose');
+    'mrClose'
+    {$IF FPC_FULLVERSION>30300}
+    ,
+    'mrContinue',
+    'mrTryAgain'
+    {$ENDIF}
+    );
 
 
 implementation
