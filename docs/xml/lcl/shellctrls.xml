@@ -510,6 +510,7 @@ methods implemented in the descendent classes.
 <element name="TCustomShellTreeView.FExpandCollapseMode"/>
 <element name="TCustomShellTreeView.FFileSortType"/>
 <element name="TCustomShellTreeView.FInitialRoot"/>
+<element name="TCustomShellTreeView.FUpdateLock"/>
 <element name="TCustomShellTreeView.FUseBuiltinIcons"/>
 <element name="TCustomShellTreeView.FOnAddItem"/>
 
@@ -1517,9 +1518,10 @@ state of the local file system.
 </p>
 <p>
 UpdateView ensures that the Selected and expanded tree node(s) are captured, 
-and restored when the nodes in Items have been reloaded. TopItem is used to 
-restore the first visible tree node on the control. Selected provides the 
-selected tree node on the control.
+and restored when the nodes in Items have been reloaded. If one of the selected 
+or expanded nodes no longer exists on the file system, the parent node for the 
+missing item is updated. Selected provides the selected tree node on the 
+control.
 </p>
 <p>
 Updates to the Items in the control are enclosed by BeginUpdate and EndUpdate 
@@ -1545,6 +1547,11 @@ Added in LCL version 4.0.
 <link id="#lcl.comctrls.TTreeNodes.BeginUpdate">TTreeNodes.BeginUpdate</link>
 <link id="#lcl.comctrls.TTreeNodes.EndUpdate">TTreeNodes.EndUpdate</link>
 </seealso>
+</element>
+<element name="TCustomShellTreeView.UpdateView.AStartDir">
+<short>
+Path to the first tree node updated in the method. Root is used when omitted.
+</short>
 </element>
 
 <element name="TCustomShellTreeView.UseBuiltinIcons">
@@ -1588,14 +1595,23 @@ enabled and displayed on the control.
 </p>
 <dl>
 <dt>otFolders</dt>
-<dd>Enables and displays folders.</dd>
+<dd>
+Enables and displays folders (directories).
+</dd>
 <dt>otNonFolders</dt>
-<dd>Enables and displays files and other file system entries which are not a 
-folder.</dd>
+<dd>
+Enables and displays files and other file system entries which are not a 
+folder.
+</dd>
 <dt>otHidden</dt>
-<dd>Enables and displays hidden directories and/or files on the tree view 
-control.</dd>
+<dd>
+Enables and displays hidden directories and/or files on the tree view 
+control.
+</dd>
 </dl>
+<p>
+The default value for the property is [otFolders].
+</p>
 <p>
 Changing the values in the property causes the Refresh method to be called to 
 reload the Items for the control starting at the root directory. The 
@@ -1644,35 +1660,38 @@ list view control.
 </element>
 
 <element name="TCustomShellTreeView.FileSortType">
-<short>Indicates how the items should be sorted in the tree.</short>
+<short>
+Indicates the sort type used for items in the tree.
+</short>
 <descr>
 <p>
 <var>FileSortType</var> is a <var>TFileSortType</var> property used to 
-indicate the sort order for tree nodes in the <var>Items</var> property. See 
-<var>TFileSortType</var> for information about enumeration values and their 
-meanings.
+indicate the sort order for tree nodes in the <var>Items</var> property. The 
+default value for the property is <b>fstNone</b>, and indicates the default 
+sort order is used for tree nodes. See 
+<link id="TFileSortType">TFileSortType</link> for information about the 
+enumeration values and their meanings.
 </p>
 <p>
 Changing the value in <var>FileSortType</var> causes the <var>Items</var> 
-property to be cleared, and the tree nodes to be re-created for the 
-<var>Path</var> when <var>Root</var> has been assigned. If Root contains an 
-empty string (<b>''</b>), the <var>PopulateWithBaseFiles</var> method is 
-called. Otherwise, the <var>Path</var> is updated to force the control to be 
-reloaded.
+property to be cleared, and tree nodes to be reloaded. If Root has not been 
+assigned, PopulateWithBaseFiles is used to fill the Items property. Otherwise, 
+the path to the Selected node is restored to the Path property (if it still 
+exists on the local file system).
 </p>
 <p>
 No action other than setting the property value is performed in the method at 
 design-time.
 </p>
 <p>
-The value in <var>FileSortType</var> is used in the 
-<var>PopulateTreeNodeWithFiles</var> method and passed as an argument to the 
-internal <var>GetFilesInDir</var> procedure.
+The value in FileSortType is used in the PopulateTreeNodeWithFiles method and 
+passed as an argument to an internal method used to load the files in a given 
+path name.
 </p>
 <remark>
 The value in FileSortType is not used in <var>PopulateWithBaseFiles</var> on 
-Windows platforms. The entries are logical drive letters, and are processed 
-in the order provided by the file system.
+Windows platforms. The entries are logical drive letters processed in the order 
+provided by the file system.
 </remark>
 </descr>
 <seealso>
@@ -1810,7 +1829,9 @@ the tree view control when its FileSortType property is set to fstCustom.
 </p>
 <p>
 Changing the routine assigned to the property causes the Items in the control 
-to be reloaded and ordered using the new file sort compare routine.
+to be reloaded and ordered using the new file sort compare routine. The Path 
+property is used to to expand and select nodes if the path still exists on the 
+local file system.
 </p>
 <p>
 An application can implement and assign a routine using the signature perform 
@@ -2287,6 +2308,24 @@ path name.
 <short>New value for the property.</short>
 </element>
 
+<element name="TCustomShellListView.SetObjectTypes">
+<short>
+Sets the value for the ObjectTypes property.
+</short>
+<descr>
+<p>
+Forces the Items property to be cleared and reloaded. Selected is restored if 
+it was assigned on entry.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TCustomShellListView.SetObjectTypes.Value">
+<short>
+New value for the ObjectTypes property.
+</short>
+</element>
+
 <element name="TCustomShellListView.WSRegisterClass">
 <short>
 Registers an association between the class type and its widgetset class.
@@ -2710,8 +2749,8 @@ Reloads the contents for the list view control and restores the Selected item.
 <descr>
 <p>
 <var>UpdateView</var> is a method used to repopulate the Items for the control. 
-It ensures that the Selected entry is captured and restored (if assigned) when 
-the file system entries have been reloaded in the method.
+It ensures that the Selected entry is captured and restored (if assigned and 
+still available) when the file system entries have been reloaded in the method.
 </p>
 <p>
 UpdateView calls Clear to discard existing entries in Items, and 
@@ -2720,7 +2759,8 @@ FindCaption is called to locate and restore the value in Selected.
 </p>
 <p>
 UpdateView ensures that an associated ShellTreeView control calls its 
-UpdateView method to synchronize the contents for the controls.
+UpdateView method to synchronize the contents for the controls. Root is used as 
+the starting directory for the update.
 </p>
 </descr>
 <version>
@@ -2824,14 +2864,32 @@ to re-populate its file Items using the <var>Mask</var> for the control.
 
 <element name="TCustomShellListView.ObjectTypes">
 <short>
-Indicates which objects are visible in the control (files and/or directories, 
-hidden files, etc.).
+Controls which file system objects are visible on the list view control.
 </short>
 <descr>
+<p>
+<var>ObjectTypes</var> is a <var>TObjectTypes</var> property with the set of 
+file system objects displayed by the list view control. It allows zero or more 
+values from the TObjectType enumeration to be included in the property. The 
+default value for the property is [otNonFolders] and allows file system objects 
+other than directories to be displayed on the list view control.
+</p>
+<p>
+See <link id="TObjectType">TObjectType</link> for the list of enumeration 
+values and their meanings.
+</p>
+<p>
+Changing the value for the property causes the contents of the list view 
+control to be cleared and reloaded. If Selected has been assigned, it is 
+restored following the update to the list view items.
+</p>
 </descr>
 <seealso>
-<link id="TObjectTypes"/>
+<link id="TCustomShellListView.PopulateWithRoot"/>
 <link id="TCustomShellTreeView.ObjectTypes"/>
+<link id="TObjectTypes"/>
+<link id="#lcl.comctrls.TCustomListView.Clear">TCustomListView.Clear</link>
+<link id="#lcl.comctrls.TCustomListView.Selected">TCustomListView.Selected</link>
 </seealso>
 </element>
 
