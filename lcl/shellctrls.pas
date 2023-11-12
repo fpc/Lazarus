@@ -131,9 +131,9 @@ type
     property UseBuiltinIcons: Boolean read FUseBuiltinIcons write SetUseBuiltinIcons default true;
 
     { Properties }
-    property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes;
+    property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes default [otFolders];
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
-    property FileSortType: TFileSortType read FFileSortType write SetFileSortType;
+    property FileSortType: TFileSortType read FFileSortType write SetFileSortType default fstNone;
     property Root: string read FRoot write SetRoot;
     property Path: string read GetPath write SetPath;
     property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
@@ -268,6 +268,7 @@ type
     procedure SetMaskCaseSensitivity(AValue: TMaskCaseSensitivity);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
+    procedure SetObjectTypes(const Value: TObjectTypes);
   protected
     { Methods specific to Lazarus }
     class procedure WSRegisterClass; override;
@@ -291,7 +292,7 @@ type
     property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default true;
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
     property MaskCaseSensitivity: TMaskCaseSensitivity read FMaskCaseSensitivity write SetMaskCaseSensitivity default mcsPlatformDefault;
-    property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
+    property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes default [otNonFolders];
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
     property UseBuiltInIcons: Boolean read FUseBuiltinIcons write FUseBuiltInIcons default true;
@@ -1698,6 +1699,27 @@ begin
     OldMask := FMask;
     FMask := #0 + FMask;
     SetMask(OldMask);
+  end;
+end;
+
+procedure TCustomShellListView.SetObjectTypes(const Value: TObjectTypes);
+var
+  sel: String = '';
+begin
+  if FObjectTypes = Value then Exit;
+  FObjectTypes := Value;
+  if (csLoading in ComponentState) then Exit;
+
+  BeginUpdate;
+  try
+    if Assigned(Selected) then
+      sel := Selected.Caption;
+    Clear;
+    PopulateWithRoot();
+    if Sel <> '' then
+      Selected := FindCaption(0, sel, false, true, false);
+  finally
+    EndUpdate;
   end;
 end;
 
