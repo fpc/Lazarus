@@ -652,12 +652,8 @@ begin
       RootNode := Items.AddChild(nil, FRoot);
       RootNode.HasChildren := True;
       RootNode.Expand(False);
-      try
-       SetPath(CurrPath);
-      except
-        // CurrPath may have been removed in the mean time by another process, just ignore
-        on E: EInvalidPath do ;//
-      end;
+      if Exists(CurrPath) then
+        SetPath(CurrPath);
     end;
   finally
     EndUpdate;
@@ -675,12 +671,8 @@ begin
   try
     BeginUpdate;
     Refresh(nil);
-    try
+    if Exists(CurrPath) then
       SetPath(CurrPath);
-    except
-      // CurrPath may have been removed in the mean time by another process, just ignore
-      on E: EInvalidPath do ;//
-    end;
   finally
     EndUpdate;
   end;
@@ -710,12 +702,8 @@ begin
       RootNode := Items.AddChild(nil, FRoot);
       RootNode.HasChildren := True;
       RootNode.Expand(False);
-      try
-       SetPath(CurrPath);
-      except
-        // CurrPath may have been removed in the mean time by another process, just ignore
-        on E: EInvalidPath do ;//
-      end;
+      if Exists(Currpath) then
+        SetPath(CurrPath);
     end;
   finally
     EndUpdate;
