@@ -1530,7 +1530,8 @@ method calls to reduce the number of updates while the control is reloaded.
 <p>
 UpdateView causes an associated ShellListView control to call its UpdateView 
 method to synchronize the two controls. This action is omitted if ShellListView 
-has not been assigned.
+has not been assigned, or the directory requested does not affect the Selected 
+tree node.
 </p>
 </descr>
 <version>
@@ -1542,6 +1543,7 @@ Added in LCL version 4.0.
 <link id="TCustomShellTreeView.GetPathFromNode"/>
 <link id="TCustomShellTreeView.ShellListView"/>
 <link id="TCustomShellListView.UpdateView"/>
+<link id="TCustomShellListView.Root"/>
 <link id="#lcl.comctrls.TCustomTreeView.TopItem">TCustomTreeView.TopItem</link>
 <link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
 <link id="#lcl.comctrls.TTreeNodes.BeginUpdate">TTreeNodes.BeginUpdate</link>
