@@ -10782,11 +10782,6 @@ msgctxt "lazarusidestrconsts.lisimportant"
 msgid "Important"
 msgstr "Importante"
 
-#: lazarusidestrconsts.lisimported
-#, object-pascal-format
-msgid "%s (imported)"
-msgstr "%s (importado)"
-
 #: lazarusidestrconsts.lisimportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
 msgid "Import environment options"
