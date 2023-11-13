@@ -1315,8 +1315,10 @@ begin
       TopItem := Items.FindNodeWithTextPath(topNodePath);
     end;
 
-    // Force synchronization of associated ShellListView
-    if Assigned(FShellListView) then
+    // Force synchronization of associated ShellListView, but only if the
+    // refresh affects the selected tree node.
+    if Assigned(FShellListView) and
+       not ((AStartDir <> '') and (pos(AStartDir, FShellListView.FRoot) = 0)) then
     begin
       inc(FUpdateLock);
       try
