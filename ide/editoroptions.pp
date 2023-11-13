@@ -1872,7 +1872,7 @@ procedure RepairEditorFontSize(var FontSize: integer);
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function HighlighterList: TEditOptLangList;
 function ColorSchemeFactory: TColorSchemeFactory;
-function UserKeySchemeDirectory(CreateIfNotExists: Boolean): String;
+function UserKeySchemeDirectory(CreateIfNotExists: Boolean = False): String;
 function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
 procedure InitLocale;
 
