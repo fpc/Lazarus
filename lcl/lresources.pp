@@ -401,7 +401,7 @@ type
     property SourceLine: Integer read fSourceLine;
     function SourceColumn: integer;
     property Token: Char read fToken;
-  end;
+  end deprecated 'use Classes.TParser instead';
 
   { TCustomLazComponentQueue
     A queue to stream components, used for multithreading or network.
