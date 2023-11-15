@@ -2639,6 +2639,7 @@ begin
     for i := 0 to Libs.Count-1 do
       Str.WriteString(IndentText('{$LINKLIB '+Libs.Strings[i]+'}',0,1));
     Str.WriteString(IndentText('{$endif}',0,1));
+	Str.WriteString(IndentText('{$WARN 3031 off : Values in enumeration types have to be ascending}', 0, 1));
    end;
 
   Libs.Free;
