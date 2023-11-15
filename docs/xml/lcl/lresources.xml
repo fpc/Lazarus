@@ -1750,6 +1750,7 @@ pointer to the item data.
 <seealso/>
 </element>
 
+<!-- Deprecated in 5b65498e. -->
 <element name="TUTF8Parser">
 <short>
 Deprecated. Parser for UTF-8-encoded identifiers, string, and number literals.
@@ -2075,6 +2076,7 @@ Deprecated. Sets Token to the unrecognized character (no error).
 <version>
 Deprecated in LCL version 3.0. Use Classes.TParser instead.
 </version>
+<descr/>
 <seealso/>
 </element>
 
@@ -2128,6 +2130,9 @@ Deprecated in LCL version 3.0. Use Classes.TParser instead.
 Deprecated. Asserts that Token is of the expected type.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 4.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 <errors>
 EParserError when Token doesn't match the expected type.
@@ -2145,6 +2150,9 @@ Deprecated in LCL version 3.0. Use Classes.TParser instead.
 Deprecated. Asserts that the given name was parsed (case insensitive).
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 4.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 <errors>
 EParserError when Token doesn't match the expected type or name.
@@ -2283,7 +2291,8 @@ Deprecated in LCL version 3.0. Use Classes.TParser instead.
 <element name="TUTF8Parser.TokenFloat.Result"/>
 
 <element name="TUTF8Parser.TokenInt">
-<short>Deprecated. Returns the binary value of an integral number.
+<short>
+Deprecated. Returns the binary value of an integral number.
 </short>
 <descr/>
 <version>
@@ -2347,6 +2356,9 @@ Deprecated in LCL version 3.0. Use Classes.TParser instead.
 Deprecated. The current column number in the source line.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 4.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.SourceColumn.Result"/>
@@ -2368,7 +2380,7 @@ A queue to stream components, used for multi-threading or network.
 </short>
 <descr>
 <p>
-ConvertComponentAsString converts a component to binary format with a leading 
+ConvertComponentAsString converts a component to binary format with leading 
 size information (using WriteLRSInt64MB).
 </p>
 <p>
