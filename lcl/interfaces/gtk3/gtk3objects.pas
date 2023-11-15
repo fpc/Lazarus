@@ -471,7 +471,7 @@ begin
     gdk_cur:=GDK_ARROW;
   end;
 
-  Fhandle:=TGdkCursor.new(gdk_cur);
+  Fhandle:=TGdkCursor.new_for_display(gdk_display_get_default, gdk_cur);
 end;
 
 constructor TGtk3Cursor.Create(pixbuf: PGdkPixbuf;x,y:gint);

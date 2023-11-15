@@ -3220,7 +3220,6 @@ type
   PPGdkCursorType = ^PGdkCursorType;
   PGdkCursorType = ^TGdkCursorType;
   TGdkCursor = object(TGObject)
-    function new(cursor_type: TGdkCursorType): PGdkCursor; cdecl; inline; static;
     function new_for_display(display: PGdkDisplay; cursor_type: TGdkCursorType): PGdkCursor; cdecl; inline; static;
     function new_from_name(display: PGdkDisplay; name: Pgchar): PGdkCursor; cdecl; inline; static;
     function new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x: gint; y: gint): PGdkCursor; cdecl; inline; static;
@@ -5411,11 +5410,6 @@ end;
 procedure TGdkScreen.set_resolution(dpi: gdouble); cdecl;
 begin
   LazGdk3.gdk_screen_set_resolution(@self, dpi);
-end;
-
-function TGdkCursor.new(cursor_type: TGdkCursorType): PGdkCursor; cdecl;
-begin
-  Result := LazGdk3.gdk_cursor_new(cursor_type);
 end;
 
 function TGdkCursor.new_for_display(display: PGdkDisplay; cursor_type: TGdkCursorType): PGdkCursor; cdecl;
