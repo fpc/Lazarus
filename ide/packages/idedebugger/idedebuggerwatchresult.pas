@@ -534,7 +534,6 @@ type
   TWatchResultTypeProc = object(TWatchResultValue)
   private
     FText: String;
-    FLoc: String;
   protected
     property GetAsString: String read FText;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -544,22 +543,36 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
   end;
 
-  TWatchResultValueFunc = object(TWatchResultValueOrdNumBase)
+  { TWatchResultValueProcBase }
+
+  TWatchResultValueProcBase = object(TWatchResultValueOrdNumBase)
+  private
+    FLoc: String;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+  end;
+
+
+  TWatchResultValueFunc = object(TWatchResultValueProcBase)
   protected const
     VKind = rdkFunction;
   end;
 
-  TWatchResultValueProc = object(TWatchResultValueOrdNumBase)
+  TWatchResultValueProc = object(TWatchResultValueProcBase)
   protected const
     VKind = rdkProcedure;
   end;
 
-  TWatchResultValueFuncRef = object(TWatchResultValueOrdNumBase)
+  TWatchResultValueFuncRef = object(TWatchResultValueProcBase)
   protected const
     VKind = rdkFunctionRef;
   end;
 
-  TWatchResultValueProcRef = object(TWatchResultValueOrdNumBase)
+  TWatchResultValueProcRef = object(TWatchResultValueProcBase)
   protected const
     VKind = rdkProcedureRef;
   end;
@@ -2384,6 +2397,24 @@ procedure TWatchResultTypeProc.SaveDataToXMLConfig(const AConfig: TXMLConfig;
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
   AConfig.SetValue(APath + 'Desc', FText);
+end;
+
+{ TWatchResultValueProcBase }
+
+procedure TWatchResultValueProcBase.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+  FLoc := AConfig.GetValue(APath + 'Loc', '');
+end;
+
+procedure TWatchResultValueProcBase.SaveDataToXMLConfig(
+  const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
+  AConfig.SetValue(APath + 'Loc', FLoc);
 end;
 
 { TWatchResultStorageOverrides }
@@ -4839,7 +4870,7 @@ end;
 
 function TGenericWatchResultDataProc.GetAsString: String;
 begin
-  Result := FType.FLoc;
+  Result := FData.FLoc;
 end;
 
 function TGenericWatchResultDataProc.GetAsDesc: String;
@@ -4851,7 +4882,7 @@ constructor TGenericWatchResultDataProc.Create(AnAddr: QWord; ALoc,
   ADesc: String);
 begin
   FType.FText := ADesc;
-  FType.FLoc := ALoc;
+  FData.FLoc := ALoc;
   FData.FNumValue := AnAddr;
   inherited Create();
 end;
