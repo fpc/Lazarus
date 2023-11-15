@@ -2240,8 +2240,8 @@ begin
   *)
   // AModifierMask := gdk_keymap_get_modifier_mask(AKeyMap, 0);
 
-  AKeyMap := gdk_keymap_get_default;
-  AModifiers := gdk_keymap_get_modifier_state(AKeyMap);
+  AKeyMap := TGdkKeymap.get_for_display(gdk_display_get_default);
+  AModifiers := TGdkModifierType(AKeyMap^.get_modifier_state);
   case nVirtKey of
     VK_LBUTTON:
       if GDK_BUTTON1_MASK in AModifiers  then

@@ -4425,7 +4425,7 @@ type
     function get_entries_for_keycode(hardware_keycode: guint; keys: PPGdkKeymapKey; keyvals: PPguint; n_entries: Pgint): gboolean; cdecl; inline;
     function get_entries_for_keyval(keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; inline;
     function get_modifier_mask(intent: TGdkModifierIntent): TGdkModifierType; cdecl; inline;
-    function get_modifier_state: TGdkModifierType; cdecl; inline;
+    function get_modifier_state: guint; cdecl; inline;
     function get_num_lock_state: gboolean; cdecl; inline;
     function get_scroll_lock_state: gboolean; cdecl; inline;
     function have_bidi_layouts: gboolean; cdecl; inline;
@@ -4567,7 +4567,6 @@ function gdk_cairo_create(window: PGdkWindow): Pcairo_t; cdecl; external;
 function gdk_cursor_new(cursor_type: TGdkCursorType): PGdkCursor; cdecl; external;
 function gdk_device_manager_get_client_pointer(device_manager: PGdkDeviceManager): PGdkDevice; cdecl; external;
 function gdk_display_get_device_manager(display: PGdkDisplay): PGdkDeviceManager; cdecl; external;
-function gdk_keymap_get_default: PGdkKeymap; cdecl; external;
 function gdk_screen_get_active_window(screen: PGdkScreen): PGdkWindow; cdecl; external;
 function gdk_screen_get_height(screen: PGdkScreen): gint; cdecl; external;
 function gdk_screen_get_height_mm(screen: PGdkScreen): gint; cdecl; external;
@@ -4770,7 +4769,7 @@ function gdk_keymap_get_entries_for_keycode(keymap: PGdkKeymap; hardware_keycode
 function gdk_keymap_get_entries_for_keyval(keymap: PGdkKeymap; keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_entries_for_keyval';
 function gdk_keymap_get_for_display(display: PGdkDisplay): PGdkKeymap; cdecl; external LazGdk3_library name 'gdk_keymap_get_for_display';
 function gdk_keymap_get_modifier_mask(keymap: PGdkKeymap; intent: TGdkModifierIntent): TGdkModifierType; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_mask';
-function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): TGdkModifierType; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_state';
+function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): guint; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_state';
 function gdk_keymap_get_num_lock_state(keymap: PGdkKeymap): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_num_lock_state';
 function gdk_keymap_get_scroll_lock_state(keymap: PGdkKeymap): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_scroll_lock_state';
 function gdk_keymap_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_keymap_get_type';
@@ -6782,7 +6781,7 @@ begin
   Result := LazGdk3.gdk_keymap_get_modifier_mask(@self, intent);
 end;
 
-function TGdkKeymap.get_modifier_state: TGdkModifierType; cdecl;
+function TGdkKeymap.get_modifier_state: guint; cdecl;
 begin
   Result := LazGdk3.gdk_keymap_get_modifier_state(@self);
 end;
