@@ -1429,6 +1429,12 @@ type
   Pgssize = ^gssize;
   gssize = PtrInt;
 
+  { int32 }
+  PPPint32 = ^PPint32;
+  PPint32 = ^Pint32;
+  Pint32 = ^int32;
+  int32 = cint32;
+
   { size_t }
   PPPsize_t = ^PPsize_t;
   PPsize_t = ^Psize_t;
