@@ -9,6 +9,7 @@ unit Lazcairo1;
 {$ifdef Unix}
 {$LINKLIB libcairo-gobject.so.2}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes;
