@@ -2684,7 +2684,7 @@ end;
 
 procedure LRSObjectTextToBinary(Input, Output: TStream; Links: TLRPositionLinks);
 var
-  parser: {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF};
+  parser: TParser;
   OldDecimalSeparator: Char;
   OldThousandSeparator: Char;
   TokenStartPos: LongInt;
@@ -2745,35 +2745,6 @@ var
     else
       WriteInteger(StrToInt(s));
   end;
-
-  {$IFDEF DisableWindowsUnicodeSupport}
-  function WideStringNeeded(const s: widestring): Boolean;
-  var
-    i: Integer;
-  begin
-    i:=length(s);
-    while (i>=1) and (ord(s[i])<256) do dec(i);
-    Result:=i>=1;
-  end;
-
-  function WideStrToAnsiStrWithoutConversion(const s: widestring): string;
-  var
-    i: Integer;
-  begin
-    SetLength(Result,Length(s){$IFDEF WideStringLenDoubled} div 2{$ENDIF});
-    for i:=1 to length(Result) do
-      Result[i]:=chr(ord(s[i]));
-  end;
-
-  function WideStrToShortStrWithoutConversion(const s: widestring): shortstring;
-  var
-    i: Integer;
-  begin
-    SetLength(Result,Length(s){$IFDEF WideStringLenDoubled} div 2{$ENDIF});
-    for i:=1 to length(Result) do
-      Result[i]:=chr(ord(s[i]));
-  end;
-  {$ENDIF}
 
   function ParserNextToken: Char;
   begin
@@ -3045,7 +3016,7 @@ begin
     // sort links for LFM positions
     Links.Sort(true);
   end;
-  parser := {$IFDEF DisableWindowsUnicodeSupport}TParser{$ELSE}TUTF8Parser{$ENDIF}.Create(Input);
+  parser := TParser.Create(Input);
   OldDecimalSeparator:=DefaultFormatSettings.DecimalSeparator;
   DefaultFormatSettings.DecimalSeparator:='.';
   OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
