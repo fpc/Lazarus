@@ -319,6 +319,20 @@ begin
   // There is no way to change the dock title
 end;
 
+// NSModalPanelWindowLevel has higher priority than NSFloatingWindowLevel
+// on Cocoa, so nothing needs to be done
+function TCocoaWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean
+  ): Boolean;
+begin
+  Result:= true;
+end;
+
+function TCocoaWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
+  ): Boolean;
+begin
+  Result:= true;
+end;
+
 function TCocoaWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of

@@ -206,6 +206,10 @@ type
     procedure AppBringToFront; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
+    function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean=False
+      ): Boolean; override;
+    function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean=False
+      ): Boolean; override;
 
     function BeginMessageProcess: TLCLHandle; override;
     procedure EndMessageProcess(context: TLCLHandle); override;
