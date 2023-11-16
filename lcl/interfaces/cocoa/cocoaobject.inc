@@ -615,28 +615,23 @@ end;
 
 procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
 var
-  i : integer;
+  windows: NSArray;
+  window: NSWindow;
+  form: TObject;
+  style: TFormStyle;
+  i: Integer;
 begin
-  // Cocoa changes level and order of windows to it's liking
-  // (it happens between Will- and DidBecomeActive)
-  // for example Model windows becoming level 8,
-  // even if LCL set them to level 0 before.
-  // As a result the OrderedIndex also goes messed up.
-  // It's being restored here
-  for i := orderArrayCount-1 downto 0 do
-  begin
-    if not orderArray^[i].vis then
+  windows := NSApp.orderedWindows;
+  for i:= windows.count-1 downto 0 do begin
+    window:= NSWindow( windows.objectAtIndex(i) );
+    if not window.isVisible then
       continue;
-    if orderArray^[i].lvl=NSNormalWindowLevel then
+    form:= window.lclGetTarget;
+    if not (form is TCustomForm) then
       continue;
-    orderArray^[i].win.setLevel( orderArray^[i].lvl );
-    orderArray^[i].win.orderFrontRegardless;
-  end;
-  orderArrayCount := 0;
-  if orderArray <> nil then
-  begin
-    Freemem(orderArray);
-    orderArray := nil;
+    style:= TCustomForm(form).FormStyle;
+    if style in fsAllNonSystemStayOnTop then
+      window.setLevel( NSFloatingWindowLevel );
   end;
 
   Application.IntfAppActivate;
