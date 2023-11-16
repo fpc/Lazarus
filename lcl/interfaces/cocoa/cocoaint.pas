@@ -71,7 +71,6 @@ type
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
-    procedure applicationWillResignActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
     procedure applicationWillFinishLaunching(notification: NSNotification);

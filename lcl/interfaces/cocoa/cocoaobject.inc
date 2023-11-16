@@ -642,50 +642,67 @@ begin
   Application.IntfAppActivate;
 end;
 
-procedure TAppDelegate.applicationWillResignActive(notification: NSNotification
-  );
+procedure TAppDelegate.applicationDidResignActive(notification: NSNotification);
 var
-  baseWindowNumber: NSInteger;
+  lastWindowNumber: NSInteger;
+  topWindowNumber: NSInteger;
   windows: NSArray;
   window: NSWindow;
   form: TObject;
-  info: PWinLevelOrder;
+  style: TFormStyle;
+  state: TFormState;
+  i: Integer;
 begin
-  windows := NSApp.orderedWindows;
+  // no window in this space
+  if NSWindow.windowNumbersWithOptions(0).count = 0 then
+    Exit;
 
-  baseWindowNumber:= 0;
-  for window in windows do begin
-    if window.level=NSNormalWindowLevel then begin
-      baseWindowNumber:= window.windowNumber;
-      break;
-    end;
-  end;
+  windows:= NSApp.orderedWindows;
 
-  orderArrayCount:= windows.count;
-  orderArray:= GetMem(orderArrayCount * sizeof(TWinLevelOrder));
-
-  info:= orderArray^;
-  for window in windows do begin
-    info^.win := window;
-    info^.lvl := window.level;
-    info^.ord := window.orderedIndex;
-    info^.vis := window.isVisible;
-    inc( info );
-  end;
-
-  for window in windows do begin
+  // reset fsStayOnTop form
+  lastWindowNumber:= 0;
+  for i:=windows.count-1 downto 0 do begin
+    window:= NSWindow( windows.objectAtIndex(i) );
+    if not window.isVisible then
+      continue;
     form:= window.lclGetTarget;
-    if form is TCustomForm then begin
-      if TCustomForm(form).FormStyle=fsStayOnTop then begin
-        window.setLevel( NSNormalWindowLevel );
-        window.orderWindow_relativeTo( NSWindowAbove, baseWindowNumber );
-      end;
+    if not (form is TCustomForm) then
+      continue;
+    style:= TCustomForm(form).FormStyle;
+    if style in fsAllNonSystemStayOnTop then begin
+      window.setLevel( NSNormalWindowLevel );
+      if lastWindowNumber<>0 then
+        window.orderWindow_relativeTo( NSWindowAbove, lastWindowNumber );
+    end;
+    lastWindowNumber:= window.windowNumber;
+  end;
+
+  // find top window of NSNormalWindowLevel
+  topWindowNumber:= 0;
+  for window in windows do begin
+    if not window.isVisible then
+      continue;
+    if window.level <> NSNormalWindowLevel then
+      continue;
+    topWindowNumber:= window.windowNumber;
+    break;
+  end;
+
+  // bring up modal form
+  for i:=windows.count-1 downto 0 do begin
+    window:= NSWindow( windows.objectAtIndex(i) );
+    if not window.isVisible then
+      continue;
+    form:= window.lclGetTarget;
+    if not (form is TCustomForm) then
+      continue;
+    state:= TCustomForm(form).FormState;
+    if fsModal in state then begin
+      window.orderWindow_relativeTo( NSWindowAbove, topWindowNumber );
+      topWindowNumber:= window.windowNumber;
     end;
   end;
-end;
 
-procedure TAppDelegate.applicationDidResignActive(notification: NSNotification);
-begin
   Application.IntfAppDeactivate;
   Application.DoBeforeMouseMessage(nil);
 end;
