@@ -724,8 +724,9 @@ end;
 
 procedure TCocoaWindow.DoWindowDidBecomeKey();
 begin
-  if CocoaWidgetSet.isModalSession then
-    self.orderFront(nil);
+  if Assigned(NSApp.keyWindow) then
+    NSApp.keyWindow.orderFrontRegardless;
+
   CursorHelper.SetCursorOnActive();
 end;
 
