@@ -146,7 +146,6 @@ type
   public
     _keyEvCallback: ICommonCallback;
     callback: IWindowCallback;
-    keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
     function makeFirstResponder(aResponder: NSResponder): ObjCBOOL; override;
@@ -732,18 +731,6 @@ end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
-  // forcing to keep the level as all other LCL windows
-  // Modal windows tend to "restore" their elevated level
-  // And that doesn't work for modal windows that are "Showing" other windows
-
-  // Another approach is to set elevated levels for windows, shown during modal session
-  // That requires to revoke the elevated level from windows on closing a window session
-  // This might be the way to go, if FormStyle (such as fsStayOnTop) would come
-  // in conflict with modality
-  if level <> keepWinLevel then begin
-    setLevel(keepWinLevel);
-  end;
-
   if Assigned(callback) then
     callback.Activate;
 
