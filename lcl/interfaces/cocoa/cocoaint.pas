@@ -901,18 +901,12 @@ end;
 function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
 var
   sess : NSModalSession;
-  lvl : NSInteger;
 begin
   Result := false;
   if not Assigned(awin) then Exit;
 
-  lvl := awin.level;
-
   sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
   if not Assigned(sess) then Exit;
-
-  // beginModalSession "configures" the modality and potentially is changing window level
-  awin.setLevel(lvl);
 
   if not Assigned(Modals) then Modals := TList.Create;
 
