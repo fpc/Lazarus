@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
+Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0 
+International public license.
+
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+file://../../cc-by-sa-4-0.txt
+
+Copyright (c) 1997-2023, by the Lazarus Development Team.
+
+-->
 <fpdoc-descriptions>
 <package name="lcl">
 <short>(LCL) Lazarus Component Library.</short>
@@ -6,6 +18,26 @@
 <p>
 The Lazarus Component Library (LCL) is a set of visual components to create 
 GUI applications.
+</p>
+<p>
+<b>License Information</b>
+</p>
+<p>
+Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
+Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0 
+International public license, as described in <file>docs/license.txt</file>. 
+</p>
+<p>
+Details about the Creative Commons Attribution-ShareAlike 4.0 International 
+public license is available both locally and online:
+</p>
+<code>
+file://docs/cc-by-sa-4-0.txt
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+https://wiki.lazarus.freepascal.org/licensing
+</code>
+<p>
+Copyright (c) 1997-2023, by the Lazarus Development Team.
 </p>
 </descr>
 </package>
