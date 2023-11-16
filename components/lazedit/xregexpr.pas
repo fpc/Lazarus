@@ -106,11 +106,11 @@ interface
 {$ENDIF}
 {.$DEFINE Compat} // Enable compatability methods/properties for forked version in Free Pascal 3.0
 // ======== Define Pascal-language options
-// Define 'UseAsserts' option (do not edit this definitions).
+// Define 'WITH_REGEX_ASSERT' option (do not edit this definitions).
 // Asserts used to catch 'strange bugs' in TRegExpr implementation (when something goes
 // completely wrong). You can swith asserts on/off with help of {$C+}/{$C-} compiler options.
-{$IFDEF D3} {$DEFINE UseAsserts} {$ENDIF}
-{$IFDEF FPC} {$DEFINE UseAsserts} {$ENDIF}
+{$IFDEF D3} { $DEFINE WITH_REGEX_ASSERT} {$ENDIF}
+{$IFDEF FPC}{$IFOPT C+} {$DEFINE WITH_REGEX_ASSERT} {$ENDIF}{$ENDIF} // Only if compile with -Sa
 // Define 'use subroutine parameters default values' option (do not edit this definition).
 {$IFDEF D4} {$DEFINE DefParam} {$ENDIF}
 {$IFDEF FPC} {$DEFINE DefParam} {$ENDIF}
@@ -274,6 +274,7 @@ type
 
   TRegExprFindFixedLengthFlag = (
     flfForceToStopAt,
+    flfReturnAtNextNil,
     flfSkipLookAround
   );
   TRegExprFindFixedLengthFlags = set of TRegExprFindFixedLengthFlag;
@@ -575,7 +576,7 @@ type
     procedure FillFirstCharSet(prog: PRegExprChar);
     {$ENDIF}
 
-    function IsPartFixedLength(var prog: PRegExprChar; var op: TREOp; var ALen: integer; StopAt: TREOp; Flags: TRegExprFindFixedLengthFlags = []): boolean;
+    function IsPartFixedLength(var prog: PRegExprChar; var op: TREOp; var AMinLen, AMaxLen: integer; StopAt: TREOp; StopMaxProg: PRegExprChar; Flags: TRegExprFindFixedLengthFlags): boolean;
 
     { ===================== Matching section =================== }
     // repeatedly match something simple, report how many
@@ -583,6 +584,7 @@ type
 
     // dig the "next" pointer out of a node
     function regNext(p: PRegExprChar): PRegExprChar;
+    function regNextQuick(p: PRegExprChar): PRegExprChar; {$IFDEF InlineFuncs}inline;{$ENDIF}
 
     // dig the "last" pointer out of a chain of node
     function regLast(p: PRegExprChar): PRegExprChar;
@@ -729,6 +731,7 @@ type
 
     // Opcode contains only operations for fixed match length: EXACTLY*, ANY*, etc
     function IsFixedLength(var op: TREOp; var ALen: integer): boolean;
+    function IsFixedLengthEx(var op: TREOp; var AMinLen, AMaxLen: integer): boolean;
 
     // Regular expression.
     // For optimization, TRegExpr will automatically compiles it into 'P-code'
@@ -974,7 +977,7 @@ type
     );
 
   TReOpLookBehindOptions = packed record
-    MatchLen: TREBracesArg;
+    MatchLenMin, MatchLenMax: TREBracesArg;
     IsGreedy: REChar;
   end;
   PReOpLookBehindOptions = ^TReOpLookBehindOptions;
@@ -1796,7 +1799,6 @@ const
   reeFirstRuntimeCode = 1000;
   reeRegRepeatCalledInappropriately = 1000;
   reeMatchPrimMemoryCorruption = 1001;
-  reeMatchPrimCorruptedPointers = 1002;
   reeNoExpression = 1003;
   reeCorruptedProgram = 1004;
   reeOffsetMustBePositive = 1006;
@@ -1901,8 +1903,6 @@ begin
       Result := 'TRegExpr exec: RegRepeat called inappropriately';
     reeMatchPrimMemoryCorruption:
       Result := 'TRegExpr exec: MatchPrim memory corruption';
-    reeMatchPrimCorruptedPointers:
-      Result := 'TRegExpr exec: MatchPrim corrupted pointers';
     reeNoExpression:
       Result := 'TRegExpr exec: empty expression';
     reeCorruptedProgram:
@@ -2790,34 +2790,39 @@ begin
         begin
           Inc(ABuffer);
           ch := ABuffer^;
-          Inc(ABuffer);
-          ch2 := ABuffer^;
-          Inc(ABuffer);
-          {
-          // if AIgnoreCase, ch, ch2 are upcased in opcode
-          if AIgnoreCase then
+          if (AChar >= ch) then
           begin
-            ch := _UpperCase(ch);
-            ch2 := _UpperCase(ch2);
-          end;
-          }
-          if (AChar >= ch) and (AChar <= ch2) then
-          begin
-            Result := True;
-            Exit;
-          end;
+            Inc(ABuffer);
+            ch2 := ABuffer^;
+            {
+            // if AIgnoreCase, ch, ch2 are upcased in opcode
+            if AIgnoreCase then
+            begin
+              ch := _UpperCase(ch);
+              ch2 := _UpperCase(ch2);
+            end;
+            }
+            if (AChar <= ch2) then
+            begin
+              Result := True;
+              Exit;
+            end;
+            Inc(ABuffer);
+          end
+          else
+            Inc(ABuffer, 2);
         end;
 
       OpKind_MetaClass:
         begin
           Inc(ABuffer);
           N := Ord(ABuffer^);
-          Inc(ABuffer);
           if CharCheckers[N](AChar) then
           begin
             Result := True;
             Exit
           end;
+          Inc(ABuffer);
         end;
 
       OpKind_Char:
@@ -2828,7 +2833,6 @@ begin
           for i := 1 to N do
           begin
             ch := ABuffer^;
-            Inc(ABuffer);
             {
             // already upcased in opcode
             if AIgnoreCase then
@@ -2839,6 +2843,7 @@ begin
               Result := True;
               Exit;
             end;
+            Inc(ABuffer);
           end;
         end;
 
@@ -2859,8 +2864,10 @@ begin
         end;
       {$ENDIF}
 
+    {$IFDEF WITH_REGEX_ASSERT}
       else
         Error(reeBadOpcodeInCharClass);
+    {$ENDIF}
     end;
   until False; // assume that Buffer is ended correctly
 end;
@@ -3045,8 +3052,10 @@ begin
         end;
       {$ENDIF}
 
+    {$IFDEF WITH_REGEX_ASSERT}
       else
         Error(reeBadOpcodeInCharClass);
+    {$ENDIF}
     end;
   until False; // assume that Buffer is ended correctly
 end;
@@ -3612,11 +3621,11 @@ begin
 
   case op of
     '*':
-  begin
+      begin
         if (FlagTemp and FLAG_NOT_QUANTIFIABLE) <> 0 then begin
           Error(reeNotQuantifiable);
-    Exit;
-  end;
+          Exit;
+        end;
 
         FlagParse := FLAG_WORST or FLAG_SPECSTART or FLAG_LOOP;
         nextch := (regParse + 1)^;
@@ -3920,6 +3929,7 @@ var
   RangeBeg, RangeEnd: REChar;
   CanBeRange: boolean;
   AddrOfLen: PLongInt;
+  HasCaseSenseChars: boolean;
 
   function ParseNumber(var AParsePos: PRegExprChar; out ANumber: integer): boolean;
   begin
@@ -3935,24 +3945,36 @@ var
     Result := True;
   end;
   procedure EmitExactly(Ch: REChar);
+  var
+    cs: Boolean;
   begin
     if fCompModifiers.I then
       ret := EmitNode(OP_EXACTLY_CI)
     else
       ret := EmitNode(OP_EXACTLY);
     EmitInt(1);
-    if fCompModifiers.I then
-      EmitC(_UpperCase(Ch))
+    cs := False;
+    if fCompModifiers.I then begin
+      Ch := _UpperCase(Ch);
+      EmitC(Ch);
+      if Ch <> _LowerCase(Ch) then
+        cs := True;
+    end
     else
       EmitC(Ch);
+    if not cs then
+      PREOp(ret)^ := OP_EXACTLY;
     FlagParse := FlagParse or FLAG_HASWIDTH or FLAG_SIMPLE;
   end;
 
   procedure EmitRangeChar(Ch: REChar; AStartOfRange: boolean);
   begin
     CanBeRange := AStartOfRange;
-    if fCompModifiers.I then
+    if fCompModifiers.I then begin
       Ch := _UpperCase(Ch);
+      if Ch <> _LowerCase(Ch) then
+        HasCaseSenseChars := True;
+    end;
     if AStartOfRange then
     begin
       AddrOfLen := nil;
@@ -3982,6 +4004,8 @@ var
     begin
       ch1 := _UpperCase(ch1);
       ch2 := _UpperCase(ch2);
+      if (Ch1 <> _LowerCase(Ch1)) or (Ch2 <> _LowerCase(Ch2)) then
+        HasCaseSenseChars := True;
     end;
 
     for ChkIndex := Low(CharCheckerInfos) to High(CharCheckerInfos) do
@@ -4024,7 +4048,7 @@ var
   DashForRange: Boolean;
   GrpKind: TREGroupKind;
   GrpName: RegExprString;
-  GrpIndex, ALen, RegGrpCountBefore: integer;
+  GrpIndex, ALen, RegGrpCountBefore, AMaxLen: integer;
   NextCh: REChar;
   op: TREOp;
   SavedModifiers: TRegExprModifiers;
@@ -4073,6 +4097,7 @@ begin
 
     '[':
       begin
+        HasCaseSenseChars := False;
         if regParse^ = '^' then
         begin // Complement of range.
           if fCompModifiers.I then
@@ -4217,6 +4242,12 @@ begin
         AddrOfLen := nil;
         CanBeRange := False;
         EmitC(OpKind_End);
+        if fCompModifiers.I and not HasCaseSenseChars then begin
+          if PREOp(ret)^ = OP_ANYBUT_CI then
+            PREOp(ret)^ := OP_ANYBUT;
+          if PREOp(ret)^ = OP_ANYOF_CI then
+            PREOp(ret)^ := OP_ANYOF;
+        end;
         if regParse^ <> ']' then
         begin
           Error(reeUnmatchedSqBrackets);
@@ -4468,7 +4499,7 @@ begin
               ret2 := Result;
               if (regCode <> @regDummy) then begin
                 ALen := 0;
-                if IsPartFixedLength(ret2, op, ALen, OP_LOOKBEHIND_END, [flfSkipLookAround]) then
+                if IsPartFixedLength(ret2, op, ALen, AMaxLen, OP_LOOKBEHIND_END, nil, [flfSkipLookAround]) then
                   PReOpLookBehindOptions(regLookBehindOption)^.IsGreedy := OPT_LOOKBEHIND_FIXED
                 else
                 if (ParsedGrpCount > RegGrpCountBefore) and (not FAllowUnsafeLookBehind) then
@@ -4478,7 +4509,8 @@ begin
                   PReOpLookBehindOptions(regLookBehindOption)^.IsGreedy := OPT_LOOKBEHIND_GREEDY
                 else
                   PReOpLookBehindOptions(regLookBehindOption)^.IsGreedy := OPT_LOOKBEHIND_NON_GREEDY;
-                PReOpLookBehindOptions(regLookBehindOption)^.MatchLen := ALen;
+                PReOpLookBehindOptions(regLookBehindOption)^.MatchLenMin := ALen;
+                PReOpLookBehindOptions(regLookBehindOption)^.MatchLenMax := AMaxLen;
               end;
 
               FlagParse := FlagParse and not FLAG_HASWIDTH or FLAG_LOOKAROUND;
@@ -5243,13 +5275,32 @@ begin
     Result := nil;
     Exit;
   end;
-  offset := PRENextOff(AlignToPtr(p + REOpSz))^; // ###0.933 inlined NEXT
+  offset := PRENextOff(AlignToPtr(p + REOpSz))^;
   if offset = 0 then
     Result := nil
   else
     Result := p + offset;
-end; { of function TRegExpr.regNext
-  -------------------------------------------------------------- }
+end;
+
+function TRegExpr.regNextQuick(p: PRegExprChar): PRegExprChar; {$IFDEF InlineFuncs}inline;{$ENDIF}
+var
+  offset: TRENextOff;
+begin
+  // The inlined version is never called in the first pass.
+  Assert(fSecondPass); // fSecondPass will also be true in MatchPrim.
+  offset := PRENextOff(AlignToPtr(p + REOpSz))^;
+  {$IFDEF WITH_REGEX_ASSERT}
+  if offset = 0 then
+    Result := nil
+  else
+  begin
+  {$ENDIF}
+    Result := p + offset;
+  {$IFDEF WITH_REGEX_ASSERT}
+    assert((Result >= programm) and (Result < programm + regCodeSize * SizeOf(REChar)));
+  end;
+  {$ENDIF}
+end;
 
 function TRegExpr.regLast(p: PRegExprChar): PRegExprChar;
 var
@@ -5335,13 +5386,10 @@ begin
   }
 
   scan := prog;
-  while scan <> nil do
+  while True do
   begin
-    Len := PRENextOff(AlignToPtr(scan + 1))^; // ###0.932 inlined regNext
-    if Len = 0 then
-      next := nil
-    else
-      next := scan + Len;
+    Assert(scan <> nil);
+    next := regNextQuick(scan);
 
     case scan^ of
       OP_BOUND:
@@ -5797,31 +5845,41 @@ begin
           LookAroundInfoList := @Local.LookAroundInfo;
           fInputCurrentEnd := regInput;
 
+          Result := regInput - fInputStart >= PReOpLookBehindOptions(scan)^.MatchLenMin;
+          if Result then begin
           if Local.IsGreedy = OPT_LOOKBEHIND_FIXED then begin
-            regInput := regInput - PReOpLookBehindOptions(scan)^.MatchLen;
+              regInput := regInput - PReOpLookBehindOptions(scan)^.MatchLenMin;
             inc(scan, ReOpLookBehindOptionsSz);
-            Result := regInput >= fInputStart;
-            if Result then
               Result := MatchPrim(scan)
+            end
             else
-              regInput := Local.LookAroundInfo.InputPos;
+            if Local.IsGreedy = OPT_LOOKBEHIND_NON_GREEDY then begin
+              Local.InpStart := regInput - PReOpLookBehindOptions(scan)^.MatchLenMin;
+              if regInput - fInputStart >= PReOpLookBehindOptions(scan)^.MatchLenMax then
+                  save := regInput - PReOpLookBehindOptions(scan)^.MatchLenMax
+              else
+                save := fInputStart;
+              inc(scan, ReOpLookBehindOptionsSz);
+              repeat
+                regInput := Local.InpStart;
+                dec(Local.InpStart);
+                Result := MatchPrim(scan);
+              until Local.LookAroundInfo.HasMatchedToEnd or (Local.InpStart < save);
           end
           else begin
-            inc(scan, ReOpLookBehindOptionsSz);
-            if Local.IsGreedy = OPT_LOOKBEHIND_NON_GREEDY then
-              Local.InpStart := regInput
+              if regInput - fInputStart >= PReOpLookBehindOptions(scan)^.MatchLenMax then
+                Local.InpStart := regInput - PReOpLookBehindOptions(scan)^.MatchLenMax
             else
               Local.InpStart := fInputStart;
+              save := Local.LookAroundInfo.InputPos - PReOpLookBehindOptions(scan)^.MatchLenMin;
+              inc(scan, ReOpLookBehindOptionsSz);
             repeat
               regInput := Local.InpStart;
-              if Local.IsGreedy = OPT_LOOKBEHIND_NON_GREEDY then
-                dec(Local.InpStart)
-              else
                 inc(Local.InpStart);
 
               Result := MatchPrim(scan);
-            until Local.LookAroundInfo.HasMatchedToEnd or
-              (Local.InpStart > Local.LookAroundInfo.InputPos) or (Local.InpStart < fInputStart);
+              until Local.LookAroundInfo.HasMatchedToEnd or (Local.InpStart > save);
+            end;
           end;
 
           if Local.LookAroundInfo.IsBackTracking then
@@ -5929,8 +5987,12 @@ begin
               regInput := save;
               if IsBacktrackingGroupAsAtom then
                 Exit;
-              scan := regNext(scan);
-            until (scan = nil) or (scan^ <> OP_BRANCH);
+              scan := next;
+              Assert(scan <> nil);
+              if  (scan^ <> OP_BRANCH) then
+                break;
+              next := regNextQuick(scan);
+            until  False;
             Exit;
           end;
         end;
@@ -6223,16 +6285,14 @@ begin
             Inc(regInput);
         end;
 
+    {$IFDEF WITH_REGEX_ASSERT}
     else
         Error(reeMatchPrimMemoryCorruption);
         Exit;
+    {$ENDIF}
     end; { of case scan^ }
     scan := next;
   end; { of while scan <> nil }
-
-  // We get here only if there's trouble -- normally "case EEND" is the
-  // terminating point.
-  Error(reeMatchPrimCorruptedPointers);
 end; { of function TRegExpr.MatchPrim
   -------------------------------------------------------------- }
 
@@ -6345,8 +6405,8 @@ begin
   GrpOpCodes[0] := nil;
 end;
 
-function TRegExpr.ExecPrim(AOffset: integer; ASlowChecks, ABackward: boolean;
-  ATryMatchOnlyStartingBefore: Integer): boolean;
+function TRegExpr.ExecPrim(AOffset: Integer; ASlowChecks, ABackward: Boolean;
+  ATryMatchOnlyStartingBefore: Integer): Boolean;
 begin
   if fRaiseForRuntimeError then begin
     Result := ExecPrimProtected(AOffset, ASlowChecks, ABackward, ATryMatchOnlyStartingBefore);
@@ -6432,9 +6492,9 @@ begin
       raEOL: Ptr := fInputEnd;
     end;
     {$IFDEF UseFirstCharSet}
-    {$IFDEF UnicodeRE}
-    if (Ptr < fInputEnd) and (Ord(Ptr^) <= $FF) then
-    {$ENDIF}
+    if (Ptr < fInputEnd)
+    {$IFDEF UnicodeRE} and (Ord(Ptr^) <= $FF)  {$ENDIF}
+    then
       if not FirstCharArray[byte(Ptr^)] then
         Exit;
     {$ENDIF}
@@ -6873,7 +6933,7 @@ begin
   scan := prog;
   while scan <> nil do
   begin
-    Next := regNext(scan);
+    Next := regNextQuick(scan);
     Oper := PREOp(scan)^;
     case Oper of
       OP_BSUBEXP,
@@ -7074,7 +7134,7 @@ begin
           begin
             repeat
               FillFirstCharSet(scan + REOpSz + RENextOffSz);
-              scan := regNext(scan);
+              scan := regNextQuick(scan);
             until (scan = nil) or (PREOp(scan)^ <> OP_BRANCH);
             Exit;
           end;
@@ -7635,12 +7695,15 @@ begin
     if (op = OP_LOOKBEHIND) or (op = OP_LOOKBEHIND_NEG) then
     begin
       if PReOpLookBehindOptions(s)^.IsGreedy = OPT_LOOKBEHIND_FIXED then
-        Result := Result + ' Len: ' + IntToStr(PReOpLookBehindOptions(s)^.MatchLen)
+        Result := Result + ' (fixed)'
       else
       if PReOpLookBehindOptions(s)^.IsGreedy = OPT_LOOKBEHIND_NON_GREEDY then
         Result := Result + ' (not greedy)'
       else
         Result := Result + ' (greedy)';
+        Result := Result
+               + ' Len: ' + IntToStr(PReOpLookBehindOptions(s)^.MatchLenMin)
+               + '..' + IntToStr(PReOpLookBehindOptions(s)^.MatchLenMax);
       Inc(s, ReOpLookBehindOptionsSz);
     end;
     Result := Result + #$d#$a;
@@ -7678,38 +7741,86 @@ end; { of function TRegExpr.Dump
 function TRegExpr.IsFixedLength(var op: TREOp; var ALen: integer): boolean;
 var
   s: PRegExprChar;
+  ADummyMaxLen: integer;
 begin
   Result := False;
   if not IsCompiled then Exit;
   s := regCodeWork;
-  Result := IsPartFixedLength(s, op, ALen, OP_EEND, []);
+  Result := IsPartFixedLength(s, op, ALen, ADummyMaxLen, OP_EEND, nil, []);
+end;
+
+function TRegExpr.IsFixedLengthEx(var op: TREOp; var AMinLen, AMaxLen: integer
+  ): boolean;
+var
+  s: PRegExprChar;
+begin
+  Result := False;
+  if not IsCompiled then Exit;
+  s := regCodeWork;
+  Result := IsPartFixedLength(s, op, AMinLen, AMaxLen, OP_EEND, nil, []);
 end;
 
 function TRegExpr.IsPartFixedLength(var prog: PRegExprChar; var op: TREOp;
-  var ALen: integer; StopAt: TREOp; Flags: TRegExprFindFixedLengthFlags): boolean;
+  var AMinLen, AMaxLen: integer; StopAt: TREOp; StopMaxProg: PRegExprChar;
+  Flags: TRegExprFindFixedLengthFlags): boolean;
+
+  function MultiplyLen(AVal, AFactor: Integer): Integer;
+  begin
+    if AFactor > High(AVal) div AVal then
+      Result := high(AVal)
+    else
+      Result := AVal * AFactor;
+  end;
+
+  procedure IncMaxLen(var AVal: Integer; AInc: Integer);
+  begin
+    if AInc > High(AVal) - AVal then
+      AVal := high(AVal)
+    else
+      AVal := AVal + AInc;
+  end;
+
+
 var
   s, next: PRegExprChar;
-  N, N2, ASubLen, ABranchLen: integer;
-  NotFixedLen: Boolean;
+  N, N2, FndMaxLen, ASubLen, ABranchLen, ABranchMaxLen, ASubMaxLen: integer;
+  NotFixedLen, r, NextIsNil: Boolean;
+  FirstVarLenOp: TREOp;
 begin
   Result := False;
   NotFixedLen := False;
-  ALen := 0;
+  AMinLen := 0;
+  AMaxLen := High(AMaxLen);
+  FndMaxLen := 0;
+  next := prog;
   s := prog;
 
   repeat
+    NextIsNil := next = nil;
     next := regNext(s);
     prog := s;
     op := s^;
+    if not NotFixedLen then
+      FirstVarLenOp := op;
 
-    Result := op = StopAt;
-    if Result then Exit;
+    if (op = StopAt) or
+       ((StopMaxProg <> nil) and (s >= StopMaxProg)) or
+       (NextIsNil and (flfReturnAtNextNil in Flags))
+    then begin
+      AMaxLen := FndMaxLen;
+      op := FirstVarLenOp;
+      if not NotFixedLen then
+        Result := True;
+      Exit;
+    end;
 
     Inc(s, REOpSz + RENextOffSz);
 
     case op of
       OP_EEND:
         begin
+          AMaxLen := FndMaxLen;
+          op := FirstVarLenOp;
           if not NotFixedLen then
             Result := True;
           Exit;
@@ -7718,36 +7829,53 @@ begin
       OP_BRANCH:
         begin
           if next^ = OP_BRANCH then begin
-            if not IsPartFixedLength(s, op, ABranchLen, OP_BRANCH) then
-              if flfForceToStopAt in Flags then
-                NotFixedLen := True
-              else
+            if not IsPartFixedLength(s, op, ABranchLen, ABranchMaxLen, OP_EEND, next, []) then
+            begin
+              if not NotFixedLen then
+                FirstVarLenOp := op;
+              NotFixedLen := True;
+              if (ABranchMaxLen = high(ABranchMaxLen)) and not(flfForceToStopAt in Flags) then
                 Exit;
+            end;
+            s := next;
             repeat
               next := regNext(s);
               Inc(s, REOpSz + RENextOffSz);
-              if not IsPartFixedLength(s, op, ASubLen, next^) then
-                if flfForceToStopAt in Flags then
-                  NotFixedLen := True
-                else
+              if not IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_EEND, next, []) then
+              begin
+                if not NotFixedLen then
+                  FirstVarLenOp := op;
+                NotFixedLen := True;
+                if (ABranchMaxLen = high(ABranchMaxLen)) and not(flfForceToStopAt in Flags) then
                   Exit;
-              op := OP_BRANCH;
+              end;
+              s := next;
               if (ASubLen <> ABranchLen) then
-                if flfForceToStopAt in Flags then
-                  NotFixedLen := True
-                else
-                  Exit;
+                NotFixedLen := True;
+              if ASubLen < ABranchLen then
+                ABranchLen := ASubLen;
+              if ASubMaxLen > ABranchMaxLen then
+                ABranchMaxLen := ASubMaxLen;
             until next^ <> OP_BRANCH;
-            ALen := ALen + ABranchLen;
+            AMinLen := AMinLen + ABranchLen;
+            IncMaxLen(FndMaxLen, ABranchMaxLen);
           end;
         end;
 
       OP_OPEN:
         begin
           Inc(s, ReGroupIndexSz);
-          if not IsPartFixedLength(s, op, ASubLen, OP_CLOSE) then
+          if not IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_CLOSE, nil, [flfForceToStopAt]) then
+          begin
+            if not NotFixedLen then
+              FirstVarLenOp := op;
+            NotFixedLen := True;
+            if (ABranchMaxLen = high(ABranchMaxLen)) and not(flfForceToStopAt in Flags) then
             Exit;
-          ALen := ALen + ASubLen;
+          end;
+          assert(s^=OP_CLOSE);
+          AMinLen := AMinLen + ASubLen;
+          IncMaxLen(FndMaxLen, ASubMaxLen);
           Inc(s, REOpSz + RENextOffSz + ReGroupIndexSz); // consume the OP_CLOSE
           continue;
         end;
@@ -7755,9 +7883,17 @@ begin
       OP_OPEN_ATOMIC:
         begin
           Inc(s, ReGroupIndexSz);
-          if not IsPartFixedLength(s, op, ASubLen, OP_CLOSE_ATOMIC) then
+          if not IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_CLOSE_ATOMIC, nil, [flfForceToStopAt]) then
+          begin
+            if not NotFixedLen then
+              FirstVarLenOp := op;
+            NotFixedLen := True;
+            if (ABranchMaxLen = high(ABranchMaxLen)) and not(flfForceToStopAt in Flags) then
             Exit;
-          ALen := ALen + ASubLen;
+          end;
+          assert(s^=OP_CLOSE);
+          AMinLen := AMinLen + ASubLen;
+          IncMaxLen(FndMaxLen, ASubMaxLen);
           Inc(s, REOpSz + RENextOffSz + ReGroupIndexSz); // consume the OP_CLOSE_ATOMIC;
           continue;
         end;
@@ -7770,31 +7906,27 @@ begin
 
       OP_LOOKAHEAD, OP_LOOKAHEAD_NEG:
         begin
-          if flfSkipLookAround in Flags then
-          begin
-            IsPartFixedLength(s, op, ASubLen, OP_LOOKAHEAD_END, [flfSkipLookAround, flfForceToStopAt]);
+          r := IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_LOOKAHEAD_END, next, [flfSkipLookAround, flfForceToStopAt]);
+          s := next;
             Inc(s, REOpSz + RENextOffSz); // skip the OP_LOOKAHEAD_END
-          end
-          else
-          if flfForceToStopAt in Flags then
-            NotFixedLen := True
-          else
-            Exit;
+          if not (flfSkipLookAround in Flags) then
+          begin
+            //if not r then
+              NotFixedLen := True;
+          end;
         end;
 
       OP_LOOKBEHIND, OP_LOOKBEHIND_NEG:
         begin
           Inc(s, ReOpLookBehindOptionsSz);
-          if flfSkipLookAround in Flags then
-          begin
-            IsPartFixedLength(s, op, ASubLen, OP_LOOKBEHIND_END, [flfSkipLookAround, flfForceToStopAt]);
+          r := IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_LOOKBEHIND_END, next, [flfSkipLookAround, flfForceToStopAt]);
+          s := next;
             Inc(s, REOpSz + RENextOffSz); // skip the OP_LOOKBEHIND_END
-          end
-          else
-          if flfForceToStopAt in Flags then
+          if not (flfSkipLookAround in Flags) then
+            //if flfForceToStopAt in Flags then
             NotFixedLen := True
-          else
-            Exit;
+            //else
+            //  Exit;
         end;
 
       OP_LOOKAHEAD_END, OP_LOOKBEHIND_END:
@@ -7831,7 +7963,8 @@ begin
       OP_ANYVERTSEP,
       OP_NOTVERTSEP:
         begin
-          Inc(ALen);
+          Inc(AMinLen);
+          IncMaxLen(FndMaxLen, 1);
           Continue;
         end;
 
@@ -7840,7 +7973,8 @@ begin
       OP_ANYBUT,
       OP_ANYBUT_CI:
         begin
-          Inc(ALen);
+          Inc(AMinLen);
+          IncMaxLen(FndMaxLen, 1);
           repeat
             case s^ of
               OpKind_End:
@@ -7879,7 +8013,8 @@ begin
       OP_EXACTLY_CI:
         begin
           N := PLongInt(s)^;
-          Inc(ALen, N);
+          Inc(AMinLen, N);
+          inc(FndMaxLen, N);
           Inc(s, RENumberSz + N);
           Continue;
         end;
@@ -7887,7 +8022,8 @@ begin
       OP_ANYCATEGORY,
       OP_NOTCATEGORY:
         begin
-          Inc(ALen);
+          Inc(AMinLen);
+          IncMaxLen(FndMaxLen, 1);
           Inc(s, 2);
           Continue;
         end;
@@ -7899,26 +8035,40 @@ begin
           // allow only d{n,n}
           N := PREBracesArg(AlignToInt(s))^;
           N2 := PREBracesArg(AlignToInt(s + REBracesArgSz))^;
-          if N <> N2 then
-            Exit;
-          Inc(ALen, N-1);
           Inc(s, REBracesArgSz * 2);
+          r := IsPartFixedLength(s, op, ASubLen, ASubMaxLen, OP_EEND, next, [flfSkipLookAround, flfReturnAtNextNil, flfForceToStopAt]);
+          if not r then
+          begin
+            if not NotFixedLen then
+              FirstVarLenOp := op;
+            if (ABranchMaxLen = high(ABranchMaxLen)) and not(flfForceToStopAt in Flags) then
+              exit;
+          end;
+          assert(s=next);
+
+          Inc(AMinLen, MultiplyLen(ASubLen, N));
+          IncMaxLen(FndMaxLen, MultiplyLen(ASubMaxLen, N2));
+          if (not r) or (N <> N2) then
+            NotFixedLen := True;
+          s := next;
         end;
 
       OP_BSUBEXP, OP_BSUBEXP_CI, OP_SUBCALL:
         begin
-          Inc(s, ReGroupIndexSz);
-          if flfForceToStopAt in Flags then
-            NotFixedLen := True
-          else
-            Exit;
+          s := next;
+          NotFixedLen := True; // group may be in look-around. Could be anything
+          FndMaxLen := high(FndMaxLen);
         end;
 
       else
+      begin
+        s := next;
+        FndMaxLen := high(FndMaxLen);
         if flfForceToStopAt in Flags then
           NotFixedLen := True
         else
           Exit;
+    end;
     end;
   until False;
 end;
