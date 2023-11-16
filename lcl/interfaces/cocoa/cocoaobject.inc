@@ -629,6 +629,8 @@ begin
     form:= window.lclGetTarget;
     if not (form is TCustomForm) then
       continue;
+    if csDesigning in TCustomForm(form).ComponentState then
+      continue;
     style:= TCustomForm(form).FormStyle;
     if style in fsAllNonSystemStayOnTop then
       window.setLevel( NSFloatingWindowLevel );
@@ -662,6 +664,8 @@ begin
       continue;
     form:= window.lclGetTarget;
     if not (form is TCustomForm) then
+      continue;
+    if csDesigning in TCustomForm(form).ComponentState then
       continue;
     style:= TCustomForm(form).FormStyle;
     if style in fsAllNonSystemStayOnTop then begin
