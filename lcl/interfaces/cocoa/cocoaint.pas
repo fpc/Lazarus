@@ -53,20 +53,8 @@ type
 
   { TAppDelegate }
 
-  TWinLevelOrder = record
-    win : NSWindow;
-    lvl : NSInteger;
-    ord : NSinteger;
-    vis : Boolean;
-  end;
-  PWinLevelOrder = ^TWinLevelOrder;
-  TWinLevelOrderArray = array [Word] of TWinLevelOrder;
-  PWinLevelOrderArray = ^TWinLevelOrderArray;
-
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
   public
-    orderArray : PWinLevelOrderArray;
-    orderArrayCount : Integer;
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
