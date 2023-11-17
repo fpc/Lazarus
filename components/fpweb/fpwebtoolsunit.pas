@@ -381,6 +381,7 @@ end;
 
 function ShowEditInputTagForm(const ATagType:string; const ADefValue:string = ''):string;
 begin
+  Result:='';
   If Not CheckEditor then Exit;
   With TFpwebNewHTMLInputForm.Create(Application) do
     try
@@ -733,8 +734,6 @@ begin
 end;
 
 procedure InsertTextToCurEditor(const S: string);
-var
-  i:integer;
 begin
   { TODO -oalexs : Add code for positiopn cursor to position of char |, also insert curent selection into new string at position of %s }
 
