@@ -131,7 +131,7 @@ type
     procedure Pop;
     procedure ClearRecurseData;
     procedure CallParentNextToken(const AText: String; ACurTokenPos: integer;
-      var ANextTokenPos: integer; // May be set by caller, so it can be kept unchanget if StateIdx = 0
+      var ANextTokenPos: integer; // May be set by caller, so it can be kept unchanged if StateIdx = 0
       AnInitInfoOnly: Boolean = False);
     property Parent[ADepth: integer]: TTextMatePattern read GetParent;
     property Pattern[ADepth: integer]: TTextMatePattern read GetPattern;
