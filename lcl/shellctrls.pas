@@ -1230,6 +1230,27 @@ end;
   file system. Collapsed nodes will be updated anyway when they are expanded. }
 procedure TCustomShellTreeView.UpdateView(AStartDir: String = '');
 
+  function FindExistingSubPath(APath: String): String;
+  var
+    path: String;
+    i: Integer;
+  begin
+    APath := AppendPathDelim(APath);
+    Result := APath;
+    for i := 1 to Length(APath) do
+    begin
+      if APath[i] = PathDelimiter then
+      begin
+        path := Copy(APath, 1, i);
+        if Exists(path) then
+          Result := path
+        else
+          break;
+      end;
+    end;
+    Result := ChompPathDelim(Result);
+  end;
+
   procedure RecordNodeState(const ANode: TTreeNode; const AExpandedPaths: TStringList);
   var
     currentNode: TTreeNode;
@@ -1276,10 +1297,12 @@ procedure TCustomShellTreeView.UpdateView(AStartDir: String = '');
 var
   node: TTreeNode;
   firstNode: TTreeNode;
+  startNode: TTreeNode;
   topNodePath: String;
   selectedPath: String;
   selectedWasExpanded: Boolean = false;
   expandedPaths: TStringList;
+  listviewRefreshNeeded: Boolean;
 begin
   if FUpdateLock <> 0 then
     exit;
@@ -1294,17 +1317,22 @@ begin
 
     firstNode := Items.GetFirstNode;
     if AStartDir = '' then
-      node := firstNode
-    else
     begin
-      node := Items.FindNodeWithTextPath(ChompPathDelim(AStartDir));
-      // Avoid starting at a non-existing folder
-      while not Exists(GetPathFromNode(node)) and (node <> firstNode) do
-        node := node.Parent;
+      startNode := firstNode;
+      listViewRefreshNeeded := true;
+    end else
+    begin
+      // Make sure that AStartDir is a valid, existing path. If not, go back in
+      // hierarchy until a valid subpath is found.
+      startNode := Items.FindNodeWithTextPath(FindExistingSubPath(AStartDir));
+      // Set a flag to refresh the ShellListView if affected by the refresh.
+      listViewRefreshNeeded := (AStartDir = '') or (startNode = Selected);
+      if (Selected = nil) and Assigned(FShellListView) then
+         listViewRefreshNeeded := (FShellListView.Items.Count> 0);
     end;
 
-    RecordNodeState(node, expandedPaths);
-    RestoreNodeState(node, true, expandedPaths);
+    RecordNodeState(startNode, expandedPaths);
+    RestoreNodeState(startNode, true, expandedPaths);
 
     if Exists(selectedPath) then
     begin
@@ -1317,8 +1345,7 @@ begin
 
     // Force synchronization of associated ShellListView, but only if the
     // refresh affects the selected tree node.
-    if Assigned(FShellListView) and
-       not ((AStartDir <> '') and (pos(AStartDir, FShellListView.FRoot) = 0)) then
+    if Assigned(FShellListView) and listViewRefreshNeeded then
     begin
       inc(FUpdateLock);
       try
