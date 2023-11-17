@@ -53,25 +53,12 @@ type
 
   { TAppDelegate }
 
-  TWinLevelOrder = record
-    win : NSWindow;
-    lvl : NSInteger;
-    ord : NSinteger;
-    vis : Boolean;
-  end;
-  PWinLevelOrder = ^TWinLevelOrder;
-  TWinLevelOrderArray = array [Word] of TWinLevelOrder;
-  PWinLevelOrderArray = ^TWinLevelOrderArray;
-
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
   public
-    orderArray : PWinLevelOrderArray;
-    orderArrayCount : Integer;
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
-    procedure applicationWillResignActive(notification: NSNotification);
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
     procedure applicationWillFinishLaunching(notification: NSNotification);
@@ -206,6 +193,10 @@ type
     procedure AppBringToFront; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
+    function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean=False
+      ): Boolean; override;
+    function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean=False
+      ): Boolean; override;
 
     function BeginMessageProcess: TLCLHandle; override;
     procedure EndMessageProcess(context: TLCLHandle); override;
@@ -897,18 +888,12 @@ end;
 function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
 var
   sess : NSModalSession;
-  lvl : NSInteger;
 begin
   Result := false;
   if not Assigned(awin) then Exit;
 
-  lvl := awin.level;
-
   sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
   if not Assigned(sess) then Exit;
-
-  // beginModalSession "configures" the modality and potentially is changing window level
-  awin.setLevel(lvl);
 
   if not Assigned(Modals) then Modals := TList.Create;
 
