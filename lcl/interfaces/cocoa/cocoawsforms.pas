@@ -231,6 +231,8 @@ var
 begin
   lvl := CGWindowLevelForKey(FormStyleToWindowLevelKey[AFormStyle]);
   win.setLevel(lvl);
+  if win.isKindOfClass(TCocoaWindow) then
+    TCocoaWindow(win).keepWinLevel := lvl;
 end;
 
 { TCocoaWSHintWindow }

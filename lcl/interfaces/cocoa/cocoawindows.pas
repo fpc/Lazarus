@@ -146,6 +146,7 @@ type
   public
     _keyEvCallback: ICommonCallback;
     callback: IWindowCallback;
+    keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
     function makeFirstResponder(aResponder: NSResponder): ObjCBOOL; override;
@@ -775,6 +776,8 @@ begin
   // MacOS does 10.7 fullscreen switch with an animation (that's about 1 second long)
   // if during that animation there's another call toggleFullScreen() is made
   // then macOS produces an output "not in fullscreen state" and ignores the call.
+
+  self.setLevel( NSNormalWindowLevel );
 end;
 
 procedure TCocoaWindow.windowDidEnterFullScreen(notification: NSNotification);
@@ -788,6 +791,9 @@ begin
   if orderOutAfterFS then begin
     self.orderOut(nil);
     orderOutAfterFS := false;
+  end else begin
+    if self.level<>self.keepWinLevel then
+      self.setLevel(self.keepWinLevel);
   end;
 end;
 
