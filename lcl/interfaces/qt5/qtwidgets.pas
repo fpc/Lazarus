@@ -16081,6 +16081,14 @@ begin
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
     Parent := nil;
+
+  {$IFDEF HASX11}
+  // issue #40602
+  if IsWayland and Assigned(FMenuItem) and FMenuItem.HasParent and not FMenuItem.Parent.HasParent and
+    (FMenuItem.GetParentMenu is TMainMenu) then
+    Parent := TQtMainWindow(Application.MainForm.Handle).MenuBarNeeded.Widget;
+  {$ENDIF}
+
   Result := QMenu_create(Parent);
   FDeleteLater := True;
   FActionHandle := nil;
