@@ -835,18 +835,29 @@ end;
 
 function TBuildManager.GetFPCFrontEndOptions: string;
 var
-  s: String;
+  s, CfgFilename: String;
+  Opts: TProjectCompilerOptions;
 begin
   Result:='';
   if FBuildTarget<>nil then
   begin
-    s:=ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions);
+    Opts:=FBuildTarget.CompilerOptions;
+    s:=ExtractFPCFrontEndParameters(Opts.CustomOptions);
     if GlobalMacroList.SubstituteStr(s) then
     begin
       if s<>'' then
         Result:=s;
     end else begin
       debugln(['Warning: (lazarus) [GetFPCFrontEndOptions] ignoring invalid macros in custom options for fpc frontend: "',ExtractFPCFrontEndParameters(FBuildTarget.CompilerOptions.CustomOptions),'"']);
+    end;
+    if Opts.CustomConfigFile and (Opts.ConfigFilePath<>'') then
+    begin
+      CfgFilename:=Opts.ParsedOpts.DoParseOption(Opts.ConfigFilePath, pcosCustomConfigFilePath, false);
+      if CfgFilename<>'' then
+      begin
+        if Result<>'' then Result+=' ';
+        Result+='@'+CfgFilename;
+      end;
     end;
   end;
   if LazarusIDE<>nil then

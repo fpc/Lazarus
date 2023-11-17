@@ -828,7 +828,7 @@ type
 
   { TPCTargetConfigCache
     Storing all information (macros, search paths) of one compiler
-    with one specific TargetOS and TargetCPU. }
+    with one specific TargetOS, TargetCPU, SubTarget, Compiler and CompilerOptions. }
 
   TPCTargetConfigCache = class(TComponent)
   private
@@ -981,7 +981,7 @@ type
 
   { TFPCUnitSetCache
     Unit name to FPC source file.
-    Specific to one compiler, compileroptions, targetos, targetcpu and FPC source directory. }
+    Specific to one compiler, compileroptions, targetos, targetcpu, subtarget and FPC source directory. }
 
   TFPCUnitSetCache = class(TComponent)
   private
