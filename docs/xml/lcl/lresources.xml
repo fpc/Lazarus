@@ -53,7 +53,7 @@ Author: Mattias Gaertner
 </p>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
++<!-- unresolved type references -->
 <element name="Windows"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
@@ -1751,7 +1751,9 @@ pointer to the item data.
 </element>
 
 <element name="TUTF8Parser">
-<short>Parser for identifiers, and string and number literals.</short>
+<short>
++Deprecated. Parser for UTF-8-encoded identifiers, string, and number literals.
+</short>
 <descr>
 <p>
 Use <link id="TUTF8Parser.NextToken"/> to get the next token.
@@ -1775,227 +1777,267 @@ according to FloatType.
 All other characters are returned literally.
 </p>
 </descr>
-<seealso/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<seealso>
+<link id="#rtl.classes.TParser">RTL.Classes.TParser</link>    
+</seealso>
 </element>
 
 <!-- private -->
-<element name="TUTF8Parser.fStream">
-<short>The input stream.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TUTF8Parser.fBuf">
-<short>The allocated buffer.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TUTF8Parser.fBufLen">
-<short>Number of valid chars (bytes) in the buffer.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TUTF8Parser.fPos">
-<short>Current position (index) in the buffer.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TUTF8Parser.fLineStart">
-<short>Buffer-relative begin of the current line.
-</short>
-<descr>column = fPos - fLineStart + 1
-</descr>
-<seealso/>
-</element>
-
-<element link="#lcl.lresources.TUTF8Parser.FloatType" name="TUTF8Parser.fFloatType"/>
-<element link="#lcl.lresources.TUTF8Parser.SourceLine" name="TUTF8Parser.fSourceLine"/>
-<element link="#lcl.lresources.TUTF8Parser.Token" name="TUTF8Parser.fToken"/>
-
-<element name="TUTF8Parser.fEofReached">
-<short>True when reached the end of the input stream.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TUTF8Parser.fLastTokenStr">
-<short>Holds the last parsed token text.</short>
-<descr/>
-<seealso/>
-</element>
+<element name="TUTF8Parser.fStream"/>
+<element name="TUTF8Parser.fBuf"/>
+<element name="TUTF8Parser.fBufLen"/>
+<element name="TUTF8Parser.fPos"/>
+<element name="TUTF8Parser.fLineStart"/>
+<element name="TUTF8Parser.fFloatType"/>
+<element name="TUTF8Parser.fSourceLine"/>
+<element name="TUTF8Parser.fToken"/>
+<element name="TUTF8Parser.fEofReached"/>
+<element name="TUTF8Parser.fLastTokenStr"/>
 
 <element name="TUTF8Parser.GetTokenName">
-<short>The name of a token, maybe the Token character itself.</short>
+<short>
+Deprecated. The name of a token, maybe the Token character itself.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.GetTokenName.Result">
-<short/>
-</element>
-<element name="TUTF8Parser.GetTokenName.aTok">
-<short/>
-</element>
+<element name="TUTF8Parser.GetTokenName.Result"/>
+<element name="TUTF8Parser.GetTokenName.aTok"/>
 
 <element name="TUTF8Parser.LoadBuffer">
-<short>Fills the buffer from the input stream.</short>
+<short>
+Deprecated. Fills the buffer from the input stream.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.CheckLoadBuffer">
-<short>Skips to the next non-null character.</short>
+<short>
+Deprecated. Skips to the next non-null character.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.ProcessChar">
-<short>Add the current character to the token string.</short>
+<short>
+Deprecated. Add the current character to the token string.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.IsNumber">
-<short>True when the current character is a digit.</short>
+<short>
+Deprecated. True when the current character is a digit.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.IsNumber.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.IsNumber.Result"/>
 
 <element name="TUTF8Parser.IsHexNum">
-<short>True when the current character is a hex digit.</short>
+<short>
+Deprecated. True when the current character is a hex digit.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.IsHexNum.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.IsHexNum.Result"/>
 
 <element name="TUTF8Parser.IsAlpha">
 <short>
-True when the current character is an ASCII character (or underscore).
+Deprecated. True when the current character is an ASCII character (or 
+underscore).
 </short>
-<descr>Should mean: all allowed characters in an identifier.
-[To be updated for Unicode identifiers]
+<descr>
+Should mean: all allowed characters in an identifier.
+[To be updated for Unicode identifiers].
 </descr>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.IsAlpha.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.IsAlpha.Result"/>
 
 <element name="TUTF8Parser.IsAlphaNum">
-<short>True when the current character is a digit or IsAlpha.</short>
+<short>
+Deprecated. True when the current character is a digit or IsAlpha.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.IsAlphaNum.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.IsAlphaNum.Result"/>
 
 <element name="TUTF8Parser.GetHexValue">
-<short>Returns the value of a hex digit.</short>
+<short>
+Deprecated. Returns the value of a hex digit.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.GetHexValue.Result">
-<short/>
-</element>
-<element name="TUTF8Parser.GetHexValue.c">
-<short/>
-</element>
+<element name="TUTF8Parser.GetHexValue.Result"/>
+<element name="TUTF8Parser.GetHexValue.c"/>
 
 <element name="TUTF8Parser.GetAlphaNum">
-<short>Parses and returns an identifier.</short>
+<short>
+Deprecated. Parses and returns an identifier.
+</short>
 <descr/>
-<seealso/>
-<errors>EParserError when the current character is not valid for an 
-identifier.
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<errors>
+EParserError when the current character is not valid for an identifier.
 </errors>
+<seealso/>
 </element>
-<element name="TUTF8Parser.GetAlphaNum.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.GetAlphaNum.Result"/>
 
 <element name="TUTF8Parser.HandleNewLine">
-<short>Skip CR/LF, adjust SourceLine.</short>
+<short>
+Deprecated. Skip CR/LF, adjust SourceLine.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.SkipSpaces">
-<short>Skip space and tab chars.</short>
+<short>
+Deprecated. Skip space and tab chars.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.SkipWhitespace">
-<short>Skip all whitespace characters.</short>
+<short>
+Deprecated. Skip all whitespace characters.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleEof">
-<short>Marks end of input reached (fEofReached).</short>
+<short>
+Deprecated. Marks end of input reached (fEofReached).
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleAlphaNum">
-<short>Parse an identifier.</short>
+<short>
+Deprecated. Parse an identifier.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleNumber">
-<short>Parse a number,
-recognizing trailing floating point format specifiers.</short>
+<short>
+Deprecated. Parse a number, recognizing trailing floating point format 
+specifiers.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleHexNumber">
-<short>Parse a hex number, prefix the token string with '$'.
+<short>
+Deprecated. Parse a hex number, prefix the token string with '$'.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
-<errors>EParserError when no valid hex digit was found.
+<errors>
+EParserError when no valid hex digit was found.
 </errors>
 </element>
 
 <element name="TUTF8Parser.HandleQuotedString">
 <short>
-Parse an quoted string, excluding the leading and trailing quotes.
+Deprecated. Parse an quoted string, excluding the leading and trailing quotes.
 </short>
 <descr/>
-<seealso/>
-<errors>EParserError on an unterminated string literal.
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<errors>
+EParserError on an unterminated string literal.
 </errors>
+<seealso/>
 </element>
-<element name="TUTF8Parser.HandleQuotedString.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.HandleQuotedString.Result"/>
 
 <element name="TUTF8Parser.HandleDecimalString">
 <short>
-Parse an decimal Unicode codepoint, return it as an UTF-8 string.
+Deprecated. Parse an decimal Unicode codepoint, return it as an UTF-8 string.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.HandleDecimalString.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.HandleDecimalString.Result"/>
 <element name="TUTF8Parser.HandleDecimalString.ascii">
 <short>Is set to False on a non-ASCII character.</short>
 </element>
 
 <element name="TUTF8Parser.HandleString">
-<short>Parses a string literal.</short>
+<short>
+Deprecated. Parses a string literal.
+</short>
 <descr>
 <p>
 The string can consist of quoted strings and Unicode codepoints.
@@ -2008,26 +2050,39 @@ The result is stored in fLastTokenStr, in UTF-8 encoding.
 The resulting token is toString for all-ASCII strings, else toWString.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleMinus">
-<short>Tries to parse a negative number, or a single '-' character.
+<short>
+Deprecated. Tries to parse a negative number, or a single '-' character.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.HandleUnknown">
-<short>Sets Token to the unrecognized character (no error).
+<short>
+Deprtecated. Sets Token to the unrecognized character (no error).
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <!-- public -->
 <element name="TUTF8Parser.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Deprecated. Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the constructor for the class instance.
@@ -2041,6 +2096,9 @@ the NextToken method is called to position the parser on the first token in
 the buffered values.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.Create.Stream">
@@ -2048,7 +2106,9 @@ the buffered values.
 </element>
 
 <element name="TUTF8Parser.Destroy">
-<short>Destructor for the class instance.</short>
+<short>
+Deprecated. Destructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Destroy</var> is the overridden destructor for the class instance. It 
@@ -2057,36 +2117,54 @@ position for the last processed value in the internal buffer). Destroy free
 the memory allocated for the internal buffer in the class instance.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.CheckToken">
-<short>Asserts that Token is of the expected type.</short>
+<short>
+Deprecated. Asserts that Token is of the expected type.
+</short>
 <descr/>
 <seealso/>
-<errors>EParserError when Token doesn't match the expected type.
+<errors>
+EParserError when Token doesn't match the expected type.
 </errors>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 </element>
 <element name="TUTF8Parser.CheckToken.T">
 <short>The expected token type.</short>
 </element>
 
 <element name="TUTF8Parser.CheckTokenSymbol">
-<short>Asserts that the given name was parsed (case insensitive).
+<short>
+Deprecated. Asserts that the given name was parsed (case insensitive).
 </short>
 <descr/>
 <seealso/>
-<errors>EParserError when Token doesn't match the expected type or name.
+<errors>
+EParserError when Token doesn't match the expected type or name.
 </errors>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 </element>
 <element name="TUTF8Parser.CheckTokenSymbol.S">
 <short>The expected identifier.</short>
 </element>
 
 <element name="TUTF8Parser.Error">
-<short>Raises an EParserError with the given message.
+<short>
+Deprecated. Raises an EParserError with the given message.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.Error.Ident">
@@ -2094,9 +2172,13 @@ the memory allocated for the internal buffer in the class instance.
 </element>
 
 <element name="TUTF8Parser.ErrorFmt">
-<short>Raises an EParserError with the formatted message.
+<short>
+Deprecated. Raises an EParserError with the formatted message.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.ErrorFmt.Ident">
@@ -2107,18 +2189,21 @@ the memory allocated for the internal buffer in the class instance.
 </element>
 
 <element name="TUTF8Parser.ErrorStr">
-<short>Raises an EParserError with the given message, adding source position 
-information.
+<short>
+Deprecated. Raises an EParserError with the given message, adding source 
+position information.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.ErrorStr.Message">
-<short/>
-</element>
+<element name="TUTF8Parser.ErrorStr.Message"/>
 
 <element name="TUTF8Parser.HexToBinary">
-<short>Writes an hex value into the output stream.
+<short>
+Deprecated. Writes an hex value into the output stream.
 </short>
 <descr>
 <p>
@@ -2128,18 +2213,26 @@ The hex digits must occur in pairs, for every byte.
 The binary bytes are written in input order (highest first).
 </p>
 </descr>
-<seealso/>
 <errors>
 EParserError on unpaired hex digits.
 </errors>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<seealso/>
 </element>
 <element name="TUTF8Parser.HexToBinary.Stream">
 <short>The output stream.</short>
 </element>
 
 <element name="TUTF8Parser.NextToken">
-<short>Parses the next token.</short>
+<short>
+Deprecated. Parses the next token.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.NextToken.Result">
@@ -2147,98 +2240,125 @@ EParserError on unpaired hex digits.
 </element>
 
 <element name="TUTF8Parser.SourcePos">
-<short>Returns the current position in the input stream.</short>
+<short>
+Deprecated. Returns the current position in the input stream.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.SourcePos.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.SourcePos.Result"/>
 
 <element name="TUTF8Parser.TokenComponentIdent">
 <short>
-Parses an (possibly) qualified identifier, after a symbol has been parsed.
+Deprecated. Parses an (possibly) qualified identifier, after a symbol has been 
+parsed.
 </short>
 <descr/>
-<seealso/>
-<errors>EParserError when Token is not toSymbol.
+<errors>
+EParserError when Token is not toSymbol.
 </errors>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<seealso/>
 </element>
-<element name="TUTF8Parser.TokenComponentIdent.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.TokenComponentIdent.Result"/>
 
 <element name="TUTF8Parser.TokenFloat">
-<short>Returns the binary value of a floating point number.</short>
+<short>
+Deprecated. Returns the binary value of a floating point number.
+</short>
 <descr/>
-<seealso/>
-<errors>EParserError on an invalid number.
+<errors>
+EParserError on an invalid number.
 </errors>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
+<seealso/>
 </element>
-<element name="TUTF8Parser.TokenFloat.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.TokenFloat.Result"/>
 
 <element name="TUTF8Parser.TokenInt">
-<short>Returns the binary value of an integral number.</short>
+<short>Deprecated. Returns the binary value of an integral number.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.TokenInt.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.TokenInt.Result"/>
 
 <element name="TUTF8Parser.TokenString">
-<short>Returns the last parsed token as an string.
+<short>
+Deprecated. Returns the last parsed token as an string.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
-<element name="TUTF8Parser.TokenString.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.TokenString.Result"/>
 
 <element name="TUTF8Parser.TokenSymbolIs">
-<short>Compares the parsed symbol with the given string (case-insensitive).
+<short>
+Deprecated. Compares the parsed symbol with the given string (case-insensitive).
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 <element name="TUTF8Parser.TokenSymbolIs.Result">
 <short>True when a matching symbol has been parsed.</short>
 </element>
-<element name="TUTF8Parser.TokenSymbolIs.S">
-<short/>
-</element>
+<element name="TUTF8Parser.TokenSymbolIs.S"/>
 
 <element name="TUTF8Parser.FloatType">
 <short>
-The type of the parsed floating point number. (number, date...).
+Deprecated. The type of the parsed floating point number. (number, date...).
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.SourceLine">
-<short>The current line number in the input stream.
+<short>
+Deprecated. The current line number in the input stream.
 </short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
 <element name="TUTF8Parser.SourceColumn">
-<short>The current column number in the source line.
+<short>
+Deprecated. The current column number in the source line.
 </short>
 <descr/>
 <seealso/>
 </element>
-<element name="TUTF8Parser.SourceColumn.Result">
-<short/>
-</element>
+<element name="TUTF8Parser.SourceColumn.Result"/>
 
 <element name="TUTF8Parser.Token">
-<short>The last parsed token type.</short>
+<short>
+Deprecated. The last parsed token type.
+</short>
 <descr/>
+<version>
+Deprecated in LCL version 3.0. Use Classes.TParser instead.
+</version>
 <seealso/>
 </element>
 
