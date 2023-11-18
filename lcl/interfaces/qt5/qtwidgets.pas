@@ -16073,9 +16073,6 @@ function TQtMenu.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   AGroup: TQtActionGroup;
   Parent: QWidgetH;
-  {$IFDEF HASX11}
-  AForm: TCustomForm;
-  {$ENDIF}
 begin
   FTrackButton := QtNoButton;
   FLastTick := 0;
@@ -16087,11 +16084,10 @@ begin
 
   {$IFDEF HASX11}
   // issue #40602
-  if IsWayland and Assigned(FMenuItem) and FMenuItem.HasParent and not FMenuItem.Parent.HasParent and
-    (FMenuItem.GetParentMenu is TMainMenu) and (TMainMenu(FMenuItem.GetParentMenu).Parent is TCustomForm) then
+  if (Parent = nil) and IsWayland and Assigned(FMenuItem) and FMenuItem.HasParent then
   begin
-    AForm := TCustomForm(TMainMenu(FMenuItem.GetParentMenu).Parent);
-    Parent := TQtMainWindow(AForm.Handle).MenuBarNeeded.Widget;
+    if (FMenuItem.GetParentMenu is TMenu) then
+      Parent := TQtMenu(TMainMenu(FMenuItem.GetParentMenu).Handle).Widget;
   end;
   {$ENDIF}
 
