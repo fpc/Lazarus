@@ -626,6 +626,9 @@ begin
     window:= NSWindow( windows.objectAtIndex(i) );
     if not window.isVisible then
       continue;
+    if window.isKindOfClass(TCocoaWindow) then
+      if TCocoaWindow(window).lclIsFullScreen then
+        continue;
     form:= window.lclGetTarget;
     if not (form is TCustomForm) then
       continue;
