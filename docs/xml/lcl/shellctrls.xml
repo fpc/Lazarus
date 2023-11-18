@@ -1514,14 +1514,14 @@ ShellListView control.
 <p>
 <var>UpdateView</var> is a method used to repopulate the nodes on a tree view 
 control. It ensures that Items contains the entries needed for the current 
-state of the local file system.
+state of the local file system in the tree view control.
 </p>
 <p>
 UpdateView ensures that the Selected and expanded tree node(s) are captured, 
 and restored when the nodes in Items have been reloaded. If one of the selected 
-or expanded nodes no longer exists on the file system, the parent node for the 
-missing item is updated. Selected provides the selected tree node on the 
-control.
+or expanded nodes no longer exists on the file system, the path in an existing 
+parent node is used for the update. Selected provides the selected tree node on 
+the control.
 </p>
 <p>
 Updates to the Items in the control are enclosed by BeginUpdate and EndUpdate 
