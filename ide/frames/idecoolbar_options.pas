@@ -171,7 +171,6 @@ begin
   EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
   Opts := (EnvGui as TEnvGuiOptions).Desktop.IDECoolBarOptions;
   cbCoolBarVisible.Checked := Opts.Visible;
-  FTempCoolBar.IsVisible := Opts.Visible;
 
   spCoolBarWidth.Value := Opts.Width;
   FTempCoolBar.Width := Opts.Width;
@@ -269,7 +268,6 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.cbCoolBarVisibleClick(Sender: TObject);
 begin
-  FTempCoolBar.IsVisible := cbCoolBarVisible.Checked;
   EnableDisableGeneralButtons;
 end;
 
@@ -287,7 +285,9 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.EnableDisableGeneralButtons;
 begin
+  FTempCoolBar.IsVisible := cbCoolBarVisible.Checked;
   bDefaultGeneral.Enabled := not FTempCoolBar.IsDefaultCoolbar;
+  FTempCoolBar.IsVisible := true;
 end;
 
 procedure TIdeCoolbarOptionsFrame.EnableDisableToolbarButtons;
