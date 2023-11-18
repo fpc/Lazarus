@@ -2227,7 +2227,7 @@ begin
         else
           setFocusPolicy(QtNoFocus);
       end else
-      if (Self is TQtTabWidget) then
+      if (Self is TQtTabWidget) or (Self is TQtCustomControl{issue #36006}) then
         setFocusPolicy(QtTabFocus)
       else
         setFocusPolicy(QtClickFocus);
