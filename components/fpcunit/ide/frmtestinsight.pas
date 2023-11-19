@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LazFileUtils, LazUTF8, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   LCLProc, AsyncProcess, IniFiles, fpJSON, testinsightprotocol,
-  testinsightserver, jsonparser, types;
+  testinsightserver, jsonparser, types, StrUtils, strtestcaseopts;
 
 
 type
@@ -183,8 +183,6 @@ type
   end;
 
 implementation
-
-uses strutils, StrTestInsight;
 
 {$R *.lfm}
 

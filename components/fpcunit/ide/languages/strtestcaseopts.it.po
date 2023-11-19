@@ -11,13 +11,154 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
 
+#: strtestcaseopts.rsalltests
+msgid "All Tests"
+msgstr ""
+
+#: strtestcaseopts.rscouldnotdete
+#, object-pascal-format
+msgid "Could not determine class and method from test path \"%s\""
+msgstr ""
+
+#: strtestcaseopts.rserrors
+#, object-pascal-format
+msgid "%s    Errors: %s"
+msgstr ""
+
+#: strtestcaseopts.rsexception
+#, object-pascal-format
+msgid "Exception: %s"
+msgstr ""
+
+#: strtestcaseopts.rsexceptioncla
+#, object-pascal-format
+msgid "Exception class: %s"
+msgstr ""
+
+#: strtestcaseopts.rsexceptionmes
+#, object-pascal-format
+msgid "Exception message: %s"
+msgstr ""
+
+#: strtestcaseopts.rsfailures
+#, object-pascal-format
+msgid "%s     Failures: %s"
+msgstr ""
+
+#: strtestcaseopts.rslinenumber
+#, object-pascal-format
+msgid "Line number: %s"
+msgstr ""
+
+#: strtestcaseopts.rsmessage
+#, object-pascal-format
+msgid "Message: %s"
+msgstr ""
+
+#: strtestcaseopts.rsmethodname
+#, object-pascal-format
+msgid "Method name: %s"
+msgstr ""
+
+#: strtestcaseopts.rsnumberofexec
+#, object-pascal-format
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr ""
+
+#: strtestcaseopts.rsrun
+msgid "Run "
+msgstr ""
+
+#: strtestcaseopts.rsrunning
+#, object-pascal-format
+msgid "Running %s"
+msgstr ""
+
+#: strtestcaseopts.rsruns
+#, object-pascal-format
+msgid "Runs: %s/%s"
+msgstr ""
+
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
+msgstr ""
+
+#: strtestcaseopts.rsunitname
+#, object-pascal-format
+msgid "Unit name: %s"
+msgstr ""
+
+#: strtestcaseopts.sactcheckall
+msgid "Select all tests"
+msgstr ""
+
+#: strtestcaseopts.sactcheckcurrentsuite
+msgid "Select current suite"
+msgstr ""
+
+#: strtestcaseopts.sactcloseform
+msgid "Quit"
+msgstr ""
+
+#: strtestcaseopts.sactcloseformh
+msgid "Quit testing"
+msgstr ""
+
+#: strtestcaseopts.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr ""
+
+#: strtestcaseopts.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
+msgstr ""
+
+#: strtestcaseopts.sactrunaction
+msgid "&Run all"
+msgstr ""
+
+#: strtestcaseopts.sactrunactionh
+msgid "Run all checked tests"
+msgstr ""
+
+#: strtestcaseopts.sactrunhighlightedtest
+msgid "Run selected"
+msgstr ""
+
+#: strtestcaseopts.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr ""
+
+#: strtestcaseopts.sactsaveresults
+msgid "Save results"
+msgstr ""
+
+#: strtestcaseopts.sactsaveresultsh
+msgid "Save XML results to file"
+msgstr ""
+
+#: strtestcaseopts.sactuncheckall
+msgid "Deselect all tests"
+msgstr ""
+
+#: strtestcaseopts.sactuncheckcurrentsuite
+msgid "Deselect current suite"
+msgstr ""
+
+#: strtestcaseopts.sbtnclose
+msgid "Close"
 msgstr ""
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Crea unit"
+
+#: strtestcaseopts.sbtnrun
+msgid "Run"
+msgstr ""
+
+#: strtestcaseopts.sbtnrunh
+msgid "Run highlighted test"
+msgstr ""
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
@@ -65,6 +206,10 @@ msgstr "Caso di test FPCUnit"
 msgid "A unit containing a FPCUnit Test Case."
 msgstr "Caso di test FPCUnit%sUna unit che contiene un caso di test FPCUnit."
 
+#: strtestcaseopts.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr ""
+
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
 msgstr "Opzioni TestCase"
@@ -81,12 +226,45 @@ msgstr "Nomi"
 msgid "Default Test Name"
 msgstr "Nome del Test di Default"
 
+#: strtestcaseopts.smiactions
+msgid "Actions"
+msgstr ""
+
+#: strtestcaseopts.smiedit
+msgid "Edit"
+msgstr ""
+
+#: strtestcaseopts.smitesttree
+msgid "Test tree"
+msgstr ""
+
+#: strtestcaseopts.snavigationnotavailable
+msgid "Source navigation not available"
+msgstr ""
+
+#: strtestcaseopts.snoexecutableavailable
+#, object-pascal-format
+msgid "Test executable is not available: \"%s\""
+msgstr ""
+
+#: strtestcaseopts.snotestprojectconfigured
+msgid "No test project configured."
+msgstr ""
+
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
 msgstr ""
 
 #: strtestcaseopts.sskiptiminginfo
 msgid "&Omit timing info in output"
+msgstr ""
+
+#: strtestcaseopts.stshresults
+msgid "Results XML"
+msgstr ""
+
+#: strtestcaseopts.stshtree
+msgid "Testcase tree"
 msgstr ""
 
 #: strtestcaseopts.susetextinsight

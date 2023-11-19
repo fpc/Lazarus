@@ -8,8 +8,9 @@ unit fpcunitide;
 interface
 
 uses
-  FPCUnitLazIDEIntf, strtestcaseopts, testcaseopts, fraTestInsightOpts, frmtestinsight, RegTestInsight, testinsightcontroller, 
-  testinsightserver, strtestinsight, frmconsoleopts, LazarusPackageIntf;
+  FPCUnitLazIDEIntf, strtestcaseopts, testcaseopts, fraTestInsightOpts, 
+  frmtestinsight, RegTestInsight, testinsightcontroller, testinsightserver, 
+  frmConsoleOpts, LazarusPackageIntf;
 
 implementation
 

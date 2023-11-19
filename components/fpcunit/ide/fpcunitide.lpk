@@ -24,7 +24,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="13">
+    <Files Count="12">
       <Item1>
         <Filename Value="fpcunitlazideintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -72,13 +72,9 @@
         <UnitName Value="testinsightserver"/>
       </Item11>
       <Item12>
-        <Filename Value="strtestinsight.pas"/>
-        <UnitName Value="strtestinsight"/>
-      </Item12>
-      <Item13>
         <Filename Value="frmconsoleopts.pas"/>
         <UnitName Value="frmconsoleopts"/>
-      </Item13>
+      </Item12>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
