@@ -33,7 +33,7 @@ uses
   // interfacebase
   LCLPlatformDef, InterfaceBase, GraphType,
   // private
-  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
+  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL

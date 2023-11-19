@@ -32,7 +32,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra,
   // LCL
   LCLType,
@@ -460,8 +460,6 @@ function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
 function NSViewCanFocus(v: NSView): Boolean;
 
 implementation
-
-uses CocoaWSCommon;
 
 function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
 begin

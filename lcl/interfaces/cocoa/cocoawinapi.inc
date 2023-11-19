@@ -1138,9 +1138,7 @@ end;
 
 function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  lpPoint:= ScreenPointFromNSToLCL( NSEvent.mouseLocation );
-  //debugln('GetCursorPos='+DbgS(lpPoint));
-  Result := True;
+  Result:= CocoaGetCursorPos(lpPoint);
 end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
