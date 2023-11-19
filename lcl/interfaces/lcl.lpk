@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Build="2"/>
-    <Files Count="528">
+    <Files Count="532">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2608,6 +2608,23 @@ end;"/>
         <Filename Value="gtk3/issues.xml"/>
         <Type Value="Issues"/>
       </Item528>
+      <Item529>
+        <Filename Value="gtk3/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item529>
+      <Item530>
+        <Filename Value="cocoa/cocoaconfig.pas"/>
+        <UnitName Value="CocoaConfig"/>
+      </Item530>
+      <Item531>
+        <Filename Value="cocoa/cocoacursor.pas"/>
+        <UnitName Value="CocoaCursor"/>
+      </Item531>
+      <Item532>
+        <Filename Value="cocoa/cocoamenus.pas"/>
+        <UnitName Value="CocoaMenus"/>
+      </Item532>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

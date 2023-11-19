@@ -27,7 +27,7 @@ interface
 
 uses 
   {$IFNDEF DisableCWString}cwstring,{$ENDIF}
-  InterfaceBase;
+  InterfaceBase, CocoaWSFactory;
 
 implementation
 

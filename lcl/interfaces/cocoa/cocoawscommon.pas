@@ -8,30 +8,12 @@ unit CocoaWSCommon;
 interface
 
 uses
-  Types,
-  CocoaAll, cocoa_extra,
-  Classes, Controls, SysUtils,
-  //
-  WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue,
-  CocoaScrollers;
+  Types, Classes, Controls, SysUtils,
+  WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
+  CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaScrollers, cocoa_extra;
 
 type
-  { TCursorHelper }
-
-  TCursorHelper = class
-  private
-    _lastCursor: NSCursor;
-  public
-    procedure SetNewCursor( newCursor:TCocoaCursor );
-    procedure ForceSetDefaultCursor;
-    procedure SetCursorOnActive;
-    procedure SetScreenCursor;
-    procedure SetScreenCursorWhenNotDefault;
-  public
-    class procedure SetCursorAtMousePos;
-  end;
-
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -197,8 +179,6 @@ function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaS
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
-function HWNDToTargetObject(AFormHandle: HWND): TObject;
-
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
 
@@ -211,13 +191,10 @@ function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
 procedure DebugDumpParents(fromView: NSView);
 
-var
-  CursorHelper: TCursorHelper;
-
 implementation
 
 uses
-  Math, CocoaInt;
+  Math;
 
 var
   LastMouse: TLastMouseInfo;
@@ -364,76 +341,6 @@ begin
   AView.setHidden(false);
   {$endif}
   SetViewDefaults(Result);
-end;
-
-
-{ TCursorHelper }
-
-procedure TCursorHelper.SetNewCursor( newCursor:TCocoaCursor );
-var
-  currentCursor: NSCursor;
-begin
-  currentCursor:= NSCursor.currentCursor;
-  if (_lastCursor=nil) or (currentCursor=NSCursor.arrowCursor) or (currentCursor=_lastCursor) then
-  begin
-    newCursor.SetCursor;
-    _lastCursor:= newCursor.Cursor;
-  end;
-end;
-
-procedure TCursorHelper.ForceSetDefaultCursor;
-var
-  newCursor: TCocoaCursor;
-begin
-  newCursor:= TCocoaCursor(Screen.Cursors[crDefault]);
-  newCursor.SetCursor;
-  _lastCursor:= newCursor.Cursor;
-end;
-
-procedure TCursorHelper.SetCursorOnActive;
-begin
-  _lastCursor:= NSCursor.arrowCursor;
-  if Screen.Cursor<>crDefault then
-    SetScreenCursor
-  else
-    SetCursorAtMousePos;
-end;
-
-class procedure TCursorHelper.SetCursorAtMousePos;
-var
-  P: TPoint;
-  rect: NSRect;
-  window: NSWindow;
-  event: NSEvent;
-begin
-  window:= NSAPP.keyWindow;
-  if not (Assigned(window) and Assigned(window.lclGetCallback)) then
-    exit;
-
-  GetCursorPos(P);
-
-  rect:= NSZeroRect;
-  rect.origin:= LCLToNSPoint(P, window.screen.frame.size.height);
-  rect:= window.convertRectFromScreen(rect);
-
-  event:= NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-            NSMouseMoved,
-            rect.origin, 0, 0,
-            window.windowNumber, nil, 0, 0, 0);
-
-  NSApp.postEvent_atStart(event, true);
-end;
-
-procedure TCursorHelper.SetScreenCursor;
-begin
-  _lastCursor:= nil;
-  TCocoaCursor(Screen.Cursors[Screen.Cursor]).SetCursor;
-end;
-
-procedure TCursorHelper.SetScreenCursorWhenNotDefault;
-begin
-  if Screen.Cursor<>crDefault then
-    SetScreenCursor;
 end;
 
 { TLCLCommonCallback }
@@ -2125,17 +2032,6 @@ begin
   ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
 end;
 
-function HWNDToTargetObject(AFormHandle: HWND): TObject;
-var
-  cb : ICommonCallback;
-begin
-  Result := nil;
-  if AFormHandle = 0 then Exit;
-  cb := NSObject(AFormHandle).lclGetCallback;
-  if not Assigned(cb) then Exit;
-  Result := cb.GetTarget;
-end;
-
 function NSObjectDebugStr(obj: NSObject): string;
 begin
   Result := IntToStr(PtrUInt(obj));
@@ -2168,12 +2064,6 @@ begin
     fromView := fromView.superView;
   end;
 end;
-
-initialization
-  CursorHelper:= TCursorHelper.Create;
-
-finalization
-  FreeAndNil(CursorHelper);
 
 end.
 

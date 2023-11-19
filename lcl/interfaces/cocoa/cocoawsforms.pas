@@ -28,9 +28,9 @@ uses
   // LCL
   Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc,
   // Widgetset
-  WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
+  WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus,
+  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
   CocoaGDIObjects,
   CocoaWindows, CocoaScrollers, cocoa_extra;
 
@@ -189,7 +189,6 @@ type
   end;
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
 procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
 var
@@ -198,8 +197,7 @@ var
 implementation
 
 uses
-  GraphMath,
-  CocoaInt;
+  GraphMath;
 
 const
   // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
@@ -644,7 +642,7 @@ begin
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 
-  if not CocoaInt.CocoaIconUse then
+  if not CocoaConfig.CocoaIconUse then
   begin
     btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
     url := nil;
@@ -1050,7 +1048,7 @@ var
   trg : NSImage;
   btn : NSButton;
 begin
-  if CocoaInt.CocoaIconUse then Exit;
+  if CocoaConfig.CocoaIconUse then Exit;
   if not AForm.HandleAllocated then Exit;
 
   win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
@@ -1207,16 +1205,6 @@ begin
     _window.release;
     release;
   end;
-end;
-
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
-var
-  obj : TObject;
-begin
-  obj := HWNDToTargetObject(AFormHandle);
-  if Assigned(obj) and (obj is TCustomForm)
-    then Result := TCustomForm(obj)
-    else Result := nil;
 end;
 
 end.

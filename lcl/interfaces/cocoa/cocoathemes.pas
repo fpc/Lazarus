@@ -22,7 +22,7 @@ uses
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   customdrawndrawers,
   // widgetset
-  CocoaUtils, CocoaGDIObjects, Cocoa_Extra;
+  CocoaUtils, CocoaGDIObjects;
   
 type
   { TCocoaThemeServices }

@@ -24,11 +24,9 @@ interface
 
 uses
   // rtl+ftl
-  Types, Math, Classes, SysUtils,
-  CGGeometry,
+  Math, Classes, SysUtils,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate;
+  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
 
 type
   { TCocoaScrollView }

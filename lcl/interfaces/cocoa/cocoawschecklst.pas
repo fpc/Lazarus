@@ -25,13 +25,12 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Controls, StdCtrls, CheckLst, LCLType,
+  Controls, StdCtrls, CheckLst, LCLType, LCLMessageGlue,
   // Widgetset
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaWSStdCtrls, CocoaTables, CocoaGDIObjects,
-  CocoaScrollers
-  ,LCLMessageGlue;
+  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaWSStdCtrls, CocoaTables,
+  CocoaScrollers;
 
 type
 

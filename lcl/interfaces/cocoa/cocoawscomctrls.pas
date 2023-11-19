@@ -12,7 +12,7 @@ interface
 uses
   // RTL, FCL, LCL
   MacOSAll, CocoaAll,
-  Classes, LCLType, SysUtils, Contnrs, LCLMessageGlue, LMessages,
+  Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList,
   Math,
   // WS

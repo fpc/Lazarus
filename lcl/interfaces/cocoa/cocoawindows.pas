@@ -25,9 +25,8 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaWScommon,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
   cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,
@@ -232,9 +231,6 @@ type
   end;
 
 implementation
-
-uses
-  CocoaInt;
 
 { TCocoaDesignOverlay }
 

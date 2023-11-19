@@ -28,13 +28,12 @@ uses
   MacOSAll,
   CocoaAll, Classes,
   // LCL
-  Controls, StrUtils, SysUtils, Forms, Dialogs, Graphics, Masks,
+  Controls, SysUtils, Forms, Dialogs, Graphics, Masks,
   LCLType, LCLProc, LCLStrConsts,
   // Widgetset
-  WSForms, WSLCLClasses, WSDialogs,
+  WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaUtils, CocoaGDIObjects
-  ,Cocoa_Extra, CocoaWSMenus;
+  CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
 
 type
 
@@ -165,9 +164,6 @@ procedure DictToFont(src: NSDictionary; dst: TFont);
 function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
 
 implementation
-
-uses
-  CocoaInt;
 
 // API irony.
 // In LCL the base dialog is TOpenDialog (savedialog inherits from it)
