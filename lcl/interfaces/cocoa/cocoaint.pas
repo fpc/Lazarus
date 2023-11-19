@@ -33,7 +33,7 @@ uses
   // interfacebase
   LCLPlatformDef, InterfaceBase, GraphType,
   // private
-  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
+  CocoaAll, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
@@ -239,24 +239,6 @@ type
   
 var
   CocoaWidgetSet: TCocoaWidgetSet;
-  CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
-  MainPool : NSAutoreleasePool = nil;
-
-  // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
-  // The icon would have to be changed manually. By default LCL behaviour is used
-  CocoaIconUse: Boolean = false;
-  CocoaToggleBezel : NSBezelStyle = NSRoundedBezelStyle;
-  CocoaToggleType  : NSButtonType = NSPushOnPushOffButton;
-
-  CocoaHideFocusNoBorder : Boolean = true;
-
-  CocoaUseLocalizedFontName : Boolean = false; // some localized named might be too long to be returned properly by APIs
-
-  {$ifdef COCOALOOPHIJACK}
-  // The flag is set to true once hi-jacked loop is finished (at the end of app)
-  // The flag is checked in Menus to avoid "double" Cmd+Q menu
-  LoopHiJackEnded : Boolean = false;
-  {$endif}
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
@@ -297,6 +279,9 @@ uses
 const
   // Lack of documentation, provisional definition
   LazarusApplicationDefinedSubtypeWakeup = 13579;
+
+var
+  MainPool : NSAutoreleasePool = nil;
 
 procedure InternalInit;
 begin

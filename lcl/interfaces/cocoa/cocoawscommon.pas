@@ -13,7 +13,7 @@ uses
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaPrivate, CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaUtils, LCLMessageGlue,
+  CocoaConfig, CocoaPrivate, CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaUtils, LCLMessageGlue,
   CocoaScrollers;
 
 type
