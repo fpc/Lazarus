@@ -5,7 +5,7 @@ unit CocoaWSFactory;
 interface
 
 uses
-  Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
+  Classes, Controls, ComCtrls, StdCtrls, Spin,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
   WSLCLClasses, WSDialogs,
   CocoaWSCommon,

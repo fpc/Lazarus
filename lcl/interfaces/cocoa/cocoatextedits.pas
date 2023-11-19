@@ -30,10 +30,8 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaPrivate,
   // LCL
   LCLType;
 

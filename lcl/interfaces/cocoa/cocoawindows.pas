@@ -25,7 +25,6 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
   cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,

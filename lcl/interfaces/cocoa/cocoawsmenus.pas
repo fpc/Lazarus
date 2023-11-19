@@ -29,8 +29,7 @@ uses
   // RTL
   math,
   // LCL
-  Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
-  LCLMessageGlue, LCLStrConsts,
+  Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes, LCLMessageGlue,
   // Widgetset
   WSMenus,
   // LCL Cocoa

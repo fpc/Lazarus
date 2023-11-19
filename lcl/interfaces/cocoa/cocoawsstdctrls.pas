@@ -31,7 +31,7 @@ uses
   // LazUtils
   LazUTF8, TextStrings,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, WSControls, WSProc,
+  WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaConfig, CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
   CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;

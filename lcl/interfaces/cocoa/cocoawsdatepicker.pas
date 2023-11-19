@@ -8,9 +8,8 @@ interface
 uses
   CocoaAll,
   Classes, SysUtils, Controls, Calendar,
-  WSCalendar, CocoaWSCommon, CocoaDatePicker,
-  LCLtype, LclProc, LMessages, LCLMessageGlue,
-  CocoaUtils, CocoaPrivate;
+  LCLtype, LclProc, WSCalendar,
+  CocoaWSCommon, CocoaDatePicker, CocoaUtils, CocoaPrivate;
 
 const
   singleDateMode                          = 0;

@@ -8,8 +8,8 @@ interface
 uses
   classes,
   MacOSAll, CocoaAll, Cocoa_Extra,
-  SysUtils, Types, LCLType, LCLClasses, LCLProc,
-  Graphics, Math, GraphType;
+  SysUtils, Types, LCLType, LCLProc,
+  Graphics, GraphType;
 
 var
   // post message/send message string. Created by TCocoaWidgetSet

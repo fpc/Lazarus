@@ -26,12 +26,12 @@ uses
   // libs
   MacOSAll, CocoaAll,
   // LCL
-  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
+  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, SysUtils,
   // widgetset
-  WSExtCtrls, WSLCLClasses, WSControls, WSProc,
+  WSExtCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaMenus, CocoaWSCommon, CocoaGDIObjects, CocoaScrollers
-  ,Cocoa_Extra;
+  CocoaPrivate, CocoaMenus, CocoaWSCommon, CocoaGDIObjects, CocoaScrollers,
+  Cocoa_Extra;
 
 type
 
