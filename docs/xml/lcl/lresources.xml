@@ -2069,7 +2069,7 @@ Deprecated in LCL version 3.0. Use Classes.TParser instead.
 
 <element name="TUTF8Parser.HandleUnknown">
 <short>
-Deprtecated. Sets Token to the unrecognized character (no error).
+Deprecated. Sets Token to the unrecognized character (no error).
 </short>
 <descr/>
 <version>
