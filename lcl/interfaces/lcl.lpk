@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="535">
+    <Files Count="529">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2613,6 +2613,7 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item529>
+<<<<<<< HEAD
       <Item530>
         <Filename Value="cocoa/cocoaconst.pas"/>
         <AddToUsesPkgSection Value="False"/>
