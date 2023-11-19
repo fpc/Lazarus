@@ -183,6 +183,7 @@ function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
 
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
@@ -2046,6 +2047,16 @@ begin
   cb := NSObject(AFormHandle).lclGetCallback;
   if not Assigned(cb) then Exit;
   Result := cb.GetTarget;
+end;
+
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+var
+  obj : TObject;
+begin
+  obj := HWNDToTargetObject(AFormHandle);
+  if Assigned(obj) and (obj is TCustomForm)
+    then Result := TCustomForm(obj)
+    else Result := nil;
 end;
 
 function NSObjectDebugStr(obj: NSObject): string;

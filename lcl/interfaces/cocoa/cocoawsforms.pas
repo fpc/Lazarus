@@ -28,9 +28,9 @@ uses
   // LCL
   Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc,
   // Widgetset
-  WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
+  WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
-  CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus,
+  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSMenus,
   CocoaGDIObjects,
   CocoaWindows, CocoaScrollers, cocoa_extra;
 
@@ -189,7 +189,6 @@ type
   end;
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
 procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
 var
@@ -198,8 +197,7 @@ var
 implementation
 
 uses
-  GraphMath,
-  CocoaInt;
+  GraphMath;
 
 const
   // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
@@ -1207,16 +1205,6 @@ begin
     _window.release;
     release;
   end;
-end;
-
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
-var
-  obj : TObject;
-begin
-  obj := HWNDToTargetObject(AFormHandle);
-  if Assigned(obj) and (obj is TCustomForm)
-    then Result := TCustomForm(obj)
-    else Result := nil;
 end;
 
 end.

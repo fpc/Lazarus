@@ -34,12 +34,12 @@ uses
   LCLPlatformDef, InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
-  cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
+  cocoa_extra, CocoaWSMenus, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
-  IntfGraphics, Graphics, CocoaWSFactory;
+  IntfGraphics, Graphics;
 
 type
 
