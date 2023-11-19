@@ -233,9 +233,6 @@ type
 
 implementation
 
-uses
-  CocoaInt;
-
 { TCocoaDesignOverlay }
 
 procedure TCocoaDesignOverlay.drawRect(r: NSRect);

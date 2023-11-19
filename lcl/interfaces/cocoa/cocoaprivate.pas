@@ -30,7 +30,6 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra,

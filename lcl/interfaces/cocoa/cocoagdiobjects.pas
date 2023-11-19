@@ -495,10 +495,6 @@ type
 
 implementation
 
-uses
-  CocoaInt;
-
-
 { LCLNSGraphicsContext }
 
 function LCLNSGraphicsContext.lclCGcontext: CGContextRef;
