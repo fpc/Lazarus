@@ -9,7 +9,7 @@ uses
   Forms,
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf,
   IDEOptEditorIntf, IDEDialogs, IDEOptionsIntf, IDEExternToolIntf,
-  frmTestInsight, testinsightserver;
+  frmTestInsight, testinsightserver, strtestcaseopts;
 
 Type
 
@@ -66,10 +66,6 @@ Type
 var
   FreeNotifier : TFormFreeNotifier;
   TestInsightForm: TTestInsightForm;
-
-resourcestring
-  rsTestInsightTitle = 'Test Insight';
-
 
 
 Function ShowFileAt(aLocationFile : String; aLocationLine : integer) : Boolean;

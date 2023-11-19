@@ -9,6 +9,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
+msgstr ""
+
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Erzeuge Unit"

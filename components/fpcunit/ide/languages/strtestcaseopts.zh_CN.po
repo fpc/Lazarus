@@ -12,6 +12,10 @@ msgstr ""
 "X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
+msgstr ""
+
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "创建单元"

@@ -10,6 +10,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
+msgstr ""
+
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Vytvořit jednotku"

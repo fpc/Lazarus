@@ -28,6 +28,7 @@ resourcestring
   sCreateFirstTestCase = '&Create first test case';
   sDefaultOutputFormat = 'Default output &format';
 
+  rsTestInsightTitle = 'Test Insight';
 implementation
 
 end.

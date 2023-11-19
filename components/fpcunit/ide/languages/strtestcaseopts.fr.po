@@ -11,6 +11,10 @@ msgstr ""
 "Language: fr\n"
 "X-Generator: Poedit 1.7.5\n"
 
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
+msgstr ""
+
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Créer l'unité"
