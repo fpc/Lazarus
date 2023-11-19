@@ -34,7 +34,7 @@ uses
   LCLPlatformDef, InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
-  cocoa_extra, CocoaWSMenus, CocoaWindows, CocoaScrollers,
+  cocoa_extra, CocoaMenus, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType,

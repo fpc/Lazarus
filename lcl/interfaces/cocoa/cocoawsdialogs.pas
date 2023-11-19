@@ -34,7 +34,7 @@ uses
   WSForms, WSLCLClasses, WSDialogs,
   // LCL Cocoa
   CocoaUtils, CocoaGDIObjects
-  ,Cocoa_Extra, CocoaWSMenus;
+  ,Cocoa_Extra, CocoaMenus;
 
 type
 

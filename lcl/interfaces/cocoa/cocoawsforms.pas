@@ -30,7 +30,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSMenus,
+  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
   CocoaGDIObjects,
   CocoaWindows, CocoaScrollers, cocoa_extra;
 
