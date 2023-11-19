@@ -9,7 +9,7 @@ uses
   jsonparser, jsonscanner, fpjson,
   // LazUtils
   LazFileUtils,
-  Laz2_XMLRead, PList2JSon, Laz2_DOM,
+  Laz2_XMLRead, PList2JSon, Laz2_DOM, LazStringUtils,
   // LazEdit
   TextMateGrammar,
   // SynEdit
@@ -76,6 +76,7 @@ type
     procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     procedure Next; override;
     function GetEol: Boolean; override;
+    function DebugAttrAtXPos(AXPos: Integer): String; // requires StartAtLineIndex before
 
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
@@ -312,6 +313,56 @@ begin
   FCurrentTokenPos  := FTextMateGrammar.CurrentTokenPos;
   FCurrentTokenLen  := FTextMateGrammar.CurrentTokenLen;
   //FCurrentRange     := FTextMateGrammar.CurrentPatternIndex;
+end;
+
+function TSynTextMateSyn.DebugAttrAtXPos(AXPos: Integer): String;
+var
+  st: TTextMatePatternState;
+  i: Integer;
+begin
+  Result := '';
+  st := FTextMateGrammar.CurrentState;
+  SetLength(st.StateList, Length(st.StateList)) ;
+  while (FCurrentTokenPos + FCurrentTokenLen < AXPos) do begin
+    if GetEol then begin
+      result := format('EOL At %d Len %d %s', [FCurrentTokenPos, FCurrentTokenLen, LineEnding]);
+      exit;
+    end;
+    st := FTextMateGrammar.CurrentState;
+    SetLength(st.StateList, Length(st.StateList)) ;
+    Next;
+  end;
+
+  result := format('At %d Len %d %s', [FCurrentTokenPos, FCurrentTokenLen, LineEnding]);
+
+  for i := st.StateIdx downto 0 do begin
+    if st.StateList[i].Pattern <> nil then begin
+      if (st.StateList[i].Pattern is TTextMatePatternBaseNested) and
+         (st.StateList[i].Pattern.ForwardTarget <> nil)
+      then
+        Result := Result + Format('%2d: %4d: %s / %s >// %s %s%s', [
+          i,
+          st.StateList[i].Pattern.ForwardTarget.Index,
+          st.StateList[i].Pattern.ForwardTarget.Name,
+          st.StateList[i].Pattern.ForwardTarget.Comment,
+          StripLN(st.StateList[i].Pattern.DebugDump(0,false,'')),
+          st.StateList[i].Pattern.ForwardTarget.ClassName,
+          LineEnding
+        ])
+      else
+        Result := Result + Format('%2d: %4d: %s / %s  // %s%s%s', [
+          i,
+          st.StateList[i].Pattern.Index,
+          st.StateList[i].Pattern.Name,
+          st.StateList[i].Pattern.Comment,
+          StripLN(st.StateList[i].Pattern.DebugDump(0,false,'')),
+          st.StateList[i].Pattern.ClassName,
+          LineEnding
+        ]);
+      end
+      else
+        Result := Result + '???';
+  end;
 end;
 
 function TSynTextMateSyn.GetEol: Boolean;

@@ -27,6 +27,9 @@ type
       APattern: TTextMatePattern; AContextName: String;
       var AnAttribInfo: TSynAttributeInfo);
 
+    function BuildMatch(Name, Ptn: String; Extra: String = ''): String;
+    function BuildBeginEnd(Name, PtnBegin, PtnEnd: String; Extra: String = ''): String;
+
     function GetTestA1Foo: String;
     function GetTestA1(WithContentName: Boolean; ASubPatterns: array of String): String;
     function GetTestA1(WithContentName: Boolean; BCaptures, ECaptures, ACaptures: TCaptSet;
@@ -43,9 +46,10 @@ type
 
     function GetTestNest(ASubPatterns: array of String): String;
 
-    function  Join(const APatterns: array of String): String;
+    function  Join(APatterns: array of String): String;
     function  Include(const AName: String; SkipHash: Boolean = False): String;
     function  BuildPatterns(const APatterns: array of String; AMore: String = ''; LeadComma: boolean = True): String;
+    function  BuildCaptures(APatterns: array of String): String;
     procedure SetGrammar(AText: String);
     procedure SetGrammar(const ARootPatterns, ARepository: array of String);
     procedure SetGrammar(const AScopeName: String; ARootPatterns, ARepository: array of String);
@@ -103,6 +107,33 @@ begin
   if AnAttribInfo.TokId < 0 then
     AnAttribInfo.TokId := FNames.Add(AContextName);
   AnAttribInfo.TokObject := nil;
+end;
+
+function TTestTextMateGrammar.BuildMatch(Name, Ptn: String; Extra: String
+  ): String;
+begin
+  Result := '{' +
+            Join([
+              '"contentName": "'+Name+'"',
+              '"name":  "'+Name+'"',
+              '"match": "'+Ptn+'"',
+              Extra
+            ])+
+            '}';
+end;
+
+function TTestTextMateGrammar.BuildBeginEnd(Name, PtnBegin, PtnEnd: String;
+  Extra: String): String;
+begin
+  Result := '{' +
+            Join([
+              '"contentName": "'+Name+'"',
+              '"name":  "'+Name+'"',
+              '"begin": "'+PtnBegin+'"',
+              '"end": "'+PtnEnd+'"',
+              Extra
+            ])+
+            '}';
 end;
 
 function TTestTextMateGrammar.GetTestA1Foo: String;
@@ -292,7 +323,7 @@ begin
             '}';
 end;
 
-function TTestTextMateGrammar.Join(const APatterns: array of String): String;
+function TTestTextMateGrammar.Join(APatterns: array of String): String;
 var
   i: Integer;
 begin
@@ -322,6 +353,22 @@ begin
     Result := ' "patterns": [' + Result + ' ]';
   if (Result <> '') and LeadComma then
     Result := ',' + Result;
+end;
+
+function TTestTextMateGrammar.BuildCaptures(APatterns: array of String): String;
+var
+  i: Integer;
+  n: String;
+begin
+  Result := '';
+  for i := 0 to Length(APatterns) do begin
+    n := APatterns[i];
+    if n = '' then continue;
+    if n[1] <> '{' then
+      n := '{ "name": "' + n + '"}';
+    Result := Join([Result, '"'+IntToStr(i+1)+'": ' + n]);
+  end;
+  Result := ' "captures": { ' + Result + ' }';
 end;
 
 procedure TTestTextMateGrammar.SetGrammar(AText: String);
@@ -758,6 +805,16 @@ begin
   TestLine('capt at end',  '<a1>b</a1-M[b1]>', '1:a1,12:b1,16:a1.e6/root/0');
 
 
+  SetGrammar([
+      BuildBeginEnd('comment', '//(.*)', '(?=$)', BuildCaptures(['slash'])),
+      BuildBeginEnd('comment2', '(!!).*', '(?=$)', BuildCaptures(['c2'])),
+      BuildBeginEnd('comment3', '(\\?\\?)', '(?=$)', BuildCaptures(['c3'])),
+      BuildMatch('foo', 'foo')
+    ], []);
+
+  TestLine('// abc foo',  '// abc foo', '1:comment,3:slash/root/0');
+  TestLine('!!a',  '!!a', '1:c2,3:comment2/root/0');
+  TestLine('??a',  '??a', '1:c3,3:comment3/root/0');
 
 end;
 

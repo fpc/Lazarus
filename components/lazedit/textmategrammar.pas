@@ -185,10 +185,11 @@ type
 
     procedure NextToken(var AStates: TTextMatePatternState; const AText: String;
       ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); virtual;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); virtual;
   public
     function DebugName: string; virtual;
     function DebugDump(AnIndent: Integer = 2; AnIncludeNested: Boolean = True; APrefix: string = ''): string; virtual;
+    property ForwardTarget: TTextMatePatternBaseNested read GetForwardTarget;
 
     property Index: integer read FMainIndex;
     property Name: String read FName;
@@ -223,7 +224,7 @@ type
   public
     procedure NextToken(var AStates: TTextMatePatternState; const AText: String;
       ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); override;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); override;
 
   public
     function DebugDump(AnIndent: Integer = 2; AnIncludeNested: Boolean = True; APrefix: string = ''): string; override;
@@ -303,7 +304,7 @@ type
     procedure InitRegEx; override;
     procedure NextToken(var AStates: TTextMatePatternState; const AText: String;
       ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); override;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); override;
   end;
 
   { TTextMatePatternBeginEnd }
@@ -332,7 +333,7 @@ type
     procedure InitRegEx; override;
     procedure NextToken(var AStates: TTextMatePatternState; const AText: String;
       ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); override;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); override;
   end;
 
   { TTextMatePatternBeginWhile }
@@ -360,7 +361,7 @@ type
     procedure InitRegEx; override;
     procedure NextToken(var AStates: TTextMatePatternState;
       const AText: String; ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); override;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); override;
   end;
 
   { TTextMatePatternRoot }
@@ -395,7 +396,7 @@ type
   public
     procedure NextToken(var AStates: TTextMatePatternState;
       const AText: String; ACurTokenPos: integer; out ANextTokenPos: integer;
-      AnInitInfoOnly: Boolean = False); override;
+      AnInitInfoOnly: Boolean = False; AnIsCalledAsParent: Boolean = False); override;
     property ForwardTo: TTextMatePatternBaseNested read FForwardTo;
 
     function DebugDump(AnIndent: Integer = 2; AnIncludeNested: Boolean = True; APrefix: string = ''): string; override;
@@ -773,7 +774,7 @@ begin
     exit;
   Pop;
   st := @StateList[StateIdx];
-  st^.Pattern.NextToken(Self, AText, ACurTokenPos, ANextTokenPos, AnInitInfoOnly);
+  st^.Pattern.NextToken(Self, AText, ACurTokenPos, ANextTokenPos, AnInitInfoOnly, True);
 end;
 
 { TTextMatePattern }
@@ -799,7 +800,7 @@ end;
 
 procedure TTextMatePattern.NextToken(var AStates: TTextMatePatternState;
   const AText: String; ACurTokenPos: integer; out ANextTokenPos: integer;
-  AnInitInfoOnly: Boolean);
+  AnInitInfoOnly: Boolean; AnIsCalledAsParent: Boolean);
 begin
   ANextTokenPos := Length(AText);
   assert(False, 'TTextMatePattern.NextToken: False');
@@ -991,7 +992,7 @@ begin
   Result := False;
 
   AMatchInfo.Index := -1;
-  if ATextStartOffset > AStateEntryP^.SubTextLen then
+  if ATextStartOffset > AStateEntryP^.SubTextLen + 1 then
     exit;
 
   if ATextStartOffset = FRecurseMatchPos then begin
@@ -1146,7 +1147,8 @@ end;
 
 procedure TTextMatePatternBaseNested.NextToken(
   var AStates: TTextMatePatternState; const AText: String;
-  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean);
+  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean;
+  AnIsCalledAsParent: Boolean);
 var
   FndMatchInfo: TTextMateMatchInfo;
   st: PTextMatePatternStateEntry;
@@ -1154,6 +1156,7 @@ begin
   {$IFDEF TMATE_MATCHING}
   debuglnEnter(['> '+ClassName+'.NextToken ',DebugName,' --- TkPos:', ACurTokenPos, ' ',dbgs(AnInitInfoOnly), '  txt-len:',AStates.EntryP[0]^.SubTextLen,'/',length(AText) ]); try
   {$ENDIF}
+  if not AnIsCalledAsParent then
   if IsEndlessRecursion(ACurTokenPos, AnInitInfoOnly) then begin
     if AnInitInfoOnly
     then ANextTokenPos := ACurTokenPos
@@ -1183,7 +1186,8 @@ begin
     {$IFDEF TMATE_MATCHING} debugln([''+ClassName+'.NextToken  << no match or init ', FndMatchInfo.Start]); {$ENDIF}
     if AnInitInfoOnly then begin
       // TODO, cache if AnInitInfoOnly
-      FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+      if not AnIsCalledAsParent then
+        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
     end
     else
     if (self is TTextMatePatternCapture) then // ANextTokenPos is end of catpured text + 1
@@ -1287,7 +1291,8 @@ begin
       continue;
     Result := True;
 
-    if AFoundCapturePosList[i].Start >= ACaptureInfo.Start then
+// If starting at same point: which to take?? the last or the shorter???
+    if AFoundCapturePosList[i].Start > ACaptureInfo.Start then
       continue;
 
     ACaptureInfo.Start := AFoundCapturePosList[i].Start;
@@ -1359,7 +1364,7 @@ end;
 
 procedure TTextMatePatternMatch.NextToken(var AStates: TTextMatePatternState;
   const AText: String; ACurTokenPos: integer; out ANextTokenPos: integer;
-  AnInitInfoOnly: Boolean);
+  AnInitInfoOnly: Boolean; AnIsCalledAsParent: Boolean);
 var
   st: PTextMatePatternStateEntry;
   CaptTextLen, MatchEndPos: Integer;
@@ -1369,6 +1374,7 @@ begin
   {$IFDEF TMATE_MATCHING}
   debuglnEnter(['> TTextMatePatternMatch.NextToken ',DebugName,' --- TkPos:', ACurTokenPos, ' ',dbgs(AnInitInfoOnly), '  txt-len:',AStates.EntryP[0]^.SubTextLen,'/',length(AText) ]); try
   {$ENDIF}
+  if not AnIsCalledAsParent then
   if IsEndlessRecursion(ACurTokenPos, AnInitInfoOnly) then begin
     if AnInitInfoOnly
     then ANextTokenPos := ACurTokenPos
@@ -1419,7 +1425,8 @@ begin
     if AnInitInfoOnly then begin
       if r then
         st^.SetCache(FndCapture, CaptTextLen);
-      FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+      if not AnIsCalledAsParent then
+        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
     end
     else begin
       assert(ANextTokenPos >= MatchEndPos, 'TTextMatePatternMatch.NextToken: ANextTokenPos >= MatchEndPos');
@@ -1521,7 +1528,8 @@ end;
 
 procedure TTextMatePatternBeginEnd.NextToken(
   var AStates: TTextMatePatternState; const AText: String;
-  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean);
+  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean;
+  AnIsCalledAsParent: Boolean);
 var
   st: PTextMatePatternStateEntry;
   FndCapture, FndCapture2: TTextMateMatchInfo;
@@ -1532,6 +1540,8 @@ begin
   {$IFDEF TMATE_MATCHING}
   debuglnEnter(['> TTextMatePatternBeginEnd.NextToken ',DebugName,' --- TkPos:', ACurTokenPos, ' ',dbgs(AnInitInfoOnly), '  txt-len:',AStates.EntryP[0]^.SubTextLen,'/',length(AText) ]); try
   {$ENDIF}
+
+  if not AnIsCalledAsParent then
   if IsEndlessRecursion(ACurTokenPos, AnInitInfoOnly) then begin
     if AnInitInfoOnly
     then ANextTokenPos := ACurTokenPos
@@ -1573,7 +1583,8 @@ begin
         if r then
           st^.SetCache(FndCapture, CaptTextLen);
         ANextTokenPos := ACurTokenPos;
-        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+        if not AnIsCalledAsParent then
+          FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
         {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken exit inside MatchBegin ',BodyPos  ]); {$ENDIF}
         exit;
       end;
@@ -1581,7 +1592,7 @@ begin
   end;
 
   (*  Check body / nested patterns  *)
-  if (not r) and (BodyPos <= st^.SubTextLen) then begin
+  if (not r) and (BodyPos <= st^.SubTextLen + 1) then begin
     Include(st^.Flags, psfMatchBeginDone);
     CaptTextLen := st^.SubTextLen;
     if BodyPos < ACurTokenPos then
@@ -1647,7 +1658,9 @@ begin
     then begin
       {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken exit after MatchBegin ',BodyPos  ]); {$ENDIF}
       ANextTokenPos := BodyPos;
-      if (psfNestedinCapture in st^.Flags) and (ANextTokenPos > st^.SubTextLen) then
+      if ((psfNestedinCapture in st^.Flags) and (ANextTokenPos > st^.SubTextLen)) or
+         (ANextTokenPos >= EndEnd)
+      then
         AStates.CallParentNextToken(AText, ANextTokenPos, ANextTokenPos, True);
       exit;
     end;
@@ -1658,7 +1671,9 @@ begin
       {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken  exit before matchEnd', EndPos]); {$ENDIF}
       ANextTokenPos := EndPos;
       st^.CurrentTokenAttribInfo := FAttribInfo;
-      if (psfNestedinCapture in st^.Flags) and (ANextTokenPos > st^.SubTextLen) then
+      if ((psfNestedinCapture in st^.Flags) and (ANextTokenPos > st^.SubTextLen)) or
+         (ANextTokenPos >= EndEnd)
+      then
         AStates.CallParentNextToken(AText, ANextTokenPos, ANextTokenPos, True);
       exit;
     end;
@@ -1684,7 +1699,8 @@ begin
       {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken exit for init']); {$ENDIF}
       if r then
         st^.SetCache(FndCapture, CaptTextLen);
-      FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+      if not AnIsCalledAsParent then
+        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
     end
     else
     if (psfMatchEndInitialized in st^.Flags) then begin
@@ -1771,7 +1787,8 @@ end;
 
 procedure TTextMatePatternBeginWhile.NextToken(
   var AStates: TTextMatePatternState; const AText: String;
-  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean);
+  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean;
+  AnIsCalledAsParent: Boolean);
 var
   st: PTextMatePatternStateEntry;
   BodyPos, CaptTextLen: Integer;
@@ -1782,6 +1799,7 @@ begin
   {$IFDEF TMATE_MATCHING}
   debuglnEnter(['> TTextMatePatternBeginWhile.NextToken ',DebugName,' --- TkPos:', ACurTokenPos, ' ',dbgs(AnInitInfoOnly), '  txt-len:',AStates.EntryP[0]^.SubTextLen,'/',length(AText) ]); try
   {$ENDIF}
+  if not AnIsCalledAsParent then
   if IsEndlessRecursion(ACurTokenPos, AnInitInfoOnly) then begin
     if AnInitInfoOnly
     then ANextTokenPos := ACurTokenPos
@@ -1842,7 +1860,8 @@ begin
         //if r then
         //  st^.SetCache(FndCapture, CaptTextLen);
         ANextTokenPos := ACurTokenPos;
-        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+        if not AnIsCalledAsParent then
+          FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
         {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken exit inside MatchBegin ',BodyPos  ]); {$ENDIF}
         exit;
       end;
@@ -1862,11 +1881,12 @@ begin
 
   if not r then begin
     if AnInitInfoOnly then begin
-      FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
+      if not AnIsCalledAsParent then
+        FDeepestRecurseWasInit := True; // Next call must be NOT AnInitInfoOnly
     end
     else
     if (psfNestedinCapture in st^.Flags) and (ANextTokenPos > st^.SubTextLen)then begin
-      {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken  EXIT GOT TO LENGTH ', ANextTokenPos, ' ' ,EndEnd]); {$ENDIF}
+      {$IFDEF TMATE_MATCHING} debugln(['TTextMatePatternBeginEnd.NextToken  EXIT GOT TO LENGTH ', ANextTokenPos, ' ' ,st^.SubTextLen]); {$ENDIF}
       AStates.CallParentNextToken(AText, ANextTokenPos, ANextTokenPos, True);
     end;
     exit;
@@ -1951,9 +1971,10 @@ end;
 
 procedure TTextMatePatternForwarder.NextToken(
   var AStates: TTextMatePatternState; const AText: String;
-  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean);
+  ACurTokenPos: integer; out ANextTokenPos: integer; AnInitInfoOnly: Boolean;
+  AnIsCalledAsParent: Boolean);
 begin
-  FForwardTo.NextToken(AStates, AText, ACurTokenPos, ANextTokenPos, AnInitInfoOnly);
+  FForwardTo.NextToken(AStates, AText, ACurTokenPos, ANextTokenPos, AnInitInfoOnly, AnIsCalledAsParent);
 end;
 
 function TTextMatePatternForwarder.DebugDump(AnIndent: Integer;
@@ -2303,6 +2324,8 @@ begin
       inc(j);
 
       APatternArray[j] := ParsePattern(AParent, PtrnJson);
+      if APatternArray[j].Name = '' then APatternArray[j].FDebugName := AParent.FDebugName+'['+IntToStr(j)+']';
+
     except
       on E: TTextMateGrammarException do raise E.Copy.AddLocation(i);
       on E: Exception do raise TTextMateGrammarException.Create(E.Message, i);
