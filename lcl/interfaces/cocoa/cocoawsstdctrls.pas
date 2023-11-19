@@ -31,9 +31,9 @@ uses
   // LazUtils
   LazUTF8, TextStrings,
   // Widgetset
-  WSStdCtrls, WSLCLClasses, WSControls, WSProc,
+  WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
+  CocoaConfig, CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
   CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;
 
 type
@@ -379,9 +379,6 @@ procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
 procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
-
-uses
-  CocoaInt;
 
 const
   VerticalScrollerVisible: array[TScrollStyle] of boolean = (

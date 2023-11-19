@@ -25,12 +25,10 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate
+  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate,
   // LCL
-  ,Graphics;
+  Graphics;
 
 const
   // these heights were received from Xcode interface builder,

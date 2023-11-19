@@ -299,24 +299,6 @@ type
     property Height: Integer read FHeight;
   end;
 
-  { TCocoaCursor }
-
-  TCocoaCursor = class(TObject)
-  strict private
-    FStandard: Boolean;
-    FBitmap: TCocoaBitmap;
-    FCursor: NSCursor;
-  public
-    constructor CreateStandard(const ACursor: NSCursor);
-    constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
-    constructor CreateFromCustomCursor(const ACursor: NSCursor);
-    destructor Destroy; override;
-    procedure SetCursor;
-    property Cursor: NSCursor read FCursor;
-    property Standard: Boolean read FStandard;
-  end;
-
-
   // device context data for SaveDC/RestoreDC
   TCocoaDCData = class
   public
@@ -512,10 +494,6 @@ type
   end;
 
 implementation
-
-uses
-  CocoaInt;
-
 
 { LCLNSGraphicsContext }
 
@@ -1206,40 +1184,6 @@ constructor TCocoaBitmap.Create(ABitmap: TCocoaBitmap);
 begin
   Create(ABitmap.Width, ABitmap.Height, ABitmap.Depth, ABitmap.FBitsPerPixel,
     ABitmap.FAlignment, ABitmap.FType, ABitmap.Data);
-end;
-
-{ TCocoaCursor }
-constructor TCocoaCursor.CreateStandard(const ACursor: NSCursor);
-begin
-  FBitmap := nil;
-  FCursor := ACursor;
-  FStandard := True;
-end;
-
-constructor TCocoaCursor.CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
-begin
-  FBitmap := ABitmap;            // takes ownership, no ref count change required
-  FCursor := NSCursor.alloc.initWithImage_hotSpot(ABitmap.Image, hotSpot);
-  FStandard := False;
-end;
-
-constructor TCocoaCursor.CreateFromCustomCursor(const ACursor: NSCursor);
-begin
-  FCursor := ACursor;
-  FStandard := False;
-end;
-
-destructor TCocoaCursor.Destroy;
-begin
-  FreeAndNil(FBitmap);
-  if not Standard then
-    FCursor.release;
-  inherited;
-end;
-
-procedure TCocoaCursor.SetCursor;
-begin
-  FCursor.set_;
 end;
 
 { TCocoaContext }
