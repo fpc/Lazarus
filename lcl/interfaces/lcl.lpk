@@ -2615,14 +2615,17 @@ end;"/>
       </Item529>
       <Item530>
         <Filename Value="cocoa/cocoaconfig.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaConfig"/>
       </Item530>
       <Item531>
         <Filename Value="cocoa/cocoacursor.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCursor"/>
       </Item531>
       <Item532>
         <Filename Value="cocoa/cocoamenus.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaMenus"/>
       </Item532>
     </Files>
