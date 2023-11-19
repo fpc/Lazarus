@@ -8,13 +8,10 @@ unit CocoaWSCommon;
 interface
 
 uses
-  Types,
-  CocoaAll, cocoa_extra,
-  Classes, Controls, SysUtils,
-  //
-  WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaConfig, CocoaPrivate, CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaUtils, LCLMessageGlue,
-  CocoaScrollers;
+  Types, Classes, Controls, SysUtils,
+  WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
+  CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaScrollers, cocoa_extra;
 
 type
   { TLCLCommonCallback }
@@ -182,9 +179,6 @@ function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaS
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
-function HWNDToTargetObject(AFormHandle: HWND): TObject;
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
-
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
 
@@ -200,7 +194,7 @@ procedure DebugDumpParents(fromView: NSView);
 implementation
 
 uses
-  Math, CocoaInt;
+  Math;
 
 var
   LastMouse: TLastMouseInfo;
@@ -2036,27 +2030,6 @@ class procedure TCocoaWSCustomControl.SetBorderStyle(
 begin
   if not Assigned(AWinControl) or not (AWinControl.HandleAllocated) then Exit;
   ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
-end;
-
-function HWNDToTargetObject(AFormHandle: HWND): TObject;
-var
-  cb : ICommonCallback;
-begin
-  Result := nil;
-  if AFormHandle = 0 then Exit;
-  cb := NSObject(AFormHandle).lclGetCallback;
-  if not Assigned(cb) then Exit;
-  Result := cb.GetTarget;
-end;
-
-function HWNDToForm(AFormHandle: HWND): TCustomForm;
-var
-  obj : TObject;
-begin
-  obj := HWNDToTargetObject(AFormHandle);
-  if Assigned(obj) and (obj is TCustomForm)
-    then Result := TCustomForm(obj)
-    else Result := nil;
 end;
 
 function NSObjectDebugStr(obj: NSObject): string;

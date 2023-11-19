@@ -27,7 +27,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaCursor, CocoaWScommon,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
   cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,

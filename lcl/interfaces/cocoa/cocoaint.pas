@@ -28,14 +28,14 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, GraphMath,
-  // carbon bindings
-  MacOSAll,
   // interfacebase
   LCLPlatformDef, InterfaceBase, GraphType,
+  // darwin bindings
+  MacOSAll,
   // private
   CocoaAll, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra, CocoaMenus, CocoaWindows, CocoaScrollers,
-  CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
+  CocoaWSClipboard, CocoaTextEdits,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -282,6 +282,27 @@ const
 
 var
   MainPool : NSAutoreleasePool = nil;
+
+function HWNDToTargetObject(AFormHandle: HWND): TObject;
+var
+  cb : ICommonCallback;
+begin
+  Result := nil;
+  if AFormHandle = 0 then Exit;
+  cb := NSObject(AFormHandle).lclGetCallback;
+  if not Assigned(cb) then Exit;
+  Result := cb.GetTarget;
+end;
+
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+var
+  obj : TObject;
+begin
+  obj := HWNDToTargetObject(AFormHandle);
+  if Assigned(obj) and (obj is TCustomForm)
+    then Result := TCustomForm(obj)
+    else Result := nil;
+end;
 
 procedure InternalInit;
 begin

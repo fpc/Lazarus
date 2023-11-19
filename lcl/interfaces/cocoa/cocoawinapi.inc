@@ -1443,9 +1443,7 @@ begin
     Result := Assigned(cbi);
     if not Result then Exit;
 
-    obj := cbi.GetCallbackObject;
-    Result :=  (obj is TLCLCommonCallback)
-      and (HWND(TLCLCommonCallback(obj).HandleFrame)=handle);
+    Result:= NSObject(handle).isKindOfClass(TCocoaWindowContent);
   end
   else
     Result := False;
@@ -2138,7 +2136,7 @@ var
   view : NSView;
   dl   : NSObject;
   cb   : ICommonCallback;
-  cbobj : TObject;
+  lclobj : TObject;
 begin
   Result := 0;
   win := NSApp.keyWindow;
@@ -2164,16 +2162,9 @@ begin
   end
   else
   begin
-    cb := rsp.lclGetCallback;
-    if Assigned(cb) then
-      cbobj := cb.GetCallbackObject
-    else
-      cbobj := nil;
-
-    if (cbobj is TLCLCommonCallback) then
-      Result := HWND(TLCLCommonCallback(cbobj).HandleFrame)
-    else
-      Result := 0;
+    lclobj := rsp.lclGetTarget;
+    if lclobj is TWinControl then
+      Result := TWinControl(lclobj).Handle;
   end;
 end;
 
