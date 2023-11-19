@@ -23,6 +23,14 @@ msgstr "Créer la méthode d'installation"
 msgid "Create TearDown method"
 msgstr "Créer la méthode de démontage"
 
+#: strtestcaseopts.screatefirsttestcase
+msgid "&Create first test case"
+msgstr ""
+
+#: strtestcaseopts.sdefaultoutputformat
+msgid "Default output &format"
+msgstr ""
+
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
 msgstr "Unité FPC - Application console de test"
@@ -68,6 +76,18 @@ msgstr "Noms"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Nom de test par défaut"
+
+#: strtestcaseopts.srunalltests
+msgid "&Run all tests by default"
+msgstr ""
+
+#: strtestcaseopts.sskiptiminginfo
+msgid "&Omit timing info in output"
+msgstr ""
+
+#: strtestcaseopts.susetextinsight
+msgid "Use &testinsight to communicate results to the IDE"
+msgstr ""
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"

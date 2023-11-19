@@ -23,6 +23,14 @@ msgstr "Створити налаштувальний метод"
 msgid "Create TearDown method"
 msgstr "Створити метод демонтажу"
 
+#: strtestcaseopts.screatefirsttestcase
+msgid "&Create first test case"
+msgstr ""
+
+#: strtestcaseopts.sdefaultoutputformat
+msgid "Default output &format"
+msgstr ""
+
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
 msgstr "Консольний тестовий застосунок FPCUnit"
@@ -62,6 +70,18 @@ msgstr "Назви"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Типова назва тесту"
+
+#: strtestcaseopts.srunalltests
+msgid "&Run all tests by default"
+msgstr ""
+
+#: strtestcaseopts.sskiptiminginfo
+msgid "&Omit timing info in output"
+msgstr ""
+
+#: strtestcaseopts.susetextinsight
+msgid "Use &testinsight to communicate results to the IDE"
+msgstr ""
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"

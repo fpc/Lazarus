@@ -1,0 +1,97 @@
+object ConsoleTestRunnerOptionsForm: TConsoleTestRunnerOptionsForm
+  Left = 388
+  Height = 264
+  Top = 174
+  Width = 498
+  Caption = 'New FPCUnit console testrunner  program'
+  ClientHeight = 264
+  ClientWidth = 498
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object cbRunAllTests: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 16
+    Height = 23
+    Top = 16
+    Width = 165
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 16
+    Caption = '&Run all tests by default'
+    TabOrder = 0
+  end
+  object cbTestInsight: TCheckBox
+    AnchorSideLeft.Control = cbRunAllTests
+    AnchorSideTop.Control = cbFormat
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 23
+    Top = 105
+    Width = 323
+    BorderSpacing.Top = 8
+    Caption = 'Use &testInsight to communicate results to the IDE'
+    TabOrder = 1
+  end
+  object cbCreateTestCase: TCheckBox
+    AnchorSideLeft.Control = cbRunAllTests
+    AnchorSideTop.Control = cbTestInsight
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 23
+    Top = 136
+    Width = 148
+    BorderSpacing.Top = 8
+    Caption = '&Create first test case'
+    TabOrder = 2
+  end
+  object cbFormat: TComboBox
+    AnchorSideLeft.Control = cbRunAllTests
+    AnchorSideTop.Control = lblFormat
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 26
+    Top = 71
+    Width = 220
+    BorderSpacing.Top = 8
+    ItemHeight = 0
+    Items.Strings = (
+      'Default'
+      'XML'
+      'Plain text'
+      'Plain text without timings'
+      'LaTeX'
+    )
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object lblFormat: TLabel
+    AnchorSideLeft.Control = cbRunAllTests
+    AnchorSideTop.Control = cbRunAllTests
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 16
+    Top = 47
+    Width = 138
+    BorderSpacing.Top = 8
+    Caption = 'Default output &format:'
+    FocusControl = cbFormat
+  end
+  object bpOptions: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 220
+    Width = 486
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 4
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

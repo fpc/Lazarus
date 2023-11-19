@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="laztestinsight"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <ConfigFile>
+          <WriteConfigFilePath Value=""/>
+        </ConfigFile>
+      </Other>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="testinsightclient.pas"/>
+        <UnitName Value="testinsightclient"/>
+      </Item>
+      <Item>
+        <Filename Value="testinsightprotocol.pas"/>
+        <UnitName Value="testinsightprotocol"/>
+      </Item>
+      <Item>
+        <Filename Value="fpcunittestinsight.pas"/>
+        <UnitName Value="fpcunittestinsight"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

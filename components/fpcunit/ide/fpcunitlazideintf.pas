@@ -32,7 +32,8 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts, strtestcaseopts;
+  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts, frmConsoleOpts,
+  strtestcaseopts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -48,9 +49,20 @@ type
   
   { TFPCUnitConsoleApplicationDescriptor }
 
+  TConsoleOption = (coRunAllTests,coOmitTiming,coCreateTestCase,coTestInsight);
+  TConsoleOptions = set of TConsoleOption;
+
   TFPCUnitConsoleApplicationDescriptor = class(TProjectDescriptor)
+  private
+    FOptions : TConsoleOptions;
+    FDefaultFormat : TDefaultFormat;
+    function CreateSource: String;
+    function GetDefaultformatSource: String;
+  Protected
+    function DoInitDescriptor: TModalResult; override;
   public
     constructor Create; override;
+    function ShowOptions: TModalResult;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
@@ -88,6 +100,8 @@ var
 procedure Register;
 
 implementation
+
+uses typinfo,codetoolmanager;
 
 procedure Register;
 begin
@@ -318,11 +332,130 @@ begin
   Result:=sFPCUnConsoleTestDesc;
 end;
 
+function TFPCUnitConsoleApplicationDescriptor.DoInitDescriptor: TModalResult;
+begin
+  Result:=ShowOptions;
+end;
+
+function TFPCUnitConsoleApplicationDescriptor.ShowOptions: TModalResult;
+
+  procedure IncOpt(DoInclude : Boolean; Option : TConsoleOption);
+
+  begin
+    If DoInclude then
+      Include(FOptions,Option);
+  end;
+
+var
+  Frm : TConsoleTestRunnerOptionsForm;
+
+begin
+  frm:=TConsoleTestRunnerOptionsForm.Create(Nil);
+  try
+    Result:=frm.ShowModal;
+    if Result=mrOK then
+      begin
+      FOptions:=[];
+      IncOpt(Frm.RunAllTests,coRunAllTests);
+      IncOpt(Frm.UseTestInsight,coTestInsight);
+      IncOpt(frm.CreateTestCase,coCreateTestCase);
+      FDefaultFormat:=Frm.DefaultFormat;
+      end;
+  finally
+    Frm.Free;
+  end;
+end;
+
+function TFPCUnitConsoleApplicationDescriptor.GetDefaultformatSource : String;
+
+begin
+  Result:='';
+  Case FDefaultFormat of
+    dfPlainText :
+      Result:='fPlain';
+    dfPlainNoTiming :
+      Result:='fPlainNoTiming';
+    dfLaTeX:
+      Result:='fLatex';
+    dfXML:
+      Result:='fXML';
+  else
+    Exit;
+  end;
+  Result:='DefaultFormat:='+Result;
+end;
+
+function TFPCUnitConsoleApplicationDescriptor.CreateSource : String;
+
+var
+  S : TStrings;
+  Prefix,Line : String;
+
+
+begin
+  S:=TStringList.Create;
+  try
+    With S do
+      begin
+      Add('program FPCUnitProject1;');
+      Add('');
+      Add('{$mode objfpc}{$H+}');
+      Add('');
+      Add('uses');
+      Line:='Classes, consoletestrunner';
+      if (coTestInsight in FOptions) then
+        Line:=Line+', fpcunittestinsight';
+      Add('  '+Line+';');
+      Add('');
+      Add('type');
+      Add('');
+      Add('  { TMyTestRunner }');
+      Add('');
+      Add('  TMyTestRunner = class(TTestRunner)');
+      Add('  protected');
+      Add('  // override the protected methods of TTestRunner to customize its behavior');
+      Add('  end;');
+      Add('');
+      Add('var');
+      Add('  Application: TMyTestRunner;');
+      Add('');
+      Add('begin');
+      if (coTestInsight in FOptions) then
+        begin
+        add('  if IsTestInsightListening() then');
+        add('    RunRegisteredTests('''','''')');
+        add('  else');
+        add('    begin');
+        Prefix:='    ';
+        end
+      else
+        Prefix:='  ';
+      if coRunAllTests in FOptions then
+        Add(Prefix+'DefaultRunAllTests:=True;');
+      if FDefaultFormat<>dfDefault  then
+        Add(Prefix+GetDefaultformatSource+';');
+      Add(Prefix+'Application := TMyTestRunner.Create(nil);');
+      Add(Prefix+'Application.Initialize;');
+      Add(Prefix+'Application.Title := ''FPCUnit Console test runner'';');
+      Add(Prefix+'Application.Run;');
+      Add(Prefix+'Application.Free;');
+      if (coTestInsight in FOptions) then
+        Add(Prefix+'end;');
+      Add('end.');
+      end;
+    Result:=S.Text;
+  finally
+    S.Free;
+  end;
+end;
+
 function TFPCUnitConsoleApplicationDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 var
   NewSource: string;
   MainFile: TLazProjectFile;
+  FPCVer,FPCRel,FPCPatch: Integer;
+  NeedDep : Boolean;
 begin
   inherited InitProject(AProject);
 
@@ -332,12 +465,22 @@ begin
   AProject.MainFileID:=0;
 
   // create program source
-  {$i fpcunitproject1.inc}
+  NewSource:=CreateSource;
 
   AProject.MainFile.SetSourceText(NewSource);
 
   // add FCL dependency
   AProject.AddPackageDependency('FCL');
+
+  // For 3.2.1 or higher we do not need laztestinsight
+  if (coTestInsight in FOptions) then
+    begin
+    // We don't have a project directory yet.
+    CodetoolBoss.GetFPCVersionForDirectory(LazarusIDE.GetTestBuildDirectory,FPCver,FPCRel,FPCPatch);
+    NeedDep:=(FPCVer<3) or ((FPCVer>=3) and (FPCRel<3));
+    if NeedDep then
+      AProject.AddPackageDependency('laztestinsight');
+    end;
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
@@ -349,8 +492,9 @@ end;
 function TFPCUnitConsoleApplicationDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 begin
-  LazarusIDE.DoNewEditorFile(FileDescriptorFPCUnitTestCase,'','',
-                         [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  if coCreateTestCase in FOptions then
+    LazarusIDE.DoNewEditorFile(FileDescriptorFPCUnitTestCase,'','',
+                              [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
   Result:=mrOK;
 end;
 

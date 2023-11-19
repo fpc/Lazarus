@@ -1,0 +1,79 @@
+object TestInsightOptionsFrame: TTestInsightOptionsFrame
+  Left = 0
+  Height = 479
+  Top = 0
+  Width = 507
+  BorderSpacing.Left = 6
+  ClientHeight = 479
+  ClientWidth = 507
+  ParentShowHint = False
+  ShowHint = True
+  TabOrder = 0
+  DesignLeft = 577
+  DesignTop = 326
+  object lblBaseURL: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = seServerPort
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 16
+    Top = 69
+    Width = 69
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    Caption = 'Server path'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object cbServerBasePath: TComboBox
+    AnchorSideLeft.Control = lblBaseURL
+    AnchorSideTop.Control = lblBaseURL
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 28
+    Top = 93
+    Width = 484
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    ItemHeight = 0
+    TabOrder = 0
+  end
+  object seServerPort: TSpinEdit
+    AnchorSideLeft.Control = lblBaseURL
+    AnchorSideTop.Control = lblServerPort
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 28
+    Top = 33
+    Width = 74
+    BorderSpacing.Top = 9
+    MaxValue = 65353
+    MinValue = 1024
+    TabOrder = 1
+    Value = 3000
+  end
+  object lblServerPort: TLabel
+    AnchorSideLeft.Control = lblBaseURL
+    AnchorSideTop.Control = Owner
+    Left = 8
+    Height = 16
+    Top = 8
+    Width = 67
+    BorderSpacing.Top = 8
+    Caption = 'Server port'
+    ParentColor = False
+  end
+  object cbAutoFetch: TCheckBox
+    AnchorSideLeft.Control = lblBaseURL
+    AnchorSideTop.Control = cbServerBasePath
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 23
+    Top = 129
+    Width = 244
+    BorderSpacing.Top = 8
+    Caption = 'Automatically fetch test list on open'
+    TabOrder = 2
+  end
+end

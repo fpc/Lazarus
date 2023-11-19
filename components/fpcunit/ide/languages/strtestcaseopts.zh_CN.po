@@ -24,6 +24,14 @@ msgstr "创建 Setup 方法"
 msgid "Create TearDown method"
 msgstr "创建 TearDown 方法"
 
+#: strtestcaseopts.screatefirsttestcase
+msgid "&Create first test case"
+msgstr ""
+
+#: strtestcaseopts.sdefaultoutputformat
+msgid "Default output &format"
+msgstr ""
+
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit 控制台测试应用程序"
@@ -63,6 +71,18 @@ msgstr "名称"
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "默认测试名称"
+
+#: strtestcaseopts.srunalltests
+msgid "&Run all tests by default"
+msgstr ""
+
+#: strtestcaseopts.sskiptiminginfo
+msgid "&Omit timing info in output"
+msgstr ""
+
+#: strtestcaseopts.susetextinsight
+msgid "Use &testinsight to communicate results to the IDE"
+msgstr ""
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
