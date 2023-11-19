@@ -53,7 +53,7 @@ Author: Mattias Gaertner
 </p>
 </descr>
 
-+<!-- unresolved type references -->
+<!-- unresolved type references -->
 <element name="Windows"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
@@ -1752,7 +1752,7 @@ pointer to the item data.
 
 <element name="TUTF8Parser">
 <short>
-+Deprecated. Parser for UTF-8-encoded identifiers, string, and number literals.
+Deprecated. Parser for UTF-8-encoded identifiers, string, and number literals.
 </short>
 <descr>
 <p>
