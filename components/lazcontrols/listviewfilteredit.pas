@@ -333,10 +333,12 @@ var
 begin
   if fFilteredListview = nil then
     exit(false);
-  Key:=Char(VK_RETURN);
   Result:=Assigned(fFilteredListview.OnKeyPress);
   if Result then
+  begin
+    Key:=Char(VK_RETURN);
     fFilteredListview.OnKeyPress(fFilteredListview, Key);
+  end;
 end;
 
 end.
