@@ -79,7 +79,7 @@ begin
   if FPas2jsFilename<>'' then begin
     if UnitSetCache=nil then begin
       UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(Pas2jsFilename,
-        '','','','','',true);
+        '','','','','','',true);
       // parse compiler settings
       UnitSetCache.Init;
 
