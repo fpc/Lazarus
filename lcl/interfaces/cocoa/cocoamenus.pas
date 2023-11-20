@@ -140,6 +140,16 @@ begin
     ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
   if ssMeta in s then
     ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
+
+  // as a key , +/= is a rare case, both + and = are used as primary keys.
+  // ‘Shift+=’ for ‘+’
+  // ‘=’ for ‘='
+  if key.isEqualToString(NSSTR('+')) then begin
+    if (ShiftKeyMask and NSShiftKeyMask)=0 then
+      key := NSStr('=')
+    else
+      ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
+  end;
 end;
 
 procedure ToggleAppNSMenu(mn: NSMenu; ALogicalEnabled: Boolean);
