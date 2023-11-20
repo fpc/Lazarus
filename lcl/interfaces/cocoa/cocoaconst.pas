@@ -31,13 +31,21 @@ var
   NSSTR_KEY_EQUALS: NSString;
   NSSTR_KEY_PLUS: NSString;
 
+  NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
+  NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+
 implementation
 
 initialization
   NSSTR_KEY_EQUALS:= NSSTR('=');
   NSSTR_KEY_PLUS:= NSSTR('+');
 
+  NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀'#0);
+  NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶'#0);
+
 finalization;
+  NSSTR_TABCONTROL_PREV_ARROW.release;
+  NSSTR_TABCONTROL_NEXT_ARROW.release;
 
 end.
 
