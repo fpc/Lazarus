@@ -618,7 +618,7 @@ begin
     TargetProcessor:='';
 
     UnitSetCache:=Boss.CompilerDefinesCache.FindUnitSet(CompilerPath,
-                        TargetOS,TargetProcessor,'','',FPCSrcDir,true);
+                        TargetOS,TargetProcessor,'','',FPCSrcDir,'',true);
 
     // create directory defines
     DirTemplate:=TDefineTemplate.Create('FPC Project ('+FileNames[0]+')',
@@ -727,7 +727,7 @@ begin
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
 
     UnitSetCache:=Boss.CompilerDefinesCache.FindUnitSet(CompilerPath,
-                             TargetOS,TargetProcessor,'','',FPCSrcDir,true);
+                             TargetOS,TargetProcessor,'','',FPCSrcDir,'',true);
     // create FPC Source defines
     FPCSrcTemplate:=CreateFPCSourceTemplate(UnitSetCache,CodeToolsOpts);
     if FPCSrcTemplate=nil then begin

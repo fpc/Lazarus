@@ -1144,7 +1144,7 @@ var
   FPCDefines: TDefineTemplate;
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
-  CurFPCOptions: String;
+  CurFPCOptions, WorkDir: String;
   UnitSetCache: TFPCUnitSetCache;
   //CfgCache: TPCTargetConfigCache;
 
@@ -1171,8 +1171,13 @@ begin
   if CompilerDefinesCache.TestFilename='' then
     CompilerDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
 
+  WorkDir:='';
+  if FilenameIsAbsolute(Config.ProjectDir) and HasFPCParamsRelativeFilename(Config.FPCOptions) then
+    WorkDir:=Config.ProjectDir;
+
   UnitSetCache:=CompilerDefinesCache.FindUnitSet(Config.FPCPath,
-    Config.TargetOS,Config.TargetProcessor,Config.Subtarget,Config.FPCOptions,Config.FPCSrcDir,
+    Config.TargetOS,Config.TargetProcessor,Config.Subtarget,
+    Config.FPCOptions,Config.FPCSrcDir,WorkDir,
     true);
   // parse compiler settings, fpc sources
   UnitSetCache.Init;

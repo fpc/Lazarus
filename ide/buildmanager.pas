@@ -1022,7 +1022,7 @@ var
   HasTemplate: Boolean;
   CompilerErrorMsg: string;
   Msg, DefCompilerFilename, ProjCompilerFilename, ProjCompilerErrorMsg,
-    DefCompilerErrorMsg: String;
+    DefCompilerErrorMsg, WorkDir: String;
   CompilerKind, ProjCompilerKind, DefCompilerKind: TPascalCompiler;
 begin
   if ClearCaches then begin
@@ -1075,7 +1075,7 @@ begin
     debugln(['TBuildManager.RescanCompilerDefines reading default compiler settings']);
     {$ENDIF}
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-      DefCompilerFilename,'','','','',FPCSrcDir,true);
+      DefCompilerFilename,'','','','',FPCSrcDir,'',true);
     UnitSetCache.GetConfigCache(true);
   end;
 
@@ -1118,9 +1118,14 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TBuildManager.RescanCompilerDefines reading active compiler settings']);
   {$ENDIF}
-  //debugln(['TBuildManager.RescanCompilerDefines ',CompilerFilename,' OS=',TargetOS,' CPU=',TargetCPU,' Subtarget=',Subtarget,' Options="',FPCOptions,'"']);
+  WorkDir:='';
+  if (FBuildTarget<>nil) and (not FBuildTarget.IsVirtual)
+      and HasFPCParamsRelativeFilename(FPCOptions) then
+    WorkDir:=FBuildTarget.Directory;
+
+  //debugln(['TBuildManager.RescanCompilerDefines ',CompilerFilename,' OS=',TargetOS,' CPU=',TargetCPU,' Subtarget=',Subtarget,' Options="',FPCOptions,'" WorkDir="',WorkDir,'"']);
   UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-    CompilerFilename,TargetOS,TargetCPU,Subtarget,FPCOptions,FPCSrcDir,true);
+    CompilerFilename,TargetOS,TargetCPU,Subtarget,FPCOptions,FPCSrcDir,WorkDir,true);
 
   NeedUpdateFPCSrcCache:=false;
   //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
@@ -1152,14 +1157,15 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TBuildManager.RescanCompilerDefines UnitSet changed=',UnitSetChanged,
     ' ClearCaches=',ClearCaches,
-    ' CompilerFilename=',CompilerFilename,
-    ' TargetOS=',TargetOS,
-    ' TargetCPU=',TargetCPU,
-    ' Subtarget=',Subtarget,
-    ' FPCOptions="',FPCOptions,'"',
+    ' CompilerFilename=',UnitSetCache.CompilerFilename,
+    ' TargetOS=',UnitSetCache.TargetOS,
+    ' TargetCPU=',UnitSetCache.TargetCPU,
+    ' Subtarget=',UnitSetCache.Subtarget,
+    ' WorkDir=',UnitSetCache.WorkingDir,
+    ' FPCOptions="',UnitSetCache.CompilerOptions,'"',
     ' RealCompiler=',UnitSetCache.GetConfigCache(false).RealCompiler,
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
-    ' FPCSrcDir=',FPCSrcDir,
+    ' FPCSrcDir=',UnitSetCache.FPCSourceDirectory,
     '']);
   {$ENDIF}
 
@@ -2321,8 +2327,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     if ConfigCache=nil then exit;
     if ConfigCache.NeedsUpdate then begin
       // ask compiler
-      if not ConfigCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,
-                                CodeToolBoss.CompilerDefinesCache.ExtraOptions,nil)
+      if not ConfigCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,'',nil)
       then
         exit;
     end;
