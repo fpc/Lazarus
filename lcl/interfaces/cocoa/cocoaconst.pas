@@ -1,4 +1,4 @@
-unit CocoaConfig;
+unit CocoaConst;
 
 {$mode ObjFPC}{$H+}
 {$modeswitch objectivec1}

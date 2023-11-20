@@ -5,7 +5,7 @@ uses
   agl{%H-},
   cocoa_extra{%H-},
   cocoacaret{%H-},
-  cocoaconfig{%H-},
+  cocoaconst{%H-},
   cocoacursor{%H-},
   cocoagdiobjects{%H-},
   cocoaint{%H-},
