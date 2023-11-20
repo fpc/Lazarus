@@ -28,6 +28,14 @@ const
   {$endif}
 
 var
+  NSSTR_DARK_NAME: NSString;
+  NSSTR_DARK_NAME_VIBRANT: NSString;
+
+  NSSTR_LINE_FEED: NSString;
+  NSSTR_CARRIAGE_RETURN: NSString;
+  NSSTR_LINE_SEPARATOR: NSString;
+  NSSTR_PARAGRAPH_SEPARATOR: NSString;
+
   NSSTR_KEY_EQUALS: NSString;
   NSSTR_KEY_PLUS: NSString;
 
@@ -36,14 +44,29 @@ var
 
 implementation
 
+const
+  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
+  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
+
 initialization
+  NSSTR_DARK_NAME:= NSSTR(DarkName);
+  NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
+
+  NSSTR_LINE_FEED:= NSStr(#10);
+  NSSTR_CARRIAGE_RETURN:= NSStr(#13);
+  NSSTR_LINE_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A8);
+  NSSTR_PARAGRAPH_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A9);
+
   NSSTR_KEY_EQUALS:= NSSTR('=');
   NSSTR_KEY_PLUS:= NSSTR('+');
 
-  NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀'#0);
-  NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶'#0);
+  NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀');
+  NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶');
 
 finalization;
+  NSSTR_LINE_SEPARATOR.release;
+  NSSTR_PARAGRAPH_SEPARATOR.release;
+
   NSSTR_TABCONTROL_PREV_ARROW.release;
   NSSTR_TABCONTROL_NEXT_ARROW.release;
 

@@ -7,7 +7,7 @@ interface
 
 uses
   classes,
-  MacOSAll, CocoaAll, Cocoa_Extra,
+  MacOSAll, CocoaAll, Cocoa_Extra, CocoaConst,
   SysUtils, Types, LCLType, LCLProc,
   Graphics, GraphType;
 
@@ -154,19 +154,7 @@ function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
-var
-  NSSTR_DARK_NAME: NSString;
-  NSSTR_DARK_NAME_VIBRANT: NSString;
-  NSSTR_LINE_FEED: NSString;
-  NSSTR_CARRIAGE_RETURN: NSString;
-  NSSTR_LINE_SEPARATOR: NSString;
-  NSSTR_PARAGRAPH_SEPARATOR: NSString;
-
 implementation
-
-const
-  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
-  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
 
 procedure ApplicationWillShowModal;
 begin
@@ -1361,18 +1349,5 @@ begin
   img.release;
 end;
 
-initialization
-  NSSTR_DARK_NAME:= NSSTR(DarkName);
-  NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
-  NSSTR_LINE_FEED:= NSStr(#10);
-  NSSTR_CARRIAGE_RETURN:= NSStr(#13);
-  NSSTR_LINE_SEPARATOR:= StrToNSString(#$E2#$80#$A8, false);
-  NSSTR_PARAGRAPH_SEPARATOR:= StrToNSString(#$E2#$80#$A9, false);
-
-finalization;
-  NSSTR_LINE_SEPARATOR.release;
-  NSSTR_PARAGRAPH_SEPARATOR.release;
-
 end.
-
 
