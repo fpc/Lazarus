@@ -40,29 +40,15 @@ msgstr "Сообщение исключения: %s"
 msgid "%s     Failures: %s"
 msgstr "%s     Неудач: %s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Номер строки: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Сообщение: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Имя метода: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Количество выполненных тестов: %s  Прошедшее время: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Запустить "
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -73,11 +59,6 @@ msgstr "Запущены тесты: %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Запусков: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Имя модуля: %s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -135,19 +116,6 @@ msgstr "Снять выбор со всех тестов"
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
 msgstr "Снять выбор с текущего набора"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Закрыть"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Запустить"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "Запустить выделенный тест"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

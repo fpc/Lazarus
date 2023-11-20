@@ -8,155 +8,133 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
-msgstr ""
+msgstr "Все тесты"
+
+#: strtestcaseopts.rsautomaticallyfetchtestlistonopen
+msgid "Automatically fetch test list on open"
+msgstr "Автоматически загружать список тестов при открытии"
 
 #: strtestcaseopts.rscouldnotdete
 #, object-pascal-format
 msgid "Could not determine class and method from test path \"%s\""
-msgstr ""
+msgstr "Не удалось выявить класс и метод из пути к тесту \"%s\""
 
 #: strtestcaseopts.rserrors
 #, object-pascal-format
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    Ошибок: %s"
 
 #: strtestcaseopts.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr ""
+msgstr "Исключение: %s"
 
 #: strtestcaseopts.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr ""
+msgstr "Класс исключения: %s"
 
 #: strtestcaseopts.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr ""
+msgstr "Сообщение исключения: %s"
 
 #: strtestcaseopts.rsfailures
 #, object-pascal-format
 msgid "%s     Failures: %s"
-msgstr ""
-
-#: strtestcaseopts.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr ""
+msgstr "%s     Неудач: %s"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
-msgstr ""
+msgstr "Сообщение: %s"
 
-#: strtestcaseopts.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr ""
+#: strtestcaseopts.rsnexterror
+msgid "Next error"
+msgstr "Следующая ошибка"
 
-#: strtestcaseopts.rsnumberofexec
-#, object-pascal-format
-msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr ""
-
-#: strtestcaseopts.rsrun
-msgid "Run "
-msgstr ""
-
-#: strtestcaseopts.rsrunning
-#, object-pascal-format
-msgid "Running %s"
-msgstr ""
+#: strtestcaseopts.rspreviouserror
+msgid "Previous error"
+msgstr "Предыдущая ошибка"
 
 #: strtestcaseopts.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Запусков: %s/%s"
+
+#: strtestcaseopts.rsserverpath
+msgid "Server path"
+msgstr "Путь к серверу"
+
+#: strtestcaseopts.rsserverport
+msgid "Server port"
+msgstr "Порт сервера"
 
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
-msgstr ""
-
-#: strtestcaseopts.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr ""
+msgstr "Сведения о тестировании"
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
-msgstr ""
+msgstr "Выбрать все тесты"
 
 #: strtestcaseopts.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "Выбрать текущий набор"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
-msgstr ""
+msgstr "Выход"
 
 #: strtestcaseopts.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "Завершить тестирование"
 
 #: strtestcaseopts.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Копировать текст в буфер обмена"
 
 #: strtestcaseopts.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Копировать весь текст в буфер обмена"
+
+#: strtestcaseopts.sactcopymessagetoclipboard
+msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
+msgid "Copy message to clipboard"
+msgstr "Копировать сообщение в буфер обмена"
 
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "&Запустить все"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
-msgstr ""
+msgstr "Запустить все выбранные тесты"
 
 #: strtestcaseopts.sactrunhighlightedtest
 msgid "Run selected"
-msgstr ""
+msgstr "Запустить выбранный"
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
-
-#: strtestcaseopts.sactsaveresults
-msgid "Save results"
-msgstr ""
-
-#: strtestcaseopts.sactsaveresultsh
-msgid "Save XML results to file"
-msgstr ""
+msgstr "Запустить выбранный тест"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "Снять выбор со всех тестов"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
-
-#: strtestcaseopts.sbtnclose
-msgid "Close"
-msgstr ""
+msgstr "Снять выбор с текущего набора"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Создать модуль"
-
-#: strtestcaseopts.sbtnrun
-msgid "Run"
-msgstr ""
-
-#: strtestcaseopts.sbtnrunh
-msgid "Run highlighted test"
-msgstr ""
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
@@ -168,11 +146,11 @@ msgstr "Создать завершающий метод"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
-msgstr ""
+msgstr "&Создавать первый тест"
 
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
-msgstr ""
+msgstr "&Формат вывода по умолчанию"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
@@ -200,7 +178,7 @@ msgstr "Модуль, содержащий тест FPCUnit."
 
 #: strtestcaseopts.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - модульное тестирование"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
@@ -220,48 +198,44 @@ msgstr "Имя теста по умолчанию"
 
 #: strtestcaseopts.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Действия"
+
+#: strtestcaseopts.smicollapsenodes
+msgid "Collapse Nodes"
+msgstr "Свернуть элементы"
 
 #: strtestcaseopts.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
+
+#: strtestcaseopts.smiexpandnodes
+msgid "Expand Nodes"
+msgstr "Развернуть элементы"
 
 #: strtestcaseopts.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Тесты"
 
 #: strtestcaseopts.snavigationnotavailable
-msgid "Source navigation not available"
-msgstr ""
+msgid "Source navigation not available."
+msgstr "Перемещение по исходному коду недоступно."
 
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
-msgstr ""
+msgstr "Исполнимый файл тестов недоступен: \"%s\""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
-msgstr ""
+msgstr "Не задан тестовый проект."
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
-msgstr ""
-
-#: strtestcaseopts.sskiptiminginfo
-msgid "&Omit timing info in output"
-msgstr ""
-
-#: strtestcaseopts.stshresults
-msgid "Results XML"
-msgstr ""
-
-#: strtestcaseopts.stshtree
-msgid "Testcase tree"
-msgstr ""
+msgstr "&Запускать все тесты по умолчанию"
 
 #: strtestcaseopts.susetextinsight
-msgid "Use &testinsight to communicate results to the IDE"
-msgstr ""
+msgid "Use &Test Insight to communicate results to the IDE"
+msgstr "Передавать результаты в IDE через сведения о &тестировании"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"

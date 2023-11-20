@@ -40,29 +40,15 @@ msgstr "Messaggio dell'eccezione: %s"
 msgid "%s     Failures: %s"
 msgstr "%s     Insuccessi: %s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Numero di riga: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Messaggio: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Nome metodo: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Numero di test eseguiti: %s Tempo impiegato: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Esegui"
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -73,11 +59,6 @@ msgstr "Esecuzione %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Esecuzioni: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Nome unit: %s"
 
 #: guitestrunner.sactcheckall
 #, fuzzy
@@ -151,19 +132,6 @@ msgstr "Disabilita tutti i test"
 #| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
 msgstr "Deseleziona la Suite corrente"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Chiudi"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Esegui"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "Esegui il test evidenziato"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

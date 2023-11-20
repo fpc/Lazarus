@@ -30,28 +30,14 @@ msgstr ""
 msgid "%s     Failures: %s"
 msgstr ""
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr ""
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr ""
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr ""
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr ""
-
-#: guitestrunner.rsrun
-msgid "Run "
 msgstr ""
 
 #: guitestrunner.rsrunning
@@ -62,11 +48,6 @@ msgstr ""
 #: guitestrunner.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
 msgstr ""
 
 #: guitestrunner.sactcheckall
@@ -124,19 +105,6 @@ msgstr ""
 
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr ""
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr ""
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
 msgstr ""
 
 #: guitestrunner.sfrmguitest

@@ -16,6 +16,10 @@ msgstr ""
 msgid "All Tests"
 msgstr ""
 
+#: strtestcaseopts.rsautomaticallyfetchtestlistonopen
+msgid "Automatically fetch test list on open"
+msgstr ""
+
 #: strtestcaseopts.rscouldnotdete
 #, object-pascal-format
 msgid "Could not determine class and method from test path \"%s\""
@@ -46,33 +50,17 @@ msgstr ""
 msgid "%s     Failures: %s"
 msgstr ""
 
-#: strtestcaseopts.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr ""
-
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr ""
 
-#: strtestcaseopts.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
+#: strtestcaseopts.rsnexterror
+msgid "Next error"
 msgstr ""
 
-#: strtestcaseopts.rsnumberofexec
-#, object-pascal-format
-msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr ""
-
-#: strtestcaseopts.rsrun
-msgid "Run "
-msgstr ""
-
-#: strtestcaseopts.rsrunning
-#, object-pascal-format
-msgid "Running %s"
+#: strtestcaseopts.rspreviouserror
+msgid "Previous error"
 msgstr ""
 
 #: strtestcaseopts.rsruns
@@ -80,13 +68,16 @@ msgstr ""
 msgid "Runs: %s/%s"
 msgstr ""
 
-#: strtestcaseopts.rstestinsighttitle
-msgid "Test Insight"
+#: strtestcaseopts.rsserverpath
+msgid "Server path"
 msgstr ""
 
-#: strtestcaseopts.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
+#: strtestcaseopts.rsserverport
+msgid "Server port"
+msgstr ""
+
+#: strtestcaseopts.rstestinsighttitle
+msgid "Test Insight"
 msgstr ""
 
 #: strtestcaseopts.sactcheckall
@@ -113,6 +104,11 @@ msgstr ""
 msgid "Copy the entire text to clipboard"
 msgstr ""
 
+#: strtestcaseopts.sactcopymessagetoclipboard
+msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
+msgid "Copy message to clipboard"
+msgstr ""
+
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
 msgstr ""
@@ -129,14 +125,6 @@ msgstr ""
 msgid "Run selected test"
 msgstr ""
 
-#: strtestcaseopts.sactsaveresults
-msgid "Save results"
-msgstr ""
-
-#: strtestcaseopts.sactsaveresultsh
-msgid "Save XML results to file"
-msgstr ""
-
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
 msgstr ""
@@ -145,21 +133,9 @@ msgstr ""
 msgid "Deselect current suite"
 msgstr ""
 
-#: strtestcaseopts.sbtnclose
-msgid "Close"
-msgstr ""
-
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
 msgstr "Birim oluştur"
-
-#: strtestcaseopts.sbtnrun
-msgid "Run"
-msgstr ""
-
-#: strtestcaseopts.sbtnrunh
-msgid "Run highlighted test"
-msgstr ""
 
 #: strtestcaseopts.schksetup
 msgid "Create Setup Method"
@@ -225,8 +201,16 @@ msgstr "Varsayılan Test Adı"
 msgid "Actions"
 msgstr ""
 
+#: strtestcaseopts.smicollapsenodes
+msgid "Collapse Nodes"
+msgstr ""
+
 #: strtestcaseopts.smiedit
 msgid "Edit"
+msgstr ""
+
+#: strtestcaseopts.smiexpandnodes
+msgid "Expand Nodes"
 msgstr ""
 
 #: strtestcaseopts.smitesttree
@@ -234,7 +218,7 @@ msgid "Test tree"
 msgstr ""
 
 #: strtestcaseopts.snavigationnotavailable
-msgid "Source navigation not available"
+msgid "Source navigation not available."
 msgstr ""
 
 #: strtestcaseopts.snoexecutableavailable
@@ -250,20 +234,8 @@ msgstr ""
 msgid "&Run all tests by default"
 msgstr ""
 
-#: strtestcaseopts.sskiptiminginfo
-msgid "&Omit timing info in output"
-msgstr ""
-
-#: strtestcaseopts.stshresults
-msgid "Results XML"
-msgstr ""
-
-#: strtestcaseopts.stshtree
-msgid "Testcase tree"
-msgstr ""
-
 #: strtestcaseopts.susetextinsight
-msgid "Use &testinsight to communicate results to the IDE"
+msgid "Use &Test Insight to communicate results to the IDE"
 msgstr ""
 
 #: strtestcaseopts.swriteyourowntest

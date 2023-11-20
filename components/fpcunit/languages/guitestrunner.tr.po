@@ -41,29 +41,15 @@ msgstr "İstisna mesajı: %s"
 msgid "%s     Failures: %s"
 msgstr "%s     Hata: %s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Satır numarası: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Mesaj: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Metod adı: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Yürütülen test sayısı: %s Geçen süre: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Çalıştır "
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -74,11 +60,6 @@ msgstr "Çalışıyor %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Çalıştır: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Birim adı: %s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -136,19 +117,6 @@ msgstr "Tüm testlerin seçimini kaldır"
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
 msgstr "Mevcut paketin seçimini kaldır"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Kapat"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Çalıştır"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "Vurgulanan testi çalıştır"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

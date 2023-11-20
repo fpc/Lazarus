@@ -41,29 +41,15 @@ msgstr "异常消息：%s"
 msgid "%s     Failures: %s"
 msgstr "%s     失败：%s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "行号：%s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "消息：%s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "方法名：%s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "执行测试的次数：%s  经过时间：%s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "运行 "
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -74,11 +60,6 @@ msgstr "运行 %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "运行：%s%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "单元名称：%s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -136,19 +117,6 @@ msgstr "取消选择所有测试"
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
 msgstr "取消选择当前套件"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "关闭"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "运行"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "运行高亮的测试"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

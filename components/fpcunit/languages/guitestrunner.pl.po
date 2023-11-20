@@ -41,29 +41,15 @@ msgstr "Komunikat wyjątku: %s"
 msgid "%s     Failures: %s"
 msgstr ""
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Numer wiersza: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Komunikat: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Nazwa metody: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Liczba wykonanych testów: %s Czas wykonania: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Uruchom"
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -74,11 +60,6 @@ msgstr "Uruchomiony %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Działa: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Nazwa modułu: %s"
 
 #: guitestrunner.sactcheckall
 #, fuzzy
@@ -152,19 +133,6 @@ msgstr "Odznacz wszystkie testy"
 #| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
 msgstr "Odznacz bieżący zestaw"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Zamknij"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Uruchom"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "Wykonaj wybrany test"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

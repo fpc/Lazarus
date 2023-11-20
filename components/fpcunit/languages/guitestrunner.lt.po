@@ -41,29 +41,15 @@ msgstr "Išimtinės situacijos pranešimas: %s"
 msgid "%s     Failures: %s"
 msgstr "%s     Nesėkmės: %s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Eilutės numeris: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Pranešimas: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Metodo pavadinimas: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Įvykdyta testavimų: %s Užtruktą: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Vykdyti "
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -74,11 +60,6 @@ msgstr "Vykdoma %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Vykdymų: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Modulio pavadinimas: %s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -136,19 +117,6 @@ msgstr "Naikinti visų testavimų žymėjimą"
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
 msgstr "Naikinti veikiamojo komplekto žymėjimą"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Užverti"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Vykdyti"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "Vykdyti pažymėtus testavimus"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"

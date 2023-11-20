@@ -40,29 +40,15 @@ msgstr "Kivétel üzenet: %s"
 msgid "%s     Failures: %s"
 msgstr "%s     Hibák: %s"
 
-#: guitestrunner.rslinenumber
-#, object-pascal-format
-msgid "Line number: %s"
-msgstr "Sorszám: %s"
-
 #: guitestrunner.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
 msgstr "Üzenet: %s"
 
-#: guitestrunner.rsmethodname
-#, object-pascal-format
-msgid "Method name: %s"
-msgstr "Metódus neve: %s"
-
 #: guitestrunner.rsnumberofexec
 #, object-pascal-format
 msgid "Number of executed tests: %s  Time elapsed: %s"
 msgstr "Futtatott tesztek száma: %s  Felhasznált idő: %s"
-
-#: guitestrunner.rsrun
-msgid "Run "
-msgstr "Futtatás"
 
 #: guitestrunner.rsrunning
 #, object-pascal-format
@@ -73,11 +59,6 @@ msgstr "Futtatás: %s"
 #, object-pascal-format
 msgid "Runs: %s/%s"
 msgstr "Futtatás: %s/%s"
-
-#: guitestrunner.rsunitname
-#, object-pascal-format
-msgid "Unit name: %s"
-msgstr "Unit név: %s"
 
 #: guitestrunner.sactcheckall
 msgid "Select all tests"
@@ -135,19 +116,6 @@ msgstr "Összes teszt kijelölésének törlése"
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
 msgstr "Az aktuális sorozat kijelölésének törlése"
-
-#: guitestrunner.sbtnclose
-msgid "Close"
-msgstr "Bezárás"
-
-#: guitestrunner.sbtnrun
-msgid "Run"
-msgstr "Futtatás"
-
-#: guitestrunner.sbtnrunh
-msgctxt "guitestrunner.sbtnrunh"
-msgid "Run highlighted test"
-msgstr "A kiemelt teszt futtatása"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"
