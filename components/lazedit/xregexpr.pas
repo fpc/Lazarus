@@ -6077,11 +6077,6 @@ begin
 
       OP_BRANCH:
         begin
-          if (next^ <> OP_BRANCH)  // No next choice in group
-          then
-            next := scan + REOpSz + RENextOffSz + REBranchArgSz // Avoid recursion
-          else
-          begin
           repeat
             save := regInput;
             Result := MatchPrim(scan + REOpSz + RENextOffSz + REBranchArgSz);
@@ -6098,7 +6093,6 @@ begin
               break;
           until  False;
           next := scan + REOpSz + RENextOffSz + REBranchArgSz; // Avoid recursion
-        end;
         end;
 
       OP_GBRANCH, OP_GBRANCH_EX, OP_GBRANCH_EX_CI:
@@ -7081,7 +7075,7 @@ var
   {$IFDEF UseLineSep}
   i: integer;
   {$ENDIF}
-  TempSet: TRegExprCharset;
+  TempSet, TmpFirstCharSet: TRegExprCharset;
 begin
   TempSet := [];
   scan := prog;
@@ -7268,34 +7262,57 @@ begin
           Exit;
         end;
 
-      OP_LOOKAHEAD, OP_LOOKAHEAD_NEG,
-      OP_LOOKBEHIND, OP_LOOKBEHIND_NEG,
+      OP_LOOKAHEAD:
+        begin
+          opnd := PRegExprChar(AlignToPtr(Next + 1)) + RENextOffSz;
+          Next := regNextQuick(Next);
+          FillFirstCharSet(Next);
+          if opnd^ = OP_LOOKAROUND_OPTIONAL then
+            Exit;
+
+          Next := PRegExprChar(AlignToPtr(scan + 1)) + RENextOffSz;
+          TmpFirstCharSet := FirstCharSet;
+          FirstCharSet := [];
+          FillFirstCharSet(Next);
+
+          if TmpFirstCharSet = [] then
+            exit;
+          if FirstCharSet = [] then
+            FirstCharSet := TmpFirstCharSet
+          else
+            FirstCharSet := FirstCharSet * TmpFirstCharSet;
+          exit;
+        end;
+
+      OP_LOOKAHEAD_NEG,
+      OP_LOOKBEHIND, OP_LOOKBEHIND_NEG:
+        begin
+          Next := PRegExprChar(AlignToPtr(Next + 1)) + RENextOffSz;
+        end;
+
       OP_LOOKAHEAD_END, OP_LOOKBEHIND_END:
         begin
-          FillFirstCharSet(Next); // skip to the end
           Exit;
         end;
 
       OP_LOOKAROUND_OPTIONAL:
-        ;
+        begin
+          Next := PRegExprChar(AlignToPtr(scan + 1)) + RENextOffSz;
+        end;
 
       OP_BRANCH, OP_GBRANCH, OP_GBRANCH_EX, OP_GBRANCH_EX_CI:
-        begin
-          if (PREOp(Next)^ <> OP_BRANCH) and (PREOp(Next)^ <> OP_GBRANCH) and
-             (PREOp(Next)^ <> OP_GBRANCH_EX) and (PREOp(Next)^ <> OP_GBRANCH_EX_CI) // No choice.
-          then
-            Next := scan + REOpSz + RENextOffSz + REBranchArgSz // Avoid recursion.
-          else
           begin
             repeat
+              TmpFirstCharSet := FirstCharSet;
+              FirstCharSet := [];
               FillFirstCharSet(scan + REOpSz + RENextOffSz + REBranchArgSz);
+              FirstCharSet := FirstCharSet + TmpFirstCharSet;
               scan := regNextQuick(scan);
             until (scan = nil) or
               ( (PREOp(scan)^ <> OP_BRANCH) and (PREOp(Next)^ <> OP_GBRANCH) and
                 (PREOp(scan)^ <> OP_GBRANCH_EX) and (PREOp(scan)^ <> OP_GBRANCH_EX_CI) );
             Exit;
           end;
-        end;
 
       {$IFDEF ComplexBraces}
       OP_LOOPENTRY:
@@ -8001,7 +8018,6 @@ begin
 
       OP_BRANCH, OP_GBRANCH, OP_GBRANCH_EX, OP_GBRANCH_EX_CI:
         begin
-          if (next^ = OP_BRANCH) or (PREOp(Next)^ = OP_GBRANCH) or (next^ = OP_GBRANCH_EX) or (next^ = OP_GBRANCH_EX_CI) then begin
             s := s + REBranchArgSz;
             if not IsPartFixedLength(s, op, ABranchLen, ABranchMaxLen, OP_EEND, next, []) then
             begin
@@ -8035,9 +8051,6 @@ begin
                   (next^ <> OP_GBRANCH_EX) and (next^ <> OP_GBRANCH_EX_CI);
             AMinLen := AMinLen + ABranchLen;
             IncMaxLen(FndMaxLen, ABranchMaxLen);
-          end
-          else
-            s := s + REBranchArgSz;
         end;
 
       OP_OPEN:
