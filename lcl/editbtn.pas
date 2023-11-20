@@ -1270,6 +1270,9 @@ end;
 
 procedure TCustomControlFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
 begin
+  inherited EditKeyDown(Key, Shift);
+  if Key = 0 then exit;
+
   if Shift = [] then
     case Key of
       VK_RETURN: if ReturnKeyHandled then Key := 0;
@@ -1286,9 +1289,6 @@ begin
       VK_HOME:  begin MoveHome(ssShift in Shift); Key := 0; end;
       VK_END:   begin MoveEnd (ssShift in Shift); Key := 0; end;
     end;
-
-  if Key <> 0 then
-    inherited EditKeyDown(Key, Shift);
 end;
 
 procedure TCustomControlFilterEdit.EditChange;
