@@ -27,7 +27,17 @@ const
   LoopHiJackEnded : Boolean = false;
   {$endif}
 
+var
+  NSSTR_KEY_EQUALS: NSString;
+  NSSTR_KEY_PLUS: NSString;
+
 implementation
+
+initialization
+  NSSTR_KEY_EQUALS:= NSSTR('=');
+  NSSTR_KEY_PLUS:= NSSTR('+');
+
+finalization;
 
 end.
 
