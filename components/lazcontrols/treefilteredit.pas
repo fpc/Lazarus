@@ -714,6 +714,9 @@ procedure TTreeFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
   end;
   //
 begin
+  inherited EditKeyDown(Key, Shift);
+  if Key = 0 then exit;
+
   if fFilteredTreeview <> nil then
   begin
     // current node
@@ -740,9 +743,6 @@ begin
       Key := 0;
     end
   end;
-
-  if Key <> 0 then
-    inherited EditKeyDown(Key, Shift);
 end;
 
 end.
