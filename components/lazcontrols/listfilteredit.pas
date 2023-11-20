@@ -366,10 +366,12 @@ var
 begin
   if fFilteredListbox = nil then
     exit(false);
-  Key:=Char(VK_RETURN);
   Result:=Assigned(fFilteredListbox.OnKeyPress);
   if Result then
+  begin
+    Key:=Char(VK_RETURN);
     fFilteredListbox.OnKeyPress(fFilteredListbox, Key);
+  end;
 end;
 
 end.

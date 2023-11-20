@@ -1269,34 +1269,25 @@ begin
 end;
 
 procedure TCustomControlFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
-var
-  Handled: Boolean;
 begin
-  Handled:=False;
   if Shift = [] then
     case Key of
-      VK_RETURN: Handled:=ReturnKeyHandled;
+      VK_RETURN: if ReturnKeyHandled then Key := 0;
+    end;
+  if (Shift = []) or (Shift = [ssShift]) then
+    case Key of
+      VK_UP:    begin MovePrev    (ssShift in Shift); Key := 0; end;
+      VK_DOWN:  begin MoveNext    (ssShift in Shift); Key := 0; end;
+      VK_PRIOR: begin MovePageUp  (ssShift in Shift); Key := 0; end;
+      VK_NEXT:  begin MovePageDown(ssShift in Shift); Key := 0; end;
+    end;
+  if (Shift = [ssCtrl]) or (Shift = [ssCtrl, ssShift]) then
+    case Key of
+      VK_HOME:  begin MoveHome(ssShift in Shift); Key := 0; end;
+      VK_END:   begin MoveEnd (ssShift in Shift); Key := 0; end;
     end;
 
-  if (Shift = []) or (Shift = [ssShift]) then
-  begin
-    case Key of
-      VK_UP:     begin MovePrev(ssShift in Shift); Handled:=True; end;
-      VK_DOWN:   begin MoveNext(ssShift in Shift); Handled:=True; end;
-      VK_PRIOR:  begin MovePageUp(ssShift in Shift); Handled:=True; end;
-      VK_NEXT:   begin MovePageDown(ssShift in Shift); Handled:=True; end;
-    end;
-  end;
-  if (Shift = [ssCtrl]) or (Shift = [ssCtrl, ssShift]) then
-  begin
-    case Key of
-      VK_HOME:   begin MoveHome(ssShift in Shift); Handled:=True; end;
-      VK_END:    begin MoveEnd(ssShift in Shift); Handled:=True; end;
-    end;
-  end;
-  if Handled then
-    Key:=VK_UNKNOWN
-  else
+  if Key <> 0 then
     inherited EditKeyDown(Key, Shift);
 end;
 
