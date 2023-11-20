@@ -87,14 +87,12 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure pTestReadData(Sender: TObject);
     procedure TestInsightFormCreate(Sender: TObject);
-    procedure TestInsightFormShow(Sender: TObject);
     procedure TestInsightFormDestroy(Sender: TObject);
     procedure ActCheckAllExecute(Sender: TObject);
     procedure ActCheckCurrentSuiteExecute(Sender: TObject);
     procedure ActCloseFormExecute(Sender: TObject);
     procedure ActCopyTextToClipboardExecute(Sender: TObject);
     procedure ActCopyTextToClipboardUpdate(Sender: TObject);
-    procedure ActSaveResultsExecute(Sender: TObject);
     procedure ActRunHighlightedTestExecute(Sender: TObject);
     procedure ActUncheckAllExecute(Sender: TObject);
     procedure ActRunHighLightedTestUpdate(Sender: TObject);
@@ -340,6 +338,11 @@ begin
   MenuItemActions.Caption := smiActions;
   MenuItemTestTree.Caption := smiTestTree;
   MenuItemEdit.Caption := smiEdit;
+  miCollapseNodes.Caption := smiCollapseNodes;
+  miExpandNodes.Caption := smiExpandNodes;
+  actNextError.Caption := rsNextError;
+  actPrevError.Caption := rsPreviousError;
+  ActCopyErrorMsg.Caption := sactCopyMessageToClipboard;
   ActCopyTextToClipboard.Caption := sactCopyAllToClipboard;
   ActCopyTextToClipboard.Hint := sactCopyAllToClipboardH;
   FServer:=CreateServer(Self);
@@ -482,10 +485,6 @@ begin
   TAction(Sender).Enabled := (ActiveControl = mDetails) ;
 end;
 
-procedure TTestInsightForm.ActSaveResultsExecute(Sender: TObject);
-begin
-end;
-
 procedure TTestInsightForm.ActCheckAllExecute(Sender: TObject);
 var
   i: integer;
@@ -568,10 +567,6 @@ begin
   if not Assigned(TestTree.Selected) then
     Exit;
   TestTree.Selected.Expand(True);
-end;
-
-procedure TTestInsightForm.TestInsightFormShow(Sender: TObject);
-begin
 end;
 
 procedure TTestInsightForm.TestTreeChange(Sender: TObject; Node: TTreeNode);

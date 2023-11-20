@@ -199,7 +199,6 @@ var
 
 resourcestring
   rsAllTests = 'All Tests';
-  rsRun = 'Run ';
   rsRuns = 'Runs: %s/%s';
   rsErrors = '%s    Errors: %s';
   rsFailures = '%s     Failures: %s';
@@ -207,16 +206,10 @@ resourcestring
   rsException = 'Exception: %s';
   rsExceptionMes = 'Exception message: %s';
   rsExceptionCla = 'Exception class: %s';
-  rsUnitName = 'Unit name: %s';
-  rsMethodName = 'Method name: %s';
-  rsLineNumber = 'Line number: %s';
   rsRunning = 'Running %s';
   rsNumberOfExec = 'Number of executed tests: %s  Time elapsed: %s';
   // Visual components captions
   sfrmGUITest = 'FPCUnit - run unit test';
-  sbtnRun = 'Run';
-  sbtnRunH = 'Run highlighted test';
-  sbtnClose = 'Close';
   stshTree = 'Testcase tree';
   stshResults = 'Results XML';
   sactRunAction = '&Run all';

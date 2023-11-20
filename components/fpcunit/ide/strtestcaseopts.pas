@@ -27,15 +27,16 @@ resourcestring
   sFPCUnConsoleTestDesc = 'An application to run FPCUnit test cases in console mode.';
 
   sRunAllTests = '&Run all tests by default';
-  sUseTextInsight = 'Use &testinsight to communicate results to the IDE';
-  sSkipTimingInfo = '&Omit timing info in output';
+  sUseTextInsight = 'Use &Test Insight to communicate results to the IDE';
   sCreateFirstTestCase = '&Create first test case';
   sDefaultOutputFormat = 'Default output &format';
 
   rsTestInsightTitle = 'Test Insight';
+  rsServerPort = 'Server port';
+  rsServerPath = 'Server path';
+  rsAutomaticallyFetchTestListOnOpen = 'Automatically fetch test list on open';
 
   rsAllTests = 'All Tests';
-  rsRun = 'Run ';
   rsRuns = 'Runs: %s/%s';
   rsErrors = '%s    Errors: %s';
   rsFailures = '%s     Failures: %s';
@@ -43,18 +44,8 @@ resourcestring
   rsException = 'Exception: %s';
   rsExceptionMes = 'Exception message: %s';
   rsExceptionCla = 'Exception class: %s';
-  rsUnitName = 'Unit name: %s';
-  rsMethodName = 'Method name: %s';
-  rsLineNumber = 'Line number: %s';
-  rsRunning = 'Running %s';
-  rsNumberOfExec = 'Number of executed tests: %s  Time elapsed: %s';
   // Visual components captions
   sfrmGUITest = 'FPCUnit - run unit test';
-  sbtnRun = 'Run';
-  sbtnRunH = 'Run highlighted test';
-  sbtnClose = 'Close';
-  stshTree = 'Testcase tree';
-  stshResults = 'Results XML';
   sactRunAction = '&Run all';
   sactRunActionH = 'Run all checked tests';
   sactCloseForm = 'Quit';
@@ -68,14 +59,18 @@ resourcestring
   smiActions = 'Actions';
   smiTestTree = 'Test tree';
   smiEdit = 'Edit';
+  smiCollapseNodes = 'Collapse Nodes';
+  smiExpandNodes = 'Expand Nodes';
+  rsNextError = 'Next error';
+  rsPreviousError = 'Previous error';
   sactCopyAllToClipboard = 'Copy text to clipboard';
+  sactCopyMessageToClipboard = 'Copy message to clipboard';
   sactCopyAllToClipboardH = 'Copy the entire text to clipboard';
-  sactSaveResults = 'Save results';
-  sactSaveResultsH = 'Save XML results to file';
   SNoExecutableAvailable = 'Test executable is not available: "%s"';
   SNoTestProjectConfigured = 'No test project configured.';
-  SNavigationNotAvailable = 'Source navigation not available';
+  SNavigationNotAvailable = 'Source navigation not available.';
   rsCouldNotDete = 'Could not determine class and method from test path "%s"';
+
 implementation
 
 end.
