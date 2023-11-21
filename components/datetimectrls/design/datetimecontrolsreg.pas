@@ -27,14 +27,18 @@ unit DateTimeControlsReg;
 
 interface
 
+uses
+  Classes,
+  // LCL
+  LResources,
+  // DateTimeCtrls
+  DateTimePicker, DBDateTimePicker;
+
 procedure Register;
 
 implementation
 
 {$R datetimectrls.res}
-
-uses
-  Classes, DateTimePicker, DBDateTimePicker, LResources;
 
 procedure Register;
 begin
