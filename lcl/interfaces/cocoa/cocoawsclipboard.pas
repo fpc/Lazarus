@@ -24,7 +24,7 @@ uses
   // fcl-image
   ,fpreadpng, fpwritepng, fpimage, fpreadbmp, fpwritebmp
   ,LCLType
-  ,CocoaUtils;
+  ,CocoaUtils, Cocoa_Extra;
 
 type
   TCocoaClipboardDataType = (ccdtText,
@@ -81,21 +81,7 @@ type
   end;
 
 
-const
-  // these constants are available starting MacOSX 10.6
-  // thus for earlier systems must be redeclared
-  _NSPasteboardTypeString : NSString = nil;
-  _NSPasteboardTypePNG : NSString = nil;
-  _NSPasteboardTypeTiff : NSString = nil;
-
 implementation
-
-procedure InitConst;
-begin
-  _NSPasteboardTypeString := NSSTR('public.utf8-plain-text');
-  _NSPasteboardTypePNG := NSSTR('public.png');
-  _NSPasteboardTypeTiff := NSSTR('public.tiff');
-end;
 
 { TCocoaWSClipboard }
 
@@ -433,20 +419,17 @@ begin
   case AMimeType of
   'text/plain':
   begin
-    //hack: the name of constants is a hack
-    //      should be replaced with either weaklinking
-    //      or dynamic loading (dlsym)
-    lNSStr := NSSTR('public.utf8-plain-text'); // NSPasteboardTypeString; // commented out for OSX < 10.6  see #33672
+    lNSStr := NSPasteboardTypeString;
     lDataType := ccdtText;
   end;
   'image/png':
   begin
-    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
+    lNSStr := NSPasteboardTypePNG;
     lDataType := ccdtCocoaStandard;
   end;
   'image/bmp':
   begin
-    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
+    lNSStr := NSPasteboardTypePNG;
     lDataType := ccdtBitmap;
   end;
   else
@@ -470,7 +453,7 @@ end;
 function TCocoaWSClipboard.CocoaTypeToMimeType(AType: NSString): string;
 begin
   // "default" types must be mapped to a default LCL mime-type
-  if AType.isEqualToString(_NSPasteboardTypeString) then
+  if AType.isEqualToString(NSPasteboardTypeString) then
     Result := 'text/plain'
   else
     Result := NSStringToString(AType);
@@ -489,9 +472,5 @@ destructor TCocoaClipboardData.Destroy;
 begin
   CocoaFormat.release;
 end;
-
-
-initialization
-  InitConst;
 
 end.
