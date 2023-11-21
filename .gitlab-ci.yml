@@ -38,7 +38,7 @@ stages:  # List of stages for jobs, and their order of execution
   rules:
     - when: on_success
 
-update-build-env:  # This job updates building environment image. Run it if FPC version constants and/or Dockerfile.buildenv were changed.
+update-build-env:  # This job updates building environment image. Run it if FPC version constants and/or buildenv.Dockerfile were changed.
   stage: prepenv
   image: docker
   services:
@@ -50,7 +50,7 @@ update-build-env:  # This job updates building environment image. Run it if FPC 
                    --build-arg FPC_STABLE_VER=$FPC_STABLE_VER
                    --build-arg FPC_FIXES_VER=$FPC_FIXES_VER
                    --build-arg FPC_MAIN_VER=$FPC_MAIN_VER
-                   -t $IMAGE_TAG - < Dockerfile.buildenv
+                   -t $IMAGE_TAG - < buildenv.Dockerfile
     - docker push $IMAGE_TAG
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
