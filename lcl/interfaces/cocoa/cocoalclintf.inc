@@ -290,7 +290,7 @@ begin
           aButton.setKeyEquivalentModifierMask(0);
 
           if I = DefaultIndex then
-            aButton.setKeyEquivalent(NSSTR_KEY_ESC)
+            aButton.setKeyEquivalent(NSSTR_KEY_ENTER)
           else if I = 0 then
             // By default, the first button is the default button. If in our
             // case this should not be the case, remove the default status
