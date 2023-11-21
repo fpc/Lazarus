@@ -2614,9 +2614,9 @@ end;"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item529>
       <Item530>
-        <Filename Value="cocoa/cocoaconfig.pas"/>
+        <Filename Value="cocoa/cocoaconst.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaConfig"/>
+        <UnitName Value="CocoaConst"/>
       </Item530>
       <Item531>
         <Filename Value="cocoa/cocoacursor.pas"/>

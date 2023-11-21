@@ -290,16 +290,16 @@ begin
           aButton.setKeyEquivalentModifierMask(0);
 
           if I = DefaultIndex then
-            aButton.setKeyEquivalent(NSSTR(#13))
+            aButton.setKeyEquivalent(NSSTR_KEY_ENTER)
           else if I = 0 then
             // By default, the first button is the default button. If in our
             // case this should not be the case, remove the default status
             // from the first button.
-            aButton.setKeyEquivalent(NSSTR(''));
+            aButton.setKeyEquivalent(NSSTR_EMPTY);
 
           if Buttons[I]=mrCancel then begin
             needsCancel := False;
-            aButton.setKeyEquivalent(NSSTR(#27));
+            aButton.setKeyEquivalent(NSSTR_KEY_ESC);
           end;
 
           aButton.setTag(Buttons[I]);

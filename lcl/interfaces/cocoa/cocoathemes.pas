@@ -22,7 +22,7 @@ uses
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   customdrawndrawers,
   // widgetset
-  CocoaUtils, CocoaGDIObjects;
+  CocoaUtils, CocoaGDIObjects, CocoaConst;
   
 type
   { TCocoaThemeServices }
@@ -266,7 +266,7 @@ var
 begin
   if (HdrCell=nil) then
   begin
-    hdrCell := NSTableHeaderCell.alloc.initTextCell(NSSTR(''));
+    hdrCell := NSTableHeaderCell.alloc.initTextCell(NSSTR_EMPTY);
   end;
   CellDrawStart(DC, R, cur, nsr);
 
@@ -530,7 +530,7 @@ begin
   end;
   if cocoaBtn < 0 then Exit; // unsupported button type
 
-  btn := NSButtonCell(NSButtonCell.alloc).initTextCell(NSSTR(''));
+  btn := NSButtonCell(NSButtonCell.alloc).initTextCell(NSSTR_EMPTY);
   btn.setButtonType(NSButtonType(cocoaBtn));
 
   SetButtonCellToDetails(btn, Details);
@@ -542,7 +542,7 @@ end;
 constructor TCocoaThemeServices.Create;
 begin
   inherited Create;
-  BtnCell := NSButtonCell.alloc.initTextCell(NSSTR(''));
+  BtnCell := NSButtonCell.alloc.initTextCell(NSSTR_EMPTY);
   BezelToolBar := NSSmallSquareBezelStyle; // can be resized at any size
   BezelButton := NSSmallSquareBezelStyle;
 

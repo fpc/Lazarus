@@ -10,7 +10,7 @@ interface
 uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
+  CocoaAll, CocoaInt, CocoaConst, CocoaPrivate, CocoaUtils,
   CocoaGDIObjects, CocoaCursor, CocoaCaret, CocoaScrollers, cocoa_extra;
 
 type

@@ -12,7 +12,7 @@ uses
   // LCL
   Forms, Menus, LCLType, Classes, LCLStrConsts,
   // LCL Cocoa
-  CocoaAll, CocoaPrivate, CocoaUtils;
+  CocoaAll, CocoaPrivate, CocoaUtils, CocoaConst;
 
 type
   IMenuItemCallback = interface(ICommonCallBack)
@@ -144,9 +144,9 @@ begin
   // as a key , +/= is a rare case, both + and = are used as primary keys.
   // ‘Shift+=’ for ‘+’
   // ‘=’ for ‘='
-  if key.isEqualToString(NSSTR('+')) then begin
+  if key.isEqualToString(NSSTR_KEY_PLUS) then begin
     if (ShiftKeyMask and NSShiftKeyMask)=0 then
-      key := NSStr('=')
+      key := NSSTR_KEY_EQUALS
     else
       ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
   end;
