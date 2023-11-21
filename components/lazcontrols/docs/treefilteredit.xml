@@ -529,13 +529,22 @@ event handler for the associated tree view.
 </short>
 <descr>
 <p>
-Implements the abstract virtual method introduced in the 
-TCustomControlFilterEdit ancestor.
+<var>ReturnKeyHandled</var> is an overridden <var>Boolean</var> function which 
+implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor. ReturnKeyHandled is used to forward a Return 
+(Enter) key to the FilteredTreeView for the control when it is handled in the 
+edit box for the control. No actions are performed in the method if either 
+FilteredTreeView or its OnKeypress event handler has not been assigned.
+</p>
+<p>
+The return value is <b>True</b> if the key down event was forwarded to the 
+FilteredTreeView control for the class instance.
 </p>
 </descr>
 <seealso>
 <link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
 </seealso>
 </element>
 <element name="TTreeFilterEdit.ReturnKeyHandled.Result">
@@ -553,6 +562,12 @@ Implements the OnKeyDown event handler for the Edit on the control.
 <var>EditKeyDown</var> is an overridden method in <var>TTreeFilterEdit</var>. 
 It extends the inherited method to ensure that key strokes in the Edit for the 
 control are applied (when needed) to its FilteredTreeview control.
+</p>
+<p>
+EditKeyDown calls the inherited method on entry to handle key down events 
+supported in the TCustomControlFilterEdit ancestor. The value in Key is set to 
+0 if it was handled in the inherited method, and no additional actions are 
+performed in the method.
 </p>
 <p>
 When FilteredTreeview has been assigned in the control, the following values 
@@ -575,13 +590,7 @@ Expands all of the tree nodes in the FilteredTreeview control.
 </dd>
 </dl>
 <p>
-The value in Key is set to 0 if it was forward handled using methods in the 
-tree view control.
-</p>
-<p>
-If Key has a value that is not handled in the method, or FilteredTreeview is 
-unassigned, the inherited method is called to handle the key combination for 
-the control.
+The value in Key is set to 0 if it was handled in the method.
 </p>
 </descr>
 <version>
@@ -754,7 +763,7 @@ FilteredTreeview control.
 <p>
 Values in SelectionList are cleared and reloaded if the selected tree node is 
 not the first node in the list; SelectionList will contain only the selected 
-tree node on exit. SelectionList is not changed if the selected node <b>is</b>  
+tree node on exit. SelectionList is not changed if the selected node <b>is</b> 
 the first tree node in the selection list.
 </p>
 <p>
