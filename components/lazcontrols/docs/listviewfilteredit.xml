@@ -370,8 +370,21 @@ Move the associated list view control to the last list item.
 Returns <b>True</b> if a Return or Enter key press was forwarded to the list 
 view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ReturnKeyHandled</var> is an overridden <var>Boolean</var> function used 
+to the signal the OnKeyPress event handler in FilteredListView when a Return 
+(Enter) key down event is handled for the edit box on the control. No actions 
+are performed in the method if either FilteredListView or its OnKeyPress event 
+handler have not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TListViewFilterEdit.FilteredListview"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ReturnKeyHandled">TCustomControlFilterEdit.ReturnKeyHandled</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+</seealso>
 </element>
 <element name="TListViewFilterEdit.ReturnKeyHandled.Result">
 <short>
