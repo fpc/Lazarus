@@ -1421,13 +1421,21 @@ instance.
 </element>
 
 <element name="TCustomControlFilterEdit.EditKeyDown">
-<short>Handles a KeyDown event for the Edit control.</short>
+<short>
+Handles a KeyDown event for the Edit control.
+</short>
 <descr>
 <p>
-EditKeyDown is an overridden method in TCustomControlFilterEdit. It 
-implements the OnKeyDown event handler for the Edit in the grouped edit 
-control. It extends the inherited method to handle additional key down 
-events, including:
+<var>EditKeyDown</var> is an overridden method in 
+<var>TCustomControlFilterEdit</var>. It implements the OnKeyDown event handler 
+for the Edit in the grouped edit control. It calls the inherited EditKeyDown 
+method on entry to signal an assigned OnEditKeyDown handler using the values in 
+Key and Shift. No additional actions are performed if Key is set to 0 in the 
+inherited method.
+</p>
+<p>
+EditKeyDown extends the inherited method to handle additional key down events, 
+including:
 </p>
 <ul>
 <li>Return</li>
@@ -1445,12 +1453,19 @@ descendent classes to call methods in the associated control for the filter
 edit control.
 </p>
 <p>
-If the value in Key is handled in the method, Key is set to VK_UNKNOWN (0). 
-Otherwise, the inherited method is called to handle the Key and Shift 
-modifier.
+If the value in Key is handled in the method, Key is set to VK_UNKNOWN (0).
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomControlFilterEdit.ReturnKeyHandled"/>
+<link id="TCustomControlFilterEdit.MovePrev"/>
+<link id="TCustomControlFilterEdit.MoveNext"/>
+<link id="TCustomControlFilterEdit.MovePageUp"/>
+<link id="TCustomControlFilterEdit.MovePageDown"/>
+<link id="TCustomControlFilterEdit.MoveHome"/>
+<link id="TCustomControlFilterEdit.MoveEnd"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyDown">TCustomAbstractGroupedEdit.EditKeyDown</link>
+</seealso>
 </element>
 <element name="TCustomControlFilterEdit.EditKeyDown.Key">
 <short>
