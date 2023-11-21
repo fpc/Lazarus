@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaConfig, CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
+  CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
   CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;
 
 type
@@ -1432,8 +1432,6 @@ var
   ns    : NSString;
   idx   : integer;
   ro    : Boolean;
-const
-  LFSTR = #10;
 begin
   ns:=FTextView.string_;
   idx:=0;
@@ -1455,7 +1453,7 @@ begin
   FTextView.setSelectedRange(rng);
 
   if (rng.location>=ns.length) and (st=ced) and (ns.length>0) then
-    FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
+    FTextView.insertText( NSSTR_LINE_FEED );
 
   if S<>'' then
   begin
@@ -1463,7 +1461,7 @@ begin
   end;
 
   dec(FTextView.supressTextChangeEvent);
-  FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
+  FTextView.insertText( NSSTR_LINE_FEED );
 
   if not ro then FTextView.setEditable(ro);
 

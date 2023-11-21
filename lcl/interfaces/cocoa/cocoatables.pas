@@ -29,7 +29,7 @@ uses
   Types, Classes, SysUtils,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
+  cocoa_extra, CocoaPrivate, CocoaConst,
   // LCL
   LCLType;
 
@@ -924,7 +924,7 @@ begin
   if not isFirstColumnCheckboxes and isImagesInCell then begin
     img := lclGetItemImageAt(row, col);
 
-    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
+    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR_EMPTY);
     NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
     Exit;
   end;

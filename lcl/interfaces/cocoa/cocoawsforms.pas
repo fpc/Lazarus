@@ -30,7 +30,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
+  CocoaInt, CocoaConst, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
   CocoaGDIObjects,
   CocoaWindows, CocoaScrollers, cocoa_extra;
 
@@ -642,7 +642,7 @@ begin
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 
-  if not CocoaConfig.CocoaIconUse then
+  if not CocoaConst.CocoaIconUse then
   begin
     btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
     url := nil;
@@ -1048,7 +1048,7 @@ var
   trg : NSImage;
   btn : NSButton;
 begin
-  if CocoaConfig.CocoaIconUse then Exit;
+  if CocoaConst.CocoaIconUse then Exit;
   if not AForm.HandleAllocated then Exit;
 
   win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
