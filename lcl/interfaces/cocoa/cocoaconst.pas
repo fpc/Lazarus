@@ -27,24 +27,23 @@ const
   LoopHiJackEnded : Boolean = false;
   {$endif}
 
-var
-  NSSTR_EMPTY: NSString;
+function NSSTR_EMPTY: NSString;
 
-  NSSTR_DARK_NAME: NSString;
-  NSSTR_DARK_NAME_VIBRANT: NSString;
+function NSSTR_DARK_NAME: NSString;
+function NSSTR_DARK_NAME_VIBRANT: NSString;
 
-  NSSTR_LINE_FEED: NSString;
-  NSSTR_CARRIAGE_RETURN: NSString;
-  NSSTR_LINE_SEPARATOR: NSString;
-  NSSTR_PARAGRAPH_SEPARATOR: NSString;
+function NSSTR_LINE_FEED: NSString;
+function NSSTR_CARRIAGE_RETURN: NSString;
+function NSSTR_LINE_SEPARATOR: NSString;
+function NSSTR_PARAGRAPH_SEPARATOR: NSString;
 
-  NSSTR_KEY_ENTER: NSString;
-  NSSTR_KEY_ESC: NSString;
-  NSSTR_KEY_EQUALS: NSString;
-  NSSTR_KEY_PLUS: NSString;
+function NSSTR_KEY_ENTER: NSString;
+function NSSTR_KEY_ESC: NSString;
+function NSSTR_KEY_EQUALS: NSString;
+function NSSTR_KEY_PLUS: NSString;
 
-  NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
-  NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+function NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
+function NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
 
 implementation
 
@@ -52,31 +51,119 @@ const
   DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
   DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
 
+var
+  _NSSTR_EMPTY: NSString;
+
+  _NSSTR_DARK_NAME: NSString;
+  _NSSTR_DARK_NAME_VIBRANT: NSString;
+
+  _NSSTR_LINE_FEED: NSString;
+  _NSSTR_CARRIAGE_RETURN: NSString;
+  _NSSTR_LINE_SEPARATOR: NSString;
+  _NSSTR_PARAGRAPH_SEPARATOR: NSString;
+
+  _NSSTR_KEY_ENTER: NSString;
+  _NSSTR_KEY_ESC: NSString;
+  _NSSTR_KEY_EQUALS: NSString;
+  _NSSTR_KEY_PLUS: NSString;
+
+  _NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
+  _NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+
+function NSSTR_EMPTY: NSString;
+begin
+  Result:= _NSSTR_EMPTY;
+end;
+
+function NSSTR_DARK_NAME: NSString;
+begin
+  Result:= _NSSTR_DARK_NAME;
+end;
+
+function NSSTR_DARK_NAME_VIBRANT: NSString;
+begin
+  Result:= _NSSTR_DARK_NAME_VIBRANT;
+end;
+
+
+function NSSTR_LINE_FEED: NSString;
+begin
+  Result:= _NSSTR_LINE_FEED;
+end;
+
+function NSSTR_CARRIAGE_RETURN: NSString;
+begin
+  Result:= _NSSTR_CARRIAGE_RETURN;
+end;
+
+function NSSTR_LINE_SEPARATOR: NSString;
+begin
+  Result:= _NSSTR_LINE_SEPARATOR;
+end;
+
+function NSSTR_PARAGRAPH_SEPARATOR: NSString;
+begin
+  Result:= _NSSTR_PARAGRAPH_SEPARATOR;
+end;
+
+
+function NSSTR_KEY_ENTER: NSString;
+begin
+  Result:= _NSSTR_KEY_ENTER;
+end;
+
+function NSSTR_KEY_ESC: NSString;
+begin
+  Result:= _NSSTR_KEY_ESC;
+end;
+
+function NSSTR_KEY_EQUALS: NSString;
+begin
+  Result:= _NSSTR_KEY_EQUALS;
+end;
+
+function NSSTR_KEY_PLUS: NSString;
+begin
+  Result:= _NSSTR_KEY_PLUS;
+end;
+
+
+function NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
+begin
+  Result:= _NSSTR_TABCONTROL_PREV_ARROW;
+end;
+
+function NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+begin
+  Result:= _NSSTR_TABCONTROL_NEXT_ARROW;
+end;
+
+
 initialization
-  NSSTR_EMPTY:= NSString.string_;
+  _NSSTR_EMPTY:= NSString.string_;
 
-  NSSTR_DARK_NAME:= NSSTR(DarkName);
-  NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
+  _NSSTR_DARK_NAME:= NSSTR(DarkName);
+  _NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
 
-  NSSTR_LINE_FEED:= NSSTR(#10);
-  NSSTR_CARRIAGE_RETURN:= NSSTR(#13);
-  NSSTR_LINE_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A8);
-  NSSTR_PARAGRAPH_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A9);
+  _NSSTR_LINE_FEED:= NSSTR(#10);
+  _NSSTR_CARRIAGE_RETURN:= NSSTR(#13);
+  _NSSTR_LINE_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A8);
+  _NSSTR_PARAGRAPH_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A9);
 
-  NSSTR_KEY_ENTER:= NSSTR(#13);
-  NSSTR_KEY_ESC:= NSSTR(#27);
-  NSSTR_KEY_EQUALS:= NSSTR('=');
-  NSSTR_KEY_PLUS:= NSSTR('+');
+  _NSSTR_KEY_ENTER:= NSSTR(#13);
+  _NSSTR_KEY_ESC:= NSSTR(#27);
+  _NSSTR_KEY_EQUALS:= NSSTR('=');
+  _NSSTR_KEY_PLUS:= NSSTR('+');
 
-  NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀');
-  NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶');
+  _NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀');
+  _NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶');
 
 finalization;
-  NSSTR_LINE_SEPARATOR.release;
-  NSSTR_PARAGRAPH_SEPARATOR.release;
+  _NSSTR_LINE_SEPARATOR.release;
+  _NSSTR_PARAGRAPH_SEPARATOR.release;
 
-  NSSTR_TABCONTROL_PREV_ARROW.release;
-  NSSTR_TABCONTROL_NEXT_ARROW.release;
+  _NSSTR_TABCONTROL_PREV_ARROW.release;
+  _NSSTR_TABCONTROL_NEXT_ARROW.release;
 
 end.
 
