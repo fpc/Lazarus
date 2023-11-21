@@ -28,6 +28,8 @@ const
   {$endif}
 
 var
+  NSSTR_EMPTY: NSString;
+
   NSSTR_DARK_NAME: NSString;
   NSSTR_DARK_NAME_VIBRANT: NSString;
 
@@ -36,6 +38,7 @@ var
   NSSTR_LINE_SEPARATOR: NSString;
   NSSTR_PARAGRAPH_SEPARATOR: NSString;
 
+  NSSTR_KEY_ESC: NSString;
   NSSTR_KEY_EQUALS: NSString;
   NSSTR_KEY_PLUS: NSString;
 
@@ -49,14 +52,17 @@ const
   DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
 
 initialization
+  NSSTR_EMPTY:= NSString.string_;
+
   NSSTR_DARK_NAME:= NSSTR(DarkName);
   NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
 
-  NSSTR_LINE_FEED:= NSStr(#10);
-  NSSTR_CARRIAGE_RETURN:= NSStr(#13);
+  NSSTR_LINE_FEED:= NSSTR(#10);
+  NSSTR_CARRIAGE_RETURN:= NSSTR(#13);
   NSSTR_LINE_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A8);
   NSSTR_PARAGRAPH_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A9);
 
+  NSSTR_KEY_ESC:= NSSTR(#27);
   NSSTR_KEY_EQUALS:= NSSTR('=');
   NSSTR_KEY_PLUS:= NSSTR('+');
 
