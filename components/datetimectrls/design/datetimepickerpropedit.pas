@@ -27,16 +27,20 @@ unit DateTimePickerPropEdit;
 {$mode objfpc}{$H+}
 
 interface
-// Nothing needs to be in interface section!
+
+uses
+  Classes, SysUtils, Math,
+  // LCL
+  Forms, Controls, StdCtrls, Menus, ButtonPanel,
+  // IdeIntf
+  ComponentEditors, PropEdits,
+  // DateTimeCtrls
+  DateTimePicker, DBDateTimePicker;
 
 implementation
 
-uses
-  Classes, SysUtils, Forms, Controls, ButtonPanel, DateTimePicker,
-  DBDateTimePicker, StdCtrls, Math, Menus, ComponentEditors, PropEdits;
-
 type
-    { TFormDateTimePickerEditor }
+  { TFormDateTimePickerEditor }
 
   TFormDateTimePickerEditor = class(TForm)
   private

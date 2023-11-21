@@ -29,7 +29,11 @@ unit DBDateTimePicker;
 interface
 
 uses
-  Classes, SysUtils, DateTimePicker, db, DBCtrls, LMessages;
+  Classes, SysUtils, db,
+  // LCL
+  DBCtrls, LMessages,
+  // DateTimeCtrls
+  DateTimePicker;
 
 type
 
