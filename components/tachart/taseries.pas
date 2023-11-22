@@ -2308,28 +2308,33 @@ begin
   scaled_depth := ADrawer.Scale(Depth);
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
 
-  CollectMissing;
-  if Length(missing) = 0 then
-    DrawSegment(0, High(FGraphPoints))
-  else begin
-    j := 0;
-    k := 0;
-    while j < Length(missing) do begin
-      while (missing[j] = k) do begin
-        inc(k);
+  ADrawer.ClippingStart(ParentChart.ClipRect);
+  try
+    CollectMissing;
+    if Length(missing) = 0 then
+      DrawSegment(0, High(FGraphPoints))
+    else begin
+      j := 0;
+      k := 0;
+      while j < Length(missing) do begin
+        while (missing[j] = k) do begin
+          inc(k);
+          inc(j);
+          if j = Length(missing) then
+            break;
+        end;
+        if j <= High(missing) then begin
+          DrawSegment(k, missing[j]-1);
+          k := missing[j]+1;
+        end else
+          DrawSegment(k, High(FGraphPoints));
         inc(j);
-        if j = Length(missing) then
-          break;
       end;
-      if j <= High(missing) then begin
-        DrawSegment(k, missing[j]-1);
-        k := missing[j]+1;
-      end else
+      if k <= High(FGraphPoints) then
         DrawSegment(k, High(FGraphPoints));
-      inc(j);
     end;
-    if k <= High(FGraphPoints) then
-      DrawSegment(k, High(FGraphPoints));
+  finally
+    ADrawer.ClippingStop;
   end;
 
   DrawLabels(ADrawer);
