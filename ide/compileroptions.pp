@@ -2891,12 +2891,12 @@ begin
 
   { --------------- Parsing Tab ------------------- }
 
-  { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
-  case AssemblerStyle of
-    1: switches := switches + ' -Rintel';
-    2: switches := switches + ' -Ratt';
-    3: switches := switches + ' -Rdirect';
-  end;
+  { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdefault (or no option) = default }
+  if IsCPUX86(CurTargetCPU) then
+    case AssemblerStyle of
+      1: switches := switches + ' -Rintel';
+      2: switches := switches + ' -Ratt';
+    end;
 
   // Syntax Options
   tempsw:=GetSyntaxOptionsString(Kind);

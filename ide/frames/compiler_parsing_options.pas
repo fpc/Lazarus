@@ -142,7 +142,7 @@ begin
   begin
     cmbSyntaxMode.Text := SyntaxModeToCaption(SyntaxMode);
 
-    if (AssemblerStyle in [1,2,3]) then
+    if (AssemblerStyle in [1,2]) then
       grpAsmStyle.ItemIndex := AssemblerStyle
     else
       grpAsmStyle.ItemIndex := 0;

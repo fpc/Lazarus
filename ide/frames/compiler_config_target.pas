@@ -253,7 +253,7 @@ begin
   // Update selection list for assembler style
   ParsingFrame := TCompilerParsingOptionsFrame(FDialog.FindEditor(TCompilerParsingOptionsFrame));
   Assert(Assigned(ParsingFrame));
-  ParsingFrame.grpAsmStyle.Visible := (aTargetCPU='i386') or (aTargetCPU='x86_64');
+  ParsingFrame.grpAsmStyle.Visible := IsCPUX86(aTargetCPU);
 end;
 
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
