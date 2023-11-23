@@ -314,16 +314,15 @@ type
     ttGreaterThanOrEqual,
     ttLessThanOrEqual,
     ttNotEqual,
-    ttSetSymDif,
-    ttBackSlash, { legal in char literals }
-
     // FreePascal c-style operators
     ttPlusAssign,     // +=
     ttMinusAssign,    // -=
     ttTimesAssign,    // *=
     ttFloatDivAssign, // /=
     ttShl_ll,         // <<
-    ttShr_gg          // >>
+    ttShr_gg,         // >>
+    ttSetSymDif,
+    ttBackSlash { legal in char literals }
     );
 
   TTokenTypeSet = set of TTokenType;

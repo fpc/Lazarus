@@ -67,6 +67,9 @@ begin
   if pt = nil then
     exit;
 
+  if (pt.TokenType in operators) and pt.HasParentNode(nIdentifier,1) then //operator orverloading identifier;
+    Exit(True);
+
   { if the next thing is a comment, leave well enough alone }
   if ptNext.TokenType = ttComment then
     exit;

@@ -81,6 +81,11 @@ begin
   if pt.HasParentNode(nGeneric, 1) then
     exit;
 
+  if (pt.TokenType in operators) and pt.HasParentNode(nIdentifier,1) then
+  begin
+    exit(pt.PriorSolidTokenType<>ttDot);
+  end;
+
   if pt.TokenType = ttCloseBracket then
   begin
     if FormattingSettings.Spaces.SpaceBeforeCloseBrackets then
@@ -147,7 +152,7 @@ begin
   begin
     if (pt.TokenType in SingleSpaceOperators) then
     begin
-      Result := True;
+      Result := not pt.HasParentNode(nIdentifier,1); //can be an overloaded operator identifier.
     end;
 
     { 'a := --3;' and 'lc := ptr^;'
@@ -158,8 +163,7 @@ begin
         (IsUnaryOperator(pt) and IsUnaryOperator(pt.PriorSolidToken)) then
         Result := False
       else
-        Result := True;
-
+        Result := not pt.HasParentNode(nIdentifier,1); //can be an overloaded operator identifier.
       exit;
     end;
 
