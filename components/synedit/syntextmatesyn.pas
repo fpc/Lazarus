@@ -181,12 +181,21 @@ end;
 function TSynTextMateSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
 var
   r: TSynTextMateRangeInfo;
+  i: Integer;
 begin
+  GetRange;
+  i := Integer(TSynHighlighterTextMateRangeList(CurrentRanges).Range[Index]);
+  if i <> FCurrentRange then
+    FTextMateGrammar.MainPatternList[i].DecRefCount;
+
   Result := inherited;
   r := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index];
   Result := Result
         or (FRangeInfo.FoldLevel <> r.FoldLevel);
   TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index] := FRangeInfo;
+
+  if i <> FCurrentRange then
+    FTextMateGrammar.MainPatternList[Integer(i)].IncRefCount;
 end;
 
 procedure TSynTextMateSyn.DoPopulateAttributeInfo(
