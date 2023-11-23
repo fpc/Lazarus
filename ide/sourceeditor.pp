@@ -6968,6 +6968,7 @@ Begin
     debugln('[TSourceNotebook.CreateNotebook] C');
     {$ENDIF}
     EditorOpts.ApplyTabFontSettingsTo(FNotebook);
+    TabStop := false;
     Align := alClient;
     APage:=TTabSheet.Create(FNotebook);
     APage.Caption:='unit1';
