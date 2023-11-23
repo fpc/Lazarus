@@ -2721,12 +2721,12 @@ begin
 
   { --------------- Parsing Tab ------------------- }
 
-  { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
-  case AssemblerStyle of
-    1: Result.Add('-Rintel');
-    2: Result.Add('-Ratt');
-    3: Result.Add('-Rdirect');
-  end;
+  { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdefault (or no option) = default }
+  if IsCPUX86(CurTargetCPU) then
+    case AssemblerStyle of
+      1: Result.Add('-Rintel');
+      2: Result.Add('-Ratt');
+    end;
 
   // Syntax Options
   GetSyntaxOptions(Kind,Result);
