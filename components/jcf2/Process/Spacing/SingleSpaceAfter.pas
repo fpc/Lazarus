@@ -78,7 +78,10 @@ begin
 
   Result := False;
 
-  if (pt.TokenType=ttClass) and (pt.NextSolidTokenType in SingleSpaceAfterClass) then
+  if (pt.TokenType in operators) and pt.HasParentNode(nIdentifier,1) then //operator orverloading identifier;
+    Exit(False);
+
+ if (pt.TokenType=ttClass) and (pt.NextSolidTokenType in SingleSpaceAfterClass) then
     Exit(True);
 
   if pt.HasParentNode(nLiteralString) then

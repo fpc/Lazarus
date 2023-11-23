@@ -115,7 +115,6 @@ type
     procedure RecogniseProcedureDeclSection;
     procedure RecogniseClassOperator(const pbHasBody: boolean);
     procedure RecogniseOperator(const pbHasBody: boolean);
-    procedure RecogniseOperatorSymbol;
 
     // set pbAnon = true if the proc has no name
     procedure RecogniseProcedureHeading(const pbAnon, pbCanInterfaceMap: boolean);
@@ -2602,7 +2601,7 @@ begin
   Recognise(ttOperator);
 
   CheckEnumeratorToken();
-  RecogniseOperatorSymbol();
+  RecogniseMethodName(False);
 
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     RecogniseFormalParameters;
@@ -2630,16 +2629,6 @@ begin
   end;
 
   PopNode;
-end;
-
-procedure TBuildParseTree.RecogniseOperatorSymbol;
-const
-  OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
-    ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
-    ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign, ttXor,
-    ttAnd, ttOr, ttEnumerator, ttNot, ttDiv, ttMod, ttIn, ttShl, ttShr];
-begin
-  Recognise(OperatorTokens);
 end;
 
 procedure TBuildParseTree.RecogniseVarDecl(aVarType: TVarType=vtNormal);
@@ -5440,11 +5429,12 @@ begin
     exit;
   end
   else
-  if IsSymbolOperator(fcTokenList.FirstSolidToken) then begin
-      PushNode(nIdentifier);
-      Recognise(Operators);
-      PopNode;
-      exit;
+  if fcTokenList.FirstSolidTokenType in operators then
+  begin
+    PushNode(nIdentifier);
+    Recognise(Operators);
+    PopNode;
+    exit;
   end;
   if not (IdentifierNext(idAllowDirectives)) then
     RaiseParseError('Expected identifier', fcTokenList.FirstSolidToken);

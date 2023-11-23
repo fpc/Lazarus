@@ -132,12 +132,8 @@ begin
 
   if (FormattingSettings.Spaces.SpaceForOperator = eNever) then
   begin
-    if IsSymbolOperator(pt) then
-    begin
-      Result := True;
-      exit;
-    end;
-
+    if (pt.TokenType in Operators) and (not pt.HasParentNode(nIdentifier,1)) and IsSymbolOperator(pt) then
+      exit(True);
   end;
 
   { '[' of array property definition }
