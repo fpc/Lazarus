@@ -2353,7 +2353,7 @@ begin
   for i := 0 to AnOtherGrammar.FMainPatternCount - 1 do
     FMainPatternList[InsPos + i].CopyFrom(AnOtherGrammar.FMainPatternList[i], InsPos, FMainPatternList);
 
-  FPatternRepo.Add(AnIncludeName+'#', AnOtherGrammar.RootPattern);
+  FPatternRepo.Add(AnIncludeName+'#', TTextMatePattern.GetCopyFor(AnOtherGrammar.RootPattern, InsPos, FMainPatternList));
   for i := 0 to AnOtherGrammar.FPatternRepo.Count - 1 do begin
     k := AnOtherGrammar.FPatternRepo.Keys[i];
     if pos('#', k) > 0 then
