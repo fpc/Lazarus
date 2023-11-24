@@ -482,8 +482,8 @@ type
     procedure ClearMatches;
     procedure ClearInternalExecData;
     procedure InitInternalGroupData;
-    function FindInCharClass(ABuffer: PRegExprChar; AChar: REChar; AIgnoreCase: boolean): boolean;
-    procedure GetCharSetFromCharClass(ABuffer: PRegExprChar; AIgnoreCase: boolean; var ARes: TRegExprCharset);
+    function FindInCharClass(ABuffer: PRegExprChar; AChar: REChar; AIgnoreCase: Boolean): Boolean;
+    procedure GetCharSetFromCharClass(ABuffer: PRegExprChar; AIgnoreCase: Boolean; var ARes: TRegExprCharset);
     procedure GetCharSetFromSpaceChars(var ARes: TRegExprCharset); {$IFDEF InlineFuncs}inline;{$ENDIF}
     procedure GetCharSetFromWordChars(var ARes: TRegExprCharSet); {$IFDEF InlineFuncs}inline;{$ENDIF}
     function IsWordChar(AChar: REChar): boolean; {$IFDEF InlineFuncs}inline;{$ENDIF}
@@ -561,6 +561,8 @@ type
 
     // one alternative of an | operator
     function ParseBranch(var FlagParse: integer): PRegExprChar;
+
+    procedure MaybeGuardBranchPiece(piece: PRegExprChar);
 
     // something followed by possible [*+?]
     function ParsePiece(var FlagParse: integer): PRegExprChar;
@@ -933,7 +935,7 @@ uses
 const
   // TRegExpr.VersionMajor/Minor return values of these constants:
   REVersionMajor = 1;
-  REVersionMinor = 178;
+  REVersionMinor = 181;
 
   OpKind_End = REChar(1);
   OpKind_MetaClass = REChar(2);
@@ -1719,7 +1721,10 @@ const
   OP_SUBCALL = TREOp(65); // Call of subroutine; OP_SUBCALL+i is for group i
   OP_LOOP_POSS = TREOp(66); // Same as OP_LOOP but in non-greedy mode
 
-  OP_GBRANCH = TREOp(67); // Guarded branch
+  // Guarded branch
+  // If a branch is know to begin with a specific letter (starts with OP_EXACTLY[_CI])
+  // then that letter can be tested before recursively calling MatchPrim. (guarded from non-match entering)
+  OP_GBRANCH = TREOp(67);
   OP_GBRANCH_EX = TREOp(68);
   OP_GBRANCH_EX_CI = TREOp(69);
 
@@ -2820,7 +2825,7 @@ const
   RusRangeHiHigh = #$DF; // 'Я' in cp1251
   {$ENDIF}
 
-function TRegExpr.FindInCharClass(ABuffer: PRegExprChar; AChar: REChar; AIgnoreCase: boolean): boolean;
+function TRegExpr.FindInCharClass(ABuffer: PRegExprChar; AChar: REChar; AIgnoreCase: Boolean): Boolean;
 // Buffer contains char pairs: (Kind, Data), where Kind is one of OpKind_ values,
 // and Data depends on Kind
 var
@@ -2970,7 +2975,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TRegExpr.GetCharSetFromCharClass(ABuffer: PRegExprChar; AIgnoreCase: boolean; var ARes: TRegExprCharset);
+procedure TRegExpr.GetCharSetFromCharClass(ABuffer: PRegExprChar; AIgnoreCase: Boolean; var ARes: TRegExprCharset);
 var
   ch, ch2: REChar;
   TempSet: TRegExprCharSet;
@@ -2998,7 +3003,7 @@ begin
           begin
             Include(ARes, byte(i));
             if AIgnoreCase then
-              Include(ARes, byte(InvertCase(REChar(i))));
+              Include(ARes, Byte(InvertCase(REChar(i))));
           end;
         end;
 
@@ -3090,7 +3095,7 @@ begin
             begin
               Include(ARes, byte(ch));
               if AIgnoreCase then
-                Include(ARes, byte(InvertCase(ch)));
+                Include(ARes, Byte(InvertCase(ch)));
             end;
           end;
         end;
@@ -3458,7 +3463,6 @@ function TRegExpr.ParseBranch(var FlagParse: integer): PRegExprChar;
 // Implements the concatenation operator.
 var
   ret, chain, latest: PRegExprChar;
-  ch: REChar;
   FlagTemp: integer;
 begin
   FlagTemp := 0;
@@ -3487,23 +3491,7 @@ begin
     if chain = nil // First piece.
     then begin
       FlagParse := FlagParse or FlagTemp and FLAG_SPECSTART;
-      if fSecondPass then begin
-        case latest^ of
-          OP_EXACTLY: begin
-              ret^ := OP_GBRANCH_EX;
-              ch := (latest + REOpSz + RENextOffSz + RENumberSz)^;
-              (ret + REOpSz + RENextOffSz)^ := ch;
-            end;
-          OP_EXACTLY_CI: begin
-              ret^ := OP_GBRANCH_EX_CI;
-              ch := (latest + REOpSz + RENextOffSz + RENumberSz)^;
-              (ret + REOpSz + RENextOffSz)^ := _UpperCase(ch);
-              (ret + REOpSz + RENextOffSz + 1)^ := _LowerCase(ch);
-            end;
-        end;
-      end
-      else begin
-      end;
+      MaybeGuardBranchPiece(ret);
     end
     else
       Tail(chain, latest);
@@ -3515,6 +3503,74 @@ begin
   Result := ret;
 end; { of function TRegExpr.ParseBranch
   -------------------------------------------------------------- }
+
+procedure TRegExpr.MaybeGuardBranchPiece(piece: PRegExprChar);
+var
+  opnd: PRegExprChar;
+  ch: REChar;
+begin
+  if not fSecondPass then
+    exit;
+
+  opnd := piece + REOpSz + RENextOffSz + REBranchArgSz;
+        while opnd <> nil do begin
+          case opnd^ of
+          OP_OPEN, OP_OPEN_ATOMIC, OP_CLOSE, OP_CLOSE_ATOMIC,
+          OP_COMMENT,
+          OP_BOL, OP_CONTINUE_POS, OP_RESET_MATCHPOS,
+    OP_BOUND, OP_NOTBOUND,
+    OP_BACK:
+            opnd := regNext(opnd);
+    OP_PLUS, OP_PLUS_NG, OP_PLUS_POSS:
+      opnd := opnd + REOpSz + RENextOffSz;
+          OP_BRACES, OP_BRACES_NG, OP_BRACES_POSS:
+            begin
+              if PREBracesArg(AlignToPtr(opnd + REOpSz + RENextOffSz))^ >= 1 then
+                opnd := opnd + REOpSz + RENextOffSz + 2*REBracesArgSz;
+              break;
+            end;
+          OP_LOOPENTRY:
+            begin
+        if PREBracesArg(AlignToInt(regNext(opnd) + REOpSz + RENextOffSz))^ >= 1 then
+                opnd := opnd + REOpSz + RENextOffSz;
+              break;
+            end;
+          OP_LOOKAROUND_OPTIONAL:
+            opnd := (opnd + 1 + RENextOffSz);
+          OP_LOOKAHEAD:  // could contain OP_OPEN....
+            begin
+              if ( ((opnd + 1 + RENextOffSz)^ = OP_EXACTLY) or
+                 ((opnd + 1 + RENextOffSz)^ = OP_EXACTLY_CI)
+                 ) and
+                 ((regNext(opnd) + 1 + RENextOffSz)^ <> OP_LOOKAROUND_OPTIONAL)
+              then begin
+                opnd := (opnd + 1 + RENextOffSz);
+                break;
+              end
+              else
+                opnd := regNext(regNext(opnd));
+            end;
+          OP_LOOKAHEAD_NEG, OP_LOOKBEHIND, OP_LOOKBEHIND_NEG:
+            opnd := regNext(regNext(opnd));
+          else
+            break;
+          end;
+        end;
+        if opnd <> nil then
+          case opnd^ of
+            OP_EXACTLY: begin
+        piece^ := OP_GBRANCH_EX;
+                ch := (opnd + REOpSz + RENextOffSz + RENumberSz)^;
+        (piece + REOpSz + RENextOffSz)^ := ch;
+              end;
+            OP_EXACTLY_CI: begin
+        piece^ := OP_GBRANCH_EX_CI;
+                ch := (opnd + REOpSz + RENextOffSz + RENumberSz)^;
+        (piece + REOpSz + RENextOffSz)^ := _UpperCase(ch);
+        (piece + REOpSz + RENextOffSz + 1)^ := _LowerCase(ch);
+              end;
+          end;
+  end;
 
 function TRegExpr.ParsePiece(var FlagParse: integer): PRegExprChar;
 // something followed by possible [*+?{]
@@ -3759,6 +3815,7 @@ begin
             OpTail(Result, Result); // back
             Tail(Result, EmitBranch); // or
             Tail(Result, EmitNode(OP_NOTHING)); // nil.
+            MaybeGuardBranchPiece(Result);
           end
         end
         else
@@ -3807,6 +3864,7 @@ begin
             Tail(EmitNode(OP_BACK), Result); // loop back
             Tail(NextNode, EmitBranch); // or
             Tail(Result, EmitNode(OP_NOTHING)); // nil.
+            MaybeGuardBranchPiece(NextNode);
           end
         end
         else
@@ -3856,6 +3914,7 @@ begin
           NextNode := EmitNode(OP_NOTHING); // nil.
           Tail(Result, NextNode);
           OpTail(Result, NextNode);
+          MaybeGuardBranchPiece(Result);
         end;
         if NonGreedyCh or PossessiveCh then
           Inc(regParse); // Skip extra char ('?')
@@ -7365,7 +7424,7 @@ begin
         begin
           min_cnt := PREBracesArg(AlignToPtr(Next + REOpSz + RENextOffSz))^;
           if min_cnt = 0 then begin
-            opnd := AlignToPtr(Next + REOpSz + 2 * RENextOffSz + 2 * REBracesArgSz);
+            opnd := regNext(Next);
             FillFirstCharSet(opnd); // FirstChar may be after loop
           end;
           Next := PRegExprChar(AlignToPtr(scan + 1)) + RENextOffSz;
@@ -7379,7 +7438,6 @@ begin
           if min_cnt = 0 then
           Exit;
           // zero width loop
-          Next := AlignToPtr(scan + REOpSz + 2 * RENextOffSz + 2 * REBracesArgSz);
         end;
       {$ENDIF}
 
@@ -7770,7 +7828,8 @@ function TRegExpr.Dump(Indent: Integer): RegExprString;
 var
   s: PRegExprChar;
   op: TREOp; // Arbitrary non-END op.
-  next: PRegExprChar;
+  next, BranchEnd: PRegExprChar;
+  BranchEndStack: Array of PRegExprChar;
   i, NLen, CurIndent: integer;
   Diff: PtrInt;
   iByte: byte;
@@ -7783,16 +7842,43 @@ begin
   CurIndent := 0;
   op := OP_EXACTLY;
   s := regCodeWork;
+  BranchEnd := nil;
   while op <> OP_EEND do
   begin // While that wasn't END last time...
     op := s^;
-    if ((op =OP_CLOSE) or (op = OP_CLOSE_ATOMIC) or (op = OP_LOOP) or (op = OP_LOOP_NG) or (op = OP_LOOP_POSS)) and (CurIndent > 0) then
-      dec(CurIndent, Indent);
-    Result := Result + Format('%2d:%s %s', [s - programm, StringOfChar(' ', CurIndent), DumpOp(s^)]);
-    if ((op = OP_OPEN) or (op = OP_OPEN_ATOMIC) or (op = OP_LOOPENTRY)) then
-      inc(CurIndent, Indent);
-    // Where, what.
     next := regNext(s);
+
+    if ((op =OP_CLOSE) or (op = OP_CLOSE_ATOMIC) or (op = OP_LOOP) or (op = OP_LOOP_NG) or (op = OP_LOOP_POSS) or
+        (op = OP_LOOKAHEAD_END) or (op = OP_LOOKBEHIND_END)
+       ) and
+       (CurIndent > 0)
+    then
+      dec(CurIndent, Indent);
+    if s = BranchEnd then begin
+      dec(CurIndent, Indent);
+      BranchEnd := nil;
+      if Length(BranchEndStack) > 0 then begin
+        BranchEnd := BranchEndStack[Length(BranchEndStack)-1];
+        SetLength(BranchEndStack, Length(BranchEndStack)-1);
+      end;
+    end;
+
+    Result := Result + Format('%3d:%s %s', [s - programm, StringOfChar(' ', CurIndent), DumpOp(s^)]);
+
+    if (op = OP_OPEN) or (op = OP_OPEN_ATOMIC) or (op = OP_LOOPENTRY) or
+       (op = OP_LOOKAHEAD) or (op = OP_LOOKAHEAD_NEG) or (op = OP_LOOKBEHIND) or (op = OP_LOOKBEHIND_NEG)
+    then
+      inc(CurIndent, Indent);
+    if (op = OP_BRANCH) or (op = OP_GBRANCH) or (op = OP_GBRANCH_EX) or (op = OP_GBRANCH_EX_CI) then begin
+      inc(CurIndent, Indent);
+      if BranchEnd <> nil then begin
+        SetLength(BranchEndStack, Length(BranchEndStack)+1);
+        BranchEndStack[Length(BranchEndStack)-1] := BranchEnd;
+      end;
+      BranchEnd := next;
+    end;
+
+    // Where, what.
     if next = nil // Next ptr.
     then
       Result := Result + ' (0)'
@@ -7938,10 +8024,16 @@ begin
       Inc(s, ReOpLookBehindOptionsSz);
     end
     else
-    if (op = OP_BRANCH) or (op = OP_GBRANCH) or
-       (op = OP_GBRANCH_EX) or (op = OP_GBRANCH_EX_CI)
-    then
+    if (op = OP_BRANCH) or (op = OP_GBRANCH) then
     begin
+      Inc(s, REBranchArgSz);
+    end
+    else
+    if (op = OP_GBRANCH_EX) or (op = OP_GBRANCH_EX_CI) then
+    begin
+      Result := Result + ' ' + s^;
+      if (op = OP_GBRANCH_EX_CI) then
+        Result := Result + (s+1)^;
       Inc(s, REBranchArgSz);
     end;
     Result := Result + #$d#$a;
