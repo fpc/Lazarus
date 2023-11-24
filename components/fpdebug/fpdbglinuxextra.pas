@@ -7,7 +7,8 @@ interface
 uses
   Classes,
   BaseUnix,
-  SysUtils;
+  SysUtils,
+  SysCall;
 
 const
   PTRACE_TRACEME                               = 0;
