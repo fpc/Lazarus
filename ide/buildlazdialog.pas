@@ -1467,6 +1467,7 @@ begin
       if fProfiles.Selected.IndexOf(fProfiles[i].Name)>-1 then
         EditForm.CheckListBox1.Checked[ind]:=True;
     end;
+    IDEDialogLayoutList.ApplyLayout(EditForm);
     // Show the form.
     EditForm.ShowModal;
     if EditForm.ModalResult in [mrOK, mrYes] then begin
@@ -1480,6 +1481,7 @@ begin
     if EditForm.ModalResult=mrYes then
       ModalResult:=mrAll;
   finally
+    IDEDialogLayoutList.SaveLayout(EditForm);
     EditForm.Free;
   end;
 end;
@@ -1553,6 +1555,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.CleanRadioButtonClick(Sender: TObject);
 begin
+  //
 end;
 
 end.
