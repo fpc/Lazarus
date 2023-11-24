@@ -986,6 +986,7 @@ begin
   FName       := AnOther.FName;
   FDebugName  := AnOther.FDebugName;
   FAttribInfo := AnOther.FAttribInfo;
+  FAttribInfo.TokId := FAttribInfo.TokId + AnIndexOffset;
 end;
 
 procedure TTextMatePattern.DoInitRegex(var ARegEx: TRegExpr;
