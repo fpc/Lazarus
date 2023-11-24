@@ -117,7 +117,7 @@ type
     procedure SelectAll;
     procedure SelectFirst;
   public
-    constructor Create(InfoCaption: String);
+    constructor Create(InfoCaption: String); overload;
     destructor Destroy; override;
   end;
 
