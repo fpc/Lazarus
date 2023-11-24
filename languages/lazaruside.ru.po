@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-11-02 17:31+0300\n"
+"PO-Revision-Date: 2023-11-24 18:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5314,8 +5314,8 @@ msgid "Available for installation"
 msgstr "Доступные для установки"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
-msgid "Available project build modes:"
-msgstr "Доступные режимы сборки проекта:"
+msgid "Available project build modes"
+msgstr "Доступные режимы сборки проекта"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"

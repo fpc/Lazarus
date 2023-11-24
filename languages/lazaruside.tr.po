@@ -5289,7 +5289,9 @@ msgid "Available for installation"
 msgstr "Kurulum için kullanılabilir"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
-msgid "Available project build modes:"
+#, fuzzy
+#| msgid "Available project build modes:"
+msgid "Available project build modes"
 msgstr "Mevcut proje oluşturma modları:"
 
 #: lazarusidestrconsts.lisbackupchangedfiles

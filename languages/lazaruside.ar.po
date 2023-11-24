@@ -5324,7 +5324,7 @@ msgid "Available for installation"
 msgstr ""
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
-msgid "Available project build modes:"
+msgid "Available project build modes"
 msgstr ""
 
 #: lazarusidestrconsts.lisbackupchangedfiles

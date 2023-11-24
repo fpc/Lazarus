@@ -5319,7 +5319,9 @@ msgid "Available for installation"
 msgstr "可用于安装"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
-msgid "Available project build modes:"
+#, fuzzy
+#| msgid "Available project build modes:"
+msgid "Available project build modes"
 msgstr "可用的项目构建模式:"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
