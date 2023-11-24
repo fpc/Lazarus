@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ButtonPanel, LazarusIDEStrConsts, CheckLst;
+  StdCtrls, ButtonPanel, LazarusIDEStrConsts, IDEWindowIntf, CheckLst;
 
 type
 
@@ -17,6 +17,7 @@ type
     UnCheckAll: TCheckBox;
     FileList: TCheckListBox;
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure UnCheckAllChange(Sender: TObject);
   private
     { private declarations }
@@ -35,6 +36,12 @@ begin
   Caption:=lisDeleteAllTheseFiles;
   FileList.Clear;
   UnCheckAll.Caption := lisCheckUncheckAll;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TShowDeletingFilesDialog.FormDestroy(Sender: TObject);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TShowDeletingFilesDialog.UnCheckAllChange(Sender: TObject);
