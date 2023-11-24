@@ -3203,7 +3203,10 @@ begin
       SetWindowCursor(GetContainerWidget^.window, ACursor, False, True)
     else
     if Widget^.get_has_window and Gtk3IsGdkWindow(Widget^.window) then
-      SetWindowCursor(Widget^.window, ACursor, False, True);
+      SetWindowCursor(Widget^.window, ACursor, False, True)
+    else // fallback for window-less widgets
+    if Assigned(self.getParent) then
+      Self.getParent.SetCursor(ACursor);
   end;
 end;
 
