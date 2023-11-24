@@ -38,6 +38,7 @@ uses
   LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
+  IDEWindowIntf,
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs,
   // IDE
@@ -108,14 +109,12 @@ type
 
   { TBuildModesCheckList }
 
-  TBuildModesCheckList = class
+  TBuildModesCheckList = class(TGenericCheckListForm)
   private
-    FListForm: TGenericCheckListForm;
     function IsSelected(AIndex: Integer): Boolean;
     procedure SaveManyModesSelection;
     procedure SelectAll;
     procedure SelectFirst;
-    function Show: Boolean;
   public
     constructor Create(InfoCaption: String);
     destructor Destroy; override;
@@ -238,7 +237,7 @@ begin
     if Project1.BuildModes.Count > 1 then
     begin
       BMList.SelectAll;
-      Ok:=BMList.Show;
+      Ok:=BMList.ShowModal = mrOK;
     end
     else begin
       Ok:=IDEMessageDialog(DlgCapt, Format(DlgMsg,[LineEnding,aDir]),
@@ -345,7 +344,7 @@ begin
   BMList := TBuildModesCheckList.Create(lisCompileFollowingModes);
   ModeList := TList.Create;
   try
-    if not BMList.Show then Exit;
+    if BMList.ShowModal <> mrOK then Exit;
     BMList.SaveManyModesSelection;      // Remember the selection for next time.
     ActiveMode := Project1.ActiveBuildMode;
     BuildActiveMode := False;
@@ -864,10 +863,11 @@ var
   BM: String;
   ManyBMs: TStringList;
 begin
-  FListForm:=TGenericCheckListForm.Create(Nil);
-  //lisApplyForBuildModes = 'Apply for build modes:';
-  FListForm.Caption:=lisAvailableProjectBuildModes;
-  FListForm.InfoLabel.Caption:=InfoCaption;
+  inherited Create(nil);
+
+  Caption:=lisAvailableProjectBuildModes;
+  InfoLabel.Caption:=InfoCaption;
+
   ManyBMs:=Project1.BuildModes.ManyBuildModes;
   // Backwards compatibility. Many BuildModes value used to be in EnvironmentOptions.
   if ManyBMs.Count=0 then
@@ -875,23 +875,25 @@ begin
   // Add project build modes to a CheckListBox.
   for i:=0 to Project1.BuildModes.Count-1 do begin
     BM:=Project1.BuildModes[i].Identifier;
-    FListForm.CheckListBox1.Items.Add(BM);
+    CheckListBox1.Items.Add(BM);
     if ManyBMs.IndexOf(BM) >= 0 then
-      FListForm.CheckListBox1.Checked[i]:=True;
+      CheckListBox1.Checked[i]:=True;
   end;
   if ManyBMs.Count=0 then  // No persistent selections -> select all by default.
     SelectAll;
+
+  IDEDialogLayoutList.ApplyLayout(Self, 350, 300);
 end;
 
 destructor TBuildModesCheckList.Destroy;
 begin
-  FListForm.Free;
+  IDEDialogLayoutList.SaveLayout(Self);
   inherited Destroy;
 end;
 
 function TBuildModesCheckList.IsSelected(AIndex: Integer): Boolean;
 begin
-  Result := FListForm.CheckListBox1.Checked[AIndex];
+  Result := CheckListBox1.Checked[AIndex];
 end;
 
 procedure TBuildModesCheckList.SaveManyModesSelection;
@@ -900,9 +902,9 @@ var
 begin
   // Remember selected items.
   Project1.BuildModes.ManyBuildModes.Clear;
-  for i:=0 to FListForm.CheckListBox1.Items.Count-1 do
-    if FListForm.CheckListBox1.Checked[i] then
-      Project1.BuildModes.ManyBuildModes.Add(FListForm.CheckListBox1.Items[i]);
+  for i:=0 to CheckListBox1.Items.Count-1 do
+    if CheckListBox1.Checked[i] then
+      Project1.BuildModes.ManyBuildModes.Add(CheckListBox1.Items[i]);
   Project1.Modified:=True;
 end;
 
@@ -910,19 +912,14 @@ procedure TBuildModesCheckList.SelectAll;
 var
   i: Integer;
 begin
-  for i := 0 to FListForm.CheckListBox1.Count-1 do
-    FListForm.CheckListBox1.Checked[i] := True;
+  for i := 0 to CheckListBox1.Count-1 do
+    CheckListBox1.Checked[i] := True;
 end;
 
 procedure TBuildModesCheckList.SelectFirst;
 begin
-  Assert(FListForm.CheckListBox1.Items.Count>0, 'TBuildModesCheckList.SelectFirst: Build modes count < 1');
-  FListForm.CheckListBox1.Checked[0] := True;
-end;
-
-function TBuildModesCheckList.Show: Boolean;
-begin
-  Result := FListForm.ShowModal=mrOK;
+  Assert(CheckListBox1.Items.Count>0, 'TBuildModesCheckList.SelectFirst: Build modes count < 1');
+  CheckListBox1.Checked[0] := True;
 end;
 
 end.

@@ -4519,7 +4519,7 @@ resourcestring
     +'is marked for installation but cannot be found.'
     +'%sRemove dependency from the installation list of packages?';
   lisERRORInvalidBuildMode = 'Error: (lazarus) invalid build mode "%s"';
-  lisAvailableProjectBuildModes = 'Available project build modes:';
+  lisAvailableProjectBuildModes = 'Available project build modes';
   lisThisProjectHasOnlyTheDefaultBuildMode = 'This project has only the default build mode.';
   lisPkgMangstaticPackagesConfigFile = 'static packages config file';
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
