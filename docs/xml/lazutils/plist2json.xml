@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-<!-- plist2json -->
+<!--
+========================================================================
+plist2json
+========================================================================
+-->
 <module name="plist2json">
-<!-- TODO: Needs module overview content. -->
-<short/>
-<descr/>
+<short>
+Contains routines used to convert the content in an XML document to its 
+representation using JSON (JavaScript Object Notation).
+</short>
+<descr>
+Used in the implementation of the TextMate grammar parser in the LazEdit 
+package.
+</descr>
 
 <!-- unresolved references -->
 <element name="Classes"/>
