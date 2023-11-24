@@ -230,6 +230,44 @@ begin
 
     GetMem(NewData, ArawImage.DataSize);
 
+    if desc.BitsPerPixel = 1 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if desc.BitsPerPixel = 8 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if desc.BitsPerPixel = 16 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if (desc.BitsPerPixel = 24) and ((Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)) then
+    begin
+      // put components in right order
+      DstRowPtr := NewData;
+      SrcRowPtr := ArawImage.Data;
+      y := Desc.Height;
+      while y > 0 do
+      begin
+        Src := SrcRowPtr;
+        Dst := DstRowPtr;
+        x := Desc.Width;
+        while x > 0 do
+        begin
+          Dst[0] := Src[Ridx];
+          Dst[1] := Src[Gidx];
+          Dst[2] := Src[Bidx];
+
+          Inc(Src, 3);
+          Inc(Dst, 3);
+          Dec(x);
+        end;
+        Inc(SrcRowPtr, ARowstride);
+        Inc(DstRowPtr, ARowstride);
+        Dec(y);
+      end;
+    end else
     if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
     begin
       // put components in right order
