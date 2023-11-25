@@ -4597,6 +4597,12 @@ begin
 
   Recognise(ttObject);
 
+  if fcTokenList.FirstSolidTokenType = ttSealed then
+    Recognise(ttSealed);
+
+  if fcTokenList.FirstSolidTokenType = ttAbstract then
+    Recognise(ttAbstract);
+
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
     RecogniseObjHeritage;
 
