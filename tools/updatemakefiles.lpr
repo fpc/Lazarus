@@ -34,10 +34,11 @@ program updatemakefiles;
 
 uses
   Classes, sysutils, FileProcs, DefineTemplates, LazFileUtils, Laz2_XMLCfg,
-  FileUtil;
+  FileUtil, LazLogger;
 
 var
   LazarusDir: String;
+  FPCMake: String;
 
 function FindLPK(Dir, MainSrc: string; out HasConditionals: boolean): string;
 var
@@ -146,7 +147,6 @@ procedure CheckFPCMake;
 const
   LastTarget = 'aarch64-darwin';
 var
-  FPCMake: String;
   Lines: TStringList;
 begin
   FPCMake:=FindDefaultExecutablePath('fpcmake');
@@ -158,6 +158,29 @@ begin
     raise Exception.Create('fpcmake does not support target '+LastTarget+'. Did you set PATH to the devel version of fpcmake?');
   end;
   Lines.Free;
+end;
+
+procedure UpdateCustomMakefiles;
+const
+  Dirs: array[1..7] of string = (
+    'lcl/interfaces',
+    'components/virtualtreeview',
+    'components/chmhelp/lhelp',
+    'components',
+    'lcl/interfaces',
+    'ide',
+    'tools'
+    );
+var
+  Dir: String;
+  Lines: TStringList;
+begin
+  for Dir in Dirs do begin
+    writeln(dir);
+    Lines:=RunTool(FPCMake,'-TAll',LazarusDir+SetDirSeparators(Dir));
+    //writeln(Lines.Text);
+    Lines.Free;
+  end;
 end;
 
 var
@@ -174,22 +197,28 @@ begin
     exit;
   end;
   CheckFPCMake;
+
   LazarusDir:=CleanAndExpandDirectory(GetCurrentDirUTF8);
   if ExtractFileName(ChompPathDelim(LazarusDir))='tools' then
     LazarusDir:=ExtractFilePath(ChompPathDelim(LazarusDir));
+  LazarusDir:=AppendPathDelim(LazarusDir);
+
   LPKFiles:=TStringList.Create;
   FindLPKFilesWithMakefiles(LazarusDir,LPKFiles);
   writeln(LPKFiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
-  LazbuildExe:=SetDirSeparators(LazarusDir+'/lazbuild'+ExeExt);
+  LazbuildExe:=SetDirSeparators(LazarusDir+'lazbuild'+ExeExt);
   if not FileIsExecutable(LazbuildExe) then
   begin
     writeln('Error: missing ',LazbuildExe);
     Halt(1);
   end;
-  LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'/lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
+  LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
+  LazbuildOut.Free;
   LPKFiles.Free;
+
+  UpdateCustomMakefiles;
 end.
 
