@@ -1,11 +1,12 @@
-unit testinsightclient;
+unit TestInsightClient;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, types, testinsightprotocol, fphttpclient, fpjson, contnrs, inifiles;
+  Classes, SysUtils, types, fphttpclient, fpjson, contnrs, inifiles,
+  TestInsightProtocol;
 
 Type
 

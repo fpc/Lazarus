@@ -1,4 +1,4 @@
-unit testinsightprotocol;
+unit TestInsightProtocol;
 
 {$mode ObjFPC}{$H+}
 

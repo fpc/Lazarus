@@ -1,11 +1,12 @@
-unit fpcunittestinsight;
+unit FpcUnitTestInsight;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, types, fpjson, fpcunit, testregistry, testinsightprotocol, testinsightclient;
+  Classes, SysUtils, types, DateUtils, fpjson, fpcunit, testregistry,
+  TestInsightProtocol, TestInsightClient;
 
 type
 
@@ -27,7 +28,7 @@ type
   Protected
     procedure AddFailure(ATest: TTest; aFailure: TTestFailure); virtual;
     procedure AddError(ATest: TTest; aError: TTestFailure); virtual;
-    procedure StartTest(ATest: TTest); virtual;
+    procedure StartTest({%H-}ATest: TTest); virtual;
     procedure EndTest(ATest: TTest); virtual;
     procedure StartTestSuite(ATestSuite: TTestSuite); virtual;
     procedure EndTestSuite(ATestSuite: TTestSuite); virtual;
@@ -44,9 +45,6 @@ Function TestSuiteToJSON(aSuite : TTest) : TJSONObject;
 Procedure TestSuiteToJSON(aSuite : TTest; aJSON : TJSONObject);
 
 implementation
-
-uses
-  DateUtils;
 
 Function DefaultTestConfigFileName : String;
 begin

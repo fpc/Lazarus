@@ -14,11 +14,11 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin,
   // LazUtils
-  LazFileCache, LazFileUtils, LazStringUtils, FileUtil,
+  LazFileCache, LazFileUtils, FileUtil,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // FPCUnit
-  TestInsightController, strtestcaseopts;
+  TestInsightController, StrTestCaseOpts;
 
 Type
   { TTestInsightOptionsFrame }
