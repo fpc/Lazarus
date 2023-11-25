@@ -673,11 +673,11 @@ var
   lParentHandle: TCDBaseControl;
   lScroll, lParentPos: TPoint;
 begin
+  lParentControl := ALCLControl.Parent;
+  if lParentControl = nil then Exit(Point(0, 0));
   // Iterate to find the appropriate BaseWindowOrg relative to the parent control
   Result := Point(ALCLControl.Left, ALCLControl.Top);
-  lParentControl := ALCLControl.Parent;
-  while (lParentControl <> nil) do
-  begin
+  repeat
     if AConsiderScrolling and lParentControl.HandleAllocated then
     begin
       lParentHandle := TCDBaseControl(lParentControl.Handle);
@@ -691,7 +691,7 @@ begin
     Result.X := Result.X + lParentPos.X - lScroll.X;
     Result.Y := Result.Y + lParentPos.Y - lScroll.Y;
     lParentControl := lParentControl.Parent;
-  end;
+  until lParentControl = nil;
 end;
 
 function FormPosToControlPos(ALCLControl: TWinControl; AX, AY: Integer): TPoint;
