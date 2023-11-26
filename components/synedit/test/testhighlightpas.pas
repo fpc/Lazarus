@@ -61,6 +61,7 @@ type
     procedure TestContextForProcedureNameAttr;
     procedure TestContextForInterface;
     procedure TestContextForDeprecated;
+    procedure TestContextForClassSection;
     procedure TestContextForClassModifier; // Sealed abstract
     procedure TestContextForClassHelper;
     procedure TestContextForTypeHelper;
@@ -1456,6 +1457,123 @@ begin
     SubTest('unimplemented', AFolds);
     SubTest('experimental' , AFolds);
     SubTest('platform'     , AFolds);
+  end;
+end;
+
+procedure TTestHighlighterPas.TestContextForClassSection;
+var
+  rc, lead1, lead2, cm, s1, s2, v: string;
+  strict1, strict2: Boolean;
+  cmod, sp1, sp2: Integer;
+begin
+  for rc in ['class ', 'object'] do
+  for lead1 in ['', '  '] do
+  for lead2 in ['', '  '] do
+  for cm  in ['                ', ' sealed abstract', ' sealed         ', ' abstract       '] do
+  for s1 in ['strict private  ', 'strict protected', 'private          ', 'protected        ', 'public           ', 'published        '] do
+  for s2 in ['strict private  ', 'strict protected', 'private          ', 'protected        ', 'public           ', 'published        '] do
+  for v  in ['private          ', 'protected        ', 'public           ', 'published        '] do
+  begin
+    sp1 := ord(tkSpace);
+    if lead1 = '' then sp1 := TK_SKIP;
+    sp2 := ord(tkSpace);
+    if lead2 = '' then sp2 := TK_SKIP;
+
+    strict1 := s1[1] = 's';
+    strict2 := s2[1] = 's';
+    cmod := 0;
+    if cm[2] <> ' ' then
+    case cm[9] of
+      ' ': cmod := 1;
+      'a': cmod := 2;
+      't': cmod := 1;
+    end;
+
+    if (rc <> 'class ') and ( (cmod <> 0) or strict1 or  strict2 )
+    then
+      continue;
+
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',  // 0
+         'type',
+         'TFoo='+rc+cm ,  // 2  class sealed abstract
+         lead1+trim(s1),
+         lead2+trim(s2),
+           'a,'+trim(v)+':'+trim(v)+';', // 5
+         lead1+trim(s2),
+         lead2+trim(s1),
+           'function '+trim(v)+'('+trim(v)+':'+trim(v)+';'+trim(v)+','+trim(v)+':'+trim(v)+'):'+trim(v)+';', // 8
+         lead1+trim(s1),
+         lead2+trim(s2), //10
+         'end;',
+         lead1+trim(v)+'='+trim(v)+';', // 12
+         lead2+trim(v)+'='+trim(v)+';',
+         'var',
+         lead1+trim(v)+':'+trim(v)+';', // 15
+         lead2+trim(v)+':'+trim(v)+';',
+         ''
+      ]);
+
+    case cmod of
+      0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey ]);
+      1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace ]);
+      2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+    end;
+
+    case strict1 of
+      False: CheckTokensForLine('public',          3, [ sp1, tkKey ]);
+      True:  CheckTokensForLine('strict private',  3, [ sp1, tkKey, tkSpace, tkKey ]);
+    end;
+    case strict2 of
+      False: CheckTokensForLine('public',          4, [ sp2, tkKey ]);
+      True:  CheckTokensForLine('strict private',  4, [ sp2, tkKey, tkSpace, tkKey ]);
+    end;
+
+    CheckTokensForLine('a,public:public;',  5,
+      [ tkIdentifier {a}, tkSymbol{,}, tkIdentifier {public}, tkSymbol{:},
+        tkIdentifier, tkSymbol{;} ]);
+
+    case strict2 of
+      False: CheckTokensForLine('public',          6, [ sp1, tkKey ]);
+      True:  CheckTokensForLine('strict private',  6, [ sp1, tkKey, tkSpace, tkKey ]);
+    end;
+    case strict1 of
+      False: CheckTokensForLine('public',          7, [ sp2, tkKey ]);
+      True:  CheckTokensForLine('strict private',  7, [ sp2, tkKey, tkSpace, tkKey ]);
+    end;
+
+
+    CheckTokensForLine('function ...',  8,
+      [ tkKey {function}, tkSpace, tkIdentifier + FAttrProcName{public},tkSymbol{(},
+        tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;},
+        tkIdentifier {public}, tkSymbol{,}, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;},
+        tkSymbol{)}, tkIdentifier, tkSymbol{;}
+      ]);
+
+    case strict1 of
+      False: CheckTokensForLine('public',          9, [ sp1, tkKey ]);
+      True:  CheckTokensForLine('strict private',  9, [ sp1, tkKey, tkSpace, tkKey ]);
+    end;
+    case strict2 of
+      False: CheckTokensForLine('public',         10, [ sp2, tkKey ]);
+      True:  CheckTokensForLine('strict private', 10, [ sp2, tkKey, tkSpace, tkKey ]);
+    end;
+
+    CheckTokensForLine('end',          11, [ tkKey, tkSymbol ]);
+
+    CheckTokensForLine('public=public;',  12,
+      [ sp1, tkIdentifier {public}, tkSymbol{=}, tkIdentifier, tkSymbol{;} ]);
+    CheckTokensForLine('public=public;',  13,
+      [ sp2, tkIdentifier {public}, tkSymbol{=}, tkIdentifier, tkSymbol{;} ]);
+
+    CheckTokensForLine('var',          14, [ tkKey ]);
+
+    CheckTokensForLine('public:public;',  15,
+      [ sp1, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;} ]);
+    CheckTokensForLine('public:public;',  16,
+      [ sp2, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;} ]);
+
   end;
 end;
 

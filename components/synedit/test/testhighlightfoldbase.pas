@@ -19,6 +19,8 @@ type
 
   function ExpVLine(ALine: Integer; AExp: Array of integer): TTestExpValuesForLine;
 
+const
+  TK_SKIP = -1;
 type
 
   TExpTokenInfo = record
@@ -212,10 +214,14 @@ begin
   c := 0;
   while not FTheHighLighter.GetEol do begin
     e := ExpTokens[c];
+    if e.ExpKind = TK_SKIP then begin
+      inc(c);
+      continue;
+    end;
     //DebugLn([FTheHighLighter.GetToken,' (',FTheHighLighter.GetTokenKind ,') at ', FTheHighLighter.GetTokenPos]);
 
     if etiKind in e.Flags then
-      AssertEquals(Name + ' Kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+      AssertEquals(Name + ' ASSERT token-kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
         e.ExpKind, FTheHighLighter.GetTokenKind);
 
     GotAttr := FTheHighLighter.GetTokenAttribute;

@@ -69,6 +69,7 @@ end;
 procedure TTestSynTextArea.TearDown;
 begin
   FTokenBreaker.Free;
+  FreeAndNil(FTheHighLighter);
   inherited TearDown;
 end;
 
