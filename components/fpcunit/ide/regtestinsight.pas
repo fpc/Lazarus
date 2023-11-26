@@ -6,10 +6,13 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms,
+  lazlogger, Forms, Controls,
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf,
-  IDEOptEditorIntf, IDEDialogs, IDEOptionsIntf, IDEExternToolIntf,
-  frmTestInsight, testinsightserver, strtestcaseopts;
+  IDEOptEditorIntf, IDEOptionsIntf, IDEExternToolIntf,
+  Projectintf,
+  CodeTree, CodeCache, CodeToolManager, FindDeclarationTool,
+  frmTestInsight, TestInsightServer, StrTestCaseOpts,
+  TestInsightController, fraTestInsightOpts;
 
 Type
 
@@ -33,9 +36,6 @@ procedure register;
 
 implementation
 
-uses controls, projectintf, codetree, codecache, codetoolmanager,
-  finddeclarationtool, lazlogger, testinsightcontroller, fraTestInsightOpts;
-
 const
   TestInsightFormName = 'TestInsightForm';
 
@@ -49,7 +49,7 @@ Type
   TFormFreeNotifier = Class(TComponent)
   Public
   Type
-     TFreeNotificationProc = Procedure(aForm : TCustomForm);
+    TFreeNotificationProc = Procedure(aForm : TCustomForm);
   Private
     FOnNotify : TFreeNotificationProc;
     FForm : TCustomForm;
@@ -57,7 +57,7 @@ Type
     procedure SetForm(AValue: TCustomForm);
   Protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
+    function DoProjectChanged(Sender: TObject; {%H-}AProject: TLazProject): TModalResult;
   Public
     Constructor CustomCreate(aOwner : TComponent; aOnNotify : TFreeNotificationProc);
     Property Form : TCustomForm Read FForm Write SetForm;
@@ -322,6 +322,7 @@ begin
 end;
 
 finalization
-  Controller.Free;
+  FreeAndNil(Controller);
+  FreeAndNil(FreeNotifier);
 end.
 

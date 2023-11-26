@@ -172,7 +172,7 @@ type
     function TestRunning : Boolean; virtual;
     procedure ConfigureServer(aServer: TTestInsightServer); virtual;
     function CreateServer(aOwner : TComponent) : TTestInsightServer; virtual;
-    procedure NavigateTo(const aClass, aMethod,aUnit,aLocationFile : String; aLocationLine : Integer); virtual;
+    procedure NavigateTo(const {%H-}aClass, {%H-}aMethod,{%H-}aUnit,{%H-}aLocationFile : String; {%H-}aLocationLine : Integer); virtual;
     procedure DoneServer(aServer :TTestInsightServer); virtual;
     procedure ShowMessage(Const Msg : String); virtual;
     procedure HandleServerLog(Sender: TObject; const aMessage: String); virtual;

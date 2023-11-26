@@ -1,4 +1,4 @@
-unit testinsightserver;
+unit TestInsightServer;
 
 {$mode ObjFPC}{$H+}
 

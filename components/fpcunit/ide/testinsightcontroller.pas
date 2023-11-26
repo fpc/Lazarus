@@ -1,4 +1,4 @@
-unit testinsightcontroller;
+unit TestInsightController;
 
 {$mode objfpc}{$H+}
 
