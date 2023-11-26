@@ -189,17 +189,19 @@ var
     OldFontHandle := SelectObject(TmpDC, BitBtn.Font.Reference.Handle);
     OldTextAlign := GetTextAlign(TmpDC);
 
-    // clear background:
-    // for alpha bitmap clear it with $00000000 else make it solid color for
-    // further masking
     if PaintBuffer = 0 then
     begin
+      // Make background solid color for further masking.
       Windows.FillRect(TmpDC, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
       Color := BitBtn.Font.Color;
       if Color = clDefault then
         Color := BitBtn.GetDefaultColor(dctFont);
       SetTextColor(TmpDC, ColorToRGB(Color));
-    end;
+    end
+    else
+      // Bitmap has alpha and themes are enabled, therefore BitmapRect is already initialized with $00000000.
+      // Fill glyph area with solid background to correctly blend semi-transparent pixels, issue #38897.
+      Windows.FillRect(TmpDC, Rect(XDestBitmap, YDestBitmap, XDestBitmap + glyphWidth, YDestBitmap + glyphHeight), GetSysColorBrush(COLOR_BTNFACE));
 
     if AState <> bsDisabled then
     begin
