@@ -24,13 +24,8 @@ type
     fActionBtn: TBitBtn;
     procedure UpdateButtons;
   public
-    constructor Create(TheOwner: TComponent); override;
     constructor CreateWithActionButton(aCaption: TCaption; aResourceGlyphName: string = '');
-    destructor Destroy; override;
   end;
-
-var
-  GenericCheckListForm: TGenericCheckListForm;
 
 implementation
 
@@ -38,19 +33,13 @@ implementation
 
 { TGenericCheckListForm }
 
-constructor TGenericCheckListForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  InfoLabel.Caption := '';
-end;
-
 constructor TGenericCheckListForm.CreateWithActionButton(aCaption: TCaption;
   aResourceGlyphName: string);
 begin
-  Create(Nil);
+  inherited Create(nil);
   fActionBtn := TBitBtn.Create(ButtonPanel1);
   fActionBtn.Caption := aCaption;
-  fActionBtn.ModalResult := mrYes;             // ActionButton will return mrYes.
+  fActionBtn.ModalResult := mrYes; // ActionButton will return mrYes.
   fActionBtn.Align := alRight;
   fActionBtn.BorderSpacing.Left := 6;
   fActionBtn.BorderSpacing.Right := 6;
@@ -58,11 +47,6 @@ begin
     IDEImages.AssignImage(fActionBtn, aResourceGlyphName);
   fActionBtn.AutoSize := True;
   fActionBtn.Parent := ButtonPanel1;
-end;
-
-destructor TGenericCheckListForm.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TGenericCheckListForm.FormShow(Sender: TObject);

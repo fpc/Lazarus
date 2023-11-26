@@ -35,7 +35,6 @@ object GenericListSelectForm: TGenericListSelectForm
     Width = 454
     Align = alTop
     BorderSpacing.Around = 6
-    Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
   end

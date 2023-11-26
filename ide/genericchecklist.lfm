@@ -52,7 +52,6 @@ object GenericCheckListForm: TGenericCheckListForm
     Width = 331
     Align = alTop
     BorderSpacing.Around = 6
-    Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
   end

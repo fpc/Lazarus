@@ -14,14 +14,7 @@ type
   TGenericListEditForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     Memo1: TMemo;
-  private
-
-  public
-
-  end; 
-
-var
-  GenericListEditForm: TGenericListEditForm;
+  end;
 
 implementation
 
