@@ -657,6 +657,8 @@ end;
 procedure TComponentPalette.SelectionToolClick(Sender: TObject);
 begin
   SelectAButton(TSpeedButton(Sender));
+  if Assigned(OnClassSelected) then
+    OnClassSelected(Self);
 end;
 
 procedure TComponentPalette.ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
