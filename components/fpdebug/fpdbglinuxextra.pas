@@ -7,8 +7,10 @@ interface
 uses
   Classes,
   BaseUnix,
-  SysUtils,
-  SysCall;
+{$ifdef linux}
+  SysCall,
+{$endif}
+  SysUtils;
 
 const
   PTRACE_TRACEME                               = 0;
