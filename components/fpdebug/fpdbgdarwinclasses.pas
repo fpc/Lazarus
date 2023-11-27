@@ -114,6 +114,7 @@ type
   protected
     function ReadThreadState: boolean;
     function ReadDebugState: boolean;
+//    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;

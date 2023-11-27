@@ -229,6 +229,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgdwarfcfi.pas"/>
         <UnitName Value="FpDbgDwarfCFI"/>
       </Item>
+      <Item>
+        <Filename Value="fpdbgcpux86.pas"/>
+        <UnitName Value="fpdbgcpux86"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

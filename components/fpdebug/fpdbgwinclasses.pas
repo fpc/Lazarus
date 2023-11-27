@@ -120,7 +120,7 @@ uses
   FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, UTF8Process,
-  FpDbgCommon, FpdMemoryTools, FpErrorMessages;
+  FpDbgCommon, FpdMemoryTools, FpErrorMessages, FpDbgCpuX86;
 
 type
 
@@ -140,6 +140,7 @@ type
     FBreakPointState: TBreakPointState;
     FDoNotPollName: Boolean;
     FName: String;
+    FUnwinder: TDbgStackUnwinderX86MultiMethod;
   protected
     FThreadContextChanged: boolean;
     FThreadContextChangeFlags: TFpContextChangeFlags;
@@ -150,7 +151,9 @@ type
     function GetFpThreadContext(var AStorage: TFpContext; out ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags): Boolean;
     function SetFpThreadContext(ACtxPtr: PFpContext; ACtxFlags: TFpWinCtxFlags = cfSkip): Boolean;
     function GetName: String; override;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
+    destructor Destroy; override;
     procedure Suspend;
     procedure SuspendForStepOverBreakPoint;
     procedure Resume;
@@ -1671,6 +1674,19 @@ begin
   end;
   if Result = '' then
     Result := inherited GetName;
+end;
+
+function TDbgWinThread.GetStackUnwinder: TDbgStackUnwinder;
+begin
+  if FUnwinder = nil then
+    FUnwinder := TDbgStackUnwinderX86MultiMethod.Create(Process);
+  Result := FUnwinder;
+end;
+
+destructor TDbgWinThread.Destroy;
+begin
+  FUnwinder.Free;
+  inherited Destroy;
 end;
 
 procedure TDbgWinThread.Suspend;

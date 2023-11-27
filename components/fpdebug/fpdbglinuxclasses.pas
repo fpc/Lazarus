@@ -27,7 +27,8 @@ uses
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, Maps,
   FpDbgCommon, FpdMemoryTools,
   FpErrorMessages,
-  FpImgReaderBase;
+  FpImgReaderBase,
+  FpDbgCpuX86;
 
 type
   user_regs_struct64 = record
@@ -274,6 +275,7 @@ type
     FIsSteppingBreakPoint: boolean;
     FDidResetInstructionPointer: Boolean;
     FHasThreadState: boolean;
+    FUnwinder: TDbgStackUnwinderX86MultiMethod;
     function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
@@ -284,7 +286,9 @@ type
     function RequestInternalPause: Boolean;
     function CheckSignalForPostponing(AWaitedStatus: cint): Boolean;
     procedure ResetPauseStates;
+    function GetStackUnwinder: TDbgStackUnwinder; override;
   public
+    destructor Destroy; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
     function DetectHardwareWatchpoint: Pointer; override;
@@ -664,6 +668,19 @@ begin
   ClearExceptionSignal;
   FHasThreadState := False;
   FDidResetInstructionPointer := False;
+end;
+
+function TDbgLinuxThread.GetStackUnwinder: TDbgStackUnwinder;
+begin
+  if FUnwinder = nil then
+    FUnwinder := TDbgStackUnwinderX86MultiMethod.Create(Process);
+  Result := FUnwinder;
+end;
+
+destructor TDbgLinuxThread.Destroy;
+begin
+  FUnwinder.Free;
+  inherited Destroy;
 end;
 
 function TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: boolean;

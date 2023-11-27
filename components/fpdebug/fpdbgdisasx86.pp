@@ -287,21 +287,23 @@ type
   TOperandFlag = (ofMemory);
   TOperandFlags = set of TOperandFlag;
 
+  TInstructionOperand = record
+    CodeIndex: integer;
+    Value: String;
+    Size: TOperandSize;
+    ByteCount: Word;
+    ByteCount2: Byte;
+    FormatFlags: THexValueFormatFlags;
+    Flags: TOperandFlags;
+  end;
+
   TInstruction = record
     OpCode: TFullOpcode;
     Flags: set of TInstructionFlag;
     Segment: String;
     MaskIndex: Byte;
 
-    Operand: array[1..4] of record
-      CodeIndex: integer;
-      Value: String;
-      Size: TOperandSize;
-      ByteCount: Word;
-      ByteCount2: Byte;
-      FormatFlags: THexValueFormatFlags;
-      Flags: TOperandFlags;
-    end;
+    Operand: array[1..4] of TInstructionOperand;
     OperCnt: Integer;
 
     ParseFlags: TFlags;
@@ -573,6 +575,18 @@ type
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; override;
     // Only Modify the values if result is true
     function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean): boolean; override;
+  end;
+
+  { TDbgStackUnwinderIntelDisAssembler }
+
+  TDbgStackUnwinderIntelDisAssembler = class(TDbgStackUnwinderX86Base)
+  private
+    //FCodeReadErrCnt: integer;
+  public
+    //procedure InitForThread(AThread: TDbgThread); override;
+    function Unwind(AFrameIndex: integer; var CodePointer, StackPointer,
+      FrameBasePointer: TDBGPtr; ACurrentFrame: TDbgCallstackEntry; out
+      ANewFrame: TDbgCallstackEntry): TTDbgStackUnwindResult; override;
   end;
 
 implementation
@@ -5272,17 +5286,74 @@ function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
       Result := 8;
   end;
 
+var
+  NewAddr, NewStack, NewFrame: TDBGPtr;
+  CurAddr: PByte;
+
+  function ValueFromOperand(constref Oper: TInstructionOperand; out AVal: TDBGPtr): boolean;
+  var
+    OpVal: Int64;
+    Src: TDBGPtr;
+    RSize: Cardinal;
+  begin
+    AVal := 0;
+    Result := True;
+    if (Oper.ByteCount2 <> 0) then
+      exit(False);
+
+    if (Oper.ByteCount = 0)
+    then begin
+      if (IsRegister(Oper.Value, 'bp')) then
+        AVal := NewFrame
+      else
+      if (IsRegister(Oper.Value, 'sp')) then
+        AVal := NewStack
+      else
+        exit(False);
+    end
+    else
+    if (Oper.ByteCount <> 0)
+    then begin
+      OpVal := ValueFromMem(CurAddr[Oper.CodeIndex], Oper.ByteCount, Oper.FormatFlags);
+
+      if (IsRegister(Oper.Value, 'bp%s')) then
+        {$PUSH}{$R-}{$Q-}
+        AVal := NewFrame + OpVal
+        {$POP}
+      else
+      if (IsRegister(Oper.Value, 'sp%s')) then
+        {$PUSH}{$R-}{$Q-}
+        AVal := NewStack + OpVal
+        {$POP}
+      else
+      if (Oper.Value = '%s') and (not(ofMemory in Oper.Flags))
+      then
+        AVal := TDBGPtr(OpVal)  // constant
+      else
+        exit(False);
+    end
+    else
+      exit(False);
+
+    if (ofMemory in Oper.Flags) then begin
+      Src := AVal;
+      AVal := 0;
+      RSize := RegisterSize(Oper.Value);
+      if not FProcess.ReadData(Src, RSize, AVal, RSize) then
+        exit(False);
+    end;
+  end;
+
 const
   MAX_SEARCH_ADDR = 8000;
   MAX_SEARCH_CNT = 400;
 var
-  NewAddr, NewStack, NewFrame, MaxAddr, MaxAddr2, StartAddr, StartStack, Tmp: TDBGPtr;
+  MaxAddr, MaxAddr2, StartAddr, StartStack, Tmp: TDBGPtr;
   ConditionalForwardAddr, BackwardJumpAddress: TDBGPtr;
   Cnt: Integer;
   instr: TX86AsmInstruction;
   RSize: Cardinal;
   Val: Int64;
-  CurAddr: PByte;
 begin
   Result := False;
   NewAddr    := AnAddress;
@@ -5324,8 +5395,9 @@ begin
     case instr.X86OpCode of
       OPret:
         begin
-          if instr.X86Instruction.OperCnt > 1 then
+          if instr.X86Instruction.OperCnt > 1 then begin
             exit;
+          end;
 
           Val := 0;
           if instr.X86Instruction.OperCnt = 1 then
@@ -5415,20 +5487,19 @@ begin
             exit;
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
-             not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
-            if (not IsRegister(instr.X86Instruction.Operand[2].Value, 'bp')) or
-               (Instr.X86Instruction.Operand[2].ByteCount <> 0) or
-               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
-               (ofMemory in Instr.X86Instruction.Operand[2].Flags)
-            then
-              exit; // TODO: check if source is known part of stack
-            NewStack := NewFrame;
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
+            NewStack := Tmp;
           end;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
-             not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
-          then
-            exit; // TODO: check if source is SP or known part of stack
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
+            NewFrame := Tmp;
+          end;
         end;
       OPlea:
         begin
@@ -5436,17 +5507,24 @@ begin
             exit;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
           then begin
-            if (not IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) or
-               (Instr.X86Instruction.Operand[2].ByteCount = 0) or
+            if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
                (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
                not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
             then
               exit;
 
             Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
-            {$PUSH}{$R-}{$Q-}
-            NewFrame := NewFrame + Val;
-            {$POP}
+            if (IsRegister(instr.X86Instruction.Operand[2].Value, 'sp%s')) then begin
+              {$PUSH}{$R-}{$Q-}
+              NewFrame := NewStack + Val;
+              {$POP}
+            end
+            else
+            if (IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) then begin
+              {$PUSH}{$R-}{$Q-}
+              NewFrame := NewFrame + Val;
+              {$POP}
+            end;
           end;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
           then begin
@@ -5456,15 +5534,14 @@ begin
             then
               exit;
 
+            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'sp%s')) then begin
-              Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
               {$PUSH}{$R-}{$Q-}
               NewStack := NewStack + Val;
               {$POP}
             end
             else
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) then begin
-              Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
               {$PUSH}{$R-}{$Q-}
               NewStack := NewFrame + Val;
               {$POP}
@@ -5477,18 +5554,23 @@ begin
         begin
           if instr.X86Instruction.OperCnt <> 2 then
             exit;
-          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
-          then begin
-            if (instr.X86Instruction.Operand[2].Value <> '%s') or
-               (Instr.X86Instruction.Operand[2].ByteCount = 0) or
-               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
-               (ofMemory in Instr.X86Instruction.Operand[2].Flags)
-            then
-              exit;
 
-            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[2].CodeIndex], Instr.X86Instruction.Operand[2].ByteCount, Instr.X86Instruction.Operand[2].FormatFlags);
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
             {$PUSH}{$R-}{$Q-}
-            NewStack := NewStack + Val;
+            NewStack := NewStack + int64(Tmp);
+            {$POP}
+          end;
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
+            {$PUSH}{$R-}{$Q-}
+            NewFrame := NewFrame + int64(Tmp);
             {$POP}
           end;
         end;
@@ -5554,6 +5636,26 @@ begin
           end;
         end;
     end;
+  end;
+end;
+
+{ TDbgStackUnwinderIntelDisAssembler }
+
+function TDbgStackUnwinderIntelDisAssembler.Unwind(AFrameIndex: integer;
+  var CodePointer, StackPointer, FrameBasePointer: TDBGPtr;
+  ACurrentFrame: TDbgCallstackEntry; out ANewFrame: TDbgCallstackEntry
+  ): TTDbgStackUnwindResult;
+begin
+  ANewFrame := nil;
+  Result := suFailed;
+
+  if Process.Disassembler.UnwindFrame(CodePointer, StackPointer, FrameBasePointer, False)
+  then begin
+    ANewFrame := TDbgCallstackEntry.Create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
+    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameIP].SetValue(CodePointer, IntToStr(CodePointer),AddressSize, FDwarfNumIP);
+    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameBP].SetValue(FrameBasePointer, IntToStr(FrameBasePointer),AddressSize, FDwarfNumBP);
+    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameSP].SetValue(StackPointer, IntToStr(StackPointer),AddressSize, FDwarfNumSP);
+    Result := suSuccess;
   end;
 end;
 
