@@ -1097,12 +1097,10 @@ begin
       // TScrollBar
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
-        MinHeight:=Widget^.get_allocated_height();
-        MaxHeight:=MinHeight;
+        widget^.get_preferred_height(@MinHeight,@MaxHeight);
       end else begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
-        MinWidth:=Widget^.get_allocated_width();
-        MaxWidth:=MinWidth;
+        widget^.get_preferred_width(@MinWidth,@MaxWidth);
       end;
       //DebugLn('TGtk3WidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
     end else if SizeConstraints.Control is TPageControl then begin
