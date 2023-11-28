@@ -4364,7 +4364,7 @@ end;
 
 procedure TFpDebugDebugger.DoAddBreakFuncLib;
 begin
-  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheFileName, FCacheBoolean, FCacheLib);
+  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheFileName, FCacheBoolean, FCacheLib, True);
 end;
 
 procedure TFpDebugDebugger.DoAddBreakLocation;

@@ -549,7 +549,7 @@ type
     procedure UpdateState; override;
     procedure UpdateForLibraryLoaded(ALib: TDbgLibrary); override;
   public
-    constructor Create(const AProcess: TDbgProcess; const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance = nil); virtual;
+    constructor Create(const AProcess: TDbgProcess; const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance = nil; AIgnoreCase: Boolean = False); virtual;
   end;
 
   { TFpInternalBreakpointAtFileLine }
@@ -614,7 +614,7 @@ type
     function GetPointerSize: Integer;
 
     function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
-    function FindProcSymbol(const AName: String): TFpSymbol; overload;
+    function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
   protected
     FDbgInfo: TDbgInfo;
@@ -793,7 +793,7 @@ type
     function  AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil): TFpDbgBreakpoint; overload;
-    function  AddBreak(const AFuncName: String; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil): TFpDbgBreakpoint; overload;
+    function  AddBreak(const AFuncName: String; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil; AIgnoreCase: Boolean = False): TFpDbgBreakpoint; overload;
     function  AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope): TFpInternalWatchpoint;
     property WatchPointData: TFpWatchPointData read FWatchPointData;
@@ -807,7 +807,7 @@ type
     *)
     function  FindProcSymbol(const AName: String): TFpSymbol; overload; // deprecated 'backward compatible / use FindProcSymbol(AName, TheDbgProcess)';
     function  FindProcSymbol(const AName: String; ASymInstance: TDbgInstance): TFpSymbol; overload;
-    procedure FindProcSymbol(const AName: String; ASymInstance: TDbgInstance; out ASymList: TFpSymbolArray);
+    procedure FindProcSymbol(const AName: String; ASymInstance: TDbgInstance; out ASymList: TFpSymbolArray; AIgnoreCase: Boolean = False);
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
@@ -1936,14 +1936,15 @@ end;
 { TDbgInstance }
 
 
-function TDbgInstance.FindProcSymbol(const AName: String): TFpSymbol;
+function TDbgInstance.FindProcSymbol(const AName: String; AIgnoreCase: Boolean
+  ): TFpSymbol;
 begin
   if FDbgInfo <> nil then
     Result := FDbgInfo.FindProcSymbol(AName)
   else
     Result := nil;
   if (Result = nil) and (SymbolTableInfo <> nil) then
-    Result := SymbolTableInfo.FindProcSymbol(AName);
+    Result := SymbolTableInfo.FindProcSymbol(AName, AIgnoreCase);
 end;
 
 constructor TDbgInstance.Create(const AProcess: TDbgProcess);
@@ -2092,9 +2093,9 @@ begin
 end;
 
 function TDbgProcess.AddBreak(const AFuncName: String; AnEnabled: Boolean;
-  ASymInstance: TDbgInstance): TFpDbgBreakpoint;
+  ASymInstance: TDbgInstance; AIgnoreCase: Boolean): TFpDbgBreakpoint;
 begin
-  Result := TFpInternalBreakpointAtSymbol.Create(Self, AFuncName, AnEnabled, ASymInstance);
+  Result := TFpInternalBreakpointAtSymbol.Create(Self, AFuncName, AnEnabled, ASymInstance, AIgnoreCase);
   AfterBreakpointAdded(Result);
 end;
 
@@ -2126,7 +2127,8 @@ begin
 end;
 
 procedure TDbgProcess.FindProcSymbol(const AName: String;
-  ASymInstance: TDbgInstance; out ASymList: TFpSymbolArray);
+  ASymInstance: TDbgInstance; out ASymList: TFpSymbolArray; AIgnoreCase: Boolean
+  );
 var
   Lib: TDbgLibrary;
   Sym: TFpSymbol;
@@ -2134,21 +2136,21 @@ begin
   // TODO: find multiple symbols within the same DbgInfo
   ASymList := nil;
   if ASymInstance <> nil then begin
-    Sym := ASymInstance.FindProcSymbol(AName);
+    Sym := ASymInstance.FindProcSymbol(AName, AIgnoreCase);
     if Sym <> nil then begin
       SetLength(ASymList, 1);
       ASymList[0] := Sym;
     end;
   end
   else begin
-    Sym := FindProcSymbol(AName);
+    Sym := FindProcSymbol(AName, AIgnoreCase);
     if Sym <> nil then begin
       SetLength(ASymList, 1);
       ASymList[0] := Sym;
     end;
 
     for Lib in FLibMap do begin
-      Sym := Lib.FindProcSymbol(AName);
+      Sym := Lib.FindProcSymbol(AName, AIgnoreCase);
       if Sym <> nil then begin
         SetLength(ASymList, 1);
         ASymList[0] := Sym;
@@ -3887,7 +3889,8 @@ begin
 end;
 
 constructor TFpInternalBreakpointAtSymbol.Create(const AProcess: TDbgProcess;
-  const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance);
+  const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance;
+  AIgnoreCase: Boolean);
 var
   a: TDBGPtrArray;
   AProcList: TFpSymbolArray;
@@ -3896,7 +3899,7 @@ begin
   FFuncName := AFuncName;
   FSymInstance := ASymInstance;
 
-  AProcess.FindProcSymbol(AFuncName, ASymInstance, AProcList);
+  AProcess.FindProcSymbol(AFuncName, ASymInstance, AProcList, AIgnoreCase);
   SetLength(a, Length(AProcList));
   for i := 0 to Length(AProcList) - 1 do begin
     a[i] := AProcList[i].Address.Address;

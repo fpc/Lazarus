@@ -61,7 +61,7 @@ type
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String);
     destructor Destroy; override;
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
-    function FindProcSymbol(const AName: String): TFpSymbol; override; overload;
+    function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; override; overload;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
   end;
 
@@ -195,11 +195,23 @@ begin
   Result := TFpSymbolContext.Create(ALocationContext, Self);
 end;
 
-function TFpSymbolInfo.FindProcSymbol(const AName: String): TFpSymbol;
+function TFpSymbolInfo.FindProcSymbol(const AName: String; AIgnoreCase: Boolean
+  ): TFpSymbol;
 var
+  s: String;
   i: integer;
 begin
-  i := FSymbolList.IndexOf(AName);
+  if AIgnoreCase then begin
+    s := UpperCase(AName);
+    i := FSymbolList.Count - 1;
+    while i >= 0 do begin
+      if UpperCase(FSymbolList.Keys[i]) = s then
+        break;
+      dec(i);
+    end;
+  end
+  else
+    i := FSymbolList.IndexOf(AName);
   if i >= 0 then
     Result := TFpSymbolTableProc.Create(AName, FSymbolList.DataPtr[i]^.Addr)
   else
