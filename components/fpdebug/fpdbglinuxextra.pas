@@ -5,6 +5,7 @@ unit FpDbgLinuxExtra;
 interface
 
 uses
+  {$IFDEF linux}{$IFDEF LIBC} SysCall, {$ENDIF}{$ENDIF}
   Classes,
   BaseUnix,
   SysUtils;
