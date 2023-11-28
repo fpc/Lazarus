@@ -1424,7 +1424,7 @@ var
   Brk: TBreakLocationEntry;
 begin
   for Brk in Self do begin
-    if (Brk.Location >= AAdress) and (Brk.Location < (AAdress+ASize)) then
+    if (not Brk.ErrorSetting) and (Brk.Location >= AAdress) and (Brk.Location < (AAdress+ASize)) then
       PByte(@AData)[Brk.Location-AAdress] := Brk.OrigValue;
   end;
 end;
