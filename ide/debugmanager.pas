@@ -1620,6 +1620,7 @@ begin
   SrcLine := FCurrentLocation.SrcLine;
   if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
                                        // SrcLine will be -2 after stepping (gdbmi)
+  and not FAsmStepping
   then begin
     TId := Threads.CurrentThreads.CurrentThreadId;
     if CallStack.CurrentCallStackList.EntriesForThreads[TId].HasAtLeastCount(30) = nbUnknown then begin
@@ -1666,6 +1667,7 @@ begin
 
   if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
                                        // SrcLine will be -2 after stepping (gdbmi)
+  and not FAsmStepping
   then begin
     // jump to the deepest stack frame with debugging info
     // TODO: Only below the frame supplied by debugger
