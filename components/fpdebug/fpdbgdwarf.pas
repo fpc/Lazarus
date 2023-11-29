@@ -580,6 +580,8 @@ type
                               AValueObj: TFpValueDwarf; out AValue: Int64;
                               AReadState: PFpDwarfAtEntryDataReadState = nil;
                               ADataSymbol: PFpSymbolDwarfData = nil): Boolean;
+    function  LocationExprFromLocationList(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
+                              out AValue: TByteDynArray): boolean;
     function  LocationFromAttrData(const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
                               var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
                               AnInitLocParserData: PInitLocParserData = nil;
@@ -4497,6 +4499,81 @@ begin
     AReadState^ := rfError;
 end;
 
+function TFpSymbolDwarf.LocationExprFromLocationList(
+  const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf; out
+  AValue: TByteDynArray): boolean;
+var
+  LocSect: TDwarfSectionInfo;
+  ValOffs: QWord;
+  LocList, LocListEnd: Pointer;
+  Sz, Len: Integer;
+  BaseAddr, PC: TDBGPtr;
+  LowBnd, HighBnd: TDBGPtr;
+begin
+  Result := False;
+  LocSect := CompilationUnit.DebugFile^.Sections[dsLoc];
+  if (LocSect.RawData = nil) then
+    exit;
+
+  if InformationEntry.ReadValue(AnAttribData, ValOffs) then begin
+    Sz := AValueObj.Context.SizeOfAddress;
+    if ValOffs > LocSect.Size - 2 * Sz - 2 // need at least 1 pair of bounds an a 2 byte len
+    then
+      exit;
+    LocList := LocSect.RawData + ValOffs;
+    LocListEnd := LocList + LocSect.Size - 2 * Sz - 2;
+
+    BaseAddr := 0;
+    if CompilationUnit.Version > 2 then
+      BaseAddr := CompilationUnit.BaseAddress;
+    PC := AValueObj.Context.Address;
+
+    while LocList < LocListEnd do begin
+      case sz of
+        4: begin
+            LowBnd  := PDWord(LocList)^;
+            HighBnd := PDWord(LocList)[1];
+            LocList := LocList + 2 * sz;
+            if LowBnd = high(DWORD) then begin
+              BaseAddr := HighBnd;
+              continue;
+            end;
+          end;
+        8: begin
+            LowBnd  := PQWord(LocList)^;
+            HighBnd := PQWord(LocList)[1];
+            LocList := LocList + 2 * sz;
+            if LowBnd = high(QWORD) then begin
+              BaseAddr := HighBnd;
+              continue;
+            end;
+          end;
+      end;
+
+      if (LowBnd = 0) and (HighBnd = 0) then
+        exit; // not found
+
+      Len := PWord(LocList)^;
+
+      LowBnd  := LowBnd + BaseAddr;
+      HighBnd := HighBnd + BaseAddr;
+
+      if (PC >= LowBnd) and (PC < HighBnd) then begin
+        // found
+        SetLength(AValue, Len);
+        if Len > 0 then
+          move((LocList+2)^, AValue[0], Len);
+        Result := True;
+        exit;
+      end;
+
+      LocList := LocList + 2 * Len;
+    end;
+
+    SetLastError(AValueObj, CreateError(fpErrAnyError));
+  end;
+end;
+
 function TFpSymbolDwarf.LocationFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf;
   var AnAddress: TFpDbgMemLocation; AnInitLocParserData: PInitLocParserData;
@@ -4504,19 +4581,32 @@ function TFpSymbolDwarf.LocationFromAttrData(
 var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
+  AForm: Cardinal;
 begin
   //debugln(FPDBG_DWARF_VERBOSE, ['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   AnAddress := InvalidLoc;
 
-  //TODO: avoid copying data
-  // DW_AT_data_member_location in members [ block or const]
-  // DW_AT_location [block or reference] todo: const
-  if not InformationEntry.ReadValue(AnAttribData, Val) then begin
-    DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location']);
-    SetLastError(AValueObj, CreateError(fpErrAnyError));
-    exit;
+  AForm :=  AnAttribData.InformationEntry.AttribForm[AnAttribData.Idx];
+  if (AForm = DW_FORM_data4) or (AForm = DW_FORM_data8) then begin
+    // location list
+    if not LocationExprFromLocationList(AnAttribData, AValueObj, Val) then begin
+      DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location from loc-list']);
+      if not IsError(AValueObj.LastError) then
+        SetLastError(AValueObj, CreateError(fpErrAnyError));
+      exit;
+    end;
+  end
+  else begin
+    //TODO: avoid copying data
+    // DW_AT_data_member_location in members [ block or const]
+    // DW_AT_location [block or reference] todo: const
+    if not InformationEntry.ReadValue(AnAttribData, Val) then begin
+      DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location']);
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
+      exit;
+    end;
   end;
 
   if Length(Val) = 0 then begin

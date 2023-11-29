@@ -690,8 +690,8 @@ type
     FAddressMap: TMap; // Holds a key for each DW_TAG_subprogram / TFpSymbolDwarfDataProc, stores TDwarfAddressInfo
     FAddressMapBuild: Boolean;
     
-    FMinPC: QWord;  // the min and max PC value found in this unit.
-    FMaxPC: QWord;  //
+    FMinPC: TDBGPtr;  // the min and max PC value found in this unit.
+    FMaxPC: TDBGPtr;  //
     FFirstScope: TDwarfScopeInfo;
     FScopeList: TDwarfScopeList;
     FCompUnitScope: TDwarfScopeInfo;
@@ -755,6 +755,7 @@ type
     property UnitName: String read GetUnitName;
     property IdentifierCase: Integer read FIdentifierCase;
     property Producer: String read FProducer;
+    property BaseAddress: TDBGPtr read FMinPC;
 
     property Version: Word read FVersion;
     //property AbbrevOffset: QWord read FAbbrevOffset;

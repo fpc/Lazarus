@@ -120,7 +120,7 @@ begin
     ProcVal := ProcSymbol.Value;
     if (ProcVal <> nil) then begin
       AContext := TFpDbgSimpleLocationContext.Create(AMemManager,
-        LocToAddrOrNil(ProcSymbol.Address), ATargetWidth div 8, AThread.ID, ADbgCallStack.Index);
+        LocToAddrOrNil(TargetLoc(ADbgCallStack.AnAddress)), ATargetWidth div 8, AThread.ID, ADbgCallStack.Index);
 
       if AContext <> nil then begin
         TFpValueDwarf(ProcVal).Context := AContext;
