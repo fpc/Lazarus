@@ -175,6 +175,7 @@ begin
     p[i] := FitSeries.Param[i];
 
   s := FitSeries.EquationText.
+    TextFormat(Chart.Legend.TextFormat).
     x('&alpha;').
     y('A').
     NumFormat('%.2f').
