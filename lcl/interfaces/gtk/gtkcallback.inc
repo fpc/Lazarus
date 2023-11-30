@@ -403,7 +403,6 @@ begin
   LCLMenuItem := TMenuItem(AData);
   // some sanity checks
   if LCLMenuItem = nil then Exit;
-  if not LCLMenuItem.IsCheckItem then Exit; // ???
 
   // the gtk always toggles the check flag
   // -> restore 'checked' flag if needed

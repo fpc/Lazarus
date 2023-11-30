@@ -361,7 +361,6 @@ type
 const
   OldCheckMenuItemDrawProc: TCheckMenuItemDrawProc = nil;
   OldMenuSizeRequestProc: TMenuSizeRequestProc = nil;
-  OldCheckMenuItemToggleSize: integer = 0;
 
 
   { Accelerators }
