@@ -68,7 +68,7 @@ const
   mrNoToAll = SysUITypes.mrNoToAll;
   mrYesToAll= SysUITypes.mrYesToAll;
   mrClose   = SysUITypes.mrClose;
-  {$IF FPC_FULLVERSION>30300}
+  {$IF FPC_FULLVERSION>=30203}
   mrContinue= SysUITypes.mrContinue;
   mrTryAgain= SysUITypes.mrTryAgain;
   {$ENDIF}
@@ -179,7 +179,7 @@ type
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TAnchorKind = SysUITypes.TAnchorKind;
   TAnchors = SysUITypes.TAnchors;
   TAnchorSideReference = SysUITypes.TAnchorSideReference;
@@ -190,7 +190,7 @@ type
   {$ENDIF}
 
 const
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   akLeft = SysUITypes.akLeft;
   akTop = SysUITypes.akTop;
   akRight = SysUITypes.akRight;
@@ -222,14 +222,14 @@ type
 
   TBevelCut = TGraphicsBevelCut;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TMouseButton = SysUITypes.TMouseButton;
   {$ELSE}
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
   {$ENDIF}
 
 const
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   mbLeft = SysUITypes.mbLeft;
   mbRight = SysUITypes.mbRight;
   mbMiddle = SysUITypes.mbMiddle;
@@ -471,7 +471,7 @@ type
 
   TDragObject = class;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TDragKind = SysUITypes.TDragKind;
   TDragMode = SysUITypes.TDragMode;
   TDragState = SysUITypes.TDragState;
@@ -986,7 +986,7 @@ type
     );
   TControlAutoSizePhases = set of TControlAutoSizePhase;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TTabOrder = SysUITypes.TTabOrder;
   {$ELSE}
   TTabOrder = -1..32767;
@@ -2788,7 +2788,7 @@ function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): Integer;
 // register (called by the package initialization in design mode)
 procedure Register;
 
-{$IF FPC_FULLVERSION >= 30300}
+{$IF FPC_FULLVERSION >= 30203}
 const
   dkDrag = SysUITypes.dkDrag;
   dkDock = SysUITypes.dkDock;

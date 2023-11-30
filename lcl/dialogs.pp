@@ -819,7 +819,7 @@ const
     idButtonAll,
     idButtonNoToAll,
     idButtonYesToAll,
-    {$IF FPC_FULLVERSION>30300}
+    {$IF FPC_FULLVERSION>=30203}
     idButtonContinue,
     idButtonTryAgain,
     {$ENDIF}
