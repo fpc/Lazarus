@@ -3193,7 +3193,7 @@ var
   XKeyEvent: TXKeyEvent;
   KeySymStart, KeySymNext: PKeySym;
   UpKeySym, LoKeySym: TKeySym;
-  KeySyms: array of TKeySym;
+  KeySyms: array of TKeySym = nil;
 {$else}
   KeySyms: array of guint;
   KeyVals: Pguint;
@@ -3214,7 +3214,7 @@ var
 
   KeyCode: Byte;
   m: Integer;
-  LoKey, HiKey: Integer;
+  LoKey, HiKey, I: Integer;
 
   VKey, FreeVK: Byte;
   HasMultiVK, DummyBool, Extended, SecondKey, HasKey, ComputeVK: Boolean;
@@ -3258,8 +3258,14 @@ begin
     then XFree(KeySymStart);
     Exit;
   end;
-  if KeySymCount > Length(MVKeyInfo[0].KeySym)
-  then DebugLn('[WARNING] keysymcount=%u larger than expected=%u', [KeySymCount, Length(MVKeyInfo[0].KeySym)]);
+  // The code in Accelerate below assumes at least 2 items in the KeySym array
+  if KeySymCount > 2 then begin
+    for I:=Low(MVKeyInfo) to High(MVKeyInfo) do
+      SetLength(MVKeyInfo[I].KeySym, KeySymCount);
+  end else begin
+    for I:=Low(MVKeyInfo) to High(MVKeyInfo) do
+      SetLength(MVKeyInfo[I].KeySym, 2);
+  end;
   SetLength(KeySyms, KeySymCount);
 {$else gtk1}
   LoKey := 0;

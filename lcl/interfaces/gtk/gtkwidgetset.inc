@@ -148,6 +148,10 @@ begin
   fpsigaction(SIGCHLD, @child_action, nil);
 end;
 
+{$ifdef ClearGtkModulesEnvVar}
+function setenv(envname, envvar: PAnsiChar; overwrite: cint): cint; cdecl; external 'c' name 'setenv';
+{$endif}
+
 {$endif}
 
 {------------------------------------------------------------------------------
@@ -164,6 +168,10 @@ var
   TM: TThreadManager;
 {$ENDIF}
 {$ENDIF}
+{$ifdef ClearGtkModulesEnvVar}
+var
+  OldGtkModulesValue: AnsiString;
+{$endif}
 begin
   if ClassType = TGtkWidgetSet
   then raise EInvalidOperation.Create('Cannot create the base gtkwidgetset, use gtk1 or gtk2 instead');
@@ -226,8 +234,19 @@ begin
   // initialize app level gtk engine
   gtk_set_locale ();
 
+  // clear the GTK_MODULES environment variable if needed
+  {$ifdef ClearGtkModulesEnvVar}
+  OldGtkModulesValue:=GetEnvironmentVariable('GTK_MODULES');
+  setenv('GTK_MODULES', '', 1);
+  {$endif}
+
   // call init and pass cmd line args
   PassCmdLineOptions;
+
+  // restore the GTK_MODULES environment variable
+  {$ifdef ClearGtkModulesEnvVar}
+  setenv('GTK_MODULES', PAnsiChar(OldGtkModulesValue), 1);
+  {$endif}
 
   // set glib log handler
   FLogHandlerID := g_log_set_handler(nil, -1, @GLogFunc, Self);
@@ -1054,9 +1073,11 @@ begin
   {$ENDIF}
   
   if (GTK_WIDGET_REALIZED(AWidget)) then
-    WindowStyle := gtk_style_copy(gtk_widget_get_style(AWidget))
+    WindowStyle := gtk_widget_get_style(AWidget)
   else
-    WindowStyle := gtk_style_copy(gtk_rc_get_style(AWidget));
+    WindowStyle := gtk_rc_get_style(AWidget);
+
+  if WindowStyle <> nil then WindowStyle := gtk_style_copy(WindowStyle);
 
   if (Windowstyle = nil) then
     Windowstyle := gtk_style_new;
@@ -3791,6 +3812,11 @@ begin
     LM_DROPFILES:
       ConnectSenderSignal(gCore, 'drag_data_received', @GtkDragDataReceived);
 
+    LM_CONTEXTMENU:
+    begin
+      // Gtk1 does not have an explicit context menu signal, LM_CONTEXTMENU
+      // support is emulated in gtkMouseBtnPress
+    end;
 (*
     LM_WINDOWPOSCHANGED:
     begin
