@@ -102,11 +102,6 @@ function gtk_gl_area_make_current(glarea: PGtkGLArea): boolean;
 function gtk_gl_area_begingl(glarea: PGtkGLArea): boolean;
 procedure gtk_gl_area_swap_buffers(gl_area: PGtkGLArea);
 
-{$IFDEF lclgtk}
-function gdk_x11_get_default_xdisplay:PDisplay;cdecl;external;
-function gdk_x11_get_default_screen:gint;cdecl;external;
-{$ENDIF}
-
 procedure LOpenGLViewport({%H-}Handle: HWND; Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
@@ -599,7 +594,7 @@ begin
   Result:=PGtkWidget(gl_area);
 end;
 
-function CustomXErrorHandler({%H-}para1:PDisplay; para2:PXErrorEvent):cint;cdecl;
+function CustomXErrorHandler({%H-}para1:XLib.PDisplay; para2:PXErrorEvent):cint;cdecl;
 begin
   if para2^.error_code=8 then begin
     raise Exception.Create('A BadMatch X error occurred. Most likely the requested OpenGL version is invalid.');
@@ -634,8 +629,13 @@ begin
   ShareList:=nil;
   if share<>nil then ShareList:=share^.glcontext;
   PrivateShareList:=PGdkGLContextPrivate(ShareList);
+  {$IFDEF LCLGTK}
+  XDisplay:=gdk_display;
+  ScreenNum:=gdk_screen;
+  {$ELSE}
   XDisplay:=gdk_x11_get_default_xdisplay;
   ScreenNum:=gdk_x11_get_default_screen;
+  {$ENDIF}
   if GLX_version_1_3(XDisplay) then begin
     { use approach recommended since glX 1.3 }
     FBConfigsCount:=0;
@@ -718,20 +718,19 @@ begin
   if GLXContext=nil then
     raise Exception.Create('gdk_gl_context_share_new_usefpglx context creation failed');
 
+  {$IFNDEF LCLGTK}
   ColorMap:=gdk_colormap_get_system;
   Visual:=gdk_colormap_get_visual(ColorMap);
-  if XVisualIDFromVisual(
-    GDK_VISUAL_XVISUAL({$IFDEF LCLGTK}PGdkVisualPrivate(visual)
-                       {$ELSE}visual
-                       {$ENDIF}))
-    <>XVInfo^.visualid
-  then begin
+  if XVisualIDFromVisual(GDK_VISUAL_XVISUAL(visual)) <> XVInfo^.visualid then begin
     Visual:=gdkx_visual_get(XVInfo^.visualid);
-    ColorMap:=gdk_colormap_new(Visual, {$IFDEF LCLGTK2}gFALSE{$ELSE}0{$ENDIF});
+    ColorMap:=gdk_colormap_new(Visual, gFALSE);
   end;
+  {$ENDIF}
 
   GLArea:=gtk_type_new(gtk_gl_area_get_type);
+  {$IFNDEF LCLGTK}
   gtk_widget_set_colormap(PGtkWidget(@GLArea^.darea), ColorMap);
+  {$ENDIF}
 
   PrivateContext:=g_new(SizeOf(TGdkGLContextPrivate), 1);
   PrivateContext^.xdisplay:=XDisplay;

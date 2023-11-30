@@ -29,7 +29,9 @@ unit OpenGLContext;
     {$DEFINE UseGtkGLX}
     {$DEFINE HasRGBA}
     {$DEFINE HasRGBBits}
+    {$DEFINE HasDebugContext}
     {$DEFINE OpenGLTargetDefined}
+    {$DEFINE UsesModernGL}
   {$ENDIF}
 {$ENDIF}
 {$IFDEF LCLGTK2}
