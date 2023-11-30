@@ -417,7 +417,7 @@ type
   TVKeyUTF8Char = array[0..7] of Char;
   TVKeyInfo = record
     KeyCode: array[Boolean] of Byte; // false is primary keycode, true the keycode of the other key when 2 keys exist (like CTRL or extended key)
-    KeySym: array[0..7] of Integer;
+    KeySym: array of Integer;
     KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 

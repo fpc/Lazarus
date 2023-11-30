@@ -33,7 +33,21 @@
 
 {off $Define Disable_GC_SysColors}
 
+{$define HideKeyTableWarnings}
+
 {$define RawimageConsistencyChecks}
+
+(*
+ Gtk1 uses a GTK_MODULES environment variable that causes it to load modules
+ at startup, however this variable is also used by Gtk2 and Gtk3, meaning
+ that if a referenced module is not part of the available Gtk1 modules the
+ program will display a warning at startup time.  Since as of 2023 pretty much
+ no distribution comes with Gtk1 this is always a bogus warning and to avoid
+ this, the GTK_MODULES environment variable will be cleaned during startup and
+ reset after the toolkit has been initialized to allow for Gtk2 and later child
+ processes.
+*)
+{$define ClearGtkModulesEnvVar}
 
 (*
  keep track of keystates instead of using OS

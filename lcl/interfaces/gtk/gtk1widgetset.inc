@@ -37,10 +37,13 @@ begin
     Exit; // the GTKAPIWidget is self drawn, so no use to change the widget style.
 
   if (GTK_WIDGET_REALIZED(AWidget)) then
-    WindowStyle := gtk_style_copy(gtk_widget_get_style(AWidget))
+    WindowStyle := gtk_widget_get_style(AWidget)
   else
-    WindowStyle := gtk_style_copy(gtk_rc_get_style(AWidget));
-    
+    WindowStyle := gtk_rc_get_style(AWidget);
+
+  if WindowStyle <> nil then
+    WindowStyle := gtk_style_copy(WindowStyle);
+
   if (Windowstyle = nil) then
     Windowstyle := gtk_style_new;
 
