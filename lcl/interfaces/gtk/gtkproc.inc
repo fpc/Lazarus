@@ -5964,7 +5964,7 @@ begin
     MenuItem:=PGtkMenuItem(ListItem^.Data);
     if GTK_IS_CHECK_MENU_ITEM(PGtkWidget(MenuItem)) then begin
       CheckMenuItem:=MenuItem;
-      CurToggleSize:=OldCheckMenuItemToggleSize;
+      CurToggleSize:=1;
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
       if LCLMenuItem<>nil then begin
         IconSize:=LCLMenuItem.GetIconSize(0);
@@ -6112,11 +6112,6 @@ var
           {$ELSE}
           bm_show_toggle_indicator;
           {$ENDIF}
-
-      // set our own draw handler
-      if OldCheckMenuItemDrawProc = nil then
-        OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
-      CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator := @DrawMenuItemIcon;
 
       {$IFNDEF Gtk2}
       // add a dummy widget for the icon height

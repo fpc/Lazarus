@@ -170,15 +170,23 @@ begin
 
   if GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM) then
   begin
-    // set 'ShowAlwaysCheckable'
-    gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(Widget),
-      AMenuItem.ShowAlwaysCheckable);
+    // set 'ShowAlwaysCheckable' (this modifies the always_show_toggle bitfield
+    // in the private _GtkCheckMenuItem - it used to be modifiable by a function
+    // call but in Gtk 1.2.9 and 1.2.10 it became a noop, however aside from
+    // that the rest of the code didn't change
+    if AMenuItem.ShowAlwaysCheckable then
+      PGtkCheckMenuItem(Widget)^.flag0:=PGtkCheckMenuItem(Widget)^.flag0 or 2
+    else
+      PGtkCheckMenuItem(Widget)^.flag0:=PGtkCheckMenuItem(Widget)^.flag0 and not 2;
     // set 'Checked'
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
       AMenuItem.Checked);
 
-    if (OldCheckMenuItemToggleSize=0) then
-      OldCheckMenuItemToggleSize := MENU_ITEM_CLASS(Widget)^.toggle_size;
+    // always set our own indicator draw handler to ensure the check box is not
+    // drawn for non-checkable menu items
+    if OldCheckMenuItemDrawProc = nil then
+      OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(Widget)^.draw_indicator;
+    CHECK_MENU_ITEM_CLASS(Widget)^.draw_indicator := @DrawMenuItemIcon;
 
     g_signal_connect_after(PGTKObject(Widget), 'toggled',
       TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(AMenuItem));
