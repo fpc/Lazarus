@@ -41,9 +41,10 @@ type
   TBubbleOverrideColor = (bocBrush, bocPen);
   TBubbleOverrideColors = set of TBubbleOverrideColor;
   TBubbleRadiusUnits = (
-    bruX,   // Circle with radius given in x axis units
-    bruY,   // Circle with radius given in y axis units
-    bruXY   // Ellipse
+    bruX,           // Circle with radius given in x axis units
+    bruY,           // Circle with radius given in y axis units
+    bruXY,          // Ellipse
+    bruPercentage   // Percentage of the smallest dimension of plot area
   );
 
   { TBubbleSeries }
@@ -53,13 +54,17 @@ type
     FBubbleBrush: TBrush;
     FBubblePen: TPen;
     FOverrideColor: TBubbleOverrideColors;
+    FBubbleRadiusPercentage: Integer;
     FBubbleRadiusUnits: TBubbleRadiusUnits;
+    FBubbleScalingFactor: Double;
     procedure SetBubbleBrush(AValue: TBrush);
     procedure SetBubblePen(AValue: TPen);
+    procedure SetBubbleRadiusPercentage(AValue: Integer);
     procedure SetBubbleRadiusUnits(AValue: TBubbleRadiusUnits);
     procedure SetOverrideColor(AValue: TBubbleOverrideColors);
   protected
-    function GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
+    function CalcBubbleScalingFactor(const ARect: TRect): Double;
+    function GetBubbleRect(AItem: PChartDataItem; AFactor: Double; out ARect: TRect): Boolean;
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -86,6 +91,8 @@ type
     property AxisIndexY;
     property BubbleBrush: TBrush read FBubbleBrush write SetBubbleBrush;
     property BubblePen: TPen read FBubblePen write SetBubblePen;
+    property BubbleRadiusPercentage: Integer read FBubbleRadiusPercentage
+      write SetBubbleRadiusPercentage default 20;
     property BubbleRadiusUnits: TBubbleRadiusUnits read FBubbleRadiusUnits
       write SetBubbleRadiusUnits default bruXY;
     property MarkPositions;
@@ -532,8 +539,23 @@ begin
     with TBubbleSeries(ASource) do begin
       Self.BubbleBrush := FBubbleBrush;
       Self.BubblePen := FBubblePen;
+      Self.BubbleRadiusUnits := FBubbleRadiusUnits;
+      Self.BubbleRadiusPercentage := FBubbleRadiusPercentage;
+      Self.OverrideColor := FOverrideColor;
     end;
   inherited Assign(ASource);
+end;
+
+function TBubbleSeries.CalcBubbleScalingFactor(const ARect: TRect): Double;
+var
+  rMin, rMax: Double;
+begin
+  if FBubbleRadiusUnits = bruPercentage then
+  begin
+    Source.YRange(1, rMin, rMax);
+    Result := Min(ARect.Width, ARect.Height) * FBubbleRadiusPercentage * PERCENT / abs(rMax);
+  end else
+    Result := 1.0;
 end;
 
 constructor TBubbleSeries.Create(AOwner: TComponent);
@@ -544,7 +566,9 @@ begin
   FBubblePen.OnChange := @StyleChanged;
   FBubbleBrush := TBrush.Create;
   FBubbleBrush.OnChange := @StyleChanged;
+  FBubbleRadiusPercentage := 20;
   FBubbleRadiusUnits := bruXY;
+  FBubbleScalingFactor := 1.0;
 end;
 
 destructor TBubbleSeries.Destroy;
@@ -584,9 +608,11 @@ begin
   NormalizeRect(clipR);
   ADrawer.ClippingStart(clipR);
 
+  FBubbleScalingFactor := CalcBubbleScalingFactor(clipR);
+
   for i := 0 to Count - 1 do begin
     item := Source[i];
-    if not GetBubbleRect(item, irect) then
+    if not GetBubbleRect(item, FBubbleScalingFactor, irect) then
       continue;
     if not IntersectRect(dummyR, clipR, irect) then
       continue;
@@ -594,19 +620,24 @@ begin
       ADrawer.SetPenParams(BubblePen.Style, ColorDef(item^.Color, BubblePen.Color));
     if bocBrush in OverrideColor then
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
+
     ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
+
   GetXYCountNeeded(nx, ny);
-  if Source.YCount > ny then
+  if Source.YCount >= ny then
     for i := 0 to ny - 1 do DrawLabels(ADrawer, i)
   else
     DrawLabels(ADrawer);
+
   ADrawer.ClippingStop;
 end;
 
+{ Calculates the extent of the series such that bubbles are not clipped.
+  But note that this method is correct only for BubbleRadiusUnits bruXY, it
+  would crash for bruX and bruY. Adjust Chart.Margins or Chart.ExpandPercentage
+  in these cases. }
 function TBubbleSeries.Extent: TDoubleRect;
-// to do: this method is correct only for BubbleRadiusMode bruXY.
-// The radius calculation in case of bruX or bruY causes a crash.,,
 var
   i: Integer;
   r: Double;
@@ -617,27 +648,32 @@ begin
   if IsEmpty then exit;
   if not RequestValidChartScaling then exit;
 
-  for i := 0 to Count - 1 do begin
-    item := Source[i];
-    sp := item^.Point;
-    if TAChartUtils.IsNaN(sp) then
-      continue;
-    r := item^.YList[0];
-    if Math.IsNaN(r) then
-      continue;
-    rp := DoublePoint(r, r);
-    gp := AxisToGraph(sp);
-    gq := AxisToGraph(sp + rp);
-    rp := gq - gp;
+  if FBubbleRadiusUnits = bruXY then
+  begin
+    for i := 0 to Count - 1 do begin
+      item := Source[i];
+      sp := item^.Point;
+      if TAChartUtils.IsNaN(sp) then
+        continue;
+      r := item^.YList[0];
+      if Math.IsNaN(r) then
+        continue;
+      rp := DoublePoint(r, r);
+      gp := AxisToGraph(sp);
+      gq := AxisToGraph(sp + rp);
+      rp := gq - gp;
 
-    Result.a.X := Min(Result.a.X, sp.x - rp.x);
-    Result.b.X := Max(Result.b.X, sp.x + rp.x);
-    Result.a.Y := Min(Result.a.Y, sp.y - rp.y);
-    Result.b.Y := Max(Result.b.Y, sp.y + rp.y);
-  end;
+      Result.a.X := Min(Result.a.X, sp.x - rp.x);
+      Result.b.X := Max(Result.b.X, sp.x + rp.x);
+      Result.a.Y := Min(Result.a.Y, sp.y - rp.y);
+      Result.b.Y := Max(Result.b.Y, sp.y + rp.y);
+    end;
+  end else
+    Result := Source.BasicExtent;
 end;
 
-function TBubbleSeries.GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
+function TBubbleSeries.GetBubbleRect(AItem: PChartDataItem;
+  AFactor: Double; out ARect: TRect): Boolean;
 var
   sp: TDoublePoint;    // source point in axis units
   p: TPoint;           // bubble center in image units
@@ -673,6 +709,12 @@ begin
         ARect.TopLeft := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x - r, sp.y - r)));
         ARect.BottomRight := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x + r, sp.y + r)));
       end;
+    bruPercentage:
+      begin
+        p := ParentChart.GraphToImage(AxisToGraph(sp));
+        ri := round(r * AFactor);
+        ARect := Rect(p.x - ri, p.y - ri, p.x + ri, p.y + ri);
+      end;
   end;
   NormalizeRect(ARect);
   Result := true;
@@ -691,7 +733,7 @@ var
   isneg: Boolean;
   dir: TLabelDirection;
 begin
-  if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex + FLoBound], R) then begin
+  if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex + FLoBound], FBubbleScalingFactor, R) then begin
     isNeg := IS_NEGATIVE[MarkPositions];
     if Assigned(GetAxisY) then
       if (IsRotated and ParentChart.IsRightToLeft) xor GetAxisY.Inverted then
@@ -732,7 +774,7 @@ begin
   if Result and (nptYList in AParams.FTargets) and (nptYList in ToolTargets) then
     if (AResults.FYIndex = 1) then begin
       item := Source[AResults.FIndex];
-      GetBubbleRect(item, iRect);
+      GetBubbleRect(item, FBubbleScalingFactor, iRect);
       rx := (iRect.Right - iRect.Left) div 2;
       ry := (iRect.Bottom - iRect.Top) div 2;
       p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
@@ -746,7 +788,7 @@ begin
     dist := MaxInt;
     for i := 0 to Count - 1 do begin
       item := Source[i];
-      if not GetBubbleRect(item, irect) then
+      if not GetBubbleRect(item, FBubbleScalingFactor, irect) then
         continue;
       rx := (iRect.Right - iRect.Left) div 2;
       ry := (iRect.Bottom - iRect.Top) div 2;
@@ -862,6 +904,13 @@ begin
   UpdateParentChart;
 end;
 
+procedure TBubbleSeries.SetBubbleRadiusPercentage(AValue: Integer);
+begin
+  if FBubbleRadiusPercentage = AValue then exit;
+  FBubbleRadiusPercentage := AValue;
+  UpdateParentChart;
+end;
+
 procedure TBubbleSeries.SetBubbleRadiusUnits(AValue: TBubbleRadiusUnits);
 begin
   if FBubbleRadiusUnits = AValue then exit;
@@ -892,7 +941,7 @@ begin
   end;
 
   item := Source[APointIdx];
-  GetBubbleRect(item, iRect);
+  GetBubbleRect(item, FBubbleScalingFactor, iRect);
   rx := (iRect.Right - iRect.Left) div 2;
   ry := (iRect.Bottom - iRect.Top) div 2;
   p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
@@ -940,6 +989,7 @@ begin
     center := AxisToGraphY((a.y + b.y) * 0.5);
   UpdateLabelDirectionReferenceLevel(0, 0, center);
   scMarksDistance := ADrawer.Scale(Marks.Distance);
+
   for i := FLoBound to FUpBound do begin
     for j := 0 to Min(1, Source.YCount-1) do begin
       gp := GetLabelDataPoint(i, j);
