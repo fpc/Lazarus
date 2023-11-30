@@ -171,7 +171,7 @@ type
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TAnchorKind = System.UITypes.TAnchorKind;
   TAnchors = System.UITypes.TAnchors;
   TAnchorSideReference = System.UITypes.TAnchorSideReference;
@@ -182,7 +182,7 @@ type
   {$ENDIF}
 
 const
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   akLeft = System.UITypes.akLeft;
   akTop = System.UITypes.akTop;
   akRight = System.UITypes.akRight;
@@ -214,14 +214,14 @@ type
 
   TBevelCut = TGraphicsBevelCut;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TMouseButton = System.UITypes.TMouseButton;
   {$ELSE}
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
   {$ENDIF}
 
 const
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   mbLeft = System.UITypes.mbLeft;
   mbRight = System.UITypes.mbRight;
   mbMiddle = System.UITypes.mbMiddle;
@@ -463,7 +463,7 @@ type
 
   TDragObject = class;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TDragKind = System.UITypes.TDragKind;
   TDragMode = System.UITypes.TDragMode;
   TDragState = System.UITypes.TDragState;
@@ -978,7 +978,7 @@ type
     );
   TControlAutoSizePhases = set of TControlAutoSizePhase;
 
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TTabOrder = System.UITypes.TTabOrder;
   {$ELSE}
   TTabOrder = -1..32767;
@@ -2780,7 +2780,7 @@ function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): Integer;
 // register (called by the package initialization in design mode)
 procedure Register;
 
-{$IF FPC_FULLVERSION >= 30300}
+{$IF FPC_FULLVERSION >= 30203}
 const
   dkDrag = System.UITypes.dkDrag;
   dkDock = System.UITypes.dkDock;
