@@ -1484,7 +1484,6 @@ var
   centerLvl: Double;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-
   lfont := TFont.Create;
   try
     lfont.Assign(Marks.LabelFont);

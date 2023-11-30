@@ -209,6 +209,8 @@ type
     FSortIndex: Cardinal;
     FXCount: Cardinal;
     FYCount: Cardinal;
+    FYRange: array of TDoubleInterval;
+    FYRangeValid: array of Boolean;
     function CalcExtentXYList(UseXList: Boolean): TDoubleRect;
     procedure ChangeErrorBars(Sender: TObject); virtual;
     function GetCount: Integer; virtual; abstract;
@@ -222,7 +224,7 @@ type
     procedure SetSortDir(AValue: TChartSortDir); virtual;
     procedure SetSortIndex(AValue: Cardinal); virtual;
     procedure SetXCount(AValue: Cardinal); virtual; abstract;
-    procedure SetYCount(AValue: Cardinal); virtual; abstract;
+    procedure SetYCount(AValue: Cardinal); virtual;
     property XErrorBarData: TChartErrorBarData index 0 read GetErrorBarData
       write SetErrorBarData stored IsErrorBarDataStored;
     property YErrorBarData: TChartErrorBarData index 1 read GetErrorBarData
@@ -273,6 +275,7 @@ type
     function ValuesTotal: Double; virtual;
     function XOfMax(AIndex: Integer = 0): Double;
     function XOfMin(AIndex: Integer = 0): Double;
+    procedure YRange(AYIndex: Integer; var AMin, AMax: Double);
 
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
@@ -1015,6 +1018,8 @@ begin
   FSortIndex := 0;
   FXCount := 1;
   FYCount := 1;
+  SetLength(FYRange, 1);
+  SetLength(FYRangeValid, 1);
   for i:=Low(FErrorBarData) to High(FErrorBarData) do begin
     FErrorBarData[i] := TChartErrorBarData.Create;
     FErrorBarData[i].OnChange := @ChangeErrorBars;
@@ -1025,6 +1030,8 @@ destructor TCustomChartSource.Destroy;
 var
   i: Integer;
 begin
+  Finalize(FYRange);
+  Finalize(FYRangeValid);
   for i:= Low(FErrorBarData) to High(FErrorBarData) do
     FErrorBarData[i].Free;
   inherited;
@@ -1414,12 +1421,18 @@ begin
 end;
 
 procedure TCustomChartSource.InvalidateCaches;
+var
+  i: Integer;
 begin
   FBasicExtentIsValid := false;
   FValuesTotalIsValid := false;
   FCumulativeExtentIsValid := false;
   FXListExtentIsValid := false;
   FYListExtentIsValid := false;
+  SetLength(FYRangeValid, YCount);
+  SetLength(FYRange, YCount);
+  for i := 0 to High(FYRange) do
+    FYRangeValid[i] := false;
 end;
 
 function TCustomChartSource.IsErrorBarDataStored(AIndex: Integer): Boolean;
@@ -1478,6 +1491,13 @@ procedure TCustomChartSource.SetSortIndex(AValue: Cardinal);
 begin
   if FSortIndex <> AValue then
     raise ESortError.CreateFmt(rsSourceSortError, [ClassName]);
+end;
+
+procedure TCustomChartSource.SetYCount(AValue: Cardinal);
+begin
+  FYCount := AValue;
+  SetLength(FYRange, FYCount);
+  SetLength(FYRangeValid, FYCount);
 end;
 
 procedure TCustomChartSource.SortValuesInRange(
@@ -1672,6 +1692,35 @@ begin
           exit(i);
       end;
   Result := 0.0;
+end;
+
+{ Returns the smallest and largest y value with the given y index. }
+procedure TCustomChartSource.YRange(AYIndex: Integer; var AMin, AMax: Double);
+var
+  i, yIdx: Integer;
+begin
+  if FYRangeValid[AYIndex] then
+  begin
+    AMin := FYRange[AYIndex].FStart;
+    AMax := FYRange[AYIndex].FEnd;
+  end else
+  begin
+    AMin := +Infinity;
+    AMax := -Infinity;
+    if (AYIndex >= YCount) or (AYIndex < 0) then
+      exit;
+    if AYIndex = 0 then
+      for i := 0 to Count - 1 do
+        UpdateMinMax(Item[i]^.Y, AMin, AMax)
+    else
+    begin
+      yIdx := AYIndex - 1;
+      for i := 0 to Count - 1 do
+        UpdateMinMax(Item[i]^.YList[yIdx], AMin, AMax);
+    end;
+    FYRange[AYIndex].FStart := AMin;
+    FYRange[AYIndex].FEnd := AMax;
+  end;
 end;
 
 

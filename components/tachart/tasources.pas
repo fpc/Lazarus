@@ -944,6 +944,8 @@ begin
 end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(const AX, AY: Double);
+var
+  i: Integer;
 begin
   if IsUpdating then exit; // Optimization
   if FBasicExtentIsValid then begin
@@ -955,6 +957,8 @@ begin
   FCumulativeExtentIsValid := false;
   FXListExtentIsValid := false;
   FYListExtentIsValid := false;
+  for i := 0 to YCount-1 do
+    FYRangeValid[i] := false;
   Notify;
 end;
 
@@ -1410,7 +1414,7 @@ end;
 procedure TRandomChartSource.SetYCount(AValue: Cardinal);
 begin
   if YCount = AValue then exit;
-  FYCount := AValue;
+  inherited SetYCount(AValue);
   Reset;
 end;
 
@@ -1496,7 +1500,7 @@ end;
 procedure TUserDefinedChartSource.SetYCount(AValue: Cardinal);
 begin
   if FYCount = AValue then exit;
-  FYCount := AValue;
+  inherited SetYCount(AValue);
   SetLength(FItem.YList, Max(YCount - 1, 0));
   Reset;
 end;
