@@ -96,7 +96,8 @@ type
     ofDoLoadResource,// do open form, datamodule, ... (overriding default)
     ofLoadHiddenResource,// load component hidden
     ofAddToProject,  // add file to project (if exists)
-    ofInternalFile   // opening data from an internal source (e.g. an editor macro (pascal script) from memory)
+    ofInternalFile,  // opening data from an internal source (e.g. an editor macro (pascal script) from memory)
+    ofDoNotActiveSourceEditor // do not active the source editor window
     );
   TOpenFlags = set of TOpenFlag;
 
