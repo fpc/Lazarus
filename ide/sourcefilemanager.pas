@@ -1320,7 +1320,8 @@ begin
 
   if (FNewEditorInfo <> nil) and (FFlags * [ofProjectLoading, ofRevert] = [])
   and (FNewEditorInfo.EditorComponent <> nil) then begin
-    SourceEditorManager.ShowActiveWindowOnTop(True);
+    if not (ofDoNotActiveSourceEditor in FFLags) then
+      SourceEditorManager.ShowActiveWindowOnTop(True);
     exit(ChangeEditorPage);
   end;
 
