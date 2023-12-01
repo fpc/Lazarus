@@ -255,7 +255,7 @@ type
     function TestFalse(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 
     function CheckResult(AnWatchExp: TWatchExpectation): Boolean;
-    function CheckData(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String; AnIsNested: Boolean = True): Boolean; virtual;
+    function CheckData(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String; AnIsNested: Boolean = True; ASkipErrCheck: Boolean = False): Boolean; virtual;
     function VerifyDebuggerState: Boolean; virtual;
     function VerifySymType(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function VerifyTypeName(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -345,6 +345,7 @@ function weUniStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResul
 function wePointer(ATypeName: String=''): TWatchExpectationResult;
 function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
 function wePointerAddr(AExpVal: Pointer; ATypeName: String=''): TWatchExpectationResult;
+function wePointerAddr(AExpVal: Pointer; AExpSubVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
 
 function weStatArray(const AExpVal: Array of TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult; overload;
 function weStatArray(const AExpVal: Array of TWatchExpectationResult; AExpFullLen: Integer; ATypeName: String=''): TWatchExpectationResult; overload;
@@ -654,6 +655,18 @@ begin
   Result.ExpSymKind := skPointer;
   Result.ExpTypeName := ATypeName;
   Result.ExpPointerValue := AExpVal;
+end;
+
+function wePointerAddr(AExpVal: Pointer; AExpSubVal: TWatchExpectationResult;
+  ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkPointerAddr;
+  Result.ExpSymKind := skPointer;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpPointerValue := AExpVal;
+  SetLength(Result.ExpSubResults, 1);
+  Result.ExpSubResults[0] := AExpSubVal;
 end;
 
 function weStatArray(const AExpVal: array of TWatchExpectationResult;
@@ -1431,7 +1444,7 @@ begin
         with Debugger.CurLocation do
           FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' WATCH: '+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
       if TstStackFrame > 0 then
-        FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
+        FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ') ';
       if not VerifyDebuggerState then
         exit;
       FTest.LogText('###### ' + TstTestName + ' // ' + TstWatch.Expression + '###### '+LineEnding);
@@ -1446,6 +1459,9 @@ begin
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
       Context.WatchRes := WatchVal.ResultData;
+
+      //debugln([' ## ## ',  WatchVal.Expression]);
+      //debugln([FWatchResultPrinter.PrintWatchValue(WatchVal.ResultData,wdfDefault)]); debugln;
 
       if (Context.WatchRes <> nil) and
          (Context.WatchRes.ValueKind = rdkPCharOrString)
@@ -1481,7 +1497,7 @@ begin
       end;
       if ehExpectErrorText in ehf then begin
         Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
-        Result := CheckData(Context, AnIgnoreRsn);
+        Result := CheckData(Context, AnIgnoreRsn, True, True);
         exit;
       end;
       if ehExpectNotFound in ehf then begin
@@ -1525,9 +1541,26 @@ begin
 end;
 
 function TWatchExpectationList.CheckData(AContext: TWatchExpTestCurrentData;
-  AnIgnoreRsn: String; AnIsNested: Boolean): Boolean;
+  AnIgnoreRsn: String; AnIsNested: Boolean; ASkipErrCheck: Boolean): Boolean;
+var
+  ehf: TWatchExpErrorHandlingFlags;
 begin
+  ehf := AContext.Expectation.ExpErrorHandlingFlags[Compiler.SymbolType];
   AContext.IsNested := AnIsNested;
+
+  // TODO: can be pre-printed for an error
+  if not ASkipErrCheck then begin
+    if ehExpectError in ehf then begin
+      Result := TestTrue('IsErr', AContext.WatchRes.ValueKind in [rdkError, rdkPrePrinted], AContext, AnIgnoreRsn);
+      exit;
+    end;
+    if ehExpectErrorText in ehf then begin
+      Result := TestTrue('IsErr', AContext.WatchRes.ValueKind in [rdkError, rdkPrePrinted], AContext, AnIgnoreRsn);
+      Result := CheckResultMatch(AContext, AnIgnoreRsn);
+      exit;
+    end;
+  end;
+
   case AContext.Expectation.ExpResultKind of
     rkMatch:       Result := CheckResultMatch(AContext, AnIgnoreRsn);
     rkInteger:     Result := CheckResultNum(AContext, False, AnIgnoreRsn);
@@ -1979,7 +2012,7 @@ begin
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
       g := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
 
-      e := '(\$[0-9a-fA-F]*|nil)';
+      e := '(\$[0-9a-fA-F]*\^?|nil)';
       tn := GetExpTypeNameAsRegEx(Expect);
       if (tn <> '') and
          (Length(Expect.ExpSubResults) = 1) and
@@ -1989,7 +2022,7 @@ begin
         tn := ''; // char pointer to not (always?) include the type
       if tn <> '' then
         e := tn+'\('+e+'\)';
-      e := '^'+e+'([:\s=]|$)';
+      e := '^'+e+'\^?([:\s=]|$)';
 
       Result := TestMatches('Data', e, g, AContext, AnIgnoreRsn);
 
@@ -2022,7 +2055,7 @@ begin
       SubContext := AContext;
       SubContext.WatchRes := TWatchResultDataPrePrinted.Create(g);
       SubContext.Expectation := Expect.ExpSubResults[0];
-      FTest.TestBaseName := n + ' / deref value';
+      FTest.TestBaseName := n + ' / deref value ';
 
       Result := CheckData(SubContext, AnIgnoreRsn);
 
@@ -2049,7 +2082,7 @@ begin
           SubContext := AContext;
           SubContext.WatchRes := AContext.WatchRes.DerefData;
           SubContext.Expectation := Expect.ExpSubResults[0];
-          FTest.TestBaseName := n + ' / deref value';
+          FTest.TestBaseName := n + ' / deref value ';
 
           Result := VerifyTypeName(SubContext, AnIgnoreRsn);
           // TODO: check type specifics, like ValueKind, ByteSize, ...  // ehIgnData
@@ -2093,8 +2126,11 @@ begin
     end
     else begin
       Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkPointerVal, AContext, AnIgnoreRsn);
+      Result := TestEquals('Ptr-Addr', TDBGPtr(Expect.ExpPointerValue), AContext.WatchRes.DataAddress, AContext, AnIgnoreRsn);
     end;
   end;
+  if (Length(Expect.ExpSubResults) = 1) then
+    Result := CheckResultPointer(AContext, AnIgnoreRsn);
 end;
 
 function TWatchExpectationList.CheckResultArray(
@@ -2150,7 +2186,7 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     n := FTest.TestBaseName;
     SubContext := AContext;
     for i := 0 to min(e, length(Expect.ExpSubResults)) - 1 do begin
-      FTest.TestBaseName := n + ' Idx='+IntToStr(i);
+      FTest.TestBaseName := n + ' Idx='+IntToStr(i)+' ';
       AContext.WatchRes.SetSelectedIndex(i);
 
       if PrePrint then
@@ -2238,7 +2274,7 @@ begin
         SubContext.WatchRes := TWatchResultDataPrePrinted.Create(
           FWatchResultPrinter.PrintWatchValue(AContext.WatchRes.Fields[j].Field, wdfDefault)
         );
-        FTest.TestBaseName := n + ' Idx=' + IntToStr(i);
+        FTest.TestBaseName := n + ' Idx=' + IntToStr(i)+' ';
         SubContext.Expectation := sr;
         Result := CheckData(SubContext, AnIgnoreRsn);
 

@@ -1368,6 +1368,8 @@ begin
   //  exit(WResult);
 
   Result := FValue.AsString;
+  if IsError(FValue.LastError) then
+    SetLastError(FValue.LastError);
 end;
 
 function TFpPasParserValueAddressOf.GetAsWideString: WideString;
@@ -1385,6 +1387,8 @@ begin
   end;
 
   Result := FValue.AsWideString;
+  if IsError(FValue.LastError) then
+    SetLastError(FValue.LastError);
 end;
 
 constructor TFpPasParserValueAddressOf.Create(AValue: TFpValue;
@@ -1641,7 +1645,7 @@ begin
           end;
           a := TmpVal.DataAddress;
           if IsTargetAddr(a) and IsReadableMem(a) then
-            TFpValueConstChar(TmpVal2).SetAddress(a + Offs-1);
+            TFpValueConstWithType(TmpVal2).SetAddress(a + Offs-1);
         end;
       skWideString: begin
           //TODO: move to FpDwarfValue.member ??
@@ -3820,6 +3824,7 @@ begin
 
   tmp := Items[0].ResultValue;
   if (tmp = nil) or not IsTargetAddr(tmp.Address) then begin
+    SetError(fpErrAnyError, []);
   // seterror / cant take address
     exit;
   end;
