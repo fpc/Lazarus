@@ -1088,7 +1088,6 @@ begin
 
   if lNSColumn = nil then Exit;
   lTableLV.removeTableColumn(lNSColumn);
-  lNSColumn.release;
 end;
 
 class function TCocoaWSCustomListView.ColumnGetWidth(
