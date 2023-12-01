@@ -1587,10 +1587,11 @@ procedure TTestWatches.TestWatchesIntrinsic;
   end;
 
 var
-  ExeName: String;
+  ExeName, vn, d1: String;
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg, BrkFoo, BrkFooVar, BrkFooConstRef: TDBGBreakPoint;
+  i: Integer;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchIntrinsic) then exit;
@@ -1639,25 +1640,217 @@ begin
     t.Add('pos', PREFIX+'pos(''e'', Short0)',     weInteger( 5, #1, 0)).IgnTypeName();
     t.Add('pos', PREFIX+'pos(''e'', ''1e'')',     weInteger( 2, #1, 0)).IgnTypeName();
 
-    t.Add('substr', PREFIX+'substr(SRef1, 2,3)',   weAnsiStr('bcd', #1)).IgnTypeName();
+// dwarf2 incorrectly does SREF: PChar
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3)',   weAnsiStr('bcd', #1)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3)',   weAnsiStr('cde', #1)).IgnTypeName().IgnAll(stDwarf3Up);
     t.Add('substr', PREFIX+'substr(Short0, 4,3)',   weAnsiStr('def', #1)).IgnTypeName();
-    t.Add('substr', PREFIX+'substr(SRef1, 2,3, false)',   weAnsiStr('bcd', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3, false)',   weAnsiStr('bcd', #1)).IgnTypeName().IgnAll(stDwarf2);
+    t.Add('substr', PREFIX+'substr(SRef1, 2,3, false)',   weAnsiStr('cde', #1)).IgnTypeName().IgnAll(stDwarf3Up);
     t.Add('substr', PREFIX+'substr(Short0, 4,3, false)',   weAnsiStr('def', #1)).IgnTypeName();
     //  0 based
     t.Add('substr', PREFIX+'substr(SRef1, 2,3, true)',   weAnsiStr('cde', #1)).IgnTypeName();
-    t.Add('substr', PREFIX+'substr(Short0, 4,3, true)',   weAnsiStr('ef1', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(Short0, 4,3, true)',   weAnsiStr('ef1', #1)).IgnTypeName().IgnAll(stDwarf2);
     // cut off
-    t.Add('substr', PREFIX+'substr(SRef1, 10, 30)',   weAnsiStr('456', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(SRef1, 10, 30)',   weAnsiStr('456', #1)).IgnTypeName().IgnAll(stDwarf2);
+    //t.Add('substr', PREFIX+'substr(SRef1, 10, 30)',   weAnsiStr('567', #1)).IgnTypeName().IgnAll(stDwarf3Up);
 
-    t.Add('substr', PREFIX+'substr(SHORT1[1], -4, 2, true)',   weAnsiStr('23', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(SHORT1[1], -4, 2, true)',   weAnsiStr('23', #1)).IgnTypeName()
+.IgnAll(stDwarf2);
 
-    t.Add('substr', PREFIX+'PtrRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
-    t.Add('substr', PREFIX+'PCRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(PtrRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
+    t.Add('substr', PREFIX+'substr(PCRef1, 2, 4, true)',   weAnsiStr('cdef', #1)).IgnTypeName();
+
+
+    t.Add('string[..]', 'SRef1[3..5]', weAnsiStr('cde').IgnTypeName()).IgnAll(stDwarf2);
+    t.Add('string[..]', 'SRef1[2..6][2]', weChar('c').IgnTypeName()).IgnAll(stDwarf2);
+    t.Add('string[..]', 'SRef1[2..6][2..3]', weAnsiStr('cd').IgnTypeName()).IgnAll(stDwarf2);
+// not avail for pchar
+//    t.Add('pchar[..]', 'PCRef1[2..4]', weAnsiStr('cde').IgnTypeName()).IgnAll(stDwarf2);
+//    t.Add('string[..]', '@SRef1[1][2..4]', weAnsiStr('cde').IgnTypeName()).IgnAll(stDwarf2);
+
+
+    for i := 0 to 2 do begin
+      case i of
+        0: begin
+            vn := 'dotdotArray1a';
+            d1 := '';
+          end;
+        1: begin
+            vn := 'dotdotArrayP1a';
+            d1 := '^';
+          end;
+        2: begin
+            vn := 'dotdotArrayPPa^';
+            d1 := '';
+          end;
+      end;
+
+      t.Add('..', vn+'[2..4]'+d1, weStatArray([
+        ////weMatchErr('error|fail'),
+        weRecord([wePointer(weAnsiStr('ABCDE')).N('p1'),       weMatch('nil',skPointer).N('p2')  ]),
+        weRecord([weMatch('nil',skPointer).N('p1'),            weMatch('nil',skPointer).N('p2')  ]),
+        weRecord([wePointer(weAnsiStr('bcdef123456')).N('p1'), weMatch('nil',skPointer).N('p2')  ])
+      ], 3))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[2..4]'+d1+'.p1', weStatArray([
+        wePointer(weAnsiStr('ABCDE').IgnTypeName()),
+        weMatch('nil',skPointer),
+        wePointer(weAnsiStr('bcdef123456').IgnTypeName())
+      ], 3))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[2..4]'+d1+'.p1[0]', weStatArray([
+        weChar('A', #1).IgnTypeName(),
+        weMatchErr('error|fail'),
+        weChar('b', #1).IgnTypeName()
+      ], 3))
+      .AddFlag(ehIgnKindArrayType);
+
+
+      t.Add('..', vn+'[1..4]'+d1, weStatArray([
+        weRecord([wePointerAddr(pointer(1), weMatchErr('error|fail')).N('p1'),  weMatch('nil',skPointer).N('p2')  ]),
+        weRecord([wePointer(weAnsiStr('ABCDE')).N('p1'),               weMatch('nil',skPointer).N('p2')  ]),
+        weRecord([weMatch('nil',skPointer).N('p1'),                    weMatch('nil',skPointer).N('p2')  ]),
+        weRecord([wePointer(weAnsiStr('bcdef123456')).N('p1'),         weMatch('nil',skPointer).N('p2')  ])
+      ], 4))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[1..4]'+d1+'.p1', weStatArray([
+        wePointerAddr(pointer(1), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('ABCDE').IgnTypeName()),
+        weMatch('nil',skPointer),
+        wePointer(weAnsiStr('bcdef123456').IgnTypeName())
+      ], 4))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[1..4]'+d1+'.p1^', weStatArray([
+        weMatchErr('error|fail'),
+        weChar('A', #1).IgnTypeName(),
+        weMatchErr('error|fail'),
+        weChar('b', #1).IgnTypeName()
+      ],4))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[1..4]'+d1+'.p1[0]', weStatArray([
+        weMatchErr('error|fail'),
+        weChar('A', #1).IgnTypeName(),
+        weMatchErr('error|fail'),
+        weChar('b', #1).IgnTypeName()
+      ],4))
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', vn+'[1..4]'+d1+'.p1[1]', weStatArray([
+        weMatchErr('error|fail'),
+        weChar('B', #1).IgnTypeName(),
+        weMatchErr('error|fail'),
+        weChar('c', #1).IgnTypeName()
+      ],4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+
+      t.Add('..', '@'+vn+'[1..4]'+d1+'.p1^', weStatArray([
+        wePointerAddr(pointer(1), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('ABCDE').IgnTypeName()),
+        weMatch('nil',skPointer),
+        wePointer(weAnsiStr('bcdef123456').IgnTypeName())
+      ], 4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', '@'+vn+'[1..4]'+d1+'.p1[0]', weStatArray([
+        wePointerAddr(pointer(1), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('ABCDE').IgnTypeName()),
+        weMatch('nil',skPointer),
+        wePointer(weAnsiStr('bcdef123456').IgnTypeName())
+      ], 4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', '@'+vn+'[1..4]'+d1+'.p1[1]', weStatArray([
+        wePointerAddr(pointer(2), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('BCDE').IgnTypeName()),
+        wePointerAddr(pointer(1), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('cdef123456').IgnTypeName())
+      ], 4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+      t.Add('..', '@('+vn+'[1..4]'+d1+'.p1[1])', weStatArray([
+        wePointerAddr(pointer(2), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('BCDE').IgnTypeName()),
+        wePointerAddr(pointer(1), weMatchErr('error|fail')),
+        wePointer(weAnsiStr('cdef123456').IgnTypeName())
+      ], 4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+
+
+
+      t.Add('..', '(@'+vn+'[1..4]'+d1+'.p1[1])[2]', weStatArray([
+        weMatchErr('error|fail'),
+        weChar('D').IgnTypeName(),
+        weMatchErr('error|fail'),
+        weChar('e').IgnTypeName()
+      ], 4))
+      .ChrIdxExpPChar
+      .AddFlag(ehIgnKindArrayType);
+
+      //t.Add('..', '(@'+vn+'[1..4]'+d1+'.p1[1])[1..2]', weStatArray([
+      //  weMatchErr('error|fail'),
+      //  weAnsiStr('BC').IgnTypeName(),
+      //  weMatchErr('error|fail'),
+      //  weAnsiStr('cd').IgnTypeName()
+      //], 4))
+      //.ChrIdxExpPChar
+      //.AddFlag(ehIgnKindArrayType);
+
+
+      case i of
+        0: begin
+            vn := 'dotdotArray2a';
+            d1 := '';
+          end;
+        1: begin
+            vn := 'dotdotArrayP2a';
+            d1 := '^';
+          end;
+        else continue;
+      end;
+
+      t.Add('..', vn+'[0..1][0..2]'+d1, weStatArray([
+    //TODO: detect outer array error
+        weStatArray([
+          weMatchErr('error|fail'),
+          weMatchErr('error|fail'),
+          weMatchErr('error|fail')
+        ], 3)
+        .AddFlag(ehIgnKindArrayType),
+        weStatArray([
+          weRecord([wePointer(weAnsiStr('abcdef123456')).N('p1'),        weMatch('nil',skPointer).N('p2')  ]),
+          weRecord([wePointerAddr(pointer(1), weMatchErr('error|fail')).N('p1'),  weMatch('nil',skPointer).N('p2')  ]),
+          weRecord([wePointer(weAnsiStr('ABCDE')).N('p1'),               weMatch('nil',skPointer).N('p2')  ])
+        ], 3)
+        .AddFlag(ehIgnKindArrayType)
+      ], 2))
+      .AddFlag(ehIgnKindArrayType);
+
+      t.Add('..', vn+'[0..1][0..2]'+d1+'.p1', weStatArray([
+        //weMatchErr('error|fail'),
+        weStatArray([
+          weMatchErr('error|fail'),
+          weMatchErr('error|fail'),
+          weMatchErr('error|fail')
+        ], 3)
+        .AddFlag(ehIgnKindArrayType),
+        weStatArray([
+          wePointer(weAnsiStr('abcdef123456').IgnTypeName()),
+          wePointerAddr(pointer(1), weMatchErr('error|fail')),
+          wePointer(weAnsiStr('ABCDE').IgnTypeName())
+        ], 3)
+        .AddFlag(ehIgnKindArrayType)
+      ], 2))
+      .AddFlag(ehIgnKindArrayType);
+
+
+    end;
 
 
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob MyClass1',     'MyClass1.mc',  002, 'C');
     t.EvaluateWatches;
+    t.CheckResults;
 
 
     RunToPause(BrkFoo);

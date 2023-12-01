@@ -109,6 +109,7 @@ var
   v_array: array [3..4] of variant;
 
   SRef0, SRef1, SRef2, SRef3, SRef4: String;
+  SConst: Ansistring;
   PCRef1: PChar;
   PtrRef1: Pointer;
   Short0: Shortstring;
@@ -942,6 +943,23 @@ var
     post: byte; // padding, must not be changed
   end;
 
+// Intrinsic ..
+type
+  TRecPP = record
+    p1, p2: pchar;
+  end;
+  PRecPP = ^TRecPP;
+  TRecArray = array of TRecPP;
+  PTRecArray = ^TRecArray;
+  PRecArray = array of PRecPP;
+var
+  dotdotArray1a, dotdotArray1b: TRecArray;
+  dotdotArray2a, dotdotArray2b: array of array of TRecPP;
+  dotdotArrayP1a, dotdotArrayP1b: PRecArray;
+  dotdotArrayP2a, dotdotArrayP2b: array of array of PRecPP;
+
+  dotdotArrayPPa, dotdotArrayPPb: PTRecArray;
+  i1,i2: integer;
 
 begin
   U8Data1 := #$2267; //#$E2#$89#$A7;
@@ -1169,9 +1187,9 @@ begin
 
   SRef0 := '';
   SRef1 := 'abcdef123456';
-  SRef1 := inttostr(random(9))+SRef1;
   SRef2 := inttostr(random(9))+SRef1;
-  SRef3 := SRef2;
+  SRef3 := inttostr(random(9))+SRef1;
+  SRef4 := SRef3;
 
   PCRef1 := @SRef1[1];
   PtrRef1 := PCRef1;
@@ -1186,6 +1204,60 @@ begin
   SetLength(ARef2, 10);
   SetLength(ARef3, 10);
   ARef4 := ARef3;
+
+  // .. intrinsic
+  SConst := 'ABCDE';
+  SetLength(dotdotArray1a, 5);
+  SetLength(dotdotArray1b, 5);
+  SetLength(dotdotArray2a, 6, 5);
+  SetLength(dotdotArray2b, 6, 5);
+
+  dotdotArray1a[0].p1 := @SRef1[1];
+  pointer(dotdotArray1a[1].p1) := pointer(1);
+  dotdotArray1a[2].p1 := @SConst[1];
+  dotdotArray1a[3].p1 := nil;
+  dotdotArray1a[4].p1 := @SRef1[2];
+
+  pointer(dotdotArray1b[0].p1) := pointer(1);
+  dotdotArray1b[1].p1 := @SRef1[1];
+  dotdotArray1b[2].p1 := nil;
+  dotdotArray1b[3].p1 := nil;
+  dotdotArray1b[4].p1 := @SRef1[3];
+
+  dotdotArray2a[0] := nil;
+  dotdotArray2a[1][0].p1 := @SRef1[1];
+  pointer(dotdotArray2a[1][1].p1) := pointer(1);
+  dotdotArray2a[1][2].p1 := @SConst[1];
+  dotdotArray2a[1][3].p1 := nil;
+  dotdotArray2a[1][4].p1 := @SRef1[2];
+  pointer(dotdotArray2a[2][0].p1) := pointer(1);
+  dotdotArray2a[2][1].p1 := pointer(-1);
+  dotdotArray2a[2][2].p1 := @SConst[1];
+  dotdotArray2a[2][3].p1 := nil;
+  dotdotArray2a[2][4].p1 := @SRef1[2];
+  dotdotArray2a[3] := nil;
+  dotdotArray2a[4][0].p1 := @SRef1[1];
+  pointer(dotdotArray2a[4][1].p1) := pointer(1);
+  dotdotArray2a[4][2].p1 := @SConst[1];
+  dotdotArray2a[4][3].p1 := nil;
+  dotdotArray2a[4][4].p1 := @SRef1[2];
+
+  SetLength(dotdotArrayP1a, 5);
+  SetLength(dotdotArrayP1b, 5);
+  SetLength(dotdotArrayP2a, 6, 5);
+  SetLength(dotdotArrayP2b, 6, 5);
+  for i1 := 0 to 4 do
+  for i2 := 0 to 5 do begin
+    dotdotArrayP1a[i1] := @dotdotArray1a[i1];
+    dotdotArrayP1b[i1] := @dotdotArray1b[i1];
+    dotdotArrayP2a[i1][i2] := @dotdotArray2a[i1][i2];
+    dotdotArrayP2b[i1][i2] := @dotdotArray2b[i1][i2];
+  end;
+
+  dotdotArrayPPa := @dotdotArray1a;
+  dotdotArrayPPb := @dotdotArray1b;
+
+
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg
 
