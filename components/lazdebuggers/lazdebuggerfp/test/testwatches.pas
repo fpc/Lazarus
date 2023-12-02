@@ -4280,7 +4280,7 @@ end;
 
 procedure TTestWatches.TestWatchesErrors;
 var
-  ExeName: String;
+  ExeName, op1, op2: String;
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg: TDBGBreakPoint;
@@ -4324,6 +4324,28 @@ begin
     t.Add('', 'gvIntStatArray[1,2]', weMatchFpErr(LazErrPasParserIndexError_Wrapper + '%x'  + LazErrTypeNotIndexable));
     t.Add('', 'gvIntStatArray^',     weMatchFpErr(LazErrCannotDeref_p));
     t.Add('', '^byte(''abc'')^',     weMatchErr('.'));
+
+    for op1 in [' ', '+','-'] do
+    for op2 in ['   +  ','   - ', '   * ', '   / ', '   = ', ' div ', ' mod ', ' and ', ' or ', ' xor '] do
+    begin
+      t.Add('', op1+'^byte(0)^',       weMatchErr('read.*mem|data.*location')); // TODO: wrong error
+      t.Add('', op1+'^byte(0)^'+op2+'2',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'2'+op2+'^byte(0)^',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'^byte(1)^',       weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'^byte(1)^'+op2+'2',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'2'+op2+'^byte(1)^',     weMatchErr('read.*mem|data.*location|div.*zero|mod.*zero'));
+    end;
+
+    for op1 in ['    ', 'not '] do
+    for op2 in ['   = ', ' and ', ' or ', ' xor '] do
+    begin
+      t.Add('', op1+'^boolean(0)^',       weMatchErr('read.*mem|data.*location|data.*location')); // TODO: wrong error
+      t.Add('', op1+'^boolean(0)^'+op2+'True',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'True'+op2+'^boolean(0)^',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'^boolean(1)^',       weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'^boolean(1)^'+op2+'True',     weMatchErr('read.*mem|data.*location'));
+      t.Add('', op1+'True'+op2+'^boolean(1)^',     weMatchErr('read.*mem|data.*location'));
+    end;
 
 
     t.EvaluateWatches;

@@ -119,8 +119,6 @@ type
     FSize: TFpDbgValueSize;
     procedure SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
   protected
-    procedure SetLastError(ALastError: TFpError);
-
     function GetKind: TDbgSymbolKind; virtual;
     function GetFieldFlags: TFpValueFieldFlags; virtual;
 
@@ -243,6 +241,7 @@ type
     property ParentTypeInfo: TFpSymbol read GetParentTypeInfo; // For members, the class in which this member is declared
 
     property LastError: TFpError read GetLastError;
+    procedure SetLastError(ALastError: TFpError);
     procedure ResetError;
   end;
 
