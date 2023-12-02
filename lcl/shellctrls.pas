@@ -121,8 +121,11 @@ type
     destructor Destroy; override;
 
     { Methods specific to Lazarus - useful for other classes }
-    class function  GetBasePath: string;
-    function  GetRootPath: string;
+    class function GetBasePath: string;
+    function GetRootPath: string;
+    class procedure GetFilesInDir(const ABaseDir: string; AMask: string;
+      AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone;
+      ACaseSensitivity: TMaskCaseSensitivity = mcsPlatformDefault);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
     procedure PopulateWithBaseFiles;
@@ -480,7 +483,7 @@ end;
 { TFileItemAVLTree
 
   Specialized TAVLTree descendant for sorting the TFileItems found by the
-  helper function GetFilesInDir such that a user-friendly compare function
+  helper function GetFilesInDirectory such that a user-friendly compare function
   can be applied. }
 
 type
@@ -816,7 +819,7 @@ end;
 
   AMask may contain multiple file masks separated by ;
 }
-procedure GetFilesInDir(const ABaseDir: string; AMask: string;
+procedure GetFilesInDirectory(const ABaseDir: string; AMask: string;
   AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType;
   ACaseSensitivity: TMaskCaseSensitivity = mcsPlatformDefault;
   ASortCompare: TFileItemCompareEvent = nil);
@@ -977,6 +980,14 @@ begin
     Result := IncludeTrailingPathDelimiter(Result);
 end;
 
+class procedure TCustomShellTreeView.GetFilesInDir(const ABaseDir: string;
+  AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings;
+  AFileSortType: TFileSortType; ACaseSensitivity: TMaskCaseSensitivity);
+begin
+  GetFilesInDirectory(ABaseDir, AMask, AObjectTypes, AResult,
+                      AFileSortType, ACaseSensitivity);
+end;
+
 function TCustomShellTreeView.NodeHasChildren(Node: TTreeNode): Boolean;
 
   function HasSubDir(Const ADir: String): Boolean;
@@ -1042,7 +1053,8 @@ begin
   Items.BeginUpdate;
   try
     Files.OwnsObjects := True;
-    GetFilesInDir(ANodePath, AllFilesMask, FObjectTypes, Files, FFileSortType, mcsPlatformDefault, FOnSortCompare);
+    GetFilesInDirectory(ANodePath, AllFilesMask, FObjectTypes, Files,
+                        FFileSortType, mcsPlatformDefault, FOnSortCompare);
     Result := Files.Count > 0;
 
     for i := 0 to Files.Count - 1 do
@@ -1157,10 +1169,10 @@ begin
     FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
-function TCustomShellTreeView.DrawBuiltinIcon(ANode: TTreeNode; ARect: TRect): TSize;
+function TCustomShellTreeView.DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize;
 begin
   if FUseBuiltinIcons then
-    Result := TWSCustomShellTreeViewClass(WidgetSetClass).DrawBuiltinIcon(Self, ANode, ARect)
+    Result := TWSCustomShellTreeViewClass(WidgetSetClass).DrawBuiltInIcon(Self, ANode, ARect)
   else
     Result := inherited;
 end;
@@ -1835,7 +1847,8 @@ begin
   Files := TStringList.Create;
   try
     Files.OwnsObjects := True;
-    GetFilesInDir(FRoot, Trim(FMask), FObjectTypes, Files, fstNone, FMaskCaseSensitivity);
+    GetFilesInDirectory(FRoot, Trim(FMask), FObjectTypes, Files, fstNone,
+                        FMaskCaseSensitivity);
 
     for i := 0 to Files.Count - 1 do
     begin
