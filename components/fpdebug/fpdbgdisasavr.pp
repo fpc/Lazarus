@@ -47,8 +47,6 @@ type
 
   TAvrAsmDecoder = class;
 
-  { TX86DisassemblerInstruction }
-
   { TAvrAsmInstruction }
 
   TAvrAsmInstruction = class(TDbgAsmInstruction)
@@ -86,6 +84,7 @@ type
       returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
     function FParseEpilogue(AnAddress, AStartPC, AEndPC: TDBGPtr; out
       returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
+
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
     function GetMaxInstrSize: integer; override;
@@ -94,10 +93,11 @@ type
     function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
 
   public
-    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo); override; overload;
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override; overload;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
-    // Don't use, ot really suited to AVR ABI
+    // Don't use, not really suited to AVR ABI
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out
       AnIsOutsideFrame: Boolean): Boolean; override;
 
@@ -113,10 +113,36 @@ type
   end;
 
 
+  { TDbgStackUnwinderAVR }
+
+  TDbgStackUnwinderAVR = class(TDbgStackUnwinder)
+  private
+    FThread: TDbgThread;
+    FProcess: TDbgProcess;
+    FAddressSize: Integer;
+    FLastFrameBaseIncreased: Boolean;
+    FCodeReadErrCnt: integer;
+  protected
+    property Process: TDbgProcess read FProcess;
+    property Thread: TDbgThread read FThread;
+    property AddressSize: Integer read FAddressSize;
+  public
+    constructor Create(AProcess: TDbgProcess);
+    procedure InitForThread(AThread: TDbgThread); override;
+    procedure InitForFrame(ACurrentFrame: TDbgCallstackEntry; out CodePointer,
+      StackPointer, FrameBasePointer: TDBGPtr); override;
+    procedure GetTopFrame(out CodePointer, StackPointer, FrameBasePointer: TDBGPtr;
+      out ANewFrame: TDbgCallstackEntry); override;
+    function Unwind(AFrameIndex: integer; var CodePointer, StackPointer,
+      FrameBasePointer: TDBGPtr; ACurrentFrame: TDbgCallstackEntry; out
+      ANewFrame: TDbgCallstackEntry): TTDbgStackUnwindResult; override;
+  end;
+
 implementation
 
 uses
-  StrUtils, LazClasses, Math;
+  StrUtils, LazClasses, Math,
+  FpDbgAvrClasses;
 
 var
   DBG_WARNINGS: PLazLoggerLogGroup;
@@ -556,7 +582,7 @@ begin
 end;
 
 procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out
-  ACodeBytes: String; out ACode: String);
+  ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo);
 var
   CodeIdx, r, d, k, q: byte;
   a: SmallInt;
@@ -565,6 +591,7 @@ var
   s1: string;
   _set: boolean;
 begin
+  AnInfo := default(TDbgInstInfo);
   pcode := AAddress;
   CodeIdx := 0;
   code := pcode[CodeIdx];
@@ -1156,6 +1183,18 @@ begin
     ACodeBytes := ACodeBytes + HexStr(pcode[k], 2);
 
   Inc(AAddress, CodeIdx);
+
+  // Todo: Indicate whether currrent instruction has a destination code address
+  //       call jump branch(?)
+  //       Return information in AnInfo
+end;
+
+procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out
+  ACodeBytes: String; out ACode: String);
+var
+  AnInfo: TDbgInstInfo;
+begin
+  Disassemble(AAddress, ACodeBytes, ACode, AnInfo);
 end;
 
 function TAvrAsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr
@@ -1220,6 +1259,132 @@ destructor TAvrAsmDecoder.Destroy;
 begin
   ReleaseRefAndNil(FLastInstr);
   inherited Destroy;
+end;
+
+{ TDbgStackUnwinderAVR }
+
+constructor TDbgStackUnwinderAVR.Create(AProcess: TDbgProcess);
+begin
+  FProcess := AProcess;
+  FAddressSize := 2;
+  FLastFrameBaseIncreased := True;
+  FCodeReadErrCnt := 0;
+end;
+
+procedure TDbgStackUnwinderAVR.InitForThread(AThread: TDbgThread);
+begin
+  FThread := AThread;
+end;
+
+procedure TDbgStackUnwinderAVR.InitForFrame(ACurrentFrame: TDbgCallstackEntry;
+  out CodePointer, StackPointer, FrameBasePointer: TDBGPtr);
+var
+  R: TDbgRegisterValue;
+begin
+  CodePointer := ACurrentFrame.AnAddress;
+
+  // Frame pointer is r29:r28 (if used)
+  FrameBasePointer := ACurrentFrame.FrameAdress;
+
+  //Could update using GetStackBasePointerRegisterValue
+
+  //R := ACurrentFrame.RegisterValueList.FindRegisterByDwarfIndex(FDwarfNumBP);
+  //if R <> nil then
+  //  FrameBasePointer := R.NumValue;
+
+  StackPointer := 0;
+  R := ACurrentFrame.RegisterValueList.FindRegisterByDwarfIndex(SPindex);
+  if R = nil then exit;
+  StackPointer := R.NumValue;
+end;
+
+procedure TDbgStackUnwinderAVR.GetTopFrame(out CodePointer, StackPointer,
+  FrameBasePointer: TDBGPtr; out ANewFrame: TDbgCallstackEntry);
+var
+  i: Integer;
+  R: TDbgRegisterValue;
+begin
+  CodePointer      := Thread.GetInstructionPointerRegisterValue;
+  StackPointer     := Thread.GetStackPointerRegisterValue;
+  FrameBasePointer := Thread.GetStackBasePointerRegisterValue;
+  ANewFrame        := TDbgCallstackEntry.create(Thread, 0, FrameBasePointer, CodePointer);
+
+  i := Thread.RegisterValueList.Count;
+  while i > 0 do begin
+    dec(i);
+    R := Thread.RegisterValueList[i];
+    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[R.Name].SetValue(R.NumValue, R.StrValue, R.Size, R.DwarfIdx);
+  end;
+end;
+
+function TDbgStackUnwinderAVR.Unwind(AFrameIndex: integer; var CodePointer,
+  StackPointer, FrameBasePointer: TDBGPtr; ACurrentFrame: TDbgCallstackEntry;
+  out ANewFrame: TDbgCallstackEntry): TTDbgStackUnwindResult;
+const
+  MAX_FRAMES = 50000; // safety net
+  // To read RAM, add data space offset to address
+  DataOffset = $800000;
+  Size = 2;
+var
+  NextIdx: LongInt;
+  LastFrameBase: TDBGPtr;
+  OutSideFrame: Boolean;
+  StackPtr: TDBGPtr;
+  startPC, endPC: TDBGPtr;
+  returnAddrStackOffset: word;
+  b: byte;
+begin
+  ANewFrame := nil;
+  Result := suFailed;
+
+  if StackPointer = 0 then
+    exit;
+  if not FLastFrameBaseIncreased then
+    exit;
+
+  OutSideFrame := False;
+  LastFrameBase := FrameBasePointer;
+
+  // Get start/end PC of proc from debug info
+  if not Self.Process.FindProcStartEndPC(CodePointer, startPC, endPC) then
+  begin
+    // Give up for now, it is complicated to locate prologue/epilogue in general without proc limits
+    // ToDo: Perhaps interpret .debug_frame info if available,
+    //       or scan forward from address until an epilogue is found.
+    exit;
+  end;
+
+  if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(CodePointer, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
+  begin
+    OutSideFrame := False;
+  end;
+
+  if OutSideFrame then begin
+    // Before adjustment of frame pointer, or after restoration of frame pointer,
+    // return PC should be located by offset from SP
+    if not Process.ReadData(DataOffset or (StackPtr + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
+  end
+  else begin
+    // Inside stack frame, return PC should be located by offset from FP
+    if not Process.ReadData(DataOffset or (FrameBasePointer + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
+  end;
+  // Convert return address from BE to LE, shl 1 to get byte address
+  CodePointer := BEtoN(word(CodePointer)) shl 1;
+  {$PUSH}{$R-}{$Q-}
+  StackPtr := FrameBasePointer + returnAddrStackOffset + Size - 1; // After popping return-addr from "StackPtr"
+  FrameBasePointer := StackPtr;  // Estimate of previous FP
+  {$POP}
+
+  FLastFrameBaseIncreased := (FrameBasePointer <> 0) and (FrameBasePointer > LastFrameBase);
+
+  ANewFrame:= TDbgCallstackEntry.create(Thread, NextIdx, FrameBasePointer, CodePointer);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(CodePointer, IntToStr(CodePointer),Size, PCindex);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBasePointer), IntToStr(b),Size, 28);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue((FrameBasePointer and $FF00) shr 8, IntToStr(b),Size, 29);
+
+  FCodeReadErrCnt := 0;
+  Result := suSuccess;
 end;
 
 initialization
