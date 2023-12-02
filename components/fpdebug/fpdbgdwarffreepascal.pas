@@ -1886,8 +1886,15 @@ begin
   if not IsReadableLoc(Addr) then
     exit;
 
-  Addr:= Addr - (AddressSize * 2);
-  Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
+  if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
+  then begin
+    Addr:= Addr - AddressSize - 4;
+    Result := Context.ReadSignedInt(Addr, SizeVal(4), ARefCount);
+  end
+  else begin
+    Addr:= Addr - (AddressSize * 2);
+    Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
+  end;
 end;
 
 function TFpValueDwarfV3FreePascalString.ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out
