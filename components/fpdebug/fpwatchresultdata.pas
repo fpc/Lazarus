@@ -978,8 +978,10 @@ begin
     AnResData.CreateError('No Data');
     exit;
   end;
-  if CheckError(AnFpValue, AnResData) then
+  if CheckError(AnFpValue, AnResData) then begin
+    Result := True;
     exit;
+  end;
 
   FRecurseAddrList.Clear;
   FRepeatCount := ARepeatCount;

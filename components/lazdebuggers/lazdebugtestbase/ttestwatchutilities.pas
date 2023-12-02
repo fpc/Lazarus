@@ -1492,11 +1492,17 @@ begin
 
       if ehExpectError in ehf then begin
 //TODO
-        Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
+        if Context.WatchRes.ValueKind = rdkError then
+          Result := TestTrue('IsErr', Context.WatchRes.ValueKind = rdkError, Context, AnIgnoreRsn)
+        else
+          Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
         exit;
       end;
       if ehExpectErrorText in ehf then begin
-        Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
+        if Context.WatchRes.ValueKind = rdkError then
+          Result := TestTrue('IsErr', Context.WatchRes.ValueKind = rdkError, Context, AnIgnoreRsn)
+        else
+          Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
         Result := CheckData(Context, AnIgnoreRsn, True, True);
         exit;
       end;
