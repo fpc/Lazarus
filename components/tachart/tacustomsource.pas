@@ -1429,10 +1429,14 @@ begin
   FCumulativeExtentIsValid := false;
   FXListExtentIsValid := false;
   FYListExtentIsValid := false;
-  SetLength(FYRangeValid, YCount);
-  SetLength(FYRange, YCount);
-  for i := 0 to High(FYRange) do
-    FYRangeValid[i] := false;
+  if YCount <> MaxInt then
+  begin
+    SetLength(FYRangeValid, YCount);
+    SetLength(FYRange, YCount);
+    for i := 0 to High(FYRange) do
+      FYRangeValid[i] := false;
+  end else
+    SetLength(FYRangeValid, 0);
 end;
 
 function TCustomChartSource.IsErrorBarDataStored(AIndex: Integer): Boolean;
@@ -1699,7 +1703,7 @@ procedure TCustomChartSource.YRange(AYIndex: Integer; var AMin, AMax: Double);
 var
   i, yIdx: Integer;
 begin
-  if FYRangeValid[AYIndex] then
+  if (AYIndex < Length(FYRangeValid)) and FYRangeValid[AYIndex] then
   begin
     AMin := FYRange[AYIndex].FStart;
     AMax := FYRange[AYIndex].FEnd;
