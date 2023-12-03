@@ -1242,6 +1242,126 @@ method.
 </seealso>
 </element>
 
+<element name="TCustomShellTreeView.GetFilesInDir">
+<short>
+Fills a TStrings instance with file system objects which match the specified 
+path and mask.
+</short>
+<descr>
+<p>
+<var>GetFilesInDir</var> is a class method which can be called without an 
+existing instance of a TCustomShellTreeView descendant. For example:
+</p>
+<code>
+TShellTreeView.GetFilesInDir('/path/to/dir', '*.pas;*.pp', 
+  [otNonFolders], AStringList, [fstAlphabet], mcsCaseSensitive);
+</code>
+<p>
+It performs actions to gather directories and/or files as in the 
+PopulateTreeNodeWithFiles method, but does <b>not</b> store the file system objects to the Items property.
+</p>
+<p>
+GetFilesInDir calls an implementation routine to access the local file system 
+and to store matching file system objects in AResult. It calls FindFirstUTF8 / 
+FindNextUTF8 / FindCloseUTF8 (in LazUtils) to gather TSearchRec information for 
+the folders or files which match the specified criteria. The file system 
+information is transferred to TFileItem instances which are stored in the 
+Objects property in AResult. The Names property in AResult contains the names 
+for the directories or files.
+</p>
+<p>
+Use <var>ABaseDir</var> to specify the folder examined in the method, and the 
+base directory used to resolve any relative path references in AMask. A 
+trailing path delimiter is not required in ABaseDir; it is appended (when 
+needed) in the implementation.
+</p>
+<p>
+Use <var>AMask</var> to specify one or masks for file system items considered a 
+match in the method. Use the ';' character to delimit mask values in the 
+argument. When omitted (or set to an empty string), the AllFilesMask ('*') is 
+used when checking file system objects.
+</p>
+<p>
+Use <var>AObjectTypes</var> to specify the file system objects examined in the 
+method. See <link id="TObjectType">TObjectType</link> for the values allowed in 
+the set type, and their meanings.
+</p>
+<p>
+<var>AResult</var> is a <var>TStrings</var> instance where folders and/or files 
+matching the specified criteria are stored and returned to the caller. Use the 
+Names property in AResult to access the names for the file system objects in 
+the list. Use the Objects property in AResult to access 
+<link id="TFileItem">TFileItem</link> instances with the path and search
+record information for the file system objects. A value in Object must be cast 
+to a TFileItem type to access the properties specific to the object instance. 
+Use the Clear method in AResult to free the Names and Objects in the TStrings 
+instance.
+</p>
+<p>
+Use <var>AFileSortType</var> to specify the sort order applied to the values 
+stored in AResult. See <link id="TFileSortType">TFileSortType</link> for the 
+values allowed in the argument, and their meanings.
+</p>
+<p>
+Use <var>ACaseSensitivity</var> to specify whether case sensitivity is used 
+when comparing values in AMask to select matching file system objects. See 
+<link id="TMaskCaseSensitivity">TMaskCaseSensitivity</link> for the values 
+allowed in the argument, and their meanings. The default value for the argument 
+is mcsPlatformDefault in the implementation routine.
+</p>
+</descr>
+<version>
+Modified in LCL version 3.0 to have public visibility.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.Items"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TFileItem"/>
+<link id="TFileSortType"/>
+<link id="TMaskCaseSensitivity"/>
+<link id="TObjectType"/>
+<link id="TObjectTypes"/>
+<link id="#lazutils.lazfileutils.FindFirstUTF8">FindFirstUTF8</link>
+<link id="#lazutils.lazfileutils.FindNextUTF8">FindNextUTF8</link>
+<link id="#lazutils.lazfileutils.FindCloseUTF8">FindCloseUTF8</link>
+<link id="#lazutils.masks.TMaskList">TMaskList</link>
+<link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+</seealso>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.ABaseDir">
+<short>
+Base directory name used to resolve relative path references in AMask.
+</short>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.AMask">
+<short>
+One or more mask values used to select the matching file system objects  
+returned in AResult.
+</short>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.AObjectTypes">
+<short>
+Specifies the file system object types examined and returned in AResult.
+</short>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.AResult">
+<short>
+TStrings instance where file system objects matching the specified criteria 
+are stored and returned.
+</short>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.AFileSortType">
+<short>
+Sort type/order applied to the file system objects in AResult.
+</short>
+</element>
+<element name="TCustomShellTreeView.GetFilesInDir.ACaseSensitivity">
+<short>
+Indicates whether case sensitivity is used when file system objects are 
+compared to the selection criteria.
+</short>
+</element>
+
 <element name="TCustomShellTreeView.GetPathFromNode">
 <short>
 Returns the path (including the file name) for the file system object 
@@ -2236,16 +2356,17 @@ indicate the condition, and PopulateWithRoot will be called again when the
 Handle is created in CreateHandle.
 </p>
 <p>
-PopulateWithRoot calls the internal GetFilesInDir helper routine to get a 
-list of file system items for the path which match the Mask and ObjectTypes 
-specified for the control. Each of the files in the list are passed to 
-DoAddItem / OnAddItem to determine if they can be added to the Items property.
+PopulateWithRoot calls the GetFilesInDirectory helper routine in the 
+implementation section to get a list of file system items for the path which 
+match the Mask and ObjectTypes specified for the control. Each of the files in 
+the list are passed to DoAddItem / OnAddItem to determine if they can be added 
+to the Items property.
 </p>
 <p>
 The add method in Items is called to create the list items which represent 
 each of the files or directories. If a list item is a TShellListItem class 
 type, its FileInfo property is updated with the file information from the 
-TFileItem created in GetFilesInDir.
+TFileItem created in the GetFilesInDirectory helper.
 </p>
 <p>
 The Caption is used to store the file or directory name in the list item. The 
@@ -2543,9 +2664,8 @@ for the shell control. In addition, the <var>Items</var> property calls its
 using the new mask value.
 </p>
 <p>
-The value in Mask is passed as an argument to the internal 
-<var>GetFilesInDir</var> helper which gets the file system objects displayed 
-in the List View control.
+The value in Mask is passed as an argument to the  GetFilesInDirectory helper 
+routine which gets the file system objects displayed in the List View control.
 </p>
 <p>
 Use <var>MaskCaseSensitivity</var> to specify the case sensitivity option 
