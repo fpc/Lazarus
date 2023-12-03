@@ -456,11 +456,17 @@ end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
 begin
-  if UnityAppIndicatorInit then
-    RegisterWSComponent(TCustomTrayIcon, TUnityWSCustomTrayIcon)
-  else
-    RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
   Result := True;
+  case UnityWSCtrls.GlobalUseAppInd of
+    UseAppIndAuto : if UnityAppIndicatorInit then
+                    RegisterWSComponent(TCustomTrayIcon, TUnityWSCustomTrayIcon)
+                    else
+                    RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
+    UseAppIndYes  : if UnityAppIndicatorInit then
+                    RegisterWSComponent(TCustomTrayIcon, TUnityWSCustomTrayIcon)
+                    else Result := false;
+    UseAppIndNo   : RegisterWSComponent(TCustomTrayIcon, TGtk2WSCustomTrayIcon);
+  end;
 end;
 
 //ExtDlgs
