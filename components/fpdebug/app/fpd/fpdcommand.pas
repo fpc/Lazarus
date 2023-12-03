@@ -59,7 +59,7 @@ uses
 
 type
   TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
-  TBreakPointIdMap = class(specialize TFPGMapObject<Integer, TFpInternalBreakpoint>)
+  TBreakPointIdMap = class(specialize TFPGMapObject<Integer, TFpDbgBreakpoint>)
   public
     function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   end;
@@ -213,11 +213,7 @@ var
   Address: TDbgPtr;
   e, Id: Integer;
   Line: Cardinal;
-  bp: TFpInternalBreakpoint;
-
-  AContext: TFpDbgSymbolScope;
-  AValue: TFpValue;
-
+  bp: TFpDbgBreakpoint;
 begin
   CallProcessLoop:=false;
   if GController.MainProcess = nil
@@ -250,6 +246,7 @@ begin
     // current addr
     P := '';
     Address := GController.CurrentThread.GetInstructionPointerRegisterValue;
+    bp := GController.CurrentProcess.AddBreak(Address);
   end
   else begin
     P := GetPart([], [':'], S);
@@ -259,43 +256,13 @@ begin
   then begin
     if P <> ''
     then begin
-      // address given
+      // Try to convert parameter to address
       Val(P, Address, e);
-      if e <> 0
-      then begin
-        AContext := GController.CurrentProcess.SymbolTableInfo.FindSymbolScope(
-          GController.DefaultContext,
-          GController.CurrentThread.GetInstructionPointerRegisterValue
-        );
-        if AContext = nil then begin
-          Writeln('Invalid context');
-          exit;
-        end;
-        AValue := AContext.FindSymbol(P);
-        if not assigned(AValue) then begin
-          WriteLN('Illegal address/unknown symbol: ', P);
-          Exit;
-        end;
-        Address:=AValue.Address.Address;
-        AValue.ReleaseReference;
-      end;
+      if e = 0 then
+        bp := GController.CurrentProcess.AddBreak(Address)
+      else // Assume it is a proc/func name
+        bp := GController.CurrentProcess.AddBreak(P);
     end;
-    //if Remove
-    //then begin
-    //  if GController.CurrentProcess.RemoveBreak(Address)
-    //  then WriteLn(format(sRemoveBreakpoint,[FormatAddress(Address)]))
-    //  else WriteLn(Format(sRemoveBreakpointFailed, [FormatAddress(Address)]));
-    //end
-    //else begin
-      bp := GController.CurrentProcess.AddBreak(Address);
-      if bp <> nil then begin
-        inc(CurBreakId);
-        BreakPointIdMap.Add(CurBreakId, bp);
-        WriteLn(format(sAddBreakpoint, [CurBreakId, FormatAddress(Address)]));
-      end
-      else
-        WriteLn(Format(sAddBreakpointFailed, [FormatAddress(Address)]));
-    //end;
   end
   else begin
     S := GetPart([':'], [], S);
@@ -305,25 +272,19 @@ begin
       WriteLN('Illegal line: ', S);
       Exit;
     end;
-    //if Remove
-    //then begin
-    //  if TDbgInstance(GController.CurrentProcess).RemoveBreak(P, Line)
-    //  then WriteLn('breakpoint removed')
-    //  else WriteLn('remove breakpoint failed');
-    //  Exit;
-    //end;
 
-    bp := TDbgInstance(GController.CurrentProcess).AddBreak(P, Line);
-    if bp = nil
-    then begin
-      WriteLn(Format(sAddBreakpointFailed, [S]));
-      Exit;
-    end;
-    
-    inc(CurBreakId);
-    BreakPointIdMap.Add(CurBreakId, bp);
-    WriteLn(format(sAddBreakpoint, [CurBreakId, ''])); // FormatAddress(bp.Location)]))
-  end;
+    bp := GController.CurrentProcess.AddBreak(P, Line);
+   end;
+
+  if bp = nil
+   then begin
+     WriteLn(Format(sAddBreakpointFailed, [S]));
+     Exit;
+   end;
+
+   inc(CurBreakId);
+   BreakPointIdMap.Add(CurBreakId, bp);
+   WriteLn(format(sAddBreakpoint, [CurBreakId, ''])); // FormatAddress(bp.Location)]))
 end;
 
 procedure HandleContinue(AParams: String; out CallProcessLoop: boolean);
