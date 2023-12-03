@@ -71,9 +71,15 @@ type
     class function GetPosition(const {%H-}ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
-{ UnityAppIndicatorInit returns true if an AppIndicator library can be loaded }
+type TUseAppIndInstruction = (UseAppIndYes, UseAppIndNo, UseAppIndAuto);
 
+{ UnityAppIndicatorInit returns true if an AppIndicator library can be loaded }
 function UnityAppIndicatorInit: Boolean;
+
+var
+  // A Global used in RegisterCustomTrayIcon() and possibly set in higher level
+  // code to predetermine the SysTray model to use.
+  GlobalUseAppInd : TUseAppIndInstruction = UseAppIndAuto;
 
 implementation
 
