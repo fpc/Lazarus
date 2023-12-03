@@ -43,7 +43,7 @@ uses
   Menus, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, LCLType, WSFactory,
-  LazUtilities, LazLogger;
+  LazUtilities, LazLoggerBase;
 
 type
   { TWSMenuItem }
