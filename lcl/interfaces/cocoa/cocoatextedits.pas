@@ -1379,7 +1379,7 @@ begin
     begin
       // ComboBox.Text will be set to the List Item value after comboBox_indexOfItemWithStringValue()
       // so if cbactRetainPrefixCase set, ComboBox.Text should be reset Async
-      TComboBoxAsyncHelper.ResetTextIfNecessary(lclCmb, lclString);
+      TComboBoxAsyncHelper.ResetTextIfNecessary(self, lclString);
       Result := idx;
     end;
   end;
