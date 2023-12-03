@@ -59,7 +59,7 @@ uses
 
 type
   TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
-  TBreakPointIdMap = class(specialize TFPGMapObject<Integer, TFpInternalBreakpoint>)
+  TBreakPointIdMap = class(specialize TFPGMapObject<Integer, TFpDbgBreakpoint>)
   public
     function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   end;
@@ -213,7 +213,7 @@ var
   Address: TDbgPtr;
   e, Id: Integer;
   Line: Cardinal;
-  bp: TFpInternalBreakpoint;
+  bp: TFpDbgBreakpoint;
 begin
   CallProcessLoop:=false;
   if GController.MainProcess = nil
