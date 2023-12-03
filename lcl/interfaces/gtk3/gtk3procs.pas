@@ -1240,12 +1240,7 @@ begin
       g_object_set_data(PGObject(AWindow), 'havesavedcursor', gpointer(1));
       g_object_set_data(PGObject(AWindow), 'savedcursor', gpointer(OldCursor));
     end;
-    gdk_pointer_grab(AWindow, False, [], AWindow, Cursor, 1);
-    try
-      gdk_window_set_cursor(AWindow, Cursor);
-    finally
-      gdk_pointer_ungrab(0);
-    end;
+    gdk_window_set_cursor(AWindow, Cursor);
   end else
   begin
     if g_object_steal_data(PGObject(AWindow), 'havesavedcursor') <> nil then
@@ -1303,16 +1298,19 @@ end;
 procedure SetGlobalCursor(Cursor: HCURSOR);
 var
   TopList: PGList;
-  i: Integer;
+  List: PGList;
+  Window: PGdkWindow;
 begin
   TopList := gdk_screen_get_toplevel_windows(gdk_screen_get_default);
   if TopList = nil then
     exit;
-  for i := 0 to g_list_length(TopList) - 1 do
-  begin
-    if (TopList^.Data <> nil) then
-      SetWindowCursor(PGDKWindow(TopList^.Data), Cursor,
-        True, False);
+  List := TopList;
+  while Assigned(List) do begin
+    Window := List^.Data;
+    if Assigned(Window) then begin
+      SetWindowCursor(Window, Cursor, True, False);
+    end;
+    List := List^.Next;
   end;
   g_list_free(TopList);
 end;
