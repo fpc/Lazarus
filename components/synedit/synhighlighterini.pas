@@ -60,11 +60,14 @@ type
   TProcTableProc = procedure of object;
 
 type
+  TSynIniCommentType = (ictSemicolon, ictHash); // TODO ictSemicolonMidLine, ictHashMidline
+  TSynIniCommentTypes = set of TSynIniCommentType;
 
   { TSynIniSyn }
 
   TSynIniSyn = class(TSynCustomHighlighter)
   private
+    FCommentTypes: TSynIniCommentTypes;
     fLine: PChar;
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
@@ -79,6 +82,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
+    procedure SetCommentTypes(AValue: TSynIniCommentTypes);
     procedure SectionOpenProc;
     procedure KeyProc;
     procedure CRProc;
@@ -87,7 +91,7 @@ type
     procedure LFProc;
     procedure NullProc;
     procedure NumberProc;
-    procedure SemiColonProc;
+    procedure CommentProc;
     procedure SpaceProc;
     procedure StringProc;  // ""
     procedure StringProc1; // ''
@@ -112,6 +116,7 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
   published
+    property CommentTypes: TSynIniCommentTypes read FCommentTypes write SetCommentTypes default [ictSemicolon];
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property TextAttri   : TSynHighlighterAttributes read fTextAttri
@@ -144,7 +149,18 @@ begin
       #34 {"} : fProcTable[i] := @StringProc;
       #39 {'} : fProcTable[i] := @StringProc1;
       '0'..'9': fProcTable[i] := @NumberProc;
-      #59 {;} : fProcTable[i] := @SemiColonProc;
+      #59 {;} : begin
+          if ictSemicolon in FCommentTypes then
+            fProcTable[i] := @CommentProc
+          else
+            fProcTable[i] := @TextProc;
+        end;
+      '#': begin
+          if ictHash in FCommentTypes then
+            fProcTable[i] := @CommentProc
+          else
+            fProcTable[i] := @TextProc;
+        end;
       #61 {=} : fProcTable[i] := @EqualProc;
       #91 {[} : fProcTable[i] := @SectionOpenProc;
       #1..#9, #11, #12, #14..#32: fProcTable[i] := @SpaceProc;
@@ -180,6 +196,7 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
 
   fDefaultFilter      := SYNS_FilterINI;
+  FCommentTypes := [ictSemicolon];
   MakeMethodTables;
 end; { Create }
 
@@ -227,6 +244,15 @@ procedure TSynIniSyn.EqualProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+end;
+
+procedure TSynIniSyn.SetCommentTypes(AValue: TSynIniCommentTypes);
+begin
+  if FCommentTypes = AValue then Exit;
+  FCommentTypes := AValue;
+  MakeMethodTables;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
 end;
 
 procedure TSynIniSyn.KeyProc;
@@ -280,7 +306,7 @@ begin
 end;
 
 // ;
-procedure TSynIniSyn.SemiColonProc;
+procedure TSynIniSyn.CommentProc;
 begin
   // if it is not column 0 mark as tkText and get out of here
   if Run > 0 then
