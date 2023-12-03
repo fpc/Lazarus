@@ -1,6 +1,11 @@
 {$DEFINE _BLOCK_}
 {$DEFINE _BLOCK2_}
 
+{$IFnDef Part2}{$IFnDef Part3} // Part 1
+      // ******************************
+      // **********  PART 1  **********
+      // ******************************
+
 // ADD max 15
 
   pre__Byte{e}          _OP_ Byte        (1                    + ADD);          //@@ _pre3_Byte{e3};
@@ -159,6 +164,15 @@
   {$ENDIF}
   {$ENDIF}
 
+
+{$ENDIF}{$ENDIF} // parts
+{$IFnDef Part1}{$IFnDef Part3} // part 2
+
+      // ******************************
+      // **********  PART 2  **********
+      // ******************************
+
+
   // **** ARRAY ****
   // **** Dyn ARRAY ****
 
@@ -224,6 +238,7 @@
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
+
 
   {$IFDEF TestAssign}
   SetLength(pre__CharDynArray2    {e}, 3);    pre__CharDynArray2{e}[0]     _OP_ 'N';          //@@ // }
@@ -409,11 +424,29 @@
   pre__Set{e}      _OP_ TSet([EnVal2, EnVal4]);          //@@ _pre3_Set{e3};
   pre__SmallSet{e} _OP_ TSmallRangeSet([22, 24,25]);     //@@ _pre3_SmallSet{e3};
 
+{$IFnDEF TestParam}
+{$IFnDEF TestArg}
+{$IFnDEF TestPointer} {$DEFINE NO_TYPE}
+  pre__Set2{e}      _O2_ set of TEnum       _EQ_ ([EnVal1, EnVal4]);      //@@ _pre3_Set2{e3};
+  pre__SmallSet2{e} _O2_ set of TSmallRange _EQ_ ([21, 24,25]);           //@@ _pre3_SmallSet2{e3};
+{$ENDIF} {$UNDEF NO_TYPE}
+{$ENDIF}
+{$ENDIF}
+
   pre__Set4{e}      _OP_ TSet4([E4Val02, E4Val0A]);          //@@ _pre3_Set4{e3};
   pre__Set5{e}      _OP_ TSet5([E5Val02, E5Val12]);          //@@ _pre3_Set5{e3};
   pre__Set6{e}      _OP_ TSet6([E6Val02, E6Val1A]);          //@@ _pre3_Set6{e3};
   pre__Set7{e}      _OP_ TSet7([E7Val02, E7Val3A]);          //@@ _pre3_Set7{e3};
   pre__Set8{e}      _OP_ TSet8([E8Val02, E8Val5B]);          //@@ _pre3_Set8{e3};
+
+
+{$ENDIF}{$ENDIF} // parts
+{$IFnDef Part1}{$IFnDef Part2} // part 3
+
+      // ******************************
+      // **********  PART 3  **********
+      // ******************************
+
 
   {$IFnDEF TestAssign}
   pre__BitPackBoolArray{e}      _O2_ TBitPackBoolArray    _EQ_ (True, False, True, True);          //@@ _pre3_BitPackBoolArray{e3}; // }}
@@ -508,15 +541,6 @@
 
   {$ENDIF}
 
-
-{$IFnDEF TestParam}
-{$IFnDEF TestArg}
-{$IFnDEF TestPointer} {$DEFINE NO_TYPE}
-  pre__Set2{e}      _O2_ set of TEnum       _EQ_ ([EnVal1, EnVal4]);      //@@ _pre3_Set2{e3};
-  pre__SmallSet2{e} _O2_ set of TSmallRange _EQ_ ([21, 24,25]);           //@@ _pre3_SmallSet2{e3};
-{$ENDIF} {$UNDEF NO_TYPE}
-{$ENDIF}
-{$ENDIF}
 
   {$IFnDEF TestAssign}
     pre__FiveRec{e}       _O2_ TRecordFive      _EQ_ (a:-22-ADD;b:44);          //@@ _pre3_FiveRec{e3};
@@ -633,6 +657,8 @@
   {$ENDIF}
   {$ENDIF}{$ENDIF}
   {$ENDIF}
+
+{$ENDIF}{$ENDIF} // parts
 
 {$UNDEF _BLOCK_}
 {$UNDEF _BLOCK2_}

@@ -634,71 +634,247 @@ begin
   BreakDummy2 := ClassVar1;
 end;
 
-procedure Foo(
-(* LOCATION: param *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
-  ArgMyClass1: TMyClass;
-  ArgMyClass2: TMyBaseClass;
-  ArgMyTestRec1: TMyTestRec;
-  Dummy: Integer
-);
-var
-(* LOCATION: local var *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+{$IFDEF SINGLE_BIG_FUNC}
+  procedure Foo(
+  (* LOCATION: param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgMyClass1: TMyClass;      ArgMyClass2: TMyBaseClass;
+    ArgMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+  (* LOCATION: local var *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
 
-(* LOCATION: local var  pointer <each type>  FOR locals *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
-(* LOCATION: local var  pointer <each type>  FOR args *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  (* LOCATION: local var  pointer <each type>  FOR locals *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  (* LOCATION: local var  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
 
-//TODO MyClass
-begin  // TEST_BREAKPOINT=FooBegin
-  BreakDummy:= 1;
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+  //TODO MyClass
+  begin  // TEST_BREAKPOINT=FooBegin
+    BreakDummy:= 1;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
 
-(* INIT: local var  pointer <each type> *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
 
-  BreakDummy:= 1; // TEST_BREAKPOINT=Foo
-end;
-
-
-procedure FooVar(
-(* LOCATION: var param *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
-  ArgVarMyClass1: TMyClass;
-  ArgVarMyClass2: TMyBaseClass;
-  ArgVarMyTestRec1: TMyTestRec;
-  Dummy: Integer
-);
-var
-(* LOCATION: var params  pointer <each type>  FOR args *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
-begin // TEST_BREAKPOINT=FooVarBegin
-(* INIT: local var  pointer <each type> *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
-
-  BreakDummy:= 1;
-  BreakDummy:= 1; // TEST_BREAKPOINT=FooVar
-end;
+    BreakDummy:= 1; // TEST_BREAKPOINT=Foo
+  end;
 
 
-procedure FooConstRef(
-(* LOCATION: constref param *)
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
-  ArgConstRefMyClass1: TMyClass;
-  ArgConstRefMyClass2: TMyBaseClass;
-  ArgConstRefMyTestRec1: TMyTestRec;
-  Dummy: Integer
-);
-var
-  xxx, xx2: ansistring; // enforce a stackframe
-begin // TEST_BREAKPOINT=FooConstRefBegin
-  BreakDummy:= 1;
-  xxx := '1';
-  BreakDummy:= 1; // TEST_BREAKPOINT=FooConstRef
-end;
+  procedure FooVar(
+  (* LOCATION: var param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgVarMyClass1: TMyClass;      ArgVarMyClass2: TMyBaseClass;
+    ArgVarMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+  (* LOCATION: var params  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  begin // TEST_BREAKPOINT=FooVarBegin
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
+
+    BreakDummy:= 1;
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooVar
+  end;
+
+
+  procedure FooConstRef(
+  (* LOCATION: constref param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgConstRefMyClass1: TMyClass;      ArgConstRefMyClass2: TMyBaseClass;
+    ArgConstRefMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+    xxx, xx2: ansistring; // enforce a stackframe
+  begin // TEST_BREAKPOINT=FooConstRefBegin
+    BreakDummy:= 1;
+    xxx := '1';
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooConstRef
+  end;
+
+{$ELSE} // SINGLE_BIG_FUNC
+{$DEFINE PART1}
+  procedure Foo1(
+  (* LOCATION: param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgMyClass1: TMyClass;      ArgMyClass2: TMyBaseClass;
+    ArgMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+  (* LOCATION: local var *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+  (* LOCATION: local var  pointer <each type>  FOR locals *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  (* LOCATION: local var  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+  //TODO MyClass
+  begin  // TEST_BREAKPOINT=FooBegin1
+    BreakDummy:= 1;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
+
+    BreakDummy:= 1; // TEST_BREAKPOINT=Foo1
+  end;
+
+
+  procedure FooVar1(
+  (* LOCATION: var param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgVarMyClass1: TMyClass;      ArgVarMyClass2: TMyBaseClass;
+    ArgVarMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+  (* LOCATION: var params  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  begin // TEST_BREAKPOINT=FooVarBegin1
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
+
+    BreakDummy:= 1;
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooVar1
+  end;
+
+
+  procedure FooConstRef1(
+  (* LOCATION: constref param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    ArgConstRefMyClass1: TMyClass;      ArgConstRefMyClass2: TMyBaseClass;
+    ArgConstRefMyTestRec1: TMyTestRec;  Dummy: Integer
+  );
+  var
+    xxx, xx2: ansistring; // enforce a stackframe
+  begin // TEST_BREAKPOINT=FooConstRefBegin1
+    BreakDummy:= 1;
+    xxx := '1';
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooConstRef1
+  end;
+
+{$UNDEF PART1}{$DEFINE PART2}
+  procedure Foo2(
+  (* LOCATION: param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+  (* LOCATION: local var *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+  (* LOCATION: local var  pointer <each type>  FOR locals *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  (* LOCATION: local var  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+  //TODO MyClass
+  begin  // TEST_BREAKPOINT=FooBegin2
+    BreakDummy:= 1;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
+
+    BreakDummy:= 1; // TEST_BREAKPOINT=Foo2
+  end;
+
+
+  procedure FooVar2(
+  (* LOCATION: var param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+  (* LOCATION: var params  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  begin // TEST_BREAKPOINT=FooVarBegin2
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
+
+    BreakDummy:= 1;
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooVar2
+  end;
+
+
+  procedure FooConstRef2(
+  (* LOCATION: constref param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+    xxx, xx2: ansistring; // enforce a stackframe
+  begin // TEST_BREAKPOINT=FooConstRefBegin2
+    BreakDummy:= 1;
+    xxx := '1';
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooConstRef2
+  end;
+
+{$UNDEF PART2}{$DEFINE PART3}
+  procedure Foo3(
+  (* LOCATION: param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=arg, _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+  (* LOCATION: local var *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+
+  (* LOCATION: local var  pointer <each type>  FOR locals *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pl_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  (* LOCATION: local var  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pa_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+
+  //TODO MyClass
+  begin  // TEST_BREAKPOINT=FooBegin3
+    BreakDummy:= 1;
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc, ADD=2, CHR1='C', _OP_=:=, _O2_={, _EQ_=}:=, _pre2_=gc, _BLOCK_=TestAssign)
+
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pl_, _OP_={, _O2_={, _pre3_=@fooloc, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pa_, _OP_={, _O2_={, _pre3_=@arg, "//@@=} :=", _BLOCK_=TestArg, _BLOCK2_=TestPointer) //}
+
+    BreakDummy:= 1; // TEST_BREAKPOINT=Foo3
+  end;
+
+
+  procedure FooVar3(
+  (* LOCATION: var param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=var argvar", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+  (* LOCATION: var params  pointer <each type>  FOR args *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=fooloc_pv_, "_OP_=: ^", (=;//, "_O2_=: ^", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestPointer )
+  begin // TEST_BREAKPOINT=FooVarBegin3
+  (* INIT: local var  pointer <each type> *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=fooloc_pv_, _OP_={, _O2_={, _pre3_=@argvar, "//@@=} :=", _BLOCK_=TestPointer, _BLOCK2_=TestArg) //}
+
+    BreakDummy:= 1;
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooVar3
+  end;
+
+
+  procedure FooConstRef3(
+  (* LOCATION: constref param *)
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, "pre__=constref argconstref", _OP_=:, (=;//, _O2_=:, _EQ_= , _BLOCK_=TestArg)
+    Dummy: Integer
+  );
+  var
+    xxx, xx2: ansistring; // enforce a stackframe
+  begin // TEST_BREAKPOINT=FooConstRefBegin3
+    BreakDummy:= 1;
+    xxx := '1';
+    BreakDummy:= 1; // TEST_BREAKPOINT=FooConstRef3
+  end;
+
+{$UNDEF PART3}
+{$ENDIF} // SINGLE_BIG_FUNC
 
 function TMyClass.SomeFuncIntRes(): Integer;
 begin
@@ -1261,6 +1437,7 @@ begin
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg
 
+{$IFDEF SINGLE_BIG_FUNC}
   Foo(
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
     MyClass1,
@@ -1284,6 +1461,65 @@ begin
     MyTestRec1,
     0
   );
+{$ELSE} // SINGLE_BIG_FUNC
+{$DEFINE PART1}
+  Foo1(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    MyClass1,
+    MyClass2,
+    MyTestRec1,
+    0
+  );
+
+  FooVar1(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    MyClass1,
+    MyClass2,
+    MyTestRec1,
+    0
+  );
+
+  FooConstRef1(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    MyClass1,
+    MyClass2,
+    MyTestRec1,
+    0
+  );
+{$UNDEF PART1}{$DEFINE PART2}
+  Foo2(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+
+  FooVar2(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+
+  FooConstRef2(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+{$UNDEF PART2}{$DEFINE PART3}
+  Foo3(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+
+  FooVar3(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+
+  FooConstRef3(
+    TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv, "_OP_=,//", "_O2_=,//", _BLOCK_=TestParam)
+    0
+  );
+{$UNDEF PART3}
+{$ENDIF} // SINGLE_BIG_FUNC
+
+
 
   TMyClass.ClassBaseVar1 := 118;
   TMyClass.ClassVar1 := 119;

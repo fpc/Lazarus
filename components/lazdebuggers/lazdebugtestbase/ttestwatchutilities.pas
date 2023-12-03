@@ -1966,7 +1966,7 @@ begin
         v := AContext.WatchRes.AsString;
       end
       else begin
-        TestTrue('got correct type', False, AContext, AnIgnoreRsn);
+        TestEquals('got correct type', 'rdk...string', dbgs(AContext.WatchRes.ValueKind), AContext, AnIgnoreRsn);
         exit;
       end;
       Result := TestEquals('Data', Expect.ExpTextData, v, AContext, AnIgnoreRsn);
