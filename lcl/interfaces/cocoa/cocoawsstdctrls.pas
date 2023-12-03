@@ -61,16 +61,16 @@ type
 
   TComboBoxAsyncHelper = class
   private
-    cmb: TCustomComboBox;
-    newText: String;
+    _cocoaCmb: NSObject;
+    _newText: String;
   private
     procedure AsyncResetText(Data:PtrInt);
     procedure AsyncSetLastIndex(Data:PtrInt);
   public
-    constructor Create(ACmb:TCustomComboBox);
+    constructor Create(cocoaCmb:NSObject);
   public
-    class procedure ResetTextIfNecessary(AObject:TObject; ANewText:String);
-    class procedure SetLastIndex(AObject:TObject);
+    class procedure ResetTextIfNecessary(cocoaCmb:NSObject; ANewText:String);
+    class procedure SetLastIndex(cocoaCmb:NSObject);
   end;
 
   { TLCLComboboxCallback }
@@ -722,42 +722,64 @@ end;
 
 { TComboBoxAsyncHelper }
 
-constructor TComboBoxAsyncHelper.Create(ACmb:TCustomComboBox);
+constructor TComboBoxAsyncHelper.Create(cocoaCmb:NSObject);
 begin
-  cmb:= ACmb;
+  _cocoaCmb:= cocoaCmb;
+  _cocoaCmb.retain;
 end;
 
 procedure TComboBoxAsyncHelper.AsyncResetText(Data:PtrInt);
+var
+  cmb: TCustomComboBox;
 begin
-  TCocoaWSCustomComboBox.SetText(cmb, newText);
-  cmb.SelStart:= UTF8Length(newText);
-  cmb.SelLength:= 0;
-  Free;
+  try
+    cmb:= TCustomComboBox(_cocoaCmb.lclGetTarget);
+    if not Assigned(cmb) then
+      exit;
+    TCocoaWSCustomComboBox.SetText(cmb, _newText);
+    cmb.SelStart:= UTF8Length(_newText);
+    cmb.SelLength:= 0;
+  finally
+    _cocoaCmb.release;
+    Free;
+  end;
 end;
 
 procedure TComboBoxAsyncHelper.AsyncSetLastIndex(Data:PtrInt);
+var
+  cmb: TCustomComboBox;
 begin
-  TCocoaWSCustomComboBox.SetItemIndex(cmb, TCocoaReadOnlyComboBox(cmb.Handle).lastSelectedItemIndex);
-  Free;
+  try
+    cmb:= TCustomComboBox(_cocoaCmb.lclGetTarget);
+    if not Assigned(cmb) then
+      exit;
+    TCocoaWSCustomComboBox.SetItemIndex(cmb, TCocoaReadOnlyComboBox(_cocoaCmb).lastSelectedItemIndex);
+  finally
+    _cocoaCmb.release;
+    Free;
+  end;
 end;
 
-class procedure TComboBoxAsyncHelper.ResetTextIfNecessary(AObject:TObject; ANewText:String);
+class procedure TComboBoxAsyncHelper.ResetTextIfNecessary(cocoaCmb:NSObject; ANewText:String);
 var
   helper: TComboBoxAsyncHelper;
-  ACmb: TCustomComboBox absolute AObject;
+  cmb: TCustomComboBox;
 begin
-  if not (cbactRetainPrefixCase in ACmb.AutoCompleteText) then exit;
-  helper:= TComboBoxAsyncHelper.Create(ACmb);
-  helper.newText:= ANewText;
+  cmb:= TCustomComboBox(cocoaCmb.lclGetTarget);
+  if not Assigned(cmb) then
+    exit;
+  if not (cbactRetainPrefixCase in cmb.AutoCompleteText) then
+    exit;
+  helper:= TComboBoxAsyncHelper.Create(cocoaCmb);
+  helper._newText:= ANewText;
   Application.QueueAsyncCall(@helper.AsyncResetText, 0);
 end;
 
-class procedure TComboBoxAsyncHelper.SetLastIndex(AObject:TObject);
+class procedure TComboBoxAsyncHelper.SetLastIndex(cocoaCmb:NSObject);
 var
   helper: TComboBoxAsyncHelper;
-  ACmb: TCustomComboBox absolute AObject;
 begin
-  helper:= TComboBoxAsyncHelper.Create(ACmb);
+  helper:= TComboBoxAsyncHelper.Create(cocoaCmb);
   Application.QueueAsyncCall(@helper.AsyncSetLastIndex, 0);
 end;
 
@@ -1911,7 +1933,7 @@ begin
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.lastSelectedItemIndex:= -1;
-    TComboBoxAsyncHelper.SetLastIndex(AWinControl);
+    TComboBoxAsyncHelper.SetLastIndex(rocmb);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     Result:=TLCLIntfHandle(rocmb);
     rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
