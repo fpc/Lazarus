@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Build="2"/>
-    <Files Count="532">
+    <Files Count="533">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2628,6 +2628,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaMenus"/>
       </Item532>
+      <Item533>
+        <Filename Value="cocoa/cocoawsdatepicker.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSDatePicker"/>
+      </Item533>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
