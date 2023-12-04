@@ -84,6 +84,10 @@ msgctxt "fperrormessages.msgfperrindexoutofrange"
 msgid "Index out of range: %1:d"
 msgstr ""
 
+#: fperrormessages.msgfperrlocationnotinlist
+msgid "Value not available at current code location"
+msgstr ""
+
 #: fperrormessages.msgfperrlocationparser
 msgid "Internal Error: Cannot calculate location."
 msgstr "Erreur interne : impossible de calculer l'emplacement."

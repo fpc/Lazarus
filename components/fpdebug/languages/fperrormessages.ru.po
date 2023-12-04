@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: fperrormessages.fpgdbmidisplaygdbinsteadoffpdebugwatches
 msgid "Display GDB instead of FpDebug Watches"
@@ -80,6 +80,10 @@ msgstr "Не удалось записать данные"
 msgctxt "fperrormessages.msgfperrindexoutofrange"
 msgid "Index out of range: %1:d"
 msgstr "Индекс вне границ диапазона: %1:d"
+
+#: fperrormessages.msgfperrlocationnotinlist
+msgid "Value not available at current code location"
+msgstr "Значение недоступно в текущем расположении кода"
 
 #: fperrormessages.msgfperrlocationparser
 msgid "Internal Error: Cannot calculate location."
