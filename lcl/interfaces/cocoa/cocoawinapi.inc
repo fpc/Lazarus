@@ -1063,21 +1063,30 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
-  contentView: TCocoaWindowContent;
+  view: NSObject;
+  contentView: TCocoaWindowContent absolute view;
+  dx, dy: Integer;
 begin
   Result := 0;
   if Handle=0 then
     exit;
 
-  if not NSObject(Handle).isKindOfClass(TCocoaWindowContent) then
-    exit;
-
-  contentView := TCocoaWindowContent(Handle);
-  if (not contentView.isembedded) and Assigned(contentView.window) then
-    ARect := ScreenRectFromNSToLCL( contentView.window.frame )
-  else
-    ARect := contentView.lclFrame;
   Result := 1;
+  view := NSObject(Handle);
+  if view.isKindOfClass(TCocoaWindowContent) then begin
+    // handle is Form / Window
+    if (not contentView.isembedded) and Assigned(contentView.window) then
+      ARect := ScreenRectFromNSToLCL( contentView.window.frame )
+    else
+      ARect := contentView.lclFrame;
+  end else begin
+    // handle is Control
+    ARect := view.lclFrame;
+    dx := 0;
+    dy := 0;
+    view.lclLocalToScreen( dx, dy );
+    MoveRect( ARect, dx, dy );
+  end;
 end;
 
 function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
