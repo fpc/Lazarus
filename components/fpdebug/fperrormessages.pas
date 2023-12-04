@@ -71,7 +71,7 @@ resourcestring
   MsgfpErrLocationParserInit                 = 'Internal Error: Cannot calculate location (Init).';
   MsgfpErrLocationParserMinStack             = 'Not enough elements on stack.';             // internally used
   MsgfpErrLocationParserNoAddressOnStack     = 'Not an address on stack';           // internally used
-  MsgfpErrLocationNotInList                  = 'Value not available at current code-location';
+  MsgfpErrLocationNotInList                  = 'Value not available at current code location';
 
   // 10000 Process/Control errors
   MsgfpErrCreateProcess = 'Failed to start process "%1:s".%0:sError message: %2:d "%3:s".%0:s%4:s';
