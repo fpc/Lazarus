@@ -9,7 +9,7 @@ uses
   CocoaAll,
   Classes, SysUtils, Controls, Calendar,
   LCLtype, LclProc, WSCalendar,
-  CocoaWSCommon, CocoaDatePicker, CocoaUtils, CocoaPrivate;
+  CocoaInt, CocoaWSCommon, CocoaDatePicker, CocoaUtils, CocoaPrivate, Cocoa_Extra;
 
 const
   singleDateMode                          = 0;
@@ -85,6 +85,7 @@ class function TCocoaWSCustomCalendar.CreateHandle(const AWinControl: TWinContro
 var
   dp: TCocoaDatePicker;
   Params: TCreateParams;
+  form: TWinControl;
 begin
   dp:= AllocDatePicker(AWinControl, AParams);
   dp.autoResize := true;
@@ -93,6 +94,12 @@ begin
   if Assigned(dp) then
   begin
     NSDatePickerCell(TLCLHandle(dp)).setDatePickerStyle(NSDatePickerStyle_ClockCal);
+  end;
+
+  if CocoaWidgetSet.isModalSession then begin
+    form:= TWinControl(AWinControl.GetTopParent);
+    if form.HandleAllocated then
+      NSView(form.handle).window.setLevel(NSModalPanelWindowLevel);
   end;
 
   Result:= TLCLHandle(dp);
