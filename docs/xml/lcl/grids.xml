@@ -6671,20 +6671,38 @@ existing <var>TGridColumn</var> class instance.
 
 <element name="TGridColumns.VisibleCount">
 <short>The number of visible columns in the collection.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>VisibleCount</var> is a read-only <var>Integer</var> property with the 
+number of visible TGridColumn instances in the collection. In the current LCL 
+version, the property contains the value for the Count property in the 
+collection. In prior LCL versions, the value was calculated as the number of 
+TGridColumn instances in Items with their Visible properties set to <b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumns.Count"/>
+<link id="TGridColumn.Visible"/>
+</seealso>
 </element>
 
 <element name="TGridColumns.Enabled">
 <short>Indicates if the column collection is enabled.</short>
 <descr>
 <p>
-Enabled is a read-only Boolean property which indicates if columns in the 
-collection can be used in the associated Grid control. Enabled is <b>True</b> 
-when VisibleCount contains a value greater than 0 (zero).
+<var>Enabled</var> is a read-only <var>Boolean</var> property which indicates 
+if columns in the collection can be used in the associated Grid control. 
+Enabled is <b>True</b> when Count contains a value greater than 0 (zero). 
+Please note: In prior LCL versions, the value in VisibleCount was checked to 
+determine the Enabled state. In the current LCL version, VisibleCount and Count 
+return the same value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TGridColumns.Count"/>
+<link id="TGridColumns.Grid"/>
+<link id="TGridColumns.Items"/>
+</seealso>
 </element>
 
 <element name="TGridCoord">
@@ -24248,7 +24266,7 @@ marker.
 are treated as fixed column titles in the grid. When set to <b>True</b>, 
 each column value is stored as the caption for the corresponding entry in 
 the Columns collection (when enabled). If Columns are not used, the values 
-are stored as cell data in row number 0. When set to <b>False</b>, the first 
+are stored as Cell data in row number 0. When set to <b>False</b>, the first 
 row is treated as cell data. The default value is <b>True</b>.
 </p>
 <p>
@@ -24271,11 +24289,14 @@ provides support for converting character encodings when needed.
 </p>
 <p>
 LoadFromCSVStream ensures that the grid control has enough columns to 
-represent the values read from the stream. When Columns is enabled, its Add 
-method is called to create additional columns (when needed). If this occurs 
-on the first line and UseTitles is enabled, cell values are stored as the 
-Title for each of the columns. If Columns is not enabled, the value in 
-ColCount is updated to reflect the number of columns read from the stream.
+represent the values read for each record or row in the stream. When Columns is 
+enabled (i. e. Columns.Count has a non-zero value), the Delete and Add methods 
+in Columns are called to recreate column definitions for the number of 
+delimited values read from the stream. If this occurs on the first line and 
+UseTitles is enabled, each value in the row is stored as the Title for the 
+corresponding TGridColumn instance in Columns. If Columns is not enabled, the 
+value in ColCount is updated with the number of columns read from the stream 
+and the values are stored in the first row (0) in the Cells property.
 </p>
 <p>
 Please note that updates to the control occur in a BeginUpdate..EndUpdate 
@@ -24351,18 +24372,21 @@ characters is encountered, they are processed as an end-of-line
 marker.
 </p>
 <p>
-<var>UseTitles</var> indicates whether the first row of values are treated 
-as fixed column titles in the grid. When set to <b>True</b>, each column 
-value is stored as the caption for the corresponding entry in the Columns 
-collection (when enabled). If Columns are not used, the values are stored as 
-cell data in row number 0. When set to <b>False</b>, the first row is 
-treated as cell data. The default value is <b>True</b>.
+<var>UseTitles</var> indicates whether the first row of values in the file 
+are treated as fixed column titles in the grid. When set to <b>True</b>, 
+each column value is stored as the caption for the corresponding entry in 
+the Columns collection (when enabled). The Columns collection is enabled when 
+its Count property has a positive non-zero value. If Columns are not used, the 
+values are stored as Cell data in row 0. If UseTitles is set to <b>False</b>, 
+the first row is treated as Cell data in row 0. The default value for UseTitles 
+is <b>True</b>.
 </p>
 <p>
 <var>FromLine</var> indicates the ordinal line number that is the first row 
 loaded in the method. The default value is 0, and causes processing to begin 
-at the first line. When a positive non-zero value is used, the lines are 
-skipped by reading the corresponding number of end-of-line sequences.
+at the first line. When a positive non-zero value is used, the specified number 
+of lines are skipped by reading the corresponding number of end-of-line 
+sequences.
 </p>
 <p>
 <var>SkipEmptyLines</var> indicates whether blank lines are skipped when the 
@@ -24371,7 +24395,8 @@ row and column values are loaded in the method. The default value is
 skipped.
 </p>
 <p>
-Use LoadFromCSVStream to load comma-separated values from a TStream instance.
+Use LoadFromCSVStream to load delimited row and column values from a TStream 
+instance.
 </p>
 <p>
 Use SaveToCSVFile or SaveToCSVStream to store the content in the grid as 
@@ -24388,6 +24413,7 @@ comma-separated values.
 <link id="TCustomDrawGrid.FixedRows"/>
 <link id="TGridColumns"/>
 <link id="TGridColumn.Title"/>
+<link id="#lazutils.lcsvutils.LoadFromCSVFile">LoadFromCSVFile</link>
 </seealso>
 </element>
 <element name="TCustomStringGrid.LoadFromCSVFile.AFilename">
@@ -24461,7 +24487,7 @@ included in the output is written using the value in ADelimiter to separate
 the adjacent column values. A column value is enclosed by quote characters 
 if its content contains whitespace or the delimiter character defined in 
 ADelimiter. Each row is terminated with the end-of-line sequence used in the 
-LCL.
+LCL platform.
 </p>
 <p>
 No actions are performed in the method if either RowCount or ColCount are 
