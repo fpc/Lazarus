@@ -29,7 +29,7 @@ uses
   Types, Classes, SysUtils,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate, CocoaConst,
+  cocoa_extra, CocoaPrivate, CocoaConst, CocoaConfig,
   // LCL
   LCLType;
 
@@ -557,6 +557,7 @@ end;
 function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
+  setStyle( CocoaConfig.CocoaTableViewStyle );
 end;
 
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
