@@ -6681,8 +6681,8 @@ TGridColumn instances in Items with their Visible properties set to <b>True</b>.
 </p>
 </descr>
 <seealso>
-<link id="TGridColumns.Count"/>
 <link id="TGridColumn.Visible"/>
+<link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
 </seealso>
 </element>
 
@@ -6699,9 +6699,9 @@ return the same value.
 </p>
 </descr>
 <seealso>
-<link id="TGridColumns.Count"/>
 <link id="TGridColumns.Grid"/>
 <link id="TGridColumns.Items"/>
+<link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
 </seealso>
 </element>
 
