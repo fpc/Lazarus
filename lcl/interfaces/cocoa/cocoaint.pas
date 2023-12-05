@@ -33,8 +33,8 @@ uses
   // darwin bindings
   MacOSAll,
   // private
-  CocoaAll, CocoaConst, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaCursor,
-  cocoa_extra, CocoaMenus, CocoaWindows, CocoaScrollers,
+  CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaUtils, Cocoa_Extra,
+  CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType,
