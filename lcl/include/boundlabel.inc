@@ -19,6 +19,8 @@ constructor TBoundLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name := 'SubLabel';
+  Alignment := taLeftJustify;
+  Layout := tlCenter;
   SetSubComponent(True);
   if Assigned(TheOwner) then
     Caption := TheOwner.Name;

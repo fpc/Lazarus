@@ -77,12 +77,10 @@ begin
     lpLeft : 
       begin
         FEditLabel.AnchorToCompanion(akRight,FLabelSpacing,Self);
-        FEditLabel.AnchorVerticalCenterTo(Self); 
       end; 
     lpRight:
       begin
         FEditLabel.AnchorToCompanion(akLeft,FLabelSpacing,Self);
-        FEditLabel.AnchorVerticalCenterTo(Self); 
       end; 
   end;
   if Parent<>nil then

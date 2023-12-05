@@ -973,6 +973,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     property FocusControl;
   published
+    property Alignment;
     property AnchorSideLeft stored False;
     property AnchorSideTop stored False;
     property AnchorSideRight stored False;
@@ -991,7 +992,7 @@ type
     property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
-    property Layout;
+    property Layout default tlCenter;
     property WordWrap;
     property OnClick;
     property OnDblClick;
