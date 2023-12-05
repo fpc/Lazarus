@@ -891,7 +891,6 @@ begin
   inherited Create(TheOwner);
 
   fCompStyle := csComboBox;
-  ControlStyle := ControlStyle - [csCaptureMouse];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FItems := TStringListUTF8Fast.Create;
