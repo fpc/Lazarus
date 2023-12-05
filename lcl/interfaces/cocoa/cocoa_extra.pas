@@ -214,6 +214,8 @@ type
 
   NSTableViewAnimationOptions = NSUInteger;
 
+  NSTableViewStyle = NSInteger;    // 11.0
+
   NSTableViewFix = objccategory external (NSTableView)
     // 10.7
     function rowForView(AView: NSView): NSInteger; message 'rowForView:';
@@ -224,6 +226,10 @@ type
       message 'insertRowsAtIndexes:withAnimation:';
     procedure removeRowsAtIndexes_withAnimation(indexes: NSIndexSet; withAnimation: NSTableViewAnimationOptions);
       message 'removeRowsAtIndexes:withAnimation:';
+    // 11.0
+    procedure setStyle(newValue: NSTableViewStyle); message 'setStyle:';
+    function style: NSTableViewStyle; message 'style';
+    function effectiveStyle: NSTableViewStyle; message 'effectiveStyle';
   end;
 
   {// private since 10.5, doesn't seam to do anything in 10.10
@@ -319,6 +325,14 @@ type
     procedure setShowsTagField(AShow: LCLObjCBoolean); message 'setShowsTagField:';
     function showsTagField: LCLObjCBoolean; message 'showsTagField';
   end;
+
+const
+  // 11.0
+  NSTableViewStyleAutomatic = 0;
+  NSTableViewStyleFullWidth = 1;
+  NSTableViewStyleInset = 2;
+  NSTableViewStyleSourceList = 3;
+  NSTableViewStylePlain = 4;
 
 implementation
 

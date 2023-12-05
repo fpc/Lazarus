@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="534">
+    <Files Count="535">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2638,6 +2638,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoaconfig"/>
       </Item534>
+      <Item535>
+        <Filename Value="cocoa/cocoa_extra.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Cocoa_Extra"/>
+      </Item535>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
