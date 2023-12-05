@@ -3324,11 +3324,9 @@ The default value for the property is <b>False</b>.
 <var>Create</var> is the overridden constructor for the class instance, and 
 calls the inherited constructor on entry. Create ensures that resources are 
 allocated for members in the class instance. Create sets the default values 
-for properties, including the following:
+for properties, including:
 </p>
 <dl>
-<dt>ControlSyle</dt>
-<dd>Removes csCaptureMouse from the style flags.</dd>
 <dt>DropDownCunt</dt>
 <dd>Set to display 8 items by default.</dd>
 <dt>ArrowKeysTraverseList</dt>
@@ -7564,20 +7562,50 @@ GetRGBColorResolvingParent method.
 <short>Constructor for the class instance.</short>
 <descr>
 <p>
-<var>Create</var> is the overridden constructor for the class instance, and 
-calls the inherited constructor on entry. Create ensures that values in the 
-component and <var>ControlStyle</var> properties are set for the control. 
-ControlStyle excludes the value csCaptureMouse and includes the value 
-csRequiresKeyboardInput.
+<var>Create</var> is an overridden constructor in <var>TCustomEdit</var>, and 
+calls the inherited constructor on entry. Create ensures that component and 
+control styles are set to the values needed for the edit control; csEdit in 
+component style, csRequiresKeyboardInput is included in ControlStyle. Please 
+note that these values may be changed in descendent classes; i. e. TCustomMemo 
+uses csMemo instead of csEdit in the component style.
 </p>
 <p>
-Create sets the default values for properties, including: <var>MaxLength, 
-HideSelection, ParentColor, TabStop, EchoMode, BorderStyle, AutoSelect, 
-AutoSelected,</var> and <var>TextHint</var>.
+The default values for properties are assigned, including:
 </p>
+<ul>
+<li>MaxLength</li>
+<li>HideSelection</li>
+<li>ParentColor</li>
+<li>TabStop</li>
+<li>EchoMode</li>
+<li>BorderStyle</li>
+<li>AutoSelect</li>
+<li>AutoSelected</li>
+<li>AutoSize</li>
+<li>AccessibleRole</li>
+<li>TextHint</li>
+</ul>
 </descr>
 <seealso>
-</seealso></element>
+<link id="TCustomEdit.AutoSelect"/>
+<link id="TCustomEdit.AutoSelected"/>
+<link id="TCustomEdit.AutoSize"/>
+<link id="TCustomEdit.BorderStyle"/>
+<link id="TCustomEdit.Destroy"/>
+<link id="TCustomEdit.EchoMode"/>
+<link id="TCustomEdit.HideSelection"/>
+<link id="TCustomEdit.MaxLength"/>
+<link id="TCustomEdit.ParentColor"/>
+<link id="TCustomEdit.TabStop"/>
+<link id="TCustomMemo"/>
+<link id="#lcl.extctrls.TCustomLabeledEdit">TCustomLabeledEdit</link>
+<link id="#lcl.maskedit.TCustomMaskEdit">TCustomMaskEdit</link>
+<link id="#lcl.spin.TCustomFloatSpinEdit">TCustomFloatSpinEdit</link>
+<link id="#lcl.controls.TControl.AccessibleRole">TControl.AccessibleRole</link>
+<link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
+</seealso>
+</element>
 <element name="TCustomEdit.Create.AOwner">
 <short>Owner of the class instance.</short>
 </element>
