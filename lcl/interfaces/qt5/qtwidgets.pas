@@ -1100,7 +1100,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
-
+    procedure grabMouse; override;
     procedure SlotActivate(index: Integer); cdecl;
     procedure SlotChange(p1: PWideString); cdecl;
     procedure SlotSelect(index: Integer); cdecl;
@@ -1147,6 +1147,7 @@ type
     function getReadOnly: Boolean;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
+    procedure grabMouse; override;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
     procedure setDefaultColorRoles; override;
@@ -11751,6 +11752,14 @@ begin
   PreferredHeight := Size.cy;
 end;
 
+procedure TQtComboBox.grabMouse;
+begin
+  if Assigned(LCLObject) and getEditable and not (csDesigning in LCLObject.ComponentState) then
+    LineEdit.grabMouse
+  else
+    inherited grabMouse;
+end;
+
 procedure TQtComboBox.SlotActivate(index: Integer); cdecl;
 var
   Msg: TLMessage;
@@ -11843,7 +11852,10 @@ function TQtAbstractSpinBox.LineEditEventFilter(Sender: QObjectH; Event: QEventH
 begin
   Result := False;
   QEvent_accept(Event);
-  if QEvent_type(Event) = QEventFontChange then
+  if (QEvent_type(Event) = QEventFontChange) then
+    Result := EventFilter(QWidgetH(Sender), Event)
+  else
+  if (QEvent_type(Event) >= QEventMouseButtonPress) and (QEvent_type(Event) <= QEventMouseMove) then
     Result := EventFilter(QWidgetH(Sender), Event);
 end;
 
@@ -12025,6 +12037,15 @@ end;
 function TQtAbstractSpinBox.getTextStatic: Boolean;
 begin
   Result := False;
+end;
+
+procedure TQtAbstractSpinBox.grabMouse;
+begin
+  if Assigned(LCLObject) and not (csDesigning in LCLObject.ComponentState)
+    and Assigned(LineEdit) then
+      QWidget_grabMouse(LineEdit)
+  else
+    inherited grabMouse;
 end;
 
 procedure TQtAbstractSpinBox.setAlignment(const AAlignment: QtAlignment);
