@@ -1274,7 +1274,9 @@ end;
 
 procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
 begin
-  FFont := AValue;        // UpdateRefs done within property setter
+  if TCocoaGDIObject.UpdateRefs(FFont, AValue) then
+    FFont := AValue;
+  end;
 end;
 
 procedure TCocoaContext.SetPen(const AValue: TCocoaPen);
