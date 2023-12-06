@@ -197,6 +197,7 @@ type
   end;
 
   TOHLCMode = (mOHLC, mCandleStick);
+  TTickWidthStyle = (twsPercent, twsPercentMin);
 
   TOpenHighLowCloseSeries = class(TBasicPointSeries)
   private
@@ -206,6 +207,7 @@ type
     FDownLinePen: TOHLCDownPen;
     FLinePen: TPen;
     FTickWidth: Integer;
+    FTickWidthStyle: TTickWidthStyle;
     FYIndexClose: Integer;
     FYIndexHigh: Integer;
     FYIndexLow: Integer;
@@ -218,6 +220,7 @@ type
     procedure SetLinePen(AValue: TPen);
     procedure SetOHLCMode(AValue: TOHLCMode);
     procedure SetTickWidth(AValue: Integer);
+    procedure SetTickWidthStyle(AValue: TTickWidthStyle);
     procedure SetYIndexClose(AValue: Integer);
     procedure SetYIndexHigh(AValue: Integer);
     procedure SetYIndexLow(AValue: Integer);
@@ -254,6 +257,8 @@ type
     property Mode: TOHLCMode read FMode write SetOHLCMode default mOHLC;
     property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
+    property TickWidthStyle: TTickWidthStyle
+      read FTickWidthStyle write SetTickWidthStyle default twsPercent;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
     property YIndexClose: integer
       read FYIndexClose write SetYIndexClose default DEF_YINDEX_CLOSE;
@@ -1725,6 +1730,14 @@ end;
 
 procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
 
+  function CalcTickWidth(AX: Double; AIndex: Integer): Double;
+  begin
+    case FTickWidthStyle of
+      twsPercent: Result := GetXRange(AX, AIndex) * PERCENT * TickWidth;
+      twsPercentMin: Result := FMinXRange * PERCENT * TickWidth;
+    end;
+  end;
+
   function MaybeRotate(AX, AY: Double): TPoint;
   begin
     if IsRotated then
@@ -1789,6 +1802,9 @@ begin
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
+  if TickWidthStyle = twsPercentMin then
+    UpdateMinXRange;
+
   PrepareGraphPoints(ext2, true);
 
   for i := FLoBound to FUpBound do begin
@@ -1802,7 +1818,7 @@ begin
     if IsNaN(ylow) then Continue;
     yclose := GetGraphPointY(i, YIndexClose);
     if IsNaN(yclose) then Continue;
-    tw := GetXRange(x, i) * PERCENT * TickWidth;
+    tw := CalcTickWidth(x, i); //GetXRange(x, i) * PERCENT * TickWidth;
     if (yopen <= yclose) then begin
       p := LinePen;
       ADrawer.Brush := FCandleStickUpBrush;
@@ -1994,6 +2010,13 @@ procedure TOpenHighLowCloseSeries.SetTickWidth(AValue: Integer);
 begin
   if FTickWidth = AValue then exit;
   FTickWidth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetTickWidthStyle(AValue: TTickWidthStyle);
+begin
+  if FTickWidthStyle = AValue then exit;
+  FTickWidthStyle := AValue;
   UpdateParentChart;
 end;
 
