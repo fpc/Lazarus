@@ -1765,8 +1765,9 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
   procedure DrawOHLC(x, yopen, yhigh, ylow, yclose, tw: Double);
   begin
     DoLine(x, yhigh, x, ylow);
-    DoLine(x - tw, yopen, x, yopen);
     DoLine(x, yclose, x + tw, yclose);
+    if not IsNaN(yopen) then
+      DoLine(x - tw, yopen, x, yopen);
   end;
 
   procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double);
@@ -1811,15 +1812,15 @@ begin
     x := GetGraphPointX(i);
     if IsNaN(x) then Continue;
     yopen := GetGraphPointY(i, YIndexOpen);
-    if IsNaN(yopen) then Continue;
+    if IsNaN(yopen) and (FMode = mCandleStick) then Continue;
     yhigh := GetGraphPointY(i, YIndexHigh);
     if IsNaN(yhigh) then Continue;
     ylow := GetGraphPointY(i, YIndexLow);
     if IsNaN(ylow) then Continue;
     yclose := GetGraphPointY(i, YIndexClose);
     if IsNaN(yclose) then Continue;
-    tw := CalcTickWidth(x, i); //GetXRange(x, i) * PERCENT * TickWidth;
-    if (yopen <= yclose) then begin
+    tw := CalcTickWidth(x, i);
+    if (not IsNaN(yopen) and (yopen <= yclose)) then begin
       p := LinePen;
       ADrawer.Brush := FCandleStickUpBrush;
       ADrawer.SetBrushColor(FCandleStickUpBrush.Color);
