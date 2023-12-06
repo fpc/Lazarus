@@ -3327,7 +3327,7 @@ allocated for members in the class instance. Create sets the default values
 for properties, including:
 </p>
 <dl>
-<dt>DropDownCunt</dt>
+<dt>DropDownCount</dt>
 <dd>Set to display 8 items by default.</dd>
 <dt>ArrowKeysTraverseList</dt>
 <dd>Set to <b>True</b> to enable cursor key navigation in the control.</dd>
