@@ -6377,7 +6377,9 @@ determine their order and layout.
 <element name="TCheckGroup.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
 <element name="TBoundLabel">
-<short>Implements a label bound to another control.</short>
+<short>
+Implements a label bound to another control.
+</short>
 <descr>
 <p>
 <var>TBoundLabel</var> is a <var>TCustomLabel</var> descendant which 
@@ -6386,36 +6388,73 @@ implement the <var>EditLabel</var> property in <var>TCustomLabeledEdit</var>
 and <var>TLabeledEdit</var>.
 </p>
 <p>
-Use <var>Caption</var> to assign the text displayed in the label. Use 
-<var>Layout</var> to specify the text alignment used for the Caption value.
+Use <var>Caption</var> to assign the text displayed in the label. An 
+accelerator key can be specified in Caption to activate the control to which it 
+is bound.
 </p>
 <p>
 The <var>FocusControl</var> property specifies the control given focus when a 
-Dialog accelerator key or other input event in the class is handled. Use one 
-of the <b>AnchorSide*</b> properties to specify the edge anchored to the 
-FocusControl.
+Dialog accelerator key or other input event in the class is handled. The 
+<b>AnchorSide*</b> properties indicate the edge anchored to the FocusControl.
 </p>
 <p>
-Other than a constructor, the class does not have any new methods or event 
-handlers.
+Use <var>Alignment</var> and <var>Layout</var> to specify the horizontal and 
+vertical alignment used for the label Caption. Values in these properties may 
+be ignored (in the implementing control) if they do not apply to the position 
+for the bound label relative to its FocusControl. Alignment does not apply when 
+the label is positioned on the left or right of its FocusControl. Layout does 
+not apply when the label is positioned above or below its FocusControl.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to include the Alignment and Layout properties.
+</version>
 <seealso>
-<link id="TCustomLabel"/>
-<link id="TCustomLabeledEdit"/>
+<link id="TBoundLabel.Alignment"/>
+<link id="TBoundLabel.Layout"/>
+<link id="TBoundLabel.FocusControl"/>
+<link id="TBoundLabel.Caption"/>
+<link id="TCustomLabeledEdit.EditLabel"/>
+<link id="TCustomLabeledEdit.LabelPosition"/>
 <link id="TLabeledEdit"/>
+<link id="#lcl.stdctrls.TCustomLabel">TCustomLabel</link>
 </seealso>
 </element>
 
 <element name="TBoundLabel.Create">
 <short>Constructor for the class instance.</short>
 <descr>
+<p>
 <var>Create</var> is the constructor for <var>TBoundLabel</var>. It calls the 
 inherited <var>Create</var> method, and makes itself a SubComponent of the 
-Owner. The Caption in the control is changed to the Name in the Owner.
+Owner. The default values for the following properties are set:
+</p>
+<dl>
+<dt>Alignment</dt>
+<dd>
+Set to taLeftJustify to align text to the left in the label.
+</dd>
+<dt>Layout</dt>
+<dd>
+Set to tlCenter to center the text vertically on the label. The top of the 
+label is determined using the height for the control to which it is bound.
+</dd>
+</dl>
+<p>
+The Caption for the label is changed to the value from the Name property in the 
+Owner control.
+</p>
 </descr>
+<version>
+Modified in LCL version 4.0 to set default values for the Alignment and Layout 
+properties.
+</version>
 <seealso>
+<link id="TBoundLabel.Alignment"/>
+<link id="TBoundLabel.Caption"/>
+<link id="TBoundLabel.Layout"/>
 <link id="#lcl.stdctrls.TCustomLabel.Create">TCustomLabel.Create</link>
+<link id="#rtl.classes.TComponent.SetSubComponent">TComponent.SetSubComponent</link>
 </seealso>
 </element>
 <element name="TBoundLabel.Create.TheOwner">
@@ -6424,15 +6463,77 @@ Owner. The Caption in the control is changed to the Name in the Owner.
 
 <element name="TBoundLabel.FocusControl">
 <short>
-<var>FocusControl</var> is the control to receive focus when the label is 
-activated.
+Control focused when the accelerator key for the label is detected.
 </short>
 <descr>
 <p>
-FocusControl also receives key messages in the DialogChar method.
+<var>FocusControl</var> is a public <var>TWinControl</var> property in 
+<var>TBoundLabel</var>. A label control cannot receive the input focus (it is 
+read-only), but can display an accelerator key indicator, just like a menu 
+entries. A windowed control (Edit...) can receive focus, but cannot indicate an 
+accelerator key.
+</p>
+<p>
+An accelerator key is designated using an Ampersand '&amp;' in the label 
+Caption, immediately preceding the character to be used as the accelerator key. 
+The marked character appears with an underline on the screen when ShowAccelChar 
+is set to <b>True</b>.
+</p>
+<p> 
+FocusControl receives key messages in the DialogChar method.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="#lcl.stdctrls.TCustomLabel.DialogChar">TCustomLabel.DialogChar</link>
+<link id="#lcl.stdctrls.TCustomLabel.FocusControl">TCustomLabel.FocusControl</link>
+<link id="#lcl.stdctrls.TCustomLabel.ShowAccelChar">TCustomLabel.ShowAccelChar</link>
+</seealso>
+</element>
+
+<element name="TBoundLabel.Alignment">
+<short>
+Horizontal alignment for the Caption displayed on the bound label.
+</short>
+<descr>
+<p>
+<var>Alignment</var> is a published <var>TAlignment</var> property in 
+<var>TBoundLabel</var> which controls how Caption text is aligned horizontally 
+on the label.
+</p>
+<p>
+The default value for Alignment is taCenter as assigned in the Create 
+constructor. Please note that this is different than the default property value 
+(taLeftJustify) used in the TCustomLabel ancestor.
+</p>
+<p>
+See <link id="#rtl.classes.TAlignment">TAlignment</link> for the values 
+allowed in the property and their meanings.
+</p>
+<p>
+The property value is used when it is relevant to the position for the bound 
+label relative to its FocusControl. In short, when the bound label appears 
+above or below the FocusControl. The property value is not used when the bound 
+label is positioned to the left or right of the FocusControl; the label width 
+is auto-sized in this use case. See 
+<link id="TCustomLabeledEdit.LabelPosition"/> for more information.
+</p>
+<p>
+Use the Layout property to control the vertical alignment for the Caption text 
+displayed on the label.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TBoundLabel.Caption"/>
+<link id="TBoundLabel.Layout"/>
+<link id="TBoundLabel.FocusControl"/>
+<link id="TCustomLabeledEdit.LabelPosition"/>
+<link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="#lcl.stdctrls.TCustomLabel.Alignment">TCustomLabel.Alignment</link>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
+</seealso>
 </element>
 
 <element name="TBoundLabel.AnchorSideLeft" link="#lcl.controls.TControl.AnchorSideLeft"/>
@@ -6454,7 +6555,44 @@ FocusControl also receives key messages in the DialogChar method.
 <element name="TBoundLabel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 <element name="TBoundLabel.ShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
 <element name="TBoundLabel.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TBoundLabel.Layout" link="#lcl.stdctrls.TCustomLabel.Layout"/>
+
+<element name="TBoundLabel.Layout">
+<short>
+Specifies the vertical alignment for the Caption text on the label.
+</short>
+<descr>
+<p>
+<var>Layout</var> is a published <var>TTextLayout</var> property in <var>
+TBoundLabel</var>. The default value for the property is tlCenter in 
+TBoundLabel, and causes the Caption to be centered vertically using the Height 
+for the label. Please note that the default value differs from the default used 
+in the TCustomLabel ancestor (tlTop).
+</p>
+<p>
+See <link id="#lcl.graphics.TTextLayout">TTextLayout</link> for the values 
+allowed in the property and their meanings.
+</p>
+<p>
+The property value is used when it is relevant to the position for the bound 
+label relative to its FocusControl. In short, when the bound label appears to 
+the left or right of the FocusControl. The property value is not used when the 
+bound label is positioned above or below the FocusControl; the label height is 
+auto-sized in this use case. See <link id="TCustomLabeledEdit.LabelPosition"/> 
+for more information.
+</p>
+<p>
+Use Alignment to control the horizontal alignment used for the Caption text.
+</p>
+</descr>
+<seealso>
+<link id="TBoundLabel.Alignment"/>
+<link id="TBoundLabel.Caption"/>
+<link id="TCustomLabeledEdit.LabelPosition"/>
+<link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="#lcl.stdctrls.TCustomLabel.Layout">TCustomLabel.Layout</link>
+</seealso>
+</element>
+
 <element name="TBoundLabel.WordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
 <element name="TBoundLabel.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TBoundLabel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -6473,12 +6611,26 @@ FocusControl also receives key messages in the DialogChar method.
 
 <element name="TLabelPosition">
 <short>
+Specifies the position for a label relative to an associated control.
+</short>
+<descr>
+<p>
 <var>TLabelPosition</var> is an enumerated type with values that represent 
 the position of a label relative to an associated control: i. e. above, 
 below, left, or right.
-</short>
-<descr/>
-<seealso/>
+</p>
+<p>
+TLabelPosition is the type used for the LabelPosition property in 
+TCustomLabeledEdit and descendent classes. It is used in the DoPositionLabel 
+method to position and anchor the EditLabel to its companion control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabeledEdit.LabelPosition"/>
+<link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="TCustomLabeledEdit.DoPositionLabel"/>
+<link id="TBoundLabel.FocusControl"/>
+</seealso>
 </element>
 <element name="TLabelPosition.lpAbove">
 <short>Label is displayed above the control.</short>
@@ -6497,9 +6649,9 @@ below, left, or right.
 <short>Defines an edit control with a label bound to the control.</short>
 <descr>
 <p>
-<var>TCustomLabeledEdit</var> is a TCustomEdit descendant which defines an 
-edit control with a label bound to the control. TCustomLabeledEdit is the 
-base type for <var>TLabeledEdit</var>.
+<var>TCustomLabeledEdit</var> is a <var>TCustomEdit</var> descendant which 
+defines an edit control with a label bound to the control. TCustomLabeledEdit 
+is the base type for <var>TLabeledEdit</var>.
 </p>
 <p>
 Note particularly the <link 
@@ -6511,6 +6663,28 @@ the label attached to the Edit control.
 Use LabelPosition to specify the location where EditLabel is displayed 
 relative to the edit box in the control. Use LabelSpacing to set the spacing 
 between EditLabel and the edit control.
+</p>
+<p>
+<b>About TCustomLabeledEdit / TLabeledEdit</b>
+</p>
+<p>
+<var>TCustomLabeledEdit</var> and <var>TLabeledEdit</var> are based on the 
+similarly named controls from the Delphi VCL. While they offer code 
+compatibility with the VCL class, they have some drawbacks when used in the 
+LCL. They do not work very well with the positioning and anchoring mechanisms 
+used in LCL. They do not have an Align property used to position, align, and 
+stack controls towards one of the edges on the control. There are also 
+shortcomings when using BorderSpacing; the extra spacing is inserted between 
+the label and the edit box on the control instead around the composite control. 
+Labels with long captions are not ellipsified or aligned properly when longer 
+than the associated edit control. Multi-line captions on a label are not 
+positioned as expected; the label often overlaps (or is obscured by) adjacent 
+controls.
+</p>
+<p>
+Despite the convenience of TCustomLabeledEdit / TLabeledEdit, most will elect 
+to use separate label and edit controls to avoid the shortcomings in the align 
+and anchoring mechanisms for the composite control.
 </p>
 </descr>
 <seealso>
@@ -6629,14 +6803,19 @@ for the Parent control prior to exiting from the method.
 <p>
 DoPositionLabel updates EditLabel to use the values assigned to the Parent 
 and <var>Visibility</var> properties. The values in <var>LabelPosition</var> 
-and <var>LabelSpacing</var> are used to determine the anchoring to the 
-companion control applied to EditLabel.
+and <var>LabelSpacing</var> are used to set the anchor position for the 
+EditLabel and the spacing between EditLabel and the edit box on the control.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the Layout property in the TBoundLabel 
+instance to determine vertical alignment for the label caption.
+</version>
 <seealso>
 <link id="TCustomLabeledEdit.EditLabel"/>
 <link id="TCustomLabeledEdit.LabelPosition"/>
 <link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="TBoundLabel.Layout"/>
 <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
 <link id="#lcl.controls.TWinControl.DisableAlign">TWinControl.DisableAlign</link>
 <link id="#lcl.controls.TWinControl.EnableAlign">TWinControl.EnableAlign</link>
@@ -6865,15 +7044,16 @@ aligned.
 </element>
 
 <element name="TLabeledEdit">
-<short>Implements an edit control with a label bound to the control.</short>
+<short>
+Implements an edit control with a label bound to the control.
+</short>
 <descr>
 <p>
 <var>TLabeledEdit</var> is a <var>TCustomLabeledEdit</var> descendant which 
 implements an edit control with a label bound to the control. It saves time 
 and effort over placing separate Label and Edit Box on Form. The properties 
-are described in the parent component, <link 
-id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which 
-most of the properties are inherited.
+are described in the parent component, 
+<link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited.
 </p>
 <p>
 Note particularly the 
@@ -6886,6 +7066,28 @@ Use LabelPosition to specify the location where EditLabel is displayed
 relative to the edit box in the control. Use LabelSpacing to set the spacing 
 (in pixels) between EditLabel and the edit control.
 </p>
+<p>
+<b>About TCustomLabeledEdit / TLabeledEdit</b>
+</p>
+<p>
+<var>TCustomLabeledEdit</var> and <var>TLabeledEdit</var> are based on the 
+similarly named controls from the Delphi VCL. While they offer code 
+compatibility with the VCL class, they have some drawbacks when used in the 
+LCL. They do not work very well with the positioning and anchoring mechanisms 
+used in LCL. They do not have an Align property used to position, align, and 
+stack controls towards one of the edges on the control. There are also 
+shortcomings when using BorderSpacing; the extra spacing is inserted between 
+the label and the edit box on the control instead around the composite control. 
+Labels with long captions are not ellipsified or aligned properly when longer 
+than the associated edit control. Multi-line captions on a label are not 
+positioned as expected; the label often overlaps (or is obscured by) adjacent 
+controls.
+</p>
+<p>
+Despite the convenience of TCustomLabeledEdit / TLabeledEdit, most will elect 
+to use separate label and edit controls to avoid the shortcomings in the align 
+and anchoring mechanisms for the composite control.
+</p>
 </descr>
 <seealso>
 <link id="TCustomLabeledEdit.EditLabel"/>
@@ -6896,7 +7098,6 @@ relative to the edit box in the control. Use LabelSpacing to set the spacing
 <link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
 <link id="#lcl.stdctrls.TCustomLabel">TCustomLabel</link>
 </seealso>
-
 </element>
 
 <element name="TLabeledEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
