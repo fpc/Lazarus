@@ -4569,7 +4569,7 @@ begin
         exit;
       end;
 
-      LocList := LocList + 2 * Len;
+      LocList := LocList + 2 + Len;
     end;
 
     SetLastError(AValueObj, CreateError(fpErrAnyError));
