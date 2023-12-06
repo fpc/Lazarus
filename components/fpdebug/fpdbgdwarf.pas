@@ -1069,6 +1069,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
     FDwarf: TFpDwarfInfo;
+    FProcTypeInfo: TFpSymbolDwarfType;
     function GetLineUnfixed: TDBGPtr;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
@@ -1113,6 +1114,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FAddressInfo: PDwarfAddressInfo;
     FLastMember: TFpSymbol;
     FProcMembers: TRefCntObjList; // Locals
+    FProcValue: TFpSymbolDwarfDataProc; // not refcounted
 
     procedure CreateMembers;
   protected
@@ -6629,6 +6631,8 @@ end;
 
 destructor TFpSymbolDwarfDataProc.Destroy;
 begin
+  if FProcTypeInfo <> nil then
+    TFpSymbolDwarfTypeProc(FProcTypeInfo).FProcValue := nil;
   FreeAndNil(FStateMachine);
   inherited Destroy;
 end;
@@ -6922,9 +6926,14 @@ procedure TFpSymbolDwarfDataProc.TypeInfoNeeded;
 var
   t: TFpSymbolDwarfTypeProc;
 begin
+  if FProcTypeInfo <> nil then
+    TFpSymbolDwarfTypeProc(FProcTypeInfo).FProcValue := nil;
+
   t := TFpSymbolDwarfTypeProc.Create('', InformationEntry, FAddressInfo);
   SetTypeInfo(t); // TODO: avoid adding a reference, already got one....
   t.ReleaseReference;
+  FProcTypeInfo := t;
+  TFpSymbolDwarfTypeProc(FProcTypeInfo).FProcValue := Self;
 end;
 
 function TFpSymbolDwarfDataProc.GetParent: TFpSymbol;
@@ -7063,6 +7072,8 @@ begin
   FLastMember := TFpSymbolDwarf.CreateSubClass('', TDwarfInformationEntry(FProcMembers[AIndex]));
   {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember');{$ENDIF}
   Result := FLastMember;
+  if Result <> nil then
+    TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(const AIndex: String;
@@ -7085,6 +7096,8 @@ begin
     end;
   end;
   Result := FLastMember;
+  if Result <> nil then
+    TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolCount: Integer;
