@@ -191,9 +191,35 @@ type
     property Source;
   end;
 
-  TOHLCDownPen = class(TPen)
+  TOHLCBrushKind = (obkCandleUp, obkCandleDown);
+  TOHLCPenKind = (opkCandleUp, opkCandleDown, opkCandleLine, opkLineUp, opkLineDown);
+
+  TOHLCBrush = class(TBrush)
+  private
+    const
+      DEFAULT_COLORS: array[TOHLCBrushKind] of TColor = (clLime, clRed);
+  private
+    FBrushKind: TOHLCBrushKind;
+    function IsColorStored: Boolean;
+    procedure SetBrushKind(AValue: TOHLCBrushKind);
+  public
+    property BrushKind: TOHLCBrushKind read FBrushKind write SetBrushKind;
   published
-    property Color default clTAColor;
+    property Color stored IsColorStored;
+  end;
+
+  TOHLCPen = class(TPen)
+  private
+    const
+      DEFAULT_COLORS: array[TOHLCPenKind] of TColor = (clGreen, clMaroon, clDefault, clLime, clRed);
+  private
+    FPenKind: TOHLCPenKind;
+    function IsColorStored: Boolean;
+    procedure SetPenKind(AValue: TOHLCPenKind);
+  public
+    property PenKind: TOHLCPenKind read FPenKind write SetPenKind;
+  published
+    property Color stored IsColorStored;
   end;
 
   TOHLCMode = (mOHLC, mCandleStick);
@@ -201,11 +227,8 @@ type
 
   TOpenHighLowCloseSeries = class(TBasicPointSeries)
   private
-    FCandlestickDownBrush: TBrush;
-    FCandleStickLinePen: TPen;
-    FCandlestickUpBrush: TBrush;
-    FDownLinePen: TOHLCDownPen;
-    FLinePen: TPen;
+    FPen: array[TOHLCPenKind] of TOHLCPen;
+    FBrush: array[TOHLCBrushKind] of TOHLCBrush;
     FTickWidth: Integer;
     FTickWidthStyle: TTickWidthStyle;
     FYIndexClose: Integer;
@@ -213,11 +236,10 @@ type
     FYIndexLow: Integer;
     FYIndexOpen: Integer;
     FMode: TOHLCMode;
-    procedure SetCandlestickLinePen(AValue: TPen);
-    procedure SetCandlestickDownBrush(AValue: TBrush);
-    procedure SetCandlestickUpBrush(AValue: TBrush);
-    procedure SetDownLinePen(AValue: TOHLCDownPen);
-    procedure SetLinePen(AValue: TPen);
+    function GetBrush(AIndex: TOHLCBrushKind): TOHLCBrush;
+    function GetPen(AIndex: TOHLCPenKind): TOHLCPen;
+    procedure SetBrush(AIndex: TOHLCBrushKind; AValue: TOHLCBrush);
+    procedure SetPen(AIndex: TOHLCPenKind; AValue: TOHLCPen);
     procedure SetOHLCMode(AValue: TOHLCMode);
     procedure SetTickWidth(AValue: Integer);
     procedure SetTickWidthStyle(AValue: TTickWidthStyle);
@@ -226,6 +248,7 @@ type
     procedure SetYIndexLow(AValue: Integer);
     procedure SetYIndexOpen(AValue: Integer);
   protected
+    function CalcTickWidth(AX: Double; AIndex: Integer): Double;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
@@ -238,6 +261,7 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
     function AddXOHLC(
       AX, AOpen, AHigh, ALow, AClose: Double;
       ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
@@ -246,14 +270,13 @@ type
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
   published
-    property CandlestickDownBrush: TBrush
-      read FCandlestickDownBrush write SetCandlestickDownBrush;
-    property CandlestickLinePen: TPen
-      read FCandlestickLinePen write FCandleStickLinePen;
-    property CandlestickUpBrush: TBrush
-      read FCandlestickUpBrush write SetCandlestickUpBrush;
-    property DownLinePen: TOHLCDownPen read FDownLinePen write SetDownLinePen;
-    property LinePen: TPen read FLinePen write SetLinePen;
+    property CandlestickDownBrush: TOHLCBrush index obkCandleDown read GetBrush write SetBrush;
+    property CandlestickDownPen: TOHLCPen index opkCandleDown read GetPen write SetPen;
+    property CandlestickLinePen: TOHLCPen index opkCandleLine read GetPen write SetPen;
+    property CandlestickUpBrush: TOHLCBrush index obkCandleUp read GetBrush write SetBrush;
+    property CandlestickUpPen: TOHLCPen index opkCandleUp read GetPen write Setpen;
+    property DownLinePen: TOHLCPen index opkLineDown read GetPen write SetPen;
+    property LinePen: TOHLCPen index opkLineUp read GetPen write SetPen;
     property Mode: TOHLCMode read FMode write SetOHLCMode default mOHLC;
     property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
@@ -1634,6 +1657,31 @@ begin
     FYDataLayout := bwlCustom;
 end;
 
+{ TOHLCBrush }
+
+function TOHLCBrush.IsColorStored: Boolean;
+begin
+  Result := (Color = DEFAULT_COLORS[FBrushKind]);
+end;
+
+procedure TOHLCBrush.SetBrushKind(AValue: TOHLCBrushKind);
+begin
+  FBrushKind := AValue;
+  Color := DEFAULT_COLORS[FBrushKind];
+end;
+
+{ TOHLCPen }
+
+function TOHLCPen.IsColorStored: Boolean;
+begin
+  Result := (Color = DEFAULT_COLORS[FPenKind]);
+end;
+
+procedure TOHLCPen.SetPenKind(AValue: TOHLCPenKind);
+begin
+  FPenKind := AValue;
+  Color := DEFAULT_COLORS[FPenKind];
+end;
 
 { TOpenHighLowCloseSeries }
 
@@ -1664,14 +1712,16 @@ begin
 end;
 
 procedure TOpenHighLowCloseSeries.Assign(ASource: TPersistent);
+var
+  bk: TOHLCBrushKind;
+  pk: TOHLCPenKind;
 begin
   if ASource is TOpenHighLowCloseSeries then
     with TOpenHighLowCloseSeries(ASource) do begin
-      Self.FCandlestickDownBrush := FCandlestickDownBrush;
-      Self.FCandlestickLinePen := FCandlestickLinePen;
-      Self.FCandlestickUpBrush := FCandlestickUpBrush;
-      Self.FDownLinePen := FDownLinePen;
-      Self.FLinePen := FLinePen;
+      for bk in TOHLCBrushKind do
+        Self.FBrush[bk] := FBrush[bk];
+      for pk in TOHLCPenKind do
+        Self.FPen[pk] := FPen[pk];
       Self.FMode := FMode;
       Self.FTickWidth := FTickWidth;
       Self.FYIndexClose := FYIndexClose;
@@ -1685,58 +1735,73 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
   ToolTargets := [nptPoint, nptYList, nptCustom];
   FOptimizeX := false;
   FStacked := false;
-  FCandlestickDownBrush := TBrush.Create;
-  with FCandlestickDownBrush do begin
-    Color := clRed;
-    OnChange := @StyleChanged;
-  end;
-  FCandlestickLinePen := TPen.Create;
-  with FCandlestickLinePen do begin
-    Color := clBlack;
-    OnChange := @StyleChanged;
-  end;
-  FCandlestickUpBrush := TBrush.Create;
-  with FCandlestickUpBrush do begin
-    Color := clLime;
-    OnChange := @StyleChanged;
-  end;
-  FDownLinePen := TOHLCDownPen.Create;
-  with FDownLinePen do begin
-    Color := clTAColor;
-    OnChange := @StyleChanged;
-  end;
-  FLinePen := TPen.Create;
-  with FLinePen do
-    OnChange := @StyleChanged;
   FTickWidth := DEF_OHLC_TICK_WIDTH;
   FYIndexClose := DEF_YINDEX_CLOSE;
   FYIndexHigh := DEF_YINDEX_HIGH;
   FYIndexLow := DEF_YINDEX_LOW;
   FYIndexOpen := DEF_YINDEX_OPEN;
+
+  // Candlestick up brush
+  FBrush[obkCandleUp] := TOHLCBrush.Create;
+  FBrush[obkCandleUp].BrushKind := obkCandleUp;
+  FBrush[obkCandleUp].OnChange := @StyleChanged;
+  // Candlestick down brush
+  FBrush[obkCandleDown] := TOHLCBrush.Create;
+  FBrush[obkCandleDown].BrushKind := obkCandleDown;
+  FBrush[obkCandleDown].OnChange := @StyleChanged;
+  // Candlestick up border pen
+  FPen[opkCandleUp] := TOHLCPen.Create;
+  FPen[opkCandleUp].PenKind := opkCandleUp;
+  FPen[opkCandleUp].OnChange := @StyleChanged;
+  // Candlestick down border pen
+  FPen[opkCandleDown] := TOHLCPen.Create;
+  FPen[opkCandleDown].PenKind := opkCandleDown;
+  FPen[opkCandleDown].OnChange := @StyleChanged;
+  // Candlestick range pen
+  FPen[opkCandleLine] := TOHLCPen.Create;
+  FPen[opkCandleLine].PenKind := opkCandleLine;
+  FPen[opkCandleLine].OnChange := @StyleChanged;
+  // OHLC up pen
+  FPen[opkLineUp] := TOHLCPen.Create;
+  FPen[opkLineUp].PenKind := opkLineUp;
+  FPen[opkLineUp].OnChange := @StyleChanged;
+  // OHLC down pen
+  FPen[opkLineDown] := TOHLCPen.Create;
+  FPen[opkLineDown].PenKind := opkLineDown;
+  FPen[opkLineDown].OnChange := @StyleChanged;
 end;
 
 destructor TOpenHighLowCloseSeries.Destroy;
+var
+  bk: TOHLCBrushKind;
+  pk: TOHLCPenKind;
 begin
-  FreeAndNil(FCandlestickDownBrush);
-  FreeAndNil(FCandlestickLinePen);
-  FreeAndNil(FCandlestickUpBrush);
-  FreeAndNil(FDownLinePen);
-  FreeAndNil(FLinePen);
+  for bk in TOHLCBrushKind do
+    FreeAndNil(FBrush[bk]);
+  for pk in TOHLCPenKind do
+    FreeAndNil(FPen[pk]);
   inherited;
 end;
 
-procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
-
-  function CalcTickWidth(AX: Double; AIndex: Integer): Double;
-  begin
-    case FTickWidthStyle of
-      twsPercent: Result := GetXRange(AX, AIndex) * PERCENT * TickWidth;
-      twsPercentMin: Result := FMinXRange * PERCENT * TickWidth;
-    end;
+function TOpenHighLowCloseSeries.CalcTickWidth(AX: Double; AIndex: Integer): Double;
+begin
+  case FTickWidthStyle of
+    twsPercent:
+      Result := GetXRange(AX, AIndex) * PERCENT * TickWidth;
+    twsPercentMin:
+      begin
+        if FMinXRange = 0 then
+          UpdateMinXRange;
+        Result := FMinXRange * PERCENT * TickWidth;
+      end;
   end;
+end;
+
+procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
 
   function MaybeRotate(AX, AY: Double): TPoint;
   begin
@@ -1770,29 +1835,27 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
       DoLine(x - tw, yopen, x, yopen);
   end;
 
-  procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double);
-  var
-    clr: TColor;
+  procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double; APenIdx: Integer);
   begin
-    ADrawer.Pen := FCandlestickLinePen;
-    if FCandleStickLinePen.Color = clDefault then begin
-      if yopen <= yclose then
-        clr := FCandleStickUpBrush.Color
-      else
-        clr := FCandleStickDownBrush.Color;
-    end else
-      clr := FCandlestickLinePen.Color;
-    ADrawer.SetPenParams(FCandleStickLinePen.Style, clr);
+    if CandleStickLinePen.Color = clDefault then
+      // use linepen and linedown pen for range line
+      ADrawer.Pen := FPen[TOHLCPenKind(APenIdx + 3)]
+    else
+      ADrawer.Pen := CandleStickLinePen;
     DoLine(x, yhigh, x, ylow);
+    ADrawer.Pen := FPen[TOHLCPenKind(APenIdx)];
     DoRect(x - tw, yopen, x + tw, yclose);
   end;
 
+const
+  UP_INDEX = 0;
+  DOWN_INDEX = 1;
 var
   my: Cardinal;
   ext2: TDoubleRect;
   i: Integer;
-  x, tw, yopen, yhigh, ylow, yclose: Double;
-  p: TPen;
+  x, tw, yopen, yhigh, ylow, yclose, prevclose: Double;
+  idx: Integer;
   nx, ny: Cardinal;
 begin
   if IsEmpty or (not Active) then exit;
@@ -1803,11 +1866,9 @@ begin
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
-  if TickWidthStyle = twsPercentMin then
-    UpdateMinXRange;
-
   PrepareGraphPoints(ext2, true);
 
+  prevclose := -Infinity;
   for i := FLoBound to FUpBound do begin
     x := GetGraphPointX(i);
     if IsNaN(x) then Continue;
@@ -1820,25 +1881,36 @@ begin
     yclose := GetGraphPointY(i, YIndexClose);
     if IsNaN(yclose) then Continue;
     tw := CalcTickWidth(x, i);
-    if (not IsNaN(yopen) and (yopen <= yclose)) then begin
-      p := LinePen;
-      ADrawer.Brush := FCandleStickUpBrush;
-      ADrawer.SetBrushColor(FCandleStickUpBrush.Color);
-    end
-    else begin
-      p := DownLinePen;
-      ADrawer.Brush := FCandleStickDownBrush;
-      ADrawer.SetBrushColor(FCandleStickDownBrush.Color);
+
+    if IsNaN(yopen) then
+    begin
+      // HLC chart: compare with close value of previous data point
+      if prevclose < yclose then
+        idx := UP_INDEX
+      else
+        idx := DOWN_INDEX;
+    end else
+    if (yopen <= yclose) then
+      idx := UP_INDEX
+    else
+      idx := DOWN_INDEX;
+    ADrawer.Brush := FBrush[TOHLCBrushKind(idx)];
+    case FMode of
+      mOHLC: ADrawer.Pen := FPen[TOHLCPenKind(idx + 3)];
+      mCandlestick: ADrawer.Pen := FPen[TOHLCPenKind(idx)];
     end;
-    ADrawer.Pen := p;
-    with Source[i]^ do
-      if Color <> clTAColor then
-        ADrawer.SetPenParams(p.Style, Color);
+    if Source[i]^.Color <> clTAColor then
+    begin
+      ADrawer.SetPenParams(FPen[TOHLCPenKind(idx)].Style, Source[i]^.Color, FPen[TOHLCPenKind(idx)].Width);
+      ADrawer.SetBrushParams(FBrush[TOHLCBrushKind(idx)].Style, Source[i]^.Color);
+    end;
 
     case FMode of
       mOHLC: DrawOHLC(x, yopen, yhigh, ylow, yclose, tw);
-      mCandleStick: DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw);
+      mCandleStick: DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw, idx);
     end;
+
+    prevclose := yclose;
   end;
 
   GetXYCountNeeded(nx, ny);
@@ -1855,6 +1927,10 @@ var
   j: Integer;
 begin
   Result := Source.ExtentList;                            // axis units
+
+  // Enforce recalculation of tick/candlebox width
+  FMinXRange := 0;
+
   // Show first and last open/close ticks and candle boxes fully.
   j := -1;
   x := NaN;
@@ -1862,7 +1938,7 @@ begin
     inc(j);
     x := GetGraphPointX(j);                                 // graph units
   end;
-  tw := GetXRange(x, j) * PERCENT * TickWidth;
+  tw := CalcTickWidth(x, j);
   Result.a.X := Min(Result.a.X, GraphToAxisX(x - tw));    // axis units
 //  Result.a.X := Min(Result.a.X, x - tw);
   j := Count;
@@ -1871,9 +1947,14 @@ begin
     dec(j);
     x := GetGraphPointX(j);
   end;
-  tw := GetXRange(x, j) * PERCENT * TickWidth;
+  tw := CalcTickWidth(x, j);
   Result.b.X := Max(Result.b.X, AxisToGraphX(x + tw));
 //  Result.b.X := Max(Result.b.X, x + tw);
+end;
+
+function TOpenHighLowCloseSeries.GetBrush(AIndex: TOHLCBrushKind): TOHLCBrush;
+begin
+  Result := FBrush[AIndex];
 end;
 
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1918,7 +1999,7 @@ begin
     yhigh := GetGraphPointY(i, YIndexHigh);
     ylow := GetGraphPointY(i, YIndexLow);
     yclose := GetGraphPointY(i, YIndexClose);
-    tw := GetXRange(x, i) * PERCENT * TickWidth;
+    tw := CalcTickWidth(x, i);
 
     dist := MaxInt;
 
@@ -1954,6 +2035,11 @@ begin
   Result := AResults.FIndex > -1;
 end;
 
+function TOpenHighLowCloseSeries.GetPen(AIndex: TOHLCPenKind): TOHLCPen;
+begin
+  Result := FPen[AIndex];
+end;
+
 function TOpenHighLowCloseSeries.GetSeriesColor: TColor;
 begin
   Result := LinePen.Color;
@@ -1965,38 +2051,17 @@ begin
   AYCount := 4;
 end;
 
-procedure TOpenHighLowCloseSeries.SetCandlestickLinePen(AValue: TPen);
+procedure TOpenHighLowCloseSeries.SetBrush(AIndex: TOHLCBrushKind; AValue: TOHLCBrush);
 begin
-  if FCandleStickLinePen = AValue then exit;
-  FCandleStickLinePen.Assign(AValue);
+  if GetBrush(AIndex) = AValue then exit;
+  FBrush[AIndex].Assign(AValue);
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetCandlestickDownBrush(AValue: TBrush);
+procedure TOpenHighLowCloseSeries.SetPen(AIndex: TOHLCPenKind; AValue: TOHLCPen);
 begin
-  if FCandlestickDownBrush = AValue then exit;
-  FCandlestickDownBrush.Assign(AValue);
-  UpdateParentChart;
-end;
-
-procedure TOpenHighLowCloseSeries.SetCandlestickUpBrush(AValue: TBrush);
-begin
-  if FCandlestickUpBrush = AValue then exit;
-  FCandlestickUpBrush.Assign(AValue);
-  UpdateParentChart;
-end;
-
-procedure TOpenHighLowCloseSeries.SetDownLinePen(AValue: TOHLCDownPen);
-begin
-  if FDownLinePen = AValue then exit;
-  FDownLinePen.Assign(AValue);
-  UpdateParentChart;
-end;
-
-procedure TOpenHighLowCloseSeries.SetLinePen(AValue: TPen);
-begin
-  if FLinePen = AValue then exit;
-  FLinePen.Assign(AValue);
+  if GetPen(AIndex) = AValue then exit;
+  FPen[AIndex].Assign(AValue);
   UpdateParentChart;
 end;
 
@@ -2089,7 +2154,7 @@ begin
   end else
     clickPt := AParams.FPoint;
 
-  w := GetXRange(AGraphPt.X, APointIdx) * PERCENT * TickWidth;
+  w := CalcTickWidth(AGraphPt.X, APointIdx);
   x1 := ParentChart.XGraphToImage(AGraphPt.X - w);
   x2 := ParentChart.XGraphToImage(AGraphPt.X + w);
   p := ParentChart.GraphToImage(AGraphPt);
