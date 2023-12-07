@@ -1758,7 +1758,9 @@ begin
   p:=Path+'Other/';
   DontUseConfigFile := aXMLConfig.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
   WriteConfigFile := aXMLConfig.GetValue(p+'ConfigFile/WriteConfigFile/Value', false);
-  WriteConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/WriteConfigFilePath/Value', GetDefaultWriteConfigFilePath));
+  WriteConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/WriteConfigFilePath/Value',''));
+  if WriteConfigFilePath='' then
+    WriteConfigFilePath:=GetDefaultWriteConfigFilePath; // GetDefaultWriteConfigFilePath can contain pathdelims, which might differ between lpi/lpk and current platform
   if FileVersion<=3 then
     CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
   else
@@ -1953,7 +1955,10 @@ begin
   p:=Path+'Other/';
   aXMLConfig.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/WriteConfigFile/Value', WriteConfigFile,false);
-  aXMLConfig.SetDeleteValue(p+'ConfigFile/WriteConfigFilePath/Value', f(WriteConfigFilePath),GetDefaultWriteConfigFilePath);
+  s:=WriteConfigFilePath; // GetDefaultWriteConfigFilePath can contain pathdelims, which might differ between lpi/lpk and current platform
+  if CompareFilenames(s,GetDefaultWriteConfigFilePath)=0 then
+    s:='';
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/WriteConfigFilePath/Value', f(s),'');
   aXMLConfig.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
