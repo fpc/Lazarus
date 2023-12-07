@@ -9828,6 +9828,9 @@ begin
     @p.x, @p.y);
   if window <> nil then
   begin
+    // ignore temporary windows Hint/DragImageList/etc...
+    if gdk_window_get_type(Window) = GDK_WINDOW_TEMP then
+      Exit(LastWFPResult);
     FillChar(ev{%H-}, SizeOf(ev), 0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
