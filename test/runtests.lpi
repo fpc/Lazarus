@@ -48,9 +48,6 @@
             </Checks>
           </CodeGeneration>
           <Other>
-            <ConfigFile>
-              <WriteConfigFilePath Value="$(ProjOutDir)\fpclaz.cfg"/>
-            </ConfigFile>
             <CustomOptions Value="-dNoSemiAutomatedTests"/>
           </Other>
         </CompilerOptions>
@@ -196,9 +193,6 @@
       </Checks>
     </CodeGeneration>
     <Other>
-      <ConfigFile>
-        <WriteConfigFilePath Value="$(ProjOutDir)\fpclaz.cfg"/>
-      </ConfigFile>
       <CustomOptions Value="-dNoSemiAutomatedTests"/>
     </Other>
   </CompilerOptions>

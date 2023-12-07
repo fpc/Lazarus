@@ -8,11 +8,6 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <ConfigFile>
-          <WriteConfigFilePath Value="$(PkgOutDir)/fpclaz.cfg"/>
-        </ConfigFile>
-      </Other>
     </CompilerOptions>
     <Files Count="27">
       <Item1>

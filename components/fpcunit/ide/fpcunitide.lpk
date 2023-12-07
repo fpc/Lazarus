@@ -17,11 +17,6 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <ConfigFile>
-          <WriteConfigFilePath Value="$(PkgOutDir)\fpclaz.cfg"/>
-        </ConfigFile>
-      </Other>
     </CompilerOptions>
     <Version Minor="1"/>
     <Files Count="12">

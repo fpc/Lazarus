@@ -13,9 +13,6 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
-        <ConfigFile>
-          <WriteConfigFilePath Value="$(PkgOutDir)\fpclaz.cfg"/>
-        </ConfigFile>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
