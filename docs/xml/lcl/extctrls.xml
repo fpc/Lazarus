@@ -6401,9 +6401,10 @@ Dialog accelerator key or other input event in the class is handled. The
 Use <var>Alignment</var> and <var>Layout</var> to specify the horizontal and 
 vertical alignment used for the label Caption. Values in these properties may 
 be ignored (in the implementing control) if they do not apply to the position 
-for the bound label relative to its FocusControl. Alignment does not apply when 
-the label is positioned on the left or right of its FocusControl. Layout does 
-not apply when the label is positioned above or below its FocusControl.
+for the bound label relative to its associated control. Alignment does not 
+apply when the label is positioned on the left or right of its associated 
+control. Layout does not apply when the label is positioned above or below its 
+associated control.
 </p>
 </descr>
 <version>
@@ -6646,7 +6647,9 @@ method to position and anchor the EditLabel to its companion control.
 </element>
 
 <element name="TCustomLabeledEdit">
-<short>Defines an edit control with a label bound to the control.</short>
+<short>
+Defines an edit control with a label bound to the control.
+</short>
 <descr>
 <p>
 <var>TCustomLabeledEdit</var> is a <var>TCustomEdit</var> descendant which 
@@ -6671,16 +6674,35 @@ between EditLabel and the edit control.
 <var>TCustomLabeledEdit</var> and <var>TLabeledEdit</var> are based on the 
 similarly named controls from the Delphi VCL. While they offer code 
 compatibility with the VCL class, they have some drawbacks when used in the 
-LCL. They do not work very well with the positioning and anchoring mechanisms 
-used in LCL. They do not have an Align property used to position, align, and 
-stack controls towards one of the edges on the control. There are also 
-shortcomings when using BorderSpacing; the extra spacing is inserted between 
-the label and the edit box on the control instead around the composite control. 
-Labels with long captions are not ellipsified or aligned properly when longer 
-than the associated edit control. Multi-line captions on a label are not 
-positioned as expected; the label often overlaps (or is obscured by) adjacent 
-controls.
+LCL. For instance:
 </p>
+<ul>
+<li>
+They do not work very well with the positioning and anchoring mechanisms 
+used in LCL. They do not have an Align property used to position, align, and 
+stack controls towards one of the edges on the parent control.
+</li>
+<li>
+There are also shortcomings when using BorderSpacing; the extra spacing is 
+inserted between the bound label and the edit box on the control instead around 
+the composite control.
+</li>
+<li>
+Labels with long captions are not ellipsified or aligned properly when longer 
+than the associated edit control. 
+</li>
+<li>
+Multi-line captions on a label are not positioned as expected; the label often 
+overlaps (or is obscured by) adjacent controls.
+</li>
+<li>
+When EditLabel is placed above or below the Edit control, and its caption is 
+wider than the Edit, the text will be clipped at the Edit's left/right sides. 
+Likewise, when the EditLabel is placed at the left or right of the Edit control 
+and is taller than the Edit, it will be clipped at the top and bottom edges of 
+the Edit control.
+</li>
+</ul>
 <p>
 Despite the convenience of TCustomLabeledEdit / TLabeledEdit, most will elect 
 to use separate label and edit controls to avoid the shortcomings in the align 
@@ -7073,16 +7095,35 @@ relative to the edit box in the control. Use LabelSpacing to set the spacing
 <var>TCustomLabeledEdit</var> and <var>TLabeledEdit</var> are based on the 
 similarly named controls from the Delphi VCL. While they offer code 
 compatibility with the VCL class, they have some drawbacks when used in the 
-LCL. They do not work very well with the positioning and anchoring mechanisms 
-used in LCL. They do not have an Align property used to position, align, and 
-stack controls towards one of the edges on the control. There are also 
-shortcomings when using BorderSpacing; the extra spacing is inserted between 
-the label and the edit box on the control instead around the composite control. 
-Labels with long captions are not ellipsified or aligned properly when longer 
-than the associated edit control. Multi-line captions on a label are not 
-positioned as expected; the label often overlaps (or is obscured by) adjacent 
-controls.
+LCL. For instance:
 </p>
+<ul>
+<li>
+They do not work very well with the positioning and anchoring mechanisms 
+used in LCL. They do not have an Align property used to position, align, and 
+stack controls towards one of the edges on the parent control.
+</li>
+<li>
+There are also shortcomings when using BorderSpacing; the extra spacing is 
+inserted between the bound label and the edit box on the control instead around 
+the composite control.
+</li>
+<li>
+Labels with long captions are not ellipsified or aligned properly when longer 
+than the associated edit control. 
+</li>
+<li>
+Multi-line captions on a label are not positioned as expected; the label often 
+overlaps (or is obscured by) adjacent controls.
+</li>
+<li>
+When EditLabel is placed above or below the Edit control, and its caption is 
+wider than the Edit, the text will be clipped at the Edit's left/right sides. 
+Likewise, when the EditLabel is placed at the left or right of the Edit control 
+and is taller than the Edit, it will be clipped at the top and bottom edges of 
+the Edit control.
+</li>
+</ul>
 <p>
 Despite the convenience of TCustomLabeledEdit / TLabeledEdit, most will elect 
 to use separate label and edit controls to avoid the shortcomings in the align 
