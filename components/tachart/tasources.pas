@@ -979,7 +979,7 @@ begin
   if FXCount < FXCountMin then
     FXCount := FXCountMin;
   if FYCount < FYCountMin then
-    FYCount := FYCountMin;
+    SetYCount(FYCountMin);
 end;
 
 procedure TBuiltinListChartSource.CopyFrom(ASource: TCustomChartSource);
