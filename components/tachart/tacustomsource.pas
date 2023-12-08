@@ -1722,8 +1722,11 @@ begin
       for i := 0 to Count - 1 do
         UpdateMinMax(Item[i]^.YList[yIdx], AMin, AMax);
     end;
+    if Length(FYRange) < FYCount then SetLength(FYRange, FYCount);
+    if Length(FYRangeValid) < FYCount then SetLength(FYRangeValid, FYCount);
     FYRange[AYIndex].FStart := AMin;
     FYRange[AYIndex].FEnd := AMax;
+    FYRangeValid[AYIndex] := true;
   end;
 end;
 

@@ -94,6 +94,8 @@ begin
   if FOrigin <> nil then begin
     FXCount := Origin.XCount;
     FYCount := Origin.YCount;
+    SetLength(FYRange, FYCount);
+    SetLength(FYRangeValid, FYCount);
   end else begin
     FXCount := MaxInt;    // Allow source to be used by any series while Origin = nil
     FYCount := MaxInt;

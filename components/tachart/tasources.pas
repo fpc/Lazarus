@@ -979,7 +979,11 @@ begin
   if FXCount < FXCountMin then
     FXCount := FXCountMin;
   if FYCount < FYCountMin then
-    SetYCount(FYCountMin);
+  begin
+    FYCount := FYCountMin;
+    SetLength(FYRange, FYCount);
+    SetLength(FYRangeValid, FYCount);
+  end;
 end;
 
 procedure TBuiltinListChartSource.CopyFrom(ASource: TCustomChartSource);
@@ -1042,6 +1046,8 @@ begin
   if FOrigin <> nil then begin
     FXCount := Origin.XCount;
     FYCount := Origin.YCount;
+    SetLength(FYRange, FYCount);
+    SetLength(FYRangeValid, FYCount);
     ResetTransformation(Origin.Count);
     if IsSorted and (not HasSameSorting(Origin)) then SortNoNotify;
   end else begin
@@ -1502,6 +1508,8 @@ begin
   if FYCount = AValue then exit;
   inherited SetYCount(AValue);
   SetLength(FItem.YList, Max(YCount - 1, 0));
+  SetLength(FYRange, FYCount);
+  SetLength(FYRangeValid, FYCount);
   Reset;
 end;
 
@@ -1895,8 +1903,9 @@ begin
     end;
   end;
   FYCount := Length(FYOrder);
-
   SetLength(FItem.YList, Max(High(FYOrder), 0));
+  SetLength(FYRange, FYCount);
+  SetLength(FYRangeValid, FYCount);
   Changed(nil);
 end;
 

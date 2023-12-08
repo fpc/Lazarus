@@ -338,6 +338,8 @@ begin
     FFieldYList.CommaText := FFieldY;
   FYCount := FFieldYList.Count;
   SetLength(FCurItem.YList, Max(FYCount - 1, 0));
+  SetLength(FYRange, FYCount);
+  SetLength(FYRangeValid, FYCount);
   Reset;
 end;
 
