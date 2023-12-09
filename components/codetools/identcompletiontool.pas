@@ -687,12 +687,11 @@ var
   var
     l: TFPList;
   begin
-if ((FFilteredList.Count + SecondaryList.Count) < 15) or (InsertPosFromEnd > 0) then //////////////////////
-    { $IFDEF ShowFilteredIdents}
+    {$IFDEF ShowFilteredIdents}
     DebugLn('::: FILTERED ITEM Prior %d / Second %d  "%s" (%d) AsRecent -%d',
       [ FFilteredList.Count, SecondaryList.Count,
        Itm.Identifier, ord(Sect), InsertPosFromEnd]);
-    { $ENDIF}
+    {$ENDIF}
 
     case Sect of
       mtNone: exit;
@@ -781,7 +780,6 @@ var
     j: Integer;
     CurItem: TIdentifierListItem;
   begin
-debugln(['>>> InsertHistoryForComp ', ord(ACompat)]);
     LowerRecentCount := 0;
     for j := 0 to length(FFoundHistoryItems) - 1 do begin
       CurItem := FFoundHistoryItems[j];
@@ -789,7 +787,6 @@ debugln(['>>> InsertHistoryForComp ', ord(ACompat)]);
         HandleItem(CurItem, True);
     end;
     LowerRecentCount := 0;
-debugln(['<<< InsertHistoryForComp ', ord(ACompat)]);
   end;
 
   procedure InsertHistoryForAllComp;
@@ -797,7 +794,6 @@ debugln(['<<< InsertHistoryForComp ', ord(ACompat)]);
     j: Integer;
     CurItem: TIdentifierListItem;
   begin
-debugln(['>>> InsertHistoryForAllComp ']);
     LowerRecentCount := 0;
     for j := 0 to length(FFoundHistoryItems) - 1 do begin
       CurItem := FFoundHistoryItems[j];
@@ -805,7 +801,6 @@ debugln(['>>> InsertHistoryForAllComp ']);
         HandleItem(CurItem, True);
     end;
     LowerRecentCount := 0;
-debugln(['>>> InsertHistoryForAllComp ']);
   end;
 
 var
@@ -846,7 +841,6 @@ begin
   end;
 
 
-debugln;debugln(['=================================================================== ']);debugln;
   SecondaryList := TFPList.Create;
   AnAVLNode:=FItems.FindLowest;
   if SortMethodForCompletion in IdentComplSortMethodUsingCompatibility then begin
