@@ -92,10 +92,10 @@ type
     rsAtClass,
     rsInObjcProtocol,
     rsAfterClass,
+    rsInTypeHelper,
     rsAfterIdentifierOrValue, // anywhere where a ^ deref can happen "foo^", "foo^^", "foo()^", "foo[]^"
     rsAfterIdentifierOrValueAdd,
 
-    rsAtClosingBracket,   // ')'
     rsAtCaseLabel,
     rsAtProcName,    // after a procedure/function/... keyword, when the name is expected (not for types)
                      // also after "unit unitname" to detect "deprecated"
@@ -1417,7 +1417,12 @@ begin
   if KeyComp('For') then begin
     Result := tkKey;
     if TopPascalCodeFoldBlockType in PascalStatementBlocks then
-      StartPascalCodeFoldBlock(cfbtForDo);
+      StartPascalCodeFoldBlock(cfbtForDo)
+    else
+    if rsInTypeHelper in FOldRange then begin
+      fRange := fRange + [rsInTypeHelper];
+      FOldRange := FOldRange - [rsInTypeHelper];
+    end;
   end
   else
   if KeyComp('Shl') then begin
@@ -1722,9 +1727,10 @@ begin
   end
   else if KeyComp('Record') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
-    fRange := fRange - [rsVarTypeInSpecification];
+    fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterEqualOrColon] + [rsAfterSemiColon];
+    FOldRange := FOldRange - [rsAfterSemiColon];
     if CompilerMode = pcmDelphi then
-      fRange := fRange + [rsAtClass] - [rsAfterEqual, rsAfterEqualOrColon]; // highlight helper
+      fRange := fRange + [rsAtClass]; // highlight helper
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey
@@ -1763,12 +1769,14 @@ begin
   // TODO: "class helper" fold at "class", but "type helper" fold at "helper"
   else if KeyComp('helper') then begin
     if (rsAtClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
-    then
-      Result := tkKey
+    then begin
+      Result := tkKey;
+      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual] + [rsInTypeHelper];
+    end
     else
     if (rsAfterEqualThenType in fRange) and TypeHelpers then begin
       Result := tkKey;
-      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual];
+      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual] + [rsInTypeHelper];
       StartPascalCodeFoldBlock(cfbtClass); // type helper
     end
     else
@@ -3712,10 +3720,6 @@ begin
   fTokenID := tkSymbol;
   fRange := fRange + [rsAfterIdentifierOrValueAdd];
   PasCodeFoldRange.DecBracketNestLevel;
-  if (PasCodeFoldRange.BracketNestLevel = 0) then begin
-    if (fRange * [rsAfterClass] <> []) then
-      fRange := fRange + [rsAtClosingBracket];
-  end;
 end;
 
 procedure TSynPasSyn.SquareOpenProc;
@@ -3960,6 +3964,7 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
+  OldNestLevel: Integer;
 begin
   fAsmStart := False;
   FIsPasDocKey := False;
@@ -3989,6 +3994,7 @@ begin
         SlashContinueProc
       else begin
         FOldRange := fRange;
+        OldNestLevel := PasCodeFoldRange.BracketNestLevel;
         if (PasCodeFoldRange.BracketNestLevel = 1) then // procedure foo; [attr...]
           FOldRange := FOldRange - [rsWasInProcHeader];
         FTokenFlags := [];
@@ -4014,17 +4020,24 @@ begin
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective]) then begin
           if (PasCodeFoldRange.BracketNestLevel = 0) and
-             not(rsAtClosingBracket in fRange)
+             (OldNestLevel = 0)
           then
             fRange := fRange - [rsAfterClass];
+          if (PasCodeFoldRange.BracketNestLevel > 0) or
+             (OldNestLevel > 0)
+          then
+            FOldRange := FOldRange - [rsInTypeHelper];
 
           fRange := fRange -
             (FOldRange * [rsAfterEqualOrColon, rsAfterSemiColon,
                           rsAtPropertyOrReadWrite, rsAfterClassField,
                           rsAfterIdentifierOrValue, rsAfterEqualThenType,
-                          rsWasInProcHeader, rsAtProcName, rsAfterProcName]
-            ) -
-            [rsAtClosingBracket];
+                          rsWasInProcHeader, rsAtProcName, rsAfterProcName,
+                          rsInTypeHelper]
+            );
+
+          if (FTokenID = tkIdentifier) and (rsInTypeHelper in FOldRange) then
+            fRange := fRange + [rsAfterSemiColon];
 
           if rsAtClass in fRange then begin
             if FOldRange * [rsAtClass, rsAfterClass] <> [] then
@@ -4034,7 +4047,6 @@ begin
           end
         end
         else begin
-          fRange := fRange - [rsAtClosingBracket];
           if rsAtClass in fRange then
             fRange := fRange + [rsAfterClass];
         end;

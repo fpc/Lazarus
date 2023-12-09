@@ -1715,9 +1715,12 @@ begin
       ([ 'Unit A; interface',
          'type',
          'TFoo = class helper for TBar',
-           'helper, sealed, abstract: Integer;',
+           'helper, sealed, abstract, public: Integer;',
            'procedure Foo; abstract;',
           'end;',
+         'TFoo = class helper for TBar',
+         'protected',
+         'end;',
          ''
       ]);
     CheckTokensForLine('class declaration"',  2,
@@ -1726,11 +1729,21 @@ begin
         tkSpace, tkIdentifier
       ]);
     CheckTokensForLine('var in class "',  3,
-      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,
+        tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('end',  5,
+      [ tkKey, tkSymbol ]);
+    CheckTokensForLine('class declaration"',  6,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
+        tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('class section',  7,
+      [ tkKey ]);
 
 
     ReCreateEdit;
@@ -1742,6 +1755,8 @@ begin
            'helper, sealed, abstract: Integer;',
            'procedure Foo; abstract;',
           'end;',
+         'TFoo = class helper(helper) for helper',
+         'protected',
          ''
       ]);
     CheckTokensForLine('class declaration"',  2,
@@ -1756,6 +1771,8 @@ begin
       ]);
     CheckTokensForLine('procedure in class "',  4,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('class section',  7,
+      [ tkKey ]);
   end;
 end;
 
@@ -1785,6 +1802,11 @@ procedure TTestHighlighterPas.TestContextForTypeHelper;
         tkKey {type}, tkSpace, tkIdentifier {helper}, tkSpace, tkKey {for}, tkSpace, tkIdentifier, tkSymbol
       ]);
     AssertEquals('not a helper, switched off / no fold', 0, PasHighLighter.FoldOpenCount(11));
+
+    CheckTokensForLine('class section',  14,
+      [ tkKey ]);
+    CheckTokensForLine('NOT class section',  18,
+      [ tkIdentifier ]);
   end;
 
 var
@@ -1812,6 +1834,13 @@ begin
          'type',
          '{$modeswitch typehelpers-}',
          'helper = type helper for helper;',
+         '{$modeswitch typehelpers}',
+         'helper = type helper for helper',
+         'protected',
+         'end;',
+         '{$modeswitch typehelpers-}',
+         'helper = type helper for helper',
+         'protected',
          '{$modeswitch typehelpers}',
          ''
       ]);
@@ -1884,6 +1913,9 @@ begin
          'TFoo = record helper for TBar',
            'helper, sealed, abstract: Integer;',
           'end;',
+         'TFoo = record helper for TBar',
+          'protected;',
+          'end;',
          ''
       ]);
     CheckTokensForLine('record declaration"',  2,
@@ -1895,6 +1927,8 @@ begin
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
+    CheckTokensForLine('class section',  6,
+      [ tkKey ]);
 
 
     ReCreateEdit;
