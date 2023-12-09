@@ -8207,6 +8207,27 @@ the physical screen. For other platforms, the position and other features
 varies according to the window or display manager in use.
 </p>
 <p>
+On the GTK2 platform, there are two competing models used in the widgetset 
+implementation for the tray icon class: the traditional system tray icon and 
+the AppIndicator library. Starting with Lazarus version 3.0, the 
+<var>GlobalUseAppInd</var> variable in <file>unitywsctrls,pas</file> can be 
+used at run-time to enable, disable, or auto-detect use of the AppIndicator 
+library. You <b>MUST</b> use the UnityWSCtrls unit and set the value in 
+<var>GlobalUseAppInd</var> <b>BEFORE</b> the tray icon is created, so setting 
+the value in the project .LPR file is recommended. Or, create your TrayIcon 
+later in the startup process.  The fallback is to use the standard system tray 
+icon model in GTK2. This feature applies to the GTK2 platform only, and any 
+related code should be wrapped with <b>{$ifdef gtk2}</b>.
+</p>
+<p>
+For an in-depth exploration of using TTrayIcon on GTK2, see the wiki page at:
+</p>
+<p>
+<url href="https://wiki.freepascal.org/How_to_use_a_TrayIcon#UnityWSCtrls.GlobalUseAppInd_GTK2_ONLY">
+How to use a TrayIcon
+</url>
+</p>
+<p>
 Use Icon to set the icon image type displayed for the control. Use Icons to 
 assign a list of images displayed as the animated icon for the control when 
 the Show method is called.
@@ -9306,6 +9327,27 @@ On the Windows platform, the system tray is usually located on the
 bottom-right corner of the screen, but it can be located on other edges for 
 the physical screen. For other platforms, the position and other features 
 varies according to the window or display manager in use.
+</p>
+<p>
+On the GTK2 platform, there are two competing models used in the widgetset 
+implementation for the tray icon class: the traditional system tray icon and 
+the AppIndicator library. Starting with Lazarus version 3.0, the 
+<var>GlobalUseAppInd</var> variable in <file>unitywsctrls,pas</file> can be 
+used at run-time to enable, disable, or auto-detect use of the AppIndicator 
+library. You <b>MUST</b> use the UnityWSCtrls unit and set the value in 
+<var>GlobalUseAppInd</var> <b>BEFORE</b> the tray icon is created, so setting 
+the value in the project .LPR file is recommended. Or, create your TrayIcon 
+later in the startup process.  The fallback is to use the standard system tray 
+icon model in GTK2. This feature applies to the GTK2 platform only, and any 
+related code should be wrapped with <b>{$ifdef gtk2}</b>.
+</p>
+<p>
+For an in-depth exploration of using TTrayIcon on GTK2, see the wiki page at:
+</p>
+<p>
+<url href="https://wiki.freepascal.org/How_to_use_a_TrayIcon#UnityWSCtrls.GlobalUseAppInd_GTK2_ONLY">
+How to use a TrayIcon
+</url>
 </p>
 <p>
 Use Icon to set the icon image type displayed for the control. Use Icons to 
