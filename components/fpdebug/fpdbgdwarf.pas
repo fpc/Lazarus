@@ -1074,6 +1074,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
   protected
+    procedure DoReferenceReleased; override;
     function GetLineEndAddress: TDBGPtr; override;
     function GetLineStartAddress: TDBGPtr; override;
     function GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
@@ -6869,6 +6870,15 @@ begin
   end;
 end;
 
+procedure TFpSymbolDwarfDataProc.DoReferenceReleased;
+begin
+  inherited DoReferenceReleased;
+  if (sfiTypeInfo in EvaluatedFields) and
+     (RefCount = 1)
+  then
+    NilThenReleaseRef(TFpSymbolDwarfTypeProc(TypeInfo).FLastMember {$IFDEF WITH_REFCOUNT_DEBUG}, 'TFpSymbolDwarfDataProc.FLastMember'{$ENDIF});
+end;
+
 function TFpSymbolDwarfDataProc.GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
 var
   Val: TByteDynArray;
@@ -7072,8 +7082,8 @@ begin
   FLastMember := TFpSymbolDwarf.CreateSubClass('', TDwarfInformationEntry(FProcMembers[AIndex]));
   {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember');{$ENDIF}
   Result := FLastMember;
-  if Result <> nil then
-    TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
+  //if Result <> nil then
+  //  TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(const AIndex: String;
@@ -7096,8 +7106,8 @@ begin
     end;
   end;
   Result := FLastMember;
-  if Result <> nil then
-    TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
+  //if Result <> nil then
+  //  TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolCount: Integer;
@@ -7116,7 +7126,7 @@ end;
 destructor TFpSymbolDwarfTypeProc.Destroy;
 begin
   FreeAndNil(FProcMembers);
-  FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember'){$ENDIF};
+  NilThenReleaseRef(FLastMember {$IFDEF WITH_REFCOUNT_DEBUG}, 'TFpSymbolDwarfDataProc.FLastMember'{$ENDIF});
   inherited Destroy;
 end;
 
