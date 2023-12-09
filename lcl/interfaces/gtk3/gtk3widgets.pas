@@ -7573,6 +7573,7 @@ begin
     // cannot gtk_widget_realize(Result), because that needs a valid widget parent
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
+  Result^.set_size_request(Params.Width, Params.Height);
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
 
