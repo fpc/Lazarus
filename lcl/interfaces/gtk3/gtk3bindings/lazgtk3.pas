@@ -9,6 +9,7 @@ unit LazGtk3;
 {$ifdef Unix}
 {$LINKLIB libgtk-3.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazAtk1, LazGdk3, Lazxlib2, LazGLib2, LazGdkPixbuf2, LazGObject2, LazGio2, Lazcairo1, LazPango1;
@@ -20,7 +21,7 @@ const
   LazGtk3_library = 'libgtk-3.so.0';
   {$endif}
 
-  GTK_BINARY_AGE = 2437;
+  GTK_BINARY_AGE = 2438;
   GTK_INPUT_ERROR = -1;
   GTK_INTERFACE_AGE = 32;
   GTK_LEVEL_BAR_OFFSET_FULL = 'full';
@@ -28,7 +29,7 @@ const
   GTK_LEVEL_BAR_OFFSET_LOW = 'low';
   GTK_MAJOR_VERSION = 3;
   GTK_MAX_COMPOSE_LEN = 7;
-  GTK_MICRO_VERSION = 37;
+  GTK_MICRO_VERSION = 38;
   GTK_MINOR_VERSION = 24;
   GTK_PAPER_NAME_A3 = 'iso_a3';
   GTK_PAPER_NAME_A4 = 'iso_a4';

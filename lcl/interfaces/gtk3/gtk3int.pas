@@ -29,7 +29,7 @@ uses
   LazLoggerBase, LazTracer, LazUTF8, IntegerList, GraphType, LazUtilities,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue,
-  Controls, Forms, Graphics, GraphUtil, IntfGraphics,
+  Controls, Forms, Graphics, GraphUtil, IntfGraphics, StdCtrls, ComCtrls,
   LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazGio2,
   LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs, gtk3boxes;
 

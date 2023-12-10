@@ -10,6 +10,7 @@ unit LazGLib2;
 {$LINKLIB libgobject-2.0.so.0}
 {$LINKLIB libglib-2.0.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes;
@@ -1427,6 +1428,12 @@ type
   PPgssize = ^Pgssize;
   Pgssize = ^gssize;
   gssize = PtrInt;
+
+  { int32 }
+  PPPint32 = ^PPint32;
+  PPint32 = ^Pint32;
+  Pint32 = ^int32;
+  int32 = cint32;
 
   { size_t }
   PPPsize_t = ^PPsize_t;

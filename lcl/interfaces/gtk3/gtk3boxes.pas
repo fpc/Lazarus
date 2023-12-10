@@ -13,7 +13,7 @@ unit Gtk3Boxes;
 interface
 
 uses
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  System.UITypes,
   // LCL
   LCLType, LCLStrConsts,LCLProc, InterfaceBase,
   LazGtk3, LazGLib2, LazGObject2, LazGdk3, gtk3objects;

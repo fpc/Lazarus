@@ -9,6 +9,7 @@ unit LazGdkPixbuf2;
 {$ifdef Unix}
 {$LINKLIB libgdk_pixbuf-2.0.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazGModule2, LazGio2, LazGLib2, LazGObject2;

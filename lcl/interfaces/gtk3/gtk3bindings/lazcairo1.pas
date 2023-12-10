@@ -8,8 +8,8 @@ unit Lazcairo1;
 
 {$ifdef Unix}
 {$LINKLIB libcairo-gobject.so.2}
-{$LINKLIB libcairo.so.2}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes;
@@ -20,7 +20,6 @@ const
   {$else}
   Lazcairo1_library = 'libcairo-gobject.so.2';
   {$endif}
-  LIB_CAIRO = Lazcairo1_library;
 
 type
   Tcairo_status_t = (
@@ -521,6 +520,14 @@ function cairo_gobject_scaled_font_get_type: csize_t { TGType }; cdecl; external
 function cairo_gobject_surface_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_surface_get_type';
 procedure cairo_image_surface_create; cdecl; external Lazcairo1_library name 'cairo_image_surface_create';
 
+{**** Manually added types and functions ****}
+
+{$ifdef Unix}
+{$LINKLIB libcairo.so.2}
+{$endif}
+
+const
+  LIB_CAIRO = Lazcairo1_library;
 
 function cairo_version: LongInt; cdecl; external LIB_CAIRO;
 function cairo_version_string: PChar; cdecl; external LIB_CAIRO;

@@ -9,6 +9,7 @@ unit LazGdk3;
 {$ifdef Unix}
 {$LINKLIB libgdk-3.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazGdkPixbuf2, LazGio2, LazPango1, Lazcairo1, LazGLib2, LazGObject2;
@@ -2306,7 +2307,7 @@ const
   GDK_KEY_zstroke_ = 16777654;
   GDK_MAJOR_VERSION = 3;
   GDK_MAX_TIMECOORD_AXES = 128;
-  GDK_MICRO_VERSION = 37;
+  GDK_MICRO_VERSION = 38;
   GDK_MINOR_VERSION = 24;
   GDK_PARENT_RELATIVE = 1;
   GDK_PRIORITY_REDRAW = 120;
@@ -3136,7 +3137,7 @@ type
     procedure notify_startup_complete(startup_id: Pgchar); cdecl; inline;
     function peek_event: PGdkEvent; cdecl; inline;
     procedure put_event(event: PGdkEvent); cdecl; inline;
-    function request_selection_notification(selection: PGdkAtom): gboolean; cdecl; inline;
+    function request_selection_notification(selection: TGdkAtom): gboolean; cdecl; inline;
     procedure set_double_click_distance(distance: guint); cdecl; inline;
     procedure set_double_click_time(msec: guint); cdecl; inline;
     procedure store_clipboard(clipboard_window: PGdkWindow; time_: guint32; targets: PGdkAtom; n_targets: gint); cdecl; inline;
@@ -3219,7 +3220,6 @@ type
   PPGdkCursorType = ^PGdkCursorType;
   PGdkCursorType = ^TGdkCursorType;
   TGdkCursor = object(TGObject)
-    function new(cursor_type: TGdkCursorType): PGdkCursor; cdecl; inline; static;
     function new_for_display(display: PGdkDisplay; cursor_type: TGdkCursorType): PGdkCursor; cdecl; inline; static;
     function new_from_name(display: PGdkDisplay; name: Pgchar): PGdkCursor; cdecl; inline; static;
     function new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x: gint; y: gint): PGdkCursor; cdecl; inline; static;
@@ -3270,7 +3270,7 @@ type
     function get_axes: TGdkAxisFlags; cdecl; inline;
     function get_axis(axes: Pgdouble; use: TGdkAxisUse; value: Pgdouble): gboolean; cdecl; inline;
     function get_axis_use(index_: guint): TGdkAxisUse; cdecl; inline;
-    function get_axis_value(axes: Pgdouble; axis_label: PGdkAtom; value: Pgdouble): gboolean; cdecl; inline;
+    function get_axis_value(axes: Pgdouble; axis_label: TGdkAtom; value: Pgdouble): gboolean; cdecl; inline;
     function get_device_type: TGdkDeviceType; cdecl; inline;
     function get_display: PGdkDisplay; cdecl; inline;
     function get_has_cursor: gboolean; cdecl; inline;
@@ -4425,7 +4425,7 @@ type
     function get_entries_for_keycode(hardware_keycode: guint; keys: PPGdkKeymapKey; keyvals: PPguint; n_entries: Pgint): gboolean; cdecl; inline;
     function get_entries_for_keyval(keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; inline;
     function get_modifier_mask(intent: TGdkModifierIntent): TGdkModifierType; cdecl; inline;
-    function get_modifier_state: TGdkModifierType; cdecl; inline;
+    function get_modifier_state: guint; cdecl; inline;
     function get_num_lock_state: gboolean; cdecl; inline;
     function get_scroll_lock_state: gboolean; cdecl; inline;
     function have_bidi_layouts: gboolean; cdecl; inline;
@@ -4567,7 +4567,6 @@ function gdk_cairo_create(window: PGdkWindow): Pcairo_t; cdecl; external;
 function gdk_cursor_new(cursor_type: TGdkCursorType): PGdkCursor; cdecl; external;
 function gdk_device_manager_get_client_pointer(device_manager: PGdkDeviceManager): PGdkDevice; cdecl; external;
 function gdk_display_get_device_manager(display: PGdkDisplay): PGdkDeviceManager; cdecl; external;
-function gdk_keymap_get_default: PGdkKeymap; cdecl; external;
 function gdk_screen_get_active_window(screen: PGdkScreen): PGdkWindow; cdecl; external;
 function gdk_screen_get_height(screen: PGdkScreen): gint; cdecl; external;
 function gdk_screen_get_height_mm(screen: PGdkScreen): gint; cdecl; external;
@@ -4596,7 +4595,7 @@ procedure gdk_pointer_ungrab(time_: guint32); cdecl; external LazGdk3_library na
 function gdk_app_launch_context_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_app_launch_context_get_type';
 function gdk_atom_intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl; external LazGdk3_library name 'gdk_atom_intern';
 function gdk_atom_intern_static_string(atom_name: Pgchar): PGdkAtom; cdecl; external LazGdk3_library name 'gdk_atom_intern_static_string';
-function gdk_atom_name(atom: PGdkAtom): Pgchar; cdecl; external LazGdk3_library name 'gdk_atom_name';
+function gdk_atom_name(atom: TGdkAtom): Pgchar; cdecl; external LazGdk3_library name 'gdk_atom_name';
 function gdk_cairo_get_clip_rectangle(cr: Pcairo_t; rect: PGdkRectangle): gboolean; cdecl; external LazGdk3_library name 'gdk_cairo_get_clip_rectangle';
 function gdk_cairo_get_drawing_context(cr: Pcairo_t): PGdkDrawingContext; cdecl; external LazGdk3_library name 'gdk_cairo_get_drawing_context';
 function gdk_cairo_region_create_from_surface(surface: Pcairo_surface_t): Pcairo_region_t; cdecl; external LazGdk3_library name 'gdk_cairo_region_create_from_surface';
@@ -4615,7 +4614,7 @@ function gdk_device_get_associated_device(device: PGdkDevice): PGdkDevice; cdecl
 function gdk_device_get_axes(device: PGdkDevice): TGdkAxisFlags; cdecl; external LazGdk3_library name 'gdk_device_get_axes';
 function gdk_device_get_axis(device: PGdkDevice; axes: Pgdouble; use: TGdkAxisUse; value: Pgdouble): gboolean; cdecl; external LazGdk3_library name 'gdk_device_get_axis';
 function gdk_device_get_axis_use(device: PGdkDevice; index_: guint): TGdkAxisUse; cdecl; external LazGdk3_library name 'gdk_device_get_axis_use';
-function gdk_device_get_axis_value(device: PGdkDevice; axes: Pgdouble; axis_label: PGdkAtom; value: Pgdouble): gboolean; cdecl; external LazGdk3_library name 'gdk_device_get_axis_value';
+function gdk_device_get_axis_value(device: PGdkDevice; axes: Pgdouble; axis_label: TGdkAtom; value: Pgdouble): gboolean; cdecl; external LazGdk3_library name 'gdk_device_get_axis_value';
 function gdk_device_get_device_type(device: PGdkDevice): TGdkDeviceType; cdecl; external LazGdk3_library name 'gdk_device_get_device_type';
 function gdk_device_get_display(device: PGdkDevice): PGdkDisplay; cdecl; external LazGdk3_library name 'gdk_device_get_display';
 function gdk_device_get_has_cursor(device: PGdkDevice): gboolean; cdecl; external LazGdk3_library name 'gdk_device_get_has_cursor';
@@ -4672,7 +4671,7 @@ function gdk_display_manager_list_displays(manager: PGdkDisplayManager): PGSList
 function gdk_display_manager_open_display(manager: PGdkDisplayManager; name: Pgchar): PGdkDisplay; cdecl; external LazGdk3_library name 'gdk_display_manager_open_display';
 function gdk_display_open(display_name: Pgchar): PGdkDisplay; cdecl; external LazGdk3_library name 'gdk_display_open';
 function gdk_display_peek_event(display: PGdkDisplay): PGdkEvent; cdecl; external LazGdk3_library name 'gdk_display_peek_event';
-function gdk_display_request_selection_notification(display: PGdkDisplay; selection: PGdkAtom): gboolean; cdecl; external LazGdk3_library name 'gdk_display_request_selection_notification';
+function gdk_display_request_selection_notification(display: PGdkDisplay; selection: TGdkAtom): gboolean; cdecl; external LazGdk3_library name 'gdk_display_request_selection_notification';
 function gdk_display_supports_clipboard_persistence(display: PGdkDisplay): gboolean; cdecl; external LazGdk3_library name 'gdk_display_supports_clipboard_persistence';
 function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gboolean; cdecl; external LazGdk3_library name 'gdk_display_supports_cursor_alpha';
 function gdk_display_supports_cursor_color(display: PGdkDisplay): gboolean; cdecl; external LazGdk3_library name 'gdk_display_supports_cursor_color';
@@ -4694,7 +4693,7 @@ function gdk_drag_context_get_type: TGType; cdecl; external LazGdk3_library name
 function gdk_drag_context_list_targets(context: PGdkDragContext): PGList; cdecl; external LazGdk3_library name 'gdk_drag_context_list_targets';
 function gdk_drag_context_manage_dnd(context: PGdkDragContext; ipc_window: PGdkWindow; actions: TGdkDragAction): gboolean; cdecl; external LazGdk3_library name 'gdk_drag_context_manage_dnd';
 function gdk_drag_drop_succeeded(context: PGdkDragContext): gboolean; cdecl; external LazGdk3_library name 'gdk_drag_drop_succeeded';
-function gdk_drag_get_selection(context: PGdkDragContext): PGdkAtom; cdecl; external LazGdk3_library name 'gdk_drag_get_selection';
+function gdk_drag_get_selection(context: PGdkDragContext): TGdkAtom; cdecl; external LazGdk3_library name 'gdk_drag_get_selection';
 function gdk_drag_motion(context: PGdkDragContext; dest_window: PGdkWindow; protocol: TGdkDragProtocol; x_root: gint; y_root: gint; suggested_action: TGdkDragAction; possible_actions: TGdkDragAction; time_: guint32): gboolean; cdecl; external LazGdk3_library name 'gdk_drag_motion';
 function gdk_drawing_context_get_cairo_context(context: PGdkDrawingContext): Pcairo_t; cdecl; external LazGdk3_library name 'gdk_drawing_context_get_cairo_context';
 function gdk_drawing_context_get_clip(context: PGdkDrawingContext): Pcairo_region_t; cdecl; external LazGdk3_library name 'gdk_drawing_context_get_clip';
@@ -4770,7 +4769,7 @@ function gdk_keymap_get_entries_for_keycode(keymap: PGdkKeymap; hardware_keycode
 function gdk_keymap_get_entries_for_keyval(keymap: PGdkKeymap; keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_entries_for_keyval';
 function gdk_keymap_get_for_display(display: PGdkDisplay): PGdkKeymap; cdecl; external LazGdk3_library name 'gdk_keymap_get_for_display';
 function gdk_keymap_get_modifier_mask(keymap: PGdkKeymap; intent: TGdkModifierIntent): TGdkModifierType; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_mask';
-function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): TGdkModifierType; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_state';
+function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): guint; cdecl; external LazGdk3_library name 'gdk_keymap_get_modifier_state';
 function gdk_keymap_get_num_lock_state(keymap: PGdkKeymap): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_num_lock_state';
 function gdk_keymap_get_scroll_lock_state(keymap: PGdkKeymap): gboolean; cdecl; external LazGdk3_library name 'gdk_keymap_get_scroll_lock_state';
 function gdk_keymap_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_keymap_get_type';
@@ -4804,7 +4803,7 @@ function gdk_pango_layout_get_clip_region(layout: PPangoLayout; x_origin: gint; 
 function gdk_pango_layout_line_get_clip_region(line: PPangoLayoutLine; x_origin: gint; y_origin: gint; index_ranges: Pgint; n_ranges: gint): Pcairo_region_t; cdecl; external LazGdk3_library name 'gdk_pango_layout_line_get_clip_region';
 function gdk_pixbuf_get_from_surface(surface: Pcairo_surface_t; src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external LazGdk3_library name 'gdk_pixbuf_get_from_surface';
 function gdk_pixbuf_get_from_window(window: PGdkWindow; src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external LazGdk3_library name 'gdk_pixbuf_get_from_window';
-function gdk_property_get(window: PGdkWindow; property_: PGdkAtom; type_: PGdkAtom; offset: gulong; length: gulong; pdelete: gint; actual_property_type: PGdkAtom; actual_format: Pgint; actual_length: Pgint; data: PPguint8): gboolean; cdecl; external LazGdk3_library name 'gdk_property_get';
+function gdk_property_get(window: PGdkWindow; property_: TGdkAtom; type_: TGdkAtom; offset: gulong; length: gulong; pdelete: gint; actual_property_type: PGdkAtom; actual_format: Pgint; actual_length: Pgint; data: PPguint8): gboolean; cdecl; external LazGdk3_library name 'gdk_property_get';
 function gdk_rectangle_equal(rect1: PGdkRectangle; rect2: PGdkRectangle): gboolean; cdecl; external LazGdk3_library name 'gdk_rectangle_equal';
 function gdk_rectangle_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_rectangle_get_type';
 function gdk_rectangle_intersect(src1: PGdkRectangle; src2: PGdkRectangle; dest: PGdkRectangle): gboolean; cdecl; external LazGdk3_library name 'gdk_rectangle_intersect';
@@ -4834,15 +4833,15 @@ function gdk_seat_get_pointer(seat: PGdkSeat): PGdkDevice; cdecl; external LazGd
 function gdk_seat_get_slaves(seat: PGdkSeat; capabilities: TGdkSeatCapabilities): PGList; cdecl; external LazGdk3_library name 'gdk_seat_get_slaves';
 function gdk_seat_get_type: TGType; cdecl; external LazGdk3_library name 'gdk_seat_get_type';
 function gdk_seat_grab(seat: PGdkSeat; window: PGdkWindow; capabilities: TGdkSeatCapabilities; owner_events: gboolean; cursor: PGdkCursor; event: PGdkEvent; prepare_func: TGdkSeatGrabPrepareFunc; prepare_func_data: gpointer): TGdkGrabStatus; cdecl; external LazGdk3_library name 'gdk_seat_grab';
-function gdk_selection_owner_get(selection: PGdkAtom): PGdkWindow; cdecl; external LazGdk3_library name 'gdk_selection_owner_get';
-function gdk_selection_owner_get_for_display(display: PGdkDisplay; selection: PGdkAtom): PGdkWindow; cdecl; external LazGdk3_library name 'gdk_selection_owner_get_for_display';
-function gdk_selection_owner_set(owner: PGdkWindow; selection: PGdkAtom; time_: guint32; send_event: gboolean): gboolean; cdecl; external LazGdk3_library name 'gdk_selection_owner_set';
-function gdk_selection_owner_set_for_display(display: PGdkDisplay; owner: PGdkWindow; selection: PGdkAtom; time_: guint32; send_event: gboolean): gboolean; cdecl; external LazGdk3_library name 'gdk_selection_owner_set_for_display';
+function gdk_selection_owner_get(selection: TGdkAtom): PGdkWindow; cdecl; external LazGdk3_library name 'gdk_selection_owner_get';
+function gdk_selection_owner_get_for_display(display: PGdkDisplay; selection: TGdkAtom): PGdkWindow; cdecl; external LazGdk3_library name 'gdk_selection_owner_get_for_display';
+function gdk_selection_owner_set(owner: PGdkWindow; selection: TGdkAtom; time_: guint32; send_event: gboolean): gboolean; cdecl; external LazGdk3_library name 'gdk_selection_owner_set';
+function gdk_selection_owner_set_for_display(display: PGdkDisplay; owner: PGdkWindow; selection: TGdkAtom; time_: guint32; send_event: gboolean): gboolean; cdecl; external LazGdk3_library name 'gdk_selection_owner_set_for_display';
 function gdk_selection_property_get(requestor: PGdkWindow; data: PPguint8; prop_type: PGdkAtom; prop_format: Pgint): gint; cdecl; external LazGdk3_library name 'gdk_selection_property_get';
 function gdk_setting_get(name: Pgchar; value: PGValue): gboolean; cdecl; external LazGdk3_library name 'gdk_setting_get';
 function gdk_test_simulate_button(window: PGdkWindow; x: gint; y: gint; button: guint; modifiers: TGdkModifierType; button_pressrelease: TGdkEventType): gboolean; cdecl; external LazGdk3_library name 'gdk_test_simulate_button';
 function gdk_test_simulate_key(window: PGdkWindow; x: gint; y: gint; keyval: guint; modifiers: TGdkModifierType; key_pressrelease: TGdkEventType): gboolean; cdecl; external LazGdk3_library name 'gdk_test_simulate_key';
-function gdk_text_property_to_utf8_list_for_display(display: PGdkDisplay; encoding: PGdkAtom; format: gint; text: Pguint8; length: gint; list: PPPgchar): gint; cdecl; external LazGdk3_library name 'gdk_text_property_to_utf8_list_for_display';
+function gdk_text_property_to_utf8_list_for_display(display: PGdkDisplay; encoding: TGdkAtom; format: gint; text: Pguint8; length: gint; list: PPPgchar): gint; cdecl; external LazGdk3_library name 'gdk_text_property_to_utf8_list_for_display';
 function gdk_threads_add_idle(function_: TGSourceFunc; data: gpointer): guint; cdecl; external LazGdk3_library name 'gdk_threads_add_idle';
 function gdk_threads_add_idle_full(priority: gint; function_: TGSourceFunc; data: gpointer; notify: TGDestroyNotify): guint; cdecl; external LazGdk3_library name 'gdk_threads_add_idle_full';
 function gdk_threads_add_timeout(interval: guint; function_: TGSourceFunc; data: gpointer): guint; cdecl; external LazGdk3_library name 'gdk_threads_add_timeout';
@@ -4980,16 +4979,16 @@ procedure gdk_notify_startup_complete; cdecl; external LazGdk3_library name 'gdk
 procedure gdk_notify_startup_complete_with_id(startup_id: Pgchar); cdecl; external LazGdk3_library name 'gdk_notify_startup_complete_with_id';
 procedure gdk_offscreen_window_set_embedder(window: PGdkWindow; embedder: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_offscreen_window_set_embedder';
 procedure gdk_parse_args(argc: Pgint; argv: PPPgchar); cdecl; external LazGdk3_library name 'gdk_parse_args';
-procedure gdk_property_change(window: PGdkWindow; property_: PGdkAtom; type_: PGdkAtom; format: gint; mode: TGdkPropMode; data: Pguint8; nelements: gint); cdecl; external LazGdk3_library name 'gdk_property_change';
-procedure gdk_property_delete(window: PGdkWindow; property_: PGdkAtom); cdecl; external LazGdk3_library name 'gdk_property_delete';
+procedure gdk_property_change(window: PGdkWindow; property_: TGdkAtom; type_: TGdkAtom; format: gint; mode: TGdkPropMode; data: Pguint8; nelements: gint); cdecl; external LazGdk3_library name 'gdk_property_change';
+procedure gdk_property_delete(window: PGdkWindow; property_: TGdkAtom); cdecl; external LazGdk3_library name 'gdk_property_delete';
 procedure gdk_rectangle_union(src1: PGdkRectangle; src2: PGdkRectangle; dest: PGdkRectangle); cdecl; external LazGdk3_library name 'gdk_rectangle_union';
 procedure gdk_rgba_free(rgba: PGdkRGBA); cdecl; external LazGdk3_library name 'gdk_rgba_free';
 procedure gdk_screen_set_font_options(screen: PGdkScreen; options: Pcairo_font_options_t); cdecl; external LazGdk3_library name 'gdk_screen_set_font_options';
 procedure gdk_screen_set_resolution(screen: PGdkScreen; dpi: gdouble); cdecl; external LazGdk3_library name 'gdk_screen_set_resolution';
 procedure gdk_seat_ungrab(seat: PGdkSeat); cdecl; external LazGdk3_library name 'gdk_seat_ungrab';
-procedure gdk_selection_convert(requestor: PGdkWindow; selection: PGdkAtom; target: PGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_convert';
-procedure gdk_selection_send_notify(requestor: PGdkWindow; selection: PGdkAtom; target: PGdkAtom; property_: PGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_send_notify';
-procedure gdk_selection_send_notify_for_display(display: PGdkDisplay; requestor: PGdkWindow; selection: PGdkAtom; target: PGdkAtom; property_: PGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_send_notify_for_display';
+procedure gdk_selection_convert(requestor: PGdkWindow; selection: TGdkAtom; target: TGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_convert';
+procedure gdk_selection_send_notify(requestor: PGdkWindow; selection: TGdkAtom; target: TGdkAtom; property_: TGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_send_notify';
+procedure gdk_selection_send_notify_for_display(display: PGdkDisplay; requestor: PGdkWindow; selection: TGdkAtom; target: TGdkAtom; property_: TGdkAtom; time_: guint32); cdecl; external LazGdk3_library name 'gdk_selection_send_notify_for_display';
 procedure gdk_set_allowed_backends(backends: Pgchar); cdecl; external LazGdk3_library name 'gdk_set_allowed_backends';
 procedure gdk_set_double_click_time(msec: guint); cdecl; external LazGdk3_library name 'gdk_set_double_click_time';
 procedure gdk_set_program_class(program_class: Pgchar); cdecl; external LazGdk3_library name 'gdk_set_program_class';
@@ -5244,7 +5243,7 @@ end;
 
 function TGdkAtom.name: Pgchar; cdecl;
 begin
-  Result := LazGdk3.gdk_atom_name(@self);
+  Result := LazGdk3.gdk_atom_name(self);
 end;
 
 function TGdkAtom.intern(atom_name: Pgchar; only_if_exists: gboolean): PGdkAtom; cdecl;
@@ -5257,7 +5256,7 @@ begin
   Result := LazGdk3.gdk_atom_intern_static_string(atom_name);
 end;
 
-function TGdkDisplay.request_selection_notification(selection: PGdkAtom): gboolean; cdecl;
+function TGdkDisplay.request_selection_notification(selection: TGdkAtom): gboolean; cdecl;
 begin
   Result := LazGdk3.gdk_display_request_selection_notification(@self, selection);
 end;
@@ -5412,11 +5411,6 @@ begin
   LazGdk3.gdk_screen_set_resolution(@self, dpi);
 end;
 
-function TGdkCursor.new(cursor_type: TGdkCursorType): PGdkCursor; cdecl;
-begin
-  Result := LazGdk3.gdk_cursor_new(cursor_type);
-end;
-
 function TGdkCursor.new_for_display(display: PGdkDisplay; cursor_type: TGdkCursorType): PGdkCursor; cdecl;
 begin
   Result := LazGdk3.gdk_cursor_new_for_display(display, cursor_type);
@@ -5482,7 +5476,7 @@ begin
   Result := LazGdk3.gdk_device_get_axis_use(@self, index_);
 end;
 
-function TGdkDevice.get_axis_value(axes: Pgdouble; axis_label: PGdkAtom; value: Pgdouble): gboolean; cdecl;
+function TGdkDevice.get_axis_value(axes: Pgdouble; axis_label: TGdkAtom; value: Pgdouble): gboolean; cdecl;
 begin
   Result := LazGdk3.gdk_device_get_axis_value(@self, axes, axis_label, value);
 end;
@@ -6787,7 +6781,7 @@ begin
   Result := LazGdk3.gdk_keymap_get_modifier_mask(@self, intent);
 end;
 
-function TGdkKeymap.get_modifier_state: TGdkModifierType; cdecl;
+function TGdkKeymap.get_modifier_state: guint; cdecl;
 begin
   Result := LazGdk3.gdk_keymap_get_modifier_state(@self);
 end;

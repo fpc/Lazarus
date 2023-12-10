@@ -1759,8 +1759,9 @@ end;
 function TGtk3WidgetSet.GetActiveWindow: HWND;
 var
   AWindow: PGdkWindow;
-  AData: gpointer;
-  AWidget: PGtkWidget;
+  AGtkWin: PGtkWindow;
+  AData, AWidget: gpointer;
+  Hndl: HWND;
   i: Integer;
 begin
   Result := 0;
@@ -1778,10 +1779,12 @@ begin
     begin
       if Screen.Forms[i].HandleAllocated then
       begin
-        if PGtkWindow(TGtk3Window(Screen.Forms[i].Handle).Widget)^.get_window = AWindow then
+        Hndl := Screen.Forms[i].Handle;
+        AGtkWin := PGtkWindow(TGtk3Window(Hndl).Widget);
+        if AGtkWin^.get_window = AWindow then
         begin
-          AWidget := PGtkWindow(TGtk3Window(Screen.Forms[i].Handle).Widget)^.get_focus;
-          Result := HWND(Screen.Forms[i].Handle);
+          AGtkWin^.get_focus;
+          Result := Hndl;
         end;
       end;
     end;
@@ -1903,7 +1906,7 @@ begin
   else
   begin
     cairo_region_destroy(TGtk3Region(RGN).Handle);
-    TGtk3Region(RGN).Handle := cairo_region_create_rectangle(@ARect);
+    TGtk3Region(RGN).Handle := cairo_region_create_rectangle(Pcairo_rectangle_int_t(@ARect));
     Result := 1;
   end;
 end;
@@ -2194,8 +2197,6 @@ var
 begin
   Result := 0;
 
-  Result := 0;
-
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
@@ -2239,8 +2240,8 @@ begin
   *)
   // AModifierMask := gdk_keymap_get_modifier_mask(AKeyMap, 0);
 
-  AKeyMap := gdk_keymap_get_default;
-  AModifiers := gdk_keymap_get_modifier_state(AKeyMap);
+  AKeyMap := TGdkKeymap.get_for_display(gdk_display_get_default);
+  AModifiers := TGdkModifierType(AKeyMap^.get_modifier_state);
   case nVirtKey of
     VK_LBUTTON:
       if GDK_BUTTON1_MASK in AModifiers  then
@@ -2846,7 +2847,7 @@ begin
       //h := AWindow^.get_height;
       AWindow^.get_frame_extents(@GRect);
       // R := RectFromGdkRect(GRect);
-      ARect := Bounds(0, 0, GRect.width, GRect.Height);
+      ARect := Bounds(x, Y, GRect.width, GRect.Height);
       Result := 1;
     end else
     begin
