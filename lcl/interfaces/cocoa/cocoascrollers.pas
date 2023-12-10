@@ -436,8 +436,10 @@ begin
   f.origin.y := 0;
   hr := f;
   vr := f;
-  hw := NSScroller.scrollerWidth;
-  vw := NSScroller.scrollerWidth;
+  hw := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+          hrz.controlSize, hrz.preferredScrollerStyle);
+  vw := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+          vrt.controlSize, vrt.preferredScrollerStyle);
   vr.size.width:=vw;
   vr.origin.x:=f.size.width-vr.size.width;
   hr.size.height:=hw;
