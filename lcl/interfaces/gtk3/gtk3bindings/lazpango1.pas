@@ -9,6 +9,7 @@ unit LazPango1;
 {$ifdef Unix}
 {$LINKLIB libpango-1.0.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazGObject2, LazGio2, LazHarfBuzz0, Lazcairo1, LazGLib2;

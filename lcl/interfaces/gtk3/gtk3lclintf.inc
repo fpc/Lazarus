@@ -230,6 +230,44 @@ begin
 
     GetMem(NewData, ArawImage.DataSize);
 
+    if desc.BitsPerPixel = 1 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if desc.BitsPerPixel = 8 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if desc.BitsPerPixel = 16 then
+    begin
+      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+    end
+    else if (desc.BitsPerPixel = 24) and ((Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)) then
+    begin
+      // put components in right order
+      DstRowPtr := NewData;
+      SrcRowPtr := ArawImage.Data;
+      y := Desc.Height;
+      while y > 0 do
+      begin
+        Src := SrcRowPtr;
+        Dst := DstRowPtr;
+        x := Desc.Width;
+        while x > 0 do
+        begin
+          Dst[0] := Src[Ridx];
+          Dst[1] := Src[Gidx];
+          Dst[2] := Src[Bidx];
+
+          Inc(Src, 3);
+          Inc(Dst, 3);
+          Dec(x);
+        end;
+        Inc(SrcRowPtr, ARowstride);
+        Inc(DstRowPtr, ARowstride);
+        Dec(y);
+      end;
+    end else
     if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
     begin
       // put components in right order
@@ -1035,7 +1073,6 @@ end;
   Updates the constraints object (e.g. TSizeConstraints) with interface specific
   bounds.
  ------------------------------------------------------------------------------}
-(*
 function TGtk3WidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 var
   SizeConstraints: TSizeConstraints absolute Constraints;
@@ -1044,70 +1081,44 @@ var
   MinHeight: Integer;
   MaxWidth: Integer;
   MaxHeight: Integer;
+  aPageControl: TPageControl;
 begin
   Result := True;
 
   if Constraints is TSizeConstraints then
   begin
+    if (SizeConstraints.Control=nil) then exit;
     MinWidth := 1;
     MinHeight := 1;
     MaxWidth := 0;
     MaxHeight := 0;
 
-    if (SizeConstraints.Control=nil) then exit;
-
     if SizeConstraints.Control is TScrollBar then begin
       // TScrollBar
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
-        MinHeight:=Widget^.requisition.Height;
-        MaxHeight:=MinHeight;
+        widget^.get_preferred_height(@MinHeight,@MaxHeight);
       end else begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
-        MinWidth:=Widget^.requisition.Width;
-        MaxWidth:=MinWidth;
+        widget^.get_preferred_width(@MinWidth,@MaxWidth);
       end;
       //DebugLn('TGtk3WidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
-    end
-    else if SizeConstraints.Control is TCustomSplitter then begin
-      // TCustomSplitter
-      if TCustomSplitter(SizeConstraints.Control).ResizeAnchor in [akTop,akBottom] then
-      begin
-        Widget:=GetStyleWidget(lgsHorizontalPaned);
-        MinHeight:=Widget^.requisition.Height;
-        MaxHeight:=MinHeight;
+    end else if SizeConstraints.Control is TPageControl then begin
+      aPageControl:=TPageControl(SizeConstraints.Control);
+      if aPageControl.TabPosition in [tpTop, tpBottom] then begin
+        MinHeight:=20;
       end else begin
-        Widget:=GetStyleWidget(lgsVerticalPaned);
-        MinWidth:=Widget^.requisition.Width;
-        MaxWidth:=MinWidth;
+        MinWidth:=20;
       end;
-    end
-    else if SizeConstraints.Control is TCustomMemo then begin
-      // TCustomMemo
-      Widget:=GetStyleWidget(lgsHorizontalScrollbar);
-      MinHeight:=Widget^.requisition.Height+20;
-      Widget:=GetStyleWidget(lgsVerticalScrollbar);
-      MinWidth:=Widget^.requisition.Width+20;
-    end
-    else if SizeConstraints.Control is TCustomTrackBar then begin
-      // TCustomTrackBar
-      if TCustomTrackBar(SizeConstraints.Control).Orientation=trHorizontal then
-      begin
-        Widget:=GetStyleWidget(lgsHScale);
-        MinHeight:=Widget^.requisition.height;
-      end else begin
-        Widget:=GetStyleWidget(lgsVScale);
-        MinWidth:=Widget^.requisition.width;
-      end;
-      //DebugLn(['TGtk3WidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),
-      //         ' ',MinWidth,',',MinHeight]);
+      //DebugLn('TGtk3WidgetSet.GetControlConstraints A '+DbgSName(SizeConstraints.Control),' ',dbgs(MinWidth)+','+dbgs(MinHeight));
     end;
+
+    //DebugLn('TGtk3WidgetSet.GetControlConstraints A '+DbgSName(SizeConstraints.Control),' ',dbgs(MinWidth)+','+dbgs(MinHeight));
 
     SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                             MaxWidth,MaxHeight);
   end;
 end;
-*)
 
 {------------------------------------------------------------------------------
   function TGtk3WidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
@@ -1149,7 +1160,6 @@ begin
   finally
     fact.Free;
   end;
-
 end;
 
 

@@ -8,6 +8,7 @@ unit Lazxlib2;
 
 {$ifdef Unix}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes;

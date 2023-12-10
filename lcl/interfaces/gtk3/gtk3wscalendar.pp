@@ -151,7 +151,7 @@ end;
 
 class function TGtk3WSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
-  Year, Month, Day: Word;  //used for csCalendar
+  Year, Month, Day: LongWord;  //used for csCalendar
 begin
   Result := 0;
   if not WSCheckHandleAllocated(ACalendar, 'GetDateTime') then

@@ -21,10 +21,11 @@ unit Gtk3WSMenus;
 interface
 
 uses
-  Classes, Types, LCLProc, LCLType,
+  Classes, Types,
   LazGObject2, LazGlib2, LazGdk3, LazGtk3, gtk3procs,
+  LazLoggerBase,
   WSLCLClasses, WSMenus,
-  LMessages, Graphics, Menus, Forms, LCLIntf;
+  LCLType, LMessages, Graphics, Menus, Forms, Controls, LCLIntf;
 
 type
 
@@ -288,9 +289,9 @@ begin
     ParentMenuWidget := TGtk3Widget(AMenuItem.Parent.Handle).Widget;
   end;
 
-  if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
+  if (not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu) then
   begin
-    AForm := TCustomForm(AMenuItem.GetParentMenu.Owner);
+    AForm := TCustomForm(AMenuItem.GetParentMenu.Parent);
     PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
   end else
   (*
@@ -597,7 +598,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
   {$ENDIF}
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := {%H-}HMENU(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenu;
   // no callbacks for main menu
