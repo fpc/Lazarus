@@ -1027,6 +1027,12 @@ begin
     newResponder := getProperFocusedResponder( self, aResponder );
     if lastResponder = newResponder then exit;
 
+    // get the callback of lastResponder first, because the callback of
+    // lastResponder may be changed dynamically.
+    // for example, when lastResponder is a FieldEditor.
+    // see also: TCocoaFieldEditor.lclGetCallback()
+    cb := getResponderCallback( lastResponder );
+
     // do toggle Focused Control
     // Result=false when the focused control has not been changed
     // TCocoaWindow.makeFirstResponder() may be triggered reentrant here
@@ -1038,7 +1044,6 @@ begin
       exit;
 
     // 1st: send KillFocus Message first
-    cb:= getResponderCallback( lastResponder );
     if Assigned(cb) then
       cb.ResignFirstResponder;
 
