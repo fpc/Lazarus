@@ -896,9 +896,6 @@ property DwarfSymbolClassMapList: TFpSymbolDwarfClassMapList read GetDwarfSymbol
 
 implementation
 
-uses
-  FpDbgCommon;
-
 var
   FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE,
   // FPDBG_DWARF_DATA_WARNINGS,

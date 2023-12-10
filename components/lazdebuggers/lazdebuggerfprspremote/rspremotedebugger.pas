@@ -66,6 +66,8 @@ type
   private
     FProcessConfig: TRemoteConfig;
     procedure UpdateProcessConfig;
+  protected
+    function CreateMemManager: TFpDbgMemManager; override;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -94,6 +96,11 @@ begin
   TRemoteConfig(FProcessConFig).AfterConnectMonitorCmds.Assign(AProperties.AfterConnectMonitorCmds);
   TRemoteConfig(FProcessConFig).AfterUploadMonitorCmds.Assign(AProperties.AfterUploadMonitorCmds);
   TRemoteConfig(FProcessConFig).SkipSectionsList.Assign(AProperties.SkipUploadOfSectionList);
+end;
+
+function TFpRspRemoteDebugger.CreateMemManager: TFpDbgMemManager;
+begin
+  Result := TAvrMemManager.Create(FMemReader, FMemConverter);
 end;
 
 constructor TFpRspRemoteDebugger.Create(const AExternalDebugger: String);

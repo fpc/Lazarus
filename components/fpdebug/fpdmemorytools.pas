@@ -428,6 +428,7 @@ type
     *)
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext {= nil}): Boolean;
     function ReadRegisterAsAddress(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext {= nil}): Boolean; virtual;
+    property MemReader: TFpDbgMemReaderBase read FMemReader;
   public
     procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
     property CacheManager: TFpDbgMemCacheManagerBase read GetCacheManager;
@@ -456,7 +457,6 @@ type
     property PartialReadResultLenght: QWord read FPartialReadResultLenght;
     property LastError: TFpError read FLastError;
     property MemLimits: TFpDbgMemLimits read FMemLimits;
-    property MemReader: TFpDbgMemReaderBase read FMemReader;
   end;
 
 function NilLoc: TFpDbgMemLocation; inline;

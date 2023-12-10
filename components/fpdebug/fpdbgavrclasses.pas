@@ -600,11 +600,7 @@ begin
     FRemoteConfig.Assign(AProcessConfig);
   end;
 
-  // Create own memory manager to manage register address reads
-  // Pass through other helper classes as is
-  FMemManager := TAvrMemManager.Create(AMemManager.MemReader, AMemManager.TargetMemConvertor, AMemManager.SelfMemConvertor);
-
-  inherited Create(AFileName, AnOsClasses, FMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgAvrProcess.Destroy;
@@ -613,8 +609,6 @@ begin
     FreeAndNil(FConnection);
   if Assigned(FRemoteConfig) then
     FreeAndNil(FRemoteConfig);
-  if Assigned(FMemManager) then
-    FreeAndNil(FMemManager);
   inherited Destroy;
 end;
 
