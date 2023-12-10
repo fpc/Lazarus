@@ -36,9 +36,9 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, RegExpr, Types,
+  Classes, SysUtils, RegExpr, Types, Math,
   // LCL
-  LCLType, Graphics, Controls, LCLIntf,
+  LCLType, Graphics, Controls, LCLIntf, ImgList,
   // LazUtils
   LazFileUtils, LazStringUtils,
   // SynEdit
@@ -185,6 +185,34 @@ var
     Result := aCompletion.TheForm.Scale96ToForm(APadding);
   end;
 
+  function GetImgListRes(const AImages: TLCLGlyphs; ALineHeight: integer): TScaledImageListResolution;
+  const
+    //AllowedHeights: array[0..4] of Integer = (8, 12, 16, 24, 32);
+    AllowedHeights: array[0..8] of Integer = (8, 10, 12, 14, 16, 20, 24, 28, 32);
+  var
+    Scale: Double;
+    PPI, I, ImageHeight: Integer;
+  begin
+    Scale := 1;
+    PPI := 96;
+    ALineHeight := max(ALineHeight, aCompletion.FontHeight);
+    if ALineHeight > 16 then
+      ALineHeight := max(16, ALineHeight - GetPaddingScaled(1));
+
+    ImageHeight := AllowedHeights[0];
+    for I := High(AllowedHeights) downto Low(AllowedHeights) do
+      if AllowedHeights[I] <= ALineHeight then
+      begin
+        ImageHeight := AllowedHeights[I];
+        break;
+      end;
+    // don't set PPI here -> we don't want to scale the image anymore
+
+    if ACanvas is TControlCanvas then
+      Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor;
+    Result := AImages.ResolutionForPPI[ImageHeight, PPI, Scale];
+  end;
+
   procedure SetFontColor(NewColor: TColor; Force: boolean = false);
   
     {procedure IncreaseDiff(var Value: integer; BaseValue: integer);
@@ -302,12 +330,12 @@ var
   IsReadOnly: boolean;
   UseImages: boolean;
   ImageIndex, ImageIndexCC: longint;
-  ImageScaledSize: TSize;
   Token: String;
   PrefixPosition: Integer;
   HintModifiers: TPascalHintModifiers;
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
+  ScaledImgList: TScaledImageListResolution;
 begin
 
   SetBkMode(ACanvas.Handle, TRANSPARENT);
@@ -537,17 +565,19 @@ begin
       s:='';
     end;
 
-    ImageScaledSize := IDEImages.Images_16.SizeForPPI[16, aCompletion.TheForm.PixelsPerInch];
+    ScaledImgList := GetImgListRes(IDEImages.Images_16, Result.Y);
 
     if UseImages then
     begin
       // drawing type image
       if MeasureOnly then
-        Inc(Result.X, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
+        Inc(Result.X, ScaledImgList.Width + round(ScaledImgList.Width / 4))
       else
-        if ImageIndexCC >= 0 then
-          IDEImages.Images_16.DrawForPPI (ACanvas, x+GetPaddingScaled(1), y+(Result.Y-ImageScaledSize.Height) div 2, ImageIndexCC, 16, aCompletion.TheForm.PixelsPerInch, 1);
-      Inc(x, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
+        begin
+          if ImageIndexCC >= 0 then
+            ScaledImgList.Draw(ACanvas, x+1, y+(Result.Y-ScaledImgList.Height) div 2, ImageIndexCC);
+        end;
+      Inc(x,ScaledImgList.Width + round(ScaledImgList.Width / 4));
     end
     else
     begin
@@ -612,12 +642,12 @@ begin
     begin
       if ImageIndex>=0 then
         if MeasureOnly then
-          Inc(Result.X, ImageScaledSize.Width + (ImageScaledSize.Width div 4))
-      else begin
-        IDEImages.Images_16.DrawForPPI (ACanvas, x+GetPaddingScaled(1), y+(Result.Y-ImageScaledSize.Height) div 2, ImageIndex, 16, aCompletion.TheForm.PixelsPerInch, 1);
-        Inc(x, ImageScaledSize.Width + (ImageScaledSize.Width div 4));
-        if x>MaxX then exit;
-      end;
+          Inc(Result.X, ScaledImgList.Width + GetPaddingScaled(2))
+        else begin
+          ScaledImgList.Draw(ACanvas,x+1,y+(Result.Y-ScaledImgList.Height) div 2,ImageIndex);
+          inc(x,ScaledImgList.Width + GetPaddingScaled(2));
+          if x>MaxX then exit;
+        end;
     end;
 
     // finally paint the type/value/parameters
