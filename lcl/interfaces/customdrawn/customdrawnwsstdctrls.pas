@@ -1651,8 +1651,7 @@ end;*)
 
 class procedure TCDWSButton.InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDIntfButton.Create(AWinControl);
-  TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
+  TCDIntfButton(ACDControlField).LCLControl := TCustomButton(AWinControl);
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
@@ -1673,6 +1672,7 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfButton.Create(AWinControl);
 end;
 
 class procedure TCDWSButton.DestroyHandle(const AWinControl: TWinControl);
