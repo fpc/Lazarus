@@ -98,8 +98,10 @@ begin
 
   if CocoaWidgetSet.isModalSession then begin
     form:= TWinControl(AWinControl.GetTopParent);
-    if form.HandleAllocated then
-      NSView(form.handle).window.setLevel(NSModalPanelWindowLevel);
+    if form.HandleAllocated then begin
+      CocoaWidgetSet.CurModalForm.addChildWindow_ordered(
+        NSView(form.handle).window, NSWindowAbove );
+    end;
   end;
 
   Result:= TLCLHandle(dp);
