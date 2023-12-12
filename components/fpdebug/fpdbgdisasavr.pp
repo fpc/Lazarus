@@ -699,8 +699,8 @@ begin
   end;
 
   // Instructions with variable number of operands
-  if (instr.OpCode in [A_ELPM, A_LPM, A_SPM]) and
-     (instr.Oper[1] = operandNoIndex) then
+  if ((instr.OpCode in [A_ELPM, A_LPM]) and (instr.Oper[2] = operandNoIndex)) or
+     ((instr.OpCode = A_SPM) and (instr.Oper[1] = operandNoIndex)) then
     info.OperCount := 0;
 
   if info.OperCount > 0 then
@@ -1134,10 +1134,10 @@ begin
           $9588: instr := SetInstructionInfo(A_SLEEP, 0, 2, []);
           $9598: instr := SetInstructionInfo(A_BREAK, 0, 2, []);
           $95a8: instr := SetInstructionInfo(A_WDR, 0, 2, []);
-          $95c8: instr := SetInstructionInfo(A_LPM, 0, 2, []);
-          $95d8: instr := SetInstructionInfo(A_ELPM, 0, 2, []);
-          $95e8: instr := SetInstructionInfo(A_SPM, 0, 2, []);
-          $95f8: instr := SetInstructionInfo(A_SPM, operandZInc, 2, []);
+          $95c8: instr := SetInstructionInfo(A_LPM, 0, 2, [0, operandNoIndex]);
+          $95d8: instr := SetInstructionInfo(A_ELPM, 0, 2, [0, operandNoIndex]);
+          $95e8: instr := SetInstructionInfo(A_SPM, 0, 2, [operandNoIndex]);
+          $95f8: instr := SetInstructionInfo(A_SPM, 0, 2, [operandZInc]);
           else
           begin
             case (code and $fe0f) of
@@ -1155,18 +1155,18 @@ begin
               begin // LPM Load Program Memory 1001 000d dddd 01oo
                 r := (code shr 4) and $1f;
                 if (code and 1 = 1) then
-                  instr := SetInstructionInfo(A_LPM, operandZInc, 2, [r])
+                  instr := SetInstructionInfo(A_LPM, 0, 2, [r, operandZInc])
                 else
-                  instr := SetInstructionInfo(A_LPM, operandZ, 2, [r]);
+                  instr := SetInstructionInfo(A_LPM, 0, 2, [r, operandZ]);
               end;
               $9006,
               $9007:
               begin // ELPM Extended Load Program Memory 1001 000d dddd 01oo
                 r := (code shr 4) and $1f;
                 if (code and 1 = 1) then
-                  instr := SetInstructionInfo(A_ELPM, operandZInc, 2, [r])
+                  instr := SetInstructionInfo(A_ELPM, 0, 2, [r, operandZInc])
                 else
-                  instr := SetInstructionInfo(A_ELPM, operandZ, 2, [r]);
+                  instr := SetInstructionInfo(A_ELPM, 0, 2, [r, operandZ]);
               end;
               $900c,
               $900d,
