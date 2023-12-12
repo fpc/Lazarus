@@ -22,7 +22,7 @@ type
     FDbgController: TDbgController;
     FMemManager: TFpDbgMemManager;
     FMemReader: TDbgMemReader;
-    FMemConverter: TFpDbgMemConvertorLittleEndian;
+    FMemConverter: TFpDbgMemConvertor;
     FLockList: TFpDbgLockList;
     FWorkQueue: TFpThreadPriorityWorkerQueue;
 
@@ -71,7 +71,7 @@ type
     property DbgController: TDbgController read FDbgController;
     property MemManager:    TFpDbgMemManager read FMemManager;
     property MemReader:     TDbgMemReader read FMemReader;
-    property MemConverter:  TFpDbgMemConvertorLittleEndian read FMemConverter;
+    property MemConverter:  TFpDbgMemConvertor read FMemConverter;
     property LockList:      TFpDbgLockList read FLockList;
     property WorkQueue:     TFpThreadPriorityWorkerQueue read FWorkQueue;
   end;

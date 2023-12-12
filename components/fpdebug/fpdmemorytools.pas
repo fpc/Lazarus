@@ -105,6 +105,7 @@ type
     (* ReadRegister needs a Context, to get the thread/stackframe
     *)
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; inline;
+    function ReadRegisterasAddress(ARegNum: Cardinal; out AValue: TDbgPtr): Boolean; inline;
 
     function WriteMemory(const ADestLocation: TFpDbgMemLocation; const ASize: TFpDbgValueSize;
                          const ASource: Pointer; const AFlags: TFpDbgMemManagerFlags = []
@@ -426,6 +427,8 @@ type
     (* ReadRegister needs a Context, to get the thread/stackframe
     *)
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext {= nil}): Boolean;
+    function ReadRegisterAsAddress(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext {= nil}): Boolean; virtual;
+    property MemReader: TFpDbgMemReaderBase read FMemReader;
   public
     procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
     property CacheManager: TFpDbgMemCacheManagerBase read GetCacheManager;
@@ -959,6 +962,12 @@ function TFpDbgLocationContext.ReadRegister(ARegNum: Cardinal; out
   AValue: TDbgPtr): Boolean;
 begin
   Result := MemManager.ReadRegister(ARegNum, AValue, Self);
+end;
+
+function TFpDbgLocationContext.ReadRegisterasAddress(ARegNum: Cardinal; out
+  AValue: TDbgPtr): Boolean;
+begin
+  Result := MemManager.ReadRegisterAsAddress(ARegNum, AValue, Self);
 end;
 
 function TFpDbgLocationContext.WriteMemory(
@@ -1906,6 +1915,12 @@ begin
   Result := FMemReader.ReadRegister(ARegNum, AValue, AContext);
   if not Result then
     FLastError := CreateError(fpErrFailedReadRegister);
+end;
+
+function TFpDbgMemManager.ReadRegisterAsAddress(ARegNum: Cardinal; out
+  AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
+begin
+  Result := ReadRegister(ARegNum, AValue, AContext);
 end;
 
 function TFpDbgMemManager.SetLength(var ADest: TByteDynArray; ALength: Int64

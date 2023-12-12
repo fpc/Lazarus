@@ -2310,7 +2310,7 @@ begin
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
-          if not FContext.ReadRegister(CurInstr^-DW_OP_breg0, NewValue) then begin
+          if not FContext.ReadRegisterasAddress(CurInstr^-DW_OP_breg0, NewValue) then begin
             SetError;
             exit;
           end;
@@ -2319,7 +2319,7 @@ begin
           {$POP}
         end;
       DW_OP_bregx: begin
-          if not FContext.ReadRegister(ULEB128toOrdinal(CurData), NewValue) then begin
+          if not FContext.ReadRegisterasAddress(ULEB128toOrdinal(CurData), NewValue) then begin
             SetError;
             exit;
           end;

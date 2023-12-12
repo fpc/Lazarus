@@ -46,6 +46,12 @@ const
 
 type
 
+  { TAvrMemManager }
+
+  TAvrMemManager = class(TFpDbgMemManager)
+    function ReadRegisterAsAddress(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
+  end;
+
   { TDbgAvrThread }
 
   TDbgAvrThread = class(TDbgThread)
@@ -170,6 +176,30 @@ uses
 
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+
+{ TAvrMemManager }
+
+function TAvrMemManager.ReadRegisterAsAddress(ARegNum: Cardinal; out
+  AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
+const
+  AvrDataOffset = $800000;
+var
+  tmpVal: TDBGPtr;
+begin
+  Result := ReadRegister(ARegNum, AValue, AContext);
+  { Assume the pointer points to data space.
+    This will be the case for stack based parameters.
+    But if parameters are stored in registers this could lead to confusion.
+    E.g. when passing a procedure pointer the pointer points to code space.
+    Todo: consider adding DW_AT_address_class or DW_AT_segment information on compiler side.
+    There will be more potential for confusion when section support is added to the compiler }
+  if Result then
+  begin
+    Result := ReadRegister(ARegNum+1, tmpVal, AContext);
+    if Result then
+      AValue := AvrDataOffset or (AValue + (word(tmpVal) shl 8));
+  end;
+end;
 
 { TFpRspWatchPointData }
 
