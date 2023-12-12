@@ -31,7 +31,7 @@ const
 {DEFINE QT_6_2_0}
   
 {$IFDEF MSWINDOWS}
-  Qt6PasLib = 'Qt6Pas1.dll';
+  Qt6PasLib = 'Qt6Pas6.dll';
 {$ELSE}
   {$IFDEF DARWIN}
     Qt6PasLib = '';
