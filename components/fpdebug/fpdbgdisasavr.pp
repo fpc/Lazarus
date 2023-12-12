@@ -419,7 +419,6 @@ var
   opcode, frameOffset: word;
   d, k: byte;
   stackState: TPrologueState;
-  instr: TAVRInstruction;
 begin
 { AVR function entry example
   3e:	df 93       	push	r29
@@ -461,7 +460,6 @@ begin
   // Loop until prologue buffer is empty, or stepped inside stack frame
   while (ADataLen > 1) and AnIsOutsideFrame do
   begin
-    //FDecoder.Disassemble(AData, instr);
     opcode := AData[0] or (AData[1] shl 8);
     inc(AData, 2);
     dec(ADataLen, 2);
@@ -477,7 +475,7 @@ begin
       OpCodeSetSPL: stackState := psWriteSPL;
       OpCodeZeroR1, OpCodeZeroR16: ;
     else
-      // Push a register onto stack
+      // Push stack
       if (opcode and OpCodePushMask) = OpCodePushMask then
       begin
         if (stackState <= psPush) or (stackState = psLoadSreg) then
@@ -583,9 +581,7 @@ begin
   cc:	08 95       	ret
 }
 
-  // Also read previous instruction, for simple procs/interrupts it may not be easy to spot the start of epilogue
-  // so the previous instruction could tie break
-  ADataLen := Min(MaxEpilogueSize, AEndPC - AnAddress + 2);
+  ADataLen := Min(MaxEpilogueSize, AEndPC - AnAddress);
   Result := ReadCodeAt(AEndPC - ADataLen, ADataLen);
   if not Result then
     exit;
@@ -613,7 +609,7 @@ begin
       OpCodeSetSPL: stackState := esWriteSPL;
       OpCodeRet, OpCodeReti: stackState := esRet;
     else
-      // Push a register onto stack
+      // Pop stack
       if (opcode and OpCodePopMask) = OpCodePopMask then
       begin
         if (stackState <= esPop) or (stackState = esWriteSreg) then
@@ -1508,7 +1504,6 @@ var
   NextIdx: LongInt;
   LastFrameBase: TDBGPtr;
   OutSideFrame: Boolean;
-  StackPtr: TDBGPtr;
   startPC, endPC: TDBGPtr;
   returnAddrStackOffset: word;
   b: byte;
@@ -1527,10 +1522,10 @@ begin
   // Get start/end PC of proc from debug info
   if not Self.Process.FindProcStartEndPC(CodePointer, startPC, endPC) then
   begin
-    // Give up for now, it is complicated to locate prologue/epilogue in general without proc limits
-    // ToDo: Perhaps interpret .debug_frame info if available,
-    //       or scan forward from address until an epilogue is found.
-    exit;
+    { Assume we are at beginning of proc. GetFunctionFrameReturnAddress should then
+      assume we are outside the stack frame (or no stack frame exists).
+    }
+    endPC := CodePointer;
   end;
 
   if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(CodePointer, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
@@ -1541,24 +1536,29 @@ begin
   if OutSideFrame then begin
     // Before adjustment of frame pointer, or after restoration of frame pointer,
     // return PC should be located by offset from SP
-    if not Process.ReadData(DataOffset or (StackPtr + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
+    if not Process.ReadData(DataOffset or (StackPointer + returnAddrStackOffset), Size, CodePointer) or
+      (CodePointer = 0) then
+      exit;
+    {$PUSH}{$R-}{$Q-}
+    StackPointer := StackPointer + returnAddrStackOffset + 1;
+    FrameBasePointer := StackPointer; // After popping return-addr from "StackPtr"
+    {$POP}
   end
   else begin
     // Inside stack frame, return PC should be located by offset from FP
     if not Process.ReadData(DataOffset or (FrameBasePointer + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
+    {$PUSH}{$R-}{$Q-}
+    FrameBasePointer := StackPointer + returnAddrStackOffset + Size - 1; // After popping return-addr from stack
+    {$POP}
   end;
   // Convert return address from BE to LE, shl 1 to get byte address
   CodePointer := BEtoN(word(CodePointer)) shl 1;
-  {$PUSH}{$R-}{$Q-}
-  StackPtr := FrameBasePointer + returnAddrStackOffset + Size - 1; // After popping return-addr from "StackPtr"
-  FrameBasePointer := StackPtr;  // Estimate of previous FP
-  {$POP}
 
   FLastFrameBaseIncreased := (FrameBasePointer <> 0) and (FrameBasePointer > LastFrameBase);
 
   ANewFrame:= TDbgCallstackEntry.create(Thread, NextIdx, FrameBasePointer, CodePointer);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(CodePointer, IntToStr(CodePointer),Size, PCindex);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPointer, IntToStr(StackPointer),Size, SPindex);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBasePointer), IntToStr(b),Size, 28);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue((FrameBasePointer and $FF00) shr 8, IntToStr(b),Size, 29);
 
