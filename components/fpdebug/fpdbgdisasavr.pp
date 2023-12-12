@@ -47,20 +47,59 @@ type
 
   TAvrAsmDecoder = class;
 
+  TAVROpCode = (
+    A_ADC, A_ADD, A_ADIW, A_AND, A_ANDI, A_ASR, A_BLD, A_BR, A_BREAK, A_BST,
+    A_CALL, A_CBI, A_CL, A_COM, A_CP, A_CPC, A_CPI, A_CPSE, A_DEC, A_DES,
+    A_EICALL, A_EIJMP, A_ELPM, A_EOR, A_FMUL, A_FMULS, A_FMULSU, A_ICALL, A_IJMP, A_IN,
+    A_INC, A_JMP, A_LAC, A_LAS, A_LAT, A_LD, A_LDD, A_LDI, A_LDS, A_LPM,
+    A_LSL, A_LSR, A_MOV, A_MOVW, A_MUL, A_MULS, A_MULSU, A_NEG, A_NOP, A_OR,
+    A_ORI, A_OUT, A_POP, A_PUSH, A_RCALL, A_RET, A_RETI, A_RJMP, A_ROL, A_ROR,
+    A_SBC, A_SBCI, A_SBI, A_SBIC, A_SBIS, A_SBIW, A_SBR, A_SBRC, A_SBRS, A_SE,
+    A_SER, A_SLEEP, A_SPM, A_ST, A_STD, A_STS, A_SUB, A_SUBI, A_SWAP, A_WDR,
+    A_XCH, A_INVALID);
+
+  TAVRInstruction = record
+    OpCode: TAVROpCode;
+    OpCodeMod: integer;  // Use as index to general opcode modifiers, typically in range 0..7
+    Size: integer;
+    Oper: array[1..2] of integer;
+  end;
+
+  TOperandFormat = (ofNone, ofDecimal, ofHex8, ofHex16, ofHex32, ofReg, ofIndex, ofIndexOffset, ofRelAddr);
+  // Information mostly for formatting
+  TAvrInstructionInfo = record
+    OpName: string;
+    OperCount: integer;
+    OperandFormats: array[1..2] of TOperandFormat;
+  end;
+
+  { TAvrDisassembler }
+
+    TAvrDisassembler = object
+    private
+      function InvalidOpCode(instr: word): TAVRInstruction;
+      function SetInstructionInfo(AOpCode: TAVROpCode; AOpcodeMod: integer;
+        ASize: integer; AOper: array of integer): TAVRInstruction;
+    public
+      procedure Disassemble(var AAddress: Pointer; out AnInstruction: TAVRInstruction);
+    end;
+
   { TAvrAsmInstruction }
 
   TAvrAsmInstruction = class(TDbgAsmInstruction)
   private const
     INSTR_CODEBIN_LEN = 4;
   private
-    FAsmDecoder: TAvrAsmDecoder;
+    FProcess: TDbgProcess;
     FAddress: TDBGPtr;
     FCodeBin: array[0..INSTR_CODEBIN_LEN-1] of byte;
-    FFlags: set of (diCodeRead, diCodeReadError);
+    FAvrInstruction: TAVRInstruction;
+    FFlags: set of (diCodeRead, diCodeReadError, diDisAss);
   protected
     procedure ReadCode; inline;
+    procedure Disassemble; inline;
   public
-    constructor Create(AAsmDecoder: TAvrAsmDecoder);
+    constructor Create(AProcess: TDbgProcess);
     procedure SetAddress(AnAddress: TDBGPtr);
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
@@ -75,6 +114,31 @@ type
     MaxPrologueSize = 64;  // Bytes, so ~32 instructions
     MaxEpilogueSize = MaxPrologueSize; // Perhaps a bit smaller, since the locals/parameters do not have to be initialized
     MAX_CODEBIN_LEN = MaxPrologueSize; // About 32 instructions
+
+    // Opcodes for prologue / epilogue parsing
+    OpCodeNOP = $0000;
+    OpCodeLoadSPL = $B7CD;       // in r28, 0x3d
+    OpCodeLoadSPH = $B7DE;       // in r29, 0x3e
+    OpCodeLoadSRegR0 = $B60F;    // in r0, 0x3f
+    OpCodeLoadSRegR16 = $B70F;   // in r16, 0x3f, avrtiny subarch
+    OpCodeCli = $94F8;           // cli
+    OpCodeSetSPH = $BFDE;        // out 0x3e, r29
+    OpCodeSetSPL = $BFCD;        // out 0x3d, r28
+    OpCodeSetSregR0 = $BE0F;     // out 0x3f, r0
+    OpCodeSetSregR16 = $BF0F;    // out 0x3f, r16
+    OpCodeRet = $9508;           // ret
+    OpCodeReti = $9518;          // reti
+    // Zero register gets zeroed at start of interrupt
+    OpCodeZeroR1 = $2411;        // eor r1, r1
+    OpCodeZeroR16 = $2700;       // eor r16, r16
+    OpCodePushMask = $920F;      // PUSH 1001 001d dddd 1111
+    OpCodePopMask = $900F;       // POP  1001 000d dddd 1111
+    // Frame pointer is r28:r29, so fix register index in opcode
+    OpCodeAdjustFrameLMask = $50C0;   // subi r28, k,  0101 kkkk dddd kkkk, rd = 16 + d
+    OpCodeAdjustFrameHMask = $40D0;   // sbci r28, k,  0100 kkkk dddd kkkk, rd = 16 + d
+    // Not yet implemented in FPC, but more compact option to set frame pointer
+    OpCodeAdjustFrameMask  = $9720;   // sbiw r28, k,  1001 0111 kkdd kkkk, rd = 24 + d*2
+    OpCodeStoreOnStackMask = $8208;   // std Y+2, r24  10q0 qq1r rrrr 1qqq
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
@@ -85,6 +149,7 @@ type
     function FParseEpilogue(AnAddress, AStartPC, AEndPC: TDBGPtr; out
       returnAddressOffset: word; out AnIsOutsideFrame: Boolean): Boolean;
 
+    function FormatInstruction(instr: TAVRInstruction): string;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
     function GetMaxInstrSize: integer; override;
@@ -148,53 +213,110 @@ var
   DBG_WARNINGS: PLazLoggerLogGroup;
 
 const
-  opRegReg = '%s r%d, r%d';
-  opRegConst = '%s r%d, %d';
-  opRegConstHex8 = '%s r%d, $%.2X';
-  opRegConstHex16 = '%s r%d, $%.4X';
-  opRegConstHex32 = '%s r%d, $%.8X';
-  opConstReg = '%s %d, r%d';
-  opConstHex8Reg = '%s $%.2X, r%d';
-  opConstHex16Reg = '%s $%.4X, r%d';
-  opConstHex32Reg = '%s $%.4X, r%d';
-  opRegStr = '%s r%d, %s';
-  opStrReg = '%s %s, r%d';
-  opOnly = '%s';
-  opStr = '%s %s';
-  opConst = '%s %d';
-  opConstHex8 = '%s $%.2X';
-  opConstHex16 = '%s $%.4X';
-  opConstHex8Const = '%s $%.2X, %d';
-  opReg = '%s r%d';
-
   statusFlagNames: array[0..7] of char = ('c', 'z', 'n', 'v', 's', 'h', 't', 'i');
-  branchIfSetNames: array[0..7] of string = ('brcs', 'breq', 'brmi', 'brvs', 'brlt', 'brhs', 'brts', 'brie');
-  branchIfClrNames: array[0..7] of string = ('brcc', 'brne', 'brpl', 'brvc', 'brge', 'brhc', 'brtc', 'brid');
 
-  OpCodeNOP = $0000;
-  OpCodeLoadSPL = $B7CD;       // in r28, 0x3d
-  OpCodeLoadSPH = $B7DE;       // in r29, 0x3e
-  OpCodeLoadSRegR0 = $B60F;    // in r0, 0x3f
-  OpCodeLoadSRegR16 = $B70F;   // in r16, 0x3f, avrtiny subarch
-  OpCodeCli = $94F8;           // cli
-  OpCodeSetSPH = $BFDE;        // out 0x3e, r29
-  OpCodeSetSPL = $BFCD;        // out 0x3d, r28
-  OpCodeSetSregR0 = $BE0F;     // out 0x3f, r0
-  OpCodeSetSregR16 = $BF0F;    // out 0x3f, r16
-  OpCodeRet = $9508;           // ret
-  OpCodeReti = $9518;          // reti
-  // Zero register gets zeroed at start of interrupt
-  OpCodeZeroR1 = $2411;        // eor r1, r1
-  OpCodeZeroR16 = $2700;       // eor r16, r16
+  branchConditionStr: array[0..15] of string = (
+   'cs', 'eq', 'mi', 'vs', 'lt', 'hs', 'ts', 'ie',
+   'cc', 'ne', 'pl', 'vc', 'ge', 'hc', 'tc', 'id');
 
-  OpCodePushMask = $920F;      // PUSH 1001 001d dddd 1111
-  OpCodePopMask = $900F;       // POP  1001 000d dddd 1111
-  // Frame pointer is r28:r29, so fix register index in opcode
-  OpCodeAdjustFrameLMask = $50C0;   // subi r28, k,  0101 kkkk dddd kkkk, rd = 16 + d
-  OpCodeAdjustFrameHMask = $40D0;   // sbci r28, k,  0100 kkkk dddd kkkk, rd = 16 + d
-  // Not yet implemented in FPC, but more compact option
-  OpCodeAdjustFrameMask  = $9720;   // sbiw r28, k,  1001 0111 kkdd kkkk, rd = 24 + d*2
-  OpCodeStoreOnStackMask = $8208;   // std Y+2, r24  10q0 qq1r rrrr 1qqq
+  OpCodeInfo: array[A_ADC..A_INVALID] of TAvrInstructionInfo = (
+    (OpName: 'adc'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'add'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'adiw'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'and'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'andi'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'asr'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'bld'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'br'; OperCount: 1; OperandFormats: (ofRelAddr, ofNone)),
+    (OpName: 'break'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'bst'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'call'; OperCount: 1; OperandFormats: (ofHex32, ofNone)),
+    (OpName: 'cbi'; OperCount: 2; OperandFormats: (ofHex8, ofDecimal)),
+    (OpName: 'cl'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'com'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'cp'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'cpc'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'cpi'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'cpse'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'dec'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'des'; OperCount: 1; OperandFormats: (ofHex8, ofNone)),
+    (OpName: 'eicall'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'eijmp'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'elpm'; OperCount: 2; OperandFormats: (ofReg, ofIndex)),
+    (OpName: 'eor'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'fmul'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'fmuls'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'fmulsu'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'icall'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'ijmp'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'in'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'inc'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'jmp'; OperCount: 1; OperandFormats: (ofHex32, ofNone)),
+    (OpName: 'lac'; OperCount: 2; OperandFormats: (ofIndex, ofReg)),
+    (OpName: 'las'; OperCount: 2; OperandFormats: (ofIndex, ofReg)),
+    (OpName: 'lat'; OperCount: 2; OperandFormats: (ofIndex, ofReg)),
+    (OpName: 'ld'; OperCount: 2; OperandFormats: (ofReg, ofIndex)),
+    (OpName: 'ldd'; OperCount: 2; OperandFormats: (ofReg, ofIndexOffset)),
+    (OpName: 'ldi'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'lds'; OperCount: 2; OperandFormats: (ofReg, ofHex16)),
+    (OpName: 'lpm'; OperCount: 2; OperandFormats: (ofReg, ofIndex)),
+    (OpName: 'lsl'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'lsr'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'mov'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'movw'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'mul'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'muls'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'mulsu'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'neg'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'nop'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'or'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'ori'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'out'; OperCount: 2; OperandFormats: (ofHex8, ofReg)),
+    (OpName: 'pop'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'push'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'rcall'; OperCount: 1; OperandFormats: (ofRelAddr, ofNone)),
+    (OpName: 'ret'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'reti'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'rjmp'; OperCount: 1; OperandFormats: (ofRelAddr, ofNone)),
+    (OpName: 'rol'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'ror'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'sbc'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'sbci'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'sbi'; OperCount: 2; OperandFormats: (ofHex8, ofDecimal)),
+    (OpName: 'sbic'; OperCount: 2; OperandFormats: (ofHex8, ofDecimal)),
+    (OpName: 'sbis'; OperCount: 2; OperandFormats: (ofHex8, ofDecimal)),
+    (OpName: 'sbiw'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'sbr'; OperCount: 2; OperandFormats: (ofReg, ofHex8)),
+    (OpName: 'sbrc'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'sbrs'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'se'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'ser'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'sleep'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'spm'; OperCount: 1; OperandFormats: (ofIndex, ofNone)),
+    (OpName: 'st'; OperCount: 2; OperandFormats: (ofIndex, ofReg)),
+    (OpName: 'std'; OperCount: 2; OperandFormats: (ofIndexOffset, ofReg)),
+    (OpName: 'sts'; OperCount: 2; OperandFormats: (ofHex16, ofReg)),
+    (OpName: 'sub'; OperCount: 2; OperandFormats: (ofReg, ofReg)),
+    (OpName: 'subi'; OperCount: 2; OperandFormats: (ofReg, ofDecimal)),
+    (OpName: 'swap'; OperCount: 1; OperandFormats: (ofReg, ofNone)),
+    (OpName: 'wdr'; OperCount: 0; OperandFormats: (ofNone, ofNone)),
+    (OpName: 'xch'; OperCount: 2; OperandFormats: (ofIndex, ofReg)),
+    (OpName: '.dw'; OperCount: 1; OperandFormats: (ofHex16, ofNone))
+  );
+
+  // Constants for describing index registers of LD, LDD, ST, STS, LP, SPM
+  operandNoIndex = 0;
+  operandX = 1;
+  operandXInc = 2;
+  operandDecrX = 3;
+  operandY = 4;
+  operandYInc = 5;
+  operandDecrY = 6;
+  operandZ = 7;
+  operandZInc = 8;
+  operandDecrZ = 9;
+  OperandIndexStr: array [operandX..operandDecrZ] of string = (
+    'X', 'X+', '-X', 'Y', 'Y+', '-Y', 'Z', 'Z+', '-Z');
 
 procedure get_r_d_10(o: word; out r, d: byte);
 begin
@@ -208,26 +330,35 @@ begin
   k := byte((o and $0f00) shr 4) or (o and $f);
 end;
 
-// If non-valid opcode, assume it is a data statement
-function InvalidOpCode(instr: word): string;
-begin
-  result := format(opConstHex16, ['dw', instr]);
-end;
-
 { TAvrAsmInstruction }
 
 procedure TAvrAsmInstruction.ReadCode;
 begin
   if not (diCodeRead in FFlags) then begin
-    if not FAsmDecoder.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
+    if not FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
       Include(FFlags, diCodeReadError);
     Include(FFlags, diCodeRead);
   end;
 end;
 
-constructor TAvrAsmInstruction.Create(AAsmDecoder: TAvrAsmDecoder);
+procedure TAvrAsmInstruction.Disassemble;
+var
+  a: PByte;
+  Disassembler: TAvrDisassembler;
 begin
-  FAsmDecoder := AAsmDecoder;
+  if not (diDisAss in FFlags) then begin
+    ReadCode;
+    if diCodeReadError in FFlags then
+      exit;
+    a := @FCodeBin[0];
+    Disassembler.Disassemble(a, FAvrInstruction);
+    Include(FFlags, diDisAss);
+  end;
+end;
+
+constructor TAvrAsmInstruction.Create(AProcess: TDbgProcess);
+begin
+  FProcess := AProcess;
   inherited Create;
   AddReference;
 end;
@@ -239,29 +370,25 @@ begin
 end;
 
 function TAvrAsmInstruction.IsCallInstruction: boolean;
-var
-  LoByte, HiByte: byte;
 begin
   Result := False;
   ReadCode;
-  LoByte := FCodeBin[0];
-  HiByte := FCodeBin[1];
-  if ((HiByte and $FE) = $94) and ((LoByte and $0E) = $0E) or // call
-     ((HiByte = $95) and (LoByte in [$09, $19])) or           // icall / eicall
-     ((HiByte and $D0) = $D0) then                            // rcall
-    Result := true;
+  if diCodeReadError in FFlags then
+    exit;
+
+  Disassemble;
+  Result := FAvrInstruction.OpCode in [A_CALL, A_RCALL, A_ICALL, A_EICALL];
 end;
 
 function TAvrAsmInstruction.IsReturnInstruction: boolean;
-var
-  LoByte, HiByte: byte;
 begin
   Result := False;
   ReadCode;
-  LoByte := FCodeBin[0];
-  HiByte := FCodeBin[1];
-  if ((HiByte = $95) and (LoByte in [$08, $18])) then  // ret / reti
-    Result := true;
+  if diCodeReadError in FFlags then
+    exit;
+
+  Disassemble;
+  Result := FAvrInstruction.OpCode in [A_RET, A_RETI];
 end;
 
 function TAvrAsmInstruction.IsLeaveStackFrame: boolean;
@@ -270,16 +397,14 @@ begin
 end;
 
 function TAvrAsmInstruction.InstructionLength: Integer;
-var
-  LoByte, HiByte: byte;
 begin
   Result := 2;
   ReadCode;
-  LoByte := FCodeBin[0];
-  HiByte := FCodeBin[1];
-  if ((HiByte and $FE) = $94) and ((LoByte and $0E) in [$0C, $0E]) or   // jmp / call
-     ((HiByte and $FE) in [$90, $92]) and ((LoByte and $0F) = $0) then  // lds / sts
-    Result := 4;
+  if diCodeReadError in FFlags then
+    exit;
+
+  Disassemble;
+  Result := FAvrInstruction.Size;
 end;
 
 type
@@ -294,6 +419,7 @@ var
   opcode, frameOffset: word;
   d, k: byte;
   stackState: TPrologueState;
+  instr: TAVRInstruction;
 begin
 { AVR function entry example
   3e:	df 93       	push	r29
@@ -335,6 +461,7 @@ begin
   // Loop until prologue buffer is empty, or stepped inside stack frame
   while (ADataLen > 1) and AnIsOutsideFrame do
   begin
+    //FDecoder.Disassemble(AData, instr);
     opcode := AData[0] or (AData[1] shl 8);
     inc(AData, 2);
     dec(ADataLen, 2);
@@ -554,6 +681,71 @@ begin
     AnIsOutsideFrame := true;
 end;
 
+function TAvrAsmDecoder.FormatInstruction(instr: TAVRInstruction): string;
+const
+  OutputFormats: array[0..2] of string = (
+    '%s',
+    '%:-7s %s',
+    '%:-7s %s, %s');
+var
+  OpName: string;
+  ops: array[1..2] of string;
+  info: TAvrInstructionInfo;
+  i: integer;
+begin
+  info := OpCodeInfo[instr.OpCode];
+  OpName := info.OpName;
+
+  // Special cases first
+  case instr.OpCode of
+    A_BR: OpName := OpName + branchConditionStr[instr.OpCodeMod];
+    A_CL, A_SE: OpName := OpName + statusFlagNames[instr.OpCodeMod];
+  end;
+
+  // Instructions with variable number of operands
+  if (instr.OpCode in [A_ELPM, A_LPM, A_SPM]) and
+     (instr.Oper[1] = operandNoIndex) then
+    info.OperCount := 0;
+
+  if info.OperCount > 0 then
+  begin
+    for i := 1 to info.OperCount do
+    begin
+      case info.OperandFormats[i] of
+        ofDecimal:     ops[i] := IntToStr(instr.Oper[i]);
+        ofHex8:        ops[i] := '$'+IntToHex(instr.Oper[i], 2);
+        ofHex16:       ops[i] := '$'+IntToHex(instr.Oper[i], 4);
+        ofHex32:       ops[i] := '$'+IntToHex(instr.Oper[i], 8);
+        ofReg:         ops[i] := 'r' + IntToStr(instr.Oper[i]);
+        ofIndex:       ops[i] := OperandIndexStr[instr.Oper[i]];
+        ofIndexOffset:
+        begin
+          // IndexOffset should be either Y+ or Z+
+          if not(instr.OpCodeMod in [operandYInc, operandZInc]) then
+            writeln('ERROR');
+          ops[i] := OperandIndexStr[instr.OpCodeMod] + IntToStr(instr.Oper[i]);
+        end;
+        ofRelAddr:
+        begin
+          if instr.Oper[i] >= 0 then
+            ops[i] := '.+' + IntToStr(instr.Oper[i])
+          else
+            ops[i] := '.' + IntToStr(instr.Oper[i]);
+        end;
+      else
+        writeln('ERROR');
+      end;
+    end;
+
+    if info.OperCount = 1 then
+      Result := Format(OutputFormats[1], [OpName, ops[1]])
+    else
+      Result := Format(OutputFormats[2], [OpName, ops[1], ops[2]]);
+  end
+  else
+    Result := Format(OutputFormats[0], [OpName]);
+end;
+
 function TAvrAsmDecoder.GetLastErrorWasMemReadErr: Boolean;
 begin
   Result := FLastErrWasMem;
@@ -584,605 +776,21 @@ end;
 procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out
   ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo);
 var
-  CodeIdx, r, d, k, q: byte;
-  a: SmallInt;
+  decoder: TAvrDisassembler;
+  k: byte;
   pcode: PByte;
-  code, addr16: word;
-  s1: string;
-  _set: boolean;
+  instr: TAVRInstruction;
 begin
   AnInfo := default(TDbgInstInfo);
   pcode := AAddress;
-  CodeIdx := 0;
-  code := pcode[CodeIdx];
-  inc(CodeIdx);
-  code := code or (pcode[CodeIdx] shl 8);
-  inc(CodeIdx);
+  decoder.Disassemble(AAddress, instr);
+  Inc(AAddress, instr.Size);
 
-  case (code and $f000) of
-    $0000:
-    begin
-      case (code) of
-        $0000: ACode := 'nop';
-        else
-        begin
-          case (code and $fc00) of
-            $0400:
-            begin // CPC compare with carry 0000 01rd dddd rrrr
-              get_r_d_10(code, r, d);
-              ACode := format(opRegReg, ['cpc', d, r]);
-            end;
-            $0c00:
-            begin // ADD without carry 0000 11 rd dddd rrrr
-              get_r_d_10(code, r, d);
-              ACode := format(opRegReg, ['add', d, r]);
-            end;
-            $0800:
-            begin // SBC subtract with carry 0000 10rd dddd rrrr
-              get_r_d_10(code, r, d);
-              ACode := format(opRegReg, ['sbc', d, r]);
-            end;
-            else
-              case (code and $ff00) of
-                $0100:
-                begin // MOVW – Copy Register Word 0000 0001 dddd rrrr
-                  d := ((code shr 4) and $f) shl 1;
-                  r := ((code) and $f) shl 1;
-                  ACode := format(opRegReg, ['movw', d, r]);
-                end;
-                $0200:
-                begin // MULS – Multiply Signed 0000 0010 dddd rrrr
-                  r := 16 + (code and $f);
-                  d := 16 + ((code shr 4) and $f);
-                  ACode := format(opRegReg, ['muls', d, r]);
-                end;
-                $0300:
-                begin // MUL Multiply 0000 0011 fddd frrr
-                  r := 16 + (code and $7);
-                  d := 16 + ((code shr 4) and $7);
-                  case (code and $88) of
-                    $00: ACode := format(opRegReg, ['mulsu', d, r]);
-                    $08: ACode := format(opRegReg, ['fmul', d, r]);
-                    $80: ACode := format(opRegReg, ['fmuls', d, r]);
-                    $88: ACode := format(opRegReg, ['fmulsu', d, r]);
-                  end;
-                end;
-                else
-                  ACode := InvalidOpCode(code);
-              end;
-          end;
-        end;
-      end;
-    end;
-    $1000:
-    begin
-      case (code and $fc00) of
-        $1800:
-        begin // SUB without carry 0000 10 rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['sub', d, r]);
-        end;
-        $1000:
-        begin // CPSE Compare, skip if equal 0000 00 rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['cpse', d, r]);
-        end;
-        $1400:
-        begin // CP Compare 0000 01 rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['cp', d, r]);
-        end;
-        $1c00:
-        begin // ADD with carry 0001 11 rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['adc', d, r]);
-        end;
-        else
-          ACode := InvalidOpCode(code);
-      end;
-    end;
-    $2000:
-    begin
-      case (code and $fc00) of
-        $2000:
-        begin // AND 0010 00rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['and', d, r]);
-        end;
-        $2400:
-        begin // EOR 0010 01rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['eor', d, r]);
-        end;
-        $2800:
-        begin // OR Logical OR 0010 10rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['or', d, r]);
-        end;
-        $2c00:
-        begin // MOV 0010 11rd dddd rrrr
-          get_r_d_10(code, r, d);
-          ACode := format(opRegReg, ['mov', d, r]);
-        end;
-        else
-          ACode := InvalidOpCode(code);
-      end;
-    end;
-    $3000:
-    begin // CPI 0011 KKKK rrrr KKKK
-      get_k_r16(code, d, k);
-      ACode := format(opRegConstHex8, ['cpi', d, k]);
-    end;
-    $4000:
-    begin // SBCI Subtract Immediate With Carry 0100 kkkk dddd kkkk
-      get_k_r16(code, d, k);
-      ACode := format(opRegConstHex8, ['sbci', d, k]);
-    end;
-    $5000:
-    begin // SUB Subtract Immediate 0101 kkkk dddd kkkk
-      get_k_r16(code, d, k);
-      ACode := format(opRegConstHex8, ['subi', d, k]);
-    end;
-    $6000:
-    begin // ORI aka SBR Logical AND with Immediate 0110 kkkk dddd kkkk
-      get_k_r16(code, d, k);
-      ACode := format(opRegConstHex8, ['ori', d, k]);
-    end;
-    $7000:
-    begin // ANDI Logical AND with Immediate 0111 kkkk dddd kkkk
-      get_k_r16(code, d, k);
-      ACode := format(opRegConstHex8, ['andi', d, k]);
-    end;
-    $a000,
-    $8000:
-    begin
-      case (code and $d008) of
-        $a000,
-        $8000:
-        begin // LD (LDD) – Load Indirect using Z 10q0 qq0r rrrr 0qqq
-          d := (code shr 4) and $1f;
-          q := ((code and $2000) shr 8) or ((code and $0c00) shr 7) or (code and $7);
-          if (code and $0200) <> 0 then // store
-          begin
-            if q > 0 then
-              ACode := format(opStrReg, ['std', 'Z+'+IntToStr(q), d])
-            else
-            begin
-              case (code and 3) of
-                0: s1 := 'Z';
-                1: s1 := 'Z+';
-                3: s1 := '-Z';
-              end;
-              ACode := format(opStrReg, ['st', s1, d]);
-            end;
-          end
-          else  // load
-          begin
-            if q > 0 then
-              ACode := format(opRegStr, ['ldd', d, 'Z+'+IntToStr(q)])
-            else
-            begin
-              case (code and 3) of
-                0: s1 := 'Z';
-                1: s1 := 'Z+';
-                3: s1 := '-Z';
-              end;
-              ACode := format(opRegStr, ['ld', d, s1]);
-            end;
-          end;
-        end;
-        $a008,
-        $8008:
-        begin // LD (LDD) – Load Indirect using Y 10q0 qq0r rrrr 1qqq
-          d := (code shr 4) and $1f;
-          q := ((code and $2000) shr 8) or ((code and $0c00) shr 7) or (code and $7);
-          if (code and $0200) <> 0 then // store
-          begin
-            if q > 0 then
-              ACode := format(opStrReg, ['std', 'Y+'+IntToStr(q), d])
-            else
-            begin
-              case (code and 3) of
-                0: s1 := 'Y';
-                1: s1 := 'Y+';
-                3: s1 := '-Y';
-              end;
-              ACode := format(opStrReg, ['st', s1, d]);
-            end;
-          end
-          else  // load
-          begin
-            if q > 0 then
-              ACode := format(opRegStr, ['ldd', d, 'Y+'+IntToStr(q)])
-            else
-            begin
-              case (code and 3) of
-                0: s1 := 'Y';
-                1: s1 := 'Y+';
-                3: s1 := '-Y';
-              end;
-              ACode := format(opRegStr, ['ld', d, s1]);
-            end;
-          end;
-        end;
-        else
-          ACode := InvalidOpCode(code);
-      end;
-    end;
-    $9000:
-    begin
-      if ((code and $ff0f) = $9408) then  // clear/set SREG flags
-      begin
-        k := (code shr 4) and 7;
-        if ((code and $0080) = 0) then
-          s1 := 'se'
-        else
-          s1 := 'cl';
-        ACode := format(opOnly, [s1 + statusFlagNames[k]]);
-      end
-      else
-        case (code) of
-          $9409: ACode := format(opOnly, ['ijmp']);
-          $9419: ACode := format(opOnly, ['eijmp']);
-          $9508: ACode := format(opOnly, ['ret']);
-          $9509: ACode := format(opOnly, ['icall']);
-          $9519: ACode := format(opOnly, ['eicall']);
-          $9518: ACode := format(opOnly, ['reti']);
-          $9588: ACode := format(opOnly, ['sleep']);
-          $9598: ACode := format(opOnly, ['break']);
-          $95a8: ACode := format(opOnly, ['wdr']);
-          $95c8: ACode := format(opOnly, ['lpm']);
-          $95d8: ACode := format(opOnly, ['elpm']);
-          $95e8: ACode := format(opOnly, ['spm']);
-          $95f8: ACode := format(opStr, ['spm', 'Z+']);
-
-          $9408, $9418, $9428, $9438, $9448, $9458, $9468,
-          $9478:
-          begin // BSET 1001 0100 0ddd 1000
-            d := (code shr 4) and 7;
-            ACode := format(opConst, ['bset', d]);
-          end;
-          $9488, $9498, $94a8, $94b8, $94c8, $94d8, $94e8,
-          $94f8: // bit 7 is 'clear vs set'
-          begin // BCLR 1001 0100 1ddd 1000
-            d := (code shr 4) and 7;
-            ACode := format(opConst, ['bclr', d]);
-          end;
-          else
-          begin
-            case (code and $fe0f) of
-              $9000:
-              begin // LDS Load Direct from fData Space, 32 bits
-                r := (code shr 4) and $1f;
-                addr16 := pcode[CodeIdx];
-                inc(CodeIdx);
-                addr16 := addr16 or (pcode[CodeIdx] shl 8);
-                inc(CodeIdx);
-                ACode := format(opRegConstHex16, ['lds', r, addr16]);
-              end;
-              $9005,
-              $9004:
-              begin // LPM Load Program Memory 1001 000d dddd 01oo
-                r := (code shr 4) and $1f;
-                if (code and 1 = 1) then
-                  s1 := 'Z+'
-                else
-                  s1 := 'Z';
-                ACode := format(opRegStr, ['lpm', r, s1]);
-              end;
-              $9006,
-              $9007:
-              begin // ELPM Extended Load Program Memory 1001 000d dddd 01oo
-                r := (code shr 4) and $1f;
-                if (code and 1 = 1) then
-                  s1 := 'Z+'
-                else
-                  s1 := 'Z';
-                ACode := format(opRegStr, ['elpm', r, s1]);
-              end;
-              $900c,
-              $900d,
-              $900e:
-              begin // LD Load Indirect from fData using X 1001 000r rrrr 11oo
-                r := (code shr 4) and $1f;
-                if (code and 3 = 1) then
-                  s1 := 'X+'
-                else if (code and 3 = 2) then
-                  s1 := '-X'
-                else
-                  s1 := 'X';
-                ACode := format(opRegStr, ['ld', r, s1]);
-              end;
-              $920c,
-              $920d,
-              $920e:
-              begin // ST Store Indirect fData Space X 1001 001r rrrr 11oo
-                r := (code shr 4) and $1f;
-                if (code and 3 = 1) then
-                  s1 := 'X+'
-                else if (code and 3 = 2) then
-                  s1 := '-X'
-                else
-                  s1 := 'X';
-                ACode := format(opStrReg, ['st', s1, r]);
-              end;
-              $9009,
-              $900a:
-              begin // LD Load Indirect from fData using Y 1001 000r rrrr 10oo
-                r := (code shr 4) and $1f;
-                if (code and 3 = 1) then
-                  s1 := 'Y+'
-                else if (code and 3 = 2) then
-                  s1 := '-Y';
-                ACode := format(opRegStr, ['ld', r, s1]);
-              end;
-              $9209,
-              $920a:
-              begin // ST Store Indirect fData Space Y 1001 001r rrrr 10oo
-                r := (code shr 4) and $1f;
-                if (code and 3 = 1) then
-                  s1 := 'Y+'
-                else if (code and 3 = 2) then
-                  s1 := '-Y';
-                ACode := format(opStrReg, ['st', s1, r]);
-              end;
-              $9200:
-              begin // STS Store Direct to Data Space, 32 bits
-                r := (code shr 4) and $1f;
-                addr16 := pcode[CodeIdx];
-                inc(CodeIdx);
-                addr16 := addr16 or (pcode[CodeIdx] shl 8);
-                inc(CodeIdx);
-                ACode := format(opConstHex16Reg, ['sts', addr16, r]);
-              end;
-              $9001,
-              $9002:
-              begin // LD Load Indirect from Data using Z 1001 001r rrrr 00oo
-                r := (code shr 4) and $1f;
-                if (code and 3 = 1) then
-                  s1 := 'Z+'
-                else
-                  s1 := '-Z';
-                ACode := format(opRegStr, ['ld', r, s1]);
-              end;
-              $9201,
-              $9202:
-              begin // ST Store Indirect Data Space Z 1001 001r rrrr 0Xoo X=0 or XMega instructions X=1
-                r := (code shr 4) and $1f;
-                if (code and 4) = 0 then  // normal AVR8 instruction
-                begin
-                  if (code and 3 = 1) then
-                    s1 := 'Z+'
-                  else
-                    s1 := '-Z';
-                  ACode := format(opStrReg, ['st', s1, r]);
-                end
-                else
-                begin  // AVR8X instructions
-                  case (code and 3) of
-                    0: s1 := 'xch';
-                    1: s1 := 'las';
-                    2: s1 := 'lac';
-                    3: s1 := 'lat';
-                  end;
-                  ACode := format(opStrReg, [s1, 'Z', r]);
-                end;
-              end;
-              $900f:
-              begin // POP 1001 000d dddd 1111
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['pop', r]);
-              end;
-              $920f:
-              begin // PUSH 1001 001d dddd 1111
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['push', r]);
-              end;
-              $9400:
-              begin // COM – One’s Complement
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['com', r]);
-              end;
-              $9401:
-              begin // NEG – Two’s Complement
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['neg', r]);
-              end;
-              $9402:
-              begin // SWAP – Swap Nibbles
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['swap', r]);
-              end;
-              $9403:
-              begin // INC – Increment
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['inc', r]);
-              end;
-              $9405:
-              begin // ASR – Arithmetic Shift Right 1001 010d dddd 0101
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['asr', r]);
-              end;
-              $9406:
-              begin // LSR 1001 010d dddd 0110
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['lsr', r]);
-              end;
-              $9407:
-              begin // ROR 1001 010d dddd 0111
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['ror', r]);
-              end;
-              $940a:
-              begin // DEC – Decrement
-                r := (code shr 4) and $1f;
-                ACode := format(opReg, ['dec', r]);
-              end;
-              $940c,
-              $940d:
-              begin // JMP Long Call to sub, 32 bits
-                k := ((code and $01f0) shr 3) or (code and 1);
-                addr16 := pcode[CodeIdx];
-                inc(CodeIdx);
-                addr16 := addr16 or (pcode[CodeIdx] shl 8);
-                inc(CodeIdx);
-                ACode := format(opConstHex8, ['jmp', (dword(k shl 16) or dword(addr16)) shl 1]);
-              end;
-              $940e,
-              $940f:
-              begin // CALL Long Call to sub, 32 bits
-                k := ((code and $01f0) shr 3) or (code and 1);
-                addr16 := pcode[CodeIdx];
-                inc(CodeIdx);
-                addr16 := addr16 or (pcode[CodeIdx] shl 8);
-                inc(CodeIdx);
-                ACode := format(opConstHex8, ['call', (dword(k shl 16) or dword(addr16)) shl 1]);
-              end;
-              else
-              begin
-                case (code and $ff00) of
-                  $9600:
-                  begin // ADIW - Add Immediate to Word 1001 0110 KKdd KKKK
-                    r := 24 + ((code shr 3) and $6);
-                    k := ((code and $00c0) shr 2) or (code and $f);
-                    ACode := format(opRegConstHex8, ['adiw', r, k]);
-                  end;
-                  $9700:
-                  begin // SBIW - Subtract Immediate from Word 1001 0110 KKdd KKKK
-                    r := 24 + ((code shr 3) and $6);
-                    k := ((code and $00c0) shr 2) or (code and $f);
-                    ACode := format(opRegConstHex8, ['sbiw', r, k]);
-                  end;
-                  $9800:
-                  begin // CBI - Clear Bit in I/O Register 1001 1000 AAAA Abbb
-                    d := (code shr 3) and $1f;
-                    k := code and $7;
-                    ACode := format(opConstHex8Const, ['cbi', d, k]);
-                  end;
-                  $9900:
-                  begin // SBIC - Skip if Bit in I/O Register is Cleared 1001 0111 AAAA Abbb
-                    d := (code shr 3) and $1f;
-                    k := code and $7;
-                    ACode := format(opConstHex8Const, ['sbic', d, k]);
-                  end;
-                  $9a00:
-                  begin // SBI - Set Bit in I/O Register 1001 1000 AAAA Abbb
-                    d := (code shr 3) and $1f;
-                    k := code and $7;
-                    ACode := format(opConstHex8Const, ['sbi', d, k]);
-                  end;
-                  $9b00:
-                  begin // SBIS - Skip if Bit in I/O Register is Set 1001 1011 AAAA Abbb
-                    d := (code shr 3) and $1f;
-                    k := code and $7;
-                    ACode := format(opConstHex8Const, ['sbis', d, k]);
-                  end;
-                  else
-                    case (code and $fc00) of
-                      $9c00:
-                      begin // MUL - Multiply Unsigned 1001 11rd dddd rrrr
-                        get_r_d_10(code, r, d);
-                        ACode := format(opRegReg, ['mul', d, r]);
-                      end;
-                      else
-                        ACode := InvalidOpCode(code);
-                    end;
-                end;
-              end;
-            end;
-          end;
-        end;
-    end;
-    $b000:
-    begin
-      case (code and $f800) of
-        $b800:
-        begin // OUT A,Rr 1011 1AAr rrrr AAAA
-          r := (code shr 4) and $1f;
-          d := ((((code shr 9) and 3) shl 4) or ((code) and $f));
-          ACode := format(opConstHex8Reg, ['out', d, r]);
-        end;
-        $b000:
-        begin // IN Rd,A 1011 0AAr rrrr AAAA
-          r := (code shr 4) and $1f;
-          d := ((((code shr 9) and 3) shl 4) or ((code) and $f));
-          ACode := format(opRegConstHex8, ['in', r, d]);
-        end;
-        else
-          ACode := InvalidOpCode(code);
-      end;
-    end;
-    $c000:
-    begin // RJMP 1100 kkkk kkkk kkkk
-      a := smallint((word(code) shl 4) and $ffff) div 16;
-      ACode := format(opStr, ['rjmp', '.'+IntToStr(a shl 1)]);
-    end;
-    $d000:
-    begin // RCALL 1100 kkkk kkkk kkkk
-      a := smallint((word(code) shl 4) and $ffff) div 16;
-      ACode := format(opStr, ['rcall', '.'+IntToStr(a shl 1)]);
-    end;
-    $e000:
-    begin // LDI Rd, K 1110 KKKK RRRR KKKK -- aka SER (LDI r, $ff)
-      d := 16 + ((code shr 4) and $f);
-      k := ((code and $0f00) shr 4) or (code and $f);
-      ACode := format(opRegConstHex8, ['ldi', d, k]);
-    end;
-    $f000:
-    begin
-      case (code and $fe00) of
-        $f000,
-        $f200,
-        $f400,
-        $f600:
-        begin // All the fSREG branches
-          a := smallint(smallint(code shl 6) shr 9) * 2; // offset
-          k := code and 7;
-          _set := (code and $0400) = 0; // this bit means BRXC otherwise BRXS
-           if (_set) then
-             ACode := format(opStr, [branchIfSetNames[k], '.'+IntToStr(a)])
-           else
-             ACode := format(opStr, [branchIfClrNames[k], '.'+IntToStr(a)]);
-        end;
-        $f800,
-        $f900:
-        begin // BLD – Bit Load from T into a Bit in Register 1111 100r rrrr 0bbb
-          d := (code shr 4) and $1f; // register index
-          k := code and 7;
-          ACode := format(opRegConst, ['bld', d, k]);
-        end;
-        $fa00,
-        $fb00:
-        begin // BST – Bit Store into T from bit in Register 1111 100r rrrr 0bbb
-          r := (code shr 4) and $1f; // register index
-          k := code and 7;
-          ACode := format(opRegConst, ['bst', r, k]);
-        end;
-        $fc00,
-        $fe00:
-        begin // SBRS/SBRC – Skip if Bit in Register is Set/Clear 1111 11sr rrrr 0bbb
-          r := (code shr 4) and $1f; // register index
-          k := code and 7;
-          _set := (code and $0200) <> 0;
-          if _set then
-            ACode := format(opRegConst, ['sbrs', r, k])
-          else
-            ACode := format(opRegConst, ['sbrc', r, k]);
-        end;
-        else
-          ACode := InvalidOpCode(code);
-      end;
-    end;
-    else
-      ACode := InvalidOpCode(code);
-  end;
-
-  // memory
   ACodeBytes := '';
-  for k := 0 to CodeIdx - 1 do
-    ACodeBytes := ACodeBytes + HexStr(pcode[k], 2);
-
-  Inc(AAddress, CodeIdx);
+  for k := 0 to instr.Size-1 do
+    ACodeBytes := ACodeBytes + HexStr(pcode[k], 2) + ' ';
+  Delete(ACodeBytes, length(ACodeBytes), 1);
+  ACode := FormatInstruction(instr);
 
   // Todo: Indicate whether currrent instruction has a destination code address
   //       call jump branch(?)
@@ -1202,7 +810,7 @@ function TAvrAsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr
 begin
   if (FLastInstr = nil) or (FLastInstr.RefCount > 1) then begin
     ReleaseRefAndNil(FLastInstr);
-    FLastInstr := TAvrAsmInstruction.Create(Self);
+    FLastInstr := TAvrAsmInstruction.Create(FProcess);
   end;
 
   FLastInstr.SetAddress(AnAddress);
@@ -1259,6 +867,577 @@ destructor TAvrAsmDecoder.Destroy;
 begin
   ReleaseRefAndNil(FLastInstr);
   inherited Destroy;
+end;
+
+{ TAvrDisassembler }
+
+function TAvrDisassembler.InvalidOpCode(instr: word): TAVRInstruction;
+begin
+  result.OpCode := A_INVALID;
+  result.Size := 2;
+  result.Oper[1] := instr;
+end;
+
+function TAvrDisassembler.SetInstructionInfo(AOpCode: TAVROpCode;
+  AOpcodeMod: integer; ASize: integer; AOper: array of
+  integer): TAVRInstruction;
+var
+  i: integer;
+begin
+  Result.OpCode := AOpCode;
+  Result.OpCodeMod := AOpcodeMod;
+  Result.Size := ASize;
+
+  for i := 1 to 2 do
+  begin
+    if i <= OpCodeInfo[AOpCode].OperCount then
+      Result.Oper[i] := AOper[i-1]
+    else
+      Result.Oper[i] := 0;
+  end;
+end;
+
+procedure TAvrDisassembler.Disassemble(var AAddress: Pointer; out
+  AnInstruction: TAVRInstruction);
+var
+  CodeIdx, r, d, k, q: byte;
+  a: SmallInt;
+  pcode: PByte;
+  code, addr16: word;
+  _set: boolean;
+  instr: TAVRInstruction absolute AnInstruction;
+begin
+  pcode := AAddress;
+  CodeIdx := 0;
+  code := pcode[CodeIdx];
+  inc(CodeIdx);
+  code := code or (pcode[CodeIdx] shl 8);
+  inc(CodeIdx);
+
+  case (code and $f000) of
+    $0000:
+    begin
+      case (code) of
+        $0000: instr := SetInstructionInfo(A_NOP, 0, 2, []);
+      else
+        case (code and $fc00) of
+          $0400:
+          begin // CPC compare with carry 0000 01rd dddd rrrr
+            get_r_d_10(code, r, d);
+            instr := SetInstructionInfo(A_CPC, 0, 2, [d, r]);
+          end;
+          $0c00:
+          begin // ADD without carry 0000 11 rd dddd rrrr
+            get_r_d_10(code, r, d);
+            instr := SetInstructionInfo(A_ADD, 0, 2, [d, r]);
+          end;
+          $0800:
+          begin // SBC subtract with carry 0000 10rd dddd rrrr
+            get_r_d_10(code, r, d);
+            instr := SetInstructionInfo(A_SBC, 0, 2, [d, r]);
+          end;
+          else
+            case (code and $ff00) of
+              $0100:
+              begin // MOVW – Copy Register Word 0000 0001 dddd rrrr
+                d := ((code shr 4) and $f) shl 1;
+                r := ((code) and $f) shl 1;
+                instr := SetInstructionInfo(A_MOVW, 0, 2, [d, r]);
+              end;
+              $0200:
+              begin // MULS – Multiply Signed 0000 0010 dddd rrrr
+                r := 16 + (code and $f);
+                d := 16 + ((code shr 4) and $f);
+                instr := SetInstructionInfo(A_MULS, 0, 2, [d, r]);
+              end;
+              $0300:
+              begin // MUL Multiply 0000 0011 fddd frrr
+                r := 16 + (code and $7);
+                d := 16 + ((code shr 4) and $7);
+                case (code and $88) of
+                  $00: instr := SetInstructionInfo(A_MULSU, 0, 2, [d, r]);
+                  $08: instr := SetInstructionInfo(A_FMUL, 0, 2, [d, r]);
+                  $80: instr := SetInstructionInfo(A_FMULS, 0, 2, [d, r]);
+                  $88: instr := SetInstructionInfo(A_FMULSU, 0, 2, [d, r]);
+                end;
+              end;
+              else
+                instr := InvalidOpCode(code);
+            end; // case (code and $ff00)
+        end;  // case (code and $fc00)
+      end; // case code of
+    end;
+    $1000:
+    begin
+      case (code and $fc00) of
+        $1800:
+        begin // SUB without carry 0000 10 rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_SUB, 0, 2, [d, r]);
+        end;
+        $1000:
+        begin // CPSE Compare, skip if equal 0000 00 rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_CPSE, 0, 2, [d, r]);
+        end;
+        $1400:
+        begin // CP Compare 0000 01 rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_CP, 0, 2, [d, r]);
+        end;
+        $1c00:
+        begin // ADD with carry 0001 11 rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_ADC, 0, 2, [d, r]);
+        end;
+        else
+          instr := InvalidOpCode(code);
+      end;
+    end;
+    $2000:
+    begin
+      case (code and $fc00) of
+        $2000:
+        begin // AND 0010 00rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_AND, 0, 2, [d, r]);
+        end;
+        $2400:
+        begin // EOR 0010 01rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_EOR, 0, 2, [d, r]);
+        end;
+        $2800:
+        begin // OR Logical OR 0010 10rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_OR, 0, 2, [d, r]);
+        end;
+        $2c00:
+        begin // MOV 0010 11rd dddd rrrr
+          get_r_d_10(code, r, d);
+          instr := SetInstructionInfo(A_MOV, 0, 2, [d, r]);
+        end;
+        else
+          instr := InvalidOpCode(code);
+      end;
+    end;
+    $3000:
+    begin // CPI 0011 KKKK rrrr KKKK
+      get_k_r16(code, d, k);
+      instr := SetInstructionInfo(A_CPI, 0, 2, [d, k]);
+    end;
+    $4000:
+    begin // SBCI Subtract Immediate With Carry 0100 kkkk dddd kkkk
+      get_k_r16(code, d, k);
+      instr := SetInstructionInfo(A_SBCI, 0, 2, [d, k]);
+    end;
+    $5000:
+    begin // SUB Subtract Immediate 0101 kkkk dddd kkkk
+      get_k_r16(code, d, k);
+      instr := SetInstructionInfo(A_SUBI, 0, 2, [d, k]);
+    end;
+    $6000:
+    begin // ORI aka SBR Logical AND with Immediate 0110 kkkk dddd kkkk
+      get_k_r16(code, d, k);
+      instr := SetInstructionInfo(A_ORI, 0, 2, [d, k]);
+    end;
+    $7000:
+    begin // ANDI Logical AND with Immediate 0111 kkkk dddd kkkk
+      get_k_r16(code, d, k);
+      instr := SetInstructionInfo(A_ANDI, 0, 2, [d, k]);
+    end;
+    $a000,
+    $8000:
+    begin
+      case (code and $d008) of
+        $a000,
+        $8000:
+        begin // LD (LDD) – Load Indirect using Z 10q0 qq0r rrrr 0qqq
+              // ST (STD) - Store Indirect with Z 10q0 qq1r rrrr 0qqq
+          // This check overlaps with the 16 bit LDS/STS instructions of reduced core tiny
+          // Todo: only activate this check if debugging a tiny
+          if false and ((code and $A000) = $A000) then
+          begin
+            r := 16 + ((code shr 4) and $0F);
+            k := ((code shr 5) and $30) or (code and $0F);
+            if (code and $0100) = 0 then
+              k := k or $80
+            else
+              k := k or $40;
+
+            if (code and $800) = 0 then
+              instr := SetInstructionInfo(A_LDS, 0, 2, [r, k])
+            else
+              instr := SetInstructionInfo(A_STS, 0, 2, [k, r]);
+          end
+          else
+          begin
+            d := (code shr 4) and $1f;
+            q := ((code and $2000) shr 8) or ((code and $0c00) shr 7) or (code and $7);
+            if (code and $0200) <> 0 then // store
+            begin
+              if q > 0 then
+                instr := SetInstructionInfo(A_STD, operandZInc, 2, [q, d])
+              else
+              begin
+                q := OperandZ + (code and 3);
+                instr := SetInstructionInfo(A_ST, 0, 2, [q, d]);
+              end;
+            end
+            else  // load
+            begin
+              if q > 0 then
+                instr := SetInstructionInfo(A_LDD, operandZInc, 2, [d, q])
+              else
+                instr := SetInstructionInfo(A_LD, 0, 2, [d, operandZ + (code and 3)]);
+            end;
+          end;
+        end;
+        $a008,
+        $8008:
+        begin // LD (LDD) – Load Indirect using Y 10q0 qq0r rrrr 1qqq
+          d := (code shr 4) and $1f;
+          q := ((code and $2000) shr 8) or ((code and $0c00) shr 7) or (code and $7);
+          if (code and $0200) <> 0 then // store
+          begin
+            if q > 0 then
+              instr := SetInstructionInfo(A_STD, operandYInc, 2, [q, d])
+            else
+              instr := SetInstructionInfo(A_ST, 0, 2, [operandY + (code and 3), d]);
+          end
+          else  // load
+          begin
+            if q > 0 then
+              instr := SetInstructionInfo(A_LDD, operandYInc, 2, [d, q])
+            else
+              instr := SetInstructionInfo(A_LD, 0, 2, [d, operandY + (code and 3)]);
+          end;
+        end;
+        else
+          instr := InvalidOpCode(code);
+      end;
+    end;
+    $9000:
+    begin
+      if ((code and $ff0f) = $9408) then  // clear/set SREG flags
+      begin
+        k := (code shr 4) and 7;
+        if ((code and $0080) = 0) then
+          instr := SetInstructionInfo(A_SE, k, 2, [])
+        else
+          instr := SetInstructionInfo(A_CL, k, 2, []);
+      end
+      else
+        case (code) of
+          $9409: instr := SetInstructionInfo(A_IJMP, 0, 2, []);
+          $9419: instr := SetInstructionInfo(A_EIJMP, 0, 2, []);
+          $9508: instr := SetInstructionInfo(A_RET, 0, 2, []);
+          $9509: instr := SetInstructionInfo(A_ICALL, 0, 2, []);
+          $9519: instr := SetInstructionInfo(A_EICALL, 0, 2, []);
+          $9518: instr := SetInstructionInfo(A_RETI, 0, 2, []);
+          $9588: instr := SetInstructionInfo(A_SLEEP, 0, 2, []);
+          $9598: instr := SetInstructionInfo(A_BREAK, 0, 2, []);
+          $95a8: instr := SetInstructionInfo(A_WDR, 0, 2, []);
+          $95c8: instr := SetInstructionInfo(A_LPM, 0, 2, []);
+          $95d8: instr := SetInstructionInfo(A_ELPM, 0, 2, []);
+          $95e8: instr := SetInstructionInfo(A_SPM, 0, 2, []);
+          $95f8: instr := SetInstructionInfo(A_SPM, operandZInc, 2, []);
+          else
+          begin
+            case (code and $fe0f) of
+              $9000:
+              begin // LDS Load Direct from fData Space, 32 bits
+                r := (code shr 4) and $1f;
+                addr16 := pcode[CodeIdx];
+                inc(CodeIdx);
+                addr16 := addr16 or (pcode[CodeIdx] shl 8);
+                inc(CodeIdx);
+                instr := SetInstructionInfo(A_LDS, 0, 4, [r, addr16]);
+              end;
+              $9005,
+              $9004:
+              begin // LPM Load Program Memory 1001 000d dddd 01oo
+                r := (code shr 4) and $1f;
+                if (code and 1 = 1) then
+                  instr := SetInstructionInfo(A_LPM, operandZInc, 2, [r])
+                else
+                  instr := SetInstructionInfo(A_LPM, operandZ, 2, [r]);
+              end;
+              $9006,
+              $9007:
+              begin // ELPM Extended Load Program Memory 1001 000d dddd 01oo
+                r := (code shr 4) and $1f;
+                if (code and 1 = 1) then
+                  instr := SetInstructionInfo(A_ELPM, operandZInc, 2, [r])
+                else
+                  instr := SetInstructionInfo(A_ELPM, operandZ, 2, [r]);
+              end;
+              $900c,
+              $900d,
+              $900e:
+              begin // LD Load Indirect from fData using X 1001 000r rrrr 11oo
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_LD, 0, 2, [r, operandX + (code and 3)]);
+              end;
+              $920c,
+              $920d,
+              $920e:
+              begin // ST Store Indirect fData Space X 1001 001r rrrr 11oo
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_ST, 0, 2, [operandX + (code and 3), r])
+              end;
+              $9009,
+              $900a:
+              begin // LD Load Indirect from fData using Y 1001 000r rrrr 10oo
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_LD, 0, 2, [r, operandY + (code and 3)])
+              end;
+              $9209,
+              $920a:
+              begin // ST Store Indirect fData Space Y 1001 001r rrrr 10oo
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_ST, 0, 2, [operandY + (code and 3), r])
+              end;
+              $9200:
+              begin // STS Store Direct to Data Space, 32 bits
+                r := (code shr 4) and $1f;
+                addr16 := pcode[CodeIdx];
+                inc(CodeIdx);
+                addr16 := addr16 or (pcode[CodeIdx] shl 8);
+                inc(CodeIdx);
+                instr := SetInstructionInfo(A_STS, 0, 4, [addr16, r])
+              end;
+              $9001,
+              $9002:
+              begin // LD Load Indirect from Data using Z 1001 001r rrrr 00oo
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_LD, 0, 2, [r, operandZ + (code and 3)])
+              end;
+              $9201,
+              $9202:
+              begin // ST Store Indirect Data Space Z 1001 001r rrrr 0Xoo X=0 or XMega instructions X=1
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_ST, 0, 2, [operandZ + (code and 3), r])
+              end;
+
+              $9204..$9207:
+              begin  // AVR8X instructions
+                r := (code shr 4) and $1f;
+                case (code and 3) of
+                  0: instr := SetInstructionInfo(A_XCH, 0, 2, [operandZ, r]);
+                  1: instr := SetInstructionInfo(A_LAS, 0, 2, [operandZ, r]);
+                  2: instr := SetInstructionInfo(A_LAC, 0, 2, [operandZ, r]);
+                  3: instr := SetInstructionInfo(A_LAT, 0, 2, [operandZ, r]);
+                end;
+              end;
+
+              $900f:
+              begin // POP 1001 000d dddd 1111
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_POP, 0, 2, [r])
+              end;
+              $920f:
+              begin // PUSH 1001 001d dddd 1111
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_PUSH, 0, 2, [r])
+              end;
+              $9400:
+              begin // COM – One’s Complement
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_COM, 0, 2, [r])
+              end;
+              $9401:
+              begin // NEG – Two’s Complement
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_NEG, 0, 2, [r])
+              end;
+              $9402:
+              begin // SWAP – Swap Nibbles
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_SWAP, 0, 2, [r])
+              end;
+              $9403:
+              begin // INC – Increment
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_INC, 0, 2, [r])
+              end;
+              $9405:
+              begin // ASR – Arithmetic Shift Right 1001 010d dddd 0101
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_ASR, 0, 2, [r])
+              end;
+              $9406:
+              begin // LSR 1001 010d dddd 0110
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_LSR, 0, 2, [r])
+              end;
+              $9407:
+              begin // ROR 1001 010d dddd 0111
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_ROR, 0, 2, [r])
+              end;
+              $940a:
+              begin // DEC – Decrement
+                r := (code shr 4) and $1f;
+                instr := SetInstructionInfo(A_DEC, 0, 2, [r])
+              end;
+              $940c,
+              $940d:
+              begin // JMP Long Call to sub, 32 bits
+                k := ((code and $01f0) shr 3) or (code and 1);
+                addr16 := pcode[CodeIdx];
+                inc(CodeIdx);
+                addr16 := addr16 or (pcode[CodeIdx] shl 8);
+                inc(CodeIdx);
+                instr := SetInstructionInfo(A_JMP, 0, 4, [dword(k shl 16) or (dword(addr16) shl 1)]);
+              end;
+              $940e,
+              $940f:
+              begin // CALL Long Call to sub, 32 bits
+                k := ((code and $01f0) shr 3) or (code and 1);
+                addr16 := pcode[CodeIdx];
+                inc(CodeIdx);
+                addr16 := addr16 or (pcode[CodeIdx] shl 8);
+                inc(CodeIdx);
+                instr := SetInstructionInfo(A_CALL, 0, 4, [dword(k shl 16) or (dword(addr16) shl 1)]);
+              end;
+              else
+              begin
+                case (code and $ff00) of
+                  $9600:
+                  begin // ADIW - Add Immediate to Word 1001 0110 KKdd KKKK
+                    r := 24 + ((code shr 3) and $6);
+                    k := ((code and $00c0) shr 2) or (code and $f);
+                    instr := SetInstructionInfo(A_ADIW, 0, 2, [r, k]);
+                  end;
+                  $9700:
+                  begin // SBIW - Subtract Immediate from Word 1001 0110 KKdd KKKK
+                    r := 24 + ((code shr 3) and $6);
+                    k := ((code and $00c0) shr 2) or (code and $f);
+                    instr := SetInstructionInfo(A_SBIW, 0, 2, [r, k]);
+                  end;
+                  $9800:
+                  begin // CBI - Clear Bit in I/O Register 1001 1000 AAAA Abbb
+                    d := (code shr 3) and $1f;
+                    k := code and $7;
+                    instr := SetInstructionInfo(A_CBI, 0, 2, [d, k]);
+                  end;
+                  $9900:
+                  begin // SBIC - Skip if Bit in I/O Register is Cleared 1001 0111 AAAA Abbb
+                    d := (code shr 3) and $1f;
+                    k := code and $7;
+                    instr := SetInstructionInfo(A_SBIC, 0, 2, [d, k]);
+                  end;
+                  $9a00:
+                  begin // SBI - Set Bit in I/O Register 1001 1000 AAAA Abbb
+                    d := (code shr 3) and $1f;
+                    k := code and $7;
+                    instr := SetInstructionInfo(A_SBI, 0, 2, [d, k]);
+                  end;
+                  $9b00:
+                  begin // SBIS - Skip if Bit in I/O Register is Set 1001 1011 AAAA Abbb
+                    d := (code shr 3) and $1f;
+                    k := code and $7;
+                    instr := SetInstructionInfo(A_SBIS, 0, 2, [d, k]);
+                  end;
+                  else
+                    case (code and $fc00) of
+                      $9c00:
+                      begin // MUL - Multiply Unsigned 1001 11rd dddd rrrr
+                        get_r_d_10(code, r, d);
+                        instr := SetInstructionInfo(A_MUL, 0, 2, [d, k]);
+                      end;
+                      else
+                        instr := InvalidOpCode(code);
+                    end;
+                end;
+              end;
+            end;
+          end;
+        end;
+    end;
+    $b000:
+    begin
+      case (code and $f800) of
+        $b800:
+        begin // OUT A,Rr 1011 1AAr rrrr AAAA
+          r := (code shr 4) and $1f;
+          d := ((((code shr 9) and 3) shl 4) or ((code) and $f));
+          instr := SetInstructionInfo(A_OUT, 0, 2, [d, r]);
+        end;
+        $b000:
+        begin // IN Rd,A 1011 0AAr rrrr AAAA
+          r := (code shr 4) and $1f;
+          d := ((((code shr 9) and 3) shl 4) or ((code) and $f));
+          instr := SetInstructionInfo(A_IN, 0, 2, [r, d]);
+        end;
+        else
+          instr := InvalidOpCode(code);
+      end;
+    end;
+    $c000:
+    begin // RJMP 1100 kkkk kkkk kkkk
+      a := smallint((word(code) shl 4) and $ffff) div 16;
+      instr := SetInstructionInfo(A_RJMP, 0, 2, [a shl 1]);
+    end;
+    $d000:
+    begin // RCALL 1100 kkkk kkkk kkkk
+      a := smallint((word(code) shl 4) and $ffff) div 16;
+      instr := SetInstructionInfo(A_RCALL, 0, 2, [a shl 1]);
+    end;
+    $e000:
+    begin // LDI Rd, K 1110 KKKK RRRR KKKK -- aka SER (LDI r, $ff)
+      d := 16 + ((code shr 4) and $f);
+      k := ((code and $0f00) shr 4) or (code and $f);
+      instr := SetInstructionInfo(A_LDI, 0, 2, [d, k]);
+    end;
+    $f000:
+    begin
+      case (code and $fe00) of
+        $f000,
+        $f200,
+        $f400,
+        $f600:
+        begin // All the fSREG branches
+          a := smallint(smallint(code shl 6) shr 9) * 2; // offset
+          k := code and 7;
+          _set := (code and $0400) = 0; // this bit means BRXC otherwise BRXS
+          if not _set then
+            k := k + 8;
+          instr := SetInstructionInfo(A_BR, k, 2, [a]);
+        end;
+        $f800,
+        $f900:
+        begin // BLD – Bit Load from T into a Bit in Register 1111 100r rrrr 0bbb
+          d := (code shr 4) and $1f; // register index
+          k := code and 7;
+          instr := SetInstructionInfo(A_BLD, 0, 2, [d, k]);
+        end;
+        $fa00,
+        $fb00:
+        begin // BST – Bit Store into T from bit in Register 1111 100r rrrr 0bbb
+          r := (code shr 4) and $1f; // register index
+          k := code and 7;
+          instr := SetInstructionInfo(A_BST, 0, 2, [r, k]);
+        end;
+        $fc00,
+        $fe00:
+        begin // SBRS/SBRC – Skip if Bit in Register is Set/Clear 1111 11sr rrrr 0bbb
+          r := (code shr 4) and $1f; // register index
+          k := code and 7;
+          _set := (code and $0200) <> 0;
+          if _set then
+            instr := SetInstructionInfo(A_SBRS, 0, 2, [r, k])
+          else
+            instr := SetInstructionInfo(A_SBRC, 0, 2, [r, k]);
+        end;
+        else
+          instr := InvalidOpCode(code);
+      end;
+    end;
+    else
+      instr := InvalidOpCode(code);
+  end;
 end;
 
 { TDbgStackUnwinderAVR }
