@@ -804,12 +804,8 @@ class function TQtWSDragImageListResolution.HideDragImage(
   const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; DoUnLock: Boolean
   ): Boolean;
 begin
-  Result := True;
-  if DoUnlock then
-  begin
-    TQtWidgetset(Widgetset).DragImageLock := False;
-    Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(False);
-  end;
+  TQtWidgetset(Widgetset).DragImageLock := False;
+  Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(False);
 end;
 
 class function TQtWSDragImageListResolution.ShowDragImage(
