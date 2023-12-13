@@ -863,6 +863,7 @@ begin
   or Selection.LookupRootSelected then exit;
   Selection.MoveSelection(DiffX, DiffY, False);
   Modified;
+  Form.Invalidate;
 end;
 
 procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
