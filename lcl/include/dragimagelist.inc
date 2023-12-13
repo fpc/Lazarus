@@ -281,7 +281,7 @@ end;
 procedure TDragImageListResolution.ShowDragImage;
 begin
   if Dragging then
-    TWSDragImageListResolutionClass(WidgetSetClass).ShowDragImage(Self, 0, 0, 0, False);
+    TWSDragImageListResolutionClass(WidgetSetClass).ShowDragImage(Self, 0, FLastDragPos.X, FLastDragPos.Y, False);
 end;
 
 class procedure TDragImageListResolution.WSRegisterClass;
