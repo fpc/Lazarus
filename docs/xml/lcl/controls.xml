@@ -2810,19 +2810,28 @@ HideDragImage is called from the HideDragImage method in TDragImageList.
 </element>
 
 <element name="TDragImageListResolution.ShowDragImage">
-<short>Notifies the widgetset class to display the drag image.</short>
+<short>
+Notifies the widgetset class to display the drag image for the resolution.
+</short>
 <descr>
 <p>
-Displays the drag image from the image resolution. No actions are performed 
-in the method if Dragging is set to <b>False</b>.
+Calls the ShowDragImage method in the widgetset class to display the drag image 
+for the image resolution if its Dragging property is set to <b>True</b>. The 
+previous position for the drag image, stored in an internal member, is used to 
+send the image position to the widgetset class.
 </p>
 <p>
-ShowDragImage is called from the ShowDragImage method in TDragImageList.
+No actions are performed in the method if Dragging is set to <b>False</b>.
+</p>
+<p>
+ShowDragImage is called from the ShowDragImage method in TDragImageList, and 
+occurs after the active image resolution in the image list has been determined.
 </p>
 </descr>
 <seealso>
 <link id="TDragImageListResolution.Dragging"/>
 <link id="TDragImageList.ShowDragImage"/>
+<link id="#lcl.imglist.TCustomImageList.Resolutions">TCustomImageList.Resolutions</link>
 </seealso>
 </element>
 
