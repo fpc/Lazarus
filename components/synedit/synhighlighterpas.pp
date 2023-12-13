@@ -51,8 +51,9 @@ unit SynHighlighterPas;
 interface
 
 uses
-  SysUtils, Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst, SynEditMiscClasses;
+  SysUtils, Classes, Registry, Graphics, SynEditHighlighterFoldBase,
+  SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase,
+  SynEditStrConst, SynEditMiscClasses, LazLogger;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
@@ -1720,8 +1721,10 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
        (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
        (tbf in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord])
-    then
-      FRange := FRange + [rsInProcHeader]
+    then begin
+      Result := tkKey;
+      FRange := FRange + [rsInProcHeader];
+    end
     else
       Result := tkIdentifier;
   end
