@@ -6851,23 +6851,40 @@ Contains the extra options enabled for the database grid control.
 </short>
 <descr>
 <p>
-<var>OptionsExtra</var> is a TDBGridExtraOptions property used to store extra 
-options enabled for the grid control. OptionsExtra is a set data type which 
-can contain 0 (zero) or more values from the TDBGridExtraOption enumeration. 
-The default values in the property include dgeAutoColumns and 
-dgeCheckboxColumn. These values enable the use of automatic columns 
-definitions from the linked dataset and displaying check boxes for Boolean 
-columns.
+<var>OptionsExtra</var> is a <var>TDBGridExtraOptions</var> property used to 
+store extra options enabled for the grid control. OptionsExtra is a set type 
+which can contain 0 (zero) or more values from the TDBGridExtraOption 
+enumeration. The default values in the property include dgeAutoColumns and 
+dgeCheckboxColumn. These values enable the use of automatic columns definitions 
+from the linked dataset and displaying check boxes in columns with 
+<b>Boolean</b> values.
 </p>
 <p>
-SetExtraOptions is the write access specifier for the property, and ensures 
-that the grid control is updated to reflect values added to or removed from 
-the set.
+Changing the values in the OptionsExtra property causes the grid control to be 
+updated to reflect the values added to or removed from the set. Adding or 
+removing dgeCheckboxColumn causes the control to be redrawn. Adding or removing 
+dgeAutoColumns causes automatic columns to be added to or removed from the grid 
+as needed. See 
+<link id="TCustomDBGrid.AddAutomaticColumns">AddAutomaticColumns</link> and 
+<link id="TCustomDBGrid.RemoveAutomaticColumns">RemoveAutomaticColumns</link> 
+for more information. The active cell and/or row is updated prior to exit by 
+calling UpdateActive.
+</p>
+<p>
+Use the Options and Options2 properties to control other features and behaviors 
+enabled for the grid control.
 </p>
 </descr>
 <seealso>
-<link id="TDBGridExtraOptions"/>
+<link id="TCustomDBGrid.AddAutomaticColumns"/>
+<link id="TCustomDBGrid.RemoveAutomaticColumns"/>
+<link id="TCustomDBGrid.UpdateActive"/>
+<link id="TDBGrid.Columns"/>
+<link id="TDBGrid.Options"/>
+<link id="TDBGrid.Options2"/>
 <link id="TDBGridExtraOption"/>
+<link id="TDBGridExtraOptions"/>
+<link id="TColumn"/>
 </seealso>
 </element>
 
