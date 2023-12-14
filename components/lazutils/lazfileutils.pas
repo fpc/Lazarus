@@ -1264,7 +1264,7 @@ var
 begin
   Result := False;
   ADrv := ExtractFileDrive(Dir);
-  if (ADrv<>'') and (not DirectoryExistsUTF8(ADrv))
+  if (ADrv<>'') and (not DirectoryExistsUTF8(ADrv+DirectorySeparator))
   {$IFNDEF FORCEDIR_NO_UNC_SUPPORT} and (not IsUncDrive(ADrv)){$ENDIF} then Exit;
   if Dir='' then
     begin
