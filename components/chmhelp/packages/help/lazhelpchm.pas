@@ -365,7 +365,7 @@ begin
   if Result<>shrSuccess then exit;
 
   if not (csDesigning in ComponentState) and
-//    (KeywordPrefix<>'') and
+    (KeywordPrefix<>'') and
     (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then
   begin
     // HelpKeyword starts with KeywordPrefix -> add default node
