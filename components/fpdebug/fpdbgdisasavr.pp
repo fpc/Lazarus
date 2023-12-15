@@ -1484,6 +1484,10 @@ begin
   FrameBasePointer := Thread.GetStackBasePointerRegisterValue;
   ANewFrame        := TDbgCallstackEntry.create(Thread, 0, FrameBasePointer, CodePointer);
 
+  // Frame pointer may not have been updated yet
+  if FrameBasePointer > StackPointer then
+    FrameBasePointer := StackPointer;
+
   i := Thread.RegisterValueList.Count;
   while i > 0 do begin
     dec(i);
@@ -1501,7 +1505,6 @@ const
   DataOffset = $800000;
   Size = 2;
 var
-  NextIdx: LongInt;
   LastFrameBase: TDBGPtr;
   OutSideFrame: Boolean;
   startPC, endPC: TDBGPtr;
@@ -1549,6 +1552,9 @@ begin
     if not Process.ReadData(DataOffset or (FrameBasePointer + returnAddrStackOffset), Size, CodePointer) or (CodePointer = 0) then exit;
     {$PUSH}{$R-}{$Q-}
     FrameBasePointer := StackPointer + returnAddrStackOffset + Size - 1; // After popping return-addr from stack
+    // An estimate of SP, needed when attempting unwinding of next frame
+    // If registers are spilled to stack this will be wrong.
+    StackPointer := FrameBasePointer;
     {$POP}
   end;
   // Convert return address from BE to LE, shl 1 to get byte address
@@ -1556,11 +1562,12 @@ begin
 
   FLastFrameBaseIncreased := (FrameBasePointer <> 0) and (FrameBasePointer > LastFrameBase);
 
-  ANewFrame:= TDbgCallstackEntry.create(Thread, NextIdx, FrameBasePointer, CodePointer);
+  ANewFrame:= TDbgCallstackEntry.create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(CodePointer, IntToStr(CodePointer),Size, PCindex);
   ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPointer, IntToStr(StackPointer),Size, SPindex);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBasePointer), IntToStr(b),Size, 28);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue((FrameBasePointer and $FF00) shr 8, IntToStr(b),Size, 29);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBasePointer), IntToStr(byte(FrameBasePointer)),Size, 28);
+  b := byte(FrameBasePointer shr 8);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue(b, IntToStr(b), Size, 29);
 
   FCodeReadErrCnt := 0;
   Result := suSuccess;
