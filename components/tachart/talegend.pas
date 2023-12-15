@@ -409,17 +409,19 @@ end;
 procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   symTextSpc: Integer;
+  P: TPoint;
 begin
   symTextSpc := ADrawer.Scale(SYMBOL_TEXT_SPACING);
+  P := ADrawer.TextExtent(FText, FTextFormat);
   if ADrawer.GetRightToLeft then
     ADrawer.TextOut.
       TextFormat(FTextFormat).
-      Pos(ARect.Left - symTextSpc - ADrawer.TextExtent(FText, FTextFormat).X, ARect.Top).
+      Pos(ARect.Left - symTextSpc - P.X, (ARect.Top + ARect.Bottom - P.Y) div 2).
       Text(FText).Done
   else
     ADrawer.TextOut.
       TextFormat(FTextFormat).
-      Pos(ARect.Right + symTextSpc, ARect.Top).
+      Pos(ARect.Right + symTextSpc, (ARect.Top + ARect.Bottom - P.Y) div 2).
       Text(FText).Done;
 end;
 
