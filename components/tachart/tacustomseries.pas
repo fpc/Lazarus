@@ -131,8 +131,12 @@ type
     property Transparency;
   end;
 
+  TChartSeries = class;
+
   TChartGetMarkEvent = procedure (
     out AFormattedMark: String; AIndex: Integer) of object;
+  TChartGetMarkTextEvent = procedure (ASeries: TChartSeries;
+    APointIndex, AXIndex, AYIndex: Integer; var AFormattedMark: String) of object;
 
   { TChartSeries }
 
@@ -142,6 +146,7 @@ type
     FListener: TListener;
     FMarks: TChartMarks;
     FOnGetMark: TChartGetMarkEvent;
+    FOnGetMarkText: TChartGetMarkTextEvent;
     FSource: TCustomChartSource;
     FStyles: TChartStyles;
     FStylesListener: TListener;
@@ -149,7 +154,8 @@ type
     function GetSource: TCustomChartSource;
     function IsSourceStored: boolean;
     procedure SetMarks(AValue: TChartMarks);
-    procedure SetOnGetMark(AValue: TChartGetMarkEvent);
+    procedure SetOnGetMark(AValue: TChartGetMarkEvent); deprecated;
+    procedure SetOnGetMarkText(AValue: TChartGetMarkTextEvent);
     procedure SetSource(AValue: TCustomChartSource);
     procedure SetStyles(AValue: TChartStyles);
   protected
@@ -222,8 +228,8 @@ type
     procedure EndUpdate;
     function Extent: TDoubleRect; virtual;
     procedure FindYRange(AXMin, AXMax: Double; var AYMin, AYMax: Double); virtual;
-    function FormattedMark(
-      AIndex: Integer; AFormat: String = ''; AYIndex: Integer = 0): String;
+    function FormattedMark(AIndex: Integer; AFormat: String = '';
+      AYIndex: Integer = 0; AXIndex: Integer = 0): String;
     function IsEmpty: Boolean; override;
     function ListSource: TListChartSource;
     property Marks: TChartMarks
@@ -247,7 +253,8 @@ type
     property Title;
     property ZPosition;
   published
-    property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark;
+    property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark; deprecated 'Use OnGetMarkText instead';  // To be removed in Laz 5
+    property OnGetMarkText: TChartGetMarkTextEvent read FOnGetMarkText write SetOnGetMarkText;
   end;
 
   TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
@@ -795,6 +802,7 @@ begin
     with TChartSeries(ASource) do begin
       Self.Marks.Assign(FMarks);
       Self.FOnGetMark := FOnGetMark;
+      Self.FOnGetMarkText := FOnGetMarkText;
       Self.Source := FSource;
       Self.Styles := FStyles;
     end;
@@ -888,14 +896,18 @@ begin
   Source.FindYRange(AXMin, AXMax, false, AYMin, AYMax);
 end;
 
-function TChartSeries.FormattedMark(
-  AIndex: Integer; AFormat: String; AYIndex: Integer): String;
+function TChartSeries.FormattedMark(AIndex: Integer; AFormat: String;
+  AYIndex, AXIndex: Integer): String;
 begin
   if Assigned(FOnGetMark) then
     FOnGetMark(Result, AIndex)
   else
+  begin
     Result := Source.FormatItem(
       IfThen(AFormat = '', Marks.Format, AFormat), AIndex, AYIndex);
+    if Assigned(FOnGetMarkText) then
+      FOnGetMarkText(Self, AIndex, AXIndex, AYIndex, Result)
+  end;
 end;
 
 procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
@@ -1111,6 +1123,13 @@ procedure TChartSeries.SetOnGetMark(AValue: TChartGetMarkEvent);
 begin
   if TMethod(FOnGetMark) = TMethod(AValue) then exit;
   FOnGetMark := AValue;
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.SetOnGetMarkText(AValue: TChartGetMarkTextEvent);
+begin
+  if TMethod(FOnGetMarkText) = TMethod(AValue) then exit;
+  FOnGetMarkText := AValue;
   UpdateParentChart;
 end;
 

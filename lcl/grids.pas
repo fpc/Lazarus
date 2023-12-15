@@ -146,6 +146,8 @@ type
   TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown,
     aaRightUp, aaLeftUp);
 
+  TMouseWheelSpeedupKey = (mwskNone, mwskShift, mwskCtrl, mwskShiftCtrl);
+
   { Option goRangeSelect: --> select a single range only, or multiple ranges }
   TRangeSelectMode = (rsmSingle, rsmMulti);
 
@@ -843,6 +845,7 @@ type
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
     FMouseWheelOption: TMouseWheelOption;
+    FMouseWheelSpeedupKey: TMouseWheelSpeedupKey;
     FSavedHint: String;
     FCellHintPriority: TCellHintPriority;
     FOnGetCellHint: TGetCellHintEvent;
@@ -1277,6 +1280,7 @@ type
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property MouseWheelOption: TMouseWheelOption read FMouseWheelOption write FMouseWheelOption default mwCursor;
+    property MouseWheelSpeedupKey: TMouseWheelSpeedupKey read FMouseWheelSpeedupKey write FMouseWheelSpeedupKey default mwskCtrl;
     property Options: TGridOptions read FOptions write SetOptions default DefaultGridOptions;
     property Options2: TGridOptions2 read FOptions2 write SetOptions2 default DefaultGridOptions2;
     property RangeSelectMode: TRangeSelectMode read FRangeSelectMode write SetRangeSelectMode default rsmSingle;
@@ -10073,6 +10077,8 @@ begin
   FSpecialCursors[gcsRowHeightChanging] := crVSplit;
   FSpecialCursors[gcsDragging] := crMultiDrag;
 
+  FMouseWheelSpeedupKey := mwskCtrl;
+
   varRubberSpace := Scale96ToScreen(constRubberSpace);
   varCellPadding := Scale96ToScreen(constCellPadding);
   varColRowBorderTolerance := Scale96ToScreen(constColRowBorderTolerance);
@@ -11632,6 +11638,12 @@ begin
           tmpCanvas.Font := TitleFont
         else
           tmpCanvas.Font := Font;
+      end;
+
+      if Assigned(FOnPrepareCanvas) then
+      begin
+        FOnPrepareCanvas(self, aCol, i, []);
+        tmpCanvas.Font := Canvas.Font;
       end;
 
       if (i=0) and (FixedRows>0) and (C<>nil) then

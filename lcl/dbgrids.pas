@@ -78,8 +78,9 @@ type
   TDbGridOptions = set of TDbGridOption;
 
   TDbGridExtraOption = (
-    dgeAutoColumns,       // if uncustomized columns, add them anyway?
-    dgeCheckboxColumn     // enable the use of checkbox in columns
+    dgeAutoColumns,          // if uncustomized columns, add them anyway?
+    dgeCheckboxColumn,       // enable the use of checkbox in columns
+    dgeMouseWheelPageScroll  // forces the mouse-wheel to scroll by pages
   );
   TDbGridExtraOptions = set of TDbGridExtraOption;
 
@@ -614,6 +615,7 @@ type
     property HeaderPushZones;
     //property ImeMode;
     //property ImeName;
+    property MouseWheelSpeedupKey;
     property Options;
     property Options2;
     property OptionsExtra;
@@ -3070,29 +3072,129 @@ begin
   {$ifdef dbgDBGrid}DebugLnExit('%s.DoExit DONE', [ClassName]);{$endif}
 end;
 
+function SpeedupKeyPressed(Shift: TShiftState; SpeedupKey: TMouseWheelSpeedupKey): Boolean;
+begin
+  case SpeedupKey of
+    mwskNone:
+      Result := false;
+    mwskShift:
+      Result := (Shift = [ssShift]);
+    mwskCtrl:
+      Result := (Shift * [ssCtrl, ssMeta] <> []);   // check also ssMeta for Mac
+    mwskShiftCtrl:
+      Result := (Shift * [ssCtrl, ssMeta] <> []) and (Shift * [ssShift] <> []);
+  end;
+end;
+
+(*
 function TCustomDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
+var
+  delta: Integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelDown) then
     OnMouseWheelDown(Self, Shift, MousePos, Result);
   if not Result and FDatalink.Active then begin
-    FDatalink.MoveBy(1);
+    if (dgeMouseWheelPageScroll in FExtraOptions) or SpeedupKeyPressed(Shift, MouseWheelSpeedupKey) then
+    begin
+      if Row < VisibleRowCount then
+        delta := VisibleRowCount - Row
+      else
+        delta := VisibleRowCount;
+    end else
+      delta := 1;
+    FDatalink.MoveBy(delta);
     Result := True;
   end;
 end;
 
 function TCustomDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
+var
+  delta: Integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelUp) then
     OnMouseWheelUp(Self, Shift, MousePos, Result);
   if not Result and FDatalink.Active then begin
-    FDatalink.MoveBy(-1);
+    if (dgeMouseWheelPageScroll in FExtraOptions) or SpeedupKeyPressed(Shift, MouseWheelSpeedupKey) then
+    begin
+      if Row > 1 then
+        delta := Row - 1
+      else
+        delta := VisibleRowCount;
+    end
+    else
+      delta := 1;
+    FDatalink.MoveBy(-delta);
     Result := True;
   end;
 end;
+*)
+function TCustomDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+var
+  delta, row1: Integer;
+  bBack: Boolean;
+begin
+  Result := False;
+  if Assigned(OnMouseWheelDown) then
+    OnMouseWheelDown(Self, Shift, MousePos, Result);
+  if not Result and FDatalink.Active then begin
+    if (dgeMouseWheelPageScroll in FExtraOptions) or SpeedupKeyPressed(Shift, MouseWheelSpeedupKey) then
+    begin
+      row1 := Row;
+      if Row < VisibleRowCount then
+        delta := VisibleRowCount * 2 - Row
+      else
+        delta := VisibleRowCount;
+      bBack := True;
+    end else Begin
+      bBack := False;
+      delta := 1;
+    End;
+    if FDatalink.MoveBy(delta) <> delta then
+    begin
+      FDatalink.MoveBy(1);
+      bBack := False;
+    end;
+    if bBack then
+      FDatalink.MoveBy(-(Row - row1));
+    Result := True;
+  end;
+end;
+
+function TCustomDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+var
+  delta, row1: Integer;
+  bBack: Boolean;
+begin
+  Result := False;
+  if Assigned(OnMouseWheelUp) then
+    OnMouseWheelUp(Self, Shift, MousePos, Result);
+  if not Result and FDatalink.Active then begin
+    if (dgeMouseWheelPageScroll in FExtraOptions) or SpeedupKeyPressed(Shift, MouseWheelSpeedupKey) then
+    begin
+      row1 := Row - 1;
+      delta := VisibleRowCount + Row - 1;
+      bBack := True;
+    end else Begin
+      bBack := False;
+      delta := 1;
+    End;
+    if FDatalink.MoveBy(-delta) <> -delta then
+    begin
+      FDatalink.MoveBy(-1);
+      bBack := False;
+    end;
+    if bBack then
+      FDatalink.MoveBy(row1);
+    Result := True;
+  end;
+end;
+
 
 function TCustomDBGrid.GetEditMask(aCol, aRow: Longint): string;
 var
