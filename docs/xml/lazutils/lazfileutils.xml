@@ -2603,28 +2603,67 @@ removed.
 
 <element name="ForceDirectoriesUTF8">
 <short>
-Creates the specified directories if they do not already exist.
+Creates the directories specified in Dir if they do not already exist.
 </short>
 <descr>
 <p>
-<var>ForceDirectories</var> is a <var>Boolean</var> function which creates 
-the specified directories if they do not already exist. ForceDirectories 
-examines the value in Dir to determine if it contains a Windows device 
-identifier or a UNC name. If a device identifier or UNC name is found, but 
-not supported on the platform, no actions are performed in the function.
+<var>ForceDirectoriesUTF8</var> is a <var>Boolean</var> function which creates 
+any missing directories specified in the UTF-8-encoded <var>Dir</var> argument. 
+Dir can contain notation using the following conventions:
+</p>
+<dl>
+<dt>Windows device and path</dt>
+<dd>
+A disk drive available on the local system, such as 'C:' or 'D:', and directory 
+names. For example: 'C:\Windows\Fonts'.
+</dd>
+<dt>Universal Naming Convention identifier</dt>
+<dd>
+UNC notation like '\\server\share\path\to\dir' (for Windows) or 
+'//hostname/path/to/dir' (for UNIX-like systems). Please note that UNC support
+is not available on all platforms where LCL/LazUtils are hosted.
+</dd>
+<dt>
+Path specification
+</dt>
+<dd>
+A path specification as used on the local file systems For example: 
+'/path/to/dir' or '\path\to\dir'. Relative paths, like './foo' or '.\foo', are 
+resolved to the directory where the application executable is located.
+</dd>
+</dl>
+<p>
+ForceDirectoriesUTF8 calls ExtractFileDrive to get the disk or UNC host+share 
+name used in Dir. No actions are performed if the return value from 
+ExtractFileDrive is an empty device identifier, or the device does not have a 
+valid root directory on the local file system. The return value is set to 
+<b>False</b>.
 </p>
 <p>
 ForceDirectories raises an <var>EInOutError</var> exception with the message 
 in <var>SCannotCreateEmptyDir</var> when Dir contains an empty string ('').
 </p>
 <p>
-Each directory in the specified path is checked using 
-<var>DirectoryExistsUTF8</var>. ForceDirectories calls 
-<var>CreateDirUTF8</var> if a directory does not already exist, and may exit 
-with a return value of <b>False</b> if directory creation is not successful. 
+ForceDirectoriesUTF8 converts path delimiters specified in Dir to the value 
+required for the platform using ForcePathDelims (when needed).
+</p>
+<p>
+Each directory found in Dir is checked using DirectoryExistsUTF8. CreateDirUTF8 
+is called if a directory does not already exist, and may exit with a return 
+value of <b>False</b> if directory creation is not successful.
+</p>
+<p>
 The return value is <b>True</b> if all directories in the path information 
 already exist, or are successfully created in the function.
 </p>
+<code>
+var bOk: Boolean;
+// ...
+bOk := ForceDirectoriesUTF8('\\capcom\telemetry\eva\bio');
+bOk := ForceDirectoriesUTF8('//capcom/telemetry/eva/gps');
+bOk := ForceDirectoriesUTF8('/home/jsmith/capcom/telemetry/eva/camera');
+bOk := ForceDirectoriesUTF8('C:\capcom\telemetry\eva\era');
+</code>
 </descr>
 <errors>
 <dl>
@@ -2636,7 +2675,13 @@ SCannotCreateEmptyDir, and ErrorCode is set to 3.
 </dl>
 </errors>
 <seealso>
+<link id="DirectoryExistsUTF8"/>
+<link id="CreateDirUTF8"/>
+<link id="GetForcedPathDelims"/>
 <link id="ForceDirectory"/>
+<link id="#rtl.sysutils.ExtractFileDrive">ExtractFileDrive</link>
+<link id="#rtl.sysutils.ExtractFilePath">ExtractFilePath</link>
+<link id="#rtl.system.DirectorySeparator">DirectorySeparator</link>
 </seealso>
 </element>
 <element name="ForceDirectoriesUTF8.Result">
@@ -2646,7 +2691,9 @@ function.
 </short>
 </element>
 <element name="ForceDirectoriesUTF8.Dir">
-<short>Path information to examine the function.</short>
+<short>
+Device and path information to examine the function.
+</short>
 </element>
 
 <element name="FileOpenUTF8">
