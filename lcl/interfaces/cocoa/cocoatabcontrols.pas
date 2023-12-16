@@ -281,6 +281,8 @@ begin
   if aview.fulltabs.count=0 then exit;
 
   tryToKeepIndex:= aview.currentIndex - aview.leftKeepAmount;
+  if tryToKeepIndex < 0 then
+    tryToKeepIndex:= 0;
 
   // AttachAllTabs() has been modified to not remove the selectedTabViewItem first,
   // and no longer trigger tabView_didSelectTabViewItem
@@ -817,10 +819,13 @@ begin
   if fulltabs.count=0 then
     Exit;
 
+  OldIndex := exttabIndexOfTabViewItem( lTabPage );
+  if OldIndex < 0 then
+    Exit;
+
   if NewIndex > fulltabs.count then
     NewIndex:= fulltabs.count;
 
-  OldIndex := exttabIndexOfTabViewItem( lTabPage );
   isMovingCurrentPage := (OldIndex=currentIndex);
 
   fulltabs.removeObjectAtIndex( OldIndex );
@@ -861,6 +866,8 @@ begin
   triggeringByLCL:= true;
   try
     removedIndex := exttabIndexOfTabViewItem( removedTabPage );
+    if removedIndex < 0 then
+      Exit;
     isRemovingCurrentPage:= (removedIndex=currentIndex);
 
     fulltabs.removeObjectAtIndex( removedIndex );
@@ -895,6 +902,8 @@ function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
   ): NSInteger;
 begin
   Result := fulltabs.indexOfObject(lTabPage);
+  if Result = NSNotFound then
+    Result:= -1;
 end;
 
 { TCocoaTabControlArrow }

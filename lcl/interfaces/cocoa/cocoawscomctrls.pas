@@ -901,10 +901,11 @@ begin
   tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
   if not Assigned(tb) then Exit;
 
-  i := TCocoaTabControl(ATabControl.Handle).fulltabs.indexOfObject( tb.tabPage );
-  if (i = NSNotFound) then Exit;
+  i := TCocoaTabControl(ATabControl.Handle).exttabIndexOfTabViewItem(tb.tabPage);
+  if i < 0 then
+    Exit;
 
-  TCocoaTabControl(ATabControl.Handle).extselectTabViewItemAtIndex(NSInteger(i));
+  TCocoaTabControl(ATabControl.Handle).extselectTabViewItemAtIndex(i);
 end;
 
 class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
