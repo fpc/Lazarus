@@ -321,3 +321,55 @@ var
   gtk_adjustment_configure: procedure(Adjustment: PGtkAdjustment; AValue: GDouble; ALower: GDouble; AUpper: GDouble;
     AStepIncrement: GDouble; APageIncrement: GDouble; APageSize: GDouble); cdecl;
 
+type
+  // since 2.18
+  // * Tracks information about the keyboard grab on this display
+  PGdkKeyboardGrabInfo = ^TGdkKeyboardGrabInfo;
+  TGdkKeyboardGrabInfo = record
+    window: PGdkWindow;
+    native_window: PGdkWindow;
+    serial: gulong;
+    owner_events: gboolean;
+    time: guint32;
+  end;
+
+  {* Tracks information about which window and position the pointer last was in.
+   * This is useful when we need to synthesize events later.
+   * Note that we track toplevel_under_pointer using enter/leave events,
+   * so in the case of a grab, either with owner_events==FALSE or with the
+   * pointer in no clients window the x/y coordinates may actually be outside
+   * the window.
+   *}
+  PGdkPointerWindowInfo = ^TGdkPointerWindowInfo;
+  TGdkPointerWindowInfo = record
+    toplevel_under_pointer: PGdkWindow; // The toplevel window with mouse inside, tracked via native events
+    window_under_pointer: PGdkWindow; // The window that last got sent a normal enter event
+    toplevel_x: gdouble;
+    toplevel_y: gdouble;
+    state: guint32;
+    button: guint32;
+    motion_hint_serial: gulong; // 0 == didn't deliver hinted motion event
+  end;
+
+  PGdkDisplayExtended = ^TGdkDisplayExtended;
+  TGdkDisplayExtended = record
+    parent_instance: TGObject;
+    queued_events: PGList;
+    queued_tail: PGList;
+    button_click_time: array[0..1] of guint32;
+    button_window: array[0..1] of PGdkWindow;
+    button_number: array[0..1] of guint;
+    double_click_time: guint;
+    core_pointer: PGdkDevice;
+    pointer_hooks: PGdkDisplayPointerHooks;
+    closed: guint;
+    double_click_distance: guint;
+    button_x: array[0..1] of guint;
+    button_y: array[0..1] of guint;
+    // These fields were added in versions 2.18 by Alexander Larsson Apr 02, 2009
+    // https://gitlab.gnome.org/pksadiq/gtk/-/commits/2.18.0/gdk/gdkdisplay.h
+    pointer_grabs: PGList;
+    keyboard_grab: TGdkKeyboardGrabInfo;
+    pointer_info: TGdkPointerWindowInfo;
+    last_event_time: guint32;
+  end;
