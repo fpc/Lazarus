@@ -427,6 +427,21 @@ begin
   end;
 end;
 
+procedure SetWindowCursorWithGrab(AWindow: PGdkWindow; Cursor: PGdkCursor; ASetDefault: Boolean);
+var
+  display: PGdkDisplayExtended;
+  prevWindow: PgdkWindow;
+begin
+  display := PGdkDisplayExtended(gdk_drawable_get_display(AWindow));
+  prevWindow := display^.pointer_info.window_under_pointer;
+  display^.pointer_info.window_under_pointer := AWindow;
+  try
+    SetWindowCursor(AWindow, Cursor, ASetDefault);
+  finally
+    display^.pointer_info.window_under_pointer := prevWindow;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure: SetWindowCursor
   Params:  AWindow : PGDkWindow, ACursor: HCursor, ARecursive: Boolean
@@ -438,12 +453,16 @@ procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
   ARecursive: Boolean; ASetDefault: Boolean);
 var
   Cursor: PGdkCursor;
+  GrabPresent: Boolean;
 
   procedure SetCursorRecursive(AWindow: PGdkWindow);
   var
     ChildWindows, ListEntry: PGList;
   begin
-    SetWindowCursor(AWindow, Cursor, ASetDefault);
+    if GrabPresent then
+      SetWindowCursorWithGrab(AWindow, Cursor, ASetDefault)
+    else
+      SetWindowCursor(AWindow, Cursor, ASetDefault);
 
     ChildWindows := gdk_window_get_children(AWindow);
 
@@ -457,9 +476,16 @@ var
   end;
 begin
   Cursor := {%H-}PGdkCursor(ACursor);
-  if ARecursive
-  then SetCursorRecursive(AWindow)
-  else SetWindowCursor(AWindow, Cursor, ASetDefault);
+  // check for debian users with gtk2 2.12..2.16
+  GrabPresent := (gtk_grab_get_current <> nil) and
+    (gtk_major_version = 2) and (gtk_minor_version >= 18);
+  if ARecursive then
+    SetCursorRecursive(AWindow)
+  else
+    if GrabPresent then
+      SetWindowCursorWithGrab(AWindow, Cursor, ASetDefault)
+    else
+      SetWindowCursor(AWindow, Cursor, ASetDefault);
 end;
 
 // Helper functions
