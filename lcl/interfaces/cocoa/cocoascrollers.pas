@@ -421,56 +421,59 @@ begin
 
 end;
 
-procedure updateDocSize(parent: NSView; doc: NSView; hrz, vrt: NSScroller);
+procedure updateDocSize(parent: NSView; doc: NSView; hScroller, vScroller: NSScroller);
 var
-  f  : NSRect;
-  hr : NSRect;
-  vr : NSRect;
-  hw : CGFLoat;
-  vw : CGFLoat;
+  docFrame  : NSRect;
+  hScrollerFrame : NSRect;
+  vScrollerFrame : NSRect;
+  hScrollerHeight : CGFLoat;
+  vScrollerWidth : CGFLoat;
 begin
-  if not Assigned(parent) or not Assigned(doc) then Exit;
+  if not Assigned(parent) or not Assigned(doc) then
+    Exit;
 
-  f := parent.frame;
-  f.origin.x := 0;
-  f.origin.y := 0;
-  hr := f;
-  vr := f;
-  hw := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-          hrz.controlSize, hrz.preferredScrollerStyle);
-  vw := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-          vrt.controlSize, vrt.preferredScrollerStyle);
-  vr.size.width:=vw;
-  vr.origin.x:=f.size.width-vr.size.width;
-  hr.size.height:=hw;
+  docFrame := parent.frame;
+  docFrame.origin := NSZeroPoint;
+  hScrollerFrame := docFrame;
+  vScrollerFrame := docFrame;
 
-  if Assigned(hrz) and (not hrz.isHidden) then
+  if Assigned(hScroller) and (not hScroller.isHidden) then
   begin
-    f.size.height := f.size.height - hw;
-    if f.size.height < 0 then
-      f.size.height := 0;
-    f.origin.y := hw;
+    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            hScroller.controlSize, hScroller.preferredScrollerStyle);
+    hScrollerFrame.size.height := hScrollerHeight;
 
-    vr.origin.y := hw;
-    vr.size.height := vr.size.height - hw;
-    if Assigned(vrt) and (not vrt.isHidden) then
-      hr.size.width:=hr.size.width-vw;
-
-    hrz.setFrame(hr);
+    docFrame.size.height := docFrame.size.height - hScrollerHeight;
+    if docFrame.size.height < 0 then
+      docFrame.size.height := 0;
+    docFrame.origin.y := hScrollerHeight;
   end;
 
-  if Assigned(vrt) and (not vrt.isHidden) then
+  if Assigned(vScroller) and (not vScroller.isHidden) then
   begin
-    f.size.width := f.size.width - vw;
-    if f.size.width < 0 then
-      f.size.width:= 0;
-    vrt.setFrame(vr);
+    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            vScroller.controlSize, vScroller.preferredScrollerStyle);
+    vScrollerFrame.size.width := vScrollerWidth;
+
+    docFrame.size.width := docFrame.size.width - vScrollerWidth;
+    if docFrame.size.width < 0 then
+      docFrame.size.width:= 0;
   end;
 
+  hScrollerFrame.size.width := docFrame.size.width;
+  vScrollerFrame.size.height := docFrame.size.height;
+  vScrollerFrame.origin.x := docFrame.size.width;
+  vScrollerFrame.origin.y := docFrame.origin.y;
 
-  if not NSEqualRects(doc.frame, f) then
+  if Assigned(hScroller) then
+    hScroller.setFrame(hScrollerFrame);
+
+  if Assigned(vScroller) then
+    vScroller.setFrame(vScrollerFrame);
+
+  if not NSEqualRects(doc.frame, docFrame) then
   begin
-    doc.setFrame(f);
+    doc.setFrame(docFrame);
     {$ifdef BOOLFIX}
     doc.setNeedsDisplay__(Ord(true));
     {$else}
