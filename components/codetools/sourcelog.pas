@@ -244,9 +244,6 @@ begin
   end;
 end;
 
-
-{ TSourceLogMarker }
-
 { TSourceLog }
 
 constructor TSourceLog.Create(const ASource: string);

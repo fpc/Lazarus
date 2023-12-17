@@ -145,6 +145,7 @@ type
     procedure TestFindDeclaration_UnitSearch_StarStar;
     procedure TestFindDeclaration_IncludeSearch_DirectiveWithPath;
     procedure TestFindDeclaration_IncludeSearch_StarStar;
+    procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
     // directives
     procedure TestFindDeclaration_DirectiveWithIn;
@@ -1431,6 +1432,79 @@ begin
   finally
     CodeToolBoss.DefineTree.RemoveDefineTemplate(DirDef);
   end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits;
+var
+  UnitSet: TFPCUnitSetCache;
+  FPCSrcDir: String;
+
+  procedure Traverse(Dir: string; IsNamespaced: boolean);
+  var
+    Cache: TCTDirectoryCache;
+    Listing: TCTDirectoryListing;
+    i, p, AtomStart, IncludeStart, IncludeEnd: Integer;
+    CurFilename, Ext, FullFilename, Src, IncFilename, FullIncFilename: String;
+    CurCode: TCodeBuffer;
+  begin
+    Cache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
+    Cache.UpdateListing;
+    Listing:=Cache.Listing;
+    for i:=0 to Listing.Count-1 do begin
+      CurFilename:=Listing.GetFilename(i);
+      FullFilename:=Dir+PathDelim+CurFilename;
+      if Listing.GetAttr(i) and faDirectory>0 then begin
+        // search recursive
+        Traverse(FullFilename,IsNamespaced or (CurFilename='namespaced'));
+      end else begin
+        Ext:=ExtractFileExt(CurFilename);
+        if IsNamespaced and ((Ext='.pp') or (Ext='.pas')) then begin
+          CurCode:=CodeToolBoss.LoadFile(FullFilename,true,false);
+          if CurCode=nil then begin
+            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits failed loading "'+FullFilename+'"']);
+            continue;
+          end;
+          Src:=CurCode.Source;
+          // check if this file is an unit
+          p:=1;
+          AtomStart:=1;
+          ReadRawNextPascalAtom(Src,p,AtomStart,false,true);
+          if p=AtomStart then begin
+            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits no Pascal found in "'+FullFilename+'"']);
+            continue;
+          end;
+          if CompareIdentifiers(@Src[AtomStart],'unit')<>0 then begin
+            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits is not a Pascal unit "'+FullFilename+'"']);
+            continue;
+          end;
+          // search include directive
+          if not FindIncludeDirective(Src,'unit',1,IncludeStart,IncludeEnd) then begin
+            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits missing include directive in "'+FullFilename+'"']);
+            continue;
+          end;
+          IncFilename:=copy(Src,IncludeStart,IncludeEnd-IncludeStart);
+          DoDirSeparators(IncFilename);
+          if ExtractFilePath(IncFilename)<>'' then begin
+            FullIncFilename:=ResolveDots(Dir+PathDelim+IncFilename);
+            if not FileExists(FullIncFilename) then begin
+              Fail('Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
+            end;
+          end else begin
+            //debugln(['Namespaced unit "'+FullFilename+'" has include "'+IncFilename+'", searching ...']);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+  if UnitSet=nil then Fail('GetUnitSetForDirectory returned nil');
+  FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
+  if FPCSrcDir='' then Fail('UnitSet.FPCSourceDirectory empty');
+  if not DirectoryExists(FPCSrcDir) then
+    Fail('UnitSet.FPCSourceDirectory not found: "'+FPCSrcDir+'"');
+  Traverse(FPCSrcDir,false);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;

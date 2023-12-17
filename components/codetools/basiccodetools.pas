@@ -1028,8 +1028,8 @@ begin
   until Position<1;
 end;
 }
-function FindResourceInCode(const Source, AddCode:string;
-   out Position,EndPosition:integer):boolean;
+function FindResourceInCode(const Source, AddCode: string;
+  out Position, EndPosition: integer): boolean;
 var Find,Atom:string;
   FindPosition,FindAtomStart,SemicolonPos:integer;
 begin
@@ -1055,7 +1055,7 @@ begin
   Result:=true;
 end;
 
-function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
+function AddResourceCode(Source:TSourceLog; const AddCode: string): boolean;
 var StartPos,EndPos:integer;
 begin
   if FindResourceInCode(Source.Source,AddCode,StartPos,EndPos) then begin
