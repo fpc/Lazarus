@@ -1548,10 +1548,10 @@ begin
     else if (BarKind = SB_Horz) and Assigned(NSScrollView(obj).horizontalScroller) then
       Result:=round(NSScrollView(obj).verticalScroller.frame.size.height)
     else
-      Result := Round(NSScroller.scrollerWidth);
+      Result := GetSystemMetrics(SM_CXVSCROLL);
   end
   else
-    Result := Round(NSScroller.scrollerWidth);
+    Result := GetSystemMetrics(SM_CXVSCROLL);
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
@@ -2601,7 +2601,7 @@ begin
     SM_CYHSCROLL,
     SM_CXVSCROLL,
     SM_CYVSCROLL:
-      Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
+      Result := Round(NSScroller.scrollerWidthForControlSize_scrollerStyle(NSRegularControlSize, NSScrollerStyleLegacy));
     SM_CXSCREEN,
     SM_CXFULLSCREEN:
       Result := Round(NSPrimaryScreenFrame.size.width);
@@ -2631,7 +2631,7 @@ begin
       end;
     SM_CXDRAG,SM_CYDRAG: Result := 5;
     SM_CXHTHUMB, SM_CYVTHUMB:
-      Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
+      Result := Round(NSScroller.scrollerWidthForControlSize_scrollerStyle(NSRegularControlSize, NSScrollerStyleLegacy));
     SM_SWSCROLLBARSPACING:
       Result := 0;
     SM_LCLHasFormAlphaBlend:
