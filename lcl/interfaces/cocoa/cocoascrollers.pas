@@ -447,6 +447,8 @@ begin
   if Assigned(hrz) and (not hrz.isHidden) then
   begin
     f.size.height := f.size.height - hw;
+    if f.size.height < 0 then
+      f.size.height := 0;
     f.origin.y := hw;
 
     vr.origin.y := hw;
@@ -459,7 +461,9 @@ begin
 
   if Assigned(vrt) and (not vrt.isHidden) then
   begin
-    f.size.width := f.size.width-vw;
+    f.size.width := f.size.width - vw;
+    if f.size.width < 0 then
+      f.size.width:= 0;
     vrt.setFrame(vr);
   end;
 
