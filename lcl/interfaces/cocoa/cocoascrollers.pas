@@ -480,17 +480,11 @@ begin
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
-var
-  ch : Boolean;
 begin
-  ch := false;
   if doshow then
   begin
     if not Assigned(fvscroll) then
-    begin
       fvscroll := allocVerticalScroller(true);
-      ch := true;
-    end;
 
     if fvscroll.isHidden then
     begin
@@ -499,7 +493,6 @@ begin
       {$else}
       fvscroll.setHidden(false);
       {$endif}
-      ch := true;
     end;
   end
   else if Assigned(fvscroll) and not fvscroll.isHidden then
@@ -509,27 +502,18 @@ begin
     {$else}
     fvscroll.setHidden(true);
     {$endif}
-    ch := true;
   end;
-  if ch then
-    updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+
+  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
-var
-  r : NSRect;
-  f : NSRect;
-  ch : Boolean;
 begin
-  f:=frame;
-  ch:=false;
   if doshow then
   begin
     if not Assigned(fhscroll) then
-    begin
       fhscroll := allocHorizontalScroller(true);
-      ch := true;
-    end;
+
     if fhscroll.isHidden then
     begin
       {$ifdef BOOLFIX}
@@ -537,7 +521,6 @@ begin
       {$else}
       fhscroll.setHidden(false);
       {$endif}
-      ch := true;
     end;
   end
   else if Assigned(fhscroll) and (not fhscroll.isHidden) then
@@ -547,11 +530,9 @@ begin
     {$else}
     fhscroll.setHidden(true);
     {$endif}
-    ch := true;
   end;
 
-  if ch then
-    updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
