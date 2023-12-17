@@ -569,7 +569,8 @@ begin
   else
   begin
     f := frame;
-    w := NSScroller.scrollerWidth;
+    w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+           fhscroll.controlSize, fhscroll.preferredScrollerStyle);
     r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
     allocScroller( self, fhscroll, r, avisible);
     fhscroll.setAutoresizingMask(NSViewWidthSizable);
@@ -588,7 +589,8 @@ begin
   else
   begin
     f := frame;
-    w := NSScroller.scrollerWidth;
+    w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+           fvscroll.controlSize, fvscroll.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
     allocScroller( self, fvscroll, r, avisible);
     fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
