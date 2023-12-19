@@ -1462,11 +1462,12 @@ end;
 
 procedure TTestHighlighterPas.TestContextForClassSection;
 var
-  rc, lead1, lead2, cm, s1, s2, v: string;
+  ty, rc, lead1, lead2, cm, s1, s2, v: string;
   strict1, strict2: Boolean;
   cmod, sp1, sp2: Integer;
 begin
-  for rc in ['class ', 'object'] do
+  for ty in ['     ', 'type '] do
+  for rc in ['class ', 'object', 'record'] do
   for lead1 in ['', '  '] do
   for lead2 in ['', '  '] do
   for cm  in ['                ', ' sealed abstract', ' sealed         ', ' abstract       '] do
@@ -1484,9 +1485,9 @@ begin
     cmod := 0;
     if cm[2] <> ' ' then
     case cm[9] of
-      ' ': cmod := 1;
-      'a': cmod := 2;
-      't': cmod := 1;
+      ' ': cmod := 1; // sealed
+      'a': cmod := 2; // sealed abstract
+      't': cmod := 1; // abstract
     end;
 
     if (rc <> 'class ') and ( (cmod <> 0) or strict1 or  strict2 )
@@ -1495,9 +1496,9 @@ begin
 
     ReCreateEdit;
     SetLines
-      ([ 'Unit A; interface',  // 0
+      ([ 'Unit A; interface {$modeswitch advancedrecords}',  // 0
          'type',
-         'TFoo='+rc+cm ,  // 2  class sealed abstract
+         'TFoo='+ty+rc+cm ,  // 2  class sealed abstract
          lead1+trim(s1),
          lead2+trim(s2),
            'a,'+trim(v)+':'+trim(v)+';', // 5
@@ -1515,10 +1516,19 @@ begin
          ''
       ]);
 
-    case cmod of
-      0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey ]);
-      1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace ]);
-      2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+    if ty[1] = ' ' then begin
+      case cmod of
+        0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey ]);
+        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace ]);
+        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+      end;
+    end
+    else begin
+      case cmod of
+        0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey ]);
+        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey, tkSpace ]);
+        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+      end;
     end;
 
     case strict1 of
