@@ -3,7 +3,7 @@
 
    fpmake.pp for CodeTools 1.0.1
 
-   This file was generated on 02-01-2015
+   This file was generated on 19.12.2023
 }
 
 {$ifndef ALLPACKAGES} 
@@ -18,26 +18,30 @@ procedure add_CodeTools(const ADirectory: string);
 var
   P : TPackage;
   T : TTarget;
+  D : TDependency;
 
 begin
   with Installer do
     begin
-    P:=AddPAckage('codetools');
-    P.Version:='1.0.1';
+    P:=AddPackage('codetools');
+    P.Version:='1.0.1-0';
 
     P.Directory:=ADirectory;
 
+    P.Author:='Mattias Gaertner';
+    P.License:='GPL-2';
+    P.Description:='Tools and functions to parse, browse and edit pascal sources';
+
     P.Flags.Add('LazarusDsgnPkg');
 
-    P.Dependencies.Add('lazutils');
+    D := P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Sci');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
     P.Options.Add('-l');
-    P.Options.Add('-vh-');
-    P.Options.Add('-vewnibq');
+    P.Options.Add('-vewnhibq');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('codetools.pas');
     t.Dependencies.AddUnit('basiccodetools');
@@ -49,7 +53,6 @@ begin
     t.Dependencies.AddUnit('codecompletiontool');
     t.Dependencies.AddUnit('codegraph');
     t.Dependencies.AddUnit('codeindex');
-    t.Dependencies.AddUnit('codetemplatestool');
     t.Dependencies.AddUnit('codetoolmanager');
     t.Dependencies.AddUnit('codetoolmemmanager');
     t.Dependencies.AddUnit('codetoolsconfig');
@@ -72,6 +75,7 @@ begin
     t.Dependencies.AddUnit('keywordfunclists');
     t.Dependencies.AddUnit('lfmtrees');
     t.Dependencies.AddUnit('linkscanner');
+    t.Dependencies.AddUnit('memcheck');
     t.Dependencies.AddUnit('methodjumptool');
     t.Dependencies.AddUnit('multikeywordlisttool');
     t.Dependencies.AddUnit('nonpascalcodetools');
@@ -105,7 +109,6 @@ begin
     T:=P.Targets.AddUnit('codecompletiontool.pas');
     T:=P.Targets.AddUnit('codegraph.pas');
     T:=P.Targets.AddUnit('codeindex.pas');
-    T:=P.Targets.AddUnit('codetemplatestool.pas');
     T:=P.Targets.AddUnit('codetoolmanager.pas');
     T:=P.Targets.AddUnit('codetoolmemmanager.pas');
     T:=P.Targets.AddUnit('codetoolsconfig.pas');
@@ -128,7 +131,7 @@ begin
     T:=P.Targets.AddUnit('keywordfunclists.pas');
     T:=P.Targets.AddUnit('lfmtrees.pas');
     T:=P.Targets.AddUnit('linkscanner.pas');
-    P.Sources.AddSrc('memcheck.pas');
+    P.Targets.AddImplicitUnit('memcheck.pas');
     T:=P.Targets.AddUnit('methodjumptool.pas');
     T:=P.Targets.AddUnit('multikeywordlisttool.pas');
     T:=P.Targets.AddUnit('nonpascalcodetools.pas');
@@ -154,7 +157,8 @@ begin
     T:=P.Targets.AddUnit('codetoolgdbtracer.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.InstallFiles.Add('CodeTools.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('codetools.compiled');
+    P.InstallFiles.Add('codetools.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

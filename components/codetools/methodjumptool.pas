@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TMethodJumpingCodeTool enhances TCodeTemplatesTool with functions to jump
+    TMethodJumpingCodeTool enhances TStandardCodeTool with functions to jump
     between a method definition and its body and a forward procedure and its
     body.
 
