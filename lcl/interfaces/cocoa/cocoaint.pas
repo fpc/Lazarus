@@ -75,6 +75,11 @@ type
     Stopped : Boolean;
     {$endif}
 
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    PrevKeyModifiers : NSUInteger;
+    SavedKeyModifiers : NSUInteger;
+
     procedure dealloc; override;
     {$ifdef COCOALOOPOVERRIDE}
     procedure run; override;
@@ -711,6 +716,8 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
+  PrevKeyModifiers  := SavedKeyModifiers;
+
   {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
     isrun := True;
@@ -736,6 +743,7 @@ begin
 
   if not Assigned(Result) then
   begin
+    SavedKeyModifiers := Result.modifierFlags;
     {$ifdef COCOALOOPNATIVE}
     if Assigned(Application) then Application.Idle(true);
     {$endif}

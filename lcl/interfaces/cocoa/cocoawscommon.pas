@@ -18,10 +18,6 @@ type
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   private
-    class var
-      // Store state of key modifiers so that we can emulate keyup/keydown
-      // of keys like control, option, command, caps lock, shift
-      PrevKeyModifiers: NSUInteger;
     var
       FPropStorage: TStringList;
       FContext: TCocoaContext;
@@ -72,7 +68,6 @@ type
     lastMouseDownUp: NSTimeInterval; // the last processed mouse Event
     lastMouseWithForce: Boolean;
 
-    class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList;
@@ -448,11 +443,6 @@ begin
   end;
 end;
 
-class constructor TLCLCommonCallback.Create;
-begin
-  PrevKeyModifiers := 0;
-end;
-
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
 begin
   inherited Create;
@@ -593,7 +583,7 @@ begin
   _SendChar := False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (TCocoaApplication(NSAPP).PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -608,9 +598,7 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  _IsKeyDown := ((PrevKeyModifiers and Diff) = 0);
-
-  PrevKeyModifiers := CurMod;
+  _IsKeyDown := ((TCocoaApplication(NSAPP).PrevKeyModifiers and Diff) = 0);
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
   _KeyMsg.KeyData := KeyData;
