@@ -534,18 +534,6 @@ begin
       // p must be logical, until template text is inserted
     end;
 
-    // delete double end separator (e.g. avoid creating two semicolons 'begin end;;')
-    if (AEditor.BlockEnd.Y>0) and (AEditor.BlockEnd.Y<=AEditor.Lines.Count)
-    then begin
-      LineText:=AEditor.Lines[AEditor.BlockEnd.Y-1];
-      if AEditor.BlockEnd.X <= length(LineText) then
-        i := pos(LineText[AEditor.BlockEnd.X], EndOfTokenChr)
-      else
-        i := -1;
-      if i > 0 then
-        Parser.TrimEOTChar(EndOfTokenChr[i]);
-    end;
-
     if Parser.EditCellList.Count > 0 then
       i := AEditor.PluginCount - 1
     else
