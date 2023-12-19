@@ -1803,7 +1803,9 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (TopPascalCodeFoldBlockType in
         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
-         cfbtUnit, cfbtUnitSection])
+         cfbtUnit, cfbtUnitSection,
+         cfbtClass, cfbtClassSection, cfbtRecord // if inside a type section in class/record
+        ])
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
         if TypeHelpers then
@@ -3483,8 +3485,11 @@ procedure TSynPasSyn.GreaterProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '=' then
+  if fLine[Run] = '=' then begin
     inc(Run);
+    if (rsInTypeBlock in fRange) then // generic TFoo<..>= // no space between > and =
+      fRange := fRange + [rsAfterEqual, rsAfterEqualOrColon];
+  end;
   if fRange * [rsProperty, rsVarTypeInSpecification] = [rsProperty] then
     fRange := fRange + [rsAtPropertyOrReadWrite];
 end;
