@@ -1511,6 +1511,7 @@ TScaledImageListResolution is used in the implementation of the
 <seealso>
 <link id="TCustomImageListResolution"/>
 <link id="TCustomImageList.ResolutionForPPI"/>
+<link id="TCustomImageList.Scaled"/>
 <link id="TCustomImageList.DrawForPPI"/>
 </seealso>
 </element>
@@ -1567,7 +1568,7 @@ function.
 </p>
 <p>
 <var>AResolution</var> contains the <var>TCustomImageListResolution</var> 
-instance with image data used as the source for the scaled images. 
+instance with image data used as the source for the Scaled images. 
 AResolution is stored in the <var>Resolution</var> property to provide access 
 to its properties and methods in the scaled image resolution.
 </p>
@@ -2757,6 +2758,7 @@ GetResolutionForPPI is used in the implementation of the DrawForPPI method.
 <seealso>
 <link id="TScaledImageListResolution"/>
 <link id="TCustomImageList.Resolution"/>
+<link id="TCustomImageList.Scaled"/>
 <link id="TCustomImageList.DrawForPPI"/>
 </seealso>
 </element>
@@ -6113,12 +6115,12 @@ Width properties prior to adding images to the list.
 
 <element name="TCustomImageList.WidthForPPI">
 <short>
-Image width needed for the specified display density.
+Image width needed for the specified display density (PPI).
 </short>
 <descr>
 <p>
 <var>WidthForPPI</var> is an indexed read-only Integer property that contains 
-the image width needed for images using the specified display density (Pixels 
+the widths needed for images using the specified display densities (Pixels 
 per Inch).
 </p>
 <p>
@@ -6133,7 +6135,10 @@ calculate the width of images.
 Reading the value for the property causes the image width to be calculated 
 using the specified parameter values. If AWidth is 0 (zero) or a negative 
 number, the value in the <var>Width</var> property is used as the initial 
-image width. When <var>Scaled</var> contains <b>True</b>, the image width is 
+image width.
+</p>
+<p>
+When <var>Scaled</var> contains <b>True</b>, the image width is 
 calculated using the following formula:
 </p>
 <code>(AImageWidth * APPI) / 96</code>
@@ -6170,7 +6175,7 @@ and the value in AImageWidth is used as the property value.
 </p>
 <p>
 The <var>OnGetWidthForPPI</var> event handler is signalled (when assigned) to 
-allow overriding the calculated image width. Applications can provide a 
+allow the calculated image width to be overridden. Applications can provide a 
 <var>TCustomImageListGetWidthForPPI</var> procedure which uses custom scaling 
 logic, or performs simple image width substitution for given display 
 densities.
@@ -6412,6 +6417,7 @@ using the specified display density.
 </descr>
 <seealso>
 <link id="TCustomImageListResolution"/>
+<link id="TCustomImageList.Scaled"/>
 <link id="TCustomImageList.Resolution"/>
 <link id="TCustomImageList.Resolutions"/>
 <link id="TCustomImageList.ResolutionsDesc"/>
@@ -6456,6 +6462,7 @@ GetResolutionForPPI (the read access specifier for the property).
 <seealso>
 <link id="TScaledImageListResolution"/>
 <link id="TCustomImageList.Resolution"/>
+<link id="TCustomImageList.Scaled"/>
 <link id="TCustomImageList.DrawForPPI"/>
 </seealso>
 </element>
@@ -6544,41 +6551,62 @@ resolutions are accessed in descending image size order in the enumerator.
 <short>Descending Resolutions enumerator for the class instance.</short>
 </element>
 
+
 <element name="TCustomImageList.Scaled">
 <short>
-Indicates if images are automatically scaled for missing resolutions.
+Controls whether image sizes are automatically scaled for different display 
+density (Pixels per Inch) settings.
 </short>
 <descr>
 <p>
-<var>Scaled</var> is a <var>Boolean</var> property that indicates if images 
-are automatically scaled for missing resolutions requested in the image list. 
-The default value for the property is <b>False</b>.
+<var>Scaled</var> is a <var>Boolean</var> property used to enable or disable 
+automatic scaling of image sizes for different resolutions (Pixels per Inch). 
 </p>
 <p>
-When Scaled contains <b>True</b>, images in the list are dynamically scaled 
-to the required width for a given display density (PPI). If the resolution 
-already exists in the image list, it is used to retrieve images. If it does 
-not already exist, an existing resolution is used as the basis for scaling 
-images to the required width. When Scaled contains <b>False</b>, dynamic 
-scaling is not performed for image resolutions. Instead, the closest 
-resolution that matches the desired width is used as the source for images.
+When Scaled is <b>True</b>, images in the list are dynamically scaled from the 
+Width and Height used in the image list to the size needed for a given display 
+density (Pixels per Inch). If the scaled image size is one of the Resolutions 
+found in the image list, the images in the Resolution are used. If an image 
+size is needed that does not exist in Resolutions, the next smaller size is 
+selected from the predefined images by using the WidthForPPI property and a 
+specified PPI setting. The ResolutionForPPI property provides access to an 
+image list using the scaled image size.
 </p>
 <p>
-Use the <var>OnGetWidthForPPI</var> event handler to perform image size 
-overrides or substitution for a given display density (PPI).
+See <link id="TCustomImageList.WidthForPPI">WidthForPPI</link> for information 
+about use of the pixels per inch setting to derive the scaling factor and the 
+resulting size for images.
+</p>
+<p>
+When Scaled is <b>False</b>, images are not dynamically scaled. The Width and 
+Height specified in the image list are used.
+</p>
+<p>
+The default value for the property is <b>False</b> and disables automatic 
+scaling.
+</p>
+<p>
+At design-time, use the image list property editor to maintain images or 
+resolutions used in the image list. At run-time, use the methods provided in 
+the class instance to maintain the image list.
+</p>
+<p>
+Use the <var>OnGetWidthForPPI</var> event handler to override or substitute the 
+image size used for a given display density (PPI).
 </p>
 <p>
 Scaled is used in the implementation of the <var>GetResolutionForPPI</var> 
-and <var>GetWidthForPPI</var> methods.
+and <var>GetWidthForPPI</var> methods which implement the ResolutionForPPI and 
+WidthForPPI properties (respectively).
 </p>
 </descr>
 <seealso>
+<link id="TCustomImageList.Resolution"/>
+<link id="TCustomImageList.Resolutions"/>
 <link id="TCustomImageList.ResolutionForPPI"/>
 <link id="TCustomImageList.WidthForPPI"/>
 <link id="TCustomImageList.OnGetWidthForPPI"/>
 <link id="TCustomImageList.FindResolution"/>
-<link id="TCustomImageList.Resolution"/>
-<link id="TCustomImageList.Resolutions"/>
 </seealso>
 </element>
 
