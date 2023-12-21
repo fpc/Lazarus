@@ -34,11 +34,11 @@ uses
   Classes, SysUtils, RegExpr,
   // LCL
   LCLProc, Forms, Controls, Dialogs, ClipBrd, StdCtrls, ExtCtrls, Menus,
-  ButtonPanel, EditBtn,
+  ButtonPanel, EditBtn, LCLType,
   // LazUtils
   FileUtil, LazFileUtils, LazLoggerBase, LazStringUtils, LazUTF8,
   // synedit
-  SynEdit, SynHighlighterPas, SynEditAutoComplete,
+  SynEdit, SynHighlighterPas, SynEditAutoComplete, SynEditTypes,
   // codetools
   CodeToolManager, CodeCache, KeywordFuncLists, BasicCodeTools, PascalParserTool,
   // IDEIntf
@@ -80,6 +80,7 @@ type
     InsertMacroButton: TButton;
     KeepSubIndentCheckBox: TCheckBox;
     OptionsPanel: TPanel;
+    Splitter1: TSplitter;
     UseMacrosCheckBox: TCheckBox;
     RenameButton: TButton;
     DeleteButton: TButton;
@@ -90,6 +91,7 @@ type
     MainPopupMenu: TPopupMenu;
     procedure AddButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure RenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -824,7 +826,7 @@ procedure TCodeTemplateDialog.FormCreate(Sender: TObject);
 var
   ColorScheme: String;
 begin
-  IDEDialogLayoutList.ApplyLayout(Self,600,450);
+  IDEDialogLayoutList.ApplyLayout(Self,600,550);
 
   SynAutoComplete:=TSynEditAutoComplete.Create(Self);
   LastTemplate:=-1;
@@ -869,6 +871,10 @@ begin
   EditorOpts.GetSynEditSettings(TemplateSynEdit);
   EditorOpts.AssignKeyMapTo(TemplateSynEdit);
   TemplateSynEdit.Gutter.Visible:=false;
+  TemplateSynEdit.WantTabs := false;
+  TemplateSynEdit.Options  := TemplateSynEdit.Options  - [eoScrollPastEol];
+  TemplateSynEdit.Options2 := TemplateSynEdit.Options2 - [eoScrollPastEolAddPage];
+  TemplateSynEdit.Options2 := TemplateSynEdit.Options2 - [eoScrollPastEolAutoCaret];
 
   // init SynAutoComplete
   EditorOpts.LoadCodeTemplates(SynAutoComplete);
@@ -956,12 +962,14 @@ begin
     SynAutoComplete.AddCompletion(Token, '', Comment);
     FillCodeTemplateListBox;
     Index := SynAutoComplete.Completions.IndexOf(Token);
-    if Index >= 0
-    then Index := TemplateListBox.Items.IndexOfObject(TObject({%H-}Pointer(Index)));
-    if Index >= 0
-    then TemplateListBox.ItemIndex:=Index;
+    if Index >= 0 then
+      Index := TemplateListBox.Items.IndexOfObject(TObject({%H-}Pointer(Index)));
+    if Index >= 0 then
+      TemplateListBox.ItemIndex:=Index;
     
     ShowCurCodeTemplate;
+    if TemplateSynEdit.CanSetFocus then
+      TemplateSynEdit.SetFocus;
   end;
 end;
 
@@ -991,6 +999,82 @@ begin
   TemplateListBox.OnSelectionChange(Self, false); //update btn state
 end;
 
+procedure TCodeTemplateDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  // cancel
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    Key := 0;
+    Close;
+  end
+  // apply
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    OkButtonClick(Sender);
+  end
+  // call help
+  else if (Key = VK_F1) and (Shift = []) then
+  begin
+    HelpButtonClick(Sender);
+    Key := 0;
+  end
+  
+  // open file
+  else if (Key = VK_O) and (Shift = [ssCtrl]) then
+  begin
+    FilenameEdit.RunDialog;
+    Key := 0;
+  end
+
+  // create a new template
+  else if (Key = VK_N) and (Shift = [ssCtrl]) then
+  begin
+    AddButtonClick(Sender);
+    Key := 0;
+  end
+  // delete current template
+  else if (Key = VK_DELETE) and (Shift = [ssCtrl]) then
+  begin
+    DeleteButtonClick(Sender);
+    Key := 0;
+  end
+  // rename current template
+  else if (Key = VK_F2) and (Shift = []) then
+  begin
+    RenameButtonClick(Sender);
+    Key := 0;
+  end
+  // select next template
+  else if (Key = VK_DOWN) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    with TemplateListBox do
+      if ItemIndex >= 0 then
+      begin
+        if ItemIndex + 1 < Items.Count then
+          ItemIndex := ItemIndex + 1;
+      end else begin
+        if Items.Count > 0 then
+          ItemIndex := 0;
+      end;
+    Key := 0;
+  end
+  // select previous template
+  else if (Key = VK_UP) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    with TemplateListBox do
+      if ItemIndex >= 0 then
+      begin
+        if ItemIndex - 1 >= 0 then
+          ItemIndex := ItemIndex - 1;
+      end else begin
+        if Items.Count > 0 then
+          ItemIndex := Items.Count - 1;
+      end;
+    Key := 0;
+  end;
+end;
+
 procedure TCodeTemplateDialog.FormShow(Sender: TObject);
 begin
   TemplateListBox.OnSelectionChange(Self, true); //update btn states
@@ -1004,6 +1088,8 @@ begin
   if idx < 0 then exit;
   a := PtrInt(TemplateListBox.Items.Objects[idx]);
   if a < 0 then exit;
+
+  SaveCurCodeTemplate;
 
   if EditCodeTemplate(SynAutoComplete, a)=mrOk then begin
     TemplateListBox.Items[idx]:=

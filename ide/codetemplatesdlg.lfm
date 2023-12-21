@@ -3,12 +3,15 @@ object CodeTemplateDialog: TCodeTemplateDialog
   Height = 540
   Top = 174
   Width = 729
+  ActiveControl = TemplateListBox
   BorderIcons = [biSystemMenu]
   Caption = 'CodeTemplateDialog'
   ClientHeight = 540
   ClientWidth = 729
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
@@ -39,7 +42,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
       MaxLength = 0
       TabOrder = 0
       Text = 'FilenameEdit'
@@ -51,7 +56,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Top = 58
     Width = 717
     Align = alTop
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = 'TemplatesGroupBox'
     ClientHeight = 148
     ClientWidth = 713
@@ -74,8 +80,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ItemHeight = 0
       OnSelectionChange = TemplateListBoxSelectionChange
       ScrollWidth = 553
-      TabOrder = 0
-      TopIndex = -1
+      TabOrder = 3
     end
     object AddButton: TButton
       AnchorSideTop.Control = TemplateListBox
@@ -91,7 +96,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Caption = 'AddButton'
       Constraints.MinWidth = 140
       OnClick = AddButtonClick
-      TabOrder = 1
+      TabOrder = 0
     end
     object DeleteButton: TButton
       AnchorSideLeft.Control = AddButton
@@ -108,7 +113,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Top = 6
       Caption = 'DeleteButton'
       OnClick = DeleteButtonClick
-      TabOrder = 2
+      TabOrder = 1
     end
     object RenameButton: TButton
       AnchorSideLeft.Control = AddButton
@@ -125,7 +130,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BorderSpacing.Top = 6
       Caption = 'RenameButton'
       OnClick = RenameButtonClick
-      TabOrder = 3
+      TabOrder = 2
     end
   end
   object EditTemplateGroupBox: TGroupBox
@@ -137,7 +142,8 @@ object CodeTemplateDialog: TCodeTemplateDialog
     Top = 231
     Width = 717
     Align = alClient
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = 'EditTemplateGroupBox'
     ClientHeight = 249
     ClientWidth = 713
@@ -161,7 +167,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Font.Quality = fqNonAntialiased
       ParentColor = False
       ParentFont = False
-      TabOrder = 2
+      TabOrder = 0
       Gutter.Width = 57
       Gutter.MouseActions = <      
         item
@@ -700,7 +706,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       ChildSizing.ControlsPerLine = 2
       Columns = 2
       Constraints.MinHeight = 70
-      TabOrder = 1
+      TabOrder = 2
     end
     object OptionsPanel: TPanel
       AnchorSideLeft.Control = EditTemplateGroupBox
@@ -713,7 +719,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       BevelOuter = bvNone
       ClientHeight = 95
       ClientWidth = 200
-      TabOrder = 0
+      TabOrder = 1
       object KeepSubIndentCheckBox: TCheckBox
         AnchorSideLeft.Control = OptionsPanel
         AnchorSideTop.Control = OptionsPanel
@@ -737,6 +743,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
         Top = 30
         Width = 167
         BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         Caption = 'UseMacrosCheckBox'
         OnChange = UseMacrosCheckBoxChange
         ParentShowHint = False
@@ -779,6 +786,15 @@ object CodeTemplateDialog: TCodeTemplateDialog
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 230
+    Width = 729
+    Align = alTop
+    ResizeAnchor = akTop
   end
   object ASynPasSyn: TSynFreePascalSyn
     Enabled = False
