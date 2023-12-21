@@ -1467,15 +1467,19 @@ begin
     end
   end
   else if KeyComp('Var') then begin
-    if (PasCodeFoldRange.BracketNestLevel = 0) and
-        (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
-         cfbtUnit, cfbtUnitSection]) then begin
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
-      then StartPascalCodeFoldBlock(cfbtLocalVarType)
-      else StartPascalCodeFoldBlock(cfbtVarType);
+    if (PasCodeFoldRange.BracketNestLevel = 0) then begin
+      if (TopPascalCodeFoldBlockType in
+         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
+          cfbtUnit, cfbtUnitSection])
+      then begin
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+          EndPascalCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
+        then StartPascalCodeFoldBlock(cfbtLocalVarType)
+        else StartPascalCodeFoldBlock(cfbtVarType);
+      end;
+      fRange := fRange + [rsAfterSemiColon];
+      FOldRange := FOldRange - [rsAfterSemiColon];
     end;
     Result := tkKey;
   end
@@ -1823,7 +1827,8 @@ begin
           if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
           then StartPascalCodeFoldBlock(cfbtLocalVarType)
           else StartPascalCodeFoldBlock(cfbtVarType);
-        fRange := fRange + [rsInTypeBlock];
+        fRange := fRange + [rsInTypeBlock, rsAfterSemiColon];
+        FOldRange := FOldRange - [rsAfterSemiColon];
       end;
     end;
     Result := tkKey;
@@ -1879,15 +1884,19 @@ begin
     FRange := FRange + [rsInProcHeader];
   end
   else if KeyComp('Const') then begin
-    if (PasCodeFoldRange.BracketNestLevel = 0) and
-        (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
-         cfbtUnit, cfbtUnitSection]) then begin
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
-      then StartPascalCodeFoldBlock(cfbtLocalVarType)
-      else StartPascalCodeFoldBlock(cfbtVarType);
+    if (PasCodeFoldRange.BracketNestLevel = 0) then begin
+      if (TopPascalCodeFoldBlockType in
+         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
+          cfbtUnit, cfbtUnitSection])
+      then begin
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+          EndPascalCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
+        then StartPascalCodeFoldBlock(cfbtLocalVarType)
+        else StartPascalCodeFoldBlock(cfbtVarType);
+      end;
+      fRange := fRange + [rsAfterSemiColon];
+      FOldRange := FOldRange - [rsAfterSemiColon];
     end;
     Result := tkKey;
   end
