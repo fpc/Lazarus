@@ -2132,10 +2132,10 @@ trimming actions performed in the <var>UTF8Trim</var> function.
 <element name="TUTF8TrimFlag.u8tKeepEnd">
 <short>Keeps trailing whitespace.</short>
 </element>
-<element name="TUTF8TrimFlag.u8u8tKeepTabs">
+<element name="TUTF8TrimFlag.u8tKeepTabs">
 <short>Keeps tab characters.</short>
 </element>
-<element name="TUTF8TrimFlag.u8u8tKeepLineBreaks">
+<element name="TUTF8TrimFlag.u8tKeepLineBreaks">
 <short>Keeps line breaks.</short>
 </element>
 <element name="TUTF8TrimFlag.u8tKeepNoBreakSpaces">
