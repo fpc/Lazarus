@@ -39,9 +39,9 @@ unit IpHtmlPv;
 interface
 
 uses
-  Types, Classes, SysUtils,
+  Classes, SysUtils,
   // LCL
-  LCLIntf, GraphType, Buttons, Messages, Graphics, Controls, Forms,
+  LCLIntf, LCLType, GraphType, Buttons, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Spin,
   // TurboPower_ipro
   IpHtml, IpConst, IpHtmlTypes;

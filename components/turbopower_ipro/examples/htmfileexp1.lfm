@@ -7,9 +7,9 @@ object FHtmFileExp1: TFHtmFileExp1
   Caption = 'Example 1 for turbopower: HTM File Explorer'
   ClientHeight = 567
   ClientWidth = 777
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
     Height = 525
@@ -170,8 +170,8 @@ object FHtmFileExp1: TFHtmFileExp1
       Width = 152
       BorderSpacing.InnerBorder = 4
       Caption = 'Open HTML File'
-      OnClick = B_OpenHTMLFileClick
       TabOrder = 0
+      OnClick = B_OpenHTMLFileClick
     end
   end
   object OpenDialog1: TOpenDialog

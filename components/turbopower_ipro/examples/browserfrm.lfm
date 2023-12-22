@@ -6,7 +6,7 @@ object frMain: TfrMain
   Caption = 'IPro browser'
   ClientHeight = 314
   ClientWidth = 591
-  LCLVersion = '1.7'
+  LCLVersion = '3.99.0.0'
   object pnTop: TPanel
     Left = 0
     Height = 42
@@ -153,7 +153,7 @@ object frMain: TfrMain
       Anchors = [akTop, akLeft, akRight]
       ParentBidiMode = False
       TabOrder = 0
-      Text = 'http://freepascal.org/'
+      Text = 'https://freepascal.org/'
     end
     object btGo: TSpeedButton
       Left = 546
@@ -181,17 +181,21 @@ object frMain: TfrMain
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 640
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1920
+    PrintSettings.Preview.Height = 810
     TabOrder = 1
     OnDocumentOpen = IpHtmlPanel1DocumentOpen
   end
   object IpHttpDataProvider1: TIpHttpDataProvider
-    left = 64
-    top = 64
+    Left = 64
+    Top = 64
   end
   object alMain: TActionList
     OnUpdate = alMainUpdate
-    left = 160
-    top = 64
+    Left = 160
+    Top = 64
     object acBack: TAction
       Category = 'Browser'
       Enabled = False
@@ -205,8 +209,8 @@ object frMain: TfrMain
     object acGo: TAction
       Category = 'Browser'
       Caption = 'Go!'
-      OnExecute = acGoExecute
       ShortCut = 13
+      OnExecute = acGoExecute
     end
   end
 end

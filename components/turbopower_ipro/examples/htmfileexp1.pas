@@ -2,7 +2,10 @@ unit HtmFileExp1;
 
 {$mode objfpc}{$H+}
 
-{.$define UsePreview}
+{$DEFINE HTML_Print}
+{$IFDEF HTML_Print}
+  {$define UsePreview}
+{$ENDIF}
 
 interface
 

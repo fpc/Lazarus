@@ -2,7 +2,9 @@ unit MainUnit;
 
 {$mode objfpc}{$H+}
 
-{$define UsePreview}
+{$if defined(Html_Print)}
+ {$define UsePreview}
+{$endif}
 
 interface
 

@@ -9,8 +9,8 @@ object MainForm: TMainForm
   Caption = 'Example for turbopower internet pro HTML control'
   ClientHeight = 327
   ClientWidth = 569
+  LCLVersion = '3.99.0.0'
   OnCreate = MainFormCreate
-  LCLVersion = '2.3.0.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
     Height = 285
@@ -48,8 +48,8 @@ object MainForm: TMainForm
       Width = 152
       BorderSpacing.InnerBorder = 4
       Caption = 'Open HTML File'
-      OnClick = OpenHTMLFileButtonClick
       TabOrder = 0
+      OnClick = OpenHTMLFileButtonClick
     end
     object Button1: TButton
       Left = 192
@@ -58,8 +58,8 @@ object MainForm: TMainForm
       Width = 75
       BorderSpacing.InnerBorder = 4
       Caption = 'Preview'
-      OnClick = Button1Click
       TabOrder = 1
+      OnClick = Button1Click
     end
   end
   object OpenDialog1: TOpenDialog

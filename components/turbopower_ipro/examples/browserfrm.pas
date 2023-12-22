@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Iphttpbroker, IpHtml, Forms, Buttons, ExtCtrls, StdCtrls,
-  ActnList;
+  ActnList, opensslsockets;
 
 type
 
