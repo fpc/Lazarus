@@ -5376,7 +5376,7 @@ begin
   begin
     if gdk_window_is_visible(FDragImageList^.Window) then
       gdk_window_raise(FDragImageList^.Window);
-    gdk_window_move(FDragImageList^.Window, X - FDragHotStop.X, Y - FDragHotStop.Y);
+    gtk_window_move(GTK_WINDOW(FDragImageList), X - FDragHotStop.X, Y - FDragHotStop.Y);
   end;
 end;
 
