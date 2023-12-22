@@ -36,9 +36,9 @@ AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher=Lazarus Team
-AppPublisherURL=http://www.lazarus.freepascal.org/
-AppSupportURL=http://www.lazarus.freepascal.org/
-AppUpdatesURL=http://www.lazarus.freepascal.org/
+AppPublisherURL=https://www.lazarus-ide.org/
+AppSupportURL=https://www.lazarus-ide.org/
+AppUpdatesURL=https://www.lazarus-ide.org/
 #if FPCTargetCPU=="x86_64"
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
@@ -181,7 +181,7 @@ Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; F
 ;#endif
 
 [INI]
-Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
+Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/
 Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/index.php?action=forum
 Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/
 

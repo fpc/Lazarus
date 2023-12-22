@@ -34,9 +34,9 @@ AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher=Lazarus Team
-AppPublisherURL=http://www.lazarus.freepascal.org/
-AppSupportURL=http://www.lazarus.freepascal.org/
-AppUpdatesURL=http://www.lazarus.freepascal.org/
+AppPublisherURL=https://www.lazarus-ide.org/
+AppSupportURL=https://www.lazarus-ide.org/
+AppUpdatesURL=https://www.lazarus-ide.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
@@ -66,10 +66,9 @@ DisableDirPage=no
 Source: {#BuildDir}\image\*.*; DestDir: {app}; Flags: recursesubdirs
 
 [INI]
-Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
-Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/modules.php?op=modload&name=PNphpBB2&file=index
-Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/index.php/Main_Page
-
+Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/
+Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/index.php?action=forum
+Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/
 [Code]
 
 var
