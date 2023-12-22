@@ -6569,13 +6569,22 @@ density (Pixels per Inch). If the scaled image size is one of the Resolutions
 found in the image list, the images in the Resolution are used. If an image 
 size is needed that does not exist in Resolutions, the next smaller size is 
 selected from the predefined images by using the WidthForPPI property and a 
-specified PPI setting. The ResolutionForPPI property provides access to an 
-image list using the scaled image size.
+specified PPI setting. 
+</p>
+<p>
+The <var>OnGetWidthForPPI</var> event handler is signalled (when assigned) to 
+allow the calculated image width to be overridden. Applications can provide a 
+<var>TCustomImageListGetWidthForPPI</var> procedure which uses custom scaling 
+logic, or performs simple image width substitution for a given display density.
 </p>
 <p>
 See <link id="TCustomImageList.WidthForPPI">WidthForPPI</link> for information 
 about use of the pixels per inch setting to derive the scaling factor and the 
 resulting size for images.
+</p>
+<p>
+The ResolutionForPPI property provides access to an image list using an image 
+size scaled to a specific PPI setting.
 </p>
 <p>
 When Scaled is <b>False</b>, images are not dynamically scaled. The Width and 
@@ -6589,10 +6598,6 @@ scaling.
 At design-time, use the image list property editor to maintain images or 
 resolutions used in the image list. At run-time, use the methods provided in 
 the class instance to maintain the image list.
-</p>
-<p>
-Use the <var>OnGetWidthForPPI</var> event handler to override or substitute the 
-image size used for a given display density (PPI).
 </p>
 <p>
 Scaled is used in the implementation of the <var>GetResolutionForPPI</var> 
@@ -6679,6 +6684,16 @@ the event handler which handles image width calculations or substitutions.
 The image width is returned in the <var>AResultWidth</var> parameter for the 
 event handler.
 </p>
+<p>
+For example:
+</p>
+<code>
+procedure TForm1.ImageList1GetWidthForPPI(Sender: TCustomImageList;
+  AImageWidth, APPI: Integer; var AResultWidth: Integer);
+begin
+  AResultWidth := AImageWidth * APPI div 96;
+end;
+</code>
 </descr>
 <seealso>
 <link id="TCustomImageListGetWidthForPPI"/>
