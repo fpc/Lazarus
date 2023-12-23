@@ -137,10 +137,8 @@ echo "LazVersion=$LazVersion"
 echo "FPCVersion=$FPCVersion"
 echo "ChangeLogDate=$ChangeLogDate"
 
-# download/export lazarus git if needed
-if [ ! -f $SrcTGZ ]; then
-  ./create_lazarus_export_tgz.sh $SrcTGZ
-fi
+# export lazarus git
+./create_lazarus_export_tgz.sh $SrcTGZ
 
 echo "Build directory is $LazBuildDir"
 if [ x$LazBuildDir = x/ ]; then
