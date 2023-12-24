@@ -1,18 +1,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus ide\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 18.06.2019\n"
-"PO-Revision-Date: 2023-02-01 21:54+0300\n"
+"PO-Revision-Date: 2023-12-24 20:44+0000\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: onur2x@gmail.com\n"
-"Language: tr_TR\n"
+"Language-Team: Turkish (Turkey)\n"
+"Language: tr-TR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS: Onur ERÇELEN \"\n"
+"\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -843,14 +847,12 @@ msgid "Block indent (tabs)"
 msgstr "Blok girintisi (sekmeler)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-#, fuzzy
-#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
-msgstr "Çapa düzenleyicide kenarlık alanı ayarlanabilir. Boşluk > 0 ise kırmızı bir çizgi gösterilir."
+msgstr "Kenar alanı Anchor editöründe ayarlanabilir. Boşluk > 0 ise renkli bir çizgi gösterilir."
 
 #: lazarusidestrconsts.dlgborderspacingcolor
 msgid "BorderSpacing frame"
-msgstr ""
+msgstr "Kenarlık Aralığı çerçevesi"
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -887,7 +889,7 @@ msgstr "İmleç (Metin İmleç)"
 
 #: lazarusidestrconsts.dlgcaretscrollgroupoptions
 msgid "Caret (Text Cursor) past end of line"
-msgstr ""
+msgstr "İmleç (Metin İmleci) satırın sonundan sonra"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
@@ -1618,7 +1620,7 @@ msgstr "İtalik"
 
 #: lazarusidestrconsts.dlgeditexportbackcolor
 msgid "Use Background color in HTML export"
-msgstr ""
+msgstr "HTML dışa aktarımında Arka Plan rengini kullanma"
 
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
@@ -3115,10 +3117,8 @@ msgid "No Highlight"
 msgstr "Vurgulama Yok"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-#, fuzzy
-#| msgid "Other Designer background color (e. g. TDataModule)"
 msgid "Other Designer background (e. g. TDataModule)"
-msgstr "Diğer Tasarımcı arka plan rengi (örneğin TDataModule)"
+msgstr "Diğer Tasarımcı arka planı (ör. TDataModule)"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
@@ -3350,7 +3350,7 @@ msgstr "(Yok)"
 
 #: lazarusidestrconsts.dlgpointertypecheck
 msgid "@<pointer> returns a typed pointer"
-msgstr ""
+msgstr "@<pointer> yazılan bir işaretçiyi döndürür"
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
@@ -3582,7 +3582,7 @@ msgstr "Parametreleri Çalıştır"
 
 #: lazarusidestrconsts.dlgrunwithdebug
 msgid "Run uses the debugger (disable for release-mode)"
-msgstr ""
+msgstr "Çalıştırma hata ayıklayıcıyı kullanır (serbest bırakma modu için devre dışı bırakın)"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
@@ -3626,15 +3626,15 @@ msgstr "Kaydet"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolfixed
 msgid "Force 1024 columns minimum for horizontal scroll range"
-msgstr ""
+msgstr "Yatay kaydırma aralığı için minimum 1024 sütunu zorla"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolnone
 msgid "Do not add any permanent space to horizontal scroll range"
-msgstr ""
+msgstr "Yatay kaydırma aralığına kalıcı boşluk eklemeyin"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolpage
 msgid "Always add one page to horizontal scroll range"
-msgstr ""
+msgstr "Yatay kaydırma aralığına her zaman bir sayfa ekleyin"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -3654,8 +3654,6 @@ msgid "Scroll past end of file"
 msgstr "Dosyanın sonuna kaydır"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#, fuzzy
-#| msgid "Allow caret to move past end of line"
 msgid "Allow Caret to move past the end of line"
 msgstr "İmlecin satırın sonunu geçmesine izin ver"
 
@@ -3961,8 +3959,6 @@ msgid "Text-Style"
 msgstr "Yazı Stili"
 
 #: lazarusidestrconsts.dlgtexttofind
-#, fuzzy
-#| msgid "&Text to find"
 msgid "Search s&tring"
 msgstr "&Bulunacak metin"
 
@@ -4288,7 +4284,6 @@ msgid "Create a new recommended backend"
 msgstr "Önerilen yeni bir arka uç oluştur"
 
 #: lazarusidestrconsts.initdlgdebugcurrent
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
 msgid "Current"
 msgstr "Geçerli"
@@ -4317,7 +4312,6 @@ msgid "Keep backend"
 msgstr "Arka ucu sakla"
 
 #: lazarusidestrconsts.initdlgdebugnew
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugnew"
 msgid "New"
 msgstr "Yeni"
@@ -4377,8 +4371,6 @@ msgid "Setup is OK."
 msgstr "Kurulum TAMAM."
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
-#, fuzzy
-#| msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
 msgid "You are using an older backend. This may not give you the best debugging experience. Consider upgrading to the recommended backend."
 msgstr "Daha eski bir arka uç kullanıyorsunuz. Bu size en iyi hata ayıklama deneyimini vermeyebilir. Önerilen arka uca yükseltmeyi düşünün."
 
@@ -6280,7 +6272,7 @@ msgstr "Temizle ve projeyi derle"
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
-msgstr ""
+msgstr "Temizle + lazbuild"
 
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
@@ -7011,17 +7003,15 @@ msgstr "Önce çalıştır"
 
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
-msgstr ""
+msgstr "Daralt"
 
 #: lazarusidestrconsts.liscollapseall
-#, fuzzy
-#| msgid "Collapse All (/)"
 msgid "Collapse All [Ctrl+Minus]"
-msgstr "Tümünü daralt (/)"
+msgstr "Tümünü daralt [Ctrl+Minus]"
 
 #: lazarusidestrconsts.liscollapseall2
 msgid "Collapse All"
-msgstr ""
+msgstr "Hepsini Daralt"
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -7063,7 +7053,7 @@ msgstr "Aşağıdaki modları derleyin"
 
 #: lazarusidestrconsts.liscompilenormally
 msgid "Compile normally"
-msgstr ""
+msgstr "Normal şekilde derle"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -8804,7 +8794,7 @@ msgstr "Aşağı açılır sayısı"
 
 #: lazarusidestrconsts.lisdropdowncounthint
 msgid "Used for all ComboBoxes in IDE dialogs"
-msgstr ""
+msgstr "IDE iletişim kutularındaki tüm ComboBox'lar için kullanılır"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -9458,17 +9448,15 @@ msgstr "Çıkış kodu %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
-msgstr ""
+msgstr "Genişlet"
 
 #: lazarusidestrconsts.lisexpandall
-#, fuzzy
-#| msgid "Expand All (*)"
 msgid "Expand All [Ctrl+Plus]"
-msgstr "Hepsini genişlet (*)"
+msgstr "Hepsini genişlet [Ctrl+Plus]"
 
 #: lazarusidestrconsts.lisexpandall2
 msgid "Expand All"
-msgstr ""
+msgstr "Hepsini genişlet"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -9867,40 +9855,28 @@ msgid "&Multiline pattern"
 msgstr "&Çok satırlı desen"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-#, fuzzy
-#| msgid "search all files in &project"
 msgid "all files in &project"
-msgstr "projedeki tüm dosyalarda ara"
+msgstr "projedeki tüm dosyalar"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-#, fuzzy
-#| msgid "search all &open files"
 msgid "all &open files"
-msgstr "tüm açı&k dosyalarda ara"
+msgstr "tüm açı&k dosyalar"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-#, fuzzy
-#| msgid "search in &active file"
 msgid "&active file"
-msgstr "aktif dosya için&de ara"
+msgstr "ak&tif dosya"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-#, fuzzy
-#| msgid "search in &directories"
 msgid "&directories"
-msgstr "dizinlerde &ara"
+msgstr "&dizinlerde"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-#, fuzzy
-#| msgid "search in project &group"
 msgid "project &group"
-msgstr "p&roje grubunda ara"
+msgstr "p&roje grubu"
 
 #: lazarusidestrconsts.lisfindfilewhere
-#, fuzzy
-#| msgid "Where"
 msgid "Search location"
-msgstr "Nerede"
+msgstr "Arama lokasyonu"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
@@ -9931,10 +9907,8 @@ msgid "Force renaming"
 msgstr "Yeniden adlandırmayı zorla"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
-#, fuzzy
-#| msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
-msgstr "Örneğin, en üstte yerel değişkenleri, ardından mevcut sınıfın üyelerini, ardından ataları, sonra mevcut birimi, sonra kullanılmış birimleri gösterin"
+msgstr "\"Kapsamlı\" sıralama en üstte yerel değişkenleri, ardından geçerli sınıfın üyelerini, ardından ataların üyelerini, ardından geçerli birimi ve ardından kullanılan birimleri gösterecektir."
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -10825,9 +10799,9 @@ msgstr ""
 "WithComments, // yorumları ve boşlukları çıkart\n"
 "InUpperCase, // büyük harfe dön\n"
 "CommentsToSpace, // yorumları bir boşlukla değiştirin\n"
-"                      // (varsayılan olarak gereksiz yere atlamak,\n"
-"                      // e.g 'Do;' normalde 'Yap;'\n"
-"                      // bu seçenekle 'Yap;'\n"
+"                      // (varsayılan olarak gereksiz yere atlamak,\n"
+"                      // e.g 'Do;' normalde 'Yap;'\n"
+"                      // bu seçenekle 'Yap;'\n"
 "WithoutBrackets, // parametre listesinin başlangıç ​​ve bitiş dirseklerini atlayın\n"
 "WithoutSemicolon, // sonunda noktalı virgül atla\n"
 
@@ -11711,7 +11685,7 @@ msgstr "lazarus [seçenekler] <proje-dosya adı>"
 
 #: lazarusidestrconsts.lislazbuild
 msgid "lazbuild"
-msgstr ""
+msgstr "lazbuild"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -12080,7 +12054,7 @@ msgstr "Pascal'ı .pas / .pp son ekiyle bitmese bile varsayın."
 
 #: lazarusidestrconsts.lismajorchangesdetected
 msgid "Major changes detected"
-msgstr ""
+msgstr "Büyük değişiklikler tespit edildi"
 
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
@@ -13358,7 +13332,7 @@ msgstr "İmleçi Çalıştır"
 
 #: lazarusidestrconsts.lismenurunwithdebugging
 msgid "Run with Debugging"
-msgstr ""
+msgstr "Hata Ayıklama ile Çalıştır"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
@@ -13668,21 +13642,17 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Birimleri arayın. Bulunan yollar proje ayarlarına eklenir."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-#, fuzzy
-#| msgid "3) Abort now, install packages or fix paths and try again."
 msgid "3) Leave these units in uses sections as they are."
-msgstr "3) Şimdi iptal edin, paketler yükleyin veya yolları düzeltin ve tekrar deneyin."
+msgstr "3) Uses bölümlerindeki bu birimleri olduğu gibi bırakın."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Birim Yolunu Ara"
 
 #: lazarusidestrconsts.lismissingunitsskip
-#, fuzzy
-#| msgid "Skip this Unit"
 msgctxt "lazarusidestrconsts.lismissingunitsskip"
 msgid "Skip"
-msgstr "Bu Birimi Atla"
+msgstr "Atla"
 
 #: lazarusidestrconsts.lismitnotice
 msgid ""
@@ -14551,7 +14521,7 @@ msgstr "Paketi Aç %s"
 
 #: lazarusidestrconsts.lisopenpackage3
 msgid "Open Package"
-msgstr ""
+msgstr "Paketi Aç"
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"
@@ -17677,20 +17647,20 @@ msgstr "Sıralama"
 
 #: lazarusidestrconsts.lissortorderalphabetic
 msgid "Alphabetic"
-msgstr ""
+msgstr "Alfabetik"
 
 #: lazarusidestrconsts.lissortorderdefinition
 msgid "Definition (Scoped)"
-msgstr ""
+msgstr "Tanım (Kapsamlı)"
 
 #: lazarusidestrconsts.lissortorderscopedalphabetic
 msgctxt "lazarusidestrconsts.lissortorderscopedalphabetic"
 msgid "Alphabetic (Scoped)"
-msgstr ""
+msgstr "Alfabetik (Kapsamlı)"
 
 #: lazarusidestrconsts.lissortordertitle
 msgid "Order by"
-msgstr ""
+msgstr "Sırala"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -18245,7 +18215,7 @@ msgstr "\"%s\" Lazarus dizini doğru görünmüyor: %s %s"
 #: lazarusidestrconsts.listhelazarussourcesuse
 #, object-pascal-format
 msgid "The Lazarus sources use a different list of base packages.%sIt is recommended to compile the IDE clean using lazbuild."
-msgstr ""
+msgstr "Lazarus kaynakları farklı bir temel paket listesi kullanır.%s IDE temizle oluştur kullanılarak derlenmesi önerilir."
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
@@ -18359,7 +18329,7 @@ msgstr "%s paketi bir tasarım zamanı paketi değil, IDE'ye kurulamıyor."
 #: lazarusidestrconsts.listhepackageisusedby
 #, object-pascal-format
 msgid "The package \"%s\" is used by"
-msgstr ""
+msgstr "\"%s\" paketi tarafından kullanılıyor"
 
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
@@ -19431,7 +19401,7 @@ msgstr "%s kaldırıldı"
 
 #: lazarusidestrconsts.lisuninstallfail
 msgid "Uninstall failed"
-msgstr ""
+msgstr "Kaldırma başarısız oldu"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -19443,7 +19413,7 @@ msgstr "Seçimi kaldır"
 
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
-msgstr ""
+msgstr "Onları da kaldırın"
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"
@@ -19494,7 +19464,7 @@ msgstr "%s birimi \"%s\" yeni konumunda bulunamadı \""
 #: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
 msgid "A unit not found in file %s"
-msgstr ""
+msgstr "%s dosyasında bir birim bulunamadı"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19516,7 +19486,7 @@ msgstr "%s birimi %s paketini gerektiriyor"
 #: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
 msgid "Units not found in file %s"
-msgstr ""
+msgstr "Birimler %s dosyasında bulunamadı"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -20094,10 +20064,8 @@ msgid "Close all pages"
 msgstr "Tüm sayfaları kapat"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-#, fuzzy
-#| msgid "Close current page"
 msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
-msgstr "Geçerli sayfayı kapat"
+msgstr "Geçerli sayfayı kapat (Ctrl+F4)∥(Ctrl+W)"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
@@ -20124,10 +20092,8 @@ msgid "Enable i18n"
 msgstr "I18n aktif"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-#, fuzzy
-#| msgid "Filter the lines in list with a string"
 msgid "Filter the lines in list with a string (Ctrl+F)"
-msgstr "Listedeki satırları bir string ile filtreleme"
+msgstr "Listedeki satırları bir dizeyle filtreleme (Ctrl+F)"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found but not listed here: "
@@ -20282,10 +20248,8 @@ msgid "Mi&nor version:"
 msgstr "Küçü&k sürüm:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-#, fuzzy
-#| msgid "New search with same criteria"
 msgid "New search with same criteria (Ctrl+N)"
-msgstr "Aynı kriterlere sahip yeni arama"
+msgstr "Aynı kriterlerle yeni arama (Ctrl+N)"
 
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
@@ -20296,10 +20260,8 @@ msgid "PO Output Directory:"
 msgstr "PO Çıktı klasörü:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-#, fuzzy
-#| msgid "Refresh the search"
 msgid "Refresh the search (F5)"
-msgstr "Aramayı yenile"
+msgstr "Aramayı yenile (F5)"
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -20329,21 +20291,20 @@ msgstr "Devralınan bir girişi seçin"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
-msgstr ""
+msgstr "Kesin yol"
 
 #: lazarusidestrconsts.rsshowfilename
-#, fuzzy
 msgctxt "lazarusidestrconsts.rsshowfilename"
 msgid "File name"
 msgstr "Dosya adı"
 
 #: lazarusidestrconsts.rsshowpathmode
 msgid "Path display mode (Ctrl+P)"
-msgstr ""
+msgstr "Yol görüntüleme modu (Ctrl+P)"
 
 #: lazarusidestrconsts.rsshowrelpath
 msgid "Relative path"
-msgstr ""
+msgstr "Göreceli yol"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -21253,7 +21214,7 @@ msgstr "parametreleri çalıştır"
 
 #: lazarusidestrconsts.srkmecrunwithdebugging
 msgid "run with debugging"
-msgstr ""
+msgstr "hata ayıklama ile çalıştır"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
