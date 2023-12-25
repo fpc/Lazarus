@@ -24,8 +24,7 @@ EnableMakros=true
 $(AttributesEnd)
 begin
   |
-end else
-begin
+end else begin
 
 end$AddSemicolon()
 [casee | case statement (with else)]
@@ -106,6 +105,9 @@ end;
 [hexc | HexStr(Cardinal(),8)]
 HexStr(PtrUInt(|),8)
 [ifs | if (no begin/end)]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
 if $Param(Conditional) then
   |
 [ifb | if statement]
@@ -138,7 +140,10 @@ else begin
 
 end$AddSemicolon()
 [procedure | procedure declaration]
-procedure $Param(ProcName)|($Param());
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
+procedure $Param(ProcName)($Param());
 begin
   |
 end;
@@ -147,7 +152,7 @@ $(AttributesStart)
 EnableMakros=true
 $(AttributesEnd)
 of
-|$OfAll()end;
+|$OfAll()end$AddSemicolon()
 [trye | try except]
 $(AttributesStart)
 EnableMakros=true
@@ -188,6 +193,9 @@ begin
   |
 end$AddSemicolon()
 [whiles | while (no begin)]
+$(AttributesStart)
+EnableMakros=true
+$(AttributesEnd)
 while $Param(LoopCondition) do
   |
 [withb | with statement]
@@ -227,7 +235,7 @@ begin
   Width:=$Param(0);
   Height:=$Param(0);
   Caption:='$Param(CaptionText)';
-end;
+end$AddSemicolon()
 |
 [fpc | Conditional FPC Mode]
 $(AttributesStart)
@@ -251,35 +259,56 @@ writeln('$ProcedureName() '|)$AddSemicolon()
 [prws | property read write]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name) read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1);|
 [prwd | property read write default]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name) read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1) default $param(Const);|
 [pirws | property Integer read write]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name): Integer read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1);|
 [pirwd | property Integer read write default]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name): Integer read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1) default $param(Const);|
 [psrw | property string read write]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name): string read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1);|
 [pdrwd | property Double read write default]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
 property $param(Name): Double read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1) default $param(Const);|
 [pdrws | property Double read write]
 $(AttributesStart)
 !Version=1
+EnableMakros=true
 $(AttributesEnd)
-property $param(Name): Double read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1);| 
+property $param(Name): Double read $param(Get)$param(Name,sync=1) write $param(Set)$param(Name,sync=1);|
+[is | IntToStr]
+IntToStr(|)
+[si | StrToInt()]
+StrToInt(|)
+[sid | StrToIntDef]
+StrToIntDef(|, -1)
+[bs | BoolToStr]
+BoolToStr(|, true)
+[sb | StrToBool]
+StrToBool(|)
+[sbd | StrToBoolDef]
+StrToBoolDef(|, false)
+[ih | IntToHex]
+IntToHex(|)
