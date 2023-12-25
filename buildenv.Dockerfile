@@ -98,6 +98,8 @@ RUN tarballs=( \
     rm -rf pas2js; \
     echo "Contents of /usr/local/bin/pas2js.cfg:"; \
     cat /usr/local/bin/pas2js.cfg; \
+    echo "Contents of /usr/local/bin/pas2js-namespaced.cfg:"; \
+    cat /usr/local/bin/pas2js-namespaced.cfg; \
     # remove sources
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
