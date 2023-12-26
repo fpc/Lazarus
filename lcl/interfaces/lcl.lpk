@@ -2613,37 +2613,6 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item529>
-<<<<<<< HEAD
-      <Item530>
-        <Filename Value="cocoa/cocoaconst.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaConst"/>
-      </Item530>
-      <Item531>
-        <Filename Value="cocoa/cocoacursor.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaCursor"/>
-      </Item531>
-      <Item532>
-        <Filename Value="cocoa/cocoamenus.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaMenus"/>
-      </Item532>
-      <Item533>
-        <Filename Value="cocoa/cocoawsdatepicker.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSDatePicker"/>
-      </Item533>
-      <Item534>
-        <Filename Value="cocoa/cocoaconfig.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="cocoaconfig"/>
-      </Item534>
-      <Item535>
-        <Filename Value="cocoa/cocoa_extra.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="Cocoa_Extra"/>
-      </Item535>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
