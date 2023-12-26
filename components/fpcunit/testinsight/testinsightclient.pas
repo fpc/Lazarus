@@ -83,8 +83,8 @@ begin
   Body:=Nil;
   Res:=TStringStream.Create('');
   try
-    Writeln('Sending content to; ',ConcatURL(aURL),':');
-    Writeln(aContent);
+    // Writeln('Sending content to; ',ConcatURL(aURL),':');
+    // Writeln(aContent);
     if aContent<>'' then
       Body:=TStringStream.Create(aContent);
     FHTTP.RequestBody:=Body;
@@ -111,10 +111,10 @@ begin
   Res:=TStringStream.Create('');
   try
     try
-      Writeln('Get URL ',ConcatURL(aURL),':');
+      // Writeln('Get URL ',ConcatURL(aURL),':');
       FHTTP.Get(ConcatURL(aURL),Res);
       Result:=Res.DataString;
-      Writeln(Result);
+      // Writeln(Result);
       SetError(Nil);
     except
       on E : Exception do
