@@ -5,7 +5,7 @@ unit TestInsightServer;
 interface
 
 uses
-  Classes, SysUtils, types, fphttpserver, fpJSON, testinsightprotocol;
+  Classes, SysUtils, types, httpdefs, syncobjs, fphttpserver, fpJSON, testinsightprotocol;
 
 Type
   TTestItem = Class;
@@ -57,7 +57,8 @@ Type
    TTestResultEvent = Procedure(Sender : TObject; aResult : TTestInsightResultArray) of object;
    TTestsStartedEvent = Procedure(Sender : TObject; aCount : Integer) of object;
    TTestsOptionsEvent = Procedure(Sender : TObject; aOptions : TTestInsightOptions) of object;
-   TTestInsightLogEvent = Procedure(Sender : TObject; const aMessage : String) of object;
+   TInsightMessageType = (imtInfo,imtError);
+   TTestInsightLogEvent = Procedure(Sender : TObject; const aType : TInsightMessageType; const aMessage : String) of object;
 
    TTestInsightServer = class(TComponent)
    private
@@ -70,7 +71,6 @@ Type
      FOnSelectedTests: TSelectedTestsEvent;
      FOnSetTestNames: TTestNamesEvent;
      FOnTestResult: TtestResultEvent;
-     FResultArray : TTestInsightResultArray;
      FSelectedTests : String;
      FTestInsightResultClass: TTestInsightResultClass;
      FTestSuite : TTestItem;
@@ -80,21 +80,22 @@ Type
      FThread: TThread;
      FServerPort : Word;
      FServerActive : Boolean;
+     FCorsSupport : TCORSSupport;
      procedure CreateServer;
-     procedure ExtractResults(anArray: TJSONArray);
-     procedure FreeResults;
+     function ExtractResults(anArray: TJSONArray): TTestInsightResultArray;
+     procedure FreeResults(Results: TTestInsightResultArray);
      function GetPort: Word;
      procedure HandleStartThreadTerminate(Sender: TObject);
      procedure SetBasePath(AValue: String);
+     procedure SetCorsSupport(AValue: TCORSSupport);
      procedure SetPort(AValue: Word);
    Protected
-     Procedure DoLog(Const aMessage : String);
-     Procedure DoLog(Const Fmt : String; Args : Array of const);
+     Procedure DoLog(const aType : TInsightMessageType; const aMessage : String);
+     Procedure DoLog(const aType : TInsightMessageType; const Fmt : String; Args : Array of const);
      // Override if you want to create a descendent.
      function CreateTestInsightOptions: TTestInsightOptions; virtual;
      // these are called in the main thread
      procedure DoGetSelectedTests; virtual;
-     procedure DoResultEvent; virtual;
      procedure DoSetTestNames; virtual;
      procedure DoTestsStarted; virtual;
      procedure DoTestsFinished; virtual;
@@ -128,6 +129,8 @@ Type
      property Port: Word Read GetPort Write SetPort;
      // First part of URL. By default: /tests
      Property BasePath : String Read FBasePath Write SetBasePath;
+     // CORS Support ?
+     Property CorsSupport : TCORSSupport Read FCorsSupport Write SetCorsSupport;
      // Set the list of tests. Event handler must free JSON object.
      Property OnSetTestNames : TTestNamesEvent Read FOnSetTestNames Write FOnSetTestNames;
      // Get the list of selected tests. The server will free the received object.
@@ -271,12 +274,32 @@ end;
 
 { TTestInsightServer }
 
-procedure TTestInsightServer.DoResultEvent;
+Type
+
+  { TTransferTestResult }
+
+  TTransferTestResult = Class
+  Private
+    FEvent: TTestResultEvent;
+    FSender : TObject;
+    FResult : TTestInsightResultArray;
+  Public
+    constructor create (aEvent: TTestResultEvent; aSender : TObject; aResult : TTestInsightResultArray);
+    procedure DoResultEvent;
+  end;
+
+constructor TTransferTestResult.create(aEvent: TTestResultEvent; aSender: TObject; aResult: TTestInsightResultArray);
+begin
+  FEvent:=aEvent;
+  FSender:=aSender;
+  FResult:=aResult;
+end;
+
+procedure TTransferTestResult.DoResultEvent;
 
 begin
-  if Assigned(OnTestResult) then
-    OnTestResult(Self,FResultArray);
-  FResultArray:=Nil;
+  if Assigned(FEvent) then
+    FEvent(FSender,FResult);
 end;
 
 procedure TTestInsightServer.DoSetTestNames;
@@ -352,15 +375,16 @@ begin
     end;
 end;
 
-procedure TTestInsightServer.ExtractResults(anArray : TJSONArray);
+Function TTestInsightServer.ExtractResults(anArray : TJSONArray) : TTestInsightResultArray;
 
 Var
   i,aLen : Integer;
   Res: TTestInsightResult;
 
+
 begin
   aLen:=0;
-  SetLength(FResultArray,anArray.Count);
+  SetLength(Result,anArray.Count);
   For I:=0 to anArray.Count-1 do
     begin
     if anArray.Types[i]=jtObject then
@@ -369,11 +393,15 @@ begin
       try
         Res.FromJSOn(anArray.Objects[i]);
       except
-        FreeAndNil(res);
+        on E : Exception do
+          begin
+          FreeAndNil(res);
+          DoLog(imtError,'Error %s extracting test result: %s',[E.ClassName, E.Message]);
+          end;
       end;
       if Assigned(Res) then
         begin
-        FResultArray[aLen]:=Res;
+        Result[aLen]:=Res;
         Inc(aLen);
         end;
       end;
@@ -384,9 +412,11 @@ procedure TTestInsightServer.DoTestResults(ARequest: TFPHTTPConnectionRequest; a
 
 Var
   D : TJSONData;
+  Results : TTestInsightResultArray;
+  Trans : TTransferTestResult;
 
 begin
-  FreeResults;
+  Results:=Nil;
   try
     D:=GetJSON(aRequest.Content);
   except
@@ -400,36 +430,38 @@ begin
     if D is TJSONArray then
       begin
       Send200(aResponse);
-      ExtractResults(D as TJSONArray);
+      Results:=ExtractResults(D as TJSONArray);
       end
     else if (D is TJSONObject) and (D.Count=1) and (D.Items[0] is TJSONArray) then
       begin
       Send200(aResponse);
-      ExtractResults(TJSONObject(D).Extract(0) as TJSONArray);
+      Results:=ExtractResults(TJSONObject(D).Extract(0) as TJSONArray);
       end
     else
       Send400(aResponse,'Bad JSON message');
   finally
     D.Free;
   end;
-  if Assigned(FResultArray) then
-    begin
-    if Assigned(OnTestResult) then
-      TThread.Synchronize(TThread.CurrentThread,@DoResultEvent)
-    else
-      FreeResults;
-    end;
+  if not (Assigned(Results) and Assigned(OnTestResult)) then
+    Exit;
+  Trans:=TTransferTestResult.create(OnTestResult,Self,Results);
+  try
+    TThread.Synchronize(TThread.CurrentThread,@Trans.DoResultEvent);
+    FreeResults(Results);
+  finally
+    Trans.Free;
+  end;
 end;
 
-procedure TTestInsightServer.FreeResults;
+procedure TTestInsightServer.FreeResults(Results : TTestInsightResultArray);
 
 Var
   Res : TTestInsightResult;
 
 begin
-  For Res in FResultArray do
-     Res.Free;
-  SetLength(FResultArray,0);
+  For Res in Results do
+    Res.Free;
+  SetLength(Results,0);
 end;
 
 
@@ -519,10 +551,13 @@ Var
 
 begin
   aPath:=aRequest.PathInfo;
+  DoLog(imtInfo,'Handling request %s %s',[aRequest.Method,aPath]);
   if not SameText(Copy(aPath,1,Length(BasePath)),BasePath) then
     Send404(aResponse)
   else
     begin
+    if FCorsSupport.HandleRequest(aRequest,aResponse,[hcDetect, hcsend]) then
+      exit;
     Delete(aPath,1,Length(BasePath));
     if (aPath='') then // '/tests'
       begin
@@ -542,7 +577,7 @@ begin
       if SameText(aPath,pathStarted) then
         begin
         if CheckMethod('POST') then
-           DoStartTests(aResponse,StrToIntDef(aRequest.QueryFields.Values[qryTotalCount],-1));
+          DoStartTests(aResponse,StrToIntDef(aRequest.QueryFields.Values[qryTotalCount],-1));
         end
       else if SameText(aPath,pathFinished) then
         begin
@@ -585,7 +620,7 @@ begin
   ErrClass:=SThread.StartErrorClass;
   ErrMsg:=SThread.StartErrorMessage;
   if ErrClass<>'' then
-    DoLog('Error %s starting server: %s',[ErrClass,ErrMsg]);
+    DoLog(imtError,'Error %s starting server: %s',[ErrClass,ErrMsg]);
   FThread:=Nil;
   FServerActive:=False;
 
@@ -611,21 +646,28 @@ begin
     FBasePath:=AValue;
 end;
 
+procedure TTestInsightServer.SetCorsSupport(AValue: TCORSSupport);
+begin
+  if FCorsSupport=AValue then Exit;
+  FCorsSupport.Assign(AValue);
+end;
+
 procedure TTestInsightServer.SetPort(AValue: Word);
 begin
   FServer.Port:=aValue;
   FServerPort:=aValue;
 end;
 
-procedure TTestInsightServer.DoLog(const aMessage: String);
+
+procedure TTestInsightServer.DoLog(const aType : TInsightMessageType;const aMessage: String);
 begin
   If Assigned(FOnLog) then
-    FOnLog(Self,aMessage);
+    FOnLog(Self,aType,aMessage);
 end;
 
-procedure TTestInsightServer.DoLog(const Fmt: String; Args: array of const);
+procedure TTestInsightServer.DoLog(const aType : TInsightMessageType;const Fmt: String; Args: array of const);
 begin
-  DoLog(Format(Fmt,Args));
+  DoLog(aType,Format(Fmt,Args));
 end;
 
 procedure TTestInsightServer.Send400(aResponse: TFPHTTPConnectionResponse; aText : String);
@@ -673,6 +715,8 @@ begin
   BasePath:=pathTests;
   FTestInsightResultClass:=TTestInsightResult;
   FInsightOptions:=CreateTestInsightOptions;
+  FCorsSupport:=TCORSSupport.Create;
+  FCorsSupport.Enabled:=True;
 end;
 
 
@@ -681,10 +725,11 @@ begin
   StopServer;
   FreeAndNil(FServer);
   FreeAndNil(FInsightOptions);
+  FreeAndNil(FCorsSupport);
   inherited destroy;
 end;
 
-Procedure TTestInsightServer.CreateServer;
+procedure TTestInsightServer.CreateServer;
 
 begin
   FServer:=TFPHttpServer.Create(Self);
@@ -706,6 +751,7 @@ begin
   FServer.OnRequest:=@DoRequest;
   FServerActive:=True;
   FThread:=TStartServerThread.Create(FServer,@HandleStartThreadTerminate);
+  DoLog(imtInfo,'Starting test insight server on port %d',[Port]);
 end;
 
 procedure TTestInsightServer.StopServer;
@@ -717,19 +763,19 @@ begin
     exit;
   FServer.OnRequest:=Nil;
   FServerActive:=False;
-  DoLog('Deactivating server');
+  DoLog(imtInfo,'Deactivating server');
   FServer.Active:=False;
-  DoLog('Fake request');
+  DoLog(imtInfo,'Fake request');
   Try
     TInetSocket.Create('localhost',FServer.Port,10,Nil).Free;
   except
     on E  : Exception do
-     DoLog('Fake request resulted in %s: %s',[E.ClassName,E.Message]);
+     DoLog(imtError,'Fake request resulted in %s: %s',[E.ClassName,E.Message]);
   end;
-  DoLog('Waiting for server thread to stop');
+  DoLog(imtInfo,'Waiting for server thread to stop');
   If Assigned(FThread) then
     FThread.WaitFor;
-  DoLog('Server thread stopped');
+  DoLog(imtInfo,'Server thread stopped');
 end;
 
 
