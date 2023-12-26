@@ -7,6 +7,11 @@ interface
 uses
   Classes, SysUtils, types, httpdefs, syncobjs, fphttpserver, fpJSON, testinsightprotocol;
 
+{$IF DECLARED(TCORSSUPPORT)}
+{$DEFINE USECORS}
+{$ENDIF}
+
+
 Type
   TTestItem = Class;
 
@@ -80,14 +85,18 @@ Type
      FThread: TThread;
      FServerPort : Word;
      FServerActive : Boolean;
+{$IFDEF USECORS}
      FCorsSupport : TCORSSupport;
+{$ENDIF}
      procedure CreateServer;
      function ExtractResults(anArray: TJSONArray): TTestInsightResultArray;
      procedure FreeResults(Results: TTestInsightResultArray);
      function GetPort: Word;
      procedure HandleStartThreadTerminate(Sender: TObject);
      procedure SetBasePath(AValue: String);
+{$IFDEF USECORS}
      procedure SetCorsSupport(AValue: TCORSSupport);
+{$ENDIF}
      procedure SetPort(AValue: Word);
    Protected
      Procedure DoLog(const aType : TInsightMessageType; const aMessage : String);
@@ -130,7 +139,9 @@ Type
      // First part of URL. By default: /tests
      Property BasePath : String Read FBasePath Write SetBasePath;
      // CORS Support ?
+{$IFDEF USECORS}
      Property CorsSupport : TCORSSupport Read FCorsSupport Write SetCorsSupport;
+{$ENDIF}
      // Set the list of tests. Event handler must free JSON object.
      Property OnSetTestNames : TTestNamesEvent Read FOnSetTestNames Write FOnSetTestNames;
      // Get the list of selected tests. The server will free the received object.
@@ -556,8 +567,10 @@ begin
     Send404(aResponse)
   else
     begin
+{$IFDEF USECORS}
     if FCorsSupport.HandleRequest(aRequest,aResponse,[hcDetect, hcsend]) then
       exit;
+{$ENDIF}
     Delete(aPath,1,Length(BasePath));
     if (aPath='') then // '/tests'
       begin
@@ -646,11 +659,13 @@ begin
     FBasePath:=AValue;
 end;
 
+{$IFDEF USECORS}
 procedure TTestInsightServer.SetCorsSupport(AValue: TCORSSupport);
 begin
   if FCorsSupport=AValue then Exit;
   FCorsSupport.Assign(AValue);
 end;
+{$ENDIF}
 
 procedure TTestInsightServer.SetPort(AValue: Word);
 begin
@@ -715,8 +730,10 @@ begin
   BasePath:=pathTests;
   FTestInsightResultClass:=TTestInsightResult;
   FInsightOptions:=CreateTestInsightOptions;
+{$IFDEF USECORS}
   FCorsSupport:=TCORSSupport.Create;
   FCorsSupport.Enabled:=True;
+{$ENDIF}
 end;
 
 
@@ -725,7 +742,9 @@ begin
   StopServer;
   FreeAndNil(FServer);
   FreeAndNil(FInsightOptions);
+{$IFDEF USECORS}
   FreeAndNil(FCorsSupport);
+{$ENDIF}
   inherited destroy;
 end;
 
