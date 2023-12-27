@@ -590,7 +590,6 @@ procedure TTestInsightForm.TestTreeDblClick(Sender: TObject);
     P : integer;
 
   begin
-    Writeln('Path: ');
     Result:=False;
     P:=RPos('.',aPath);
     if P>0 then
@@ -604,7 +603,6 @@ procedure TTestInsightForm.TestTreeDblClick(Sender: TObject);
         aClass:=aPath;
       Result:=True;
       end;
-    Writeln('Path -> Class: ',aClass,' method: ',aMethod,': ',Result);
   end;
 
 var
@@ -748,7 +746,6 @@ begin
     begin
     Res:=aResult[i];
     aName:=Res.TestName;
-    Writeln('Analyizing test result',Res.TestClassName,' : ',Res.TestName);
     N:=FindNode(aName);
     if N=Nil then
       Res.Free
@@ -762,7 +759,7 @@ begin
         rtWarning : AddFailure(N,Itm);
         rtPassed : EndTest(N,Itm);
       else
-        Writeln('Unknown test result',Res.TestClassName,' : ',Res.TestName);
+        ; // 
       end;
       end;
     end;

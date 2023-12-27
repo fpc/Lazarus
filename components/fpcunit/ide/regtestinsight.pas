@@ -105,7 +105,7 @@ begin
       F:=LProj.FindFile(aunit+'.pas',[pfsfOnlyProjectFiles]);
     if Not Assigned(F) then
       F:=LProj.FindFile(aunit+'.p',[pfsfOnlyProjectFiles]);
-    Writeln('Found unit "',aunit,'" : ',Assigned(F));
+    // Writeln('Found unit "',aunit,'" : ',Assigned(F));
     end;
   // Search in unit, if available
   Tool:=Nil;
@@ -123,7 +123,7 @@ begin
     if CodetoolBoss.Explore(C,Tool,False,false) then
       Node:=Tool.FindMainBeginEndNode;
     end;
-  Writeln('Node found for unit "',aunit,'" : ',Assigned(Node));
+  // Writeln('Node found for unit "',aunit,'" : ',Assigned(Node));
   if Node=nil then
     exit;
   Params:=TFindDeclarationParams.Create;
@@ -132,7 +132,7 @@ begin
   Params.SetIdentifier(Tool,PChar(aClass),nil);
   if not Tool.FindIdentifierInContext(Params) then
     begin
-    Writeln('Class not found for unit "',aunit,'", identifier ',aClass);
+    // Writeln('Class not found for unit "',aunit,'", identifier ',aClass);
     exit;
     end;
   NewNode:=Params.NewNode;
@@ -142,13 +142,13 @@ begin
      or (NewNode.Desc<>ctnTypeDefinition)
      or (ClassNode.Desc<>ctnClass) then
        begin
-       Writeln('Class identifier in unit "',aunit,'", is not a class identifier ',aClass);
+       // Writeln('Class identifier in unit "',aunit,'", is not a class identifier ',aClass);
        Exit;
        end;
   Ctx:=ClassTool.FindClassMember(ClassNode,aMethod,true);
   if not Assigned(Ctx.Node) then
     begin
-    Writeln('Method ',aMethod,' for class ',aClass,' not found in unit "',aunit);
+    // Writeln('Method ',aMethod,' for class ',aClass,' not found in unit "',aunit);
     exit;
     end;
   Ctx.Tool.CleanPosToCaretAndTopLine(Ctx.Node.StartPos,Caret,NewTopLine);
