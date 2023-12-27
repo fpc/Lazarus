@@ -216,6 +216,7 @@ msgid "Block without begin"
 msgstr "Blöcke ohne Begin"
 
 #: jcfuiconsts.lisblockselsebegin
+#, fuzzy
 msgid "Else begin"
 msgstr "Else gein"
 
