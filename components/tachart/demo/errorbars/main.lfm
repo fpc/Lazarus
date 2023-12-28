@@ -16,7 +16,6 @@ object MainForm: TMainForm
     AxisList = <    
       item
         Grid.Color = clSilver
-        AxisPen.Width = 2
         AxisPen.Visible = True
         Marks.LabelBrush.Style = bsClear
         Minors = <>
@@ -26,7 +25,6 @@ object MainForm: TMainForm
       item
         Grid.Color = clSilver
         Alignment = calBottom
-        AxisPen.Width = 2
         AxisPen.Visible = True
         Marks.LabelBrush.Style = bsClear
         Minors = <>

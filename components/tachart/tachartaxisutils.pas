@@ -501,7 +501,8 @@ procedure TAxisDrawHelperX.GridLine(ACoord: Integer);
 begin
   if TryApplyStripes then
     BarZ(FPrevCoord + 1, FClipRect^.Top + 1, ACoord, FClipRect^.Bottom);
-  LineZ(Point(ACoord, FClipRect^.Top), Point(ACoord, FClipRect^.Bottom));
+  if (ACoord <> FClipRect^.Left) and (ACoord <> FClipRect^.Right) then
+    LineZ(Point(ACoord, FClipRect^.Top), Point(ACoord, FClipRect^.Bottom));
 end;
 
 { TAxisDrawHelperY }
@@ -570,7 +571,8 @@ procedure TAxisDrawHelperY.GridLine(ACoord: Integer);
 begin
   if TryApplyStripes then
     BarZ(FClipRect^.Left + 1, FPrevCoord, FClipRect^.Right, ACoord);
-  LineZ(Point(FClipRect^.Left, ACoord), Point(FClipRect^.Right, ACoord));
+  if (ACoord <> FClipRect^.Top) and (ACoord <> FClipRect^.Bottom) then
+    LineZ(Point(FClipRect^.Left, ACoord), Point(FClipRect^.Right, ACoord));
 end;
 
 { TChartAxisTitle }
