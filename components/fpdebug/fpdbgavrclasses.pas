@@ -42,6 +42,7 @@ type
   private
   const
     lastCPURegIndex = 31; // After this are SREG, SP and PC
+    nSREGF = 'SRegFlags';
 
     // Byte level register indexes
     SPLindex = 33;
@@ -53,6 +54,7 @@ type
     RegArrayByteLength = 39;
   protected
     procedure RefreshRegisterCache; override;
+    function FormatStatusFlags(sreg: byte): string;
     function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     procedure LoadRegisterValues; override;
@@ -129,6 +131,26 @@ begin
   end;
 end;
 
+function TDbgAvrThread.FormatStatusFlags(sreg: byte): string;
+const
+  SREG_FLAGS = 'ITHSVNZC';
+var
+  i: integer;
+  flag: char;
+begin
+  Result := '               ';
+  for i := 0 to 7 do
+  begin
+    if sreg and $80 = $80 then
+      flag := SREG_FLAGS[i+1]
+    else
+      flag := '.';
+
+    Result[2*i+1] := flag;
+    sreg := byte(sreg shl 1);
+  end;
+end;
+
 function TDbgAvrThread.GetStackUnwinder: TDbgStackUnwinder;
 begin
   if FUnwinder = nil then
@@ -157,6 +179,7 @@ begin
       FRegisterValueList.DbgRegisterAutoCreate['r'+IntToStr(i)].SetValue(FRegs.regs[i], IntToStr(FRegs.regs[i]),1, i); // confirm dwarf index
 
     FRegisterValueList.DbgRegisterAutoCreate[nSREG].SetValue(FRegs.regs[SREGindex], IntToStr(FRegs.regs[SREGindex]),1,SREGindex);
+    FRegisterValueList.DbgRegisterAutoCreate[nSREGF].SetValue(FRegs.regs[SREGindex], FormatStatusFlags(FRegs.regs[SREGindex]),1,0);
     FRegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(FRegs.regs[SPindex], IntToStr(FRegs.regs[SPindex]),2,SPindex);
     FRegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(FRegs.regs[PCindex], IntToStr(FRegs.regs[PCindex]),4,PCindex);
     FRegisterValueListValid := true;
