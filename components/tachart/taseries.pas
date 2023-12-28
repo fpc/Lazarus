@@ -2288,6 +2288,7 @@ var
 
 var
   j, k: Integer;
+  R: TRect;
 begin
   if IsEmpty or (not Active) then exit;
 
@@ -2308,7 +2309,12 @@ begin
   scaled_depth := ADrawer.Scale(Depth);
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
 
-  ADrawer.ClippingStart(ParentChart.ClipRect);
+  R := ParentChart.ClipRect;
+  if IsRotated then
+    inc(R.Left, ParentChart.LeftAxis.AxisPen.Width div 2 + 1)
+  else
+    dec(R.Bottom, ParentChart.BottomAxis.AxisPen.Width div 2 + 1);
+  ADrawer.ClippingStart(R);
   try
     CollectMissing;
     if Length(missing) = 0 then
@@ -2337,6 +2343,7 @@ begin
     ADrawer.ClippingStop;
   end;
 
+  DrawErrorBars(ADrawer);
   DrawLabels(ADrawer);
 end;
 
