@@ -69,12 +69,6 @@ type
     property AfterUploadMonitorCmds: TStringList read FAfterUploadMonitorCmds write FAfterUploadMonitorCmds;
   end;
 
-  TInitializedRegister = record
-    Initialized: boolean;
-    Value: qword; // sized to handle largest register, should truncate as required to smaller registers
-  end;
-  TInitializedRegisters = array of TInitializedRegister;
-
   TStopReason = (srNone, srSWBreakPoint, srHWBreakPoint, srWriteWatchPoint, srReadWatchPoint, srAnyWatchPoint);
 
   TStatusEvent = record
@@ -84,7 +78,6 @@ type
     threadID: integer;
     stopReason: TStopReason;
     watchPointAddress: qword;  // contains address which triggered watch point
-    registers: TInitializedRegisters;
   end;
 
   { TRspConnection }
@@ -99,7 +92,6 @@ type
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
     FConfig: TRemoteConfig;
-    procedure SetRegisterCacheSize(sz: cardinal);
     function WaitForData(timeout_ms: integer): integer; overload;
 
     // Wrappers to catch exceptions and set SockErr
@@ -126,7 +118,7 @@ type
     constructor Create(AFileName: string; AOwner: TDbgProcess; AConfig: TRemoteConfig); Overload;
     destructor Destroy; override;
     // Wait for async signal - blocking
-    function WaitForSignal(out msg: string; out registers: TInitializedRegisters): integer;
+    function WaitForSignal(out msg: string): integer;
     procedure ResetStatusEvent;
 
     procedure Break();
@@ -154,7 +146,6 @@ type
     function Init: integer;
 
     property State: integer read FState;
-    property RegisterCacheSize: cardinal write SetRegisterCacheSize;
     property lastStatusEvent: TStatusEvent read FStatusEvent;
     property SockErr: boolean read FSockErr;
   end;
@@ -208,11 +199,6 @@ begin
   end;
 end;
 
-procedure TRspConnection.SetRegisterCacheSize(sz: cardinal);
-begin
-  SetLength(FStatusEvent.registers, sz);
-end;
-
 procedure TRspConnection.ResetStatusEvent;
 var
   i: integer;
@@ -225,11 +211,6 @@ begin
     threadID := 0;
     stopReason := srNone;
     watchPointAddress := 0;
-    for i := low(registers) to high(registers) do
-    begin
-      registers[i].Initialized := false;
-      registers[i].Value := 0;
-    end;
   end;
 end;
 
@@ -589,8 +570,7 @@ begin
   DoneCriticalSection(fCS);
 end;
 
-function TRspConnection.WaitForSignal(out msg: string; out
-  registers: TInitializedRegisters): integer;
+function TRspConnection.WaitForSignal(out msg: string): integer;
 var
   res: boolean;
   startIndex, colonIndex, semicolonIndex, i: integer;
@@ -599,7 +579,6 @@ var
 begin
   result := 0;
   res := false;
-  SetLength(registers, 0);
 
   EnterCriticalSection(fCS);
   try
@@ -718,23 +697,6 @@ begin
                 end
                 else
                   DebugLn(DBG_WARNINGS, 'Stop reason "thread" with no thread data');
-              end;
-            else // catch valid hex numbers - will be register info
-              begin
-                // check if part1 is a number, this should then be a register index
-                if HexToIntLittleEndian(part1, tmp) and HexToIntLittleEndian(part2, tmp2) then
-                begin
-                  if tmp < length(FStatusEvent.registers) then
-                  begin
-                    FStatusEvent.registers[tmp].Value := tmp2;
-                    FStatusEvent.registers[tmp].Initialized := true;
-                  end
-                  else
-                    DebugLn(DBG_WARNINGS, format('Register index exceeds total number of registers (%d > %d)',
-                            [tmp, length(FStatusEvent.registers)]));
-                end
-                else
-                  DebugLn(DBG_WARNINGS, format('Ignoring stop reply pair [%s:%s] ', [part1, part2]));
               end;
             end;
             startIndex := semicolonIndex + 1;
@@ -1029,7 +991,6 @@ end;
 function TRspConnection.Init: integer;
 var
   reply: string;
-  intRegs: TInitializedRegisters;
   res: boolean;
   pSection: PDbgImageSection;
   dataStart: int64;
@@ -1065,7 +1026,6 @@ begin
       repeat
         inc(i);
         pSection := FOwner.LoaderList[0].SectionByID[i];
-
         if (pSection <> nil) and (pSection^.Size > 0) and (pSection^.IsLoadable) then
         begin
           if Assigned(FConfig.SkipSectionsList) and
@@ -1122,7 +1082,7 @@ begin
   if res then
   begin
     // Already wrapped in critical section
-    result := WaitForSignal(reply, intRegs);
+    result := WaitForSignal(reply);
   end;
 end;
 
