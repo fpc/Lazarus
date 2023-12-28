@@ -17,6 +17,7 @@ type
     CbYErrDifferent: TCheckBox;
     CbYErrShow: TCheckBox;
     Chart1: TChart;
+    Chart1AreaSeries1: TAreaSeries;
     Chart1BSplineSeries1: TBSplineSeries;
     Chart1CubicSplineSeries1: TCubicSplineSeries;
     Chart1FitSeries1: TFitSeries;
@@ -135,6 +136,9 @@ begin
 
   Chart1FitSeries1.AxisIndexX := Chart1lineSeries1.AxisIndexX;
   Chart1FitSeries1.AxisIndexY := Chart1LineSeries1.AxisIndexY;
+
+  Chart1AreaSeries1.AxisIndexX := Chart1LineSeries1.AxisIndexX;
+  Chart1AreaSeries1.AxisIndexY := Chart1LineSeries1.AxisIndexY;
 end;
 
 procedure TMainForm.CbXErrShowChange(Sender: TObject);
@@ -143,6 +147,7 @@ begin
   Chart1BSplineSeries1.XErrorBars.Visible := CbXErrShow.Checked;
   Chart1CubicSplineSeries1.XErrorBars.Visible := CbXErrShow.Checked;
   Chart1FitSeries1.XErrorBars.Visible := CbXErrShow.Checked;
+  Chart1AreaSeries1.XErrorBars.Visible := CbXErrShow.Checked;
 end;
 
 procedure TMainForm.CbXErrDifferentChange(Sender: TObject);
@@ -161,6 +166,7 @@ begin
   Chart1BSplineSeries1.YErrorBars.Visible := CbYErrShow.Checked;
   Chart1CubicSplineSeries1.YErrorBars.Visible := CbYErrShow.Checked;
   Chart1FitSeries1.YErrorBars.Visible := CbYErrShow.Checked;
+  Chart1AreaSeries1.YErrorBars.Visible := CbYErrShow.Checked;
 end;
 
 procedure TMainForm.Chart1AfterPaint(ASender: TChart);
@@ -201,11 +207,13 @@ begin
   Chart1BSplineSeries1.XErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
   Chart1CubicSplineSeries1.XErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
   Chart1FitSeries1.XErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
+  Chart1AreaSeries1.XErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
 
   Chart1LineSeries1.YErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
   Chart1BSplineSeries1.YErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
   Chart1CubicSplineSeries1.YErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
   Chart1FitSeries1.YErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
+  Chart1AreaSeries1.YErrorBars.Pen.Style := CbErrPenStyle.PenStyle;
 end;
 
 procedure TMainForm.EdXErrConstChange(Sender: TObject);
@@ -219,11 +227,13 @@ begin
   Chart1BSplineSeries1.XErrorBars.Pen.Width := EdErrPenWidth.Value;
   Chart1CubicSplineSeries1.XErrorBars.Pen.Width := EdErrPenWidth.Value;
   Chart1FitSeries1.XErrorBars.Pen.Width := EdErrPenWidth.Value;
+  Chart1AreaSeries1.XErrorBars.Pen.Width := EdErrPenWidth.Value;
 
   Chart1LineSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
   Chart1BSplineSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
   Chart1CubicSplineSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
   Chart1FitSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
+  Chart1AreaSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
 end;
 
 procedure TMainForm.StringGrid1PrepareCanvas(Sender: TObject; aCol, aRow: Integer;
@@ -270,6 +280,11 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Chart1AreaSeries1.XErrorBars.Visible := true;
+  Chart1AreaSeries1.YErrorBars.Visible := true;
+  Chart1AreaSeries1.XErrorBars.Pen.Color := clOlive;
+  Chart1AreaSeries1.YErrorBars.Pen.Color := clOlive;
+
   PopulateUserData;
 end;
 
@@ -348,18 +363,21 @@ begin
          Chart1BSplineSeries1.Source := RandomChartSource1;
          Chart1CubicSplineSeries1.Source := RandomChartSource1;
          Chart1FitSeries1.Source := RandomChartSource1;
+         Chart1AreaSeries1.Source := RandomChartSource1;
        end;
     1: begin
          Chart1LineSeries1.Source := ListChartSource1;
          Chart1BSplineSeries1.Source := ListChartSource1;
          Chart1CubicSplineSeries1.Source := ListChartSource1;
          Chart1FitSeries1.Source := ListChartSource1;
+         Chart1AreaSeries1.Source := ListChartSource1;
        end;
     2: begin
          Chart1LineSeries1.Source := UserDefinedChartSource1;
          Chart1BSplineSeries1.Source := UserDefinedChartSource1;
          Chart1CubicSplineSeries1.Source := UserDefinedChartSource1;
          Chart1FitSeries1.Source := UserDefinedChartSource1;
+         Chart1AreaSeries1.Source := UserDefinedChartSource1;
        end;
   end;
 

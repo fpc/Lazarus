@@ -226,6 +226,8 @@ type
       read FUseZeroLevel write SetUseZeroLevel default false;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
+    property XErrorBars;
+    property YErrorBars;
   end;
 
   TSeriesPointerDrawEvent = procedure (
