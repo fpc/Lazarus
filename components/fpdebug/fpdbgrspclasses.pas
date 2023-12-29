@@ -32,6 +32,8 @@ type
   private
   protected
     FRegs: TInitializedRegisters;
+    FRegsChanged: boolean;
+    FStoredRegs: TInitializedRegisters;
     FExceptionSignal: integer;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
     FIsSteppingBreakPoint: boolean;
@@ -39,7 +41,8 @@ type
     FHasThreadState: boolean;
     FUnwinder: TDbgStackUnwinder;
 
-    procedure RefreshRegisterCache; virtual;
+    procedure LoadRegisterCache; virtual;
+    procedure SaveRegisterCache; virtual;
     procedure InvalidateRegisters;
     function ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
@@ -215,7 +218,7 @@ begin
   else
   begin
     DebugLn(DBG_VERBOSE, ['TDbgRspThread.GetDebugReg requesting register: ',ind]);
-    RefreshRegisterCache;
+    LoadRegisterCache;
     if ind < length(FRegs.regs) then
     begin
       AVal := FRegs.regs[ind];
@@ -236,13 +239,16 @@ begin
 end;
 
 procedure TDbgRspThread.InvalidateRegisters;
-var
-  i: integer;
 begin
   FRegs.Initialized := false;
 end;
 
-procedure TDbgRspThread.RefreshRegisterCache;
+procedure TDbgRspThread.LoadRegisterCache;
+begin
+  // Target specific
+end;
+
+procedure TDbgRspThread.SaveRegisterCache;
 begin
   // Target specific
 end;
@@ -354,22 +360,27 @@ begin
     exit;
 
   inherited;
+  if FRegsChanged then
+    SaveRegisterCache;
   InvalidateRegisters;
 end;
 
 procedure TDbgRspThread.SetRegisterValue(AName: string; AValue: QWord);
 begin
-  assert(true, 'Not implemented');
+  assert(true, 'TDbgRspThread.SetRegisterValue not implemented');
 end;
 
 procedure TDbgRspThread.StoreRegisters;
 begin
-  assert(true, 'Not implemented');
+  FStoredRegs.Initialized := FRegs.Initialized;
+  FStoredRegs.regs := copy(FRegs.regs);
 end;
 
 procedure TDbgRspThread.RestoreRegisters;
 begin
-  assert(true, 'Not implemented');
+  FRegs.Initialized := FStoredRegs.Initialized;
+  FRegs.regs := copy(FStoredRegs.regs);
+  FRegsChanged := true;
 end;
 
 { TDbgRspProcess }

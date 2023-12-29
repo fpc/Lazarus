@@ -53,11 +53,13 @@ type
     PC3 = 38;
     RegArrayByteLength = 39;
   protected
-    procedure RefreshRegisterCache; override;
+    procedure LoadRegisterCache; override;
+    procedure SaveRegisterCache; override;
     function FormatStatusFlags(sreg: byte): string;
     function GetStackUnwinder: TDbgStackUnwinder; override;
   public
     procedure LoadRegisterValues; override;
+    procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
@@ -112,7 +114,7 @@ end;
 
 { TDbgAvrThread }
 
-procedure TDbgAvrThread.RefreshRegisterCache;
+procedure TDbgAvrThread.LoadRegisterCache;
 var
   regs: TBytes;
   i: integer;
@@ -128,6 +130,34 @@ begin
     // repack according to target endianness
     FRegs.regs[SPindex] := regs[SPLindex] + (regs[SPHindex] shl 8);
     FRegs.regs[PCindex] := regs[PC0] + (regs[PC1] shl 8) + (regs[PC2] shl 16) + (regs[PC3] shl 24);
+  end;
+end;
+
+procedure TDbgAvrThread.SaveRegisterCache;
+var
+  regs: TBytes;
+  i: integer;
+begin
+  if FRegsChanged then
+  begin
+    SetLength(regs, RegArrayByteLength);
+    for i := 0 to lastCPURegIndex do
+      regs[i] := FRegs.regs[i];
+
+    // SREG
+    regs[SREGindex] := FRegs.regs[SREGindex];
+    // SP
+    regs[SPLindex] := byte(FRegs.regs[SPindex]);
+    regs[SPHindex] := byte(FRegs.regs[SPindex] shr 8);
+    // PC
+    regs[PC0] := byte(FRegs.regs[PCindex]);
+    regs[PC1] := byte(FRegs.regs[PCindex] shr 8);
+    regs[PC2] := byte(FRegs.regs[PCindex] shr 16);
+    regs[PC3] := byte(FRegs.regs[PCindex] shr 24);
+
+    if not TDbgRspProcess(Process).RspConnection.WriteRegisters(regs[0], Length(regs)) then
+      DebugLn(DBG_WARNINGS, 'Failed to set thread registers.');
+   FRegsChanged := false;
   end;
 end;
 
@@ -171,7 +201,7 @@ begin
   if not ReadThreadState then
     exit;
 
-  RefreshRegisterCache;
+  LoadRegisterCache;
 
   if FRegs.Initialized then
   begin
@@ -186,6 +216,29 @@ begin
   end
   else
     DebugLn(DBG_WARNINGS, 'Warning: Could not update registers');
+end;
+
+procedure TDbgAvrThread.SetRegisterValue(AName: string; AValue: QWord);
+var
+  i, err: integer;
+  res: boolean;
+begin
+  if AName[1] = 'r' then
+  begin
+    val(copy(AName, 2, length(Aname)), i, err);
+    res := (err = 0) and (i <= 31);
+    if res then
+      res := TDbgRspProcess(Process).RspConnection.WriteDebugReg(i, byte(AValue));
+  end
+  else if AName = nSREG then
+    res := TDbgRspProcess(Process).RspConnection.WriteDebugReg(SREGindex, byte(AValue))
+  else if AName = nSP then
+    res := TDbgRspProcess(Process).RspConnection.WriteDebugReg(SPindex, word(AValue))
+  else if AName = nPC then
+    res := TDbgRspProcess(Process).RspConnection.WriteDebugReg(PCindex, dword(AValue));
+
+  if not res then
+    DebugLn(DBG_WARNINGS, 'Error setting register %s to %u', [AName, AValue]);
 end;
 
 function TDbgAvrThread.GetInstructionPointerRegisterValue: TDbgPtr;
