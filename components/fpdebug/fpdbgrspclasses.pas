@@ -48,7 +48,6 @@ type
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
     function ReadThreadState: boolean;
     function RequestInternalPause: Boolean;
-    function CheckSignalForPostponing(AWaitedStatus: integer): Boolean;
     procedure ResetPauseStates;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); override;
@@ -75,7 +74,6 @@ type
     FRegArrayLength: integer;
 
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
-    function CreateWatchPointData: TFpWatchPointData; override;
     procedure InitializeLoaders; override;
     // Insert/Delete break points on target
     // TODO: if target doesn't support break points or have limited break points
@@ -278,22 +276,6 @@ begin
   TDbgRspProcess(Process).RspConnection.Break();
 end;
 
-function TDbgRspThread.CheckSignalForPostponing(AWaitedStatus: integer): Boolean;
-begin
-  Assert(not FIsPaused, 'Got WaitStatus while already paused');
-  assert(FExceptionSignal = 0, 'TDbgLinuxThread.CheckSignalForPostponing: FExceptionSignal = 0');
-  Result := FIsPaused;
-  DebugLn(DBG_VERBOSE and (Result), ['Warning: Thread already paused', ID]);
-
-  DebugLn(DBG_VERBOSE, ['TDbgRspThread.CheckSignalForPostponing called with ', AWaitedStatus]);
-
-  if Result then
-    exit;
-
-  FIsPaused := True;
-  FIsInInternalPause := False;
-end;
-
 procedure TDbgRspThread.ResetPauseStates;
 begin
   FIsInInternalPause := False;
@@ -394,12 +376,6 @@ end;
 procedure TDbgRspProcess.CreateRspConnection(AFileName: string);
 begin
   self.FConnection := TRspConnection.Create(AFileName, self, FRemoteConfig);
-end;
-
-function TDbgRspProcess.CreateWatchPointData: TFpWatchPointData;
-begin
-  DebugLn(DBG_VERBOSE, 'TDbgRspProcess.CreateWatchPointData called.');
-  Result := TFpRspWatchPointData.Create;
 end;
 
 constructor TDbgRspProcess.Create(const AFileName: string;
@@ -562,9 +538,6 @@ begin
     AThread.BeforeContinue;
     TDbgRspThread(AThread).InvalidateRegisters;
     DebugLn(DBG_VERBOSE, 'TDbgRspProcess.Continue called while terminating.');
-
-
-
 
     TDbgRspThread(AThread).ResetPauseStates;
     if not FThreadMap.HasId(AThread.ID) then
