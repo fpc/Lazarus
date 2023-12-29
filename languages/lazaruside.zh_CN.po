@@ -1103,10 +1103,6 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "编译器选项可以保存到一个XML文件."
 
-#: lazarusidestrconsts.dlgcolor
-msgid "Color"
-msgstr "颜色"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(编辑颜色)"
@@ -1259,10 +1255,6 @@ msgstr "浮动的"
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
 msgstr "设置编译器选项为默认"
-
-#: lazarusidestrconsts.dlgcoshowerr
-msgid "Show errors"
-msgstr "显示错误"
 
 #: lazarusidestrconsts.dlgcoshowoptions
 msgid "&Show Options"
@@ -2505,10 +2497,6 @@ msgstr "智能链接"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "在运行时错误回溯中显示行号"
 
-#: lazarusidestrconsts.dlgmainmenu
-msgid "Main Menu"
-msgstr "主菜单"
-
 #: lazarusidestrconsts.dlgmainviewforms
 msgid "View Project Forms"
 msgstr "查看项目窗体"
@@ -2994,11 +2982,6 @@ msgstr "编辑命令的按键"
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
 msgid "Priority"
 msgstr "优先级"
-
-#: lazarusidestrconsts.dlgmsgs
-msgctxt "lazarusidestrconsts.dlgmsgs"
-msgid "Messages"
-msgstr "信息"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
@@ -3842,10 +3825,6 @@ msgstr "显示信息图标"
 msgid "Show notes"
 msgstr "显示注释"
 
-#: lazarusidestrconsts.dlgshowsummary
-msgid "Show summary"
-msgstr "显示概要"
-
 #: lazarusidestrconsts.dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "显示尝试的文件"
@@ -3906,11 +3885,6 @@ msgstr "空格"
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "主快速按钮提示 (打开, 保存, ...)"
-
-#: lazarusidestrconsts.dlgsrcedit
-msgctxt "lazarusidestrconsts.dlgsrcedit"
-msgid "Source Editor"
-msgstr "源码编辑器"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -4052,11 +4026,6 @@ msgstr "撤销/恢复"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "撤销限制"
-
-#: lazarusidestrconsts.dlgunitdepcaption
-msgctxt "lazarusidestrconsts.dlgunitdepcaption"
-msgid "Unit Dependencies"
-msgstr "单元依赖"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
@@ -4436,11 +4405,6 @@ msgstr "多义单元名称"
 msgid "Ancestor type"
 msgstr "原型类型"
 
-#: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
-msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
-msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr "一个pascal单元必须有扩展名.pp或者.pas"
-
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
 msgstr "错误依赖关系"
@@ -4452,14 +4416,6 @@ msgstr "类名已经存在"
 #: lazarusidestrconsts.lisa2pcreatenewcomp
 msgid "Create New Component"
 msgstr "创建新组件"
-
-#: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create New File"
-msgstr "创建新文件"
-
-#: lazarusidestrconsts.lisa2pcreatenewreq
-msgid "Create New Requirement"
-msgstr "创建新必要条件"
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -4561,10 +4517,6 @@ msgstr "页名称太长"
 msgid "Palette page:"
 msgstr "调色板页："
 
-#: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
-msgid "Pascal units must have the extension .pp or .pas"
-msgstr "Pascal单元必须有扩展名.pp或者.pas"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "缩短或扩展文件名称"
@@ -4614,22 +4566,10 @@ msgstr "该文件\"%s\"是当前项目的一部分.%s它是一个坏主意来共
 msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "文件名称\"%s\"是模棱两可的,因为软件包还没有默认目录.%s请具体指定一个带有完整路径的文件名称."
 
-#: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "该最大版本\"%s\"是无效的.%s请使用该格式 主要.次要.发布.构建%s例如:1.0.20.10"
-
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "该最大版本低于该最小版本."
-
-#: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "该最小版本\"%s\"是无效的.%s请使用该格式 主要.次要.发布.构建%s例如:1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 #, object-pascal-format
@@ -4673,10 +4613,6 @@ msgstr "单元名已经存在"
 msgid "Abandon changes?"
 msgstr "放弃修改？"
 
-#: lazarusidestrconsts.lisabortall
-msgid "Abort all"
-msgstr "中止所有"
-
 #: lazarusidestrconsts.lisabortallloading
 msgid "Abort all loading"
 msgstr "中止所有加载"
@@ -4688,10 +4624,6 @@ msgstr "中止"
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "取消加载项目"
-
-#: lazarusidestrconsts.lisabortwholeloading
-msgid "Abort whole loading"
-msgstr "放弃整个加载"
 
 #: lazarusidestrconsts.lisabout
 msgctxt "lazarusidestrconsts.lisabout"
@@ -5446,11 +5378,6 @@ msgstr "忙碌"
 msgid "%s byte"
 msgstr "%s 字节"
 
-#: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
-#, object-pascal-format
-msgid "Calling %s to create Makefile from %s failed."
-msgstr "调用%s来从%s创建Makefile失败."
-
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
 msgstr "取消加载这个组件"
@@ -5499,11 +5426,6 @@ msgstr "不能找到可执行的\"%s\""
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "不能找到Lazarus启动程序:%s%s"
-
-#: lazarusidestrconsts.liscannotfindunit
-#, object-pascal-format
-msgid "Cannot find unit %s"
-msgstr "不能找到单元%s"
 
 #: lazarusidestrconsts.liscannotopenform
 #, object-pascal-format
@@ -5905,21 +5827,6 @@ msgstr "错误缩进"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "一个异常发生 在%s\"%s:%s\"%s%s删除的期间"
 
-#: lazarusidestrconsts.liscfeclassnotfound
-#, object-pascal-format
-msgid "%s%sClass \"%s\" not found."
-msgstr "%s%s类\"%s\"未找到."
-
-#: lazarusidestrconsts.liscfecomponent
-#, object-pascal-format
-msgid "%s%sComponent: %s:%s"
-msgstr "%s%s组件:%s:%s"
-
-#: lazarusidestrconsts.liscfecomponentclass
-#, object-pascal-format
-msgid "%s%sComponent Class: %s"
-msgstr "%s%s组件类:%s"
-
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
 msgstr "不知道如何复制这个表格编辑选区"
@@ -5959,11 +5866,6 @@ msgstr "销毁传递者(destroying)时错误"
 msgid "Error destroying mediator %s of unit %s:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.liscfeerrorreading
-#, object-pascal-format
-msgid "Error reading %s"
-msgstr "读取%s错误"
-
 #: lazarusidestrconsts.liscfeinfile
 #, object-pascal-format
 msgid "In file %s"
@@ -5972,21 +5874,6 @@ msgstr "在文件:%s"
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
 msgstr "无效的组件拥有者"
-
-#: lazarusidestrconsts.liscferoot
-#, object-pascal-format
-msgid "%sRoot=%s:%s"
-msgstr "%sRoot(根)=%s:%s"
-
-#: lazarusidestrconsts.liscfestream
-#, object-pascal-format
-msgid "%sStream=%s"
-msgstr "%s流=%s"
-
-#: lazarusidestrconsts.liscfestreamposition
-#, object-pascal-format
-msgid "%s%sStream position: %s"
-msgstr "%s%s流位置:%s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
 msgid "TCustomFormEditor.CreateNonFormForm already exists"
@@ -6605,11 +6492,6 @@ msgstr " 一个标记(token)\"%s\"已经存在! "
 msgid "Auto complete on"
 msgstr "自动补全对(on)"
 
-#: lazarusidestrconsts.liscodetemplchange
-msgctxt "lazarusidestrconsts.liscodetemplchange"
-msgid "Change"
-msgstr "更改"
-
 #: lazarusidestrconsts.liscodetemplcomment
 msgid "Comment:"
 msgstr "注释:"
@@ -6722,10 +6604,6 @@ msgstr "Else"
 #: lazarusidestrconsts.liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
-
-#: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
-msgid "Exit without Save"
-msgstr "不保存退出"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC Git source directory"
@@ -6896,10 +6774,6 @@ msgstr "%s项目目录"
 #: lazarusidestrconsts.liscodetoolsdefsreaderror
 msgid "Read error"
 msgstr "读取错误"
-
-#: lazarusidestrconsts.liscodetoolsdefssaveandexit
-msgid "Save and Exit"
-msgstr "保存并退出"
 
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -7883,10 +7757,6 @@ msgstr "复制所有显示信息到剪贴板"
 msgid "Copy description to clipboard"
 msgstr "复制描述到剪贴板"
 
-#: lazarusidestrconsts.liscopyerror
-msgid "Copy Error"
-msgstr "复制错误"
-
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "复制错误"
@@ -7937,10 +7807,6 @@ msgstr "扫描FPC消息"
 msgid "Scan for Make messages"
 msgstr "扫描Make消息"
 
-#: lazarusidestrconsts.liscoscanformessages
-msgid "Scan for messages:"
-msgstr "扫描消息:"
-
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling compiler"
 msgstr "跳过调用编译器"
@@ -7959,11 +7825,6 @@ msgstr "不能添加\"{$R %s}\"到main源代码!"
 #, object-pascal-format
 msgid "Could not add \"%s\" to main source!"
 msgstr "不能添加\"%s\"到main源代码!"
-
-#: lazarusidestrconsts.liscouldnotremovefrommainsource
-#, object-pascal-format
-msgid "Could not remove \"%s\" from main source!"
-msgstr "不能移除\"%s\"从main源代码!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
 #, object-pascal-format
@@ -8740,11 +8601,6 @@ msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
 msgstr "打开(&O) ..."
 
-#: lazarusidestrconsts.lisdlgsave
-msgctxt "lazarusidestrconsts.lisdlgsave"
-msgid "Save ..."
-msgstr "保存(&S) ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9195,17 +9051,9 @@ msgstr "启用 Dwarf 3 (-gw3)"
 msgid "Enable Option -Xg?"
 msgstr "启用选项 -Xg？"
 
-#: lazarusidestrconsts.lisenableoptionxg2
-msgid "Enable option -Xg"
-msgstr "启用选项 -Xg"
-
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
-
-#: lazarusidestrconsts.lisenclose
-msgid "Enclose"
-msgstr "封装(Enclose)"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
@@ -9434,18 +9282,10 @@ msgstr "行号间隔"
 msgid "Example file:"
 msgstr "示例文件:"
 
-#: lazarusidestrconsts.lisexamplesbuildallselected
-msgid "Build all selected"
-msgstr "构建所有选择"
-
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 #, object-pascal-format
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "示例:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-
-#: lazarusidestrconsts.lisexamplesopenfirstselected
-msgid "Open first selected"
-msgstr "打开第一个选择"
 
 #: lazarusidestrconsts.lisexclude
 #, fuzzy
@@ -9735,10 +9575,6 @@ msgstr "文件是符号链接"
 msgid "File \"%s\" is virtual."
 msgstr "文件\"%s\"是虚拟的."
 
-#: lazarusidestrconsts.lisfilelinkerror
-msgid "File link error"
-msgstr "文件链接错误"
-
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "文件名样式"
@@ -10007,10 +9843,6 @@ msgstr "找到版本 %s，要求 %s"
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
 msgstr "FP C版本作为一个数字（例如 20701）"
-
-#: lazarusidestrconsts.lisfpcmakefailed
-msgid "fpcmake failed"
-msgstr "fpcmake 失败"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10429,30 +10261,10 @@ msgstr "提示:单击\"显示选项\" 来找到来自通过继承得到的的路
 msgid ", Hints: %s"
 msgstr ",提示:%s"
 
-#: lazarusidestrconsts.lishintsaveall
-msgid "Save all"
-msgstr "保存所有"
-
-#: lazarusidestrconsts.lishintstepinto
-msgid "Step Into"
-msgstr "单步进入"
-
-#: lazarusidestrconsts.lishintstepout
-msgid "Run until function returns"
-msgstr "运行直到函数返回"
-
-#: lazarusidestrconsts.lishintstepover
-msgid "Step Over"
-msgstr "单步跳过"
-
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 #, object-pascal-format
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "提示:\"Make Resourcestring\"函数要求一个字符串常量.%s请选择一个表达式并再次尝试."
-
-#: lazarusidestrconsts.lishinttoggleformunit
-msgid "Toggle Form/Unit"
-msgstr "在窗体与单元中切换"
 
 #: lazarusidestrconsts.lishintviewforms
 msgid "View Forms"
@@ -10525,19 +10337,9 @@ msgstr "欢迎使用 Lazarus。%0:s找到的 IDE 配置被另一个之前的 Laz
 msgid "Creating Makefile for package %s"
 msgstr "为软件包%s创建Makefile"
 
-#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
-#, object-pascal-format
-msgid "Error: running 'compile after' tool failed for package %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "信息关于 IDE"
-
-#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
-#, object-pascal-format
-msgid "WARNING: unit name invalid %s, package=%s"
-msgstr "警告:单元名称无效%s,软件包=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
@@ -10626,10 +10428,6 @@ msgstr "从文件加载"
 msgid "File \"%s\" does not contain compiler options."
 msgstr "文件\"%s\"不包含编译器选择."
 
-#: lazarusidestrconsts.lisiecorecentfiles
-msgid "Recent files"
-msgstr "最近的文件"
-
 #: lazarusidestrconsts.lisiecosavetofile
 msgid "Save to file"
 msgstr "保存到文件"
@@ -10713,14 +10511,6 @@ msgstr "在软件包\"%s\"中的一个源文件目录."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "在一个项目源文件目录中.检查是否有重复项."
 
-#: lazarusidestrconsts.lisincludeallsubdirectories
-msgid "Include all subdirectories"
-msgstr "包含所有子目录"
-
-#: lazarusidestrconsts.lisincludefilter
-msgid "Include filter"
-msgstr "包含过滤器"
-
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "包含路径"
@@ -10732,10 +10522,6 @@ msgstr "包含路径"
 #: lazarusidestrconsts.lisincluderecursive
 msgid "Include, recursive"
 msgstr ""
-
-#: lazarusidestrconsts.lisincludesubdirectories
-msgid "Include subdirectories"
-msgstr "包含子目录"
 
 #: lazarusidestrconsts.lisincompatibleppu
 #, object-pascal-format
@@ -10870,10 +10656,6 @@ msgstr "插入宏命令"
 msgid "Insert name of current procedure."
 msgstr "插入当前过程的名称."
 
-#: lazarusidestrconsts.lisinsertprintshorttag
-msgid "Insert PrintShort tag"
-msgstr "插入PrintShort标签"
-
 #: lazarusidestrconsts.lisinsertprintshorttag2
 msgid "Insert printshort tag"
 msgstr "插入PrintShort标签"
@@ -10905,10 +10687,6 @@ msgstr "插入url标记"
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
 msgstr "在会话"
-
-#: lazarusidestrconsts.lisinstallationfailed
-msgid "Installation failed"
-msgstr "安装失败"
 
 #: lazarusidestrconsts.lisinstalled
 msgid "installed"
@@ -11744,11 +11522,6 @@ msgstr "lazarus [选项] <项目-文件名>"
 msgid "lazbuild"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildaboaction
-msgctxt "lazarusidestrconsts.lislazbuildaboaction"
-msgid "Action"
-msgstr "动作"
-
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "选择 IDE 可执行文件的输出目录 "
@@ -12229,11 +12002,6 @@ msgstr "%s也许您不得不重编译这个软件包."
 msgid "%s MB"
 msgstr "%s MB"
 
-#: lazarusidestrconsts.lismeaction
-msgctxt "lazarusidestrconsts.lismeaction"
-msgid "Action"
-msgstr "动作"
-
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "取消构建(&A)"
@@ -12708,10 +12476,6 @@ msgstr "菜单项目动作"
 msgid "Menuitem shortcut conflicts in %s"
 msgstr "%s 存在菜单快捷方式冲突"
 
-#: lazarusidestrconsts.lismenueditormovedown
-msgid "Move Down (or right)"
-msgstr "下移(或右移)"
-
 #: lazarusidestrconsts.lismenueditormoveitemdown
 msgid "Mo&ve item down"
 msgstr "下移项目(&V)"
@@ -12745,10 +12509,6 @@ msgstr "右移选择项目"
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr "上移选择项目"
-
-#: lazarusidestrconsts.lismenueditormoveup
-msgid "Move Up (or left)"
-msgstr "上移 (或左移)"
 
 #: lazarusidestrconsts.lismenueditorna
 msgid "n/a"
@@ -12925,11 +12685,6 @@ msgstr "%s:快捷方式和快速键(Accelerator keys)"
 #, object-pascal-format
 msgid "%s.%s.%s - OnClick: %s"
 msgstr "%s.%s.%s - 在单击时(OnClick): %s"
-
-#: lazarusidestrconsts.lismenueditorssubmenu
-#, object-pascal-format
-msgid "%s submenu"
-msgstr "%s子菜单"
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
@@ -13654,10 +13409,6 @@ msgctxt "lazarusidestrconsts.lismeother"
 msgid "Other tabs"
 msgstr "其他的选项卡"
 
-#: lazarusidestrconsts.lismeprojects
-msgid "Projects"
-msgstr "项目"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "信息编辑器"
@@ -14247,11 +13998,6 @@ msgstr "(没有信息选择)"
 msgid "noname"
 msgstr "没有名称(noname)"
 
-#: lazarusidestrconsts.lisnone
-#, object-pascal-format
-msgid "%snone"
-msgstr "%snone"
-
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "没有,单击选择一个"
@@ -14335,12 +14081,6 @@ msgstr "注意:不能为Lazarus源代码创建自定义模板"
 msgid "no template selected"
 msgstr "没有模板选择"
 
-#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
-msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr "%s没有找到在%s在行%s,列%s.%s可能信息是过时的."
-
 #: lazarusidestrconsts.lisnothingtodo
 msgid "Nothing to do"
 msgstr ""
@@ -14369,10 +14109,6 @@ msgstr "不是现在"
 #: lazarusidestrconsts.lisnowloadedscheme
 msgid "Now loaded: "
 msgstr "当前加载： "
-
-#: lazarusidestrconsts.lisnpcreate
-msgid "Create"
-msgstr "创建"
 
 #: lazarusidestrconsts.lisnpcreateanewproject
 msgid "Create a new project"
@@ -14663,10 +14399,6 @@ msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
 msgstr "选项(&O)"
 
-#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
-msgid "Options changed, recompiling clean with -B"
-msgstr "选项更改,重新编译清理使用-B"
-
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "忽略"
@@ -14938,10 +14670,6 @@ msgstr "禁用lfm的I18N(国际化)"
 msgid "Add Files from File System"
 msgstr "添加文件从文件系统"
 
-#: lazarusidestrconsts.lispckeditaddotheritems
-msgid "Add other items"
-msgstr "增加其他项目"
-
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
@@ -15110,10 +14838,6 @@ msgstr "注册单元"
 #: lazarusidestrconsts.lispckeditremovedependency
 msgid "Remove dependency"
 msgstr "移除依赖关系"
-
-#: lazarusidestrconsts.lispckeditremovedependency2
-msgid "Remove Dependency?"
-msgstr "移除依赖关系?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
 #, object-pascal-format
@@ -15284,10 +15008,6 @@ msgstr "次要"
 #: lazarusidestrconsts.lispckoptsobject
 msgid "Object"
 msgstr "对象"
-
-#: lazarusidestrconsts.lispckoptspackagefileoptions
-msgid "Additional Package File Options"
-msgstr "附加软件包文件选项"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -15624,11 +15344,6 @@ msgstr "读取文件错误"
 msgid "Error Reading Package"
 msgstr "读取包错误"
 
-#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Error: updating po files failed for package %s"
-msgstr "错误:更新po文件失败对于软件包%s"
-
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
 msgid "Error writing file"
@@ -15677,10 +15392,6 @@ msgstr "(正在)安装该软件包%s将自动安装该软件包:"
 #, object-pascal-format
 msgid "Installing the package %s will automatically install the packages:"
 msgstr "(正在)安装该软件包 %s 将自动安装该软件包:"
-
-#: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
-msgid "invalid Compiler filename"
-msgstr "无效的编译器文件名称"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
@@ -15801,11 +15512,6 @@ msgstr "跳过这个软件包"
 msgid "static packages config file"
 msgstr "静态软件包配置文件"
 
-#: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
-#, object-pascal-format
-msgid "The compiler file for package %s is not a valid executable:%s%s"
-msgstr "该编译器文件对于软件包%s不是一个有效的可执行文件:%s%s"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15849,11 +15555,6 @@ msgstr "下面的软件包加载失败:"
 #, object-pascal-format
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%s下面的单元将被添加到%s%s:%s%s的uses分句"
-
-#: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, object-pascal-format
-msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
-msgstr "软件包\"%s\"编译失败.%s移除它 从安装列表?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 #, object-pascal-format
@@ -16045,11 +15746,6 @@ msgstr "移除"
 msgid "Select a package"
 msgstr "选择一个软件包"
 
-#: lazarusidestrconsts.lispkgsinstalled
-msgctxt "lazarusidestrconsts.lispkgsinstalled"
-msgid "Installed"
-msgstr "已经安装"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Cannot register components without unit"
 msgstr "不能注册没有单元的组件"
@@ -16142,10 +15838,6 @@ msgstr ""
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "这个文件不在任何加载的软件包."
-
-#: lazarusidestrconsts.lispkgtransitivity
-msgid "Transitivity"
-msgstr "传递性(Transitivity)"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 #, object-pascal-format
@@ -16477,11 +16169,6 @@ msgstr "项目已更改"
 msgid "Project changed on disk"
 msgstr "项目已在磁盘上更改"
 
-#: lazarusidestrconsts.lisprojectcount
-#, object-pascal-format
-msgid "%d projects"
-msgstr "%d项目"
-
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -16742,11 +16429,6 @@ msgctxt "lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid Pascal identifier."
 msgstr "单元名不是一个有效的 Pascal 标识符。"
 
-#: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses"
-msgstr "当 IDE 扩展 uses 子句时将使用单元名"
-
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
@@ -16785,10 +16467,6 @@ msgstr "快速修复错误"
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "快速修复"
-
-#: lazarusidestrconsts.lisquickfixremoveunit
-msgid "Quick fix: Remove unit"
-msgstr "快速修复:移除单元"
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
@@ -16836,10 +16514,6 @@ msgstr "正则表达式"
 #: lazarusidestrconsts.lisrelative
 msgid "Relative"
 msgstr "相关的"
-
-#: lazarusidestrconsts.lisrelativepaths
-msgid "Relative paths"
-msgstr "相对路径"
 
 #: lazarusidestrconsts.lisremove
 msgctxt "lazarusidestrconsts.lisremove"
@@ -16892,11 +16566,6 @@ msgstr "移除从搜索路径"
 #: lazarusidestrconsts.lisremoveincludepath
 msgid "Remove include path?"
 msgstr "移除包含路径?"
-
-#: lazarusidestrconsts.lisremovelocalvariable
-#, object-pascal-format
-msgid "Remove local variable %s"
-msgstr "移除局部变量%s"
 
 #: lazarusidestrconsts.lisremovelocalvariable3
 #, object-pascal-format
@@ -17112,14 +16781,6 @@ msgstr "右边"
 msgid "Right space equally"
 msgstr "右侧空间相等"
 
-#: lazarusidestrconsts.lisroot
-msgid "Root"
-msgstr "Root"
-
-#: lazarusidestrconsts.lisrootdirectory
-msgid "Root Directory"
-msgstr "根目录"
-
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17128,11 +16789,6 @@ msgstr "运行"
 #: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
 msgid "\"Run and Design time\" packages have no limitations."
 msgstr "\"运行和设计时\"软件包没有限制."
-
-#: lazarusidestrconsts.lisrunbuttonhint
-msgctxt "lazarusidestrconsts.lisrunbuttonhint"
-msgid "Run"
-msgstr "运行"
 
 #: lazarusidestrconsts.lisrunning
 #, object-pascal-format
@@ -17254,11 +16910,6 @@ msgstr "保存并退出对话"
 msgid "Save and rebuild IDE"
 msgstr "保存并重新构建IDE"
 
-#: lazarusidestrconsts.lissaveas
-msgctxt "lazarusidestrconsts.lissaveas"
-msgid "Save As"
-msgstr "另存为"
-
 #: lazarusidestrconsts.lissavechangedfiles
 msgid "Save changed files?"
 msgstr "你是否要保存已修改的文件？"
@@ -17283,10 +16934,6 @@ msgstr "与 IDE 设置一起保存"
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
 msgstr "与项目会话一起保存"
-
-#: lazarusidestrconsts.lissavefileas
-msgid "Save file as"
-msgstr "文件另存为"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 #, object-pascal-format
@@ -18202,11 +17849,6 @@ msgstr "该目录\"%s\"不再被需要在单元路径.%s移除它?"
 msgid "The directory \"%s\" is not writable."
 msgstr "该目标%s是不可写的."
 
-#: lazarusidestrconsts.listhedirectorywasnotfound
-#, object-pascal-format
-msgid "The directory %s was not found."
-msgstr "该目录%s未找到."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
@@ -18786,25 +18428,9 @@ msgstr "标题(Title)(默认留空)"
 msgid "Path:"
 msgstr "路径:"
 
-#: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
-msgid "Toggle showing filenames with full path or with relative path"
-msgstr "切换显示使用完整的路径或使用相对路径的文件名称"
-
 #: lazarusidestrconsts.listoolbarconfiguration
 msgid "Toolbar Configuration"
 msgstr "工具栏配置"
-
-#: lazarusidestrconsts.listoolbaroptions
-msgid "Toolbar"
-msgstr "工具栏"
-
-#: lazarusidestrconsts.listoolbaroptionshighlight
-msgid "Highlight toolbars buttons"
-msgstr "高亮工具栏按钮"
-
-#: lazarusidestrconsts.listoolbaroptionsraise
-msgid "Raise toolbars"
-msgstr "抬升工具栏"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 #, object-pascal-format
@@ -19250,10 +18876,6 @@ msgstr "无法创建新方法。"
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
 msgstr "无法创建临时的lfm缓冲区。"
-
-#: lazarusidestrconsts.lisunabletodelete
-msgid "Unable to delete"
-msgstr "无法删除"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
 #, object-pascal-format
@@ -19838,11 +19460,6 @@ msgstr "查看 lfm 源文件(&M)"
 #: lazarusidestrconsts.liswarning
 msgid "Warning: "
 msgstr "警告： "
-
-#: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-#, object-pascal-format
-msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
-msgstr "警告：找到不明确的文件：\"%s\"。源文件是：\"%s\""
 
 #: lazarusidestrconsts.liswarnings
 #, object-pascal-format
