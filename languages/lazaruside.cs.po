@@ -1121,10 +1121,6 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Volby překladače mohou být uloženy jako XML soubor."
 
-#: lazarusidestrconsts.dlgcolor
-msgid "Color"
-msgstr "Barva"
-
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Barva editoru)"
@@ -1320,10 +1316,6 @@ msgstr "Přemístitelné"
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
 msgstr "Nastavit volby překladače jako výchozí"
-
-#: lazarusidestrconsts.dlgcoshowerr
-msgid "Show errors"
-msgstr "Ukázat chyby"
 
 #: lazarusidestrconsts.dlgcoshowoptions
 msgid "&Show Options"
@@ -2613,10 +2605,6 @@ msgstr "Chytré spojování"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Zobrazit čísla řádků v běhových chybách při zpětném sledování"
 
-#: lazarusidestrconsts.dlgmainmenu
-msgid "Main Menu"
-msgstr "Hlavní nabídka"
-
 #: lazarusidestrconsts.dlgmainviewforms
 msgid "View Project Forms"
 msgstr "Zobrazit formuláře projektu"
@@ -3101,11 +3089,6 @@ msgstr "Filtrovat modifikační klávesy"
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
 msgid "Priority"
 msgstr "Priorita"
-
-#: lazarusidestrconsts.dlgmsgs
-msgctxt "lazarusidestrconsts.dlgmsgs"
-msgid "Messages"
-msgstr "Zprávy"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
@@ -3965,10 +3948,6 @@ msgstr "Ukázat ikony zpráv"
 msgid "Show notes"
 msgstr "Ukázat poznámky"
 
-#: lazarusidestrconsts.dlgshowsummary
-msgid "Show summary"
-msgstr "Ukázat přehled"
-
 #: lazarusidestrconsts.dlgshowtriedfiles
 msgid "Show tried files"
 msgstr "Ukázat zkoušené soubory"
@@ -4029,11 +4008,6 @@ msgstr "Mezery"
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Tipy pro hlavní tlačítka (Otevřít, Uložit, ...)"
-
-#: lazarusidestrconsts.dlgsrcedit
-msgctxt "lazarusidestrconsts.dlgsrcedit"
-msgid "Source Editor"
-msgstr "Editor zdrojového kódu"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -4179,11 +4153,6 @@ msgstr "Vrátit zpět / Znovu opakovat"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Omezení vrátitelných akcí"
-
-#: lazarusidestrconsts.dlgunitdepcaption
-msgctxt "lazarusidestrconsts.dlgunitdepcaption"
-msgid "Unit Dependencies"
-msgstr "Závislosti jednotky"
 
 #: lazarusidestrconsts.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
@@ -4570,11 +4539,6 @@ msgstr "Víceznačné jméno jednotky"
 msgid "Ancestor type"
 msgstr "Typ předka"
 
-#: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
-msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
-msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr "Pascalovská jednotka musí mít příponu .pp nebo .pas"
-
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
 msgstr "Porušená závislost"
@@ -4586,14 +4550,6 @@ msgstr "Jméno třídy již existuje"
 #: lazarusidestrconsts.lisa2pcreatenewcomp
 msgid "Create New Component"
 msgstr "Vytvořit novou komponentu"
-
-#: lazarusidestrconsts.lisa2pcreatenewfile
-msgid "Create New File"
-msgstr "Vytvořit nový soubor"
-
-#: lazarusidestrconsts.lisa2pcreatenewreq
-msgid "Create New Requirement"
-msgstr "Vytvořit nový požadavek"
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -4695,10 +4651,6 @@ msgstr "Jméno stránky je příliš dlouhé"
 msgid "Palette page:"
 msgstr "Stránka palety:"
 
-#: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
-msgid "Pascal units must have the extension .pp or .pas"
-msgstr "Pascalovské jednotky musí mít příponu .pp nebo .pas"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Zkrátit nebo rozšířit jméno souboru"
@@ -4748,22 +4700,10 @@ msgstr "Soubor \"%s\" je částí aktuálního projektu.%sSdílet soubory mezi p
 msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Jméno souboru \"%s\" je nejednoznačné, protože balíček zatím nemá předvolený adresář.%sProsím zadejte jméno souboru s úplnou cestou."
 
-#: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
-msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Nejvyšší verze \"%s\" je neplatná.%sProsím použijte formát hlavní.vedlejší.vydání.sestavení%sNapříklad: 1.0.20.10"
-
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximální verze je nižší než Minimální verze."
-
-#: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
-msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Nejnižší verze %s je neplatná.%sProsím použijte formát hlavní.vedlejší.vydání.sestavení%sNapříklad: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 #, object-pascal-format
@@ -4807,10 +4747,6 @@ msgstr "Jméno jednotky už existuje"
 msgid "Abandon changes?"
 msgstr "Zrušit změny?"
 
-#: lazarusidestrconsts.lisabortall
-msgid "Abort all"
-msgstr "Přerušit vše"
-
 #: lazarusidestrconsts.lisabortallloading
 msgid "Abort all loading"
 msgstr "Přerušit celé načítání"
@@ -4822,10 +4758,6 @@ msgstr "Zrušeno"
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Přerušit načítání projektu"
-
-#: lazarusidestrconsts.lisabortwholeloading
-msgid "Abort whole loading"
-msgstr "Přerušit celé načítání"
 
 #: lazarusidestrconsts.lisabout
 msgctxt "lazarusidestrconsts.lisabout"
@@ -5603,11 +5535,6 @@ msgstr "Zaneprázdněn"
 msgid "%s byte"
 msgstr "%s bajt"
 
-#: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
-#, object-pascal-format
-msgid "Calling %s to create Makefile from %s failed."
-msgstr "Volání %s k vytvoření Makefile z %s selhalo."
-
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
 msgstr "Zrušit načítání této komponenty"
@@ -5656,11 +5583,6 @@ msgstr "nelze najít spustitelný \"%s\""
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Nelze nalézt spouštěč Lazarusu:%s%s"
-
-#: lazarusidestrconsts.liscannotfindunit
-#, object-pascal-format
-msgid "Cannot find unit %s"
-msgstr "Nelze najít jednotku %s"
 
 #: lazarusidestrconsts.liscannotopenform
 #, object-pascal-format
@@ -6062,21 +5984,6 @@ msgstr "Nesprávné odsazení"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Došlo k výjimce během mazání%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfeclassnotfound
-#, object-pascal-format
-msgid "%s%sClass \"%s\" not found."
-msgstr "%s%sTřída \"%s\" nenalezena."
-
-#: lazarusidestrconsts.liscfecomponent
-#, object-pascal-format
-msgid "%s%sComponent: %s:%s"
-msgstr "%s%sKomponenta: %s:%s"
-
-#: lazarusidestrconsts.liscfecomponentclass
-#, object-pascal-format
-msgid "%s%sComponent Class: %s"
-msgstr "%s%sTřída komponenty: %s"
-
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
 msgstr "Není známo, jak kopírovat upravovací výběr tohoto formuláře"
@@ -6116,11 +6023,6 @@ msgstr "Chyba při rušení prostředníka"
 msgid "Error destroying mediator %s of unit %s:%s%s"
 msgstr "Chyba při rušení prostředníka %s jednotky %s:%s%s"
 
-#: lazarusidestrconsts.liscfeerrorreading
-#, object-pascal-format
-msgid "Error reading %s"
-msgstr "Chyba čtení %s"
-
 #: lazarusidestrconsts.liscfeinfile
 #, object-pascal-format
 msgid "In file %s"
@@ -6129,21 +6031,6 @@ msgstr "V souboru %s"
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
 msgstr "Neplatný vlastník komponenty"
-
-#: lazarusidestrconsts.liscferoot
-#, object-pascal-format
-msgid "%sRoot=%s:%s"
-msgstr "%sKořen=%s:%s"
-
-#: lazarusidestrconsts.liscfestream
-#, object-pascal-format
-msgid "%sStream=%s"
-msgstr "%sProud=%s"
-
-#: lazarusidestrconsts.liscfestreamposition
-#, object-pascal-format
-msgid "%s%sStream position: %s"
-msgstr "%s%sPozice proudu: %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
 msgid "TCustomFormEditor.CreateNonFormForm already exists"
@@ -6761,11 +6648,6 @@ msgstr " Symbol \"%s\" již existuje! "
 msgid "Auto complete on"
 msgstr "Automatické dokončení na"
 
-#: lazarusidestrconsts.liscodetemplchange
-msgctxt "lazarusidestrconsts.liscodetemplchange"
-msgid "Change"
-msgstr "Změnit"
-
 #: lazarusidestrconsts.liscodetemplcomment
 msgid "Comment:"
 msgstr "Komentář:"
@@ -6880,10 +6762,6 @@ msgstr "Jinak"
 #: lazarusidestrconsts.liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "JinakPokud"
-
-#: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
-msgid "Exit without Save"
-msgstr "Ukončit bez uložení"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 #, fuzzy
@@ -7058,10 +6936,6 @@ msgstr "%s adresář projektu"
 #: lazarusidestrconsts.liscodetoolsdefsreaderror
 msgid "Read error"
 msgstr "Chyba čtení"
-
-#: lazarusidestrconsts.liscodetoolsdefssaveandexit
-msgid "Save and Exit"
-msgstr "Uložit a ukončit"
 
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -8043,10 +7917,6 @@ msgstr "Kopírovat Všechny Zobrazené Zprávy do Schránky"
 msgid "Copy description to clipboard"
 msgstr "Zkopírovat popis do schránky"
 
-#: lazarusidestrconsts.liscopyerror
-msgid "Copy Error"
-msgstr "Chyba kopírování"
-
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Chyba kopírování"
@@ -8097,10 +7967,6 @@ msgstr "Snímat pro zprávy FPC"
 msgid "Scan for Make messages"
 msgstr "Snímat pro zprávy Make"
 
-#: lazarusidestrconsts.liscoscanformessages
-msgid "Scan for messages:"
-msgstr "Kontrolovat na zprávy:"
-
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling compiler"
 msgstr "Přeskočit volání překladače"
@@ -8119,11 +7985,6 @@ msgstr "Nelze přidat \"{$R %s}\" do hlavního zdrojového kódu!"
 #, object-pascal-format
 msgid "Could not add \"%s\" to main source!"
 msgstr "Nelze přidat \"%s\" do hlavního zdrojového kódu!"
-
-#: lazarusidestrconsts.liscouldnotremovefrommainsource
-#, object-pascal-format
-msgid "Could not remove \"%s\" from main source!"
-msgstr "Nelze odstranit \"%s\" z hlavního zdrojového kódu!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
 #, object-pascal-format
@@ -8896,11 +8757,6 @@ msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
 msgstr "Otevřít ..."
 
-#: lazarusidestrconsts.lisdlgsave
-msgctxt "lazarusidestrconsts.lisdlgsave"
-msgid "Save ..."
-msgstr "Uložit ..."
-
 #: lazarusidestrconsts.lisdoesnotexists
 #, object-pascal-format
 msgid "%s does not exist: %s"
@@ -9353,17 +9209,9 @@ msgstr "Povolit Dwarf 3 (-gw)"
 msgid "Enable Option -Xg?"
 msgstr "Povolit volbu -Xg?"
 
-#: lazarusidestrconsts.lisenableoptionxg2
-msgid "Enable option -Xg"
-msgstr "Povolit volbu -Xg"
-
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr "Povolit = stiskem Return nahrazuje celý identifikátor a Shift+Return nahrazuje prefix, Zakázat = stisk Return nahrazuje prefix a Shift+Return nahrazuje celý identifikátor"
-
-#: lazarusidestrconsts.lisenclose
-msgid "Enclose"
-msgstr "Ohraničit"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
@@ -9587,18 +9435,10 @@ msgstr "Každé n-té číslo řádku"
 msgid "Example file:"
 msgstr "Ukázkový soubor:"
 
-#: lazarusidestrconsts.lisexamplesbuildallselected
-msgid "Build all selected"
-msgstr "Sestavit všechny vybrané"
-
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 #, object-pascal-format
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Příklady:%sIdentifikátor%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-
-#: lazarusidestrconsts.lisexamplesopenfirstselected
-msgid "Open first selected"
-msgstr "Otevřít první vybraný"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -9886,10 +9726,6 @@ msgstr "Soubor je symbolický odkaz"
 msgid "File \"%s\" is virtual."
 msgstr "Soubor \"%s\" je virtuální."
 
-#: lazarusidestrconsts.lisfilelinkerror
-msgid "File link error"
-msgstr "Chyba vazby souboru"
-
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Styl jména souboru"
@@ -10151,10 +9987,6 @@ msgstr "Nalezena verze %s, očekávána %s"
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
 msgstr "Verze FPC jako jedno číslo (např. 20701)"
-
-#: lazarusidestrconsts.lisfpcmakefailed
-msgid "fpcmake failed"
-msgstr "fpcmake selhal"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -10579,30 +10411,10 @@ msgstr "Tip: Klikněte na \"Ukázat volby\" ke zjištění, odkud se berou přic
 msgid ", Hints: %s"
 msgstr ", Pokynů:%s"
 
-#: lazarusidestrconsts.lishintsaveall
-msgid "Save all"
-msgstr "Uložit vše"
-
-#: lazarusidestrconsts.lishintstepinto
-msgid "Step Into"
-msgstr "Vejít do"
-
-#: lazarusidestrconsts.lishintstepout
-msgid "Run until function returns"
-msgstr "Spustit do návratu z funkce"
-
-#: lazarusidestrconsts.lishintstepover
-msgid "Step Over"
-msgstr "Přejít přes"
-
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 #, object-pascal-format
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Tip: Funkce \"Vytvořit Řetězec Zdrojů\" očekává řetězcovou konstantu.%sProsím vyberte výraz a zkuste znova."
-
-#: lazarusidestrconsts.lishinttoggleformunit
-msgid "Toggle Form/Unit"
-msgstr "Přepni Formulář/Jednotka"
 
 #: lazarusidestrconsts.lishintviewforms
 msgid "View Forms"
@@ -10675,19 +10487,9 @@ msgstr "Vítejte v Lazarusu.%0:sNalezená Konfigurace IDE  byla dříve použita
 msgid "Creating Makefile for package %s"
 msgstr "Vytvořit Makefile pro balíček %s"
 
-#: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
-#, object-pascal-format
-msgid "Error: running 'compile after' tool failed for package %s"
-msgstr "Chyba: spuštění nástroje 'přeložit po' selhalo pro balíček %s"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "Informace o IDE"
-
-#: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
-#, object-pascal-format
-msgid "WARNING: unit name invalid %s, package=%s"
-msgstr "VAROVÁNÍ: neplatné jméno jednotky %s, balíček=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
@@ -10776,10 +10578,6 @@ msgstr "Načíst ze souboru"
 msgid "File \"%s\" does not contain compiler options."
 msgstr "Soubor \"%s\" neobsahuje volby překladače."
 
-#: lazarusidestrconsts.lisiecorecentfiles
-msgid "Recent files"
-msgstr "Nedávné soubory"
-
 #: lazarusidestrconsts.lisiecosavetofile
 msgid "Save to file"
 msgstr "Uložit soubor"
@@ -10860,14 +10658,6 @@ msgstr "Ve zdrojovém adresáři balíčku \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Ve zdrojovém adresáři projektu. Ověřte duplicity."
 
-#: lazarusidestrconsts.lisincludeallsubdirectories
-msgid "Include all subdirectories"
-msgstr "Včetně všech podsložek"
-
-#: lazarusidestrconsts.lisincludefilter
-msgid "Include filter"
-msgstr "Filtr zahrnutí"
-
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "cesta zahrnutí"
@@ -10879,10 +10669,6 @@ msgstr "Cesty pro začleněné soubory"
 #: lazarusidestrconsts.lisincluderecursive
 msgid "Include, recursive"
 msgstr ""
-
-#: lazarusidestrconsts.lisincludesubdirectories
-msgid "Include subdirectories"
-msgstr "Včetně podsložek"
 
 #: lazarusidestrconsts.lisincompatibleppu
 #, object-pascal-format
@@ -11016,10 +10802,6 @@ msgstr "Vložit makro"
 msgid "Insert name of current procedure."
 msgstr "Vložit jméno aktuální procedury."
 
-#: lazarusidestrconsts.lisinsertprintshorttag
-msgid "Insert PrintShort tag"
-msgstr "Vložit značku PrintShort"
-
 #: lazarusidestrconsts.lisinsertprintshorttag2
 msgid "Insert printshort tag"
 msgstr "Vložit značku printshort"
@@ -11051,10 +10833,6 @@ msgstr "Vložit značku url"
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
 msgstr "V sezení"
-
-#: lazarusidestrconsts.lisinstallationfailed
-msgid "Installation failed"
-msgstr "Instalace selhala"
 
 #: lazarusidestrconsts.lisinstalled
 msgid "installed"
@@ -11893,11 +11671,6 @@ msgstr "lazarus [volby] <jméno-projektu>"
 msgid "lazbuild"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildaboaction
-msgctxt "lazarusidestrconsts.lislazbuildaboaction"
-msgid "Action"
-msgstr "Akce"
-
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Vybrat výstupní adresář spustitelných souborů IDE "
@@ -12390,11 +12163,6 @@ msgstr "%s Možná musíte znovu přeložit balíček."
 msgid "%s MB"
 msgstr "%s MB"
 
-#: lazarusidestrconsts.lismeaction
-msgctxt "lazarusidestrconsts.lismeaction"
-msgid "Action"
-msgstr "Akce"
-
 #: lazarusidestrconsts.lismenuabortbuild
 msgid "Abort Build"
 msgstr "Přerušit sestavení"
@@ -12871,10 +12639,6 @@ msgstr "Akce položky nabídky"
 msgid "Menuitem shortcut conflicts in %s"
 msgstr "Konflikt zkratky položky nabídky v %s"
 
-#: lazarusidestrconsts.lismenueditormovedown
-msgid "Move Down (or right)"
-msgstr "Posunout dolů (nebo vpravo)"
-
 #: lazarusidestrconsts.lismenueditormoveitemdown
 msgid "Mo&ve item down"
 msgstr "Přesu&nout položku dolů"
@@ -12908,10 +12672,6 @@ msgstr "Přesunout vybranou položku napravo"
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr "Posunout vybranou položku nahodu"
-
-#: lazarusidestrconsts.lismenueditormoveup
-msgid "Move Up (or left)"
-msgstr "Posunout nahoru (nebo vlevo)"
 
 #: lazarusidestrconsts.lismenueditorna
 msgid "n/a"
@@ -13091,11 +12851,6 @@ msgstr "%s: Zkratky a urychlující klávesy"
 #, object-pascal-format
 msgid "%s.%s.%s - OnClick: %s"
 msgstr "%s.%s.%s - OnClick: %s"
-
-#: lazarusidestrconsts.lismenueditorssubmenu
-#, object-pascal-format
-msgid "%s submenu"
-msgstr "podnabídka %s"
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
@@ -13832,10 +13587,6 @@ msgctxt "lazarusidestrconsts.lismeother"
 msgid "Other tabs"
 msgstr "Jiný list"
 
-#: lazarusidestrconsts.lismeprojects
-msgid "Projects"
-msgstr "Projekty"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Editor zpráv"
@@ -14453,11 +14204,6 @@ msgstr "(nevybrány žádné zprávy)"
 msgid "noname"
 msgstr "bezejmenný"
 
-#: lazarusidestrconsts.lisnone
-#, object-pascal-format
-msgid "%snone"
-msgstr "%sžádný"
-
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "žádný, klikněte pro výběr jednoho"
@@ -14544,12 +14290,6 @@ msgstr "POZNÁMKA: Nelze vytvořit definiční šablonu pro zdroje Lazarusu"
 msgid "no template selected"
 msgstr "není vybrána žádné šablona"
 
-#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
-msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr "%s nenalezen v %s na řádku %s, sloupec %s.%sMožná je zpráva neaktuální."
-
 #: lazarusidestrconsts.lisnothingtodo
 msgid "Nothing to do"
 msgstr ""
@@ -14578,10 +14318,6 @@ msgstr "Nyní ne"
 #: lazarusidestrconsts.lisnowloadedscheme
 msgid "Now loaded: "
 msgstr "Nyní nahráváno: "
-
-#: lazarusidestrconsts.lisnpcreate
-msgid "Create"
-msgstr "Vytvořit"
 
 #: lazarusidestrconsts.lisnpcreateanewproject
 msgid "Create a new project"
@@ -14872,10 +14608,6 @@ msgctxt "lazarusidestrconsts.lisoptions"
 msgid "Options"
 msgstr "Volby"
 
-#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
-msgid "Options changed, recompiling clean with -B"
-msgstr "Volby změněny, čisté překládání s -B"
-
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignorováno"
@@ -15146,10 +14878,6 @@ msgstr "Zakázat I18N v lfm"
 msgid "Add Files from File System"
 msgstr "Přidat soubor ze souborového systému"
 
-#: lazarusidestrconsts.lispckeditaddotheritems
-msgid "Add other items"
-msgstr "Přidat jiné položky"
-
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
@@ -15316,10 +15044,6 @@ msgstr "Registrovat jednotku"
 #: lazarusidestrconsts.lispckeditremovedependency
 msgid "Remove dependency"
 msgstr "Odstranit závislost"
-
-#: lazarusidestrconsts.lispckeditremovedependency2
-msgid "Remove Dependency?"
-msgstr "Odstranit závislost?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
 #, object-pascal-format
@@ -15490,10 +15214,6 @@ msgstr "Minoritní"
 #: lazarusidestrconsts.lispckoptsobject
 msgid "Object"
 msgstr "Objekt"
-
-#: lazarusidestrconsts.lispckoptspackagefileoptions
-msgid "Additional Package File Options"
-msgstr ""
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -15830,11 +15550,6 @@ msgstr "Chyba načítání souboru"
 msgid "Error Reading Package"
 msgstr "Chyba načítání balíčku"
 
-#: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Error: updating po files failed for package %s"
-msgstr "Chyba: změna souboru po selhala pro balíček %s"
-
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
 msgid "Error writing file"
@@ -15883,10 +15598,6 @@ msgstr "Instalace balíčku %s automaticky nainstaluje balíček:"
 #, object-pascal-format
 msgid "Installing the package %s will automatically install the packages:"
 msgstr "Instalace balíčku %s automaticky nainstaluje balíčky:"
-
-#: lazarusidestrconsts.lispkgmanginvalidcompilerfilename
-msgid "invalid Compiler filename"
-msgstr "neplatné jméno překladače"
 
 #: lazarusidestrconsts.lispkgmanginvalidfileextension
 msgid "Invalid file extension"
@@ -16010,11 +15721,6 @@ msgstr "Přeskočit tento balíček"
 msgid "static packages config file"
 msgstr "konfigurační soubor statického balíčku"
 
-#: lazarusidestrconsts.lispkgmangthecompilerfileforpackageisnotavalidexecutable
-#, object-pascal-format
-msgid "The compiler file for package %s is not a valid executable:%s%s"
-msgstr "Soubor překladače pro balíček %s není platný spustitelný soubor:%s%s"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -16058,11 +15764,6 @@ msgstr "Následující balíčky se nepodařilo načíst:"
 #, object-pascal-format
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sNásledující jednotky budou přidány do sekce 'uses' jednotky%s%s:%s%s"
-
-#: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, object-pascal-format
-msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
-msgstr "Selhal překlad balíčku \"%s\".%sOdstranit jej z instalačního seznamu?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 #, object-pascal-format
@@ -16254,11 +15955,6 @@ msgstr "odstranit"
 msgid "Select a package"
 msgstr "Vybrat balíček"
 
-#: lazarusidestrconsts.lispkgsinstalled
-msgctxt "lazarusidestrconsts.lispkgsinstalled"
-msgid "Installed"
-msgstr "Instalováno"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Cannot register components without unit"
 msgstr "Nelze registrovat komponenty bez jednotky"
@@ -16349,10 +16045,6 @@ msgstr "Projekt přepisuje výstupní adresář následujících balíčků.%sVi
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Soubor není v žádném načteném balíčku."
-
-#: lazarusidestrconsts.lispkgtransitivity
-msgid "Transitivity"
-msgstr "Přechodnost"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 #, object-pascal-format
@@ -16682,11 +16374,6 @@ msgstr "Projekt změněn"
 msgid "Project changed on disk"
 msgstr "Projekt změněn na disku"
 
-#: lazarusidestrconsts.lisprojectcount
-#, object-pascal-format
-msgid "%d projects"
-msgstr "%d projektů"
-
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
@@ -16946,11 +16633,6 @@ msgctxt "lazarusidestrconsts.lispvutheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid Pascal identifier."
 msgstr "Jméno jednotky není platný pascalovský identifikátor."
 
-#: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses"
-msgstr "Jméno jednotky je použito, když IDE rozšiřuje definici uses"
-
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
@@ -16989,10 +16671,6 @@ msgstr "Rychle Opravit chybu"
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Rychlé opravy"
-
-#: lazarusidestrconsts.lisquickfixremoveunit
-msgid "Quick fix: Remove unit"
-msgstr "Rychlá oprava: Odstranit jednotku"
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
@@ -17040,10 +16718,6 @@ msgstr "Regulární výrazy"
 #: lazarusidestrconsts.lisrelative
 msgid "Relative"
 msgstr "Relativní"
-
-#: lazarusidestrconsts.lisrelativepaths
-msgid "Relative paths"
-msgstr "Relativní cesty"
 
 #: lazarusidestrconsts.lisremove
 msgctxt "lazarusidestrconsts.lisremove"
@@ -17096,11 +16770,6 @@ msgstr "Odstranit z vyhledávací cesty"
 #: lazarusidestrconsts.lisremoveincludepath
 msgid "Remove include path?"
 msgstr "Odstranit zahrnutou cestu?"
-
-#: lazarusidestrconsts.lisremovelocalvariable
-#, object-pascal-format
-msgid "Remove local variable %s"
-msgstr "Odstranit místní proměnnou %s"
 
 #: lazarusidestrconsts.lisremovelocalvariable3
 #, object-pascal-format
@@ -17326,14 +16995,6 @@ msgstr "Pravé strany"
 msgid "Right space equally"
 msgstr "Stejná pravá vzdálenost"
 
-#: lazarusidestrconsts.lisroot
-msgid "Root"
-msgstr "Kořen"
-
-#: lazarusidestrconsts.lisrootdirectory
-msgid "Root Directory"
-msgstr "Kořenový adresář"
-
 #: lazarusidestrconsts.lisrun
 msgctxt "lazarusidestrconsts.lisrun"
 msgid "Run"
@@ -17342,11 +17003,6 @@ msgstr "Spustit"
 #: lazarusidestrconsts.lisrunanddesigntimepackageshavenolimitations
 msgid "\"Run and Design time\" packages have no limitations."
 msgstr "\"Běhové a Designové\" balíčky nemají omezení."
-
-#: lazarusidestrconsts.lisrunbuttonhint
-msgctxt "lazarusidestrconsts.lisrunbuttonhint"
-msgid "Run"
-msgstr "Spustit"
 
 #: lazarusidestrconsts.lisrunning
 #, object-pascal-format
@@ -17472,11 +17128,6 @@ msgstr "Uložit a ukončovací dialog"
 msgid "Rebuild IDE"
 msgstr "Uložit a znovu sestavit IDE"
 
-#: lazarusidestrconsts.lissaveas
-msgctxt "lazarusidestrconsts.lissaveas"
-msgid "Save As"
-msgstr "Uložit jako"
-
 #: lazarusidestrconsts.lissavechangedfiles
 msgid "Save changed files?"
 msgstr "Uložit změněné soubory?"
@@ -17501,10 +17152,6 @@ msgstr "Uloženo s nastavením IDE"
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
 msgstr "Uloženo se sezením projektu"
-
-#: lazarusidestrconsts.lissavefileas
-msgid "Save file as"
-msgstr "Uložit soubor jako"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 #, object-pascal-format
@@ -18426,11 +18073,6 @@ msgstr "Adresář \"%s\" nadále není potřeba v cestě jednotek.%sOdstranit je
 msgid "The directory \"%s\" is not writable."
 msgstr "Adresář \"%s\" není zapisovatelný."
 
-#: lazarusidestrconsts.listhedirectorywasnotfound
-#, object-pascal-format
-msgid "The directory %s was not found."
-msgstr "Adresář %s nebyl nalezen."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
@@ -19009,25 +18651,9 @@ msgstr "Název (nechejte prázdné pro výchozí)"
 msgid "Path:"
 msgstr "Cesta:"
 
-#: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
-msgid "Toggle showing filenames with full path or with relative path"
-msgstr "Přepnout zobrazení názvů souborů s plnou cestou nebo s relativní cestou"
-
 #: lazarusidestrconsts.listoolbarconfiguration
 msgid "Toolbar Configuration"
 msgstr "Nastavení nástrojového panelu"
-
-#: lazarusidestrconsts.listoolbaroptions
-msgid "Toolbar"
-msgstr "Nástrojový panel"
-
-#: lazarusidestrconsts.listoolbaroptionshighlight
-msgid "Highlight toolbars buttons"
-msgstr "Zvýraznit tlačítka nástrojových panelů"
-
-#: lazarusidestrconsts.listoolbaroptionsraise
-msgid "Raise toolbars"
-msgstr "Vyvolat nástrojové panely"
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 #, object-pascal-format
@@ -19467,10 +19093,6 @@ msgstr "Nelze vytvořit novou metodu."
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
 msgstr "Nelze vytvořit dočasnou paměť pro lfm."
-
-#: lazarusidestrconsts.lisunabletodelete
-msgid "Unable to delete"
-msgstr "Nelze smazat"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
 #, object-pascal-format
@@ -20055,11 +19677,6 @@ msgstr "Zobrazit zdroj (.lfm)"
 #: lazarusidestrconsts.liswarning
 msgid "Warning: "
 msgstr "Varování: "
-
-#: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-#, object-pascal-format
-msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
-msgstr "Varování: víceznačný soubor nalezen: \"%s\". Zdrojový soubor je: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
 #, object-pascal-format
