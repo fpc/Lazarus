@@ -28,6 +28,7 @@ unit FpPascalParser;
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 {$TYPEDADDRESS on}
+{$SafeFPUExceptions off}
 
 interface
 
@@ -79,6 +80,7 @@ type
     FTextExpression: String;
     FExpressionPart: TFpPascalExpressionPart;
     FValid: Boolean;
+    FFpuMask: TFPUExceptionMask;
     function GetResultValue: TFpValue;
     function GetValid: Boolean;
     procedure SetError(AMsg: String);  // deprecated;
@@ -3197,6 +3199,8 @@ end;
 constructor TFpPascalExpression.Create(ATextExpression: String;
   AContext: TFpDbgSymbolScope; ASkipParse: Boolean);
 begin
+  FFpuMask := GetExceptionMask;
+  SetExceptionMask([low(TFPUExceptionMask)..high(TFPUExceptionMask)]);
   FContext := AContext;
   FContext.AddReference;
   FTextExpression := ATextExpression;
@@ -3211,6 +3215,8 @@ begin
   FreeAndNil(FExpressionPart);
   FContext.ReleaseReference;
   inherited Destroy;
+  ClearExceptions(False);
+  SetExceptionMask(FFpuMask);
 end;
 
 function TFpPascalExpression.DebugDump(AWithResults: Boolean): String;
