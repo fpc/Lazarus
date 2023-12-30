@@ -383,6 +383,8 @@ type
     function GetPCVersionForDirectory(const Directory: string; out Kind: TPascalCompiler): integer;
     function GetNamespacesForDirectory(const Directory: string;
                           UseCache: boolean = true): string;// value of macro #Namespaces
+    function GetNamespacedIncludesForDirectory(const Directory: string;
+                          UseCache: boolean = true): string;
 
     // simple global defines for tests and simple projects
     function GetGlobalDefines(CreateIfNotExists: boolean = true): TDefineTemplate;
@@ -1780,6 +1782,22 @@ begin
     UnitSet:=GetUnitSetForDirectory(Directory);
     if UnitSet<>nil then
       Result:=MergeWithDelimiter(Result,UnitSet.GetUnitScopes,';');
+  end;
+end;
+
+function TCodeToolManager.GetNamespacedIncludesForDirectory(
+  const Directory: string; UseCache: boolean): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  if UseCache then begin
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsNamespaces,true)
+  end else begin
+    Result:='';
+    Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+    if Evaluator=nil then exit;
+    if Evaluator.IsDefined(StdDefTemplCodetoolsFPCSrc) then
+      Result:='1';
   end;
 end;
 
@@ -6564,6 +6582,7 @@ begin
   ctdcsUnitSet: Result:=GetUnitSetIDForDirectory(ADirectory,false);
   ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
   ctdcsNamespaces: Result:=GetNamespacesForDirectory(ADirectory,false);
+  ctdcsNamespacedIncludes: Result:=GetNamespacedIncludesForDirectory(ADirectory,false);
   else RaiseCatchableException(''){%H-};
   end;
 end;

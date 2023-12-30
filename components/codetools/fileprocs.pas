@@ -1191,10 +1191,10 @@ function FilenameIsMatching(const Mask, Filename: string;
   var
     A, B: string;
   begin
-    SetLength(A,LenA);
+    SetLength(A{%H-},LenA);
     if LenA>0 then
       Move(AP^,A[1],LenA);
-    SetLength(B,LenB);
+    SetLength(B{%H-},LenB);
     if LenB>0 then
       Move(BP^,B[1],LenB);
     Result:=UTF8CompareText(A,B);

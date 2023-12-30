@@ -70,7 +70,8 @@ type
     ctdcsUnitLinks,
     ctdcsUnitSet,
     ctdcsFPCUnitPath,  // unit paths reported by FPC
-    ctdcsNamespaces
+    ctdcsNamespaces,
+    ctdcsNamespacedIncludes // 1 = search include file via /namespaced/ parent folder
     );
 
   TCTDirCacheStringRecord = record
@@ -231,6 +232,7 @@ type
     function FindIncludeFile(const IncFilename: string; AnyCase: boolean): string; override;
     function FindIncludeFileInPath(IncFilename: string; AnyCase: boolean): string;
     function FindIncludeFileInCleanPath(IncFilename, SearchPath: string; AnyCase: boolean): string;
+    function FindNamespacedIncludeFile(const IncFilename: string): string;
 
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
     procedure UpdateListing; override;
@@ -1332,6 +1334,11 @@ begin
 
   SearchPath:=Strings[ctdcsIncludePath];
   Result:=FindIncludeFileInCleanPath(IncFilename,SearchPath,AnyCase);
+
+  if (Result='') and FilenameIsPascalUnit(IncFilename)
+      and (Strings[ctdcsNamespacedIncludes]<>'') then begin
+    Result:=FindNamespacedIncludeFile(IncFilename);
+  end;
 end;
 
 function TCTDirectoryCache.FindIncludeFileInCleanPath(IncFilename,
@@ -1372,6 +1379,71 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
+end;
+
+function TCTDirectoryCache.FindNamespacedIncludeFile(const IncFilename: string
+  ): string;
+// if Direcory contains a '/namespaced/' then search IncFilename in sibling folders
+// e.g. Directory='/home/user/fpcsrc/rtl/namespaced/windows/', IncFilename='wintypes.pp'
+// search it in /home/user/fpcsrc/rtl/**
+const
+  NamespacedDir = PathDelim+'namespaced'+PathDelim;
+
+  function Traverse(Cache: TCTDirectoryCache; Lvl: integer): string;
+  var
+    i: Integer;
+    Dir: string;
+    CurListing: TCTDirectoryListing;
+    ChildCache: TCTDirectoryCache;
+  begin
+    Dir:=ExtractFilename(Cache.Directory);
+    if SameText(Dir,'backup') then exit;
+
+    Result:=Cache.FindIncludeFile(IncFilename,True);
+    if Result<>'' then exit;
+    if Lvl>4 then exit;
+    inc(Lvl);
+
+    CurListing:=Cache.Listing;
+    for i:=0 to CurListing.Count-1 do begin
+      if CurListing.GetAttr(i) and faDirectory=0 then continue;
+      Dir:=Cache.Directory+CurListing.GetFilename(i);
+      ChildCache:=Pool.GetCache(Dir,true,false);
+      Result:=Traverse(ChildCache,Lvl);
+      if Result<>'' then exit;
+    end;
+  end;
+
+var
+  p: SizeInt;
+  Dir, SubDir: String;
+  Cache: TCTDirectoryCache;
+begin
+  Result:='';
+  if Pos(PathDelim,IncFilename)>0 then exit;
+
+  p:=Pos(NamespacedDir,Directory);
+  if p<1 then exit;
+  //debugln(['TCTDirectoryCache.FindNamespacedIncludeFile ',Directory,' -> ',IncFilename]);
+  Dir:=LeftStr(Directory,p);
+  SubDir:=copy(Directory,p+length(NamespacedDir),length(Directory));
+  if SubDir<>'' then begin
+    // first search in same subdir aka the directory without /namespaced/
+    Result:=Dir+SubDir+IncFilename;
+    if Pool.FileExists(Result) then
+      exit;
+  end;
+
+  // then search in subdir 'src'
+  Result:=Dir+'src'+IncFilename;
+  if Pool.FileExists(Result) then
+    exit;
+
+  // finally search recursively
+  //debugln(['TCTDirectoryCache.FindNamespacedIncludeFile Dir=',Dir,' SubDir="',SubDir,'"']);
+
+  Cache:=Pool.GetCache(Dir,true,false);
+  Result:=Traverse(Cache,0);
 end;
 
 function TCTDirectoryCache.FileAge(const ShortFilename: string): TCTFileAgeTime;

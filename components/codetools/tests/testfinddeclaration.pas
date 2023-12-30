@@ -1439,12 +1439,13 @@ var
   UnitSet: TFPCUnitSetCache;
   FPCSrcDir: String;
 
-  procedure Traverse(Dir: string; IsNamespaced: boolean);
+  procedure Traverse(const Dir: string; Lvl, NamespacedLvl: integer);
   var
     Cache: TCTDirectoryCache;
     Listing: TCTDirectoryListing;
-    i, p, AtomStart, IncludeStart, IncludeEnd: Integer;
-    CurFilename, Ext, FullFilename, Src, IncFilename, FullIncFilename: String;
+    i, p, AtomStart, IncludeStart, IncludeEnd, NextNamespacedLvl: Integer;
+    CurFilename, Ext, FullFilename, Src, IncFilename, FullIncFilename,
+      FoundFilename, CurUnitName, DirectiveName: String;
     CurCode: TCodeBuffer;
   begin
     Cache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
@@ -1455,10 +1456,15 @@ var
       FullFilename:=Dir+PathDelim+CurFilename;
       if Listing.GetAttr(i) and faDirectory>0 then begin
         // search recursive
-        Traverse(FullFilename,IsNamespaced or (CurFilename='namespaced'));
+        NextNamespacedLvl:=NamespacedLvl;
+        if NamespacedLvl>=0 then
+          inc(NextNamespacedLvl)
+        else if CurFilename='namespaced' then
+          NextNamespacedLvl:=Lvl;
+        Traverse(FullFilename,Lvl+1,NextNamespacedLvl);
       end else begin
         Ext:=ExtractFileExt(CurFilename);
-        if IsNamespaced and ((Ext='.pp') or (Ext='.pas')) then begin
+        if (NamespacedLvl>=0) and ((Ext='.pp') or (Ext='.pas')) then begin
           CurCode:=CodeToolBoss.LoadFile(FullFilename,true,false);
           if CurCode=nil then begin
             debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits failed loading "'+FullFilename+'"']);
@@ -1479,18 +1485,29 @@ var
           end;
           // search include directive
           if not FindIncludeDirective(Src,'unit',1,IncludeStart,IncludeEnd) then begin
-            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits missing include directive in "'+FullFilename+'"']);
+            debugln(['TTestFindDeclaration.TestFindDeclaration_FindFPCSrcNameSpacedUnits missing include directive in "'+FullFilename+'"',NamespacedLvl]);
             continue;
           end;
-          IncFilename:=copy(Src,IncludeStart,IncludeEnd-IncludeStart);
+          ExtractLongParamDirective(Src,IncludeStart,DirectiveName,IncFilename);
           DoDirSeparators(IncFilename);
           if ExtractFilePath(IncFilename)<>'' then begin
             FullIncFilename:=ResolveDots(Dir+PathDelim+IncFilename);
-            if not FileExists(FullIncFilename) then begin
-              Fail('Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
+            if not CodeToolBoss.DirectoryCachePool.FileExists(FullIncFilename) then begin
+              Fail('[20231230132715] Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
             end;
           end else begin
-            //debugln(['Namespaced unit "'+FullFilename+'" has include "'+IncFilename+'", searching ...']);
+            FoundFilename:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFilename);
+            if FoundFilename<>'' then continue;
+            if not FilenameIsPascalUnit(IncFilename) then begin
+              Fail('[20231230132721] Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
+            end;
+            CurUnitName:=ExtractFileNameOnly(IncFilename);
+            FoundFilename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks('',CurUnitName);
+            if FoundFilename<>'' then begin
+              Fail('Namespaced unit "'+FullFilename+'" includes file "'+IncFilename+'", not found via FindIncludeFileInCompletePath, but found via UnitLinks');
+            end else begin
+              debugln('Note: Namespaced unit "'+FullFilename+'" includes missing file "'+IncFilename+'"');
+            end;
           end;
         end;
       end;
@@ -1504,7 +1521,7 @@ begin
   if FPCSrcDir='' then Fail('UnitSet.FPCSourceDirectory empty');
   if not DirectoryExists(FPCSrcDir) then
     Fail('UnitSet.FPCSourceDirectory not found: "'+FPCSrcDir+'"');
-  Traverse(FPCSrcDir,false);
+  Traverse(FPCSrcDir,0,-1);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;
