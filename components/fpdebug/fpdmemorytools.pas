@@ -512,6 +512,8 @@ operator -  (const AnAddr: TFpDbgMemLocation; AVal: QWord): TFpDbgMemLocation; i
 function LocToAddr(const ALocation: TFpDbgMemLocation): TDbgPtr; inline;      // does not check valid
 function LocToAddrOrNil(const ALocation: TFpDbgMemLocation): TDbgPtr; inline; // save version
 
+function SignExtend(ASrcVal: QWord; ASrcSize: TFpDbgValueSize): Int64;
+
 //function EmptyMemReadOpts:TFpDbgMemReadOptions;
 
 function dbgs(const ALocation: TFpDbgMemLocation): String; overload;
@@ -898,6 +900,26 @@ begin
     Result := ALocation.Address
   else
     Result := 0;
+end;
+
+function SignExtend(ASrcVal: QWord; ASrcSize: TFpDbgValueSize): Int64;
+var
+  SourceFullSize, SBit: Int64;
+  b: TBitSize;
+begin
+  Result := Int64(ASrcVal);
+
+  SourceFullSize := SizeToFullBytes(ASrcSize);
+  if SourceFullSize = 0 then
+    exit;
+
+  b := ASrcSize.BitSize;
+  SBit := 8 * SourceFullSize;
+  if b > 0 then
+    SBit := SBit + b - 8;
+
+  if (ASrcVal and (1 shl (SBit-1)) ) <> 0 then
+    Result := Result or (int64(-1) shl SBit);
 end;
 
 //function {%H-}EmptyMemReadOpts: TFpDbgMemReadOptions;

@@ -3589,6 +3589,52 @@ procedure TTestWatches.TestWatchesExpression;
     t.Add(AName, p+'ShortInt'+e +' and '+ p+'Word'+e,           weCardinal((50+n) and (1000+n)) );
     t.Add(AName, p+'ShortInt'+e +' and '+ IntToStr(1002+n),     weCardinal((50+n) and (1002+n)) );
 
+
+    t.Add('ENUM-EQ: ', p+'Enum = eNVaL2',         weBool(False));
+    t.Add('ENUM-EQ: ', p+'Enum = eNVaL3',         weBool(True));
+    t.Add('ENUM-EQ: ', p+'Enum = TEnum.eNVaL2',   weBool(False));
+    t.Add('ENUM-EQ: ', p+'Enum = TEnum.eNVaL3',   weBool(True));
+    t.Add('ENUM-EQ: ', 'eNVaL2 = '+p+'Enum',      weBool(False));
+    t.Add('ENUM-EQ: ', 'eNVaL3 = '+p+'Enum',      weBool(True));
+    t.Add('ENUM-EQ: ', p+'Enum = '+p2+'Enum',     weBool(True));
+    t.Add('ENUM-EQ: ', p+'Enum = '+p2+'EnumA',    weBool(False));
+    t.Add('ENUM-EQ: ', 'eNVaL3 = eNVaL2',         weBool(False));
+    t.Add('ENUM-EQ: ', 'eNVaL3 = eNVaL3',         weBool(True));
+
+    t.Add('ENUM-EQ: ', 'TEnum('+p+'Enum) = eNVaL2',        weBool(False));
+    t.Add('ENUM-EQ: ', 'TEnum('+p+'Enum) = eNVaL3',        weBool(True));
+    t.Add('ENUM-EQ: ', p+'Enum = TEnum(1)',        weBool(False));
+    t.Add('ENUM-EQ: ', p+'Enum = TEnum(2)',        weBool(True));
+    t.Add('ENUM-EQ: ', 'TEnum(1) = '+p+'Enum',     weBool(False));
+    t.Add('ENUM-EQ: ', 'TEnum(2) = '+p+'Enum',     weBool(True));
+    t.Add('ENUM-EQ: ', 'TEnum(2) = TEnum(1)',      weBool(False));
+    t.Add('ENUM-EQ: ', 'TEnum(2) = TEnum(2)',      weBool(True));
+    t.Add('ENUM-EQ: ', 'TEnum(2) = eNVaL2',        weBool(False));
+    t.Add('ENUM-EQ: ', 'TEnum(2) = eNVaL3',        weBool(True));
+
+    t.Add('ENUM-EQ: ', p+'EnumA = '+p2+'Enum1',    weBool(False));
+    t.Add('ENUM-EQ: ','ENVal2 = '+p2+'Enum1',     weBool(True));
+    t.Add('ENUM-EQ: ','ENVal1 = '+p2+'Enum1',     weBool(False));
+
+    t.Add('ENUM-Cmp: ', p+'Enum >  eNVaL2',        weBool(True));
+    t.Add('ENUM-Cmp: ', p+'Enum >= eNVaL2',        weBool(True));
+    t.Add('ENUM-Cmp: ', p+'Enum >  eNVaL3',        weBool(False));
+    t.Add('ENUM-Cmp: ', p+'Enum >= eNVaL3',        weBool(True));
+    t.Add('ENUM-Cmp: ', p+'Enum < eNVaL2',        weBool(False));
+    t.Add('ENUM-Cmp: ', p+'Enum < eNVaL3',        weBool(False));
+    t.Add('ENUM-Cmp: ', p+'Enum < eNVaL4',        weBool(True));
+    t.Add('ENUM-Cmp: ', 'eNVaL2 < '+p+'Enum',     weBool(True));
+    t.Add('ENUM-Cmp: ', 'eNVaL3 < '+p+'Enum',     weBool(False));
+    t.Add('ENUM-Cmp: ', 'eNVaL3 < eNVaL2',        weBool(False));
+    t.Add('ENUM-Cmp: ', 'eNVaL3 > eNVaL2',        weBool(True));
+
+    t.Add('ENUM-Cmp: ', 'TEnum('+p+'Enum) > eNVaL2',        weBool(True));
+    t.Add('ENUM-Cmp: ', 'TEnum('+p+'Enum) > eNVaL3',        weBool(False));
+    t.Add('ENUM-Cmp: ', p+'Enum > TEnum(2)',        weBool(False));
+    t.Add('ENUM-Cmp: ', p+'Enum > TEnum(1)',        weBool(True));
+    t.Add('ENUM-Cmp: ', p+'Enum > TEnum(-1)',       weBool(True));
+
+
     for i := 0 to t.Count-1 do
       t.Tests[i].IgnTypeName();
   end;
@@ -4332,6 +4378,10 @@ begin
       t.Add('', op1+'^boolean(1)^'+op2+'True',     weMatchErr('read.*mem|data.*location'));
       t.Add('', op1+'True'+op2+'^boolean(1)^',     weMatchErr('read.*mem|data.*location'));
     end;
+
+    t.Add('Diff ENUM types: ','gvEnum2 = gvEnum',      weMatchErr('type'));
+    t.Add('Diff ENUM types: ','gvEnum2 = gvEnum1',     weMatchErr('type'));
+    t.Add('Diff ENUM types: ','gvEnum2 = EnVal2',      weMatchErr('type'));
 
 
     t.EvaluateWatches;

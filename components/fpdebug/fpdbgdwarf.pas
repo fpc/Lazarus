@@ -350,6 +350,7 @@ type
     //function IsValidTypeCast: Boolean; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetAsString: AnsiString; override;
     procedure SetAsString(AValue: AnsiString); override;
@@ -368,6 +369,7 @@ type
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
     function GetAsString: AnsiString; override;
     function IsValidTypeCast: Boolean; override;
     function GetKind: TDbgSymbolKind; override;
@@ -2906,6 +2908,15 @@ begin
   FValue := Result;
 end;
 
+function TFpValueDwarfEnum.GetAsInteger: Int64;
+var
+  Size: TFpDbgValueSize;
+begin
+  Result := GetAsCardinal;
+  if GetSize(Size) then
+    Result := SignExtend(QWord(Result), Size);
+end;
+
 procedure TFpValueDwarfEnum.SetAsCardinal(AValue: QWord);
 var
   Size: TFpDbgValueSize;
@@ -2975,6 +2986,11 @@ begin
 end;
 
 function TFpValueDwarfEnumMember.GetAsCardinal: QWord;
+begin
+  Result := FOwnerVal.OrdinalValue;
+end;
+
+function TFpValueDwarfEnumMember.GetAsInteger: Int64;
 begin
   Result := FOwnerVal.OrdinalValue;
 end;
