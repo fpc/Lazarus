@@ -31,9 +31,12 @@ type
   TStylingClasses = Class(TPersistent)
   private
     FButtonClass: String;
+    FButtonGroupClass: String;
     FCheckBoxClass: String;
     FDeleteClass: String;
     FEditClass: String;
+    FGroupedButtonExtraTag: String;
+    FGroupedButtonExtraTagClass: String;
     FInfoClass: String;
     FReadonlyEditClass: String;
     FWidget : TCustomDBBootstrapTableWidget;
@@ -44,11 +47,14 @@ type
     Procedure Assign(Source : TPersistent); override;
   Published
     Property CheckBoxClass : String Read FCheckBoxClass Write FCheckBoxClass;
+    Property ButtonGroupClass : String Read FButtonGroupClass Write FButtonGroupClass;
     Property ButtonClass : String Read FButtonClass Write FButtonClass;
     Property InfoClass : String Read FInfoClass Write FInfoClass;
     Property EditClass : String Read FEditClass Write FEditClass;
     Property ReadonlyEditClass : String Read GetReadonlyEditClass Write FReadonlyEditClass stored IsReadonlyStored;
     Property DeleteClass : String Read FDeleteClass Write FDeleteClass;
+    Property GroupedButtonExtraTag : String Read FGroupedButtonExtraTag Write FGroupedButtonExtraTag;
+    Property GroupedButtonExtraTagClass : String Read FGroupedButtonExtraTagClass Write FGroupedButtonExtraTagClass;
   end;
 
   { TBSTableColumn }
@@ -368,6 +374,9 @@ begin
     FEditClass:=IC.FEditClass;
     FInfoClass:=IC.FInfoClass;
     FReadonlyEditClass:=IC.FReadonlyEditClass;
+    FButtonGroupClass:=IC.FButtonGroupClass;
+    FGroupedButtonExtraTag:=IC.FGroupedButtonExtraTag;
+    FGroupedButtonExtraTagClass:=IC.FGroupedButtonExtraTagClass;
     end
   else
     inherited Assign(Source);

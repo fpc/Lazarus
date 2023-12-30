@@ -106,6 +106,8 @@ Type
   
   TCustomDBSelectWidget = class(TCustomSelectWidget)
   Private
+    FClearValue: String;
+    FClearValueText: String;
     FItemTemplate: String;
     FLink : TSelectLink;
     FItemField: String;
@@ -124,6 +126,8 @@ Type
     Property ValueField : String Read FValueField Write SetValueField;
     Property NullIsNotValue : Boolean Read FNullIsNotValue Write SetNullIsNotValue;
     Property ItemTemplate : String Read FItemTemplate Write SetItemTemplate;
+    Property ClearValue : String Read FClearValue Write FClearValue;
+    Property ClearValueText : String Read FClearValueText  Write FClearValueText;
   Public
     Constructor Create(aOwner : TComponent); override;
     Destructor Destroy; override;
@@ -142,6 +146,9 @@ Type
     Property Multiple;
     Property Value;
     Property ItemTemplate;
+    Property ClearValue;
+    Property ClearValueText;
+    Property Size;
   end;
 
 

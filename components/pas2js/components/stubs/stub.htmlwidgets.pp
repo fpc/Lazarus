@@ -345,6 +345,7 @@ Type
   TCustomSelectWidget = class(TWebWidget)
   Private
     FSelectedIndex : Integer;
+    FSize: Integer;
     FMultiple : Boolean;
     function GetMultiple: Boolean;
     function GetSelectedIndex: Integer;
@@ -355,6 +356,7 @@ Type
     // Items that are selected
     property SelectedIndex : Integer Read GetSelectedIndex Write SetSelectedindex;
     Property Multiple : Boolean Read GetMultiple Write SetMultiple;
+    property Size : Integer Read FSize Write FSize;
   Public
     Constructor Create(aOWner : TComponent); override;
   end;
@@ -376,6 +378,7 @@ Type
     property SelectedIndex;
     Property Multiple;
     property Classes;
+
   end;
 
   { TLabelWidget }
