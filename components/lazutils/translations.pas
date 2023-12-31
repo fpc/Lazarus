@@ -249,7 +249,7 @@ end;
 
 function ComparePOItems(Item1, Item2: Pointer): Integer;
 begin
-  Result := CompareText(TPOFileItem(Item1).IdentifierLow,
+  Result := SysUtils.CompareText(TPOFileItem(Item1).IdentifierLow,
                         TPOFileItem(Item2).IdentifierLow);
 end;
 
@@ -850,7 +850,7 @@ end;
 
 procedure TPOFile.SetCharSet(const AValue: String);
 begin
-  if (CompareText(FCharSet, AValue) = 0) then Exit;
+  if (SysUtils.CompareText(FCharSet, AValue) = 0) then Exit;
   if (AValue = '') then FCharSet := 'UTF-8'
   else FCharSet := AValue;
 end;
