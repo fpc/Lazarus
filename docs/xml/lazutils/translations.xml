@@ -1064,13 +1064,13 @@ Stores values from Header and the sorted POItems to the specified string list.
 <descr>
 <p>
 <var>SaveToStrings</var> is a method used to store values from the .po file 
-class instance to the TStrings instance in <var>OutLst</var>. A nested routine 
-is called to store values from the Header and POItems properties to OutLst.
+class instance to the TStrings instance in <var>OutLst</var>. Values in the 
+Header and POItems properties are stored in OutLst.
 </p>
 <p>
 SaveToStrings calls CreateHeader to ensure that the Header property has been 
-allocated for the class instance. Values in POItems are sorted in Identifier 
-order prior to storing the values in OutLst.
+allocated for the class instance. Values in POItems are sorted (without case 
+sensitivity) in Identifier order prior to storing the values in OutLst.
 </p>
 <p>
 Values written to OutLst are stored in the PO (Portable Object) format used by 
