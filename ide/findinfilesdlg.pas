@@ -456,6 +456,8 @@ begin
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
   Options := Options-[fifReplace,fifReplaceAll];
+  if ShowModal <> mrOK then
+    Exit;
   Execute;
 end;
 
