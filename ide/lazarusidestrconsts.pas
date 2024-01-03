@@ -3790,7 +3790,9 @@ resourcestring
   lisCodeTemplAutoCompleteOn = 'Auto complete on';
   lisCodeTemplToken = 'Token:';
   lisCodeTemplComment = 'Comment:';
-  lisCodeTemplATokenAlreadyExists = ' A token "%s" already exists! ';
+  lisCodeTemplErrorAlreadyExists = 'A token already exists.';
+  lisCodeTemplErrorInvalidName = 'The token can only contain Latin letters, numbers and underscores, and cannot begin with a number.';
+  lisCodeTemplErrorEmptyName = 'The token cannot be empty.';
   lisCodeTemplError = 'Error';
   lisUnableToFindTheComponentClassItIsNotRegisteredViaR = 'Unable to find the component class "%s".'
     +'%sIt is not registered via RegisterClass and no lfm was found.'

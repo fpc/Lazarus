@@ -214,21 +214,42 @@ begin
 end;
 
 function IsCodeTemplateOk(ASynAutoComplete: TSynEditAutoComplete;
-  const AToken: string; AIndex: integer): boolean;
+  const AToken: string; ASkipExistCheck: boolean = false): boolean;
 var
-  n: integer;
+  i: integer;
 begin
-  n:=ASynAutoComplete.Completions.IndexOf(AToken);
-  if (n<0) or (n=AIndex) then
-    Result:= true
-  else
+  result := true;
+
+  // empty
+  if AToken = '' then
   begin
-    Result:= false;
-    IDEMessageDialog(
-      lisCodeTemplError,
-      Format(lisCodeTemplATokenAlreadyExists, [AToken]),
-      mtError, [mbOK]);
+    IDEMessageDialog(lisCodeTemplError, lisCodeTemplErrorEmptyName, mtError, [mbOK]);
+    exit(false);
   end;
+
+  // exists
+  if not ASkipExistCheck then
+    if ASynAutoComplete.Completions.IndexOf(AToken) >= 0 then
+    begin
+      IDEMessageDialog(lisCodeTemplError, lisCodeTemplErrorAlreadyExists, mtError, [mbOK]);
+      exit(false);
+    end;
+
+  // first symbol
+  if AToken[1] in ['0'..'9'] then
+    result := false;
+
+  // all symbols
+  i := 1;
+  while (i <= length(AToken)) and (result = true) do
+  begin
+    if not (AToken[i] in ['0'..'9', 'A'..'Z', 'a'..'z', '_']) then
+      result := false;
+    inc(i);
+  end;
+
+  if result = false then
+    IDEMessageDialog(lisCodeTemplError, lisCodeTemplErrorInvalidName, mtError, [mbOK]);
 end;
 
 function AddCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
@@ -244,7 +265,7 @@ begin
 
   if InputQuery(lisCodeTemplAddCodeTemplate,
     [lisCodeTemplToken, lisCodeTemplComment], Str) then
-    if IsCodeTemplateOk(ASynAutoComplete, Str[0], ASynAutoComplete.Completions.Count) then
+    if IsCodeTemplateOk(ASynAutoComplete, Str[0]) then
       begin
         Result:= mrOk;
         AToken:= Str[0];
@@ -267,7 +288,7 @@ begin
   if not InputQuery(lisCodeTemplEditCodeTemplate,
     [lisCodeTemplToken, lisCodeTemplComment], Str) then exit;
 
-  if not IsCodeTemplateOk(ASynAutoComplete, Str[0], AIndex) then exit;
+  if not IsCodeTemplateOk(ASynAutoComplete, Str[0], true) then exit;
 
   ASynAutoComplete.Completions[AIndex]:= Str[0];
   ASynAutoComplete.CompletionComments[AIndex]:= Str[1];
