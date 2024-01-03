@@ -8,7 +8,7 @@ interface
 
 uses
   // os
-  Windows, UxTheme, Win32Proc, Win32Extra, Win32Int,
+  ShellApi, Windows, UxTheme, Win32Proc, Win32Extra, Win32Int,
   // rtl
   Classes, SysUtils,
   // lcl

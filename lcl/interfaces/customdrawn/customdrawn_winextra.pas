@@ -375,9 +375,6 @@ var
 
 const
   SIID_SHIELD = 77;
-  SHGFI_SMALLICON = $000000001;
-  SHGFI_LARGEICON = $000000000;
-  SHGFI_ICON      = $000000100;
 
 type
   //64bit safe Timer functions and callback
