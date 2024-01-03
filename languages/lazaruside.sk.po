@@ -6650,11 +6650,6 @@ msgstr "Pridať šablónu"
 msgid "Add code template"
 msgstr "Pridať šablónu kódu"
 
-#: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, object-pascal-format
-msgid " A token \"%s\" already exists! "
-msgstr " Token \"%s\" už existuje! "
-
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
 msgstr "Automatické dokončovanie na"
@@ -6671,6 +6666,18 @@ msgstr "Upraviť šablónu kódu"
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Chyba"
+
+#: lazarusidestrconsts.liscodetemplerroralreadyexists
+msgid "A token already exists."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerroremptyname
+msgid "The token cannot be empty."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerrorinvalidname
+msgid "The token can only contain Latin letters, numbers and underscores, and cannot begin with a number."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"

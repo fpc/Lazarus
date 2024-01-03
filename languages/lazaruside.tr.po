@@ -6539,11 +6539,6 @@ msgstr "Şablon ekle"
 msgid "Add code template"
 msgstr "Kod şablonu ekle"
 
-#: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, object-pascal-format
-msgid " A token \"%s\" already exists! "
-msgstr " \"%s\" simgesi zaten var! "
-
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
 msgstr "Otomatik Tamamlama açık"
@@ -6560,6 +6555,18 @@ msgstr "Kod şablonunu düzenle"
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Hata"
+
+#: lazarusidestrconsts.liscodetemplerroralreadyexists
+msgid "A token already exists."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerroremptyname
+msgid "The token cannot be empty."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerrorinvalidname
+msgid "The token can only contain Latin letters, numbers and underscores, and cannot begin with a number."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"

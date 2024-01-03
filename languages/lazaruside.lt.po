@@ -6712,11 +6712,6 @@ msgstr "Pridėti šabloną"
 msgid "Add code template"
 msgstr "Pridėti kodo šabloną"
 
-#: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, object-pascal-format
-msgid " A token \"%s\" already exists! "
-msgstr "Leksema „%s“ jau egzistuoja! "
-
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
 msgstr "Automatiškas užbaigimas įgalintas"
@@ -6733,6 +6728,18 @@ msgstr "Keisti kodo šabloną"
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Klaida"
+
+#: lazarusidestrconsts.liscodetemplerroralreadyexists
+msgid "A token already exists."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerroremptyname
+msgid "The token cannot be empty."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerrorinvalidname
+msgid "The token can only contain Latin letters, numbers and underscores, and cannot begin with a number."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"

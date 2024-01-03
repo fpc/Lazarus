@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-11-24 18:11+0300\n"
+"PO-Revision-Date: 2024-01-03 18:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6569,11 +6569,6 @@ msgstr "Добавить шаблон"
 msgid "Add code template"
 msgstr "Добавление шаблона кода"
 
-#: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, object-pascal-format
-msgid " A token \"%s\" already exists! "
-msgstr " Элемент \"%s\" уже существует! "
-
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
 msgstr "Автозавершение при обнаружении..."
@@ -6590,6 +6585,18 @@ msgstr "Редактирование шаблона кода"
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Ошибка"
+
+#: lazarusidestrconsts.liscodetemplerroralreadyexists
+msgid "A token already exists."
+msgstr "Элемент уже существует."
+
+#: lazarusidestrconsts.liscodetemplerroremptyname
+msgid "The token cannot be empty."
+msgstr "Элемент не может быть пустым."
+
+#: lazarusidestrconsts.liscodetemplerrorinvalidname
+msgid "The token can only contain Latin letters, numbers and underscores, and cannot begin with a number."
+msgstr "Элемент может содержать только символы латинского алфавита, цифры и знак подчёркивания, и не может начинаться с цифры."
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"

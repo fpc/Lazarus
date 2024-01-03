@@ -6810,12 +6810,6 @@ msgstr "Tambah"
 msgid "Add code template"
 msgstr "Tambah template kode"
 
-#: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, object-pascal-format, fuzzy, badformat
-#| msgid " A token %s%s%s already exists! "
-msgid " A token \"%s\" already exists! "
-msgstr " Token %s%s%s sudah ada! "
-
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
 msgstr ""
@@ -6832,6 +6826,18 @@ msgstr "Edit template kode"
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Salah"
+
+#: lazarusidestrconsts.liscodetemplerroralreadyexists
+msgid "A token already exists."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerroremptyname
+msgid "The token cannot be empty."
+msgstr ""
+
+#: lazarusidestrconsts.liscodetemplerrorinvalidname
+msgid "The token can only contain Latin letters, numbers and underscores, and cannot begin with a number."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"
