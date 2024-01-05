@@ -1939,6 +1939,7 @@ function StringToColorDef(const S: shortstring; const DefaultValue: TColor): TCo
 procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
+function IncColor(AColor: TColor; AQuantity: Byte): TColor;
 function IsSysColor(AColor: TColorRef): Boolean;
 
 function Blue(rgb: TColorRef): BYTE; // does not work on system color
@@ -2722,6 +2723,18 @@ begin
   R := Max(0, Integer(R) - AQuantity);
   G := Max(0, Integer(G) - AQuantity);
   B := Max(0, Integer(B) - AQuantity);
+  Result := RGBToColor(R, G, B);
+end;
+
+// Increases the component RGB values in a color by the specified amount
+function IncColor(AColor: TColor; AQuantity: Byte): TColor;
+var
+  R, G, B : Byte;
+begin
+  RedGreenBlue(ColorToRGB(AColor), R, G, B);
+  R := Min(255, Integer(R) + AQuantity);
+  G := Min(255, Integer(G) + AQuantity);
+  B := Min(255, Integer(B) + AQuantity);
   Result := RGBToColor(R, G, B);
 end;
 
