@@ -8373,6 +8373,34 @@ begin
   ThemeServices.DrawElement(Canvas.Handle,ted, r);
 end;
 
+procedure DrawFrameGradientMenuBar(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  {%H-}Horizontal: boolean; Focused: boolean);
+var
+  FillDir: TGradientDirection;
+  ColorStart, ColorEnd: TColor;
+begin
+  if Horizontal then
+    FillDir := gdVertical
+  else
+    FillDir := gdHorizontal;
+
+  if Focused then
+  begin
+    ColorStart := cl3DHiLight;
+    ColorEnd := cl3DLight;
+  end
+  else
+  begin
+    ColorStart := DecColor(clMenuBar, 32); // darken by 0.125
+    ColorEnd := clMenuBar;
+  end;
+  Canvas.GradientFill(r, ColorStart, ColorEnd, FillDir);
+
+  Canvas.Pen.Color := clActiveBorder;
+  Canvas.Pen.Width := 1;
+  Canvas.Frame(r);
+end;
+
 initialization
   DockMaster:=TAnchorDockMaster.Create(nil);
   DockMaster.RegisterHeaderStyle('Frame3D', @DrawFrame3DHeader, true, true);
@@ -8381,6 +8409,7 @@ initialization
   DockMaster.RegisterHeaderStyle('Points', @DrawFramePoints, true, true);
   DockMaster.RegisterHeaderStyle('ThemedCaption', @DrawFrameThemedCaption, false, false);
   DockMaster.RegisterHeaderStyle('ThemedButton', @DrawFrameThemedButton, false, false);
+  DockMaster.RegisterHeaderStyle('GradientMenuBar', @DrawFrameGradientMenuBar, false, false);
   DockTimer:=TTimer.Create(nil);
 
 finalization
