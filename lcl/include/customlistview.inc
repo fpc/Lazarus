@@ -312,6 +312,7 @@ begin
 //    LVN_GETDISPINFO:
 //    LVN_ODCACHEHINT:
 //    LVN_ODFINDITEM:     implemented in win32 widgetset
+//    LVN_ITEMCHANGING:   implemented in win32 widgetset
 //    LVN_ODSTATECHANGED:
 //    LVN_BEGINLABELEDIT: implemented via TCustomListViewEditor
 //    LVN_ENDLABELEDIT:   implemented via TCustomListViewEditor
@@ -327,27 +328,13 @@ begin
     end;
 
     LVN_ITEMCHANGING: begin
-      //Check
-      debugln('TCustomListView.CNNotify: LVN_ITEMCHANGING');
-      //AMessage.Result:=1;  //1=disallow changing
-      //if nm^.iItem < 0 then
-      //  Item := nil
-      //else
-      //  Item := Items[nm^.iItem];
-      //
-      //if Assigned(Item) then
-      //begin
-      //  AllowChange := True;
-      //  CanChange(Item, nm^.uChanged, AllowChange);
-      //  if not AllowChange then
-      //    AMessage.Result := 1;
-      //end;
-      //
+      //Currently implemented in win32 widgeset only
+      //in response CanChange should be called and the result of that function most likely
+      //should be handled at WS level (if at all possible for non-windows)
     end;
 
 LVN_ITEMCHANGED:
     begin
-      debugln('TCustomListBox.CNNotify: LVN_ITEMCHANGED');
       if nm^.iItem < 0 then
         Item := nil
       else

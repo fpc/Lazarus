@@ -296,12 +296,12 @@ var
     end;
   end;
 
-  procedure HandleListChanging(ALV: TCustomListViewAccess);
+  procedure HandleListViewChanging(ALV: TCustomListViewAccess);
   var
     nm: PNMListView;
     Item: TListItem;
   begin
-    debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated,', (wcfInitializing in FWinControlFlags)=',Dbgs(wcfInitializing in ALV.FWinControlFlags)]);
+    //debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated,', (wcfInitializing in FWinControlFlags)=',Dbgs(wcfInitializing in ALV.FWinControlFlags)]);
     if (wcfInitializing in ALV.FWinControlFlags) then Exit;
     nm := PNMListView(NMHdr);
     if nm^.iItem < 0 then
@@ -347,12 +347,7 @@ begin
         LVN_ODFINDITEM:
           HandleListViewFindItem(TCustomListViewAccess(AWinControl));
         LVN_ITEMCHANGING:
-        begin
-          //debugln('ListViewParentMsgHandler: LVN_ITEMCHANGING');
-          //MsgResult := LResult(-1);
-          HandleListChanging(TCustomListViewAccess(AWinControl));
-        end;
-        //LVN_ITEMCHANGED: debugln('ListViewParentMsgHandler: LVN_ITEMCHANGed');
+          HandleListViewChanging(TCustomListViewAccess(AWinControl));
         LVN_ODCACHEHINT:
           HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
       end;
