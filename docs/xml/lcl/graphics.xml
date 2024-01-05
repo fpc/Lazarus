@@ -18899,23 +18899,92 @@ Returns the inverse of the original color (i.e. a 'negative' effect).
 
 <element name="DecColor">
 <short>
-<var>DecColor</var> - decrease the component RGBs of a color by the quantity 
-specified (usually results in a darker color overall).
+Decreases the component RGB values in a color by the specified amount (results 
+in a darker color overall).
 </short>
+<descr>
+<p>
+<var>DecColor</var> separates the color specified in AColor into its Red, 
+Green, and Blue component Byte values. It decreases each the RGB Byte values by 
+the amount specified in AQuantity with a lower limit of 0 for each of the 
+Byte values. The modified RGB Byte values are reassembled using RGBToColor to 
+form the return value for the routine.
+</p>
+<p>
+For example:
+</p>
+<code>
+DkSkyBlue := DecColor(clSkyBlue, 32); // darken by 12.5%
+DkKhaki := DecColor(TColor($8CE6F0), 40); // darken custom color 
+</code>
+<p>
+Use IncColor to increase (or lighten) the RGB component values in a color.
+</p>
+</descr>
+<seealso>
+<link id="RedGreenBlue"/>
+<link id="RGBToColor"/>
+<link id="IncColor"/>
+</seealso>
 </element>
 <element name="DecColor.Result">
-<short>Returns a copy of the original color, decremented by a specified 
-amount.
+<short>
+TColor value with RGB components decremented by the specified amount.
 </short>
 </element>
 <element name="DecColor.AColor">
 <short>
-<var>AColor</var> - the original color for processing.
+TColor value with the original color modified in the function.
 </short>
 </element>
 <element name="DecColor.AQuantity">
 <short>
-<var>AQuantity</var> - the amount by which the color is to be changed.
+The amount by which the separate RGB values in AColor are decreased.
+</short>
+</element>
+
+<element name="IncColor">
+<short>
+Increases the component RGB values in a color by the specified amount (results 
+in a lighter color overall).
+</short>
+<descr>
+<p>
+<var>IncColor</var> separates the color specified in AColor into its Red, 
+Green, and Blue component Byte values. It increases each the RGB Byte values by 
+the amount specified in AQuantity with an upper limit of 255 for each of the 
+Byte values. The modified RGB Byte values are reassembled using RGBToColor to 
+form the return value for the routine.
+</p>
+<p>
+For example:
+</p>
+<code>
+AColor := IncColor(clNavy, 32); // lighten by 12.5%
+</code>
+<p>
+Use DecColor to decrease (or darken) the RGB component values in a color.
+</p>
+</descr>
+<seealso>
+<link id="RedGreenBlue"/>
+<link id="RGBToColor"/>
+<link id="DecColor"/>
+</seealso>
+</element>
+<element name="IncColor.Result">
+<short>
+TColor value with RGB components incremented by the specified amount.
+</short>
+</element>
+<element name="IncColor.AColor">
+<short>
+TColor value with the original color modified in the function.
+</short>
+</element>
+<element name="IncColor.AQuantity">
+<short>
+The amount by which the separate RGB values in AColor are increased.
 </short>
 </element>
 
