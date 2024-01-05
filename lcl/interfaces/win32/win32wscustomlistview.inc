@@ -316,6 +316,7 @@ var
       else
         MsgResult := 1;
     end;
+    WinProcess := False;
   end;
 
   procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
