@@ -205,6 +205,28 @@ begin
   then FOnChange(Self, AItem, ItemChange);
 end;
 
+procedure TCustomListView.DoChanging(AItem: TListItem; AChange: Integer; var AllowChange: Boolean);
+var
+  ItemChange: TItemChange;
+begin
+  case AChange of
+    LVIF_TEXT: ItemChange := ctText;
+    LVIF_IMAGE: ItemChange := ctImage;
+    LVIF_STATE: ItemChange := ctState;
+  else
+    Exit;
+  end;
+  if Assigned(FOnChanging) then
+  begin
+    FOnChanging(Self, AItem, ItemChange, AllowChange);
+    if not AllowChange then
+    begin
+      //ToDo
+    end;
+  end;
+
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView ColClick                                                   }
 {------------------------------------------------------------------------------}
@@ -261,6 +283,7 @@ var
   Item: TListItem;
   n: Integer;
   oldSelected: TListItem;
+  AllowChange: Boolean;
 begin
   nm := PNMListView(AMessage.NMHdr);
   // ignore any notifications while initializing items
@@ -308,11 +331,29 @@ begin
       // see delete
       // besides... who's inserting items
     end;
+
     LVN_ITEMCHANGING: begin
       //Check
+      debugln('TCustomListView.CNNotify: LVN_ITEMCHANGING');
+      AMessage.Result:=1;
+      //if nm^.iItem < 0 then
+      //  Item := nil
+      //else
+      //  Item := Items[nm^.iItem];
+      //
+      //if Assigned(Item) then
+      //begin
+      //  AllowChange := True;
+      //  DoChanging(Item, nm^.uChanged, AllowChange);
+      //  if not AllowChange then
+      //    AMessage.Result := 1;
+      //end;
+      //
     end;
-    LVN_ITEMCHANGED:
+
+LVN_ITEMCHANGED:
     begin
+      debugln('TCustomListBox.CNNotify: LVN_ITEMCHANGED');
       if nm^.iItem < 0 then
         Item := nil
       else

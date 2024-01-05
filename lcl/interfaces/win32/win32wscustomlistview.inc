@@ -296,6 +296,31 @@ var
     end;
   end;
 
+  procedure HandleListChanging(ALV: TCustomListViewAccess);
+  var
+    nm: PNMListView;
+    Item: TListItem;
+    AllowChange: Boolean;
+  begin
+    debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated]);
+    MsgResult := LResult(1);
+    EXIT;
+    nm := PNMListView(NMHdr);
+    if nm^.iItem < 0 then
+      Item := nil
+    else
+      Item := ALV.Items[nm^.iItem];
+
+    if Assigned(Item) then
+    begin
+      AllowChange := True;
+      ALV.DoChanging(Item, nm^.uChanged, AllowChange);
+      //if not AllowChange then
+        MsgResult := 0;
+    end;
+
+  end;
+
   procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
   var
     DataHintInfo: PNMLVCACHEHINT;
@@ -323,6 +348,12 @@ begin
           end;
         LVN_ODFINDITEM:
           HandleListViewFindItem(TCustomListViewAccess(AWinControl));
+        LVN_ITEMCHANGING:
+        begin
+          debugln('ListViewParentMsgHandler: LVN_ITEMCHANGING');
+          MsgResult := LResult(-1);
+          //HandleListChanging(TCustomListViewAccess(AWinControl));
+        end;
         LVN_ODCACHEHINT:
           HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
       end;
