@@ -205,10 +205,11 @@ begin
   then FOnChange(Self, AItem, ItemChange);
 end;
 
-procedure TCustomListView.DoChanging(AItem: TListItem; AChange: Integer; var AllowChange: Boolean);
+function TCustomListView.CanChange(AItem: TListItem; AChange: Integer): Boolean;
 var
   ItemChange: TItemChange;
 begin
+  Result := True;
   case AChange of
     LVIF_TEXT: ItemChange := ctText;
     LVIF_IMAGE: ItemChange := ctImage;
@@ -217,14 +218,7 @@ begin
     Exit;
   end;
   if Assigned(FOnChanging) then
-  begin
-    FOnChanging(Self, AItem, ItemChange, AllowChange);
-    if not AllowChange then
-    begin
-      //ToDo
-    end;
-  end;
-
+    FOnChanging(Self, AItem, ItemChange, Result);
 end;
 
 {------------------------------------------------------------------------------}
@@ -335,7 +329,7 @@ begin
     LVN_ITEMCHANGING: begin
       //Check
       debugln('TCustomListView.CNNotify: LVN_ITEMCHANGING');
-      AMessage.Result:=1;
+      //AMessage.Result:=1;  //1=disallow changing
       //if nm^.iItem < 0 then
       //  Item := nil
       //else
@@ -344,7 +338,7 @@ begin
       //if Assigned(Item) then
       //begin
       //  AllowChange := True;
-      //  DoChanging(Item, nm^.uChanged, AllowChange);
+      //  CanChange(Item, nm^.uChanged, AllowChange);
       //  if not AllowChange then
       //    AMessage.Result := 1;
       //end;

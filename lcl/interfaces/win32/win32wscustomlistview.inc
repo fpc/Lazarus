@@ -300,11 +300,9 @@ var
   var
     nm: PNMListView;
     Item: TListItem;
-    AllowChange: Boolean;
   begin
-    debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated]);
-    MsgResult := LResult(1);
-    EXIT;
+    debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated,', (wcfInitializing in FWinControlFlags)=',Dbgs(wcfInitializing in ALV.FWinControlFlags)]);
+    if (wcfInitializing in ALV.FWinControlFlags) then Exit;
     nm := PNMListView(NMHdr);
     if nm^.iItem < 0 then
       Item := nil
@@ -313,12 +311,11 @@ var
 
     if Assigned(Item) then
     begin
-      AllowChange := True;
-      ALV.DoChanging(Item, nm^.uChanged, AllowChange);
-      //if not AllowChange then
-        MsgResult := 0;
+      if ALV.CanChange(Item, nm^.uChanged) then
+        MsgResult := 0
+      else
+        MsgResult := 1;
     end;
-
   end;
 
   procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
@@ -350,10 +347,11 @@ begin
           HandleListViewFindItem(TCustomListViewAccess(AWinControl));
         LVN_ITEMCHANGING:
         begin
-          debugln('ListViewParentMsgHandler: LVN_ITEMCHANGING');
-          MsgResult := LResult(-1);
-          //HandleListChanging(TCustomListViewAccess(AWinControl));
+          //debugln('ListViewParentMsgHandler: LVN_ITEMCHANGING');
+          //MsgResult := LResult(-1);
+          HandleListChanging(TCustomListViewAccess(AWinControl));
         end;
+        //LVN_ITEMCHANGED: debugln('ListViewParentMsgHandler: LVN_ITEMCHANGed');
         LVN_ODCACHEHINT:
           HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
       end;

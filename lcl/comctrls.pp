@@ -1525,7 +1525,7 @@ type
     function CreateListItems: TListItems; virtual;
     function CanEdit(Item: TListItem): Boolean; virtual;
     procedure Change(AItem: TListItem; AChange: Integer); virtual;
-    procedure DoChanging(AItem: TListItem; AChange: Integer; var AllowChange: Boolean);
+    function CanChange(AItem: TListItem; AChange: Integer): Boolean;
     procedure ColClick(AColumn: TListColumn); virtual;
 
     procedure Delete(AItem : TListItem); virtual;
