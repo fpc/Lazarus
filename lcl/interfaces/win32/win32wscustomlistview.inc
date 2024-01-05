@@ -311,10 +311,13 @@ var
 
     if Assigned(Item) then
     begin
+      //https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
+      //Returns TRUE to prevent the change, or FALSE to allow the change
+      //So the opposite of the result of CanChange function
       if ALV.CanChange(Item, nm^.uChanged) then
-        MsgResult := 0
+        MsgResult := 0 //Ord(BOOL(False))
       else
-        MsgResult := 1;
+        MsgResult := 1; //Ord(BOOL(True))
     end;
     WinProcess := False;
   end;
