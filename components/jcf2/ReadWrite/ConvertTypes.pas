@@ -58,8 +58,7 @@ type
   TShowParseTreeOption = (eShowAlways, eShowOnError, eShowNever);
 
 const
-  OLD_REG_ROOT_KEY = '\Software\Jedi\JediCodeFormat';
-  REG_ROOT_KEY = OLD_REG_ROOT_KEY;
+  REG_ROOT_KEY = '\Software\Jedi\JediCodeFormat';
 
 const
   SOURCE_FILE_FILTERS =

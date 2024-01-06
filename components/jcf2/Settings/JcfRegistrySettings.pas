@@ -237,45 +237,8 @@ begin
 end;
 
 constructor TJCFRegistrySettings.Create;
-var
-  Registry: TRegistry;
 begin
   inherited;
-
-  // Move old registry content to new registry location if applicable
-  Registry := TRegistry.Create;
-  try
-    Registry.Access  := KEY_ALL_ACCESS;
-    Registry.RootKey := HKEY_CURRENT_USER;
-    if not (Registry.OpenKey(REG_ROOT_KEY, False)) then
-    begin
-      if (Registry.OpenKey(OLD_REG_ROOT_KEY, False)) then
-      begin
-        Registry.MoveKey(OLD_REG_ROOT_KEY, REG_ROOT_KEY, True);
-        Registry.CloseKey;
-        if (Registry.OpenKey('\Software\Jedi', False)) then
-        begin
-          if not Registry.HasSubKeys then
-          begin
-            Registry.CloseKey;
-            if (Registry.OpenKey('\Software', False)) then
-            begin
-              Registry.DeleteKey('Jedi');
-              Registry.CloseKey;
-            end;
-          end
-          else
-            Registry.CloseKey;
-        end;
-      end;
-    end
-    else
-      Registry.CloseKey;
-  finally
-    Registry.Free;
-  end;
-
-  // New registry location
   fcReg := TRegIniFile.Create(REG_ROOT_KEY);
 
   fcExclusionsFiles := TStringList.Create;      // Will compare with CompareText.
