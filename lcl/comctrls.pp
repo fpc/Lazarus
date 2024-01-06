@@ -1289,6 +1289,8 @@ type
 
   TLVChangeEvent = procedure(Sender: TObject; Item: TListItem;
                              Change: TItemChange) of object;
+  TLVChangingEvent = procedure (Sender: TObject; Item: TListItem;
+                                Change: TItemChange; var AllowChange: Boolean) of object;
 
   TLVDataFindEvent = procedure(Sender: TObject; AFind: TItemFind;
     const AFindString: string; const AFindPosition: TPoint; AFindData: Pointer;
@@ -1429,6 +1431,7 @@ type
     // FLastVertScrollInfo: TScrollInfo;
     FUpdateCount: integer;
     FOnChange: TLVChangeEvent;
+    FOnChanging: TLVChangingEvent;
     FOnColumnClick: TLVColumnClickEvent;
     FOnCompare: TLVCompareEvent;
     FOnData: TLVDataEvent;
@@ -1522,6 +1525,7 @@ type
     function CreateListItems: TListItems; virtual;
     function CanEdit(Item: TListItem): Boolean; virtual;
     procedure Change(AItem: TListItem; AChange: Integer); virtual;
+    function CanChange(AItem: TListItem; AChange: Integer): Boolean;
     procedure ColClick(AColumn: TListColumn); virtual;
 
     procedure Delete(AItem : TListItem); virtual;
@@ -1593,6 +1597,7 @@ type
     property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
+    property OnChanging: TLVChangingEvent read FOnChanging write FOnChanging;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnCreateItemClass: TLVCreateItemClassEvent read FOnCreateItemClass write FOnCreateItemClass;
@@ -1741,6 +1746,7 @@ type
     property OnAdvancedCustomDrawItem;
     property OnAdvancedCustomDrawSubItem;
     property OnChange;
+    property OnChanging;
     property OnClick;
     property OnColumnClick;
     property OnCompare;
