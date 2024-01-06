@@ -12122,6 +12122,75 @@ TLVChangeEvent is the type used for the <var>OnChange</var> property in
 <short>Indicates the property value that was changed in Item.</short>
 </element>
 
+<element name="TLVChangingEvent">
+<short>
+Defines an event handler signalled when a widgetset class is updating an item 
+on a list view control.
+</short>
+<descr>
+<p>
+<var>TLVChangingEvent</var> is an object procedure used to define the event 
+handler signalled when a list item on a TListView is being updated by the 
+widgetset class instance. It is the type used to implement the OnChanging 
+property in TCustomListView, and allows the pending change to be accepted or 
+rejected on an item-by-item basis.
+</p>
+<p>
+The <var>Sender</var> argument contains the object for the event notification, 
+It must be cast to TCustomListView to access properties and methods specific to 
+the list view control.
+</p>
+<p>
+<var>Item</var> contains the TListItem instance on the list view control which 
+is being updated, and the values for the modified list item.
+</p>
+<p>
+<var>Change</var> indicates which value in Item is being modified: the caption 
+text, the image for the item, or the item drawing state. See TItemChange for 
+the values used in the argument, and their meanings.
+</p>
+<p>
+<var>AllowChange</var> is a variable Boolean argument which allows the handler 
+to indicate whether the change is accepted or rejected. Set AllowChange to 
+<b>False</b> to reject the modified value in Item.
+</p>
+<p>
+See <link id="TCustomListView.OnChanging">TCustomListView.OnChanging</link> 
+for more information about the event notification for the list view control.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TItemChange"/>
+<link id="TListItem"/>
+<link id="TCustomListView.OnChanging"/>
+<link id="TCustomListView.Items"/>
+</seealso>
+</element>
+<element name="TLVChangingEvent.Sender">
+<short>
+Object (TCustomListView control) for the event notification.
+</short>
+</element>
+<element name="TLVChangingEvent.Item">
+<short>
+List item with the pending change,
+</short>
+</element>
+<element name="TLVChangingEvent.Change">
+<short>
+Identifies the list item value changed in the notification.
+</short>
+</element>
+<element name="TLVChangingEvent.AllowChange">
+<short>
+Indicates whether the change is accepted or rejected in the event handler. 
+<b>True</b> for an accepted change.
+</short>
+</element>
+
 <element name="TLVDataFindEvent">
 <short>
 Specifies an event handler used to locate a list view item using the 
@@ -13356,6 +13425,7 @@ and List View Work Areas.
 <element name="TCustomListView.FHoverTime"/>
 <element name="TCustomListView.FUpdateCount"/>
 <element name="TCustomListView.FOnChange"/>
+<element name="TCustomListView.FOnChanging"/>
 <element name="TCustomListView.FOnColumnClick"/>
 <element name="TCustomListView.FOnCompare"/>
 <element name="TCustomListView.FOnData"/>
@@ -14110,6 +14180,13 @@ item are changed.
 CNNotify updates property values and calls methods in the class instance as 
 needed to respond to the notification message.
 </p>
+<p>
+Please note that LVN_ITEMCHANGING control notification is handled in the 
+ListViewParentMsgHandler routine in the widgetset class for the Windows 
+platform. Changes are accepted and applied when CanChange in the list view 
+control returns <b>True</b>. No additional processing is performed for the 
+notification message in the Windows message process loop.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -14529,6 +14606,63 @@ the programmer has assigned a method to this event.
 </element>
 <element name="TCustomListView.Change.AChange">
 <short/>
+</element>
+
+<element name="TCustomListView.CanChange">
+<short>
+Indicates whether a change notification can be applied for an item on the list 
+view control.
+</short>
+<descr>
+<p>
+<var>CanChange</var> is a <var>Boolean</var> function used to determine whether 
+a change notification message for an item in a list view control can be 
+accepted and applied. CanChange is called from the widgetset class instance, 
+and occurs when change notification messages are handled for the list view 
+control.
+</p>
+<p>
+CanChange signals the OnChanging event handler (when assigned) to determine the 
+return value for the method. The return value is <b>True</b> if the changed 
+value in AItem is accepted and can be applied to the list item. The return 
+value is <b>False</b> if the modification is rejected in the OnChanging event 
+handler.
+</p>
+<remark>
+Interestingly, the return value is True if AChange contains an Integer value 
+that is <b>not</b> represented in the TItemChange enumeration. In this case, 
+the OnChanging event is <b>not</b> signalled.
+</remark>
+<p>
+In the current LCL implementation, CanChange and OnChanging apply to the 
+Windows widgetset only. Other platforms do not generate a change notification 
+for item values.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomListView.OnChanging"/>
+<link id="TLVChangingEvent"/>
+<link id="TItemChange"/>
+</seealso>
+</element>
+<element name="TCustomListView.CanChange.Result">
+<short>
+Returns <b>True</b> if the modified value in the list item is accepted.
+</short>
+</element>
+<element name="TCustomListView.CanChange.AItem">
+<short>
+List item with the modified value examined in the method.
+</short>
+</element>
+<element name="TCustomListView.CanChange.AChange">
+<short>
+Indicates which value in the list item has been modified. Corresponds to the 
+ordinal values in the TItemChange enumeration.
+</short>
 </element>
 
 <element name="TCustomListView.ColClick">
@@ -16198,6 +16332,46 @@ a list item has been changed.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCustomListView.OnChanging">
+<short>
+Event handler signalled when a change notification is received for a list item.
+</short>
+<descr>
+<p>
+<var>OnChanging</var> is a <var>TLVChangingEvent</var> property with the event 
+handler signalled when a change notification is handled for the list view 
+control. It allows modifications to list items to be handled on an item-by-item 
+basis. It is signalled from the CanChange method (when assigned), and occurs 
+when the widgetset class handles change notification messages for the control.
+</p>
+<p>
+An application can implement and assign a handler to the property to determine 
+whether a pending change is accepted or rejected for a list item.
+</p>
+<p>
+See <link id="TItemChange">TItemChange</link> for the changes items or states 
+available in the event notification.
+</p>
+<p>
+See <link id="TLVChangingEvent">TLVChangingEvent</link> for more information 
+about the event type and its arguments.
+</p>
+<p>
+Please note that CanChange and OnChanging are relevant for the Windows platform 
+only. Other platforms do not generate or handle change notifications for list 
+item values.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomListView.CanChange"/>
+<link id="TLVChangingEvent"/>
+<link id="TItemChange"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.OnColumnClick">
@@ -18417,6 +18591,7 @@ GetRGBColorResolvingParent method.
 <element name="TListView.OnAdvancedCustomDrawItem" link="#lcl.comctrls.TCustomListView.OnAdvancedCustomDrawItem"/>
 <element name="TListView.OnAdvancedCustomDrawSubItem" link="#lcl.comctrls.TCustomListView.OnAdvancedCustomDrawSubItem"/>
 <element name="TListView.OnChange" link="#lcl.comctrls.TCustomListView.OnChange"/>
+<element name="TListView.OnChanging" link="#lcl.comctrls.TCustomListView.OnChanging"/>
 <element name="TListView.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TListView.OnColumnClick" link="#lcl.comctrls.TCustomListView.OnColumnClick"/>
 <element name="TListView.OnCompare" link="#lcl.comctrls.TCustomListView.OnCompare"/>
