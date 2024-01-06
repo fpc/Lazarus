@@ -334,7 +334,7 @@ type
     LMessage: TLMessage;
     PLMsg: PLMessage;
     FlWinControl: TWinControl;
-    WinProcess: Boolean;
+    WinProcess: Boolean;     // Setting this to FALSE signals that the message should not be processed any further along the chain.
     NotifyUserInput: Boolean;
     WindowInfo: PWin32WindowInfo;
     // Used by SendPaintMessage
