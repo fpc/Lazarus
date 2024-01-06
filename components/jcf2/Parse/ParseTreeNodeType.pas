@@ -194,7 +194,7 @@ const
   MethodHeadings: TParseTreeNodeTypeSet =
     [nFunctionHeading, nProcedureHeading, nConstructorHeading, nDestructorHeading];
 
-function NodeTypeToString(const pe: TParseTreeNodeType): string; inline;
+function NodeTypeToString(const pe: TParseTreeNodeType): string;
 
 implementation
 

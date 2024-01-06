@@ -69,6 +69,8 @@ uses
   SourceToken, FormatFlags, JcfSettings, SetReturns,
   TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNodeType;
 
+{$WARN 6058 off}  // supress note: function/procedure marked as inline is not inlined
+
 function IsLineBreaker(const pcToken: TSourceToken): boolean;
 begin
   Result := (pcToken.TokenType in [ttReturn, ttConditionalCompilationRemoved]) or

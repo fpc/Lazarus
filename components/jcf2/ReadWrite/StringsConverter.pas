@@ -30,9 +30,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Classes, SysUtils,
-  { local }
-  Converter;
+  Classes, SysUtils;
 
 type
   TStringsConverter = class(TObject)
@@ -44,10 +42,10 @@ type
 
   protected
     function OriginalFileName: string;
-
+    {$push}{$warn 5024 off}
     procedure SendStatusMessage(const psFile, psMessage: string;
       const piY, piX: integer);
-
+    {$pop}
   public
     constructor Create;
 
@@ -90,6 +88,7 @@ begin
   fcMessageStrings := pcStrings;
 end;
 
+{$push}{$warn 5024 off}
 procedure TStringsConverter.SendStatusMessage(const psFile, psMessage: string;
   const piY, piX: integer);
 var
@@ -101,11 +100,9 @@ begin
     if (piY >= 0) and (piX >= 0) then
       lsWholeMessage := lsWholeMessage + ' at line ' + IntToStr(piY) +
         ' col ' + IntToStr(piX);
-
-
     fcMessageStrings.Add(lsWholeMessage);
   end;
-
 end;
+{$pop}
 
 end.

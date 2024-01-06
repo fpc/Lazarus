@@ -126,7 +126,7 @@ function StrCharCount(const S: string; C: Char): Integer;
 function StrStrCount(const S, SubS: string): Integer;
 function StrRepeat(const S: string; Count: Integer): string;
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
-function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer; inline;
+function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer; inline; deprecated 'Use Pos instead';
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 
 function BooleanToStr(B: Boolean): string;
@@ -294,7 +294,7 @@ function StrAfter(const SubStr, S: string): string;
 var
   P: Integer;
 begin
-  P := StrSearch(SubStr, S, 1);
+  P := Pos(SubStr, S, 1);
   if P > 0 then
     Result := Copy(S, P + Length(SubStr), Length(S))
   else
@@ -305,7 +305,7 @@ function StrBefore(const SubStr, S: string): string;
 var
   P: Integer;
 begin
-  P := StrSearch(SubStr, S, 1);
+  P := Pos(SubStr, S, 1);
   if P > 0 then
     Result := Copy(S, 1, P - 1)
   else
@@ -324,7 +324,7 @@ begin
   Result := 0;
   while Result < Length(S) do
   begin
-    NewPos := StrSearch(SubStr, S, Result + 1);
+    NewPos := Pos(SubStr, S, Result + 1);
     if NewPos > 0 then
       Result := NewPos
     else
@@ -383,7 +383,7 @@ begin
   P := 1;
   while P < Length(S) do
   begin
-    P := StrSearch(Subs, S, P);
+    P := Pos(Subs, S, P);
     if P > 0 then
     begin
       inc(Result);
@@ -480,6 +480,7 @@ var
   S: TStream;
 begin
   S := nil;
+  Result := '';
   try
     S := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
     SetLength(Result, S.Size);
@@ -502,12 +503,14 @@ begin
   end;
 end;
 
+{$push}{$warn 5094 off}
 function StrFillChar(const C: Char; Count: Integer): string;
 begin
   SetLength(Result, Count);
   if Count > 0 then
     FillChar(Result[1], Count, C);
 end;
+{$pop}
 
 function IntToStrZeroPad(Value, Count: Integer): String;
 begin

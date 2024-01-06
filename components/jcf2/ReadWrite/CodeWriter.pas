@@ -81,9 +81,6 @@ type
 
 implementation
 
-const
-  MAX_TOKENS = 100000;
-
   { TCodeWriter }
 
 constructor TCodeWriter.Create;

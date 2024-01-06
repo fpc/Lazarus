@@ -313,12 +313,14 @@ begin
     Result := Length(AString) - (Pos1 + Length(NativeLineBreak));
 end;
 
+{$push}{$warn 5091 off}
 function ReadFileToUTF8String(AFilename: string): string;
 var
   lMs: TMemorystream;
   lS: string;
 begin
   lMs := TMemoryStream.Create;
+  Result := '';
   try
     lMs.LoadFromFile(AFileName);
     SetLength(lS, lMs.Size);
@@ -328,5 +330,6 @@ begin
     lMs.Free;
   end;
 end;
+{$pop}
 
 end.

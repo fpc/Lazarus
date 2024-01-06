@@ -495,8 +495,10 @@ var
 begin
   //WRAPPING the inputCode in a fake unit
   sourceCodeLowerCase := LowerCase(fsInputCode);
+  {$push}{$warn 5057 off}
   hasInterface := HasStringAtLineStart(sourceCodeLowerCase, 'interface', liInterfacePos);
   hasImplementation := HasStringAtLineStart(sourceCodeLowerCase, 'implementation', liImplementationPos);
+  {$pop}
   sourceCode := '';
   AddFakeUnit;
   if hasInterface = False then

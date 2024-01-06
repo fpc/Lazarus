@@ -58,6 +58,8 @@ implementation
 
 { TIntList }
 
+{$WARN 6058 off}  // supress note: function/procedure marked as inline is not inlined
+
 procedure TIntList.ChangeValue(const liIndex, liDelta: integer);
 begin
   { can fall out of bounds, easiest to ignore it here }

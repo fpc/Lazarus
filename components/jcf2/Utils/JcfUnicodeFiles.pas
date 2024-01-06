@@ -161,6 +161,7 @@ var
   liBytesRemaining: integer;
   lsContents8bit: AnsiString;
 begin
+ {$push}{$warn 5091 off}
   liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
   // read the bytes into a string
   SetLength(lsContents8bit, liBytesRemaining);
@@ -169,6 +170,7 @@ begin
     pcFileStream.ReadBuffer(lsContents8bit[1], liBytesRemaining);
   end;
   Result := lsContents8bit;
+  {$pop}
 end;
 
 
@@ -177,7 +179,8 @@ var
   liBytesRemaining: integer;
   lsContents: AnsiString;
 begin
-  liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
+ {$push}{$warn 5091 off}
+ liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
   // read the bytes into a string
   SetLength(lsContents, liBytesRemaining);
   if pcFileStream.Size > 0 then
@@ -185,6 +188,7 @@ begin
     pcFileStream.ReadBuffer(lsContents[1], liBytesRemaining);
   end;
   Result := lsContents;
+  {$pop}
 end;
 
 
@@ -194,6 +198,7 @@ var
   liLoop: integer;
   lsWideContents: WideString;
 begin
+  {$push}{$warn 5091 off}
   // read it
   liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
   SetLength(lsWideContents, liBytesRemaining div 2);
@@ -207,6 +212,7 @@ begin
   end;
 
   Result := lsWideContents;
+  {$pop}
 end;
 
 function SwapWords(const value: UCS4Char): UCS4Char;
@@ -232,6 +238,7 @@ var
   ucs4Chars: UCS4String;
   liLoop: integer;
 begin
+  {$push}{$warn 5091 off}
   liBytesRemaining := pcFileStream.Size - pcFileStream.Position;
   charsRemaining := liBytesRemaining div 4;
 
@@ -246,6 +253,7 @@ begin
   end;
 
   Result := UCS4StringToWideString(ucs4Chars);
+  {$pop}
 end;
 
 { read in a text file,

@@ -56,8 +56,9 @@ type
     destructor Destroy; override;
 
     procedure OpenSection(const psName: string); override;
+    {$push}{$warn 5024 off}
     procedure CloseSection(const psName: string); override;
-
+    {$pop}
     procedure Write(const psTagName, psValue: string); override;
     procedure Write(const psTagName: string; const piValue: integer); override;
     procedure Write(const psTagName: string; const pbValue: boolean); override;
@@ -122,10 +123,12 @@ begin
   fsSection := psName;
 end;
 
+{$push}{$warn 5024 off}
 procedure TSettingsRegistryOutput.CloseSection(const psName: string);
 begin
   fsSection := '';
 end;
+{$pop}
 
 procedure TSettingsRegistryOutput.Write(const psTagName, psValue: string);
 begin

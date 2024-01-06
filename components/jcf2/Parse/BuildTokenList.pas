@@ -120,12 +120,14 @@ const
   CurlyLeft =  '{'; //widechar(123);
   CurlyRight = '}'; //widechar(125);
 
+{$push}{$warn 5024 off}
 function CheckMultiByte(const pcChar: char): boolean;
 begin
   Result := False;
 //  if GetRegSettings.CheckMultiByteChars then
 //    Result := IsMultiByte(pcChar);  //IsMultiByte(pcChar)-->Result := IsDBCSLeadByte(Byte(pcChar));
 end;
+{$pop}
 
 function CharIsOctDigit(const c: Char): Boolean;
 const
