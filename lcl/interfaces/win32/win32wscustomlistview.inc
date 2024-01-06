@@ -296,6 +296,32 @@ var
     end;
   end;
 
+  procedure HandleListViewChanging(ALV: TCustomListViewAccess);
+  var
+    nm: PNMListView;
+    Item: TListItem;
+  begin
+    //debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated,', (wcfInitializing in FWinControlFlags)=',Dbgs(wcfInitializing in ALV.FWinControlFlags)]);
+    if (wcfInitializing in ALV.FWinControlFlags) then Exit;
+    nm := PNMListView(NMHdr);
+    if nm^.iItem < 0 then
+      Item := nil
+    else
+      Item := ALV.Items[nm^.iItem];
+
+    if Assigned(Item) then
+    begin
+      //https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
+      //Returns TRUE to prevent the change, or FALSE to allow the change
+      //So the opposite of the result of CanChange function
+      if ALV.CanChange(Item, nm^.uChanged) then
+        MsgResult := 0 //Ord(BOOL(False))
+      else
+        MsgResult := 1; //Ord(BOOL(True))
+    end;
+    WinProcess := False;
+  end;
+
   procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
   var
     DataHintInfo: PNMLVCACHEHINT;
@@ -323,6 +349,8 @@ begin
           end;
         LVN_ODFINDITEM:
           HandleListViewFindItem(TCustomListViewAccess(AWinControl));
+        LVN_ITEMCHANGING:
+          HandleListViewChanging(TCustomListViewAccess(AWinControl));
         LVN_ODCACHEHINT:
           HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
       end;
