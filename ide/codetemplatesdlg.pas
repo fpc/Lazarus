@@ -80,6 +80,7 @@ type
     InsertMacroButton: TButton;
     KeepSubIndentCheckBox: TCheckBox;
     OptionsPanel: TPanel;
+    ControlPanel: TPanel;
     Splitter1: TSplitter;
     UseMacrosCheckBox: TCheckBox;
     RenameButton: TButton;
@@ -849,9 +850,6 @@ var
 begin
   IDEDialogLayoutList.ApplyLayout(Self,600,550);
 
-  SynAutoComplete:=TSynEditAutoComplete.Create(Self);
-  LastTemplate:=-1;
-
   // init captions
   Caption:=dlgEdCodeTempl;
   AddButton.Caption:=lisAdd;
@@ -869,6 +867,8 @@ begin
   KeepSubIndentCheckBox.Caption:=lisKeepSubIndentation;
   KeepSubIndentCheckBox.Hint:=lisKeepRelativeIndentationOfMultiLineTemplate;
   AutoOnOptionsCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
+
+  // the order matches the TAutoCompleteOption enumeration!
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnSpace);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnTab);
@@ -893,21 +893,22 @@ begin
   EditorOpts.AssignKeyMapTo(TemplateSynEdit);
   TemplateSynEdit.Gutter.Visible:=false;
   TemplateSynEdit.WantTabs := false;
+  TemplateSynEdit.ScrollBars := ssAutoBoth;
+  TemplateSynEdit.Options  := TemplateSynEdit.Options  - [eoScrollPastEof];
   TemplateSynEdit.Options  := TemplateSynEdit.Options  - [eoScrollPastEol];
   TemplateSynEdit.Options2 := TemplateSynEdit.Options2 - [eoScrollPastEolAddPage];
   TemplateSynEdit.Options2 := TemplateSynEdit.Options2 - [eoScrollPastEolAutoCaret];
 
   // init SynAutoComplete
+  SynAutoComplete:=TSynEditAutoComplete.Create(Self);
   EditorOpts.LoadCodeTemplates(SynAutoComplete);
 
   // init listbox
+  LastTemplate:=-1;
   FillCodeTemplateListBox;
-  with TemplateListBox do
-    if Items.Count>0 then begin
-      ItemIndex:=0;
-      ShowCurCodeTemplate;
-    end;
-    
+  if TemplateListBox.Items.Count>0 then
+    TemplateListBox.ItemIndex:=0; // this call ShowCurCodeTemplate
+
   BuildPopupMenu;
 end;
 
@@ -989,6 +990,9 @@ begin
       TemplateListBox.ItemIndex:=Index;
     
     ShowCurCodeTemplate;
+
+    UseMacrosCheckBox.Checked:=true;
+
     if TemplateSynEdit.CanSetFocus then
       TemplateSynEdit.SetFocus;
   end;
@@ -1143,6 +1147,7 @@ end;
 procedure TCodeTemplateDialog.UseMacrosCheckBoxChange(Sender: TObject);
 begin
   InsertMacroButton.Enabled:=UseMacrosCheckBox.Checked;
+  CodeTemplateInsertMacroIDEMenuCommand.Enabled:=UseMacrosCheckBox.Checked;
 end;
 
 procedure TCodeTemplateDialog.BuildPopupMenu;
@@ -1158,7 +1163,7 @@ begin
   CodeTemplatesMenuRoot.MenuItem := MainPopupMenu.Items;
   //MainPopupMenu.Items.WriteDebugReport('TMessagesView.Create ');
   
-  PopupMenu:=MainPopupMenu;
+  TemplateSynEdit.PopupMenu:=MainPopupMenu;
 end;
 
 procedure TCodeTemplateDialog.DoInsertMacro;
@@ -1196,19 +1201,23 @@ procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
   EnableMacros, KeepSubIndent: boolean;
   LineCount: integer;
-
+  Attributes: TStrings;
+  idx, a, sp, ep: integer;
+  s: string;
+  AutoOnCat: array[TAutoCompleteOption] of Boolean;
+  c: TAutoCompleteOption;
+  //
   procedure AddLine(const s: string);
   begin
     TemplateSynEdit.Lines.Add(s);
     inc(LineCount);
   end;
-
-var
-  idx, a, sp, ep: integer;
-  s: string;
-  AutoOnCat: array[TAutoCompleteOption] of Boolean;
-  Attributes: TStrings;
-  c: TAutoCompleteOption;
+  //
+  function GetBooleanAttribute(const AttrName: string): boolean; inline;
+  begin
+    result:=StrToBoolDef(Attributes.Values[AttrName], false);
+  end;
+  //
 begin
   EnableMacros:=false;
   KeepSubIndent:=false;
@@ -1231,10 +1240,10 @@ begin
     EditTemplateGroupBox.Caption:=dbgstr(SynAutoComplete.Completions[a])
                            +' - '+dbgstr(SynAutoComplete.CompletionComments[a]);
     Attributes:=SynAutoComplete.CompletionAttributes[a];
-    EnableMacros:=Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
-    KeepSubIndent:=Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
+    EnableMacros:=GetBooleanAttribute(CodeTemplateEnableMacros);
+    KeepSubIndent:=GetBooleanAttribute(CodeTemplateKeepSubIndent);
     for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
-      AutoOnCat[c]:=Attributes.IndexOfName(AutoCompleteOptionNames[c])>=0;
+      AutoOnCat[c]:=GetBooleanAttribute(AutoCompleteOptionNames[c]);
     LastTemplate := -1;
     s:=SynAutoComplete.CompletionValues[a];
     //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
@@ -1259,6 +1268,7 @@ begin
   TemplateSynEdit.Invalidate;
   UseMacrosCheckBox.Checked:=EnableMacros;
   InsertMacroButton.Enabled:=EnableMacros;
+  CodeTemplateInsertMacroIDEMenuCommand.Enabled:=EnableMacros;
   KeepSubIndentCheckBox.Checked:=KeepSubIndent;
   for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
     AutoOnOptionsCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
