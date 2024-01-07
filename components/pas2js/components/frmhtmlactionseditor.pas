@@ -264,6 +264,7 @@ begin
           SetStrProp(aAction,'FieldName',aEl.InputName);
         end;
       end;
+  Result:=aAction;
 end;
 
 function CreateMissingActions(aEditor: TComponentEditor;
