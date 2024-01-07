@@ -1032,7 +1032,8 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterVisualBASIC;
+  fDefaultFilterInitialValue := SYNS_FilterVisualBASIC;
+  fDefaultFilter := fDefaultFilterInitialValue;
 end;
 
 procedure TSynVBSyn.SetLine(const NewValue: String; LineNumber: Integer);
@@ -1238,7 +1239,7 @@ end;
 
 function TSynVBSyn.IsFilterStored: Boolean;
 begin
-  Result := fDefaultFilter <> SYNS_FilterVisualBASIC;
+  Result := fDefaultFilter <> fDefaultFilterInitialValue;
 end;
 
 class function TSynVBSyn.GetLanguageName: string;

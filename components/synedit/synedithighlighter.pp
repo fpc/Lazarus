@@ -350,6 +350,7 @@ type
   protected
     FAttributeChangeNeedScan: Boolean;
     fDefaultFilter: string;
+    fDefaultFilterInitialValue: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     FIsInNextToEOL: Boolean;
     function GetInstanceLanguageName: string; virtual;
@@ -1318,6 +1319,7 @@ begin
   fAttributes.Sorted := TRUE;
   fAttrChangeHooks := TMethodList.Create;
   fDefaultFilter := '';
+  fDefaultFilterInitialValue := '';
 end;
 
 destructor TSynCustomHighlighter.Destroy;

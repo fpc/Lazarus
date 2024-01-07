@@ -3065,7 +3065,8 @@ begin
   MakeMethodTables;
   fRange := [];
   fAsmStart := False;
-  fDefaultFilter := SYNS_FilterPascal;
+  fDefaultFilterInitialValue := SYNS_FilterPascal;
+  fDefaultFilter := fDefaultFilterInitialValue;
 end; { Create }
 
 destructor TSynPasSyn.Destroy;
@@ -5459,7 +5460,7 @@ end;
 {begin}                                                                         //mh 2000-10-08
 function TSynPasSyn.IsFilterStored: boolean;
 begin
-  Result := fDefaultFilter <> SYNS_FilterPascal;
+  Result := fDefaultFilter <> fDefaultFilterInitialValue;
 end;
 
 procedure TSynPasSyn.CreateRootCodeFoldBlock;

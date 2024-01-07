@@ -1550,7 +1550,8 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterJScript;
+  fDefaultFilterInitialValue := SYNS_FilterJScript;
+  fDefaultFilter := fDefaultFilterInitialValue;
   fRange := rsUnknown;
 end;
 
@@ -1876,7 +1877,7 @@ end;
 
 function TSynJScriptSyn.IsFilterStored: Boolean;
 begin
-  Result := fDefaultFilter <> SYNS_FilterJScript;
+  Result := fDefaultFilter <> fDefaultFilterInitialValue;
 end;
 
 function TSynJScriptSyn.StartJScriptCodeFoldBlock(
