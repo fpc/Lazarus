@@ -197,6 +197,7 @@
 ./examples/componentstreaming/componentstreaming.ex-meta
 ./examples/lazresexplorer/lazresexplorer.ex-meta
 ./examples/messagedialogs/messagedialogs.ex-meta
+./examples/messageboxes/messageboxes.ex-meta
 ./examples/designerbaseclass/designerbaseclass.ex-meta
 ./examples/groupedcontrol/groupedcontrol.ex-meta
 ./examples/stock_images/stock_images.ex-meta

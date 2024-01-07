@@ -1,0 +1,5 @@
+{ "messageboxes" : {
+   "Category" : "Beginner",
+   "Keywords" : ["MessageDlg","ShowMessage","MessageBox"],
+   "Description" : "Detailed testing of various LCL MessageBox-like functions."}
+}
