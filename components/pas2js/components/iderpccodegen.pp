@@ -55,6 +55,7 @@ type
     FPasName: String;
     FPasReturnType: String;
     FReturnType: TJSONtype;
+    function GetPasReturnType: String;
     procedure SetParams(AValue: TAPIMethodParams);
   Public
     Constructor Create(aCollection : TCollection) ; override;
@@ -63,7 +64,7 @@ type
     Property Name : String Read FName Write FName;
     Property PasName : String Read FPasName Write FPasName;
     Property ReturnType : TJSONtype Read FReturnType Write FReturnType;
-    Property PasReturnType : String Read FPasReturnType Write FPasReturnType;
+    Property PasReturnType : String Read GetPasReturnType Write FPasReturnType;
     Property Params : TAPIMethodParams Read FParams Write SetParams;
   end;
 
@@ -189,6 +190,21 @@ procedure TAPIServiceMethod.SetParams(AValue: TAPIMethodParams);
 begin
   if FParams=AValue then Exit;
   FParams.Assign(AValue);
+end;
+
+function TAPIServiceMethod.GetPasReturnType: String;
+begin
+  Result:=FPasReturnType;
+  if Result='' then
+    Case ReturnType of
+      jtNull,
+      jtUnknown : Result:='JSValue';
+      jtNumber : Result:='Double';
+      jtString : Result:='String';
+      jtBoolean : Result:='Boolean';
+      jtArray : Result:='TJSArray';
+      jtObject : Result:='TJSObject';
+    end;
 end;
 
 constructor TAPIServiceMethod.Create(aCollection: TCollection);
@@ -498,6 +514,8 @@ begin
     aMeth.Name:=aJSON.Get('name','');
     aMeth.PasName:=GetServiceMethodName(aSvc.Name,aMeth.Name);
     aMeth.ReturnType:=StringToJSType(aJSON.Get('resulttype',''));
+    if (aMeth.ReturnType=jtNumber) and  (ccoPreferNativeInt in Options) then
+      aMeth.PasReturnType:='NativeInt';
     aParams:=aJSON.Get('paramdefs',TJSONarray(Nil));
     if (aJSON.Get('len',0)>0) and Assigned(aParams) then
       FillAPIMethod(aSvc,aMeth,aParams);
@@ -594,7 +612,14 @@ begin
   indent;
     Addln('If Assigned(aOnSuccess) then');
     Indent;
-      Addln('aOnSuccess(%s(aResult))',[aMeth.PasReturnType]);
+      if (ccoForceJSValueResult in options) then
+        Addln('aOnSuccess(aResult)')
+      else
+        begin
+        if (aMeth.PasReturnType='') then
+          Addln('// Return type is unknown, this will likely result in a compiler error. Set return type in API definition');
+        Addln('aOnSuccess(%s(aResult))',[aMeth.PasReturnType]);
+        end;
     undent;
   undent;
   Addln('end;');
@@ -673,7 +698,7 @@ end;
 function TAPIClientCodeGen.BaseUnits: String;
 
 begin
-  Result:='fprpcclient';
+  Result:='js, fprpcclient';
 end;
 
 
