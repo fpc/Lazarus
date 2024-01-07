@@ -12107,6 +12107,9 @@ TLVChangeEvent is the type used for the <var>OnChange</var> property in
 <var>TCustomListView</var>.
 </p>
 </descr>
+<version>
+Added in LCL version 4.0.
+</version>
 <seealso>
 <link id="TItemChange"/>
 <link id="TCustomListView.OnChange"/>
@@ -14635,8 +14638,8 @@ the OnChanging event is <b>not</b> signalled.
 </remark>
 <p>
 In the current LCL implementation, CanChange and OnChanging apply to the 
-Windows widgetset only. Other platforms do not generate a change notification 
-for item values.
+Windows widgetset only. Other platforms do not currently generate change 
+notifications for item values.
 </p>
 </descr>
 <version>
@@ -16360,8 +16363,8 @@ about the event type and its arguments.
 </p>
 <p>
 Please note that CanChange and OnChanging are relevant for the Windows platform 
-only. Other platforms do not generate or handle change notifications for list 
-item values.
+only. Other platforms do not currently generate or handle change notifications 
+for list item values.
 </p>
 </descr>
 <version>
