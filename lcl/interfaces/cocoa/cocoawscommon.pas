@@ -1109,14 +1109,13 @@ var
   MouseTargetLookup: Boolean;
   srchPt: TPoint;
 begin
+  Result:= true;
+
   if not NSApp.isActive then
     exit;
 
   if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
-  begin
-    Result := True; // Cocoa should not handle the message.
-    Exit;           // LCL should get the notification either.
-  end;
+    exit;           // LCL should get the notification either.
 
   // If LCL control is provided and it's in designing state.
   // The default resolution: Notify LCL about event, but don't let Cocoa
@@ -1144,6 +1143,9 @@ begin
     end
     else
     begin
+      if Event.window<>GetCocoaWindowAtPos(Event.mouseLocation) then
+        exit( true );
+
       rect:=Target.BoundsRect;
       OffsetRect(rect, -rect.Left, -rect.Top);
       if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
@@ -1203,8 +1205,9 @@ begin
   //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
 
   NotifyApplicationUserInput(Target, Msg.Msg);
-  Result := DeliverMessage(Msg) <> 0;
-  if BlockCocoaMouseMove then Result := true;
+  // LCL/LM_MOUSEMOVE always return false, so we should discard return value
+  DeliverMessage(Msg);
+  Result:= true;
 
   // if Screen.Cursor set, LCL won't call TCocoaWSWinControl.SetCursor().
   // we need to set the cursor ourselves
