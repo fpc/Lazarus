@@ -42,5 +42,8 @@
 		<issue name="TDateEdit.MaxDate">
 			<short>TDateEdit.MaxDate is not supported by the native Calendar.</short>
 		</issue>
+		<issue name="TListView.OnChanging">
+			<short>The OnChanging event is not supported</short>
+		</issue>
 	</widgetset>
 </package>

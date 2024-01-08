@@ -10,6 +10,9 @@
 		<issue name="TListView.StateImages">
 			<short>StateImages property is not supported</short>
 		</issue>
+		<issue name="TListView.OnChanging">
+			<short>The OnChanging event is not supported</short>
+		</issue>
 		<issue name="TMemo.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>

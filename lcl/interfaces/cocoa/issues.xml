@@ -4,6 +4,9 @@
 		<issue name="TListView.StateImages">
 			<short>StateImages property is not supported</short>
 		</issue>
+		<issue name="TListView.OnChanging">
+			<short>The OnChanging event is not supported</short>
+		</issue>
 		<issue name="TPageControl.MultiLine">
 			<short>not supported</short>
 		</issue>
