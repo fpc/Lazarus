@@ -1915,7 +1915,6 @@ begin
       if QtGetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
         lpLogFont^.lfFaceName, CharsetToQtCharSet(lpLogFont^.lfCharSet)) > 0 then
       begin
-        StylesList := QStringList_create();
         for i := 0 to FontList.Count - 1 do
         begin
           EnumLogFont.elfLogFont.lfFaceName := FontList[i];
@@ -1944,6 +1943,7 @@ begin
     finally
       FontList.free;
       QStringList_destroy(StylesList);
+      QStringList_destroy(ScriptList);
       CharSetList.Free;
     end;
   end;
