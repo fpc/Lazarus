@@ -362,7 +362,7 @@ TCustomActionList.
 <seealso/>
 </element>
 <!-- argument Visibility: default -->
-<element name="TActionEvent.Action">
+<element name="TActionEvent.AAction">
 <short>TBasicAction for the event notification.</short>
 </element>
 <!-- argument Visibility: default -->
@@ -1017,8 +1017,31 @@ the Object Inspector.
 <short>
 A list of shortcuts (accelerator keys) for actions in an action list.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TShortCutList</var> is a <var>TStringList</var> descendant used to store 
+text and TShortCut class instances for accelerator keys used on actions. It 
+provides additional properties and methods needed to maintain the TShortCut 
+instances in the list.
+</p>
+<p>
+The overridden Add method stores both the caption text and a TShortCut instance 
+needed for an accelerator key. The caption is stored in the Lines property. 
+The Objects property is used to store the TShortCut value.
+</p>
+<p>
+Use the indexed ShortCuts property to access a TShortCut value in Objects by 
+its ordinal position.
+</p>
+<p>
+TShortCutList is the type used to implement the SecondaryShortCuts property in 
+TCustomAction.
+</p>
+</descr>
+<seealso>
+<link id="TCustomAction.SecondaryShortCuts"/>
+<link id="#rtl.classes.TShortCut">TShortCut</link>
+</seealso>
 </element>
 
 <!-- private -->
@@ -2134,7 +2157,19 @@ TBasicActionClass reference used to create the new action instance.
 <short>
 TApplication instance used to update and execute actions.
 </short>
-<descr/>
+<descr>
+<p>
+<var>ApplicationActionComponent</var> is a unit global <var>TComponent</var> 
+variable with the TApplication instance used to update and execute an action. 
+It is used in the Update and Execute methods in TContainedAction when the 
+action does not have an assigned OnExecute handler or is not stored in an 
+action list.
+</p>
+<p>
+ApplicationActionComponent is maintained when the TApplication instance is 
+created or freed for an application.
+</p>
+</descr>
 <seealso>
 <link id="TContainedAction.Execute"/>
 <link id="TContainedAction.Update"/>
