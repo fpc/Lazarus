@@ -11446,11 +11446,15 @@ msgid "Keep open"
 msgstr ""
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
+#, fuzzy
+#| msgid "Keep relative indentation of multi line template"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
 msgstr "שמור הזחה יחסית של תבנית מרובת שורות"
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
+#, fuzzy
+#| msgid "Keep indentation"
+msgid "Absolute indentation"
 msgstr "שמור הזחה"
 
 #: lazarusidestrconsts.liskeepthemandcontinue

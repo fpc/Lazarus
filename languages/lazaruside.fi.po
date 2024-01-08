@@ -10962,11 +10962,15 @@ msgid "Keep open"
 msgstr "Pidä auki"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
+#, fuzzy
+#| msgid "Keep relative indentation of multi line template"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
 msgstr "Säilytä monirivisten mallineiden suhteellinen sisennys"
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
+#, fuzzy
+#| msgid "Keep indentation"
+msgid "Absolute indentation"
 msgstr "Säilytä sisennys"
 
 #: lazarusidestrconsts.liskeepthemandcontinue

@@ -11023,11 +11023,15 @@ msgid "Keep open"
 msgstr "Maradjon nyitva"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
+#, fuzzy
+#| msgid "Keep relative indentation of multi line template"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
 msgstr "A többsoros sablon viszonylagos behúzásának megtartása"
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
+#, fuzzy
+#| msgid "Keep indentation"
+msgid "Absolute indentation"
 msgstr "Behúzás megtartása"
 
 #: lazarusidestrconsts.liskeepthemandcontinue

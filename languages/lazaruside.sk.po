@@ -11056,11 +11056,13 @@ msgid "Keep open"
 msgstr "Ponechať otvorené"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
 msgstr ""
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
+#, fuzzy
+#| msgid "Keep indentation"
+msgid "Absolute indentation"
 msgstr "Ponechať odsadenie"
 
 #: lazarusidestrconsts.liskeepthemandcontinue

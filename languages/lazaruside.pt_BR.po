@@ -11035,11 +11035,15 @@ msgid "Keep open"
 msgstr "Manter aberto"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
+#, fuzzy
+#| msgid "Keep relative indentation of multi line template"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
 msgstr "Manter identação relativa do modelo de múltiplas linhas"
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
+#, fuzzy
+#| msgid "Keep indentation"
+msgid "Absolute indentation"
 msgstr "Manter identação"
 
 #: lazarusidestrconsts.liskeepthemandcontinue

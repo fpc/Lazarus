@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-03 18:23+0300\n"
+"PO-Revision-Date: 2024-01-08 03:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10960,12 +10960,12 @@ msgid "Keep open"
 msgstr "Оставить открытым"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-msgid "Keep relative indentation of multi line template"
-msgstr "Сохранять относительные отступы в многострочном шаблоне"
+msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
+msgstr "Сохранять абсолютные значения отступов независимо от положения курсора в тексте."
 
 #: lazarusidestrconsts.liskeepsubindentation
-msgid "Keep indentation"
-msgstr "Сохранять отступы"
+msgid "Absolute indentation"
+msgstr "Абсолютные отступы"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
