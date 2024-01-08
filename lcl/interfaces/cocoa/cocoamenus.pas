@@ -72,6 +72,7 @@ procedure MenuTrackCancelAll;
 // the returned "Key" should not be released, as it's not memory owned
 procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 
+function LCLMenuItemInit(item: NSMenuItem; const lclMenuItem: TMenuItem): id;
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0; State: TShiftState = []): id;
 function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
@@ -192,6 +193,41 @@ const
   menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
   ANSMenuItem.setState( menustate[Checked] );
+end;
+
+function getHotkeyFromTitle( aTitle:String ): Word;
+var
+  i: Integer;
+  hotkeyChar: Char;
+begin
+  Result:= 0;
+  i:= aTitle.IndexOf( cHotkeyPrefix );
+  if (i<0) or (i>=aTitle.Length-1) then
+    Exit;
+
+  hotkeyChar:= aTitle.Chars[i+1];
+  if hotkeyChar <> cHotkeyPrefix then
+    Result:= Word( UpCase(hotkeyChar) );
+end;
+
+function LCLMenuItemInit(item: NSMenuItem; const lclMenuItem: TMenuItem): id;
+var
+  aShortCut: TShortCut;
+  aTitle: String;
+  key: Word;
+begin
+  aTitle := lclMenuItem.Caption;
+  aShortCut := lclMenuItem.ShortCut;
+
+  if aShortCut=0 then begin
+    if not Assigned(lclMenuItem.Action) then begin
+      key:= getHotkeyFromTitle( aTitle );
+      if key<>0 then
+        aShortCut:= ShortCut( key, [] );
+    end;
+  end;
+
+  Result:= LCLMenuItemInit(item, aTitle, aShortCut);
 end;
 
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;

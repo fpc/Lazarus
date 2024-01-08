@@ -268,7 +268,7 @@ begin
   end
   else
   begin
-    item := LCLMenuItemInit(TCocoaMenuItem.alloc, AMenuItem.Caption, AMenuItem.ShortCut);
+    item := LCLMenuItemInit(TCocoaMenuItem.alloc, AMenuItem);
     TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
 
     if AMenuItem.IsInMenuBar then
