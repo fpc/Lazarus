@@ -6624,7 +6624,7 @@ begin
       aDest.UnderlinePriority := Src.UnderlinePriority;
     end;
 
-    if not (aDest is TSynSelectedColor) then begin
+    if not (aDest is TSynHighlighterAttributesModifier) then begin
       if aDefault <> nil then begin
         if aDefault.IsUsingSchemeGlobals then
           aDefault := aDefault.GetSchemeGlobal;
