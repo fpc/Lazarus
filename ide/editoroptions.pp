@@ -6890,7 +6890,7 @@ begin
   FAttributes.Sorted := true;
 
   if (not FIsSchemeDefault) and (aPascalScheme <> nil) and (MappedAttributes <> nil) then begin
-    TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/';
+    TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'  + 'Scheme' + StrToValidXMLName(Name) + '/';
     if not aXMLConfig.HasPath(TmpPath, False) then begin
       for i := 0 to FAttributes.Count - 1 do begin
         csa := TColorSchemeAttribute(FAttributes.Objects[i]);
