@@ -169,6 +169,7 @@ type
 
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoChange; override;
+    property ConstName: string read FConstName write FConstName; // internal accessor
   public
     constructor Create;
     constructor Create(aCaption: string; aStoredName: String = '');

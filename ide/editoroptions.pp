@@ -296,6 +296,7 @@ type
     function IsEnabled: boolean; override;
     procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
+    procedure AssignColors(Src: TPersistent);
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
     function GetStoredValuesForAttrib: TColorSchemeAttribute; // The IDE default colors from the resources
     function GetSchemeGlobal: TColorSchemeAttribute;
@@ -3219,7 +3220,7 @@ begin
       Add('Comment=Comment');
       Add('Preprocessor=Comment');
       Add('Identifier=Identifier');
-      Add('Reserved_word=Reserved_word');
+      Add('Reserved word=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3246,7 +3247,7 @@ begin
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
     begin
-      Add('Element=Reserved_word');
+      Add('Element=Reserved word');
       Add('Comment=Comment');
       Add('Text=Identifier');
       Add('Space=Space');
@@ -3273,10 +3274,10 @@ begin
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
     begin
-      Add('Element=Reserved_word');
+      Add('Element=Reserved word');
       Add('Comment=Comment');
       Add('Identifier=Identifier');
-      Add('Key=Reserved_word');
+      Add('Key=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3305,7 +3306,7 @@ begin
     begin
       Add('Comment=Comment');
       Add('Identifier=Identifier');
-      Add('KeyAttri=Reserved_word');
+      Add('KeyAttri=Reserved word');
       Add('NumberAttri=Number');
       Add('SpaceAttri=Space');
       Add('StringAttri=String');
@@ -3341,7 +3342,7 @@ begin
       Add('Comment=Comment');
       Add('Documentation=Comment');
       Add('Identifier=Identifier');
-      Add('Reserved_word=Reserved_word');
+      Add('Reserved word=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3375,7 +3376,7 @@ begin
     begin
       Add('Comment=Comment');
       Add('Variable=Identifier');
-      Add('Key=Reserved_word');
+      Add('Key=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3409,7 +3410,7 @@ begin
       Add('Comment=Comment');
       Add('Identifier=Identifier');
       Add('Documentation=Comment');
-      Add('Reserved_word=Reserved_word');
+      Add('Reserved word=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3434,7 +3435,7 @@ begin
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
     begin
-      Add('Element=Reserved_word');
+      Add('Element=Reserved word');
       Add('Comment=Comment');
       Add('Variable=Identifier');
       Add('Space=Space');
@@ -3466,7 +3467,7 @@ begin
     with MappedAttributes do
     begin
       Add('Comment=Comment');
-      Add('Element=Reserved_word');
+      Add('Element=Reserved word');
       Add('Variable=Identifier');
       Add('Space=Space');
       Add('Symbol=Symbol');
@@ -3498,7 +3499,7 @@ begin
     with MappedAttributes do
     begin
       Add('Comment=Comment');
-      Add('Selector=Reserved_word');
+      Add('Selector=Reserved word');
       Add('Identifier=Identifier');
       Add('Space=Space');
       Add('Symbol=Symbol');
@@ -3541,7 +3542,7 @@ begin
       Add('Comment=Comment');
       Add('Documentation=Comment');
       Add('Identifier=Identifier');
-      Add('Reserved_word=Reserved_word');
+      Add('Reserved word=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -3681,7 +3682,7 @@ begin
       Add('Comment=Comment');
       Add('Documentation=Comment');
       Add('Identifier=Identifier');
-      Add('Reserved_word=Reserved_word');
+      Add('Reserved word=Reserved word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -6668,6 +6669,28 @@ begin
   end;
 end;
 
+procedure TColorSchemeAttribute.AssignColors(Src: TPersistent);
+var
+  SrcAttr: TColorSchemeAttribute;
+  sn, n: String;
+begin
+  BeginUpdate;
+  sn := StoredName;
+  n := ConstName;
+  inherited Assign(Src);
+  StoredName := sn;
+  ConstName := n;
+
+  if Src is TColorSchemeAttribute then begin
+    SrcAttr := TColorSchemeAttribute(Src);
+    FUseSchemeGlobals    := SrcAttr.FUseSchemeGlobals;
+    FMarkupFoldLineColor := SrcAttr.FMarkupFoldLineColor;
+    FMarkupFoldLineStyle := SrcAttr.FMarkupFoldLineStyle;
+    FMarkupFoldLineAlpha := SrcAttr.FMarkupFoldLineAlpha;
+  end;
+  EndUpdate;
+end;
+
 function TColorSchemeAttribute.Equals(Other: TColorSchemeAttribute): Boolean;
 begin
   Result := (FGroup      = Other.FGroup) and
@@ -6875,7 +6898,7 @@ begin
         if (n <> '') then begin
           pasattr := aPascalScheme.Attribute[n];
           if pasattr <> nil then
-            csa.Assign(pasattr);
+            csa.AssignColors(pasattr);
         end;
       end;
       exit;

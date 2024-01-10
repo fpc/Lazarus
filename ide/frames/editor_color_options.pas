@@ -1229,10 +1229,10 @@ begin
     DefAttri := DefaultColorScheme.Attribute[FCurHighlightElement.StoredName];
     if FCurHighlightElement.IsUsingSchemeGlobals then begin
       // reset the globol settings for the element
-      FCurHighlightElement.GetSchemeGlobal.Assign(DefAttri);
+      FCurHighlightElement.GetSchemeGlobal.AssignColors(DefAttri);
     end
     else begin
-      FCurHighlightElement.Assign(DefAttri);
+      FCurHighlightElement.AssignColors(DefAttri);
       FCurHighlightElement.UseSchemeGlobals := False; // keep editing locals, for single elem reset, this should not change.
     end;
   end else begin
