@@ -219,7 +219,7 @@ begin
   aTitle := lclMenuItem.Caption;
   aShortCut := lclMenuItem.ShortCut;
 
-  if aShortCut=0 then begin
+  if (lclMenuItem.Owner is TPopupMenu) and (aShortCut=0) then begin
     if not Assigned(lclMenuItem.Action) then begin
       key:= getHotkeyFromTitle( aTitle );
       if key<>0 then
