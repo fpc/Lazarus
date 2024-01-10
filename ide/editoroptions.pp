@@ -330,6 +330,7 @@ type
     function GetAttributeAtPos(Index: Integer): TColorSchemeAttribute;
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
+    function DoesSupportGroup(AGroup: TAhaGroupName): boolean;
   public
     constructor Create(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       IsSchemeDefault: Boolean);
@@ -6775,6 +6776,24 @@ begin
   Result := FOwner.Name;
 end;
 
+function TColorSchemeLanguage.DoesSupportGroup(AGroup: TAhaGroupName): boolean;
+begin
+  Result := True;
+  if (FHighlighter = nil) then Exit;
+  case AGroup of
+//    agnDefault: ;
+//    agnLanguage: ;
+//    agnText: ;
+//    agnLine: ;
+//    agnGutter: ;
+//    agnTemplateMode: ;
+//    agnSyncronMode: ;
+    agnIfDef: Result := FHighlighter is TSynPasSyn;
+//    agnIdentComplWindow: ;
+    agnOutlineColors: Result := FHighlighter is TSynCustomFoldHighlighter;
+  end;
+end;
+
 function TColorSchemeLanguage.GetStoredValuesForLanguage: TColorSchemeLanguage;
 var
   cs: TColorScheme;
@@ -6838,6 +6857,7 @@ begin
 
   for aha := Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute) do begin
     if aha = ahaNone then continue;
+    if not DoesSupportGroup(ahaGroupMap[aha]) then continue;
     csa := TColorSchemeAttribute.Create(Self, @AdditionalHighlightAttributes[aha],
                                         GetAddiHilightAttrName(aha) );
     csa.Features := ahaSupportedFeatures[aha];

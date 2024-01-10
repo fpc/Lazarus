@@ -1161,7 +1161,7 @@ begin
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
   for j := low(TAhaGroupName) to high(TAhaGroupName) do
     if not(j in [agnDefault, agnLanguage]) then
-      ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]);
+      ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]).Visible := False;
 
   // Fill Attributes in
   DefNode := nil;
@@ -1186,6 +1186,7 @@ begin
       end;
       if ParentNode = nil then
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
+      ParentNode.Visible := True;
       NewNode :=  ColorElementTree.Items.AddChild(ParentNode, COLOR_NODE_PREFIX + Attr.Caption^);
       NewNode.Data := Pointer(Attr);
       if Attr.Group = agnDefault then
