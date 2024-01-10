@@ -75,12 +75,16 @@ function MaxPoint(const A, B: TPoint): TPoint; inline;
 function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
 function NextNumberSeq(
   const APoints: array of TDoublePoint; var AStart, AEnd: Integer): Boolean;
-function PointDist(const A, B: TPoint): Integer; inline;
-function PointDist(const A, B: TDoublePoint): Double; inline;
+function PointDistSq(const A, B: TPoint): Integer; inline;
+function PointDistSq(const A, B: TDoublePoint): Double; inline;
+function PointDist(const A, B: TPoint): Integer; inline; deprecated 'Use PointDistSq';  // to be removed in v4.99
+function PointDist(const A, B: TDoublePoint): Double; inline; deprecated 'Use PointDistSq';  // to be removed in v4.99
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
-function PointLineDist(const P, A, B: TPoint): Integer; overload;
-function PointLineDist(const P, A,B: TPoint; out Q: TPoint; out Inside: Boolean): Integer; overload;
+function PointLineDistSq(const P, A, B: TPoint): Integer; overload;
+function PointLineDistSq(const P, A,B: TPoint; out Q: TPoint; out Inside: Boolean): Integer; overload;
+function PointLineDist(const P, A, B: TPoint): Integer; overload; deprecated 'Use PointLineDistSq';  // to be removed in v4.99
+function PointLineDist(const P, A,B: TPoint; out Q: TPoint; out Inside: Boolean): Integer; overload; deprecated 'Use PointLineDistSq';  // to be removed in v4.99
 function ProjToLine(const P, A, B: TDoublePoint): TDoublePoint; overload;
 function ProjToLine(const P, A, B: TPoint): TPoint; overload;
 function ProjToRect(
@@ -388,7 +392,7 @@ var
   begin
     Result :=
       ScalarProduct(AShape[AIndex] - ATarget, AVector) /
-      Sqrt(Double(PointDist(AShape[AIndex], ATarget)) * PointDist(ACenter, ATarget));
+      Sqrt(Double(PointDistSq(AShape[AIndex], ATarget)) * PointDistSq(ACenter, ATarget));
   end;
 
   function LineIntersectsRay(
@@ -554,14 +558,26 @@ begin
   Result := AStart <= High(APoints);
 end;
 
-function PointDist(const A, B: TPoint): Integer;
+function PointDistSq(const A, B: TPoint): Integer;
 begin
   Result := Min(Sqr(Int64(A.X) - B.X) + Sqr(Int64(A.Y) - B.Y), MaxInt);
 end;
 
-function PointDist(const A, B: TDoublePoint): Double;
+// Deprecated, to be removed in v4.99
+function PointDist(const A, B: TPoint): Integer;
+begin
+  Result := PointDistSq(A, B);
+end;
+
+function PointDistSq(const A, B: TDoublePoint): Double;
 begin
   Result := Sqrt(Sqr(A.X - B.X) + Sqr(A.Y - B.Y));
+end;
+
+// Deprecated, to be removed in v4.99
+function PointDist(const A, B: TDoublePoint): Double;
+begin
+  Result := PointDistSq(A, B);
 end;
 
 function PointDistX(const A, B: TPoint): Integer;
@@ -574,25 +590,31 @@ begin
   Result := Min(Abs(Int64(A.Y) - B.Y), MaxInt);
 end;
 
-function PointLineDist(const P, A,B: TPoint): Integer;
+function PointLineDistSq(const P, A,B: TPoint): Integer;
 var
   v, w, Q: TPoint;
   dot: Int64;
   lv: Integer;
 begin
   if A = B then
-    Result := PointDist(A, P)
+    Result := PointDistSq(A, P)
   else begin
-    v := B - A;                // Vector pointing along line from A to B
-    w := P - A;                // Vector pointing from A to P
+    v := B - A;                  // Vector pointing along line from A to B
+    w := P - A;                  // Vector pointing from A to P
     dot := Int64(v.x) * w.x + Int64(v.y) * w.y;  // dot product v . w
-    lv := PointDist(A, B);     // Length of vector AB
-    Q := (v * dot) div lv;     // Projection of P onto line A-B, seen from A
-    Result := PointDist(Q, w); // Length from A to Q
+    lv := PointDistSq(A, B);     // Length of vector AB
+    Q := (v * dot) div lv;       // Projection of P onto line A-B, seen from A
+    Result := PointDistSq(Q, w); // Length from A to Q
   end;
 end;
 
-function PointLineDist(const P, A,B: TPoint; out Q: TPoint;
+// Deprecated, to be removed in v4.99
+function PointLineDist(const P, A,B: TPoint): Integer;
+begin
+  Result := PointLineDistSq(P, A,B);
+end;
+
+function PointLineDistSq(const P, A,B: TPoint; out Q: TPoint;
   out Inside: Boolean): Integer;
 var
   v, w: TPoint;
@@ -602,24 +624,31 @@ var
   aq, bq: Integer;
 begin
   if A = B then begin
-    Result := PointDist(A, P);
+    Result := PointDistSq(A, P);
     Inside := false;
     Q := A;
   end else begin
     v := B - A;
     w := P - A;
     dot := Int64(v.x) * w.x + Int64(v.y) * w.y;
-    lv := PointDist(A, B);
+    lv := PointDistSq(A, B);
     Q := (v * dot) div lv;
-    Result := PointDist(Q, w);
+    Result := PointDistSq(Q, w);
 
     // Check whether the projection point Q is inside the A-B line.
     // In this case the lengths AQ and BQ are shorter than AB.
     aq := sqr(Q.x) + sqr(Q.y);     // note: Q is seen from A, not from origin.
-    bq := PointDist(v, Q);
+    bq := PointDistSq(v, Q);
     Inside := (aq <= lv) and (bq <= lv);
     Q := Q + A;
   end;
+end;
+
+// Deprecated, to be removed in v4.99
+function PointLineDist(const P, A,B: TPoint; out Q: TPoint;
+  out Inside: Boolean): Integer;
+begin
+  Result := PointLineDistSq(P, A,B, Q, Inside);
 end;
 
 function ProjToLine(const P, A,B: TDoublePoint): TDoublePoint;
@@ -928,7 +957,7 @@ var
     pt: TPoint;
   begin
     pt := RoundPoint(GetPoint(AHi));
-    if PointDist(APoly.LastPoint, pt) <= Sqr(AStep) then
+    if PointDistSq(APoly.LastPoint, pt) <= Sqr(AStep) then
       SafeAddPoint(pt, AHi)
     else begin
       Rec(ALo, (ALo + AHi) / 2);

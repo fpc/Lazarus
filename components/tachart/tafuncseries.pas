@@ -858,7 +858,7 @@ begin
   ts := ms;
   while t < ParamMax do begin
     p := PointAt(t + ts);
-    if PointDist(p, pp) > Sqr(Step) then
+    if PointDistSq(p, pp) > Sqr(Step) then
       ts /= 2
     else begin
       ADrawer.LineTo(p);
@@ -1101,7 +1101,7 @@ var
     m: Double;
     pm: TPoint;
   begin
-    if (level > INF_SENTINEL) or (PointDist(APL, APR) <= Sqr(Step)) then
+    if (level > INF_SENTINEL) or (PointDistSq(APL, APR) <= Sqr(Step)) then
       // Left-then-right recursive call order guarantees that
       // the last drawn segment is the immediately preceding one.
       ADrawer.LineTo(APR)

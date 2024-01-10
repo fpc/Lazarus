@@ -824,7 +824,7 @@ begin
       phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
       SinCos(phi, sinphi, cosphi);
       dperim := round(sqrt(sqr(rx * cosPhi) + sqr(ry * sinPhi)));
-      d := round(sqrt(PointDist(p, AParams.FPoint)));
+      d := round(sqrt(PointDistSq(p, AParams.FPoint)));
       if (d < dist) and (d < dperim + AParams.FRadius) then begin  // not quite exact...
         dist := d;
         AResults.FDist := d;
@@ -973,7 +973,7 @@ begin
   rx := (iRect.Right - iRect.Left) div 2;
   ry := (iRect.Bottom - iRect.Top) div 2;
   p := ParentChart.GraphToImage(AxisToGraph(item^.Point));
-  d := round(sqrt(PointDist(p, AParams.FPoint)));  // dist between data pt and clicked pt
+  d := round(sqrt(PointDistSq(p, AParams.FPoint)));  // dist between data pt and clicked pt
   phi := -arctan2(AParams.FPoint.Y - p.y, AParams.FPoint.X - p.x);
   SinCos(phi, sinphi, cosphi);
   dperim := round(sqrt((sqr(rx * cosPhi) + sqr(ry * sinPhi))));
@@ -981,7 +981,7 @@ begin
   if AYIdx = 1 then
     Result := sqr(abs(d - dperim))
   else begin
-    Result := PointDist(p, AParams.FPoint);
+    Result := PointDistSq(p, AParams.FPoint);
     if sqrt(Result) > dperim then
       Result := MaxInt;
   end;
@@ -2392,7 +2392,7 @@ begin
        (nptCustom in AParams.FTargets) and
        (nptCustom in ToolTargets)
     then begin
-      d := PointLineDist(AParams.FPoint, pt1, pt2);  // distance of point from line
+      d := PointLineDistSq(AParams.FPoint, pt1, pt2);  // distance of point from line
       if d < dist then begin
         dist := d;
         xidx := -1;

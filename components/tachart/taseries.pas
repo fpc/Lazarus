@@ -834,7 +834,7 @@ begin
     ip1 := ParentChart.GraphToImage(FGraphPoints[0]);
     for pointIndex := 1 to FUpBound - FLoBound do begin
       ip2 := ParentChart.GraphToImage(FGraphPoints[pointIndex]);
-      d := PointLineDist(AParams.FPoint, ip1, ip2, q, isInside);
+      d := PointLineDistSq(AParams.FPoint, ip1, ip2, q, isInside);
       if isInside and (d < dmin) then begin
         dmin := d;
         AResults.FIndex := -1; //pointIndex + FLoBound;

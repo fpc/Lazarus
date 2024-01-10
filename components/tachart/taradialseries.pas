@@ -823,8 +823,8 @@ begin
     idx := FindContainingSlice(FDragOrigin);
     if idx > -1 then begin
       p := ParentChart.GraphToImage(ANewPos);
-      r1 := sqrt(PointDist(FDragOrigin, FCenter));
-      r2 := sqrt(PointDist(p, FCenter));
+      r1 := sqrt(PointDistSq(FDragOrigin, FCenter));
+      r2 := sqrt(PointDistSq(p, FCenter));
       dist := Source.Item[idx]^.X + (r2 - r1) / FRadius;
       if dist < 0 then dist := 0;  // Don't let value go negative
       ListSource.BeginUpdate;

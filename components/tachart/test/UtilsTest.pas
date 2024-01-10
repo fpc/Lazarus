@@ -50,6 +50,8 @@ type
     procedure TestPointOnLine;
     procedure TestPointOperations;
     procedure TestPolygonIntersectsPolygon;
+    procedure TestPointDist;
+    procedure TestPointLineDist;
   end;
 
   TColorTest = class(TTestCase)
@@ -389,6 +391,24 @@ begin
   AssertFalse(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(11, 0))));
   AssertFalse(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(0, -6))));
 end;
+
+procedure TGeometryTest.TestPointDist;
+var
+  P: array[0..2] of TPoint = ((X:2; Y:2), (X:3; Y:3), (X:3; Y:4));
+begin
+  AssertEquals(2, PointDistSq(P[0], P[1]));
+  AssertEquals(5, PointDistSq(P[0], P[2]));
+end;
+
+procedure TGeometryTest.TestPointLineDist;
+var
+  Line: array[0..1] of TPoint = ((X:0; Y:100), (X:100; Y:0));
+  P: TPoint = (X:0; Y:0);
+begin
+  AssertEquals(100*100 div 2, PointLineDistSq(P, Line[0], Line[1]));
+end;
+
+
 
 { TColorTest }
 

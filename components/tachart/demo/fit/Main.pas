@@ -514,7 +514,7 @@ begin
                 paramName,
                 FloatToStrEx(FitSeries.Param[i], PRECISION, STD_FMT, EXP_FMT),
                 FloatToStrEx(FitSeries.ParamError[i], PRECISION, STD_FMT, EXP_FMT),
-                FloatToStrEx(FitSeries.Param_tValue[i], PRECISION, STD_FMT, EXP_FMT)
+                FloatToStrEx(FitSeries.Param_tValue[i], PRECISION, STD_FMT, EXP_FMT),
                 FloatToStrEx(FitSeries.Param_pValue[i], PRECISION, STD_FMT, EXP_FMT)
               ]));
             end;

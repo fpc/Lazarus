@@ -1705,7 +1705,7 @@ begin
     exit;
 
   if not IsActive then begin
-    if PointDist(FOrigin, APoint) < Sqr(MinDragRadius) then
+    if PointDistSq(FOrigin, APoint) < Sqr(MinDragRadius) then
       exit;
     Activate;
   end;
@@ -1890,7 +1890,7 @@ procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 
 const
   DIST_FUNCS: array [TChartDistanceMode] of TPointDistFunc = (
-    @PointDist, @PointDistX, @PointDistY);
+    @PointDistSq, @PointDistX, @PointDistY);
 var
   s, bestS: TCustomChartSeries;
   p: TNearestPointParams;
@@ -2016,7 +2016,7 @@ procedure TDataPointClickTool.MouseUp(APoint: TPoint);
 begin
   if
     Assigned(OnPointClick) and (FSeries <> nil) and
-    (FSeries.SpecialPointPos or (PointDist(APoint, FMouseDownPoint) <= Sqr(GrabRadius)))
+    (FSeries.SpecialPointPos or (PointDistSq(APoint, FMouseDownPoint) <= Sqr(GrabRadius)))
   then
     OnPointClick(Self, FMouseDownPoint);
   FSeries := nil;
