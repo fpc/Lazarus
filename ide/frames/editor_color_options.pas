@@ -1301,6 +1301,11 @@ begin
     SynColorAttrEditor1.CurrentColorScheme := FCurrentColorScheme;
     FillPriorEditor;
   end;
+  if FCurrentHighlighter <> nil then
+    SetComboBoxText(FileExtensionsComboBox,
+      GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename)
+  else
+    SetComboBoxText(FileExtensionsComboBox, '', cstFilename);
   ApplyCurrentScheme;
   FillColorElementListBox;
 end;
@@ -1410,8 +1415,6 @@ begin
                         GetColorSchemeForLang(EditorOpts.HighlighterList
                                      [CurLanguageID].SynInstance.LanguageName));
         SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
-        SetComboBoxText(FileExtensionsComboBox,
-          GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename);
       end;
     end;
     LanguageButton.Caption := Language;
