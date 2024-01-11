@@ -222,6 +222,17 @@
           <Previous_value Style="fsItalic" Foreground="clOlive"/>
         </SchemeDelphi>
       </Langpo_language_files>
+      <LangDisassembler_Window Version="13">
+        <SchemeDelphi>
+          <ahaDefault Background="clForm" Foreground="clBlack" UseSchemeGlobals="False"/>
+          <ahaAsmSourceFunc Style="fsBold"/>
+          <ahaAsmSourceLine Style="fsBold"/>
+          <ahaTextBlock Background="clHighlight" Foreground="clHighlightText" UseSchemeGlobals="False"/>
+          <ahaLineHighlight Foreground="clHighlightText" FrameColor="clBlack" UseSchemeGlobals="False" Background="clHighlight"/>
+          <ahaMouseLink Style="fsUnderline" FrameColor="clNone" UseSchemeGlobals="False"/>
+          <ahaAsmLinkTarget Foreground="clHotLight"/>
+        </SchemeDelphi>
+      </LangDisassembler_Window>
     </ColorSchemes>
   </Lazarus>
 </CONFIG>

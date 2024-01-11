@@ -2175,6 +2175,10 @@ resourcestring
   dlgIfDefNodeActive              = 'Active $IFDEF node';
   dlgIfDefNodeTmpActive           = 'Included mixed state $IFDEF node';
 
+  dbgAsmWindowSourceLine          = 'Source line';
+  dbgAsmWindowSourceFunc          = 'Function name';
+  dbgAsmWindowLinkTarget          = 'Link target line';
+
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
   dlgAddHiAttrGroupLine     = 'Line';

@@ -15,10 +15,10 @@ uses
   // Codetools
   CodeToolManager, CodeCache,
   //SynEdit
-  SynEdit,
+  SynEdit, SynEditHighlighter, SynEditMiscClasses, SynEditTypes,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, IDEOptEditorIntf,
-  IdeIntfStrConsts,
+  IdeIntfStrConsts, EditorSyntaxHighlighterDef,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerIntf
@@ -109,6 +109,7 @@ type
     procedure pbAsmMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
     procedure pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
+    procedure GetColors(ASrc: TSynHighlighterAttributes; AMod: array of TSynHighlighterAttributesModifier; out AText, ABack, AFrame: TColor; out AStyle: TFontStyles);
     procedure pbAsmPaint(Sender: TObject);
     procedure popCopyAddrClick(Sender: TObject);
     procedure sbHorizontalChange(Sender: TObject);
@@ -158,6 +159,11 @@ type
     FImgNoSourceLine: Integer;
     FImageTarget: Integer;
 
+    FHighLigther: TSynCustomHighlighter;
+    FDefAttrib, FSrcCodeAttrib, FSrcFuncAttrib: TSynHighlighterAttributes;
+    FSelAttrib, FCurLineAttrib, FJmpLinkAttrib, FJmpTargetAttrib: TSynHighlighterAttributesModifier;
+    FMergeCol: TSynSelectedColorMergeResult;
+
     function LineForAddr(AnAddr: TDBGPtr):Integer;
     procedure BreakPointChanged(const {%H-}ASender: TIDEBreakPoints;
       const {%H-}ABreakpoint: TIDEBreakPoint);
@@ -201,6 +207,10 @@ type
     property DebugManager: TBaseDebugManager read FDebugManager write FDebugManager;
     property BreakPoints;
   end;
+
+
+var
+  IdeAsmWinHlId: integer;
 
 implementation
 
@@ -302,6 +312,15 @@ begin
   FHistory := TDBGPtrList.Create;
   FLinkLine := -1;
 
+  FDefAttrib       := TSynHighlighterAttributes.Create;
+  FSrcCodeAttrib   := TSynHighlighterAttributes.Create;
+  FSrcFuncAttrib   := TSynHighlighterAttributes.Create;
+  FSelAttrib       := TSynHighlighterAttributesModifier.Create;
+  FCurLineAttrib   := TSynHighlighterAttributesModifier.Create;
+  FJmpLinkAttrib   := TSynHighlighterAttributesModifier.Create;
+  FJmpTargetAttrib := TSynHighlighterAttributesModifier.Create;
+  FMergeCol:= TSynSelectedColorMergeResult.Create;
+
   inherited Create(AOwner);
 //  DoubleBuffered := True;
 
@@ -367,6 +386,15 @@ begin
   FDisassemblerNotification.OnChange := nil;
   FDisassemblerNotification.ReleaseReference;
   FHistory.Free;
+  FreeAndNil(FMergeCol);
+  FreeAndNil(FDefAttrib);
+  FreeAndNil(FSrcCodeAttrib);
+  FreeAndNil(FSrcFuncAttrib);
+  FreeAndNil(FSelAttrib);
+  FreeAndNil(FCurLineAttrib);
+  FreeAndNil(FJmpLinkAttrib);
+  FreeAndNil(FJmpTargetAttrib);
+
   inherited Destroy;
 end;
 
@@ -744,12 +772,38 @@ begin
   pbAsm.Invalidate;
 end;
 
+procedure TAssemblerDlg.GetColors(ASrc: TSynHighlighterAttributes;
+  AMod: array of TSynHighlighterAttributesModifier; out AText, ABack,
+  AFrame: TColor; out AStyle: TFontStyles);
+var
+  i: Integer;
+begin
+  FMergeCol.CleanupMergeInfo;
+  FMergeCol.Assign(ASrc);
+  for i := low(AMod) to high(AMod) do
+    if AMod[i] <> nil then FMergeCol.Merge(AMod[i]);
+
+  FMergeCol.ProcessMergeInfo;
+
+  ABack  := FMergeCol.Background;
+  if (ABack = clNone) or (ABack = clDefault) then ABack := FDefAttrib.Background;
+  if (ABack = clNone) or (ABack = clDefault) then ABack := clWhite;
+  AText  := FMergeCol.Foreground;
+  if (AText = clNone) or (AText = clDefault) then AText := FDefAttrib.FrameColor;
+  if (AText = clNone) or (AText = clDefault) then AText := clBlack;
+  AFrame := FMergeCol.FrameSideColors[bsBottom];
+  AStyle := FMergeCol.Style;
+end;
+
 procedure TAssemblerDlg.pbAsmPaint(Sender: TObject);
 var
   R: TRect;
   n, X, Y, Line, W: Integer;
   S: String;
   TextStyle: TTextStyle;
+  Fore, Back, Frame: TColor;
+  St: TFontStyles;
+  m0, m1, m2, m3: TSynHighlighterAttributesModifier;
 begin
   R := pbAsm.ClientRect;
   TextStyle := pbAsm.Canvas.TextStyle;
@@ -757,6 +811,8 @@ begin
   TextStyle.SingleLine := True;
   pbAsm.Canvas.TextStyle := TextStyle;
 
+  GetColors(FDefAttrib, [], Fore, Back, Frame, St);
+  pbAsm.Canvas.Brush.Color := Back;
   pbAsm.Canvas.FillRect(R);
   Inc(R.Left, FGutterWidth);
 
@@ -770,41 +826,54 @@ begin
 
   for n := 0 to FLineCount do
   begin
-    if Line = FSelectLine
-    then begin
-      pbAsm.Canvas.Brush.Color := clHighlight;
-      pbAsm.Canvas.Font.Color := clHighlightText;
-      pbAsm.Canvas.FillRect(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
-      if (FSelectionEndLine <> FSelectLine)
-      then begin
-        pbAsm.Canvas.Brush.Color := clHotLight;
-        pbAsm.Canvas.Brush.Style := bsClear;
-        pbAsm.Canvas.Rectangle(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
-        pbAsm.Canvas.Brush.Style := bsSolid;
-        pbAsm.Canvas.Brush.Color := clHighlight;
-      end;
-    end
-    else if (FSelectionEndLine <> FSelectLine)
-    and (line >= Min(FSelectLine, FSelectionEndLine))
-    and (line <= Max(FSelectLine, FSelectionEndLine))
-    then begin
-      pbAsm.Canvas.Brush.Color := clHighlight;
-      pbAsm.Canvas.Font.Color := clHighlightText;
-      pbAsm.Canvas.FillRect(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
-    end
-    else begin
-      pbAsm.Canvas.Brush.Color := pbAsm.Color;
-      pbAsm.Canvas.Font.Color := pbAsm.Font.Color;
-    end;
+    m0 := nil;
+    m1 := nil;
+    m2 := nil;
+    m3 := nil;
+    // Current-line is only used, if multiple lines are selected
+    if (Line = FSelectLine) or
+       ( (FSelectionEndLine <> FSelectLine) and
+         (line >= Min(FSelectLine, FSelectionEndLine)) and
+         (line <= Max(FSelectLine, FSelectionEndLine))
+       )
+    then
+      m0 := FSelAttrib;
+    if (Line = FSelectLine) and (FSelectionEndLine <> FSelectLine) then
+      m1 := FCurLineAttrib;
+    if FLinkLine = n then
+      m2 := FJmpLinkAttrib;
+    if (FLinkLine >=0) and (n = FTargetLine) then
+      m3 := FJmpTargetAttrib;
 
-    pbAsm.Canvas.Font.Bold := (FLineMap[n].State in [lmsSource, lmsFuncName]);
-    pbAsm.Canvas.Font.Underline := FLinkLine = n;
+    if (FLineMap[n].State in [lmsSource]) then
+      GetColors(FSrcCodeAttrib, [m0, m1, m2, m3], Fore, Back, Frame, St)
+    else
+    if (FLineMap[n].State in [lmsFuncName]) then
+      GetColors(FSrcFuncAttrib, [m0, m1, m2, m3], Fore, Back, Frame, St)
+    else
+      GetColors(FDefAttrib, [m0, m1, m2, m3], Fore, Back, Frame, St);
+
+    pbAsm.Canvas.Font.Color :=  Fore;
+    pbAsm.Canvas.Font.Style :=  st;
+
+    pbAsm.Canvas.Brush.Color := Back;
+    pbAsm.Canvas.FillRect(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
+
+    if (Frame <> clNone) and (Frame <> clDefault)
+    then begin
+      pbAsm.Canvas.Brush.Color := Frame;
+      pbAsm.Canvas.Pen.Color := Frame;
+      pbAsm.Canvas.Brush.Style := bsClear;
+      pbAsm.Canvas.Rectangle(R.Left, n * FLineHeight, R.Right, (n + 1) * FLineHeight);
+      pbAsm.Canvas.Brush.Style := bsSolid;
+      pbAsm.Canvas.Brush.Color := Back;
+      pbAsm.Canvas.Pen.Color := Back;
+    end;
 
     if (FLinkLine >=0) and (n = FTargetLine)
     then begin
       if (FImageTarget >= 0)
       then IDEImages.Images_16.Draw(pbAsm.Canvas, FGutterWidth - 16, Y, FImageTarget, True);
-      pbAsm.Canvas.Font.Color := clHotLight;
     end
     else begin
       CheckImageIndexFor(FLineMap[n]);
@@ -1041,7 +1110,11 @@ procedure TAssemblerDlg.DoEditorOptsChanged(Sender: TObject);
 var
   TM: TTextMetric;
   Syn: TSynEdit;
+  i: Integer;
 begin
+  FHighLigther := TSynCustomHighlighter(IdeSyntaxHighlighters.SharedInstances[IdeAsmWinHlId]);
+  IDEEditorOptions.GetHighlighterObjSettings(FHighLigther);
+
   Syn := TSynEdit.Create(nil);
   IDEEditorOptions.GetSynEditorSettings(Syn);
 
@@ -1053,6 +1126,17 @@ begin
     FLineHeight := Max(6, Syn.ExtraLineSpacing + TM.tmHeight);
     SetLineCount(pbAsm.Height div FLineHeight);
   end;
+
+  for i := 0 to FHighLigther.AttrCount - 1 do
+    case FHighLigther.Attribute[i].StoredName of
+      'ahaDefault':        FDefAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaAsmSourceLine':  FSrcCodeAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaAsmSourceFunc':  FSrcFuncAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaTextBlock':      FSelAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaLineHighlight':  FCurLineAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaMouseLink':      FJmpLinkAttrib.Assign(FHighLigther.Attribute[i]);
+      'ahaAsmLinkTarget':  FJmpTargetAttrib.Assign(FHighLigther.Attribute[i]);
+    end;
 
   Syn.Free;
 end;

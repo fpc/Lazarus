@@ -63,7 +63,7 @@ uses
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
   SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
-  SynTextMateSyn,
+  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -74,7 +74,7 @@ uses
   // IdeConfig
   LazConf,
   // IDE
-  SourceMarks, LazarusIDEStrConsts, KeyMapping;
+  SourceMarks, LazarusIDEStrConsts, KeyMapping, AssemblerDlg;
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
@@ -83,6 +83,9 @@ const
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
   TSrcIDEHighlighter = TSynCustomHighlighter;
+  // TSynPositionHighlighter - minimum implementation needed.
+  TNonSrcIDEHighlighter = class(TSynPositionHighlighter); // Hold colors, not related to SourceEditor
+
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TSrcIDEHighlighter;
 
@@ -332,6 +335,7 @@ type
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
     function DoesSupportGroup(AGroup: TAhaGroupName): boolean;
+    function GetSupportsFileExt: Boolean;
   public
     constructor Create(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       IsSchemeDefault: Boolean);
@@ -362,6 +366,7 @@ type
     property  AttributeAtPos[Index: Integer]: TColorSchemeAttribute read GetAttributeAtPos;
     property  DefaultAttribute: TColorSchemeAttribute read FDefaultAttribute;
     property  SharedHighlighter: TSynCustomHighlighter read FHighlighter;
+    property  SupportsFileExt: Boolean read GetSupportsFileExt;
   end;
 
   { TColorScheme }
@@ -1742,6 +1747,7 @@ type
     procedure ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
+    procedure GetHighlighterObjSettings(Syn: TObject); override; // read highlight settings from config file
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
@@ -1865,6 +1871,14 @@ type
     // Multi window
     property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
         read FMultiWinEditAccessOrder write FMultiWinEditAccessOrder;
+  end;
+
+  { TIDEAsmWinHighlighter }
+
+  TIDEAsmWinHighlighter = class(TNonSrcIDEHighlighter) // TODO: move to AssemblerDlg, when editoropts become a package
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function GetLanguageName: string; override;
   end;
 
 var
@@ -3708,6 +3722,35 @@ begin
     MappedAttributes := TStringList.Create;
     CaretXY := Point(1,1);
   end;
+  Add(NewInfo);
+
+  // create info for asm Window
+  // TODO: move to debugger package
+  NewInfo := TEditOptLanguageInfo.Create;
+  NewInfo.TheType := lshNone;
+  NewInfo.DefaultCommentType := comtNone;
+  NewInfo.SynInstance := TIDEAsmWinHighlighter.Create(nil);
+  NewInfo.SetBothFilextensions('');
+  NewInfo.SampleSource :=
+    '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
+    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+    '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
+    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10;
+  with NewInfo do
+  begin
+    AddAttrSampleLines[ahaTextBlock] := 5;
+    MappedAttributes := TStringList.Create;
+    MappedAttributes.Add('ahaAsmSourceLine=Reserved word');
+    MappedAttributes.Add('ahaAsmSourceFunc=Reserved word');
+    CaretXY := Point(40,4);
+  end;
+  IdeAsmWinHlId :=
   Add(NewInfo);
 
 
@@ -6127,6 +6170,11 @@ begin
   end;
 end;
 
+procedure TEditorOptions.GetHighlighterObjSettings(Syn: TObject);
+begin
+  GetHighlighterSettings(TSrcIDEHighlighter(Syn));
+end;
+
 procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
@@ -6521,6 +6569,26 @@ begin
   ASynEdit.ReadOnly := True;
 end;
 
+{ TIDEAsmWinHighlighter }
+
+constructor TIDEAsmWinHighlighter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FreeHighlighterAttributes;
+  AddAttribute( TSynHighlighterAttributes.Create(@dlgAddHiAttrDefault, 'ahaDefault')  );
+  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceLine, 'ahaAsmSourceLine')  );
+  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceFunc, 'ahaAsmSourceFunc')  );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaTextBlock], GetAddiHilightAttrName(ahaTextBlock)) );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaLineHighlight], GetAddiHilightAttrName(ahaLineHighlight)) );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaMouseLink], GetAddiHilightAttrName(ahaMouseLink)) );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@dbgAsmWindowLinkTarget, 'ahaAsmLinkTarget') );
+end;
+
+class function TIDEAsmWinHighlighter.GetLanguageName: string;
+begin
+  Result := 'Disassembler Window';
+end;
+
 { TColorSchemeAttribute }
 
 procedure TColorSchemeAttribute.SetMarkupFoldLineAlpha(AValue: Byte);
@@ -6803,6 +6871,12 @@ function TColorSchemeLanguage.DoesSupportGroup(AGroup: TAhaGroupName): boolean;
 begin
   Result := True;
   if (FHighlighter = nil) then Exit;
+
+  if FHighlighter is TNonSrcIDEHighlighter then begin
+    Result := AGroup in [agnDefault, agnLanguage];
+    exit;
+  end;
+
   case AGroup of
 //    agnDefault: ;
 //    agnLanguage: ;
@@ -6815,6 +6889,11 @@ begin
 //    agnIdentComplWindow: ;
     agnOutlineColors: Result := FHighlighter is TSynCustomFoldHighlighter;
   end;
+end;
+
+function TColorSchemeLanguage.GetSupportsFileExt: Boolean;
+begin
+  Result := (FHighlighter = nil) or not(FHighlighter is TNonSrcIDEHighlighter);
 end;
 
 function TColorSchemeLanguage.GetStoredValuesForLanguage: TColorSchemeLanguage;
@@ -6871,9 +6950,15 @@ begin
   if FHighlighter <> nil then begin
     for i := 0 to FHighlighter.AttrCount - 1 do begin
       hla := FHighlighter.Attribute[i];
+      if hla.StoredName = FDefaultAttribute.StoredName then continue;
       csa := TColorSchemeAttribute.Create(Self, hla.Caption, hla.StoredName);
       csa.Assign(hla);
       csa.Group := agnLanguage;
+      if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then
+        if hla is TSynHighlighterAttributesModifier then
+          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
+        else
+          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
       FAttributes.AddObject(csa.StoredName, csa);
     end;
   end;
@@ -6989,7 +7074,7 @@ procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig;
   const aOldPath: String);
 var
   Def, EmptyDef, CurAttr: TColorSchemeAttribute;
-  FormatVersion: longint;
+  FormatVersion, RealFormatVersion: longint;
   TmpPath: String;
   i: Integer;
 begin
@@ -7000,6 +7085,7 @@ begin
     TmpPath := aPath;
   if aXMLConfig.HasChildPaths(TmpPath) then begin
     FormatVersion := aXMLConfig.GetValue(TmpPath + 'Version', 0);
+    RealFormatVersion := FormatVersion;
     if FormatVersion > ColorVersion then
       FormatVersion := ColorVersion;
     if FIsSchemeDefault and (FormatVersion < 6) then
@@ -7050,7 +7136,7 @@ begin
         Def := EmptyDef;
     end;
     CurAttr.LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
-    if (ColorVersion < 9)
+    if (ColorVersion < 9) and (RealFormatVersion < 9)
     and (CurAttr.StoredName = GetAddiHilightAttrName(ahaMouseLink)) then
     begin
       // upgrade ahaMouseLink

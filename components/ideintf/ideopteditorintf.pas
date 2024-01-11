@@ -51,6 +51,7 @@ type
   protected
     function GetTabPosition: TTabPosition; virtual; abstract;
   public
+    procedure GetHighlighterObjSettings(Syn: TObject); virtual; abstract;
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); virtual; abstract;
     // read-only access to options needed by external packages.
     // feel free to extend when needed

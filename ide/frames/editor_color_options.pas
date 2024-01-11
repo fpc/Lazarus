@@ -1295,6 +1295,7 @@ begin
     exit;
 
   FCurrentColorScheme := NewColorScheme;
+  FileExtensionsComboBox.Enabled := FCurrentColorScheme.SupportsFileExt;
   if not FIsEditingDefaults then begin
     FCurrentHighlighter.Free;
     FCurrentHighlighter := EditorOpts.HighlighterList.GetNewSynInstance(FCurrentColorScheme.IdeHighlighterID);
