@@ -9,6 +9,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: lazarusidestrconsts.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourceline
+msgid "Source line"
+msgstr ""
+
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

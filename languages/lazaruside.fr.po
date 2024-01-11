@@ -13,6 +13,18 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: lazarusidestrconsts.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourceline
+msgid "Source line"
+msgstr ""
+
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

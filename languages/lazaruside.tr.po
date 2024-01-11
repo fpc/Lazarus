@@ -18,6 +18,18 @@ msgstr ""
 "\n"
 "X-Loco-Parser: loco_parse_po"
 
+#: lazarusidestrconsts.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourceline
+msgid "Source line"
+msgstr ""
+
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

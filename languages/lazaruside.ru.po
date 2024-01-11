@@ -5,12 +5,24 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-08 03:07+0300\n"
+"PO-Revision-Date: 2024-01-12 02:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: lazarusidestrconsts.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr "Целевая строка ссылки"
+
+#: lazarusidestrconsts.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr "Имя функции"
+
+#: lazarusidestrconsts.dbgasmwindowsourceline
+msgid "Source line"
+msgstr "Строка исходного кода"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -11863,7 +11875,7 @@ msgstr "параметры компоновщика"
 
 #: lazarusidestrconsts.lislinktarget
 msgid "Link target"
-msgstr "Объект ссылки"
+msgstr "Цель ссылки"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"

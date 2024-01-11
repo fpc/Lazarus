@@ -17,6 +17,18 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Bookmarks: 2233,2232,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
+#: lazarusidestrconsts.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr ""
+
+#: lazarusidestrconsts.dbgasmwindowsourceline
+msgid "Source line"
+msgstr ""
+
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
