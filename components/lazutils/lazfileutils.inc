@@ -21,14 +21,13 @@ function ResolveDots(const AFilename: string): string;
     Result:=false;
   end;
 
-var SrcPos, DestPos, Len, DirStart: integer;
+var
+  SrcPos, DestPos, Len, DirStart: integer;
   c: char;
   MacroPos: LongInt;
-  ResultMustEndWithPathDelim: Boolean;
 begin
   Len:=length(AFilename);
   if Len=0 then exit('');
-
   Result:=AFilename;
 
   {$ifdef windows}
@@ -37,13 +36,6 @@ begin
   and (AFilename[3]='?') and (AFilename[4]='\') then
     exit;
   {$endif}
-
-  //To add some consistency to the outcomes
-  //Depending on the path the algorithm takes it may remove the trailing PathDelim, so we restore it later if needed
-  //Issue #37188
-  //It's a workaround, fee free to implement a better fix
-  ResultMustEndWithPathDelim := ((Len>2) and (AFilename[Len]='.') and (AFilename[Len-1]='.') and (AFilename[Len-2] in AllowDirectorySeparators)) or
-                                ((Len>1) and (AFilename[Len]='.') and (AFilename[Len-1] in AllowDirectorySeparators));
 
   SrcPos:=1;
   DestPos:=1;
@@ -76,8 +68,7 @@ begin
       if (SrcPos<Len) then begin
         if (AFilename[SrcPos+1] in AllowDirectorySeparators)
         and IsPathDelim(Result,DestPos-1) then begin
-          // special dir ./ or */./
-          // -> skip
+          // special dir ./ or */./   -> skip
           inc(SrcPos,2);
           while (SrcPos<=Len) and (AFilename[SrcPos] in AllowDirectorySeparators) do
             inc(SrcPos);
@@ -145,12 +136,8 @@ begin
                 //writeln('ResolveDots ',DestPos,' SrcPos=',SrcPos,' File="',AFilename,'" Result="',copy(Result,1,DestPos-1),'"');
                 if SrcPos>Len then begin
                   // '..' at end of filename
-                  if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
-                    // foo/dir/.. -> foo
-                    dec(DestPos);
-                  end else if (DestPos=1) then begin
-                    // foo/.. -> .
-                    Result[1]:='.';
+                  if (DestPos=1) then begin
+                    Result[1]:='.';  // foo/.. -> .
                     DestPos:=2;
                   end;
                 end else if DestPos=1 then begin
@@ -165,20 +152,8 @@ begin
         end;
       end else begin
         // special dir . at end of filename
-        if DestPos=1 then begin
-          Result:='.';
-          exit;
-        end;
-        if (DestPos>2) and (Result[DestPos-1]=PathDelim)
-        {$ifdef windows}
-        and not IsDriveDelim(Result,DestPos-2)
-        {$endif}
-        then begin
-          // foo/. -> foo
-          // C:foo\. -> C:foo
-          // C:\. -> C:\
-          {dec(DestPos); } //Part of issue #37188
-        end;
+        if DestPos=1 then
+          exit('.');
         break;
       end;
     end;
@@ -198,12 +173,10 @@ begin
   end;
   // trim result
   if DestPos<=length(AFilename) then
-    if (DestPos=1) then
+    if DestPos=1 then
       Result:='.'
     else
       SetLength(Result,DestPos-1);
-  if ResultMustEndWithPathDelim and (Result<>'.') and (Result[Length(Result)]<>PathDelim) then
-    Result := Result + PathDelim;
 end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
