@@ -1143,7 +1143,7 @@ begin
     end
     else
     begin
-      if Event.window<>GetCocoaWindowAtPos(Event.mouseLocation) then
+      if Event.window<>GetCocoaWindowAtPos(GetScreenPointFromEvent(Event)) then
         exit( true );
 
       rect:=Target.BoundsRect;
