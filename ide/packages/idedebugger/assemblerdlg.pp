@@ -1138,6 +1138,8 @@ begin
       'ahaAsmLinkTarget':  FJmpTargetAttrib.Assign(FHighLigther.Attribute[i]);
     end;
 
+  Invalidate;
+
   Syn.Free;
 end;
 
