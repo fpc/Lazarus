@@ -6942,7 +6942,7 @@ begin
   for i := 0 to Src.AttributeCount - 1 do begin
     SrcAttr := Src.AttributeAtPos[i];
     // Reuse existing Attribute if possible.
-    j := FAttributes.IndexOf(UpperCase(SrcAttr.StoredName));
+    j := FAttributes.IndexOf(SrcAttr.StoredName);
     if j >= 0 then begin
       Attr := TColorSchemeAttribute(FAttributes.Objects[j]);
       DebugLn(['      Use existing attr ', Attr.StoredName]);
@@ -6952,7 +6952,7 @@ begin
       Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
     end;
     Attr.Assign(SrcAttr);
-    NewList.AddObject(UpperCase(Attr.StoredName), Attr);
+    NewList.AddObject(Attr.StoredName, Attr);
     if SrcAttr = Src.DefaultAttribute then
       FDefaultAttribute := Attr;
   end;
