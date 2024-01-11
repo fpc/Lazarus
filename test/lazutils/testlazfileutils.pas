@@ -63,7 +63,7 @@ begin
   t('..','..');
   t('bla/..','.');
   t('bla//..','.');
-  t('foo/bla//..','foo');
+  t('foo/bla//..','foo/');
   t('bla/../','.');
   t('bla//..//','.');
   t('foo/../bar','bar');
@@ -82,6 +82,8 @@ begin
   t('.//.//.','.');
   t('foo/bar/./../too','foo/too');
   t('foo//bar//.//..//too','foo/too');
+  t('/bla/..','/');
+  t('/..','/');
   {$IFDEF Unix}
   t('/.','/');
   t('//.','/');
@@ -142,10 +144,12 @@ begin
   DoTest('a/../b','b');
   DoTest('a/b/../c','a/c');
   DoTest('a/b/../../c','c');
+  DoTest('a/b/c/../..','a/');
   DoTest('a/./b','a/b');
   DoTest('a/.//b','a/b');
   DoTest('a//b','a/b');
   DoTest('a//./b','a/b');
+  DoTest('/a/b/../..','/');
 end;
 
 procedure TTestLazFileUtils.TestCreateRelativePath;

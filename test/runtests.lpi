@@ -192,6 +192,11 @@
         <StackChecks Value="True"/>
       </Checks>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CustomOptions Value="-dNoSemiAutomatedTests"/>
     </Other>
