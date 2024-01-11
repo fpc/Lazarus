@@ -7,10 +7,18 @@ interface
 uses
   Classes,
   BaseUnix,
-{$ifdef linux}
+{$ifdef linux}{$ifNdef FPDEBUG_USE_LIBC}
   SysCall,
-{$endif}
+{$endif}{$endif}
   SysUtils;
+
+{$ifdef darwin}
+  {$DEFINE FPDEBUG_USE_LIBC}
+{$else}
+  {$IF not declared(Do_SysCall)}
+    {$IFDEF SUNOS} {$DEFINE FPDEBUG_USE_LIBC} {$ENDIF}
+  {$ENDIF}
+{$endif}
 
 const
   PTRACE_TRACEME                               = 0;
@@ -56,24 +64,27 @@ function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer)
 
 implementation
 
-type
-  // all platforms, cint=32-bit.
-  // On platforms with off_t =64-bit, people should
-  // use int64, and typecast all calls that don't
-  // return off_t to cint.
-{$ifdef cpux86_64}
-  TSysResult = int64;
-  TSysParam  = int64;
-{$else}
-  TSysResult = cint32;
-  TSysParam  = cint32;
-{$endif cpux86_64}
+{$ifdef FPDEBUG_USE_LIBC}
+(* **   ptrace   ** *)
 
-{$ifdef darwin}
 Function ptrace(ptrace_request: cInt; pid: TPid; addr:pointer; data:pointer): cint; cdecl; external clib name 'ptrace';
-{$endif darwin}
-{$ifdef linux}
-function Do_SysCall(sysnr,param1,param2,param3,param4:TSysParam):TSysResult; {$ifdef cpui386}register;{$endif} external name 'FPC_SYSCALL4';
+
+function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt; inline;
+begin
+  result := ptrace(ptrace_request, pid, addr, data);
+end;
+
+{$else} // FPDEBUG_USE_LIBC
+{$IF not declared(Do_SysCall)}
+(* **   ptrace not available   ** *)
+
+function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt; inline;
+begin
+  raise Exception.Create('not supported');
+end;
+
+{$else} // not declared(Do_SysCall)
+(* **   Use Do_SysCall   ** *)
 
 const
 {$ifdef cpux86_64}
@@ -82,19 +93,11 @@ const
   syscall_nr_ptrace                            = 26;
 {$endif}
 
-{$endif linux}
-
 function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt;
-{$ifdef linux}
 var
   res : TSysResult;
   ret : PtrInt;
-{$endif linux}
 begin
-{$ifdef darwin}
-  result := ptrace(ptrace_request, pid, addr, data);
-{$endif}
-{$ifdef linux}
   if (ptrace_request > 0) and (ptrace_request < 4) then
     data := @ret;
 
@@ -106,8 +109,10 @@ begin
     end
   else
     result := res;
-{$endif linux}
 end;
+
+{$endif} // declared(Do_SysCall)
+{$endif FPDEBUG_USE_LIBC}
 
 end.
 
