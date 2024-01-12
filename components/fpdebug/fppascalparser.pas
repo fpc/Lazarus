@@ -1217,7 +1217,7 @@ begin
   FCardinal := 0;
   FCardinalRead := True;
   Addr := GetAddress;
-  if not IsReadableLoc(Addr) then exit;
+  if not Context.MemModel.IsReadableLocation(Addr) then exit;
   FCardinal := LocToAddrOrNil(Ctx.ReadAddress(Addr, SizeVal(Ctx.SizeOfAddress)));
 
   Result := FCardinal;

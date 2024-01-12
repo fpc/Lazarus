@@ -584,6 +584,7 @@ type
     function GetSymbolAtAddress: TFpSymbol; virtual;
     function GetProcedureAtAddress: TFpValue; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
+    function GetMemModel: TFpDbgMemModel; virtual;
     function GetSizeOfAddress: Integer; virtual;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext);
@@ -593,6 +594,7 @@ type
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String; const OnlyUnitName: String = ''): TFpValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
+    property MemModel: TFpDbgMemModel read GetMemModel;
     property SizeOfAddress: Integer read GetSizeOfAddress;
     property LocationContext: TFpDbgLocationContext read FLocationContext;
   end;
@@ -1528,6 +1530,11 @@ end;
 function TFpDbgSymbolScope.GetMemManager: TFpDbgMemManager;
 begin
   Result := LocationContext.MemManager;
+end;
+
+function TFpDbgSymbolScope.GetMemModel: TFpDbgMemModel;
+begin
+  Result := LocationContext.MemModel;
 end;
 
 constructor TFpDbgSymbolScope.Create(ALocationContext: TFpDbgLocationContext);

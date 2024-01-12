@@ -45,6 +45,8 @@ type
     function UpdateLocationToCodeAddress(const ALocation: TFpDbgMemLocation): TFpDbgMemLocation; override;
     function LocationToAddress(const ALocation: TFpDbgMemLocation): TDBGPtr; override;
     function AddressToTargetLocation(const AAddress: TDBGPtr): TFpDbgMemLocation; override;
+    function IsReadableMemory(const ALocation: TFpDbgMemLocation): Boolean; override;
+    function IsReadableLocation(const ALocation: TFpDbgMemLocation): Boolean; override;
 end;
 
   { TAvrMemManager }
@@ -166,6 +168,21 @@ begin
   end;
   // Truncate address to 16 bits
   Result.Address := word(Result.Address);
+end;
+
+function TFpDbgAvrMemModel.IsReadableMemory(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (ALocation.MType in [mlfTargetMem, mlfSelfMem]) and
+            (ALocation.Address >= 0);
+end;
+
+function TFpDbgAvrMemModel.IsReadableLocation(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := (not(ALocation.MType in [mlfInvalid, mlfUninitialized])) and
+            (not(ALocation.MType in [mlfTargetMem, mlfSelfMem]) or
+              (ALocation.Address >= 0));
 end;
 
 { TAvrMemManager }

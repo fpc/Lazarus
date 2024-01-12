@@ -391,6 +391,8 @@ type
     function UpdateLocationToCodeAddress(const ALocation: TFpDbgMemLocation): TFpDbgMemLocation; virtual;
     function LocationToAddress(const ALocation: TFpDbgMemLocation): TDBGPtr; virtual;
     function AddressToTargetLocation(const AAddress: TDBGPtr): TFpDbgMemLocation; virtual;
+    function IsReadableMemory(const ALocation: TFpDbgMemLocation): Boolean; virtual;
+    function IsReadableLocation(const ALocation: TFpDbgMemLocation): Boolean; virtual;
   end;
 
   (* TFpDbgMemManager
@@ -496,7 +498,7 @@ function IsConstData(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
 function IsReadableLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
-function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
+function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or self <> nil
 function IsNilLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;    // Valid AND NIL // Does not check mlfTargetRegister
 // TODO: registers should be targed.... // May have to rename some of those
 function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
@@ -1147,6 +1149,18 @@ function TFpDbgMemModel.AddressToTargetLocation(const
   AAddress: TDBGPtr): TFpDbgMemLocation;
 begin
   Result := TargetLoc(AAddress);
+end;
+
+function TFpDbgMemModel.IsReadableMemory(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := IsReadableMem(ALocation);
+end;
+
+function TFpDbgMemModel.IsReadableLocation(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := IsReadableLoc(ALocation);
 end;
 
 { TFpDbgMemReaderBase }
@@ -2056,7 +2070,7 @@ var
   i: QWord;
 begin
   Result := False;
-  if not IsReadableLoc(ALocation) then begin
+  if not MemModel.IsReadableLocation(ALocation) then begin
     FLastError := CreateError(fpInternalErrFailedReadMem);
     exit;
   end;
@@ -2089,7 +2103,7 @@ var
   i: QWord;
 begin
   Result := False;
-  if not IsReadableLoc(ALocation) then begin
+  if not MemModel.IsReadableLocation(ALocation) then begin
     FLastError := CreateError(fpInternalErrFailedReadMem);
     exit;
   end;

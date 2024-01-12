@@ -2010,7 +2010,7 @@ begin
     Assert((ti is TFpSymbolDwarfType) and (ti.SymbolType = stType), 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo = stType');
 
     AnAddress := Address;
-    Result := IsReadableLoc(AnAddress);
+    Result := Context.MemModel.IsReadableLocation(AnAddress);
 
     if Result then
       Result := TFpSymbolDwarf(ti).GetDataAddress(Self, AnAddress, ATargetType);
@@ -2031,7 +2031,7 @@ begin
     if svfAddress in fields then
       AnAddress := FTypeCastSourceValue.Address;
 
-    Result := IsReadableLoc(AnAddress);
+    Result := Context.MemModel.IsReadableLocation(AnAddress);
     if Result then
       Result := FTypeSymbol.GetDataAddress(Self, AnAddress, ATargetType);
   end;
@@ -3715,7 +3715,7 @@ begin
   assert((FArraySymbol is TFpSymbolDwarfTypeArray) and (FArraySymbol.Kind = skArray));
 
   Addr := TFpSymbolDwarfTypeArray(FArraySymbol).GetMemberAddress(Self, AIndex);
-  if not IsReadableLoc(Addr) then exit;
+  if not Context.MemModel.IsReadableLocation(Addr) then exit;
 
   // FAddrObj.RefCount: hold by self
   i := 1;

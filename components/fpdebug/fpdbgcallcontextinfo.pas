@@ -115,7 +115,7 @@ function TFpSymbolCallParamOrdinalOrPointer.TFpValueCallParamStringByRef.GetDwar
   (out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
   AnAddress := Address;
-  Result := IsReadableLoc(AnAddress);
+  Result := MemManager.MemModel.IsReadableLocation(AnAddress);
 end;
 
 { TFpSymbolCallParamOrdinalOrPointer }

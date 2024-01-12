@@ -880,7 +880,7 @@ begin
     // check params
 
     ProcAddress := AFunctionValue.EntryPCAddress;
-    if not IsReadableLoc(ProcAddress) then begin
+    if not FExpressionScope.MemModel.IsReadableMemory(ProcAddress)  then begin
       DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error proc addr']);
       AnError := CreateError(fpErrAnyError, ['Unable to calculate function address']);
       exit;
