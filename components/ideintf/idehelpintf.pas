@@ -405,6 +405,9 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
     if NewHeight <= 0 then
       NewHeight := 200;
 
+    {$IFDEF LCLCOCOA}
+    dec(ScreenPos.Y);
+    {$ENDIF}
     HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
     if MouseOffset then
       HintRenderWindow.OffsetHintRect(ScreenPos)
