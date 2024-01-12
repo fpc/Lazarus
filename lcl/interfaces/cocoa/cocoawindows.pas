@@ -91,10 +91,7 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
-    function acceptsFirstResponder: LCLObjCBoolean; override;
     function canBecomeKeyWindow: LCLObjCBoolean; override;
-    function becomeFirstResponder: LCLObjCBoolean; override;
-    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -579,28 +576,9 @@ begin
     callback.Move;
 end;
 
-function TCocoaPanel.acceptsFirstResponder: LCLObjCBoolean;
-begin
-  Result := True;
-end;
-
 function TCocoaPanel.canBecomeKeyWindow: LCLObjCBoolean;
 begin
-  Result := Assigned(callback) and callback.CanActivate;
-end;
-
-function TCocoaPanel.becomeFirstResponder: LCLObjCBoolean;
-begin
-  Result := inherited becomeFirstResponder;
-//  if Assigned(callback) then
-//    callback.BecomeFirstResponder;
-end;
-
-function TCocoaPanel.resignFirstResponder: LCLObjCBoolean;
-begin
-  Result := inherited resignFirstResponder;
-//  if Assigned(callback) then
-//    callback.ResignFirstResponder;
+  Result := false;
 end;
 
 function TCocoaPanel.lclGetCallback: ICommonCallback;

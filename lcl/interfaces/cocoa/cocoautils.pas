@@ -42,6 +42,8 @@ function NSRectToRect(const NS: NSRect): TRect;
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
+function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
+
 function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
 function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
 function ScreenRectFromLCLToNS(const lclRect: TRect): NSRect;
@@ -750,6 +752,19 @@ begin
   ns.origin.y:=ParentHeight-lcl.bottom;
   ns.size.width:=lcl.Right-lcl.Left;
   ns.size.height:=lcl.Bottom-lcl.Top;
+end;
+
+function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
+var
+  rect: NSRect;
+begin
+  Result:= event.locationInWindow;
+  if not Assigned(event.window) then
+    Exit;
+  rect.origin:= Result;
+  rect.size:= NSZeroSize;
+  rect:= event.window.convertRectToScreen( rect );
+  Result:= rect.origin;
 end;
 
 function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
