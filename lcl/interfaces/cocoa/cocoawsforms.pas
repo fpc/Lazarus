@@ -411,7 +411,6 @@ begin
     {$IFDEF COCOA_USE_NATIVE_MODAL}
     NSApp.stopModal();
     {$ENDIF}
-    CocoaWidgetSet.CurModalForm := nil;
     {// Felipe: This code forces focusing another form, its a work around
     // for a gdb issue, gdb doesn't start the app properly
     //
@@ -936,7 +935,6 @@ begin
   if (not fullscreen) and (lWinContent.window.isKindOfClass(TCocoaWindow)) then
     fullscreen := TCocoaWindow(lWinContent.window).lclIsFullScreen;
 
-  CocoaWidgetSet.CurModalForm := lWinContent.lclOwnWindow;
   // LCL initialization code would cause the custom form to be disabled
   // (due to the fact, ShowModal() has not been called yet, and a previous form
   // might be disabled at the time.

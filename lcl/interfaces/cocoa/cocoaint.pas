@@ -171,7 +171,6 @@ type
     procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
   public
     // modal session
-    CurModalForm: NSWindow;
     Modals : TList;
     ModalCounter: Integer; // the cheapest way to determine if modal window was called
                            // used in mouse handling (in callbackobject)
@@ -218,6 +217,7 @@ type
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
     function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
     procedure EndModal(awin: NSWindow);
+    function CurModalForm: NSWindow;
     function isTopModalWin(awin: NSWindow): Boolean;
     function isModalSession: Boolean;
 
@@ -946,13 +946,22 @@ begin
   wakeupEventLoop;
 end;
 
+function TCocoaWidgetSet.CurModalForm: NSWindow;
+begin
+  if isModalSession then begin
+    Result := TModalSession(Modals[Modals.Count-1]).window;
+  end else begin
+    Result:= nil;
+  end;
+end;
+
 function TCocoaWidgetSet.isTopModalWin(awin: NSWindow): Boolean;
 begin
-  if not isModalSession then begin
-    Result := false;
-    Exit;
+  if Assigned(awin) then begin
+    Result:= CurModalForm=awin;
+  end else begin
+    Result:= false;
   end;
-  Result := TModalSession(Modals[Modals.Count-1]).window = awin;
 end;
 
 function TCocoaWidgetSet.isModalSession: Boolean;
