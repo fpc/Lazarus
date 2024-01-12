@@ -100,6 +100,7 @@ type
     FIsSuccess: Boolean;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FReaderErrors: String;
   public
     procedure Execute; override;
@@ -110,6 +111,7 @@ type
     property DwarfInfo: TFpDwarfInfo read FDwarfInfo;
     property MemReader: TFpLldbDbgMemReader read FMemReader;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel;
     property ReaderErrors: String read FReaderErrors;
     property IsSuccess: Boolean read FIsSuccess;
   end;
@@ -181,6 +183,7 @@ type
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FDwarfLoaderThread: TDwarfLoaderThread;
     // cache last context
     FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgSymbolScope;
@@ -495,13 +498,14 @@ begin
   {$Else}
     FMemReader := TFpLldbDbgMemReader.Create(FDebugger);
   {$ENDIF}
-    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+    FMemModel := TFpDbgMemModel.Create;
+    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create, FMemModel);
     FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
     if Terminated then
       exit;
 
 
-    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager, FMemManager.MemModel);
     if Terminated then
       exit;
 
@@ -532,6 +536,7 @@ begin
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
+  FreeAndNil(FMemModel);
 end;
 
 
@@ -1384,7 +1389,8 @@ begin
   {$Else}
     FMemReader := TFpLldbDbgMemReader.Create(Self);
   {$ENDIF}
-    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+    FMemModel := TFpDbgMemModel.Create;
+    FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create, FMemModel);
     FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
 
     FMemManager.MemLimits.MaxMemReadSize := TFpLldbDebuggerProperties(GetProperties).MemLimits.MaxMemReadSize;
@@ -1392,7 +1398,7 @@ begin
     FMemManager.MemLimits.MaxStringLen := TFpLldbDebuggerProperties(GetProperties).MemLimits.MaxStringLen;
     FMemManager.MemLimits.MaxNullStringSearchLen := TFpLldbDebuggerProperties(GetProperties).MemLimits.MaxNullStringSearchLen;
 
-    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
+    FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager, FMemManager.MemModel);
     FDwarfInfo.LoadCompilationUnits;
 
     if FDwarfInfo.TargetInfo.bitness = b64 then
@@ -1422,6 +1428,7 @@ begin
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
+  FreeAndNil(FMemModel);
   FreeAndNil(FPrettyPrinter);
 
   if FDwarfLoaderThread <> nil then begin

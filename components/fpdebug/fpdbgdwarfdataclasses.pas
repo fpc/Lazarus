@@ -800,7 +800,7 @@ type
     function FindCompilationUnitByOffs(AOffs: QWord): TDwarfCompilationUnit;
     function FindDwarfUnitSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
   public
-    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); override;
     destructor Destroy; override;
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
@@ -3653,7 +3653,7 @@ end;
 { TFpDwarfInfo }
 
 constructor TFpDwarfInfo.Create(ALoaderList: TDbgImageLoaderList;
-  AMemManager: TFpDbgMemManager);
+  AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
 var
   Section: TDwarfSection;
   p: PDbgImageSection;
@@ -3662,7 +3662,7 @@ begin
   FWorkQueue := FpDbgGlobalWorkerQueue;
   FWorkQueue.AddRef;
 
-  inherited Create(ALoaderList, AMemManager);
+  inherited Create(ALoaderList, AMemManager, AMemModel);
   FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
   FCallFrameInformationList := TObjectList.Create(True);
@@ -5340,11 +5340,11 @@ function TDwarfCompilationUnit.ReadTargetAddressFromDwarfSection(var AData: Poin
 begin
   // do not need mem reader, address is in dwarf. Should be in correct format
   if (FAddressSize = 8) then
-    Result := TargetLoc(PQWord(AData)^)
+    Result := Owner.MemModel.AddressToTargetLocation(PQWord(AData)^)
   else if (FAddressSize = 4) then
-    Result := TargetLoc(PLongWord(AData)^)
+    Result := Owner.MemModel.AddressToTargetLocation(PLongWord(AData)^)
   else if (FAddressSize = 2) then
-    Result := TargetLoc(PWord(AData)^);
+    Result := Owner.MemModel.AddressToTargetLocation(PWord(AData)^);
   if AIncPointer then inc(AData, FAddressSize);
 end;
 
@@ -5353,9 +5353,9 @@ function TDwarfCompilationUnit.ReadDwarfSectionOffsetOrLenFromDwarfSection(var A
 begin
   // do not need mem reader, address is in dwarf. Should be in correct format
   if ((Version>2) and IsDwarf64) or ((version < 3) and (FAddressSize = 8)) then
-    Result := TargetLoc(PQWord(AData)^)
+    Result := Owner.MemModel.AddressToTargetLocation(PQWord(AData)^)
   else
-    Result := TargetLoc(PLongWord(AData)^);
+    Result := Owner.MemModel.AddressToTargetLocation(PLongWord(AData)^);
   if AIncPointer then inc(AData, FAddressSize);
 end;
 

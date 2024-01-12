@@ -604,6 +604,7 @@ type
   TDbgInstance = class(TObject)
   private
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FMode: TFPDMode;
     FFileName: String;
     FProcess: TDbgProcess;
@@ -646,6 +647,7 @@ type
     property Mode: TFPDMode read FMode;
     property PointerSize: Integer read GetPointerSize;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel;
     property LoaderList: TDbgImageLoaderList read FLoaderList;
   end;
 
@@ -780,7 +782,8 @@ type
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-                      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); virtual;
+                      AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
+                      AProcessConfig: TDbgProcessConfig = nil); virtual;
     destructor Destroy; override;
 
     function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
@@ -1951,6 +1954,7 @@ constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
   FMemManager := AProcess.MemManager;
+  FMemModel := AProcess.MemModel;
   FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
@@ -2020,12 +2024,12 @@ begin
     FMode:=dm64
   else
     FMode:=dm32;
-  FDbgInfo := TFpDwarfInfo.Create(FLoaderList, MemManager);
+  FDbgInfo := TFpDwarfInfo.Create(FLoaderList, MemManager, MemModel);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
   if self is TDbgProcess then
-    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager)
+    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager, MemModel)
   else
-    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager, ExtractFileNameOnly(FFileName));
+    FSymbolTableInfo := TFpSymbolInfo.Create(FLoaderList, MemManager, ExtractFileNameOnly(FFileName), MemModel);
   TFpDwarfInfo(FDbgInfo).LoadCallFrameInstructions;
 end;
 
@@ -2175,8 +2179,9 @@ begin
   Result := lib.FindProcSymbol(AName);
 end;
 
-constructor TDbgProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
+constructor TDbgProcess.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -2185,6 +2190,7 @@ const
   {.$ENDIF}
 begin
   FMemManager := AMemManager;
+  FMemModel := AMemModel;
   FProcessID := 0;
   FThreadID := 0;
   FOSDbgClasses := AnOsClasses;

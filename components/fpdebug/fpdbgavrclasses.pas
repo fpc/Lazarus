@@ -30,9 +30,37 @@ const
   nSREG = 'SReg';
 
 type
+
+  { TFpDbgAvrMemModel }
+
+  TFpDbgAvrMemModel = class(TFpDbgMemModel)
+  const
+    AvrProgramMemoryOffset = 0;
+    AvrDataMemoryOffset = $800000;
+    AvrEepromMemoryOffset = $810000;
+    AvrDataMemoryClass = 0;
+    AvrProgramMemoryClass = 1;
+    AvrEepromMemoryClass = 2;
+  public
+    function UpdateLocationToCodeAddress(const ALocation: TFpDbgMemLocation): TFpDbgMemLocation; override;
+    function LocationToAddress(const ALocation: TFpDbgMemLocation): TDBGPtr; override;
+    function AddressToTargetLocation(const AAddress: TDBGPtr): TFpDbgMemLocation; override;
+end;
+
   { TAvrMemManager }
 
   TAvrMemManager = class(TFpDbgMemManager)
+    function ReadMemory(AReadDataType: TFpDbgMemReadDataType;
+      const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
+      const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgLocationContext;
+      const AFlags: TFpDbgMemManagerFlags = []
+    ): Boolean; override;
+    function WriteMemory(AReadDataType: TFpDbgMemReadDataType;
+      const ADestLocation: TFpDbgMemLocation; const ADestSize: TFpDbgValueSize;
+      const ASource: Pointer; const ASourceSize: QWord; AContext: TFpDbgLocationContext;
+      const AFlags: TFpDbgMemManagerFlags = []
+    ): Boolean; override;
+
     function ReadRegisterAsAddress(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
   end;
 
@@ -76,7 +104,8 @@ type
   public
     class function isSupported(target: TTargetDescriptor): boolean; override;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig); override;
+                      AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
+                      AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
   end;
 
@@ -88,7 +117,99 @@ uses
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
 
+{ TFpDbgAvrMemModel }
+
+function TFpDbgAvrMemModel.UpdateLocationToCodeAddress(const
+  ALocation: TFpDbgMemLocation): TFpDbgMemLocation;
+begin
+  Result := ALocation;
+  Result.AddressClass := AvrProgramMemoryClass;
+  Result.Address := word(ALocation.Address) shl 1;
+end;
+
+function TFpDbgAvrMemModel.LocationToAddress(const
+  ALocation: TFpDbgMemLocation): TDBGPtr;
+begin
+  Result := inherited LocationToAddress(ALocation);
+  // Ensure address is a 16 bit value
+  Result := word(Result);
+  if ALocation.MType = mlfTargetMem then
+    // Mask address according to address class
+    case ALocation.AddressClass of
+      // Data memory
+      0: Result := Result or $800000;
+      // Program memory
+      1: ;
+      // EEPROM
+      2: Result := Result or $810000;
+    else
+      ;
+    end;
+end;
+
+function TFpDbgAvrMemModel.AddressToTargetLocation(const
+  AAddress: TDBGPtr): TFpDbgMemLocation;
+begin
+  // Address class will default to 0, or data space
+  Result := inherited AddressToTargetLocation(AAddress);
+
+  case (Result.Address and $FF0000) of
+    // Data memory
+    AvrProgramMemoryOffset: Result.AddressClass := AvrProgramMemoryClass;
+    // Program memory
+    AvrDataMemoryOffset: Result.AddressClass := AvrDataMemoryClass;
+    // EEPROM
+    AvrEepromMemoryOffset: Result.AddressClass := AvrEepromMemoryClass;
+  else
+    // Probably a read that overran pointer limits, mark as data memory
+    Result.AddressClass := AvrDataMemoryClass;
+  end;
+  // Truncate address to 16 bits
+  Result.Address := word(Result.Address);
+end;
+
 { TAvrMemManager }
+
+function TAvrMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType; const
+  ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize; const
+  ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgLocationContext;
+  const AFlags: TFpDbgMemManagerFlags): Boolean;
+var
+  loc: TFpDbgMemLocation;
+  tmp: QWord;
+begin
+  loc := ASourceLocation;
+  // Update address to include possible address class modifications
+  if ASourceLocation.MType = mlfTargetMem then
+    loc.Address := MemModel.LocationToAddress(ASourceLocation);
+  Result := inherited ReadMemory(AReadDataType, loc, ASourceSize,
+    ADest, ADestSize, AContext, AFlags);
+
+  { Assume an address is located in data memory.
+    This can be updated when more information is known, e.g.
+    in TFpSymbolDwarfTypeSubroutine.GetDataAddress }
+  if (AReadDataType = rdtAddress) then
+  begin
+    tmp := PQWord(ADest)^;
+    tmp := (tmp and $FFFF) or $800000;
+    PQWord(ADest)^ := tmp;
+  end;
+end;
+
+function TAvrMemManager.WriteMemory(AReadDataType: TFpDbgMemReadDataType; const
+  ADestLocation: TFpDbgMemLocation; const ADestSize: TFpDbgValueSize; const
+  ASource: Pointer; const ASourceSize: QWord; AContext: TFpDbgLocationContext;
+  const AFlags: TFpDbgMemManagerFlags): Boolean;
+var
+  loc: TFpDbgMemLocation;
+begin
+  loc := ADestLocation;
+  // Update address to include possible address class modifications
+  if ADestLocation.MType = mlfTargetMem then
+    loc.Address := MemModel.LocationToAddress(ADestLocation);
+  Result := inherited WriteMemory(AReadDataType, loc, ADestSize,
+    ASource, ASourceSize, AContext, AFlags);
+end;
 
 function TAvrMemManager.ReadRegisterAsAddress(ARegNum: Cardinal; out
   AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean;
@@ -312,11 +433,12 @@ begin
     result := nil;
 end;
 
-constructor TDbgAvrProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
+constructor TDbgAvrProcess.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
 begin
   FRegArrayLength := FNumRegisters;
-  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
 end;
 
 destructor TDbgAvrProcess.Destroy;

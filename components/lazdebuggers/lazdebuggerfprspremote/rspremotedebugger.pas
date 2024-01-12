@@ -68,6 +68,7 @@ type
     procedure UpdateProcessConfig;
   protected
     function CreateMemManager: TFpDbgMemManager; override;
+    function CreateMemModel: TFpDbgMemModel; override;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -100,7 +101,12 @@ end;
 
 function TFpRspRemoteDebugger.CreateMemManager: TFpDbgMemManager;
 begin
-  Result := TAvrMemManager.Create(FMemReader, FMemConverter);
+  Result := TAvrMemManager.Create(FMemReader, FMemConverter, FMemModel);
+end;
+
+function TFpRspRemoteDebugger.CreateMemModel: TFpDbgMemModel;
+begin
+  Result := TFpDbgAvrMemModel.Create;
 end;
 
 constructor TFpRspRemoteDebugger.Create(const AExternalDebugger: String);

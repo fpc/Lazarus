@@ -74,6 +74,7 @@ type
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpGDBMIDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     // cache last context
     FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgSymbolScope;
     FLockUnLoadDwarf: integer;
@@ -788,9 +789,10 @@ begin
 {$Else}
   FMemReader := TFpGDBMIDbgMemReader.Create(Self);
 {$ENDIF}
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+  FMemModel := TFpDbgMemModel.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create, FMemModel);
 
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager, FMemModel);
   FDwarfInfo.LoadCompilationUnits;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;
@@ -809,6 +811,7 @@ begin
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
+  FreeAndNil(FMemModel);
   FreeAndNil(FPrettyPrinter);
 end;
 

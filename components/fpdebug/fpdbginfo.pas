@@ -602,12 +602,14 @@ type
   TFpDbgSimpleLocationContext = class(TFpDbgLocationContext)
   private
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FAddress: TDbgPtr;
     FThreadId: Integer;
     FStackFrame: Integer;
     FSizeOfAddr: Integer;
   protected
     function GetMemManager: TFpDbgMemManager; override;
+    function GetMemModel: TFpDbgMemModel; override;
     function GetAddress: TDbgPtr; override;
     function GetThreadId: Integer; override;
     function GetStackFrame: Integer; override;
@@ -652,6 +654,7 @@ type
   private
     FBaseContext: TFpDbgLocationContext;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FMemReader: TFpDbgCallMemReader;
     FIsValid: Boolean;
     FMessage: string;
@@ -678,11 +681,12 @@ type
   private
     FHasInfo: Boolean;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
   protected
     FTargetInfo: TTargetDescriptor;
     procedure SetHasInfo;
   public
-    constructor Create({%H-}ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); virtual;
+    constructor Create({%H-}ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); virtual;
     (* Context should be searched by Thread, and StackFrame. The Address can be
        derived from this.
        However a different Address may be froced.
@@ -701,6 +705,7 @@ type
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel;
   end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
@@ -781,8 +786,9 @@ begin
   FBaseContext:=ABaseContext;
   FBaseContext.AddReference;
 
+  FMemModel := TFpDbgMemModel.Create;
   FMemReader := TFpDbgCallMemReader.Create(AMemReader);
-  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter, FMemModel);
 
   FIsValid := True;
 
@@ -1569,6 +1575,11 @@ begin
   Result := FMemManager;
 end;
 
+function TFpDbgSimpleLocationContext.GetMemModel: TFpDbgMemModel;
+begin
+  Result := FMemModel;
+end;
+
 function TFpDbgSimpleLocationContext.GetAddress: TDbgPtr;
 begin
   Result := fAddress;
@@ -1595,6 +1606,7 @@ begin
   inherited Create;
   AddReference;
   FMemManager := AMemManager;
+  FMemModel := AMemManager.MemModel;
   FAddress := AnAddress;
   FSizeOfAddr := AnSizeOfAddr;
   FThreadId := AThreadId;
@@ -2098,9 +2110,10 @@ end;
 { TDbgInfo }
 
 constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList;
-  AMemManager: TFpDbgMemManager);
+  AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
 begin
   FMemManager := AMemManager;
+  FMemModel := AMemModel;
   inherited Create;
 end;
 

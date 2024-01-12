@@ -351,7 +351,8 @@ type
     procedure AddLib(const ALibrary: tDbgLinuxLibrary);
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function StartInstance(AParams, AnEnvironment: TStrings;
@@ -1153,12 +1154,12 @@ end;
 
 constructor TDbgLinuxProcess.Create(const AFileName: string;
   AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  AProcessConfig: TDbgProcessConfig);
+  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
 begin
   FMasterPtyFd:=-1;
   FSingleSteppingThreadID := -1;
   FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
-  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
 end;
 
 destructor TDbgLinuxProcess.Destroy;

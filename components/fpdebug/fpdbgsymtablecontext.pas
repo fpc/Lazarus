@@ -57,8 +57,8 @@ type
     FSymbolList: TfpSymbolList;
     FLibName: String;
   public
-    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); override;
-    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String);
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); override; overload;
+    constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String; AMemModel: TFpDbgMemModel); overload;
     destructor Destroy; override;
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; override; overload;
@@ -160,12 +160,12 @@ end;
 { TFpSymbolInfo }
 
 constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
-  AMemManager: TFpDbgMemManager);
+  AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
 
 var
   i: Integer;
 begin
-  inherited Create(ALoaderList, AMemManager);
+  inherited Create(ALoaderList, AMemManager, AMemModel);
 
   FSymbolList := TfpSymbolList.Create;
   for i := 0 to ALoaderList.Count-1 do
@@ -176,10 +176,10 @@ begin
 end;
 
 constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
-  AMemManager: TFpDbgMemManager; ALibName: String);
+  AMemManager: TFpDbgMemManager; ALibName: String; AMemModel: TFpDbgMemModel);
 begin
   FLibName := ALibName;
-  Create(ALoaderList, AMemManager);
+  Create(ALoaderList, AMemManager, AMemModel);
 end;
 
 destructor TFpSymbolInfo.Destroy;
