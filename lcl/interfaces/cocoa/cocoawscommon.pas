@@ -1144,7 +1144,7 @@ begin
     else
     begin
       if Event.window<>GetCocoaWindowAtPos(GetScreenPointFromEvent(Event)) then
-        exit( true );
+        exit;
 
       rect:=Target.BoundsRect;
       OffsetRect(rect, -rect.Left, -rect.Top);
