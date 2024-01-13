@@ -4627,14 +4627,15 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
       // use defaults
       Result:=GetWidgetOrigin(TheWidget);
       FrameBorders:=GetStyleNotebookFrameBorders;
-      GetWidgetClientOrigin.x:=Result.x+FrameBorders.Left;
-      GetWidgetClientOrigin.y:=Result.y+FrameBorders.Top;
+      Inc(Result.X, FrameBorders.Left);
+      Inc(Result.Y, FrameBorders.Top);
     end;
   end;
 
 var
   ClientWidget: PGtkWidget;
   ClientWindow: PGdkWindow;
+  LCLObject: TObject;
 begin
   ClientWidget := GetFixedWidget(TheWidget);
   if ClientWidget <> TheWidget then
@@ -4642,6 +4643,14 @@ begin
     ClientWindow := GetControlWindow(ClientWidget);
     if ClientWindow <> nil then
     begin
+      // fix for buggy compiz. issue #40659
+      if Gtk2WidgetSet.compositeManagerRunning and GTK_WIDGET_TOPLEVEL(TheWidget)  then
+      begin
+        LCLObject := GetLCLObject(ClientWidget);
+        if (LCLObject is TWinControl) and (TWinControl(LCLObject).Parent = nil)
+        and not (csDesigning in TWinControl(LCLObject).ComponentState) then
+          Exit(TWinControl(LCLObject).BoundsRect.TopLeft);
+      end;
       {$IFDEF DebugGDK}
       BeginGDKErrorTrap;
       {$ENDIF}
