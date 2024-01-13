@@ -1029,26 +1029,49 @@ Windows-specific file system quirks handled in the routine include:
 <dd>Resolved to C:\</dd>
 <dt>\\..</dt>
 <dd>Resolved to \\</dd>
+<dt>c:/path/to/dir</dt>
+<dd>
+Resolved to C:\path\to\dir using the PathDelimiter for the platform.
+</dd>
 </dl>
 <p>
 For UNIX-like environments, the resolved path may be invalid if it references 
 the parent directory and the initial directory in the path is a symbolic link.
 </p>
 <p>
-When AFilename ends with a relative path ('/.' or '/..'), an additional path 
-delimiter is added to the return value.
+When AFilename ends with a relative path ('/.' or '/..'), the path is resolved 
+to the directory represented by the relative value. The current directory for 
+'/.' or the parent directory for '/..'.
 </p>
 <p>
 If a relative path reference cannot be resolved for the local file system, 
 the original path information is retained.
 </p>
 <p>
-Macros found in the AFilename are retained if the relative path references a 
-parent directory. For example:
+Some common examples include:
+</p>
+<dl>
+<dt>foo/bar/..</dt>
+<dd>Resolved to foo</dd>
+<dt>foo//..//</dt>
+<dd>Resolved to .</dd>
+<dt>foo/bar/./../baz</dt>
+<dd>Resolved to foo/baz</dd>
+<dt>/a/b/../..</dt>
+<dd>Resolved to /</dd>
+<dt>.//.//.</dt>
+<dd>Resolved to .</dd>
+</dl>
+<p>
+Macros found in the AFilename are retained in the resolved file name. For example:
 </p>
 <code>
 '($LazarusDir)/../path/that/may/be/invalid/for/macro/filename.ext'
 </code>
+<p>
+If AFilename ends with a path trailing path delimiter or a relative path 
+reference, the return value will end with a trailing path delimiter.
+</p>
 </descr>
 </element>
 <element name="ResolveDots.Result">
