@@ -823,7 +823,7 @@ var
         // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
         begin             // File
-          if ((MaskList = nil) or MaskList.Matches(PathInfo.Name)) and AcceptFile(PathInfo.Name) then
+          if ((MaskList = nil) or MaskList.Matches(PathInfo.Name)) and AcceptFile(APath+PathInfo.Name) then
           begin
             FPath := APath;
             FLevel := ALevel;
@@ -854,7 +854,7 @@ var
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) or
              (not FFollowSymLink and FileIsSymlink(APath + PathInfo.Name)) or
-             (not AcceptDir(PathInfo.Name))
+             (not AcceptDir(APath+PathInfo.Name))
           then Continue;
 
           FPath := APath;
