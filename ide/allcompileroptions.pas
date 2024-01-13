@@ -322,15 +322,13 @@ var
         end;
         oeBoolean: begin                        // CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
-          //Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
-          TCheckBox(Cntrl).Checked := Opt.Value='True';
+          TCheckBox(Cntrl).Checked := (Opt.Value='True') or (Opt.Value='+');
           TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
           MakeDescrLabel(Cntrl, CalcLeft(Cntrl, Opt));
         end;
         oeSetElem: begin                        // Sub-item for set, CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);
-          //Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value='True';
           TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
