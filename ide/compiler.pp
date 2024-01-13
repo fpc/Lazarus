@@ -841,14 +841,14 @@ begin
       while (i <= Length(aOptStr)) and (aOptStr[i] in ['0'..'9']) do
         Inc(i)
     else
-      Inc(i);
+      Inc(i, UTF8CodepointSize(@aOptStr[i]));
     OneOpt := Copy(aOptStr, Start, i-Start);
     if OneOpt[1] in ['0'..'9'] then
       OptOk := SetNumberOpt(OneOpt)
     else
       OptOk := False;
     if not (OptOk or SetBooleanOpt(OneOpt)) then
-      raise Exception.CreateFmt('Option %s is not found in set %s.', [OneOpt, fOption]);
+      raise Exception.CreateFmt('Option "%s" is not found in set %s.', [OneOpt, fOption]);
   end;
 end;
 
