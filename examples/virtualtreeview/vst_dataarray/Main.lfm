@@ -1,0 +1,169 @@
+object MainForm: TMainForm
+  Left = 188
+  Height = 396
+  Top = 104
+  Width = 649
+  ActiveControl = MyTree
+  Caption = 'Data Array Virtual Tree Demo'
+  ClientHeight = 396
+  ClientWidth = 649
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object Label1: TLabel
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrCenter
+    Left = 224
+    Height = 15
+    Top = 319
+    Width = 167
+    Caption = 'Array data  of  the clicked node:'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Label3
+    AnchorSideBottom.Control = Label3
+    Left = 224
+    Height = 15
+    Top = 344
+    Width = 247
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 6
+    Caption = 'Find and show the node by specific array index'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    AnchorSideLeft.Control = btnDelete
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Edit2
+    AnchorSideTop.Side = asrCenter
+    Left = 224
+    Height = 15
+    Top = 365
+    Width = 259
+    BorderSpacing.Left = 32
+    BorderSpacing.Right = 6
+    Caption = 'Type index to get related tree node on the screen:'
+    ParentColor = False
+  end
+  object Button1: TButton
+    AnchorSideLeft.Control = MyTree
+    AnchorSideTop.Control = Edit1
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 25
+    Top = 314
+    Width = 83
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Add nodes'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object btnDelete: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Button1
+    Left = 95
+    Height = 25
+    Top = 314
+    Width = 97
+    BorderSpacing.Left = 6
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Delete selected'
+    TabOrder = 1
+    OnClick = btnDeleteClick
+  end
+  object Edit1: TEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Edit2
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Label2
+    Left = 410
+    Height = 23
+    Top = 315
+    Width = 170
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    ReadOnly = True
+    TabOrder = 2
+  end
+  object btnCleanAll: TButton
+    AnchorSideTop.Control = Edit2
+    AnchorSideTop.Side = asrCenter
+    Left = 56
+    Height = 25
+    Top = 360
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Clean all'
+    TabOrder = 3
+    OnClick = btnCleanAllClick
+  end
+  object Edit2: TEdit
+    AnchorSideLeft.Control = Label3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 489
+    Height = 23
+    Top = 361
+    Width = 97
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 12
+    TabOrder = 4
+    OnChange = Edit2Change
+  end
+  object MyTree: TLazVirtualStringTree
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Edit1
+    Left = 6
+    Height = 303
+    Top = 6
+    Width = 637
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoScrollDelay = 1
+    BorderSpacing.Around = 6
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
+    Header.Columns = <    
+      item
+        Position = 0
+        Text = 'Text'
+        Width = 150
+      end    
+      item
+        Options = [coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible]
+        Position = 1
+        Text = 'Pointers'
+        Width = 300
+      end    
+      item
+        Position = 2
+        Text = 'Random'
+        Width = 100
+      end>
+    Header.DefaultHeight = 17
+    Header.Font.Style = [fsBold]
+    Header.Height = 17
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    Header.SortColumn = 0
+    RootNodeCount = 10
+    TabOrder = 5
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScroll, toAutoScrollOnExpand, toAutoTristateTracking]
+    TreeOptions.SelectionOptions = [toMultiSelect]
+    OnBeforeCellPaint = MyTreeBeforeCellPaint
+    OnCompareNodes = MyTreeCompareNodes
+    OnFocusChanged = MyTreeFocusChanged
+    OnFreeNode = MyTreeFreeNode
+    OnGetText = MyTreeGetText
+    OnPaintText = MyTreePaintText
+    OnHeaderClick = MyTreeHeaderClick
+  end
+end
