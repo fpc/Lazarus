@@ -1,0 +1,11 @@
+{
+  "vst_dataarray" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TLazVirtualStringTree",
+      "TVirtualTreeView",
+      "Data"
+    ],
+    "Description" : "This is about TLazVirtualStringTree, a component renamed from TVirtualTreeView that exists in the LazControls Component Tab. \n\nThis example demonstrates how to access data from a VirtualStringTree when they are stored somewhere in your own data structure. Further details in the header of the 'Main' unit."
+  }
+}
