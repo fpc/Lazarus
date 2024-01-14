@@ -802,6 +802,7 @@ type
     function GetBaseCaption: String; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
 
+    function CanShowEditorHint: Boolean;
     procedure EditorMouseMove(Sender: TObject; {%H-}Shift: TShiftstate;
                               {%H-}X,{%H-}Y: Integer);
     procedure EditorMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
@@ -7737,6 +7738,16 @@ begin
   Result := SourceEditorManager.CompletionPlugins[Index];
 end;
 
+function TSourceNotebook.CanShowEditorHint: Boolean;
+begin
+  // Issue: 40117 Don't show hint when mouse is down
+  Result := (GetKeyState(VK_LBUTTON)  >= 0) and
+            (GetKeyState(VK_RBUTTON)  >= 0) and
+            (GetKeyState(VK_MBUTTON)  >= 0) and
+            (GetKeyState(VK_XBUTTON1) >= 0) and
+            (GetKeyState(VK_XBUTTON2) >= 0);
+end;
+
 function TSourceNotebook.NewSE(Pagenum: Integer; NewPagenum: Integer;
   ASharedEditor: TSourceEditor; ATabCaption: String): TSourceEditor;
 begin
@@ -9479,7 +9490,7 @@ procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X, Y: Integer);
 begin
   Manager.FHints.HideAutoHintAfterMouseMoved;
-  if Visible then
+  if Visible and CanShowEditorHint then
     Manager.FHints.UpdateHintTimer;
 end;
 
@@ -9589,6 +9600,8 @@ var
   CurHint: String;
   MLine: TSynEditMarkLine;
 begin
+  if not CanShowEditorHint then
+    exit;
   // hide other hints
   //debugln('TSourceNotebook.ShowSynEditHint A');
   Application.HideHint;
