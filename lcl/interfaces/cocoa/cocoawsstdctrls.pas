@@ -274,6 +274,7 @@ type
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual;
     procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet); virtual;
+    function shouldTableSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
@@ -680,6 +681,12 @@ begin
   // do not notify about selection changes while clearing
   if Assigned(strings) and (strings.isClearing) then Exit;
   SendSimpleMessage(Target, LM_SELCHANGE);
+end;
+
+function TLCLListBoxCallback.shouldTableSelectionChange(NewSel: Integer
+  ): Boolean;
+begin
+  Result:= true;
 end;
 
 procedure TLCLListBoxCallback.ColumnClicked(ACol: Integer);

@@ -46,6 +46,7 @@ type
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
+    function shouldTableSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
@@ -140,8 +141,8 @@ type
     //procedure tableView_willDisplayCell_forTableColumn_row(tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:willDisplayCell:forTableColumn:row:';
     function tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldEditTableColumn:row:';
     function selectionShouldChangeInTableView(tableView: NSTableView): Boolean; message 'selectionShouldChangeInTableView:';
-    {function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
-    function tableView_selectionIndexesForProposedSelection(tableView: NSTableView; proposedSelectionIndexes: NSIndexSet): NSIndexSet; message 'tableView:selectionIndexesForProposedSelection:';
+    function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
+    {function tableView_selectionIndexesForProposedSelection(tableView: NSTableView; proposedSelectionIndexes: NSIndexSet): NSIndexSet; message 'tableView:selectionIndexesForProposedSelection:';
     function tableView_shouldSelectTableColumn(tableView: NSTableView; tableColumn: NSTableColumn): Boolean; message 'tableView:shouldSelectTableColumn:';
     procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';}
     procedure tableView_didClickTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didClickTableColumn:';
@@ -648,6 +649,12 @@ begin
   if Assigned(beforeSel) then beforeSel.release;
   beforeSel := (NSIndexSet.alloc).initWithIndexSet(selectedRowIndexes);
   Result := true;
+end;
+
+function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
+  row: NSInteger): Boolean;
+begin
+  Result:= callback.shouldTableSelectionChange( row );
 end;
 
 procedure TCocoaTableListView.tableView_didClickTableColumn(
