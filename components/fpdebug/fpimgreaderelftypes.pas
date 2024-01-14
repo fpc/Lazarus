@@ -154,6 +154,7 @@ const
   EM_IA_64       = 50;
   EM_X86_64      = 62;
   EM_AVR         = 83;
+  EM_XTENSA      = 94;
   EM_ALPHA       = $9026; //unofficial, but used by gnu toolchain
 
   //elf version       {Elf32_Hdr.e_version}
