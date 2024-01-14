@@ -119,6 +119,7 @@ type
     makeFirstResponderCount: Integer;
   private
     procedure DoWindowDidBecomeKey(); message 'DoWindowDidBecomeKey';
+    procedure DoMakeFirstResponder(aResponder: NSResponder); message 'DoMakeFirstResponder:';
   protected
     fieldEditor: TCocoaFieldEditor;
     firedMouseEvent: Boolean;
@@ -146,6 +147,7 @@ type
     //LCLForm: TCustomForm;
     procedure dealloc; override;
     function makeFirstResponder(aResponder: NSResponder): ObjCBOOL; override;
+    function makeFirstResponderFromLCL(aResponder: NSResponder): ObjCBOOL; message 'makeFirstResponderFromLCL:';
     function canBecomeKeyWindow: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -1041,6 +1043,25 @@ begin
   finally
     dec( makeFirstResponderCount );
   end;
+end;
+
+function TCocoaWindow.makeFirstResponderFromLCL(aResponder: NSResponder): ObjCBOOL;
+begin
+  if makeFirstResponderCount=0 then begin
+    // not in makeFirstResponder processing, call makeFirstResponder directly
+    Result:= makeFirstResponder( aResponder );
+  end else begin
+    // otherwise, delay processing after makeFirstResponder
+    aResponder.retain;
+    performSelector_withObject_afterDelay( ObjCSelector('DoMakeFirstResponder:'), aResponder, 0 );
+    Result:= true;
+  end;
+end;
+
+procedure TCocoaWindow.DoMakeFirstResponder(aResponder: NSResponder);
+begin
+  makeFirstResponder( aResponder );
+  aResponder.release;
 end;
 
 

@@ -2467,7 +2467,11 @@ begin
     if Assigned(lView) and Assigned(lView.window) then
     begin
       lView.window.makeKeyWindow;
-      lView.window.makeFirstResponder(lView.lclContentView);
+      if lView.window.isKindOfClass(TCocoaWindow) then begin
+        TCocoaWindow(lView.window).makeFirstResponderFromLCL(lView.lclContentView);
+      end else begin
+        lView.window.makeFirstResponder(lView.lclContentView);
+      end;
     end else
       Result := 0;
   end
