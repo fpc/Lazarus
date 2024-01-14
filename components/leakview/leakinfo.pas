@@ -18,7 +18,7 @@ uses
   {$IFDEF LEAK_RESOLVE_USE_FPC}
   DbgInfoReader,
   {$ENDIF}
-  DbgIntfBaseTypes, FpDbgLoader, FpDbgDwarf, FpDbgInfo, Dialogs,
+  DbgIntfBaseTypes, FpDbgLoader, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, Dialogs,
   LldbHelper;
 
 type
@@ -885,11 +885,13 @@ function THeapTrcInfo.ResolveLeakInfo(AFileName: string; Traces: TStackTraceList
 {$IFnDEF LEAK_RESOLVE_USE_FPC}
 var
   DwarfInfo: TFpDwarfInfo;
+  MemModel: TFpDbgMemModel;
   ImageLoaderList: TDbgImageLoaderList;
 
   procedure UnLoadDwarf;
   begin
     FreeAndNil(DwarfInfo);
+    FreeAndNil(MemModel);
     FreeAndNil(ImageLoaderList);
   end;
   procedure LoadDwarf;
@@ -905,7 +907,8 @@ var
 
     ImageLoaderList := TDbgImageLoaderList.Create(True);
     ImageLoader.AddToLoaderList(ImageLoaderList);
-    DwarfInfo := TFpDwarfInfo.Create(ImageLoaderList, nil);
+    MemModel := TFpDbgMemModel.Create;
+    DwarfInfo := TFpDwarfInfo.Create(ImageLoaderList, nil, MemModel);
     DwarfInfo.LoadCompilationUnits;
   end;
 {$ENDIF}
