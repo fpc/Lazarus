@@ -618,7 +618,6 @@ begin
     Result.Address := Result.Address - 1; // Going to ADD some bits back
                                           // E.g. b=-1 means (b and 7) = 7 and that means adding 7 bits, instead of substracting 1
   Result.BitOffset := ABitOffset and 7;
-  Result.AddressClass := AnAddr.AddressClass;
   {$POP}
 end;
 
@@ -1021,12 +1020,8 @@ end;
 function TFpDbgLocationContext.ReadAddress(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize): TFpDbgMemLocation;
 begin
-  Result := Default(TFpDbgMemLocation);
   if MemManager.ReadMemory(rdtAddress, ALocation, ASize, @Result.Address, SizeOf(Result.Address), Self) then
-  begin
-    Result := MemModel.AddressToTargetLocation(Result.Address);
-    Result.MType := mlfTargetMem;
-  end
+    Result := MemModel.AddressToTargetLocation(Result.Address)
   else
     Result := InvalidLoc;
 end;
@@ -1041,13 +1036,9 @@ end;
 function TFpDbgLocationContext.ReadAddress(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize; out AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  AnAddress := Default(TFpDbgMemLocation);
   Result := MemManager.ReadMemory(rdtAddress, ALocation, ASize, @AnAddress.Address, (SizeOf(AnAddress.Address)), Self);
   if Result then
-  begin
-    AnAddress := MemModel.AddressToTargetLocation(AnAddress.Address);
-    AnAddress.MType := mlfTargetMem;
-  end
+    AnAddress := MemModel.AddressToTargetLocation(AnAddress.Address)
   else
     AnAddress := InvalidLoc;
 end;
