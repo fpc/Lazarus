@@ -820,7 +820,7 @@ var
   lTabPage: NSTabViewItem;
   tb : TCocoaTabPageView;
   i   : integer;
-  idx : integer;
+  idx : NSUInteger;
   tr  : TRect;
   w   : array of Double;
   mw  : Double;
@@ -838,7 +838,7 @@ begin
   if not Assigned(tb) then Exit;
 
   idx := lTabControl.tabViewItems.indexOfObject( tb.tabPage );
-  if (idx = Integer(NSNotFound)) then Exit;
+  if idx = NSNotFound then Exit;
 
   if not GetTabsRect(lTabControl, tr) then Exit;
 
