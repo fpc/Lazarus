@@ -99,6 +99,7 @@ Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
 begin
   ResetRunParams(RunParams);
   RunParams.LaunchingApplicationPathPlusParams:='"$(Pas2JSNodeJS)" "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  RunParams.WorkingDirectory:='$(ProjPath)';
 end;
 
 Procedure SetPasJSCompileOptions(CompOpts: TLazCompilerOptions;

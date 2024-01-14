@@ -1717,6 +1717,7 @@ begin
   RunMode:=AProject.RunParameters.GetOrCreate('default');
   RunMode.UseLaunchingApplication:=true;
   RunMode.LaunchingApplicationPathPlusParams:='"$(Pas2jsElectron)" .';
+  RunMode.WorkingDirectory:='$(ProjPath)';
 
   Result:=mrOk;
 end;
