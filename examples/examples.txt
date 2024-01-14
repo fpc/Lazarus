@@ -187,6 +187,7 @@
 ./examples/virtualtreeview/vst_advanced/vst_advanced.ex-meta
 ./examples/virtualtreeview/vst_dragdrop/vst_dragdrop.ex-meta
 ./examples/virtualtreeview/vst_minimal/vst_minimal.ex-meta
+./examples/virtualtreeview/vst_dataarray/vst_dataarray.ex-meta
 ./examples/lclversion/lclversion.ex-meta
 ./examples/shapedcontrols/shapedcontrols.ex-meta
 ./examples/laz_scalable/laz_scalable.ex-meta
