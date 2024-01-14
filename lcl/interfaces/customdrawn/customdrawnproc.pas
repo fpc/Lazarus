@@ -811,8 +811,9 @@ begin
     while j < AFontDirectories.Count do
     begin
       if AFontDirectories.Strings[i] = AFontDirectories.Strings[j] then
-        AFontDirectories.Delete(j);
-      Inc(j);
+        AFontDirectories.Delete(j)
+      else
+        Inc(j);
     end;
     Inc(i);
   end;
@@ -822,8 +823,9 @@ begin
   while i < AFontDirectories.Count do
   begin
     if not DirectoryExistsUTF8(AFontDirectories.Strings[i]) then
-      AFontDirectories.Delete(i);
-    Inc(i);
+      AFontDirectories.Delete(i)
+    else
+      Inc(i);
   end;
 
   // Raise an exception if there are no font directories
