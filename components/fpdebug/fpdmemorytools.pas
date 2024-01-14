@@ -386,7 +386,7 @@ type
   { TFpDbgMemModel }
 
   // Here Location is the fpdebug representation of an address
-  // and Ref is the target representation of an address
+  // and Address is the target (pointer-only) representation of an address
   TFpDbgMemModel = class
     function UpdateLocationToCodeAddress(const ALocation: TFpDbgMemLocation): TFpDbgMemLocation; virtual;
     function LocationToAddress(const ALocation: TFpDbgMemLocation): TDBGPtr; virtual;
