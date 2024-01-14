@@ -136,6 +136,7 @@ type
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
     procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
+    function shouldTableSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState);
@@ -282,6 +283,9 @@ type
   end;
 
 implementation
+
+type
+  TCustomListViewAccess = class(TCustomListView);
 
 type
 
@@ -2034,6 +2038,16 @@ begin
   end;
 
   LCLMessageGlue.DeliverMessage(ListView, Msg);}
+end;
+
+function TLCLListViewCallback.shouldTableSelectionChange(NewSel: Integer
+  ): Boolean;
+var
+  item: TListItem = nil;
+begin
+  if (NewSel>=0) and (NewSel<self.listView.Items.Count) then
+    item:= self.listView.Items[NewSel];
+  Result:= TCustomListViewAccess(self.listView).CanChange( item, LVIF_TEXT );
 end;
 
 procedure TLCLListViewCallback.ColumnClicked(ACol: Integer);
