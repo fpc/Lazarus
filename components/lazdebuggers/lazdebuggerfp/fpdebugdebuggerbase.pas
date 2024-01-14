@@ -21,6 +21,7 @@ type
   protected
     FDbgController: TDbgController;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FMemReader: TDbgMemReader;
     FMemConverter: TFpDbgMemConvertor;
     FLockList: TFpDbgLockList;

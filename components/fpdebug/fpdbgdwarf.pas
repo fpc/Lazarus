@@ -601,7 +601,7 @@ type
                              ): Boolean;
     // GetDataAddress: data of a class, or string
     function GetDataAddress(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
-                            ATargetType: TFpSymbolDwarfType = nil): Boolean;
+                            ATargetType: TFpSymbolDwarfType = nil): Boolean; virtual;
     function GetNextTypeInfoForDataAddress(ATargetType: TFpSymbolDwarfType): TFpSymbolDwarfType; virtual;
     function GetDataAddressNext(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; virtual;
@@ -866,6 +866,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
     procedure KindNeeded; override;
     function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
+    function GetDataAddress(AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation;
+                            ATargetType: TFpSymbolDwarfType = nil): Boolean; override;
   public
     destructor Destroy; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -2008,7 +2010,7 @@ begin
     Assert((ti is TFpSymbolDwarfType) and (ti.SymbolType = stType), 'TDbgDwarfSymbolValue.GetDwarfDataAddress TypeInfo = stType');
 
     AnAddress := Address;
-    Result := IsReadableLoc(AnAddress);
+    Result := Context.MemModel.IsReadableLocation(AnAddress);
 
     if Result then
       Result := TFpSymbolDwarf(ti).GetDataAddress(Self, AnAddress, ATargetType);
@@ -2029,7 +2031,7 @@ begin
     if svfAddress in fields then
       AnAddress := FTypeCastSourceValue.Address;
 
-    Result := IsReadableLoc(AnAddress);
+    Result := Context.MemModel.IsReadableLocation(AnAddress);
     if Result then
       Result := FTypeSymbol.GetDataAddress(Self, AnAddress, ATargetType);
   end;
@@ -2557,7 +2559,7 @@ var
 begin
   a := GetDerefAddress;
   if IsTargetAddr(a) then
-    Result := LocToAddr(a)
+    Result := Context.MemModel.LocationToAddress(a)
   else
     Result := 0;
 end;
@@ -3713,7 +3715,7 @@ begin
   assert((FArraySymbol is TFpSymbolDwarfTypeArray) and (FArraySymbol.Kind = skArray));
 
   Addr := TFpSymbolDwarfTypeArray(FArraySymbol).GetMemberAddress(Self, AIndex);
-  if not IsReadableLoc(Addr) then exit;
+  if not Context.MemModel.IsReadableLocation(Addr) then exit;
 
   // FAddrObj.RefCount: hold by self
   i := 1;
@@ -5721,6 +5723,13 @@ begin
   ASize := ZeroSize;
   ASize.Size := CompilationUnit.AddressSize;
   Result := True;
+end;
+
+function TFpSymbolDwarfTypeSubroutine.GetDataAddress(AValueObj: TFpValueDwarf;
+  var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
+begin
+  Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType);
+  AnAddress := AValueObj.Context.MemModel.UpdateLocationToCodeAddress(AnAddress);
 end;
 
 destructor TFpSymbolDwarfTypeSubroutine.Destroy;

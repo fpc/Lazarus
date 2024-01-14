@@ -584,6 +584,7 @@ type
     function GetSymbolAtAddress: TFpSymbol; virtual;
     function GetProcedureAtAddress: TFpValue; virtual;
     function GetMemManager: TFpDbgMemManager; virtual;
+    function GetMemModel: TFpDbgMemModel; virtual;
     function GetSizeOfAddress: Integer; virtual;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext);
@@ -593,6 +594,7 @@ type
     // search this, and all parent context
     function FindSymbol(const {%H-}AName: String; const OnlyUnitName: String = ''): TFpValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
+    property MemModel: TFpDbgMemModel read GetMemModel;
     property SizeOfAddress: Integer read GetSizeOfAddress;
     property LocationContext: TFpDbgLocationContext read FLocationContext;
   end;
@@ -602,12 +604,14 @@ type
   TFpDbgSimpleLocationContext = class(TFpDbgLocationContext)
   private
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FAddress: TDbgPtr;
     FThreadId: Integer;
     FStackFrame: Integer;
     FSizeOfAddr: Integer;
   protected
     function GetMemManager: TFpDbgMemManager; override;
+    function GetMemModel: TFpDbgMemModel; override;
     function GetAddress: TDbgPtr; override;
     function GetThreadId: Integer; override;
     function GetStackFrame: Integer; override;
@@ -652,17 +656,20 @@ type
   private
     FBaseContext: TFpDbgLocationContext;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FMemReader: TFpDbgCallMemReader;
     FIsValid: Boolean;
     FMessage: string;
   protected
     function GetMemManager: TFpDbgMemManager; override;
+    function GetMemModel: TFpDbgMemModel; override;
     function GetAddress: TDbgPtr; override;
     function GetThreadId: Integer; override;
     function GetStackFrame: Integer; override;
     function GetSizeOfAddress: Integer; override;
   public
-    constructor Create(const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
+    constructor Create(const ABaseContext: TFpDbgLocationContext;
+      AMemReader: TFpDbgMemReaderBase; AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor);
     destructor Destroy; override;
 
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
@@ -678,11 +685,12 @@ type
   private
     FHasInfo: Boolean;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
   protected
     FTargetInfo: TTargetDescriptor;
     procedure SetHasInfo;
   public
-    constructor Create({%H-}ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager); virtual;
+    constructor Create({%H-}ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); virtual;
     (* Context should be searched by Thread, and StackFrame. The Address can be
        derived from this.
        However a different Address may be froced.
@@ -701,6 +709,7 @@ type
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel;
   end;
 
 function dbgs(ADbgSymbolKind: TDbgSymbolKind): String; overload;
@@ -776,13 +785,14 @@ end;
 
 constructor TFpDbgAbstractCallContext.Create(
   const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
-  AMemConverter: TFpDbgMemConvertor);
+  AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor);
 begin
   FBaseContext:=ABaseContext;
   FBaseContext.AddReference;
 
+  FMemModel := AMemModel;
   FMemReader := TFpDbgCallMemReader.Create(AMemReader);
-  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter, FMemModel);
 
   FIsValid := True;
 
@@ -805,6 +815,11 @@ end;
 function TFpDbgAbstractCallContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := FMemManager;
+end;
+
+function TFpDbgAbstractCallContext.GetMemModel: TFpDbgMemModel;
+begin
+  Result := FMemModel;
 end;
 
 function TFpDbgAbstractCallContext.GetSizeOfAddress: Integer;
@@ -1524,6 +1539,11 @@ begin
   Result := LocationContext.MemManager;
 end;
 
+function TFpDbgSymbolScope.GetMemModel: TFpDbgMemModel;
+begin
+  Result := LocationContext.MemModel;
+end;
+
 constructor TFpDbgSymbolScope.Create(ALocationContext: TFpDbgLocationContext);
 begin
   FLocationContext := ALocationContext;
@@ -1569,6 +1589,11 @@ begin
   Result := FMemManager;
 end;
 
+function TFpDbgSimpleLocationContext.GetMemModel: TFpDbgMemModel;
+begin
+  Result := FMemModel;
+end;
+
 function TFpDbgSimpleLocationContext.GetAddress: TDbgPtr;
 begin
   Result := fAddress;
@@ -1595,6 +1620,7 @@ begin
   inherited Create;
   AddReference;
   FMemManager := AMemManager;
+  FMemModel := AMemManager.MemModel;
   FAddress := AnAddress;
   FSizeOfAddr := AnSizeOfAddr;
   FThreadId := AThreadId;
@@ -2098,9 +2124,10 @@ end;
 { TDbgInfo }
 
 constructor TDbgInfo.Create(ALoaderList: TDbgImageLoaderList;
-  AMemManager: TFpDbgMemManager);
+  AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
 begin
   FMemManager := AMemManager;
+  FMemModel := AMemModel;
   inherited Create;
 end;
 

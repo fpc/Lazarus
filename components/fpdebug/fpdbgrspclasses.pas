@@ -82,7 +82,8 @@ type
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; override;
   public
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-                      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+                  AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
+                  AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
@@ -380,7 +381,7 @@ end;
 
 constructor TDbgRspProcess.Create(const AFileName: string;
   AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  AProcessConfig: TDbgProcessConfig);
+  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
 begin
   if Assigned(AProcessConfig) and (AProcessConfig is TRemoteConfig) then
   begin
@@ -388,7 +389,7 @@ begin
     FRemoteConfig.Assign(AProcessConfig);
   end;
 
-  inherited Create(AFileName, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel);
 end;
 
 destructor TDbgRspProcess.Destroy;

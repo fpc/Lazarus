@@ -931,7 +931,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       GetTypeAsDeclaration(s, t);
     APrintedValue := APrintedValue + s;
 
-    if (AValue.Kind in [skFunction, skProcedure]) and IsReadableLoc(v) then begin
+    if (AValue.Kind in [skFunction, skProcedure]) and Context.MemModel.IsReadableLocation(v) then begin
       APrintedValue := APrintedValue + ' AT ' + '$'+IntToHex(va, AnAddressSize*2);
     end;
 

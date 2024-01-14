@@ -1477,7 +1477,7 @@ begin
   if Result then
     exit;
 
-  if not( GetDwarfDataAddress(Addr) and IsReadableLoc(Addr) ) then
+  if not( GetDwarfDataAddress(Addr) and MemManager.MemModel.IsReadableLocation(Addr) ) then
     exit;
 
   Addr:= Addr - (AddressSize * 2);
@@ -1883,7 +1883,7 @@ begin
   if Result then
     exit;
 
-  if not IsReadableLoc(Addr) then
+  if not MemManager.MemModel.IsReadableLocation(Addr) then
     exit;
 
   if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
@@ -1953,7 +1953,7 @@ begin
      (svfOrdinal in TypeCastSourceValue.FieldFlags)
   then
     Addr := TargetLoc(TypeCastSourceValue.AsCardinal);
-  if not IsReadableLoc(Addr) then
+  if not MemManager.MemModel.IsReadableLocation(Addr) then
     exit;
 
   assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.GetAsString: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
@@ -1996,7 +1996,7 @@ begin
      (svfOrdinal in TypeCastSourceValue.FieldFlags)
   then
     AnAddr := TargetLoc(TypeCastSourceValue.AsCardinal);
-  if not IsReadableLoc(AnAddr) then
+  if not MemManager.MemModel.IsReadableLocation(AnAddr) then
     exit;
 
   Result := True;

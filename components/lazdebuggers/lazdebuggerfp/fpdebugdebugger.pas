@@ -385,6 +385,7 @@ type
     function CreateMemReader: TDbgMemReader; virtual;
     function CreateMemConverter: TFpDbgMemConvertor; virtual;
     function CreateMemManager: TFpDbgMemManager; virtual;
+    function CreateMemModel: TFpDbgMemModel; virtual;
     function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
     function CreateThreads: TThreadsSupplier; override;
@@ -3598,7 +3599,12 @@ end;
 
 function TFpDebugDebugger.CreateMemManager: TFpDbgMemManager;
 begin
-  Result := TFpDbgMemManager.Create(FMemReader, FMemConverter);
+  Result := TFpDbgMemManager.Create(FMemReader, FMemConverter, FMemModel);
+end;
+
+function TFpDebugDebugger.CreateMemModel: TFpDbgMemModel;
+begin
+  Result := TFpDbgMemModel.Create;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -4610,12 +4616,13 @@ begin
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   FMemReader    := CreateMemReader;
   FMemConverter := CreateMemConverter;
+  FMemModel     := CreateMemModel;
   FMemManager   := CreateMemManager;
   FMemManager.MemLimits.MaxMemReadSize := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxMemReadSize;
   FMemManager.MemLimits.MaxArrayLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxArrayLen;
   FMemManager.MemLimits.MaxStringLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxStringLen;
   FMemManager.MemLimits.MaxNullStringSearchLen := TFpDebugDebuggerProperties(GetProperties).MemLimits.MaxNullStringSearchLen;
-  FDbgController := TDbgController.Create(FMemManager);
+  FDbgController := TDbgController.Create(FMemManager, FMemModel);
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
   FDbgController.OnHitBreakpointEvent:=@FDbgControllerHitBreakpointEvent;
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;
@@ -4651,6 +4658,7 @@ begin
   FreeAndNil(FBreakUpdateList);
   FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
+  FreeAndNil(FMemModel);
   FreeAndNil(FMemManager);
   FreeAndNil(FMemConverter);
   FreeAndNil(FMemReader);

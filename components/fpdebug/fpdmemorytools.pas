@@ -61,10 +61,12 @@ type
   end;
   PFpDbgValueSize = ^TFpDbgValueSize;
 
+  TDbgAddressClass = byte;
   TFpDbgMemLocation = packed record
     Address: TDbgPtr;
     MType: TFpDbgMemLocationType;
     BitOffset: TBitAddr;
+    AddressClass: TDbgAddressClass;  // Used by AVR. 0 = data (or unspecified), 1 = progmem, 2 = EEPROM
   end;
   PFpDbgMemLocation = ^TFpDbgMemLocation;
 
@@ -74,6 +76,7 @@ type
 
   TByteDynArray = array of Byte;
 
+  TFpDbgMemModel = class;
 
   { TFpDbgLocationContext }
 
@@ -87,12 +90,14 @@ type
     function GetThreadId: Integer; virtual; abstract;
     function GetSizeOfAddress: Integer; virtual; abstract;
     function GetMemManager: TFpDbgMemManager; virtual; abstract;
+    function GetMemModel: TFpDbgMemModel; virtual; abstract;
   public
     property Address: TDbgPtr read GetAddress;
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;
     property SizeOfAddress: Integer read GetSizeOfAddress;
     property MemManager: TFpDbgMemManager read GetMemManager;
+    property MemModel: TFpDbgMemModel read GetMemModel;
   public
     procedure ClearLastMemError;
     property LastMemError: TFpError read GetLastMemError;
@@ -378,6 +383,18 @@ type
     property MaxNullStringSearchLen: QWord read FMaxNullStringSearchLen write FMaxNullStringSearchLen;
   end;
 
+  { TFpDbgMemModel }
+
+  // Here Location is the fpdebug representation of an address
+  // and Address is the target (pointer-only) representation of an address
+  TFpDbgMemModel = class
+    function UpdateLocationToCodeAddress(const ALocation: TFpDbgMemLocation): TFpDbgMemLocation; virtual;
+    function LocationToAddress(const ALocation: TFpDbgMemLocation): TDBGPtr; virtual;
+    function AddressToTargetLocation(const AAddress: TDBGPtr): TFpDbgMemLocation; virtual;
+    function IsReadableMemory(const ALocation: TFpDbgMemLocation): Boolean; virtual;
+    function IsReadableLocation(const ALocation: TFpDbgMemLocation): Boolean; virtual;
+  end;
+
   (* TFpDbgMemManager
    * allows to to pretend reading from the target, by using its own memory, or
        a constant.
@@ -410,6 +427,7 @@ type
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
     FStartWirteableSelfMem: TDBGPtr;
     FLenWirteableSelfMem: Cardinal;
+    FMemModel: TFpDbgMemModel;
     function GetCacheManager: TFpDbgMemCacheManagerBase;
     procedure BitShiftMem(ASrcMem, ADestMem: Pointer; ASrcSize, ADestSize: cardinal; ABitCnt: Integer);
   protected
@@ -417,12 +435,12 @@ type
       const ASourceLocation: TFpDbgMemLocation; const ASourceSize: TFpDbgValueSize;
       const ADest: Pointer; const ADestSize: QWord; AContext: TFpDbgLocationContext;
       const AFlags: TFpDbgMemManagerFlags = []
-    ): Boolean;
+    ): Boolean; virtual;
     function WriteMemory(AReadDataType: TFpDbgMemReadDataType;
       const ADestLocation: TFpDbgMemLocation; const ADestSize: TFpDbgValueSize;
       const ASource: Pointer; const ASourceSize: QWord; AContext: TFpDbgLocationContext;
       const AFlags: TFpDbgMemManagerFlags = []
-    ): Boolean;
+    ): Boolean; virtual;
     function ReadMemoryEx(const ASourceLocation: TFpDbgMemLocation; AnAddressSpace: TDbgPtr; ASize: TFpDbgValueSize; ADest: Pointer; AContext: TFpDbgLocationContext = nil): Boolean;
     (* ReadRegister needs a Context, to get the thread/stackframe
     *)
@@ -433,8 +451,10 @@ type
     procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
     property CacheManager: TFpDbgMemCacheManagerBase read GetCacheManager;
   public
-    constructor Create(AMemReader: TFpDbgMemReaderBase; AMemConvertor: TFpDbgMemConvertor);
-    constructor Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor, ASelfMemConvertor: TFpDbgMemConvertor);
+    constructor Create(AMemReader: TFpDbgMemReaderBase; AMemConvertor: TFpDbgMemConvertor;
+      AMemModel: TFpDbgMemModel);
+    constructor Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor, ASelfMemConvertor: TFpDbgMemConvertor;
+      AMemModel: TFpDbgMemModel);
     destructor Destroy; override;
     procedure ClearLastError;
 
@@ -457,6 +477,7 @@ type
     property PartialReadResultLenght: QWord read FPartialReadResultLenght;
     property LastError: TFpError read FLastError;
     property MemLimits: TFpDbgMemLimits read FMemLimits;
+    property MemModel: TFpDbgMemModel read FMemModel;
   end;
 
 function NilLoc: TFpDbgMemLocation; inline;
@@ -477,7 +498,7 @@ function IsConstData(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
 function IsReadableLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and not Nil // can be const or reg
-function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or sel <> nil
+function IsReadableMem(const ALocation: TFpDbgMemLocation): Boolean; inline;  // Valid and target or self <> nil
 function IsNilLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;    // Valid AND NIL // Does not check mlfTargetRegister
 // TODO: registers should be targed.... // May have to rename some of those
 function IsTargetNil(const ALocation: TFpDbgMemLocation): Boolean; inline;    // valid targed = nil
@@ -530,21 +551,18 @@ var
 function NilLoc: TFpDbgMemLocation;
 begin
   Result := Default(TFpDbgMemLocation);
-  Result.Address := 0;
   Result.MType := mlfTargetMem;
 end;
 
 function InvalidLoc: TFpDbgMemLocation;
 begin
   Result := Default(TFpDbgMemLocation);
-  Result.Address := 0;
   Result.MType := mlfInvalid;
 end;
 
 function UnInitializedLoc: TFpDbgMemLocation;
 begin
   Result := Default(TFpDbgMemLocation);
-  Result.Address := 0;
   Result.MType := mlfUninitialized;
 end;
 
@@ -1002,9 +1020,9 @@ end;
 function TFpDbgLocationContext.ReadAddress(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize): TFpDbgMemLocation;
 begin
-  Result := Default(TFpDbgMemLocation);
-  Result.MType := mlfTargetMem;
-  if not MemManager.ReadMemory(rdtAddress, ALocation, ASize, @Result.Address, SizeOf(Result.Address), Self) then
+  if MemManager.ReadMemory(rdtAddress, ALocation, ASize, @Result.Address, SizeOf(Result.Address), Self) then
+    Result := MemModel.AddressToTargetLocation(Result.Address)
+  else
     Result := InvalidLoc;
 end;
 
@@ -1018,11 +1036,11 @@ end;
 function TFpDbgLocationContext.ReadAddress(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize; out AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  AnAddress := Default(TFpDbgMemLocation);
   Result := MemManager.ReadMemory(rdtAddress, ALocation, ASize, @AnAddress.Address, (SizeOf(AnAddress.Address)), Self);
-  if Result
-  then AnAddress.MType := mlfTargetMem
-  else AnAddress := InvalidLoc;
+  if Result then
+    AnAddress := MemModel.AddressToTargetLocation(AnAddress.Address)
+  else
+    AnAddress := InvalidLoc;
 end;
 
 function TFpDbgLocationContext.ReadUnsignedInt(
@@ -1102,6 +1120,38 @@ begin
   FMaxArrayLen    := 10000;
   FMaxStringLen   := 100 * 1024;
   FMaxNullStringSearchLen := 20 * 1024;
+end;
+
+{ TFpDbgMemModel }
+
+function TFpDbgMemModel.UpdateLocationToCodeAddress(const
+  ALocation: TFpDbgMemLocation): TFpDbgMemLocation;
+begin
+  Result := ALocation;
+end;
+
+function TFpDbgMemModel.LocationToAddress(const
+  ALocation: TFpDbgMemLocation): TDBGPtr;
+begin
+  Result := LocToAddr(ALocation);
+end;
+
+function TFpDbgMemModel.AddressToTargetLocation(const
+  AAddress: TDBGPtr): TFpDbgMemLocation;
+begin
+  Result := TargetLoc(AAddress);
+end;
+
+function TFpDbgMemModel.IsReadableMemory(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := IsReadableMem(ALocation);
+end;
+
+function TFpDbgMemModel.IsReadableLocation(const
+  ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := IsReadableLoc(ALocation);
 end;
 
 { TFpDbgMemReaderBase }
@@ -1850,21 +1900,23 @@ begin
 end;
 
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase;
-  AMemConvertor: TFpDbgMemConvertor);
+  AMemConvertor: TFpDbgMemConvertor; AMemModel: TFpDbgMemModel);
 begin
   FMemLimits := TFpDbgMemLimits.Create;
   FMemReader := AMemReader;
   FTargetMemConvertor := AMemConvertor;
   FSelfMemConvertor := AMemConvertor;
+  FMemModel := AMemModel;
 end;
 
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor,
-  ASelfMemConvertor: TFpDbgMemConvertor);
+  ASelfMemConvertor: TFpDbgMemConvertor; AMemModel: TFpDbgMemModel);
 begin
   FMemLimits := TFpDbgMemLimits.Create;
   FMemReader := AMemReader;
   FTargetMemConvertor := ATargenMemConvertor;
   FSelfMemConvertor := ASelfMemConvertor;
+  FMemModel := AMemModel;
 end;
 
 destructor TFpDbgMemManager.Destroy;
@@ -2009,7 +2061,7 @@ var
   i: QWord;
 begin
   Result := False;
-  if not IsReadableLoc(ALocation) then begin
+  if not MemModel.IsReadableLocation(ALocation) then begin
     FLastError := CreateError(fpInternalErrFailedReadMem);
     exit;
   end;
@@ -2042,7 +2094,7 @@ var
   i: QWord;
 begin
   Result := False;
-  if not IsReadableLoc(ALocation) then begin
+  if not MemModel.IsReadableLocation(ALocation) then begin
     FLastError := CreateError(fpInternalErrFailedReadMem);
     exit;
   end;

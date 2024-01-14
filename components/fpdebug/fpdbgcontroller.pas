@@ -263,6 +263,7 @@ type
   private
     FLastError: TFpError;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
     FDefaultContext: TFpDbgLocationContext;
     FStoredDefaultContext: TFpDbgLocationContext; // while function eval calling
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
@@ -308,7 +309,7 @@ type
     FCommand, FCommandToBeFreed: TDbgControllerCmd;
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
-    constructor Create(AMemManager: TFpDbgMemManager); virtual;
+    constructor Create(AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); virtual;
     destructor Destroy; override;
     (* InitializeCommand: set new command
        Not called if command is replaced by OnThreadProcessLoopCycleEvent  *)
@@ -330,6 +331,7 @@ type
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel;
     property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
     property LastError: TFpError read FLastError;
     property Event: TFPDEvent read FPDEvent;
@@ -1658,7 +1660,7 @@ begin
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, ProcessConfig);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, MemModel, ProcessConfig);
   if not Assigned(FCurrentProcess) then
     begin
     Result := false;
@@ -2104,9 +2106,11 @@ begin
   Result := FProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
 end;
 
-constructor TDbgController.Create(AMemManager: TFpDbgMemManager);
+constructor TDbgController.Create(AMemManager: TFpDbgMemManager;
+  AMemModel: TFpDbgMemModel);
 begin
   FMemManager := AMemManager;
+  FMemModel := AMemModel;
   FParams := TStringList.Create;
   FEnvironment := TStringList.Create;
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
@@ -2129,7 +2133,7 @@ begin
   then
     exit;
 
-  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter, FCurrentProcess, FCurrentThread);
+  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, MemModel, AMemConverter, FCurrentProcess, FCurrentThread);
   Context.AddReference;
   InitializeCommand(TDbgControllerCallRoutineCmd.Create(self, FunctionAddress, Context));
   Result := Context;

@@ -48,6 +48,7 @@ type
   private
     FLast: string;
     FMemReader: TDbgMemReader;
+    FMemModel: TFpDbgMemModel;
     FMemManager: TFpDbgMemManager;
     FMemConvertor: TFpDbgMemConvertor;
     procedure ShowDisas;
@@ -263,9 +264,10 @@ procedure TFPDLoop.Initialize;
 begin
   inherited Initialize;
   FMemReader := TPDDbgMemReader.Create;
+  FMemModel := TFpDbgMemModel.Create;
   FMemConvertor := TFpDbgMemConvertorLittleEndian.Create;
-  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConvertor);
-  GController := TDbgController.Create(FMemManager);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConvertor, FMemModel);
+  GController := TDbgController.Create(FMemManager, FMemModel);
 
   if ParamCount > 0
   then begin
@@ -287,6 +289,7 @@ begin
   FMemManager.Free;
   FMemReader.Free;
   FMemConvertor.Free;
+  FMemManager.Free;
   GController.Free;
   inherited Destroy;
 end;

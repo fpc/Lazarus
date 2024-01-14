@@ -105,7 +105,7 @@ type
     FBreakPointIdCnt: Integer;
     FBreakPointIdMap: TBreakPointIdMap;
   public
-    constructor Create(AMemManager: TFpDbgMemManager); override;
+    constructor Create(AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); override;
     destructor Destroy; override;
     function AddInternalBreakPointToId(ABrkPoint: TFpDbgBreakpoint): Integer;
     function GetInternalBreakPointFromId(AnId: Integer): TFpDbgBreakpoint;
@@ -161,6 +161,7 @@ type
     FListenerList: TThreadList;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
+    FMemModel: TFpDbgMemModel;
     FMemManager: TFpDbgMemManager;
     FConsoleOutputThread: TThread;
     procedure FreeConsoleOutputThread;
@@ -243,11 +244,11 @@ begin
   Result := PPointer(Key1)^ - PPointer(Key1)^;
 end;
 
-constructor TFpServerDbgController.Create(AMemManager: TFpDbgMemManager);
+constructor TFpServerDbgController.Create(AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
 begin
   FBreakPointIdMap := TBreakPointIdMap.Create;
   FBreakPointIdMap.OnDataPtrCompare := @DoBreakPointCompare;
-  inherited Create(AMemManager);
+  inherited Create(AMemManager, MemModel);
 end;
 
 destructor TFpServerDbgController.Destroy;
@@ -493,7 +494,7 @@ var
   ARunLoop: boolean;
   AnEvent: TFpDebugEvent;
 begin
-  FController := TFpServerDbgController.Create(FMemManager);
+  FController := TFpServerDbgController.Create(FMemManager, FMemManager.MemModel);
   FController.RedirectConsoleOutput:=true;
   FController.OnCreateProcessEvent:=@FControllerCreateProcessEvent;
   FController.OnProcessExitEvent:=@FControllerProcessExitEvent;
@@ -568,10 +569,10 @@ begin
   inherited create(false);
   FCommandQueue := TFpDebugThreadCommandQueue.create(100, INFINITE, 100);
   FListenerList:=TThreadList.Create;
-
   FMemReader := TFpDbgMemReader.Create(self);
+  FMemModel := TFpDbgMemModel.Create;
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
-  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter, FMemModel);
 end;
 
 destructor TFpDebugThread.Destroy;
@@ -583,6 +584,7 @@ begin
   FMemManager.Free;
   FMemConverter.Free;
   FMemReader.Free;
+  FMemModel.Free;
 end;
 
 class function TFpDebugThread.Instance: TFpDebugThread;
