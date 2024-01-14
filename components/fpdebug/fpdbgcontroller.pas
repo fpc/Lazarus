@@ -2133,7 +2133,7 @@ begin
   then
     exit;
 
-  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter, FCurrentProcess, FCurrentThread);
+  Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, MemModel, AMemConverter, FCurrentProcess, FCurrentThread);
   Context.AddReference;
   InitializeCommand(TDbgControllerCallRoutineCmd.Create(self, FunctionAddress, Context));
   Result := Context;

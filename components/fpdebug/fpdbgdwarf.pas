@@ -5728,7 +5728,7 @@ end;
 function TFpSymbolDwarfTypeSubroutine.GetDataAddress(AValueObj: TFpValueDwarf;
   var AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType): Boolean;
 begin
-  inherited;
+  Result := inherited GetDataAddress(AValueObj, AnAddress, ATargetType);
   AnAddress := AValueObj.Context.MemModel.UpdateLocationToCodeAddress(AnAddress);
 end;
 

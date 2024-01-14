@@ -72,6 +72,7 @@ type
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext;
       AMemReader: TFpDbgMemReaderBase;
+      AMemModel: TFpDbgMemModel;
       AMemConverter: TFpDbgMemConvertor;
       ADbgProcess: TDbgProcess;
       ADbgThread: TDbgThread);
@@ -450,10 +451,10 @@ end;
 
 constructor TFpDbgInfoCallContext.Create(
   const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
-  AMemConverter: TFpDbgMemConvertor; ADbgProcess: TDbgProcess;
+  AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor; ADbgProcess: TDbgProcess;
   ADbgThread: TDbgThread);
 begin
-  inherited Create(ABaseContext, AMemReader, AMemConverter);
+  inherited Create(ABaseContext, AMemReader, AMemModel, AMemConverter);
   FDbgProcess := ADbgProcess;
   FDbgThread := ADbgThread;
   FNextParamRegister := 0;

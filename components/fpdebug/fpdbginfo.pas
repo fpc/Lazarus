@@ -662,12 +662,14 @@ type
     FMessage: string;
   protected
     function GetMemManager: TFpDbgMemManager; override;
+    function GetMemModel: TFpDbgMemModel; override;
     function GetAddress: TDbgPtr; override;
     function GetThreadId: Integer; override;
     function GetStackFrame: Integer; override;
     function GetSizeOfAddress: Integer; override;
   public
-    constructor Create(const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase; AMemConverter: TFpDbgMemConvertor);
+    constructor Create(const ABaseContext: TFpDbgLocationContext;
+      AMemReader: TFpDbgMemReaderBase; AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor);
     destructor Destroy; override;
 
     procedure SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
@@ -783,12 +785,12 @@ end;
 
 constructor TFpDbgAbstractCallContext.Create(
   const ABaseContext: TFpDbgLocationContext; AMemReader: TFpDbgMemReaderBase;
-  AMemConverter: TFpDbgMemConvertor);
+  AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor);
 begin
   FBaseContext:=ABaseContext;
   FBaseContext.AddReference;
 
-  FMemModel := TFpDbgMemModel.Create;
+  FMemModel := AMemModel;
   FMemReader := TFpDbgCallMemReader.Create(AMemReader);
   FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter, FMemModel);
 
@@ -813,6 +815,11 @@ end;
 function TFpDbgAbstractCallContext.GetMemManager: TFpDbgMemManager;
 begin
   Result := FMemManager;
+end;
+
+function TFpDbgAbstractCallContext.GetMemModel: TFpDbgMemModel;
+begin
+  Result := FMemModel;
 end;
 
 function TFpDbgAbstractCallContext.GetSizeOfAddress: Integer;

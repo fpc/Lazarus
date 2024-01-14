@@ -155,7 +155,7 @@ type
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
       out AnError: TFpError): boolean; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -637,10 +637,10 @@ begin
 end;
 
 constructor TDbgDarwinProcess.Create(const AFileName: string;
-  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
   AProcessConfig: TDbgProcessConfig);
 begin
-  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
 
   GetDebugAccessRights;
 end;
