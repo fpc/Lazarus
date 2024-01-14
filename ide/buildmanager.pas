@@ -717,6 +717,7 @@ begin
   Result := '';
   if Project1=nil then exit;
 
+  // first take the WorkDir from the active run parameters
   AMode := Project1.RunParameterOptions.GetActiveMode;
   if AMode<>nil then
     Result := AMode.WorkingDirectory;
@@ -725,14 +726,16 @@ begin
   if (Result <> '') and not FilenameIsAbsolute(Result) then
     Result := CreateAbsolutePath(Result, Project1.Directory);
 
-  if (Result='') and (not Project1.IsVirtual) then
-    Result := ChompPathDelim(Project1.Directory);
-
+  // then use the directory of the produced exe
   if Result='' then begin
     Result := ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
     if (Result <> '') and not FilenameIsAbsolute(Result) then
       Result := CreateAbsolutePath(Result, Project1.Directory);
   end;
+
+  // finally use the project directory
+  if (Result='') and (not Project1.IsVirtual) then
+    Result := ChompPathDelim(Project1.Directory);
 end;
 
 procedure TBuildManager.WriteDebug_RunCommandLine;
