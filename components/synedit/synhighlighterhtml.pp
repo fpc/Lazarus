@@ -247,6 +247,7 @@ type
     fAndCode: Integer;
     fRange: TRangeState;
     fLine: PChar;
+    fLineLen: integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: Longint;
     Temp: PChar;
@@ -2343,6 +2344,7 @@ procedure TSynHTMLSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
+  fLineLen := Length(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
   Next;
@@ -2456,14 +2458,14 @@ procedure TSynHTMLSyn.BraceOpenProc;
 begin
   fSimpleTag := False;
   Inc(Run);
-  if (Run <= length(fLine)-2) and (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
+  if (Run <= fLineLen-2) and (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
   then begin
     fRange := rsComment;
     fTokenID := tkComment;
     StartHtmlCodeFoldBlock(cfbtHtmlComment);
     Inc(Run, 3);
   end
-  else if (Run <= length(fLine)-7) and (fLine[Run] = '!') and (fLine[Run + 1] = '[')
+  else if (Run <= fLineLen-7) and (fLine[Run] = '!') and (fLine[Run + 1] = '[')
   and (fLine[Run + 2] = 'C') and (fLine[Run + 3] = 'D') and (fLine[Run + 4] = 'A')
   and (fLine[Run + 5] = 'T') and (fLine[Run + 6] = 'A') and (fLine[Run + 7] = '[') then begin
     fRange := rsCDATA;
@@ -2477,7 +2479,7 @@ begin
     StartHtmlCodeFoldBlock(cfbtHtmlAsp);
     Inc(Run);
   end
-  else if (Run <= length(fLine)-7) and (fLine[Run] = '!') and (upcase(fLine[Run + 1]) = 'D')
+  else if (Run <= fLineLen-7) and (fLine[Run] = '!') and (upcase(fLine[Run + 1]) = 'D')
   and (upcase(fLine[Run + 2]) = 'O') and (upcase(fLine[Run + 3]) = 'C') and (upcase(fLine[Run + 4]) = 'T')
   and (upcase(fLine[Run + 5]) = 'Y') and (upcase(fLine[Run + 6]) = 'P') and (upcase(fLine[Run + 7]) = 'E') then 
   begin
@@ -2522,6 +2524,7 @@ end;
 procedure TSynHTMLSyn.IdentProc;
 var
   R: LongInt;
+  s: string;
 begin
   case fRange of
   rsKey:
@@ -2530,11 +2533,18 @@ begin
       fTokenID := IdentKind((fLine + Run));
       R := Run;
       Inc(Run, fStringLen);
-      if ((FMode = shmXHtml) or (not fSimpleTag)) then
-        if fLine[R] = '/' then
-          EndHtmlNodeCodeFoldBlock(R+1, copy(fline, R+2, fStringLen-1))
-        else if fLine[R] <> '!' then
-          StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, R, copy(fline, R+1, fStringLen));
+      if ((FMode = shmXHtml) or (not fSimpleTag)) then begin
+        if fLine[R] = '/' then begin
+          SetLength(s, fStringLen - 1);
+          move((fLine + R + 1)^, s[1], fStringLen-1);
+          EndHtmlNodeCodeFoldBlock(R+1, s);
+        end
+        else if fLine[R] <> '!' then begin
+          SetLength(s, fStringLen);
+          move((fLine + R)^, s[1], fStringLen);
+          StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, R, s);
+        end;
+      end;
     end;
   rsValue:
     begin
