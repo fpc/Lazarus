@@ -113,20 +113,23 @@ begin
   Result:=false;
   CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
   if FindFirstUTF8(CurSrcDir+GetAllFilesMask,DeleteMask,FileInfo)=0 then begin
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-        continue;
-      CurFilename:=CurSrcDir+FileInfo.Name;
-      if ((FileInfo.Attr and faDirectory)>0)
-         {$ifdef unix} and ((FileInfo.Attr and faSymLink{%H-})=0) {$endif unix} then begin
-        if not DeleteDirectory(CurFilename,false) then exit;
-      end else begin
-        if not DeleteFileUTF8(CurFilename) then exit;
-      end;
-    until FindNextUTF8(FileInfo)<>0;
+    try
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+          continue;
+        CurFilename:=CurSrcDir+FileInfo.Name;
+        if ((FileInfo.Attr and faDirectory)>0)
+           {$ifdef unix} and ((FileInfo.Attr and faSymLink{%H-})=0) {$endif unix} then begin
+          if not DeleteDirectory(CurFilename,false) then exit;
+        end else begin
+          if not DeleteFileUTF8(CurFilename) then exit;
+        end;
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
   end;
-  FindCloseUTF8(FileInfo);
   if (not OnlyChildren) and (not RemoveDirUTF8(CurSrcDir)) then exit;
   Result:=true;
 end;
@@ -562,30 +565,33 @@ begin
       Ambiguous:=false;
       if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then
       begin
-        repeat
-          // check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-          then
-            continue;
-          if CompareFilenamesIgnoreCase(FileInfo.Name,CurFile)=0 then begin
-            //debugln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
-            if FileInfo.Name=CurFile then begin
-              // file found, has already the correct name
-              AliasFile:='';
-              break;
-            end else begin
-              // alias found, but has not the correct name
-              if AliasFile='' then begin
-                AliasFile:=FileInfo.Name;
+        try
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            then
+              continue;
+            if CompareFilenamesIgnoreCase(FileInfo.Name,CurFile)=0 then begin
+              //debugln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
+              if FileInfo.Name=CurFile then begin
+                // file found, has already the correct name
+                AliasFile:='';
+                break;
               end else begin
-                // there are more than one candidate
-                Ambiguous:=true;
+                // alias found, but has not the correct name
+                if AliasFile='' then begin
+                  AliasFile:=FileInfo.Name;
+                end else begin
+                  // there are more than one candidate
+                  Ambiguous:=true;
+                end;
               end;
             end;
-          end;
-        until FindNextUTF8(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
+        finally
+          FindCloseUTF8(FileInfo);
+        end;
       end;
-      FindCloseUTF8(FileInfo);
       if (AliasFile<>'') and (not Ambiguous) then begin
         // better filename found -> replace
         Result:=CurDir+AliasFile+copy(Result,EndPos,length(Result));
@@ -604,25 +610,28 @@ begin
   Result:='';
   CurDir:=ExtractFilePath(ResolveDots(Filename));
   if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile, FileInfo)=0 then begin
-    ShortFilename:=ExtractFilename(Filename);
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      then
-        continue;
-      if CompareFilenamesIgnoreCase(FileInfo.Name,ShortFilename)<>0 then
-        continue;
-      if FileInfo.Name=ShortFilename then begin
-        // fits exactly
-        //Don't return (unaltered) Filename: otherwise possible changes by ResolveDots get lost
+    try
+      ShortFilename:=ExtractFilename(Filename);
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then
+          continue;
+        if CompareFilenamesIgnoreCase(FileInfo.Name,ShortFilename)<>0 then
+          continue;
+        if FileInfo.Name=ShortFilename then begin
+          // fits exactly
+          //Don't return (unaltered) Filename: otherwise possible changes by ResolveDots get lost
+          Result:=CurDir+FileInfo.Name;
+          break;
+        end;
+        // fits case insensitive
         Result:=CurDir+FileInfo.Name;
-        break;
-      end;
-      // fits case insensitive
-      Result:=CurDir+FileInfo.Name;
-    until FindNextUTF8(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
   end;
-  FindCloseUTF8(FileInfo);
 end;
 
 function FindDefaultExecutablePath(const Executable: string;

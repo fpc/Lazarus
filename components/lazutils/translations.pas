@@ -611,11 +611,14 @@ begin
   Path:=ExtractFilePath(Filename);
   NameOnly:=ExtractFileNameOnly(Filename);
   if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then
-    repeat
-      if GetPOFilenameParts(FileInfo.Name, CurUnitName, CurLang) and (NameOnly=CurUnitName) then
-        Result.Add(Path+FileInfo.Name);
-    until FindNextUTF8(FileInfo)<>0;
-  FindCloseUTF8(FileInfo);
+    try
+      repeat
+        if GetPOFilenameParts(FileInfo.Name, CurUnitName, CurLang) and (NameOnly=CurUnitName) then
+          Result.Add(Path+FileInfo.Name);
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
 end;
 
 procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPOFile);
