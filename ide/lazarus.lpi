@@ -1223,7 +1223,10 @@
       <Unit>
         <Filename Value="keymapschemedlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ChooseKeySchemeDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="KeymapSchemeDlg"/>
       </Unit>
       <Unit>
         <Filename Value="gotofrm.pas"/>
