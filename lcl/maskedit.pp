@@ -305,7 +305,6 @@ const
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
     property EditMask: string read FRealEditMask write SetEditMask;
-    property ValidationErrorMode: TMaskEditValidationErrorMode read FValidationErrorMode write FValidationErrorMode default mvemException; experimental;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -315,10 +314,11 @@ const
     procedure SelectAll; override;
     procedure ValidateEdit; virtual;
 
-    property EnableSets: Boolean read FEnableSets write FEnableSets; experimental;
+    property EnableSets: Boolean read FEnableSets write FEnableSets;
+    property ValidationErrorMode: TMaskEditValidationErrorMode read FValidationErrorMode write FValidationErrorMode default mvemException;
     property Modified: Boolean read GetModified write SetModified;
 
-    property OnValidationError: TNotifyEvent read FOnValidationError write FOnValidationError; experimental;
+    property OnValidationError: TNotifyEvent read FOnValidationError write FOnValidationError;
   end;
 
   { TMaskEdit }
@@ -327,7 +327,6 @@ const
   public
     property IsMasked;
     property EditText;
-    property ValidationErrorMode;
   published
     property Align;
     property Alignment;
@@ -344,6 +343,7 @@ const
     property DragKind;
     property DragMode;
     property Enabled;
+    property EnableSets;
     property Font;
     property MaxLength;
     property ParentBiDiMode;
@@ -355,6 +355,7 @@ const
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property ValidationErrorMode;
     property Visible;
 
     property EditMask;
@@ -385,6 +386,7 @@ const
     property OnMouseWheelUp;
     property OnStartDock;
     property OnStartDrag;
+    property OnValidationError;
     property OnUTF8KeyPress;
   end;
 
