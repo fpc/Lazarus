@@ -2618,9 +2618,9 @@ not valid. Raised with the message in <var>SMaskEditNoMatch</var>.
 <short>Enables or disables use of set notation in the EditMask.</short>
 <descr>
 <p>
-<var>EnableSets</var> is an experimental <var>Boolean</var> property. It is 
-used when a new value assigned to the EditMask property is parsed to 
-reconstruct the internal mask characters and literals for the control.
+<var>EnableSets</var> is a <var>Boolean</var> property used when a new value 
+assigned to the EditMask property is parsed to reconstruct the internal mask 
+characters and literals for the control.
 </p>
 <p>
 When set to <b>False</b>, the '[' and ']' characters used in set notation are 
@@ -2653,10 +2653,22 @@ Event handler signalled when the value for the masked edit control is invalid.
 <p>
 <var>OnValidationError</var> is a <var>TNotifyEvent</var> property with the 
 event handler signalled when the value for the masked edit control is invalid 
-for its <var>EditMask</var>.
+for its <var>EditMask</var>. OnValidationError is signalled (when assigned) 
+from the ValidateEdit method and occurs when focus is removed from the control 
+and ValidationErrorMode is set mvemEvent. An application can implement and 
+assign a handler to perform actions needed to respond to an invalid value 
+entered in the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomMaskEdit.ValidateEdit"/>
+<link id="TCustomMaskEdit.ValidationErrorMode"/>
+<link id="TCustomMaskEdit.IsMasked"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.EditText"/>
+<link id="TMaskEditValidationErrorMode"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <element name="TMaskEdit">
