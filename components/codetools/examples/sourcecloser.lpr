@@ -252,13 +252,16 @@ var
     Info: TSearchRec;
   begin
     if FindFirstUTF8(Pattern,faAnyFile,Info)=0 then begin
-      repeat
-        if (Info.Name='.') or (Info.Name='..') then continue;
-        if (faDirectory and Info.Attr)>0 then continue;
-        AddFile(ExtractFilePath(Pattern)+Info.Name);
-      until FindNextUTF8(Info)<>0;
+      try
+        repeat
+          if (Info.Name='.') or (Info.Name='..') then continue;
+          if (faDirectory and Info.Attr)>0 then continue;
+          AddFile(ExtractFilePath(Pattern)+Info.Name);
+        until FindNextUTF8(Info)<>0;
+      finally
+        FindCloseUTF8(Info);
+      end;
     end;
-    FindCloseUTF8(Info);
   end;
 
 var

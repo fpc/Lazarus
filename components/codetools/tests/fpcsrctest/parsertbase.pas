@@ -110,10 +110,14 @@ var
 begin
   Dir:=CleanAndExpandDirectory(GetCurrentDirUTF8);
   if FindFirstUTF8(Dir+'pt_*.pas',faAnyFile,Info)=0 then begin
-    repeat
-      Filename:=Dir+Info.Name;
-      TestParseFile(Filename);
-    until FindNextUTF8(Info)<>0;
+    try
+      repeat
+        Filename:=Dir+Info.Name;
+        TestParseFile(Filename);
+      until FindNextUTF8(Info)<>0;
+    finally
+      FindCloseUTF8(Info);
+    end;
   end;
 end;
 

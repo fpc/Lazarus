@@ -725,47 +725,50 @@ begin
 
   if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      then
-        continue;
-      if not FilenameIsPascalUnit(FileInfo.Name,false) then continue;
-      case SearchCase of
-      ctsfcDefault,ctsfcLoUpCase:
-        if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
-                                length(FileInfo.Name),
-                                PChar(Pointer(AnUnitName)),
-                                length(AnUnitName),false)=0)
-        then begin
-          CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
-          if CurUnitName=AnUnitName then begin
-            Result:=FileInfo.Name;
-            break;
-          end else if ((LowerCaseUnitname=CurUnitName)
-          or (UpperCaseUnitname=CurUnitName)) then begin
-            Result:=FileInfo.Name;
+    try
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+        then
+          continue;
+        if not FilenameIsPascalUnit(FileInfo.Name,false) then continue;
+        case SearchCase of
+        ctsfcDefault,ctsfcLoUpCase:
+          if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
+                                  length(FileInfo.Name),
+                                  PChar(Pointer(AnUnitName)),
+                                  length(AnUnitName),false)=0)
+          then begin
+            CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
+            if CurUnitName=AnUnitName then begin
+              Result:=FileInfo.Name;
+              break;
+            end else if ((LowerCaseUnitname=CurUnitName)
+            or (UpperCaseUnitname=CurUnitName)) then begin
+              Result:=FileInfo.Name;
+            end;
           end;
-        end;
 
-      ctsfcAllCase:
-        if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
-                                length(FileInfo.Name),
-                                PChar(Pointer(AnUnitName)),length(AnUnitName),
-                                false)=0)
-        then begin
-          Result:=FileInfo.Name;
-          CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
-          if CurUnitName=AnUnitName then
-            break;
-        end;
+        ctsfcAllCase:
+          if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),// pointer type cast avoids #0 check
+                                  length(FileInfo.Name),
+                                  PChar(Pointer(AnUnitName)),length(AnUnitName),
+                                  false)=0)
+          then begin
+            Result:=FileInfo.Name;
+            CurUnitName:=ExtractFileNameOnly(FileInfo.Name);
+            if CurUnitName=AnUnitName then
+              break;
+          end;
 
-      else
-        RaiseNotImplemented;
-      end;
-    until FindNextUTF8(FileInfo)<>0;
+        else
+          RaiseNotImplemented;
+        end;
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
   end;
-  FindCloseUTF8(FileInfo);
   if Result<>'' then Result:=Base+Result;
 end;
 
@@ -864,34 +867,37 @@ begin
   
   if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
   begin
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      then
-        continue;
-      case SearchCase of
-      ctsfcDefault,ctsfcLoUpCase:
-        if (ShortFilename=FileInfo.Name) then begin
-          Result:=FileInfo.Name;
-          break;
-        end else if (LowerCaseFilename=FileInfo.Name)
-        or (UpperCaseFilename=FileInfo.Name)
+    try
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
         then
-          Result:=FileInfo.Name;
+          continue;
+        case SearchCase of
+        ctsfcDefault,ctsfcLoUpCase:
+          if (ShortFilename=FileInfo.Name) then begin
+            Result:=FileInfo.Name;
+            break;
+          end else if (LowerCaseFilename=FileInfo.Name)
+          or (UpperCaseFilename=FileInfo.Name)
+          then
+            Result:=FileInfo.Name;
 
-      ctsfcAllCase:
-        // do not use CompareFilenamesIgnoreCase
-        if SysUtils.CompareText(ShortFilename,FileInfo.Name)=0 then begin
-          Result:=FileInfo.Name;
-          if ShortFilename=FileInfo.Name then break;
+        ctsfcAllCase:
+          // do not use CompareFilenamesIgnoreCase
+          if SysUtils.CompareText(ShortFilename,FileInfo.Name)=0 then begin
+            Result:=FileInfo.Name;
+            if ShortFilename=FileInfo.Name then break;
+          end;
+
+        else
+          RaiseNotImplemented;
         end;
-
-      else
-        RaiseNotImplemented;
-      end;
-    until FindNextUTF8(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
   end;
-  FindCloseUTF8(FileInfo);
   if Result<>'' then Result:=Base+Result;
 end;
 
@@ -1087,25 +1093,28 @@ begin
       Base:=FindDiskFilename(Base);
       if FindFirstUTF8(Base+FileMask,faAnyFile,FileInfo)=0 then
       begin
-        repeat
-          // check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-          then
-            continue;
-          if (SysUtils.CompareText(FileInfo.Name,ShortFile)=0)
-          or (CompareFilenamesIgnoreCase(FileInfo.Name,ShortFile)=0) then begin
-            if FileInfo.Name=ShortFile then begin
-              // file found, with correct name
-              Result:=FileInfo.Name;
-              break;
-            end else begin
-              // alias found, but has not the correct name
-              Result:=FileInfo.Name;
+        try
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            then
+              continue;
+            if (SysUtils.CompareText(FileInfo.Name,ShortFile)=0)
+            or (CompareFilenamesIgnoreCase(FileInfo.Name,ShortFile)=0) then begin
+              if FileInfo.Name=ShortFile then begin
+                // file found, with correct name
+                Result:=FileInfo.Name;
+                break;
+              end else begin
+                // alias found, but has not the correct name
+                Result:=FileInfo.Name;
+              end;
             end;
-          end;
-        until FindNextUTF8(FileInfo)<>0;
+          until FindNextUTF8(FileInfo)<>0;
+        finally
+          FindCloseUTF8(FileInfo);
+        end;
       end;
-      FindCloseUTF8(FileInfo);
       if Result<>'' then Result:=Base+Result;
     end;
   else

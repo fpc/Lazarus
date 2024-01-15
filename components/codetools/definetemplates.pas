@@ -1339,40 +1339,43 @@ var
     if Level>MaxLevel then exit;
     //DebugLn(['Search CurDir=',CurDir]);
     if FindFirstUTF8(Directory+CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        inc(FileCount);
-        if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-          OnProgress(nil,0,-1,'Scanned files: '+IntToStr(FileCount),Abort);
-          if Abort then break;
-        end;
-        ShortFilename:=FileInfo.Name;
-        if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
-          continue;
-        //debugln(['Search ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
-        Filename:=CurDir+ShortFilename;
-        if (FileInfo.Attr and faDirectory)>0 then begin
-          // directory
-          if (ExcludeDirMask='')
-          or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
-          then begin
-            Search(Filename+PathDelim,Level+1);
+      try
+        repeat
+          inc(FileCount);
+          if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+            OnProgress(nil,0,-1,'Scanned files: '+IntToStr(FileCount),Abort);
             if Abort then break;
-          end else begin
-            //DebugLn(['Search DIR MISMATCH ',Filename]);
           end;
-        end else begin
-          // file
-          if (IncludeFileMask='')
-          or FilenameIsMatching(IncludeFileMask,ShortFilename,true) then begin
-            //DebugLn(['Search ADD ',Filename]);
-            Add(Filename);
+          ShortFilename:=FileInfo.Name;
+          if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+            continue;
+          //debugln(['Search ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+          Filename:=CurDir+ShortFilename;
+          if (FileInfo.Attr and faDirectory)>0 then begin
+            // directory
+            if (ExcludeDirMask='')
+            or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
+            then begin
+              Search(Filename+PathDelim,Level+1);
+              if Abort then break;
+            end else begin
+              //DebugLn(['Search DIR MISMATCH ',Filename]);
+            end;
           end else begin
-            //DebugLn(['Search MISMATCH ',Filename]);
+            // file
+            if (IncludeFileMask='')
+            or FilenameIsMatching(IncludeFileMask,ShortFilename,true) then begin
+              //DebugLn(['Search ADD ',Filename]);
+              Add(Filename);
+            end else begin
+              //DebugLn(['Search MISMATCH ',Filename]);
+            end;
           end;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
+      end;
     end;
-    FindCloseUTF8(FileInfo);
   end;
 
 var
@@ -1986,29 +1989,32 @@ begin
       Directory:=TrimAndExpandDirectory(SearchUnitPaths[i]);
       if (Directory='') then continue;
       if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
-        repeat
-          inc(FileCount);
-          if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-            OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
-              ), Abort);
-            if Abort then break;
-          end;
-          ShortFilename:=FileInfo.Name;
-          if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
-            continue;
-          //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
-          Filename:=Directory+ShortFilename;
-          if FilenameExtIn(ShortFilename,['.pas','.pp','.p','.ppu']) then begin
-            File_Name:=ExtractFileNameOnly(Filename);
-            if (not Units.Contains(File_Name))
-            or (not FilenameExtIs(ShortFilename,'.ppu',true)
-              and FilenameExtIs(Units[File_Name],'ppu',true) )
-            then
-              Units[File_Name]:=Filename;
-          end;
-        until FindNextUTF8(FileInfo)<>0;
+        try
+          repeat
+            inc(FileCount);
+            if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+              OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+                ), Abort);
+              if Abort then break;
+            end;
+            ShortFilename:=FileInfo.Name;
+            if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+              continue;
+            //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+            Filename:=Directory+ShortFilename;
+            if FilenameExtIn(ShortFilename,['.pas','.pp','.p','.ppu']) then begin
+              File_Name:=ExtractFileNameOnly(Filename);
+              if (not Units.Contains(File_Name))
+              or (not FilenameExtIs(ShortFilename,'.ppu',true)
+                and FilenameExtIs(Units[File_Name],'ppu',true) )
+              then
+                Units[File_Name]:=Filename;
+            end;
+          until FindNextUTF8(FileInfo)<>0;
+        finally
+          FindCloseUTF8(FileInfo);
+        end;
       end;
-      FindCloseUTF8(FileInfo);
     end;
 
   // inc files
@@ -2018,27 +2024,30 @@ begin
       Directory:=TrimAndExpandDirectory(SearchIncludePaths[i]);
       if (Directory='') then continue;
       if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
-        repeat
-          inc(FileCount);
-          if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-            OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
-              ), Abort);
-            if Abort then break;
-          end;
-          ShortFilename:=FileInfo.Name;
-          if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
-            continue;
-          //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
-          Filename:=Directory+ShortFilename;
-          if FilenameExtIs(ShortFilename,'.inc') then begin
-            File_Name:=ExtractFileName(Filename);
-            if (not Includes.Contains(File_Name))
-            then
-              Includes[File_Name]:=Filename;
-          end;
-        until FindNextUTF8(FileInfo)<>0;
+        try
+          repeat
+            inc(FileCount);
+            if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+              OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+                ), Abort);
+              if Abort then break;
+            end;
+            ShortFilename:=FileInfo.Name;
+            if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+              continue;
+            //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+            Filename:=Directory+ShortFilename;
+            if FilenameExtIs(ShortFilename,'.inc') then begin
+              File_Name:=ExtractFileName(Filename);
+              if (not Includes.Contains(File_Name))
+              then
+                Includes[File_Name]:=Filename;
+            end;
+          until FindNextUTF8(FileInfo)<>0;
+        finally
+          FindCloseUTF8(FileInfo);
+        end;
       end;
-      FindCloseUTF8(FileInfo);
     end;
 end;
 

@@ -546,14 +546,18 @@ begin
   Directory:=AppendPathDelim(Directory);
 
   if FindFirstUTF8(Directory+aFileMask,faAnyFile,Info)=0 then begin
-    repeat
-      if faDirectory and Info.Attr>0 then continue;
-      aFilename:=Info.Name;
-      if not FilenameIsPascalUnit(aFilename) then continue;
-      if Verbose then
-        debugln(['TTestFindDeclaration.TestFiles File="',aFilename,'"']);
-      FindDeclarations(Directory+aFilename);
-    until FindNextUTF8(Info)<>0;
+    try
+      repeat
+        if faDirectory and Info.Attr>0 then continue;
+        aFilename:=Info.Name;
+        if not FilenameIsPascalUnit(aFilename) then continue;
+        if Verbose then
+          debugln(['TTestFindDeclaration.TestFiles File="',aFilename,'"']);
+        FindDeclarations(Directory+aFilename);
+      until FindNextUTF8(Info)<>0;
+    finally
+      FindCloseUTF8(Info);
+    end;
   end;
 end;
 
