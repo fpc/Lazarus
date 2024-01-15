@@ -289,26 +289,29 @@ var
 begin
   Dir:=AppendPathDelim(TrimFilename(Dir));
   if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
-    repeat
-      if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
-      or (FileInfo.Name[1]='.')
-      then
-        continue;
-      Filename:=Dir+FileInfo.Name;
-      if faDirectory and FileInfo.Attr>0 then
-      begin
-        if Recursive then
-          CleanDir(Filename)
-      end
-      else begin
-        if FilenameExtIn(FileInfo.Name,['.ppu','.o','.rst','.rsj']) then begin
-          if not DeleteFileUTF8(Filename) then
-            debugln(['Error : (lazarus) Clean directory: failed to delete file "',Filename,'"']);
+    try
+      repeat
+        if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..')
+        or (FileInfo.Name[1]='.')
+        then
+          continue;
+        Filename:=Dir+FileInfo.Name;
+        if faDirectory and FileInfo.Attr>0 then
+        begin
+          if Recursive then
+            CleanDir(Filename)
+        end
+        else begin
+          if FilenameExtIn(FileInfo.Name,['.ppu','.o','.rst','.rsj']) then begin
+            if not DeleteFileUTF8(Filename) then
+              debugln(['Error : (lazarus) Clean directory: failed to delete file "',Filename,'"']);
+          end;
         end;
-      end;
-    until FindNextUTF8(FileInfo)<>0;
+      until FindNextUTF8(FileInfo)<>0;
+    finally
+      FindCloseUTF8(FileInfo);
+    end;
   end;
-  FindCloseUTF8(FileInfo);
 end;
 
 procedure TLazarusBuilder.CleanLazarusSrcDir;

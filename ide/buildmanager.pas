@@ -1727,49 +1727,52 @@ begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
     if FindFirstUTF8(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     begin
-      ShortFilename:=ExtractFileName(Filename);
-      IsPascalUnit:=FilenameHasPascalExt(ShortFilename);
-      AUnitName:=ExtractFilenameOnly(ShortFilename);
-      repeat
-        if (FileInfo.Name='.') or (FileInfo.Name='..')
-        or (FileInfo.Name='')
-        or ((FileInfo.Attr and faDirectory)<>0) then continue;
-        if CompareFilenames(ShortFilename,FileInfo.Name)=0 then continue;
+      try
+        ShortFilename:=ExtractFileName(Filename);
+        IsPascalUnit:=FilenameHasPascalExt(ShortFilename);
+        AUnitName:=ExtractFilenameOnly(ShortFilename);
+        repeat
+          if (FileInfo.Name='.') or (FileInfo.Name='..')
+          or (FileInfo.Name='')
+          or ((FileInfo.Attr and faDirectory)<>0) then continue;
+          if CompareFilenames(ShortFilename,FileInfo.Name)=0 then continue;
 
-        if (SysUtils.CompareText(ShortFilename,FileInfo.Name)=0)
-        then begin
-          // same name different case => ambiguous
-        end else if IsPascalUnit and FilenameHasPascalExt(FileInfo.Name)
-           and (SysUtils.CompareText(AUnitName,ExtractFilenameOnly(FileInfo.Name))=0)
-        then begin
-          // same unit name => ambiguous
-        end else
-          continue;
+          if (SysUtils.CompareText(ShortFilename,FileInfo.Name)=0)
+          then begin
+            // same name different case => ambiguous
+          end else if IsPascalUnit and FilenameHasPascalExt(FileInfo.Name)
+             and (SysUtils.CompareText(AUnitName,ExtractFilenameOnly(FileInfo.Name))=0)
+          then begin
+            // same unit name => ambiguous
+          end else
+            continue;
 
-        CurFilename:=ADirectory+FileInfo.Name;
-        if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
-          if IDEMessageDialog(lisDeleteAmbiguousFile,
-            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete,
-                   [CurFilename, LineEnding, ShortFilename, LineEnding+LineEnding]),
-            mtConfirmation,[mbYes,mbNo])=mrNo
-          then continue;
-        end;
-        if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
-        then begin
-          Result:=DeleteFileInteractive(CurFilename);
-          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
-        end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
-        begin
-          Result:=BackupFileForWrite(CurFilename);
-          if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
-          if FileExistsUTF8(CurFilename) then begin
+          CurFilename:=ADirectory+FileInfo.Name;
+          if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
+            if IDEMessageDialog(lisDeleteAmbiguousFile,
+              Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete,
+                     [CurFilename, LineEnding, ShortFilename, LineEnding+LineEnding]),
+              mtConfirmation,[mbYes,mbNo])=mrNo
+            then continue;
+          end;
+          if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
+          then begin
             Result:=DeleteFileInteractive(CurFilename);
             if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+          end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
+          begin
+            Result:=BackupFileForWrite(CurFilename);
+            if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+            if FileExistsUTF8(CurFilename) then begin
+              Result:=DeleteFileInteractive(CurFilename);
+              if not (Result in [mrOK,mrIgnore]) then exit(mrCancel);
+            end;
           end;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
+      end;
     end;
-    FindCloseUTF8(FileInfo);
   end;
   Result:=mrOk;
 end;

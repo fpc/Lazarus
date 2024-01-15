@@ -340,24 +340,27 @@ var
     if FindFirstUTF8(MainDirectory+GetAllFilesMask,
                           faAnyFile,FileInfo)=0
     then begin
-      repeat
-        // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-        then continue;
-        FullFilename:=MainDirectory+FileInfo.Name;
-        if (FileInfo.Attr and faDirectory)>0 then begin
-          if SubDirsCheckbox.Checked then begin
-            // search recursively
-            if not SearchInDirectory(AppendPathDelim(FullFilename),Lvl+1) then
-              break;
+      try
+        repeat
+          // check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+          then continue;
+          FullFilename:=MainDirectory+FileInfo.Name;
+          if (FileInfo.Attr and faDirectory)>0 then begin
+            if SubDirsCheckbox.Checked then begin
+              // search recursively
+              if not SearchInDirectory(AppendPathDelim(FullFilename),Lvl+1) then
+                break;
+            end;
+          end else begin
+            if FileMatches(FullFilename) then
+              List.Add(FullFilename);
           end;
-        end else begin
-          if FileMatches(FullFilename) then
-            List.Add(FullFilename);
-        end;
-      until FindNextUTF8(FileInfo)<>0;
+        until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
+      end;
     end;
-    FindCloseUTF8(FileInfo);
     Result:=true;
   end;
   

@@ -565,11 +565,14 @@ begin
   xDir := ExtractFilePath(FFileName);
   if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
-    repeat
-      DeleteFile(xDir+xRec.Name);
-    until FindNextUTF8(xRec) <> 0;
+    try
+      repeat
+        DeleteFile(xDir+xRec.Name);
+      until FindNextUTF8(xRec) <> 0;
+    finally
+      FindCloseUTF8(xRec);
+    end;
   end;
-  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.DeleteRequest(const aRequestID: Integer): Boolean;
@@ -605,17 +608,20 @@ begin
   Result := -1;
   if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
-    repeat
-      Result := RequestFileNameToID(xRec.Name);
-      if Result >= 0 then
-      begin
-        outFileName := GetRequestFileName(Result);
-        if not CanReadMessage(outFileName, outStream, outMsgType, outMsgLen) then
-          Result := -1;
-      end;
-    until (Result >= 0) or (FindNextUTF8(xRec) <> 0);
+    try
+      repeat
+        Result := RequestFileNameToID(xRec.Name);
+        if Result >= 0 then
+        begin
+          outFileName := GetRequestFileName(Result);
+          if not CanReadMessage(outFileName, outStream, outMsgType, outMsgLen) then
+            Result := -1;
+        end;
+      until (Result >= 0) or (FindNextUTF8(xRec) <> 0);
+    finally
+      FindCloseUTF8(xRec);
+    end;
   end;
-  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.FindHighestPendingRequestId: Integer;
@@ -626,13 +632,16 @@ begin
   Result := -1;
   if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
-    repeat
-      xRequestID := RequestFileNameToID(xRec.Name);
-      if xRequestID > Result then
-        Result := xRequestID;
-    until FindNextUTF8(xRec) <> 0;
+    try
+      repeat
+        xRequestID := RequestFileNameToID(xRec.Name);
+        if xRequestID > Result then
+          Result := xRequestID;
+      until FindNextUTF8(xRec) <> 0;
+    finally
+      FindCloseUTF8(xRec);
+    end;
   end;
-  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.GetPendingRequestCount: Integer;
@@ -642,12 +651,15 @@ begin
   Result := 0;
   if FindFirstUTF8(GetRequestPrefix+AllFilesMask, faAnyFile, xRec) = 0 then
   begin
-    repeat
-      if RequestFileNameToID(xRec.Name) >= 0 then
-        Inc(Result);
-    until FindNextUTF8(xRec) <> 0;
+    try
+      repeat
+        if RequestFileNameToID(xRec.Name) >= 0 then
+          Inc(Result);
+      until FindNextUTF8(xRec) <> 0;
+    finally
+      FindCloseUTF8(xRec);
+    end;
   end;
-  FindCloseUTF8(xRec);
 end;
 
 function TIPCServer.PeekRequest(out outRequestID: Integer; out

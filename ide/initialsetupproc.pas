@@ -460,8 +460,8 @@ var
     SubFile:='bin/$(TargetCPU)-$(TargetOS)/'+ShortCompFile;
     if CheckFile(ADir+SubFile,List) then
       exit;
-    try
-      if FindFirstUTF8(ADir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(ADir+AllFilesMask,faAnyFile,FileInfo)=0 then begin
+      try
         repeat
           // check if special file
           if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
@@ -470,9 +470,9 @@ var
           and CheckFile(ADir+FileInfo.Name+PathDelim+SubFile,List) then
             exit;
         until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
       end;
-    finally
-      FindCloseUTF8(FileInfo);
     end;
     Result:=false;
   end;

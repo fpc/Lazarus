@@ -705,19 +705,22 @@ begin
         //DebugLn(['TCheckCompilerOptsDlg.CheckFPCUnitPathsContainSources Directory="',Directory,'"']);
         if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
         then begin
-          repeat
-            // check if special file
-            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-              continue;
-            // check extension
-            if FilenameHasPascalExt(FileInfo.Name) then begin
-              AddWarning(lisCCOFPCUnitPathHasSource+Directory+FileInfo.Name);
-              WarnedDirectories.Add(Directory);
-              break;
-            end;
-          until FindNextUTF8(FileInfo)<>0;
+          try
+            repeat
+              // check if special file
+              if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+                continue;
+              // check extension
+              if FilenameHasPascalExt(FileInfo.Name) then begin
+                AddWarning(lisCCOFPCUnitPathHasSource+Directory+FileInfo.Name);
+                WarnedDirectories.Add(Directory);
+                break;
+              end;
+            until FindNextUTF8(FileInfo)<>0;
+          finally
+            FindCloseUTF8(FileInfo);
+          end;
         end;
-        FindCloseUTF8(FileInfo);
       end;
     end;
   end;

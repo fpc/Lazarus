@@ -133,17 +133,20 @@ begin
 
   if FindFirstUTF8('/proc/*', faDirectory, Rec) = 0 then
   begin
-    repeat
-      Val(Rec.Name, Pid, Code);
-      if (Code = 0) then
-      begin
-        ProcName := GetProcName;
-        item := TRunningProcessInfo.Create(Pid, ProcName);
-        AList.Add(item);
-      end;
-    until FindNextUTF8(Rec) <> 0;
+    try
+      repeat
+        Val(Rec.Name, Pid, Code);
+        if (Code = 0) then
+        begin
+          ProcName := GetProcName;
+          item := TRunningProcessInfo.Create(Pid, ProcName);
+          AList.Add(item);
+        end;
+      until FindNextUTF8(Rec) <> 0;
+    finally
+      FindCloseUTF8(Rec);
+    end;
   end;
-  FindCloseUTF8(Rec);
 end;
 {$else}
 {$ifdef darwin}
