@@ -390,7 +390,7 @@ const
     property OnUTF8KeyPress;
   end;
 
-function FormatMaskText(const AEditMask: string; const Value: string ): string;
+function FormatMaskText(const AEditMask: string; const Value: string; EnableSets: Boolean = False): string;
 procedure SplitEditMask(AEditMask: String; out AMaskPart: String; out AMaskSave: Boolean; out ASpaceChar: Char);
 
 procedure Register;
@@ -587,12 +587,13 @@ end;
 
 
 
-function FormatMaskText(const AEditMask: string; const Value: string): string;
+function FormatMaskText(const AEditMask: string; const Value: string; EnableSets: Boolean): string;
 var
   CME: TCustomMaskEdit;
 begin
   CME := TCustomMaskEdit.Create(nil);
   try
+    CME.EnableSets := EnableSets;
     CME.EditMask := AEditMask;
     if CME.IsMasked then
     begin
