@@ -79,6 +79,17 @@ uses
   spe,    // Incomplete gamma function
   inv;    // Inverse matrix
 
+function AllZero(x: TArbFloatArray): Boolean;
+var
+  i: Integer;
+begin
+  Result := false;
+  for i := 0 to High(x) do
+    if x[i] <> 0.0 then
+      exit;
+  Result := true;
+end;
+
 function FitBaseFunc_Const(x: ArbFloat; Param: Integer): ArbFloat;
 begin
   Result := 1.0;
@@ -150,7 +161,7 @@ var
   i, n: Integer;
 begin
   n := Length(y);
-  hasSig := (dy <> nil) and (Length(dy) > 0);
+  hasSig := (dy <> nil) and (Length(dy) > 0) and not AllZero(dy);
   Assert(n = Length(yhat));
   if hasSig then
     Assert(n = Length(dy));
@@ -226,7 +237,7 @@ begin
     Result.ErrCode := fitDimError;
     exit;
   end;
-  hasSig := (dy <> nil) and (Length(dy) > 0);
+  hasSig := (dy <> nil) and (Length(dy) > 0) and not AllZero(dy);
   if hasSig and (n <> Length(dy)) then begin
     Result.ErrCode := fitDimError;
     exit;
