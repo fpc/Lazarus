@@ -41,10 +41,11 @@ type
   TBubbleOverrideColor = (bocBrush, bocPen);
   TBubbleOverrideColors = set of TBubbleOverrideColor;
   TBubbleRadiusUnits = (
-    bruX,           // Circle with radius given in x axis units
-    bruY,           // Circle with radius given in y axis units
-    bruXY,          // Ellipse
-    bruPercentage   // Percentage of the smallest dimension of plot area
+    bruX,                // Circle with radius given in x axis units
+    bruY,                // Circle with radius given in y axis units
+    bruXY,               // Ellipse
+    bruPercentageRadius, // Bubble radius is percentage of the smallest dimension of plot area
+    bruPercentageArea    // dto., but bubble area
   );
 
   { TBubbleSeries }
@@ -574,13 +575,18 @@ begin
   inherited Assign(ASource);
 end;
 
+{ Adjusts a scaling factor such that the largest bubble radius is the
+  given percentage (FBubbleRadiusPercentage) of the smallest edge of
+  the chart area (ARect). }
 function TBubbleSeries.CalcBubbleScalingFactor(const ARect: TRect): Double;
 var
   rMin, rMax: Double;
 begin
-  if FBubbleRadiusUnits = bruPercentage then
+  if FBubbleRadiusUnits in [bruPercentageRadius, bruPercentageArea] then
   begin
     Source.YRange(1, rMin, rMax);
+    if FBubbleRadiusUnits = bruPercentageArea then
+      rMax := sqrt(abs(rMax));
     Result := Min(ARect.Width, ARect.Height) * FBubbleRadiusPercentage * PERCENT / abs(rMax);
   end else
     Result := 1.0;
@@ -737,10 +743,16 @@ begin
         ARect.TopLeft := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x - r, sp.y - r)));
         ARect.BottomRight := ParentChart.GraphToImage(AxisToGraph(DoublePoint(sp.x + r, sp.y + r)));
       end;
-    bruPercentage:
+    bruPercentageRadius:
       begin
         p := ParentChart.GraphToImage(AxisToGraph(sp));
         ri := round(r * AFactor);
+        ARect := Rect(p.x - ri, p.y - ri, p.x + ri, p.y + ri);
+      end;
+    bruPercentageArea:
+      begin
+        p := ParentChart.GraphToImage(AxisToGraph(sp));
+        ri := round(sqrt(abs(r)) * AFactor);
         ARect := Rect(p.x - ri, p.y - ri, p.x + ri, p.y + ri);
       end;
   end;
