@@ -170,6 +170,7 @@ type
 
     procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
   public
+    KeyWindow: NSWindow;
     // modal session
     Modals : TList;
     ModalCounter: Integer; // the cheapest way to determine if modal window was called

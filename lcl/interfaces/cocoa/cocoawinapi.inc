@@ -2148,8 +2148,13 @@ var
   lclobj : TObject;
 begin
   Result := 0;
+
   win := NSApp.keyWindow;
-  if not Assigned(win) then Exit;
+  if not Assigned(win) then
+    win := CocoaWidgetSet.KeyWindow;
+  if not Assigned(win) then
+    Exit;
+
   // assuming that that the content view of Window
   // is the focused handle and return it, by default
   Result := HWND(win.contentView);
