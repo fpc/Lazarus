@@ -223,6 +223,8 @@ const
   DW_FORM_ref_udata = $15;    // reference
   DW_FORM_indirect  = $16;    //
 
+  DW_FORM_MAX  = $16;    //
+
 
   { DWARF operation encodings }
   

@@ -215,6 +215,7 @@ type
     FMap: TMap;  // Abbrevs
     {$Endif}
     FDefinitions: array of TDwarfAbbrevEntry;
+    FValid: Boolean;
     function GetEntryPointer(AIndex: Integer): PDwarfAbbrevEntry; inline;
     procedure LoadAbbrevs(AnAbbrevDataPtr: Pointer);
   public
@@ -224,6 +225,7 @@ type
     function FindLe128bFromPointer(AnAbbrevPtr: Pointer; out AData: TDwarfAbbrev{Pointer}): Pointer; reintroduce;
     {$Endif}
     property EntryPointer[AIndex: Integer]: PDwarfAbbrevEntry read GetEntryPointer;
+    property Valid: Boolean read FValid;
   end;
 {%endregion Abbreviation Data / Section "debug_abbrev"}
 
@@ -1560,6 +1562,7 @@ var
   DbgVerbose: Boolean;
   f: TDwarfAbbrevFlags;
 begin
+  FValid := False;
   abbrev := 0;
   CurAbbrevIndex := 0;
   DbgVerbose := (FPDBG_DWARF_VERBOSE_LOAD <> nil) and (FPDBG_DWARF_VERBOSE_LOAD^.Enabled);
@@ -1616,6 +1619,10 @@ begin
         Include(f, dafHasAbstractOrigin);
 
       form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+      if form > DW_FORM_MAX then begin
+        DebugLn(FPDBG_DWARF_WARNINGS, ['Unknown FW_FORM: ', form, ' found. Aborting']);
+        exit;
+      end;
 
       MakeRoom(CurAbbrevIndex + 1);
       FDefinitions[CurAbbrevIndex].Attribute := attrib;
@@ -1636,6 +1643,7 @@ begin
 
     Inc(pword(AnAbbrevDataPtr));
   end;
+  FValid := True;
 end;
 
 constructor TDwarfAbbrevList.Create(AnAbbrData, AnAbbrDataEnd: Pointer; AnAbbrevOffset,
@@ -4245,7 +4253,8 @@ begin
   Result := FCompilationUnits.Count;
 
   for i := 0 to Result - 1 do
-    TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
+    if TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker <> nil then
+      TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
 end;
 
 function TFpDwarfInfo.CompilationUnitForAddr(AnAddr: TDBGPtr
@@ -5060,6 +5069,11 @@ begin
 
   FFirstScope.Init(nil); // invalid
 
+  if not FAbbrevList.Valid then begin
+    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.Create(Self, nil);
+    exit;
+  end;
+
   FComputeNameHashesWorker := TFpThreadWorkerComputeNameHashes.Create(Self);
   FComputeNameHashesWorker.AddRef;
   FScanAllWorker := TFpThreadWorkerScanAll.Create(Self, FComputeNameHashesWorker);
@@ -5068,6 +5082,7 @@ begin
   Scope := FScanAllWorker.FindCompileUnit(FScopeList);
   if not Scope.IsValid then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
+    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.Create(Self, nil);
     Exit;
   end;
   FValid := True;
@@ -5131,6 +5146,8 @@ destructor TDwarfCompilationUnit.Destroy;
   var
     n: Integer;
   begin
+    if FLineNumberMap = nil then
+      exit;
     for n := 0 to FLineNumberMap.Count - 1 do
       Dispose(PDWarfLineMap(FLineNumberMap.Objects[n]));
     FreeAndNil(FLineNumberMap);
