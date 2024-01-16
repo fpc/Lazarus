@@ -1363,6 +1363,7 @@ begin
 
     FImageLoaderList := Loader.ImageLoaderList;
     FMemReader := Loader.MemReader;
+    FMemModel := Loader.MemModel;
     FMemManager := Loader.MemManager;
     FDwarfInfo := Loader.DwarfInfo;
     Loader.Free;
