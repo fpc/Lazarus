@@ -572,6 +572,10 @@ msgstr "Šalinti pažymėtuosius laukelius"
 msgid "%d lines, %d chars"
 msgstr "%d eilučių, %d simbolių"
 
+#: objinspstrconsts.oisenablesetshint
+msgid "Only affects the EnableSets property of the Test Input"
+msgstr ""
+
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
 msgstr "Vardinis tipas"

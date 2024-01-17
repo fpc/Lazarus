@@ -263,6 +263,7 @@ resourcestring
   oisCharactersForBlanks = 'Characters for Blanks';
   oisTestInput = 'Test Input';
   oisOpenMaskFile = 'Open masks file (*.dem)';
+  oisEnableSetsHint = 'Only affects the EnableSets property of the Test Input';
   cActionListEditorDialogCategory = 'Dialog';
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';

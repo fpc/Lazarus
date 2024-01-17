@@ -1,13 +1,13 @@
 object MaskEditorForm: TMaskEditorForm
   Left = 458
-  Height = 287
+  Height = 326
   Top = 248
   Width = 507
   ActiveControl = InputMaskEdit
   AutoSize = True
   BorderStyle = bsDialog
   Caption = 'Input Mask Editor'
-  ClientHeight = 287
+  ClientHeight = 326
   ClientWidth = 507
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
@@ -74,7 +74,7 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideBottom.Control = LoadSampleMasksButton
     AnchorSideBottom.Side = asrBottom
     Left = 201
-    Height = 198
+    Height = 223
     Top = 24
     Width = 300
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -94,7 +94,7 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 25
-    Top = 197
+    Top = 222
     Width = 75
     BorderSpacing.Around = 6
     Caption = '&Masks...'
@@ -134,13 +134,13 @@ object MaskEditorForm: TMaskEditorForm
   end
   object TestInputPanel: TPanel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = SaveLiteralCheckBox
+    AnchorSideTop.Control = EnableSetsCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = InputMaskEdit
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 66
-    Top = 125
+    Top = 150
     Width = 189
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -187,8 +187,8 @@ object MaskEditorForm: TMaskEditorForm
     AnchorSideTop.Control = LoadSampleMasksButton
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 53
-    Top = 228
+    Height = 67
+    Top = 253
     Width = 495
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
@@ -201,6 +201,23 @@ object MaskEditorForm: TMaskEditorForm
     CancelButton.DefaultCaption = True
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object EnableSetsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SaveLiteralCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Hint = 'Only affects the EnableSets property of the Test Input'
+    Top = 125
+    Width = 74
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'EnableSets'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
+    OnClick = EnableSetsCheckBoxClick
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open mask file (*.dem)'

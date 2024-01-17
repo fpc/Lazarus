@@ -32,6 +32,7 @@ type
 
   TMaskEditorForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    EnableSetsCheckBox: TCheckBox;
     LoadSampleMasksButton: TButton;
     SaveLiteralCheckBox: TCheckBox;
     InputMaskEdit: TEdit;
@@ -44,6 +45,7 @@ type
     TestMaskEdit: TMaskEdit;
     OpenDialog1: TOpenDialog;
     TestInputPanel: TPanel;
+    procedure EnableSetsCheckBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure LoadSampleMasksButtonClick(Sender: TObject);
     procedure SampleMasksListBoxDrawItem(Control: TWinControl; Index: Integer;
@@ -54,14 +56,17 @@ type
     procedure SampleMasksListBoxClick(Sender: TObject);
     procedure MaskEditorFormCreate(Sender: TObject);
   private
+    FEnableSets: Boolean;
     function ConstructEditmask: String;
     function GetEditMask: string;
     procedure LoadDEMFile(AFileName: string);
     procedure ReConstructEditmask;
     procedure SetEditMask(AValue: string);
+    procedure SetEnableSets(AValue: Boolean);
     procedure UpdateTestEditor;
   public
     property EditMask: string read GetEditMask write SetEditMask;
+    property EnableSets: Boolean write SetEnableSets;
   end; 
 
   { TEditMaskProperty }
@@ -70,6 +75,7 @@ type
   public
     function  GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
+    function GetMaskEdit: TCustomMaskEdit;
   end;
 
   { TMaskEditEditor }
@@ -105,7 +111,7 @@ begin
   Mask := Line;
 end;
 
-function MaskDoFormatText(const EditMask: string; const Value: string; Blank: Char): String;
+function MaskDoFormatText(const EditMask: string; const Value: string; EnableSets: Boolean): String;
 var
   P: Integer;
   S: String;
@@ -115,7 +121,7 @@ begin
   P := LastDelimiter(';', S);
   if P <> 0 then
   begin
-    S[P + 1] := Blank;
+    S[P + 1] := #32;
     dec(P);
     while (P > 0) and (S[P] <> ';') do
       dec(P);
@@ -123,7 +129,7 @@ begin
      S[P + 1] := '0';
   end;
   try
-    Result := FormatMaskText(S, Value);
+    Result := FormatMaskText(S, Value, EnableSets);
   except
     Result := Value;
   end;
@@ -157,6 +163,11 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TMaskEditorForm.EnableSetsCheckBoxClick(Sender: TObject);
+begin
+  SetEnableSets(EnableSetsCheckBox.Checked);
+end;
+
 procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
 begin
   OpenDialog1.InitialDir:=ExtractFileDir(ParamStrUTF8(0));
@@ -186,7 +197,7 @@ begin
     ListBox.Canvas.TextStyle := NewTextStyle;
 
     ParseMaskLine(ListBox.Items[Index], AMaskCaption, AMaskExample, AEditMask);
-    AMaskExample := MaskDoFormatText(AEditMask, AMaskExample, ' ');
+    AMaskExample := MaskDoFormatText(AEditMask, AMaskExample, FEnableSets);
 
     R1 := ARect;
     R2 := ARect;
@@ -293,6 +304,27 @@ begin
   UpdateTestEditor;
 end;
 
+procedure TMaskEditorForm.SetEnableSets(AValue: Boolean);
+var
+  OldMask: String;
+  WasMasked: Boolean;
+begin
+  FEnableSets := AValue;
+  WasMasked := TestMaskEdit.IsMasked;
+  if WasMasked then
+  begin
+    OldMask := TestMaskEdit.EditMask;
+    TestMaskEdit.EditMask := '';
+  end;
+  TestMaskEdit.EnableSets := FEnableSets;
+  if WasMasked then
+  begin
+    TestMaskEdit.EditMask := OldMask;
+  end;
+  //since this is not only called from clicking on the checkbox
+  EnableSetsCheckBox.Checked := FEnableSets;
+end;
+
 procedure TMaskEditorForm.UpdateTestEditor;
 begin
   TestMaskEdit.EditMask:=InputMaskEdit.Text;
@@ -308,9 +340,13 @@ end;
 procedure TEditMaskProperty.Edit;
 var
   MaskEditorForm: TMaskEditorForm;
+  C: TPersistent;
+  AMaskEdit: TCustomMaskEdit;
 begin
   MaskEditorForm:=TMaskEditorForm.Create(Application);
   try
+    AMaskEdit := GetMaskEdit;
+    MaskEditorForm.EnableSets := AMaskEdit.EnableSets;
     MaskEditorForm.EditMask:=GetValue;
     if MaskEditorForm.ShowModal = mrOk then
       SetValue(MaskEditorForm.EditMask);
@@ -318,6 +354,25 @@ begin
     MaskEditorForm.Free;
   end;
 end;
+
+
+function TEditMaskProperty.GetMaskEdit: TCustomMaskEdit;
+var
+  i: Integer;
+  C: TPersistent;
+begin
+  Result := nil;
+  for i:=0 to PropCount-1 do
+  begin
+    C := GetComponent(i);
+    if C is TCustomMaskEdit then
+    begin
+      Result := TCustomMaskEdit(C);
+      Exit;
+    end;
+  end;
+end;
+
 
 { TMaskEditEditor }
 
@@ -329,6 +384,7 @@ begin
   begin
     MaskEditorForm := TMaskEditorForm.Create(Application);
     try
+      MaskEditorForm.EnableSets := MaskEdit.EnableSets;
       MaskEditorForm.EditMask := MaskEdit.EditMask;
       if MaskEditorForm.ShowModal = mrOk then
         MaskEdit.EditMask := MaskEditorForm.EditMask;

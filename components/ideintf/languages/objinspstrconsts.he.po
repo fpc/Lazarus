@@ -590,6 +590,10 @@ msgstr "מחק את השדה(ות) שנבחרו"
 msgid "%d lines, %d chars"
 msgstr "שורות d%, תווים d%"
 
+#: objinspstrconsts.oisenablesetshint
+msgid "Only affects the EnableSets property of the Test Input"
+msgstr ""
+
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
 msgstr "Enumeration"

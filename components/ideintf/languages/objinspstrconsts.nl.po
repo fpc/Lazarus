@@ -582,6 +582,10 @@ msgstr ""
 msgid "%d lines, %d chars"
 msgstr "%d regels, %d letters"
 
+#: objinspstrconsts.oisenablesetshint
+msgid "Only affects the EnableSets property of the Test Input"
+msgstr ""
+
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
 msgstr "Enumeration"

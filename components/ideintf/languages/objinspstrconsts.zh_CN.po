@@ -568,6 +568,10 @@ msgstr "删除选择的字段"
 msgid "%d lines, %d chars"
 msgstr "%d行, %d字符"
 
+#: objinspstrconsts.oisenablesetshint
+msgid "Only affects the EnableSets property of the Test Input"
+msgstr ""
+
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
 msgstr "枚举"
