@@ -1,6 +1,7 @@
 ﻿unit Diff;
 
 {$mode delphi}{$H+}
+{$WARN 6058 off}  // supress note: call function/procedure marked as inline is not inlined
 
 (*******************************************************************************
 * Component         TDiff                                                      *

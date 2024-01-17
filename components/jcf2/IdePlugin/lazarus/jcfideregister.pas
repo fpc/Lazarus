@@ -47,7 +47,9 @@ uses
 type
   TIDEFormattingSettings = class(TAbstractIDEEnvironmentOptions)
   public
+    {$push}{$warn 5024 off}
     constructor Create(const pbReadRegFile: boolean);
+    {$pop}
     destructor Destroy; override;
     class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -154,11 +156,13 @@ var
   // a module var
   mcIDEFormattingSettings: TIDEFormattingSettings = nil;
 
+{$push}{$warn 5024 off}
 constructor TIDEFormattingSettings.Create(const pbReadRegFile: boolean);
 begin
   inherited Create();
   FormattingSettings;  //create JCF FormattingSetting if not exitst.
 end;
+{$pop}
 
 destructor TIDEFormattingSettings.Destroy;
 begin

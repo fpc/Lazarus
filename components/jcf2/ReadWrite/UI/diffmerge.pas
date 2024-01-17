@@ -39,6 +39,8 @@
 unit diffmerge;
 
 {$mode objfpc}{$H+}
+{$WARN 6058 off}  // supress note: call function/procedure marked as inline is not inlined
+
 interface
 
 uses
