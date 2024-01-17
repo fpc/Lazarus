@@ -83,7 +83,7 @@ const
     'FpcExe',
     'FpcSrc',
     'Make',
-    'Debbugger',
+    'Debugger',
     'Fppkg',
     'Setup',
     'MissingPackageFile',
