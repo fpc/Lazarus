@@ -823,16 +823,33 @@ var
   NewGraphic: TGraphic;
   GraphicClass: TGraphicClass;
   ok: boolean;
+  isRegisteredFormat: Boolean = true;
 begin
   Stream.Read(GraphicClassName[0], 1);
   Stream.Read(GraphicClassName[1], length(GraphicClassName));
   GraphicClass := GetPicFileFormats.FindClassName(GraphicClassName);
+  if GraphicClass = nil then
+  begin
+    // This case happens when the stream does not contain the name of a registered graphic class
+    isRegisteredFormat := false;
+    // In Delphi the image data follow immediately after the graphic class name
+    GraphicClass := GetPicFileFormats.FindByStreamFormat(Stream);
+    if GraphicClass = nil then
+    begin
+      // In Lazarus we must skip 4 bytes (image size) to get to the image data.
+      Stream.ReadDWord;
+      GraphicClass := GetPicFileFormats.FindByStreamFormat(Stream);
+    end;
+  end;
   NewGraphic := nil;
   if GraphicClass <> nil then begin
     NewGraphic := GraphicClass.Create;
     ok:=false;
     try
-      NewGraphic.ReadData(Stream);
+      if isRegisteredFormat then
+        NewGraphic.ReadData(Stream)
+      else
+        NewGraphic.LoadFromStream(Stream);
       ok:=true;
     finally
       if not ok then NewGraphic.Free;
