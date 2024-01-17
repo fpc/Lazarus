@@ -643,6 +643,10 @@ msgstr ""
 msgid "Input Mask:"
 msgstr "Įvedimo kaukė:"
 
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr ""
+
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
 msgstr "Įterpti lapo pavadinimą"

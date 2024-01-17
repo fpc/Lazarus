@@ -642,6 +642,10 @@ msgstr ""
 msgid "Input Mask:"
 msgstr "Vstupní maska:"
 
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr ""
+
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
 msgstr "Vložit jméno stránky"

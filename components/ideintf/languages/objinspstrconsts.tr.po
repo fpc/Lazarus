@@ -638,6 +638,10 @@ msgstr "Tasarım zamanında kayan nokta özelliğinin pozitif veya negatif Infin
 msgid "Input Mask:"
 msgstr "Maske gir:"
 
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr ""
+
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
 msgstr "Sayfa ismi ekle"

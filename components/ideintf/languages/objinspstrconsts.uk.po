@@ -641,6 +641,10 @@ msgstr "Встановлення властивості з рухомою ком
 msgid "Input Mask:"
 msgstr "Маска введення:"
 
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr ""
+
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
 msgstr "Назва сторінки, що вставляється"

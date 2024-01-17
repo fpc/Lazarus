@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-10-10 01:36+0300\n"
+"PO-Revision-Date: 2024-01-18 02:47+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -569,7 +569,7 @@ msgstr "%d строк, %d символов"
 
 #: objinspstrconsts.oisenablesetshint
 msgid "Only affects the EnableSets property of the Test Input"
-msgstr ""
+msgstr "Затрагивает только свойство EnableSets тестового ввода"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -637,6 +637,10 @@ msgstr "Присвоение вещественному свойству зна�
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
 msgstr "Маска ввода:"
+
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr "Редактор маски ввода"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"

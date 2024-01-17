@@ -665,6 +665,10 @@ msgstr ""
 msgid "Input Mask:"
 msgstr "Input Mask:"
 
+#: objinspstrconsts.oisinputmaskeditor
+msgid "Input Mask Editor"
+msgstr ""
+
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
 msgstr ""
