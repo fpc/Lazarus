@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lclstrconsts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-02 16:22+0100\n"
-"PO-Revision-Date: 2023-05-24 07:47+0200\n"
+"PO-Revision-Date: 2024-01-17 10:49+0100\n"
 "Last-Translator: Slavo Gbúr <slavusec@azet.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "Language: sk\n"
@@ -615,7 +615,7 @@ msgstr "Nenašiel sa zobrazovač pre tento typ obsahu pomoci"
 
 #: lclstrconsts.rshidedetails
 msgid "Hide details"
-msgstr ""
+msgstr "Skryť podrobnosti"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -1099,7 +1099,7 @@ msgstr "Výber fontu"
 
 #: lclstrconsts.rsshowdetails
 msgid "Show details"
-msgstr ""
+msgstr "Zobraziť podrobnosti"
 
 #: lclstrconsts.rssilvercolorcaption
 msgid "Silver"
