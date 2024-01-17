@@ -141,12 +141,15 @@ procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
 var
   aDemFile: string;
 begin
+  Caption := oisInputMaskEditor;
   LoadSampleMasksButton.Caption := oisMasks;
   SaveLiteralCheckBox.Caption := oisSaveLiteralCharacters;
   InputMaskLabel.Caption := oisInputMask;
   SampleMasksLabel.Caption := oisSampleMasks;
   CharactersForBlanksLabel.Caption := oisCharactersForBlanks;
   TestInputLabel.Caption := oisTestInput;
+
+  EnableSetsCheckBox.Hint := oisEnableSetsHint;
 
   if LazarusIDE<>nil then
     aDemFile:=LazarusIDE.GetPrimaryConfigPath

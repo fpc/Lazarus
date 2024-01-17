@@ -257,6 +257,7 @@ resourcestring
   // Mask Editor
   sccsMaskEditor = 'Edit Mask Editor ...';
   oisMasks = 'Masks ...';
+  oisInputMaskEditor = 'Input Mask Editor';
   oisSaveLiteralCharacters = 'Save Literal Characters';
   oisInputMask = 'Input Mask:';
   oisSampleMasks = 'Sample Masks:';
