@@ -1306,6 +1306,7 @@ const
 var
   InterceptAtFirst: Boolean;
   threadname: String;
+  t: TDbgThread;
 begin
   if AThread <> nil then
     TDbgWinThread(AThread).EndSingleStepOverBreakPoint;
@@ -1338,9 +1339,19 @@ begin
             if AThread <> nil then begin
               if not ReadString(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1]), 200, threadname) then
                 threadname := 'error getting threadname';
-              with TDbgWinThread(AThread) do begin
-                FName := threadname;
-                FDoNotPollName := True;
+              t := AThread;
+              if (MDebugEvent.Exception.ExceptionRecord.NumberParameters >= 3) and
+                 (MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2] <> 0) and
+                 (MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2] <> INVALID_HANDLE_VALUE)
+              then begin
+                if not GetThread(Integer(MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2]), t) then
+                  t := nil;
+              end;
+              if t <> nil then begin
+                with TDbgWinThread(t) do begin
+                  FName := threadname;
+                  FDoNotPollName := True;
+                end;
               end;
             end;
             result := deInternalContinue;
