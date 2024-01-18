@@ -938,7 +938,7 @@ procedure TFpThreadWorkerThreadsUpdate.UpdateThreads_DecRef(Data: PtrInt);
 var
   Threads: TThreadsSupplier;
   ThreadArray: TFPDThreadArray;
-  i: Integer;
+  i, j: Integer;
   CallStack: TDbgCallstackEntryList;
   t, n: TThreadEntry;
   FpThr: TDbgThread;
@@ -950,6 +950,15 @@ begin
 
   if (Threads.CurrentThreads <> nil) then begin
     ThreadArray := FpDebugger.FDbgController.CurrentProcess.GetThreadArray;
+    for i := 1 to high(ThreadArray) do begin
+      j := i;
+      while (j > 0) and (ThreadArray[j].Num < ThreadArray[j-1].Num) do begin
+        FpThr := ThreadArray[j];
+        ThreadArray[j] := ThreadArray[j-1];
+        ThreadArray[j-1] := FpThr;
+        dec(j);
+      end;
+    end;
     for i := 0 to high(ThreadArray) do begin
       FpThr := ThreadArray[i];
       ThrState := dtsPaused;
@@ -961,21 +970,21 @@ begin
       if Assigned(CallStack) and (CallStack.Count > 0) then begin
         c := CallStack.Items[0];
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState);
+          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState);
+          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
       end
       else begin
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState);
+          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState);
+          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
       end;
     end;
 
@@ -1470,8 +1479,9 @@ end;
 procedure TFPThreads.RequestEntries;
 var
   ThreadArray: TFPDThreadArray;
-  i: Integer;
+  i, j: Integer;
   ThreadEntry: TThreadEntry;
+  FpThr: TDbgThread;
 begin
   if CurrentThreads = nil then exit;
   if Debugger = nil then Exit;
@@ -1480,6 +1490,15 @@ begin
   CurrentThreads.Clear;
 
   ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
+  for i := 1 to high(ThreadArray) do begin
+    j := i;
+    while (j > 0) and (ThreadArray[j].Num < ThreadArray[j-1].Num) do begin
+      FpThr := ThreadArray[j];
+      ThreadArray[j] := ThreadArray[j-1];
+      ThreadArray[j-1] := FpThr;
+      dec(j);
+    end;
+  end;
   for i := 0 to high(ThreadArray) do begin
     // TODO: Maybe get the address. If FpDebug has already read the ThreadState.
     if TFpDebugDebugger(Debugger).FSuspendedThreads.IndexOf(ThreadArray[i].ID) < 0 then

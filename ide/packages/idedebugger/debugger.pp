@@ -1648,7 +1648,8 @@ type
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: TDbgThreadState;
-                       AState: TDebuggerDataState = ddsValid): TThreadEntry; override;
+                       AState: TDebuggerDataState = ddsValid;
+                       AThreadNum: Integer = 0): TThreadEntry; override;
     procedure SetValidity({%H-}AValidity: TDebuggerDataState); override;
     property Entries[const AnIndex: Integer]: TIdeThreadEntry read GetEntry; default;
     property EntryById[const AnID: Integer]: TIdeThreadEntry read GetEntryById;
@@ -1676,7 +1677,8 @@ type
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: TDbgThreadState;
-                       AState: TDebuggerDataState = ddsValid): TThreadEntry; override;
+                       AState: TDebuggerDataState = ddsValid;
+                       AThreadNum: Integer = 0): TThreadEntry; override;
     procedure SetValidity(AValidity: TDebuggerDataState); override;
   end;
 
@@ -5321,10 +5323,10 @@ function TCurrentThreads.CreateEntry(const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName,
   FullName: String; const ALine: Integer; const AThreadId: Integer;
   const AThreadName: String; const AThreadState: TDbgThreadState;
-  AState: TDebuggerDataState): TThreadEntry;
+  AState: TDebuggerDataState; AThreadNum: Integer): TThreadEntry;
 begin
   Result := inherited CreateEntry(AnAdress, AnArguments, AFunctionName, FileName,
-    FullName, ALine, AThreadId, AThreadName, AThreadState, AState);
+    FullName, ALine, AThreadId, AThreadName, AThreadState, AState, AThreadNum);
   TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 
@@ -5579,6 +5581,7 @@ procedure TIdeThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const A
 begin
   TIdeCallStackEntry(TopFrame).SaveDataToXMLConfig(AConfig, APath, AUnitInvoPrv);
   AConfig.SetValue(APath + 'ThreadId', ThreadId);
+  AConfig.SetValue(APath + 'ThreadNum', ThreadNum);
   AConfig.SetValue(APath + 'ThreadName', ThreadName);
   AConfig.SetValue(APath + 'ThreadState', ThreadState, TypeInfo(TDbgThreadState));
 end;
@@ -5636,10 +5639,10 @@ function TIdeThreads.CreateEntry(const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName,
   FullName: String; const ALine: Integer; const AThreadId: Integer;
   const AThreadName: String; const AThreadState: TDbgThreadState;
-  AState: TDebuggerDataState): TThreadEntry;
+  AState: TDebuggerDataState; AThreadNum: Integer): TThreadEntry;
 begin
   Result := TIdeThreadEntry.Create(AnAdress, AnArguments, AFunctionName, FileName,
-    FullName, ALine, AThreadId, AThreadName, AThreadState, AState);
+    FullName, ALine, AThreadId, AThreadName, AThreadState, AState, AThreadNum);
   TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 

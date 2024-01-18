@@ -242,6 +242,7 @@ type
   TDbgThread = class(TObject)
   private
     FNextIsSingleStep: boolean;
+    FNum: Integer;
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
@@ -322,6 +323,7 @@ type
     function IsAtStartOfLine: boolean;
     procedure StoreStepInfo(AnAddr: TDBGPtr = 0);
     property ID: Integer read FID;
+    property Num: Integer read FNum;
     property Handle: THandle read FHandle;
     property Name: String read GetName;
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
@@ -357,8 +359,11 @@ type
   { TThreadMap }
 
   TThreadMap = class(TMap)
+  private
+    FNumCounter: integer;
   public
     function GetEnumerator: TThreadMapEnumerator;
+    procedure Add(const AId, AData); reintroduce;
   end;
 
   // Simple array to pass a list of multiple libraries in a parameter. Does
@@ -1096,6 +1101,13 @@ end;
 function TThreadMap.GetEnumerator: TThreadMapEnumerator;
 begin
   Result := TThreadMapEnumerator.Create(Self);
+end;
+
+procedure TThreadMap.Add(const AId, AData);
+begin
+  inc(FNumCounter);
+  TDbgThread(AData).FNum := FNumCounter;
+  inherited Add(AId, AData);
 end;
 
 { TLibraryMapEnumerator }

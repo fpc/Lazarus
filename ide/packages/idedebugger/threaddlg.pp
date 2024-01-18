@@ -144,7 +144,10 @@ begin
       if Threads[i].ThreadId = Threads.CurrentThreadId
       then lvThreads.Items[i].ImageIndex := imgCurrentLine
       else lvThreads.Items[i].ImageIndex := -1;
-      lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
+      if Threads[i].ThreadNum > 0 then
+        lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadNum) + ': ' + IntToStr(Threads[i].ThreadId)
+      else
+        lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
       lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
       lvThreads.Items[i].SubItems[2] := THREAD_STATE_NAMES[Threads[i].ThreadState];
       s := Threads[i].TopFrame.Source;
@@ -194,7 +197,10 @@ var
 begin
   Item := lvThreads.Selected;
   if Item = nil then exit;
-  id := StrToIntDef(Item.SubItems[0], -1);
+  if TIdeThreadEntry(Item.Data) <> nil then
+    id := TIdeThreadEntry(Item.Data).ThreadId
+  else
+    id := StrToIntDef(Item.SubItems[0], -1);
   if id < 0 then exit;
   if GetSelectedSnapshot = nil
   then ThreadsMonitor.ChangeCurrentThread(id)
