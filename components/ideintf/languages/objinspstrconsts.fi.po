@@ -589,6 +589,11 @@ msgstr "Virhe kuvaa ladattaessa"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Virhe ladattaessa kuvaa \"%s\":%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -693,6 +698,10 @@ msgstr "Tuo kuva"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "Maskit ..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

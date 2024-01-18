@@ -265,6 +265,9 @@ resourcestring
   oisTestInput = 'Test Input';
   oisOpenMaskFile = 'Open masks file (*.dem)';
   oisEnableSetsHint = 'Only affects the EnableSets property of the Test Input';
+  oisMaskSampleFilter = 'EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)';
+  oisErrorReadingSampleFile = 'Error reading file %s';
+
   cActionListEditorDialogCategory = 'Dialog';
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';

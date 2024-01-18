@@ -596,6 +596,11 @@ msgstr "Hiba kép betöltése közben"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Hiba a(z) \"%s\" kép betöltése közben:%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -700,6 +705,10 @@ msgstr "Kép betöltése"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "Maszkok ..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

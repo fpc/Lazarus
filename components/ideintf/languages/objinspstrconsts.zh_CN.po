@@ -593,6 +593,11 @@ msgstr "加载图片错误"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "加载图片\"%s\":%s%s错误"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -697,6 +702,10 @@ msgstr "加载图片"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "掩码..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

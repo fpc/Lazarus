@@ -597,6 +597,11 @@ msgstr "Klaida įkeliant paveikslą"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Įkeliant paveikslą įvyko klaida „%s“:%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -701,6 +706,10 @@ msgstr "Įkelti paveikslą"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "Kaukės…"
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

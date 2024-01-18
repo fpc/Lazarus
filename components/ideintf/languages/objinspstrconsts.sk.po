@@ -601,6 +601,11 @@ msgstr "Chyba pri načítaní obrázka"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Chyba pri načítaní obrázka \"%s\":%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -705,6 +710,10 @@ msgstr "Načítať obrázok"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "Masky..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

@@ -608,6 +608,11 @@ msgstr "Fout bij het laden van het plaatje"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Fout bij het laden van plaatje \"%s\":%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -714,6 +719,10 @@ msgstr "Laad plaatje"
 #| msgid "Masks..."
 msgid "Masks ..."
 msgstr "Maskers..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

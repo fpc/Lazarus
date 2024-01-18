@@ -619,6 +619,11 @@ msgstr "Kesalahan pengambilan gambar"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Kesalahan pengambilan gambar %s%s%s:%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -725,6 +730,10 @@ msgstr "Ambil gambar"
 #| msgid "Masks..."
 msgid "Masks ..."
 msgstr "Masks..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

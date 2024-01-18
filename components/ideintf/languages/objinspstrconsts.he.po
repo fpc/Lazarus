@@ -616,6 +616,11 @@ msgstr "שגיאה בעריכת דמות"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "שגיאה בטעינת דמות %s%s%s:%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -725,6 +730,10 @@ msgstr "טען תמונה"
 #| msgid "Masks..."
 msgid "Masks ..."
 msgstr "מסכות ..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"

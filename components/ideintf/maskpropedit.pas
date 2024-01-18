@@ -31,6 +31,13 @@ type
   { TMaskEditorForm }
 
   TMaskEditorForm = class(TForm)
+  private
+  type
+    TParsedSample = record
+      Caption, Example, FormattedExample, Mask: String;
+    end;
+    TParsedSamples = array of TParsedSample;
+  published
     ButtonPanel1: TButtonPanel;
     EnableSetsCheckBox: TCheckBox;
     LoadSampleMasksButton: TButton;
@@ -57,8 +64,13 @@ type
     procedure MaskEditorFormCreate(Sender: TObject);
   private
     FEnableSets: Boolean;
+    ParsedSamples: TParsedSamples;
     function ConstructEditmask: String;
     function GetEditMask: string;
+    function MaskDoFormatText(const EditMask: string; const Value: string; EnableSets: Boolean): String;
+    function ParseMaskLineDelphi(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
+    function ParseMaskLineLazarus(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
+    procedure LoadAndCleanSampleFile(Fn: String; EnableSets: Boolean; List: TStrings; out AParsedSamples: TParsedSamples);  //out list of record?
     procedure LoadDEMFile(AFileName: string);
     procedure ReConstructEditmask;
     procedure SetEditMask(AValue: string);
@@ -94,46 +106,6 @@ implementation
 
 {$R *.lfm}
 
-procedure ParseMaskLine(Line: String; out Caption, Example, Mask: String);
-begin
-  // in delphi .dem files every mask line contains:
-  // mask name|mask example|mask
-
-  // 1. Extract caption from Line
-  Caption := Copy(Line, 1, Pos(' | ', Line) - 1);
-  Delete(Line, 1, Length(Caption) + 3);
-
-  // 2. Extract example from Line
-  Example := Copy(Line, 1, Pos(' | ', Line) - 1);
-  Delete(Line, 1, Length(Example) + 3);
-
-  // 3. Copy what we have to Mask
-  Mask := Line;
-end;
-
-function MaskDoFormatText(const EditMask: string; const Value: string; EnableSets: Boolean): String;
-var
-  P: Integer;
-  S: String;
-begin
-  // cheat maskutils while it has no its own MaskDoFormatText
-  S := EditMask;
-  P := LastDelimiter(';', S);
-  if P <> 0 then
-  begin
-    S[P + 1] := #32;
-    dec(P);
-    while (P > 0) and (S[P] <> ';') do
-      dec(P);
-    if P <> 0 then
-     S[P + 1] := '0';
-  end;
-  try
-    Result := FormatMaskText(S, Value, EnableSets);
-  except
-    Result := Value;
-  end;
-end;
 
 { TMaskEditorForm }
 
@@ -150,6 +122,7 @@ begin
   TestInputLabel.Caption := oisTestInput;
 
   EnableSetsCheckBox.Hint := oisEnableSetsHint;
+  OpenDialog1.Filter := oisMaskSampleFilter;
 
   if LazarusIDE<>nil then
     aDemFile:=LazarusIDE.GetPrimaryConfigPath
@@ -185,7 +158,6 @@ var
   OldTextStyle: TTextStyle;
   NewTextStyle: TTextStyle;
   ListBox: TListBox absolute Control;
-  AMaskCaption, AMaskExample, AEditMask: String;
   R1, R2: TRect;
 begin
   ListBox.Canvas.FillRect(ARect);
@@ -199,15 +171,12 @@ begin
     NewTextStyle.Layout := tlCenter;
     ListBox.Canvas.TextStyle := NewTextStyle;
 
-    ParseMaskLine(ListBox.Items[Index], AMaskCaption, AMaskExample, AEditMask);
-    AMaskExample := MaskDoFormatText(AEditMask, AMaskExample, FEnableSets);
-
     R1 := ARect;
     R2 := ARect;
     R1.Right := (R1.Left + R1.Right) div 2;
     R2.Left := R1.Right + 1;
-    ListBox.Canvas.TextRect(R1, R1.Left + 2, R1.Top, AMaskCaption);
-    ListBox.Canvas.TextRect(R2, R2.Left + 2, R2.Top, AMaskExample);
+    ListBox.Canvas.TextRect(R1, R1.Left + 2, R1.Top, ParsedSamples[Index].Caption);
+    ListBox.Canvas.TextRect(R2, R2.Left + 2, R2.Top, ParsedSamples[Index].FormattedExample);
     ListBox.Canvas.MoveTo(R2.Left - 1, R2.Top);
     ListBox.Canvas.LineTo(R2.Left - 1, R2.Bottom);
     ListBox.Canvas.Brush.Style := OldBrushStyle;
@@ -269,15 +238,11 @@ begin
 end;
 
 procedure TMaskEditorForm.SampleMasksListBoxClick(Sender: TObject);
-var
-  AMaskCaption, AMaskExample, AEditMask: String;
 begin
   if (SampleMasksListBox.Items.Count > 0) then
   begin
     TestMaskEdit.Text := '';
-    ParseMaskLine(SampleMasksListBox.Items[SampleMasksListBox.ItemIndex],
-      AMaskCaption, AMaskExample, AEditMask);
-    EditMask := AEditMask;
+    EditMask := ParsedSamples[SampleMasksListBox.ItemIndex].Mask;
   end;
 end;
 
@@ -286,10 +251,174 @@ begin
   Result:=ConstructEditMask;
 end;
 
+function TMaskEditorForm.MaskDoFormatText(const EditMask: string; const Value: string; EnableSets: Boolean): String;
+var
+  P: Integer;
+  S, MaskPart: String;
+  MaskSave: Boolean;
+  SpaceChar: Char;
+begin
+  // cheat maskutils while it has no its own MaskDoFormatText
+  SplitEditMask(EditMask, MaskPart, MaskSave, SpaceChar);
+  // in order to construct the displayed string from the "example text" field,
+  // we must set MaskSave to False and SpaceChar to #32, otherwise the result
+  // won't be the same as in Delphi
+  S := MaskPart+';0; ';
+  try
+    Result := FormatMaskText(S, Value, EnableSets);
+  except
+    Result := Value;
+  end;
+end;
+
+function TMaskEditorForm.ParseMaskLineDelphi(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
+var
+  P1, P2: SizeInt;
+begin
+   {
+   in delphi .dem files every line is made up like this:
+
+   Maskname
+   zero or more spaces
+   a pipe symbol (|)
+   one space
+   Example Text
+   one space
+   a pipe symbol (|)
+   one space
+   Editmask
+   zero or more spaces
+
+   Trailing spaces from Maskname will be stripped
+   The first and last character from the Example Text field will be stripped away (hence they should be spaces)
+   The first character from the Editmask field will be stripped away, as well as trailing spaces
+   So notice that except for 2 places, whitespace is significant.
+   }
+
+  Result := False;
+  //we need at least 2 | symbols
+  P1 := Pos('|', Line);
+  if (P1 = 0) then
+    Exit;
+  P2 := Pos('|', Line, P1 + 1);
+  if (P2 = 0) then
+    Exit;
+  aCaption := TrimRight(Copy(Line, 1, P1-1));
+  if (aCaption = '') then
+    Exit;
+  aExample := (Copy(Line, P1+2, P2-P1-3));
+  if (aExample = '') then
+    Exit;
+  aMask := TrimRight(Copy(Line,P2+2,MaxInt));
+  if (aMask = '') then
+    Exit;
+  aFormattedExample := MaskDoFormatText(aMask, aExample, EnableSets);
+  Result := True;
+end;
+
+function TMaskEditorForm.ParseMaskLineLazarus(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
+var
+  P1, P2: SizeInt;
+begin
+   {
+   in Lazarus .lem files every line is made up like this:
+
+   Maskname
+   zero or more spaces
+   a pipe symbol (|)
+   zero or more spaces
+   Example Text
+   zero or more spaces
+   a pipe symbol (|)
+   zero or more spaces
+   Editmask
+   zero or more spaces
+
+   Trailing spaces from Maskname will be stripped
+   Leading and trailing spaces from Example Text and EditMask will be stripped.
+
+   Lines starting with '//' will be ignored
+   }
+
+  Result := False;
+  if (TrimLeft(Line).StartsWith('//')) then
+    Exit;
+  //we need at least 2 | symbols
+  P1 := Pos('|', Line);
+  if (P1 = 0) then
+    Exit;
+  P2 := Pos('|', Line, P1 + 1);
+  if (P2 = 0) then
+    Exit;
+  aCaption := TrimRight(Copy(Line, 1, P1-1));
+  if (aCaption = '') then
+    Exit;
+  aExample := Trim(Copy(Line, P1+1, P2-P1-1));
+  if (aExample = '') then
+    Exit;
+  aMask := Trim(Copy(Line,P2+1,MaxInt));
+  if (aMask = '') then
+    Exit;
+  aFormattedExample := MaskDoFormatText(aMask, aExample, EnableSets);
+  Result := True;
+end;
+
+
+procedure TMaskEditorForm.LoadAndCleanSampleFile(Fn: String; EnableSets: Boolean; List: TStrings; out AParsedSamples: TParsedSamples);
+type
+  TParseFunc = function (Line: String; EnableSets: Boolean; out Caption, Example, FormattedExample, Mask: String): Boolean of Object;
+var
+  i, Index: Integer;
+  S, aCaption, aExample, aFormattedExample, aMask: String;
+  SL: TStringList;
+  ParseFunc: TParseFunc;
+begin
+  AParsedSamples := nil;
+  if (CompareText(ExtractFileExt(Fn),'.dem') = 0) then
+    ParseFunc := @ParseMaskLineDelphi
+  else
+    ParseFunc := @ParseMaskLineLazarus;
+  List.BeginUpdate;
+  List.Clear;
+  if not FileExistsUtf8(Fn) then
+    Exit;
+  SL := TStringList.Create;
+  try
+    try
+      SL.LoadFromFile(Fn, TEncoding.UTF8);
+      SetLength(AParsedSamples, SL.Count);
+      Index := 0;
+      for i := 0 to SL.Count - 1 do
+      begin
+        S := SL[i];
+        if ParseFunc(S, EnableSets, aCaption, aExample, aFormattedExample, aMask) then
+        begin
+          AParsedSamples[Index].Caption := aCaption;
+          AParsedSamples[Index].Example := aExample;
+          AParsedSamples[Index].FormattedExample := aFormattedExample;
+          AParsedSamples[Index].Mask := aMask;
+          List.Add(S);
+          Inc(Index);
+        end;
+      end;
+      SetLength(AParsedSamples, Index);
+    except
+      on ESTreamError do
+      begin
+        List.Clear;
+        AParsedSamples := nil;
+        MessageDlg(Format(oisErrorReadingSampleFile,[Fn]), mtError, [mbOk], 0);
+      end;
+    end;
+  finally
+    List.EndUpdate;
+    SL.Free;
+  end;
+end;
+
 procedure TMaskEditorForm.LoadDEMFile(AFileName: string);
 begin
-  SampleMasksListBox.Items.Clear;
-  SampleMasksListBox.Items.LoadFromFile(UTF8ToSys(AFileName));
+  LoadAndCleanSampleFile(AFilename, FEnableSets, SampleMasksListBox.Items, ParsedSamples);
 end;
 
 procedure TMaskEditorForm.SetEditMask(AValue: string);
@@ -311,6 +440,7 @@ procedure TMaskEditorForm.SetEnableSets(AValue: Boolean);
 var
   OldMask: String;
   WasMasked: Boolean;
+  i: Integer;
 begin
   FEnableSets := AValue;
   WasMasked := TestMaskEdit.IsMasked;
@@ -324,6 +454,13 @@ begin
   begin
     TestMaskEdit.EditMask := OldMask;
   end;
+  //since this is not only called from clicking on the checkbox
+  EnableSetsCheckBox.Checked := FEnableSets;
+  for i := 0 to Length(ParsedSamples) - 1 do
+  begin
+    ParsedSamples[i].FormattedExample := MaskDoFormatText(ParsedSamples[i].Mask, ParsedSamples[i].Example, FEnableSets);
+  end;
+  SampleMasksListBox.Invalidate;
   //since this is not only called from clicking on the checkbox
   EnableSetsCheckBox.Checked := FEnableSets;
 end;

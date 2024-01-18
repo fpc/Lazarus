@@ -592,6 +592,11 @@ msgstr "Ошибка загрузки изображения"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Ошибка загрузки изображения \"%s\":%s%s"
 
+#: objinspstrconsts.oiserrorreadingsamplefile
+#, object-pascal-format
+msgid "Error reading file %s"
+msgstr ""
+
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
 msgid "Error while deleting action:%s%s"
@@ -696,6 +701,10 @@ msgstr "Загрузить изображение"
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
 msgstr "Маски ..."
+
+#: objinspstrconsts.oismasksamplefilter
+msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgstr ""
 
 #: objinspstrconsts.oismethod
 msgid "Method"
