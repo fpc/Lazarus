@@ -2554,8 +2554,11 @@ begin
             begin
               // DebugLn('QEventEnabledChange: ',dbgsName(LCLObject),' enabled ',dbgs(getEnabled));
               if not getEnabled then
-                Palette.setTextColor(@Palette.DisabledTextColor)
-              else
+              begin
+                BeginUpdate;
+                Palette.setTextColor(@Palette.DisabledTextColor);
+                EndUpdate;
+              end else
               begin
                 setInitialColor;
                 setInitialFontColor;
