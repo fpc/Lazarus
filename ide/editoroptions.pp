@@ -2683,11 +2683,15 @@ begin
   EditorOptionsFoldInfoPas[17].Name := dlgFoldPasRecord;
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasRecordCase;
   EditorOptionsFoldInfoPas[19].Name := dlgFoldPasIfDef;
-  EditorOptionsFoldInfoPas[10].Name := dlgFoldPasUserRegion;
+  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasUserRegion;
   EditorOptionsFoldInfoPas[21].Name := dlgFoldPasAnsiComment;
   EditorOptionsFoldInfoPas[22].Name := dlgFoldPasBorComment;
   EditorOptionsFoldInfoPas[23].Name := dlgFoldPasSlashComment;
   EditorOptionsFoldInfoPas[24].Name := dlgFoldPasNestedComment;
+  EditorOptionsFoldInfoPas[25].Name := dlgFoldPasIfThen;
+  EditorOptionsFoldInfoPas[26].Name := dlgFoldPasForDo;
+  EditorOptionsFoldInfoPas[27].Name := dlgFoldPasWhileDo;
+  EditorOptionsFoldInfoPas[28].Name := dlgFoldPasWithDo;
 
   EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
   EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
