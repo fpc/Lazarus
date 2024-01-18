@@ -43,6 +43,7 @@ type
   TTestHighlighterPas = class(TTestBaseHighlighterPas)
   protected
     FAttrProcName: TSynHighlighterAttributesModifier;
+    FCaseLabelAttri: TSynHighlighterAttributesModifier;
     procedure ReCreateEdit; override;
 
     function TestTextFoldInfo1: TStringArray;
@@ -50,6 +51,7 @@ type
     function TestTextFoldInfo3: TStringArray;
     function TestTextFoldInfo4(AIfCol: Integer): TStringArray;
     function TestTextFoldInfo5: TStringArray;
+    procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TExpTokenInfo); reintroduce;
 
   published
     procedure TestFoldInfo;
@@ -236,6 +238,7 @@ procedure TTestHighlighterPas.ReCreateEdit;
 begin
   inherited ReCreateEdit;
   FAttrProcName := PasHighLighter.ProcedureHeaderName;
+  FCaseLabelAttri := PasHighLighter.CaseLabelAttri;
 end;
 
 function TTestHighlighterPas.TestTextFoldInfo1: TStringArray;
@@ -324,6 +327,30 @@ begin
   Result[10] := '//';
   Result[11] := 'end.';
   Result[12] := '';
+end;
+
+procedure TTestHighlighterPas.CheckTokensForLine(Name: String;
+  LineIdx: Integer; ExpTokens: array of TExpTokenInfo);
+var
+  i: Integer;
+begin
+  for i := low(ExpTokens) to high(ExpTokens) do begin
+    if ExpTokens[i].Flags * [etiAttr, etiKind] = [etiKind] then begin
+      case TtkTokenKind(ExpTokens[i].ExpKind) of
+        tkIdentifier: ExpTokens[i].ExpAttr := PasHighLighter.IdentifierAttri;
+        tkKey:        ExpTokens[i].ExpAttr := PasHighLighter.KeywordAttribute;
+        tkSymbol:     ExpTokens[i].ExpAttr := PasHighLighter.SymbolAttri;
+        tkString:     ExpTokens[i].ExpAttr := PasHighLighter.StringAttri;
+        tkNumber:     ExpTokens[i].ExpAttr := PasHighLighter.NumberAttri;
+        tkSpace:      ExpTokens[i].ExpAttr := PasHighLighter.SpaceAttri;
+        tkComment:    ExpTokens[i].ExpAttr := PasHighLighter.CommentAttri;
+        else          ExpTokens[i].ExpAttr := nil;
+      end;
+      if ExpTokens[i].ExpAttr <> nil then
+        ExpTokens[i].Flags := ExpTokens[i].Flags + [etiAttr];
+    end;
+  end;
+  inherited CheckTokensForLine(Name, LineIdx, ExpTokens);
 end;
 
 procedure TTestHighlighterPas.TestFoldInfo;
@@ -1259,28 +1286,153 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
     procedure SubTest2(struct: String);
     begin
       SetLines
-        ([  'Unit A; interface',
+        ([  'Unit A; interface {$ModeSwitch nestedprocvars}',
             'type',
             'TFoo='+struct,
                s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+               s+': array of '+s+' '+s+';',  // nameDEPRECATED=array of typeDEPRECATED deprecated;
+               s+': array [1..2] of '+s+' '+s+';',  // nameDEPRECATED=array of typeDEPRECATED deprecated;
+               s+': set of '+s+' '+s+';',    // nameDEPRECATED=set of typeDEPRECATED deprecated;
+               s+': class of '+s+' '+s+';',  // nameDEPRECATED=class of typeDEPRECATED deprecated;
+               s+': procedure '+s+';',
+               s+': procedure of object '+s+';',
+               s+': procedure(a:'+s+') '+s+';',
+               s+': procedure(a:'+s+') of object '+s+';',
+               s+': function:'+s+' '+s+';',
+               s+': function:'+s+' of object '+s+';',
+               s+': function(a:'+s+'):'+s+' '+s+';',
+               s+': function(a:'+s+'):'+s+' of object '+s+';',
+               s+': record end '+s+';',  // nameDEPRECATED=packed record deprecated;
+               s+': packed record end '+s+';',  // nameDEPRECATED=packed record deprecated;
               'foo, '+s+', bar: Integer '+s+';',
               'procedure '+s+'('+s+': '+s+'); '+s+';',
+            'end',
+            ''
+        ]);
+        //TODO: is nested
+
+      CheckTokensForLine('member in class', 3,
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('array of', 4,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('array [1..2] of', 5,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkSymbol, tkNumber, tkSymbol, tkNumber, tkSymbol,
+         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('set of', 6,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('class of', 7,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure ', 8,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure of object ', 9,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure(a:s) ', 10,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+         TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+         tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure(a:s) of object ', 11,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+         TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function', 12,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function of object ', 13,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function(a:s)', 14,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+          TK_Colon, tkIdentifier,
+          tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function(a:s) of object ', 15,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+          TK_Colon, tkIdentifier,
+          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('record end', 16,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('packed record end', 17,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('multi member in class', 18,
+        [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+
+      if copy(struct, 1,11) = 'record case' then // procedure not allowed in record-case
+        exit;
+      CheckTokensForLine('procedure in class', 19,
+        [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+        ]);
+
+      if struct = 'byte;var' then
+        struct := 'byte;';
+
+      // NOT in record-case / no type allowed
+      SetLines
+        ([  'Unit A; interface {$modeswitch advancedrecords}{$ModeSwitch nestedprocvars}',
+            'type',
+            'TFoo='+struct+' type',
+               s+'= '+s+' '+s+';',  // nameDEPRECATED= typeDEPRECATED deprecated;
+               s+'= array of '+s+' '+s+';',  // nameDEPRECATED=array of typeDEPRECATED deprecated;
+               s+'= array [1..2] of '+s+' '+s+';',  // nameDEPRECATED=array of typeDEPRECATED deprecated;
+               s+'= set of '+s+' '+s+';',    // nameDEPRECATED=set of typeDEPRECATED deprecated;
+               s+'= class of '+s+' '+s+';',  // nameDEPRECATED=class of typeDEPRECATED deprecated;
+               s+'= procedure '+s+';',
+               s+'= procedure of object '+s+';',
+               s+'= procedure(a:'+s+') '+s+';',
+               s+'= procedure(a:'+s+') of object '+s+';',
+               s+'= function:'+s+' '+s+';',
+               s+'= function:'+s+' of object '+s+';',
+               s+'= function(a:'+s+'):'+s+' '+s+';',
+               s+'= function(a:'+s+'):'+s+' of object '+s+';',
+               s+'= record end '+s+';',  // nameDEPRECATED=packed record deprecated;
+               s+'= packed record end '+s+';',  // nameDEPRECATED=packed record deprecated;
             'end',
             ''
         ]);
 
       CheckTokensForLine('member in class', 3,
         [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-      CheckTokensForLine('multi member in class', 4,
-        [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-      CheckTokensForLine('procedure in class', 5,
-        [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
-        ]);
+      CheckTokensForLine('array of', 4,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('array [1..2] of', 5,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkSymbol, tkNumber, tkSymbol, tkNumber, tkSymbol,
+         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('set of', 6,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('class of', 7,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure ', 8,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure of object ', 9,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure(a:s) ', 10,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+         TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+         tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure(a:s) of object ', 11,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+         TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function', 12,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function of object ', 13,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function(a:s)', 14,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+          TK_Colon, tkIdentifier,
+          tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('function(a:s) of object ', 15,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey,
+          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
+          TK_Colon, tkIdentifier,
+          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('record end', 16,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('packed record end', 17,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
 
-
-      if struct = 'record' then
+      if (struct = 'record') or (struct = 'byte;') then
         exit;
 
       SetLines
@@ -1358,10 +1510,19 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
 
     PushBaseName('class');
     SubTest2('class');
+    PushBaseName('class public');
+    SubTest2('class public');
     PopPushBaseName('object');
     SubTest2('object');
+    PopPushBaseName('object public');
+    SubTest2('object public');
     PopPushBaseName('record');
     SubTest2('record');
+    PopPushBaseName('record public');
+    SubTest2('record public');
+
+    PopPushBaseName('var/type');
+    SubTest2('byte;var');
     PopBaseName;
 
 
@@ -1459,6 +1620,10 @@ begin
     SubTest('experimental' , AFolds);
     SubTest('platform'     , AFolds);
   end;
+  SubTest('deprecated'   , []);
+  SubTest('unimplemented', []);
+  SubTest('experimental' , []);
+  SubTest('platform'     , []);
 end;
 
 procedure TTestHighlighterPas.TestContextForClassObjRecHelp;

@@ -1114,11 +1114,13 @@ begin
   tfb := TopPascalCodeFoldBlockType;
   if KeyComp('Of') then begin
     Result := tkKey;
+    if not (rsInProcHeader in fRange) then
+      fRange := fRange + [rsAfterEqualOrColon]; // Identifier for type expected
     if (rsAfterClass in fRange) and (tfb = cfbtClass) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
-      fRange := fRange + [rsSkipAllPasBlocks];
+      fRange := fRange + [rsSkipAllPasBlocks, rsVarTypeInSpecification];
       //CodeFoldRange.Pop(false); // avoid minlevel // does not work, still minlevel for disabled
       //CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end
@@ -1158,10 +1160,20 @@ begin
         fRange := fRange - [rsAtCaseLabel];
         if TopPascalCodeFoldBlockType = cfbtRecord then
           EndPascalCodeFoldBlock;
+        // After type declaration, allow "deprecated"?
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
+             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]
+        then
+          fRange := fRange + [rsVarTypeInSpecification];
       end
       else
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
+        // After type declaration, allow "deprecated"?
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
+             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]
+        then
+          fRange := fRange + [rsVarTypeInSpecification];
       end else if tfb = cfbtUnit then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtPackage then begin
@@ -1207,13 +1219,17 @@ begin
           fRange := fRange - [rsInObjcProtocol];
         end
         else
-        if TopPascalCodeFoldBlockType = cfbtRecordCase then
-          EndPascalCodeFoldBlock;
-        if TopPascalCodeFoldBlockType = cfbtRecord then
-          EndPascalCodeFoldBlock;
-      // After type declaration, allow "deprecated"?
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        fRange := fRange + [rsVarTypeInSpecification];
+        begin
+          if TopPascalCodeFoldBlockType = cfbtRecordCase then
+            EndPascalCodeFoldBlock;
+          if TopPascalCodeFoldBlockType = cfbtRecord then
+            EndPascalCodeFoldBlock;
+        end;
+        // After type declaration, allow "deprecated"?
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
+             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]
+        then
+          fRange := fRange + [rsVarTypeInSpecification];
       end;
     end else begin
       Result := tkKey; // @@end or @end label
@@ -1605,7 +1621,9 @@ function TSynPasSyn.Func55: TtkTokenKind;
 begin
   if KeyComp('Object') then begin
     Result := tkKey;
-    if (fRange * [rsAfterEqualOrColon, rsAfterEqualThenType] <> []) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (fRange * [rsAfterEqualOrColon, rsAfterEqualThenType] <> []) and
+       not(rsInProcHeader in fRange) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -2006,9 +2024,10 @@ begin
     tbf := TopPascalCodeFoldBlockType;
     if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord]) and
-           (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
-           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]) and
+           ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
+             (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
+         ) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnit, cfbtNone]) and
@@ -2335,9 +2354,10 @@ begin
     tbf := TopPascalCodeFoldBlockType;
     if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord]) and
-           (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
-           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]) and
+           ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
+             (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
+         ) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnit, cfbtNone]) and
@@ -2693,9 +2713,10 @@ begin
     tbf := TopPascalCodeFoldBlockType;
     if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord]) and
-           (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
-           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]) and
+           ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
+             (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
+         ) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnit, cfbtNone]) and
@@ -2773,9 +2794,10 @@ begin
   if KeyComp('Unimplemented') then begin
     if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord]) and
-           (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
-           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase]) and
+           ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
+             (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
+         ) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnit, cfbtNone]) and
