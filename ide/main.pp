@@ -193,6 +193,7 @@ type
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
+    procedure HintWatchFreed(Sender: TObject);
     procedure HintWatchValidityChanged(Sender: TObject);
     procedure DlgDebugInfoHelpRequested(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean);
 
@@ -11547,6 +11548,11 @@ begin
     CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
+procedure TMainIDE.HintWatchFreed(Sender: TObject);
+begin
+  FHintWatchData.WatchValue := nil;
+end;
+
 procedure TMainIDE.HintWatchValidityChanged(Sender: TObject);
 var
   p: SizeInt;
@@ -11709,6 +11715,7 @@ begin
       if CStack <> nil then
         st := CStack.CurrentIndex;
       FHintWatchData.WatchValue := aWatch.Values[tid, st] as TCurrentWatchValue;
+      FHintWatchData.WatchValue.AddFreeNotification(@HintWatchFreed);
       FHintWatchData.WatchValue.OnValidityChanged := @HintWatchValidityChanged;
       FHintWatchData.WatchValue.Value;
       HintWatchValidityChanged(FHintWatchData.WatchValue);
