@@ -70,6 +70,7 @@ type
     procedure TestContextForTypeHelper;
     procedure TestContextForClassFunction; // in class,object,record
     procedure TestContextForRecordHelper;
+    procedure TestContextForRecordCase;
     procedure TestContextForStatic;
     procedure TestCaretAsString;
     procedure TestFoldNodeInfo;
@@ -1521,6 +1522,10 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
     PopPushBaseName('record public');
     SubTest2('record public');
 
+    PopPushBaseName('record case integer of 1:(');
+    SubTest2('record case integer of 1:(');
+    PopPushBaseName('record case integer of 1:( B:record case integer of 2:(');
+    SubTest2('record case integer of 1:( B:record case integer of 2:(');
     PopPushBaseName('var/type');
     SubTest2('byte;var');
     PopBaseName;
@@ -2225,6 +2230,118 @@ begin
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
+  end;
+end;
+
+procedure TTestHighlighterPas.TestContextForRecordCase;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
+begin
+  for i := 0 to $1F do begin
+    AFolds := [];
+    if (i and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtVarType, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection];
+    if (i and $01) = 0 then AFolds := AFolds + [cfbtVarType];
+    if (i and $02) = 0 then AFolds := AFolds + [cfbtRecord];
+    if (i and $04) = 0 then AFolds := AFolds + [cfbtRecordCase];
+    if (i and $08) = 0 then AFolds := AFolds + [cfbtRecordCaseSection];
+
+    ReCreateEdit;
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         '  TFoo = record',
+         '  A:byte;',
+         '  case integer of',
+         '  1: (',
+         '    B: record',
+         '    case integer of',
+         '    3: (',
+         '    );',
+         '    4: (',
+         '      C: packed record',
+         '      A:byte;',
+         '      case integer of',
+         '      5: (',
+         '      B: record end;',
+         '      );',
+         '      6: (',
+         '        X:byte;',
+         '        case integer of',
+         '        8: (',
+         '        );',
+         '        9: (',
+         '        );',
+         '      );',
+         '      end;',
+         '    );',
+         '    end;',
+         '  );',
+         '  2: (',
+         '  );',
+         '  end;',
+         '',
+         'var',
+         ''
+      ]);
+
+    EnableFolds(AFolds);
+
+    CheckTokensForLine('  TFoo = record',         2, [tkSpace, tkIdentifier, tkSpace, TK_Equal, tkSpace, tkKey]);
+    CheckTokensForLine('  A:byte;',               3, [tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Semi]);
+    CheckTokensForLine('  case integer of',       4, [tkSpace, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey]);
+    CheckTokensForLine('  1: (',                  5, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('    B: record',           6, [tkSpace, tkIdentifier, TK_Colon, tkSpace, tkKey]);
+    CheckTokensForLine('    case integer of',     7, [tkSpace, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey]);
+    CheckTokensForLine('    3: (',                8, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('    );',                  9, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('    4: (',               10, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('      C: packed record', 11, [tkSpace, tkIdentifier, TK_Colon, tkSpace, tkKey, tkSpace, tkKey]);
+    CheckTokensForLine('      A:byte;',          12, [tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Semi]);
+    CheckTokensForLine('      case integer of',  13, [tkSpace, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey]);
+    CheckTokensForLine('      5: (',             14, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('      B: record end;',   15, [tkSpace, tkIdentifier, TK_Colon, tkSpace, tkKey, tkSpace, tkKey, TK_Semi]);
+    CheckTokensForLine('      );',               16, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('      6: (',             17, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('        X:byte;',        18, [tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Semi]);
+    CheckTokensForLine('        case integer of',19, [tkSpace, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey]);
+    CheckTokensForLine('        8: (',           20, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('        );',             21, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('        9: (',           22, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('        );',             23, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('      );',               24, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('      end;',             25, [tkSpace, tkKey, TK_Semi]);
+    CheckTokensForLine('    );',                 26, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('    end;',               27, [tkSpace, tkKey, TK_Semi]);
+    CheckTokensForLine('  );',                   28, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('  2: (',                 29, [tkSpace, tkNumber+FCaseLabelAttri, TK_Colon, tkSpace, TK_Bracket]);
+    CheckTokensForLine('  );',                   30, [tkSpace, TK_Bracket, TK_Semi]);
+    CheckTokensForLine('  end;',                 31, [tkSpace, tkKey, TK_Semi]);
+
+
+    if cfbtVarType in AFolds then
+      AssertEquals('Fold-Len type   (1) ',   31, PasHighLighter.FoldLineLength(1, 0));
+    if cfbtRecord in AFolds then
+      AssertEquals('Fold-Len record (2) ',   29, PasHighLighter.FoldLineLength(2, 0));
+    if cfbtRecordCase in AFolds then begin
+      AssertEquals('Fold-Len case   (4) ',   27, PasHighLighter.FoldLineLength( 4, 0));
+      AssertEquals('Fold-Len case   (7) ',   20, PasHighLighter.FoldLineLength( 7, 0));
+      AssertEquals('Fold-Len case  (13) ',   12, PasHighLighter.FoldLineLength(13, 0));
+      AssertEquals('Fold-Len case  (19) ',    5, PasHighLighter.FoldLineLength(19, 0)); // closed by ")" of surrounding case-section
+    end;
+    if cfbtRecordCaseSection in AFolds then begin
+      AssertEquals('Fold-Len section  (5) ',  23, PasHighLighter.FoldLineLength( 5, 0));
+      AssertEquals('Fold-Len section ( 8) ',   1, PasHighLighter.FoldLineLength( 8, 0));
+      AssertEquals('Fold-Len section (10) ',  16, PasHighLighter.FoldLineLength(10, 0));
+      AssertEquals('Fold-Len section (14) ',   2, PasHighLighter.FoldLineLength(14, 0));
+      AssertEquals('Fold-Len section (17) ',   7, PasHighLighter.FoldLineLength(17, 0));
+      AssertEquals('Fold-Len section (20) ',   1, PasHighLighter.FoldLineLength(20, 0));
+      AssertEquals('Fold-Len section (22) ',   1, PasHighLighter.FoldLineLength(22, 0));
+      AssertEquals('Fold-Len section (29) ',   1, PasHighLighter.FoldLineLength(29, 0));
+    end;
+
+
+
   end;
 end;
 
