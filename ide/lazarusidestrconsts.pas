@@ -2093,6 +2093,7 @@ resourcestring
   dlgFoldPasUnit            = 'Unit';
   dlgFoldPasRecord          = 'Record';
   dlgFoldPasRecordCase      = 'Record case';
+  dlgFoldPasRecordCaseSect  = 'Record case section';
   dlgFoldPasTry             = 'Try';
   dlgFoldPasExcept          = 'Except/Finally';
   dlgFoldPasRepeat          = 'Repeat';

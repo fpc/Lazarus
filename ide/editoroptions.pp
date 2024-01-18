@@ -528,7 +528,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..28] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..29] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -570,6 +570,8 @@ const
        Index: ord(cfbtRecord);       Enabled: True),
       (Name:  dlgFoldPasRecordCase;    Xml:     'RecordCase';
        Index: ord(cfbtRecordCase);   Enabled: False),
+      (Name:  dlgFoldPasRecordCaseSect;    Xml:     'RecordCaseSection';
+       Index: ord(cfbtRecordCaseSection);   Enabled: False),
 
       (Name:  dlgFoldPasIfDef;         Xml:     'IfDef';
        Index: ord(cfbtIfDef);        Enabled: False),
@@ -686,8 +688,8 @@ const
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsFoldRecord =
     ( (Count:  0; HasMarkup: False; Info: nil), // none
       (Count:  0; HasMarkup: False; Info: nil), // text
-      (Count: 29; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 29; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // pas
+      (Count: 30; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 30; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // pas
       (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoLFM[0]), // lfm
       (Count:  5; HasMarkup: True; Info: @EditorOptionsFoldInfoXML[0]), // xml
       (Count:  3; HasMarkup: True; Info: @EditorOptionsFoldInfoHTML[0]), // html
@@ -2682,16 +2684,17 @@ begin
   EditorOptionsFoldInfoPas[16].Name := dlgFoldPasClassSection;
   EditorOptionsFoldInfoPas[17].Name := dlgFoldPasRecord;
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasRecordCase;
-  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasIfDef;
-  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasUserRegion;
-  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasAnsiComment;
-  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasBorComment;
-  EditorOptionsFoldInfoPas[23].Name := dlgFoldPasSlashComment;
-  EditorOptionsFoldInfoPas[24].Name := dlgFoldPasNestedComment;
-  EditorOptionsFoldInfoPas[25].Name := dlgFoldPasIfThen;
-  EditorOptionsFoldInfoPas[26].Name := dlgFoldPasForDo;
-  EditorOptionsFoldInfoPas[27].Name := dlgFoldPasWhileDo;
-  EditorOptionsFoldInfoPas[28].Name := dlgFoldPasWithDo;
+  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasRecordCaseSect;
+  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasIfDef;
+  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasUserRegion;
+  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasAnsiComment;
+  EditorOptionsFoldInfoPas[23].Name := dlgFoldPasBorComment;
+  EditorOptionsFoldInfoPas[24].Name := dlgFoldPasSlashComment;
+  EditorOptionsFoldInfoPas[25].Name := dlgFoldPasNestedComment;
+  EditorOptionsFoldInfoPas[26].Name := dlgFoldPasIfThen;
+  EditorOptionsFoldInfoPas[27].Name := dlgFoldPasForDo;
+  EditorOptionsFoldInfoPas[28].Name := dlgFoldPasWhileDo;
+  EditorOptionsFoldInfoPas[29].Name := dlgFoldPasWithDo;
 
   EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
   EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
