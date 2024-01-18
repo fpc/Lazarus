@@ -6410,22 +6410,69 @@ Use <var>Height</var> to the height of the image in the Graphic property.
 <short>Width of the image stored in the Graphic property.</short>
 </element>
 
+<!-- this is private and not visible in documentation -->
 <element name="TPicture.ReadData">
-<short>Reads data for the persistent object during LCL streaming.</short>
+<short>
+Reads data for the persistent object during LCL streaming.
+</short>
 <descr>
 <p>
-ReadData implements the procedure used to read a persistent object during LCL 
-streaming. Stream is the TStream instance with the data for the persistent 
+<var>ReadData</var> is used to read a persistent object during LCL streaming. 
+<var>Stream</var> is the TStream instance with the data for the persistent 
 object.
 </p>
 <p>
-ReadData is used by the TFiler instance for the class type.
+ReadData checks the content in Stream for header information which identifies 
+the image format. It creates a new instance of the image class which is used 
+to read the raw image content.
+</p>
+<p>
+Content in Stream includes the name for the graphic class needed to read or 
+write the image data. For an image created using Delphi, and then used in a 
+Lazarus project, this presents a problem. For example: Lazarus uses the 
+TPortableNetworkGraphic class to handle .PNG images. Delphi uses the TPngImage 
+class. This difference in image headers is handled in the ReadData method by 
+substituting the graphic class needed in Lazarus based on the registered 
+graphic class names or extensions. Other differences in Stream, like the size 
+for image data (omitted by a Delphi-generated image), are also handled in the 
+method.
+</p>
+<p>
+The ReadData method in the TGraphic class instance is called to load the 
+content for registered graphic classes. LoadFromStream in TGraphic is called 
+for images which do not use one of the registered classes known to Lazarus.
+</p>
+<p>
+The TGraphic instance created and loaded in the method is assigned to the 
+Graphic property prior to exit. The OnChange and OnProgress event handlers in 
+Graphic are set to the Changed and Progress methods in TPicture.
+</p>
+<p>
+The Graphic property is set to <b>Nil</b> if an unsupported image format is 
+detected in Stream.
+</p>
+<p>
+The Changed method is called prior to exit to signal an assigned OnChange event 
+handler in the class instance.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL 4.0 to handle image data using unregistered class names and 
+with omitted image size information.
+</version>
+<seealso>
+<link id="TPicture.Graphic"/>
+<link id="TPicture.Changed"/>
+<link id="TPicture.WriteData"/>
+<link id="TGraphic"/>
+<link id="TGraphic.OnChange"/>
+<link id="TGraphic.OnProgress"/>
+</seealso>
 </element>
 <element name="TPicture.ReadData.Stream">
-<short>TStream instance with the data for the persistent object.</short>
+<short>
+TStream instance with the data for the persistent object.
+</short>
 </element>
 
 <element name="TPicture.SetBitmap">
