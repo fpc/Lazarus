@@ -2123,7 +2123,8 @@ procedure TFPBreakpoint.DoChanged;
 begin
   if FResetBreakFlag and not FSetBreakFlag then
     ResetBreak
-  else if FSetBreakFlag then
+  else
+  if FSetBreakFlag and not (TFpDebugDebugger(Debugger).State in [dsStop, dsError]) then
     SetBreak;
 
   FSetBreakFlag := false;
