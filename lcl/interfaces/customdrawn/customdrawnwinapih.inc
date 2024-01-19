@@ -106,7 +106,7 @@ function BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
-//function GetCmdLineParamDescForInterface: string; override;
+//function GetCmdLineParamDescForInterface: TStringList; override;
 function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDC(hWnd: HWND): HDC; override;

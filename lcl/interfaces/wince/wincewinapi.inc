@@ -1471,7 +1471,7 @@ begin
   Result := Windows.GetCurrentObject(DC, uObjectType);
 end;
 
-{function TWinCEWidgetSet.GetCmdLineParamDescForInterface: string;
+{function TWinCEWidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
   Result:=inherited GetCmdLineParamDescForInterface;
 end;}

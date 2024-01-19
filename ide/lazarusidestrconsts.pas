@@ -146,27 +146,27 @@ resourcestring
   lisErrOptionNeeded = 'Option at position %d needs an argument : %s';
 
   // command line help
-  listhisHelpMessage = 'this help message';
-  lisprimaryConfigDirectoryWhereLazarusStoresItsConfig = 'primary config '+
-    'directory where Lazarus stores its config files. Default is ';
-  lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
+  lisThisHelpMessage = 'This help message.';
+  lisPrimaryConfigDirectoryWhereLazarusStoresItsConfig = 'Primary config '+
+    'directory where Lazarus stores its config files. Default is "%s".';
+  lisLazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
   lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions = 'LCL Interface specific options:';
-  lisDoNotShowSplashScreen = 'Do not show splash screen';
-  lisSkipLoadingLastProject = 'Skip loading last project';
-  lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning = '%sDo not check if '
-    +'another IDE instance is already running';
-  lisOverrideLanguage = 'Override language. For example --language=de.'+
-    ' For possible values see files in the languages directory.';
-  lissecondaryConfigDirectoryWhereLazarusSearchesFor = 'secondary config '+
-    'directory where Lazarus searches for config template files. Default is ';
+  lisDoNotShowSplashScreen = 'Do not show splash screen.';
+  lisSkipLoadingLastProject = 'Skip loading last project.';
+  lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning = 'Do not check if '
+    +'another IDE instance is already running.';
+  lisOverrideLanguage = 'Override language. '+
+    'For possible values see files in the "languages" directory. Example: "--language=de".';
+  lisSecondaryConfigDirectoryWhereLazarusSearchesFor = 'Secondary config '+
+    'directory where Lazarus searches for config template files. Default is "%s".';
   lisFileWhereDebugOutputIsWritten =
-    'file where debug output is written to. If it is '+
-    'not specified, debug output is written to the console.';
-  lisSkipStartupChecks = 'Skip selected checks at startup.';
-  lisGroupsForDebugOutput = 'Enable or Disable groups of debug output.' +
-    ' Valid Options are:';
-  lisLazarusDirOverride = 'directory to be used as a basedirectory';
+    'File where debug output is written to. Default is write to the console.';
+  lisSkipStartupChecks = 'Skip selected checks at startup. Valid options are:';
+  lisGroupsForDebugOutput = 'Enable or disable groups of debug output. ' +
+    'Valid options are:';
+  lisLazarusDirOverride = 'Directory to be used as a basedirectory.';
+
   lisMaximumNumberOfThreadsForCompilingInParallelDefaul = 'Maximum number of '
     +'threads for compiling in parallel. Default is 0 which guesses the '
     +'number of cores in the system.';
@@ -5495,11 +5495,11 @@ resourcestring
   lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'add package(s) to '
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
   lisBuildIDEWithPackages = 'build IDE with packages';
-  lisShowVersionAndExit = 'show version and exit';
-  lisBeLessVerboseCanBeGivenMultipleTimes = 'be less verbose, can be given '
-    +'multiple times';
-  lisBeMoreVerboseCanBeGivenMultipleTimes = 'be more verbose, can be given '
-    +'multiple times';
+  lisShowVersionAndExit = 'Show version and exit.';
+  lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
+    +'multiple times.';
+  lisBeMoreVerboseCanBeGivenMultipleTimes = 'Be more verbose. Can be given '
+    +'multiple times.';
   lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = '%soverride the '
     +'project operating system. e.g. win32 linux. default: %s';
   lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = '%soverride the '
@@ -5965,7 +5965,7 @@ resourcestring
   lisCFETheComponentEditorOfClassHasCreatedTheError = 'The component editor '
     +'of class "%s"has created the error:%s"%s"';
   lisShowSetupDialogForMostImportantSettings = 'Show setup dialog for most '
-    +'important settings';
+    +'important settings.';
   lisShowPositionOfSourceEditor = 'Show position of source editor';
 
   //Initial setup dialog

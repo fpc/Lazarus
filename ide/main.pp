@@ -1040,68 +1040,14 @@ end;
   Parses the command line for the IDE.
 -------------------------------------------------------------------------------}
 class procedure TMainIDE.ParseCmdLineOptions;
-const
-  space = '                      ';
 var
-  AHelp: TStringList;
-  HelpLang: string;
-
-  procedure AddHelp(Args: array of const);
+  lHelp: TStringList;
+  //
+  procedure TranslateHelp;
   var
-    i: Integer;
-    s: String;
-  begin
-    s:='';
-    for i := Low(Args) to High(Args) do
-    begin
-      case Args[i].VType of
-        vtInteger: s+=dbgs(Args[i].vinteger);
-        vtInt64: s+=dbgs(Args[i].VInt64^);
-        vtQWord: s+=dbgs(Args[i].VQWord^);
-        vtBoolean: s+=dbgs(Args[i].vboolean);
-        vtExtended: s+=dbgs(Args[i].VExtended^);
-{$ifdef FPC_CURRENCY_IS_INT64}
-        // fpc 2.x has troubles in choosing the right dbgs()
-        // so we convert here
-        vtCurrency: s+=dbgs(int64(Args[i].vCurrency^)/10000, 4);
-{$else}
-        vtCurrency: s+=dbgs(Args[i].vCurrency^);
-{$endif}
-        vtString: s+=Args[i].VString^;
-        vtAnsiString: s+=AnsiString(Args[i].VAnsiString);
-        vtChar: s+=Args[i].VChar;
-        vtPChar: s+=Args[i].VPChar;
-        vtPWideChar: {%H-}s+=Args[i].VPWideChar{%H-};
-        vtWideChar: {%H-}s+=Args[i].VWideChar{%H-};
-        vtWidestring: {%H-}s+=WideString(Args[i].VWideString){%H-};
-        vtObject: s+=DbgSName(Args[i].VObject);
-        vtClass: s+=DbgSName(Args[i].VClass);
-        vtPointer: s+=Dbgs(Args[i].VPointer);
-      end;
-    end;
-    AHelp.Add(s);
-  end;
-
-  procedure WriteHelp(const AText: string);
-  begin
-    if TextRec(Output).Mode = fmClosed then
-      // Note: do not use IDEMessageDialog here:
-      Dialogs.MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
-    else
-      WriteLn(UTF8ToConsole(AText));
-    Application.Terminate;
-  end;
-
-var
-  i: integer;
-  ConfFileName: String;
-  Cfg: TXMLConfig;
-begin
-  ParamBaseDirectory:=GetCurrentDirUTF8;
-  StartedByStartLazarus:=false;
-  SkipAutoLoadingLastProject:=false;
-  EnableRemoteControl:=false;
-  if IsHelpRequested then
+    HelpLang: string;
+    ConfFileName: string;
+    Cfg: TXMLConfig;
   begin
     HelpLang := GetLanguageSpecified;
     if HelpLang = '' then
@@ -1118,66 +1064,117 @@ begin
       end;
     end;
     TranslateResourceStrings(ProgramDirectoryWithBundle, HelpLang);
-
-    AHelp := TStringList.Create;
-    AddHelp([lislazarusOptionsProjectFilename]);
-    AddHelp(['']);
-    AddHelp([lisIDEOptions]);
-    AddHelp(['']);
-    AddHelp(['--help or -?             ', listhisHelpMessage]);
-    AddHelp(['']);
-    AddHelp(['-v or --version          ', lisShowVersionAndExit]);
-    AddHelp(['--quiet                  ', lisBeLessVerboseCanBeGivenMultipleTimes]);
-    AddHelp(['--verbose                ', lisBeMoreVerboseCanBeGivenMultipleTimes]);
-    AddHelp(['']);
-    AddHelp([ShowSetupDialogOptLong]);
-    AddHelp([BreakString(space+lisShowSetupDialogForMostImportantSettings, 75, 22)]);
-    AddHelp(['']);
-    AddHelp([PrimaryConfPathOptLong, ' <path>']);
-    AddHelp(['or ', PrimaryConfPathOptShort, ' <path>']);
-    AddHelp([BreakString(space+lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
-                        75, 22), LazConf.GetPrimaryConfigPath]);
-    AddHelp(['']);
-    AddHelp([SecondaryConfPathOptLong,' <path>']);
-    AddHelp(['or ',SecondaryConfPathOptShort,' <path>']);
-    AddHelp([BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
-                        75, 22), LazConf.GetSecondaryConfigPath]);
-    AddHelp(['']);
-    AddHelp([SkipChecksOptLong,''.Join(',', SkipChecksKeys)]);
-    AddHelp([BreakString(space+lisSkipStartupChecks, 75, 22)]);
-    AddHelp(['']);
-    AddHelp([DebugLogOpt,' <file>']);
-    AddHelp([BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22)]);
-    AddHelp(['']);
-    AddHelp([DebugLogOptEnable,' [[-]OptName][,[-]OptName][...]']);
-    AddHelp([BreakString(space+lisGroupsForDebugOutput, 75, 22)]);
+  end;
+  //
+  procedure WriteHelp(const AText: string);
+  begin
+    if TextRec(Output).Mode = fmClosed then
+      // Note: do not use IDEMessageDialog here:
+      Dialogs.MessageDlg(lisInformation, AText, mtInformation, [mbOk], 0)
+    else
+      WriteLn(UTF8ToConsole(AText));
+    Application.Terminate;
+  end;
+  //
+  function GetCmdLineParamDescForLazarus: TStringList;
+  var
+    e: TSkipAbleChecks;
+    i: Integer;
+    lDescr: String;
+    lLogGroups: TStringList;
+  begin
+    result := TStringList.Create;
+    // help
+    AddCmdLineParamDesc(result, ['-?', '-h', '--help'], lisThisHelpMessage);
+    // version
+    AddCmdLineParamDesc(result, ['-v', '--version'], lisShowVersionAndExit);
+    // language
+    AddCmdLineParamDesc(result, [LanguageOpt + '<id>'], lisOverrideLanguage);
+    // setup
+    AddCmdLineParamDesc(result, [ShowSetupDialogOptLong], lisShowSetupDialogForMostImportantSettings);
+    // skipchecks
+    lDescr := lisSkipStartupChecks;
+    for e := low(TSkipAbleChecks) to high(TSkipAbleChecks) do
+      lDescr := lDescr + LineEnding + SkipChecksKeys[e];
+    AddCmdLineParamDesc(result, [SkipChecksOptLong + '[OptName][,OptName][...]'], lDescr);
+    // lazdir
+    AddCmdLineParamDesc(result, [LazarusDirOpt + '<directory>'], lisLazarusDirOverride);
+    // config
+    AddCmdLineParamDesc(result, [PrimaryConfPathOptShort + '<path>', PrimaryConfPathOptLong + '<path>'],
+      Format(lisPrimaryConfigDirectoryWhereLazarusStoresItsConfig, [LazConf.GetPrimaryConfigPath]));
+    AddCmdLineParamDesc(result, [SecondaryConfPathOptShort + '<path>', SecondaryConfPathOptLong + '<path>'],
+      Format(lisSecondaryConfigDirectoryWhereLazarusSearchesFor, [LazConf.GetSecondaryConfigPath]));
+    // new instance
+    AddCmdLineParamDesc(result, [ForceNewInstanceOpt], lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning);
+    // skip last project
+    AddCmdLineParamDesc(result, [SkipLastProjectOpt], lisSkipLoadingLastProject);
+    // splash
+    AddCmdLineParamDesc(result, [NoSplashScreenOptShort, NoSplashScreenOptLong], lisDoNotShowSplashScreen);
+    // verbose
+    AddCmdLineParamDesc(result, ['--quiet'], lisBeLessVerboseCanBeGivenMultipleTimes);
+    AddCmdLineParamDesc(result, ['--verbose'], lisBeMoreVerboseCanBeGivenMultipleTimes);
+    // debug file
+    AddCmdLineParamDesc(result, [DebugLogOpt + '<file>'], lisFileWhereDebugOutputIsWritten);
+    // debug groups (sorted)
+    lLogGroups := TStringList.Create;
     for i := 0 to DebugLogger.LogGroupList.Count - 1 do
-      AddHelp([space + DebugLogger.LogGroupList[i]^.ConfigName]);
-    AddHelp(['']);
-    AddHelp([NoSplashScreenOptLong]);
-    AddHelp(['or ',NoSplashScreenOptShort]);
-    AddHelp([BreakString(space+lisDoNotShowSplashScreen,75, 22)]);
-    AddHelp(['']);
-    AddHelp([ForceNewInstanceOpt]);
-    AddHelp([BreakString(Format(
-      lisDoNotCheckIfAnotherIDEInstanceIsAlreadyRunning, [space]), 75, 22)]);
-    AddHelp(['']);
-    AddHelp([SkipLastProjectOpt]);
-    AddHelp([BreakString(space+lisSkipLoadingLastProject, 75, 22)]);
-    AddHelp(['']);
-    AddHelp([LanguageOpt]);
-    AddHelp([BreakString(space+lisOverrideLanguage,75, 22)]);
-    AddHelp(['']);
-    AddHelp([LazarusDirOpt,'<directory>']);
-    AddHelp([BreakString(space+lisLazarusDirOverride, 75, 22)]);
-    AddHelp(['']);
-    AddHelp([lisCmdLineLCLInterfaceSpecificOptions]);
-    AddHelp(['']);
-    AddHelp([GetCmdLineParamDescForInterface]);
-    AddHelp(['']);
+      lLogGroups.Add(DebugLogger.LogGroupList[i]^.ConfigName);
+    lLogGroups.Sort;
+    lDescr := lisGroupsForDebugOutput + LineEnding + lLogGroups.Text;
+    FreeAndNil(lLogGroups);
+    AddCmdLineParamDesc(result, [DebugLogOptEnable + '[[-]OptName][,[-]OptName][...]'], lDescr);
+  end;
+  //
+  // lOptions is freed at the end
+  procedure AddHelpSection(aHeader: string; lOptions: TStringList);
+  const
+    cDescrIndent = 16;
+    cMaxLength = 80;
+  var
+    i: Integer;
+  begin
+    if lOptions = nil then exit;
 
-    WriteHelp(AHelp.Text);
-    AHelp.Free;
+    // header
+    lHelp.Add('');
+    lHelp.Add(aHeader);
+    lHelp.Add('');
+
+    // indent for descriptions (all lines not starting with '-' or '/')
+    for i := 0 to lOptions.Count - 1 do
+      if (lOptions[i] <> '') and not (lOptions[i][1] in ['-', '/']) then
+        lOptions[i] := BreakString(StringOfChar(' ', cDescrIndent) + lOptions[i], cMaxLength, cDescrIndent);
+
+    lHelp.AddStrings(lOptions);
+
+    FreeThenNil(lOptions);
+  end;
+  //
+  procedure CallHelp;
+  begin
+    TranslateHelp;
+
+    lHelp := TStringList.Create;
+    // command line
+    lHelp.Add(lisLazarusOptionsProjectFilename);
+    // IDE options
+    AddHelpSection(lisIDEOptions, GetCmdLineParamDescForLazarus);
+    // interface options
+    AddHelpSection(lisCmdLineLCLInterfaceSpecificOptions, GetCmdLineParamDescForInterface);
+
+    WriteHelp(lHelp.Text);
+    FreeThenNil(lHelp);
+  end;
+  //
+begin
+  ParamBaseDirectory:=GetCurrentDirUTF8;
+  StartedByStartLazarus:=false;
+  SkipAutoLoadingLastProject:=false;
+  EnableRemoteControl:=false;
+
+  if IsHelpRequested then
+  begin
+    CallHelp;
     exit;
   end;
   if IsVersionRequested then

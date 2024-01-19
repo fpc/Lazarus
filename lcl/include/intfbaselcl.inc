@@ -373,9 +373,9 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.GetCmdLineParamDescForInterface: string;
+function TWidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
-  Result := '';
+  Result := nil;
 end;
 
 function TWidgetSet.GetControlConstraints(Constraints: TObject): boolean;

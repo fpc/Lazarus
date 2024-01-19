@@ -235,8 +235,12 @@ function UnicodeToUTF16(u: cardinal): UnicodeString; deprecated 'Use LazUTF16.Un
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
+
 // Font
 function IsFontNameDefault(const AName: string): boolean; inline;
+
+// Help
+procedure AddCmdLineParamDesc(var aText: TStringList; aParamOpts: array of string; aDescr: string);
 
 implementation
 
@@ -1764,6 +1768,33 @@ end;
 function IsFontNameDefault(const AName: string): boolean;
 begin
   Result := CompareText(AName, 'default') = 0;
+end;
+
+procedure AddCmdLineParamDesc(var aText: TStringList; aParamOpts: array of string; aDescr: string);
+var
+  i: Integer;
+  s: String;
+begin
+  if Length(aParamOpts) = 0 then exit;
+
+  // parameter options (separate lines)
+  for i := 0 to high(aParamOpts) do
+    aText.Add(aParamOpts[i]);
+
+  // parameter options (one line)
+  //s := aParamOpts[0];
+  //for i := 1 to high(aParamOpts) do
+  //  s := s + ', ' + aParamOpts[i];
+  //aText.Add(s);
+
+  // extra line between name and description
+  //aText.Add('');
+
+  // description
+  aText.Add(aDescr);
+
+  // extra line between parameters
+  //aText.Add('');
 end;
 
 { TDebugLCLItems }

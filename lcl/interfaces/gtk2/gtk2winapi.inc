@@ -4620,27 +4620,23 @@ end;
   Returns a description of the command line parameters, that are understood by
   the interface.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.GetCmdLineParamDescForInterface: string;
-  function b(const s: string): string;
-  begin
-    Result:=BreakString(s,75,22)+LineEnding+LineEnding;
-  end;
-
+function TGtk2WidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
-  Result:=
-     b(rsgtkOptionNoTransient)
-    +b(rsgtkOptionModule)
-    +b(rsgOptionFatalWarnings)
-    +b(rsgtkOptionDebug)
-    +b(rsgtkOptionNoDebug)
-    +b(rsgdkOptionDebug)
-    +b(rsgdkOptionNoDebug)
-    +b(rsgtkOptionDisplay)
-    +b(rsgtkOptionSync)
-    +b(rsgtkOptionNoXshm)
-    +b(rsgtkOptionName)
-    +b(rsgtkOptionClass)
-    +b(rsqtOptionDisableAccurateFrame);
+  result := TStringList.Create;
+
+  AddCmdLineParamDesc(result, ['--lcl-no-transient'], rsgtkOptionNoTransient);
+  AddCmdLineParamDesc(result, ['--gtk-module <module>'], rsgtkOptionModule);
+  AddCmdLineParamDesc(result, ['--g-fatal-warnings'], rsgOptionFatalWarnings);
+  AddCmdLineParamDesc(result, ['--gtk-debug <flags>'], rsgtkOptionDebug);
+  AddCmdLineParamDesc(result, ['--gtk-no-debug <flags>'], rsgtkOptionNoDebug);
+  AddCmdLineParamDesc(result, ['--gdk-debug <flags>'], rsgdkOptionDebug);
+  AddCmdLineParamDesc(result, ['--gdk-no-debug <flags>'], rsgdkOptionNoDebug);
+  AddCmdLineParamDesc(result, ['--display <h:s:d>'], rsgtkOptionDisplay);
+  AddCmdLineParamDesc(result, ['--sync'], rsgtkOptionSync);
+  AddCmdLineParamDesc(result, ['--no-xshm'], rsgtkOptionNoXshm);
+  AddCmdLineParamDesc(result, ['--name <progname>'], rsgtkOptionName);
+  AddCmdLineParamDesc(result, ['--class <classname>'], rsgtkOptionClass);
+  AddCmdLineParamDesc(result, ['--disableaccurateframe'], rsqtOptionDisableAccurateFrame);
 end;
 
 {------------------------------------------------------------------------------

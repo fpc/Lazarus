@@ -1911,7 +1911,7 @@ begin
   end;
 end;
 
-function TGtk3WidgetSet.GetCmdLineParamDescForInterface: string;
+function TGtk3WidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   DebugLn('WARNING: TGtk3WidgetSet.GetCmdLineParamDescForInterface not implemented ...');

@@ -70,7 +70,7 @@ function GetAvailableNativeCanvasTypes(DC: HDC; AAllowFallbackToParent: Boolean 
 function GetAvailableNativeHandleTypes(Handle: HWND; AAllowFallbackToParent: Boolean = False): TNativeHandleTypes; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetClientBounds(handle : HWND; var ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetCmdLineParamDescForInterface: string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetCmdLineParamDescForInterface: TStringList; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetControlConstraints(Constraints: TObject): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDesignerDC(WindowHandle: HWND): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

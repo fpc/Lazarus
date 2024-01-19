@@ -238,7 +238,7 @@ end;
   Returns a description of the command line parameters, that are understood by
   the interface.
  ------------------------------------------------------------------------------}
-function GetCmdLineParamDescForInterface: string;
+function GetCmdLineParamDescForInterface: TStringList;
 begin
   Result := WidgetSet.GetCmdLineParamDescForInterface;
 end;

@@ -2791,39 +2791,35 @@ begin
   end;
 end;
 
-function TQtWidgetSet.GetCmdLineParamDescForInterface: string;
-  function b(const s: string): string;
-  begin
-    Result:=BreakString(s,75,22)+LineEnding+LineEnding;
-  end;
+function TQtWidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
-  Result:=
-     b(rsqtOptionNoGrab)
-    +b(rsqtOptionDoGrab)
-    +b(rsqtOptionSync)
-    +b(rsqtOptionStyle)
-    +b(rsqtOptionStyleSheet)
-    +b(rsqtOptionGraphicsStyle)
-    +b(rsqtOptionSession)
-    +b(rsqtOptionWidgetCount)
-    +b(rsqtOptionReverse)
-    {$IFDEF HASX11}
-    +b(rsqtOptionX11Display)
-    +b(rsqtOptionX11Geometry)
-    +b(rsqtOptionX11Font)
-    +b(rsqtOptionX11BgColor)
-    +b(rsqtOptionX11FgColor)
-    +b(rsqtOptionX11BtnColor)
-    +b(rsqtOptionX11Name)
-    +b(rsqtOptionX11Title)
-    +b(rsqtOptionX11Visual)
-    +b(rsqtOptionX11NCols)
-    +b(rsqtOptionX11CMap)
-    +b(rsqtOptionX11IM)
-    +b(rsqtOptionX11InputStyle)
-    +b(rsqtOptionDisableAccurateFrame)
-    {$ENDIF}
-    ;
+  result := TStringList.Create;
+
+  AddCmdLineParamDesc(result, ['-nograb'], rsqtOptionNoGrab);
+  AddCmdLineParamDesc(result, ['-dograb'], rsqtOptionDoGrab);
+  AddCmdLineParamDesc(result, ['-sync'], rsqtOptionSync);
+  AddCmdLineParamDesc(result, ['-style <style>', '-style=<style>'], rsqtOptionStyle);
+  AddCmdLineParamDesc(result, ['-stylesheet <stylesheet>', '-stylesheet=<stylesheet>'], rsqtOptionStyleSheet);
+  AddCmdLineParamDesc(result, ['-graphicssystem <param>'], rsqtOptionGraphicsStyle);
+  AddCmdLineParamDesc(result, ['-session <session>'], rsqtOptionSession);
+  AddCmdLineParamDesc(result, ['-widgetcount'], rsqtOptionWidgetCount);
+  AddCmdLineParamDesc(result, ['-reverse'], rsqtOptionReverse);
+  {$IFDEF HASX11}
+  AddCmdLineParamDesc(result, ['-display <display>'], rsqtOptionX11Display);
+  AddCmdLineParamDesc(result, ['-geometry <geometry>'], rsqtOptionX11Geometry);
+  AddCmdLineParamDesc(result, ['-fn <font>', '-font <font>'], rsqtOptionX11Font);
+  AddCmdLineParamDesc(result, ['-bg <color>', '-background <color>'], rsqtOptionX11BgColor);
+  AddCmdLineParamDesc(result, ['-fg <color>', '-foreground <color>'], rsqtOptionX11FgColor);
+  AddCmdLineParamDesc(result, ['-btn <color>', '-button <color>'], rsqtOptionX11BtnColor);
+  AddCmdLineParamDesc(result, ['-name <name>'], rsqtOptionX11Name);
+  AddCmdLineParamDesc(result, ['-title <title>'], rsqtOptionX11Title);
+  AddCmdLineParamDesc(result, ['-visual TrueColor'], rsqtOptionX11Visual);
+  AddCmdLineParamDesc(result, ['-ncols <count>'], rsqtOptionX11NCols);
+  AddCmdLineParamDesc(result, ['-cmap'], rsqtOptionX11CMap);
+  AddCmdLineParamDesc(result, ['-im'], rsqtOptionX11IM);
+  AddCmdLineParamDesc(result, ['-inputstyle'], rsqtOptionX11InputStyle);
+  AddCmdLineParamDesc(result, ['-disableaccurateframe'], rsqtOptionDisableAccurateFrame);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

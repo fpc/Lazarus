@@ -1306,7 +1306,7 @@ begin
   Result := TCarbonDeviceContext(DC).CopyClipRegion(TCarbonRegion(RGN));
 end;
 
-function TCarbonWidgetSet.GetCmdLineParamDescForInterface: string;
+function TCarbonWidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
   Result:=inherited GetCmdLineParamDescForInterface;
 end;
