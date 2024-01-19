@@ -1376,7 +1376,12 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  LCLSendKillFocusMsg(Target);
+  CocoaWidgetSet.KillingFocus:= true;
+  try
+    LCLSendKillFocusMsg(Target);
+  finally
+    CocoaWidgetSet.KillingFocus:= false;
+  end;
 end;
 
 procedure TLCLCommonCallback.DidBecomeKeyNotification;

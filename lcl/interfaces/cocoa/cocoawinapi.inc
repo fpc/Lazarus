@@ -2148,6 +2148,8 @@ var
   lclobj : TObject;
 begin
   Result := 0;
+  if KillingFocus then
+    Exit;
 
   win := NSApp.keyWindow;
   if not Assigned(win) then
