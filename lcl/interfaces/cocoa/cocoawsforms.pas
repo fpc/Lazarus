@@ -348,7 +348,10 @@ procedure TLCLWindowCallback.Activate;
 var
   ACustForm: TCustomForm;
   isDesign: Boolean;
+  focusedCb: ICommonCallback;
 begin
+  CocoaWidgetSet.KeyWindow:= window;
+
   if not IsActivating then
   begin
     IsActivating:=True;
@@ -379,7 +382,9 @@ begin
     end;
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
-    LCLSendSetFocusMsg(Target);
+    focusedCb := window.firstResponder.lclGetCallback;
+    if Assigned(focusedCb) then
+      focusedCb.BecomeFirstResponder;
     // The only way to update Forms.ActiveCustomForm for the main form
     // is calling TCustomForm.SetFocusedControl, see bug 31056
     ACustForm.SetFocusedControl(ACustForm.ActiveControl);
@@ -392,9 +397,17 @@ begin
 end;
 
 procedure TLCLWindowCallback.Deactivate;
+var
+  focusedCb: ICommonCallback;
 begin
+  CocoaWidgetSet.KeyWindow:= nil;
+
+  focusedCb:= window.firstResponder.lclGetCallback;
+  if Assigned(focusedCb) then begin
+    if not (csDestroying in TComponent(focusedCb.GetTarget).ComponentState) then
+      focusedCb.ResignFirstResponder;
+  end;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
-  LCLSendKillFocusMsg(Target);
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
