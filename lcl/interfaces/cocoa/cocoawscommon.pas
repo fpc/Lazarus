@@ -1376,7 +1376,12 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  LCLSendKillFocusMsg(Target);
+  CocoaWidgetSet.KillingFocus:= true;
+  try
+    LCLSendKillFocusMsg(Target);
+  finally
+    CocoaWidgetSet.KillingFocus:= false;
+  end;
 end;
 
 procedure TLCLCommonCallback.DidBecomeKeyNotification;
@@ -1621,6 +1626,12 @@ begin
     CocoaWidgetSet.ReleaseCapture;
 
   obj := NSObject(AWinControl.Handle);
+  Callback := obj.lclGetCallback;
+
+  if AWinControl.Focused and Assigned(Callback) then
+    Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
+  LCLSendDestroyMsg( AWinControl );
+
   if obj.isKindOfClass_(NSView) then
   begin
     // no need to "retain" prior to "removeFromSuperview"
@@ -1633,7 +1644,6 @@ begin
     NSWindow(obj).close;
 
   // destroy the callback
-  Callback := obj.lclGetCallback;
   if Assigned(Callback) then
   begin
     if Callback.HasCaret then DestroyCaret(nil);
