@@ -478,6 +478,7 @@ type
     FEnabled: boolean;
     FOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
   protected
+    procedure SetFreeByDbgProcess(AValue: Boolean); virtual;
     procedure SetEnabled(AValue: boolean);
     function GetState: TFpDbgBreakpointState; virtual;
   public
@@ -493,7 +494,8 @@ type
     procedure ResetBreak; virtual; abstract;
 
     // FreeByDbgProcess: The breakpoint will be freed by TDbgProcess.Destroy
-    property FreeByDbgProcess: Boolean read FFreeByDbgProcess write FFreeByDbgProcess;
+    // If the breakpoint does not have a process, it will be destroyed immediately
+    property FreeByDbgProcess: Boolean read FFreeByDbgProcess write SetFreeByDbgProcess;
     property Enabled: boolean read FEnabled write SetEnabled;
     property State: TFpDbgBreakpointState read GetState;
     // Event runs in dbg-thread
@@ -506,6 +508,7 @@ type
   private
     FProcess: TDbgProcess;
   protected
+    procedure SetFreeByDbgProcess(AValue: Boolean); override;
     procedure UpdateForLibraryLoaded(ALib: TDbgLibrary); virtual;
     procedure UpdateForLibrareUnloaded(ALib: TDbgLibrary); virtual;
     property Process: TDbgProcess read FProcess;
@@ -1012,6 +1015,11 @@ end;
 function TFpDbgBreakpoint.GetState: TFpDbgBreakpointState;
 begin
   Result := bksUnknown;
+end;
+
+procedure TFpDbgBreakpoint.SetFreeByDbgProcess(AValue: Boolean);
+begin
+  FFreeByDbgProcess := AValue;
 end;
 
 procedure TFpDbgBreakpoint.SetEnabled(AValue: boolean);
@@ -3686,6 +3694,13 @@ begin
 end;
 
 { TFpInternalBreakBase }
+
+procedure TFpInternalBreakBase.SetFreeByDbgProcess(AValue: Boolean);
+begin
+  inherited SetFreeByDbgProcess(AValue);
+  if AValue and (FProcess = nil) then
+    Destroy;
+end;
 
 procedure TFpInternalBreakBase.UpdateForLibraryLoaded(ALib: TDbgLibrary);
 begin
