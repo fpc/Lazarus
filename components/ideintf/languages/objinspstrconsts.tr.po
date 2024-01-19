@@ -703,7 +703,7 @@ msgid "Masks ..."
 msgstr "Maske...."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -758,10 +758,6 @@ msgstr "&TAMAM"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "Tamam"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Maske dosyası aç (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -888,6 +884,10 @@ msgstr "Seçilmiş kontroller"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "&Seçilmiş Özellikler"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

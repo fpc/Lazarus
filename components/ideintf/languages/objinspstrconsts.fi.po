@@ -700,7 +700,7 @@ msgid "Masks ..."
 msgstr "Maskit ..."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -755,10 +755,6 @@ msgstr ""
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr ""
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Avaa maskitiedosto (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -885,6 +881,10 @@ msgstr "Valitut komponentit"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "&Valitut ominaisuudet"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

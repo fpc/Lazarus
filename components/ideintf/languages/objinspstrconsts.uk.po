@@ -706,7 +706,7 @@ msgid "Masks ..."
 msgstr "Маски ..."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -761,10 +761,6 @@ msgstr "&Гаразд"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "Гаразд"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Відкрити файл масок (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -891,6 +887,10 @@ msgstr "Вибрані елементи керування"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "&Вибрані властивості"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

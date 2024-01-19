@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-18 02:47+0300\n"
+"PO-Revision-Date: 2024-01-19 18:20+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -595,7 +595,7 @@ msgstr "Ошибка загрузки изображения \"%s\":%s%s"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "Ошибка чтения файла %s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -703,8 +703,8 @@ msgid "Masks ..."
 msgstr "Маски ..."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
-msgstr ""
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
+msgstr "Файлы образцов масок ввода (*.lem;*.dem)|*.lem;*.dem|Все файлы|*"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -758,10 +758,6 @@ msgstr "&ОК"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "ОК"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Открыть файл масок (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -888,6 +884,10 @@ msgstr "Выбранные компоненты"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Вы&бранные свойства"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr "Выберите файл образца маски ввода"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

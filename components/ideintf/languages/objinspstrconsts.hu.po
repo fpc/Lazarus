@@ -707,7 +707,7 @@ msgid "Masks ..."
 msgstr "Maszkok ..."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -762,10 +762,6 @@ msgstr "&OK"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "Ok"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Maszk fájl megnyitása (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -892,6 +888,10 @@ msgstr "Kiválasztott vezérlők"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "Kijelölt tulajdonságok"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

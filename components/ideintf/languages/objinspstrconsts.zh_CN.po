@@ -704,7 +704,7 @@ msgid "Masks ..."
 msgstr "掩码..."
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -759,10 +759,6 @@ msgstr "确定(&O)"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "确定"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "打开掩码文件(*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -889,6 +885,10 @@ msgstr "选择控件(controls)"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "选择属性(&S)"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"

@@ -708,7 +708,7 @@ msgid "Masks ..."
 msgstr "Kaukės…"
 
 #: objinspstrconsts.oismasksamplefilter
-msgid "EditMask sample files (*.lem;*.dem)|*.lem;*.dem|All files|(*)"
+msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -763,10 +763,6 @@ msgstr "&Tinka"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "Tinka"
-
-#: objinspstrconsts.oisopenmaskfile
-msgid "Open masks file (*.dem)"
-msgstr "Įkelti kaukes iš failo (*.dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -893,6 +889,10 @@ msgstr "Pažymėti valdikliai"
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
 msgstr "&Pažymėtos savybės"
+
+#: objinspstrconsts.oisselectinputmasksample
+msgid "Select input mask sample file"
+msgstr ""
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
