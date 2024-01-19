@@ -2936,7 +2936,7 @@ end;
 
 procedure TDbgProcess.AfterBreakpointAdded(ABreak: TFpDbgBreakpoint);
 begin
-  if not assigned(FCurrentBreakpoint) then begin
+  if (FMainThread <> nil) and not assigned(FCurrentBreakpoint) then begin
     if ABreak.HasLocation(FMainThread.GetInstructionPointerRegisterValue) then
       FCurrentBreakpoint := TFpInternalBreakpoint(ABreak);
   end;
