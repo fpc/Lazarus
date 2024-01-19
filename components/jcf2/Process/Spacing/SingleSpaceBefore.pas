@@ -78,6 +78,10 @@ begin
   if pt = nil then
     exit;
 
+  { after record ... end align XX; }
+  if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then
+    exit(True);
+
   if pt.HasParentNode(nGeneric, 1) then
     exit;
 

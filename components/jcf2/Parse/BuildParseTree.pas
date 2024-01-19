@@ -2186,6 +2186,11 @@ begin
   begin
     RecogniseRecordBody;
     Recognise(ttEnd);
+    if fcTokenList.FirstSolidTokenType = ttAlign then
+    begin
+      Recognise(ttAlign);
+      RecogniseConstantExpression;
+    end;
   end;
 
   RecogniseHintDirectives;

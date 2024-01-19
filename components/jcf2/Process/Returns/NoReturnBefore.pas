@@ -71,6 +71,10 @@ begin
   if pt.TokenType=ttReference then
     exit(true);
 
+  { after record ... end align XX; }
+  if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then
+    exit(true);
+
   // referencce to procedure/function
   if (pt.TokenType in [ttFunction,ttProcedure]) and (pt.PriorSolidTokenType=ttTo) then
     exit(true);

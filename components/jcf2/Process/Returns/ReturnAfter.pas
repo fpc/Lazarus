@@ -316,7 +316,10 @@ begin
     if (lcNext <> nil) and (lcNext.TokenType = ttElse) then
       Result := (FormattingSettings.Returns.EndElseStyle = eAlways)
     else
-      Result := True;
+    begin
+      { after record ... end align XX; }
+      Result := not ((lcNext <> nil) and (lcNext.TokenType = ttAlign) and lcNext.HasParentNode(nRecordType, 1));
+    end;
     exit;
   end;
 

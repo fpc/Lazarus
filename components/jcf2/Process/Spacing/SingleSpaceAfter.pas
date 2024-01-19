@@ -78,6 +78,10 @@ begin
 
   Result := False;
 
+  { after record ... end align XX; }
+  if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then
+    exit(True);
+
   if (pt.TokenType in operators) and pt.HasParentNode(nIdentifier,1) then //operator orverloading identifier;
     Exit(False);
 

@@ -155,6 +155,7 @@ type
 
     { reserved words that are directives }
     ttAbsolute,
+    ttAlign,
     ttExternal,
     ttPascal,
     ttSafecall,
@@ -681,6 +682,7 @@ begin
   AddKeyword('package', wtReservedWordDirective, ttPackage);
   AddKeyword('contains', wtReservedWordDirective, ttContains);
   AddKeyword('requires', wtReservedWordDirective, ttRequires);
+  AddKeyword('align', wtReservedWordDirective, ttAlign);
 
   { reseved words that are directives }
   AddKeyword('absolute', wtReservedWordDirective, ttAbsolute);

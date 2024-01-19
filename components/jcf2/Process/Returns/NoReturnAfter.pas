@@ -91,6 +91,10 @@ begin
   if pt.HasParentNode(nAsm) then
     exit;
 
+  { after record ... end align XX; }
+  if (pt.TokenType = ttAlign) and pt.HasParentNode(nRecordType, 1) then
+    exit(True);
+
   lcSetReturns := FormattingSettings.Returns;
   Assert(lcSetReturns <> nil);
 
