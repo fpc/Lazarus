@@ -1630,6 +1630,8 @@ begin
 
   if AWinControl.Focused and Assigned(Callback) then
     Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
+  LCLSendDestroyMsg( AWinControl );
+
   if obj.isKindOfClass_(NSView) then
   begin
     // no need to "retain" prior to "removeFromSuperview"
