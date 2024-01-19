@@ -6640,11 +6640,32 @@ a specific image format, like:
 <short>
 Writes data for the persistent object during LCL component streaming.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>WriteData</var> is a method used to write the content in the persistent 
+object to the specified stream during LCL streaming. <var>Stream</var> is the 
+TStream instance where the content for the picture is stored.
+</p>
+<p>
+WriteData ensures that the name for the class used in the Graphic property is 
+written to the stream (when assigned). The WriteData method in Graphic is also 
+called to store the image format to Stream.
+</p>
+<p>
+WriteData does not change the position in Stream before the write operation is 
+performed, or after it has been competed.
+</p>
+</descr>
+<seealso>
+<link id="TPicture.Graphic"/>
+<link id="TGraphic.WriteData"/>
+<link id="#rtl.classes.TObject.ClassName">TObject.ClassName</link>
+</seealso>
 </element>
 <element name="TPicture.WriteData.Stream">
-<short/>
+<short>
+TStream instance where the content for the picture is stored.
+</short>
 </element>
 
 <element name="TPicture.AssignTo">
