@@ -402,9 +402,11 @@ var
 begin
   CocoaWidgetSet.KeyWindow:= nil;
 
-  focusedCb := window.firstResponder.lclGetCallback;
-  if Assigned(focusedCb) then
-    focusedCb.ResignFirstResponder;
+  focusedCb:= window.firstResponder.lclGetCallback;
+  if Assigned(focusedCb) then begin
+    if not (csDestroying in TComponent(focusedCb.GetTarget).ComponentState) then
+      focusedCb.ResignFirstResponder;
+  end;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
 end;
 
