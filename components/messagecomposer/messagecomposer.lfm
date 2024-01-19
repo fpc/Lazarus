@@ -9,10 +9,11 @@ object FormMessagesComposer: TFormMessagesComposer
   Caption = 'Messages Composer'
   ClientHeight = 539
   ClientWidth = 580
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 520
+  Position = poScreenCenter
   OnCreate = MessagesInitExecute
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object CaptionLabel: TLabel
     AnchorSideLeft.Control = KindMessageComboBox
     AnchorSideTop.Control = KindMessageComboBox
@@ -43,7 +44,7 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 152
     Height = 15
     Top = 64
-    Width = 42
+    Width = 44
     Caption = 'DlgType'
     ParentColor = False
   end
@@ -54,7 +55,7 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 15
     Top = 281
-    Width = 70
+    Width = 69
     Anchors = [akLeft, akBottom]
     Caption = 'Help Context'
     ParentColor = False
@@ -129,7 +130,7 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 15
     Top = 447
-    Width = 55
+    Width = 56
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 12
     Caption = 'Value (var)'
@@ -320,7 +321,7 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 23
     Top = 412
-    Width = 181
+    Width = 183
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     TabOrder = 7
@@ -331,10 +332,10 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = MsgMemo
     AnchorSideRight.Side = asrBottom
-    Left = 205
+    Left = 207
     Height = 19
     Top = 414
-    Width = 76
+    Width = 74
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 16
     Caption = 'MaskInput'
@@ -391,13 +392,13 @@ object FormMessagesComposer: TFormMessagesComposer
       Left = 8
       Height = 19
       Top = 8
-      Width = 69
+      Width = 67
       BorderSpacing.Left = 8
       Caption = 'if...then...'
       Checked = True
-      OnClick = SetIfOrCaseExecute
       TabOrder = 0
       TabStop = True
+      OnClick = SetIfOrCaseExecute
     end
     object IfThenElseRadioButton: TRadioButton
       AnchorSideLeft.Control = IfThenRadioButton
@@ -406,38 +407,38 @@ object FormMessagesComposer: TFormMessagesComposer
       Left = 8
       Height = 19
       Top = 29
-      Width = 101
+      Width = 99
       BorderSpacing.Top = 2
       Caption = 'if...then...else ...'
-      OnClick = SetIfOrCaseExecute
       TabOrder = 1
+      OnClick = SetIfOrCaseExecute
     end
     object CaseOfEndRadioButton: TRadioButton
       AnchorSideLeft.Control = IfThenElseRadioButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = IfThenRadioButton
-      Left = 125
+      Left = 123
       Height = 19
       Top = 10
-      Width = 107
+      Width = 105
       BorderSpacing.Left = 16
       BorderSpacing.Top = 2
       Caption = 'case ... of ... end;'
-      OnClick = SetIfOrCaseExecute
       TabOrder = 2
+      OnClick = SetIfOrCaseExecute
     end
     object CaseOfEndElseRadioButton: TRadioButton
       AnchorSideLeft.Control = CaseOfEndRadioButton
       AnchorSideTop.Control = CaseOfEndRadioButton
       AnchorSideTop.Side = asrBottom
-      Left = 125
+      Left = 123
       Height = 19
       Top = 31
-      Width = 116
+      Width = 114
       BorderSpacing.Top = 2
       Caption = 'case ... of ... else ...'
-      OnClick = SetIfOrCaseExecute
       TabOrder = 3
+      OnClick = SetIfOrCaseExecute
     end
     object BeginEndCheckBox: TCheckBox
       AnchorSideLeft.Control = IfThenRadioButton
@@ -446,7 +447,7 @@ object FormMessagesComposer: TFormMessagesComposer
       Left = 8
       Height = 19
       Top = 54
-      Width = 85
+      Width = 83
       BorderSpacing.Top = 6
       Caption = 'begin ... end'
       TabOrder = 4
@@ -476,7 +477,7 @@ object FormMessagesComposer: TFormMessagesComposer
           Left = 0
           Height = 15
           Top = 0
-          Width = 58
+          Width = 60
           Caption = '"if" RESULT'
           ParentColor = False
         end
@@ -587,9 +588,9 @@ object FormMessagesComposer: TFormMessagesComposer
     Items.Strings = (
       '{Filled @runtime}'
     )
-    OnChange = MessageSetupExecute
     Style = csDropDownList
     TabOrder = 14
+    OnChange = MessageSetupExecute
   end
   object MsgMemo: TMemo
     AnchorSideLeft.Control = MsgLabel
@@ -607,11 +608,11 @@ object FormMessagesComposer: TFormMessagesComposer
     Lines.Strings = (
       'MsgLabel'
     )
-    OnChange = GetParamsFmtExecute
-    OnEditingDone = GetParamsFmtExecute
     ScrollBars = ssAutoVertical
     TabOrder = 11
     WordWrap = False
+    OnChange = GetParamsFmtExecute
+    OnEditingDone = GetParamsFmtExecute
   end
   object ButtonsNotebook: TNotebook
     AnchorSideLeft.Control = HCenterBevel
@@ -663,8 +664,8 @@ object FormMessagesComposer: TFormMessagesComposer
           'mbHelp'
           'mbClose'
         )
-        OnItemClick = ButtonsCheckGroupItemClick
         TabOrder = 0
+        OnItemClick = ButtonsCheckGroupItemClick
         Data = {
           0C000000020203030202020202020202
         }
@@ -804,7 +805,7 @@ object FormMessagesComposer: TFormMessagesComposer
       Left = 8
       Height = 26
       Top = 9
-      Width = 55
+      Width = 56
       Action = Test
       Anchors = [akTop, akLeft, akBottom]
       AutoSize = True
@@ -882,8 +883,8 @@ object FormMessagesComposer: TFormMessagesComposer
     Shape = bsSpacer
   end
   object ActionList1: TActionList
-    left = 504
-    top = 376
+    Left = 504
+    Top = 376
     object AddConst: TAction
       Caption = 'AddConst'
       OnExecute = AddConstExecute
