@@ -123,6 +123,7 @@ begin
 
   EnableSetsCheckBox.Hint := oisEnableSetsHint;
   OpenDialog1.Filter := oisMaskSampleFilter;
+  OpenDialog1.Title := oisSelectInputMaskSample;
 
   if LazarusIDE<>nil then
     aDemFile:=LazarusIDE.GetPrimaryConfigPath
