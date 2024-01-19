@@ -1626,6 +1626,10 @@ begin
     CocoaWidgetSet.ReleaseCapture;
 
   obj := NSObject(AWinControl.Handle);
+  Callback := obj.lclGetCallback;
+
+  if AWinControl.Focused and Assigned(Callback) then
+    Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
   if obj.isKindOfClass_(NSView) then
   begin
     // no need to "retain" prior to "removeFromSuperview"
@@ -1638,7 +1642,6 @@ begin
     NSWindow(obj).close;
 
   // destroy the callback
-  Callback := obj.lclGetCallback;
   if Assigned(Callback) then
   begin
     if Callback.HasCaret then DestroyCaret(nil);
