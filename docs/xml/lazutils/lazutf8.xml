@@ -2044,7 +2044,6 @@ Gets the right-most position in the source string for the substring value.
 <short>String with values examined in the routine.</short>
 </element>
 
-<!-- TODO: Modified in 86e979c2. -->
 <element name="UTF8WrapText">
 <short>Creates a word wrapped version of the specified string.</short>
 <descr>
@@ -2071,7 +2070,7 @@ MaxCol is set to 0 (zero), or BreakChars is an empty set.
 </p>
 </descr>
 <version>
-Modified in LCL 4.0 to include the overload with an indentation argument.
+Modified in LazUtils 4.0 to include the overload with an indentation argument.
 </version>
 <seealso>
 <link id="#lazutils.lazstringutils.BreakString">BreakString</link>
