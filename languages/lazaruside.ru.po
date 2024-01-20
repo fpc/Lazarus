@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-20 18:59+0300\n"
+"PO-Revision-Date: 2024-01-20 19:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10790,7 +10790,7 @@ msgstr "Установка/удаление пакетов"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compiling a package create a simple Makefile."
-msgstr "Вместо компиляции пакета создавать простой Makefile."
+msgstr "Вместо компиляции пакета создать простой Makefile."
 
 #: lazarusidestrconsts.lisinsufficientencoding
 msgid "Insufficient encoding"
@@ -19675,7 +19675,7 @@ msgstr "Не удалось записать файл сведений о про
 
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
-msgstr "Вывести ищущиеся и найденные пакеты."
+msgstr "Вывести ищущиеся и найденные файлы пакетов."
 
 #: lazarusidestrconsts.liswrongversionin
 #, object-pascal-format
