@@ -1777,24 +1777,17 @@ var
 begin
   if Length(aParamOpts) = 0 then exit;
 
-  // parameter options (separate lines)
-  for i := 0 to high(aParamOpts) do
-    aText.Add(aParamOpts[i]);
-
   // parameter options (one line)
-  //s := aParamOpts[0];
-  //for i := 1 to high(aParamOpts) do
-  //  s := s + ', ' + aParamOpts[i];
-  //aText.Add(s);
-
-  // extra line between name and description
-  //aText.Add('');
+  s := aParamOpts[0];
+  for i := 1 to high(aParamOpts) do
+    s := s + ', ' + aParamOpts[i];
+  aText.Add(s);
 
   // description
   aText.Add(aDescr);
 
   // extra line between parameters
-  //aText.Add('');
+  aText.Add('');
 end;
 
 { TDebugLCLItems }

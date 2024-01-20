@@ -1143,7 +1143,7 @@ var
     // indent for descriptions (all lines not starting with '-' or '/')
     for i := 0 to lOptions.Count - 1 do
       if (lOptions[i] <> '') and not (lOptions[i][1] in ['-', '/']) then
-        lOptions[i] := BreakString(StringOfChar(' ', cDescrIndent) + lOptions[i], cMaxLength, cDescrIndent);
+        lOptions[i] := UTF8WrapText(StringOfChar(' ', cDescrIndent) + lOptions[i], LineEnding, [' ', #9], cMaxLength, cDescrIndent);
 
     lHelp.AddStrings(lOptions);
 
