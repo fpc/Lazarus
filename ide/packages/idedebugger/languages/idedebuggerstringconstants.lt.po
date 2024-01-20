@@ -262,6 +262,10 @@ msgstr "Šaltinio stulpelis"
 msgid "State column"
 msgstr "Būsenos stulpelis"
 
+#: idedebuggerstringconstants.drscolwidthtid
+msgid "ThreadID column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
 msgstr "Vertės stulpelis"
@@ -1210,6 +1214,10 @@ msgstr "Stilius"
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Daryti momentinę kopiją"
+
+#: idedebuggerstringconstants.listhreadid
+msgid "Thread-Id"
+msgstr ""
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"

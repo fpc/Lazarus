@@ -263,6 +263,10 @@ msgstr "Colonne source"
 msgid "State column"
 msgstr "Colonne état"
 
+#: idedebuggerstringconstants.drscolwidthtid
+msgid "ThreadID column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
 msgstr "Colonne valeur"
@@ -1208,6 +1212,10 @@ msgstr "Style"
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Prendre un instantané"
+
+#: idedebuggerstringconstants.listhreadid
+msgid "Thread-Id"
+msgstr ""
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"

@@ -970,21 +970,21 @@ begin
       if Assigned(CallStack) and (CallStack.Count > 0) then begin
         c := CallStack.Items[0];
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
+          n := Threads.CurrentThreads.CreateEntry(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
+          t.Init(c.AnAddress, nil, c.FunctionName, c.SourceFile, '', c.Line, FpThr.ID, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
       end
       else begin
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
+          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
+          t.Init(0, nil, '', '', '', 0, FpThr.ID, FpThr.ID, FpThr.Name, ThrState, ddsValid, FpThr.Num);
       end;
     end;
 
@@ -1502,9 +1502,9 @@ begin
   for i := 0 to high(ThreadArray) do begin
     // TODO: Maybe get the address. If FpDebug has already read the ThreadState.
     if TFpDebugDebugger(Debugger).FSuspendedThreads.IndexOf(ThreadArray[i].ID) < 0 then
-      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].Name, dtsPaused, ddsValid, ThreadArray[i].Num)
+      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].ID, ThreadArray[i].Name, dtsPaused, ddsValid, ThreadArray[i].Num)
     else
-      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].Name, dtsSuspended, ddsValid, ThreadArray[i].Num);
+      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].ID, ThreadArray[i].Name, dtsSuspended, ddsValid, ThreadArray[i].Num);
     try
       CurrentThreads.Add(ThreadEntry);
     finally

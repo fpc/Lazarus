@@ -261,6 +261,10 @@ msgstr ""
 msgid "State column"
 msgstr ""
 
+#: idedebuggerstringconstants.drscolwidthtid
+msgid "ThreadID column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
 msgstr ""
@@ -1195,6 +1199,10 @@ msgstr "Štýl"
 
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
+msgstr ""
+
+#: idedebuggerstringconstants.listhreadid
+msgid "Thread-Id"
 msgstr ""
 
 #: idedebuggerstringconstants.listhreads

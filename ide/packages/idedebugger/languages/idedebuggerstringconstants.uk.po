@@ -257,6 +257,10 @@ msgstr "Графа джерела"
 msgid "State column"
 msgstr "Графа стану"
 
+#: idedebuggerstringconstants.drscolwidthtid
+msgid "ThreadID column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
 msgstr "Графа значення"
@@ -1189,6 +1193,10 @@ msgstr "Стиль"
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Зробити знімок"
+
+#: idedebuggerstringconstants.listhreadid
+msgid "Thread-Id"
+msgstr ""
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"

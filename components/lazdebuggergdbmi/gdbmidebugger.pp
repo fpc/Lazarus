@@ -3862,7 +3862,7 @@ var
   R: TGDBMIExecResult;
   List, EList, ArgList: TGDBMINameValueList;
   i, j: Integer;
-  line, ThrId: Integer;
+  line, ThrId, ThrTargedId: Integer;
   func, filename, fullname: String;
   ThrName, s: string;
   ThrState: TDbgThreadState;
@@ -3906,6 +3906,21 @@ begin
       EList.Init(List.Items[i]^.Name);
       ThrId    := StrToIntDef(EList.Values['id'], -2);
       ThrName  := EList.Values['target-id'];
+      ThrTargedId := StrToIntDef(GetPart(['LWP '], [')'], ThrName, True, False), 0);
+      if ThrTargedId = 0 then
+        ThrTargedId := StrToIntDef(GetPart(['.'], ['', ' '], ThrName, True, False), 0);
+      if ThrTargedId = 0 then begin
+        ThrTargedId := StrToIntDef(ThrName, 0);
+        if ThrTargedId = 0 then
+          ThrName := '';
+      end;
+
+      s := EList.Values['name'];
+      if s <> '' then
+        ThrName  := s + ' [' + ThrName + ']'
+      else
+      if ThrName <> '' then
+        ThrName  := '[' + ThrName + ']';
       s := LowerCase(EList.Values['state']);
       if (pos('pause', s) > 0) or (pos('stop', s) > 0) then ThrState := dtsPaused
       else
@@ -3932,7 +3947,7 @@ begin
         func,
         filename, fullname,
         line,
-        ThrId,ThrName, ThrState
+        ThrId, ThrTargedId, ThrName, ThrState, ddsValid, ThrId
       );
 
       Arguments.Free;
@@ -9074,6 +9089,10 @@ begin
     ], False, False);
     case x of
     0,1: begin
+(* // more info may be in the next line....
+=thread-created,id="5",group-id="i1"
+~"[New Thread 16088.0x4218]\n"
+*)
         i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
         if (i > 0) and (Threads.CurrentThreads <> nil)
         then begin
@@ -9082,7 +9101,7 @@ begin
           case x of
             0: begin
                 if t = nil then begin
-                  t := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', dtsUnknown);
+                  t := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, 0, '', dtsUnknown, ddsValid, i);
                   ct.Add(t);
                   t.Free;
                 end

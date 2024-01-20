@@ -7,7 +7,7 @@ object ThreadsDlg: TThreadsDlg
   Caption = 'Threads'
   ClientHeight = 240
   ClientWidth = 774
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object lvThreads: TListView
     Left = 0
     Height = 214
@@ -24,6 +24,9 @@ object ThreadsDlg: TThreadsDlg
       item
         Caption = 'TargetId'
         Width = 100
+      end    
+      item
+        Caption = 'Name'
       end    
       item
         Caption = 'State'

@@ -185,6 +185,7 @@ resourcestring
 
   // ThreadDlg
   lisThreads = 'Threads';
+  lisThreadId = 'Thread-Id';
   lisThreadsState = 'State';
   lisThreadsSrc  = 'Source';
   lisThreadsLine = 'Line';
@@ -353,6 +354,7 @@ resourcestring
   lisDebugOptionsFrmResumeUnhandled = 'Resume Unhandled';
 
 
+  drsColWidthTId         = 'ThreadID column';
   drsColWidthName        = 'Name column';
   drsColWidthExpression  = 'Expression column';
   drsColWidthValue       = 'Value column';

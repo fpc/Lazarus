@@ -1646,7 +1646,7 @@ type
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
-                       const AThreadId: Integer; const AThreadName: String;
+                       const AThreadId, AThreadTargetId: Integer; const AThreadName: String;
                        const AThreadState: TDbgThreadState;
                        AState: TDebuggerDataState = ddsValid;
                        AThreadNum: Integer = 0): TThreadEntry; override;
@@ -1675,7 +1675,7 @@ type
                        const AnArguments: TStrings; const AFunctionName: String;
                        const FileName, FullName: String;
                        const ALine: Integer;
-                       const AThreadId: Integer; const AThreadName: String;
+                       const AThreadId, AThreadTargetId: Integer; const AThreadName: String;
                        const AThreadState: TDbgThreadState;
                        AState: TDebuggerDataState = ddsValid;
                        AThreadNum: Integer = 0): TThreadEntry; override;
@@ -5321,12 +5321,13 @@ end;
 
 function TCurrentThreads.CreateEntry(const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName,
-  FullName: String; const ALine: Integer; const AThreadId: Integer;
-  const AThreadName: String; const AThreadState: TDbgThreadState;
-  AState: TDebuggerDataState; AThreadNum: Integer): TThreadEntry;
+  FullName: String; const ALine: Integer; const AThreadId,
+  AThreadTargetId: Integer; const AThreadName: String;
+  const AThreadState: TDbgThreadState; AState: TDebuggerDataState;
+  AThreadNum: Integer): TThreadEntry;
 begin
   Result := inherited CreateEntry(AnAdress, AnArguments, AFunctionName, FileName,
-    FullName, ALine, AThreadId, AThreadName, AThreadState, AState, AThreadNum);
+    FullName, ALine, AThreadId, AThreadTargetId, AThreadName, AThreadState, AState, AThreadNum);
   TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 
@@ -5571,8 +5572,10 @@ procedure TIdeThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
   TIdeCallStackEntry(TopFrame).LoadDataFromXMLConfig(AConfig, APath, AUnitInvoPrv);
-  FThreadId    := AConfig.GetValue(APath + 'ThreadId', -1);
-  FThreadName  := AConfig.GetValue(APath + 'ThreadName', '');
+  FThreadId       := AConfig.GetValue(APath + 'ThreadId', -1);
+  FThreadName     := AConfig.GetValue(APath + 'ThreadName', '');
+  FThreadTargetId := AConfig.GetValue(APath + 'ThreadTId', 0);
+  FThreadNum      := AConfig.GetValue(APath + 'ThreadNum', 0);
   FThreadNum   := AConfig.GetValue(APath + 'ThreadNum', 0);
   AConfig.GetValue(APath + 'ThreadState', FThreadState, TypeInfo(TDbgThreadState));
 end;
@@ -5582,6 +5585,7 @@ procedure TIdeThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const A
 begin
   TIdeCallStackEntry(TopFrame).SaveDataToXMLConfig(AConfig, APath, AUnitInvoPrv);
   AConfig.SetValue(APath + 'ThreadId', ThreadId);
+  AConfig.SetValue(APath + 'ThreadTId', ThreadTargetId);
   AConfig.SetValue(APath + 'ThreadNum', ThreadNum);
   AConfig.SetValue(APath + 'ThreadName', ThreadName);
   AConfig.SetValue(APath + 'ThreadState', ThreadState, TypeInfo(TDbgThreadState));
@@ -5638,12 +5642,13 @@ end;
 
 function TIdeThreads.CreateEntry(const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const FileName,
-  FullName: String; const ALine: Integer; const AThreadId: Integer;
-  const AThreadName: String; const AThreadState: TDbgThreadState;
-  AState: TDebuggerDataState; AThreadNum: Integer): TThreadEntry;
+  FullName: String; const ALine: Integer; const AThreadId,
+  AThreadTargetId: Integer; const AThreadName: String;
+  const AThreadState: TDbgThreadState; AState: TDebuggerDataState;
+  AThreadNum: Integer): TThreadEntry;
 begin
   Result := TIdeThreadEntry.Create(AnAdress, AnArguments, AFunctionName, FileName,
-    FullName, ALine, AThreadId, AThreadName, AThreadState, AState, AThreadNum);
+    FullName, ALine, AThreadId, AThreadTargetId, AThreadName, AThreadState, AState, AThreadNum);
   TIdeThreadEntry(Result).FThreadOwner := self;
 end;
 

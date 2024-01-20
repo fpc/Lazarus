@@ -1441,7 +1441,7 @@ begin
       func,
       filename, fullfile,
       line,
-      TId, name, dtsUnknown
+      TId, StrToIntDef(name, 0), name, dtsUnknown
     );
     CurrentThreads.Add(te);
     te.Free;

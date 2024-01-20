@@ -3347,7 +3347,7 @@ end;
 
 function TDbgThread.GetName: String;
 begin
-  Result := 'Thread ' + IntToStr(FID);
+  Result := '';
 end;
 
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);

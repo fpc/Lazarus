@@ -252,6 +252,10 @@ msgstr "Kaynak sütunu"
 msgid "State column"
 msgstr "Durum sütunu"
 
+#: idedebuggerstringconstants.drscolwidthtid
+msgid "ThreadID column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
 msgstr "Değer sütunu"
@@ -1191,6 +1195,10 @@ msgstr "Stil"
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Ekran Görüntüsü Alın"
+
+#: idedebuggerstringconstants.listhreadid
+msgid "Thread-Id"
+msgstr ""
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
