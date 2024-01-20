@@ -2061,8 +2061,10 @@ variant without a BreakChars argument. They include: ' ' (Space), '-' (Dash),
 and #9 (Tab). <var>BreakStr</var> contains the end-of-line sequence used to 
 represent a line break inserted into the return value.
 </p>
+<p>
 Use <var>Indent</var> to specify the indentation inserted at the beginning of 
 each line in the word-wrapped values.
+</p>
 <p>
 No actions are performed in the function when S is an empty string (''), 
 MaxCol is set to 0 (zero), or BreakChars is an empty set.
