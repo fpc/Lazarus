@@ -270,7 +270,7 @@ msgid "State column"
 msgstr "Coluna estado"
 
 #: idedebuggerstringconstants.drscolwidthtid
-msgid "ThreadID column"
+msgid "Thread ID column"
 msgstr ""
 
 #: idedebuggerstringconstants.drscolwidthvalue
@@ -1215,7 +1215,7 @@ msgid "Take a Snapshot"
 msgstr "Tirar um instantâneo"
 
 #: idedebuggerstringconstants.listhreadid
-msgid "Thread-Id"
+msgid "Thread ID"
 msgstr ""
 
 #: idedebuggerstringconstants.listhreads

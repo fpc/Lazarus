@@ -262,8 +262,8 @@ msgid "State column"
 msgstr "Столбец состояния"
 
 #: idedebuggerstringconstants.drscolwidthtid
-msgid "ThreadID column"
-msgstr ""
+msgid "Thread ID column"
+msgstr "Столбец идентификатора потока исполнения"
 
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
@@ -1199,8 +1199,8 @@ msgid "Take a Snapshot"
 msgstr "Сделать снимок"
 
 #: idedebuggerstringconstants.listhreadid
-msgid "Thread-Id"
-msgstr ""
+msgid "Thread ID"
+msgstr "Идентификатор потока исполнения"
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
