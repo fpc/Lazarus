@@ -54,7 +54,7 @@ type
     FLinesView:  TSynEditStrings;
     FMarkupManager: TSynEditMarkupManager;
 
-    FCharWidths: TPhysicalCharWidths;
+    FCharWidths, FCharWidths2: TPhysicalCharWidths;
     FCharWidthsLen: Integer;
     FCurTxtLineIdx : Integer;
     FCurLineByteLen: Integer;
@@ -314,6 +314,7 @@ end;
 procedure TLazSynPaintTokenBreaker.Finish;
 begin
   FCharWidths := nil;
+  FCharWidths2 := nil;
 end;
 
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
@@ -322,9 +323,17 @@ var
   LogLeftPos: Integer;
 begin
   FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, LogLeftPos, FCurLineByteLen);
-  FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
-  FCharWidthsLen := Length(FCharWidths);
-  FLinesView.GetPhysicalCharWidths(ARealLine, FCharWidths, FCharWidthsLen);
+  if FLinesView.LogPhysConvertor.CurrentLine = ARealLine then begin
+    FCharWidths2 := FCharWidths;
+    FCharWidths :=FLinesView.LogPhysConvertor.CurrentWidthsDirect;
+  end
+  else begin
+    if FCharWidths2 <> nil then begin
+      FCharWidths := FCharWidths2;
+      FCharWidths2 := nil;
+    end;
+    FLinesView.GetPhysicalCharWidths(ARealLine, FCharWidths, FCharWidthsLen);
+  end;
   FCurLineByteLen := FCurLineByteLen + LogLeftPos - 1;
 
   FCurViewToken.TokenLength     := 0;
@@ -1790,6 +1799,7 @@ var
       rcLine.Left := DrawLeft;
       LineBufferRtlLogPos := -1;
 
+      CharWidths := nil; // keep refcnt = 1 -- in case they get resized
       FTokenBreaker.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
       CharWidths := FTokenBreaker.CharWidths;
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
