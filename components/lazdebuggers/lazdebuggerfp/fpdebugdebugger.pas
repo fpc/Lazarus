@@ -3338,8 +3338,7 @@ begin
        not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd)
     then
       exit; // wrong command type / should not happen
-    if (FState = esIgnoredRaise) and
-       (not CheckCommandFinishesInFrame(CurrentThread.GetStackBasePointerRegisterValue))
+    if (not CheckCommandFinishesInFrame(CurrentThread.GetStackBasePointerRegisterValue))
     then
       exit;
 
