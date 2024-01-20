@@ -2044,6 +2044,7 @@ Gets the right-most position in the source string for the substring value.
 <short>String with values examined in the routine.</short>
 </element>
 
+<!-- TODO: Modified in 86e979c2. -->
 <element name="UTF8WrapText">
 <short>Creates a word wrapped version of the specified string.</short>
 <descr>
@@ -2060,12 +2061,19 @@ variant without a BreakChars argument. They include: ' ' (Space), '-' (Dash),
 and #9 (Tab). <var>BreakStr</var> contains the end-of-line sequence used to 
 represent a line break inserted into the return value.
 </p>
+Use <var>Indent</var> to specify the indentation inserted at the beginning of 
+each line in the word-wrapped values.
 <p>
 No actions are performed in the function when S is an empty string (''), 
 MaxCol is set to 0 (zero), or BreakChars is an empty set.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL 4.0 to include the overload with an indentation argument.
+</version>
+<seealso>
+<link id="#lazutils.lazstringutils.BreakString">BreakString</link>
+</seealso>
 </element>
 <element name="UTF8WrapText.Result">
 <short>Word-wrapped version of the specified text.</short>
@@ -2081,6 +2089,12 @@ MaxCol is set to 0 (zero), or BreakChars is an empty set.
 </element>
 <element name="UTF8WrapText.MaxCol">
 <short>Maximum line width in number of UTF-8 characters.</short>
+</element>
+<element name="UTF8WrapText.Indent">
+<short>
+Number of Space (#32) characters used to indent the individual lines of 
+word-wrapped text.
+</short>
 </element>
 
 <element name="IsPureAscii">
