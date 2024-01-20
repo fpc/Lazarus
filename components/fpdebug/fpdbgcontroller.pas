@@ -1288,7 +1288,8 @@ begin
   end
   else
   if not assigned(FHiddenBreakpoint) then begin
-    if GetOutsideFrame(Outside) then begin
+    Outside := FThread.GetInstructionPointerRegisterValue = FThread.StoreStepFuncAddr;
+    if Outside or GetOutsideFrame(Outside) then begin
       SetReturnAdressBreakpoint(AProcess, Outside);
     end
     else

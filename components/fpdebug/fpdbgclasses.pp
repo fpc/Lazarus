@@ -330,6 +330,7 @@ type
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
     property StoreStepFuncName: String read FStoreStepFuncName;
+    property StoreStepFuncAddr: TDBGPtr read FStoreStepFuncAddr;
     property PausedAtHardcodeBreakPoint: Boolean read FPausedAtHardcodeBreakPoint;
   end;
   TDbgThreadClass = class of TDbgThread;
@@ -3284,6 +3285,7 @@ begin
   sym := FProcess.FindProcSymbol(AnAddr);
   FStoreStepStartAddr := AnAddr;
   FStoreStepEndAddr := AnAddr;
+  FStoreStepFuncAddr:=0;
   if assigned(sym) then
   begin
     FStoreStepSrcFilename:=sym.FileName;
