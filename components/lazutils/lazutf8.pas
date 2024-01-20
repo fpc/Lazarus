@@ -147,6 +147,7 @@ function UTF8ReverseString(p: PChar; const ByteCount: LongInt): string;
 function UTF8ReverseString(const AText: string): string; inline;
 function UTF8RPos(const Substr, Source: string): PtrInt;
 
+function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol, Indent: integer): string; overload;
 function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S: string; MaxCol: integer): string; overload;
 
@@ -3237,9 +3238,10 @@ begin
   Result := UTF8Length(PChar(Source), pRev); // Length of the leading part.
 end;
 
-function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol: integer): string;
+function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol, Indent: integer): string;
 var
   P : PChar;
+  IndentStr: string;
   RightSpace : integer = 0;
   N : integer = 0;
   Len : integer = 0;
@@ -3248,7 +3250,12 @@ var
 begin
   Result := '';
   if (S = '') or (MaxCol = 0) or (BreakStr = '') or (BreakChars = []) then Exit;
+  if Indent > MaxCol - 2 then
+    Indent := MaxCol - 2;
+  if Indent < 0 then
+    Indent := 0;
   P := PChar(S);
+  IndentStr := StringOfChar(' ', Indent);
   while P^ <> #0 do
   begin
     CharLen := UTF8CodepointSize(P);
@@ -3265,7 +3272,7 @@ begin
     Inc(N);
     if P^ = BreakStr[Length(BreakStr)] then
       N := 0;
-    if N > MaxCol then
+    if N > MaxCol - Indent then
     begin
       Len := Length(Result);
       RP := Len;
@@ -3280,8 +3287,15 @@ begin
       Result := Result + BreakStr;
       N := 0;
     end;
+    if N = 0 then
+      Result := Result + IndentStr;
     Inc(P, CharLen);
   end;
+end;
+
+function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol: integer): string;
+begin
+  Result := UTF8WrapText(S, BreakStr, BreakChars, MaxCol, 0);
 end;
 
 function UTF8WrapText(S: string; MaxCol: integer): string;
