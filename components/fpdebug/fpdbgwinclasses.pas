@@ -1340,12 +1340,14 @@ begin
               if not ReadString(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1]), 200, threadname) then
                 threadname := 'error getting threadname';
               t := AThread;
-              if (MDebugEvent.Exception.ExceptionRecord.NumberParameters >= 3) and
-                 (MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2] <> 0) and
-                 (MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2] <> INVALID_HANDLE_VALUE)
-              then begin
-                if not GetThread(Integer(MDebugEvent.Exception.ExceptionRecord.ExceptionInformation[2]), t) then
-                  t := nil;
+              with MDebugEvent.Exception.ExceptionRecord do begin
+                if (NumberParameters >= 3) and
+                   (TThreadID(ExceptionInformation[2]) <> 0) and
+                   (TThreadID(ExceptionInformation[2]) <> TThreadID(-1))
+                then begin
+                  if not GetThread(Integer(ExceptionInformation[2]), t) then
+                    t := nil;
+                end;
               end;
               if t <> nil then begin
                 with TDbgWinThread(t) do begin
