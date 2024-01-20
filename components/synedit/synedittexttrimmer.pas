@@ -770,6 +770,7 @@ procedure TSynEditStringTrimmingList.TrimAfterLock;
 var
   i, index, slen: Integer;
   ltext: String;
+  Changed: Boolean;
 begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
@@ -788,8 +789,7 @@ begin
     IncViewChangeStamp;
   FIsTrimming := True;
   BeginUpdate;
-  if fLockList.Count > 0 then
-    IncViewChangeStamp;
+  Changed := False;
   try
     for i := 0 to fLockList.Count-1 do begin
       index := fLockList.Entries[i].LineIndex;
@@ -799,9 +799,12 @@ begin
 // TODO: Avoid triggering the highlighter
         NextLines[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
         MaybeAddUndoForget(Index+1, fLockList.Entries[i].TrimmedSpaces);
+        Changed := True;
       end;
     end;
   finally
+    if Changed then
+      IncViewChangeStamp;
     EndUpdate;
     FIsTrimming := False;
   end;
