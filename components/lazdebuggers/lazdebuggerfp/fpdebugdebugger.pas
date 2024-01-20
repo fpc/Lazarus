@@ -1502,9 +1502,9 @@ begin
   for i := 0 to high(ThreadArray) do begin
     // TODO: Maybe get the address. If FpDebug has already read the ThreadState.
     if TFpDebugDebugger(Debugger).FSuspendedThreads.IndexOf(ThreadArray[i].ID) < 0 then
-      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, 'Thread ' + IntToStr(ThreadArray[i].ID), dtsPaused)
+      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].Name, dtsPaused, ddsValid, ThreadArray[i].Num)
     else
-      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, 'Thread ' + IntToStr(ThreadArray[i].ID), dtsSuspended);
+      ThreadEntry := CurrentThreads.CreateEntry(0, nil, '', '', '', 0, ThreadArray[i].ID, ThreadArray[i].Name, dtsSuspended, ddsValid, ThreadArray[i].Num);
     try
       CurrentThreads.Add(ThreadEntry);
     finally

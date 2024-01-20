@@ -5573,6 +5573,7 @@ begin
   TIdeCallStackEntry(TopFrame).LoadDataFromXMLConfig(AConfig, APath, AUnitInvoPrv);
   FThreadId    := AConfig.GetValue(APath + 'ThreadId', -1);
   FThreadName  := AConfig.GetValue(APath + 'ThreadName', '');
+  FThreadNum   := AConfig.GetValue(APath + 'ThreadNum', 0);
   AConfig.GetValue(APath + 'ThreadState', FThreadState, TypeInfo(TDbgThreadState));
 end;
 

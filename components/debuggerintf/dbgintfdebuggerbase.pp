@@ -2332,6 +2332,7 @@ begin
   FTopFrame    := CreateStackEntry;  //   .CreateCopy;
   FTopFrame.Assign(AnOther.TopFrame);
   FThreadId    := AnOther.FThreadId;
+  FThreadNum   := AnOther.FThreadNum;
   FThreadName  := AnOther.FThreadName;
   FThreadState := AnOther.FThreadState;
 end;
