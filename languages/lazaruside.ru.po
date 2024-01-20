@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-19 17:37+0300\n"
+"PO-Revision-Date: 2024-01-20 04:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -5291,12 +5291,12 @@ msgid "Behind related"
 msgstr "После связанных"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
-msgstr "выводить меньше подробностей, может задаваться несколько раз"
+msgid "Be less verbose. Can be given multiple times."
+msgstr "Выводить меньше подробностей. Может задаваться несколько раз."
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
-msgstr "выводить больше подробностей, может задаваться несколько раз"
+msgid "Be more verbose. Can be given multiple times."
+msgstr "Выводить больше подробностей. Может задаваться несколько раз."
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
@@ -8704,9 +8704,8 @@ msgid "Do not change"
 msgstr "В неизменном виде"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
-msgstr "%sНе проверять, что другой экземпляр IDE уже запущен"
+msgid "Do not check if another IDE instance is already running."
+msgstr "Не проверять, что другой экземпляр IDE уже запущен."
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
@@ -8717,8 +8716,8 @@ msgid "do not compile dependencies"
 msgstr "не собирать зависимости"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
-msgstr "Не показывать начальную заставку"
+msgid "Do not show splash screen."
+msgstr "Не показывать начальную заставку."
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
 msgid "Do not show this dialog for this project"
@@ -9734,8 +9733,8 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Файлы не в кодировке ASCII и не в UTF-8"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
-msgstr "файл, куда записывается вывод отладки. Если он не указан, вывод отладки записывается в консоль."
+msgid "File where debug output is written to. Default is write to the console."
+msgstr "Файл, куда записывается вывод отладки. По умолчанию вывод отладки записывается в консоль."
 
 #: lazarusidestrconsts.lisfilter
 msgid "Filter"
@@ -10224,7 +10223,7 @@ msgid "Group automatically defined local variables"
 msgstr "Группировать автоматически создаваемые объявления локальных переменных"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "Включить или отключить группы отладочного вывода. Возможные параметры:"
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11570,8 +11569,8 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr "Исходный код Lazarus. Путь указывается относительно первичного каталога настройки (%s)."
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory to be used as a basedirectory"
-msgstr "каталог для использования в качестве базового"
+msgid "Directory to be used as a basedirectory."
+msgstr "Каталог для использования в качестве базового."
 
 #: lazarusidestrconsts.lislazaruseditorv
 #, object-pascal-format
@@ -14509,8 +14508,8 @@ msgid "Output filename of project"
 msgstr "Имя результирующего файла проекта"
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
-msgstr "Перекрыть язык. Например, --language=de. Возможные значения смотрите в каталоге languages."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
+msgstr "Перекрыть язык. Возможные значения можно посмотреть в каталоге \"languages\". Пример: \"--language=de\"."
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
 msgid "Override function result string types with the first parameter expression type"
@@ -16072,8 +16071,9 @@ msgid "Preceding word"
 msgstr "Предыдущее слово"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory where Lazarus stores its config files. Default is "
-msgstr "первичный каталог настройки, где Lazarus хранит свои файлы настройки. По умолчанию - "
+#, object-pascal-format
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
+msgstr "Первичный каталог настройки, где Lazarus хранит свои файлы настройки. По умолчанию - \"%s\"."
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -17117,8 +17117,9 @@ msgid "Search Unit \"%s\""
 msgstr "Найти модуль \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
-msgstr "вторичный каталог настройки, где Lazarus ищет шаблоны файлов настройки. По умолчанию - "
+#, object-pascal-format
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
+msgstr "Вторичный каталог настройки, где Lazarus ищет шаблоны файлов настройки. По умолчанию - \"%s\"."
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
@@ -17380,8 +17381,8 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr "В панели снизу выводится описание для выбранного свойства"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
-msgstr "Показать диалог настройки наиболее важных параметров"
+msgid "Show setup dialog for most important settings."
+msgstr "Показать диалог настройки наиболее важных параметров."
 
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
@@ -17412,8 +17413,8 @@ msgid "Show value hints while debugging"
 msgstr "Выводить подсказки со значениями во время отладки"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
-msgstr "показать версию и выйти"
+msgid "Show version and exit."
+msgstr "Показать версию и выйти."
 
 #: lazarusidestrconsts.lisshrinktosmal
 msgid "Shrink to smallest"
@@ -17448,12 +17449,12 @@ msgid "Skip file and continue loading"
 msgstr "Пропустить файл и продолжить загрузку"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
-msgstr "Пропустить загрузку предыдущего проекта"
+msgid "Skip loading last project."
+msgstr "Пропустить загрузку предыдущего проекта."
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
-msgstr "Пропустить выбранные проверки при запуске."
+msgid "Skip selected checks at startup. Valid options are:"
+msgstr "Пропустить выбранные проверки при запуске. Возможные параметры:"
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -18463,8 +18464,8 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "Эта функция требует наличия открытого файла .lfm в редакторе исходного кода."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
-msgstr "это справочное сообщение"
+msgid "This help message."
+msgstr "Это справочное сообщение."
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."

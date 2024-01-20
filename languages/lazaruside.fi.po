@@ -5312,11 +5312,15 @@ msgid "Behind related"
 msgstr "Samankaltaisten jälkeen"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr "vähemmän monisanainen, voidaan antaa monta kertaa"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr "enemmän monisanainen, voidaan antaa monta kertaa"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -8726,8 +8730,9 @@ msgid "Do not change"
 msgstr "Älä muuta"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+#, fuzzy
+#| msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr "%sÄlä tarkista onko toinen IDE instanssi käynnissä"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -8739,7 +8744,9 @@ msgid "do not compile dependencies"
 msgstr "älä käännä riippuvuuksia"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "Älä näytä aloitusikkunaa"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -9755,7 +9762,9 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Muut kuin ASCII- tai UTF-8-koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+#, fuzzy
+#| msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "Tiedosto mihin virheenjäljitys-tuloste kirjoitetaan. Jollei määritelty, kirjoitetaan konsoliin."
 
 #: lazarusidestrconsts.lisfilter
@@ -10248,7 +10257,9 @@ msgid "Group automatically defined local variables"
 msgstr "Ryhmittele automaattisesti luodut paikalliset muuttujat"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+#, fuzzy
+#| msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "Salli tai estä virheenjäljitysviestien ryhmät. Mahdolliset asetukset ovat:"
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11575,7 +11586,9 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "hakemisto, käytetään kantahakemistona"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -14484,7 +14497,9 @@ msgid "Output filename of project"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "Syrjäytä kieli. Esim. --language=fi. Mahdolliset arvot selviävät katsomalla languages hakemiston tiedostoja."
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -16047,7 +16062,9 @@ msgid "Preceding word"
 msgstr "Edeltävä sana"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory where Lazarus stores its config files. Default is "
+#, object-pascal-format, fuzzy, badformat
+#| msgid "primary config directory where Lazarus stores its config files. Default is "
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "ensisijainen hakemisto, minne Lazarus tallentaa config-tiedostot. Oletus on "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -17083,7 +17100,9 @@ msgid "Search Unit \"%s\""
 msgstr "Etsi käännösyksikköä \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+#, object-pascal-format, fuzzy, badformat
+#| msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "Toinen asetushakemisto, mistä Lazarus etsii asetusten malleja. Oletus on "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17345,7 +17364,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr "Laatikko alhaalla näyttää valitun ominaisuuden selityksen."
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "Näytä asetusikkuna tärkeimmille asetuksille"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -17377,7 +17398,9 @@ msgid "Show value hints while debugging"
 msgstr "Näytä arvot vihjeinä debuggaus-tilassa"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "näytä versio ja poistu"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -17413,11 +17436,13 @@ msgid "Skip file and continue loading"
 msgstr "Ohita tiedosto ja jatka lataamista"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "Ohita viime projektin lataaminen"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -18427,7 +18452,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "Tämä ominaisuus vaatii .lfm tiedoston avoinna editorissa."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "tämä avusteviesti"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage

@@ -5425,11 +5425,15 @@ msgid "Behind related"
 msgstr "関連するものの後に"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr "より簡潔に、複数の時に与えられる"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr "より詳細に、複数の時に与えられる"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -8864,8 +8868,9 @@ msgid "Do not change"
 msgstr "変更しない"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+#, fuzzy
+#| msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr "%s　は他のIDEインスタンスが既に実行されているかどうかをチェックしません"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -8877,7 +8882,9 @@ msgid "do not compile dependencies"
 msgstr "依存関係をコンパイルしない"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "スプラッシュ画面を表示しない"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -9903,7 +9910,7 @@ msgstr "ASCIIでもUTF-8エンコーディングもないファイル"
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 #, fuzzy
 #| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "デバッグ出力が書き込まれるファイル。それが指定されない場合、デバッグ出力はコンソールに書き込まれます。"
 
 #: lazarusidestrconsts.lisfilter
@@ -10416,7 +10423,9 @@ msgid "Group automatically defined local variables"
 msgstr "グループがローカル変数を自動的に拒否"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+#, fuzzy
+#| msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "デバッグ出力のグループを有効化もしくは無効化。有効なオプションは以下の通り："
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11754,7 +11763,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusdiroverride
 #, fuzzy
 #| msgid "directory, to be used as a basedirectory"
-msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "基底ディレクトリとして扱われるディレクトリ"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -14754,7 +14763,9 @@ msgid "Output filename of project"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "言語指定をオーバーライド。例：--language=de。可能な値は languages ディレクトリを参照のこと。"
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -16332,9 +16343,9 @@ msgid "Preceding word"
 msgstr "先行する単語"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgid "primary config directory where Lazarus stores its config files. Default is "
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "Lazarusがその設定ファイルを保存する主設定ディレクトリ。デフォルト："
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -17403,9 +17414,9 @@ msgid "Search Unit \"%s\""
 msgstr "ユニット\"%s\"を検索"
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "Lazarusが設定テンプレートファイルを検索する二次的な設定ディレクトリ。デフォルト："
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17672,7 +17683,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr "底辺の箱が選択されたプロパティの説明を表示します。"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "最も重要な設定の設定ダイアログを表示"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -17704,7 +17717,9 @@ msgid "Show value hints while debugging"
 msgstr "デバッグ中に値ヒントを表示"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "バージョンを表示して退出"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -17740,11 +17755,13 @@ msgid "Skip file and continue loading"
 msgstr "そのファイルをとばして読み込みを続行"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "最後のプロジェクトの読み込みをスキップ"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -18762,7 +18779,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "この関数はソースエディタ内でオープンな.lfmファイルを必要とします。"
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "このヘルプメッセージ"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage

@@ -5301,11 +5301,15 @@ msgid "Behind related"
 msgstr "Після пов'язаних"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr "виводити менше подробиць, може задаватися декілька разів"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr "виводити більше подробиць, може задаватися декілька разів"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -8717,8 +8721,9 @@ msgid "Do not change"
 msgstr "Не змінювати"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+#, fuzzy
+#| msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr "%sНе перевіряти, чи запущено інший примірник ІСР"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -8730,7 +8735,9 @@ msgid "do not compile dependencies"
 msgstr "не компілювати залежності"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "Не показувати заставки"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -9749,7 +9756,9 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Файли не в кодуванні ASCII і не в UTF-8"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+#, fuzzy
+#| msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "файл, куди буде записуватись зневаджувальна інформація. Якщо не вказано, зневаджувальна інформація виводиться в консоль."
 
 #: lazarusidestrconsts.lisfilter
@@ -10253,7 +10262,9 @@ msgid "Group automatically defined local variables"
 msgstr "Групувати автоматично визначені локальні змінні"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+#, fuzzy
+#| msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "Увімкнення або вимкнення груп виводу зневаджувача. Варіанти:"
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11604,7 +11615,9 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr "Сирці Lazarus. Шлях вказується відносно первинного каталогу налаштування (%s)."
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "тека, що буде використана як базова"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -14543,7 +14556,9 @@ msgid "Output filename of project"
 msgstr "Назва вихідного файлу проєкту"
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "Підмінити мову. Наприклад --language=de.  Для можливих величин див. теку languages"
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -16106,7 +16121,9 @@ msgid "Preceding word"
 msgstr "Попереднє слово"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory where Lazarus stores its config files. Default is "
+#, object-pascal-format, fuzzy, badformat
+#| msgid "primary config directory where Lazarus stores its config files. Default is "
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "тека головних налаштувань, де Lazarus зберігає свої файли налаштувань. Типово"
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -17155,7 +17172,9 @@ msgid "Search Unit \"%s\""
 msgstr "Знайти модуль \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+#, object-pascal-format, fuzzy, badformat
+#| msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "вторинна тека налаштувань, де Lazarus шукає свої шаблони налаштувань. Типово "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17418,7 +17437,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr "Поле внизу показує опис вибраної властивості."
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "Показати діалог налаштування найбільш важливих параметрів"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -17450,7 +17471,9 @@ msgid "Show value hints while debugging"
 msgstr "Виводити підказки зі значеннями під час зневадження"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "показати версію і вийти"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -17486,11 +17509,15 @@ msgid "Skip file and continue loading"
 msgstr "Пропустити файл і продовжити завантаження"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "Пропустити завантаження останнього проєкту"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+#, fuzzy
+#| msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr "Пропустити вибрані перевірки під час запуску."
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -18501,7 +18528,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "Цій функції потрібен відкритий у редакторі коду .lfm файл."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "це довідкове повідомлення"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage

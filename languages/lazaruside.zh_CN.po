@@ -5298,11 +5298,15 @@ msgid "Behind related"
 msgstr "背后相关(Behind related)"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr "较少冗长,可以多次给出"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr "较多冗长,可以多次给出"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -8717,8 +8721,9 @@ msgid "Do not change"
 msgstr "不更改"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+#, fuzzy
+#| msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr "%s不要检查是否另一个IDE实例已经在运行"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -8730,7 +8735,9 @@ msgid "do not compile dependencies"
 msgstr "不编译依赖"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "不显示启动画面"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -9762,7 +9769,8 @@ msgstr "文件不为ASCII或UTF-8编码"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 #, fuzzy
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+#| msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "文件,调试输出(信息)将被写入的地方.如果没有指定, 调试输出(信息)将被写入控制台."
 
 #: lazarusidestrconsts.lisfilter
@@ -10276,7 +10284,9 @@ msgid "Group automatically defined local variables"
 msgstr "组自动地定义局部变量"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+#, fuzzy
+#| msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "启用或禁用调试输出的组.有效的选项是:"
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11604,7 +11614,9 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "作为基础目录使用的目录"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -14541,7 +14553,9 @@ msgid "Output filename of project"
 msgstr "项目的输出文件名称"
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "重写语言.例如 --language=de.对于可能的值,查看在languages目录中的文件."
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -16111,7 +16125,8 @@ msgid "Preceding word"
 msgstr "先前的(Preceding)单词"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory where Lazarus stores its config files. Default is "
+#, object-pascal-format
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -17142,7 +17157,9 @@ msgid "Search Unit \"%s\""
 msgstr "查找单元 \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+#, object-pascal-format, fuzzy, badformat
+#| msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "用于 Lazarus 搜索配置模板文件的第二个配置目录，默认是 "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17407,7 +17424,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "为最重要的设置显示设置对话框"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -17439,7 +17458,9 @@ msgid "Show value hints while debugging"
 msgstr "在调试期间显示值提示"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "显示版本并退出"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -17475,11 +17496,13 @@ msgid "Skip file and continue loading"
 msgstr "跳过文件继续加载"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "跳过加载最后的(last)项目"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -18491,7 +18514,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "这个函数需要一个在源文件编辑器中打开的.lfm文件."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "这个帮助信息"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage

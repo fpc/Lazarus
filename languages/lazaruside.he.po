@@ -5596,11 +5596,11 @@ msgid "Behind related"
 msgstr "מאחורי הקשורים"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr ""
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr ""
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -9152,8 +9152,7 @@ msgid "Do not change"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -9165,7 +9164,9 @@ msgid "do not compile dependencies"
 msgstr "אל תהדר תלויות"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "אל תציג מצג פתיחה"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -10208,7 +10209,7 @@ msgstr "קבצים לא בקידוד ASCII  ולא UTF-8"
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 #, fuzzy
 #| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "הקובץ בו נשמר המידע לניפוי שגיאות. אם אין הגדרה, המידע יכתב על מסך המסוף."
 
 #: lazarusidestrconsts.lisfilter
@@ -10717,7 +10718,7 @@ msgid "Group automatically defined local variables"
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -12183,7 +12184,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusdiroverride
 #, fuzzy
 #| msgid "directory, to be used as a basedirectory"
-msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "התקייה, שיש להשתמש בה כתיקיית המוצא"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -15352,7 +15353,9 @@ msgid "Output filename of project"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "מעמיס על השפה. דוגמא: language=he--. בשביל לקבל רשימה של ערכים אפשריים ראה את הקבצים בספריית השפות."
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -17016,9 +17019,9 @@ msgid "Preceding word"
 msgstr "מלה קודמת"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgid "primary config directory where Lazarus stores its config files. Default is "
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "הספרייה הראשית בה לזרוס שומר את קבצי ההגדורת שלו. ברירת המחדל היא "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -18105,9 +18108,9 @@ msgid "Search Unit \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "תיקיית הגדרות משנית, המיקום בו לזרוס יחפש את תבנית קבצי ההגדרות . ברירת המחדל היא "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -18375,7 +18378,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "הראה דיאלוג הגדרות עבור ההגדרות החשובות ביותר"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -18410,7 +18415,9 @@ msgid "Show value hints while debugging"
 msgstr "הראה טיפים חשובים בזמן ניפוי השגיאות"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "הראה גירסה וצא"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -18448,11 +18455,13 @@ msgid "Skip file and continue loading"
 msgstr "דלג על הקובץ והמשך בטעינה"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "דלג על טעינת הפרויקט האחרון"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -19517,7 +19526,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "הפונקציה צריכה קובץ lfm. פתוח בעורך הטקסט."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "הודעת עזרה ז"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage

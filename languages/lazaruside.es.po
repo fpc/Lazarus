@@ -5431,11 +5431,15 @@ msgid "Behind related"
 msgstr "Detrás de los relacionados"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
-msgid "be less verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be less verbose, can be given multiple times"
+msgid "Be less verbose. Can be given multiple times."
 msgstr "ser menos verboso (menos explicativo), se pueden dar múltiples elementos"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
-msgid "be more verbose, can be given multiple times"
+#, fuzzy
+#| msgid "be more verbose, can be given multiple times"
+msgid "Be more verbose. Can be given multiple times."
 msgstr "ser más verboso (más explicativo), se pueden dar múltiples elementos"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
@@ -8880,8 +8884,9 @@ msgid "Do not change"
 msgstr "No cambiar"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, object-pascal-format
-msgid "%sDo not check if another IDE instance is already running"
+#, fuzzy
+#| msgid "%sDo not check if another IDE instance is already running"
+msgid "Do not check if another IDE instance is already running."
 msgstr "%sNo verifica si otra instancia del IDE está ejecutándose"
 
 #: lazarusidestrconsts.lisdonotclosetheproject
@@ -8893,7 +8898,9 @@ msgid "do not compile dependencies"
 msgstr "no compilar dependencias"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+#, fuzzy
+#| msgid "Do not show splash screen"
+msgid "Do not show splash screen."
 msgstr "No mostrar la pantalla de inicio"
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
@@ -9927,7 +9934,7 @@ msgstr "Archivos sin codificación ASCII o UTF-8"
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 #, fuzzy
 #| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
-msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "File where debug output is written to. Default is write to the console."
 msgstr "archivo, donde se escribe la salida de depuración. Si no se especifica, la salida de depuración será a la consola."
 
 #: lazarusidestrconsts.lisfilter
@@ -10427,7 +10434,9 @@ msgid "Group automatically defined local variables"
 msgstr "Grupo de variables locales definidas automáticamente"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-msgid "Enable or Disable groups of debug output. Valid Options are:"
+#, fuzzy
+#| msgid "Enable or Disable groups of debug output. Valid Options are:"
+msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "Activar o desactivar los grupos de salida de depuración. Las opciones válidas son:"
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -11854,7 +11863,9 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr "Fuentes de Lazarus. Esta ruta es relativa al directorio de configuración principal (%s)."
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory to be used as a basedirectory"
+msgid "Directory to be used as a basedirectory."
 msgstr "directorio, para ser usado como directorio base"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -14828,7 +14839,9 @@ msgid "Output filename of project"
 msgstr "Nombre de archivo de salida del proyecto"
 
 #: lazarusidestrconsts.lisoverridelanguage
-msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+#, fuzzy
+#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "Reemplazar lenguaje. Por ejemplo --languaje=de. Para los valores posibles mirar los archivos en el directorio languages."
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
@@ -16414,9 +16427,9 @@ msgid "Preceding word"
 msgstr "Palabra anterior"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgid "primary config directory where Lazarus stores its config files. Default is "
+msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "directorio de configuración primario, donde Lazarus guarda sus archivos de configuración. Por defecto es "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -17458,9 +17471,9 @@ msgid "Search Unit \"%s\""
 msgstr "Buscar Unidad  \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgid "secondary config directory where Lazarus searches for config template files. Default is "
+msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "directorio secundario de configuración, donde Lazarus busca las plantillas de archivos de configuración. Por defecto es "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17727,7 +17740,9 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr "Un recuadro al fondo muestra la descripción de la propiedad seleccionada."
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-msgid "Show setup dialog for most important settings"
+#, fuzzy
+#| msgid "Show setup dialog for most important settings"
+msgid "Show setup dialog for most important settings."
 msgstr "Mostrar diálogo de configuracion para los ajustes más importantes"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
@@ -17759,7 +17774,9 @@ msgid "Show value hints while debugging"
 msgstr "Mostrar descripciones de valores cuando este depurando"
 
 #: lazarusidestrconsts.lisshowversionandexit
-msgid "show version and exit"
+#, fuzzy
+#| msgid "show version and exit"
+msgid "Show version and exit."
 msgstr "mostrar versión y salir"
 
 #: lazarusidestrconsts.lisshrinktosmal
@@ -17795,11 +17812,15 @@ msgid "Skip file and continue loading"
 msgstr "Saltar archivo y continuar cargando"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-msgid "Skip loading last project"
+#, fuzzy
+#| msgid "Skip loading last project"
+msgid "Skip loading last project."
 msgstr "Continuar cargando el último proyecto"
 
 #: lazarusidestrconsts.lisskipstartupchecks
-msgid "Skip selected checks at startup."
+#, fuzzy
+#| msgid "Skip selected checks at startup."
+msgid "Skip selected checks at startup. Valid options are:"
 msgstr "Omita las comprobaciones seleccionadas al inicio."
 
 #: lazarusidestrconsts.lisskipthesewarnings
@@ -18819,7 +18840,9 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "Esta función necesita un archivo .lfm abierto en el editor de código fuente."
 
 #: lazarusidestrconsts.listhishelpmessage
-msgid "this help message"
+#, fuzzy
+#| msgid "this help message"
+msgid "This help message."
 msgstr "este mensaje de ayuda"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
