@@ -1720,16 +1720,33 @@ end;
 procedure TSynJScriptSyn.StringProc;
 var
   l_strChar : String;
+  p: PChar;
 begin
   fTokenID := tkString;
   l_strChar := FLine[Run];   // We could have '"' or #39
   if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then inc(Run, 2);
-  repeat
-    case FLine[Run] of
-      #0, #10, #13: break;
-    end;
-    inc(Run);
-  until (FLine[Run] = l_strChar) and (FLine[Pred(Run)] <> '\');
+  p := @fLine[Run+1];
+
+  if l_strChar ='"' then
+    repeat
+      while not(p^ in [#0, #10, #13, '"', '\']) do
+        inc(p);
+      if (p^ = '\') and not (p[1] in [#0, #10, #13]) then
+        inc(p,2)
+      else
+        break;
+    until false
+  else
+    repeat
+      while not(p^ in [#0, #10, #13, '''', '\']) do
+        inc(p);
+      if (p^ = '\') and not (p[1] in [#0, #10, #13]) then
+        inc(p,2)
+      else
+        break;
+    until false;
+
+  Run := p - fLine;
   if FLine[Run] <> #0 then
     Inc(Run);
 end;
