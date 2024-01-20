@@ -174,6 +174,9 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
+  lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package '
+    +'name>';
+
   // component palette
   lisSelectionTool = 'Selection tool';
   lisClickToSelectPalettePage = 'Click to Select Palette Page';
@@ -5488,28 +5491,32 @@ resourcestring
   lisObjectPascalDefault = 'Object Pascal - default';
   lisVerifyMethodCalls = 'Verify method calls';
   lisUnableToCreateLinkWithTarget = 'Unable to create link "%s" with target "%s"';
-  lisBuildAllFilesOfProjectPackageIDE =
-    'build all files of project/package/IDE';
-  lisApplyBuildFlagsBToDependenciesToo = 'apply build flags (-B) to dependencies too';
-  lisDoNotCompileDependencies = 'do not compile dependencies';
-  lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'add package(s) to '
+  lisBuildAllFilesOfProjectPackageIDE = 'Build all files of project/package/IDE.';
+  lisApplyBuildFlagsBToDependenciesToo = 'Apply build flags (-B) to dependencies too.';
+  lisDoNotCompileDependencies = 'Do not compile dependencies.';
+  lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'Add package(s) to the '
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
-  lisBuildIDEWithPackages = 'build IDE with packages';
+  lisWriteWhatPackageFilesAreS = 'Write what package files are searched and '
+    +'found.';
+  lisBuildIDEWithPackages = 'Build IDE with packages.';
   lisShowVersionAndExit = 'Show version and exit.';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
     +'multiple times.';
+  lisPassingQuietTwoTimesWillP = 'Passing --quiet two times will pass -vw-n-h-'
+    +'i-l-d-u-t-p-c-x- to the compiler.';
   lisBeMoreVerboseCanBeGivenMultipleTimes = 'Be more verbose. Can be given '
     +'multiple times.';
-  lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = '%soverride the '
-    +'project operating system. e.g. win32 linux. default: %s';
-  lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = '%soverride the '
-    +'project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s';
-  lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64 = '%soverride the '
-    +'project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s';
-  lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = '%soverride the '
-    +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
-    +'environmentoptions.xml';
-  lisOverrideTheProjectBuildMode = '%soverride the project or IDE build mode.';
+  lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = 'Override the '
+    +'project operating system. For example: win32 linux. Default: %s.';
+  lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = 'Override the '
+    +'project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s.';
+  lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64 = 'Override the '
+    +'project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s.';
+  lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = 'Override the '
+    +'default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in '
+    +'environmentoptions.xml.';
+  lisOverrideTheProjectBuildMode = 'Override the project or IDE build mode.';
+  lisOverrideTheProjectSubtarg = 'Override the project subtarget.';
   lisProjectChangedOnDisk = 'Project changed on disk';
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information file "%s"%shas changed on disk.';
   lisReopenProject = 'Reopen project';
@@ -5926,7 +5933,7 @@ resourcestring
   dlgNoAvailableUnits = 'No available units to add.';
   lisOpenUnit = 'Open Unit';
   lisOpenPackage3 = 'Open Package';
-  lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
+  lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compiling a '
     +'package create a simple Makefile.';
   lisOnlyRegisterTheLazarusPackageFilesLpkDoNotBuild = 'Only register the '
     +'Lazarus package files (.lpk). Do not build.';
