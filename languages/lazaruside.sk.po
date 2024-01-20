@@ -4920,7 +4920,7 @@ msgid "Add package requirement?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
-msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgid "Add package(s) to the list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -5179,7 +5179,9 @@ msgid "Apply"
 msgstr "Použiť"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
-msgid "apply build flags (-B) to dependencies too"
+#, fuzzy
+#| msgid "apply build flags (-B) to dependencies too"
+msgid "Apply build flags (-B) to dependencies too."
 msgstr "použiť príznaky budovania (-B) aj pre závislosti"
 
 #: lazarusidestrconsts.lisapplyconventions
@@ -5470,7 +5472,9 @@ msgid "Build"
 msgstr "Vybudovať"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
-msgid "build all files of project/package/IDE"
+#, fuzzy
+#| msgid "build all files of project/package/IDE"
+msgid "Build all files of project/package/IDE."
 msgstr "vybudovať všetky súbory projektu/balíčka/IDE"
 
 #: lazarusidestrconsts.lisbuildcaption
@@ -5487,7 +5491,9 @@ msgid "Build IDE"
 msgstr "Vybudovať IDE"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-msgid "build IDE with packages"
+#, fuzzy
+#| msgid "build IDE with packages"
+msgid "Build IDE with packages."
 msgstr "vybudovať IDE aj s balíčkami"
 
 #: lazarusidestrconsts.lisbuilding
@@ -8807,7 +8813,9 @@ msgid "Do not close the project"
 msgstr "Nezatvárať projekt"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
-msgid "do not compile dependencies"
+#, fuzzy
+#| msgid "do not compile dependencies"
+msgid "Do not compile dependencies."
 msgstr "neprekladať závislosti"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
@@ -10880,7 +10888,7 @@ msgid "Install/Uninstall Packages"
 msgstr "Nainštalovať/Odinštalovať balíčky"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
-msgid "Instead of compile package create a simple Makefile."
+msgid "Instead of compiling a package create a simple Makefile."
 msgstr ""
 
 #: lazarusidestrconsts.lisinsufficientencoding
@@ -11825,6 +11833,10 @@ msgstr "Voľby:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildoptionssyntax
+msgid "lazbuild [options] <project/package filename or package name>"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
@@ -14667,28 +14679,35 @@ msgid "Override function result string types with the first parameter expression
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, object-pascal-format
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+#, fuzzy
+#| msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgid "Override the default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in environmentoptions.xml."
 msgstr "%sprepíše predvolený prekladač. napr. ppc386 ppcx64 ppcppc atď. predvolené je uložené v environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, object-pascal-format
-msgid "%soverride the project or IDE build mode."
+msgid "Override the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-#, object-pascal-format
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgid "Override the project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s."
 msgstr "%sprepisuje CPU projektu. napr. i386 x86_64 powerpc powerpc_64 atď. predvolené: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-#, object-pascal-format
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgid "Override the project operating system. For example: win32 linux. Default: %s."
 msgstr "%sprepisuje operačný systém projektu. napr. win32 linux. predvolené: %s"
 
+#: lazarusidestrconsts.lisoverridetheprojectsubtarg
+msgid "Override the project subtarget."
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, object-pascal-format
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%sprepisuje widgetset projektu. napr. gtk gtk2 qt win32 carbon. predvolené: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
@@ -14804,6 +14823,10 @@ msgstr ""
 #: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
+#: lazarusidestrconsts.lispassingquiettwotimeswillp
+msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
 msgstr ""
 
 #: lazarusidestrconsts.lispasteclipboard
@@ -19928,6 +19951,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswriteprojectinfofailed
 msgid "Writing the project info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswritewhatpackagefilesares
+msgid "Write what package files are searched and found."
 msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin

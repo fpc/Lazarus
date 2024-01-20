@@ -4875,7 +4875,7 @@ msgid "Add package requirement?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
-msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgid "Add package(s) to the list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -5129,7 +5129,7 @@ msgid "Apply"
 msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
-msgid "apply build flags (-B) to dependencies too"
+msgid "Apply build flags (-B) to dependencies too."
 msgstr ""
 
 #: lazarusidestrconsts.lisapplyconventions
@@ -5413,7 +5413,7 @@ msgid "Build"
 msgstr "Bou"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
-msgid "build all files of project/package/IDE"
+msgid "Build all files of project/package/IDE."
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildcaption
@@ -5430,7 +5430,7 @@ msgid "Build IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-msgid "build IDE with packages"
+msgid "Build IDE with packages."
 msgstr ""
 
 #: lazarusidestrconsts.lisbuilding
@@ -8732,7 +8732,7 @@ msgid "Do not close the project"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
-msgid "do not compile dependencies"
+msgid "Do not compile dependencies."
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
@@ -10774,7 +10774,7 @@ msgid "Install/Uninstall Packages"
 msgstr ""
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
-msgid "Instead of compile package create a simple Makefile."
+msgid "Instead of compiling a package create a simple Makefile."
 msgstr ""
 
 #: lazarusidestrconsts.lisinsufficientencoding
@@ -11671,6 +11671,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
+msgstr ""
+
+#: lazarusidestrconsts.lislazbuildoptionssyntax
+msgid "lazbuild [options] <project/package filename or package name>"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
@@ -14533,28 +14537,30 @@ msgid "Override function result string types with the first parameter expression
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, object-pascal-format
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgid "Override the default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in environmentoptions.xml."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, object-pascal-format
-msgid "%soverride the project or IDE build mode."
+msgid "Override the project or IDE build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 #, object-pascal-format
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgid "Override the project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 #, object-pascal-format
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgid "Override the project operating system. For example: win32 linux. Default: %s."
+msgstr ""
+
+#: lazarusidestrconsts.lisoverridetheprojectsubtarg
+msgid "Override the project subtarget."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 #, object-pascal-format
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverwritefile
@@ -14670,6 +14676,10 @@ msgstr ""
 #: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
+#: lazarusidestrconsts.lispassingquiettwotimeswillp
+msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
 msgstr ""
 
 #: lazarusidestrconsts.lispasteclipboard
@@ -19684,6 +19694,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswriteprojectinfofailed
 msgid "Writing the project info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswritewhatpackagefilesares
+msgid "Write what package files are searched and found."
 msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin

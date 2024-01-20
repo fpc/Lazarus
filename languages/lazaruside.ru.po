@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-20 04:18+0300\n"
+"PO-Revision-Date: 2024-01-20 18:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -4871,8 +4871,8 @@ msgid "Add package requirement?"
 msgstr "Добавить зависимость от пакета?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
-msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr "добавить пакет(ы) в список установленных (использовать совместно с --build-ide для пересборки IDE)."
+msgid "Add package(s) to the list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr "Добавить пакет(ы) в список установленных (использовать совместно с --build-ide для пересборки IDE)."
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -5125,8 +5125,8 @@ msgid "Apply"
 msgstr "Применить"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
-msgid "apply build flags (-B) to dependencies too"
-msgstr "использовать флаг сборки (-B) также для зависимостей"
+msgid "Apply build flags (-B) to dependencies too."
+msgstr "Использовать флаг сборки (-B) также для зависимостей."
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
@@ -5409,8 +5409,8 @@ msgid "Build"
 msgstr "Собрать"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
-msgid "build all files of project/package/IDE"
-msgstr "собрать все файлы проекта/пакета/IDE"
+msgid "Build all files of project/package/IDE."
+msgstr "Собрать все файлы проекта/пакета/IDE."
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -5426,8 +5426,8 @@ msgid "Build IDE"
 msgstr "Сборка IDE"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-msgid "build IDE with packages"
-msgstr "собрать IDE с пакетами"
+msgid "Build IDE with packages."
+msgstr "Собрать IDE с пакетами."
 
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
@@ -8712,8 +8712,8 @@ msgid "Do not close the project"
 msgstr "Не закрывать проект"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
-msgid "do not compile dependencies"
-msgstr "не собирать зависимости"
+msgid "Do not compile dependencies."
+msgstr "Не собирать зависимости."
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen."
@@ -10789,7 +10789,7 @@ msgid "Install/Uninstall Packages"
 msgstr "Установка/удаление пакетов"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
-msgid "Instead of compile package create a simple Makefile."
+msgid "Instead of compiling a package create a simple Makefile."
 msgstr "Вместо компиляции пакета создавать простой Makefile."
 
 #: lazarusidestrconsts.lisinsufficientencoding
@@ -11687,6 +11687,10 @@ msgstr "Параметры:"
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
 msgstr "Параметры, передаваемые компилятору"
+
+#: lazarusidestrconsts.lislazbuildoptionssyntax
+msgid "lazbuild [options] <project/package filename or package name>"
+msgstr "lazbuild [параметры] <имя файла проекта/пакета либо имя пакета>"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to build"
@@ -14516,29 +14520,31 @@ msgid "Override function result string types with the first parameter expression
 msgstr "Заменять строковый тип результата функции типом выражения первого параметра"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, object-pascal-format
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%sперекрыть компилятор по умолчанию, например, ppc386, ppcx64, ppcppc и т. д. Значение по умолчанию хранится в environmentoptions.xml"
+msgid "Override the default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in environmentoptions.xml."
+msgstr "Перекрыть компилятор по умолчанию. Например: ppc386, ppcx64, ppcppc. Значение по умолчанию хранится в environmentoptions.xml."
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, object-pascal-format
-msgid "%soverride the project or IDE build mode."
-msgstr "%sперекрыть режим сборки проекта или IDE."
+msgid "Override the project or IDE build mode."
+msgstr "Перекрыть режим сборки проекта или IDE."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 #, object-pascal-format
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sперекрыть целевое семейство процессоров проекта, например, i386, x86_64, powerpc, powerpc_64 и т. д. Значение по умолчанию: %s"
+msgid "Override the project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s."
+msgstr "Перекрыть целевое семейство процессоров проекта. Например: i386, x86_64, powerpc, powerpc_64. Значение по умолчанию: %s."
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 #, object-pascal-format
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sперекрыть операционную систему проекта, например, win32, linux. Значение по умолчанию: %s"
+msgid "Override the project operating system. For example: win32 linux. Default: %s."
+msgstr "Перекрыть операционную систему проекта. Например: win32, linux. Значение по умолчанию: %s."
+
+#: lazarusidestrconsts.lisoverridetheprojectsubtarg
+msgid "Override the project subtarget."
+msgstr "Перекрыть подцель проекта."
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 #, object-pascal-format
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sперекрыть библиотеку виджетов проекта, например, gtk, gtk2, qt, win32, carbon. Значение по умолчанию: %s"
+msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
+msgstr "Перекрыть библиотеку виджетов проекта. Например: gtk, gtk2, qt, win32, carbon. Значение по умолчанию: %s."
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -14654,6 +14660,10 @@ msgstr "неоднократная передача определения ко�
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "неоднократная передача параметра компилятора -%s с разными значениями"
+
+#: lazarusidestrconsts.lispassingquiettwotimeswillp
+msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
+msgstr "Дважды заданный --quiet повлечёт за собой передачу -vw-n-h-i-l-d-u-t-p-c-x- компилятору."
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"
@@ -19662,6 +19672,10 @@ msgstr "Не удалось записать файл сведений о пак
 #: lazarusidestrconsts.liswriteprojectinfofailed
 msgid "Writing the project info file failed."
 msgstr "Не удалось записать файл сведений о проекте."
+
+#: lazarusidestrconsts.liswritewhatpackagefilesares
+msgid "Write what package files are searched and found."
+msgstr "Вывести ищущиеся и найденные пакеты."
 
 #: lazarusidestrconsts.liswrongversionin
 #, object-pascal-format

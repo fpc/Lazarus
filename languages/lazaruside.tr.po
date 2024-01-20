@@ -4838,7 +4838,9 @@ msgid "Add package requirement?"
 msgstr "Paket gereksinimi eklensin mi?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
-msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+#, fuzzy
+#| msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgid "Add package(s) to the list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "kurulu paket listesine paket (ler) ekleyin (IDE'yi yeniden oluşturmak için --build-ide ile birleştirin)."
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -5092,7 +5094,9 @@ msgid "Apply"
 msgstr "Uygula"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
-msgid "apply build flags (-B) to dependencies too"
+#, fuzzy
+#| msgid "apply build flags (-B) to dependencies too"
+msgid "Apply build flags (-B) to dependencies too."
 msgstr "yapı bayraklarını (-B) bağımlılıklara çok uygulayın"
 
 #: lazarusidestrconsts.lisapplyconventions
@@ -5380,7 +5384,9 @@ msgid "Build"
 msgstr "Derle"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
-msgid "build all files of project/package/IDE"
+#, fuzzy
+#| msgid "build all files of project/package/IDE"
+msgid "Build all files of project/package/IDE."
 msgstr "tüm proje/paket/IDE dosyalarını oluştur"
 
 #: lazarusidestrconsts.lisbuildcaption
@@ -5397,7 +5403,9 @@ msgid "Build IDE"
 msgstr "IDE oluştur"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-msgid "build IDE with packages"
+#, fuzzy
+#| msgid "build IDE with packages"
+msgid "Build IDE with packages."
 msgstr "paketlerle IDE oluştur"
 
 #: lazarusidestrconsts.lisbuilding
@@ -8688,7 +8696,9 @@ msgid "Do not close the project"
 msgstr "Projeyi kapatma"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
-msgid "do not compile dependencies"
+#, fuzzy
+#| msgid "do not compile dependencies"
+msgid "Do not compile dependencies."
 msgstr "bağımlılıkları derleme"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
@@ -10770,7 +10780,9 @@ msgid "Install/Uninstall Packages"
 msgstr "Paketleri Yükle/Kaldır"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
-msgid "Instead of compile package create a simple Makefile."
+#, fuzzy
+#| msgid "Instead of compile package create a simple Makefile."
+msgid "Instead of compiling a package create a simple Makefile."
 msgstr "Derleme paketi yerine basit bir Makefile oluşturun."
 
 #: lazarusidestrconsts.lisinsufficientencoding
@@ -11671,6 +11683,10 @@ msgstr "Seçenekler:"
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
 msgstr "Derleyiciye geçirilen seçenekler"
+
+#: lazarusidestrconsts.lislazbuildoptionssyntax
+msgid "lazbuild [options] <project/package filename or package name>"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to build"
@@ -14482,28 +14498,37 @@ msgid "Override function result string types with the first parameter expression
 msgstr "İlk parametre ifadesi türüyle işlev sonuç dizesi türlerini geçersiz kıl"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, object-pascal-format
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+#, fuzzy
+#| msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgid "Override the default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in environmentoptions.xml."
 msgstr "%s varsayılan derleyiciyi geçersiz kılar. Örneğin ppc386 ppcx64 ppcppc vb. Varsayılan ortamda depolanı environmentoptions.xml"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, object-pascal-format
-msgid "%soverride the project or IDE build mode."
+#, fuzzy
+#| msgid "%soverride the project or IDE build mode."
+msgid "Override the project or IDE build mode."
 msgstr "%s proje veya IDE derleme modunu geçersiz kılar."
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-#, object-pascal-format
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgid "Override the project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s."
 msgstr "%s proje işlemcisini geçersiz kılar. Örneğin. i386 x86_64 powerpc powerpc_64 vb varsayılan:%s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-#, object-pascal-format
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgid "Override the project operating system. For example: win32 linux. Default: %s."
 msgstr "%s proje işletim sistemini geçersiz kıl.örneğin win32 linux varsayılan: %s"
 
+#: lazarusidestrconsts.lisoverridetheprojectsubtarg
+msgid "Override the project subtarget."
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, object-pascal-format
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%s proje pencere setini geçersiz kılar. Örneğin. gtk gtk2 qt win32 karbon. varsayılan:%s"
 
 #: lazarusidestrconsts.lisoverwritefile
@@ -14620,6 +14645,10 @@ msgstr "derleyiciyi geçerek \"%s\" tanımını farklı değerlerle iki kez tan�
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "derleyici seçeneğinin geçilmesi - farklı değerlerle iki kez %s"
+
+#: lazarusidestrconsts.lispassingquiettwotimeswillp
+msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
+msgstr ""
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"
@@ -19605,6 +19634,10 @@ msgstr "Paket bilgi dosyası yazılamadı."
 #: lazarusidestrconsts.liswriteprojectinfofailed
 msgid "Writing the project info file failed."
 msgstr "Proje bilgi dosyası yazılamadı."
+
+#: lazarusidestrconsts.liswritewhatpackagefilesares
+msgid "Write what package files are searched and found."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 #, object-pascal-format
