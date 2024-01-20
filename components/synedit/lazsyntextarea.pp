@@ -89,6 +89,7 @@ type
                       AMarkupManager: TSynEditMarkupManager;
                       AFirstCol, ALastCol: integer
                      );
+    procedure Finish;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
     function  GetNextHighlighterTokenFromView(out ATokenInfo: TLazSynDisplayTokenInfoEx;
                                               APhysEnd: Integer = -1;
@@ -310,6 +311,11 @@ begin
   FLastCol       := ALastCol;
 end;
 
+procedure TLazSynPaintTokenBreaker.Finish;
+begin
+  FCharWidths := nil;
+end;
+
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
   ARealLine: TLineIdx);
 var
@@ -318,6 +324,7 @@ begin
   FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, LogLeftPos, FCurLineByteLen);
   FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
   FCharWidthsLen := Length(FCharWidths);
+  FLinesView.GetPhysicalCharWidths(ARealLine, FCharWidths, FCharWidthsLen);
   FCurLineByteLen := FCurLineByteLen + LogLeftPos - 1;
 
   FCurViewToken.TokenLength     := 0;
@@ -1894,6 +1901,7 @@ begin
   end;
 
   fMarkupManager.EndMarkup;
+  FTokenBreaker.Finish;
 end;
 
 end.

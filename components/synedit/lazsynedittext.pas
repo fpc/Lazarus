@@ -144,7 +144,7 @@ type
     FAdjustedPhysToLogOrigin: Integer;
     FLines: TSynEditStrings;
     FCurrentWidths: TPhysicalCharWidths;
-    FCurrentWidthsLen, FCurrentWidthsAlloc: Integer;
+    FCurrentWidthsLen, FCurrentWidthsAlloc, FCurrentWidthsShrinkCnt: Integer;
     FCurrentLine: Integer;
     FTextChangeStamp, FViewChangeStamp: Int64;
     FUnAdjustedPhysToLogColOffs: Integer;
@@ -345,6 +345,7 @@ type
     // CharWidths
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
+    procedure GetPhysicalCharWidths(Index: Integer; var AResult: TPhysicalCharWidths; out ALen: Integer);
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: String;
@@ -353,7 +354,7 @@ type
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer; virtual; //deprecated;
-    property LogPhysConvertor :TSynLogicalPhysicalConvertor read FLogPhysConvertor;
+    property LogPhysConvertor :TSynLogicalPhysicalConvertor read FLogPhysConvertor write FLogPhysConvertor;
 
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; virtual;
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; virtual;
@@ -718,11 +719,15 @@ begin
     //debugln(['**************** COMPUTING widths (grow): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
     SetLength(FCurrentWidths, LineLen);
     FCurrentWidthsAlloc := LineLen;
+    FCurrentWidthsShrinkCnt := 0;
   end
   else if FCurrentWidthsAlloc > Max(Max(LineLen, FCurrentWidthsLen)*4, SYN_LP_MIN_ALLOC) then begin
     //debugln(['**************** COMPUTING widths (shrink): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
-    FCurrentWidthsAlloc := Max(Max(LineLen, FCurrentWidthsLen), SYN_LP_MIN_ALLOC) ;
-    SetLength(FCurrentWidths, FCurrentWidthsAlloc);
+    inc(FCurrentWidthsShrinkCnt);
+    if FCurrentWidthsShrinkCnt > 20 then begin
+      FCurrentWidthsAlloc := Max(Max(LineLen, FCurrentWidthsLen), SYN_LP_MIN_ALLOC) ;
+      SetLength(FCurrentWidths, FCurrentWidthsAlloc);
+    end;
   //end
   //else begin
   //  debugln(['**************** COMPUTING widths: ', AIndex,' (',dbgs(Pointer(self)),') alloc=',FCurrentWidthsAlloc]);
@@ -1130,10 +1135,11 @@ end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 var
-  s: string;
+  s: PChar;
+  ALen: Integer;
 begin
-  s := Strings[Index];
-  Result := GetPhysicalCharWidths(PChar(s), length(s), Index);
+  s := GetPChar(Index, ALen);
+  Result := GetPhysicalCharWidths(s, ALen, Index);
 end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Line: PChar; LineLen,
@@ -1143,6 +1149,19 @@ begin
   if LineLen = 0 then
     exit;
   DoGetPhysicalCharWidths(Line, LineLen, Index, @Result[0]);
+end;
+
+procedure TSynEditStrings.GetPhysicalCharWidths(Index: Integer;
+  var AResult: TPhysicalCharWidths; out ALen: Integer);
+var
+  s: PChar;
+begin
+  s := GetPChar(Index, ALen);
+  if ALen = 0 then
+    exit;
+  if Length(AResult) < ALen then
+    SetLength(AResult, Length(s));
+  DoGetPhysicalCharWidths(s, ALen, Index, @AResult[0]);
 end;
 
 function TSynEditStrings.GetDisplayView: TLazSynDisplayView;
