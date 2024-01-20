@@ -1659,15 +1659,63 @@ package for replacements.
 </element>
 
 <element name="IsFontNameDefault">
-<short>Indicates if the specified name contains 'default'.</short>
+<short>
+Indicates whether the specified font name contains 'default'.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="IsFontNameDefault.Result">
-<short><b>True</b> when AName contains 'default'.</short>
+<short>
+<b>True</b> when AName contains 'default'.
+</short>
 </element>
 <element name="IsFontNameDefault.AName">
-<short>Font name examined in the routine.</short>
+<short>
+Font name examined in the routine.
+</short>
+</element>
+
+<!-- TODO: Added in f0eb9b84. Issue #40690. -->
+<element name="AddCmdLineParamDesc">
+<short>
+Adds the help displayed for a command line parameter (and options) to the 
+specified TStringList instance.
+</short>
+<descr>
+<p>
+<var>AddCmdLineParamDesc</var> stores the values from <var>aParamOpts</var> and 
+<var>aDescr</var> as separate lines appended to the string list in 
+<var>aText</var>. Multiple values in aParamOpts are combined into a 
+comma-delimited list and added as a single line to AText. aDescr is appended to 
+aText as the last entry.
+</p>
+<p>
+No actions are performed in the routine if aParamOpts is an empty array (Length 
+= 0).
+</p>
+</descr>
+<version>
+Added in LCL 4.0.
+</version>
+<seealso/>
+</element>
+<element name="AddCmdLineParamDesc.aText">
+<short>
+TStringList instance where the formatted help output is stored.
+</short>
+</element>
+<element name="AddCmdLineParamDesc.aParamOpts">
+<short>
+Array with the list of parameters / options for the generated help content. 
+Normally contains the short and/or long variants of the command line switch(es) 
+and any argument(s).
+</short>
+</element>
+<element name="AddCmdLineParamDesc.aDescr">
+<short>
+Descriptive text for the specified parameter(s).
+</short>
 </element>
 
 </module>
