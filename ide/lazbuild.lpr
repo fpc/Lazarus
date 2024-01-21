@@ -1821,7 +1821,7 @@ begin
   writeln('');
   writeln(lisEdtExtToolParameters);
   writeln('');
-  writeln('-?, --help');
+  writeln('-?, -h, --help');
   w(lisThisHelpMessage);
   writeln('');
   writeln('-B, --build-all');
