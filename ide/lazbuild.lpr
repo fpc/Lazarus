@@ -1815,9 +1815,9 @@ begin
   writeln('');
   writeln(lisLazbuildOptionsSyntax);
   writeln('');
-  w(lisEdtExtToolParameters);
+  writeln(lisEdtExtToolParameters);
   writeln('');
-  writeln('--help, -?');
+  writeln('-?, --help');
   w(lisThisHelpMessage);
   writeln('');
   writeln('-B, --build-all');
@@ -1856,16 +1856,16 @@ begin
   w(lisInsteadOfCompilePackageCreateASimpleMakefile);
   writeln('');
 
-  writeln(PrimaryConfPathOptLong,'<path>, ',PrimaryConfPathOptShort,'<path>');
+  writeln(PrimaryConfPathOptShort,'<path>, ',PrimaryConfPathOptLong,'<path>');
   w(Format(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig, [LazConf.GetPrimaryConfigPath]));
   writeln('');
-  writeln(SecondaryConfPathOptLong,'<path>, ',SecondaryConfPathOptShort,'<path>');
+  writeln(SecondaryConfPathOptShort,'<path>, ',SecondaryConfPathOptLong,'<path>');
   w(Format(lissecondaryConfigDirectoryWhereLazarusSearchesFor, [LazConf.GetSecondaryConfigPath]));
   writeln('');
-  writeln('--operating-system=<operating-system>, --os=<operating-system>');
+  writeln('--os=<operating-system>, --operating-system=<operating-system>');
   w(Format(lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [GetCompiledTargetOS]));
   writeln('');
-  writeln('--widgetset=<widgetset>, --ws=<widgetset>');
+  writeln('--ws=<widgetset>, --widgetset=<widgetset>');
   w(Format(lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD, [LCLPlatformDirNames[GetBuildLCLWidgetType]]));
   writeln('');
   writeln('--cpu=<cpu>');
@@ -1874,7 +1874,7 @@ begin
   writeln('--subtarget=<subtarget>');
   w(lisOverrideTheProjectSubtarg);
   writeln('');
-  writeln('--build-mode=<project/ide build mode>, --bm=<project/ide build mode>');
+  writeln('--bm=<project/IDE build mode>, --build-mode=<project/IDE build mode>');
   w(lisOverrideTheProjectBuildMode);
   writeln('');
   writeln('--compiler=<ppcXXX>');
