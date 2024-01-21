@@ -6754,7 +6754,7 @@ begin
     // PGtkEventBox(Result)^.set_visible_window(True);
   end;
   g_object_unref(ListStore);
-
+  PGtkComboBox(Result)^.set_id_column(0);
 end;
 
 function TGtk3ComboBox.EatArrowKeys(const AKey: Word): Boolean;
@@ -6764,15 +6764,29 @@ end;
 
 function TGtk3ComboBox.getText: String;
 begin
-  Result := inherited getText;
-  if Gtk3IsComboBox(GetContainerWidget) then
-    Result := StrPas(PGtkComboBox(GetContainerWidget)^.get_title);
+  Result := '';
+  if Gtk3IsComboBox(GetContainerWidget) then begin
+    with PGtkComboBox(GetContainerWidget)^ do begin
+      if has_entry then begin
+        Result := StrPas(PGtkEntry(get_child)^.Text);
+      end else begin
+        Result := active_id;
+      end;
+    end;
+  end;
 end;
 
 procedure TGtk3ComboBox.setText(const AValue: String);
 begin
-  if Gtk3IsComboBox(FWidget) then
-    PGtkComboBox(GetContainerWidget)^.set_title(PgChar(AValue));
+  if Gtk3IsComboBox(GetContainerWidget) then begin
+    with PGtkComboBox(GetContainerWidget)^ do begin
+      if has_entry then begin
+        PGtkEntry(get_child)^.Text := Pgchar(AValue);
+      end else begin
+        //active_id := Pgchar(AValue); TODO: Wait until property becomes writeble
+      end;
+    end;
+  end;
 end;
 
 procedure TGtk3ComboBox.DumpPrivateStructValues(const ADbgEvent: String);
