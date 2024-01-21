@@ -84,7 +84,7 @@ object MaskEditorForm: TMaskEditorForm
     Constraints.MinWidth = 300
     ItemHeight = 0
     Style = lbOwnerDrawFixed
-    TabOrder = 4
+    TabOrder = 6
     OnClick = SampleMasksListBoxClick
     OnDrawItem = SampleMasksListBoxDrawItem
   end
@@ -150,7 +150,7 @@ object MaskEditorForm: TMaskEditorForm
     ClientHeight = 66
     ClientWidth = 189
     FullRepaint = False
-    TabOrder = 3
+    TabOrder = 4
     object TestInputLabel: TLabel
       AnchorSideLeft.Control = TestInputPanel
       AnchorSideTop.Control = TestInputPanel
@@ -199,7 +199,7 @@ object MaskEditorForm: TMaskEditorForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 6
+    TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object EnableSetsCheckBox: TCheckBox
@@ -216,7 +216,7 @@ object MaskEditorForm: TMaskEditorForm
     Caption = 'EnableSets'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 3
     OnClick = EnableSetsCheckBoxClick
   end
   object OpenDialog1: TOpenDialog
