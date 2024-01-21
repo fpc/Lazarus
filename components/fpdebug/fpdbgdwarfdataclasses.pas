@@ -5070,7 +5070,7 @@ begin
   FFirstScope.Init(nil); // invalid
 
   if not FAbbrevList.Valid then begin
-    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.Create(Self, nil);
+    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
     exit;
   end;
 
@@ -5082,7 +5082,7 @@ begin
   Scope := FScanAllWorker.FindCompileUnit(FScopeList);
   if not Scope.IsValid then begin
     DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING compilation unit has no compile_unit tag']);
-    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.Create(Self, nil);
+    FDwarfSymbolClassMap := DwarfSymbolClassMapList.FDefaultMap.GetInstanceForCompUnit(Self);
     Exit;
   end;
   FValid := True;
