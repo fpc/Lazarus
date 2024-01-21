@@ -1801,6 +1801,8 @@ begin
 end;
 
 procedure TLazBuildApplication.WriteUsage;
+var
+  CustomLang: string;
 const
   cDescrIndent = 16;
   cMaxLength = 80;
@@ -1811,7 +1813,9 @@ const
   end;
 
 begin
-  TranslateResourceStrings(ProgramDirectoryWithBundle,'');
+  if LazBuildApp.HasOption('language') then
+    CustomLang:=LazBuildApp.GetOptionValue('language');
+  TranslateResourceStrings(ProgramDirectoryWithBundle,CustomLang);
   writeln('');
   writeln(lisLazbuildOptionsSyntax);
   writeln('');
