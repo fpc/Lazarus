@@ -1809,7 +1809,7 @@ const
 
   procedure w(Msg: string);
   begin
-    writeln(UTF8ToConsole(UTF8WrapText(StringOfChar(' ', cDescrIndent) + Msg, LineEnding, [' ', #9], cMaxLength, cDescrIndent)));
+    writeln(UTF8ToConsole(StringOfChar(' ', cDescrIndent) + UTF8WrapText(Msg, LineEnding, [' ', #9], cMaxLength, cDescrIndent)));
   end;
 
 begin
