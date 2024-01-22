@@ -3272,7 +3272,7 @@ begin
     Inc(N);
     if P^ = BreakStr[Length(BreakStr)] then
       N := 0;
-    if N > MaxCol - Indent then
+    if N >= MaxCol - Indent then
     begin
       Len := Length(Result);
       RP := Len;
