@@ -2027,7 +2027,7 @@ number of byte values in p to the return value for the function.
 
 <element name="UTF8RPos">
 <short>
-Gets the right-most position in the source string for the substring value.
+Gets the right-most position in the Source string for the value in Substr.
 </short>
 <descr></descr>
 <seealso>
@@ -2045,7 +2045,9 @@ Gets the right-most position in the source string for the substring value.
 </element>
 
 <element name="UTF8WrapText">
-<short>Creates a word wrapped version of the specified string.</short>
+<short>
+Creates a word-wrapped version of the specified string.
+</short>
 <descr>
 <p>
 <var>UTF8WrapText</var> is an overloaded <var>String</var> function used to 
@@ -2061,12 +2063,19 @@ and #9 (Tab). <var>BreakStr</var> contains the end-of-line sequence used to
 represent a line break inserted into the return value.
 </p>
 <p>
-Use <var>Indent</var> to specify the indentation inserted at the beginning of 
-each line in the word-wrapped values.
+Use <var>Indent</var> to specify the number of Space (#32) characters inserted 
+as indentation at the beginning of each word-wrapped line. The default value is 
+0 (zero) and omits indentation in the word-wrapped lines. A negative value in 
+Indent causes the argument to be set to 0.
+</p>
+<p>
+The Indent argument affects the number of UTF-8 characters allowed in each 
+word-wrapped line. When set to a positive non-zero value, the maximum number of 
+characters allowed per line is <b>MaxCol - Indent</b>.
 </p>
 <p>
 No actions are performed in the function when S is an empty string (''), 
-MaxCol is set to 0 (zero), or BreakChars is an empty set.
+MaxCol is set to 0 (zero), or BreakChars is an empty set ([]).
 </p>
 </descr>
 <version>
