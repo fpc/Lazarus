@@ -5772,7 +5772,7 @@ function TEditorOptions.LoadCodeTemplates(AnAutoComplete: TSynEditAutoComplete
     data: TResourceStream;
     i: Int64;
   begin
-    data := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
+    data := TResourceStream.Create(HInstance, PChar('codetemplates'), PChar(RT_RCDATA));
     i := data.Size;
     SetLength(Result{%H-}, i);
     if i > 0 then
