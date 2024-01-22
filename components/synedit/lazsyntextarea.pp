@@ -326,6 +326,7 @@ begin
   if FLinesView.LogPhysConvertor.CurrentLine = ARealLine then begin
     FCharWidths2 := FCharWidths;
     FCharWidths :=FLinesView.LogPhysConvertor.CurrentWidthsDirect;
+    FCharWidthsLen :=FLinesView.LogPhysConvertor.CurrentWidthsCount;
   end
   else begin
     if FCharWidths2 <> nil then begin
