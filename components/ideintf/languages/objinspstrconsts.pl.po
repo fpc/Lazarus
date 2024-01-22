@@ -1288,6 +1288,14 @@ msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "Nieznany"
 
+#: objinspstrconsts.oisunload
+msgid "Unload"
+msgstr ""
+
+#: objinspstrconsts.oisunloadhint
+msgid "Unloads the current sample file"
+msgstr ""
+
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
 msgstr "Odznacz wszystko"

@@ -1336,6 +1336,14 @@ msgctxt "objinspstrconsts.oisunknown"
 msgid "Unknown"
 msgstr "לא ידוע "
 
+#: objinspstrconsts.oisunload
+msgid "Unload"
+msgstr ""
+
+#: objinspstrconsts.oisunloadhint
+msgid "Unloads the current sample file"
+msgstr ""
+
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
 msgstr "בטל את כל הבחירות"

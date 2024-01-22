@@ -84,7 +84,7 @@ object MaskEditorForm: TMaskEditorForm
     Constraints.MinWidth = 300
     ItemHeight = 0
     Style = lbOwnerDrawFixed
-    TabOrder = 6
+    TabOrder = 7
     OnClick = SampleMasksListBoxClick
     OnDrawItem = SampleMasksListBoxDrawItem
   end
@@ -199,7 +199,7 @@ object MaskEditorForm: TMaskEditorForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 7
+    TabOrder = 8
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object EnableSetsCheckBox: TCheckBox
@@ -218,6 +218,21 @@ object MaskEditorForm: TMaskEditorForm
     ShowHint = True
     TabOrder = 3
     OnClick = EnableSetsCheckBoxClick
+  end
+  object UnloadSampleMasksButton: TButton
+    AnchorSideLeft.Control = LoadSampleMasksButton
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LoadSampleMasksButton
+    Left = 87
+    Height = 25
+    Top = 222
+    Width = 75
+    BorderSpacing.Left = 6
+    Caption = 'Unload'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+    OnClick = UnloadSampleMasksButtonClick
   end
   object OpenDialog1: TOpenDialog
     Title = 'Open mask file (*.dem)'

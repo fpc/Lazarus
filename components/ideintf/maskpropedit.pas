@@ -24,7 +24,7 @@ uses
   // LazUtils
   LazUTF8, LazFileUtils,
   // IdeIntf
-  LazIDEIntf, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
+  LazIDEIntf, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf, PropEditConfig;
 
 type
 
@@ -41,6 +41,7 @@ type
     ButtonPanel1: TButtonPanel;
     EnableSetsCheckBox: TCheckBox;
     LoadSampleMasksButton: TButton;
+    UnloadSampleMasksButton: TButton;
     SaveLiteralCheckBox: TCheckBox;
     InputMaskEdit: TEdit;
     CharactersForBlanksEdit: TEdit;
@@ -55,6 +56,7 @@ type
     procedure EnableSetsCheckBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure LoadSampleMasksButtonClick(Sender: TObject);
+    procedure UnloadSampleMasksButtonClick(Sender: TObject);
     procedure SampleMasksListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure SaveLiteralCheckBoxClick(Sender: TObject);
@@ -65,13 +67,13 @@ type
   private
     FEnableSets: Boolean;
     ParsedSamples: TParsedSamples;
+    FSampleEditMaskFilename: String;
     function ConstructEditmask: String;
     function GetEditMask: string;
     function MaskDoFormatText(const EditMask: string; const Value: string; EnableSets: Boolean): String;
     function ParseMaskLineDelphi(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
     function ParseMaskLineLazarus(Line: String; EnableSets: Boolean; out aCaption, aExample, aFormattedExample, aMask: String): Boolean;
     procedure LoadAndCleanSampleFile(Fn: String; EnableSets: Boolean; List: TStrings; out AParsedSamples: TParsedSamples);  //out list of record?
-    procedure LoadDEMFile(AFileName: string);
     procedure ReConstructEditmask;
     procedure SetEditMask(AValue: string);
     procedure SetEnableSets(AValue: Boolean);
@@ -102,6 +104,8 @@ type
     function MaskEdit: TCustomMaskEditAccess; virtual;
   end;
 
+
+
 implementation
 
 {$R *.lfm}
@@ -110,11 +114,11 @@ implementation
 { TMaskEditorForm }
 
 procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
-var
-  aDemFile: string;
 begin
   Caption := oisInputMaskEditor;
   LoadSampleMasksButton.Caption := oisMasks;
+  UnloadSampleMasksButton.Caption := oisUnload;
+  UnloadSampleMasksButton.Hint := oisUnloadHint;  // alternatively have a longer caption?
   SaveLiteralCheckBox.Caption := oisSaveLiteralCharacters;
   InputMaskLabel.Caption := oisInputMask;
   SampleMasksLabel.Caption := oisSampleMasks;
@@ -125,19 +129,28 @@ begin
   OpenDialog1.Filter := oisMaskSampleFilter;
   OpenDialog1.Title := oisSelectInputMaskSample;
 
-  if LazarusIDE<>nil then
-    aDemFile:=LazarusIDE.GetPrimaryConfigPath
-  else
-    aDemFile:=ExtractFileDir(ParamStrUTF8(0));
-  aDemFile:=CleanAndExpandDirectory(aDemFile)+'maskeditmasks.txt';
-  if FileExistsUTF8(aDemFile) then
-    LoadDEMFile(aDemFile);
+  if not Assigned(PropEditConfigs) then
+    PropEditConfigs := TPropEditConfigs.Create;
+  PropEditConfigs.Load;
+  FSampleEditMaskFilename := PropEditConfigs.SampleEditMaskFilename;
+  FSampleEditMaskFilename := CleanAndExpandFilename(FSampleEditMaskFilename);
+  if (FSampleEditMaskFilename <> '') and FileExistsUTF8(FSampleEditMaskFilename) then
+    LoadAndCleanSampleFile(FSampleEditMaskFilename, FEnableSets, SampleMasksListBox.Items, ParsedSamples);
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TMaskEditorForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  PropEditConfigs.SampleEditMaskFilename := FSampleEditMaskFilename;
+  PropEditConfigs.Save;
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TMaskEditorForm.UnloadSampleMasksButtonClick(Sender: TObject);
+begin
+  SampleMasksListBox.Clear;
+  ParsedSamples := nil;
+  FSampleEditMaskFilename := '';
 end;
 
 procedure TMaskEditorForm.EnableSetsCheckBoxClick(Sender: TObject);
@@ -147,9 +160,9 @@ end;
 
 procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
 begin
-  OpenDialog1.InitialDir:=ExtractFileDir(ParamStrUTF8(0));
+  OpenDialog1.InitialDir:=ExtractFileDir(FSampleEditMaskFilename);
   if OpenDialog1.Execute then
-    LoadDEMFile(OpenDialog1.FileName);
+    LoadAndCleanSampleFile(OpenDialog1.Filename, FEnableSets, SampleMasksListBox.Items, ParsedSamples);
 end;
 
 procedure TMaskEditorForm.SampleMasksListBoxDrawItem(Control: TWinControl;
@@ -374,6 +387,7 @@ var
   SL: TStringList;
   ParseFunc: TParseFunc;
 begin
+  FSampleEditMaskFilename := '';
   AParsedSamples := nil;
   if (CompareText(ExtractFileExt(Fn),'.dem') = 0) then
     ParseFunc := @ParseMaskLineDelphi
@@ -403,11 +417,13 @@ begin
         end;
       end;
       SetLength(AParsedSamples, Index);
+      FSampleEditMaskFilename := Fn;
     except
       on ESTreamError do
       begin
         List.Clear;
         AParsedSamples := nil;
+        FSampleEditMaskFilename := '';
         MessageDlg(Format(oisErrorReadingSampleFile,[Fn]), mtError, [mbOk], 0);
       end;
     end;
@@ -417,10 +433,6 @@ begin
   end;
 end;
 
-procedure TMaskEditorForm.LoadDEMFile(AFileName: string);
-begin
-  LoadAndCleanSampleFile(AFilename, FEnableSets, SampleMasksListBox.Items, ParsedSamples);
-end;
 
 procedure TMaskEditorForm.SetEditMask(AValue: string);
 

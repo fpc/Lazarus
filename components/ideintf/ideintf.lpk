@@ -328,6 +328,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="PagesPropEditDlg"/>
       </Item>
+      <Item>
+        <Filename Value="propeditconfig.pp"/>
+        <UnitName Value="PropEditConfig"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

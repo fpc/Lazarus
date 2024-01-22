@@ -21,7 +21,7 @@ uses
   PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
   StringsPropEditDlg, TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, 
   bufdatasetdsgn, selectdatasetdlg, SelEdits, IdeIntfStrConsts, 
-  LazarusPackageIntf;
+  PropEditConfig, LazarusPackageIntf;
 
 implementation
 
