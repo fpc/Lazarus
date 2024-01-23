@@ -95,6 +95,7 @@ type
 
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
+    function fittingSize: NSSize; override;
 
     procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
     procedure drawRect(dirtyRect: NSRect); override;
@@ -504,6 +505,11 @@ begin
   if Assigned(beforeSel) then beforeSel.release;
   if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
+end;
+
+function TCocoaTableListView.fittingSize: NSSize;
+begin
+  Result:= NSZeroSize;
 end;
 
 procedure TCocoaTableListView.drawRow_clipRect(row: NSInteger; clipRect: NSRect
