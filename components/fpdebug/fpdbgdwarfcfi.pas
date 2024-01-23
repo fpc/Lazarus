@@ -639,11 +639,15 @@ class function TDwarfCallFrameInformation.TryObtainNextCallFrame(
         end;
       cfiOffset:
         begin
-        Process.ReadData(CFA+Rule.Offset, AddressSize, Value);
+        {$PUSH}{$R-}{$Q-}
+        Process.ReadData(CFA+TDBGPtr(Rule.Offset), AddressSize, Value);
+        {$POP}
         end;
       cfiValOffset:
         begin
-        Value := CFA+Rule.Offset;
+        {$PUSH}{$R-}{$Q-}
+        Value := CFA+TDBGPtr(Rule.Offset);
+        {$POP}
         end;
       cfiRegister:
         begin
@@ -680,7 +684,9 @@ begin
       if Assigned(Reg) then
         begin
         FrameBase := Reg.NumValue;
-        FrameBase := FrameBase + Rule.Offset;
+        {$PUSH}{$R-}{$Q-}
+        FrameBase := FrameBase + TDBGPtr(Rule.Offset);
+        {$POP}
         end
       else
         begin
