@@ -3954,7 +3954,8 @@ var
 begin
   for i := 0 to AllEditorsInfoCount - 1 do
     with AllEditorsInfo[i] do
-      IsVisibleTab := (WindowID = AWindowID) and (EditorComponent = AnEditor);
+      if AllEditorsInfo[i].WindowID = AWindowID then
+        IsVisibleTab := (EditorComponent = AnEditor);
   AnEditorInfo := EditorInfoWithEditorComponent(AnEditor);
   if AnEditorInfo = nil then Exit(nil);
   Result := AnEditorInfo.UnitInfo;
