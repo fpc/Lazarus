@@ -863,7 +863,13 @@ var
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) or
              (not FFollowSymLink and FileIsSymlink(APath + PathInfo.Name)) or
-             (not AcceptDir(APath+PathInfo.Name))
+             (FileIsSymlink(APath + PathInfo.Name) and
+             ( //try to detect the simples case of a circular link
+               //is the link "up or down the current tree": infinite loop if we follow
+               FileIsInPath(ExpandFilenameUTF8(ReadAllLinks(APath+PathInfo.Name,False)),ExpandFilenameUTF8(APath)) or
+               FileIsInPath(ExpandFilenameUTF8(APath),ExpandFilenameUTF8(ReadAllLinks(APath+PathInfo.Name,False))))
+             ) or
+             (not AcceptDir(PathInfo.Name))
           then Continue;
 
           FPath := APath;
