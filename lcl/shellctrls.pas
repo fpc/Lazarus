@@ -1512,7 +1512,9 @@ begin
   else
     FQRootPath := '';
   RootIsAbsolute := (FQRootPath = '') or (FQRootPath = PathDelim)
-                    or ((Length(FQRootPath) = 3) and (FQRootPath[2] = ':') and (FQRootPath[3] = PathDelim));
+                    {$ifdef mswindows}
+                    or ((Length(FQRootPath) = 3) and (FQRootPath[2] = ':') and (FQRootPath[3] = PathDelim))
+                    {$endif};
 
   {$ifdef debug_shellctrls}
   debugln(['SetPath: FQRootPath = ',fqrootpath]);
