@@ -4,6 +4,13 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sk\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
@@ -11,7 +18,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.breakviewheadernogroup
 msgid "No group"
-msgstr ""
+msgstr "Žiadna skupina"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgid "Select Groups"
@@ -31,61 +38,51 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr ""
 
 #: idedebuggerstringconstants.dbgdispformatbinary
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
 msgstr "Binárny"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
 msgid "Character"
 msgstr "Znak"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
 msgid "Decimal"
 msgstr "Desiatkovo"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
 msgid "Default"
 msgstr "Predvolené"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
 msgid "Floating Point"
 msgstr "Plávajúca čiarka"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
 msgid "Hexadecimal"
 msgstr "Šestnástkovo"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
 msgid "Memory Dump"
 msgstr "Výpis pamäte"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
 msgid "Pointer"
 msgstr "Ukazovateľ"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
 msgid "Record/Structure"
 msgstr "Záznam/Štruktúra"
 
 #: idedebuggerstringconstants.dbgdispformatstring
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatstring"
 msgid "String"
 msgstr "Reťazec"
@@ -93,17 +90,16 @@ msgstr "Reťazec"
 #: idedebuggerstringconstants.dbgdispformatunsigned
 msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
 msgid "Unsigned"
-msgstr ""
+msgstr "Unsigned"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Akcia"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
-msgstr ""
+msgstr "Pridať"
 
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
 msgid "Backend Converter"
@@ -114,14 +110,13 @@ msgid "Match types by name"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Meno"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
-msgstr ""
+msgstr "Odstrániť"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
 msgid "Backend Converter:"
@@ -146,22 +141,21 @@ msgid "All files"
 msgstr "Všetky súbory"
 
 #: idedebuggerstringconstants.dlgfilterxml
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Súbory XML"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "Debuger"
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
-msgstr ""
+msgstr "Zadajte meno"
 
 #: idedebuggerstringconstants.dlgidedbgnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Nová položka"
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
@@ -191,9 +185,10 @@ msgid "Data-Address"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch
+#, fuzzy
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
-msgstr ""
+msgstr "Pridať pozorovanie"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
@@ -271,12 +266,12 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr ""
+msgstr "Konvertor"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Zakázať/Povoliť aktualizácie pre celé okno"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
@@ -284,10 +279,9 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr ""
+msgstr "Vyhodnotiť"
 
 #: idedebuggerstringconstants.drshistory
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
 msgstr "História"
@@ -310,7 +304,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
-msgstr ""
+msgstr "Skontrolovať"
 
 #: idedebuggerstringconstants.drsinspectcolwidthdataclass
 msgid "Data class column"
@@ -355,7 +349,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr ""
+msgstr "Nová hodnota"
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
 msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
@@ -371,26 +365,26 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
-msgstr ""
+msgstr "Spustiť všetky vlákna počas vyhodnocovania"
 
 #: idedebuggerstringconstants.drssuspend
 msgid "Suspend"
-msgstr ""
+msgstr "Pozastaviť"
 
 #: idedebuggerstringconstants.drsusefunctioncalls
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
 msgid "Function"
 msgstr "Funkcia"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr ""
+msgstr "Povoliť volania funkcií"
 
 #: idedebuggerstringconstants.drsuseinstanceclass
+#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
-msgstr ""
+msgstr "Inštancia"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
@@ -413,7 +407,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.histdlgbtnclearhint
 msgid "Clear all snapshots"
-msgstr ""
+msgstr "Vymazať všetky snímky"
 
 #: idedebuggerstringconstants.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
@@ -421,11 +415,11 @@ msgstr ""
 
 #: idedebuggerstringconstants.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
-msgstr ""
+msgstr "Urobiť snímku"
 
 #: idedebuggerstringconstants.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
-msgstr ""
+msgstr "Zapnúť/vypnúť automatické snímky"
 
 #: idedebuggerstringconstants.histdlgbtnremovehint
 msgid "Remove selected entry"
@@ -437,7 +431,7 @@ msgstr "Zobraziť históriu"
 
 #: idedebuggerstringconstants.histdlgbtnshowsnaphint
 msgid "View Snapshots"
-msgstr ""
+msgstr "Zobraziť snímky"
 
 #: idedebuggerstringconstants.histdlgcolumnloc
 msgctxt "lazarusidestrconsts.histdlgcolumnloc"
@@ -455,32 +449,30 @@ msgstr "História"
 
 #: idedebuggerstringconstants.lisactions
 msgid "Actions:"
-msgstr ""
+msgstr "Akcie:"
 
 #: idedebuggerstringconstants.lisaddress
 msgid "Address:"
-msgstr ""
+msgstr "Adresa:"
 
 #: idedebuggerstringconstants.lisaddressbreakpoint
 msgid "&Address Breakpoint ..."
-msgstr ""
+msgstr "&Adresa bodu prerušenia ..."
 
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
-msgstr "Povoliť Function Calls"
+msgstr "Povoliť volania funkcií"
 
 #: idedebuggerstringconstants.lisautocontinueafter
 msgid "Auto continue after:"
-msgstr ""
+msgstr "Automaticky pokračovať po:"
 
 #: idedebuggerstringconstants.lisbpsdisabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsdisabled"
 msgid "Disabled"
 msgstr "Zakázané"
 
 #: idedebuggerstringconstants.lisbpsenabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsenabled"
 msgid "Enabled"
 msgstr "Povolené"
@@ -488,11 +480,11 @@ msgstr "Povolené"
 #: idedebuggerstringconstants.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
-msgstr "Zalomiť"
+msgstr "Prerušiť"
 
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
-msgstr ""
+msgstr "Vlastnosti bodu prerušenia"
 
 #: idedebuggerstringconstants.lisbrkpointaction
 msgctxt "idedebuggerstringconstants.lisbrkpointaction"
@@ -515,21 +507,19 @@ msgstr "Chyba"
 
 #: idedebuggerstringconstants.lisclear
 msgid "Clear"
-msgstr ""
+msgstr "Vyčistiť"
 
 #: idedebuggerstringconstants.liscoladdress
-#, fuzzy
-#| msgid "Address"
 msgid "Function Address"
-msgstr "Adresa"
+msgstr "Adresa funkcie"
 
 #: idedebuggerstringconstants.liscolclass
 msgid "Class"
-msgstr ""
+msgstr "Trieda"
 
 #: idedebuggerstringconstants.liscolinstance
 msgid "Object Instance"
-msgstr ""
+msgstr "Inštancia objektu"
 
 #: idedebuggerstringconstants.liscolreturns
 msgid "Returns"
@@ -537,7 +527,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.liscolvisibility
 msgid "Visibility"
-msgstr ""
+msgstr "Viditeľnosť"
 
 #: idedebuggerstringconstants.liscondition
 msgid "Condition"
@@ -553,7 +543,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.liscopyline
 msgid "Copy Line"
-msgstr ""
+msgstr "Kopírovať riadok"
 
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
@@ -572,7 +562,7 @@ msgstr "Aktuálny"
 
 #: idedebuggerstringconstants.lisdadattach
 msgid "Attach"
-msgstr ""
+msgstr "Pripojiť"
 
 #: idedebuggerstringconstants.lisdadimagename
 msgid "Image Name"
@@ -584,50 +574,50 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisdadrunningprocesses
 msgid "Running Processes"
-msgstr ""
+msgstr "Bežiace procesy"
 
 #: idedebuggerstringconstants.lisdbgallitemdelete
 msgctxt "idedebuggerstringconstants.lisdbgallitemdelete"
 msgid "Delete all"
-msgstr ""
+msgstr "Zmazať všetko"
 
 #: idedebuggerstringconstants.lisdbgallitemdeletehint
 msgctxt "idedebuggerstringconstants.lisdbgallitemdeletehint"
 msgid "Delete all"
-msgstr ""
+msgstr "Zmazať všetko"
 
 #: idedebuggerstringconstants.lisdbgallitemdisable
 msgctxt "idedebuggerstringconstants.lisdbgallitemdisable"
 msgid "Disable all"
-msgstr ""
+msgstr "Zakázať všetko"
 
 #: idedebuggerstringconstants.lisdbgallitemdisablehint
 msgctxt "idedebuggerstringconstants.lisdbgallitemdisablehint"
 msgid "Disable all"
-msgstr ""
+msgstr "Zakázať všetko"
 
 #: idedebuggerstringconstants.lisdbgallitemenable
 msgctxt "idedebuggerstringconstants.lisdbgallitemenable"
 msgid "Enable all"
-msgstr ""
+msgstr "Povoliť všetko"
 
 #: idedebuggerstringconstants.lisdbgallitemenablehint
 msgctxt "idedebuggerstringconstants.lisdbgallitemenablehint"
 msgid "Enable all"
-msgstr ""
+msgstr "Povoliť všetko"
 
 #: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
-msgstr ""
+msgstr "Kopírovať adresu do schránky"
 
 #: idedebuggerstringconstants.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
-msgstr ""
+msgstr "Kopírovať do schránky"
 
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "idedebuggerstringconstants.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
-msgstr ""
+msgstr "Vlastnosti bodu prerušenia ..."
 
 #: idedebuggerstringconstants.lisdbgitemdeletehint
 msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
@@ -637,22 +627,22 @@ msgstr "Delete"
 #: idedebuggerstringconstants.lisdbgitemdisable
 msgctxt "idedebuggerstringconstants.lisdbgitemdisable"
 msgid "Disable"
-msgstr ""
+msgstr "Zakázať"
 
 #: idedebuggerstringconstants.lisdbgitemdisablehint
 msgctxt "idedebuggerstringconstants.lisdbgitemdisablehint"
 msgid "Disable"
-msgstr ""
+msgstr "Zakázať"
 
 #: idedebuggerstringconstants.lisdbgitemenable
 msgctxt "idedebuggerstringconstants.lisdbgitemenable"
 msgid "Enable"
-msgstr ""
+msgstr "Povoliť"
 
 #: idedebuggerstringconstants.lisdbgitemenablehint
 msgctxt "idedebuggerstringconstants.lisdbgitemenablehint"
 msgid "Enable"
-msgstr ""
+msgstr "Povoliť"
 
 #: idedebuggerstringconstants.lisdbgterminal
 msgid "Console In/Output"
@@ -660,24 +650,24 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisdbgwinpower
 msgid "On/Off"
-msgstr ""
+msgstr "Zapnúť/Vypnúť"
 
 #: idedebuggerstringconstants.lisdbgwinpowerhint
 msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Zakázať/Povoliť aktualizácie pre celé okno"
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackerror
 msgid "Debugger Error"
-msgstr ""
+msgstr "Chyba ladenia"
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackinformation
 msgid "Debugger Information"
-msgstr ""
+msgstr "Informácie ladenia"
 
 #: idedebuggerstringconstants.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
-msgstr ""
+msgstr "Varovania ladenia"
 
 #: idedebuggerstringconstants.lisdebugoptionsfrmresume
 msgid "Resume"
@@ -724,12 +714,12 @@ msgstr "Zmazať bod prerušenia na%s\"%s\" riadok %d?"
 #: idedebuggerstringconstants.lisdeletebreakpointforaddress
 #, object-pascal-format
 msgid "Delete breakpoint for address %s?"
-msgstr ""
+msgstr "Zmazať bod prerušenia na adrese %s?"
 
 #: idedebuggerstringconstants.lisdeletebreakpointforwatch
 #, object-pascal-format
 msgid "Delete watchpoint for \"%s\"?"
-msgstr ""
+msgstr "Zmazať bod pozorovania pre \"%s\"?"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
@@ -741,16 +731,17 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisdisablebreakpoint
 msgid "Disable Breakpoint"
-msgstr ""
+msgstr "Zakázať bod prerušenia"
 
 #: idedebuggerstringconstants.lisdisablegroups
 msgid "Disable Groups"
-msgstr ""
+msgstr "Zakázať skupiny"
 
 #: idedebuggerstringconstants.lisdisassassembler
+#, fuzzy
 msgctxt "idedebuggerstringconstants.lisdisassassembler"
 msgid "Assembler"
-msgstr ""
+msgstr "Assembler"
 
 #: idedebuggerstringconstants.lisdisassgotoaddredittexthint
 msgid "($address)"
@@ -759,22 +750,22 @@ msgstr ""
 #: idedebuggerstringconstants.lisdisassgotoaddress
 msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
 msgid "Goto Address"
-msgstr ""
+msgstr "Choď na adresu"
 
 #: idedebuggerstringconstants.lisdisassgotoaddresshint
 msgctxt "idedebuggerstringconstants.lisdisassgotoaddresshint"
 msgid "Goto Address"
-msgstr ""
+msgstr "Choď na adresu"
 
 #: idedebuggerstringconstants.lisdisassgotocurrentaddress
 msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddress"
 msgid "Goto Current Address"
-msgstr ""
+msgstr "Choď na aktuálnu adresu"
 
 #: idedebuggerstringconstants.lisdisassgotocurrentaddresshint
 msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddresshint"
 msgid "Goto Current Address"
-msgstr ""
+msgstr "Choď na aktuálnu adresu"
 
 #: idedebuggerstringconstants.lisenableall
 msgid "&Enable All"
@@ -786,20 +777,21 @@ msgstr "Povoliť všetko v rovnakom zdroji"
 
 #: idedebuggerstringconstants.lisenablebreakpoint
 msgid "Enable Breakpoint"
-msgstr ""
+msgstr "Povoliť bod prerušenia"
 
 #: idedebuggerstringconstants.lisenablegroups
 msgid "Enable Groups"
-msgstr ""
+msgstr "Povoliť skupiny"
 
 #: idedebuggerstringconstants.lisevalexpression
+#, fuzzy
 msgctxt "idedebuggerstringconstants.lisevalexpression"
 msgid "Eval expression"
-msgstr ""
+msgstr "Vyhodnotiť výraz"
 
 #: idedebuggerstringconstants.lisevaluateall
 msgid "Evaluate all"
-msgstr ""
+msgstr "Vyhodnotiť všetko"
 
 #: idedebuggerstringconstants.lisevaluatemodify
 msgid "&Evaluate/Modify"
@@ -807,23 +799,23 @@ msgstr "Vyhodnotiť/Upraviť"
 
 #: idedebuggerstringconstants.liseventlogclear
 msgid "Clear Events"
-msgstr ""
+msgstr "Vymazať udalosti"
 
 #: idedebuggerstringconstants.liseventlogoptions
 msgid "Event Log Options ..."
-msgstr ""
+msgstr "Voľby záznamu udalostí ..."
 
 #: idedebuggerstringconstants.liseventlogsavetofile
 msgid "Save Events to File"
-msgstr ""
+msgstr "Uložiť udalosti do súboru"
 
 #: idedebuggerstringconstants.liseventslogaddcomment
 msgid "Add Comment ..."
-msgstr ""
+msgstr "Pridať komentár ..."
 
 #: idedebuggerstringconstants.liseventslogaddcomment2
 msgid "Add Comment"
-msgstr ""
+msgstr "Pridať komentár"
 
 #: idedebuggerstringconstants.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -876,7 +868,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisgroupnameinput
 msgid "Group name:"
-msgstr ""
+msgstr "Názov skupiny:"
 
 #: idedebuggerstringconstants.lisgroupnameinvalid
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
@@ -892,7 +884,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
-msgstr ""
+msgstr "Počítadlo"
 
 #: idedebuggerstringconstants.lisid
 msgctxt "lazarusidestrconsts.lisid"
@@ -905,7 +897,7 @@ msgstr "Ignorovať tento typ výnimky"
 
 #: idedebuggerstringconstants.lisimport
 msgid "Import"
-msgstr ""
+msgstr "Importovať"
 
 #: idedebuggerstringconstants.lisindex
 msgid "Index"
@@ -913,10 +905,9 @@ msgstr "Index"
 
 #: idedebuggerstringconstants.lisinspect
 msgid "&Inspect"
-msgstr ""
+msgstr "Skontrolovať"
 
 #: idedebuggerstringconstants.lisinspectaddwatch
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisinspectaddwatch"
 msgid "Add watch"
 msgstr "Pridať pozorovanie"
@@ -928,20 +919,20 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisinspectdata
 msgid "Data"
-msgstr ""
+msgstr "Dáta"
 
 #: idedebuggerstringconstants.lisinspectdialog
 msgid "Debug Inspector"
-msgstr ""
+msgstr "Inšpektor ladenia"
 
 #: idedebuggerstringconstants.lisinspectmethods
 msgid "Methods"
-msgstr ""
+msgstr "Metódy"
 
 #: idedebuggerstringconstants.lisinspectpointerto
 #, object-pascal-format
 msgid "Pointer to %s"
-msgstr ""
+msgstr "Ukazovateľ na %s"
 
 #: idedebuggerstringconstants.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -968,7 +959,7 @@ msgstr ""
 #: idedebuggerstringconstants.lisinspectuseinstance
 msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
 msgid "Instance"
-msgstr ""
+msgstr "Inštancia"
 
 #: idedebuggerstringconstants.lisinspectuseinstancehint
 msgid "Use instance class"
@@ -988,7 +979,7 @@ msgstr "Vyhodnotiť/Upraviť"
 
 #: idedebuggerstringconstants.lisless
 msgid "Less"
-msgstr ""
+msgstr "Menej"
 
 #: idedebuggerstringconstants.lisline
 msgid "Line:"
@@ -1037,7 +1028,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lislogcallstack
 msgid "Log Call Stack"
-msgstr ""
+msgstr "Zaznamenať zásobník volaní"
 
 #: idedebuggerstringconstants.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
@@ -1046,11 +1037,11 @@ msgstr ""
 #: idedebuggerstringconstants.lislogevalexpression
 msgctxt "idedebuggerstringconstants.lislogevalexpression"
 msgid "Eval expression"
-msgstr ""
+msgstr "Vyhodnotiť výraz"
 
 #: idedebuggerstringconstants.lislogmessage
 msgid "Log Message"
-msgstr ""
+msgstr "Zaznamenať správu"
 
 #: idedebuggerstringconstants.lismaxs
 #, object-pascal-format
@@ -1059,7 +1050,7 @@ msgstr "Max %d"
 
 #: idedebuggerstringconstants.lismenubreak
 msgid "&Break"
-msgstr ""
+msgstr "Prerušiť"
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
@@ -1076,12 +1067,12 @@ msgstr ""
 #: idedebuggerstringconstants.lismenustepintoinstr
 msgctxt "idedebuggerstringconstants.lismenustepintoinstr"
 msgid "Step Into Instruction"
-msgstr ""
+msgstr "Krok do inštrukcie"
 
 #: idedebuggerstringconstants.lismenustepintoinstrhint
 msgctxt "idedebuggerstringconstants.lismenustepintoinstrhint"
 msgid "Step Into Instruction"
-msgstr ""
+msgstr "Krok do inštrukcie"
 
 #: idedebuggerstringconstants.lismenustepout
 msgid "Step O&ut"
@@ -1112,7 +1103,7 @@ msgstr "Krok cez po kurzor"
 #: idedebuggerstringconstants.lismenuviewassembler
 msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
-msgstr ""
+msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -1159,7 +1150,7 @@ msgstr "? (Zapnúť)"
 
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
-msgstr ""
+msgstr "Počet priechodov"
 
 #: idedebuggerstringconstants.lispefilename
 msgid "Filename:"
@@ -1171,7 +1162,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.lisregisters
 msgid "Registers"
-msgstr ""
+msgstr "Registre"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
@@ -1182,7 +1173,6 @@ msgid "&Source Breakpoint ..."
 msgstr "&Zdrojový bod prerušenia ..."
 
 #: idedebuggerstringconstants.lissrcline
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lissrcline"
 msgid "Line"
 msgstr "Riadok"
@@ -1199,7 +1189,7 @@ msgstr "Štýl"
 
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
-msgstr ""
+msgstr "Urobiť snímku"
 
 #: idedebuggerstringconstants.listhreadid
 msgid "Thread ID"
@@ -1244,7 +1234,6 @@ msgid "State"
 msgstr "Stav"
 
 #: idedebuggerstringconstants.lisvalue
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisvalue"
 msgid "Value"
 msgstr "Hodnota"
@@ -1252,7 +1241,7 @@ msgstr "Hodnota"
 #: idedebuggerstringconstants.lisviewbreakpointproperties
 msgctxt "idedebuggerstringconstants.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
-msgstr ""
+msgstr "Vlastnosti bodu prerušenia ..."
 
 #: idedebuggerstringconstants.lisviewsource
 msgid "View Source"
@@ -1260,15 +1249,15 @@ msgstr "Zobraziť zdrojový kód"
 
 #: idedebuggerstringconstants.lisviewsourcedisass
 msgid "View Assembler"
-msgstr ""
+msgstr "Zobraziť Assembler"
 
 #: idedebuggerstringconstants.liswatch
 msgid "&Watch"
-msgstr ""
+msgstr "Pozorovanie"
 
 #: idedebuggerstringconstants.liswatchdata
 msgid "Watch:"
-msgstr ""
+msgstr "Pozorovanie:"
 
 #: idedebuggerstringconstants.liswatchkind
 msgid "Watch action"
@@ -1288,11 +1277,11 @@ msgstr ""
 
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
-msgstr ""
+msgstr "&Data/Sledovať bod prerušenia ..."
 
 #: idedebuggerstringconstants.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
-msgstr ""
+msgstr "&Data/Sledovať bod prerušenia ..."
 
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
@@ -1309,11 +1298,11 @@ msgstr "Globálne"
 
 #: idedebuggerstringconstants.liswatchscopelocal
 msgid "Declaration"
-msgstr ""
+msgstr "Deklarácia"
 
 #: idedebuggerstringconstants.liswatchtowatchpoint
 msgid "Create &Data/Watch Breakpoint ..."
-msgstr ""
+msgstr "Vytvoriť &Data/Sledovať bod prerušenia ..."
 
 #: idedebuggerstringconstants.liswldeleteall
 msgid "De&lete All"
@@ -1356,9 +1345,10 @@ msgid "Decimal"
 msgstr "Desiatkovo"
 
 #: idedebuggerstringconstants.regdlgdefault
+#, fuzzy
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
-msgstr ""
+msgstr "Predvolené"
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
@@ -1366,7 +1356,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.regdlgformat
 msgid "Format"
-msgstr ""
+msgstr "Formát"
 
 #: idedebuggerstringconstants.regdlghex
 msgid "Hex"
