@@ -732,6 +732,8 @@ begin
   cnt.wincallback := cb;
   cnt.isCustomRange := true;
 
+  cnt.setHasHorizontalScroller(True);
+  cnt.setHasVerticalScroller(True);
   cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
   cnt.setHorizontalScrollElasticity(NSScrollElasticityNone);
   cnt.setDocumentView(doc);
