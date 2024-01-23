@@ -55,6 +55,7 @@ type
     FMarkupManager: TSynEditMarkupManager;
 
     FCharWidths, FCharWidths2: TPhysicalCharWidths;
+    FCharWidthsFromConverter: Boolean;
     FCharWidthsLen: Integer;
     FCurTxtLineIdx : Integer;
     FCurLineByteLen: Integer;
@@ -315,6 +316,7 @@ procedure TLazSynPaintTokenBreaker.Finish;
 begin
   FCharWidths := nil;
   FCharWidths2 := nil;
+  FCharWidthsFromConverter := False;
 end;
 
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
@@ -324,14 +326,18 @@ var
 begin
   FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, LogLeftPos, FCurLineByteLen);
   if FLinesView.LogPhysConvertor.CurrentLine = ARealLine then begin
-    FCharWidths2 := FCharWidths;
+    if not FCharWidthsFromConverter then begin
+      FCharWidthsFromConverter := True;
+      FCharWidths2 := FCharWidths;
+    end;
     FCharWidths :=FLinesView.LogPhysConvertor.CurrentWidthsDirect;
     FCharWidthsLen :=FLinesView.LogPhysConvertor.CurrentWidthsCount;
   end
   else begin
-    if FCharWidths2 <> nil then begin
+    if FCharWidthsFromConverter then begin
       FCharWidths := FCharWidths2;
       FCharWidths2 := nil;
+      FCharWidthsFromConverter := False;
     end;
     FLinesView.GetPhysicalCharWidths(ARealLine, FCharWidths, FCharWidthsLen);
   end;
