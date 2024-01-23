@@ -1539,7 +1539,8 @@ begin
   end
   else
   begin
-    //AValue is an absoulte path to begin with
+    //AValue is an absoulte path to begin with , but still needs  expanding (because TryCreateRelativePath requires this)
+    AValue := ExpandFilenameUtf8(AValue);
     //if not DirectoryExistsUtf8(AValue) then
     if not Exists(AValue) then
       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue]);
