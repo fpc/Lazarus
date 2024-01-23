@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2024-01-17 10:46+0100\n"
+"PO-Revision-Date: 2024-01-23 13:31+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1085,7 +1085,7 @@ msgstr "Súbory include (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
 msgid "Debugger info"
-msgstr ""
+msgstr "Informácie pre ladenie"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1300,7 +1300,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcotrashvariables
 msgid "Trash variables"
-msgstr ""
+msgstr "Inicializovať lokálne premenné s preddefinovanými hodnotami"
 
 #: lazarusidestrconsts.dlgcounitstyle
 msgid "Unit style"
@@ -1381,14 +1381,13 @@ msgid "Delete mode"
 msgstr "Zmazať režim"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
-msgstr "Delete"
+msgstr "Zmazať"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "Zmazať vybratú pracovnú plochu"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -1841,17 +1840,17 @@ msgstr "Include súbor Lazarus"
 #: lazarusidestrconsts.dlgfilterlazarusotherfile
 msgctxt "lazarusidestrconsts.dlgfilterlazarusotherfile"
 msgid "Lazarus other file"
-msgstr ""
+msgstr "Iný súbor Lazarusu"
 
 #: lazarusidestrconsts.dlgfilterlazaruspackage
 msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
 msgid "Lazarus package"
-msgstr "Balíček Lazarus"
+msgstr "Balíček Lazarusu"
 
 #: lazarusidestrconsts.dlgfilterlazarusproject
 msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
 msgid "Lazarus project"
-msgstr "Projekt Lazarus"
+msgstr "Projekt Lazarusu"
 
 #: lazarusidestrconsts.dlgfilterlazarusprojectsource
 msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
@@ -1865,7 +1864,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfilterlazarusunit
 msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
-msgstr "Jednotka Lazarus"
+msgstr "Jednotka Lazarusu"
 
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
@@ -2519,7 +2518,7 @@ msgstr "Spustiteľný súbor \"Make\""
 
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
-msgstr ""
+msgstr "Spravovať pracovné plochy"
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -3161,10 +3160,8 @@ msgid "Object Inspector"
 msgstr "Inšpektor objektov"
 
 #: lazarusidestrconsts.dlgoiitemheight
-#, fuzzy
-#| msgid "Item height"
 msgid "Item height (0 = auto)"
-msgstr "Výška položky"
+msgstr "Výška položky (0 = auto)"
 
 #: lazarusidestrconsts.dlgoimiscellaneous
 msgctxt "lazarusidestrconsts.dlgoimiscellaneous"
@@ -3615,7 +3612,7 @@ msgstr "Parametre spustenia"
 
 #: lazarusidestrconsts.dlgrunwithdebug
 msgid "Run uses the debugger (disable for release-mode)"
-msgstr ""
+msgstr "Spustiť používa debuger (vypnúť pre \"release\" režim)"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
@@ -3627,11 +3624,11 @@ msgstr "Uložiť aktuálnu pracovnú plochu ako"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Uložiť aktívnu pracovnú plochu ako ..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Uložiť aktívnu pracovnú plochu ako"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -3986,11 +3983,9 @@ msgid "Text-Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind
-#, fuzzy
-#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "Search s&tring"
-msgstr "Nájsť &text"
+msgstr "Hľadať &text"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
@@ -3999,12 +3994,12 @@ msgstr ""
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
-msgstr ""
+msgstr "Prepnúť ako ladiacu pracovnú plochu"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
-msgstr ""
+msgstr "Prepnúť ako ladiacu pracovnú plochu"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -4312,7 +4307,6 @@ msgid "Create a new recommended backend"
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugcurrent
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
 msgid "Current"
 msgstr "Aktuálny"
@@ -4332,7 +4326,6 @@ msgid "Default for your OS/Arch is: \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugignore
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugignore"
 msgid "Ignore"
 msgstr "Ignorovať"
@@ -4342,7 +4335,6 @@ msgid "Keep backend"
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugnew
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugnew"
 msgid "New"
 msgstr "Nový"
@@ -4468,10 +4460,8 @@ msgid "File is used"
 msgstr "Súbor je používaný"
 
 #: lazarusidestrconsts.lisa2pfilename2
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename/URL"
-msgstr "Meno súboru"
+msgstr "Meno súboru/URL"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -5274,10 +5264,8 @@ msgid "When this file is active in source editor"
 msgstr "Keď je tento súbor aktívny v editore"
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
-#, fuzzy
-#| msgid "Working directory (Leave empty for file path)"
 msgid "Working directory (leave empty for file path)"
-msgstr "Pracovný adresár (prázdne pre cestu súboru)"
+msgstr "Pracovný adresár (nechajte prázdne pre cestu súboru)"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
@@ -5417,8 +5405,6 @@ msgid "Build new project"
 msgstr "Vybudovať nový projekt"
 
 #: lazarusidestrconsts.lisbuildnumber
-#, fuzzy
-#| msgid "Build Number"
 msgid "Build number"
 msgstr "Číslo vybudovania"
 
@@ -5457,10 +5443,9 @@ msgid "Cannot copy top level component."
 msgstr "Nie je možné kopírovať komponent najvyššej úrovne."
 
 #: lazarusidestrconsts.liscannotcreatefile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Cannot create file %s%s%s"
+#, object-pascal-format
 msgid "Cannot create file \"%s\""
-msgstr "Nemožno vytvoriť súbor %s%s%s"
+msgstr "Nie je možné vytvoriť súbor \"%s\""
 
 #: lazarusidestrconsts.liscannotdeletelastmode
 msgid "Cannot delete last mode."
@@ -5482,10 +5467,9 @@ msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
-#, object-pascal-format, fuzzy
-#| msgid "Cannot find lazarus starter:%s%s"
+#, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
-msgstr "Nemožno nájsť spúšťač Lazarus: %s%s"
+msgstr "Nemožno nájsť spúšťač Lazarusu: %s%s"
 
 #: lazarusidestrconsts.liscannotopenform
 #, object-pascal-format
@@ -5517,7 +5501,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
-msgstr ""
+msgstr "Porovnať súbory (nie na vytváranie záplat)"
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -6283,7 +6267,7 @@ msgstr "Vyčistiť adresár?"
 
 #: lazarusidestrconsts.lisclearfilter
 msgid "Clear filter"
-msgstr ""
+msgstr "Vyčistiť filter"
 
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
@@ -6324,9 +6308,10 @@ msgid "Close files"
 msgstr "Zatvoriť súbory"
 
 #: lazarusidestrconsts.lisclosealltabshide
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisclosealltabshide"
 msgid "Hide window"
-msgstr ""
+msgstr "Skryť okno"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
@@ -6397,8 +6382,6 @@ msgid "Code"
 msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
-#, fuzzy
-#| msgid "Code browser"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Prehliadač kódu"
@@ -6497,11 +6480,9 @@ msgid "Insert paragraph formatting tag"
 msgstr "Vložiť značku formátovania odseku"
 
 #: lazarusidestrconsts.liscodehelpmainformcaption
-#, fuzzy
-#| msgid "FPDoc editor"
 msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
-msgstr "Editor·FPCDoc"
+msgstr "Editor FPCDoc"
 
 #: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
 msgid "(no inherited description found)"
@@ -7032,7 +7013,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
-msgstr ""
+msgstr "Preložiť nasledujúce režimy"
 
 #: lazarusidestrconsts.liscompilenormally
 msgid "Compile normally"
@@ -7127,10 +7108,9 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Component name %s%s%s is keyword"
+#, object-pascal-format
 msgid "Component name \"%s\" is keyword"
-msgstr "Meno komponentu %s%s%s je kľúčové slovo"
+msgstr "Meno komponentu \"%s\" je kľúčové slovo"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
 #, object-pascal-format, fuzzy, badformat
@@ -7265,7 +7245,6 @@ msgid "contains"
 msgstr "obsahuje"
 
 #: lazarusidestrconsts.liscontents
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscontents"
 msgid "Contents"
 msgstr "Obsah"
@@ -7679,7 +7658,6 @@ msgid "Toolbars border style"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarborderstyleitem0
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem0"
 msgid "None"
 msgstr "Žiadne"
@@ -7690,7 +7668,6 @@ msgid "Single"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
 msgstr "Prehliadač kódu"
@@ -7796,10 +7773,9 @@ msgid "Please select a toolbar first!"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
-msgstr "Editor kódu"
+msgstr "Editor zdrojového kódu"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
@@ -7872,10 +7848,8 @@ msgid "Copy Selected Items to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
-#, fuzzy
-#| msgid "Copy selected messages to clipboard"
 msgid "Copy Selected Messages to Clipboard"
-msgstr "Kopírovať vybrané správy do schránky"
+msgstr "Kopírovať vybraté správy do schránky"
 
 #: lazarusidestrconsts.liscoscanforfpcmessages
 msgid "Scan for FPC messages"
@@ -8295,8 +8269,6 @@ msgid "Language Exceptions"
 msgstr "Výnimky jazyka"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-#, fuzzy
-#| msgid "Limit linecount to"
 msgid "Limit line count to"
 msgstr "Obmedziť počet riadkov na"
 
@@ -8507,11 +8479,11 @@ msgstr "Necitlivé na veľkosť"
 
 #: lazarusidestrconsts.lisdiffdlgfile1
 msgid "File1"
-msgstr ""
+msgstr "Súbor1"
 
 #: lazarusidestrconsts.lisdiffdlgfile2
 msgid "File2"
-msgstr ""
+msgstr "Súbor2"
 
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
@@ -8542,8 +8514,6 @@ msgid "Only selection"
 msgstr "Len výber"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-#, fuzzy
-#| msgid "Open Diff in editor"
 msgid "Open difference in editor"
 msgstr "Otvoriť rozdiel v editore"
 
@@ -8660,8 +8630,6 @@ msgid "Defines ..."
 msgstr "Definície ..."
 
 #: lazarusidestrconsts.lisdlgedit
-#, fuzzy
-#| msgid "Edit..."
 msgctxt "lazarusidestrconsts.lisdlgedit"
 msgid "Edit ..."
 msgstr "Upraviť ..."
@@ -8718,7 +8686,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
-msgstr ""
+msgstr "Túto správu už nezobrazovať"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
@@ -9824,28 +9792,20 @@ msgid "&Multiline pattern"
 msgstr "&Viacriadkový vzor"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-#, fuzzy
-#| msgid "search all files in &project"
 msgid "all files in &project"
-msgstr "prehľadávať všetky súbory v &projekte"
+msgstr "všetky súbory v &projekte"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-#, fuzzy
-#| msgid "search all &open files"
 msgid "all &open files"
-msgstr "prehľadávať všetky &otvorené súbory"
+msgstr "všetky &otvorené súbory"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-#, fuzzy
-#| msgid "search in &active file"
 msgid "&active file"
-msgstr "hľadať v &aktívnom súbore"
+msgstr "&aktívny súbor"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-#, fuzzy
-#| msgid "search in &directories"
 msgid "&directories"
-msgstr "prehľadávať a&dresáre"
+msgstr "a&dresáre"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "project &group"
@@ -9943,7 +9903,6 @@ msgid "FPC Version (e.g. 2.2.2)"
 msgstr "Verzia FPC (napr. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "Editor FPCDoc"
@@ -10079,7 +10038,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
-msgstr "&Spätné hľadanie"
+msgstr "Hľadať smerom do&zadu"
 
 #: lazarusidestrconsts.lisfreeingbufferlines
 #, object-pascal-format
@@ -10100,7 +10059,7 @@ msgstr "Zdrojový adresár FreePascal"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
-msgstr "Hľa&dať dopredu"
+msgstr "Hľa&dať smerom dopredu"
 
 #: lazarusidestrconsts.lisfriadditionalfilestosearchegpathpaspath2pp
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
@@ -10145,7 +10104,7 @@ msgstr "Premenovať všetky referencie"
 
 #: lazarusidestrconsts.lisfrirenaming
 msgid "Renaming"
-msgstr ""
+msgstr "Premenovanie"
 
 #: lazarusidestrconsts.lisfrisearch
 msgid "Search"
@@ -10291,7 +10250,7 @@ msgstr ""
 #: lazarusidestrconsts.lishidewindow
 msgctxt "lazarusidestrconsts.lishidewindow"
 msgid "Hide window"
-msgstr ""
+msgstr "Skryť okno"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 #, object-pascal-format
@@ -11060,10 +11019,8 @@ msgid "Config \"Build File\""
 msgstr "Konfigurovať %sVybudovanie súboru%s"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
-#, fuzzy
-#| msgid "Configure custom components"
 msgid "Configure Custom Components"
-msgstr "Konfigurovať voliteľné komponenty"
+msgstr "Konfigurovať vlastné komponenty"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
@@ -11366,64 +11323,44 @@ msgid "Set free Bookmark"
 msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
 msgid "Set bookmark 0"
-msgstr "Nastaviť značku 0"
+msgstr "Nastaviť záložku 0"
 
 #: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
 msgid "Set bookmark 1"
-msgstr "Nastaviť značku 1"
+msgstr "Nastaviť záložku 1"
 
 #: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
 msgid "Set bookmark 2"
-msgstr "Nastaviť značku 2"
+msgstr "Nastaviť záložku 2"
 
 #: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
 msgid "Set bookmark 3"
-msgstr "Nastaviť značku 3"
+msgstr "Nastaviť záložku 3"
 
 #: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
 msgid "Set bookmark 4"
-msgstr "Nastaviť značku 4"
+msgstr "Nastaviť záložku 4"
 
 #: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
 msgid "Set bookmark 5"
-msgstr "Nastaviť značku 5"
+msgstr "Nastaviť záložku 5"
 
 #: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
 msgid "Set bookmark 6"
-msgstr "Nastaviť značku 6"
+msgstr "Nastaviť záložku 6"
 
 #: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
 msgid "Set bookmark 7"
-msgstr "Nastaviť značku 7"
+msgstr "Nastaviť záložku 7"
 
 #: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
 msgid "Set bookmark 8"
-msgstr "Nastaviť značku 8"
+msgstr "Nastaviť záložku 8"
 
 #: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
 msgid "Set bookmark 9"
-msgstr "Nastaviť značku 9"
+msgstr "Nastaviť záložku 9"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
@@ -11483,11 +11420,9 @@ msgid "View Breakpoints"
 msgstr "Zobraziť body prerušenia"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-#, fuzzy
-#| msgid "Toggle view Call Stack"
 msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
-msgstr "Prepnúť zobrazenie Zásobník volaní"
+msgstr "Zobraziť Zásobník volaní"
 
 #: lazarusidestrconsts.liskmtoggleviewcodebrowser
 msgid "Toggle view Code Browser"
@@ -11506,8 +11441,6 @@ msgid "View Debuger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-#, fuzzy
-#| msgid "Toggle view Debugger Output"
 msgid "View Debugger Output"
 msgstr "Prepnúť zobrazenie Výstup debugera"
 
@@ -11559,10 +11492,8 @@ msgid "View Threads"
 msgstr "Zobraziť vlákna"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-#, fuzzy
-#| msgid "Toggle view Watches"
 msgid "View Watches"
-msgstr "Prepnúť zobrazenie Pozorovaní"
+msgstr "Zobraziť Pozorovania"
 
 #: lazarusidestrconsts.liskmviewjumphistory
 msgid "View jump history"
@@ -11795,8 +11726,6 @@ msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr ""
 
 #: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL Widget Type"
 msgid "LCL widget type"
 msgstr "Typ LCL Widgetu"
 
@@ -12859,8 +12788,6 @@ msgid "E&valuate/Modify ..."
 msgstr "Vyhodnotiť/Upraviť ..."
 
 #: lazarusidestrconsts.lismenuextractproc
-#, fuzzy
-#| msgid "Extract procedure ..."
 msgid "Extract Procedure ..."
 msgstr "Oddeliť procedúru ..."
 
@@ -12907,7 +12834,7 @@ msgstr "Nájsť &predchádzajúci"
 
 #: lazarusidestrconsts.lismenufindreferencesofusedunit
 msgid "Find References Of Used Unit"
-msgstr ""
+msgstr "Nájsť odkazy na použitú jednotku"
 
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
@@ -12934,8 +12861,6 @@ msgid "&Help"
 msgstr "&Pomoc"
 
 #: lazarusidestrconsts.lismenuideinternals
-#, fuzzy
-#| msgid "IDE internals"
 msgid "IDE Internals"
 msgstr "IDE interné"
 
@@ -12992,7 +12917,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "MIT vyhlásenie"
 
 #: lazarusidestrconsts.lismenuinsertmitnoticetranslated
 msgid "MIT Notice (translated)"
@@ -13011,8 +12936,6 @@ msgid "Current Username"
 msgstr "Meno aktuálneho používateľa"
 
 #: lazarusidestrconsts.lismenuinspect
-#, fuzzy
-#| msgid "Inspect ..."
 msgctxt "lazarusidestrconsts.lismenuinspect"
 msgid "&Inspect ..."
 msgstr "Skontrolovať ..."
@@ -13600,7 +13523,6 @@ msgid "Search Unit Path"
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsskip
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismissingunitsskip"
 msgid "Skip"
 msgstr "Preskočiť"
@@ -14276,10 +14198,9 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Class %s%s%s not found."
+#, object-pascal-format
 msgid "Class \"%s\" not found."
-msgstr "Trieda %s%s%s nenájdená."
+msgstr "Trieda \"%s\" nenájdená."
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
 msgid "Remove from favorite properties"
@@ -14725,16 +14646,12 @@ msgid "Delete Invalid Paths"
 msgstr ""
 
 #: lazarusidestrconsts.lispatheditmovepathdown
-#, fuzzy
-#| msgid "Move path down"
 msgid "Move path down (Ctrl+Down)"
-msgstr "Posunúť cestu dole"
+msgstr "Posunúť cestu dole (Ctrl+Down)"
 
 #: lazarusidestrconsts.lispatheditmovepathup
-#, fuzzy
-#| msgid "Move path up"
 msgid "Move path up (Ctrl+Up)"
-msgstr "Posunúť cestu hore"
+msgstr "Posunúť cestu hore (Ctrl+Up)"
 
 #: lazarusidestrconsts.lispatheditoraddhint
 msgid "Add new path to the list"
@@ -14863,10 +14780,8 @@ msgid "Dependency Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lispckediteditgeneraloptions
-#, fuzzy
-#| msgid "Edit General Options"
 msgid "Edit general options"
-msgstr "Upraviť Všeobecné voľby"
+msgstr "Upraviť všeobecné voľby"
 
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
@@ -15054,10 +14969,8 @@ msgid "%sState: "
 msgstr "%sStav: "
 
 #: lazarusidestrconsts.lispckexpluninstallonnextstart
-#, fuzzy
-#| msgid "Uninstall on next start"
 msgid "Uninstall on next start (unless needed by an installed package)"
-msgstr "Odinštalovať pri ďalšom štarte"
+msgstr "Odinštalovať pri ďalšom štarte (pokiaľ to nepotrebuje nainštalovaný balíček)"
 
 #: lazarusidestrconsts.lispckexpluninstallpackage
 #, object-pascal-format
@@ -15100,8 +15013,6 @@ msgid "Designtime"
 msgstr ""
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
-#, fuzzy
-#| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "Doba návrhu i spustenia"
 
@@ -15464,10 +15375,9 @@ msgid "Delete Old Package File?"
 msgstr "Zmazať súbor starého balíčka?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Delete old package file %s%s%s?"
+#, object-pascal-format
 msgid "Delete old package file \"%s\"?"
-msgstr "Zmazať starý súbor balíčka %s%s%s?"
+msgstr "Zmazať starý súbor balíčka \"%s\"?"
 
 #: lazarusidestrconsts.lispkgmangdependencywithoutowner
 #, object-pascal-format
@@ -15638,10 +15548,9 @@ msgid "Save Package %s (*.lpk)"
 msgstr "Uložiť balíček %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Should the file be renamed lowercase to%s%s%s%s?"
+#, object-pascal-format
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
-msgstr "Má byyť súbor premenovaný malými písmenami na %s%s%s%s?"
+msgstr "Má byť súbor premenovaný malými písmenami na %s\"%s\"?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
 msgid "Skip this package"
@@ -15652,17 +15561,15 @@ msgid "static packages config file"
 msgstr "konfiguračný súbor statických balíčkov"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The file %s%s%s%sis already in the package %s."
+#, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
-msgstr "Súbor %s%s%s%suž je v balíčku %s."
+msgstr "Súbor \"%s\"%suž je v balíčku %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The file %s%s%s is not a Lazarus package."
+#, object-pascal-format
 msgid "The file \"%s\" is not a Lazarus package."
-msgstr "Súbor %s%s%s nie je balíček Lazarus."
+msgstr "Súbor \"%s\" nie je balíček Lazarusu."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
 #, object-pascal-format, fuzzy, badformat
@@ -15827,10 +15734,9 @@ msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory i
 msgstr "Nemožno vytvoriť cieľový adresár pre Lazarus:%s%s%s%s.%sTento adresár je potebný pre nové, zmenené Lazarus IDE s vašimi balíčkami."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to delete file %s%s%s."
+#, object-pascal-format
 msgid "Unable to delete file \"%s\"."
-msgstr "Nemožno zmazať súbor %s%s%s."
+msgstr "Nemožno zmazať súbor \"%s\"."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
@@ -15918,16 +15824,14 @@ msgid "Cannot register components without unit"
 msgstr "Nemožno registrovať komponent bez jednotky"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Component Class %s%s%s already defined"
+#, object-pascal-format
 msgid "Component Class \"%s\" already defined"
-msgstr "Trieda komponentu %s%s%s je už definovaná"
+msgstr "Trieda komponentu \"%s\" je už definovaná"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%s%sFile Name: %s%s%s"
+#, object-pascal-format
 msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sMeno súboru: %s%s%s"
+msgstr "%s%sMeno súboru: \"%s\""
 
 #: lazarusidestrconsts.lispkgsysinvalidcomponentclass
 msgid "Invalid component class"
@@ -15983,10 +15887,9 @@ msgid "This package is installed but the lpk file was not found. All its compone
 msgstr "Tento balíček je nainštalovaný, ale súbor lpk nebol nájdený. Všetky jeho komponenty sú deaktivované. Prosím opravte to."
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%s%sUnit Name: %s%s%s"
+#, object-pascal-format
 msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sMeno jednotky: %s%s%s"
+msgstr "%s%sMeno jednotky: \"%s\""
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
 #, object-pascal-format
@@ -16013,10 +15916,9 @@ msgid "This file is not in any loaded package."
 msgstr "Tento súbor nepatrí do žiadneho načítaneho balíčka."
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to read package file %s%s%s.%sError: %s"
+#, object-pascal-format
 msgid "Unable to read package file \"%s\".%sError: %s"
-msgstr "Nemožno čítať súbor balíčka  %s%s%s.%sChyba: %s"
+msgstr "Nemožno čítať súbor balíčka \"%s\".%sChyba: %s"
 
 #: lazarusidestrconsts.lisplay
 msgid "Play"
@@ -16420,7 +16322,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
-msgstr ""
+msgstr "Zdrojové adresáre projektu"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionataddress
 #, object-pascal-format
@@ -16798,7 +16700,7 @@ msgstr "Premenovanie súboru zlyhalo"
 
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
-msgstr ""
+msgstr "Zobraziť zoznam premenovaných identifikátorov"
 
 #: lazarusidestrconsts.lisrenameto
 #, object-pascal-format
@@ -17441,7 +17343,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowoutput
 msgid "Show output"
-msgstr ""
+msgstr "Zobraziť výstup"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview gutter"
@@ -17528,8 +17430,6 @@ msgid "A most simple Free Pascal command line program."
 msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
-#, fuzzy
-#| msgid "Simple Syntax"
 msgid "Simple syntax"
 msgstr "Jednoduchá syntax"
 
@@ -17657,10 +17557,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Zdroj a cieľ sú rovnaké: %s%s"
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Source directory %s%s%s does not exist."
+#, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
-msgstr "Adresár zdrojových kódov %s%s%s neexistuje."
+msgstr "Adresár zdrojových kódov \"%s\" neexistuje."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
 msgid "Source Editor Window Manager"
@@ -18007,10 +17906,9 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr ""
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
+#, object-pascal-format
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
-msgstr "Debuger %s%s%s%sneexistuje, alebo nie je spustiteľný.%s%sPozrite Prostredie -> Voľby debugera"
+msgstr "Debuger \"%s\"%sneexistuje alebo nie je spustiteľný.%sPozrite Nástroje -> Voľby prostredia -> Voľby debugera"
 
 #: lazarusidestrconsts.listhedefaultmodemustbestoredinproject
 msgid "The default mode must be stored in project, not in session."
@@ -18081,7 +17979,7 @@ msgstr ""
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 #, object-pascal-format
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Súbor \"%s\" vyzerá byť programom.%sZatvoriť aktuálny projekt a vytvoriť nový projekt Lazarus z tohoto programu?%s\"Nie\" načíta súbor ako bežný zdrojový kód."
+msgstr "Súbor \"%s\" vyzerá byť programom.%sZatvoriť aktuálny projekt a vytvoriť nový projekt Lazarusu z tohoto programu?%s\"Nie\" načíta súbor ako bežný zdrojový kód."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 #, object-pascal-format
@@ -18295,7 +18193,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_caption
 msgid "Running your application with debugger"
-msgstr ""
+msgstr "Spustenie aplikácie s debugerom"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
 msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
@@ -18303,7 +18201,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
 msgid "Run with no debugger"
-msgstr ""
+msgstr "Spustiť bez debugera"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_textexplain
 #, object-pascal-format
@@ -18897,11 +18795,11 @@ msgstr "Hľadanie: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Pokračovať v hľadaní od začiatku?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Pokračovať v hľadaní od konca?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 #, object-pascal-format
@@ -19032,10 +18930,9 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "Nemožno konvertovať text komponentu do binárneho formátu:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to convert file %s%s%s%sError: %s"
+#, object-pascal-format
 msgid "Unable to convert file \"%s\"%sError: %s"
-msgstr "Nemožno konvertovať súbor %s%s%s%sChyba: %s"
+msgstr "Nemožno konvertovať súbor \"%s\"%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 #, object-pascal-format, fuzzy, badformat
@@ -19059,20 +18956,18 @@ msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Nemožno prekopírovať súbor %s%s%s%sdo %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to create directory %s%s%s."
+#, object-pascal-format
 msgid "Unable to create directory \"%s\"."
-msgstr "Nemožno vytvoriť adresár %s%s%s."
+msgstr "Nemožno vytvoriť adresár \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatefile
 msgid "Unable to create file"
 msgstr "Nemožno vytvoriť súbor"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to create file %s%s%s"
+#, object-pascal-format
 msgid "Unable to create file \"%s\""
-msgstr "Nemožno vytvoriť súbor %s%s%s"
+msgstr "Nemožno vytvoriť súbor \"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatefile3
 #, object-pascal-format
@@ -19080,10 +18975,9 @@ msgid "Unable to create file%s\"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to create link %s%s%s with target %s%s%s"
+#, object-pascal-format
 msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "Nemožno vytvoriť odkaz %s%s%s s cieľom %s%s%s"
+msgstr "Nemožno vytvoriť odkaz \"%s\" s cieľom \"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
@@ -19098,10 +18992,9 @@ msgid "Unable to create temporary lfm buffer."
 msgstr "Nemožno vytvoriť dočasný LFM buffer."
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to delete ambiguous file %s%s%s"
+#, object-pascal-format
 msgid "Unable to delete ambiguous file \"%s\""
-msgstr "Nemožno zmazať poškodený súbor %s%s%s"
+msgstr "Nemožno zmazať nejednoznačný súbor \"%s\""
 
 #: lazarusidestrconsts.lisunabletoexecute
 #, object-pascal-format
@@ -19119,10 +19012,9 @@ msgid "Unable to find a valid classname in \"%s\""
 msgstr "Nemožno nájsť platné meno triedy v %s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to find file %s%s%s."
+#, object-pascal-format
 msgid "Unable to find file \"%s\"."
-msgstr "Nemožno nájsť súbor %s%s%s."
+msgstr "Nemožno nájsť súbor \"%s\"."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
 #, object-pascal-format
@@ -19201,10 +19093,9 @@ msgid "Unable to read file \"%s\"."
 msgstr "Nemožno čítať súbor \"%s\"."
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to read file %s%s%s%sError: %s"
+#, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Nemožno čítať súbor %s%s%s%sChyba: %s"
+msgstr "Nemožno čítať súbor \"%s\"%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
@@ -19251,10 +19142,9 @@ msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "Nemožno premenovať súbor \"%s\" na \"%s\"!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to rename file %s%s%s%sto %s%s%s."
+#, object-pascal-format
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "Nemožno premenovať súbor %s%s%s%sna %s%s%s."
+msgstr "Nemožno premenovať súbor \"%s\"%sna \"%s\"."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19308,10 +19198,9 @@ msgid "Unable to update CreateForm statement in project source"
 msgstr "Nemožno vytvoriť príkaz CreateForm v zdrojovom kóde projektu"
 
 #: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to write %s%s%s"
+#, object-pascal-format
 msgid "Unable to write \"%s\""
-msgstr "Nemožno zapísať %s%s%s"
+msgstr "Nemožno zapísať \"%s\""
 
 #: lazarusidestrconsts.lisunabletowritefile
 msgid "Unable to write file"
@@ -19323,10 +19212,9 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to write file %s%s%s%sError: %s"
+#, object-pascal-format
 msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Nemožno zapísať súbor %s%s%s%sChyba: %s"
+msgstr "Nemožno zapísať súbor \"%s\"%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
 #, object-pascal-format
@@ -19393,10 +19281,9 @@ msgid "Unit identifier exists"
 msgstr "Identifikátor jednotky existuje"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%s unit %s in package %s%s"
+#, object-pascal-format
 msgid "%s unit %s in package %s"
-msgstr "%s jednotka %s v balíčku %s%s"
+msgstr "%s jednotka %s v balíčku %s"
 
 #: lazarusidestrconsts.lisunitmustsavebeforeinherit
 #, object-pascal-format
@@ -19704,12 +19591,12 @@ msgstr ""
 #: lazarusidestrconsts.liswelcometolazaruside
 #, object-pascal-format
 msgid "Welcome to Lazarus IDE %s"
-msgstr ""
+msgstr "Vitajte v Lazarus IDE %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 #, object-pascal-format
 msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
-msgstr ""
+msgstr "Vitajte v Lazarus IDE %s%sUž existuje konfigurácia z verzie %s v%s%s"
 
 #: lazarusidestrconsts.liswhatneedsbuilding
 msgid "What needs building"
@@ -20028,14 +19915,12 @@ msgid "Close all pages"
 msgstr "Zatvoriť všetky stránky"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-#, fuzzy
-#| msgid "Close current page"
 msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
-msgstr "Zatvoriť aktuálnu stránku"
+msgstr "Zatvoriť aktuálnu stránku (Ctrl+F4)∥(Ctrl+W)"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
-msgstr ""
+msgstr "Zatvoriť stránky vľavo"
 
 #: lazarusidestrconsts.rscloseothers
 msgid "Close other page(s)"
@@ -20043,7 +19928,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rscloseright
 msgid "Close page(s) on the right"
-msgstr ""
+msgstr "Zatvoriť stránky vpravo"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
@@ -20211,7 +20096,7 @@ msgstr "&Hlavná verzia:"
 
 #: lazarusidestrconsts.rsminorversion
 msgid "Mi&nor version:"
-msgstr "&Nižšia verzia:"
+msgstr "Vedľajšia verzia:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
 msgid "New search with same criteria (Ctrl+N)"
@@ -20260,7 +20145,6 @@ msgid "Absolute path"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowfilename
-#, fuzzy
 msgctxt "lazarusidestrconsts.rsshowfilename"
 msgid "File name"
 msgstr "Názov súboru"
@@ -20701,8 +20585,6 @@ msgid "evaluate/modify"
 msgstr "vyhodnotiť/zmeniť"
 
 #: lazarusidestrconsts.srkmecextractproc
-#, fuzzy
-#| msgid "Extract procedure"
 msgctxt "lazarusidestrconsts.srkmecextractproc"
 msgid "Extract Procedure"
 msgstr "Oddeliť procedúru"
@@ -21540,8 +21422,6 @@ msgid "Previous Cell (all selected / firsts only)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
-#, fuzzy
-#| msgid "Syntax check"
 msgid "Syntax Check"
 msgstr "Kontrola syntaxe"
 
@@ -21871,17 +21751,17 @@ msgstr ""
 #: lazarusidestrconsts.uembookmarknset
 #, object-pascal-format
 msgid "Bookmark &%s: %s"
-msgstr ""
+msgstr "Záložka &%s: %s"
 
 #: lazarusidestrconsts.uembookmarknunset
 #, object-pascal-format
 msgid "Bookmark &%s"
-msgstr ""
+msgstr "Záložka &%s"
 
 #: lazarusidestrconsts.uembookmarknunsetdisabled
 #, object-pascal-format
 msgid "Bookmark %s"
-msgstr ""
+msgstr "Záložka %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -21954,7 +21834,6 @@ msgid "Highlighter"
 msgstr "Zvýrazňovač"
 
 #: lazarusidestrconsts.ueminspect
-#, fuzzy
 msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "Skontrolovať ..."

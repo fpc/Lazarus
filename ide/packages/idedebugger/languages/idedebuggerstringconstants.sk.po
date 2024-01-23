@@ -1183,7 +1183,7 @@ msgstr "Štýl"
 
 #: idedebuggerstringconstants.listakesnapshot
 msgid "Take a Snapshot"
-msgstr ""
+msgstr "Urobiť snímku"
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
