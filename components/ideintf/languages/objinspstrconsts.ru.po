@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-19 18:20+0300\n"
+"PO-Revision-Date: 2024-01-23 03:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -887,7 +887,7 @@ msgstr "Вы&бранные свойства"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
-msgstr "Выберите файл образца маски ввода"
+msgstr "Выберите файл образцов масок ввода"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1291,11 +1291,11 @@ msgstr "Неизвестный"
 
 #: objinspstrconsts.oisunload
 msgid "Unload"
-msgstr ""
+msgstr "Выгрузить"
 
 #: objinspstrconsts.oisunloadhint
 msgid "Unloads the current sample file"
-msgstr ""
+msgstr "Отменяет загрузку текущего файла образцов"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
