@@ -117,10 +117,11 @@ type
   // Except, will be kept for: tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull  // maybe in future line break
   TTokenState = (
     tsNone,
-    tsAfterExternal      // after public or external: "name" may follow
+    tsAfterExternal,     // after public or external: "name" may follow
                          // procedure Foo; public name 'bar';
                          // procedure Foo; external 'x' name 'bar';
                          // var Foo; public name 'bar';
+    tsAfterAbsolute      //var x absolute y;
   );
 
 type
@@ -2278,8 +2279,17 @@ end;
 
 function TSynPasSyn.Func95: TtkTokenKind;
 begin
-  if KeyComp('Absolute') then
-    Result := tkKey
+  if KeyComp('Absolute') and
+     (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType]) and
+     (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon, rsProperty] = [rsVarTypeInSpecification]) and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (FTokenState = tsNone) // FTokenState <> tsAfterAbsolute
+  then begin
+    Result := tkKey;
+    // prevent:          var foo absolute absolute; // at same address as variable named absolute
+    // does not prevent: var foo absolute bar absolute abc; // not valid code
+    FNextTokenState := tsAfterAbsolute;
+  end
   else
   if KeyComp('Contains') and (TopPascalCodeFoldBlockType=cfbtPackage) then
     Result := tkKey
