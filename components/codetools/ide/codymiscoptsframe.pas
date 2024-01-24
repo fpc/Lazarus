@@ -182,7 +182,7 @@ end;
 
 class function TCodyMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TAbstractIDEEnvironmentOptions;
+  Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;
 
 procedure TCodyMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions
