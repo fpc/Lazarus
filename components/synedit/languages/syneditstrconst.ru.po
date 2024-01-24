@@ -5,11 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-21 16:36+0300\n"
+"PO-Revision-Date: 2024-01-25 02:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: syneditstrconst.scannotpause
 msgid "Can only pause when recording"
@@ -257,7 +257,7 @@ msgstr "Разное"
 
 #: syneditstrconst.syns_attrmodifier
 msgid "Modifier"
-msgstr ""
+msgstr "Модификатор"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
