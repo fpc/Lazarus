@@ -4980,6 +4980,32 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.AllocateHWnd(Method: TLCLWndMethod): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := GTKAPIWidget_New;
+  Result := THandle({%H-}PtrUInt(Widget));
+  if Result = 0 then Exit;
+  WidgetInfo := GetOrCreateWidgetInfo(Widget);
+  WidgetInfo^.CoreWidget := PGTKAPIWidget(Widget)^.Client;
+  WidgetInfo^.LCLObject := TMessageDispatcher.Create(Method);
+end;
+
+procedure TGtk2WidgetSet.DeallocateHWnd(Wnd: HWND);
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := {%H-}PGtkWidget(Wnd);
+  if WidgetIsDestroyingHandle(Widget) then Exit;
+  WidgetInfo := GetWidgetInfo(Widget);
+  if Assigned(WidgetInfo) then
+    FreeAndNil(WidgetInfo^.LCLObject);
+  DestroyConnectedWidget(Widget, True);
+end;
+
 function TGtk2WidgetSet.GetCompStyle(Sender : TObject) : Longint;
 begin
   Result := csNone;

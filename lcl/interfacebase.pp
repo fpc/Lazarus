@@ -181,6 +181,16 @@ type
   end;
   TWidgetSetClass = class of TWidgetSet;
 
+  { TMessageDispatcher }
+
+  TMessageDispatcher = class
+  private
+    FMethod: TLCLWndMethod;
+  public
+    constructor Create(AMethod: TLCLWndMethod);
+    procedure Dispatch(var message); override;
+  end;
+
   function GetDefaultLCLWidgetType: TLCLPlatform;
   function GetLCLWidgetTypeName: string;
 

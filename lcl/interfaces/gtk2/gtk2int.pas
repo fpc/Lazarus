@@ -165,6 +165,9 @@ type
     procedure DestroyEmptySubmenu(Sender: TObject);
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);
+    function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
+    procedure DeallocateHWnd(Wnd: HWND); override;
+
     // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);
 
