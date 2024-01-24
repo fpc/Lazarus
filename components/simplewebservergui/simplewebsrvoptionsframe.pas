@@ -281,7 +281,7 @@ end;
 
 class function TSimpleWebSrvOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TAbstractIDEEnvironmentOptions;
+  Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;
 
 procedure TSimpleWebSrvOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
