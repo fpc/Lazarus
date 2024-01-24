@@ -255,6 +255,10 @@ msgstr "Üzenet"
 msgid "Miscellaneous"
 msgstr "Vegyes"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Névtér tulajdonság neve"

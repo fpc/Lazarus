@@ -256,6 +256,10 @@ msgstr "Pranešimas"
 msgid "Miscellaneous"
 msgstr "Kita"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Vardų srities atributo pavadinimas"

@@ -258,6 +258,10 @@ msgstr "Повідомлення"
 msgid "Miscellaneous"
 msgstr "Різне"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Назва атрибута простору назв"

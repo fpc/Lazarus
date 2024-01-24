@@ -253,6 +253,10 @@ msgstr "הודעה"
 msgid "Miscellaneous"
 msgstr "שונות"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "שם של מאפיין מרחב-השמות"

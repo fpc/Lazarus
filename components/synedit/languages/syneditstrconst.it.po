@@ -256,6 +256,10 @@ msgstr "Messaggio"
 msgid "Miscellaneous"
 msgstr "Varie"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Nome attributo namespace"

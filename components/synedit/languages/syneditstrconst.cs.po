@@ -255,6 +255,10 @@ msgstr "Zpráva"
 msgid "Miscellaneous"
 msgstr "Různé"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Jméno atributu jmenného prostoru"

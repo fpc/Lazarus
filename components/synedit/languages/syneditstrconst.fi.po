@@ -248,6 +248,10 @@ msgstr "Viesti"
 msgid "Miscellaneous"
 msgstr "Sekalainen"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "Nimiavaruuden attribuutin nimi"

@@ -342,6 +342,7 @@ begin
       case TtkTokenKind(ExpTokens[i].ExpKind) of
         tkIdentifier: ExpTokens[i].ExpAttr := PasHighLighter.IdentifierAttri;
         tkKey:        ExpTokens[i].ExpAttr := PasHighLighter.KeywordAttribute;
+        tkModifier:   ExpTokens[i].ExpAttr := PasHighLighter.ModifierAttri;
         tkSymbol:     ExpTokens[i].ExpAttr := PasHighLighter.SymbolAttri;
         tkString:     ExpTokens[i].ExpAttr := PasHighLighter.StringAttri;
         tkNumber:     ExpTokens[i].ExpAttr := PasHighLighter.NumberAttri;
@@ -654,7 +655,7 @@ begin
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol,        // "Procedure",  " ", "message", "("
         tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
         tkSymbol, tkSymbol, tkSpace,                   // ")", ";", " "
-        tkKey, // "message" as key
+        tkModifier, // "message" as key
         tkSpace, tkNumber, tkSymbol
       ]);
     CheckTokensForLine('property',  4,
@@ -715,7 +716,7 @@ begin
     CheckTokensForLine('type cdecl',  2,
       [ tkIdentifier, TK_Equal, tkKey,  // cdecl=function
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+        TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi // :cdecl;cdecl;
       ]);
 
     CheckTokensForLine('StdCall=class',  4,
@@ -726,8 +727,8 @@ begin
     CheckTokensForLine('function/method cdecl',  5,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
-        tkKey, TK_Semi //deprecated;
+        TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi, // :cdecl;cdecl;
+        tkModifier, TK_Semi //deprecated;
       ]);
 
     CheckTokensForLine('property',  6,
@@ -740,14 +741,14 @@ begin
     CheckTokensForLine('funciton in recorld',  10,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
-        tkKey, TK_Semi //deprecated;
+        TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi, // :cdecl;cdecl;
+        tkModifier, TK_Semi //deprecated;
       ]);
 
     CheckTokensForLine('var cdecl function',  14,
       [ tkIdentifier, TK_Equal, tkKey,  // Stdcall:function
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+        TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi // :cdecl;cdecl;
       ]);
 
     CheckTokensForLine('var cdecl:cdecl',  16,
@@ -757,20 +758,20 @@ begin
     CheckTokensForLine('function',  18,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+        TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi // :cdecl;cdecl;
       ]);
 
     CheckTokensForLine('var cdecl deprecated:cdecl',  20,
       [ tkIdentifier, TK_Colon, tkIdentifier,   //cdecl:cdecl
-        tkSpace, tkKey, TK_Semi //deprecated;
+        tkSpace, tkModifier, TK_Semi //deprecated;
       ]);
 
     CheckTokensForLine('function deprecated',  21,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
-        tkKey, TK_Semi, // cdecl;
-        tkKey, TK_Semi //deprecated;
+        tkModifier, TK_Semi, // cdecl;
+        tkModifier, TK_Semi //deprecated;
       ]);
 
   end;
@@ -813,17 +814,17 @@ begin
 
     CheckTokensForLine('procedure name; external ''name'' name ''name'';', 1,
       [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
-       tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+       tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi]);
     CheckTokensForLine('procedure name; public name ''name'';', 2,
       [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
-       tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+       tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi]);
 
     CheckTokensForLine('function name: name; external ''name'' name ''name'';', 4,
       [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
-       tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+       tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi]);
     CheckTokensForLine('function name: name; public name ''name'';', 5,
       [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
-       tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+       tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi]);
 
     CheckTokensForLine('CLASS: procedure name; public name: name;', 9,
       [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
@@ -945,145 +946,145 @@ begin
 
       CheckTokensForLine(n+':'+n+'; public;', 3,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; public name ''name'';', 4,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external;', 5,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external ''name'';', 6,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external name ''name'';', 7,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external ''name'' name ''name'';', 8,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; export;', 9,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; export name ''name'';', 10,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 
       CheckTokensForLine(n+':'+n+';cvar; public;', 13,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; public name ''name'';', 14,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; external;', 15,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; external ''name'';', 16,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkString, TK_Semi
        ]);
 //      CheckTokensForLine(n+':'+n+';cvar; external name ''name'';', 17,
-//        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
-//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkKey {cvar}, TK_Semi, tkSpace,
+//        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
 //       ]);
 //      CheckTokensForLine(n+':'+n+';cvar; external ''name'' name ''name'';', 18,
-//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkKey {cvar}, TK_Semi, tkSpace,
-//        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
+//        tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
 //       ]);
       CheckTokensForLine(n+':'+n+';cvar; export;', 19,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; export name ''name'';', 20,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       // just another var:
       CheckTokensForLine(n+':'+n+';cvar; cvar: cvar; name: name; var', 21,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
         tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi,
-        tkSpace, tkKey
+        tkSpace, tkkey
        ]);
 
       CheckTokensForLine(n+':'+n+'=1; public;', 23,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'=1; public name ''name'';', 24,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 //      CheckTokensForLine(n+':'+n+'=1; external;', 25,
 //       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-//        tkKey, TK_Semi
+//        tkModifier, TK_Semi
 //       ]);
 //      CheckTokensForLine(n+':'+n+'=1; external ''name'';', 26,
 //       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-//        tkKey, tkSpace, tkString, TK_Semi
+//        tkModifier, tkSpace, tkString, TK_Semi
 //       ]);
 //      CheckTokensForLine(n+':'+n+'=1; external name ''name'';', 27,
 //       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-//        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
 //       ]);
 //      CheckTokensForLine(n+':'+n+'=1; external ''name'' name ''name'';', 28,
 //       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-//        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//        tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
 //       ]);
       CheckTokensForLine(n+':'+n+'=1; export;', 29,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'=1; export name ''name'';', 30,
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 
       CheckTokensForLine(n+':'+n+' deprecated; public;', 33,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; public name ''name'';', 34,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; external;', 35,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; external ''name'';', 36,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; external name ''name'';', 37,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; external ''name'' name ''name'';', 38,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; export;', 39,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+' deprecated; export name ''name'';', 40,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{depr}, TK_Semi, tkSpace,
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 
       CheckTokensForLine(n+':'+n+' absolute '+n+';', 43,
-       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{absolute}, tkSpace, tkIdentifier, TK_Semi ]);
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkModifier{absolute}, tkSpace, tkIdentifier, TK_Semi ]);
 
        //TYPE / just another type
       CheckTokensForLine(n+'='+n+'; '+n+'='+n+';', 48,
@@ -1096,7 +1097,7 @@ begin
         tkIdentifier, TK_Equal, tkIdentifier, TK_Semi]);
       CheckTokensForLine(n+':'+n+'='+n+'; cvar;', 51,    // key CVAR
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
 
       if copy(n,1,6) = 'public' then
@@ -1104,15 +1105,15 @@ begin
       // NOT for "public"
       CheckTokensForLine(n+':'+n+'='+n+'; cvar; public;', 52,   // key CVAR
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi, tkSpace, tkKey, TK_Semi
+        tkModifier, TK_Semi, tkSpace, tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'='+n+'; public;', 53,    // key public
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, TK_Semi
+        tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'='+n+'; public name ''name'';', 54,   // key public name
        [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
-        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 
       // NOT for "public"
@@ -1304,7 +1305,7 @@ begin
         TK_Colon, tkIdentifier, TK_Bracket, TK_Colon, tkIdentifier, // :default]:default
         tkSpace, tkKey, tkSpace, tkIdentifier,  // read default
         tkSpace, tkKey, tkSpace, tkIdentifier,  // write default
-        TK_Semi, tkSpace, tkKey, TK_Semi // ; default;
+        TK_Semi, tkSpace, tkModifier, TK_Semi // ; default;
       ]);
 
     CheckTokensForLine('property default:default read default default default;',  11,
@@ -1575,18 +1576,18 @@ begin
 
 
     CheckTokensForLine('var p1:procedure deprecated;', 28,
-      [ tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey, TK_Semi     // p1:procedure deprecated;
+      [ tkIdentifier, TK_Colon, tkKey, tkSpace, tkModifier, TK_Semi     // p1:procedure deprecated;
       ]);
 
     CheckTokensForLine('var p2:procedure(a:int64) deprecated;', 29,
       [ tkIdentifier, TK_Colon, tkKey,   // p2:procedure
       TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,    // (a:int64)
-      tkSpace, tkKey, TK_Semi  //deprecated;
+      tkSpace, tkModifier, TK_Semi  //deprecated;
       ]);
 
     CheckTokensForLine('var f1:function:int64 deprecated;', 30,
       [ tkIdentifier, TK_Colon, tkKey,   // f1:function
-      TK_Colon, tkIdentifier, tkSpace, tkKey, TK_Semi    // :int64 deprecated;
+      TK_Colon, tkIdentifier, tkSpace, tkModifier, TK_Semi    // :int64 deprecated;
       ]);
 
   end;
@@ -1681,55 +1682,55 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
         //TODO: is nested
 
       CheckTokensForLine('member in class', 3,
-        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('array of', 4,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('array [1..2] of', 5,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkSymbol, tkNumber, tkSymbol, tkNumber, tkSymbol,
-         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('set of', 6,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('class of', 7,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure ', 8,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure of object ', 9,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure(a:s) ', 10,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
-         tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure(a:s) of object ', 11,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
-         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function', 12,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function of object ', 13,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function(a:s)', 14,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
-          tkSpace, tkKey {the one and only}, tkSymbol]);
+          tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function(a:s) of object ', 15,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
-          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('record end', 16,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('packed record end', 17,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('multi member in class', 18,
         [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
 
       if copy(struct, 1,11) = 'record case' then // procedure not allowed in record-case
         exit;
       CheckTokensForLine('procedure in class', 19,
         [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkModifier {the one and only}, tkSymbol
         ]);
 
       if struct = 'byte;var' then
@@ -1760,46 +1761,46 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
         ]);
 
       CheckTokensForLine('member in class', 3,
-        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('array of', 4,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('array [1..2] of', 5,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkSymbol, tkNumber, tkSymbol, tkNumber, tkSymbol,
-         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('set of', 6,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('class of', 7,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure ', 8,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure of object ', 9,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure(a:s) ', 10,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
-         tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure(a:s) of object ', 11,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
-         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+         tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function', 12,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function of object ', 13,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function(a:s)', 14,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
-          tkSpace, tkKey {the one and only}, tkSymbol]);
+          tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('function(a:s) of object ', 15,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
-          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkKey {the one and only}, tkSymbol]);
+          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('record end', 16,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('packed record end', 17,
-        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
 
       if (struct = 'record') or (struct = 'byte;') then
         exit;
@@ -1821,27 +1822,27 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
         ]);
 
       CheckTokensForLine('member in class', 3,
-        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('multi member in class', 4,
         [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('procedure in class', 5,
         [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkModifier {the one and only}, tkSymbol
         ]);
 
       CheckTokensForLine('member in class-sect', 7,
-        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('multi member in class-sect', 8,
         [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+        tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('property in class-sect', 9,
         [tkKey, tkSpace, tkIdentifier, tkSymbol { : }, tkSpace, tkIdentifier, tkSpace,
-         tkKey { read }, tkSpace, tkIdentifier, tkSymbol { ; }, tkSpace, tkKey {the one and only}, tkSymbol
+         tkKey { read }, tkSpace, tkIdentifier, tkSymbol { ; }, tkSpace, tkModifier {the one and only}, tkSymbol
         ]);
       CheckTokensForLine('procedure in class-sect', 10,
         [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkModifier {the one and only}, tkSymbol
         ]);
 
     end;
@@ -1864,20 +1865,20 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           ''
       ]);
     CheckTokensForLine('var', 2,
-      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
     CheckTokensForLine('multi var', 3,
       [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
     CheckTokensForLine('type', 5,
-      [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
     CheckTokensForLine('type', 6,
-      [tkIdentifier, tkSpace, tkSymbol, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      [tkIdentifier, tkSpace, tkSymbol, tkKey, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
     CheckTokensForLine('procedure', 7,
       [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkModifier {the one and only}, tkSymbol
       ]);
     CheckTokensForLine('var a:procedure DEPRECATED;', 9,
-      [tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey {the one and only}, TK_Semi]);
+      [tkIdentifier, TK_Colon, tkKey, tkSpace, tkModifier {the one and only}, TK_Semi]);
 
 
     PushBaseName('class');
@@ -1917,10 +1918,10 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
        tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol
       ]);
     CheckTokensForLine('var in procedure', 3,
-      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
     CheckTokensForLine('multi var in procedure', 4,
       [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
 
 
 
@@ -1934,7 +1935,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           ''
       ]);
     CheckTokensForLine('after class declaration', 4,
-      [tkKey, tkSpace, tkKey, tkSymbol]);
+      [tkKey, tkSpace, tkModifier , tkSymbol]);
 
 
     // after unit declaration
@@ -1960,7 +1961,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           ''
       ]);
     CheckTokensForLine('after unit', 0,
-      [tkKey, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+      [tkKey, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('after unit - next line', 1,
       [tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol]);
 
@@ -1970,7 +1971,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           ''
       ]);
     CheckTokensForLine('after dotted unit', 0,
-      [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+      [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('after unit - next line', 1,
       [tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol]);
 
@@ -2159,15 +2160,15 @@ begin
     if ty[1] = ' ' then begin
       case cmod of
         0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey ]);
-        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace ]);
-        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
+        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
       end;
     end
     else begin
       case cmod of
         0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey ]);
-        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey, tkSpace ]);
-        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey ]);
+        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
+        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
       end;
     end;
 
@@ -2255,14 +2256,14 @@ begin
     CheckTokensForLine('class declaration"',  2,
       [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
         tkKey {class}, tkSpace,
-        tkKey {sealed}, tkSpace, tkKey {abstract}
+        tkModifier {sealed}, tkSpace, tkModifier {abstract}
       ]);
     CheckTokensForLine('var in class "',  3,
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
 
 
 
@@ -2281,14 +2282,14 @@ begin
     CheckTokensForLine('class declaration"',  2,
       [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
         tkKey {class}, tkSpace, tkComment, tkSpace,
-        tkKey {sealed}, tkSpace, tkKey {abstract}
+        tkModifier {sealed}, tkSpace, tkModifier {abstract}
       ]);
     CheckTokensForLine('var in class "',  3,
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
 
 
 
@@ -2310,14 +2311,14 @@ begin
         tkKey {class}, tkSpace, tkComment
       ]);
     CheckTokensForLine('class declaration"',  3,
-      [ tkSpace, tkKey {sealed}, tkSpace, tkKey {abstract}
+      [ tkSpace, tkModifier {sealed}, tkSpace, tkModifier {abstract}
       ]);
     CheckTokensForLine('var in class "',  4,
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  5,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
 
 
 
@@ -2337,15 +2338,15 @@ begin
     CheckTokensForLine('class declaration"',  2,
       [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
         tkKey {class}, tkSymbol, tkIdentifier, tkSymbol, tkSpace,
-        tkKey {sealed}, tkSpace,
-        tkKey {abstract}
+        tkModifier {sealed}, tkSpace,
+        tkModifier {abstract}
       ]);
     CheckTokensForLine('var in class "',  3,
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
 
   end;
 end;
@@ -2386,7 +2387,7 @@ begin
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
     CheckTokensForLine('end',  5,
       [ tkKey, tkSymbol ]);
     CheckTokensForLine('class declaration"',  6,
@@ -2422,7 +2423,7 @@ begin
         tkSpace, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('procedure in class "',  4,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
     CheckTokensForLine('class section',  7,
       [ tkKey ]);
   end;
@@ -2442,7 +2443,7 @@ procedure TTestHighlighterPas.TestContextForTypeHelper;
         tkKey {type}, tkSpace, tkKey {helper}, tkSpace, tkKey {for}, tkSpace, tkIdentifier
       ]);
     CheckTokensForLine('procedure in helper',  6,
-      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
     CheckTokensForLine('uniq type',  8,
       [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
         tkKey {type}, tkSpace, tkIdentifier, tkSymbol
@@ -2754,13 +2755,13 @@ begin
     CheckTokensForLine('Tfoo=class(static)',  3,
     [tkIdentifier, tkSymbol, tkKey,tkSymbol, tkIdentifier, tkSymbol]);
     CheckTokensForLine('fields',              4,
-                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('fields 2',            5,
-                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('function',            6,
                        [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
                         tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
-                        tkSpace, tkKey, tkSymbol                   // #32 static ;
+                        tkSpace, tkModifier, tkSymbol                   // #32 static ;
                        ]);
     CheckTokensForLine('property',            7,
                        [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
@@ -2770,13 +2771,13 @@ begin
                         tkSymbol                   // ;
                        ]);
     CheckTokensForLine('pup fields',          9,
-                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('pup fields 2',       10,
-                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkModifier, tkSymbol]);
     CheckTokensForLine('pup function',       11,
                        [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
                         tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
-                        tkSpace, tkKey, tkSymbol                   // #32 static ;
+                        tkSpace, tkModifier, tkSymbol                   // #32 static ;
                        ]);
     CheckTokensForLine('pup property',       12,
                        [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,

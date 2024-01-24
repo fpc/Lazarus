@@ -112,6 +112,7 @@ resourcestring
   SYNS_AttrQualifier            =  'Qualifier';
   SYNS_AttrRegister             =  'Register';
   SYNS_AttrReservedWord         =  'Reserved word';
+  SYNS_AttrModifier             =  'Modifier';
   SYNS_AttrRpl                  =  'Rpl';
   SYNS_AttrRplKey               =  'Rpl key';
   SYNS_AttrRplComment           =  'Rpl comment';
@@ -233,6 +234,7 @@ const
   SYNS_XML_AttrQualifier            =  'Qualifier';
   SYNS_XML_AttrRegister             =  'Register';
   SYNS_XML_AttrReservedWord         =  'Reserved word';
+  SYNS_XML_AttrModifier             =  'Modifier';
   SYNS_XML_AttrRpl                  =  'Rpl';
   SYNS_XML_AttrRplKey               =  'Rpl key';
   SYNS_XML_AttrRplComment           =  'Rpl comment';

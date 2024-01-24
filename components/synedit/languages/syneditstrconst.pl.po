@@ -256,6 +256,10 @@ msgstr "Komunikat"
 msgid "Miscellaneous"
 msgstr "Pozostałe"
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr ""

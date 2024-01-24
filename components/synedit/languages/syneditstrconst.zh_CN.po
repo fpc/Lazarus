@@ -256,6 +256,10 @@ msgstr "信息"
 msgid "Miscellaneous"
 msgstr ""
 
+#: syneditstrconst.syns_attrmodifier
+msgid "Modifier"
+msgstr ""
+
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
 msgstr "命名空间属性名称"
