@@ -677,4 +677,16 @@ begin
   Result := False;
 end;
 
+{ TMessageDispatcher }
+
+constructor TMessageDispatcher.Create(AMethod: TLCLWndMethod);
+begin
+  FMethod := AMethod;
+end;
+
+procedure TMessageDispatcher.Dispatch(var message);
+begin
+  FMethod(TLMessage(message));
+end;
+
 //##apiwiz##eps##   // Do not remove
