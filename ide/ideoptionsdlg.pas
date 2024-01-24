@@ -406,23 +406,21 @@ var
 
   procedure Traverse(Node: TTreeNode);
   begin
-    if Node <> nil then
-    begin
-      if Node.Data <> nil then
-        with TAbstractIDEOptionsEditor(Node.Data) do
-          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil))
-          or ((SupportedOptionsClass <> nil)
-          and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
-          begin
-            case anAction of
-            iodaRead: ReadSettings(AOptions);
-            iodaWrite: WriteSettings(AOptions);
-            iodaRestore: RestoreSettings(AOptions);
-            end;
+    if Node = nil then exit;
+    if Node.Data <> nil then
+      with TAbstractIDEOptionsEditor(Node.Data) do
+        if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil))
+        or ((SupportedOptionsClass <> nil)
+        and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
+        begin
+          case anAction of
+          iodaRead: ReadSettings(AOptions);
+          iodaWrite: WriteSettings(AOptions);
+          iodaRestore: RestoreSettings(AOptions);
           end;
-      Traverse(Node.GetFirstChild);
-      Traverse(Node.GetNextSibling);
-    end;
+        end;
+    Traverse(Node.GetFirstChild);
+    Traverse(Node.GetNextSibling);
   end;
 
 begin
