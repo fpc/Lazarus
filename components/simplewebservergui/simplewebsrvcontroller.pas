@@ -2008,8 +2008,11 @@ begin
         exit;
       end;
       SplitCmdLineParams(Cmd,Params);
-      Result:=Params[0];
-      Params.Delete(0);
+      if Params.Count>0 then
+      begin
+        Result:=Params[0];
+        Params.Delete(0);
+      end;
     end;
   swsbkFirefox: Result:=GetBrowserFirefox(URL,Params);
   swsbkChrome: Result:=GetBrowserChrome(URL,Params);
