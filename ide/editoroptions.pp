@@ -732,6 +732,8 @@ const
          Colors for MarkupFoldColor can now have gaps (before unset colors were filtered)
     * Changes in Version 13:
          CtrlMiddleTabClickClosesOthers was replaced by MiddleTabClickClosesOthersModifier
+    * Changes in Version 14:
+         Introduced "Modifier" to pascal. Prior versions must load "Reserved word"
   }
   EditorMouseOptsFormatVersion = 1;
   { * Changes in Version 6:
@@ -7135,12 +7137,23 @@ begin
 
   for i := 0 to AttributeCount - 1 do begin
     CurAttr := AttributeAtPos[i];
-    if Defaults <> nil then
-      Def := Defaults.Attribute[CurAttr.StoredName]
-    else begin
-      Def := CurAttr.GetSchemeGlobal;
-      if Def = nil then
-        Def := EmptyDef;
+    Def := nil;
+    if (ColorVersion < 14) and (RealFormatVersion < 14) and
+       (Defaults = nil) and
+       (CurAttr.GetSchemeGlobal = nil) and
+       (CurAttr.StoredName = SYNS_XML_AttrModifier) and
+       not (aXMLConfig.HasPath(TmpPath+SYNS_XML_AttrModifier, False))
+    then
+      Def := Attribute[SYNS_XML_AttrReservedWord];
+
+    if Def = nil then begin
+      if Defaults <> nil then
+        Def := Defaults.Attribute[CurAttr.StoredName]
+      else begin
+        Def := CurAttr.GetSchemeGlobal;
+        if Def = nil then
+          Def := EmptyDef;
+      end;
     end;
     CurAttr.LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
     if (ColorVersion < 9) and (RealFormatVersion < 9)
