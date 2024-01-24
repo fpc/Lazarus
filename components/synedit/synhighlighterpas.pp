@@ -1663,7 +1663,7 @@ function TSynPasSyn.Func55: TtkTokenKind;
 begin
   if KeyComp('Object') then begin
     Result := tkKey;
-    if (fRange * [rsAfterEqualOrColon, rsAfterEqualThenType] <> []) and
+    if (fRange * [rsAfterEqualOrColon] <> []) and
        not(rsInProcHeader in fRange) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
@@ -1875,6 +1875,7 @@ begin
         ])
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
+        FOldRange := FOldRange - [rsAfterEqualOrColon];
         if TypeHelpers then
           fRange := fRange + [rsAfterEqualThenType];
       end
