@@ -59,6 +59,7 @@ type
     procedure TestContextForProcModifiers;
     procedure TestContextForProcModifiers2;
     procedure TestContextForProcModifiersName;
+    procedure TestContextForVarModifiers;
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
     procedure TestContextForProcedureNameAttr;
@@ -834,6 +835,313 @@ begin
   end;
 end;
 
+procedure TTestHighlighterPas.TestContextForVarModifiers;
+var
+  n: String;
+  AFolds: TPascalCodeFoldBlockTypes;
+  i, j: Integer;
+begin
+  ReCreateEdit;
+  for i := 0 to 7 do begin
+    case i of
+      0: n := 'name';
+      1: n := 'public';
+      2: n := 'external';
+      3: n := 'export';
+      4: n := 'cvar';
+      5: n := 'deprecated';
+      6: n := 'default';
+      7: n := 'absolute';
+    end;
+
+    SetLines
+      ([ 'Unit A; interface',
+         '',
+         'var ',
+         // Line 3:
+         n+':'+n+'; public;',
+         n+':'+n+'; public name ''name'';',
+         n+':'+n+'; external;',
+         n+':'+n+'; external ''name'';',
+         n+':'+n+'; external name ''name'';',
+         n+':'+n+'; external ''name'' name ''name'';',
+         n+':'+n+'; export;',
+         n+':'+n+'; export name ''name'';',
+         '',
+         '',
+         // Line 13:
+         n+':'+n+';cvar; public;',
+         n+':'+n+';cvar; public name ''name'';',
+         n+':'+n+';cvar; external;',
+         n+':'+n+';cvar; external ''name'';',
+         '',//n+':'+n+';cvar; external name ''name'';',
+         '',//n+':'+n+';cvar; external ''name'' name ''name'';',
+         n+':'+n+';cvar; export;',
+         n+':'+n+';cvar; export name ''name'';',
+         n+':'+n+';cvar; cvar: cvar; name: name; var',                         // just another variable
+         '',
+         // Line 23:
+         n+':'+n+'=1; public;',
+         n+':'+n+'=1; public name ''name'';',
+         '',//n+':'+n+'=1; external;',
+         '',//n+':'+n+'=1; external ''name'';',
+         '',//n+':'+n+'=1; external name ''name'';',
+         '',//n+':'+n+'=1; external ''name'' name ''name'';',
+         n+':'+n+'=1; export;',
+         n+':'+n+'=1; export name ''name'';',
+         '',
+         '',
+         // Line 33:
+         n+':'+n+' deprecated; public;',
+         n+':'+n+' deprecated; public name ''name'';',
+         n+':'+n+' deprecated; external;',
+         n+':'+n+' deprecated; external ''name'';',
+         n+':'+n+' deprecated; external name ''name'';',
+         n+':'+n+' deprecated; external ''name'' name ''name'';',
+         n+':'+n+' deprecated; export;',
+         n+':'+n+' deprecated; export name ''name'';',
+         '',
+         '',
+         // Line 43:
+         n+':'+n+' absolute '+n+';',
+         '',
+         '',
+         '',
+         'type',
+         // Line 48:
+         n+'='+n+'; '+n+'='+n+';',  // just another type
+         'const',
+         // Line 50:
+         n+'='+n+'; '+n+'='+n+';',  // just another const
+         n+':'+n+'='+n+'; cvar;',   // key CVAR
+         n+':'+n+'='+n+'; cvar; public;',   // key CVAR
+         n+':'+n+'='+n+'; public;',   // key public
+         n+':'+n+'='+n+'; public name ''name'';',   // key public name
+         '',
+         '',
+         '',
+         '',
+         // NOT for "public"
+         'type TFoo = class ',
+         // Line 60:
+         n+':'+n+'; '+n+':'+n+'; public private',  // just another field
+         n+':'+n+'; public '+n+':'+n+'; public private',  // just another public field
+         'var '+n+':'+n+'; public '+n+':'+n+'; public private',  // just another public field
+         'type '+n+':'+n+'; '+n+':'+n+'; public private',  // just another type
+         'const '+n+':'+n+'='+n+'; '+n+':'+n+'='+n+'; public private',  // just another const
+         '',
+         'end;',
+         ''
+          ]);
+
+    for j := 0 to $1F do begin
+      AFolds := [];
+      if (j and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtVarType, cfbtClass, cfbtClassSection];
+      if (j and $01) = 0 then AFolds := AFolds + [cfbtUnitSection];
+      if (j and $02) = 0 then AFolds := AFolds + [cfbtVarType];
+      if (j and $04) = 0 then AFolds := AFolds + [cfbtClass];
+      if (j and $08) = 0 then AFolds := AFolds + [cfbtClassSection];
+      EnableFolds(AFolds);
+
+      CheckTokensForLine(n+':'+n+'; public;', 3,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; public name ''name'';', 4,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; external;', 5,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; external ''name'';', 6,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; external name ''name'';', 7,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; external ''name'' name ''name'';', 8,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; export;', 9,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'; export name ''name'';', 10,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+
+      CheckTokensForLine(n+':'+n+';cvar; public;', 13,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+';cvar; public name ''name'';', 14,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+';cvar; external;', 15,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+';cvar; external ''name'';', 16,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkString, TK_Semi
+       ]);
+//      CheckTokensForLine(n+':'+n+';cvar; external name ''name'';', 17,
+//        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkKey {cvar}, TK_Semi, tkSpace,
+//       ]);
+//      CheckTokensForLine(n+':'+n+';cvar; external ''name'' name ''name'';', 18,
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkKey {cvar}, TK_Semi, tkSpace,
+//        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//       ]);
+      CheckTokensForLine(n+':'+n+';cvar; export;', 19,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+';cvar; export name ''name'';', 20,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      // just another var:
+      CheckTokensForLine(n+':'+n+';cvar; cvar: cvar; name: name; var', 21,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkKey {cvar}, TK_Semi, tkSpace,
+        tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi,
+        tkSpace, tkKey
+       ]);
+
+      CheckTokensForLine(n+':'+n+'=1; public;', 23,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'=1; public name ''name'';', 24,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+//      CheckTokensForLine(n+':'+n+'=1; external;', 25,
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+//        tkKey, TK_Semi
+//       ]);
+//      CheckTokensForLine(n+':'+n+'=1; external ''name'';', 26,
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+//        tkKey, tkSpace, tkString, TK_Semi
+//       ]);
+//      CheckTokensForLine(n+':'+n+'=1; external name ''name'';', 27,
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+//        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//       ]);
+//      CheckTokensForLine(n+':'+n+'=1; external ''name'' name ''name'';', 28,
+//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+//        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+//       ]);
+      CheckTokensForLine(n+':'+n+'=1; export;', 29,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'=1; export name ''name'';', 30,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+
+      CheckTokensForLine(n+':'+n+' deprecated; public;', 33,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; public name ''name'';', 34,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; external;', 35,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; external ''name'';', 36,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; external name ''name'';', 37,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; external ''name'' name ''name'';', 38,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; export;', 39,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+' deprecated; export name ''name'';', 40,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{depr}, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+
+      CheckTokensForLine(n+':'+n+' absolute '+n+';', 43,
+       [tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey{absolute}, tkSpace, tkIdentifier, TK_Semi ]);
+
+       //TYPE / just another type
+      CheckTokensForLine(n+'='+n+'; '+n+'='+n+';', 48,
+       [tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Equal, tkIdentifier, TK_Semi]);
+
+      // const
+      CheckTokensForLine(n+'='+n+'; '+n+'='+n+';', 50,   // just another const
+       [tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Equal, tkIdentifier, TK_Semi]);
+      CheckTokensForLine(n+':'+n+'='+n+'; cvar;', 51,    // key CVAR
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+
+      if copy(n,1,6) = 'public' then
+        continue;
+      // NOT for "public"
+      CheckTokensForLine(n+':'+n+'='+n+'; cvar; public;', 52,   // key CVAR
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi, tkSpace, tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'='+n+'; public;', 53,    // key public
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, TK_Semi
+       ]);
+      CheckTokensForLine(n+':'+n+'='+n+'; public name ''name'';', 54,   // key public name
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi
+       ]);
+
+      // NOT for "public"
+      CheckTokensForLine('#CLASS#'+ n+':'+n+'; '+n+':'+n+'; public private', 60,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace, tkKey {private}
+       ]);
+      CheckTokensForLine('#CLASS#'+n+':'+n+'; public '+n+':'+n+'; public private', 61,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace, tkKey {private}
+       ]);
+      CheckTokensForLine('#CLASS#'+'var '+n+':'+n+'; public '+n+':'+n+'; public private', 62,
+       [tkKey{var}, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace, tkKey {private}
+       ]);
+      CheckTokensForLine('#CLASS#'+'type '+n+'='+n+'; '+n+'='+n+'; public private', 63,
+       [tkKey{type}, tkSpace,
+        tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace, tkKey {private}]);
+      CheckTokensForLine('#CLASS#'+'const '+n+':'+n+'='+n+'; '+n+':'+n+'='+n+'; public private',  64,   // just another const
+       [tkKey{const}, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace,
+        tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, TK_Semi, tkSpace, tkKey {public}, tkSpace, tkKey {private}]);
+
+    end;
+  end;
+end;
+
 procedure TTestHighlighterPas.TestContextForProperties;
 var
   AFolds: TPascalCodeFoldBlockTypes;
@@ -1549,6 +1857,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
           'foo, '+s+', bar: Integer '+s+';',
           'type',
           s+' = '+s+' '+s+';',   // nameDEPRECATED = typeDEPRECATED deprecated;
+          s+' =type '+s+' '+s+';',   // nameDEPRECATED = type typeDEPRECATED deprecated;
           'procedure '+s+'('+s+': '+s+'); '+s+';',
           'var',
           s+':procedure '+s+';',
@@ -1561,11 +1870,13 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
       tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
     CheckTokensForLine('type', 5,
       [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-    CheckTokensForLine('procedure', 6,
+    CheckTokensForLine('type', 6,
+      [tkIdentifier, tkSpace, tkSymbol, tkKey, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+    CheckTokensForLine('procedure', 7,
       [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
        tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
       ]);
-    CheckTokensForLine('var a:procedure DEPRECATED;', 8,
+    CheckTokensForLine('var a:procedure DEPRECATED;', 9,
       [tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey {the one and only}, TK_Semi]);
 
 
@@ -1910,8 +2221,10 @@ begin
 
     CheckTokensForLine('public:public;',  15,
       [ sp1, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;} ]);
-    CheckTokensForLine('public:public;',  16,
-      [ sp2, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;} ]);
+    // public would be modifier
+    if trim(v) <> 'public' then
+      CheckTokensForLine('public:public;',  16,
+        [ sp2, tkIdentifier {public}, tkSymbol{:}, tkIdentifier, tkSymbol{;} ]);
 
   end;
 end;
