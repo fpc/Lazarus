@@ -58,6 +58,7 @@ type
     procedure TestExtendedKeywordsAndStrings;
     procedure TestContextForProcModifiers;
     procedure TestContextForProcModifiers2;
+    procedure TestContextForProcModifiersName;
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
     procedure TestContextForProcedureNameAttr;
@@ -770,6 +771,65 @@ begin
         tkKey, TK_Semi, // cdecl;
         tkKey, TK_Semi //deprecated;
       ]);
+
+  end;
+end;
+
+procedure TTestHighlighterPas.TestContextForProcModifiersName;
+var
+  p: TSynHighlighterAttributesModifier;
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
+begin
+  ReCreateEdit;
+  p := FAttrProcName;
+  SetLines
+    ([ 'Unit A; interface',
+       'procedure name; external ''name'' name ''name'';',
+       'procedure name; public name ''name'';',
+       '  begin end;',
+       'function name: name; external ''name'' name ''name'';',
+       'function name: name; public name ''name'';',
+       '  begin end;',
+       '',
+       'type TFoo = class ',
+       'procedure name; public name: name;',  // just a public field
+       'function name: name; public name: name;',  // just a public field
+       'end;',
+       ''
+        ]);
+
+  for i := 0 to $3F do begin
+    AFolds := [];
+    if (i and $20) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtProcedure, cfbtVarType, cfbtClass, cfbtClassSection];
+    if (i and $01) = 0 then AFolds := AFolds + [cfbtUnitSection];
+    if (i and $02) = 0 then AFolds := AFolds + [cfbtProcedure];
+    if (i and $04) = 0 then AFolds := AFolds + [cfbtVarType];
+    if (i and $08) = 0 then AFolds := AFolds + [cfbtClass];
+    if (i and $10) = 0 then AFolds := AFolds + [cfbtClassSection];
+
+    EnableFolds(AFolds);
+
+    CheckTokensForLine('procedure name; external ''name'' name ''name'';', 1,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+    CheckTokensForLine('procedure name; public name ''name'';', 2,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+
+    CheckTokensForLine('function name: name; external ''name'' name ''name'';', 4,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkString, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+    CheckTokensForLine('function name: name; public name ''name'';', 5,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkKey, tkSpace, tkString, TK_Semi]);
+
+    CheckTokensForLine('CLASS: procedure name; public name: name;', 9,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+    CheckTokensForLine('CLASS: function name: name; public name: name;', 10,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+       tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
 
   end;
 end;

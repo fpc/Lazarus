@@ -113,6 +113,16 @@ type
   );
   TRangeStates = set of TRangeState;
 
+  // Just for the current token, unless renewed during parsing for the next token
+  // Except, will be kept for: tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull  // maybe in future line break
+  TTokenState = (
+    tsNone,
+    tsAfterExternal      // after public or external: "name" may follow
+                         // procedure Foo; public name 'bar';
+                         // procedure Foo; external 'x' name 'bar';
+                         // var Foo; public name 'bar';
+  );
+
 type
   TPascalCodeFoldBlockType = ( // Do *not* change the order
     cfbtBeginEnd,      // Nested
@@ -308,6 +318,7 @@ type
     FLastLineCodeFoldLevelFix: integer;
     FPasFoldFixLevel: Smallint;
     FTypeHelpers: Boolean;
+    FTokenState: TTokenState;
   public
     procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
@@ -324,6 +335,7 @@ type
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
     property PasFoldFixLevel: Smallint read FPasFoldFixLevel write FPasFoldFixLevel;
+    property TokenState: TTokenState read FTokenState write FTokenState;
   end;
 
   TProcTableProc = procedure of object;
@@ -349,6 +361,7 @@ type
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
     FOldRange: TRangeStates;
+    FTokenState, FNextTokenState: TTokenState;
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
@@ -795,6 +808,33 @@ var
 function dbgs(FoldType: TPascalCodeFoldBlockType): String; overload;
 begin
   WriteStr(Result, FoldType);
+end;
+
+function dbgs(RsState: TRangeState): String; overload;
+begin
+  WriteStr(Result, RsState);
+end;
+function dbgs(Range: TRangeStates): String; overload;
+var
+  i: TRangeState;
+begin
+  Result := '[';
+  for i := low(TRangeState) to high(TRangeState) do
+    if i in Range then begin
+      if Result <> '[' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  Result := Result + ']';
+end;
+
+function dbgs(TkState: TTokenState): String; overload;
+begin
+  WriteStr(Result, TkState);
+end;
+
+function dbgs(TkKind: TtkTokenKind): String; overload;
+begin
+  WriteStr(Result, TkKind);
 end;
 
 procedure MakeIdentTable;
@@ -1356,16 +1396,17 @@ begin
     fRange := fRange + [rsAtClass];
   end
   else
-  if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+  if (FTokenState = tsAfterExternal) and
+//     (PasCodeFoldRange.BracketNestLevel = 0) and
+//     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+//     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
      KeyComp('name') // procedure foo; public name 'abc';
   then
   begin
-    Result := tkIdentifier;
-    FRange := FRange + [rsInProcHeader];
+    Result := tkKey;
   end
-  else Result := tkIdentifier;
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func35: TtkTokenKind;
@@ -1745,7 +1786,7 @@ begin
        (tbf in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord])
     then begin
       Result := tkKey;
-      FRange := FRange + [rsInProcHeader];
+      FNextTokenState := tsAfterExternal;
     end
     else
       Result := tkIdentifier;
@@ -2317,6 +2358,7 @@ begin
      KeyComp('External')
   then begin
     Result := tkKey;
+    FNextTokenState := tsAfterExternal;
     if tbf = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
     end;
@@ -3951,6 +3993,8 @@ end;
 procedure TSynPasSyn.StringProc;
 begin
   fTokenID := tkString;
+  if FTokenState = tsAfterExternal then
+    FNextTokenState := tsAfterExternal; // external 'foo' name 'bar'
   Inc(Run);
   while (not (fLine[Run] in [#0, #10, #13])) do begin
     if fLine[Run] = '''' then begin
@@ -4054,6 +4098,7 @@ begin
       else if rsSlash in fRange then
         SlashContinueProc
       else begin
+        FNextTokenState := tsNone;
         FOldRange := fRange;
         OldNestLevel := PasCodeFoldRange.BracketNestLevel;
         if (PasCodeFoldRange.BracketNestLevel = 1) then // procedure foo; [attr...]
@@ -4066,6 +4111,9 @@ begin
         IsAtCaseLabel := rsAtCaseLabel in fRange;
 
         fProcTable[fLine[Run]];
+
+        if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then
+          FTokenState := FNextTokenState;
 
         if (FTokenID = tkIdentifier) and (fRange * [rsAtProcName] = [rsAtProcName]) then begin
           if rsInProcHeader in fRange then
@@ -4118,7 +4166,7 @@ begin
   end;
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
     FAtLineStart := False;
-  //DebugLn(['TSynPasSyn.Next Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
+  //DebugLn('TSynPasSyn.Next Run=%2d TkPos=%2d %12s Tk="%s" -- TS=%s  Rng=%s  F=%s  ()=%d', [Run, fTokenPos, dbgs(FTokenID), GetToken, dbgs(FTokenState), dbgs(fRange), dbgs(TopPascalCodeFoldBlockType), PasCodeFoldRange.BracketNestLevel]);
 end;
 
 function TSynPasSyn.GetDefaultAttribute(Index: integer):
@@ -4250,6 +4298,7 @@ begin
   // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  PasCodeFoldRange.TokenState := FTokenState;
   PasCodeFoldRange.TypeHelpers := TypeHelpers;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
@@ -4262,6 +4311,7 @@ begin
   CompilerMode := PasCodeFoldRange.Mode;
   NestedComments := PasCodeFoldRange.NestedComments;
   TypeHelpers := PasCodeFoldRange.TypeHelpers;
+  FTokenState := PasCodeFoldRange.TokenState;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
@@ -4282,6 +4332,7 @@ end;
 procedure TSynPasSyn.ResetRange;
 begin
   fRange := [];
+  FTokenState := tsNone;
   FStartCodeFoldBlockLevel:=0;
   FPasStartLevel := 0;
   with FSynPasRangeInfo do begin
@@ -5565,6 +5616,7 @@ begin
   FBracketNestLevel := 0;
   FLastLineCodeFoldLevelFix := 0;
   FPasFoldFixLevel := 0;
+  FTokenState := tsNone;
 end;
 
 function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
@@ -5572,6 +5624,8 @@ begin
   Result:=inherited Compare(Range);
   if Result<>0 then exit;
 
+  Result:=ord(FTokenState)-ord(TSynPasSynRange(Range).FTokenState);
+  if Result<>0 then exit;
   Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
   if Result<>0 then exit;
   Result:=ord(FNestedComments)-ord(TSynPasSynRange(Range).FNestedComments);
@@ -5589,6 +5643,7 @@ procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
 begin
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
     inherited Assign(Src);
+    FTokenState:=TSynPasSynRange(Src).FTokenState;
     FMode:=TSynPasSynRange(Src).FMode;
     FNestedComments:=TSynPasSynRange(Src).FNestedComments;
     FTypeHelpers := TSynPasSynRange(Src).FTypeHelpers;
