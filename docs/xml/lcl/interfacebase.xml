@@ -7553,6 +7553,63 @@ Class reference used to create new instance of the TWidgetSet class.
 </seealso>
 </element>
 
+<!-- TODO: Added in 92e31d44. -->
+<element name="TMessageDispatcher">
+<short>
+Implements a class used to dispatch messages originating in a widgetset class 
+to a handler routine in the LCL class instance.
+</short>
+<descr>
+Used in the GTK widgetset to implement the AllocateHWnd and DeallocateHWnd 
+methods in the widgetset class.
+</descr>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TMessageDispatcher.FMethod"/>
+
+<!-- public -->
+<element name="TMessageDispatcher.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr/>
+<seealso>
+<link id="TLCLWndMethod"/>
+</seealso>
+</element>
+<element name="TMessageDispatcher.Create.AMethod">
+<short>
+Window handler routine in an LCL object where a message is delivered.
+</short>
+</element>
+
+<element name="TMessageDispatcher.Dispatch">
+<short>
+Sends the specified message to the handler routine for the dispatcher.
+</short>
+<descr>
+<p>
+Dispatch is an overridden method in TMessageDispatcher. It reimplements the 
+method introduced in the TObject ancestor. It executes the TLCLWndMethod 
+routine passed as an argument to the constructor using the specified message as 
+a parameter.
+</p>
+</descr>
+<seealso>
+<link id="TLCLWndMethod"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+<link id="#rtl.system.TObject.Dispatch">TObject.Dispatch</link>
+</seealso>
+</element>
+<element name="TMessageDispatcher.Dispatch.message">
+<short>
+Untyped variable argument with the message sent in the method. Cast to an 
+TLMessage instance when passed to the handler routine.
+</short>
+</element>
+
 <element name="GetDefaultLCLWidgetType">
 <short>
 Gets the enumeration value representing the LCL platform for the current 
