@@ -134,6 +134,10 @@ msgstr "Executável"
 msgid "File not found: \"%s\""
 msgstr "Arquivo não encontrado: \"%s\""
 
+#: simplewebsrvstrconsts.rsswforcustombrowser
+msgid "For custom browser"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswinvalidmacrosee
 msgid "Invalid macro. See"
 msgstr "Macro inválida. Veja"

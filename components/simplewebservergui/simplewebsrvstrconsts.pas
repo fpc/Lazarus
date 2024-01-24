@@ -33,6 +33,7 @@ resourcestring
     +'line options for the command which starts the webserver.';
   rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
     +'when opening the URL or HTML file of a web browser project';
+  rsSWForCustomBrowser = 'For custom browser';
   rsSWSBindAny = 'Bind Any';
   rsSWSUserOrigin = 'User';
   rsSWUnableToAddLocation = 'Unable to add location:';

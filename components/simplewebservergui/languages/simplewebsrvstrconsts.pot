@@ -123,6 +123,10 @@ msgstr ""
 msgid "File not found: \"%s\""
 msgstr ""
 
+#: simplewebsrvstrconsts.rsswforcustombrowser
+msgid "For custom browser"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswinvalidmacrosee
 msgid "Invalid macro. See"
 msgstr ""

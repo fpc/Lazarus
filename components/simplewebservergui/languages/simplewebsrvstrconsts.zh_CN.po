@@ -133,6 +133,10 @@ msgstr "可执行"
 msgid "File not found: \"%s\""
 msgstr "未找到文件： \"%s\""
 
+#: simplewebsrvstrconsts.rsswforcustombrowser
+msgid "For custom browser"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswinvalidmacrosee
 msgid "Invalid macro. See"
 msgstr "宏无效，详见"

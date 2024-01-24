@@ -224,6 +224,7 @@ var
   sl: TStringList;
   Options: TSimpleWebServerOptions;
   bk: TSWSBrowserKind;
+  i: Integer;
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
 
@@ -255,6 +256,9 @@ begin
 
     BrowserCmdComboBox.Enabled:=Options.BrowserKind=swsbkCustom;
     sl.Assign(Options.RecentLists[swsrlBrowserCmd]);
+    for i:=sl.Count-1 downto 0 do
+      if Trim(sl[i])='' then
+        sl.Delete(i);
     AddDefault(sl,Options.BrowserCmd);
     SetCombobox(BrowserCmdComboBox,Options.BrowserCmd,sl);
 
@@ -277,6 +281,7 @@ begin
 
   BrowserLabel.Caption:=rsSWBrowserToOpenHTMLPageMacroSWSBrowser;
   BrowserLabel.Hint:= rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
+  BrowseBrowserButton.Hint:=rsSWForCustomBrowser;
 end;
 
 class function TSimpleWebSrvOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
