@@ -1106,6 +1106,7 @@ type
     // parts
     FLineEdit: QLineEditH;
     FTextChangedByValueChanged: Boolean;
+    FMouseCaptureFix: boolean; {issue #40725}
     function GetLineEdit: QLineEditH;
     function LineEditEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   protected
@@ -11778,10 +11779,11 @@ end;
 procedure TQtAbstractSpinBox.grabMouse;
 begin
   if Assigned(LCLObject) and not (csDesigning in LCLObject.ComponentState)
-    and Assigned(LineEdit) then
+    and Assigned(LineEdit) and not FMouseCaptureFix then
       QWidget_grabMouse(LineEdit)
   else
     inherited grabMouse;
+  FMouseCaptureFix := False;
 end;
 
 procedure TQtAbstractSpinBox.setAlignment(const AAlignment: QtAlignment);
@@ -11852,6 +11854,16 @@ begin
       (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier)
   else
     IsDeleteKey := False;
+
+  {issue #40725}
+  if (QEvent_type(Event) >= QEventMouseButtonPress) and (QEvent_type(Event) <= QEventMouseMove) then
+  begin
+    if (QEvent_type(Event) = QEventMouseButtonPress) and (LineEdit <> Sender) then
+      FMouseCaptureFix := True
+    else
+      FMouseCaptureFix := False;
+  end;
+
   Result := inherited EventFilter(Sender, Event);
   {we must pass delete key to qt, qabstractspinbox doesn't like what we do}
   if IsDeleteKey then
