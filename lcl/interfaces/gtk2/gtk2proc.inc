@@ -2308,16 +2308,12 @@ begin
     ShiftState := GTKEventStateToShiftState(AEvent^.state);
     KeyCode := AEvent^.hardware_keycode;
 
-    if (KeyCode = 0)
-    or (KeyCode > High(MKeyCodeInfo))
-    or (MKeyCodeInfo[KeyCode].VKey1 = 0)
-    then begin
+    if not GetKeyCodeInfo(KeyCode, KCInfo) then
+    begin
       // no VKey defined, maybe composed char ?
       CommonKeyData := 0;
     end
     else begin
-      KCInfo := MKeyCodeInfo[KeyCode];
-
       {$IFDEF VerboseKeyboard}
       debugln(['HandleGTKKeyUpDown AEvent^.hardware_keycode=',AEvent^.hardware_keycode,',keyval=',AEvent^.keyval,',group=',AEvent^.group,' KeyCode=',KeyCode,' ',dbgs(ShiftState),' KCInfo.VKey1=',KCInfo.VKey1,',VKey2=',KCInfo.VKey2]);
       {$ENDIF}
@@ -3527,6 +3523,30 @@ end;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 begin
   Result := MVKeyInfo[AVKey];
+end;
+
+{------------------------------------------------------------------------------
+  Function:  GetKeyCodeInfo
+  Params:    HwKeyCode: A PGdkEventKey^.hardware_keycode to get the info for
+             KeyCodeInfo: A Info record
+  Returns:   True if KeyCodeInfo is available
+
+  This function is more a safety to make sure MKeyCodeInfo isn't accessed out of
+  it's bounds
+ ------------------------------------------------------------------------------}
+function GetKeyCodeInfo(HwKeyCode: guint16; out KeyCodeInfo: TKeyCodeInfo): Boolean;
+begin
+  if (HwKeyCode = 0) or (HwKeyCode > High(MKeyCodeInfo)) or
+    (MKeyCodeInfo[HwKeyCode].VKey1 = 0) then
+  begin
+    KeyCodeInfo := Default(TKeyCodeInfo);
+    Result := False;
+  end
+  else
+  begin
+    KeyCodeInfo := MKeyCodeInfo[HwKeyCode];
+    Result := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------

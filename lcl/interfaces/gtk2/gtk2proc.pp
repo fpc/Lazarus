@@ -430,6 +430,13 @@ type
     KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 
+  TKeyCodeInfo = record
+    VKey1: Byte;
+    VKey2: Byte; // second code to be used depending on the type of MULTI_VK flag
+    Flags: Byte; // indicates if Alt | Ctrl | Shift is needed
+                 // extended state
+  end;
+
 const
   GdkKeymap: PGdkKeymap = nil;
   GdkKeyMapChangedID: gulong = 0;
@@ -437,6 +444,7 @@ procedure InitKeyboardTables;
 procedure DoneKeyboardTables;
 procedure DisconnectGdkKeymapChangedSignal;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
+function GetKeyCodeInfo(HwKeyCode: guint16; out KeyCodeInfo: TKeyCodeInfo): Boolean;
 function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
@@ -809,15 +817,6 @@ const
 
   KCINFO_FLAG_SHIFT_XOR_NUM = $40; // second vkey should be used when numlock <>shift
   //KCINFO_FLAG_MULTI_MASK    = $C0; // key has more than one VK
-
-
-type
-  TKeyCodeInfo = record
-    VKey1: Byte;
-    VKey2: Byte; // second code to be used depending on the type of MULTI_VK flag
-    Flags: Byte; // indicates if Alt | Ctrl | Shift is needed
-                 // extended state
-  end;
 
 var
   MKeyCodeInfo: array[Byte] of TKeyCodeInfo;
