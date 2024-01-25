@@ -8951,6 +8951,8 @@ begin
   FreeAndNil(BufferBitmap);
   {$ENDIF}
   SurrenderPrimarySelection;
+  if FFoldedLinesView <> nil then
+    FFoldedLinesView.LinesInWindow := -1; // Mark as "not HandleAllocated"
   inherited DestroyWnd;
 end;
 
