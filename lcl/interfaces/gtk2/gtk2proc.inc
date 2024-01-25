@@ -4654,6 +4654,7 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 
 var
   ClientWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
   ClientWindow: PGdkWindow;
   LCLObject: TObject;
 begin
@@ -4669,7 +4670,11 @@ begin
         LCLObject := GetLCLObject(ClientWidget);
         if (LCLObject is TWinControl) and (TWinControl(LCLObject).Parent = nil)
         and not (csDesigning in TWinControl(LCLObject).ComponentState) then
-          Exit(TWinControl(LCLObject).BoundsRect.TopLeft);
+        begin
+          WidgetInfo := GetWidgetInfo(ClientWidget);
+          if Assigned(WidgetInfo) and (WidgetInfo^.FormBorderStyle = 0) then
+             Exit(TWinControl(LCLObject).BoundsRect.TopLeft);
+        end;
       end;
       {$IFDEF DebugGDK}
       BeginGDKErrorTrap;
