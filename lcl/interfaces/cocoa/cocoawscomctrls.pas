@@ -2071,8 +2071,13 @@ end;
 
 procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState);
+var
+  ALV: TCustomListViewAccess;
 begin
-  // todo: check for custom draw listviews event
+  ALV:= TCustomListViewAccess(self.listView);
+  ALV.Canvas.Handle:= HDC(ctx);
+  ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
+  ALV.Canvas.Handle:= 0;
 end;
 
 procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
