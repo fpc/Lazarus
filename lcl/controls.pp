@@ -126,22 +126,39 @@ type
 
   TCMControlChange = record
     Msg: Cardinal;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
     Control: TControl;
+  {$ifdef cpu64}
+    Inserting: QWordBool;
+  {$else}
     Inserting: LongBool;
+  {$endif}
     Result: LRESULT;
   end;
 
   TCMChanged = record
     Msg: Cardinal;
-    Unused: Longint;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
+    Unused: PtrInt;
     Child: TControl;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
   TCMControlListChange = record
     Msg: Cardinal;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
     Control: TControl;
+  {$ifdef cpu64}
+    Inserting: QWordBool;
+  {$else}
     Inserting: LongBool;
+  {$endif}
     Result: LRESULT;
   end;
 
@@ -153,9 +170,12 @@ type
 
   TCMCancelMode = record
     Msg: Cardinal;
-    Unused: Integer;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
+    Unused: PtrInt;
     Sender: TControl;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
   TCMChildKey = record
