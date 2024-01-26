@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools,
-  TATransformations, TACustomSeries, Types, TADrawUtils, TATypes;
+  Controls, Graphics, Dialogs, Types, TAGraph, TASeries, TASources, TATools,
+  TATransformations, TACustomSeries, TADrawUtils, TATypes;
 
 type
 
@@ -20,12 +20,14 @@ type
     cb3D: TCheckBox;
     cbLineType: TComboBox;
     cbColorEach: TComboBox;
+    cbColorEachLineType: TComboBox;
     cbRotated: TCheckBox;
     cbSorted: TCheckBox;
     catOscillator: TChartAxisTransformations;
     Chart_CustomDrawPointer: TChart;
     ChartGetPointerStyleEvent: TChart;
     Chart_ColorEach: TChart;
+    cbColorEachRotated: TCheckBox;
     lsColorEach: TLineSeries;
     lsGetPointerStyle: TLineSeries;
     pnlColorEach: TPanel;
@@ -67,9 +69,11 @@ type
     procedure cb3DChange(Sender: TObject);
     procedure cbBitmapPointerChange(Sender: TObject);
     procedure cbColorEachChange(Sender: TObject);
+    procedure cbColorEachLineTypeChange(Sender: TObject);
     procedure cbLineTypeChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
     procedure cbSortedChange(Sender: TObject);
+    procedure cbColorEachRotatedChange(Sender: TObject);
     procedure edEveryNthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lsGetPointerStyleGetPointerStyle({%H-}ASender: TChartSeries;
@@ -151,6 +155,11 @@ begin
   lsColorEach.ColorEach := TColorEachMode(cbColorEach.ItemIndex);
 end;
 
+procedure TForm1.cbColorEachLineTypeChange(Sender: TObject);
+begin
+  lsColorEach.LineType := TLineType(cbColorEachLineType.ItemIndex);
+end;
+
 procedure TForm1.cbLineTypeChange(Sender: TObject);
 var
   ls: TLineSeries;
@@ -178,6 +187,12 @@ begin
   for ls in TLineSeriesEnum.Create(chFast) do
     if ls.Source is TListChartSource then
       ls.ListSource.Sorted := cbSorted.Checked;
+end;
+
+procedure TForm1.cbColorEachRotatedChange(Sender: TObject);
+begin
+  lsColorEach.AxisIndexY := Ord(cbColorEachRotated.Checked);
+  lsColorEach.AxisIndexX := 1 - lsColorEach.AxisIndexY;
 end;
 
 procedure TForm1.edEveryNthChange(Sender: TObject);

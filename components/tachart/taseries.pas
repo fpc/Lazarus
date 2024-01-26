@@ -234,7 +234,7 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
-  TLineType = (ltNone, ltFromPrevious, ltFromOrigin, ltStepXY, ltStepYX);
+  TLineType = (ltNone, ltFromPrevious, ltFromOrigin, ltStepXY, ltStepYX, ltStepCenterXY, ltStepCenterYX);
 
   TColorEachMode = (ceNone, cePoint, ceLineBefore, ceLineAfter,
     cePointAndLineBefore, cePointAndLineAfter);
@@ -568,14 +568,31 @@ var
 
   procedure DrawStep(const AP1, AP2: TDoublePoint);
   var
-    m: TDoublePoint;
+    m, m1: TDoublePoint;
   begin
-    if (LineType = ltStepXY) xor IsRotated then
-      m := DoublePoint(AP2.X, AP1.Y)
-    else
-      m := DoublePoint(AP1.X, AP2.Y);
-    CacheLine(AP1, m);
-    CacheLine(m, AP2);
+    if (LineType = ltStepCenterXY) or (LineType = ltStepCenterYX) then
+    begin
+      if (LineType = ltStepCenterXY) xor IsRotated then
+      begin
+        m := DoublePoint((AP1.X + AP2.X) * 0.5, AP1.Y);
+        m1 := DoublePoint(m.X, AP2.Y);
+      end else
+      begin
+        m := DoublePoint(AP1.X, (AP1.Y + AP2.Y) * 0.5);
+        m1 := DoublePoint(AP2.X, m.Y);
+      end;
+      CacheLine(AP1, m);
+      CacheLine(m, m1);
+      Cacheline(m1, AP2);
+    end else
+    begin
+      if (LineType = ltStepXY) xor IsRotated then
+        m := DoublePoint(AP2.X, AP1.Y)
+      else
+        m := DoublePoint(AP1.X, AP2.Y);
+      CacheLine(AP1, m);
+      CacheLine(m, AP2);
+    end;
   end;
 
   procedure DrawDefaultLines;
@@ -607,7 +624,7 @@ var
         for p in FGraphPoints do
           if not IsNan(p) then
             CacheLine(pPrev, p);
-      ltStepXY, ltStepYX:
+      ltStepXY, ltStepYX, ltStepCenterXY, ltStepCenterYX:
         for p in FGraphPoints do begin
           pNan := IsNan(p);
           if not (pNan or pPrevNan) then
@@ -659,7 +676,7 @@ var
     gp: TDoublepoint;
     col, col1, col2: TColor;
     imgPt1, imgPt2: TPoint;
-    pt, origin: TPoint;
+    pt, pt1, pt2, origin: TPoint;
     hasBreak: Boolean;
   begin
     if LineType = ltNone then exit;
@@ -725,6 +742,22 @@ var
                 pt := Point(imgPt1.x, imgPt2.Y);
                 ADrawer.Line(imgPt1, pt);
                 ADrawer.Line(pt, imgPt2);
+              end;
+            ltStepCenterXY, ltStepCenterYX:
+              begin
+                if (LineType = ltStepCenterXY) xor IsRotated then
+                begin
+                  pt1 := Point((imgPt1.x + imgPt2.x) div 2, imgPt1.y);
+                  pt2 := Point(pt1.x, imgPt2.y);
+                end else
+                if (LineType = ltStepCenterYX) xor IsRotated then
+                begin
+                  pt1 := Point(imgPt1.x, (imgPt1.y + imgPt2.y) div 2);
+                  pt2 := Point(imgPt2.x, pt1.y);
+                end;
+                ADrawer.Line(imgPt1, pt1);
+                ADrawer.Line(pt1, pt2);
+                ADrawer.Line(pt2, imgPt2);
               end;
             ltFromOrigin:
               ADrawer.Line(origin, imgPt2);
