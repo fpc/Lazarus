@@ -1608,9 +1608,15 @@ class procedure TCocoaWSCustomListView.SetImageList(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+  spacing: NSSize;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   lTableLV.lclSetImagesInCell(Assigned(AValue));
+
+  if AValue.Height < lTableLV.rowHeight-2 then Exit;
+  spacing:= lTableLV.intercellSpacing;
+  spacing.height:= lTableLV.rowHeight / 3 + 2;
+  lTableLV.setIntercellSpacing( spacing );
 end;
 
 class procedure TCocoaWSCustomListView.SetItemsCount(
