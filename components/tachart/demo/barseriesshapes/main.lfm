@@ -1,17 +1,18 @@
 object Form1: TForm1
   Left = 332
-  Height = 370
+  Height = 384
   Top = 127
-  Width = 495
+  Width = 633
   Caption = 'Form1'
-  ClientHeight = 370
-  ClientWidth = 495
-  LCLVersion = '2.3.0.0'
+  ClientHeight = 384
+  ClientWidth = 633
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
   object Chart1: TChart
     Left = 0
-    Height = 335
+    Height = 349
     Top = 0
-    Width = 495
+    Width = 633
     AxisList = <    
       item
         Grid.Color = clSilver
@@ -32,6 +33,7 @@ object Form1: TForm1
     BackColor = clWhite
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
+    Legend.Visible = True
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -39,36 +41,39 @@ object Form1: TForm1
     )
     Align = alClient
     object BarSeries: TBarSeries
+      Legend.Multiplicity = lmStyle
       AxisIndexX = 1
       AxisIndexY = 0
       BarBrush.Color = clRed
       Depth = 20
       DepthBrightnessDelta = -32
-      Source = RandomChartSource1
+      Marks.LabelFont.Color = clWhite
+      Marks.Visible = False
+      Marks.LabelBrush.Color = clOlive
+      Marks.LinkPen.Color = clGray
       Styles = ChartStyles1
     end
   end
   object Panel1: TPanel
     Left = 0
     Height = 35
-    Top = 335
-    Width = 495
+    Top = 349
+    Width = 633
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 35
-    ClientWidth = 495
+    ClientWidth = 633
     TabOrder = 1
     object lblShape: TLabel
-      AnchorSideLeft.Control = cb3D
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = cmbShape
       AnchorSideTop.Side = asrCenter
-      Left = 52
+      Left = 6
       Height = 15
       Top = 10
       Width = 32
-      BorderSpacing.Left = 12
+      BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Shape'
     end
@@ -76,7 +81,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = lblShape
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 90
+      Left = 44
       Height = 23
       Top = 6
       Width = 164
@@ -92,68 +97,54 @@ object Form1: TForm1
         'pyramid'
         'conical'
       )
-      OnChange = cmbShapeChange
       Style = csDropDownList
       TabOrder = 0
       Text = 'rectangular box'
+      OnChange = cmbShapeChange
     end
     object cb3D: TCheckBox
-      AnchorSideLeft.Control = Panel1
-      AnchorSideTop.Control = cmbShape
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 19
-      Top = 8
-      Width = 34
-      BorderSpacing.Left = 6
-      Caption = '3D'
-      Checked = True
-      OnChange = cb3DChange
-      State = cbChecked
-      TabOrder = 1
-    end
-    object lblLevels: TLabel
       AnchorSideLeft.Control = cmbShape
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cmbShape
       AnchorSideTop.Side = asrCenter
-      Left = 266
-      Height = 15
-      Top = 10
-      Width = 32
-      BorderSpacing.Left = 12
-      Caption = 'Levels'
-    end
-    object seLevels: TSpinEdit
-      AnchorSideLeft.Control = lblLevels
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = cmbShape
-      AnchorSideTop.Side = asrCenter
-      Left = 304
-      Height = 23
-      Top = 6
-      Width = 42
-      Alignment = taRightJustify
-      BorderSpacing.Left = 6
-      MaxValue = 5
-      MinValue = 1
-      OnChange = seLevelsChange
-      TabOrder = 2
-      Value = 3
-    end
-    object cbRotated: TCheckBox
-      AnchorSideLeft.Control = seLevels
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = cmbShape
-      AnchorSideTop.Side = asrCenter
-      Left = 358
+      Left = 220
       Height = 19
       Top = 8
-      Width = 61
+      Width = 32
+      BorderSpacing.Left = 12
+      Caption = '3D'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnChange = cb3DChange
+    end
+    object cbRotated: TCheckBox
+      AnchorSideLeft.Control = cb3D
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cmbShape
+      AnchorSideTop.Side = asrCenter
+      Left = 264
+      Height = 19
+      Top = 8
+      Width = 59
       BorderSpacing.Left = 12
       Caption = 'Rotated'
+      TabOrder = 2
       OnChange = cbRotatedChange
+    end
+    object cbShowLabels: TCheckBox
+      AnchorSideLeft.Control = cbRotated
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 335
+      Height = 19
+      Top = 8
+      Width = 80
+      BorderSpacing.Left = 12
+      Caption = 'Show labels'
       TabOrder = 3
+      OnChange = cbShowLabelsChange
     end
   end
   object RandomChartSource1: TRandomChartSource
@@ -169,18 +160,18 @@ object Form1: TForm1
     Styles = <    
       item
         Brush.Color = clRed
+        Text = 'RED'
+        UseFont = False
       end    
       item
         Brush.Color = clYellow
+        Text = 'YELLOW'
+        UseFont = False
       end    
       item
         Brush.Color = clBlue
-      end    
-      item
-        Brush.Color = clTeal
-      end    
-      item
-        Brush.Color = clFuchsia
+        Text = 'BLUE'
+        UseFont = False
       end>
     Left = 232
     Top = 79

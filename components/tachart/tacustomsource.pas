@@ -95,6 +95,7 @@ type
     XList: TDoubleDynArray;
     YList: TDoubleDynArray;
     procedure CopyFrom(AItem: PChartDataItem);
+    function GetText(AIndex: Integer; ALabelSeparator: Char): String;
     function GetX(AIndex: Integer): Double;
     function GetY(AIndex: Integer): Double;
     procedure SetX(AIndex: Integer; const AValue: Double);
@@ -188,6 +189,7 @@ type
   TCustomChartSource = class(TBasicChartSource)
   strict private
     FErrorBarData: array[0..1] of TChartErrorBarData;
+    FLabelSeparator: Char;
     function GetErrorBarData(AIndex: Integer): TChartErrorBarData;
     function IsErrorBarDataStored(AIndex: Integer): Boolean;
     procedure SetErrorBarData(AIndex: Integer; AValue: TChartErrorBarData);
@@ -225,6 +227,7 @@ type
     procedure SetSortIndex(AValue: Cardinal); virtual;
     procedure SetXCount(AValue: Cardinal); virtual; abstract;
     procedure SetYCount(AValue: Cardinal); virtual;
+    property LabelSeparator: Char read FLabelSeparator write FLabelSeparator default '|';
     property XErrorBarData: TChartErrorBarData index 0 read GetErrorBarData
       write SetErrorBarData stored IsErrorBarDataStored;
     property YErrorBarData: TChartErrorBarData index 1 read GetErrorBarData
@@ -552,6 +555,18 @@ begin
   for i := 0 to High(AItem^.YList) do YList[i] := AItem^.YList[i];
   Text := AItem^.Text;
   Color := AItem^.Color;
+end;
+
+function TChartDataItem.GetText(AIndex: Integer; ALabelSeparator: Char): String;
+var
+  sa: TStringArray;
+begin
+  AIndex := EnsureRange(AIndex, 0, Length(YList));
+  sa := Text.Split(ALabelSeparator);
+  if InRange(AIndex, 0, High(sa)) then
+    Result := sa[AIndex]
+  else
+    Result := Text;
 end;
 
 function TChartDataItem.GetX(AIndex: Integer): Double;
@@ -1013,6 +1028,7 @@ var
   i: Integer;
 begin
   inherited Create(AOwner);
+  FLabelSeparator := '|';
   FSortBy := sbX;
   FSortDir := sdAscending;
   FSortIndex := 0;
@@ -1236,7 +1252,7 @@ function TCustomChartSource.FormatItem(
   const AFormat: String; AIndex, AYIndex: Integer): String;
 begin
   with Item[AIndex]^ do
-    Result := FormatItemXYText(AFormat, Math.IfThen(XCount > 0, X, Double(AIndex)), GetY(AYIndex), Text);
+    Result := FormatItemXYText(AFormat, Math.IfThen(XCount > 0, X, Double(AIndex)), GetY(AYIndex), GetText(AYIndex, FLabelSeparator));
 end;
 
 function TCustomChartSource.FormatItemXYText(

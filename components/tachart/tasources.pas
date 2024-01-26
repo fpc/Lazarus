@@ -64,6 +64,7 @@ type
     property UseSortedAutoDetection;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
+    property LabelSeparator;
     property XCount;
     property XErrorBarData;
     property YCount;
@@ -230,6 +231,7 @@ type
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
     property Sorted: Boolean read FSorted write FSorted default false;
+    property LabelSeparator;
     property XCount;
     property XErrorBarData;
     property YCount;

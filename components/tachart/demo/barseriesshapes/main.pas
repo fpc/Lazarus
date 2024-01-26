@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Spin, TAGraph, TASeries, TASources, TAStyles;
+  Spin, TAGraph, TASeries, TASources, TAStyles, TAChartUtils;
 
 type
 
@@ -18,16 +18,16 @@ type
     cb3D: TCheckBox;
     ChartStyles1: TChartStyles;
     cbRotated: TCheckBox;
+    cbShowLabels: TCheckBox;
     cmbShape: TComboBox;
-    lblLevels: TLabel;
     lblShape: TLabel;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
-    seLevels: TSpinEdit;
     procedure cb3DChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
+    procedure cbShowLabelsChange(Sender: TObject);
     procedure cmbShapeChange(Sender: TObject);
-    procedure seLevelsChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
 
   public
@@ -62,15 +62,44 @@ begin
   end;
 end;
 
+procedure TForm1.cbShowLabelsChange(Sender: TObject);
+begin
+  BarSeries.Marks.Visible := cbShowLabels.Checked;
+end;
+
 procedure TForm1.cmbShapeChange(Sender: TObject);
 begin
   BarSeries.BarShape := TBarShape(cmbShape.ItemIndex);
   cb3DChange(nil);
 end;
 
-procedure TForm1.seLevelsChange(Sender: TObject);
+function RandomString(ALength: Integer): String;
+var
+  i: Integer;
 begin
-  RandomChartSource1.YCount := seLevels.Value;
+  SetLength(Result, ALength);
+  Result[1] := Char(ord('A') + Random(26));
+  for i := 2 to ALength do
+    Result[i] := Char(ord('a') + Random(26));
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i, j: Integer;
+  s: String;
+begin
+  RandSeed := 1;
+  BarSeries.Marks.Style := smsLabel;
+  BarSeries.Marks.YIndex := -1;
+  BarSeries.ListSource.YCount := 3;
+  BarSeries.ListSource.LabelSeparator:= ';';
+  for i := 0 to 5 do
+  begin
+    s := RandomString(1 + Random(4));
+    for j := 2 to BarSeries.ListSource.YCount do
+      s := s + ';' + RandomString(1 + Random(4));
+    BarSeries.AddXY(i, 20+Random*100, [20+Random*100, 20+Random*100], s);
+  end;
 end;
 
 end.

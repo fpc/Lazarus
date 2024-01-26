@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 430
   ClientWidth = 624
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object pcMain: TPageControl
     Left = 0
     Height = 355
@@ -143,12 +143,12 @@ object Form1: TForm1
       Left = 436
       Height = 19
       Top = 8
-      Width = 144
+      Width = 142
       BorderSpacing.Left = 16
       BorderSpacing.Top = 8
       Caption = 'Hide overlapping labels'
-      OnChange = cbHideOverlappingChange
       TabOrder = 0
+      OnChange = cbHideOverlappingChange
     end
     object gbAngles: TGroupBox
       Left = 8
@@ -176,8 +176,8 @@ object Form1: TForm1
         Increment = 5
         MaxValue = 360
         MinValue = -360
-        OnChange = seAxisAngleChange
         TabOrder = 0
+        OnChange = seAxisAngleChange
       end
       object lblAxisAngle: TLabel
         AnchorSideLeft.Control = gbAngles
@@ -216,8 +216,8 @@ object Form1: TForm1
         Increment = 5
         MaxValue = 360
         MinValue = -360
-        OnChange = seSeriesAngleChange
         TabOrder = 1
+        OnChange = seSeriesAngleChange
       end
       object lblTitleAngle: TLabel
         AnchorSideLeft.Control = seSeriesAngle
@@ -245,8 +245,8 @@ object Form1: TForm1
         Increment = 5
         MaxValue = 360
         MinValue = -360
-        OnChange = seTitleAngleChange
         TabOrder = 2
+        OnChange = seTitleAngleChange
       end
       object seCalloutAngle: TSpinEdit
         AnchorSideLeft.Control = lblCalloutAngle
@@ -262,8 +262,8 @@ object Form1: TForm1
         BorderSpacing.Bottom = 8
         Increment = 5
         MaxValue = 120
-        OnChange = seCalloutAngleChange
         TabOrder = 3
+        OnChange = seCalloutAngleChange
       end
       object lblCalloutAngle: TLabel
         AnchorSideLeft.Control = seTitleAngle
@@ -297,10 +297,10 @@ object Form1: TForm1
         'Rounded sides'
         'User-defined'
       )
-      OnChange = cbShapeChange
       Style = csDropDownList
       TabOrder = 2
       Text = 'Rectangle'
+      OnChange = cbShapeChange
     end
   end
   object RandomChartSource1: TRandomChartSource
