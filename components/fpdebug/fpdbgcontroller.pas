@@ -292,6 +292,7 @@ type
     FWorkingDirectory: string;
     // This only holds a reference to the LazDebugger instance
     FProcessConfig: TDbgProcessConfig;
+    function GetCurrentProcess: TDbgProcess;
     function GetCurrentThreadId: Integer;
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
@@ -308,6 +309,7 @@ type
     FCurrentThread: TDbgThread;
     FCommand, FCommandToBeFreed: TDbgControllerCmd;
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
+    function CreateDbgProcess: TDbgProcess;
   public
     constructor Create(AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); virtual;
     destructor Destroy; override;
@@ -338,7 +340,7 @@ type
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
-    property CurrentProcess: TDbgProcess read FCurrentProcess;
+    property CurrentProcess: TDbgProcess read GetCurrentProcess;
     property CurrentThread: TDbgThread read FCurrentThread;
     property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
     property MainProcess: TDbgProcess read FMainProcess;
@@ -1520,8 +1522,12 @@ end;
 
 procedure TDbgController.SetExecutableFilename(const AValue: string);
 begin
+  if assigned(FMainProcess) then
+    raise Exception.Create('ExecutableFilename can not be changed while running');
+
   if FExecutableFilename=AValue then Exit;
   FExecutableFilename:=AValue;
+  FreeAndNil(FCurrentProcess);
 end;
 
 procedure TDbgController.SetEnvironment(AValue: TStrings);
@@ -1533,6 +1539,14 @@ end;
 function TDbgController.GetCurrentThreadId: Integer;
 begin
   Result := FCurrentThread.ID;
+end;
+
+function TDbgController.GetCurrentProcess: TDbgProcess;
+begin
+  if (FCurrentProcess = nil) and (FMainProcess = nil) then
+    FCurrentProcess := CreateDbgProcess;
+
+  Result := FCurrentProcess;
 end;
 
 function TDbgController.GetDefaultContext: TFpDbgLocationContext;
@@ -1631,43 +1645,20 @@ var
 begin
   result := False;
   FLastError := NoError;
-  if assigned(FMainProcess) then
-    begin
+
+  if assigned(FMainProcess) then begin
     DebugLn(DBG_WARNINGS, 'The debuggee is already running');
     Exit;
-    end;
+  end;
 
-  if FExecutableFilename = '' then
-    begin
-    DebugLn(DBG_WARNINGS, 'No filename given to execute.');
+  if FCurrentProcess = nil then
+    FCurrentProcess := CreateDbgProcess;
+  if not Assigned(FCurrentProcess) then
     Exit;
-    end;
-
-  if not FileExists(FExecutableFilename) then
-    begin
-    DebugLn(DBG_WARNINGS, 'File %s does not exist.',[FExecutableFilename]);
-    Exit;
-    end;
-
-  // Get exe info, load classes
-  CheckExecutableAndLoadClasses;
-  if not Assigned(OsDbgClasses) then
-    begin
-    result := false;
-    DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
-    Exit;
-    end;
 
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, MemModel, ProcessConfig);
-  if not Assigned(FCurrentProcess) then
-    begin
-    Result := false;
-    DebugLn(DBG_WARNINGS, 'Error - could not create TDbgProcess');
-    Exit;
-    end;
 
   if AttachToPid <> 0 then
     Result := FCurrentProcess.AttachToInstance(AttachToPid, FLastError)
@@ -2105,6 +2096,36 @@ end;
 function TDbgController.GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
 begin
   Result := FProcessMap.GetData(AProcessIdentifier, AProcess) and (AProcess <> nil);
+end;
+
+function TDbgController.CreateDbgProcess: TDbgProcess;
+begin
+  Result := nil;
+  assert(FMainProcess = nil, 'TDbgController.CreateDbgProcess: FMainProcess = nil');
+
+  if FExecutableFilename = '' then begin
+    DebugLn(DBG_WARNINGS, 'No filename given to execute.');
+    Exit;
+  end;
+  if not FileExists(FExecutableFilename) then begin
+    DebugLn(DBG_WARNINGS, 'File %s does not exist.',[FExecutableFilename]);
+    Exit;
+  end;
+
+  // Get exe info, load classes
+  CheckExecutableAndLoadClasses;
+  if not Assigned(OsDbgClasses) then begin
+    DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
+    Exit;
+  end;
+
+  Result := OSDbgClasses.DbgProcessClass.Create(
+    FExecutableFilename, OsDbgClasses, MemManager, MemModel, ProcessConfig);
+
+  if not Assigned(Result) then begin
+    DebugLn(DBG_WARNINGS, 'Error - could not create TDbgProcess');
+    Exit;
+  end;
 end;
 
 constructor TDbgController.Create(AMemManager: TFpDbgMemManager;
