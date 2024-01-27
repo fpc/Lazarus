@@ -125,6 +125,7 @@ type
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    ScrollBox1: TScrollBox;
     UseConsoleSizeCheckBox: TCheckBox;
     UseConsoleBufferCheckBox: TCheckBox;
     edConsolePosTop: TSpinEdit;
