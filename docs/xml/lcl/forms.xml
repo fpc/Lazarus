@@ -13598,6 +13598,11 @@ passed as an argument to methods in a control.
 <element name="TCMHintShow.Msg">
 <short>Cardinal value representing the control message.</short>
 </element>
+<element name="TCMHintShow.UnusedMsg">
+<short>
+Padding added for alignment on 64-bit platforms.
+</short>
+</element>
 <element name="TCMHintShow.Reserved">
 <short>Reserved parameter values for the message.</short>
 </element>
@@ -13618,6 +13623,7 @@ TCMHintShowPause is not used in the current LCL implementation.
 <seealso/>
 </element>
 <element name="TCMHintShowPause.Msg"/>
+<element name="TCMHintShowPause.UnusedMsg"/>
 <element name="TCMHintShowPause.WasActive"/>
 <element name="TCMHintShowPause.Pause"/>
 <element name="TCMHintShowPause.Result"/>
