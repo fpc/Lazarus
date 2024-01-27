@@ -4854,7 +4854,9 @@ end;
 
 class function TFpDebugDebugger.SupportedFeatures: TDBGFeatures;
 begin
-  {$IF defined(windows) or defined(linux)}
+  {$IF (defined(windows) or defined(linux)) and
+       (defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64))
+  }
   Result := [dfEvalFunctionCalls, dfThreadSuspension];
   {$ELSE}
   Result := [dfNotSuitableForOsArch];
