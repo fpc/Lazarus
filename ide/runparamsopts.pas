@@ -59,7 +59,8 @@ uses
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE
-  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts, BaseDebugManager;
+  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
+  {$IFnDef LCLNoGui}, BaseDebugManager {$ENDIF} ;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -838,12 +839,14 @@ end;
 
 procedure TRunParamsOptsDlg.UseConsolePosCheckBoxChange(Sender: TObject);
 begin
+{$IFnDef LCLNoGui}
   ConsoleSizeWarnLabel.Visible :=
     ( UseConsolePosCheckBox.Checked or
       UseConsoleSizeCheckBox.Checked or
       UseConsoleBufferCheckBox.Checked
     ) and
     not (dfConsoleWinPos in DebugBoss.DebuggerClass.SupportedFeatures);
+{$ENDIF}
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
