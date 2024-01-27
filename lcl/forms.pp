@@ -1330,6 +1330,9 @@ type
   // application hint stuff
   TCMHintShow = record
     Msg: Cardinal;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
     Reserved: WPARAM;
     HintInfo: PHintInfo;
     Result: LRESULT;
@@ -1337,7 +1340,10 @@ type
 
   TCMHintShowPause = record
     Msg: Cardinal;
-    WasActive: Integer;
+  {$ifdef cpu64}
+    UnusedMsg: Cardinal;
+  {$endif}
+    WasActive: PtrInt;
     Pause: PInteger;
     Result: LRESULT;
   end;
