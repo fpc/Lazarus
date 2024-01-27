@@ -5,10 +5,10 @@ unit pas2jscompedits;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf, PropEdits, ComponentEditors, fpjsondataset, dbpropedits,
-  db, stub.htmlfragment, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
+  Classes, SysUtils, ProjectIntf, PropEdits, ComponentEditors, dbpropedits,
+  db, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
   stub.webwidget, stub.bootstrapwidgets, stub.bootstraptablewidget, stub.bulmawidgets,
-  stub.templateloader, stub.jsondataset, stub.dbwebwidget, stub.dbhtmlwidgets,
+  stub.templateloader, stub.dbhtmlwidgets,
   stub.fprpcclient;
 
 Type
@@ -204,7 +204,7 @@ implementation
 
 uses
   // LCL/Lazarus
-  Types, IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
+  Types, IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, IDEExternToolIntf, Menuintf,
   idehtmltools,
   frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, frmpas2jsedithtml, p2jselementactions,
   frmcreaterpcserviceclient, frmaddmissingtablecolumns;

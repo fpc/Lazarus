@@ -190,8 +190,6 @@ Type
 
 implementation
 
-uses stub.web;
-
 { TRPCCustomService }
 
 procedure TRPCCustomService.SetClient(AValue: TRPCClient);

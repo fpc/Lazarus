@@ -136,7 +136,7 @@ var
 begin
   aComp:=aComp.Owner;
   aCount:=0;
-  SetLength(Result,aComp.ComponentCount);
+  SetLength(Result{%H-},aComp.ComponentCount);
   For I:=0 to aComp.ComponentCount-1 do
     if aComp.Components[i] is TDatasource then
       begin

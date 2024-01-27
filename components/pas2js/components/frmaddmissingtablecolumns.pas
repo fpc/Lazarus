@@ -5,7 +5,7 @@ unit frmaddmissingtablecolumns;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, ValEdit, Grids, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, Grids, StdCtrls,
   db, types, stub.bootstraptablewidget;
 
 type
@@ -236,7 +236,7 @@ begin
   For I:=1 to SGFields.RowCount-1 do
     if SGFields.Cells[idxAdd,I]='1' then
       Inc(Count);
-  SetLength(Result,Count);
+  SetLength(Result{%H-},Count);
   Count:=0;
   For I:=1 to SGFields.RowCount-1 do
     if SGFields.Cells[idxAdd,I]='1' then
@@ -311,7 +311,6 @@ end;
 class function TAddMissingTableColumsForm.GetFieldProps(aTable: TDBBootstrapTableWidget; const aFieldName : String; out aProps: TFieldProps): Boolean;
 var
   DS : TDataset;
-  I : Integer;
   FD : TFieldDef;
   F : TField;
 

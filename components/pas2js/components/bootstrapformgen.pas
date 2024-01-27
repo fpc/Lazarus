@@ -28,7 +28,6 @@ Type
   TBootstrapFormGenerator = class(TDataFormGenerator)
   private
     FBottomMargin: Integer;
-    FEditlColWidth: Integer;
     FHorizontalForm: Boolean;
     FLabelColWidth: Integer;
     FUseInputGroup: Boolean;
@@ -86,12 +85,14 @@ begin
     S:='mb-'+IntToStr(FBottomMargin);
   Result:=Result+Indent+Format('<div class="row %s">',[S])+LF;
   IncIndent;
+  if aEntry=nil then ;
 end;
 
 function TBootstrapFormGenerator.GetRowColEnd(aEntry: TDataFieldEntryItem): String;
 begin
   Decindent;
   Result:=Indent+'</div> <!-- .row -->'+Lf;
+  if aEntry=nil then ;
 end;
 
 constructor TBootstrapFormGenerator.Create(aOwner: TComponent);
@@ -175,12 +176,14 @@ function TBootstrapFormGenerator.GetInputGroup(aEntry : TDataFieldEntryItem): St
 begin
   Result:=Indent+'<div class="input-group">'+LF;
   IncIndent;
+  if aEntry=nil then ;
 end;
 
 function TBootstrapFormGenerator.GetInputGroupEnd(aEntry : TDataFieldEntryItem): String;
 begin
   DecIndent;
   Result:=Indent+'</div> <!-- .input-group -->'+LF;
+  if aEntry=nil then ;
 end;
 
 function TBootstrapFormGenerator.GenerateFieldHTML(aEntry: TDataFieldEntryItem): String;
