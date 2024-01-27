@@ -912,10 +912,7 @@ representing the arguments and the result for a Control Change Message.
 <short>Control to receive the change message.</short>
 </element>
 <element name="TCMControlChange.Inserting">
-<short>
-Indicates if the control message is an insert operation. QwordBool for 64-bit 
-platforms, LongBool for other platforms.
-</short>
+<short>Indicates if the control message is an insert operation.</short>
 </element>
 <element name="TCMControlChange.Result">
 <short>Result for the control change message.</short>
@@ -925,7 +922,6 @@ platforms, LongBool for other platforms.
 <short>Not used in the current LCL implementation.</short>
 </element>
 <element name="TCMChanged.Msg"/>
-<element name="TCMChanged.UnusedMsg"/>
 <element name="TCMChanged.Unused"/>
 <element name="TCMChanged.Child"/>
 <element name="TCMChanged.Result"/>
@@ -934,7 +930,6 @@ platforms, LongBool for other platforms.
 <short>Not used in the current LCL implementation.</short>
 </element>
 <element name="TCMControlListChange.Msg"/>
-<element name="TCMControlListChange.UnusedMsg"/>
 <element name="TCMControlListChange.Control"/>
 <element name="TCMControlListChange.Inserting"/>
 <element name="TCMControlListChange.Result"/>
@@ -978,11 +973,6 @@ Contains information representing a CM_CANCELMODE control message.
 <element name="TCMCancelMode.Msg">
 <short>
 Message constant.
-</short>
-</element>
-<element name="TCMCancelMode.UnusedMsg">
-<short>
-Padding for alignment on 64-bit platforms.
 </short>
 </element>
 <element name="TCMCancelMode.Unused">
