@@ -39,6 +39,11 @@ msgstr "Произвольное имя для подкаталога в адр�
 msgid "Binding of socket failed"
 msgstr "Не удалось привязать сокет"
 
+#: simplewebsrvstrconsts.rsswbrowserfilenotfound
+#, object-pascal-format
+msgid "Browser file not found: \"%s\""
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr "Браузер для открытия страницы HTML, макрос $(SWSBrowser)"
@@ -169,6 +174,10 @@ msgstr "Расположение"
 #: simplewebsrvstrconsts.rsswlocationalreadyused
 msgid "Location already used."
 msgstr "Расположение уже используется."
+
+#: simplewebsrvstrconsts.rsswmissingbrowserfilename
+msgid "Missing browser filename"
+msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
 msgid "missing controller"

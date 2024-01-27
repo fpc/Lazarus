@@ -292,7 +292,8 @@ begin
           try
             SplitCmdLineParams(Cmd,Params);
             if Params.Count=0 then begin
-              if IDEMessageDialog(rsSWError, 'Missing browser filename'+sLineBreak +
+              if IDEMessageDialog(rsSWError, rsSWMissingBrowserFilename+
+                sLineBreak +
                 rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbIgnore,mbCancel])=mrIgnore then
                 exit(true)
               else
@@ -303,7 +304,8 @@ begin
               ExeFilename:=FindDefaultExecutablePath(ExeFilename);
             end;
             if not FileExists(ExeFilename) then begin
-              if IDEMessageDialog(rsSWError, 'Browser file not found "'+Params[0]+'"'+sLineBreak +
+              if IDEMessageDialog(rsSWError, Format(rsSWBrowserFileNotFound, [
+                Params[0]])+sLineBreak +
                 rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbIgnore,mbCancel])=mrIgnore then
                 exit(true)
               else

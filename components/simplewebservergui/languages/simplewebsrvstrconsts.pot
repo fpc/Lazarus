@@ -29,6 +29,11 @@ msgstr ""
 msgid "Binding of socket failed"
 msgstr ""
 
+#: simplewebsrvstrconsts.rsswbrowserfilenotfound
+#, object-pascal-format
+msgid "Browser file not found: \"%s\""
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr ""
@@ -158,6 +163,10 @@ msgstr ""
 
 #: simplewebsrvstrconsts.rsswlocationalreadyused
 msgid "Location already used."
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswmissingbrowserfilename
+msgid "Missing browser filename"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller

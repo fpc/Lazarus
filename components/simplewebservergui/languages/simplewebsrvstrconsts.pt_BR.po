@@ -40,6 +40,11 @@ msgstr "Um nome arbitrário para a subpasta URL"
 msgid "Binding of socket failed"
 msgstr "Ligação ao soquete falhou"
 
+#: simplewebsrvstrconsts.rsswbrowserfilenotfound
+#, object-pascal-format
+msgid "Browser file not found: \"%s\""
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr "Navegador para abrir a página HTML, macro $(SWSBrowser)"
@@ -170,6 +175,10 @@ msgstr "Local"
 #: simplewebsrvstrconsts.rsswlocationalreadyused
 msgid "Location already used."
 msgstr "Local já está em uso."
+
+#: simplewebsrvstrconsts.rsswmissingbrowserfilename
+msgid "Missing browser filename"
+msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
 msgid "missing controller"

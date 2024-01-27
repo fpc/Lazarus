@@ -48,6 +48,8 @@ resourcestring
     +'on disk, usually where the server fetches files from';
   rsSWAddLocation = 'Add Location';
   rsSWError = 'Error';
+  rsSWBrowserFileNotFound = 'Browser file not found: "%s"';
+  rsSWMissingBrowserFilename = 'Missing browser filename';
   rsSWThereIsAlreadyAServerOnPortOriginPath = 'There is already a server on '
     +'port %s:%sOrigin: %sPath: %s';
   rsSWErrorFindingFreeTCPPort = 'Error finding free TCP port:';

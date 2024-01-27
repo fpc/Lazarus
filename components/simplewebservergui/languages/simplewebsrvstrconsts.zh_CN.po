@@ -39,6 +39,11 @@ msgstr "URL 子文件夹的任意名称"
 msgid "Binding of socket failed"
 msgstr "套接字绑定失败"
 
+#: simplewebsrvstrconsts.rsswbrowserfilenotfound
+#, object-pascal-format
+msgid "Browser file not found: \"%s\""
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr "打开 HTML 页面的浏览器，宏 $(SWSBrowser)"
@@ -169,6 +174,10 @@ msgstr "路径"
 #: simplewebsrvstrconsts.rsswlocationalreadyused
 msgid "Location already used."
 msgstr "路径已被使用。"
+
+#: simplewebsrvstrconsts.rsswmissingbrowserfilename
+msgid "Missing browser filename"
+msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
 msgid "missing controller"
