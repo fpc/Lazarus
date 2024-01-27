@@ -10,7 +10,7 @@ interface
 uses
   Classes, SysUtils, Controls, Graphics, Dialogs, StdCtrls,
   FileUtil, LazFileUtils, IDEOptEditorIntf, IDEDialogs,
-  FileProcs, IDEOptionsIntf,
+  FileProcs, IDEOptionsIntf, MacroIntf,
   SimpleWebSrvStrConsts, SimpleWebSrvOptions, SimpleWebSrvController;
 
 type
@@ -33,6 +33,7 @@ type
     ServerExeComboBox: TComboBox;
     ServerExeLabel: TLabel;
     procedure BrowseBrowserButtonClick(Sender: TObject);
+    procedure BrowserCmdComboBoxChange(Sender: TObject);
     procedure BrowserKindComboBoxSelect(Sender: TObject);
     procedure ServerExeBrowseButtonClick(Sender: TObject);
   private
@@ -40,9 +41,12 @@ type
     procedure SetCombobox(aComboBox: TComboBox; const aValue: string; ListItems: TStrings);
     procedure SetComboBoxText(aComboBox: TComboBox; const aValue: string);
     procedure BrowserKindComboBoxChanged;
+    procedure SetRecentList(Options: TSimpleWebServerOptions; List: TSWSRecentList;
+      aComboBox: TComboBox; const aValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function Check: Boolean; override;
     function GetTitle: String; override;
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -165,6 +169,11 @@ begin
   end;
 end;
 
+procedure TSimpleWebSrvOptsFrame.BrowserCmdComboBoxChange(Sender: TObject);
+begin
+
+end;
+
 procedure TSimpleWebSrvOptsFrame.SetCombobox(aComboBox: TComboBox;
   const aValue: string; ListItems: TStrings);
 begin
@@ -195,6 +204,42 @@ begin
   BrowserCmdComboBox.Enabled:=Kind=swsbkCustom;
 end;
 
+procedure TSimpleWebSrvOptsFrame.SetRecentList(
+  Options: TSimpleWebServerOptions; List: TSWSRecentList; aComboBox: TComboBox;
+  const aValue: string);
+var
+  i: Integer;
+  sl: TStringList;
+begin
+  sl:=TStringList.Create;
+  try
+    sl.Assign(aComboBox.Items);
+    i:=sl.Count-1;
+    while i>=0 do
+    begin
+      if sl[i]=aValue then
+      begin
+        if i=0 then exit;
+        sl.Move(i,0);
+        break;
+      end;
+      dec(i);
+    end;
+    if i<0 then
+    begin
+      sl.Insert(0,aValue);
+      if sl.Count>30 then
+        sl.Delete(sl.Count-1);
+    end;
+
+    aComboBox.Items.Assign(sl);
+    aComboBox.ItemIndex:=0;
+  finally
+    Options.RecentLists[List]:=sl;
+    sl.Free;
+  end;
+end;
+
 constructor TSimpleWebSrvOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -205,6 +250,71 @@ destructor TSimpleWebSrvOptsFrame.Destroy;
 begin
   FreeAndNil(FOldOptions);
   inherited Destroy;
+end;
+
+function TSimpleWebSrvOptsFrame.Check: Boolean;
+var
+  NewBrowserKind: TSWSBrowserKind;
+  NewBrowserCmd, Cmd: TCaption;
+  Options: TSimpleWebServerOptions;
+  Params: TStringList;
+  ExeFilename: String;
+begin
+  Result:=inherited Check;
+  if not Result then exit;
+
+  Options:=SimpleWebServerController.Options;
+  NewBrowserKind:=StrToBrowserKind(BrowserKindComboBox.Text);
+  NewBrowserCmd:=BrowserCmdComboBox.Text;
+  SetRecentList(Options,swsrlBrowserCmd,BrowserCmdComboBox,NewBrowserCmd);
+
+  if (NewBrowserKind<>Options.BrowserKind) or (NewBrowserCmd<>Options.BrowserCmd) then
+  begin
+    // browser changed -> check
+    case NewBrowserKind of
+      swsbkDefault: ;
+      swsbkFirefox: ;
+      swsbkChrome: ;
+      swsbkOpera: ;
+      swsbkVivaldi: ;
+      swsbkCustom:
+        begin
+          Cmd:=SimpleWebServerController.SubstituteURLMacro(NewBrowserCmd,'Test.html');
+          if not IDEMacros.SubstituteMacros(Cmd) then
+          begin
+            if IDEMessageDialog(rsSWError, rsSWInvalidMacroSee+sLineBreak +
+              rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbIgnore,mbCancel])=mrIgnore then
+              exit(true)
+            else
+              exit(false);
+          end;
+          Params:=TStringList.Create;
+          try
+            SplitCmdLineParams(Cmd,Params);
+            if Params.Count=0 then begin
+              if IDEMessageDialog(rsSWError, 'Missing browser filename'+sLineBreak +
+                rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbIgnore,mbCancel])=mrIgnore then
+                exit(true)
+              else
+                exit(false);
+            end;
+            ExeFilename:=Params[0];
+            if not FilenameIsAbsolute(ExeFilename) then begin
+              ExeFilename:=FindDefaultExecutablePath(ExeFilename);
+            end;
+            if not FileExists(ExeFilename) then begin
+              if IDEMessageDialog(rsSWError, 'Browser file not found "'+Params[0]+'"'+sLineBreak +
+                rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbIgnore,mbCancel])=mrIgnore then
+                exit(true)
+              else
+                exit(false);
+            end;
+          finally
+            Params.Free;
+          end;
+        end;
+    end;
+  end;
 end;
 
 function TSimpleWebSrvOptsFrame.GetTitle: String;
@@ -225,6 +335,7 @@ var
   Options: TSimpleWebServerOptions;
   bk: TSWSBrowserKind;
   i: Integer;
+  s: String;
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
 
@@ -259,9 +370,11 @@ begin
     for i:=sl.Count-1 downto 0 do
       if Trim(sl[i])='' then
         sl.Delete(i);
-    AddDefault(sl,Options.BrowserCmd);
-    SetCombobox(BrowserCmdComboBox,Options.BrowserCmd,sl);
-
+    s:=Options.BrowserCmd;
+    if Trim(s)='' then
+      s:=SWSDefaultBrowserCmd;
+    AddDefault(sl,s);
+    SetCombobox(BrowserCmdComboBox,s,sl);
   finally
     sl.Free;
   end;
@@ -292,45 +405,23 @@ end;
 procedure TSimpleWebSrvOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   Options: TSimpleWebServerOptions;
-
-  procedure SetRecentList(List: TSWSRecentList; Items: TStrings; const aValue: string);
-  var
-    i: Integer;
-  begin
-    i:=Items.Count-1;
-    while i>=0 do
-    begin
-      if Items[i]=aValue then
-      begin
-        Items.Move(i,0);
-        break;
-      end;
-      dec(i);
-    end;
-    if i<0 then
-    begin
-      Items.Insert(0,aValue);
-      if Items.Count>30 then
-        Items.Delete(Items.Count-1);
-    end;
-    Options.RecentLists[List]:=Items;
-  end;
-
 var
   s: string;
   i: LongInt;
 begin
+  if not (AOptions is SupportedOptionsClass) then exit;
+
   Options:=SimpleWebServerController.Options;
 
   s:=Trim(ServerExeComboBox.Text);
   if s<>'' then
     Options.ServerExe:=s;
-  SetRecentList(swsrlServerExe,ServerExeComboBox.Items,Options.ServerExe);
+  SetRecentList(Options,swsrlServerExe,ServerExeComboBox,Options.ServerExe);
 
   s:=Trim(ServerAddrComboBox.Text);
   if s<>'' then
     Options.ServerAddr:=s;
-  SetRecentList(swsrlServerAddr,ServerAddrComboBox.Items,Options.ServerAddr);
+  SetRecentList(Options,swsrlServerAddr,ServerAddrComboBox,Options.ServerAddr);
 
   Options.BindAny:=BindAnyCheckBox.Checked;
 
@@ -338,11 +429,11 @@ begin
   i:=StrToIntDef(s,0);
   if (i>0) and (i<=65535) then
     Options.ServerPort:=i;
-  SetRecentList(swsrlServerPort,PortComboBox.Items,IntToStr(Options.ServerPort));
+  SetRecentList(Options,swsrlServerPort,PortComboBox,IntToStr(Options.ServerPort));
 
   Options.BrowserKind:=StrToBrowserKind(BrowserKindComboBox.Text);
   Options.BrowserCmd:=BrowserCmdComboBox.Text;
-  SetRecentList(swsrlBrowserCmd,BrowserCmdComboBox.Items,Options.BrowserCmd);
+  SetRecentList(Options,swsrlBrowserCmd,BrowserCmdComboBox,Options.BrowserCmd);
 
   if Options.Modified then
   begin

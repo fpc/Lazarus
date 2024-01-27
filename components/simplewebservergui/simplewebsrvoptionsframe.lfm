@@ -196,6 +196,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     ItemHeight = 0
     TabOrder = 7
     Text = 'BrowserCmdComboBox'
+    OnChange = BrowserCmdComboBoxChange
   end
   object BrowseBrowserButton: TButton
     AnchorSideTop.Control = BrowserCmdComboBox
