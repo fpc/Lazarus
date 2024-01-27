@@ -4177,16 +4177,14 @@ begin
 
   // project change build mode
   ACmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
-  AHint := lisChangeBuildMode+' '+KeyValuesToCaptionStr(ACmd.ShortcutA,ACmd.ShortcutB,'(');
+  AHint := lisChangeBuildMode;
   if Assigned(Project1) then
     AHint := AHint + sLineBreak + Project1.ActiveBuildMode.GetCaption;
   ACmd.Hint := AHint;
-  if ProjInspector<>nil then
-    ProjInspector.OptionsBitBtn.Hint := AHint;    //ProjInspector.UpdateTitle;
 
   // run
   ACmd := IDECommandList.FindIDECommand(ecRun);
-  AHint := lisRun+' '+KeyValuesToCaptionStr(ACmd.ShortcutA,ACmd.ShortcutB,'(');
+  AHint := lisRun;
   if Assigned(Project1) and Assigned(Project1.RunParameterOptions.GetActiveMode) then
     AHint := AHint + sLineBreak + Project1.RunParameterOptions.GetActiveMode.Name;
   ACmd.Hint := AHint;
