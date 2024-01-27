@@ -7539,6 +7539,26 @@ begin
     Process.Executable := ExeFile;
     Process.Parameters.Assign(Params);
     Process.CurrentDirectory := RunWorkingDirectory;
+    {$IFDEF Windows}
+    ARunMode := Project1.RunParameterOptions.GetActiveMode;
+    if ARunMode <> nil then begin
+      if ARunMode.UseConsoleWinPos then begin
+        Process.StartupOptions := Process.StartupOptions + [suoUsePosition];
+        Process.WindowLeft    := ARunMode.ConsoleWinPos.X;
+        Process.WindowTop     := ARunMode.ConsoleWinPos.Y;
+      end;
+      if ARunMode.UseConsoleWinSize then begin
+        Process.StartupOptions := Process.StartupOptions + [suoUseSize];
+        Process.WindowWidth   := ARunMode.ConsoleWinSize.X;
+        Process.WindowHeight  := ARunMode.ConsoleWinSize.Y;
+      end;
+      if ARunMode.UseConsoleWinBuffer then begin
+        Process.StartupOptions := Process.StartupOptions + [suoUseCountChars];
+        Process.WindowColumns := ARunMode.ConsoleWinBuffer.X;
+        Process.WindowRows    := ARunMode.ConsoleWinBuffer.Y;
+      end;
+    end;
+    {$ENDIF}
 
     if MainBuildBoss.GetProjectUsesAppBundle
     and (FileExistsUTF8(ExeFile) or DirectoryExistsUTF8(ExeFile))

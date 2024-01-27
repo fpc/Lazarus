@@ -348,6 +348,8 @@ type
     property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
   end;
 
+  { TAbstractRunParamsOptionsMode }
+
   TAbstractRunParamsOptionsMode = class(TPersistent)
   private
     fName: string;
@@ -360,6 +362,12 @@ type
     fLaunchingApplicationPathPlusParams: string;
     fWorkingDirectory: string;
     fDisplay: string;
+    FUseConsoleWinPos: boolean;
+    FUseConsoleWinSize: boolean;
+    FUseConsoleWinBuffer: boolean;
+    FConsoleWinPos: TPoint;
+    FConsoleWinSize: TPoint;
+    FConsoleWinBuffer: TPoint;
 
     // environment options
     fUserOverrides: TStringList;
@@ -391,6 +399,13 @@ type
     property UserOverrides: TStringList Read fUserOverrides;
     property IncludeSystemVariables: boolean
       Read fIncludeSystemVariables Write fIncludeSystemVariables;
+    // WindowBounds
+    property UseConsoleWinPos: boolean read FUseConsoleWinPos write FUseConsoleWinPos;
+    property UseConsoleWinSize: boolean read FUseConsoleWinSize write FUseConsoleWinSize;
+    property UseConsoleWinBuffer: boolean read FUseConsoleWinBuffer write FUseConsoleWinBuffer;
+    property ConsoleWinPos: TPoint read FConsoleWinPos write FConsoleWinPos;
+    property ConsoleWinSize: TPoint read FConsoleWinSize write FConsoleWinSize;
+    property ConsoleWinBuffer: TPoint read FConsoleWinBuffer write FConsoleWinBuffer;
   end;
 
   { TAbstractRunParamsOptions }
@@ -821,6 +836,12 @@ begin
     ADest.LaunchingApplicationPathPlusParams := LaunchingApplicationPathPlusParams;
     ADest.WorkingDirectory := WorkingDirectory;
     ADest.Display := Display;
+    ADest.UseConsoleWinPos    := UseConsoleWinPos;
+    ADest.UseConsoleWinSize   := UseConsoleWinSize;
+    ADest.UseConsoleWinBuffer := UseConsoleWinBuffer;
+    ADest.ConsoleWinPos    := ConsoleWinPos;
+    ADest.ConsoleWinSize   := ConsoleWinSize;
+    ADest.ConsoleWinBuffer := ConsoleWinBuffer;
 
     ADest.UserOverrides.Assign(UserOverrides);
     ADest.IncludeSystemVariables := IncludeSystemVariables;
@@ -839,6 +860,12 @@ begin
   fWorkingDirectory := '';
   fUseDisplay := False;
   fDisplay    := ':0';
+  FUseConsoleWinPos := False;
+  FUseConsoleWinSize := False;
+  FUseConsoleWinBuffer := False;
+  FConsoleWinPos := Default(TPoint);
+  FConsoleWinSize := Default(TPoint);
+  FConsoleWinBuffer := Default(TPoint);
 
   // environment options
   fUserOverrides.Clear;

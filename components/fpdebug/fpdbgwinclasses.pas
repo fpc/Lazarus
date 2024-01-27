@@ -744,6 +744,21 @@ begin
     FProcProcess.Parameters:=AParams;
     FProcProcess.Environment:=AnEnvironment;
     FProcProcess.CurrentDirectory:=AWorkingDirectory;
+    if Config.UseConsoleWinPos then begin
+      FProcProcess.StartupOptions := FProcProcess.StartupOptions + [suoUsePosition];
+      FProcProcess.WindowLeft   := Cardinal(Config.ConsoleWinPos.X);
+      FProcProcess.WindowTop    := Cardinal(Config.ConsoleWinPos.Y);
+    end;
+    if Config.UseConsoleWinSize then begin
+      FProcProcess.StartupOptions := FProcProcess.StartupOptions + [suoUseSize];
+      FProcProcess.WindowWidth    := Cardinal(Config.ConsoleWinSize.X);
+      FProcProcess.WindowHeight   := Cardinal(Config.ConsoleWinSize.Y);
+    end;
+    if Config.UseConsoleWinBuffer then begin
+      FProcProcess.StartupOptions := FProcProcess.StartupOptions + [suoUseCountChars];
+      FProcProcess.WindowColumns := Cardinal(Config.ConsoleWinBuffer.X);
+      FProcProcess.WindowRows    := Cardinal(Config.ConsoleWinBuffer.Y);
+    end;
     FProcProcess.Execute;
 
     Init(FProcProcess.ProcessID, 0);

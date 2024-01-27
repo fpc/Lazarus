@@ -7,11 +7,11 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   Caption = 'RunParamsOptsDlg'
   ClientHeight = 465
   ClientWidth = 531
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object Notebook: TPageControl
     Left = 0
     Height = 355
@@ -110,8 +110,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           BorderSpacing.Right = 6
           BorderSpacing.Bottom = 6
           Caption = 'UseLaunchingApplicationCheckBox'
-          OnChange = UseLaunchingApplicationCheckBoxChange
           TabOrder = 0
+          OnChange = UseLaunchingApplicationCheckBoxChange
         end
         object UseLaunchingApplicationComboBox: TComboBox
           Left = 6
@@ -153,8 +153,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = 'HostApplicationBrowseBtn'
-          OnClick = HostApplicationBrowseBtnClick
           TabOrder = 1
+          OnClick = HostApplicationBrowseBtnClick
         end
         object HostApplicationEdit: TEdit
           AnchorSideLeft.Control = HostApplicationGroupBox
@@ -197,8 +197,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Caption = 'WorkingDirectoryBtn'
-          OnClick = WorkingDirectoryBtnClick
           TabOrder = 1
+          OnClick = WorkingDirectoryBtnClick
         end
         object WorkingDirectoryComboBox: TComboBox
           AnchorSideLeft.Control = WorkingDirectoryGroupBox
@@ -213,6 +213,125 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           ItemHeight = 15
           TabOrder = 0
           Text = 'WorkingDirectoryComboBox'
+        end
+      end
+      object ConsoleWinSizeGroupBox: TGroupBox
+        Left = 0
+        Height = 128
+        Top = 328
+        Width = 523
+        Align = alTop
+        Anchors = [akTop]
+        AutoSize = True
+        Caption = 'ConsoleWinSizeGroupBox'
+        ClientHeight = 108
+        ClientWidth = 519
+        TabOrder = 5
+        object ConsoleSizePanel: TPanel
+          Left = 0
+          Height = 93
+          Top = 0
+          Width = 519
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = '0'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.HorizontalSpacing = 6
+          ChildSizing.VerticalSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 3
+          ClientHeight = 93
+          ClientWidth = 519
+          TabOrder = 0
+          object UseConsolePosCheckBox: TCheckBox
+            Left = 6
+            Height = 23
+            Top = 6
+            Width = 242
+            Caption = 'UseConsolePosCheckBox'
+            TabOrder = 0
+            OnChange = UseConsolePosCheckBoxChange
+          end
+          object edConsolePosLeft: TSpinEdit
+            Left = 254
+            Height = 23
+            Top = 6
+            Width = 127
+            MaxValue = 20000
+            TabOrder = 2
+          end
+          object edConsolePosTop: TSpinEdit
+            Left = 387
+            Height = 23
+            Top = 6
+            Width = 126
+            MaxValue = 20000
+            TabOrder = 1
+          end
+          object UseConsoleSizeCheckBox: TCheckBox
+            Left = 6
+            Height = 23
+            Top = 35
+            Width = 242
+            Caption = 'UseConsoleSizeCheckBox'
+            TabOrder = 3
+            OnChange = UseConsolePosCheckBoxChange
+          end
+          object edConsoleSizeWidth: TSpinEdit
+            Left = 254
+            Height = 23
+            Top = 35
+            Width = 127
+            MaxValue = 20000
+            TabOrder = 5
+          end
+          object edConsoleSizeHeight: TSpinEdit
+            Left = 387
+            Height = 23
+            Top = 35
+            Width = 126
+            MaxValue = 20000
+            TabOrder = 4
+          end
+          object UseConsoleBufferCheckBox: TCheckBox
+            Left = 6
+            Height = 23
+            Top = 64
+            Width = 242
+            Caption = 'UseConsoleBufferCheckBox'
+            TabOrder = 6
+            OnChange = UseConsolePosCheckBoxChange
+          end
+          object edConsoleBufferColumns: TSpinEdit
+            Left = 254
+            Height = 23
+            Top = 64
+            Width = 127
+            MaxValue = 20000
+            TabOrder = 8
+          end
+          object edConsoleBufferRows: TSpinEdit
+            Left = 387
+            Height = 23
+            Top = 64
+            Width = 126
+            MaxValue = 20000
+            TabOrder = 7
+          end
+        end
+        object ConsoleSizeWarnLabel: TLabel
+          Left = 0
+          Height = 15
+          Top = 93
+          Width = 519
+          Align = alBottom
+          Caption = 'ConsoleSizeWarnLabel'
+          Font.Color = clRed
+          ParentFont = False
+          Visible = False
         end
       end
     end
@@ -286,8 +405,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'UserOverridesAddButton'
-          OnClick = UserOverridesAddButtonClick
           TabOrder = 1
+          OnClick = UserOverridesAddButtonClick
         end
         object UserOverridesEditButton: TBitBtn
           AnchorSideLeft.Control = UserOverridesDeleteButton
@@ -302,8 +421,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'UserOverridesEditButton'
-          OnClick = UserOverridesEditButtonClick
           TabOrder = 3
+          OnClick = UserOverridesEditButtonClick
         end
         object UserOverridesDeleteButton: TBitBtn
           AnchorSideLeft.Control = UserOverridesAddButton
@@ -318,8 +437,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'UserOverridesDeleteButton'
-          OnClick = UserOverridesDeleteButtonClick
           TabOrder = 2
+          OnClick = UserOverridesDeleteButtonClick
         end
       end
       object SystemVariablesGroupBox: TGroupBox
@@ -383,8 +502,8 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Width = 523
         Align = alBottom
         Caption = 'PreviewMultilineCheckBox'
-        OnChange = PreviewMultilineCheckBoxChange
         TabOrder = 1
+        OnChange = PreviewMultilineCheckBoxChange
       end
     end
   end
@@ -426,7 +545,6 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       Top = 2
       Width = 64
       Caption = 'ModesLabel'
-      Color = clDefault
       ParentColor = False
     end
     object ModesComboBox: TComboBox
@@ -438,9 +556,9 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       Width = 217
       BorderSpacing.Left = 9
       ItemHeight = 15
-      OnChange = ModesComboBoxChange
       Style = csDropDownList
       TabOrder = 0
+      OnChange = ModesComboBoxChange
     end
     object ToolBar1: TToolBar
       AnchorSideLeft.Control = ModesComboBox
@@ -461,19 +579,19 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Left = 1
         Top = 0
         Caption = 'NewModeButton'
-        OnClick = NewModeButtonClick
         ParentShowHint = False
         ShowCaption = False
         ShowHint = True
+        OnClick = NewModeButtonClick
       end
       object DeleteModeButton: TToolButton
         Left = 24
         Top = 0
         Caption = 'DeleteModeButton'
-        OnClick = DeleteModeButtonClick
         ParentShowHint = False
         ShowCaption = False
         ShowHint = True
+        OnClick = DeleteModeButtonClick
       end
     end
     object SaveInComboBox: TComboBox
@@ -505,7 +623,6 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
       Width = 62
       BorderSpacing.Top = 3
       Caption = 'SaveInLabel'
-      Color = clDefault
       ParentColor = False
     end
   end

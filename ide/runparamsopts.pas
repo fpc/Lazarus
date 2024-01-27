@@ -50,15 +50,16 @@ uses
   Classes, SysUtils,
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
+  Spin,
   // IdeIntf
   IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, InputHistory,
   IDEImagesIntf, IDEWindowIntf, MacroIntf,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, DbgIntfDebuggerBase,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE
-  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts;
+  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts, BaseDebugManager;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -124,6 +125,17 @@ type
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    UseConsoleSizeCheckBox: TCheckBox;
+    UseConsoleBufferCheckBox: TCheckBox;
+    edConsolePosTop: TSpinEdit;
+    edConsolePosLeft: TSpinEdit;
+    edConsoleSizeHeight: TSpinEdit;
+    edConsoleSizeWidth: TSpinEdit;
+    ConsoleSizeWarnLabel: TLabel;
+    ConsoleSizePanel: TPanel;
+    edConsoleBufferRows: TSpinEdit;
+    edConsoleBufferColumns: TSpinEdit;
+    UseConsolePosCheckBox: TCheckBox;
     CmdLineParametersComboBox: TComboBox;
     CmdLineParametersGroupBox: TGroupBox;
     DeleteModeButton: TToolButton;
@@ -131,6 +143,7 @@ type
     DisplayGroupBox: TGroupBox;
     EnvVarsPage: TTabSheet;
     GeneralPage: TTabSheet;
+    ConsoleWinSizeGroupBox: TGroupBox;
     HostApplicationBrowseBtn: TButton;
     HostApplicationEdit: TEdit;
     HostApplicationGroupBox: TGroupBox;
@@ -172,6 +185,7 @@ type
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure NewModeButtonClick(Sender: TObject);
     procedure PreviewMultilineCheckBoxChange(Sender: TObject);
+    procedure UseConsolePosCheckBoxChange(Sender: TObject);
     procedure UseLaunchingApplicationCheckBoxChange(Sender: TObject);
     procedure UserOverridesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
@@ -484,6 +498,22 @@ begin
     UseDisplay);
   Display    := XMLConfig.GetValue(Path + 'local/Display/Value', Display);
 
+  UseConsoleWinPos    := XMLConfig.GetValue(Path + 'local/UseConsoleWinPos/Value', False);
+  UseConsoleWinSize   := XMLConfig.GetValue(Path + 'local/UseConsoleWinSize/Value', False);
+  UseConsoleWinBuffer := XMLConfig.GetValue(Path + 'local/UseConsoleWinBuffer/Value', False);
+  ConsoleWinPos := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinPos/Left/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinPos/Top/Value',     0)
+  );
+  ConsoleWinSize := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinSize/Width/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinSize/Height/Value',     0)
+  );
+  ConsoleWinBuffer := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Columns/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Rows/Value',     0)
+  );
+
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
   IncludeSystemVariables := XMLConfig.GetValue(
@@ -532,6 +562,16 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/Display/Value',
     Display, ':0');
 
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinPos/Value', UseConsoleWinPos, False);
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinSize/Value', UseConsoleWinSize, False);
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinBuffer/Value', UseConsoleWinBuffer, False);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinPos/Left/Value',       ConsoleWinPos.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinPos/Top/Value',        ConsoleWinPos.Y, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinSize/Width/Value',     ConsoleWinSize.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinSize/Height/Value',    ConsoleWinSize.Y, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Columns/Value', ConsoleWinBuffer.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Rows/Value',    ConsoleWinBuffer.Y, 0);
+
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');
   XMLConfig.SetDeleteValue(Path + 'environment/IncludeSystemVariables/Value',
@@ -578,6 +618,22 @@ begin
   UseDisplay := XMLConfig.GetValue(Path + 'local/Display/Use',
     UseDisplay);
   Display    := XMLConfig.GetValue(Path + 'local/Display/Value', Display);
+
+  UseConsoleWinPos    := XMLConfig.GetValue(Path + 'local/UseConsoleWinPos/Value', False);
+  UseConsoleWinSize   := XMLConfig.GetValue(Path + 'local/UseConsoleWinSize/Value', False);
+  UseConsoleWinBuffer := XMLConfig.GetValue(Path + 'local/UseConsoleWinBuffer/Value', False);
+  ConsoleWinPos := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinPos/Left/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinPos/Top/Value',     0)
+  );
+  ConsoleWinSize := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinSize/Width/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinSize/Height/Value',     0)
+  );
+  ConsoleWinBuffer := Point(
+    XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Columns/Value', 0),
+    XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Rows/Value',     0)
+  );
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -628,6 +684,16 @@ begin
     UseDisplay, False);
   XMLConfig.SetDeleteValue(Path + 'local/Display/Value',
     Display, ':0');
+
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinPos/Value', UseConsoleWinPos, False);
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinSize/Value', UseConsoleWinSize, False);
+  XMLConfig.SetDeleteValue(Path + 'local/UseConsoleWinBuffer/Value', UseConsoleWinBuffer, False);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinPos/Left/Value',       ConsoleWinPos.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinPos/Top/Value',        ConsoleWinPos.Y, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinSize/Width/Value',     ConsoleWinSize.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinSize/Height/Value',    ConsoleWinSize.Y, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Columns/Value', ConsoleWinBuffer.X, 0);
+  XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Rows/Value',    ConsoleWinBuffer.Y, 0);
 
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');
@@ -769,6 +835,16 @@ begin
   UpdatePreview;
 end;
 
+procedure TRunParamsOptsDlg.UseConsolePosCheckBoxChange(Sender: TObject);
+begin
+  ConsoleSizeWarnLabel.Visible :=
+    ( UseConsolePosCheckBox.Checked or
+      UseConsoleSizeCheckBox.Checked or
+      UseConsoleBufferCheckBox.Checked
+    ) and
+    not (dfConsoleWinPos in DebugBoss.DebuggerClass.SupportedFeatures);
+end;
+
 procedure TRunParamsOptsDlg.SetupLocalPage;
 begin
   HostApplicationGroupBox.Caption   := dlgHostApplication;
@@ -782,6 +858,12 @@ begin
   DisplayGroupBox.Caption := dlgRunODisplay;
   UseDisplayCheckBox.Caption := dlgRunOUsedisplay;
   DisplayEdit.Parent := DisplayGroupBox;
+
+  ConsoleWinSizeGroupBox.Caption := dlgDefaultWinPos;
+  UseConsolePosCheckBox.Caption    := dlgUseConsolePos;
+  UseConsoleSizeCheckBox.Caption   := dlgUseConsoleSize;
+  UseConsoleBufferCheckBox.Caption := dlgUseConsoleBuffer;
+  ConsoleSizeWarnLabel.Caption := dlgConsoleSizeNotSupported;
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
@@ -1052,6 +1134,16 @@ begin
   UseDisplayCheckBox.Checked := AMode.UseDisplay;
   DisplayEdit.Text := AMode.Display;
 
+  UseConsolePosCheckBox.Checked    := AMode.UseConsoleWinPos;
+  UseConsoleSizeCheckBox.Checked   := AMode.UseConsoleWinSize;
+  UseConsoleBufferCheckBox.Checked := AMode.UseConsoleWinBuffer;
+  edConsolePosLeft.Value     := AMode.ConsoleWinPos.X;
+  edConsolePosTop.Value      := AMode.ConsoleWinPos.Y;
+  edConsoleSizeWidth.Value    := AMode.ConsoleWinSize.X;
+  edConsoleSizeHeight.Value   := AMode.ConsoleWinSize.Y;
+  edConsoleBufferColumns.Value  := AMode.ConsoleWinBuffer.X;
+  edConsoleBufferRows.Value     := AMode.ConsoleWinBuffer.Y;
+
   // environment
   FillSystemVariablesListView;
   FillUserOverridesListView(AMode);
@@ -1174,7 +1266,14 @@ begin
   AMode.WorkingDirectory := Trim(WorkingDirectoryComboBox.Text);
   AMode.UseDisplay := UseDisplayCheckBox.Checked;
   AMode.Display    := Trim(DisplayEdit.Text);
-  
+
+  AMode.UseConsoleWinPos    := UseConsolePosCheckBox.Checked;
+  AMode.ConsoleWinPos       := Point(edConsolePosLeft.Value, edConsolePosTop.Value);
+  AMode.UseConsoleWinSize   := UseConsoleSizeCheckBox.Checked;
+  AMode.ConsoleWinSize      := Point(edConsoleSizeWidth.Value, edConsoleSizeHeight.Value);
+  AMode.UseConsoleWinBuffer := UseConsoleBufferCheckBox.Checked;
+  AMode.ConsoleWinBuffer    := Point(edConsoleBufferColumns.Value, edConsoleBufferRows.Value);
+
   // history list: WorkingDirectoryComboBox
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);
 

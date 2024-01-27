@@ -2772,6 +2772,13 @@ resourcestring
   dlgROWorkingDirectory = 'Working directory';
   dlgRunODisplay = 'Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
   dlgRunOUsedisplay = 'Use display';
+  dlgDefaultWinPos = 'Default Window/Console position and size';
+  dlgUseConsolePos    = 'Set Left/Top';
+  dlgUseConsoleSize   = 'Set Width/Height';
+  dlgUseConsoleBuffer = 'Set Columns/Rows ';
+  dlgConsoleSizeXY = 'Top/Left:';
+  dlgConsoleSizeWH = 'Rows/Colums:';
+  dlgConsoleSizeNotSupported = 'Current debugger does not support this.';
   dlgRunOSystemVariables = 'System variables';
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';

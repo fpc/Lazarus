@@ -68,7 +68,7 @@ uses
   // IDE
   CompilerOptions, SourceEditor, ProjectDefs, Project, ProjectDebugLink,
   LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
-  DebugEventsForm, EnvGuiOptions;
+  DebugEventsForm, EnvGuiOptions, RunParamsOpts;
 
 type
 
@@ -2667,6 +2667,7 @@ var
   NewWorkingDir: String;
   NewDebuggerClass: TDebuggerClass;
   DbgCfg: TDebuggerPropertiesConfig;
+  AMode: TRunParamsOptionsMode;
 begin
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
@@ -2787,6 +2788,28 @@ begin
       then FDebugger.Arguments := LaunchingParams;
       if FDebugger <> nil
       then FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
+      if FDebugger <> nil then begin
+        AMode := Project1.RunParameterOptions.GetActiveMode;
+        if (AMode <> nil) then begin
+          if AMode.UseConsoleWinPos then
+            FDebugger.SetConsoleWinPos(AMode.ConsoleWinPos.X, AMode.ConsoleWinPos.Y)
+          else
+            FDebugger.UnSetConsoleWinPos;
+          if AMode.UseConsoleWinSize then
+            FDebugger.SetConsoleWinSize(AMode.ConsoleWinSize.X, AMode.ConsoleWinSize.Y)
+          else
+            FDebugger.UnSetConsoleWinSize;
+          if AMode.UseConsoleWinBuffer then
+            FDebugger.SetConsoleWinBuffer(AMode.ConsoleWinBuffer.X, AMode.ConsoleWinBuffer.Y)
+          else
+            FDebugger.UnSetConsoleWinBuffer;
+        end
+        else begin
+          FDebugger.UnSetConsoleWinPos;
+          FDebugger.UnSetConsoleWinSize;
+          FDebugger.UnSetConsoleWinBuffer;
+        end;
+      end;
     end
     else begin
       // attach

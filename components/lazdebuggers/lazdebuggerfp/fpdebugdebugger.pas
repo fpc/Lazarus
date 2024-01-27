@@ -353,6 +353,12 @@ type
     FBreakUpdateList: TBreakPointUpdateList;
     FFpDebugOutputQueue: TFpDebugStringQueue;
     FFpDebugOutputAsync: integer;
+    FUseConsoleWinBuffer: boolean;
+    FUseConsoleWinPos: boolean;
+    FUseConsoleWinSize: boolean;
+    FConsoleWinBuffer: TPoint;
+    FConsoleWinPos: TPoint;
+    FConsoleWinSize: TPoint;
     //
     procedure DoDebugOutput(Data: PtrInt);
     procedure DoThreadDebugOutput(Sender: TObject; ProcessId,
@@ -453,6 +459,12 @@ type
     procedure ThreadHandleBreakPointInCallRoutine(AnAddress: TDBGPtr; out ACanContinue: Boolean);
     procedure BeforeWatchEval(ACallContext: TFpDbgInfoCallContext); override;
     procedure RunProcessLoop(OnlyCurrentThread: Boolean); override;
+    procedure SetConsoleWinPos(ALeft, ATop: Integer); override;
+    procedure UnSetConsoleWinPos; override;
+    procedure SetConsoleWinSize(AWidth, AHeight: Integer); override;
+    procedure UnSetConsoleWinSize; override;
+    procedure SetConsoleWinBuffer(AColumns, ARows: Integer); override;
+    procedure UnSetConsoleWinBuffer; override;
 
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
@@ -4041,6 +4053,13 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
+    FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
+    FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;
+    FDbgController.CurrentProcess.Config.UseConsoleWinBuffer := FUseConsoleWinBuffer;
+    FDbgController.CurrentProcess.Config.ConsoleWinPos    := FConsoleWinPos;
+    FDbgController.CurrentProcess.Config.ConsoleWinSize   := FConsoleWinSize;
+    FDbgController.CurrentProcess.Config.ConsoleWinBuffer := FConsoleWinBuffer;
+
     FDbgController.AttachToPid := 0;
     if ACommand = dcAttach then begin
       FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
@@ -4781,6 +4800,42 @@ begin
     Application.QueueAsyncCall(@DebugLoopFinished, 0);
 end;
 
+procedure TFpDebugDebugger.SetConsoleWinPos(ALeft, ATop: Integer);
+begin
+  FUseConsoleWinPos := True;
+  FConsoleWinPos.X   := ALeft;
+  FConsoleWinPos.Y    := ATop;
+end;
+
+procedure TFpDebugDebugger.UnSetConsoleWinPos;
+begin
+  FUseConsoleWinPos := False;
+end;
+
+procedure TFpDebugDebugger.SetConsoleWinSize(AWidth, AHeight: Integer);
+begin
+  FUseConsoleWinSize := True;
+  FConsoleWinSize.X   := AWidth;
+  FConsoleWinSize.Y    := AHeight;
+end;
+
+procedure TFpDebugDebugger.UnSetConsoleWinSize;
+begin
+  FUseConsoleWinSize := False;
+end;
+
+procedure TFpDebugDebugger.SetConsoleWinBuffer(AColumns, ARows: Integer);
+begin
+  FUseConsoleWinBuffer := True;
+  FConsoleWinBuffer.X   := AColumns;
+  FConsoleWinBuffer.Y    := ARows;
+end;
+
+procedure TFpDebugDebugger.UnSetConsoleWinBuffer;
+begin
+  FUseConsoleWinBuffer := False;
+end;
+
 class function TFpDebugDebugger.Caption: String;
 begin
   Result:='FpDebug internal Dwarf-debugger';
@@ -4858,6 +4913,9 @@ begin
        (defined(CPU386) or defined(CPUI386) or defined(CPUX86_64) or defined(CPUX64))
   }
   Result := [dfEvalFunctionCalls, dfThreadSuspension];
+    {$IFDEF windows}
+    Result := Result + [dfConsoleWinPos];
+    {$ENDIF}
   {$ELSE}
   Result := [dfNotSuitableForOsArch];
   {$ENDIF}

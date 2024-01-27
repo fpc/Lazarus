@@ -63,6 +63,7 @@ type
   TDBGFeature = (
     dfEvalFunctionCalls,   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
     dfThreadSuspension,
+    dfConsoleWinPos,        // Able to set position of console Window
 
     (* dfNotSuitableForOsArch:
        If this is set, then this debugger can not be used on the current
@@ -1747,6 +1748,12 @@ type
     procedure RemoveNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
     procedure SetSkipStopMessage;
   public
+    procedure SetConsoleWinPos(ALeft, ATop: Integer); virtual;
+    procedure UnSetConsoleWinPos; virtual;
+    procedure SetConsoleWinSize(AWidth, AHeight: Integer); virtual;
+    procedure UnSetConsoleWinSize; virtual;
+    procedure SetConsoleWinBuffer(AColumns, ARows: Integer); virtual;
+    procedure UnSetConsoleWinBuffer; virtual;
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TCallStackSupplier read FCallStack;
@@ -5428,6 +5435,36 @@ end;
 procedure TDebuggerIntf.SetSkipStopMessage;
 begin
   FSkipStopMessage := True;
+end;
+
+procedure TDebuggerIntf.SetConsoleWinPos(ALeft, ATop: Integer);
+begin
+//
+end;
+
+procedure TDebuggerIntf.UnSetConsoleWinPos;
+begin
+//
+end;
+
+procedure TDebuggerIntf.SetConsoleWinSize(AWidth, AHeight: Integer);
+begin
+//
+end;
+
+procedure TDebuggerIntf.UnSetConsoleWinSize;
+begin
+//
+end;
+
+procedure TDebuggerIntf.SetConsoleWinBuffer(AColumns, ARows: Integer);
+begin
+//
+end;
+
+procedure TDebuggerIntf.UnSetConsoleWinBuffer;
+begin
+//
 end;
 
 class function TDebuggerIntf.SupportedCommandsFor(AState: TDBGState): TDBGCommands;

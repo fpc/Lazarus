@@ -55,6 +55,12 @@ type
   TProcessDebugger = class(TDebugger)
   private
     FProcess: TProcessUTF8;
+    FUseConsoleWinPos: boolean;
+    FUseConsoleWinSize: boolean;
+    FUseConsoleWinBuffer: boolean;
+    FConsoleWinPos: TPoint;
+    FConsoleWinSize: TPoint;
+    FConsoleWinBuffer: TPoint;
     procedure ProcessDestroyed(Sender: TObject);
     function  ProcessEnvironment(const {%H-}AVariable: String; const {%H-}ASet: Boolean): Boolean;
     function  ProcessRun: Boolean;
@@ -66,6 +72,13 @@ type
   public
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
+    class function SupportedFeatures: TDBGFeatures; override;
+    procedure SetConsoleWinPos(ALeft, ATop: Integer); override;
+    procedure UnSetConsoleWinPos; override;
+    procedure SetConsoleWinSize(AWidth, AHeight: Integer); override;
+    procedure UnSetConsoleWinSize; override;
+    procedure SetConsoleWinBuffer(AColumns, ARows: Integer); override;
+    procedure UnSetConsoleWinBuffer; override;
   published
   end;
 
@@ -139,6 +152,23 @@ begin
     then FProcess.Options:= [poNewConsole]
     else FProcess.Options:= [poNoConsole];
     FProcess.ShowWindow := swoShowNormal;
+    {$IFDEF windows}
+    if FUseConsoleWinPos then begin
+      FProcess.StartupOptions := FProcess.StartupOptions + [suoUsePosition];
+      FProcess.WindowLeft   := FConsoleWinPos.X;
+      FProcess.WindowTop    := FConsoleWinPos.Y;
+    end;
+    if FUseConsoleWinSize then begin
+      FProcess.StartupOptions := FProcess.StartupOptions + [suoUseSize];
+      FProcess.WindowWidth    := FConsoleWinSize.X;
+      FProcess.WindowHeight   := FConsoleWinSize.Y;
+    end;
+    if FUseConsoleWinBuffer then begin
+      FProcess.StartupOptions := FProcess.StartupOptions + [suoUseCountChars];
+      FProcess.WindowColumns := FConsoleWinBuffer.X;
+      FProcess.WindowRows    := FConsoleWinBuffer.Y;
+    end;
+    {$ENDIF}
     FProcess.Execute;
   except
     on E: exception do begin
@@ -187,6 +217,50 @@ end;
 class function TProcessDebugger.NeedsExePath: boolean;
 begin
   Result := false; // no need to have a valid exe path for the process debugger
+end;
+
+class function TProcessDebugger.SupportedFeatures: TDBGFeatures;
+begin
+  Result := inherited SupportedFeatures;
+  {$IFDEF windows}
+  Result := Result + [dfConsoleWinPos];
+  {$ENDIF}
+end;
+
+procedure TProcessDebugger.SetConsoleWinPos(ALeft, ATop: Integer);
+begin
+  FUseConsoleWinPos := True;
+  FConsoleWinPos.X   := ALeft;
+  FConsoleWinPos.Y   := ATop;
+end;
+
+procedure TProcessDebugger.UnSetConsoleWinPos;
+begin
+  FUseConsoleWinPos := False;
+end;
+
+procedure TProcessDebugger.SetConsoleWinSize(AWidth, AHeight: Integer);
+begin
+  FUseConsoleWinSize := True;
+  FConsoleWinSize.X   := AWidth;
+  FConsoleWinSize.Y   := AHeight;
+end;
+
+procedure TProcessDebugger.UnSetConsoleWinSize;
+begin
+  FUseConsoleWinSize := False;
+end;
+
+procedure TProcessDebugger.SetConsoleWinBuffer(AColumns, ARows: Integer);
+begin
+  FUseConsoleWinBuffer := True;
+  FConsoleWinBuffer.X   := AColumns;
+  FConsoleWinBuffer.Y   := ARows;
+end;
+
+procedure TProcessDebugger.UnSetConsoleWinBuffer;
+begin
+  FUseConsoleWinBuffer := False;
 end;
 
 initialization

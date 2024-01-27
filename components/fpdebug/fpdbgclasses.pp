@@ -608,6 +608,26 @@ type
   TDbgProcessConfig = class(TPersistent)
   end;
 
+  { TDbgConfig }
+
+  TDbgConfig = class
+  private
+    FUseConsoleWinPos: boolean;
+    FUseConsoleWinSize: boolean;
+    FUseConsoleWinBuffer: boolean;
+    FConsoleWinPos: TPoint;
+    FConsoleWinSize: TPoint;
+    FConsoleWinBuffer: TPoint;
+  public
+    // WindowBounds
+    property UseConsoleWinPos: boolean read FUseConsoleWinPos write FUseConsoleWinPos;
+    property UseConsoleWinSize: boolean read FUseConsoleWinSize write FUseConsoleWinSize;
+    property UseConsoleWinBuffer: boolean read FUseConsoleWinBuffer write FUseConsoleWinBuffer;
+    property ConsoleWinPos: TPoint read FConsoleWinPos write FConsoleWinPos;
+    property ConsoleWinSize: TPoint read FConsoleWinSize write FConsoleWinSize;
+    property ConsoleWinBuffer: TPoint read FConsoleWinBuffer write FConsoleWinBuffer;
+  end;
+
   { TDbgInstance }
 
   TDbgInstance = class(TObject)
@@ -741,6 +761,7 @@ type
     FThreadID: Integer;
     FWatchPointData: TFpWatchPointData;
     FProcessConfig: TDbgProcessConfig;
+    FConfig: TDbgConfig;
     function GetDisassembler: TDbgAsmDecoder;
     function GetLastLibrariesLoaded: TDbgLibraryArr;
     function GetLastLibrariesUnloaded: TDbgLibraryArr;
@@ -787,6 +808,7 @@ type
 
     function CreateWatchPointData: TFpWatchPointData; virtual;
     procedure Init(const AProcessID, AThreadID: Integer);
+    function CreateConfig: TDbgConfig;
     procedure InitializeLoaders; override;
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
@@ -906,6 +928,7 @@ type
     property GotExitProcess: Boolean read FGotExitProcess write FGotExitProcess;
     property Disassembler: TDbgAsmDecoder read GetDisassembler;
     property ThreadMap: TThreadMap read FThreadMap;
+    property Config: TDbgConfig read FConfig;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -2210,6 +2233,7 @@ const
 //  MAP_ID_SIZE = itu4;
   {.$ENDIF}
 begin
+  FConfig := CreateConfig;
   FMemManager := AMemManager;
   FMemModel := AMemModel;
   FProcessID := 0;
@@ -2284,6 +2308,7 @@ begin
   FreeAndNil(FLibMap);
   FreeAndNil(FSymInstances);
   FreeAndNil(FDisassembler);
+  FreeAndNil(FConfig);
   inherited;
 end;
 
@@ -3004,6 +3029,11 @@ procedure TDbgProcess.Init(const AProcessID, AThreadID: Integer);
 begin
   FProcessID := AProcessID;
   FThreadID := AThreadID;
+end;
+
+function TDbgProcess.CreateConfig: TDbgConfig;
+begin
+  Result := TDbgConfig.Create;
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
