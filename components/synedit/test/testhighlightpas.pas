@@ -677,8 +677,10 @@ end;
 procedure TTestHighlighterPas.TestContextForProcModifiers2;
 var
   AFolds: TPascalCodeFoldBlockTypes;
-  i: Integer;
+  i, j: Integer;
+  n: String;
 begin
+  ReCreateEdit;
   for i := 0 to $10-1 do begin
     AFolds := [cfbtBeginEnd..cfbtNone];
     if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
@@ -686,7 +688,6 @@ begin
     if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
     if (i and $08) = 0 then AFolds := AFolds - [cfbtProcedure];
 
-    ReCreateEdit;
     EnableFolds(AFolds);
     SetLines
       ([ 'Unit A; interface',
@@ -774,6 +775,59 @@ begin
         tkModifier, TK_Semi, // cdecl;
         tkModifier, TK_Semi //deprecated;
       ]);
+
+
+    for j := 0 to 6 do begin
+      case j of
+        0: n := 'overload';
+        1: n := 'assembler';
+        2: n := 'alias';
+        3: n := 'inline';
+        4: n := 'weakexternal';
+        5: n := 'compilerproc';
+        6: n := 'forward';
+      end;
+
+      SetLines
+      ([ 'Unit A; interface',
+         'var',
+         n+':function:'+n+';'+n+':'+n+';',
+         'type',
+         n+'=function:'+n+';'+n+':'+n+';',
+         'function '+n+':'+n+';'+n+';',
+         'type',
+         n+'=class('+n+') public',
+         n+':function:'+n+';'+n+':'+n+';',
+         'function '+n+':'+n+';'+n+';',
+         'end;',
+         ''
+      ]);
+
+       CheckTokensForLine(n+':function:'+n+';'+n+':'+n+';',2,
+          [ tkIdentifier, TK_Colon, tkKey, TK_Colon, tkIdentifier, TK_Semi,
+            tkIdentifier, TK_Colon, tkIdentifier, TK_Semi
+          ]);
+       CheckTokensForLine(n+'=function:'+n+';'+n+':'+n+';',4,
+          [ tkIdentifier, TK_Colon, tkKey, TK_Colon, tkIdentifier, TK_Semi,
+            tkIdentifier, TK_Colon, tkIdentifier, TK_Semi
+          ]);
+       CheckTokensForLine('function '+n+':'+n+';'+n+';',5,
+          [ tkKey, tkSpace, tkIdentifier+FAttrProcName, TK_Colon, tkIdentifier, TK_Semi,
+            tkModifier, TK_Semi
+          ]);
+
+       CheckTokensForLine(n+':function:'+n+';'+n+':'+n+';',8,
+          [ tkIdentifier, TK_Colon, tkKey, TK_Colon, tkIdentifier, TK_Semi,
+            tkIdentifier, TK_Colon, tkIdentifier, TK_Semi
+          ]);
+       if j = 6 then
+         continue;
+       CheckTokensForLine('function '+n+':'+n+';'+n+';',9,
+          [ tkKey, tkSpace, tkIdentifier+FAttrProcName, TK_Colon, tkIdentifier, TK_Semi,
+            tkModifier, TK_Semi
+          ]);
+
+    end;
 
   end;
 end;
@@ -2382,7 +2436,7 @@ var
 begin
   ReCreateEdit;
   h := FAttrProcName;
-  for i := 0 to 7 do begin
+  for i := 0 to 8 do begin
     case i of
       0: n := 'virtual';
       1: n := 'dynamic';
@@ -2392,7 +2446,7 @@ begin
       5: n := 'reintroduce';
       6: n := 'message';
       7: n := 'platform';
-      //8: n := 'overload'; // TODO
+      8: n := 'overload';
     end;
 
     SetLines
