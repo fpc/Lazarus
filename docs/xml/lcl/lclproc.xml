@@ -415,22 +415,71 @@ key code.
 </element>
 
 <element name="ShortCutToText">
-<short>Returns the textual representation for a shortcut value.</short>
-<descr/>
-<seealso/>
+<short>
+Returns the localized textual representation for a shortcut value.
+</short>
+<descr>
+<p>
+<var>ShortCutToText</var> is the counterpart to the TextToShortCut routine, and 
+converts the numeric TShortCut value in ShortCut its textual representation. 
+</p>
+<p>
+<var>ShortCut</var> is the <var>Word</var> value with the modifier keys and the 
+key code OR'd together. The high-order byte contains the Shift/Ctrl/Alt/Meta 
+modifier(s) for the shortcut. The low-order-byte contains the virtual key code 
+for the shortcut.
+</p>
+<p>
+The return value contains localized versions of text for the modifiers and 
+the key cap used in the shortcut. For example:
+</p>
+<code>
+Ctrl+V
+Ctrl+Alt+Del
+^V
+Shift+F9
+Alt+G
+Meta+Q
+</code>
+<p>
+Use ShortCutToTextRaw to get the text for a shortcut without localization.
+</p>
+</descr>
+<seealso>
+<link id="ShortCutToTextRaw"/>
+<link id="TextToShortCut"/>
+<link id="#rtl.classes.TShortCut">TShortCut</link>
+</seealso>
 </element>
 <element name="ShortCutToText.Result">
-<short>Localized text value for the specified shortcut.</short>
+<short>
+Localized text value for the specified shortcut.
+</short>
 </element>
 <element name="ShortCutToText.ShortCut">
-<short/>
+<short>
+TShortCut instance with the numeric shift modifier and key code handled in the 
+routine.
+</short>
 </element>
 
 <element name="ShortCutToTextRaw">
 <short>
 Converts a shortcut value to its text representation without localization.
 </short>
-<descr/>
+<descr>
+<p>
+<var>ShortCutToTextRaw</var> is similar to ShortCutToText, but does not use 
+localization for the modifiers or key caps found in the shortcut.
+</p>
+<p>
+See <link id="ShortCutToText">ShortCutToText</link> for more information.
+</p>
+<p>
+Use <var>TextToShortCutRaw</var> to create a shortcut for text which does not 
+use localization.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="ShortCutToTextRaw.Result">
@@ -442,35 +491,145 @@ Converts a shortcut value to its text representation without localization.
 
 <element name="TextToShortCut">
 <short>
-Converts the textual representation for a shortcut into a shortcut value.
+Converts the textual representation for a shortcut to its TShortCut value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TextToShortCut</var> is a <var>TShortcut</var> function used to convert 
+the string representation for a shortcut (or accelerator) to a TShortCut 
+instance.
+</p>
+<p>
+<var>ShortCutText</var> contains the text which represents a key or a key 
+combination used as a shortcut in an application. It can contain optional key 
+modifier(s) as well as a key caption. For example:
+</p>
+<code>
+Ctrl+V
+Ctrl+Alt+Del
+^V
+Shift+F9
+Alt+G
+Meta+Q
+</code>
+<p>
+Recognized key modifiers include:
+</p>
+<code>
+Alt
+Ctrl or ^
+Meta
+Shift
+</code>
+<p>
+Recognized key captions include the standard key caps for your keyboard and the 
+localized versions of the following:
+</p>
+<dl>
+<dt>BkSp</dt>
+<dd>VK_BACK</dd>
+<dt>Del</dt>
+<dd>VK_DELETE</dd>
+<dt>Down</dt>
+<dd>VK_DOWN</dd>
+<dt>End</dt>
+<dd>VK_END</dd>
+<dt>Enter</dt>
+<dd>VK_RETURN</dd>
+<dt>Esc</dt>
+<dd>VK_ESCAPE</dd>
+<dt>Help</dt>
+<dd>VK_HELP</dd>
+<dt>Home</dt>
+<dd>VK_HOME</dd>
+<dt>Ins</dt>
+<dd>VK_INSERT</dd>
+<dt>Left</dt>
+<dd>VK_LEFT</dd>
+<dt>PgDn</dt>
+<dd>VK_NEXT</dd>
+<dt>PgUp</dt>
+<dd>VK_PRIOR</dd>
+<dt>Right</dt>
+<dd>VK_RIGHT</dd>
+<dt>Space</dt>
+<dd>VK_SPACE</dd>
+<dt>Tab</dt>
+<dd>VK_TAB</dd>
+<dt>Up</dt>
+<dd>VK_UP</dd>
+</dl>
+<p>
+The return value is a TShortCut instance with the numeric value used to 
+represent both the Shift/Ctrl/Alt modifier and the key code for the shortcut. 
+It consists of the Shift and Key values OR'd together.
+</p>
+<p>
+Use TextToShortCutRaw to convert a non-localized string to it TShortCut 
+equivalent.
+</p>
+<p>
+Use ShortCutToText to reverse the process.
+</p>
+</descr>
+<seealso>
+<link id="TextToShortCutRaw"/>
+<link id="ShortCutToText"/>
+<link id="ShortCutToTextRaw"/>
+<link id="#rtl.classes.TShortCut">TShortCut</link>
+</seealso>
 </element>
 <element name="TextToShortCut.Result">
-<short>TShortcut value for the specified text.</short>
+<short>
+TShortcut value for the specified text.
+</short>
 </element>
 <element name="TextToShortCut.ShortCutText">
-<short>Text converted to a shortcut value in the method.</short>
+<short>
+Text converted to a shortcut value in the routine.
+</short>
 </element>
 
 <element name="TextToShortCutRaw">
 <short>
-Converts the non-localized textual representation for a shortcut into a 
-shortcut value.
+Converts the non-localized textual representation for a shortcut to a TShortCut 
+value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TextToShortCutRaw</var> is similar to <var>TextToShortCut</var>, but does 
+not handle or use localized versions of modifiers or key caps in 
+<var>ShortCutText</var>.
+</p>
+<p>
+See <link id="TextToShortCut">TextToShortCut</link> for more information.
+</p>
+<p>
+Use ShortCutToTextRaw to reverse the process.
+</p>
+</descr>
+<seealso>
+<link id="ShortCutToTextRaw"/>
+<link id="ShortCutToText"/>
+<link id="TextToShortCut"/>
+<link id="#rtl.classes.TShortCut">TShortCut</link>
+</seealso>
 </element>
 <element name="TextToShortCutRaw.Result">
-<short/>
+<short>
+TShortcut value for the specified text.
+</short>
 </element>
 <element name="TextToShortCutRaw.ShortCutText">
-<short/>
+<short>
+Text converted to a shortcut value in the routine.
+</short>
 </element>
 
 <element name="GetCompleteText">
-<short>Finds a string in a list, given its first few characters.</short>
+<short>
+Finds a string in a list, given its first few characters.
+</short>
 <descr/>
 <seealso/>
 </element>
