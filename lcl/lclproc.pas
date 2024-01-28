@@ -701,22 +701,20 @@ begin
 end;
 
 function TextToShortCutGeneric(const ShortCutText: string; Localized: boolean): TShortCut;
+var
+  StartPos: integer;
 
-  function CompareFront(var StartPos: integer; const Front: string): Boolean;
+  function HasFront(const Front: string): Boolean;
   begin
-    if (Front<>'') and (StartPos+length(Front)-1<=length(ShortCutText))
-    and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Front), Length(Front))= 0)
-    then begin
-      Result:=true;
+    Result := (Front<>'') and (StartPos+length(Front)-1 <= length(ShortCutText))
+       and (AnsiStrLIComp(@ShortCutText[StartPos],PChar(Front),Length(Front))=0);
+    if Result then
       inc(StartPos,length(Front));
-    end else
-      Result:=false;
   end;
 
 var
   Key: TShortCut;
   Shift: TShortCut;
-  StartPos: integer;
   Name: string;
 begin
   Result := 0;
@@ -725,15 +723,15 @@ begin
   StartPos := 1;
   while True do
   begin
-    if CompareFront(StartPos, KeyCodeToKeyString(scShift, Localized)) then
+    if HasFront(KeyCodeToKeyString(scShift, Localized)) then
       Shift := Shift or scShift
-    else if CompareFront(StartPos, '^') then
+    else if HasFront('^') then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, KeyCodeToKeyString(scCtrl, Localized)) then
+    else if HasFront(KeyCodeToKeyString(scCtrl, Localized)) then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, KeyCodeToKeyString(scAlt, Localized)) then
+    else if HasFront(KeyCodeToKeyString(scAlt, Localized)) then
       Shift := Shift or scAlt
-    else if CompareFront(StartPos, KeyCodeToKeyString(scMeta, Localized)) then
+    else if HasFront(KeyCodeToKeyString(scMeta, Localized)) then
       Shift := Shift or scMeta
     else
       Break;
@@ -744,10 +742,8 @@ begin
     Name := KeyCodeToKeyString(Key, Localized);
     if (Name<>'') and (length(Name)=length(ShortCutText)-StartPos+1)
     and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Name), length(Name)) = 0)
-    then begin
-      Result := Key or Shift;
-      Exit;
-    end;
+    then
+      Exit(Key or Shift);
   end;
 end;
 
