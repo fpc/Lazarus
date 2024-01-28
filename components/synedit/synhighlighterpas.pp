@@ -1578,11 +1578,13 @@ begin
   end
   else
   if KeyComp('Final') and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
-     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers]) and
      (PasCodeFoldRange.BracketNestLevel = 0)
-  then
-    Result := tkKey
+  then begin
+    Result := tkModifier;
+    FRange := FRange + [rsInProcHeader];
+  end
   else
     Result := tkIdentifier;
 end;
@@ -1966,8 +1968,8 @@ begin
       Result := tkIdentifier;
   end else
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      KeyComp('Dynamic')
   then begin
     Result := tkModifier;
@@ -1975,11 +1977,13 @@ begin
   end
   else
   if KeyComp('Message') and
-     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers]) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      (PasCodeFoldRange.BracketNestLevel = 0)
-  then
-    Result := tkModifier
+  then begin
+    Result := tkModifier;
+    FRange := FRange + [rsInProcHeader];
+  end
   else
     Result := tkIdentifier;
 end;
@@ -2130,8 +2134,14 @@ begin
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
-    then
-      Result := tkModifier
+    then begin
+      Result := tkModifier;
+      if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+         (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+         (CompilerMode = pcmDelphi)
+      then
+        FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+    end
     else
       Result := tkIdentifier;
   end
@@ -2141,13 +2151,19 @@ end;
 
 function TSynPasSyn.Func84: TtkTokenKind;
 begin
-  if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+     KeyComp('Abstract')
   then begin
     Result := tkModifier;
-    if (rsAfterClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    // type foo = class abstract
+    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then
       fRange := fRange + [rsAtClass] // forward, in case of further class modifiers  end
     else
-    if not (rsAfterClassMembers in fRange) then
+    // procedure foo; virtual; abstract;
+    if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) then
+      FRange := FRange + [rsInProcHeader]
+    else
       Result := tkIdentifier;
   end
   else if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
@@ -2365,9 +2381,9 @@ begin
     StartPascalCodeFoldBlock(cfbtClassSection);
   end
   else
-  if (PasCodeFoldRange.BracketNestLevel = 0) and  // TODO nested record
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      KeyComp('Override')
   then begin
     Result := tkModifier;
@@ -2451,7 +2467,11 @@ end;
 
 function TSynPasSyn.Func100: TtkTokenKind;
 begin
-  if KeyComp('Automated') then
+  if KeyComp('Automated') and // in old times: class section
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+     (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
+     (fRange * [rsAfterSemiColon, rsAfterClass] <> [])
+  then
     Result := tkKey
   else
   if (rsInProcHeader in fRange) and KeyComp('constref') and
@@ -2491,8 +2511,14 @@ begin
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
-    then
-      Result := tkModifier
+    then begin
+      Result := tkModifier;
+      if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+         (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+         (CompilerMode = pcmDelphi)
+      then
+        FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+    end
     else
       Result := tkIdentifier;
   end
@@ -2546,8 +2572,8 @@ end;
 function TSynPasSyn.Func103: TtkTokenKind;
 begin
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      KeyComp('Virtual')
   then begin
     Result := tkModifier;
@@ -2770,8 +2796,8 @@ function TSynPasSyn.Func132: TtkTokenKind;
 begin
   if D4syntax and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
      KeyComp('Reintroduce')
   then begin
     Result := tkModifier;
@@ -2851,8 +2877,14 @@ begin
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
-    then
-      Result := tkModifier
+    then begin
+      Result := tkModifier;
+      if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+         (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+         (CompilerMode = pcmDelphi)
+      then
+        FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+    end
     else
       Result := tkIdentifier;
   end
@@ -2933,8 +2965,14 @@ begin
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
-    then
-      Result := tkModifier
+    then begin
+      Result := tkModifier;
+      if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
+         (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+         (CompilerMode = pcmDelphi)
+      then
+        FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+    end
     else
       Result := tkIdentifier;
   end
