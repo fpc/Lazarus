@@ -16,14 +16,14 @@
   to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
   Boston, MA 02110-1335, USA.
 }
-program runtestsgui;
+program RunTestsGui;
 
 {$mode objfpc}{$H+}
 
 uses
   Interfaces, Forms,
-  GuiTestRunner, lazmouseandkeyinput,
-  testunits, TestLazUtils, testmenuintf;
+  GuiTestRunner, LazMouseAndKeyInput,
+  TestUnits, TestLazUtils, TestMenuIntf;
 
 begin
   Application.Title:='Run Lazarus tests';

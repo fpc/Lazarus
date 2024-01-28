@@ -23,7 +23,7 @@ unit TestLpi;
 interface
 
 uses
-  Classes, SysUtils, strutils, fpcunit, testregistry, process, UTF8Process,
+  Classes, SysUtils, StrUtils, fpcunit, testregistry, process, UTF8Process,
   InterfaceBase, LCLPlatformDef, LazFileUtils, LazUTF8, FileUtil,
   TestGlobals;
 
@@ -122,8 +122,7 @@ begin
   SearchDirectory('')
 end;
 
-class function TLpkTest.CreateSuiteFromFile(const AName,
-  APath: string): TTestSuite;
+class function TLpkTest.CreateSuiteFromFile(const AName, APath: string): TTestSuite;
 begin
   Result := TTestSuite.Create(AnsiReplaceStr(AName, DirectorySeparator, '/'));
   Result.AddTest(Create(APath, 'TestCompile'));
@@ -175,8 +174,7 @@ begin
   Result := '.lpi';
 end;
 
-class function TLpiTest.CreateSuiteFromFile(const AName,
-  APath: string): TTestSuite;
+class function TLpiTest.CreateSuiteFromFile(const AName, APath: string): TTestSuite;
 {$IFDEF win32}
 var
   AhkFileName: String;

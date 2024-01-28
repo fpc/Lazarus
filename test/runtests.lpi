@@ -5,6 +5,9 @@
     <PathDelim Value="\"/>
     <General>
       <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <MainUnitHasScaledStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
         <CompatibilityMode Value="True"/>
       </Flags>
@@ -61,14 +64,14 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
+        <CommandLineParams Value="--suite=TTestLazUTF8"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
+            <CommandLineParams Value="--suite=TTestLazUTF8"/>
             <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
           </local>
         </Mode0>
@@ -94,7 +97,7 @@
         <PackageName Value="lazmouseandkeyinput"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="16">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -112,10 +115,12 @@
       <Unit3>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestGlobals"/>
       </Unit3>
       <Unit4>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestUnits"/>
       </Unit4>
       <Unit5>
         <Filename Value="lcltests\testpen.pas"/>
@@ -128,6 +133,7 @@
       <Unit7>
         <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazUtils"/>
       </Unit7>
       <Unit8>
         <Filename Value="lazutils\testlazxml.pas"/>
@@ -158,6 +164,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSearchPathProcs"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="lazutils\testlazutf8.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazUTF8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="lazutils\testlazloggercase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazLoggerCase"/>
+      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

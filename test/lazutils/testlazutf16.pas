@@ -5,7 +5,7 @@ unit TestLazUTF16;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazUTF8, LazUTF16, LazLogger;
+  Classes, SysUtils, fpcunit, TestGlobals, LazUTF8, LazUTF16, LazLogger;
 
 type
 

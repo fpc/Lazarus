@@ -1,4 +1,4 @@
-unit testfileutil;
+unit TestFileUtil;
 
 {$mode objfpc}{$H+}
 

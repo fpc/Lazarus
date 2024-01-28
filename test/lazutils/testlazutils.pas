@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit,
-  testglobals, LazLogger, LazUTF8, LazStringUtils, LazFileUtils;
+  TestGlobals, LazLogger, LazStringUtils, LazFileUtils;
 
 type
 
@@ -33,7 +33,7 @@ type
 
 implementation
 
-{ TTestLazUTF8 }
+{ TTestLazUtils }
 
 procedure TTestLazUtils.TestReplaceSubstring;
 

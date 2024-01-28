@@ -29,9 +29,10 @@ type
     procedure TestUTF8Pos;
     procedure TestUTF8ToUTF16;
     procedure TestFindInvalidUTF8;
-    procedure TestFindUnicodeToUTF8;
+    procedure TestUnicodeToUTF8;
     procedure TestUTF8QuotedStr;
     procedure TestUTF8FixBroken;
+    procedure TestUTF8CompareLatinTextFast;
   end;
 
 implementation
@@ -168,13 +169,13 @@ begin
   t(#$ED#$A0#$80,0,'3 byte encoding for reserved UTF-16 surrogate halve');
 end;
 
-procedure TTestLazUTF8.TestFindUnicodeToUTF8;
+procedure TTestLazUTF8.TestUnicodeToUTF8;
 
   procedure t(CodePoint: cardinal; Expected: string);
   var
     Actual: String;
   begin
-    Actual:=LazUTF8.UnicodeToUTF8(CodePoint);
+    Actual:=UnicodeToUTF8(CodePoint);
     AssertEquals('CodePoint='+HexStr(CodePoint,8),
       dbgMemRange(PChar(Expected),length(Expected)),
       dbgMemRange(PChar(Actual),length(Actual)));
@@ -265,6 +266,30 @@ begin
   t(#$F0#$CF#$BF#$BF,' '#$CF#$BF' ');
   t(#$F4#$8F#$BF#$BF,#$F4#$8F#$BF#$BF);
   t(#$F4#$90#$80#$80,'    ');
+end;
+
+procedure TTestLazUTF8.TestUTF8CompareLatinTextFast;
+var
+  a, b, c: String;
+begin
+  // ASCII
+  AssertTrue(UTF8CompareLatinTextFast('abc', 'xyz') < 0);
+  AssertTrue(UTF8CompareLatinTextFast('xyz', 'abc') > 0);
+  AssertTrue(UTF8CompareLatinTextFast('ijk', 'ijk') = 0);
+  // ASCII <-> non-ASCII
+  AssertTrue(UTF8CompareLatinTextFast('hello', 'привет') < 0);
+  AssertTrue(UTF8CompareLatinTextFast('привет', 'hello') > 0);
+  // non-ASCII
+  AssertTrue(UTF8CompareLatinTextFast('привет', 'नमस्ते') < 0); // 'Hello' in Sankrit
+  AssertTrue(UTF8CompareLatinTextFast('नमस्ते', 'привет') > 0);
+  AssertTrue(UTF8CompareLatinTextFast('привет', 'привет') = 0);
+  // Issue #40014
+  a := 'abcä';
+  b := 'abcx';
+  c := 'abc|';     // '|' comes after ['a'..'z','A'..'Z'] in ASCII table.
+  AssertTrue('UTF8CompareLatinTextFast('+a+', '+b+')', UTF8CompareLatinTextFast(a, b) > 0);
+  AssertTrue('UTF8CompareLatinTextFast('+a+', '+c+')', UTF8CompareLatinTextFast(a, c) > 0);
+  AssertTrue('UTF8CompareLatinTextFast('+b+', '+c+')', UTF8CompareLatinTextFast(b, c) < 0);
 end;
 
 initialization

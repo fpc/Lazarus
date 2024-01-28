@@ -25,11 +25,11 @@ uses
   cthreads,
   {$ENDIF}
   Classes, consoletestrunner,
-  testglobals, testunits, dom,
+  TestGlobals, TestUnits, DOM,
   {Unit needed to set the LCL version and widget set name}
   LCLVersion, InterfaceBase, LCLPlatformDef, lazmouseandkeyinput, Interfaces,
-  TestLazXML, TestAvgLvlTree, TestLConvEncoding, testlazfileutils, 
-TestSearchPathProcs;
+  TestLazXML, TestAvgLvlTree, TestLConvEncoding, TestLazFileUtils, TestLazUTF8,
+  TestLazLoggerCase, TestSearchPathProcs;
   
 type
 

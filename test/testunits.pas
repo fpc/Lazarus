@@ -20,7 +20,7 @@
   to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
   Boston, MA 02110-1335, USA.
 }
-unit testunits;
+unit TestUnits;
 
 {$mode objfpc}{$H+}
 
@@ -28,11 +28,11 @@ interface
 
 uses
   TestLpi, BugTestCase,
-  bug8432, testfileutil,
+  bug8432, TestFileUtil,
   // lazutils
   TestLazUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
-  testpen, TestPreferredSize, TestTextStrings, TestListView
+  TestPen, TestPreferredSize, TestTextStrings, TestListView
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
   , testpagecontrol, idesemiautotests, lclsemiautotests
