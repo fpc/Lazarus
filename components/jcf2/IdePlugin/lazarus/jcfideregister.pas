@@ -73,6 +73,7 @@ const
   FORMAT_PROJECT_MENU_NAME = 'jcfAllFilesinProject';
   FORMAT_OPEN_MENU_NAME    = 'jcfAllOpenWindows';
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
+  FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegSettings';
   FORMAT_ABOUT_MENU_NAME   = 'jcfAbout';
   FORMAT_CATEGORY_IDECMD_NAME = 'jcfFormat';
   FORMAT_MENU_SECTION1     = 'jcfSection1';
@@ -141,8 +142,8 @@ begin
 
   // settings
   SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION1);
-  //RegisterIDEMenuCommand(SubSection, FORMAT_REG_SETTINGS_MENU_NAME, FORMAT_REG_SETTINGS_MENU,
-  //  lcJCFIDE.DoRegistrySettings);
+  RegisterIDEMenuCommand(SubSection, FORMAT_REG_SETTINGS_MENU_NAME, FORMAT_REG_SETTINGS_MENU,
+    lcJCFIDE.DoRegistrySettings);
   RegisterIDEMenuCommand(SubSection, FORMAT_SETTINGS_MENU_NAME, FORMAT_SETTINGS_MENU,
     lcJCFIDE.DoFormatSettings);
 

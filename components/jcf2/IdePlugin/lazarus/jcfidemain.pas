@@ -45,7 +45,8 @@ uses
   Menus, Dialogs, Controls,
   // local
   EditorConverter, FileConverter, Converter, ConvertTypes,
-  JcfUIConsts, JcfStringUtils, JcfSettings, fAbout, frFiles;
+  JcfUIConsts, JcfStringUtils, JcfSettings, fAbout, frFiles,
+  JcfRegistrySettings, fRegistrySettings;
 
 type
 
@@ -400,12 +401,9 @@ begin
 end;
 
 procedure TJcfIdeMain.DoRegistrySettings(Sender: TObject);
-{var
+var
   lcAbout: TfmRegistrySettings;
-}
 begin
-  ShowMessage('unimplemented');
-{ TODO: convert JCF registry settings (it contains some TJvXXX components atm)
   if not GetRegSettings.HasRead then
     GetRegSettings.ReadAll;
 
@@ -415,7 +413,6 @@ begin
   finally
     lcAbout.Free;
   end;
-}
 end;
 
 procedure TJcfIdeMain.LogIDEMessage(const psFile, psMessage: string;

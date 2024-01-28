@@ -11,6 +11,7 @@ resourcestring
   FORMAT_PROJECT_MENU     = '&All Files in Project';
   FORMAT_OPEN_MENU        = 'All &Open Windows';
   FORMAT_SETTINGS_MENU    = '&Format Settings ...';
+  FORMAT_REG_SETTINGS_MENU= 'Global Settings ...';
   FORMAT_ABOUT_MENU       = '&About ...';
   FORMAT_CATEGORY_IDECMD  = 'JEDI Code Format';
 
@@ -329,6 +330,55 @@ resourcestring
   lisImbalancedCommentAct = 'Imbalanced comment action';
   lisErrorAct = 'Error';
   lisWarnAct = 'Warn';
+
+
+  //Registry Settings
+  lisCnfCaption='JCF Global Settings';
+  // tabs
+  lisCnfTabGeneral='General';
+  lisCnfTabLogFile='Log file';
+  lisCnfTabExclusions='Exclusions';
+  //lisCnfDelphiIDE='Delphi IDE';
+  // tab general
+  lisHintApplicationDefault='Application Default: ';
+  lisCnfGenConvertSettingsFile='Convert settings file';
+  lisCnfGenWriteSettings='&Write settings file';
+  lisCnfGenAlways='Always';
+  lisCnfGenFail='Fail quietly';
+  lisCnfGenNever='Never';
+  lisCnfGenOnParseError='On parse error';
+
+  lisCnfGenShowParseTree='Show parse &tree during parse';
+
+  //lisCnfGenMru='MRU max items';
+  //lisCnfGenClearMru='Clear MRU';
+  //lisCnfGenCheckMultibyte='Check for &multibyte chars';
+
+  // tab Log File
+  lisCnfLogDetailLevel='Log file detail level';
+  lisCnfLogErrorsOnly='Errors only';
+  lisCnfLogFile='File';
+  lisCnfLogToken='Token';
+  lisCnfLogFileDir='Log file directory';
+  lisCnfLogTemp='Temp';
+  lisCnfLogApplication='Application';
+  lisCnfLogSpecified='Specified';
+  lisCnfLogSelectDir='Select specified directory';
+  lisCnfLogViewLog='View log after each run';
+  lisCnfLogTime='Log time taken to process';
+  lisCnfLogViewLogNow='View Log now';
+  lisCnfLogBackupFileExt='Backup file extension';
+  lisCnfLogOutputFileExt='Output file extension';
+  //tab Exclusions
+  lisCnfExcludeFiles='Individual files to exclude from batch processing:';
+  lisCnfExcludeDirs='Directories to exclude from batch processing:';
+  //tab Delphi Ide
+  //lisCnfIdeIntegration='&Editor Integration';
+  //lisCnfIdeFormatAfterLoad='Format after &Load';
+  //lisCnfIdeFormatBeforeSave='Format before &Save';
+
+  lisCnfOk='Ok';
+  lisCnfCancel='Cancel';
 
 implementation
 

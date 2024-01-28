@@ -275,6 +275,10 @@
         <Filename Value="jcfuiconsts.pas"/>
         <UnitName Value="JcfUIConsts"/>
       </Item>
+      <Item>
+        <Filename Value="..\..\Ui\Settings\fRegistrySettings.pas"/>
+        <UnitName Value="fRegistrySettings"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

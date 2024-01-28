@@ -15,7 +15,8 @@ uses
   frReservedCapsSettings, frAnyCapsSettings, frIdentifierCapsSettings, 
   frNotIdentifierCapsSettings, frUnitCaps, frReplace, frUses, frTransform, 
   frAsm, frPreProcessor, Diff, diffmerge, EditorConverter, Delay, JcfHelp, 
-  JcfUiToolsGUI, fAbout, fJcfErrorDisplay, JcfUIConsts, LazarusPackageIntf;
+  JcfUiToolsGUI, fAbout, fJcfErrorDisplay, JcfUIConsts, fRegistrySettings, 
+  LazarusPackageIntf;
 
 implementation
 

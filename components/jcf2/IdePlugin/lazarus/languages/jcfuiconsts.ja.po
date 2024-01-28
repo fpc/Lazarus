@@ -45,6 +45,10 @@ msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
 msgstr "プロジェクト内すべてのファイル(&A)"
 
+#: jcfuiconsts.format_reg_settings_menu
+msgid "Global Settings ..."
+msgstr ""
+
 #: jcfuiconsts.format_settings_menu
 #, fuzzy
 #| msgid "&Format Settings"
@@ -397,6 +401,126 @@ msgstr "整形済みコメント"
 msgid "Run &only these"
 msgstr "コメントのみ埋め込む(&o)"
 
+#: jcfuiconsts.liscnfcancel
+msgid "Cancel"
+msgstr ""
+
+#: jcfuiconsts.liscnfcaption
+msgid "JCF Global Settings"
+msgstr ""
+
+#: jcfuiconsts.liscnfexcludedirs
+msgid "Directories to exclude from batch processing:"
+msgstr ""
+
+#: jcfuiconsts.liscnfexcludefiles
+msgid "Individual files to exclude from batch processing:"
+msgstr ""
+
+#: jcfuiconsts.liscnfgenalways
+#, fuzzy
+msgctxt "jcfuiconsts.liscnfgenalways"
+msgid "Always"
+msgstr "常に行う"
+
+#: jcfuiconsts.liscnfgenconvertsettingsfile
+msgid "Convert settings file"
+msgstr ""
+
+#: jcfuiconsts.liscnfgenfail
+msgid "Fail quietly"
+msgstr ""
+
+#: jcfuiconsts.liscnfgennever
+#, fuzzy
+msgctxt "jcfuiconsts.liscnfgennever"
+msgid "Never"
+msgstr "なくす"
+
+#: jcfuiconsts.liscnfgenonparseerror
+msgid "On parse error"
+msgstr ""
+
+#: jcfuiconsts.liscnfgenshowparsetree
+msgid "Show parse &tree during parse"
+msgstr ""
+
+#: jcfuiconsts.liscnfgenwritesettings
+msgid "&Write settings file"
+msgstr ""
+
+#: jcfuiconsts.liscnflogapplication
+msgid "Application"
+msgstr ""
+
+#: jcfuiconsts.liscnflogbackupfileext
+msgid "Backup file extension"
+msgstr ""
+
+#: jcfuiconsts.liscnflogdetaillevel
+msgid "Log file detail level"
+msgstr ""
+
+#: jcfuiconsts.liscnflogerrorsonly
+msgid "Errors only"
+msgstr ""
+
+#: jcfuiconsts.liscnflogfile
+msgid "File"
+msgstr ""
+
+#: jcfuiconsts.liscnflogfiledir
+msgid "Log file directory"
+msgstr ""
+
+#: jcfuiconsts.liscnflogoutputfileext
+msgid "Output file extension"
+msgstr ""
+
+#: jcfuiconsts.liscnflogselectdir
+msgid "Select specified directory"
+msgstr ""
+
+#: jcfuiconsts.liscnflogspecified
+msgid "Specified"
+msgstr ""
+
+#: jcfuiconsts.liscnflogtemp
+msgid "Temp"
+msgstr ""
+
+#: jcfuiconsts.liscnflogtime
+msgid "Log time taken to process"
+msgstr ""
+
+#: jcfuiconsts.liscnflogtoken
+msgid "Token"
+msgstr ""
+
+#: jcfuiconsts.liscnflogviewlog
+msgid "View log after each run"
+msgstr ""
+
+#: jcfuiconsts.liscnflogviewlognow
+msgid "View Log now"
+msgstr ""
+
+#: jcfuiconsts.liscnfok
+msgid "Ok"
+msgstr ""
+
+#: jcfuiconsts.liscnftabexclusions
+msgid "Exclusions"
+msgstr ""
+
+#: jcfuiconsts.liscnftabgeneral
+msgid "General"
+msgstr ""
+
+#: jcfuiconsts.liscnftablogfile
+msgid "Log file"
+msgstr ""
+
 #: jcfuiconsts.liscommentsremoveemptycurlybracescomments
 msgid "Remove empty '{ }' comments"
 msgstr "空の '{ }' コメントを除去する"
@@ -498,6 +622,10 @@ msgstr ""
 #, object-pascal-format
 msgid "Version that wrote this file: %s"
 msgstr "このファイルが書かれたバージョン：%s"
+
+#: jcfuiconsts.lishintapplicationdefault
+msgid "Application Default: "
+msgstr ""
 
 #: jcfuiconsts.lisimbalancedcommentact
 msgid "Imbalanced comment action"
