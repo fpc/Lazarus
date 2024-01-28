@@ -40,7 +40,7 @@ See http://www.gnu.org/licenses/gpl.html
 interface
 
 uses
-  Registry, Classes, SysUtils,
+  Classes, SysUtils, IniFiles,
   { local }
   ConvertTypes;
 
@@ -52,7 +52,7 @@ type
 
   TJCFRegistrySettings = class(TObject)
   private
-    fcReg:     TRegIniFile;
+    fcReg:     TIniFile;
     fbHasRead: boolean;
 
     { general settings }
@@ -239,7 +239,7 @@ end;
 constructor TJCFRegistrySettings.Create;
 begin
   inherited;
-  fcReg := TRegIniFile.Create(REG_ROOT_KEY);
+  fcReg := TIniFile.Create(GetConfigFileNameJcf());
 
   fcExclusionsFiles := TStringList.Create;      // Will compare with CompareText.
   fcExclusionsFiles.UseLocale := False;
@@ -367,7 +367,7 @@ begin
   feLogPlace := TLogPlace(fcReg.ReadInteger(REG_LOG_SECTION, REG_LOG_PLACE,
     Ord(eLogTempDir)));
   fsSpecifiedDirectory := fcReg.ReadString(REG_LOG_SECTION,
-    REG_SPECIFIED_DIRECTORY, 'c:\');
+    REG_SPECIFIED_DIRECTORY,  {$ifdef Windows} 'c:\' {$else}'/'{$endif});
   fbViewLogAfterRun := fcReg.ReadBool(REG_LOG_SECTION, REG_VIEW_LOG_AFTER_RUN, False);
   fbLogTime  := fcReg.ReadBool(REG_LOG_SECTION, REG_LOG_TIME, False);
   fbLogStats := fcReg.ReadBool(REG_LOG_SECTION, REG_LOG_STATS, False);

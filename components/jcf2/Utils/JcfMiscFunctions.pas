@@ -50,6 +50,8 @@ interface
 uses
   Classes, SysUtils, JcfStringUtils, lconvencoding;
 
+type
+  GetConfigFileNameFunction=function:string;
 
 function GetApplicationFolder: string;
 
@@ -65,6 +67,10 @@ function SetFileNameExtension(const psFileName, psExt: string): string;
 procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
 function ReadFileToUTF8String(AFilename: string): string;
+function GetConfigFileNameJcf:string;
+
+var
+  GetConfigFileNameJcfFunction:GetConfigFileNameFunction = nil;
 
 implementation
 
@@ -331,5 +337,26 @@ begin
   end;
 end;
 {$pop}
+
+function JcfApplicationName: string;
+begin
+  Result := 'JediCodeFormat';
+end;
+
+function GetConfigFileNameJcf: string;
+var
+  lOld: TGetAppNameEvent;
+begin
+  if Assigned(GetConfigFileNameJcfFunction) then
+    Exit(GetConfigFileNameJcfFunction());
+
+  lOld := OnGetApplicationName;
+  OnGetApplicationName := @JcfApplicationName;
+  try
+    Result := GetAppConfigDir(True) + 'JediCodeFormat.ini';
+  finally
+    OnGetApplicationName := lOld;
+  end;
+end;
 
 end.

@@ -1,5 +1,6 @@
-unit RegistrySettings;
-
+unit RegistrySettings deprecated 'Not used by JPF component';
+// Unit not used in any package.
+// TODO: delete from jcfbase and delete file.
 {(*}
 (*------------------------------------------------------------------------------
  Delphi Code formatter source code 
@@ -38,7 +39,7 @@ interface
     this object serves as both the root and the section
   }
 uses
-  Registry, Classes, SysUtils,
+  IniFiles, Classes, SysUtils,
   { local }
   SettingsStream;
 
@@ -46,7 +47,7 @@ type
 
   TSettingsRegistryOutput = class(TSettingsOutput)
   private
-    fReg: TRegIniFile;
+    fReg: TIniFile;
     fsSection: string;
 
   public
@@ -70,13 +71,13 @@ type
 
   TSettingsInputRegistry = class(TSettingsInput)
   private
-    fReg: TRegIniFile;
+    fReg: TIniFile;
     fsSection: string;
     fbOwnReg: boolean;
 
   public
     constructor Create(const psRootKey: string); overload;
-    constructor Create(const pcReg: TRegIniFile; const psSection: string); overload;
+    constructor Create(const pcReg: TIniFile; const psSection: string); overload;
 
     destructor Destroy; override;
 
@@ -107,8 +108,7 @@ begin
   Assert(psRootKey <> '');
   inherited Create;
 
-  fReg := TRegIniFile.Create;
-  fReg.OpenKey(psRootKey, True);
+  fReg := TIniFile.Create(psRootKey);
   fsSection := '';
 end;
 
@@ -182,14 +182,13 @@ begin
   Assert(psRootKey <> '');
   inherited Create;
 
-  fReg := TRegIniFile.Create;
-  fReg.OpenKey(psRootKey, True);
+  fReg := TIniFile.Create(psRootKey);
 
   fsSection := '';
   fbOwnReg  := True;
 end;
 
-constructor TSettingsInputRegistry.Create(const pcReg: TRegIniFile;
+constructor TSettingsInputRegistry.Create(const pcReg: TIniFile;
   const psSection: string);
 begin
   Assert(psSection <> '');

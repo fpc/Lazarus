@@ -58,9 +58,6 @@ type
   TShowParseTreeOption = (eShowAlways, eShowOnError, eShowNever);
 
 const
-  REG_ROOT_KEY = '\Software\Jedi\JediCodeFormat';
-
-const
   SOURCE_FILE_FILTERS =
     'All source|*.pas; *.dpr; *.dpk; *.pp; *.lpr; *.lpk; *.txt|' +
     'Delphi source (*.pas, *.dpr, *.dpk)|*.pas; *.dpr; *.dpk|' +
