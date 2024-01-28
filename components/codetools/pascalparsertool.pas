@@ -4847,6 +4847,11 @@ begin
       ReadConstant(true,false,[]);
     end;
   end;
+  // read record align.
+  if (ClassDesc=ctnRecordType) and IsForward and UpAtomIs('ALIGN') then begin
+    ReadNextAtom;
+    ReadConstant(true,false,[]);
+  end;
   if CurPos.Flag<>cafSemicolon then
     UndoReadNextAtom;
   // close class

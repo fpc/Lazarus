@@ -45,6 +45,7 @@ type
     procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
     procedure TestRecord_Nonkeywords;
+    procedure TestRecord_Align;
     procedure TestDeprecated;
     procedure TestMissingGenericKeywordObjFPCFail;
     procedure TestParseGenericsDelphi;
@@ -399,6 +400,18 @@ begin
   '    protected: word;',
   '    published: word;',
   '  end;',
+  'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestRecord_Align;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  t = record',
+  '    pad: word;',
+  '  end align 16;',
   'begin']);
   ParseModule;
 end;
