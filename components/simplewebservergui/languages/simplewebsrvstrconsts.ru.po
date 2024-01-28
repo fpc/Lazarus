@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: simplewebsrvstrconsts.rsswadd
 msgid "Add"
@@ -41,8 +41,8 @@ msgstr "Не удалось привязать сокет"
 
 #: simplewebsrvstrconsts.rsswbrowserfilenotfound
 #, object-pascal-format
-msgid "Browser file not found: \"%s\""
-msgstr ""
+msgid "Browser file not found: \"%s\". See"
+msgstr "Файл браузера не найден: \"%s\". Смотрите"
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
@@ -176,8 +176,8 @@ msgid "Location already used."
 msgstr "Расположение уже используется."
 
 #: simplewebsrvstrconsts.rsswmissingbrowserfilename
-msgid "Missing browser filename"
-msgstr ""
+msgid "Missing browser filename. See"
+msgstr "Не указано имя файла браузера. Смотрите"
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
 msgid "missing controller"

@@ -42,7 +42,7 @@ msgstr "Ligação ao soquete falhou"
 
 #: simplewebsrvstrconsts.rsswbrowserfilenotfound
 #, object-pascal-format
-msgid "Browser file not found: \"%s\""
+msgid "Browser file not found: \"%s\". See"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
@@ -177,7 +177,7 @@ msgid "Location already used."
 msgstr "Local já está em uso."
 
 #: simplewebsrvstrconsts.rsswmissingbrowserfilename
-msgid "Missing browser filename"
+msgid "Missing browser filename. See"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller

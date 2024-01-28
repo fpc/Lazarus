@@ -41,7 +41,7 @@ msgstr "套接字绑定失败"
 
 #: simplewebsrvstrconsts.rsswbrowserfilenotfound
 #, object-pascal-format
-msgid "Browser file not found: \"%s\""
+msgid "Browser file not found: \"%s\". See"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
@@ -176,7 +176,7 @@ msgid "Location already used."
 msgstr "路径已被使用。"
 
 #: simplewebsrvstrconsts.rsswmissingbrowserfilename
-msgid "Missing browser filename"
+msgid "Missing browser filename. See"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
