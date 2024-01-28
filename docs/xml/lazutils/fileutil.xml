@@ -1996,7 +1996,7 @@ may seem very convenient at first, but it is very easy to create memory leaks
 if string list instances are not freed properly.
 </p>
 <p>
-FindAllFiles uses the <link name="TListFileSearcher">TListFileSearcher</link> 
+FindAllFiles uses the <link id="TListFileSearcher">TListFileSearcher</link> 
 class to perform the file search using the specified parameter values.
 </p>
 </descr>
