@@ -526,12 +526,24 @@ begin
 end;
 
 function TDbgRspProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean;
+
+  procedure DoLocalStep(TheThread: TDbgThread);
+  var
+    res: boolean;
+    s: string;
+  begin
+    res := RspConnection.SingleStep();
+    TDbgRspThread(TheThread).ResetPauseStates; // So BeforeContinue will not run again
+    TDbgRspThread(TheThread).FIsPaused := True;
+    if res then
+      RspConnection.WaitForSignal(s)
+    else
+      DebugLn(DBG_WARNINGS, ['Error local single stepping thread ', TheThread.ID]);
+  end;
+
 var
   ThreadToContinue: TDbgRspThread;
   PC: word;
-  s: string;
-  tempState: integer;
-  initRegs: TInitializedRegisters;
 begin
   // Terminating process and all threads
   if FIsTerminating or (FStatus = SIGHUP) then
@@ -559,23 +571,8 @@ begin
         TempRemoveBreakInstructionCode(PC);
         ThreadToContinue.BeforeContinue;
 
-        while (ThreadToContinue.GetInstructionPointerRegisterValue = PC) do
-        begin
-          result := RspConnection.SingleStep();
-          TDbgRspThread(ThreadToContinue).ResetPauseStates; // So BeforeContinue will not run again
-          ThreadToContinue.FIsPaused := True;
-          if result then
-          begin
-            tempState := RspConnection.WaitForSignal(s);  // TODO: Update registers cache for this thread
-            if (tempState = SIGTRAP) then
-              break; // if the command jumps back an itself....
-          end
-          else
-          begin
-            DebugLn(DBG_WARNINGS, ['Error single stepping other thread ', ThreadToContinue.ID]);
-            break;
-          end;
-        end;
+        if (ThreadToContinue.GetInstructionPointerRegisterValue = PC) then
+          DoLocalStep(ThreadToContinue);
       end;
     end;
 
@@ -609,11 +606,15 @@ begin
     if not FIsTerminating then
     begin
       AThread.BeforeContinue;
-      if SingleStep then
-        result := RspConnection.SingleStep()
-      else
+
+      // In qemu, needs to step over breakpoint for continue command to work
+      DoLocalStep(AThread);
+
+      if not SingleStep then
+      begin
         result := RspConnection.Continue();
-      TDbgRspThread(AThread).ResetPauseStates;
+        TDbgRspThread(AThread).ResetPauseStates;
+      end;
       FStatus := 0;  // should update status by calling WaitForSignal
     end;
 
@@ -624,7 +625,6 @@ end;
 function TDbgRspProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
 var
   s: string;
-  initRegs: TInitializedRegisters;
 begin
   debugln(DBG_VERBOSE, ['Entering WaitForDebugEvent, FStatus = ', FStatus]);
   // Currently only single process/thread
