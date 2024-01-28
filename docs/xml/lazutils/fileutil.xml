@@ -1439,12 +1439,37 @@ specified options.
 </short>
 <descr>
 <p>
-Search is a method used to search for files or directories matching a 
-specified mask found in the specified search paths. <var>ASearchPath</var> 
-contains the locations examined in the method, and can contain multiple path 
-names separated by the value in <var>PathSeparator</var>. Each delimited path 
-value in <var>ASearchPath</var> is resolved by calling the 
-<var>ResolveDots</var> function, and processed in the method.
+<var>Search</var> is a method used to search for files or directories matching 
+the specified file masks found in the specified search paths.
+</p>
+<p>
+<var>ASearchPath</var> contains one or more paths examined in the method, and 
+can contain multiple path names separated by the value in 
+<var>PathSeparator</var>. Each delimited path value in ASearchPath is resolved 
+by calling the <var>ResolveDots</var> function, and processed in the method. 
+For example:
+</p>
+<code>
+'c:\path\to\dir;c:\path\to\another\dir'
+'/home/user/path/to/dir;/home/user/path/to/another/dir'
+</code>
+<p>
+Please note that leading or trailing white space in a search path is treated as 
+part of the path specification. It is not trimmed, and will most likely prevent 
+a match for the path value.
+</p>
+<p>
+<var>ASearchMask</var> contains one or more file masks which determine the 
+matching files in the method. It may contain multiple file masks separated by 
+the value in the <var>MaskSeparator</var> property. For example:
+</p>
+<code>
+'*.pas;*.pp;*.lpr'
+</code>
+<p>
+Please note that leading or trailing white space in a file mask is treated as 
+part of the file specification. It is not trimmed, and will most likely prevent 
+a match for the mask value.
 </p>
 <p>
 The value in the <var>CaseSensitive</var> argument is used to add or remove 
@@ -1453,8 +1478,9 @@ mask options for the search mask in ASearchMask. Set CaseSensitive to
 sensitivity.
 </p>
 <p>
-<var>ASearchSubDirs</var> includes subdirectories found in ASearchMask in the 
-search process when set to <b>True</b>.
+<var>ASearchSubDirs</var> includes subdirectories found in ASearchPath in the 
+search process when set to <b>True</b>. When set to <b>False</b> only the 
+specified paths are searched and their subdirectories are ignored.
 </p>
 <p>
 Set the value in <var>FileAttribute</var> to control the file attributes 
@@ -1499,12 +1525,12 @@ already been called and has not completed.
 </element>
 <element name="TFileSearcher.Search.ASearchPath">
 <short>
-Base path for searching files.
+One or more paths used to search for files.
 </short>
 </element>
 <element name="TFileSearcher.Search.ASearchMask">
 <short>
-Mask used to determine file names that match in the search.
+One or more masks used to determine file names that match in the search.
 </short>
 </element>
 <element name="TFileSearcher.Search.ASearchSubDirs">
@@ -1873,10 +1899,24 @@ instance.
 <p>
 <var>TListDirectoriesSearcher</var> is a <var>TFileSearcher</var> descendant 
 used to store directory names matching the specified search criteria in a 
-TStrings class instance.
+TStrings class instance. It extends the ancestor class by implementing an 
+internal member used to store the TStrings class instance.
+</p>
+<p>
+Use the <var>PathSeparator</var> property to specify the separator used between 
+path names passed as an argument to the <var>Search</var> method.
+</p>
+<p>
+TListDirectoriesSearcher is used to implement the FindAllDirectories routine.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TFileSearcher"/>
+<link id="TFileSearcher.PathSeparator"/>
+<link id="TFileSearcher.Search"/>
+<link id="TListFileSearcher"/>
+<link id="FindAllDirectories"/>
+</seealso>
 </element>
 
 <element name="TListDirectoriesSearcher.FDirectoriesList">
@@ -1943,43 +1983,42 @@ Returns the list of files in the specified path matching the search criteria.
 </short>
 <descr>
 <p>
-<var>FindAllFiles</var> is an overloaded routine used to populate a 
-<var>TStringList</var> class instance with a list of files match the 
-specified search criteria. The procedure variant uses an existing TStringList 
-class instance to store the matching file names. The function variant creates 
-the TStringList class instance used as the return value for the method.
+<var>FindAllFiles</var> is a routine used to gather a list of file names found 
+in the specified search paths which match the specified file masks. Overloaded 
+variants are provided which allow the list of matching file names to be 
+returned in different manners. 
 </p>
-<remark>
-The function variant of <var>FindAllFiles</var> creates the string list 
-internally. This may seem very convenient at first, but it is very easy to 
-create memory leaks if string list instances are not freed properly.
-</remark>
+<p>
+The procedure variant uses an existing TStringList class instance to store the 
+matching file names. The function variant creates a new TStringList instance 
+which is used as the return value. It creates the string list internally. This 
+may seem very convenient at first, but it is very easy to create memory leaks 
+if string list instances are not freed properly.
+</p>
+<p>
+FindAllFiles uses the <link name="TListFileSearcher">TListFileSearcher</link> 
+class to perform the file search using the specified parameter values.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TListFileSearcher"/>
+</seealso>
 <example file="examples/fileutil.findallfiles.pas"/>
 </element>
 <element name="FindAllFiles.Result">
 <short>
-List of file names matching the search criteria.
-</short>
-<descr>
-<p>
+TStringList instance with the file names matching the search criteria.
 The StringList is created in the FindAllFiles function; you should not 
-instantiate it before calling the function.
-</p>
-</descr>
+instantiate it before calling the function, and it must be freed in the calling 
+routine.
+</short>
 </element>
 <element name="FindAllFiles.AList">
 <short>
-TStringList used to store file names matching the search criteria.
+TStringList used to store file names matching the search criteria. AList must 
+be instantiated before it is passed as an argument to the method. The 
+TStringList instance must also be freed by the routine where it was created.
 </short>
-<descr>
-<p>
-AList must be instantiated before it is passed as an argument to the method. 
-The TStringList instance must also be freed by the routine where it was 
-created.
-</p>
-</descr>
 </element>
 <element name="FindAllFiles.SearchPath">
 <short>
@@ -1988,31 +2027,36 @@ Base path for searching files.
 </element>
 <element name="FindAllFiles.SearchMask">
 <short>
-A list of masks, separated by a semicolon (;) to which found files should 
-match.
+A list of file masks, separated by a semicolon (;), used to determine which 
+files are a match in the routine. The mask can contain wildcards like * and ? 
+and it also supports sets like [a-d,x]. See the Masks unit for more details. 
+The default value is an empty string ('') and causes the all files mask for the 
+platform to be used.
 </short>
-<descr>
-<p>
-A list of masks, separated by a semicolon (;) to which found files should 
-match. The mask can contain wildcards like * and ? and it also supports sets 
-like [a-d,x]. See the Masks unit for more details.
-</p>
-</descr>
 </element>
 <element name="FindAllFiles.SearchSubDirs">
-<short><b>True</b> to search sub-directories in the process.</short>
-<descr>
-<p>
-Parameter DirAttr is int file attribute: if file-system item has this 
-attribute(s), it is considered as a directory. It can be 
-<var>faDirectory</var>, <var>faSymLink</var>, (<var>faDirectory</var>+
-<var>faSymLink</var>) or maybe another bits can be used.
-</p>
-</descr>
+<short>
+<b>True</b> to search for matching files in subdirectories. 
+</short>
+</element>
+<element name="FindAllFiles.DirAttr">
+<short>
+Specifies the file attribute which indicates whether a file system entry is 
+treated as a directory. It can contain <var>faDirectory</var>, 
+<var>faSymLink</var>, (<var>faDirectory</var>+ <var>faSymLink</var>), or other 
+bits can be used. The default value is faDirectory.
+</short>
+</element>
+<element name="FindAllFiles.MaskSeparator">
+<short>
+Separator used between file masks in the SearchMask argument. Default value is 
+';'.
+</short>
 </element>
 <element name="FindAllFiles.PathSeparator">
 <short>
-If search recursively sub directories.
+Separator used between path names in the SearchPath argument. Default value is 
+';'.
 </short>
 </element>
 
@@ -2031,7 +2075,9 @@ function variant allocates a TStringList class instance used to capture the
 matching directory names.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TListDirectoriesSearcher"/>
+</seealso>
 </element>
 <element name="FindAllDirectories.Result">
 <short>
@@ -2050,12 +2096,12 @@ Path(s) to the directories examined in the routine.
 </element>
 <element name="FindAllDirectories.SearchSubDirs">
 <short>
-<b>True</b> to recurse into sub-directories in the search.
+<b>True</b> to recurse into subdirectories in the search.
 </short>
 </element>
 <element name="FindAllDirectories.PathSeparator">
 <short>
-Delimiter used to separate path names in the SearchPath parameter.
+Delimiter used between path names in the SearchPath parameter.
 </short>
 </element>
 
