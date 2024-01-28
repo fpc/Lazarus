@@ -111,6 +111,7 @@ uses
   Classes,
   SysUtils,
   Windows,
+  LazLinkedList,
   FpDbgUtil,
   FpDbgClasses,
   process,
@@ -178,6 +179,27 @@ type
     property Process;
   end;
 
+  TDbgWinThreadNameInternal = class(TLinkListItem)
+   Fid: TThreadID;
+   Fthreadname: shortstring;
+   procedure  SetInfo(id:TThreadID;const threadname:string);
+  end;
+
+  TDbgWinThreadNameList = class(TLinkList)
+  private
+   const
+    FMaxCounter = 10000;
+   var
+    FNumCounter: integer;
+  protected
+    function CreateItem: TLinkListItem; override;
+  public
+    procedure  ClearThread;
+    function   FindById(id:TThreadID):TDbgWinThreadNameInternal;
+    function   FetchThread(id:TThreadID):string;
+    function   AddThread(id:TThreadID;const threadname:string):Boolean;
+  end;
+
   { TDbgWinProcess }
 
   TDbgWinProcess = class(TDbgProcess)
@@ -186,6 +208,7 @@ type
     FProcProcess: TProcessUTF8;
     FJustStarted, FTerminated: boolean;
     FBitness: TBitness;
+    FThreadNameList: TDbgWinThreadNameList;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -374,6 +397,85 @@ begin
   DebugLn(DBG_WARNINGS and (_Wow64SuspendThread = nil), ['WARNING: Failed to get _Wow64SuspendThread']);
   {$endif}
 end;
+
+//TDbgWinThreadName
+
+procedure TDbgWinThreadNameInternal.SetInfo(id:TThreadID;const threadname:string);
+begin
+ Fid:=id;
+ Fthreadname:=threadname;
+end;
+
+//
+
+function TDbgWinThreadNameList.CreateItem: TLinkListItem;
+begin
+ Result:=TLinkListItem(TDbgWinThreadNameInternal.Create);
+end;
+
+procedure TDbgWinThreadNameList.ClearThread;
+begin
+ Clear;
+ FNumCounter:=0;
+end;
+
+function TDbgWinThreadNameList.FindById(id:TThreadID):TDbgWinThreadNameInternal;
+var
+ node:TDbgWinThreadNameInternal;
+begin
+ Result:=nil;
+ node:=TDbgWinThreadNameInternal(First);
+ while (node<>nil) do
+ begin
+  if (node.Fid=id) then
+  begin
+   Exit(node);
+  end;
+  node:=TDbgWinThreadNameInternal(node.Next);
+ end;
+end;
+
+function TDbgWinThreadNameList.FetchThread(id:TThreadID):string;
+var
+ node:TDbgWinThreadNameInternal;
+begin
+ Result:='';
+ node:=FindById(id);
+ if (node<>nil) then
+ begin
+  Result:=node.Fthreadname;
+  Delete(TLinkListItem(node));
+  Dec(FNumCounter);
+ end;
+end;
+
+function TDbgWinThreadNameList.AddThread(id:TThreadID;const threadname:string):Boolean;
+var
+ node:TDbgWinThreadNameInternal;
+begin
+ node:=FindById(id);
+ if (node<>nil) then
+ begin
+  node.SetInfo(id,threadname);
+ end else
+ begin
+
+  if (FNumCounter>=FMaxCounter) then
+  begin
+   //limit
+   Exit(False);
+  end;
+
+  node:=TDbgWinThreadNameInternal(GetNewItem);
+  node.SetInfo(id,threadname);
+  AddAsLast(TLinkListItem(node));
+  Inc(FNumCounter);
+ end;
+
+ Result:=True;
+end;
+
+//TThreadNameMap
 
 procedure TDbgWinProcess.LogLastError(AMsg: String);
 begin
@@ -564,6 +666,7 @@ begin
   {$else}
   FBitness := b64;
   {$endif}
+  FThreadNameList := TDbgWinThreadNameList.Create;
   inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
 end;
 
@@ -571,6 +674,7 @@ destructor TDbgWinProcess.Destroy;
 begin
   FInfo.hProcess:=0;
   FProcProcess.Free;
+  FThreadNameList.Free;
   inherited Destroy;
 end;
 
@@ -762,6 +866,9 @@ begin
     FProcProcess.Execute;
 
     Init(FProcProcess.ProcessID, 0);
+
+    FThreadNameList.ClearThread;
+
     Result:=true;
   except
     on E: Exception do
@@ -798,6 +905,9 @@ begin
   end;
 
   Init(APid, 0);
+
+  FThreadNameList.ClearThread;
+
   Result := true;
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
@@ -1027,6 +1137,7 @@ begin
           end;
         EXIT_PROCESS_DEBUG_EVENT: begin
             // Should never be here, since it detached
+            FThreadNameList.ClearThread;
             Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
             Done := False;
           end;
@@ -1369,6 +1480,10 @@ begin
                   FName := threadname;
                   FDoNotPollName := True;
                 end;
+              end else
+              with MDebugEvent.Exception.ExceptionRecord do
+              begin
+               FThreadNameList.AddThread(TThreadID(ExceptionInformation[2]),threadname);
               end;
             end;
             result := deInternalContinue;
@@ -1411,6 +1526,7 @@ begin
         SetExitCode(MDebugEvent.ExitProcess.dwExitCode);
         // Let the kernel close all debug-handles and close-up the
         // debuggee.
+        FThreadNameList.ClearThread;
         Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
         result := deExitProcess;
       end;
@@ -1440,6 +1556,8 @@ begin
 end;
 
 function TDbgWinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
+var
+  threadname: string;
 begin
   case MDebugEvent.dwDebugEventCode of
     CREATE_THREAD_DEBUG_EVENT :
@@ -1455,6 +1573,17 @@ begin
   else
     result := nil;
   end; {case}
+
+  if (result<>nil) then
+  begin
+   threadname:=FThreadNameList.FetchThread(result.ID);
+   if (threadname<>'') then
+    with TDbgWinThread(result) do
+    begin
+      FName := threadname;
+      FDoNotPollName := True;
+    end;
+  end;
 end;
 
 procedure TDbgWinProcess.StartProcess(const AThreadID: DWORD;const AInfo: TCreateProcessDebugInfo);
@@ -1517,6 +1646,7 @@ procedure TDbgWinProcess.TerminateProcess;
 begin
   Windows.TerminateProcess(Handle, 0);
   FTerminated := True;
+  FThreadNameList.ClearThread;
 end;
 
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
