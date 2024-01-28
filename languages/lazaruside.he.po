@@ -1335,6 +1335,10 @@ msgstr ""
 msgid "Config files"
 msgstr "קבצי תצורה:"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1499,6 +1503,10 @@ msgstr "גופן ברירת מחדל של העורך"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
@@ -3656,7 +3664,7 @@ msgid "&Load Icon"
 msgstr "טען סמל"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4366,6 +4374,18 @@ msgstr "שורה לא שמורה"
 #| msgid "Code folding"
 msgid "Code Folding"
 msgstr "קיפול קוד"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 #, fuzzy

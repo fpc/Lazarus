@@ -1280,6 +1280,10 @@ msgstr "Конфігурація і ціль"
 msgid "Config files"
 msgstr "Файли налаштувань"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Інша зневаджувальна інформація"
@@ -1429,6 +1433,10 @@ msgstr "Типовий шрифт редактора"
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
 msgstr "Типовий шрифт назви вкладки"
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -3462,7 +3470,9 @@ msgid "&Load Icon"
 msgstr "&Завантажити значок"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+#, fuzzy
+#| msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr "Підтримка довгих шляхів"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4133,6 +4143,18 @@ msgstr "Незбережений рядок"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "Згортання коду"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

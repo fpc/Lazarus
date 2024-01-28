@@ -1305,6 +1305,10 @@ msgstr ""
 msgid "Config files"
 msgstr "File Konfig:"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1465,6 +1469,10 @@ msgstr "Font editor default"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
@@ -3559,7 +3567,7 @@ msgid "&Load Icon"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4263,6 +4271,18 @@ msgstr ""
 #| msgid "Code folding"
 msgid "Code Folding"
 msgstr "Lipatan kode"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

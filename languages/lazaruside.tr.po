@@ -1277,6 +1277,10 @@ msgstr "Yapılandırma ve Hedef"
 msgid "Config files"
 msgstr "Yapılandırma dosyaları"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Diğer hata ayıklama bilgileri"
@@ -1426,6 +1430,10 @@ msgstr "Varsayılan düzenleyici yazı tipi"
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
 msgstr "Varsayılan sekme yazı tipi"
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -3431,7 +3439,9 @@ msgid "&Load Icon"
 msgstr "&Simge Yükle"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+#, fuzzy
+#| msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr "Uzun yol biçimlendirme"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4096,6 +4106,18 @@ msgstr "Kaydedilmemiş satır"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "Kod Katlama"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

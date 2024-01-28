@@ -1282,6 +1282,10 @@ msgstr "配置和目标"
 msgid "Config files"
 msgstr "配置文件"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "其他调试信息"
@@ -1431,6 +1435,10 @@ msgstr "默认编辑器字体"
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
 msgstr "默认标签页字体"
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -3465,7 +3473,9 @@ msgid "&Load Icon"
 msgstr "加载图标(&L)"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+#, fuzzy
+#| msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr "长路径意识"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4134,6 +4144,18 @@ msgstr "未保存行"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "代码折叠"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

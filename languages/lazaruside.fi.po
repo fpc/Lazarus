@@ -1282,6 +1282,10 @@ msgstr "Muoto ja kohde"
 msgid "Config files"
 msgstr "Asetustiedostot"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Muu virheenjäljitystieto"
@@ -1430,6 +1434,10 @@ msgstr "Editorin oletuskirjasin"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
@@ -3459,7 +3467,7 @@ msgid "&Load Icon"
 msgstr "&Lataa kuvake"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4141,6 +4149,18 @@ msgstr "Tallentamaton rivi"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "Koodin laskostus"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

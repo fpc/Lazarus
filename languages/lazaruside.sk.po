@@ -1279,6 +1279,10 @@ msgstr "Konfigurácia a cieľ"
 msgid "Config files"
 msgstr "Konfiguračné súbory"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Ďalšie informácie pre ladenie"
@@ -1429,6 +1433,10 @@ msgstr "Predvolený font editora"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
@@ -3469,7 +3477,7 @@ msgid "&Load Icon"
 msgstr "Načítať ikonu"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4150,6 +4158,18 @@ msgstr ""
 #| msgid "Code folding"
 msgid "Code Folding"
 msgstr "Skladanie kódu"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

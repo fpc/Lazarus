@@ -1301,6 +1301,10 @@ msgstr "Configuración y Objetivo"
 msgid "Config files"
 msgstr "Archivos de configuración"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Otra información de depuración"
@@ -1456,6 +1460,10 @@ msgstr "Fuente predeterminada del editor"
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
 msgstr "Fuente predeterminada de tab"
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -3563,7 +3571,9 @@ msgid "&Load Icon"
 msgstr "Cargar Icono"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+#, fuzzy
+#| msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr "Conciencia de la ruta larga"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4257,6 +4267,18 @@ msgstr "Línea sin guardar"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "Plegando código"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

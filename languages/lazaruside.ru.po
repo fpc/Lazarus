@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-20 19:29+0300\n"
+"PO-Revision-Date: 2024-01-28 23:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -1278,6 +1278,10 @@ msgstr "Настройка и целевая платформа"
 msgid "Config files"
 msgstr "Файлы настройки"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr "Текущий отладчик не поддерживает эту возможность."
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr "Прочая отладочная информация"
@@ -1427,6 +1431,10 @@ msgstr "Шрифт редактора по умолчанию"
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
 msgstr "Шрифт заголовка вкладки по умолчанию"
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
+msgstr "Положение и размер окна/консоли по умолчанию"
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -3460,8 +3468,8 @@ msgid "&Load Icon"
 msgstr "&Загрузить значок"
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
-msgstr "Поддержка длинных путей"
+msgid "Long path awareness (Windows 10 1607+)"
+msgstr "Поддержка длинных путей (Windows 10 1607+)"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -4129,6 +4137,18 @@ msgstr "Несохранённая строка"
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
 msgstr "Сворачивание кода"
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr "Задать столбцы/строки"
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr "Задать лево/верх"
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
+msgstr "Задать ширину/высоту"
 
 #: lazarusidestrconsts.dlgusecustomconfig
 msgid "Use additional compiler config file"

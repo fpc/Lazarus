@@ -1303,6 +1303,10 @@ msgstr ""
 msgid "Config files"
 msgstr "Fitxers de configuració:"
 
+#: lazarusidestrconsts.dlgconsolesizenotsupported
+msgid "Current debugger does not support this."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcootherdebugginginfo
 msgid "Other debugging info"
 msgstr ""
@@ -1463,6 +1467,10 @@ msgstr "Font de l'editor predeterminat"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
+msgstr ""
+
+#: lazarusidestrconsts.dlgdefaultwinpos
+msgid "Default Window/Console position and size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdefvaluecolor
@@ -3549,7 +3557,7 @@ msgid "&Load Icon"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpolongpathaware
-msgid "Long path awareness"
+msgid "Long path awareness (Windows 10 1607+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpomisc
@@ -4244,6 +4252,18 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgusecodefolding
 msgid "Code Folding"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolebuffer
+msgid "Set Columns/Rows"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolepos
+msgid "Set Left/Top"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseconsolesize
+msgid "Set Width/Height"
 msgstr ""
 
 #: lazarusidestrconsts.dlgusecustomconfig
