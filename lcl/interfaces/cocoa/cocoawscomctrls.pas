@@ -284,6 +284,9 @@ type
 implementation
 
 type
+  TCustomListViewAccess = class(TCustomListView);
+
+type
 
   { TUpdownCommonCallback }
 
