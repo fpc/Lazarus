@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: jcfuiconsts.format_about_menu
 msgid "&About ..."
@@ -45,7 +45,7 @@ msgstr "Все файлы &проекта"
 
 #: jcfuiconsts.format_reg_settings_menu
 msgid "Global Settings ..."
-msgstr ""
+msgstr "Глобальные параметры ..."
 
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings ..."
@@ -398,115 +398,116 @@ msgstr "Выполнять &только их"
 
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
-msgstr ""
+msgstr "Глобальные параметры JCF"
 
 #: jcfuiconsts.liscnfexcludedirs
 msgid "Directories to exclude from batch processing:"
-msgstr ""
+msgstr "Каталоги, исключаемые из пакетной обработки:"
 
 #: jcfuiconsts.liscnfexcludefiles
 msgid "Individual files to exclude from batch processing:"
-msgstr ""
+msgstr "Отдельные файлы, исключаемые из пакетной обработки:"
 
 #: jcfuiconsts.liscnfgenalways
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgenalways"
 msgid "Always"
 msgstr "Всегда"
 
 #: jcfuiconsts.liscnfgenconvertsettingsfile
 msgid "Convert settings file"
-msgstr ""
+msgstr "Файл параметров для преобразования"
 
 #: jcfuiconsts.liscnfgenfail
 msgid "Fail quietly"
-msgstr ""
+msgstr "Не сообщать об ошибках"
 
 #: jcfuiconsts.liscnfgennever
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgennever"
 msgid "Never"
 msgstr "Никогда"
 
 #: jcfuiconsts.liscnfgenonparseerror
 msgid "On parse error"
-msgstr ""
+msgstr "При ошибке анализа"
 
 #: jcfuiconsts.liscnfgenshowparsetree
 msgid "Show parse &tree during parse"
-msgstr ""
+msgstr "Показывать &дерево анализа"
 
 #: jcfuiconsts.liscnfgenwritesettings
 msgid "&Write settings file"
-msgstr ""
+msgstr "Записывать файл &параметров"
 
 #: jcfuiconsts.liscnflogapplication
-msgid "Application"
-msgstr ""
+#, object-pascal-format
+msgid "Application: %s"
+msgstr "Каталог приложения: %s"
 
 #: jcfuiconsts.liscnflogbackupfileext
 msgid "Backup file extension"
-msgstr ""
+msgstr "Расширение файла резервной копии"
 
 #: jcfuiconsts.liscnflogdetaillevel
 msgid "Log file detail level"
-msgstr ""
+msgstr "Подробность событий в журнале"
 
 #: jcfuiconsts.liscnflogerrorsonly
 msgid "Errors only"
-msgstr ""
+msgstr "Только ошибки"
 
 #: jcfuiconsts.liscnflogfile
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: jcfuiconsts.liscnflogfiledir
 msgid "Log file directory"
-msgstr ""
+msgstr "Каталог размещения журнала"
 
 #: jcfuiconsts.liscnflogoutputfileext
 msgid "Output file extension"
-msgstr ""
+msgstr "Расширение файла вывода"
 
 #: jcfuiconsts.liscnflogselectdir
 msgid "Select specified directory"
-msgstr ""
+msgstr "Указать каталог"
 
 #: jcfuiconsts.liscnflogspecified
-msgid "Specified"
-msgstr ""
+#, object-pascal-format
+msgid "Specified: %s"
+msgstr "Указанный: %s"
 
 #: jcfuiconsts.liscnflogtemp
-msgid "Temp"
-msgstr ""
+#, object-pascal-format
+msgid "Temp: %s"
+msgstr "Временный: %s"
 
 #: jcfuiconsts.liscnflogtime
 msgid "Log time taken to process"
-msgstr ""
+msgstr "Записывать время, потребовавшееся для обработки"
 
 #: jcfuiconsts.liscnflogtoken
 msgid "Token"
-msgstr ""
+msgstr "Элемент"
 
 #: jcfuiconsts.liscnflogviewlog
 msgid "View log after each run"
-msgstr ""
+msgstr "Показывать журнал после каждого запуска"
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"
-msgstr ""
+msgstr "Показать журнал сейчас"
 
 #: jcfuiconsts.liscnftabexclusions
 msgid "Exclusions"
-msgstr ""
+msgstr "Исключения"
 
 #: jcfuiconsts.liscnftabgeneral
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 #: jcfuiconsts.liscnftablogfile
 msgid "Log file"
-msgstr ""
+msgstr "Журнал"
 
 #: jcfuiconsts.liscommentsremoveemptycurlybracescomments
 msgid "Remove empty '{ }' comments"
@@ -611,7 +612,7 @@ msgstr "Файл записан версией: %s"
 
 #: jcfuiconsts.lishintapplicationdefault
 msgid "Application Default: "
-msgstr ""
+msgstr "По умолчанию для приложения: "
 
 #: jcfuiconsts.lisimbalancedcommentact
 msgid "Imbalanced comment action"
