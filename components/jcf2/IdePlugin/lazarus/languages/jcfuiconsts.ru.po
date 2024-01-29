@@ -396,10 +396,6 @@ msgstr "Однократные операции"
 msgid "Run &only these"
 msgstr "Выполнять &только их"
 
-#: jcfuiconsts.liscnfcancel
-msgid "Cancel"
-msgstr ""
-
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
 msgstr ""
@@ -498,10 +494,6 @@ msgstr ""
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"
-msgstr ""
-
-#: jcfuiconsts.liscnfok
-msgid "Ok"
 msgstr ""
 
 #: jcfuiconsts.liscnftabexclusions

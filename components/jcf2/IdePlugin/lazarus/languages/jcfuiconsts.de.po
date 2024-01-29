@@ -400,10 +400,6 @@ msgstr "Einmalige Einstellung"
 msgid "Run &only these"
 msgstr "Nur die ausführen"
 
-#: jcfuiconsts.liscnfcancel
-msgid "Cancel"
-msgstr ""
-
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
 msgstr ""
@@ -502,10 +498,6 @@ msgstr ""
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"
-msgstr ""
-
-#: jcfuiconsts.liscnfok
-msgid "Ok"
 msgstr ""
 
 #: jcfuiconsts.liscnftabexclusions
