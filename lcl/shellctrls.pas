@@ -175,7 +175,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ReadOnly;
+    property ReadOnly default True;
     property RightClickSelect;
     property Root;
     property RowSelect;
@@ -346,7 +346,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ReadOnly;
+    property ReadOnly default True;
     property RowSelect;
     property ScrollBars;
     property ShowColumnHeaders;
@@ -775,6 +775,7 @@ begin
   {$ELSE}
   FFindOptions := [foFindExpands];
   {$ENDIF}
+  Options := Options + [tvoReadOnly];
 
   // Initial property values
   FObjectTypes:= [otFolders];
@@ -1799,6 +1800,7 @@ begin
   ObjectTypes := [otNonFolders];
   FMaskCaseSensitivity := mcsPlatformDefault;
   FAutoSizeColumns := true;
+  ReadOnly := true;
 
   Self.Columns.Add;
   Self.Columns.Add;
