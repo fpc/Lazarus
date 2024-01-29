@@ -1189,6 +1189,11 @@ Create sets the default values for properties, including:
 <dd>Set to True top enable the built-in icons in the widgetset class.</dd>
 <dt>PathDelimiter</dt>
 <dd>Set to the platform-specific PathDelim from the SysUtils unit.</dd>
+<dt>Options</dt>
+<dd>
+Includes tvoReadOnly in the set to match the default value for the ReadOnly 
+property.
+</dd>
 <dt>ObjectTypes</dt>
 <dd>
 Set to [otFolders] to display folders (but not files) in the tree view.
@@ -1196,7 +1201,10 @@ Set to [otFolders] to display folders (but not files) in the tree view.
 </dl>
 <p>
 Create initializes internal members used to monitor the <var>Root</var> 
-property for changes to its value, and the find options used to locate nodes in the Items for the tree view control. Find options include use of case-insensitive comparisons in node values when the CaseInsensitiveFilenames compiler define is enabled.
+property for changes to its value, and the find options used to locate nodes in 
+the Items for the tree view control. Find options include use of 
+case-insensitive comparisons in node values when the CaseInsensitiveFilenames 
+compiler define is enabled.
 </p>
 <p>
 Please note: Values in the <var>Items</var> property are populated when the 
@@ -1204,7 +1212,9 @@ Please note: Values in the <var>Items</var> property are populated when the
 </p>
 </descr>
 <version>
-Modified in LCL version 3.0 to initialize the PathDelimiter property and internal find options.
+Modified in LCL version 3.0 to initialize the PathDelimiter property and 
+internal find options. 
+Modified in LCL version 4.0 to update the Options property.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.ObjectTypes"/>
@@ -1973,7 +1983,54 @@ application, then ParentColor will be automatically set to <b>False</b>.
 <element name="TShellTreeView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TShellTreeView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TShellTreeView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TShellTreeView.ReadOnly" link="#lcl.comctrls.TCustomTreeView.ReadOnly"/>
+
+<element name="TShellTreeView.ReadOnly">
+<short>
+Indicates whether the text (or caption) for tree nodes can be edited in the 
+shell control.
+</short>
+<descr>
+<p>
+<var>ReadOnly</var> is a <var>Boolean</var> property which indicates whether 
+the text for the <var>TTreeNode</var> instances in Items can be edited in the 
+control. When ReadOnly is set to <b>False</b>, the <var>BeginEditing</var> 
+method is <b>not</b> called when the <b>F2</b> key is pressed, or when the Left 
+mouse button is double clicked. The default value for the property is 
+<b>True</b>.
+</p>
+<p>
+The property value is <b>True</b> when <var>tvoReadOnly</var> has been 
+included in the <var>Options</var> for the control. Setting a new value for 
+the property causes tvoReadOnly to be included in or excluded from the values 
+in Options. Changing the value to <b>False</b> causes the 
+<var>EndEditing</var> method to be called.
+</p>
+<p>
+The ReadOnly property was changed to <b>True</b> because the shell tree view 
+does not automatically propagate changes to a tree node caption to the file 
+system. The previous behavior was confusing because the user was able to rename 
+a node but had to notice that the change was not persistent without additional 
+code.
+</p>
+<p>
+Applications using the shell controls only for selecting files and folders are 
+not affected. In "file-manager" application types, however, the ReadOnly 
+property must be changed explicitely to <b>False</b> so that the user can edit 
+items/nodes again.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to set the default value for the property to 
+<b>True</b>.
+</version>
+<seealso>
+<link id="#lcl.comctrls.TCustomTreeView.ReadOnly"/>
+<link id="#lcl.comctrls.TCustomTreeView.Options"/>
+<link id="#lcl.comctrls.TTreeViewOption"/>
+<link id="#lcl.comctrls.TTreeViewOptions"/>
+</seealso>
+</element>
+
 <element name="TShellTreeView.RightClickSelect" link="#lcl.comctrls.TCustomTreeView.RightClickSelect"/>
 <element name="TShellTreeView.Root" link="#lcl.shellctrls.TCustomShellTreeView.Root"/>
 <element name="TShellTreeView.RowSelect" link="#lcl.comctrls.TCustomTreeView.RowSelect"/>
@@ -3118,7 +3175,53 @@ GetRGBColorResolvingParent method.
 <element name="TShellListView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TShellListView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TShellListView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TShellListView.ReadOnly" link="#lcl.comctrls.TCustomListView.ReadOnly"/>
+
+<element name="TShellListView.ReadOnly">
+<short>
+Disables editing of list items on the shell control when set to <b>True</b>.
+</short>
+<descr>
+<p>
+<var>ReadOnly</var> is a <var>Boolean</var> property used to enable or 
+disable editing of captions for list items at run-time. When ReadOnly is set 
+to <b>True</b>, the editor for the control cannot be activated using a mouse 
+double Click or by pressing the F2 function key.
+</p>
+<p>
+The default value for the property is <b>True</b>, and indicates that item 
+editing is not allowed.
+</p>
+<p>
+ReadOnly is one of the TListViewProperty values included in the 
+TListViewProperties set type and exchanged with the widgetset class. The 
+property value is read from and written to the TCustomTreeview widgetset 
+class instance when its handle is valid. Changing the value for the property 
+causes the widgetset class to be updated with the new value.
+</p>
+<p>
+The ReadOnly property was changed to <b>True</b> because the shell list view 
+does not automatically propagate changes in a list item to the file system. The 
+previous behavior was confusing because the user was able to modify a list item 
+but had to notice that the change was not persistent without additional code.
+</p>
+<p>
+Applications using the shell controls only for selecting files and folders are 
+not affected. In "file-manager" application types, however, the ReadOnly 
+property must be changed explicitely to <b>False</b> so that the user can edit 
+items/nodes again.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to set the default value for the property to 
+<b>True</b>.
+</version>
+<seealso>
+<link id="#lcl.comctrls.TCustomListView.ReadOnly"/>
+<link id="TListViewProperties"/>
+<link id="TListViewProperty"/>
+</seealso>
+</element>
+
 <element name="TShellListView.RowSelect" link="#lcl.comctrls.TCustomListView.RowSelect"/>
 <element name="TShellListView.ScrollBars" link="#lcl.comctrls.TCustomListView.ScrollBars"/>
 <element name="TShellListView.ShowColumnHeaders" link="#lcl.comctrls.TCustomListView.ShowColumnHeaders"/>
