@@ -377,9 +377,6 @@ resourcestring
   //lisCnfIdeFormatAfterLoad='Format after &Load';
   //lisCnfIdeFormatBeforeSave='Format before &Save';
 
-  lisCnfOk='Ok';
-  lisCnfCancel='Cancel';
-
 implementation
 
 end.

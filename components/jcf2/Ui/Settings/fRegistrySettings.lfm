@@ -8,27 +8,24 @@ object fmRegistrySettings: TfmRegistrySettings
   ClientHeight = 389
   ClientWidth = 771
   Color = clBtnFace
-  Font.Color = clWindowText
-  Font.Height = -15
+  DesignTimePPI = 120
   Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   Scaled = False
   OnCreate = FormCreate
   OnResize = FormResize
   object pgPages: TPageControl
     Left = 0
-    Height = 334
+    Height = 343
     Top = 0
     Width = 771
     ActivePage = tsGeneral
     Align = alClient
-    Font.Color = clWindowText
-    Font.Height = -15
-    ParentFont = False
     TabIndex = 0
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = '&General'
-      ClientHeight = 301
+      ClientHeight = 310
       ClientWidth = 763
       object sbFile: TSpeedButton
         AnchorSideLeft.Control = eSettingsFile
@@ -132,7 +129,7 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 411
         Height = 24
         Top = 49
-        Width = 185
+        Width = 188
         Caption = 'Check for &multibyte chars'
         TabOrder = 4
         Visible = False
@@ -151,7 +148,7 @@ object fmRegistrySettings: TfmRegistrySettings
     end
     object tsLogFile: TTabSheet
       Caption = '&Log file'
-      ClientHeight = 301
+      ClientHeight = 310
       ClientWidth = 763
       ImageIndex = 1
       object sbSpecifedDir: TSpeedButton
@@ -247,7 +244,7 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 7
         Height = 24
         Top = 231
-        Width = 171
+        Width = 174
         Caption = 'View log after each run'
         TabOrder = 4
       end
@@ -277,14 +274,14 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 7
         Height = 24
         Top = 256
-        Width = 189
+        Width = 192
         Caption = 'Log time taken to process'
         TabOrder = 5
       end
     end
     object tsExclusions: TTabSheet
       Caption = '&Exclusions'
-      ClientHeight = 301
+      ClientHeight = 310
       ClientWidth = 763
       ImageIndex = 2
       OnResize = tsExclusionsResize
@@ -319,7 +316,7 @@ object fmRegistrySettings: TfmRegistrySettings
     end
     object tsIde: TTabSheet
       Caption = 'IDE'
-      ClientHeight = 301
+      ClientHeight = 310
       ClientWidth = 763
       ImageIndex = 3
       TabVisible = False
@@ -327,7 +324,7 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 11
         Height = 24
         Top = 15
-        Width = 135
+        Width = 138
         Caption = '&Editor Integration'
         TabOrder = 0
       end
@@ -335,7 +332,7 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 11
         Height = 24
         Top = 59
-        Width = 148
+        Width = 151
         Caption = 'Format before &Save'
         TabOrder = 1
         OnClick = cbFormatBeforeSaveClick
@@ -344,45 +341,31 @@ object fmRegistrySettings: TfmRegistrySettings
         Left = 11
         Height = 24
         Top = 37
-        Width = 137
+        Width = 140
         Caption = 'Format after &Load'
         TabOrder = 2
         OnClick = cbFormatAfterLoadClick
       end
     end
   end
-  object pnlBottom: TPanel
-    Left = 0
-    Height = 55
-    Top = 334
-    Width = 771
-    Align = alBottom
-    BevelOuter = bvNone
-    ClientHeight = 55
-    ClientWidth = 771
-    ParentBackground = False
+  object ButtonPanel: TButtonPanel
+    Left = 8
+    Height = 30
+    Top = 351
+    Width = 755
+    BorderSpacing.Around = 8
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
-    object btnOK: TButton
-      Left = 300
-      Height = 25
-      Top = 8
-      Width = 92
-      Caption = 'Ok'
-      TabOrder = 0
-      OnClick = btnOKClick
-    end
-    object btnCancel: TButton
-      AnchorSideLeft.Control = btnOK
-      AnchorSideLeft.Side = asrBottom
-      Left = 404
-      Height = 25
-      Top = 8
-      Width = 92
-      BorderSpacing.Around = 12
-      Caption = 'Cancel'
-      TabOrder = 1
-      OnClick = btnCancelClick
-    end
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
   end
   object dlgOpen: TOpenDialog
     DefaultExt = '.*.cfg'
