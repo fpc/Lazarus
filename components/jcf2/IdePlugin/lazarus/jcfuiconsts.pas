@@ -360,9 +360,9 @@ resourcestring
   lisCnfLogFile='File';
   lisCnfLogToken='Token';
   lisCnfLogFileDir='Log file directory';
-  lisCnfLogTemp='Temp';
-  lisCnfLogApplication='Application';
-  lisCnfLogSpecified='Specified';
+  lisCnfLogTemp='Temp: %s';
+  lisCnfLogApplication='Application: %s';
+  lisCnfLogSpecified='Specified: %s';
   lisCnfLogSelectDir='Select specified directory';
   lisCnfLogViewLog='View log after each run';
   lisCnfLogTime='Log time taken to process';

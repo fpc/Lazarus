@@ -247,9 +247,6 @@ begin
   rgLogLevel.Items[1] := lisCnfLogFile;
   rgLogLevel.Items[2] := lisCnfLogToken;
   rgLogDir.Caption := lisCnfLogFileDir;
-  rgLogDir.Items[0] := lisCnfLogTemp;
-  rgLogDir.Items[1] := lisCnfLogApplication;
-  rgLogDir.Items[2] := lisCnfLogSpecified;
   Label3.Caption := lisCnfLogSelectDir;
 
   cbViewLog.Caption := lisCnfLogViewLog;
@@ -312,10 +309,10 @@ end;
 
 procedure TfmRegistrySettings.ShowDirs;
 begin
-  rgLogDir.Items[0] := 'Temp: ' + GetTempDir;
-  rgLogDir.Items[1] := 'Application: ' + IncludeTrailingPathDelimiter(
-    ExtractFileDir(ParamStr(0)));
-  rgLogDir.Items[2] := 'Specified: ' + fsSpecifiedDirectory;
+  rgLogDir.Items[0] := Format(lisCnfLogTemp, [GetTempDir]);
+  rgLogDir.Items[1] := Format(lisCnfLogApplication, [IncludeTrailingPathDelimiter(
+    ExtractFileDir(ParamStr(0)))]);
+  rgLogDir.Items[2] := Format(lisCnfLogSpecified, [fsSpecifiedDirectory]);
 end;
 
 procedure TfmRegistrySettings.tsExclusionsResize(Sender: TObject);
