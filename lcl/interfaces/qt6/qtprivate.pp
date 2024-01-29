@@ -575,13 +575,21 @@ begin
 end;
 
 procedure TQtComboStrings.Clear;
+var
+  AText: WideString;
 begin
   inherited Clear;
 
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
     FOwner.BeginUpdate;
+    if FOwner.getEditable then
+      AText := FOwner.LineEdit.getText
+    else
+      AText := '';
     FOwner.ClearItems;
+    if (AText <> '') then
+      FOwner.setText(AText);
     FOwner.EndUpdate;
   end;
 end;
