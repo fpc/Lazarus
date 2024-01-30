@@ -1352,6 +1352,7 @@ begin
       Path := selectedPath;
       // Setting the path expands the selected node --> apply the stored state.
       Selected.Expanded := selectedWasExpanded;
+      Selected.HasChildren := NodeHasChildren(Selected);
       // Avoid selected node to scroll away.
       TopItem := Items.FindNodeWithTextPath(topNodePath);
     end;
