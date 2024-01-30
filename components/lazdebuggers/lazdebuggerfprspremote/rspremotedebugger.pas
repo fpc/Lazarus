@@ -67,8 +67,7 @@ type
     FProcessConfig: TRemoteConfig;
     procedure UpdateProcessConfig;
   protected
-    function CreateMemManager: TFpDbgMemManager; override;
-    function CreateMemModel: TFpDbgMemModel; override;
+    function ChangeFileName: Boolean; override;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -82,6 +81,9 @@ type
 procedure Register;
 
 implementation
+
+uses
+  FpDbgCommon, FpDbgLoader;
 
 { TFpRspRemoteDebugger }
 
@@ -99,14 +101,33 @@ begin
   TRemoteConfig(FProcessConFig).SkipSectionsList.Assign(AProperties.SkipUploadOfSectionList);
 end;
 
-function TFpRspRemoteDebugger.CreateMemManager: TFpDbgMemManager;
+function TFpRspRemoteDebugger.ChangeFileName: Boolean;
+var
+  ImgLoader: TDbgImageLoader;
+  target: TTargetDescriptor;
 begin
-  Result := TAvrMemManager.Create(FMemReader, FMemConverter, FMemModel);
-end;
+  Result := inherited ChangeFileName;
 
-function TFpRspRemoteDebugger.CreateMemModel: TFpDbgMemModel;
-begin
-  Result := TFpDbgAvrMemModel.Create;
+  // Load the target information from the executable file
+  if FileName <> '' then
+  begin
+    ImgLoader := TDbgImageLoader.Create(FileName);
+    target := ImgLoader.TargetInfo;
+    ImgLoader.Free;
+
+    // Change MemManager and MemModel for AVR only
+    if (target.machineType = mtAVR8) then
+    begin
+      if Assigned(FMemModel) then FMemModel.Free;
+      FMemModel := TFpDbgAvrMemModel.Create;
+      if Assigned(FMemManager) then FMemManager.Free;
+      FMemManager := TAvrMemManager.Create(FMemReader, FMemConverter, FMemModel);
+
+      // Update debug controller
+      FDbgController.MemModel := FMemModel;
+      FDbgController.MemManager := FMemManager;
+    end;
+  end;
 end;
 
 constructor TFpRspRemoteDebugger.Create(const AExternalDebugger: String);

@@ -332,8 +332,8 @@ type
     procedure SendEvents(out continue: boolean);
     property CurrentCommand: TDbgControllerCmd read FCommand;
     property OsDbgClasses: TOSDbgClasses read FOsDbgClasses;
-    property MemManager: TFpDbgMemManager read FMemManager;
-    property MemModel: TFpDbgMemModel read FMemModel;
+    property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
+    property MemModel: TFpDbgMemModel read FMemModel write FMemModel;
     property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
     property LastError: TFpError read FLastError;
     property Event: TFPDEvent read FPDEvent;
