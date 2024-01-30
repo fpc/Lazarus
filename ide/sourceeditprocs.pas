@@ -514,26 +514,42 @@ begin
           end;
       end;
 
+    ctnProgram,ctnPackage,ctnLibrary:
+      begin
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_unit')
+        else begin
+          if ItemNode<>nil then begin
+            AColor:=clOlive;
+            s:=LowerCase(ItemNode.DescAsString);
+          end else begin
+            AColor:=clGray;
+            s:='';
+          end;
+        end;
+      end;
+
     ctnUnit, ctnUseUnitClearName:
       begin
         if UseImages then
           ImageIndexCC := IDEImages.LoadImage('cc_unit')
-        else
-          begin
-            AColor:=clBlack;
-            s:='unit';
-          end;
+        else begin
+          AColor:=clBlack;
+          s:='unit';
+        end;
       end;
 
     ctnUseUnitNamespace:
       begin
-        if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_namespace')
-        else
-          begin
+        if (IdentItem.Node<>nil) and (IdentItem.Node.Parent<>nil) and
+          (IdentItem.Node.Parent.desc in [ctnUseUnit]) then begin
+          if UseImages then
+            ImageIndexCC := IDEImages.LoadImage('cc_unit')
+          else begin
             AColor:=clBlack;
-            s:='namespace';
-          end;
+            s:='unit';
+           end;
+        end;
       end;
 
     ctnWord:

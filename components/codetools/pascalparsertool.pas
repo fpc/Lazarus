@@ -775,8 +775,9 @@ begin
           repeat
             ReadNextAtom; // read source name
             // program and library can use keywords
-            if (CurPos.Flag<>cafWord)
-            or (CurSection in [ctnUnit,ctnPackage]) then
+            if (aNameSpace='') and
+            ((CurPos.Flag<>cafWord) or
+            (CurSection in [ctnProgram,ctnPackage,ctnLibrary,ctnUnit])) then //+dotted
               AtomIsIdentifierSaveE(20180411193958);
             if aNameSpace='' then begin
               CreateChildNode;
@@ -798,8 +799,8 @@ begin
             CurNode.EndPos:=CurPos.EndPos;
             EndChildNode;
           end;
-          if CurSection in [ctnProgram,ctnLibrary,ctnPackage] then
-            AddedNameSpace:=aNameSpace;
+          if CurSection in [ctnProgram,ctnPackage,ctnLibrary,ctnUnit] then
+            AddedNameSpace:=''; //aNameSpace; // to kill namespaces!
         end;
         ScannedRange:=lsrSourceName;
         if ord(Range)<=ord(ScannedRange) then exit;

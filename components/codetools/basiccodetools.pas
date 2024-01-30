@@ -107,7 +107,8 @@ procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
     out IdentStart,IdentEnd:integer);
 function GetIdentStartPosition(const Source:string; Position:integer): integer;
 function GetIdentLen(Identifier: PChar): integer;
-function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean = True): string;
+function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean = True;
+    const IsDottedIdent: Boolean = False): string;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
@@ -1834,13 +1835,12 @@ begin
     IdentEnd:=IdentStart;
 end;
 
-function GetIdentStartPosition(const Source: string; Position: integer
-  ): integer;
+function GetIdentStartPosition(const Source: string; Position: integer): integer;
 begin
   Result:=Position;
   if (Result<1) or (Result>length(Source)+1) then exit;
   while (Result>1)
-  and (IsIdentChar[Source[Result-1]]) do
+  and (IsDottedIdentChar[Source[Result-1]]) do //+dotted
     dec(Result);
   while (Result<Position)
   and (not IsIdentStartChar[Source[Result]]) do
@@ -4823,8 +4823,10 @@ begin
          +'Actual:   '+dbgstr(Actual,1,d-1)+'|'+dbgstr(Actual,d,length(Actual));
 end;
 
-function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean): string;
-var len: integer;
+function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean;
+    const IsDottedIdent: Boolean): string;
+var
+  len: integer;
 begin
   if (Identifier=nil) then begin
     Result:='';
@@ -4839,7 +4841,10 @@ begin
       else
         inc(len);
     end;
-    while (IsIdentChar[Identifier[len]]) do inc(len);
+    if not IsDottedIdent then
+      while (IsIdentChar[Identifier[len]]) do inc(len)
+    else
+      while (IsDottedIdentChar[Identifier[len]]) do inc(len);
     SetLength(Result,len);
     if len>0 then
       Move(Identifier[0],Result[1],len);
@@ -4847,8 +4852,7 @@ begin
     Result:='';
 end;
 
-function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
-  ): integer;
+function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 begin
   Result:=StartPos;
   while (Result<=MaxPos) and (not IsIdentStartChar[Source[Result]]) do

@@ -2405,19 +2405,7 @@ begin
       DbgOut(' Parent="',CursorNode.Parent.DescAsString,'"');
     Debugln;
     {$ENDIF}
-    if (CursorNode.Desc = ctnUseUnitNamespace) then begin
-      NewExprType.Desc:=xtContext;
-      NewExprType.Context.Node:=CursorNode;
-      NewExprType.Context.Tool:=Self;
-      CleanPosToCaret(CursorNode.StartPos, NewPos);
-      NewTopLine := NewPos.Y;
-      BlockTopLine := NewTopLine;
-      CleanPosToCaret(CursorNode.EndPos, NewPos);
-      BlockBottomLine := NewPos.Y;
-      Result := True;
-      Exit;
-    end else
-    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnitClearName]) then begin
+    if (CursorNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]) then begin
       // in uses section
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -2984,13 +2972,15 @@ begin
     if not UpAtomIs('USES') then
       RaiseUsesExpected(20170421200506);
   end else
-  if (UsesNode.Desc = ctnUseUnitClearName) then
+  if (UsesNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]) then
     MoveCursorToNodeStart(UsesNode.Parent);
 
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
     if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag=cafPoint then continue; //+dotted
+
     ReadNextUsedUnit(UnitNamePos,UnitInFilePos);
     if CleanPos<=CurPos.StartPos then begin
       // cursor is on an used unit -> try to locate it
@@ -3470,9 +3460,18 @@ begin
       Node := Node.Parent;
     case Node.Desc of
     ctnIdentifier:
-      if Assigned(Node.Parent) and (Node.Parent.Desc = ctnProcedureHead) then
-        // function result
-        Result := 'var Result: ' + ExtractNode(Node, []);
+      if Assigned(Node.Parent) then begin
+        if (Node.Parent.Desc = ctnProcedureHead) then
+          // function result
+          Result := 'var Result: ' + ExtractNode(Node, [])
+        else  if Assigned(Node.Parent.Parent) and (Node.Parent.Parent.Desc = ctnSrcName) then
+          // source name,
+          //Node.Parent.Parent should be assigned but nobody promised that it always will be true
+        begin
+          //DebugLn(['Node.Parent.Parent.DescAsString = ', Node.Parent.Parent.DescAsString]);
+          Result := Node.Parent.Parent.DescAsString+': ' + GetDottedIdentifier(pchar(@Src[Node.Parent.StartPos]));
+        end;
+      end;
 
     ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
     ctnEnumIdentifier, ctnLabel, ctnGenericType:
@@ -3683,16 +3682,7 @@ begin
         end;
       end;
 
-    ctnUseUnitNamespace:
-      begin
-        // hint for unit namespace in "uses" section
-        Result += 'namespace ';
-        MoveCursorToNodeStart(Node);
-        ReadNextAtom;
-        Result := Result + GetAtom;
-      end;
-
-    ctnUseUnitClearName:
+    ctnUseUnitNamespace,ctnUseUnitClearName:
       begin
         // hint for unit in "uses" section
         Result += 'unit ';
@@ -4112,8 +4102,22 @@ begin
   MoveCursorToCleanPos(Params.Identifier);
   StartPos:=FindStartOfTerm(CurPos.StartPos,NodeTermInType(Params.ContextNode));
   MoveCursorToCleanPos(Params.Identifier);
-  ReadNextAtom;
-  EndPos:=CurPos.EndPos;
+
+  if Params.ContextNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName] then
+  begin
+    EndPos:=Params.ContextNode.Parent.EndPos;
+    repeat
+      ReadNextAtom;
+      if CurPos.Flag=cafWord then
+        ReadNextAtom;
+      if CurPos.Flag=cafPoint then
+        continue;
+      break;
+    until CurPos.EndPos>= self.SrcLen;
+  end else begin
+    ReadNextAtom;
+    EndPos:=CurPos.EndPos;
+  end;
   if (Params.ContextNode.Desc=ctnIdentifier)
   and (Params.ContextNode.Parent.Desc=ctnAttribParam) then begin
     // parameters don't matter for the attribute name
@@ -6563,17 +6567,23 @@ var
     AnUnitName: String;
     UnitInFilename: AnsiString;
     Node: TCodeTreeNode;
+    IsDotted: boolean;
   begin
     if (not IsComment) then
       UnitStartFound:=true;
     IdentStartPos:=StartPos;
     IdentEndPos:=IdentStartPos;
-    while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
-      inc(IdentEndPos);
+    IsDotted:=IsDottedIdentifier(Identifier);
+    if not IsDotted then
+      while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
+        inc(IdentEndPos)
+    else
+      while (IdentEndPos<=MaxPos) and (IsDottedIdentChar[Src[IdentEndPos]]) do
+        inc(IdentEndPos);
     StartPos:=IdentEndPos;
     //debugln(['ReadIdentifier ',CleanPosToStr(IdentStartPos,true),' ',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos),' ',CompareIdentifiers(PChar(Pointer(Identifier)),@Src[IdentStartPos])]);
-    if IdentEndPos-IdentStartPos<>length(Identifier) then exit;
-    if CompareIdentifiers(PChar(Pointer(Identifier)),@Src[IdentStartPos])<>0 then exit;
+    if not Isdotted and (IdentEndPos-IdentStartPos<>length(Identifier)) then exit;
+    if CompareIdentifiers(PChar(Pointer(Identifier)),@Src[IdentStartPos])<>0 then exit;//dotted ready
     if IsComment and (SkipComments or (not UnitStartFound)) then exit;
     {$IFDEF VerboseFindReferences}
     debugln(['Identifier with same name found at: ',
@@ -6589,6 +6599,11 @@ var
     CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(IdentStartPos,true);
     //debugln('  CursorNode=',NodePathAsString(CursorNode),' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
 
+    if (CursorNode<>nil) and
+       (CursorNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and
+       (IdentStartPos=CursorNode.Parent.StartPos) then begin //found in uses clause
+      AddReference(IdentStartPos);
+    end else
     if (DeclarationTool=Self)
     and ((IdentStartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
     then begin
@@ -6629,7 +6644,7 @@ var
 
       //debugln(' Found=',dbgs(Found));
       Node:=Params.NewNode;
-      if Found and (Node<>nil) then begin
+      if Found and (Node<>nil) and (Node.Parent<>nil) then begin
         if ((Node.Desc=ctnUseUnit) or (Node.Parent.Desc=ctnUseUnit))
             and (Params.NewCodeTool=Self) then begin
           // identifier is a unit reference
@@ -6820,7 +6835,12 @@ var
     DeclarationTool.BuildTreeAndGetCleanPos(CursorPos,CleanDeclCursorPos);
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
                                            CleanDeclCursorPos,true);
-    Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
+
+    if not DeclarationNode.IsDottedIdentChild then
+      Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos)
+    else
+      Identifier:=DeclarationTool.ExtractDottedIdentifier(DeclarationNode.Parent.StartPos);
+
     if Identifier='' then begin
       //debugln('FindDeclarationNode Identifier="',Identifier,'"');
       exit;
@@ -7233,7 +7253,7 @@ begin
 
   ctnIdentifier:
     if Node.Parent.Desc=ctnSrcName then
-      Result:=true;
+      Result:=(Node.Parent.StartPos<=CleanPos) and (Node.Parent.EndPos>CleanPos);
   end;
 end;
 
@@ -9807,7 +9827,7 @@ var
           Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
           if Assigned(Context.Node) and (Context.Node.Desc=ctnImplementation) then
             Params.Flags:=Params.Flags+[fdfSearchInParentNodes];
-          if Context.Node.Desc=ctnObjCClass then
+          if Assigned(Context.Node) and  (Context.Node.Desc=ctnObjCClass) then
             Exclude(Params.Flags,fdfExceptionOnNotFound); // ObjCClass has predefined identifiers like 'alloc'
         end;
 
@@ -9817,7 +9837,7 @@ var
           Include(Params.Flags,fdfIgnoreOverloadedProcs);
 
         //debugln(['ResolveIdentifier ',IsEnd,' ',GetAtom(CurAtom),' ',Context.Node.DescAsString,' ',Context.Node.Parent.DescAsString,' ']);
-        if IsEnd and (Context.Node.Desc=ctnIdentifier)
+        if IsEnd and Assigned(Context.Node) and (Context.Node.Desc=ctnIdentifier) //check node<>nil
         and (Context.Node.Parent.Desc=ctnAttribParam)
         and ResolveAttribute(Context) then begin
           exit;
