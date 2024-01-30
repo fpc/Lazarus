@@ -521,6 +521,18 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.GetButton
+  Params: Index - index of radio button in a group
+
+  Return instance of radio button in a group
+ ------------------------------------------------------------------------------}
+
+function TCustomRadioGroup.GetButton(Index: integer): TRadioButton;
+begin
+  result := TRadioButton(FButtonList[Index]);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomRadioGroup.Changed
   Params: sender - the calling object
 

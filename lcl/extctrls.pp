@@ -734,6 +734,7 @@ type
     FUpdatingItems: Boolean;
     procedure Changed(Sender: TObject);
     procedure Clicked(Sender: TObject);
+    function GetButton(Index: integer): TRadioButton;
     procedure ItemEnter(Sender: TObject);
     procedure ItemExit(Sender: TObject);
     procedure ItemKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -769,6 +770,7 @@ type
     function Rows: integer;
   public
     property AutoFill: Boolean read FAutoFill write SetAutoFill;
+    property Buttons[Index: integer]: TRadioButton read GetButton;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property Items: TStrings read FItems write SetItems;
     property Columns: integer read FColumns write SetColumns default 1;
@@ -859,6 +861,7 @@ type
     FColumns: integer;
     FOnItemClick: TCheckGroupClicked;
     FUpdatingItems: Boolean;
+    function GetButton(Index: integer): TCheckBox;
     function GetChecked(Index: integer): boolean;
     function GetCheckEnabled(Index: integer): boolean;
     procedure Clicked(Sender: TObject);
@@ -895,6 +898,7 @@ type
     function Rows: integer;
   public
     property AutoFill: boolean read FAutoFill write SetAutoFill;
+    property Buttons[Index: integer]: TCheckBox read GetButton;
     property Items: TStrings read FItems write SetItems;
     property Checked[Index: integer]: boolean read GetChecked write SetChecked;
     property CheckEnabled[Index: integer]: boolean read GetCheckEnabled write SetCheckEnabled;

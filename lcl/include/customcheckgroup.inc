@@ -318,6 +318,11 @@ begin
   Result:=TCheckBox(FButtonList[Index]).Checked;
 end;
 
+function TCustomCheckGroup.GetButton(Index: integer): TCheckBox;
+begin
+  result := TCheckBox(FButtonList[Index]);
+end;
+
 procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
