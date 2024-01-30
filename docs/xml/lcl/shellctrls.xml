@@ -1530,8 +1530,12 @@ state of the local file system in the tree view control.
 UpdateView ensures that the Selected and expanded tree node(s) are captured, 
 and restored when the nodes in Items have been reloaded. If one of the selected 
 or expanded nodes no longer exists on the file system, the path in an existing 
-parent node is used for the update. Selected provides the selected tree node on 
-the control.
+parent node is used for the update. When a node is updated, its HasChildren 
+property is changed to reflect whether subdirectories have been added or 
+removed for the node.
+</p>
+<p>
+The Selected property provides the selected tree node on the control.
 </p>
 <p>
 Updates to the Items in the control are enclosed by BeginUpdate and EndUpdate 
@@ -1551,6 +1555,7 @@ Added in LCL version 4.0.
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.Refresh"/>
 <link id="TCustomShellTreeView.GetPathFromNode"/>
+<link id="TCustomShellTreeView.NodeHasChildren"/>
 <link id="TCustomShellTreeView.ShellListView"/>
 <link id="TCustomShellListView.UpdateView"/>
 <link id="TCustomShellListView.Root"/>
