@@ -518,8 +518,7 @@ end;
 
 { TFreeTypeRenderableFont }
 
-procedure TFreeTypeRenderableFont.DefaultWordBreakHandler(var ABefore,
-  AAfter: string);
+procedure TFreeTypeRenderableFont.DefaultWordBreakHandler(var ABefore, AAfter: string);
 var p: integer;
 begin
   if (AAfter <> '') and (ABefore <> '') and (AAfter[1]<> ' ') and (ABefore[length(ABefore)] <> ' ') then
@@ -529,14 +528,16 @@ begin
     if p > 1 then //can put the word after
     begin
       AAfter := copy(ABefore,p,length(ABefore)-p+1)+AAfter;
-      ABefore := copy(ABefore,1,p-1);
+      SetLength(ABefore, p-1);
     end else
     begin //cannot put the word after, so before
 
     end;
   end;
-  while (ABefore <> '') and (ABefore[length(ABefore)] =' ') do delete(ABefore,length(ABefore),1);
-  while (AAfter <> '') and (AAfter[1] =' ') do delete(AAfter,1,1);
+  while (ABefore <> '') and (ABefore[length(ABefore)] =' ') do
+    SetLength(ABefore, length(ABefore)-1);
+  while (AAfter <> '') and (AAfter[1] =' ') do
+    Delete(AAfter,1,1);
 end;
 
 procedure TFreeTypeRenderableFont.SplitText(var AText: string;
