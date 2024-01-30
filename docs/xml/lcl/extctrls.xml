@@ -4756,6 +4756,10 @@ specify the radio buttons required for the grouped control.
 <short>Object instance for the event notification.</short>
 </element>
 
+<element name="TCustomRadioGroup.GetButton"/>
+<element name="TCustomRadioGroup.GetButton.Result"/>
+<element name="TCustomRadioGroup.GetButton.Index"/>
+
 <element name="TCustomRadioGroup.ItemEnter">
 <short>
 Implements the OnEnter event handler for radio buttons in the group.
@@ -4900,6 +4904,41 @@ Implements the OnResize event handler assigned to radio buttons in the group.
 </element>
 <element name="TCustomRadioGroup.SetAutoFill.AValue">
 <short>New value for the property.</short>
+</element>
+
+<element name="TCustomRadioGroup.Buttons">
+<short>
+Provides indexed access to the radio buttons on the group box control.
+</short>
+<descr>
+<p>
+<var>Buttons</var> is a <var>TRadioButton</var> property which allows access to 
+a radio button on the group box by its ordinal position in Items.
+</p>
+<p>
+Use ItemIndex to get the currently selected radio button on the group box.
+</p>
+<p>
+For example:
+</p>
+<code>
+AChecked := (AGroupBox.ItemIndex &lt;&gt; -1) and 
+  AGroupBox.Buttons[AGroupBox.ItemIndex].Checked;
+</code>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomRadioGroup.ItemIndex"/>
+<link id="TCustomRadioGroup.Items"/>
+<link id="#lcl.stdctrls.TRadioButton">TRadioButton</link>
+</seealso>
+</element>
+<element name="TCustomRadioGroup.Buttons.Index">
+<short>
+Ordinal position for the radio button returned as the property value. Must be in the range 0..Items.Count-1.
+</short>
 </element>
 
 <element name="TCustomRadioGroup.SetColumnLayout">
@@ -5645,6 +5684,10 @@ the columns first, or across the rows first.
 <element name="TCustomCheckGroup.FOnItemClick"/>
 <element name="TCustomCheckGroup.FUpdatingItems"/>
 
+<element name="TCustomCheckGroup.GetButton"/>
+<element name="TCustomCheckGroup.GetButton.Result"/>
+<element name="TCustomCheckGroup.GetButton.Index"/>
+
 <element name="TCustomCheckGroup.GetChecked">
 <short>Gets the value for the indexed Checked property.</short>
 <descr/>
@@ -6115,6 +6158,43 @@ AutoFill is set to <b>True</b> in the <var>Create</var> constructor.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCustomCheckGroup.Buttons">
+<short>
+Provides indexed access to the check boxes on the group box control.
+</short>
+<descr>
+<p>
+<var>Buttons</var> a <var>TCheckBox</var> property which provides indexed 
+access to the check boxes on the group box control. Values in the property are 
+accessed by their ordinal position in the Items.
+</p>
+<p>
+Use Items to access the captions displayed on each of the check box controls.
+</p>
+<p>
+Use Checked to access the Boolean state for each of the Items.
+</p>
+<p>
+Use CheckEnabled to read or write the value for the Enabled property in each of 
+the check box controls.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomCheckGroup.Items"/>
+<link id="TCustomCheckGroup.Checked"/>
+<link id="TCustomCheckGroup.CheckEnabled"/>
+<link id="#lcl.stdctrls.TCheckBox">TCheckBox</link>
+</seealso>
+</element>
+<element name="TCustomCheckGroup.Buttons.Index">
+<short>
+Ordinal position for the check box returned as the property value.
+</short>
 </element>
 
 <element name="TCustomCheckGroup.Items">
