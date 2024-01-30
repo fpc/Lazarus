@@ -204,12 +204,20 @@ begin
 end;
 
 type
-  TMethodNameTableEntry = packed record
+  TMethodNameTableEntry =
+{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+  packed
+{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
+  record
       Name: PShortstring;
       Addr: Pointer;
     end;
 
-  TMethodNameTable = packed record
+  TMethodNameTable =
+{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+  packed
+{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
+  record
     Count: DWord;
     Entries: packed array[0..9999999] of TMethodNameTableEntry;
   end;
