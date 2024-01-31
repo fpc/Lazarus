@@ -373,7 +373,6 @@ type
     FPageLabel: PGtkLabel;
   protected
     procedure setText(const AValue: String); override;
-    function getText: String; override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
   public
@@ -4501,19 +4500,12 @@ procedure TGtk3Page.setText(const AValue: String);
 var
   bs:string;
 begin
+  inherited;
   if Assigned(FPageLabel) then
   begin
     bs:=ReplaceAmpersandsWithUnderscores(Avalue);
-    FPageLabel^.set_text(PChar(bs));
+    FPageLabel^.set_markup_with_mnemonic(PChar(bs));
   end;
-end;
-
-function TGtk3Page.getText: String;
-begin
-  if Assigned(FPageLabel) then
-    Result := FPageLabel^.get_text
-  else
-    Result := '';
 end;
 
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7588,6 +7580,7 @@ begin
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
   Result^.set_size_request(Params.Width, Params.Height);
+  Text := Params.Caption;
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
 
