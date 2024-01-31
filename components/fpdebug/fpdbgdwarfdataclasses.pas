@@ -4460,7 +4460,9 @@ begin
           Exit;
         end;
         DW_LNS_advance_pc: begin
+          {$PUSH}{$R-}{$Q-}
           Inc(FAddress, ULEB128toOrdinal(pbyte(FLineInfoPtr)));
+          {$POP}
         end;
         DW_LNS_advance_line: begin
           Inc(FLine, SLEB128toOrdinal(pbyte(FLineInfoPtr)));
@@ -4479,12 +4481,16 @@ begin
         end;
         DW_LNS_const_add_pc: begin
           Opcode := 255 - Length(FOwner.FLineInfo.StandardOpcodeLengths);
+          {$PUSH}{$R-}{$Q-}
           if FOwner.FLineInfo.LineRange = 0
           then Inc(FAddress, Opcode * FOwner.FLineInfo.MinimumInstructionLength)
           else Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
+          {$POP}
         end;
         DW_LNS_fixed_advance_pc: begin
+          {$PUSH}{$R-}{$Q-}
           Inc(FAddress, PWord(FLineInfoPtr)^);
+          {$POP}
           Inc(pbyte(FLineInfoPtr), 2);
         end;
         DW_LNS_set_prologue_end: begin
@@ -4547,6 +4553,7 @@ begin
 
     // Special opcode
     Dec(Opcode, Length(FOwner.FLineInfo.StandardOpcodeLengths)+1);
+    {$PUSH}{$R-}{$Q-}
     if FOwner.FLineInfo.LineRange = 0
     then begin
       Inc(FAddress, Opcode * FOwner.FLineInfo.MinimumInstructionLength);
@@ -4555,6 +4562,7 @@ begin
       Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
       Inc(FLine, FOwner.FLineInfo.LineBase + (Opcode mod FOwner.FLineInfo.LineRange));
     end;
+    {$POP}
     Result := True;
     Exit;
   end;
