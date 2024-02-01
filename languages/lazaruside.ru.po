@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-28 23:27+0300\n"
+"PO-Revision-Date: 2024-02-01 22:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10195,6 +10195,18 @@ msgstr "Воспользуйтесь этим диалогом для созда
 #: lazarusidestrconsts.lisgeneratefppkgconfigurationcaption
 msgid "Generate new Fppkg configuration files"
 msgstr "Создание новых файлов настройки Fppkg"
+
+#: lazarusidestrconsts.lisgetbuildmodes
+msgid "Write a list of build modes in the project."
+msgstr "Вывести список режимов сборки проекта."
+
+#: lazarusidestrconsts.lisgetexepath
+msgid "Write the directory where the excutable will be placed."
+msgstr "Вывести каталог, в котором будет помещён исполнимый файл."
+
+#: lazarusidestrconsts.lisgetexpandtext
+msgid "Write text to console after substituting its macro values."
+msgstr "Вывести в консоль текст с раскрытыми значениями имеющихся в нём макросов."
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"

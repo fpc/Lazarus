@@ -10268,6 +10268,18 @@ msgstr "Utiliser cet écran pour générer les nouveaux fichiers de configuratio
 msgid "Generate new Fppkg configuration files"
 msgstr "Générer de nouveaux fichiers de configuration Fppkg"
 
+#: lazarusidestrconsts.lisgetbuildmodes
+msgid "Write a list of build modes in the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisgetexepath
+msgid "Write the directory where the excutable will be placed."
+msgstr ""
+
+#: lazarusidestrconsts.lisgetexpandtext
+msgid "Write text to console after substituting its macro values."
+msgstr ""
+
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
 msgstr "obtenir le mot à la position courante du curseur"
