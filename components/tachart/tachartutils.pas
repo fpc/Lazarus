@@ -510,14 +510,8 @@ begin
 end;
 
 function IncQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
-var
-  y, m, d: Word;
 begin
-  DecodeDate(ADate, y,m,d);
-  m := (((m - 1) div 3) + NumberOfQuarters) * 3;
-  inc(y, m div 12);
-  m := m mod 12 + 1;
-  Result := EncodeDate(y, m, 1);
+  Result := IncMonth(ADate, NumberOfQuarters*3);
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
