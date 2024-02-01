@@ -60,13 +60,13 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-    OnGetColors = ForegroundColorBoxGetColors
+    OnGetColors = GeneralColorBoxOnGetColors
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
     Constraints.MaxWidth = 200
     Constraints.MinWidth = 80
     ItemHeight = 16
-    OnChange = ForegroundColorBoxChange
+    OnChange = GeneralColorBoxOnChange
     TabOrder = 1
   end
   object BackGroundColorBox: TColorBox
@@ -80,13 +80,13 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-    OnGetColors = ForegroundColorBoxGetColors
+    OnGetColors = GeneralColorBoxOnGetColors
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
     Constraints.MaxWidth = 200
     Constraints.MinWidth = 80
     ItemHeight = 16
-    OnChange = ForegroundColorBoxChange
+    OnChange = GeneralColorBoxOnChange
     TabOrder = 4
   end
   object BackGroundUseDefaultCheckBox: TCheckBox
@@ -115,13 +115,13 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-    OnGetColors = ForegroundColorBoxGetColors
+    OnGetColors = GeneralColorBoxOnGetColors
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
     Constraints.MaxWidth = 200
     Constraints.MinWidth = 80
     ItemHeight = 16
-    OnChange = ForegroundColorBoxChange
+    OnChange = GeneralColorBoxOnChange
     TabOrder = 7
   end
   object FrameColorUseDefaultCheckBox: TCheckBox
@@ -431,8 +431,8 @@ object SynColorAttrEditor: TSynColorAttrEditor
       'slsDotted'
       'slsWaved'
     )
-    OnChange = ForegroundColorBoxChange
-    OnDrawItem = FrameStyleBoxDrawItem
+    OnChange = GeneralColorBoxOnChange
+    OnDrawItem = GeneralStyleBoxOnDrawItem
     Style = csOwnerDrawFixed
     TabOrder = 10
     Text = 'slsSolid'
@@ -453,7 +453,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
       'Bottom'
       'Left'
     )
-    OnChange = ForegroundColorBoxChange
+    OnChange = GeneralColorBoxOnChange
     OnDrawItem = FrameEdgesBoxDrawItem
     Style = csOwnerDrawFixed
     TabOrder = 9
@@ -528,11 +528,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Constraints.MinWidth = 65
     MaxValue = 256
     MinValue = 1
-    OnChange = ForeAlphaSpinChange
-    OnEditingDone = ForeAlphaSpinChange
-    OnEnter = ForeAlphaSpinEnter
-    OnExit = ForeAlphaSpinChange
-    OnResize = ForeAlphaSpinChange
+    OnChange = GeneralAlphaSpinOnChange
+    OnEditingDone = GeneralAlphaSpinOnChange
+    OnEnter = GeneralAlphaSpinOnEnter
+    OnExit = GeneralAlphaSpinOnChange
+    OnResize = GeneralAlphaSpinOnChange
     TabOrder = 2
     Value = 256
   end
@@ -549,11 +549,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Constraints.MinWidth = 65
     MaxValue = 256
     MinValue = 1
-    OnChange = ForeAlphaSpinChange
-    OnEditingDone = ForeAlphaSpinChange
-    OnEnter = ForeAlphaSpinEnter
-    OnExit = ForeAlphaSpinChange
-    OnResize = ForeAlphaSpinChange
+    OnChange = GeneralAlphaSpinOnChange
+    OnEditingDone = GeneralAlphaSpinOnChange
+    OnEnter = GeneralAlphaSpinOnEnter
+    OnExit = GeneralAlphaSpinOnChange
+    OnResize = GeneralAlphaSpinOnChange
     TabOrder = 5
     Value = 256
   end
@@ -570,11 +570,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Constraints.MinWidth = 65
     MaxValue = 256
     MinValue = 1
-    OnChange = ForeAlphaSpinChange
-    OnEditingDone = ForeAlphaSpinChange
-    OnEnter = ForeAlphaSpinEnter
-    OnExit = ForeAlphaSpinChange
-    OnResize = ForeAlphaSpinChange
+    OnChange = GeneralAlphaSpinOnChange
+    OnEditingDone = GeneralAlphaSpinOnChange
+    OnEnter = GeneralAlphaSpinOnEnter
+    OnExit = GeneralAlphaSpinOnChange
+    OnResize = GeneralAlphaSpinOnChange
     TabOrder = 8
     Value = 256
   end
@@ -629,9 +629,9 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BorderSpacing.Left = 6
     Constraints.MinWidth = 65
     MaxValue = 9999
-    OnChange = ForePriorSpinChange
-    OnEditingDone = ForePriorSpinChange
-    OnExit = ForePriorSpinChange
+    OnChange = GeneralPriorSpinOnChange
+    OnEditingDone = GeneralPriorSpinOnChange
+    OnExit = GeneralPriorSpinOnChange
     TabOrder = 15
     Value = 1
   end
@@ -647,9 +647,9 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BorderSpacing.Left = 6
     Constraints.MinWidth = 65
     MaxValue = 9999
-    OnChange = ForePriorSpinChange
-    OnEditingDone = ForePriorSpinChange
-    OnExit = ForePriorSpinChange
+    OnChange = GeneralPriorSpinOnChange
+    OnEditingDone = GeneralPriorSpinOnChange
+    OnExit = GeneralPriorSpinOnChange
     TabOrder = 16
     Value = 1
   end
@@ -665,9 +665,9 @@ object SynColorAttrEditor: TSynColorAttrEditor
     BorderSpacing.Left = 6
     Constraints.MinWidth = 65
     MaxValue = 9999
-    OnChange = ForePriorSpinChange
-    OnEditingDone = ForePriorSpinChange
-    OnExit = ForePriorSpinChange
+    OnChange = GeneralPriorSpinOnChange
+    OnEditingDone = GeneralPriorSpinOnChange
+    OnExit = GeneralPriorSpinOnChange
     TabOrder = 17
     Value = 1
   end
@@ -697,13 +697,13 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-    OnGetColors = ForegroundColorBoxGetColors
+    OnGetColors = GeneralColorBoxOnGetColors
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
     Constraints.MaxWidth = 200
     Constraints.MinWidth = 80
     ItemHeight = 16
-    OnChange = ForegroundColorBoxChange
+    OnChange = GeneralColorBoxOnChange
     TabOrder = 18
   end
   object MarkupFoldAlphaLabel: TLabel
@@ -732,11 +732,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Constraints.MinWidth = 65
     MaxValue = 256
     MinValue = 1
-    OnChange = ForeAlphaSpinChange
-    OnEditingDone = ForeAlphaSpinChange
-    OnEnter = ForeAlphaSpinEnter
-    OnExit = ForeAlphaSpinChange
-    OnResize = ForeAlphaSpinChange
+    OnChange = GeneralAlphaSpinOnChange
+    OnEditingDone = GeneralAlphaSpinOnChange
+    OnEnter = GeneralAlphaSpinOnEnter
+    OnExit = GeneralAlphaSpinOnChange
+    OnResize = GeneralAlphaSpinOnChange
     TabOrder = 20
     Value = 256
   end
@@ -757,8 +757,8 @@ object SynColorAttrEditor: TSynColorAttrEditor
       'slsDotted'
       'slsWaved'
     )
-    OnChange = ForegroundColorBoxChange
-    OnDrawItem = FrameStyleBoxDrawItem
+    OnChange = GeneralColorBoxOnChange
+    OnDrawItem = GeneralStyleBoxOnDrawItem
     Style = csOwnerDrawFixed
     TabOrder = 21
     Text = 'slsSolid'

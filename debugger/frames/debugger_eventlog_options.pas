@@ -61,7 +61,7 @@ type
       var {%H-}PaintImages, DefaultDraw: Boolean);
     procedure ColorTreeChange(Sender: TObject; {%H-}Node: TTreeNode);
     procedure ColorTreeClick(Sender: TObject);
-    procedure ForegroundColorBoxChange(Sender: TObject);
+    procedure GeneralColorBoxOnChange(Sender: TObject);
   private
     FColors: array[TDBGEventType] of TDebuggerEventLogColor;
     class function GetCategoryStr(ACategory: TDBGEventCategory): String;
@@ -141,7 +141,7 @@ begin
   UpdateSelectedColor;
 end;
 
-procedure TDebuggerEventLogOptionsFrame.ForegroundColorBoxChange(Sender: TObject);
+procedure TDebuggerEventLogOptionsFrame.GeneralColorBoxOnChange(Sender: TObject);
 begin
   if Assigned(ColorTree.Selected) then
   begin
