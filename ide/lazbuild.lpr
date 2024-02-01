@@ -1914,7 +1914,7 @@ begin
   writeln('--no-write-project');
   w(lisDoNotWriteUpdatedProjectInfoAfterBuild);
   writeln('');
-  writeln('--get-expand-text=<count>');
+  writeln('--get-expand-text=<text>');
   w(lisGetExpandText);
   writeln('');
   writeln('--get-build-modes');
