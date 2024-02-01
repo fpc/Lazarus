@@ -174,8 +174,11 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
-  lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package '
-    +'name>';
+  lisGetExpandText = 'Write text to console after substituting its macro values.';
+  lisGetBuildModes = 'Write a list of build modes in the project.';
+  lisGetExePath = 'Write the directory where the excutable will be placed.';
+
+  lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
 
   // component palette
   lisSelectionTool = 'Selection tool';

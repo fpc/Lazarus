@@ -31,7 +31,7 @@ uses
   Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, Laz2_XMLCfg, LazStringUtils,
+  LazUTF8, Laz2_XMLCfg, LazStringUtils, FPCAdds,
   // LCL
   LCLPlatformDef, Forms,
   // Codetools
@@ -272,6 +272,20 @@ begin
   end;
 end;
 
+procedure ShowBuildModes;
+var
+  i: Integer;
+begin
+  for i:=0 to Project1.BuildModes.Count-1 do
+  begin
+    if Project1.BuildModes[i]=Project1.ActiveBuildMode then
+      Write('* ')
+    else
+      Write('  ');
+    WriteLn(Project1.BuildModes[i].Identifier);
+  end;
+end;
+
 { TLazBuildApplication }
 
 procedure TLazBuildApplication.CodeBufferEncodeSaving(Code: TCodeBuffer;
@@ -399,10 +413,7 @@ begin
         // We found a package link
         case PackageAction of
         lpaBuild:
-          begin
-            Result:=BuildPackage(Package.LPKFilename);
-            exit;
-          end;
+          exit(BuildPackage(Package.LPKFilename));
         lpaInstall:
           exit(true); // this is handled in AddPackagesToInstallList
         end;
@@ -766,28 +777,22 @@ end;
 
 function TLazBuildApplication.BuildProject(const AFilename: string): boolean;
 var
-  CompilerFilename: String;
-  WorkingDir: String;
-  SrcFilename: String;
-  CompilerParams, CmdLineParams: TStrings;
-  ToolBefore: TProjectCompilationToolOptions;
-  ToolAfter: TProjectCompilationToolOptions;
-  UnitOutputDirectory: String;
-  TargetExeName: String;
-  TargetExeDir: String;
-  CompilePolicy: TPackageUpdatePolicy;
-  i,MatchCount: Integer;
-  CompileHint: String;
+  SrcFilename, TargetExeName, TargetExeDir: String;
   CompReason: TCompileReason;
-  NeedBuildAllFlag: Boolean;
-  MatrixOption: TBuildMatrixOption;
-  ModeMask: TMask;
-  CurResult: Boolean;
 
   function StartBuilding : boolean;
   var
+    NeedBuildAllFlag: Boolean;
     CfgCode: TCodeBuffer;
     CfgFilename: String;
+    CompilerParams, CmdLineParams: TStrings;
+    CompilerFilename, CompileHint: String;
+    UnitOutputDirectory: String;
+    MatrixOption: TBuildMatrixOption;
+    WorkingDir: String;
+    CompilePolicy: TPackageUpdatePolicy;
+    ToolBefore: TProjectCompilationToolOptions;
+    ToolAfter: TProjectCompilationToolOptions;
   begin
     Result := false;
 
@@ -851,8 +856,6 @@ var
         Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
 
       // create target output directory
-      TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-      TargetExeDir := ExtractFilePath(TargetExeName);
       if not ForceDirectory(TargetExeDir) then
         Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
 
@@ -937,6 +940,11 @@ var
     end;
   end;
 
+var
+  i, MatchCount: Integer;
+  MacrosString: String;
+  ModeMask: TMask;
+  CurResult: Boolean;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -952,6 +960,25 @@ begin
     CompReason:= crBuild
   else
     CompReason:= crCompile;
+
+  if HasOption('get-expand-text') then begin
+    MacrosString:=GetOptionValue('get-expand-text');
+    Project1.MacroEngine.SubstituteStr(MacrosString);
+    WriteLn(MacrosString);
+    exit(true);
+  end;
+
+  if HasOption('get-build-modes') then begin
+    ShowBuildModes;
+    exit(true);
+  end;
+
+  TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
+  TargetExeDir := ExtractFilePath(TargetExeName);
+  if HasOption('get-exe-path') then begin
+    writeln(TargetExeDir);
+    exit(true);
+  end;
 
   // first override build mode
   if (BuildModeOverride<>'') then
@@ -980,14 +1007,7 @@ begin
         if Project1.BuildModes.Count>1 then
         begin
           debugln(lisAvailableProjectBuildModes);
-          for i:=0 to Project1.BuildModes.Count-1 do
-          begin
-            if Project1.BuildModes[i]=Project1.ActiveBuildMode then
-              dbgout('* ')
-            else
-              dbgout('  ');
-            debugln(Project1.BuildModes[i].Identifier);
-          end;
+          ShowBuildModes;
         end else begin
           debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
         end;
@@ -1206,7 +1226,6 @@ begin
 
   MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,SubtargetOverrideValue,
                                WidgetSetOverride,smsfsSkip,true);
-
   fInitResult:=true;
   Result:=fInitResult;
 end;
@@ -1215,31 +1234,28 @@ procedure TLazBuildApplication.LoadEnvironmentOptions;
 var
   Note: string;
 begin
-  with EnvironmentOptions do begin
-    CreateConfig;
-    Load(false);
-    fCompilerInCfg:=CompilerFilename;
-    fLazarusDirInCfg:=LazarusDirectory;
+  EnvironmentOptions.CreateConfig;
+  EnvironmentOptions.Load(false);
+  fCompilerInCfg:=EnvironmentOptions.CompilerFilename;
+  fLazarusDirInCfg:=EnvironmentOptions.LazarusDirectory;
 
-    if LazBuildApp.HasOption('language') then begin
-      if ConsoleVerbosity>=0 then
-        debugln('Note: (lazarus) overriding language with command line: ',
-          LazBuildApp.GetOptionValue('language'));
-      EnvironmentOptions.LanguageID:=LazBuildApp.GetOptionValue('language');
-    end;
-    TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
-                             EnvironmentOptions.LanguageID);
-    if CompilerOverride<>'' then
-      CompilerFilename:=CompilerOverride;
-    //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
-    if LazarusDirOverride<>'' then
-      LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
-    if MaxProcessCount>=0 then
-      // set command line override
-      MaxExtToolsInParallel:=MaxProcessCount;
+  if HasOption('language') then begin
+    if ConsoleVerbosity>=0 then
+      debugln('Note: (lazarus) overriding language with command line: ', GetOptionValue('language'));
+    EnvironmentOptions.LanguageID:=GetOptionValue('language');
   end;
+  TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
+                           EnvironmentOptions.LanguageID);
+  if CompilerOverride<>'' then
+    EnvironmentOptions.CompilerFilename:=CompilerOverride;
+  //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
+  if LazarusDirOverride<>'' then
+    EnvironmentOptions.LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
+  if MaxProcessCount>=0 then
+    // set command line override
+    EnvironmentOptions.MaxExtToolsInParallel:=MaxProcessCount;
   if not FileExistsUTF8(EnvironmentOptions.GetParsedLazarusDirectory
-    +GetForcedPathDelims('packager/registration/fcl.lpk'))
+                        +GetForcedPathDelims('packager/registration/fcl.lpk'))
   then begin
     CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note);
     if ConsoleVerbosity>=-1 then
@@ -1258,7 +1274,6 @@ end;
 procedure TLazBuildApplication.SetupMacros;
 begin
   MainBuildBoss.SetupTransferMacros;
-
   (IDEMacros as TLazIDEMacros).LoadLazbuildMacros;
 end;
 
@@ -1618,6 +1633,9 @@ begin
     LongOptions.Add('create-makefile');
     LongOptions.Add('max-process-count:');
     LongOptions.Add('no-write-project');
+    LongOptions.Add('get-expand-text:');
+    LongOptions.Add('get-build-modes');
+    LongOptions.Add('get-exe-path');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1867,13 +1885,13 @@ begin
   w(Format(lissecondaryConfigDirectoryWhereLazarusSearchesFor, [LazConf.GetSecondaryConfigPath]));
   writeln('');
   writeln('--os=<operating-system>, --operating-system=<operating-system>');
-  w(Format(lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [GetCompiledTargetOS]));
+  w(Format(lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau, [FPCAdds.GetCompiledTargetOS]));
   writeln('');
   writeln('--ws=<widgetset>, --widgetset=<widgetset>');
   w(Format(lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD, [LCLPlatformDirNames[GetBuildLCLWidgetType]]));
   writeln('');
   writeln('--cpu=<cpu>');
-  w(Format(lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [GetCompiledTargetCPU]));
+  w(Format(lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [FPCAdds.GetCompiledTargetCPU]));
   writeln('');
   writeln('--subtarget=<subtarget>');
   w(lisOverrideTheProjectSubtarg);
@@ -1895,6 +1913,15 @@ begin
   writeln('');
   writeln('--no-write-project');
   w(lisDoNotWriteUpdatedProjectInfoAfterBuild);
+  writeln('');
+  writeln('--get-expand-text=<count>');
+  w(lisGetExpandText);
+  writeln('');
+  writeln('--get-build-modes');
+  w(lisGetBuildModes);
+  writeln('');
+  writeln('--get-exe-path');
+  w(lisGetExePath);
   writeln('');
 end;
 
