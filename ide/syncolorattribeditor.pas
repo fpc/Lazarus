@@ -231,7 +231,7 @@ begin
     FCurHighlightElement.ForePriority := v;
   if Sender = BackPriorSpin then
     FCurHighlightElement.BackPriority := v;
-  if Sender = FramePriorLabel then
+  if Sender = FramePriorSpin then
     FCurHighlightElement.FramePriority := v;
 
   DoChanged;
