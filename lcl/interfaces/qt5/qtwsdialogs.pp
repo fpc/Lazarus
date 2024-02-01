@@ -431,7 +431,7 @@ begin
     saveFileName := GetEnvironmentVariableUTF8('HOME');
     {$ENDIF}
     sDir := StringReplace(sDir,'$HOME', UTF8Encode(saveFileName),[rfReplaceAll]);
-    saveFileName := GetUTF8String(SDir) + PathDelim + ExtractFileName(FileDialog.Filename);
+    saveFileName := UTF8ToUTF16(SDir) + PathDelim + ExtractFileName(FileDialog.Filename);
   end;
   {$endif}
 
@@ -462,10 +462,10 @@ begin
       SDir := SDir + PathDelim;
     if (FileDialog.FileName <> '') and
       (ExtractFileName(FileDialog.FileName) <> FileDialog.FileName) then
-        saveFileName := GetUtf8String(FileDialog.Filename)
+        saveFileName := UTF8ToUTF16(FileDialog.Filename)
     else
-      saveFileName := GetUtf8String(SDir+FileDialog.Filename);
-    saveTitle := GetUTF8String(FileDialog.Title);
+      saveFileName := UTF8ToUTF16(SDir+FileDialog.Filename);
+    saveTitle := UTF8ToUTF16(FileDialog.Title);
 
     Flags := 0;
     if not (ofOverwritePrompt in TSaveDialog(FileDialog).Options) then
@@ -543,10 +543,10 @@ begin
       SDir := SDir + PathDelim;
     if (FileDialog.FileName <> '') and
       (ExtractFileName(FileDialog.FileName) <> FileDialog.FileName) then
-        saveFileName := GetUtf8String(FileDialog.Filename)
+        saveFileName := UTF8ToUTF16(FileDialog.Filename)
     else
-      saveFileName := GetUtf8String(SDir+FileDialog.Filename);
-    saveTitle := GetUTF8String(FileDialog.Title);
+      saveFileName := UTF8ToUTF16(SDir+FileDialog.Filename);
+    saveTitle := UTF8ToUTF16(FileDialog.Title);
 
     Flags := 0;
     if (ofReadOnly in TOpenDialog(FileDialog).Options) then
@@ -788,7 +788,7 @@ begin
     Code to call the dialog
    ------------------------------------------------------------------------------}
   {$ifdef QT_NATIVE_DIALOGS}
-  saveTitle := GetUTF8String(FileDialog.Title);
+  saveTitle := UTF8ToUTF16(FileDialog.Title);
   // saveFileName := GetUtf8String(FileDialog.InitialDir);
   if UTF8Pos('$HOME', FileDialog.InitialDir) > 0 then
   begin
@@ -797,12 +797,12 @@ begin
     saveFileName := GetEnvironmentVariableUTF8('HOMEDRIVE') +
     GetEnvironmentVariableUTF8('HOMEPATH');
     {$ELSE}
-    saveFileName := GetEnvironmentVariableUTF8('HOME');
+    saveFileName := UTF8ToUTF16(GetEnvironmentVariable('HOME'));
     {$ENDIF}
     s := StringReplace(S,'$HOME', UTF8Encode(saveFileName),[rfReplaceAll]);
-    saveFileName := GetUTF8String(s);
+    saveFileName := UTF8ToUTF16(s);
   end else
-    saveFileName := GetUtf8String(FileDialog.InitialDir);
+    saveFileName := UTF8ToUTF16(FileDialog.InitialDir);
 
   QFileDialog_getExistingDirectory(@ReturnText,
     QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
