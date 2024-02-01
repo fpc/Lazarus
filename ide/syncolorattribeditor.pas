@@ -592,7 +592,6 @@ begin
     ForeAlphaLabel.Visible := ForeAlphaSpin.Visible;
     if FCurHighlightElement.ForeAlpha = 0 then begin
       ForeAlphaSpin.Value    := 256; // Off
-      Application.ProcessMessages;
       ForeAlphaSpin.Caption  := dlgEdOff;
     end
     else
@@ -628,7 +627,7 @@ begin
     else
       BackAlphaSpin.Value    := FCurHighlightElement.BackAlpha;
 
-    BackPriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
+    BackPriorSpin.Visible  := BackGroundColorBox.Visible and FShowPrior and
                              (hafPrior in FCurHighlightElement.Features);
     BackPriorLabel.Visible := BackPriorSpin.Visible;
     BackPriorSpin.Value    := FCurHighlightElement.BackPriority;
@@ -660,8 +659,8 @@ begin
     else
       FrameAlphaSpin.Value    := FCurHighlightElement.FrameAlpha;
 
-    FramePriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
-                             (hafPrior in FCurHighlightElement.Features);
+    FramePriorSpin.Visible  := FrameColorBox.Visible and FShowPrior and
+                              (hafPrior in FCurHighlightElement.Features);
     FramePriorLabel.Visible := FramePriorSpin.Visible;
     FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
@@ -724,7 +723,7 @@ begin
         TextItalicRadioOff.Checked := True;
 
       TextUnderlineCheckBox.Checked := (fsUnderline in FCurHighlightElement.Style) or
-                                  (fsUnderline in FCurHighlightElement.StyleMask);
+                                       (fsUnderline in FCurHighlightElement.StyleMask);
       TextUnderlineRadioPanel.Enabled := TextUnderlineCheckBox.Checked;
 
       if not(fsUnderline in FCurHighlightElement.StyleMask) then
