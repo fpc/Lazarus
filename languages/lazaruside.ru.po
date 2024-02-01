@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-01 22:56+0300\n"
+"PO-Revision-Date: 2024-02-02 02:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10202,7 +10202,7 @@ msgstr "Вывести список режимов сборки проекта."
 
 #: lazarusidestrconsts.lisgetexepath
 msgid "Write the directory where the excutable will be placed."
-msgstr "Вывести каталог, в котором будет помещён исполнимый файл."
+msgstr "Вывести каталог, в который будет помещён исполнимый файл."
 
 #: lazarusidestrconsts.lisgetexpandtext
 msgid "Write text to console after substituting its macro values."
