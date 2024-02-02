@@ -175,7 +175,7 @@ resourcestring
     'if configured.';
 
   lisGetExpandText = 'Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used.';
-  lisGetBuildModes = 'Print a list of build modes in the project, active mode is listed first.';
+  lisGetBuildModes = 'Print a list of build modes in the project. Active mode is listed first.';
   lisGetExePath = 'Print the full path to the executable file in the specified build mode. By default, active build mode is used.';
 
   lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
