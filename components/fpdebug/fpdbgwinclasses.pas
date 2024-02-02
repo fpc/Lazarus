@@ -197,7 +197,7 @@ type
     procedure  ClearThread;
     function   FindById(id:TThreadID):TDbgWinThreadNameInternal;
     function   FetchThread(id:TThreadID):string;
-    function   AddThread(id:TThreadID;const threadname:string):Boolean;
+    procedure  AddThread(id:TThreadID;const threadname:string);
   end;
 
   { TDbgWinProcess }
@@ -449,7 +449,7 @@ begin
  end;
 end;
 
-function TDbgWinThreadNameList.AddThread(id:TThreadID;const threadname:string):Boolean;
+procedure TDbgWinThreadNameList.AddThread(id:TThreadID;const threadname:string);
 var
  node:TDbgWinThreadNameInternal;
 begin
@@ -463,16 +463,19 @@ begin
   if (FNumCounter>=FMaxCounter) then
   begin
    //limit
-   Exit(False);
+   node:=TDbgWinThreadNameInternal(First);
+   if (node=nil) then Exit;
+   node.SetInfo(id,threadname);
+   MoveToLast(TLinkListItem(node));
+  end else
+  begin
+   node:=TDbgWinThreadNameInternal(GetNewItem);
+   node.SetInfo(id,threadname);
+   AddAsLast(TLinkListItem(node));
+   Inc(FNumCounter);
   end;
 
-  node:=TDbgWinThreadNameInternal(GetNewItem);
-  node.SetInfo(id,threadname);
-  AddAsLast(TLinkListItem(node));
-  Inc(FNumCounter);
  end;
-
- Result:=True;
 end;
 
 //TThreadNameMap
