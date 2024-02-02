@@ -410,7 +410,8 @@ type
                          var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages, GroupCompile: boolean;
-                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
+                    var NeedBuildAllFlag: boolean; // pass true to force a build
+                    var Note: string): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function GetFallbackOutputDir(APackage: TLazPackage): string;
@@ -3525,7 +3526,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  SkipDesignTimePackages, GroupCompile: boolean; out NeedBuildAllFlag: boolean;
+  SkipDesignTimePackages, GroupCompile: boolean; var NeedBuildAllFlag: boolean;
   var Note: string): TModalResult;
 var
   OutputDir: String;
@@ -3533,25 +3534,27 @@ var
   ConfigChanged: boolean;
   DependenciesChanged: boolean;
   DefResult: TModalResult;
-  OldNeedBuildAllFlag, IsDefDirWritable: Boolean;
+  OldNeedBuildAllFlag, IsDefDirWritable, ForceBuild: Boolean;
   OldOverride: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
-  NeedBuildAllFlag:=false;
-
-  if APackage.AutoUpdate=pupManually then
-    exit(mrNo);
-
-  // check the current output directory
-  Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-             true,SkipDesignTimePackages,GroupCompile,
-             NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
-  if Result=mrNo then begin
-    // the current output is valid
-    exit;
+  ForceBuild:=NeedBuildAllFlag;
+  if ForceBuild then begin
+    // user demands to rebuild the package
+  end else begin
+    if (APackage.AutoUpdate=pupManually) then
+      exit(mrNo);
+    // check the current output directory
+    Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+               true,SkipDesignTimePackages,GroupCompile,
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+    if Result=mrNo then begin
+      // the current output is valid
+      exit;
+    end;
   end;
 
   // the current output directory needs compilation
@@ -3576,13 +3579,20 @@ begin
     end;
     Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
-    Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,GroupCompile,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+    if ForceBuild then
+      Result:=mrYes
+    else
+      Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+                 true,SkipDesignTimePackages,GroupCompile,
+                 NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
 
     if not IsDefDirWritable then begin
+      if ForceBuild then begin
+        // => keep using the fallback directory
+        exit;
+      end;
       if not ConfigChanged then begin
         // some source files have changed, not the compiler parameters
         // => keep using the fallback directory
@@ -3604,8 +3614,8 @@ begin
       debugln(['Hint: (lazarus) trying the default output directory of package ',APackage.IDAsString]);
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,GroupCompile,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+                 true,SkipDesignTimePackages,GroupCompile,
+                 NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
     if IsDefDirWritable or (DefResult=mrNo) then begin
       // switching back to the default output directory
       debugln(['Hint: (lazarus) switching back to the normal output directory: "',APackage.GetOutputDirectory,'" Package ',APackage.IDAsString]);
@@ -3652,7 +3662,8 @@ begin
   ConfigChanged:=false;
   DependenciesChanged:=false;
   
-  if APackage.AutoUpdate=pupManually then exit(mrNo);
+  if APackage.AutoUpdate=pupManually then
+    exit(mrNo);
 
   SrcFilename:=APackage.GetSrcFilename;
   CompilerFilename:=APackage.GetCompilerFilename;
@@ -3666,7 +3677,8 @@ begin
     // check state file
     StateFilename:=APackage.GetStateFilename;
     Result:=LoadPackageCompiledState(APackage,false,true);
-    if Result<>mrOk then exit; // read error and user aborted
+    if Result<>mrOk then
+      exit; // read error and user aborted
     if not Stats.StateFileLoaded then begin
       // package was not compiled via Lazarus nor via Makefile/fpmake
       DebugLn('Hint: (lazarus) Missing state file of ',APackage.IDAsString,': ',StateFilename);
@@ -4094,6 +4106,7 @@ begin
           BuildItems:=TObjectList.Create(true);
           for i:=0 to PkgList.Count-1 do begin
             CurPkg:=TLazPackage(PkgList[i]);
+            if CurPkg.AutoUpdate=pupManually then continue;
             BuildItem:=TLazPkgGraphBuildItem.Create(nil);
             BuildItem.LazPackage:=CurPkg;
             BuildItems.Add(BuildItem);
@@ -4299,7 +4312,7 @@ begin
     end;
 
     // check if compilation is needed and if a clean build is needed
-    NeedBuildAllFlag:=false;
+    NeedBuildAllFlag:=pcfCleanCompile in Flags;
     Note:='';
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           pcfSkipDesignTimePackages in Flags,

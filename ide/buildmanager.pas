@@ -2186,7 +2186,7 @@ begin
       List:=nil;
       try
         if ConsoleVerbosity>0 then
-          debugln(['Hint: (lazarus) TBuildManager.MacroFuncInstantFPCCache ',Prog]);
+          debugln(['Hint: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] Exe=',Prog]);
         List:=RunTool(Prog,'--get-cache','',ConsoleVerbosity<1);
         if (List<>nil) and (List.Count>0) then
           FMacroInstantFPCCache:=List[0];
@@ -2199,7 +2199,7 @@ begin
       end;
     end;
     if ConsoleVerbosity>=1 then
-      debugln(['Hint: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] ',FMacroInstantFPCCache]);
+      debugln(['Hint: (lazarus) [TBuildManager.MacroFuncInstantFPCCache] CacheDir=',FMacroInstantFPCCache]);
   end;
   Result:=FMacroInstantFPCCache;
 end;
