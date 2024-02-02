@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-02 20:26+0300\n"
+"PO-Revision-Date: 2024-02-03 02:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -10206,7 +10206,7 @@ msgstr "Вывести полный путь к исполнимому файл�
 
 #: lazarusidestrconsts.lisgetexpandtext
 msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
-msgstr "Вывести результат раскрытия значений макросов в тексте для указанного режима сборки. По умолчанию используется активный."
+msgstr "Вывести результат раскрытия макросов в тексте для указанного режима сборки. По умолчанию используется активный."
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
