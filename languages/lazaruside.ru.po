@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-02 02:30+0300\n"
+"PO-Revision-Date: 2024-02-02 20:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -10197,16 +10197,16 @@ msgid "Generate new Fppkg configuration files"
 msgstr "Создание новых файлов настройки Fppkg"
 
 #: lazarusidestrconsts.lisgetbuildmodes
-msgid "Write a list of build modes in the project."
-msgstr "Вывести список режимов сборки проекта."
+msgid "Print a list of build modes in the project. Active mode is listed first."
+msgstr "Вывести список режимов сборки проекта. Активный режим выводится первым в списке."
 
 #: lazarusidestrconsts.lisgetexepath
-msgid "Write the directory where the excutable will be placed."
-msgstr "Вывести каталог, в который будет помещён исполнимый файл."
+msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
+msgstr "Вывести полный путь к исполнимому файлу для указанного режима сборки. По умолчанию используется активный."
 
 #: lazarusidestrconsts.lisgetexpandtext
-msgid "Write text to console after substituting its macro values."
-msgstr "Вывести в консоль текст с раскрытыми значениями имеющихся в нём макросов."
+msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
+msgstr "Вывести результат раскрытия значений макросов в тексте для указанного режима сборки. По умолчанию используется активный."
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"

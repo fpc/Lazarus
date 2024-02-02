@@ -10180,15 +10180,15 @@ msgid "Generate new Fppkg configuration files"
 msgstr ""
 
 #: lazarusidestrconsts.lisgetbuildmodes
-msgid "Write a list of build modes in the project."
+msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetexepath
-msgid "Write the directory where the excutable will be placed."
+msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetexpandtext
-msgid "Write text to console after substituting its macro values."
+msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
