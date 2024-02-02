@@ -174,9 +174,9 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
-  lisGetExpandText = 'Write text to console after substituting its macro values.';
-  lisGetBuildModes = 'Write a list of build modes in the project.';
-  lisGetExePath = 'Write the directory where the excutable will be placed.';
+  lisGetExpandText = 'Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used.';
+  lisGetBuildModes = 'Print a list of build modes in the project, active mode is listed first.';
+  lisGetExePath = 'Print the full path to the executable file in the specified build mode. By default, active build mode is used.';
 
   lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
 

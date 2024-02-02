@@ -276,14 +276,32 @@ procedure ShowBuildModes;
 var
   i: Integer;
 begin
-  for i:=0 to Project1.BuildModes.Count-1 do
+  // first print the active build mode
+  for i := 0 to Project1.BuildModes.Count - 1 do
+    if Project1.BuildModes[i] = Project1.ActiveBuildMode then
+      WriteLn(Project1.BuildModes[i].Identifier);
+  // print other build modes
+  for i := 0 to Project1.BuildModes.Count - 1 do
+    if Project1.BuildModes[i] <> Project1.ActiveBuildMode then
+      WriteLn(Project1.BuildModes[i].Identifier);
+end;
+
+procedure ShowBuildModeError(const aBuildModeOverride: string);
+begin
+  WriteLn(Format(lisERRORInvalidBuildMode, [aBuildModeOverride]));
+  if ConsoleVerbosity>=0 then
   begin
-    if Project1.BuildModes[i]=Project1.ActiveBuildMode then
-      Write('* ')
-    else
-      Write('  ');
-    WriteLn(Project1.BuildModes[i].Identifier);
+    WriteLn;
+    if Project1.BuildModes.Count>1 then
+    begin
+      WriteLn(lisAvailableProjectBuildModes);
+      ShowBuildModes;
+    end else begin
+      WriteLn(lisThisProjectHasOnlyTheDefaultBuildMode);
+    end;
+    WriteLn;
   end;
+  Halt(ErrorBuildFailed);
 end;
 
 { TLazBuildApplication }
@@ -777,7 +795,7 @@ end;
 
 function TLazBuildApplication.BuildProject(const AFilename: string): boolean;
 var
-  SrcFilename, TargetExeName, TargetExeDir: String;
+  SrcFilename: String;
   CompReason: TCompileReason;
 
   function StartBuilding : boolean;
@@ -787,16 +805,14 @@ var
     CfgFilename: String;
     CompilerParams, CmdLineParams: TStrings;
     CompilerFilename, CompileHint: String;
-    UnitOutputDirectory: String;
+    S, TargetExeName, WorkingDir: String;
     MatrixOption: TBuildMatrixOption;
-    WorkingDir: String;
     CompilePolicy: TPackageUpdatePolicy;
-    ToolBefore: TProjectCompilationToolOptions;
-    ToolAfter: TProjectCompilationToolOptions;
+    ToolBefore, ToolAfter: TProjectCompilationToolOptions;
   begin
     Result := false;
 
-    // then override specific options
+    // override specific options
     if (OSOverride<>'') then
       Project1.CompilerOptions.TargetOS:=OSOverride;
     if (CPUOverride<>'') then
@@ -811,6 +827,19 @@ var
     end;
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
+
+    if HasOption('get-expand-text') then begin
+      S:=GetOptionValue('get-expand-text');
+      Project1.MacroEngine.SubstituteStr(S);
+      WriteLn(S);
+      exit(true);
+    end;
+
+    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
+    if HasOption('get-exe-path') then begin
+      WriteLn(TargetExeName + GetExecutableExt);
+      exit(true);
+    end;
 
     CompilerParams:=nil;
     CmdLineParams:=nil;
@@ -851,13 +880,14 @@ var
       end;
 
       // create unit output directory
-      UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-      if not ForceDirectory(UnitOutputDirectory) then
-        Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
+      S:=Project1.CompilerOptions.GetUnitOutPath(false);
+      if not ForceDirectory(S) then
+        Error(ErrorBuildFailed,'Unable to create project unit output directory '+S);
 
       // create target output directory
-      if not ForceDirectory(TargetExeDir) then
-        Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
+      S := ExtractFileDir(TargetExeName);
+      if not ForceDirectory(S) then
+        Error(ErrorBuildFailed,'Unable to create project target directory '+S);
 
       // create LazBuildApp bundle
       if Project1.UseAppBundle and (Project1.MainUnitID>=0)
@@ -942,7 +972,6 @@ var
 
 var
   i, MatchCount: Integer;
-  MacrosString: String;
   ModeMask: TMask;
   CurResult: Boolean;
 begin
@@ -961,30 +990,15 @@ begin
   else
     CompReason:= crCompile;
 
-  if HasOption('get-expand-text') then begin
-    MacrosString:=GetOptionValue('get-expand-text');
-    Project1.MacroEngine.SubstituteStr(MacrosString);
-    WriteLn(MacrosString);
-    exit(true);
-  end;
-
   if HasOption('get-build-modes') then begin
     ShowBuildModes;
     exit(true);
   end;
 
-  TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-  TargetExeDir := ExtractFilePath(TargetExeName);
-  if HasOption('get-exe-path') then begin
-    writeln(TargetExeDir);
-    exit(true);
-  end;
-
   // first override build mode
-  if (BuildModeOverride<>'') then
+  if BuildModeOverride<>'' then
   begin
     CurResult := true;
-
     MatchCount := 0;
     ModeMask := TMask.Create(BuildModeOverride);
     for i := 0 to Project1.BuildModes.Count-1 do
@@ -997,25 +1011,8 @@ begin
       end;
     end;
     ModeMask.Free;
-
     if MatchCount=0 then // No matches
-    begin
-      debugln([Format(lisERRORInvalidBuildMode, [BuildModeOverride])]);
-      if ConsoleVerbosity>=0 then
-      begin
-        debugln;
-        if Project1.BuildModes.Count>1 then
-        begin
-          debugln(lisAvailableProjectBuildModes);
-          ShowBuildModes;
-        end else begin
-          debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
-        end;
-        debugln;
-      end;
-      Halt(ErrorBuildFailed);
-    end;
-
+      ShowBuildModeError(BuildModeOverride);
     Result := CurResult;
   end
   else
