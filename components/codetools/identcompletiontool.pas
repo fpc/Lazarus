@@ -1367,7 +1367,6 @@ var
   Node: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
-  NamePos: TAtomPosition;
   HasLowerVisibility: Boolean;
   IsDottedIdent: Boolean;
 begin
