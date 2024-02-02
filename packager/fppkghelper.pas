@@ -34,7 +34,7 @@ type
     class function Instance: TFppkgHelper;
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
-    function GetPackageUnitPath(const PackageName: string): string;
+    function GetPackageUnitPath(PackageName: string): string;
     function IsProperlyConfigured(out Message: string): Boolean;
     function GetCompilerFilename: string;
     function GetConfigurationFileName: string;
@@ -154,7 +154,8 @@ begin
     end;
 end;
 
-function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
+function TFppkgHelper.GetPackageUnitPath(PackageName: string): string;
+// Don't use "const" for PackageName parameter.
 var
   FppkgPackage: TFPPackage;
 {$IF not (FPC_FULLVERSION>30300)}

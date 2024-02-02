@@ -554,7 +554,7 @@ type
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetConditionals(AValue: string); override;
-    function SubstituteProjectMacros(const s: string;
+    function SubstituteProjectMacros(s: string;
                                      PlatformIndependent: boolean): string;
   public
     constructor Create(const AOwner: TObject); override;
@@ -6526,8 +6526,9 @@ begin
   inherited SetConditionals(AValue);
 end;
 
-function TProjectCompilerOptions.SubstituteProjectMacros(const s: string;
+function TProjectCompilerOptions.SubstituteProjectMacros(s: string;
   PlatformIndependent: boolean): string;
+// Don't use "const" for s parameter.
 begin
   Result:=s;
   if LazProject=nil then exit;

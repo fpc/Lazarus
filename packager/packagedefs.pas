@@ -652,7 +652,7 @@ type
     function GetSrcPath(RelativeToBaseDir: boolean): string;
     function GetFPDocPackageName: string;
     function NeedsDefineTemplates: boolean;
-    function SubstitutePkgMacros(const s: string; PlatformIndependent: boolean): string;
+    function SubstitutePkgMacros(s: string; PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
     function GetActiveBuildMethod: TBuildMethod;
     // files
@@ -2235,8 +2235,8 @@ begin
   FUserReadOnly:=AValue;
 end;
 
-function TLazPackage.SubstitutePkgMacros(const s: string;
-  PlatformIndependent: boolean): string;
+function TLazPackage.SubstitutePkgMacros(s: string; PlatformIndependent: boolean): string;
+// Don't use "const" for s parameter.
 begin
   Result:=s;
   if PlatformIndependent then
@@ -3840,11 +3840,10 @@ end;
 function TLazPackage.GetOutputDirectory(UseOverride: boolean = true): string;
 begin
   if HasDirectory then begin
-    if GetActiveBuildMethod = bmFPMake then begin
-      Result :=TFppkgHelper.Instance.GetPackageUnitPath(name);
-    end else begin
+    if GetActiveBuildMethod = bmFPMake then
+      Result :=TFppkgHelper.Instance.GetPackageUnitPath(name)
+    else
       Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,UseOverride);
-    end;
   end else
     Result:='';
 end;

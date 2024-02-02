@@ -261,7 +261,7 @@ const
   CompilerOptionMacroPlatformIndependent = 1;
 
 type
-  TLocalSubstitutionEvent = function(const s: string;
+  TLocalSubstitutionEvent = function(s: string;
                                 PlatformIndependent: boolean): string of object;
 
   TInheritedCompOptsParseTypesStrings =
@@ -303,7 +303,7 @@ type
     function GetParsedPIValue(Option: TParsedCompilerOptString): string;// platform independent
     procedure SetUnparsedValue(Option: TParsedCompilerOptString;
                                const NewValue: string);
-    function DoParseOption(const OptionText: string;
+    function DoParseOption(OptionText: string;
                            Option: TParsedCompilerOptString;
                            PlatformIndependent: boolean): string;
     procedure Assign(Src: TParsedCompilerOptions);
@@ -3858,8 +3858,9 @@ begin
   Values[Option].UnparsedValue:=NewValue;
 end;
 
-function TParsedCompilerOptions.DoParseOption(const OptionText: string;
+function TParsedCompilerOptions.DoParseOption(OptionText: string;
   Option: TParsedCompilerOptString; PlatformIndependent: boolean): string;
+// Don't use "const" for OptionText parameter.
 
   function GetBaseDir: string;
   begin
@@ -3878,67 +3879,67 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
     aFilename:=TrimFilename(aFilename);
     if (aFilename<>'') and (not FilenameIsAbsolute(aFilename)) then begin
       BaseDirectory:=GetBaseDir;
-      if (BaseDirectory<>'') then aFilename:=TrimFilename(BaseDirectory+aFilename);
+      if (BaseDirectory<>'') then
+        aFilename:=TrimFilename(BaseDirectory+aFilename);
     end;
   end;
 
 var
-  s: String;
   BaseDirectory, h: String;
 begin
-  s:=OptionText;
+  Result:=OptionText;
 
   // apply overrides
   if not PlatformIndependent then begin
     if Option=pcosOutputDir then begin
       if Assigned(OnGetOutputDirectoryOverride) then
-        OnGetOutputDirectoryOverride(Self,s,bmgtAll);
+        OnGetOutputDirectoryOverride(Self,Result,bmgtAll);
     end;
   end;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
   if Assigned(OnLocalSubstitute) then
   begin
-    //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
-    s:=OnLocalSubstitute(s,PlatformIndependent)
+    //DebugLn(['TParsedCompilerOptions.DoParseOption local "',Result,'" ...']);
+    Result:=OnLocalSubstitute(Result,PlatformIndependent)
   end else
   begin
-    //DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
-    s:=ParseString(Self,s,PlatformIndependent);
+    //DebugLn(['TParsedCompilerOptions.DoParseOption global "',Result,'" ...']);
+    Result:=ParseString(Self,Result,PlatformIndependent);
   end;
-  //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
+  //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',Result,'" ...']);
   // improve
   if Option=pcosBaseDir then
     // base directory
-    s:=AppendPathDelim(TrimFilename(s))
+    Result:=AppendPathDelim(TrimFilename(Result))
   else if Option in ParsedCompilerFilenames then
   begin
     // make filename absolute
-    //debugln(['TParsedCompilerOptions.DoParseOption ',ParsedCompilerOptsVars[Option],' s="',s,'"']);
-    if (Option in ParsedCompilerExecutables) and (ExtractFilePath(s)='') then
+    //debugln(['TParsedCompilerOptions.DoParseOption ',ParsedCompilerOptsVars[Option],' Result="',Result,'"']);
+    if (Option in ParsedCompilerExecutables) and (ExtractFilePath(Result)='') then
     begin
-      h:=FileUtil.FindDefaultExecutablePath(s,GetBaseDir);
-      if h<>'' then s:=h;
+      h:=FileUtil.FindDefaultExecutablePath(Result,GetBaseDir);
+      if h<>'' then
+        Result:=h;
     end;
-    MakeFilenameAbsolute(s);
+    MakeFilenameAbsolute(Result);
   end
   else if Option in ParsedCompilerDirectories then
   begin
     // make directory absolute
-    s:=TrimFilename(s);
+    Result:=TrimFilename(Result);
     if Option<>pcosBaseDir then
-      MakeFilenameAbsolute(s);
-    s:=AppendPathDelim(s);
+      MakeFilenameAbsolute(Result);
+    Result:=AppendPathDelim(Result);
   end
   else if Option in ParsedCompilerSearchPaths then
   begin
     // make search paths absolute
     BaseDirectory:=GetBaseDir;
-    s:=TrimSearchPath(s,BaseDirectory);
+    Result:=TrimSearchPath(Result,BaseDirectory);
   end else if Option=pcosCustomOptions then begin
-    s:=SpecialCharsToSpaces(s,true);
+    Result:=SpecialCharsToSpaces(Result,true);
   end;
-  Result:=s;
 end;
 
 procedure TParsedCompilerOptions.Assign(Src: TParsedCompilerOptions);
