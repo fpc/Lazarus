@@ -408,7 +408,8 @@ type
                          var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages, GroupCompile: boolean;
-                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
+                    var NeedBuildAllFlag: boolean; // pass true to force a build
+                    var Note: string): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function GetFallbackOutputDir(APackage: TLazPackage): string;
@@ -534,6 +535,9 @@ function ExtractFPCParamsForBuildAll(const CompParams: string): string;
 function ExtractMakefileCompiledParams(const CompParams: string;
   CreateReduced: boolean = false;
   BaseDir: string = ''; MakeRelative: boolean = false): TStringList;
+function FPCParamNeedsBuildAll(const Param: String): boolean;
+function FPCParamForBuildAllHasChanged(OldParams, NewParams: TStrings): boolean; overload;
+function FPCParamForBuildAllHasChanged(const OldParams, NewParams: String): boolean; overload;
 function RemoveFPCVerbosityParams(const CompParams: string): string;
 procedure WarnSuspiciousCompilerOptions(ViewCaption, Target, CompilerParams: string);
 
@@ -670,6 +674,86 @@ begin
   end;
   if CreateReduced then
     AllPaths.Values['Reduced']:=UTF8Trim(Reduced,[]);
+end;
+
+function FPCParamNeedsBuildAll(const Param: String): boolean;
+{ Some compiler flags require a clean build -B, because the compiler
+  does not recompile/update some ppu itself.
+  Remove all flags that do not require build all:
+  -B  build all
+  -e  executable
+  -E omit linking stage
+  -F  file name and paths
+  -I  includepath
+  -i  information
+  -k  linker flags
+  -l  logo
+  -o  name of the executable
+  -P  target cpu
+  -s  quick build option, do not call assembler and linker
+  -T  target OS
+  -v  verbosity
+  -V  Append '-<x>' to the used compiler binary name
+  -X  Executable options
+  }
+begin
+  Result:=(length(Param)<=2)
+      or (Param[1]<>'-')
+      or not (Param[2] in ['l','F','B','E','e','I','i','o','s','T','P','v','X','k']);
+end;
+
+function FPCParamForBuildAllHasChanged(OldParams, NewParams: TStrings): boolean;
+var
+  i, j, OldCount, NewCount: Integer;
+begin
+  i:=0;
+  j:=0;
+  if OldParams<>nil then
+    OldCount:=OldParams.Count
+  else
+    OldCount:=0;
+  if NewParams<>nil then
+   NewCount:=NewParams.Count
+  else
+    NewCount:=0;
+  repeat
+    while (i<OldCount) and not FPCParamNeedsBuildAll(OldParams[i]) do
+      inc(i);
+    while (j<NewCount) and not FPCParamNeedsBuildAll(NewParams[j]) do
+      inc(j);
+    if i=OldCount then
+    begin
+      if j=NewCount then
+        exit(false) // nothing relevant changed
+      else
+        exit(true); // new relevant param
+    end else
+    begin
+      if j=NewCount then
+        exit(true) // a relevant param vanished
+      else if OldParams[i]<>NewParams[j] then
+        exit(true); // relevant param changed
+    end;
+    inc(i);
+    inc(j);
+  until false;
+end;
+
+function FPCParamForBuildAllHasChanged(const OldParams, NewParams: String
+  ): boolean;
+var
+  OldParamList, NewParamList: TStrings;
+begin
+  OldParamList:=TStringListUTF8Fast.Create;
+  NewParamList:=TStringListUTF8Fast.Create;
+  try
+    SplitCmdLineParams(OldParams,OldParamList);
+    SplitCmdLineParams(NewParams,NewParamList);
+    Result:=FPCParamForBuildAllHasChanged(OldParamList,NewParamList);
+  finally
+    OldParamList.Free;
+    NewParamList.Free;
+  end;
 end;
 
 function RemoveFPCVerbosityParams(const CompParams: string): string;
@@ -3449,7 +3533,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  SkipDesignTimePackages, GroupCompile: boolean; out NeedBuildAllFlag: boolean;
+  SkipDesignTimePackages, GroupCompile: boolean; var NeedBuildAllFlag: boolean;
   var Note: string): TModalResult;
 var
   OutputDir: String;
@@ -3457,25 +3541,27 @@ var
   ConfigChanged: boolean;
   DependenciesChanged: boolean;
   DefResult: TModalResult;
-  OldNeedBuildAllFlag, IsDefDirWritable: Boolean;
+  OldNeedBuildAllFlag, IsDefDirWritable, ForceBuild: Boolean;
   OldOverride: String;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
-  NeedBuildAllFlag:=false;
-
-  if APackage.AutoUpdate=pupManually then
-    exit(mrNo);
-
-  // check the current output directory
-  Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-             true,SkipDesignTimePackages,GroupCompile,
-             NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
-  if Result=mrNo then begin
-    // the current output is valid
-    exit;
+  ForceBuild:=NeedBuildAllFlag;
+  if ForceBuild then begin
+    // user demands to rebuild the package
+  end else begin
+    if (APackage.AutoUpdate=pupManually) then
+      exit(mrNo);
+    // check the current output directory
+    Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+               true,SkipDesignTimePackages,GroupCompile,
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+    if Result=mrNo then begin
+      // the current output is valid
+      exit;
+    end;
   end;
 
   // the current output directory needs compilation
@@ -3500,13 +3586,20 @@ begin
     end;
     Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
-    Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,GroupCompile,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+    if ForceBuild then
+      Result:=mrYes
+    else
+      Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
+                 true,SkipDesignTimePackages,GroupCompile,
+                 NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
 
     if not IsDefDirWritable then begin
+      if ForceBuild then begin
+        // => keep using the fallback directory
+        exit;
+      end;
       if not ConfigChanged then begin
         // some source files have changed, not the compiler parameters
         // => keep using the fallback directory
@@ -3528,8 +3621,8 @@ begin
       debugln(['Hint: (lazarus) trying the default output directory of package ',APackage.IDAsString]);
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,GroupCompile,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+                 true,SkipDesignTimePackages,GroupCompile,
+                 NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
     if IsDefDirWritable or (DefResult=mrNo) then begin
       // switching back to the default output directory
       debugln(['Hint: (lazarus) switching back to the normal output directory: "',APackage.GetOutputDirectory,'" Package ',APackage.IDAsString]);
@@ -3576,8 +3669,9 @@ begin
   NeedBuildAllFlag:=false;
   ConfigChanged:=false;
   DependenciesChanged:=false;
-  
-  if APackage.AutoUpdate=pupManually then exit(mrNo);
+
+  if APackage.AutoUpdate=pupManually then
+    exit(mrNo);
 
   SrcFilename:=APackage.GetSrcFilename;
   CompilerFilename:=APackage.GetCompilerFilename;
@@ -3591,7 +3685,8 @@ begin
   // check state file
   StateFilename:=APackage.GetStateFilename;
   Result:=LoadPackageCompiledState(APackage,false,true);
-  if Result<>mrOk then exit; // read error and user aborted
+  if Result<>mrOk then
+    exit; // read error and user aborted
   if not Stats.StateFileLoaded then begin
     // package was not compiled via Lazarus nor via Makefile/fpmake
     DebugLn('Hint: (lazarus) Missing state file of ',APackage.IDAsString,': ',StateFilename);
@@ -3613,8 +3708,7 @@ begin
 
   // check if build all (-B) is needed
   if (Stats.CompilerFilename<>CompilerFilename)
-  or (ExtractFPCParamsForBuildAll(Stats.Params)
-      <>ExtractFPCParamsForBuildAll(CompilerParams))
+  or FPCParamForBuildAllHasChanged(Stats.Params,CompilerParams)
   or ((Stats.CompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
       and (FileAgeCached(CompilerFilename)<>Stats.CompilerFileDate))
@@ -3625,7 +3719,7 @@ begin
 
   if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
     //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
-    Note+='Dependencies will be rebuilt';
+    Note+='Dependencies will be rebuilt.'+LineEnding;
     DependenciesChanged:=true;
     exit(mrYes);
   end;
@@ -3633,7 +3727,7 @@ begin
   StateFileAge:=FileAgeUTF8(StateFilename);
 
   // check compiler and params
-  LastParams:=APackage.GetLastCompilerParams(o);
+  LastParams:=APackage.LastCompile[o].Params;
   if Stats.ViaMakefile then begin
     // the package was compiled via Makefile/fpmake
     if ConsoleVerbosity>=1 then
@@ -3698,7 +3792,7 @@ begin
   end else begin
     ReducedParams:=RemoveFPCVerbosityParams(CompilerParams);
     ReducedLastParams:=RemoveFPCVerbosityParams(LastParams);
-    if ReducedParams<>ReducedLastParams then begin
+    if not ReducedParams.Equals(ReducedLastParams) then begin
       // package was compiled by Lazarus
       DebugLn('Hint: (lazarus) Compiler params changed for ',APackage.IDAsString);
       DebugLn('  Old="',dbgstr(ReducedLastParams),'"');
@@ -3712,6 +3806,8 @@ begin
       exit(mrYes);
     end;
   end;
+
+  // compiler
   if (not Stats.ViaMakefile)
   and (CompilerFilename<>Stats.CompilerFilename) then begin
     DebugLn('Hint: (lazarus) Compiler filename changed for ',APackage.IDAsString);
@@ -3775,7 +3871,6 @@ begin
       end;
     end;
   end;
-
 
   //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
 
@@ -3844,7 +3939,7 @@ begin
       end;
     end;
   end;
-  
+
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile END ',APackage.IDAsString);
   {$ENDIF}
@@ -4010,6 +4105,7 @@ begin
           BuildItems:=TObjectList.Create(true);
           for i:=0 to PkgList.Count-1 do begin
             CurPkg:=TLazPackage(PkgList[i]);
+            if CurPkg.AutoUpdate=pupManually then continue;
             BuildItem:=TLazPkgGraphBuildItem.Create(nil);
             BuildItem.LazPackage:=CurPkg;
             BuildItems.Add(BuildItem);
@@ -4215,7 +4311,7 @@ begin
     end;
 
     // check if compilation is needed and if a clean build is needed
-    NeedBuildAllFlag:=false;
+    NeedBuildAllFlag:=pcfCleanCompile in Flags;
     Note:='';
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           pcfSkipDesignTimePackages in Flags,
