@@ -837,7 +837,7 @@ var
 
     TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
     if HasOption('get-exe-path') then begin
-      WriteLn(TargetExeName + GetExecutableExt);
+      WriteLn(TargetExeName);
       exit(true);
     end;
 
