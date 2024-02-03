@@ -158,7 +158,7 @@ type
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
     procedure HintTimer(Sender : TObject);
-    procedure InvalidateWithParent(AComponent: TComponent);
+    //procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
     procedure SetGridSizeX(const AValue: integer);
@@ -1926,7 +1926,7 @@ begin
     inc(Result.Y,ParentForm.Y);
   end;
 end;
-
+{
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
 begin
   {$IFDEF VerboseDesigner}
@@ -1941,7 +1941,7 @@ begin
     FForm.Invalidate;
   end;
 end;
-
+}
 procedure TDesigner.SetDefaultFormBounds(const AValue: TRect);
 begin
   FDefaultFormBounds:=AValue;
