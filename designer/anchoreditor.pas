@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDECommands, PropEdits, IDEDialogs, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
+  LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts, EnvGuiOptions;
 
 type
 
@@ -638,6 +638,12 @@ begin
     end;
     GlobalDesignHook.Modified(Self, 'Anchors');
     GlobalDesignHook.RefreshPropertyValues;
+    // redraw border spacing frame
+    if EnvironmentGuiOpts.ShowBorderSpacing then
+      if (GlobalDesignHook.LookupRoot is TCustomForm) or
+         (GlobalDesignHook.LookupRoot is TCustomFrame)
+      then
+        TControl(GlobalDesignHook.LookupRoot).Invalidate;
   end;
 end;
 

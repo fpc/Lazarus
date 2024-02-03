@@ -854,6 +854,7 @@ type
     procedure SetTop(const AValue: TSpacingSize);
   protected
     procedure Change(InnerSpaceChanged: Boolean); virtual;
+    function GetOwner: TPersistent; override;
   public
     constructor Create(OwnerControl: TControl; ADefault: PControlBorderSpacingDefault = nil);
     procedure Assign(Source: TPersistent); override;
@@ -3852,8 +3853,7 @@ begin
   end;
 end;
 
-function TControlBorderSpacing.IsEqual(Spacing: TControlBorderSpacing
-  ): Boolean;
+function TControlBorderSpacing.IsEqual(Spacing: TControlBorderSpacing): Boolean;
 begin
   Result:=(FAround=Spacing.Around)
       and (FBottom=Spacing.Bottom)
@@ -3891,6 +3891,11 @@ begin
   if FControl <> nil then
     FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+function TControlBorderSpacing.GetOwner: TPersistent;
+begin
+  Result := FControl;
 end;
 
 function TControlBorderSpacing.GetAroundBottom: Integer;
