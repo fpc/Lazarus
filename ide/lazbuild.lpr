@@ -289,18 +289,13 @@ end;
 procedure ShowBuildModeError(const aBuildModeOverride: string);
 begin
   WriteLn(Format(lisERRORInvalidBuildMode, [aBuildModeOverride]));
-  if ConsoleVerbosity>=0 then
+  if Project1.BuildModes.Count>1 then
   begin
-    WriteLn;
-    if Project1.BuildModes.Count>1 then
-    begin
-      WriteLn(lisAvailableProjectBuildModes);
-      ShowBuildModes;
-    end else begin
-      WriteLn(lisThisProjectHasOnlyTheDefaultBuildMode);
-    end;
-    WriteLn;
-  end;
+    WriteLn(lisAvailableProjectBuildModes);
+    ShowBuildModes;
+  end else
+    WriteLn(lisThisProjectHasOnlyTheDefaultBuildMode);
+  WriteLn;
   Halt(ErrorBuildFailed);
 end;
 
@@ -836,7 +831,7 @@ var
     end;
 
     TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-    if HasOption('get-exe-path') then begin
+    if HasOption('get-target-path') then begin
       WriteLn(TargetExeName);
       exit(true);
     end;
@@ -1632,7 +1627,7 @@ begin
     LongOptions.Add('no-write-project');
     LongOptions.Add('get-expand-text:');
     LongOptions.Add('get-build-modes');
-    LongOptions.Add('get-exe-path');
+    LongOptions.Add('get-target-path');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
@@ -1917,8 +1912,8 @@ begin
   writeln('--get-build-modes');
   w(lisGetBuildModes);
   writeln('');
-  writeln('--get-exe-path');
-  w(lisGetExePath);
+  writeln('--get-target-path');
+  w(lisGetTargetPath);
   writeln('');
 end;
 
