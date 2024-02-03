@@ -6958,6 +6958,8 @@ begin
         if ARoot = nil then Continue;
         if (ARoot <> APersistent) and (List.IndexOf(ARoot) >= 0) then Continue;
         List.Add(ARoot);
+        if ARoot is TControl then
+          TControl(ARoot).Invalidate;
         // ... get the designer ...
         AForm := GetDesignerForm(ARoot);
         if Assigned(AForm) and Assigned(AForm.Designer) then
