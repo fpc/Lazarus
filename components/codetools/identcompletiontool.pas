@@ -1366,6 +1366,7 @@ var
   Node: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
+  NamePos: TAtomPosition;
   HasLowerVisibility: Boolean;
 begin
   // proceed searching ...
