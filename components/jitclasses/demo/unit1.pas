@@ -267,20 +267,12 @@ begin
 end;
 
 type
-   tmethodnamerec =
-{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
-   packed
-{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
-   record
+   tmethodnamerec = packed record
       name : pshortstring;
       addr : codepointer;
    end;
 
-   tmethodnametable =
-{$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
-   packed
-{$endif FPC_REQUIRES_PROPER_ALIGNMENT}
-   record
+   tmethodnametable = packed record
      count : dword;
      entries : packed array[0..0] of tmethodnamerec;
    end;
