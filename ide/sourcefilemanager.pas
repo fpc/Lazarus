@@ -8363,14 +8363,10 @@ var
   OldCode: TCodeBuffer;
   OldCodeCreated: Boolean;
   PascalReferences: TAVLTree;
+  i: Integer;
   MsgResult: TModalResult;
   OnlyEditorFiles: Boolean;
   aFilename: String;
-  DeclXY: TPoint;
-  CodeTool: TCodeTool;
-  CaretXY: TCodeXYPosition;
-  CodeNode: TCodeTreeNode;
-  CleanPosAmd, i:integer;
 begin
   // compare unitnames case sensitive, maybe only the case changed
   if (CompareFilenames(OldFilename,NewFilename)=0) and (OldUnitName=NewUnitName) then
@@ -8397,46 +8393,24 @@ begin
     end else begin
       // get owners of unit
       OwnerList:=PkgBoss.GetOwnersOfUnit(NewFilename);
+      if OwnerList=nil then exit(mrOk);
+      PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+      ReverseList(OwnerList);
 
-      //if OwnerList=nil then exit(mrOk); // this causes out of the business, why?
-      if OwnerList<>nil then begin
-        PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
-        ReverseList(OwnerList);
-
-        // get source files of packages and projects
-        ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
-        try
-          if ExtraFiles<>nil then
-            Files.AddStrings(ExtraFiles);
-        finally
-          ExtraFiles.Free;
-        end;
+      // get source files of packages and projects
+      ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+      try
+        if ExtraFiles<>nil then
+          Files.AddStrings(ExtraFiles);
+      finally
+        ExtraFiles.Free;
       end;
-      // Files list here was empty, so the below
-      if LazarusIDE.ActiveProject <> nil then begin
-        if OwnerList=nil then
-          OwnerList:=TFPList.Create;
-        OwnerList.Clear;
-
-        OwnerList.Add(LazarusIDE.ActiveProject);
-        ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
-        try
-          if ExtraFiles<>nil then
-            Files.AddStrings(ExtraFiles);
-            //Files.Add(OldFilename); // here can be references to unit itself in code or comments
-        finally
-          ExtraFiles.Free;
-        end;
-      end;
-      CleanUpFileList(Files);
     end;
-
     for i:=Files.Count-1 downto 0 do begin
       if (CompareFilenames(Files[i],OldFilename)=0)
       or (CompareFilenames(Files[i],NewFilename)=0) then
         Files.Delete(i);
     end;
-
     //DebugLn(['ReplaceUnitUse ',Files.Text]);
 
     // commit source editor to codetools
@@ -8451,50 +8425,11 @@ begin
     end;
 
     // search pascal source references
-    //Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,PascalReferences); //WB - commented out
-
-    //WB ===
-    CodeTool:=nil;
-    CaretXY.X:=1;
-    CaretXY.Y:=1;
-    CaretXY.Code:=OldCode;
-    CodeNode:=nil;
-    if CodeToolBoss.Explore(OldCode,CodeTool,false,true{= interface only}) then
-      if CodeTool<>nil then begin
-        CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
-        CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false{= no exceptions});
-      end;
-    if CodeNode<>nil then begin
-      //explore tree and find unit SourceName StartPos
-      CodeNode:=CodeNode.GetRoot;
-      if (CodeNode.Desc in  [ctnProgram, ctnPackage, ctnLibrary, ctnUnit]) and
-        (CodeNode.FirstChild<>nil) and (CodeNode.FirstChild.Desc=ctnSrcName)
-      then begin
-        CleanPosAmd:=CodeNode.FirstChild.StartPos;
-        if CodeTool.CleanPosToCaret(CleanPosAmd,CaretXY) then begin
-          DeclXY.X:=CaretXY.X;
-          DeclXY.Y:=CaretXY.Y;
-        end else begin
-          DeclXY.X:=0;
-          DeclXY.Y:=0;
-        end;
-      end else begin
-        DeclXY.X:=0;
-        DeclXY.Y:=0;
-      end;
-    end else begin
-      DeclXY.X:=0;
-      DeclXY.Y:=0;
-    end;
-
-    Result:=GatherIdentifierReferences(Files, OldCode,DeclXY, True, PascalReferences);
-    //===
-
+    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,PascalReferences);
     if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'') then
       MainIDE.DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
-      //debugln('ReplaceUnitUse GatherUnitReferences failed');
-      debugln('ReplaceUnitUse GatherIdentifierReferences failed'); //WB - now as Identifiers
+      debugln('ReplaceUnitUse GatherUnitReferences failed');
       exit;
     end;
 
@@ -8519,7 +8454,6 @@ begin
           exit;
         end;
       end;
-
       if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName,
                                            Nil,Nil,True) then
       begin

@@ -313,8 +313,6 @@ type
     function GetLastNode: TCodeTreeNode;
     function DescAsString: string;
     function FindOwner: TObject;
-    function IsDottedIdentParent: boolean;
-    function IsDottedIdentChild: boolean;
     procedure Clear;
     constructor Create;
     procedure ConsistencyCheck;
@@ -977,38 +975,6 @@ function TCodeTreeNode.FindOwner: TObject;
 begin
   Result:=FindOwnerOfCodeTreeNode(Self);
 end;
-
-function TCodeTreeNode.IsDottedIdentParent: boolean;
-begin // TRUE means: from this node.StartPos dotted Ident can be read,
-      //note that node.EndPos-1 for (Desc = ctnSrcName) should be ';' and for
-      //(Desc = ctnUseUnit) should be ',' or ';'
-  Result:=false;
-  if (Desc in [ctnUseUnit]) and (ChildCount>1) then
-    Result:=true
-  else
-  if (Parent<>nil) and (Parent.Desc in [ctnUnit,ctnProgram,ctnPackage,ctnLibrary])
-  and (Desc = ctnSrcName) and (ChildCount>1) and (FirstChild.Desc=ctnIdentifier) then
-      //identifier can be dotted
-      // a solution can be change parsing (and write proper EndPos value) or as below
-    Result:=FirstChild.NextBrother.StartPos>FirstChild.EndPos+2;//'.'+';'
-    //without accessing Src[N] (clean source)
-end;
-
-function TCodeTreeNode.IsDottedIdentChild: boolean;
-begin // TRUE means: from this node.Parent.StartPos dotted Ident can be read,
-      //note that node.Parent.EndPos-1 for (Parent.Desc = ctnSrcName) should be ';' and for
-      //(Parent.Desc = ctnUseUnit) should be ',' or ';'
-  Result:=false;
-  if (Parent<>nil) then begin
-    if (Desc in [ctnUseUnitNamespace, ctnUseUnitClearName]) and (Parent.ChildCount>1) then
-      Result:=true
-    else
-    if (Desc = ctnIdentifier) {and (Parent.Desc=ctnSrcName)} //WB - was too strict
-    and ((EndPos - StartPos)<(Parent.EndPos-Parent.StartPos-1)) then
-      Result:=true;
-  end;
-end;
-
 
 { TCodeTree }
 

@@ -183,7 +183,6 @@ var
 function UpperCaseStr(const s: string): string;
 function IsUpperCaseStr(const s: string): boolean;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
-function CompareIdentifiersAtoms(Identifier1, Identifier2: PChar): integer;
 
 function CalcMemSize: PtrUInt;
 
@@ -222,50 +221,10 @@ end;
 
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 begin
-  if (Identifier1<>nil) and IsIdentStartChar[Identifier1[0]] then begin
-    if (Identifier2<>nil) and IsIdentStartChar[Identifier2[0]] then begin
-      while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
-        if (IsDottedIdentChar[Identifier1[0]]) then begin //+ dotted feature
-          inc(Identifier1);
-          inc(Identifier2);
-        end else begin
-          Result:=0; // for example  'aaA;' 'aAa;'
-          exit;
-        end;
-      end;
-      if (IsIdentChar[Identifier1[0]]) then begin
-        if (IsIdentChar[Identifier2[0]]) then begin
-          if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
-            Result:=-1 // for example  'aab' 'aaa'
-          else
-            Result:=1; // for example  'aaa' 'aab'
-        end else begin
-          Result:=-1; // for example  'aaa' 'aa;'
-        end;
-      end else begin
-        if (IsIdentChar[Identifier2[0]]) then
-          Result:=1 // for example  'aa;' 'aaa'
-        else
-          Result:=0; // for example  'aa;' 'aa,'
-      end;
-    end else begin
-      Result:=-1; // for example  'aaa' nil
-    end;
-  end else begin
+  if (Identifier1<>nil) then begin
     if (Identifier2<>nil) then begin
-      Result:=1; // for example  nil 'bbb'
-    end else begin
-      Result:=0; // for example  nil nil
-    end;
-  end;
-end;
-
-function CompareIdentifiersAtoms(Identifier1, Identifier2: PChar): integer;
-begin
-  if (Identifier1<>nil) and IsIdentStartChar[Identifier1[0]] then begin
-    if (Identifier2<>nil) and IsIdentStartChar[Identifier2[0]] then begin
       while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
-        if (IsIdentChar[Identifier1[0]]) then begin //not dotted feature
+        if (IsIdentChar[Identifier1[0]]) then begin
           inc(Identifier1);
           inc(Identifier2);
         end else begin
@@ -604,7 +563,7 @@ begin
     i:=FBucketStart[i];
     if i>=0 then begin
       repeat
-        if CompareIdentifiersAtoms(PChar(@FItems[i].KeyWord[1]),Identifier)=0 then begin
+        if CompareIdentifiers(PChar(@FItems[i].KeyWord[1]),Identifier)=0 then begin
           if Assigned(FItems[i].DoIt) then
             Result:=FItems[i].DoIt()
           else

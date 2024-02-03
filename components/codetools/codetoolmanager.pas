@@ -2597,100 +2597,19 @@ end;
 function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; X, Y: integer; out
   Identifier: string): boolean;
 var
-  CleanPos, cleanPosAmd, i: integer;
-  canBeDotted: boolean;
-  CodeTool: TCodeTool;
-  CaretXY: TCodeXYPosition;
-  CodeNode: TCodeTreeNode;
+  CleanPos: integer;
 begin
   Result:=false;
-  Identifier:='';
-  canBeDotted:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   Code.LineColToPosition(Y,X,CleanPos);
-
   if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
-    i:=CleanPos;
-    repeat
-      while (i>1) and isIdentChar[Code.Source[i-1]] do
-        dec(i);
-      if Code.Source[i-1]='.' then begin
-        canBeDotted:=true;
-        dec(i);
-      end;
-    until (i<=1) or (not isIdentChar[Code.Source[i-1]]);
-
-    if not isIdentStartChar[Code.Source[i]] then exit;
-
-    if not canBeDotted then begin
-      i:=CleanPos;
-      repeat
-        while (i<Code.SourceLength) and isIdentChar[Code.Source[i]] do
-          inc(i);
-        if Code.Source[i]='.' then begin
-          canBeDotted:=true;
-          inc(i);
-        end;
-      until canBeDotted or ((not isIdentChar[Code.Source[i]]) or (i>=Code.SourceLength));
-    end;
-    if not canBeDotted then begin
-      Identifier:=GetIdentifier(@Code.Source[CleanPos]);
-      Result:=true;
-    end else begin //now  problematic cases
-      //1. inside single dotted identifier?
-      //2. inside [multiple] concatenation of
-      //[[dotted] identifier + '.' + type/field/property/method/procedure/function ..]?
-      // no assumptions should be taken - everything possible, then use parsed code tree
-      CodeTool:=nil;
-      CaretXY:=CleanCodeXYPosition;
-      CaretXY.Code:=Code;
-      CaretXY.X:=X;
-      CaretXY.Y:=Y;
-      CodeNode:=nil;
-
-      if CodeToolBoss.Explore(Code,CodeTool,true) then
-        if CodeTool<>nil then begin
-          CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
-          CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false);
-        end;
-
-      if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
-        if CodeNode.IsDottedIdentParent then begin
-          CleanPosAmd:= CodeNode.StartPos;
-          if (CleanPosAmd<1) or  (CleanPosAmd >= Code.SourceLength) then exit;
-          Identifier:=GetDottedIdentifier(@Code.Source[CleanPosAmd]);
-          Result:=true;
-        end else
-        if CodeNode.IsDottedIdentChild then begin
-          CleanPosAmd:= CodeNode.Parent.StartPos;
-          if (CleanPosAmd<1) or  (CleanPosAmd >= Code.SourceLength) then exit;
-          Identifier:=GetDottedIdentifier(@Code.Source[CleanPosAmd]);
-          Result:=true;
-        end else begin
-          if (CodeNode.StartPos<=CleanPosAmd) and (CodeNode.EndPos>CleanPosAmd)
-          then begin
-            if (CodeNode.ChildCount=1) and (CodeNode.LastChild.Desc=ctnIdentifier)
-            then begin //e.g. 'a:dotted.|unit1.TType;' - where | = CleanPosAmd
-              i:=CleanPosAmd;
-              repeat
-                while (i>1) and isIdentChar[Code.Source[i-1]] do
-                  dec(i);
-                if Code.Source[i-1]='.' then begin
-                  dec(i);
-                end;
-              until (i<=1) or (not isIdentChar[Code.Source[i-1]]);
-
-              if IsIdentStartChar[Code.Source[i]] then begin
-                Identifier:=GetDottedIdentifier(@Code.Source[i]);
-                Result:=true;
-              end;
-            end;
-          end;
-        end;
-      end;
-    end;
+    Identifier:=GetIdentifier(@Code.Source[CleanPos]);
+    Result:=true;
+  end else begin
+    Identifier:='';
+    Result:=false;
   end;
 end;
 

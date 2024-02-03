@@ -158,8 +158,7 @@ type
                        NewHasChilds: boolean; NewHistoryIndex: integer;
                        NewIdentifier: PChar; NewLevel: integer;
                        NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-                       NewDefaultDesc: TCodeTreeNodeDesc;
-                       IsDottedIdent: boolean=false);
+                       NewDefaultDesc: TCodeTreeNodeDesc);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
     function IsPropertyReadOnly: boolean;
@@ -1368,7 +1367,6 @@ var
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
-  IsDottedIdent: Boolean;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1540,38 +1538,15 @@ begin
   ctnRecordCase:
     Ident:=@FoundContext.Tool.Src[Params.NewCleanPos];
 
-  ctnIdentifier:
-    if (FoundContext.Tool=Self) and  (FoundContext.Node.Parent<>nil) then begin
-      Ident:=@Src[FoundContext.Node.Parent.StartPos];
-      if (FoundContext.Node.Desc = ctnIdentifier) and
-        (FoundContext.Node.Parent.Desc = ctnSrcName) then begin
-          IsDottedIdent:=true;
-          Ident:=@Src[FoundContext.Node.Parent.StartPos];
-        end;
-    end;
-
   ctnUseUnitNamespace,ctnUseUnitClearName:
-    if (FoundContext.Tool=Self) and  (FoundContext.Node.Parent<>nil) then begin
-      Ident:=@Src[FoundContext.Node.Parent.StartPos];
-      if (FoundContext.Node.Parent.ChildCount=1) then
-        IsDottedIdent:=false //ctnUseUnitClearName only
-      else begin
-        if  (FoundContext.Node.Parent.FirstChild = FoundContext.Node) then
-          IsDottedIdent:=true //first ctnUseUnitNamespace
-        else
-          Ident:=nil; //not first ctnUseUnitNamespace =>  mark to skip the node
-          //execution flow does not reache here as parsing "use unit" only once
-          //calls the function, let us leave it for safety if the rule changed
-      end;
+    if (FoundContext.Tool=Self) then begin
+      Ident:=@Src[FoundContext.Node.StartPos];
     end;
 
-  ctnUnit,ctnProgram,ctnLibrary,ctnPackage:  //WB
-    if (FoundContext.Tool=Self) and (FoundContext.Node.FirstChild<>nil) and
-      (FoundContext.Node.FirstChild.Desc=ctnSrcName)  then begin
-      IsDottedIdent:=true;// undotted idents will be procedeed correctly anyway
-                          //but dotted ones need it
-      Ident:=@Src[FoundContext.Node.FirstChild.StartPos];
-    end;
+  ctnUnit,ctnProgram,ctnLibrary,ctnPackage:
+    if (FoundContext.Tool=Self)
+    and GetSourceNamePos(NamePos) then
+      Ident:=@Src[NamePos.StartPos];
 
   end;
   if Ident=nil then exit;
@@ -1584,8 +1559,7 @@ begin
                             Lvl,
                             FoundContext.Node,
                             FoundContext.Tool,
-                            ctnNone,
-                            IsDottedIdent);
+                            ctnNone);
 
   //Add the '&' character to prefixed identifiers
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
@@ -4321,12 +4295,12 @@ constructor TIdentifierListItem.Create(
   NewCompatibility: TIdentifierCompatibility; NewHasChilds: boolean;
   NewHistoryIndex: integer; NewIdentifier: PChar; NewLevel: integer;
   NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-  NewDefaultDesc: TCodeTreeNodeDesc; IsDottedIdent: boolean);
+  NewDefaultDesc: TCodeTreeNodeDesc);
 begin
   Compatibility:=NewCompatibility;
   if NewHasChilds then Include(FLags,iliHasChilds);
   HistoryIndex:=NewHistoryIndex;
-  Identifier:=GetIdentifier(NewIdentifier,True,IsDottedIdent);
+  Identifier:=GetIdentifier(NewIdentifier);
   Level:=NewLevel;
   Tool:=NewTool;
   Node:=NewNode;
