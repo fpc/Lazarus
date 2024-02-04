@@ -5189,15 +5189,25 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: WideString;
   AEvent: QKeyEventH): Word;
+var
+  Modifiers: LongWord;
 begin
   // The big problem here with unicode keys
   // Example: for Russian letter A qt returns AKey = $0410 and this is
   // absolutely correct: 0400 - 04FF - is russian unicode space and
   // 0410 is defined as "CYRILLIC CAPITAL LETTER A"
-
+  if Assigned(AEvent) then
+    Modifiers := QKeyEvent_modifiers(AEvent)
+  else
+    Modifiers := 0;
   Result := VK_UNKNOWN;
   case AKey of
-    QtKey_0..QtKey_9: Result := VK_0 + (AKey - QtKey_0);
+    QtKey_0..QtKey_9:
+    begin
+      Result := VK_0 + (AKey - QtKey_0);
+      if Modifiers and QtKeypadModifier <> 0 then
+        Result := Result + VK_0;
+    end;
     QtKey_At: Result := VK_2; // some bug, but Ctrl + Shit + 2 produce QtKey_At
     QtKey_Escape: Result := VK_ESCAPE;
     QtKey_Tab: Result := VK_TAB;
@@ -5256,17 +5266,49 @@ begin
     QtKey_AmperSand,
     QtKey_ParenLeft,
     QtKey_ParenRight: Result := VK_UNKNOWN;
-    QtKey_Asterisk: Result := VK_MULTIPLY;
-    QtKey_Plus: Result := VK_ADD;
-    QtKey_Comma: Result := VK_SEPARATOR;
-    QtKey_Minus: Result := VK_SUBTRACT;
-    QtKey_Period: Result := VK_DECIMAL;
+    QtKey_Asterisk:
+    begin
+      if Modifiers = QtShiftModifier then
+        Result := VK_OEM_PLUS
+      else
+        Result := VK_MULTIPLY;
+    end;
+    QtKey_Plus:
+    begin
+      if Modifiers and QtKeypadModifier <> 0 then
+        Result := VK_ADD
+      else
+        Result := VK_OEM_PLUS;
+    end;
+    QtKey_Comma:
+    begin
+      if Modifiers and QtKeypadModifier <> 0 then
+        Result := VK_SEPARATOR
+      else
+        Result := VK_OEM_COMMA;
+    end;
+    QtKey_Underscore: Result := VK_OEM_MINUS;
+    QtKey_Minus:
+    begin
+       if Modifiers and QtKeypadModifier <> 0 then
+        Result := VK_SUBTRACT
+      else
+        Result := VK_OEM_MINUS;
+    end;
+    QtKey_Period:
+    begin
+      if Modifiers and QtKeypadModifier <> 0 then
+        Result := VK_DECIMAL
+      else
+        Result := VK_OEM_PERIOD;
+    end;
     QtKey_Slash: Result := VK_DIVIDE;
     QtKey_Equal: Result := VK_OEM_PLUS;
 
     QtKey_Colon,
     QtKey_Semicolon: Result := VK_OEM_1;
-    QtKey_AsciiTilde: Result := VK_OEM_3;
+    QtKey_AsciiTilde,
+    QtKey_QuoteLeft: Result := VK_OEM_3;
     QtKey_BraceLeft,
     QtKey_BracketLeft: Result := VK_OEM_4;
     QtKey_BackSlash: Result := VK_OEM_5;
