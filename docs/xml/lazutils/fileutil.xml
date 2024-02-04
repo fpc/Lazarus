@@ -1637,7 +1637,6 @@ in the following properties:
 <seealso/>
 </element>
 
-<!-- Modified in 9ec85e5d. -->
 <element name="TFileSearcher.Search">
 <short>
 Searches for files or directories in the specified path(s) using the specified 
@@ -1721,7 +1720,9 @@ and files are available in the method.
 <p>
 The OnQueryFileFound and OnQueryDirectoryFound events handlers are signalled 
 (when assigned) to allow the application to include or exclude each directory 
-or file found in the process.
+or file found in the process. Arguments passed to these handlers include the 
+fully-qualified path or file name returned by ExpandFilenameUtf8. Path names 
+include a trailing path delimiter.
 </p>
 <p>
 When a matching file is found, the OnFileFound event is signalled. When a 
@@ -1758,6 +1759,8 @@ already running.
 <link id="TFileSearcher.PathSeparator"/>
 <link id="TFileSearcher.MaskSeparator"/>
 <link id="TFileIterator.Stop"/>
+<link id="#lazutils.lazfileutils.ExpandFilenameUtf8">ExpandFilenameUtf8</link>
+<link id="#lazutils.masks.TMaskList">TMaskList</link>
 </seealso>
 </element>
 <element name="TFileSearcher.Search.ASearchPath">
