@@ -386,12 +386,20 @@ const
 type
   // these definitions are copied from typinfo.pp
 
-  TMethodNameRec = packed record
+  TMethodNameRec =
+{$if (FPC_FULLVERSION<30301) or NOT defined(FPC_REQUIRES_PROPER_ALIGNMENT)}
+  packed
+{$endif}
+  record
     Name : PShortString;
     Addr : Pointer;
   end;
 
-  TMethodNameTable = packed record
+  TMethodNameTable =
+{$if (FPC_FULLVERSION<30301) or NOT defined(FPC_REQUIRES_PROPER_ALIGNMENT)}
+  packed
+{$endif}
+  record
     Count : DWord;
     // for runtime range checking it is important to give a range
     Entries : packed array[0..1000000] of TMethodNameRec;
