@@ -6002,6 +6002,35 @@ default value passes to the constructor.
 <short>Currently ignored (distinction no longer required).</short>
 </element>
 
+<element name="TControlBorderSpacing.GetOwner">
+<short>
+Gets the class where the border spacing values are used.
+</short>
+<descr>
+<p>
+<var>GetOwner</var> is an overridden method in TControlBorderSpacing used to 
+get the persistent object where the class instance is used. It reimplements the 
+dynamic method introduced in the TPersistent ancestor to return the value in 
+the Control property. To access properties /methods / events specific to a 
+TPersistent descendant, the return value must be cast to the required class 
+type.
+</p>
+</descr>
+<version>
+Added in LCL version 3.2.
+</version>
+<seealso>
+<link id="TControlBorderSpacing.Control"/>
+<link id="TControlBorderSpacing.Create"/>
+<link id="#rtl.classes.TPersistent">TPersistent</link>
+</seealso>
+</element>
+<element name="TControlBorderSpacing.GetOwner.Result">
+<short>
+TPersistent object where the class instance is used.
+</short>
+</element>
+
 <element name="TControlBorderSpacing.Create">
 <short>Constructor for the class instance.</short>
 <descr/>
