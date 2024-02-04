@@ -832,7 +832,7 @@ var
         // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
         begin             // File
-          if ((MaskList = nil) or MaskList.Matches(PathInfo.Name)) and AcceptFile(APath+PathInfo.Name) then
+          if ((MaskList = nil) or MaskList.Matches(PathInfo.Name)) and AcceptFile(ExpandFilenameUtf8(APath+PathInfo.Name)) then
           begin
             FPath := APath;
             FLevel := ALevel;
@@ -841,7 +841,7 @@ var
           end;
         end
         else begin        // Directory
-          if AcceptDir(PathInfo.Name) then
+          if AcceptDir(AppendPathDelim(ExpandFilenameUtf8(APath + PathInfo.Name))) then
           begin
             FPath := APath;
             FLevel := ALevel;
@@ -869,7 +869,7 @@ var
                FileIsInPath(ExpandFilenameUTF8(ReadAllLinks(APath+PathInfo.Name,False)),ExpandFilenameUTF8(APath)) or
                FileIsInPath(ExpandFilenameUTF8(APath),ExpandFilenameUTF8(ReadAllLinks(APath+PathInfo.Name,False))))
              ) or
-             (not AcceptDir(PathInfo.Name))
+             (not AcceptDir(AppendPathDelim(ExpandFilenameUtf8(APath + PathInfo.Name))))
           then Continue;
 
           FPath := APath;
