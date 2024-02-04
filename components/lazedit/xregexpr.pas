@@ -2530,7 +2530,7 @@ procedure TRegExpr.Tail(p: PRegExprChar; val: PRegExprChar);
 var
   scan: PRegExprChar;
 begin
-  if p = @regDummy then
+  if p = @regDummy[0] then
     Exit;
   // Find last node.
   scan := regLast(p);
@@ -2553,7 +2553,7 @@ procedure TRegExpr.OpTail(p: PRegExprChar; val: PRegExprChar);
 // regtail on operand of first argument; nop if operandless
 begin
   // "Operandless" and "op != OP_BRANCH" are synonymous in practice.
-  if (p = nil) or (p = @regDummy) or
+  if (p = nil) or (p = @regDummy[0]) or
      (PREOp(p)^ <> OP_BRANCH) and (PREOp(p)^ <> OP_GBRANCH) and
      (PREOp(p)^ <> OP_GBRANCH_EX) and (PREOp(p)^ <> OP_GBRANCH_EX_CI)
   then
@@ -2566,7 +2566,7 @@ function TRegExpr.EmitNode(op: TREOp): PRegExprChar;
 // emit a node, return location
 begin
   Result := regCode;
-  if Result <> @regDummy then
+  if Result <> @regDummy[0] then
   begin
     PREOp(regCode)^ := op;
     Inc(regCode, REOpSz);
@@ -2598,7 +2598,7 @@ end;
 
 procedure TRegExpr.EmitC(ch: REChar);
 begin
-  if regCode <> @regDummy then
+  if regCode <> @regDummy[0] then
   begin
     regCode^ := ch;
     Inc(regCode);
@@ -2614,7 +2614,7 @@ end; { of procedure TRegExpr.EmitC
 
 procedure TRegExpr.EmitInt(AValue: LongInt);
 begin
-  if regCode <> @regDummy then
+  if regCode <> @regDummy[0] then
   begin
     PLongInt(regCode)^ := AValue;
     Inc(regCode, RENumberSz);
@@ -2723,7 +2723,7 @@ var
   src, dst, place: PRegExprChar;
   i: Integer;
 begin
-  if regCode = @regDummy then
+  if regCode = @regDummy[0] then
   begin
     Inc(regCodeSize, sz);
     Exit;
@@ -2765,7 +2765,7 @@ var
   src, dst: PRegExprChar;
   i: Integer;
 begin
-  if regCode = @regDummy then
+  if regCode = @regDummy[0] then
   begin
     // Do not decrement regCodeSize => the fSecondPass may temporary fill the extra memory;
     Exit;
@@ -3188,7 +3188,7 @@ begin
     regNumBrackets := 1;
     regNumAtomicBrackets := 0;
     regCodeSize := 0;
-    regCode := @regDummy;
+    regCode := @regDummy[0];
     regCodeWork := nil;
 
     EmitC(OP_MAGIC);
@@ -3610,7 +3610,7 @@ var
       TheOp := OP_LOOP;
     InsertOperator(OP_LOOPENTRY, Result, REOpSz + RENextOffSz);
     NextNode := EmitNode(TheOp);
-    if regCode <> @regDummy then
+    if regCode <> @regDummy[0] then
     begin
       off := (Result + REOpSz + RENextOffSz) - (regCode - REOpSz - RENextOffSz);
       // back to Atom after OP_LOOPENTRY
@@ -3629,7 +3629,7 @@ var
     else
       Inc(regCodeSize, REBracesArgSz * 2 + RENextOffSz);
     Tail(Result, NextNode); // OP_LOOPENTRY -> OP_LOOP
-    if regCode <> @regDummy then
+    if regCode <> @regDummy[0] then
       Tail(Result + REOpSz + RENextOffSz, NextNode); // Atom -> OP_LOOP
     {$ENDIF}
   end;
@@ -3644,7 +3644,7 @@ var
     else
       TheOp := OP_BRACES;
     InsertOperator(TheOp, Result, REOpSz + RENextOffSz + REBracesArgSz * 2);
-    if regCode <> @regDummy then
+    if regCode <> @regDummy[0] then
     begin
       PREBracesArg(AlignToInt(Result + REOpSz + RENextOffSz))^ := ABracesMin;
       PREBracesArg(AlignToInt(Result + REOpSz + RENextOffSz + REBracesArgSz))^ := ABracesMax;
@@ -4619,7 +4619,7 @@ begin
                 gkLookbehindNeg: ret := EmitNode(OP_LOOKBEHIND_NEG);
               end;
               regLookBehindOption := regCode;
-              if (regCode <> @regDummy) then
+              if (regCode <> @regDummy[0]) then
                 Inc(regCode, ReOpLookBehindOptionsSz)
               else
                 Inc(regCodeSize, ReOpLookBehindOptionsSz);
@@ -4631,7 +4631,7 @@ begin
 
               Tail(ret, regLast(Result));
 
-              if (regCode <> @regDummy) then begin
+              if (regCode <> @regDummy[0]) then begin
                 ALen := 0;
                 ret2 := Result;
                 if IsPartFixedLength(ret2, op, ALen, AMaxLen, OP_LOOKBEHIND_END, regCode, [flfSkipLookAround]) then
@@ -4977,7 +4977,7 @@ begin
               EmitC(_UpperCase(regParse^))
             else
               EmitC(regParse^);
-            if regCode <> @regDummy then
+            if regCode <> @regDummy[0] then
               Inc(regExactlyLen^);
           end;
           Inc(regParse);
@@ -5356,7 +5356,7 @@ function TRegExpr.regNext(p: PRegExprChar): PRegExprChar;
 var
   offset: TRENextOff;
 begin
-  if p = @regDummy then
+  if p = @regDummy[0] then
   begin
     Result := nil;
     Exit;
@@ -5395,7 +5395,7 @@ var
   temp: PRegExprChar;
 begin
   Result := p;
-  if p = @regDummy then
+  if p = @regDummy[0] then
     Exit;
   // Find last node.
   repeat
@@ -7870,6 +7870,7 @@ begin
   op := OP_EXACTLY;
   s := regCodeWork;
   BranchEnd := nil;
+  SetLength(BranchEndStack, 0);
   while op <> OP_EEND do
   begin // While that wasn't END last time...
     op := s^;
