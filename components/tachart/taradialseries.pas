@@ -657,6 +657,8 @@ begin
   for ps in FSlices do
     if ps.FVisible then begin
       ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+      if Styles <> nil then
+        Styles.Apply(ADrawer, ps.FOrigIndex);
       DrawSlice(ps);
     end;
 

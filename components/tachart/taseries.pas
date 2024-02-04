@@ -162,6 +162,7 @@ type
     property RotateLabels;
     property StartAngle;
     property Source;
+    property Styles;
     property ViewAngle;
     property OnCustomDrawPie;
   end;
@@ -1332,8 +1333,15 @@ var
     c := Source[pointIndex]^.Color;
     if c <> clTAColor then
       ADrawer.BrushColor := c;
+
     if Styles <> nil then
-      Styles.Apply(ADrawer, stackIndex);
+    begin
+      if Source.YCount = 1 then
+        Styles.Apply(ADrawer, pointIndex)
+      else
+        Styles.Apply(ADrawer, stackIndex);
+    end;
+
     sz := Size(AR);
     if (sz.cx <= 2*BarPen.Width) or (sz.cy <= 2*BarPen.Width) then begin
       // Bars are too small to distinguish the border from the interior.

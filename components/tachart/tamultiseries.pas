@@ -101,6 +101,7 @@ type
     property OverrideColor: TBubbleOverrideColors
       read FOverrideColor write SetOverrideColor default [];
     property Source;
+    property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
   end;
 
@@ -580,7 +581,8 @@ end;
   the chart area (ARect). }
 function TBubbleSeries.CalcBubbleScalingFactor(const ARect: TRect): Double;
 var
-  rMin, rMax: Double;
+  rMin: Double = 0.0;
+  rMax: Double = 0.0;
 begin
   if FBubbleRadiusUnits in [bruPercentageRadius, bruPercentageArea] then
   begin
@@ -654,6 +656,9 @@ begin
       ADrawer.SetPenParams(BubblePen.Style, ColorDef(item^.Color, BubblePen.Color));
     if bocBrush in OverrideColor then
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
+
+    if Styles <> nil then
+      Styles.Apply(ADrawer, i);
 
     ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
