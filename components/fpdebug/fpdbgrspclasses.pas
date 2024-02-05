@@ -74,6 +74,7 @@ type
     FRegArrayLength: integer;
 
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function CreateWatchPointData: TFpWatchPointData; override;
     procedure InitializeLoaders; override;
     // Insert/Delete break points on target
     // TODO: if target doesn't support break points or have limited break points
@@ -810,6 +811,11 @@ begin
       end;
     end;
   end;
+end;
+
+function TDbgRspProcess.CreateWatchPointData: TFpWatchPointData;
+begin
+  Result := TFpRspWatchPointData.Create;
 end;
 
 initialization
