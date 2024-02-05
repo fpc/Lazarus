@@ -801,7 +801,7 @@ type
     function findWidgetByName(const AName: WideString): QWidgetH;
     function IsWidget(AnObject: QObjectH): Boolean;
     function GetObjectName(AnObject: QObjectH): WideString;
-    function InheritsQtClass(AnObject: QObjectH; AQtClass: WideString): Boolean;
+    function InheritsQtClass(AnObject: QObjectH; AQtClass: AnsiString): Boolean;
     property List: TStrings read FList;
     property ObjList: TFPList read FObjList;
   end;
@@ -5336,12 +5336,12 @@ begin
 end;
 
 function TQtObjectDump.InheritsQtClass(AnObject: QObjectH;
-  AQtClass: WideString): Boolean;
+  AQtClass: AnsiString): Boolean;
 begin
   if (AnObject = nil) or (AQtClass = '') then
     Result := False
   else
-    Result := QObject_inherits(AnObject, @AQtClass);
+    Result := QObject_inherits(AnObject, PAnsiChar(AQtClass));
 end;
 
 constructor TQtObjectDump.Create(AnObject: QObjectH);
