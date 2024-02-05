@@ -332,6 +332,14 @@
         <Filename Value="propeditconfig.pp"/>
         <UnitName Value="PropEditConfig"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggerwatchvalueintf.pas"/>
+        <UnitName Value="IdeDebuggerWatchValueIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformatterintf.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterIntf"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
@@ -339,6 +347,12 @@
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="DebuggerIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazDebuggerIntf"/>
+      </Item>
       <Item>
         <PackageName Value="BuildIntf"/>
       </Item>

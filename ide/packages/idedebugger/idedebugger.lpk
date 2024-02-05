@@ -188,12 +188,41 @@
       </Item>
       <Item>
         <Filename Value="breakpointgroupframe.pas"/>
-        <UnitName Value="breakpointgroupframe"/>
+        <UnitName Value="BreakpointGroupFrame"/>
       </Item>
       <Item>
         <Filename Value="inputhistorycopy.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="InputHistoryCopy"/>
+      </Item>
+      <Item>
+        <Filename Value="idedbgvalueformattersettingsframe.pas"/>
+        <UnitName Value="IdeDbgValueFormatterSettingsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformatter.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatter"/>
+      </Item>
+      <Item>
+        <Filename Value="frames\idedebugger_valformatter_options.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDebugger_ValFormatter_Options"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformatterdatetime.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterDateTime"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformattercolor.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterColor"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformattersetup.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterSetup"/>
       </Item>
     </Files>
     <i18n>

@@ -43,10 +43,11 @@ uses
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList, Laz2_XMLWrite,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,
-  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv, IdeDebuggerUtils;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
+  IdeDebuggerWatchValueIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerValueConverter, LazDebuggerTemplate, IdeDebuggerBase,
+  IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
+  IdeDebuggerUtils, IdeDebuggerValueFormatter;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -2035,7 +2036,9 @@ function HasConsoleSupport: Boolean;
 (******************************************************************************)
 
 var
+  // filled in by the IDE, as the IdeDebugger can not (yet) see ProjectOptions
   ProjectValueConverterSelectorList: TIdeDbgValueConvertSelectorList;
+  ProjectValueFormatterSelectorList: TIdeDbgValueFormatterSelectorList;
 
 implementation
 

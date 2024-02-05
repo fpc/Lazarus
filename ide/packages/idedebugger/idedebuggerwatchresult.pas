@@ -6,26 +6,18 @@ unit IdeDebuggerWatchResult;
 interface
 
 uses
-  Classes, SysUtils, Types, IdeDebuggerUtils, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazUTF8, Laz2_XMLCfg,
-  LazLoggerBase;
+  Classes, SysUtils, Types,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeIntf
+  IdeDebuggerWatchValueIntf,
+  // LclBase
+  LazUTF8, Laz2_XMLCfg, LazLoggerBase,
+  // IdeDebugger
+  IdeDebuggerUtils, LazDebuggerValueConverter;
 
 type
 
-  TWatchResultDataKind = (
-    rdkUnknown,
-    rdkError, rdkPrePrinted,
-    rdkString, rdkWideString, rdkChar,
-    rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
-    rdkBool, rdkEnum, rdkEnumVal, rdkSet,
-    rdkVariant,
-    rdkPCharOrString,
-    rdkArray,
-    rdkStruct,
-    rdkConvertRes,
-    rdkFunction, rdkProcedure,
-    rdkFunctionRef, rdkProcedureRef
-  );
   TWatchResultData = class;
   TWatchResultDataError = class;
   TWatchResultStorage = class;
@@ -714,7 +706,7 @@ type
 
   { TWatchResultData }
 
-  TWatchResultData = class abstract // (TRefCountedObject)
+  TWatchResultData = class abstract(TObject, IWatchResultDataIntf)
   private
     FTypeName: String;
 //    FDataFlags: TWatchResultDataFlags;
@@ -722,6 +714,7 @@ type
   // MemDump
     function GetBackendValueHandler: ILazDbgValueConverterIntf; virtual;
     function GetClassID: TWatchResultDataClassID; virtual; //abstract;
+    function GetInternalObject: TObject;
   protected
     class function GetStorageClass: TWatchResultStorageClass; virtual; abstract;
     function CreateStorage: TWatchResultStorage; virtual; abstract;
@@ -759,12 +752,15 @@ type
     function GetLength: Integer; virtual; abstract;
     function GetElementName(AnIndex: integer): String; virtual; abstract;
     function GetDerefData: TWatchResultData; virtual; abstract;
+    function GetDerefDataIntf: IWatchResultDataIntf;
     function GetNestedType: TWatchResultData; virtual; abstract;
 
     function GetArrayType: TLzDbgArrayType; virtual; abstract;
     function GetBoundType: TWatchResultData; virtual; abstract;
+    function GetBoundTypeIntf: IWatchResultDataIntf;
     function GetLowBound: Int64; virtual; abstract;
     function GetSelectedEntry: TWatchResultData;  virtual; abstract;
+    function GetSelectedEntryIntf: IWatchResultDataIntf;
     function GetDataAddress: TDBGPtr; virtual; abstract;
     function GetHasDataAddress: Boolean; virtual;
 
@@ -772,9 +768,12 @@ type
     function GetAnchestor: TWatchResultData; virtual; abstract;
     function GetAnchestorCount: Integer; virtual; abstract;
     function GetAnchestors(AnIndex: Integer): TWatchResultData; virtual; abstract;
+    function GetAnchestorIntf: IWatchResultDataIntf;
+    function GetAnchestorsIntf(AnIndex: Integer): IWatchResultDataIntf;
     function GetDirectFieldCount: Integer; virtual; abstract;
     function GetFieldCount: Integer; virtual; abstract;
     function GetFields(AnIndex: Integer): TWatchResultDataFieldInfo; virtual; abstract;
+    function GetFieldsIntf(AnIndex: Integer): TWatchResultDataFieldInfoIntf;
     function GetConvertedRes: TWatchResultData; virtual;
 
     function GetFieldVisibility: TLzDbgFieldVisibility; virtual; abstract;
@@ -2638,6 +2637,30 @@ begin
   Result := False;
 end;
 
+function TWatchResultData.GetAnchestorIntf: IWatchResultDataIntf;
+begin
+  Result := GetAnchestor;
+end;
+
+function TWatchResultData.GetAnchestorsIntf(AnIndex: Integer
+  ): IWatchResultDataIntf;
+begin
+  Result := GetAnchestors(AnIndex);
+end;
+
+function TWatchResultData.GetFieldsIntf(AnIndex: Integer
+  ): TWatchResultDataFieldInfoIntf;
+var
+  R: TWatchResultDataFieldInfo;
+begin
+  R := GetFields(AnIndex);
+  Result.FieldName := R.FieldName;
+  Result.FieldVisibility := R.FieldVisibility;
+  Result.FieldFlags := R.FieldFlags;
+  Result.Field := R.Field;
+  Result.Owner := R.Owner;
+end;
+
 constructor TWatchResultData.CreateEmpty;
 begin
   //
@@ -2676,6 +2699,11 @@ begin
   Result := wdPrePrint;
 end;
 
+function TWatchResultData.GetInternalObject: TObject;
+begin
+  Result := Self;
+end;
+
 function TWatchResultData.GetConvertedRes: TWatchResultData;
 begin
   Result := Self;
@@ -2689,6 +2717,21 @@ end;
 function TWatchResultData.GetIsFullDephtEvaluated: Boolean;
 begin
   Result := False;
+end;
+
+function TWatchResultData.GetDerefDataIntf: IWatchResultDataIntf;
+begin
+  Result := GetDerefData;
+end;
+
+function TWatchResultData.GetBoundTypeIntf: IWatchResultDataIntf;
+begin
+  Result := GetBoundType;
+end;
+
+function TWatchResultData.GetSelectedEntryIntf: IWatchResultDataIntf;
+begin
+  Result := GetSelectedEntry;
 end;
 
 function TWatchResultData.GetBackendValueHandler: ILazDbgValueConverterIntf;

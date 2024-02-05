@@ -52,17 +52,19 @@ uses
   ProjectIntf, CompOptsIntf,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf,
-  IdeIntfStrConsts, IDEDialogs, ToolBarIntf, InputHistory,
+  IdeIntfStrConsts, IDEDialogs, ToolBarIntf, InputHistory, IdeDebuggerValueFormatterIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDEDebugger
-  IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg, BreakPropertyDlg,
-  LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg,
-  DebugOutputForm, ExceptionDlg, InspectDlg, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
-  HistoryDlg, ProcessDebugger, IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
+  IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg,
+  BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg,
+  RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg, InspectDlg,
+  PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg, ProcessDebugger,
+  IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
+  IdeDebuggerValueFormatter,
   // IdeConfig
   LazConf,
   // IDE
@@ -318,7 +320,6 @@ function GetDebugManager: TDebugManager;
 
 property DebugBossMgr: TDebugManager read GetDebugManager;
 
-function DBGDateTimeFormatter(const aValue: string): string;
 function ResolveLocationForLaunchApplication(ALaunchApp: String): String;
 
 implementation
@@ -329,27 +330,6 @@ var
 function GetDebugManager: TDebugManager;
 begin
   Result := TDebugManager(DebugBoss);
-end;
-
-function DBGDateTimeFormatter(const aValue: string): string;
-var
-  FS: TFormatSettings;
-  MyDate: Extended;
-begin
-  FillChar(FS{%H-}, SizeOf(TFormatSettings), 0);
-  FS.DecimalSeparator := '.';
-  if TryStrToFloat(aValue, MyDate, FS) then
-  begin
-    // it is important to know datetime for all TDate/TTime/TDateTime
-    if SameValue(Frac(MyDate), 0) then
-      Result := DateToStr(MyDate)
-    else
-    if SameValue(Int(MyDate), 0) then
-      Result := TimeToStr(MyDate)
-    else
-      Result := DateTimeToStr(MyDate);
-  end else
-    Result := aValue;
 end;
 
 function ResolveLocationForLaunchApplication(ALaunchApp: String): String;
@@ -2125,13 +2105,6 @@ begin
 
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 
-  RegisterValueFormatter(skSimple, 'TDate', @DBGDateTimeFormatter);
-  RegisterValueFormatter(skFloat, 'TDate', @DBGDateTimeFormatter);
-  RegisterValueFormatter(skSimple, 'TTime', @DBGDateTimeFormatter);
-  RegisterValueFormatter(skFloat, 'TTime', @DBGDateTimeFormatter);
-  RegisterValueFormatter(skSimple, 'TDateTime', @DBGDateTimeFormatter);
-  RegisterValueFormatter(skFloat, 'TDateTime', @DBGDateTimeFormatter);
-
   FEventLogManager := TDebugEventLogManager.Create;
   FProjectLink := TProjectDebugLink.Create;
 end;
@@ -2516,16 +2489,25 @@ procedure TDebugManager.DoBackendConverterChanged;
 begin
   ValueConverterSelectorList.Lock;
   ProjectValueConverterSelectorList := nil;
+  ProjectValueFormatterSelectorList := nil;
 
   try
     ValueConverterSelectorList.Clear;
+    ValueFormatterSelectorList.Clear;
     if {(Project1 <> nil) and} (FProjectLink.UseBackendConverterFromProject) then
       FProjectLink.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
     if (Project1 = nil) or (FProjectLink.UseBackendConverterFromIDE) then
       DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
 
-    if (Project1 <> nil) then
+    if {(Project1 <> nil) and} (FProjectLink.UseValueFormatterFromProject) then
+      FProjectLink.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
+    if (Project1 = nil) or (FProjectLink.UseValueFormatterFromIDE) then
+      DebuggerOptions.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
+
+    if (Project1 <> nil) then begin
       ProjectValueConverterSelectorList := FProjectLink.BackendConverterConfig;
+      ProjectValueFormatterSelectorList := FProjectLink.ValueFormatterConfig;
+    end;
   finally
     ValueConverterSelectorList.Unlock;
   end;

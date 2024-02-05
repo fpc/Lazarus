@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, Math, IdeDebuggerBase, DebuggerTreeView,
   IdeDebuggerWatchResult, ArrayNavigationFrame, BaseDebugManager,
-  laz.VirtualTrees, DbgIntfDebuggerBase, Controls, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes;
+  laz.VirtualTrees, DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf, Controls,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 

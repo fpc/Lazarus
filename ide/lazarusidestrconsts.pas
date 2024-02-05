@@ -6369,6 +6369,11 @@ resourcestring
     +'below. The options setting which list to use are always stored in the session.';
   drsUseTheIDEGlobalListOfConv = 'Use the IDE-Global list of converters';
   drsUseTheProjectListOfConver = 'Use the project list of converters';
+  drsStoreFormatterConfigInSes = 'Store formatter config in session';
+  drsThisOnlyAffectsTheListOfFormatter = 'This only affects the list of formatters '
+    +'below. The options setting which list to use are always stored in the session.';
+  drsUseTheIDEGlobalListOfFormatter  = 'Use the IDE-Global list of formatters';
+  drsUseTheProjectListOfFormatter = 'Use the project list of formatters';
 
   InitDlgDebugPopupInformation = 'A backend provides OS and architecture '
     +'specific implementations for the debugger.%0:s'

@@ -1491,6 +1491,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
+      <Unit>
+        <Filename Value="frames/project_valformatter_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="Project_ValFormatter_Options"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

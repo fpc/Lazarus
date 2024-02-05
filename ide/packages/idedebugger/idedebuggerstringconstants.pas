@@ -53,6 +53,7 @@ resourcestring
   dlgBackConvOptRemove = 'Remove';
   dlgBackConvOptMatchTypesByName = 'Match types by name';
   dlgBackConvOptAction = 'Action';
+  dlgVarFormatterDebugOptions = 'Value Formatter';
   dlgBackConvOptDebugOptions = 'Backend Converter';
   dlgIdeDbgDebugger = 'Debugger';
   dlgIdeDbgNewItem = 'New Item';
@@ -396,6 +397,22 @@ resourcestring
   drsSuspend = 'Suspend';
   BreakViewHeaderNoGroup = 'No group';
   BreakViewHeaderAddGroup = '- Add new group -';
+
+  ValFormatterOrigValHide    = 'Replace/Hide original value';
+  ValFormatterOrigValAtStart = 'Show original value at start';
+  ValFormatterOrigValAtEnd   = 'Show original value at end';
+
+  ValFormatterDateTimeName = 'DateTime';
+  ValFormatterDateTimeFormatDT = 'Format for date-time';
+  ValFormatterDateTimeFormatD = 'Format for date';
+  ValFormatterDateTimeFormatT = 'Format for time';
+
+  ValFormatterColorName = 'TColor';
+  ValFormatterColorNameAlpha = 'TAlphaColor';
+  ValFormatterColorShowName = 'Show name';
+  ValFormatterColorShowRgb  = 'Show RGB';
+  ValFormatterColorShowBoth = 'Show Both';
+  ValFormatterColorRgbDec = 'RGB in decimal';
 
 implementation
 

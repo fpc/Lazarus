@@ -16,7 +16,8 @@ uses
   IDEImagesIntf,
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
-  IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase;
+  IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
+  IdeDebuggerUtils;
 
 type
 
@@ -119,7 +120,6 @@ type
     function  GetShowButtons(AIndex: Integer): Boolean;
     procedure SetShowButtons(AIndex: Integer; AValue: Boolean);
 
-    function  DisplayFormatName(ADispFormat: TWatchDisplayFormat): string;
     procedure DoDbgOptChanged(Sender: TObject; Restore: boolean);
     procedure AddToHistory(AnExpression: String);
     procedure DoClear;
@@ -446,25 +446,6 @@ begin
   tbDivAdd.Visible   := (ShowAddWatch or ShowAddEval or ShowAddInspect) and
                         ShowEvalHist;
   FrameResize(nil);
-end;
-
-function TWatchInspectNav.DisplayFormatName(ADispFormat: TWatchDisplayFormat
-  ): string;
-begin
-  Result := '?';
-  case ADispFormat of
-    wdfDefault:   Result := dbgDispFormatDefault     ;
-    wdfChar:      Result := dbgDispFormatCharacter   ;
-    wdfString:    Result := dbgDispFormatString      ;
-    wdfDecimal:   Result := dbgDispFormatDecimal     ;
-    wdfUnsigned:  Result := dbgDispFormatUnsigned    ;
-    wdfHex:       Result := dbgDispFormatHexadecimal ;
-    wdfBinary:    Result := dbgDispFormatBinary      ;
-    wdfFloat:     Result := dbgDispFormatFloatingPoin;
-    wdfPointer:   Result := dbgDispFormatPointer     ;
-    wdfStructure: Result := dbgDispFormatRecordStruct;
-    wdfMemDump:   Result := dbgDispFormatMemoryDump  ;
-  end;
 end;
 
 procedure TWatchInspectNav.DoDbgOptChanged(Sender: TObject; Restore: boolean);

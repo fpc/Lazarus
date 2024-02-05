@@ -1,0 +1,63 @@
+object IdeDbgValFormatOptionsFrame: TIdeDbgValFormatOptionsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 470
+  DesignTop = 214
+  inline IdeDbgVarFormatterFrame1: TIdeDbgVarFormatterFrame
+    Height = 240
+    Width = 320
+    Align = alClient
+    ClientHeight = 240
+    ClientWidth = 320
+    inherited Panel1: TPanel
+      Width = 320
+      ClientWidth = 320
+      inherited lstFormatters: TCheckListBox
+        Width = 140
+      end
+      inherited Panel2: TPanel
+        Left = 150
+      end
+    end
+    inherited pnlCurrentFormatter: TPanel
+      Height = 120
+      Width = 320
+      ClientHeight = 120
+      ClientWidth = 320
+      inherited lblDesc: TLabel
+        Width = 310
+      end
+      inherited Panel5: TPanel
+        Height = 100
+        Width = 320
+        ClientHeight = 100
+        ClientWidth = 320
+        inherited lblName: TLabel
+          Width = 310
+        end
+        inherited EdName: TEdit
+          Width = 310
+        end
+        inherited lblTypeNames: TLabel
+          Width = 310
+        end
+        inherited memoTypeNames: TMemo
+          Height = 22
+          Width = 310
+        end
+      end
+    end
+    inherited Splitter1: TSplitter
+      Width = 320
+    end
+    inherited pnlCurFormatterSetting: TPanel
+      Top = 240
+      Width = 320
+    end
+  end
+end

@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, IDEOptionsIntf, Laz2_XMLCfg, LazFileUtils, LazUTF8,
   LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, DbgIntfDebuggerBase,
-  IdeDebuggerStringConstants, IdeDebuggerBackendValueConv, EnvironmentOpts;
+  IdeDebuggerStringConstants, IdeDebuggerBackendValueConv,
+  IdeDebuggerValueFormatter, EnvironmentOpts;
 
 type
 
@@ -128,6 +129,7 @@ type
     FHasActiveDebuggerEntry: Boolean;
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
+    FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
     FXMLCfg: TRttiXMLConfig;
 
     FDebuggerConfigList: TDebuggerPropertiesConfigList; // named entries
@@ -156,6 +158,7 @@ type
     property PrimaryConfigPath: String read FPrimaryConfigPath write FPrimaryConfigPath;
 
     property BackendConverterConfig: TIdeDbgValueConvertSelectorList read FBackendConverterConfig write FBackendConverterConfig;
+    property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig write FValueFormatterConfig;
 
     function DebuggerFilename: string;
     function GetParsedDebuggerFilename(AProjectDbgFileName: String = ''): string;
@@ -808,6 +811,7 @@ begin
   inherited Create;
   FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
+  FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
   Init;
 end;
 
@@ -821,6 +825,7 @@ destructor TDebuggerOptions.Destroy;
 begin
   inherited Destroy;
   BackendConverterConfig.Free;
+  FValueFormatterConfig.Free;
   FDebuggerConfigList.Free;
 
   FXMLCfg.Free;
@@ -847,6 +852,7 @@ begin
   FreeAndNil(Def);
 
   FBackendConverterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
+  FValueFormatterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
 end;
 
 procedure TDebuggerOptions.Save;
@@ -865,6 +871,9 @@ begin
   if FBackendConverterConfig.Changed then
     FBackendConverterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FBackendConverterConfig.Changed := False;
+  if FValueFormatterConfig.Changed then
+    FValueFormatterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
+  FValueFormatterConfig.Changed := False;
 
   SaveDebuggerPropertiesList;
 

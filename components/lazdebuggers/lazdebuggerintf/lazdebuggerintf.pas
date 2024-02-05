@@ -115,6 +115,7 @@ type
      wdfPointer,
      wdfMemDump, wdfBinary
     );
+  TWatchDisplayFormats = set of TWatchDisplayFormat;
 
   TWatcheEvaluateFlag =
     ( defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable

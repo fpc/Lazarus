@@ -41,6 +41,10 @@ See LCL license for details."/>
         <Filename Value="lazdebuggervalueconverter.pas"/>
         <UnitName Value="LazDebuggerValueConverter"/>
       </Item>
+      <Item>
+        <Filename Value="dbgutilstypepatternlist.pas"/>
+        <UnitName Value="dbgutilstypepatternlist"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs>

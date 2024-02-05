@@ -33,7 +33,8 @@ uses
   LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
   ExtCtrls, Buttons, Clipbrd, LMessages,
   // IdeIntf
-  IDEWindowIntf, ObjectInspector, PropEdits, InputHistoryCopy,
+  IDEWindowIntf, ObjectInspector, PropEdits, IdeDebuggerWatchValueIntf,
+  InputHistoryCopy,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // DebuggerIntf

@@ -1,0 +1,118 @@
+object IdeProjectValueFormatterOptionsFrame: TIdeProjectValueFormatterOptionsFrame
+  Left = 0
+  Height = 327
+  Top = 0
+  Width = 412
+  ClientHeight = 327
+  ClientWidth = 412
+  TabOrder = 0
+  DesignLeft = 267
+  DesignTop = 120
+  object Panel1: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 412
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 56
+    ClientWidth = 412
+    TabOrder = 0
+    object chkUseProjList: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 200
+      Caption = 'chkUseProjList'
+      TabOrder = 0
+    end
+    object chkUseGlobalList: TCheckBox
+      Left = 212
+      Height = 19
+      Top = 6
+      Width = 194
+      Caption = 'chkUseGlobalList'
+      TabOrder = 1
+    end
+    object chkStoreInSession: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 200
+      Caption = 'chkStoreInSession'
+      TabOrder = 2
+    end
+  end
+  object DividerBevel1: TDividerBevel
+    Left = 0
+    Height = 15
+    Top = 56
+    Width = 412
+    Align = alTop
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  inline IdeDbgVarFormatterFrame1: TIdeDbgVarFormatterFrame
+    Height = 256
+    Top = 71
+    Width = 412
+    Align = alClient
+    ClientHeight = 256
+    ClientWidth = 412
+    TabOrder = 1
+    inherited Panel1: TPanel
+      Width = 412
+      ClientWidth = 412
+      inherited lstFormatters: TCheckListBox
+        Width = 232
+      end
+      inherited Panel2: TPanel
+        Left = 242
+      end
+    end
+    inherited pnlCurrentFormatter: TPanel
+      Height = 120
+      Width = 412
+      ClientHeight = 120
+      ClientWidth = 412
+      inherited lblDesc: TLabel
+        Width = 402
+      end
+      inherited Panel5: TPanel
+        Height = 100
+        Width = 412
+        ClientHeight = 100
+        ClientWidth = 412
+        inherited lblName: TLabel
+          Width = 402
+        end
+        inherited EdName: TEdit
+          Width = 402
+        end
+        inherited lblTypeNames: TLabel
+          Width = 402
+        end
+        inherited memoTypeNames: TMemo
+          Height = 22
+          Width = 402
+        end
+      end
+    end
+    inherited Splitter1: TSplitter
+      Width = 412
+    end
+    inherited pnlCurFormatterSetting: TPanel
+      Top = 256
+      Width = 412
+    end
+  end
+end

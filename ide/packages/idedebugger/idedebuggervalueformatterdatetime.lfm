@@ -1,0 +1,60 @@
+object IdeDebuggerValueFormatterDateTimeFrame: TIdeDebuggerValueFormatterDateTimeFrame
+  Left = 0
+  Height = 234
+  Top = 0
+  Width = 503
+  AutoSize = True
+  ChildSizing.HorizontalSpacing = 6
+  ChildSizing.VerticalSpacing = 6
+  ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+  ChildSizing.ShrinkVertical = crsHomogenousChildResize
+  ChildSizing.Layout = cclLeftToRightThenTopToBottom
+  ChildSizing.ControlsPerLine = 2
+  ClientHeight = 234
+  ClientWidth = 503
+  TabOrder = 0
+  DesignLeft = 291
+  DesignTop = 34
+  object lbDateTime: TLabel
+    Left = 0
+    Height = 23
+    Top = 0
+    Width = 239
+    Caption = 'lbDateTime'
+  end
+  object edDateTime: TEdit
+    Left = 245
+    Height = 23
+    Top = 0
+    Width = 258
+    TabOrder = 0
+  end
+  object lbDate: TLabel
+    Left = 0
+    Height = 23
+    Top = 29
+    Width = 239
+    Caption = 'lbDate'
+  end
+  object edDate: TEdit
+    Left = 245
+    Height = 23
+    Top = 29
+    Width = 258
+    TabOrder = 1
+  end
+  object lbTime: TLabel
+    Left = 0
+    Height = 23
+    Top = 58
+    Width = 239
+    Caption = 'lbTime'
+  end
+  object edTime: TEdit
+    Left = 245
+    Height = 23
+    Top = 58
+    Width = 258
+    TabOrder = 2
+  end
+end

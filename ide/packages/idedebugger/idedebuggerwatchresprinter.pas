@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils,
-  LazDebuggerIntf, LazUTF8, StrUtils;
+  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils;
 
 type
 
@@ -19,7 +19,7 @@ type
 
   { TWatchResultPrinter }
 
-  TWatchResultPrinter = class
+  TWatchResultPrinter = class(TObject, IWatchResultPrinter)
   private
     FFormatFlags: TWatchResultPrinterFormatFlags;
     FLineSeparator: String;
@@ -36,6 +36,7 @@ type
   public
     constructor Create;
     function PrintWatchValue(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat): String;
+    function PrintWatchValue(AResValue: IWatchResultDataIntf; ADispFormat: TWatchDisplayFormat): String;
 
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
   end;
@@ -500,6 +501,12 @@ begin
     FLineSeparator := ' ';
 
   Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
+end;
+
+function TWatchResultPrinter.PrintWatchValue(AResValue: IWatchResultDataIntf;
+  ADispFormat: TWatchDisplayFormat): String;
+begin
+  Result := PrintWatchValue(TWatchResultData(AResValue.GetInternalObject), ADispFormat);
 end;
 
 end.

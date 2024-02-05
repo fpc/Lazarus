@@ -206,7 +206,8 @@ const
     DbgOptionsClass              = 150;
     DbgOptionsEventLog           = 200;
     DbgOptionsSignals            = 400;
-    DbgOptionsBackConverter      = 500;
+    DbgOptionsValFormatter       = 500;
+    DbgOptionsBackConverter      = 600;
 
   GroupHelp         = 500;
     HlpOptionsGeneral = 100;
@@ -223,7 +224,8 @@ const
     ProjectOptionsMisc        = 700;
     ProjectOptionsDebug       = 800;
     DbgOptionsLanguageExceptions        =  900;
-    ProjectOptionsDbgValueConvert       = 1000;
+    ProjectOptionsDbgValueFormatter     = 1000;
+    ProjectOptionsDbgValueConvert       = 1100;
 
   GroupPackage      = 200100;
     PackageOptionsUsage        = 100;

@@ -5,7 +5,7 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, IdeDebuggerStringConstants, LazDebuggerIntf;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String): UTf8String;
@@ -27,6 +27,8 @@ function ClearMultiline(const AValue: ansistring): ansistring;
 *)
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: String): AnsiString; overload;
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Int64): AnsiString; overload;
+
+function DisplayFormatName(ADispFormat: TWatchDisplayFormat): string;
 
 implementation
 
@@ -359,6 +361,24 @@ function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
   AnIndex: Int64): AnsiString;
 begin
   Result := GetExpressionForArrayElement(AnArrayExpression, IntToStr(AnIndex));
+end;
+
+function DisplayFormatName(ADispFormat: TWatchDisplayFormat): string;
+begin
+  Result := '?';
+  case ADispFormat of
+    wdfDefault:   Result := dbgDispFormatDefault     ;
+    wdfChar:      Result := dbgDispFormatCharacter   ;
+    wdfString:    Result := dbgDispFormatString      ;
+    wdfDecimal:   Result := dbgDispFormatDecimal     ;
+    wdfUnsigned:  Result := dbgDispFormatUnsigned    ;
+    wdfHex:       Result := dbgDispFormatHexadecimal ;
+    wdfBinary:    Result := dbgDispFormatBinary      ;
+    wdfFloat:     Result := dbgDispFormatFloatingPoin;
+    wdfPointer:   Result := dbgDispFormatPointer     ;
+    wdfStructure: Result := dbgDispFormatRecordStruct;
+    wdfMemDump:   Result := dbgDispFormatMemoryDump  ;
+  end;
 end;
 
 end.

@@ -12,6 +12,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeDebugger
   IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,
+  IdeDebuggerValueFormatter,
   // IDE
   Project;
 
@@ -31,14 +32,23 @@ type
     FBackendConverterConfigWasFromSession, FBackendConverterConfigWasFromLPI: boolean;
     FUseBackendConverterFromIDE: boolean;
     FUseBackendConverterFromProject: boolean;
+    FStoreValueFormatterConfigInSession: boolean;
+    FValueFormatterConfigWasFromSession, FValueFormatterConfigWasFromLPI: boolean;
+    FUseValueFormatterFromIDE: boolean;
+    FUseValueFormatterFromProject: boolean;
+    FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
     function GetCurrentDebuggerBackend: String;
     procedure SetDebuggerBackend(AValue: String);
     procedure SetProject(AValue: TProject);
     procedure SetStoreDebuggerClassConfInSession(AValue: boolean);
     procedure SetStoreBackendConverterConfigInSession(AValue: boolean);
+    procedure SetStoreValueFormatterConfigInSession(AValue: boolean);
     procedure SetUseBackendConverterFromIDE(AValue: boolean);
     procedure SetUseBackendConverterFromProject(AValue: boolean);
     procedure BackendConverterConfigChanged(Sender: TObject);
+    procedure SetUseValueFormatterFromIDE(AValue: boolean);
+    procedure SetUseValueFormatterFromProject(AValue: boolean);
+    procedure ValueFormatterConfigChanged(Sender: TObject);
   protected
     procedure Clear; override;
     procedure BeforeReadProject; override;
@@ -71,6 +81,15 @@ type
                                               write SetUseBackendConverterFromIDE;
     property UseBackendConverterFromProject: boolean read FUseBackendConverterFromProject
                                                   write SetUseBackendConverterFromProject;
+    property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig
+                                                                     write FValueFormatterConfig;
+  published
+    property StoreValueFormatterConfigInSession: boolean read FStoreValueFormatterConfigInSession
+                                                        write SetStoreValueFormatterConfigInSession default False;
+    property UseValueFormatterFromIDE: boolean read FUseValueFormatterFromIDE
+                                              write SetUseValueFormatterFromIDE default True;
+    property UseValueFormatterFromProject: boolean read FUseValueFormatterFromProject
+                                                  write SetUseValueFormatterFromProject default True;
   end;
 
 implementation
@@ -84,6 +103,10 @@ begin
   FBackendConverterConfig.OnChanged := @BackendConverterConfigChanged;
   FUseBackendConverterFromIDE := True;
   FUseBackendConverterFromProject := True;
+  FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
+  FValueFormatterConfig.OnChanged := @ValueFormatterConfigChanged;
+  FUseValueFormatterFromIDE := True;
+  FUseValueFormatterFromProject := True;
   if DebugBossManager <> nil then
     DebugBossManager.DoBackendConverterChanged;
 end;
@@ -92,6 +115,7 @@ destructor TProjectDebugLink.Destroy;
 begin
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FBackendConverterConfig);
+  FreeAndNil(FValueFormatterConfig);
   inherited Destroy;
 end;
 
@@ -132,6 +156,15 @@ begin
   FProject.SessionModified := True;
 end;
 
+procedure TProjectDebugLink.SetStoreValueFormatterConfigInSession(
+  AValue: boolean);
+begin
+  if FStoreValueFormatterConfigInSession = AValue then Exit;
+  FStoreValueFormatterConfigInSession := AValue;
+  FProject.Modified := True;
+  FProject.SessionModified := True;
+end;
+
 procedure TProjectDebugLink.SetUseBackendConverterFromIDE(AValue: boolean);
 begin
   if FUseBackendConverterFromIDE = AValue then Exit;
@@ -154,10 +187,34 @@ begin
     FProject.Modified := True;
 end;
 
+procedure TProjectDebugLink.SetUseValueFormatterFromIDE(AValue: boolean);
+begin
+  if FUseValueFormatterFromIDE = AValue then Exit;
+  FUseValueFormatterFromIDE := AValue;
+  FProject.SessionModified := True;
+end;
+
+procedure TProjectDebugLink.SetUseValueFormatterFromProject(AValue: boolean);
+begin
+  if FUseValueFormatterFromProject = AValue then Exit;
+  FUseValueFormatterFromProject := AValue;
+  FProject.SessionModified := True;
+end;
+
+procedure TProjectDebugLink.ValueFormatterConfigChanged(Sender: TObject);
+begin
+  if FStoreValueFormatterConfigInSession then
+    FProject.SessionModified := True
+  else
+    FProject.Modified := True;
+end;
+
 procedure TProjectDebugLink.Clear;
 begin
   FUseBackendConverterFromIDE := True;
   FUseBackendConverterFromProject := True;
+  FUseValueFormatterFromIDE := True;
+  FUseValueFormatterFromProject := True;
 end;
 
 procedure TProjectDebugLink.BeforeReadProject;
@@ -187,6 +244,14 @@ begin
   end;
   // This is for backward compatibility (only trunk 2.1 did use this / Can be removed in some time after 2.2 / but needs LoadFromSession to change default to '')
   FDebuggerBackend := aXMLConfig.GetValue(Path+'Debugger/Backend/Value', '');
+
+  if not FStoreValueFormatterConfigInSession then begin
+    FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
+    ProjectValueFormatterSelectorList := FValueFormatterConfig;
+    FValueFormatterConfigWasFromLPI := True;
+  end;
+
+  aXMLConfig.ReadObject(Path+'Debugger/', Self);
 end;
 
 procedure TProjectDebugLink.LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string);
@@ -204,9 +269,19 @@ begin
     ProjectValueConverterSelectorList := FBackendConverterConfig;
     FBackendConverterConfigWasFromSession := True;
   end;
+
+  if FStoreValueFormatterConfigInSession then begin
+    FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
+    ProjectValueFormatterSelectorList := FValueFormatterConfig;
+    FValueFormatterConfigWasFromSession := True;
+  end;
+
+  aXMLConfig.ReadObject(Path+'Debugger/', Self);
 end;
 
 procedure TProjectDebugLink.SaveToLPI(aXMLConfig: TRttiXMLConfig; Path: string);
+var
+  Def: TProjectDebugLink;
 begin
   aXMLConfig.DeletePath(Path+'Debugger/Backend'); // remove old value from trunk 2.1
   aXMLConfig.SetDeleteValue(Path+'Debugger/StoreDebuggerClassConfInSession/Value', FStoreDebuggerClassConfInSession, False);
@@ -223,9 +298,22 @@ begin
     aXMLConfig.DeletePath(Path+'Debugger/BackendConv');
   FBackendConverterConfigWasFromSession := False;
   FBackendConverterConfigWasFromLPI := False;
+
+  if not FStoreValueFormatterConfigInSession then
+    FValueFormatterConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/')
+  else if FValueFormatterConfigWasFromLPI then
+    aXMLConfig.DeletePath(Path+'Debugger/ValueFormatter');
+  FValueFormatterConfigWasFromSession := False;
+  FValueFormatterConfigWasFromLPI := False;
+
+  Def := TProjectDebugLink.Create;
+  aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);
+  Def.Free;
 end;
 
 procedure TProjectDebugLink.SaveToSession(aXMLConfig: TRttiXMLConfig; Path: string);
+var
+  Def: TProjectDebugLink;
 begin
   aXMLConfig.SetDeleteValue(Path+'Debugger/Backend/Value', DebuggerBackend, '');
   if FStoreDebuggerClassConfInSession then
@@ -242,6 +330,17 @@ begin
     aXMLConfig.DeletePath(Path+'Debugger/BackendConv');
   FBackendConverterConfigWasFromSession := False;
   FBackendConverterConfigWasFromLPI := False;
+
+  if FStoreValueFormatterConfigInSession then
+    FValueFormatterConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/')
+  else if FValueFormatterConfigWasFromSession then
+    aXMLConfig.DeletePath(Path+'Debugger/ValueFormatter');
+  FValueFormatterConfigWasFromSession := False;
+  FValueFormatterConfigWasFromLPI := False;
+
+  Def := TProjectDebugLink.Create;
+  aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);
+  Def.Free;
 end;
 
 function TProjectDebugLink.DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;

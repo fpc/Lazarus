@@ -5,7 +5,8 @@ unit IdeDebuggerWatchResUtils;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerWatchResult, LazDebuggerIntf;
+  Classes, SysUtils, IdeDebuggerWatchResult, LazDebuggerIntf,
+  IdeDebuggerWatchValueIntf;
 
 function ExtractProcResFromMethod(AMethodRes: TWatchResultData): TWatchResultData;
 function ExtractInstanceResFromMethod(AMethodRes: TWatchResultData): TWatchResultData;

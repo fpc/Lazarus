@@ -181,6 +181,10 @@ msgstr "Değer"
 msgid "Data-Address"
 msgstr "Veri-Adres"
 
+#: idedebuggerstringconstants.dlgvarformatterdebugoptions
+msgid "Value Formatter"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
@@ -1394,4 +1398,56 @@ msgstr "Hata ayıklayıcı değeri değiştiremiyor."
 #: idedebuggerstringconstants.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"
 msgstr "Kesme &noktası değiştir"
+
+#: idedebuggerstringconstants.valformattercolorname
+msgid "TColor"
+msgstr ""
+
+#: idedebuggerstringconstants.valformattercolornamealpha
+msgid "TAlphaColor"
+msgstr ""
+
+#: idedebuggerstringconstants.valformattercolorrgbdec
+msgid "RGB in decimal"
+msgstr ""
+
+#: idedebuggerstringconstants.valformattercolorshowboth
+msgid "Show Both"
+msgstr ""
+
+#: idedebuggerstringconstants.valformattercolorshowname
+msgid "Show name"
+msgstr ""
+
+#: idedebuggerstringconstants.valformattercolorshowrgb
+msgid "Show RGB"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterdatetimeformatd
+msgid "Format for date"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterdatetimeformatdt
+msgid "Format for date-time"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterdatetimeformatt
+msgid "Format for time"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterdatetimename
+msgid "DateTime"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterorigvalatend
+msgid "Show original value at end"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterorigvalatstart
+msgid "Show original value at start"
+msgstr ""
+
+#: idedebuggerstringconstants.valformatterorigvalhide
+msgid "Replace/Hide original value"
+msgstr ""
 

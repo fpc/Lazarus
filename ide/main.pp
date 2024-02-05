@@ -92,7 +92,8 @@ uses
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
   PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptorTypes,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
+  IDEContextHelpEdit, IDEHelpIntf, IdeDebuggerWatchValueIntf, IDEHelpManager,
+  CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup, IdeCoolbarData,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
@@ -137,7 +138,7 @@ uses
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options, project_resources_options, project_debug_options,
-  project_valconv_options,
+  project_valconv_options, Project_ValFormatter_Options,
   // project compiler option frames
   compiler_path_options, compiler_config_target, compiler_parsing_options,
   compiler_codegen_options, compiler_debugging_options, compiler_verbosity_options,
@@ -164,7 +165,7 @@ uses
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   CodeExplOpts, EditorMacroListViewer,
   SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
-  WordCompletion, EnvGuiOptions, EnvDebuggerOptions,
+  WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter,
   // main ide
   MainBar, MainIntf, MainBase, SearchPathProcs;
 
@@ -11573,6 +11574,7 @@ var
   p: SizeInt;
   WatchPrinter: TWatchResultPrinter;
   ResultText: String;
+  ResData: TWatchResultData;
 begin
   if (Sender <> FHintWatchData.WatchValue) or (FHintWatchData.WatchValue = nil) or
      (SourceEditorManager = nil) or
@@ -11588,17 +11590,33 @@ begin
   WatchPrinter := TWatchResultPrinter.Create;
   try
     if FHintWatchData.WatchValue.Validity = ddsValid then begin
-      ResultText := WatchPrinter.PrintWatchValue(FHintWatchData.WatchValue.ResultData, wdfStructure);
-      if (FHintWatchData.WatchValue.ResultData <> nil) and
-         (FHintWatchData.WatchValue.ResultData.ValueKind = rdkArray) and (FHintWatchData.WatchValue.ResultData.ArrayLength > 0)
-      then
-        ResultText := Format(drsLen, [FHintWatchData.WatchValue.ResultData.ArrayLength]) + ResultText
-      else
-      if (FHintWatchData.WatchValue.TypeInfo <> nil) and
-         (FHintWatchData.WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
-         (FHintWatchData.WatchValue.TypeInfo.Len >= 0)
-      then
-        ResultText := Format(drsLen, [FHintWatchData.WatchValue.TypeInfo.Len]) + ResultText;
+      ResData :=  FHintWatchData.WatchValue.ResultData;
+      if (ResData <> nil) and
+         not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
+      then begin
+        if not ValueFormatterSelectorList.FormatValue(ResData,
+           FHintWatchData.WatchValue.DisplayFormat, WatchPrinter, ResultText)
+        then begin
+          ResultText := WatchPrinter.PrintWatchValue(ResData, FHintWatchData.WatchValue.DisplayFormat);
+          if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
+          then
+            ResultText := Format(drsLen, [ResData.ArrayLength]) + ResultText;
+        end;
+
+      end
+      else begin
+        if (FHintWatchData.WatchValue.TypeInfo = nil) or
+           not ValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
+           FHintWatchData.WatchValue.Value, FHintWatchData.WatchValue.DisplayFormat, ResultText)
+        then begin
+          ResultText := FHintWatchData.WatchValue.Value;
+          if (FHintWatchData.WatchValue.TypeInfo <> nil) and
+             (FHintWatchData.WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+             (FHintWatchData.WatchValue.TypeInfo.Len >= 0)
+          then
+            ResultText := Format(drsLen, [FHintWatchData.WatchValue.TypeInfo.Len]) + ResultText;
+        end;
+      end;
     end
     else
       ResultText := FHintWatchData.WatchValue.Value;
