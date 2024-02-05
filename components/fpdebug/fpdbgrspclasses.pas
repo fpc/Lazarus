@@ -528,7 +528,7 @@ end;
 
 function TDbgRspProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean;
 
-  procedure DoLocalStep(TheThread: TDbgThread);
+  function DoLocalStep(TheThread: TDbgThread): Integer;
   var
     res: boolean;
     s: string;
@@ -537,9 +537,12 @@ function TDbgRspProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; Sin
     TDbgRspThread(TheThread).ResetPauseStates; // So BeforeContinue will not run again
     TDbgRspThread(TheThread).FIsPaused := True;
     if res then
-      RspConnection.WaitForSignal(s)
+      Result := RspConnection.WaitForSignal(s)
     else
+    begin
       DebugLn(DBG_WARNINGS, ['Error local single stepping thread ', TheThread.ID]);
+      Result := -1;
+    end;
   end;
 
 var
@@ -573,7 +576,9 @@ begin
         ThreadToContinue.BeforeContinue;
 
         if (ThreadToContinue.GetInstructionPointerRegisterValue = PC) then
-          DoLocalStep(ThreadToContinue);
+          repeat
+            FStatus := DoLocalStep(ThreadToContinue);
+          until (FStatus = -1) or (FStatus = SIGTRAP);
       end;
     end;
 
@@ -609,14 +614,14 @@ begin
       AThread.BeforeContinue;
 
       // In qemu, needs to step over breakpoint for continue command to work
-      DoLocalStep(AThread);
+      FStatus := DoLocalStep(AThread);
 
       if not SingleStep then
       begin
         result := RspConnection.Continue();
         TDbgRspThread(AThread).ResetPauseStates;
+        FStatus := 0;  // should update status by calling WaitForSignal
       end;
-      FStatus := 0;  // should update status by calling WaitForSignal
     end;
 
   if not FThreadMap.HasId(AThread.ID) then
