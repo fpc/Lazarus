@@ -1,3 +1,18 @@
+{***************************************************************************
+ *                                                                         *
+ * This unit is distributed under the LGPL version 2                       *
+ *                                                                         *
+ * Additionally this unit can be used under any newer version (3 or up)    *
+ * of the LGPL                                                             *
+ *                                                                         *
+ * Users are also granted the same "linking exception" as defined          *
+ * for the LCL.                                                            *
+ * See the LCL license for details                                         *
+ *                                                                         *
+ *                                                                         *
+ ***************************************************************************
+ @author(Martin Friebe)
+}
 unit LazDebuggerValueConverter;
 
 {$mode objfpc}{$H+}

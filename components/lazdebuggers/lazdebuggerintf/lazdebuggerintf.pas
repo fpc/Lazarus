@@ -5,7 +5,7 @@
  * Additionally this unit can be used under any newer version (3 or up)    *
  * of the LGPL                                                             *
  *                                                                         *
- * Users are also granted the same "linknig exception" as defined          *
+ * Users are also granted the same "linking exception" as defined          *
  * for the LCL.                                                            *
  * See the LCL license for details                                         *
  *                                                                         *
