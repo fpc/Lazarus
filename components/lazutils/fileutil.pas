@@ -29,7 +29,8 @@ interface
 uses
   Classes, SysUtils, StrUtils,
   // LazUtils
-  Masks, LazUTF8, LazFileUtils;
+  Masks, LazUTF8, LazFileUtils,
+  Contnrs;
 
 {$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
 {$define CaseInsensitiveFilenames}
@@ -138,6 +139,8 @@ type
     FDirectoryAttribute: Word;
     FOnQueryFileFound: TQueryFileFoundEvent;
     FOnQueryDirectoryFound: TQueryDirectoryFoundEvent;
+    FCircularLinkDetection: Boolean;
+    VisitedDirs: TFPStringHashTable;
     procedure RaiseSearchingError;
   protected
     procedure DoDirectoryEnter; virtual;
@@ -155,6 +158,7 @@ type
     property FollowSymLink: Boolean read FFollowSymLink write FFollowSymLink;
     property FileAttribute: Word read FFileAttribute write FFileAttribute default faAnyfile;
     property DirectoryAttribute: Word read FDirectoryAttribute write FDirectoryAttribute default faDirectory;
+    property CircularLinkdetection: Boolean read FCircularLinkdetection write FCircularLinkdetection default False;
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
     property OnDirectoryEnter: TDirectoryEnterEvent read FOnDirectoryEnter write FOnDirectoryEnter;
