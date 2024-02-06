@@ -1142,7 +1142,7 @@ type
     FDefaultCursor: HCURSOR;
     FHintFont: TFont;
     FFocusedForm: TCustomForm;
-    FFonts : TStrings;
+    FFonts : TStringList;
     FFormList: TFPList;
     FDataModuleList: TFPList;
     FIconFont: TFont;
