@@ -55,6 +55,7 @@ WideStringManager is not needed.
 <element name="Masks"/>
 <element name="LazUTF8"/>
 <element name="LazFileUtils"/>
+<element name="Contnrs"/>
 
 <element name="UTF8FileHeader">
 <short>
@@ -1502,6 +1503,8 @@ TFileSearcher is the ancestor class for more specialized descendants like
 <element name="TFileSearcher.FDirectoryAttribute"/>
 <element name="TFileSearcher.FOnQueryFileFound"/>
 <element name="TFileSearcher.FOnQueryDirectoryFound"/>
+<element name="TFileSearcher.FCircularLinkDetection"/>
+<element name="TFileSearcher.VisitedDirs"/>
 
 <element name="TFileSearcher.RaiseSearchingError">
 <short>
@@ -1851,9 +1854,15 @@ link. When set to <b>False</b>, the directory is <b>not</b> processed; the
 method ignores the directory path. The <var>OnDirectoryFound</var> event 
 handler is signalled for the iterator value.
 </p>
+<p>
+Use CircularLinkDetection to control whether symbolic links in already 
+processed directories are included in the search results.
+</p>
 </descr>
 <seealso>
 <link id="TFileSearcher.Create"/>
+<link id="TFileSearcher.CircularLinkDetection"/>
+<link id="TFileSearcher.Search"/>
 <link id="TFileSearcher.OnDirectoryFound"/>
 <link id="TFileIterator.FileInfo"/>
 <link id="TFileIterator.IsDirectory"/>
@@ -1927,6 +1936,39 @@ considered a match in the Search method.
 <link id="#lazutils.lazfileutils.FindFirstUTF8">FindFirstUTF8</link>
 <link id="#lazutils.lazfileutils.FindNextUTF8">FindNextUTF8</link>
 <link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+</seealso>
+</element>
+
+<element name="TFileSearcher.CircularLinkDetection">
+<short>
+Enables or disables detection of circular references when resolving symbolic 
+links.
+</short>
+<descr>
+<p>
+The value in <var>CircularLinkDetection</var> is used, along with 
+FollowSymLink, in the Search method. They control whether a file is a symbol 
+link in a directory which has already been visited in the method.
+</p>
+<p>
+When CircularLinkDetection and FollowSymLink are enabled, an internal hash of 
+processed directory names is maintained in the method. If a file is encountered 
+which resolves to one the already processed directories, it is not processed in 
+the Search method.
+</p>
+<p>
+The default value for the CircularLinkDetection property is <b>False</b>, and 
+disables circular link detection.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
+<seealso>
+<link id="TFileSearcher.Search"/>
+<link id="TFileSearcher.FollowSymLink"/>
+<link id="#Lazutils.lazfileutils.FileIsSymLink">FileIsSymLink</link>
+<link id="#Lazutils.lazfileutils.ReadAllLinks">ReadAllLinks</link>
 </seealso>
 </element>
 
