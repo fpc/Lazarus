@@ -9314,7 +9314,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
 #, object-pascal-format
-msgid "Error: (lazarus) invalid build mode \"%s\""
+msgid "Error: invalid build mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10228,12 +10228,13 @@ msgstr ""
 msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
-#: lazarusidestrconsts.lisgetexepath
-msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
-msgstr ""
-
 #: lazarusidestrconsts.lisgetexpandtext
 msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
+msgstr ""
+
+#: lazarusidestrconsts.lisgettargetpath
+msgctxt "lazarusidestrconsts.lisgettargetpath"
+msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition

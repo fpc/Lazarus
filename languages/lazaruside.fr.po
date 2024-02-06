@@ -9337,8 +9337,9 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Erreur dans le \"répertoire de sortie de l'unité\" :"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-#, object-pascal-format
-msgid "Error: (lazarus) invalid build mode \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "Error: (lazarus) invalid build mode \"%s\""
+msgid "Error: invalid build mode \"%s\""
 msgstr "Erreur : (Lazarus) mode de construction \"%s\" incorrect"
 
 #: lazarusidestrconsts.liserrorloadingfile
@@ -10272,12 +10273,13 @@ msgstr "Générer de nouveaux fichiers de configuration Fppkg"
 msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
-#: lazarusidestrconsts.lisgetexepath
-msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
-msgstr ""
-
 #: lazarusidestrconsts.lisgetexpandtext
 msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
+msgstr ""
+
+#: lazarusidestrconsts.lisgettargetpath
+msgctxt "lazarusidestrconsts.lisgettargetpath"
+msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
