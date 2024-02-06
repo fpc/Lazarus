@@ -68,14 +68,14 @@ type
     TextUnderlineRadioPanel: TPanel;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
-    procedure ForeAlphaSpinChange(Sender: TObject);
-    procedure ForeAlphaSpinEnter(Sender: TObject);
-    procedure ForegroundColorBoxChange(Sender: TObject);
-    procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
-    procedure ForePriorSpinChange(Sender: TObject);
+    procedure GeneralAlphaSpinOnChange(Sender: TObject);
+    procedure GeneralAlphaSpinOnEnter(Sender: TObject);
+    procedure GeneralColorBoxOnChange(Sender: TObject);
+    procedure GeneralColorBoxOnGetColors(Sender: TCustomColorBox; Items: TStrings);
+    procedure GeneralPriorSpinOnChange(Sender: TObject);
     procedure FrameEdgesBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       {%H-}State: TOwnerDrawState);
-    procedure FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+    procedure GeneralStyleBoxOnDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       {%H-}State: TOwnerDrawState);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure pnlElementAttributesResize(Sender: TObject);
@@ -124,7 +124,7 @@ end;
 
 { TSynColorAttrEditor }
 
-procedure TSynColorAttrEditor.ForegroundColorBoxChange(Sender: TObject);
+procedure TSynColorAttrEditor.GeneralColorBoxOnChange(Sender: TObject);
 begin
   if (FCurHighlightElement = nil) or UpdatingColor then
     exit;
@@ -170,7 +170,7 @@ begin
   DoChanged;
 end;
 
-procedure TSynColorAttrEditor.ForeAlphaSpinChange(Sender: TObject);
+procedure TSynColorAttrEditor.GeneralAlphaSpinOnChange(Sender: TObject);
 var
   v: Integer;
 begin
@@ -199,7 +199,7 @@ begin
   DoChanged;
 end;
 
-procedure TSynColorAttrEditor.ForeAlphaSpinEnter(Sender: TObject);
+procedure TSynColorAttrEditor.GeneralAlphaSpinOnEnter(Sender: TObject);
 begin
   UpdatingColor := True;
   If TSpinEdit(Sender).Value = 256 then
@@ -207,7 +207,7 @@ begin
   UpdatingColor := False;
 end;
 
-procedure TSynColorAttrEditor.ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
+procedure TSynColorAttrEditor.GeneralColorBoxOnGetColors(Sender: TCustomColorBox; Items: TStrings);
 var
   i: longint;
 begin
@@ -218,7 +218,7 @@ begin
   end;
 end;
 
-procedure TSynColorAttrEditor.ForePriorSpinChange(Sender: TObject);
+procedure TSynColorAttrEditor.GeneralPriorSpinOnChange(Sender: TObject);
 var
   v: Integer;
 begin
@@ -231,7 +231,7 @@ begin
     FCurHighlightElement.ForePriority := v;
   if Sender = BackPriorSpin then
     FCurHighlightElement.BackPriority := v;
-  if Sender = FramePriorLabel then
+  if Sender = FramePriorSpin then
     FCurHighlightElement.FramePriority := v;
 
   DoChanged;
@@ -304,7 +304,7 @@ begin
   end;
 end;
 
-procedure TSynColorAttrEditor.FrameStyleBoxDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+procedure TSynColorAttrEditor.GeneralStyleBoxOnDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 var
   p: TPoint;
@@ -592,7 +592,6 @@ begin
     ForeAlphaLabel.Visible := ForeAlphaSpin.Visible;
     if FCurHighlightElement.ForeAlpha = 0 then begin
       ForeAlphaSpin.Value    := 256; // Off
-      Application.ProcessMessages;
       ForeAlphaSpin.Caption  := dlgEdOff;
     end
     else
@@ -628,7 +627,7 @@ begin
     else
       BackAlphaSpin.Value    := FCurHighlightElement.BackAlpha;
 
-    BackPriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
+    BackPriorSpin.Visible  := BackGroundColorBox.Visible and FShowPrior and
                              (hafPrior in FCurHighlightElement.Features);
     BackPriorLabel.Visible := BackPriorSpin.Visible;
     BackPriorSpin.Value    := FCurHighlightElement.BackPriority;
@@ -660,8 +659,8 @@ begin
     else
       FrameAlphaSpin.Value    := FCurHighlightElement.FrameAlpha;
 
-    FramePriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
-                             (hafPrior in FCurHighlightElement.Features);
+    FramePriorSpin.Visible  := FrameColorBox.Visible and FShowPrior and
+                              (hafPrior in FCurHighlightElement.Features);
     FramePriorLabel.Visible := FramePriorSpin.Visible;
     FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
@@ -724,7 +723,7 @@ begin
         TextItalicRadioOff.Checked := True;
 
       TextUnderlineCheckBox.Checked := (fsUnderline in FCurHighlightElement.Style) or
-                                  (fsUnderline in FCurHighlightElement.StyleMask);
+                                       (fsUnderline in FCurHighlightElement.StyleMask);
       TextUnderlineRadioPanel.Enabled := TextUnderlineCheckBox.Checked;
 
       if not(fsUnderline in FCurHighlightElement.StyleMask) then
