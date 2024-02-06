@@ -200,8 +200,6 @@ begin
 end;
 
 procedure TRspConnection.ResetStatusEvent;
-var
-  i: integer;
 begin
   with FStatusEvent do
   begin
@@ -574,7 +572,7 @@ function TRspConnection.WaitForSignal(out msg: string): integer;
 var
   res: boolean;
   startIndex, colonIndex, semicolonIndex, i: integer;
-  tmp, tmp2: qword;
+  tmp: qword;
   part1, part2, s: string;
 begin
   result := 0;
@@ -974,7 +972,12 @@ var
   cmdstr, reply: string;
 begin
   cmdstr := 'qRcmd,' + HexEncodeStr(s);
-  result := SendCmdWaitForReply(cmdstr, reply) and not(SockErr);
+  EnterCriticalSection(fCS);
+  try
+    result := SendCmdWaitForReply(cmdstr, reply) and not(SockErr);
+  finally
+    LeaveCriticalSection(fCS);
+  end;
 
   if reply = '' then
     DebugLn(DBG_RSP, ['[Monitor '+s+'] : "qRcmd" not recognized by gdbserver.'])
