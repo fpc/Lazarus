@@ -1594,8 +1594,6 @@ begin
 end;
 
 procedure TIpHtmlParser.ParseHead(AParent: TIpHtmlNode);
-var
-  L: TStringListUTF8Fast;
 begin
   {lead token is optional}
   if FCurToken = IpHtmlTagHEAD then begin
@@ -1604,15 +1602,8 @@ begin
     if FCurToken = IpHtmlTagHEADend then
       NextToken;
   end;
-  
-  L := TStringListUTF8Fast.Create;
-  try
-    GetSupportedEncodings(L);
-    if L.IndexOf(FDocCharset) = 0 then  // clear for UTF-8 to avoid conversion
-      FDocCharset := '';
-  finally
-    L.Free;
-  end;
+  if SameText(FDocCharset, 'UTF-8') then  // clear for UTF-8 to avoid conversion
+    FDocCharset := '';
 end;
 
 procedure TIpHtmlParser.ParseHeader(AParent: TIpHtmlNode; EndToken: TIpHtmlToken; 
