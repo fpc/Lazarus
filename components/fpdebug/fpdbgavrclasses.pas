@@ -91,6 +91,7 @@ end;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
@@ -418,6 +419,8 @@ end;
 
 procedure TDbgAvrThread.SetStackPointerRegisterValue(AValue: TDbgPtr);
 begin
+  FRegs.regs[SPindex] := AValue;
+  FRegsChanged := true;
 end;
 
 function TDbgAvrThread.GetStackPointerRegisterValue: TDbgPtr;
@@ -434,6 +437,12 @@ begin
 
   DebugLn(DBG_VERBOSE, 'TDbgRspThread.GetStackPointerRegisterValue requesting stack registers.');
   ReadDebugReg(SPindex, result);
+end;
+
+procedure TDbgAvrThread.SetInstructionPointerRegisterValue(AValue: TDbgPtr);
+begin
+  FRegs.regs[PCindex] := AValue;
+  FRegsChanged := true;
 end;
 
 { TDbgAvrProcess }
