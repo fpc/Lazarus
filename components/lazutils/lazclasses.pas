@@ -43,14 +43,14 @@ type
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
   end;
 
-  { TRefCountedObject }
+  { TRefCountedGeneric }
 
-  TRefCountedObject = class(TFreeNotifyingObject)
+  generic TRefCountedGeneric<_B: TObject> = class(_B)
   private
     FRefCount, FInDecRefCount: Integer;
     {$IFDEF WITH_REFCOUNT_DEBUG}
     {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
-    FDebugNext, FDebugPrev: TRefCountedObject;
+    FDebugNext, FDebugPrev: TRefCountedGeneric;
     {$ENDIF}
     FDebugList: TStringList;
     FCritSect: TRTLCriticalSection;
@@ -65,7 +65,7 @@ type
     property  RefCount: Integer read FRefCount;
   public
     constructor Create;
-    destructor  Destroy; override;
+    procedure  DoDestroy; inline; // call in destructor
     (* AddReference
        AddReference/ReleaseReference can be used in Threads.
        However a thread may only call those, if either
@@ -81,6 +81,13 @@ type
     procedure DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
     procedure DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String; DebugIdAdr: Pointer; DebugIdTxt: String = '');
     {$ENDIF}
+  end;
+
+  { TRefCountedObject }
+
+  TRefCountedObject = class(specialize TRefCountedGeneric<TFreeNotifyingObject>)
+  public
+    destructor  Destroy; override;
   end;
 
   { TRefCntObjList }
@@ -129,7 +136,7 @@ end;
 {$IFDEF WITH_REFCOUNT_DEBUG}
 uses LazLoggerBase;
 {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}
-var FUnfreedRefObjList: TRefCountedObject = nil;
+var FUnfreedRefObjList: TRefCountedGeneric = nil;
 {$ENDIF}
 {$ENDIF}
 
@@ -157,21 +164,21 @@ begin
   FFreeNotificationList.Remove(TMethod(ANotification));
 end;
 
-{ TRefCountedObject }
+{ TRefCountedGeneric }
 
 {$IFDEF WITH_REFCOUNT_DEBUG}
-procedure TRefCountedObject.AddReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
+procedure TRefCountedGeneric.AddReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
 begin
   Assert(not FInDestroy, 'Adding reference while destroying');
   DbgAddName(DebugIdAdr, DebugIdTxt);
 
   InterLockedIncrement(FRefCount);
   // call only if overridden
-  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
+  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedGeneric.DoReferenceAdded) then
     DoReferenceAdded;
 end;
 
-procedure TRefCountedObject.DbgAddName(DebugIdAdr: Pointer; DebugIdTxt: String);
+procedure TRefCountedGeneric.DbgAddName(DebugIdAdr: Pointer; DebugIdTxt: String);
 var
   s: String;
 begin
@@ -187,7 +194,7 @@ begin
     FDebugList.AddObject(s, TObject(1))
   else begin
     if s <> 'not named' then
-      debugln(['TRefCountedObject.AddReference Duplicate ref ', s]);
+      debugln(['TRefCountedGeneric.AddReference Duplicate ref ', s]);
     FDebugList.Objects[FDebugList.IndexOf(s)] :=
       TObject(PtrUint(FDebugList.Objects[FDebugList.IndexOf(s)])+1);
   end;
@@ -196,7 +203,7 @@ begin
   end;
 end;
 
-procedure TRefCountedObject.DbgRemoveName(DebugIdAdr: Pointer; DebugIdTxt: String);
+procedure TRefCountedGeneric.DbgRemoveName(DebugIdAdr: Pointer; DebugIdTxt: String);
 var
   s: String;
 begin
@@ -220,26 +227,26 @@ begin
 end;
 {$ENDIF}
 
-procedure TRefCountedObject.DoFree;
+procedure TRefCountedGeneric.DoFree;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
-  Assert(not FInDestroy, 'TRefCountedObject.DoFree: Double destroy');
+  Assert(not FInDestroy, 'TRefCountedGeneric.DoFree: Double destroy');
   FInDestroy := True;
   {$ENDIF}
   Self.Free;
 end;
 
-procedure TRefCountedObject.DoReferenceAdded;
+procedure TRefCountedGeneric.DoReferenceAdded;
 begin
   //
 end;
 
-procedure TRefCountedObject.DoReferenceReleased;
+procedure TRefCountedGeneric.DoReferenceReleased;
 begin
   //
 end;
 
-constructor TRefCountedObject.Create;
+constructor TRefCountedGeneric.Create;
 begin
   FRefCount := 0;
   FInDecRefCount := 0;
@@ -256,7 +263,7 @@ begin
   inherited;
 end;
 
-destructor TRefCountedObject.Destroy;
+procedure TRefCountedGeneric.DoDestroy;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   FreeAndNil(FDebugList);
@@ -279,10 +286,9 @@ begin
   {$ENDIF}
   {$ENDIF}
   Assert(FRefcount = 0, 'Destroying referenced object');
-  inherited;
 end;
 
-procedure TRefCountedObject.AddReference;
+procedure TRefCountedGeneric.AddReference;
 begin
   {$IFDEF WITH_REFCOUNT_DEBUG}
   Assert(not FInDestroy, 'Adding reference while destroying');
@@ -291,16 +297,16 @@ begin
 
   InterLockedIncrement(FRefCount);
   // call only if overridden
-  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedObject.DoReferenceAdded) then
+  If TMethod(@DoReferenceAdded).Code <> Pointer(@TRefCountedGeneric.DoReferenceAdded) then
     DoReferenceAdded;
 end;
 
-procedure TRefCountedObject.ReleaseReference;
+procedure TRefCountedGeneric.ReleaseReference;
 var
   lc: Integer;
 begin
   if Self = nil then exit;
-  Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
+  Assert(FRefCount > 0, 'TRefCountedGeneric.ReleaseReference  RefCount > 0');
   {$IFDEF WITH_REFCOUNT_DEBUG} DbgRemoveName(nil, ''); {$ENDIF}
 
   InterLockedIncrement(FInDecRefCount);
@@ -308,7 +314,7 @@ begin
   // call only if overridden
 
   // Do not check for RefCount = 0, since this was done, by whoever decreased it;
-  If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedObject.DoReferenceReleased) then
+  If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedGeneric.DoReferenceReleased) then
     DoReferenceReleased;
 
   lc := InterLockedDecrement(FInDecRefCount);
@@ -319,8 +325,16 @@ begin
   end;
 end;
 
+{ TRefCountedObject }
+
+destructor TRefCountedObject.Destroy;
+begin
+  DoDestroy;
+  inherited Destroy;
+end;
+
 {$IFDEF WITH_REFCOUNT_DEBUG}
-procedure TRefCountedObject.ReleaseReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
+procedure TRefCountedGeneric.ReleaseReference(DebugIdAdr: Pointer; DebugIdTxt: String = '');
 var
   lc: Integer;
 begin
@@ -332,7 +346,7 @@ begin
   // call only if overridden
 
   // Do not check for RefCount = 0, since this was done, by whoever decreased it;
-  If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedObject.DoReferenceReleased) then
+  If TMethod(@DoReferenceReleased).Code <> Pointer(@TRefCountedGeneric.DoReferenceReleased) then
     DoReferenceReleased;
 
   lc := InterLockedDecrement(FInDecRefCount);
@@ -343,13 +357,13 @@ begin
   end;
 end;
 
-procedure TRefCountedObject.DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
+procedure TRefCountedGeneric.DbgRenameReference(DebugIdAdr: Pointer; DebugIdTxt: String);
 begin
   DbgRemoveName(nil, '');
   DbgAddName(DebugIdAdr, DebugIdTxt);
 end;
 
-procedure TRefCountedObject.DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String;
+procedure TRefCountedGeneric.DbgRenameReference(OldDebugIdAdr: Pointer; OldDebugIdTxt: String;
   DebugIdAdr: Pointer; DebugIdTxt: String);
 begin
   DbgRemoveName(OldDebugIdAdr, OldDebugIdTxt);
@@ -407,30 +421,30 @@ end;
 procedure ReleaseRefAndNil(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
 begin
   Assert( (Pointer(ARefCountedObject) = nil) or
-          (TObject(ARefCountedObject) is TRefCountedObject),
-         'ReleaseRefAndNil requires TRefCountedObject');
+          (TObject(ARefCountedObject) is TRefCountedGeneric),
+         'ReleaseRefAndNil requires TRefCountedGeneric');
 
   if Pointer(ARefCountedObject) = nil then
     exit;
 
-  if (TObject(ARefCountedObject) is TRefCountedObject) then
-    TRefCountedObject(ARefCountedObject).ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
+  if (TObject(ARefCountedObject) is TRefCountedGeneric) then
+    TRefCountedGeneric(ARefCountedObject).ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(DebugIdAdr, DebugIdTxt){$ENDIF};
   Pointer(ARefCountedObject) := nil;
 end;
 
 procedure NilThenReleaseRef(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdTxt: String = '');
 var
-  RefObj: TRefCountedObject;
+  RefObj: TRefCountedGeneric;
 begin
   Assert( (Pointer(ARefCountedObject) = nil) or
-          (TObject(ARefCountedObject) is TRefCountedObject),
-         'ReleaseRefAndNil requires TRefCountedObject');
+          (TObject(ARefCountedObject) is TRefCountedGeneric),
+         'ReleaseRefAndNil requires TRefCountedGeneric');
 
   if Pointer(ARefCountedObject) = nil then
     exit;
 
-  if (TObject(ARefCountedObject) is TRefCountedObject) then
-    RefObj := TRefCountedObject(ARefCountedObject)
+  if (TObject(ARefCountedObject) is TRefCountedGeneric) then
+    RefObj := TRefCountedGeneric(ARefCountedObject)
   else RefObj := nil;
   Pointer(ARefCountedObject) := nil;
 
