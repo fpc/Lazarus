@@ -782,11 +782,11 @@ begin
     FOnQueryFileFound(Self, Fn, Accept);
 end;
 
-procedure TFileSearcher.DoQueryDirectoryFound(const Dir: String;
+procedure TFileSearcher.DoQueryDirectoryEnter(const Dir: String;
   var Accept: Boolean);
 begin
-  if Assigned(FOnQueryDirectoryFound) then
-    FOnQueryDirectoryFound(Self, Dir, Accept);
+  if Assigned(FOnQueryDirectoryEnter) then
+    FOnQueryDirectoryEnter(Self, Dir, Accept);
 end;
 
 constructor TFileSearcher.Create;
@@ -816,7 +816,7 @@ var
     function AcceptDir(const Dir: String): Boolean;
     begin
       Result := True;
-      DoQueryDirectoryFound(Dir, Result);
+      DoQueryDirectoryEnter(Dir, Result);
     end;
 
   var
@@ -842,13 +842,10 @@ var
           end;
         end
         else begin        // Directory
-          if AcceptDir(AppendPathDelim(ExpandFilenameUtf8(APath + PathInfo.Name))) then
-          begin
-            FPath := APath;
-            FLevel := ALevel;
-            FFileInfo := PathInfo;
-            DoDirectoryFound;
-          end;
+          FPath := APath;
+          FLevel := ALevel;
+          FFileInfo := PathInfo;
+          DoDirectoryFound;
         end;
 
       until (FindNextUTF8(PathInfo) <> 0) or not FSearching;

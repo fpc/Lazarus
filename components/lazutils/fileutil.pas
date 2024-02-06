@@ -138,7 +138,7 @@ type
     FFileAttribute: Word;
     FDirectoryAttribute: Word;
     FOnQueryFileFound: TQueryFileFoundEvent;
-    FOnQueryDirectoryFound: TQueryDirectoryFoundEvent;
+    FOnQueryDirectoryEnter: TQueryDirectoryFoundEvent;
     FCircularLinkDetection: Boolean;
     VisitedDirs: TFPStringHashTable;
     procedure RaiseSearchingError;
@@ -147,7 +147,7 @@ type
     procedure DoDirectoryFound; virtual;
     procedure DoFileFound; virtual;
     procedure DoQueryFileFound(const Fn: String; var Accept: Boolean);
-    procedure DoQueryDirectoryFound(const Dir: String; var Accept: Boolean);
+    procedure DoQueryDirectoryEnter(const Dir: String; var Accept: Boolean);
   public
     constructor Create;
     procedure Search(const ASearchPath: String; const ASearchMask: String = '';
@@ -163,7 +163,7 @@ type
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
     property OnDirectoryEnter: TDirectoryEnterEvent read FOnDirectoryEnter write FOnDirectoryEnter;
     property OnQueryFileFound: TQueryFileFoundEvent read FOnQueryFileFound write FOnQueryFileFound;
-    property OnQueryDirectoryFound: TQueryDirectoryFoundEvent read FOnQueryDirectoryFound write FOnQueryDirectoryFound;
+    property OnQueryDirectoryEnter: TQueryDirectoryFoundEvent read FOnQueryDirectoryEnter write FOnQueryDirectoryEnter;
   end;
 
   { TListFileSearcher }
