@@ -36,13 +36,19 @@ end;
 function EnumFontsNoDups(var LogFont: TEnumLogFontEx; var Metric: TNewTextMetricEx;
   FontType: Longint; Data: LParam): LongInt; extdecl;
 var
-  L: TStrings;
+  L: TStringList;
   S: String;
 begin
-  L := TStrings(Data);
+  L := TStringList(Data);
+  Assert(not L.Sorted, 'EnumFontsNoDups: List of fonts has Sorted=True.');
+  Assert(not L.UseLocale, 'EnumFontsNoDups: List of fonts has UseLocale=True.');
   S := LogFont.elfLogFont.lfFaceName;
-  if L.IndexOf(S) < 0 then
+  // Prevent consecutive duplicates. The list is alphabetically sorted in all platforms.
+  if (L.Count=0) or (L[L.Count-1] <> S) then begin
+    // There should be no duplicates elsewhere in the list.
+    Assert(L.IndexOf(S)<0,'EnumFontsNoDups: Unexpected duplicate font "'+S+'"');
     L.Add(S);
+  end;
   Result := 1;
 end;
 
@@ -61,10 +67,11 @@ end;
 constructor TScreen.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FFonts := TStringListUTF8Fast.Create;
+  FFonts := TStringList.Create;       // FFonts will be sorted in GetFonts.
+  FFonts.UseLocale := False;
+  //FFonts.CaseSensitive := True;
   FCursorMap := TMap.Create(its4, SizeOf(HCursor));
   FMonitors := TMonitorList.Create;
-  //TStringlist(FFonts).Sorted := True;  Will be sorted in GetFonts
   FCustomForms := TFPList.Create;
   FCustomFormsZOrdered := TFPList.Create;
   FFormList := TFPList.Create;
@@ -588,31 +595,27 @@ begin
     Result := UpdatedMonitor(MonitorHandle, MonitorDefault, 'TScreen.MonitorFromWindow');
 end;
 
-procedure GetScreenFontsList(FontList: TStrings);
-var
-  lf: TLogFont;
-  DC: HDC;
-begin
-  lf.lfCharSet := DEFAULT_CHARSET;
-  lf.lfFaceName := '';
-  lf.lfPitchAndFamily := 0;
-  DC := GetDC(0);
-  try
-    EnumFontFamiliesEx(DC, @lf, @EnumFontsNoDups, PtrInt(FontList), 0);
-  finally
-    ReleaseDC(0, DC);
-  end;
-end;
-
 {------------------------------------------------------------------------------
   function TScreen.GetFonts : TStrings;
  ------------------------------------------------------------------------------}
 function TScreen.GetFonts : TStrings;
+var
+  lf: TLogFont;
+  DC: HDC;
 begin
   if FFonts.Count = 0 then
   begin
-    GetScreenFontsList(FFonts);
-    TStringList(FFonts).Sort;
+    lf.lfCharSet := DEFAULT_CHARSET;
+    lf.lfFaceName := '';
+    lf.lfPitchAndFamily := 0;
+    DC := GetDC(0);
+    try
+      EnumFontFamiliesEx(DC, @lf, @EnumFontsNoDups, PtrInt(FFonts), 0);
+    finally
+      ReleaseDC(0, DC);
+    end;
+    // Widgetset already provided a sorted list, but this enables fast binary search.
+    FFonts.Sorted:=True;
   end;
   Result := FFonts;
 end;
