@@ -860,7 +860,7 @@ var
         repeat
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) or
-             (not AcceptDir(AppendPathDelim(ExpandFilenameUtf8(APath + PathInfo.Name))))
+             (not AcceptDir(ExpandFilenameUtf8(APath + PathInfo.Name)))
           then
             Continue;
           if Assigned(VisitedDirs) then
