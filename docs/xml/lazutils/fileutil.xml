@@ -1720,13 +1720,12 @@ and files are available in the method.
 The OnQueryFileFound and OnQueryDirectoryFound events handlers are signalled 
 (when assigned) to allow the application to include or exclude each directory 
 or file found in the process. Arguments passed to these handlers include the 
-fully-qualified path or file name returned by ExpandFilenameUtf8. Path names 
-include a trailing path delimiter.
+fully-qualified path or file name returned by ExpandFilenameUtf8.
 </p>
 <p>
 When a matching file is found, the OnFileFound event is signalled. When a 
 matching directory is found, the OnDirectoryFound event is signalled. When a 
-new directory is processed in the method, the OnDirectoryEnter events is 
+new directory is processed in the method, the OnDirectoryEnter event is 
 signalled. 
 </p>
 <p>
@@ -1735,14 +1734,14 @@ notifications. You can abort the search process by calling the Stop method in
 the handlers for these events.
 </p>
 <p>
-Search is used in the implement of convenience routines like CopyFile, 
-CopyDirTree, FindAllFiles, and FindAllDirectories.
+Search is used in the implementation of routines like CopyFile, CopyDirTree, 
+FindAllFiles, and FindAllDirectories.
 </p>
 </descr>
 <errors>
 <p>
-An Exception is raised if Search is called and a previous call to the method is 
-already running.
+An Exception is raised if Search is called while a previous call to the method 
+is already running.
 </p>
 </errors>
 <seealso>
@@ -1758,6 +1757,10 @@ already running.
 <link id="TFileSearcher.PathSeparator"/>
 <link id="TFileSearcher.MaskSeparator"/>
 <link id="TFileIterator.Stop"/>
+<link id="CopyDirTree"/>
+<link id="CopyFile"/>
+<link id="FindAllFiles"/>
+<link id="FindAllDirectories"/>
 <link id="#lazutils.lazfileutils.ExpandFilenameUtf8">ExpandFilenameUtf8</link>
 <link id="#lazutils.masks.TMaskList">TMaskList</link>
 </seealso>
