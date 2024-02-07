@@ -23,7 +23,7 @@ uses
   // LCL
   LCLIntf, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Menus,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
+  LazFileUtils, LazStringUtils, Laz2_XMLCfg, LazLoggerBase,
   // Turbopower IPro
   IpHtml,
   // ChmHelp
@@ -275,7 +275,9 @@ end;
 procedure TChmContentProvider.CompareIndexNodes(Sender: TObject; Node1,
   Node2: TTreeNode; var Compare: Integer);
 begin
-  Compare:= UTF8CompareLatinTextFast(Node1.Text, Node2.Text);
+  // ToDo: Use AnsiCompareText() but only when the data actually has Unicode.
+  //       FPC and Lazarus help files have none.
+  Compare:= CompareText(Node1.Text, Node2.Text);
 end;
 
 procedure TChmContentProvider.ProcTreeKeyDown(Sender: TObject; var Key: Word;
