@@ -441,7 +441,7 @@ begin
       if (ArgErr1 = 0) and (ArgErr2 <> 0) then
         Result := false
       else
-        Result := UTF8CompareLatinTextFast(Extr1, Extr2) = 0;
+        Result := Extr1 = Extr2;  // Format Args are case sensitive.
     end;
   end;
 end;
