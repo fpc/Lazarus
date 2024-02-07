@@ -26,7 +26,7 @@ function MinI2(const I1, I2: Integer) : Integer;
 implementation
 
 uses
-  Translations, LazUTF8, 
+  Translations, LazUTF8,
   IpConst,IpUtils;
 
 const
@@ -593,6 +593,11 @@ begin
   SetLength(Result, n);
 end;
 
+
+var // Remember previous in/out values for function FindFontName.
+  PrevFontList1, PrevResult1: string;
+  PrevFontList2, PrevResult2: string;
+
 function FindFontName(const AFontList: string): string;
 
   function CheckFonts(ATestFontList: array of String): String;
@@ -609,37 +614,44 @@ function FindFontName(const AFontList: string): string;
 
 var
   L: TStringList;
+  S: String;
   i: Integer;
 begin
+  // Optimize 2 previous calls having the same parameter value.
+  if AFontList = PrevFontList1 then
+    Exit(PrevResult1)
+  else
+  if AFontList = PrevFontList2 then
+    Exit(PrevResult2);
+
+  Result := '';
   L := TStringList.Create;
   try
     L.CommaText := AFontList;
     for i:=0 to L.Count-1 do begin
-      Result := L[i];
-      if Screen.Fonts.IndexOf(Result) > -1 then
-        exit;
-      if SameText(Result, 'sans-serif') then begin
-        Result := Checkfonts(['Arial', 'Helvetica', 'Liberation Sans']);
-        if Result = '' then
-          Result := Screen.MenuFont.Name;
-        exit;
-      end else
-      if SameText(Result, 'serif') then begin
-        Result := CheckFonts(['Times', 'Times New Roman', 'Liberation Serif']);
-        if Result = '' then
-          Result := Screen.MenuFont.Name;
-        exit;
-      end else
-      if SameText(Result, 'monospace') then begin
+      S := L[i];
+      if Screen.Fonts.IndexOf(S) > -1 then
+        Result := S
+      else
+      if SameText(S, 'sans-serif') then
+        Result := Checkfonts(['Arial', 'Helvetica', 'Liberation Sans'])
+      else
+      if SameText(S, 'serif') then
+        Result := CheckFonts(['Times', 'Times New Roman', 'Liberation Serif'])
+      else
+      if SameText(S, 'monospace') then
         Result := CheckFonts(['Courier New', 'Courier', 'Liberation Mono']);
-        if Result = '' then
-          Result := Screen.MenuFont.Name;
-        exit;
-      end else
-        Result := Screen.MenuFont.Name;
+      if Result <> '' then
+        Break;
     end;
+    if Result = '' then  // Unknown or CheckFonts returned ''.
+      Result := Screen.MenuFont.Name;
   finally
     L.Free;
+    PrevFontList2 := PrevFontList1;
+    PrevResult2 := PrevResult1;
+    PrevFontList1 := AFontList;
+    PrevResult1 := Result;
   end;
 end;
 
