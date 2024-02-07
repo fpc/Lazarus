@@ -670,12 +670,13 @@ begin
 
   if not Assigned(Result) then
   begin
-    SavedKeyModifiers := Result.modifierFlags;
     {$ifdef COCOALOOPNATIVE}
     if Assigned(Application) then Application.Idle(true);
     {$endif}
     Exit;
   end;
+
+  SavedKeyModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
