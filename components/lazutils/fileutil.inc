@@ -899,13 +899,13 @@ var
           FPath := APath;
           FLevel := ALevel;
           FFileInfo := PathInfo;
-          DoDirectoryEnter;
           if not FSearching then Break;
+          DoDirectoryEnter;
           if Assigned(VisitedDirs) then
             VisitedDirs.Add(FQDir,'');
           DoSearch(AppendPathDelim(APath + PathInfo.Name), Succ(ALevel));
 
-        until (FindNextUTF8(PathInfo) <> 0);
+        until (FindNextUTF8(PathInfo) <> 0) or (not FSearching);
       finally
         FindCloseUTF8(PathInfo);
       end;
