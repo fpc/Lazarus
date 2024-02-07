@@ -1209,7 +1209,10 @@ begin
   NotifyApplicationUserInput(Target, Msg.Msg);
   // LCL/LM_MOUSEMOVE always return false, so we should discard return value
   DeliverMessage(Msg);
-  Result:= true;
+  // 1. for MouseMove Event, it has been processed by LCL,
+  //    and does not need Cocoa to continue processing.
+  // 2. for MouseDragged Event, it needs Cocoa to continue processing.
+  Result := Event.type_ = NSMouseMoved;
 
   // if Screen.Cursor set, LCL won't call TCocoaWSWinControl.SetCursor().
   // we need to set the cursor ourselves
