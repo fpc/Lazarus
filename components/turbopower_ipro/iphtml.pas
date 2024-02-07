@@ -4730,29 +4730,29 @@ begin
     Owner.IdList.AddObject(FId, Self);
 end;
 
+function CssMarginToProps(CssMargin: TCSSMargin;
+  out ElemMargin: TIpHtmlElemMargin): boolean;
+begin
+  ElemMargin.Style:=hemsAuto;
+  ElemMargin.Size:=0;
+  if CssMargin.Style=cmsNone then exit(false);
+  if CssMargin.Style=cmsAuto then exit(true);
+  if CssMargin.Style=cmsPx then begin
+    ElemMargin.Style:=hemsPx;
+    ElemMargin.Size:=CssMargin.Size;
+    exit(true);
+  end;
+  if CssMargin.Style=cmsEm then begin
+    ElemMargin.Style:=hemsPx;
+    ElemMargin.Size:=10*CssMargin.Size; // 1em = 1 current font size
+    exit(true);
+  end;
+  Result:=false;
+  debugln(['TIpHtmlNodeCore.ApplyCSSProps.CssMarginToProps note: margin style not supported ',ord(CssMargin.Style)]);
+end;
+
 procedure TIpHtmlNodeCore.ApplyCSSProps(const ACSSProps: TCSSProps;
   const props: TIpHtmlProps);
-
-  function CssMarginToProps(CssMargin: TCSSMargin;
-    out ElemMargin: TIpHtmlElemMargin): boolean;
-  begin
-    ElemMargin.Style:=hemsAuto;
-    ElemMargin.Size:=0;
-    if CssMargin.Style=cmsNone then exit(false);
-    if CssMargin.Style=cmsAuto then exit(true);
-    if CssMargin.Style=cmsPx then begin
-      ElemMargin.Style:=hemsPx;
-      ElemMargin.Size:=CssMargin.Size;
-      exit(true);
-    end;
-    if CssMargin.Style=cmsEm then begin
-      ElemMargin.Style:=hemsPx;
-      ElemMargin.Size:=10*CssMargin.Size; // 1em = 1 current font size
-      exit(true);
-    end;
-    debugln(['TIpHtmlNodeCore.ApplyCSSProps.CssMarginToProps note: margin style not supported ',ord(CssMargin.Style)]);
-  end;
-
 var
   ElemMargin: TIpHtmlElemMargin;
 begin
@@ -4826,8 +4826,35 @@ begin
   Result := Props.Alignment;
 end;
 
-function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
-  aFontSize: string):Integer;
+var  // Remember previous in/out values for function GetFPxSize.
+  PrevFontSize: string;
+  PrevPxResult: Integer;
+
+// Calculate points based on screen resolution :(
+// at 96dpi CSS21 recommneds 1px=0.26 mm
+// TODO: use screen resolution, check printing!
+function GetFPxSize(aFontSize: string): Integer;
+var
+  i: Integer;
+  dd: double;
+begin
+  // Optimize consecutive identical values. Return a saved value.
+  if aFontSize=PrevFontSize then
+    exit(PrevPxResult);
+  // Calculate
+  i := pos('px', aFontSize);
+  if i>0 then begin
+    dd := StrToFloatDef(copy(aFontSize,1,i-1), -1.0);
+    Result := Round(dd * 0.7370241);
+    PrevFontSize := aFontSize;
+    PrevPxResult := Result;
+  end
+  else
+    result := -1;
+end;
+
+function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize: Integer;
+  aFontSize: string): Integer;
 
   function GetFSize(aUnits: string): double;
   var
@@ -4839,7 +4866,7 @@ function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
     else
       result := -1.0;
   end;
-  
+
   function GetParentFontSize: integer;
   begin
     if (FParentNode is TIpHtmlNodeBlock) then
@@ -4853,45 +4880,35 @@ function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
     else
       result := CurrentFontSize;
   end;
-  
+
 var
   P: double;
-  //ParentFSize: Integer;
+  i: Integer;
 begin
   result := CurrentFontSize;
 
+  // check px (most common)
+  i:=GetFPxSize(aFontSize);
+  if i>0 then
+    exit(i);
+
   // check pt
   P:=GetFSize('pt');
-  if P>0 then begin
-    result := round(P);
-    exit;
-  end;
-  
-  // check px
-  P:=GetFSize('px');
-  if P>0 then begin
-    // calculate points based on screen resolution :(
-    // at 96dpi CSS21 recommneds 1px=0.26 mm
-    // TODO: use screen resolution, check printing!
-    Result := Round(P*0.7370241);
-    exit;
-  end;
+  if P>0 then
+    exit(round(P));
 
   //todo: em, ex are supposed to be based on the computed pixel size of
   //      parent node, tpipro has no provision for this....
 
   // check %
   P:=GetFSize('%');
-  if P>0 then begin
-    result := round(GetParentFontSize * P/100);
-    exit;
-  end;
-  
+  if P>0 then
+    exit(round(GetParentFontSize * P/100));
+
   // check em
   P:=GetFSize('em');
-  if P>0 then begin
+  if P>0 then
     result := round(GetParentFontSize * P);
-  end;
 end;
 
 constructor TIpHtmlNodeCore.Create(ParentNode: TIpHtmlNode);
