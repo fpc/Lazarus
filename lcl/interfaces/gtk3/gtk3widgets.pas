@@ -4525,9 +4525,9 @@ end;
 
 procedure TGtk3Page.DestroyWidget;
 begin
-  inherited DestroyWidget;
   // unref it to allow it to be destroyed
   FPageLabel^.unref;
+  inherited DestroyWidget;
 end;
 
 function TGtk3Page.getClientOffset: TPoint;
