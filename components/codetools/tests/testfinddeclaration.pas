@@ -48,6 +48,13 @@
     {guesstype:
       Tests: CodeToolBoss.GuessTypeOfIdentifier
 
+    {findrefs:XYLIST
+      XYLIST=x,y;x,y;...
+      Tests: CodeToolBoss.FindReferences
+
+      An exact list of all the location that codetool will find.
+      if XYLIST starts with "C," then comments are searched too.
+
 *)
 unit TestFindDeclaration;
 
@@ -61,7 +68,7 @@ uses
   Classes, SysUtils, contnrs, fpcunit, testregistry, FileProcs, LazFileUtils,
   LazLogger, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, DefineTemplates, DirectoryCacher, StrUtils,
+  IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph, StrUtils,
   TestPascalParser;
 
 const
@@ -290,12 +297,15 @@ var
   NameStartPos, i, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpexctedCompletion, ExpexctedTerm,
-    ExpexctedCompletionPart, ExpexctedTermPart: String;
+    ExpexctedCompletionPart, ExpexctedTermPart, s: String;
   IdentItem: TIdentifierListItem;
-  ItsAKeyword, IsSubIdentifier, ExpInvert: boolean;
+  ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment: boolean;
   ExistingDefinition: TFindContext;
   ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
+  ListOfPCodeXYPosition: TFPList;
+  Cache: TFindIdentifierReferenceCache;
+  CodePos: PCodeXYPosition;
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
@@ -505,6 +515,31 @@ begin
             FreeListOfPFindContext(ListOfPFindContext);
           end;
 
+        end else if Marker='findrefs' then begin
+          ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
+          ExpComment := copy(ExpectedPath,1,2) = 'C,';
+          if ExpComment then delete(ExpectedPath, 1, 2);
+          ListOfPCodeXYPosition:=nil;
+          Cache:=nil;
+          MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+
+          if not CodeToolBoss.FindReferences(
+            aCode,CursorPos.X,CursorPos.Y,
+            aCode {TODO: iterate multiple files}, not ExpComment,
+            ListOfPCodeXYPosition, Cache)
+          then
+            AssertTrue('FindReferences failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true), False);
+
+            s := '';
+            for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+              if s <> '' then
+                s := s + ';';
+              s := s + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.X) + ',' + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.Y);
+            end;
+          CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+          Cache.Free;
+
+          AssertEquals('FindReferences failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true), ExpectedPath, s);
         end else begin
           WriteSource(IdentifierStartPos,MainTool);
           AssertEquals('Unknown marker at '+MainTool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
