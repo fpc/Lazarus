@@ -24,9 +24,9 @@ unit pocheckermain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
-  LCLType, LazUTF8,
+  Classes, SysUtils, Types,
+  FileUtil, LazFileUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, CheckLst, Buttons, ExtCtrls, ComCtrls, LCLType,
   {$IFDEF POCHECKERSTANDALONE}
   LCLTranslator,
   {$ELSE}
@@ -566,7 +566,7 @@ end;
 
 function ListSortFunc(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := UTF8CompareLatinTextFast(List.Strings[Index1], List.Strings[Index2]);
+  Result := CompareText(List.Strings[Index1], List.Strings[Index2]);
 end;
 
 function TPoCheckerForm.LangFilterIndexToLangID(Index: Integer): TLangID;

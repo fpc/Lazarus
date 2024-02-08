@@ -275,9 +275,9 @@ begin
     end else begin
       while i > -1 do begin
         s := fCompletions[i];
-        if UTF8CompareLatinTextFast(s, AToken) = 0 then
+        if AnsiCompareText(s, AToken) = 0 then
           break
-        else if UTF8CompareLatinTextFast(Copy(s, 1, Len), AToken) = 0 then begin
+        else if AnsiCompareText(Copy(s, 1, Len), AToken) = 0 then begin
           Inc(NumMaybe);
           IdxMaybe := i;
         end;
