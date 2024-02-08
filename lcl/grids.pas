@@ -11734,7 +11734,7 @@ begin
   if Assigned(OnCompareCells) then
     Result:=inherited DoCompareCells(Acol, ARow, Bcol, BRow)
   else begin
-    Result:=UTF8CompareLatinTextFast(Cells[ACol,ARow], Cells[BCol,BRow]);
+    Result:=AnsiCompareText(Cells[ACol,ARow], Cells[BCol,BRow]);
     if SortOrder=soDescending then
       result:=-result;
   end;
