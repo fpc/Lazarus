@@ -43,8 +43,10 @@ unit FpDbgDwarfDataClasses;
 interface
 
 uses
-  Classes, Types, SysUtils, contnrs, Math, Maps, LazClasses, LazFileUtils,
-  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
+  Classes, Types, SysUtils, Contnrs, Math,
+  // LazUtils
+  Maps, LazClasses, LazFileUtils, LazUTF8, LazCollections,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   // FpDebug
   FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, FpDbgCommon, FpDbgDwarfCFI,
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes;
@@ -5194,7 +5196,7 @@ function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWar
     if Result <> -1 then Exit;
 
     for Result := 0 to FLineNumberMap.Count - 1 do
-      if UTF8CompareLatinTextFast(Name, ExtractFileName(FLineNumberMap[Result])) = 0 then
+      if AnsiCompareText(Name, ExtractFileName(FLineNumberMap[Result])) = 0 then
         Exit;
     Result := -1;
   end;

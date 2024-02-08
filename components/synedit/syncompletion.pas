@@ -1158,16 +1158,15 @@ begin
   end else begin
     if FCaseSensitive then begin
       for i := 0 to Pred(ItemList.Count) do
-        if 0 = CompareStr(fCurrentString,
-          Copy(ItemList[i], 1, Length(fCurrentString)))
+        if 0 = CompareStr(fCurrentString, Copy(ItemList[i], 1, Length(fCurrentString)))
         then begin
           Position := i;
           break;
         end;
     end else begin
       for i := 0 to Pred(ItemList.Count) do
-        if 0 = UTF8CompareLatinTextFast(fCurrentString,
-                                    Copy(ItemList[i], 1, Length(fCurrentString)))
+        if 0 = AnsiCompareText(fCurrentString,
+                               Copy(ItemList[i], 1, Length(fCurrentString)))
         then begin
           Position := i;
           break;

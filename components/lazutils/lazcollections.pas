@@ -6,7 +6,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit lazCollections;
+unit LazCollections;
 
 {$mode objfpc}{$H+}
 {$ModeSwitch advancedrecords}
