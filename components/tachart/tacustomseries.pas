@@ -1565,7 +1565,7 @@ begin
           then begin
             if Styles <> nil then begin
               style := Styles.StyleByIndex(si);
-              if style.UseFont then
+              if (style <> nil) and style.UseFont then
                 Marks.LabelFont.Assign(style.Font)
               else
                 Marks.LabelFont.Assign(lfont);
