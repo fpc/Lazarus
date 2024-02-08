@@ -100,8 +100,8 @@ var
 begin
   if BuildModes=nil then exit;
   for i:=0 to BuildModes.Count-1 do
-    if UTF8CompareLatinTextFast(BuildModes[i].GetCaption,ModeComboBox.Text)=0
-    then begin
+    if AnsiCompareText(BuildModes[i].GetCaption,ModeComboBox.Text)=0 then
+    begin
       fBaseMode:=BuildModes[i];
       FillDiffTreeView;
       break;

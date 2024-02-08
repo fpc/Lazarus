@@ -38,7 +38,7 @@ uses
   // LCL
   Dialogs,
   // LazUtils
-  LazFileCache, LazFileUtils, LazLoggerBase, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
+  LazFileCache, LazFileUtils, LazLoggerBase, AvgLvlTree, Laz2_XMLCfg,
   LazConfigStorage,
   // IdeConfig
   DiffPatch, LazConf, RecentListProcs, IdeXmlConfigProcs,
@@ -797,7 +797,7 @@ end;
 function THistoryLists.IndexOfName(const Name: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (UTF8CompareLatinTextFast(Items[Result].Name,Name)<>0) do
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,Name)<>0) do
     dec(Result);
 end;
 

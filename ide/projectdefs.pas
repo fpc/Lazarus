@@ -43,7 +43,7 @@ uses
   // Codetools
   FileProcs,
   // LazUtils
-  LazFileUtils, LazUTF8, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg,
   // BuildIntf
   ProjectIntf, PublishModuleIntf;
 
@@ -951,7 +951,7 @@ end;
 function TLazProjectFileDescriptors.IndexOf(const Name: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (UTF8CompareLatinTextFast(Name,Items[Result].Name)<>0) do
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
     dec(Result);
 end;
 
@@ -1075,7 +1075,7 @@ end;
 function TLazProjectDescriptors.IndexOf(const Name: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (UTF8CompareLatinTextFast(Name,Items[Result].Name)<>0) do
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
     dec(Result);
 end;
 

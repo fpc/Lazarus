@@ -230,7 +230,7 @@ begin
   m:=0;
   while l<=r do begin
     m:=(l+r) shr 1;
-    cmp:=UTF8CompareLatinTextFast(NewMacro.Name,Items[m].Name);
+    cmp:=AnsiCompareText(NewMacro.Name,Items[m].Name);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then
@@ -238,7 +238,7 @@ begin
     else
       break;
   end;
-  if (m<fItems.Count) and (UTF8CompareLatinTextFast(NewMacro.Name,Items[m].Name)>0) then
+  if (m<fItems.Count) and (AnsiCompareText(NewMacro.Name,Items[m].Name)>0) then
     inc(m);
   fItems.Insert(m,NewMacro);
   //if NewMacro.MacroFunction<>nil then
@@ -417,7 +417,7 @@ begin
   while l<=r do begin
     m:=(l+r) shr 1;
     Result:=Items[m];
-    cmp:=UTF8CompareLatinTextFast(MacroName,Result.Name);
+    cmp:=AnsiCompareText(MacroName,Result.Name);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then

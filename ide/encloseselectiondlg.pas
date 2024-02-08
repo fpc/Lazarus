@@ -39,7 +39,7 @@ uses
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls, ButtonPanel,
   // LazUtils
-  LazUTF8, LazTracer, LazStringUtils,
+  LazTracer, LazStringUtils,
   // CodeTools
   BasicCodeTools, CodeToolManager, SourceChanger,
   // IDE
@@ -436,8 +436,8 @@ var
 begin
   i:=TypeRadiogroup.ItemIndex;
   for Result:=Low(TEncloseSelectionType) to High(TEncloseSelectionType) do
-    if UTF8CompareLatinTextFast(TypeRadiogroup.Items[i],
-                                EncloseSelectionTypeDescription(Result))=0
+    if AnsiCompareText(TypeRadiogroup.Items[i],
+                       EncloseSelectionTypeDescription(Result))=0
     then
       exit;
   RaiseGDBException('TEncloseSelectionDialog.GetEncloseType');

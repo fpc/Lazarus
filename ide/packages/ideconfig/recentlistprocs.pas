@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Laz2_XMLCfg,
   // LazUtils
-  LazUTF8, LazFileUtils,
+  LazFileUtils,
   // IdeConfig
   IdeXmlConfigProcs;
 
@@ -62,7 +62,7 @@ end;
 function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
 begin
   case ListType of
-  rltCaseInsensitive: Result:=UTF8CompareLatinTextFast(s1,s2)=0;
+  rltCaseInsensitive: Result:=AnsiCompareText(s1,s2)=0;
   rltFile: Result:=CompareFilenames(ChompPathDelim(s1),ChompPathDelim(s2))=0;
   else Result:=s1=s2;
   end;

@@ -3869,8 +3869,8 @@ end;
 function TEditOptLangList.FindByName(const Name: String): Integer;
 begin
   Result := Count - 1;
-  while (Result > 0) and (UTF8CompareLatinTextFast(
-      Items[Result].SynInstance.LanguageName, Name) <> 0) do
+  while (Result > 0)
+  and (AnsiCompareText(Items[Result].SynInstance.LanguageName, Name) <> 0) do
     dec(Result);
   if Result = 0 then // not found // not checking lshNone;
     dec(Result);

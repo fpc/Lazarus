@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, Contnrs, System.UITypes,
   // LazUtils
-  Laz2_XMLCfg, LazLoggerBase, LazFileUtils, LazUTF8,
+  Laz2_XMLCfg, LazLoggerBase, LazFileUtils,
   // LCL
   Forms, Dialogs, ExtCtrls, StdCtrls, ComCtrls, ButtonPanel,
   InterfaceBase, LCLPlatformDef,
@@ -366,7 +366,7 @@ end;
 function TBuildLazarusProfiles.IndexByName(AName: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (UTF8CompareLatinTextFast(Items[Result].Name,AName)<>0) do
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,AName)<>0) do
     dec(Result);
 end;
 

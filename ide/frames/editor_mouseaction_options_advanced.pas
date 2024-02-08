@@ -176,8 +176,8 @@ procedure TEditorMouseOptionsAdvFrame.ActionGridCompareCells(Sender: TObject; AC
         Result := ord(TSynEditMouseAction(TStringGrid(Sender).Objects[0, BRow]).ClickDir)
                 - ord(TSynEditMouseAction(TStringGrid(Sender).Objects[0, ARow]).ClickDir);
       else
-        Result := UTF8CompareLatinTextFast(TStringGrid(Sender).Cells[i, ARow],
-                                           TStringGrid(Sender).Cells[i, BRow]);
+        Result := AnsiCompareText(TStringGrid(Sender).Cells[i, ARow],
+                                  TStringGrid(Sender).Cells[i, BRow]);
     end;
   end;
 

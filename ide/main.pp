@@ -10275,7 +10275,7 @@ begin
       then begin
         STB := AppendPathDelim(GetTestBuildDirectory);
         FNStart := copy(NewSource.Filename, 1, length(STB));
-        if UTF8CompareLatinTextFast(FNStart, STB) = 0 then
+        if AnsiCompareText(FNStart, STB) = 0 then
           ActiveUnitInfo := Project1.UnitInfoWithFilename(
                                   copy(NewSource.Filename, 1+length(STB), MaxInt),
                                   [pfsfOnlyVirtualFiles]);

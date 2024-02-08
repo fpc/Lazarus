@@ -2173,7 +2173,7 @@ var
               continue;
             ShortFilename:=ExtractFilename(NewFilename);
             CurName:=ExtractFileName(ConflictFile.Filename);
-            if (UTF8CompareLatinTextFast(CurName,ShortFilename)<>0)
+            if (AnsiCompareText(CurName,ShortFilename)<>0)
             and (CompareFilenames(CurName,ShortFilename)<>0) then
               continue;
             // name clash on this or other platforms => warn
@@ -6662,7 +6662,7 @@ end;
 function TLazPackageDescriptors.IndexOf(const Name: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (UTF8CompareLatinTextFast(Name,Items[Result].Name)<>0) do
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
     dec(Result);
 end;
 
