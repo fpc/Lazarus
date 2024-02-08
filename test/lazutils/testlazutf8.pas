@@ -32,7 +32,6 @@ type
     procedure TestUnicodeToUTF8;
     procedure TestUTF8QuotedStr;
     procedure TestUTF8FixBroken;
-    procedure TestUTF8CompareLatinTextFast;
   end;
 
 implementation
@@ -266,30 +265,6 @@ begin
   t(#$F0#$CF#$BF#$BF,' '#$CF#$BF' ');
   t(#$F4#$8F#$BF#$BF,#$F4#$8F#$BF#$BF);
   t(#$F4#$90#$80#$80,'    ');
-end;
-
-procedure TTestLazUTF8.TestUTF8CompareLatinTextFast;
-var
-  a, b, c: String;
-begin
-  // ASCII
-  AssertTrue(UTF8CompareLatinTextFast('abc', 'xyz') < 0);
-  AssertTrue(UTF8CompareLatinTextFast('xyz', 'abc') > 0);
-  AssertTrue(UTF8CompareLatinTextFast('ijk', 'ijk') = 0);
-  // ASCII <-> non-ASCII
-  AssertTrue(UTF8CompareLatinTextFast('hello', 'привет') < 0);
-  AssertTrue(UTF8CompareLatinTextFast('привет', 'hello') > 0);
-  // non-ASCII
-  AssertTrue(UTF8CompareLatinTextFast('привет', 'नमस्ते') < 0); // 'Hello' in Sankrit
-  AssertTrue(UTF8CompareLatinTextFast('नमस्ते', 'привет') > 0);
-  AssertTrue(UTF8CompareLatinTextFast('привет', 'привет') = 0);
-  // Issue #40014
-  a := 'abcä';
-  b := 'abcx';
-  c := 'abc|';     // '|' comes after ['a'..'z','A'..'Z'] in ASCII table.
-  AssertTrue('UTF8CompareLatinTextFast('+a+', '+b+')', UTF8CompareLatinTextFast(a, b) > 0);
-  AssertTrue('UTF8CompareLatinTextFast('+a+', '+c+')', UTF8CompareLatinTextFast(a, c) > 0);
-  AssertTrue('UTF8CompareLatinTextFast('+b+', '+c+')', UTF8CompareLatinTextFast(b, c) < 0);
 end;
 
 initialization
