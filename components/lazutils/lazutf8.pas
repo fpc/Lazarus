@@ -150,6 +150,8 @@ function UTF8RPos(const Substr, Source: string): PtrInt;
 function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S: string; MaxCol: integer): string; overload;
 
+function IsPureAscii(S: string): Boolean; // String has only ASCII characters.
+
 type
   TEscapeMode = (emPascal, emHexPascal, emHexC, emC, emAsciiControlNames);
 
@@ -174,17 +176,23 @@ function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
 function UTF8CompareTextP(S1, S2: PChar): PtrInt;
-function UTF8CompareLatinTextFast(S1, S2: String): PtrInt;
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
+// Deprecated in Lazarus 3.99, February 2024.
+function UTF8CompareLatinTextFast(S1, S2: String): PtrInt; deprecated 'Use UTF8CompareText or AnsiCompareText instead.';
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt; deprecated 'Use UTF8CompareStr instead.';
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
 
   { TStringListUTF8Fast }
 
+  // This list uses fast ASCII comparison functions when its data is pure ASCII.
+  // When data is Unicode, it switches to slower AnsiCompare.. functions.
+  // The switch is managed by setting "UseLocale" which should not be changed by user.
   TStringListUTF8Fast = class(TStringList)
-  protected  // Uses UTF8CompareLatinTextFast for comparison.
-    function DoCompareText(const s1,s2 : string): PtrInt; override;
+  protected
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+  public
+    constructor Create;
   end;
 
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
@@ -3195,7 +3203,7 @@ begin
     TextLen := Utf8Length(AText);
     SubTextLen := Utf8Length(ASubText);
     if (TextLen >= SubTextLen) then
-      Result := (UTF8CompareLatinTextFast(Utf8Copy(AText,1,SubTextLen),ASubText) = 0);
+      Result := UTF8CompareText(UTF8Copy(AText,1,SubTextLen),ASubText) = 0;
   end;
 end;
 
@@ -3209,7 +3217,7 @@ begin
     TextLen := Utf8Length(AText);
     SubTextLen := Utf8Length(ASubText);
     if (TextLen >= SubTextLen) then
-      Result := (UTF8CompareLatinTextFast(Utf8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0);
+      Result := UTF8CompareText(UTF8Copy(AText,TextLen-SubTextLen+1,SubTextLen),ASubText) = 0;
   end;
 end;
 
@@ -3291,6 +3299,16 @@ end;
 function UTF8WrapText(S: string; MaxCol: integer): string;
 begin
   Result := UTF8WrapText(S, LineEnding, [' ', '-', #9], MaxCol);
+end;
+
+function IsPureAscii(S: string): Boolean;
+var
+  i: Integer;
+begin
+  for i := 1 to Length(S) do
+    if Ord(S[i]) > $7F then      // Not ASCII.
+      Exit(False);
+  Result := True;
 end;
 
 function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
@@ -3514,67 +3532,11 @@ begin
 end;
 
 function UTF8CompareLatinTextFast(S1, S2: String): PtrInt;
-// Like UTF8CompareText but does not return strict alphabetical order.
-// The order is deterministic and good for binary search and such uses.
-// Optimizes comparison of single-byte encoding and also multi-byte portions
-// when they are equal. Otherwise falls back to AnsiCompareText.
-var
-  Count, Count1, Count2: SizeInt;
-  Chr1, Chr2: Char;
-  P1, P2, P1LastBytePointOffset: PChar;
 begin
-  Count1 := Length(S1);
-  Count2 := Length(S2);
-  if Count1 > Count2 then
-    Count := Count2
-  else
-    Count := Count1;
-  if Count > 0 then
-  begin
-    P1 := @S1[1];
-    P2 := @S2[1];
-    P1LastBytePointOffset := P1;
-    while Count > 0 do
-    begin
-      Chr1 := P1^;
-      Chr2 := P2^;
-
-      if Chr1 <> Chr2 then
-      begin
-        if (Ord(Chr1) or Ord(Chr2)) < 128 then
-        begin
-          P1LastBytePointOffset := P1;
-          if (Chr1 in ['A'..'Z']) then
-            inc(Chr1, $20);
-          if (Chr2 in ['A'..'Z']) then
-            inc(Chr2, $20);
-          if Chr1 <> Chr2 then
-            break;
-        end
-        else
-        begin
-          P2 := P2 + (P1LastBytePointOffset - P1);
-          Delete(S1, 1, P1LastBytePointOffset-@S1[1]);
-          Delete(S2, 1, P2-@S2[1]);
-          Exit(AnsiCompareText(S1, S2));
-        end;
-      end
-      else
-      if (Ord(Chr1) or Ord(Chr2)) < 128 then
-        P1LastBytePointOffset := P1;
-
-      Inc(P1); Inc(P2);
-      Dec(Count);
-    end;
-  end;
-  if Count > 0 then
-    //Both Chr1 and Ch2 are lower ASCII if we arrive here, so this is safe
-    Result := AnsiCompareText(Chr1, Chr2)
-  else
-    Result := Count1-Count2;
+  Result := UTF8CompareText(S1, S2);
 end;
 
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt; {$IFnDEF ACP_RTL}inline;{$endif}
+function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
 begin
   {$IFDEF ACP_RTL}
     //Only with this define AnsiCompareStr does not point to Utf8CompareStr
@@ -4037,26 +3999,36 @@ var
   LangID: TLanguageID;
 begin
   LangID := GetLanguageID;
-  Lang:=LangID.LanguageCode;
+  Lang := LangID.LanguageCode;
 end;
 
 procedure InitFPUpchars;
 var
   c: Char;
 begin
-  for c:=Low(char) to High(char) do begin
-    FPUpChars[c]:=upcase(c);
-  end;
+  for c:=Low(char) to High(char) do
+    FPUpChars[c]:=UpCase(c);
 end;
 
 { TStringListUTF8Fast }
 
-function TStringListUTF8Fast.DoCompareText(const s1, s2: string): PtrInt;
+constructor TStringListUTF8Fast.Create;
 begin
-  if CaseSensitive then
-    Result:=Utf8CompareStr(s1, s2)
-  else
-    Result:=UTF8CompareLatinTextFast(s1, s2);
+  inherited Create;
+  UseLocale := False;      // Assume pure ASCII string. Comparison will be fast.
+end;
+
+procedure TStringListUTF8Fast.InsertItem(Index: Integer; const S: string; O: TObject);
+begin
+  if not IsPureAscii(S) then
+  begin
+    // Unicode string found, switch to Unicode mode.
+    WriteLn('TStringListUTF8Fast.InsertItem: Found non-ASCII string "'+S+'"');
+    UseLocale := True;
+    if Sorted then
+      Sort;    // Sort a sorted list again with AnsiCompare.. functions.
+  end;
+  inherited InsertItem(Index, S, O);
 end;
 
 
