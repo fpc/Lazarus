@@ -3685,6 +3685,7 @@ var
   SaveWidget: QWidgetH;
   LazButton: Byte;
   LazPos: TPoint;
+  SavedLCLControl: PtrUInt;
 begin
   {$ifdef VerboseQt}
   WriteLn('TQtWidget.SlotMouse ',DbgSName(Self));
@@ -3752,14 +3753,21 @@ begin
             Include(FOwner.FWidgetState, qtwsInsideMouseDoubleClickEvent);
         Include(FWidgetState, qtwsInsideMouseDoubleClickEvent);
       end;
+      SavedLCLControl := PtrUInt(LCLObject);
       try
 
         NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+        if (SavedLCLControl <> PtrUInt(LCLObject)) then
+          exit(True);
 
         if not CanSendLCLMessage or (Sender = nil) then
           exit(True);
 
         DeliverMessage(Msg, True);
+
+        if (SavedLCLControl <> PtrUInt(LCLObject)) then
+          exit(True);
 
       finally
         if qtwsInsideMouseDoubleClickEvent in FWidgetState then
@@ -3789,6 +3797,7 @@ begin
     QEventMouseButtonRelease:
     begin
       SaveWidget := nil;
+      SavedLCLControl := PtrUInt(LCLObject);
       if (FChildOfComplexWidget = ccwCustomControl) and (FOwner <> nil) then
         SaveWidget := Widget;
 
@@ -3797,11 +3806,18 @@ begin
       if (SaveWidget <> nil) and (SaveWidget <> Widget) then
         exit(True);
 
+      if (SavedLCLControl <> PtrUInt(LCLObject)) then
+        exit(True);
+
       if not CanSendLCLMessage or (Sender = nil) then
         exit(True);
 
       DeliverMessage(Msg, True);
+
       if (SaveWidget <> nil) and (SaveWidget <> Widget) then
+        exit(True);
+
+      if (SavedLCLControl <> PtrUInt(LCLObject)) then
         exit(True);
 
       // Check if our objects exists since LCL can destroy object during
