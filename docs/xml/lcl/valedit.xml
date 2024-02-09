@@ -38,19 +38,18 @@ component palette:
 </descr>
 
 <!-- unresolved reference Visibility: default -->
-<element name="Contnrs"/>
 <element name="SysUtils"/>
 <element name="Classes"/>
+<element name="Contnrs"/>
 <element name="Variants"/>
-<element name="LazUtf8"/>
 <element name="Controls"/>
 <element name="StdCtrls"/>
 <element name="Grids"/>
 <element name="LResources"/>
 <element name="Dialogs"/>
 <element name="LCLType"/>
-<element name="Laz2_XMLCfg"/>
 <element name="LCLStrConsts"/>
+<element name="Laz2_XMLCfg"/>
 
 <element name="TEditStyle">
 <short>
@@ -2267,7 +2266,7 @@ The return value is <b>False</b> if a duplicate Key name is found in
 control.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TValueListEditor.ValidateEntry.ACol">
 <short>Column number for the new value.</short>
