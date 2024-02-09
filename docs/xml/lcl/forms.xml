@@ -13136,12 +13136,15 @@ The default font used for system task dialogs and controls like TSpeedButton.
 <short>The names for the available (installed) fonts.</short>
 <descr>
 <p>
-<var>Fonts</var> is a read-only <var>TStrings</var> property which contains 
-the names for the fonts found using the <var>EnumFontFamiliesEx</var> 
-routine for the widgetset. Values in Fonts are sorted alphabetically in 
-ascending order.
+<var>Fonts</var> is a read-only <var>TStringList</var> property which contains 
+the names for the fonts found using the <var>EnumFontFamiliesEx</var> routine 
+for the widgetset. Values in Fonts are unique (no duplicates) and sorted 
+alphabetically in ascending order.
 </p>
 </descr>
+<version>
+Modified in LCL version 3.2 to use the TStringList type instead of TStrings.
+</version>
 <seealso/>
 </element>
 
