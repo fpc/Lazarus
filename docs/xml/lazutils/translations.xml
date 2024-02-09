@@ -1244,7 +1244,7 @@ CurrentItem is <b>Nil</b>, a new TPOFileItem instance is created and used to
 stored the argument values. It is added to the Items in the class instance.
 </p>
 <p>
-FillItem retrieves an existing TPOFIleItem instance in Items and merges its 
+FillItem retrieves an existing TPOFileItem instance in Items and merges its 
 properties into the values in CurrentItem. The value in CurrentItem is 
 subsequently used to replace the translation entry in Items.
 </p>
