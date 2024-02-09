@@ -133,7 +133,7 @@ const
     (sName: 'findreplace'; eFlags: [eFindReplace]),
     (sName: 'findreplaceuses'; eFlags: [eFindReplaceUses]),
 
-    (sName: 'reovecomments'; eFlags: [eRemoveComments])
+    (sName: 'removecomments'; eFlags: [eRemoveComments])
     );
 
 
