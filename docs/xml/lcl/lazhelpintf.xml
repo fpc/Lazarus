@@ -41,10 +41,9 @@ Author: Mattias Gaertner
 <element name="FileUtil"/>
 <element name="LazFileUtils"/>
 <element name="LazUtilities"/>
-<element name="LazUTF8"/>
+<element name="LazLoggerBase"/>
 <element name="LazConfigStorage"/>
 <element name="Masks"/>
-<element name="LCLProc"/>
 <element name="LCLStrConsts"/>
 <element name="Dialogs"/>
 <element name="HelpIntfs"/>
@@ -1263,6 +1262,25 @@ Creates or updates a list of help nodes using the specified help HelpKeyword.
 <short>Message describing an error condition in the return value.</short>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="THelpDatabase.GetNodesForDirective">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="THelpDatabase.GetNodesForDirective.Result">
+<short/>
+</element>
+<element name="THelpDatabase.GetNodesForDirective.HelpDirective">
+<short/>
+</element>
+<element name="THelpDatabase.GetNodesForDirective.ListOfNodes">
+<short/>
+</element>
+<element name="THelpDatabase.GetNodesForDirective.ErrMsg">
+<short/>
+</element>
+
 <element name="THelpDatabase.GetNodesForContext">
 <short>
 Creates or updates the list of help nodes for the specified help context.
@@ -2074,6 +2092,25 @@ Populates a list with help nodes using the specified help keyword.
 <short/>
 </element>
 <element name="THelpDatabases.GetNodesForKeyword.ErrMsg">
+<short/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="THelpDatabases.GetNodesForDirective">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="THelpDatabases.GetNodesForDirective.Result">
+<short/>
+</element>
+<element name="THelpDatabases.GetNodesForDirective.HelpDirective">
+<short/>
+</element>
+<element name="THelpDatabases.GetNodesForDirective.ListOfNodes">
+<short/>
+</element>
+<element name="THelpDatabases.GetNodesForDirective.ErrMsg">
 <short/>
 </element>
 
