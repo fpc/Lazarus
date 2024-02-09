@@ -1266,7 +1266,6 @@ var
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
   OldFontQuality: TFontQuality;
-  OldTextStyle: TTextStyle;
   wordIsInTable: Boolean;
 
   procedure saveCanvasProperties;

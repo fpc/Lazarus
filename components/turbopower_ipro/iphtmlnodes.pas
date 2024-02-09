@@ -3669,12 +3669,12 @@ end;
 
 procedure TIpHtmlNodeTABLE.Enqueue;
 var
-  lOwner: TIpHtmlOpener;
+  //lOwner: TIpHtmlOpener;
   h: Integer;
   elem: PIpHtmlElement;
 begin
   // display block
-  lOwner := TIpHtmlOpener(Owner);
+  //lOwner := TIpHtmlOpener(Owner);
   
   //The commented code below prevents a blank line before the table
   {

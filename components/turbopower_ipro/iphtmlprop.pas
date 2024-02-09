@@ -5,7 +5,8 @@ unit IpHtmlProp;
 interface
 
 uses
-  Classes, SysUtils, types, contnrs, Graphics,
+  Classes, SysUtils, Types, Contnrs, AVL_Tree,
+  Graphics,
   IpConst, IpUtils, IpHtmlTypes;
 
 type
@@ -15,6 +16,7 @@ type
   end;
 
   TFontNameStr = string[50];
+  PIpHtmlPropAFieldsRec = ^TIpHtmlPropAFieldsRec;
   TIpHtmlPropAFieldsRec = record
     BaseFontSize: Integer;
     FontSize: Integer;
@@ -22,17 +24,18 @@ type
     FontName: TFontNameStr;
   end;
 
-  TIpHtmlPropBFieldsRec = record
+  PIpHtmlPropBFieldsRec = ^TIpHtmlPropBFieldsRec;
+  TIpHtmlPropBFieldsRec = packed record
     FontBaseline: Integer;
-    Alignment: TIpHtmlAlign;
     FontColor: TColor;
-    VAlignment: TIpHtmlVAlign3;
     LinkColor : TColor;
     VLinkColor : TColor;
     ALinkColor : TColor;
     HoverColor : TColor;
     HoverBgColor : TColor;
     BgColor : TColor;
+    Alignment: TIpHtmlAlign;
+    VAlignment: TIpHtmlVAlign3;
     Preformatted : Boolean;
     NoBreak : Boolean;
     ElemMarginTop: TIpHtmlElemMargin;
@@ -41,16 +44,34 @@ type
     ElemMarginRight: TIpHtmlElemMargin;
   end;
 
-  TIpHtmlPropsAList = class;
+  TIpHtmlPropBase = class;
+
+  { TObjectAVLTree }
+
+  // This container owns its objects. They are freed at the end.
+  TObjectAVLTree = class(TAVLTree)
+  public
+    destructor Destroy; override;
+    function Add(AProp: TIpHtmlPropBase): TAVLTreeNode;
+    function Remove(AProp: TIpHtmlPropBase): Boolean;
+  end;
+
+  { TIpHtmlPropBase }
+
+  TIpHtmlPropBase = class
+  private
+    FOwner: TObjectAVLTree;
+    FUseCount: Integer;
+  public
+    constructor Create(AOwner: TObjectAVLTree);
+  end;
 
   { TIpHtmlPropA }
 
   {display properties that affect the font size}
-  TIpHtmlPropA = class
+  TIpHtmlPropA = class(TIpHtmlPropBase)
   private
-    FOwner: TIpHtmlPropsAList;
     FPropRec : TIpHtmlPropAFieldsRec;
-    FUseCount: Integer;
     FKnownSizeOfSpace: TSize;
     FSizeOfSpaceKnown : Boolean;
     procedure SetBaseFontSize(const Value: Integer);
@@ -60,8 +81,6 @@ type
   public
     KnownSizeOfHyphen : TSize;
     tmAscent, tmDescent, tmHeight : Integer;
-    constructor Create(AOwner: TIpHtmlPropsAList);
-    destructor Destroy; override;
     procedure Assign(const Source: TIpHtmlPropA);
     procedure DecUse;
     procedure IncUse;
@@ -73,22 +92,16 @@ type
     property FontName : TFontNameStr read FPropRec.FontName write SetFontName;
     property FontSize : Integer read FPropRec.FontSize write SetFontSize;
     property FontStyle : TFontStyles read FPropRec.FontStyle write SetFontStyle;
-    property UseCount : Integer read FUseCount write FUseCount;
   end;
-
-  TIpHtmlPropsBList = class;
 
   { TIpHtmlPropB }
 
   {display properties that don't affect the font size}
-  TIpHtmlPropB = class
+  TIpHtmlPropB = class(TIpHtmlPropBase)
   private
-    FOwner: TIpHtmlPropsBList;
     FPropRec : TIpHtmlPropBFieldsRec;
-    FUseCount: Integer;
   public
-    constructor Create(AOwner: TIpHtmlPropsBList);
-    destructor Destroy; override;
+    constructor Create(AOwner: TObjectAVLTree);
     procedure Assign(const Source: TIpHtmlPropB);
     procedure DecUse;
     procedure IncUse;
@@ -109,7 +122,27 @@ type
     property ElemMarginLeft: TIpHtmlElemMargin read FPropRec.ElemMarginLeft write FPropRec.ElemMarginLeft;
     property ElemMarginBottom: TIpHtmlElemMargin read FPropRec.ElemMarginBottom write FPropRec.ElemMarginBottom;
     property ElemMarginRight: TIpHtmlElemMargin read FPropRec.ElemMarginRight write FPropRec.ElemMarginRight;
-    property UseCount : Integer read FUseCount write FUseCount;
+  end;
+
+  { TIpHtmlPropsAList }
+
+  TIpHtmlPropsAList = class(TObjectAVLTree)
+  private
+    FDummyA : TIpHtmlPropA;
+  public
+    constructor Create;
+    function FindPropARec(pRec: PIpHtmlPropAFieldsRec): TIpHtmlPropA;
+    procedure ResetCache;
+  end;
+
+  { TIpHtmlPropsBList }
+
+  TIpHtmlPropsBList = class(TObjectAVLTree)
+  private
+    FDummyB : TIpHtmlPropB;
+  public
+    constructor Create;
+    function FindPropBRec(pRec: PIpHtmlPropBFieldsRec): TIpHtmlPropB;
   end;
 
   { TIpHtmlProps }
@@ -122,7 +155,6 @@ type
     FPropA : TIpHtmlPropA;
     FPropB : TIpHtmlPropB;
     FDelayCache: integer;
-    FDirtyA, FDirtyB: Boolean;
     function GetAlignment: TIpHtmlAlign;
     function GetALinkColor: TColor;
     function GetBaseFontSize: Integer;
@@ -163,12 +195,10 @@ type
     procedure SetHoverBgColor(const Value: TColor);
     function GetNoBreak: Boolean;
     procedure SetNoBreak(const Value: Boolean);
-    procedure CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);
-    procedure CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);
-    procedure CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);
-    procedure CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);
-    procedure FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
-    procedure FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
+    procedure CopyPropARecTo(pRec: PIpHtmlPropAFieldsRec);
+    procedure CopyPropBRecTo(pRec: PIpHtmlPropBFieldsRec);
+    procedure FindOrCreatePropA(pRec: PIpHtmlPropAFieldsRec);
+    procedure FindOrCreatePropB(pRec: PIpHtmlPropBFieldsRec);
     procedure SetDelayCache(b: boolean);
     function getDelayCache: boolean;
   protected
@@ -206,33 +236,6 @@ type
     property DelayCache : Boolean read getDelayCache write setDelayCache;
   end;
 
-  { TIpHtmlPropsAList and TIpHtmlPropsBList }
-
-  TIpHtmlPropsAList = class(TObjectList)
-  private
-    FDummyA : TIpHtmlPropA;
-    function GetItem(Index: Integer): TIpHtmlPropA;
-    procedure SetItem(Index: Integer; AValue: TIpHtmlPropA);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
-    procedure ResetCache;
-    property Items[Index: Integer]: TIpHtmlPropA read GetItem write SetItem; default;
-  end;
-
-  TIpHtmlPropsBList = class(TObjectList)
-  private
-    FDummyB : TIpHtmlPropB;
-    function GetItem(Index: Integer): TIpHtmlPropB;
-    procedure SetItem(Index: Integer; AValue: TIpHtmlPropB);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
-    property Items[Index: Integer]: TIpHtmlPropB read GetItem write SetItem; default;
-  end;
-
 
 implementation
 
@@ -241,29 +244,52 @@ begin
   Result:=(Margin1.Style=Margin2.Style) and (Margin1.Size=Margin2.Size);
 end;
 
-{ TIpHtmlPropA }
+{ TObjectAVLTree }
 
-constructor TIpHtmlPropA.Create(AOwner: TIpHtmlPropsAList);
+destructor TObjectAVLTree.Destroy;
+var
+  Enumerator: TAVLTreeNodeEnumerator;
+begin
+  Enumerator := GetEnumerator;
+  while Enumerator.MoveNext do
+    TObject(Enumerator.Current.Data).Free;
+  Enumerator.Free;
+  inherited Destroy;
+end;
+
+function TObjectAVLTree.Add(AProp: TIpHtmlPropBase): TAVLTreeNode;
+begin
+  AProp.FUseCount := 1;  // Initial count. Will not be disposed so quickly.
+  Result := inherited Add(AProp);
+end;
+
+function TObjectAVLTree.Remove(AProp: TIpHtmlPropBase): Boolean;
+begin
+  Result := inherited Remove(AProp);
+  if Result then
+    AProp.Free;
+end;
+
+{ TIpHtmlPropBase }
+
+constructor TIpHtmlPropBase.Create(AOwner: TObjectAVLTree);
 begin
   inherited Create;
   FOwner := AOwner;
 end;
 
-destructor TIpHtmlPropA.Destroy;
-begin
-  inherited Destroy;
-end;
+{ TIpHtmlPropA }
 
 procedure TIpHtmlPropA.Assign(const Source: TIpHtmlPropA);
 begin
-  if Source <> nil then begin
+  if Source <> nil then
     Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-  end;
 end;
 
 procedure TIpHtmlPropA.DecUse;
 begin
-  if FUseCount > 0 then Dec(FUseCount);
+  if FUseCount > 0 then
+    Dec(FUseCount);
 end;
 
 procedure TIpHtmlPropA.IncUse;
@@ -311,25 +337,18 @@ end;
 
 { TIpHtmlPropB }
 
-constructor TIpHtmlPropB.Create(AOwner: TIpHtmlPropsBList);
+constructor TIpHtmlPropB.Create(AOwner: TObjectAVLTree);
 begin
-  inherited Create;
-  FOwner := AOwner;
+  inherited Create(AOwner);
   FPropRec.BgColor := clNone;
   FPropRec.HoverColor := clNone;
   FPropRec.HoverBgColor := clNone;
-end;
-
-destructor TIpHtmlPropB.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TIpHtmlPropB.Assign(const Source: TIpHtmlPropB);
 begin
   if Source <> nil then
     FPropRec := Source.FPropRec;
-    //Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropBFieldsRec));
 end;
 
 procedure TIpHtmlPropB.DecUse;
@@ -338,13 +357,89 @@ begin
   if FUseCount < 0 then
     raise EIpHtmlException.Create(SHtmlInternal)
   else if FUseCount = 0 then
-    if FOwner.Remove(Self) = -1 then
+    if not FOwner.Remove(Self) then
       raise EIpHtmlException.Create(SHtmlInternal);
 end;
 
 procedure TIpHtmlPropB.IncUse;
 begin
   Inc(FUseCount);
+end;
+
+{ TIpHtmlPropsAList }
+
+function ComparePropAFields(Data1, Data2: Pointer): integer;
+begin
+  Result := CompareByte(TIpHtmlPropA(Data1).FPropRec,
+                        TIpHtmlPropA(Data2).FPropRec, SizeOf(TIpHtmlPropAFieldsRec));
+end;
+
+function CompareKeyPropA(Key, Data: Pointer): integer;
+begin
+  Result := CompareByte(Key^, TIpHtmlPropA(Data).FPropRec, SizeOf(TIpHtmlPropAFieldsRec));
+end;
+
+constructor TIpHtmlPropsAList.Create;
+begin
+  inherited Create(@ComparePropAFields);
+  FDummyA := TIpHtmlPropA.Create(Self);
+  Add(FDummyA);
+end;
+
+function TIpHtmlPropsAList.FindPropARec(pRec: PIpHtmlPropAFieldsRec): TIpHtmlPropA;
+var
+  Node: TAVLTreeNode;
+begin
+  Node := FindKey(pRec, @CompareKeyPropA);
+  if Assigned(Node) then
+    Result := TIpHtmlPropA(Node.Data)
+  else
+    Result := Nil;
+end;
+
+procedure TIpHtmlPropsAList.ResetCache;
+var
+  Enumerator: TAVLTreeNodeEnumerator;
+  Prop: TIpHtmlPropA;
+begin
+  Enumerator := GetEnumerator;
+  while Enumerator.MoveNext do begin
+    Prop := TIpHtmlPropA(Enumerator.Current.Data);
+    Prop.FSizeOfSpaceKnown := False;
+    Prop.tmHeight := 0;
+  end;
+  Enumerator.Free;
+end;
+
+{ TIpHtmlPropsBList }
+
+function ComparePropBFields(Data1, Data2: Pointer): integer;
+begin
+  Result := CompareByte(TIpHtmlPropB(Data1).FPropRec,
+                        TIpHtmlPropB(Data2).FPropRec, SizeOf(TIpHtmlPropBFieldsRec));
+end;
+
+function CompareKeyPropB(Key, Data: Pointer): integer;
+begin
+  Result := CompareByte(Key^, TIpHtmlPropB(Data).FPropRec, SizeOf(TIpHtmlPropBFieldsRec));
+end;
+
+constructor TIpHtmlPropsBList.Create;
+begin
+  inherited Create(@ComparePropBFields);
+  FDummyB := TIpHtmlPropB.Create(Self);
+  Add(FDummyB);
+end;
+
+function TIpHtmlPropsBList.FindPropBRec(pRec: PIpHtmlPropBFieldsRec): TIpHtmlPropB;
+var
+  Node: TAVLTreeNode;
+begin
+  Node := FindKey(pRec, @CompareKeyPropB);
+  if Assigned(Node) then
+    Result := TIpHtmlPropB(Node.Data)
+  else
+    Result := Nil;
 end;
 
 { TIpHtmlProps }
@@ -513,394 +608,270 @@ end;
 
 procedure TIpHtmlProps.SetDelayCache(b: boolean);
 begin
-  if b then Inc(FDelayCache)
+  if b then
+    Inc(FDelayCache)
   else if FDelayCache > 0 then
     Dec(FDelayCache);
-
-  if (not b) and (FDelayCache = 0) then
-  begin
-      if FDirtyA then
-      begin
-        //Finish/Commit transaction
-        FDirtyA := False;
-      end;
-      if FDirtyB then
-      begin
-        //Finish/Commit transaction
-        FDirtyB := False;
-      end;
-  end;
 end;
 
-procedure TIpHtmlProps.CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);
+procedure TIpHtmlProps.CopyPropARecTo(pRec: PIpHtmlPropAFieldsRec);
 begin
-    Move(FPropA.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec))
+    Move(FPropA.FPropRec, pRec^, sizeof(TIpHtmlPropAFieldsRec))
 end;
 
-procedure TIpHtmlProps.CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);
+procedure TIpHtmlProps.CopyPropBRecTo(pRec: PIpHtmlPropBFieldsRec);
 begin
-    Move(FPropB.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec))
+    Move(FPropB.FPropRec, pRec^, sizeof(TIpHtmlPropBFieldsRec))
 end;
 
-procedure TIpHtmlProps.CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);
-begin
-    Move(pRec, FPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-end;
-
-procedure TIpHtmlProps.CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);
-begin
-    Move(pRec, FPropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
-end;
-
-procedure TIpHtmlProps.FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
+procedure TIpHtmlProps.FindOrCreatePropA(pRec: PIpHtmlPropAFieldsRec);
 var
   NewPropA : TIpHtmlPropA;
 begin
-  if FDirtyA then
-    // we are in a transaction updating a new unique entry
-    CopyPropARecFrom(pRec)
-  else
-  begin
-    NewPropA := FPropsACache.FindPropARec(pRec);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.Create(FPropsACache);
-      Move(pRec, NewPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-      //Start Transaction if DelayCache is set
-      if DelayCache then FDirtyA := True;
-      FPropsACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    FPropA.DecUse;
-    FPropA := NewPropA;
+  NewPropA := FPropsACache.FindPropARec(pRec);
+  if NewPropA = nil then begin
+    NewPropA := TIpHtmlPropA.Create(FPropsACache);
+    Move(pRec^, NewPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
+    FPropsACache.Add(NewPropA);
   end;
+  NewPropA.IncUse;
+  FPropA.DecUse;
+  FPropA := NewPropA;
 end;
 
-procedure TIpHtmlProps.FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
+procedure TIpHtmlProps.FindOrCreatePropB(pRec: PIpHtmlPropBFieldsRec);
 var
   NewPropB : TIpHtmlPropB;
 begin
-  if FDirtyB then
-    //we are in a transaction updating a new unique entry
-    CopyPropBRecFrom(pRec)
-  else
-  begin
-    NewPropB := FPropsBCache.FindPropBRec(pRec);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.Create(FPropsBCache);
-      Move(pRec, NewPropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
-      //Start Transaction if DelayCache is set
-      if DelayCache then FDirtyB := True;
-      FPropsBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    FPropB.DecUse;
-    FPropB := NewPropB;
+  NewPropB := FPropsBCache.FindPropBRec(pRec);
+  if NewPropB = nil then begin
+    NewPropB := TIpHtmlPropB.Create(FPropsBCache);
+    Move(pRec^, NewPropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
+    FPropsBCache.Add(NewPropB);
   end;
+  NewPropB.IncUse;
+  FPropB.DecUse;
+  FPropB := NewPropB;
 end;
 
-procedure TIpHtmlProps.SetAlignment(const Value: TIpHtmlAlign);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if (Value <> haDefault) and (Value <> Alignment) then begin
-    CopyPropBRecTo(pRec);
-    pRec.Alignment:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetALinkColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> ALinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.ALinkColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
+// For TIpHtmlPropAFieldsRec
 
 procedure TIpHtmlProps.SetBaseFontSize(const Value: Integer);
 var
-  pRec : TIpHtmlPropAFieldsRec;
+  Rec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> BaseFontSize then begin
-    CopyPropARecTo(pRec);
-    pRec.BaseFontSize:=Value;
-    FindOrCreatePropA(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetBgColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> BgColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.BgColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontBaseline(const Value: Integer);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> FontBaseline then begin
-    CopyPropBRecTo(pRec);
-    pRec.FontBaseline:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> FontColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.FontColor:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropARecTo(@Rec);
+    Rec.BaseFontSize:=Value;
+    FindOrCreatePropA(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontName(const Value: string);
 var
-  pRec : TIpHtmlPropAFieldsRec;
+  Rec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontName then begin
-    CopyPropARecTo(pRec);
-    pRec.FontName:=Value;
-    FindOrCreatePropA(pRec);
+    CopyPropARecTo(@Rec);
+    Rec.FontName:=Value;
+    FindOrCreatePropA(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontSize(const Value: Integer);
 var
-  pRec : TIpHtmlPropAFieldsRec;
+  Rec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontSize then begin
-    CopyPropARecTo(pRec);
-    pRec.FontSize:=Value;
-    FindOrCreatePropA(pRec);
+    CopyPropARecTo(@Rec);
+    Rec.FontSize:=Value;
+    FindOrCreatePropA(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetFontStyle(const Value: TFontStyles);
 var
-  pRec : TIpHtmlPropAFieldsRec;
+  Rec : TIpHtmlPropAFieldsRec;
 begin
   if Value <> FontStyle then begin
-    CopyPropARecTo(pRec);
-    pRec.FontStyle:=Value;
-    FindOrCreatePropA(pRec);
+    CopyPropARecTo(@Rec);
+    Rec.FontStyle:=Value;
+    FindOrCreatePropA(@Rec);
+  end;
+end;
+
+// For TIpHtmlPropBFieldsRec
+
+procedure TIpHtmlProps.SetAlignment(const Value: TIpHtmlAlign);
+var
+  Rec : TIpHtmlPropBFieldsRec;
+begin
+  if (Value <> haDefault) and (Value <> Alignment) then begin
+    CopyPropBRecTo(@Rec);
+    Rec.Alignment:=Value;
+    FindOrCreatePropB(@Rec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetALinkColor(const Value: TColor);
+var
+  Rec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> ALinkColor then begin
+    CopyPropBRecTo(@Rec);
+    Rec.ALinkColor:=Value;
+    FindOrCreatePropB(@Rec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetBgColor(const Value: TColor);
+var
+  Rec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> BgColor then begin
+    CopyPropBRecTo(@Rec);
+    Rec.BgColor:=Value;
+    FindOrCreatePropB(@Rec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetFontBaseline(const Value: Integer);
+var
+  Rec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> FontBaseline then begin
+    CopyPropBRecTo(@Rec);
+    Rec.FontBaseline:=Value;
+    FindOrCreatePropB(@Rec);
+  end;
+end;
+
+procedure TIpHtmlProps.SetFontColor(const Value: TColor);
+var
+  Rec : TIpHtmlPropBFieldsRec;
+begin
+  if Value <> FontColor then begin
+    CopyPropBRecTo(@Rec);
+    Rec.FontColor:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetLinkColor(const Value: TColor);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> LinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.LinkColor:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.LinkColor:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetElemMarginBottom(const AValue: TIpHtmlElemMargin);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if AreHtmlMarginsEqual(AValue,ElemMarginBottom) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginBottom:=AValue;
-  FindOrCreatePropB(pRec);
+  CopyPropBRecTo(@Rec);
+  Rec.ElemMarginBottom:=AValue;
+  FindOrCreatePropB(@Rec);
 end;
 
 procedure TIpHtmlProps.SetElemMarginLeft(const AValue: TIpHtmlElemMargin);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if AreHtmlMarginsEqual(AValue,ElemMarginLeft) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginLeft:=AValue;
-  FindOrCreatePropB(pRec);
+  CopyPropBRecTo(@Rec);
+  Rec.ElemMarginLeft:=AValue;
+  FindOrCreatePropB(@Rec);
 end;
 
 procedure TIpHtmlProps.SetElemMarginRight(const AValue: TIpHtmlElemMargin);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if AreHtmlMarginsEqual(AValue,ElemMarginRight) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginRight:=AValue;
-  FindOrCreatePropB(pRec);
+  CopyPropBRecTo(@Rec);
+  Rec.ElemMarginRight:=AValue;
+  FindOrCreatePropB(@Rec);
 end;
 
 procedure TIpHtmlProps.SetElemMarginTop(const AValue: TIpHtmlElemMargin);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if AreHtmlMarginsEqual(AValue,ElemMarginTop) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginTop:=AValue;
-  FindOrCreatePropB(pRec);
+  CopyPropBRecTo(@Rec);
+  Rec.ElemMarginTop:=AValue;
+  FindOrCreatePropB(@Rec);
 end;
 
 procedure TIpHtmlProps.SetNoBreak(const Value: Boolean);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> NoBreak then begin
-    CopyPropBRecTo(pRec);
-    pRec.NoBreak:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.NoBreak:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetPreformatted(const Value: Boolean);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> Preformatted then begin
-    CopyPropBRecTo(pRec);
-    pRec.Preformatted:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.Preformatted:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetVAlignment(const Value: TIpHtmlVAlign3);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> VAlignment then begin
-    CopyPropBRecTo(pRec);
-    pRec.VAlignment:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.VAlignment:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetVLinkColor(const Value: TColor);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> VLinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.VLinkColor:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.VLinkColor:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetHoverColor(const Value: TColor);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> HoverColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.HoverColor:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.HoverColor:=Value;
+    FindOrCreatePropB(@Rec);
   end;
 end;
 
 procedure TIpHtmlProps.SetHoverBgColor(const Value: TColor);
 var
-  pRec : TIpHtmlPropBFieldsRec;
+  Rec : TIpHtmlPropBFieldsRec;
 begin
   if Value <> HoverBgColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.HoverBgColor:=Value;
-    FindOrCreatePropB(pRec);
+    CopyPropBRecTo(@Rec);
+    Rec.HoverBgColor:=Value;
+    FindOrCreatePropB(@Rec);
   end;
-end;
-
-{ TIpHtmlPropsAList }
-
-constructor TIpHtmlPropsAList.Create;
-begin
-  inherited Create;
-  FDummyA := TIpHtmlPropA.Create(Self);
-  FDummyA.UseCount := 1;
-  Add(FDummyA);
-end;
-
-destructor TIpHtmlPropsAList.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TIpHtmlPropsAList.ResetCache;
-var
-  i : Integer;
-begin
-  for i := 0 to Pred(Count) do begin
-    Items[i].FSizeOfSpaceKnown := False;
-    Items[i].tmHeight := 0;
-  end;
-end;
-
-function TIpHtmlPropsAList.FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
-var
-  i: Integer;
-begin
-  for i := 0 to Pred(Count) do begin
-    Result := Items[i];
-    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec)) = 0 then
-       exit;
-  end;
-  Result := nil;
-end;
-
-// Getter / Setter
-
-function TIpHtmlPropsAList.GetItem(Index: Integer): TIpHtmlPropA;
-begin
-  Result := TIpHtmlPropA(inherited Items[Index]);
-end;
-
-procedure TIpHtmlPropsAList.SetItem(Index: Integer; AValue: TIpHtmlPropA);
-begin
-  inherited Items[Index] := AValue;
-end;
-
-
-{ TIpHtmlPropsBList }
-
-constructor TIpHtmlPropsBList.Create;
-begin
-  inherited Create;
-  FDummyB := TIpHtmlPropB.Create(Self);
-  FDummyB.UseCount := 1;
-  Add(FDummyB);
-end;
-
-destructor TIpHtmlPropsBList.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TIpHtmlPropsBList.FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
-var
-  i: Integer;
-begin
-  for i := 0 to Pred(Count) do begin
-    Result := Items[i];
-    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec)) = 0 then
-       exit;
-  end;
-  Result := nil;
-end;
-
-// Getter / Setter
-
-function TIpHtmlPropsBList.GetItem(Index: Integer): TIpHtmlPropB;
-begin
-  Result := TIpHtmlPropB(inherited Items[Index]);
-end;
-
-procedure TIpHtmlPropsBList.SetItem(Index: Integer; AValue: TIpHtmlPropB);
-begin
-  inherited Items[Index] := AValue;
 end;
 
 end.

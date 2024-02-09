@@ -28,6 +28,9 @@ const
   LF = #10;
   CR = #13;
   
+// Many enums are part of records which are compared and moved around. Use less memory.
+{$minEnumSize 1}
+
 type
   TElementType = (
     etWord, etObject, etSoftLF, etHardLF, etClearLeft, etClearRight, 
