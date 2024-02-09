@@ -25,7 +25,7 @@
     <License Value="MPL - Mozilla public license
 "/>
     <Version Major="1"/>
-    <Files Count="23">
+    <Files Count="22">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -75,53 +75,49 @@
         <UnitName Value="IpUtils"/>
       </Item11>
       <Item12>
-        <Filename Value="ipcss.inc"/>
-        <Type Value="Include"/>
-      </Item12>
-      <Item13>
         <Filename Value="iphtmltablist.pas"/>
         <UnitName Value="IpHtmlTabList"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="iphtmlprop.pas"/>
         <UnitName Value="IpHtmlProp"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="iphtmlblocklayout.pas"/>
         <UnitName Value="ipHtmlBlockLayout"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="iphtmltablelayout.pas"/>
         <UnitName Value="ipHtmlTableLayout"/>
-      </Item16>
-      <Item17>
+      </Item15>
+      <Item16>
         <Filename Value="iphtmlgenerated.inc"/>
         <Type Value="Binary"/>
-      </Item17>
-      <Item18>
+      </Item16>
+      <Item17>
         <Filename Value="iphtmlparser.pas"/>
         <UnitName Value="IpHtmlParser"/>
-      </Item18>
-      <Item19>
+      </Item17>
+      <Item18>
         <Filename Value="iphtmlutils.pas"/>
         <UnitName Value="IpHtmlUtils"/>
-      </Item19>
-      <Item20>
+      </Item18>
+      <Item19>
         <Filename Value="ipcss.pas"/>
         <UnitName Value="IpCSS"/>
-      </Item20>
-      <Item21>
+      </Item19>
+      <Item20>
         <Filename Value="iphtmlclasses.pas"/>
         <UnitName Value="IpHtmlClasses"/>
-      </Item21>
-      <Item22>
+      </Item20>
+      <Item21>
         <Filename Value="iphtmltypes.pas"/>
         <UnitName Value="IpHtmlTypes"/>
-      </Item22>
-      <Item23>
+      </Item21>
+      <Item22>
         <Filename Value="iphtmlnodes.pas"/>
         <UnitName Value="IpHtmlNodes"/>
-      </Item23>
+      </Item22>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
