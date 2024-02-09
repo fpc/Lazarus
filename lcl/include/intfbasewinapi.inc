@@ -1842,6 +1842,7 @@ var
   ClipRGN, RectRgn: hRGN;
   Intersection: hRGN;
   CombineResult: Integer;
+  LRect: TRect;
 begin
   Result := False;
   if (ARect.Left >= ARect.Right) or
@@ -1851,7 +1852,9 @@ begin
   ClipRGN := CreateEmptyRegion;
   if GetClipRGN(DC, ClipRGN) > 0 then
   begin
-    RectRgn := CreateRectRGN(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+    LRect := ARect;
+    LPtoDP(DC, LRect, 2);
+    RectRgn := CreateRectRGN(LRect.Left, LRect.Top, LRect.Right, LRect.Bottom);
     Intersection := CreateEmptyRegion;
     //debugln(['TWidgetSet.RectVisible ARect=',dbgs(ARect)]);
     CombineResult := CombineRGN(Intersection, RectRGN, ClipRGN, RGN_AND);
