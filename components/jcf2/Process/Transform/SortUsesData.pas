@@ -110,7 +110,7 @@ begin
     Result := 1
   else
   begin
-    Result := AnsiCompareText(lcItem1.SortKey, lcItem2.SortKey);
+    Result := CompareText(lcItem1.SortKey, lcItem2.SortKey);
   end;
 end;
 
@@ -137,7 +137,7 @@ begin
     { Length has more sort collisions that alphabetic
       same length -> Alphabetic sort }
     if Result = 0 then
-      Result := AnsiCompareText(lcItem1.SortKey, lcItem2.SortKey);
+      Result := CompareText(lcItem1.SortKey, lcItem2.SortKey);
   end;
 end;
 
@@ -158,7 +158,7 @@ begin
 
     { Soting the other way by length, but still forwards alphbetically }
     if Result = 0 then
-      Result := AnsiCompareText(lcItem1.SortKey, lcItem2.SortKey);
+      Result := CompareText(lcItem1.SortKey, lcItem2.SortKey);
   end;
 end;
 
