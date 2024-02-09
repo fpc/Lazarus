@@ -6702,9 +6702,13 @@ begin
       clientRectFix^.Height:= MainWidget^.Allocation.Height - GtkHeight;
       WidthHeightChanged:= true;
     end;
-    if WidthHeightChanged then begin
-      SetWindowSizeAndPosition(PGtkWindow(MainWidget), LCLControl);
-      SetResizeRequest(MainWidget);
+    if WidthHeightChanged then
+    begin
+      if TopLevelWindowResizeLocked = 0 then
+      begin
+        SetWindowSizeAndPosition(PGtkWindow(MainWidget), LCLControl);
+        SetResizeRequest(MainWidget);
+      end;
       SetWidgetConstraints(LCLControl);
     end;
   end else begin
@@ -6822,6 +6826,8 @@ begin
       YPos := SmallInt(GtkTop);
     end;
     MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
+    if TopLevelWindowResizeLocked > 0 then
+      FWidgetsWithResizeRequest.Remove(MainWidget);
     if not MessageDelivered then exit;
   end;
 
@@ -7101,6 +7107,7 @@ var
   Width, Height: integer;
   allocation: TGtkAllocation;
   clientRectFix: TRect;
+  x, y: gint;
   //Info: PGtkWindowGeometryInfo;
 begin
   clientRectFix:= GetWidgetInfo(Window)^.FormClientRectFix;
@@ -7121,7 +7128,9 @@ begin
   // resize
   gtk_window_resize(Window, Width, Height);
   // reposition
-  gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
+  gtk_window_get_position(Window, @x, @y);
+  if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
+    gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
   // force early resize
   allocation := PGtkWidget(Window)^.allocation;
   allocation.width := Width;
@@ -7132,8 +7141,10 @@ begin
   if (PGtkWidget(Window)^.Window <> nil) then
   begin
     // resize gdkwindow directly (sometimes the gtk forgets this)
-    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
-      AWinControl.Top,Width,Height)
+    if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
+      gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,AWinControl.Top,Width,Height)
+    else
+      gdk_window_resize(PGtkWidget(Window)^.Window,Width,Height);
   end;
 
   {$IFDEF VerboseSizeMsg}

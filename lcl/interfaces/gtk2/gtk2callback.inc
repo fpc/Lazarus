@@ -2506,7 +2506,6 @@ function gtksize_allocateCB(widget: PGtkWidget; size: pGtkAllocation;
 var
   w, h: Gint;
 {$ENDIF}
-
 begin
   Result := CallBackDefaultReturn;
 
@@ -2543,7 +2542,15 @@ begin
   if TControl(Data) is TCustomForm then
     DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
-  SendSizeNotificationToLCL(Widget);
+
+  if GTK_WIDGET_REALIZED(widget) and LockTopLevelWindowResizeOnNativeCall then
+  begin
+    Inc(TopLevelWindowResizeLocked);
+    SendSizeNotificationToLCL(Widget);
+    Dec(TopLevelWindowResizeLocked);
+  end
+  else
+    SendSizeNotificationToLCL(Widget);
 end;
 
 function gtksize_allocate_client({%H-}widget: PGtkWidget; {%H-}size: pGtkAllocation;

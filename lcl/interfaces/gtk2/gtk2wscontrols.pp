@@ -721,9 +721,15 @@ begin
           gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
             AHints);
       end;
-      gtk_window_resize( {%H-}PGtkWindow(AForm.Handle),
-        AForm.Width+clientRectFix.Width,
-        AForm.Height+clientRectFix.Height);
+      if LockTopLevelWindowResizeOnNativeCall then
+      begin
+        if TopLevelWindowResizeLocked = 0 then
+          SetWindowSizeAndPosition({%H-}PGtkWindow(AForm.Handle), AForm);
+      end
+      else
+        gtk_window_resize({%H-}PGtkWindow(AForm.Handle),
+          AForm.Width + clientRectFix.Width,
+          AForm.Height + clientRectFix.Height);
     end;
   end;
 end;
