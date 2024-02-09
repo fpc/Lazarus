@@ -2029,6 +2029,34 @@ MaxCol is set to 0 (zero), or BreakChars is an empty set.
 <short>Maximum line width in number of UTF-8 characters.</short>
 </element>
 
+<element name="IsPureAscii">
+<short>
+Determines whether the specified string contains only single-byte ASCII  
+characters.
+</short>
+<descr>
+<p>
+Used in the implementation of the TStringListUTF8Fast.InsertItem method.
+</p>
+</descr>
+<version>
+Added in LazUtils version 3.2.
+</version>
+<seealso>
+<link id="TStringListUTF8Fast.InsertItem"/>
+</seealso>
+</element>
+<element name="IsPureAscii.Result">
+<short>
+Returns <b>True</b> if all of the characters in S have a value less than $7F.
+</short>
+</element>
+<element name="IsPureAscii.S">
+<short>
+String with the characters examined in the method.
+</short>
+</element>
+
 <element name="TEscapeMode">
 <short>
 Represents styles used to escape control characters.
@@ -2320,7 +2348,7 @@ PChar with the values used in the comparison.
 
 <element name="UTF8CompareLatinTextFast">
 <short>
-Like UTF8CompareText but does not return strict alphabetical order.
+Deprecated. Use UTF8CompareText or AnsiCompareText instead.
 </short>
 <descr>
 <p>
@@ -2353,6 +2381,9 @@ the compared values is stored.
 <dd>S1 and S2 have the same value in the sort order.</dd>
 </dl>
 </descr>
+<version>
+Deprecated in LazUtils version 3.2 (Feb 2024).
+</version>
 <seealso>
 <link id="UTF8CompareText"/>
 <link id="#rtl.sysutils.AnsiCompareText">AnsiCompareText</link>
@@ -2376,7 +2407,7 @@ UTF-8-encoded String value used in the comparison.
 
 <element name="UTF8CompareStrCollated">
 <short>
-Compare two strings using language-specific sorting.
+Deprecated. Use UTF8CompareStr instead.
 </short>
 <descr>
 <p>
@@ -2385,6 +2416,9 @@ language-specific sorting. The return value contains the relative sort order
 for the compared values, as defined for <var>UTF8CompareStr</var>.
 </p>
 </descr>
+<version>
+Deprecated in LazUtils version 3.2 (Feb 2024).
+</version>
 <seealso/>
 </element>
 <element name="UTF8CompareStrCollated.Result">
@@ -2432,15 +2466,17 @@ defined for <var>UTF8CompareText</var>.
 <short>Position of the second text line.</short>
 </element>
 
+<!-- TODO: Modified ancestor in 890f92e3. -->
 <element name="TStringListUTF8Fast">
 <short>
-Implements a string list using UTF8CompareLatinTextFast for comparisons.
+Implements a string list using fast ASCII comparison functions when its data is 
+pure ASCII.
 </short>
 <descr>
 <p>
-<var>TStringListUTF8Fast</var> is a <var>TStringList</var> descendant which 
-uses UTF8CompareLatinTextFast for fast comparison of values in the class 
-instance.
+When data is Unicode, it switches to slower AnsiCompare functions. The switch 
+is managed by setting the UseLocale property/option and should not be changed 
+by the user.
 </p>
 </descr>
 <seealso>
@@ -2448,44 +2484,44 @@ instance.
 </seealso>
 </element>
 
-<element name="TStringListUTF8Fast.DoCompareText">
+<!-- TODO: Added in 890f92e3. -->
+<element name="TStringListUTF8Fast.InsertItem">
 <short>
-Compares UTF-8-encoded values using UTF8CompareLatinTextFast when case 
-sensitivity is not enabled.
+Ensures that the UseLocale property is enabled when a new line with non-ASCII 
+data is stored in the string list.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TStringListUTF8Fast.InsertItem.Index">
+<short>
+Ordinal position in the string list where the value in S is stored.
+</short>
+</element>
+<element name="TStringListUTF8Fast.InsertItem.S">
+<short>
+String value examined and stored in the method.
+</short>
+</element>
+
+<element name="TStringListUTF8Fast.Create">
+<short>
+Constructor for the class instance.
 </short>
 <descr>
 <p>
-Calls the UTF8CompareLatinTextFast routine to compare the values in 
-<var>s1</var> and <var>s2</var> when the CaseSensitive property is set to 
-<b>False</b>. Otherwise, the Utf8CompareStr routine is called to compare the 
-string values.
-</p>
-<p>
-The return value is a pointer to an Integer with the relative order for the 
-compared values. &lt;0 indicates s1 comes before s2. 0 indicated the compared 
-values are the same. &gt;0 indicates s2 comes after s1.
+<var>Create</var> is the overridden constructor for the class instance. It 
+calls the inherited method on entry to set the default encoding and options 
+used in the class instance. Create ensures that the UseLocale property is set 
+to <b>False</b> to allow fast comparisons for ASCII data stored in the string 
+list.
 </p>
 </descr>
 <seealso>
-<link id="UTF8CompareLatinTextFast"/>
-<link id="UTF8CompareStr"/>
-<link id="#rtl.classes.TStringList.CaseSensitive">TStringList.CaseSensitive</link>
+<link id="TStringListUTF8Fast.InsertItem"/>
+<link id="#rtl.classes.TStrings.UseLocale">TStrings.UseLocale</link>
+<link id="#rtl.classes.TStrings.DefaultEncoding">TStrings.DefaultEncoding</link>
 </seealso>
-</element>
-<element name="TStringListUTF8Fast.DoCompareText.Result">
-<short>
-Pointer to an Integer with the relative order for the compared values.
-</short>
-</element>
-<element name="TStringListUTF8Fast.DoCompareText.s1">
-<short>
-String with a value used in the comparison.
-</short>
-</element>
-<element name="TStringListUTF8Fast.DoCompareText.s2">
-<short>
-String with a value used in the comparison.
-</short>
 </element>
 
 <element name="TConvertResult">
