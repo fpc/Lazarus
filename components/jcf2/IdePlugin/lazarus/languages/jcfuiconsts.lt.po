@@ -1052,7 +1052,7 @@ msgid "Uses sort &order"
 msgstr "Naudojamų modulių rūšiavimo &tvarka"
 
 #: jcfuiconsts.listransformwarningsortusesclauses
-msgid "WARNING: changing order of uses clauses may broke your code."
+msgid "WARNING: changing order of uses clauses may break your code."
 msgstr ""
 
 #: jcfuiconsts.lisusesinsertintoimplementation

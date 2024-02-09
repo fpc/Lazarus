@@ -278,7 +278,7 @@ resourcestring
   lisTransformReverseAlphabetic = 'Reverse Alphabetic';
   lisTransformShortestToLongest = 'Shortest to longest';
   lisTransformLongestToShortest = 'Longest to shortest';
-  lisTransformWarningSortUsesClauses = 'WARNING: changing order of uses clauses may broke your code.';
+  lisTransformWarningSortUsesClauses = 'WARNING: changing order of uses clauses may break your code.';
 
   //Asm tab
   lisAsmAsm = 'Asm';

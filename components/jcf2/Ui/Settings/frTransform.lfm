@@ -180,9 +180,9 @@ object fTransform: TfTransform
     Left = 6
     Height = 15
     Top = 126
-    Width = 356
+    Width = 355
     BorderSpacing.Around = 6
-    Caption = 'WARNING: changing order of uses clauses may broke your code.'
+    Caption = 'WARNING: changing order of uses clauses may break your code.'
     Font.Style = [fsBold]
     ParentFont = False
   end
