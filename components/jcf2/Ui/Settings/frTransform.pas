@@ -39,6 +39,7 @@ type
 
   TfTransform = class(TAbstractIDEOptionsEditor)
     cbBlockEndSemicolons: TCheckBox;
+    lbWarningSortUsesClauses: TLabel;
     rbBeginEnd: TRadioGroup;
     bgSortUses: TGroupBox;
     cbSortInterfaceUses: TCheckBox;
@@ -99,6 +100,7 @@ begin
   rgUsesSortOrder.Items[1] := lisTransformReverseAlphabetic;
   rgUsesSortOrder.Items[2] := lisTransformShortestToLongest;
   rgUsesSortOrder.Items[3] := lisTransformLongestToShortest;
+  lbWarningSortUsesClauses.Caption := lisTransformWarningSortUsesClauses;
 end;
 
 procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);

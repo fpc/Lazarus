@@ -1051,6 +1051,10 @@ msgstr "変形"
 msgid "Uses sort &order"
 msgstr "uses の並び順(&o)"
 
+#: jcfuiconsts.listransformwarningsortusesclauses
+msgid "WARNING: changing order of uses clauses may broke your code."
+msgstr ""
+
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
 msgstr "実装部への挿入"

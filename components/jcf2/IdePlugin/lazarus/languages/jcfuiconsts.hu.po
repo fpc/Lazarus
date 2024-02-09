@@ -1052,6 +1052,10 @@ msgstr "Átalakítás"
 msgid "Uses sort &order"
 msgstr "A uses szakasz rendezése"
 
+#: jcfuiconsts.listransformwarningsortusesclauses
+msgid "WARNING: changing order of uses clauses may broke your code."
+msgstr ""
+
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
 msgstr "Beszúrás a kidolgozás szakaszba"

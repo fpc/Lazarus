@@ -1047,6 +1047,10 @@ msgstr ""
 msgid "Uses sort &order"
 msgstr ""
 
+#: jcfuiconsts.listransformwarningsortusesclauses
+msgid "WARNING: changing order of uses clauses may broke your code."
+msgstr ""
+
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
 msgstr ""
