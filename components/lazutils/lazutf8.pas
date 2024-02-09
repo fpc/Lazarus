@@ -4025,15 +4025,15 @@ end;
 constructor TStringListUTF8Fast.Create;
 begin
   inherited Create;
-  UseLocale := False;      // Assume pure ASCII string. Comparison will be fast.
+  UseLocale := False;      // Assume pure ASCII. Comparison will be fast.
 end;
 
 procedure TStringListUTF8Fast.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   if not IsPureAscii(S) then
   begin
-    // Unicode string found, switch to Unicode mode.
-    WriteLn('TStringListUTF8Fast.InsertItem: Found non-ASCII string "'+S+'"');
+    // Non-ASCII string found, switch to Unicode mode.
+    //WriteLn('TStringListUTF8Fast.InsertItem: Found non-ASCII string "'+S+'"');
     UseLocale := True;
     if Sorted then
       Sort;    // Sort a sorted list again with AnsiCompare.. functions.
