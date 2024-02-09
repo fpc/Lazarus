@@ -23558,7 +23558,7 @@ BRow.</dd>
 BRow.</dd>
 </dl>
 <p>
-When OnCompareCells is not assigned, the <var>UTF8CompareLatinTextFast</var> 
+When OnCompareCells is not assigned, the <var>AnsiCompareText</var> 
 routine is called to perform the cell comparison and provide the return 
 value for the method. When SortOrder is set to soDescending, the return 
 value is negated.
@@ -23567,7 +23567,7 @@ value is negated.
 <seealso>
 <link id="TCustomGrid.DoCompareCells"/>
 <link id="TCustomGrid.OnCompareCells"/>
-<link id="#lazutils.lazutf8.UTF8CompareLatinTextFast">UTF8CompareLatinTextFast</link>
+<link id="#rtl.sysutils.AnsiCompareText">AnsiCompareText</link>
 </seealso>
 </element>
 <element name="TCustomStringGrid.DoCompareCells.Result">
