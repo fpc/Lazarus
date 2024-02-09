@@ -801,6 +801,11 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 function gtkMouseWheelCB({%H-}widget: PGtkWidget; event: PGdkEventScroll;
                          data: gPointer): GBoolean; cdecl;
 
+{$Region 'Workaround for Fly (Astra Linux) + openbox'}
+var
+  TopLevelWindowResizeLocked: Integer = 0;
+function LockTopLevelWindowResizeOnNativeCall: Boolean;
+{$EndRegion}
 implementation
 
 uses
@@ -870,6 +875,27 @@ type
 
   TWinControlAccess = class(TWinControl)
   end;
+
+{$Region 'Workaround for Fly (Astra Linux) + openbox'}
+var
+  fLockTopLevelWindowResizeOnNativeCall: Integer = -1;
+
+// Ref.to https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40752
+function LockTopLevelWindowResizeOnNativeCall: Boolean;
+var
+  AWindowManager: string;
+begin
+  if fLockTopLevelWindowResizeOnNativeCall < 0 then
+  begin
+    AWindowManager := GTK2WidgetSet.GetWindowManager;
+    if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') then
+      fLockTopLevelWindowResizeOnNativeCall := 1
+    else
+      fLockTopLevelWindowResizeOnNativeCall := 0;
+  end;
+  Result := fLockTopLevelWindowResizeOnNativeCall <> 0;
+end;
+{$EndRegion}
 
 { TLCLHandledKeyEvent }
 
