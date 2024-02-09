@@ -140,7 +140,7 @@ comparison.
 <p>
 <var>CaseSensitive</var> indicates whether case is used in the comparison. 
 When CaseSensitive contains <b>True</b>, CompareStr is called to perform the 
-comparison. Otherwise, UTF8CompareText is called to compare the values.
+comparison. Otherwise, CompareText is called to compare the values.
 </p>
 <p>
 The return value indicates the order for the file name extension relative to 
