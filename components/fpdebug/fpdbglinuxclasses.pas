@@ -1435,18 +1435,22 @@ function TDbgLinuxProcess.GetConsoleOutput: string;
 var
   ABytesAvailable: DWord;
   ABytesRead: cint;
+  s: string;
 begin
   if fpioctl(FMasterPtyFd, FIONREAD, @ABytesAvailable)<0 then
     ABytesAvailable := 0;
 
-  if ABytesAvailable>0 then
+  result := '';
+  while ABytesAvailable>0 do
   begin
-    setlength(result, ABytesAvailable);
-    ABytesRead := fpRead(FMasterPtyFd, result[1], ABytesAvailable);
-    SetLength(result, ABytesRead);
-  end
-  else
-    result := '';
+    setlength(s, ABytesAvailable);
+    ABytesRead := fpRead(FMasterPtyFd, s[1], ABytesAvailable);
+    SetLength(s, ABytesRead);
+    Result := Result + s;
+
+    if fpioctl(FMasterPtyFd, FIONREAD, @ABytesAvailable)<0 then
+      ABytesAvailable := 0;
+  end;
 end;
 
 procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
