@@ -5104,6 +5104,7 @@ var
   Msg: TLMVScroll;
   MaxValue: gdouble;
   Widget: PGtkWidget;
+  StateFlags: TGtkStateFlags;
 begin
   Result := False;
 
@@ -5141,7 +5142,8 @@ begin
 
   if Msg.Scrollcode = SB_THUMBTRACK then
   begin
-    if Widget^.get_state_flags = GTK_STATE_FLAG_NORMAL then
+    StateFlags := Widget^.get_state_flags;
+    if not (GTK_STATE_FLAG_ACTIVE in StateFlags) then
     begin
       Msg.ScrollCode := SB_THUMBPOSITION;
       DeliverMessage(AData.LCLObject, Msg);
