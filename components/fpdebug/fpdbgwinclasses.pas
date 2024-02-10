@@ -1471,6 +1471,7 @@ begin
               t := AThread;
               with MDebugEvent.Exception.ExceptionRecord do begin
                 if (NumberParameters >= 3) and
+                   ((ExceptionInformation[0] and $ffffffff) = $1000) and
                    (TThreadID(ExceptionInformation[2]) <> 0) and
                    (TThreadID(ExceptionInformation[2]) <> TThreadID(-1))
                 then begin
