@@ -261,7 +261,8 @@ end;
 
 constructor TDbgTypePatternList.Create;
 begin
-  inherited Create(True);
+  inherited Create;
+  OwnsObjects := True;
 end;
 
 function TDbgTypePatternList.CheckTypeName(ATypeName: String): boolean;
