@@ -37670,31 +37670,81 @@ not been assigned.
 
 <element name="TCustomTreeView.StoreCurrentSelection">
 <short>
-Creates and fills a TStringList with the text for the selected nodes on the 
-tree view control.
+Creates and fills a TStringList with the text for each of the tree nodes in the 
+access path to the Selected node on the tree view control.
 </short>
 <descr>
+<p>
+<var>StoreCurrentSelection</var> uses the Selected property to determine the 
+values returned in the TStringList instance. The Text for each of the TTreeNode 
+instances is inserted in the return value in the order the nodes were visited 
+to reach the Selected node. The Text for each of the tree nodes appears on a 
+separate line.
+</p>
+<p>
+If multi-selection is enabled on the tree view control, the first node in 
+Selections is used in the method (same value as Selected).
+</p>
 <p>
 It is the responsibility of the calling routine to free the TStringList 
 instance in the return value. Failure to do so will result in a memory leak.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomTreeView.Selected"/>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.Text"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.StoreCurrentSelection.Result">
-<short>TStringList instance with the selected nodes in the control.</short>
+<short>
+TStringList instance with the text for the nodes in the path to the selected 
+node on the control.
+</short>
 </element>
 
 <element name="TCustomTreeView.ApplyStoredSelection">
 <short>
-Selects the first node with text matching a value in the specified list.
+Selects the tree node with the access path represented in the specified string 
+list.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ApplyStoredSelection</var> is used to locate a tree node in Items which 
+matches the specified access path. ASelection contains values, as returned by 
+StoreCurrentSelection, where each line is the text for a tree node in the path 
+to the selected node.
+</p>
+<p>
+ApplyStoredSelection searches the sibling and child nodes in Items to locate a 
+tree node which matches the specified values. When a node is found, Selected is 
+set to the TTreeNode instance located in the method. If a node is not found, 
+Selected is set to <b>Nil</b>.
+</p>
+<p>
+ApplyStoredSelection causes the OnSelectionChanged event handler to be 
+signalled (when assigned) when the value in Selected is updated.
+</p>
+<p>
+FreeList indicates whether ASelection is freed in the method. When set to 
+<b>False</b>, the TStringList instance must be freed in the caller or a memory 
+leak can occur.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.StoreCurrentSelection"/>
+<link id="TCustomTreeView.OnSelectionChanged"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.GetFirstChild"/>
+<link id="TTreeNode.GetNextSibling"/>
+<link id="TTreeNodes.GetFirstNode"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.ApplyStoredSelection.ASelection">
 <short>
-TStringList with the text for nodes selected in the method.
+TStringList with the text for nodes used to access the selected tree node.
 </short>
 </element>
 <element name="TCustomTreeView.ApplyStoredSelection.FreeList">
