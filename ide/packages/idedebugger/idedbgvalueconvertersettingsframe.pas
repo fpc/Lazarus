@@ -89,6 +89,7 @@ begin
   obj.Name := AName;
 //  obj.MatchKinds := obj.Converter.GetSupportedKinds;
   FValConvList.Add(obj);
+  FValConvList.Changed := True;
 
   FillList;
   lstConverters.ItemIndex := lstConverters.Count-1;
@@ -106,6 +107,7 @@ begin
   if (i < 0) or (i >= FValConvList.Count-1) then
     exit;
   FValConvList.Move(i, i+1);
+  FValConvList.Changed := True;
 
   FillList;
   lstConverters.ItemIndex := i+1;
@@ -120,6 +122,7 @@ begin
   FCurConvConf := nil;
   i := lstConverters.ItemIndex;
   FValConvList.Delete(i);
+  FValConvList.Changed := True;
 
   FillList;
   if i >= lstConverters.Count then
@@ -138,6 +141,7 @@ begin
   if (i < 1) or (i > FValConvList.Count-1) then
     exit;
   FValConvList.Move(i, i-1);
+  FValConvList.Changed := True;
 
   FillList;
   lstConverters.ItemIndex := i-1;
