@@ -8,7 +8,9 @@ uses
   SysUtils, Math, Classes, Forms, Controls,
   Graphics, StdCtrls, ExtCtrls,
   System.UITypes,  // register TColor
+  {$IF FPC_FULLVERSION>030202}
   System.UIConsts, // required to register Alphacolors
+  {$ENDIF}
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
   // LazDebuggerIntf
@@ -375,7 +377,9 @@ end;
 initialization
   ValueFormatterRegistry.Add(TIdeDbgValueFormatterRegistryColor);
   ValueFormatterRegistry.Add(TIdeDbgValueFormatterRegistryColorAlpha);
+  {$IF FPC_FULLVERSION>030202}
   RegisterAlphaColorIntegerConsts;
+  {$ENDIF}
 
 end.
 
