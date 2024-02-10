@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeDebugger 0.0.1
 
-   This file was generated on 10/01/2023
+   This file was generated on 10/02/2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -86,6 +86,21 @@ begin
     t.Dependencies.AddUnit('exceptiondlg');
     t.Dependencies.AddUnit('feedbackdlg');
     t.Dependencies.AddUnit('debugattachdialog');
+    t.Dependencies.AddUnit('breakpropertydlg');
+    t.Dependencies.AddUnit('evaluatedlg');
+    t.Dependencies.AddUnit('inspectdlg');
+    t.Dependencies.AddUnit('breakpointsdlg');
+    t.Dependencies.AddUnit('assemblerdlg');
+    t.Dependencies.AddUnit('dbgtreeviewwatchdata');
+    t.Dependencies.AddUnit('envdebuggeroptions');
+    t.Dependencies.AddUnit('breakpointgroupframe');
+    t.Dependencies.AddUnit('inputhistorycopy');
+    t.Dependencies.AddUnit('idedbgvalueformattersettingsframe');
+    t.Dependencies.AddUnit('idedebuggervalueformatter');
+    t.Dependencies.AddUnit('idedebugger_valformatter_options');
+    t.Dependencies.AddUnit('idedebuggervalueformatterdatetime');
+    t.Dependencies.AddUnit('idedebuggervalueformattercolor');
+    t.Dependencies.AddUnit('idedebuggervalueformattersetup');
 
     T:=P.Targets.AddUnit('idedebuggerbase.pas');
     T:=P.Targets.AddUnit('debugger.pp');
@@ -119,10 +134,25 @@ begin
     T:=P.Targets.AddUnit('exceptiondlg.pas');
     T:=P.Targets.AddUnit('feedbackdlg.pp');
     T:=P.Targets.AddUnit('debugattachdialog.pas');
+    T:=P.Targets.AddUnit('breakpropertydlg.pas');
+    T:=P.Targets.AddUnit('evaluatedlg.pp');
+    T:=P.Targets.AddUnit('inspectdlg.pas');
+    T:=P.Targets.AddUnit('breakpointsdlg.pp');
+    T:=P.Targets.AddUnit('assemblerdlg.pp');
+    T:=P.Targets.AddUnit('dbgtreeviewwatchdata.pas');
+    T:=P.Targets.AddUnit('envdebuggeroptions.pas');
+    T:=P.Targets.AddUnit('breakpointgroupframe.pas');
+    P.Targets.AddImplicitUnit('inputhistorycopy.pas');
+    T:=P.Targets.AddUnit('idedbgvalueformattersettingsframe.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformatter.pas');
+    T:=P.Targets.AddUnit('frames\idedebugger_valformatter_options.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformatterdatetime.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformattercolor.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformattersetup.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('IdeDebugger.compiled');
-    P.InstallFiles.Add('IdeDebugger.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('idedebugger.compiled');
+    P.InstallFiles.Add('idedebugger.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

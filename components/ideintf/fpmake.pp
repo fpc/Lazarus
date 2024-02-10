@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 18.06.2023
+   This file was generated on 10/02/2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,8 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('debuggerintf');
+    D := P.Dependencies.Add('lazdebuggerintf');
     D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lazcontrols');
     P.Options.Add('-MObjFPC');
@@ -104,6 +106,10 @@ begin
     t.Dependencies.AddUnit('selectdatasetdlg');
     t.Dependencies.AddUnit('seledits');
     t.Dependencies.AddUnit('ideintfstrconsts');
+    t.Dependencies.AddUnit('pagespropeditdlg');
+    t.Dependencies.AddUnit('propeditconfig');
+    t.Dependencies.AddUnit('idedebuggerwatchvalueintf');
+    t.Dependencies.AddUnit('idedebuggervalueformatterintf');
 
     T:=P.Targets.AddUnit('actionseditor.pas');
     T:=P.Targets.AddUnit('actionseditorstd.pas');
@@ -161,10 +167,14 @@ begin
     T:=P.Targets.AddUnit('selectdatasetdlg.pas');
     T:=P.Targets.AddUnit('seledits.pas');
     T:=P.Targets.AddUnit('ideintfstrconsts.pas');
+    P.Targets.AddImplicitUnit('pagespropeditdlg.pas');
+    T:=P.Targets.AddUnit('propeditconfig.pp');
+    T:=P.Targets.AddUnit('idedebuggerwatchvalueintf.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformatterintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('IDEIntf.compiled');
-    P.InstallFiles.Add('IDEIntf.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('ideintf.compiled');
+    P.InstallFiles.Add('ideintf.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;
