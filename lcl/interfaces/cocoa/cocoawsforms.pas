@@ -535,21 +535,25 @@ var
   docview: TCocoaCustomControl;
   lcl : TLCLCommonCallback;
 begin
-  docview := TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams);
-  scrollcon:=EmbedInScrollView(docView);
+  scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
+  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+  scrollcon.setDrawsBackground(false); // everything is covered anyway
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
   scrollcon.setHasHorizontalScroller(True);
   scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
 
+  docview:= TCocoaCustomControl.alloc.init;
+  docview.setFrameSize( scrollcon.contentSize );
+  scrollcon.setDocumentView(docview);
+
   lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
   lcl.BlockCocoaUpDown := true;
+  scrollcon.callback := lcl;
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
-  scrollcon.callback := lcl;
-  scrollcon.setDocumentView(docview);
-  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+
   Result := TLCLHandle(scrollcon);
 end;
 
