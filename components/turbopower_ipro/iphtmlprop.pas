@@ -15,13 +15,12 @@ type
     Size: single; // negative values are not yet supported
   end;
 
-  TFontNameStr = string[50];
   PIpHtmlPropAFieldsRec = ^TIpHtmlPropAFieldsRec;
-  TIpHtmlPropAFieldsRec = record
+  TIpHtmlPropAFieldsRec = packed record
     BaseFontSize: Integer;
     FontSize: Integer;
+    FontName: string;
     FontStyle: TFontStyles;
-    FontName: TFontNameStr;
   end;
 
   PIpHtmlPropBFieldsRec = ^TIpHtmlPropBFieldsRec;
@@ -75,7 +74,7 @@ type
     FKnownSizeOfSpace: TSize;
     FSizeOfSpaceKnown : Boolean;
     procedure SetBaseFontSize(const Value: Integer);
-    procedure SetFontName(const Value: TFontNameStr);
+    procedure SetFontName(const Value: string);
     procedure SetFontSize(const Value: Integer);
     procedure SetFontStyle(const Value: TFontStyles);
   public
@@ -89,7 +88,7 @@ type
     property SizeOfSpaceKnown: Boolean read FSizeOfSpaceKnown;
     property KnownSizeOfSpace : TSize read FKnownSizeOfSpace;
     property BaseFontSize : Integer read FPropRec.BaseFontSize write SetBaseFontSize;
-    property FontName : TFontNameStr read FPropRec.FontName write SetFontName;
+    property FontName : string read FPropRec.FontName write SetFontName;
     property FontSize : Integer read FPropRec.FontSize write SetFontSize;
     property FontStyle : TFontStyles read FPropRec.FontStyle write SetFontStyle;
   end;
@@ -305,7 +304,7 @@ begin
   end;
 end;
 
-procedure TIpHtmlPropA.SetFontName(const Value: TFontNameStr);
+procedure TIpHtmlPropA.SetFontName(const Value: string);
 begin
   if Value <> FPropRec.FontName then begin
     FPropRec.FontName := Value;
@@ -368,15 +367,25 @@ end;
 
 { TIpHtmlPropsAList }
 
+function ComparePropARec(Prop1, Prop2: PIpHtmlPropAFieldsRec): integer;
+begin
+  Result := Prop1^.BaseFontSize - Prop2^.BaseFontSize;
+  if Result <> 0 then Exit;
+  Result := Prop1^.FontSize - Prop2^.FontSize;
+  if Result <> 0 then Exit;
+  Result := LongWord(Prop1^.FontStyle) - LongWord(Prop2^.FontStyle);
+  if Result <> 0 then Exit;
+  Result := CompareStr(Prop1^.FontName, Prop2^.FontName);
+end;
+
 function ComparePropAFields(Data1, Data2: Pointer): integer;
 begin
-  Result := CompareByte(TIpHtmlPropA(Data1).FPropRec,
-                        TIpHtmlPropA(Data2).FPropRec, SizeOf(TIpHtmlPropAFieldsRec));
+  Result := ComparePropARec(@TIpHtmlPropA(Data1).FPropRec, @TIpHtmlPropA(Data2).FPropRec);
 end;
 
 function CompareKeyPropA(Key, Data: Pointer): integer;
 begin
-  Result := CompareByte(Key^, TIpHtmlPropA(Data).FPropRec, SizeOf(TIpHtmlPropAFieldsRec));
+  Result := ComparePropARec(PIpHtmlPropAFieldsRec(Key), @TIpHtmlPropA(Data).FPropRec);
 end;
 
 constructor TIpHtmlPropsAList.Create;
@@ -616,12 +625,17 @@ end;
 
 procedure TIpHtmlProps.CopyPropARecTo(pRec: PIpHtmlPropAFieldsRec);
 begin
-    Move(FPropA.FPropRec, pRec^, sizeof(TIpHtmlPropAFieldsRec))
+  pRec^.BaseFontSize := FPropA.FPropRec.BaseFontSize;
+  pRec^.FontSize     := FPropA.FPropRec.FontSize;
+  pRec^.FontStyle    := FPropA.FPropRec.FontStyle;
+  pRec^.FontName     := FPropA.FPropRec.FontName;
+  // Cannot use Move() because of a reference counted string.
+  //Move(FPropA.FPropRec, pRec^, sizeof(TIpHtmlPropAFieldsRec))
 end;
 
 procedure TIpHtmlProps.CopyPropBRecTo(pRec: PIpHtmlPropBFieldsRec);
 begin
-    Move(FPropB.FPropRec, pRec^, sizeof(TIpHtmlPropBFieldsRec))
+  Move(FPropB.FPropRec, pRec^, sizeof(TIpHtmlPropBFieldsRec))
 end;
 
 procedure TIpHtmlProps.FindOrCreatePropA(pRec: PIpHtmlPropAFieldsRec);
@@ -631,7 +645,10 @@ begin
   NewPropA := FPropsACache.FindPropARec(pRec);
   if NewPropA = nil then begin
     NewPropA := TIpHtmlPropA.Create(FPropsACache);
-    Move(pRec^, NewPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
+    NewPropA.FPropRec.BaseFontSize := pRec^.BaseFontSize;
+    NewPropA.FPropRec.FontSize     := pRec^.FontSize;
+    NewPropA.FPropRec.FontStyle    := pRec^.FontStyle;
+    NewPropA.FPropRec.FontName     := pRec^.FontName; // Reference counted string.
     FPropsACache.Add(NewPropA);
   end;
   NewPropA.IncUse;
@@ -671,7 +688,7 @@ procedure TIpHtmlProps.SetFontName(const Value: string);
 var
   Rec : TIpHtmlPropAFieldsRec;
 begin
-  if Value <> FontName then begin
+  if Value <> Rec.FontName then begin
     CopyPropARecTo(@Rec);
     Rec.FontName:=Value;
     FindOrCreatePropA(@Rec);
