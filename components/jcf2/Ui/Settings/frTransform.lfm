@@ -1,9 +1,9 @@
 object fTransform: TfTransform
   Left = 0
-  Height = 325
+  Height = 367
   Top = 0
   Width = 412
-  ClientHeight = 325
+  ClientHeight = 367
   ClientWidth = 412
   TabOrder = 0
   object cbBlockEndSemicolons: TCheckBox
@@ -55,7 +55,7 @@ object fTransform: TfTransform
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 176
-    Top = 147
+    Top = 178
     Width = 169
     AutoSize = True
     BorderSpacing.Around = 6
@@ -63,6 +63,7 @@ object fTransform: TfTransform
     ClientHeight = 156
     ClientWidth = 165
     TabOrder = 2
+    Visible = False
     object cbSortInterfaceUses: TCheckBox
       AnchorSideLeft.Control = bgSortUses
       AnchorSideTop.Control = bgSortUses
@@ -146,7 +147,7 @@ object fTransform: TfTransform
     AnchorSideBottom.Side = asrBottom
     Left = 181
     Height = 126
-    Top = 147
+    Top = 178
     Width = 225
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -172,18 +173,34 @@ object fTransform: TfTransform
       'Longest to shortest'
     )
     TabOrder = 3
+    Visible = False
   end
   object lbWarningSortUsesClauses: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbBlockEndSemicolons
+    AnchorSideTop.Control = btnAdvancedSettings
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 126
+    Top = 157
     Width = 355
     BorderSpacing.Around = 6
     Caption = 'WARNING: changing order of uses clauses may break your code.'
     Font.Style = [fsBold]
     ParentFont = False
+    Visible = False
+  end
+  object btnAdvancedSettings: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbBlockEndSemicolons
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 25
+    Top = 126
+    Width = 123
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Advanced settings'
+    TabOrder = 4
+    OnClick = btnAdvancedSettingsClick
   end
 end

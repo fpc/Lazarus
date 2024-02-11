@@ -38,6 +38,7 @@ type
   { TfTransform }
 
   TfTransform = class(TAbstractIDEOptionsEditor)
+    btnAdvancedSettings: TButton;
     cbBlockEndSemicolons: TCheckBox;
     lbWarningSortUsesClauses: TLabel;
     rbBeginEnd: TRadioGroup;
@@ -49,6 +50,8 @@ type
     rgUsesSortOrder: TRadioGroup;
     cbNoComments: TCheckBox;
     cbSortProgramUses: TCheckBox;
+    procedure btnAdvancedSettingsClick(Sender: TObject);
+    procedure ShowAdvancedSettings(AVisible: boolean);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -65,6 +68,19 @@ implementation
 
 uses 
   SettingsTypes, JcfSettings, SetTransform, JcfUIConsts, JcfIdeRegister;
+
+procedure TfTransform.btnAdvancedSettingsClick(Sender: TObject);
+begin
+  ShowAdvancedSettings(True);
+  btnAdvancedSettings.Enabled := False;
+end;
+
+procedure TfTransform.ShowAdvancedSettings(AVisible: boolean);
+begin
+  lbWarningSortUsesClauses.Visible := AVisible;
+  bgSortUses.Visible := AVisible;
+  rgUsesSortOrder.Visible := AVisible;
+end;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin
@@ -101,6 +117,15 @@ begin
   rgUsesSortOrder.Items[2] := lisTransformShortestToLongest;
   rgUsesSortOrder.Items[3] := lisTransformLongestToShortest;
   lbWarningSortUsesClauses.Caption := lisTransformWarningSortUsesClauses;
+  btnAdvancedSettings.Caption := lisTransformAdvancedSettings;
+
+  if FormattingSettings.Transform.SortProgramUses or
+     FormattingSettings.Transform.SortInterfaceUses or
+     FormattingSettings.Transform.SortImplementationUses then
+  begin
+    ShowAdvancedSettings(True);
+    btnAdvancedSettings.Enabled := False;
+  end;
 end;
 
 procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);

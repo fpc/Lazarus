@@ -988,6 +988,10 @@ msgstr "Legyen begin és end a magányos állományok körül"
 msgid "Add or Remove &begin and end from single statements"
 msgstr "Legyen vagy ne legyen begin és end a magányos állományok körül"
 
+#: jcfuiconsts.listransformadvancedsettings
+msgid "Advanced settings"
+msgstr ""
+
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
 msgstr "ABC sorrend"

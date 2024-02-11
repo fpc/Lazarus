@@ -987,6 +987,10 @@ msgstr "Su „Begin“ ir „End“ apgaubti ir vieną sakinį"
 msgid "Add or Remove &begin and end from single statements"
 msgstr "Šalinti vieno &sakinio „Begin“ ir „End“"
 
+#: jcfuiconsts.listransformadvancedsettings
+msgid "Advanced settings"
+msgstr ""
+
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
 msgstr "Abėcėlinis"

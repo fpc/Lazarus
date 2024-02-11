@@ -987,6 +987,10 @@ msgstr "単一ステートメントに begin と end を付加する"
 msgid "Add or Remove &begin and end from single statements"
 msgstr "単一ステートメントに対する begin と end の追加ないし削除(&b)"
 
+#: jcfuiconsts.listransformadvancedsettings
+msgid "Advanced settings"
+msgstr ""
+
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
 msgstr "アルファベット順"

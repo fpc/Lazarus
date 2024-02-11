@@ -988,6 +988,10 @@ msgstr "Aggiungi Begin e End a una istruzione singola"
 msgid "Add or Remove &begin and end from single statements"
 msgstr "Aggiungi/togli Begin e End da una istruzione singola"
 
+#: jcfuiconsts.listransformadvancedsettings
+msgid "Advanced settings"
+msgstr ""
+
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
 msgstr "Alfabetico"
