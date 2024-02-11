@@ -799,9 +799,6 @@ type
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 20;
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 20;
     procedure DoGetImage(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture);
-    {$IFOPT C+}
-    procedure CheckImage(Picture: TPicture);
-    {$ENDIF}
     function GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
     function getControlCount:integer;
     function getControl(i:integer):TIpHtmlNode;
@@ -818,6 +815,9 @@ type
     procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
       APageTop, APageBottom: Integer; UsePaintBuffer: Boolean;
       const TopLeft: TPoint); overload;
+    {$IFOPT C+}
+    procedure CheckImage(Picture: TPicture);
+    {$ENDIF}
     {$IFDEF IP_LAZARUS_DBG}
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
     procedure DebugAll;
