@@ -869,6 +869,9 @@ var
             {$ifdef CaseInsensitiveFilenames}
             FQDir := Utf8LowerCase(FQDir);
             {$endif}
+            //we may have already visited this directory via a link
+            if Assigned(VisitedDirs.Find(FQDir)) then
+              Continue;
           end;
 
           // deal with symlinks separately, avoid excessive calls to ExpandFilenameUTF8 and
