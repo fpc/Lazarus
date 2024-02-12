@@ -674,9 +674,10 @@ begin
   CurrPath := GetPath;
   try
     BeginUpdate;
-    Refresh(nil);
-    if Exists(CurrPath) then
-      SetPath(CurrPath);
+    //Refresh(nil);
+    //if Exists(CurrPath) then
+    //  SetPath(CurrPath);
+    UpdateView;
   finally
     EndUpdate;
   end;
@@ -1393,7 +1394,12 @@ begin
   if not (otNonFolders in FObjectTypes) then
     Result := ((Attr and faDirectory) > 0)
   else
-    Result := True;
+  begin
+    if not (otHidden in FObjectTypes) then
+      Result := ((Attr and faHidden) = 0)
+    else
+      Result := True;
+  end;
   {$ifdef debug_shellctrls}
   debugln(['TCustomShellTreeView.SetPath.Exists: Result = ',Result]);
   {$endif}
