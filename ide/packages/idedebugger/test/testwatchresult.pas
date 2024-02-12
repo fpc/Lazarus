@@ -5,9 +5,9 @@ unit TestWatchResult;
 interface
 
 uses
-  Classes, SysUtils, Math, Debugger,
-  fpcunit, testutils, testregistry,
-  IdeDebuggerWatchResult, LazDebuggerIntf, Laz2_XMLCfg, LazLogger;
+  Classes, SysUtils, Math, Debugger, fpcunit, testutils, testregistry,
+  IdeDebuggerWatchResult, LazDebuggerIntf, Laz2_XMLCfg, LazLogger,
+  IdeDebuggerWatchValueIntf;
 
 const
   SkipSubTestCopy = False; // Skip CreateCopy in Assert....

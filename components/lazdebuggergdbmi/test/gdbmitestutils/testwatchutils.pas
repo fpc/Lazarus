@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, RegExpr, TestBase, LazLoggerBase, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, TestDbgConfig, TTestDebuggerClasses, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes;
+  LazDebuggerIntfBaseTypes, IdeDebuggerWatchValueIntf;
 
 type
 

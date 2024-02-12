@@ -9,10 +9,11 @@ interface
 
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  FpPascalBuilder, LazLoggerBase, Forms, IdeDebuggerBase, IdeDebuggerUtils,
-  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, RegExpr,
-  TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, TestOutputLogger;
+  FpPascalBuilder, LazLoggerBase, IdeDebuggerWatchValueIntf, Forms,
+  IdeDebuggerBase, IdeDebuggerUtils, IdeDebuggerWatchResult,
+  IdeDebuggerWatchResPrinter, RegExpr, TestDbgTestSuites, TTestDebuggerClasses,
+  TTestDbgExecuteables, TestDbgConfig, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, TestOutputLogger;
 
 const
   SIZE_1 = 1;

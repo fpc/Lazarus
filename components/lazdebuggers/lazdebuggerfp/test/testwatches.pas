@@ -9,9 +9,9 @@ uses
   FpDebugDebugger, TestDbgControl, TestDbgTestSuites, TestOutputLogger,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon, Forms,
-  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerBackendValueConv,
-  FpDebugStringConstants;
+  DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon,
+  IdeDebuggerWatchValueIntf, Forms, IdeDebuggerBase, IdeDebuggerWatchResult,
+  IdeDebuggerBackendValueConv, FpDebugStringConstants;
 
 type
 

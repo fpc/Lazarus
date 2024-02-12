@@ -5,9 +5,9 @@ unit TTestDebuggerClasses;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase, Debugger,
-  IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  LazDebuggerValueConverter, LazDebuggerTemplate;
+  Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf,
+  IdeDebuggerBase, Debugger, IdeDebuggerWatchResult, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate;
 
 type
 
