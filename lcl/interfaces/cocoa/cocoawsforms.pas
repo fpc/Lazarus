@@ -543,8 +543,6 @@ begin
   scrollcon.setDrawsBackground(false); // everything is covered anyway
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
-  scrollcon.setHasHorizontalScroller(True);
-  scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
 
   docview:= TCocoaCustomControl.alloc.init;
