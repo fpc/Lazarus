@@ -34,13 +34,13 @@ type
     procedure BuildWordList;
   protected
     PropsR : TIpHtmlProps; {reference}
+  public
+    constructor Create(ParentNode : TIpHtmlNode);
+    destructor Destroy; override;
     procedure ReportDrawRects(M : TRectMethod); override;
     procedure Enqueue; override;
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
-  public
-    constructor Create(ParentNode : TIpHtmlNode);
-    destructor Destroy; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -737,8 +737,6 @@ type
     FSize: TSize;
     NetDrawRect: TRect;
     SizeWidth: TIpHtmlPixels;
-    procedure ReportDrawRects(M : TRectMethod); override;
-    procedure ReportMapRects(M : TRectMethod); override;
     function GetHint: string; override;
     procedure InvalidateSize; override;
   public
@@ -755,6 +753,8 @@ type
     function GrossDrawRect: TRect;
     procedure LoadImage;
     procedure UnloadImage;
+    procedure ReportDrawRects(M : TRectMethod); override;
+    procedure ReportMapRects(M : TRectMethod); override;
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -848,7 +848,7 @@ type
     function GetColCount: Integer;
   public
     FCaption: TIpHtmlNodeCAPTION;
-    FLayouter : TIpHtmlBaseTableLayouter;
+    FLayouter: TIpHtmlBaseTableLayouter;
     BorderRect: TRect;
     BorderRect2: TRect; {includes caption if any}
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1167,15 +1167,6 @@ uses
   {$ENDIF}
   StrUtils, LazStringUtils;
   
-
-type
-  // Helper classes to access protected class members
-  TIpHtmlOpener = class(TIpHtml);
-  TIpHtmlNodeOpener = class(TIpHtmlNode);
-  TIpHtmlNodeBlockOpener = class(TIpHtmlNodeBlock);
-  TIpHtmlBaseTableLayouterOpener = class(TIpHtmlBaseTableLayouter);
-  TFriendPanel = class(TCustomPanel);
-  
 type
   THtmlRadioButton = class(TRadioButton)
   protected
@@ -1229,12 +1220,9 @@ end;
 { TIpHtmlNodeText }
 
 constructor TIpHtmlNodeText.Create(ParentNode : TIpHtmlNode);
-var
-  lOwner: TIpHtmlOpener;
 begin
   inherited Create(ParentNode);
-  lOwner := TIpHtmlOpener(FOwner);
-  PropsR := TIpHtmlProps.Create(lOwner.PropACache, lOwner.PropBCache);
+  PropsR := TIpHtmlProps.Create(FOwner.PropACache, FOwner.PropBCache);
 end;
 
 destructor TIpHtmlNodeText.Destroy;
@@ -1261,9 +1249,9 @@ end;
 procedure TIpHtmlNodeText.AddAWord(StartP: PAnsiChar);
 begin
   if FFirstW then
-    TIpHtmlOpener(Owner).AddWord(StartP, PropsR, Self)
+    Owner.AddWord(StartP, PropsR, Self)
   else
-    TIpHtmlOpener(Owner).AddWord(StartP, nil, Self);
+    Owner.AddWord(StartP, nil, Self);
   FFirstW := False;
 end;
 
@@ -1290,14 +1278,14 @@ begin
       ImplicitLF := True;
     LF :
       begin
-        EnqueueElement(TIpHtmlOpener(Owner).HardLF);
+        EnqueueElement(Owner.HardLF);
         Inc(N);
         ImplicitLF := False;
       end;
     else
       begin
         if ImplicitLF then begin
-          EnqueueElement(TIpHtmlOpener(Owner).HardLF);
+          EnqueueElement(Owner.HardLF);
           Inc(N);
           ImplicitLF := False;
         end;
@@ -1327,13 +1315,13 @@ begin
     case N^ of
     LF :
       begin
-        EnqueueElement(TIpHtmlOpener(Owner).HardLF);
+        EnqueueElement(Owner.HardLF);
         Inc(N);
       end;
     ' ' :
       begin
         if not ElementQueueIsEmpty then begin
-          NewEntry := TIpHtmlOpener(Owner).NewElement(etWord, Self);
+          NewEntry := Owner.NewElement(etWord, Self);
           NewEntry.AnsiWord := ' ';
           NewEntry.IsBlank := 1;
           if FFirstW then
@@ -1389,13 +1377,13 @@ end;
 
 procedure TIpHtmlNodeText.EnqueueElement(const Entry: PIpHtmlElement);
 begin
-  TIpHtmlNodeOpener(FParentNode).EnqueueElement(Entry);
+  FParentNode.EnqueueElement(Entry);
 end;
 
 function FindInnerBlock(Node : TIpHTMLNode): TIpHtmlNodeBlock;
 begin
   while (Node <> nil) and not (Node is TIpHtmlNodeBlock) do
-    Node := TIpHtmlNodeOpener(Node).FParentNode;
+    Node := Node.ParentNode;
   Result := TIpHtmlNodeBlock(Node);
 end;
 
@@ -1414,11 +1402,11 @@ begin
     exit;
 
   {we need to clear the queue so that it will be built again}
-  TIpHtmlNodeBlockOpener(Block).FLayouter.ClearWordList;
+  Block.Layouter.ClearWordList;
 
   {then, we need to Invalidate the block so that
    the rendering logic recalculates everything}
-  TIpHtmlNodeBlockOpener(Block).InvalidateSize;
+  Block.InvalidateSize;
 end;
 
 procedure TIpHtmlNodeText.ReportDrawRects(M: TRectMethod);
@@ -1428,7 +1416,7 @@ end;
 
 function TIpHtmlNodeText.ElementQueueIsEmpty: Boolean;
 begin
-  Result := TIpHtmlNodeOpener(FParentNode).ElementQueueIsEmpty;
+  Result := FParentNode.ElementQueueIsEmpty;
 end;
 
 
@@ -1442,9 +1430,9 @@ destructor TIpHtmlNodeAREA.Destroy;
 var
   I: Integer;
 begin
-  I := TIpHtmlOpener(Owner).AreaList.IndexOf(Self);
+  I := Owner.AreaList.IndexOf(Self);
   if I <> -1 then
-    TIpHtmlOpener(Owner).AreaList.Delete(I);
+    Owner.AreaList.Delete(I);
   inherited;
 end;
 
@@ -1569,12 +1557,12 @@ end;
 constructor TIpHtmlNodeMAP.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  TIpHtmlOpener(Owner).MapList.Add(Self);
+  Owner.MapList.Add(Self);
 end;
 
 destructor TIpHtmlNodeMAP.Destroy;
 begin
-  TIpHtmlOpener(Owner).MapList.Remove(Self);
+  Owner.MapList.Remove(Self);
   inherited;
 end;
 
@@ -1825,7 +1813,7 @@ end;
 destructor TIpHtmlNodeA.Destroy;
 begin
   if HasRef then
-    TIpHtmlOpener(Owner).AnchorList.Remove(Self);
+    Owner.AnchorList.Remove(Self);
   inherited;
   MapAreaList.Free;
 end;
@@ -1868,7 +1856,7 @@ var
 begin
   inherited;
   for i := 0 to Pred(ChildCount) do
-    TIpHtmlNodeOpener(ChildNode[i]).ReportMapRects(AddMapArea);
+    ChildNode[i].ReportMapRects(AddMapArea);
 end;
 
 function TIpHtmlNodeA.PtInRects(const P: TPoint): Boolean;
@@ -1917,7 +1905,7 @@ begin
     SetProps(Props);
   for i := 0 to Pred(FAreaList.Count) do
     if PageRectToScreen(PRect(FAreaList[i])^, R) then
-      TIpHtmlOpener(Owner).InvalidateRect(R);
+      Owner.InvalidateRect(R);
 end;
 
 procedure TIpHtmlNodeA.SetHRef(const Value: string);
@@ -1928,9 +1916,9 @@ begin
   NewHasRef := Value <> '';
   if NewHasRef <> HasRef then begin
     if HasRef then
-      TIpHtmlOpener(Owner).AnchorList.Remove(Self)
+      Owner.AnchorList.Remove(Self)
     else
-      TIpHtmlOpener(Owner).AnchorList.Add(Self);
+      Owner.AnchorList.Add(Self);
     FHasRef := NewHasRef;
   end;
 end;
@@ -1951,11 +1939,11 @@ end;
 procedure TIpHtmlNodeA.SetName(const Value: string);
 begin
   if FName <> '' then
-    with TIpHtmlOpener(Owner).NameList do
+    with Owner.NameList do
       Delete(IndexOf(FName));
   FName := Value;
   if FName <> '' then
-    TIpHtmlOpener(Owner).NameList.AddObject(FName, Self);
+    Owner.NameList.AddObject(FName, Self);
 end;
   (*
 procedure TIpHtmlNodeA.MakeVisible;
@@ -1982,11 +1970,11 @@ begin
     Props.FontStyle := Props.FontStyle + [fsUnderline];
   end else
     if HasRef then begin
-      if TIpHtmlOpener(Owner).LinksUnderlined then
+      if Owner.LinksUnderlined then
         Props.FontStyle := Props.FontStyle + [fsUnderline]
       else
         Props.FontStyle := Props.FontStyle - [fsUnderline];
-      if TIpHtmlOpener(Owner).LinkVisited(HRef) then
+      if Owner.LinkVisited(HRef) then
         Props.FontColor := Props.VLinkColor
       else
         Props.FontColor := Props.LinkColor;
@@ -2032,15 +2020,15 @@ var
 begin
   // display: block;
   hf := Props.FontSize;
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, hf);
+  elem := Owner.BuildLinefeedEntry(etHardLF, hf);
   EnqueueElement(elem);
 
-  EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
+  EnqueueElement(Owner.LIndent);
   inherited;
-  EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+  EnqueueElement(Owner.LOutdent);
 
   // close the block
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, hf);
+  elem := Owner.BuildLinefeedEntry(etHardLF, hf);
   EnqueueElement(elem);
 end;
 
@@ -2075,15 +2063,15 @@ begin
   case Clear of
     hbcNone :
       begin
-        elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+        elem := Owner.BuildLinefeedEntry(etHardLF, h);
         EnqueueElement(elem);
       end;
     hbcLeft :
-      EnqueueElement(TIpHtmlOpener(Owner).HardLFClearLeft);
+      EnqueueElement(Owner.HardLFClearLeft);
     hbcRight :
-      EnqueueElement(TIpHtmlOpener(Owner).HardLFClearRight);
+      EnqueueElement(Owner.HardLFClearRight);
     hbcAll :
-      EnqueueElement(TIpHtmlOpener(Owner).HardLFClearBoth);
+      EnqueueElement(Owner.HardLFClearBoth);
   end;
 end;
 
@@ -2119,16 +2107,16 @@ var
 begin
   // avoid top and bottom margins... they're always inherited from DL
   if ChildCount > 0 then begin
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, 0);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
   end;
 
-  EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
+  EnqueueElement(Owner.LIndent);
   inherited;
-  EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+  EnqueueElement(Owner.LOutdent);
 
   if ChildCount > 0 then begin
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, 0);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
   end;
 end;
@@ -2185,13 +2173,13 @@ begin
   //hf := Props.FontSize;
   if ChildCount > 0 then begin
     h := GetMargin(Props.ElemMarginTop, 0); //hf div 4);
-    elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
   inherited Enqueue;
   if ChildCount > 0 then begin
     h := GetMargin(Props.ElemMarginBottom, 0);  //hf div 4);
-    elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
 end;
@@ -2234,18 +2222,18 @@ begin
   // display block
   hf := Props.FontSize;
   h := GetMargin(Props.ElemMarginTop, hf);
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  elem := Owner.BuildLinefeedEntry(etHardLF, h);
   EnqueueElement(elem);
 
   // indent not needed here
-  // EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
+  // EnqueueElement(Owner.LIndent);
   inherited;
   // outdent not needed here
-  // EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+  // EnqueueElement(Owner.LOutdent);
 
   // close the block
   h := GetMargin(Props.ElemMarginBottom, hf);
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  elem := Owner.BuildLinefeedEntry(etHardLF, h);
   EnqueueElement(elem);
 end;
 
@@ -2270,7 +2258,7 @@ begin
   begin
     hf := Props.FontSize;
     h := 3 * (hf div 8);
-    elem := TIPHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
 
@@ -2282,7 +2270,7 @@ begin
   begin
     hf := Props.FontSize;
     h := hf div 8;
-    elem := TIPHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
 end;
@@ -2380,10 +2368,10 @@ var
   begin
     case Method of
     hfmGet :
-      TIpHtmlOpener(Owner).Get(Action + '?' + URLData);
+      Owner.Get(Action + '?' + URLData);
     hfmPost :
       begin
-        TIpHtmlOpener(Owner).Post(Action, FormData);
+        Owner.Post(Action, FormData);
         {The Formdata object will be freed by the post logic,
          which is called asynchroneously via PostMessage.
          Clear the pointer to prevent our finalization
@@ -2447,7 +2435,7 @@ end;
 constructor TIpHtmlNodeGenInline.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Props := TIpHtmlProps.Create(TIpHtmlOpener(Owner).PropACache, TIpHtmlOpener(Owner).PropBCache);
+  Props := TIpHtmlProps.Create(Owner.PropACache, Owner.PropBCache);
 end;
 
 destructor TIpHtmlNodeGenInline.Destroy;
@@ -2468,12 +2456,12 @@ end;
 constructor TIpHtmlNodeLABEL.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  TIpHtmlOpener(Owner).FControlList.Add(Self);
+  Owner.ControlList.Add(Self);
 end;
 
 destructor TIpHtmlNodeLABEL.Destroy;
 begin
-  TIpHtmlOpener(Owner).FControlList.Remove(Self);
+  Owner.ControlList.Remove(Self);
   inherited;
 end;
 
@@ -2483,12 +2471,8 @@ end;
 procedure TIpHtmlNodeList.Enqueue;
 var
   i, hf: Integer;
-  lOwner: TIpHtmlOpener;
-  lParentNode: TIpHtmlNodeOpener;
   elem: PIpHtmlElement;
 begin
-  lOwner := TIpHtmlOpener(Owner);
-  lParentNode := TIpHtmlNodeOpener(FParentNode);
   hf := Props.FontSize;
 
   if ChildCount > 0 then begin
@@ -2497,20 +2481,20 @@ begin
       (FParentNode is TIpHtmlNodeList) or
       (FParentNode is TIpHtmlNodeLI) then
     begin
-      elem := lOwner.BuildLineFeedEntry(etHardLF, 0);
-      lParentNode.EnqueueElement(elem);
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
-      lParentNode.EnqueueElement(elem);
-      lParentNode.EnqueueElement(lOwner.FLIndent);
+      elem := Owner.BuildLineFeedEntry(etHardLF, 0);
+      ParentNode.EnqueueElement(elem);
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      ParentNode.EnqueueElement(elem);
+      ParentNode.EnqueueElement(Owner.LIndent);
     end
     // start block container and inline block for list items
     else
     begin
-      elem := lOwner.BuildLineFeedEntry(etHardLF, hf);
+      elem := Owner.BuildLineFeedEntry(etHardLF, hf);
       EnqueueElement(elem);
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
       EnqueueElement(elem);
-      EnqueueElement(lOwner.FLIndent);
+      EnqueueElement(Owner.LIndent);
     end;
   end;
 
@@ -2521,28 +2505,28 @@ begin
     if (ChildNode[i] is TIpHtmlNodeLI) then
     begin
       TIpHtmlNodeLI(ChildNode[i]).Enqueue;
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
       EnqueueElement(elem);
     end
     // handle a nested list
     else
-      TIpHtmlNodeOpener(ChildNode[i]).Enqueue;
+      ChildNode[i].Enqueue;
   end;
 
   if ChildCount > 0 then begin
     // close inline block
-    lParentNode.EnqueueElement(lOwner.FLOutdent);
-    elem := lOwner.BuildLineFeedEntry(etSoftLF, 0);
+    ParentNode.EnqueueElement(Owner.LOutdent);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
 
     // nested list has different bottom margin
     if (FParentNode is TIpHtmlNodeOL) or
       (FParentNode is TIpHtmlNodeList) or
       (FParentNode is TIpHtmlNodeLI) then
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, hf div 8)
+      elem := Owner.BuildLineFeedEntry(etSoftLF, hf div 8)
     // close the block
     else
-      elem := lOwner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
+      elem := Owner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
     EnqueueElement(elem);
   end;
 
@@ -2622,7 +2606,7 @@ begin
   // start block with top margin
   if (ChildCount > 0) then begin
     h := GetMargin(Props.ElemMarginTop, hf);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etHardLF, h);
+    elem := Owner.BuildLineFeedEntry(etHardLF, h);
     EnqueueElement(elem);
   end;
 
@@ -2631,7 +2615,7 @@ begin
   // close block with optional bottom margin
   if (ChildCount > 0) then begin
     h := GetMargin(Props.ElemMarginBottom, 0);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etHardLF, h);
+    elem := Owner.BuildLineFeedEntry(etHardLF, h);
     EnqueueElement(elem);
   end;
 end;
@@ -2722,9 +2706,9 @@ end;
 
 procedure TIpHtmlNodeHR.Enqueue;
 begin
-  EnqueueElement(TIpHtmlOpener(Owner).SoftLF);
+  EnqueueElement(Owner.SoftLF);
   inherited;
-  EnqueueElement(TIpHtmlOpener(Owner).SoftLF);
+  EnqueueElement(Owner.SoftLF);
 end;
 
 function TIpHtmlNodeHR.GetDim(ParentWidth: Integer): TSize;
@@ -2777,44 +2761,36 @@ begin
 end;
 
 procedure TIpHtmlNodeIMG.LoadImage;
-var
-  lOwner: TIpHtmlOpener;
 begin
-  lOwner := TIpHtmlOpener(Owner);
-  
   if Src <> '' then begin
-    if FPicture <> lOwner.DefaultImage then begin
+    if FPicture <> Owner.DefaultImage then begin
       FPicture.Free;
       FPicture := nil;
     end;
-    lOwner.DoGetImage(Self, lOwner.BuildPath(Src), FPicture);
+    Owner.DoGetImage(Self, Owner.BuildPath(Src), FPicture);
     if FPicture = nil then
-      FPicture := lOwner.DefaultImage;
+      FPicture := Owner.DefaultImage;
 
     {$IFDEF UseGifImageUnit}
     if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TGifImage) then
-      lOwner.GifImages.Add(Self);
+      Owner.GifImages.Add(Self);
     {$ELSE}
     if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TIpAnimatedGraphic) then
-      lOwner.AnimationFrames.Add(Self);
+      Owner.AnimationFrames.Add(Self);
     {$ENDIF}
   end;
 end;
 
 procedure TIpHtmlNodeIMG.UnloadImage;
-var
-  lOwner: TIpHtmlOpener;
 begin
-  lOwner := TIpHtmlOpener(Owner);
-  
   {$IFDEF UseGifImageUnit}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TGifImage) then
     Owner.GifImages.Remove(Self);
   {$ELSE}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TIpAnimatedGraphic) then
-    lOwner.AnimationFrames.Remove(Self);
+    Owner.AnimationFrames.Remove(Self);
   {$ENDIF}
-  if FPicture <> lOwner.DefaultImage then begin
+  if FPicture <> Owner.DefaultImage then begin
     FPicture.Free;
     FPicture := nil;
   end;
@@ -2915,17 +2891,17 @@ begin
         begin
           with TGifImage(FPicture.Graphic) do
             DrawOptions := DrawOptions + [goDirectDraw];
-          TIpHtmlOpener(Owner).AddGifQueue(FPicture.Graphic, R);
+          Owner.AddGifQueue(FPicture.Graphic, R);
         end else
         {$ELSE}
         if (FPicture.Graphic is TIpAnimatedGraphic) and (TIpAnimatedGraphic(FPicture.Graphic).Images.Count > 1) then 
         begin
           TIpAnimatedGraphic(FPicture.Graphic).AggressiveDrawing := True;
-          TIpHtmlOpener(Owner).AddGifQueue(FPicture.Graphic, R);
+          Owner.AddGifQueue(FPicture.Graphic, R);
         end else
       begin
         {$ENDIF}
-        if FPicture = TIpHtmlOpener(Owner).DefaultImage then begin
+        if FPicture = Owner.DefaultImage then begin
           if (NetDrawRect.Right - NetDrawRect.Left > FPicture.Graphic.Width) and
              (NetDrawRect.Bottom - NetDrawRect.Top > FPicture.Graphic.Height) then 
           begin
@@ -2960,10 +2936,7 @@ end;
 procedure TIpHtmlNodeIMG.ImageChange(NewPicture: TPicture);
 var
   OldDim, Dim: TSize;
-  lOwner: TIpHtmlOpener;
 begin
-  lOwner := TIpHtmlOpener(Owner);
-  
   {$IFOPT C+}
   Owner.CheckImage(NewPicture);
   {$ENDIF}
@@ -2971,22 +2944,22 @@ begin
   
   {$IFDEF UseGifImageUnit}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TGifImage) then
-    lOwner.GifImages.Remove(Self);
+    Owner.GifImages.Remove(Self);
   {$ELSE}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TIpAnimatedGraphic) then
-    lOwner.AnimationFrames.Remove(Self);
+    Owner.AnimationFrames.Remove(Self);
   {$ENDIF}
   
-  if FPicture <> lOwner.DefaultImage then
+  if FPicture <> Owner.DefaultImage then
     FPicture.Free;
   FPicture := NewPicture;
   
   {$IFDEF UseGifImageUnit}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TGifImage) then
-    lOwner.GifImages.Add(Self);
+    Owner.GifImages.Add(Self);
   {$ELSE}
   if (FPicture <> nil) and (FPicture.Graphic <> nil) and (FPicture.Graphic is TIpAnimatedGraphic) then
-    lOwner.AnimationFrames.Add(Self);
+    Owner.AnimationFrames.Add(Self);
   {$ENDIF}
   
   SizeWidth.PixelsType := hpUndefined;
@@ -3095,19 +3068,15 @@ begin
 end;
 
 procedure TIpHtmlNodeIMG.SetUseMap(const Value: string);
-var
-  lOwner: TIpHtmlOpener;
 begin
-  lOwner := TIpHtmlOpener(Owner);
-  
   if FUseMap <> '' then begin
-    lOwner.MapImgList.Remove(Self);
-    lOwner.ClearAreaList;
+    Owner.MapImgList.Remove(Self);
+    Owner.ClearAreaList;
   end;
   FUseMap := Value;
   if FUseMap <> '' then begin
-    lOwner.MapImgList.Add(Self);
-    lOwner.ClearAreaList;
+    Owner.MapImgList.Add(Self);
+    Owner.ClearAreaList;
   end;
 end;
 
@@ -3153,7 +3122,7 @@ begin
   inherited;
   ElementName := 'li';
   Align := hiaBottom;
-  WordEntry := TIpHtmlOpener(Owner).NewElement(etWord, Self);
+  WordEntry := Owner.NewElement(etWord, Self);
   WordEntry.Props := Props;
 end;
 
@@ -3233,10 +3202,10 @@ begin
     EnqueueElement(WordEntry);
   end else
     EnqueueElement(Element);
-  EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
+  EnqueueElement(Owner.LIndent);
   for i := 0 to Pred(ChildCount) do
-    TIpHtmlNodeOpener(ChildNode[i]).Enqueue;
-  EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+    ChildNode[i].Enqueue;
+  EnqueueElement(Owner.LOutdent);
 end;
 
 function TIpHtmlNodeLI.GetDim(ParentWidth: Integer): TSize;
@@ -3287,14 +3256,10 @@ procedure TIpHtmlNodeOL.Enqueue;
 var
   i: Integer;
   iVal: Integer;
-  lParentNode: TIpHtmlNodeOpener;
-  lOwner: TIpHtmlOpener;
   elem: PIpHtmlElement;
   hf: Integer;
 begin
   // display block
-  lOwner := TIpHtmlOpener(Owner);
-  lParentNode := TIpHtmlNodeOpener(FParentNode);
   hf := Props.FontSize;
   
   if ChildCount > 0 then begin
@@ -3303,20 +3268,20 @@ begin
       (FParentNode is TIpHtmlNodeList) or
       (FParentNode is TIpHtmlNodeLI) then
     begin
-      elem := lOwner.BuildLineFeedEntry(etHardLF, 0);
-      lParentNode.EnqueueElement(elem);
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
-      lParentNode.EnqueueElement(elem);
-      lParentNode.EnqueueElement(lOwner.FLIndent);
+      elem := Owner.BuildLineFeedEntry(etHardLF, 0);
+      ParentNode.EnqueueElement(elem);
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      ParentNode.EnqueueElement(elem);
+      ParentNode.EnqueueElement(Owner.LIndent);
     end
     // start block container and inline block for list items
     else
     begin
-      elem := lOwner.BuildLineFeedEntry(etHardLF, hf);
+      elem := Owner.BuildLineFeedEntry(etHardLF, hf);
       EnqueueElement(elem);
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
       EnqueueElement(elem);
-      EnqueueElement(lOwner.FLIndent);
+      EnqueueElement(Owner.LIndent);
     end;
   end;
 
@@ -3330,28 +3295,28 @@ begin
       Inc(iVal);
       Counter := Start + iVal;
       TIpHtmlNodeLI(ChildNode[i]).Enqueue;
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      elem := Owner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
       EnqueueElement(elem);
     end
     // handle a nested list
     else
-      TIpHtmlNodeOpener(ChildNode[i]).Enqueue;
+      ChildNode[i].Enqueue;
   end;
 
   if ChildCount > 0 then begin
     // close inline block
-    lParentNode.EnqueueElement(lOwner.FLOutdent);
-    elem := lOwner.BuildLineFeedEntry(etSoftLF, 0);
+    ParentNode.EnqueueElement(Owner.LOutdent);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
 
     // nested list has different bottom margin
     if (FParentNode is TIpHtmlNodeOL) or
       (FParentNode is TIpHtmlNodeList) or
       (FParentNode is TIpHtmlNodeLI)  then
-      elem := lOwner.BuildLineFeedEntry(etSoftLF, hf div 8)
+      elem := Owner.BuildLineFeedEntry(etSoftLF, hf div 8)
     // close the block
     else
-      elem := lOwner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
+      elem := Owner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
     EnqueueElement(elem);
   end;
 end;
@@ -3483,10 +3448,8 @@ var
   Al : TIpHtmlVAlign3;
   TRBgColor, TrTextColor: TColor;
   aCanvas : TCanvas;
-  lLayouter: TIpHtmlBaseTableLayouterOpener;
 begin
   aCanvas := Owner.Target;
-  lLayouter := TIpHtmlBaseTableLayouterOpener(FLayouter);
 
   if (FOwner.Body.BgPicture <> nil) or (Props.BGColor = 1) then
     aCanvas.Brush.Style := bsClear
@@ -3500,7 +3463,7 @@ begin
   Al := Props.VAlignment;
 
   for z := 0 to Pred(ColCount) do
-    lLayouter.FRowSp[z] := 0;
+    FLayouter.RowSp[z] := 0;
 
   for z := 0 to Pred(ChildCount) do
     if (TIpHtmlNode(ChildNode[z]) is TIpHtmlNodeTHeadFootBody) then
@@ -3669,13 +3632,11 @@ end;
 
 procedure TIpHtmlNodeTABLE.Enqueue;
 var
-  //lOwner: TIpHtmlOpener;
   h: Integer;
   elem: PIpHtmlElement;
 begin
   // display block
-  //lOwner := TIpHtmlOpener(Owner);
-  
+
   //The commented code below prevents a blank line before the table
   {
     case Align of
@@ -3689,7 +3650,7 @@ begin
 
   // vertical margin: specified in CSS or none
   h := GetMargin(Props.ElemMarginTop, 0);
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+  elem := Owner.BuildLinefeedEntry(etSoftLF, h);
   EnqueueElement(elem);
 
   // insert element content
@@ -3698,7 +3659,7 @@ begin
   // close block
   // vertical margin: specified in CSS or none
   h := GetMargin(Props.ElemMarginBottom, 0);
-  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  elem := Owner.BuildLinefeedEntry(etHardLF, h);
   EnqueueElement(elem);
 
   {
@@ -3727,38 +3688,40 @@ end;
 
 function TIpHtmlNodeTABLE.GetMaxWidth: Integer;
 begin
-  Result := TIpHtmlBaseTableLayouterOpener(FLayouter).FMax;
+  Result := FLayouter.Max;
 end;
 
 function TIpHtmlNodeTABLE.GetMinWidth: Integer;
 begin
-  Result := TIpHtmlBaseTableLayouterOpener(FLayouter).FMin;
+  Result := FLayouter.Min;
 end;
 
 function TIpHtmlNodeTABLE.GetTableWidth: Integer;
 begin
-  Result := TIpHtmlBaseTableLayouterOpener(FLayouter).FTableWidth;
+  Result := FLayouter.TableWidth;
 end;
 
 function TIpHtmlNodeTABLE.GetCellPadding: Integer;
 begin
-  Result := TIpHtmlBaseTableLayouterOpener(FLayouter).FCellPadding;
+  Result := FLayouter.CellPadding;
 end;
 
 function TIpHtmlNodeTABLE.GetCellSpacing: Integer;
 begin
-  Result := TIpHtmlBaseTableLayouterOpener(FLayouter).FCellSpacing;
+  Result := FLayouter.CellSpacing;
 end;
 
 procedure TIpHtmlNodeTABLE.SetCellPadding(const Value: Integer);
 begin
-  TIpHtmlBaseTableLayouterOpener(FLayouter).FCellPadding := Value;
+  FLayouter.CellPadding := Value;
   InvalidateSize;
 end;
 
 procedure TIpHtmlNodeTABLE.SetCellSpacing(const Value: Integer);
 begin
-  TIpHtmlBaseTableLayouterOpener(FLayouter).FCellSpacing := Value;
+  if not (FLayouter is TIpHtmlBaseTableLayouter) then
+    raise Exception.Create('TIpHtmlNodeTABLE.FLayouter has wrong type: ' + FLayouter.ClassName);
+  FLayouter.CellSpacing := Value;
   InvalidateSize;
 end;
 
@@ -4074,24 +4037,21 @@ constructor TIpHtmlNodeBUTTON.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
   ElementName := 'button';
-  with TIpHtmlOpener(Owner) do
-  begin
-    FControlList.Add(Self);
-    if DoneLoading then
-      Self.CreateControl(FControlParent);
-  end;
+  Owner.ControlList.Add(Self);
+  if Owner.DoneLoading then
+    CreateControl(Owner.ControlParent);
 end;
 
 destructor TIpHtmlNodeBUTTON.Destroy;
 begin
-  TIpHtmlOpener(Owner).FControlList.Remove(Self);
+  Owner.ControlList.Remove(Self);
   inherited;
 end;
 
 procedure TIpHtmlNodeBUTTON.CreateControl(Parent: TWinControl);
 begin
   inherited;
-  TIpHtmlOpener(Owner).ControlCreate(Self);
+  Owner.ControlCreate(Self);
 
   FControl := TButton.Create(Parent);
   FControl.Visible := False;
@@ -4145,7 +4105,7 @@ begin
     end;
   hbtButton :
     begin
-      TIpHtmlOpener(Owner).ControlClick(Self);
+      Owner.ControlClick(Self);
     end;
   end;
 end;
@@ -4162,10 +4122,10 @@ var
 begin
   with Control as TButton do
   begin
-    lCanvas := TFriendPanel(Parent).Canvas;
+    lCanvas := TCustomPanel(Parent).Canvas;
     oldFontSize := lCanvas.Font.Size;
-    Width := TFriendPanel(Parent).Canvas.TextWidth(Caption) + 40;
-    Height := TFriendPanel(Parent).Canvas.TextHeight('Tg') + 10;
+    Width := lCanvas.TextWidth(Caption) + 40;
+    Height := lCanvas.TextHeight('Tg') + 10;
     lCanvas.Font.Size := oldFontSize;
   end;
 end;
@@ -4174,7 +4134,7 @@ procedure TIpHtmlNodeBUTTON.SetInputType(const AValue: TIpHtmlButtonType);
 begin
   if FInputType = AValue then exit;
   FInputType := AValue;
-  if TIpHtmlOpener(Owner).DoneLoading and (FControl <> nil) and (Self.Value = '') then
+  if Owner.DoneLoading and (FControl <> nil) and (Self.Value = '') then
     SetValue(GetButtonCaption);
 end;
 
@@ -4182,7 +4142,7 @@ procedure TIpHtmlNodeBUTTON.SetValue(const AValue: String);
 begin
   if FValue = AValue then Exit;
   FValue := AValue;
-  if TIpHtmlOpener(Owner).DoneLoading and (FControl <> nil) then
+  if Owner.DoneLoading and (FControl <> nil) then
   begin
     (FControl as TButton).Caption := GetButtonCaption;
     CalcSize;
@@ -4284,9 +4244,9 @@ var
 
 begin
   inherited;
-  TIpHtmlOpener(Owner).ControlCreate(Self);
+  Owner.ControlCreate(Self);
 
-  aCanvas := TFriendPanel(Parent).Canvas;
+  aCanvas := TCustomPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   case InputType of
   hitText :
@@ -4418,10 +4378,9 @@ begin
     begin
       FControl := TBitbtn.Create(Parent);
       setCommonProperties;
-      with TIpHtmlOpener(Owner) do
-        DoGetImage(Self, BuildPath(Src), FPicture);
+      Owner.DoGetImage(Self, Owner.BuildPath(Src), FPicture);
       if FPicture = nil
-        then FPicture := TIpHtmlOpener(Owner).DefaultImage;
+        then FPicture := Owner.DefaultImage;
       with TBitbtn(FControl) do begin
         Caption := Self.Value;
         Enabled := not Self.Disabled and not Self.Readonly;
@@ -4473,7 +4432,7 @@ begin
   {$IFOPT C+}
   Owner.CheckImage(NewPicture);
   {$ENDIF}
-  if FPicture <> TIpHtmlOpener(Owner).DefaultImage then
+  if FPicture <> Owner.DefaultImage then
     FPicture.Free;
   FPicture := NewPicture;
   SetImageGlyph(FPicture);
@@ -4535,8 +4494,9 @@ var
   vCancel: boolean;
 begin
   vCancel := False;
-  TIpHtmlOpener(Owner).ControlClick2(Self, vCancel);
-  if not vCancel then SubmitRequest;
+  Owner.ControlClick2(Self, vCancel);
+  if not vCancel then
+    SubmitRequest;
 end;
 
 procedure TIpHtmlNodeINPUT.ResetClick(Sender: TObject);
@@ -4560,19 +4520,19 @@ end;
 procedure TIpHtmlNodeINPUT.ButtonClick(Sender: TObject);
 begin
   getControlValue;
-  TIpHtmlOpener(Owner).ControlClick(Self);
+  Owner.ControlClick(Self);
 end;
 
 procedure TIpHtmlNodeINPUT.ControlOnEditingDone(Sender: TObject);
 begin
   getControlValue;
-  TIpHtmlOpener(Owner).ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 procedure TIpHtmlNodeINPUT.ControlOnChange(Sender: TObject);
 begin
   getControlValue;
-  TIpHtmlOpener(Owner).ControlOnChange(Self);
+  Owner.ControlOnChange(Self);
 end;
 
 function TIpHtmlNodeINPUT.GetHint: string;
@@ -4678,9 +4638,9 @@ var
   OptGroup: TIpHtmlNodeOPTGROUP;
 begin
   inherited;
-  TIpHtmlOpener(Owner).ControlCreate(Self);
+  Owner.ControlCreate(Self);
 
-  aCanvas := TFriendPanel(Parent).Canvas;
+  aCanvas := TCustomPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   if Multiple then begin
     FControl := TListBox.Create(Parent);
@@ -4788,17 +4748,17 @@ end;
 
 procedure TIpHtmlNodeSELECT.ButtonClick(Sender: TObject);
 begin
-  TIpHtmlOpener(Owner).ControlClick(Self);
+  Owner.ControlClick(Self);
 end;
 
 procedure TIpHtmlNodeSELECT.ControlOnEditingDone(Sender: TObject);
 begin
-  TIpHtmlOpener(Owner).ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 procedure TIpHtmlNodeSELECT.ListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
-  TIpHtmlOpener(Owner).ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 procedure TIpHtmlNodeSELECT.SetText(aText: string);
@@ -4845,9 +4805,9 @@ var
   aCanvas : TCanvas;
 begin
   inherited;
-  TIpHtmlOpener(Owner).ControlCreate(Self);
+  Owner.ControlCreate(Self);
 
-  aCanvas := TFriendPanel(Parent).Canvas;
+  aCanvas := TCustomPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
   FControl := TMemo.Create(Parent);
   FControl.Visible := False;
@@ -4856,8 +4816,8 @@ begin
   adjustFromCss;
 
   with TMemo(FControl) do begin
-    Width := Cols * TFriendPanel(Parent).Canvas.TextWidth('0'); 
-    Height := Rows * TFriendPanel(Parent).Canvas.TextHeight('Wy');
+    Width := Cols * TCustomPanel(Parent).Canvas.TextWidth('0');
+    Height := Rows * TCustomPanel(Parent).Canvas.TextHeight('Wy');
     Enabled := not Self.Disabled;
   end;
 
@@ -4902,7 +4862,7 @@ end;
 
 procedure TIpHtmlNodeTEXTAREA.ControlOnEditingDone(Sender: TObject);
 begin
-  TIpHtmlOpener(Owner).ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 

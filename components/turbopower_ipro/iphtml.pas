@@ -148,6 +148,13 @@ type
       var Min, Max: Integer); virtual; abstract;
     procedure CalcSize(ParentWidth: Integer; RenderProps: TIpHtmlProps); virtual; abstract;
     function GetColCount: Integer; virtual; abstract;
+  public
+    property Min: Integer read FMin;
+    property Max: Integer read FMax;
+    property TableWidth: Integer read FTableWidth;
+    property CellSpacing: Integer read FCellSpacing write FCellSpacing;
+    property CellPadding: Integer read FCellPadding write FCellPadding;
+    property RowSp: TIntArr read FRowSp;
   end;
 
   TIpHtmlBaseTableLayouterClass = class of TIpHtmlBaseTableLayouter;
@@ -180,12 +187,6 @@ type
     procedure ScreenFrame(R : TRect; Raised: boolean);
     procedure ScreenPolygon(Points : array of TPoint; const Color : TColor);
     function PagePtToScreen(const Pt: TPoint): TPoint;
-    procedure Enqueue; virtual;
-    procedure EnqueueElement(const Entry: PIpHtmlElement); virtual;
-    function ElementQueueIsEmpty: Boolean; virtual;
-    procedure ReportDrawRects(M : TRectMethod); virtual;
-    procedure ReportCurDrawRects(Owner: TIpHtmlNode; M : TRectMethod); virtual;
-    procedure ReportMapRects(M : TRectMethod); virtual;
     procedure Invalidate; virtual;
     procedure InvalidateSize; virtual;
     procedure SubmitRequest; virtual;
@@ -201,9 +202,15 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+    procedure Enqueue; virtual;
+    procedure EnqueueElement(const Entry: PIpHtmlElement); virtual;
+    function ElementQueueIsEmpty: Boolean; virtual;
     function ExpParentWidth: Integer; virtual;
     procedure ImageChange(NewPicture : TPicture); virtual;
     function PageRectToScreen(const Rect : TRect; var ScreenRect: TRect): Boolean;
+    procedure ReportDrawRects(M : TRectMethod); virtual;
+    procedure ReportCurDrawRects(Owner: TIpHtmlNode; M : TRectMethod); virtual;
+    procedure ReportMapRects(M : TRectMethod); virtual;
     procedure GetAttributes(Target: TStrings; IncludeValues, IncludeBlanks: Boolean);
     procedure SetAttributeValue(const AttrName, NewValue: string);
     procedure SetProps(const RenderProps: TIpHtmlProps); virtual;
@@ -214,13 +221,13 @@ type
 
   TIpHtmlNodeNv = class(TIpHtmlNode)
   protected
+    procedure Invalidate; override;
+    procedure InvalidateSize; override;
+  public
+    procedure Enqueue; override;
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
     procedure ReportDrawRects(M : TRectMethod); override;
-    procedure Invalidate; override;
-    procedure InvalidateSize; override;
-    procedure Enqueue; override;
-  public
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   end;
 
@@ -231,8 +238,6 @@ type
     function GetChildNode(Index: Integer): TIpHtmlNode;
     function GetChildCount: Integer;
   protected
-    procedure ReportDrawRects(M : TRectMethod); override;
-    procedure ReportMapRects(M : TRectMethod); override;
     procedure AppendSelection(var S : string; var Completed: Boolean); override;
     procedure EnumChildren(EnumProc: TIpHtmlNodeEnumProc; UserData: Pointer); override;
     function GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer; override;
@@ -240,6 +245,8 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure Enqueue; override;
+    procedure ReportDrawRects(M : TRectMethod); override;
+    procedure ReportMapRects(M : TRectMethod); override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   public
     property ChildCount : Integer read GetChildCount;
@@ -290,9 +297,10 @@ type
 
   TIpHtmlNodeInline = class(TIpHtmlNodeCore)
   protected
+    procedure Invalidate; override;
+  public
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
-    procedure Invalidate; override;
   end;
 
   TIpHtmlNodeAlignInline = class(TIpHtmlNodeInline)
@@ -367,13 +375,9 @@ type
     FBackground : string;
     FBgColor : TColor;
     FTextColor : TColor;
-    procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;
     procedure CalcMinMaxPropWidth(RenderProps: TIpHtmlProps; var aMin, aMax: Integer); virtual;
     procedure Invalidate; override;
     function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
-    procedure InvalidateSize; override;
-    procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
     procedure AppendSelection(var S : string; var Completed: Boolean); override;
     procedure SetBackground(const AValue: string);
     procedure SetBgColor(const AValue: TColor);
@@ -382,10 +386,14 @@ type
     constructor Create(ParentNode : TIpHtmlNode; LayouterClass: TIpHtmlBaseLayouterClass); overload;
     constructor Create(ParentNode : TIpHtmlNode); overload;
     destructor Destroy; override;
+    procedure EnqueueElement(const Entry: PIpHtmlElement); override;
+    function ElementQueueIsEmpty: Boolean; override;
+    procedure InvalidateSize; override;
     procedure Layout(RenderProps: TIpHtmlProps; const TargetRect : TRect); virtual;
     procedure Render(RenderProps: TIpHtmlProps); virtual;
     function Level0: Boolean;
     procedure LoadAndApplyCSSProps; override;
+    procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
   public
     property Layouter : TIpHtmlBaseLayouter read FLayouter;
     property PageRect : TRect read GetPageRect;
@@ -411,10 +419,9 @@ type
     FMedia: string;
     FTitle: string;
     FType: string;
-  protected
+  public
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
-  public
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -685,22 +692,8 @@ type
     FBody : TIpHtmlNodeBODY;
     FTitleNode : TIpHtmlNodeTITLE;
     FDataProvider: TIpAbstractHtmlDataProvider;
-    {$IFDEF UseGifImageUnit}
-    GifImages : TFPList;
-    {$ELSE}
-    AnimationFrames : TFPList;
-    {$ENDIF}
-    FLIndent, FLOutdent : PIpHtmlElement;
-    SoftLF,
-    HardLF, HardLFClearLeft, SoftHyphen,
-    HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
-    NameList : TStringList;
     IdList: TStringList;
     GifQueue : TFPList;
-    MapList : TFPList;
-    AreaList : TFPList;
-    DefaultImage : TPicture;
-    MapImgList : TFPList;
     PaintBufferBitmap : TBitmap;
     PaintBuffer : TCanvas;
     Destroying : Boolean;
@@ -708,18 +701,12 @@ type
     RectList : TFPList;
     FStartSel, FEndSel : TPoint;
     ElementPool : TIpHtmlPoolManager;
-    AnchorList : TFPList;
-    FControlList : TFPList;
     FCurURL : string;
-    DoneLoading : Boolean;
-    PropACache : TIpHtmlPropsAList;
-    PropBCache : TIpHtmlPropsBList;
     RenderCanvas : TCanvas;
     FPageHeight : Integer;
     FFixedTypeface: string;
     FDefaultTypeFace: string;
     FDefaultFontSize: integer;
-    FControlParent: TWinControl;
     procedure ResetCanvasData;
     procedure ResetWordLists;
     procedure ResetBlocks(Node: TIpHtmlNode);
@@ -728,29 +715,18 @@ type
     function CheckKnownURL(URL: string): boolean;
     procedure ReportReference(URL: string);
     procedure PaintSelection;
-    function NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
-    function BuildStandardEntry(EType: TElementType): PIpHtmlElement;
-    function BuildLinefeedEntry(EType: TElementType; AHeight: Integer): PIpHtmlElement;
     function FindAttribute(const AttrNameSet: TIpHtmlAttributesSet): string;
     procedure Parse;
-    procedure InvalidateRect(R : TRect);
     procedure SetDefaultProps;
-    function BuildPath(const Ext: string): string;
     procedure MakeVisible(const R: TRect; ShowAtTop: Boolean = True);
     procedure InvalidateSize;
-    procedure AddGifQueue(Graphic: TGraphic; const R: TRect);
     procedure ClearGifQueue;
     procedure StartGifPaint(Target: TCanvas);
     procedure ClearAreaLists;
     procedure BuildAreaList;
-    procedure ClearAreaList;
-    procedure Get(const URL: string);
-    procedure Post(const URL: string; FormData: TIpFormDataEntity);
     procedure ClearRectList;
     procedure CreateIFrame(Parent: TWinControl; Frame: TIpHtmlNodeIFRAME; var Control: TWinControl);
     procedure FinalizeRecs(P: Pointer);
-    function LinkVisited(const URL: string): Boolean;
-    procedure AddWord(Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
     procedure AddWordEntry(const Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
     function FindElement(const Name: string): TIpHtmlNode;
     function FindElementId(const Id: String): TIpHtmlNode;
@@ -766,11 +742,6 @@ type
     procedure RequestImageNodes(Node: TIpHtmlNode);
     procedure SelectAll;
     procedure DeselectAll;
-    procedure ControlClick(Sender: TIpHtmlNodeControl);
-    procedure ControlClick2(Sender: TIpHtmlNodeControl; var cancel: boolean);
-    procedure ControlOnEditingDone(Sender: TIpHtmlNodeControl);
-    procedure ControlOnChange(Sender: TIpHtmlNodeControl);
-    procedure ControlCreate(Sender: TIpHtmlNodeControl);
     property HotNode: TIpHtmlNode read FHotNode;
     property CurElement: PIpHtmlElement read FCurElement write FCurElement;
     property HotPoint: TPoint read FHotPoint;
@@ -780,7 +751,6 @@ type
     property VLinkColor: TColor read FVLinkColor write FVLinkColor;
     property ALinkColor: TColor read FALinkColor write FALinkColor;
     property BgColor: TColor read FBgColor write FBgColor;
-    property LinksUnderlined: Boolean read FLinksUnderlined write FLinksUnderlined;
     property HasFrames: Boolean read FHasFrames;
     property OnGetImageX: TIpHtmlDataGetImageEvent read FOnGetImageX write FOnGetImageX;
     property OnScroll: TIpHtmlScrollEvent read FOnScroll write FOnScroll;
@@ -798,18 +768,55 @@ type
     property CanPaint: Boolean read FCanPaint;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 20;
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 20;
-    procedure DoGetImage(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture);
     function GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
     function getControlCount:integer;
     function getControl(i:integer):TIpHtmlNode;
   public
+    ControlParent: TWinControl;
+    DoneLoading : Boolean;
+    SoftLF, HardLF, SoftHyphen,
+    HardLFClearLeft, HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
+    LIndent, LOutdent : PIpHtmlElement;
+    AnchorList : TFPList;
+    AreaList : TFPList;
+    ControlList : TFPList;
+    MapList : TFPList;
+    NameList : TStringList;
+    PropACache : TIpHtmlPropsAList;
+    PropBCache : TIpHtmlPropsBList;
+    MapImgList : TFPList;
+    DefaultImage : TPicture;
+    {$IFDEF UseGifImageUnit}
+    GifImages : TFPList;
+    {$ELSE}
+    AnimationFrames : TFPList;
+    {$ENDIF}
+  public
     constructor Create;
     destructor Destroy; override;
+    procedure AddGifQueue(Graphic: TGraphic; const R: TRect);
+    procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
+    procedure AddWord(Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
+    function BuildStandardEntry(EType: TElementType): PIpHtmlElement;
+    function BuildLinefeedEntry(EType: TElementType; AHeight: Integer): PIpHtmlElement;
+    function BuildPath(const Ext: string): string;
+    procedure ClearAreaList;
+    procedure ControlCreate(Sender: TIpHtmlNodeControl);
+    procedure ControlClick(Sender: TIpHtmlNodeControl);
+    procedure ControlClick2(Sender: TIpHtmlNodeControl; var cancel: boolean);
+    procedure ControlOnChange(Sender: TIpHtmlNodeControl);
+    procedure ControlOnEditingDone(Sender: TIpHtmlNodeControl);
+    procedure DoGetImage(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture);
+    procedure FixMissingBodyTag;
+    procedure Get(const URL: string);
+    procedure InvalidateRect(R : TRect);
+    function LinkVisited(const URL: string): Boolean;
+    property LinksUnderlined: Boolean read FLinksUnderlined write FLinksUnderlined;
+    procedure LoadFromStream(S : TStream);
+    function NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
     function PagePtToScreen(const Pt: TPoint): TPoint;
     function PageRectToScreen(const Rect: TRect; var ScreenRect: TRect): Boolean;
-    procedure AddRect(const R: TRect; AElement: PIpHtmlElement; ABlock: TIpHtmlNodeBlock);
-    procedure FixMissingBodyTag;
-    procedure LoadFromStream(S : TStream);
+    procedure Post(const URL: string; FormData: TIpFormDataEntity);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
       UsePaintBuffer: Boolean; const TopLeft: TPoint); overload;
     procedure Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
@@ -2926,8 +2933,8 @@ begin
   HardLFClearLeft := BuildStandardEntry(etClearLeft);
   HardLFClearRight := BuildStandardEntry(etClearRight);
   HardLFClearBoth := BuildStandardEntry(etClearBoth);
-  FLIndent := BuildStandardEntry(etIndent);
-  FLOutdent := BuildStandardEntry(etOutdent);
+  LIndent := BuildStandardEntry(etIndent);
+  LOutdent := BuildStandardEntry(etOutdent);
   SoftHyphen := BuildStandardEntry(etSoftHyphen);
   DefaultProps := TIpHtmlProps.Create(PropACache, PropBCache);
   FHtml := TIpHtmlNodeHtml.Create(nil);
@@ -2937,7 +2944,7 @@ begin
   AreaList := TFPList.Create;
   MapImgList := TFPList.Create;
   RectList := TFPList.Create;
-  FControlList := TFPList.Create;
+  ControlList := TFPList.Create;
   LinkColor := clBlue;
   VLinkColor := clPurple;
   ALinkColor := clRed;
@@ -3048,7 +3055,7 @@ begin
   ClearRectList;
   RectList.Free;
   MapImgList.Free;
-  FControlList.Free;
+  ControlList.Free;
   DefaultProps.Free;
   FTabList.Free;
   {$IFDEF UseGifImageUnit}
@@ -3215,12 +3222,12 @@ end;
 
 function TIpHtml.getControlCount:integer;
 begin
-  result := FControlList.Count;
+  result := ControlList.Count;
 end;
 
 function TIpHtml.getControl(i:integer):TIpHtmlNode;
 begin
-  result := FControlList[i];
+  result := ControlList[i];
 end;
 
 procedure TIpHtml.PaintSelection;
@@ -3397,8 +3404,8 @@ begin
           AggressiveDrawing := False;
     {$ENDIF}
 
-  for i := 0 to Pred(FControlList.Count) do
-    TIpHtmlNode(FControlList[i]).UnmarkControl;
+  for i := 0 to Pred(ControlList.Count) do
+    TIpHtmlNode(ControlList[i]).UnmarkControl;
   if NeedResize then
     SetDefaultProps;
   FPageViewRect := TargetPageRect;
@@ -3427,8 +3434,8 @@ begin
   if FHtml <> nil then
     FHtml.Render(DefaultProps);
 
-  for i := 0 to Pred(FControlList.Count) do
-    TIpHtmlNode(FControlList[i]).HideUnmarkedControl;
+  for i := 0 to Pred(ControlList.Count) do
+    TIpHtmlNode(ControlList[i]).HideUnmarkedControl;
   if UsePaintBuffer then
     TargetCanvas.CopyRect(FClientRect, PaintBuffer, FClientRect)
   else
@@ -5077,13 +5084,13 @@ end;
 constructor TIpHtmlNodeControl.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Owner.FControlList.Add(Self);
+  Owner.ControlList.Add(Self);
   Align := hiaBottom;
 end;
 
 destructor TIpHtmlNodeControl.Destroy;
 begin
-  Owner.FControlList.Remove(Self);
+  Owner.ControlList.Remove(Self);
   inherited;
 end;
 
@@ -6459,15 +6466,15 @@ begin
     HyperPanel.OnHotClick := FViewer.HotClick;
     HyperPanel.OnClick := FViewer.ClientClick;
     HyperPanel.TabStop := FViewer.WantTabs;
-    FHtml.FControlParent := HyperPanel;
+    FHtml.ControlParent := HyperPanel;
     FHtml.OnScroll := HyperPanel.ScrollRequest;
     FHtml.OnControlClick := ControlClick;
     FHtml.OnControlClick2 := ControlClick2;
     FHtml.OnControlChange := ControlOnChange;
     FHtml.OnControlEditingdone := ControlOnEditingDone;
     FHtml.OnControlCreate := ControlCreate;
-    for i := 0 to Pred(FHtml.FControlList.Count) do
-      TIpHtmlNode(FHtml.FControlList[i]).CreateControl(HyperPanel);
+    for i := 0 to Pred(FHtml.ControlList.Count) do
+      TIpHtmlNode(FHtml.ControlList[i]).CreateControl(HyperPanel);
     HyperPanel.Hyper := FHtml;
   end;
 end;
