@@ -1649,7 +1649,7 @@ the specified file masks found in the specified search paths.
 <p>
 <var>ASearchPath</var> contains one or more paths examined in the method, and 
 can contain multiple path names separated by the value in 
-<var>PathSeparator</var>. Each delimited path value in ASearchPath is resolved 
+<var>PathSeparator</var>. Each delimited path value in ASearchPath is resolved
 by calling the <var>ResolveDots</var> function, and processed in the method. 
 For example:
 </p>
@@ -1676,45 +1676,38 @@ part of the file specification. It is not trimmed, and will most likely prevent
 a match for the mask value.
 </p>
 <p>
-<var>ASearchPath</var> contains the locations examined in the method, and can 
-contain multiple path names separated by the <var>PathSeparator</var> 
-character. Each delimited path value in <var>ASearchPath</var> is resolved 
-using <var>ResolveDots</var> and processed in the method.
-</p>
-<p>
 <var>ASearchSubDirs</var> includes subdirectories found in ASearchPath in the 
 search process when set to <b>True</b>. When set to <b>False</b> only the 
-specified paths are searched and their subdirectories are ignored.
+specified path(s) are searched and their subdirectories are ignored. The 
+default value is <b>True</b> and includes subdirectories.
 </p>
 <p>
-<var>CaseSensitive</var> determines whether case sensitive comparisons are 
-performed for paths, files, and directories processed in the method. The 
-default value is <b>False</b>.
+<var>CaseSensitive</var> determines whether file masks in ASearchMask are 
+handled in a case-sensitive manner. The default value is <b>False</b>.
 </p>
 <p>
-<var>ASearchSubDirs</var> determines whether subdirectories found in the search 
-path are processed in the method. The default value is <b>True</b> and includes 
-subdirectories.
+Use the <var>FileAttribute</var> property to control the file attributes needed 
+for any file that is considered a match in the search process. The default 
+value (<var>faAnyFile</var>) allows all files to be considered.
 </p>
 <p>
-Use the <var>FileAttribute</var> property to control the file attributes 
-included in the search process. The default value (<var>faAnyFile</var>) 
-allows all files to be considered.
-</p>
-<p>
-Use the <var>DirectoryAttribute</var> property to control whether directory 
-names are included in the search process. The default value 
-(<var>faDirectory</var>) includes directories.
+Use the <var>DirectoryAttribute</var> property to control the directory 
+attributes needed for any directory that is considered a match in the search 
+process. The default value (<var>faDirectory</var>) includes directories.
 </p>
 <p>
 Use the <var>FollowSymLink</var> property to indicate whether symbolic links 
-in the file system are followed in the method.
+in the file system are followed in the method. When enabled, a path or file 
+name that is a symbolic link is expanded (when accepted) to get the real path 
+on the local file system. By default, FollowSymLink is enabled in TFileSearcher.
 </p>
 <p>
 Search processes each of the path values found in ASearchPath. FindFirstUTF8 is 
 called to get file and directory attributes examined in the process. Values in 
 FileAttribute and DirectoryAttribute are checked to determine which directories 
-and files are available in the method.
+and files are available in the method. FollowSymLink determines whether an 
+internal hash of visited directories is maintained in the method and used to 
+resolve symbolic links.
 </p>
 <p>
 The OnQueryFileFound and OnQueryDirectoryFound events handlers are signalled 
