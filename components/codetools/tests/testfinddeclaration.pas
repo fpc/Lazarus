@@ -41,9 +41,11 @@
 
       Each ENTRY can start with a ! to test for a non-present completion
 
-    {declaration:
+    {declaration:TEST
+     declaration!:TEST
+       TEST=[unitname/]nested.declaration.path[:linenumber]
       Tests: CodeToolBoss.FindDeclaration
-      Also runs {completion:*}
+      Also runs {completion:*} unless followed by !
 
     {guesstype:
       Tests: CodeToolBoss.GuessTypeOfIdentifier
@@ -294,7 +296,7 @@ var
   FoundNode: TCodeTreeNode;
   FoundPath: String;
   Src: String;
-  NameStartPos, i, l, IdentifierStartPos, IdentifierEndPos,
+  NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpexctedCompletion, ExpexctedTerm,
     ExpexctedCompletionPart, ExpexctedTermPart, s: String;
@@ -365,12 +367,12 @@ begin
       end;
 
       CommentEnd := CommentP;
-      CommentP := p-1;
+      CommentP := p;
       repeat
-        NameStartPos:=CommentP+1;
+        NameStartPos:=CommentP;
         p := NameStartPos;
-        CommentP := PosEx('|', Src, NameStartPos);
-        if (CommentP < 1) or (CommentP > CommentEnd) then
+        CommentP := PosEx('|', Src, NameStartPos) + 1;
+        if (CommentP <= 1) or (CommentP > CommentEnd) then
           CommentP := CommentEnd;
 
         // check for specials:
@@ -378,6 +380,7 @@ begin
         {guesstype:type}
         if not IsIdentStartChar[Src[p]] then continue;
         while (p<=length(Src)) and (IsIdentChar[Src[p]]) do inc(p);
+        if (p<=length(Src)) and (Src[p] = '!') then inc(p);
         Marker:=copy(Src,NameStartPos,p-NameStartPos);
         if (p>length(Src)) or (Src[p]<>':') then begin
           WriteSource(p,MainTool);
@@ -388,13 +391,13 @@ begin
         PathPos:=p;
 
         //debugln(['TTestFindDeclaration.FindDeclarations Marker="',Marker,'" params: ',dbgstr(MainTool.Src,p,CommentP-p)]);
-        if (Marker='declaration') or (Marker='completion') then begin
+        if (Marker='declaration') or (Marker='declaration!') or (Marker='completion') then begin
           ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
           {$IFDEF VerboseFindDeclarationTests}
           debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
           {$ENDIF}
 
-          if (Marker='declaration') then begin
+          if (Marker='declaration') or (Marker='declaration!') then begin
             MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
             // test FindDeclaration
@@ -415,6 +418,18 @@ begin
               FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
               FoundPath:='';
               FoundNode:=nil;
+              i := pos('/', ExpectedPath);
+              if i > 1 then begin
+                FoundPath:=ExtractFileNameOnly(FoundCursorPos.Code.Filename);
+                AssertEquals('find declaration (Loop: '+IntToStr(TestLoop)+') FILENAME wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),copy(LowerCase(ExpectedPath), 1 , i-1),LowerCase(FoundPath));
+                delete(ExpectedPath, 1, i);
+              end;
+              i := pos(':', ExpectedPath); // line number
+              if i > 1 then begin
+                TryStrToInt(copy(ExpectedPath, i+1, Length(ExpectedPath)), j);
+                AssertEquals('find declaration (Loop: '+IntToStr(TestLoop)+') LINE wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true), j, FoundCursorPos.Y);
+                delete(ExpectedPath,i,Length(ExpectedPath));
+              end;
               if (FoundCursorPos.Y=1) and (FoundCursorPos.X=1) then begin
                 // unit
                 FoundPath:=ExtractFileNameOnly(FoundCursorPos.Code.Filename);
@@ -435,7 +450,7 @@ begin
           end;
 
           // test identifier completion
-          if (ExpectedPath<>'') then begin
+          if (ExpectedPath<>'') and (Marker<>'declaration!') then begin
             for ExpexctedCompletionPart in ExpectedPath.Split(';') do begin
               ExpexctedCompletion := ExpexctedCompletionPart;
               StartOffs := 0;
@@ -506,6 +521,8 @@ begin
               continue;
             end else begin
               //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
+              if pos('/', ExpectedType) > 0 then
+                NewType := NewExprType.Context.Tool.GetSourceName + '/' + NewType;
               if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
                 WriteSource(IdentifierStartPos,MainTool);
                 AssertEquals('GuessTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
@@ -522,7 +539,6 @@ begin
           ListOfPCodeXYPosition:=nil;
           Cache:=nil;
           MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
-
           if not CodeToolBoss.FindReferences(
             aCode,CursorPos.X,CursorPos.Y,
             aCode {TODO: iterate multiple files}, not ExpComment,
@@ -531,11 +547,12 @@ begin
             AssertTrue('FindReferences failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true), False);
 
             s := '';
-            for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-              if s <> '' then
-                s := s + ';';
-              s := s + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.X) + ',' + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.Y);
-            end;
+            if ListOfPCodeXYPosition <> nil then
+              for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+                if s <> '' then
+                  s := s + ';';
+                s := s + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.X) + ',' + IntToStr(PCodeXYPosition(ListOfPCodeXYPosition[i])^.Y);
+              end;
           CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
           Cache.Free;
 
