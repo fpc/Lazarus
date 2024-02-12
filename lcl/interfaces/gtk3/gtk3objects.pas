@@ -2141,18 +2141,6 @@ begin
   path:=w^.get_path;
   gtk_style_context_set_path (context, path);
   gtk_style_context_set_state(context,(* gtk_widget_path_iter_get_state (path, -1)*) [TGtkStateFlagsIdxMinValue..TGtkStateFlagsIdxMaxValue]);
-
-  {GTK_STATE_FLAG_NORMAL: TGtkStateFlags = 0;
-  GTK_STATE_FLAG_ACTIVE: TGtkStateFlags = 1;
-  GTK_STATE_FLAG_PRELIGHT: TGtkStateFlags = 2;
-  GTK_STATE_FLAG_SELECTED: TGtkStateFlags = 4;
-  GTK_STATE_FLAG_INSENSITIVE: TGtkStateFlags = 8;
-  GTK_STATE_FLAG_INCONSISTENT: TGtkStateFlags = 16;
-  GTK_STATE_FLAG_FOCUSED: TGtkStateFlags = 32;
-  GTK_STATE_FLAG_BACKDROP: TGtkStateFlags = 64;
-  GTK_STATE_FLAG_DIR_LTR: TGtkStateFlags = 128;
-  GTK_STATE_FLAG_DIR_RTL: TGtkStateFlags = 256;
-  }
   gtk_style_context_set_state(context, [GTK_STATE_FLAG_FOCUSED, GTK_STATE_FLAG_PRELIGHT]);
 
   pw:=w;
