@@ -199,6 +199,9 @@ implementation
 uses
   GraphMath;
 
+type
+  TControlScrollBarAccess = class(TControlScrollBar);
+
 const
   // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
   // however, these are macros of a function call to CGWindowLevelKey()
@@ -701,6 +704,22 @@ begin
   Result := TCocoaWindow(TCocoaWindow.alloc);
 end;
 
+
+function hasScrollBar(AScrollBar: TControlScrollBar): Boolean; inline;
+begin
+  Result:= TControlScrollBarAccess(AScrollBar).ScrollBarShouldBeVisible;
+end;
+
+function hasHorzScrollBar(AWinControl: TWinControl): Boolean; inline;
+begin
+  Result:= hasScrollBar( TScrollingWinControl(AWinControl).HorzScrollBar );
+end;
+
+function hasVertScrollBar(AWinControl: TWinControl): Boolean; inline;
+begin
+  Result:= hasScrollBar( TScrollingWinControl(AWinControl).VertScrollBar );
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
@@ -736,8 +755,8 @@ begin
   cnt.wincallback := cb;
   cnt.isCustomRange := true;
 
-  cnt.setHasHorizontalScroller(True);
-  cnt.setHasVerticalScroller(True);
+  cnt.setHasHorizontalScroller( hasHorzScrollBar(AWinControl) );
+  cnt.setHasVerticalScroller( hasVertScrollBar(AWinControl) );
   cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
   cnt.setHorizontalScrollElasticity(NSScrollElasticityNone);
   cnt.setDocumentView(doc);
