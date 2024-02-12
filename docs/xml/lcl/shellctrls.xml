@@ -1023,12 +1023,13 @@ on the tree view control.
 APath is a UTF-8-encoded fully-qualified path name. File attributes for the 
 argument are retrieved to check whether it exists on the local file system. 
 ObjectTypes is checked to determine whether the item is one of the object types 
-displayed on the tree view control.
+displayed on the tree view control; this includes checking whether the otHidden 
+object type setting matches the file system attributes for the path.
 </p>
 <p>
-The return value is <b>False</b> if both conditions are not satisfied. The 
-return value is <b>True</b> if APath a valid file (or directory) on the local 
-file system.
+The return value is <b>False</b> if both conditions are <b>not</b> satisfied. 
+The return value is <b>True</b> if APath a valid file (or directory) on the 
+local file system.
 </p>
 <p>
 Exists is used in the UpdateView method when the Path and expanded state for a 
@@ -1630,21 +1631,24 @@ control.
 The default value for the property is [otFolders].
 </p>
 <p>
-Changing the values in the property causes the Refresh method to be called to 
-reload the Items for the control starting at the root directory. The 
-currently Selected tree node is saved before the nodes are refreshed, and 
-restored when Items has been reloaded. An exception raised when the path no 
-longer exists in the tree nodes is handled and ignored in the method.
+Changing the values in the property causes the UpdateView method to be called 
+to reload the Items displayed on the control. The currently Selected tree node 
+is saved before the nodes are refreshed, and restored (when able) when Items 
+has been reloaded. If the selected path has become invalid after the property 
+change, an previous path (or the root node) becomes the Selected item on the 
+control.
 </p>
 </descr>
 <seealso>
-<link id="TCustomShellTreeView.ObjectTypes"/>
 <link id="TCustomShellTreeView.Items"/>
+<link id="TCustomShellTreeView.Exists"/>
 <link id="TCustomShellTreeView.Path"/>
 <link id="TCustomShellTreeView.Root"/>
-<link id="TCustomShellTreeView.Refresh"/>
+<link id="TCustomShellTreeView.UpdateView"/>
 <link id="TObjectTypes"/>
 <link id="TObjectType"/>
+<link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+<link id="#lcl.comctrls.TCustomTreeView.TopItem">TCustomTreeView.TopItem</link>
 </seealso>
 </element>
 
