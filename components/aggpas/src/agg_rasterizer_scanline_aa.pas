@@ -1752,7 +1752,7 @@ end;
 { CALCULATE_ALPHA }
 function rasterizer_scanline_aa.calculate_alpha(area: int): unsigned;
 var
- cover : system.integer;
+ cover : int;
 
 begin
 // 1: cover:=area shr (poly_base_shift * 2 + 1 - aa_shift );
