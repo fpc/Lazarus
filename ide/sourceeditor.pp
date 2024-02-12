@@ -2318,7 +2318,7 @@ var
 begin
   FAutoHintTimer.Enabled := False;
   FAutoHintTimer.AutoEnabled := False;
-  if not FManager.ActiveSourceWindow.IsVisible then exit;
+  if not Assigned(FManager.ActiveSourceWindow) or not FManager.ActiveSourceWindow.IsVisible then exit;
   MousePos := Mouse.CursorPos;
   AControl:=FindLCLControl(MousePos);
   if (AControl=nil) or (not FManager.ActiveSourceWindow.ContainsControl(AControl)) then exit;
