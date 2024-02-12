@@ -1704,6 +1704,7 @@ var
   sz  : NSSize;
   flg : NSUInteger;
   hosted: Boolean;
+  lclControl: TScrollingWinControl;
 begin
   obj := NSObject(Handle);
   Result := 0;
@@ -1719,6 +1720,8 @@ begin
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
     sc:=TCocoaScrollView(obj);
+    if sc.lclGetTarget is TScrollingWinControl then
+      lclControl:=TScrollingWinControl(sc.lclGetTarget);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
       f:=sc.contentSize;
       sz:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
@@ -1728,6 +1731,8 @@ begin
         if ScrollInfo.nMax>f.width then begin
           sz.width := ScrollInfo.nMax;
           flg:=flg and not NSViewWidthSizable;
+          if (sz.width>f.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then
+            sc.setHasHorizontalScroller(true);
         end else begin
           sz.width := f.width;
           flg:=flg or NSViewWidthSizable;
@@ -1736,6 +1741,8 @@ begin
         if ScrollInfo.nMax>f.height then begin
           sz.height := ScrollInfo.nMax;
           flg:=flg and not NSViewHeightSizable;
+          if (sz.height>f.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then
+            sc.setHasVerticalScroller(true);
         end else begin
           sz.height := f.height;
           flg:=flg or NSViewHeightSizable;
