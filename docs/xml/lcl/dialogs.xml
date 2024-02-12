@@ -1236,19 +1236,22 @@ classes. For example, it represents a directory name in the
 
 <element name="TFileDialog.Filter">
 <short>
-A string which contains possible filename filters (e.g. .doc, .xmp, .pas etc).
+A string which contains available filename filters used to select files by 
+their file extensions.
 </short>
 <descr>
 <p>
-This is a string which contains the filters a user can choose from. The 
-available filters and their description are separated by pipe symbols.
+This is a string which contains the filters a user can choose from. The filters 
+contain descriptive text for the filters and their file masks. The component 
+values in the filter are separated by the Pipe (|) symbol.
 </p>
 <p>
-To set this property at run-time assign a value like:
+A value can be assigned to the property using notation like:
 </p>
 <code>'All files|*.*|Lazarus Project files|*.lpr'</code>
 <p>
-An entry can contain multiple masks separated by semicolon, like:
+A filter can contain multiple file masks separated by the Semicolon (;) 
+character, like:
 </p>
 <code>'Pascal units|*.pas;*.pp;*.p|All files|*.*'</code>
 </descr>
