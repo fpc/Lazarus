@@ -632,8 +632,11 @@ in the dialog.
 list of file name filters available in the dialog. Each value in the 
 delimited list is separated by a Pipe (or vertical bar) character ('|') and 
 consists of a description and file extension for files matching the filter 
-value.
+value. For example:
 </p>
+<code>
+'All files|*.*|Lazarus Project files|*.lpr|Pascal units|*.pas;*.pp'
+</code>
 <p>
 The initial value for Filter is assigned in <var>Create</var> using the value 
 from the <var>DefaultFilter</var> property.
