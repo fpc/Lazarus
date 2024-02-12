@@ -4393,6 +4393,10 @@ msgstr " (Ignorando la configuración del proyecto a continuación)"
 msgid "Store converter config in session"
 msgstr "Almacenar la configuración del convertidor en la sesión"
 
+#: lazarusidestrconsts.drsstoreformatterconfiginses
+msgid "Store formatter config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreprojectdebuggerconfi
 msgid "Store project debugger configs in session"
 msgstr "Almacenar la configuración del depurador en la sesión"
@@ -4402,16 +4406,30 @@ msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugge
 msgstr "El \"Backend del depurador\" seleccionado del menú desplegable (lista de backend de depueración del IDE) es siempre almacenado en la sesión. Los backends específicos del proyecto (a continuación) se almacenan de forma predeterminada en el LPI."
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
-msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
+#, fuzzy
+#| msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
+msgid "This only affects the list of converters below. The settings which list to use are always stored in the session."
 msgstr "Esto solo afecta la lista de convertidores a continuación. Las opciones que configuran qué lista usar siempre se almacenan en la sesión."
+
+#: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
+msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
 msgid "Use the IDE-Global list of converters"
 msgstr "User la lista IDE-Global de convertidores"
 
+#: lazarusidestrconsts.drsusetheidegloballistofformatter
+msgid "Use the IDE-Global list of formatters"
+msgstr ""
+
 #: lazarusidestrconsts.drsusetheprojectlistofconver
 msgid "Use the project list of converters"
 msgstr "Usar la lista de convertidores del proyecto"
+
+#: lazarusidestrconsts.drsusetheprojectlistofformatter
+msgid "Use the project list of formatters"
+msgstr ""
 
 #: lazarusidestrconsts.drsusingidedefaultdebuggerse
 msgid "Using IDE default debugger settings"

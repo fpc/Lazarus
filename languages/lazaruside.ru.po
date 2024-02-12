@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-06 03:31+0300\n"
+"PO-Revision-Date: 2024-02-12 18:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4263,6 +4263,10 @@ msgstr " (параметры проекта ниже игнорируются)"
 msgid "Store converter config in session"
 msgstr "Сохранять параметры преобразования в сеансе работы"
 
+#: lazarusidestrconsts.drsstoreformatterconfiginses
+msgid "Store formatter config in session"
+msgstr "Сохранять параметры форматирования в сеансе работы"
+
 #: lazarusidestrconsts.drsstoreprojectdebuggerconfi
 msgid "Store project debugger configs in session"
 msgstr "Сохранять параметры отладчика проекта в сеансе работы"
@@ -4272,16 +4276,28 @@ msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugge
 msgstr "Выбранный механизм отладки в раскрывающемся списке (механизмов отладки IDE) всегда сохраняется в сеансе работы. Механизмы отладки проекта (ниже) по умолчанию хранятся в LPI."
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
-msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
+msgid "This only affects the list of converters below. The settings which list to use are always stored in the session."
 msgstr "Затрагивает только список элементов преобразования ниже. Параметры, задающие используемый список, всегда хранятся в сеансе работы."
+
+#: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
+msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr "Затрагивает только список элементов форматирования ниже. Параметры, задающие используемый список, всегда хранятся в сеансе работы."
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
 msgid "Use the IDE-Global list of converters"
 msgstr "Использовать список элементов преобразования IDE"
 
+#: lazarusidestrconsts.drsusetheidegloballistofformatter
+msgid "Use the IDE-Global list of formatters"
+msgstr "Использовать список элементов форматирования IDE"
+
 #: lazarusidestrconsts.drsusetheprojectlistofconver
 msgid "Use the project list of converters"
 msgstr "Использовать список элементов преобразования проекта"
+
+#: lazarusidestrconsts.drsusetheprojectlistofformatter
+msgid "Use the project list of formatters"
+msgstr "Использовать список элементов форматирования проекта"
 
 #: lazarusidestrconsts.drsusingidedefaultdebuggerse
 msgid "Using IDE default debugger settings"

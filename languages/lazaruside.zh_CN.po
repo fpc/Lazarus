@@ -4270,6 +4270,10 @@ msgstr ""
 msgid "Store converter config in session"
 msgstr "在会话中存储转换器配置"
 
+#: lazarusidestrconsts.drsstoreformatterconfiginses
+msgid "Store formatter config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreprojectdebuggerconfi
 msgid "Store project debugger configs in session"
 msgstr "在会话中保存项目调试器配置"
@@ -4279,16 +4283,28 @@ msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugge
 msgstr ""
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
-msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
+msgid "This only affects the list of converters below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
+msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
 msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
 msgid "Use the IDE-Global list of converters"
 msgstr "使用 IDE 全局转换器列表"
 
+#: lazarusidestrconsts.drsusetheidegloballistofformatter
+msgid "Use the IDE-Global list of formatters"
+msgstr ""
+
 #: lazarusidestrconsts.drsusetheprojectlistofconver
 msgid "Use the project list of converters"
 msgstr "使用项目转换器列表"
+
+#: lazarusidestrconsts.drsusetheprojectlistofformatter
+msgid "Use the project list of formatters"
+msgstr ""
 
 #: lazarusidestrconsts.drsusingidedefaultdebuggerse
 msgid "Using IDE default debugger settings"

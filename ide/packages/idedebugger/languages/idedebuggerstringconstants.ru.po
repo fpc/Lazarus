@@ -192,7 +192,7 @@ msgstr "Адрес данных"
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
-msgstr ""
+msgstr "Форматирование значений"
 
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
@@ -1403,53 +1403,53 @@ msgstr "П&ереключить точку останова"
 
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
-msgstr ""
+msgstr "TColor"
 
 #: idedebuggerstringconstants.valformattercolornamealpha
 msgid "TAlphaColor"
-msgstr ""
+msgstr "TAlphaColor"
 
 #: idedebuggerstringconstants.valformattercolorrgbdec
 msgid "RGB in decimal"
-msgstr ""
+msgstr "Десятичное значение RGB"
 
 #: idedebuggerstringconstants.valformattercolorshowboth
 msgid "Show Both"
-msgstr ""
+msgstr "Показывать то и другое"
 
 #: idedebuggerstringconstants.valformattercolorshowname
 msgid "Show name"
-msgstr ""
+msgstr "Показывать имя"
 
 #: idedebuggerstringconstants.valformattercolorshowrgb
 msgid "Show RGB"
-msgstr ""
+msgstr "Показывать значение RGB"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatd
 msgid "Format for date"
-msgstr ""
+msgstr "Формат даты"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatdt
 msgid "Format for date-time"
-msgstr ""
+msgstr "Формат даты/времени"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatt
 msgid "Format for time"
-msgstr ""
+msgstr "Формат времени"
 
 #: idedebuggerstringconstants.valformatterdatetimename
 msgid "DateTime"
-msgstr ""
+msgstr "DateTime"
 
 #: idedebuggerstringconstants.valformatterorigvalatend
 msgid "Show original value at end"
-msgstr ""
+msgstr "Показывать исходное значение в конце"
 
 #: idedebuggerstringconstants.valformatterorigvalatstart
 msgid "Show original value at start"
-msgstr ""
+msgstr "Показывать исходное значение в начале"
 
 #: idedebuggerstringconstants.valformatterorigvalhide
 msgid "Replace/Hide original value"
-msgstr ""
+msgstr "Заменить/скрыть исходное значение"
 
