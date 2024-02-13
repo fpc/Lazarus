@@ -7250,15 +7250,15 @@ var
 begin
   if not CodeToolsOpts.IdentComplIncludeCodeTemplates then
     Exit;
-
-  for I := 0 to SourceEditorManager.CodeTemplateModul.Completions.Count-1 do
-  begin
-    New := TCodeTemplateIdentifierListItem.Create(CodeTemplateCompatibility, False, CodeTemplateHistoryIndex,
-      PChar(SourceEditorManager.CodeTemplateModul.Completions[I]),
-      CodeTemplateLevel, nil, nil, ctnCodeTemplate);
-    New.Comment := SourceEditorManager.CodeTemplateModul.CompletionComments[I];
-    CodeToolBoss.IdentifierList.Add(New);
-  end;
+  with SourceEditorManager.CodeTemplateModul do
+    for I := 0 to CodeTemplates.Count-1 do
+    begin
+      New := TCodeTemplateIdentifierListItem.Create(CodeTemplateCompatibility,
+              False, CodeTemplateHistoryIndex, PChar(CodeTemplates[I]),
+              CodeTemplateLevel, nil, nil, ctnCodeTemplate);
+      New.Comment := CodeTemplates.Objects[I].Comment;
+      CodeToolBoss.IdentifierList.Add(New);
+    end;
 end;
 
 procedure TMainIDE.DoCompile;

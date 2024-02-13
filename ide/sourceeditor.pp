@@ -2488,15 +2488,16 @@ Begin
      ctTemplateCompletion:
        begin
          ccSelection:='';
-         for I := 0 to Manager.CodeTemplateModul.Completions.Count-1 do begin
-           NewStr := Manager.CodeTemplateModul.Completions[I];
-           if NewStr<>'' then begin
-             NewStr:=#3'B'+NewStr+#3'b';
-             while length(NewStr)<10+4 do NewStr:=NewStr+' ';
-             NewStr:=NewStr+' '+Manager.CodeTemplateModul.CompletionComments[I];
-             SL.Add(NewStr);
+         with Manager.CodeTemplateModul do
+           for I := 0 to CodeTemplates.Count-1 do begin
+             NewStr := CodeTemplates[I];
+             if NewStr<>'' then begin
+               NewStr:=#3'B'+NewStr+#3'b';
+               while length(NewStr)<10+4 do NewStr:=NewStr+' ';
+               NewStr:=NewStr+' '+CodeTemplates.Objects[I].Comment;
+               SL.Add(NewStr);
+             end;
            end;
-         end;
        end;
 
     end;
@@ -5086,6 +5087,7 @@ var
   SrcToken: String;
   IdChars: TSynIdentChars;
   WordToken: String;
+  Template: TCodeTemplate;
 begin
   Result:=false;
   Line:=GetLineText;
@@ -5098,28 +5100,28 @@ begin
   x2 := Min(x2, p.x);
   WordToken := copy(Line, x1, x2-x1);
   IdChars := FEditor.IdentChars;
-  for i:=0 to Manager.CodeTemplateModul.Completions.Count-1 do begin
-    AToken:=Manager.CodeTemplateModul.Completions[i];
-    if AToken='' then continue;
-    if AToken[1] in IdChars then
-      SrcToken:=WordToken
-    else
-      SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
-    //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
-    if (AnsiCompareText(AToken,SrcToken)=0)
-    and (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)>=0)
-    and ( (not FEditor.SelAvail) or
-          (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
-             AutoCompleteOptionNames[acoIgnoreForSelection]) < 0)  )
-    then begin
-      Result:=true;
+  with Manager.CodeTemplateModul do
+    for i:=0 to CodeTemplates.Count-1 do begin
+      AToken:=CodeTemplates[i];
+      Template:=CodeTemplates.Objects[i];
+      if AToken='' then continue;
+      if AToken[1] in IdChars then
+        SrcToken:=WordToken
+      else
+        SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
       //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
-      Manager.CodeTemplateModul.ExecuteCompletion(AToken,FEditor);
-      AddChar:=not Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
-                                     AutoCompleteOptionNames[acoRemoveChar])>=0;
-      exit;
+      if (AnsiCompareText(AToken,SrcToken)=0)
+      and (Template.Attributes.IndexOfName(CatName)>=0)
+      and ( (not FEditor.SelAvail) or
+            (Template.Attributes.IndexOfName(AutoCompleteOptionNames[acoIgnoreForSelection])<0) )
+      then begin
+        Result:=true;
+        //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
+        ExecuteCompletion(AToken,FEditor);
+        AddChar:=not Template.Attributes.IndexOfName(AutoCompleteOptionNames[acoRemoveChar])>=0;
+        exit;
+      end;
     end;
-  end;
 
   if EditorOpts.AutoBlockCompletion
   and (FEditor.Highlighter is TSynPasSyn) then
@@ -11649,22 +11651,18 @@ procedure TSourceEditorManager.CodeTemplateExecuteCompletion(
   ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
 var
   SrcEdit: TSourceEditorInterface;
+  Template: TCodeTemplate;
   TemplateName: string;
-  TemplateValue: string;
-  TemplateComment: string;
-  TemplateAttr: TStrings;
 begin
   SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
   if SrcEdit=nil then
     SrcEdit := ActiveEditor;
   //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
 
-  TemplateName:=ASynAutoComplete.Completions[Index];
-  TemplateValue:=ASynAutoComplete.CompletionValues[Index];
-  TemplateComment:=ASynAutoComplete.CompletionComments[Index];
-  TemplateAttr:=ASynAutoComplete.CompletionAttributes[Index];
-  ExecuteCodeTemplate(SrcEdit,TemplateName,TemplateValue,TemplateComment,
-                      ASynAutoComplete.EndOfTokenChr,TemplateAttr,
+  TemplateName:=ASynAutoComplete.CodeTemplates[Index];
+  Template:=ASynAutoComplete.CodeTemplates.Objects[Index];
+  ExecuteCodeTemplate(SrcEdit,Template,TemplateName,
+                      ASynAutoComplete.EndOfTokenChr,
                       ASynAutoComplete.IndentToTokenStart);
 end;
 

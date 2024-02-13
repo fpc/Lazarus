@@ -230,7 +230,7 @@ begin
 
   // exists
   if not ASkipExistCheck then
-    if ASynAutoComplete.Completions.IndexOf(AToken) >= 0 then
+    if ASynAutoComplete.CodeTemplates.IndexOf(AToken) >= 0 then
     begin
       IDEMessageDialog(lisCodeTemplError, lisCodeTemplErrorAlreadyExists, mtError, [mbOK]);
       exit(false);
@@ -280,19 +280,19 @@ var
   Str: array of string;
 begin
   Result:= mrCancel;
-  if (AIndex<0) or (AIndex>=ASynAutoComplete.Completions.Count) then exit;
+  if (AIndex<0) or (AIndex>=ASynAutoComplete.CodeTemplates.Count) then exit;
 
   SetLength(Str{%H-}, 2);
-  Str[0]:= ASynAutoComplete.Completions[AIndex];
-  Str[1]:= ASynAutoComplete.CompletionComments[AIndex];
+  Str[0] := ASynAutoComplete.CodeTemplates[AIndex];
+  Str[1] := ASynAutoComplete.CodeTemplates.Objects[AIndex].Comment;
 
   if not InputQuery(lisCodeTemplEditCodeTemplate,
     [lisCodeTemplToken, lisCodeTemplComment], Str) then exit;
 
   if not IsCodeTemplateOk(ASynAutoComplete, Str[0], true) then exit;
 
-  ASynAutoComplete.Completions[AIndex]:= Str[0];
-  ASynAutoComplete.CompletionComments[AIndex]:= Str[1];
+  ASynAutoComplete.CodeTemplates[AIndex] := Str[0];
+  ASynAutoComplete.CodeTemplates.Objects[AIndex].Comment := Str[1];
   Result:= mrOk;
 end;
 
@@ -983,7 +983,7 @@ begin
   if AddCodeTemplate(SynAutoComplete,Token,Comment)=mrOk then begin
     SynAutoComplete.AddCompletion(Token, '', Comment);
     FillCodeTemplateListBox;
-    Index := SynAutoComplete.Completions.IndexOf(Token);
+    Index := SynAutoComplete.CodeTemplates.IndexOf(Token);
     if Index >= 0 then
       Index := TemplateListBox.Items.IndexOfObject(TObject({%H-}Pointer(Index)));
     if Index >= 0 then
@@ -1008,11 +1008,11 @@ begin
   if a < 0 then exit;
 
   if IDEMessageDialog(lisConfirm, dlgDelTemplate
-      +'"'+SynAutoComplete.Completions[a]+' - '
-      +SynAutoComplete.CompletionComments[a]+'"'
+      +'"'+SynAutoComplete.CodeTemplates[a]+' - '
+      +SynAutoComplete.CodeTemplates[a]+'"'
       +'?',mtConfirmation,[mbOk,mbCancel])=mrOK
   then begin
-    SynAutoComplete.DeleteCompletion(a);
+    SynAutoComplete.CodeTemplates.Delete(a);
     LastTemplate := -1; // to prevent the saving of the deleted template
     FillCodeTemplateListBox;
     if idx < TemplateListBox.Items.Count then begin
@@ -1118,8 +1118,8 @@ begin
 
   if EditCodeTemplate(SynAutoComplete, a)=mrOk then begin
     TemplateListBox.Items[idx]:=
-       SynAutoComplete.Completions[a]
-       +' - "'+SynAutoComplete.CompletionComments[a]+'"';
+       SynAutoComplete.CodeTemplates[a]
+       +' - "'+SynAutoComplete.CodeTemplates[a]+'"';
     ShowCurCodeTemplate;
   end;
 end;
@@ -1184,11 +1184,12 @@ var
 begin
   sl:=TStringListUTF8Fast.Create;
   try
-    for a:=0 to SynAutoComplete.Completions.Count-1 do begin
+    for a:=0 to SynAutoComplete.CodeTemplates.Count-1 do begin
       // Add the index in SynAutoComplete as Object, since both indexes won't
       // be in sync after sorting
-      sl.AddObject(SynAutoComplete.Completions[a]
-          +' - "'+SynAutoComplete.CompletionComments[a]+'"', TObject({%H-}Pointer(a)));
+      sl.AddObject(SynAutoComplete.CodeTemplates[a]
+          +' - "'+SynAutoComplete.CodeTemplates.Objects[a].Comment+'"',
+          TObject({%H-}Pointer(a)));
     end;
     sl.Sort;
     TemplateListBox.Items.Assign(sl);
@@ -1201,7 +1202,7 @@ procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
   EnableMacros, KeepSubIndent: boolean;
   LineCount: integer;
-  Attributes: TStrings;
+  Template: TCodeTemplate;
   idx, a, sp, ep: integer;
   s: string;
   AutoOnCat: array[TAutoCompleteOption] of Boolean;
@@ -1215,7 +1216,7 @@ var
   //
   function GetBooleanAttribute(const AttrName: string): boolean; inline;
   begin
-    result:=StrToBoolDef(Attributes.Values[AttrName], false);
+    result:=StrToBoolDef(Template.Attributes.Values[AttrName], false);
   end;
   //
 begin
@@ -1237,15 +1238,15 @@ begin
   // debugln('TCodeTemplateDialog.ShowCurCodeTemplate A a=',dbgs(a));
   if a >= 0
   then begin
-    EditTemplateGroupBox.Caption:=dbgstr(SynAutoComplete.Completions[a])
-                           +' - '+dbgstr(SynAutoComplete.CompletionComments[a]);
-    Attributes:=SynAutoComplete.CompletionAttributes[a];
+    Template:=SynAutoComplete.CodeTemplates.Objects[a];
+    EditTemplateGroupBox.Caption:=dbgstr(SynAutoComplete.CodeTemplates[a])
+                           +' - '+dbgstr(Template.Comment);
     EnableMacros:=GetBooleanAttribute(CodeTemplateEnableMacros);
     KeepSubIndent:=GetBooleanAttribute(CodeTemplateKeepSubIndent);
     for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
       AutoOnCat[c]:=GetBooleanAttribute(AutoCompleteOptionNames[c]);
     LastTemplate := -1;
-    s:=SynAutoComplete.CompletionValues[a];
+    s:=Template.Value;
     //debugln('TCodeTemplateDialog.ShowCurCodeTemplate s="',s,'"');
     sp:=1;
     ep:=1;
@@ -1276,51 +1277,17 @@ end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
 var
-  a: LongInt;
-
-  procedure SetBooleanAttribute(const AttrName: string; NewValue: boolean);
-  var
-    Attributes: TStrings;
-    l: LongInt;
-  begin
-    Attributes:=SynAutoComplete.CompletionAttributes[a];
-    if NewValue then
-      Attributes.Values[AttrName]:='true'
-    else begin
-      l:=Attributes.IndexOfName(AttrName);
-      if l>=0 then
-        Attributes.Delete(l);
-    end;
-  end;
-
-var
-  NewValue: string;
-  l: integer;
+  Templ: TCodeTemplate;
   c: TAutoCompleteOption;
 begin
   if LastTemplate<0 then exit;
-  a := LastTemplate;
-  //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate A a=',dbgs(a));
-  NewValue:=TemplateSynEdit.Lines.Text;
-  // remove last EOL
-  if NewValue<>'' then begin
-    l:=length(NewValue);
-    if NewValue[l] in [#10,#13] then begin
-      dec(l);
-      if (l>0) and (NewValue[l] in [#10,#13])
-      and (NewValue[l]<>NewValue[l+1]) then
-        dec(l);
-      SetLength(NewValue,l);
-    end;
-  end;
-  SynAutoComplete.CompletionValues[a]:=NewValue;
-  
-  SetBooleanAttribute(CodeTemplateEnableMacros,UseMacrosCheckBox.Checked);
-  SetBooleanAttribute(CodeTemplateKeepSubIndent,KeepSubIndentCheckBox.Checked);
+  Templ:=SynAutoComplete.CodeTemplates.Objects[LastTemplate];
+  Templ.SetValueWithoutLastEOL(TemplateSynEdit.Lines.Text);
+  Templ.SetBooleanAttribute(CodeTemplateEnableMacros, UseMacrosCheckBox.Checked);
+  Templ.SetBooleanAttribute(CodeTemplateKeepSubIndent, KeepSubIndentCheckBox.Checked);
   for c:=low(TAutoCompleteOption) to High(TAutoCompleteOption) do
-     SetBooleanAttribute(AutoCompleteOptionNames[c],AutoOnOptionsCheckGroup.Checked[ord(c)]);
-
-  //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate NewValue="',NewValue,'" SynAutoComplete.CompletionValues[a]="',SynAutoComplete.CompletionValues[a],'"');
+     Templ.SetBooleanAttribute(AutoCompleteOptionNames[c],
+                               AutoOnOptionsCheckGroup.Checked[ord(c)]);
 end;
 
 { TLazCodeMacros }

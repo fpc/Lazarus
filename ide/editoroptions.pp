@@ -2496,36 +2496,34 @@ const
   DciFileVersionName = '!FileVersion';
   DciVersionName = '!Version';
 
-function BuildBorlandDCIFile(
-  ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
+function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
   // returns if something has changed
 var
   sl: TStringList;
   i, sp, ep, v: Integer;
-  Token, Comment, Value: String;
-  Attributes: TStrings;
+  Token, Value: String;
+  Template: TCodeTemplate;
 begin
   Result := False;
   sl     := TStringList.Create;
   try
-    for i := 0 to ACustomSynAutoComplete.Completions.Count - 1 do
+    for i := 0 to ACustomSynAutoComplete.CodeTemplates.Count - 1 do
     begin
-      Token := ACustomSynAutoComplete.Completions[i];
-      Comment := ACustomSynAutoComplete.CompletionComments[i];
-      Value := ACustomSynAutoComplete.CompletionValues[i];
-      sl.Add('[' + Token + ' | ' + Comment + ']');
-      Attributes:=ACustomSynAutoComplete.CompletionAttributes[i];
+      Token := ACustomSynAutoComplete.CodeTemplates[i];
+      Template := ACustomSynAutoComplete.CodeTemplates.Objects[i];
+      Value := Template.Value;
+      sl.Add('[' + Token + ' | ' + Template.Comment + ']');
 
       // Store DciFileVersion as attribute to first macro
-      v := Attributes.IndexOfName(DciFileVersionName);
+      v := Template.Attributes.IndexOfName(DciFileVersionName);
       if v >= 0 then
-        Attributes.Delete(v);
+        Template.Attributes.Delete(v);
       if i = 0 then
-        Attributes.Values[DciFileVersionName] := IntToStr(DciFileVersion);
+        Template.Attributes.Values[DciFileVersionName] := IntToStr(DciFileVersion);
 
-      if (Attributes<>nil) and (Attributes.Count>0) then begin
+      if Template.Attributes.Count>0 then begin
         sl.Add(CodeTemplateAttributesStartMagic);
-        sl.AddStrings(Attributes);
+        sl.AddStrings(Template.Attributes);
         sl.Add(CodeTemplateAttributesEndMagic);
       end;
       sp    := 1;
@@ -2545,10 +2543,10 @@ begin
       if (ep > sp) or ((Value <> '') and (Value[length(Value)] in [#10, #13])) then
         sl.Add(copy(Value, sp, ep - sp));
     end;
-    if ACustomSynAutoComplete.AutoCompleteList.Equals(sl) = False then
+    if not ACustomSynAutoComplete.CodeTemplSource.Equals(sl) then
     begin
       Result := True;
-      ACustomSynAutoComplete.AutoCompleteList := sl;
+      ACustomSynAutoComplete.CodeTemplSource := sl;
     end;
   finally
     sl.Free;
@@ -5786,14 +5784,14 @@ var
   s: String;
   FileVersion, i, j, v: Integer;
   NewAutoComplete: TSynEditAutoComplete;
-  Attr, ExAtr: TStrings;
   Added: Boolean;
+  Template: TCodeTemplate;
 begin
   s := CodeTemplateFileNameExpand;
   Result := mrAbort;
   if FileExistsUTF8(s) then begin
     try
-      AnAutoComplete.AutoCompleteList.LoadFromFile(s);
+      AnAutoComplete.CodeTemplSource.LoadFromFile(s);
       Result := mrOK;
     except
       Result := mrAbort;
@@ -5801,35 +5799,30 @@ begin
     if Result = mrAbort then
       exit;
 
-    FileVersion := AnAutoComplete.Completions.Count;
+    FileVersion := AnAutoComplete.CodeTemplates.Count;
     if (FileVersion > 0) then begin
-      ExAtr := AnAutoComplete.CompletionAttributes[0];
-      FileVersion := ExAtr.IndexOfName(DciFileVersionName);
+      Template := AnAutoComplete.CodeTemplates.Objects[0];
+      FileVersion := Template.Attributes.IndexOfName(DciFileVersionName);
       if (FileVersion >= 0) then
-        FileVersion := StrToIntDef(ExAtr.ValueFromIndex[FileVersion], 0);
+        FileVersion := StrToIntDef(Template.Attributes.ValueFromIndex[FileVersion], 0);
     end;
     if FileVersion < DciFileVersion then begin
       // Merge new entries
       NewAutoComplete := TSynEditAutoComplete.Create(nil);
-      NewAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
+      NewAutoComplete.CodeTemplSource.Text := ResourceDCIAsText;
       Added := False;
-      for i := 0 to NewAutoComplete.Completions.Count - 1 do begin
-        ExAtr := NewAutoComplete.CompletionAttributes[i];
-        j := ExAtr.IndexOfName(DciVersionName);
+      for i := 0 to NewAutoComplete.CodeTemplates.Count - 1 do begin
+        Template := NewAutoComplete.CodeTemplates.Objects[0];
+        j := Template.Attributes.IndexOfName(DciVersionName);
         if j < 0 then
           continue;
-        v := StrToIntDef(ExAtr.ValueFromIndex[j], 0);
+        v := StrToIntDef(Template.Attributes.ValueFromIndex[j], 0);
         if v <= FileVersion then
           continue;
-        if AnAutoComplete.Completions.IndexOf(NewAutoComplete.Completions[i]) >= 0 then
+        if AnAutoComplete.CodeTemplates.IndexOf(NewAutoComplete.CodeTemplates[i]) >= 0 then
           continue;
-        Attr := TStringListUTF8Fast.Create;
-        Attr.Assign(ExAtr); // will be owned by AnAutoComplete;
-        AnAutoComplete.AddCompletion(
-          NewAutoComplete.Completions[i],
-          NewAutoComplete.CompletionValues[i],
-          NewAutoComplete.CompletionComments[i],
-          Attr);
+        AnAutoComplete.AddCompletion(NewAutoComplete.CodeTemplates[i],
+                                     NewAutoComplete.CodeTemplates.Objects[0]);
         Added := True;
       end;
       NewAutoComplete.Free;
@@ -5839,7 +5832,7 @@ begin
     end;
   end
   else begin
-    AnAutoComplete.AutoCompleteList.Text := ResourceDCIAsText;
+    AnAutoComplete.CodeTemplSource.Text := ResourceDCIAsText;
   end;
 end;
 
@@ -5847,7 +5840,7 @@ function TEditorOptions.SaveCodeTemplates(AnAutoComplete: TSynEditAutoComplete
   ): TModalResult;
 begin
   try
-    AnAutoComplete.AutoCompleteList.SaveToFile(CodeTemplateFileNameExpand);
+    AnAutoComplete.CodeTemplSource.SaveToFile(CodeTemplateFileNameExpand);
     Result := mrOK;
   except
     Result := mrAbort;

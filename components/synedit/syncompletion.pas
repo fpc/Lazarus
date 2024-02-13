@@ -458,8 +458,7 @@ type
     function GetTokenList: string;
     function GetTokenValue(Token: string): string; 
   published
-    property AutoCompleteList: TStrings read fAutoCompleteList
-      write SetAutoCompleteList;
+    property AutoCompleteList: TStrings read fAutoCompleteList write SetAutoCompleteList;
     property EndOfTokenChr: string read FEndOfTokenChr write FEndOfTokenChr;
     property ShortCut: TShortCut read FShortCut write SetShortCut;
     property ExecCommandID: TSynEditorCommand read FExecCommandID write FExecCommandID;

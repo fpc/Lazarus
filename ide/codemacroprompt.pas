@@ -108,8 +108,7 @@ type
   end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
-  const TemplateName, TemplateValue, {%H-}TemplateComment,
-  EndOfTokenChr: string; Attributes: TStrings;
+  Template: TCodeTemplate; const TemplateName, EndOfTokenChr: string;
   IndentToTokenStart: boolean): boolean;
 
 implementation
@@ -452,8 +451,7 @@ begin
 end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
-  const TemplateName, TemplateValue, TemplateComment,
-  EndOfTokenChr: string; Attributes: TStrings;
+  Template: TCodeTemplate; const TemplateName, EndOfTokenChr: string;
   IndentToTokenStart: boolean): boolean;
 var
   AEditor: TSynEdit;
@@ -471,7 +469,7 @@ begin
   Result:=false;
   //debugln('ExecuteCodeTemplate ',dbgsName(SrcEdit),' ',dbgsName(SrcEdit.EditorControl));
   AEditor:=SrcEdit.EditorControl as TSynEdit;
-  Pattern:=TemplateValue;
+  Pattern:=Template.Value;
   Parser := TLazTemplateParser.Create(Pattern);
   AEditor.BeginUpdate;
   try
@@ -499,8 +497,8 @@ begin
       dec(BaseIndent);
     end;
 
-    Parser.EnableMacros := Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
-    Parser.KeepSubIndent := Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
+    Parser.EnableMacros := Template.Attributes.IndexOfName(CodeTemplateEnableMacros)>=0;
+    Parser.KeepSubIndent := Template.Attributes.IndexOfName(CodeTemplateKeepSubIndent)>=0;
     Parser.Indent := LogBaseIndent;
     CodeToolBossOriginalIndent := CodeToolBoss.IndentSize;
     if Parser.KeepSubIndent then
