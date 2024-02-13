@@ -224,6 +224,10 @@
         <Filename Value="idedebuggervalueformattersetup.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterSetup"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformattercurrency.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterCurrency"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

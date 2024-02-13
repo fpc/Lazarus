@@ -414,6 +414,8 @@ resourcestring
   ValFormatterColorShowBoth = 'Show Both';
   ValFormatterColorRgbDec = 'RGB in decimal';
 
+  ValFormatterCurrencyName = 'Currency';
+
 implementation
 
 end.

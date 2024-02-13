@@ -1425,6 +1425,10 @@ msgstr "Показывать имя"
 msgid "Show RGB"
 msgstr "Показывать значение RGB"
 
+#: idedebuggerstringconstants.valformattercurrencyname
+msgid "Currency"
+msgstr ""
+
 #: idedebuggerstringconstants.valformatterdatetimeformatd
 msgid "Format for date"
 msgstr "Формат даты"

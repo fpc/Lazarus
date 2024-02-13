@@ -1457,6 +1457,10 @@ msgstr ""
 msgid "Show RGB"
 msgstr ""
 
+#: idedebuggerstringconstants.valformattercurrencyname
+msgid "Currency"
+msgstr ""
+
 #: idedebuggerstringconstants.valformatterdatetimeformatd
 msgid "Format for date"
 msgstr ""

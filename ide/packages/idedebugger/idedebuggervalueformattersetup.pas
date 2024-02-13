@@ -6,7 +6,8 @@ interface
 
 uses
   LazIDEIntf, LazDebuggerIntf, IdeDebuggerOpts, IdeDebuggerValueFormatter,
-  IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor;
+  IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor,
+  IdeDebuggerValueFormatterCurrency;
 
 implementation
 
@@ -63,6 +64,14 @@ begin
     cl.ShowName := True;
     cl.ShowRgb := True;
     cl.ShowRgbAsDec := False;
+    vc.Add(f);
+
+    f := TIdeDbgValueFormatterSelector.Create(TIdeDbgValueFormatterRegistryCurrency);
+    f.Name := 'Currency formatter';
+    f.Enabled := True;
+    f.FilterDisplayFormat := [low(TWatchDisplayFormat)..high(TWatchDisplayFormat)] - [wdfMemDump, wdfDecimal];
+    f.MatchTypeNames.Add('Currency');
+    f.OriginalValue := vfovHide;
     vc.Add(f);
 
     vc.DefaultsAdded := 1;

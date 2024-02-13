@@ -21,7 +21,8 @@ uses
   BreakpointGroupFrame, IdeDbgValueFormatterSettingsFrame, 
   IdeDebuggerValueFormatter, IdeDebugger_ValFormatter_Options, 
   IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor, 
-  IdeDebuggerValueFormatterSetup, LazarusPackageIntf;
+  IdeDebuggerValueFormatterSetup, IdeDebuggerValueFormatterCurrency, 
+  LazarusPackageIntf;
 
 implementation
 
