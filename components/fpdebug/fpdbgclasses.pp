@@ -246,9 +246,9 @@ type
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-    FPausedAtRemovedBreakPointState: (rbUnknown, rbNone, rbFound{, rbFoundAndDec});
+    FStoredBreakpointInfoState: (rbUnknown, rbNone, rbFound{, rbFoundAndDec});
+    FStoredBreakpointInfoAddress: TDBGPtr;
     FPausedAtHardcodeBreakPoint: Boolean;
-    FPausedAtRemovedBreakPointAddress: TDBGPtr;
     FSuspendCount: Integer;
 
     function GetRegisterValueList: TDbgRegisterValueList;
@@ -262,6 +262,12 @@ type
     FStoreStepSrcLineNo: integer;
     FStoreStepFuncAddr: TDBGPtr;
     FStackBeforeAlloc: TDBGPtr;
+
+    procedure StoreHasBreakpointInfoForAddress(AnAddr: TDBGPtr); inline;
+    procedure ClearHasBreakpointInfoForAddressMismatch(AKeepOnlyForAddr: TDBGPtr); inline;
+    procedure ClearHasBreakpointInfoForAddress; inline;
+    function  HasBreakpointInfoForAddressMismatch(AnAddr: TDBGPtr): boolean; inline;
+
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
     function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
@@ -3344,37 +3350,62 @@ begin
   // Do nothing
 end;
 
-procedure TDbgThread.DoBeforeBreakLocationMapChange;
-var
-  t: TDBGPtr;
+procedure TDbgThread.StoreHasBreakpointInfoForAddress(AnAddr: TDBGPtr);
 begin
-  if (FPausedAtRemovedBreakPointState <> rbUnknown) and
-     (FPausedAtRemovedBreakPointAddress = GetInstructionPointerRegisterValue) then
+  // Already stored?
+  if (FStoredBreakpointInfoState <> rbUnknown) and
+     (FStoredBreakpointInfoAddress = AnAddr)
+  then
     exit;
 
-  t := GetInstructionPointerRegisterValue;
-  if (t <> 0) and Process.HasInsertedBreakInstructionAtLocation(t - 1) then begin
-  (* There is a chance, that the code jumped to this Addr, instead of executing the breakpoint.
-     But if the next signal for this thread is a breakpoint at this address, then
-     it must be handled (even if the breakpoint has been removed since)
-  *)
-    FPausedAtRemovedBreakPointAddress := t;
-    FPausedAtRemovedBreakPointState := rbFound;
+  if (AnAddr <> 0) and Process.HasInsertedBreakInstructionAtLocation(AnAddr - 1) then begin
+    (* There is a chance, that the code jumped to this Addr, instead of executing the breakpoint.
+       But if the next signal for this thread is a breakpoint at this address, then
+       it must be handled (even if the breakpoint has been removed since)
+    *)
+    FStoredBreakpointInfoAddress := AnAddr;
+    FStoredBreakpointInfoState := rbFound;
     // Most likely the debugger should see the previous address (unless we got here
     // by jump.
     // Call something like ResetInstructionPointerAfterBreakpointForPendingSignal; virtual;
     ////ResetInstructionPointerAfterBreakpoint;
   end
   else
-    FPausedAtRemovedBreakPointState := rbNone;
+    FStoredBreakpointInfoState := rbNone;
+end;
+
+procedure TDbgThread.ClearHasBreakpointInfoForAddressMismatch(AKeepOnlyForAddr: TDBGPtr);
+begin
+  if (FStoredBreakpointInfoState <> rbUnknown) and
+     (FStoredBreakpointInfoAddress <> AKeepOnlyForAddr)
+  then begin
+    FStoredBreakpointInfoAddress := 0;
+    FStoredBreakpointInfoState := rbUnknown;
+  end;
+end;
+
+procedure TDbgThread.ClearHasBreakpointInfoForAddress;
+begin
+  FStoredBreakpointInfoAddress := 0;
+  FStoredBreakpointInfoState := rbUnknown;
+end;
+
+function TDbgThread.HasBreakpointInfoForAddressMismatch(AnAddr: TDBGPtr
+  ): boolean;
+begin
+  Result := ( (FStoredBreakpointInfoState = rbFound) and
+              (FStoredBreakpointInfoAddress = AnAddr) );
+end;
+
+procedure TDbgThread.DoBeforeBreakLocationMapChange;
+begin
+  StoreHasBreakpointInfoForAddress(GetInstructionPointerRegisterValue);
 end;
 
 procedure TDbgThread.ValidateRemovedBreakPointInfo;
 begin
-  if (FPausedAtRemovedBreakPointState <> rbUnknown) and
-     (FPausedAtRemovedBreakPointAddress <> GetInstructionPointerRegisterValue)
-  then
-    FPausedAtRemovedBreakPointState := rbUnknown;
+  if (FStoredBreakpointInfoState <> rbUnknown) then
+    ClearHasBreakpointInfoForAddressMismatch(GetInstructionPointerRegisterValue);
 end;
 
 function TDbgThread.GetName: String;
@@ -3407,8 +3438,7 @@ var
   t: TDBGPtr;
 begin
   t := GetInstructionPointerRegisterValue;
-  Result := ( (FPausedAtRemovedBreakPointState = rbFound) and
-              (FPausedAtRemovedBreakPointAddress = t) ) or
+  Result := HasBreakpointInfoForAddressMismatch(t) or
             ( (t <> 0) and Process.HasInsertedBreakInstructionAtLocation(t - 1) );
 end;
 
@@ -3423,7 +3453,7 @@ begin
     exit;
   if HasInsertedBreakInstructionAtLocation(t - 1)
   then begin
-    FPausedAtRemovedBreakPointState := rbFound;
+    FStoredBreakpointInfoState := rbFound;
     ResetInstructionPointerAfterBreakpoint;
   end
   else begin
@@ -3447,10 +3477,8 @@ end;
 
 procedure TDbgThread.BeforeContinue;
 begin
-  // On Windows this is only called, if this was the signalled thread
   FPausedAtHardcodeBreakPoint := False;
-  FPausedAtRemovedBreakPointState := rbUnknown;
-  FPausedAtRemovedBreakPointAddress := 0;
+  ClearHasBreakpointInfoForAddress;
 end;
 
 procedure TDbgThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
