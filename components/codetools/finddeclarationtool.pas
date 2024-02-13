@@ -13592,8 +13592,9 @@ begin
         FindContext:=ExprType.Context;
 
         // ToDo: PPU, DCU
-
-        if FindContext.Node.Parent.Desc=ctnTypeDefinition then
+        if (FindContext.Node<>nil) and (FindContext.Node.Parent<>nil) and
+           (FindContext.Node.Parent.Desc=ctnTypeDefinition)
+        then
           FindContext.Node:=FindContext.Node.Parent;
         case FindContext.Node.Desc of
 
