@@ -4196,7 +4196,7 @@ begin
     if vf <> 0 then
       TopView := TopView + vf div 32;
 
-    FCaret.ViewedLineCharPos := PixelsToRowColumn(CurMousePos);
+    FCaret.LineCharPos:=PixelsToRowColumn(CurMousePos);
 
   finally
     if sfEnsureCursorPos in fStateFlags then
