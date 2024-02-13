@@ -132,7 +132,7 @@ type
 
   { TDbgWinThread }
 
-  TDbgWinThread = class(TDbgThread)
+  TDbgWinThread = class(TDbgx86Thread)
   private type
     TBreakPointState = (bsNone, bsInSingleStep);
   private
@@ -2017,6 +2017,7 @@ begin
   FThreadContextChanged := False;
   FThreadContextChangeFlags := [];
   FCurrentContext := nil;
+  FHasResetInstructionPointerAfterBreakpoint := False;
 end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
@@ -2030,6 +2031,7 @@ begin
   if not ReadThreadState then
     exit;
 
+  assert(not FHasResetInstructionPointerAfterBreakpoint, 'TDbgWinThread.ResetInstructionPointerAfterBreakpoint: not FHasResetInstructionPointerAfterBreakpoint');
   {$ifdef cpui386}
   if not CheckForHardcodeBreakPoint(FCurrentContext^.def.Eip - 1) then
     dec(FCurrentContext^.def.Eip);
@@ -2045,6 +2047,7 @@ begin
   {$endif}
 
   FThreadContextChanged := True;
+  FHasResetInstructionPointerAfterBreakpoint := True;
   Result := True;
 end;
 
@@ -2067,6 +2070,7 @@ begin
   //FThreadContextChanged := False; TODO: why was that not here?
   FThreadContextChangeFlags := [];
   FRegisterValueListValid:=False;
+  FHasResetInstructionPointerAfterBreakpoint := False;
 end;
 
 procedure TDbgWinThread.ClearExceptionSignal;

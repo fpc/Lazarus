@@ -10,6 +10,15 @@ uses
 
 type
 
+  { TDbgx86Thread }
+
+  TDbgx86Thread = class(TDbgThread)
+  protected
+    FHasResetInstructionPointerAfterBreakpoint: boolean;
+
+    function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
+  end;
+
   { TDbgStackUnwinderX86FramePointer }
 
   TDbgStackUnwinderX86FramePointer = class(TDbgStackUnwinderX86Base)
@@ -53,6 +62,15 @@ type
   end;
 
 implementation
+
+{ TDbgx86Thread }
+
+function TDbgx86Thread.GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr;
+begin
+  Result := GetInstructionPointerRegisterValue;
+  if (Result <> 0) and not FHasResetInstructionPointerAfterBreakpoint then
+    Result := Result - 1;
+end;
 
 { TDbgStackUnwinderX86FramePointer }
 

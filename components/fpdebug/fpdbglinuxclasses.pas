@@ -264,7 +264,7 @@ type
 
   { TDbgLinuxThread }
 
-  TDbgLinuxThread = class(TDbgThread)
+  TDbgLinuxThread = class(TDbgx86Thread)
   private
     FUserRegs: TUserRegs;
     FStoredUserRegs: TUserRegs;
@@ -591,6 +591,7 @@ begin
   FUserRegsChanged:=false;
   FRegisterValueListValid:=false;
   FHasThreadState := Result;
+  FHasResetInstructionPointerAfterBreakpoint := False;
 end;
 
 function TDbgLinuxThread.RequestInternalPause: Boolean;
@@ -701,6 +702,7 @@ begin
   else
     Dec(FUserRegs.regs64[rip]);
   FUserRegsChanged:=true;
+  FHasResetInstructionPointerAfterBreakpoint := True;
 end;
 
 procedure TDbgLinuxThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
@@ -764,6 +766,7 @@ begin
       end;
     FUserRegsChanged:=false;
     end;
+  FHasResetInstructionPointerAfterBreakpoint := False;
 end;
 
 procedure TDbgLinuxThread.LoadRegisterValues;

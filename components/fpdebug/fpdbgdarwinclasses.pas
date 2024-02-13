@@ -24,7 +24,7 @@ uses
   UTF8Process,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   FpDbgCommon, FpdMemoryTools,
-  FpErrorMessages;
+  FpErrorMessages, FpDbgCpuX86;
 
 type
   x86_thread_state32_t = record
@@ -102,7 +102,7 @@ type
 
   { TDbgDarwinThread }
 
-  TDbgDarwinThread = class(TDbgThread)
+  TDbgDarwinThread = class(TDbgx86Thread)
   private
     FThreadState32: x86_thread_state32_t;
     FThreadState64: x86_thread_state64_t;
