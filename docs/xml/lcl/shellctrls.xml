@@ -1008,16 +1008,16 @@ unit.
 <short>Rectangle where the icon is drawn.</short>
 </element>
 
-<element name="TCustomShellTreeView.Exists">
+<element name="TCustomShellTreeView.ExistsAndIsValid">
 <short>
 Checks whether the specified path is a valid file system object and type for 
 the tree view control.
 </short>
 <descr>
 <p>
-<var>Exists</var> is a <var>Boolean</var> function used to determine whether a 
-file system object at the path specified in <var>APath</var> can be displayed 
-on the tree view control.
+<var>ExistsAndIsValid</var> is a <var>Boolean</var> function used to determine 
+whether a file system object at the path specified in <var>APath</var> can be 
+displayed on the tree view control.
 </p>
 <p>
 APath is a UTF-8-encoded fully-qualified path name. File attributes for the 
@@ -1032,8 +1032,8 @@ The return value is <b>True</b> if APath a valid file (or directory) on the
 local file system.
 </p>
 <p>
-Exists is used in the UpdateView method when the Path and expanded state for a 
-Selected node are updated.
+ExistsAndIsValid is used in the UpdateView method when the Path and expanded 
+state for a Selected node are updated.
 </p>
 </descr>
 <version>
@@ -1045,11 +1045,16 @@ Added in LCL version 4.0.
 <link id="TCustomShellTreeView.UpdateView"/>
 </seealso>
 </element>
-<element name="TCustomShellTreeView.Exists.Result">
-<short/>
+<element name="TCustomShellTreeView.ExistsAndIsValid.Result">
+<short>
+Returns <b>True</b> if the specified path exists and is valid for the object 
+types displayed on the control. 
+</short>
 </element>
-<element name="TCustomShellTreeView.Exists.APath">
-<short/>
+<element name="TCustomShellTreeView.ExistsAndIsValid.APath">
+<short>
+Path name examined in the method.
+</short>
 </element>
 
 <element name="TCustomShellTreeView.GetBuiltinIconSize">
@@ -1530,7 +1535,7 @@ state of the local file system in the tree view control.
 <p>
 UpdateView ensures that the Selected and expanded tree node(s) are captured, 
 and restored when the nodes in Items have been reloaded. If one of the selected 
-or expanded nodes no longer exists on the file system, the path in an existing 
+or expanded nodes no longer exists on the file system, the Path in an existing 
 parent node is used for the update. When a node is updated, its HasChildren 
 property is changed to reflect whether subdirectories have been added or 
 removed for the node.
@@ -1559,7 +1564,9 @@ Added in LCL version 4.0.
 <link id="TCustomShellTreeView.NodeHasChildren"/>
 <link id="TCustomShellTreeView.ShellListView"/>
 <link id="TCustomShellListView.UpdateView"/>
-<link id="TCustomShellListView.Root"/>
+<link id="TCustomShellTreeView.Root"/>
+<link id="TCustomShellTreeView.Path"/>
+<link id="TCustomShellTreeView.ExistsAndIsValid"/>
 <link id="#lcl.comctrls.TCustomTreeView.TopItem">TCustomTreeView.TopItem</link>
 <link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
 <link id="#lcl.comctrls.TTreeNodes.BeginUpdate">TTreeNodes.BeginUpdate</link>
@@ -1641,7 +1648,7 @@ control.
 </descr>
 <seealso>
 <link id="TCustomShellTreeView.Items"/>
-<link id="TCustomShellTreeView.Exists"/>
+<link id="TCustomShellTreeView.ExistsAndIsValid"/>
 <link id="TCustomShellTreeView.Path"/>
 <link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.UpdateView"/>
@@ -1721,6 +1728,7 @@ provided by the file system.
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.Path"/>
+<link id="TCustomShellTreeView.ExistsAndIsValid"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 </seealso>
@@ -1772,7 +1780,9 @@ updated to match the new value for the property.
 </element>
 
 <element name="TCustomShellTreeView.Path">
-<short>Path to the directory displayed in the shell control.</short>
+<short>
+Path to the directory displayed in the shell control.
+</short>
 <descr>
 <p>
 <var>Path</var> is a <var>String</var> property which represents the path on 
@@ -1787,23 +1797,34 @@ the base path name is prepended to the path value.
 </p>
 <p>
 Setting the value for the property causes the the new value to be resolved to 
-a fully qualified path name when needed. A relative path is expanded into a 
-fully qualified absolute path value resolved relative to the base path in 
+a fully-qualified path name when needed. A relative path is expanded into a 
+fully-qualified absolute path value resolved relative to the base path in 
 <var>Root</var>.
 </p>
 <p>
-An <var>EInvalidPath</var> exception is raised when setting Path to a value 
+An <var>EInvalidPath</var> exception is raised if Path is set to a value 
 that is not valid, including:
 </p>
 <ul>
-<li>The path does not exist on the local file system</li>
-<li>The path cannot be resolved as a directory located under the Root 
-directory</li>
-<li>The path represents an entry not valid for the settings in 
-ObjectTypes</li>
+<li>
+The path does not exist on the local file system.
+</li>
+<li>
+The path cannot be resolved as a directory located under the Root directory.
+</li>
+<li>
+The path represents an entry not valid for the settings in ObjectTypes.
+</li>
 </ul>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomShellTreeView.GetPathFromNode"/>
+<link id="TCustomShellTreeView.GetRootPath"/>
+<link id="TCustomShellTreeView.ExistsAndIsValid"/>
+<link id="TCustomShellTreeView.ObjectTypes"/>
+<link id="EInvalidPath"/>
+<link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
+</seealso>
 </element>
 
 <element name="TCustomShellTreeView.OnAddItem">
@@ -1851,8 +1872,8 @@ the tree view control when its FileSortType property is set to fstCustom.
 <p>
 Changing the routine assigned to the property causes the Items in the control 
 to be reloaded and ordered using the new file sort compare routine. The Path 
-property is used to to expand and select nodes if the path still exists on the 
-local file system.
+property is used to to expand and select a node if the path still exists and is 
+valid for the settings in ObjectTypes.
 </p>
 <p>
 An application can implement and assign a routine using the signature perform 
@@ -1917,6 +1938,8 @@ Added in LCL version 3.0.
 <link id="TCustomShellTreeView.FileSortType"/>
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.Path"/>
+<link id="TCustomShellTreeView.ExistsAndIsValid"/>
+<link id="TCustomShellTreeView.ObjectTypes"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
 <link id="TCustomShellTreeView.Root"/>
