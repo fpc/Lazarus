@@ -111,7 +111,7 @@ type
     function CanExpand(Node: TTreeNode): Boolean; override;
     procedure Collapse(Node: TTreeNode); override;
     function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
-    function Exists(APath: String): Boolean;
+    function ExistsAndIsValid(APath: String): Boolean;
     function GetBuiltinIconSize: TSize; override;
     function NodeHasChildren(Node: TTreeNode): Boolean; override;
     property ExpandCollapseMode: TExpandCollapseMode read FExpandCollapseMode write FExpandCollapseMode default ecmRefreshedExpanding;
@@ -656,7 +656,7 @@ begin
       RootNode := Items.AddChild(nil, FRoot);
       RootNode.HasChildren := True;
       RootNode.Expand(False);
-      if Exists(CurrPath) then
+      if ExistsAndIsValid(CurrPath) then
         SetPath(CurrPath);
     end;
   finally
@@ -675,7 +675,7 @@ begin
   try
     BeginUpdate;
     //Refresh(nil);
-    //if Exists(CurrPath) then
+    //if ExistsAndIsValid(CurrPath) then
     //  SetPath(CurrPath);
     UpdateView;
   finally
@@ -707,7 +707,7 @@ begin
       RootNode := Items.AddChild(nil, FRoot);
       RootNode.HasChildren := True;
       RootNode.Expand(False);
-      if Exists(Currpath) then
+      if ExistsAndIsValid(Currpath) then
         SetPath(CurrPath);
     end;
   finally
@@ -1256,7 +1256,7 @@ procedure TCustomShellTreeView.UpdateView(AStartDir: String = '');
       if APath[i] = PathDelimiter then
       begin
         path := Copy(APath, 1, i);
-        if Exists(path) then
+        if ExistsAndIsValid(path) then
           Result := path
         else
           break;
@@ -1348,7 +1348,7 @@ begin
     RecordNodeState(startNode, expandedPaths);
     RestoreNodeState(startNode, true, expandedPaths);
 
-    if Exists(selectedPath) then
+    if ExistsAndIsValid(selectedPath) then
     begin
       Path := selectedPath;
       // Setting the path expands the selected node --> apply the stored state.
@@ -1380,7 +1380,7 @@ begin
   Result := GetPathFromNode(Selected);
 end;
 
-function TCustomShellTreeView.Exists(APath: String): Boolean;
+function TCustomShellTreeView.ExistsAndIsValid(APath: String): Boolean;
 // APath should be fully qualified
 var
   Attr: LongInt;
@@ -1532,7 +1532,7 @@ begin
 
   if not FileNameIsAbsolute(AValue) then
   begin
-    if Exists(FQRootPath + AValue) then
+    if ExistsAndIsValid(FQRootPath + AValue) then
     begin
       //Expand it, since it may be in the form of ../../foo
       AValue := ExpandFileNameUtf8(FQRootPath + AValue);
@@ -1540,9 +1540,9 @@ begin
     else
     begin
       //don't expand Avalue yet, we may need it in error message
-      if not Exists(ExpandFileNameUtf8(AValue)) then
+      if not ExistsAndIsValid(ExpandFileNameUtf8(AValue)) then
         Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
-      //Directory (or file) exists
+      //Directory (or file) ExistsAndIsValid
       //Make it fully qualified
       AValue := ExpandFileNameUtf8(AValue);
     end;
@@ -1552,11 +1552,11 @@ begin
     //AValue is an absoulte path to begin with , but still needs  expanding (because TryCreateRelativePath requires this)
     AValue := ExpandFilenameUtf8(AValue);
     //if not DirectoryExistsUtf8(AValue) then
-    if not Exists(AValue) then
+    if not ExistsAndIsValid(AValue) then
       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[AValue]);
   end;
 
-  //AValue now is a fully qualified path and it exists
+  //AValue now is a fully qualified path and it ExistsAndIsValid
   //Now check if it is a subdirectory of FQRootPath
   //RelPath := CreateRelativePath(AValue, FQRootPath, False);
   IsRelPath := (FQRootPath = '') or TryCreateRelativePath(AValue, FQRootPath, False, True, RelPath);
