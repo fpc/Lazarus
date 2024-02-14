@@ -492,8 +492,8 @@ type
   private
     FTmpRemovedBreaks: array of TDBGPtr;
 
-    class function OrigByteFromPointer(AData: Pointer): _BRK_STORE;
-    class function ErrorSettingFromPointer(AData: Pointer): ByteBool;
+    class function OrigByteFromPointer(AData: Pointer): _BRK_STORE;{$IF FPC_Fullversion=30301}static;{$ENDIF} // Work around for https://gitlab.com/freepascal.org/fpc/source/-/issues/40641
+    class function ErrorSettingFromPointer(AData: Pointer): ByteBool;{$IF FPC_Fullversion=30301}static;{$ENDIF}
 
   strict private
     function GetOrigValueAtLocation(const ALocation: TDBGPtr): _BRK_STORE; // returns Int3, if there is no break at this location
