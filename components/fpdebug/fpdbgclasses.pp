@@ -34,6 +34,7 @@
 unit FpDbgClasses;
 {$mode objfpc}{$H+}
 {$TYPEDADDRESS on}
+{$ModeSwitch typehelpers}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 
@@ -412,42 +413,91 @@ type
 
   TFpInternalBreakpointArray = array of TFpInternalBreakpoint;
 
+  { TFpBreakPointMap }
+
+  TFpBreakPointMap = class abstract(TMap)
+  {strict} protected type
+    { TFpBreakPointMapEntry }
+    TFpBreakPointMapEntry = packed record
+      InternalBreakPoint: Pointer;  // TFpInternalBreakpoint or TFpInternalBreakpointArray
+      IsBreakList: ByteBool;
+    end;
+    PFpBreakPointMapEntry = ^TFpBreakPointMapEntry;
+
+  {strict} protected type
+    { TFpBreakPointMapLocDataPair }
+    TFpBreakPointMapLocDataPair = record
+      Location: TDBGPtr;
+      Data: PFpBreakPointMapEntry;
+    end;
+
+  strict protected type
+    { TFpBreakPointMapEnumeratorEnumerator }
+    TFpBreakPointMapEnumerator = class(TMapIterator)
+    private
+      FDoneFirst: Boolean;
+      function GetCurrent: TFpBreakPointMapLocDataPair;
+    public
+      function MoveNext: Boolean;
+      property Current: TFpBreakPointMapLocDataPair read GetCurrent;
+    end;
+
+  strict private
+    FProcess: TDbgProcess;
+
+  strict protected
+    procedure NewMapEntry(out ALocData: PFpBreakPointMapEntry); virtual; abstract;
+    procedure DisposeMapEntry(ALocData: PFpBreakPointMapEntry); virtual; abstract;
+    procedure DoAddedNewLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry); virtual; abstract;
+    procedure DoRemovingLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry); virtual; abstract;
+
+    property Process: TDbgProcess read FProcess;
+  public
+    constructor Create(AProcess: TDbgProcess; ADataSize: Cardinal);
+    destructor Destroy; override;
+    procedure Clear; reintroduce;
+
+    procedure AddLocation   (const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
+    procedure RemoveLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
+    function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
+
+    function GetEnumerator: TFpBreakPointMapEnumerator;
+
+    // When the debugger modifies the debuggee's code, it might be that the
+    // original value underneeth the breakpoint has to be changed. This function
+    // makes this possible.
+    procedure UpdateMapForNewTargetCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData); virtual; abstract;
+
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
+    function IsHardcodeBreakPoint(const ALocation: TDBGPtr): Boolean; virtual; abstract;
+
+    procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr); virtual; abstract;
+    procedure RestoreTempBreakInstructionCodes; virtual; abstract;
+    procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData); virtual; abstract;
+  end;
+
   { TBreakLocationMap }
 
-  TBreakLocationMap = class(TMap)
-  strict private type
-    { TBreakLocationEntry }
-    TBreakLocationEntry = object
-      Location: TDBGPtr;
-      Data: Pointer;
+  TBreakLocationMap = class(TFpBreakPointMap)
+  strict protected type
+    { TFpBreakPointMapLocDataPairHelper }
+    TFpBreakPointMapLocDataPairHelper = type helper for TFpBreakPointMapLocDataPair
       function OrigValue: Byte;
       function ErrorSetting: ByteBool;
     end;
 
     { TInternalBreakLocationEntry }
-    TInternalBreakLocationEntry = record
+    TInternalBreakLocationEntry = packed record
+      BaseMapEntry: TFpBreakPointMapEntry;
       OrigValue: Byte;
-      IsBreakList, ErrorSetting: ByteBool;
-      InternalBreakPoint: Pointer;
+      ErrorSetting: ByteBool;
     end;
     PInternalBreakLocationEntry = ^TInternalBreakLocationEntry;
-
-  public type
-    { TBreakLocationMapEnumerator }
-    TBreakLocationMapEnumerator = class(TMapIterator)
-    private
-      FDoneFirst: Boolean;
-      function GetCurrent: TBreakLocationEntry;
-    public
-      function MoveNext: Boolean;
-      property Current: TBreakLocationEntry read GetCurrent;
-    end;
 
   private const
     Int3: Byte = $CC;
 
   private
-    FProcess: TDbgProcess;
     FTmpRemovedBreaks: array of TDBGPtr;
 
     class function OrigByteFromPointer(AData: Pointer): Byte;
@@ -456,26 +506,25 @@ type
   strict private
     function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte; // returns Int3, if there is no break at this location
     procedure AdaptOriginalValueAtLocation(const ALocation: TDBGPtr; const NewOrigValue: Byte);
+  strict protected
+    procedure NewMapEntry(out ALocData: PFpBreakPointMapEntry); override;
+    procedure DisposeMapEntry(ALocData: PFpBreakPointMapEntry); override;
+    procedure DoAddedNewLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry); override;
+    procedure DoRemovingLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry); override;
   public
     constructor Create(AProcess: TDbgProcess);
-    destructor Destroy; override;
-    procedure Clear; reintroduce;
-    procedure AddLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
-    procedure RemoveLocation(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
 
     // When the debugger modifies the debuggee's code, it might be that the
     // original value underneeth the breakpoint has to be changed. This function
     // makes this possible.
-    procedure UpdateMapForNewTargetCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData);
+    procedure UpdateMapForNewTargetCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData); override;
 
-    function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
-    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean;
-    function IsHardcodeBreakPoint(const ALocation: TDBGPtr): Boolean;
-    function GetEnumerator: TBreakLocationMapEnumerator;
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; override;
+    function IsHardcodeBreakPoint(const ALocation: TDBGPtr): Boolean; override;
 
-    procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr);
-    procedure RestoreTempBreakInstructionCodes;
-    procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
+    procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr); override;
+    procedure RestoreTempBreakInstructionCodes; override;
+    procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData); override;
   end;
 
   { TFpDbgBreakpoint }
@@ -1252,27 +1301,15 @@ begin
   FLibrariesRemoved := [];
 end;
 
-{ TBreakLocationMap.TBreakLocationEntry }
+{ TFpBreakPointMap.TFpBreakPointMapEnumerator }
 
-function TBreakLocationMap.TBreakLocationEntry.OrigValue: Byte;
-begin
-  Result := TBreakLocationMap.OrigByteFromPointer(Data);
-end;
-
-function TBreakLocationMap.TBreakLocationEntry.ErrorSetting: ByteBool;
-begin
-  Result := TBreakLocationMap.ErrorSettingFromPointer(Data);
-end;
-
-{ TBreakLocationMap.TBreakLocationMapEnumerator }
-
-function TBreakLocationMap.TBreakLocationMapEnumerator.GetCurrent: TBreakLocationEntry;
+function TFpBreakPointMap.TFpBreakPointMapEnumerator.GetCurrent: TFpBreakPointMapLocDataPair;
 begin
   Result.Data := DataPtr;
   GetID(Result.Location);
 end;
 
-function TBreakLocationMap.TBreakLocationMapEnumerator.MoveNext: Boolean;
+function TFpBreakPointMap.TFpBreakPointMapEnumerator.MoveNext: Boolean;
 begin
   if FDoneFirst then
     Next
@@ -1282,19 +1319,165 @@ begin
   Result := not EOM;
 end;
 
-{ TBreakLocationMap }
+{ TFpBreakPointMap }
 
-procedure TBreakLocationMap.Clear;
+constructor TFpBreakPointMap.Create(AProcess: TDbgProcess; ADataSize: Cardinal);
+begin
+  FProcess := AProcess;
+  inherited Create(itu8, ADataSize);
+end;
+
+destructor TFpBreakPointMap.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TFpBreakPointMap.Clear;
 var
-  LocData: TBreakLocationEntry;
+  LocDataPair: TFpBreakPointMapLocDataPair;
 begin
   debugln(DBG_VERBOSE or DBG_BREAKPOINTS, ['TBreakLocationMap.Clear ']);
-  for LocData in Self do begin
-    if PInternalBreakLocationEntry(LocData.Data)^.IsBreakList then
-      TFpInternalBreakpointArray(PInternalBreakLocationEntry(LocData.Data)^.InternalBreakPoint) := nil;
+  for LocDataPair in Self do begin
+    if LocDataPair.Data^.IsBreakList then
+      TFpInternalBreakpointArray(LocDataPair.Data^.InternalBreakPoint) := nil;
   end;
   inherited Clear;
 end;
+
+procedure TFpBreakPointMap.AddLocation(const ALocation: TDBGPtr;
+  const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean);
+var
+  MapEntryPtr: PFpBreakPointMapEntry;
+  Len, i: Integer;
+  BList: TFpInternalBreakpointArray;
+begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocation');{$ENDIF}
+  MapEntryPtr := GetDataPtr(ALocation);
+
+  if MapEntryPtr <> nil then begin
+    if MapEntryPtr^.IsBreakList then begin
+      Len := Length(TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint));
+      if AnIgnoreIfExists then begin
+        i := Len - 1;
+        while (i >= 0) and (TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)[i] <> AInternalBreak) do
+          dec(i);
+        if i >= 0 then
+          exit;
+      end;
+
+      SetLength(TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint), Len+1);
+      TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)[Len] := AInternalBreak;
+    end
+    else begin
+      if AnIgnoreIfExists and (TFpInternalBreakpoint(MapEntryPtr^.InternalBreakPoint) = AInternalBreak) then
+        exit;
+
+      MapEntryPtr^.IsBreakList := True;
+      SetLength(BList, 2);
+      BList[0] := TFpInternalBreakpoint(MapEntryPtr^.InternalBreakPoint);
+      BList[1] := AInternalBreak;
+      MapEntryPtr^.InternalBreakPoint := nil;
+      TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint) := BList;
+    end;
+
+    exit;
+  end;
+
+
+  NewMapEntry(MapEntryPtr);
+  MapEntryPtr^.IsBreakList := False;
+  MapEntryPtr^.InternalBreakPoint := AInternalBreak;
+
+  FProcess.DoBeforeBreakLocationMapChange; // Only if a new breakpoint is set => memory changed
+  DoAddedNewLocation(ALocation, AInternalBreak, MapEntryPtr);
+
+  Add(ALocation, MapEntryPtr^);
+  DisposeMapEntry(MapEntryPtr);
+end;
+
+procedure TFpBreakPointMap.RemoveLocation(const ALocation: TDBGPtr;
+  const AInternalBreak: TFpInternalBreakpoint);
+var
+  MapEntryPtr: PFpBreakPointMapEntry;
+  Len, i: Integer;
+begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.RemoveLocation');{$ENDIF}
+  MapEntryPtr := GetDataPtr(ALocation);
+  if MapEntryPtr = nil then begin
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
+    exit;
+  end;
+
+  if MapEntryPtr^.IsBreakList then begin
+    Len := Length(TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint));
+    i := Len - 1;
+    while (i >= 0) and (TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)[i] <> AInternalBreak) do
+      dec(i);
+    if i < 0 then begin
+      DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
+      exit;
+    end;
+    if i < Len - 1 then
+      move(TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)[i+1],
+           TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)[i],
+           (Len - 1 - i) * sizeof(TFpInternalBreakpoint));
+    SetLength(TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint), Len-1);
+
+    if Len > 1 then
+      exit;
+  end
+  else
+  if AInternalBreak <> TFpInternalBreakpoint(MapEntryPtr^.InternalBreakPoint) then begin
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
+
+    exit;
+  end;
+
+  FProcess.DoBeforeBreakLocationMapChange; // Only if a breakpoint is removed => memory changed
+  DoRemovingLocation(ALocation, AInternalBreak, MapEntryPtr);
+  Delete(ALocation);
+end;
+
+function TFpBreakPointMap.GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
+var
+  MapEntryPtr: PFpBreakPointMapEntry;
+begin
+  MapEntryPtr := GetDataPtr(ALocation);
+  if MapEntryPtr = nil then begin
+    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
+    Result := nil;
+    exit;
+  end;
+
+  if MapEntryPtr^.IsBreakList then begin
+    Result := TFpInternalBreakpointArray(MapEntryPtr^.InternalBreakPoint)
+  end
+  else begin
+    SetLength(Result, 1);
+    Result[0] := TFpInternalBreakpoint(MapEntryPtr^.InternalBreakPoint);
+  end;
+end;
+
+function TFpBreakPointMap.GetEnumerator: TFpBreakPointMapEnumerator;
+begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TBreakLocationMap.GetEnumerator');{$ENDIF}
+  Result := TFpBreakPointMapEnumerator.Create(Self);
+end;
+
+{ TBreakLocationMap.TFpBreakPointMapLocDataPairHelper }
+
+function TBreakLocationMap.TFpBreakPointMapLocDataPairHelper.OrigValue: Byte;
+begin
+  Result := TBreakLocationMap.OrigByteFromPointer(Data);
+end;
+
+function TBreakLocationMap.TFpBreakPointMapLocDataPairHelper.ErrorSetting: ByteBool;
+begin
+  Result := TBreakLocationMap.ErrorSettingFromPointer(Data);
+end;
+
+{ TBreakLocationMap }
 
 class function TBreakLocationMap.OrigByteFromPointer(AData: Pointer): Byte;
 begin
@@ -1309,115 +1492,7 @@ end;
 
 constructor TBreakLocationMap.Create(AProcess: TDbgProcess);
 begin
-  FProcess := AProcess;
-  inherited Create(itu8, SizeOf(TInternalBreakLocationEntry));
-end;
-
-destructor TBreakLocationMap.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TBreakLocationMap.AddLocation(const ALocation: TDBGPtr;
-  const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean);
-var
-  LocData: PInternalBreakLocationEntry;
-  Len, i: Integer;
-  BList: TFpInternalBreakpointArray;
-  IsTempRemoved: Boolean;
-begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocation');{$ENDIF}
-  LocData := GetDataPtr(ALocation);
-
-  if LocData <> nil then begin
-    if LocData^.IsBreakList then begin
-      Len := Length(TFpInternalBreakpointArray(LocData^.InternalBreakPoint));
-      if AnIgnoreIfExists then begin
-        i := Len - 1;
-        while (i >= 0) and (TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[i] <> AInternalBreak) do
-          dec(i);
-        if i >= 0 then
-          exit;
-      end;
-
-      SetLength(TFpInternalBreakpointArray(LocData^.InternalBreakPoint), Len+1);
-      TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[Len] := AInternalBreak;
-    end
-    else begin
-      if AnIgnoreIfExists and (TFpInternalBreakpoint(LocData^.InternalBreakPoint) = AInternalBreak) then
-        exit;
-
-      LocData^.IsBreakList := True;
-      SetLength(BList, 2);
-      BList[0] := TFpInternalBreakpoint(LocData^.InternalBreakPoint);
-      BList[1] := AInternalBreak;
-      LocData^.InternalBreakPoint := nil;
-      TFpInternalBreakpointArray(LocData^.InternalBreakPoint) := BList;
-    end;
-
-    exit;
-  end;
-
-  // TODO: maybe remove, when TempRemoveBreakInstructionCode is called by "OS"Classes.Continue, which means no breakpoint can be set, while TempRemove are active
-  IsTempRemoved := False;
-  for i := 0 to high(FTmpRemovedBreaks) do begin
-    IsTempRemoved := ALocation = FTmpRemovedBreaks[i];
-    if IsTempRemoved then
-      break;
-  end;
-
-  FProcess.DoBeforeBreakLocationMapChange; // Only if a new breakpoint is set => memory changed
-  new(LocData);
-  LocData^.ErrorSetting := not FProcess.InsertBreakInstructionCode(ALocation, LocData^.OrigValue, IsTempRemoved);
-  LocData^.IsBreakList := False;
-  LocData^.InternalBreakPoint := AInternalBreak;
-  Add(ALocation, LocData^);
-  Dispose(LocData);
-end;
-
-procedure TBreakLocationMap.RemoveLocation(const ALocation: TDBGPtr;
-  const AInternalBreak: TFpInternalBreakpoint);
-var
-  LocData: PInternalBreakLocationEntry;
-  Len, i: Integer;
-begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.RemoveLocation');{$ENDIF}
-  LocData := GetDataPtr(ALocation);
-  if LocData = nil then begin
-    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
-    exit;
-  end;
-
-  if LocData^.IsBreakList then begin
-    Len := Length(TFpInternalBreakpointArray(LocData^.InternalBreakPoint));
-    i := Len - 1;
-    while (i >= 0) and (TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[i] <> AInternalBreak) do
-      dec(i);
-    if i < 0 then begin
-      DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
-      exit;
-    end;
-    if i < Len - 1 then
-      move(TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[i+1],
-           TFpInternalBreakpointArray(LocData^.InternalBreakPoint)[i],
-           (Len - 1 - i) * sizeof(TFpInternalBreakpoint));
-    SetLength(TFpInternalBreakpointArray(LocData^.InternalBreakPoint), Len-1);
-
-    if Len > 1 then
-      exit;
-  end
-  else
-  if AInternalBreak <> TFpInternalBreakpoint(LocData^.InternalBreakPoint) then begin
-    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Wrong break for loc ', FormatAddress(ALocation)]);
-
-    exit;
-  end;
-
-  FProcess.DoBeforeBreakLocationMapChange; // Only if a breakpoint is removed => memory changed
-  if not LocData^.ErrorSetting then
-    FProcess.RemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
-  Delete(ALocation);
+  inherited Create(AProcess, SizeOf(TInternalBreakLocationEntry));
 end;
 
 procedure TBreakLocationMap.UpdateMapForNewTargetCode(const AAdress: TDbgPtr;
@@ -1428,27 +1503,6 @@ begin
   for i := 0 to ASize -1 do
     if HasInsertedBreakInstructionAtLocation(AAdress+i) then
       AdaptOriginalValueAtLocation(AAdress+i, PByte(@AData+i)^);
-end;
-
-function TBreakLocationMap.GetInternalBreaksAtLocation(const ALocation: TDBGPtr
-  ): TFpInternalBreakpointArray;
-var
-  LocData: PInternalBreakLocationEntry;
-begin
-  LocData := GetDataPtr(ALocation);
-  if LocData = nil then begin
-    DebugLn(DBG_WARNINGS or DBG_BREAKPOINTS, ['Missing breakpoint for loc ', FormatAddress(ALocation)]);
-    Result := nil;
-    exit;
-  end;
-
-  if LocData^.IsBreakList then begin
-    Result := TFpInternalBreakpointArray(LocData^.InternalBreakPoint)
-  end
-  else begin
-    SetLength(Result, 1);
-    Result[0] := TFpInternalBreakpoint(LocData^.InternalBreakPoint);
-  end;
 end;
 
 function TBreakLocationMap.GetOrigValueAtLocation(const ALocation: TDBGPtr
@@ -1477,12 +1531,6 @@ begin
   Result := GetOrigValueAtLocation(ALocation) = Int3;
 end;
 
-function TBreakLocationMap.GetEnumerator: TBreakLocationMapEnumerator;
-begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TBreakLocationMap.GetEnumerator');{$ENDIF}
-  Result := TBreakLocationMapEnumerator.Create(Self);
-end;
-
 procedure TBreakLocationMap.TempRemoveBreakInstructionCode(
   const ALocation: TDBGPtr);
 var
@@ -1501,7 +1549,7 @@ begin
 
   SetLength(FTmpRemovedBreaks, l+1);
   FTmpRemovedBreaks[l] := ALocation;
-  FProcess.RemoveBreakInstructionCode(ALocation, OVal); // Do not update FBreakMap
+  Process.RemoveBreakInstructionCode(ALocation, OVal); // Do not update FBreakMap
   DebugLn(DBG_VERBOSE or DBG_BREAKPOINTS, ['<<< TempRemoveBreakInstructionCode']);
 end;
 
@@ -1518,14 +1566,14 @@ begin
   FTmpRemovedBreaks := nil;
   for i := 0 to length(t) - 1 do
     if HasId(t[i]) then // may have been removed
-      FProcess.InsertBreakInstructionCode(t[i], OVal, False);
+      Process.InsertBreakInstructionCode(t[i], OVal, False);
   DebugLnExit(DBG_VERBOSE or DBG_BREAKPOINTS, ['<<< RestoreTempBreakInstructionCodes']);
 end;
 
 procedure TBreakLocationMap.MaskBreakpointsInReadData(const AAdress: TDbgPtr;
   const ASize: Cardinal; var AData);
 var
-  Brk: TBreakLocationEntry;
+  Brk: TFpBreakPointMapLocDataPair;
 begin
   for Brk in Self do begin
     if (not Brk.ErrorSetting) and (Brk.Location >= AAdress) and (Brk.Location < (AAdress+ASize)) then
@@ -1540,6 +1588,42 @@ begin
   LocData := GetDataPtr(ALocation);
   if Assigned(LocData) then
     LocData^.OrigValue := NewOrigValue;
+end;
+
+procedure TBreakLocationMap.NewMapEntry(out ALocData: PFpBreakPointMapEntry);
+begin
+  New(PInternalBreakLocationEntry(ALocData));
+end;
+
+procedure TBreakLocationMap.DisposeMapEntry(ALocData: PFpBreakPointMapEntry);
+begin
+  Dispose(PInternalBreakLocationEntry(ALocData));
+end;
+
+procedure TBreakLocationMap.DoAddedNewLocation(const ALocation: TDBGPtr;
+  const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry);
+var
+  MapEntryPtr: PInternalBreakLocationEntry absolute AnEntry;
+  IsTempRemoved: Boolean;
+  i: Integer;
+begin
+  IsTempRemoved := False;
+  for i := 0 to high(FTmpRemovedBreaks) do begin
+    IsTempRemoved := ALocation = FTmpRemovedBreaks[i];
+    if IsTempRemoved then
+      break;
+  end;
+
+  MapEntryPtr^.ErrorSetting := not Process.InsertBreakInstructionCode(ALocation, MapEntryPtr^.OrigValue, IsTempRemoved);
+end;
+
+procedure TBreakLocationMap.DoRemovingLocation(const ALocation: TDBGPtr;
+  const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointMapEntry);
+var
+  MapEntryPtr: PInternalBreakLocationEntry absolute AnEntry;
+begin
+  if not MapEntryPtr^.ErrorSetting then
+    Process.RemoveBreakInstructionCode(ALocation, MapEntryPtr^.OrigValue);
 end;
 
 { TDbgCallstackEntry }
