@@ -76,7 +76,7 @@ type
     = class(_BASE)
   strict private
     FSupplier: _SUPPLIER_INTF;
-  private
+  protected
     procedure SetSupplier(ASupplier: _SUPPLIER_INTF);
     procedure RemoveSupplier(ASupplier: _SUPPLIER_INTF);
   protected
@@ -97,7 +97,7 @@ type
     = class(_BASE)
   strict private
     FMonitor: _MONITOR_INTF;
-  private
+  protected
     procedure SetMonitor(AMonitor: _MONITOR_INTF);
   protected
     procedure DoNewMonitor; virtual;
