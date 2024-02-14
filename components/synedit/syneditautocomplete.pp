@@ -201,14 +201,15 @@ procedure TCodeTemplate.SetValueWithoutLastEOL(aValue: string);
 var
   l: Integer;
 begin                        // Remove last EOL from Value.
-  if aValue = '' then Exit;
-  l := Length(aValue);
-  if aValue[l] in [#10,#13] then begin
-    Dec(l);
-    if (l > 0) and (aValue[l] in [#10,#13])
-    and (aValue[l] <> aValue[l+1]) then
+  if aValue <> '' then begin
+    l := Length(aValue);
+    if aValue[l] in [#10,#13] then begin
       Dec(l);
-    SetLength(aValue, l);
+      if (l > 0) and (aValue[l] in [#10,#13])
+      and (aValue[l] <> aValue[l+1]) then
+        Dec(l);
+      SetLength(aValue, l);
+    end;
   end;
   fValue := aValue;
 end;
