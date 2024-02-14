@@ -3424,7 +3424,9 @@ begin
     AThread := TFpWaitForConsoleOutputThread(FConsoleOutputThread);
     FConsoleOutputThread := nil;
     AThread.Terminate;
+    AThread.DoHasConsoleOutput(0);
     AThread.WaitFor;
+    Application.RemoveAsyncCalls(AThread);
     sleep(50);
     AThread.DoHasConsoleOutput(0);
     AThread.Free;
