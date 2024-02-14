@@ -461,27 +461,25 @@ end;
 
 procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 var
-  ns : NSView;
-  vr : NSRect;
+  newOrigin : NSPoint;
 begin
-  ns:=sc.documentView;
-  if not Assigned(ns) then Exit;
+  if not Assigned(sc.documentView) then Exit;
 
-  vr:=sc.documentVisibleRect;
+  newOrigin:=sc.contentView.bounds.origin;
   if BarFlag = SB_Vert then
   begin
     //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
     if not sc.documentView.isFlipped then
-      vr.origin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - vr.size.Height
+      newOrigin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - sc.contentSize.height
     else
-      vr.origin.y := ScrollInfo.nPos;
+      newOrigin.y := ScrollInfo.nPos;
   end
   else
   begin
     //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
-    vr.origin.x:=ScrollInfo.nPos;
+    newOrigin.x:=ScrollInfo.nPos;
   end;
-  ns.scrollRectToVisible(vr);
+  sc.contentView.setBoundsOrigin( newOrigin );
 end;
 
 { TModalSession }
