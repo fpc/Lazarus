@@ -905,7 +905,7 @@ end;
 
 function TCocoaScrollBar.lclPos: Integer;
 begin
-  Result:=round( floatValue * (maxint-minInt-pageInt)) + minInt;
+  Result:=round( doubleValue * (maxint-minInt-pageInt)) + minInt;
 end;
 
 procedure TCocoaScrollBar.lclSetPos(aPos: integer);
