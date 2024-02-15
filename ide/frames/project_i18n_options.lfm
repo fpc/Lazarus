@@ -10,22 +10,22 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
   DesignTop = 355
   object EnableI18NCheckBox: TCheckBox
     Left = 0
-    Height = 19
+    Height = 23
     Top = 0
     Width = 438
     Align = alTop
     Caption = 'Enable i18n'
-    OnChange = EnableI18NCheckBoxChange
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
+    OnChange = EnableI18NCheckBoxChange
   end
   object I18NGroupBox: TGroupBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 103
-    Top = 25
+    Height = 115
+    Top = 29
     Width = 438
     Align = alTop
     AutoSize = True
@@ -33,14 +33,14 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
     BorderSpacing.Bottom = 6
     BorderSpacing.InnerBorder = 4
     Caption = 'i18n Options'
-    ClientHeight = 83
-    ClientWidth = 434
+    ClientHeight = 98
+    ClientWidth = 436
     TabOrder = 1
     object PoOutDirLabel: TLabel
       Left = 6
-      Height = 15
+      Height = 16
       Top = 6
-      Width = 111
+      Width = 123
       BorderSpacing.Around = 6
       Caption = 'PO Output Directory:'
       ParentColor = False
@@ -50,9 +50,9 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       AnchorSideTop.Control = POOutDirEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 56
-      Width = 136
+      Height = 23
+      Top = 67
+      Width = 159
       Caption = 'PoForFormsCheckBox'
       ParentShowHint = False
       ShowHint = True
@@ -64,9 +64,9 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 27
-      Width = 420
+      Height = 33
+      Top = 28
+      Width = 422
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -74,18 +74,18 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       ButtonWidth = 25
       MaxLength = 0
       NumGlyphs = 1
-      OnButtonClick = POOutDirButtonClick
       ParentShowHint = False
       PasswordChar = #0
       ShowHint = True
       TabOrder = 0
       Text = 'POOutDirEdit'
+      OnButtonClick = POOutDirButtonClick
     end
   end
   object ExcludedGroupBox: TGroupBox
     Left = 0
-    Height = 120
-    Top = 134
+    Height = 100
+    Top = 150
     Width = 438
     Align = alClient
     Caption = 'Excluded'
@@ -98,34 +98,35 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 100
-    ClientWidth = 434
+    ClientHeight = 83
+    ClientWidth = 436
     TabOrder = 2
     object ExcludedIdentifiersPanel: TPanel
       Left = 10
-      Height = 90
+      Height = 73
       Top = 5
-      Width = 202
+      Width = 203
       BevelOuter = bvNone
       Caption = 'ExcludedIdentifiersPanel'
-      ClientHeight = 90
-      ClientWidth = 202
+      ClientHeight = 73
+      ClientWidth = 203
       TabOrder = 0
       object ExcludedIdentifiersMemo: TMemo
         Left = 0
-        Height = 73
-        Top = 17
-        Width = 202
+        Height = 55
+        Top = 18
+        Width = 203
         Align = alClient
-        OnChange = ExcludedIdentifiersMemoChange
-        ScrollBars = ssAutoVertical
+        ScrollBars = ssAutoBoth
         TabOrder = 0
+        WordWrap = False
+        OnChange = ExcludedIdentifiersMemoChange
       end
       object ExcludedIdentifiersLabel: TLabel
         Left = 0
-        Height = 15
+        Height = 16
         Top = 0
-        Width = 202
+        Width = 203
         Align = alTop
         BorderSpacing.Bottom = 2
         Caption = 'Identifiers:'
@@ -133,30 +134,31 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       end
     end
     object ExcludedOriginalsPanel: TPanel
-      Left = 222
-      Height = 90
+      Left = 223
+      Height = 73
       Top = 5
-      Width = 202
+      Width = 203
       BevelOuter = bvNone
       Caption = 'ExcludedOriginalsPanel'
-      ClientHeight = 90
-      ClientWidth = 202
+      ClientHeight = 73
+      ClientWidth = 203
       TabOrder = 1
       object ExcludedOriginalsMemo: TMemo
         Left = 0
-        Height = 73
-        Top = 17
-        Width = 202
+        Height = 55
+        Top = 18
+        Width = 203
         Align = alClient
-        OnChange = ExcludedOriginalsMemoChange
-        ScrollBars = ssAutoVertical
+        ScrollBars = ssAutoBoth
         TabOrder = 0
+        WordWrap = False
+        OnChange = ExcludedOriginalsMemoChange
       end
       object ExcludedOriginalsLabel: TLabel
         Left = 0
-        Height = 15
+        Height = 16
         Top = 0
-        Width = 202
+        Width = 203
         Align = alTop
         BorderSpacing.Bottom = 2
         Caption = 'Originals:'
@@ -166,8 +168,8 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
   end
   object ForceUpdatePoFilesCheckBox: TCheckBox
     Left = 0
-    Height = 19
-    Top = 259
+    Height = 23
+    Top = 255
     Width = 438
     Align = alBottom
     BorderSpacing.Top = 5
