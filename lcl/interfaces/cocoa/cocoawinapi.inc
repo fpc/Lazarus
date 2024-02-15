@@ -1696,15 +1696,25 @@ end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 var
-  si  : TScrollInfo;
   obj : NSObject;
   sc  : TCocoaScrollView;
-  bar : TCocoaScrollBar;
-  f   : NSSize;
-  sz  : NSSize;
-  flg : NSUInteger;
-  hosted: Boolean;
   lclControl: TScrollingWinControl;
+  bar : TCocoaScrollBar;
+  contentSize  : NSSize;
+  documentSize : NSSize;
+  sizingMask : NSUInteger;
+  hosted: Boolean;
+
+  function getNewScrollPos: Integer;
+  var
+    si: TScrollInfo;
+  begin
+    FillChar(si, sizeof(si), 0);
+    si.cbSize:=sizeof(si);
+    NSScrollViewGetScrollInfo(sc, SBStyle, si);
+    Result:=si.nPos;
+  end;
+
 begin
   obj := NSObject(Handle);
   Result := 0;
@@ -1723,51 +1733,48 @@ begin
     if sc.lclGetTarget is TScrollingWinControl then
       lclControl:=TScrollingWinControl(sc.lclGetTarget);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
-      f:=sc.contentSize;
-      sz:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
-      flg:=sc.documentView.autoresizingMask;
+      contentSize:=sc.contentSize;
+      documentSize:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
+      sizingMask:=sc.documentView.autoresizingMask;
 
       if SBStyle=SB_Horz then begin
-        if ScrollInfo.nMax>f.width then begin
-          sz.width := ScrollInfo.nMax;
-          flg:=flg and not NSViewWidthSizable;
-          if (sz.width>f.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then
+        if ScrollInfo.nMax>contentSize.width then begin
+          documentSize.width := ScrollInfo.nMax;
+          sizingMask:=sizingMask and not NSViewWidthSizable;
+          if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then
             sc.setHasHorizontalScroller(true);
         end else begin
-          sz.width := f.width;
-          flg:=flg or NSViewWidthSizable;
+          documentSize.width := contentSize.width;
+          sizingMask:=sizingMask or NSViewWidthSizable;
         end;
       end else if SBStyle=SB_Vert then begin
-        if ScrollInfo.nMax>f.height then begin
-          sz.height := ScrollInfo.nMax;
-          flg:=flg and not NSViewHeightSizable;
-          if (sz.height>f.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then
+        if ScrollInfo.nMax>contentSize.height then begin
+          documentSize.height := ScrollInfo.nMax;
+          sizingMask:=sizingMask and not NSViewHeightSizable;
+          if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then
             sc.setHasVerticalScroller(true);
         end else begin
-          sz.height := f.height;
-          flg:=flg or NSViewHeightSizable;
+          documentSize.height := contentSize.height;
+          sizingMask:=sizingMask or NSViewHeightSizable;
         end;
       end;
-      sc.documentView.setAutoresizingMask(flg);
-      sc.documentView.setFrameSize( sz );
+      sc.documentView.setAutoresizingMask(sizingMask);
+      sc.documentView.setFrameSize( documentSize );
 
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
         if sc.lclVertScrollInfo.fMask<>0 then
-          NSScrollViewSetScrollPos(NSScrollView(obj), SB_Vert, sc.lclVertScrollInfo)
+          NSScrollViewSetScrollPos(sc, SB_Vert, sc.lclVertScrollInfo)
       end else begin
         if sc.lclHoriScrollInfo.fMask<>0 then
-          NSScrollViewSetScrollPos(NSScrollView(obj), SB_Horz, sc.lclHoriScrollInfo);
+          NSScrollViewSetScrollPos(sc, SB_Horz, sc.lclHoriScrollInfo);
       end;
     end;
 
     // if frame changed, another ScrollBar has been updated
     if ScrollInfo.fMask and SIF_ALL > 0 then
-      NSScrollViewSetScrollPos(NSScrollView(obj), SBStyle, ScrollInfo);
-    FillChar(si, sizeof(si), 0);
-    si.cbSize:=sizeof(si);
-    NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
-    Result:=si.nPos;
+      NSScrollViewSetScrollPos(sc, SBStyle, ScrollInfo);
+    Result:= getNewScrollPos();
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     bar:=nil;
