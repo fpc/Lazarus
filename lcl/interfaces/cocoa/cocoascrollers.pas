@@ -61,6 +61,7 @@ type
     procedure lclInvalidate; override;
 
     procedure fillScrollInfo(barFlag: Integer; var scrollInfo: TScrollInfo); message 'fillScrollInfo:barFlag:';
+    procedure applyScrollInfo(barFlag: Integer; const scrollInfo: TScrollInfo); message 'applyScrollInfo:barFlag:';
   end;
 
   { TCocoaManualScrollView }
@@ -748,6 +749,30 @@ begin
     fillScrollerScrollInfo(docSize.height, self.contentSize.height, self.verticalScroller)
   else
     fillScrollerScrollInfo(docSize.width, self.contentSize.width, self.horizontalScroller);
+end;
+
+procedure TCocoaScrollView.applyScrollInfo(barFlag: Integer;
+  const scrollInfo: TScrollInfo);
+var
+  newOrigin : NSPoint;
+begin
+  if not Assigned(self.documentView) then Exit;
+
+  newOrigin:= self.contentView.bounds.origin;
+  if BarFlag = SB_Vert then
+  begin
+    self.lclVertScrollInfo:= scrollInfo;
+    if not self.documentView.isFlipped then
+      newOrigin.y := self.documentView.frame.size.height - scrollInfo.nPos - self.contentSize.height
+    else
+      newOrigin.y := scrollInfo.nPos;
+  end
+  else
+  begin
+    self.lclHoriScrollInfo:= scrollInfo;
+    newOrigin.x:= scrollInfo.nPos;
+  end;
+  self.contentView.setBoundsOrigin( newOrigin );
 end;
 
 function TCocoaScrollView.initWithFrame(ns: NSRect): id;

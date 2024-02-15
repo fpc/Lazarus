@@ -1762,16 +1762,16 @@ begin
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
         if sc.lclVertScrollInfo.fMask<>0 then
-          NSScrollViewSetScrollPos(sc, SB_Vert, sc.lclVertScrollInfo)
+          sc.applyScrollInfo(SB_Vert, sc.lclVertScrollInfo)
       end else begin
         if sc.lclHoriScrollInfo.fMask<>0 then
-          NSScrollViewSetScrollPos(sc, SB_Horz, sc.lclHoriScrollInfo);
+          sc.applyScrollInfo(SB_Horz, sc.lclHoriScrollInfo);
       end;
     end;
 
     // if frame changed, another ScrollBar has been updated
     if ScrollInfo.fMask and SIF_ALL > 0 then
-      NSScrollViewSetScrollPos(sc, SBStyle, ScrollInfo);
+      sc.applyScrollInfo(SBStyle, ScrollInfo);
     Result:= getNewScrollPos();
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin

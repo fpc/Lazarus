@@ -250,8 +250,6 @@ var
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
-procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
-procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
@@ -410,50 +408,6 @@ begin
   ScrollInfo.nPos:=bar.lclPos;
   ScrollInfo.nTrackPos:=ScrollInfo.nPos;
   Result:=true;
-end;
-
-procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
-var
-  sz : CGFloat;
-begin
-  if ScrollInfo.fMask and SIF_POS>0 then begin
-    sz:=docSz-pageSz;
-    if sz=0 then rl.setFloatValue(0)
-    else rl.setFloatValue(ScrollInfo.nPos/sz);
-  end;
-  if ScrollInfo.fMask and SIF_PAGE>0 then begin
-    sz:=docSz-pageSz;
-    if sz=0 then rl.setKnobProportion(1)
-    else rl.setKnobProportion(1/sz);
-  end;
-end;
-
-procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
-var
-  cocoaSc: TCocoaScrollView Absolute sc;
-  newOrigin : NSPoint;
-begin
-  if not Assigned(sc.documentView) then Exit;
-
-  newOrigin:=sc.contentView.bounds.origin;
-  if BarFlag = SB_Vert then
-  begin
-    if sc.isKindOfClass(TCocoaScrollView) then
-      cocoaSc.lclVertScrollInfo:= ScrollInfo;
-    //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
-    if not sc.documentView.isFlipped then
-      newOrigin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - sc.contentSize.height
-    else
-      newOrigin.y := ScrollInfo.nPos;
-  end
-  else
-  begin
-    if sc.isKindOfClass(TCocoaScrollView) then
-      cocoaSc.lclHoriScrollInfo:= ScrollInfo;
-    //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
-    newOrigin.x:=ScrollInfo.nPos;
-  end;
-  sc.contentView.setBoundsOrigin( newOrigin );
 end;
 
 { TModalSession }
