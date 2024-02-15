@@ -2502,7 +2502,7 @@ var
   sl: TStringList;
   i, sp, ep, v: Integer;
   Value: String;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   Result := False;
   sl     := TStringList.Create;
@@ -5784,7 +5784,7 @@ var
   FileVersion, i, j, v: Integer;
   NewAutoComplete: TSynEditAutoComplete;
   Added: Boolean;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   s := CodeTemplateFileNameExpand;
   Result := mrAbort;

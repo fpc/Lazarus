@@ -2421,7 +2421,7 @@ var
   I: Integer;
   NewStr: String;
   SynEditor: TIDESynEditor;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
@@ -5090,7 +5090,7 @@ var
   SrcToken: String;
   IdChars: TSynIdentChars;
   WordToken: String;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   Result:=false;
   Line:=GetLineText;
@@ -11654,7 +11654,7 @@ procedure TSourceEditorManager.CodeTemplateExecuteCompletion(
   ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
 var
   SrcEdit: TSourceEditorInterface;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
   if SrcEdit=nil then

@@ -277,7 +277,7 @@ end;
 function EditCodeTemplate(ASynAutoComplete: TSynEditAutoComplete;
   AIndex: integer): TModalResult;
 var
-  Template: TCodeTemplate;
+  Template: TTemplate;
   Str: array of string;
 begin
   Result:= mrCancel;
@@ -1003,7 +1003,7 @@ end;
 procedure TCodeTemplateDialog.DeleteButtonClick(Sender: TObject);
 var
   a, idx: LongInt;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   idx := TemplateListBox.ItemIndex;
   if idx < 0 then exit;
@@ -1110,7 +1110,7 @@ end;
 procedure TCodeTemplateDialog.RenameButtonClick(Sender: TObject);
 var
   a, idx: LongInt;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   idx := TemplateListBox.ItemIndex;
   if idx < 0 then exit;
@@ -1181,7 +1181,7 @@ procedure TCodeTemplateDialog.FillCodeTemplateListBox;
 var
   a: PtrInt;
   sl: TStringListUTF8Fast;
-  Template: TCodeTemplate;
+  Template: TTemplate;
 begin
   sl:=TStringListUTF8Fast.Create;
   try
@@ -1203,7 +1203,7 @@ procedure TCodeTemplateDialog.ShowCurCodeTemplate;
 var
   EnableMacros, KeepSubIndent: boolean;
   LineCount: integer;
-  Template: TCodeTemplate;
+  Template: TTemplate;
   idx, a, sp, ep: integer;
   s: string;
   AutoOnCat: array[TAutoCompleteOption] of Boolean;
@@ -1278,7 +1278,7 @@ end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
 var
-  Templ: TCodeTemplate;
+  Templ: TTemplate;
   c: TAutoCompleteOption;
 begin
   if LastTemplate<0 then exit;

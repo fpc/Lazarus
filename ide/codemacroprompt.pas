@@ -108,7 +108,7 @@ type
   end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
-  Template: TCodeTemplate; const EndOfTokenChr: string;
+  Template: TTemplate; const EndOfTokenChr: string;
   IndentToTokenStart: boolean): boolean;
 
 implementation
@@ -451,7 +451,7 @@ begin
 end;
 
 function ExecuteCodeTemplate(SrcEdit: TSourceEditorInterface;
-  Template: TCodeTemplate; const EndOfTokenChr: string;
+  Template: TTemplate; const EndOfTokenChr: string;
   IndentToTokenStart: boolean): boolean;
 var
   AEditor: TSynEdit;
