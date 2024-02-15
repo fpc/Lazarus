@@ -1607,16 +1607,16 @@ begin
     obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
-    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), ScrollInfo)
+    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), scrollInfo)
   else
   if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     if BarFlag = SB_Vert then
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), ScrollInfo)
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
     else
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), ScrollInfo);
-  end else if obj.isKindOfClass(NSScrollView) then
-    NSScrollViewGetScrollInfo(NSScrollView(obj), BarFlag, ScrollInfo)
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
+  end else if obj.isKindOfClass(TCocoaScrollView) then
+    TCocoaScrollView(obj).fillScrollInfo(BarFlag, scrollInfo)
   else
     Result := False;
 end;
@@ -1709,9 +1709,7 @@ var
   var
     si: TScrollInfo;
   begin
-    FillChar(si, sizeof(si), 0);
-    si.cbSize:=sizeof(si);
-    NSScrollViewGetScrollInfo(sc, SBStyle, si);
+    sc.fillScrollInfo(SBStyle, si);
     Result:=si.nPos;
   end;
 

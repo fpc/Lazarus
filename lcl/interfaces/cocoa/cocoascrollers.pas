@@ -59,6 +59,8 @@ type
     procedure lclUpdate; override;
     procedure lclInvalidateRect(const r: TRect); override;
     procedure lclInvalidate; override;
+
+    procedure fillScrollInfo(barFlag: Integer; var scrollInfo: TScrollInfo); message 'fillScrollInfo:barFlag:';
   end;
 
   { TCocoaManualScrollView }
@@ -715,6 +717,37 @@ end;
 procedure TCocoaScrollView.lclInvalidate;
 begin
   documentView.lclInvalidate;
+end;
+
+procedure TCocoaScrollView.fillScrollInfo(barFlag: Integer;
+  var scrollInfo: TScrollInfo);
+var
+  docSize: NSSize;
+
+  procedure fillScrollerScrollInfo(maxValue: CGFloat; pageValue: CGFloat;
+    scroller: NSScroller);
+  begin
+    scrollInfo.cbSize:=sizeof(scrollInfo);
+    scrollInfo.fMask:=SIF_ALL;
+    scrollInfo.nPos:=round(scroller.doubleValue*(maxValue-pageValue));
+    scrollInfo.nTrackPos:=ScrollInfo.nPos;
+    scrollInfo.nMin:=0;
+    scrollInfo.nMax:=round(maxValue);
+    scrollInfo.nPage:=round(scroller.knobProportion*maxValue);
+  end;
+
+begin
+  if not Assigned(self.documentView) then begin
+    FillChar(scrollInfo, sizeof(scrollInfo),0);
+    scrollInfo.cbSize:=sizeof(scrollInfo);
+    Exit;
+  end;
+
+  docSize:= self.documentView.frame.size;
+  if barFlag = SB_Vert then
+    fillScrollerScrollInfo(docSize.height, self.contentSize.height, self.verticalScroller)
+  else
+    fillScrollerScrollInfo(docSize.width, self.contentSize.width, self.horizontalScroller);
 end;
 
 function TCocoaScrollView.initWithFrame(ns: NSRect): id;

@@ -250,8 +250,6 @@ var
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
-procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
-procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
 procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 
@@ -412,35 +410,6 @@ begin
   ScrollInfo.nPos:=bar.lclPos;
   ScrollInfo.nTrackPos:=ScrollInfo.nPos;
   Result:=true;
-end;
-
-procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
-begin
-  ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  ScrollInfo.fMask:=SIF_ALL;
-  ScrollInfo.nPos:=round(rl.floatValue*(docSz-pageSz));
-  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
-  ScrollInfo.nMin:=0;
-  ScrollInfo.nMax:=round(docSz);
-  ScrollInfo.nPage:=round(rl.knobProportion*docSz);
-end;
-
-procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
-var
-  ns : NSView;
-  vr : NSRect;
-begin
-  ns:=sc.documentView;
-  if not Assigned(ns) then begin
-    FillChar(ScrollInfo, sizeof(ScrollInfo),0);
-    ScrollInfo.cbSize:=sizeof(ScrollInfo);
-    Exit;
-  end;
-  vr:=sc.documentVisibleRect;
-  if BarFlag = SB_Vert then
-    NSScrollerGetScrollInfo(ns.frame.size.height, vr.size.height, sc.verticalScroller, ScrollInfo)
-  else
-    NSScrollerGetScrollInfo(ns.frame.size.width, vr.size.width, sc.horizontalScroller, ScrollInfo);
 end;
 
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
