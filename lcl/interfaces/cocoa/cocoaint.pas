@@ -461,6 +461,7 @@ end;
 
 procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 var
+  cocoaSc: TCocoaScrollView Absolute sc;
   newOrigin : NSPoint;
 begin
   if not Assigned(sc.documentView) then Exit;
@@ -468,6 +469,8 @@ begin
   newOrigin:=sc.contentView.bounds.origin;
   if BarFlag = SB_Vert then
   begin
+    if sc.isKindOfClass(TCocoaScrollView) then
+      cocoaSc.lclVertScrollInfo:= ScrollInfo;
     //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
     if not sc.documentView.isFlipped then
       newOrigin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - sc.contentSize.height
@@ -476,6 +479,8 @@ begin
   end
   else
   begin
+    if sc.isKindOfClass(TCocoaScrollView) then
+      cocoaSc.lclHoriScrollInfo:= ScrollInfo;
     //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
     newOrigin.x:=ScrollInfo.nPos;
   end;

@@ -24,7 +24,7 @@ interface
 
 uses
   // rtl+ftl
-  Math, Classes, SysUtils,
+  Math, Classes, SysUtils, LclType,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
 
@@ -36,8 +36,14 @@ type
     callback: ICommonCallback;
     isCustomRange: Boolean;
 
+    // the corresponding LCL ScrollInfo,
+    // which are needed when documentView.frame changes.
+    lclHoriScrollInfo: TScrollInfo;
+    lclVertScrollInfo: TScrollInfo;
+
     docrect    : NSRect;    // have to remember old
     holdscroll : Integer; // do not send scroll messages
+
     function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
@@ -48,7 +54,7 @@ type
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
     procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
-    procedure resetScrollRect; message 'resetScrollRect';
+    procedure resetScrollData; message 'resetScrollData';
 
     procedure lclUpdate; override;
     procedure lclInvalidateRect(const r: TRect); override;
@@ -654,7 +660,7 @@ end;
 procedure TCocoaScrollView.setDocumentView(aView: NSView);
 begin
   inherited setDocumentView(aView);
-  resetScrollRect;
+  resetScrollData;
 end;
 
 procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification
@@ -689,9 +695,11 @@ begin
   end;
 end;
 
-procedure TCocoaScrollView.resetScrollRect;
+procedure TCocoaScrollView.resetScrollData;
 begin
   docrect:=documentVisibleRect;
+  lclHoriScrollInfo.fMask:= 0;
+  lclVertScrollInfo.fMask:= 0;
 end;
 
 procedure TCocoaScrollView.lclUpdate;

@@ -1750,8 +1750,18 @@ begin
       end;
       sc.documentView.setAutoresizingMask(flg);
       sc.documentView.setFrameSize( sz );
+
+      // frame changed, Need to update another ScrollBar too
+      if SbStyle=SB_Horz then begin
+        if sc.lclVertScrollInfo.fMask<>0 then
+          NSScrollViewSetScrollPos(NSScrollView(obj), SB_Vert, sc.lclVertScrollInfo)
+      end else begin
+        if sc.lclHoriScrollInfo.fMask<>0 then
+          NSScrollViewSetScrollPos(NSScrollView(obj), SB_Horz, sc.lclHoriScrollInfo);
+      end;
     end;
 
+    // if frame changed, another ScrollBar has been updated
     if ScrollInfo.fMask and SIF_ALL > 0 then
       NSScrollViewSetScrollPos(NSScrollView(obj), SBStyle, ScrollInfo);
     FillChar(si, sizeof(si), 0);
