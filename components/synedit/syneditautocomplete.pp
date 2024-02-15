@@ -92,6 +92,7 @@ type
     function GetTemplate(Index: Integer): TCodeTemplate;
     procedure SetTemplate(Index: Integer; AValue: TCodeTemplate);
   public
+    constructor Create;
     property Objects[Index: Integer]: TCodeTemplate read GetTemplate write SetTemplate;
   end;
 
@@ -160,7 +161,6 @@ begin
   inherited Create;
   fAttributes := TStringListUTF8Fast.Create;
   fAttributes.UseLocale := False;
-  fAttributes.OwnsObjects := True;
 end;
 
 constructor TCodeTemplate.Create(aTemplate: TCodeTemplate);
@@ -224,6 +224,12 @@ end;
 procedure TCodeTemplateList.SetTemplate(Index: Integer; AValue: TCodeTemplate);
 begin
   inherited PutObject(Index, AValue);
+end;
+
+constructor TCodeTemplateList.Create;
+begin
+  inherited Create;
+  OwnsObjects := True;
 end;
 
 { TCustomSynAutoComplete }
