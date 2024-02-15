@@ -688,7 +688,7 @@ procedure TIpHtmlProps.SetFontName(const Value: string);
 var
   Rec : TIpHtmlPropAFieldsRec;
 begin
-  if Value <> Rec.FontName then begin
+  if Value <> FontName then begin
     CopyPropARecTo(@Rec);
     Rec.FontName:=Value;
     FindOrCreatePropA(@Rec);
