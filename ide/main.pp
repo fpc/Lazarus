@@ -7254,9 +7254,9 @@ begin
     for I := 0 to CodeTemplates.Count-1 do
     begin
       New := TCodeTemplateIdentifierListItem.Create(CodeTemplateCompatibility,
-              False, CodeTemplateHistoryIndex, PChar(CodeTemplates[I]),
+              False, CodeTemplateHistoryIndex, PChar(CodeTemplates[I].Key),
               CodeTemplateLevel, nil, nil, ctnCodeTemplate);
-      New.Comment := CodeTemplates.Objects[I].Comment;
+      New.Comment := CodeTemplates[I].Comment;
       CodeToolBoss.IdentifierList.Add(New);
     end;
 end;

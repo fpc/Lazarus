@@ -2421,6 +2421,7 @@ var
   I: Integer;
   NewStr: String;
   SynEditor: TIDESynEditor;
+  Template: TCodeTemplate;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
@@ -2490,11 +2491,13 @@ Begin
          ccSelection:='';
          with Manager.CodeTemplateModul do
            for I := 0 to CodeTemplates.Count-1 do begin
-             NewStr := CodeTemplates[I];
+             Template := CodeTemplates[I];
+             NewStr := Template.Key;
              if NewStr<>'' then begin
                NewStr:=#3'B'+NewStr+#3'b';
-               while length(NewStr)<10+4 do NewStr:=NewStr+' ';
-               NewStr:=NewStr+' '+CodeTemplates.Objects[I].Comment;
+               while length(NewStr)<10+4 do
+                 NewStr:=NewStr+' ';
+               NewStr:=NewStr+' '+Template.Comment;
                SL.Add(NewStr);
              end;
            end;
@@ -5102,8 +5105,8 @@ begin
   IdChars := FEditor.IdentChars;
   with Manager.CodeTemplateModul do
     for i:=0 to CodeTemplates.Count-1 do begin
-      AToken:=CodeTemplates[i];
-      Template:=CodeTemplates.Objects[i];
+      Template:=CodeTemplates[i];
+      AToken:=Template.Key;
       if AToken='' then continue;
       if AToken[1] in IdChars then
         SrcToken:=WordToken
@@ -11652,17 +11655,14 @@ procedure TSourceEditorManager.CodeTemplateExecuteCompletion(
 var
   SrcEdit: TSourceEditorInterface;
   Template: TCodeTemplate;
-  TemplateName: string;
 begin
   SrcEdit:=FindSourceEditorWithEditorComponent(ASynAutoComplete.Editor);
   if SrcEdit=nil then
     SrcEdit := ActiveEditor;
   //debugln('TSourceNotebook.OnCodeTemplateExecuteCompletion A ',dbgsName(SrcEdit),' ',dbgsName(ASynAutoComplete.Editor));
 
-  TemplateName:=ASynAutoComplete.CodeTemplates[Index];
-  Template:=ASynAutoComplete.CodeTemplates.Objects[Index];
-  ExecuteCodeTemplate(SrcEdit,Template,TemplateName,
-                      ASynAutoComplete.EndOfTokenChr,
+  Template:=ASynAutoComplete.CodeTemplates[Index];
+  ExecuteCodeTemplate(SrcEdit, Template, ASynAutoComplete.EndOfTokenChr,
                       ASynAutoComplete.IndentToTokenStart);
 end;
 

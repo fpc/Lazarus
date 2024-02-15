@@ -69,17 +69,19 @@ type
   { TCodeTemplate }
 
   TCodeTemplate = class
-  private    // The Key is Stored in a TCodeTemplateList string item.
+  private
+    fKey: string;
     fValue: string;
     fComment: string;
     fAttributes: TStringList;  // List of attributes.
   public
     constructor Create;
     constructor Create(aTemplate: TCodeTemplate);
-    constructor Create(aValue, aComment: string);
+    constructor Create(aKey, aValue, aComment: string);
     destructor Destroy; override;
     procedure SetBooleanAttribute(aName: string; aValue: Boolean);
     procedure SetValueWithoutLastEOL(aValue: string);
+    property Key: string read fKey write fKey;
     property Value: string read fValue write fValue;
     property Comment: string read fComment write fComment;
     property Attributes: TStringList read fAttributes;
@@ -87,13 +89,27 @@ type
 
   { TCodeTemplateList }
 
-  TCodeTemplateList = class(TStringListUTF8Fast)
+  TCodeTemplateList = class
   private
+    fList: TStringListUTF8Fast;
+    function GetSorted: Boolean;
     function GetTemplate(Index: Integer): TCodeTemplate;
+    procedure SetSorted(AValue: Boolean);
     procedure SetTemplate(Index: Integer; AValue: TCodeTemplate);
   public
     constructor Create;
-    property Objects[Index: Integer]: TCodeTemplate read GetTemplate write SetTemplate;
+    destructor Destroy; override;
+    function Add(aTemplate: TCodeTemplate): Integer;
+    function ByKey(aKey: string): TCodeTemplate;
+    function Count: Integer;
+    procedure Clear;
+    procedure Delete(Index: Integer);
+    function IndexOf(aKey: string): Integer;
+    procedure Sort;
+  public
+    property Sorted: Boolean read GetSorted write SetSorted;
+    property Templates[Index: Integer]: TCodeTemplate read GetTemplate
+                                                     write SetTemplate; default;
   end;
 
   { TCustomSynAutoComplete }
@@ -124,7 +140,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddCompletion(AToken: string; ATemplate: TCodeTemplate);
+    procedure AddCompletion(ATemplate: TCodeTemplate);
     procedure AddCompletion(AToken, AValue, AComment: string);
     procedure Execute(AEditor: TCustomSynEdit); virtual;
     procedure ExecuteCompletion(AToken: string; AEditor: TCustomSynEdit); virtual;
@@ -164,16 +180,18 @@ begin
 end;
 
 constructor TCodeTemplate.Create(aTemplate: TCodeTemplate);
-begin
+begin             // A copy constructor
   Create;
-  fValue := aTemplate.Value;
-  fComment := aTemplate.Comment;
+  fKey := aTemplate.fKey;
+  fValue := aTemplate.fValue;
+  fComment := aTemplate.fComment;
   fAttributes.Assign(aTemplate.Attributes);
 end;
 
-constructor TCodeTemplate.Create(aValue, aComment: string);
+constructor TCodeTemplate.Create(aKey, aValue, aComment: string);
 begin
   Create;
+  fKey := aKey;
   fValue := aValue;
   fComment := aComment;
 end;
@@ -216,44 +234,102 @@ end;
 
 { TCodeTemplateList }
 
+constructor TCodeTemplateList.Create;
+begin
+  inherited Create;
+  fList := TStringListUTF8Fast.Create;
+  fList.OwnsObjects := True;
+end;
+
+destructor TCodeTemplateList.Destroy;
+begin
+  fList.Free;
+  inherited Destroy;
+end;
+
+function TCodeTemplateList.Add(aTemplate: TCodeTemplate): Integer;
+begin
+  Result := fList.AddObject(aTemplate.fKey, aTemplate);
+end;
+
+function TCodeTemplateList.ByKey(aKey: string): TCodeTemplate;
+var
+  i: Integer;
+begin
+  i := fList.IndexOf(aKey);
+  if i >= 0 then
+    Result := TCodeTemplate(fList.Objects[i])
+  else
+    Result := Nil;
+end;
+
+function TCodeTemplateList.Count: Integer;
+begin
+  Result := fList.Count;
+end;
+
+procedure TCodeTemplateList.Clear;
+begin
+  fList.Clear;
+end;
+
+procedure TCodeTemplateList.Delete(Index: Integer);
+begin
+  fList.Delete(Index);
+end;
+
+function TCodeTemplateList.IndexOf(aKey: string): Integer;
+begin
+  Result := fList.IndexOf(aKey);
+end;
+
+procedure TCodeTemplateList.Sort;
+begin
+  fList.Sort;
+end;
+
+function TCodeTemplateList.GetSorted: Boolean;
+begin
+  Result := fList.Sorted;
+end;
+
 function TCodeTemplateList.GetTemplate(Index: Integer): TCodeTemplate;
 begin
-  Result := TCodeTemplate(inherited GetObject(Index));
+  Result := TCodeTemplate(fList.Objects[Index]);
+end;
+
+procedure TCodeTemplateList.SetSorted(AValue: Boolean);
+begin
+  fList.Sorted := AValue;
 end;
 
 procedure TCodeTemplateList.SetTemplate(Index: Integer; AValue: TCodeTemplate);
 begin
-  inherited PutObject(Index, AValue);
-end;
-
-constructor TCodeTemplateList.Create;
-begin
-  inherited Create;
-  OwnsObjects := True;
+  fList.Objects[Index] := AValue;
 end;
 
 { TCustomSynAutoComplete }
 
-procedure TCustomSynAutoComplete.AddCompletion(AToken: string; ATemplate: TCodeTemplate);
+procedure TCustomSynAutoComplete.AddCompletion(ATemplate: TCodeTemplate);
 var
   NewTemplate: TCodeTemplate;
 begin
-  if aToken = '' then Exit;
+  Assert(ATemplate.Key<>'', 'TCustomSynAutoComplete.AddCompletion: Key is empty.');
   if not fParsed then
     ParseCompletionList;
   NewTemplate := TCodeTemplate.Create(ATemplate);
-  fCodeTemplates.AddObject(aToken, NewTemplate);
+  fCodeTemplates.Add(NewTemplate);
 end;
 
 procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string);
 var
   NewTemplate: TCodeTemplate;
 begin
-  if aToken = '' then Exit;
+  Assert(AToken<>'', 'TCustomSynAutoComplete.AddCompletion: Key is empty.');
   if not fParsed then
     ParseCompletionList;
-  NewTemplate := TCodeTemplate.Create(AValue, AComment);
-  fCodeTemplates.AddObject(aToken, NewTemplate);
+  NewTemplate := TCodeTemplate.Create(AToken, AValue, AComment);
+  fCodeTemplates.Add(NewTemplate);
 end;
 
 procedure TCustomSynAutoComplete.CompletionListChanged(Sender: TObject);
@@ -300,7 +376,7 @@ begin
       if Assigned(OnTokenNotFound) then
         OnTokenNotFound(Self,'',AEditor,i);
       if i>=0 then
-        ExecuteCompletion(fCodeTemplates[i], AEditor);
+        ExecuteCompletion(fCodeTemplates[i].Key, AEditor);
     end;
   end;
 end;
@@ -333,7 +409,7 @@ begin
     NumMaybe := 0;
     if fCaseSensitive then begin
       while i > -1 do begin
-        s := fCodeTemplates[i];
+        s := fCodeTemplates[i].Key;
         if s = AToken then
           break
         else if LazStartsStr(AToken, s) then begin
@@ -344,7 +420,7 @@ begin
       end;
     end else begin
       while i > -1 do begin
-        s := fCodeTemplates[i];
+        s := fCodeTemplates[i].Key;
         if AnsiCompareText(s, AToken) = 0 then
           break
         else if AnsiCompareText(Copy(s, 1, Len), AToken) = 0 then begin
@@ -392,7 +468,7 @@ begin
           NewCaretPos := FALSE;
           Temp := TStringList.Create;
           try
-            Template := fCodeTemplates.Objects[i];
+            Template := fCodeTemplates[i];
             s:=Template.fValue;
             Temp.Text := s;
             if (s<>'') and (s[length(s)] in [#10,#13]) then
@@ -470,6 +546,8 @@ var
     Template: TCodeTemplate;
   begin
     Template := TCodeTemplate.Create;
+    Template.Key := sKey;
+    Template.Comment := sComment;
     Assert(not LazStartsStr(CodeTemplateMacroMagic, sValue), 'SaveEntry: Found '+CodeTemplateMacroMagic);
     if LazStartsStr(CodeTemplateAttributesStartMagic, sValue) then
     begin
@@ -488,8 +566,7 @@ var
         Inc(StartI);
       Template.Value := Copy(sValue, StartI, Length(sValue));
     end;
-    Template.Comment := sComment;
-    fCodeTemplates.AddObject(sKey, Template);
+    fCodeTemplates.Add(Template);
     sKey := '';
     sValue := '';
     sComment := '';
@@ -560,7 +637,7 @@ begin
     if sKey <> '' then
       SaveEntry;
   end;
-  fCodeTemplates.Sort;
+  fCodeTemplates.Sorted := True;
   fParsed:=true;
 end;
 

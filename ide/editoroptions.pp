@@ -2501,7 +2501,7 @@ function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Bo
 var
   sl: TStringList;
   i, sp, ep, v: Integer;
-  Token, Value: String;
+  Value: String;
   Template: TCodeTemplate;
 begin
   Result := False;
@@ -2509,10 +2509,9 @@ begin
   try
     for i := 0 to ACustomSynAutoComplete.CodeTemplates.Count - 1 do
     begin
-      Token := ACustomSynAutoComplete.CodeTemplates[i];
-      Template := ACustomSynAutoComplete.CodeTemplates.Objects[i];
+      Template := ACustomSynAutoComplete.CodeTemplates[i];
       Value := Template.Value;
-      sl.Add('[' + Token + ' | ' + Template.Comment + ']');
+      sl.Add('[' + Template.Key + ' | ' + Template.Comment + ']');
 
       // Store DciFileVersion as attribute to first macro
       v := Template.Attributes.IndexOfName(DciFileVersionName);
@@ -5801,7 +5800,7 @@ begin
 
     FileVersion := AnAutoComplete.CodeTemplates.Count;
     if (FileVersion > 0) then begin
-      Template := AnAutoComplete.CodeTemplates.Objects[0];
+      Template := AnAutoComplete.CodeTemplates[0];
       FileVersion := Template.Attributes.IndexOfName(DciFileVersionName);
       if (FileVersion >= 0) then
         FileVersion := StrToIntDef(Template.Attributes.ValueFromIndex[FileVersion], 0);
@@ -5812,17 +5811,16 @@ begin
       NewAutoComplete.CodeTemplSource.Text := ResourceDCIAsText;
       Added := False;
       for i := 0 to NewAutoComplete.CodeTemplates.Count - 1 do begin
-        Template := NewAutoComplete.CodeTemplates.Objects[0];
+        Template := NewAutoComplete.CodeTemplates[i];
         j := Template.Attributes.IndexOfName(DciVersionName);
         if j < 0 then
           continue;
         v := StrToIntDef(Template.Attributes.ValueFromIndex[j], 0);
         if v <= FileVersion then
           continue;
-        if AnAutoComplete.CodeTemplates.IndexOf(NewAutoComplete.CodeTemplates[i]) >= 0 then
+        if AnAutoComplete.CodeTemplates.ByKey(Template.Key) <> Nil then
           continue;
-        AnAutoComplete.AddCompletion(NewAutoComplete.CodeTemplates[i],
-                                     NewAutoComplete.CodeTemplates.Objects[0]);
+        AnAutoComplete.AddCompletion(Template);
         Added := True;
       end;
       NewAutoComplete.Free;
