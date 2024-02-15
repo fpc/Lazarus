@@ -494,6 +494,8 @@ type
     procedure UpdateMapForNewTargetCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData); virtual; abstract;
 
     function IsHardcodeBreakPoint(const ALocation: TDBGPtr): Boolean; virtual; abstract;
+    // IsHardcodeBreakPointInCode checks even if no TFpInternalBreakpoint is set at the location
+    function IsHardcodeBreakPointInCode(const ALocation: TDBGPtr): Boolean; virtual; abstract;
 
     procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr); virtual; abstract;
     procedure RestoreTempBreakInstructionCodes; virtual; abstract;
@@ -531,6 +533,7 @@ type
     procedure UpdateMapForNewTargetCode(const AAdress: TDbgPtr; const ASize: Cardinal; const AData); override;
 
     function IsHardcodeBreakPoint(const ALocation: TDBGPtr): Boolean; override;
+    function IsHardcodeBreakPointInCode(const ALocation: TDBGPtr): Boolean; override;
 
     procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr); override;
     procedure RestoreTempBreakInstructionCodes; override;
@@ -1554,6 +1557,16 @@ function TGenericBreakPointTargetHandler.IsHardcodeBreakPoint(const ALocation: T
   ): Boolean;
 begin
   Result := GetOrigValueAtLocation(ALocation) = _BREAK._CODE;
+end;
+
+function TGenericBreakPointTargetHandler.IsHardcodeBreakPointInCode(
+  const ALocation: TDBGPtr): Boolean;
+var
+  OVal: _BRK_STORE;
+begin
+  Result := False;
+  if Process.ReadData(ALocation, SizeOf(_BRK_STORE), OVal) then
+    Result := OVal = _BREAK._CODE;
 end;
 
 procedure TGenericBreakPointTargetHandler.TempRemoveBreakInstructionCode(
@@ -3561,7 +3574,6 @@ end;
 procedure TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint;
 var
   t: TDBGPtr;
-  OVal: Byte;
 begin
   // todo: check that the breakpoint is NOT in the temp removed list
   t := GetInstructionPointerForHasBreakpointInfoForAddress;
@@ -3574,20 +3586,16 @@ begin
   end
   else begin
     // TODO: allow to skip this, while detaching
-    if FProcess.ReadData(t, 1, OVal) then
-      FPausedAtHardcodeBreakPoint := OVal = TDbgProcess.Int3;
+    FPausedAtHardcodeBreakPoint := Process.FBreakTargetHandler.IsHardcodeBreakPointInCode(t);
   end;
 end;
 
 function TDbgThread.CheckForHardcodeBreakPoint(AnAddr: TDBGPtr): boolean;
-var
-  OVal: Byte;
 begin
   Result := False;
   if AnAddr = 0 then
     exit;
-  if FProcess.ReadData(AnAddr, 1, OVal) then
-    FPausedAtHardcodeBreakPoint := OVal = TDbgProcess.Int3;
+  FPausedAtHardcodeBreakPoint := Process.FBreakTargetHandler.IsHardcodeBreakPointInCode(AnAddr);
   Result := FPausedAtHardcodeBreakPoint;
 end;
 
