@@ -48,7 +48,7 @@ unit SynHighlighterHTML;
 interface
 
 uses
-  SysUtils, Classes, Graphics, SynEditTypes, SynEditHighlighter,
+  SysUtils, Classes, Math, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst;
 
 const
@@ -2535,13 +2535,15 @@ begin
       Inc(Run, fStringLen);
       if ((FMode = shmXHtml) or (not fSimpleTag)) then begin
         if fLine[R] = '/' then begin
-          SetLength(s, fStringLen - 1);
-          move((fLine + R + 1)^, s[1], fStringLen-1);
+          SetLength(s, Max(fStringLen - 1, 0));
+          if fStringLen > 1 then
+            move((fLine + R + 1)^, s[1], fStringLen-1);
           EndHtmlNodeCodeFoldBlock(R+1, s);
         end
         else if fLine[R] <> '!' then begin
           SetLength(s, fStringLen);
-          move((fLine + R)^, s[1], fStringLen);
+          if fStringLen > 0 then
+            move((fLine + R)^, s[1], fStringLen);
           StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, R, s);
         end;
       end;
