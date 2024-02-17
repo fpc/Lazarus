@@ -2,12 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-25 18:36+0100\n"
+"PO-Revision-Date: 2024-02-17 23:20+0100\n"
 "Last-Translator: J.Salvador Pérez <salvaperez@escomposlinux.org>\n"
 "Language-Team: \n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -519,7 +521,7 @@ msgid "Clear picture"
 msgstr ""
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "El nom del component %s%s%s no es un identificador vàlid"
@@ -575,7 +577,7 @@ msgid "&Delete"
 msgstr "Eliminar components"
 
 #: objinspstrconsts.oisdeleteitem
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Voleu eliminar l'element %s%s%s?"
@@ -614,7 +616,7 @@ msgid "Error loading image"
 msgstr "S'ha produït un error mentre es carregava l'imatge"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "S'ha produït un error mentre es carregava l'imatge %s%s%s:%s%s"
@@ -1803,16 +1805,16 @@ msgstr "Element"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Index de l'Imatge:"
+msgid "Image Index"
+msgstr "Index de l'Imatge"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Index sel·leccionat:"
+msgid "Selected Index"
+msgstr "Index sel·leccionat"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
+msgid "State Index"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabeltext
@@ -1903,4 +1905,3 @@ msgstr ""
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr ""
-

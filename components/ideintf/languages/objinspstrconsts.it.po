@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
-"PO-Revision-Date: 2014-10-03 18:07+0100\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-02-17 23:24+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -9,8 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.5.1\n"
-"POT-Creation-Date: \n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1746,16 +1746,16 @@ msgstr "Voce"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Image Index:"
+msgid "Image Index"
+msgstr "Image Index"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Indice selezionato:"
+msgid "Selected Index"
+msgstr "Indice selezionato"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
+msgid "State Index"
 msgstr "Indice di Stato"
 
 #: objinspstrconsts.sccstredtlabeltext
@@ -1846,4 +1846,3 @@ msgstr "Muovi scheda a sinistra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Muovi scheda a destra"
-

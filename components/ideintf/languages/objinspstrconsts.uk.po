@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-11 12:16+0300\n"
+"PO-Revision-Date: 2024-02-17 23:27+0100\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1740,17 +1740,17 @@ msgstr "Елемент"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Індекс зображення:"
+msgid "Image Index"
+msgstr "Індекс зображення"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Вибраний індекс:"
+msgid "Selected Index"
+msgstr "Вибраний індекс"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Індекс стану:"
+msgid "State Index"
+msgstr "Індекс стану"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1840,4 +1840,3 @@ msgstr "Перемістити вкладку вліво"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Перемістити вкладку вправо"
-

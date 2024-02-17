@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-11-25 15:04+0100\n"
+"PO-Revision-Date: 2024-02-17 23:22+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1740,17 +1740,17 @@ msgstr "Élément"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Index d'image :"
+msgid "Image Index"
+msgstr "Index d'image"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Index sélectionné :"
+msgid "Selected Index"
+msgstr "Index sélectionné"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Index d'état :"
+msgid "State Index"
+msgstr "Index d'état"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1840,4 +1840,3 @@ msgstr "Déplacer l'onglet vers la gauche"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Déplacer l'onglet vers la droite"
-

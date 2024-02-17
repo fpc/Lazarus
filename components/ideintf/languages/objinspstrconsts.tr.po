@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1737,17 +1737,17 @@ msgstr "Öğe"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Resim Dizini:"
+msgid "Image Index"
+msgstr "Resim Dizini"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Seçilen dizin:"
+msgid "Selected Index"
+msgstr "Seçilen dizin"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Durum dizini:"
+msgid "State Index"
+msgstr "Durum dizini"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1837,4 +1837,3 @@ msgstr "Sekmeyi sola taşı"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Sekmeyi sağa taşı"
-

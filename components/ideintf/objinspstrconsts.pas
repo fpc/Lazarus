@@ -106,9 +106,9 @@ resourcestring
   sccsTrEdtLoad            = 'Load';
   sccsTrEdtSave            = 'Save';
   sccsTrEdtLabelText       = 'Text:';
-  sccsTrEdtLabelImageIndex = 'Image Index:';
-  sccsTrEdtLabelSelIndex   = 'Selected Index:';
-  sccsTrEdtLabelStateIndex = 'State Index:';
+  sccsTrEdtLabelImageIndex = 'Image Index';
+  sccsTrEdtLabelSelIndex   = 'Selected Index';
+  sccsTrEdtLabelStateIndex = 'State Index';
   sccsTrEdtItem            = 'Item';
   sccsTrEdtOpenDialog      = 'Open';
   sccsTrEdtSaveDialog      = 'Save';

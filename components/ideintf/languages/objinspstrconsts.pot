@@ -1728,16 +1728,16 @@ msgstr ""
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
+msgid "Image Index"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
+msgid "Selected Index"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
+msgid "State Index"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabeltext

@@ -2,12 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-29 23:56+0700\n"
+"PO-Revision-Date: 2024-02-17 23:23+0100\n"
 "Last-Translator: Zaenal Mutaqin <ade999@gmail.com>\n"
 "Language-Team: \n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -519,7 +521,7 @@ msgid "Clear picture"
 msgstr "Bersihkan gambar"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
@@ -575,7 +577,7 @@ msgid "&Delete"
 msgstr "Hapus komponen"
 
 #: objinspstrconsts.oisdeleteitem
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Hapus item %s%s%s?"
@@ -614,7 +616,7 @@ msgid "Error loading image"
 msgstr "Kesalahan pengambilan gambar"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Kesalahan pengambilan gambar %s%s%s:%s%s"
@@ -1817,17 +1819,19 @@ msgstr "Item"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Indeks Gambar:"
+msgid "Image Index"
+msgstr "Indeks Gambar"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
+#, fuzzy
+#| msgid "Selected Index:"
+msgid "Selected Index"
 msgstr "Indeks Dipilih"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Indeks Keadaan:"
+msgid "State Index"
+msgstr "Indeks Keadaan"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1917,4 +1921,3 @@ msgstr "Pindahkan tab ke kiri"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Pindahkan tab ke kanan"
-

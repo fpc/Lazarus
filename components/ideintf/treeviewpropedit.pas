@@ -131,9 +131,9 @@ begin
 
   GroupBox2.Caption := sccsTrEdtGrpRCaption;
   LabelText.Caption := sccsTrEdtLabelText;
-  LabelImageIndex.Caption := sccsTrEdtLabelImageIndex;
-  LabelSelectedIndex.Caption := sccsTrEdtLabelSelIndex;
-  LabelStateIndex.Caption := sccsTrEdtLabelStateIndex;
+  LabelImageIndex.Caption := sccsTrEdtLabelImageIndex + ':';
+  LabelSelectedIndex.Caption := sccsTrEdtLabelSelIndex + ':';
+  LabelStateIndex.Caption := sccsTrEdtLabelStateIndex + ':';
 
   OpenDialog1.Title := sccsTrEdtOpenDialog;
   SaveDialog1.Title := sccsTrEdtSaveDialog;

@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: ideintf\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-01 15:56-0600\n"
+"PO-Revision-Date: 2024-02-17 23:21+0100\n"
 "Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
 "Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1675,10 +1675,8 @@ msgid "Load ..."
 msgstr "Cargar ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
-msgstr "Mover Filas/Col."
+msgstr "Mover Filas/Col"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1745,17 +1743,17 @@ msgstr "Elemento"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Índice de imagen:"
+msgid "Image Index"
+msgstr "Índice de imagen"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Índice seleccionado:"
+msgid "Selected Index"
+msgstr "Índice seleccionado"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Índice de estado:"
+msgid "State Index"
+msgstr "Índice de estado"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1845,4 +1843,3 @@ msgstr "Mover pestaña a la izquierda"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Mover pestaña a la derecha"
-

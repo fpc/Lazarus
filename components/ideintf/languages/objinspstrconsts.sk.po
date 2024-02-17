@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-12-09 12:37+0100\n"
+"PO-Revision-Date: 2024-02-17 23:26+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
+"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"Language: sk\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1271,19 +1271,19 @@ msgid "Test Input"
 msgstr "Testovať vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Identifikátor %s%s%s nie je metóda.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je kompatibilná s touto udalosťou (%s).%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, object-pascal-format, fuzzy, badformat
+#, fuzzy, object-pascal-format
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je published.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
@@ -1751,17 +1751,17 @@ msgstr "Položka"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Index obrázka:"
+msgid "Image Index"
+msgstr "Index obrázka"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Index výberu:"
+msgid "Selected Index"
+msgstr "Index výberu"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Index stavu:"
+msgid "State Index"
+msgstr "Index stavu"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1851,4 +1851,3 @@ msgstr "Presunúť záložku vľavo"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Presunúť záložku vpravo"
-

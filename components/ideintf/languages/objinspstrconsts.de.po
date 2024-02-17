@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-17 23:09+0100\n"
+"PO-Revision-Date: 2024-02-17 23:19+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -1744,17 +1744,17 @@ msgstr "Eintrag"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index:"
-msgstr "Bildindex:"
+msgid "Image Index"
+msgstr "Bildindex"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index:"
-msgstr "Ausgewählter Index:"
+msgid "Selected Index"
+msgstr "Ausgewählter Index"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index:"
-msgstr "Statusindex:"
+msgid "State Index"
+msgstr "Statusindex"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
