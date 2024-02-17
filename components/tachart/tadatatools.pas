@@ -279,14 +279,14 @@ begin
   FSeries := nil;
   if AMode in [dpmSnap, dpmLock] then begin
     FindNearestPoint(APoint);
-    ADest.FGraphPos := FNearestGraphPoint;
+    ADest.GraphPos := FNearestGraphPoint;
     ADest.FIndex := PointIndex;
     if not SameTransformations(FSeries, AOtherEndSeries) then
       FSeries := nil;
   end;
   ADest.FSeries := FSeries;
   if FSeries = nil then
-    ADest.SetGraphPos(FChart.ImageToGraph(APoint));
+    ADest.GraphPos := FChart.ImageToGraph(APoint);
   Result := (FSeries <> nil) or (AMode <> dpmLock);
 end;
 
