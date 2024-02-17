@@ -10,22 +10,22 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   ClientWidth = 635
   Constraints.MinHeight = 240
   Constraints.MinWidth = 400
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnOK
     Left = 6
-    Height = 276
+    Height = 277
     Top = 6
     Width = 420
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Items'
-    ClientHeight = 249
+    ClientHeight = 257
     ClientWidth = 416
     TabOrder = 0
     object TreeView1: TTreeView
@@ -34,7 +34,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 239
+      Height = 247
       Top = 5
       Width = 240
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -44,8 +44,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       HideSelection = False
       ReadOnly = True
       TabOrder = 0
-      OnSelectionChanged = TreeView1SelectionChanged
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      OnSelectionChanged = TreeView1SelectionChanged
     end
     object BtnNewItem: TButton
       Tag = 1
@@ -63,8 +63,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       BorderSpacing.Around = 6
       Caption = '&New Item'
       Default = True
-      OnClick = BtnNewItemClick
       TabOrder = 1
+      OnClick = BtnNewItemClick
     end
     object BtnNewSubItem: TButton
       AnchorSideLeft.Control = BtnNewItem
@@ -79,8 +79,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'N&ew SubItem'
-      OnClick = BtnNewItemClick
       TabOrder = 2
+      OnClick = BtnNewItemClick
     end
     object BtnDelete: TButton
       AnchorSideLeft.Control = BtnNewSubItem
@@ -95,8 +95,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Delete'
-      OnClick = btnDeleteClick
       TabOrder = 3
+      OnClick = btnDeleteClick
     end
     object BtnLoad: TButton
       AnchorSideLeft.Control = BtnDelete
@@ -111,8 +111,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Load'
-      OnClick = btnLoadClick
       TabOrder = 4
+      OnClick = btnLoadClick
     end
     object BtnSave: TButton
       AnchorSideLeft.Control = BtnLoad
@@ -127,8 +127,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Save'
-      OnClick = btnSaveClick
       TabOrder = 5
+      OnClick = btnSaveClick
     end
     object MoveUpBtn: TSpeedButton
       AnchorSideLeft.Control = TreeView1
@@ -141,9 +141,9 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 22
       BorderSpacing.Around = 6
       Enabled = False
-      OnClick = MoveUpBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = MoveUpBtnClick
     end
     object MoveDownBtn: TSpeedButton
       AnchorSideLeft.Control = MoveUpBtn
@@ -155,9 +155,9 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
-      OnClick = MoveDownBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = MoveDownBtnClick
     end
   end
   object GroupBox2: TGroupBox
@@ -168,13 +168,13 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnOK
     Left = 432
-    Height = 276
+    Height = 277
     Top = 6
     Width = 197
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Item Properties'
-    ClientHeight = 249
+    ClientHeight = 257
     ClientWidth = 193
     TabOrder = 1
     object LabelText: TLabel
@@ -183,7 +183,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Left = 6
       Height = 15
       Top = 6
-      Width = 29
+      Width = 24
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Text:'
@@ -196,37 +196,34 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 15
-      Top = 58
-      Width = 79
+      Top = 52
+      Width = 68
       BorderSpacing.Top = 6
       Caption = 'Image Index:'
-      FocusControl = edtIndexImg
       ParentColor = False
     end
     object LabelSelectedIndex: TLabel
       AnchorSideLeft.Control = LabelImageIndex
-      AnchorSideTop.Control = edtIndexImg
+      AnchorSideTop.Control = spnImageIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 15
-      Top = 110
-      Width = 93
+      Top = 98
+      Width = 79
       BorderSpacing.Top = 6
       Caption = 'Selected index:'
-      FocusControl = edtIndexSel
       ParentColor = False
     end
     object LabelStateIndex: TLabel
       AnchorSideLeft.Control = LabelSelectedIndex
-      AnchorSideTop.Control = edtIndexSel
+      AnchorSideTop.Control = spnSelectedIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 15
-      Top = 162
-      Width = 73
+      Top = 144
+      Width = 61
       BorderSpacing.Top = 6
       Caption = 'State Index:'
-      FocusControl = edtIndexState
       ParentColor = False
     end
     object edtText: TEdit
@@ -236,59 +233,71 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
+      Height = 23
       Top = 23
       Width = 182
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       BorderSpacing.Right = 5
-      OnChange = Edit1Change
       TabOrder = 0
+      OnChange = Edit1Change
     end
-    object edtIndexImg: TEdit
+    object spnImageIndex: TSpinEdit
       AnchorSideLeft.Control = LabelImageIndex
       AnchorSideTop.Control = LabelImageIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 75
-      Width = 48
+      Height = 23
+      Top = 69
+      Width = 66
+      Alignment = taRightJustify
       BorderSpacing.Top = 2
-      OnEditingDone = edtIndexStateEditingDone
+      MaxValue = 99999
+      MinValue = -1
       TabOrder = 1
+      Value = -1
+      OnChange = spnIndexChange
     end
-    object edtIndexSel: TEdit
+    object spnSelectedIndex: TSpinEdit
       AnchorSideLeft.Control = LabelSelectedIndex
       AnchorSideTop.Control = LabelSelectedIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 127
-      Width = 48
+      Height = 23
+      Top = 115
+      Width = 66
+      Alignment = taRightJustify
       BorderSpacing.Top = 2
-      OnEditingDone = edtIndexStateEditingDone
+      MaxValue = 99999
+      MinValue = -1
       TabOrder = 2
+      Value = -1
+      OnChange = spnIndexChange
     end
-    object edtIndexState: TEdit
+    object spnStateIndex: TSpinEdit
       AnchorSideLeft.Control = LabelStateIndex
       AnchorSideTop.Control = LabelStateIndex
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 179
-      Width = 48
+      Height = 23
+      Top = 161
+      Width = 66
+      Alignment = taRightJustify
       BorderSpacing.Top = 2
-      OnEditingDone = edtIndexStateEditingDone
+      MaxValue = 99999
+      MinValue = -1
       TabOrder = 3
+      Value = -1
+      OnChange = spnIndexChange
     end
   end
   object BtnOK: TBitBtn
     AnchorSideRight.Control = BtnCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 303
-    Height = 27
-    Top = 288
+    Left = 304
+    Height = 26
+    Top = 289
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -304,10 +313,10 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     AnchorSideRight.Control = BtnApply
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 384
-    Height = 27
-    Top = 288
-    Width = 83
+    Left = 385
+    Height = 26
+    Top = 289
+    Width = 82
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -324,8 +333,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 473
-    Height = 26
-    Top = 289
+    Height = 25
+    Top = 290
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -333,8 +342,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     Caption = '&Apply'
     Constraints.MinHeight = 25
     Constraints.MinWidth = 75
-    OnClick = btnApplyClick
     TabOrder = 4
+    OnClick = btnApplyClick
   end
   object BtnHelp: TBitBtn
     AnchorSideRight.Control = Owner
@@ -342,8 +351,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 554
-    Height = 27
-    Top = 288
+    Height = 26
+    Top = 289
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -357,13 +366,13 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   object OpenDialog1: TOpenDialog
     Title = 'Open'
     FilterIndex = 0
-    left = 296
-    top = 208
+    Left = 296
+    Top = 208
   end
   object SaveDialog1: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
-    left = 368
-    top = 232
+    Left = 368
+    Top = 232
   end
 end

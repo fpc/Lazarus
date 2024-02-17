@@ -1727,6 +1727,16 @@ msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Elemento savybės"
 
+#: objinspstrconsts.sccstredtimagelistnotassigned
+#, object-pascal-format
+msgid "%s not assigned."
+msgstr ""
+
+#: objinspstrconsts.sccstredtinvalidindex
+#, object-pascal-format
+msgid "%s has only %d images."
+msgstr ""
+
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"

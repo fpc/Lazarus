@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-04-06 00:06+0200\n"
+"PO-Revision-Date: 2024-02-17 23:09+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1727,6 +1727,16 @@ msgctxt "objinspstrconsts.sccstredtgrprcaption"
 msgid "Item Properties"
 msgstr "Eigenschaften des Eintrags"
 
+#: objinspstrconsts.sccstredtimagelistnotassigned
+#, object-pascal-format
+msgid "%s not assigned."
+msgstr "%s nicht zugewiesen."
+
+#: objinspstrconsts.sccstredtinvalidindex
+#, object-pascal-format
+msgid "%s has only %d images."
+msgstr "%s enthält nur %d Bilder."
+
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
@@ -1834,4 +1844,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls,
+  Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls, ImgList, Spin,
   // IdeIntf
   PropEdits, ComponentEditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
@@ -39,9 +39,6 @@ type
     BtnDelete: TButton;
     BtnLoad: TButton;
     edtText: TEdit;
-    edtIndexImg: TEdit;
-    edtIndexSel: TEdit;
-    edtIndexState: TEdit;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
     LabelText: TLabel;
@@ -52,6 +49,9 @@ type
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
     SaveDialog1: TSaveDialog;
+    spnImageIndex: TSpinEdit;
+    spnSelectedIndex: TSpinEdit;
+    spnStateIndex: TSpinEdit;
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
@@ -64,13 +64,14 @@ type
     procedure btnDeleteClick(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
-    procedure edtIndexStateEditingDone(Sender: TObject);
+    procedure spnIndexChange(Sender: TObject);
   private
     FTreeView: TCustomTreeView;
     FModified: Boolean;
     procedure LoadFromTree(ATreeView: TCustomTreeView);
     procedure SaveToTree;
     procedure UpdateEnabledStates;
+    procedure UpdateImageHints;
   public
   end; 
 
@@ -191,10 +192,27 @@ procedure TTreeViewItemsEditorForm.TreeView1SelectionChanged(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
   begin
+    // Update node text
     edtText.Text := TreeView1.Selected.Text;
-    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
-    edtIndexSel.Text := IntToStr(TreeView1.Selected.SelectedIndex);
-    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
+
+    // Update image indexes
+    // Remove events to avoid cyclic calling
+    spnImageIndex.OnChange := nil;
+    spnSelectedIndex.OnChange := nil;
+    spnStateIndex.OnChange := nil;
+    try
+      // Read the indexes of the selected item
+      spnImageIndex.Value := TreeView1.Selected.ImageIndex;
+      spnSelectedIndex.Value := TreeView1.Selected.SelectedIndex;
+      spnStateIndex.Value := TreeView1.Selected.StateIndex;
+    finally
+      // Restore events
+      spnImageIndex.OnChange := @spnIndexChange;
+      spnSelectedIndex.OnChange := @spnIndexChange;
+      spnStateIndex.OnChange := @spnIndexChange;
+    end;
+    // Update hints
+    UpdateImageHints;
   end;
   UpdateEnabledStates;
 end;
@@ -238,17 +256,69 @@ begin
     TreeView1.SaveToFile(SaveDialog1.FileName);
 end;
 
-procedure TTreeViewItemsEditorForm.edtIndexStateEditingDone(Sender: TObject);
+procedure TTreeViewItemsEditorForm.spnIndexChange(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
   begin
-    TreeView1.Selected.ImageIndex := StrToIntDef(edtIndexImg.Text, -1);
-    TreeView1.Selected.SelectedIndex := StrToIntDef(edtIndexSel.Text, -1);
-    TreeView1.Selected.StateIndex := StrToIntDef(edtIndexState.Text, -1);
-    
-    edtIndexImg.Text := IntToStr(TreeView1.Selected.ImageIndex);
-    edtIndexSel.Text := IntToStr(TreeView1.Selected.SelectedIndex);
-    edtIndexState.Text := IntToStr(TreeView1.Selected.StateIndex);
+    TreeView1.Selected.ImageIndex := spnImageIndex.Value;
+    TreeView1.Selected.SelectedIndex := spnSelectedIndex.Value;
+    TreeView1.Selected.StateIndex := spnStateIndex.Value;
+
+    UpdateImageHints;
+  end;
+end;
+
+// Show hints and "*" in label for invalid index
+procedure TTreeViewItemsEditorForm.UpdateImageHints;
+
+  procedure UpdateImageHint(ASpinEdit: TSpinEdit;
+    AIsStateImages: boolean; ALabel: TLabel; ACaption: string);
+  var
+    lImageList: TCustomImageList;
+    lPropName: string;
+  begin
+    if AIsStateImages then
+    begin
+      lImageList := TreeView1.StateImages;
+      lPropName := FTreeView.Name + '.StateImages';
+    end else begin
+      lImageList := TreeView1.Images;
+      lPropName := FTreeView.Name + '.Images';
+    end;
+
+    // check valid index
+    if ASpinEdit.Value >= 0 then
+    begin
+      // check assign
+      if lImageList = nil then
+      begin
+        ALabel.Hint := Format(sccsTrEdtImageListNotAssigned, [lPropName]);
+        ALabel.ShowHint := true;
+      end else begin
+        // check count
+        if ASpinEdit.Value >= lImageList.Count then
+        begin
+          ALabel.Hint := Format(sccsTrEdtInvalidIndex, [lPropName, lImageList.Count]);
+          ALabel.ShowHint := true;
+        end else
+          ALabel.ShowHint := false;
+      end;
+    end else
+      aLabel.ShowHint := false;
+
+    // show asterisk if necessary
+    if ALabel.ShowHint then
+      ALabel.Caption := ACaption + '*:'
+    else
+      ALabel.Caption := ACaption + ':';
+  end;
+  //
+begin
+  if Assigned(TreeView1.Selected) then
+  begin
+    UpdateImageHint(spnImageIndex,    false, LabelImageIndex,    sccsTrEdtLabelImageIndex);
+    UpdateImageHint(spnSelectedIndex, false, LabelSelectedIndex, sccsTrEdtLabelSelIndex);
+    UpdateImageHint(spnStateIndex,    true,  LabelStateIndex,    sccsTrEdtLabelStateIndex);
   end;
 end;
 

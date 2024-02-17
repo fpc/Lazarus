@@ -113,6 +113,9 @@ resourcestring
   sccsTrEdtOpenDialog      = 'Open';
   sccsTrEdtSaveDialog      = 'Save';
 
+  sccsTrEdtInvalidIndex    = '%s has only %d images.';
+  sccsTrEdtImageListNotAssigned = '%s not assigned.';
+
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';
   sccsLvEdt                = 'Edit Items ...';
