@@ -78,6 +78,9 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 procedure TTreeWalker.InitialiseFlags;
 begin
   { read these once only for speed  }
@@ -112,7 +115,7 @@ begin
     if pcNode.ChildNodeCount > MAX_NODE_CHILDREN then
     begin
       // some parse or insert process has gone bezerk
-      raise Exception.Create('Too many child nodes ' + IntToStr(pcNode.ChildNodeCount));
+      raise Exception.Create(Format(lisMsgTooManyChildNodes, [pcNode.ChildNodeCount]));
     end;
 
     liLoop := 0;

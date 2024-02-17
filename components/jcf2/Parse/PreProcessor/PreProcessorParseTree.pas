@@ -97,7 +97,7 @@ implementation
 
 uses
   { local }
-  PreProcessorExpressionTokenise, PreProcessorExpressionParser, StrUtils,
+  PreProcessorExpressionTokenise, PreProcessorExpressionParser, StrUtils, jcfbaseConsts,
   ParseError, JcfSettings, JcfUiTools, JcfStringUtils, TokenUtils, SettingsTypes, BuildTokenList;
 
 var
@@ -297,7 +297,7 @@ begin
       NextToken;
     end;
     else
-      raise TEParseError.Create('Unexpected preprocessor symbol', lcToken);
+      raise TEParseError.Create(lisMsgUnexpectedPreprocessorSymbol, lcToken);
   end;
 end;
 
@@ -469,7 +469,7 @@ begin
     else
     begin
       if lsFileContentOrError <> '' then
-        Converter.SendStatusMessage(Converter.FileName, 'Include file: ' + lsTemp + '  ' + lsFileContentOrError, mtCodeWarning, 0, 0);
+        Converter.SendStatusMessage(Converter.FileName, Format(lisMsgIncludeFile, [lsTemp,lsFileContentOrError]), mtCodeWarning, 0, 0);
     end;
     Dec(giIncludeLevel);
   finally
@@ -487,19 +487,17 @@ procedure TPreProcessorParseTree.ParsePreProcessorDirective(
   const peSymbolTypes: TPreProcessorSymbolTypeSet);
 var
   lcToken: TSourceToken;
-const
-  lExceptionMessage='Expected compiler directive ';
 begin
   lcToken := CurrentToken;
 
   if lcToken=nil then
-    raise TEParseError.Create(lExceptionMessage, LastSolidToken);
+    raise TEParseError.Create(lisExpectedCompilerDirective, LastSolidToken);
 
   if lcToken.CommentStyle <> eCompilerDirective then
-    raise TEParseError.Create(lExceptionMessage, lcToken);
+    raise TEParseError.Create(lisExpectedCompilerDirective, lcToken);
 
   if not (lcToken.PreprocessorSymbol in peSymbolTypes) then
-    raise TEParseError.Create(lExceptionMessage +
+    raise TEParseError.Create(lisExpectedCompilerDirective +
       PreProcSymbolTypeSetToString(peSymbolTypes), lcToken);
 
   NextToken;
@@ -627,8 +625,7 @@ begin
       lcTokeniser.Tokenise;
     except
       on E: Exception do
-        raise TEParseError.Create('Exception tokenising "' + psExpression +
-          '": ' + E.Message, CurrentToken);
+        raise TEParseError.Create(Format(lisMsgExceptionTokenising, [psExpression, E.Message]), CurrentToken);
     end;
 
     { !! unknown syntax. Accept expression as true ? fix in later version }
@@ -647,8 +644,7 @@ begin
         Result := lcParser.Parse;
       except
         on E: Exception do
-          raise TEParseError.Create('Exception parsing "' + psExpression +
-            '": ' + E.Message, CurrentToken);
+          raise TEParseError.Create(Format(lisMsgExceptionParsing, [psExpression, E.Message]), CurrentToken);
       end;
     end;
   finally

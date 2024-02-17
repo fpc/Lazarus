@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  ParseTreeNode, ParseTreeNodeType;
+  ParseTreeNode, ParseTreeNodeType, jcfbaseConsts;
 
 
 
@@ -80,7 +80,7 @@ begin
   if (lcNode.NodeType = nCaseStatement) and
     ( not lcNode.HasChildNode(nElseCase, 1)) then
   begin
-    SendWarning(lcNode, 'Case statement has no else case');
+    SendWarning(lcNode, lisMsgCaseStatmentHasNoElseCase);
   end;
 end;
 

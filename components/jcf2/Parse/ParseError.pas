@@ -56,10 +56,13 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 procedure CheckNilPointer(aPtr:Pointer);
 begin
   if aPtr=nil then
-    raise TEParseError.Create('JCF Internal Error. Unexpected NIL pointer', nil);
+    raise TEParseError.Create(lisMsgJCFInternalErrorUnexpectedNilPointer, nil);
 end;
 
 procedure CheckNilInstance(aInstance: TObject; aLastValidToken: TObject);
@@ -70,7 +73,7 @@ begin
     begin
       aLastValidToken := nil;
     end;
-    raise TEParseError.Create('JCF Internal Error. Unexpected error in source code', TSourceToken(aLastValidToken));
+    raise TEParseError.Create(lisMsgJCFInternalErrorUnexpectedErrorInSourceCode, TSourceToken(aLastValidToken));
   end;
 end;
 

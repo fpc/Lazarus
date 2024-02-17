@@ -50,7 +50,8 @@ type
 
 implementation
 
-uses ParseTreeNode, SourceToken, TokenUtils, FormatFlags, JcfSettings;
+uses
+  ParseTreeNode, SourceToken, TokenUtils, FormatFlags, JcfSettings, jcfbaseConsts;
 
 constructor TWarning.Create;
 begin
@@ -88,10 +89,10 @@ begin
 
   if lcToken <> nil then
   begin
-    lsMessage := lsMessage + ' near ' + lcToken.Describe;
+    lsMessage := lsMessage + lisMsgNear + lcToken.Describe;
     lsProc    := GetProcedureName(lcToken, True, False);
     if lsProc <> '' then
-      lsMessage := lsMessage + ' in ' + GetBlockType(lcToken) + ' ' + lsProc;
+      lsMessage := lsMessage + lisMsgIn + GetBlockType(lcToken) + ' ' + lsProc;
   end;
 
   fOnWarning('', lsMessage, mtCodeWarning, lcToken.YPosition, lcToken.XPosition);

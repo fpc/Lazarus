@@ -74,6 +74,9 @@ var
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 function GetApplicationFolder: string;
 begin
   Result := ExtractFilePath(ParamStr(0));
@@ -102,8 +105,7 @@ begin
 
   Val(s, Result, Code);
   if code <> 0 then
-    raise EConvertError.Create('Str2Float: ' + s +
-      ' is not a valid floating point string');
+    raise EConvertError.Create(Format(lisMsgNotValidFloatingPointString, [s]));
 end;
 
 // Like FloatToStr, but gives back a dot (.) as decimalseparator

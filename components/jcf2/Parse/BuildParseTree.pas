@@ -299,7 +299,7 @@ type
 implementation
 
 uses
-  JcfUiTools;
+  JcfUiTools, jcfbaseConsts;
 
 const
   UPDATE_INTERVAL = 512;
@@ -392,7 +392,7 @@ begin
       begin
         // $ (US): 2021-06-29 12:05:12 $
         //  Try to recover the last valid token before exception is thrown.
-        JcfRaiseOuterException(TEParseError.Create('Unhandled error in source code!', lc));
+        JcfRaiseOuterException(TEParseError.Create(lisMsgUnhandledErrorInSourceCode, lc));
       end else
       begin
         raise;
@@ -446,8 +446,7 @@ begin
     end
     // accept any white space until we find it
     else if not (lcToken.TokenType in NotSolidTokens) then
-      raise TEParseError.Create('Unexpected token "'+lcToken.SourceCode+ '" , expected ' +
-        DescribeTarget, lcToken);
+      raise TEParseError.Create(Format(lisMsgUnexpectedTokenExpected, [lcToken.SourceCode, DescribeTarget]), lcToken);
   end;
   
   Inc(fiTokenCount);
@@ -520,11 +519,11 @@ begin
   // Goal -> (Program | Package  | Library  | Unit)
 
   if fcTokenList.Count < 1 then
-    raise TEParseError.Create('No source to parse', nil);
+    raise TEParseError.Create(lisMsgNoSourceToParse, nil);
 
   lt := fcTokenList.FirstSolidTokenType;
   if lt=ttUnknown then
-    raise TEParseError.Create('No source to parse', nil);
+    raise TEParseError.Create(lisMsgNoSourceToParse, nil);
 
   WriteStr(s, lt);
   case lt of
@@ -540,9 +539,7 @@ begin
       if Self.IsIncFile then
         RecogniseInclude
   else
-        RaiseParseError('Expected program, package, library, unit, ''.inc'' got "' +
-          s + '" ',
-      fcTokenList.FirstSolidToken);
+    RaiseParseError(Format(lisMsgExpectedProgramPackageLibraryUnit,[s]), fcTokenList.FirstSolidToken);
 end;
   end;
 end;
@@ -851,7 +848,7 @@ begin
       Recognise(ttSemicolon);
     end;
   else
-    RaiseParseError('Expected const, type, var, procedure or function', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedConstTypeVarProcedureOrFunction, fcTokenList.FirstSolidToken);
   end;
 
   PopNode;
@@ -885,11 +882,11 @@ begin
         ttOperator:
           RecogniseOperator(false);
       else
-        RaiseParseError('Expected function or procedure', fcTokenList.FirstSolidToken);
+        RaiseParseError(lisMsgExpectedProcedureOrFunction, fcTokenList.FirstSolidToken);
       end;
     end;
   else
-    RaiseParseError('Expected function or procedure', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedProcedureOrFunction, fcTokenList.FirstSolidToken);
   end;
 
   { the ';' is ommited by lazy programmers in some rare occasions}
@@ -993,7 +990,7 @@ begin
       Recognise(ttSemicolon);
     end;
   else
-    RaiseParseError('Expected label, const, type, var, procedure or function',
+    RaiseParseError(lisMsgExpectedLabelConstTypeVarProcedureOrFunction,
       fcTokenList.FirstSolidToken);
   end;
 
@@ -1120,7 +1117,7 @@ begin
   end
   else
   begin
-    RaiseParseError('Expected equals or colon', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedEqualsOrColon, fcTokenList.FirstSolidToken);
   end;
 
   { can be deprecated library platform }
@@ -1412,7 +1409,7 @@ var
           Recognise(fcTokenList.FirstTokenType);
           if fcTokenList.EOF then
           begin
-            raise TEParseError.Create('Unexpected EOF.', nil);
+            raise TEParseError.Create(lisMsgUnexpectedEOF, nil);
           end;
         end;
       end
@@ -1931,7 +1928,7 @@ begin
     ttInterface, ttDispInterface:
       RecogniseInterfaceType;
   else
-    RaiseParseError('Expected object, class or interface', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedObjectClassOrInterface, fcTokenList.FirstSolidToken);
   end;
 
   PopNode;
@@ -2111,7 +2108,7 @@ begin
     ttRecord:
       RecogniseRecordType;
   else
-    RaiseParseError('Expected array, set, file or record type', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedArraySetFileOrRecordType, fcTokenList.FirstSolidToken);
   end;
 end;
 
@@ -2514,7 +2511,7 @@ begin
     RecogniseFunctionHeading(True, False)
   else
   begin
-    RaiseParseError('Expected procedure or function type', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedProcedureOrFunctionType, fcTokenList.FirstSolidToken);
   end;
 
   if fcTokenList.FirstSolidTokenType = ttOf then
@@ -2974,7 +2971,7 @@ begin
 
   else
   begin
-    RaiseParseError('Unexpected token in factor', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgUnexpectedTokenInFactor, fcTokenList.FirstSolidToken);
   end;
 
   { can't use lc for FirstSolidToken any more, have moved on }
@@ -3048,7 +3045,7 @@ begin
   if lt in RelationalOperators then
     Recognise(RelationalOperators)
   else
-    RaiseParseError('unexpected token in rel op', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgUnexpectedTokenInRelOp, fcTokenList.FirstSolidToken);
 end;
 
 procedure TBuildParseTree.RecogniseAddOp;
@@ -3059,7 +3056,7 @@ begin
   if lt in AddOperators then
     Recognise(AddOperators)
   else
-    RaiseParseError('Unexpected token in add op', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgUnexpectedTokenInAddOp, fcTokenList.FirstSolidToken);
 end;
 
 procedure TBuildParseTree.RecogniseAnonymousMethod;
@@ -3085,7 +3082,7 @@ begin
     ttFunction:
       RecogniseFunctionDecl(true,lIsNamedAnonymous);
   else
-    RaiseParseError('Unexpected token in RecogniseAnonymousMethod', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgUnexpectedTokenInRecogniseAnonymousMethod, fcTokenList.FirstSolidToken);
   end;
 
 
@@ -3111,7 +3108,7 @@ begin
   if lt in MulOperators then
     Recognise(MulOperators)
   else
-    RaiseParseError('Unexpected token in mul op', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgUnexpectedTokenInMulOp, fcTokenList.FirstSolidToken);
 end;
 
 procedure TBuildParseTree.RecogniseDesignator;
@@ -3491,7 +3488,7 @@ begin
   end
   else
   begin
-    RaiseParseError('Expected simple statement', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedSimpleStatement, fcTokenList.FirstSolidToken);
   end;
 end;
 
@@ -3638,7 +3635,7 @@ begin
     ttTry:
       RecogniseTryStatement;
   else
-    RaiseParseError('Expected structured statement', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedStructuredStatement, fcTokenList.FirstSolidToken);
   end;
 
 end;
@@ -3937,7 +3934,7 @@ begin
       PopNode;
     end;
   else
-    RaiseParseError('Expected except or finally', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedExceptOrFinally, fcTokenList.FirstSolidToken);
   end;
 
   PopNode;
@@ -4076,7 +4073,7 @@ begin
         ttOperator:
           RecogniseClassOperator(True);
       else
-        RaiseParseError('Expected class procedure or class function', fcTokenList.FirstSolidToken);
+        RaiseParseError(lisMsgExpectedClassProcedureOrClassFunction, fcTokenList.FirstSolidToken);
       end;
     end;
     ttGeneric:
@@ -4092,13 +4089,13 @@ begin
             ttFunction:
               RecogniseFunctionDecl(false);
           else
-            RaiseParseError('Expected class procedure or class function', fcTokenList.FirstSolidToken);
+            RaiseParseError(lisMsgExpectedClassProcedureOrClassFunction, fcTokenList.FirstSolidToken);
           end;
       else
-        RaiseParseError('Expected class procedure or class function', fcTokenList.FirstSolidToken);
+        RaiseParseError(lisMsgExpectedClassProcedureOrClassFunction, fcTokenList.FirstSolidToken);
       end;
   else
-    RaiseParseError('Expected procedure or function', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedProcedureOrFunction, fcTokenList.FirstSolidToken);
   end;
 
 end;
@@ -4714,7 +4711,7 @@ begin
       Recognise(ttEnd);
     end
   else
-    RaiseParseError('Expected initialisation, begin or end', lc);
+    RaiseParseError(lisMsgExpectedInitializationBeginOrEnd, lc);
   end;
   RecogniseNotSolidTokens;
   PopNode;
@@ -4958,7 +4955,7 @@ begin
           ttOperator:
             RecogniseClassOperator(False);
         else
-          RaiseParseError('Expected class procedure or class function', fcTokenList.FirstSolidToken);
+          RaiseParseError(lisMsgExpectedClassProcedureOrClassFunction, fcTokenList.FirstSolidToken);
         end;
 
       end;
@@ -4966,14 +4963,14 @@ begin
       begin
           // no constructor on interface
         if pbInterface then
-          RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
+          RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
         RecogniseConstructorHeading(True);
       end;
       ttDestructor:
       begin
           // no constructor on interface
         if pbInterface then
-          RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
+          RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
         RecogniseDestructorHeading(True);
       end;
       ttProperty:
@@ -4999,12 +4996,12 @@ begin
       begin
         // no vars on interface
         if pbInterface then
-          RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
+          RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
 
         RecogniseVarDecl(vtInClassBody);
       end
       else
-        RaiseParseError('Unexpected token', fcTokenList.FirstSolidToken);
+        RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
     end;
 
     // semicolon after each def.
@@ -5179,7 +5176,7 @@ begin
         Recognise(ttWriteOnly);
       end;
     else
-      RaiseParseError('Expected property specifier', lc);
+      RaiseParseError(lisMsgExpectedPropertySpecifier, lc);
     end;
 
     PopNode;
@@ -5401,7 +5398,7 @@ procedure TBuildParseTree.RecogniseIdentifier(const pbCanHaveUnitQualifier: bool
   const peStrictness: TIdentifierStrictness);
 begin
   if not IdentifierNext(peStrictness) then
-    RaiseParseError('Expected identifier', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedIdentifier, fcTokenList.FirstSolidToken);
 
   PushNode(nIdentifier);
   Recognise(IdentiferTokens);
@@ -5451,7 +5448,7 @@ begin
     exit;
   end;
   if not (IdentifierNext(idAllowDirectives)) then
-    RaiseParseError('Expected identifier', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedIdentifier, fcTokenList.FirstSolidToken);
 
   // a method name is an identifier
   PushNode(nIdentifier);
@@ -5510,7 +5507,7 @@ begin
   end
   else
   begin
-    RaiseParseError('Expected procedure or function', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedProcedureOrFunction, fcTokenList.FirstSolidToken);
   end;
 
   PopNode;
@@ -5695,7 +5692,7 @@ begin
   lc := fcTokenList.FirstSolidToken;
 
   if (not Assigned(lc)) or (not (lc.TokenType in IdentiferTokens + [ttAtSign])) then
-    RaiseParseError('Expected asm identifier', lc);
+    RaiseParseError(lisMsgExpectedAsmIdentifier, lc);
 
   while (lc.TokenType in IdentiferTokens + [ttAtSign]) do
   begin
@@ -5725,7 +5722,7 @@ begin
     // match anything
     Recognise(fcTokenList.FirstSolidTokenType)
   else
-    RaiseParseError('Expected asm opcode', fcTokenList.FirstSolidToken);
+    RaiseParseError(lisMsgExpectedAsmOpcode, fcTokenList.FirstSolidToken);
 
   PopNode;
 end;
@@ -5817,7 +5814,7 @@ begin
     else
     begin
       if not lbHasLabel then
-        RaiseParseError('Expected asm param', lc);
+        RaiseParseError(lisMsgExpectedAsmParam, lc);
     end;
   end;
 
@@ -6078,7 +6075,7 @@ begin
       ttResident:
         Recognise(ttResident);
     else
-      RaiseParseError('Expected export directive', fcTokenList.FirstSolidToken);
+      RaiseParseError(lisMsgExpectedExportDirective, fcTokenList.FirstSolidToken);
     end;
     lt := fcTokenList.FirstSolidTokenType;
   end;
@@ -6273,7 +6270,7 @@ begin
         if fcTokenList.FirstTokenLength = 1 then
           Recognise(fcTokenList.FirstTokenType)
         else
-          RaiseParseError('Unexpected token, expected single char after ^', fcTokenList.FirstSolidToken);
+          RaiseParseError(lisMsgUnexpectedTokenExpectedSingleChar, fcTokenList.FirstSolidToken);
       end;
       ttHash:
       begin

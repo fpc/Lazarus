@@ -68,7 +68,7 @@ implementation
 
 uses
   { local }
-  ParseTreeNodeType, SourceToken, TokenUtils, JCfSettings;
+  ParseTreeNodeType, SourceToken, TokenUtils, JCfSettings, jcfbaseConsts;
 
 constructor TWarnUnusedParam.Create;
 begin
@@ -150,9 +150,7 @@ begin
   lbFound := IsIdentifierUsedInParseTree(psIdentName, pcBlock);
 
   if not lbFound then
-  begin
-    SendWarning(fcRootNode, 'Parameter ' + psIdentName + ' is not used');
-  end;
+    SendWarning(fcRootNode, Format(lisMsgParameterIsNotUsed, [psIdentName]));
 end;
 
 { recurse to find it }

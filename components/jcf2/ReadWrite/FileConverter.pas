@@ -117,7 +117,8 @@ uses
   { local }
   JcfStringUtils, FileUtil,
   JcfMiscFunctions, JcfLog,
-  JcfRegistrySettings, JcfSettings, JcfUnicodeFiles, JcfUiTools, System.UITypes;
+  JcfRegistrySettings, JcfSettings, JcfUnicodeFiles, JcfUiTools, System.UITypes,
+  jcfbaseConsts;
 
 constructor TFileConverter.Create;
 begin
@@ -140,23 +141,21 @@ begin
 
   if psInputFileName = '' then
   begin
-    SendStatusMessage('', 'Select a file', mtInputError, -1, -1);
+    SendStatusMessage('', lisMsgSelectAFile, mtInputError, -1, -1);
     exit;
   end;
 
   if not FileExists(psInputFileName) then
   begin
-    SendStatusMessage(psInputFileName,
-      'The file "' + psInputFileName + '" does not exist',
+    SendStatusMessage(psInputFileName, Format(lisMsgTheFileDoesNotExist, [psInputFileName]),
       mtInputError, -1, -1);
     exit;
   end;
 
   if FileSize(psInputFileName) < 1 then
   begin
-    SendStatusMessage(psInputFileName, 'The file "' + psInputFileName + '" is empty',
-      mtInputError,
-      -1, -1);
+    SendStatusMessage(psInputFileName, Format(lisMsgTheFileIsEmpty, [psInputFileName]),
+      mtInputError, -1, -1);
     exit;
   end;
 
@@ -166,7 +165,7 @@ begin
 
     if GetRegSettings.FileIsExcluded(lsTemp) then
     begin
-      Log.Write('Exluded file: ' + psInputFileName);
+      Log.Write('Excluded file: ' + psInputFileName);
       exit;
     end;
   end;
@@ -198,7 +197,7 @@ begin
     exit;
 
   // notify owner
-  lsMessage := 'Formatting file ' + psInputFileName;
+  lsMessage := Format(lisMsgFormattingFile, [psInputFileName]);;
 
   if GetRegSettings.LogLevel in [eLogFiles, eLogTokens] then
     Log.Write(lsMessage);
@@ -236,7 +235,7 @@ begin
   begin
     if lsOut = '' then
     begin
-      SendStatusMessage(psInputFileName, 'No output/backup file specified',
+      SendStatusMessage(psInputFileName, lisMsgNoOutputBackupFileSpecified,
        mtInputError, -1, -1);
       exit;
     end;
@@ -248,11 +247,11 @@ begin
       else
       begin
         if BackupMode = cmInPlaceWithBackup then
-          lsOutType := 'Backup'
+          lsOutType := lisMsgBackup
         else
-          lsOutType := 'Output';
+          lsOutType := lisMsgOutput;
           
-        wRes := GetUI.MessageDlgUI(lsOutType + ' file ' + lsOut + ' exists already. Remove it?');
+        wRes := GetUI.MessageDlgUI(lsOutType + lisMsgFile + lsOut + lisMsgExistsAlreadyRemoveIt);
       end;
 
       if wRes = mrAll then
@@ -264,8 +263,7 @@ begin
       if wRes = mrYes then
       begin
         if not DeleteFile(lsOut) then
-          raise Exception.Create('TFileConverter.ProcessFile: ' +
-            'Failed to delete ' + lsOutType + ' file ' + lsOut);
+          raise Exception.Create(lisMsgFailedToDelete + lsOutType + lisMsgFile + lsOut);
       end
       else if wRes = mrNo then
       begin
@@ -304,8 +302,7 @@ begin
           write processed code back to the original file }
         if not RenameFile(psInputFileName, lsOut) then
         begin
-          raise Exception.Create('TFileConverter.ProcessFile: ' +
-          ' could not rename source file ' + psInputFileName + ' to ' + lsOut);
+          raise Exception.Create(Format(lisMsgCouldNorRenameSourceFile,[psInputFileName,lsOut]));
         end;
 
         WriteTextFile(psInputFileName, fcConverter.OutputCode, leContentType);
@@ -335,20 +332,20 @@ var
 begin
   if not DirectoryExists(psDir) then
   begin
-    SendStatusMessage('', 'The directory ' + psDir + ' does not exist',
+    SendStatusMessage('', Format(lisMsgDirectoryDoesNotExist,[psDir]),
       mtInputError, -1, -1);
     exit;
   end;
 
   if GetRegSettings.DirIsExcluded(GetLastDir(psDir)) then
   begin
-    Log.Write('Exluded dir: ' + psDir);
+    Log.Write('Excluded dir: ' + psDir);
     exit;
   end;
 
   lsDir := IncludeTrailingPathDelimiter(psDir);
 
-  lsMessage := 'Processing directory ' + lsDir;
+  lsMessage := Format(lisMsgProcessingDirectory,[lsDir]);
   //if Settings.Log.LogLevel in [eLogFiles, eLogTokens] then
   Log.Write(lsMessage);
   SendStatusMessage('', lsMessage, mtProgress, -1, -1);
@@ -461,7 +458,7 @@ begin
       ProcessDirectory(Input);
     end
     else
-      raise Exception.Create('TConverter.Convert: Bad file recurse type');
+      raise Exception.Create(lisMsgBadFileRecurseType);
   end;
 
   if GetRegSettings.LogTime then
@@ -490,14 +487,14 @@ begin
   if fiConvertCount = 0 then
   begin
     if ConvertError then
-      lsMessage := 'Aborted due to error'
+      lsMessage := lisMsgAbortedDueToError
     else
-      lsMessage := 'Nothing done';
+      lsMessage := lisMsgNothingDone;
   end
   else if fbAbort then
-    lsMessage := 'Aborted after ' + DescribeFileCount(fiConvertCount)
+    lsMessage := lisMsgAbortedAfter + DescribeFileCount(fiConvertCount)
   else if fiConvertCount > 1 then
-    lsMessage := 'Finished processing ' + DescribeFileCount(fiConvertCount)
+    lsMessage := lisMsgFinishedProcessing + DescribeFileCount(fiConvertCount)
   else
     lsMessage := '';
 

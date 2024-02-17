@@ -64,6 +64,9 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 const
   REG_ENABLED = 'Enabled';
   REG_WORDS   = 'Words';
@@ -159,7 +162,7 @@ begin
     begin
       lsNewWord := DefaultWordsWithCaps[liLoop];
       if fcWords.IndexOf(lsNewWord) >= 0 then
-        ShowMessage('TSetAnyWordCaps.Read: duplicate default word: ' + lsNewWord)
+        ShowMessage(Format(lisMsgDuplicateDefaultWord, [lsNewWord]))
       else
         fcWords.Add(lsNewWord);
     end;

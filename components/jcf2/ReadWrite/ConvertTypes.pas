@@ -76,14 +76,14 @@ function DescribeFileCount(const piCount: integer): string;
 
 implementation
 
-uses SysUtils;
+uses SysUtils, jcfbaseConsts;
 
 function DescribeFileCount(const piCount: integer): string;
 begin
   if piCount = 1 then
-    Result := '1 file'
+    Result := lisMsg1File
   else
-    Result := IntToStr(piCount) + ' files';
+    Result := Format(lisMsgFiles,[piCount]);
 end;
 
 end.

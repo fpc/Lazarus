@@ -49,7 +49,8 @@ interface
 
 uses
   SysUtils,
-  Warning;
+  Warning,
+  jcfbaseConsts;
 
 type
 
@@ -165,11 +166,7 @@ begin
     Assert(lcLeftName <> nil, 'No id before assign');
 
     if AnsiSameText(lcLeftName.SourceCode, psFnName) then
-    begin
-      SendWarning(lcLeftName,
-        'Assignment to the function name "' + psFnName +
-        '" is deprecated, Use assignment to "Result"');
-    end;
+      SendWarning(lcLeftName,Format(lisMsgAssignmentToFuncionNameIsDeprecated, [psFnName]));
   end
   else
   begin

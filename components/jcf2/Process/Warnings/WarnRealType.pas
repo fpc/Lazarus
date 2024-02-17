@@ -46,11 +46,9 @@ type
 
 implementation
 
-uses SourceToken, ParseTreeNodeType, Tokens;
+uses SourceToken, ParseTreeNodeType, Tokens, jcfbaseConsts;
 
 function TWarnRealType.EnabledVisitSourceToken(const pcToken: TObject): Boolean;
-const
-  REAL_WARNING = ' This type is obsolete and is seldom useful';
   // + 'See the help for details';
 var
   lcToken: TSourceToken;
@@ -68,14 +66,9 @@ begin
    }
 
   if lcToken.TokenType = ttReal then
-  begin
-    SendWarning(lcToken, 'Real type used.' + REAL_WARNING);
-  end
+    SendWarning(lcToken, lisMsgRealTypeUsed)
   else if lcToken.TokenType = ttReal48 then
-  begin
-    SendWarning(lcToken, 'Real48 type used.' + REAL_WARNING);
-  end;
-
+    SendWarning(lcToken, lisMsgReal48TypeUsed);
 end;
 
 end.

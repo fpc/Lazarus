@@ -114,7 +114,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils, JcfRegistrySettings, ParseError;
+  JcfStringUtils, JcfRegistrySettings, ParseError, jcfbaseConsts;
 
 const
   CurlyLeft =  '{'; //widechar(123);
@@ -258,7 +258,7 @@ var
           // $ (US): 2021-06-28 15:48:59 $
           //  Although it is not a parse error, but I do not want to introduce
           //  another exception class.
-          raise TEParseError.Create('Unable to recover from imbalanced bracket star comment.', pcToken);
+          raise TEParseError.Create(lisMsgUnableToRecoverImbalancedBracketStarComment, pcToken);
         end else
         begin
           bPossiblyImbalanced := True;
@@ -342,7 +342,7 @@ var
           // $ (US): 2021-06-28 15:48:59 $
           //  Although it is not a parse error, but I do not want to introduce
           //  another exception class.
-          raise TEParseError.Create('Unable to recover from imbalanced curly comment.', pcToken);
+          raise TEParseError.Create(lisMsgUnableToRecoverImbalancedCurlyComment, pcToken);
         end else
         begin
           bPossiblyImbalanced := True;
@@ -513,7 +513,7 @@ begin
     { read until the close ''' }
     repeat
       if Current = #0 then
-        Raise Exception.Create('Unterminated string: ' + pcToken.SourceCode);
+        Raise Exception.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]));
 
       if (Current = NativeSingleQuote) then
       begin
@@ -556,7 +556,7 @@ begin
       if Current = #0 then
         break;
       if CharIsReturn(Current) then
-        Raise Exception.Create('Unterminated string: ' + pcToken.SourceCode);
+        Raise Exception.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]));
 
       { two quotes in a row are still part of the string }
       if (Current = pcDelimiter) then

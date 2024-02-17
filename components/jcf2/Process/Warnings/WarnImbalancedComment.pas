@@ -63,8 +63,8 @@ uses
   ParseError,
   Tokens,
   SetComments,
-  JcfSettings
-  //
+  JcfSettings,
+  jcfbaseConsts
   ;
 
 
@@ -129,7 +129,7 @@ procedure TWarnImbalancedComment.AssertCurlyBreaketCommentBalanced(const pcNode:
 begin
   if not IsCurlyBreaketCommentBalanced(pcNode) then
   begin
-    raise TEParseError.Create('Imbalanced curly breaket comment!', pcNode as TSourceToken);
+    raise TEParseError.Create(lisMsgImbalancedCurlyBracketComment, pcNode as TSourceToken);
   end;
 end;
 
@@ -137,7 +137,7 @@ procedure TWarnImbalancedComment.AssertBreaketStarCommentBalanced(const pcNode: 
 begin
   if not IsBreaketStarCommentBalanced(pcNode) then
   begin
-    raise TEParseError.Create('Imbalanced breaket star comment!', pcNode as TSourceToken);
+    raise TEParseError.Create(lisMsgImbalancedBracketStarComment, pcNode as TSourceToken);
   end;
 end;
 

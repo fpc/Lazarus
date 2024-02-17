@@ -107,7 +107,7 @@ implementation
 
 uses
   { local }
-  JcfMiscFunctions;
+  JcfMiscFunctions, jcfbaseConsts;
 
 constructor TSourceTokenList.Create;
 begin
@@ -334,7 +334,7 @@ end;
 procedure TSourceTokenList.Insert(const piIndex: integer; const pcItem: TSourceToken);
 begin
   if (fiCurrentTokenIndex <> 0) and (piIndex < fiCurrentTokenIndex) then
-    raise Exception.Create('TSourceTokenList: Insert back not allowed in Stack mode');
+    raise Exception.Create(lisMsgInsertBackNotAllowedInStackMode);
 
   inherited Insert(piIndex, pcItem);
 end;
@@ -342,7 +342,7 @@ end;
 procedure TSourceTokenList.Delete(const piIndex: integer);
 begin
   if (fiCurrentTokenIndex <> 0) and (piIndex < fiCurrentTokenIndex) then
-    raise Exception.Create('TSourceTokenList: Delete back not allowed in Stack mode');
+    raise Exception.Create(lisMsgDeleteBackNotAllowedInStackMode);
 
   inherited Delete(piIndex);
 end;

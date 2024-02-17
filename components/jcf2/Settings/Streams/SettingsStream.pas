@@ -154,7 +154,7 @@ implementation
 
 uses
   { local}
-  JcfStringUtils, JcfMiscFunctions;
+  JcfStringUtils, JcfMiscFunctions, jcfbaseConsts;
 
 const
   XML_HEADER = '<?xml version="1.0" ?>' + NativeLineBreak;
@@ -352,9 +352,9 @@ begin
       Result := piDefault;
   except
     on E: Exception do
-      raise Exception.Create('Could not read integer setting' + NativeLineBreak +
-        'name: ' + psTag + NativeLineBreak +
-        'value: ' + lsNewText + NativeLineBreak + E.Message);
+      raise Exception.Create(lisMsgCouldNotReadIntegerSetting + NativeLineBreak +
+        lisMsgName + psTag + NativeLineBreak +
+        lisMsgValue + lsNewText + NativeLineBreak + E.Message);
   end;
 
 end;
@@ -372,9 +372,9 @@ begin
       Result := pfDefault;
   except
     on E: Exception do
-      raise Exception.Create('Could not read float setting' + NativeLineBreak +
-        'name: ' + psTag + NativeLineBreak +
-        'value: ' + lsNewText + NativeLineBreak + E.Message);
+      raise Exception.Create(lisMsgCouldNotReadFloatSetting + NativeLineBreak +
+        lisMsgName + psTag + NativeLineBreak +
+        lisMsgValue + lsNewText + NativeLineBreak + E.Message);
   end;
 end;
 
@@ -392,9 +392,9 @@ begin
       Result := pbDefault;
   except
     on E: Exception do
-      raise Exception.Create('Could not read boolean setting' + NativeLineBreak +
-        'name: ' + psTag + NativeLineBreak +
-        'value: ' + lsNewText + NativeLineBreak + E.Message);
+      raise Exception.Create(lisMsgCouldNotReadBooleanSetting + NativeLineBreak +
+        lisMsgName + psTag + NativeLineBreak +
+        lisMsgValue + lsNewText + NativeLineBreak + E.Message);
   end;
 
 end;

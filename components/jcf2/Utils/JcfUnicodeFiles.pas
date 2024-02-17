@@ -48,6 +48,9 @@ procedure WriteTextFile(const psFileName: string; const psContents: String;
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 const
   // byte order markers (BOM)
   // these are found at the start of the file
@@ -149,7 +152,7 @@ begin
     eUtf32LittleEndian, eUtf32BigEndian:
       liOffsetBytes := 4;
     else
-      raise Exception.Create('Unknown file content type: ' + IntToStr(Ord(peContentType)));
+      raise Exception.Create(Format(lisMsgUnknownFileContentType, [Ord(peContentType)]));
   end;
 
   pcFileStream.Seek(liOffsetBytes, soFromBeginning);
@@ -292,8 +295,7 @@ begin
       eUtf32LittleEndian, eUtf32BigEndian:
         psContents := {%H-}Read32BitFile(fs, peContentType = eUtf32BigEndian);
       else
-        raise Exception.Create('Unknown file content type: ' + IntToStr(Ord(peContentType)));
-
+        raise Exception.Create(Format(lisMsgUnknownFileContentType, [Ord(peContentType)]));
     end;
   finally
     // close the file
@@ -439,7 +441,7 @@ var
      end;
 
      else
-       raise Exception.Create('Unknown file content type: ' + IntToStr(Ord(peContentType)));
+       raise Exception.Create(Format(lisMsgUnknownFileContentType, [Ord(peContentType)]));
 
    end;
 

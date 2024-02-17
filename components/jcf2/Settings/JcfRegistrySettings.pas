@@ -190,7 +190,7 @@ implementation
 
 uses
   { jcf }
-  JcfStringUtils, JcfMiscFunctions, JcfUiTools;
+  JcfStringUtils, JcfMiscFunctions, JcfUiTools, jcfbaseConsts;
 
 const
   REG_GENERAL_SECTION = 'General';
@@ -491,7 +491,7 @@ begin
     GetUI.OpenDocumentUI(lsFile);
   end
   else
-    GetUI.ShowErrorMessageUI('No log file found at ' + lsFile);
+    GetUI.ShowErrorMessageUI(Format(lisMsgNoLogFileFoundAt,[lsFile]));
 end;
 
 function TJCFRegistrySettings.DirIsExcluded(const psDir: string): boolean;
@@ -556,7 +556,7 @@ begin
       Result := Result + '.' + OutputExtension;
   end
   else
-    raise Exception.Create('TCodeFormatSettings.Output: bad backup mode ');
+    raise Exception.Create(lisMsgBadBackupMode);
 end;
 
 function TJCFRegistrySettings.GetOutputFileName(const psIn: string): string;

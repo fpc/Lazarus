@@ -97,6 +97,8 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
 { TPreProcessorExpressionParser }
 
 procedure TPreProcessorExpressionParser.Consume(const peType: TPreProcessorSymbol);
@@ -130,7 +132,7 @@ begin
   Result := ParseExpr;
 
   if MoreTokens then
-    raise PreProcessorParseFailedException.Create('Expression has trailing tokens');
+    raise PreProcessorParseFailedException.Create(lisMsgExpressionHasTrailingTokens);
 end;
 
 function TPreProcessorExpressionParser.ParseExpr: boolean;
@@ -162,8 +164,7 @@ begin
       end;
       else
       begin
-        raise PreProcessorParseFailedException.Create(
-          'Preprocessor expression could not be parsed');
+        raise PreProcessorParseFailedException.Create(lisMsgPreprocessorExpressionCouldNotBeParsed);
       end;
     end;
   end;
@@ -220,8 +221,7 @@ begin
     else
     begin
       CurrentTokenType;
-      raise PreProcessorParseFailedException.Create(
-        'Preprocessor term could not be parsed');
+      raise PreProcessorParseFailedException.Create(lisMsgPreprocessorTermCouldNotBeParsed);
     end;
   end;
 end;

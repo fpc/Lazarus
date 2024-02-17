@@ -50,7 +50,7 @@ implementation
 
 uses
   { local }
-  SourceToken, ParseTreeNodeType, ParseTreeNode;
+  SourceToken, ParseTreeNodeType, ParseTreeNode, jcfbaseConsts;
 
 function TWarnDestroy.EnabledVisitSourceToken(const pcToken: TObject): Boolean;
 var
@@ -73,8 +73,7 @@ begin
   if (lcFunction <> nil) and (lcFunction.NodeType = nDestructorDecl) then
     exit;
 
-  SendWarning(lcToken, 'Destroy should not normally be called. ' +
-    'You may want to use FreeAndNil(MyObj), or MyObj.Free, or MyForm.Release');
+  SendWarning(lcToken, lisMsgDestroyShoultNotBeCalled);
 end;
 
 end.

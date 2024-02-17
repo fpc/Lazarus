@@ -48,7 +48,7 @@ type
 
 implementation
 
-uses ParseTreeNode, ParseTreeNodeType;
+uses ParseTreeNode, ParseTreeNodeType, jcfbaseConsts;
 
 constructor TWarnEmptyBlock.Create;
 begin
@@ -79,24 +79,24 @@ begin
   begin
     if lcNode.NodeType = nCompoundStatement then
     begin
-      SendWarning(lcNode, 'Empty begin..end block');
+      SendWarning(lcNode, lisMsgEmptyBeginEndBlock);
     end;
 
     if lcNode.NodeType = nFinallyBlock then
     begin
-      SendWarning(lcNode, 'Empty finally..end block');
+      SendWarning(lcNode, lisMsgEmptyFinallyEndBlock);
     end;
 
     if lcNode.NodeType = nExceptBlock then
     begin
-      SendWarning(lcNode, 'Empty except..end block');
+      SendWarning(lcNode, lisMsgEmptyExceptEndBlock);
     end;
   end
   else if liSolidChildCount = 1 then
   begin
     if lcNode.NodeType = nTryBlock then
     begin
-      SendWarning(lcNode, 'Empty try block');
+      SendWarning(lcNode, lisMsgEmptyTryBlock);
     end;
   end;
 
