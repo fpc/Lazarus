@@ -350,6 +350,11 @@ begin
     Result := ( Assigned(IntToIdentFn) and
                 IntToIdentFn(integer(c), APrintedValue)
               );
+    {$IF FPC_FULLVERSION>030202}
+    if not Result then
+      Result := AlphaColorToIdent(integer(c), APrintedValue);
+    {$ENDIF}
+
     if not Result then
       APrintedValue := '';
   end;
@@ -377,9 +382,9 @@ end;
 initialization
   ValueFormatterRegistry.Add(TIdeDbgValueFormatterRegistryColor);
   ValueFormatterRegistry.Add(TIdeDbgValueFormatterRegistryColorAlpha);
-  {$IF FPC_FULLVERSION>030202}
-  RegisterAlphaColorIntegerConsts;
-  {$ENDIF}
+  //{$IF FPC_FULLVERSION>030202}
+  //RegisterAlphaColorIntegerConsts;
+  //{$ENDIF}
 
 end.
 
