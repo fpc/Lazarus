@@ -1,0 +1,266 @@
+object Form1: TForm1
+  Left = 381
+  Height = 401
+  Top = 250
+  Width = 729
+  Caption = 'Chart Axis Click Tool Demo'
+  ClientHeight = 401
+  ClientWidth = 729
+  LCLVersion = '3.99.0.0'
+  object Chart: TChart
+    Left = 0
+    Height = 353
+    Top = 0
+    Width = 729
+    AxisList = <    
+      item
+        Grid.Color = 12040191
+        Grid.Style = psSolid
+        AtDataOnly = True
+        AxisPen.Color = clRed
+        AxisPen.Visible = True
+        Group = 1
+        Marks.LabelFont.Color = clRed
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Left axis #1'
+        Title.LabelBrush.Style = bsClear
+        Title.PositionOnMarks = True
+        Transformations = RedAxisTransformations
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Visible = True
+        Title.Caption = 'Bottom axis'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Visible = False
+        Alignment = calRight
+        AxisPen.Visible = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 450
+        Title.Visible = True
+        Title.Caption = 'Right axis'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = 16765650
+        Grid.Style = psSolid
+        AtDataOnly = True
+        AxisPen.Color = clBlue
+        AxisPen.Visible = True
+        Group = 1
+        Marks.LabelFont.Color = clBlue
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clBlue
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Left axis #2'
+        Title.LabelBrush.Style = bsClear
+        Title.PositionOnMarks = True
+        Transformations = BlueAxisTransformations
+      end>
+    Frame.Visible = False
+    Title.Text.Strings = (
+      'Click on various parts of the axes'
+      'Colliding parts are detected in the order of the series (left#1-bottom-right-left#2)'
+    )
+    Title.Visible = True
+    Toolset = ChartToolset
+    Align = alClient
+    object RedSeries: TLineSeries
+      AxisIndexY = 0
+      LinePen.Color = clRed
+      Source = RedChartSource
+    end
+    object BlueSeries: TLineSeries
+      AxisIndexY = 3
+      LinePen.Color = clBlue
+      Source = BlueChartSource
+    end
+  end
+  object BottomPanel: TPanel
+    Left = 6
+    Height = 36
+    Top = 359
+    Width = 717
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 36
+    ClientWidth = 717
+    TabOrder = 1
+    object Label1: TLabel
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = BottomPanel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 65
+      Caption = 'Clicked axis:'
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 15
+      Top = 19
+      Width = 66
+      BorderSpacing.Top = 4
+      Caption = 'Clicked part:'
+    end
+    object lblClickedAxis: TLabel
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label1
+      Left = 73
+      Height = 15
+      Top = 0
+      Width = 36
+      BorderSpacing.Left = 8
+      Caption = '(none)'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lblClickedAxisPart: TLabel
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label2
+      Left = 73
+      Height = 15
+      Top = 19
+      Width = 36
+      BorderSpacing.Left = 8
+      Caption = '(none)'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object cbShowGrid_LeftAxis2: TCheckBox
+      AnchorSideLeft.Control = Bevel1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrCenter
+      Left = 360
+      Height = 19
+      Top = -2
+      Width = 130
+      Caption = 'Show left axis #2 grid'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbShowGrid_LeftAxis2Change
+    end
+    object Bevel1: TBevel
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = BottomPanel
+      Left = 357
+      Height = 26
+      Top = 0
+      Width = 3
+      Shape = bsSpacer
+    end
+    object cbShowGrid_LeftAxis1: TCheckBox
+      AnchorSideLeft.Control = Bevel1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrCenter
+      Left = 360
+      Height = 19
+      Top = 17
+      Width = 130
+      Caption = 'Show left axis #1 grid'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnChange = cbShowGrid_LeftAxis2Change
+    end
+    object cbShowGrid_RightAxis: TCheckBox
+      AnchorSideLeft.Control = cbShowGrid_LeftAxis2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrCenter
+      Left = 506
+      Height = 19
+      Top = -2
+      Width = 122
+      BorderSpacing.Left = 16
+      Caption = 'Show right axis grid'
+      TabOrder = 2
+      OnChange = cbShowGrid_LeftAxis2Change
+    end
+    object cbShowGrid_BottomAxis: TCheckBox
+      AnchorSideLeft.Control = cbShowGrid_LeftAxis2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Label2
+      AnchorSideTop.Side = asrCenter
+      Left = 506
+      Height = 19
+      Top = 17
+      Width = 137
+      BorderSpacing.Left = 16
+      Caption = 'Show bottom axis grid'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnChange = cbShowGrid_LeftAxis2Change
+    end
+  end
+  object ChartToolset: TChartToolset
+    Left = 368
+    Top = 128
+    object ChartToolsetAxisClickTool1: TAxisClickTool
+      Shift = [ssLeft]
+      OnClick = ChartToolsetAxisClickTool1Click
+    end
+    object ChartToolsetUserDefinedTool1: TUserDefinedTool
+      Shift = [ssLeft]
+      OnAfterMouseDown = ChartToolsetUserDefinedTool1AfterMouseDown
+    end
+  end
+  object RedChartSource: TRandomChartSource
+    PointsNumber = 11
+    RandSeed = 108757768
+    XMax = 1
+    YMax = 1
+    Left = 240
+    Top = 216
+  end
+  object RedAxisTransformations: TChartAxisTransformations
+    Left = 104
+    Top = 216
+    object RedAxisTransformationsAutoScaleAxisTransform: TAutoScaleAxisTransform
+    end
+  end
+  object BlueAxisTransformations: TChartAxisTransformations
+    Left = 104
+    Top = 39
+    object BlueAxisTransformationsAutoScaleAxisTransform: TAutoScaleAxisTransform
+      MaxValue = 2
+      MinValue = 1
+    end
+  end
+  object BlueChartSource: TRandomChartSource
+    PointsNumber = 21
+    RandSeed = 1002808897
+    XMax = 1
+    YMax = 2
+    Left = 240
+    Top = 39
+  end
+end
