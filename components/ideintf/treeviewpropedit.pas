@@ -148,18 +148,21 @@ end;
 
 procedure TTreeViewItemsEditorForm.btnNewItemClick(Sender: TObject);
 var
-  S: String;
+  lNewName: String;
 begin
-  S := sccsTrEdtItem + IntToStr(treEditor.Items.Count);
-  if (Sender as TComponent).Tag = 1 then
-    treEditor.Selected := treEditor.Items.Add(treEditor.Selected, S)
+  lNewName := sccsTrEdtItem + IntToStr(treEditor.Items.Count);
+  if Sender = btnNewItem then
+    treEditor.Selected := treEditor.Items.Add(treEditor.Selected, lNewName)
   else
-    treEditor.Selected := treEditor.Items.AddChild(treEditor.Selected, S);
+  if Sender = btnNewSubItem then
+    treEditor.Selected := treEditor.Items.AddChild(treEditor.Selected, lNewName)
+  else
+    raise Exception.Create('[btnNewItemClick] Unknown Sender.');
 
-  grpNodeEditor.Enabled := treEditor.Items.Count > 0;
+  //grpNodeEditor.Enabled := treEditor.Items.Count > 0;
   
   edtNodeText.SetFocus;
-  edtNodeText.SelectAll;
+  //edtNodeText.SelectAll;
 end;
 
 procedure TTreeViewItemsEditorForm.Edit1Change(Sender: TObject);
@@ -331,6 +334,7 @@ begin
     treEditor.StateImages := ATreeView.StateImages;
     treEditor.Items.Assign(ATreeView.Items);
   end;
+  treEditor.Selected := treEditor.Items.GetFirstNode;
   UpdateEnabledStates;
 end;
 
@@ -345,12 +349,25 @@ end;
 
 procedure TTreeViewItemsEditorForm.UpdateEnabledStates;
 var
-  CurNode: TTreeNode;
+  lCurNode: TTreeNode;
 begin
-  CurNode := treEditor.Selected;
-  btnMoveUp.Enabled := Assigned(CurNode) and Assigned(CurNode.GetPrevSibling);
-  btnMoveDown.Enabled:=Assigned(CurNode) and Assigned(CurNode.GetNextSibling);
-  grpNodeEditor.Enabled := Assigned(CurNode);
+  lCurNode := treEditor.Selected;
+
+  // Control states
+  btnSave.Enabled := treEditor.Items.Count > 0;
+  btnMoveUp.Enabled := Assigned(lCurNode) and Assigned(lCurNode.GetPrevSibling);
+  btnMoveDown.Enabled := Assigned(lCurNode) and Assigned(lCurNode.GetNextSibling);
+  btnDelete.Enabled := Assigned(lCurNode);
+  grpNodeEditor.Enabled := Assigned(lCurNode);
+
+  // Clear disabled fields
+  if lCurNode = nil then
+  begin
+    edtNodeText.Text := '';
+    spnImageIndex.Value := -1;
+    spnSelectedIndex.Value := -1;
+    spnStateIndex.Value := -1;
+  end;
 end;
 
 
