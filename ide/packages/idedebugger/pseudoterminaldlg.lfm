@@ -93,7 +93,6 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
           ChildSizing.ControlsPerLine = 1
           ClientHeight = 54
           ClientWidth = 192
-          Enabled = False
           Items.Strings = (
             'Line numbers'
             'C1 as C0 + Underbar'
