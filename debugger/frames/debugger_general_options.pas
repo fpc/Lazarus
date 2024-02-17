@@ -93,6 +93,7 @@ begin
     gcbDebuggerGeneralOptions.Checked[3] := DebuggerAutoCloseAsm;
     gcbDebuggerGeneralOptions.Checked[4] := DebuggerAutoSetInstanceFromClass;
     gcbDebuggerGeneralOptions.Checked[5] := DebuggerAllowFunctionCalls;
+    gcbDebuggerGeneralOptions.Checked[6] := DebuggerOptions.AlwaysBringDbgDialogsToFront;
   end;
   txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
@@ -117,6 +118,7 @@ begin
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoCloseAsm);           // 3 auto close asm
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoInstanceClass);      // 4 auto set class-from-instance
   gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAllowFunctionCalls);     // 5 allow function calls
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmDialogsToFront);     // 6 bring dialogs to front
 end;
 
 procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -141,6 +143,7 @@ begin
     DebuggerAutoCloseAsm             := gcbDebuggerGeneralOptions.Checked[3];
     DebuggerAutoSetInstanceFromClass := gcbDebuggerGeneralOptions.Checked[4];
     DebuggerAllowFunctionCalls       := gcbDebuggerGeneralOptions.Checked[5];
+    DebuggerOptions.AlwaysBringDbgDialogsToFront := gcbDebuggerGeneralOptions.Checked[6];
   end;
 end;
 

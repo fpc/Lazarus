@@ -121,6 +121,7 @@ type
     *)
     DebuggerOptsVersionFpDebugUpdate = 1;
   private
+    FAlwaysBringDbgDialogsToFront: boolean;
     FBreakpointsDialogShowTree: TBreakpointsDialogShowTreeType;
     FFilename: string;
     FFileVersion: integer;
@@ -175,6 +176,7 @@ type
   published
     property SetupCheckIgnoreNoDefault: Boolean read FSetupCheckIgnoreNoDefault write FSetupCheckIgnoreNoDefault;
     property BreakpointsDialogShowTree: TBreakpointsDialogShowTreeType read FBreakpointsDialogShowTree write FBreakpointsDialogShowTree default bstBrkGroup;
+    property AlwaysBringDbgDialogsToFront: boolean read FAlwaysBringDbgDialogsToFront write FAlwaysBringDbgDialogsToFront default true;
   end;
 
   TCurrentDebuggerSetupResult = (
@@ -835,6 +837,7 @@ procedure TDebuggerOptions.Init;
 begin
   // Init for all published values
   FBreakpointsDialogShowTree := bstBrkGroup;
+  FAlwaysBringDbgDialogsToFront := True;
 end;
 
 procedure TDebuggerOptions.Load;

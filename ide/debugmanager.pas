@@ -1802,6 +1802,7 @@ const
   );
 var
   CurDialog: TDebuggerDlg;
+  AW: HWND;
 begin
   if Destroying then exit;
   if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
@@ -1868,7 +1869,10 @@ begin
   if Show then
   begin
     CurDialog.BeginUpdate;
-    IDEWindowCreators.ShowForm(CurDialog,BringToFront,vmOnlyMoveOffScreenToVisible);
+    AW := GetActiveWindow;
+    IDEWindowCreators.ShowForm(CurDialog,BringToFront or DebuggerOptions.AlwaysBringDbgDialogsToFront,vmOnlyMoveOffScreenToVisible);
+    if (not BringToFront) and DebuggerOptions.AlwaysBringDbgDialogsToFront then
+      SetActiveWindow(AW);
     CurDialog.EndUpdate;
   end;
 end;

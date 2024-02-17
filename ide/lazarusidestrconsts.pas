@@ -5332,6 +5332,7 @@ resourcestring
   lisDebugOptionsFrmAutoCloseAsm = 'Automatically close the assembler window, after source not found';
   lisDebugOptionsFrmAutoInstanceClass = 'Automatically set "use instance class type" for new watches';
   lisDebugOptionsFrmAllowFunctionCalls = 'BETA: Allow function calls in watches (if supported by backend)';
+  lisDebugOptionsFrmDialogsToFront = 'Always bring debug-windows (watches, locals) to front when adding items';
   lisDebugOptionsFrmDebuggerSpecific = 'Debugger specific options (depends on '
     +'type of debugger)';
   lisDebugOptionsFrmEventLog = 'Event Log';
