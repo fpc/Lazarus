@@ -251,6 +251,8 @@ type
     procedure GetClipRange(out AMin, AMax: Integer); virtual; abstract;
     function GetDefaultPenColor: TColor;
     function GraphToImage(AGraph: Double): Integer; virtual; abstract;
+    property MaxForMarks: Double read FMaxForMarks;
+    property MinForMarks: Double read FMinForMarks;
   end;
 
   TAxisDrawHelperClass = class of TAxisDrawHelper;
