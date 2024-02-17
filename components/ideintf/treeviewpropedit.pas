@@ -20,7 +20,8 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls, ImgList, Spin,
+  LCLType, Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls, ImgList, Spin,
+  ButtonPanel,
   // IdeIntf
   PropEdits, ComponentEditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
@@ -30,14 +31,12 @@ type
 
   TTreeViewItemsEditorForm = class(TForm)
     btnApply: TBitBtn;
-    btnCancel: TBitBtn;
-    btnHelp: TBitBtn;
-    btnOK: TBitBtn;
     btnSave: TButton;
     btnNewItem: TButton;
     btnNewSubItem: TButton;
     btnDelete: TButton;
     btnLoad: TButton;
+    ButtonPanel: TButtonPanel;
     edtNodeText: TEdit;
     grpTreeEditor: TGroupBox;
     grpNodeEditor: TGroupBox;
@@ -57,8 +56,9 @@ type
     procedure Edit1Change(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure btnMoveUpClick(Sender: TObject);
+    procedure btnMoveClick(Sender: TObject);
     procedure btnMoveDownClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure treEditorSelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
@@ -115,6 +115,7 @@ end;
 
 procedure TTreeViewItemsEditorForm.FormCreate(Sender: TObject);
 begin
+  // Captions
   Caption := sccsTrEdtCaption;
 
   grpTreeEditor.Caption := sccsTrEdtGrpLCaption;
@@ -137,6 +138,12 @@ begin
 
   dlgOpen.Title := sccsTrEdtOpenDialog;
   dlgSave.Title := sccsTrEdtSaveDialog;
+
+  // Button panel
+  ButtonPanel.ShowHint := true;
+  btnApply.LoadGlyphFromResource(idButtonRetry);
+
+  // Layout
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
@@ -144,6 +151,89 @@ procedure TTreeViewItemsEditorForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TTreeViewItemsEditorForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    // form actions
+    VK_RETURN:
+      if (Shift = [ssCtrl]) then
+      begin
+        Key := 0;
+        ModalResult := mrOK;
+      end else
+      if (Shift = [ssShift]) then
+      begin
+        Key := 0;
+        btnApplyClick(Sender);
+      end;
+    VK_ESCAPE:
+      if (Shift = []) then
+      begin
+        if not treEditor.IsEditing then
+        begin
+          Key := 0;
+          ModalResult := mrCancel;
+        end;
+      end;
+
+    // create items
+    VK_N:
+      if (Shift = [ssCtrl]) then
+      begin
+        Key := 0;
+        btnNewItemClick(btnNewItem); // "Sender" is the pressed button
+      end else
+      if (Shift = [ssCtrl, ssShift]) then
+      begin
+        Key := 0;
+        btnNewItemClick(btnNewSubItem); // "Sender" is the pressed button
+      end;
+
+    // delete item
+    VK_DELETE:
+      if (Shift = []) then
+      begin
+        // check to prevent it from working in TEdit or TSpinEdit
+        // or when renaming node
+        if treEditor.Focused and not treEditor.IsEditing then
+        begin
+          Key := 0;
+          btnDeleteClick(Sender);
+        end;
+      end;
+
+    // move item
+    VK_DOWN:
+      if (Shift = [ssCtrl, ssShift]) then
+      begin
+        Key := 0;
+        btnMoveClick(btnMoveDown); // "Sender" is the pressed button
+      end;
+    VK_UP:
+      if (Shift = [ssCtrl, ssShift]) then
+      begin
+        Key := 0;
+        btnMoveClick(btnMoveUp); // "Sender" is the pressed button
+      end;
+
+    // save and load in/from file
+    VK_S:
+      if (Shift = [ssCtrl]) then
+      begin
+        Key := 0;
+        btnSaveClick(Sender);
+      end;
+
+    VK_L, VK_O:
+      if (Shift = [ssCtrl]) then
+      begin
+        Key := 0;
+        btnLoadClick(Sender);
+      end;
+  end;
 end;
 
 procedure TTreeViewItemsEditorForm.btnNewItemClick(Sender: TObject);
@@ -171,14 +261,27 @@ begin
     treEditor.Selected.Text := edtNodeText.Text;
 end;
 
-procedure TTreeViewItemsEditorForm.btnMoveUpClick(Sender: TObject);
+procedure TTreeViewItemsEditorForm.btnMoveClick(Sender: TObject);
 var
-  CurNode, PrevNode: TTreeNode;
+  lCurNode: TTreeNode;
 begin
-  CurNode := treEditor.Selected;      Assert(Assigned(CurNode));
-  PrevNode := CurNode.GetPrevSibling; Assert(Assigned(PrevNode));
-  CurNode.MoveTo(PrevNode, naInsert);
+  lCurNode := treEditor.Selected;
+  if lCurNode = nil then exit;
+
+  if Sender = btnMoveUp then
+  begin
+    if lCurNode.GetPrevSibling = nil then exit;
+    lCurNode.MoveTo(lCurNode.GetPrevSibling, naInsert);
+  end else
+  if Sender = btnMoveDown then
+  begin
+    if lCurNode.GetNextSibling = nil then exit;
+    lCurNode.MoveTo(lCurNode.GetNextSibling, naInsertBehind);
+  end else
+    raise Exception.Create('[btnMoveClick] Unknown Sender');
+
   UpdateEnabledStates;
+  treEditor.SetFocus; // return focus after button click
 end;
 
 procedure TTreeViewItemsEditorForm.btnMoveDownClick(Sender: TObject);

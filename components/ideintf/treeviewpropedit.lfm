@@ -1,31 +1,32 @@
 object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   Left = 329
-  Height = 321
+  Height = 326
   Top = 230
   Width = 635
   ActiveControl = btnNewItem
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'TreeView Items Editor'
-  ClientHeight = 321
+  ClientHeight = 326
   ClientWidth = 635
   Constraints.MinHeight = 240
   Constraints.MinWidth = 400
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   object grpTreeEditor: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = btnOK
     Left = 6
-    Height = 277
+    Height = 282
     Top = 6
     Width = 420
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Items'
-    ClientHeight = 257
+    ClientHeight = 262
     ClientWidth = 416
     TabOrder = 0
     object treEditor: TTreeView
@@ -34,7 +35,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideBottom.Control = grpTreeEditor
       AnchorSideBottom.Side = asrBottom
       Left = 5
-      Height = 247
+      Height = 252
       Top = 5
       Width = 240
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -56,13 +57,13 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 282
       Height = 25
+      Hint = '[Ctrl+N]'
       Top = 6
       Width = 128
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 3
       BorderSpacing.Around = 6
       Caption = '&New Item'
-      Default = True
       TabOrder = 1
       OnClick = btnNewItemClick
     end
@@ -74,6 +75,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 282
       Height = 25
+      Hint = '[Ctrl+Shift+N]'
       Top = 37
       Width = 128
       Anchors = [akTop, akLeft, akRight]
@@ -90,6 +92,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 282
       Height = 25
+      Hint = '[Del]'
       Top = 68
       Width = 128
       Anchors = [akTop, akLeft, akRight]
@@ -106,6 +109,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 282
       Height = 25
+      Hint = '[Ctrl+O]; [Ctrl+L]'
       Top = 99
       Width = 128
       Anchors = [akTop, akLeft, akRight]
@@ -122,6 +126,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 282
       Height = 25
+      Hint = '[Ctrl+S]'
       Top = 130
       Width = 128
       Anchors = [akTop, akLeft, akRight]
@@ -137,13 +142,14 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideRight.Side = asrBottom
       Left = 251
       Height = 26
+      Hint = '[Ctrl+Shift+Up]'
       Top = 78
       Width = 22
       BorderSpacing.Around = 6
       Enabled = False
       ShowHint = True
       ParentShowHint = False
-      OnClick = btnMoveUpClick
+      OnClick = btnMoveClick
     end
     object btnMoveDown: TSpeedButton
       AnchorSideLeft.Control = btnMoveUp
@@ -151,13 +157,14 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 251
       Height = 26
+      Hint = '[Ctrl+Shift+Down]'
       Top = 111
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
       ShowHint = True
       ParentShowHint = False
-      OnClick = btnMoveDownClick
+      OnClick = btnMoveClick
     end
   end
   object grpNodeEditor: TGroupBox
@@ -166,15 +173,14 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = btnOK
     Left = 432
-    Height = 277
+    Height = 282
     Top = 6
     Width = 197
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Item Properties'
-    ClientHeight = 257
+    ClientHeight = 262
     ClientWidth = 193
     TabOrder = 1
     object lblNodeText: TLabel
@@ -291,77 +297,42 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       OnChange = spnIndexChange
     end
   end
-  object btnOK: TBitBtn
-    AnchorSideRight.Control = btnCancel
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 304
+  object ButtonPanel: TButtonPanel
+    Left = 6
     Height = 26
-    Top = 289
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkOK
-    ModalResult = 1
+    Top = 294
+    Width = 623
+    OKButton.Name = 'OKButton'
+    OKButton.Hint = '[Ctrl+Enter]'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Hint = '[F1]'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Hint = '[Esc]'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
-  end
-  object btnCancel: TBitBtn
-    AnchorSideRight.Control = btnApply
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 385
-    Height = 26
-    Top = 289
-    Width = 82
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    TabOrder = 3
-  end
-  object btnApply: TBitBtn
-    AnchorSideRight.Control = btnHelp
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 473
-    Height = 25
-    Top = 290
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Apply'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    TabOrder = 4
-    OnClick = btnApplyClick
-  end
-  object btnHelp: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 554
-    Height = 26
-    Top = 289
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    TabOrder = 5
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowBevel = False
+    object btnApply: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 357
+      Height = 26
+      Hint = '[Shift+Enter]'
+      Top = 0
+      Width = 75
+      Align = alCustom
+      Anchors = []
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Apply'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      TabOrder = 4
+      OnClick = btnApplyClick
+    end
   end
   object dlgOpen: TOpenDialog
     Title = 'Open'
