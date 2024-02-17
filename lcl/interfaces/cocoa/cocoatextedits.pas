@@ -489,6 +489,10 @@ begin
   end else
     FOwner.insertItemWithTitle_atIndex(astr, Index);
 
+  // ItemIndex may be changed in addItemWithTitle() / insertItemWithTitle_atIndex()
+  // keep compatibility with LCL by resetting ItemIndex
+  FOwner.selectItemAtIndex(FOwner.lastSelectedItemIndex);
+
   mn := FOwner.itemAtIndex(Index);
   if not Assigned(mn) then Exit;
 
@@ -1589,7 +1593,7 @@ begin
   if Assigned(selectedItem) then
     Result:=selectedItem.title
   else
-    Result:=inherited stringValue;
+    Result:=NSString.string_;
 end;
 
 procedure TCocoaReadOnlyComboBox.drawRect(dirtyRect: NSRect);
