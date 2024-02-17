@@ -83,10 +83,15 @@ type
 
   { TChartAxis }
 
+type
   TChartAxisHitTest = (ahtTitle, ahtLine, ahtLabels, ahtGrid,
     ahtAxisStart, ahtAxisCenter, ahtAxisEnd);
   TChartAxisHitTests = set of TChartAxisHitTest;
 
+const
+  ALL_CHARTAXIS_HITTESTS = [ahtTitle, ahtLine, ahtLabels, ahtGrid, ahtAxisStart, ahtAxisCenter, ahtAxisEnd];
+
+type
   TChartAxis = class(TChartBasicAxis)
   strict private
     FListener: TListener;
@@ -157,7 +162,9 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
-    function GetHitTestInfoAt(APoint: TPoint; ADelta: Integer): TChartAxisHitTests; virtual;
+    function GetHitTestInfoAt(APoint: TPoint; ADelta: Integer;
+      ATest: TChartAxisHitTests = ALL_CHARTAXIS_HITTESTS): TChartAxisHitTests; virtual;
+    function GetLabeledAxisRect: TRect;
     procedure Draw;
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
@@ -495,91 +502,133 @@ begin
   inherited;
 end;
 
-function TChartAxis.GetHitTestInfoAt(APoint: TPoint;
-  ADelta: Integer): TChartAxisHitTests;
+function TChartAxis.GetHitTestInfoAt(APoint: TPoint; ADelta: Integer;
+  ATest: TChartAxisHitTests = ALL_CHARTAXIS_HITTESTS): TChartAxisHitTests;
 var
-  R: TRect;
-  w, h, loc: Integer;
+  R, Rax, Rline: TRect;
+  dist, loc: Integer;
   p: Integer;
   t: TChartValueText;
 begin
   Result := [];
-  if IsPointInPolygon(APoint, FTitlePolygon) then
-    Include(Result, ahtTitle)
-  else begin
-    R := FAxisRect;
-    case FAlignment of
-      calLeft:
-        begin
-          R.Right := R.Left + Max(ADelta, TickInnerLength);
-          R.Left := R.Left - Max(ADelta, TickLength);
-        end;
-      calRight:
-        begin
-          R.Left := R.Right - Max(ADelta, TickInnerLength);
-          R.Right := R.Right + Max(ADelta, TickLength);
-        end;
-      calTop:
-        begin
-          R.Bottom := R.Top + Max(ADelta, TickInnerLength);
-          R.Top := R.Top - Max(ADelta, TickLength);
-        end;
-      calBottom:
-        begin
-          R.Top := R.Bottom - Max(ADelta, TickInnerLength);
-          R.Bottom := R.Bottom + Max(ADelta, TickLength);
-        end;
-    end;
-    if IsPointInRect(APoint, R) then
-      Include(Result, ahtLine)
-    else if IsPointInside(APoint) then
-      Include(Result, ahtLabels)
-    else begin
-      R := FHelper.FClipRect^;
-      for t in FMarkValues do begin
+
+  if (ahtTitle in ATest) and IsPointInPolygon(APoint, FTitlePolygon) then
+  begin
+    Include(Result, ahtTitle);
+    exit;
+  end;
+
+  Rax := GetLabeledAxisRect;
+  Rline := Rax;
+  case FAlignment of
+    calLeft:
+      begin
+        Rline.Right := Rline.Left + Max(ADelta, TickInnerLength);
+        Rline.Left := Rline.Left - Max(ADelta, TickLength);
+        if not InRange(APoint.Y, Rax.Top, Rax.Bottom) then
+          exit;
+      end;
+    calRight:
+      begin
+        Rline.Left := Rline.Right - Max(ADelta, TickInnerLength);
+        Rline.Right := Rline.Right + Max(ADelta, TickLength);
+        if not InRange(APoint.Y, Rax.Top, Rax.Bottom) then
+          exit;
+      end;
+    calTop:
+      begin
+        Rline.Bottom := Rline.Top + Max(ADelta, TickInnerLength);
+        Rline.Top := Rline.Top - Max(ADelta, TickLength);
+        if not InRange(APoint.X, Rax.Left, RAx.Right) then
+          exit;
+      end;
+    calBottom:
+      begin
+        Rline.Top := Rline.Bottom - Max(ADelta, TickInnerLength);
+        Rline.Bottom := Rline.Bottom + Max(ADelta, TickLength);
+        if not InRange(APoint.X, Rax.Left, RAx.Right) then
+          exit;
+      end;
+  end;
+
+  if (ahtLine in ATest) and IsPointInRect(APoint, Rline) then
+    Include(Result, ahtLine)
+  else
+  if (ahtLabels in ATest) and IsPointInside(APoint) then
+    Include(Result, ahtLabels)
+  else
+  if (ahtGrid in ATest) then
+  begin
+    R := Rax;
+    if IsPointInRect(APoint, R) and Grid.Visible then
+      for t in FMarkValues do
+      begin
         p := FHelper.GraphToImage(FHelper.FAxisTransf(t.FValue));
-        if IsVertical then begin
+        if IsVertical then
+        begin
           R.Top := p - ADelta;
           R.Bottom := p + ADelta;
-        end else begin
+        end else
+        begin
           R.Left := p - ADelta;
-          R.Right := p + ADelta;
+          R.Right := p + aDelta;
         end;
-        if IsPointInRect(APoint, R) then begin
+        if IsPointInRect(APoint, R) then
+        begin
           Include(Result, ahtGrid);
-          break;
+          exit;
         end;
       end;
-    end;
+  end;
 
-    if Result = [] then
-      exit;
+  if Result = [] then
+    exit;
 
-    R := FHelper.FClipRect^;
+  if [ahtAxisStart, ahtAxisCenter, ahtAxisEnd] * ATest <> [] then
+  begin
+    R := Rax;
     if IsVertical then begin
-      h := R.Bottom - R.Top;
-      p := APoint.Y - R.Top;
-      if p < h div 4 then
+      dist := abs(R.Bottom - R.Top) div 4;
+      p := abs(APoint.Y - R.Top);
+      if p < dist then
         loc := +1
-      else if p > h - h div 4 then
+      else if p > 3 * dist then
         loc := -1
       else
         loc := 0;
     end else begin
-      w := abs(R.Right - R.Left);
+      dist := abs(R.Right - R.Left) div 4;
       p := abs(APoint.X - R.Left);
-      if p < w div 4 then
+      if p < dist then
         loc := -1
-      else if p > w - w div 4 then
+      else if p > 3 * dist then
         loc := +1
       else
         loc := 0;
     end;
-    if IsFlipped then loc := -loc;
+    if IsFlipped then
+      loc := -loc;
     case loc of
-      -1: Include(Result, ahtAxisStart);
-       0: Include(Result, ahtAxisCenter);
-      +1: Include(Result, ahtAxisEnd);
+      -1: if (ahtAxisStart in ATest) then Include(Result, ahtAxisStart);
+       0: if (ahtAxisCenter in ATest) then Include(Result, ahtAxisCenter);
+      +1: if (ahtAxisEnd in ATest) then Include(Result, ahtAxisEnd);
+    end;
+  end;
+end;
+
+function TChartAxis.GetLabeledAxisRect: TRect;
+begin
+  Result := FHelper.FClipRect^; //FAxisRect;
+  if FAtDataOnly then
+  begin
+    if IsVertical then
+    begin
+      Result.Bottom := FHelper.GraphToImage(FHelper.MinForMarks);
+      Result.Top := FHelper.GraphToImage(FHelper.MaxForMarks);
+    end else
+    begin
+      Result.Left := FHelper.GraphToImage(FHelper.MinForMarks);
+      Result.Right := FHelper.GraphToImage(FHelper.MaxForMarks);
     end;
   end;
 end;
