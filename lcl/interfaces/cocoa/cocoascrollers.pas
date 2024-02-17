@@ -53,6 +53,9 @@ type
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
+    procedure ensureDocumentViewSizeChanged(newSize: NSSize;
+      ensureWidth: Boolean; ensureHeight: Boolean);
+      message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
     procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
     procedure resetScrollData; message 'resetScrollData';
 
@@ -664,6 +667,25 @@ procedure TCocoaScrollView.setDocumentView(aView: NSView);
 begin
   inherited setDocumentView(aView);
   resetScrollData;
+end;
+
+// ensure documentView Size be changed
+// setHasXxxScroller() only takes effect after documentView Size is changed
+procedure TCocoaScrollView.ensureDocumentViewSizeChanged(newSize: NSSize;
+  ensureWidth: Boolean; ensureHeight: Boolean);
+var
+  oldSize: NSSize;
+  tempSize: NSSize;
+begin
+  oldSize:= self.documentView.frame.size;
+  tempSize:= newSize;
+  if ensureWidth and (oldSize.width=tempSize.width) then
+    tempSize.width:= tempSize.width + 1;
+  if ensureHeight and (oldSize.height=tempSize.height) then
+    tempSize.height:= tempSize.height + 1;
+  if ensureWidth or ensureHeight then
+    self.documentView.setFrameSize( tempSize );
+  self.documentView.setFrameSize( newSize );
 end;
 
 procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification

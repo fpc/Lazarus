@@ -1704,6 +1704,8 @@ var
   documentSize : NSSize;
   sizingMask : NSUInteger;
   hosted: Boolean;
+  ensureWidth: Boolean = false;
+  ensureHeight: Boolean = false;
 
   function getNewScrollPos: Integer;
   var
@@ -1739,8 +1741,10 @@ begin
         if ScrollInfo.nMax>contentSize.width then begin
           documentSize.width := ScrollInfo.nMax;
           sizingMask:=sizingMask and not NSViewWidthSizable;
-          if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then
+          if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then begin
             sc.setHasHorizontalScroller(true);
+            ensureHeight:= true;
+          end;
         end else begin
           documentSize.width := contentSize.width;
           sizingMask:=sizingMask or NSViewWidthSizable;
@@ -1749,15 +1753,17 @@ begin
         if ScrollInfo.nMax>contentSize.height then begin
           documentSize.height := ScrollInfo.nMax;
           sizingMask:=sizingMask and not NSViewHeightSizable;
-          if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then
+          if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then begin
             sc.setHasVerticalScroller(true);
+            ensureHeight:= true;
+          end;
         end else begin
           documentSize.height := contentSize.height;
           sizingMask:=sizingMask or NSViewHeightSizable;
         end;
       end;
       sc.documentView.setAutoresizingMask(sizingMask);
-      sc.documentView.setFrameSize( documentSize );
+      sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
 
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
