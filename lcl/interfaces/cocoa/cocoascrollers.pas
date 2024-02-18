@@ -53,6 +53,7 @@ type
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
+    procedure scrollWheel(theEvent: NSEvent); override;
     procedure ensureDocumentViewSizeChanged(newSize: NSSize;
       ensureWidth: Boolean; ensureHeight: Boolean);
       message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
@@ -725,6 +726,16 @@ begin
   docrect:=documentVisibleRect;
   lclHoriScrollInfo.fMask:= 0;
   lclVertScrollInfo.fMask:= 0;
+end;
+
+procedure TCocoaScrollView.scrollWheel(theEvent: NSEvent);
+begin
+  if self.hasHorizontalScroller or self.hasVerticalScroller then
+    inherited scrollWheel( theEvent )
+  else if Assigned(self.enclosingScrollView) then
+    self.enclosingScrollView.scrollWheel( theEvent )
+  else
+    inherited scrollWheel( theEvent );
 end;
 
 procedure TCocoaScrollView.lclUpdate;
