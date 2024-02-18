@@ -29,6 +29,7 @@ Initial implementation:  2016 by Bart Broersma. Revised in August 2020.
 <element name="ComCtrls"/>
 <element name="GroupedEdit"/>
 <element name="LResources"/>
+<element name="LazLogger"/>
 
 <element name="TNullValueBehaviour">
 <short>
