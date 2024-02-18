@@ -1189,6 +1189,11 @@ begin
 
   if ConsoleVerbosity>=0 then
   begin
+    // lazarus config file "lazarus.cfg"
+    if FileExistsUTF8(GetCfgFileName) then
+      Debugln('Hint: (lazarus) Using config file: "' + GetCfgFileName + '"');
+
+    // lazarus config dirs (--pcp and --scp)
     Debugln('Hint: (lazarus) [TMainIDE.ParseCmdLineOptions] PrimaryConfigPath="',GetPrimaryConfigPath,'"');
     Debugln('Hint: (lazarus) [TMainIDE.ParseCmdLineOptions] SecondaryConfigPath="',GetSecondaryConfigPath,'"');
   end;

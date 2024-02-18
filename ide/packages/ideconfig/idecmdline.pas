@@ -128,6 +128,7 @@ procedure ParseNoGuiCmdLineParams;
 function ExtractCmdLineFilenames : TStrings;
 
 // options from CFG file
+function GetCfgFileName: string;
 function GetCfgFileContent: TStrings;
 function GetParamsAndCfgFile: TStrings;
 function ParamsAndCfgCount: Integer;
@@ -141,10 +142,14 @@ function GetSkipCheckByKey(AKey: String): Boolean;
 implementation
 
 var
-  CfgFileName: String = '';
   CfgFileDone: Boolean = False;
   CfgFileContent: TStrings = nil;
   ParamsAndCfgFileContent: TStrings = nil;
+
+function GetCfgFileName: string;
+begin
+  result := AppendPathDelim(ProgramDirectoryWithBundle) + 'lazarus.cfg';
+end;
 
 function GetCfgFileContent: TStrings;
 begin
@@ -152,11 +157,9 @@ begin
   if CfgFileDone then
     exit;
   CfgFileDone := True;
-  CfgFileName := AppendPathDelim(ProgramDirectoryWithBundle) + 'lazarus.cfg';
-  if FileExistsUTF8(CfgFileName) then begin
-    DebugLn(['using config file ', CfgFileName]);
+  if FileExistsUTF8(GetCfgFileName) then begin
     CfgFileContent := TStringList.Create;
-    CfgFileContent.LoadFromFile(CfgFileName);
+    CfgFileContent.LoadFromFile(GetCfgFileName);
   end;
   Result := CfgFileContent;
 end;
@@ -220,7 +223,7 @@ begin
   if Cfg <> nil then begin
     Warn := '';
     // insert Cfg at start. For duplicates the latest occurrence takes precedence
-    CfgDir:=ExtractFilePath(CfgFileName);
+    CfgDir:=ExtractFilePath(GetCfgFileName);
     for i := 0 to Cfg.Count - 1 do begin
       s := Cfg[i];
       if (s <> '') and (s[1] = '-') then

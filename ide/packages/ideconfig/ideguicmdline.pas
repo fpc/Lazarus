@@ -177,9 +177,9 @@ begin
     else if ParamIsOption(i, EnableRemoteControlOpt) then
       EnableRemoteControl := true
     else if ParamIsOption(i, '--verbose') then
-      ConsoleVerbosity:=Max(1,ConsoleVerbosity+1)
+      ConsoleVerbosity:=Max(+1,ConsoleVerbosity+1)
     else if ParamIsOption(i, '--quiet') then
-      ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
+      ConsoleVerbosity:=Min(-1,ConsoleVerbosity-1);
   end;
   if ConsoleVerbosity>=0 then
     CTConsoleVerbosity:=1;

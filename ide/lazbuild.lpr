@@ -161,7 +161,10 @@ type
     procedure Run;
     function ParseParameters: boolean;
     procedure WriteUsage;
-    procedure Error(ErrorCode: Byte; const ErrorMsg: string);
+    procedure PrintInfo(const Msg: string);
+    procedure PrintHint(const Msg: string);
+    procedure PrintWarning(const Msg: string);
+    procedure PrintErrorAndHalt(Code: Byte; const Msg: string);
 
     property PackageAction: TPkgAction read FPackageAction write FPackageAction;
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
@@ -189,11 +192,13 @@ var
   LazBuildApp: TLazBuildApplication = nil;
 
 const
-  ErrorFileNotFound = 1;
-  ErrorBuildFailed = 2;
-  ErrorLoadPackageFailed = 3;
+  ErrorFileNotFound       = 1;
+  ErrorBuildFailed        = 2;
+  ErrorLoadPackageFailed  = 3;
   ErrorPackageNameInvalid = 4;
-  ErrorLoadProjectFailed = 5;
+  ErrorLoadProjectFailed  = 5;
+  ErrorInvalidSyntax      = 6;
+  ErrorInitialization     = 7;
   VersionStr = {$I packages/ideconfig/version.inc};
 
 procedure FilterConfigFileContent;
@@ -366,7 +371,7 @@ function TLazBuildApplication.IDEMessageDialogHandler(const aCaption, aMsg: stri
   DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   DumpStack;
-  Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
+  PrintErrorAndHalt(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
     aCaption, LineEnding, aMsg, LineEnding]));
   Result:=mrCancel;
 end;
@@ -375,7 +380,7 @@ function TLazBuildApplication.IDEQuestionDialogHandler(const aCaption, aMsg: str
   DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
   DumpStack;
-  Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
+  PrintErrorAndHalt(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
     aCaption, LineEnding, aMsg, LineEnding]));
   Result:=mrCancel;
 end;
@@ -406,10 +411,8 @@ begin
     // Check for packages if the specified name is a valid identifier
     //debugln(['TLazBuildApplication.BuildFile ',OriginalFilename]);
     if IsValidPkgName(OriginalFileName) then begin
-      if PackageAction=lpaAddPkgLinks then begin
-        Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
-        Exit;
-      end;
+      if PackageAction=lpaAddPkgLinks then
+        PrintErrorAndHalt(ErrorFileNotFound, 'lpk file expected, but "' + OriginalFilename + '" found');
       // Initialize package graph with base packages etc:
       if not Init then exit;
       // Could be a known but not installed package
@@ -418,9 +421,9 @@ begin
       if Package=nil then begin
         // Not found after everything we tried
         if FilenameExtIs(Filename,'lpi', true) then
-          Error(ErrorFileNotFound,'file not found: '+OriginalFilename)
+          PrintErrorAndHalt(ErrorFileNotFound, 'File not found: "' + OriginalFilename + '"')
         else
-          Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
+          PrintErrorAndHalt(ErrorFileNotFound, 'Package not found: "' + OriginalFilename + '"');
       end
       else begin
         // We found a package link
@@ -433,14 +436,10 @@ begin
       end;
     end;
 
-    Error(ErrorFileNotFound, 'file not found: '+OriginalFilename);
-    Exit;
+    PrintErrorAndHalt(ErrorFileNotFound, 'File not found: "' + OriginalFilename + '"');
   end
   else if DirPathExists(Filename) then
-    begin
-    Error(ErrorFileNotFound,'file "'+Filename+'" is a directory');
-    Exit;
-    end
+    PrintErrorAndHalt(ErrorFileNotFound, '"' + Filename + '" is a directory')
   else begin
     // File exists:
     if FilenameExtIs(Filename,'lpk',true) then begin
@@ -456,9 +455,9 @@ begin
       if FileExists(Filename) then
         Result:=BuildProject(Filename)
       else
-        Error(ErrorFileNotFound,'file not found: '+Filename);
+        PrintErrorAndHalt(ErrorFileNotFound, 'File not found: "' + Filename + '"');
     end else
-      Error(ErrorBuildFailed,'don''t know how to build: '+Filename);
+      PrintErrorAndHalt(ErrorBuildFailed, 'Don''t know how to build: "' + Filename + '"');
   end;
 end;
 
@@ -471,12 +470,11 @@ begin
   
   if not Init then exit;
 
-  if ConsoleVerbosity>=0 then
-    debugln(['Hint: (lazarus) compile package "',AFilename,'"']);
+  PrintHint('Compile package "' + AFilename + '"');
 
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
-    Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
+    PrintErrorAndHalt(ErrorLoadPackageFailed, 'Unable to load package "' + AFilename + '"');
     
   Flags:=[];
   if BuildAll then
@@ -514,7 +512,7 @@ begin
   Result:=PackageGraph.FindPackageWithFilename(AFilename);
   if (Result<>nil) then exit;
   if not FileExistsUTF8(AFilename) then
-    Error(ErrorLoadPackageFailed,'Package file not found "'+AFilename+'"');
+    PrintErrorAndHalt(ErrorLoadPackageFailed, 'Package file not found: "' + AFilename + '"');
 
   Result:=TLazPackage.Create;
   // load the package file
@@ -527,9 +525,8 @@ begin
   end;
   // check Package Name
   if not IsValidPkgName(Result.Name) then
-    Error(ErrorPackageNameInvalid,
-          Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
-                 [Result.Name, LineEnding, Result.Filename]));
+    PrintErrorAndHalt(ErrorPackageNameInvalid,
+      Format(lisPkgMangThePackageNameOfTheFileIsInvalid, [Result.Name, LineEnding, Result.Filename]));
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindPackageWithName(Result.Name,nil);
   if ConflictPkg<>nil then begin
@@ -566,8 +563,8 @@ begin
     i:=BuildLazProfiles.IndexByName(BuildModeOverride);
     if i<0 then
     begin
-      debugln(['Error: (lazarus) IDE build mode "'+BuildModeOverride+'" not found']);
-      if ConsoleVerbosity>=-2 then begin
+      debugln(['Error: (lazbuild) IDE build mode "' + BuildModeOverride + '" not found']);
+      if ConsoleVerbosity>=0 then begin
         debugln;
         debugln('Available IDE build modes:');
         for i:=0 to BuildLazProfiles.Count-1 do
@@ -578,15 +575,13 @@ begin
             dbgout('  ');
           debugln(BuildLazProfiles[i].Name);
         end;
-        debugln;
       end;
       Halt(ErrorBuildFailed);
     end;
     CurProf:=BuildLazProfiles[i];
     BuildLazProfiles.CurrentIndex:=i;
   end;
-  if ConsoleVerbosity>=0 then
-    debugln(['Hint: (lazarus) Building Lazarus IDE with profile "',CurProf.Name,'"']);
+  PrintHint('Building Lazarus IDE with profile "' + CurProf.Name + '"');
 
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
@@ -618,11 +613,8 @@ begin
   // create target directory
   TargetDir:=CurProf.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
-  if not ForceDirectory(TargetDir) then begin
-    if ConsoleVerbosity>=-1 then
-      DebugLn('Warning: (lazarus) failed creating IDE target directory "',TargetDir,'" (TLazBuildApplication.BuildLazarusIDE)');
-    exit;
-  end;
+  if not ForceDirectory(TargetDir) then
+    PrintErrorAndHalt(ErrorBuildFailed, 'Failed creating IDE target directory "' + TargetDir + '"');
 
   // clean
   Builder:=TLazarusBuilder.Create;
@@ -633,48 +625,32 @@ begin
       Builder.PackageOptions:='';
       CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                   Flags+[blfDontBuild]);
-      if CurResult<>mrOk then begin
-        if ConsoleVerbosity>=-1 then
-          DebugLn('Error: (lazarus) Building IDE: Clean all failed.');
-        exit;
-      end;
+      if CurResult<>mrOk then
+        PrintErrorAndHalt(ErrorBuildFailed, 'Building IDE: Clean all failed');
     end;
 
     // save list of install packages
     CurResult:=PackageGraph.SaveAutoInstallConfig;
-    if CurResult<>mrOk then begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Building IDE: failed saving IDE make config files.');
-      exit;
-    end;
+    if CurResult<>mrOk then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Building IDE: Failed saving IDE make config files');
 
     // compile auto install static packages
-    if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
-    then begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Building IDE: Compile AutoInstall Packages failed.');
-      exit;
-    end;
+    if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild) then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Building IDE: Compile AutoInstall Packages failed');
 
     // create inherited compiler options
     Builder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     // save idemake.cfg
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
-    if CurResult<>mrOk then begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Building IDE: failed saving idemake.cfg');
-      exit;
-    end;
+    if CurResult<>mrOk then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Building IDE: Failed saving "idemake.cfg"');
 
     // compile IDE
     CurResult:=Builder.MakeLazarus(BuildLazProfiles.Current,
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
-    if CurResult<>mrOk then begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Building IDE: Building IDE failed.');
-      exit;
-    end;
+    if CurResult<>mrOk then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Building IDE: Building IDE failed');
 
     Result:=true;
   finally
@@ -725,7 +701,7 @@ procedure TLazBuildApplication.CompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags);
 begin
   if APackage.Missing then
-    Error(ErrorBuildFailed,APackage.IDAsString+' lpk file missing');
+    PrintErrorAndHalt(ErrorBuildFailed, '"' + APackage.IDAsString + '": lpk file missing');
 
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
@@ -733,13 +709,12 @@ begin
   end;
 
   if PackageGraph.CompilePackage(APackage,Flags,false)<>mrOk then
-    Error(ErrorBuildFailed,APackage.IDAsString+' compilation failed');
+    PrintErrorAndHalt(ErrorBuildFailed, '"' + APackage.IDAsString + '": compilation failed');
 end;
 
 procedure TLazBuildApplication.DoCreateMakefile(APackage: TLazPackage);
 begin
-  if ConsoleVerbosity>0 then
-    debugln(['Hint: (lazarus) [TLazBuildApplication.DoCreateMakefile] ',APackage.Filename]);
+  PrintHint('Create makefile for package "' + APackage.Filename + '"');
   PackageGraph.WriteMakeFile(APackage);
 end;
 
@@ -777,12 +752,12 @@ begin
     // check for broken dependencies
     PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
     if PathList<>nil then
-      Error(ErrorLoadPackageFailed,'Broken dependency: '+PathListToString(PathList));
+      PrintErrorAndHalt(ErrorLoadPackageFailed,'Broken dependency: '+PathListToString(PathList));
 
     // check for circle dependencies
     PathList:=PackageGraph.FindCycleDependencyPath(APackage,FirstDependency);
     if PathList<>nil then
-      Error(ErrorLoadPackageFailed,'Circle dependency: '+PathListToString(PathList));
+      PrintErrorAndHalt(ErrorLoadPackageFailed,'Circle dependency: '+PathListToString(PathList));
   finally
     PathList.Free;
   end;
@@ -852,7 +827,7 @@ var
                                   not (pfUseDesignTimePackages in Project1.Flags),
                                   CompilePolicy)<>mrOk
         then
-          Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Project dependencies of "' + AFilename + '"');
       end;
 
       WorkingDir:=Project1.Directory;
@@ -871,18 +846,18 @@ var
         if ToolBefore.Execute(Project1.Directory,
           lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
         then
-          Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Failed "tool before" of project "' + AFilename + '"');
       end;
 
       // create unit output directory
       S:=Project1.CompilerOptions.GetUnitOutPath(false);
       if not ForceDirectory(S) then
-        Error(ErrorBuildFailed,'Unable to create project unit output directory '+S);
+        PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create project unit output directory "' + S + '"');
 
       // create target output directory
       S := ExtractFileDir(TargetExeName);
       if not ForceDirectory(S) then
-        Error(ErrorBuildFailed,'Unable to create project target directory '+S);
+        PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create project target directory "' + S + '"');
 
       // create LazBuildApp bundle
       if Project1.UseAppBundle and (Project1.MainUnitID>=0)
@@ -890,9 +865,9 @@ var
         or (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCocoa]))
       then begin
         if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
-          Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create application bundle for "' + TargetExeName + '"');
         if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
-          Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create application bundle symbolic link for "' + TargetExeName + '"');
       end;
 
       // update all lrs files
@@ -900,10 +875,7 @@ var
 
       // regenerate resources
       if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
-      begin
-        if ConsoleVerbosity>=-1 then
-          DebugLn('Error: (lazarus) Project1.Resources.Regenerate failed of ',SrcFilename);
-      end;
+        PrintWarning('Project1.Resources.Regenerate failed of "' + SrcFilename + '"');
 
       // get compiler parameters
       if CompilerOverride <> '' then
@@ -911,7 +883,7 @@ var
       else
         CompilerFilename:=Project1.GetCompilerFilename;
       if CompilerFilename='' then
-        Error(ErrorBuildFailed,'invalid compiler "'+Project1.CompilerOptions.CompilerPath+'"');
+        PrintErrorAndHalt(ErrorBuildFailed, 'Invalid compiler "' + Project1.CompilerOptions.CompilerPath + '"');
 
       //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
       // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
@@ -927,22 +899,22 @@ var
           CfgFilename:=Project1.GetWriteConfigFilePath;
           CfgCode:=WriteCompilerCfgFile(CfgFilename,CompilerParams,CmdLineParams);
           if CfgCode=nil then
-            Error(ErrorBuildFailed,'unable to read "'+CfgFilename+'"');
+            PrintErrorAndHalt(ErrorBuildFailed, 'Unable to read "' + CfgFilename + '"');
           if CfgCode.FileOnDiskNeedsUpdate and (not CfgCode.Save) then
-            Error(ErrorBuildFailed,'unable to write "'+CfgFilename+'"');
+            PrintErrorAndHalt(ErrorBuildFailed, 'Unable to write "' + CfgFilename + '"');
         end;
 
         // write state file to avoid building clean every time
         if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
-          Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Failed saving statefile of project "' + AFilename + '"');
         if TheCompiler.Compile(Project1,WorkingDir,CompilerFilename,CmdLineParams,
                                BuildAll or NeedBuildAllFlag,false,false,false,
                                CompileHint)<>mrOk
         then
-          Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Failed compiling of project "' + AFilename + '"');
         // compilation succeded -> write state file
         if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
-          Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Failed saving statefile of project "' + AFilename + '"');
       end;
 
       // execute compilation tool 'After'
@@ -951,7 +923,7 @@ var
         if ToolAfter.Execute(Project1.Directory,
           lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
         then
-          Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
+          PrintErrorAndHalt(ErrorBuildFailed, 'Failed "tool after" of project "' + AFilename + '"');
       end;
 
       // no need to check for mrOk, we are exit if it wasn't
@@ -978,7 +950,7 @@ begin
   Project1:=LoadProject(AFilename);
   
   if Project1.MainUnitInfo=nil then
-    Error(ErrorBuildFailed,'project has no main unit');
+    PrintErrorAndHalt(ErrorBuildFailed, 'Project has no main unit');
 
   if BuildAll then
     CompReason:= crBuild
@@ -1018,16 +990,11 @@ begin
   and Project1.ProjResources.VersionInfo.UseVersionInfo
   and Project1.ProjResources.VersionInfo.AutoIncrementBuild
   then begin
-    if FileIsWritable(AFilename) then
-    begin
+    if FileIsWritable(AFilename) then begin
       Project1.ProjResources.DoAfterBuild(CompReason, Project1.IsVirtual);
       Project1.WriteProject(Project1.PublishOptions.WriteFlags,AFileName,EnvironmentOptions.BuildMatrixOptions)
-    end
-    else
-    begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Project1.WriteProject skipped for read-only ',SrcFilename);
-    end;
+    end else
+      PrintWarning('Project1.WriteProject skipped for read-only "' + SrcFilename + '"');
   end;
 end;
 
@@ -1059,7 +1026,7 @@ begin
   try
     // read project info file
     if Result.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions)<>mrOk then
-      Error(ErrorLoadProjectFailed,'Project '+AFilename);
+      PrintErrorAndHalt(ErrorLoadProjectFailed,'Project '+AFilename);
     //BuildBoss.RescanCompilerDefines(true);
 
     // load required packages
@@ -1100,45 +1067,42 @@ begin
     PackageName:='';
     PkgFilename:='';
     if pvPkgSearch in fPkgGraphVerbosity then
-      debugln(['Info: (lazarus) [TLazBuildApplication.AddPackagesToInstallList] "',PackageNamesOrFiles[i],'"']);
+      debugln(['Info: (lazbuild) [TLazBuildApplication.AddPackagesToInstallList] "',PackageNamesOrFiles[i],'"']);
     if FilenameExtIs(PackageNamesOrFiles[i],'lpk',true) then
       PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
     else if IsValidPkgName(PackageNamesOrFiles[i]) then begin
       PackageLink:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]));
       if PackageLink=nil then
       begin
-        ErrorMsg+='Can not find package '+PackageNamesOrFiles[i]+', so it is not marked for installation.'+LineEnding;
+        ErrorMsg+='Can not find package "'+PackageNamesOrFiles[i]+'", so it is not marked for installation.'+LineEnding;
         continue;
       end;
       PkgFilename:=PackageLink.LPKFilename;
     end else begin
-      ErrorMsg+=PackageNamesOrFiles[i]+' is not a package, so it is not marked for installation.'+LineEnding;
+      ErrorMsg+='"'+PackageNamesOrFiles[i]+'" is not a package, so it is not marked for installation.'+LineEnding;
       continue;
     end;
     Package:=LoadPackage(PkgFilename);
     if Package=nil then
     begin
-      ErrorMsg+='Could not load '+PackageNamesOrFiles[i]+', so it is not marked for installation.'+LineEnding;
+      ErrorMsg+='Could not load "'+PackageNamesOrFiles[i]+'", so it is not marked for installation.'+LineEnding;
       ErrCode:=ErrorLoadPackageFailed;
       continue;
     end;
     if Package.PackageType in [lptRunTime,lptRunTimeOnly] then
     begin
-      ErrorMsg+='Package '+PackageNamesOrFiles[i]+' is only for runtime.'+LineEnding;
+      ErrorMsg+='Package "'+PackageNamesOrFiles[i]+'" is only for runtime.'+LineEnding;
       continue;
     end;
     PackageName:=Package.Name;
     // set it as (static) autoinstall: select for installation
-    if ConsoleVerbosity>=0 then
-      debugln(['Hint: (lazarus) adding package "'+PkgFilename+'" to install list of IDE']);
+    PrintHint('Adding package "' + PkgFilename + '" to install list of IDE');
     if MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.IndexOf(PackageName)<0 then
       MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
   end;
-  if ErrorMsg<>'' then begin
-    ErrorMsg:=UTF8Trim(ErrorMsg);
-    Error(ErrCode,ErrorMsg);
-    exit;
-  end;
+  if ErrorMsg<>'' then
+    PrintErrorAndHalt(ErrCode,UTF8Trim(ErrorMsg));
+
   // save list
   MiscellaneousOptions.Save;
   LazPackageLinks.SaveUserLinks(true);
@@ -1163,7 +1127,7 @@ begin
     // Look for package name in all known packages
     PkgFilename:=PackageNamesOrFiles[i];
     if not FilenameExtIs(PkgFilename,'lpk',true) then begin
-      ErrorMsg+=PkgFilename+' is not a package (.lpk), so it is not registered.'+LineEnding;
+      ErrorMsg+='"' + PkgFilename+'" is not a package (.lpk), so it is not registered.'+LineEnding;
       continue;
     end;
     PkgFilename:=ExpandFileNameUTF8(PkgFilename);
@@ -1171,18 +1135,14 @@ begin
     Package:=LoadPackage(PkgFilename);
     if Package=nil then
     begin
-      ErrorMsg+='Could not load '+PkgFilename+', so it is not registered.'+LineEnding;
+      ErrorMsg+='Could not load "'+PkgFilename+'", so it is not registered.'+LineEnding;
       continue;
     end;
-    if ConsoleVerbosity>=0 then
-      debugln(['Hint: (lazarus) registering package link "'+PkgFilename+'".']);
+    PrintHint('Registering package link "' + PkgFilename + '"');
     LazPackageLinks.AddUserLink(Package);
   end;
-  if ErrorMsg<>'' then begin
-    ErrorMsg:=UTF8Trim(ErrorMsg);
-    Error(ErrCode,ErrorMsg);
-    exit;
-  end;
+  if ErrorMsg<>'' then
+    PrintErrorAndHalt(ErrCode,UTF8Trim(ErrorMsg));
 
   LazPackageLinks.SaveUserLinks(true);
   Result:=true;
@@ -1194,30 +1154,34 @@ begin
   fInitResult:=false;
   fInitialized:=true;
 
-  if ConsoleVerbosity>=0 then
-    debugln(['Hint: (lazarus) primary config path: ',GetPrimaryConfigPath]);
-  CreatePrimaryConfigPath;
+  try
+    PrintHint('Primary config path: "' + GetPrimaryConfigPath + '"');
+    CreatePrimaryConfigPath;
 
-  MainBuildBoss:=TBuildManager.Create(nil);
-  SetupMacros;
-  LoadEnvironmentOptions;
-  if Terminated then exit(false);
-  LoadMiscellaneousOptions;
-  SetupLazarusDirectory;
-  SetupCodetools;
-  SetupFPCExeFilename;
-  SetupPackageSystem;
-  MainBuildBoss.SetupExternalTools(TExternalToolsConsole);
-  ExtToolConsole:=TLazExtToolConsole.Create(nil);
-  MainBuildBoss.SetupCompilerInterface;
+    MainBuildBoss:=TBuildManager.Create(nil);
+    SetupMacros;
+    LoadEnvironmentOptions;
+    if Terminated then exit(false);
+    LoadMiscellaneousOptions;
+    SetupLazarusDirectory;
+    SetupCodetools;
+    SetupFPCExeFilename;
+    SetupPackageSystem;
+    MainBuildBoss.SetupExternalTools(TExternalToolsConsole);
+    ExtToolConsole:=TLazExtToolConsole.Create(nil);
+    MainBuildBoss.SetupCompilerInterface;
 
-  StoreBaseSettings;
+    StoreBaseSettings;
 
-  // load static base packages
-  PackageGraph.LoadStaticBasePackages;
+    // load static base packages
+    PackageGraph.LoadStaticBasePackages;
 
-  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,SubtargetOverrideValue,
-                               WidgetSetOverride,smsfsSkip,true);
+    MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,SubtargetOverrideValue,
+                                 WidgetSetOverride,smsfsSkip,true);
+  except
+    PrintErrorAndHalt(ErrorInitialization, 'Initialization error');
+  end;
+
   fInitResult:=true;
   Result:=fInitResult;
 end;
@@ -1231,11 +1195,8 @@ begin
   fCompilerInCfg:=EnvironmentOptions.CompilerFilename;
   fLazarusDirInCfg:=EnvironmentOptions.LazarusDirectory;
 
-  if HasOption('language') then begin
-    if ConsoleVerbosity>=0 then
-      debugln('Note: (lazarus) overriding language with command line: ', GetOptionValue('language'));
+  if HasOption('language') then
     EnvironmentOptions.LanguageID:=GetOptionValue('language');
-  end;
   TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                            EnvironmentOptions.LanguageID);
   if CompilerOverride<>'' then
@@ -1250,9 +1211,7 @@ begin
                         +GetForcedPathDelims('packager/registration/fcl.lpk'))
   then begin
     CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note);
-    if ConsoleVerbosity>=-1 then
-      debugln(['Error: (lazarus) invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
-    Terminate;
+    PrintErrorAndHalt(ErrorInitialization, 'Invalid Lazarus directory "' + EnvironmentOptions.LazarusDirectory + '": ' + Note);
   end;
 end;
 
@@ -1316,15 +1275,12 @@ begin
   if (not StoreLazDir) and (not StoreCompPath) then exit;
 
   try
-    if ConsoleVerbosity>=-1 then
-    begin
-      dbgout('Hint: (lazarus) storing');
-      if StoreLazDir then
-        dbgout(' Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
-      if StoreCompPath then
-        dbgout(' Compiler path "',EnvironmentOptions.CompilerFilename,'"');
-      debugln(' in "',EnvironmentOptions.Filename,'"');
-    end;
+    PrintInfo('Storing in "' + EnvironmentOptions.Filename + '":');
+    if StoreLazDir then
+      PrintInfo('  Lazarus directory: "' + EnvironmentOptions.LazarusDirectory + '"');
+    if StoreCompPath then
+      PrintInfo('  Compiler path: "' + EnvironmentOptions.CompilerFilename + '"');
+
     Cfg:=TXMLConfig.Create(EnvironmentOptions.Filename);
     try
       if StoreLazDir then
@@ -1338,8 +1294,7 @@ begin
       Cfg.Free;
     end;
   except
-    on E: Exception do
-      debugln(['Error: (lazarus) unable to edit file ',EnvironmentOptions.Filename]);
+    PrintWarning('Unable to edit file "' + EnvironmentOptions.Filename + '"');
   end;
 end;
 
@@ -1416,7 +1371,7 @@ begin
         else // Short Option.
           begin
           HaveArg:=(I<ToolParamCount) and (Length(ToolParamStr(I+1))>0)
-                   and (ToolParamStr(I+1)[i]<>OptionChar);
+                   and (ToolParamStr(I+1)[1]<>OptionChar);
           If HaveArg then
             OV:=ToolParamStr(I+1);
           L:=Length(O);
@@ -1433,8 +1388,7 @@ begin
                 begin
                 // Required argument
                 NeedArg:=true;
-                if ConsoleVerbosity>0 then
-                  debugln(['P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg]);
+                PrintInfo( Format('P %d J %d %s %d Havearg %s', [P, J, O[J], l, BoolToStr(HaveArg, true)]) );
                 If ((P+1)=Length(ShortOptions)) or (Shortoptions[P+2]<>':') Then
                   If (J<L) or not haveArg then // Must be last in multi-opt !!
                     Result:=Format(lisErrOptionNeeded,[I,O[J]]);
@@ -1498,39 +1452,23 @@ begin
 
   // Build all projects/packages specified by the user...
   // except packages to be added the IDE install list.
-  for i:=0 to Files.Count-1 do begin
-    if not BuildFile(Files[i]) then begin
-      if ConsoleVerbosity>=-1 then
-        debugln('Error: (lazarus) Building failed: ',Files[i]);
-      ExitCode := ErrorBuildFailed;
-      exit;
-    end;
-  end;
+  for i:=0 to Files.Count-1 do
+    if not BuildFile(Files[i]) then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Building failed: "' + Files[i] + '"');
 
   // Add user-requested packages to IDE install list:
   case PackageAction of
   lpaInstall:
-    if not AddPackagesToInstallList(Files) then begin
-      if ConsoleVerbosity>=-1 then
-        debugln('Error: (lazarus) Installing package(s) failed: ',Files.Text);
-      ExitCode := ErrorBuildFailed;
-      exit;
-    end;
+    if not AddPackagesToInstallList(Files) then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Installing package(s) failed: "' + Files.Text + '"');
   lpaAddPkgLinks:
-    if not AddCmdLinePackageLinks(Files) then begin
-      if ConsoleVerbosity>=-1 then
-        debugln('Error: (lazarus) Adding package(s) links failed: ',Files.Text);
-      ExitCode := ErrorBuildFailed;
-      exit;
-    end;
+    if not AddCmdLinePackageLinks(Files) then
+      PrintErrorAndHalt(ErrorBuildFailed, 'Adding package(s) links failed: "' + Files.Text + '"');
   end;
 
-  if BuildIDE then begin
-    if not BuildLazarusIDE then begin
-      ExitCode := ErrorBuildFailed;
-      exit;
-    end;
-  end;
+  if BuildIDE then
+    if not BuildLazarusIDE then
+      PrintErrorAndHalt(ErrorBuildFailed, '');
 end;
 
 function TLazBuildApplication.HasLongOptIgnoreCase(const S: String; out
@@ -1585,13 +1523,19 @@ begin
   end;
 
   // ConsoleVerbosity
-  for i:=1 to ToolParamCount do begin
-    p:=ToolParamStr(i);
-    if p='--verbose' then
-      ConsoleVerbosity:=Max(1,ConsoleVerbosity+1)
-    else if (p='-q') or (p='--quiet') then
-      ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
-  end;
+  if HasLongOptIgnoreCase('get-build-modes', p) or
+     HasLongOptIgnoreCase('get-expand-text', p) or
+     HasLongOptIgnoreCase('get-target-path', p)
+  then
+    ConsoleVerbosity := -100 // do not output anything other than the result
+  else
+    for i:=1 to ToolParamCount do begin
+      p:=ToolParamStr(i);
+      if CompareText(p, '--verbose') = 0 then
+        ConsoleVerbosity:=Max(+1,ConsoleVerbosity+1)
+      else if (p='-q') or (CompareText(p, '--quiet') = 0) then
+        ConsoleVerbosity:=Min(-1,ConsoleVerbosity-1);
+    end;
   CTConsoleVerbosity:=ConsoleVerbosity;
 
   Options:=TStringList.Create;
@@ -1629,11 +1573,12 @@ begin
     LongOptions.Add('get-build-modes');
     LongOptions.Add('get-target-path');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
-    if ErrorMsg<>'' then begin
-      writeln(ErrorMsg);
-      writeln('');
-      exit;
-    end;
+    if ErrorMsg<>'' then
+      PrintErrorAndHalt(ErrorInvalidSyntax, ErrorMsg);
+
+    // lazarus config
+    if FileExistsUTF8(GetCfgFileName) then
+      PrintInfo('Using config file: "' + GetCfgFileName + '"');
 
     FilesNeeded:=true;
 
@@ -1642,26 +1587,18 @@ begin
 
     // PackageAction: register lpk files
     if HasLongOptIgnoreCase('add-package-link',p) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: add-package-link');
-      if PackageAction<>lpaBuild then begin
-        writeln('Error: invalid combination of package actions');
-        WriteUsage;
-        exit;
-      end;
+      PrintInfo('Parameter: --add-package-link');
+      if PackageAction<>lpaBuild then
+        PrintErrorAndHalt(ErrorInvalidSyntax, 'Invalid combination of package actions');
       FilesNeeded:=false;
       PackageAction:=lpaAddPkgLinks;
     end;
 
     // PackageAction: install lpk files
     if HasLongOptIgnoreCase('add-package',p) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: add-package');
-      if PackageAction<>lpaBuild then begin
-        writeln('Error: invalid combination of package actions');
-        WriteUsage;
-        exit;
-      end;
+      PrintInfo('Parameter: --add-package');
+      if PackageAction<>lpaBuild then
+        PrintErrorAndHalt(ErrorInvalidSyntax, 'Invalid combination of package actions');
       PackageAction:=lpaInstall;
       FilesNeeded:=false;
     end;
@@ -1670,137 +1607,108 @@ begin
     if HasLongOptIgnoreCase('build-ide', FBuildIDEOptions) then begin
       BuildIDE:=true;
       FilesNeeded:=false;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: build-ide=',BuildIDEOptions);
+      PrintInfo('Parameter: --build-ide="' + BuildIDEOptions + '"');
     end;
 
     // files
     Files.Assign(NonOptions);
-    if FilesNeeded and (Files.Count=0) then begin
-      writeln('Error: missing file');
-      WriteUsage;
-      exit;
-    end;
+    if FilesNeeded and (Files.Count=0) then
+      PrintErrorAndHalt(ErrorInvalidSyntax, 'Missing file');
 
     // primary config path
     if HasLongOptIgnoreCase('primary-config-path',p) then begin
       SetPrimaryConfigPath(p);
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: primary-config-path=',GetPrimaryConfigPath);
+      PrintInfo('Parameter: --primary-config-path="' + GetPrimaryConfigPath + '"');
     end else if HasLongOptIgnoreCase('pcp',p) then begin
       SetPrimaryConfigPath(p);
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: pcp=',GetPrimaryConfigPath);
+      PrintInfo('Parameter: --pcp="' + GetPrimaryConfigPath + '"');
     end;
 
     // secondary config path
     if HasLongOptIgnoreCase('secondary-config-path',p) then begin
       SetPrimaryConfigPath(p);
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: secondary-config-path=',GetSecondaryConfigPath);
+      PrintInfo('Parameter: --secondary-config-path="' + GetSecondaryConfigPath + '"');
     end else if HasLongOptIgnoreCase('scp',p) then begin
       SetSecondaryConfigPath(p);
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: scp=',GetSecondaryConfigPath);
+      PrintInfo('Parameter: --scp="' + GetSecondaryConfigPath + '"');
     end;
 
     // build all
     if HasShortOrLongOpt('B','build-all') then begin
       BuildAll:=true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: build-all');
+      PrintInfo('Parameter: --build-all');
     end;
     if HasShortOrLongOpt('r','recursive') then begin
       BuildAll:=true;
       BuildRecursive:=true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: recursive');
+      PrintInfo('Parameter: --recursive');
     end;
     if HasShortOrLongOpt('d','skip-dependencies') then begin
       SkipDependencies:=true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: skip-dependencies');
+      PrintInfo('Parameter: --skip-dependencies');
     end;
-    if BuildRecursive and SkipDependencies then begin
-      writeln('Error: --recursive and --skip-dependencies. You have to make up your mind.');
-      WriteUsage;
-      exit;
-    end;
+    if BuildRecursive and SkipDependencies then
+      PrintErrorAndHalt(ErrorInvalidSyntax, '"--recursive" and "--skip-dependencies" options are incompatible');
 
-    // overides
+    { Overrides }
+
     // widgetset
-    if HasLongOptIgnoreCase('ws',FWidgetSetOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: ws=',WidgetSetOverride);
-    end else if HasLongOptIgnoreCase('widgetset',FWidgetSetOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: widgetset=',WidgetSetOverride);
-    end;
+    if HasLongOptIgnoreCase('ws',FWidgetSetOverride) then
+      PrintInfo('Parameter: --ws=' + WidgetSetOverride)
+    else if HasLongOptIgnoreCase('widgetset',FWidgetSetOverride) then
+      PrintInfo('Parameter: --widgetset=' + WidgetSetOverride);
 
     // operating system
-    if HasLongOptIgnoreCase('os',FOSOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: os=',OSOverride);
-    end else if HasLongOptIgnoreCase('operating-system',FOSOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: operating-system=',OSOverride);
-    end;
+    if HasLongOptIgnoreCase('os',FOSOverride) then
+      PrintInfo('Parameter: --os=' + OSOverride)
+    else if HasLongOptIgnoreCase('operating-system',FOSOverride) then
+      PrintInfo('Parameter: --operating-system=' + OSOverride);
 
     // cpu
-    if HasLongOptIgnoreCase('cpu',FCPUOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: cpu=',CPUOverride);
-    end;
+    if HasLongOptIgnoreCase('cpu',FCPUOverride) then
+      PrintInfo('Parameter: --cpu=' + CPUOverride);
 
     // subtarget
     if HasLongOptIgnoreCase('subtarget',FSubtargetOverrideValue) then begin
       FSubtargetOverride:=true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: subtarget=',FSubtargetOverrideValue);
+      PrintInfo('Parameter: --subtarget=' + FSubtargetOverrideValue);
     end;
 
     // build mode
-    if HasLongOptIgnoreCase('bm',FBuildModeOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: bm=',BuildModeOverride);
-    end else if HasLongOptIgnoreCase('build-mode',FBuildModeOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: build-mode=',BuildModeOverride);
-    end;
+    if HasLongOptIgnoreCase('bm',FBuildModeOverride) then
+      PrintInfo('Parameter: --bm="' + BuildModeOverride + '"')
+    else if HasLongOptIgnoreCase('build-mode',FBuildModeOverride) then
+      PrintInfo('Parameter: --build-mode="' + BuildModeOverride + '"');
 
     // compiler
-    if HasLongOptIgnoreCase('compiler',FCompilerOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: compiler=',CompilerOverride);
-    end;
+    if HasLongOptIgnoreCase('compiler',FCompilerOverride) then
+      PrintInfo('Parameter: --compiler="' + CompilerOverride + '"');
 
     // lazarusdir
-    if HasLongOptIgnoreCase('lazarusdir',FLazarusDirOverride) then begin
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: lazarusdir=',LazarusDirOverride);
-    end;
+    if HasLongOptIgnoreCase('lazarusdir',FLazarusDirOverride) then
+      PrintInfo('Parameter: --lazarusdir="' + LazarusDirOverride + '"');
+
+    // language
+    if HasLongOptIgnoreCase('language',p) then
+      PrintInfo('Parameter: --language=' + p);
 
     // max-process-count
     if HasLongOptIgnoreCase('max-process-count',p) then begin
       MaxProcessCount:=StrToInt(p);
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: max-process-count=',MaxProcessCount);
+      PrintInfo('Parameter: --max-process-count=' + p);
     end;
 
-    if HasLongOptIgnoreCase('no-write-project',p) then
-    begin
+    if HasLongOptIgnoreCase('no-write-project',p) then begin
       NoWriteProject := true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: no-write-project');
+      PrintInfo('Parameter: --no-write-project');
     end;
 
     if HasLongOptIgnoreCase('create-makefile',p) then
     begin
       CreateMakefile := true;
-      if ConsoleVerbosity>=0 then
-        writeln('Parameter: create-makefile');
+      PrintInfo('Parameter: --create-makefile');
       if PackageAction<>lpaBuild then
-        Error(ErrorPackageNameInvalid,'You can not combine --create-makefile and --add-package');
+        PrintErrorAndHalt(ErrorInvalidSyntax, '"--create-makefile" and "--add-package" options are incompatible');
     end;
   finally
     Options.Free;
@@ -1917,10 +1825,29 @@ begin
   writeln('');
 end;
 
-procedure TLazBuildApplication.Error(ErrorCode: Byte; const ErrorMsg: string);
+procedure TLazBuildApplication.PrintInfo(const Msg: string);
 begin
-  writeln('Error: (lazbuild) ',LineBreaksToSystemLineBreaks(ErrorMsg));
-  Halt(ErrorCode);
+  if ConsoleVerbosity >= 1 then
+    debugln('Info: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
+end;
+
+procedure TLazBuildApplication.PrintHint(const Msg: string);
+begin
+  if ConsoleVerbosity >= 0 then
+    debugln('Hint: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
+end;
+
+procedure TLazBuildApplication.PrintWarning(const Msg: string);
+begin
+  if ConsoleVerbosity >= -1 then
+    debugln('Warning: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
+end;
+
+procedure TLazBuildApplication.PrintErrorAndHalt(Code: Byte; const Msg: string);
+begin
+  if Msg <> '' then
+    writeln('Error: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
+  halt(Code);
 end;
 
 begin
@@ -1929,7 +1856,6 @@ begin
   // At the moment there is no flag
 
   HasGUI:=false;
-  ConsoleVerbosity:=-1;
   FilterConfigFileContent;
   // free LCL Application to help debugging nogui issues
   Application.Free;
