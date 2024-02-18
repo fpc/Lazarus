@@ -12,6 +12,7 @@ resourcestring
   lisErrorWritingSettingsException = 'Error writing settings file %s:%s%s';
   lisNoSettingsFound = 'No settings found';
 
+const
   //Parser messages
   lisMsg1File = '1 file';
   lisMsgAbortedAfter = 'Aborted after ';
