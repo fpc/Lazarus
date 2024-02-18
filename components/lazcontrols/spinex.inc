@@ -34,6 +34,9 @@ procedure TSpinEditExBase.UpdateControl;
 var
   ANumber: T;
 begin
+  {$ifdef debugspinex}
+  debugln(['TSpinEditExBase.UpdateControl: FSettingValue=',FSettingValue]);
+  {$endif}
   //if (MaxValue < MinValue) then FMaxValue := MinValue;
   if (FNullValueBehaviour <> nvbShowTextHint) then
     FValue := GetLimitedValue(FValue);
@@ -253,7 +256,8 @@ begin
 
   FUpdatePending := True;
   UpdateControl;
-  FSettingValue := False;
+  if not (csLoading in ComponentState) then
+    FSettingValue := False;
 end;
 
 function TSpinEditExBase.GetValue: T;

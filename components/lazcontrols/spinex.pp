@@ -71,13 +71,15 @@ unit SpinEx;
 
 interface
 
+{.$define debugspinex}
+
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLType, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources;
+  LCLType, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources
+  {$ifdef debugspinex}, LazLogger{$endif};
 
 
-{.$define debugspinex}
 
 type
   { TSpinEditExBase }
