@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-17 23:26+0100\n"
+"PO-Revision-Date: 2024-02-18 22:07+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1702,7 +1702,6 @@ msgid "Apply"
 msgstr "Применить"
 
 #: objinspstrconsts.sccstredtcancel
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtcancel"
 msgid "&Cancel"
 msgstr "От&мена"
@@ -1713,15 +1712,15 @@ msgstr "Редактор элементов TreeView"
 
 #: objinspstrconsts.sccstredtconfirmationcaption
 msgid "Confirmation"
-msgstr ""
+msgstr "Подтверждение"
 
 #: objinspstrconsts.sccstredtconfirmationimages
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
-msgstr ""
+msgstr "Сведения об изображениях элементов не могут быть сохранены в файл. Продолжить всё равно?"
 
 #: objinspstrconsts.sccstredtconfirmationreplace
 msgid "The file already exists, replace it?"
-msgstr ""
+msgstr "Файл уже существует. Заменить его?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1741,12 +1740,12 @@ msgstr "Свойства элемента"
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
 msgid "%s not assigned."
-msgstr ""
+msgstr "%s не присвоено."
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
 msgid "%s has only %d images."
-msgstr ""
+msgstr "%s имеет только %d изображений."
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1787,7 +1786,7 @@ msgstr "Новый подэлемент"
 
 #: objinspstrconsts.sccstredtno
 msgid "&No"
-msgstr ""
+msgstr "&Нет"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1806,7 +1805,7 @@ msgstr "Сохранить"
 
 #: objinspstrconsts.sccstredtyes
 msgid "&Yes"
-msgstr ""
+msgstr "&Да"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
