@@ -188,7 +188,7 @@ end;
 
 function CharIsWordChar(const c: Char): Boolean;
 begin
-  Result := CharIsAlpha(c) or (c = '_');
+  Result := CharIsAlpha(c) or (c = '_') or (Ord(c) > 127);
 end;
 
 function CharIsControl(const C: Char): Boolean;
