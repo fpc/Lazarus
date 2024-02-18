@@ -521,7 +521,7 @@ msgid "Clear picture"
 msgstr "Bersihkan gambar"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
@@ -577,7 +577,7 @@ msgid "&Delete"
 msgstr "Hapus komponen"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Hapus item %s%s%s?"
@@ -616,7 +616,7 @@ msgid "Error loading image"
 msgstr "Kesalahan pengambilan gambar"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Kesalahan pengambilan gambar %s%s%s:%s%s"
@@ -1783,9 +1783,27 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Terapkan"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "B&atal"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "Editor Item TreeView"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1851,6 +1869,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Subitem Baru"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1865,6 +1887,10 @@ msgstr "Simpan"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Simpan"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1921,3 +1947,4 @@ msgstr "Pindahkan tab ke kiri"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Pindahkan tab ke kanan"
+

@@ -1701,9 +1701,27 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Uygula"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "İptal"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "TreeView Öğe düzenleyici"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1767,6 +1785,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Yeni alt öğe"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1781,6 +1803,10 @@ msgstr "Kaydet"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Kaydet"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1837,3 +1863,4 @@ msgstr "Sekmeyi sola taşı"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Sekmeyi sağa taşı"
+

@@ -521,7 +521,7 @@ msgid "Clear picture"
 msgstr ""
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "El nom del component %s%s%s no es un identificador vàlid"
@@ -577,7 +577,7 @@ msgid "&Delete"
 msgstr "Eliminar components"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Voleu eliminar l'element %s%s%s?"
@@ -616,7 +616,7 @@ msgid "Error loading image"
 msgstr "S'ha produït un error mentre es carregava l'imatge"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "S'ha produït un error mentre es carregava l'imatge %s%s%s:%s%s"
@@ -1769,8 +1769,26 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Aplicar"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "&Cancel·la"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
@@ -1835,6 +1853,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr ""
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1849,6 +1871,10 @@ msgstr "Desar"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Desar"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1905,3 +1931,4 @@ msgstr ""
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr ""
+

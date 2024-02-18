@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-17 23:19+0100\n"
+"PO-Revision-Date: 2024-02-18 01:21+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -1674,8 +1674,6 @@ msgid "Load ..."
 msgstr "Laden..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Columns"
 msgid "Move rows/columns"
 msgstr "Zeilen/Spalten verschieben"
 
@@ -1708,9 +1706,26 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Übernehmen"
 
+#: objinspstrconsts.sccstredtcancel
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "&Abbrechen"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "Editor für TreeView-Einträge"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr "Bestätigung"
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr "Information über die Knoten-Bilder kann nicht in der Datei gespeichert werden. Trotzdem fortfahren?"
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr "Die Datei existiert bereits. Soll sie ersetzt werden?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1774,6 +1789,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Neuer Untereintrag"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr "&Nein"
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1788,6 +1807,10 @@ msgstr "Sichern"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Sichern"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr "&Ja"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"

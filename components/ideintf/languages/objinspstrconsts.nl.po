@@ -520,7 +520,7 @@ msgid "Clear picture"
 msgstr "Plaatje wissen"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Componentnaam \"%s\" is geen geldige indentifier"
@@ -571,7 +571,7 @@ msgid "&Delete"
 msgstr "&Verwijderen"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
 msgstr "Verwijder onderdelen \"%s\"?"
@@ -610,7 +610,7 @@ msgid "Error loading image"
 msgstr "Fout bij het laden van het plaatje"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
 msgstr "Fout bij het laden van plaatje \"%s\":%s%s"
@@ -1772,9 +1772,27 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Toepassen"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "&Ongedaan"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "TreeView Onderdelen editor"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1838,6 +1856,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nieuw subonderdeel"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1852,6 +1874,10 @@ msgstr "Opslaan"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Opslaan"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1908,3 +1934,4 @@ msgstr ""
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr ""
+

@@ -1271,19 +1271,19 @@ msgid "Test Input"
 msgstr "Testovať vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Identifikátor %s%s%s nie je metóda.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je kompatibilná s touto udalosťou (%s).%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Metóda %s%s%s nie je published.%sPoužite Zrušiť pre zrušenie,%spoužite Ignorovať pre jeho vynútenie."
@@ -1715,9 +1715,27 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Použiť"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "&Zrušiť"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "Editor položiek TreeView"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1781,6 +1799,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nová podpoložka"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1795,6 +1817,10 @@ msgstr "Uložiť"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Uložiť"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1851,3 +1877,4 @@ msgstr "Presunúť záložku vľavo"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Presunúť záložku vpravo"
+

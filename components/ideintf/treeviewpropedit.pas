@@ -352,14 +352,54 @@ begin
   if dlgOpen.Execute then
   begin
     treEditor.LoadFromFile(dlgOpen.FileName);
+
+    treEditor.FullExpand;
+    treEditor.Selected := treEditor.Items.GetFirstNode;
+    treEditor.SetFocus; // return focus after button click
     UpdateEnabledStates;
   end;
 end;
 
 procedure TTreeViewItemsEditorForm.btnSaveClick(Sender: TObject);
+
+  function ImagesFound: boolean;
+  var
+    i: Integer;
+  begin
+    for i := 0 to treEditor.Items.Count - 1 do
+      if (treEditor.Items[i].ImageIndex    >= 0) or
+         (treEditor.Items[i].SelectedIndex >= 0) or
+         (treEditor.Items[i].StateIndex    >= 0)
+      then
+        exit(true);
+    Result := false;
+  end;
+
+  function ConfirmImagesLoss: boolean;
+  begin
+    if ImagesFound then
+      Result := QuestionDlg(sccsTrEdtConfirmationCaption, sccsTrEdtConfirmationImages,
+        TMsgDlgType.mtConfirmation, [mrYes, sccsTrEdtYes, mrNo, sccsTrEdtNo,
+        mrCancel, sccsTrEdtCancel], 0) = mrYes
+    else
+      Result := true;
+  end;
+
+  function ConfirmReplace: boolean;
+  begin
+    if FileExists(dlgSave.FileName) then
+      Result := QuestionDlg(sccsTrEdtConfirmationCaption, sccsTrEdtConfirmationReplace,
+        TMsgDlgType.mtConfirmation, [mrYes, sccsTrEdtYes, mrNo, sccsTrEdtNo,
+        mrCancel, sccsTrEdtCancel], 0) = mrYes
+    else
+      Result := true;
+  end;
+
 begin
-  if dlgSave.Execute then
+  if ConfirmImagesLoss and dlgSave.Execute and ConfirmReplace then
     treEditor.SaveToFile(dlgSave.FileName);
+
+  treEditor.SetFocus; // return focus after button click
 end;
 
 procedure TTreeViewItemsEditorForm.spnIndexChange(Sender: TObject);

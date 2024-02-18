@@ -676,7 +676,7 @@ msgid "Invalid property value"
 msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" není platné jméno jednotky."
@@ -1708,9 +1708,27 @@ msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
 msgstr "Použít"
 
+#: objinspstrconsts.sccstredtcancel
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtcancel"
+msgid "&Cancel"
+msgstr "&Zrušit"
+
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
 msgstr "Editor položek TreeView"
+
+#: objinspstrconsts.sccstredtconfirmationcaption
+msgid "Confirmation"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimages
+msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationreplace
+msgid "The file already exists, replace it?"
+msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1774,6 +1792,10 @@ msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
 msgstr "Nová podpoložka"
 
+#: objinspstrconsts.sccstredtno
+msgid "&No"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
@@ -1788,6 +1810,10 @@ msgstr "Uložit"
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
 msgstr "Uložit"
+
+#: objinspstrconsts.sccstredtyes
+msgid "&Yes"
+msgstr ""
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
@@ -1844,3 +1870,4 @@ msgstr "Přesunout záložku vlevo"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Přesunou záložku vpravo"
+
