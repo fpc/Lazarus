@@ -128,11 +128,11 @@ var
 type
   TClass1 = class;
 
-  TIntRange = -300..300;
+  IntRange = -300..300;
   TSmallRange = 20..30;
   TTinyRange = 0..3;
   TTinyNegRange = -2..3;
-  TCardinalRange = 1..300;
+  CardinalRange = 1..300;
 
   ShortStr1 = String[1];
   ShortStr10 = String[10];
@@ -150,7 +150,7 @@ type
   TUStrTA = type UnicodeString;
   //TPUChr = ^UnicodeChar;
 
-  TShortRec = record // looks like shortstring
+  ShortRec = record // looks like shortstring
     length: byte;
     st: array [1..5] of char;
   end;

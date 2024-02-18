@@ -11,8 +11,8 @@
   pre__Smallint{e}      _OP_ Smallint    (500                  + ADD);          //@@ _pre3_Smallint{e3};
   pre__Longint{e}       _OP_ Longint     (5000                 + ADD);          //@@ _pre3_Longint{e3};
   pre__Int64{e}         _OP_ Int64       (50000                + ADD);          //@@ _pre3_Int64{e3};
-  pre__IntRange{e}      _OP_ TIntRange   (-50                  + ADD);          //@@ _pre3_IntRange{e3};
-  pre__CardinalRange{e} _OP_ TCardinalRange(50                  + ADD);         //@@ _pre3_CardinalRange{e3};
+  pre__IntRange{e}      _OP_ IntRange   (-50                  + ADD);          //@@ _pre3_IntRange{e3};
+  pre__CardinalRange{e} _OP_ CardinalRange(50                  + ADD);         //@@ _pre3_CardinalRange{e3};
 
   pre__Byte_2{e}        _OP_ Byte        (240                  + ADD);          //@@ _pre3_Byte_2{e3};
   pre__Word_2{e}        _OP_ Word        (65501                + ADD);          //@@ _pre3_Word_2{e3};
@@ -150,7 +150,7 @@
   // types that may get confused with strings
 
   {$IFnDEF TestAssign}
-  pre__ShortRec{e}       _O2_ TShortRec               _EQ_      (length: 5; st:  (CHR1, 'b',CHR1, 'b','c'));       //@@ _pre3_ShortRec{e3};
+  pre__ShortRec{e}       _O2_ ShortRec               _EQ_      (length: 5; st:  (CHR1, 'b',CHR1, 'b','c'));       //@@ _pre3_ShortRec{e3};
   {$ELSE}
   {$IFDEF TestType} // incomplete values
   pre__ShortRec{e}       := pre__ShortRec;   pre__ShortRec{e}.st[1] := CHR1; pre__ShortRec{e}.st[3] := CHR1;      //@@ _pre3_ShortRec{e3}; // }}
