@@ -280,11 +280,11 @@ begin
   if AMode in [dpmSnap, dpmLock] then begin
     FindNearestPoint(APoint);
     ADest.GraphPos := FNearestGraphPoint;
-    ADest.FIndex := PointIndex;
+    ADest.Index := PointIndex;
     if not SameTransformations(FSeries, AOtherEndSeries) then
       FSeries := nil;
   end;
-  ADest.FSeries := FSeries;
+  ADest.Series := FSeries;
   if FSeries = nil then
     ADest.GraphPos := FChart.ImageToGraph(APoint);
   Result := (FSeries <> nil) or (AMode <> dpmLock);
@@ -326,7 +326,7 @@ begin
   if IsActive then exit;
   if dpdoPermanent in Options then
     DoHide(GetCurrentDrawer);
-  PointStart.FSeries := nil;
+  PointStart.Series := nil;
   if FindRef(APoint, DataPointModeStart, PointStart, nil) then
     Activate;
   PointEnd.Assign(PointStart);
