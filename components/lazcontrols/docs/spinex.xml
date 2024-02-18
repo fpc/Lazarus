@@ -117,7 +117,6 @@ Value.
 <element name="TSpinEditExBase.FIncrement"/>
 <element name="TSpinEditExBase.FMaxValue"/>
 <element name="TSpinEditExBase.FMinValue"/>
-<element name="TSpinEditExBase.FInitialValue"/>
 <element name="TSpinEditExBase.FMinRepeatValue"/>
 <element name="TSpinEditExBase.FNullValue"/>
 <element name="TSpinEditExBase.FNullValueBehaviour"/>
@@ -251,30 +250,6 @@ Increment property.
 </short>
 </element>
 
-<element name="TSpinEditExBase.IsLimited">
-<short>
-Indicates if valid values have been assigned to the MinValue and MaxValue 
-properties.
-</short>
-<descr>
-<p>
-The return value is <b>True</b> when MaxValue is larger than MinValue. 
-IsLimited is used in the implementation of the <var>IsOutOfLimits</var> 
-method.
-</p>
-</descr>
-<seealso>
-<link id="TSpinEditExBase.MinValue"/>
-<link id="TSpinEditExBase.MaxValue"/>
-</seealso>
-</element>
-<element name="TSpinEditExBase.IsLimited.Result">
-<short>
-<b>True</b> when the typed value in MaxValue is larger than the typed value 
-in MinValue.
-</short>
-</element>
-
 <element name="TSpinEditExBase.IsOutOfLimits">
 <short>
 Determines if the specified value is not within the limits set in MinValue 
@@ -334,40 +309,6 @@ New value for the Orientation property.
 </short>
 </element>
 
-<element name="TSpinEditExBase.UpdateControl">
-<short>Updates members in the control when editing is completed.</short>
-<descr>
-<p>
-<var>UpdateControl</var> is a method used to update members in the class 
-instance to reflect the state for the control. It is called when a new value 
-is assigned to properties in the class instance. It is called when editing 
-has been completed using the <var>Edit</var> for the grouped editing control. 
-It is also called when the handle is allocated for the control in 
-<var>InitializeWnd</var>.
-</p>
-<p>
-<var>NullValueBehaviour</var> is used to determine whether <var>Value</var> 
-is adjusted to ensure that it is in the range specified by MinValue and 
-MaxValue. A value other than <var>nvbShowTextHint</var> causes 
-<var>GetLimitedValue</var> to be called to get the adjusted Value.
-</p>
-<p>
-No additional actions are performed in the method when a handle has not been 
-allocated for the control, or at design-time.
-</p>
-<p>
-When NullValueBehaviour is set to <var>nvbShowTextHint</var>, an invalid 
-numeric value entered in <var>Text</var> causes Text to be set to an empty 
-string. This allows the <var>TextHint</var> for the control to be displayed.
-</p>
-<p>
-When Value is a valid number, and in the required range, it is converted to 
-its <var>String</var> representation and assigned to the Text for the control.
-</p>
-</descr>
-<seealso/>
-</element>
-
 <element name="TSpinEditExBase.UpDownChangingEx">
 <short>Implements the OnChangingEx event handler assigned to UpDown.</short>
 <descr>
@@ -415,6 +356,8 @@ Calls the <var>BuddyClick</var> method for the grouped edit control.
 </element>
 
 <!-- protected members and properties -->
+<element name="TSpinEditExBase.FInitialValue"/>
+
 <element name="TSpinEditExBase.GetBuddyClassType">
 <short>Gets the class type used for Buddy in the grouped edit control.</short>
 <descr/>
@@ -609,6 +552,30 @@ message was handled in the ancestor class. When set to <b>False</b>, the
 </element>
 <element name="TSpinEditExBase.EditMouseWheelDown.Handled">
 <short><b>True</b> when the message was handled in the method.</short>
+</element>
+
+<element name="TSpinEditExBase.IsLimited">
+<short>
+Indicates if valid values have been assigned to the MinValue and MaxValue 
+properties.
+</short>
+<descr>
+<p>
+The return value is <b>True</b> when MaxValue is larger than MinValue. 
+IsLimited is used in the implementation of the <var>IsOutOfLimits</var> 
+method.
+</p>
+</descr>
+<seealso>
+<link id="TSpinEditExBase.MinValue"/>
+<link id="TSpinEditExBase.MaxValue"/>
+</seealso>
+</element>
+<element name="TSpinEditExBase.IsLimited.Result">
+<short>
+<b>True</b> when the typed value in MaxValue is larger than the typed value 
+in MinValue.
+</short>
 </element>
 
 <element name="TSpinEditExBase.SafeInc">
@@ -813,6 +780,40 @@ for ANumber.
 </element>
 <element name="TSpinEditExBase.TextIsNumber.ANumber">
 <short>Numeric value for the specified String.</short>
+</element>
+
+<element name="TSpinEditExBase.UpdateControl">
+<short>Updates members in the control when editing is completed.</short>
+<descr>
+<p>
+<var>UpdateControl</var> is a method used to update members in the class 
+instance to reflect the state for the control. It is called when a new value 
+is assigned to properties in the class instance. It is called when editing 
+has been completed using the <var>Edit</var> for the grouped editing control. 
+It is also called when the handle is allocated for the control in 
+<var>InitializeWnd</var>.
+</p>
+<p>
+<var>NullValueBehaviour</var> is used to determine whether <var>Value</var> 
+is adjusted to ensure that it is in the range specified by MinValue and 
+MaxValue. A value other than <var>nvbShowTextHint</var> causes 
+<var>GetLimitedValue</var> to be called to get the adjusted Value.
+</p>
+<p>
+No additional actions are performed in the method when a handle has not been 
+allocated for the control, or at design-time.
+</p>
+<p>
+When NullValueBehaviour is set to <var>nvbShowTextHint</var>, an invalid 
+numeric value entered in <var>Text</var> causes Text to be set to an empty 
+string. This allows the <var>TextHint</var> for the control to be displayed.
+</p>
+<p>
+When Value is a valid number, and in the required range, it is converted to 
+its <var>String</var> representation and assigned to the Text for the control.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <element name="TSpinEditExBase.InitializeWnd">
