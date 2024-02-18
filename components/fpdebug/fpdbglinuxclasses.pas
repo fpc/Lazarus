@@ -310,7 +310,7 @@ type
 
   { TDbgLinuxProcess }
 
-  TDbgLinuxProcess = class(TDbgProcess)
+  TDbgLinuxProcess = class(TDbgx86Process)
   private
     FPostponedSignals: TFpDbgLinuxSignalQueue;
     FStatus: cint;

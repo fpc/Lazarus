@@ -202,7 +202,7 @@ type
 
   { TDbgWinProcess }
 
-  TDbgWinProcess = class(TDbgProcess)
+  TDbgWinProcess = class(TDbgx86Process)
   private
     FInfo: TCreateProcessDebugInfo;
     FProcProcess: TProcessUTF8;

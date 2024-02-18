@@ -88,6 +88,7 @@ end;
     function FormatStatusFlags(sreg: byte): string;
     function GetStackUnwinder: TDbgStackUnwinder; override;
   public
+    destructor Destroy; override;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
@@ -111,6 +112,13 @@ end;
                       AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
   end;
+
+  TAvrBreakInfo = object
+  const
+    _CODE: Word = $9598;
+  end;
+
+  TAvrBreakPointTargetHandler = specialize TRspBreakPointTargetHandler<Word, TAvrBreakInfo>;
 
 implementation
 
@@ -327,6 +335,13 @@ begin
   Result := FUnwinder;
 end;
 
+destructor TDbgAvrThread.Destroy;
+begin
+  if Assigned(FUnwinder) then
+    FreeAndNil(FUnwinder);
+  inherited Destroy;
+end;
+
 procedure TDbgAvrThread.LoadRegisterValues;
 var
   i: integer;
@@ -465,6 +480,10 @@ constructor TDbgAvrProcess.Create(const AFileName: string;
 begin
   FRegArrayLength := FNumRegisters;
   inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
+
+  FBreakTargetHandler := TAvrBreakPointTargetHandler.Create(Self);
+  FBreakMap := TFpBreakPointMap.Create(Self, FBreakTargetHandler);
+  TAvrBreakPointTargetHandler(FBreakTargetHandler).BreakMap := FBreakMap;
 end;
 
 destructor TDbgAvrProcess.Destroy;

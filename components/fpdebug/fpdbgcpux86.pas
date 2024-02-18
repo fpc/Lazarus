@@ -19,6 +19,23 @@ type
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
   end;
 
+  TBreakInfoX86 = object
+  const
+    _CODE: Byte = $CC;
+  end;
+
+  TBreakPointx86Handler = specialize TGenericBreakPointTargetHandler<Byte, TBreakInfoX86>;
+
+  { TDbgx86Process }
+
+  TDbgx86Process = class(TDbgProcess)
+  public
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+                      AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
+                      AProcessConfig: TDbgProcessConfig = nil); override;
+
+  end;
+
   { TDbgStackUnwinderX86FramePointer }
 
   TDbgStackUnwinderX86FramePointer = class(TDbgStackUnwinderX86Base)
@@ -70,6 +87,20 @@ begin
   Result := GetInstructionPointerRegisterValue;
   if (Result <> 0) and not FHasResetInstructionPointerAfterBreakpoint then
     Result := Result - 1;
+end;
+
+{ TDbgx86Process }
+
+constructor TDbgx86Process.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
+begin
+  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel,
+    AProcessConfig);
+
+  FBreakTargetHandler := TBreakPointx86Handler.Create(Self);
+  FBreakMap := TFpBreakPointMap.Create(Self, FBreakTargetHandler);
+  TBreakPointx86Handler(FBreakTargetHandler).BreakMap := FBreakMap;
 end;
 
 { TDbgStackUnwinderX86FramePointer }
