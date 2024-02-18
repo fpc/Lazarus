@@ -109,7 +109,6 @@ type
     FIncrement: T;
     FMaxValue: T;
     FMinValue: T;
-    FInitialValue: T;
     FMinRepeatValue: Byte;
     FMustSetModifiedToTrueInOnChange: Boolean;
     FNullValue: T;
@@ -126,16 +125,15 @@ type
     function GetUpDown: TUpDown;
     function GetValue: T;
     function IncrementStored: Boolean;
-    function IsLimited: Boolean;
     function IsOutOfLimits(AValue: T): Boolean;
     function MaxValueStored: Boolean;
     function MinValueStored: Boolean;
     procedure SetOrientation(AValue: TUDOrientation);
-    procedure UpdateControl;
     procedure UpDownChangingEx(Sender: TObject; var {%H-}AllowChange: Boolean;
                                {%H-}NewValue: SmallInt; Direction: TUpDownDirection);
     procedure UpDownClick(Sender: TObject; {%H-}Button: TUDBtnType);
   protected
+    FInitialValue: T;
     function GetBuddyClassType: TControlClass; override;
     procedure DoEnter; override;
     function RealGetText: TCaption; override;
@@ -144,6 +142,7 @@ type
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
     procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    function IsLimited: Boolean;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
     function SameValue(AValue1, AValue2: T): boolean; virtual; abstract;  //because it is wrong to use Math.SameValue for e.g. Integer derived classes.
@@ -153,6 +152,7 @@ type
     procedure SetMinValue(const AValue: T); virtual;
     procedure SetIncrement(const AIncrement: T); virtual;
     function TextIsNumber(const S: String; out ANumber: T): Boolean; virtual; abstract;
+    procedure UpdateControl;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
