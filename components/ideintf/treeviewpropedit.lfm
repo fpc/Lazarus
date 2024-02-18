@@ -64,6 +64,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       BorderSpacing.Left = 3
       BorderSpacing.Around = 6
       Caption = '&New Item'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       OnClick = btnNewItemClick
     end
@@ -81,6 +83,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'N&ew SubItem'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
       OnClick = btnNewItemClick
     end
@@ -98,6 +102,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Delete'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = btnDeleteClick
     end
@@ -115,6 +121,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Load'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
       OnClick = btnLoadClick
     end
@@ -132,6 +140,8 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = '&Save'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 5
       OnClick = btnSaveClick
     end

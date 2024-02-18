@@ -127,8 +127,8 @@ begin
   btnApply.Caption := sccsTrEdtApply;
   IDEImages.AssignImage(btnMoveUp, 'arrow_up');
   IDEImages.AssignImage(btnMoveDown, 'arrow_down');
-  btnMoveUp.Hint:=rscdMoveUp;
-  btnMoveDown.Hint:=rscdMoveDown;
+  btnMoveUp.Hint:=rscdMoveUp + LineEnding + '[Ctrl+Shift+Up]';
+  btnMoveDown.Hint:=rscdMoveDown + LineEnding + '[Ctrl+Shift+Down]';
 
   grpNodeEditor.Caption := sccsTrEdtGrpRCaption;
   lblNodeText.Caption := sccsTrEdtLabelText;
