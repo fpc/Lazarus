@@ -409,8 +409,8 @@ type
       procedure Assign(ASource: TPointRef);
       function AxisPos(ADefaultSeries: TBasicChartSeries = nil): TDoublePoint;
       property GraphPos: TDoublePoint read FGraphPos write SetGraphPos;
-      property Index: Integer read FIndex;
-      property Series: TBasicChartSeries read FSeries;
+      property Index: Integer read FIndex write FIndex;
+      property Series: TBasicChartSeries read FSeries write FSeries;
     end;
 
   strict private
