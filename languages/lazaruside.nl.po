@@ -8565,6 +8565,10 @@ msgstr "Algemene debugger opties"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Specifieke opties debugger (hangt af van het type debugger)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr ""

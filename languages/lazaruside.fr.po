@@ -8350,6 +8350,10 @@ msgstr "Options générales du débogueur"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Options spécifiques du débogueur (dépendent du type de débogueur)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "Dupliquer le nom de l'exception"

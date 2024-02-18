@@ -8742,6 +8742,10 @@ msgstr "הגדרות ניפוי שגיאות כלליות"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "אפשרות תלויית מנפה (תלויה בסוג מנפה השגיאות)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "שם כפול של חריגה "

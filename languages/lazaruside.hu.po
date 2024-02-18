@@ -8361,6 +8361,10 @@ msgstr "Hibakereső általános beállításai"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Hibakereső-függő beállítások (a hibakereső típusától függ)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "Ismétlődő kivételnév"

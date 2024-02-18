@@ -8290,6 +8290,10 @@ msgstr "Genel Hata ayıklayıcı seçenekleri"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Hata ayıklayıcıya özgü seçenekler (hata ayıklayıcı türüne bağlıdır)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "İstisna adı çoğalt"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-12 18:34+0300\n"
+"PO-Revision-Date: 2024-02-18 21:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8303,6 +8303,10 @@ msgstr "Общие параметры отладчика"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerspecific
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Частные параметры отладчика (зависят от типа отладчика)"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr "Всегда помещать окна отладки (списки наблюдений и локальных переменных) спереди при добавлении элементов"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"

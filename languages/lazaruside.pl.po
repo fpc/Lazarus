@@ -8492,6 +8492,10 @@ msgstr "Główne opcje odpluskiwacza"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Specyficzne opcje odpluskiwacza (zależne od typu odpluskiwacza)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "Zdublowana nazwa wyjątku"

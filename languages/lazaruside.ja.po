@@ -8471,6 +8471,10 @@ msgstr "デバッガ一般オプション"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "デバッガ固有オプション（デバッガの種類に依存）"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "重複した例外名"

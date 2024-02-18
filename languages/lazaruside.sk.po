@@ -8372,6 +8372,10 @@ msgstr "Všeobecné voľby debugera"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Špecifické voľby debugera (závisia na type debugera)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr ""

@@ -8333,6 +8333,10 @@ msgstr "Загальні параметри зневаджувача"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Особливі параметри зневаджувача (залежать від його типу)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "Дубльована назва винятку"

@@ -8475,6 +8475,10 @@ msgstr "Derintuvės pagrindinės parinktys"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "Derintuvės specifinės parinktys (priklauso nuo derintuvės tipo)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "Dubliuoti išimtinės situacijos pavadinimą"

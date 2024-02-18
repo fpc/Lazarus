@@ -8330,6 +8330,10 @@ msgstr "调试器常规选项"
 msgid "Debugger specific options (depends on type of debugger)"
 msgstr "调试器指定的选项(取决于调试器的类型)"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmdialogstofront
+msgid "Always bring debug-windows (watches, locals) to front when adding items"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmduplicateexceptionname
 msgid "Duplicate Exception name"
 msgstr "重复异常名称"
