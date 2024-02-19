@@ -233,7 +233,7 @@ type
   private
     FFloatPrecission: TLzDbgFloatPrecission;
   protected
-    property FloatPrecission: TLzDbgFloatPrecission read FFloatPrecission;
+    property GetFloatPrecission: TLzDbgFloatPrecission read FFloatPrecission;
     function GetAsString: String; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
