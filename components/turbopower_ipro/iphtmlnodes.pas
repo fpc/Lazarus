@@ -9,7 +9,7 @@ uses
   // LCL
   LCLType, LCLIntf,
   // RTL, FCL
-  Types, Classes, SysUtils,
+  Types, Math, Classes, SysUtils,
   // LCL
   Graphics, GraphUtil,
   Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
@@ -3911,18 +3911,18 @@ begin
       end;
     hfsSMALL: 
       begin
-        Props.FontSize := Props.FontSize - 2;
+        Props.FontSize := Max(Props.FontSize - 2, 0);
         ElementName := 'small';
       end;
     hfsSUB: 
       begin
-        Props.FontSize := Props.FontSize - 4;
+        Props.FontSize := Max(Props.FontSize - 4, 0);
         Props.FontBaseline := Props.FontBaseline - 2;
         ElementName := 'sub';
       end;
     hfsSUP: 
       begin
-        Props.FontSize := Props.FontSize - 4;
+        Props.FontSize := Max(Props.FontSize - 4, 0);
         Props.FontBaseline := Props.FontBaseline + 4;
         ElementName := 'sup';
       end;

@@ -7,7 +7,7 @@ interface
 
 uses
   // LCL
-  LCLIntf,  // Must be before Types
+  LCLIntf, LazLoggerBase,  // Must be before Types
   // RTL, FCL
   Types, Classes, SysUtils,
   // LCL
@@ -212,7 +212,7 @@ var
   R : TRect;
 begin
   OffsetRect(FPageRect, dx, dy);
-  for i := 0 to Pred(FElementQueue.Count) do begin
+  for i := 0 to FElementQueue.Count-1 do begin
     CurElem := PIpHtmlElement(FElementQueue[i]);
     R := CurElem^.WordRect2;
     if R.Bottom <> 0 then begin
@@ -826,11 +826,11 @@ end;
 
 procedure TIpNodeBlockLayouter.LayoutQueue(TargetRect: TRect);
 var
-  WW, X0, ExpLIndent, RectWidth : Integer;
+  WW, X0, ExpLIndent, RectWidth, i : Integer;
   FirstElem, LastElem : Integer;
   PendingIndent, PendingOutdent : Integer;
-  Prefor : Boolean;
-  CurElem : PIpHtmlElement;
+  Prefor, NeedProps: Boolean;
+  CurElem, PropsElem: PIpHtmlElement;
   wi: PWordInfo;
   lfh: Integer;
 
@@ -949,11 +949,24 @@ begin
     iElem := FirstElem;
     while iElem <= LastElem do begin
       InitInner;
+      NeedProps := true;
       while iElem < FElementQueue.Count do begin
         FCanBreak := False;
         CurElem := PIpHtmlElement(FElementQueue[iElem]);
-        if CurElem.Props <> nil then
-          ApplyQueueProps(CurElem, Prefor);
+        PropsElem := CurElem;
+        if (PropsElem.Props = nil) and NeedProps then begin
+          // Props exists only for elements with different attributes compared to previous sibling
+          // -> search previous element with Props
+          i := iElem;
+          while (i>=0) and (PIpHtmlElement(FElementQueue[i]).Props=nil) do
+            dec(i);
+          if i>=0 then
+            PropsElem:=PIpHtmlElement(FElementQueue[i]);
+        end;
+        if PropsElem.Props <> nil then begin
+          ApplyQueueProps(PropsElem, Prefor);
+          NeedProps:=false;
+        end;
         FSoftLF := False;
         case CurElem.ElementType of
           etWord :
@@ -1289,7 +1302,7 @@ var
 begin
   P := FIpHtml.PagePtToScreen(aCurWord.WordRect2.TopLeft);
 
-  // We dont't want clipped lines at the top of the preview
+  // We don't want clipped lines at the top of the preview
   if (FIpHtml.RenderDevice = rdPreview) and
      (P.Y < 0) and (FIpHtml.PageViewRect.Top = FIpHtml.PageViewTop)
   then
