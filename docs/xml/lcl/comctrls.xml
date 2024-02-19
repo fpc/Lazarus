@@ -8552,7 +8552,7 @@ Represents the items created in TCustomListView and descendants.
 </p>
 <p>
 TListItem provides properties which identify the content for the list item, 
-like: Caption, SubItems, Data, Index, ImageIndeex, and StateIndex. Other 
+like: Caption, SubItems, Data, Index, ImageIndex, and StateIndex. Other 
 properties indicate the disposition of the item in the control, like: 
 Checked, Cut, DropTarget, Focused, and Selected.
 </p>
@@ -30445,19 +30445,49 @@ when the tree node is not selected.
 
 <element name="TTreeNode.StateIndex">
 <short>
-<var>StateIndex</var> the index of the state (within an enumerated type).
+Ordinal position for the image displayed to represent the state for the tree 
+node.
 </short>
 <descr>
 <p>
-<var>StateIndex</var> the index of the state (within an enumerated type).
+<var>StateIndex</var> refers to a position in StateImages for the associated 
+TreeView control. It determines the image displayed to the left of the icon 
+image specified in ImageIndex. The default value for the property is -1, and 
+indicates that an image has not been assigned to represent the state for the 
+tree node. 
 </p>
-<p>Definition of enumerated type NodeState:</p>
 <p>
-nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, 
-nsHasChildren, nsDeleting, nsBound
+Changing the value for the property causes the tree node and the associated 
+TreeView control to be redrawn. The Changed method is called to notify the 
+TreeView control of the reason for the update.
+</p>
+<p>
+StateIndex can be used (along with StateImages in TreeView) to approximate the 
+check box available for tree nodes in Delphi VCL but not in LCL.
+</p>
+<p>
+Use StateImages in TTreeView / TCustomTreeView to specify the available state images.
+</p>
+<p>
+Use ImageIndex to specify the icon displayed for the tree node.
+</p>
+<p>
+Use OverlayIndex to specify an overlay displayed on the icon for the tree node.
+</p>
+<p>
+Use SelectedIndex to specify the icon displayed when the tree node is Selected.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.TreeView"/>
+<link id="TTreeNode.ImageIndex"/>
+<link id="TTreeNode.OverlayIndex"/>
+<link id="TTreeNode.SelectedIndex"/>
+<link id="TTreeNode.Update"/>
+<link id="TTreeNode.Changed"/>
+<link id="TTreeView.StateImages"/>
+<link id="TTreeView.Images"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.States">
@@ -30474,6 +30504,7 @@ associated <var>TreeView</var> control.
 </p>
 </descr>
 <seealso>
+<link id="TNodeState"/>
 <link id="TTreeViewStates"/>
 <link id="TTreeViewState"/>
 </seealso>
