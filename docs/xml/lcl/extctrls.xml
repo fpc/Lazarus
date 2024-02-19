@@ -6224,24 +6224,49 @@ and provides access to values in <var>Checked</var> and
 </element>
 
 <element name="TCustomCheckGroup.Checked">
-<short>Whether an individual entry in the list is <var>Checked</var>.</short>
+<short>
+Controls whether an individual check box in the group is in the checked state.
+</short>
 <descr>
 <p>
 <var>Checked</var> is an indexed <var>Boolean</var> property used to read or 
 write the state for a check box at the ordinal position specified in 
-<var>Index</var>.
+<var>Index</var>. Index must be in the range <b>0..Count-1</b>. An exception is 
+raised if an invalid index position is specified.
+</p>
+<p>
+The value is True if the Checked property for the specified item is set. The 
+OnClick event handler for the check box is not signalled when the checked state 
+is changed using the property.
+</p>
+<p>
+Use CheckEnabled to control whether a specific check box is enabled, and can 
+toggle the value in its Checked property.
+</p>
+<p>
+Use Buttons to access the TCheckBox controls for the captions in Items.
 </p>
 </descr>
-<seealso/>
+<errors>
+Raises an exception with the message <var>rsIndexOutOfBounds</var> if an 
+invalid index position is specified.
+</errors><seealso>
+<link id="TCustomCheckGroup.CheckEnabled"/>
+<link id="TCustomCheckGroup.Buttons"/>
+<link id="TCustomCheckGroup.Items"/>
+<link id="TCustomCheckGroup.OnItemClick"/>
+<link id="#lcl.stdctrls.TCheckBox.OnClick">TCheckBox.OnClick</link>
+</seealso>
 </element>
 <element name="TCustomCheckGroup.Checked.Index">
-<short>Ordinal position in Items for the requested check box.</short>
+<short>
+Ordinal position in Items for the requested check box.
+</short>
 </element>
 
 <element name="TCustomCheckGroup.CheckEnabled">
 <short>
-<var>CheckEnabled</var> - whether a given (indexed) entry in the list is 
-allowed to be checked.
+Indicates whether a check box control in the group is enabled or disabled.
 </short>
 <descr>
 <p>
@@ -6260,14 +6285,22 @@ Use the <var>Checked</var> property to determine if a check box has its
 Use <var>Items</var> to maintain the Captions for the check boxes displayed 
 in the grouped edit control.
 </p>
+<p>
+Use Buttons to access the TCheckBox controls for the captions in Items.
+</p>
 </descr>
+<errors>
+Raises an exception with the message <var>rsIndexOutOfBounds</var> if an 
+invalid index position is specified.
+</errors>
 <seealso>
 <link id="TCustomCheckGroup.Checked"/>
+<link id="TCustomCheckGroup.Buttons"/>
 <link id="TCustomCheckGroup.Items"/>
 </seealso>
 </element>
 <element name="TCustomCheckGroup.CheckEnabled.Index">
-<short>Ordinal position for the check box examined in the method.</short>
+<short>Ordinal position for the check box accessed in the method.</short>
 </element>
 
 <element name="TCustomCheckGroup.Columns">
