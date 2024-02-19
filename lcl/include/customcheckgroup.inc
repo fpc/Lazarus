@@ -287,7 +287,7 @@ end;
 
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
 begin
-  if (Index < -1) or (Index >= FItems.Count) then
+  if (Index < 0) or (Index >= FItems.Count) then
     RaiseIndexOutOfBounds(Index);
   Result:=TCheckBox(FButtonList[Index]).Enabled;
 end;
@@ -295,7 +295,7 @@ end;
 procedure TCustomCheckGroup.SetCheckEnabled(Index: integer;
   const AValue: boolean);
 begin
-  if (Index < -1) or (Index >= FItems.Count) then
+  if (Index < 0) or (Index >= FItems.Count) then
     RaiseIndexOutOfBounds(Index);
   TCheckBox(FButtonList[Index]).Enabled:=AValue;
 end;
@@ -313,19 +313,21 @@ end;
 
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
 begin
-  if (Index < -1) or (Index >= FItems.Count) then
+  if (Index < 0) or (Index >= FItems.Count) then
     RaiseIndexOutOfBounds(Index);
   Result:=TCheckBox(FButtonList[Index]).Checked;
 end;
 
 function TCustomCheckGroup.GetButton(Index: integer): TCheckBox;
 begin
+  if (Index < 0) or (Index >= FItems.Count) then
+    RaiseIndexOutOfBounds(Index);
   result := TCheckBox(FButtonList[Index]);
 end;
 
 procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
 begin
-  if (Index < -1) or (Index >= FItems.Count) then
+  if (Index < 0) or (Index >= FItems.Count) then
     RaiseIndexOutOfBounds(Index);
   // disable OnClick
   TCheckBox(FButtonList[Index]).OnClick:=nil;
@@ -425,7 +427,7 @@ begin
     //if triggered by Items.Delete, then
     // * it will always be the last CheckBox('s) that will be removed
     // * Items.Count will already have been decremented, so Idx will be equal to Items.Count
-    if (Idx <> -1) and (Idx < Items.Count) then
+    if (Idx >= 0) and (Idx < Items.Count) then
     begin
       FButtonList.Delete(Idx);
       Items.Delete(Idx);

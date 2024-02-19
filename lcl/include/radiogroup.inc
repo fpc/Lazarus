@@ -116,7 +116,7 @@ procedure TCustomRadioGroup.InitializeWnd;
   var
     i: Integer;
   begin
-    if (FItemIndex <> -1) and (FItemIndex<FButtonList.Count) then
+    if (FItemIndex >= 0) and (FItemIndex < FButtonList.Count) then
       TRadioButton(FButtonList[FItemIndex]).Checked := true
     else if FHiddenButton<>nil then
       FHiddenButton.Checked:=true;
@@ -235,7 +235,7 @@ begin
       Self.InsertControl(FHiddenButton);
       if HandleAllocated then
         FHiddenButton.HandleNeeded;
-      FHiddenButton.Checked := (FItemIndex = -1);
+      FHiddenButton.Checked := FItemIndex < 0;
       UpdateTabStops;
     end;
   finally
@@ -381,8 +381,9 @@ begin
   if FReading then
     FItemIndex:=Value
   else begin
+    // -1 allowed
     if (Value < -1) or (Value >= FItems.Count) then
-      raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Value,FItems.Count-1]);
+      raise Exception.CreateFmt(rsIndexOutOfBoundsMinusOne, [ClassName, Value, FItems.Count - 1]);
 
     if (HandleAllocated) then
     begin
@@ -393,13 +394,13 @@ begin
       OldIgnoreClicks:=FIgnoreClicks;
       FIgnoreClicks:=true;
       try
-        if (FItemIndex <> -1) then
+        if FItemIndex >= 0 then
           TRadioButton(FButtonList[FItemIndex]).Checked := true
         else
           FHiddenButton.Checked:=true;
         // uncheck old radiobutton
-        if (OldItemIndex <> -1) then begin
-          if (OldItemIndex>=0) and (OldItemIndex<FButtonList.Count) then
+        if OldItemIndex >= 0 then begin
+          if OldItemIndex < FButtonList.Count then
             TRadioButton(FButtonList[OldItemIndex]).Checked := false
         end else
           FHiddenButton.Checked:=false;
@@ -473,7 +474,7 @@ begin
     //if triggered by Items.Delete, then
     // * it will always be the last radiobutton(s) that will be removed
     // * Items.Count will already have been decremented, so Idx will be equal to Items.Count
-    if (Idx <> -1) and (Idx < Items.Count) then
+    if (Idx >= 0) and (Idx < Items.Count) then
     begin
       FButtonList.Delete(Idx);
       Items.Delete(Idx);
@@ -503,6 +504,7 @@ begin
   FReading := True;
   inherited ReadState(Reader);
   FReading := False;
+  // -1 allowed
   if (fItemIndex<-1) or (fItemIndex>=FItems.Count) then fItemIndex:=-1;
   FLastClickedItemIndex:=FItemIndex;
 end;
@@ -529,6 +531,9 @@ end;
 
 function TCustomRadioGroup.GetButton(Index: integer): TRadioButton;
 begin
+  if (Index < 0) or (Index >= FItems.Count) then
+    raise Exception.CreateFmt(rsIndexOutOfBounds, [ClassName, Index, FItems.Count - 1]);
+
   result := TRadioButton(FButtonList[Index]);
 end;
 

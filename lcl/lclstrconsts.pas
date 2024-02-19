@@ -255,6 +255,7 @@ resourceString
     +' See the global variable RequireDerivedFormResource.';
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
   rsIndexOutOfBounds = '%s Index %d out of bounds 0 .. %d';
+  rsIndexOutOfBoundsMinusOne = '%s Index %d out of bounds -1 .. %d';
   rsUnknownPictureExtension = 'Unknown picture extension';
   rsUnknownPictureFormat = 'Unknown picture format';
   rsBitmaps = 'Bitmap Files';
