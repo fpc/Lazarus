@@ -456,9 +456,9 @@ begin
     end;
     rdkFloatVal: begin
       case AResValue.FloatPrecission of
-        dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral,  8, 0);
-        dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 12, 0);
-        dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 15, 0);
+        dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral,  9, 0);
+        dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 17, 0);
+        dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 21, 0);
       end;
     end;
     rdkChar:       Result := PrintChar;
