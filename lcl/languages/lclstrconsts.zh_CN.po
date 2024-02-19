@@ -695,6 +695,11 @@ msgstr "非活动标题"
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s索引%d超出范围0..%d"
 
+#: lclstrconsts.rsindexoutofboundsminusone
+#, object-pascal-format
+msgid "%s Index %d out of bounds -1 .. %d"
+msgstr ""
+
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"

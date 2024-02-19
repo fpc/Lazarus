@@ -713,6 +713,11 @@ msgstr "非アクティブタイトルバーの文字色"
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "%s インデックスが %d、インデックス範囲外(0 .. %d)です"
 
+#: lclstrconsts.rsindexoutofboundsminusone
+#, object-pascal-format
+msgid "%s Index %d out of bounds -1 .. %d"
+msgstr ""
+
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"

@@ -712,6 +712,11 @@ msgstr "Inaktív cím"
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "A(z) %s %d Index a 0 .. %d tartományon kívül esik"
 
+#: lclstrconsts.rsindexoutofboundsminusone
+#, object-pascal-format
+msgid "%s Index %d out of bounds -1 .. %d"
+msgstr ""
+
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"

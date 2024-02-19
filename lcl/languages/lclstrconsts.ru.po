@@ -5,11 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-20 05:11+0300\n"
+"PO-Revision-Date: 2024-02-19 16:55+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
@@ -676,7 +676,12 @@ msgstr "Заголовок неактивного окна"
 #: lclstrconsts.rsindexoutofbounds
 #, object-pascal-format
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr "%s Индекс %d вне диапазона 0 .. %d"
+msgstr "%s Индекс %d вне границ диапазона 0 .. %d"
+
+#: lclstrconsts.rsindexoutofboundsminusone
+#, object-pascal-format
+msgid "%s Index %d out of bounds -1 .. %d"
+msgstr "%s Индекс %d вне границ диапазона -1 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format

@@ -671,6 +671,11 @@ msgstr ""
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr ""
 
+#: lclstrconsts.rsindexoutofboundsminusone
+#, object-pascal-format
+msgid "%s Index %d out of bounds -1 .. %d"
+msgstr ""
+
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"
