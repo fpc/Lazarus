@@ -19,6 +19,20 @@ type
     function GetInstructionPointerForHasBreakpointInfoForAddress: TDBGPtr; override;
   end;
 
+  TBreakInfoX86 = object
+  const
+    _CODE: Byte = $CC;
+  end;
+
+  TBreakPointx86Handler = specialize TGenericBreakPointTargetHandler<Byte, TBreakInfoX86>;
+
+  { TDbgx86Process }
+
+  TDbgx86Process = class(TDbgProcess)
+  protected
+    function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
+  end;
+
   { TDbgStackUnwinderX86FramePointer }
 
   TDbgStackUnwinderX86FramePointer = class(TDbgStackUnwinderX86Base)
@@ -70,6 +84,13 @@ begin
   Result := GetInstructionPointerRegisterValue;
   if (Result <> 0) and not FHasResetInstructionPointerAfterBreakpoint then
     Result := Result - 1;
+end;
+
+{ TDbgx86Process }
+
+function TDbgx86Process.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
+begin
+  Result := TBreakPointx86Handler.Create(Self);
 end;
 
 { TDbgStackUnwinderX86FramePointer }

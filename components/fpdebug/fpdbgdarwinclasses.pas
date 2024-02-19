@@ -131,7 +131,7 @@ type
 
   { TDbgDarwinProcess }
 
-  TDbgDarwinProcess = class(TDbgProcess)
+  TDbgDarwinProcess = class(TDbgx86Process)
   private
     FStatus: cint;
     FProcessStarted: boolean;

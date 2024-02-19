@@ -88,6 +88,7 @@ end;
     function FormatStatusFlags(sreg: byte): string;
     function GetStackUnwinder: TDbgStackUnwinder; override;
   public
+    destructor Destroy; override;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
@@ -104,6 +105,7 @@ end;
     FNumRegisters = 35;  // r0..r31, SREG, SP, PC
   protected
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
+    function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
   public
     class function isSupported(target: TTargetDescriptor): boolean; override;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
@@ -111,6 +113,13 @@ end;
                       AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
   end;
+
+  TAvrBreakInfo = object
+  const
+    _CODE: Word = $9598;
+  end;
+
+  TAvrBreakPointTargetHandler = specialize TRspBreakPointTargetHandler<Word, TAvrBreakInfo>;
 
 implementation
 
@@ -327,6 +336,13 @@ begin
   Result := FUnwinder;
 end;
 
+destructor TDbgAvrThread.Destroy;
+begin
+  if Assigned(FUnwinder) then
+    FreeAndNil(FUnwinder);
+  inherited Destroy;
+end;
+
 procedure TDbgAvrThread.LoadRegisterValues;
 var
   i: integer;
@@ -457,6 +473,11 @@ begin
   end
   else
     result := nil;
+end;
+
+function TDbgAvrProcess.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
+begin
+  Result := TAvrBreakPointTargetHandler.Create(Self);
 end;
 
 constructor TDbgAvrProcess.Create(const AFileName: string;

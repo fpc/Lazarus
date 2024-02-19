@@ -76,11 +76,6 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
     procedure InitializeLoaders; override;
-    // Insert/Delete break points on target
-    // TODO: if target doesn't support break points or have limited break points
-    // then debugger needs to manage insertion/deletion of break points in target memory
-    function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte; AMakeTempRemoved: Boolean): Boolean; override;
-    function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; override;
   public
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
                   AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
@@ -132,6 +127,12 @@ type
     property Data[AnIndex: Integer]: TRspBreakWatchPoint read BreakWatchPoint;
     property Count: integer read DataCount;
   end;
+
+  generic TRspBreakPointTargetHandler<_BRK_STORE, _BREAK> = class(specialize TGenericBreakPointTargetHandler<_BRK_STORE, _BREAK>)
+    // Defer break handling to remote server.
+    function DoInsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: _BRK_STORE; AMakeTempRemoved: Boolean): Boolean; override;
+    function DoRemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: _BRK_STORE): Boolean; override;
+ end;
 
 implementation
 
@@ -206,6 +207,37 @@ begin
     Changed := True;
     Result := True;
   end;
+end;
+
+{ TRspBreakPointTargetHandler }
+
+function TRspBreakPointTargetHandler.DoInsertBreakInstructionCode(const
+  ALocation: TDBGPtr; out OrigValue: _BRK_STORE;
+  AMakeTempRemoved: Boolean): Boolean;
+begin
+  if TDbgRspProcess(Process).FIsTerminating or (TDbgRspProcess(Process).FStatus = SIGHUP) then
+    DebugLn(DBG__WARNINGS, 'TDbgRspProcess.InsertBreakInstruction called while FIsTerminating is set.');
+
+  result := process.ReadData(ALocation, SizeOf(_BRK_STORE), OrigValue);
+  if AMakeTempRemoved then
+    exit;
+
+  // Insert HW break...
+  result := TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(ALocation, wkpExec);
+  if not result then
+    DebugLn(DBG__WARNINGS, 'Failed to set break point.', []);
+end;
+
+function TRspBreakPointTargetHandler.DoRemoveBreakInstructionCode(const
+  ALocation: TDBGPtr; const OrigValue: _BRK_STORE): Boolean;
+begin
+  if TDbgRspProcess(Process).FIsTerminating or (TDbgRspProcess(Process).FStatus = SIGHUP) then
+  begin
+    DebugLn(DBG__WARNINGS, 'TDbgRspProcess.RemoveBreakInstructionCode called while FIsTerminating is set');
+    result := false;
+  end
+  else
+    result := TDbgRspProcess(Process).RspConnection.DeleteBreakWatchPoint(ALocation, wkpExec);
 end;
 
 { TDbgRspThread }
@@ -370,9 +402,17 @@ end;
 { TDbgRspProcess }
 
 procedure TDbgRspProcess.InitializeLoaders;
+var
+  Loader: TDbgImageLoader;
 begin
   if LoaderList.Count = 0 then
-    TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
+  begin
+    Loader := TDbgImageLoader.Create(Name);
+    if Loader.IsValid then
+      Loader.AddToLoaderList(LoaderList)
+    else
+      Loader.Free;
+  end;
 end;
 
 procedure TDbgRspProcess.CreateRspConnection(AFileName: string);
@@ -659,36 +699,6 @@ begin
     RestoreTempBreakInstructionCodes;
 
   result := FStatus <> 0;
-end;
-
-function TDbgRspProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr;
-  out OrigValue: Byte; AMakeTempRemoved: Boolean): Boolean;
-begin
-  if FIsTerminating or (FStatus = SIGHUP) then
-    DebugLn(DBG_WARNINGS, 'TDbgRspProcess.InsertBreakInstruction called while FIsTerminating is set.');
-
-  // Todo: This does not respect a break instruction larger than 1 byte.
-  // Fix: Use target specific break information in parent class.
-  result := ReadData(ALocation, SizeOf(OrigValue), OrigValue);
-  if AMakeTempRemoved then
-    exit;
-
-  // Insert HW break...
-  result := RspConnection.SetBreakWatchPoint(ALocation, wkpExec);
-  if not result then
-    DebugLn(DBG_WARNINGS, 'Failed to set break point.', []);
-end;
-
-function TDbgRspProcess.RemoveBreakInstructionCode(const ALocation: TDBGPtr;
-  const OrigValue: Byte): Boolean;
-begin
-  if FIsTerminating or (FStatus = SIGHUP) then
-  begin
-    DebugLn(DBG_WARNINGS, 'TDbgRspProcess.RemoveBreakInstructionCode called while FIsTerminating is set');
-    result := false;
-  end
-  else
-    result := RspConnection.DeleteBreakWatchPoint(ALocation, wkpExec);
 end;
 
 function TDbgRspProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
