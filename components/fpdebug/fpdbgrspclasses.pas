@@ -215,15 +215,15 @@ function TRspBreakPointTargetHandler.DoInsertBreakInstructionCode(const
   ALocation: TDBGPtr; out OrigValue: _BRK_STORE;
   AMakeTempRemoved: Boolean): Boolean;
 begin
-  if TDbgRspProcess(FProcess).FIsTerminating or (TDbgRspProcess(FProcess).FStatus = SIGHUP) then
+  if TDbgRspProcess(Process).FIsTerminating or (TDbgRspProcess(Process).FStatus = SIGHUP) then
     DebugLn(DBG__WARNINGS, 'TDbgRspProcess.InsertBreakInstruction called while FIsTerminating is set.');
 
-  result := Fprocess.ReadData(ALocation, SizeOf(_BRK_STORE), OrigValue);
+  result := process.ReadData(ALocation, SizeOf(_BRK_STORE), OrigValue);
   if AMakeTempRemoved then
     exit;
 
   // Insert HW break...
-  result := TDbgRspProcess(FProcess).RspConnection.SetBreakWatchPoint(ALocation, wkpExec);
+  result := TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(ALocation, wkpExec);
   if not result then
     DebugLn(DBG__WARNINGS, 'Failed to set break point.', []);
 end;
@@ -231,13 +231,13 @@ end;
 function TRspBreakPointTargetHandler.DoRemoveBreakInstructionCode(const
   ALocation: TDBGPtr; const OrigValue: _BRK_STORE): Boolean;
 begin
-  if TDbgRspProcess(FProcess).FIsTerminating or (TDbgRspProcess(FProcess).FStatus = SIGHUP) then
+  if TDbgRspProcess(Process).FIsTerminating or (TDbgRspProcess(Process).FStatus = SIGHUP) then
   begin
     DebugLn(DBG__WARNINGS, 'TDbgRspProcess.RemoveBreakInstructionCode called while FIsTerminating is set');
     result := false;
   end
   else
-    result := TDbgRspProcess(FProcess).RspConnection.DeleteBreakWatchPoint(ALocation, wkpExec);
+    result := TDbgRspProcess(Process).RspConnection.DeleteBreakWatchPoint(ALocation, wkpExec);
 end;
 
 { TDbgRspThread }

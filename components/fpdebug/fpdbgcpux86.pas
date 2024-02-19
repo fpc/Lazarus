@@ -29,11 +29,8 @@ type
   { TDbgx86Process }
 
   TDbgx86Process = class(TDbgProcess)
-  public
-    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-                      AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel;
-                      AProcessConfig: TDbgProcessConfig = nil); override;
-
+  protected
+    function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
   end;
 
   { TDbgStackUnwinderX86FramePointer }
@@ -91,16 +88,9 @@ end;
 
 { TDbgx86Process }
 
-constructor TDbgx86Process.Create(const AFileName: string;
-  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
+function TDbgx86Process.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
 begin
-  inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel,
-    AProcessConfig);
-
-  FBreakTargetHandler := TBreakPointx86Handler.Create(Self);
-  FBreakMap := TFpBreakPointMap.Create(Self, FBreakTargetHandler);
-  TBreakPointx86Handler(FBreakTargetHandler).BreakMap := FBreakMap;
+  Result := TBreakPointx86Handler.Create(Self);
 end;
 
 { TDbgStackUnwinderX86FramePointer }

@@ -105,6 +105,7 @@ end;
     FNumRegisters = 35;  // r0..r31, SREG, SP, PC
   protected
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
+    function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
   public
     class function isSupported(target: TTargetDescriptor): boolean; override;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
@@ -474,16 +475,17 @@ begin
     result := nil;
 end;
 
+function TDbgAvrProcess.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
+begin
+  Result := TAvrBreakPointTargetHandler.Create(Self);
+end;
+
 constructor TDbgAvrProcess.Create(const AFileName: string;
   AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
   AMemModel: TFpDbgMemModel; AProcessConfig: TDbgProcessConfig);
 begin
   FRegArrayLength := FNumRegisters;
   inherited Create(AFileName, AnOsClasses, AMemManager, AMemModel, AProcessConfig);
-
-  FBreakTargetHandler := TAvrBreakPointTargetHandler.Create(Self);
-  FBreakMap := TFpBreakPointMap.Create(Self, FBreakTargetHandler);
-  TAvrBreakPointTargetHandler(FBreakTargetHandler).BreakMap := FBreakMap;
 end;
 
 destructor TDbgAvrProcess.Destroy;
