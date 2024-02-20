@@ -256,7 +256,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       BorderSpacing.Top = 2
       BorderSpacing.Right = 5
       TabOrder = 0
-      OnChange = Edit1Change
+      OnChange = edtNodeTextChange
     end
     object spnImageIndex: TSpinEdit
       AnchorSideLeft.Control = lblImageIndex
@@ -329,7 +329,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     ShowBevel = False
     object btnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 357
+      Left = 379
       Height = 26
       Hint = '[Shift+Enter]'
       Top = 0
