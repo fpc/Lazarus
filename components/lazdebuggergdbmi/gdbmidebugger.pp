@@ -58,7 +58,7 @@ uses
   // LCL
   Controls, Dialogs, Forms,
   // LazUtils
-  FileUtil, LazUTF8, LazClasses, LazLoggerBase, LazStringUtils, LazFileUtils, Maps,
+  FileUtil, LazUTF8, LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils, LazFileUtils, Maps,
   // IdeIntf
   BaseIDEIntf, PropEdits, MacroIntf,
   // DebuggerIntf

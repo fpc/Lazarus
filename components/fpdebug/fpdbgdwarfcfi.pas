@@ -42,7 +42,7 @@ uses
   SysUtils,
   // LazUtils
   Maps,
-  LazLogger,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   // DebuggerIntf
   DbgIntfBaseTypes,
   // FpDebug

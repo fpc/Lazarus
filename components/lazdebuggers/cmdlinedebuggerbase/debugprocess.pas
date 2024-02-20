@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, sysutils, AsyncProcess, LCLIntf, InterfaceBase, process,
-  Pipes, LazLoggerBase, UTF8Process;
+  Pipes, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, UTF8Process;
 
 type
 

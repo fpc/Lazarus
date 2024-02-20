@@ -4,7 +4,7 @@ unit DebugInstructions;
 interface
 
 uses
-  Classes, SysUtils, LazClasses, LazLoggerBase, debugprocess;
+  Classes, SysUtils, LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, debugprocess;
 
 type
 

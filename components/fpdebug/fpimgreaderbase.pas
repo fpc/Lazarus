@@ -12,7 +12,7 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
-  fgl, LazFglHash, LazFileUtils, LazLoggerBase,
+  fgl, LazFglHash, LazFileUtils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   fpDbgSymTable,
   Classes, SysUtils, DbgIntfBaseTypes, contnrs,
   FpDbgCommon, crc;

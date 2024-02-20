@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, strutils, math,
   // LazUtils
-  LazClasses, LazFileUtils, LazLoggerBase, LazStringUtils, Maps,
+  LazClasses, LazFileUtils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils, Maps,
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
   // CmdLineDebuggerBase

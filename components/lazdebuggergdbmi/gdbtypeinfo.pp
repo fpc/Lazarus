@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, math,
   // LazUtils
-  LazLoggerBase, LazStringUtils,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // LazDebuggerGdbmi

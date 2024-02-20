@@ -43,7 +43,7 @@ uses
   // LCL
   Forms,
   // LazUtils
-  LazLoggerBase, UTF8Process,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, UTF8Process,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi

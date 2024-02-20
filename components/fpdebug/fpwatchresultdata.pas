@@ -7,7 +7,7 @@ interface
 
 uses
   FpDbgInfo, FpPascalBuilder, FpdMemoryTools, FpErrorMessages, FpDbgDwarf,
-  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, LazLoggerBase, fgl, Math,
+  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, fgl, Math,
   SysUtils, LazDebuggerIntf;
 
 type

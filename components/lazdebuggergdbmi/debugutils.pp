@@ -37,7 +37,7 @@ interface
 uses
   Classes,
   // LazUtils
-  LazLoggerBase, LazUTF8,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8,
   // DebuggerIntf
   DbgIntfBaseTypes;
 

@@ -27,7 +27,7 @@ uses
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
   LldbInstructions, LldbHelper, LazDebuggerIntf, DbgIntfBaseTypes, LazDebuggerIntfBaseTypes,
-  DbgIntfDebuggerBase, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
+  DbgIntfDebuggerBase, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages,
   FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon, FpWatchResultData;
 

@@ -20,7 +20,7 @@ interface
 uses
   SysUtils, Classes, strutils,
   // LazUtils
-  LazLoggerBase,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
   // CmdLineDebuggerBase

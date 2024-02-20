@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, fgl, Math, FPDbgController, FpdMemoryTools, FpDbgClasses,
   FpDbgUtil, FpDbgInfo, FpDbgCallContextInfo, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, LazLoggerBase, FpDebugDebuggerUtils,
+  DbgIntfBaseTypes, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, FpDebugDebuggerUtils,
   LazDebuggerIntfBaseTypes;
 
 type

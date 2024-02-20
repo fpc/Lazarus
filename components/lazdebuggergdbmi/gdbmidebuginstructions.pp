@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, StrUtils, Math,
   // LazUtils
-  LazLoggerBase, LazClasses, LazStringUtils,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses, LazStringUtils,
   // LazDebuggerGdbmi
   CmdLineDebugger, GDBMIMiscClasses;
 

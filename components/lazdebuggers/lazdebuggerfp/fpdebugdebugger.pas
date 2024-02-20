@@ -35,7 +35,7 @@ interface
 uses
   Classes, {$IfDef WIN64}windows,{$EndIf} SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
-  Maps, LazLoggerBase, LazUTF8, lazCollections,
+  Maps, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase, LazDebuggerIntf,
   // FpDebug

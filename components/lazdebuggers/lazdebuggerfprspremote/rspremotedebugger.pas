@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
-  Maps, LazLogger, LazUTF8, lazCollections,
+  Maps, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDebugDebugger, FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads,
   // FpDebug
