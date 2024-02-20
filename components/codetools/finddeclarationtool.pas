@@ -6655,7 +6655,7 @@ var
         //debugln('Context=',NodePathAsString(Params.NewNode),' FoundPos=',Params.NewCodeTool.CleanPosToStr(Params.NewNode.StartPos,true),' SearchPos=',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos,true));
         if (Params.NewNode=DeclarationNode)
         or (Params.NewNode=AliasDeclarationNode) then begin
-          debugln(['ReadIdentifier reference found, adding ...']);
+          //debugln(['ReadIdentifier reference found, adding ...']);
           AddReference(IdentStartPos);
         end;
       end;
