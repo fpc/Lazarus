@@ -506,7 +506,6 @@ type
     function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False;
                              AFlags: TGDBTypeCreationFlags = [];
-                             {%H-}AFormat: TWatchDisplayFormat = wdfDefault;
                              ARepeatCount: Integer = 0): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
@@ -12411,7 +12410,7 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String;
-  FullTypeInfo: Boolean; AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat;
+  FullTypeInfo: Boolean; AFlags: TGDBTypeCreationFlags;
   ARepeatCount: Integer): TGDBType;
 var
   R: TGDBMIExecResult;
@@ -12486,7 +12485,7 @@ begin
   then AFlags := AFlags + [gtcfClassIsPointer];
   if FullTypeInfo
   then AFlags := AFlags + [gtcfFullTypeInfo];
-  Result := TGdbType.CreateForExpression(AExpression, AFlags, wdfDefault, ARepeatCount);
+  Result := TGdbType.CreateForExpression(AExpression, AFlags, ARepeatCount);
   while not Result.ProcessExpression do begin
     if Result.EvalError
     then break;
@@ -14657,7 +14656,7 @@ var
           i := 0;
           if FWatchValue <> nil then i := FWatchValue.RepeatCount;
           FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags,
-            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], FDisplayFormat, i);
+            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], i);
 
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin

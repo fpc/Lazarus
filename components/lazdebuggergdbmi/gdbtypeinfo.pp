@@ -376,7 +376,6 @@ type
     // Value-Eval
     FExprEvaluatedAsText: String;
     FHasExprEvaluatedAsText: Boolean;
-    FExprEvaluateFormat: TWatchDisplayFormat;
     FRepeatCount: Integer;
 
     // Sub-Types (FNext is managed by creator / linked list)
@@ -414,7 +413,6 @@ type
   public
     constructor CreateForExpression(const AnExpression: string;
                                     const AFlags: TGDBTypeCreationFlags;
-                                    AFormat: TWatchDisplayFormat = wdfDefault;
                                     ARepeatCount: Integer = 0);
     destructor Destroy; override;
     function ProcessExpression: Boolean;
@@ -2208,7 +2206,7 @@ begin
 end;
 
 constructor TGDBType.CreateForExpression(const AnExpression: string;
-  const AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat; ARepeatCount: Integer);
+  const AFlags: TGDBTypeCreationFlags; ARepeatCount: Integer);
 begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
@@ -2216,7 +2214,6 @@ begin
   FExpression := AnExpression;
   FOrigExpression := FExpression;
   FCreationFlags := AFlags;
-  FExprEvaluateFormat := AFormat;
   FEvalStarted := False;
   FEvalRequest := nil;
   FFirstProcessingSubType := nil;
@@ -2839,11 +2836,6 @@ var
   procedure EvaluateExpressionDynArray;
   begin
     FProcessState := gtpsEvalExprDynArray;
-    if FExprEvaluateFormat <> wdfDefault then begin;
-      Result := True;
-      exit;
-    end;
-
 
     FBoundLow :=  -1;
     FBoundHigh := -1;
@@ -2903,10 +2895,6 @@ var
     PTypeResult: TGDBPTypeResult;
   begin
     FProcessState := gtpsEvalExprArray;
-    if FExprEvaluateFormat <> wdfDefault then begin;
-      Result := True;
-      exit;
-    end;
 
     PTypeResult := FReqResults[gptrPTypeExpr].Result;
     FBoundLow :=  PCLenToInt(PTypeResult.BoundLow);
@@ -3016,7 +3004,6 @@ var
     FRepeatCountEval := TGDBType.CreateForExpression(
       ExpArray.GetTextToIdx(ExpArray.IndexCount-2),
       FCreationFlags + [gtcfExprEvaluate, gtcfForceArrayEval],
-      FExprEvaluateFormat,
       FRepeatCount
     );
     FRepeatCountEval.RepeatFirstIndex := Idx;
@@ -3048,11 +3035,6 @@ var
     end;
     if saArray in FAttributes then begin
       EvaluateExpressionArray;
-      exit;
-    end;
-
-    if FExprEvaluateFormat <> wdfDefault then begin;
-      Result := True;
       exit;
     end;
 
