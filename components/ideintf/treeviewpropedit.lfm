@@ -3,7 +3,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   Height = 326
   Top = 230
   Width = 635
-  ActiveControl = btnNewItem
+  ActiveControl = treEditor
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'TreeView Items Editor'
   ClientHeight = 326
@@ -43,9 +43,9 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       BorderSpacing.Top = 5
       BorderSpacing.Bottom = 5
       HideSelection = False
-      ReadOnly = True
       TabOrder = 0
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      OnEditingEnd = treEditorEditingEnd
       OnSelectionChanged = treEditorSelectionChanged
     end
     object btnNewItem: TButton

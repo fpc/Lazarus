@@ -58,6 +58,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnMoveClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure treEditorEditingEnd(Sender: TObject; Node: TTreeNode;
+      Cancel: Boolean);
     procedure treEditorSelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
@@ -70,6 +72,8 @@ type
     procedure SaveToTree;
     procedure UpdateEnabledStates;
     procedure UpdateImageHints;
+    procedure FinishNodeEditing;
+    procedure CancelNodeEditing;
   end;
 
   { TTreeViewItemsProperty }
@@ -161,6 +165,8 @@ begin
   // form actions
   if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
+    FinishNodeEditing;
+
     ModalResult := mrOK;
     Key := 0;
   end
@@ -171,11 +177,12 @@ begin
   end
   else if (Key = VK_ESCAPE) and (Shift = []) then
   begin
-    if not treEditor.IsEditing then
-    begin
+    // pressing [Esc] in an open editor cancel text editing
+    if treEditor.IsEditing then
+      CancelNodeEditing
+    else
       ModalResult := mrCancel;
-      Key := 0;
-    end;
+    Key := 0;
   end
   // create item
   else if (Key = VK_N) and (Shift = [ssCtrl]) then
@@ -210,6 +217,25 @@ begin
     btnMoveClick(btnMoveUp); // "Sender" is the pressed button
     Key := 0;
   end
+  // move selection
+  else if (Key in [VK_DOWN, VK_UP]) and (Shift = []) then
+  begin
+    if treEditor.IsEditing then
+    begin
+      // close text editor
+      FinishNodeEditing;
+      // select next
+      if Key = VK_DOWN then
+        treEditor.MoveToNextNode(true)
+      else
+        treEditor.MoveToPrevNode(true);
+      // open text editor
+      if Assigned(treEditor.Selected) then
+        treEditor.Selected.EditText;
+
+      Key := 0;
+    end;
+  end
   // save and load in/from file
   else if (Key = VK_S) and (Shift = [ssCtrl]) then
   begin
@@ -223,10 +249,32 @@ begin
   end;
 end;
 
+procedure TTreeViewItemsEditorForm.treEditorEditingEnd(Sender: TObject;
+  Node: TTreeNode; Cancel: Boolean);
+begin
+  // this event can be fired when edtNodeText has already been released
+  if csDestroying in ComponentState then exit;
+
+  if Assigned(treEditor.Selected) then
+  begin
+    // remove event to avoid cyclic calling
+    edtNodeText.OnChange := nil;
+    try
+      // update text
+      edtNodeText.Text := treEditor.Selected.Text;
+    finally
+      // restore event
+      edtNodeText.OnChange := @edtNodeTextChange;
+    end;
+  end;
+end;
+
 procedure TTreeViewItemsEditorForm.btnNewItemClick(Sender: TObject);
 var
   lNewName: String;
 begin
+  FinishNodeEditing;
+
   lNewName := sccsTrEdtItem + IntToStr(treEditor.Items.Count);
   if Sender = btnNewItem then
     treEditor.Selected := treEditor.Items.Add(treEditor.Selected, lNewName)
@@ -235,10 +283,7 @@ begin
   else
     raise Exception.Create('[btnNewItemClick] Unknown Sender');
 
-  //grpNodeEditor.Enabled := treEditor.Items.Count > 0;
-  
-  edtNodeText.SetFocus;
-  //edtNodeText.SelectAll;
+  UpdateEnabledStates;
 end;
 
 procedure TTreeViewItemsEditorForm.edtNodeTextChange(Sender: TObject);
@@ -251,6 +296,8 @@ procedure TTreeViewItemsEditorForm.btnMoveClick(Sender: TObject);
 var
   lCurNode: TTreeNode;
 begin
+  FinishNodeEditing;
+
   lCurNode := treEditor.Selected;
   if lCurNode = nil then exit;
 
@@ -304,6 +351,8 @@ end;
 
 procedure TTreeViewItemsEditorForm.btnApplyClick(Sender: TObject);
 begin
+  FinishNodeEditing;
+
   SaveToTree;
 end;
 
@@ -334,6 +383,8 @@ end;
 
 procedure TTreeViewItemsEditorForm.btnLoadClick(Sender: TObject);
 begin
+  FinishNodeEditing;
+
   if dlgOpen.Execute then
   begin
     treEditor.LoadFromFile(dlgOpen.FileName);
@@ -381,6 +432,8 @@ procedure TTreeViewItemsEditorForm.btnSaveClick(Sender: TObject);
   end;
   //
 begin
+  FinishNodeEditing;
+
   if ConfirmImagesLoss and dlgSave.Execute and ConfirmReplace then
     treEditor.SaveToFile(dlgSave.FileName);
 
@@ -451,6 +504,18 @@ begin
     UpdateImageHint(spnSelectedIndex, false, lblSelectedIndex, sccsTrEdtLabelSelIndex);
     UpdateImageHint(spnStateIndex,    true,  lblStateIndex,    sccsTrEdtLabelStateIndex);
   end;
+end;
+
+procedure TTreeViewItemsEditorForm.FinishNodeEditing;
+begin
+  if treEditor.Items.Count > 0 then
+    treEditor.Items[0].EndEdit(false);
+end;
+
+procedure TTreeViewItemsEditorForm.CancelNodeEditing;
+begin
+  if treEditor.Items.Count > 0 then
+    treEditor.Items[0].EndEdit(true);
 end;
 
 procedure TTreeViewItemsEditorForm.LoadFromTree(aTreeView: TCustomTreeView);
