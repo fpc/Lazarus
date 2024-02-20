@@ -71,7 +71,7 @@ type
     procedure tbSaveClick(Sender: TObject);
     procedure treEditorSelectionChanged(Sender: TObject);
   private
-    fModifed: Boolean;
+    fModified: Boolean;
     fTreeView: TCustomTreeView;
     procedure LoadFromTree(aTreeView: TCustomTreeView);
     procedure SaveToTree;
