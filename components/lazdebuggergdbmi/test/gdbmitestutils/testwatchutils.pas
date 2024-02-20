@@ -402,7 +402,7 @@ var
   fld: TDBGField;
   MemberTests: TFullTypeMemberExpectationResultArray;
 
-  function CmpNames(const TestName, Exp, Got: String; Match: Boolean): Boolean;
+  function CmpNames(const TestName, Exp: String; Got: String; Match: Boolean): Boolean;
   begin
     if Match then begin
       if Frx = nil then Frx := TRegExpr.Create;
@@ -410,7 +410,10 @@ var
       Frx.Expression := Exp;
       TestTrue(TestName + ' matches '+Exp+' but was '+Got,  Frx.Exec(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
      end
-     else TestEquals(TestName + ' equals ',  LowerCase(Exp), LowerCase(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+     else begin
+       if LowerCase(Got) = 'ansichar' then Got := 'char'; // 3.3.1 returns ansichar
+       TestEquals(TestName + ' equals ',  LowerCase(Exp), LowerCase(Got), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+     end;
   end;
 
 begin
