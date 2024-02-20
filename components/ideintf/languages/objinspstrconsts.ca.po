@@ -863,6 +863,7 @@ msgid "Remove from Favorites"
 msgstr "Elimina de Favorits"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr ""
 
@@ -1796,24 +1797,14 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Elimina"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Elements"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Propietats de l'Element"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
-msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr ""
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
-msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr ""
 
 #: objinspstrconsts.sccstredtitem
@@ -1835,14 +1826,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr ""
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Texte:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Carrega"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1857,14 +1840,25 @@ msgstr ""
 msgid "&No"
 msgstr ""
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Obre"
 
+#: objinspstrconsts.sccstredtrename
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr ""
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Desar"
 
 #: objinspstrconsts.sccstredtsavedialog

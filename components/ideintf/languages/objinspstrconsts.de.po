@@ -833,6 +833,7 @@ msgid "Remove from Favorites"
 msgstr "Von Favoriten entfernen"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr "Umbenennen"
 
@@ -1732,24 +1733,16 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Löschen"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Einträge"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Eigenschaften des Eintrags"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
-#, object-pascal-format
-msgid "%s not assigned."
+#, object-pascal-format, fuzzy
+#| msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr "%s nicht zugewiesen."
 
 #: objinspstrconsts.sccstredtinvalidindex
-#, object-pascal-format
-msgid "%s has only %d images."
+#, object-pascal-format, fuzzy
+#| msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr "%s enthält nur %d Bilder."
 
 #: objinspstrconsts.sccstredtitem
@@ -1771,14 +1764,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "Statusindex"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Text:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Laden"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1793,14 +1778,26 @@ msgstr "Neuer Untereintrag"
 msgid "&No"
 msgstr "&Nein"
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Öffnen"
 
+#: objinspstrconsts.sccstredtrename
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr "Umbenennen"
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Sichern"
 
 #: objinspstrconsts.sccstredtsavedialog

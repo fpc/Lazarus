@@ -840,6 +840,7 @@ msgid "Remove from Favorites"
 msgstr "お気に入りから削除"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr ""
 
@@ -1744,24 +1745,14 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "削除"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "項目"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "項目のプロパティ"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
-msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr ""
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
-msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr ""
 
 #: objinspstrconsts.sccstredtitem
@@ -1783,14 +1774,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "ステートのインデックス"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "テキスト:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "読み込み"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1805,14 +1788,25 @@ msgstr "新規サブアイテム"
 msgid "&No"
 msgstr ""
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "開く"
 
+#: objinspstrconsts.sccstredtrename
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr ""
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "保存"
 
 #: objinspstrconsts.sccstredtsavedialog

@@ -865,6 +865,7 @@ msgid "Remove from Favorites"
 msgstr "Hapus dari Favorit"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr ""
 
@@ -1810,24 +1811,14 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Hapus"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Item"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Properti Item"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
-msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr ""
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
-msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr ""
 
 #: objinspstrconsts.sccstredtitem
@@ -1851,14 +1842,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "Indeks Keadaan"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Teks:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Ambil"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1873,14 +1856,25 @@ msgstr "Subitem Baru"
 msgid "&No"
 msgstr ""
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Buka"
 
+#: objinspstrconsts.sccstredtrename
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr ""
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Simpan"
 
 #: objinspstrconsts.sccstredtsavedialog

@@ -833,6 +833,7 @@ msgid "Remove from Favorites"
 msgstr "Прибрати з улюблених"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr "Перейменувати"
 
@@ -1731,24 +1732,14 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Видалити"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Елементи"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Властивості елемента"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
-msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr ""
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
-msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr ""
 
 #: objinspstrconsts.sccstredtitem
@@ -1770,14 +1761,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "Індекс стану"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Текст:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Завантажити"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1792,14 +1775,26 @@ msgstr "Новий піделемент"
 msgid "&No"
 msgstr ""
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Відкрити"
 
+#: objinspstrconsts.sccstredtrename
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr "Перейменувати"
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Зберегти"
 
 #: objinspstrconsts.sccstredtsavedialog

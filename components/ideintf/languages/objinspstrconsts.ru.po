@@ -830,6 +830,7 @@ msgid "Remove from Favorites"
 msgstr "Удалить из избранного"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -1727,24 +1728,16 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Удалить"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Элементы"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Свойства элемента"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
-#, object-pascal-format
-msgid "%s not assigned."
+#, object-pascal-format, fuzzy
+#| msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr "%s не присвоено."
 
 #: objinspstrconsts.sccstredtinvalidindex
-#, object-pascal-format
-msgid "%s has only %d images."
+#, object-pascal-format, fuzzy
+#| msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr "%s имеет только %d изображений."
 
 #: objinspstrconsts.sccstredtitem
@@ -1766,14 +1759,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "Индекс состояния"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Текст:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Загрузить"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1788,14 +1773,26 @@ msgstr "Новый подэлемент"
 msgid "&No"
 msgstr "&Нет"
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Открыть"
 
+#: objinspstrconsts.sccstredtrename
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr "Переименовать"
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Сохранить"
 
 #: objinspstrconsts.sccstredtsavedialog

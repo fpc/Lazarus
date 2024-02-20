@@ -830,6 +830,7 @@ msgid "Remove from Favorites"
 msgstr "Favorilerden kaldır"
 
 #: objinspstrconsts.oisrename
+msgctxt "objinspstrconsts.oisrename"
 msgid "Rename"
 msgstr "Yeniden Adlandır"
 
@@ -1728,24 +1729,14 @@ msgctxt "objinspstrconsts.sccstredtdelete"
 msgid "Delete"
 msgstr "Sil"
 
-#: objinspstrconsts.sccstredtgrplcaption
-msgctxt "objinspstrconsts.sccstredtgrplcaption"
-msgid "Items"
-msgstr "Öğeler"
-
-#: objinspstrconsts.sccstredtgrprcaption
-msgctxt "objinspstrconsts.sccstredtgrprcaption"
-msgid "Item Properties"
-msgstr "Öğe Özellikleri"
-
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
-msgid "%s not assigned."
+msgid "\"%s\" not assigned"
 msgstr ""
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
-msgid "%s has only %d images."
+msgid "\"%s\" has only %d images"
 msgstr ""
 
 #: objinspstrconsts.sccstredtitem
@@ -1767,14 +1758,6 @@ msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index"
 msgstr "Durum dizini"
 
-#: objinspstrconsts.sccstredtlabeltext
-msgid "Text:"
-msgstr "Metin:"
-
-#: objinspstrconsts.sccstredtload
-msgid "Load"
-msgstr "Yükle"
-
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
@@ -1789,14 +1772,26 @@ msgstr "Yeni alt öğe"
 msgid "&No"
 msgstr ""
 
+#: objinspstrconsts.sccstredtopen
+msgid "Open file"
+msgstr ""
+
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Aç"
 
+#: objinspstrconsts.sccstredtrename
+#, fuzzy
+msgctxt "objinspstrconsts.sccstredtrename"
+msgid "Rename"
+msgstr "Yeniden Adlandır"
+
 #: objinspstrconsts.sccstredtsave
+#, fuzzy
+#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
-msgid "Save"
+msgid "Save to file"
 msgstr "Kaydet"
 
 #: objinspstrconsts.sccstredtsavedialog

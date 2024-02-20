@@ -21,7 +21,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls, ImgList, Spin,
-  ButtonPanel,
+  ButtonPanel, ExtCtrls,
   // IdeIntf
   PropEdits, ComponentEditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
@@ -31,42 +31,47 @@ type
 
   TTreeViewItemsEditorForm = class(TForm)
     btnApply: TBitBtn;
-    btnSave: TButton;
-    btnNewItem: TButton;
-    btnNewSubItem: TButton;
-    btnDelete: TButton;
-    btnLoad: TButton;
     ButtonPanel: TButtonPanel;
-    edtNodeText: TEdit;
-    grpTreeEditor: TGroupBox;
-    grpNodeEditor: TGroupBox;
-    lblNodeText: TLabel;
     lblImageIndex: TLabel;
     lblSelectedIndex: TLabel;
     lblStateIndex: TLabel;
     dlgOpen: TOpenDialog;
-    btnMoveDown: TSpeedButton;
-    btnMoveUp: TSpeedButton;
     dlgSave: TSaveDialog;
+    pnlStateIndex: TPanel;
+    pnlSelectedIndex: TPanel;
+    pnlImageIndex: TPanel;
+    pnlImageIndexes: TPanel;
     spnImageIndex: TSpinEdit;
     spnSelectedIndex: TSpinEdit;
     spnStateIndex: TSpinEdit;
+    ToolBar: TToolBar;
+    tbNewItem: TToolButton;
+    tbNewSubItem: TToolButton;
+    tb1: TToolButton;
+    tbDelete: TToolButton;
+    tb2: TToolButton;
+    tbRename: TToolButton;
+    tb3: TToolButton;
+    tbMoveDown: TToolButton;
+    tbMoveUp: TToolButton;
+    tb4: TToolButton;
+    tbSave: TToolButton;
+    tbOpen: TToolButton;
     treEditor: TTreeView;
-    procedure btnNewItemClick(Sender: TObject);
-    procedure edtNodeTextChange(Sender: TObject);
+    procedure btnApplyClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure btnMoveClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure treEditorEditingEnd(Sender: TObject; Node: TTreeNode;
-      Cancel: Boolean);
-    procedure treEditorSelectionChanged(Sender: TObject);
-    procedure btnApplyClick(Sender: TObject);
-    procedure btnDeleteClick(Sender: TObject);
-    procedure btnLoadClick(Sender: TObject);
-    procedure btnSaveClick(Sender: TObject);
     procedure spnIndexChange(Sender: TObject);
+    procedure tbDeleteClick(Sender: TObject);
+    procedure tbMoveClick(Sender: TObject);
+    procedure tbNewItemSubItemClick(Sender: TObject);
+    procedure tbOpenClick(Sender: TObject);
+    procedure tbRenameClick(Sender: TObject);
+    procedure tbSaveClick(Sender: TObject);
+    procedure treEditorSelectionChanged(Sender: TObject);
   private
+    fModifed: Boolean;
     fTreeView: TCustomTreeView;
     procedure LoadFromTree(aTreeView: TCustomTreeView);
     procedure SaveToTree;
@@ -74,6 +79,7 @@ type
     procedure UpdateImageHints;
     procedure FinishNodeEditing;
     procedure CancelNodeEditing;
+    property Modified: Boolean read fModified write fModified;
   end;
 
   { TTreeViewItemsProperty }
@@ -97,14 +103,15 @@ implementation
 
 {$R *.lfm}
 
+{ The function returns TRUE if the tree has been changed. }
 function EditTreeView(ATreeView: TCustomTreeView): boolean;
 begin
   with TTreeViewItemsEditorForm.Create(Application) do
     try
       LoadFromTree(ATreeView);
-      result := ShowModal = mrOK;
-      if result then
+      if ShowModal = mrOK then
         SaveToTree;
+      Result := Modified;
     finally
       Free;
     end;
@@ -117,36 +124,48 @@ begin
   { Captions }
 
   // form
-  self    .Caption := sccsTrEdtCaption;
+  self   .Caption := sccsTrEdtCaption;
   btnApply.Caption := sccsTrEdtApply;
-  // tree group
-  grpTreeEditor.Caption := sccsTrEdtGrpLCaption;
-  btnNewItem   .Caption := sccsTrEdtNewItem;
-  btnNewSubItem.Caption := sccsTrEdtNewSubItem;
-  btnDelete    .Caption := sccsTrEdtDelete;
-  btnSave      .Caption := sccsTrEdtSave;
-  btnLoad      .Caption := sccsTrEdtLoad;
-  // node group
-  grpNodeEditor   .Caption := sccsTrEdtGrpRCaption;
-  lblNodeText     .Caption := sccsTrEdtLabelText;
-  lblImageIndex   .Caption := sccsTrEdtLabelImageIndex;
-  lblSelectedIndex.Caption := sccsTrEdtLabelSelIndex;
-  lblStateIndex   .Caption := sccsTrEdtLabelStateIndex;
+
+  // toolbar
+  ToolBar.ShowHint := true;
+  tbNewItem   .Hint := sccsTrEdtNewItem    + ' [Ctrl+N]';
+  tbNewSubItem.Hint := sccsTrEdtNewSubItem + ' [Ctrl+Shift+N]';
+  tbDelete    .Hint := sccsTrEdtDelete     + ' [Del]';
+  tbRename    .Hint := sccsTrEdtRename     + ' [F2]';
+  tbMoveDown  .Hint := rscdMoveDown        + ' [Ctrl+Shift+Down]';
+  tbMoveUp    .Hint := rscdMoveUp          + ' [Ctrl+Shift+Up]';
+  tbSave      .Hint := sccsTrEdtSave       + ' [Ctrl+S]';
+  tbOpen      .Hint := sccsTrEdtOpen       + ' [Ctrl+O]';
+
+  // image indexes
+  lblImageIndex   .Caption := sccsTrEdtLabelImageIndex + ':';
+  lblSelectedIndex.Caption := sccsTrEdtLabelSelIndex   + ':';
+  lblStateIndex   .Caption := sccsTrEdtLabelStateIndex + ':';
+
   // dialogs
   dlgOpen.Title := sccsTrEdtOpenDialog;
   dlgSave.Title := sccsTrEdtSaveDialog;
 
+  // button panel
+  ButtonPanel.ShowHint := true;
+
   { Images }
 
-  IDEImages.AssignImage(btnMoveUp  , 'arrow_up');
-  IDEImages.AssignImage(btnMoveDown, 'arrow_down');
   btnApply.LoadGlyphFromResource(idButtonRetry);
 
   { Hints }
 
-  ButtonPanel.ShowHint := true;
-  btnMoveUp  .Hint := rscdMoveUp   + LineEnding + '[Ctrl+Shift+Up]';
-  btnMoveDown.Hint := rscdMoveDown + LineEnding + '[Ctrl+Shift+Down]';
+  // toolbar
+  ToolBar.Images := IDEImages.Images_16;
+  tbNewItem   .ImageIndex := IDEImages.LoadImage('new_item');
+  tbNewSubItem.ImageIndex := IDEImages.LoadImage('new_subitem');
+  tbDelete    .ImageIndex := IDEImages.LoadImage('item_delete');
+  tbRename    .ImageIndex := IDEImages.LoadImage('item_rename');
+  tbMoveDown  .ImageIndex := IDEImages.LoadImage('item_down');
+  tbMoveUp    .ImageIndex := IDEImages.LoadImage('item_up');
+  tbSave      .ImageIndex := IDEImages.LoadImage('items_save');
+  tbOpen      .ImageIndex := IDEImages.LoadImage('items_load');
 
   { Layout }
 
@@ -187,12 +206,12 @@ begin
   // create item
   else if (Key = VK_N) and (Shift = [ssCtrl]) then
   begin
-    btnNewItemClick(btnNewItem); // "Sender" is the pressed button
+    tbNewItemSubItemClick(tbNewItem); // "Sender" is the pressed button
     Key := 0;
   end
   else if (Key = VK_N) and (Shift = [ssCtrl, ssShift]) then
   begin
-    btnNewItemClick(btnNewSubItem); // "Sender" is the pressed button
+    tbNewItemSubItemClick(tbNewSubItem); // "Sender" is the pressed button
     Key := 0;
   end
   // delete item
@@ -202,19 +221,19 @@ begin
     // or when renaming node
     if treEditor.Focused and not treEditor.IsEditing then
     begin
-      btnDeleteClick(Sender);
+      tbDeleteClick(Sender);
       Key := 0;
     end;
   end
   // move item
   else if (Key = VK_DOWN) and (Shift = [ssCtrl, ssShift]) then
   begin
-    btnMoveClick(btnMoveDown); // "Sender" is the pressed button
+    tbMoveClick(tbMoveDown); // "Sender" is the pressed button
     Key := 0;
   end
   else if (Key = VK_UP) and (Shift = [ssCtrl, ssShift]) then
   begin
-    btnMoveClick(btnMoveUp); // "Sender" is the pressed button
+    tbMoveClick(tbMoveUp); // "Sender" is the pressed button
     Key := 0;
   end
   // move selection
@@ -239,60 +258,47 @@ begin
   // save and load in/from file
   else if (Key = VK_S) and (Shift = [ssCtrl]) then
   begin
-    btnSaveClick(Sender);
+    tbSaveClick(Sender);
     Key := 0;
   end
   else if (Key in [VK_L, VK_O]) and (Shift = [ssCtrl]) then
   begin
-    btnLoadClick(Sender);
+    tbOpenClick(Sender);
     Key := 0;
   end;
 end;
 
-procedure TTreeViewItemsEditorForm.treEditorEditingEnd(Sender: TObject;
-  Node: TTreeNode; Cancel: Boolean);
+procedure TTreeViewItemsEditorForm.tbRenameClick(Sender: TObject);
 begin
-  // this event can be fired when edtNodeText has already been released
-  if csDestroying in ComponentState then exit;
-
-  if Assigned(treEditor.Selected) then
-  begin
-    // remove event to avoid cyclic calling
-    edtNodeText.OnChange := nil;
-    try
-      // update text
-      edtNodeText.Text := treEditor.Selected.Text;
-    finally
-      // restore event
-      edtNodeText.OnChange := @edtNodeTextChange;
-    end;
-  end;
+  treEditor.Selected.EditText;
 end;
 
-procedure TTreeViewItemsEditorForm.btnNewItemClick(Sender: TObject);
+procedure TTreeViewItemsEditorForm.tbNewItemSubItemClick(Sender: TObject);
 var
+  lEdited: Boolean;
   lNewName: String;
 begin
+  lEdited := treEditor.IsEditing;
   FinishNodeEditing;
 
   lNewName := sccsTrEdtItem + IntToStr(treEditor.Items.Count);
-  if Sender = btnNewItem then
+  if Sender = tbNewItem then
     treEditor.Selected := treEditor.Items.Add(treEditor.Selected, lNewName)
-  else if Sender = btnNewSubItem then
+  else if Sender = tbNewSubItem then
     treEditor.Selected := treEditor.Items.AddChild(treEditor.Selected, lNewName)
   else
-    raise Exception.Create('[btnNewItemClick] Unknown Sender');
+    raise Exception.Create('[tbNewItemClick] Unknown Sender');
+
+  if lEdited and Assigned(treEditor.Selected) then
+  begin
+    treEditor.SetFocus;
+    treEditor.Selected.EditText;
+  end;
 
   UpdateEnabledStates;
 end;
 
-procedure TTreeViewItemsEditorForm.edtNodeTextChange(Sender: TObject);
-begin
-  if Assigned(treEditor.Selected) then
-    treEditor.Selected.Text := edtNodeText.Text;
-end;
-
-procedure TTreeViewItemsEditorForm.btnMoveClick(Sender: TObject);
+procedure TTreeViewItemsEditorForm.tbMoveClick(Sender: TObject);
 var
   lCurNode: TTreeNode;
 begin
@@ -301,17 +307,17 @@ begin
   lCurNode := treEditor.Selected;
   if lCurNode = nil then exit;
 
-  if Sender = btnMoveUp then
+  if Sender = tbMoveUp then
   begin
     if lCurNode.GetPrevSibling = nil then exit;
     lCurNode.MoveTo(lCurNode.GetPrevSibling, naInsert);
   end
-  else if Sender = btnMoveDown then
+  else if Sender = tbMoveDown then
   begin
     if lCurNode.GetNextSibling = nil then exit;
     lCurNode.MoveTo(lCurNode.GetNextSibling, naInsertBehind);
   end else
-    raise Exception.Create('[btnMoveClick] Unknown Sender');
+    raise Exception.Create('[tbMoveClick] Unknown Sender');
 
   UpdateEnabledStates;
   treEditor.SetFocus; // return focus after button click
@@ -341,7 +347,6 @@ procedure TTreeViewItemsEditorForm.treEditorSelectionChanged(Sender: TObject);
 begin
   if Assigned(treEditor.Selected) then
   begin
-    edtNodeText.Text := treEditor.Selected.Text;
     UpdateImageIndexes;
     UpdateImageHints;
   end;
@@ -352,11 +357,11 @@ end;
 procedure TTreeViewItemsEditorForm.btnApplyClick(Sender: TObject);
 begin
   FinishNodeEditing;
-
   SaveToTree;
+  fModified := true;
 end;
 
-procedure TTreeViewItemsEditorForm.btnDeleteClick(Sender: TObject);
+procedure TTreeViewItemsEditorForm.tbDeleteClick(Sender: TObject);
 var
   lNextNode: TTreeNode;
 begin
@@ -381,7 +386,7 @@ begin
   end;
 end;
 
-procedure TTreeViewItemsEditorForm.btnLoadClick(Sender: TObject);
+procedure TTreeViewItemsEditorForm.tbOpenClick(Sender: TObject);
 begin
   FinishNodeEditing;
 
@@ -396,8 +401,8 @@ begin
   end;
 end;
 
-procedure TTreeViewItemsEditorForm.btnSaveClick(Sender: TObject);
-  //
+procedure TTreeViewItemsEditorForm.tbSaveClick(Sender: TObject);
+
   function ImagesFound: boolean;
   var
     i: Integer;
@@ -410,7 +415,7 @@ procedure TTreeViewItemsEditorForm.btnSaveClick(Sender: TObject);
         exit(true);
     result := false;
   end;
-  //
+
   function ConfirmImagesLoss: boolean;
   begin
     if ImagesFound then
@@ -542,21 +547,22 @@ end;
 procedure TTreeViewItemsEditorForm.UpdateEnabledStates;
 var
   lCurNode: TTreeNode;
+  lAssigned: Boolean;
 begin
   lCurNode := treEditor.Selected;
+  lAssigned := Assigned(lCurNode);
 
   // control states
-  btnSave      .Enabled := treEditor.Items.Count > 0;
-  btnMoveUp    .Enabled := Assigned(lCurNode) and Assigned(lCurNode.GetPrevSibling);
-  btnMoveDown  .Enabled := Assigned(lCurNode) and Assigned(lCurNode.GetNextSibling);
-  btnDelete    .Enabled := Assigned(lCurNode);
-  grpNodeEditor.Enabled := Assigned(lCurNode);
+  pnlImageIndexes .Enabled := lAssigned;
+  tbDelete        .Enabled := lAssigned;
+  tbRename        .Enabled := lAssigned;
+  tbMoveUp        .Enabled := lAssigned and Assigned(lCurNode.GetPrevSibling);
+  tbMoveDown      .Enabled := lAssigned and Assigned(lCurNode.GetNextSibling);
+  tbSave          .Enabled := treEditor.Items.Count > 0;
 
   // clear disabled fields
   if lCurNode = nil then
   begin
-    edtNodeText.Text := '';
-
     spnImageIndex   .Value := -1;
     spnSelectedIndex.Value := -1;
     spnStateIndex   .Value := -1;

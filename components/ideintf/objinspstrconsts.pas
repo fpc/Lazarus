@@ -97,15 +97,13 @@ resourcestring
   // TreeView Items Editor
   sccsTrEdtCaption         = 'TreeView Items Editor';
   sccsTrEdt                = 'Edit Items ...';
-  sccsTrEdtGrpLCaption     = 'Items';
-  sccsTrEdtGrpRCaption     = 'Item Properties';
   sccsTrEdtNewItem         = 'New Item';
   sccsTrEdtNewSubItem      = 'New SubItem';
   sccsTrEdtDelete          = 'Delete';
+  sccsTrEdtRename          = 'Rename';
   sccsTrEdtApply           = 'Apply';
-  sccsTrEdtLoad            = 'Load';
-  sccsTrEdtSave            = 'Save';
-  sccsTrEdtLabelText       = 'Text:';
+  sccsTrEdtOpen            = 'Open file';
+  sccsTrEdtSave            = 'Save to file';
   sccsTrEdtLabelImageIndex = 'Image Index';
   sccsTrEdtLabelSelIndex   = 'Selected Index';
   sccsTrEdtLabelStateIndex = 'State Index';
@@ -115,8 +113,8 @@ resourcestring
   sccsTrEdtYes             = '&Yes';
   sccsTrEdtNo              = '&No';
   sccsTrEdtCancel          = '&Cancel';
-  sccsTrEdtInvalidIndex         = '%s has only %d images.';
-  sccsTrEdtImageListNotAssigned = '%s not assigned.';
+  sccsTrEdtInvalidIndex         = '"%s" has only %d images';
+  sccsTrEdtImageListNotAssigned = '"%s" not assigned';
   sccsTrEdtConfirmationCaption  = 'Confirmation';
   sccsTrEdtConfirmationImages   = 'Information about node images cannot be stored in the file. Continue anyway?';
   sccsTrEdtConfirmationReplace  = 'The file already exists, replace it?';
