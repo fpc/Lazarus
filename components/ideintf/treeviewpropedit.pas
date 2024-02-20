@@ -57,7 +57,6 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnMoveClick(Sender: TObject);
-    procedure btnMoveDownClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure treEditorSelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
@@ -67,7 +66,6 @@ type
     procedure spnIndexChange(Sender: TObject);
   private
     fTreeView: TCustomTreeView;
-    FModified: Boolean;
     procedure LoadFromTree(aTreeView: TCustomTreeView);
     procedure SaveToTree;
     procedure UpdateEnabledStates;
@@ -96,18 +94,16 @@ implementation
 {$R *.lfm}
 
 function EditTreeView(ATreeView: TCustomTreeView): boolean;
-var
-  TreeViewItemsEditorForm: TTreeViewItemsEditorForm;
 begin
-  TreeViewItemsEditorForm:=TTreeViewItemsEditorForm.Create(Application);
-  try
-    TreeViewItemsEditorForm.LoadFromTree(ATreeView);
-    if TreeViewItemsEditorForm.ShowModal = mrOk then
-      TreeViewItemsEditorForm.SaveToTree;
-    Result:=TreeViewItemsEditorForm.FModified;
-  finally
-    TreeViewItemsEditorForm.Free;
-  end;
+  with TTreeViewItemsEditorForm.Create(Application) do
+    try
+      LoadFromTree(ATreeView);
+      result := ShowModal = mrOK;
+      if result then
+        SaveToTree;
+    finally
+      Free;
+    end;
 end;
 
 { TTreeViewItemsEditorForm }
@@ -272,16 +268,6 @@ begin
 
   UpdateEnabledStates;
   treEditor.SetFocus; // return focus after button click
-end;
-
-procedure TTreeViewItemsEditorForm.btnMoveDownClick(Sender: TObject);
-var
-  CurNode, NextNode: TTreeNode;
-begin
-  CurNode := treEditor.Selected;      Assert(Assigned(CurNode));
-  NextNode := CurNode.GetNextSibling; Assert(Assigned(NextNode));
-  CurNode.MoveTo(NextNode, naInsertBehind);
-  UpdateEnabledStates;
 end;
 
 procedure TTreeViewItemsEditorForm.treEditorSelectionChanged(Sender: TObject);
@@ -485,10 +471,7 @@ end;
 procedure TTreeViewItemsEditorForm.SaveToTree;
 begin
   if Assigned(fTreeView) then
-  begin
     fTreeView.Items.Assign(treEditor.Items);
-    FModified := True;
-  end;
 end;
 
 procedure TTreeViewItemsEditorForm.UpdateEnabledStates;
