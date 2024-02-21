@@ -410,10 +410,11 @@ begin
     // must be #
     v := 0;
     inc(i);
-    while (i < length(AValue)) and (AValue[i] in ['0'..'9']) do begin
+    while (i <= length(AValue)) and (AValue[i] in ['0'..'9']) do begin
       v:= v * 10 + ord(AValue[i]) - ord('0');
       inc(i);
     end;
+    dec(i);
     inc(j);
     Result[j] := chr(v and 255);
   end;
