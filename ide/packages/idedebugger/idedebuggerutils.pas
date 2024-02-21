@@ -5,7 +5,7 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerStringConstants, LazDebuggerIntf;
+  Classes, SysUtils, IdeDebuggerStringConstants, IdeDebuggerWatchValueIntf;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String): UTf8String;

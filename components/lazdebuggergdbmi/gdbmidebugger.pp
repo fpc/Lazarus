@@ -1471,7 +1471,6 @@ type
     FCallback: TDBGEvaluateResultCallback;
     FEvalFlags: TWatcheEvaluateFlags;
     FExpression: String;
-    FDisplayFormat: TWatchDisplayFormat;
     FWatchValue: IDbgWatchValueIntf;
     FTextValue: String;
     FNumValue: TDBGPtr;
@@ -1491,13 +1490,12 @@ type
     function SelectContext: Boolean;
     procedure UnSelectContext;
   public
-    constructor Create(AOwner: TGDBMIDebuggerBase; AExpression: String; ADisplayFormat: TWatchDisplayFormat);
+    constructor Create(AOwner: TGDBMIDebuggerBase; AExpression: String);
     constructor Create(AOwner: TGDBMIDebuggerBase; AWatchValue: IDbgWatchValueIntf);
     destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
     property EvalFlags: TWatcheEvaluateFlags read FEvalFlags write FEvalFlags;
-    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     property TextValue: String read FTextValue;
     property TypeInfo: TGDBType read GetTypeInfo;
     property TypeInfoAutoDestroy: Boolean read FTypeInfoAutoDestroy write FTypeInfoAutoDestroy;
@@ -9611,7 +9609,7 @@ function TGDBMIDebuggerBase.GDBEvaluate(const AExpression: String;
 var
   CommandObj: TGDBMIDebuggerCommandEvaluate;
 begin
-  CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
+  CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression);
   CommandObj.EvalFlags := EvalFlags;
   CommandObj.AddReference;
   CommandObj.Priority := GDCMD_PRIOR_IMMEDIATE; // try run imediately
@@ -14400,7 +14398,7 @@ var
         else
           FTextValue := UnEscapeBackslashed(FTextValue); // TODO: Check for string
       end;
-      skString, skAnsiString, skWideString:
+      skString, skAnsiString, skWideString, skChar:
         exit; // dont call FormatResult
     end;
 
@@ -14498,100 +14496,74 @@ var
       exit;
     end;
 
-    case FDisplayFormat of
-//      wdfStructure:
-//        begin
-//          FreeAndNil(FTypeInfo);
-//          Result := ExecuteCommand('-data-evaluate-expression %s', [Quote(AnExpression)], R);
-//          Result := Result and (R.State <> dsError);
-//          if (not Result) then begin
-//            ParseLastError;
-//            exit;
-//          end;
-//
-//          ResultList := TGDBMINameValueList.Create(R.Values);
-//          if Result
-//          then FTextValue := ResultList.Values['value']
-//          else FTextValue := ResultList.Values['msg'];
-//          FTextValue := DeleteEscapeChars(FTextValue);
-//          ResultList.Free;
-//
-//          if Result
-//          then begin
-//            FixUpResult(AnExpression);
-//            FValidity := ddsValid;
-//          end;
-//        end;
-      wdfMemDump:
-        begin
-          AnExpression := QuoteExpr(AddAddressOfToExpression(AnExpression, FTypeInfo));
+    if defMemDump in FEvalFlags then
+    begin
+      AnExpression := QuoteExpr(AddAddressOfToExpression(AnExpression, FTypeInfo));
 
-          Result := False;
-          Size := 256;
-          if (FTypeInfo <> nil) and (saInternalPointer in FTypeInfo.Attributes) then begin
-            Result := ExecuteCommand('-data-read-memory %s^ x 1 1 %u', [AnExpression, Size], R);
-            Result := Result and (R.State <> dsError);
-            // nil ?
-            if (R.State = dsError) and (pos('Unable to read memory', R.Values) > 0) then
-              Size := TargetInfo^.TargetPtrSize;
-          end;
-          if (not Result) then begin
-            Result := ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
-            Result := Result and (R.State <> dsError);
-          end;
-          if (not Result) then begin
-            ParseLastError;
-            exit;
-          end;
-          MemDump := TGDBMIMemoryDumpResultList.Create(R);
-          FValidity := ddsValid;
-          FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
-          MemDump.Free;
+      Result := False;
+      Size := 256;
+      if (FTypeInfo <> nil) and (saInternalPointer in FTypeInfo.Attributes) then begin
+        Result := ExecuteCommand('-data-read-memory %s^ x 1 1 %u', [AnExpression, Size], R);
+        Result := Result and (R.State <> dsError);
+        // nil ?
+        if (R.State = dsError) and (pos('Unable to read memory', R.Values) > 0) then
+          Size := TargetInfo^.TargetPtrSize;
+      end;
+      if (not Result) then begin
+        Result := ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
+        Result := Result and (R.State <> dsError);
+      end;
+      if (not Result) then begin
+        ParseLastError;
+        exit;
+      end;
+      MemDump := TGDBMIMemoryDumpResultList.Create(R);
+      FValidity := ddsValid;
+      FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
+      MemDump.Free;
+    end
+    else
+    begin
+      Result := False;
+      if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
+      then begin
+        ParseLastError;
+        exit;
+      end;
+      if FTypeInfo.HasExprEvaluatedAsText then begin
+        FTextValue := FTypeInfo.ExprEvaluatedAsText;
+        FValidity := ddsValid;
+
+        if (FTextValue <> '') and (FTextValue[1] = '-') then begin
+          Val(FTextValue, i64, Error);
+          FNumValue := TDBGPtr(i64);
+          if Error = 0 then
+            FHasNumValue := nvSigned;
+        end
+        else begin
+          Val(FTextValue, FNumValue, Error);
+          if Error = 0 then
+            FHasNumValue := nvUnsigned;
         end;
-      else // wdfDefault
-        begin
-          Result := False;
-          if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
-          then begin
-            ParseLastError;
-            exit;
-          end;
-          if FTypeInfo.HasExprEvaluatedAsText then begin
-            FTextValue := FTypeInfo.ExprEvaluatedAsText;
-            FValidity := ddsValid;
 
-            if (FTextValue <> '') and (FTextValue[1] = '-') then begin
-              Val(FTextValue, i64, Error);
-              FNumValue := TDBGPtr(i64);
-              if Error = 0 then
-                FHasNumValue := nvSigned;
-            end
-            else begin
-              Val(FTextValue, FNumValue, Error);
-              if Error = 0 then
-                FHasNumValue := nvUnsigned;
-            end;
+        //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
+        Result := True;
+        FixUpResult(AnExpression, FTypeInfo);
 
-            //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
-            Result := True;
-            FixUpResult(AnExpression, FTypeInfo);
-
-            if FTypeInfo.HasStringExprEvaluatedAsText then begin
-              s := FTextValue;
-              FTextValue := FTypeInfo.StringExprEvaluatedAsText;
-              //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
-              FixUpResult(AnExpression, FTypeInfo);
-              FTextValue := 'PCHAR: ' + s + LineEnding + 'STRING: ' + FTextValue;
-            end;
-
-            exit;
-          end;
-
-          debugln(DBG_WARNINGS, '############# Not expected to be here');
-          FTextValue := '<ERROR>';
+        if FTypeInfo.HasStringExprEvaluatedAsText then begin
+          s := FTextValue;
+          FTextValue := FTypeInfo.StringExprEvaluatedAsText;
+          //FTextValue := DeleteEscapeChars(FTextValue); // TODO: move to FixUpResult / only if really needed
+          FixUpResult(AnExpression, FTypeInfo);
+          FTextValue := 'PCHAR: ' + s + LineEnding + 'STRING: ' + FTextValue;
         end;
+
+        exit;
+      end;
+
+      debugln(DBG_WARNINGS, '############# Not expected to be here');
+      FTextValue := '<ERROR>';
     end;
-
   end;
 
 var
@@ -14660,82 +14632,84 @@ begin
     if FWatchValue <> nil then begin
       FWatchValue.BeginUpdate;
       repeat
-        if (FHasNumValue <> nvNone) and
-           (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
-           (FWatchValue.RepeatCount <= 0)
-        then begin
-          if (FTypeInfo.Kind = skPointer) then begin
-            FWatchValue.ResData.CreatePointerValue(FNumValue);
-            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-            FWatchValue.Validity := FValidity;
-            break;
-          end;
-
-          if (FHasNumValue = nvSigned) or
-             ( (FTypeInfo.Kind = skInteger) and (FNumValue <= high(int64)) )
+        if not(defMemDump in FEvalFlags) then begin
+          if (FHasNumValue <> nvNone) and
+             (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
+             (FWatchValue.RepeatCount <= 0)
           then begin
-            FWatchValue.ResData.CreateNumValue(FNumValue, True);
-            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-            FWatchValue.Validity := FValidity;
-            break;
-          end
-          else begin
-            FWatchValue.ResData.CreateNumValue(FNumValue, False);
-            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-            FWatchValue.Validity := FValidity;
-            break;
-          end;
-        end;
-        if FTypeInfo <> nil then begin
-          DoneResData := True;
-          s := LowerCase(FTextValue);
-          case FTypeInfo.Kind of
-            //skProcedure: ;
-            //skFunction: ;
-            //skProcedureRef: ;
-            //skFunctionRef: ;
-            skBoolean:
-              if s = 'false' then
-                FWatchValue.ResData.CreateBoolValue(0)
-              else
-              if s = 'true' then
-                FWatchValue.ResData.CreateBoolValue(1)
-              else
-                DoneResData := False;
-            skChar:
-              if Length(s) = 1 then
-                FWatchValue.ResData.CreateCharValue(ord(FTextValue[1]), 1)
-              else
-                DoneResData := False;
-            //skFloat: ;
-            skString,
-            skAnsiString:
-              FWatchValue.ResData.CreateString(FTextValue);
-            skWideString:
-              FWatchValue.ResData.CreateWideString(FTextValue);
-            skEnum: begin
-              i := 0;
-              if FTypeInfo.Members <> nil then begin
-                i := FTypeInfo.Members.IndexOf(FTextValue);
-                if i < 0 then i := 0;
-              end;
-              FWatchValue.ResData.CreateEnumValue(i, FTextValue);
+            if (FTypeInfo.Kind = skPointer) then begin
+              FWatchValue.ResData.CreatePointerValue(FNumValue);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.Validity := FValidity;
+              break;
             end;
-            //skEnumValue: ;
-            //  FWatchValue.ResData.CreateEnumValue(0, FTextValue, 0 ,True);
-            //skSet: ;
-            //skRecord: ;
-            //skObject: ;
-            //skClass: ;
-            //skInterface: ;
-            //skArray: ;
-            else
-              DoneResData := False;
+
+            if (FHasNumValue = nvSigned) or
+               ( (FTypeInfo.Kind = skInteger) and (FNumValue <= high(int64)) )
+            then begin
+              FWatchValue.ResData.CreateNumValue(FNumValue, True);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.Validity := FValidity;
+              break;
+            end
+            else begin
+              FWatchValue.ResData.CreateNumValue(FNumValue, False);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.Validity := FValidity;
+              break;
+            end;
           end;
-          if DoneResData then begin
-            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
-            FWatchValue.Validity := FValidity;
-            break;
+          if FTypeInfo <> nil then begin
+            DoneResData := True;
+            s := LowerCase(FTextValue);
+            case FTypeInfo.Kind of
+              //skProcedure: ;
+              //skFunction: ;
+              //skProcedureRef: ;
+              //skFunctionRef: ;
+              skBoolean:
+                if s = 'false' then
+                  FWatchValue.ResData.CreateBoolValue(0)
+                else
+                if s = 'true' then
+                  FWatchValue.ResData.CreateBoolValue(1)
+                else
+                  DoneResData := False;
+              skChar:
+                if Length(s) = 1 then
+                  FWatchValue.ResData.CreateCharValue(ord(FTextValue[1]), 1)
+                else
+                  DoneResData := False;
+              //skFloat: ;
+              skString,
+              skAnsiString:
+                FWatchValue.ResData.CreateString(FTextValue);
+              skWideString:
+                FWatchValue.ResData.CreateWideString(FTextValue);
+              skEnum: begin
+                i := 0;
+                if FTypeInfo.Members <> nil then begin
+                  i := FTypeInfo.Members.IndexOf(FTextValue);
+                  if i < 0 then i := 0;
+                end;
+                FWatchValue.ResData.CreateEnumValue(i, FTextValue);
+              end;
+              //skEnumValue: ;
+              //  FWatchValue.ResData.CreateEnumValue(0, FTextValue, 0 ,True);
+              //skSet: ;
+              //skRecord: ;
+              //skObject: ;
+              //skClass: ;
+              //skInterface: ;
+              //skArray: ;
+              else
+                DoneResData := False;
+            end;
+            if DoneResData then begin
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.Validity := FValidity;
+              break;
+            end;
           end;
         end;
 
@@ -14771,13 +14745,12 @@ begin
   FContext.StackContext := ccUseGlobal;
 end;
 
-constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebuggerBase; AExpression: String;
-  ADisplayFormat: TWatchDisplayFormat);
+constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebuggerBase;
+  AExpression: String);
 begin
   inherited Create(AOwner);
   FWatchValue := nil;
   FExpression := AExpression;
-  FDisplayFormat := ADisplayFormat;
   FTextValue := '';
   FTypeInfo:=nil;
   FEvalFlags := [];
@@ -14789,7 +14762,7 @@ end;
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebuggerBase;
   AWatchValue: IDbgWatchValueIntf);
 begin
-  Create(AOwner, AWatchValue.Expression, AWatchValue.DisplayFormat);
+  Create(AOwner, AWatchValue.Expression);
   EvalFlags := AWatchValue.EvaluateFlags;
   FWatchValue := AWatchValue;
   FWatchValue.AddFreeNotification(@DoWatchFreed);

@@ -43,7 +43,7 @@ uses
   // LCL
   Forms, StdCtrls, Extctrls, ButtonPanel,
   // IdeIntf
-  IDEHelpIntf, IdeIntfStrConsts,
+  IDEHelpIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
   // IdeConfig
   //EnvironmentOpts,
   // DebuggerIntf

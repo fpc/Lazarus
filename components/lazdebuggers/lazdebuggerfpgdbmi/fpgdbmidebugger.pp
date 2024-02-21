@@ -1025,7 +1025,6 @@ var
   PasExpr, PasExpr2: TFpPascalExpression;
   ResValue: TFpValue;
   s: String;
-  DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
   TiSym: TFpSymbol;
 
@@ -1041,6 +1040,7 @@ var
   CastName: String;
   WatchResConv: TFpWatchResultConvertor;
   ddf: TDataDisplayFormat;
+  AMemDump: Boolean;
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1058,12 +1058,10 @@ begin
 
   if AWatchValue <> nil then begin
     Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
-    DispFormat := AWatchValue.DisplayFormat;
     RepeatCnt := AWatchValue.RepeatCount;
   end
   else begin
     Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
-    DispFormat := wdfDefault;
     RepeatCnt := -1;
   end;
   if Ctx = nil then exit;
@@ -1124,9 +1122,12 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       end;
     end;
 
+    AMemDump := (defMemDump in EvalFlags) or
+                ( (ResValue <> nil) and (ResValue.Kind = skAddress) );
+
     if (AWatchValue <> nil) and
        (ResValue <> nil) and (not IsError(ResValue.LastError)) and
-       (DispFormat <> wdfMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
+       (not AMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
     then begin
       WatchResConv := TFpWatchResultConvertor.Create(Ctx.LocationContext);
       Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData);
@@ -1137,7 +1138,7 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
 
     ddf := ddfDefault;
-    if DispFormat = wdfMemDump then ddf := ddfMemDump;
+    if AMemDump then ddf := ddfMemDump;
     TiSym := ResValue.DbgSymbol;
     if (ResValue.Kind = skNone) and (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
       if GetTypeAsDeclaration(AResText, TiSym) then

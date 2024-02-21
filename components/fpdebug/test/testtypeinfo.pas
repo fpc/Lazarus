@@ -28,6 +28,7 @@ type
     FImageLoaderList: TDbgImageLoaderList;
     FMemReader: TTestMemReader;
     FMemManager: TFpDbgMemManager;
+    FMemModel: TFpDbgMemModel;
 
     procedure AssertEqualsQW(const AMessage: string; Expected, Actual: QWord);
 
@@ -337,8 +338,9 @@ begin
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   FImageLoaderList.Add(FImageLoader);
   FMemReader := TTestMemReader.Create;
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager);
+  FMemModel := TFpDbgMemModel.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create, FMemModel);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, FMemManager, FMemModel);
   FDwarfInfo.LoadCompilationUnits;
 end;
 
@@ -348,6 +350,7 @@ begin
   FImageLoader     := nil;
   FImageLoaderList := nil;
   FMemReader       := nil;
+  FMemModel        := nil;
   FMemManager      := nil;
   FDwarfInfo       := nil;
   FCurrentTestName := '';
@@ -362,6 +365,7 @@ begin
   FDwarfInfo.Free;
   FImageLoaderList.Free;
   FMemReader.Free;
+  FMemModel.Free;
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);

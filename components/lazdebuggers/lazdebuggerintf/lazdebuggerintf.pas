@@ -107,22 +107,13 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  TWatchDisplayFormat =
-    (wdfDefault,
-     wdfStructure,
-     wdfChar, wdfString,
-     wdfDecimal, wdfUnsigned, wdfFloat, wdfHex,
-     wdfPointer,
-     wdfMemDump, wdfBinary
-    );
-  TWatchDisplayFormats = set of TWatchDisplayFormat;
-
   TWatcheEvaluateFlag =
     ( defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable
       defAllowFunctionCall, //
       defFunctionCallRunAllThreads, //
       defExtraDepth,        // Evaluate 1 extra level of sub-elements => i.e., evaluate each nested sub-item
       defSkipValConv,
+      defMemDump,           // Return Memory Dump, **instead** of value
       // deprecated
       defNoTypeInfo,        // No Typeinfo object will be returned // for structures that means a printed value will be returned
       defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
@@ -246,7 +237,6 @@ type
 
     (* ***** Methods for the front-end to provide the request  ***** *)
 
-    function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
     function GetExpression: String;
@@ -260,7 +250,6 @@ type
     procedure SetValidity(AValue: TDebuggerDataState);
     procedure SetValue(AValue: String);
 
-    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat; // deprecated
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
     property FirstIndexOffs: Int64 read GetFirstIndexOffs;
     property RepeatCount: Integer read GetRepeatCount;

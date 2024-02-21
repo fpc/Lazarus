@@ -69,9 +69,9 @@ type
     function  HasTestArraysData: Boolean;
 
     // Add to FLastAddedExp
-    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
+    function Add(AnExpr:  string; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
+    function Add(AnExpr:  string; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     //
     function AddFmtDef        (AnExpr: string;
@@ -243,25 +243,25 @@ begin
     Result := Result or (Length(ExpectBreakSimple[i]) > 0);
 end;
 
-function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string;
+function TTestWatches.Add(AnExpr: string; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := AddWatchExp(FCurrentExpect^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
+  Result := AddWatchExp(FCurrentExpect^, AnExpr, AMtch, AKind, ATpNm, AFlgs );
   FLastAddedExp := Result;
 end;
 
-function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
+function TTestWatches.Add(AnExpr: string;
   AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := AddWatchExp(FCurrentExpect^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+  Result := AddWatchExp(FCurrentExpect^, AnExpr, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
   FLastAddedExp := Result;
 end;
 
 function TTestWatches.AddFmtDef(AnExpr: string; AMtch: string; AKind: TDBGSymbolKind;
   ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
+  Result := Add(AnExpr,  AMtch, AKind, ATpNm, AFlgs );
 end;
 
 function TTestWatches.AddFmtDef(AnExpr: string; AnFormatParam: array of const; AMtch: string;
@@ -273,14 +273,14 @@ end;
 //function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
 //  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 //begin
-//  Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+//  Result := Add(AnExpr,  AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 //end;
 
 function TTestWatches.AddFmtDef(AnExpr: String; AnFormatParam: array of const;
   AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
-  Result := Add(Format(AnExpr, AnFormatParam), wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+  Result := Add(Format(AnExpr, AnFormatParam),  AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 end;
 
 procedure TTestWatches.JoinExpectsForHexReplace;
@@ -789,26 +789,20 @@ begin
       AddExpInt('%sDynInt1%1:s[0]', [s,s2],    5511, M_Int);
       AddExpInt('%sDynInt1%1:s[19]', [s,s2],    5500, M_Int);
 
-      // Test: wdfMemDump
+      // Test: defMemDump
 //TODO: DynArray.Size / check for end after last element.
       if not SkipParamArgs then begin
         // 5511 = $1587 / -5511=$FFFFEA79 / 5500=$157c
-        AddFmtDef('%sDynInt1%1:s', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((15 87)|(87 15)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((15 7C)|(7C 15))'), skArray, '', [fTpMtch]);
-        FLastAddedExp^.DspFormat := wdfMemDump;
-        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) *$'), skArray, '', [fTpMtch]);
-        FLastAddedExp^.DspFormat := wdfMemDump;
-        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
-        FLastAddedExp^.DspFormat := wdfMemDump;
+        AddFmtDef('%sDynInt1%1:s', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((15 87)|(87 15)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((15 7C)|(7C 15))'), skArray, '', [fTpMtch]);
+        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) *$'), skArray, '', [fTpMtch]);
+        AddFmtDef('%sDynInt1%1:s[1]', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 15 88)|(88 15 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
         FLastAddedExp^.RepeatCount := 5;
       end;
 
       // 6600 = $19C8 / 6699=$1A2B
-      AddFmtDef('%sStatAInt1%1:s', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((19 C8)|(C8 19)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((1A 2B)|(2B 1A))'), skArray, '', [fTpMtch]);
-      FLastAddedExp^.DspFormat := wdfMemDump;
-      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) *$'), skArray, '', [fTpMtch]);
-      FLastAddedExp^.DspFormat := wdfMemDump;
-      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
-      FLastAddedExp^.DspFormat := wdfMemDump;
+      AddFmtDef('%sStatAInt1%1:s', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *(00 00 )?((19 C8)|(C8 19)) +00 00 +([0-9A-F][0-9A-F] +)*00 ((1A 2B)|(2B 1A))'), skArray, '', [fTpMtch]);
+      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) *$'), skArray, '', [fTpMtch]);
+      AddFmtDef('%sStatAInt1%1:s[5]', [s,s2], [defMemDump], Sp2RegEx('^\$?[0-9A-F]+: *((00 00 19 C9)|(C9 19 00 00)) +[0-9A-F][0-9A-F]'), skArray, '', [fTpMtch]);
       FLastAddedExp^.RepeatCount := 5;
 
       // Test: typecast dynarray to dynarray

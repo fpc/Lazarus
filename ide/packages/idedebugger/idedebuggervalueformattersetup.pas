@@ -5,9 +5,9 @@ unit IdeDebuggerValueFormatterSetup;
 interface
 
 uses
-  LazIDEIntf, LazDebuggerIntf, IdeDebuggerOpts, IdeDebuggerValueFormatter,
-  IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor,
-  IdeDebuggerValueFormatterCurrency;
+  LazIDEIntf, IdeDebuggerWatchValueIntf, IdeDebuggerOpts,
+  IdeDebuggerValueFormatter, IdeDebuggerValueFormatterDateTime,
+  IdeDebuggerValueFormatterColor, IdeDebuggerValueFormatterCurrency;
 
 implementation
 

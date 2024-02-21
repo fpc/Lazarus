@@ -13,7 +13,7 @@ uses
   // LazControls
   SpinEx,
   // IdeIntf
-  IDEImagesIntf,
+  IDEImagesIntf, IdeDebuggerWatchValueIntf,
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,

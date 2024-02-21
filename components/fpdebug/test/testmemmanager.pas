@@ -19,6 +19,7 @@ type
     FMemReader: TTestMemReader;
     FMemConvTarget: TFpDbgMemConvertorLittleEndian;
     FMemConvSelf: TFpDbgMemConvertorLittleEndian;
+    FMemModel: TFpDbgMemModel;
     FMemManager: TFpDbgMemManager;
     FDummyContext: TFpDbgSimpleLocationContext;
 
@@ -37,7 +38,8 @@ begin
   FMemReader     := TTestMemReader.Create;
   FMemConvTarget := TFpDbgMemConvertorLittleEndian.Create;
   FMemConvSelf   := TFpDbgMemConvertorLittleEndian.Create;
-  FMemManager    := TFpDbgMemManager.Create(FMemReader, FMemConvTarget, FMemConvSelf);
+  FMemModel := TFpDbgMemModel.Create;
+  FMemManager    := TFpDbgMemManager.Create(FMemReader, FMemConvTarget, FMemConvSelf, FMemModel);
   FDummyContext := TFpDbgSimpleLocationContext.Create(FMemManager, 0, 4, 0, 0);
 end;
 
@@ -47,6 +49,7 @@ begin
   FMemReader     := nil;
   FMemConvTarget := nil;
   FMemConvSelf   := nil;
+  FMemModel    := nil;
   FMemManager    := nil;
 end;
 
@@ -57,6 +60,7 @@ begin
   FreeAndNil(FMemReader);
   FreeAndNil(FMemConvTarget);
   FreeAndNil(FMemConvSelf);
+  FreeAndNil(FMemModel);
   FreeAndNil(FMemManager);
 end;
 

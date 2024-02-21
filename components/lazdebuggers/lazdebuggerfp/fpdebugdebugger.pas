@@ -1111,7 +1111,7 @@ begin
   FWatchValue.AddNotification(weeCancel, @DoWachCanceled);
 
   inherited Create(ADebugger, twpWatch, FWatchValue.Expression, FWatchValue.StackFrame, FWatchValue.ThreadId,
-    FWatchValue.DisplayFormat, FWatchValue.RepeatCount, FWatchValue.EvaluateFlags);
+    FWatchValue.RepeatCount, FWatchValue.EvaluateFlags);
 end;
 
 { TFpThreadWorkerBreakPointSetUpdate }

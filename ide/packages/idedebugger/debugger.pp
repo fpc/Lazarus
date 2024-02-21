@@ -776,6 +776,8 @@ type
     procedure DoEndUpdating; override;
     function ResData: IDbgWatchDataIntf;
     function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
+    function GetIntfEvaluateFlags: TWatcheEvaluateFlags;
+    function IDbgWatchValueIntf.GetEvaluateFlags = GetIntfEvaluateFlags;
   private
     FOnValidityChanged: TNotifyEvent;
     FSnapShot: TIdeWatchValue;
@@ -4130,6 +4132,13 @@ end;
 function TCurrentWatchValue.GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
 begin
   Result := FDbgBackendConverter;
+end;
+
+function TCurrentWatchValue.GetIntfEvaluateFlags: TWatcheEvaluateFlags;
+begin
+  Result := EvaluateFlags;
+  if FDisplayFormat = wdfMemDump then
+    Result := Result + [defMemDump];
 end;
 
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);

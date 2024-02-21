@@ -1654,7 +1654,6 @@ var
   PasExpr, PasExpr2: TFpPascalExpression;
   ResValue: TFpValue;
   s: String;
-  DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
   TiSym: TFpSymbol;
 
@@ -1672,6 +1671,7 @@ var
   NameLen: QWord;
   WatchResConv: TFpWatchResultConvertor;
   ddf: TDataDisplayFormat;
+  AMemDump: Boolean;
 begin
   Result := False;
 
@@ -1690,12 +1690,10 @@ begin
 
   if AWatchValue <> nil then begin
     Ctx := GetInfoContextForContext(AWatchValue.ThreadId, AWatchValue.StackFrame);
-    DispFormat := AWatchValue.DisplayFormat;
     RepeatCnt := AWatchValue.RepeatCount;
   end
   else begin
     Ctx := GetInfoContextForContext(CurrentThreadId, CurrentStackFrame);
-    DispFormat := wdfDefault;
     RepeatCnt := -1;
   end;
   if Ctx = nil then exit;
@@ -1715,11 +1713,10 @@ begin
     if not IsWatchValueAlive then exit;
 
     if not PasExpr.Valid then begin
-DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       if ErrorCode(PasExpr.Error) <> fpErrAnyError then begin
         Result := True;
-        AResText := ErrorHandler.ErrorAsString(PasExpr.Error);;
-        if AWatchValue <> nil then begin;
+        AResText := ErrorHandler.ErrorAsString(PasExpr.Error);
+        if AWatchValue <> nil then begin
           AWatchValue.Value    := AResText;
           AWatchValue.Validity := ddsError;
         end;
@@ -1767,12 +1764,12 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       end;
     end;
 
-    if (ResValue <> nil) and (ResValue.Kind = skAddress) then
-      DispFormat := wdfMemDump;
+    AMemDump := (defMemDump in EvalFlags) or
+                ( (ResValue <> nil) and (ResValue.Kind = skAddress) );
 
     if (AWatchValue <> nil) and
        (ResValue <> nil) and (not IsError(ResValue.LastError)) and
-       (DispFormat <> wdfMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
+       (not AMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
     then begin
       WatchResConv := TFpWatchResultConvertor.Create(Ctx.LocationContext);
       Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData);
@@ -1783,7 +1780,7 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
 
     ddf := ddfDefault;
-    if DispFormat = wdfMemDump then ddf := ddfMemDump;
+    if AMemDump then ddf := ddfMemDump;
     case ResValue.Kind of
       skNone: begin
           // maybe type

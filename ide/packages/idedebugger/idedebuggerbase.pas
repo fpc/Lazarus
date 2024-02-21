@@ -443,15 +443,13 @@ end;
 
 function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
 begin
-  if (FWatch <> nil) and
-     (FWatch.FDisplayFormat <> wdfMemDump) and
-     (FDisplayFormat <> wdfMemDump) and
-     (FResultData <> nil) and
-     (FResultData.ValueKind <> rdkPrePrinted)
+  if (FWatch = nil) or
+     (FDisplayFormat = wdfMemDump) or
+     (FWatch.FDisplayFormat = wdfMemDump)
   then
-    Result := FWatch.DisplayFormat
+    Result := FDisplayFormat
   else
-    Result := FDisplayFormat;
+    Result := FWatch.DisplayFormat;
 end;
 
 function TWatchValue.GetRepeatCount: Integer;

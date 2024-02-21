@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs,
-  StrUtils, IdeDebuggerValueFormatterIntf, LazDebuggerIntf,
-  IdeDebuggerStringConstants, IdeDebuggerValueFormatter, IdeDebuggerUtils;
+  StrUtils, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
+  LazDebuggerIntf, IdeDebuggerStringConstants, IdeDebuggerValueFormatter,
+  IdeDebuggerUtils;
 
 type
 

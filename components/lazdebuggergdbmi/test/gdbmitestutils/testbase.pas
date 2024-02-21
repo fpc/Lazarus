@@ -20,15 +20,6 @@ const
   stDwarfAll  = [stDwarf, stDwarfSet, stDwarf3];
   stSymAll = [stStabs, stDwarf, stDwarfSet, stDwarf3];
 
-  TWatchDisplayFormatNames: array [TWatchDisplayFormat] of string =
-    ('wdfDefault',
-     'wdfStructure',
-     'wdfChar', 'wdfString',
-     'wdfDecimal', 'wdfUnsigned', 'wdfFloat', 'wdfHex',
-     'wdfPointer',
-     'wdfMemDump', 'wdfBinary'
-    );
-
 type
 
   TGDBMIDebuggerClass = class of TGDBMIDebugger;

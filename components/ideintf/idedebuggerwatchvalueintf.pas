@@ -15,9 +15,19 @@ unit IdeDebuggerWatchValueIntf experimental;
 interface
 
 uses
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeIntfStrConsts;
 
 type
+
+  TWatchDisplayFormat =
+    (wdfDefault,
+     wdfStructure,
+     wdfChar, wdfString,
+     wdfDecimal, wdfUnsigned, wdfFloat, wdfHex,
+     wdfPointer,
+     wdfMemDump, wdfBinary
+    );
+  TWatchDisplayFormats = set of TWatchDisplayFormat;
 
   TWatchResultDataKind = (
     rdkUnknown,
