@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
 Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
@@ -21,9 +21,29 @@ CustomDrawn_Mac
 -->
 
 <module name="CustomDrawn_Mac">
-<short></short>
+<short>
+Contains classes used to implement custom-drawn controls using the macOS 
+drawing style.
+</short>
 <descr>
+<p>
+<file>customdrawn_mac.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
+</p>
 </descr>
+
+<!-- external references -->
+<element name="classes"/>
+<element name="sysutils"/>
+<element name="types"/>
+<element name="fpcanvas"/>
+<element name="fpimage"/>
+<element name="math"/>
+<element name="graphics"/>
+<element name="controls"/>
+<element name="lcltype"/>
+<element name="customdrawndrawers"/>
+<element name="customdrawn_common"/>
 
 <!-- class Visibility: default -->
 <element name="TCDDrawerMac">

@@ -21,9 +21,28 @@ customdrawndrawers
 -->
 
 <module name="customdrawndrawers">
-<short></short>
+<short>
+Contains classes and routines used to draw custom-drawn controls for various 
+platforms, operating systems, or user-specified styles.
+</short>
 <descr>
+<p>
+<file>customedrawndrawers.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
+</p>
 </descr>
+
+<!-- external references -->
+<element name="classes"/>
+<element name="sysutils"/>
+<element name="types"/>
+<element name="fpcanvas"/>
+<element name="fpimage"/>
+<element name="controls"/>
+<element name="graphics"/>
+<element name="comctrls"/>
+<element name="extctrls"/>
+<element name="lazutf8"/>
 
 <!-- constant Visibility: default -->
 <element name="CDDRAWSTYLE_COUNT">

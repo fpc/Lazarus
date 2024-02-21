@@ -21,9 +21,34 @@ customdrawn_android
 -->
 
 <module name="customdrawn_android">
-<short></short>
+<short>
+Contains classes used to implement custom-drawn controls using the drawing 
+style for the Android platform.
+</short>
 <descr>
+<p>
+<file>customdrawn_android.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
+</p>
 </descr>
+
+<!-- external references -->
+<element name="classes"/>
+<element name="sysutils"/>
+<element name="types"/>
+<element name="math"/>
+<element name="fpcanvas"/>
+<element name="fpimgcanv"/>
+<element name="fpimage"/>
+<element name="graphics"/>
+<element name="controls"/>
+<element name="lcltype"/>
+<element name="lclintf"/>
+<element name="intfgraphics"/>
+<element name="lresources"/>
+<element name="forms"/>
+<element name="customdrawndrawers"/>
+<element name="customdrawn_common"/>
 
 <!-- class Visibility: default -->
 <element name="TCDDrawerAndroid">

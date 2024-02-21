@@ -21,9 +21,40 @@ customdrawncontrols
 -->
 
 <module name="customdrawncontrols">
-<short></short>
+<short>
+Contains classes used to implement custom-drawn components or controls.
+</short>
 <descr>
+<p>
+<file>customdrawncontrols.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
+</p>
+<p>
+Copyright (C) 2011 Felipe Monteiro de Carvalho.
+</p>
 </descr>
+
+<!-- external references -->
+<element name="classes"/>
+<element name="sysutils"/>
+<element name="contnrs"/>
+<element name="math"/>
+<element name="types"/>
+<element name="lazutf8"/>
+<element name="lcltype"/>
+<element name="lclproc"/>
+<element name="lclintf"/>
+<element name="lclmessageglue"/>
+<element name="lmessages"/>
+<element name="messages"/>
+<element name="forms"/>
+<element name="graphics"/>
+<element name="controls"/>
+<element name="stdctrls"/>
+<element name="extctrls"/>
+<element name="comctrls"/>
+<element name="buttons"/>
+<element name="customdrawndrawers"/>
 
 <!-- class Visibility: default -->
 <element name="TCDControl">

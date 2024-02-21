@@ -21,9 +21,33 @@ customdrawn_common
 -->
 
 <module name="customdrawn_common">
-<short></short>
+<short>
+Contains the common base class for renders in custom-drawn controls.
+</short>
 <descr>
+<p>
+<file>customdrawn_common.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
+</p>
 </descr>
+
+<!-- external references -->
+<element name="classes"/>
+<element name="sysutils"/>
+<element name="types"/>
+<element name="math"/>
+<element name="fpcanvas"/>
+<element name="fpimage"/>
+<element name="lazutf8"/>
+<element name="graphics"/>
+<element name="controls"/>
+<element name="lcltype"/>
+<element name="stdctrls"/>
+<element name="comctrls"/>
+<element name="extctrls"/>
+<element name="forms"/>
+<element name="customdrawndrawers"/>
+<element name="extctrls"/>
 
 <!-- class Visibility: default -->
 <element name="TCDDrawerCommon">
