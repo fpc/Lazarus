@@ -3356,6 +3356,8 @@ var
   OldProcessState: TGDBTypeProcessState;
   OldReqMade: TGDBTypeProcessRequests;
   s: string;
+  i: Integer;
+  j: Longint;
 begin
   Result := False;
   FEvalRequest := nil;
@@ -3410,6 +3412,30 @@ begin
       FKind := skSimple;
       FreeAndNil(FFields);
     end;
+
+    if (FKind = skSimple) and FHasExprEvaluatedAsText and (FExprEvaluatedAsText <> '') then begin
+      // check value for string or char
+      i := 1;
+      while (i <= Length(FExprEvaluatedAsText)) and (FExprEvaluatedAsText[i] in ['0'..'9']) do
+        inc(i);
+      if (i > 1) and (i + 1 < Length(FExprEvaluatedAsText)) and
+         (FExprEvaluatedAsText[i] in [#9, ' ']) and (FExprEvaluatedAsText[i+1] in ['#', '''']) and
+         TryStrToInt(copy(FExprEvaluatedAsText, 1 , i-1), j) and (j < 256)
+      then begin
+        //char
+        FKind := skChar;
+        Delete(FExprEvaluatedAsText, 1, i);
+        FExprEvaluatedAsText := ParseGDBString(UnEscapeBackslashed(FExprEvaluatedAsText), True);
+      end
+      else
+      if (Length(FExprEvaluatedAsText) > 1) and (FExprEvaluatedAsText[1] in ['#', '''']) then begin
+        // string
+        FKind := skString;
+        FExprEvaluatedAsText := ParseGDBString(UnEscapeBackslashed(FExprEvaluatedAsText), True);
+      end;
+    end;
+
+
     if Value.AsString = '' then
       Value.AsString := ExprEvaluatedAsText;
 

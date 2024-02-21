@@ -60,7 +60,7 @@ function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [
 function UnQuote(const AValue: String): String;
 function Quote(const AValue: String; AForce: Boolean=False): String;
 function ConvertGdbPathAndFile(const AValue: String): String; deprecated 'use ConvertPathFromGdbToLaz'; // fix path, delim, unescape, and to utf8
-function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
+function ParseGDBString(const AValue: String; KeepBackSlash: Boolean = False): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr; ARemoveFromValue: Boolean = False): Boolean;
 function UpperCaseSymbols(s: string): string;
 function ConvertPascalExpression(var AExpression: String): Boolean;
@@ -364,7 +364,7 @@ begin
   Result := AnsiToUtf8(ConvertPathDelims(UnEscapeBackslashed(AValue, [uefOctal])));
 end;
 
-function ParseGDBString(const AValue: String): String;
+function ParseGDBString(const AValue: String; KeepBackSlash: Boolean): String;
 var
   i, j, v: Integer;
   InQuote: Boolean;
@@ -396,7 +396,7 @@ begin
       end;
       continue;
     end;
-    if (AValue[i] = '\' ) and (i < length(AValue)) then begin // gdb escapes some chars, even it not pascalish
+    if (not KeepBackSlash) and (AValue[i] = '\' ) and (i < length(AValue)) then begin // gdb escapes some chars, even it not pascalish
       inc(j);
       inc(i); // copy next char
       Result[j] := AValue[i];

@@ -14400,6 +14400,8 @@ var
         else
           FTextValue := UnEscapeBackslashed(FTextValue); // TODO: Check for string
       end;
+      skString, skAnsiString, skWideString:
+        exit; // dont call FormatResult
     end;
 
     PutValuesInTree;
@@ -14473,33 +14475,6 @@ var
   end;
 
   function TryExecute(AnExpression: string): Boolean;
-
-    function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
-    begin
-      Assert(FTypeInfo = nil, 'Type info must be nil');
-      FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags, TypeInfoFlags);
-      Result := FTypeInfo <> nil;
-      if (not Result) then begin
-        ParseLastError;
-        exit;
-      end;
-
-      if NoAddressOp
-      then expr := QuoteExpr(expr)
-      else expr := QuoteExpr(AddAddressOfToExpression(expr, FTypeInfo));
-    end;
-
-    procedure  GetNumValue(const AExpression: String);
-    var
-      s: String;
-    begin
-      s := GetStrValue(AExpression, [], [cfNoMemLimits]);
-      FHasNumValue := nvUnsigned;
-      if (s <> '') and (s[1] = '-') then
-        FHasNumValue := nvSigned;
-      FNumValue := GetPtrValue(s);
-    end;
-
   var
     ResultList: TGDBMINameValueList;
     R: TGDBMIExecResult;
@@ -14512,109 +14487,44 @@ var
     Result := False;
     FHasNumValue := nvNone;
 
+    Assert(FTypeInfo = nil, 'Type info must be nil');
+    i := 0;
+    if FWatchValue <> nil then i := FWatchValue.RepeatCount;
+    FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags,
+      TypeInfoFlags+[gtcfExprEvaluate, gtcfExprEvalStrFixed], i);
+    Result := FTypeInfo <> nil;
+    if (not Result) then begin
+      ParseLastError;
+      exit;
+    end;
+
     case FDisplayFormat of
-      wdfStructure:
-        begin
-          Result := ExecuteCommand('-data-evaluate-expression %s', [Quote(AnExpression)], R);
-          Result := Result and (R.State <> dsError);
-          if (not Result) then begin
-            ParseLastError;
-            exit;
-          end;
-
-          ResultList := TGDBMINameValueList.Create(R.Values);
-          if Result
-          then FTextValue := ResultList.Values['value']
-          else FTextValue := ResultList.Values['msg'];
-          FTextValue := DeleteEscapeChars(FTextValue);
-          ResultList.Free;
-
-          if Result
-          then begin
-            FixUpResult(AnExpression);
-            FValidity := ddsValid;
-          end;
-        end;
-      wdfChar:
-        begin
-          Result := PrepareExpr(AnExpression);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          FTextValue := GetChar(AnExpression, []);
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
-      wdfString:
-        begin
-          Result := PrepareExpr(AnExpression);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          FTextValue := GetText(AnExpression, []); // GetText takes Addr
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
-      wdfDecimal:
-        begin
-          Result := PrepareExpr(AnExpression, True);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          GetNumValue(AnExpression);
-          FTextValue := IntToStr(Int64(FNumValue));
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
-      wdfUnsigned:
-        begin
-          Result := PrepareExpr(AnExpression, True);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          GetNumValue(AnExpression);
-          FTextValue := IntToStr(FNumValue);
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
-      //wdfFloat:
-      //  begin
-      //    Result := PrepareExpr(AnExpression);
-      //    if not Result
-      //    then exit;
-      //    FTextValue := GetFloat(AnExpression, []);  // GetFloat takes address
-      //    if LastExecResult.State = dsError
-      //    then FTextValue := '<error>';
-      //  end;
-      wdfHex:
-        begin
-          Result := PrepareExpr(AnExpression, True);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          GetNumValue(AnExpression);
-          FTextValue := IntToHex(FNumValue, 2);
-          if length(FTextValue) mod 2 = 1
-          then FTextValue := '0'+FTextValue; // make it an even number of digets
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
-      wdfPointer:
-        begin
-          Result := PrepareExpr(AnExpression, True);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          GetNumValue(AnExpression);
-          FTextValue := PascalizePointer('0x' + IntToHex(FNumValue, TargetInfo^.TargetPtrSize*2));
-          if LastExecResult.State = dsError
-          then FTextValue := '<error>';
-        end;
+//      wdfStructure:
+//        begin
+//          FreeAndNil(FTypeInfo);
+//          Result := ExecuteCommand('-data-evaluate-expression %s', [Quote(AnExpression)], R);
+//          Result := Result and (R.State <> dsError);
+//          if (not Result) then begin
+//            ParseLastError;
+//            exit;
+//          end;
+//
+//          ResultList := TGDBMINameValueList.Create(R.Values);
+//          if Result
+//          then FTextValue := ResultList.Values['value']
+//          else FTextValue := ResultList.Values['msg'];
+//          FTextValue := DeleteEscapeChars(FTextValue);
+//          ResultList.Free;
+//
+//          if Result
+//          then begin
+//            FixUpResult(AnExpression);
+//            FValidity := ddsValid;
+//          end;
+//        end;
       wdfMemDump:
         begin
-          Result := PrepareExpr(AnExpression);
-          if not Result
-          then exit;
+          AnExpression := QuoteExpr(AddAddressOfToExpression(AnExpression, FTypeInfo));
 
           Result := False;
           Size := 256;
@@ -14638,26 +14548,9 @@ var
           FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
           MemDump.Free;
         end;
-      wdfBinary:
-        begin
-          Result := PrepareExpr(AnExpression, True);
-          if not Result
-          then exit;
-          FValidity := ddsValid;
-          GetNumValue(AnExpression);
-          FTextValue := Concat('0b' + BinStr(FNumValue, TargetInfo^.TargetPtrSize*2));
-          if LastExecResult.State = dsError
-          then ParseLastError;
-        end;
       else // wdfDefault
         begin
           Result := False;
-          Assert(FTypeInfo = nil, 'Type info must be nil');
-          i := 0;
-          if FWatchValue <> nil then i := FWatchValue.RepeatCount;
-          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags,
-            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], i);
-
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin
             ParseLastError;
@@ -14704,7 +14597,8 @@ var
 var
   S: String;
   ResultList: TGDBMINameValueList;
-  frameidx: Integer;
+  frameidx, i: Integer;
+  DoneResData: Boolean;
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   SelectContext;
@@ -14792,12 +14686,66 @@ begin
             break;
           end;
         end;
+        if FTypeInfo <> nil then begin
+          DoneResData := True;
+          s := LowerCase(FTextValue);
+          case FTypeInfo.Kind of
+            //skProcedure: ;
+            //skFunction: ;
+            //skProcedureRef: ;
+            //skFunctionRef: ;
+            skBoolean:
+              if s = 'false' then
+                FWatchValue.ResData.CreateBoolValue(0)
+              else
+              if s = 'true' then
+                FWatchValue.ResData.CreateBoolValue(1)
+              else
+                DoneResData := False;
+            skChar:
+              if Length(s) = 1 then
+                FWatchValue.ResData.CreateCharValue(ord(FTextValue[1]), 1)
+              else
+                DoneResData := False;
+            //skFloat: ;
+            skString,
+            skAnsiString:
+              FWatchValue.ResData.CreateString(FTextValue);
+            skWideString:
+              FWatchValue.ResData.CreateWideString(FTextValue);
+            skEnum: begin
+              i := 0;
+              if FTypeInfo.Members <> nil then begin
+                i := FTypeInfo.Members.IndexOf(FTextValue);
+                if i < 0 then i := 0;
+              end;
+              FWatchValue.ResData.CreateEnumValue(i, FTextValue);
+            end;
+            //skEnumValue: ;
+            //  FWatchValue.ResData.CreateEnumValue(0, FTextValue, 0 ,True);
+            //skSet: ;
+            //skRecord: ;
+            //skObject: ;
+            //skClass: ;
+            //skInterface: ;
+            //skArray: ;
+            else
+              DoneResData := False;
+          end;
+          if DoneResData then begin
+            FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            break;
+          end;
+        end;
 
         FWatchValue.Value := FTextValue;
         FWatchValue.TypeInfo := TypeInfo;
+        FTypeInfo := nil;
         FWatchValue.Validity := FValidity;
       until true;
       FWatchValue.EndUpdate;
+      FreeAndNil(FTypeInfo);
     end;
   end;
 end;

@@ -187,7 +187,7 @@ begin
   // but the IDE only gets that with Dwarf-3
   // might be prefixed, with address
   Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skPOINTER, ATpNm, AFlgs );
-  UpdExpRes(Result, stDwarf3,           skSimple);
+  UpdExpRes(Result, stDwarf3, '''' + AMtch + '''$', skString, ATpNm, AFlgs+[acceptSkSimple]);
 end;
 
 function TTestWatches.AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string;
@@ -196,7 +196,7 @@ begin
   // TODO, encoding of special chars
   // shortstring
   // might be prefixed, with address
-  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skSimple, ATpNm, AFlgs );
+  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skString, ATpNm, AFlgs+[acceptSkSimple] );
 end;
 
 function TTestWatches.AddCharFmtDef(AnExpr, AMtch: string; ATpNm: string;
@@ -204,7 +204,7 @@ function TTestWatches.AddCharFmtDef(AnExpr, AMtch: string; ATpNm: string;
 begin
   // TODO, encoding of special chars
   // might be prefixed, with address
-  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skSimple, ATpNm, AFlgs );
+  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skChar, ATpNm, AFlgs+[acceptSkSimple] );
 end;
 
 function TTestWatches.AddPointerFmtDef(AnExpr, ATpNm: string;
@@ -696,23 +696,23 @@ begin
 
   // accessing char
   // TODO: only works with dwarf 3
-  r:=AddFmtDef('ArgTMyAnsiString[1]',      '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('VArgTMyAnsiString[1]',     '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', []);
+  r:=AddFmtDef('ArgTMyAnsiString[1]',      '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
+  r:=AddFmtDef('VArgTMyAnsiString[1]',     '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
+  r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
+  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skChar,   'char', [acceptSkSimple]);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
-     UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('AnsiString(VArgTMyAnsiString)[1]',     '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+     UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
+  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
+  r:=AddFmtDef('AnsiString(VArgTMyAnsiString)[1]',     '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
 
   // accessing char, after typecast
-  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
-                    UpdExpRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skChar,   'char', [acceptSkSimple]);
+                    UpdExpRes(r, stDwarf3,    '''M''$', skChar,   'char', [acceptSkSimple]);
 
 
   // string in array
@@ -787,19 +787,19 @@ begin
   r:=AddStringFmtDef('ArgTStringHolderObj.FTMyAnsiString',   'Obj1 MyAnsi',         'AnsiString', []);
   r:=AddStringFmtDef('VArgTStringHolderObj.FTMyAnsiString',  'Obj2 MyAnsi',         'AnsiString', []);
 
-  r:=AddFmtDef('ArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
-     UpdExpRes(r, stDwarf3,                         '''O''$', skSimple);
-  r:=AddFmtDef('VArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
-     UpdExpRes(r, stDwarf3,                         '''O''$', skSimple);
+  r:=AddFmtDef('ArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skChar,    'char', [acceptSkSimple]);
+     UpdExpRes(r, stDwarf3,                         '''O''$', skChar,    'char', [acceptSkSimple]);
+  r:=AddFmtDef('VArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skChar,    'char', [acceptSkSimple]);
+     UpdExpRes(r, stDwarf3,                         '''O''$', skChar,    'char', [acceptSkSimple]);
 
   // string in rec
   r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   'Rec1 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
   r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  'Rec2 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
 
-  r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
-     UpdExpRes(r, stDwarf3,                         '''R''$', skSimple);
-  r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
-     UpdExpRes(r, stDwarf3,                         '''R''$', skSimple);
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skChar,    'char', [fTstSkipDwarf3, acceptSkSimple]);
+     UpdExpRes(r, stDwarf3,                         '''R''$', skChar,    'char', [fTstSkipDwarf3, acceptSkSimple]);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skChar,    'char', [fTstSkipDwarf3, acceptSkSimple]);
+     UpdExpRes(r, stDwarf3,                         '''R''$', skChar,    'char', [fTstSkipDwarf3, acceptSkSimple]);
 
 
   //r:=AddFmtDef('ArgTNewAnsiString',       '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
@@ -815,12 +815,12 @@ begin
 
 
 
-  AddFmtDef('ArgTMyShortString',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  AddFmtDef('VArgTMyShortString',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+  AddFmtDef('ArgTMyShortString',        '''short''$',        skString,      '^(TMy)?ShortString$', [fTpMtch, acceptSkSimple]);
+  AddFmtDef('VArgTMyShortString',       '''short''$',        skString,      '^(TMy)?ShortString$', [fTpMtch, acceptSkSimple]);
   AddFmtDef('ArgPMyShortString',        Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
   AddFmtDef('VArgPMyShortString',       Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
-  AddFmtDef('ArgPMyShortString^',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  r := AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+  AddFmtDef('ArgPMyShortString^',        '''short''$',        skString,      '^(TMy)?ShortString$', [fTpMtch, acceptSkSimple]);
+  r := AddFmtDef('VArgPMyShortString^',       '''short''$',        skString,      '^(TMy)?ShortString$', [fTpMtch, acceptSkSimple]);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
   // string in array
@@ -851,12 +851,12 @@ begin
   r:=AddCharFmtDef('ArgTMyShortStringSArray[4][14]',  '4',      'char', [IgnDwrf2]);
 
   // string in obj
-  r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
-  r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
+  r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skString,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3, acceptSkSimple]);
+  r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skString,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3, acceptSkSimple]);
 
   // string in rec
-  r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
-  r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skString,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3, acceptSkSimple]);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skString,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3, acceptSkSimple]);
 
 
   (*
@@ -896,12 +896,12 @@ begin
   // Utf8
   // a single ', must appear double ''
   // reg ex needs \\ for \
-  r:=AddStringFmtDef  ('ConstUtf8TextAnsi',     'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'AnsiString', []);
-  r:=AddShortStrFmtDef('ConstUtf8TextShort',    'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
-  r:=AddShortStrFmtDef('ConstUtf8TextShortStr', 'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
-  r:=AddStringFmtDef  ('VarUtf8TextAnsi',       'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'AnsiString', []);
-  r:=AddShortStrFmtDef('VarUtf8TextShort',      'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
-  r:=AddShortStrFmtDef('VarUtf8TextShortStr',   'a üü1'''' \\\\t 2 \\t 3''#9''4''#13''5\\n6',         'ShortString', []);
+  r:=AddStringFmtDef  ('ConstUtf8TextAnsi',     'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'AnsiString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShort',    'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'ShortString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortStr', 'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'ShortString', []);
+  r:=AddStringFmtDef  ('VarUtf8TextAnsi',       'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'AnsiString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShort',      'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'ShortString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortStr',   'a üü1'''' \\\\t 2 \\t 3''#\$?0*9''4''#(13|\$0*D)''5\\n6',         'ShortString', []);
 
   r:=AddStringFmtDef  ('ConstUtf8TextAnsi2',     'üü''''1',         'AnsiString', []);
   r:=AddShortStrFmtDef('ConstUtf8TextShort2',    'üü''''1',         'ShortString', []);
@@ -910,12 +910,12 @@ begin
   r:=AddShortStrFmtDef('VarUtf8TextShort2',      'üü''''1',         'ShortString', []);
   r:=AddShortStrFmtDef('VarUtf8TextShortStr2',   'üü''''1',         'ShortString', []);
 
-  r:=AddStringFmtDef  ('ConstUtf8TextAnsiBad',     'a ''#170''b',         'AnsiString', []);
-  r:=AddShortStrFmtDef('ConstUtf8TextShortBad', 'a ''#170''b',         'ShortString', []);
-  r:=AddShortStrFmtDef('ConstUtf8TextShortStrBad', 'a ''#170''b',         'ShortString', []);
-  r:=AddStringFmtDef  ('VarUtf8TextAnsiBad',       'a ''#170''b',         'AnsiString', []);
-  r:=AddShortStrFmtDef('VarUtf8TextShortBad',   'a ''#170''b',         'ShortString', []);
-  r:=AddShortStrFmtDef('VarUtf8TextShortStrBad',   'a ''#170''b',         'ShortString', []);
+  r:=AddStringFmtDef  ('ConstUtf8TextAnsiBad',     'a ''#(170|\$AA)''b',         'AnsiString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortBad',    'a ''#(170|\$AA)''b',         'ShortString', []);
+  r:=AddShortStrFmtDef('ConstUtf8TextShortStrBad', 'a ''#(170|\$AA)''b',         'ShortString', []);
+  r:=AddStringFmtDef  ('VarUtf8TextAnsiBad',       'a ''#(170|\$AA)''b',         'AnsiString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortBad',      'a ''#(170|\$AA)''b',         'ShortString', []);
+  r:=AddShortStrFmtDef('VarUtf8TextShortStrBad',   'a ''#(170|\$AA)''b',         'ShortString', []);
 
   {%endregion    * Strings * }
 

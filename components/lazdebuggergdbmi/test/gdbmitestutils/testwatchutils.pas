@@ -31,6 +31,7 @@ type
      IgnKindDw2,
      IgnKindDw3,
      IgnKindSt,
+     acceptSkSimple, // also accept skSimple
 
      IgnKindPtr,           // Ignore skSimple, ONLY if got kind=skPointer
      IgnKindPtrDw,
@@ -491,14 +492,19 @@ begin
       else
       case wv.ResultData.ValueKind of
         rdkString:         s := 'skString';
+        rdkChar:           s := 'skChar';
         rdkWideString:     s := 'skWideString';
         rdkSignedNumVal:   s := 'skSimple';  // 'skInteger'
         rdkUnsignedNumVal: s := 'skSimple';
         rdkPointerVal:     s := 'skPointer';
         rdkFloatVal:       s := 'skFloat';
+        rdkEnum:           s := 'skEnum';
+        rdkEnumVal:        s := 'skEnumValue';
+        rdkBool:           s := 'skBoolean';
       end;
     end;
     WriteStr(s2, DataRes.ExpKind);
+    if (acceptSkSimple in DataRes.Flgs) and (s = 'skSimple') then s2 := 'skSimple';
     IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
       if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
@@ -645,6 +651,7 @@ end;
 
 initialization
   TheWatchPrinter := TWatchResultPrinter.Create;
+  TheWatchPrinter.FormatFlags := [];
 
 finalization
   FreeAndNil(Frx);
