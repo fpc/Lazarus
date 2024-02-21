@@ -1040,6 +1040,7 @@ var
 var
   CastName: String;
   WatchResConv: TFpWatchResultConvertor;
+  ddf: TDataDisplayFormat;
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1135,6 +1136,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     end;
 
 
+    ddf := ddfDefault;
+    if DispFormat = wdfMemDump then ddf := ddfMemDump;
     TiSym := ResValue.DbgSymbol;
     if (ResValue.Kind = skNone) and (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
       if GetTypeAsDeclaration(AResText, TiSym) then
@@ -1154,9 +1157,9 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     end
     else begin
       if defNoTypeInfo in EvalFlags then
-        FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
+        FPrettyPrinter.PrintValue(AResText, ResValue, ddf, RepeatCnt)
       else
-        FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
+        FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ddf, RepeatCnt);
     end;
     if not IsWatchValueAlive then exit;
 
@@ -1165,7 +1168,7 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       PasExpr.FixPCharIndexAccess := True;
       PasExpr.ResetEvaluation;
       ResValue := PasExpr.ResultValue;
-      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, DispFormat, RepeatCnt)) then
+      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, ddf, RepeatCnt)) then
         s := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
     end

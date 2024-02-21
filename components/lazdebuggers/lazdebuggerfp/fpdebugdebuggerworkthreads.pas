@@ -1127,6 +1127,7 @@ var
   WatchResConv: TFpLazDbgWatchResultConvertor;
   ResData: IDbgWatchDataIntf;
   i: Integer;
+  ddf: TDataDisplayFormat;
 begin
   Result := False;
   AResText := '';
@@ -1245,10 +1246,12 @@ begin
     PrettyPrinter := TFpPascalPrettyPrinter.Create(FExpressionScope.SizeOfAddress);
     PrettyPrinter.Context := FExpressionScope.LocationContext;
 
+    ddf := ddfDefault;
+    if ADispFormat = wdfMemDump then ddf := ddfMemDump;
     if defNoTypeInfo in AnEvalFlags then
-      Result := PrettyPrinter.PrintValue(AResText, ResValue, ADispFormat, ARepeatCnt)
+      Result := PrettyPrinter.PrintValue(AResText, ResValue, ddf, ARepeatCnt)
     else
-      Result := PrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ADispFormat, ARepeatCnt);
+      Result := PrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ddf, ARepeatCnt);
 
     // PCHAR/String
     if Result and APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
@@ -1256,7 +1259,7 @@ begin
       APasExpr.FixPCharIndexAccess := True;
       APasExpr.ResetEvaluation;
       ResValue := APasExpr.ResultValue;
-      if (ResValue=nil) or (not PrettyPrinter.PrintValue(ResText2, ResValue, ADispFormat, ARepeatCnt)) then
+      if (ResValue=nil) or (not PrettyPrinter.PrintValue(ResText2, ResValue, ddf, ARepeatCnt)) then
         ResText2 := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+ResText2;
     end;

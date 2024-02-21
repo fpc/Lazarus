@@ -888,7 +888,7 @@ begin
   if FRecurseCnt > 0 then begin
     PrettyPrinter := TFpPascalPrettyPrinter.Create(Context.SizeOfAddress);
     PrettyPrinter.Context := Context;
-    PrettyPrinter.PrintValue(s, AnFpValue, wdfDefault, 1, [], [ppvSkipClassBody]);
+    PrettyPrinter.PrintValue(s, AnFpValue, ddfDefault, 1, [], [ppvSkipClassBody]);
     AnResData.CreatePrePrinted(s);
     PrettyPrinter.Free;
     Result := True;

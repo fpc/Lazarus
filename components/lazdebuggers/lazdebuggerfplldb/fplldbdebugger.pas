@@ -1671,6 +1671,7 @@ var
   ClassAddr, CNameAddr: TFpDbgMemLocation;
   NameLen: QWord;
   WatchResConv: TFpWatchResultConvertor;
+  ddf: TDataDisplayFormat;
 begin
   Result := False;
 
@@ -1781,6 +1782,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     end;
 
 
+    ddf := ddfDefault;
+    if DispFormat = wdfMemDump then ddf := ddfMemDump;
     case ResValue.Kind of
       skNone: begin
           // maybe type
@@ -1805,9 +1808,9 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       else
       begin
         if defNoTypeInfo in EvalFlags then
-          FPrettyPrinter.PrintValue(AResText, ResValue, DispFormat, RepeatCnt)
+          FPrettyPrinter.PrintValue(AResText, ResValue, ddf, RepeatCnt)
         else
-          FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, DispFormat, RepeatCnt);
+          FPrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ddf, RepeatCnt);
       end;
     end;
     if not IsWatchValueAlive then exit;
@@ -1817,7 +1820,7 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       PasExpr.FixPCharIndexAccess := True;
       PasExpr.ResetEvaluation;
       ResValue := PasExpr.ResultValue;
-      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, DispFormat, RepeatCnt)) then
+      if (ResValue=nil) or (not FPrettyPrinter.PrintValue(s, ResValue, ddf, RepeatCnt)) then
         s := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+s;
     end
