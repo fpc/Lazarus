@@ -827,11 +827,25 @@ needed when the handle is allocated for the control, and before child
 controls are created. InitializeWnd calls the inherited method on entry.
 </p>
 <p>
-InitializeWnd calls <var>UpdateControl</var> to validate and update members 
-in the class instance.
+InitializeWnd updates the value in the Text property by calling ValueToStr. 
+This ensures that the Value property is range-limited to the settings 
+in MinValue and MaxValue (when needed). InitializeWnd calls UpdateControl to 
+validate and update members in the class instance using NullValue and 
+NullValueBehavior (when needed).
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TSpinEditExBase.GetLimitedValue"/>
+<link id="TSpinEditExBase.MinValue"/>
+<link id="TSpinEditExBase.MaxValue"/>
+<link id="TSpinEditExBase.NullValue"/>
+<link id="TSpinEditExBase.NullValueBehavior"/>
+<link id="TSpinEditExBase.UpdateControl"/>  
+<link id="TSpinEditExBase.Value"/>
+<link id="TSpinEditExBase.ValueToStr"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Text">TCustomAbstractGroupedEdit.Text</link>
+<link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+</seealso>
 </element>
 
 <element name="TSpinEditExBase.FinalizeWnd">
