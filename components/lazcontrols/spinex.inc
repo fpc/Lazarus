@@ -204,6 +204,9 @@ end;
 procedure TSpinEditExBase.InitializeWnd;
 begin
   inherited InitializeWnd;
+  // at this point Text will be empty, which in UpdateControl will invoke the NullValueBehaviour
+  // so make sure that Text will represent FValue now
+  Text := ValueToStr(FValue);
   UpdateControl;
 end;
 
