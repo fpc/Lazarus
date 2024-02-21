@@ -51,6 +51,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       TabOrder = 4
+      OnClick = btnApplyClick
     end
   end
   object ToolBar: TToolBar
@@ -64,13 +65,13 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Left = 1
       Top = 2
       Caption = 'tbNewItem'
-      OnClick = tbNewItemSubItemClick
+      OnClick = tbNewItemClick
     end
     object tbNewSubItem: TToolButton
       Left = 24
       Top = 2
       Caption = 'tbNewSubItem'
-      OnClick = tbNewItemSubItemClick
+      OnClick = tbNewItemClick
     end
     object tb1: TToolButton
       Left = 47
@@ -134,6 +135,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
       Left = 182
       Top = 2
       Caption = 'tbOpen'
+      OnClick = tbOpenClick
     end
   end
   object pnlImageIndexes: TPanel

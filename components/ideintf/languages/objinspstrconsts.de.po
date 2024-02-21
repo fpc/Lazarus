@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-18 01:21+0100\n"
+"PO-Revision-Date: 2024-02-21 23:55+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -242,11 +242,11 @@ msgstr "&Name:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset fields list."
-msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen"
+msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen."
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen"
+msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -1720,13 +1720,19 @@ msgstr "Editor für TreeView-Einträge"
 msgid "Confirmation"
 msgstr "Bestätigung"
 
-#: objinspstrconsts.sccstredtconfirmationimages
+#: objinspstrconsts.sccstredtconfirmationfilereplace
+msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
+msgid "The file already exists, replace it?"
+msgstr "Die Datei existiert bereits. Soll sie ersetzt werden?"
+
+#: objinspstrconsts.sccstredtconfirmationimagesloss
+msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgstr "Information über die Knoten-Bilder kann nicht in der Datei gespeichert werden. Trotzdem fortfahren?"
 
-#: objinspstrconsts.sccstredtconfirmationreplace
-msgid "The file already exists, replace it?"
-msgstr "Die Datei existiert bereits. Soll sie ersetzt werden?"
+#: objinspstrconsts.sccstredtconfirmationtreereplace
+msgid "The current tree will be overwritten, continue?"
+msgstr "Der aktuelle Baum wird überschrieben. Fortfahren?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1734,16 +1740,14 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: objinspstrconsts.sccstredtimagelistnotassigned
-#, object-pascal-format, fuzzy
-#| msgid "%s not assigned."
+#, object-pascal-format
 msgid "\"%s\" not assigned"
-msgstr "%s nicht zugewiesen."
+msgstr "%s nicht zugewiesen"
 
 #: objinspstrconsts.sccstredtinvalidindex
-#, object-pascal-format, fuzzy
-#| msgid "%s has only %d images."
+#, object-pascal-format
 msgid "\"%s\" has only %d images"
-msgstr "%s enthält nur %d Bilder."
+msgstr "%s enthält nur %d Bilder"
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1751,18 +1755,21 @@ msgid "Item"
 msgstr "Eintrag"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index"
-msgstr "Bildindex"
+msgid "Image Index%s:"
+msgstr "Bildindex %s:"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index"
-msgstr "Ausgewählter Index"
+#, object-pascal-format
+msgid "Selected Index%s:"
+msgstr "Ausgewählter Index %s:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index"
-msgstr "Statusindex"
+msgid "State Index%s:"
+msgstr "Statusindex %s:"
 
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
@@ -1780,7 +1787,7 @@ msgstr "&Nein"
 
 #: objinspstrconsts.sccstredtopen
 msgid "Open file"
-msgstr ""
+msgstr "Datei öffnen"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1864,4 +1871,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

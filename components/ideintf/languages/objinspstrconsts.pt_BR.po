@@ -1716,12 +1716,18 @@ msgstr "Editor Itens \"TreeView\""
 msgid "Confirmation"
 msgstr ""
 
-#: objinspstrconsts.sccstredtconfirmationimages
+#: objinspstrconsts.sccstredtconfirmationfilereplace
+msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
+msgid "The file already exists, replace it?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimagesloss
+msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgstr ""
 
-#: objinspstrconsts.sccstredtconfirmationreplace
-msgid "The file already exists, replace it?"
+#: objinspstrconsts.sccstredtconfirmationtreereplace
+msgid "The current tree will be overwritten, continue?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
@@ -1745,17 +1751,23 @@ msgid "Item"
 msgstr "Item"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Image Index"
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index"
+msgid "Image Index%s:"
 msgstr "Índice Imagem"
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Selected Index"
+msgid "Selected Index%s:"
 msgstr "Índice Selecionado"
 
 #: objinspstrconsts.sccstredtlabelstateindex
+#, object-pascal-format, fuzzy, badformat
+#| msgid "State Index"
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index"
+msgid "State Index%s:"
 msgstr "Índice Estado"
 
 #: objinspstrconsts.sccstredtnewitem

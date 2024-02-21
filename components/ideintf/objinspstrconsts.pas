@@ -104,9 +104,9 @@ resourcestring
   sccsTrEdtApply           = 'Apply';
   sccsTrEdtOpen            = 'Open file';
   sccsTrEdtSave            = 'Save to file';
-  sccsTrEdtLabelImageIndex = 'Image Index';
-  sccsTrEdtLabelSelIndex   = 'Selected Index';
-  sccsTrEdtLabelStateIndex = 'State Index';
+  sccsTrEdtLabelImageIndex = 'Image Index%s:';
+  sccsTrEdtLabelSelIndex   = 'Selected Index%s:';
+  sccsTrEdtLabelStateIndex = 'State Index%s:';
   sccsTrEdtItem            = 'Item';
   sccsTrEdtOpenDialog      = 'Open';
   sccsTrEdtSaveDialog      = 'Save';
@@ -115,9 +115,10 @@ resourcestring
   sccsTrEdtCancel          = '&Cancel';
   sccsTrEdtInvalidIndex         = '"%s" has only %d images';
   sccsTrEdtImageListNotAssigned = '"%s" not assigned';
-  sccsTrEdtConfirmationCaption  = 'Confirmation';
-  sccsTrEdtConfirmationImages   = 'Information about node images cannot be stored in the file. Continue anyway?';
-  sccsTrEdtConfirmationReplace  = 'The file already exists, replace it?';
+  sccsTrEdtConfirmationCaption     = 'Confirmation';
+  sccsTrEdtConfirmationImagesLoss  = 'Information about node images cannot be stored in the file. Continue anyway?';
+  sccsTrEdtConfirmationFileReplace = 'The file already exists, replace it?';
+  sccsTrEdtConfirmationTreeReplace = 'The current tree will be overwritten, continue?';
 
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';

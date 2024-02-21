@@ -1717,12 +1717,18 @@ msgstr "Edytor elementów TreeView"
 msgid "Confirmation"
 msgstr ""
 
-#: objinspstrconsts.sccstredtconfirmationimages
+#: objinspstrconsts.sccstredtconfirmationfilereplace
+msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
+msgid "The file already exists, replace it?"
+msgstr ""
+
+#: objinspstrconsts.sccstredtconfirmationimagesloss
+msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgstr ""
 
-#: objinspstrconsts.sccstredtconfirmationreplace
-msgid "The file already exists, replace it?"
+#: objinspstrconsts.sccstredtconfirmationtreereplace
+msgid "The current tree will be overwritten, continue?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtdelete
@@ -1746,17 +1752,20 @@ msgid "Item"
 msgstr "Element"
 
 #: objinspstrconsts.sccstredtlabelimageindex
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
-msgid "Image Index"
+msgid "Image Index%s:"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabelselindex
-msgid "Selected Index"
+#, object-pascal-format
+msgid "Selected Index%s:"
 msgstr ""
 
 #: objinspstrconsts.sccstredtlabelstateindex
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
-msgid "State Index"
+msgid "State Index%s:"
 msgstr ""
 
 #: objinspstrconsts.sccstredtnewitem
