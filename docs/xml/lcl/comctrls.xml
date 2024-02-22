@@ -33122,9 +33122,9 @@ TEdit control created when the BeginEditing method is called.
 <link id="TCustomTreeView.EndEditing"/>
 <link id="TCustomTreeView.OnEdited"/>
 <link id="TCustomTreeView.OnEditingEnd"/>
-<link id="TCustomTreeView.OnEditingDone"/>
 <link id="TCustomTreeView.BeginEditing"/>
 <link id="TTreeNode.Text"/>
+<link id="#lcl.stdctrls.TEdit.OnEditingDone">TEdit.OnEditingDone</link>
 <link id="#lcl.controls.TWinControl.SetFocus">TWinControl.SetFocus</link>
 </seealso>
 </element>
@@ -33180,9 +33180,9 @@ control created in the BeginEditing method.
 <link id="TCustomTreeView.EndEditing"/>
 <link id="TCustomTreeView.OnEdited"/>
 <link id="TCustomTreeView.OnEditingEnd"/>
-<link id="TCustomTreeView.OnEditingDone"/>
 <link id="TCustomTreeView.BeginEditing"/>
 <link id="TTreeNode.Text"/>
+<link id="#lcl.stdctrls.TEdit.OnEditingDone">TEdit.OnEditingDone</link>
 <link id="#lcl.controls.TWinControl.SetFocus">TWinControl.SetFocus</link>
 </seealso>
 </element>
