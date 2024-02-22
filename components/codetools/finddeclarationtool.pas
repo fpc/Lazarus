@@ -6630,7 +6630,7 @@ var
       //debugln(' Found=',dbgs(Found));
       Node:=Params.NewNode;
       if Found and (Node<>nil) then begin
-        if ((Node.Desc=ctnUseUnit) or (Node.Parent.Desc=ctnUseUnit))
+        if ((Node.Desc=ctnUseUnit) or ((Node.Parent<>nil) and (Node.Parent.Desc=ctnUseUnit)))
             and (Params.NewCodeTool=Self) then begin
           // identifier is a unit reference
           if (DeclarationNode.Desc=ctnSrcName)
