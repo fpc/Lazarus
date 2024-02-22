@@ -8119,10 +8119,8 @@ begin
     if AFilename = '' then
       AFilename := 'Project1';
     // Filename extension
-    Assert((ExtractFileExt(AFilename)='') or FilenameIsPascalSource(AFilename),
-           'ShowSaveProjectAsDialog: '+AFilename+' is not Pascal source.');
     Ext := '.lpi';
-    AFilename := ChangeFileExt(AFilename, Ext);
+    AFilename := AFilename + Ext;
 
     SaveDialog := IDESaveDialogClass.Create(nil);
     try
