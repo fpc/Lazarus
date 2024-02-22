@@ -33101,10 +33101,32 @@ Signals the OnAddition event handler (when assigned).
 
 <element name="TCustomTreeView.EditorEditingDone">
 <short>
-Implements the OnEditingDone event handler for the Editor in the control.
+Implements the OnEditingDone event handler for a tree node editor on the 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Performs actions when the editor has finished editing a tree node on the 
+control. It calls EndEditing to update state flags, and to signal assigned 
+OnEdited and OnEditingEnd events handlers when the Text for the tree node is 
+changed. It calls SetFocus to restore focus to the tree view control if the 
+editor was assigned and had focus on entry to the method.
+</p>
+<p>
+EditorEditingDone is used as the OnEditingDone event handler for the internal 
+TEdit control created when the BeginEditing method is called.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.EditingItem"/>
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TCustomTreeView.OnEdited"/>
+<link id="TCustomTreeView.OnEditingEnd"/>
+<link id="TCustomTreeView.OnEditingDone"/>
+<link id="TCustomTreeView.BeginEditing"/>
+<link id="TTreeNode.Text"/>
+<link id="#lcl.controls.TWinControl.SetFocus">TWinControl.SetFocus</link>
+</seealso>
 </element>
 <element name="TCustomTreeView.EditorEditingDone.Sender">
 <short>Object for the event notification.</short>
@@ -33112,10 +33134,57 @@ Implements the OnEditingDone event handler for the Editor in the control.
 
 <element name="TCustomTreeView.EditorKeyDown">
 <short>
-Implements the OnKeyDown event handler for the Editor in the control.
+Implements the OnKeyDown event handler for the editor on the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>EditorKeyDown</var> ensures that key down events and focus change are 
+handled for the tree node editor on the control.
+</p>
+<p>
+<var>Key</var> and <var>Shift</var> contain the virtual key code and shift 
+modifier(s) for the key down event. Virtual key codes handled in the method 
+include:
+</p>
+<dl>
+<dt>Return (VK_RETURN)</dt>
+<dd>
+Ends editing and accepts the changed valued in the Text for the tree node in 
+EditingItem.
+</dd>
+<dt>Escape (VK_ESCAPE)</dt>
+<dd>
+Ends editing but rejects any change to the text for the EditingItem.
+</dd>
+</dl>
+<p>
+Shift must be an empty set ([]) to handle these virtual key codes in the method.
+</p>
+<p>
+EditorKeyDown calls EndEditing to update state flags, and to signal assigned 
+OnEdited and OnEditingEnd events handlers when the Text for the tree node is 
+changed. It calls SetFocus to restore focus to the tree view control if the 
+tree node editor was assigned and had focus on entry to the method.
+</p>
+<p>
+The value in Key is set to 0 to if the virtual key code is handled in the 
+method.
+</p>
+<p>
+EditorKeyDown is used as the OnKeyDown event handler for the internal TEdit 
+control created in the BeginEditing method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.EditingItem"/>
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TCustomTreeView.OnEdited"/>
+<link id="TCustomTreeView.OnEditingEnd"/>
+<link id="TCustomTreeView.OnEditingDone"/>
+<link id="TCustomTreeView.BeginEditing"/>
+<link id="TTreeNode.Text"/>
+<link id="#lcl.controls.TWinControl.SetFocus">TWinControl.SetFocus</link>
+</seealso>
 </element>
 <element name="TCustomTreeView.EditorKeyDown.Sender">
 <short>Object for the event notification.</short>
