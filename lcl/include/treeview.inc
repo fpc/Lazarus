@@ -6498,7 +6498,7 @@ procedure TCustomTreeView.EditorEditingDone(Sender: TObject);
 var
   WasFocused: Boolean;
 begin
-  WasFocused := (FEditor<>nil) and FEditor.Focused;
+  WasFocused := Assigned(FEditor) and FEditor.Focused;
   EndEditing;
   if WasFocused then
     SetFocus;
@@ -6509,7 +6509,7 @@ procedure TCustomTreeView.EditorKeyDown(Sender: TObject; var Key: Word;
 var
   WasFocused: Boolean;
 begin
-  if (Key = VK_ESCAPE) or (Key = VK_RETURN) then
+  if (Key in [VK_RETURN, VK_ESCAPE]) and (Shift = []) then
   begin
     WasFocused := Assigned(FEditor) and FEditor.Focused;
     EndEditing(Key = VK_ESCAPE);
