@@ -291,6 +291,7 @@ type
     procedure SetMasked(const AValue: boolean);
     procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
+    function GetHandle: TLCLHandle;
     function GetReference(AImageWidth: Integer): TWSCustomImageListReference;
     function GetReferenceForPPI(AImageWidth, APPI: Integer): TWSCustomImageListReference;
     function GetResolutionForPPI(AImageWidth, APPI: Integer;
@@ -401,6 +402,7 @@ type
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
     property Count: Integer read GetCount;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
+    property Handle: TLCLHandle read GetHandle;
     property Height: Integer read FHeight write SetHeight default 16;
     property HeightForPPI[AImageWidth, APPI: Integer]: Integer read GetHeightForPPI;
     property HeightForWidth[AWidth: Integer]: Integer read GetHeightForWidth;

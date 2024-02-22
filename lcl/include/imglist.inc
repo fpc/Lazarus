@@ -2174,6 +2174,11 @@ begin
       for nIndex := 0 to Count - 1 do TChangeLink(Items[nIndex]).Change
 end;
 
+function TCustomImageList.GetHandle: TLCLHandle;
+begin
+  Result := ResolutionByIndex[0].Reference.Handle;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.WriteDefData
   Params:  AStream: The stream to write the data to
