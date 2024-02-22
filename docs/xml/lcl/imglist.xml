@@ -357,6 +357,24 @@ method in TCustomImageList.
 <short>Number of images that require data storage.</short>
 </element>
 
+<element name="TCustomImageList.GetHandle">
+<short>
+Gets the value for the Handle property.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TImageList.Handle"/>
+</seealso>
+</element>
+<element name="TCustomImageList.GetHandle.Result">
+<short>
+Value for the Handle property.
+</short>
+</element>
+
 <element name="TCustomImageListResolution.GetReference">
 <short>Gets the value for the Reference property.</short>
 <seealso>
@@ -6009,6 +6027,45 @@ default drawing style for images in the image list.
 </descr>
 <seealso>
 <link id="TDrawingStyle"/>
+</seealso>
+</element>
+
+<element name="TCustomImageList.Handle">
+<short>
+Contains the handle for the default image resolution in the image list.
+</short>
+<descr>
+<p>
+<var>Handle</var> is a read-only <var>TLCLHandle</var> property property which 
+contains the handle for the image list with the images using the default 
+Height. ResolutionByIndex is used to get the Reference member for the first 
+image resolution in the internal list. The property value is the handle 
+allocated for the image list in the widgetset class instance.
+</p>
+<p>
+To access other image resolutions, use one of the following:
+</p>
+<ul>
+<li>Resolution</li>
+<li>ResolutionByIndex</li>
+<li>ResolutionForPPI</li>
+<li>Resolutions</li>
+</ul>
+<p>
+Use the Reference in the target resolution to access its Handle property.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomImageList.Resolution"/>
+<link id="TCustomImageList.Resolutions"/>
+<link id="TCustomImageList.ResolutionByIndex"/>
+<link id="TCustomImageList.ResolutionForPPI"/>
+<link id="TCustomImageListResolution.Reference"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+<link id="#lcl.wsreferences.TWSCustomImageListReference">TWSCustomImageListReference</link>
 </seealso>
 </element>
 
