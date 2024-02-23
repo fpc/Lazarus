@@ -13,6 +13,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -38,7 +39,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     ShowBevel = False
     object btnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 379
+      Left = 357
       Height = 26
       Hint = '[Shift+Enter]'
       Top = 0
@@ -140,48 +141,47 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   end
   object pnlImageIndexes: TPanel
     Left = 0
-    Height = 37
+    Height = 27
     Top = 26
     Width = 635
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.TopBottomSpacing = 2
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
-    ClientHeight = 37
+    ClientHeight = 27
     ClientWidth = 635
     TabOrder = 1
     object pnlImageIndex: TPanel
       Left = 6
-      Height = 25
-      Top = 6
+      Height = 23
+      Top = 2
       Width = 124
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 25
+      ClientHeight = 23
       ClientWidth = 124
       TabOrder = 0
       object lblImageIndex: TLabel
         Left = 0
-        Height = 19
-        Top = 6
+        Height = 23
+        Top = 0
         Width = 68
         Align = alClient
-        BorderSpacing.Top = 6
         Caption = 'Image Index:'
+        Layout = tlCenter
         ParentColor = False
       end
       object spnImageIndex: TSpinEdit
         Left = 74
         Height = 23
-        Top = 2
+        Top = 0
         Width = 50
         Align = alRight
         Alignment = taRightJustify
         BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
         MaxValue = 99999
         MinValue = -1
         TabOrder = 0
@@ -191,34 +191,33 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object pnlSelectedIndex: TPanel
       Left = 142
-      Height = 25
-      Top = 6
+      Height = 23
+      Top = 2
       Width = 135
       AutoSize = True
       BorderSpacing.Left = 12
       BevelOuter = bvNone
-      ClientHeight = 25
+      ClientHeight = 23
       ClientWidth = 135
       TabOrder = 1
       object lblSelectedIndex: TLabel
         Left = 0
-        Height = 19
-        Top = 6
+        Height = 23
+        Top = 0
         Width = 79
         Align = alClient
-        BorderSpacing.Top = 6
         Caption = 'Selected index:'
+        Layout = tlCenter
         ParentColor = False
       end
       object spnSelectedIndex: TSpinEdit
         Left = 85
         Height = 23
-        Top = 2
+        Top = 0
         Width = 50
         Align = alRight
         Alignment = taRightJustify
         BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
         MaxValue = 99999
         MinValue = -1
         TabOrder = 0
@@ -228,34 +227,33 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     end
     object pnlStateIndex: TPanel
       Left = 289
-      Height = 25
-      Top = 6
+      Height = 23
+      Top = 2
       Width = 117
       AutoSize = True
       BorderSpacing.Left = 12
       BevelOuter = bvNone
-      ClientHeight = 25
+      ClientHeight = 23
       ClientWidth = 117
       TabOrder = 2
       object lblStateIndex: TLabel
         Left = 0
-        Height = 19
-        Top = 6
+        Height = 23
+        Top = 0
         Width = 61
         Align = alClient
-        BorderSpacing.Top = 6
         Caption = 'State Index:'
+        Layout = tlCenter
         ParentColor = False
       end
       object spnStateIndex: TSpinEdit
         Left = 67
         Height = 23
-        Top = 2
+        Top = 0
         Width = 50
         Align = alRight
         Alignment = taRightJustify
         BorderSpacing.Left = 6
-        BorderSpacing.Top = 2
         MaxValue = 99999
         MinValue = -1
         TabOrder = 0
@@ -266,15 +264,16 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   end
   object treEditor: TTreeView
     Left = 6
-    Height = 225
-    Top = 63
+    Height = 231
+    Top = 57
     Width = 623
     Align = alClient
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 4
     BorderSpacing.Right = 6
     HideSelection = False
     TabOrder = 2
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnSelectionChanged = treEditorSelectionChanged
   end
   object dlgOpen: TOpenDialog

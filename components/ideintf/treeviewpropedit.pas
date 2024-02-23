@@ -59,6 +59,7 @@ type
     tbOpen: TToolButton;
     treEditor: TTreeView;
     procedure btnApplyClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -73,6 +74,7 @@ type
   private
     fModified: Boolean;
     fTreeView: TCustomTreeView;
+    procedure FinishNodeEditing;
     procedure LoadFromTree(aTreeView: TCustomTreeView);
     procedure SaveToSourceTree;
     procedure UpdateEnabledStates;
@@ -117,6 +119,11 @@ begin
 end;
 
 { TTreeViewItemsEditorForm }
+
+procedure TTreeViewItemsEditorForm.FormActivate(Sender: TObject);
+begin
+  Constraints.MinWidth := pnlStateIndex.Left + pnlStateIndex.Width + pnlImageIndex.Left;
+end;
 
 procedure TTreeViewItemsEditorForm.FormCreate(Sender: TObject);
 begin
@@ -292,6 +299,8 @@ procedure TTreeViewItemsEditorForm.tbNewItemClick(Sender: TObject);
 var
   lNewName: String;
 begin
+  FinishNodeEditing;
+
   lNewName := sccsTrEdtItem + IntToStr(treEditor.Items.Count);
   if Sender = tbNewItem then
     treEditor.Selected := treEditor.Items.Add(treEditor.Selected, lNewName)
@@ -316,6 +325,8 @@ begin
   lCurNode := treEditor.Selected;
   if lCurNode = nil then exit;
 
+  FinishNodeEditing;
+
   if Sender = tbMoveUp then
   begin
     if lCurNode.GetPrevSibling = nil then exit;
@@ -327,6 +338,8 @@ begin
     lCurNode.MoveTo(lCurNode.GetNextSibling, naInsertBehind);
   end else
     raise Exception.Create('[tbMoveClick] Unknown Sender');
+
+  treEditor.SetFocus;
 
   UpdateEnabledStates;
 end;
@@ -364,6 +377,7 @@ end;
 
 procedure TTreeViewItemsEditorForm.btnApplyClick(Sender: TObject);
 begin
+  FinishNodeEditing;
   SaveToSourceTree;
 end;
 
@@ -392,7 +406,7 @@ begin
 end;
 
 procedure TTreeViewItemsEditorForm.tbOpenClick(Sender: TObject);
-  //
+
   function ConfirmTreeReplace: boolean;
   begin
     if treEditor.Items.Count > 0 then
@@ -402,8 +416,10 @@ procedure TTreeViewItemsEditorForm.tbOpenClick(Sender: TObject);
     else
       result := true;
   end;
-  //
+
 begin
+  FinishNodeEditing;
+
   if ConfirmTreeReplace and dlgOpen.Execute then
   begin
     treEditor.LoadFromFile(dlgOpen.FileName);
@@ -416,7 +432,7 @@ begin
 end;
 
 procedure TTreeViewItemsEditorForm.tbSaveClick(Sender: TObject);
-  //
+
   function ImagesFound: boolean;
   var
     i: Integer;
@@ -429,7 +445,7 @@ procedure TTreeViewItemsEditorForm.tbSaveClick(Sender: TObject);
         exit(true);
     result := false;
   end;
-  //
+
   function ConfirmImagesLoss: boolean;
   begin
     if ImagesFound then
@@ -439,7 +455,7 @@ procedure TTreeViewItemsEditorForm.tbSaveClick(Sender: TObject);
     else
       result := true;
   end;
-  //
+
   function ConfirmFileReplace: boolean;
   begin
     if FileExists(dlgSave.FileName) then
@@ -449,8 +465,10 @@ procedure TTreeViewItemsEditorForm.tbSaveClick(Sender: TObject);
     else
       result := true;
   end;
-  //
+
 begin
+  FinishNodeEditing;
+
   if ConfirmImagesLoss and dlgSave.Execute and ConfirmFileReplace then
     treEditor.SaveToFile(dlgSave.FileName);
 end;
@@ -459,10 +477,12 @@ procedure TTreeViewItemsEditorForm.spnIndexChange(Sender: TObject);
 begin
   if Assigned(treEditor.Selected) then
   begin
-    treEditor.Selected.ImageIndex    := spnImageIndex   .Value;
-    treEditor.Selected.SelectedIndex := spnSelectedIndex.Value;
-    treEditor.Selected.StateIndex    := spnStateIndex   .Value;
-
+    treEditor.Selected.ImageIndex := spnImageIndex.Value;
+    treEditor.Selected.StateIndex := spnStateIndex.Value;
+    if Sender = spnImageIndex then
+      spnSelectedIndex.Value := spnImageIndex.Value
+    else
+      treEditor.Selected.SelectedIndex := spnSelectedIndex.Value;
     UpdateImageHints;
   end;
 end;
@@ -472,6 +492,8 @@ procedure TTreeViewItemsEditorForm.UpdateImageHints;
   //
   procedure UpdateImageHint(aSpinEdit: TSpinEdit;
     aIsStateImages: boolean; aLabel: TLabel; aCaption: string);
+  const
+    MAYBE_ASTERISK: array[boolean] of String[1] = ('', '*');
   var
     lImageList: TCustomImageList;
     lPropName: string;
@@ -506,10 +528,7 @@ procedure TTreeViewItemsEditorForm.UpdateImageHints;
       aLabel.ShowHint := false;
 
     // show asterisk if necessary
-    if aLabel.ShowHint then
-      aLabel.Caption := Format(aCaption, ['*'])
-    else
-      aLabel.Caption := Format(aCaption, ['']);
+    aLabel.Caption := Format(aCaption, [MAYBE_ASTERISK[aLabel.ShowHint]]);
   end;
   //
 begin
@@ -519,6 +538,15 @@ begin
     UpdateImageHint(spnSelectedIndex, false, lblSelectedIndex, sccsTrEdtLabelSelIndex);
     UpdateImageHint(spnStateIndex,    true,  lblStateIndex,    sccsTrEdtLabelStateIndex);
   end;
+end;
+
+procedure TTreeViewItemsEditorForm.FinishNodeEditing;
+begin
+  if treEditor.IsEditing then
+    if treEditor.Items.Count > 0 then
+      treEditor.Items[0].EndEdit(false);
+    // Quick-and-dirty way to end editing and accepting the edited text
+    // no matter if the edited node was selected or not.
 end;
 
 procedure TTreeViewItemsEditorForm.LoadFromTree(aTreeView: TCustomTreeView);
