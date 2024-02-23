@@ -1019,6 +1019,7 @@ end;
 class procedure TWin32WSCustomListView.EndUpdate(const ALV: TCustomListView);
 var
   ColIndex : Integer;
+  WasFocused: Boolean;
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate')
   then Exit;
@@ -1032,6 +1033,10 @@ begin
   // column resizing, but this way we we can really enforce it).
   // ShowWindow() itself does not force an immediate redraw,
   // so it won't flicker at all.
+
+  // If parent of the listview is not the form itself, then
+  // hiding it may cause it to loose focus. Issue #40786
+  WasFocused := ALV.Focused;
   ShowWindow(ALV.Handle, SW_HIDE);
   for ColIndex := 0 to TCustomListViewAccess(ALV).Columns.Count - 1 do
     if ALV.Column[ColIndex].AutoSize
@@ -1040,6 +1045,8 @@ begin
   SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(True),0);
   if ALV.Visible then
     ShowWindow(ALV.Handle, SW_SHOW);
+  if WasFocused and ALV.CanSetFocus then
+    ALV.SetFocus;
 end;
 
 class function TWin32WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
