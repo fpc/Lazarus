@@ -278,8 +278,17 @@ begin
   CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
   CurUnitname:=ExtractFileNameOnly(DeclCode.Filename);
 
-  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=',dbgs(DeclarationCaretXY));
+  // ToDo: Support renaming and saving a unit also here.
+  // Now just inform a user that renaming is not possible.
+  if CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+  begin
+    IDEMessageDialog(srkmecRenameIdentifier,
+      lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
+      mtInformation,[mbCancel],'');
+    exit(mrCancel);
+  end;
 
+  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=',dbgs(DeclarationCaretXY));
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
@@ -395,13 +404,6 @@ begin
 
     // rename identifier
     if Options.Rename then begin
-      if CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
-      begin
-        IDEMessageDialog(srkmecRenameIdentifier,
-          lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
-          mtInformation,[mbCancel],'');
-        exit(mrCancel);
-      end;
       OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
@@ -410,8 +412,7 @@ begin
         then begin
           LazarusIDE.DoJumpToCodeToolBossError;
           debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
-          Result:=mrCancel;
-          exit;
+          exit(mrCancel);
         end;
       finally
         LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
