@@ -646,21 +646,24 @@ end;
 procedure TFPDSendWatchEvaluateCommand.DoOnCommandSuccesfull(ACommandResponse: TJSonObject);
 var
   s: string;
-  i: TDebuggerDataState;
+  i, V: TDebuggerDataState;
 begin
   inherited DoOnCommandSuccesfull(ACommandResponse);
 
   if assigned(FWatchValue) then
     begin
-    FWatchValue.Value:=ACommandResponse.Get('message','');
+    FWatchValue.BeginUpdate;
+    FWatchValue.ResData.CreatePrePrinted(ACommandResponse.Get('message',''));
     s := ACommandResponse.Get('validity','');
-    FWatchValue.Validity:=ddsError;
+    V := ddsError;
     for i := low(TDebuggerDataState) to high(TDebuggerDataState) do
       if DebuggerDataStateStr[i]=s then
         begin
-        FWatchValue.Validity:=i;
+        V :=i;
         break;
         end;
+    FWatchValue.Validity:=V;
+    FWatchValue.EndUpdate;
     end;
 end;
 

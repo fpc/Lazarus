@@ -1717,8 +1717,7 @@ begin
         Result := True;
         AResText := ErrorHandler.ErrorAsString(PasExpr.Error);
         if AWatchValue <> nil then begin
-          AWatchValue.Value    := AResText;
-          AWatchValue.Validity := ddsError;
+          AWatchValue.ResData.CreateError(AResText);
         end;
         exit;
       end;
@@ -1796,7 +1795,7 @@ begin
             Result := True;
             if AWatchValue <> nil then begin
               if not IsWatchValueAlive then exit;
-              AWatchValue.Value    := AResText;
+              AWatchValue.ResData.CreatePrePrinted(AResText);
               AWatchValue.Validity := ddsValid; // TODO ddsError ?
             end;
             exit;
@@ -1829,12 +1828,15 @@ begin
       Result := True;
       debugln(DBG_VERBOSE, ['TFPLldbWatches.InternalRequestData   GOOOOOOD ', AExpression]);
       if AWatchValue <> nil then begin
-        AWatchValue.Value    := AResText;
         AWatchValue.TypeInfo := ATypeInfo;
-        if IsError(ResValue.LastError) then
-          AWatchValue.Validity := ddsError
-        else
+        if IsError(ResValue.LastError) then begin
+          AWatchValue.ResData.CreateError(AResText);
+          AWatchValue.Validity := ddsError;
+        end
+        else begin
+          AWatchValue.ResData.CreatePrePrinted(AResText);
           AWatchValue.Validity := ddsValid;
+        end;
       end;
     end;
 

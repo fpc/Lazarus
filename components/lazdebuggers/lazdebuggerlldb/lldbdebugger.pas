@@ -2561,9 +2561,11 @@ procedure TLldbDebuggerCommandEvaluate.EvalInstructionSucceeded(Sender: TObject
   );
 begin
   if FWatchValue <> nil then begin
-    FWatchValue.Value := FInstr.Res;
+    FWatchValue.BeginUpdate;
+    FWatchValue.ResData.CreatePrePrinted(FInstr.Res);
     //FWatchValue.TypeInfo := TypeInfo;
     FWatchValue.Validity := ddsValid;
+    FWatchValue.EndUpdate;
   end
   else
   if FCallback <> nil then

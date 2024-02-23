@@ -78,7 +78,6 @@ type
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState; virtual;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
-    procedure SetValue(AValue: String); virtual;
     procedure SetTypeInfo(AValue: TDBGType);
     procedure SetTypeInfo(AValue: TDBGTypeBase);
 
@@ -113,7 +112,7 @@ type
   public
     property Watch: TWatch read FWatch write SetWatch;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
-    property Value: String read GetValue write SetValue;
+    property Value: String read GetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
     property ResultData: TWatchResultData read GetResultData;
   end;
@@ -460,11 +459,6 @@ end;
 function TWatchValue.GetThreadId: Integer;
 begin
   Result := FThreadId;
-end;
-
-procedure TWatchValue.SetValue(AValue: String);
-begin
-  assert(False, 'TWatchValue.SetValue: False');
 end;
 
 procedure TWatchValue.SetTypeInfo(AValue: TDBGType);

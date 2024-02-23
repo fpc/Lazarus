@@ -93,7 +93,6 @@ type
     function GetTypeInfo: TDBGType; override;
     function GetValidity: TDebuggerDataState; override;
     function GetValue: String; override;
-    procedure SetValue(AValue: String); override;
   public
     constructor Create(AOwnerWatch: TWatch;
                        const AThreadId: Integer;
@@ -476,13 +475,6 @@ begin
     ddsInvalid:                  Result := '<invalid>';
     ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
   end;
-end;
-
-procedure TTestWatchValue.SetValue(AValue: String);
-begin
-  BeginUpdate;
-  ResData.CreatePrePrinted(AValue);
-  EndUpdate;
 end;
 
 constructor TTestWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;

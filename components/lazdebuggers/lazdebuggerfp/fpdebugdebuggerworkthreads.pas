@@ -1150,8 +1150,9 @@ begin
       ErrorHandler.OnErrorTextLookup := @GetErrorText;
       AResText := ErrorHandler.ErrorAsString(APasExpr.Error);
       if FWatchValue <> nil then begin
-        FWatchValue.Value := AResText;
-        FWatchValue.Validity := ddsError;
+        FWatchValue.BeginUpdate;
+        FWatchValue.ResData.CreateError(AResText);
+        FWatchValue.EndUpdate;
       end;
       exit;
     end;
@@ -1160,8 +1161,9 @@ begin
     if ResValue = nil then begin
       AResText := 'Error';
       if FWatchValue <> nil then begin
-        FWatchValue.Value := AResText;
-        FWatchValue.Validity := ddsError;
+        FWatchValue.BeginUpdate;
+        FWatchValue.ResData.CreateError(AResText);
+        FWatchValue.EndUpdate;
       end;
       exit;
     end;
@@ -1268,9 +1270,11 @@ begin
     if not Result then
       FreeAndNil(ATypeInfo);
     if FWatchValue <> nil then begin
-      FWatchValue.Value := AResText;
+      FWatchValue.BeginUpdate;
+      FWatchValue.ResData.CreatePrePrinted(AResText);
       FWatchValue.TypeInfo := ATypeInfo;
       FWatchValue.Validity := ddsValid;
+      FWatchValue.EndUpdate;
     end;
   finally
     PrettyPrinter.Free;

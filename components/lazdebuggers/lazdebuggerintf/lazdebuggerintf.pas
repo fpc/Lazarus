@@ -246,9 +246,7 @@ type
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState;
     procedure SetTypeInfo(AValue: TDBGTypeBase);
-    function GetValue: String; // FpGdbmiDebugger
     procedure SetValidity(AValue: TDebuggerDataState);
-    procedure SetValue(AValue: String);
 
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
     property FirstIndexOffs: Int64 read GetFirstIndexOffs;
@@ -258,7 +256,6 @@ type
     property Expression: String read GetExpression;
 
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
-    property Value: String read GetValue write SetValue;
     property TypeInfo: TDBGTypeBase {read GetTypeInfo} write SetTypeInfo;
   end;
 

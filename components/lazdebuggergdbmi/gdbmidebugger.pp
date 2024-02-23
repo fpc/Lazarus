@@ -14713,7 +14713,7 @@ begin
           end;
         end;
 
-        FWatchValue.Value := FTextValue;
+        FWatchValue.ResData.CreatePrePrinted(FTextValue);
         FWatchValue.TypeInfo := TypeInfo;
         FTypeInfo := nil;
         FWatchValue.Validity := FValidity;

@@ -783,7 +783,6 @@ type
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
-    procedure SetValue(AValue: String); override; // TODO: => one per DisplayFormat???
     procedure SetWatch(AValue: TWatch); override;
     function GetBackendExpression: String; reintroduce;
     function GetValidity: TDebuggerDataState; override;
@@ -4148,13 +4147,6 @@ begin
   FSnapShot := AValue;
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
-end;
-
-procedure TCurrentWatchValue.SetValue(AValue: String);
-begin
-  BeginUpdate;
-  ResData.CreatePrePrinted(AValue);
-  EndUpdate;
 end;
 
 procedure TCurrentWatchValue.SetWatch(AValue: TWatch);
