@@ -463,6 +463,7 @@ type
     function GetPageCount : integer; virtual;
     procedure InsertPage(APage: TCustomPage; Index: Integer); virtual;
     procedure RemovePage(Index: Integer); virtual;
+    procedure ActivateFirstControlOnPage(APage: TCustomPage) virtual;
   //Delphi compatible properties
     function CanChange: Boolean; virtual;
     property DisplayRect: TRect read GetDisplayRect;
