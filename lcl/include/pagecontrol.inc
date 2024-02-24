@@ -116,6 +116,8 @@ begin
   if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
 end;
 
+
+
 function TPageControl.FindNextPage(CurPage: TTabSheet; GoForward,
   CheckTabVisible: Boolean): TTabSheet;
 var
