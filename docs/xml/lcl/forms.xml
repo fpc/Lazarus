@@ -1957,7 +1957,9 @@ access scroll bar page, range, and visibility when AutoScroll is not enabled.
 </p>
 <p>
 An example application using TScrollBox is located in the 
-<file>examples/imgviewer</file> directory.
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/imgviewer">
+<file>examples/imgviewer</file>
+</url> directory.
 </p>
 </descr>
 <seealso>
