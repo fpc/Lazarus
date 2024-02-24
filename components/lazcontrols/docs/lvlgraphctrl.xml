@@ -2576,7 +2576,9 @@ drawing.
 </ul>
 <p>
 There is a simple example in:
-<file>($LazarusDir)/examples/levelgraph/lvlgraph_dependencies.lpi</file>.
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/levelgraph/lvlgraph_dependencies.lpi">
+<file>examples/levelgraph/lvlgraph_dependencies.lpi</file>
+</url>.
 </p>
 <p>
 TLvlGraphControl is used to display unit dependencies in the Package Graph 
@@ -3313,7 +3315,9 @@ drawing.
 </ul>
 <p>
 There is a simple example in:
-<file>($LazarusDir)/examples/levelgraph/lvlgraph_dependencies.lpi</file>.
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/levelgraph/lvlgraph_dependencies.lpi">
+<file>examples/levelgraph/lvlgraph_dependencies.lpi</file>
+</url>.
 </p>
 <p>
 TLvlGraphControl is used to display unit dependencies in the Package Graph 
