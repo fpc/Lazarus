@@ -152,9 +152,11 @@ constructor and the Restore method must be called to reload the values. The
 Save method method also be called in na overridden Destructor for the frame.
 </p>
 <p>
-A demonstration program is located in the examples directory at:
+A demonstration program is located in the 
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/propstorage/">
+<file>examples/propstorage/</file>
+</url> directory.
 </p>
-<code>$(LazarusDir)/examples/propstorage</code>
 <p>
 A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
 </p>
@@ -379,9 +381,11 @@ constructor and the Restore method must be called to reload the values. The
 Save method method also be called in na overridden Destructor for the frame.
 </p>
 <p>
-A demonstration program is located in the examples directory at:
+A demonstration program is located in the 
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/propstorage/">
+<file>examples/propstorage/</file>
+</url> directory.
 </p>
-<code>$(LazarusDir)/examples/propstorage</code>
 <p>
 A tutorial for TXMLPropStorage is located on the Lazarus Wiki at:
 </p>
