@@ -772,13 +772,16 @@ end;
 procedure TCustomTabControl.ActivateFirstControlOnPage(APage: TCustomPage);
 var
   ParentForm: TCustomForm;
-  C: TWinControl;
+  C, ActiveControl: TWinControl;
 begin
   ParentForm := GetParentForm(Self);
   //Debugln(['TCustomTabControl.ActivateFirstControl: Self=',DbgSName(Self),', APage=',DbgSName(APage),', ParentForm=',DbgSName(ParentForm)]);
   if not (Assigned(APage) and Assigned(ParentForm) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
     Exit;
   //Debugln(['TCustomTabControl.ActivateFirstControl: APage.Visible=',APage.Visible,', APage.Enabled=',APage.Enabled,', (APage.ControlCount > 0)=', (APage.ControlCount > 0)]);
+  ActiveControl := ParentForm.ActiveControl;
+  //don't steal focus if a control outside is ActiveControl
+  if (Self = ActiveControl) or Self.ContainsControl(ActiveControl) then
   begin
     C := APage.FindNextControl(Self, True, True, True);
     if Assigned(C) then
