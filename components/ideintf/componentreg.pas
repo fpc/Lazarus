@@ -91,6 +91,7 @@ type
     // Pages removed or renamed. They must be hidden in the palette.
     FHiddenPageNames: TStringList;
     FVisible: boolean;
+    procedure AddPageCompName(aPageName, aCompName: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -118,16 +119,18 @@ type
   private
     fPalette: TBaseComponentPalette;
     // List of page names with component contents.
-    // Object holds TRegisteredComponentList for the components.
+    // Object holds TRegisteredCompList for the components.
     FComponentPages: TStringList;
     // Reference to either EnvironmentOptions.ComponentPaletteOptions or a copy of it.
     fOptions: TCompPaletteOptions;
+    procedure AddRecentlyInstalledComps;
+    function FindComp(aCompClassName: string): TRegisteredComponent;
   public
     constructor Create(aPalette: TBaseComponentPalette);
     destructor Destroy; override;
-    procedure Clear;
     procedure Assign(Source: TCompPaletteUserOrder);
     procedure AssignCompPage(aPageName: string; aList: TRegisteredCompList);
+    procedure Clear;
     function Equals(Obj: TObject): boolean; override;
     function SortPagesAndCompsUserOrder: Boolean;
   public
@@ -312,10 +315,6 @@ type
   end;
   
 
-  {$IFDEF VerboseComponentPalette}
-const
-  CompPalVerbPgName = 'Dialogs'; //'Standard';
-  {$ENDIF}
 var
   IDEComponentPalette: TBaseComponentPalette = nil;
 
@@ -450,6 +449,20 @@ begin
   inherited Clear;
   FPageNamesCompNames.Clear;
   FHiddenPageNames.Clear;
+end;
+
+procedure TCompPaletteOptions.AddPageCompName(aPageName, aCompName: string);
+var
+  i: Integer;
+  sl: TStringList;
+begin
+  i := FPageNamesCompNames.IndexOf(aPageName);
+  if i >= 0 then begin
+    sl := TStringList(FPageNamesCompNames.Objects[i]);
+    sl.Add(aCompName);
+  end
+  else
+    DebugLn(['TCompPaletteOptions.AddPageCompName: Page "',aPageName,'" not found.']);
 end;
 
 procedure TCompPaletteOptions.Assign(Source: TCompPaletteOptions);
@@ -617,10 +630,38 @@ begin
   inherited Destroy;
 end;
 
-procedure TCompPaletteUserOrder.Clear;
+procedure TCompPaletteUserOrder.AddRecentlyInstalledComps;
+// Add comps that are not found in user config for any page
+// but are found in original config for a certain page.
+// They are components that a user installed after configuring the palette.
+var
+  PageI, i: Integer;
+  PgName, CompName: String;
+  PalComps, UserComps: TRegisteredCompList;
+  RegComp: TRegisteredComponent;
 begin
-  inherited Clear;
-  FComponentPages.Clear;
+  for PageI := 0 to FComponentPages.Count-1 do
+  begin
+    PgName := FComponentPages[PageI];
+    UserComps := TRegisteredCompList(FComponentPages.Objects[PageI]);
+    if fPalette.fOrigComponentPageCache.Find(PgName, i) then begin
+      PalComps := TRegisteredCompList(fPalette.fOrigComponentPageCache.Objects[i]);
+      for i := PalComps.Count-1 downto 0 do  // Iterate backwards.
+      begin
+        CompName := PalComps[i].ComponentClass.ClassName;
+        if FindComp(CompName)<>Nil then // New installed components are always at
+          Break                         // the end of the list -> OK to skip rest.
+        else begin
+          // Not in user config.
+          RegComp := fPalette.FindRegComponent(CompName);
+          DebugLn(['Adding recently installed component "',
+                   RegComp.ComponentClass.ClassName,'" to user config.']);
+          UserComps.Add(RegComp);
+          fOptions.AddPageCompName(PgName, CompName);
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TCompPaletteUserOrder.Assign(Source: TCompPaletteUserOrder);
@@ -648,6 +689,12 @@ begin
   FComponentPages.AddObject(aPageName, rcl);
 end;
 
+procedure TCompPaletteUserOrder.Clear;
+begin
+  inherited Clear;
+  FComponentPages.Clear;
+end;
+
 function TCompPaletteUserOrder.Equals(Obj: TObject): boolean;
 var
   Source: TCompPaletteUserOrder;
@@ -670,6 +717,26 @@ begin
   end;
 end;
 
+function TCompPaletteUserOrder.FindComp(aCompClassName: string): TRegisteredComponent;
+var
+  i, j: Integer;
+  CompList: TRegisteredCompList;
+begin
+  for i := 0 to FComponentPages.Count-1 do
+  begin
+    //PgName := FComponentPages[i];
+    CompList := TRegisteredCompList(FComponentPages.Objects[i]);
+    Assert(Assigned(CompList), 'TCompPaletteUserOrder.FindComp: CompList=Nil.');
+    for j := 0 to CompList.Count-1 do
+    begin
+      Result := CompList[j];
+      if Result.ComponentClass.ClassName = aCompClassName then
+        Exit;   // Found
+    end;
+  end;
+  Result := Nil;
+end;
+
 function TCompPaletteUserOrder.SortPagesAndCompsUserOrder: Boolean;
 // Calculate page order using user config and default order. User config takes priority.
 // This order will finally be shown in the palette.
@@ -678,7 +745,7 @@ var
   RegComp: TRegisteredComponent;
   sl: TStringList;
   PgName: String;
-  PageI, i, j: Integer;
+  PageI, i: Integer;
 begin
   Result:=True;
   Clear;
@@ -702,13 +769,18 @@ begin
     i := fOptions.FPageNamesCompNames.IndexOf(PgName);
     if i >= 0 then begin                // Add components reordered by user.
       sl := TStringList(fOptions.FPageNamesCompNames.Objects[i]);
-      for j := 0 to sl.Count-1 do
+      for i := 0 to sl.Count-1 do
       begin
-        RegComp := fPalette.FindRegComponent(sl[j]);
-        DstComps.Add(RegComp);
+        RegComp := fPalette.FindRegComponent(sl[i]);
+        if Assigned(RegComp) then
+          DstComps.Add(RegComp)
+        else begin                    // Component can be uninstalled, not found
+          DebugLn(['TCompPaletteUserOrder.SortPagesAndCompsUserOrder: Not found "',sl[i],'". Removing.']);
+          sl.Delete(i);               // Delete from configuration.
+        end;
       end;
     end
-    else                                // Add components that were not reordered.
+    else                              // Add components that were not reordered.
       fPalette.AssignOrigCompsForPage(PgName, DstComps);
   end;
 end;
@@ -885,20 +957,13 @@ begin
     CurPgInd := IndexOfPageName(PgName, True);
     if CurPgInd = -1 then begin
       // Create a new page
-      {$IFDEF VerboseComponentPalette}
-      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, page ', PgName, ' index ',UserPageI]);
-      {$ENDIF}
       Pg := ComponentPageClass.Create(PgName);
       fPages.Insert(UserPageI, Pg);
       Pg.Palette := Self;
     end
-    else if CurPgInd <> UserPageI then begin
-      {$IFDEF VerboseComponentPalette}
-      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, move ', PgName, ' from ',CurPgInd, ' to ',UserPageI]);
-      {$ENDIF}
+    else if CurPgInd <> UserPageI then
       fPages.Move(CurPgInd, UserPageI); // Move page to right place.
-    end;
-    Pg := Pages[UserPageI];
+    Pg := fPages[UserPageI];
     Pg.FIndex := UserPageI;
     Assert(PgName = Pg.PageName,
       Format('TComponentPalette.CreatePagesFromUserOrder: Page names differ, "%s" and "%s".',
@@ -918,19 +983,11 @@ begin
       if VoteCompVisibility(RegComp) then
         inc(aVisibleCompCnt);
     end;
-    {$IFDEF VerboseComponentPalette}
-    if PgName=CompPalVerbPgName then
-      debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls,' aVisibleCompCnt=',aVisibleCompCnt]);
-    {$ENDIF}
     Pg.Visible := (CompareText(PgName,'Hidden')<>0) and (aVisibleCompCnt>0);
   end;
   // Remove left-over pages.
   while fPages.Count > fUserOrder.ComponentPages.Count do begin
     Pg := fPages[fPages.Count-1];
-    {$IFDEF VerboseComponentPalette}
-    DebugLn(['TComponentPalette.CreatePagesFromUserOrder: Deleting left-over page=',
-             Pg.PageName, ', Index=', fPages.Count-1]);
-    {$ENDIF}
     fPages.Delete(fPages.Count-1);
     Pg.Free;
   end;
@@ -966,7 +1023,7 @@ begin
   rcl := TRegisteredCompList(fOrigComponentPageCache.Objects[i]);
   for i := 0 to rcl.Count-1 do
     if rcl[i].Visible then
-      DestCompNames.Add(rcl[i].GetFullClassName);
+      DestCompNames.Add(rcl[i].ComponentClass.ClassName);
 end;
 
 function TBaseComponentPalette.RefUserCompsForPage(PageName: string): TRegisteredCompList;
@@ -1086,7 +1143,7 @@ begin
   CurClassName:=NewComponent.ComponentClass.ClassName;
   for i:=0 to fComps.Count-1 do
   begin
-    OtherComp:=TRegisteredComponent(fComps[i]);
+    OtherComp:=fComps[i];
     if SameText(OtherComp.ComponentClass.ClassName,CurClassName) then
     begin
       while OtherComp.NextSameName<>nil do
@@ -1199,6 +1256,7 @@ procedure TBaseComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
   fUserOrder.SortPagesAndCompsUserOrder;
   CreatePagesFromUserOrder;
+  fUserOrder.AddRecentlyInstalledComps;
   DoAfterUpdate;
 end;
 
