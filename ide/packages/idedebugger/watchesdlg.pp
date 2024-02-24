@@ -1173,7 +1173,7 @@ begin
   if (d.ResultData <> nil) and
      not( (d.ResultData.ValueKind = rdkPrePrinted) and (t <> nil) )
   then begin
-    if ValueFormatterSelectorList.FormatValue(d.ResultData, d.DisplayFormat, FWatchPrinter, s)
+    if ValueFormatterSelectorList.FormatValue(d.ResultData, Watch.DisplayFormat, FWatchPrinter, s)
     then begin
       InspectMemo.WordWrap := True;
       InspectMemo.Text := s;
@@ -1182,7 +1182,7 @@ begin
   end
   else
   if (t <> nil) and
-     ValueFormatterSelectorList.FormatValue(t, d.Value, d.DisplayFormat, s)
+     ValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s)
   then begin
     InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
@@ -1191,7 +1191,7 @@ begin
 
 
   if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
-     (d.DisplayFormat in [wdfDefault, wdfStructure])
+     (Watch.DisplayFormat in [wdfDefault, wdfStructure])
   then begin
     InspectMemo.WordWrap := False;
     InspectMemo.Lines.BeginUpdate;
@@ -1221,7 +1221,7 @@ begin
 
   InspectMemo.WordWrap := True;
   if d.ResultData <> nil then
-    s := FWatchPrinter.PrintWatchValue(d.ResultData, d.DisplayFormat)
+    s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat)
   else
     s := d.Value;
   InspectMemo.Text := s;
@@ -1434,8 +1434,10 @@ function TDbgTreeViewWatchValueMgr.GetFieldAsText(Nd: PVirtualNode;
   AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
   AField: TTreeViewDataToTextField; AnOpts: TTreeViewDataToTextOptions): String;
 var
+  TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
   da: TDBGPtr;
+  DispFormat: TWatchDisplayFormat;
 begin
   if AWatchAbleResult = nil then
     exit(inherited);
@@ -1444,7 +1446,7 @@ begin
   case AField of
     vdfName:
       if AWatchAble <> nil then
-        Result := TIdeWatch(AWatchAble).Expression;
+        Result := TheWatch.Expression;
     vdfValue: begin
         if AWatchAbleResult = nil then begin
           Result := '<not evaluated>';
@@ -1470,6 +1472,9 @@ begin
           end;
         end;
 
+        DispFormat := wdfDefault;
+        if AWatchAble <> nil then
+          DispFormat := TheWatch.DisplayFormat;
         if vdoAllowMultiLine in AnOpts then
           FWatchDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
         try
@@ -1478,15 +1483,15 @@ begin
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
             if not ValueFormatterSelectorList.FormatValue(ResData,
-               AWatchAbleResult.DisplayFormat, FWatchDlg.FWatchPrinter, Result)
+               DispFormat, FWatchDlg.FWatchPrinter, Result)
             then begin
-              Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, AWatchAbleResult.DisplayFormat);
+              Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
             end;
           end
           else begin
             if (AWatchAbleResult.TypeInfo = nil) or
                not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-               AWatchAbleResult.Value, AWatchAbleResult.DisplayFormat, Result)
+               AWatchAbleResult.Value, DispFormat, Result)
             then begin
               Result := AWatchAbleResult.Value;
             end;
@@ -1509,9 +1514,11 @@ end;
 procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;
   AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode);
 var
+  TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
   WatchValueStr: String;
   da: TDBGPtr;
+  DispFormat: TWatchDisplayFormat;
 begin
   TreeView.NodeText[AVNode, COL_WATCH_EXPR-1]:= TIdeWatch(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 2] := '';
@@ -1527,15 +1534,19 @@ begin
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
        (AWatchAbleResult.ResultData <> nil)
     then begin
+      DispFormat := wdfDefault;
+      if AWatchAble <> nil then
+        DispFormat := TheWatch.DisplayFormat;
+
       ResData :=  AWatchAbleResult.ResultData;
       if (ResData <> nil) and
          not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
       then begin
         FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
         if not ValueFormatterSelectorList.FormatValue(ResData,
-           AWatchAbleResult.DisplayFormat, FWatchDlg.FWatchPrinter, WatchValueStr)
+           DispFormat, FWatchDlg.FWatchPrinter, WatchValueStr)
         then begin
-          WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, AWatchAbleResult.DisplayFormat);
+          WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
           if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
           then
             WatchValueStr := Format(drsLen, [ResData.ArrayLength]) + WatchValueStr;
@@ -1552,7 +1563,7 @@ begin
       else begin
         if (AWatchAbleResult.TypeInfo = nil) or
            not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-           AWatchAbleResult.Value, AWatchAbleResult.DisplayFormat, WatchValueStr)
+           AWatchAbleResult.Value, DispFormat, WatchValueStr)
         then begin
           WatchValueStr := AWatchAbleResult.Value;
           if (AWatchAbleResult.TypeInfo <> nil) and

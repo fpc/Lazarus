@@ -11580,6 +11580,7 @@ var
   WatchPrinter: TWatchResultPrinter;
   ResultText: String;
   ResData: TWatchResultData;
+  DispFormat: TWatchDisplayFormat;
 begin
   if (Sender <> FHintWatchData.WatchValue) or (FHintWatchData.WatchValue = nil) or
      (SourceEditorManager = nil) or
@@ -11594,15 +11595,19 @@ begin
   ResultText := '';
   WatchPrinter := TWatchResultPrinter.Create;
   try
+    DispFormat := wdfDefault;
+    if FHintWatchData.WatchValue.Watch <> nil then
+      DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;
+
     if FHintWatchData.WatchValue.Validity = ddsValid then begin
       ResData :=  FHintWatchData.WatchValue.ResultData;
       if (ResData <> nil) and
          not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
       then begin
         if not ValueFormatterSelectorList.FormatValue(ResData,
-           FHintWatchData.WatchValue.DisplayFormat, WatchPrinter, ResultText)
+           DispFormat, WatchPrinter, ResultText)
         then begin
-          ResultText := WatchPrinter.PrintWatchValue(ResData, FHintWatchData.WatchValue.DisplayFormat);
+          ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
           if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
           then
             ResultText := Format(drsLen, [ResData.ArrayLength]) + ResultText;
@@ -11612,7 +11617,7 @@ begin
       else begin
         if (FHintWatchData.WatchValue.TypeInfo = nil) or
            not ValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
-           FHintWatchData.WatchValue.Value, FHintWatchData.WatchValue.DisplayFormat, ResultText)
+           FHintWatchData.WatchValue.Value, DispFormat, ResultText)
         then begin
           ResultText := FHintWatchData.WatchValue.Value;
           if (FHintWatchData.WatchValue.TypeInfo <> nil) and

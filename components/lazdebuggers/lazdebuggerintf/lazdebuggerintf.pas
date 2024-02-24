@@ -245,7 +245,7 @@ type
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState;
-    procedure SetTypeInfo(AValue: TDBGTypeBase);
+    procedure SetTypeInfo(AValue: TDBGTypeBase); // Must not be used by MemDump
     procedure SetValidity(AValue: TDebuggerDataState);
 
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
@@ -256,7 +256,7 @@ type
     property Expression: String read GetExpression;
 
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
-    property TypeInfo: TDBGTypeBase {read GetTypeInfo} write SetTypeInfo;
+    property TypeInfo: TDBGTypeBase {read GetTypeInfo} write SetTypeInfo; // Must not be used by MemDump
   end;
 
 

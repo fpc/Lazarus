@@ -834,6 +834,7 @@ function TDbgTreeViewLocalsValueMgr.GetFieldAsText(Nd: PVirtualNode;
 var
   ResData: TWatchResultData;
   da: TDBGPtr;
+  DispFormat: TWatchDisplayFormat;
 begin
   if AWatchAbleResult = nil then
     exit(inherited);
@@ -868,6 +869,7 @@ begin
           end;
         end;
 
+        DispFormat := wdfDefault; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
         if vdoAllowMultiLine in AnOpts then
           FLocalsDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
         try
@@ -876,15 +878,15 @@ begin
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
             if not ValueFormatterSelectorList.FormatValue(ResData,
-               AWatchAbleResult.DisplayFormat, FLocalsDlg.FWatchPrinter, Result)
+               DispFormat, FLocalsDlg.FWatchPrinter, Result)
             then begin
-              Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, AWatchAbleResult.DisplayFormat);
+              Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
             end;
           end
           else begin
             if (AWatchAbleResult.TypeInfo = nil) or
                not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-               AWatchAbleResult.Value, AWatchAbleResult.DisplayFormat, Result)
+               AWatchAbleResult.Value, DispFormat, Result)
             then begin
               Result := AWatchAbleResult.Value;
             end;
@@ -910,21 +912,23 @@ var
   WatchValueStr: String;
   ResData: TWatchResultData;
   da: TDBGPtr;
+  DispFormat: TWatchDisplayFormat;
 begin
   ResData :=  AWatchAbleResult.ResultData;
+  DispFormat := wdfDefault; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
   if (ResData <> nil) and
      not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
   then begin
     if not ValueFormatterSelectorList.FormatValue(ResData,
-       AWatchAbleResult.DisplayFormat, FLocalsDlg.FWatchPrinter, WatchValueStr)
+       DispFormat, FLocalsDlg.FWatchPrinter, WatchValueStr)
     then begin
-      WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, AWatchAbleResult.DisplayFormat);
+      WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
     end;
   end
   else begin
     if (AWatchAbleResult.TypeInfo = nil) or
        not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-       AWatchAbleResult.Value, AWatchAbleResult.DisplayFormat, WatchValueStr)
+       AWatchAbleResult.Value, DispFormat, WatchValueStr)
     then begin
       WatchValueStr := AWatchAbleResult.Value;
     end;

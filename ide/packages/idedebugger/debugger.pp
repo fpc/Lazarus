@@ -4136,7 +4136,7 @@ end;
 function TCurrentWatchValue.GetIntfEvaluateFlags: TWatcheEvaluateFlags;
 begin
   Result := EvaluateFlags;
-  if FDisplayFormat = wdfMemDump then
+  if IsMemDump then
     Result := Result + [defMemDump];
 end;
 
@@ -4310,6 +4310,8 @@ begin
   for i := 0 to c - 1 do begin
     e := TIdeWatchValue.Create(Watch);
     e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+// TODO xxxx may load the same entry more than once with diff display format
+// check before adding
     Add(e);
   end;
 end;
@@ -4551,7 +4553,7 @@ begin
   then Include(FEvaluateFlags, defClassAutoCast)
   else Exclude(FEvaluateFlags, defClassAutoCast);
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
-  AConfig.GetValue(APath + 'DisplayFormat', int64(ord(wdfDefault)), FDisplayFormat, system.TypeInfo(TWatchDisplayFormat));
+  FIsMemDump := AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault') = 'wdfMemDump'; // use constants from TWatchDisplayFormat
 
   // Defaults to PrePrinted
   FResultData := TWatchResultData.CreateFromXMLConfig(AConfig, APath);
@@ -4570,17 +4572,15 @@ begin
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in EvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', RepeatCount, 0);
 
-  if (Watch <> nil) and (FDisplayFormat <> wdfMemDump) and
-     (FResultData <> nil) and
-     (FResultData.ValueKind <> rdkPrePrinted)
-  then begin
-    // Use same path => "Value" will be readable for older IDE (read as wdDefault)
-    // ResultData does not write any "path/value" conflicting with the above fields
-    ResultData.SaveDataToXMLConfig(AConfig, APath);
+  if IsMemDump then begin
+    AConfig.SetDeleteValue(APath + 'DisplayFormat', 'wdfMemDump', 'wdfDefault'); // use constants from TWatchDisplayFormat
+    AConfig.SetValue(APath + 'Value', Value);
   end
   else begin
-    AConfig.SetDeleteValue(APath + 'DisplayFormat', DisplayFormat, int64(ord(wdfDefault)), system.TypeInfo(TWatchDisplayFormat));
-    AConfig.SetValue(APath + 'Value', Value);
+    if ResultData <> nil then
+      // Use same path => "Value" will be readable for older IDE (read as wdDefault)
+      // ResultData does not write any "path/value" conflicting with the above fields
+      ResultData.SaveDataToXMLConfig(AConfig, APath);
   end;
 end;
 
@@ -4588,7 +4588,7 @@ constructor TIdeWatchValue.Create(AOwnerWatch: TWatch);
 begin
   inherited Create(AOwnerWatch);
   Validity := ddsUnknown;
-  FDisplayFormat := Watch.DisplayFormat;
+  FIsMemDump := Watch.DisplayFormat = wdfMemDump;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
   FFirstIndexOffs    := Watch.FirstIndexOffs;
@@ -4607,7 +4607,7 @@ begin
   inherited Assign(AnOther);
   FThreadId      := TIdeWatchValue(AnOther).FThreadId;
   FStackFrame    := TIdeWatchValue(AnOther).FStackFrame;
-  FDisplayFormat := TIdeWatchValue(AnOther).FDisplayFormat;
+  FIsMemDump := TIdeWatchValue(AnOther).FIsMemDump;
 end;
 
 function TIdeWatchValue.ExpressionForChildField(AName: String;
