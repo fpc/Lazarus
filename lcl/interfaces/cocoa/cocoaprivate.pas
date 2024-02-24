@@ -648,7 +648,8 @@ var
   textView: NSView;
   isFirst: Boolean;
 begin
-  if (not _inIME) and (theEvent.keyCode in [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape]) then
+  if (not _inIME) and (theEvent.keyCode in
+     [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape, kVK_Space]) then
   begin
     inherited;
     exit;
