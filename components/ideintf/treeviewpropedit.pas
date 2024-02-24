@@ -157,6 +157,7 @@ begin
 
   // button panel
   ButtonPanel.ShowHint := true;
+  btnApply.TabOrder := 1;
 
   { Images }
 
