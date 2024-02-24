@@ -717,8 +717,9 @@ collection or container.
 </p>
 <p>
 An example using TTIGrid is located in the 
-<file>$(LazarusDir)/components/rtticontrols/examples/exampleprojectgrid1.lpr</file> 
-file.
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/components/rtticontrols/examples/exampleprojectgrid1.lpr">
+<file>components/rtticontrols/examples/exampleprojectgrid1.lpr</file>
+</url> file.
 </p>
 </descr>
 <seealso>
@@ -1833,7 +1834,9 @@ collection or container.
 </p>
 <p>
 An example using TTIGrid is located in the 
-<file>$(LazarusDir)/components/rtticontrols/examples/exampleprojectgrid1.lpr</file> 
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/components/rtticontrols/examples/exampleprojectgrid1.lpr">
+<file>components/rtticontrols/examples/exampleprojectgrid1.lpr</file>
+</url>
 file.
 </p>
 </descr>
