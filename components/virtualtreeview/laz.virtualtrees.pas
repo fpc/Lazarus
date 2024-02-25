@@ -31931,6 +31931,8 @@ var
   ScrolledHorizontally: Boolean;
 
 begin
+  if not HandleAllocated then
+    exit;
   //todo: minimize calls to ClientHeight and ClientWidth
   ScrolledVertically := False;
   ScrolledHorizontally := False;
@@ -32833,6 +32835,8 @@ end;
 procedure TBaseVirtualTree.UpdateHorizontalRange;
 
 begin
+  if not HandleAllocated then
+    exit;
   if FHeader.UseColumns then
     FRangeX := FHeader.FColumns.TotalWidth
   else
@@ -32847,6 +32851,8 @@ var
   ScrollInfo: TScrollInfo;
 
 begin
+  if not HandleAllocated then
+    exit;
   UpdateHorizontalRange;
 
   if (tsUpdating in FStates) or not HandleAllocated then
@@ -32949,6 +32955,8 @@ var
   ScrollInfo: TScrollInfo;
 
 begin
+  if not HandleAllocated then
+    exit;
   UpdateVerticalRange;
 
   if tsUpdating in FStates then
