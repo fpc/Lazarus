@@ -3761,8 +3761,10 @@ begin
     SizeVal(SizeOf(LongInt)), ErrNo)
   then
     ExceptName := Format('RunError(%d)', [ErrNo])
-  else
+  else begin
     ExceptName := 'RunError(unknown)';
+    ErrNo := 0;
+  end;
 
   ExceptItem := Exceptions.Find(ExceptName);
   if (ExceptItem <> nil) and (ExceptItem.Enabled)
@@ -3797,8 +3799,10 @@ begin
     SizeVal(SizeOf(Word)), ErrNo)
   then
     ExceptName := Format('RunError(%d)', [ErrNo])
-  else
+  else begin
     ExceptName := 'RunError(unknown)';
+    ErrNo := 0;
+  end;
 
   ExceptItem := Exceptions.Find(ExceptName);
   if (ExceptItem <> nil) and (ExceptItem.Enabled)
