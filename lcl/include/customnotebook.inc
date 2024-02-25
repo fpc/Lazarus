@@ -783,7 +783,7 @@ begin
   //don't steal focus if a control outside is ActiveControl
   if (Self = ActiveControl) or Self.ContainsControl(ActiveControl) then
   begin
-    C := APage.FindNextControl(Self, True, True, True);
+    C := APage.FindNextControl(Self, True, True, False);
     if Assigned(C) then
       ParentForm.ActiveControl := C;
   end;
