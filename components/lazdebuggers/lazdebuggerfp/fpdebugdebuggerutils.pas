@@ -103,7 +103,7 @@ type
 
   { TFpDebugDebuggerProperties }
 
-  TFpDebugDebuggerProperties = class(TDebuggerProperties)
+  TFpDebugDebuggerProperties = class(TCommonDebuggerProperties)
   private
     FAutoDeref: Boolean;
     FConsoleTty: string;
@@ -133,6 +133,7 @@ type
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
     property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
     property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
+    property InternalExceptionBreakPoints;
   end;
 
 
