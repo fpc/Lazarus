@@ -82,18 +82,6 @@ resourcestring
   drsNewValueToAssignToTheVari = 'New value to assign to the variable in the '
     +'debugged process (use Shift-Enter to confirm)';
 
-  dbgDispFormatDefault = 'Default';
-  dbgDispFormatCharacter = 'Character';
-  dbgDispFormatString = 'String';
-  dbgDispFormatDecimal = 'Decimal';
-  dbgDispFormatUnsigned = 'Unsigned';
-  dbgDispFormatHexadecimal = 'Hexadecimal';
-  dbgDispFormatFloatingPoin = 'Floating Point';
-  dbgDispFormatPointer = 'Pointer';
-  dbgDispFormatRecordStruct = 'Record/Structure';
-  dbgDispFormatMemoryDump = 'Memory Dump';
-  dbgDispFormatBinary = 'Binary';
-
   // Watch Property Dialog
   lisWatchPropert = 'Watch Properties';
   lisExpression = 'Expression:';
@@ -415,6 +403,86 @@ resourcestring
   ValFormatterColorRgbDec = 'RGB in decimal';
 
   ValFormatterCurrencyName = 'Currency';
+
+  DispFormatDlgBtnCurrent   = 'Current';
+  DispFormatDlgBtnAll       = 'All';
+  DispFormatDlgBtnNumber    = 'Number';
+  DispFormatDlgBtnOrd       = 'Ordinal';
+  DispFormatDlgBtnEnum      = 'Enum';
+  DispFormatDlgBtnBool      = 'Boolean';
+  DispFormatDlgBtnChar      = 'Char';
+  DispFormatDlgBtnFloat     = 'Float';
+  DispFormatDlgBtnStruct    = 'Structure';
+  DispFormatDlgBtnPointer   = 'Pointer';
+  DispFormatDlgBtnOrdFormat = 'Ordinal format';
+  DispFormatDlgBtnAdrFormat = 'Address format';
+
+  DispFormatDlgCaptionDefault  = 'Default';
+  DispFormatDlgCaptionSign     = '(Sign)';
+  DispFormatDlgCaptionShowChar = '(Show Char)';
+  DispFormatDlgCaptionAddress  = '(Address)';
+  DispFormatDlgCaptionTyped    = '(Typed)';
+  DispFormatDlgCaptionDeref    = '(Deref)';
+  DispFormatDlgCaptionNumber   = '(Number)';
+
+  DispFormatGroupBase          = 'Number base';
+  DispFormatGroupSign          = 'Number sign';
+  DispFormatGroupNumChar       = 'Ordinal as char';
+  DispFormatGroupEnum          = 'Enum';
+  DispFormatGroupBool          = 'Bool';
+  DispFormatGroupChar          = 'Char';
+  DispFormatGroupFloat         = 'Float';
+  DispFormatGroupStruct        = 'Structures';
+  DispFormatGroupStructAddress = 'Structures (Addr)';
+  DispFormatGroupPointer       = 'Pointer';
+  DispFormatGroupPointerDeref  = 'Pointer (Deref)';
+  DispFormatGroupCategory      = 'Display type';
+
+  DispFormatBaseDefault          = 'Default';
+  DispFormatBaseDecimal          = 'Decimal';
+  DispFormatBaseHex              = 'Hex';
+  DispFormatBaseOct              = 'Oct';
+  DispFormatBaseBin              = 'Binary';
+  DispFormatBasePointer          = 'Pointer';
+  DispFormatSignDefault          = 'Default';
+  DispFormatSignSigned           = 'Signed';
+  DispFormatSignUnsigned         = 'Unsigned';
+  DispFormatNumCharDefault       = 'Default';
+  DispFormatNumCharOff           = 'Off';
+  DispFormatNumCharOrdAndUnicode = 'Unicode + Number';
+  DispFormatNumCharOnlyUnicode   = 'Unicode only';
+  DispFormatEnumDefault          = 'Default';
+  DispFormatEnumName             = 'Name';
+  DispFormatEnumOrd              = 'Ordinal';
+  DispFormatEnumNameAndOrd       = 'Both';
+  DispFormatBoolDefault          = 'Default';
+  DispFormatBoolName             = 'Name';
+  DispFormatBoolOrd              = 'Ordinal';
+  DispFormatBoolNameAndOrd       = 'Both';
+  DispFormatCharDefault          = 'Default';
+  DispFormatCharLetter           = 'Letter';
+  DispFormatCharOrd              = 'Ordinal';
+  DispFormatCharLetterAndOrd     = 'Both';
+  DispFormatFloatDefault         = 'Default';
+  DispFormatFloatPoint           = 'Decimal';
+  DispFormatFloatScientific      = 'Exponent';
+  DispFormatStructDefault        = 'Default';
+  DispFormatStructValOnly        = 'Values only';
+  DispFormatStructFields         = 'Field names';
+  DispFormatStructFull           = 'Full';
+  DispFormatStructAddressDefault = 'Default';
+  DispFormatStructAddressOff     = 'Off';
+  DispFormatStructAddressOn      = 'On';
+  DispFormatStructAddressOnly    = 'Only';
+  DispFormatPointerDefault       = 'Default';
+  DispFormatPointerAddress       = 'Address';
+  DispFormatPointerTypedAddress  = 'Typed address';
+  DispFormatPointerDerefDefault  = 'Default';
+  DispFormatPointerDerefOff      = 'Off';
+  DispFormatPointerDerefOn       = 'On';
+  DispFormatPointerDerefOnly     = 'Only';
+  DispFormatCategoryData         = 'Value';
+  DispFormatCategoryMemDump      = 'Memory dump';
 
 implementation
 

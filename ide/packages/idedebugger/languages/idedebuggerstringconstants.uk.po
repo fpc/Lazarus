@@ -39,60 +39,376 @@ msgstr "Виберіть групи для ввімкнення при заді�
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Деякі групи в списку ввімкнення/вимкнення не існують.%0:sСтворити їх?%0:s%0:s%1:s"
 
-#: idedebuggerstringconstants.dbgdispformatbinary
-msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
+#: idedebuggerstringconstants.dispformatbasebin
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
 msgstr "Двійковий"
 
-#: idedebuggerstringconstants.dbgdispformatcharacter
-msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
-msgid "Character"
-msgstr "Символ"
-
-#: idedebuggerstringconstants.dbgdispformatdecimal
-msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
+#: idedebuggerstringconstants.dispformatbasedecimal
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasedecimal"
 msgid "Decimal"
 msgstr "Десятковий"
 
-#: idedebuggerstringconstants.dbgdispformatdefault
-msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
+#: idedebuggerstringconstants.dispformatbasedefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasedefault"
 msgid "Default"
 msgstr "Типово"
 
-#: idedebuggerstringconstants.dbgdispformatfloatingpoin
-msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
-msgid "Floating Point"
-msgstr "З рухомою комою"
-
-#: idedebuggerstringconstants.dbgdispformathexadecimal
-msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
-msgid "Hexadecimal"
+#: idedebuggerstringconstants.dispformatbasehex
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasehex"
+msgid "Hex"
 msgstr "Шістнадцятковий"
 
-#: idedebuggerstringconstants.dbgdispformatmemorydump
-msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
-msgid "Memory Dump"
-msgstr "Дамп пам'яті"
+#: idedebuggerstringconstants.dispformatbaseoct
+msgid "Oct"
+msgstr ""
 
-#: idedebuggerstringconstants.dbgdispformatpointer
-msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
+#: idedebuggerstringconstants.dispformatbasepointer
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasepointer"
 msgid "Pointer"
 msgstr "Вказівник"
 
-#: idedebuggerstringconstants.dbgdispformatrecordstruct
-msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
-msgid "Record/Structure"
-msgstr "Запис/структура"
+#: idedebuggerstringconstants.dispformatbooldefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbooldefault"
+msgid "Default"
+msgstr "Типово"
 
-#: idedebuggerstringconstants.dbgdispformatstring
-msgctxt "idedebuggerstringconstants.dbgdispformatstring"
-msgid "String"
-msgstr "Рядковий"
+#: idedebuggerstringconstants.dispformatboolname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatboolname"
+msgid "Name"
+msgstr "Назва"
 
-#: idedebuggerstringconstants.dbgdispformatunsigned
-msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
+#: idedebuggerstringconstants.dispformatboolnameandord
+msgctxt "idedebuggerstringconstants.dispformatboolnameandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatboolord
+msgctxt "idedebuggerstringconstants.dispformatboolord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcategorydata
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatcategorydata"
+msgid "Value"
+msgstr "Значення"
+
+#: idedebuggerstringconstants.dispformatcategorymemdump
+msgid "Memory dump"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatchardefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatchardefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatcharletter
+msgid "Letter"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcharletterandord
+msgctxt "idedebuggerstringconstants.dispformatcharletterandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcharord
+msgctxt "idedebuggerstringconstants.dispformatcharord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnadrformat
+msgid "Address format"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnall
+msgid "All"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnbool
+msgid "Boolean"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnchar
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnchar"
+msgid "Char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtncurrent
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatdlgbtncurrent"
+msgid "Current"
+msgstr "Поточний"
+
+#: idedebuggerstringconstants.dispformatdlgbtnenum
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnenum"
+msgid "Enum"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnfloat
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
+msgid "Float"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnnumber
+msgid "Number"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnord
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnordformat
+msgid "Ordinal format"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnpointer
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
+msgid "Pointer"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnstruct
+msgid "Structure"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionaddress
+msgid "(Address)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptiondefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatdlgcaptiondefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatdlgcaptionderef
+msgid "(Deref)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionnumber
+msgid "(Number)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionshowchar
+msgid "(Show Char)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionsign
+msgid "(Sign)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptiontyped
+msgid "(Typed)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatenumdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatenumdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatenumname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatenumname"
+msgid "Name"
+msgstr "Назва"
+
+#: idedebuggerstringconstants.dispformatenumnameandord
+msgctxt "idedebuggerstringconstants.dispformatenumnameandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatenumord
+msgctxt "idedebuggerstringconstants.dispformatenumord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatfloatdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatfloatdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatfloatpoint
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatfloatpoint"
+msgid "Decimal"
+msgstr "Десятковий"
+
+#: idedebuggerstringconstants.dispformatfloatscientific
+msgid "Exponent"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupbase
+msgid "Number base"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupbool
+msgid "Bool"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupcategory
+msgid "Display type"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupchar
+msgctxt "idedebuggerstringconstants.dispformatgroupchar"
+msgid "Char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupenum
+msgctxt "idedebuggerstringconstants.dispformatgroupenum"
+msgid "Enum"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupfloat
+msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
+msgid "Float"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupnumchar
+msgid "Ordinal as char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgrouppointer
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatgrouppointer"
+msgid "Pointer"
+msgstr "Вказівник"
+
+#: idedebuggerstringconstants.dispformatgrouppointerderef
+msgid "Pointer (Deref)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupsign
+msgid "Number sign"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupstruct
+msgid "Structures"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupstructaddress
+msgid "Structures (Addr)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumchardefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatnumchardefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatnumcharoff
+msgctxt "idedebuggerstringconstants.dispformatnumcharoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumcharonlyunicode
+msgid "Unicode only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumcharordandunicode
+msgid "Unicode + Number"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointeraddress
+msgid "Address"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpointerdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatpointerderefdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpointerderefdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatpointerderefoff
+msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerderefon
+msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
+msgid "On"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerderefonly
+msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
+msgid "Only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointertypedaddress
+msgid "Typed address"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatsigndefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatsigndefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatsignsigned
+msgid "Signed"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatsignunsigned
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatsignunsigned"
 msgid "Unsigned"
 msgstr "Беззнаковий"
+
+#: idedebuggerstringconstants.dispformatstructaddressdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatstructaddressdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatstructaddressoff
+msgctxt "idedebuggerstringconstants.dispformatstructaddressoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructaddresson
+msgctxt "idedebuggerstringconstants.dispformatstructaddresson"
+msgid "On"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructaddressonly
+msgctxt "idedebuggerstringconstants.dispformatstructaddressonly"
+msgid "Only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatstructdefault"
+msgid "Default"
+msgstr "Типово"
+
+#: idedebuggerstringconstants.dispformatstructfields
+msgid "Field names"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructfull
+msgid "Full"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructvalonly
+msgid "Values only"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
@@ -1366,6 +1682,7 @@ msgid "Format"
 msgstr "Формат"
 
 #: idedebuggerstringconstants.regdlghex
+msgctxt "idedebuggerstringconstants.regdlghex"
 msgid "Hex"
 msgstr "Шістнадцятковий"
 

@@ -630,7 +630,7 @@ begin
     DebugBoss.Watches.CurrentWatches.BeginUpdate;
     try
       NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
-      NewWatch.DisplayFormat := wdfDefault;
+      NewWatch.DisplayFormat := DefaultWatchDisplayFormat;
       NewWatch.Enabled       := True;
       if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
         NewWatch.EvaluateFlags := [defClassAutoCast];
@@ -705,7 +705,7 @@ begin
       DebugBoss.Watches.CurrentWatches.BeginUpdate;
       try
         NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
-        NewWatch.DisplayFormat := wdfDefault;
+        NewWatch.DisplayFormat := DefaultWatchDisplayFormat;
         NewWatch.Enabled       := True;
         if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
           NewWatch.EvaluateFlags := [defClassAutoCast];
@@ -1121,13 +1121,20 @@ end;
 procedure TWatchesDlg.popPropertiesClick(Sender: TObject);
 var
   Watch: TCurrentWatch;
+  d: TIdeWatchValue;
+  dk: TWatchResultDataKind;
 begin
   if GetSelectedSnapshot <> nil then exit;
   try
     DisableAllActions;
     Watch := TCurrentWatch(GetSelected);
-    if (Watch.TopParentWatch = Watch) then
-      DebugBoss.ShowWatchProperties(Watch);
+    if (Watch.TopParentWatch = Watch) then begin
+      d := Watch.Values[GetThreadId, GetStackframe];
+      dk := rdkUnknown;
+      if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
+        dk := d.ResultData.ValueKind;
+      DebugBoss.ShowWatchProperties(Watch, '', dk);
+    end;
   finally
     tvWatchesChange(nil, nil);
   end;
@@ -1139,7 +1146,7 @@ var
   i: integer;
   d: TIdeWatchValue;
   t: TDBGType;
-  s: String;
+  s, FldName: String;
 begin
   if not nbInspect.Visible then exit;
   DebugBoss.LockCommandProcessing;
@@ -1191,27 +1198,30 @@ begin
 
 
   if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
-     (Watch.DisplayFormat in [wdfDefault, wdfStructure])
+     (Watch.DisplayFormat.StructFormat <> vdfStructDefault)
   then begin
     InspectMemo.WordWrap := False;
     InspectMemo.Lines.BeginUpdate;
     try
       for i := 0 to t.Fields.Count - 1 do
+        FldName := '';
+        if Watch.DisplayFormat.StructFormat in [vdfStructFields, vdfStructFull] then
+          FldName := t.Fields[i].Name + ': ';
         case t.Fields[i].DBGType.Kind of
           skSimple:
             begin
               if t.Fields[i].DBGType.Value.AsString='$0' then begin
                 if t.Fields[i].DBGType.TypeName='ANSISTRING' then
-                  InspectMemo.Append(t.Fields[i].Name + ': ''''')
+                  InspectMemo.Append(FldName + '''''')
                 else
-                  InspectMemo.Append(t.Fields[i].Name + ': nil');
+                  InspectMemo.Append(FldName + 'nil');
               end
               else
-                InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
+                InspectMemo.Append(FldName + t.Fields[i].DBGType.Value.AsString);
             end;
           skProcedure, skFunction, skProcedureRef, skFunctionRef: ;
           else
-            InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
+            InspectMemo.Append(FldName + t.Fields[i].DBGType.Value.AsString);
         end;
     finally
       InspectMemo.Lines.EndUpdate;
@@ -1472,7 +1482,7 @@ begin
           end;
         end;
 
-        DispFormat := wdfDefault;
+        DispFormat := DefaultWatchDisplayFormat;
         if AWatchAble <> nil then
           DispFormat := TheWatch.DisplayFormat;
         if vdoAllowMultiLine in AnOpts then
@@ -1534,7 +1544,7 @@ begin
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
        (AWatchAbleResult.ResultData <> nil)
     then begin
-      DispFormat := wdfDefault;
+      DispFormat := DefaultWatchDisplayFormat;
       if AWatchAble <> nil then
         DispFormat := TheWatch.DisplayFormat;
 
@@ -1591,7 +1601,7 @@ end;
 procedure TDbgTreeViewWatchValueMgr.ConfigureNewSubItem(AWatchAble: TObject);
 begin
   if (AWatchAble <> nil) and (AWatchAble is TCurrentWatch) then
-    TCurrentWatch(AWatchAble).DisplayFormat := wdfDefault;
+    TCurrentWatch(AWatchAble).DisplayFormat := DefaultWatchDisplayFormat;
 end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateSubItems(AWatchAble: TObject;

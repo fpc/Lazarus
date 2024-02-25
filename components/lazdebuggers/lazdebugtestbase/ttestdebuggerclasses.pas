@@ -482,7 +482,7 @@ constructor TTestWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer
 begin
   inherited Create(AOwnerWatch);
   Validity := ddsUnknown;
-  FDisplayFormat := Watch.DisplayFormat;
+  FIsMemDump := Watch.DisplayFormat.MemDump;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
   FThreadId := AThreadId;
@@ -493,7 +493,7 @@ constructor TTestWatchValue.Create(AOwnerWatch: TWatch);
 begin
   inherited Create(AOwnerWatch);
   Validity := ddsUnknown;
-  FDisplayFormat := Watch.DisplayFormat;
+  FIsMemDump := Watch.DisplayFormat.MemDump;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
 end;

@@ -11595,7 +11595,7 @@ begin
   ResultText := '';
   WatchPrinter := TWatchResultPrinter.Create;
   try
-    DispFormat := wdfDefault;
+    DispFormat := DefaultWatchDisplayFormat;
     if FHintWatchData.WatchValue.Watch <> nil then
       DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;
 

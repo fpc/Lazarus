@@ -58,7 +58,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Width = 160
         ItemHeight = 15
         Style = csDropDownList
-        TabOrder = 4
+        TabOrder = 0
       end
       object btnAdd: TButton
         Left = 5
@@ -66,7 +66,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Top = 33
         Width = 160
         Caption = 'btnAdd'
-        TabOrder = 0
+        TabOrder = 1
         OnClick = btnAddClick
       end
       object btnRemove: TButton
@@ -75,7 +75,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Top = 63
         Width = 160
         Caption = 'btnRemove'
-        TabOrder = 1
+        TabOrder = 2
         OnClick = btnRemoveClick
       end
       object btnUp: TButton
@@ -85,7 +85,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Width = 160
         BorderSpacing.Top = 12
         Caption = 'btnUp'
-        TabOrder = 2
+        TabOrder = 3
         OnClick = btnUpClick
       end
       object btnDown: TButton
@@ -94,7 +94,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Top = 130
         Width = 160
         Caption = 'btnDown'
-        TabOrder = 3
+        TabOrder = 4
         OnClick = btnDownClick
       end
     end
@@ -109,7 +109,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
     ClientHeight = 374
     ClientWidth = 638
     Constraints.MinHeight = 120
-    TabOrder = 1
+    TabOrder = 2
     object lblDesc: TLabel
       Left = 5
       Height = 15
@@ -125,17 +125,17 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
       Left = 0
       Height = 354
       Top = 20
-      Width = 392
+      Width = 388
       Align = alClient
       BevelOuter = bvNone
       ClientHeight = 354
-      ClientWidth = 392
+      ClientWidth = 388
       TabOrder = 0
       object lblName: TLabel
         Left = 5
         Height = 15
         Top = 5
-        Width = 382
+        Width = 378
         Align = alTop
         BorderSpacing.Around = 5
         Caption = 'lblName'
@@ -144,7 +144,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 23
         Top = 25
-        Width = 382
+        Width = 378
         Align = alTop
         BorderSpacing.Around = 5
         TabOrder = 0
@@ -154,7 +154,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 15
         Top = 53
-        Width = 382
+        Width = 378
         Align = alTop
         BorderSpacing.Around = 5
         Caption = 'lblTypeNames'
@@ -163,7 +163,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 246
         Top = 73
-        Width = 382
+        Width = 378
         Align = alClient
         BorderSpacing.Around = 5
         TabOrder = 1
@@ -172,7 +172,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 6
         Height = 23
         Top = 325
-        Width = 380
+        Width = 376
         Align = alBottom
         BorderSpacing.Around = 6
         ItemHeight = 15
@@ -180,14 +180,24 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         TabOrder = 2
       end
     end
-    object clDisplayFormat: TCheckListBox
-      Left = 392
+    object vtvDisplayFormat: TLazVirtualStringTree
+      Left = 388
       Height = 354
       Top = 20
-      Width = 246
+      Width = 250
       Align = alRight
-      ItemHeight = 0
+      DefaultText = '-'
+      DragOperations = []
+      Header.AutoSizeIndex = 0
+      Header.Columns = <>
+      Header.MainColumn = -1
+      NodeDataSize = 4
       TabOrder = 1
+      TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+      TreeOptions.MiscOptions = [toCheckSupport, toFullRepaintOnResize, toInitOnSave, toWheelPanning]
+      TreeOptions.PaintOptions = [toShowDropmark, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
+      TreeOptions.SelectionOptions = [toFullRowSelect, toRightClickSelect]
+      OnGetText = vtvDisplayFormatGetText
     end
   end
   object Splitter1: TSplitter

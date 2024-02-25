@@ -51,8 +51,8 @@ uses
   // BuildIntf
   ProjectIntf, CompOptsIntf,
   // IDEIntf
-  IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf,
-  IdeIntfStrConsts, IDEDialogs, ToolBarIntf, InputHistory, IdeDebuggerValueFormatterIntf,
+  IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
+  ToolBarIntf, InputHistory, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
@@ -293,7 +293,7 @@ type
     function DoDeleteBreakPointAtMark(const ASourceMarkObj: TObject): TModalResult; override;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
-    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; override;
+    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown): TModalresult; override;
 
     // Dialog routines
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
@@ -3526,9 +3526,10 @@ begin
   Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
 end;
 
-function TDebugManager.ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult;
+function TDebugManager.ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String;
+  AResDataType: TWatchResultDataKind): TModalresult;
 begin
-  Result := TWatchPropertyDlg.Create(Self, AWatch, AWatchExpression).ShowModal;
+  Result := TWatchPropertyDlg.Create(Self, AWatch, AWatchExpression, AResDataType).ShowModal;
 end;
 
 procedure TDebugManager.SetDebugger(const ADebugger: TDebuggerIntf);

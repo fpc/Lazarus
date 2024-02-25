@@ -105,6 +105,8 @@
       <Item>
         <Filename Value="watchpropertydlg.pp"/>
         <UnitName Value="WatchPropertyDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="debuggerdlg.pp"/>
@@ -113,70 +115,104 @@
       <Item>
         <Filename Value="watchesdlg.pp"/>
         <UnitName Value="WatchesDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="callstackdlg.pp"/>
         <UnitName Value="CallStackDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="localsdlg.pp"/>
         <UnitName Value="LocalsDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="threaddlg.pp"/>
         <UnitName Value="ThreadDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="breakpropertydlggroups.pas"/>
         <UnitName Value="BreakPropertyDlgGroups"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="historydlg.pp"/>
         <UnitName Value="HistoryDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="pseudoterminaldlg.pp"/>
         <UnitName Value="PseudoTerminalDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="registersdlg.pp"/>
         <UnitName Value="RegistersDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="debugoutputform.pp"/>
         <UnitName Value="DebugOutputForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="exceptiondlg.pas"/>
         <UnitName Value="ExceptionDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="feedbackdlg.pp"/>
         <UnitName Value="FeedbackDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="debugattachdialog.pas"/>
         <UnitName Value="DebugAttachDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="breakpropertydlg.pas"/>
         <UnitName Value="BreakPropertyDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="evaluatedlg.pp"/>
         <UnitName Value="EvaluateDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="inspectdlg.pas"/>
         <UnitName Value="InspectDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="breakpointsdlg.pp"/>
         <UnitName Value="BreakPointsDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="assemblerdlg.pp"/>
         <UnitName Value="AssemblerDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="dbgtreeviewwatchdata.pas"/>
@@ -189,6 +225,8 @@
       <Item>
         <Filename Value="breakpointgroupframe.pas"/>
         <UnitName Value="BreakpointGroupFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="inputhistorycopy.pas"/>
@@ -215,10 +253,14 @@
       <Item>
         <Filename Value="idedebuggervalueformatterdatetime.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterDateTime"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="idedebuggervalueformattercolor.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterColor"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="idedebuggervalueformattersetup.pas"/>
@@ -227,6 +269,12 @@
       <Item>
         <Filename Value="idedebuggervalueformattercurrency.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterCurrency"/>
+      </Item>
+      <Item>
+        <Filename Value="frames\displayformatconfigframe.pas"/>
+        <UnitName Value="DisplayFormatConfigFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
     </Files>
     <i18n>

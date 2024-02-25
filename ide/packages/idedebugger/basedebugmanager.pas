@@ -43,7 +43,7 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  IDEOptEditorIntf,
+  IDEOptEditorIntf, IdeDebuggerWatchValueIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
@@ -198,7 +198,7 @@ type
     function DoDeleteBreakPointAtMark(const ASourceMarkObj: TObject): TModalResult; virtual; abstract;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
-    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
+    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown): TModalresult; virtual; abstract;
 
     procedure RequestWatchData(AWatchValue: IDbgWatchValueIntf); override;
     // Dialog routines

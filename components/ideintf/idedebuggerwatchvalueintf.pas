@@ -19,15 +19,149 @@ uses
 
 type
 
-  TWatchDisplayFormat =
-    (wdfDefault,
-     wdfStructure,
-     wdfChar, wdfString,
-     wdfDecimal, wdfUnsigned, wdfFloat, wdfHex,
-     wdfPointer,
-     wdfMemDump, wdfBinary
-    );
-  TWatchDisplayFormats = set of TWatchDisplayFormat;
+  TValueDisplayFormatGroup = (
+    vdfgBase, vdfgSign, vdfgNumChar,
+    vdfgEnum, vdfgBool,
+    vdfgChar,
+    vdfgFloat,
+    vdfgStruct, vdfgStructAddress,
+    vdfgPointer, vdfgPointerDeref,
+    vdfgCategory
+  );
+  TValueDisplayFormatGroups = set of TValueDisplayFormatGroup;
+
+  TValueDisplayFormat = (
+    // ordinals
+    vdfBaseDefault, vdfBaseDecimal, vdfBaseHex, vdfBaseOct, vdfBaseBin, vdfBasePointer,
+    // signed numbers
+    vdfSignDefault, vdfSignSigned, vdfSignUnsigned,
+    // num as char
+    vdfNumCharDefault, vdfNumCharOff, vdfNumCharOrdAndUnicode, vdfNumCharOnlyUnicode,
+    // enum
+    vdfEnumDefault, vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd,
+    // bool
+    vdfBoolDefault, vdfBoolName, vdfBoolOrd, vdfBoolNameAndOrd,
+    // char
+    vdfCharDefault, vdfCharLetter, vdfCharOrd, vdfCharLetterAndOrd,
+    // float
+    vdfFloatDefault, vdfFloatPoint, vdfFloatScientific,
+    // structures
+    vdfStructDefault, vdfStructValOnly, vdfStructFields, vdfStructFull,
+    // structures with pointer
+    vdfStructAddressDefault, vdfStructAddressOff, vdfStructAddressOn, vdfStructAddressOnly,
+    // pointer
+    vdfPointerDefault, vdfPointerAddress, vdfPointerTypedAddress,
+    // pointer deref
+    vdfPointerDerefDefault, vdfPointerDerefOff, vdfPointerDerefOn, vdfPointerDerefOnly,
+
+    // Categories
+    vdfCategoryData, vdfCategoryMemDump   // For use in the set TValueDisplayFormats
+  );
+  TValueDisplayFormats = set of TValueDisplayFormat;
+
+  TValueDisplayFormatBase         = vdfBaseDefault          .. vdfBasePointer;
+  TValueDisplayFormatSign         = vdfSignDefault          .. vdfSignUnsigned;
+  TValueDisplayFormatNumChar      = vdfNumCharDefault       .. vdfNumCharOnlyUnicode;
+  TValueDisplayFormatEnum         = vdfEnumDefault          .. vdfEnumNameAndOrd;
+  TValueDisplayFormatBool         = vdfBoolDefault          .. vdfBoolNameAndOrd;
+  TValueDisplayFormatChar         = vdfCharDefault          .. vdfCharLetterAndOrd;
+  TValueDisplayFormatFloat        = vdfFloatDefault         .. vdfFloatScientific;
+  TValueDisplayFormatStruct       = vdfStructDefault        .. vdfStructFull;
+  TValueDisplayFormatStructAddr   = vdfStructAddressDefault .. vdfStructAddressOnly;
+  TValueDisplayFormatPointer      = vdfPointerDefault       .. vdfPointerTypedAddress;
+  TValueDisplayFormatPointerDeref = vdfPointerDerefDefault  .. vdfPointerDerefOnly;
+
+  TValueDisplayFormatCategory     = vdfCategoryData .. vdfCategoryMemDump;
+  TValueDisplayFormatCategories   = set of TValueDisplayFormatCategory;
+
+
+  TWatchDisplayFormat = packed record
+    NumBaseFormat:            TValueDisplayFormatBase;
+     NumSignFormat:           TValueDisplayFormatSign;
+     NumCharFormat:           TValueDisplayFormatNumChar;
+    EnumFormat:               TValueDisplayFormatEnum;
+     EnumBaseFormat:          TValueDisplayFormatBase;
+     EnumSignFormat:          TValueDisplayFormatSign;
+    BoolFormat:               TValueDisplayFormatBool;
+     BoolBaseFormat:          TValueDisplayFormatBase;
+     BoolSignFormat:          TValueDisplayFormatSign;
+    CharFormat:               TValueDisplayFormatChar;
+     CharBaseFormat:          TValueDisplayFormatBase;
+     CharSignFormat:          TValueDisplayFormatSign;
+    FloatFormat:              TValueDisplayFormatFloat;
+    StructFormat:             TValueDisplayFormatStruct;
+     StructAddrFormat:        TValueDisplayFormatStructAddr;
+     StructPointerFormat:     TValueDisplayFormatPointer;
+     StructPointerBaseFormat: TValueDisplayFormatBase;
+     StructPointerSignFormat: TValueDisplayFormatSign;
+    PointerFormat:            TValueDisplayFormatPointer;
+     PointerDerefFormat:      TValueDisplayFormatPointerDeref;
+     PointerBaseFormat:       TValueDisplayFormatBase;
+     PointerSignFormat:       TValueDisplayFormatSign;
+    MemDump: ByteBool;
+  end;
+
+const
+  {$WRITEABLECONST OFF}
+  DefaultWatchDisplayFormat:  TWatchDisplayFormat = (
+    NumBaseFormat:            vdfBaseDefault;
+    NumSignFormat:            vdfSignDefault;
+    NumCharFormat:            vdfNumCharDefault;
+    EnumFormat:               vdfEnumDefault;
+     EnumBaseFormat:          vdfBaseDefault;
+     EnumSignFormat:          vdfSignDefault;
+    BoolFormat:               vdfBoolDefault;
+     BoolBaseFormat:          vdfBaseDefault;
+     BoolSignFormat:          vdfSignDefault;
+    CharFormat:               vdfCharDefault;
+     CharBaseFormat:          vdfBaseDefault;
+     CharSignFormat:          vdfSignDefault;
+    FloatFormat:              vdfFloatDefault;
+    StructFormat:             vdfStructDefault;
+     StructAddrFormat:        vdfStructAddressDefault;
+     StructPointerFormat:     vdfPointerDefault;
+     StructPointerBaseFormat: vdfBaseDefault;
+     StructPointerSignFormat: vdfSignDefault;
+    PointerFormat:            vdfPointerDefault;
+     PointerDerefFormat:      vdfPointerDerefDefault;
+     PointerBaseFormat:       vdfBaseDefault;
+     PointerSignFormat:       vdfSignDefault;
+    MemDump:       False;
+  );
+
+  ValueDisplayFormatGroupMap: array [TValueDisplayFormat] of TValueDisplayFormatGroup = (
+    vdfgBase, vdfgBase, vdfgBase, vdfgBase, vdfgBase, vdfgBase,
+    vdfgSign, vdfgSign, vdfgSign,
+    vdfgNumChar, vdfgNumChar, vdfgNumChar, vdfgNumChar,
+    vdfgEnum, vdfgEnum, vdfgEnum, vdfgEnum,
+    vdfgBool, vdfgBool, vdfgBool, vdfgBool,
+    vdfgChar, vdfgChar, vdfgChar, vdfgChar,
+    vdfgFloat, vdfgFloat, vdfgFloat,
+    vdfgStruct, vdfgStruct, vdfgStruct, vdfgStruct,
+    vdfgStructAddress, vdfgStructAddress, vdfgStructAddress, vdfgStructAddress,
+    vdfgPointer, vdfgPointer, vdfgPointer,
+    vdfgPointerDeref, vdfgPointerDeref, vdfgPointerDeref, vdfgPointerDeref,
+    vdfgCategory, vdfgCategory
+  );
+
+  ValueDisplayFormatMaskMap: array [TValueDisplayFormatGroup] of TValueDisplayFormats = (
+    [low(TValueDisplayFormatBase)         .. high(TValueDisplayFormatBase)],         // vdfgBase
+    [low(TValueDisplayFormatSign)         .. high(TValueDisplayFormatSign)],         // vdfgSign
+    [low(TValueDisplayFormatNumChar)      .. high(TValueDisplayFormatNumChar)],      // vdfgNumChar
+    [low(TValueDisplayFormatEnum)         .. high(TValueDisplayFormatEnum)],         // vdfgEnum
+    [low(TValueDisplayFormatBool)         .. high(TValueDisplayFormatBool)],         // vdfgBool
+    [low(TValueDisplayFormatChar)         .. high(TValueDisplayFormatChar)],         // vdfgChar
+    [low(TValueDisplayFormatFloat)        .. high(TValueDisplayFormatFloat)],        // vdfgFloat
+    [low(TValueDisplayFormatStruct)       .. high(TValueDisplayFormatStruct)],       // vdfgStruct
+    [low(TValueDisplayFormatStructAddr)   .. high(TValueDisplayFormatStructAddr)],   // vdfgStructAddress
+    [low(TValueDisplayFormatPointer)      .. high(TValueDisplayFormatPointer)],      // vdfgPointer
+    [low(TValueDisplayFormatPointerDeref) .. high(TValueDisplayFormatPointerDeref)], // vdfgPointerDeref
+    [low(TValueDisplayFormatCategory)     .. high(TValueDisplayFormatCategory)]      // vdfgCategory
+  );
+
+operator = (a,b: TWatchDisplayFormat): Boolean;
+
+type
 
   TWatchResultDataKind = (
     rdkUnknown,
@@ -47,7 +181,7 @@ type
   IWatchResultDataIntf = interface;
 
   IWatchResultPrinter = interface
-    function PrintWatchValue(AResValue: IWatchResultDataIntf; ADispFormat: TWatchDisplayFormat): String;
+    function PrintWatchValue(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat): String;
   end;
 
 
@@ -148,6 +282,34 @@ type
 
 
 implementation
+
+operator = (a, b: TWatchDisplayFormat): Boolean;
+begin
+  Result :=
+    (a.NumBaseFormat           = b.NumBaseFormat) and
+    (a.NumSignFormat           = b.NumSignFormat) and
+    (a.NumCharFormat           = b.NumCharFormat) and
+    (a.EnumFormat              = b.EnumFormat) and
+    (a.EnumBaseFormat          = b.EnumBaseFormat) and
+    (a.EnumSignFormat          = b.EnumSignFormat) and
+    (a.BoolFormat              = b.BoolFormat) and
+    (a.BoolBaseFormat          = b.BoolBaseFormat) and
+    (a.BoolSignFormat          = b.BoolSignFormat) and
+    (a.CharFormat              = b.CharFormat) and
+    (a.CharBaseFormat          = b.CharBaseFormat) and
+    (a.CharSignFormat          = b.CharSignFormat) and
+    (a.FloatFormat             = b.FloatFormat) and
+    (a.StructFormat            = b.StructFormat) and
+    (a.StructAddrFormat        = b.StructAddrFormat) and
+    (a.StructPointerFormat     = b.StructPointerFormat) and
+    (a.StructPointerBaseFormat = b.StructPointerBaseFormat) and
+    (a.StructPointerSignFormat = b.StructPointerSignFormat) and
+    (a.PointerFormat           = b.PointerFormat) and
+    (a.PointerDerefFormat      = b.PointerDerefFormat) and
+    (a.PointerBaseFormat       = b.PointerBaseFormat) and
+    (a.PointerSignFormat       = b.PointerSignFormat) and
+    (a.MemDump                 = b.MemDump);
+end;
 
 end.
 

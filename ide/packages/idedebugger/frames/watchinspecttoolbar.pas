@@ -17,7 +17,7 @@ uses
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
-  IdeDebuggerUtils;
+  IdeDebuggerUtils, IdeDebuggerWatchResPrinter;
 
 type
 
@@ -80,6 +80,7 @@ type
   private const
     MAX_HISTORY = 1000;
   private
+    FDisplayFormat: TWatchDisplayFormat;
     FDefaultEvalOpts: TWatcheEvaluateFlags;
     FOnAddEvaluateClicked: TNotifyEvent;
     FOnAddInspectClicked: TNotifyEvent;
@@ -108,9 +109,10 @@ type
     procedure ArrayNavSizeChanged(Sender: TObject);
     procedure DoDbpConvMenuClicked(Sender: TObject);
     procedure DoDispFormatClicked(Sender: TObject);
+    function GetDisplayFormat: TWatchDisplayFormat;
+    procedure UpdateDisplayFormatMenu;
     function  GetButtonDown(AIndex: Integer): Boolean;
     function GetButtonEnabled(AIndex: Integer): Boolean;
-    function GetDisplayFormat: TWatchDisplayFormat;
     function GetDropDownOpen: boolean;
     function GetExpression: String;
     function  GetOnArrayNavChanged(AIndex: Integer): TArrayNavChangeEvent;
@@ -195,6 +197,14 @@ type
 implementation
 
 {$R *.lfm}
+
+procedure AddToStr(var txt: string; add, sep: string);
+begin
+  if (txt = add) then
+    exit;
+  if txt <> '' then txt := txt + sep;
+  txt := txt + add;
+end;
 
 { TWatchInspectNav }
 
@@ -374,11 +384,6 @@ begin
   end;
 end;
 
-function TWatchInspectNav.GetDisplayFormat: TWatchDisplayFormat;
-begin
-  Result := TWatchDisplayFormat(btnDisplayFormat.Tag);
-end;
-
 function TWatchInspectNav.GetDropDownOpen: boolean;
 begin
   Result := EdInspect.Focused and EdInspect.DroppedDown;
@@ -398,13 +403,124 @@ begin
 end;
 
 procedure TWatchInspectNav.DoDispFormatClicked(Sender: TObject);
+  //function GetDispForm(AParent: TMenuItem; AGrp: TValueDisplayFormatGroup): TValueDisplayFormat;
+  //var
+  //  m: TValueDisplayFormats;
+  //begin
+  //  m := DisplayFormatMask(AGrp);
+  //end;
+var
+  p: TMenuItem;
+  tg: integer;
+  df: TValueDisplayFormat;
 begin
-  btnDisplayFormat.Caption := TMenuItem(Sender).Caption;
-  btnDisplayFormat.Tag := TMenuItem(Sender).Tag;
+  p := TMenuItem(Sender).Parent;
+  if p = nil then
+    exit;
+  tg := TMenuItem(Sender).Tag;
+  if (tg < ord(low(TValueDisplayFormat))) or (tg > ord(high(TValueDisplayFormat))) then
+    exit;
+
+  df := TValueDisplayFormat(tg);
+  case p.Tag of
+    -10: case ValueDisplayFormatGroupMap[df] of
+        vdfgBase:    FDisplayFormat.NumBaseFormat := df;
+        vdfgSign:    FDisplayFormat.NumSignFormat := df;
+        vdfgNumChar: FDisplayFormat.NumCharFormat := df;
+      end;
+    -11: case ValueDisplayFormatGroupMap[df] of
+        vdfgEnum:    begin
+                     FDisplayFormat.EnumFormat := df;
+                     FDisplayFormat.BoolFormat := FormatEnumToBool[df];
+                     FDisplayFormat.CharFormat := FormatEnumToChar[df];
+                     end;
+        vdfgBase:    begin
+                     FDisplayFormat.EnumBaseFormat := df;
+                     FDisplayFormat.BoolBaseFormat := FormatEnumToBool[df];
+                     FDisplayFormat.CharBaseFormat := FormatEnumToChar[df];
+                     end;
+        vdfgSign: begin
+                     FDisplayFormat.EnumSignFormat := df;
+                     FDisplayFormat.BoolSignFormat := FormatEnumToBool[df];
+                     FDisplayFormat.CharSignFormat := FormatEnumToChar[df];
+                     end;
+      end;
+    -12: case ValueDisplayFormatGroupMap[df] of
+        vdfgFloat:   FDisplayFormat.FloatFormat := df;
+      end;
+    -13: case ValueDisplayFormatGroupMap[df] of
+        vdfgStruct:        FDisplayFormat.StructFormat := df;
+        vdfgStructAddress: FDisplayFormat.StructAddrFormat := df;
+        vdfgPointer:       FDisplayFormat.StructPointerFormat := df;
+        vdfgBase:          FDisplayFormat.StructPointerBaseFormat := df;
+        vdfgSign:          FDisplayFormat.StructPointerSignFormat := df;
+      end;
+    -14: case ValueDisplayFormatGroupMap[df] of
+        vdfgPointer:      FDisplayFormat.PointerFormat := df;
+        vdfgPointerDeref: FDisplayFormat.PointerDerefFormat := df;
+        vdfgBase:         FDisplayFormat.PointerBaseFormat := df;
+        vdfgSign:         FDisplayFormat.PointerSignFormat := df;
+      end;
+  end;
+
+  UpdateDisplayFormatMenu;
+
   if FOnDisplayFormatChanged <> nil then
     FOnDisplayFormatChanged(Self);
+  //FrameResize(nil);
+end;
 
-  FrameResize(nil);
+function TWatchInspectNav.GetDisplayFormat: TWatchDisplayFormat;
+begin
+  if btnDisplayFormat.Visible then
+    Result := FDisplayFormat
+  else
+    Result := DefaultWatchDisplayFormat;
+end;
+
+procedure TWatchInspectNav.UpdateDisplayFormatMenu;
+  procedure CheckMn(AMnItem: TMenuItem; ACapt: String; AValForms: TValueDisplayFormats);
+  var
+    i, j: Integer;
+    s: String;
+  begin
+    j := 0;
+    s := '';
+    for i := 0 to AMnItem.Count - 1 do
+      if TValueDisplayFormat(AMnItem.Items[i].Tag) in AValForms then begin
+        AMnItem.Items[i].Checked := True;
+        inc(j);
+        if j <= 2 then
+          AddToStr(s, DisplayFormatName(TValueDisplayFormat(AMnItem.Items[i].Tag)), ', ');
+      end
+      else begin
+        AMnItem.Items[i].Checked := False;
+      end;
+    AMnItem.Caption := ACapt+': '+s;
+  end;
+var
+  i: Integer;
+begin
+  for i := 0 to popDispForm.Items.Count - 1 do begin
+    case popDispForm.Items[i].Tag of
+      -10: CheckMn(popDispForm.Items[i], DispFormatDlgBtnNumber, [TValueDisplayFormat(FDisplayFormat.NumBaseFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.NumSignFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.NumCharFormat)]);
+      -11: CheckMn(popDispForm.Items[i], DispFormatDlgBtnOrd,    [TValueDisplayFormat(FDisplayFormat.EnumFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.EnumBaseFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.EnumSignFormat)]);
+      -12: CheckMn(popDispForm.Items[i], DispFormatDlgBtnFloat,  [TValueDisplayFormat(FDisplayFormat.FloatFormat)]);
+      -13: CheckMn(popDispForm.Items[i], DispFormatDlgBtnStruct, [TValueDisplayFormat(FDisplayFormat.StructFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.StructAddrFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.StructPointerFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.StructPointerBaseFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.StructPointerSignFormat)]);
+      -14: CheckMn(popDispForm.Items[i], DispFormatDlgBtnPointer,[TValueDisplayFormat(FDisplayFormat.PointerFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.PointerDerefFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.PointerBaseFormat),
+                                                                  TValueDisplayFormat(FDisplayFormat.PointerSignFormat)]);
+    end;
+  end;
 end;
 
 procedure TWatchInspectNav.ArrayNavSizeChanged(Sender: TObject);
@@ -516,8 +632,29 @@ begin
 end;
 
 constructor TWatchInspectNav.Create(TheOwner: TComponent);
+  function MnItem(ACapt: String; ATag: integer; ARadioGrp: integer = 0): TMenuItem;
+  begin
+    Result := TMenuItem.Create(Self);
+    Result.Caption := ACapt;
+    Result.Tag := ATag;
+    Result.GroupIndex := ARadioGrp;
+    Result.RadioItem := ARadioGrp > 0;
+    if ARadioGrp > 0 then
+      Result.OnClick := @DoDispFormatClicked;
+  end;
+  procedure MnListAdd(AStart, AnEnd: TValueDisplayFormat; AParent: TMenuItem; ARadioGrp: integer; ADefaultPostFix: String = '');
+  var
+    df: TValueDisplayFormat;
+  begin
+    if ADefaultPostFix <> '' then
+      ADefaultPostFix := ' ' + ADefaultPostFix;
+    for df := AStart to AnEnd do begin
+      AParent.Add(MnItem(DisplayFormatName(df) + ADefaultPostFix, ord(df), ARadioGrp));
+      ADefaultPostFix := '';
+    end;
+  end;
 var
-  df: TWatchDisplayFormat;
+  df: TValueDisplayFormat;
   m: TMenuItem;
 begin
   inherited Create(TheOwner);
@@ -564,17 +701,52 @@ begin
   mnuHistory.Items[1].Caption := drsInsertResultAtTopOfHistor;
   mnuHistory.Items[2].Caption := drsAppendResultAtBottomOfHis;
 
-  for df := low(TWatchDisplayFormat) to high(TWatchDisplayFormat) do begin
-    if df = wdfMemDump then
-      continue;
-    m := TMenuItem.Create(Self);
-    m.Caption := DisplayFormatName(df);
-    m.Tag := ord(df);
-    m.OnClick := @DoDispFormatClicked;
-    popDispForm.Items.Add(m);
-  end;
-  btnDisplayFormat.Caption := DisplayFormatName(wdfStructure);
-  btnDisplayFormat.Tag := Ord(wdfStructure);
+  FDisplayFormat := DefaultWatchDisplayFormat;
+
+  m := MnItem(DispFormatDlgBtnNumber, -10);
+  popDispForm.Items.Add(m);
+  MnListAdd(low(TWatchDisplayFormat.NumBaseFormat), high(TWatchDisplayFormat.NumBaseFormat), m, 1);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.NumSignFormat), high(TWatchDisplayFormat.NumSignFormat), m, 2, DispFormatDlgCaptionSign);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.NumCharFormat), high(TWatchDisplayFormat.NumCharFormat), m, 3, DispFormatDlgCaptionShowChar);
+
+  m := MnItem(DispFormatDlgBtnOrd, -11);
+  popDispForm.Items.Add(m);
+  MnListAdd(low(TWatchDisplayFormat.EnumFormat), high(TWatchDisplayFormat.EnumFormat), m, 10);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.EnumBaseFormat), high(TWatchDisplayFormat.EnumBaseFormat), m, 11, DispFormatDlgCaptionNumber);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.EnumSignFormat), high(TWatchDisplayFormat.EnumSignFormat), m, 12, DispFormatDlgCaptionSign);
+
+  m := MnItem(DispFormatDlgBtnFloat, -12);
+  popDispForm.Items.Add(m);
+  MnListAdd(low(TWatchDisplayFormat.FloatFormat), high(TWatchDisplayFormat.FloatFormat), m, 20);
+
+  m := MnItem(DispFormatDlgBtnStruct, -13);
+  popDispForm.Items.Add(m);
+  MnListAdd(low(TWatchDisplayFormat.StructFormat), high(TWatchDisplayFormat.StructFormat), m, 30);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.StructAddrFormat), high(TWatchDisplayFormat.StructAddrFormat), m, 31, DispFormatDlgCaptionAddress);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.StructPointerFormat), high(TWatchDisplayFormat.StructPointerFormat), m, 32, DispFormatDlgCaptionTyped);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.StructPointerBaseFormat), high(TWatchDisplayFormat.StructPointerBaseFormat), m, 33, DispFormatDlgCaptionNumber);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.StructPointerSignFormat), high(TWatchDisplayFormat.StructPointerSignFormat), m, 34, DispFormatDlgCaptionSign);
+
+  m := MnItem(DispFormatDlgBtnPointer, -14);
+  popDispForm.Items.Add(m);
+  MnListAdd(low(TWatchDisplayFormat.PointerDerefFormat), high(TWatchDisplayFormat.PointerDerefFormat), m, 40, DispFormatDlgCaptionDeref);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.PointerFormat), high(TWatchDisplayFormat.PointerFormat), m, 41);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.PointerBaseFormat), high(TWatchDisplayFormat.PointerBaseFormat), m, 42, DispFormatDlgCaptionNumber);
+  m.Add(MnItem(cLineCaption, -1));
+  MnListAdd(low(TWatchDisplayFormat.PointerSignFormat), high(TWatchDisplayFormat.PointerSignFormat), m, 43, DispFormatDlgCaptionSign);
+
+  btnDisplayFormat.Caption := 'Display-Format';
+  UpdateDisplayFormatMenu;
 
 
   btnBackward.Enabled := False;

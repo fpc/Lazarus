@@ -38,60 +38,375 @@ msgstr "Selecionar grupos à habilitar quando o ponto de parada for atingido"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Alguns grupos na lista Habilitar/Desabilitar não existem.%0:sCriá-los?%0:s%0:s%1:s"
 
-#: idedebuggerstringconstants.dbgdispformatbinary
-msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
+#: idedebuggerstringconstants.dispformatbasebin
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
 msgstr "Binário"
 
-#: idedebuggerstringconstants.dbgdispformatcharacter
-msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
-msgid "Character"
-msgstr "Caracter"
-
-#: idedebuggerstringconstants.dbgdispformatdecimal
-msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
+#: idedebuggerstringconstants.dispformatbasedecimal
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasedecimal"
 msgid "Decimal"
 msgstr "Decimal"
 
-#: idedebuggerstringconstants.dbgdispformatdefault
-msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
+#: idedebuggerstringconstants.dispformatbasedefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasedefault"
 msgid "Default"
 msgstr "Padrão"
 
-#: idedebuggerstringconstants.dbgdispformatfloatingpoin
-msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
-msgid "Floating Point"
-msgstr "Ponto flutuante"
+#: idedebuggerstringconstants.dispformatbasehex
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasehex"
+msgid "Hex"
+msgstr "Hex"
 
-#: idedebuggerstringconstants.dbgdispformathexadecimal
-msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
-msgid "Hexadecimal"
-msgstr "Hexadecimal"
+#: idedebuggerstringconstants.dispformatbaseoct
+msgid "Oct"
+msgstr ""
 
-#: idedebuggerstringconstants.dbgdispformatmemorydump
-msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
-msgid "Memory Dump"
-msgstr "Despejo de memória"
-
-#: idedebuggerstringconstants.dbgdispformatpointer
-msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
+#: idedebuggerstringconstants.dispformatbasepointer
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbasepointer"
 msgid "Pointer"
 msgstr "Ponteiro"
 
-#: idedebuggerstringconstants.dbgdispformatrecordstruct
-msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
-msgid "Record/Structure"
-msgstr "Registro/Estrutura"
+#: idedebuggerstringconstants.dispformatbooldefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatbooldefault"
+msgid "Default"
+msgstr "Padrão"
 
-#: idedebuggerstringconstants.dbgdispformatstring
-msgctxt "idedebuggerstringconstants.dbgdispformatstring"
-msgid "String"
-msgstr "String"
+#: idedebuggerstringconstants.dispformatboolname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatboolname"
+msgid "Name"
+msgstr "Nome"
 
-#: idedebuggerstringconstants.dbgdispformatunsigned
-msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
+#: idedebuggerstringconstants.dispformatboolnameandord
+msgctxt "idedebuggerstringconstants.dispformatboolnameandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatboolord
+msgctxt "idedebuggerstringconstants.dispformatboolord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcategorydata
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatcategorydata"
+msgid "Value"
+msgstr "Valor"
+
+#: idedebuggerstringconstants.dispformatcategorymemdump
+msgid "Memory dump"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatchardefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatchardefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatcharletter
+msgid "Letter"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcharletterandord
+msgctxt "idedebuggerstringconstants.dispformatcharletterandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatcharord
+msgctxt "idedebuggerstringconstants.dispformatcharord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnadrformat
+msgid "Address format"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnall
+msgid "All"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnbool
+msgid "Boolean"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnchar
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnchar"
+msgid "Char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtncurrent
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatdlgbtncurrent"
+msgid "Current"
+msgstr "Atual"
+
+#: idedebuggerstringconstants.dispformatdlgbtnenum
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnenum"
+msgid "Enum"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnfloat
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
+msgid "Float"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnnumber
+msgid "Number"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnord
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnordformat
+msgid "Ordinal format"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnpointer
+msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
+msgid "Pointer"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnstruct
+msgid "Structure"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionaddress
+msgid "(Address)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptiondefault
+msgctxt "idedebuggerstringconstants.dispformatdlgcaptiondefault"
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionderef
+msgid "(Deref)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionnumber
+msgid "(Number)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionshowchar
+msgid "(Show Char)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptionsign
+msgid "(Sign)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgcaptiontyped
+msgid "(Typed)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatenumdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatenumdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatenumname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatenumname"
+msgid "Name"
+msgstr "Nome"
+
+#: idedebuggerstringconstants.dispformatenumnameandord
+msgctxt "idedebuggerstringconstants.dispformatenumnameandord"
+msgid "Both"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatenumord
+msgctxt "idedebuggerstringconstants.dispformatenumord"
+msgid "Ordinal"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatfloatdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatfloatdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatfloatpoint
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatfloatpoint"
+msgid "Decimal"
+msgstr "Decimal"
+
+#: idedebuggerstringconstants.dispformatfloatscientific
+msgid "Exponent"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupbase
+msgid "Number base"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupbool
+msgid "Bool"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupcategory
+msgid "Display type"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupchar
+msgctxt "idedebuggerstringconstants.dispformatgroupchar"
+msgid "Char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupenum
+msgctxt "idedebuggerstringconstants.dispformatgroupenum"
+msgid "Enum"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupfloat
+msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
+msgid "Float"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupnumchar
+msgid "Ordinal as char"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgrouppointer
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatgrouppointer"
+msgid "Pointer"
+msgstr "Ponteiro"
+
+#: idedebuggerstringconstants.dispformatgrouppointerderef
+msgid "Pointer (Deref)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupsign
+msgid "Number sign"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupstruct
+msgid "Structures"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupstructaddress
+msgid "Structures (Addr)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumchardefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatnumchardefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatnumcharoff
+msgctxt "idedebuggerstringconstants.dispformatnumcharoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumcharonlyunicode
+msgid "Unicode only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumcharordandunicode
+msgid "Unicode + Number"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointeraddress
+msgid "Address"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpointerdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatpointerderefdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpointerderefdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatpointerderefoff
+msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerderefon
+msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
+msgid "On"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointerderefonly
+msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
+msgid "Only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpointertypedaddress
+msgid "Typed address"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatsigndefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatsigndefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatsignsigned
+msgid "Signed"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatsignunsigned
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatsignunsigned"
 msgid "Unsigned"
 msgstr "Unsigned"
+
+#: idedebuggerstringconstants.dispformatstructaddressdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatstructaddressdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatstructaddressoff
+msgctxt "idedebuggerstringconstants.dispformatstructaddressoff"
+msgid "Off"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructaddresson
+msgctxt "idedebuggerstringconstants.dispformatstructaddresson"
+msgid "On"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructaddressonly
+msgctxt "idedebuggerstringconstants.dispformatstructaddressonly"
+msgid "Only"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructdefault
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatstructdefault"
+msgid "Default"
+msgstr "Padrão"
+
+#: idedebuggerstringconstants.dispformatstructfields
+msgid "Field names"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructfull
+msgid "Full"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatstructvalonly
+msgid "Values only"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 #, fuzzy
@@ -1388,6 +1703,7 @@ msgid "Format"
 msgstr "Formatar"
 
 #: idedebuggerstringconstants.regdlghex
+msgctxt "idedebuggerstringconstants.regdlghex"
 msgid "Hex"
 msgstr "Hex"
 

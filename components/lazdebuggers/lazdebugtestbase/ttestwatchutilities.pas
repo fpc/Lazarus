@@ -158,7 +158,6 @@ type
     EvalCallResText: String;
     EvalCallResDBGType: TDBGType;
 
-    //TstDspFormat: TWatchDisplayFormat;
     //TstRepeatCount: Integer;
     //TstEvaluateFlags: TWatcheEvaluateFlags;
     TstStackFrame: Integer;
@@ -292,14 +291,14 @@ type
     ): PWatchExpectation;
 
     function Add(ATestName: String;
-      AnExpr:  string; // AEvaluateFlags: TWatcheEvaluateFlags; // AFmt: TWatchDisplayFormat;
+      AnExpr:  string; // AEvaluateFlags: TWatcheEvaluateFlags;
       AnExpect: TWatchExpectationResult;
       AStackFrame: Integer = 0; AMinFpc: Integer = 0; AMinDbg: Integer = 0
       // ASpecialFlags: ... // Ignore this or that // maybe per result
     ): PWatchExpectation;
 
     function Add(
-      AnExpr:  string; // AEvaluateFlags: TWatcheEvaluateFlags; // AFmt: TWatchDisplayFormat;
+      AnExpr:  string; // AEvaluateFlags: TWatcheEvaluateFlags;
       AnExpect: TWatchExpectationResult;
       AStackFrame: Integer = 0; AMinFpc: Integer = 0; AMinDbg: Integer = 0
     ): PWatchExpectation;
@@ -1462,7 +1461,7 @@ begin
       Context.WatchRes := WatchVal.ResultData;
 
       //debugln([' ## ## ',  WatchVal.Expression]);
-      //debugln([FWatchResultPrinter.PrintWatchValue(WatchVal.ResultData,wdfDefault)]); debugln;
+      //debugln([FWatchResultPrinter.PrintWatchValue(WatchVal.ResultData,DefaultWatchDisplayFormat)]); debugln;
 
       if (Context.WatchRes <> nil) and
          (Context.WatchRes.ValueKind = rdkPCharOrString)
@@ -1729,7 +1728,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestMatches('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+    Result := TestMatches('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1751,7 +1750,7 @@ begin
       else
         s := IntToStr(Expect.expIntValue);
 
-      Result := TestEquals('Data', s, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', s, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat), AContext, AnIgnoreRsn);
     end
     else begin
       if IsCardinal then begin
@@ -1784,7 +1783,7 @@ begin
     Expect := AContext.Expectation;
 
     WriteStr(s, Expect.ExpBoolValue);
-    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
     if AContext.Expectation.ExpResultKind = rkSizedBool then begin
       i := pos('(', v);
       if i > 1 then
@@ -1805,7 +1804,7 @@ begin
     Expect := AContext.Expectation;
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), EqIgnoreCase, AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat), EqIgnoreCase, AContext, AnIgnoreRsn);
     end
     else begin
       Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkFloatVal, AContext, AnIgnoreRsn);
@@ -1823,7 +1822,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
+    Result := TestEquals('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1839,7 +1838,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
 
     if (v='') or (v[1] <> '[') or (v[length(v)] <> ']') then begin
       Result := TestTrue('elements are in [...]', False, AContext, AnIgnoreRsn);
@@ -1877,7 +1876,7 @@ begin
     else
       e := QuoteText(Expect.ExpTextData);
 
-    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
     if ehCharFromIndex in ehf then begin
       if v <> e then begin
 //AnIgnoreRsn := AnIgnoreRsn + 'char from index not implemented';
@@ -1906,7 +1905,7 @@ begin
     Expect := AContext.Expectation;
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+      v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
       ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
       // in dwarf 2 ansistring are pchar
@@ -1993,7 +1992,7 @@ begin
       else
         e := QuoteText(Expect.ExpTextData);
 
-      Result := TestEquals('Data', e, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', e, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat), AContext, AnIgnoreRsn);
     end
     else begin
       Result := TestTrue('ValueKind', AContext.WatchRes.ValueKind = rdkString, AContext, AnIgnoreRsn);
@@ -2017,7 +2016,7 @@ begin
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
-      g := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+      g := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
 
       e := '(\$[0-9a-fA-F]*\^?|nil)';
       tn := GetExpTypeNameAsRegEx(Expect);
@@ -2168,7 +2167,7 @@ begin
       end;
     end;
 
-    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault);
+    v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat);
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
 
     if CompareText(v, 'nil') = 0 then begin
@@ -2229,7 +2228,7 @@ begin
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat));
     delete(v, 1, pos('(', v));
     delete(v, length(v), 1);
 
@@ -2279,7 +2278,7 @@ begin
 
       if j >= 0 then begin
         SubContext.WatchRes := TWatchResultDataPrePrinted.Create(
-          FWatchResultPrinter.PrintWatchValue(AContext.WatchRes.Fields[j].Field, wdfDefault)
+          FWatchResultPrinter.PrintWatchValue(AContext.WatchRes.Fields[j].Field, DefaultWatchDisplayFormat)
         );
         FTest.TestBaseName := n + ' Idx=' + IntToStr(i)+' ';
         SubContext.Expectation := sr;
@@ -2301,7 +2300,7 @@ begin
   with AContext.WatchExp do begin
     Result := True;
 
-    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat));
     TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
     TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
@@ -2319,7 +2318,7 @@ begin
   with AContext.WatchExp do begin
     Result := True;
 
-    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat));
     TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
     TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
@@ -2337,7 +2336,7 @@ begin
   with AContext.WatchExp do begin
     Result := True;
 
-    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat));
     TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
     TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);
@@ -2358,7 +2357,7 @@ begin
   with AContext.WatchExp do begin
     Result := True;
 
-    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, wdfDefault));
+    v := Trim(FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, DefaultWatchDisplayFormat));
     TestTrue('TODO / some text', v <> '', AContext, AnIgnoreRsn);
 
     TestTrue('rdkStruct', AContext.WatchRes.ValueKind = rdkStruct, AContext, AnIgnoreRsn);

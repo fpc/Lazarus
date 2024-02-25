@@ -772,7 +772,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
+      Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat));
       Clipboard.Close;
     end;
   end;
@@ -792,7 +792,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault);
+      Clipboard.AsText := FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat);
       Clipboard.Close;
     end;
   end;
@@ -869,7 +869,7 @@ begin
           end;
         end;
 
-        DispFormat := wdfDefault; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
+        DispFormat := DefaultWatchDisplayFormat; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
         if vdoAllowMultiLine in AnOpts then
           FLocalsDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
         try
@@ -915,7 +915,7 @@ var
   DispFormat: TWatchDisplayFormat;
 begin
   ResData :=  AWatchAbleResult.ResultData;
-  DispFormat := wdfDefault; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
+  DispFormat := DefaultWatchDisplayFormat; // TODO TIdeLocalsValue(AWatchAble).DisplayFormat
   if (ResData <> nil) and
      not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
   then begin

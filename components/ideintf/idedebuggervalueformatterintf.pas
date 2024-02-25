@@ -21,7 +21,9 @@ type
 
   TLazDbgIdeValFormatterFeature = (
     vffFormatValue,    // FormatValue() for IWatchResultDataIntf
-    vffFormatOldValue  // FormatValue() for older backends TDBGType
+    vffFormatOldValue,  // FormatValue() for older backends TDBGType
+    vffValueData,       // Normal data
+    vffValueMemDump     // MemDump
   ) experimental;
   TLazDbgIdeValFormatterFeatures = set of TLazDbgIdeValFormatterFeature;
 
@@ -43,6 +45,8 @@ type
                         ): boolean; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures;
+    function SupportedDisplayFormatFilters: TValueDisplayFormatGroups;
+    function SupportedDisplayFormatCategories: TValueDisplayFormatCategories;
 
     // Config
     function  GetObject: TObject;  // for TXmlConfig.WriteObject / must have all config in published fields
@@ -113,6 +117,11 @@ type
                         ): boolean; virtual; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures; virtual;
+    (* SupportedDisplayFormatFilters / SupportedDisplayFormatCategories
+       must return a fixed result per instance / must not change
+    *)
+    function SupportedDisplayFormatFilters: TValueDisplayFormatGroups; virtual;
+    function SupportedDisplayFormatCategories: TValueDisplayFormatCategories; virtual;
   end;
 
   { TLazDbgIdeValueFormatterRegistryEntryGeneric }
@@ -227,7 +236,17 @@ end;
 
 function TLazDbgIdeValueFormatterGeneric.SupportedFeatures: TLazDbgIdeValFormatterFeatures;
 begin
-  Result := [];
+  Result := [vffValueData];
+end;
+
+function TLazDbgIdeValueFormatterGeneric.SupportedDisplayFormatFilters: TValueDisplayFormatGroups;
+begin
+  Result := [low(TValueDisplayFormatGroups)..high(TValueDisplayFormatGroups)];
+end;
+
+function TLazDbgIdeValueFormatterGeneric.SupportedDisplayFormatCategories: TValueDisplayFormatCategories;
+begin
+  Result := [vdfCategoryData];
 end;
 
 { TLazDbgIdeValueFormatterRegistryEntryGeneric }

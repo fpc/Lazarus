@@ -2,62 +2,71 @@ object IdeDbgValFormatOptionsFrame: TIdeDbgValFormatOptionsFrame
   Left = 0
   Height = 240
   Top = 0
-  Width = 320
+  Width = 346
   ClientHeight = 240
-  ClientWidth = 320
+  ClientWidth = 346
   TabOrder = 0
   DesignLeft = 470
   DesignTop = 214
   inline IdeDbgVarFormatterFrame1: TIdeDbgVarFormatterFrame
     Height = 240
-    Width = 320
+    Width = 346
     Align = alClient
     ClientHeight = 240
-    ClientWidth = 320
+    ClientWidth = 346
     inherited Panel1: TPanel
-      Width = 320
-      ClientWidth = 320
+      Width = 346
+      ClientWidth = 346
       inherited lstFormatters: TCheckListBox
-        Width = 140
+        Width = 166
       end
       inherited Panel2: TPanel
-        Left = 150
+        Left = 176
       end
     end
     inherited pnlCurrentFormatter: TPanel
       Height = 120
-      Width = 320
+      Width = 346
       ClientHeight = 120
-      ClientWidth = 320
+      ClientWidth = 346
       inherited lblDesc: TLabel
-        Width = 310
+        Width = 336
       end
       inherited Panel5: TPanel
         Height = 100
-        Width = 320
+        Width = 96
         ClientHeight = 100
-        ClientWidth = 320
+        ClientWidth = 96
         inherited lblName: TLabel
-          Width = 310
+          Width = 86
         end
         inherited EdName: TEdit
-          Width = 310
+          Width = 86
         end
         inherited lblTypeNames: TLabel
-          Width = 310
+          Width = 86
         end
         inherited memoTypeNames: TMemo
-          Height = 22
-          Width = 310
+          Height = 0
+          Top = 70
+          Width = 86
         end
+        inherited cbAppendOriginalValue: TComboBox
+          Top = 71
+          Width = 84
+        end
+      end
+      inherited vtvDisplayFormat: TLazVirtualStringTree
+        Left = 96
+        Height = 100
       end
     end
     inherited Splitter1: TSplitter
-      Width = 320
+      Width = 346
     end
     inherited pnlCurFormatterSetting: TPanel
       Top = 240
-      Width = 320
+      Width = 346
     end
   end
 end

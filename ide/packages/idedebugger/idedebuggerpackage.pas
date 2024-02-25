@@ -22,7 +22,7 @@ uses
   IdeDebuggerValueFormatter, IdeDebugger_ValFormatter_Options, 
   IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor, 
   IdeDebuggerValueFormatterSetup, IdeDebuggerValueFormatterCurrency, 
-  LazarusPackageIntf;
+  DisplayFormatConfigFrame, LazarusPackageIntf;
 
 implementation
 

@@ -181,6 +181,7 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     function CreateValueList: TWatchValueList; virtual;
 
+    function GetDisplayFormat: TWatchDisplayFormat; virtual;
     function GetBackendExpression: String;
     function GetFrontendExpressionSuffix: String;
   public
@@ -194,7 +195,7 @@ type
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
-    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat write SetDisplayFormat;
+    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
@@ -556,6 +557,11 @@ begin
   DoModified;
 end;
 
+function TWatch.GetDisplayFormat: TWatchDisplayFormat;
+begin
+  Result := FDisplayFormat;
+end;
+
 procedure TWatch.SetEnabled(AValue: Boolean);
 begin
   if FEnabled <> AValue
@@ -650,7 +656,7 @@ begin
   then begin
     TWatch(Dest).FExpression    := FExpression;
     TWatch(Dest).FEnabled       := FEnabled;
-    TWatch(Dest).FDisplayFormat := FDisplayFormat;
+    TWatch(Dest).FDisplayFormat := DisplayFormat;
     TWatch(Dest).FFirstIndexOffs    := FFirstIndexOffs;
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
@@ -707,6 +713,7 @@ constructor TWatch.Create(ACollection: TCollection);
 begin
   FEnabled := False;
   FValueList := CreateValueList;
+  FDisplayFormat := DefaultWatchDisplayFormat;
   inherited Create(ACollection);
 end;
 
@@ -811,7 +818,7 @@ begin
   while i >= 0 do begin
     Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       (Result.IsMemDump = (FWatch.DisplayFormat = wdfMemDump)) and
+       (Result.IsMemDump = (FWatch.DisplayFormat.MemDump)) and
        (Result.EvaluateFlags = FWatch.EvaluateFlags) and
        (Result.FFirstIndexOffs <= AFirstIndexOffs) and
        (Result.FFirstIndexOffs + Result.FRepeatCount  > AFirstIndexOffs) and
@@ -859,7 +866,7 @@ begin
   while i >= 0 do begin
     Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       (Result.IsMemDump = (FWatch.DisplayFormat = wdfMemDump)) and
+       (Result.IsMemDump = (FWatch.DisplayFormat.MemDump)) and
        (Result.RepeatCount = FWatch.RepeatCount) and
        (Result.FirstIndexOffs = FWatch.FirstIndexOffs) and
        (Result.EvaluateFlags = FWatch.EvaluateFlags)

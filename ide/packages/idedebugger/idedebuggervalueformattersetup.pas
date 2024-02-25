@@ -57,7 +57,6 @@ begin
     f := TIdeDbgValueFormatterSelector.Create(TIdeDbgValueFormatterRegistryColor);
     f.Name := 'Color formatter';
     f.Enabled := True;
-    f.FilterDisplayFormat := [low(TWatchDisplayFormat)..high(TWatchDisplayFormat)] - [wdfMemDump, wdfDecimal];
     f.MatchTypeNames.Add('TColor');
     f.OriginalValue := vfovAtEnd;
     cl := TIdeDbgValueFormatterColor(f.ValFormatter.GetObject);
@@ -69,7 +68,7 @@ begin
     f := TIdeDbgValueFormatterSelector.Create(TIdeDbgValueFormatterRegistryCurrency);
     f.Name := 'Currency formatter';
     f.Enabled := True;
-    f.FilterDisplayFormat := [low(TWatchDisplayFormat)..high(TWatchDisplayFormat)] - [wdfMemDump, wdfDecimal];
+    f.FilterDisplayFormats := [low(TValueDisplayFormat)..high(TValueDisplayFormat)] - [vdfCategoryMemDump, vdfBaseDecimal..vdfBasePointer];
     f.MatchTypeNames.Add('Currency');
     f.OriginalValue := vfovHide;
     vc.Add(f);

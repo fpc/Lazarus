@@ -51,7 +51,8 @@ uses
   // LazDebuggerIntf
   LazDebuggerIntf,
   // IdeDebugger
-  Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions;
+  Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants,
+  EnvDebuggerOptions, DisplayFormatConfigFrame;
 
 type
 
@@ -63,13 +64,13 @@ type
     chkAllowFuncThreads: TCheckBox;
     chkEnabled: TCheckBox;
     chkUseInstanceClass: TCheckBox;
+    DisplayFormatFrame1: TDisplayFormatFrame;
     dropFpDbgConv: TComboBox;
     lblFpDbgConv: TLabel;
     lblDigits: TLabel;
     lblExpression: TLabel;
     lblRepCount: TLabel;
     PanelTop: TPanel;
-    rgStyle: TRadioGroup;
     txtDigits: TEdit;
     txtExpression: TEdit;
     txtRepCount: TEdit;
@@ -80,7 +81,7 @@ type
   private
     FWatch: TIdeWatch;
   public
-    constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''); overload;
+    constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown); overload;
     destructor Destroy; override;
   end;
 
@@ -91,12 +92,6 @@ implementation
 { TWatchPropertyDlg }
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
-const
-  StyleToDispFormat: Array [0..9] of TWatchDisplayFormat =
-    (wdfChar, wdfString, wdfDecimal,
-     wdfHex, wdfUnsigned, wdfPointer,
-     wdfStructure, wdfDefault, wdfMemDump, wdfBinary
-    );
 begin
   if txtExpression.Text = '' then
     exit;
@@ -110,10 +105,7 @@ begin
       FWatch.Expression := txtExpression.Text;
     end;
 
-    if (rgStyle.ItemIndex >= low(StyleToDispFormat))
-    and (rgStyle.ItemIndex <= High(StyleToDispFormat))
-    then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
-    else FWatch.DisplayFormat := wdfDefault;
+    FWatch.DisplayFormat := DisplayFormatFrame1.DisplayFormat;
 
     FWatch.EvaluateFlags := [];
     if chkUseInstanceClass.Checked
@@ -161,39 +153,33 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIdeWatch;
-  const AWatchExpression: String = '');
-const
-  DispFormatToStyle: Array [TWatchDisplayFormat] of Integer =
-    (7, 6, //wdfDefault, wdfStructure,
-     0, 1, //wdfChar, wdfString,
-     2, 4, //wdfDecimal, wdfUnsigned, (TODO unsigned)
-     7, 3, //wdfFloat, wdfHex,
-     5, 8, //wdfPointer, wdfMemDump
-     9     //wdfBinary
-    );
+constructor TWatchPropertyDlg.Create(AOWner: TComponent; const AWatch: TIdeWatch;
+  const AWatchExpression: String; AResDataType: TWatchResultDataKind);
 var
   i, i2: Integer;
 begin
   FWatch := AWatch;
   inherited Create(AOwner);
+  DisplayFormatFrame1.Setup;
   if FWatch = nil
-  then begin 
+  then begin
     chkEnabled.Checked := True;
     txtExpression.Text := AWatchExpression;
-    rgStyle.ItemIndex := 7;
+    DisplayFormatFrame1.DisplayFormat := DefaultWatchDisplayFormat;
     chkUseInstanceClass.Checked := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
     txtRepCount.Text := '0';
   end
   else begin
     txtExpression.Text          := FWatch.Expression;
     chkEnabled.Checked          := FWatch.Enabled;
-    rgStyle.ItemIndex           := DispFormatToStyle[FWatch.DisplayFormat];
+    DisplayFormatFrame1.DisplayFormat := FWatch.DisplayFormat;
     chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
     chkAllowFunc.Checked        := defAllowFunctionCall in FWatch.EvaluateFlags;
     chkAllowFuncThreads.Checked := defFunctionCallRunAllThreads in FWatch.EvaluateFlags;
     txtRepCount.Text            := IntToStr(FWatch.RepeatCount);
   end;
+  DisplayFormatFrame1.CurrentResDataType := AResDataType;
+  DisplayFormatFrame1.SelectDefaultButton;
   txtExpressionChange(nil);
 
   lblDigits.Enabled := False;
@@ -212,18 +198,6 @@ begin
   chkAllowFunc.Caption:= lisAllowFunctio;
   chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
   chkUseInstanceClass.Caption := drsUseInstanceClassType;
-  rgStyle.Caption:= lisStyle;
-  rgStyle.Items[0]:= dbgDispFormatCharacter;
-  rgStyle.Items[1]:= dbgDispFormatString;
-  rgStyle.Items[2]:= dbgDispFormatDecimal;
-  rgStyle.Items[3]:= dbgDispFormatHexadecimal;
-  rgStyle.Items[4]:= dbgDispFormatUnsigned;
-  rgStyle.Items[5]:= dbgDispFormatPointer;
-  rgStyle.Items[6]:= dbgDispFormatRecordStruct;
-  rgStyle.Items[7]:= dbgDispFormatDefault;
-  rgStyle.Items[8]:= dbgDispFormatMemoryDump;
-  rgStyle.Items[9]:= dbgDispFormatBinary;
-  //rgStyle.Items[10]:= dbgDispFormatFloatingPoin;
 
   lblFpDbgConv.Caption := dlgBackendConvOptDebugConverter;
   dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);
@@ -259,7 +233,7 @@ begin
   ButtonPanel.CancelButton.Caption:=lisCancel;
 end;
 
-destructor TWatchPropertyDlg.destroy;
+destructor TWatchPropertyDlg.Destroy;
 begin
   inherited;
 end;

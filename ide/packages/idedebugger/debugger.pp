@@ -493,16 +493,6 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-const
-  TWatchDisplayFormatNames: array [TWatchDisplayFormat] of string =
-    ('wdfDefault',
-     'wdfStructure',
-     'wdfChar', 'wdfString',
-     'wdfDecimal', 'wdfUnsigned', 'wdfFloat', 'wdfHex',
-     'wdfPointer',
-     'wdfMemDump', 'wdfBinary'
-    );
-
 type
 
   TWatchesEvent =
@@ -624,7 +614,12 @@ type
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoDisplayFormatChanged; override;
+    function GetDisplayFormat: TWatchDisplayFormat; override;
   protected
+    procedure LoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig;
+                                const APath, AOldPath: string; var ADisplayFormat: TWatchDisplayFormat);
+    procedure SaveDisplayFormatToXMLConfig(const AConfig: TXMLConfig;
+                              const APath, AOldPath: string; ADisplayFormat: TWatchDisplayFormat);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -4588,7 +4583,7 @@ constructor TIdeWatchValue.Create(AOwnerWatch: TWatch);
 begin
   inherited Create(AOwnerWatch);
   Validity := ddsUnknown;
-  FIsMemDump := Watch.DisplayFormat = wdfMemDump;
+  FIsMemDump := Watch.DisplayFormat.MemDump;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
   FFirstIndexOffs    := Watch.FirstIndexOffs;
@@ -6725,6 +6720,17 @@ begin
   DoModified;
 end;
 
+function TIdeWatch.GetDisplayFormat: TWatchDisplayFormat;
+var
+  tw: TIdeWatch;
+begin
+  tw := GetTopParentWatch;
+  if tw <> Self then
+    Result := tw.DisplayFormat
+  else
+    Result := inherited GetDisplayFormat;
+end;
+
 function TIdeWatch.GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
 begin
   Result := TIdeWatchValue(inherited Values[AThreadId, AStackFrame]);
@@ -6850,6 +6856,100 @@ begin
   Result := TIdeWatches.Create;
 end;
 
+procedure TIdeWatch.LoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig;
+  const APath, AOldPath: string; var ADisplayFormat: TWatchDisplayFormat);
+  function ParseOldDispFormat(AnOldDispFormat: string): TWatchDisplayFormat;
+  begin
+    Result := DefaultWatchDisplayFormat;
+    Result.MemDump := AnOldDispFormat = 'wdfmemdump';
+    case AnOldDispFormat of
+      //'wdfdefault':   ;
+      'wdfstructure': Result.StructFormat := vdfStructFull; // enum = FULL / pointer = WithDataDeref
+      'wdfchar':      Result.NumCharFormat := vdfNumCharOnlyUnicode;
+      //'wdfstring':    ;  // nothing
+      'wdfdecimal':   begin
+                      Result.NumBaseFormat   := vdfBaseDecimal;
+                      Result.NumSignFormat   := vdfSignSigned;
+                      end;
+      'wdfunsigned':  begin
+                      Result.NumBaseFormat   := vdfBaseDecimal;
+                      Result.NumSignFormat   := vdfSignUnsigned;
+                      end;
+      'wdffloat':     ;
+      'wdfhex':       Result.NumBaseFormat    := vdfBaseHex;
+      'wdfbinary':    Result.NumBaseFormat    := vdfBaseBin;
+      'wdfpointers':  begin
+                      Result.NumBaseFormat    := vdfBasePointer;
+                      Result.StructAddrFormat := vdfStructAddressOnly;
+                      end;
+      //'wdfmemdump':   ;
+    end;
+  end;
+var
+  s: String;
+begin
+  s := LowerCase(AConfig.GetValue(APath+AOldPath, 'wdfDefault'));
+  if s <> 'wdfdefault' then begin
+    ADisplayFormat := ParseOldDispFormat(s);
+  end
+  else
+  begin
+    ADisplayFormat := DefaultWatchDisplayFormat;
+    ADisplayFormat.MemDump := AConfig.GetValue(APath + '/IsMemDump', False);
+    AConfig.GetValue(APath + '/Num',          ord(vdfBaseDefault),          ADisplayFormat.NumBaseFormat,              TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/Sign',         ord(vdfSignDefault),          ADisplayFormat.NumSignFormat,             TypeInfo(TValueDisplayFormatSign));
+    AConfig.GetValue(APath + '/NumChar',      ord(vdfNumCharDefault),       ADisplayFormat.NumCharFormat,          TypeInfo(TValueDisplayFormatNumChar));
+    AConfig.GetValue(APath + '/Enum',         ord(vdfEnumDefault),          ADisplayFormat.EnumFormat,             TypeInfo(TValueDisplayFormatEnum));
+    AConfig.GetValue(APath + '/EnumBase',     ord(vdfBaseDefault),          ADisplayFormat.EnumBaseFormat,          TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/EnumSign',     ord(vdfSignDefault),          ADisplayFormat.EnumSignFormat,         TypeInfo(TValueDisplayFormatSign));
+    AConfig.GetValue(APath + '/Bool',         ord(vdfBoolDefault),          ADisplayFormat.BoolFormat,             TypeInfo(TValueDisplayFormatBool));
+    AConfig.GetValue(APath + '/BoolBase',     ord(vdfBaseDefault),          ADisplayFormat.BoolBaseFormat,          TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/BoolSign',     ord(vdfSignDefault),          ADisplayFormat.BoolSignFormat,         TypeInfo(TValueDisplayFormatSign));
+    AConfig.GetValue(APath + '/Char',         ord(vdfCharDefault),          ADisplayFormat.CharFormat,             TypeInfo(TValueDisplayFormatChar));
+    AConfig.GetValue(APath + '/CharBase',     ord(vdfBaseDefault),          ADisplayFormat.CharBaseFormat,          TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/CharSign',     ord(vdfSignDefault),          ADisplayFormat.CharSignFormat,         TypeInfo(TValueDisplayFormatSign));
+    AConfig.GetValue(APath + '/Float',        ord(vdfFloatDefault),         ADisplayFormat.FloatFormat,            TypeInfo(TValueDisplayFormatFloat));
+    AConfig.GetValue(APath + '/Struct',       ord(vdfStructDefault),        ADisplayFormat.StructFormat,           TypeInfo(TValueDisplayFormatStruct));
+    AConfig.GetValue(APath + '/StructAddr',   ord(vdfStructAddressDefault), ADisplayFormat.StructAddrFormat,       TypeInfo(TValueDisplayFormatStructAddr));
+    AConfig.GetValue(APath + '/StructPtr',    ord(vdfPointerDefault),       ADisplayFormat.StructPointerFormat,    TypeInfo(TValueDisplayFormatPointer));
+    AConfig.GetValue(APath + '/StructBase',   ord(vdfBaseDefault),          ADisplayFormat.StructPointerBaseFormat, TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/StructSign',   ord(vdfSignDefault),          ADisplayFormat.StructPointerSignFormat,TypeInfo(TValueDisplayFormatSign));
+    AConfig.GetValue(APath + '/Pointer',      ord(vdfPointerDefault),       ADisplayFormat.PointerFormat,          TypeInfo(TValueDisplayFormatPointer));
+    AConfig.GetValue(APath + '/PointerDeref', ord(vdfPointerDerefDefault),  ADisplayFormat.PointerDerefFormat,     TypeInfo(TValueDisplayFormatPointerDeref));
+    AConfig.GetValue(APath + '/PointerBase',  ord(vdfBaseDefault),          ADisplayFormat.PointerBaseFormat,       TypeInfo(TValueDisplayFormatBase));
+    AConfig.GetValue(APath + '/PointerSign',  ord(vdfSignDefault),          ADisplayFormat.PointerSignFormat,      TypeInfo(TValueDisplayFormatSign));
+  end;
+end;
+
+procedure TIdeWatch.SaveDisplayFormatToXMLConfig(const AConfig: TXMLConfig;
+  const APath, AOldPath: string; ADisplayFormat: TWatchDisplayFormat);
+begin
+  AConfig.DeleteValue(APath+AOldPath);
+  AConfig.SetDeleteValue(APath + '/IsMemDump',    ADisplayFormat.MemDump, False);
+  AConfig.SetDeleteValue(APath + '/Num',          ADisplayFormat.NumBaseFormat,              ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/Sign',         ADisplayFormat.NumSignFormat,             ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + '/NumChar',      ADisplayFormat.NumCharFormat,          ord(vdfNumCharDefault),       TypeInfo(TValueDisplayFormatNumChar));
+  AConfig.SetDeleteValue(APath + '/Enum',         ADisplayFormat.EnumFormat,             ord(vdfEnumDefault),          TypeInfo(TValueDisplayFormatEnum));
+  AConfig.SetDeleteValue(APath + '/EnumBase',     ADisplayFormat.EnumBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/EnumSign',     ADisplayFormat.EnumSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + '/Bool',         ADisplayFormat.BoolFormat,             ord(vdfBoolDefault),          TypeInfo(TValueDisplayFormatBool));
+  AConfig.SetDeleteValue(APath + '/BoolBase',     ADisplayFormat.BoolBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/BoolSign',     ADisplayFormat.BoolSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + '/Char',         ADisplayFormat.CharFormat,             ord(vdfCharDefault),          TypeInfo(TValueDisplayFormatChar));
+  AConfig.SetDeleteValue(APath + '/CharBase',     ADisplayFormat.CharBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/CharSign',     ADisplayFormat.CharSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + '/Float',        ADisplayFormat.FloatFormat,            ord(vdfFloatDefault),         TypeInfo(TValueDisplayFormatFloat));
+  AConfig.SetDeleteValue(APath + '/Struct',       ADisplayFormat.StructFormat,           ord(vdfStructDefault),        TypeInfo(TValueDisplayFormatStruct));
+  AConfig.SetDeleteValue(APath + '/StructAddr',   ADisplayFormat.StructAddrFormat,       ord(vdfStructAddressDefault), TypeInfo(TValueDisplayFormatStructAddr));
+  AConfig.SetDeleteValue(APath + '/StructPtr',    ADisplayFormat.StructPointerFormat,    ord(vdfPointerDefault),       TypeInfo(TValueDisplayFormatPointer));
+  AConfig.SetDeleteValue(APath + '/StructBase',   ADisplayFormat.StructPointerBaseFormat, ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/StructSign',   ADisplayFormat.StructPointerSignFormat,ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + '/Pointer',      ADisplayFormat.PointerFormat,          ord(vdfPointerDefault),       TypeInfo(TValueDisplayFormatPointer));
+  AConfig.SetDeleteValue(APath + '/PointerDeref', ADisplayFormat.PointerDerefFormat,     ord(vdfPointerDerefDefault),  TypeInfo(TValueDisplayFormatPointerDeref));
+  AConfig.SetDeleteValue(APath + '/PointerBase',  ADisplayFormat.PointerBaseFormat,       ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + '/PointerSign',  ADisplayFormat.PointerSignFormat,      ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+end;
+
 procedure TIdeWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   s: String;
@@ -6865,8 +6965,9 @@ begin
   if AConfig.GetValue(APath + 'AllowFunctionThreads', False)
   then Include(FEvaluateFlags, defFunctionCallRunAllThreads)
   else Exclude(FEvaluateFlags, defFunctionCallRunAllThreads);
-  try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
-  except FDisplayFormat := wdfDefault; end;
+
+  LoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayFormat', '', FDisplayFormat);
+
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
@@ -6892,12 +6993,12 @@ var
 begin
   AConfig.SetDeleteValue(APath + 'Enabled', FEnabled, True);
   AConfig.SetDeleteValue(APath + 'Expression', FExpression, '');
-  WriteStr(s{%H-}, FDisplayFormat);
-  AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+
+  SaveDisplayFormatToXMLConfig(AConfig, APath + 'DisplayFormat', '', FDisplayFormat);
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
   if DbgBackendConverter <> nil then begin
@@ -7026,12 +7127,9 @@ begin
   if AConfig.GetValue(APath + 'AllowFunctionThreads', False)
   then Include(FEvaluateFlags, defFunctionCallRunAllThreads)
   else Exclude(FEvaluateFlags, defFunctionCallRunAllThreads);
-  i := StringCase
-    (AConfig.GetValue(APath + 'DisplayStyle/Value', TWatchDisplayFormatNames[wdfDefault]),
-    TWatchDisplayFormatNames);
-  if i >= 0
-  then DisplayFormat := TWatchDisplayFormat(i)
-  else DisplayFormat := wdfDefault;
+
+  LoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayStyle', '/Value', FDisplayFormat);
+
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
@@ -7053,8 +7151,8 @@ procedure TCurrentWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: 
 begin
   AConfig.SetDeleteValue(APath + 'Expression/Value', Expression, '');
   AConfig.SetDeleteValue(APath + 'Enabled/Value', Enabled, true);
-  AConfig.SetDeleteValue(APath + 'DisplayStyle/Value',
-    TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
+
+  SaveDisplayFormatToXMLConfig(AConfig, APath + 'DisplayStyle', '/Value', FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
@@ -7355,7 +7453,7 @@ end;
 
 function TIdeLocalsValue.GetDisplayFormat: TWatchDisplayFormat;
 begin
-  Result := wdfDefault;
+  Result := DefaultWatchDisplayFormat;
 end;
 
 function TIdeLocalsValue.GetTypeInfo: TDBGType;

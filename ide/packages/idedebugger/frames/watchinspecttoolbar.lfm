@@ -5,8 +5,8 @@ object WatchInspectNav: TWatchInspectNav
   Width = 1040
   ClientHeight = 112
   ClientWidth = 1040
-  OnResize = FrameResize
   TabOrder = 0
+  OnResize = FrameResize
   DesignLeft = 66
   DesignTop = 35
   object ToolBar1: TToolBar
@@ -26,9 +26,9 @@ object WatchInspectNav: TWatchInspectNav
       Top = 2
       Caption = 'O'
       Down = True
-      OnClick = btnPowerClick
       ShowCaption = False
       Style = tbsCheck
+      OnClick = btnPowerClick
     end
     object tbDivPower: TToolButton
       Left = 24
@@ -63,10 +63,10 @@ object WatchInspectNav: TWatchInspectNav
       AllowAllUp = True
       Caption = 'Instance'
       Down = True
-      OnClick = btnFunctionEvalClick
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
+      OnClick = btnFunctionEvalClick
     end
     object btnFunctionEval: TToolButton
       Left = 134
@@ -75,10 +75,10 @@ object WatchInspectNav: TWatchInspectNav
       AllowAllUp = True
       Caption = 'Function'
       Down = True
-      OnClick = btnFunctionEvalClick
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
+      OnClick = btnFunctionEvalClick
     end
     object btnUseConverter: TToolButton
       Left = 189
@@ -105,10 +105,10 @@ object WatchInspectNav: TWatchInspectNav
       AllowAllUp = True
       Caption = 'C'
       Down = True
-      OnClick = btnColTypeClick
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
+      OnClick = btnColTypeClick
     end
     object btnColType: TToolButton
       Left = 287
@@ -116,10 +116,10 @@ object WatchInspectNav: TWatchInspectNav
       AllowAllUp = True
       Caption = 'T'
       Down = True
-      OnClick = btnColTypeClick
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
+      OnClick = btnColTypeClick
     end
     object btnColVisibility: TToolButton
       Left = 310
@@ -127,10 +127,10 @@ object WatchInspectNav: TWatchInspectNav
       AllowAllUp = True
       Caption = 'V'
       Down = True
-      OnClick = btnColTypeClick
       ParentShowHint = False
       ShowHint = True
       Style = tbsCheck
+      OnClick = btnColTypeClick
     end
     object tbDivCol: TToolButton
       Left = 516
@@ -260,11 +260,11 @@ object WatchInspectNav: TWatchInspectNav
       Width = 1018
       Align = alClient
       ItemHeight = 15
+      TabOrder = 0
+      TextHint = 'Enter Expression'
       OnChange = EdInspectChange
       OnEditingDone = EdInspectEditingDone
       OnKeyDown = EdInspectKeyDown
-      TabOrder = 0
-      TextHint = 'Enter Expression'
     end
     object BtnExecute: TSpeedButton
       Left = 1019
