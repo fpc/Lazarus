@@ -4194,14 +4194,14 @@ Ordinal position for the page object removed from the page list.
 </short>
 </element>
 
-<element name="TCustomTabControl.ActivateFirstControlOnPage">
+<element name="TCustomTabControl.MaybeSelectFirstControlOnPage">
 <short>
 Updates the ActiveControl on the parent form when the specified page becomes 
 active.
 </short>
 <descr>
 <p>
-<var>ActivateFirstControlOnPage</var> is a method used to ensure that the 
+<var>MaybeSelectFirstControlOnPage</var> is a method used to ensure that the 
 active control on a form is properly updated when the page on the tab control 
 is changed. It prevents the tabbed control from stealing focus if there is an 
 enabled child control on the page specified in <var>APage</var>. It sets the 
@@ -4230,9 +4230,9 @@ APage does not have any child controls.
 </li>
 </ul>
 <p>
-ActivateFirstControlOnPage is called from the Change method, and when a new 
+MaybeSelectFirstControlOnPage is called from the Change method, and when a new 
 value is assigned to the TabIndex property. It occurs after the current Page on 
-the tab control has been made visible and given focus. It occurs before the 
+the tab control has been made visible and given focus. It is called before the 
 OnChange event handler is signalled.
 </p>
 </descr>
