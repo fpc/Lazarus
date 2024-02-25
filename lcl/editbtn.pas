@@ -726,6 +726,8 @@ type
       FDefaultNow: Boolean;
       FDroppedDown: Boolean;
       FSimpleLayout: Boolean;
+      FTimeFormat: String;
+      FTimeSeparator: String;
       FOnAcceptTime: TAcceptTimeEvent;
       FOnCustomTime: TCustomTimeEvent;
       function GetTime: TDateTime;
@@ -733,6 +735,8 @@ type
       procedure SetEmptyTime;
       function GetLayout: Boolean;
       procedure SetLayout(AValue: Boolean);
+      procedure SetTimeFormat(AValue: String);
+      procedure SetTimeSeparator(AValue: String);
       procedure TimePopupReturnTime(Sender: TObject; const ATime: TDateTime);
       procedure TimePopupShowHide(Sender: TObject);
       procedure OpenTimePopup;
@@ -740,11 +744,15 @@ type
       function TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
     protected
       function GetDefaultGlyphName: string; override;
+      function UsedFormatSettings: TFormatSettings;
+      function UsedTimeFormat: String;
+      function UsedTimeSeparator: Char;
       procedure ButtonClick; override;
       procedure EditDblClick; override;
       procedure EditEditingDone; override;
     public
       constructor Create(AOwner: TComponent); override;
+      function ValidTimeFormat(AFormat: String): Boolean;
       property Time: TDateTime read GetTime write SetTime;
       property Button;
       property DroppedDown: Boolean read FDroppedDown;
@@ -793,6 +801,8 @@ type
       property Spacing;
       property TabStop;
       property TabOrder;
+      property TimeFormat: String read FTimeFormat write SetTimeFormat;
+      property TimeSeparator: String read FTimeSeparator write SetTimeSeparator;
       property Visible;
       property Text;
       property TextHint;
@@ -2185,6 +2195,7 @@ begin
   RegisterPropertyToSkip(TDateEdit, 'CancelCaption', 'Property streamed in older Lazarus revision','');
 end;
 
+
 { TTimeEdit }
 
 function TTimeEdit.GetTime: TDateTime;
@@ -2214,13 +2225,28 @@ begin
 end;
 
 procedure TTimeEdit.SetTime(AValue: TDateTime);
-var
-  Output: String;
 begin
-  DateTimeToString(Output, DefaultFormatSettings.ShortTimeFormat, AValue);
-  Text := Output;
+  Text := FormatDateTime(UsedTimeFormat, AValue, UsedFormatSettings);
   FTime := AValue;
   IsEmptyTime := False;
+end;
+
+procedure TTimeEdit.SetTimeFormat(AValue: String);
+begin
+  if (FTimeFormat <> AValue) and ValidTimeFormat(AValue) then
+  begin
+    FTimeFormat := AValue;
+    SetTime(FTime);
+  end;
+end;
+
+procedure TTimeEdit.SetTimeSeparator(AValue: String);
+begin
+  if FTimeSeparator <> AValue then
+  begin
+    FTimeSeparator := AValue;
+    SetTime(FTime);
+  end;
 end;
 
 procedure TTimeEdit.SetEmptyTime;
@@ -2268,12 +2294,15 @@ begin
 end;
 
 function TTimeEdit.TryParseInput(AInput: String; out ParseResult: TDateTime): Boolean;
+var
+  timeSep: Char;
 begin
   AInput := Trim(AInput);
-  if (Length(AInput) in [3..4]) and (not AnsiContainsStr(AInput, DefaultFormatSettings.TimeSeparator)) then begin
-    Insert(DefaultFormatSettings.TimeSeparator, AInput, Length(AInput) - 1);
+  timeSep := UsedTimeSeparator;
+  if (Length(AInput) in [3..4]) and (not AnsiContainsStr(AInput, timeSep)) then begin
+    Insert(timeSep, AInput, Length(AInput) - 1);
   end;
-  Result := TryStrToTime(AInput, ParseResult);
+  Result := TryStrToTime(AInput, ParseResult, UsedFormatSettings);
 end;
 
 procedure TTimeEdit.ParseInput;
@@ -2291,6 +2320,106 @@ end;
 function TTimeEdit.GetDefaultGlyphName: string;
 begin
   Result := ResBtnTime;
+end;
+
+function TTimeEdit.UsedFormatSettings: TFormatSettings;
+begin
+  Result := DefaultFormatSettings;
+  Result.TimeSeparator := UsedTimeSeparator;
+  Result.ShortTimeFormat := UsedTimeFormat;
+end;
+
+function TTimeEdit.UsedTimeFormat: String;
+begin
+  if FTimeFormat = '' then
+    Result := DefaultFormatSettings.ShortTimeFormat
+  else
+    Result := FTimeFormat;
+end;
+
+function TTimeEdit.UsedTimeSeparator: Char;
+begin
+  if FTimeSeparator = '' then
+    Result := DefaultFormatSettings.TimeSeparator
+  else
+    Result := FTimeSeparator[1];
+end;
+
+// Since TTimeEdit requires a pure "time format string" this function checks
+// whether AFormat contains date parts and returns FALSE in this case.
+function TTimeEdit.ValidTimeFormat(AFormat: String): Boolean;
+type
+  TFormatPart = (pH, pM, pN, pS, pZ);
+var
+  p, pEnd: PChar;
+  parts: set of TFormatPart = [];
+  quoteChar: Char;
+begin
+  if AFormat = '' then
+    exit(true);
+
+  Result := false;
+  p := @AFormat[1];
+  pEnd := p + Length(AFormat);
+  while p < pEnd do begin
+    case p^ of
+      // allowed
+      'h', 'H':
+        Include(parts, pH);
+      'n', 'N':
+        begin
+          Include(parts, pN);
+          if (pM in parts) then exit;    // mixing of 'n' and 'm' not valid
+        end;
+      's', 'S':
+        begin
+          Include(parts, pS);
+          if parts * [pH, pM, pS] = [pM, pS] then exit;  // m:s not valid
+        end;
+      'z', 'Z':
+        begin
+          Include(parts, pZ);
+          if parts * [pH, pM, pS, pZ] = [pM, pZ] then exit;  // m:z is not valid
+        end;
+      'm', 'M':
+        begin
+          Include(parts, pM);
+          if (pN in parts) then exit;   // mixing of 'n' and 'm' not valid
+          if parts * [pH, pM, pS] = [pM, pS] then exit;      // m:s not valid
+          if parts * [pH, pM, pS, pZ] = [pM, pZ] then exit;  // m.z not valid
+        end;
+      // ignore quoted parts
+      '"', '''':
+        begin
+          quotechar := p^;
+          inc(p);
+          while (p < pEnd) and (p^ <> quoteChar) do
+            inc(p);
+        end;
+      // am/pm
+      'a', 'A':
+        begin
+          if (StrLIComp(p, 'A/P', 3) = 0) then
+            inc(p, 2)
+          else
+          if (StrLIComp(P, 'AMPM', 4) = 0) then
+            inc(p, 3)
+          else
+          if (StrLIComp(P, 'AM/PM', 5) = 0) then
+            inc(p, 4)
+          else
+            exit;
+        end;
+      '[', ']':
+        exit;  // interval mode does not fit to the GUI of this control
+      'd', 'D', 'y', 'Y':
+        exit;  // parts of date format
+    else
+      ; // all other characters allowed (not necessariy optimal)
+    end;
+    inc(p);
+  end;
+  Result := true;
 end;
 
 procedure TTimeEdit.ButtonClick;
@@ -2317,6 +2446,7 @@ begin
   SetEmptyTime;
   FSimpleLayout := True;
 end;
+
 
 { TCalcEdit }
 
