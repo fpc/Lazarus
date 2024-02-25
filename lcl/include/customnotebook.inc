@@ -769,7 +769,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TCustomTabControl.ActivateFirstControlOnPage(APage: TCustomPage);
+procedure TCustomTabControl.MaybeSelectFirstControlOnPage(APage: TCustomPage);
 var
   ParentForm: TCustomForm;
   C, ActiveControl: TWinControl;
@@ -1065,7 +1065,7 @@ begin
     ParentForm := GetParentForm(Self);
     if not (Assigned(ParentForm) and Assigned(APage) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
       Exit;
-    ActivateFirstControlOnPage(APage);
+    MaybeSelectFirstControlOnPage(APage);
 
     DoChange;
   end;
@@ -1104,7 +1104,7 @@ begin
   FPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
-  ActivateFirstControlOnPage(GetActivePageComponent);
+  MaybeSelectFirstControlOnPage(GetActivePageComponent);
 end;
 
 {------------------------------------------------------------------------------
