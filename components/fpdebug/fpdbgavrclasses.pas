@@ -205,6 +205,7 @@ function TAvrMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType; const
 var
   loc: TFpDbgMemLocation;
   tmp: QWord;
+  b, shift: Byte;
 begin
   loc := ASourceLocation;
   // Update address to include possible address class modifications
@@ -212,6 +213,28 @@ begin
     loc.Address := MemModel.LocationToAddress(ASourceLocation);
   Result := inherited ReadMemory(AReadDataType, loc, ASourceSize,
     ADest, ADestSize, AContext, AFlags);
+
+  // ReadMemory only reads single registers, read extra registers if ASourceSize > 1
+  if (ASourceLocation.MType = mlfTargetRegister) and (ASourceSize.Size > 1) then
+  begin
+    shift := 1;
+    while (shift < byte(ASourceSize.Size)) and Result do
+    begin
+      inc(loc.Address);
+      // Parameters are allocated below r26
+      if loc.Address < 26 then
+      begin
+        Result := inherited ReadMemory(AReadDataType, loc, ASourceSize,
+          @b, ADestSize, AContext, AFlags);
+        if Result then
+          PQWord(ADest)^ := PQWord(ADest)^ + (b shl 8*shift);
+      end
+      else
+        Result := False;
+
+      inc(shift);
+    end;
+  end;
 
   { Assume an address is located in data memory.
     This can be updated when more information is known, e.g.
