@@ -499,7 +499,7 @@ begin
             if (SectIdx < 0) or (SectIdx >= fElfFile.seccount) then
               continue;
             Sect := @fElfFile.sections[SectIdx];
-            if Sect^.Address = 0 then
+            if (Sect^.Flags and SHF_ALLOC) = 0 then
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
@@ -526,7 +526,7 @@ begin
             if (SectIdx < 0) or (SectIdx >= fElfFile.seccount) then
               continue;
             Sect := @fElfFile.sections[SectIdx];
-            if Sect^.Address = 0 then
+            if (Sect^.Flags and SHF_ALLOC) = 0 then
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
