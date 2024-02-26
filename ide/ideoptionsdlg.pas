@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls, Dialogs,
+  LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls,
+  Dialogs, Graphics,
   // LazControls
   TreeFilterEdit,
   // LazUtils
@@ -77,6 +78,8 @@ type
     procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
+    procedure CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
@@ -196,6 +199,13 @@ begin
   // make the category visible in the treeview
   if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
     CategoryTree.TopItem:=CategoryTree.Selected.Parent;
+  // select first not empty category
+  if (CategoryTree.Selected <> nil) and
+     (CategoryTree.Selected.Data = nil) and // is group category
+     (CategoryTree.Selected.GetFirstVisibleChild <> nil)
+  then
+    CategoryTree.Selected := CategoryTree.Selected.GetFirstVisibleChild;
+
   BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
   BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
   UpdateBuildModeGUI;
@@ -279,6 +289,15 @@ begin
   else
   if (Node.GetFirstChild <> nil) and (Node.GetFirstChild.Data <> nil) then
     TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := True;
+end;
+
+procedure TIDEOptionsDialog.CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
+  Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  if Node.Data = nil then // is group category
+    Node.TreeView.Font.Style := [fsBold]
+  else
+    Node.TreeView.Font.Style := [];
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);

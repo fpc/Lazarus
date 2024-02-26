@@ -73,6 +73,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       TabOrder = 1
       OnChange = CategoryTreeChange
       OnCollapsed = CategoryTreeCollapsed
+      OnCustomDrawItem = CategoryTreeCustomDrawItem
       OnExpanded = CategoryTreeExpanded
       OnKeyDown = CategoryTreeKeyDown
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
