@@ -726,15 +726,18 @@ type
       FDefaultNow: Boolean;
       FDroppedDown: Boolean;
       FSimpleLayout: Boolean;
+      FTimeAMPMString: array[0..1] of String;
       FTimeFormat: String;
       FTimeSeparator: String;
       FOnAcceptTime: TAcceptTimeEvent;
       FOnCustomTime: TCustomTimeEvent;
       function GetTime: TDateTime;
+      function GetTimeAMPMString(AIndex: Integer): String;
       procedure SetTime(AValue: TDateTime);
       procedure SetEmptyTime;
       function GetLayout: Boolean;
       procedure SetLayout(AValue: Boolean);
+      procedure SetTimeAMPMString(AIndex: Integer; AValue: String);
       procedure SetTimeFormat(AValue: String);
       procedure SetTimeSeparator(AValue: String);
       procedure TimePopupReturnTime(Sender: TObject; const ATime: TDateTime);
@@ -801,8 +804,10 @@ type
       property Spacing;
       property TabStop;
       property TabOrder;
+      property TimeAMString: String index 0 read GetTimeAMPMString write SetTimeAMPMString;
       property TimeFormat: String read FTimeFormat write SetTimeFormat;
       property TimeSeparator: String read FTimeSeparator write SetTimeSeparator;
+      property TimePMString: String index 1 read GetTimeAMPMString write SetTimeAMPMString;
       property Visible;
       property Text;
       property TextHint;
@@ -2214,6 +2219,11 @@ begin
   end;
 end;
 
+function TTimeEdit.GetTimeAMPMString(AIndex: Integer): String;
+begin
+  Result := FTimeAMPMString[AIndex];
+end;
+
 function TTimeEdit.GetLayout: Boolean;
 begin
   Result := FSimpleLayout;
@@ -2229,6 +2239,15 @@ begin
   Text := FormatDateTime(UsedTimeFormat, AValue, UsedFormatSettings);
   FTime := AValue;
   IsEmptyTime := False;
+end;
+
+procedure TTimeEdit.SetTimeAMPMString(AIndex: Integer; AValue: String);
+begin
+  if FTimeAMPMString[AIndex] <> AValue then
+  begin
+    FTimeAMPMString[AIndex] := AValue;
+    SetTime(FTime);
+  end;
 end;
 
 procedure TTimeEdit.SetTimeFormat(AValue: String);
@@ -2327,11 +2346,13 @@ begin
   Result := DefaultFormatSettings;
   Result.TimeSeparator := UsedTimeSeparator;
   Result.ShortTimeFormat := UsedTimeFormat;
+  Result.TimeAMString := TimeAMString;
+  Result.TimePMString := TimePMString;
 end;
 
 function TTimeEdit.UsedTimeFormat: String;
 begin
-  if FTimeFormat = '' then
+  if (FTimeFormat = '') or (FTimeFormat = 't') then
     Result := DefaultFormatSettings.ShortTimeFormat
   else
     Result := FTimeFormat;
@@ -2385,6 +2406,7 @@ begin
         begin
           Include(parts, pM);
           if (pN in parts) then exit;   // mixing of 'n' and 'm' not valid
+          if parts = [pM] then exit;    // isolated 'm' not allowed
           if parts * [pH, pM, pS] = [pM, pS] then exit;      // m:s not valid
           if parts * [pH, pM, pS, pZ] = [pM, pZ] then exit;  // m.z not valid
         end;
