@@ -1429,13 +1429,13 @@ begin
       if AIsSet
       then UpdateExStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style)
       else UpdateExStyle(ALV.Handle, LV_STYLES[AProp].Style, 0);
+      if(aProp=lvpCheckboxes)and aIsSet
+        then ReCreateWnd(ALV)  // otherwise wrong size of checkbox, issue #26690
     end;
     lsRecreate: begin
       ReCreateWnd(ALV);
     end;
   end;
-  if(aProp=lvpCheckboxes)and aIsSet
-    then ReCreateWnd(ALV)
 end;
 
 class procedure TWin32WSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
