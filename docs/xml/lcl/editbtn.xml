@@ -4346,7 +4346,7 @@ implements a control used to edit a time value. TTimeEdit provides the
 <var>Edit</var> and <var>Button</var> properties defined in the ancestor 
 class, and a dialog that is executed to select a time value when the Button 
 is clicked. The dialog allows selection of Hour and Minute values from a 
-drop-down list. Enable DirectInput to enter a time value that includes  
+drop-down list. Enable DirectInput to enter a time value that includes 
 additional time parts (like Seconds and Milliseconds).
 </p>
 <p>
@@ -4376,6 +4376,7 @@ Modified in LCL version 4.0 to include additional properties and methods.
 <element name="TTimeEdit.FDefaultNow"/>
 <element name="TTimeEdit.FDroppedDown"/>
 <element name="TTimeEdit.FSimpleLayout"/>
+<element name="TTimeEdit.FTimeAMPMString"/>
 <element name="TTimeEdit.FTimeFormat"/>
 <element name="TTimeEdit.FTimeSeparator"/>
 <element name="TTimeEdit.FOnAcceptTime"/>
@@ -4391,6 +4392,28 @@ Modified in LCL version 4.0 to include additional properties and methods.
 </element>
 <element name="TTimeEdit.GetTime.Result">
 <short>Value for the property.</short>
+</element>
+
+<element name="TTimeEdit.GetTimeAMPMString">
+<short>
+Gets the value for the indexed TimeAMString or TimePMString properties.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TTimeEdit.GetTimeAMPMString.AIndex">
+<short>
+Ordinal position in the internal member for the property value. 0 is for 
+TimeAMString. 1 is for TimePMString.
+</short>
+</element>
+<element name="TTimeEdit.GetTimeAMPMString.Result">
+<short>
+Value for the indexed property.
+</short>
 </element>
 
 <element name="TTimeEdit.SetTime">
@@ -4448,6 +4471,28 @@ method, and in the constructor for the class instance.
 </element>
 <element name="TTimeEdit.SetLayout.AValue">
 <short>New value for the property.</short>
+</element>
+
+<element name="TTimeEdit.SetTimeAMPMString">
+<short>
+Sets the value for the indexed TimeAMString and TimePMString properties.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TTimeEdit.SetTimeAMPMString.AIndex">
+<short>
+Ordinal position in the internal member for the property value updated in the 
+method. 0 is for TimeAMString, 1 is for TimePMString.
+</short>
+</element>
+<element name="TTimeEdit.SetTimeAMPMString.AValue">
+<short>
+New value for the indexed property represented by AIndex.
+</short>
 </element>
 
 <element name="TTimeEdit.SetTimeFormat">
@@ -4748,7 +4793,7 @@ control.
 </short>
 <descr>
 <p>
-TTimeEdit requires a time format string that does not include date (or other) 
+TTimeEdit requires a time format string that does not include date or interval 
 parts which are not used/allowed in the class instance. ValidTimeFormat 
 examines the characters in AFormat to determine which parts are used.
 </p>
@@ -4766,71 +4811,12 @@ property, and prevents updates to both TimeFormat and Time if the method
 returns <b>False</b>.
 </p>
 <p>
-Valid format specifiers include:
-</p>
-<dl>
-<dt>'h', 'H'</dt>
-<dd>
-Represents hours.
-</dd>
-<dt>'m', 'M'</dt>
-<dd>
-Represents minutes, but not when used in conjunction with 'n' or 'N' or when 
-'h' or 'H' has not been included.
-</dd>
-<dt>'n', 'N'</dt>
-<dd>
-Represents minutes, but not when used in conjunction with 'm' or 'M'.
-</dd>
-<dt>'s', 'S'</dt>
-<dd>
-Represents seconds, but not allowed when only 'm' or 'M' has been included.
-</dd>
-<dt>'z', 'Z'</dt>
-<dd>
-Represents milliseconds, but not allowed when only 'm' or 'M' has been included.
-</dd>
-<dt>'ampm', 'am/pm', 'a/p'</dt>
-<dd>
-Enables lowercase am/pm indicators using 12-hour format.
-</dd>
-<dt>'AMPM', 'AM/PM', 'A/P'</dt>
-<dd>
-Enables uppercase AM/PM indicators using 12-hour format.
-</dd>
-</dl>
-<p>
-Invalid format specifiers include:
-</p>
-<dl>
-<dt>'d', 'D', 'y', 'Y'</dt>
-<dd>
-Date parts are not allowed in the time format.
-</dd>
-<dt>'[', ']'</dt>
-<dd>
-Interval specifiers are not supported in the time format.
-</dd>
-<dt>'''', '"'</dt>
-<dd>
-Any literals in quoted parts (Single Quote or Double Quote) are ignored.
-</dd>
-<dt>'ampm', 'am/pm', 'a/p'</dt>
-<dd>
-Enables lowercase am/pm indicators using 12-hour format.
-</dd>
-<dt>'AMPM', 'AM/PM', 'A/P'</dt>
-<dd>
-Enables uppercase AM/PM indicators using 12-hour format.
-</dd>
-</dl>
-<p>
-See <link id="TTimeEdit.TimeFormat">TimeFormat</link> and
-<link id="#rtl.sysutils.formatchars">FormatChars</link> for more information.
+See <link id="TTimeEdit.TimeFormat">TimeFormat</link> for more information 
+about the available format specifiers and their usage.
 </p>
 <p>
 Use TimeSeparator to specify the separator character used to delimit time 
-parts in the format setting.
+parts in the formatted Text.
 </p>
 </descr>
 <version>
@@ -4965,6 +4951,37 @@ by 5 columns using 5 minute time intervals is used.
 <element name="TTimeEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTimeEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
+<element name="TTimeEdit.TimeAMString">
+<short>
+Specifies the value displayed for a 12-hour time value prior to midday (Noon).
+</short>
+<descr>
+<p>
+<var>TimeAMString</var> contains the <b><i>ante meridiem</i></b> ("before 
+midday") value displayed for a 12-hour Time value. It can be used to override 
+the TimeAMString setting provided in DefaultFormatSettings. Its value is used 
+in the UsedFormatSettings method, and applied when the feature is enabled using 
+one of the corresponding format specifiers in the TimeFormat property.
+</p>
+<p>
+See <link id="TTimeEdit.TimeFormat">TimeFormat</link> for more information 
+about the available time format specifiers and their usage.
+</p>
+<p>
+Use TimePMString for the <b><i>post meridiem</i></b> value.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.TimePMString"/>
+<link id="TTimeEdit.UsedFormatSettings"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.Time"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+</seealso>
+</element>
 
 <element name="TTimeEdit.TimeFormat">
 <short>
@@ -4980,61 +4997,61 @@ for a given platform. TimeFormat is used in the UsedTimeFormat method called
 when a new value is assigned to the Time property.
 </p>
 <p>
-TimeFormat must contain only format specifiers which are valid for a time value 
-- and does not use format specifiers which apply to date or interval parts. 
-Valid format specifiers include:
+TimeFormat can contain only format specifiers accepted by FormatDateTime(), 
+except for those which apply to date or interval parts. The following symbols 
+are interpreted in a specific way:
 </p>
 <dl>
 <dt>'h', 'H'</dt>
-<dd>
-Represents hours.
-</dd>
+<dd>Represents hours.</dd>
+<dt>'n', 'N'</dt>
+<dd>Represents minutes.</dd>
 <dt>'m', 'M'</dt>
 <dd>
-Represents minutes, but not when used in conjunction with 'n' or 'N' or when 
-'h' or 'H' has not been included.
-</dd>
-<dt>'n', 'N'</dt>
-<dd>
-Represents minutes, but not when used in conjunction with 'm' or 'M'.
+Represents minutes, but allowed only in conjunction with at least 'h' to avoid 
+misinterpretation as "month".
 </dd>
 <dt>'s', 'S'</dt>
-<dd>
-Represents seconds, but not allowed when only 'm' or 'M' has been included.
-</dd>
+<dd>Represents seconds.</dd>
 <dt>'z', 'Z'</dt>
+<dd>Represents milliseconds.</dd>
+<dt>':'</dt>
+<dd>Replaced with the value in the TimeSeparator property.</dd>
+<dt>'.'</dt>
+<dd>Represents the separator between seconds and milliseconds.</dd>
+<dt>'ampm', 'AMPM'</dt>
 <dd>
-Represents milliseconds, but not allowed when only 'm' or 'M' has been included.
+Formats the time in the 12-hour format, appends the TimeAMString or 
+TimePMString of the DefaultFormatSettings, depending on whether the time is in 
+the first or second half of the day.
 </dd>
-<dt>'ampm', 'am/pm', 'a/p'</dt>
+<dt>'a/p', 'am/pm', 'A/P', 'AM/PM'</dt>
 <dd>
-Enables lowercase am/pm indicators using 12-hour format.
+Formats the time in the 12-hour format with the corresponding part of the 
+symbol appended for the first or second half of the day.
 </dd>
-<dt>'AMPM', 'AM/PM', 'A/P'</dt>
+<dt>'t', 'tt'</dt>
 <dd>
-Enables uppercase AM/PM indicators using 12-hour format.
+Replaced with the value from ShortTimeFormat or LongTimeFormat in 
+DefaultFormatSettings, respectively.
 </dd>
-</dl>
-<p>
-Invalid format specifiers include:
-</p>
-<dl>
-<dt>'d', 'D', 'y', 'Y'</dt>
+<dt>'y', 'Y', 'd', 'D'</dt>
 <dd>
-Date parts are not allowed in the time format.
+<b>Forbidden</b> because they will introduce date parts.
 </dd>
 <dt>'[', ']'</dt>
 <dd>
-Interval specifiers are not supported in the time format.
+<b>Forbidden</b> because time interval formatting is not supported by this 
+control.
 </dd>
-<dt>'''', '"'</dt>
+<dt>Single (') or Double (") quotes</dt>
 <dd>
-Any literals in quoted parts (Single Quote or Double Quote) are ignored.
+Symbol replacement is <b>not</b> performed within the quoted substring.
 </dd>
 </dl>
 <p>
-See <link id="TTimeEdit.ValidTimeFormat">ValidTimeFormat</link> and
-<link id="#rtl.sysutils.formatchars">FormatChars</link> for more information.
+Any other characters can be inserted without quoting unless they collide with 
+those specified above.
 </p>
 <p>
 Changing the value in TimeFormat causes the new property value to be validated 
@@ -5045,6 +5062,9 @@ accepted, the Text property is updated using the new format settings.
 Use TimeSeparator to specify the separator character used to delimit time 
 parts in the format settings.
 </p>
+<p>
+Use TimeAMString and TimePMString to override the DefaultFormatSettings suffixes used for 12-hour time format.
+</p>
 </descr>
 <version>
 Added in LCL version 4.0.
@@ -5053,6 +5073,8 @@ Added in LCL version 4.0.
 <link id="TTimeEdit.Text"/>
 <link id="TTimeEdit.Time"/>
 <link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.TimeAMString"/>
+<link id="TTimeEdit.TimePMString"/>
 <link id="TTimeEdit.ValidTimeFormat"/>
 <link id="#rtl.sysutils.FormatDateTime">FormatDateTime</link>
 <link id="#rtl.sysutils.formatchars">FormatChars</link>
@@ -5102,6 +5124,37 @@ Added in LCL version 4.0.
 <link id="#rtl.sysutils.formatchars">FormatChars</link>
 </seealso>
 </element>
+
+<element name="TTimeEdit.TimePMString">
+<short>
+Specifies the value displayed for a 12-hour time value after midday (Noon).
+</short>
+<descr>
+<p>
+<var>TimePMString</var> contains the <b><i>post meridiem</i></b> ("after 
+midday") value displayed for a 12-hour Time value. It can be used to override 
+the TimePMString setting provided in DefaultFormatSettings. Its value is used 
+in the UsedFormatSettings method, and applied when the feature is enabled using 
+one of the corresponding format specifiers in the TimeFormat property.
+</p>
+<p>
+See <link id="TTimeEdit.TimeFormat">TimeFormat</link> for more information 
+about the available time format specifiers and their usage.
+</p>
+<p>
+Use TimeAMString for the <b><i>ante meridiem</i></b> value.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.TimeAMString"/>
+<link id="TTimeEdit.UsedFormatSettings"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.Time"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+</seealso></element>
 
 <element name="TTimeEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
