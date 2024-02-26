@@ -15780,16 +15780,23 @@ Enables or disables OnColumnClick events for column headers on the control.
 <p>
 <var>ColumnClick</var> is an indexed <var>Boolean</var> property which 
 controls whether the <var>OnColumnClick</var> event handler is signalled when 
-a Report view column is clicked. The default value for the property is 
-<b>True</b>.
+a Report view column header is clicked. It also controls whether a column 
+header is drawn using the "pressed" or "down" state while the mouse button is 
+down on a column header. The default value for the property is <b>True</b>, and 
+enables both the event handler and the header drawing state.
 </p>
 <p>
 ColumnClick is one of the TListViewProperty values included in the 
 TListViewProperties set type and exchanged with the widgetset class. The 
 property value is read from and written to the TCustomTreeview widgetset 
 class instance when its handle is valid. Changing the value for the property 
-causes the widgetset class to be updated with the new property value.
+causes the widgetset class to be updated with the new value.
 </p>
+<remark>
+Changing the property value causes the handle for the widgetset class to be 
+recreated on the Windows platform. This causes multi-selections to be cleared - 
+but the last item in the multi-selection is retained as the selected item.
+</remark>
 <p>
 ColumnClick is used in the <var>ColClick</var> method, which is called when 
 the LVN_COLUMNCLICK control notification message is handled for the list view 
