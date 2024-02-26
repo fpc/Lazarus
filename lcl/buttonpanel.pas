@@ -137,6 +137,7 @@ type
     property ShowButtons;
     property ShowGlyphs;
     property ShowBevel;
+    property ShowHint;
     property Visible;
 
     property OnClick;
