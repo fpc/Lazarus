@@ -12,7 +12,7 @@
 { TWin32WSCustomListView }
 
 type
-  TLVStyleType = (lsStyle, lsInvert, lsExStyle);
+  TLVStyleType = (lsStyle, lsInvert, lsExStyle, lsRecreate);
 
 const
   LV_STYLES: array[TListViewProperty] of record
@@ -21,7 +21,7 @@ const
   end = (
     (StyleType: lsStyle;   Style: LVS_AUTOARRANGE),        // lvpAutoArrange
     (StyleType: lsExStyle; Style: LVS_EX_CHECKBOXES),      // lvpCheckboxes
-    (StyleType: lsInvert;  Style: LVS_NOSORTHEADER),       // lvpColumnClick
+    (StyleType: lsRecreate;Style: LVS_NOSORTHEADER),       // lvpColumnClick
     (StyleType: lsExStyle; Style: LVS_EX_FLATSB),          // lvpFlatScrollBars
     (StyleType: lsExStyle; Style: LVS_EX_HEADERDRAGDROP),  // lvpFullDrag
     (StyleType: lsExStyle; Style: LVS_EX_GRIDLINES),       // lvpGridLines
@@ -996,6 +996,8 @@ begin
       Flags := Flags or LVS_OWNERDRAWFIXED;
     if TCustomListView(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if not TCustomListViewAccess(AWinControl).ColumnClick then
+      Flags := Flags or LVS_NOSORTHEADER;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1402,7 +1404,6 @@ class procedure TWin32WSCustomListView.SetProperty(const ALV: TCustomListView; c
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
-
   case LV_STYLES[AProp].StyleType of
     lsStyle: begin
       if AIsSet
@@ -1418,15 +1419,19 @@ begin
       if (AProp = lvpReadOnly) then
         UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
       else
-      if AIsSet then
-        UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
-      else
-        UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style);
+      begin
+        if AIsSet
+        then UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, 0)
+        else UpdateStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style);
+      end;
     end;
     lsExStyle: begin
       if AIsSet
       then UpdateExStyle(ALV.Handle, LV_STYLES[AProp].Style, LV_STYLES[AProp].Style)
       else UpdateExStyle(ALV.Handle, LV_STYLES[AProp].Style, 0);
+    end;
+    lsRecreate: begin
+      ReCreateWnd(ALV);
     end;
   end;
   if(aProp=lvpCheckboxes)and aIsSet
