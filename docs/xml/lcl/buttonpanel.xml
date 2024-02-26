@@ -1351,7 +1351,8 @@ use of glyphs.
 <element name="TButtonPanel.ShowButtons" link="#lcl.buttonpanel.TCustomButtonPanel.ShowButtons"/>
 <element name="TButtonPanel.ShowGlyphs" link="#lcl.buttonpanel.TCustomButtonPanel.ShowGlyphs"/>
 <element name="TButtonPanel.ShowBevel" link="#lcl.buttonpanel.TCustomButtonPanel.ShowBevel"/>
-<element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
+<element name="TButtonPanel.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TButtonPanel.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TButtonPanel.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TButtonPanel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TButtonPanel.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
