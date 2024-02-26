@@ -4336,33 +4336,52 @@ implement the <var>OnCustomTime</var> property in <var>TTimeEdit</var>.
 </element>
 
 <element name="TTimeEdit">
-<short>Implements a control used to edit time values.</short>
+<short>
+Implements a control used to edit time values.
+</short>
 <descr>
 <p>
 <var>TTimeEdit</var> is a <var>TCustomEditButton</var> descendant which 
 implements a control used to edit a time value. TTimeEdit provides the 
 <var>Edit</var> and <var>Button</var> properties defined in the ancestor 
 class, and a dialog that is executed to select a time value when the Button 
-is clicked.
+is clicked. The dialog allows selection of Hour and Minute values from a 
+drop-down list. Enable DirectInput to enter a time value that includes  
+additional time parts (like Seconds and Milliseconds).
 </p>
 <p>
-The time value in the control is represented using the <var>TDateTime</var> 
-type; only the time portion of the value is significant.
+The Time value in the control is represented using the <var>TDateTime</var> 
+type; only the time portion of the value is significant. 
+</p>
+<p>
+Use TimeFormat and TimeSeparator to override the default format settings used 
+to generate the display Text for the time edit control.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to include additional properties and methods.
+</version>
 <seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
 <link id="TCustomEditButton"/>
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TTimeEdit.FTime"/>
 <element name="TTimeEdit.IsEmptyTime"/>
 <element name="TTimeEdit.FDefaultNow"/>
 <element name="TTimeEdit.FDroppedDown"/>
 <element name="TTimeEdit.FSimpleLayout"/>
+<element name="TTimeEdit.FTimeFormat"/>
+<element name="TTimeEdit.FTimeSeparator"/>
 <element name="TTimeEdit.FOnAcceptTime"/>
 <element name="TTimeEdit.FOnCustomTime"/>
 
+<!-- private -->
 <element name="TTimeEdit.GetTime">
 <short>Gets the value for the Time property.</short>
 <descr/>
@@ -4429,6 +4448,42 @@ method, and in the constructor for the class instance.
 </element>
 <element name="TTimeEdit.SetLayout.AValue">
 <short>New value for the property.</short>
+</element>
+
+<element name="TTimeEdit.SetTimeFormat">
+<short>
+Sets the value for the TimeFormat property.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.TimeFormat"/>
+</seealso>
+</element>
+<element name="TTimeEdit.SetTimeFormat.AValue">
+<short>
+New value for the property.
+</short>
+</element>
+
+<element name="TTimeEdit.SetTimeSeparator">
+<short>
+Sets the value for the TimeSeparator property.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.TimeSeparator"/>
+</seealso>
+</element>
+<element name="TTimeEdit.SetTimeSeparator.AValue">
+<short>
+New value for the property.
+</short>
 </element>
 
 <element name="TTimeEdit.TimePopupReturnTime">
@@ -4532,6 +4587,124 @@ Default resource name for the glyph used on the button in the control.
 </short>
 </element>
 
+<element name="TTimeEdit.UsedFormatSettings">
+<short>
+Gets the effective format settings used to format the value for the time edit 
+control.
+</short>
+<descr>
+<p>
+The return value contains the DefaultFormatSettings for the platform combined 
+with the values assigned to the TimeFormat and TimeSeparator properties. 
+UsedFormatSettings is called when a new value is stored in the Time property, 
+and is used to format the Text displayed on the control.
+</p>
+<p>
+Use TimeFormat to specify the short time format settings applied to the Time 
+property. Use TimeSeparator to specify the time separator character used in the 
+short time settings applied to the Time property.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.UsedTimeFormat"/>
+<link id="TTimeEdit.UsedTimeSeparator"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+<link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
+</seealso>
+</element>
+<element name="TTimeEdit.UsedFormatSettings.Result">
+<short>
+Format settings after the values in TimeFormat and TimeSeparator have been 
+applied.
+</short>
+</element>
+
+<element name="TTimeEdit.UsedTimeFormat">
+<short>
+Gets the effective short time format used for the Time value in the control.
+</short>
+<descr>
+<p>
+The return value contains the short time format used to format the value in the 
+Text property. It defaults to the short time setting in the 
+DefaultFormatSettings for the platform. The value in TimeFormat is substituted 
+when an explicit value has been assigned to the property.
+</p>
+<p>
+UsedTimeFormat is called from the UsedFormatSettings method, which occurs when 
+a new value has been assigned to the Time property.
+</p>
+<p>
+See TimeSeparator and UsedTimeSeparator for the separator character used in the 
+short time format settings.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.UsedFormatSettings"/>
+<link id="TTimeEdit.UsedTimeSeparator"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+<link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
+</seealso>
+</element>
+<element name="TTimeEdit.UsedTimeFormat.Result">
+<short>
+Short time format used in the class instance.
+</short>
+</element>
+
+<element name="TTimeEdit.UsedTimeSeparator">
+<short>
+Gets the effective time separator character used in the short time format 
+settings.
+</short>
+<descr>
+<p>
+The return value contains the time separator character in the short time format 
+used in the class instance. It defaults to the time separator character found 
+in the DefaultFormatSettings for the platform. The first character found in 
+TimeSeparator is substituted when an explicit value has been assigned to the 
+property. Other characters in TimeSeparator are ignored.
+</p>
+<p>
+UsedTimeSeparator is called from the UsedFormatSettings method, which occurs 
+when a new value has been assigned to the Time property.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.UsedFormatSettings"/>
+<link id="TTimeEdit.UsedTimeFormat"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+<link id="#rtl.sysutils.TFormatSettings">TFormatSettings</link>
+</seealso>
+</element>
+<element name="TTimeEdit.UsedTimeSeparator.Result">
+<short>
+Time separator character used in the short time format settings for the class 
+instance.
+</short>
+</element>
+
 <element name="TTimeEdit.ButtonClick">
 <short>
 Performs actions needed when the Button for the control is clicked.
@@ -4566,6 +4739,120 @@ Implements the OnEditingDone event handler for the Edit in the control.
 </element>
 <element name="TTimeEdit.Create.AOwner">
 <short>Owner of the class instance.</short>
+</element>
+
+<element name="TTimeEdit.ValidTimeFormat">
+<short>
+Indicates whether the specified value is a valid time format for the TTimeEdit 
+control.
+</short>
+<descr>
+<p>
+TTimeEdit requires a time format string that does not include date (or other) 
+parts which are not used/allowed in the class instance. ValidTimeFormat 
+examines the characters in AFormat to determine which parts are used.
+</p>
+<p>
+The return value is <b>False</b> if AFormat contains any format specifier(s) or 
+combination of specifier(s) which are not allowed in the control.
+</p>
+<p>
+The return value is <b>True</b> if AFormat is a valid time format setting for 
+use in the TimeFormat property.
+</p>
+<p>
+ValidTimeFormat is called when a new value is assigned to the TimeFormat 
+property, and prevents updates to both TimeFormat and Time if the method 
+returns <b>False</b>.
+</p>
+<p>
+Valid format specifiers include:
+</p>
+<dl>
+<dt>'h', 'H'</dt>
+<dd>
+Represents hours.
+</dd>
+<dt>'m', 'M'</dt>
+<dd>
+Represents minutes, but not when used in conjunction with 'n' or 'N' or when 
+'h' or 'H' has not been included.
+</dd>
+<dt>'n', 'N'</dt>
+<dd>
+Represents minutes, but not when used in conjunction with 'm' or 'M'.
+</dd>
+<dt>'s', 'S'</dt>
+<dd>
+Represents seconds, but not allowed when only 'm' or 'M' has been included.
+</dd>
+<dt>'z', 'Z'</dt>
+<dd>
+Represents milliseconds, but not allowed when only 'm' or 'M' has been included.
+</dd>
+<dt>'ampm', 'am/pm', 'a/p'</dt>
+<dd>
+Enables lowercase am/pm indicators using 12-hour format.
+</dd>
+<dt>'AMPM', 'AM/PM', 'A/P'</dt>
+<dd>
+Enables uppercase AM/PM indicators using 12-hour format.
+</dd>
+</dl>
+<p>
+Invalid format specifiers include:
+</p>
+<dl>
+<dt>'d', 'D', 'y', 'Y'</dt>
+<dd>
+Date parts are not allowed in the time format.
+</dd>
+<dt>'[', ']'</dt>
+<dd>
+Interval specifiers are not supported in the time format.
+</dd>
+<dt>'''', '"'</dt>
+<dd>
+Any literals in quoted parts (Single Quote or Double Quote) are ignored.
+</dd>
+<dt>'ampm', 'am/pm', 'a/p'</dt>
+<dd>
+Enables lowercase am/pm indicators using 12-hour format.
+</dd>
+<dt>'AMPM', 'AM/PM', 'A/P'</dt>
+<dd>
+Enables uppercase AM/PM indicators using 12-hour format.
+</dd>
+</dl>
+<p>
+See <link id="TTimeEdit.TimeFormat">TimeFormat</link> and
+<link id="#rtl.sysutils.formatchars">FormatChars</link> for more information.
+</p>
+<p>
+Use TimeSeparator to specify the separator character used to delimit time 
+parts in the format setting.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.Time"/>
+<link id="#rtl.sysutils.FormatDateTime">FormatDateTime</link>
+<link id="#rtl.sysutils.formatchars">FormatChars</link>
+</seealso>
+</element>
+<element name="TTimeEdit.ValidTimeFormat.AFormat">
+<short>
+Time format examined in the method.
+</short>
+</element>
+<element name="TTimeEdit.ValidTimeFormat.Result">
+<short>
+Returns <b>True</b> if the specified time format is valid for the control.
+</short>
 </element>
 
 <element name="TTimeEdit.Time">
@@ -4677,8 +4964,176 @@ by 5 columns using 5 minute time intervals is used.
 <element name="TTimeEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
 <element name="TTimeEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTimeEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+
+
+<element name="TTimeEdit.TimeFormat">
+<short>
+Specifies the time format used to generate the display Text for the time edit 
+control.
+</short>
+<descr>
+<p>
+<var>TimeFormat</var> is a <var>String</var> property which contains 
+FormatDateTime-compatible specifiers used to generate the Text displayed on the 
+time edit control. It can be used to override the default time format settings 
+for a given platform. TimeFormat is used in the UsedTimeFormat method called 
+when a new value is assigned to the Time property.
+</p>
+<p>
+TimeFormat must contain only format specifiers which are valid for a time value 
+- and does not use format specifiers which apply to date or interval parts. 
+Valid format specifiers include:
+</p>
+<dl>
+<dt>'h', 'H'</dt>
+<dd>
+Represents hours.
+</dd>
+<dt>'m', 'M'</dt>
+<dd>
+Represents minutes, but not when used in conjunction with 'n' or 'N' or when 
+'h' or 'H' has not been included.
+</dd>
+<dt>'n', 'N'</dt>
+<dd>
+Represents minutes, but not when used in conjunction with 'm' or 'M'.
+</dd>
+<dt>'s', 'S'</dt>
+<dd>
+Represents seconds, but not allowed when only 'm' or 'M' has been included.
+</dd>
+<dt>'z', 'Z'</dt>
+<dd>
+Represents milliseconds, but not allowed when only 'm' or 'M' has been included.
+</dd>
+<dt>'ampm', 'am/pm', 'a/p'</dt>
+<dd>
+Enables lowercase am/pm indicators using 12-hour format.
+</dd>
+<dt>'AMPM', 'AM/PM', 'A/P'</dt>
+<dd>
+Enables uppercase AM/PM indicators using 12-hour format.
+</dd>
+</dl>
+<p>
+Invalid format specifiers include:
+</p>
+<dl>
+<dt>'d', 'D', 'y', 'Y'</dt>
+<dd>
+Date parts are not allowed in the time format.
+</dd>
+<dt>'[', ']'</dt>
+<dd>
+Interval specifiers are not supported in the time format.
+</dd>
+<dt>'''', '"'</dt>
+<dd>
+Any literals in quoted parts (Single Quote or Double Quote) are ignored.
+</dd>
+</dl>
+<p>
+See <link id="TTimeEdit.ValidTimeFormat">ValidTimeFormat</link> and
+<link id="#rtl.sysutils.formatchars">FormatChars</link> for more information.
+</p>
+<p>
+Changing the value in TimeFormat causes the new property value to be validated 
+and either accepted or rejected using the ValidTimeFormat method. When 
+accepted, the Text property is updated using the new format settings.
+</p>
+<p>
+Use TimeSeparator to specify the separator character used to delimit time 
+parts in the format settings.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="TTimeEdit.ValidTimeFormat"/>
+<link id="#rtl.sysutils.FormatDateTime">FormatDateTime</link>
+<link id="#rtl.sysutils.formatchars">FormatChars</link>
+</seealso>
+</element>
+
+<element name="TTimeEdit.TimeSeparator">
+<short>
+Specifies the separator character used to delimit time parts in the format 
+settings applied to the control.
+</short>
+<descr>
+<p>
+<var>TimeSeparator</var> is a <var>String</var> property which contains the 
+separator used to delimit time parts specified in the TimeFormat property. It 
+allows the default time separator from the system format settings to be 
+overridden in the class instance.
+</p>
+<p>
+Changing the value for the property causes the Text property to be updated 
+using the new separator.
+</p>
+<p>
+TimeSeparator is used in the UsedTimeSeparator method called when a new value 
+is assigned to the Time property. When omitted, the default time separator in 
+DefaultFormatSettings is used instead.
+</p>
+<p>
+Please note: While TimeSeparator is a String type, only the first character 
+specified in the property is actually used. The other characters in the 
+property are ignored.
+</p>
+<p>
+Use TimeFormat to specify the time format settings used in the class instance.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.Text"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.ValidTimeFormat"/>
+<link id="TTimeEdit.UsedTimeSeparator"/>
+<link id="#rtl.sysutils.FormatDateTime">FormatDateTime</link>
+<link id="#rtl.sysutils.formatchars">FormatChars</link>
+</seealso>
+</element>
+
 <element name="TTimeEdit.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TTimeEdit.Text" link="#lcl.controls.TControl.Text"/>
+
+<element name="TTimeEdit.Text">
+<short>
+Contains the formatted text used to represent the Time value for the control.
+</short>
+<descr>
+<p>
+<var>Text</var> is a published property in TTimeEdit. It contains the formatted 
+text displayed for the Time value in the control. It is automatically updated 
+when a new value is assigned to the Time, TimeFormat, or TimeSeparator 
+properties. It contains the result from the FormatDateTime routine called using 
+the Time value and format settings for the control.
+</p>
+<p>
+Use TimeFormat to specify a FormatDateTime-compatible string used to generate 
+the value for the Text property.
+</p>
+<p>
+Use TimeSeparator to specify the delimiter character used between time parts in 
+the TimeFormat.
+</p>
+</descr>
+<seealso>
+<link id="TTimeEdit.Time"/>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.TimeSeparator"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Text">TCustomAbstractGroupedEdit.Text</link>
+</seealso>
+</element>
+
 <element name="TTimeEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="TTimeEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
