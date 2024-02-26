@@ -321,19 +321,23 @@ begin
   begin
     CancelButtonClick(Sender);
     Key := 0;
-    exit;
-  end;
-  if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  end
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
     OkButtonClick(Sender);
     Key := 0;
-    exit;
-  end;
-  if (Key = VK_RETURN) and (Shift = [ssShift]) then
+  end
+  else if (Key = VK_RETURN) and (Shift = [ssShift]) then
   begin
     ApplyButtonClick(Sender);
     Key := 0;
-    exit;
+  end
+
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    if FilterEdit.CanSetFocus then
+      FilterEdit.SetFocus;
+    Key := 0;
   end;
 end;
 

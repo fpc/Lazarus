@@ -32,7 +32,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 0
+    TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object CatTVSplitter: TSplitter[1]
@@ -53,7 +53,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     ClientHeight = 438
     ClientWidth = 255
     Constraints.MinWidth = 150
-    TabOrder = 2
+    TabOrder = 0
     object CategoryTree: TTreeView
       AnchorSideLeft.Control = FilterEdit
       AnchorSideTop.Control = FilterEdit
@@ -70,7 +70,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       ReadOnly = True
       ScrollBars = ssAutoBoth
       ShowSeparators = False
-      TabOrder = 0
+      TabOrder = 1
       OnChange = CategoryTreeChange
       OnCollapsed = CategoryTreeCollapsed
       OnExpanded = CategoryTreeExpanded
@@ -92,7 +92,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       BorderSpacing.Top = 6
       NumGlyphs = 1
       MaxLength = 0
-      TabOrder = 1
+      TabOrder = 0
       FilteredTreeview = CategoryTree
       ExpandAllInitially = True
     end
@@ -122,7 +122,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 535
-    TabOrder = 3
+    TabOrder = 2
     object BuildModeComboBox: TComboBox
       AnchorSideLeft.Control = BuildModesLabel
       AnchorSideLeft.Side = asrBottom
@@ -186,6 +186,6 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
     BorderStyle = bsNone
-    TabOrder = 4
+    TabOrder = 1
   end
 end
