@@ -15783,7 +15783,8 @@ controls whether the <var>OnColumnClick</var> event handler is signalled when
 a Report view column header is clicked. It also controls whether a column 
 header is drawn using the "pressed" or "down" state while the mouse button is 
 down on a column header. The default value for the property is <b>True</b>, and 
-enables both the event handler and the header drawing state.
+enables both the event handler and the header drawing state (on supported 
+platforms).
 </p>
 <p>
 ColumnClick is one of the TListViewProperty values included in the 
