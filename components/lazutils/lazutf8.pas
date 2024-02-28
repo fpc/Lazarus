@@ -476,7 +476,7 @@ begin
     //#252, #253   : Result := 6;
     //#254         : Result := 7;
 
-    else Result := 1; // An optimization + prevents compiler warning about uninitialized Result.
+    else Result := 1; // Prevent compiler warning about uninitialized Result.
   end;
 end;
 
