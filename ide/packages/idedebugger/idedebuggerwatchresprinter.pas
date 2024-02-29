@@ -5,7 +5,7 @@ unit IdeDebuggerWatchResPrinter;
 interface
 
 uses
-  Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils,
+  Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils, IdeDebuggerDisplayFormats,
   LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils;
 
 type
@@ -26,14 +26,19 @@ type
 
   TDisplayFormatResolver = class
   private
+    FFallBackFormats: TWatchDisplayFormatList;
     function DoResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
       const AResValue: TWatchResultData
     ): TResolvedDisplayFormat; inline;
-    procedure ResolveDefaults(var AResolved: TResolvedDisplayFormat; const ADefaults: TResolvedDisplayFormat); inline;
+    function ResolveDefaults(var AResolved: TResolvedDisplayFormat; const ADefaults: TResolvedDisplayFormat): Boolean; inline;
   public
+    constructor Create;
+    destructor Destroy; override;
     function ResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
       const AResValue: TWatchResultData
     ): TResolvedDisplayFormat;
+    // Resolving from FallBackFormats[n] to FallBackFormats[0]
+    property FallBackFormats: TWatchDisplayFormatList read FFallBackFormats;
   end;
 
   TWatchResultPrinterFormatFlag = (
@@ -50,6 +55,7 @@ type
     FFormatFlags: TWatchResultPrinterFormatFlags;
     FLineSeparator: String;
     FTargetAddressSize: integer;
+    FValueFormatResolver: TDisplayFormatResolver;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected
@@ -65,11 +71,13 @@ type
     function PrintWatchValueEx(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
   public
     constructor Create;
+    destructor Destroy; override;
     function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat): String;
     function PrintWatchValue(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat): String;
 
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
     property TargetAddressSize: integer read FTargetAddressSize write FTargetAddressSize;
+    property ValueFormatResolver: TDisplayFormatResolver read FValueFormatResolver;
   end;
 
 const
@@ -79,8 +87,6 @@ const
   FormatEnumToBool: array [TValueDisplayFormatEnum] of TValueDisplayFormatBool = (vdfBoolDefault, vdfBoolName, vdfBoolOrd, vdfBoolNameAndOrd);
   FormatEnumToChar: array [TValueDisplayFormatEnum] of TValueDisplayFormatChar = (vdfCharDefault, vdfCharLetter, vdfCharOrd, vdfCharLetterAndOrd);
 
-var
-  ValueFormatResolver: TDisplayFormatResolver;
 
 implementation
 
@@ -221,26 +227,73 @@ begin
   end;
 end;
 
-procedure TDisplayFormatResolver.ResolveDefaults(var AResolved: TResolvedDisplayFormat;
-  const ADefaults: TResolvedDisplayFormat);
+function TDisplayFormatResolver.ResolveDefaults(var AResolved: TResolvedDisplayFormat;
+  const ADefaults: TResolvedDisplayFormat): Boolean;
 begin
-  if AResolved.NumBaseFormat      = vdfBaseDefault          then AResolved.NumBaseFormat         := ADefaults.NumBaseFormat;
-  if AResolved.NumSignFormat      = vdfSignDefault          then AResolved.NumSignFormat         := ADefaults.NumSignFormat;
-  if AResolved.NumCharFormat      = vdfNumCharDefault       then AResolved.NumCharFormat      := ADefaults.NumCharFormat;
-  if AResolved.EnumFormat         = vdfEnumDefault          then AResolved.EnumFormat         := ADefaults.EnumFormat;
-  if AResolved.FloatFormat        = vdfFloatDefault         then AResolved.FloatFormat        := ADefaults.FloatFormat;
-  if AResolved.StructFormat       = vdfStructDefault        then AResolved.StructFormat       := ADefaults.StructFormat;
-  if AResolved.StructAddrFormat   = vdfStructAddressDefault then AResolved.StructAddrFormat   := ADefaults.StructAddrFormat;
-  if AResolved.PointerFormat      = vdfPointerDefault       then AResolved.PointerFormat      := ADefaults.PointerFormat;
-  if AResolved.PointerDerefFormat = vdfPointerDerefDefault  then AResolved.PointerDerefFormat := ADefaults.PointerDerefFormat;
+  Result := True; // no defaults left
+  if AResolved.NumBaseFormat      = vdfBaseDefault          then begin
+    AResolved.NumBaseFormat      := ADefaults.NumBaseFormat;
+    Result := False;
+  end;
+  if AResolved.NumSignFormat      = vdfSignDefault          then begin
+    AResolved.NumSignFormat      := ADefaults.NumSignFormat;
+    Result := False;
+  end;
+  if AResolved.NumCharFormat      = vdfNumCharDefault       then begin
+    AResolved.NumCharFormat      := ADefaults.NumCharFormat;
+    Result := False;
+  end;
+  if AResolved.EnumFormat         = vdfEnumDefault          then begin
+    AResolved.EnumFormat         := ADefaults.EnumFormat;
+    Result := False;
+  end;
+  if AResolved.FloatFormat        = vdfFloatDefault         then begin
+    AResolved.FloatFormat        := ADefaults.FloatFormat;
+    Result := False;
+  end;
+  if AResolved.StructFormat       = vdfStructDefault        then begin
+    AResolved.StructFormat       := ADefaults.StructFormat;
+    Result := False;
+  end;
+  if AResolved.StructAddrFormat   = vdfStructAddressDefault then begin
+    AResolved.StructAddrFormat   := ADefaults.StructAddrFormat;
+    Result := False;
+  end;
+  if AResolved.PointerFormat      = vdfPointerDefault       then begin
+    AResolved.PointerFormat      := ADefaults.PointerFormat;
+    Result := False;
+  end;
+  if AResolved.PointerDerefFormat = vdfPointerDerefDefault  then begin
+    AResolved.PointerDerefFormat := ADefaults.PointerDerefFormat;
+    Result := False;
+  end;
+end;
+
+constructor TDisplayFormatResolver.Create;
+begin
+  inherited Create;
+  FFallBackFormats := TWatchDisplayFormatList.Create;
+end;
+
+destructor TDisplayFormatResolver.Destroy;
+begin
+  inherited Destroy;
+  FFallBackFormats.Free;
 end;
 
 function TDisplayFormatResolver.ResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
   const AResValue: TWatchResultData): TResolvedDisplayFormat;
 var
-  Base: TValueDisplayFormatBase;
+  i: Integer;
+  fb: TResolvedDisplayFormat;
 begin
   Result := DoResolveDispFormat(ADispFormat, AResValue);
+
+  for i := FFallBackFormats.Count -1 downto 0 do begin
+    fb := DoResolveDispFormat(FFallBackFormats[i], AResValue);
+    if ResolveDefaults(Result, fb) then
+      exit;
+  end;
 
   case AResValue.ValueKind of
     rdkSignedNumVal:             ResolveDefaults(Result, SignedNumDefaults);
@@ -759,6 +812,13 @@ constructor TWatchResultPrinter.Create;
 begin
   FFormatFlags := [rpfMultiLine, rpfIndent];
   FTargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
+  FValueFormatResolver := TDisplayFormatResolver.Create;
+end;
+
+destructor TWatchResultPrinter.Destroy;
+begin
+  inherited Destroy;
+  FValueFormatResolver.Free;
 end;
 
 function TWatchResultPrinter.PrintWatchValue(AResValue: TWatchResultData;
@@ -778,9 +838,5 @@ begin
   Result := PrintWatchValue(TWatchResultData(AResValue.GetInternalObject), ADispFormat);
 end;
 
-initialization
-  ValueFormatResolver := TDisplayFormatResolver.Create;
-finalization
-  ValueFormatResolver.Free;
 end.
 

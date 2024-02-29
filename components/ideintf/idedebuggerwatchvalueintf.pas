@@ -11,6 +11,7 @@ unit IdeDebuggerWatchValueIntf experimental;
 
 {$mode objfpc}{$H+}
 {$INTERFACES CORBA}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -75,6 +76,8 @@ type
   TValueDisplayFormatCategories   = set of TValueDisplayFormatCategory;
 
 
+  { TWatchDisplayFormat }
+
   TWatchDisplayFormat = packed record
     NumBaseFormat:            TValueDisplayFormatBase;
      NumSignFormat:           TValueDisplayFormatSign;
@@ -99,6 +102,8 @@ type
      PointerBaseFormat:       TValueDisplayFormatBase;
      PointerSignFormat:       TValueDisplayFormatSign;
     MemDump: ByteBool;
+
+    class operator = (a,b: TWatchDisplayFormat): boolean;
   end;
 
 const
@@ -158,8 +163,6 @@ const
     [low(TValueDisplayFormatPointerDeref) .. high(TValueDisplayFormatPointerDeref)], // vdfgPointerDeref
     [low(TValueDisplayFormatCategory)     .. high(TValueDisplayFormatCategory)]      // vdfgCategory
   );
-
-operator = (a,b: TWatchDisplayFormat): Boolean;
 
 type
 
@@ -283,7 +286,9 @@ type
 
 implementation
 
-operator = (a, b: TWatchDisplayFormat): Boolean;
+{ TWatchDisplayFormat }
+
+class operator TWatchDisplayFormat. = (a, b: TWatchDisplayFormat): boolean;
 begin
   Result :=
     (a.NumBaseFormat           = b.NumBaseFormat) and

@@ -43,9 +43,9 @@ uses
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   BaseDebugManager, Debugger, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult,
-  IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame,
-  WatchInspectToolbar, DebuggerDlg,
-  IdeDebuggerStringConstants, IdeDebuggerUtils, EnvDebuggerOptions;
+  IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame, WatchInspectToolbar,
+  DebuggerDlg, IdeDebuggerStringConstants, IdeDebuggerUtils, EnvDebuggerOptions,
+  IdeDebuggerDisplayFormats, IdeDebuggerOpts;
 
 type
 
@@ -138,7 +138,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DebugConfigChanged; override;
     procedure Execute(const AExpression: ansistring; AWatch: TWatch = nil);
+    property WatchPrinter: TWatchResultPrinter read FWatchPrinter;
   end;
 
 implementation
@@ -1308,6 +1310,7 @@ begin
 
   EnvironmentOptions.AddHandlerAfterWrite(@DoEnvOptChanged);
   DoEnvOptChanged(nil, False);
+  DebugConfigChanged;
 end;
 
 destructor TIDEInspectDlg.Destroy;
@@ -1318,6 +1321,17 @@ begin
   FCurrentResData := nil;
   FreeAndNil(FWatchPrinter);
   inherited Destroy;
+end;
+
+procedure TIDEInspectDlg.DebugConfigChanged;
+begin
+  inherited DebugConfigChanged;
+  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  if ProjectDisplayFormatConfigsUseIde then
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
+  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
+    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
+  DoDispFormatChanged(Nil);
 end;
 
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring; AWatch: TWatch);
@@ -1495,7 +1509,8 @@ end;
 
 procedure TIDEInspectDlg.DoDispFormatChanged(Sender: TObject);
 begin
-
+  if WatchInspectNav1.CurrentWatchValue <> nil then
+    DoWatchUpdated(WatchInspectNav1.Watches, WatchInspectNav1.CurrentWatchValue.Watch);
 end;
 
 procedure TIDEInspectDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);

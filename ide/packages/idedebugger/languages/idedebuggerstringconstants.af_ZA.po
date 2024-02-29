@@ -294,6 +294,20 @@ msgstr ""
 msgid "Unicode + Number"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatoptchangingdescrall
+msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrall"
+msgid "Setting fallback options for all windows."
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatoptchangingdescrsome
+msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrsome"
+msgid "Setting fallback options for all windows."
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatoptprojecttext
+msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried."
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatpointeraddress
 msgid "Address"
 msgstr ""
@@ -378,6 +392,32 @@ msgstr ""
 msgid "Values only"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformattargetevalmod
+msgid "Eval/Modify"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargetglobal
+msgid "General"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargethint
+msgid "Hints"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargetinspect
+msgctxt "idedebuggerstringconstants.dispformattargetinspect"
+msgid "Inspect"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargetlocals
+msgid "Locals"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargetwatches
+msgctxt "idedebuggerstringconstants.dispformattargetwatches"
+msgid "Watches"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
@@ -414,6 +454,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgdisplayformatdebugoptions
+msgid "Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgenvtype
@@ -589,6 +633,7 @@ msgid "Insert result at top of history"
 msgstr ""
 
 #: idedebuggerstringconstants.drsinspect
+msgctxt "idedebuggerstringconstants.drsinspect"
 msgid "Inspect"
 msgstr ""
 
@@ -1603,6 +1648,7 @@ msgid "&Properties"
 msgstr "&Eienskappe"
 
 #: idedebuggerstringconstants.liswlwatchlist
+msgctxt "idedebuggerstringconstants.liswlwatchlist"
 msgid "Watches"
 msgstr ""
 

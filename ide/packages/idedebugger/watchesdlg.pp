@@ -57,7 +57,7 @@ uses
   Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, ArrayNavigationFrame,
   IdeDebuggerUtils, IdeDebuggerStringConstants, DbgTreeViewWatchData,
-  EnvDebuggerOptions, IdeDebuggerValueFormatter;
+  EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerOpts;
 
 type
 
@@ -209,12 +209,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DebugConfigChanged; override;
     function IsShortcut(var Message: TLMKey): Boolean; override;
     property WatchesMonitor;
     property ThreadsMonitor;
     property CallStackMonitor;
     property BreakPoints;
     property SnapshotManager;
+    property WatchPrinter: TWatchResultPrinter read FWatchPrinter;
   end;
 
   { TDbgTreeViewWatchValueMgr }
@@ -358,6 +360,7 @@ begin
   tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
 
   //tvWatches.OnItemRemoved := @DoItemRemovedFromView;
+  DebugConfigChanged;
 end;
 
 destructor TWatchesDlg.Destroy;
@@ -371,6 +374,17 @@ begin
   FWatchTreeMgr.Free;
   tvWatches.Clear; // Must clear all nodes before any owned "Nav := TArrayNavigationBar" are freed;
   inherited Destroy;
+end;
+
+procedure TWatchesDlg.DebugConfigChanged;
+begin
+  inherited DebugConfigChanged;
+  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  if ProjectDisplayFormatConfigsUseIde then
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
+  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
+    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
+  UpdateAll;
 end;
 
 function TWatchesDlg.GetSelected: TIdeWatch;

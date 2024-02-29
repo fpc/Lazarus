@@ -1,0 +1,214 @@
+object ProjectDisplayFormatOptionsFrame: TProjectDisplayFormatOptionsFrame
+  Left = 0
+  Height = 439
+  Top = 0
+  Width = 613
+  ClientHeight = 439
+  ClientWidth = 613
+  TabOrder = 0
+  DesignLeft = 533
+  DesignTop = 68
+  object Panel1: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 613
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 56
+    ClientWidth = 613
+    TabOrder = 0
+    object chkUseProjList: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 300
+      Caption = 'chkUseProjList'
+      TabOrder = 0
+    end
+    object chkUseGlobalList: TCheckBox
+      Left = 312
+      Height = 19
+      Top = 6
+      Width = 295
+      Caption = 'chkUseGlobalList'
+      TabOrder = 1
+    end
+    object chkStoreInSession: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 300
+      Caption = 'chkStoreInSession'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+  object DividerBevel1: TDividerBevel
+    Left = 0
+    Height = 15
+    Top = 56
+    Width = 613
+    Align = alTop
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  inline DisplayFormatDefaultsConfigFrame1: TDisplayFormatDefaultsConfigFrame
+    Height = 368
+    Top = 71
+    Width = 613
+    Align = alClient
+    ClientHeight = 368
+    ClientWidth = 613
+    TabOrder = 1
+    inherited lblChangingDescr: TLabel
+      Width = 613
+    end
+    inherited lblProjectText: TLabel
+      Width = 613
+    end
+    inherited DisplayFormatFrame1: TDisplayFormatFrame
+      Height = 303
+      Top = 65
+      Width = 613
+      Align = alClient
+      ClientHeight = 303
+      ClientWidth = 613
+      TabOrder = 1
+      inherited ToolBar1: TToolBar
+        Width = 613
+        inherited ToolButton2: TToolButton
+          Height = 22
+        end
+        inherited ToolButton4: TToolButton
+          Height = 22
+        end
+        inherited ToolButton12: TToolButton
+          Height = 22
+        end
+        inherited ToolButton13: TToolButton
+          Height = 22
+        end
+        inherited ToolButton14: TToolButton
+          Height = 22
+        end
+        inherited ToolButton15: TToolButton
+          Height = 22
+        end
+        inherited ToolButton16: TToolButton
+          Height = 22
+        end
+        inherited ToolButton17: TToolButton
+          Height = 22
+        end
+      end
+      inherited PanelNum: TPanel
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelNum: TDividerBevel
+          Width = 613
+        end
+        inherited PanelNumBase: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+        inherited PanelNumSign: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+        inherited DividerBevelNumChar: TDividerBevel
+          Width = 613
+        end
+        inherited PanelNumChar: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelEnum: TPanel
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelEnum: TDividerBevel
+          Width = 613
+        end
+        inherited PanelEnumRb1: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelFloat: TPanel
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelFloat: TDividerBevel
+          Width = 613
+        end
+        inherited PanelFloatRb: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelStruct: TPanel
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelStruct: TDividerBevel
+          Width = 613
+        end
+        inherited PanelStructFld: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+        inherited PanelStructAddr: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelPointer: TPanel
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelPointer: TDividerBevel
+          Width = 613
+        end
+        inherited PanelPointerDeref: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelAddressFormat: TPanel
+        Top = 302
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelAddressFormat: TDividerBevel
+          Width = 613
+        end
+        inherited PanelPointerType: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+        inherited PanelPointerNum: TPanel
+          Width = 603
+          ClientWidth = 603
+        end
+      end
+      inherited PanelMemDump: TPanel
+        Top = 302
+        Width = 613
+        ClientWidth = 613
+        inherited DividerBevelMemDump: TDividerBevel
+          Width = 613
+        end
+        inherited cbMemDump: TCheckBox
+          Width = 603
+        end
+      end
+    end
+  end
+end

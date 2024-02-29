@@ -5,8 +5,9 @@ unit DisplayFormatConfigFrame;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons, IdeDebuggerUtils,
-  DividerBevel, IdeDebuggerWatchValueIntf, IdeDebuggerWatchResPrinter, IdeDebuggerStringConstants;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons, Graphics,
+  DividerBevel, IdeDebuggerWatchValueIntf, IdeDebuggerWatchResPrinter,
+  IdeDebuggerStringConstants, IdeDebuggerDisplayFormats;
 
 type
 
@@ -22,8 +23,6 @@ type
     DividerBevelStruct: TDividerBevel;
     DividerBevelEnum: TDividerBevel;
     DividerBevelPointer: TDividerBevel;
-    Label1: TLabel;
-    Label2: TLabel;
     PanelAddressFormat: TPanel;
     PanelMemDump: TPanel;
     PanelPointerDeref: TPanel;
@@ -107,15 +106,32 @@ type
   private type
     TFmtButtons = (bsNum, bsEnum, bsBool, bsChar, bsFloat, bsStruct, bsPtr);
   private
-    FDisplayFormat: TWatchDisplayFormat;
-    FCurrentResDataType: TWatchResultDataKind;
     FHighlightModifiedTabs: boolean;
+    FShowCurrent: boolean;
+    FLastWidth: integer;
+
+    FDisplayFormatCount: integer;
+    FDisplayFormat: array of TWatchDisplayFormat;
+    FCurrentResDataType: TWatchResultDataKind;
+    FShowMemDump: boolean;
+    FShowMultiRadio: boolean;
+
+    FUpdateCount: integer;
+    FNeedUpdateDisplay, FUpdatingDisplay: boolean;
     FInButtonClick: Boolean;
     FRadioMap: array [TValueDisplayFormat] of TRadioButton;
     FButtonStates: array[TFmtButtons] of boolean;
+
     function GetDisplayFormat: TWatchDisplayFormat;
+    function GetDisplayFormats(AIndex: integer): TWatchDisplayFormat;
     procedure SetCurrentResDataType(AValue: TWatchResultDataKind);
     procedure SetDisplayFormat(ADispFormat: TWatchDisplayFormat);
+    procedure SetDisplayFormatCount(AValue: integer);
+    procedure SetDisplayFormats(AIndex: integer; AValue: TWatchDisplayFormat);
+    procedure SetHighlightModifiedTabs(AValue: boolean);
+    procedure SetShowCurrent(AValue: boolean);
+    procedure SetShowMemDump(AValue: boolean);
+    procedure SetShowMultiRadio(AValue: boolean);
   protected
     procedure UpdateFormat;
     procedure UpdateDisplay;
@@ -123,10 +139,18 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Setup;
+    procedure BeginUdpate;
+    procedure EndUdpate;
     procedure SelectDefaultButton;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
+    property DisplayFormats [AIndex: integer]: TWatchDisplayFormat read GetDisplayFormats write SetDisplayFormats;
+    property DisplayFormatCount: integer read FDisplayFormatCount write SetDisplayFormatCount;
     property CurrentResDataType: TWatchResultDataKind read FCurrentResDataType write SetCurrentResDataType;
-    property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write FHighlightModifiedTabs;
+  published
+    property ShowCurrent: boolean read FShowCurrent write SetShowCurrent;
+    property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
+    property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
+    property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write SetHighlightModifiedTabs;
   end;
 
 implementation
@@ -154,9 +178,16 @@ begin
 end;
 
 procedure TDisplayFormatFrame.FormatRadioClicked(Sender: TObject);
+var
+  i: Integer;
 begin
+  if FUpdatingDisplay then
+    exit;
   UpdateFormat;
   UpdateTabs;
+  for i := 0 to TRadioButton(Sender).Parent.ControlCount - 1 do
+    if TRadioButton(Sender).Parent.Controls[i] is TRadioButton then
+      TRadioButton(Sender).Parent.Controls[i].Font.Italic := False;
 end;
 
 procedure TDisplayFormatFrame.FrameResize(Sender: TObject);
@@ -164,16 +195,12 @@ var
   w, i, pw, ph: Integer;
 begin
   w := Width;
-  if PanelNum.Constraints.MaxWidth = w then
+  if abs(FLastWidth - w) < 3 then
     exit;
-  DisableAutoSizing;
-  for i := 0 to ControlCount - 1 do
-    if Controls[i] is TPanel then begin
-      Controls[i].Constraints.MaxWidth := w;
-      Controls[i].Constraints.MinWidth := w;
-    end;
+  FLastWidth := w;
 
-  w := ((ClientWidth-12-9) div 4); // 9 = 3 * spacing of 3
+  DisableAutoSizing;
+  w := ((ClientWidth-10-9-8) div 4); // 10 = borderspacing // 9 = 3 * spacing of 3 // 8 = safety
   for i := 0 to ComponentCount - 1 do
     if (Components[i] is TRadioButton) or
        ( (Components[i] is TLabel) {and (TLabel(Components[i]).Caption = '')} )
@@ -182,8 +209,6 @@ begin
       TControl(Components[i]).AutoSize := False;
       TControl(Components[i]).Width := w;
       TControl(Components[i]).Height := ph;
-      TControl(Components[i]).Constraints.MinWidth := w;
-      TControl(Components[i]).Constraints.MaxWidth := w;
     end;
   EnableAutoSizing;
 end;
@@ -312,18 +337,77 @@ end;
 function TDisplayFormatFrame.GetDisplayFormat: TWatchDisplayFormat;
 begin
   UpdateFormat;
-  Result := FDisplayFormat;
+  Result := FDisplayFormat[0];
+end;
+
+function TDisplayFormatFrame.GetDisplayFormats(AIndex: integer): TWatchDisplayFormat;
+begin
+  UpdateFormat;
+  Result := FDisplayFormat[AIndex];
 end;
 
 procedure TDisplayFormatFrame.SetCurrentResDataType(AValue: TWatchResultDataKind);
 begin
   if FCurrentResDataType = AValue then Exit;
   FCurrentResDataType := AValue;
+  UpdateDisplay;
 end;
 
 procedure TDisplayFormatFrame.SetDisplayFormat(ADispFormat: TWatchDisplayFormat);
 begin
-  FDisplayFormat := ADispFormat;
+  FDisplayFormat[0] := ADispFormat;
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.SetDisplayFormatCount(AValue: integer);
+var
+  l, i: integer;
+begin
+  if AValue < 1 then
+    AValue := 1;
+  if FDisplayFormatCount = AValue then
+    Exit;
+  FDisplayFormatCount := AValue;
+  l := Length(FDisplayFormat);
+  SetLength(FDisplayFormat, AValue);
+  for i := l to AValue - 1 do
+    FDisplayFormat[i] := DefaultWatchDisplayFormat;
+
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.SetDisplayFormats(AIndex: integer; AValue: TWatchDisplayFormat);
+begin
+  FDisplayFormat[AIndex] := AValue;
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.SetHighlightModifiedTabs(AValue: boolean);
+begin
+  if FHighlightModifiedTabs = AValue then Exit;
+  FHighlightModifiedTabs := AValue;
+  if not FHighlightModifiedTabs then
+    UpdateTabs;
+end;
+
+procedure TDisplayFormatFrame.SetShowCurrent(AValue: boolean);
+begin
+  if FShowCurrent = AValue then Exit;
+  FShowCurrent := AValue;
+  tbCurrent.Visible := FShowCurrent;
+end;
+
+procedure TDisplayFormatFrame.SetShowMemDump(AValue: boolean);
+begin
+  if FShowMemDump = AValue then Exit;
+  FShowMemDump := AValue;
+  PanelMemDump.Visible := FShowMemDump;
+end;
+
+procedure TDisplayFormatFrame.SetShowMultiRadio(AValue: boolean);
+begin
+  if FShowMultiRadio = AValue then Exit;
+  FShowMultiRadio := AValue;
 end;
 
 procedure TDisplayFormatFrame.UpdateFormat;
@@ -331,6 +415,7 @@ var
   d: TValueDisplayFormat;
   ds, dsPtr: TValueDisplayFormats;
   OnlyPointerOrStruct: Boolean;
+  i: Integer;
 begin
   OnlyPointerOrStruct := (FButtonStates[bsPtr] or FButtonStates[bsStruct]) and
     not (FButtonStates[bsNum] or FButtonStates[bsEnum] or FButtonStates[bsBool] or FButtonStates[bsChar]);
@@ -350,85 +435,105 @@ begin
   else
     dsPtr := ds;
 
-
-  if FButtonStates[bsNum] then begin
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-      FDisplayFormat.NumBaseFormat := d;
-    for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-      FDisplayFormat.NumSignFormat := d;
-    for d := low(TValueDisplayFormatNumChar) to high(TValueDisplayFormatNumChar) do if d in ds then
-      FDisplayFormat.NumCharFormat := d;
-  end;
-  if FButtonStates[bsEnum] then begin
-    for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-      FDisplayFormat.EnumFormat := d;
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-      FDisplayFormat.EnumBaseFormat := d;
-    for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-      FDisplayFormat.EnumSignFormat := d;
-  end;
-  if FButtonStates[bsBool] then begin
-    for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-      FDisplayFormat.BoolFormat := FormatEnumToBool[d];
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-      FDisplayFormat.BoolBaseFormat := d;
-    for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-      FDisplayFormat.BoolSignFormat := d;
-  end;
-  if FButtonStates[bsChar] then begin
-    for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-      FDisplayFormat.CharFormat := FormatEnumToChar[d];
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-      FDisplayFormat.CharBaseFormat := d;
-    for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-      FDisplayFormat.CharSignFormat := d;
-  end;
-  if FButtonStates[bsFloat] then begin
-    for d := low(TValueDisplayFormatFloat) to high(TValueDisplayFormatFloat) do if d in ds then
-      FDisplayFormat.FloatFormat := d;
-  end;
-  if FButtonStates[bsStruct] then begin
-    for d := low(TValueDisplayFormatStruct) to high(TValueDisplayFormatStruct) do if d in ds then
-      FDisplayFormat.StructFormat := d;
-    for d := low(TValueDisplayFormatStructAddr) to high(TValueDisplayFormatStructAddr) do if d in ds then
-      FDisplayFormat.StructAddrFormat := d;
-    for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
-      FDisplayFormat.StructPointerFormat := d;
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-      if d in dsPtr then
-        FDisplayFormat.StructPointerBaseFormat := d;
-    if OnlyPointerOrStruct then
+  for i := 0 to FDisplayFormatCount - 1 do begin
+    if FButtonStates[bsNum] then begin
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
+        FDisplayFormat[i].NumBaseFormat := d;
       for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat.StructPointerSignFormat := d;
-  end;
-  if FButtonStates[bsPtr] then begin
-    for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
-      FDisplayFormat.PointerFormat := d;
-    for d := low(TValueDisplayFormatPointerDeref) to high(TValueDisplayFormatPointerDeref) do if d in ds then
-      FDisplayFormat.PointerDerefFormat := d;
-    for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-      if d in dsPtr then
-        FDisplayFormat.PointerBaseFormat := d;
-    if OnlyPointerOrStruct then
+        FDisplayFormat[i].NumSignFormat := d;
+      for d := low(TValueDisplayFormatNumChar) to high(TValueDisplayFormatNumChar) do if d in ds then
+        FDisplayFormat[i].NumCharFormat := d;
+    end;
+    if FButtonStates[bsEnum] then begin
+      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
+        FDisplayFormat[i].EnumFormat := d;
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
+        FDisplayFormat[i].EnumBaseFormat := d;
       for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat.PointerSignFormat := d;
-  end;
+        FDisplayFormat[i].EnumSignFormat := d;
+    end;
+    if FButtonStates[bsBool] then begin
+      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
+        FDisplayFormat[i].BoolFormat := FormatEnumToBool[d];
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
+        FDisplayFormat[i].BoolBaseFormat := d;
+      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
+        FDisplayFormat[i].BoolSignFormat := d;
+    end;
+    if FButtonStates[bsChar] then begin
+      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
+        FDisplayFormat[i].CharFormat := FormatEnumToChar[d];
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
+        FDisplayFormat[i].CharBaseFormat := d;
+      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
+        FDisplayFormat[i].CharSignFormat := d;
+    end;
+    if FButtonStates[bsFloat] then begin
+      for d := low(TValueDisplayFormatFloat) to high(TValueDisplayFormatFloat) do if d in ds then
+        FDisplayFormat[i].FloatFormat := d;
+    end;
+    if FButtonStates[bsStruct] then begin
+      for d := low(TValueDisplayFormatStruct) to high(TValueDisplayFormatStruct) do if d in ds then
+        FDisplayFormat[i].StructFormat := d;
+      for d := low(TValueDisplayFormatStructAddr) to high(TValueDisplayFormatStructAddr) do if d in ds then
+        FDisplayFormat[i].StructAddrFormat := d;
+      for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
+        FDisplayFormat[i].StructPointerFormat := d;
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+        if d in dsPtr then
+          FDisplayFormat[i].StructPointerBaseFormat := d;
+      if OnlyPointerOrStruct then
+        for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
+          FDisplayFormat[i].StructPointerSignFormat := d;
+    end;
+    if FButtonStates[bsPtr] then begin
+      for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
+        FDisplayFormat[i].PointerFormat := d;
+      for d := low(TValueDisplayFormatPointerDeref) to high(TValueDisplayFormatPointerDeref) do if d in ds then
+        FDisplayFormat[i].PointerDerefFormat := d;
+      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+        if d in dsPtr then
+          FDisplayFormat[i].PointerBaseFormat := d;
+      if OnlyPointerOrStruct then
+        for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
+          FDisplayFormat[i].PointerSignFormat := d;
+    end;
 
-  FDisplayFormat.MemDump := cbMemDump.Checked;
+    if cbMemDump.State <> cbGrayed then
+      FDisplayFormat[i].MemDump := cbMemDump.Checked;
+  end;
 end;
 
 procedure TDisplayFormatFrame.UpdateDisplay;
   procedure ApplyDispForm(ADispForm: TValueDisplayFormats);
   var
-    d: TValueDisplayFormat;
+    d, d2: TValueDisplayFormat;
+    m: TValueDisplayFormats;
   begin
-    if DisplayFormatCount(ADispForm) = 1 then begin
+    if IdeDebuggerDisplayFormats.DisplayFormatCount(ADispForm) = 1 then begin
       for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do begin
         if (FRadioMap[d] <> nil) and (d in ADispForm) then
           FRadioMap[d].Checked := True;
       end;
+    end
+    else
+    if FShowMultiRadio then begin
+      d2 := vdfCategoryData;
+      for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
+        if d in ADispForm then begin
+          d2 := d;
+          break;
+        end;
+      if d2 = vdfCategoryData then
+        exit;
+      m := DisplayFormatMask([ValueDisplayFormatGroupMap[d2]]);
+      for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do begin
+        if (FRadioMap[d] <> nil) and (d in m) then
+          FRadioMap[d].Font.Italic := (d in ADispForm);
+      end;
     end;
   end;
+
 var
   CaptDivEnum, CaptRbEnumName, CaptDivNumber: String;
   FormatOrdinal:      TValueDisplayFormats;
@@ -441,11 +546,18 @@ var
   FormatPointer:      TValueDisplayFormats;
   FormatPointerDeref: TValueDisplayFormats;
   FormatPtrOrdinal:   TValueDisplayFormats; // Pointer uses separate ordinal radios
+  FormatIsMemDump: set of boolean;
   OnlyPointerOrStruct: Boolean; // Pointer uses separate ordinal radios
   d: TValueDisplayFormat;
   fb: TFmtButtons;
-  BtnDownCount, y: Integer;
+  BtnDownCount, y, i: Integer;
 begin
+  if FUpdateCount > 0 then begin
+    FNeedUpdateDisplay := True;
+    exit;
+  end;
+  FUpdatingDisplay := True;
+
   FButtonStates[bsNum]    := tbNumber.Down;
   FButtonStates[bsEnum]   := tbEnum.Down;
   FButtonStates[bsBool]   := tbBool.Down;
@@ -506,6 +618,37 @@ begin
     if OnlyPointerOrStruct then
       CaptDivNumber  := '';
 
+    if FButtonStates[bsNum] then begin
+      CaptDivNumber  := DispFormatDlgBtnNumber;
+    end;
+    if FButtonStates[bsEnum] then begin
+      CaptDivEnum    := DispFormatGroupEnum;
+      CaptRbEnumName := DispFormatEnumName;
+      if (FButtonStates[bsNum]) then
+        AddToStr(CaptDivNumber, DispFormatDlgBtnEnum, ', ');
+    end;
+    if FButtonStates[bsBool] then begin
+      AddToStr(CaptDivEnum,    DispFormatGroupBool, ', ');
+      AddToStr(CaptRbEnumName, DispFormatBoolName, '/');
+      if (FButtonStates[bsNum]) then
+        AddToStr(CaptDivNumber,  DispFormatDlgBtnBool, ', ');
+    end;
+    if FButtonStates[bsChar] then begin
+      AddToStr(CaptDivEnum,    DispFormatGroupChar, ', ');
+      AddToStr(CaptRbEnumName, DispFormatCharLetter, '/');
+      if (FButtonStates[bsNum]) then
+        AddToStr(CaptDivNumber,  DispFormatDlgBtnChar, ', ');
+    end;
+
+    rbEnumName.Caption          := CaptRbEnumName;
+    DividerBevelEnum.Caption    := CaptDivEnum;
+    DividerBevelNum.Caption     := CaptDivNumber;
+    if FButtonStates[bsStruct] and FButtonStates[bsPtr] then
+      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat+ ': ' + DispFormatDlgBtnStruct + ', ' + DispFormatDlgBtnPointer
+    else
+      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
+
+
     FormatOrdinal := [];
     FormatSign := [];
     FormatNumChar := [];
@@ -516,74 +659,57 @@ begin
     FormatPointer := [];
     FormatPointerDeref := [];
     FormatPtrOrdinal := [];
+    FormatIsMemDump := [];
 
-    cbMemDump.Checked := FDisplayFormat.MemDump;
+    for i := 0 to FDisplayFormatCount - 1 do begin
+      FormatIsMemDump := FormatIsMemDump + [boolean(FDisplayFormat[i].MemDump)];
 
-    if FButtonStates[bsNum] then begin
-      include(FormatOrdinal, FDisplayFormat.NumBaseFormat);
-      include(FormatSign,    FDisplayFormat.NumSignFormat);
-      include(FormatNumChar, FDisplayFormat.NumCharFormat);
-      CaptDivNumber  := DispFormatDlgBtnNumber;
-    end;
-    if FButtonStates[bsEnum] then begin
-      include(FormatEnum,    FDisplayFormat.EnumFormat);
-      include(FormatOrdinal, FDisplayFormat.EnumBaseFormat);
-      include(FormatSign,    FDisplayFormat.EnumSignFormat);
-      CaptDivEnum    := DispFormatGroupEnum;
-      CaptRbEnumName := DispFormatEnumName;
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber, DispFormatDlgBtnEnum, ', ');
-    end;
-    if FButtonStates[bsBool] then begin
-      include(FormatEnum,    FormatBoolToEnum[FDisplayFormat.BoolFormat]);
-      include(FormatOrdinal, FDisplayFormat.BoolBaseFormat);
-      include(FormatSign,    FDisplayFormat.BoolSignFormat);
-      AddToStr(CaptDivEnum,    DispFormatGroupBool, ', ');
-      AddToStr(CaptRbEnumName, DispFormatBoolName, '/');
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber,  DispFormatDlgBtnBool, ', ');
-    end;
-    if FButtonStates[bsChar] then begin
-      include(FormatEnum,    FormatCharToEnum[FDisplayFormat.CharFormat]);
-      include(FormatOrdinal, FDisplayFormat.CharBaseFormat);
-      include(FormatSign,    FDisplayFormat.CharSignFormat);
-      AddToStr(CaptDivEnum,    DispFormatGroupChar, ', ');
-      AddToStr(CaptRbEnumName, DispFormatCharLetter, '/');
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber,  DispFormatDlgBtnChar, ', ');
-    end;
-    if FButtonStates[bsFloat] then begin
-      include(FormatFloat,   FDisplayFormat.FloatFormat);
-    end;
-    if FButtonStates[bsStruct] then begin
-      include(FormatStruct,     FDisplayFormat.StructFormat);
-      include(FormatStructAddr, FDisplayFormat.StructAddrFormat);
-      include(FormatPointer,    FDisplayFormat.StructPointerFormat);
-      if OnlyPointerOrStruct then begin
-        include(FormatOrdinal,    FDisplayFormat.StructPointerBaseFormat);
-        include(FormatSign,       FDisplayFormat.StructPointerSignFormat);
-      end
-      else
-        include(FormatPtrOrdinal, FDisplayFormat.StructPointerBaseFormat);
-    end;
-    if FButtonStates[bsPtr] then begin
-      include(FormatPointer,      FDisplayFormat.PointerFormat);
-      include(FormatPointerDeref, FDisplayFormat.PointerDerefFormat);
-      if OnlyPointerOrStruct then begin
-        include(FormatOrdinal,    FDisplayFormat.PointerBaseFormat);
-        include(FormatSign,       FDisplayFormat.PointerSignFormat);
-      end
-      else
-        include(FormatPtrOrdinal, FDisplayFormat.PointerBaseFormat);
+      if FButtonStates[bsNum] then begin
+        include(FormatOrdinal, FDisplayFormat[i].NumBaseFormat);
+        include(FormatSign,    FDisplayFormat[i].NumSignFormat);
+        include(FormatNumChar, FDisplayFormat[i].NumCharFormat);
+      end;
+      if FButtonStates[bsEnum] then begin
+        include(FormatEnum,    FDisplayFormat[i].EnumFormat);
+        include(FormatOrdinal, FDisplayFormat[i].EnumBaseFormat);
+        include(FormatSign,    FDisplayFormat[i].EnumSignFormat);
+      end;
+      if FButtonStates[bsBool] then begin
+        include(FormatEnum,    FormatBoolToEnum[FDisplayFormat[i].BoolFormat]);
+        include(FormatOrdinal, FDisplayFormat[i].BoolBaseFormat);
+        include(FormatSign,    FDisplayFormat[i].BoolSignFormat);
+      end;
+      if FButtonStates[bsChar] then begin
+        include(FormatEnum,    FormatCharToEnum[FDisplayFormat[i].CharFormat]);
+        include(FormatOrdinal, FDisplayFormat[i].CharBaseFormat);
+        include(FormatSign,    FDisplayFormat[i].CharSignFormat);
+      end;
+      if FButtonStates[bsFloat] then begin
+        include(FormatFloat,   FDisplayFormat[i].FloatFormat);
+      end;
+      if FButtonStates[bsStruct] then begin
+        include(FormatStruct,     FDisplayFormat[i].StructFormat);
+        include(FormatStructAddr, FDisplayFormat[i].StructAddrFormat);
+        include(FormatPointer,    FDisplayFormat[i].StructPointerFormat);
+        if OnlyPointerOrStruct then begin
+          include(FormatOrdinal,    FDisplayFormat[i].StructPointerBaseFormat);
+          include(FormatSign,       FDisplayFormat[i].StructPointerSignFormat);
+        end
+        else
+          include(FormatPtrOrdinal, FDisplayFormat[i].StructPointerBaseFormat);
+      end;
+      if FButtonStates[bsPtr] then begin
+        include(FormatPointer,      FDisplayFormat[i].PointerFormat);
+        include(FormatPointerDeref, FDisplayFormat[i].PointerDerefFormat);
+        if OnlyPointerOrStruct then begin
+          include(FormatOrdinal,    FDisplayFormat[i].PointerBaseFormat);
+          include(FormatSign,       FDisplayFormat[i].PointerSignFormat);
+        end
+        else
+          include(FormatPtrOrdinal, FDisplayFormat[i].PointerBaseFormat);
+      end;
     end;
 
-    rbEnumName.Caption          := CaptRbEnumName;
-    DividerBevelEnum.Caption    := CaptDivEnum;
-    DividerBevelNum.Caption     := CaptDivNumber;
-    if FButtonStates[bsStruct] and FButtonStates[bsPtr] then
-      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat+ ': ' + DispFormatDlgBtnStruct + ', ' + DispFormatDlgBtnPointer
-    else
-      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
 
 
     for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
@@ -602,7 +728,7 @@ begin
     ApplyDispForm(FormatStructAddr);
     ApplyDispForm(FormatPointer);
     ApplyDispForm(FormatPointerDeref);
-    if DisplayFormatCount(FormatPtrOrdinal) = 1 then begin
+    if IdeDebuggerDisplayFormats.DisplayFormatCount(FormatPtrOrdinal) = 1 then begin
       for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
         if d in FormatPtrOrdinal then
           case d of
@@ -613,56 +739,96 @@ begin
           end;
     end;
 
+    if True in FormatIsMemDump then begin
+      if False in FormatIsMemDump then
+        cbMemDump.State := cbGrayed
+      else
+        cbMemDump.Checked := True;
+    end
+    else
+      cbMemDump.Checked := False;
+
+
   finally
     EndUpdateBounds;
     EnableAutoSizing;
+    FUpdatingDisplay := False;
   end;
 end;
 
 procedure TDisplayFormatFrame.UpdateTabs;
+var
+  MarkTabNumber, MarkTabEnum, MarkTabBool, MarkTabChar, MarkTabFloat, MarkTabStruct,
+    MarkTabPointer: Boolean;
+  i: Integer;
 begin
-  tbNumber.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.NumBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.NumSignFormat <> vdfSignDefault) or
-                          (FDisplayFormat.NumCharFormat <> vdfNumCharDefault)
-                          );
-  tbEnum.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.EnumFormat <> vdfEnumDefault) or
-                          (FDisplayFormat.EnumBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.EnumSignFormat <> vdfSignDefault)
-                          );
-  tbBool.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.BoolFormat <> vdfBoolDefault) or
-                          (FDisplayFormat.BoolBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.BoolSignFormat <> vdfSignDefault)
-                          );
-  tbChar.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.CharFormat <> vdfCharDefault) or
-                          (FDisplayFormat.CharBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.CharSignFormat <> vdfSignDefault)
-                          );
-  tbFloat.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.FloatFormat <> vdfFloatDefault)
-                          );
-  tbStruct.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.StructFormat <> vdfStructDefault) or
-                          (FDisplayFormat.StructAddrFormat <> vdfStructAddressDefault) or
-                          (FDisplayFormat.StructPointerFormat <> vdfPointerDefault) or
-                          (FDisplayFormat.StructPointerBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.StructPointerSignFormat <> vdfSignDefault)
-                          );
-  tbPointer.Font.Italic := FHighlightModifiedTabs and (
-                          (FDisplayFormat.PointerDerefFormat <> vdfPointerDerefDefault) or
-                          (FDisplayFormat.PointerFormat <> vdfPointerDefault) or
-                          (FDisplayFormat.PointerBaseFormat <> vdfBaseDefault) or
-                          (FDisplayFormat.PointerSignFormat <> vdfSignDefault)
-                          );
+  MarkTabNumber  := False;
+  MarkTabEnum    := False;
+  MarkTabBool    := False;
+  MarkTabChar    := False;
+  MarkTabFloat   := False;
+  MarkTabStruct  := False;
+  MarkTabPointer := False;
+
+  if FHighlightModifiedTabs then begin
+    for i := 0 to FDisplayFormatCount - 1 do begin
+      MarkTabNumber  := MarkTabNumber or
+                        (FDisplayFormat[i].NumBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].NumSignFormat <> vdfSignDefault) or
+                        (FDisplayFormat[i].NumCharFormat <> vdfNumCharDefault)
+                        ;
+      MarkTabEnum    := MarkTabEnum or
+                        (FDisplayFormat[i].EnumFormat <> vdfEnumDefault) or
+                        (FDisplayFormat[i].EnumBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].EnumSignFormat <> vdfSignDefault)
+                        ;
+      MarkTabBool    := MarkTabBool or
+                        (FDisplayFormat[i].BoolFormat <> vdfBoolDefault) or
+                        (FDisplayFormat[i].BoolBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].BoolSignFormat <> vdfSignDefault)
+                        ;
+      MarkTabChar    := MarkTabChar or
+                        (FDisplayFormat[i].CharFormat <> vdfCharDefault) or
+                        (FDisplayFormat[i].CharBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].CharSignFormat <> vdfSignDefault)
+                        ;
+      MarkTabFloat   := MarkTabFloat or
+                        (FDisplayFormat[i].FloatFormat <> vdfFloatDefault)
+                        ;
+      MarkTabStruct  := MarkTabStruct or
+                        (FDisplayFormat[i].StructFormat <> vdfStructDefault) or
+                        (FDisplayFormat[i].StructAddrFormat <> vdfStructAddressDefault) or
+                        (FDisplayFormat[i].StructPointerFormat <> vdfPointerDefault) or
+                        (FDisplayFormat[i].StructPointerBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].StructPointerSignFormat <> vdfSignDefault)
+                        ;
+      MarkTabPointer := MarkTabPointer or
+                        (FDisplayFormat[i].PointerDerefFormat <> vdfPointerDerefDefault) or
+                        (FDisplayFormat[i].PointerFormat <> vdfPointerDefault) or
+                        (FDisplayFormat[i].PointerBaseFormat <> vdfBaseDefault) or
+                        (FDisplayFormat[i].PointerSignFormat <> vdfSignDefault)
+                        ;
+    end;
+  end;
+
+
+  tbNumber.Font.Italic  := MarkTabNumber;
+  tbEnum.Font.Italic    := MarkTabEnum;
+  tbBool.Font.Italic    := MarkTabBool;
+  tbChar.Font.Italic    := MarkTabChar;
+  tbFloat.Font.Italic   := MarkTabFloat;
+  tbStruct.Font.Italic  := MarkTabStruct;
+  tbPointer.Font.Italic := MarkTabPointer;
 end;
 
 constructor TDisplayFormatFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  DisplayFormatCount := 1;
   FHighlightModifiedTabs := True;
+  FShowCurrent := True;
+  FShowMemDump := True;
+  FShowMultiRadio := True;
 
   FillByte(FRadioMap, SizeOf(FRadioMap), 0);
 
@@ -726,6 +892,7 @@ procedure TDisplayFormatFrame.Setup;
 var
   s: String;
 begin
+  tbCurrent.Visible := FShowCurrent;
 
   tbCurrent.Caption := DispFormatDlgBtnCurrent;
   tbAll.Caption     := DispFormatDlgBtnAll;
@@ -797,6 +964,18 @@ begin
   cbMemDump.Caption             := DispFormatCategoryMemDump;
 
 
+end;
+
+procedure TDisplayFormatFrame.BeginUdpate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TDisplayFormatFrame.EndUdpate;
+begin
+  dec(FUpdateCount);
+  if (FUpdateCount = 0) and FNeedUpdateDisplay then
+    UpdateDisplay;
 end;
 
 procedure TDisplayFormatFrame.SelectDefaultButton;

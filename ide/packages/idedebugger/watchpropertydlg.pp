@@ -161,25 +161,30 @@ begin
   FWatch := AWatch;
   inherited Create(AOwner);
   DisplayFormatFrame1.Setup;
-  if FWatch = nil
-  then begin
-    chkEnabled.Checked := True;
-    txtExpression.Text := AWatchExpression;
-    DisplayFormatFrame1.DisplayFormat := DefaultWatchDisplayFormat;
-    chkUseInstanceClass.Checked := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
-    txtRepCount.Text := '0';
-  end
-  else begin
-    txtExpression.Text          := FWatch.Expression;
-    chkEnabled.Checked          := FWatch.Enabled;
-    DisplayFormatFrame1.DisplayFormat := FWatch.DisplayFormat;
-    chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
-    chkAllowFunc.Checked        := defAllowFunctionCall in FWatch.EvaluateFlags;
-    chkAllowFuncThreads.Checked := defFunctionCallRunAllThreads in FWatch.EvaluateFlags;
-    txtRepCount.Text            := IntToStr(FWatch.RepeatCount);
+  DisplayFormatFrame1.BeginUdpate;
+  try
+    if FWatch = nil
+    then begin
+      chkEnabled.Checked := True;
+      txtExpression.Text := AWatchExpression;
+      DisplayFormatFrame1.DisplayFormat := DefaultWatchDisplayFormat;
+      chkUseInstanceClass.Checked := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
+      txtRepCount.Text := '0';
+    end
+    else begin
+      txtExpression.Text          := FWatch.Expression;
+      chkEnabled.Checked          := FWatch.Enabled;
+      DisplayFormatFrame1.DisplayFormat := FWatch.DisplayFormat;
+      chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
+      chkAllowFunc.Checked        := defAllowFunctionCall in FWatch.EvaluateFlags;
+      chkAllowFuncThreads.Checked := defFunctionCallRunAllThreads in FWatch.EvaluateFlags;
+      txtRepCount.Text            := IntToStr(FWatch.RepeatCount);
+    end;
+    DisplayFormatFrame1.CurrentResDataType := AResDataType;
+    DisplayFormatFrame1.SelectDefaultButton;
+  finally
+    DisplayFormatFrame1.EndUdpate;
   end;
-  DisplayFormatFrame1.CurrentResDataType := AResDataType;
-  DisplayFormatFrame1.SelectDefaultButton;
   txtExpressionChange(nil);
 
   lblDigits.Enabled := False;

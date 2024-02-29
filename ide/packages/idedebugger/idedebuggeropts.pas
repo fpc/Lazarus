@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, IDEOptionsIntf, Laz2_XMLCfg, LazFileUtils, LazUTF8,
   LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, DbgIntfDebuggerBase,
   IdeDebuggerStringConstants, IdeDebuggerBackendValueConv,
-  IdeDebuggerValueFormatter, EnvironmentOpts;
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, EnvironmentOpts;
 
 type
 
@@ -123,6 +123,7 @@ type
   private
     FAlwaysBringDbgDialogsToFront: boolean;
     FBreakpointsDialogShowTree: TBreakpointsDialogShowTreeType;
+    FDisplayFormatConfigs: TDisplayFormatConfig;
     FFilename: string;
     FFileVersion: integer;
 
@@ -158,6 +159,7 @@ type
     property Filename: string read FFilename;
     property PrimaryConfigPath: String read FPrimaryConfigPath write FPrimaryConfigPath;
 
+    property DisplayFormatConfigs: TDisplayFormatConfig read FDisplayFormatConfigs;
     property BackendConverterConfig: TIdeDbgValueConvertSelectorList read FBackendConverterConfig write FBackendConverterConfig;
     property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig write FValueFormatterConfig;
 
@@ -812,6 +814,7 @@ constructor TDebuggerOptions.Create;
 begin
   inherited Create;
   FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
+  FDisplayFormatConfigs := TDisplayFormatConfig.Create;
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
   Init;
@@ -827,6 +830,7 @@ destructor TDebuggerOptions.Destroy;
 begin
   inherited Destroy;
   BackendConverterConfig.Free;
+  FDisplayFormatConfigs.Free;
   FValueFormatterConfig.Free;
   FDebuggerConfigList.Free;
 
@@ -854,6 +858,7 @@ begin
   FXMLCfg.ReadObject(Path + 'Options/', Self, Def);
   FreeAndNil(Def);
 
+  FDisplayFormatConfigs.LoadFromXml(FXMLCfg, Path + 'DisplayFormatConfigs/');
   FBackendConverterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FValueFormatterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
 end;
@@ -874,6 +879,7 @@ begin
   if FBackendConverterConfig.Changed then
     FBackendConverterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FBackendConverterConfig.Changed := False;
+  FDisplayFormatConfigs.SaveToXml(FXMLCfg, Path + 'DisplayFormatConfigs/');
   if FValueFormatterConfig.Changed then
     FValueFormatterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
   FValueFormatterConfig.Changed := False;

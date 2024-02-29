@@ -12,7 +12,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeDebugger
   IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,
-  IdeDebuggerValueFormatter,
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IDE
   Project;
 
@@ -22,6 +22,7 @@ type
 
   TProjectDebugLink = class(TProjectDebugLinkBase)
   private
+    FDisplayFormatConfigs: TDisplayFormatConfig;
     FProject: TProject;
     FDebuggerProperties: TDebuggerPropertiesConfigList; // named entries
     FDebuggerBackend: String;
@@ -32,8 +33,12 @@ type
     FBackendConverterConfigWasFromSession, FBackendConverterConfigWasFromLPI: boolean;
     FUseBackendConverterFromIDE: boolean;
     FUseBackendConverterFromProject: boolean;
-    FStoreValueFormatterConfigInSession: boolean;
+    FStoreDisplayFormatConfigsInSession: boolean;
     FValueFormatterConfigWasFromSession, FValueFormatterConfigWasFromLPI: boolean;
+    FUseDisplayFormatConfigsFromIDE: boolean;
+    FUseDisplayFormatConfigsFromProject: boolean;
+    FStoreValueFormatterConfigInSession: boolean;
+    FDisplayFormatConfigsWasFromSession, FDisplayFormatConfigsWasFromLPI: boolean;
     FUseValueFormatterFromIDE: boolean;
     FUseValueFormatterFromProject: boolean;
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
@@ -42,12 +47,16 @@ type
     procedure SetProject(AValue: TProject);
     procedure SetStoreDebuggerClassConfInSession(AValue: boolean);
     procedure SetStoreBackendConverterConfigInSession(AValue: boolean);
+    procedure SetStoreDisplayFormatConfigsInSession(AValue: boolean);
     procedure SetStoreValueFormatterConfigInSession(AValue: boolean);
     procedure SetUseBackendConverterFromIDE(AValue: boolean);
     procedure SetUseBackendConverterFromProject(AValue: boolean);
     procedure BackendConverterConfigChanged(Sender: TObject);
+    procedure SetUseDisplayFormatConfigsFromIDE(AValue: boolean);
+    procedure SetUseDisplayFormatConfigsFromProject(AValue: boolean);
     procedure SetUseValueFormatterFromIDE(AValue: boolean);
     procedure SetUseValueFormatterFromProject(AValue: boolean);
+    procedure DisplayFormatConfigsChanged(Sender: TObject);
     procedure ValueFormatterConfigChanged(Sender: TObject);
   protected
     procedure Clear; override;
@@ -81,9 +90,17 @@ type
                                               write SetUseBackendConverterFromIDE;
     property UseBackendConverterFromProject: boolean read FUseBackendConverterFromProject
                                                   write SetUseBackendConverterFromProject;
+    property DisplayFormatConfigs: TDisplayFormatConfig read FDisplayFormatConfigs;
     property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig
                                                                      write FValueFormatterConfig;
   published
+    property StoreDisplayFormatConfigsInSession: boolean read FStoreDisplayFormatConfigsInSession
+                                                        write SetStoreDisplayFormatConfigsInSession default False;
+    property UseDisplayFormatConfigsFromIDE: boolean read FUseDisplayFormatConfigsFromIDE
+                                              write SetUseDisplayFormatConfigsFromIDE default True;
+    property UseDisplayFormatConfigsFromProject: boolean read FUseDisplayFormatConfigsFromProject
+                                                  write SetUseDisplayFormatConfigsFromProject default True;
+
     property StoreValueFormatterConfigInSession: boolean read FStoreValueFormatterConfigInSession
                                                         write SetStoreValueFormatterConfigInSession default False;
     property UseValueFormatterFromIDE: boolean read FUseValueFormatterFromIDE
@@ -103,6 +120,10 @@ begin
   FBackendConverterConfig.OnChanged := @BackendConverterConfigChanged;
   FUseBackendConverterFromIDE := True;
   FUseBackendConverterFromProject := True;
+  FDisplayFormatConfigs := TDisplayFormatConfig.Create;
+  FDisplayFormatConfigs.OnChanged := @DisplayFormatConfigsChanged;
+  FUseDisplayFormatConfigsFromIDE := True;
+  FUseDisplayFormatConfigsFromProject := True;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
   FValueFormatterConfig.OnChanged := @ValueFormatterConfigChanged;
   FUseValueFormatterFromIDE := True;
@@ -115,6 +136,7 @@ destructor TProjectDebugLink.Destroy;
 begin
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FBackendConverterConfig);
+  FreeAndNil(FDisplayFormatConfigs);
   FreeAndNil(FValueFormatterConfig);
   inherited Destroy;
 end;
@@ -156,6 +178,14 @@ begin
   FProject.SessionModified := True;
 end;
 
+procedure TProjectDebugLink.SetStoreDisplayFormatConfigsInSession(AValue: boolean);
+begin
+  if FStoreDisplayFormatConfigsInSession = AValue then Exit;
+  FStoreDisplayFormatConfigsInSession := AValue;
+  FProject.Modified := True;
+  FProject.SessionModified := True;
+end;
+
 procedure TProjectDebugLink.SetStoreValueFormatterConfigInSession(
   AValue: boolean);
 begin
@@ -187,6 +217,20 @@ begin
     FProject.Modified := True;
 end;
 
+procedure TProjectDebugLink.SetUseDisplayFormatConfigsFromIDE(AValue: boolean);
+begin
+  if FUseDisplayFormatConfigsFromIDE = AValue then Exit;
+  FUseDisplayFormatConfigsFromIDE := AValue;
+  FProject.SessionModified := True;
+end;
+
+procedure TProjectDebugLink.SetUseDisplayFormatConfigsFromProject(AValue: boolean);
+begin
+  if FUseDisplayFormatConfigsFromProject = AValue then Exit;
+  FUseDisplayFormatConfigsFromProject := AValue;
+  FProject.SessionModified := True;
+end;
+
 procedure TProjectDebugLink.SetUseValueFormatterFromIDE(AValue: boolean);
 begin
   if FUseValueFormatterFromIDE = AValue then Exit;
@@ -201,6 +245,14 @@ begin
   FProject.SessionModified := True;
 end;
 
+procedure TProjectDebugLink.DisplayFormatConfigsChanged(Sender: TObject);
+begin
+  if FStoreDisplayFormatConfigsInSession then
+    FProject.SessionModified := True
+  else
+    FProject.Modified := True;
+end;
+
 procedure TProjectDebugLink.ValueFormatterConfigChanged(Sender: TObject);
 begin
   if FStoreValueFormatterConfigInSession then
@@ -213,6 +265,8 @@ procedure TProjectDebugLink.Clear;
 begin
   FUseBackendConverterFromIDE := True;
   FUseBackendConverterFromProject := True;
+  FUseDisplayFormatConfigsFromIDE := True;
+  FUseDisplayFormatConfigsFromProject := True;
   FUseValueFormatterFromIDE := True;
   FUseValueFormatterFromProject := True;
 end;
@@ -245,6 +299,12 @@ begin
   // This is for backward compatibility (only trunk 2.1 did use this / Can be removed in some time after 2.2 / but needs LoadFromSession to change default to '')
   FDebuggerBackend := aXMLConfig.GetValue(Path+'Debugger/Backend/Value', '');
 
+  if not FStoreDisplayFormatConfigsInSession then begin
+    FDisplayFormatConfigs.LoadFromXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/');
+    ProjectDisplayFormatConfigs := FDisplayFormatConfigs;
+    FDisplayFormatConfigsWasFromLPI := True;
+  end;
+
   if not FStoreValueFormatterConfigInSession then begin
     FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
     ProjectValueFormatterSelectorList := FValueFormatterConfig;
@@ -268,6 +328,12 @@ begin
     FBackendConverterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/BackendConv/');
     ProjectValueConverterSelectorList := FBackendConverterConfig;
     FBackendConverterConfigWasFromSession := True;
+  end;
+
+  if FStoreDisplayFormatConfigsInSession then begin
+    FDisplayFormatConfigs.LoadFromXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/');
+    ProjectDisplayFormatConfigs := FDisplayFormatConfigs;
+    FDisplayFormatConfigsWasFromSession := True;
   end;
 
   if FStoreValueFormatterConfigInSession then begin
@@ -298,6 +364,13 @@ begin
     aXMLConfig.DeletePath(Path+'Debugger/BackendConv');
   FBackendConverterConfigWasFromSession := False;
   FBackendConverterConfigWasFromLPI := False;
+
+  if not FStoreDisplayFormatConfigsInSession then
+    FDisplayFormatConfigs.SaveToXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/')
+  else if FDisplayFormatConfigsWasFromLPI then
+    aXMLConfig.DeletePath(Path+'Debugger/DisplayFormatConfigs');
+  FDisplayFormatConfigsWasFromSession := False;
+  FDisplayFormatConfigsWasFromLPI := False;
 
   if not FStoreValueFormatterConfigInSession then
     FValueFormatterConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/')
@@ -330,6 +403,13 @@ begin
     aXMLConfig.DeletePath(Path+'Debugger/BackendConv');
   FBackendConverterConfigWasFromSession := False;
   FBackendConverterConfigWasFromLPI := False;
+
+  if FStoreDisplayFormatConfigsInSession then
+    FDisplayFormatConfigs.SaveToXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/')
+  else if FDisplayFormatConfigsWasFromSession then
+    aXMLConfig.DeletePath(Path+'Debugger/DisplayFormatConfigs');
+  FDisplayFormatConfigsWasFromSession := False;
+  FDisplayFormatConfigsWasFromLPI := False;
 
   if FStoreValueFormatterConfigInSession then
     FValueFormatterConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/')

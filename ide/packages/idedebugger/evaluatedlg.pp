@@ -55,7 +55,7 @@ uses
   BaseDebugManager, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
-  IdeDebuggerStringConstants, IdeDebuggerBase, EnvDebuggerOptions;
+  IdeDebuggerStringConstants, IdeDebuggerBase, EnvDebuggerOptions, IdeDebuggerDisplayFormats;
 
 type
 
@@ -93,8 +93,10 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DebugConfigChanged; override;
     procedure Execute(const AExpression: String; AWatch: TWatch = nil);
     property EvalExpression: string read GetEvalExpression write SetEvalExpression;
+    property WatchPrinter: TWatchResultPrinter read FWatchPrinter;
   end;
 
 implementation
@@ -154,7 +156,7 @@ begin
 
   EnvironmentOptions.AddHandlerAfterWrite(@DoEnvOptChanged);
   DoEnvOptChanged(nil, False);
-
+  DebugConfigChanged;
 end;
 
 destructor TEvaluateDlg.Destroy;
@@ -165,6 +167,17 @@ begin
 
   FreeAndNil(FWatchPrinter);
   inherited Destroy;
+end;
+
+procedure TEvaluateDlg.DebugConfigChanged;
+begin
+  inherited DebugConfigChanged;
+  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  if ProjectDisplayFormatConfigsUseIde then
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfEvalMod);
+  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
+    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfEvalMod);
+  DoDispFormatChanged(nil);
 end;
 
 procedure TEvaluateDlg.Execute(const AExpression: String; AWatch: TWatch);
@@ -219,7 +232,8 @@ begin
     exit;
   end;
 
-  DoWatchUpdated(WatchInspectNav1.Watches, WatchInspectNav1.CurrentWatchValue.Watch);
+  if WatchInspectNav1.CurrentWatchValue <> nil then
+    DoWatchUpdated(WatchInspectNav1.Watches, WatchInspectNav1.CurrentWatchValue.Watch);
 end;
 
 procedure TEvaluateDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);

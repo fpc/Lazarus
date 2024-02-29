@@ -5,7 +5,7 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerStringConstants, IdeDebuggerWatchValueIntf;
+  Classes, SysUtils;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String): UTf8String;
@@ -27,41 +27,6 @@ function ClearMultiline(const AValue: ansistring): ansistring;
 *)
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: String): AnsiString; overload;
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Int64): AnsiString; overload;
-
-function DisplayFormatName(ADispFormat: TValueDisplayFormat): string;
-function DisplayFormatGroupName(ADispFormat: TValueDisplayFormat): string;
-function DisplayFormatGroupName(ADispFormatGroup: TValueDisplayFormatGroup): string;
-
-function DisplayFormatCount(ADispFormats: TValueDisplayFormats): integer;
-function DisplayFormatMask(ADispFormatGroups: TValueDisplayFormatGroups): TValueDisplayFormats;
-
-const
-  {$WRITEABLECONST OFF}
-  DataKindToDisplayFormatGroups: array [TWatchResultDataKind] of TValueDisplayFormatGroups = (
-    [],                                                 // rdkUnknown
-    [],                                                 // rdkError
-    [],                                                 // rdkPrePrinted
-    [{pointer}],                                        // rdkString
-    [],                                                 // rdkWideString
-    [vdfgChar, vdfgBase, vdfgSign],                     // rdkChar
-    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkSignedNumVal
-    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkUnsignedNumVal
-    [vdfgPointer, vdfgPointerDeref],                    // rdkPointerVal
-    [vdfgFloat],                                        // rdkFloatVal
-    [vdfgBool, vdfgBase, vdfgSign],                     // rdkBool
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnum
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnumVal
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkSet
-    [],                                                 // rdkVariant
-    [],                                                 // rdkPCharOrString
-    [],                                                 // rdkArray
-    [vdfgStruct, vdfgStructAddress, vdfgPointer],       // rdkStruct
-    [],                                                 // rdkConvertRes
-    [],                                                 // rdkFunction
-    [],                                                 // rdkProcedure
-    [],                                                 // rdkFunctionRef
-    []                                                  // rdkProcedureRe
-  );
 
 implementation
 
@@ -394,103 +359,6 @@ function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
   AnIndex: Int64): AnsiString;
 begin
   Result := GetExpressionForArrayElement(AnArrayExpression, IntToStr(AnIndex));
-end;
-
-function DisplayFormatName(ADispFormat: TValueDisplayFormat): string;
-begin
-  Result := '?';
-  WriteStr(Result, ADispFormat);
-  case ADispFormat of
-    vdfBaseDefault:          Result := DispFormatBaseDefault;
-    vdfBaseDecimal:          Result := DispFormatBaseDecimal;
-    vdfBaseHex:              Result := DispFormatBaseHex;
-    vdfBaseOct:              Result := DispFormatBaseOct;
-    vdfBaseBin:              Result := DispFormatBaseBin;
-    vdfBasePointer:          Result := DispFormatBasePointer;
-    vdfSignDefault:          Result := DispFormatSignDefault;
-    vdfSignSigned:           Result := DispFormatSignSigned;
-    vdfSignUnsigned:         Result := DispFormatSignUnsigned;
-    vdfNumCharDefault:       Result := DispFormatNumCharDefault;
-    vdfNumCharOff:           Result := DispFormatNumCharOff;
-    vdfNumCharOrdAndUnicode: Result := DispFormatNumCharOrdAndUnicode;
-    vdfNumCharOnlyUnicode:   Result := DispFormatNumCharOnlyUnicode;
-    vdfEnumDefault:          Result := DispFormatEnumDefault;
-    vdfEnumName:             Result := DispFormatEnumName;
-    vdfEnumOrd:              Result := DispFormatEnumOrd;
-    vdfEnumNameAndOrd:       Result := DispFormatEnumNameAndOrd;
-    vdfBoolDefault:          Result := DispFormatBoolDefault;
-    vdfBoolName:             Result := DispFormatBoolName;
-    vdfBoolOrd:              Result := DispFormatBoolOrd;
-    vdfBoolNameAndOrd:       Result := DispFormatBoolNameAndOrd;
-    vdfCharDefault:          Result := DispFormatCharDefault;
-    vdfCharLetter:           Result := DispFormatCharLetter;
-    vdfCharOrd:              Result := DispFormatCharOrd;
-    vdfCharLetterAndOrd:     Result := DispFormatCharLetterAndOrd;
-    vdfFloatDefault:         Result := DispFormatFloatDefault;
-    vdfFloatPoint:           Result := DispFormatFloatPoint;
-    vdfFloatScientific:      Result := DispFormatFloatScientific;
-    vdfStructDefault:        Result := DispFormatStructDefault;
-    vdfStructValOnly:        Result := DispFormatStructValOnly;
-    vdfStructFields:         Result := DispFormatStructFields;
-    vdfStructFull:           Result := DispFormatStructFull;
-    vdfStructAddressDefault: Result := DispFormatStructAddressDefault;
-    vdfStructAddressOff:     Result := DispFormatStructAddressOff;
-    vdfStructAddressOn:      Result := DispFormatStructAddressOn;
-    vdfStructAddressOnly:    Result := DispFormatStructAddressOnly;
-    vdfPointerDefault:       Result := DispFormatPointerDefault;
-    vdfPointerAddress:       Result := DispFormatPointerAddress;
-    vdfPointerTypedAddress:  Result := DispFormatPointerTypedAddress;
-    vdfPointerDerefDefault:  Result := DispFormatPointerDerefDefault;
-    vdfPointerDerefOff:      Result := DispFormatPointerDerefOff;
-    vdfPointerDerefOn:       Result := DispFormatPointerDerefOn;
-    vdfPointerDerefOnly:     Result := DispFormatPointerDerefOnly;
-    vdfCategoryData:         Result := DispFormatCategoryData;
-    vdfCategoryMemDump:      Result := DispFormatCategoryMemDump;
-  end;
-end;
-
-function DisplayFormatGroupName(ADispFormat: TValueDisplayFormat): string;
-begin
-  Result := DisplayFormatGroupName(ValueDisplayFormatGroupMap[ADispFormat]);
-end;
-
-function DisplayFormatGroupName(ADispFormatGroup: TValueDisplayFormatGroup): string;
-begin
-  case ADispFormatGroup of
-    vdfgBase:          Result := DispFormatGroupBase;
-    vdfgSign:          Result := DispFormatGroupSign;
-    vdfgNumChar:       Result := DispFormatGroupNumChar;
-    vdfgEnum:          Result := DispFormatGroupEnum;
-    vdfgBool:          Result := DispFormatGroupBool;
-    vdfgChar:          Result := DispFormatGroupChar;
-    vdfgFloat:         Result := DispFormatGroupFloat;
-    vdfgStruct:        Result := DispFormatGroupStruct;
-    vdfgStructAddress: Result := DispFormatGroupStructAddress;
-    vdfgPointer:       Result := DispFormatGroupPointer;
-    vdfgPointerDeref:  Result := DispFormatGroupPointerDeref;
-    vdfgCategory:      Result := DispFormatGroupCategory;
-    else Result := '?';
-  end;
-end;
-
-function DisplayFormatCount(ADispFormats: TValueDisplayFormats): integer;
-var
-  d: TValueDisplayFormat;
-begin
-  Result := 0;
-  for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
-    if d in ADispFormats then
-      inc(Result);
-end;
-
-function DisplayFormatMask(ADispFormatGroups: TValueDisplayFormatGroups): TValueDisplayFormats;
-var
-  g: TValueDisplayFormatGroup;
-begin
-  Result := [];
-  for g := low(TValueDisplayFormatGroup) to high(TValueDisplayFormatGroup) do
-    if g in ADispFormatGroups then
-      Result := Result + ValueDisplayFormatMaskMap[g];
 end;
 
 end.

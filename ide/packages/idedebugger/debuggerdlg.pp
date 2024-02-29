@@ -119,6 +119,7 @@ type
     property BreakPoints:      TIDEBreakPoints   read FBreakPoints      write SetBreakPoints;
   public
     destructor  Destroy; override;
+    procedure DebugConfigChanged; virtual;
   end;
   TDebuggerDlgClass = class of TDebuggerDlg;
 
@@ -491,6 +492,11 @@ begin
   ReleaseRefAndNil(FBreakpointsNotification);
 
   inherited Destroy;
+end;
+
+procedure TDebuggerDlg.DebugConfigChanged;
+begin
+  //
 end;
 
 procedure TDebuggerDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

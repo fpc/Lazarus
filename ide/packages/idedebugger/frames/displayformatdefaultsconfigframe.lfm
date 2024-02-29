@@ -1,0 +1,263 @@
+object DisplayFormatDefaultsConfigFrame: TDisplayFormatDefaultsConfigFrame
+  Left = 0
+  Height = 475
+  Top = 0
+  Width = 679
+  ClientHeight = 475
+  ClientWidth = 679
+  TabOrder = 0
+  DesignLeft = 473
+  DesignTop = 152
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 679
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 0
+    object btnGlobal: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 19
+      Top = 2
+      Width = 56
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnGlobal'
+      GroupIndex = 1
+      Transparent = False
+      OnClick = btnGlobalClick
+    end
+    object ToolButton1: TToolButton
+      Left = 57
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton1'
+      Style = tbsDivider
+    end
+    object btnHint: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 62
+      Height = 19
+      Top = 2
+      Width = 45
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnHint'
+      GroupIndex = 2
+      Transparent = False
+      OnClick = btnTargetClick
+    end
+    object btnWatches: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 107
+      Height = 19
+      Top = 2
+      Width = 67
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnWatches'
+      GroupIndex = 3
+      Transparent = False
+      OnClick = btnTargetClick
+    end
+    object btnLocals: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 174
+      Height = 19
+      Top = 2
+      Width = 55
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnLocals'
+      GroupIndex = 4
+      Transparent = False
+      OnClick = btnTargetClick
+    end
+    object btnInspect: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 229
+      Height = 19
+      Top = 2
+      Width = 60
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnInspect'
+      GroupIndex = 5
+      Transparent = False
+      OnClick = btnTargetClick
+    end
+    object btnEvalMod: TSpeedButton
+      AnchorSideBottom.Control = ToolButton1
+      AnchorSideBottom.Side = asrBottom
+      Left = 289
+      Height = 19
+      Top = 2
+      Width = 68
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'btnEvalMod'
+      GroupIndex = 6
+      Transparent = False
+      OnClick = btnTargetClick
+    end
+  end
+  object lblChangingDescr: TLabel
+    Left = 0
+    Height = 15
+    Top = 29
+    Width = 679
+    Align = alTop
+    BorderSpacing.Top = 3
+    BorderSpacing.Bottom = 3
+    Caption = 'lblChangingDescr'
+    ParentFont = False
+  end
+  object lblProjectText: TLabel
+    Left = 0
+    Height = 15
+    Top = 47
+    Width = 679
+    Align = alTop
+    BorderSpacing.Top = 3
+    BorderSpacing.Bottom = 3
+    Caption = 'lblProjectText'
+  end
+  inline DisplayFormatFrame1: TDisplayFormatFrame
+    Height = 410
+    Top = 65
+    Width = 679
+    Align = alClient
+    ClientHeight = 410
+    ClientWidth = 679
+    TabOrder = 1
+    inherited ToolBar1: TToolBar
+      Width = 679
+      inherited ToolButton2: TToolButton
+        Height = 22
+      end
+      inherited ToolButton4: TToolButton
+        Height = 22
+      end
+      inherited ToolButton12: TToolButton
+        Height = 22
+      end
+      inherited ToolButton13: TToolButton
+        Height = 22
+      end
+      inherited ToolButton14: TToolButton
+        Height = 22
+      end
+      inherited ToolButton15: TToolButton
+        Height = 22
+      end
+      inherited ToolButton16: TToolButton
+        Height = 22
+      end
+      inherited ToolButton17: TToolButton
+        Height = 22
+      end
+    end
+    inherited PanelNum: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelNum: TDividerBevel
+        Width = 679
+      end
+      inherited PanelNumBase: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+      inherited PanelNumSign: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+      inherited DividerBevelNumChar: TDividerBevel
+        Width = 679
+      end
+      inherited PanelNumChar: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelEnum: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelEnum: TDividerBevel
+        Width = 679
+      end
+      inherited PanelEnumRb1: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelFloat: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelFloat: TDividerBevel
+        Width = 679
+      end
+      inherited PanelFloatRb: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelStruct: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelStruct: TDividerBevel
+        Width = 679
+      end
+      inherited PanelStructFld: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+      inherited PanelStructAddr: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelPointer: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelPointer: TDividerBevel
+        Width = 679
+      end
+      inherited PanelPointerDeref: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelAddressFormat: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelAddressFormat: TDividerBevel
+        Width = 679
+      end
+      inherited PanelPointerType: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+      inherited PanelPointerNum: TPanel
+        Width = 669
+        ClientWidth = 669
+      end
+    end
+    inherited PanelMemDump: TPanel
+      Width = 679
+      ClientWidth = 679
+      inherited DividerBevelMemDump: TDividerBevel
+        Width = 679
+      end
+      inherited cbMemDump: TCheckBox
+        Width = 669
+      end
+    end
+  end
+end

@@ -17,7 +17,7 @@ uses
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
-  IdeDebuggerUtils, IdeDebuggerWatchResPrinter;
+  IdeDebuggerUtils, IdeDebuggerWatchResPrinter, IdeDebuggerDisplayFormats;
 
 type
 

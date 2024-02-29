@@ -276,6 +276,23 @@
         <ResourceBaseClass Value="Frame"/>
         <ResourceBaseClassname Value=""/>
       </Item>
+      <Item>
+        <Filename Value="frames\displayformatdefaultsconfigframe.pas"/>
+        <UnitName Value="DisplayFormatDefaultsConfigFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggerdisplayformats.pas"/>
+        <UnitName Value="IdeDebuggerDisplayFormats"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebugger_displayformat_options.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="idedebugger_displayformat_options"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs,
   StrUtils, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
   laz.VirtualTrees, LazDebuggerIntf, IdeDebuggerStringConstants,
-  IdeDebuggerValueFormatter, IdeDebuggerUtils;
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
 
 type
 

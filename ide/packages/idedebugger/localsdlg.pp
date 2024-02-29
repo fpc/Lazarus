@@ -52,7 +52,7 @@ uses
   IdeDebuggerStringConstants, BaseDebugManager, Debugger, DebuggerDlg,
   IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
   IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData,
-  EnvDebuggerOptions, IdeDebuggerValueFormatter,
+  EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerOpts,
   {$ifdef Windows}ActiveX{$else}laz.FakeActiveX{$endif};
 
 type
@@ -140,6 +140,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DebugConfigChanged; override;
+    property WatchPrinter: TWatchResultPrinter read FWatchPrinter;
     property LocalsMonitor;
     property ThreadsMonitor;
     property CallStackMonitor;
@@ -362,6 +364,8 @@ begin
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     vtLocals.Header.Columns[i].Width := COL_WIDTHS[i];
+
+  DebugConfigChanged;
 end;
 
 destructor TLocalsDlg.Destroy;
@@ -370,6 +374,17 @@ begin
   inherited Destroy;
   FWatchPrinter.free;
   FLocolsTreeMgr.Free;
+end;
+
+procedure TLocalsDlg.DebugConfigChanged;
+begin
+  inherited DebugConfigChanged;
+  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  if ProjectDisplayFormatConfigsUseIde then
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
+  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
+    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
+  LocalsChanged(nil);
 end;
 
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);

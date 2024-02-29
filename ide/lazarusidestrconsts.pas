@@ -6375,6 +6375,11 @@ resourcestring
     +'below. The settings which list to use are always stored in the session.';
   drsUseTheIDEGlobalListOfFormatter  = 'Use the IDE-Global list of formatters';
   drsUseTheProjectListOfFormatter = 'Use the project list of formatters';
+  drsStoreDispFormatConfigInSes = 'Store display formats config in session';
+  drsThisOnlyAffectsDispFormats = 'This only affects the display formats '
+    +'below. The settings which formats to use are always stored in the session.';
+  drsUseIDEGlobalDispFormats  = 'Use the IDEs-global display formats';
+  drsUseProjecfDispFormats = 'Use the projects display formats';
 
   InitDlgDebugPopupInformation = 'A backend provides OS and architecture '
     +'specific implementations for the debugger.%0:s'

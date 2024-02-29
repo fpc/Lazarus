@@ -138,7 +138,7 @@ uses
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options, project_resources_options, project_debug_options,
-  project_valconv_options, Project_ValFormatter_Options,
+  project_displayFormat_options, project_valconv_options, Project_ValFormatter_Options,
   // project compiler option frames
   compiler_path_options, compiler_config_target, compiler_parsing_options,
   compiler_codegen_options, compiler_debugging_options, compiler_verbosity_options,
@@ -11593,62 +11593,58 @@ begin
 
 
   ResultText := '';
-  WatchPrinter := TWatchResultPrinter.Create;
-  try
-    DispFormat := DefaultWatchDisplayFormat;
-    if FHintWatchData.WatchValue.Watch <> nil then
-      DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;
+  WatchPrinter := DebugBoss.HintWatchPrinter;
+  DispFormat := DefaultWatchDisplayFormat;
+  if FHintWatchData.WatchValue.Watch <> nil then
+    DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;
 
-    if FHintWatchData.WatchValue.Validity = ddsValid then begin
-      ResData :=  FHintWatchData.WatchValue.ResultData;
-      if (ResData <> nil) and
-         not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
+  if FHintWatchData.WatchValue.Validity = ddsValid then begin
+    ResData :=  FHintWatchData.WatchValue.ResultData;
+    if (ResData <> nil) and
+       not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
+    then begin
+      if not ValueFormatterSelectorList.FormatValue(ResData,
+         DispFormat, WatchPrinter, ResultText)
       then begin
-        if not ValueFormatterSelectorList.FormatValue(ResData,
-           DispFormat, WatchPrinter, ResultText)
-        then begin
-          ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
-          if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
-          then
-            ResultText := Format(drsLen, [ResData.ArrayLength]) + ResultText;
-        end;
-
-      end
-      else begin
-        if (FHintWatchData.WatchValue.TypeInfo = nil) or
-           not ValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
-           FHintWatchData.WatchValue.Value, DispFormat, ResultText)
-        then begin
-          ResultText := FHintWatchData.WatchValue.Value;
-          if (FHintWatchData.WatchValue.TypeInfo <> nil) and
-             (FHintWatchData.WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
-             (FHintWatchData.WatchValue.TypeInfo.Len >= 0)
-          then
-            ResultText := Format(drsLen, [FHintWatchData.WatchValue.TypeInfo.Len]) + ResultText;
-        end;
+        ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
+        if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
+        then
+          ResultText := Format(drsLen, [ResData.ArrayLength]) + ResultText;
       end;
+
     end
+    else begin
+      if (FHintWatchData.WatchValue.TypeInfo = nil) or
+         not ValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
+         FHintWatchData.WatchValue.Value, DispFormat, ResultText)
+      then begin
+        ResultText := FHintWatchData.WatchValue.Value;
+        if (FHintWatchData.WatchValue.TypeInfo <> nil) and
+           (FHintWatchData.WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+           (FHintWatchData.WatchValue.TypeInfo.Len >= 0)
+        then
+          ResultText := Format(drsLen, [FHintWatchData.WatchValue.TypeInfo.Len]) + ResultText;
+      end;
+    end;
+  end
+  else
+    ResultText := FHintWatchData.WatchValue.Value;
+
+
+  FHintWatchData.Expression := FHintWatchData.Expression + ' = ' + ResultText;
+  if FHintWatchData.SmartHintStr<>'' then
+  begin
+    p:=PosI('<body>',FHintWatchData.SmartHintStr);
+    if p>0 then
+      Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(FHintWatchData.Expression)+'</div><br>',
+             FHintWatchData.SmartHintStr, p+length('<body>'))
     else
-      ResultText := FHintWatchData.WatchValue.Value;
+      FHintWatchData.SmartHintStr:=FHintWatchData.Expression+LineEnding+LineEnding+FHintWatchData.SmartHintStr;
+  end else
+    FHintWatchData.SmartHintStr:=FHintWatchData.Expression;
 
+  FHintWatchData.SrcEdit.ActivateHint(FHintWatchData.HintPos, FHintWatchData.BaseURL, FHintWatchData.SmartHintStr, FHintWatchData.AutoShown, False);
 
-    FHintWatchData.Expression := FHintWatchData.Expression + ' = ' + ResultText;
-    if FHintWatchData.SmartHintStr<>'' then
-    begin
-      p:=PosI('<body>',FHintWatchData.SmartHintStr);
-      if p>0 then
-        Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(FHintWatchData.Expression)+'</div><br>',
-               FHintWatchData.SmartHintStr, p+length('<body>'))
-      else
-        FHintWatchData.SmartHintStr:=FHintWatchData.Expression+LineEnding+LineEnding+FHintWatchData.SmartHintStr;
-    end else
-      FHintWatchData.SmartHintStr:=FHintWatchData.Expression;
-
-    FHintWatchData.SrcEdit.ActivateHint(FHintWatchData.HintPos, FHintWatchData.BaseURL, FHintWatchData.SmartHintStr, FHintWatchData.AutoShown, False);
-
-  finally
-    WatchPrinter.Free;
-  end;
 end;
 
 procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;

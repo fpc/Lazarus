@@ -208,31 +208,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
     ClientHeight = 355
     ClientWidth = 668
     TabOrder = 1
-    inherited ToolBar1: TToolBar
-      Width = 668
-    end
-    inherited PanelNum: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelNum: TDividerBevel
-        Width = 668
-      end
-      inherited PanelNumBase: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-      inherited PanelNumSign: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-      inherited DividerBevelNumChar: TDividerBevel
-        Width = 668
-      end
-      inherited PanelNumChar: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
     inherited PanelEnum: TPanel
       Width = 668
       ClientWidth = 668

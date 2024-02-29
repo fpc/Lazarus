@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
         <PackageName Value="LazDebuggerIntf"/>
       </Item>
       <Item>
@@ -1496,6 +1499,13 @@
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="Project_ValFormatter_Options"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frames/project_displayformat_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectDisplayFormatOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Project_DisplayFormat_Options"/>
       </Unit>
     </Units>
   </ProjectOptions>

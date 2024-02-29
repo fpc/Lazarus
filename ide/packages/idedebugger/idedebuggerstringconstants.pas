@@ -53,6 +53,7 @@ resourcestring
   dlgBackConvOptRemove = 'Remove';
   dlgBackConvOptMatchTypesByName = 'Match types by name';
   dlgBackConvOptAction = 'Action';
+  dlgDisplayFormatDebugOptions = 'Display Format';
   dlgVarFormatterDebugOptions = 'Value Formatter';
   dlgBackConvOptDebugOptions = 'Backend Converter';
   dlgIdeDbgDebugger = 'Debugger';
@@ -483,6 +484,16 @@ resourcestring
   DispFormatPointerDerefOnly     = 'Only';
   DispFormatCategoryData         = 'Value';
   DispFormatCategoryMemDump      = 'Memory dump';
+
+  DispFormatTargetGlobal   = 'General';
+  DispFormatTargetHint     = 'Hints';
+  DispFormatTargetWatches  = 'Watches';
+  DispFormatTargetLocals   = 'Locals';
+  DispFormatTargetInspect  = 'Inspect';
+  DispFormatTargetEvalMod  = 'Eval/Modify';
+  DispFormatOptChangingDescrAll  = 'Setting fallback options for all windows.';
+  DispFormatOptChangingDescrSome = 'Setting fallback options for all windows.';
+  DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried.';
 
 implementation
 

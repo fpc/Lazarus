@@ -12,7 +12,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeIntf
-  IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, IdeDebuggerUtils;
+  IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, IdeDebuggerDisplayFormats;
 
 type
 

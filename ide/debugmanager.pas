@@ -64,7 +64,7 @@ uses
   PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg, ProcessDebugger,
   IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
-  IdeDebuggerValueFormatter,
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
   LazConf,
   // IDE
@@ -2058,6 +2058,7 @@ constructor TDebugManager.Create(TheOwner: TComponent);
 var
   DialogType: TDebugDialogType;
 begin
+  inherited Create(TheOwner);
   FInStateChange := False;
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     FDialogs[DialogType] := nil;
@@ -2104,8 +2105,6 @@ begin
   FCurrentWatches := TCurrentWatches.Create(FWatches);
 
   FIsInitializingDebugger:= False;
-
-  inherited Create(TheOwner);
 
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 
@@ -2490,10 +2489,13 @@ begin
 end;
 
 procedure TDebugManager.DoBackendConverterChanged;
+var
+  d: TDebugDialogType;
 begin
   ValueConverterSelectorList.Lock;
   ProjectValueConverterSelectorList := nil;
   ProjectValueFormatterSelectorList := nil;
+  ProjectDisplayFormatConfigs := nil;
 
   try
     ValueConverterSelectorList.Clear;
@@ -2510,8 +2512,22 @@ begin
 
     if (Project1 <> nil) then begin
       ProjectValueConverterSelectorList := FProjectLink.BackendConverterConfig;
+      ProjectDisplayFormatConfigs       := FProjectLink.DisplayFormatConfigs;
       ProjectValueFormatterSelectorList := FProjectLink.ValueFormatterConfig;
     end;
+
+    ProjectDisplayFormatConfigsUseIde     := FProjectLink.UseDisplayFormatConfigsFromIDE;
+    ProjectDisplayFormatConfigsUseProject := FProjectLink.UseDisplayFormatConfigsFromProject;
+
+    HintWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+    if ProjectDisplayFormatConfigsUseIde then
+      DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
+    if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
+      ProjectDisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
+
+    for d in TDebugDialogType do
+      if FDialogs[d] <> nil then
+        FDialogs[d].DebugConfigChanged;
   finally
     ValueConverterSelectorList.Unlock;
   end;

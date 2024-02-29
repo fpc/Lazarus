@@ -8,8 +8,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
   ClientWidth = 599
   TabOrder = 0
   OnResize = FrameResize
-  DesignLeft = 431
-  DesignTop = 161
+  DesignLeft = 446
+  DesignTop = 157
   object ToolBar1: TToolBar
     Left = 0
     Height = 24
@@ -19,7 +19,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 0
-    OnClick = tbFormatClick
     object tbCurrent: TSpeedButton
       Left = 1
       Height = 19
@@ -219,14 +218,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
   end
   object PanelNum: TPanel
     Left = 0
-    Height = 112
+    Height = 115
     Top = 24
     Width = 599
     Align = alTop
     AutoSize = True
     BorderSpacing.Bottom = 1
     BevelOuter = bvNone
-    ClientHeight = 112
+    ClientHeight = 115
     ClientWidth = 599
     TabOrder = 1
     object DividerBevelNum: TDividerBevel
@@ -242,7 +241,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object PanelNumBase: TPanel
       Left = 5
-      Height = 38
+      Height = 41
       Top = 15
       Width = 589
       Align = alTop
@@ -251,13 +250,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
-      ClientHeight = 38
+      ClientHeight = 41
       ClientWidth = 589
       TabOrder = 0
       object rbNumDefault: TRadioButton
+        AnchorSideLeft.Control = PanelNumBase
+        AnchorSideTop.Control = PanelNumBase
         Left = 0
         Height = 19
         Top = 0
@@ -270,67 +268,74 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbNumDec: TRadioButton
+        AnchorSideLeft.Control = rbNumDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumDefault
         Left = 97
         Height = 19
         Top = 0
-        Width = 77
+        Width = 76
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbNumDec'
+        ParentColor = False
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbNumPtr: TRadioButton
-        Left = 177
+        AnchorSideLeft.Control = rbNumDec
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumDec
+        Left = 176
         Height = 19
         Top = 0
-        Width = 75
+        Width = 71
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbNumPtr'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
-      object Label2: TLabel
-        Left = 255
-        Height = 19
-        Top = 0
-        Width = 73
-        AutoSize = False
-        OnClick = FormatRadioClicked
-      end
-      object Label1: TLabel
-        Left = 0
-        Height = 19
-        Top = 19
-        Width = 94
-        AutoSize = False
-        OnClick = FormatRadioClicked
-      end
       object rbNumHex: TRadioButton
+        AnchorSideLeft.Control = rbNumDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumDec
+        AnchorSideTop.Side = asrBottom
         Left = 97
         Height = 19
-        Top = 19
+        Top = 22
         Width = 77
         AutoSize = False
+        BorderSpacing.Left = 3
+        BorderSpacing.Top = 3
         Caption = 'rbNumHex'
         TabOrder = 3
         OnClick = FormatRadioClicked
       end
       object rbNumOct: TRadioButton
+        AnchorSideLeft.Control = rbNumHex
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumHex
         Left = 177
         Height = 19
-        Top = 19
+        Top = 22
         Width = 75
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbNumOct'
         TabOrder = 4
         OnClick = FormatRadioClicked
       end
       object rbNumBin: TRadioButton
+        AnchorSideLeft.Control = rbNumOct
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumOct
         Left = 255
         Height = 19
-        Top = 19
+        Top = 22
         Width = 73
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbNumBin'
         TabOrder = 5
         OnClick = FormatRadioClicked
@@ -339,7 +344,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     object PanelNumSign: TPanel
       Left = 5
       Height = 19
-      Top = 55
+      Top = 58
       Width = 589
       Align = alTop
       AutoSize = True
@@ -347,13 +352,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 1
       object rbSignDefault: TRadioButton
+        AnchorSideLeft.Control = PanelNumSign
+        AnchorSideTop.Control = PanelNumSign
         Left = 0
         Height = 19
         Top = 0
@@ -366,21 +370,29 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbSignSigned: TRadioButton
+        AnchorSideLeft.Control = rbSignDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbSignDefault
         Left = 93
         Height = 19
         Top = 0
         Width = 88
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbSignSigned'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbSignUnsigned: TRadioButton
+        AnchorSideLeft.Control = rbSignSigned
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbSignSigned
         Left = 184
         Height = 19
         Top = 0
         Width = 102
         AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbSignUnsigned'
         TabOrder = 2
         OnClick = FormatRadioClicked
@@ -389,7 +401,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     object DividerBevelNumChar: TDividerBevel
       Left = 0
       Height = 15
-      Top = 76
+      Top = 79
       Width = 599
       Caption = 'DividerBevelNumChar'
       Align = alTop
@@ -401,7 +413,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     object PanelNumChar: TPanel
       Left = 5
       Height = 19
-      Top = 91
+      Top = 94
       Width = 589
       Align = alTop
       AutoSize = True
@@ -409,17 +421,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 2
       object rbNumCharDefault: TRadioButton
+        AnchorSideLeft.Control = PanelNumChar
+        AnchorSideTop.Control = PanelNumChar
         Left = 0
         Height = 19
         Top = 0
         Width = 119
+        AutoSize = False
         Caption = 'rbNumCharDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -427,28 +439,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbNumCharOff: TRadioButton
+        AnchorSideLeft.Control = rbNumCharDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumCharDefault
         Left = 122
         Height = 19
         Top = 0
         Width = 71
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbCharOff'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbNumCharUniNum: TRadioButton
+        AnchorSideLeft.Control = rbNumCharOff
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumCharOff
         Left = 196
         Height = 19
         Top = 0
         Width = 126
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbNumCharUniNum'
         TabOrder = 3
         OnClick = FormatRadioClicked
       end
       object rbNumCharUni: TRadioButton
+        AnchorSideLeft.Control = rbNumCharUniNum
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbNumCharUniNum
         Left = 325
         Height = 19
         Top = 0
         Width = 98
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbCharUnicode'
         TabOrder = 2
         OnClick = FormatRadioClicked
@@ -458,7 +485,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelEnum: TPanel
     Left = 0
     Height = 36
-    Top = 137
+    Top = 140
     Width = 599
     Align = alTop
     AutoSize = True
@@ -489,17 +516,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 0
       object rbEnumDefault: TRadioButton
+        AnchorSideLeft.Control = PanelEnumRb1
+        AnchorSideTop.Control = PanelEnumRb1
         Left = 0
         Height = 19
         Top = 0
         Width = 98
+        AutoSize = False
         Caption = 'rbEnumDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -507,28 +534,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbEnumName: TRadioButton
+        AnchorSideLeft.Control = rbEnumDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbEnumDefault
         Left = 101
         Height = 19
         Top = 0
         Width = 92
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbEnumName'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbEnumOrd: TRadioButton
+        AnchorSideLeft.Control = rbEnumName
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbEnumName
         Left = 196
         Height = 19
         Top = 0
         Width = 80
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbEnumOrd'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
       object rbEnumNameAndOrd: TRadioButton
+        AnchorSideLeft.Control = rbEnumOrd
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbEnumOrd
         Left = 279
         Height = 19
         Top = 0
         Width = 134
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbEnumNameAndOrd'
         TabOrder = 3
         OnClick = FormatRadioClicked
@@ -538,7 +580,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelFloat: TPanel
     Left = 0
     Height = 36
-    Top = 174
+    Top = 177
     Width = 599
     Align = alTop
     AutoSize = True
@@ -569,17 +611,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 0
       object rbFloatDefault: TRadioButton
+        AnchorSideLeft.Control = PanelFloatRb
+        AnchorSideTop.Control = PanelFloatRb
         Left = 0
         Height = 19
         Top = 0
         Width = 93
+        AutoSize = False
         Caption = 'rbFloatDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -587,19 +629,29 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbFloatPoint: TRadioButton
+        AnchorSideLeft.Control = rbFloatDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbFloatDefault
         Left = 96
         Height = 19
         Top = 0
         Width = 83
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbFloatPoint'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbFloatScience: TRadioButton
+        AnchorSideLeft.Control = rbFloatPoint
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbFloatPoint
         Left = 182
         Height = 19
         Top = 0
         Width = 95
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbFloatScience'
         TabOrder = 2
         OnClick = FormatRadioClicked
@@ -609,7 +661,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelStruct: TPanel
     Left = 0
     Height = 57
-    Top = 211
+    Top = 214
     Width = 599
     Align = alTop
     AutoSize = True
@@ -640,17 +692,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 0
       object rbStructDefault: TRadioButton
+        AnchorSideLeft.Control = PanelStructFld
+        AnchorSideTop.Control = PanelStructFld
         Left = 0
         Height = 19
         Top = 0
         Width = 98
+        AutoSize = False
         Caption = 'rbStructDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -658,28 +710,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbStructValOnly: TRadioButton
+        AnchorSideLeft.Control = rbStructDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructDefault
         Left = 101
         Height = 19
         Top = 0
         Width = 101
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructValOnly'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbStructFields: TRadioButton
+        AnchorSideLeft.Control = rbStructValOnly
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructValOnly
         Left = 205
         Height = 19
         Top = 0
         Width = 90
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructFields'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
       object rbStructFull: TRadioButton
+        AnchorSideLeft.Control = rbStructFields
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructFields
         Left = 298
         Height = 19
         Top = 0
         Width = 79
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructFull'
         TabOrder = 3
         OnClick = FormatRadioClicked
@@ -696,17 +763,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 1
       object rbStructAddrDefault: TRadioButton
+        AnchorSideLeft.Control = PanelStructAddr
+        AnchorSideTop.Control = PanelStructAddr
         Left = 0
         Height = 19
         Top = 0
         Width = 124
+        AutoSize = False
         Caption = 'rbStructAddrDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -714,28 +781,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbStructAddrOff: TRadioButton
+        AnchorSideLeft.Control = rbStructAddrDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructAddrDefault
         Left = 127
         Height = 19
         Top = 0
         Width = 103
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructAddrOff'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbStructAddrOn: TRadioButton
+        AnchorSideLeft.Control = rbStructAddrOff
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructAddrOff
         Left = 233
         Height = 19
         Top = 0
         Width = 102
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructAddrOn'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
       object rbStructAddrOnly: TRadioButton
+        AnchorSideLeft.Control = rbStructAddrOn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbStructAddrOn
         Left = 338
         Height = 19
         Top = 0
         Width = 111
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbStructAddrOnly'
         TabOrder = 3
         OnClick = FormatRadioClicked
@@ -745,7 +827,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelPointer: TPanel
     Left = 0
     Height = 36
-    Top = 269
+    Top = 272
     Width = 599
     Align = alTop
     AutoSize = True
@@ -776,17 +858,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 0
       object rbPointerDerefDefault: TRadioButton
+        AnchorSideLeft.Control = PanelPointerDeref
+        AnchorSideTop.Control = PanelPointerDeref
         Left = 0
         Height = 19
         Top = 0
         Width = 133
+        AutoSize = False
         Caption = 'rbPointerDerefDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -794,28 +876,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbPointerDerefOff: TRadioButton
+        AnchorSideLeft.Control = rbPointerDerefDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerDerefDefault
         Left = 136
         Height = 19
         Top = 0
         Width = 112
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerDerefOff'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbPointerDerefOn: TRadioButton
+        AnchorSideLeft.Control = rbPointerDerefOff
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerDerefOff
         Left = 251
         Height = 19
         Top = 0
         Width = 111
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerDerefOn'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
       object rbPointerDerefOnly: TRadioButton
+        AnchorSideLeft.Control = rbPointerDerefOn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerDerefOn
         Left = 365
         Height = 19
         Top = 0
         Width = 120
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerDerefOnly'
         TabOrder = 3
         OnClick = FormatRadioClicked
@@ -825,7 +922,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelAddressFormat: TPanel
     Left = 0
     Height = 57
-    Top = 306
+    Top = 309
     Width = 599
     Align = alTop
     AutoSize = True
@@ -856,17 +953,17 @@ object DisplayFormatFrame: TDisplayFormatFrame
       BorderSpacing.Right = 5
       BorderSpacing.Bottom = 2
       BevelOuter = bvNone
-      ChildSizing.HorizontalSpacing = 3
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 589
       TabOrder = 0
       object rbPointerDefault: TRadioButton
+        AnchorSideLeft.Control = PanelPointerType
+        AnchorSideTop.Control = PanelPointerType
         Left = 0
         Height = 19
         Top = 0
         Width = 105
+        AutoSize = False
         Caption = 'rbPointerDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -874,19 +971,29 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbPointerAddress: TRadioButton
+        AnchorSideLeft.Control = rbPointerDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerDefault
         Left = 108
         Height = 19
         Top = 0
         Width = 109
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerAddress'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbPointerTypedAddress: TRadioButton
+        AnchorSideLeft.Control = rbPointerAddress
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerAddress
         Left = 220
         Height = 19
         Top = 0
         Width = 141
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerTypedAddress'
         TabOrder = 2
         OnClick = FormatRadioClicked
@@ -910,10 +1017,13 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ClientWidth = 589
       TabOrder = 1
       object rbPointerNumDefault: TRadioButton
+        AnchorSideLeft.Control = PanelPointerNum
+        AnchorSideTop.Control = PanelPointerNum
         Left = 0
         Height = 19
         Top = 0
         Width = 132
+        AutoSize = False
         Caption = 'rbPointerNumDefault'
         Font.Style = [fsUnderline]
         ParentFont = False
@@ -921,28 +1031,42 @@ object DisplayFormatFrame: TDisplayFormatFrame
         OnClick = FormatRadioClicked
       end
       object rbPointerNumHex: TRadioButton
+        AnchorSideLeft.Control = rbPointerNumDefault
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerNumDefault
         Left = 135
         Height = 19
         Top = 0
         Width = 115
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerNumHex'
         TabOrder = 1
         OnClick = FormatRadioClicked
       end
       object rbPointerNumDec: TRadioButton
+        AnchorSideLeft.Control = rbPointerNumHex
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerNumHex
         Left = 253
         Height = 19
         Top = 0
         Width = 114
+        AutoSize = False
+        BorderSpacing.Left = 3
         Caption = 'rbPointerNumDec'
         TabOrder = 2
         OnClick = FormatRadioClicked
       end
       object rbPointerNumOct: TRadioButton
+        AnchorSideLeft.Control = rbPointerNumDec
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = rbPointerNumDec
         Left = 370
         Height = 19
         Top = 0
         Width = 113
+        AutoSize = False
         Caption = 'rbPointerNumOct'
         TabOrder = 3
         OnClick = FormatRadioClicked
@@ -952,7 +1076,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   object PanelMemDump: TPanel
     Left = 0
     Height = 50
-    Top = 364
+    Top = 367
     Width = 599
     Align = alTop
     BorderSpacing.Bottom = 1
