@@ -10,16 +10,25 @@ implementation
 
 uses
   Graphics, Classes, Math, PropEdits, SysUtils, LCLIntf, typinfo,
-  TATypes, TADrawerCanvas, TACustomSeries, TASeries, TALegend,
+  TATypes, TADrawerCanvas, TAChartAxis, TACustomSeries, TASeries, TALegend,
   TAGraph, TAChartCombos;
 
 type
   TAxisIndexPropertyEditor = class(TOrdinalPropertyEditor)
+  protected
+    function GetChart: TChart; virtual;
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(AOrdValue: Longint): String; override;
     procedure GetValues(AProc: TGetStrProc); override;
     procedure SetValue(const ANewValue: String); override;
+  end;
+
+  TOrthogonalAxisIndexPropertyEditor = class(TAxisIndexPropertyEditor)
+  protected
+    function GetChart: TChart; override;
+  public
+    procedure GetValues(AProc: TGetStrProc); override;
   end;
 
   TSeriesPointerStylePropertyEditor = class(TEnumPropertyEditor)
@@ -42,6 +51,8 @@ begin
   RegisterPropertyEditor(
     TypeInfo(TChartAxisIndex), TCustomChartSeries, '', TAxisIndexPropertyEditor);
   RegisterPropertyEditor(
+    TypeInfo(TChartAxisIndex), TChartAxis, '', TOrthogonalAxisIndexPropertyEditor);
+  RegisterPropertyEditor(
     TypeInfo(TSeriesPointerStyle), TSeriesPointer, '', TSeriesPointerStylePropertyEditor);
   RegisterPropertyEditor(
     TypeInfo(TSeriesPointerStyle), TChartComboBox, '', TSeriespointerStylePropertyEditor);
@@ -54,14 +65,20 @@ begin
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
 
-procedure TAxisIndexPropertyEditor.GetValues(AProc: TGetStrProc);
+function TAxisIndexPropertyEditor.GetChart: TChart;
 var
   s: TCustomChartSeries;
+begin
+  s := GetComponent(0) as TCustomChartSeries;
+  Result := s.ParentChart;
+end;
+
+procedure TAxisIndexPropertyEditor.GetValues(AProc: TGetStrProc);
+var
   ch: TChart;
   i: Integer;
 begin
-  s := GetComponent(0) as TCustomChartSeries;
-  ch := s.ParentChart;
+  ch := GetChart;
   AProc('-1 None');
   if ch <> nil then
     for i := 0 to ch.AxisList.Count - 1 do
@@ -71,11 +88,9 @@ end;
 function TAxisIndexPropertyEditor.OrdValueToVisualValue(
   AOrdValue: Longint): String;
 var
-  s: TCustomChartSeries;
   ch: TChart;
 begin
-  s := GetComponent(0) as TCustomChartSeries;
-  ch := s.ParentChart;
+  ch := GetChart;
   Result := IntToStr(AOrdValue) + ' ';
   if Assigned(ch) and InRange(AOrdValue, 0, ch.AxisList.Count - 1) then
     Result += ch.AxisList[AOrdValue].DisplayName
@@ -92,6 +107,42 @@ begin
   if code > 0 then
     Val(Copy(ANewValue, 1, code - 1), v, code);
   SetOrdValue(Max(v, Low(TChartAxisIndex)));
+end;
+
+
+{ TOrthogonalAxisIndexPropertyEditor }
+
+function TOrthogonalAxisIndexPropertyEditor.GetChart: TChart;
+var
+  ax: TChartAxis;
+begin
+  ax := GetComponent(0) as TChartAxis;
+  Result := ax.GetChart as TChart;
+end;
+
+procedure TOrthogonalAxisIndexPropertyEditor.GetValues(AProc: TGetStrProc);
+var
+  ax: TChartAxis;
+  ch: TChart;
+  i: Integer;
+begin
+  ax := GetComponent(0) as TChartAxis;
+  ch := GetChart;
+  AProc('-1 None');
+  if ch <> nil then
+  begin
+    if ax.IsVertical then
+    begin
+      for i := 0 to ch.AxisList.Count - 1 do
+        if not ch.AxisList[i].IsVertical then
+          AProc(IntToStr(i) + ' ' + ch.AxisList[i].DisplayName)
+    end else
+    begin
+      for i := 0 to ch.AxisList.Count - 1 do
+        if ch.AxisList[i].IsVertical then
+          AProc(IntTostr(i) + ' ' + ch.AxisList[i].DisplayName);
+    end;
+  end;
 end;
 
 

@@ -23,8 +23,11 @@ uses
 const
   DEF_TICK_LENGTH = 4;
   DEF_TICK_WIDTH = 1;
+  DEF_AXIS_INDEX = -1;
 
 type
+
+  TChartAxisIndex = -1..MaxInt;
 
   { TChartMinorAxis }
 
@@ -118,6 +121,7 @@ type
     FMinors: TChartMinorAxisList;
     FOnGetMarkText: TChartGetAxisMarkTextEvent;
     FOnMarkToText: TChartAxisMarkToTextEvent;
+    FOrthogonalAxisIndex: TChartAxisIndex;
     FPosition: Double;
     FPositionUnits: TChartUnits;
     FRange: TChartRange;
@@ -143,6 +147,7 @@ type
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnGetMarkText(AValue: TChartGetAxisMarkTextEvent);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
+    procedure SetOrthogonalAxisIndex(AValue: TChartAxisIndex);
     procedure SetPosition(AValue: Double);
     procedure SetPositionUnits(AValue: TChartUnits);
     procedure SetRange(AValue: TChartRange);
@@ -168,6 +173,7 @@ type
     procedure Draw;
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
+    function GetOrthogonalAxis: TChartAxis;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
     function IsFlipped: Boolean; override;
@@ -198,6 +204,8 @@ type
       read FMarginsForMarks write SetMarginsForMarks default true;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
+    property OrthogonalAxisIndex: TChartAxisIndex
+      read FOrthogonalAxisIndex write SetOrthogonalAxisIndex default DEF_AXIS_INDEX;
     property Position: Double read FPosition write SetPosition stored PositionIsStored;
     property PositionUnits: TChartUnits
       read FPositionUnits write SetPositionUnits default cuPercent;
@@ -468,6 +476,7 @@ begin
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
       Self.FMarginsForMarks := MarginsForMarks;
+      Self.FOrthogonalAxisIndex := OrthogonalAxisIndex;
       Self.FOnGetMarkText := OnGetMarkText;
       Self.FOnMarkToText := OnMarkToText;
     end;
@@ -489,6 +498,7 @@ begin
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FMarginsForMarks := true;
   FMarks.SetInsideDir(1, 0);
+  FOrthogonalAxisIndex := -1;
 end;
 
 destructor TChartAxis.Destroy;
@@ -745,6 +755,20 @@ function TChartAxis.GetMarks: TChartAxisMarks;
 begin
   Result := TChartAxisMarks(inherited Marks);
 end{%H-}; // to silence the compiler warning of impossible inherited inside inline proc
+
+function TChartAxis.GetOrthogonalAxis: TChartAxis;
+begin
+  Result := nil;
+  if (FOrthogonalAxisIndex = -1) then
+  begin
+    if Collection.Count = 2 then
+      Result := TChartAxisList(Collection)[(Index + 1) mod 2];
+  end else
+    Result := TChartAxisList(Collection)[FOrthogonalAxisIndex];
+
+  if (Result <> nil) and (not (Result.IsVertical xor IsVertical)) then
+    Result := nil;
+end;
 
 function TChartAxis.GetRealTitle: String;
 begin
@@ -1011,6 +1035,9 @@ end;
 function TChartAxis.PositionToCoord(const ARect: TRect): Integer;
 var
   r: TChartAxisMargins absolute ARect;
+  orthoAx: TChartAxis;
+  t: TChartAxisTransformations;
+  posValue: Double;
 begin
   if IsDefaultPosition then exit(r[Alignment]);
   case PositionUnits of
@@ -1019,12 +1046,23 @@ begin
         r[Alignment],
         r[TChartAxisAlignment((Ord(Alignment) + 2) mod 4)],
         Position * PERCENT));
-    // TODO: Add OrthogonalAxis property to support cuAxis position.
     cuAxis, cuGraph:
-      if IsVertical then
-        Result := FHelper.FTransf.XGraphToImage(Position)
-      else
-        Result := FHelper.FTransf.YGraphToImage(Position);
+      begin
+        posValue := Position;
+        if PositionUnits = cuAxis then
+        begin
+          orthoAx := GetOrthogonalAxis;
+          if orthoAx <> nil then
+          begin
+            t := orthoAx.GetTransform;
+            posValue := t.AxisToGraph(Position);
+          end;
+        end;
+        if IsVertical then
+          Result := FHelper.FTransf.XGraphToImage(posValue)
+        else
+          Result := FHelper.FTransf.YGraphToImage(posValue);
+      end;
     cuPixel:
       Result :=
         r[Alignment] +
@@ -1140,6 +1178,13 @@ procedure TChartAxis.SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
 begin
   if TMethod(FOnMarkToText) = TMethod(AValue) then exit;
   FOnMarkToText := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetOrthogonalAxisIndex(AValue: TChartAxisIndex);
+begin
+  if FOrthogonalAxisIndex = AValue then exit;
+  FOrthogonalAxisIndex := AValue;
   StyleChanged(Self);
 end;
 

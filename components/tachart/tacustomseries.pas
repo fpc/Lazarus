@@ -21,7 +21,6 @@ uses
   TASources, TAStyles, TATextElements, TATypes;
 
 const
-  DEF_AXIS_INDEX = -1;
   DEF_ERR_ENDLENGTH = 5;
 
 type
@@ -41,8 +40,6 @@ type
     FYIndex: Integer;       // Index to be used in Source.GetY()
     FValue: TDoublePoint;
   end;
-
-  TChartAxisIndex = -1..MaxInt;
 
   { TCustomChartSeries }
 
