@@ -277,7 +277,9 @@ begin
   FInButtonClick := True;
   try
     UpdateFormat;
-    if not (ssShift in GetKeyShiftState) then begin
+    if (not(ssShift in GetKeyShiftState)) or
+       (not(tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down or tbStruct.Down or tbPointer.Down))
+    then begin
       tbNumber.Down  := tbNumber  = Sender;
       tbEnum.Down    := tbEnum    = Sender;
       tbBool.Down    := tbBool    = Sender;
