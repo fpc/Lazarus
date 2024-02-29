@@ -167,9 +167,8 @@ begin
   SetBuildModeVisibility(False);
 
   btnApply := AddButton;
-  btnApply.LoadGlyphFromResource(idButtonRetry); // not the best glyph for this button
+  btnApply.LoadGlyphFromResource(idButtonRetry);
   btnApply.OnClick := @ApplyButtonClick;
-  btnApply.Constraints.MinWidth := 75;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.OKButton.ModalResult := mrNone;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
@@ -184,11 +183,8 @@ begin
   btnApply.Caption := lisApply;
 
   // hint
-  ButtonPanel.HelpButton.Hint := '[F1]';
-  ButtonPanel.CancelButton.Hint := '[Esc]';
-  ButtonPanel.OKButton.Hint := '[Ctrl+Enter]';
-  btnApply.Hint := '[Shift+Enter]';
   ButtonPanel.ShowHint := true;
+  btnApply.Hint := '[Shift+Enter]';
 
   BuildModeComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -257,7 +253,7 @@ begin
     if Assigned(AEditor) then begin
       AEditor.Align := alClient;
       AEditor.BorderSpacing.Around := 6;
-      SetDropDownCount(AEditor); ///TEST
+      SetDropDownCount(AEditor);
       AEditor.Visible := True;
     end;
     FPrevEditor := AEditor;
@@ -276,24 +272,23 @@ end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
 begin
-  if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) <> mrOK then
-    exit;
-  UpdateBuildModeCombo(BuildModeComboBox);
+  if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) = mrOK then
+    UpdateBuildModeCombo(BuildModeComboBox);
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
 begin
-  if node.Deleting then exit;
-  if (Node.Data <> nil) then
+  if Node.Deleting then exit;
+  if Assigned(Node.Data) then
     TAbstractIDEOptionsEditor(Node.Data).Rec^.Collapsed := True
-  else
-  if (Node.GetFirstChild <> nil) and (Node.GetFirstChild.Data <> nil) then
+  else if Assigned(Node.GetFirstChild) and Assigned(Node.GetFirstChild.Data) then
     TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := True;
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
+  // make group categories bold
   if Node.Data = nil then // is group category
     Node.TreeView.Font.Style := [fsBold]
   else
@@ -303,10 +298,9 @@ end;
 procedure TIDEOptionsDialog.CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
 begin
   if node.Deleting then exit;
-  if (Node.Data <> nil) then
+  if Assigned(Node.Data) then
     TAbstractIDEOptionsEditor(Node.Data).Rec^.Collapsed := False
-  else
-  if (Node.GetFirstChild <> nil) and (Node.GetFirstChild.Data <> nil) then
+  else if Assigned(Node.GetFirstChild) and Assigned(Node.GetFirstChild.Data) then
     TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := False;
 end;
 
@@ -417,9 +411,10 @@ begin
       Break;
   end;
   // GroupRec is stored in the first child editor
-  Result := nil;
   if Assigned(Node) then
-    Result := TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.GroupClass;
+    Result := TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.GroupClass
+  else
+    Result := nil;
 end;
 
 procedure TIDEOptionsDialog.TraverseSettings(AOptions: TAbstractIDEOptions;
@@ -791,7 +786,7 @@ begin
   Result := TBitBtn.Create(Self);
   Result.Align := alCustom;
   Result.Default := false;
-  Result.Constraints.MinWidth := 25;
+  Result.Constraints.MinWidth := 75;
   Result.AutoSize := true;
   Result.Parent := ButtonPanel;
 end;
@@ -872,15 +867,10 @@ var
 begin
   Result:=nil;
   Grp:=IDEEditorGroups.GetByIndex(GroupIndex);
-  if (Grp=nil) or (Grp^.Items=nil) then exit;
-  for i:=0 to Grp^.Items.Count-1 do
-  begin
-    if Grp^.Items[i]^.Index=AIndex then
-    begin
-      Result:=Grp^.Items[i]^.EditorClass;
-      exit;
-    end;
-  end;
+  if Assigned(Grp) and Assigned(Grp^.Items) then
+    for i:=0 to Grp^.Items.Count-1 do
+      if Grp^.Items[i]^.Index=AIndex then
+        exit(Grp^.Items[i]^.EditorClass);
 end;
 
 function TIDEOptionsDialog.ResetFilter: Boolean;

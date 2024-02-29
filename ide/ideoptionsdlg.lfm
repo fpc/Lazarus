@@ -24,13 +24,16 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
+    OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.Hint = '[F1]'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.Hint = '[Esc]'
     CancelButton.DefaultCaption = True
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
@@ -84,6 +87,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 32
+      Hint = '[Ctrl+F]'
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
@@ -93,6 +97,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       BorderSpacing.Top = 6
       NumGlyphs = 1
       MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       FilteredTreeview = CategoryTree
       ExpandAllInitially = True
