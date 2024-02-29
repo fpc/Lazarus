@@ -5,8 +5,8 @@ unit DisplayFormatConfigFrame;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, IdeDebuggerUtils, DividerBevel,
-  IdeDebuggerWatchValueIntf, IdeDebuggerWatchResPrinter, IdeDebuggerStringConstants;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons, IdeDebuggerUtils,
+  DividerBevel, IdeDebuggerWatchValueIntf, IdeDebuggerWatchResPrinter, IdeDebuggerStringConstants;
 
 type
 
@@ -81,9 +81,9 @@ type
     rbPointerAddress: TRadioButton;
     rbStructAddrOff: TRadioButton;
     ToolBar1: TToolBar;
-    tbCurrent: TToolButton;
-    tbStruct: TToolButton;
-    tbPointer: TToolButton;
+    tbCurrent: TSpeedButton;
+    tbStruct: TSpeedButton;
+    tbPointer: TSpeedButton;
     ToolButton12: TToolButton;
     ToolButton13: TToolButton;
     ToolButton14: TToolButton;
@@ -91,14 +91,15 @@ type
     ToolButton16: TToolButton;
     ToolButton17: TToolButton;
     ToolButton2: TToolButton;
-    tbAll: TToolButton;
+    tbAll: TSpeedButton;
     ToolButton4: TToolButton;
-    tbNumber: TToolButton;
-    tbEnum: TToolButton;
-    tbBool: TToolButton;
-    tbChar: TToolButton;
-    tbFloat: TToolButton;
+    tbNumber: TSpeedButton;
+    tbEnum: TSpeedButton;
+    tbBool: TSpeedButton;
+    tbChar: TSpeedButton;
+    tbFloat: TSpeedButton;
     procedure cbMemDumpChange(Sender: TObject);
+    procedure FormatRadioClicked(Sender: TObject);
     procedure FrameResize(Sender: TObject);
     procedure tbAllClick(Sender: TObject);
     procedure tbCurrentClick(Sender: TObject);
@@ -108,6 +109,7 @@ type
   private
     FDisplayFormat: TWatchDisplayFormat;
     FCurrentResDataType: TWatchResultDataKind;
+    FHighlightModifiedTabs: boolean;
     FInButtonClick: Boolean;
     FRadioMap: array [TValueDisplayFormat] of TRadioButton;
     FButtonStates: array[TFmtButtons] of boolean;
@@ -117,12 +119,14 @@ type
   protected
     procedure UpdateFormat;
     procedure UpdateDisplay;
+    procedure UpdateTabs;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Setup;
     procedure SelectDefaultButton;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
     property CurrentResDataType: TWatchResultDataKind read FCurrentResDataType write SetCurrentResDataType;
+    property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write FHighlightModifiedTabs;
   end;
 
 implementation
@@ -147,6 +151,12 @@ begin
   PanelStruct.Enabled := not cbMemDump.Checked;
   PanelPointer.Enabled := not cbMemDump.Checked;
   PanelAddressFormat.Enabled := not cbMemDump.Checked;
+end;
+
+procedure TDisplayFormatFrame.FormatRadioClicked(Sender: TObject);
+begin
+  UpdateFormat;
+  UpdateTabs;
 end;
 
 procedure TDisplayFormatFrame.FrameResize(Sender: TObject);
@@ -454,6 +464,8 @@ begin
   DisableAutoSizing;
   BeginUpdateBounds;
   try
+    UpdateTabs;
+
     PanelNum.Visible           := tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbStruct.Down or tbPointer.Down;
     PanelNumChar.Visible       := tbNumber.Down;
     PanelEnum.Visible          := tbEnum.Down or tbBool.Down or tbChar.Down;
@@ -605,9 +617,50 @@ begin
   end;
 end;
 
+procedure TDisplayFormatFrame.UpdateTabs;
+begin
+  tbNumber.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.NumBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.NumSignFormat <> vdfSignDefault) or
+                          (FDisplayFormat.NumCharFormat <> vdfNumCharDefault)
+                          );
+  tbEnum.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.EnumFormat <> vdfEnumDefault) or
+                          (FDisplayFormat.EnumBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.EnumSignFormat <> vdfSignDefault)
+                          );
+  tbBool.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.BoolFormat <> vdfBoolDefault) or
+                          (FDisplayFormat.BoolBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.BoolSignFormat <> vdfSignDefault)
+                          );
+  tbChar.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.CharFormat <> vdfCharDefault) or
+                          (FDisplayFormat.CharBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.CharSignFormat <> vdfSignDefault)
+                          );
+  tbFloat.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.FloatFormat <> vdfFloatDefault)
+                          );
+  tbStruct.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.StructFormat <> vdfStructDefault) or
+                          (FDisplayFormat.StructAddrFormat <> vdfStructAddressDefault) or
+                          (FDisplayFormat.StructPointerFormat <> vdfPointerDefault) or
+                          (FDisplayFormat.StructPointerBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.StructPointerSignFormat <> vdfSignDefault)
+                          );
+  tbPointer.Font.Italic := FHighlightModifiedTabs and (
+                          (FDisplayFormat.PointerDerefFormat <> vdfPointerDerefDefault) or
+                          (FDisplayFormat.PointerFormat <> vdfPointerDefault) or
+                          (FDisplayFormat.PointerBaseFormat <> vdfBaseDefault) or
+                          (FDisplayFormat.PointerSignFormat <> vdfSignDefault)
+                          );
+end;
+
 constructor TDisplayFormatFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FHighlightModifiedTabs := True;
 
   FillByte(FRadioMap, SizeOf(FRadioMap), 0);
 

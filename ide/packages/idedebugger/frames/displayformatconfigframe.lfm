@@ -20,87 +20,150 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ShowCaptions = True
     TabOrder = 0
     OnClick = tbFormatClick
-    object tbCurrent: TToolButton
+    object tbCurrent: TSpeedButton
       Left = 1
+      Height = 19
       Top = 2
+      Width = 44
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Current'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9151
+      Transparent = False
+      ParentFont = False
       OnClick = tbCurrentClick
     end
     object ToolButton2: TToolButton
-      Left = 49
+      Left = 45
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
       Enabled = False
       Style = tbsSeparator
     end
-    object tbAll: TToolButton
-      Left = 57
+    object tbAll: TSpeedButton
+      Left = 53
+      Height = 19
       Top = 2
+      Width = 18
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'All'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9152
+      Transparent = False
+      ParentFont = False
       OnClick = tbAllClick
     end
     object ToolButton4: TToolButton
-      Left = 80
+      Left = 71
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
       Enabled = False
       Style = tbsSeparator
     end
-    object tbNumber: TToolButton
-      Left = 88
+    object tbNumber: TSpeedButton
+      Left = 79
+      Height = 19
       Top = 2
+      Width = 53
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Numbers'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9160
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbEnum: TToolButton
-      Left = 153
+    object tbEnum: TSpeedButton
+      Left = 140
+      Height = 19
       Top = 2
+      Width = 35
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Enum'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9161
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbBool: TToolButton
-      Left = 200
+    object tbBool: TSpeedButton
+      Left = 183
+      Height = 19
       Top = 2
+      Width = 28
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Bool'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9162
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbChar: TToolButton
-      Left = 240
+    object tbChar: TSpeedButton
+      Left = 219
+      Height = 19
       Top = 2
+      Width = 29
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Char'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9163
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbFloat: TToolButton
-      Left = 281
+    object tbFloat: TSpeedButton
+      Left = 256
+      Height = 19
       Top = 2
+      Width = 30
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Float'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9164
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbStruct: TToolButton
-      Left = 323
+    object tbStruct: TSpeedButton
+      Left = 294
+      Height = 19
       Top = 2
+      Width = 57
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Structures'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9165
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
-    object tbPointer: TToolButton
-      Left = 392
+    object tbPointer: TSpeedButton
+      Left = 359
+      Height = 19
       Top = 2
+      Width = 42
+      AllowAllUp = True
+      AutoSize = True
       Caption = 'Pointer'
-      Style = tbsCheck
+      Flat = True
+      GroupIndex = 9166
+      Transparent = False
+      ParentFont = False
       OnClick = tbFormatClick
     end
     object ToolButton12: TToolButton
-      Left = 145
+      Left = 132
       Height = 22
       Top = 2
       Caption = 'ToolButton12'
@@ -109,7 +172,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton13: TToolButton
-      Left = 192
+      Left = 175
       Height = 22
       Top = 2
       Caption = 'ToolButton13'
@@ -118,7 +181,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton14: TToolButton
-      Left = 232
+      Left = 211
       Height = 22
       Top = 2
       Caption = 'ToolButton14'
@@ -127,7 +190,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton15: TToolButton
-      Left = 273
+      Left = 248
       Height = 22
       Top = 2
       Caption = 'ToolButton15'
@@ -136,7 +199,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton16: TToolButton
-      Left = 315
+      Left = 286
       Height = 22
       Top = 2
       Caption = 'ToolButton16'
@@ -145,7 +208,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton17: TToolButton
-      Left = 384
+      Left = 351
       Height = 22
       Top = 2
       Caption = 'ToolButton17'
@@ -204,6 +267,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbNumDec: TRadioButton
         Left = 97
@@ -213,6 +277,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumDec'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbNumPtr: TRadioButton
         Left = 177
@@ -222,6 +287,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumPtr'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object Label2: TLabel
         Left = 255
@@ -229,6 +295,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Top = 0
         Width = 73
         AutoSize = False
+        OnClick = FormatRadioClicked
       end
       object Label1: TLabel
         Left = 0
@@ -236,6 +303,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Top = 19
         Width = 94
         AutoSize = False
+        OnClick = FormatRadioClicked
       end
       object rbNumHex: TRadioButton
         Left = 97
@@ -245,6 +313,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumHex'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
       object rbNumOct: TRadioButton
         Left = 177
@@ -254,6 +323,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumOct'
         TabOrder = 4
+        OnClick = FormatRadioClicked
       end
       object rbNumBin: TRadioButton
         Left = 255
@@ -263,6 +333,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumBin'
         TabOrder = 5
+        OnClick = FormatRadioClicked
       end
     end
     object PanelNumSign: TPanel
@@ -292,6 +363,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbSignSigned: TRadioButton
         Left = 93
@@ -301,6 +373,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbSignSigned'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbSignUnsigned: TRadioButton
         Left = 184
@@ -310,6 +383,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbSignUnsigned'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
     end
     object DividerBevelNumChar: TDividerBevel
@@ -350,6 +424,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbNumCharOff: TRadioButton
         Left = 122
@@ -358,6 +433,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 71
         Caption = 'rbCharOff'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbNumCharUniNum: TRadioButton
         Left = 196
@@ -366,6 +442,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 126
         Caption = 'rbNumCharUniNum'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
       object rbNumCharUni: TRadioButton
         Left = 325
@@ -374,6 +451,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 98
         Caption = 'rbCharUnicode'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
     end
   end
@@ -426,6 +504,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbEnumName: TRadioButton
         Left = 101
@@ -434,6 +513,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 92
         Caption = 'rbEnumName'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbEnumOrd: TRadioButton
         Left = 196
@@ -442,6 +522,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 80
         Caption = 'rbEnumOrd'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object rbEnumNameAndOrd: TRadioButton
         Left = 279
@@ -450,6 +531,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 134
         Caption = 'rbEnumNameAndOrd'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
     end
   end
@@ -502,6 +584,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbFloatPoint: TRadioButton
         Left = 96
@@ -510,6 +593,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 83
         Caption = 'rbFloatPoint'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbFloatScience: TRadioButton
         Left = 182
@@ -518,6 +602,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 95
         Caption = 'rbFloatScience'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
     end
   end
@@ -570,6 +655,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbStructValOnly: TRadioButton
         Left = 101
@@ -578,6 +664,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 101
         Caption = 'rbStructValOnly'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbStructFields: TRadioButton
         Left = 205
@@ -586,6 +673,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 90
         Caption = 'rbStructFields'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object rbStructFull: TRadioButton
         Left = 298
@@ -594,6 +682,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 79
         Caption = 'rbStructFull'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
     end
     object PanelStructAddr: TPanel
@@ -622,6 +711,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbStructAddrOff: TRadioButton
         Left = 127
@@ -630,6 +720,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 103
         Caption = 'rbStructAddrOff'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbStructAddrOn: TRadioButton
         Left = 233
@@ -638,6 +729,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 102
         Caption = 'rbStructAddrOn'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object rbStructAddrOnly: TRadioButton
         Left = 338
@@ -646,6 +738,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 111
         Caption = 'rbStructAddrOnly'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
     end
   end
@@ -698,6 +791,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbPointerDerefOff: TRadioButton
         Left = 136
@@ -706,6 +800,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 112
         Caption = 'rbPointerDerefOff'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbPointerDerefOn: TRadioButton
         Left = 251
@@ -714,6 +809,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 111
         Caption = 'rbPointerDerefOn'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object rbPointerDerefOnly: TRadioButton
         Left = 365
@@ -722,6 +818,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 120
         Caption = 'rbPointerDerefOnly'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
     end
   end
@@ -774,6 +871,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbPointerAddress: TRadioButton
         Left = 108
@@ -782,6 +880,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 109
         Caption = 'rbPointerAddress'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbPointerTypedAddress: TRadioButton
         Left = 220
@@ -790,6 +889,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 141
         Caption = 'rbPointerTypedAddress'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
     end
     object PanelPointerNum: TPanel
@@ -818,6 +918,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Font.Style = [fsUnderline]
         ParentFont = False
         TabOrder = 0
+        OnClick = FormatRadioClicked
       end
       object rbPointerNumHex: TRadioButton
         Left = 135
@@ -826,6 +927,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 115
         Caption = 'rbPointerNumHex'
         TabOrder = 1
+        OnClick = FormatRadioClicked
       end
       object rbPointerNumDec: TRadioButton
         Left = 253
@@ -834,6 +936,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 114
         Caption = 'rbPointerNumDec'
         TabOrder = 2
+        OnClick = FormatRadioClicked
       end
       object rbPointerNumOct: TRadioButton
         Left = 370
@@ -842,6 +945,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 113
         Caption = 'rbPointerNumOct'
         TabOrder = 3
+        OnClick = FormatRadioClicked
       end
     end
   end
