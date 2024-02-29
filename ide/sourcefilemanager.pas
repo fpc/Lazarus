@@ -1039,7 +1039,7 @@ var
   SourceType: String;
 begin
   if ([ofProjectLoading,ofRegularFile]*FFlags=[]) and (MainIDE.ToolStatus=itNone)
-  and FilenameExtIs(FFilename,'lpi',true) then begin
+  and FilenameExtIs(FFilename,'lpi',false) then begin
     // this is a project info file -> load whole project
     Result:=MainIDE.DoOpenProjectFile(FFilename,[ofAddToRecent]);
     if Result = mrOK then
@@ -1266,7 +1266,7 @@ begin
   if ([ofRegularFile,ofRevert,ofProjectLoading]*FFlags=[])
   and FilenameIsAbsolute(FFilename) and FileExistsCached(FFilename) then begin
     // check if file is a lazarus project (.lpi)
-    if FilenameExtIs(FFilename,'lpi',true) then
+    if FilenameExtIs(FFilename,'lpi',false) then
     begin
       case
         IDEQuestionDialog(lisOpenProject, Format(lisOpenTheProject, [FFilename]),
@@ -1981,10 +1981,10 @@ begin
   if (AFiles=nil) or (AFiles.Count=0) then Exit;
   //DebugLn(['MaybeOpenProject: AFiles=', AFiles.Count]);
   AProjectFN:=AFiles[0];
-  if FilenameExtIs(AProjectFN,'lpr',true) then
+  if FilenameExtIs(AProjectFN,'lpr',false) then
     AProjectFN:=ChangeFileExt(AProjectFN,'.lpi');
   // only try to load .lpi files here, other files are loaded later
-  if FilenameExtIs(AProjectFN,'lpi',true) then begin
+  if FilenameExtIs(AProjectFN,'lpi',false) then begin
     AProjectFN:=CleanAndExpandFilename(AProjectFN);
     if FileExistsUTF8(AProjectFN) then begin
       AFiles.Delete(0);
@@ -4222,7 +4222,7 @@ begin
                           +dlgFilterAll+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
-        if not FilenameExtIs(AFilename,'lpi',true) then begin
+        if not FilenameExtIs(AFilename,'lpi',false) then begin
           // not a lpi file
           // check if it is a program source
 

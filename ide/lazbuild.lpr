@@ -420,7 +420,7 @@ begin
       Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
       if Package=nil then begin
         // Not found after everything we tried
-        if FilenameExtIs(Filename,'lpi', true) then
+        if FilenameExtIs(Filename,'lpi', false) then
           PrintErrorAndHalt(ErrorFileNotFound, 'File not found: "' + OriginalFilename + '"')
         else
           PrintErrorAndHalt(ErrorFileNotFound, 'Package not found: "' + OriginalFilename + '"');
@@ -448,9 +448,9 @@ begin
       lpaInstall: Result:=true; // this is handled in AddPackagesToInstallList
       lpaAddPkgLinks: Result:=true;
       end;
-    end else if FilenameExtIs(Filename,'lpi',true) then
+    end else if FilenameExtIs(Filename,'lpi',false) then
       Result:=BuildProject(Filename)
-    else if FilenameExtIs(Filename,'lpr',true) then begin
+    else if FilenameExtIs(Filename,'lpr',false) then begin
       Filename:=ChangeFileExt(Filename,'.lpi');
       if FileExists(Filename) then
         Result:=BuildProject(Filename)

@@ -5835,14 +5835,14 @@ begin
   FileList := TStringList.Create;
   FileList.AddStrings(FileNames);
   try
-    if FilenameExtIs(FileList[0],'lpr') then
+    if FilenameExtIs(FileList[0],'lpr',false) then
     begin
       SourceEditorManager.IncUpdateLock;
       OpenEditorFile(FileList[0],-1,WindowIndex,Nil,[ofAddToRecent]);
       SourceEditorManager.DecUpdateLock;
       FileList.Delete(0);
     end
-    else if FilenameExtIs(FileList[0],'lpi',true) then
+    else if FilenameExtIs(FileList[0],'lpi',false) then
     begin
       DoOpenProjectFile(FileList[0],[ofAddToRecent]);
       FileList.Delete(0);
@@ -7752,9 +7752,9 @@ procedure TMainIDE.DoExecuteRemoteControl;
     AProjectFilename:='';
     for i:=Files.Count-1 downto 0 do begin
       AProjectFilename:=Files[0];
-      if FilenameExtIs(AProjectFilename,'lpr',true) then
+      if FilenameExtIs(AProjectFilename,'lpr',false) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-      if FilenameExtIs(AProjectFilename,'lpi',true) then begin
+      if FilenameExtIs(AProjectFilename,'lpi',false) then begin
         // open a project
         Files.Delete(i); // remove from the list
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
