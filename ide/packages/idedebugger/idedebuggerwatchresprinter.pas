@@ -131,6 +131,17 @@ const
     PointerFormat:      vdfPointerAddress;
     PointerDerefFormat: vdfPointerDerefOn;
   );
+  EnumValDefaults: TResolvedDisplayFormat = (
+    NumBaseFormat:      vdfBaseDecimal;
+    NumSignFormat:      vdfSignUnsigned;
+    NumCharFormat:      vdfNumCharOff;
+    EnumFormat:         vdfEnumNameAndOrd;
+    FloatFormat:        vdfFloatPoint;
+    StructFormat:       vdfStructFields;
+    StructAddrFormat:   vdfStructAddressOff;
+    PointerFormat:      vdfPointerAddress;
+    PointerDerefFormat: vdfPointerDerefOn;
+  );
 
 function Dec64ToNumb(N: QWord; Len, Base: Byte): string; overload;
 var
@@ -234,7 +245,8 @@ begin
   case AResValue.ValueKind of
     rdkSignedNumVal:             ResolveDefaults(Result, SignedNumDefaults);
     rdkUnsignedNumVal:           ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkEnum, rdkEnumVal, rdkSet: ResolveDefaults(Result, UnsignedNumDefaults);
+    rdkEnumVal:                  ResolveDefaults(Result, EnumValDefaults);
+    rdkEnum, rdkSet:             ResolveDefaults(Result, UnsignedNumDefaults);
     rdkBool: if AResValue.AsQWord > 1 then
         ResolveDefaults(Result, BoolAndNumNumDefaults)
       else

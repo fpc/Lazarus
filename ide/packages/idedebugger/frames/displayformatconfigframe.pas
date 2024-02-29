@@ -146,6 +146,7 @@ begin
   PanelFloat.Enabled := not cbMemDump.Checked;
   PanelStruct.Enabled := not cbMemDump.Checked;
   PanelPointer.Enabled := not cbMemDump.Checked;
+  PanelAddressFormat.Enabled := not cbMemDump.Checked;
 end;
 
 procedure TDisplayFormatFrame.FrameResize(Sender: TObject);
