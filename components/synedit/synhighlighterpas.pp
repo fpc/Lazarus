@@ -3914,7 +3914,10 @@ begin
   if Run>=fLineLen then begin
     fTokenID:=tkSymbol;
     if TopPascalCodeFoldBlockType = cfbtRecordCase then begin
+      fStringLen := 1;
+      Dec(Run);
       StartPascalCodeFoldBlock(cfbtRecordCaseSection, True); // TODO: only if case-label attr is set
+      Inc(Run);
       PasCodeFoldRange.BracketNestLevel := 0
     end
     else
@@ -3948,7 +3951,10 @@ begin
       begin
         fTokenID := tkSymbol;
         if TopPascalCodeFoldBlockType = cfbtRecordCase then begin
+          fStringLen := 1;
+          Dec(Run);
           StartPascalCodeFoldBlock(cfbtRecordCaseSection, True); // TODO: only if case-label attr is set
+          Inc(Run);
           PasCodeFoldRange.BracketNestLevel := 0;
           fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterEqualOrColon] + [rsAfterSemiColon];
         end
@@ -3960,13 +3966,13 @@ end;
 
 procedure TSynPasSyn.RoundCloseProc;
 begin
-  inc(Run);
   fTokenID := tkSymbol;
   fRange := fRange + [rsAfterIdentifierOrValueAdd];
   if (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtRecordCase, cfbtRecordCaseSection])
   then begin
     // End of case-section can close ONE embedded case
+    fStringLen := 1;
     if TopPascalCodeFoldBlockType = cfbtRecordCase then
       EndPascalCodeFoldBlock;
     if TopPascalCodeFoldBlockType = cfbtRecordCaseSection then
@@ -3974,6 +3980,7 @@ begin
   end
   else
     PasCodeFoldRange.DecBracketNestLevel;
+  inc(Run);
 end;
 
 procedure TSynPasSyn.SquareOpenProc;
