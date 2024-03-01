@@ -72,7 +72,7 @@ const
     'XML files (*.xml)|*.xml|' +
     'All files (*.*)|*.*';
 
-function DescribeFileCount(const piCount: integer): string;
+function DescribeFileCount(const piCount: integer): string; deprecated;
 
 implementation
 
@@ -80,10 +80,7 @@ uses SysUtils, jcfbaseConsts;
 
 function DescribeFileCount(const piCount: integer): string;
 begin
-  if piCount = 1 then
-    Result := lisMsg1File
-  else
-    Result := Format(lisMsgFiles,[piCount]);
+  Result := Format(lisMsgFiles,[piCount]);
 end;
 
 end.

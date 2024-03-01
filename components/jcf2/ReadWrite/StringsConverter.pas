@@ -57,6 +57,9 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 constructor TStringsConverter.Create;
 begin
   inherited;
@@ -98,8 +101,7 @@ begin
   begin
     lsWholeMessage := psMessage;
     if (piY >= 0) and (piX >= 0) then
-      lsWholeMessage := lsWholeMessage + ' at line ' + IntToStr(piY) +
-        ' col ' + IntToStr(piX);
+      lsWholeMessage := Format( lisMsgAtLineCol, [lsWholeMessage, piY, piX]);
     fcMessageStrings.Add(lsWholeMessage);
   end;
 end;

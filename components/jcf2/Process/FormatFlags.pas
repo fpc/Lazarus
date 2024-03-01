@@ -78,7 +78,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils;
+  JcfStringUtils, jcfbaseConsts;
 
 type
   TRFlagNameData = record
@@ -201,8 +201,7 @@ begin
   { is the comment well formed? }
   if (lsSetting = '') or (lsState = '') then
   begin
-    psError := 'Comment ' + StrDoubleQuote(psComment) +
-      ' has prefix but cannot be parsed';
+    psError := Format(lisMsgCommentHasPrefixButCannotBeParsed, [psComment]);
     exit;
   end;
 
@@ -212,8 +211,7 @@ begin
   except
     On EJcfConversionError do
     begin
-      psError := 'In comment ' + StrDoubleQuote(psComment) + ' , ' +
-        ' state ' + StrDoubleQuote(lsState) + ' cannot be parsed to either on or off';
+      psError := Format(lisMsgInCommentStateCannotBeParsedToOnOff, [psComment, lsState]);
       exit;
     end
     else
@@ -245,8 +243,7 @@ begin
   if not lbFlagFound then
   begin
     // unknown setting - nothing to do except log a message
-    psError := 'In comment ' + StrDoubleQuote(psComment) + ' , ' +
-      ' setting ' + StrDoubleQuote(lsSetting) + ' is not known';
+    psError := Format(lisMsgInCommentSettingIsNotKnown, [psComment, lsSetting]);
     exit;
   end;
 end;

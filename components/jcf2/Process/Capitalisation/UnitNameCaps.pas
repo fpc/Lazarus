@@ -57,7 +57,7 @@ implementation
 uses
   { local }
   SourceToken, Tokens, ParseTreeNodeType, JcfSettings, FormatFlags,
-  TokenUtils;
+  TokenUtils, jcfbaseConsts;
 
 function IsUnitName(const pt: TSourceToken): boolean;
 var
@@ -109,12 +109,10 @@ begin
 
   if Result then
   begin
-    psMessage := 'Unit name caps: ';
-
     if fiCount = 1 then
-      psMessage := psMessage + 'One change was made: ' + lsLastChange
+      psMessage := Format(lisMsgOneChangeWasMade,[lisMsgUnitNameCaps, lsLastChange])
     else
-      psMessage := psMessage + IntToStr(fiCount) + ' changes were made';
+      psMessage := Format(lisMsgChangesWhereMade, [lisMsgUnitNameCaps, fiCount]);
   end;
 end;
 
@@ -137,7 +135,7 @@ begin
     // case-sensitive test - see if anything to do.
     if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
     begin
-      lsLastChange := lcSourceToken.SourceCode + ' to ' + lsChange;
+      lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
       lcSourceToken.SourceCode := lsChange;
       Inc(fiCount);
     end;

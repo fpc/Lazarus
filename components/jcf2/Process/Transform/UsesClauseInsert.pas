@@ -70,7 +70,8 @@ uses
   FormatFlags,
   ParseTreeNodeType,
   ParseTreeNode,
-  TokenUtils;
+  TokenUtils,
+  jcfbaseConsts;
 
 constructor TUsesClauseInsert.Create;
 begin
@@ -150,13 +151,9 @@ function TUsesClauseInsert.FinalSummary(out psMessage: string): boolean;
 begin
   Result := (fiCount > 0);
   if Result then
-  begin
-    psMessage := 'Uses clause insertion: ' + IntToStr(fiCount) + ' insertions were made';
-  end
+    psMessage := Format(lisMsgUsesClauseInsertion, [fiCount])
   else
-  begin
     psMessage := '';
-  end;
 end;
 
 procedure TUsesClauseInsert.SetDoneSection(const pbInterface: boolean);

@@ -115,7 +115,7 @@ uses
   AllProcesses,
   JcfRegistrySettings,
   JcfSettings, JcfStringUtils, ParseError, PreProcessorParseTree,
-  SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY, JcfUiTools;
+  SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY, JcfUiTools, jcfbaseConsts;
 
 function StrInsert(const psSub, psMain: String; const piPos: Integer): String;
 begin
@@ -329,12 +329,12 @@ var
   leParseError:  TEParseError;
   leMessageType: TStatusMessageType;
 begin
-  lsMessage := 'Exception ' + pe.ClassName + '  ' + pe.Message;
+  lsMessage := Format(lisMsgExpectionClassMsg, [pe.ClassName, pe.Message]);
 
   if pe is TEParseError then
   begin
     leParseError := TEParseError(pe);
-    lsMessage := lsMessage + NativeLineBreak + 'Near ' + leParseError.TokenMessage;
+    lsMessage := lsMessage + NativeLineBreak + Format(lisMsgNear2,[leParseError.TokenMessage]);
     liX := leParseError.XPosition;
     liY := leParseError.YPosition;
     leMessageType := mtParseError;

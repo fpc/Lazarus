@@ -109,6 +109,9 @@ type
 
 implementation
 
+uses
+  jcfbaseConsts;
+
 {-------------------------------------------------------------------------------
  TSourceToken }
 
@@ -152,10 +155,10 @@ begin
 
   if YPosition > 0 then
   begin
-    Result := Result + 'on line ' + IntToStr(YPosition);
+    Result := Format(lisMsgOnLine, [YPosition]);
 
     if XPosition > 0 then
-      Result := Result + ' position ' + IntToStr(XPosition);
+      Result := Format(lisMsgPosition, [Result, XPosition]);
   end;
 end;
 

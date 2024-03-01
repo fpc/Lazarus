@@ -56,7 +56,7 @@ implementation
 
 uses
   { local }
-  SourceToken, Tokens, ParseTreeNodeType, JcfSettings, FormatFlags;
+  SourceToken, Tokens, ParseTreeNodeType, JcfSettings, FormatFlags, jcfbaseConsts;
 
 
 function Excluded(const pt: TSourceToken): boolean;
@@ -117,12 +117,10 @@ begin
 
   if Result then
   begin
-    psMessage := 'Specific word caps: ';
-
     if fiCount = 1 then
-      psMessage := psMessage + 'One change was made: ' + lsLastChange
+      psMessage := Format(lisMsgOneChangeWasMade,[lisMsgSpecificWordCaps, lsLastChange])
     else
-      psMessage := psMessage + IntToStr(fiCount) + ' changes were made';
+      psMessage := Format(lisMsgChangesWhereMade, [lisMsgSpecificWordCaps, fiCount]);
   end;
 end;
 
@@ -149,7 +147,7 @@ begin
     // case-sensitive test - see if anything to do.
     if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
     begin
-      lsLastChange := lcSourceToken.SourceCode + ' to ' + lsChange;
+      lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
       lcSourceToken.SourceCode := lsChange;
       Inc(fiCount);
     end;

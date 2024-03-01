@@ -85,7 +85,7 @@ implementation
 
 uses
   { local }
-  JcfLog, JcfRegistrySettings, diffmerge;
+  JcfLog, JcfRegistrySettings, diffmerge, jcfbaseConsts;
 
 constructor TEditorConverter.Create;
 begin
@@ -208,16 +208,16 @@ begin
   if fiConvertCount = 0 then
   begin
     if ConvertError then
-      lsMessage := 'Aborted due to error'
+      lsMessage := lisMsgAbortedDueToError
     else
-      lsMessage := 'Nothing done';
+      lsMessage := lisMsgNothingDone;
   end
   {
   else if fbAbort then
-    lsMessage := 'Aborted after ' + DescribeFileCount(fiConvertCount)
+    lsMessage := Format(lisMsgAbortedAfter, [fiConvertCount])
   }
   else if fiConvertCount > 1 then
-    lsMessage := 'Finished processing ' + DescribeFileCount(fiConvertCount)
+    lsMessage := Format(lisMsgFinishedProcessing, [fiConvertCount])
   else
     lsMessage := '';
 

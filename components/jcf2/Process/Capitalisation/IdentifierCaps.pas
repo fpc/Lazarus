@@ -58,7 +58,7 @@ implementation
 uses
   { local }
   SourceToken, Tokens, ParseTreeNodeType,
-  JcfSettings, FormatFlags, TokenUtils;
+  JcfSettings, FormatFlags, TokenUtils, jcfbaseConsts;
 
 
 function Excluded(const pt: TSourceToken): boolean;
@@ -123,12 +123,10 @@ begin
   if (fiIdentifierCount > 0) then
   begin
     Result := True;
-    psMessage := 'Identifier caps: ';
-
     if fiIdentifierCount = 1 then
-      psMessage := psMessage + 'One change was made: ' + lsLastChange
+      psMessage := Format(lisMsgOneChangeWasMade, [lisMsgIdentifierCaps, lsLastChange])
     else
-      psMessage := psMessage + IntToStr(fiIdentifierCount) + ' changes were made';
+      psMessage := Format(lisMsgChangesWhereMade, [lisMsgIdentifierCaps, fiIdentifierCount]);
   end;
 
   if (fiNonIdentifierCount > 0) then
@@ -137,12 +135,10 @@ begin
     if psMessage <> '' then
       psMessage := psMessage + '.   ';
 
-    psMessage := psMessage + 'Non-identifier caps: ';
-
     if fiNonIdentifierCount = 1 then
-      psMessage := psMessage + 'One change was made: ' + lsLastChange
+      psMessage := psMessage + Format(lisMsgOneChangeWasMade, [lisMsgNonIdentifierCaps, lsLastChange])
     else
-      psMessage := psMessage + IntToStr(fiNonIdentifierCount) + ' changes were made';
+      psMessage := psMessage + Format(lisMsgChangesWhereMade, [lisMsgNonIdentifierCaps, fiNonIdentifierCount]);
   end;
 
 end;
@@ -181,7 +177,7 @@ begin
       // case-sensitive test - see if anything to do.
       if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
       begin
-        lsLastChange := lcSourceToken.SourceCode + ' to ' + lsChange;
+        lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
         lcSourceToken.SourceCode := lsChange;
         Inc(fiIdentifierCount);
       end;
@@ -200,7 +196,7 @@ begin
       // case-sensitive test - see if anything to do.
       if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
       begin
-        lsLastChange := lcSourceToken.SourceCode + ' to ' + lsChange;
+        lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
         lcSourceToken.SourceCode := lsChange;
         Inc(fiNonIdentifierCount);
       end;

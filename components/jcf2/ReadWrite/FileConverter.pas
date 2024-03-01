@@ -250,8 +250,7 @@ begin
           lsOutType := lisMsgBackup
         else
           lsOutType := lisMsgOutput;
-          
-        wRes := GetUI.MessageDlgUI(lsOutType + lisMsgFile + lsOut + lisMsgExistsAlreadyRemoveIt);
+        wRes := GetUI.MessageDlgUI(Format(lisMsgExistsAlreadyRemoveIt, [lsOutType, lisMsgFile, lsOut]));
       end;
 
       if wRes = mrAll then
@@ -263,7 +262,7 @@ begin
       if wRes = mrYes then
       begin
         if not DeleteFile(lsOut) then
-          raise Exception.Create(lisMsgFailedToDelete + lsOutType + lisMsgFile + lsOut);
+        raise Exception.Create(Format(lisMsgFailedToDelete,[lsOutType, lisMsgFile, lsOut]));
       end
       else if wRes = mrNo then
       begin
@@ -492,9 +491,9 @@ begin
       lsMessage := lisMsgNothingDone;
   end
   else if fbAbort then
-    lsMessage := lisMsgAbortedAfter + DescribeFileCount(fiConvertCount)
+    lsMessage := Format(lisMsgAbortedAfter, [fiConvertCount])
   else if fiConvertCount > 1 then
-    lsMessage := lisMsgFinishedProcessing + DescribeFileCount(fiConvertCount)
+    lsMessage := Format(lisMsgFinishedProcessing, [fiConvertCount])
   else
     lsMessage := '';
 

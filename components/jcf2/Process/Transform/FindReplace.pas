@@ -54,7 +54,8 @@ uses
   { local }
   JcfSettings,
   SourceToken,
-  FormatFlags;
+  FormatFlags,
+  jcfbaseConsts;
 
 { TFindReplace }
 
@@ -75,13 +76,9 @@ function TFindReplace.FinalSummary(out psMessage: string): boolean;
 begin
   Result := (fiCount > 0);
   if Result then
-  begin
-    psMessage := 'Replace: ' + IntToStr(fiCount) + ' changes were made';
-  end
+    psMessage := Format(lisMsgReplaceChangesWereMade, [fiCount])
   else
-  begin
     psMessage := '';
-  end;
 end;
 
 

@@ -67,7 +67,7 @@ uses
   { local }
   JcfStringUtils,
   SourceToken, FormatFlags, JcfSettings, SetReturns,
-  TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNodeType;
+  TokenUtils, JcfMiscFunctions, Tokens, ParseTreeNodeType, jcfbaseConsts;
 
 {$WARN 6058 off}  // supress note: function/procedure marked as inline is not inlined
 
@@ -224,10 +224,7 @@ var
 begin
   if piSpacesToEnd < 0 then
   begin
-    lsMessage := 'Spaces to end is ' + IntToStr(piSpacesToEnd) +
-      ' on ' + pcNext.Describe + ' at ' + pcNext.DescribePosition +
-      ' line is ' + NativeLineBreak + pcNext.SourceLine;
-
+    lsMessage := Format(lisMsgSpacesToEnd, [piSpacesToEnd, pcNext.Describe, pcNext.DescribePosition]) + NativeLineBreak + pcNext.SourceLine;
     Raise Exception.Create(lsMessage);
   end;
 

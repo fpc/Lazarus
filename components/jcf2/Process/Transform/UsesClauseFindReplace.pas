@@ -67,7 +67,8 @@ uses
   Tokens,
   FormatFlags,
   ParseTreeNodeType,
-  TokenUtils;
+  TokenUtils,
+  jcfbaseConsts;
 
 constructor TUsesClauseFindReplace.Create;
 begin
@@ -158,13 +159,9 @@ function TUsesClauseFindReplace.FinalSummary(out psMessage: string): boolean;
 begin
   Result := (fiCount > 0);
   if Result then
-  begin
-    psMessage := 'Uses clause find/replace: ' + IntToStr(fiCount) + ' changes were made';
-  end
+    psMessage := Format(lisMsgUsesClauseFindReplace, [fiCount])
   else
-  begin
     psMessage := '';
-  end;
 end;
 
 function TUsesClauseFindReplace.MatchesSearch(const ps: string): boolean;

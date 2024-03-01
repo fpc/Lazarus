@@ -74,7 +74,7 @@ uses
   { JCF  }
   JcfStringUtils,
   SourceToken, Tokens, ParseTreeNode, ParseTreeNodeType, TokenUtils,
-  JcfRegistrySettings;
+  JcfRegistrySettings, jcfbaseConsts;
 
 function DisplayFloat(const ex: extended): string;
 begin
@@ -199,49 +199,43 @@ function TBasicStats.FinalSummary(out psMessage: string): boolean;
 begin
   Result := True;
 
-  psMessage := NativeLineBreak + 'Basic numbers and averages: ' + NativeLineBreak +
-    'Unit is ' + IntToStr(fiLines) + ' lines long' + NativeLineBreak +
-    'Unit has ' + IntToStr(fiTotalTokens) + ' tokens in ' +
-    IntToStr(fiTotalChars) + ' characters: ' + NativeLineBreak +
-    DisplayRatio(fiTotalChars, fiTotalTokens) + ' chars per token' + NativeLineBreak +
-    DisplayRatio(fiTotalChars, fiLines) + ' chars per line ' + NativeLineBreak +
-    DisplayRatio(fiTotalTokens, fiLines) + ' tokens per line ' +
+  psMessage := NativeLineBreak + lisMsgStatsBasicNumbers + NativeLineBreak +
+    Format(lisMsgStatsLinesLong, [fiLines]) + NativeLineBreak +
+    Format(lisMsgStatsUnitHasTokens, [fiTotalTokens, fiTotalChars]) + NativeLineBreak +
+    Format(lisMsgStatsCharsPerToken, [DisplayRatio(fiTotalChars, fiTotalTokens)]) + NativeLineBreak +
+    Format(lisMsgStatsCharsPerLine, [DisplayRatio(fiTotalChars, fiLines)]) + NativeLineBreak +
+    Format(lisMsgStatsTokensPerLine, [DisplayRatio(fiTotalTokens, fiLines)]) + NativeLineBreak + NativeLineBreak;
+
+  psMessage := psMessage +
+    Format(lisMsgStatsCommentsIn,[fiCommentTokens, fiCommentChars]) + NativeLineBreak +
+    Format(lisMsgStatsCharsPerComment, [DisplayRatio(fiCommentChars, fiCommentTokens)]) + NativeLineBreak +
+    Format(lisMsgStatsCharsAreComments, [DisplayPercent(fiCommentChars, fiTotalChars)]) +
     NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(fiCommentTokens) + ' comments in ' + IntToStr(fiCommentChars) +
-    ' characters ' + NativeLineBreak +
-    DisplayRatio(fiCommentChars, fiCommentTokens) + ' chars per comment' +
-    NativeLineBreak +
-    DisplayPercent(fiCommentChars, fiTotalChars) + ' of chars are comments ' +
+    Format(lisMsgStatsSpacingAndReturnTokens, [fiSpaceTokens, fiSpaceChars]) + NativeLineBreak +
+    Format(lisMsgStatsCharsPerToken, [DisplayRatio(fiSpaceChars, fiSpaceTokens)]) + NativeLineBreak +
+    Format(lisMsgStatsCharsAreSpacing, [DisplayPercent(fiSpaceChars, fiTotalChars)]) +
     NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(fiSpaceTokens) + ' spacing and return tokens in ' +
-    IntToStr(fiSpaceChars) + ' characters ' + NativeLineBreak +
-    DisplayRatio(fiSpaceChars, fiSpaceTokens) + ' chars per token' + NativeLineBreak +
-    DisplayPercent(fiSpaceChars, fiTotalChars) + ' of chars are spacing ' +
+    Format(lisMsgStatsSolidTokens, [fiSolidTokens, fiSolidChars]) + NativeLineBreak +
+    Format(lisMsgStatsCharsPerToken, [DisplayRatio(fiSolidChars, fiSolidTokens)]) + NativeLineBreak +
+    Format(lisMsgStatsCharsAreSolid, [DisplayPercent(fiSolidChars, fiTotalChars)]) + NativeLineBreak +
+    Format(lisMsgStatsTokensAreSolid, [DisplayPercent(fiSolidTokens, fiTotalTokens)]) +
     NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(fiSolidTokens) + ' solid tokens in ' + IntToStr(fiSolidChars) +
-    ' characters ' + NativeLineBreak +
-    DisplayRatio(fiSolidChars, fiSolidTokens) + ' chars per token' + NativeLineBreak +
-    DisplayPercent(fiSolidChars, fiTotalChars) + ' of chars are solid' + NativeLineBreak +
-    DisplayPercent(fiSolidTokens, fiTotalTokens) + ' of tokens are solid' +
-    NativeLineBreak + NativeLineBreak;
+    Format(lisMsgStatsConstants, [fiConsts]) + NativeLineBreak +
+    Format(lisMsgStatsTypes, [fiTypes]) + NativeLineBreak +
+    Format(lisMstStatsClasses, [fiClasses]) + NativeLineBreak +
+    Format(lisMsgStatsInterfaces, [fiInterfaces])+ NativeLineBreak +
+    Format(lisMsgStatsProcedures, [fiAllProcs]) + NativeLineBreak + NativeLineBreak;
 
   psMessage := psMessage +
-    IntToStr(fiConsts) + ' constants ' + NativeLineBreak +
-    IntToStr(fiTypes) + ' types ' + NativeLineBreak +
-    IntToStr(fiClasses) + ' classes ' + NativeLineBreak +
-    IntToStr(fiInterfaces) + ' interfaces ' + NativeLineBreak +
-    IntToStr(fiAllProcs) + ' procedures ' + NativeLineBreak + NativeLineBreak;
-
-  psMessage := psMessage +
-    IntToStr(liInterfaceGlobalVars) + ' global vars in interface ' + NativeLineBreak +
-    IntToStr(liGlobalVars) + ' global vars in rest of unit ' + NativeLineBreak +
-    IntToStr(fiInterfaceProcs) + ' procedures in interface ' +
+    Format(lisMsgStatsGlobalVarsInInterface, [liInterfaceGlobalVars]) + NativeLineBreak +
+    Format(lisMsgStatsGlobalVarsInRestOfUnit, [liGlobalVars]) + NativeLineBreak +
+    Format(lisMsgStatsProceduresInInterface, [fiInterfaceProcs]) +
     NativeLineBreak + NativeLineBreak;
 
 end;

@@ -67,7 +67,8 @@ uses
   Tokens,
   FormatFlags,
   ParseTreeNodeType,
-  TokenUtils;
+  TokenUtils,
+  jcfbaseConsts;
 
 constructor TUsesClauseRemove.Create;
 begin
@@ -149,13 +150,9 @@ function TUsesClauseRemove.FinalSummary(out psMessage: string): boolean;
 begin
   Result := (fiCount > 0);
   if Result then
-  begin
-    psMessage := 'Uses clause removal: ' + IntToStr(fiCount) + ' removals were made';
-  end
+    psMessage := Format(lisMsgUsesClauseRemoval, [fiCount])
   else
-  begin
     psMessage := '';
-  end;
 end;
 
 function TUsesClauseRemove.MatchesSearch(const ps: string): boolean;
