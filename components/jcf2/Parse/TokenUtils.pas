@@ -636,8 +636,7 @@ begin
   for liLoop := 0 to pcNode.ChildNodeCount - 1 do
   begin
     lcLeafItem := pcNode.ChildNodes[liLoop];
-    if (lcLeafItem is TSourceToken) and
-      (TSourceToken(lcLeafItem).TokenType = ttWord) then
+    if (lcLeafItem <> nil) and (lcLeafItem.NodeType = nIdentifier) then
       Inc(Result);
   end;
 end;
