@@ -1,5 +1,13 @@
 <table cellspacing="0" cellpadding="0" class="bar" width="100%">
 <tr>
-<td valign="top" align="center"><span class="footer">The latest version of this document can be found at </span><a href="http://lazarus-ccr.sourceforge.net/docs/lcl">lazarus-ccr.sourceforge.net</a><span class="footer">.</span></td>
+<td align="center">
+Version 3.4
+</td>
+<td align="center">
+<a href="https://lazarus-ccr.sourceforge.io/docs/" 
+  alt="HTML content Hosted on Source Forge">
+Hosted on Source Forge
+</a>
+</td>
 </tr>
 </table>
