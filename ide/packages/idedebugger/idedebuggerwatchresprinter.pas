@@ -464,7 +464,8 @@ begin
 
     if (Resolved.StructAddrFormat <> vdfStructAddressOff) or (AResValue.FieldCount = 0)
     then begin
-      Result := PrintNumber(AResValue.DataAddress, AResValue.DataAddress, FTargetAddressSize, Resolved);
+      // TODO: for 32 bit target, sign extend the 2nd argument
+      Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, Resolved);
       if (Resolved.PointerFormat = vdfPointerTypedAddress) and (tn <> '') then
         Result := tn + '(' + Result + ')';
 
