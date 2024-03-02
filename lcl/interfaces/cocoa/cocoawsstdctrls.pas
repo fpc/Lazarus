@@ -1315,27 +1315,16 @@ end;
 class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
-  txt : NSString;                 // NSString for AText
-  txtWithoutLineBreak: NSString;  // need not release
-  field: NSTextField;
+  txt : String;
+  mxl : Integer;
 begin
   if not AWinControl.HandleAllocated then exit;
 
-  field:= NSTextField(AWinControl.Handle);
-  if TCustomEdit(AWinControl).PasswordChar=#0 then
-  begin
-    // TCocoaTextField
-    txt:= NSStringUtf8(AText);
-    txtWithoutLineBreak:= NSStringRemoveLineBreak(txt);
-    field.setStringValue(txtWithoutLineBreak);
-    field.textDidChange(nil); // check maxLength and calls controls callback (if any)
-    txt.release;
-  end
-  else
-  begin
-    // TCocoaSecureTextField
-    ControlSetTextWithChangeEvent(field, AText);
-  end;
+  txt := AText;
+  mxl := TCustomEdit(AWinControl).MaxLength;
+  if (mxl > 0) and (UTF8Length(txt) > mxl) then
+    txt := UTF8Copy(txt, 1, mxl);
+  ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
 end;
 
 class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
