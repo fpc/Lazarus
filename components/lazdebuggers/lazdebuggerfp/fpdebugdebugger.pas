@@ -2952,7 +2952,7 @@ var
   n: String;
 begin
   case AnEventType of
-    deExitProcess: begin
+    deExitProcess, deDetachFromProcess: begin
       FDebugger.FExceptionStepper.DoDbgStopped;
       exit;
     end;
@@ -4058,6 +4058,11 @@ begin
      not assigned(FDbgController.MainProcess)
   then
   begin
+    try
+      FExceptionStepper.DoDbgStopped; // clear any old internal breakpoints
+    except
+      assert(False, 'TFpDebugDebugger.RequestCommand: DoDbgStopped failed');
+    end;
     FDbgController.ExecutableFilename:=FileName;
     AConsoleTty:=TFpDebugDebuggerProperties(GetProperties).ConsoleTty;
     FDbgController.ConsoleTty:=AConsoleTty;
@@ -4709,6 +4714,12 @@ begin
   {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
 
   Application.RemoveAsyncCalls(Self);
+  try
+    FExceptionStepper.DoDbgStopped;
+  except
+    assert(False, 'TFpDebugDebugger.Destroy: DoDbgStopped failed');
+  end;
+
   FreeAndNil(FFpDebugOutputQueue);
   FreeAndNil(FBreakUpdateList);
   FreeAndNil(FDbgController);
@@ -4813,7 +4824,7 @@ begin
       if (t <> ct) and (t.SuspendCount > 0) then // new threads will have count=0
         t.DecSuspendCount;
 
-  if FDbgController.Event = deExitProcess then
+  if FDbgController.Event in [deExitProcess, deDetachFromProcess] then
     Application.QueueAsyncCall(@DebugLoopFinished, 0);
 end;
 

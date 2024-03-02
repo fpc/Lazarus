@@ -1732,6 +1732,9 @@ end;
 procedure TDbgController.ProcessLoop;
 
   function MaybeDetach: boolean;
+  var
+    x, f: boolean;
+    c: TDbgControllerCmd;
   begin
     Result := InterLockedExchange(FDetaching, 0) <> 0;
     if not Result then
@@ -1740,8 +1743,16 @@ procedure TDbgController.ProcessLoop;
     if Assigned(FCommand) then
       FreeAndNil(FCommand);
     FPDEvent := deFinishedStep; // go to pause, if detach fails
-    if FCurrentProcess.Detach(FCurrentProcess, FCurrentThread) then
-      FPDEvent := deExitProcess;
+    if FCurrentProcess.Detach(FCurrentProcess, FCurrentThread) then begin
+      FPDEvent := deDetachFromProcess;
+      if assigned(FOnThreadProcessLoopCycleEvent) then begin
+        x := True;
+        c := nil;
+        f := True;
+        FOnThreadProcessLoopCycleEvent(x, FPDEvent, c, f);
+        FPDEvent := deDetachFromProcess;
+      end;
+    end;
   end;
 var
   AProcessIdentifier: THandle;
@@ -2036,7 +2047,7 @@ begin
             HasPauseRequest := False; // The debugger will enter Pause, so the internal-pause is handled.
         end;
       end;
-    deExitProcess:
+    deExitProcess, deDetachFromProcess:
       begin
       (* Only events for the main process get here / See ProcessLoop *)
         if FCurrentProcess = FMainProcess then FMainProcess := nil;
@@ -2148,7 +2159,7 @@ var
 begin
   debugln(FPDBG_FUNCCALL, ['CallRoutine BEGIN']);
   Result := nil;
-  if (FPDEvent in [deExitProcess, deFailed]) or
+  if (FPDEvent in [deExitProcess, deDetachFromProcess, deFailed]) or
      (FMainProcess = nil) or (FCurrentProcess = nil) or
      (FCurrentThread = nil) or
      (not FCurrentProcess.CanContinueForWatchEval(FCurrentThread))
