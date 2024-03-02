@@ -384,7 +384,7 @@ begin
   if CaseSensitive then
     Result := CompareStr(FnExt, Ext)
   else
-    Result := CompareText(FnExt, Ext);
+    Result := SysUtils.CompareText(FnExt, Ext); // SysUtils needed for Darwin-i386
   if Result < 0 then
     Result := -1
   else if Result > 0 then
