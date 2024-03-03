@@ -1442,7 +1442,6 @@ constructor TDbgStackUnwinderAVR.Create(AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
   FAddressSize := 2;
-  FLastFrameBaseIncreased := True;
   FCodeReadErrCnt := 0;
 end;
 
@@ -1479,6 +1478,7 @@ var
   i: Integer;
   R: TDbgRegisterValue;
 begin
+  FLastFrameBaseIncreased := True;
   CodePointer      := Thread.GetInstructionPointerRegisterValue;
   StackPointer     := Thread.GetStackPointerRegisterValue;
   FrameBasePointer := Thread.GetStackBasePointerRegisterValue;
