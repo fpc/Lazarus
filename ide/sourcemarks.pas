@@ -64,6 +64,7 @@ type
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
      ahaTopInfoHint,       ahaCaretColor,         ahaOverviewGutter,
+     ahaGutterCurrentLine, ahaGutterNumberCurrentLine,
      ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
      ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive,
      ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplRecent, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight,

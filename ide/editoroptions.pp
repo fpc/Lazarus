@@ -40,7 +40,7 @@ interface
 
 uses
   // RTL, FCL
-  Classes, SysUtils, typinfo, fgl, resource,
+  Classes, SysUtils, typinfo, fgl, Math, resource,
   // LCL
   Graphics, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
   // LazUtils
@@ -132,6 +132,7 @@ const
     '',  // ahaSpecialVisibleChars
     '',  // ahaTopInfoHint
     '', '', // ahaCaretColor, ahaOverviewGutter
+    '', '', // ahaGutterCurrentLine, ahaGutterNumberCurrentLine
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
     '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
     '', '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplRecent, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
@@ -174,6 +175,8 @@ const
     { ahaTopInfoHint }         agnLine,
     { ahaCaretColor }          agnText,
     { ahaOverviewGutter }      agnGutter,
+    { ahaGutterCurrentLine }   agnGutter,
+    { ahaGutterNumberCurrentLine }   agnGutter,
     { ahaIfDefBlockInactive }  agnIfDef,
     { ahaIfDefBlockActive }    agnIfDef,
     { ahaIfDefBlockTmpActive } agnIfDef,
@@ -234,6 +237,8 @@ const
     { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaCaretColor }         [hafBackColor, hafForeColor],
     { ahaOverviewGutter }     [hafBackColor, hafForeColor, hafFrameColor],
+    { ahaGutterCurrentLine }  [hafBackColor],
+    { ahaGutterNumberCurrentLine }  [hafBackColor, hafForeColor, hafFrameColor, hafStyle],
     { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -1467,6 +1472,8 @@ type
 
   TEditorOptsScrollPastEolMode = (optScrollFixed, optScrollPage, optScrollNone);
 
+  TEditorSynGutterOptsLineColor = (glcOff, glcOn, glcLineNum);
+
   { TEditorSynGutterOptions }
 
   TEditorSynGutterOptions = class(TPersistent)
@@ -1476,6 +1483,7 @@ type
     FIndex: integer;
     FOffsetLeft: integer;
     FOffsetRight: integer;
+    FShowLineColor: TEditorSynGutterOptsLineColor;
     FVisible: boolean;
     FWidth: integer;
   protected
@@ -1485,6 +1493,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure ApplyTo(AGutterPart: TSynGutterPartBase);
+    procedure ApplyLineColorTo(AGutterPart: TSynGutterPartBase; Attri, NumAttri: TColorSchemeAttribute);
     procedure ApplyIndexTo(AGutterPart: TSynGutterPartBase);
 
     property Defaults: TEditorSynGutterOptions read FDefaults;
@@ -1495,6 +1504,7 @@ type
     property Width: integer read FWidth write FWidth;
     property OffsetLeft: integer read FOffsetLeft write FOffsetLeft;
     property OffsetRight: integer read FOffsetRight write FOffsetRight;
+    property ShowLineColor: TEditorSynGutterOptsLineColor read FShowLineColor write FShowLineColor;
   end;
 
   { TEditorSynGutterOptionsList }
@@ -2217,6 +2227,7 @@ begin
   FGClass := AGClass;
   FIndex   := AIdx;
   FVisible := True;
+  FShowLineColor := glcOn;
 
   if FGClass = TSynGutterMarks then begin
     FWidth := 2;
@@ -2224,6 +2235,15 @@ begin
   else
   if FGClass = TSynGutterLineNumber then begin
     FWidth := 2;
+    FShowLineColor := glcLineNum;
+  end
+  else
+  if FGClass = TSynGutterCodeFolding then begin
+    FShowLineColor := glcOff;
+  end
+  else
+  if FGClass = TSynGutterLineOverview then begin
+    FShowLineColor := glcOff;
   end;
 end;
 
@@ -2249,6 +2269,7 @@ begin
     FOffsetRight := TEditorSynGutterOptions(Source).FOffsetRight;
     FVisible     := TEditorSynGutterOptions(Source).FVisible;
     FWidth       := TEditorSynGutterOptions(Source).FWidth;
+    FShowLineColor := TEditorSynGutterOptions(Source).FShowLineColor;
   end;
 end;
 
@@ -2284,6 +2305,17 @@ begin
   AGutterPart.Visible := FVisible;
   AGutterPart.LeftOffset := FOffsetLeft;
   AGutterPart.RightOffset := FOffsetRight;
+end;
+
+procedure TEditorSynGutterOptions.ApplyLineColorTo(AGutterPart: TSynGutterPartBase; Attri,
+  NumAttri: TColorSchemeAttribute);
+begin
+  if AGutterPart = nil then exit;
+  case FShowLineColor of
+    glcOff:     ;
+    glcOn:      if Attri    <> nil then Attri.ApplyTo(AGutterPart.MarkupInfoCurrentLine);
+    glcLineNum: if NumAttri <> nil then NumAttri.ApplyTo(AGutterPart.MarkupInfoCurrentLine);
+  end;
 end;
 
 procedure TEditorSynGutterOptions.ApplyIndexTo(AGutterPart: TSynGutterPartBase);
@@ -2948,6 +2980,8 @@ begin
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
   AdditionalHighlightAttributes[ahaCaretColor]          := dlgCaretColor;
   AdditionalHighlightAttributes[ahaOverviewGutter]      := dlgOverviewGutterColor;
+  AdditionalHighlightAttributes[ahaGutterCurrentLine]   := dlgGutterCurrentLineOther;
+  AdditionalHighlightAttributes[ahaGutterNumberCurrentLine] := dlgGutterCurrentLineNumber;
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
   AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
   AdditionalHighlightAttributes[ahaIfDefBlockTmpActive] := dlgIfDefBlockTmpActive;
@@ -6472,6 +6506,8 @@ procedure TEditorOptions.SetMarkupColors(aSynEd: TSynEdit);
 var
   Scheme: TColorSchemeLanguage;
   TmpHl: TIDESynTextSyn;
+  Attri, AttriNum: TColorSchemeAttribute;
+  i: Integer;
 begin
   // Find current color scheme for default colors
   if (aSynEd.Highlighter = nil) then begin
@@ -6490,6 +6526,13 @@ begin
   // get current colorscheme:
   Scheme := GetColorSchemeLanguage(aSynEd.Highlighter);
   if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
+
+  Attri := Scheme.AttributeByEnum[ahaGutterCurrentLine];
+  AttriNum := Scheme.AttributeByEnum[ahaGutterNumberCurrentLine];
+  for i := 0 to GutterPartList.Count - 1 do
+    GutterPartList[i].ApplyLineColorTo(aSynEd.Gutter.Parts.ByClass[GutterPartList[i].GClass, 0], Attri, AttriNum);
+  for i := 0 to GutterRightPartList.Count - 1 do
+    GutterRightPartList[i].ApplyLineColorTo(aSynEd.Gutter.Parts.ByClass[GutterRightPartList[i].GClass, 0], Attri, AttriNum);
 end;
 
 procedure TEditorOptions.ApplyFontSettingsTo(ASynEdit: TSynEdit);

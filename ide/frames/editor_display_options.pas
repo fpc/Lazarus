@@ -42,6 +42,7 @@ type
   { TEditorDisplayOptionsFrame }
 
   TEditorDisplayOptionsFrame = class(TAbstractIDEOptionsEditor)
+    cbCurLineMarkup: TComboBox;
     GutterPartVisible: TCheckBox;
     chkTopInfoView: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
@@ -170,6 +171,7 @@ end;
 procedure TEditorDisplayOptionsFrame.UpdatePreviews;
 var
   i, j: Integer;
+  col: TEditorColorOptionsFrame;
 begin
   with GeneralPage do
     for i := Low(PreviewEdits) to High(PreviewEdits) do
@@ -183,6 +185,9 @@ begin
           FCurGutterRightPartList[j].ApplyIndexTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
         end;
       end;
+  col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
+  if col <> nil then
+    col.UpdateCurrentScheme;
 end;
 
 procedure TEditorDisplayOptionsFrame.EditorFontButtonClick(Sender: TObject);
@@ -354,6 +359,12 @@ begin
   spinGutterPartWidth.Value := FCurrentGutterPart.Width;
   spinGutterPartLeftOffs.Value := FCurrentGutterPart.OffsetLeft;
   spinGutterPartRightOffs.Value := FCurrentGutterPart.OffsetRight;
+  case FCurrentGutterPart.ShowLineColor of
+    glcOff:     cbCurLineMarkup.ItemIndex := 0;
+    glcOn:      cbCurLineMarkup.ItemIndex := 1;
+    glcLineNum: cbCurLineMarkup.ItemIndex := 2;
+  end;
+
   FGutterParsUpdating := False;
 
   btnGutterUp.Enabled := lbGutterParts.ItemIndex > 0;
@@ -362,6 +373,10 @@ begin
   ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := (FCurrentGutterPart <> nil) and
     (FCurrentGutterPart.GClass = TSynGutterLineNumber);
   ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled;
+
+  cbCurLineMarkup.Enabled := (FCurrentGutterPart <> nil) and
+    (FCurrentGutterPart.GClass <> TSynGutterLineNumber) and
+    (FCurrentGutterPart.GClass <> TSynGutterLineOverview);
 end;
 
 procedure TEditorDisplayOptionsFrame.btnGutterUpClick(Sender: TObject);
@@ -474,6 +489,11 @@ begin
   FCurrentGutterPart.Width := spinGutterPartWidth.Value;
   FCurrentGutterPart.OffsetLeft := spinGutterPartLeftOffs.Value;
   FCurrentGutterPart.OffsetRight := spinGutterPartRightOffs.Value;
+  case cbCurLineMarkup.ItemIndex of
+    0: FCurrentGutterPart.ShowLineColor := glcOff;
+    1: FCurrentGutterPart.ShowLineColor := glcOn;
+    2: FCurrentGutterPart.ShowLineColor := glcLineNum;
+  end;
 
   UpdatePreviews;
 end;
@@ -533,6 +553,9 @@ begin
   lblGutterPartWidth.Caption := lisGutterPartWidth;
   lblGutterPartMargin.Caption := lisGutterPartMargin;
 
+  cbCurLineMarkup.Items.Add(optDispGutterNoCurrentLineColor);
+  cbCurLineMarkup.Items.Add(optDispGutterUseCurrentLineColor);
+  cbCurLineMarkup.Items.Add(optDispGutterUseCurrentLineNumberColor);
 
   with GeneralPage do
     AddPreviewEdit(DisplayPreview);

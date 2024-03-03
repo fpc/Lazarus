@@ -12,13 +12,13 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   object MarginAndGutterGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 249
+    Height = 250
     Top = 0
     Width = 588
     Align = alTop
     AutoSize = True
     Caption = 'MarginAndGutterGroupBox'
-    ClientHeight = 229
+    ClientHeight = 230
     ClientWidth = 584
     TabOrder = 0
     object RightMarginLabel: TLabel
@@ -40,7 +40,7 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 325
       Height = 15
-      Top = 182
+      Top = 211
       Width = 121
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -112,11 +112,11 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     end
     object ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit
       AnchorSideLeft.Control = RightMarginComboBox
-      AnchorSideTop.Control = spinGutterPartLeftOffs
+      AnchorSideTop.Control = cbCurLineMarkup
       AnchorSideTop.Side = asrBottom
       Left = 265
       Height = 23
-      Top = 178
+      Top = 207
       Width = 54
       BorderSpacing.Top = 6
       MaxValue = 65536
@@ -277,12 +277,27 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       TabOrder = 9
       OnClick = rgGutterSiteClick
     end
+    object cbCurLineMarkup: TComboBox
+      AnchorSideLeft.Control = RightMarginComboBox
+      AnchorSideTop.Control = spinGutterPartLeftOffs
+      AnchorSideTop.Side = asrBottom
+      Left = 265
+      Height = 23
+      Top = 178
+      Width = 200
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 15
+      TabOrder = 11
+      Text = 'cbCurLineMarkup'
+      OnChange = spinGutterPartWidthChange
+    end
   end
   object EditorFontGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 113
-    Top = 255
+    Top = 256
     Width = 588
     Align = alTop
     AutoSize = True
@@ -432,8 +447,8 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 81
-    Top = 374
+    Height = 80
+    Top = 375
     Width = 588
     Align = alClient
     BorderSpacing.Top = 6

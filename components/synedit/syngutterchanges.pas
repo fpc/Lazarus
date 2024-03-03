@@ -26,6 +26,7 @@ type
   published
     property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor;
     property SavedColor: TColor read GetSavedColor write SetSavedColor;
+    property MarkupInfoCurrentLine;
   end;
 
 implementation
@@ -84,11 +85,7 @@ begin
   c := SynEdit.Lines.Count;
   t := ToIdx(GutterArea.TextArea.TopLine);
 
-  if MarkupInfo.Background <> clNone then
-  begin
-    Canvas.Brush.Color := MarkupInfo.Background;
-    Canvas.FillRect(AClip);
-  end;
+  PaintBackground(Canvas, AClip);
 
   Canvas.Pen.Width := Width;
   Canvas.Pen.EndCap:= pecFlat;

@@ -59,6 +59,7 @@ type
       override;
   published
     property MarkupInfo;
+    property MarkupInfoCurrentLine;
     property DigitCount: integer read FDigitCount write SetDigitCount;
     property ShowOnlyLineNumbersMultiplesOf: integer
              read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf;
@@ -248,24 +249,13 @@ begin
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
-  if MarkupInfo.Background <> clNone then
-    Canvas.Brush.Color := MarkupInfo.Background
-  else
-    Canvas.Brush.Color := Gutter.Color;
   dc := Canvas.Handle;
-  LCLIntf.SetBkColor(dc, TColorRef(Canvas.Brush.Color));
   FTextDrawer.BeginDrawing(dc);
   try
-    if MarkupInfo.Background <> clNone then
-      FTextDrawer.SetBackColor(MarkupInfo.Background)
-    else
-      FTextDrawer.SetBackColor(Gutter.Color);
-    if MarkupInfo.Foreground <> clNone then
-      fTextDrawer.SetForeColor(MarkupInfo.Foreground)
-    else
-      fTextDrawer.SetForeColor(SynEdit.Font.Color);
-    fTextDrawer.SetFrameColor(MarkupInfo.FrameColor);
-    fTextDrawer.Style := MarkupInfo.Style;
+    FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
+    fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
+    fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+    fTextDrawer.Style := MarkupInfoInternal.Style;
     // prepare the rect initially
     rcLine := AClip;
     rcLine.Bottom := AClip.Top;
@@ -294,6 +284,19 @@ begin
       if i <> LineInfo.LineRange.Top then
         s := '';
       // erase the background and draw the line number string in one go
+      if i - t = CaretRow then begin
+        FTextDrawer.SetBackColor(MarkupInfoCurLineMerged.Background);
+        fTextDrawer.SetForeColor(MarkupInfoCurLineMerged.Foreground);
+        fTextDrawer.SetFrameColor(MarkupInfoCurLineMerged.FrameColor);
+        fTextDrawer.Style := MarkupInfoCurLineMerged.Style;
+      end
+      else
+      if i - t = CaretRow+1 then begin
+        FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
+        fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
+        fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+        fTextDrawer.Style := MarkupInfoInternal.Style;
+      end;
       fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
         PChar(Pointer(S)),Length(S));
     end;
@@ -301,6 +304,10 @@ begin
     // now erase the remaining area if any
     if AClip.Bottom > rcLine.Bottom then
     begin
+      FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
+      fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
+      fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+      fTextDrawer.Style := MarkupInfoInternal.Style;
       rcLine.Top := rcLine.Bottom;
       rcLine.Bottom := AClip.Bottom;
       with rcLine do

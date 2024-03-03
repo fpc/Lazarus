@@ -58,6 +58,7 @@ type
   published
     property AutoSize;
     property Color;
+    property CurrentLineColor;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property LeftOffset;
     property RightOffset;
@@ -89,6 +90,7 @@ type
     property LineOffset: Integer read FLineOffset write SetLineOffset default 0;
     property LineOnRight: Boolean read FLineOnRight write SetLineOnRight default True;
     property MarkupInfo;
+    property MarkupInfoCurrentLine;
   end;
 
   { TSynEditMouseActionsGutter }
@@ -257,25 +259,47 @@ end;
 
 procedure TSynGutter.Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
 var
-  i: integer;
-  rcLine: TRect;
+  aCaretRow: LongInt;
+  i, t: integer;
+  rcLine, rcClip: TRect;
   dc: HDC;
 begin
+  aCaretRow := ToIdx(SynEdit.TextXYToScreenXY(SynEdit.CaretXY).Y);
+  if (aCaretRow < FirstLine) or (aCaretRow > LastLine) then
+    aCaretRow := -1;
+  FCaretRow := aCaretRow;
+
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
   LCLIntf.SetBkColor(dc, TColorRef(Canvas.Brush.Color));
 
+  rcClip := AClip;
+  t := Surface.TextBounds.Top;
   // Clear all
   TextDrawer.BeginDrawing(dc);
   TextDrawer.SetBackColor(Color);
   TextDrawer.SetForeColor(SynEdit.Font.Color);
   TextDrawer.SetFrameColor(clNone);
-   with AClip do
-     TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
+  if aCaretRow >= 0 then
+    rcClip.Bottom := t + aCaretRow * SynEdit.LineHeight;
+   with rcClip do
+     TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcClip, nil, 0);
+  if aCaretRow >= 0 then begin
+    rcClip.top := rcClip.Bottom + SynEdit.LineHeight;
+    rcClip.Bottom := AClip.Bottom;
+     with rcClip do
+       TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcClip, nil, 0);
+
+    rcClip.Bottom := rcClip.Top;
+    rcClip.top := rcClip.Top - SynEdit.LineHeight;
+    TextDrawer.SetBackColor(MarkupInfoCurLineMerged.Background);
+     with rcClip do
+       TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcClip, nil, 0);
+  end;
   TextDrawer.EndDrawing;
 
   AClip.Left := Surface.Left + LeftOffset;
-  AClip.Top  := Surface.TextBounds.Top + FirstLine * SynEdit.LineHeight;
+  AClip.Top  := t + FirstLine * SynEdit.LineHeight;
 
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
@@ -435,12 +459,7 @@ end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 begin
-  if MarkupInfo.Background <> clNone then
-    Canvas.Brush.Color := MarkupInfo.Background
-  else
-    Canvas.Brush.Color := Gutter.Color;
-  Canvas.Brush.Style := bsSolid;
-  Canvas.FillRect(AClip);
+  PaintBackground(Canvas, AClip);
 
   if FLineOnRight then begin
     AClip.Right := Min(AClip.Right, Left + LeftOffset + Width - FLineOffset);

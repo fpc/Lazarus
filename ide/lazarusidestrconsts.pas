@@ -2164,6 +2164,8 @@ resourcestring
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret (Text-Cursor)';
   dlgOverviewGutterColor          = 'Overview Gutter';
+  dlgGutterCurrentLineOther       = 'Current Line (other)';
+  dlgGutterCurrentLineNumber      = 'Current Line (number)';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
   dlgIfDefBlockActive             = 'Active $IFDEF code';
   dlgIfDefBlockTmpActive          = 'Included mixed state $IFDEF code';
@@ -6450,6 +6452,9 @@ resourcestring
   optDispGutterChanges = 'Changes';
   optDispGutterSeparator = 'Separator';
   optDispGutterFolding = 'Folding';
+  optDispGutterNoCurrentLineColor = 'No current line color';
+  optDispGutterUseCurrentLineColor = 'Use current line color';
+  optDispGutterUseCurrentLineNumberColor = 'Use current line number color';
 
 implementation
 

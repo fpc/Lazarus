@@ -42,6 +42,8 @@ type
     property DebugMarksImageIndex: Integer read FDebugMarksImageIndex write FDebugMarksImageIndex;
     property ColumnWidth: Integer read FColumnWidth; // initialized in Paint
     property ColumnCount: Integer read FColumnCount;
+  published
+    property MarkupInfoCurrentLine;
   end;
 
 implementation
@@ -225,11 +227,7 @@ var
   rcLine: TRect;
 begin
   if not Visible then exit;
-  if MarkupInfo.Background <> clNone then
-    Canvas.Brush.Color := MarkupInfo.Background
-  else
-    Canvas.Brush.Color := Gutter.Color;
-  LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
+  PaintBackground(Canvas, AClip);
 
   if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then
     FColumnWidth := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages).Width

@@ -42,7 +42,8 @@ uses
   // IdeConfig
   IDEProcs, LazConf,
   // IDE
-  EditorOptions, editor_general_options, LazarusIDEStrConsts, SourceMarks;
+  EditorOptions, editor_general_options,
+  LazarusIDEStrConsts, SourceMarks;
 
 type
 
@@ -168,7 +169,6 @@ type
 
     procedure SetCurrentScheme(SynInstance: TSrcIDEHighlighter; const ColorScheme: String);
     procedure ApplyCurrentScheme;
-    procedure UpdateCurrentScheme;
 
     procedure StatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
     procedure SpecialLineMarkup(Sender: TObject; Line: Integer;
@@ -192,12 +192,15 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure SelectAhaColor(aha: TAdditionalHilightAttribute);
+    procedure UpdateCurrentScheme;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property UnsavedColorSchemeSettings: TColorSchemeFactory read FTempColorSchemeSettings;
     property UnsavedColorSchemeDefaultNames: TStringList read FColorSchemes;
   end;
 
 implementation
+
+uses editor_display_options;
 
 {$R *.lfm}
 
@@ -1354,19 +1357,40 @@ end;
 
 procedure TEditorColorOptionsFrame.UpdateCurrentScheme;
 var
-  a: Integer;
+  a, i: Integer;
+  col: TEditorDisplayOptionsFrame;
+  Attri, AttriNum: TColorSchemeAttribute;
 begin
   // there is always a colorscheme selected, except during initialization
   with GeneralPage do begin
     if FCurrentColorScheme = nil then
       exit;
+
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       PreviewEdits[a].BeginUpdate;
     try
       if not FIsEditingDefaults then
         FCurrentColorScheme.ApplyTo(FCurrentHighlighter);
+
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
         FCurrentColorScheme.ApplyTo(PreviewEdits[a]);
+
+        Attri := FCurrentColorScheme.AttributeByEnum[ahaGutterCurrentLine];
+        AttriNum := FCurrentColorScheme.AttributeByEnum[ahaGutterNumberCurrentLine];
+        col := TEditorDisplayOptionsFrame(FDialog.FindEditor(TEditorDisplayOptionsFrame));
+        if (col <> nil) then begin
+          for i := 0 to col.CurGutterPartList.Count - 1 do
+            col.CurGutterPartList[i].ApplyLineColorTo(PreviewEdits[a].Gutter.Parts.ByClass[col.CurGutterPartList[i].GClass, 0], Attri, AttriNum);
+          for i := 0 to col.CurGutterRightPartList.Count - 1 do
+            col.CurGutterRightPartList[i].ApplyLineColorTo(PreviewEdits[a].Gutter.Parts.ByClass[col.CurGutterRightPartList[i].GClass, 0], Attri, AttriNum);
+        end
+        else begin
+          for i := 0 to EditorOpts.GutterPartList.Count - 1 do
+            EditorOpts.GutterPartList[i].ApplyLineColorTo(PreviewEdits[a].Gutter.Parts.ByClass[EditorOpts.GutterPartList[i].GClass, 0], Attri, AttriNum);
+          for i := 0 to EditorOpts.GutterRightPartList.Count - 1 do
+            EditorOpts.GutterRightPartList[i].ApplyLineColorTo(PreviewEdits[a].Gutter.Parts.ByClass[EditorOpts.GutterRightPartList[i].GClass, 0], Attri, AttriNum);
+        end;
+
         PreviewEdits[a].Invalidate;
       end;
     finally

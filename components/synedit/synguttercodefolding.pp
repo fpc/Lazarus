@@ -114,6 +114,7 @@ type
     procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
   published
     property MarkupInfo;
+    property MarkupInfoCurrentLine;
     property MouseActionsExpanded: TSynEditMouseActions
       read GetMouseActionsExpanded write SetMouseActionsExpanded;
     property MouseActionsCollapsed: TSynEditMouseActions
@@ -737,12 +738,7 @@ begin
     LineOffset := 2;
   HalfBoxSize := Min(Width, LineHeight - cNodeOffset*2) div 2;
 
-  if MarkupInfo.Background <> clNone then
-  begin
-    Canvas.Brush.Color := MarkupInfo.Background;
-    LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
-    Canvas.FillRect(AClip);
-  end;
+  PaintBackground(Canvas, AClip);
 
   with Canvas do
   begin
