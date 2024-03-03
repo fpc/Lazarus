@@ -3764,13 +3764,13 @@ begin
 
   LazFindReplaceDialog.Options := NewOptions;
   DlgResult:=LazFindReplaceDialog.ShowModal;
-  InputHistoriesSO.FindOptions[EditorComponent.SelAvail]:=LazFindReplaceDialog.Options;
-  InputHistoriesSO.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
   if DlgResult = mrCancel then
   begin
     LazFindReplaceDialog.RestoreState(AState);
     exit;
   end;
+  InputHistoriesSO.FindOptions[EditorComponent.SelAvail]:=LazFindReplaceDialog.Options;
+  InputHistoriesSO.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
   //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
   Replace:=ssoReplace in LazFindReplaceDialog.Options;
