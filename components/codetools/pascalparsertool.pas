@@ -4699,13 +4699,13 @@ begin
       SaveRaiseCharExpectedButAtomFound(20170421195756,';');
   end else begin
     if CurPos.Flag=cafWord then begin
-      if (ClassDesc=ctnClass) and UpAtomIs('SEALED') then begin
+      if (ClassDesc in [ctnClass,ctnObject]) and UpAtomIs('SEALED') then begin
         CreateChildNode;
         CurNode.Desc:=ctnClassSealed;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;
         ReadNextAtom;
-      end else if (ClassDesc=ctnClass) and UpAtomIs('ABSTRACT') then begin
+      end else if (ClassDesc in [ctnClass,ctnObject]) and UpAtomIs('ABSTRACT') then begin
         CreateChildNode;
         CurNode.Desc:=ctnClassAbstract;
         CurNode.EndPos:=CurPos.EndPos;

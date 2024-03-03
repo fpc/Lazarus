@@ -61,6 +61,7 @@ type
     procedure TestParseMultilineStringDelphi;
     procedure TestParseUnderscoreIsSeparator;
     procedure TestParseDirective_IF_SizeOf_Char;
+    procedure TestParseObjectSealedAbstract;
   end;
 
 implementation
@@ -695,6 +696,23 @@ begin
   '{$endif}',
   'begin',
   '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseObjectSealedAbstract;
+begin
+  StartProgram;
+  Add([
+  'type',
+  'TFoo = object',
+  'end;',
+  'TBar = object sealed (TFoo)',
+  '  Field1:boolean;',
+  'end;',
+  'TBar2 = object abstract (TFoo)',
+  '  Field1:boolean;',
+  'end;',
+  'begin']);
   ParseModule;
 end;
 
