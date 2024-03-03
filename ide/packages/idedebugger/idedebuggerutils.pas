@@ -265,9 +265,35 @@ end;
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
   AnIndex: String): AnsiString;
 var
-  s, e, p, p2: PChar;
-  MaybeBeforeRange, InString, FoundDotDot: Boolean;
-  RStart, InRndBracket, InSqrBracket: Integer;
+  s, e, p: PChar;
+  MaybeBeforeArrayIdx, InString, FoundDotDot: Boolean;
+  RStart, InRndBracket, InSqrBracket, InArrayIdxBracket: Integer;
+
+  RStartStack: array of record
+    RStart: integer;
+    InRnd, InSqr: integer;
+    FoundDotDot: Boolean;
+  end;
+
+  procedure PushData;
+  begin
+    if InArrayIdxBracket >= Length(RStartStack) then
+      SetLength(RStartStack, InArrayIdxBracket + 8);
+    RStartStack[InArrayIdxBracket].RStart      := RStart;
+    RStartStack[InArrayIdxBracket].InRnd       := InRndBracket;
+    RStartStack[InArrayIdxBracket].InSqr       := InSqrBracket;
+    RStartStack[InArrayIdxBracket].FoundDotDot := FoundDotDot;
+    FoundDotDot := False;
+    InRndBracket := 0;
+    InSqrBracket := 0;
+  end;
+  procedure PopData;
+  begin
+    RStart       := RStartStack[InArrayIdxBracket].RStart;
+    InRndBracket := RStartStack[InArrayIdxBracket].InRnd;
+    InSqrBracket := RStartStack[InArrayIdxBracket].InSqr;
+    FoundDotDot  := RStartStack[InArrayIdxBracket].FoundDotDot;
+  end;
 begin
   Result := AnArrayExpression + '[' + AnIndex + ']';
   if AnArrayExpression = '' then
@@ -276,82 +302,112 @@ begin
   s := @AnArrayExpression[1];
   p := s;
   e := @AnArrayExpression[Length(AnArrayExpression)];
-  MaybeBeforeRange := False;
+
+  MaybeBeforeArrayIdx := False;
+  InRndBracket := 0;
+  InSqrBracket := 0;
+  FoundDotDot := False;
+  InArrayIdxBracket := 0;
   InString := False;
   dec(p);
   while p < e do begin
     inc(p);
     if p^ = '''' then begin
       InString := not InString;
-      MaybeBeforeRange := True; // sub-range of string
+      MaybeBeforeArrayIdx := True; // sub-range of string
       Continue;
     end;
     if InString then
       Continue;
 
-    if p^ in ['@', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then
-      MaybeBeforeRange := False  // after operator. A [1..5] would be a set of byte
 
-    else
-    if (p - s >= 2) and
-       (p[-2] in [#1..#32]) and (p[-1] in ['i', 'I']) and
-       (p^ in ['n', 'N']) and  (p[1] in [#1..#32])
-    then
-      MaybeBeforeRange := False  // after IN operator. A [1..5] would be a set of byte
+    if p^ in ['@', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then begin
+      MaybeBeforeArrayIdx := False;  // after operator. A [1..5] would be a set of byte
 
-    else
-    if p^ in ['a'..'z', 'A'..'Z', '_', ')', ']'] then
-      MaybeBeforeRange := True  // after identifier, or after ")" or "]"
-
-    else
-    if (p^ = '[') and MaybeBeforeRange then begin
-      // maybe found first range
-      p2 := nil;
-      RStart := p - s; // Length of substring before "["
-
-
-      // check if this is a slice
-      InRndBracket := 0;
-      InSqrBracket := 0;
-      FoundDotDot := False;
-      while p < e do begin
-        inc(p);
-        if p^ = '''' then begin
-          InString := not InString;
-          Continue;
-        end;
-        if InString then
-          Continue;
-        if (p^ = '.') and (p[1] = '.') then begin FoundDotDot := True; inc(p); end
-        else if (p^ = '(') then inc(InRndBracket)
-        else if (p^ = ')') then begin
-          dec(InRndBracket);
-          if InRndBracket < 0 then
-            break; // something wrong.
+      if (InArrayIdxBracket > 0) and (InSqrBracket = 0) and (InRndBracket = 0) then begin
+        if (p^ = '.') and (p[1] = '.') then begin
+          if FoundDotDot then
+            break; // something wrong
+          FoundDotDot := True;
+          inc(p);
         end
-        else if (p^ = '[') then begin
-          inc(InSqrBracket);
-          if p2 = nil then p2 := p; // continue outer loop from here
-        end
-        else if (p^ = ']') then begin
-          dec(InSqrBracket);
-          if InSqrBracket < 0 then begin
-            if (not FoundDotDot) or (InRndBracket <> 0) then
-              break; // not a range, continue outer loop
-            // Found
+        else
+        if (p^ = ',') then begin
+          if FoundDotDot then begin
             Result := copy(AnArrayExpression, 1 , RStart+1) +
               AnIndex +
               copy(AnArrayExpression, p-s + 1, Length(AnArrayExpression));
             exit;
           end;
+          RStart := p - s; // Length of substring before "["
         end;
       end;
+    end
 
 
-      MaybeBeforeRange := p2 = nil;  // after "]"
-      if p2 <> nil then
-        p := p2; // continue after first "[" in above loop
+    else
+    if (p - s >= 2) and
+       (p[-2] in [#1..#32]) and (p[-1] in ['i', 'I']) and
+       (p^ in ['n', 'N']) and  (p[1] in [#1..#32])
+    then begin
+      MaybeBeforeArrayIdx := False;  // after IN operator. A [1..5] would be a set of byte
+    end
+
+
+    else
+    if p^ in ['a'..'z', 'A'..'Z', '_', ')', ']'] then begin
+      MaybeBeforeArrayIdx := True;  // after identifier, or after ")" or "]"
+      if (p^ = ')') and (InArrayIdxBracket > 0) then begin
+        dec(InRndBracket);
+        MaybeBeforeArrayIdx := True;
+        if InRndBracket < 0 then
+          break; // something wrong.
+      end
+      else
+      if (p^ = ']') then begin
+        if InSqrBracket > 0 then begin
+          dec(InSqrBracket);
+        end
+        else
+        if InArrayIdxBracket > 0 then begin
+          if InRndBracket > 0 then
+            break; // something wrong
+          if FoundDotDot then begin
+            Result := copy(AnArrayExpression, 1 , RStart+1) +
+              AnIndex +
+              copy(AnArrayExpression, p-s + 1, Length(AnArrayExpression));
+            exit;
+          end;
+          dec(InArrayIdxBracket);
+          PopData;
+        end
+        else
+          break; //something wrong
+      end;
+    end
+
+
+    else
+    if (p^ = '(') and (InArrayIdxBracket > 0) then begin
+      inc(InRndBracket);
+      MaybeBeforeArrayIdx := False;
+    end
+
+    else
+    if (p^ = '[') then begin
+      if (not MaybeBeforeArrayIdx) then begin
+        inc(InSqrBracket);
+      end
+      else
+      begin
+        // maybe found first range
+        PushData;
+
+        inc(InArrayIdxBracket);
+        RStart := p - s; // Length of substring before "["
+      end;
     end;
+
   end;
 end;
 
