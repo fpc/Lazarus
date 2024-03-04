@@ -32,18 +32,18 @@ type
     procedure bbtnShowClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
     procedure DirectoryEditChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormShow(Sender: TObject);
     procedure LastDirClick(Sender: TObject);
     procedure sbtnLastDirsClick(Sender: TObject);
   private
-    ImgDir: String;
-    LastDirsMax: Integer;
-    function GetIniFileName: String;
-    procedure InfoMsg(const AMsg: String);
+    ImgDirectory: String;
+    function GetImgDirectory(P: String): String;
     procedure ErrorMsg(const AMsg: String);
-    procedure UpdateLastDirs(D: String);
+    procedure InfoMsg(const AMsg: String);
+    procedure UpdateLastDirs(ImgDir: String; Delete: Boolean);
   public
 
   end;
@@ -51,13 +51,19 @@ type
 var
   MainForm: TMainForm;
 
+function CustomSortProc(List: TStringList; X1, X2: Integer): Integer;
+
 implementation
 
 {$R *.lfm}
 
 const
-  LE2 = LineEnding + LineEnding;
-  
+  ConfigFileName = 'IconTableConfig.ini';
+  IconTableFileName = 'IconTable.html';
+  InfoTextFileName = 'lazarus_general_purpose_images.txt';
+  DefaultDirectory = '../../images/general_purpose/';
+  LastDirsMax = 9;
+
 { TMainForm }
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -65,9 +71,6 @@ var
   i: Integer;
   MenItem: TMenuItem;
 begin
-  Position := poScreenCenter;
-  
-  LastDirsMax := 9;
   for i := 0 to LastDirsMax do
   begin
     MenItem := TMenuItem.Create(popLastDirs);
@@ -80,33 +83,23 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 var
   i: Integer;
-  L, T, W, H: Integer;
-  R: TRect;
   Config: TIniFile;
+  StartDirectory: String;
 begin
-  Constraints.MinWidth := cbDarkMode.Left + cbDarkMode.Width + cbDarkMode.BorderSpacing.Right + 
-    bbtnClose.Left + bbtnClose.Width - bbtnCreateHTML.Left + bbtnClose.BorderSpacing.Right;
-  Constraints.MinHeight := Constraints.MinWidth * 2 div 3;
-  
-  Position := poDesigned;
-  
-  Config := TIniFile.Create(GetIniFileName);
+  Config := TIniFile.Create(Application.Location + ConfigFileName);
   try
-    T := Config.ReadInteger('Position', 'Top', Top);
-    L := Config.ReadInteger('Position', 'Left', Left);
-    W := Config.ReadInteger('Position', 'Width', Width);
-    H := Config.ReadInteger('Position', 'Height', Height);
-    R := Screen.WorkAreaRect;
-    if W > R.Width then W := R.Width;
-    if H > R.Height then H := R.Height;
-    if L < R.Left then L := R.Left;
-    if T < R.Top then T := R.Top;
-    if L + W > R.Right then L := R.Right - W - GetSystemMetrics(SM_CXSIZEFRAME);
-    if T + H > R.Bottom then T := R.Bottom - H - GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYSIZEFRAME);
-    SetBounds(L, T, W, H);
-    WindowState := wsNormal;
-    Application.ProcessMessages;
-    WindowState := TWindowState(Config.ReadInteger('Position', 'WindowState', 0));
+    Top := Config.ReadInteger('Position', 'Top', (Screen.Height - Constraints.MinHeight) div 2);
+    Left := Config.ReadInteger('Position', 'Left', (Screen.Width - Constraints.MinWidth) div 2);
+    Width := Config.ReadInteger('Position', 'Width', Constraints.MinWidth);
+    Height := Config.ReadInteger('Position', 'Height', Constraints.MinHeight);
+
+    if (Left < -Width div 2) or (Top < -Height div 2) or (Left + Width div 2 > Screen.DesktopWidth) or (Top + Height div 2 > Screen.DesktopHeight) then
+    begin
+      Top := (Screen.Height - Constraints.MinHeight) div 2;
+      Left := (Screen.Width - Constraints.MinWidth) div 2;
+      Width := Constraints.MinWidth;
+      Height := Constraints.MinHeight;
+    end;
 
     for i := 0 to LastDirsMax do
     begin
@@ -119,16 +112,33 @@ begin
     Config.Free;
   end;
 
-  if (popLastDirs.Items[0].Caption = '') and (DirectoryExists(CleanAndExpandDirectory('../../images/general_purpose/'))) then
+  if ParamCount > 0 then
   begin
-    popLastDirs.Items[0].Caption := CleanAndExpandDirectory('../../images/general_purpose/');
-    popLastDirs.Items[0].Visible := True;
+    StartDirectory := GetImgDirectory(ParamStr(1));
+    if StartDirectory > '' then
+      UpdateLastDirs(StartDirectory, False);
   end;
+
+  if (popLastDirs.Items[0].Caption = '') and (DirectoryExists(CleanAndExpandDirectory(DefaultDirectory))) then
+    UpdateLastDirs(CleanAndExpandDirectory(DefaultDirectory), False);
 
   if DirectoryExists(popLastDirs.Items[0].Caption) then
     DirectoryEdit.Directory := popLastDirs.Items[0].Caption;
 
   sbtnLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
+end;
+
+procedure TMainForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
+var
+  DropDirectory: String;
+begin
+  DropDirectory := GetImgDirectory(FileNames[0]);
+  if DropDirectory > '' then
+  begin
+    DirectoryEdit.Directory := DropDirectory;
+    UpdateLastDirs(DropDirectory, False);
+    MainForm.BringToFront;
+  end;
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -139,7 +149,7 @@ begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
 
-  Config := TIniFile.Create(GetIniFileName);
+  Config := TIniFile.Create(Application.Location + ConfigFileName);
   try
     try
       Config.WriteInteger('Position', 'Top', RestoredTop);
@@ -153,17 +163,11 @@ begin
 
       Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
     except
-      on E: Exception do
-        ErrorMsg('The configuration could not be saved.' + LE2 + E.Message);
+      ErrorMsg('The configuration could not be saved.');
     end;
   finally
     Config.Free;
   end;
-end;
-
-function TMainForm.GetIniFileName: String;
-begin
-  Result := Application.Location + 'IconTableConfig.ini';
 end;
 
 procedure TMainForm.cbDarkModeChange(Sender: TObject);
@@ -205,11 +209,11 @@ begin
     Screen.BeginWaitCursor;
     SynEdit.Lines.BeginUpdate;
 
-    FindAllFiles(AllFileList, ImgDir, '*.png', False);
+    FindAllFiles(AllFileList, ImgDirectory, '*.png', False);
 
     if AllFileList.Count = 0 then
     begin
-      ErrorMsg('No png image files found in ' + ImgDir);
+      ErrorMsg('No png image files found in ' + ImgDirectory);
       Exit;
     end;
 
@@ -234,11 +238,11 @@ begin
       if PixSizeList.IndexOf(IcoSize) = -1 then
         PixSizeList.Add(IcoSize);
     end;
-    PixSizeList.Sort;
+    PixSizeList.CustomSort(@CustomSortProc);
 
     if IcoFileList.Count = 0 then
     begin
-      ErrorMsg('No matching png image files found in ' + ImgDir);
+      ErrorMsg('No matching png image files found in ' + ImgDirectory);
       Exit;
     end;
 
@@ -274,7 +278,7 @@ begin
     SynEdit.Lines.Add('<table>');
     SynEdit.Lines.Add('  <tr class="no_border">');
     SynEdit.Lines.Add('    <td class="colorset1 right_border"></td>');
-    SynEdit.Lines.Add('    <td class="colorset2 text_center" colspan="' + IntToStr(PixSizeList.Count) + '">Appendix</td>');
+    SynEdit.Lines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Appendix</td>');
     SynEdit.Lines.Add('  </tr>');
     SynEdit.Lines.Add('  <tr>');
     SynEdit.Lines.Add('    <td class="colorset1 right_border">Name</td>');
@@ -308,12 +312,12 @@ begin
     SynEdit.Lines.Add('</table>');
 
     SynEdit.Lines.Add('<div class="infobox colorset2">');
-    SynEdit.Lines.Add('This folder contains ' + IntToStr(IcoFileList.Count) + ' icons in ' + IntToStr(IconGroups) + ' icon groups with ' + IntToStr(PixSizeList.Count) + ' icon sizes.');
-    if FileExists(ImgDir + 'lazarus_general_purpose_images.txt') then
+    SynEdit.Lines.Add('This folder contains ' + IcoFileList.Count.ToString + ' icons in ' + IconGroups.ToString + ' icon groups with ' + PixSizeList.Count.ToString + ' icon sizes.');
+    if FileExists(ImgDirectory + InfoTextFileName) then
     begin
       try
         InfoTxtList := TStringList.Create;
-        InfoTxtList.LoadFromFile(ImgDir + 'lazarus_general_purpose_images.txt');
+        InfoTxtList.LoadFromFile(ImgDirectory + InfoTextFileName);
         SynEdit.Lines.Add('<hr>');
         for i := 0 to InfoTxtList.Count - 1 do
           SynEdit.Lines.Add(InfoTxtList[i] + '<br>');
@@ -329,7 +333,7 @@ begin
     bbtnSave.Enabled := True;
     bbtnSave.SetFocus;
     bbtnShow.Enabled := False;
-    UpdateLastDirs(ImgDir);
+    UpdateLastDirs(ImgDirectory, False);
   finally
     AllFileList.Free;
     IcoFileList.Free;
@@ -342,27 +346,21 @@ begin
 end;
 
 procedure TMainForm.bbtnSaveClick(Sender: TObject);
-var
-  fn: String;
 begin
-  fn := ImgDir + 'IconTable.html';
   try
-    SynEdit.Lines.SaveToFile(fn);
-    InfoMsg('Saved as: ' + fn);
+    SynEdit.Lines.SaveToFile(ImgDirectory + IconTableFileName);
+    InfoMsg('Saved as: ' + ImgDirectory + IconTableFileName);
     bbtnShow.Enabled := True;
     bbtnShow.SetFocus;
   except
-    ErrorMsg('The file could not be saved as: ' + fn);
+    ErrorMsg('The file could not be saved as: ' + ImgDirectory + IconTableFileName);
   end;
 end;
 
 procedure TMainForm.bbtnShowClick(Sender: TObject);
-var
-  fn: String;
 begin
-  fn := ImgDir + 'IconTable.html';
-  if FileExists(fn) then
-    OpenURL(fn);
+  if FileExists(ImgDirectory + IconTableFileName) then
+    OpenURL(ImgDirectory + IconTableFileName);
   bbtnCreateHTML.SetFocus;
 end;
 
@@ -375,25 +373,36 @@ procedure TMainForm.DirectoryEditChange(Sender: TObject);
 begin
   if DirectoryExists(DirectoryEdit.Directory) then
   begin
-    ImgDir := CleanAndExpandDirectory(DirectoryEdit.Directory);
+    ImgDirectory := CleanAndExpandDirectory(DirectoryEdit.Directory);
+    SynEdit.Clear;
     bbtnCreateHTML.Enabled := True;
+    bbtnSave.Enabled := False;
+    bbtnShow.Enabled := False;
+    bbtnCreateHTML.SetFocus;
   end
   else
     bbtnCreateHTML.Enabled := False;
-  bbtnSave.Enabled := False;
-  bbtnShow.Enabled := False;
 end;
 
 procedure TMainForm.LastDirClick(Sender: TObject);
 begin
   if DirectoryExists(TMenuItem(Sender).Caption) then
   begin
-    ImgDir := TMenuItem(Sender).Caption;
-    DirectoryEdit.Directory := ImgDir;
+    DirectoryEdit.Directory := TMenuItem(Sender).Caption;
     TMenuItem(Sender).MenuIndex := 0;
-    bbtnSave.Enabled := False;
-    bbtnShow.Enabled := False;
-    SynEdit.Clear;
+  end
+  else
+  begin
+    TaskDialog.Caption := 'Information';
+    TaskDialog.MainIcon := tdiInformation;
+    TaskDialog.Title := 'Information';
+    TaskDialog.CommonButtons := [tcbYes, tcbNo];
+    TaskDialog.DefaultButton := tcbNo;
+    TaskDialog.Text := 'The folder [' + TMenuItem(Sender).Caption + '] does not exist or is currently not available.' +
+      LineEnding + LineEnding + 'Should it be removed from the list?';
+    TaskDialog.Execute;
+    if TaskDialog.ModalResult = mrYes then
+      UpdateLastDirs(TMenuItem(Sender).Caption, True);
   end;
 end;
 
@@ -405,16 +414,24 @@ begin
   popLastDirs.PopUp(pt.X, pt.Y);
 end;
 
-procedure TMainForm.UpdateLastDirs(D: String);
+procedure TMainForm.UpdateLastDirs(ImgDir: String; Delete: Boolean);
 var
   i: Integer;
 begin
-  i := popLastDirs.Items.IndexOfCaption(D);
+  i := popLastDirs.Items.IndexOfCaption(ImgDir);
   if i > -1 then
-    popLastDirs.Items[i].MenuIndex := 0
+  begin
+    popLastDirs.Items[i].MenuIndex := 0;
+    if Delete then
+    begin
+      popLastDirs.Items[0].MenuIndex := LastDirsMax;
+      popLastDirs.Items[LastDirsMax].Caption := '';
+      popLastDirs.Items[LastDirsMax].Visible := False;
+    end;
+  end
   else
   begin
-    popLastDirs.Items[LastDirsMax].Caption := D;
+    popLastDirs.Items[LastDirsMax].Caption := ImgDir;
     popLastDirs.Items[LastDirsMax].Visible := True;
     popLastDirs.Items[LastDirsMax].MenuIndex := 0;
   end;
@@ -441,6 +458,33 @@ begin
   TaskDialog.DefaultButton := tcbOk;
   TaskDialog.Text := AMsg;
   TaskDialog.Execute;
+end;
+
+function TMainForm.GetImgDirectory(P: String): String;
+begin
+  if FileExists(P) then
+    Exit(CleanAndExpandDirectory(ExtractFilePath(P)));
+
+  if DirectoryExists(P) then
+    Exit(CleanAndExpandDirectory(P));
+
+  Result := '';
+end;
+
+function CustomSortProc(List: TStringList; X1, X2: Integer): Integer;
+var
+  P1, P2: Integer;
+begin
+  if not TryStrToInt(List[X1], P1) then
+    P1 := 0;
+  if not TryStrToInt(List[X2], P2) then
+    P2 := 0;
+
+  //CustomSort sorts the stringlist with a custom comparison function.
+  //The function should compare 2 elements in the list, and return a negative number
+  //if the first item is before the second. It should return 0 if the elements are equal,
+  //and a positive result indicates that the second elements should be before the first.
+  Result := P1 - P2;
 end;
 
 end.
