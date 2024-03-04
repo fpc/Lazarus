@@ -1312,6 +1312,7 @@ var
   j: Integer;
 begin
   if IsEmpty or (not Active) then exit;
+  PrepareAngleCache;
   originPt := ParentChart.GraphToImage(DoublePoint(OriginX, OriginY));
   fill := FFilled and (FBrush.Style <> bsClear);
   SetLength(pts, Count + 1);  // +1 for origin
