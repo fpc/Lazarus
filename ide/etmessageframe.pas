@@ -1461,6 +1461,7 @@ end;
 
 procedure TMessagesCtrl.OnFilterChanged(Sender: TObject);
 begin
+  FSelectedLines.Clear;
   IdleConnected:=true;
 end;
 
