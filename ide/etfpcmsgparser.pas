@@ -61,6 +61,11 @@ const
   FPCMsgIDMethodIdentifierExpected = 3047;
   FPCMsgIDIdentifierNotFound = 5000;
   FPCMsgIDChecksumChanged = 10028;
+  FPCMsgIDUnitDeprecate = 5074; // Unit "$1" is deprecate
+  FPCMsgIDUnitDeprecated = 5075; // Unit "$1" is deprecated
+  FPCMsgIDUnitNotPortable = 5076; // Unit "$1" is not portable
+  FPCMsgIDUnitNotImplemented = 5078; // Unit "$1" is not implemented
+  FPCMsgIDUnitExperimental = 5079; // Unit "$1" is experimental
   FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
   FPCMsgIDCompilationAborted = 1018;
   FPCMsgIDLinesCompiled = 1008;
@@ -179,6 +184,11 @@ type
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
     fMsgItemChecksumChanged: TFPCMsgItem;
     fMsgItemUnitNotUsed: TFPCMsgItem;
+    fMsgItemUnitIsDeprecate: TFPCMsgItem;
+    fMsgItemUnitIsDeprecated: TFPCMsgItem;
+    fMsgItemUnitIsExperimental: TFPCMsgItem;
+    fMsgItemUnitIsNotImplemented: TFPCMsgItem;
+    fMsgItemUnitIsNotPortable: TFPCMsgItem;
     fOutputIndex: integer; // current OutputIndex given by ReadLine
     procedure FetchIncludePath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
     procedure FetchUnitPath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
@@ -205,6 +215,7 @@ type
     procedure ImproveMsgHiddenByIDEDirective(aPhase: TExtToolParserSyncPhase;
       MsgLine: TMessageLine; SourceOK: Boolean);
     procedure ImproveMsgSenderNotUsed(aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine);
+    procedure ImproveMsgUnitTagged(aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotUsed(aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
       MsgLine: TMessageLine);
@@ -1967,6 +1978,27 @@ begin
   end;
 end;
 
+procedure TIDEFPCParser.ImproveMsgUnitTagged(aPhase: TExtToolParserSyncPhase;
+  MsgLine: TMessageLine);
+// check for Unit experimental/deprecated message
+// and change urgency to merely 'verbose'
+begin
+  if aPhase<>etpspAfterReadLine then exit;
+  if (MsgLine.Urgency<=mluVerbose) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitDeprecate,fMsgItemUnitIsDeprecate) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitDeprecated,fMsgItemUnitIsDeprecated) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitNotPortable,fMsgItemUnitIsNotPortable) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitNotImplemented,fMsgItemUnitIsNotImplemented) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitExperimental,fMsgItemUnitIsExperimental) then exit;
+
+  //debugln(['TIDEFPCParser.ImproveMsgUnitTagged ',aPhase=etpspSynchronized,' ',MsgLine.Msg]);
+  // unit tagged
+  if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,MsgLine.Filename)>=0 then
+  begin
+    MsgLine.Urgency:=mluVerbose;
+  end;
+end;
+
 procedure TIDEFPCParser.ImproveMsgUnitNotUsed(aPhase: TExtToolParserSyncPhase;
   MsgLine: TMessageLine);
 // check for Unit not used message in main sources
@@ -3361,6 +3393,7 @@ begin
       ImproveMsgIdentifierPosition(aPhase, MsgLine, SourceOK);
       ImproveMsgHiddenByIDEDirective(aPhase, MsgLine, SourceOK);
       ImproveMsgUnitNotUsed(aPhase, MsgLine);
+      ImproveMsgUnitTagged(aPhase, MsgLine);
       ImproveMsgSenderNotUsed(aPhase, MsgLine);
     end else if MsgLine.SubTool=SubToolFPCLinker then begin
       ImproveMsgLinkerUndefinedReference(aPhase, MsgLine);
