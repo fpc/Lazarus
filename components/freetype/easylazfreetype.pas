@@ -902,7 +902,7 @@ begin
                   rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top,
                   OnRender, ARasterizer) = TT_Err_Ok;
   else
-    result := false;
+    result := false{%H-};
   end;
 end;
 

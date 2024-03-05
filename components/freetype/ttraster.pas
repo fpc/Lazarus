@@ -201,7 +201,7 @@ type
                                 x,y,tx,ty: integer;
                                 OnRender: TDirectRenderingFunction) : TError; override;
 
-    procedure Set_Raster_Palette(const palette: TT_Gray_Palette); override;
+    procedure Set_Raster_Palette(const {%H-}palette: TT_Gray_Palette); override;
 
     constructor Create;
     destructor Destroy; override;
