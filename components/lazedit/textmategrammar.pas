@@ -903,7 +903,7 @@ procedure TTextMatePattern.InitStates(const AGrammar: TTextMateGrammar;
 begin
   assert(False, 'TTextMatePattern.InitStates: not TTextMatePatternBaseNested');
   if AGrammar=nil then ;
-  if AStates=nil then ;
+  if AStates.Grammar=nil then ;
   if AParent=nil then ;
   if AText='' then ;
   if ADepth=0 then ;
