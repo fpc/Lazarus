@@ -49,6 +49,8 @@ uses
 {$IFDEF VIRTUALPASCAL}
      Use32,
 {$ENDIF}
+     SysUtils,
+     TTError,
      TTTypes,
      TTProfile;
 
@@ -218,10 +220,6 @@ type
   function TTGetDefaultRasterizer: TFreeTypeRasterizer;
 
 implementation
-
-uses
-     TTError,
-     SysUtils;
 
 const
   Pixel_Bits = 6;        (* fractional bits of input coordinates  *)
