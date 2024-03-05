@@ -38,47 +38,40 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dispformatbasebin
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
-msgstr "Двоичное"
+msgstr "Двоичный"
 
 #: idedebuggerstringconstants.dispformatbasedecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasedecimal"
 msgid "Decimal"
-msgstr "Десятичное"
+msgstr "Десятичный"
 
 #: idedebuggerstringconstants.dispformatbasedefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasedefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatbasehex
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasehex"
 msgid "Hex"
-msgstr "Шестнадцатеричное"
+msgstr "Шестнадцатеричный"
 
 #: idedebuggerstringconstants.dispformatbaseoct
 msgid "Oct"
-msgstr ""
+msgstr "Восьмеричный"
 
 #: idedebuggerstringconstants.dispformatbasepointer
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasepointer"
 msgid "Pointer"
 msgstr "Указатель"
 
 #: idedebuggerstringconstants.dispformatbooldefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbooldefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatboolname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatboolname"
 msgid "Name"
 msgstr "Имя"
@@ -86,62 +79,59 @@ msgstr "Имя"
 #: idedebuggerstringconstants.dispformatboolnameandord
 msgctxt "idedebuggerstringconstants.dispformatboolnameandord"
 msgid "Both"
-msgstr ""
+msgstr "То и другое"
 
 #: idedebuggerstringconstants.dispformatboolord
 msgctxt "idedebuggerstringconstants.dispformatboolord"
 msgid "Ordinal"
-msgstr ""
+msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatcategorydata
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatcategorydata"
 msgid "Value"
 msgstr "Значение"
 
 #: idedebuggerstringconstants.dispformatcategorymemdump
 msgid "Memory dump"
-msgstr ""
+msgstr "Дамп памяти"
 
 #: idedebuggerstringconstants.dispformatchardefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatchardefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatcharletter
 msgid "Letter"
-msgstr ""
+msgstr "Буква"
 
 #: idedebuggerstringconstants.dispformatcharletterandord
 msgctxt "idedebuggerstringconstants.dispformatcharletterandord"
 msgid "Both"
-msgstr ""
+msgstr "То и другое"
 
 #: idedebuggerstringconstants.dispformatcharord
 msgctxt "idedebuggerstringconstants.dispformatcharord"
 msgid "Ordinal"
-msgstr ""
+msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address format"
-msgstr ""
+msgstr "Формат адреса"
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: idedebuggerstringconstants.dispformatdlgbtnbool
 msgid "Boolean"
-msgstr ""
+msgstr "Логический"
 
 #: idedebuggerstringconstants.dispformatdlgbtnchar
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnchar"
 msgid "Char"
-msgstr ""
+msgstr "Символ"
 
 #: idedebuggerstringconstants.dispformatdlgbtncurrent
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatdlgbtncurrent"
 msgid "Current"
 msgstr "Текущий"
@@ -149,73 +139,70 @@ msgstr "Текущий"
 #: idedebuggerstringconstants.dispformatdlgbtnenum
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnenum"
 msgid "Enum"
-msgstr ""
+msgstr "Перечислимый"
 
 #: idedebuggerstringconstants.dispformatdlgbtnfloat
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
 msgid "Float"
-msgstr ""
+msgstr "Вещественный"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber
 msgid "Number"
-msgstr ""
+msgstr "Число"
 
 #: idedebuggerstringconstants.dispformatdlgbtnord
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
 msgid "Ordinal"
-msgstr ""
+msgstr "Простой"
 
 #: idedebuggerstringconstants.dispformatdlgbtnordformat
 msgid "Ordinal format"
-msgstr ""
+msgstr "Формат числового значения"
 
 #: idedebuggerstringconstants.dispformatdlgbtnpointer
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
 msgid "Pointer"
-msgstr ""
+msgstr "Указатель"
 
 #: idedebuggerstringconstants.dispformatdlgbtnstruct
 msgid "Structure"
-msgstr ""
+msgstr "Структура"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionaddress
 msgid "(Address)"
-msgstr ""
+msgstr "(Адрес)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptiondefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatdlgcaptiondefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionderef
 msgid "(Deref)"
-msgstr ""
+msgstr "(Разыменованный)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionnumber
 msgid "(Number)"
-msgstr ""
+msgstr "(Число)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionshowchar
 msgid "(Show Char)"
-msgstr ""
+msgstr "(Символ)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionsign
 msgid "(Sign)"
-msgstr ""
+msgstr "(Знаковый)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptiontyped
 msgid "(Typed)"
-msgstr ""
+msgstr "(Типизированный)"
 
 #: idedebuggerstringconstants.dispformatenumdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatenumdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatenumname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatenumname"
 msgid "Name"
 msgstr "Имя"
@@ -223,84 +210,80 @@ msgstr "Имя"
 #: idedebuggerstringconstants.dispformatenumnameandord
 msgctxt "idedebuggerstringconstants.dispformatenumnameandord"
 msgid "Both"
-msgstr ""
+msgstr "То и другое"
 
 #: idedebuggerstringconstants.dispformatenumord
 msgctxt "idedebuggerstringconstants.dispformatenumord"
 msgid "Ordinal"
-msgstr ""
+msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatfloatdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatfloatdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatfloatpoint
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatfloatpoint"
 msgid "Decimal"
-msgstr "Десятичное"
+msgstr "Десятичный"
 
 #: idedebuggerstringconstants.dispformatfloatscientific
 msgid "Exponent"
-msgstr ""
+msgstr "С плавающей точкой"
 
 #: idedebuggerstringconstants.dispformatgroupbase
 msgid "Number base"
-msgstr ""
+msgstr "Представление числа"
 
 #: idedebuggerstringconstants.dispformatgroupbool
 msgid "Bool"
-msgstr ""
+msgstr "Логический"
 
 #: idedebuggerstringconstants.dispformatgroupcategory
 msgid "Display type"
-msgstr ""
+msgstr "Метод отображения"
 
 #: idedebuggerstringconstants.dispformatgroupchar
 msgctxt "idedebuggerstringconstants.dispformatgroupchar"
 msgid "Char"
-msgstr ""
+msgstr "Символ"
 
 #: idedebuggerstringconstants.dispformatgroupenum
 msgctxt "idedebuggerstringconstants.dispformatgroupenum"
 msgid "Enum"
-msgstr ""
+msgstr "Перечислимый"
 
 #: idedebuggerstringconstants.dispformatgroupfloat
 msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
 msgid "Float"
-msgstr ""
+msgstr "Вещественный"
 
 #: idedebuggerstringconstants.dispformatgroupnumchar
 msgid "Ordinal as char"
-msgstr ""
+msgstr "Простой тип как символ"
 
 #: idedebuggerstringconstants.dispformatgrouppointer
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatgrouppointer"
 msgid "Pointer"
 msgstr "Указатель"
 
 #: idedebuggerstringconstants.dispformatgrouppointerderef
 msgid "Pointer (Deref)"
-msgstr ""
+msgstr "Указатель (разыменованный)"
 
 #: idedebuggerstringconstants.dispformatgroupsign
 msgid "Number sign"
-msgstr ""
+msgstr "Знак числа"
 
 #: idedebuggerstringconstants.dispformatgroupstruct
 msgid "Structures"
-msgstr ""
+msgstr "Структуры"
 
 #: idedebuggerstringconstants.dispformatgroupstructaddress
 msgid "Structures (Addr)"
-msgstr ""
+msgstr "Структуры (адрес)"
 
 #: idedebuggerstringconstants.dispformatnumchardefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatnumchardefault"
 msgid "Default"
 msgstr "По умолчанию"
@@ -308,42 +291,40 @@ msgstr "По умолчанию"
 #: idedebuggerstringconstants.dispformatnumcharoff
 msgctxt "idedebuggerstringconstants.dispformatnumcharoff"
 msgid "Off"
-msgstr ""
+msgstr "Выключено"
 
 #: idedebuggerstringconstants.dispformatnumcharonlyunicode
 msgid "Unicode only"
-msgstr ""
+msgstr "Только код Unicode"
 
 #: idedebuggerstringconstants.dispformatnumcharordandunicode
 msgid "Unicode + Number"
-msgstr ""
+msgstr "Код Unicode + значение"
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrall
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrall"
 msgid "Setting fallback options for all windows."
-msgstr ""
+msgstr "Установка резервных значений параметров для всех окон."
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrsome
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrsome"
 msgid "Setting fallback options for all windows."
-msgstr ""
+msgstr "Установка резервных значений параметров для всех окон."
 
 #: idedebuggerstringconstants.dispformatoptprojecttext
 msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried."
-msgstr ""
+msgstr "Сначала будут использоваться общие и частные параметры проекта. Если ни один из них не задаёт нужного значения, будут использоваться глобальные параметры IDE."
 
 #: idedebuggerstringconstants.dispformatpointeraddress
 msgid "Address"
-msgstr ""
+msgstr "Адрес"
 
 #: idedebuggerstringconstants.dispformatpointerdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatpointerdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatpointerderefdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatpointerderefdefault"
 msgid "Default"
 msgstr "По умолчанию"
@@ -351,40 +332,37 @@ msgstr "По умолчанию"
 #: idedebuggerstringconstants.dispformatpointerderefoff
 msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
 msgid "Off"
-msgstr ""
+msgstr "Выключено"
 
 #: idedebuggerstringconstants.dispformatpointerderefon
 msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
 msgid "On"
-msgstr ""
+msgstr "Включено"
 
 #: idedebuggerstringconstants.dispformatpointerderefonly
 msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
 msgid "Only"
-msgstr ""
+msgstr "Только это значение"
 
 #: idedebuggerstringconstants.dispformatpointertypedaddress
 msgid "Typed address"
-msgstr ""
+msgstr "Типизированный адрес"
 
 #: idedebuggerstringconstants.dispformatsigndefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatsigndefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatsignsigned
 msgid "Signed"
-msgstr ""
+msgstr "Знаковый"
 
 #: idedebuggerstringconstants.dispformatsignunsigned
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatsignunsigned"
 msgid "Unsigned"
-msgstr "Беззнаковое"
+msgstr "Беззнаковый"
 
 #: idedebuggerstringconstants.dispformatstructaddressdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatstructaddressdefault"
 msgid "Default"
 msgstr "По умолчанию"
@@ -392,60 +370,57 @@ msgstr "По умолчанию"
 #: idedebuggerstringconstants.dispformatstructaddressoff
 msgctxt "idedebuggerstringconstants.dispformatstructaddressoff"
 msgid "Off"
-msgstr ""
+msgstr "Выключено"
 
 #: idedebuggerstringconstants.dispformatstructaddresson
 msgctxt "idedebuggerstringconstants.dispformatstructaddresson"
 msgid "On"
-msgstr ""
+msgstr "Включено"
 
 #: idedebuggerstringconstants.dispformatstructaddressonly
 msgctxt "idedebuggerstringconstants.dispformatstructaddressonly"
 msgid "Only"
-msgstr ""
+msgstr "Только это значение"
 
 #: idedebuggerstringconstants.dispformatstructdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatstructdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
 #: idedebuggerstringconstants.dispformatstructfields
 msgid "Field names"
-msgstr ""
+msgstr "Имена полей"
 
 #: idedebuggerstringconstants.dispformatstructfull
 msgid "Full"
-msgstr ""
+msgstr "Полный"
 
 #: idedebuggerstringconstants.dispformatstructvalonly
 msgid "Values only"
-msgstr ""
+msgstr "Только значения"
 
 #: idedebuggerstringconstants.dispformattargetevalmod
 msgid "Eval/Modify"
-msgstr ""
+msgstr "Вычисление/изменение"
 
 #: idedebuggerstringconstants.dispformattargetglobal
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 #: idedebuggerstringconstants.dispformattargethint
 msgid "Hints"
-msgstr ""
+msgstr "Подсказки"
 
 #: idedebuggerstringconstants.dispformattargetinspect
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformattargetinspect"
 msgid "Inspect"
-msgstr "Просмотреть"
+msgstr "Просмотр"
 
 #: idedebuggerstringconstants.dispformattargetlocals
 msgid "Locals"
-msgstr ""
+msgstr "Локальные"
 
 #: idedebuggerstringconstants.dispformattargetwatches
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
 msgstr "Наблюдения"
@@ -496,7 +471,7 @@ msgstr "- Отключено -"
 
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
-msgstr ""
+msgstr "Формат отображения"
 
 #: idedebuggerstringconstants.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
