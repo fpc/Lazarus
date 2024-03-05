@@ -923,7 +923,7 @@ begin
   adhstOneControl: Result:='OneControl';
   adhstLayout: Result:='Layout';
   adhstPages: Result:='Pages';
-  else Result:='?';
+  else Result:='?'{%H-};
   end;
 end;
 
