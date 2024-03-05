@@ -250,12 +250,16 @@ end;
 procedure TDbgTypePatternList.InsertItem(Index: Integer; const S: string;
   O: TObject);
 begin
+  if Index=0 then ;
+  if S='' then ;
+  if O=nil then ;
   raise Exception.Create('');
 end;
 
 function TDbgTypePatternList.AddObject(const S: string; AObject: TObject
   ): Integer;
 begin
+  if AObject=nil then ;
   Result := Add(S); // used in assign, ignore object from other list
 end;
 
