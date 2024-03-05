@@ -2274,7 +2274,7 @@ begin
     else if MessI.Result <> 0 then
     begin
       // issue #19914
-      if GTK_IS_NOTEBOOK(Widget) then
+      if GTK_IS_NOTEBOOK(PGTKObject(AWinControl.Handle)) then
       begin
         if g_object_get_data({%H-}PGObject(AWinControl.Handle),'lclnotebookdragging') <> nil then
         begin
@@ -2284,7 +2284,7 @@ begin
       end;
       // handled by the LCL
       //DebugLn(['DeliverMouseUpMessage msg was handled by the LCL, Stopping signal ...']);
-      g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
+      //g_signal_stop_emission_by_name(PGTKObject(AWinControl.Handle), 'button-release-event');
       Result := True;
     end;
   end;
