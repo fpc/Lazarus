@@ -1832,14 +1832,24 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
   end;
 
+  procedure NoZeroRect(var R: TRect);
+  begin
+    if IsRotated then
+    begin
+      if R.Left = R.Right then inc(R.Right);
+    end else
+    begin
+      if R.Top = R.Bottom then inc(R.Bottom);
+    end;
+  end;
+
   procedure DoRect(AX1, AY1, AX2, AY2: Double);
   var
     r: TRect;
   begin
-    with ParentChart do begin
-      r.TopLeft := MaybeRotate(AX1, AY1);
-      r.BottomRight := MaybeRotate(AX2, AY2);
-    end;
+    r.TopLeft := MaybeRotate(AX1, AY1);
+    r.BottomRight := MaybeRotate(AX2, AY2);
+    NoZeroRect(r);
     ADrawer.FillRect(r.Left, r.Top, r.Right, r.Bottom);
     ADrawer.Rectangle(r);
   end;
