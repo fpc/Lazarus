@@ -312,7 +312,7 @@ end;
 
 procedure TTimerList.Delete(hWnd: TLCLHandle; nIDEvent: UINT_PTR);
 var
-  TimerID: TTimerID;
+  {%H-}TimerID: TTimerID;
 begin
   TimerID.hWnd := hWnd;
   TimerID.nIDEvent := nIDEvent;
@@ -321,7 +321,7 @@ end;
 
 function TTimerList.Get(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TGtk2Timer;
 var
-  TimerID: TTimerID;
+  {%H-}TimerID: TTimerID;
 begin
   TimerID.hWnd := hWnd;
   TimerID.nIDEvent := nIDEvent;
@@ -350,7 +350,7 @@ end;
 function TTimerList.Find(hWnd: TLCLHandle; nIDEvent: UINT_PTR): TGtk2Timer;
 var
   DataPtr: ^TGtk2Timer;
-  TimerID: TTimerID;
+  {%H-}TimerID: TTimerID;
 begin
   Result := nil;
   TimerID.hWnd := hWnd;
