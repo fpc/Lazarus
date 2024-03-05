@@ -17,7 +17,10 @@ interface
 
 uses
   Classes, SysUtils, Process,
-  FileUtil, LazFileUtils, LazUTF8, LazUtilsStrConsts;
+  {$IFDEF UseTProcessW}
+  LazUTF8,
+  {$ENDIF}
+  FileUtil, LazFileUtils, LazUtilsStrConsts;
 
   {$IF DEFINED(MSWINDOWS) AND NOT DECLARED(poDetached)} // we need to work around the poNoConsole->poDetached change
     // more info: issue #32055, #35991; FPC r45228, https://forum.lazarus.freepascal.org/index.php/topic,49631.0

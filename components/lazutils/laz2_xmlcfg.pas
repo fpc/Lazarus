@@ -129,10 +129,10 @@ type
                                      const AValue, DefValue: extended);
 
     // Set/Enum/Named-Int
-    procedure SetValue(const APath: String; const AValue; const APTypeInfo: PTypeInfo);
+    procedure SetValue(const APath: String; const {%H-}AValue; const APTypeInfo: PTypeInfo);
     procedure SetDeleteValue(const APath: String; const AValue, DefValue; const APTypeInfo: PTypeInfo);
     procedure SetDeleteValue(const APath: String; const AValue; DefValue: Int64; const APTypeInfo: PTypeInfo);
-    procedure SetDeleteValue(const APath: String; const AValue; const APTypeInfo: PTypeInfo);
+    procedure SetDeleteValue(const APath: String; const {%H-}AValue; const APTypeInfo: PTypeInfo);
 
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);

@@ -100,8 +100,8 @@ type
     FLast: PMapItem;    // Last element of our linkedlist
     FIterators: TList;  // A List of iterators iterating us
     FLocked: integer;
-    function FindNode(const AId): TAvlTreeNode;
-    function FindItem(const AId): PMapItem;
+    function FindNode(const {%H-}AId): TAvlTreeNode;
+    function FindItem(const {%H-}AId): PMapItem;
     procedure FreeData(ANode: TAvlTreeNode);
     function TreeCompareID(Sender: TAvlTree; AItem1, AItem2: Pointer): Integer;
     //--
@@ -110,17 +110,17 @@ type
   protected
     procedure LockMap;
     procedure UnLockMap;
-    procedure InternalAdd(const AId, AData);
+    procedure InternalAdd(const AId, {%H-}AData);
     function InternalGetData(AItem: PMapItem; out AData): Boolean;
     function InternalGetDataPtr(AItem: PMapItem): Pointer;
     function InternalGetId(AItem: PMapItem; out AID): Boolean;
-    function InternalSetData(AItem: PMapItem; const AData): Boolean;
+    function InternalSetData(AItem: PMapItem; const {%H-}AData): Boolean;
     procedure ReleaseData({%H-}ADataPtr: Pointer); virtual;
   public
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
     procedure Clear;
     function Count: SizeInt;
-    function Delete(const AId): Boolean;
+    function Delete(const {%H-}AId): Boolean;
     destructor Destroy; override;
   end;
   
@@ -141,7 +141,7 @@ type
     procedure AddToMap; virtual;
     procedure RemoveFromMap; virtual;
     procedure InternalCreate(AMap: TBaseMap);
-    function InternalLocate(const AId): Boolean; //True if match found. If not found, current is next and Invalid is set
+    function InternalLocate(const {%H-}AId): Boolean; //True if match found. If not found, current is next and Invalid is set
     procedure Validate;
     procedure ValidateMap;
     property Current: PMapItem read FCurrent;
@@ -163,11 +163,11 @@ type
   private
   protected
   public
-    procedure Add(const AId, AData);
-    function HasId(const AID): Boolean;
-    function GetData(const AId; out AData): Boolean;
-    function GetDataPtr(const AId): Pointer;
-    function SetData(const AId, AData): Boolean;
+    procedure Add(const {%H-}AId, {%H-}AData);
+    function HasId(const {%H-}AID): Boolean;
+    function GetData(const {%H-}AId; out AData): Boolean;
+    function GetDataPtr(const {%H-}AId): Pointer;
+    function SetData(const {%H-}AId, {%H-}AData): Boolean;
   end;
   
   { TMapIterator }
@@ -180,8 +180,8 @@ type
     function  DataPtr: Pointer;
     procedure GetData(out AData);
     procedure GetID(out AID);
-    function  Locate(const AId): Boolean;
-    procedure SetData(const AData);
+    function  Locate(const {%H-}AId): Boolean;
+    procedure SetData(const {%H-}AData);
   end;
 
   { TLockedMapIterator
@@ -204,13 +204,13 @@ type
     function InternalSetData(AItem: PMapItem; const AData): Boolean;
     procedure ReleaseData(ADataPtr: Pointer); override;
   public
-    procedure Add(const AId, AData);
+    procedure Add(const {%H-}AId, AData);
     constructor Create(AIdType: TMapIdType; ATypeInfo: PTypeInfo);
     destructor Destroy; override;
-    function HasId(const AID): Boolean;
-    function GetData(const AId; out AData): Boolean;
-    function GetDataPtr(const AId): Pointer;
-    function SetData(const AId, AData): Boolean;
+    function HasId(const {%H-}AID): Boolean;
+    function GetData(const {%H-}AId; out AData): Boolean;
+    function GetDataPtr(const {%H-}AId): Pointer;
+    function SetData(const {%H-}AId, {%H-}AData): Boolean;
   end;
 
   { TTypedMapIterator }
@@ -222,8 +222,8 @@ type
     constructor Create(AMap: TTypedMap);
     procedure GetData(out AData);
     procedure GetID(out AID);
-    function  Locate(const AId): Boolean;
-    procedure SetData(const AData);
+    function  Locate(const {%H-}AId): Boolean;
+    procedure SetData(const {%H-}AData);
   end;
 
   

@@ -111,8 +111,8 @@ type
     procedure DebuglnStack(const {%H-}s: string = '');
 
     procedure DbgOut(const {%H-}s: string = ''); overload;
-    procedure DbgOut({%H-}const Args: array of const); overload;
-    procedure DbgOut(const {%H-}S: String; {%H-}const Args: array of const); overload;// similar to Format(s,Args)
+    procedure DbgOut({%H-}const {%H-}Args: array of const); overload;
+    procedure DbgOut(const {%H-}S: String; {%H-}const {%H-}Args: array of const); overload;// similar to Format(s,Args)
     procedure DbgOut(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                      const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                      const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -121,8 +121,8 @@ type
                      const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLn(const {%H-}s: string = ''); overload;
-    procedure DebugLn({%H-}const Args: array of const); overload;
-    procedure DebugLn(const {%H-}S: String; {%H-}const Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn({%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLn(const {%H-}S: String; {%H-}const {%H-}Args: array of const); overload;// similar to Format(s,Args)
     procedure DebugLn(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                       const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                       const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -131,8 +131,8 @@ type
                       const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLnEnter(const {%H-}s: string = ''); overload;
-    procedure DebugLnEnter({%H-}const Args: array of const); overload;
-    procedure DebugLnEnter({%H-}s: string; {%H-}const Args: array of const); overload;
+    procedure DebugLnEnter({%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLnEnter({%H-}s: string; {%H-}const {%H-}Args: array of const); overload;
     procedure DebugLnEnter(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                            const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                            const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -141,8 +141,8 @@ type
                            const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLnExit(const {%H-}s: string = ''); overload;
-    procedure DebugLnExit({%H-}const Args: array of const); overload;
-    procedure DebugLnExit({%H-}s: string; {%H-}const Args: array of const); overload;
+    procedure DebugLnExit({%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLnExit({%H-}s: string; {%H-}const {%H-}Args: array of const); overload;
     procedure DebugLnExit(const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                           const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                           const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -154,8 +154,8 @@ type
     procedure DebuglnStack({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s: string = '');
 
     procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s: string = ''); overload;
-    procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const Args: array of const); overload;
-    procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}S: String; {%H-}const Args: array of const); overload;// similar to Format(s,Args)
+    procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const {%H-}Args: array of const); overload;
+    procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}S: String; {%H-}const {%H-}Args: array of const); overload;// similar to Format(s,Args)
     procedure DbgOut({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                      const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                      const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -164,8 +164,8 @@ type
                      const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s: string = ''); overload;
-    procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const Args: array of const); overload;
-    procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}S: String; {%H-}const Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}S: String; {%H-}const {%H-}Args: array of const); overload;// similar to Format(s,Args)
     procedure DebugLn({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                       const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                       const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -174,8 +174,8 @@ type
                       const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s: string = ''); overload;
-    procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const Args: array of const); overload;
-    procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}s: string; {%H-}const Args: array of const); overload;
+    procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}s: string; {%H-}const {%H-}Args: array of const); overload;
     procedure DebugLnEnter({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                            const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                            const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';
@@ -184,8 +184,8 @@ type
                            const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s: string = ''); overload;
-    procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const Args: array of const); overload;
-    procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}s: string; {%H-}const Args: array of const); overload;
+    procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}const {%H-}Args: array of const); overload;
+    procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; {%H-}s: string; {%H-}const {%H-}Args: array of const); overload;
     procedure DebugLnExit({%H-}LogEnabled: TLazLoggerLogEnabled; const {%H-}s1, {%H-}s2: string; const {%H-}s3: string = '';
                           const {%H-}s4: string = ''; const {%H-}s5: string = ''; const {%H-}s6: string = '';
                           const {%H-}s7: string = ''; const {%H-}s8: string = ''; const {%H-}s9: string = '';

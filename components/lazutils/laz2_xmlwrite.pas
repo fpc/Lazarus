@@ -133,7 +133,7 @@ type
   Private
     F : TStream;
   Protected
-    Procedure Write(Const Buffer; Count : Longint);override;
+    Procedure Write(Const {%H-}Buffer; Count : Longint);override;
   Public
     constructor Create(AStream: TStream);
   end;

@@ -71,7 +71,7 @@ type
     procedure BeginProperty(const PropName: String); override;
     procedure EndProperty; override;
 
-    procedure WriteBinary(const Buffer; Count: Longint); override;
+    procedure WriteBinary(const {%H-}Buffer; Count: Longint); override;
     procedure WriteBoolean(Value: Boolean); override;
     // procedure WriteChar(Value: Char);
     procedure WriteFloat(const Value: Extended); override;
