@@ -4393,6 +4393,10 @@ msgstr " (Ignorando la configuración del proyecto a continuación)"
 msgid "Store converter config in session"
 msgstr "Almacenar la configuración del convertidor en la sesión"
 
+#: lazarusidestrconsts.drsstoredispformatconfiginses
+msgid "Store display formats config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreformatterconfiginses
 msgid "Store formatter config in session"
 msgstr ""
@@ -4405,6 +4409,10 @@ msgstr "Almacenar la configuración del depurador en la sesión"
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
 msgstr "El \"Backend del depurador\" seleccionado del menú desplegable (lista de backend de depueración del IDE) es siempre almacenado en la sesión. Los backends específicos del proyecto (a continuación) se almacenan de forma predeterminada en el LPI."
 
+#: lazarusidestrconsts.drsthisonlyaffectsdispformats
+msgid "This only affects the display formats below. The settings which formats to use are always stored in the session."
+msgstr ""
+
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 #, fuzzy
 #| msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
@@ -4413,6 +4421,14 @@ msgstr "Esto solo afecta la lista de convertidores a continuación. Las opciones
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
 msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsuseideglobaldispformats
+msgid "Use the IDEs-global display formats"
+msgstr ""
+
+#: lazarusidestrconsts.drsuseprojecfdispformats
+msgid "Use the projects display formats"
 msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
@@ -14132,14 +14148,6 @@ msgstr "Objetivos: "
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "Deshacer último cambio realizado en esta rejilla"
-
-#: lazarusidestrconsts.lismmusesystemencoding
-msgid "Use system encoding"
-msgstr "Usar codificación del sistema"
-
-#: lazarusidestrconsts.lismmusesystemencodinghint
-msgid "Disable support for UTF-8 default string encoding."
-msgstr "Deshabilitar soporte para UTF-8 para codificación de cadenas por defecto."
 
 #: lazarusidestrconsts.lismmvalues
 #, object-pascal-format

@@ -4382,6 +4382,10 @@ msgstr ""
 msgid "Store converter config in session"
 msgstr ""
 
+#: lazarusidestrconsts.drsstoredispformatconfiginses
+msgid "Store display formats config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreformatterconfiginses
 msgid "Store formatter config in session"
 msgstr ""
@@ -4394,12 +4398,24 @@ msgstr ""
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
 msgstr ""
 
+#: lazarusidestrconsts.drsthisonlyaffectsdispformats
+msgid "This only affects the display formats below. The settings which formats to use are always stored in the session."
+msgstr ""
+
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 msgid "This only affects the list of converters below. The settings which list to use are always stored in the session."
 msgstr ""
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
 msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsuseideglobaldispformats
+msgid "Use the IDEs-global display formats"
+msgstr ""
+
+#: lazarusidestrconsts.drsuseprojecfdispformats
+msgid "Use the projects display formats"
 msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
@@ -14040,14 +14056,6 @@ msgstr "対象："
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "最後の変更をこのグリッドまで元に戻す"
-
-#: lazarusidestrconsts.lismmusesystemencoding
-msgid "Use system encoding"
-msgstr "システムエンコーディングを使用"
-
-#: lazarusidestrconsts.lismmusesystemencodinghint
-msgid "Disable support for UTF-8 default string encoding."
-msgstr "UTF-8のデフォルト文字列エンコーディングのサポートを無効化"
 
 #: lazarusidestrconsts.lismmvalues
 #, object-pascal-format

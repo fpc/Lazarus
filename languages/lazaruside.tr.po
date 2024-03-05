@@ -4232,6 +4232,10 @@ msgstr " (Aşağıdaki proje ayarları dikkate alınmaz)"
 msgid "Store converter config in session"
 msgstr "Dönüştürücü yapılandırmasını oturumda saklama"
 
+#: lazarusidestrconsts.drsstoredispformatconfiginses
+msgid "Store display formats config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreformatterconfiginses
 msgid "Store formatter config in session"
 msgstr ""
@@ -4244,6 +4248,10 @@ msgstr "Proje hata ayıklayıcı yapılandırmalarını oturumda saklama"
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
 msgstr "Açılır menüden \"Hata Ayıklayıcı Arka Ucu\" seçimi (IDE hata ayıklayıcı arka uçlarının listesi) her zaman oturumda saklanır. Projeye özel arka uçlar (aşağıda) varsayılan olarak LPI'da saklanır."
 
+#: lazarusidestrconsts.drsthisonlyaffectsdispformats
+msgid "This only affects the display formats below. The settings which formats to use are always stored in the session."
+msgstr ""
+
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 #, fuzzy
 #| msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
@@ -4252,6 +4260,14 @@ msgstr "Bu sadece aşağıdaki dönüştürücü listesini etkiler. Hangi listen
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
 msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsuseideglobaldispformats
+msgid "Use the IDEs-global display formats"
+msgstr ""
+
+#: lazarusidestrconsts.drsuseprojecfdispformats
+msgid "Use the projects display formats"
 msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
@@ -13774,14 +13790,6 @@ msgstr "Hedefler: "
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "Bu ızgaraya son değişikliği geri al"
-
-#: lazarusidestrconsts.lismmusesystemencoding
-msgid "Use system encoding"
-msgstr "Sistem kodlamasını kullan"
-
-#: lazarusidestrconsts.lismmusesystemencodinghint
-msgid "Disable support for UTF-8 default string encoding."
-msgstr "UTF-8 varsayılan dizge kodlamasının desteğini devre dışı bırak."
 
 #: lazarusidestrconsts.lismmvalues
 #, object-pascal-format

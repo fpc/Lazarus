@@ -4270,6 +4270,10 @@ msgstr ""
 msgid "Store converter config in session"
 msgstr "在会话中存储转换器配置"
 
+#: lazarusidestrconsts.drsstoredispformatconfiginses
+msgid "Store display formats config in session"
+msgstr ""
+
 #: lazarusidestrconsts.drsstoreformatterconfiginses
 msgid "Store formatter config in session"
 msgstr ""
@@ -4282,12 +4286,24 @@ msgstr "在会话中保存项目调试器配置"
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
 msgstr ""
 
+#: lazarusidestrconsts.drsthisonlyaffectsdispformats
+msgid "This only affects the display formats below. The settings which formats to use are always stored in the session."
+msgstr ""
+
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 msgid "This only affects the list of converters below. The settings which list to use are always stored in the session."
 msgstr ""
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofformatter
 msgid "This only affects the list of formatters below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: lazarusidestrconsts.drsuseideglobaldispformats
+msgid "Use the IDEs-global display formats"
+msgstr ""
+
+#: lazarusidestrconsts.drsuseprojecfdispformats
+msgid "Use the projects display formats"
 msgstr ""
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
@@ -13845,14 +13861,6 @@ msgstr "目标： "
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
 msgstr "撤消上次对这个网格的更改"
-
-#: lazarusidestrconsts.lismmusesystemencoding
-msgid "Use system encoding"
-msgstr "使用系统编码"
-
-#: lazarusidestrconsts.lismmusesystemencodinghint
-msgid "Disable support for UTF-8 default string encoding."
-msgstr "禁止支撑UTF-8默认字符串编码。"
 
 #: lazarusidestrconsts.lismmvalues
 #, object-pascal-format
