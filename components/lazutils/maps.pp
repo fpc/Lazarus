@@ -831,7 +831,7 @@ begin
         ftComp     : Size := SizeOf(Comp);
         ftCurr     : Size := SizeOf(Currency);
       else
-        Size := 0;
+        raise Exception.Create('not supported'){%H-};
       end;
     end;
 
