@@ -302,7 +302,7 @@ begin
     Result := 0;
   end else begin
     i := length(Line);
-    SetLength(CharWidths, i);
+    SetLength(CharWidths{%H-}, i);
     DoGetPhysicalCharWidths(Pchar(Line), i, AnIndex, @CharWidths[0]);
     Result := 0;
     for i := 0 to length(CharWidths)-1 do
