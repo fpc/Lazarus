@@ -1514,13 +1514,13 @@ begin
       GrpLow := FFoldGroup;
       GrpHigh := FFoldGroup;
     end;
-    SetLength(OpenCnt, FGroupCount);
+    SetLength(OpenCnt{%H-}, FGroupCount);
     for Grp := 0 to FGroupCount - 1 do
       OpenCnt[Grp] := 0;
     ListCnt := FFoldNodeInfoList.Count;
     if ListCnt < 0 then
       exit;
-    SetLength(OpenIdx, FGroupCount, ListCnt);
+    SetLength(OpenIdx{%H-}, FGroupCount, ListCnt);
 
     for Grp := GrpLow to GrpHigh do begin
       (* Filtering group in the loop instead of the list only works, if 0 is the only special group

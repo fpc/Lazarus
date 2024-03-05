@@ -5,11 +5,11 @@ unit SynTextMateSyn;
 interface
 
 uses
-  Classes, SysUtils, fgl, Math,
+  Classes, SysUtils, fgl,
   jsonparser, jsonscanner, fpjson,
   // LazUtils
   LazFileUtils,
-  Laz2_XMLRead, PList2JSon, Laz2_DOM, LazStringUtils,
+  Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
   TextMateGrammar,
   // SynEdit
@@ -184,7 +184,7 @@ var
   i: Integer;
 begin
   GetRange;
-  i := Integer(TSynHighlighterTextMateRangeList(CurrentRanges).Range[Index]);
+  i := {%H-}Integer(TSynHighlighterTextMateRangeList(CurrentRanges).Range[Index]);
   if i <> FCurrentRange then
     FTextMateGrammar.MainPatternList[i].DecRefCount;
 

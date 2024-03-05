@@ -3393,7 +3393,7 @@ begin
     exit;
   end;
 
-  SetLength(s, Run - p);
+  SetLength(s{%H-}, Run - p);
   move(fLine[p], s[1], Run - p);
   if FPasDocWordList.IndexOf(LowerCase(s)) >= 0 then begin
     Result := fPasDocKeyWordAttri.IsEnabled;
@@ -4358,7 +4358,7 @@ var
   Len: LongInt;
 begin
   Len := Run - fTokenPos;
-  SetLength(Result,Len);
+  SetLength(Result{%H-},Len);
   if Len>0 then
     System.Move(fLine[fTokenPos],Result[1],Len);
 end;

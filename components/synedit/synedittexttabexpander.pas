@@ -591,7 +591,7 @@ begin
     TabData.SetLineInfo(Index, 0, False);
   end else begin
     i := length(Line);
-    SetLength(CharWidths, i);
+    SetLength(CharWidths{%H-}, i);
     DoGetPhysicalCharWidths(Pchar(Line), i, Index, @CharWidths[0]);
     Result := 0;
     for i := 0 to length(CharWidths)-1 do

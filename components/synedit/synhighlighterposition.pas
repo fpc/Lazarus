@@ -192,7 +192,7 @@ var
   Len: LongInt;
 begin
   Len := fTokenEnd - fTokenPos;
-  SetLength(Result,Len);
+  SetLength(Result{%H-},Len);
   System.Move(fLine[fTokenPos],Result[1],Len);
 end;
 

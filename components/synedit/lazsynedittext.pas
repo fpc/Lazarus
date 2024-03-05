@@ -1145,7 +1145,7 @@ end;
 function TSynEditStrings.GetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer): TPhysicalCharWidths;
 begin
-  SetLength(Result, LineLen);
+  SetLength(Result{%H-}, LineLen);
   if LineLen = 0 then
     exit;
   DoGetPhysicalCharWidths(Line, LineLen, Index, @Result[0]);
@@ -1202,7 +1202,7 @@ begin
       if not (p^ in [#10,#13]) then begin
         inc(p);
       end else begin
-        SetLength(s,p-StartPos);
+        SetLength(s{%H-},p-StartPos);
         if s<>'' then
           System.Move(StartPos^,s[1],length(s));
         sl.Add(s);
