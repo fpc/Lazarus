@@ -177,7 +177,26 @@ end;
 procedure TApplication.ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean);
 var
   Info: THintInfoAtMouse;
-  HintControlChanged: Boolean;
+  HintControlChanged, MouseLeaveHintRect, WasHintActive: Boolean;
+  HitControl: TControl;
+
+  procedure StartHintTimerWithCustomPause;
+  var
+    Pause: Integer;
+  begin
+    Pause := IfThen(WasHintActive, 0, HintPause);
+    if Assigned(FHintControl) then
+      FHintControl.Perform(CM_HINTSHOWPAUSE, Ord(WasHintActive), LParam(@Pause));
+    if Pause = 0 then
+      ShowHintWindow(Info)
+    else
+    begin
+      CancelHint;
+      FHintControl := Info.Control;
+      StartHintTimer(Pause, ahttShowHint);
+    end;
+  end;
+
 begin
   Info := GetHintInfoAt(CursorPos);
 
@@ -187,6 +206,7 @@ begin
   HintControlChanged := not CheckHintControlChange or (FHintControl <> Info.Control);
   if Info.ControlHasHint then
   begin
+    MouseLeaveHintRect := Assigned(FHintControl) and not PtInRect(FHintRect, FHintControl.ScreenToClient(CursorPos));
     if HintControlChanged then
     begin
       StopHintTimer;
@@ -194,27 +214,31 @@ begin
       FHintControl := Info.Control;
       FHintRect := FHintControl.BoundsRect;
     end else begin
-      Exit;
+      if not MouseLeaveHintRect then
+        Exit;
     end;
+    WasHintActive := Assigned(FHintWindow) and FHintWindow.Visible;
     case FHintTimerType of
       ahttNone, ahttHideHint:
         //react only if the hint control changed or if the mouse leave the previously set hint rect
-        if HintControlChanged or (not PtInRect(FHintRect, FHintControl.ScreenToClient(Info.MousePos))) then
-        begin
-          //if a hint is visible immediately query the app to show a new hint...
-          if FHintTimerType = ahttHideHint then
-            ShowHintWindow(Info);
-          //...if there's no hint window visible at this point then schedule a new query
-          if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
-            StartHintTimer(HintPause, ahttShowHint);
-        end;
+        if HintControlChanged or MouseLeaveHintRect then
+          StartHintTimerWithCustomPause;
       ahttShowHint, ahttReshowHint:
-        StartHintTimer(HintPause, ahttShowHint);
+        StartHintTimerWithCustomPause;
     end;
   end
   else
-    CancelHint;
+  begin
+    // THintWindow should not be closed if there is a cursor above it
+    // Relevant for Linux only
+    {$IFNDEF MSWINDOWS}
+    HitControl := FindControlAtPosition(CursorPos, False);
+    if (HitControl = nil) or not (HitControl is THintWindow) then
+    {$ENDIF}
+      CancelHint;
+  end;
 end;
+
 
 procedure TApplication.BringToFront;
 begin
