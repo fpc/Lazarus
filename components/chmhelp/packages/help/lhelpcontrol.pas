@@ -215,7 +215,7 @@ end;
 
 function TLHelpConnection.OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
 var
-  UrlRequest: TUrlRequest;
+  {%H-}UrlRequest: TUrlRequest;
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
@@ -242,7 +242,7 @@ end;
 function TLHelpConnection.OpenContext(HelpFileName: String;
   Context: THelpContext) : TLHelpResponse;
 var
-  ContextRequest: TContextRequest;
+  {%H-}ContextRequest: TContextRequest;
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
@@ -269,7 +269,7 @@ end;
 
 function TLHelpConnection.OpenFile(HelpFileName: String): TLHelpResponse;
 var
-  FileRequest : TFileRequest;
+  {%H-}FileRequest : TFileRequest;
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
@@ -304,7 +304,7 @@ end;
 
 function TLHelpConnection.RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;
 var
-  MiscRequest : TMiscRequest;
+  {%H-}MiscRequest : TMiscRequest;
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
