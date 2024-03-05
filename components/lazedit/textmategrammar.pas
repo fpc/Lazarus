@@ -839,6 +839,10 @@ procedure TTextMatePattern.NextToken(var AStates: TTextMatePatternState;
 begin
   ANextTokenPos := Length(AText);
   assert(False, 'TTextMatePattern.NextToken: False');
+  if AStates.Grammar = nil then;
+  if ACurTokenPos=0 then ;
+  if AnInitInfoOnly then ;
+  if AnIsCalledAsParent then ;
 end;
 
 procedure TTextMatePattern.IncRefCount;
@@ -869,6 +873,7 @@ function TTextMatePattern.DebugDump(AnIndent: Integer;
 begin
   Result := StringOfChar(' ', AnIndent) + APrefix
           + '[' + IntToStr(FMainIndex) + '] ' + DebugName + LineEnding;
+  if AnIncludeNested then ;
 end;
 
 function TTextMatePattern.IsEndlessRecursion(ACurTokenPos: integer;
@@ -897,6 +902,11 @@ procedure TTextMatePattern.InitStates(const AGrammar: TTextMateGrammar;
   const AText: String; ADepth: Integer);
 begin
   assert(False, 'TTextMatePattern.InitStates: not TTextMatePatternBaseNested');
+  if AGrammar=nil then ;
+  if AStates=nil then ;
+  if AParent=nil then ;
+  if AText='' then ;
+  if ADepth=0 then ;
 end;
 
 procedure TTextMatePattern.GetCurrentTokenInfo(

@@ -6750,6 +6750,9 @@ var
   Ptr, SearchEnd: PRegExprChar;
 begin
   Result := False;
+
+  if ASlowChecks then ;
+
   Ptr := fInputStart + AOffset - 1;
   fInputContinue := Ptr;
   FMatchesCleared := False;
@@ -7870,7 +7873,7 @@ begin
   op := OP_EXACTLY;
   s := regCodeWork;
   BranchEnd := nil;
-  SetLength(BranchEndStack, 0);
+  SetLength(BranchEndStack{%H-}, 0);
   while op <> OP_EEND do
   begin // While that wasn't END last time...
     op := s^;
