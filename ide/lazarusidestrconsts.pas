@@ -6164,8 +6164,6 @@ resourcestring
   lisMMCustomOption = 'Custom Option';
   lisMMIDEMacro = 'IDE Macro';
   lisMMOverrideOutputDirectory = 'Override output directory (-FU)';
-  lisMMUseSystemEncoding = 'Use system encoding';
-  lisMMUseSystemEncodingHint = 'Disable support for UTF-8 default string encoding.';
   lisMMWidgetSetAvailableForLCLProject = 'WidgetSet change is available only for LCL projects';
   lisPriority = 'Priority';
   lisUDScanningUnits = 'Scanning: %s units ...';

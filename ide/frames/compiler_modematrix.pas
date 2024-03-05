@@ -70,8 +70,6 @@ type
     AddSepToolButton: TToolButton;
     BMMAddLclWidgetButton: TToolButton;
     LCLMacroSepToolButton: TToolButton;
-    BMMSystemEncodingButton: TToolButton;
-    DeleteSepToolButton: TToolButton;
     procedure BMMDeleteButtonClick(Sender: TObject);
     procedure BMMMoveDownButtonClick(Sender: TObject);
     procedure BMMMoveUpButtonClick(Sender: TObject);
@@ -91,7 +89,6 @@ type
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
     procedure AddMacroMenuItemClick(Sender: TObject);
     procedure AddLCLWidgetTypeClick(Sender: TObject);
-    procedure BMMSystemEncodingButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FErrorColor: TColor;
@@ -111,9 +108,6 @@ type
     procedure AddLCLWidgetTypeValues(ParentMenu: TPopupMenu; Mcr: TLazBuildMacro);
     procedure AddMacroValues(ParentMI: TMenuItem; Mcr: TLazBuildMacro);
     function ActiveModeAsText: string;
-    function CheckAndUpdateSystemEncoding(UpdateIt: Boolean; out WasUpdated: Boolean): Boolean;
-    function HasSystemEncoding: Boolean;
-    function SupportSystemEncoding: Boolean;
     procedure DoWriteSettings;
     procedure FillMenus;
     procedure MoveRow(Direction: integer);
@@ -174,9 +168,6 @@ var
   ModeMatrixFrame: TCompOptModeMatrixFrame = nil;
 
 implementation
-
-const
-  DisableUTF8RTL = '-dDisableUTF8RTL';
 
 function BuildMatrixOptionTypeCaption(Typ: TBuildMatrixOptionType): string;
 begin
@@ -550,11 +541,6 @@ begin
   BMMAddOtherPopupMenu.PopUp(p.x,p.y);
 end;
 
-procedure TCompOptModeMatrixFrame.BMMSystemEncodingButtonClick(Sender: TObject);
-begin
-  SupportSystemEncoding;
-end;
-
 procedure TCompOptModeMatrixFrame.GridEditingDone(Sender: TObject);
 begin
   //DebugLn(['TFrame1.GridEditingDone ']);
@@ -884,70 +870,6 @@ begin
     DoWriteSettings;
 end;
 
-function TCompOptModeMatrixFrame.CheckAndUpdateSystemEncoding(UpdateIt: Boolean;
-  out WasUpdated: Boolean): Boolean;
-// Returns True if the support already was there.
-var
-  GrpIndex: Integer;
-  Target: TGroupedMatrixGroup;
-  i: Integer;
-  ValueRow: TGroupedMatrixValue;
-  AMode: String;
-begin
-  Result := False;
-  WasUpdated := False;
-  for GrpIndex:=0 to GroupProject.Count-1 do
-  begin
-    Target := TGroupedMatrixGroup(GroupProject[GrpIndex]);
-    if not (Target is TGroupedMatrixGroup) then
-      exit;
-    for i:=0 to Target.Count-1 do
-    begin
-      ValueRow := TGroupedMatrixValue(Target[i]);
-      if not (ValueRow is TGroupedMatrixValue) then
-        exit;
-      Result := (ValueRow.Typ = 'Custom') and (ValueRow.Value = DisableUTF8RTL);
-      if Result then
-      begin
-        AMode := ActiveModeAsText;
-        Result := (ValueRow.ModeList.IndexOf(AMode)>=0);
-        if (not Result) and UpdateIt then
-        begin
-          Grid.MatrixChanging;
-          try
-            ValueRow.ModeList.Add(AMode);
-          finally
-            Grid.MatrixChanged;
-          end;
-          WasUpdated := True;
-        end;
-        Exit;
-      end;
-    end;
-  end;
-end;
-
-function TCompOptModeMatrixFrame.HasSystemEncoding: Boolean;
-var
-  Dummy: Boolean;
-begin
-  Result := CheckAndUpdateSystemEncoding(False, Dummy);
-end;
-
-function TCompOptModeMatrixFrame.SupportSystemEncoding: Boolean;
-// Add a compiler flag to use system encoding for string.
-// Returns true if the flag was really added and did not exist earlier.
-var
-  WasUpdated: Boolean;
-begin
-  Result := not CheckAndUpdateSystemEncoding(True, WasUpdated);
-  if Result and not WasUpdated then
-  begin
-    CreateNewOption(BuildMatrixOptionTypeCaption(bmotCustom), DisableUTF8RTL);
-    UpdateModes;
-  end;
-end;
-
 procedure TCompOptModeMatrixFrame.UpdateModes(UpdateGrid: boolean);
 var
   i: Integer;
@@ -1186,9 +1108,6 @@ begin
   BMMAddLclWidgetButton.Caption:=Format(fCaptionPatternMacroName,['LCLWidgetType']);
   BMMAddLclWidgetButton.Hint := lisMMWidgetSetAvailableForLCLProject;
   BMMAddOtherButton.Caption:=lisAdd;
-
-  BMMSystemEncodingButton.Caption:=lisMMUseSystemEncoding;
-  BMMSystemEncodingButton.Hint:=lisMMUseSystemEncodingHint;
 
   UpdateButtons;
 end;

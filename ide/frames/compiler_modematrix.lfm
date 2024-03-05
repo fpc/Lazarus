@@ -108,22 +108,6 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       Caption = 'LCLMacroSepToolButton'
       Style = tbsSeparator
     end
-    object BMMSystemEncodingButton: TToolButton
-      Left = 426
-      Top = 0
-      Caption = 'Use system encoding'
-      OnClick = BMMSystemEncodingButtonClick
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object DeleteSepToolButton: TToolButton
-      Left = 416
-      Height = 25
-      Top = 0
-      Width = 10
-      Caption = 'DeleteSepToolButton'
-      Style = tbsSeparator
-    end
   end
   object BMMAddOtherPopupMenu: TPopupMenu
     left = 240
