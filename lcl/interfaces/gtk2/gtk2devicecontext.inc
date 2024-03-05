@@ -330,31 +330,31 @@ end;
 
 procedure TGtkDeviceContext.InvTransfPoint(var X1, Y1: Integer);
 begin
-  X1 := MulDiv(X1 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y1 := MulDiv(Y1 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
   // to do: put affine inverse transformation here (for all Inv.. methods)
 end;
 
 function TGtkDeviceContext.InvTransfPointIndirect(const P: TPoint): TPoint;
 begin
-  Result.X := MulDiv(P.X + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Y := MulDiv(P.Y + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.X := MulDiv(P.X - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Result.Y := MulDiv(P.Y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
 end;
 
 procedure TGtkDeviceContext.InvTransfRect(var X1, Y1, X2, Y2: Integer);
 begin
-  X1 := MulDiv(X1 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y1 := MulDiv(Y1 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
-  X2 := MulDiv(X2 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y2 := MulDiv(Y2 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
+  X2 := MulDiv(X2 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Y2 := MulDiv(Y2 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
 end;
 
 function TGtkDeviceContext.InvTransfRectIndirect(const R: TRect): TRect;
 begin
-  Result.Left := MulDiv(R.Left + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Top := MulDiv(R.Top + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
-  Result.Right := MulDiv(R.Right + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Bottom := MulDiv(R.Bottom + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.Left := MulDiv(R.Left - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Result.Top := MulDiv(R.Top - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
+  Result.Right := MulDiv(R.Right - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x) + FWindowOrg.x;
+  Result.Bottom := MulDiv(R.Bottom - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y) + FWindowOrg.y;
 end;
 
 procedure TGtkDeviceContext.InvTransfExtent(var ExtX, ExtY: Integer);
@@ -400,30 +400,30 @@ end;
 procedure TGtkDeviceContext.TransfPoint(var X1, Y1: Integer);
 begin
   // to do: put affine transformation here (for all Transf.. methods)
-  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  X1 := MulDiv(X1 - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y1 := MulDiv(Y1 - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
 end;
 
 function TGtkDeviceContext.TransfPointIndirect(const P: TPoint): TPoint;
 begin
-  Result.x := MulDiv(P.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Result.Y := MulDiv(P.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  Result.x := MulDiv(P.x - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Y := MulDiv(P.y - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
 end;
 
 procedure TGtkDeviceContext.TransfRect(var X1, Y1, X2, Y2: Integer);
 begin
-  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
-  X2 := MulDiv(X2, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Y2 := MulDiv(Y2, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  X1 := MulDiv(X1 - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y1 := MulDiv(Y1 - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  X2 := MulDiv(X2 - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Y2 := MulDiv(Y2 - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
 end;
 
 function TGtkDeviceContext.TransfRectIndirect(const R: TRect): TRect;
 begin
-  Result.Left := MulDiv(R.Left, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Result.Top := MulDiv(R.Top, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
-  Result.Right := MulDiv(R.Right, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
-  Result.Bottom := MulDiv(R.Bottom, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  Result.Left := MulDiv(R.Left - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Top := MulDiv(R.Top - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  Result.Right := MulDiv(R.Right - FWindowOrg.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
+  Result.Bottom := MulDiv(R.Bottom - FWindowOrg.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
 end;
 
 procedure TGtkDeviceContext.TransfExtent(var ExtX, ExtY: Integer);
