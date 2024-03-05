@@ -273,7 +273,7 @@ type
 implementation
 
 const
-  LineTerm : array [TIpLineTerminator] of
+  {%H-}LineTerm : array [TIpLineTerminator] of
                array [0..1] of AnsiChar =
                  ('', #13, #10, #13#10, '');
 
@@ -1490,7 +1490,7 @@ end;
 procedure TIpAnsiTextStream.WriteLineArray(aCharArray : PAnsiChar;
                                            aLen       : Longint);
 var
-  C : AnsiChar;
+  {%H-}C : AnsiChar;
 begin
   if not Assigned(FStream) then
     Exit;

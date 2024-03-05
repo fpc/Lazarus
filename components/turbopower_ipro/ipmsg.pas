@@ -662,7 +662,7 @@ type
   TIp6BitTable = array[0..63] of AnsiChar;
 
 const {- BinHex encoding table }
-  IpBinHexTable : TIp6BitTable = (
+  {%H-}IpBinHexTable : TIp6BitTable = (
     '!', '"', '#', '$', '%', '&', '''', '(',
     ')', '*', '+', ',', '-', '0', '1',  '2',
     '3', '4', '5', '6', '8', '9', '@',  'A',
@@ -724,7 +724,7 @@ const { UUEncode encoding table }
 const
   HexDigits : array[0..$F] of AnsiChar = '0123456789ABCDEF';
   RLEChar : Byte = $90;
-  BinHexFileType : array[0..3] of Byte = ($49, $42, $4D, $3F);  { "IBM?" }
+  {%H-}BinHexFileType : array[0..3] of Byte = ($49, $42, $4D, $3F);  { "IBM?" }
   CRLF = #13#10;
   MaxLine = 1000;
   MaxLineEncode = 77;
@@ -2030,7 +2030,7 @@ var
   I : Integer;
   C : Char;
   InBuf  : array[0..3] of Char;
-  OutBuf : array[0..2] of Byte;
+  {%H-}OutBuf : array[0..2] of Byte;
   Done  : Boolean;
   Abort : Boolean;
   BufStream : TIpBufferedStream;
@@ -2081,7 +2081,7 @@ end;
 procedure TIpMimeEntity.DecodeBinHex(OutStream : TStream);
 var
   InBuf : array[1..4] of Byte;
-  OutBuf : array[1..3] of Byte;
+  {%H-}OutBuf : array[1..3] of Byte;
   i : Byte;
   btThis, btLast, btNext : Byte;
   ch : AnsiChar;
@@ -2409,7 +2409,7 @@ procedure TIpMimeEntity.DecodeUUEncode(OutStream : TStream);
 var
   I, O, Len, Count : Byte;
   InBuf  : array[0..85] of Byte;
-  OutBuf : array[0..65] of Byte;
+  {%H-}OutBuf : array[0..65] of Byte;
   FirstLine : Boolean;
   Abort : Boolean;
   BufStream : TIpBufferedStream;
@@ -2509,7 +2509,7 @@ procedure TIpMimeEntity.EncodeBinHex(InStream : TStream;
                                      const aFileName : string);
 var
   HeaderFileName : string;
-  CRC : Word;
+  {%H-}CRC : Word;
   DataOffset : DWord;
   PrevByte, CurrByte, i : Byte;
   Header : BinHexHeader;
@@ -2669,7 +2669,7 @@ procedure TIpMimeEntity.EncodeUUEncode(InStream : TStream;
 var
   I, O, Count, Temp : Byte;
   InBuf  : array[1..45] of Byte;
-  OutBuf : array[0..63] of AnsiChar;
+  {%H-}OutBuf : array[0..63] of AnsiChar;
   Abort : Boolean;
 begin
   Abort := False;
