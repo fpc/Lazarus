@@ -10,6 +10,8 @@ uses
 {$IFDEF VIRTUALPASCAL}
      Use32,
 {$ENDIF}
+     TTError,
+     TTCalc,       { used for MulDiv }
      TTTypes,
      SysUtils;
 
@@ -133,11 +135,6 @@ function ProfileList_Count( L: TProfile): integer;
 procedure ProfileList_Split( List : TProfile; out Part1, Part2: TProfile);
 
 implementation
-
-uses
-     TTCalc,       { used for MulDiv }
-     TTError ;
-
 
 (************************************************)
 (*                                              *)
