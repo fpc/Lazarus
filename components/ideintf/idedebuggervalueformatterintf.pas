@@ -14,7 +14,7 @@ unit IdeDebuggerValueFormatterIntf experimental;
 
 interface
 
-uses fgl, SysUtils, LazDebuggerIntf, IdeDebuggerWatchValueIntf,
+uses fgl, SysUtils, IdeDebuggerWatchValueIntf,
   DbgIntfDebuggerBase;
 
 type

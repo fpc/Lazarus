@@ -16,7 +16,7 @@ unit IdeDebuggerWatchValueIntf experimental;
 interface
 
 uses
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeIntfStrConsts;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 

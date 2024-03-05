@@ -151,7 +151,7 @@ var
   i: Integer;
   j: Integer;
 begin
-  SetLength(NewButtons,High(Buttons)-Low(Buttons)+1);
+  SetLength(NewButtons{%H-},High(Buttons)-Low(Buttons)+1);
   i:=low(Buttons);
   j:=0;
   while i<=High(Buttons) do begin
