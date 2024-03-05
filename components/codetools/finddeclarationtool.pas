@@ -5468,8 +5468,9 @@ var
       if SubParams.ContextNode.Desc=ctnParameterList then
         // skip search in parameter list
         SubParams.ContextNode:=SubParams.ContextNode.Parent;
-      if SubParams.ContextNode.Desc=ctnProcedureHead then
-        // skip search in proc parameters
+      if (SubParams.ContextNode.Desc=ctnProcedureHead)
+      and (StartNode.Desc<>ctnIdentifier) then
+        // skip search in proc parameters if it is not the function result
         SubParams.ContextNode:=SubParams.ContextNode.Parent;
 
       MoveCursorToCleanPos(CleanPos);
