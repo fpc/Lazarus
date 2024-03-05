@@ -24,9 +24,9 @@ type
   public
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     function GetTitle: String; override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
-    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
   end;
 
 implementation

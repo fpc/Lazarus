@@ -56,7 +56,7 @@ type
   TDummyForClose = class
   public
     PkgFile: TPkgFile;
-    procedure CloseEvent(Sender: TObject; const AValues: array of string;
+    procedure CloseEvent(Sender: TObject; const {%H-}AValues: array of string;
       var ACanClose: boolean);
   end;
 

@@ -301,8 +301,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure ReadFromXml(OnlyDesktop: boolean); override;
-    procedure WriteToXml(OnlyDesktop: boolean); override;
+    procedure ReadFromXml({%H-}OnlyDesktop: boolean); override;
+    procedure WriteToXml({%H-}OnlyDesktop: boolean); override;
     procedure InitConfig; override;
 
     procedure UseDesktop(ADesktop: TDesktopOpt);

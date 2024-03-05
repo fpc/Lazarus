@@ -423,7 +423,7 @@ type
 //    fTextAttri: TSynHighlighterAttributes;
     FPos: Integer;
   protected
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;      override;
+    function GetDefaultAttribute({%H-}Index: integer): TSynHighlighterAttributes; override;
   public
     class function GetLanguageName: string; override;
 

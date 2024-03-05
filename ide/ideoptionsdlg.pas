@@ -79,7 +79,7 @@ type
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
-      Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+      Node: TTreeNode; {%H-}State: TCustomDrawState; var {%H-}DefaultDraw: Boolean);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;

@@ -40,7 +40,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, math,
+  Classes, SysUtils,
   // LCL
   LCLType, LCLIntf, Forms, Controls, Dialogs, ExtCtrls,
   // LazUtils
@@ -52,9 +52,15 @@ uses
   ProjectIntf, CompOptsIntf,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
-  ToolBarIntf, InputHistory, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
+  ToolBarIntf, InputHistory, IdeDebuggerWatchValueIntf,
+  {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+  IdeDebuggerValueFormatterIntf,
+  {$ENDIF}
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
+  {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
+  DbgIntfBaseTypes,
+  {$ENDIF}
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDEDebugger

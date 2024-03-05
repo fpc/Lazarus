@@ -1926,22 +1926,7 @@ begin
     inc(Result.Y,ParentForm.Y);
   end;
 end;
-{
-procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
-begin
-  {$IFDEF VerboseDesigner}
-  DebugLn('TDesigner.INVALIDATEWITHPARENT ',AComponent.Name,':',AComponent.ClassName);
-  {$ENDIF}
-  if AComponent is TControl then begin
-    if TControl(AComponent).Parent<>nil then
-      TControl(AComponent).Parent.Invalidate
-    else
-      TControl(AComponent).Invalidate;
-  end else begin
-    FForm.Invalidate;
-  end;
-end;
-}
+
 procedure TDesigner.SetDefaultFormBounds(const AValue: TRect);
 begin
   FDefaultFormBounds:=AValue;

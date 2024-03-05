@@ -167,7 +167,7 @@ begin
   HasLinefeed := InText[Length(InText)] in [#10,#13];
   InLines := TStringList.Create;
   InLines.Text := InText;
-  SetLength(Indents, InLines.Count);
+  SetLength(Indents{%H-}, InLines.Count);
   TempLines := TStringList.Create;
 
   // Join many lines to one

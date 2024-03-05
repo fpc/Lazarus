@@ -462,7 +462,6 @@ var
   i: Integer;
   j: LongInt;
   Pattern: String;
-  LineText: String;
   Parser: TLazTemplateParser;
   CodeToolBossOriginalIndent : Integer; // So I don't break anything else (hopefully)
 begin
