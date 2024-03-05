@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="freetypelaz"/>
+    <Name Value="FreeTypeLaz"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="David Turner, Robert Wilhelm and Werner Lemberg"/>
     <CompilerOptions>
