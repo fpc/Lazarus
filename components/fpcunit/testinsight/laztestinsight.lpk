@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="laztestinsight"/>
+    <Name Value="LazTestInsight"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
