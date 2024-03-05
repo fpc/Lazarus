@@ -5133,6 +5133,8 @@ var
   QtPoint: TQtPoint;
   Matrix: QTransformH;
   QtDC: TQtDeviceContext;
+  RW, RV: TRect;
+  AScaleX, AScaleY: double;
 begin
   Result := False;
 
@@ -5142,6 +5144,12 @@ begin
   QtDC := TQtDeviceContext(DC);
 
   Matrix := QPainter_transform(QtDC.Widget);
+
+  QPainter_window(QtDC.Widget, @RW);
+  QPainter_viewport(QtDC.Widget, @RV);
+  AScaleX := RW.Width / RV.Width;
+  AScaleY := RW.Height / RV.Height;
+
   P := @Points;
   while Count > 0 do
   begin
@@ -5149,8 +5157,8 @@ begin
     QtPoint.X := P^.X;
     QtPoint.Y := P^.Y;
     QTransform_map(Matrix, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
-    P^.X := QtPoint.X;
-    P^.Y := QtPoint.Y;
+    P^.X := Trunc(QtPoint.X / AScaleX) + RV.Left;
+    P^.Y := Trunc(QtPoint.Y / AScaleY) + RV.Top;
     Inc(P);
   end;
 
