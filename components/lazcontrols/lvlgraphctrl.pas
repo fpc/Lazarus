@@ -997,7 +997,7 @@ var
   ch: TChannel;
   i: Integer;
 begin
-  SetLength(Result,Cnt);
+  SetLength(Result{%H-},Cnt);
   if Cnt=0 then exit;
   for ch:=Low(TChannel) to High(TChannel) do
     Steps[ch]:=1;
@@ -1102,7 +1102,7 @@ var
   i: Integer;
 begin
   if Nodes=nil then begin
-    SetLength(Result,0);
+    SetLength(Result{%H-},0);
     exit;
   end;
   AVLNode:=Nodes.FindLowest;
@@ -2933,7 +2933,7 @@ var
 begin
   Canvas.Font.Height:=round(single(TxtHeight)*NodeStyle.CaptionScale+0.5);
   if Graph.LevelCount=0 then exit;
-  SetLength(LevelTxtWidths,Graph.LevelCount);
+  SetLength(LevelTxtWidths{%H-},Graph.LevelCount);
   for i:=0 to Graph.LevelCount-1 do begin
     // compute needed width of the level
     Level:=Graph.Levels[i];
@@ -3944,7 +3944,7 @@ var
     BackEdgeList: array of TGraphLevelerNode;
     SiblingOnLvl: Boolean;
   begin
-    SetLength(BackEdgeList, NodeCount);
+    SetLength(BackEdgeList{%H-}, NodeCount);
     MaybeReduceMaxLevel := False;
     AVLNode := ExtNodes.FindLowest;
     while AVLNode <> nil do begin
