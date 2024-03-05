@@ -40,9 +40,9 @@ type
     procedure Put(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
-    function AddObject(const S: string; AObject: TObject): Integer; override;
   public
     constructor Create;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
     function CheckTypeName(ATypeName: String): boolean;
     function CheckInheritedTypeName(ATypeName: String): boolean;
     property MatchesInheritedTypes: boolean read FMatchesInheritedTypes; // perform "is TFooClass"
