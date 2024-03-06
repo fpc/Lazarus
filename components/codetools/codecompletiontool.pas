@@ -8464,9 +8464,9 @@ begin
     if InclProcCall then begin
       ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
                                           phpWithVarModifiers,phpWithParameterNames,
-                                          phpWithResultType,phpWithCallingSpecs]);
+                                          phpWithResultType,phpWithCallingSpecs,phpWithEmptyParamList]);
       ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
-                                        phpWithParameterNames,phpWithoutParamTypes]);
+                                        phpWithParameterNames,phpWithoutParamTypes,phpWithEmptyParamList]);
       for i:=1 to length(ProcCall)-1 do
         if ProcCall[i]=';' then
           ProcCall[i]:=',';
