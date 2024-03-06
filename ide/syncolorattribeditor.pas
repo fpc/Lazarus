@@ -551,7 +551,9 @@ begin
         ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
         FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
       end else
-      if IsAhaElement(FCurHighlightElement, ahaCodeFoldingTree) then begin
+      if IsAhaElement(FCurHighlightElement, ahaCodeFoldingTree) or
+         IsAhaElement(FCurHighlightElement, ahaCodeFoldingTreeCurrent)
+      then begin
         FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
       end else
       if IsAhaElement(FCurHighlightElement, ahaCaretColor) then begin

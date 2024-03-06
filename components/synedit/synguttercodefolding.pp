@@ -27,9 +27,10 @@ unit SynGutterCodeFolding;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, SynEditFoldedView, SynEditMouseCmds,
-  SynEditHighlighterFoldBase, LCLType, ImgList, Forms;
+  SysUtils, Classes, StrUtils, Controls, Graphics, Menus, LCLIntf,
+  SynGutterBase, SynEditMiscProcs, SynEditFoldedView, SynEditMouseCmds,
+  SynEditHighlighterFoldBase, SynEditMiscClasses, LazSynEditText, LCLType,
+  ImgList, Forms;
 
 type
 
@@ -70,7 +71,14 @@ type
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
     const cNodeOffset = 1;
+    procedure CaretChanged(Sender: TObject);
+    procedure ColorChanged(Sender: TObject);
+    procedure DoDecPaintLock(Sender: TObject);
+    procedure DoHighlightChanged(Sender: TSynEditStrings; aIndex,
+      aCount: Integer);
+    procedure DoIncPaintLock(Sender: TObject);
   private
+    FMarkupInfoCurrentFold, FMarkupInfoCurrentFoldInternal: TSynSelectedColor;
     FMouseActionsCollapsed: TSynEditMouseInternalActions;
     FMouseActionsExpanded: TSynEditMouseInternalActions;
     FPopUp: TPopupMenu;
@@ -83,6 +91,8 @@ type
     function GetFoldView: TSynEditFoldedView;
     function GetMouseActionsCollapsed: TSynEditMouseActions;
     function GetMouseActionsExpanded: TSynEditMouseActions;
+    procedure SetMarkupInfoCurrentFold(AValue: TSynSelectedColor);
+    procedure UpdateInternalColors; override;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
     procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
     function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
@@ -92,6 +102,13 @@ type
     procedure DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
                              NodeType: TSynEditFoldLineCapability;
                              SubType: TDrawNodeSymbolOptions);
+
+  private
+    FPaintLock: Integer;
+    FNeedInnerFoldRange: Boolean;
+    FFirstInvalidLine, FLastInvalidLine: integer;
+    FInnerFoldStart, FInnerFoldEnd, FInnerFoldCaretY: integer;
+    procedure UpdateInnerFoldRange;
   protected
     function  PreferedWidth: Integer; override;
     procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); virtual;
@@ -115,6 +132,7 @@ type
   published
     property MarkupInfo;
     property MarkupInfoCurrentLine;
+    property MarkupInfoCurrentFold: TSynSelectedColor read FMarkupInfoCurrentFold write SetMarkupInfoCurrentFold;
     property MouseActionsExpanded: TSynEditMouseActions
       read GetMouseActionsExpanded write SetMouseActionsExpanded;
     property MouseActionsCollapsed: TSynEditMouseActions
@@ -144,6 +162,23 @@ end;
 function TSynGutterCodeFolding.GetMouseActionsExpanded: TSynEditMouseActions;
 begin
   Result := FMouseActionsExpanded.UserActions;
+end;
+
+procedure TSynGutterCodeFolding.SetMarkupInfoCurrentFold(
+  AValue: TSynSelectedColor);
+begin
+  FMarkupInfoCurrentFold.Assign(AValue);
+end;
+
+procedure TSynGutterCodeFolding.UpdateInternalColors;
+begin
+  inherited UpdateInternalColors;
+  FMarkupInfoCurrentFoldInternal.Assign(FMarkupInfoCurrentFold);
+  if FMarkupInfoCurrentFoldInternal.Foreground = clNone then FMarkupInfoCurrentFoldInternal.Foreground := MarkupInfo.Foreground;
+  if FMarkupInfoCurrentFoldInternal.FrameColor = clNone then FMarkupInfoCurrentFoldInternal.FrameColor := MarkupInfo.FrameColor;
+  FInnerFoldStart := -1;
+  FInnerFoldCaretY := -1;
+  UpdateInnerFoldRange;
 end;
 
 procedure TSynGutterCodeFolding.SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
@@ -194,6 +229,58 @@ begin
       Result := cfHideStart // hide for previous line
     end;
   end;
+end;
+
+procedure TSynGutterCodeFolding.CaretChanged(Sender: TObject);
+begin
+  if FInnerFoldCaretY >= 0 then begin
+    if (FFirstInvalidLine < 0) then begin
+      FFirstInvalidLine := FInnerFoldCaretY;
+      FLastInvalidLine := FInnerFoldCaretY;
+    end
+    else begin
+      if FFirstInvalidLine > FInnerFoldCaretY then
+        FFirstInvalidLine := FInnerFoldCaretY;
+      if FLastInvalidLine < FInnerFoldCaretY then
+        FLastInvalidLine := FInnerFoldCaretY;
+    end;
+  end;
+  UpdateInnerFoldRange;
+end;
+
+procedure TSynGutterCodeFolding.ColorChanged(Sender: TObject);
+begin
+  UpdateInternalColors;
+end;
+
+procedure TSynGutterCodeFolding.DoDecPaintLock(Sender: TObject);
+begin
+  dec(FPaintLock);
+  if FPaintLock = 0 then begin
+    if FNeedInnerFoldRange then
+      UpdateInnerFoldRange;
+  end;
+end;
+
+procedure TSynGutterCodeFolding.DoHighlightChanged(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
+begin
+  if (FFirstInvalidLine < 0) then begin
+    FFirstInvalidLine := aIndex;
+    FLastInvalidLine := aIndex+aCount-1;
+  end
+  else begin
+    if FFirstInvalidLine > aIndex then
+      FFirstInvalidLine := aIndex;
+    if FLastInvalidLine < aIndex+aCount-1 then
+      FLastInvalidLine := aIndex+aCount-1;
+  end;
+  UpdateInnerFoldRange;
+end;
+
+procedure TSynGutterCodeFolding.DoIncPaintLock(Sender: TObject);
+begin
+  inc(FPaintLock);
 end;
 
 procedure TSynGutterCodeFolding.FPopUpOnPopup(Sender: TObject);
@@ -368,16 +455,29 @@ begin
   FReversePopMenuOrder := true;
   FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
   FMouseActionsCollapsed := TSynEditMouseActionsGutterFoldCollapsed.Create(self);
+  FMarkupInfoCurrentFold := TSynSelectedColor.Create;
+  FMarkupInfoCurrentFoldInternal := TSynSelectedColor.Create;
+  FInnerFoldCaretY := -1;
+  FInnerFoldStart := -1;
 
   inherited Create(AOwner);
 
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clDkGray;
   MarkupInfo.FrameColor := clNone;
+
+  CaretObj.AddChangeHandler(@CaretChanged);
+  ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  ViewedTextBuffer.AddNotifyHandler(senrBeforeDecPaintLock, @DoIncPaintLock);
+  ViewedTextBuffer.AddNotifyHandler(senrAfterDecPaintLock, @DoDecPaintLock);
+  FMarkupInfoCurrentFold.OnChange := @ColorChanged;
+  UpdateInternalColors;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;
 begin
+  FreeAndNil(FMarkupInfoCurrentFold);
+  FreeAndNil(FMarkupInfoCurrentFoldInternal);
   FreeAndNil(FMouseActionsCollapsed);
   FreeAndNil(FMouseActionsExpanded);
   FreeAndNil(FPopUp);
@@ -621,6 +721,148 @@ begin
   Canvas.AntialiasingMode := AliasMode;
 end;
 
+procedure TSynGutterCodeFolding.UpdateInnerFoldRange;
+var
+  hl: TSynCustomFoldHighlighter;
+  y, x, lvl, s, e, ndMin, ndCur, y2, i, c, mlvl: Integer;
+  ndList: TLazSynFoldNodeInfoList;
+  nd: TSynFoldNodeInfo;
+  act: TSynFoldActions;
+  HasBefore, HasAfter: Boolean;
+begin
+  FNeedInnerFoldRange := FPaintLock > 0;
+  if FNeedInnerFoldRange then
+    exit;
+
+  if not (SynEdit.Highlighter is TSynCustomFoldHighlighter) then
+    exit;
+  hl := TSynCustomFoldHighlighter(SynEdit.Highlighter);
+  if hl.NeedScan then
+    exit;
+  if not FMarkupInfoCurrentFold.IsEnabled then begin
+    FFirstInvalidLine := -1;
+    FInnerFoldStart := -1;
+    exit;
+  end;
+
+  y := ToIdx(SynEdit.CaretY);
+  if (FInnerFoldStart >= 0) and
+     (FLastInvalidLine < FInnerFoldStart) or (FFirstInvalidLine > FInnerFoldEnd) and
+     (FInnerFoldCaretY = y)
+  then begin
+    FFirstInvalidLine := -1;
+    exit;
+  end;
+
+  FInnerFoldCaretY := y;
+
+  lvl := hl.FoldBlockMinLevel(y, 1);
+  s := lvl;
+  if y > 0 then
+    s := hl.FoldBlockEndLevel(y-1, 1);
+  e := hl.FoldBlockEndLevel(y, 1);
+
+  if (s > lvl) or (e > lvl) then begin
+    ndList := hl.FoldNodeInfo[y];
+    ndList.ActionFilter := []; //[sfaOpen, sfaClose];
+    ndList.GroupFilter := 1;
+    act := [];
+    ndCur := e;
+    ndMin := e;
+    mlvl := lvl;
+    x := ToIdx(SynEdit.LogicalCaretXY.X);
+    i := ndList.Count;
+writeln('COUNT ',i);
+    while i > 0 do begin
+      dec(i);
+      nd := ndList[i];
+      act := nd.FoldAction;
+WriteLn('    ND   ', nd.LogXStart, ' - ', nd.LogXEnd, '  st lvl:',nd.FoldLvlStart, '  en lvl:', nd.FoldLvlEnd, ' act ', Dec2Numb( integer(act),0,2), ' lastl: ', sfaLastLineClose in act, ' nxt' , sfaCloseForNextLine in act , ' co ',sfaCloseAndOpen in act, ' sngl ', sfaSingleLine in act);
+      if act * [sfaInvalid, sfaOneLineOpen, sfaOneLineClose] <> [] then
+        continue;
+      if act * [sfaFold, sfaFoldFold, sfaFoldHide] = [] then
+        continue;
+      if (sfaCloseForNextLine in act) then begin
+        inc(ndCur);
+        break;
+      end;
+
+      if not ((nd.LogXEnd = 0) and (nd.LogXStart <> 0)) then
+      begin
+        //continue;
+        if sfaClose in nd.FoldAction then begin
+          if nd.LogXEnd < x then
+            break;
+        end
+        else
+          if nd.LogXEnd <= x then
+            break;
+      end;
+
+      ndCur := nd.FoldLvlEnd;
+      if ndCur < ndMin then
+        ndMin := ndCur;
+
+      if sfaClose in nd.FoldAction then begin
+        if nd.LogXEnd > 0 then begin
+          if nd.LogXEnd -1 < x then
+            break;
+        end
+        else
+          if nd.LogXStart < x then
+            break;
+      end
+      else
+        if nd.LogXStart <= x then
+          break;
+
+      ndCur := nd.FoldLvlStart;
+      if ndCur < ndMin then
+        ndMin := ndCur;
+
+    end;
+
+    lvl := ndCur;
+    HasBefore := (ndCur > ndMin) or (lvl = mlvl);
+    HasAfter := ((not HasBefore) or (lvl = mlvl));
+  end
+  else begin
+    HasBefore := True;
+    HasAfter := True;
+  end;
+
+  FFirstInvalidLine := -1;
+
+  SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
+  if lvl = 0 then begin
+writeln('000 >>> ', HasBefore, HasAfter, ' lvl: ',lvl, ' s:',s,' e:',e, ' // ndcur ',ndCur, ' ndmin ',ndMin , ' i ',i  );
+    FInnerFoldStart := -1;
+    FInnerFoldEnd := -1;
+    exit;
+  end;
+
+  y2 := y;
+  if HasBefore then begin
+    dec(y2);
+    while (y2 > 0) and (hl.FoldBlockMinLevel(y2, 1) >= lvl) do
+      dec(y2);
+  end;
+  FInnerFoldStart := y2;
+
+  y2 := y;
+  c := SynEdit.Lines.Count-1;
+  if HasAfter then begin
+    inc(y2);
+    while (y2 < c) and (hl.FoldBlockMinLevel(y2, 1) >= lvl) do
+      inc(y2);
+  end;
+  FInnerFoldEnd := y2;
+
+  SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
+
+  writeln('>>> ', FInnerFoldStart+1, '..', FInnerFoldEnd+1, ' ', HasBefore, HasAfter, ' lvl: ',lvl, ' s:',s,' e:',e, ' // ndcur ',ndCur, ' ndmin ',ndMin , ' i ',i  );
+end;
+
 function TSynGutterCodeFolding.PreferedWidth: Integer;
 const PrefFullWidth = 10;
 begin
@@ -634,7 +876,8 @@ var
   rcLine: TRect;
   rcCodeFold: TRect;
   tmp: TSynEditFoldLineCapability;
-  LineHeight, TextHeight, LineOffset, HalfBoxSize: Integer;
+  LineHeight, TextHeight, LineOffset, HalfBoxSize, aRow: Integer;
+  CurMarkUp: TSynSelectedColor;
 
   procedure DrawNodeBox(rcCodeFold: TRect; NodeType: TSynEditFoldLineCapability);
   var
@@ -671,6 +914,7 @@ var
     rcNode.Bottom := ptCenter.Y + (HalfBoxSize) - c;
 
     Canvas.Brush.Style := bsClear;
+    Canvas.Pen.Color := CurMarkUp.Foreground;
 
     //draw Paragraph end
     if isPrevLine and (cfFoldEnd in FoldView.FoldType[iLine]) and
@@ -691,15 +935,15 @@ var
     end;
 
     if (NodeType in [cfCollapsedFold, cfCollapsedHide]) and
-       (MarkupInfo.FrameColor <> clNone)
+       (CurMarkUp.FrameColor <> clNone)
     then
-      Canvas.Pen.Color := MarkupInfo.FrameColor;
+      Canvas.Pen.Color := CurMarkUp.FrameColor;
 
     if isPrevLine and (NodeType = cfCollapsedHide) then
       include(DrawOpts, nsoSubtype);
     DrawNodeSymbol(Canvas, rcNode, NodeType, DrawOpts);
 
-    Canvas.Pen.Color := MarkupInfo.Foreground;
+    Canvas.Pen.Color := CurMarkUp.Foreground;
     Canvas.Brush.Style := bsSolid;
   end;
 
@@ -710,6 +954,7 @@ var
     //center of the draw area
     iCenter := (rcCodeFold.Left + rcCodeFold.Right) div 2;
 
+    Canvas.Pen.Color := CurMarkUp.Foreground;
     Canvas.MoveTo(iCenter, rcCodeFold.Top + LineOffset);
     Canvas.LineTo(iCenter, rcCodeFold.Bottom);
     LineOffset := 0;
@@ -722,6 +967,7 @@ var
     //center of the draw area
     X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
 
+    Canvas.Pen.Color := CurMarkUp.Foreground;
     Canvas.MoveTo(X, rcCodeFold.Top + LineOffset);
     Canvas.LineTo(X, rcCodeFold.Bottom - 1);
     Canvas.LineTo(rcCodeFold.Right, rcCodeFold.Bottom - 1);
@@ -749,6 +995,15 @@ begin
     rcLine.Bottom := AClip.Top;
     for iLine := FirstLine to LastLine do
     begin
+      if FInnerFoldStart >= 0 then begin
+        aRow := ToIdx(SynEdit.ScreenXYToTextXY(Point(1, ToPos(iLine))).Y);
+        if (aRow >= FInnerFoldStart) and (aRow <= FInnerFoldEnd) then
+          CurMarkUp := FMarkupInfoCurrentFoldInternal
+        else
+          CurMarkUp := MarkupInfo;
+      end
+      else
+        CurMarkUp := MarkupInfo;
       // next line rect
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, LineHeight);

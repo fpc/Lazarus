@@ -2133,6 +2133,7 @@ resourcestring
   dlgAddHiAttrLineHighlight       = 'Current line highlight';
   dlgAddHiAttrModifiedLine        = 'Modified line';
   dlgAddHiAttrCodeFoldingTree     = 'Code folding tree';
+  dlgAddHiAttrCodeFoldingTreeCur  = 'Code folding (current)';
   dlgAddHiAttrHighlightWord       = 'Highlight current word';
   dlgAddHiAttrFoldedCode          = 'Folded code marker';
   dlgAddHiAttrFoldedCodeLine      = 'Fold start-line';

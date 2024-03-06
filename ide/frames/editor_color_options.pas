@@ -278,7 +278,7 @@ begin
     c := Attri.Background;
   // Fallback Background-color for gutter
   if ((c = clNone) or (c = clDefault)) and
-     (AttriIdx in [ord(ahaModifiedLine), ord(ahaCodeFoldingTree),
+     (AttriIdx in [ord(ahaModifiedLine), ord(ahaCodeFoldingTree), ord(ahaCodeFoldingTreeCurrent),
                    ord(ahaLineNumber), ord(ahaGutterSeparator)]) and
      (FCurrentColorScheme.AttributeByEnum[ahaGutter] <> nil)
   then
@@ -337,6 +337,7 @@ begin
   // Draw preview Frame
   TheTree.Canvas.Pen.Color := Attri.FrameColor;
   if (hafFrameColor in Attri.Features) and (AttriIdx <> ord(ahaCodeFoldingTree)) and
+     (AttriIdx <> ord(ahaCodeFoldingTreeCurrent)) and
      (Attri.FrameColor <> clDefault) and (Attri.FrameColor <> clNone)
   then
     TheTree.Canvas.Rectangle(NodeRect.Left+2, NodeRect.Top+2,
@@ -352,7 +353,7 @@ begin
     if (c = clNone) or (c = clDefault) then
       c := ColorPreview.Font.Color;
 
-    if AttriIdx = ord(ahaCodeFoldingTree) then begin
+    if (AttriIdx = ord(ahaCodeFoldingTree)) or (AttriIdx = ord(ahaCodeFoldingTreeCurrent)) then begin
       // Special draw fold gutter
       TextY := NodeRect.Bottom - NodeRect.Top - 8;
 

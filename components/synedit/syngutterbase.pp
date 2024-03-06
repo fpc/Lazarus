@@ -198,7 +198,7 @@ type
     procedure SetAutoSize(const AValue : boolean); virtual;
     procedure SetVisible(const AValue : boolean); virtual;
     procedure GutterVisibilityChanged; virtual;
-    procedure UpdateInternalColors;
+    procedure UpdateInternalColors; virtual;
     procedure PaintBackground(Canvas: TCanvas; AClip: TRect);
     procedure SetWidth(const AValue : integer); virtual;
     procedure Init; override;

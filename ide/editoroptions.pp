@@ -121,8 +121,8 @@ const
     'Unknown breakpoint',  'Error line',                'Incremental search match',
     'Highlight all',       'Brackets highlight',        'Mouse link',
     'Line number',         'Line highlight',            'Modified line',
-    'Code folding tree',   'Highlight current word',    'Folded code',
-    'Folded code Line',    'Hidden code Line',
+    'Code folding tree',   '',                          'Highlight current word',
+    'Folded code',         'Folded code Line',          'Hidden code Line',
     'Word-Brackets',       'TemplateEdit Current',      'TemplateEdit Sync',
     'TemplateEdit Cells',  'SyncronEdit Current Cells', 'SyncronEdit Syncron Cells',
     'SyncronEdit Other Cells', 'SyncronEdit Range',
@@ -156,6 +156,7 @@ const
     { ahaLineHighlight }       agnLine,
     { ahaModifiedLine }        agnGutter,
     { ahaCodeFoldingTree }     agnGutter,
+    { ahaCodeFoldingTreeCurrent } agnGutter,
     { ahaHighlightWord }       agnText,
     { ahaFoldedCode }          agnGutter,
     { ahaFoldedCodeLine }      agnGutter,
@@ -218,6 +219,7 @@ const
     { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaModifiedLine }       [hafBackColor, hafForeColor, hafFrameColor],
     { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
+    { ahaCodeFoldingTreeCurrent } [hafForeColor, hafFrameColor],
     { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaFoldedCodeLine }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -2961,6 +2963,7 @@ begin
   AdditionalHighlightAttributes[ahaLineHighlight]       := dlgAddHiAttrLineHighlight;
   AdditionalHighlightAttributes[ahaModifiedLine]        := dlgAddHiAttrModifiedLine;
   AdditionalHighlightAttributes[ahaCodeFoldingTree]     := dlgAddHiAttrCodeFoldingTree;
+  AdditionalHighlightAttributes[ahaCodeFoldingTreeCurrent] := dlgAddHiAttrCodeFoldingTreeCur;
   AdditionalHighlightAttributes[ahaHighlightWord]       := dlgAddHiAttrHighlightWord;
   AdditionalHighlightAttributes[ahaFoldedCode]          := dlgAddHiAttrFoldedCode;
   AdditionalHighlightAttributes[ahaFoldedCodeLine]      := dlgAddHiAttrFoldedCodeLine;
@@ -7626,6 +7629,11 @@ begin
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
     SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
+    Attri := AttributeByEnum[ahaCodeFoldingTreeCurrent];
+    if Attri <> nil then begin
+      if ASynEdit.Gutter.Parts.ByClass[TSynGutterCodeFolding,0] <> nil then
+        Attri.ApplyTo(TSynGutterCodeFolding(ASynEdit.Gutter.Parts.ByClass[TSynGutterCodeFolding,0]).MarkupInfoCurrentFold);
+    end;
 
     OGutter := TSynGutterLineOverview(ASynEdit.RightGutter.Parts.ByClass[TSynGutterLineOverview, 0]);
     if OGutter <> nil then begin
