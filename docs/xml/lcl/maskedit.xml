@@ -2825,6 +2825,29 @@ Use the IsVisible method to consider this and get the effective visibility.
 </seealso>
 </element>
 
+<element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
+
+<element name="TMaskEdit.Text">
+<short>Contains the value for the control.</short>
+<descr>
+<p>
+<var>Text</var> is a public <var>String</var> property in 
+<var>TMaskEdit</var> which provides access to the value for the edit control.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
+<link id="#lcl.controls.TControl.Text">TControl.Text</link>
+<link id="TCustomMaskEdit.EditText"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.RealGetText"/>
+<link id="TCustomMaskEdit.RealSetText"/>
+</seealso>
+</element>
+
+<element name="TMaskEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+<element name="TMaskEdit.SpaceChar" link="#lcl.maskedit.TCustomMaskEdit.SpaceChar"/>
+
 <element name="TMaskEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TMaskEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TMaskEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -2903,28 +2926,6 @@ pressed key may become released during the time the control has focus.
 <element name="TMaskEdit.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TMaskEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TMaskEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
-
-<element name="TMaskEdit.Text">
-<short>Contains the value for the control.</short>
-<descr>
-<p>
-<var>Text</var> is a public <var>String</var> property in 
-<var>TMaskEdit</var> which provides access to the value for the edit control.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
-<link id="#lcl.controls.TControl.Text">TControl.Text</link>
-<link id="TCustomMaskEdit.EditText"/>
-<link id="TCustomMaskEdit.EditMask"/>
-<link id="TCustomMaskEdit.RealGetText"/>
-<link id="TCustomMaskEdit.RealSetText"/>
-</seealso>
-</element>
-
-<element name="TMaskEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
-<element name="TMaskEdit.SpaceChar" link="#lcl.maskedit.TCustomMaskEdit.SpaceChar"/>
 
 <element name="FormatMaskText">
 <short>Applies an edit mask to the specified string value.</short>
@@ -2947,12 +2948,22 @@ represented using the character in the mask field to the Space character
 (decimal 32).
 </p>
 <p>
+The <var>EnableSets</var> argument indicates whether set notation, indicated 
+with '[' and ']' characters, are recognized in the edit mask. The value is 
+assigned to the EnableSets property in TMaskEdit/TCustomMaskEdit. When set to 
+<b>False</b>, the '[' and ']' characters used in set notation are treated as 
+literal characters. When set to <b>True</b>, the optional or required set 
+definition is added to the mask. The default value for the property is 
+<b>False</b>.
+</p>
+<p>
 When IsMasked is <b>False</b>, the unmodified content in <var>Value</var> is 
 used as the return value.
 </p>
 </descr>
 <seealso>
 <link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.EnableSets"/>
 <link id="TCustomMaskEdit.IsMasked"/>
 <link id="TCustomMaskEdit.ApplyMaskToText"/>
 <link id="TCustomMaskEdit.GetTextWithoutSpaceChar"/>
@@ -2966,6 +2977,11 @@ used as the return value.
 </element>
 <element name="FormatMaskText.Value">
 <short>Original content modified in the routine.</short>
+</element>
+<element name="FormatMaskText.EnableSets">
+<short>
+<b>True</b> to enable set notation when present in the edit mask.
+</short>
 </element>
 
 <element name="SplitEditMask">
