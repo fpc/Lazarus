@@ -2825,29 +2825,6 @@ Use the IsVisible method to consider this and get the effective visibility.
 </seealso>
 </element>
 
-<element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
-
-<element name="TMaskEdit.Text">
-<short>Contains the value for the control.</short>
-<descr>
-<p>
-<var>Text</var> is a public <var>String</var> property in 
-<var>TMaskEdit</var> which provides access to the value for the edit control.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
-<link id="#lcl.controls.TControl.Text">TControl.Text</link>
-<link id="TCustomMaskEdit.EditText"/>
-<link id="TCustomMaskEdit.EditMask"/>
-<link id="TCustomMaskEdit.RealGetText"/>
-<link id="TCustomMaskEdit.RealSetText"/>
-</seealso>
-</element>
-
-<element name="TMaskEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
-<element name="TMaskEdit.SpaceChar" link="#lcl.maskedit.TCustomMaskEdit.SpaceChar"/>
-
 <element name="TMaskEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TMaskEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TMaskEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -2926,6 +2903,28 @@ pressed key may become released during the time the control has focus.
 <element name="TMaskEdit.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TMaskEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TMaskEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+<element name="TMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
+
+<element name="TMaskEdit.Text">
+<short>Contains the value for the control.</short>
+<descr>
+<p>
+<var>Text</var> is a public <var>String</var> property in 
+<var>TMaskEdit</var> which provides access to the value for the edit control.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
+<link id="#lcl.controls.TControl.Text">TControl.Text</link>
+<link id="TCustomMaskEdit.EditText"/>
+<link id="TCustomMaskEdit.EditMask"/>
+<link id="TCustomMaskEdit.RealGetText"/>
+<link id="TCustomMaskEdit.RealSetText"/>
+</seealso>
+</element>
+
+<element name="TMaskEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+<element name="TMaskEdit.SpaceChar" link="#lcl.maskedit.TCustomMaskEdit.SpaceChar"/>
 
 <element name="FormatMaskText">
 <short>Applies an edit mask to the specified string value.</short>
