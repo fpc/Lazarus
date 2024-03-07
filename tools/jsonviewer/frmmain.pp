@@ -309,7 +309,7 @@ var
 implementation
 
 uses
-  frmcreatecode, msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString;
+  SynEditTypes,SynEditKeyCmds, frmcreatecode, msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString;
 
 {$R *.lfm}
 Const
@@ -404,10 +404,12 @@ begin
   TS.Caption:=STabCaptionRaw;
   TS.Parent:=FPageControl;
   FSyn:=TSynEdit.Create(Self.Owner);
-  FSyn.align:=alClient;
   FSyn.Parent:=TS;
+  FSyn.align:=alClient;
+  FSyn.Options:=FSyn.Options+[eoPersistentCaret];
   FSyn.Highlighter:=MainForm.SynJScriptSyn1;
   FSyn.Highlighter.Enabled:=True;
+
   SetCaption;
 end;
 
@@ -1678,6 +1680,7 @@ begin
   begin
    FSyn.Text:=Root.FormatJSON();
    FSyn.Modified:=false;
+   FSyn.CommandProcessor(ecRight,#0,Nil);
   end;
 end;
 

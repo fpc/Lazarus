@@ -1,10 +1,10 @@
 object MainForm: TMainForm
   Left = 395
-  Height = 509
+  Height = 485
   Top = 125
   Width = 695
   Caption = 'JSON Viewer'
-  ClientHeight = 484
+  ClientHeight = 485
   ClientWidth = 695
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -46,13 +46,13 @@ object MainForm: TMainForm
     0000
   }
   Menu = MMJSON
+  SessionProperties = 'Height;Left;MICompact.Checked;MIdocument.Checked;MIStrict.Checked;Top;Width;MISaveFormatted.Checked'
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  SessionProperties = 'Height;Left;MICompact.Checked;MIdocument.Checked;MIStrict.Checked;Top;Width;MISaveFormatted.Checked'
-  LCLVersion = '2.1.0.0'
   object TBJSON: TToolBar
     Left = 0
     Height = 26
@@ -142,19 +142,19 @@ object MainForm: TMainForm
       Top = 2
       Caption = 'Show &REST query'
       ImageIndex = 18
-      OnClick = TBShowRestClick
       Style = tbsCheck
+      OnClick = TBShowRestClick
     end
   end
   object PCJSON: TPageControl
     Left = 0
-    Height = 458
+    Height = 459
     Top = 26
     Width = 695
     Align = alClient
+    Options = [nboShowCloseButtons]
     TabOrder = 1
     OnCloseTabClicked = PCJSONCloseTabClicked
-    Options = [nboShowCloseButtons]
   end
   object ALJSON: TActionList
     Images = ILJSON
@@ -165,16 +165,16 @@ object MainForm: TMainForm
       Caption = '&New'
       Hint = 'Create new JSON document'
       ImageIndex = 1
-      OnExecute = ANewExecute
       ShortCut = 16462
+      OnExecute = ANewExecute
     end
     object AOpen: TAction
       Category = 'File'
       Caption = '&Open'
       Hint = 'Open JSON document from file'
       ImageIndex = 2
-      OnExecute = AOpenExecute
       ShortCut = 16463
+      OnExecute = AOpenExecute
     end
     object ASave: TAction
       Category = 'File'
@@ -197,8 +197,8 @@ object MainForm: TMainForm
       Caption = '&Quit'
       Hint = 'Exit the program'
       ImageIndex = 0
-      OnExecute = AQuitExecute
       ShortCut = 16465
+      OnExecute = AQuitExecute
     end
     object ANewArray: TAction
       Category = 'Values'
@@ -261,27 +261,27 @@ object MainForm: TMainForm
       Caption = '&Copy'
       Hint = 'Copy selected node to clipboard as JSON'
       ImageIndex = 11
+      ShortCut = 16451
       OnExecute = ACopyExecute
       OnUpdate = ACopyUpdate
-      ShortCut = 16451
     end
     object ACut: TAction
       Category = 'Edit'
       Caption = 'C&ut'
       Hint = 'Cut selected node to clipboard as JSON'
       ImageIndex = 12
+      ShortCut = 16472
       OnExecute = ACutExecute
       OnUpdate = ACutUpdate
-      ShortCut = 16472
     end
     object APaste: TAction
       Category = 'Edit'
       Caption = '&Paste'
       Hint = 'Paste JSON data in clipboard as new member'
       ImageIndex = 13
+      ShortCut = 16464
       OnExecute = APasteExecute
       OnUpdate = APasteUpdate
-      ShortCut = 16464
     end
     object APasteAsDocument: TAction
       Category = 'Edit'
@@ -301,32 +301,32 @@ object MainForm: TMainForm
       Category = 'Values'
       Caption = 'Expand &current object/array'
       Hint = 'Expand all nodes in the current object/array'
+      ShortCut = 16453
       OnExecute = AExpandCurrentContainerExecute
       OnUpdate = AExpandCurrentContainerUpdate
-      ShortCut = 16453
     end
     object AFind: TAction
       Category = 'Edit'
       Caption = '&Find'
       ImageIndex = 15
+      ShortCut = 16454
       OnExecute = AFindExecute
       OnUpdate = HaveData
-      ShortCut = 16454
     end
     object AFindNext: TAction
       Category = 'Edit'
       Caption = 'Find &next occurrence'
+      ShortCut = 114
       OnExecute = AFindNextExecute
       OnUpdate = AFindNextUpdate
-      ShortCut = 114
     end
     object AClose: TAction
       Category = 'File'
       Caption = '&Close'
       ImageIndex = 16
+      ShortCut = 16471
       OnExecute = ACloseExecute
       OnUpdate = ACloseUpdate
-      ShortCut = 16471
     end
     object ACreateCode: TAction
       Category = 'File'
