@@ -5867,6 +5867,8 @@ var
   Len: Integer;
 begin
   AtomEndPos:=1;
+  if EndPos>Length(ACode)+1 then
+    EndPos:=Length(ACode)+1;  // Selection in editor can exceed the code length.
   repeat
     AtomStartPos:=AtomEndPos;
     ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos,true);
