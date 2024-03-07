@@ -773,7 +773,7 @@ var
   ClipArea: TGdkRectangle;
 begin
   BrushChanged := False;
-  if not IsNullBrush then
+  if (ABrush <> 0) and not PGdiObject(ABrush)^.IsNullBrush then
   begin
     if FHasTransf then
     begin
