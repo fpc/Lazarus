@@ -2962,7 +2962,6 @@ used as the return value.
 </descr>
 <seealso>
 <link id="TCustomMaskEdit.EditMask"/>
-<link id="TCustomMaskEdit.EnableSets"/>
 <link id="TCustomMaskEdit.IsMasked"/>
 <link id="TCustomMaskEdit.ApplyMaskToText"/>
 <link id="TCustomMaskEdit.GetTextWithoutSpaceChar"/>
@@ -2971,7 +2970,7 @@ used as the return value.
 <element name="FormatMaskText.Result">
 <short>Value after applying the specified mask.</short>
 </element>
-<element name="FormatMaskText.EditMask">
+<element name="FormatMaskText.AEditMask">
 <short>Edit mask applied to the specified content.</short>
 </element>
 <element name="FormatMaskText.Value">
@@ -2979,7 +2978,7 @@ used as the return value.
 </element>
 <element name="FormatMaskText.EnableSets">
 <short>
-<b>True</b> to enable set notation when present in the edit mask.
+Enables or disables set notation in the edit mask.
 </short>
 </element>
 
