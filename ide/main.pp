@@ -946,7 +946,6 @@ type
     procedure DoGotoIncludeDirective;
 
     // tools
-    function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
 
@@ -3996,8 +3995,8 @@ begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   ActiveDesigner := GetActiveDesignerSkipMainBar;
   if (ActiveDesigner is TDesigner) and
-  not UpdateEditorCommandsStamp.Changed(ASrcEdit, ActiveDesigner as TDesigner, DisplayState) then
-    Exit;
+  not UpdateEditorCommandsStamp.Changed(ASrcEdit,TDesigner(ActiveDesigner),DisplayState)
+  then Exit;
 
   Editable := Assigned(ASrcEdit) and not ASrcEdit.ReadOnly;
   SelAvail := Assigned(ASrcEdit) and ASrcEdit.SelectionAvailable;
@@ -4009,7 +4008,8 @@ begin
   begin
     CurWordAtCursor := ASrcEdit.GetWordAtCurrentCaret;
     //it is faster to get information from SynEdit than from CodeTools
-    ASrcEdit.EditorComponent.CaretAtIdentOrString(ASrcEdit.EditorComponent.CaretXY, IdentFound, StringFound);
+    ASrcEdit.EditorComponent.CaretAtIdentOrString(ASrcEdit.EditorComponent.CaretXY,
+                                                  IdentFound, StringFound);
   end
   else begin
     CurWordAtCursor := '';
@@ -4019,18 +4019,21 @@ begin
 
   if Assigned(ActiveDesigner) then
   begin
-    IDECommandList.FindIDECommand(ecUndo).Enabled := DsgEditorActive and ActiveDesigner.CanUndo; {and not ActiveDesigner.ReadOnly}
-    IDECommandList.FindIDECommand(ecRedo).Enabled := DsgEditorActive and ActiveDesigner.CanRedo; {and not ActiveDesigner.ReadOnly}
+    IDECommandList.FindIDECommand(ecUndo).Enabled := DsgEditorActive and ActiveDesigner.CanUndo;
+    IDECommandList.FindIDECommand(ecRedo).Enabled := DsgEditorActive and ActiveDesigner.CanRedo;
     DesignerCanCopy := ActiveDesigner.CanCopy;
     IDECommandList.FindIDECommand(ecCut).Enabled := DesignerCanCopy;
     IDECommandList.FindIDECommand(ecCopy).Enabled := DesignerCanCopy;
     IDECommandList.FindIDECommand(ecPaste).Enabled := ActiveDesigner.CanPaste;
-    IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ActiveDesigner.Form) and (ActiveDesigner.Form.ComponentCount>0);
+    IDECommandList.FindIDECommand(ecSelectAll).Enabled :=
+        Assigned(ActiveDesigner.Form) and (ActiveDesigner.Form.ComponentCount>0);
   end
   else
   begin
-    IDECommandList.FindIDECommand(ecUndo).Enabled := Editable and SrcEditorActive and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanUndo;
-    IDECommandList.FindIDECommand(ecRedo).Enabled := Editable and SrcEditorActive and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanRedo;
+    IDECommandList.FindIDECommand(ecUndo).Enabled := Editable and SrcEditorActive
+                     and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanUndo;
+    IDECommandList.FindIDECommand(ecRedo).Enabled := Editable and SrcEditorActive
+                     and Assigned(ASrcEdit) and ASrcEdit.EditorComponent.CanRedo;
     IDECommandList.FindIDECommand(ecCut).Enabled := SelEditable;
     IDECommandList.FindIDECommand(ecCopy).Enabled := SelAvail;
     IDECommandList.FindIDECommand(ecPaste).Enabled := Editable;
@@ -10961,142 +10964,6 @@ begin
       NewSource, NewX, NewY, NewTopLine, [jfFocusEditor]);
   end else
     DoJumpToCodeToolBossError;
-end;
-
-function TMainIDE.DoMakeResourceString: TModalResult;
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  StartPos, EndPos: TPoint;
-  StartCode, EndCode: TCodeBuffer;
-  NewIdentifier, NewIdentValue: string;
-  NewSourceLines: string;
-  InsertPolicy: TResourcestringInsertPolicy;
-  SectionCode: TCodeBuffer;
-  SectionCaretXY: TPoint;
-  DummyResult: Boolean;
-  SelectedStartPos: TPoint;
-  SelectedEndPos: TPoint;
-  CursorCode: TCodeBuffer;
-  CursorXY: TPoint;
-  OldChange: Boolean;
-begin
-  OldChange:=OpenEditorsOnCodeToolChange;
-  OpenEditorsOnCodeToolChange:=true;
-  try
-    Result:=mrCancel;
-    ActiveSrcEdit:=nil;
-    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-    {$IFDEF IDE_DEBUG}
-    debugln('');
-    debugln('[TMainIDE.DoMakeResourceString] ************');
-    {$ENDIF}
-    // calculate start and end of expression in source
-    CursorCode:=ActiveUnitInfo.Source;
-    if ActiveSrcEdit.EditorComponent.SelAvail then
-      CursorXY:=ActiveSrcEdit.EditorComponent.BlockBegin
-    else
-      CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
-    if not CodeToolBoss.GetStringConstBounds(
-      CursorCode,CursorXY.X,CursorXY.Y,
-      StartCode,StartPos.X,StartPos.Y,
-      EndCode,EndPos.X,EndPos.Y,true) then
-    begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-
-    // the codetools have calculated the maximum bounds
-    if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
-      IDEMessageDialog(lisNoStringConstantFound,
-      Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [LineEnding]),
-      mtError,[mbCancel]);
-      exit;
-    end;
-    // the user can shorten this range by selecting text
-    if (ActiveSrcEdit.EditorComponent.SelText='') then begin
-      // the user has not selected text
-      // -> check if the string constant is in single file
-      // (replacing code that contains an $include directive is ambiguous)
-      //debugln('TMainIDE.DoMakeResourceString user has not selected text');
-      if (StartCode<>ActiveUnitInfo.Source)
-      or (EndCode<>ActiveUnitInfo.Source)
-      then begin
-        IDEMessageDialog(lisNoStringConstantFound, Format(
-          lisInvalidExpressionHintTheMakeResourcestringFunction, [LineEnding]),
-        mtError,[mbCancel]);
-        exit;
-      end;
-    end else begin
-      // the user has selected text
-      // -> check if the selection is only part of the maximum bounds
-      SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
-      SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
-      CodeToolBoss.ImproveStringConstantStart(
-                      ActiveSrcEdit.EditorComponent.Lines[SelectedStartPos.Y-1],
-                      SelectedStartPos.X);
-      CodeToolBoss.ImproveStringConstantEnd(
-                        ActiveSrcEdit.EditorComponent.Lines[SelectedEndPos.Y-1],
-                        SelectedEndPos.X);
-      //debugln('TMainIDE.DoMakeResourceString user has selected text: Selected=',dbgs(SelectedStartPos),'-',dbgs(SelectedEndPos),' Maximum=',dbgs(StartPos),'-',dbgs(EndPos));
-      if (CompareCaret(SelectedStartPos,StartPos)>0)
-      or (CompareCaret(SelectedEndPos,EndPos)<0)
-      then begin
-        IDEMessageDialog(lisSelectionExceedsStringConstant,
-        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [LineEnding]),
-        mtError,[mbCancel]);
-        exit;
-      end;
-      StartPos:=SelectedStartPos;
-      EndPos:=SelectedEndPos;
-    end;
-
-    // gather all reachable resourcestring sections
-    //debugln('TMainIDE.DoMakeResourceString gather all reachable resourcestring sections ...');
-    if not CodeToolBoss.GatherResourceStringSections(
-      CursorCode,CursorXY.X,CursorXY.Y,nil)
-    then begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-    if CodeToolBoss.Positions.Count=0 then begin
-      IDEMessageDialog(lisNoResourceStringSectionFound,
-        lisUnableToFindAResourceStringSectionInThisOrAnyOfThe,
-        mtError,[mbCancel]);
-      exit;
-    end;
-
-    // show make resourcestring dialog
-    Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
-                                 NewIdentifier,NewIdentValue,NewSourceLines,
-                                 SectionCode,SectionCaretXY,InsertPolicy);
-    if (Result<>mrOk) then exit;
-
-    // replace source
-    ActiveSrcEdit.ReplaceLines(StartPos.Y,EndPos.Y,NewSourceLines);
-
-    // add new resourcestring to resourcestring section
-    if (InsertPolicy<>rsipNone) then
-      DummyResult:=CodeToolBoss.AddResourcestring(
-                       CursorCode,CursorXY.X,CursorXY.Y,
-                       SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
-                       NewIdentifier,''''+NewIdentValue+'''',InsertPolicy)
-    else
-      DummyResult:=true;
-    ApplyCodeToolChanges;
-    if not DummyResult then begin
-      DoJumpToCodeToolBossError;
-      exit;
-    end;
-
-    // switch back to source
-    ActiveSrcEdit.Activate;
-    ActiveSrcEdit.EditorComponent.SetFocus;
-
-    Result:=mrOk;
-  finally
-    OpenEditorsOnCodeToolChange:=OldChange;
-  end;
 end;
 
 function TMainIDE.DoDiff: TModalResult;

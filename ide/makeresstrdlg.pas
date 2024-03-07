@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, Dialogs, ExtCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, Dialogs, ExtCtrls, ButtonPanel, LCLProc,
   // SynEdit
   SynHighlighterPas, SynEdit,
   // CodeTools
@@ -51,7 +51,8 @@ uses
   // IdeConfig
   RecentListProcs,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, MiscOptions;
+  LazarusIDEStrConsts, EditorOptions, MiscOptions, MainBase, SourceEditor,
+  Project;
 
 type
 
@@ -89,7 +90,6 @@ type
 
     // highlighter
     SynPasSyn: TSynPasSyn;
-
 
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -136,6 +136,9 @@ function ShowMakeResStrDialog(
   out ResStrSectionCode: TCodeBuffer;
   out ResStrSectionXY: TPoint;
   out InsertPolicy: TResourcestringInsertPolicy): TModalResult;
+
+function DoMakeResourceString: TModalResult;
+
 
 implementation
 
@@ -192,6 +195,137 @@ begin
 
   MakeResStrDialog.Positions.Free;
   MakeResStrDialog.Free;
+end;
+
+function DoMakeResourceString: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  SelectedStartPos, SelectedEndPos: TPoint;
+  StartPos, EndPos, SectionCaretXY, CursorXY: TPoint;
+  StartCode, EndCode, SectionCode, CursorCode: TCodeBuffer;
+  NewIdentifier, NewIdentValue, NewSourceLines: string;
+  InsertPolicy: TResourcestringInsertPolicy;
+  DummyResult, OldChange: Boolean;
+begin
+  OldChange:=MainIDE.OpenEditorsOnCodeToolChange;
+  MainIDE.OpenEditorsOnCodeToolChange:=true;
+  try
+    Result:=mrCancel;
+    ActiveSrcEdit:=nil;
+    if not MainIDE.BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    // calculate start and end of expression in source
+    CursorCode:=ActiveUnitInfo.Source;
+    if ActiveSrcEdit.EditorComponent.SelAvail then
+      CursorXY:=ActiveSrcEdit.EditorComponent.BlockBegin
+    else
+      CursorXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
+    DummyResult:=CodeToolBoss.GetStringConstBounds(
+                  CursorCode,CursorXY.X,CursorXY.Y,
+                  StartCode,StartPos.X,StartPos.Y,EndCode,EndPos.X,EndPos.Y,true);
+    // codetools have calculated the maximum bounds
+    if DummyResult and (StartCode=EndCode) and (StartPos=EndPos) then begin
+      // cursor is behind the closing quote, try again inside quotes.
+      DummyResult:=CodeToolBoss.GetStringConstBounds(
+                    CursorCode,CursorXY.X-1,CursorXY.Y,
+                    StartCode,StartPos.X,StartPos.Y,EndCode,EndPos.X,EndPos.Y,true);
+    end;
+    if not DummyResult then begin
+      MainIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    //DebugLn(['DoMakeResourceString: CursorXY=', CursorXY.X,',',CursorXY.Y,
+    //         ', StartPos=', StartPos.X,',',StartPos.Y,
+    //         ', EndPos=', EndPos.X,',',EndPos.Y]);
+    if (StartCode=EndCode) and (StartPos=EndPos) then begin
+      IDEMessageDialog(lisNoStringConstantFound,
+        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon,[LineEnding]),
+                       mtError,[mbCancel]);
+      exit;
+    end;
+    // the user can shorten this range by selecting text
+    if (ActiveSrcEdit.EditorComponent.SelText='') then begin
+      // the user has not selected text
+      // -> check if the string constant is in single file
+      // (replacing code that contains an $include directive is ambiguous)
+      //debugln('DoMakeResourceString user has not selected text');
+      if (StartCode<>ActiveUnitInfo.Source) or (EndCode<>ActiveUnitInfo.Source)
+      then begin
+        IDEMessageDialog(lisNoStringConstantFound,
+          Format(lisInvalidExpressionHintTheMakeResourcestringFunction,[LineEnding]),
+                         mtError,[mbCancel]);
+        exit;
+      end;
+    end else begin
+      // the user has selected text
+      // -> check if the selection is only part of the maximum bounds
+      SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
+      SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+      CodeToolBoss.ImproveStringConstantStart(
+                      ActiveSrcEdit.EditorComponent.Lines[SelectedStartPos.Y-1],
+                      SelectedStartPos.X);
+      CodeToolBoss.ImproveStringConstantEnd(
+                        ActiveSrcEdit.EditorComponent.Lines[SelectedEndPos.Y-1],
+                        SelectedEndPos.X);
+      //debugln('DoMakeResourceString user has selected text: Selected=',dbgs(SelectedStartPos),'-',dbgs(SelectedEndPos),' Maximum=',dbgs(StartPos),'-',dbgs(EndPos));
+      if (CompareCaret(SelectedStartPos,StartPos)>0)
+      or (CompareCaret(SelectedEndPos,EndPos)<0)
+      then begin
+        IDEMessageDialog(lisSelectionExceedsStringConstant,
+          Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon,[LineEnding]),
+                         mtError,[mbCancel]);
+        exit;
+      end;
+      StartPos:=SelectedStartPos;
+      EndPos:=SelectedEndPos;
+    end;
+
+    // gather all reachable resourcestring sections
+    //debugln('DoMakeResourceString gather all reachable resourcestring sections ...');
+    if not CodeToolBoss.GatherResourceStringSections(
+      CursorCode,CursorXY.X,CursorXY.Y,nil)
+    then begin
+      MainIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    if CodeToolBoss.Positions.Count=0 then begin
+      IDEMessageDialog(lisNoResourceStringSectionFound,
+                       lisUnableToFindAResourceStringSectionInThisOrAnyOfThe,
+                       mtError,[mbCancel]);
+      exit;
+    end;
+
+    // show make resourcestring dialog
+    Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
+                                 NewIdentifier,NewIdentValue,NewSourceLines,
+                                 SectionCode,SectionCaretXY,InsertPolicy);
+    if (Result<>mrOk) then exit;
+
+    // replace source
+    ActiveSrcEdit.ReplaceLines(StartPos.Y,EndPos.Y,NewSourceLines);
+
+    // add new resourcestring to resourcestring section
+    if (InsertPolicy<>rsipNone) then
+      DummyResult:=CodeToolBoss.AddResourcestring(
+                       CursorCode,CursorXY.X,CursorXY.Y,
+                       SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
+                       NewIdentifier,''''+NewIdentValue+'''',InsertPolicy)
+    else
+      DummyResult:=true;
+    CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
+    if not DummyResult then begin
+      MainIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // switch back to source
+    ActiveSrcEdit.Activate;
+    ActiveSrcEdit.EditorComponent.SetFocus;
+
+    Result:=mrOk;
+  finally
+    MainIDE.OpenEditorsOnCodeToolChange:=OldChange;
+  end;
 end;
 
 { TMakeResStrDialog }

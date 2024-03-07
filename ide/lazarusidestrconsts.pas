@@ -923,16 +923,6 @@ resourcestring
     +'looses characters at line %s, column %s.';
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
-  lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%s'
-    +'Hint: The "Make Resourcestring" function expects a string constant in a '
-    +'single file. Please select the expression and try again.';
-  lisSelectionExceedsStringConstant = 'Selection exceeds string constant';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
-    +'Resourcestring" function expects a string constant.%sPlease select the '
-    +'expression and try again.';
-  lisNoResourceStringSectionFound = 'No ResourceString Section found';
-  lisUnableToFindAResourceStringSectionInThisOrAnyOfThe = 'Unable to find a '
-    +'ResourceString section in this or any of the used units.';
   lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
     +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
@@ -3827,7 +3817,7 @@ resourcestring
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
     +'class "%s" descends from "%s". Probably this is a typo for TForm.';
 
-  // make resource string dialog
+  // make resourcestring
   lisMakeResourceString = 'Make ResourceString';
   lisMakeResStrInvalidResourcestringSect = 'Invalid Resourcestring section';
   lisMakeResStrPleaseChooseAResourcestring = 'Please choose a resourcestring '
@@ -3849,6 +3839,17 @@ resourcestring
   lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
+  lisSelectionExceedsStringConstant = 'Selection exceeds string constant';
+  lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.'
+    +'%sHint: The "Make Resourcestring" function expects a string constant in a '
+    +'single file. Please select the expression and try again.';
+  lisHintTheMakeResourcestringFunctionExpectsAStringCon =
+    'Hint: The "Make Resourcestring" function expects a string constant.'
+    +'%sPlease select the expression and try again.';
+  lisNoResourceStringSectionFound = 'No ResourceString Section found';
+  lisUnableToFindAResourceStringSectionInThisOrAnyOfThe = 'Unable to find a '
+    +'ResourceString section in this or any of the used units.';
+
   lisFailedToResolveMacros = 'failed to resolve macros';
   lisToolHasNoExecutable = 'tool "%s" has no executable';
   lisCanNotFindExecutable = 'cannot find executable "%s"';
