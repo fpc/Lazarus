@@ -1,13 +1,14 @@
 uses
   gtk2def, gdk2, GTK2Proc, Cairo, LCLVersion;
 
+function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t cdecl external gdklib;
+
 {$MACRO ON}
 
 {$if lcl_fullversion > 1000000}
 {$define TGtk2DeviceContext:=TGtkDeviceContext}
 {$endif}
 
-function gdk_cairo_create(drawable: PGdkDrawable): Pcairo_t cdecl external gdklib;
 
 procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 
