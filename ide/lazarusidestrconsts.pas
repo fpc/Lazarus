@@ -3369,6 +3369,18 @@ resourcestring
   srkmecSynPSyncroEdCellSelect       = 'Select Cell';
   srkmecSynPSyncroEdEscape           = 'Escape';
   srkmecSynPSyncroEdStart            = 'Start Syncro edit';
+  srkmecSynPSyncroEdStartCase        = 'Start Syncro edit (case-sensitive)';
+  srkmecSynPSyncroEdStartCtx         = 'Start Syncro edit (context-sensitive)';
+  srkmecSynPSyncroEdStartCtxCase     = 'Start Syncro edit (context & case-sensitive)';
+  srkmecSynPSyncroEdGrowCellLeft     = 'Grow cell on the left';
+  srkmecSynPSyncroEdShrinkCellLeft   = 'Shrink cell on the left';
+  srkmecSynPSyncroEdGrowCellRight    = 'Grow cell on the right';
+  srkmecSynPSyncroEdShrinkCellRight  = 'Shrink  cell on the right';
+  srkmecSynPSyncroEdAddCell          = 'Add Cell';
+  srkmecSynPSyncroEdAddCellCase      = 'Add Cell (Case-sensitive)';
+  srkmecSynPSyncroEdAddCellCtx       = 'Add Cell (Context-sensitive))';
+  srkmecSynPSyncroEdAddCellCtxCase   = 'Add Cell (Context & case-sensitive))';
+  srkmecSynPSyncroEdDelCell          = 'Remove current Cell';
 
   // run menu
   srkmecCompile                   = 'compile program/project';

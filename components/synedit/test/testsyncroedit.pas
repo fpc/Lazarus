@@ -117,11 +117,11 @@ begin
   for i := 0 to hsh.HashSize - 1 do begin
     he := hsh.HashEntry[i, 0];
     if he.Count > 0 then begin
-      debugln(['hash for ', i,', ', 0, '   Cnt=', he.Count, ' hsh=', he.Hash, ' nxt=', he.Next, ' y=', he.LineIdx, ' x=', he.BytePos, ' ln=', he.Len]);
+      debugln(['hash for ', i,', ', 0, '   Cnt=', he.Count, ' hsh=', he.Hash, ' nxt=', he.Next, ' y=', he.LineIdx, ' x=', he.BytePos, ' Wrd=', he.Word]);
       j := 1;
       he := hsh.HashEntry[i, j];
       while he.Count > 0 do begin
-        debugln(['  hash for ', i,', ', j, ' Cnt=', he.Count, ' hsh=', he.Hash, ' nxt=', he.Next, ' y=', he.LineIdx, ' x=', he.BytePos, ' ln=', he.Len]);
+        debugln(['  hash for ', i,', ', j, ' Cnt=', he.Count, ' hsh=', he.Hash, ' nxt=', he.Next, ' y=', he.LineIdx, ' x=', he.BytePos, ' Wrd=', he.Word]);
         inc(j);
         he := hsh.HashEntry[i, j];
       end;
@@ -375,34 +375,30 @@ var
 
   function Check(Msg, Wrd: String; Cnt: Integer): TSynPluginSyncroEditWordsHashEntry;
   begin
-    Result:= hsh.GetWord(@Wrd[1], length(Wrd));
+    Result:= hsh.GetWord(Wrd);
     AssertEquals(Msg + ' ' + Wrd + ' Cnt', Cnt, Result.Count);
     if Cnt > 0 then
-      AssertEquals(Msg + ' ' + Wrd + ' Len', length(Wrd), Result.Len);
+      AssertEquals(Msg + ' ' + Wrd + ' Len', Wrd, Result.Word);
   end;
   procedure Add(Wrd: String; Y, X: Integer);
   begin
-    hsh.AddWord(y, x, length(Wrd), @Wrd[1]);
+    hsh.AddWord(y, x, Wrd);
     //Dump(hsh);
   end;
   procedure Del(Wrd: String);
   begin
-    hsh.RemoveWord(length(Wrd), @Wrd[1]);
+    hsh.RemoveWord(Wrd);
     //Dump(hsh);
   end;
 
 var
-  lwl: TSynPluginSyncroEditLowerLineCache;
-  s: String;
+  s, s2: String;
   i: Integer;
 begin
-  lwl := TSynPluginSyncroEditLowerLineCache.Create;
-  lwl.Lines := SynEdit.ViewedTextBuffer;
   try
     hsh := TSynPluginSyncroEditWordsHash.Create;
-    hsh.LowerLines := lwl;
 
-    SynEdit.Lines.Add('Test abc');
+    SynEdit.Lines.Add('test abc');
     SynEdit.Lines.Add('atdesktop before2 252'); // supposed to have the same hash on a 4096 table
     SynEdit.Lines.Add('mk_equal ecpageup'); // same big hash
 
@@ -411,9 +407,12 @@ begin
     Del('test');        Check('one word one down again', 'test', 1);
     Del('test');        Check('one word gone', 'test', 0);
 
-    s:= 'atdesktop before2 252';
-    AssertEquals('clash for atdesktop before2', hsh.GetWordModHash(@s[1], 9), hsh.GetWordModHash(@s[11], 7));
-    AssertEquals('clash for atdesktop 252',     hsh.GetWordModHash(@s[1], 9), hsh.GetWordModHash(@s[19], 3));
+    s:= 'atdesktop';
+    s2:= 'before2';
+    AssertEquals('clash for atdesktop before2', hsh.GetWordModHash(s), hsh.GetWordModHash(s2));
+    s:= 'atdesktop';
+    s2:= '252';
+    AssertEquals('clash for atdesktop 252',     hsh.GetWordModHash(s), hsh.GetWordModHash(s2));
     (* repeat test, but with double entry*)
     // add word with bad pointer, so we can create a clash
 
@@ -464,7 +463,6 @@ begin
 
   finally
     hsh.free;
-    lwl.Free;
   end;
 end;
 

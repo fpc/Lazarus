@@ -26,9 +26,9 @@ unit SynPluginSyncronizedEditBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics,
+  Classes, SysUtils, Graphics, StrUtils,
   SynEditMiscClasses, SynEdit, SynEditMarkup, SynEditMiscProcs, LazSynEditText,
-  SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase;
+  SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase, LazUTF8;
 
 type
 
@@ -69,10 +69,11 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Add(aCell: TSynPluginSyncronizedEditCell): Integer;
-    function AddNew: TSynPluginSyncronizedEditCell; virtual;
+    function AddNew: TSynPluginSyncronizedEditCell; virtual; // only add sorted
     procedure Delete(aIndex: Integer);
     function IndexOf(aCell: TSynPluginSyncronizedEditCell): Integer;
     function IndexOf(aX, aY: Integer; IncludeLast: Boolean = False; aCurrentCellIdx: Integer = -1): Integer;
+    function IndexOfNext(aX, aY: Integer; IncludeLast: Boolean = False; aCurrentCellIdx: Integer = -1): Integer;
     function IsInCell(aX, aY, ACellIdx: Integer; IncludeLast: Boolean = False): Boolean;
     function Count: Integer;
     function GroupCount(aGroup: Integer): Integer;
@@ -282,6 +283,9 @@ type
        - various helpers, to set the caret/block
   *)
 
+  TSynPluginSyncroScanMode = (spssNoCase, spssWithCase, spssCtxNoCase, spssCtxWithCase);
+  TSynPluginSyncroScanModes = set of TSynPluginSyncroScanMode;
+
   TSynPluginCustomSyncroEdit = class(TSynPluginSyncronizedEditBase)
   private
     FLastCell: Integer;
@@ -306,6 +310,15 @@ type
     procedure NextCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False; FirstsOnly: Boolean = False);
     procedure CellCaretHome;
     procedure CellCaretEnd;
+
+    function MovePointLeft(p: TPoint; out ARes: TPoint; AllowLineWrap: Boolean): Boolean;
+    function MovePointRight(p: TPoint; out ARes: TPoint; AllowLineWrap: Boolean): Boolean;
+    procedure RemoveSingleGroupCells;
+    procedure ShrinkCell(AGroup: Integer; ARightSide: Boolean);
+    procedure GrowCell(AGroup: Integer; ARightSide: Boolean);
+    procedure ResizeCell(ARightSide: Boolean; AShrink: Boolean);
+    procedure AddGroupFromSelection(AScanMode: TSynPluginSyncroScanMode);
+    procedure RemoveCurrentCell;
   public
     constructor Create(AOwner: TComponent); override;
     //destructor Destroy; override;
@@ -432,10 +445,19 @@ end;
 
 function TSynPluginSyncronizedEditList.Add(aCell: TSynPluginSyncronizedEditCell): Integer;
 var
-  i: Integer;
+  i, n: Integer;
 begin
+  if aCell.LogStart.Y = High(Integer) then
+    n := -1
+  else
+    n := IndexOfNext(aCell.LogStart.x, aCell.LogStart.Y);
+
   i := length(FCells);
   SetLength(FCells, i + 1);
+  if (n >= 0) and (n < i) then begin
+    move(FCells[n], FCells[n+1], SizeOf(FCells[0]) * (i-n));
+    i := n;
+  end;
   FCells[i] := aCell;
   Result := i;
   if assigned(FOnCellChange) then
@@ -445,6 +467,7 @@ end;
 function TSynPluginSyncronizedEditList.AddNew: TSynPluginSyncronizedEditCell;
 begin
   Result := TSynPluginSyncronizedEditCell.Create;
+  Result.FLogStart.y := high(Integer);
   Add(Result);
 end;
 
@@ -452,13 +475,13 @@ procedure TSynPluginSyncronizedEditList.Delete(aIndex: Integer);
 var
   i: Integer;
 begin
+  if assigned(FOnCellChange) then
+    FOnCellChange(aIndex, FCells[aIndex], nil);
   FCells[aIndex].Free;
   i := length(FCells) - 1;
   if aIndex < i then
     System.Move(FCells[aIndex+1], FCells[aIndex], (i-aIndex) * SizeOf(TSynPluginSyncronizedEditCell));
   SetLength(FCells, i);
-  if assigned(FOnCellChange) then
-    FOnCellChange(aIndex, FCells[i], nil);
 end;
 
 function TSynPluginSyncronizedEditList.IndexOf(aCell: TSynPluginSyncronizedEditCell): Integer;
@@ -485,11 +508,36 @@ begin
   if IncludeLast then
     a := 1
   else
-    a := 0;;
+    a := 0;
   for i := 0 to Count -1 do begin
     if (FCells[i].Group >= 0) and
        ( (FCells[i].LogStart.Y < aY) or
          ((FCells[i].LogStart.Y = aY) and (FCells[i].LogStart.X <= aX)) ) and
+       ( (FCells[i].LogEnd.Y > aY) or
+         ((FCells[i].LogEnd.Y = aY) and (FCells[i].LogEnd.X + a > aX)) )
+    then
+      exit(i);
+  end;
+  Result := -1;
+end;
+
+function TSynPluginSyncronizedEditList.IndexOfNext(aX, aY: Integer;
+  IncludeLast: Boolean; aCurrentCellIdx: Integer): Integer;
+var
+  a, i: Integer;
+begin
+  // If 2 cells touch, prefer current cell
+  if (aCurrentCellIdx >= 0) and IsInCell(aX, aY, aCurrentCellIdx, IncludeLast) then begin
+    Result := aCurrentCellIdx;
+    exit;
+  end;
+
+  if IncludeLast then
+    a := 1
+  else
+    a := 0;
+  for i := 0 to Count -1 do begin
+    if (FCells[i].Group >= 0) and
        ( (FCells[i].LogEnd.Y > aY) or
          ((FCells[i].LogEnd.Y = aY) and (FCells[i].LogEnd.X + a > aX)) )
     then
@@ -503,6 +551,7 @@ function TSynPluginSyncronizedEditList.IsInCell(aX, aY, ACellIdx: Integer;
 var
   a: Integer;
 begin
+  if ACellIdx >= Length(FCells) then exit(False);
   if IncludeLast then
     a := 1
   else
@@ -525,10 +574,12 @@ var
   i: Integer;
 begin
   i := 0;
-Result := 0;
-  while i < length(FCells) do
+  Result := 0;
+  while i < length(FCells) do begin
     if FCells[i].Group = aGroup then
       inc(Result);
+    inc(i);
+  end;
 end;
 
 { TSynPluginSyncronizedEditMarkupBase }
@@ -728,9 +779,9 @@ end;
 procedure TSynPluginSyncronizedEditMarkupArea.CellChanged(aIndex: Integer; aOldVal,
   aNewVal: TSynPluginSyncronizedEditCell);
 begin
-  if (aOldVal <> nil) and (aOldVal.Group = CellGroupForArea) then
+  if (aOldVal <> nil) and (aOldVal.Group = CellGroupForArea) and (aOldVal.LogStart.Y <> high(Integer)) then
     InvalidateSynLines(aOldVal.LogStart.Y, aOldVal.LogEnd.Y);
-  if (aNewVal <> nil) and (aNewVal.Group = CellGroupForArea) then
+  if (aNewVal <> nil) and (aNewVal.Group = CellGroupForArea) and (aNewVal.LogStart.Y <> high(Integer)) then
     InvalidateSynLines(aNewVal.LogStart.Y, aNewVal.LogEnd.Y);
 end;
 
@@ -1634,6 +1685,339 @@ begin
     exit;
   CaretObj.LineBytePos := Cells[CurrentCell].LogEnd;
   Editor.BlockBegin := Cells[CurrentCell].LogEnd;
+end;
+
+function TSynPluginCustomSyncroEdit.MovePointLeft(p: TPoint; out ARes: TPoint;
+  AllowLineWrap: Boolean): Boolean;
+begin
+  Result := False;
+  p := FriendEdit.LogicalToPhysicalPos(p);
+  if p.X = 1 then begin
+    if (not AllowLineWrap) or (p.Y = 1) then
+      exit;
+
+    ARes.Y := p.Y - 1;
+    ARes.X := Length(FriendEdit.Lines[ToIdx(ARes.y)]) + 1;
+    Result := True;
+    exit;
+  end;
+
+  Dec(p.X);
+  ARes := FriendEdit.PhysicalToLogicalPos(p);
+  Result := True;
+end;
+
+function TSynPluginCustomSyncroEdit.MovePointRight(p: TPoint; out ARes: TPoint;
+  AllowLineWrap: Boolean): Boolean;
+begin
+  Result := False;
+  p := FriendEdit.LogicalToPhysicalPos(p);
+  if p.X > Length(FriendEdit.Lines[ToIdx(p.Y)]) then begin
+    if (not AllowLineWrap) or (p.Y >= FriendEdit.Lines.Count) then
+      exit;
+
+    ARes.Y := p.Y + 1;
+    ARes.X := 1;
+    Result := True;
+    exit;
+  end;
+
+  Inc(p.X);
+  ARes := FriendEdit.PhysicalToLogicalPos(p);
+  Result := True;
+end;
+
+procedure TSynPluginCustomSyncroEdit.RemoveSingleGroupCells;
+var
+  i, j, g: Integer;
+begin
+  i := 0;
+  while i < Cells.Count do begin
+    g := Cells[i].Group;
+    if g < 0 then begin
+      inc(i);
+      continue;
+    end;
+    j := i - 1;
+    while (j >= 0) and (Cells[j].Group <> g) do
+      dec(j);
+    Cells[i].FFirstInGroup := j < 0;
+    if j < 0 then begin
+      j := Cells.Count - 1;
+      while j > i do begin
+        if Cells[j].Group = g then break;
+        dec(j);
+      end;
+      if j = i then begin
+        Cells.Delete(i);
+        dec(i);
+      end;
+    end;
+    inc(i);
+  end;
+end;
+
+procedure TSynPluginCustomSyncroEdit.ShrinkCell(AGroup: Integer;
+  ARightSide: Boolean);
+var
+  i2: Integer;
+  c2: TSynPluginSyncronizedEditCell;
+  NewPos: TPoint;
+  DidDelete: Boolean;
+begin
+  DidDelete := False;
+  for i2 := Cells.Count - 1 downto 0 do begin
+    if i2 >= Cells.Count then Continue;
+    c2 := Cells[i2];
+    if c2.Group <> AGroup then Continue;
+    if ARightSide then begin
+      MovePointLeft(c2.LogEnd, NewPos, c2.LogEnd.y <> c2.LogStart.y);
+      if CompareCarets(NewPos, c2.LogEnd) <= 0 then begin
+        Cells.Delete(i2);
+        DidDelete := True;
+      end
+      else
+        Cells[i2].LogEnd := NewPos;
+    end
+    else begin
+      MovePointRight(c2.LogStart, NewPos, c2.LogEnd.y <> c2.LogStart.y);
+      if CompareCarets(c2.LogStart, NewPos) <= 0 then begin
+        Cells.Delete(i2);
+        DidDelete := True;
+      end
+      else
+        Cells[i2].LogStart := NewPos;
+    end;
+  end;
+
+  if DidDelete then
+    RemoveSingleGroupCells;
+  UpdateCurrentCell;
+  FriendEdit.Invalidate;
+end;
+
+procedure TSynPluginCustomSyncroEdit.GrowCell(AGroup: Integer;
+  ARightSide: Boolean);
+var
+  i2, i3: Integer;
+  c2: TSynPluginSyncronizedEditCell;
+  NewPos: TPoint;
+  DidDelete: Boolean;
+begin
+  DidDelete := False;
+  for i2 := Cells.Count - 1 downto 0 do begin
+    if i2 >= Cells.Count then Continue;
+    c2 := Cells[i2];
+    if c2.Group <> AGroup then Continue;
+    if ARightSide then begin
+      MovePointRight(c2.LogEnd, NewPos, False);
+      i3 := Cells.IndexOf(NewPos.X, NewPos.Y, True {touch});
+      Cells[i2].LogEnd := NewPos;
+    end
+    else begin
+      MovePointLeft(c2.LogStart, NewPos, False);
+      i3 := Cells.IndexOf(NewPos.X, NewPos.Y, True {touch});
+      Cells[i2].LogStart := NewPos;
+    end;
+    if (i3 >= 0) then begin
+      Cells.Delete(i3);
+      DidDelete := True;
+    end;
+  end;
+
+  if DidDelete then
+    RemoveSingleGroupCells;
+  UpdateCurrentCell;
+  FriendEdit.Invalidate;
+end;
+
+procedure TSynPluginCustomSyncroEdit.ResizeCell(ARightSide: Boolean;
+  AShrink: Boolean);
+var
+  i, g, i2, i3: Integer;
+  c, c2: TSynPluginSyncronizedEditCell;
+  NewPos: TPoint;
+  r: Boolean;
+begin
+  i := CurrentCell;
+  if i < 0 then
+    exit;
+
+  c := Cells[i];
+  g := c.Group;
+  if g < 0 then exit;
+
+  for i2 := 0 to Cells.Count - 1 do begin
+    c2 := Cells[i2];
+    if c2.Group <> g then Continue;
+    if ARightSide then begin
+      if AShrink
+      then r := MovePointLeft(c2.LogEnd, NewPos, c2.LogEnd.y <> c2.LogStart.y)
+      else r := MovePointRight(c2.LogEnd, NewPos, False);
+    end
+    else begin
+      if AShrink
+      then r := MovePointRight(c2.LogStart, NewPos, c2.LogEnd.y <> c2.LogStart.y)
+      else r := MovePointLeft(c2.LogStart, NewPos, False);
+    end;
+    if not r then
+      exit;
+
+    if AShrink then begin
+      if (i = i2) then begin
+        // check current cell can shrink
+        if ARightSide then begin
+          if CompareCarets(NewPos, c2.LogEnd) <= 0 then exit;
+        end
+        else
+          if CompareCarets(c2.LogStart, NewPos) <= 0 then exit;
+      end;
+    end
+    else begin
+      // growing
+      i3 := Cells.IndexOf(NewPos.X, NewPos.Y, True {touch});
+      if (i3 >= 0) and (Cells[i3].Group = g) then
+        exit;
+    end;
+  end;
+
+  if AShrink then
+    ShrinkCell(g, ARightSide)
+  else
+    GrowCell(g, ARightSide);
+end;
+
+procedure TSynPluginCustomSyncroEdit.AddGroupFromSelection(AScanMode: TSynPluginSyncroScanMode);
+  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint): TPoint;
+  var
+    l: String;
+  begin
+    Result.Y := -1;
+    repeat
+      l := TextBuffer[ToIdx(AStartPos.Y)];
+      if AScanMode in [spssNoCase, spssCtxNoCase] then
+        l := Utf8LowerCase(l);
+      Result.X := PosEx(AText, l, AStartPos.X);
+      if (Result.X > 0) and
+         ( (AStartPos.Y < AMaxPos.Y) or
+           ((AStartPos.y = AMaxPos.y) and (Result.x + Length(AText) <= AMaxPos.X))
+         )
+      then begin
+        Result.Y := AStartPos.Y;
+        exit;
+      end;
+      AStartPos.X := 1;
+      inc(AStartPos.Y);
+    until AStartPos.y > AMaxPos.Y;
+  end;
+
+  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint; AScope: integer): TPoint;
+  var
+    tt: Integer;
+  begin
+    repeat
+      Result := FindNextStart(AText, AStartPos, AMaxPos);
+      if not (AScanMode in [spssCtxNoCase, spssCtxWithCase]) then
+        exit;
+      if Result.Y < 0 then
+        exit;
+      TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(Result, tt, True);
+      if tt = AScope then
+        exit;
+      AStartPos := Result;
+      AStartPos.x := AStartPos.x + Length(AText);
+    until False;
+  end;
+
+var
+  Grp: Integer;
+  DidDelete: boolean;
+
+  procedure AddFndCell(p, p2: TPoint; AsFirst: boolean = False);
+  var
+    nc: TSynPluginSyncronizedEditCell;
+    Existing: Integer;
+  begin
+    Existing := Cells.IndexOfNext(p.X, p.Y);
+    if Existing >= 0 then
+      while (Existing < Cells.Count) and (CompareCarets(Cells[Existing].LogStart, p2) > 0) do begin
+        Cells.Delete(Existing);
+        DidDelete := True;
+      end;
+
+    nc := TSynPluginSyncronizedEditCell.Create;
+    nc.LogStart := p;
+    nc.LogEnd := p2;
+    nc.Group := Grp;
+    nc.FirstInGroup := AsFirst;
+    Cells.Add(nc);
+  end;
+var
+  BndCell: TSynPluginSyncronizedEditCell;
+  t: String;
+  p: TPoint;
+  Fnd, FndEnd, Fnd2, FndEnd2: TPoint;
+  Ctx, i: Integer;
+begin
+  if (not FriendEdit.SelAvail) or (FriendEdit.BlockBegin.y <> FriendEdit.BlockEnd.Y) then
+    exit;
+  BndCell := Cells.GroupCell[-1, 0];
+  if BndCell = nil then
+    exit;
+
+  DidDelete := False;
+  Grp := 1;
+  for i := 0 to Cells.Count - 1 do
+    if Cells[i].Group >= Grp then
+      Grp := Cells[i].Group + 1;
+
+  Ctx := 0;
+  if AScanMode in [spssCtxNoCase, spssCtxWithCase] then
+    TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(FriendEdit.BlockBegin, Ctx, False);
+
+  t := FriendEdit.SelText;
+  if AScanMode in [spssNoCase, spssCtxNoCase] then
+    t := UTF8LowerCase(t);
+
+  p := BndCell.LogStart;
+  Fnd := FindNextStart(t, p, BndCell.LogEnd, Ctx);
+  FndEnd := Fnd;
+  inc(FndEnd.X, Length(t));
+  if (Fnd.Y < 0)  then
+    exit;
+
+  p := FndEnd;
+  Fnd2 := FindNextStart(t, p, BndCell.LogEnd, Ctx);
+  FndEnd2 := Fnd2;
+  inc(FndEnd2.X, Length(t));
+  if (Fnd2.Y < 0) then
+    exit;
+
+  AddFndCell(Fnd, FndEnd, True);
+  while Fnd2.y >= 0 do begin
+    AddFndCell(Fnd2, FndEnd2);
+
+    p := FndEnd2;
+    Fnd2 := FindNextStart(t, p, BndCell.LogEnd, Ctx);
+    FndEnd2 := Fnd2;
+    inc(FndEnd2.X, Length(t));
+  end;
+
+  if DidDelete then
+    RemoveSingleGroupCells;
+  UpdateCurrentCell;
+  FriendEdit.Invalidate;
+end;
+
+procedure TSynPluginCustomSyncroEdit.RemoveCurrentCell;
+begin
+  if (CurrentCell < 0) or (CurrentCell >= Cells.Count) then
+    exit;
+
+  Cells.Delete(CurrentCell);
+  RemoveSingleGroupCells;
+  CurrentCell := -1;
+  FriendEdit.Invalidate;
 end;
 
 constructor TSynPluginCustomSyncroEdit.Create(AOwner: TComponent);

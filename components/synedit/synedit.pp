@@ -1010,7 +1010,8 @@ type
       out Attri: TSynHighlighterAttributes): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
       out TokenType, Start: Integer;
-      out Attri: TSynHighlighterAttributes): boolean;                           //L505
+      out Attri: TSynHighlighterAttributes): boolean;
+    function GetHighlighterAttriAtRowColEx(XY: TPoint; out TokenType: Integer; ContinueIfPossible: boolean = False): boolean;
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); override;
     function GetWordAtRowCol(XY: TPoint): string; override;
@@ -9670,14 +9671,14 @@ var
   PosX, PosY: integer;
   Line: string;
 begin
-  PosY := XY.Y -1;
+  PosY := ToIdx(XY.Y);
   if Assigned(Highlighter) and (PosY >= 0) and (PosY < FTheLinesView.Count) then
   begin
     Line := FTheLinesView[PosY];
-    fHighlighter.CurrentLines := FTheLinesView;
-    Highlighter.StartAtLineIndex(PosY);
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then begin
+      fHighlighter.CurrentLines := FTheLinesView;
+      Highlighter.StartAtLineIndex(PosY);
       while not Highlighter.GetEol do begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;
@@ -9692,6 +9693,40 @@ begin
   end;
   Token := '';
   Attri := nil;
+  TokenType := -1;
+  Result := False;
+end;
+
+function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint; out TokenType: Integer;
+  ContinueIfPossible: boolean): boolean;
+var
+  PosX, PosY, Start: integer;
+  Line: string;
+begin
+  PosY := ToIdx(XY.Y);
+  if Assigned(Highlighter) and (PosY >= 0) and (PosY < FTheLinesView.Count) then
+  begin
+    Line := FTheLinesView[PosY];
+    PosX := XY.X;
+    if (PosX > 0) and (PosX <= Length(Line)) then begin
+      if (not ContinueIfPossible) or
+         (fHighlighter.CurrentLines <> FTheLinesView) or
+         (fHighlighter.LineIndex <> PosY) or
+         (fHighlighter.GetTokenPos + 1 + Highlighter.GetTokenLen >= PosX)
+      then begin
+        fHighlighter.CurrentLines := FTheLinesView;
+        Highlighter.StartAtLineIndex(PosY);
+      end;
+      while not Highlighter.GetEol do begin
+        Start := Highlighter.GetTokenPos + 1;
+        if (PosX >= Start) and (PosX < Start + Highlighter.GetTokenLen) then begin
+          TokenType := Highlighter.GetTokenKind;
+          exit(True);
+        end;
+        Highlighter.Next;
+      end;
+    end;
+  end;
   TokenType := -1;
   Result := False;
 end;

@@ -641,6 +641,7 @@ type
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
+    function GetTokenLen: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; override;
     procedure Next; override;
 
@@ -4454,6 +4455,11 @@ end;
 function TSynPasSyn.GetTokenPos: Integer;
 begin
   Result := fTokenPos;
+end;
+
+function TSynPasSyn.GetTokenLen: Integer;
+begin
+  Result := Run-fTokenPos;
 end;
 
 function TSynPasSyn.GetRange: Pointer;

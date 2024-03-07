@@ -377,7 +377,6 @@ type
     // code fold - only valid if hcCodeFolding in Capabilities
     procedure SetCurrentLines(const AValue: TSynEditStringsBase); virtual; // todo remove virtual
     procedure DoCurrentLinesChanged; virtual;
-    property  LineIndex: Integer read FLineIndex;
     property CurrentRanges: TSynHighlighterRangeList read FCurrentRanges;
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
@@ -413,6 +412,7 @@ type
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based
+    function GetTokenLen: Integer; virtual;
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
@@ -440,6 +440,7 @@ type
     procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual;
+    property  LineIndex: Integer read FLineIndex;
   public
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
@@ -1534,6 +1535,13 @@ end;
 function TSynCustomHighlighter.GetEndOfLineAttribute: TSynHighlighterAttributes;
 begin
   Result := nil;
+end;
+
+function TSynCustomHighlighter.GetTokenLen: Integer;
+var
+  x: PChar;
+begin
+  GetTokenEx(x, Result);
 end;
 
 procedure TSynCustomHighlighter.SetWordBreakChars(AChars: TSynIdentChars);

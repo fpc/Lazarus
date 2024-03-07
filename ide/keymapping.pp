@@ -941,6 +941,13 @@ begin
     ecIdePSyncroEdCellEnd:               Result := srkmecSynPSyncroEdCellEnd;
     ecIdePSyncroEdCellSelect:            Result := srkmecSynPSyncroEdCellSelect;
     ecIdePSyncroEdEscape:                Result := srkmecSynPSyncroEdEscape;
+    ecIdePSyncroEdGrowCellLeft:          Result := srkmecSynPSyncroEdGrowCellLeft;
+    ecIdePSyncroEdShrinkCellLeft:        Result := srkmecSynPSyncroEdShrinkCellLeft;
+    ecIdePSyncroEdGrowCellRight:         Result := srkmecSynPSyncroEdGrowCellRight;
+    ecIdePSyncroEdShrinkCellRight:       Result := srkmecSynPSyncroEdShrinkCellRight;
+    ecIdePSyncroEdAddCell:               Result := srkmecSynPSyncroEdAddCell;
+    ecIdePSyncroEdAddCellCtx:            Result := srkmecSynPSyncroEdAddCellCtx;
+    ecIdePSyncroEdDelCell:               Result := srkmecSynPSyncroEdDelCell;
     // SyncroEdit
     ecIdePSyncroEdOutNextCell:              Result := srkmecSynPSyncroEdNextCell;
     ecIdePSyncroEdOutNextCellSel:           Result := srkmecSynPSyncroEdNextCellSel;
@@ -954,8 +961,19 @@ begin
     ecIdePSyncroEdOutCellEnd:               Result := srkmecSynPSyncroEdCellEnd;
     ecIdePSyncroEdOutCellSelect:            Result := srkmecSynPSyncroEdCellSelect;
     ecIdePSyncroEdOutEscape:                Result := srkmecSynPSyncroEdEscape;
+    //ecIdePSyncroEdOutGrowCellLeft:          Result := srkmecSynPSyncroEdGrowCellLeft;
+    //ecIdePSyncroEdOutShrinkCellLeft:        Result := srkmecSynPSyncroEdShrinkCellLeft;
+    //ecIdePSyncroEdOutGrowCellRight:         Result := srkmecSynPSyncroEdGrowCellRight;
+    //ecIdePSyncroEdOutShrinkCellRight:       Result := srkmecSynPSyncroEdShrinkCellRight;
+    ecIdePSyncroEdOutAddCell:               Result := srkmecSynPSyncroEdAddCell;
+    ecIdePSyncroEdOutAddCellCase:           Result := srkmecSynPSyncroEdAddCellCase;
+    ecIdePSyncroEdOutAddCellCtx:            Result := srkmecSynPSyncroEdAddCellCtx;
+    ecIdePSyncroEdOutAddCellCtxCase:        Result := srkmecSynPSyncroEdAddCellCtxCase;
     // SyncroEdit, during selection
     ecIdePSyncroEdSelStart:            Result := srkmecSynPSyncroEdStart;
+    ecIdePSyncroEdSelStartCase:        Result := srkmecSynPSyncroEdStartCase;
+    ecIdePSyncroEdSelStartCtx:         Result := srkmecSynPSyncroEdStartCtx;
+    ecIdePSyncroEdSelStartCtxCase:     Result := srkmecSynPSyncroEdStartCtxCase;
 
     else
       begin
@@ -1600,6 +1618,13 @@ begin
   ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
   ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[XCtrl]);
   ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdGrowCellLeft:      SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellLeft:    SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift,ssAlt]);
+  ecIdePSyncroEdGrowCellRight:     SetSingle(VK_LCL_POINT,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellRight:   SetSingle(VK_LCL_POINT,[ssCtrl,ssShift,ssAlt]);
+//  ecIdePSyncroEdAddCell:           SetSingle(VK_J,[ssCtrl]);
+//  ecIdePSyncroEdAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdDelCell:           SetSingle(VK_K,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit
   ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[XCtrl]);
   ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
@@ -1609,8 +1634,15 @@ begin
   ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdOutAddCell:           SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdOutAddCellCase:       SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdOutAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdOutAddCellCtxCase:    SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit, during selection
-  ecIdePSyncroEdSelStart:          SetSingle(VK_J,[XCtrl]);
+  ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdSelStartCase:      SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdSelStartCtx:       SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdSelStartCtxCase:   SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
 
   else
     begin
@@ -2046,6 +2078,13 @@ begin
   ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
   ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
   ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdGrowCellLeft:      SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellLeft:    SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift,ssAlt]);
+  ecIdePSyncroEdGrowCellRight:     SetSingle(VK_LCL_POINT,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellRight:   SetSingle(VK_LCL_POINT,[ssCtrl,ssShift,ssAlt]);
+//  ecIdePSyncroEdAddCell:           SetSingle(VK_J,[ssCtrl]);
+//  ecIdePSyncroEdAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdDelCell:           SetSingle(VK_K,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit
   ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
   ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
@@ -2055,8 +2094,15 @@ begin
   ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdOutAddCell:           SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdOutAddCellCase:       SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdOutAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdOutAddCellCtxCase:    SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit, during selection
   ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdSelStartCase:      SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdSelStartCtx:       SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdSelStartCtxCase:   SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
 
   else
     begin
@@ -2686,6 +2732,13 @@ begin
   ecIdePSyncroEdCellEnd:        SetSingle(VK_END,[]);
   ecIdePSyncroEdCellSelect:     SetSingle(VK_A,[ssCtrl]);
   ecIdePSyncroEdEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdGrowCellLeft:      SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellLeft:    SetSingle(VK_LCL_COMMA,[ssCtrl,ssShift,ssAlt]);
+  ecIdePSyncroEdGrowCellRight:     SetSingle(VK_LCL_POINT,[ssCtrl,ssShift]);
+  ecIdePSyncroEdShrinkCellRight:   SetSingle(VK_LCL_POINT,[ssCtrl,ssShift,ssAlt]);
+//  ecIdePSyncroEdAddCell:           SetSingle(VK_J,[ssCtrl]);
+//  ecIdePSyncroEdAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdDelCell:           SetSingle(VK_K,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit
   ecIdePSyncroEdOutNextCell:       SetSingle(VK_RIGHT,[ssCtrl]);
   ecIdePSyncroEdOutNextCellSel:    SetSingle(VK_TAB,[]);
@@ -2695,8 +2748,15 @@ begin
   ecIdePSyncroEdOutCellEnd:        SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutCellSelect:     SetSingle(VK_UNKNOWN,[]);
   ecIdePSyncroEdOutEscape:         SetSingle(VK_ESCAPE,[]);
+  ecIdePSyncroEdOutAddCell:           SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdOutAddCellCase:       SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdOutAddCellCtx:        SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdOutAddCellCtxCase:    SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
   // SyncroEdit, during selection
   ecIdePSyncroEdSelStart:          SetSingle(VK_J,[ssCtrl]);
+  ecIdePSyncroEdSelStartCase:      SetSingle(VK_J,[ssCtrl,ssShift]);
+  ecIdePSyncroEdSelStartCtx:       SetSingle(VK_J,[ssCtrl,ssAlt]);
+  ecIdePSyncroEdSelStartCtxCase:   SetSingle(VK_J,[ssCtrl,ssShift,ssAlt]);
 
   else
     begin
@@ -3161,6 +3221,13 @@ begin
   AddDefault(C, 'Edit Syncro Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecIdePSyncroEdCellEnd);
   AddDefault(C, 'Edit Syncro Select cell', srkmecSynPSyncroEdCellSelect, ecIdePSyncroEdCellSelect);
   AddDefault(C, 'Edit Syncro Escape', srkmecSynPSyncroEdEscape, ecIdePSyncroEdEscape);
+  AddDefault(C, 'Edit Syncro Grow cell on the left', srkmecSynPSyncroEdGrowCellLeft, ecIdePSyncroEdGrowCellLeft);
+  AddDefault(C, 'Edit Syncro Shrink cell on the left', srkmecSynPSyncroEdShrinkCellLeft, ecIdePSyncroEdShrinkCellLeft);
+  AddDefault(C, 'Edit Syncro Grow cell on the right', srkmecSynPSyncroEdGrowCellRight, ecIdePSyncroEdGrowCellRight);
+  AddDefault(C, 'Edit Syncro Shrink  cell on the right', srkmecSynPSyncroEdShrinkCellRight, ecIdePSyncroEdShrinkCellRight);
+//  AddDefault(C, 'Edit Syncro Add Cell', srkmecSynPSyncroEdAddCell, ecIdePSyncroEdAddCell);
+//  AddDefault(C, 'Edit Syncro Add Cell (Context)', srkmecSynPSyncroEdAddCellCtx, ecIdePSyncroEdAddCellCtx);
+  AddDefault(C, 'Edit Syncro Remove current Cell', srkmecSynPSyncroEdDelCell, ecIdePSyncroEdDelCell);
 
   // Syncro editing not in cell
   C:=Categories[AddCategory('Syncro Edit Off', srkmCatSyncroEditOff, IDECmdScopeSrcEditOnlySyncroEditOff)];
@@ -3176,10 +3243,17 @@ begin
   AddDefault(C, 'Edit Syncro (off) Goto last pos in cell', srkmecSynPSyncroEdCellEnd, ecIdePSyncroEdOutCellEnd);
   AddDefault(C, 'Edit Syncro (off) Select cell', srkmecSynPSyncroEdCellSelect, ecIdePSyncroEdOutCellSelect);
   AddDefault(C, 'Edit Syncro (off) Escape', srkmecSynPSyncroEdEscape, ecIdePSyncroEdOutEscape);
+  AddDefault(C, 'Edit Syncro Add Cell', srkmecSynPSyncroEdAddCell, ecIdePSyncroEdOutAddCell);
+  AddDefault(C, 'Edit Syncro Add Cell (Case)', srkmecSynPSyncroEdAddCellCase, ecIdePSyncroEdOutAddCellCase);
+  AddDefault(C, 'Edit Syncro Add Cell (Context)', srkmecSynPSyncroEdAddCellCtx, ecIdePSyncroEdOutAddCellCtx);
+  AddDefault(C, 'Edit Syncro Add Cell (Context/Case)', srkmecSynPSyncroEdAddCellCtxCase, ecIdePSyncroEdOutAddCellCtxCase);
 
   // Syncro editing still selecting
   C:=Categories[AddCategory('Syncro Edit Sel', srkmCatSyncroEditSel, IDECmdScopeSrcEditOnlySyncroEditSel)];
   AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecIdePSyncroEdSelStart);
+  AddDefault(C, 'Edit Syncro (sel) Start (Case)', srkmecSynPSyncroEdStartCase, ecIdePSyncroEdSelStartCase);
+  AddDefault(C, 'Edit Syncro (sel) Start (Context)', srkmecSynPSyncroEdStartCtx, ecIdePSyncroEdSelStartCtx);
+  AddDefault(C, 'Edit Syncro (sel) Start (Context/Case)', srkmecSynPSyncroEdStartCtxCase, ecIdePSyncroEdSelStartCtxCase);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEditOnly)];

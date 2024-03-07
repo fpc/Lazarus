@@ -442,23 +442,41 @@ const
   ecIdePSyncroEdNextFirstCellSel   = ecFirstPlugin +  59;
   ecIdePSyncroEdPrevFirstCell      = ecFirstPlugin +  60;
   ecIdePSyncroEdPrevFirstCellSel   = ecFirstPlugin +  61;
+  ecIdePSyncroEdGrowCellLeft       = ecFirstPlugin +  62;
+  ecIdePSyncroEdShrinkCellLeft     = ecFirstPlugin +  63;
+  ecIdePSyncroEdGrowCellRight      = ecFirstPlugin +  64;
+  ecIdePSyncroEdShrinkCellRight    = ecFirstPlugin +  65;
+  ecIdePSyncroEdAddCell            = ecFirstPlugin +  66;
+  ecIdePSyncroEdAddCellCase        = ecFirstPlugin +  67;
+  ecIdePSyncroEdAddCellCtx         = ecFirstPlugin +  68;
+  ecIdePSyncroEdAddCellCtxCase     = ecFirstPlugin +  69;
+  ecIdePSyncroEdDelCell            = ecFirstPlugin +  70;
 
   // TSynPluginSyncroEdit - Out off cell
-  ecIdePSyncroEdOutNextCell           = ecFirstPlugin +  70;
-  ecIdePSyncroEdOutNextCellSel        = ecFirstPlugin +  71;
-  ecIdePSyncroEdOutPrevCell           = ecFirstPlugin +  72;
-  ecIdePSyncroEdOutPrevCellSel        = ecFirstPlugin +  73;
-  ecIdePSyncroEdOutCellHome           = ecFirstPlugin +  74;
-  ecIdePSyncroEdOutCellEnd            = ecFirstPlugin +  75;
-  ecIdePSyncroEdOutCellSelect         = ecFirstPlugin +  76;
-  ecIdePSyncroEdOutEscape             = ecFirstPlugin +  77;
-  ecIdePSyncroEdOutNextFirstCell      = ecFirstPlugin +  78;
-  ecIdePSyncroEdOutNextFirstCellSel   = ecFirstPlugin +  79;
-  ecIdePSyncroEdOutPrevFirstCell      = ecFirstPlugin +  80;
-  ecIdePSyncroEdOutPrevFirstCellSel   = ecFirstPlugin +  81;
+  ecIdePSyncroEdOutNextCell           = ecFirstPlugin +  80;
+  ecIdePSyncroEdOutNextCellSel        = ecFirstPlugin +  81;
+  ecIdePSyncroEdOutPrevCell           = ecFirstPlugin +  82;
+  ecIdePSyncroEdOutPrevCellSel        = ecFirstPlugin +  83;
+  ecIdePSyncroEdOutCellHome           = ecFirstPlugin +  84;
+  ecIdePSyncroEdOutCellEnd            = ecFirstPlugin +  85;
+  ecIdePSyncroEdOutCellSelect         = ecFirstPlugin +  86;
+  ecIdePSyncroEdOutEscape             = ecFirstPlugin +  87;
+  ecIdePSyncroEdOutNextFirstCell      = ecFirstPlugin +  88;
+  ecIdePSyncroEdOutNextFirstCellSel   = ecFirstPlugin +  89;
+  ecIdePSyncroEdOutPrevFirstCell      = ecFirstPlugin +  90;
+  ecIdePSyncroEdOutPrevFirstCellSel   = ecFirstPlugin +  91;
+  // grow/shrink 92..95 (reserved)
+  ecIdePSyncroEdOutAddCell            = ecFirstPlugin +  96;
+  ecIdePSyncroEdOutAddCellCase        = ecFirstPlugin +  97;
+  ecIdePSyncroEdOutAddCellCtx         = ecFirstPlugin +  98;
+  ecIdePSyncroEdOutAddCellCtxCase     = ecFirstPlugin +  99;
+  // del 100 (reserved)
 
   // TSynPluginSyncroEdit - selecting
-  ecIdePSyncroEdSelStart              = ecFirstPlugin +  90;
+  ecIdePSyncroEdSelStart              = ecFirstPlugin + 110;
+  ecIdePSyncroEdSelStartCase          = ecFirstPlugin + 111;
+  ecIdePSyncroEdSelStartCtx           = ecFirstPlugin + 112;
+  ecIdePSyncroEdSelStartCtxCase       = ecFirstPlugin + 113;
 
 const
   // Mouse command offsets
@@ -1967,7 +1985,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..323] of TIdentMapEntry = (         // DRB reduced elements from 323
+  IDEEditorCommandStrs: array[0..337] of TIdentMapEntry = (         // DRB reduced elements from 323
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2331,6 +2349,13 @@ const
     (Value: ecIdePSyncroEdNextFirstCellSel;           Name: 'ecIdePSyncroEdNextFirstCellSel'),
     (Value: ecIdePSyncroEdPrevFirstCell;              Name: 'ecIdePSyncroEdPrevFirstCell'),
     (Value: ecIdePSyncroEdPrevFirstCellSel;           Name: 'ecIdePSyncroEdPrevFirstCellSel'),
+    (Value: ecIdePSyncroEdGrowCellLeft;               Name: 'ecIdePSyncroEdGrowCellLeft'),
+    (Value: ecIdePSyncroEdShrinkCellLeft;             Name: 'ecIdePSyncroEdShrinkCellLeft'),
+    (Value: ecIdePSyncroEdGrowCellRight;              Name: 'ecIdePSyncroEdGrowCellRight'),
+    (Value: ecIdePSyncroEdShrinkCellRight;            Name: 'ecIdePSyncroEdShrinkCellRight'),
+    (Value: ecIdePSyncroEdAddCell;                    Name: 'ecIdePSyncroEdAddCell'),
+    (Value: ecIdePSyncroEdAddCellCtx;                 Name: 'ecIdePSyncroEdAddCellCtx'),
+    (Value: ecIdePSyncroEdDelCell;                    Name: 'ecIdePSyncroEdDelCell'),
 
   // TSynPluginSyncroEdit - Out off cell
     (Value: ecIdePSyncroEdOutNextCell;                Name: 'ecIdePSyncroEdOutNextCell'),
@@ -2345,9 +2370,20 @@ const
     (Value: ecIdePSyncroEdOutNextFirstCellSel;        Name: 'ecIdePSyncroEdOutNextFirstCellSel'),
     (Value: ecIdePSyncroEdOutPrevFirstCell;           Name: 'ecIdePSyncroEdOutPrevFirstCell'),
     (Value: ecIdePSyncroEdOutPrevFirstCellSel;        Name: 'ecIdePSyncroEdOutPrevFirstCellSel'),
+//    (Value: ecIdePSyncroEdGrowCellLeft;               Name: 'ecIdePSyncroEdGrowCellLeft'),
+//    (Value: ecIdePSyncroEdShrinkCellLeft;             Name: 'ecIdePSyncroEdShrinkCellLeft'),
+//    (Value: ecIdePSyncroEdGrowCellRight;              Name: 'ecIdePSyncroEdGrowCellRight'),
+//    (Value: ecIdePSyncroEdShrinkCellRight;            Name: 'ecIdePSyncroEdShrinkCellRight'),
+    (Value: ecIdePSyncroEdOutAddCell;                    Name: 'ecIdePSyncroEdOutAddCell'),
+    (Value: ecIdePSyncroEdOutAddCellCase;                Name: 'ecIdePSyncroEdOutAddCellCase'),
+    (Value: ecIdePSyncroEdOutAddCellCtx;                 Name: 'ecIdePSyncroEdOutAddCellCtx'),
+    (Value: ecIdePSyncroEdOutAddCellCtxCase;             Name: 'ecIdePSyncroEdOutAddCellCtxCase'),
 
   // TSynPluginSyncroEdit - selecting
-    (Value: ecIdePSyncroEdSelStart; Name: 'ecIdePSyncroEdSelStart')
+    (Value: ecIdePSyncroEdSelStart;        Name: 'ecIdePSyncroEdSelStart'),
+    (Value: ecIdePSyncroEdSelStartCase;    Name: 'ecIdePSyncroEdSelStartCase'),
+    (Value: ecIdePSyncroEdSelStartCtx;     Name: 'ecIdePSyncroEdSelStartCtx'),
+    (Value: ecIdePSyncroEdSelStartCtxCase; Name: 'ecIdePSyncroEdSelStartCtxCase')
   );
 
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
