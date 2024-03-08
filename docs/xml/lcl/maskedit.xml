@@ -2933,23 +2933,22 @@ pressed key may become released during the time the control has focus.
 <p>
 <var>FormatMaskText</var> is a <var>String</var> function used to apply an 
 edit mask to the specified String value. FormatMaskText creates a temporary 
-instance of <var>TCustomMaskEdit</var> that is used to apply the edit mask in 
-<var>AEditMask</var> when required. The value in AEditMask is assigned to the 
-<var>EditMask</var> property in TCustomMaskEdit.
+instance of TCustomMaskEdit that is used to apply the edit mask in 
+<var>AEditMask</var> when required. The value in AEditMask is assigned to the
+EditMask property in TCustomMaskEdit.
 </p>
 <p>
 The <var>Value</var> argument contains the data without any mask literals, 
 escaped characters, or space characters inserted by the editing mask. When 
-the <var>IsMasked</var> method in the TCustomMaskEdit returns <b>True</b>, 
-the <var>ApplyMaskToText</var> method is used to generate the return value 
-for the routine. To maintain Delphi compatibility, the 
-GetTextWithoutSpaceChar is also called to translate space characters 
-represented using the character in the mask field to the Space character 
-(decimal 32).
+the IsMasked method in the TCustomMaskEdit returns <b>True</b>, the 
+ApplyMaskToText method is used to generate the return value for the routine. To 
+maintain Delphi compatibility, the GetTextWithoutSpaceChar is also called to 
+translate space characters represented using the character in the mask field to 
+the Space character (decimal 32).
 </p>
 <p>
-The <var>EnableSets</var> argument indicates whether set notation, indicated 
-with '[' and ']' characters, are recognized in the edit mask. The value is 
+The <var>EnableSets</var> argument indicates whether set notation, represented  
+using '[' and ']' characters, are recognized in the edit mask. The value is 
 assigned to the EnableSets property in TMaskEdit/TCustomMaskEdit. When set to 
 <b>False</b>, the '[' and ']' characters used in set notation are treated as 
 literal characters. When set to <b>True</b>, the optional or required set 
