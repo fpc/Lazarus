@@ -2295,11 +2295,9 @@ begin
   if FCurrentEdit<>nil then
   begin
     SetActiveControl(FCurrentEdit);
-    if (FCurrentEdit is TCustomEdit) then begin
-      DebugLn(['SetItemIndexAndFocus: Selecting All.']);
+    if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
     {$IFnDEF UseOINormalCheckBox}
-    end
     else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
       TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
     {$ELSE}
