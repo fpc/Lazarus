@@ -5100,7 +5100,7 @@ end;
 procedure TQtWidget.setFocus;
 begin
   if getFocusPolicy <> QtNoFocus then
-    QWidget_setFocus(Widget, QtTabFocusReason)
+    QWidget_setFocus(Widget, QtOtherFocusReason) {issue #10155}
   else
     QWidget_setFocus(Widget);
 end;
@@ -12932,7 +12932,7 @@ begin
   begin
     // issue #40089
     if {(ViewStyle < 0) and} (QEvent_type(Event) = QEventFocusIn) and
-      (QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason) and
+      (QFocusEvent_reason(QFocusEventH(Event)) >= QtTabFocusReason) and
       (TCustomListBox(LCLObject).ItemIndex = -1) then
     begin
       Result := True;
