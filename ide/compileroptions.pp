@@ -1738,7 +1738,13 @@ begin
   ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
   ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
-  ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
+  if aXMLConfig.HasPath(p+'Verbosity/ShoLineNum/Value', True) then begin
+    // Support an old typo. This can be deleted after Lazarus 4.0 release.
+    DebugLn(['TBaseCompilerOptions.LoadFromXMLConfig: Reading "',p+'Verbosity/ShoLineNum/Value"']);
+    ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false)
+  end
+  else
+    ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShowLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
   ShowUsedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
@@ -1935,7 +1941,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
+  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
