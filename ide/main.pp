@@ -12638,6 +12638,7 @@ end;
 
 procedure TMainIDE.ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
 var
+  PropGrid: TOICustomPropertyGrid;
   Kind: TTypeKind;
 begin
   CreateObjectInspector(False);
@@ -12645,15 +12646,13 @@ begin
   if ObjectInspector1.IsVisible then
   begin
     ObjectInspector1.FocusGrid;
-    if ObjectInspector1.GetActivePropertyGrid.CanEditRowValue(False) then
+    PropGrid := ObjectInspector1.GetActivePropertyGrid;
+    Kind := PropGrid.GetActiveRow.Editor.GetPropType^.Kind;
+    if Kind in [tkInteger, tkInt64, tkSString, tkLString, tkAString, tkWString, tkUString] then
     begin
-      Kind := ObjectInspector1.GetActivePropertyGrid.GetActiveRow.Editor.GetPropType^.Kind;
-      if Kind in [tkInteger, tkInt64, tkSString, tkLString, tkAString, tkWString, tkUString] then
-      begin
-        ObjectInspector1.GetActivePropertyGrid.CurrentEditValue := Key;
-        ObjectInspector1.GetActivePropertyGrid.FocusCurrentEditor;
-      end;
-    end
+      PropGrid.CurrentEditValue := Key;
+      PropGrid.FocusCurrentEditor;
+    end;
   end;
   case DisplayState of
     dsSource: DisplayState := dsInspector;

@@ -1337,12 +1337,8 @@ end;
 
 procedure TOICustomPropertyGrid.FocusCurrentEditor;
 begin
-  if (IsCurrentEditorAvailable) and (FCurrentEdit.CanFocus) then
-  begin
-    FCurrentEdit.SetFocus;
-    if (FCurrentEdit is TEdit) then
-      TEdit(FCurrentEdit).SelStart := Length((FCurrentEdit as TEdit).Text);
-  end;
+  if FCurrentEdit = ValueEdit then
+    ValueEdit.SelStart := Length(ValueEdit.Text);
 end;
 
 function TOICustomPropertyGrid.ConsistencyCheck: integer;
@@ -2299,9 +2295,11 @@ begin
   if FCurrentEdit<>nil then
   begin
     SetActiveControl(FCurrentEdit);
-    if (FCurrentEdit is TCustomEdit) then
+    if (FCurrentEdit is TCustomEdit) then begin
+      DebugLn(['SetItemIndexAndFocus: Selecting All.']);
       TCustomEdit(FCurrentEdit).SelectAll
     {$IFnDEF UseOINormalCheckBox}
+    end
     else if (FCurrentEdit is TCheckBoxThemed) and WasValueClick then
       TCheckBoxThemed(FCurrentEdit).Checked:=not TCheckBoxThemed(FCurrentEdit).Checked;
     {$ELSE}
