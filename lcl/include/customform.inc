@@ -1880,14 +1880,16 @@ begin
       {$ENDIF}
     end;
   end;
-
   {$IFDEF VerboseFocus}
   Debugln(['TCustomForm.SetActiveControl ',DbgSName(Self),' FActive=',DbgS(FActive),' OldActiveControl=',DbgSName(FActiveControl),' NewActiveControl=',DbgSName(AWinControl)]);
   {$ENDIF}
+  if Assigned(FActiveControl) and not (FActiveControl is TCustomForm) then
+    FLastActiveControl := FActiveControl
+  else
+    FLastActiveControl:=nil;
   FActiveControl := AWinControl;
-  if (FActiveControl<>nil) and not (FActiveControl is TCustomForm) then
-    FLastActiveControl := FActiveControl;
-  if Assigned(FActiveControl) then FreeNotification(FActiveControl);
+  if Assigned(FActiveControl) then
+    FreeNotification(FActiveControl);
   if ([csLoading, csDestroying] * ComponentState = []) then
   begin
     if FActive then
@@ -2544,9 +2546,11 @@ begin
         {$IFDEF VerboseFocus}
         debugln(['TCustomForm.SetFocusedControl ',DbgSName(Self),' OldActiveControl=',DbgSName(FActiveControl),' New=',DbgSName(Control)]);
         {$ENDIF}
+        if Assigned(FActiveControl) and not (FActiveControl is TCustomForm) then
+          FLastActiveControl := FActiveControl
+        else
+          FLastActiveControl := nil;
         FActiveControl := Control;
-        if (FActiveControl<>nil) and not (FActiveControl is TCustomForm) then
-          FLastActiveControl := FActiveControl;
         if Assigned(FActiveControl) then
           FreeNotification(FActiveControl);
       end;
