@@ -5,7 +5,7 @@ unit pas2jsrestcmd;
 interface
 
 uses
-  Classes, SysUtils, MenuIntf, propedits, DB, {IDEMsgIntf, }IDEExternToolIntf, stub.restdataset;
+  Classes, SysUtils, MenuIntf, propedits, DB, IDEExternToolIntf, stub.restdataset;
 
 
 Type
@@ -111,19 +111,18 @@ begin
   DoLog(Format(Fmt,Args));
 end;
 
-
-
 function TIDEPas2JSRestCommandHandler.GetDataset: TSQLDBRestDataset;
 
 Var
   ASelection : TPersistentSelectionList;
 
 begin
+  Result:=nil;
   ASelection:=TPersistentSelectionList.Create;
   try
     GlobalDesignHook.GetSelection(ASelection);
     if (ASelection.Count=1) and (ASelection[0] is TSQLDBRestDataset) then
-      Result:=ASelection[0] as TSQLDBRestDataset;
+      Result:=TSQLDBRestDataset(ASelection[0]);
   finally
     ASelection.Free;
   end;
@@ -140,7 +139,6 @@ begin
   CmdGetFieldDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createFieldDefs',rsMenuRestCreateFieldDefs,@CreateFieldDefs,Nil,Nil);
   CmdGetParamDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createParamDefs',rsMenuRestCreateParamDefs,@CreateParams,Nil,Nil);
   CmdGenHTML:=RegisterIDEMenuCommand(mnuCompRestSection,'gendatahtml',rsMenuGenHTMLForm,@CreateHTML,Nil,Nil);
-
 end;
 
 procedure TIDEPas2JSRestCommandHandler.CheckDataset(Sender: TObject);
@@ -162,7 +160,7 @@ begin
     MDOK:=False;
     HaveFields:=False;
     end;
-  CmdShowData.Enabled:=OK ;
+  CmdShowData.Enabled:=OK;
   CmdGetParamDefs.Enabled:=OK;
   CmdGenHTML.Enabled:=OK and HaveFields;
   CmdGetFieldDefs.Enabled:=MDOK;
