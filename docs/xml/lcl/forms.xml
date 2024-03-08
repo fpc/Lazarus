@@ -7529,18 +7529,20 @@ already has focus when the active control is changed.
 </element>
 
 <element name="TCustomForm.ActiveControl">
-<short>Specifies the active control on the form.</short>
+<short>
+Gets or sets the active control on the form.
+</short>
 <descr>
 <p>
 <var>ActiveControl</var> is a <var>TWinControl</var> property which contains 
-the control which has focus on the form. The property value can be <b>Nil</b> 
-if the form is hidden, disabled, or has never been activated.
+the control which has focus on the form. The property can contain <b>Nil</b> if 
+the parent form is hidden, disabled, or has never been activated.
 </p>
 <p>
-Setting a new value for the property causes validity checks to be performed 
-to ensure that the specified control can receive focus when the form is 
-<var>Visible</var>. An <var>EInvalidOperation</var> exception is raised when 
-the new property value contains:
+Setting a new value for the property performs validity checks to ensure that 
+the specified control can receive focus when the form is <var>Visible</var>. An 
+<var>EInvalidOperation</var> exception is raised with the message in 
+SCannotFocus when the new property value contains:
 </p>
 <ul>
 <li>The current form instance.</li>
@@ -7548,15 +7550,30 @@ the new property value contains:
 <li>A control that returns <b>False</b> from its CanFocus method.</li>
 </ul>
 <p>
-The <var>SetWindowFocus</var> method is called if the form is 
-<var>Active</var>, and the <var>ActiveChanged</var> method is called.
+The value in the LastActiveControl property is updated with the existing value 
+for ActiveControl if it is a control and not a TForm/TCustomForm instance. If 
+the form (and not a control) was active, LastActiveControl is set to <b>Nil</b>.
+</p>
+<p>
+At run-time, the new active control is focused and activated if its form is 
+active (Active = <b>True</b>). ActiveChanged is called too. Both of these steps 
+are omitted at design-time or when the component is loaded during component 
+streaming.
 </p>
 <p>
 The value in ActiveControl is updated in the <var>FocusControl</var> and 
 <var>DefocusControl</var> methods.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomForm.LastActiveControl"/>
+<link id="TCustomForm.Active"/>
+<link id="TCustomForm.ActiveChanged"/>
+<link id="TCustomForm.FocusControl"/>
+<link id="TCustomForm.DefocusControl"/>
+<link id="GetParentForm"/>
+<link id="#lcl.controls.TWinControl.CanFocus"/>
+</seealso>
 </element>
 
 <element name="TCustomForm.ActiveDefaultControl">
