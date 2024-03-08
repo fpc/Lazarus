@@ -126,7 +126,6 @@ type
   TMsgCtrlStates = set of TMsgCtrlState;
 
   TMsgCtrlOption = (
-    mcoCtrlLeftPopup, // true=ctrl-left shows popupmenu and alt-left toggles selection, false=ctrl-left toggles
     mcoSingleClickOpensFile, // otherwise double click
     mcoShowStats, // show numbers of errors, warnings and hints in view header line
     mcoShowTranslated, // show translation (e.g. messages from German message file)
@@ -1786,7 +1785,6 @@ procedure TMessagesCtrl.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   View: TLMsgWndView;
   LineNumber: integer;
-  p: TPoint;
 begin
   if not Focused and CanFocus then
     SetFocus;
@@ -1794,12 +1792,7 @@ begin
   if GetLineAt(Y,View,LineNumber) then begin
     if not (Button in [mbLeft,mbRight]) then Exit;
     if (Button=mbLeft) and (ssCtrl in Shift) then begin
-      if mcoCtrlLeftPopup in FOptions then begin
-        p:=ClientToScreen(Point(X,Y));
-        PopupMenu.PopUp(p.X,p.Y);
-      end
-      else
-        ToggleSelectedLine(View,LineNumber);
+      ToggleSelectedLine(View,LineNumber);
     end
     else if (Button=mbLeft) and (ssShift in Shift) then
       ExtendSelection(View,LineNumber)
@@ -2631,7 +2624,6 @@ begin
   HeaderBackground[lmvtsFailed]:=EnvironmentGuiOpts.MsgViewColors[mwFailed];
   TextColor:=EnvironmentGuiOpts.MsgViewColors[mwTextColor];
   NewOptions:=Options;
-  SetOption(mcoCtrlLeftPopup,EnvironmentGuiOpts.EmulateRightMouseButton);
   SetOption(mcoSingleClickOpensFile,not EnvironmentGuiOpts.MsgViewDblClickJumps);
   SetOption(mcoShowMsgIcons,EnvironmentGuiOpts.ShowMessagesIcons);
   SetOption(mcoShowTranslated,EnvironmentGuiOpts.MsgViewShowTranslations);

@@ -1299,9 +1299,6 @@ resourcestring
   dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
   dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
     +'jump history and search results.';
-  dlgEmulateRightButton = 'Emulate right button';
-  dlgIfEnabledTheMessages = 'If enabled, the messages window will show the '
-    +'popup menu on left mouse button click with Ctrl pressed';
   lisExportEnvironmentOptions = 'Export environment options';
   lisImportEnvironmentOptions = 'Import environment options';
   lisComboBoxes = 'Combo Boxes';

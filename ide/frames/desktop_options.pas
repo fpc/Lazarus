@@ -50,7 +50,6 @@ type
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
-    EmulateRightMouseButtonCheckBox: TCheckBox;
     lblDropDownCount: TLabel;
     lblComboBoxes: TDividerBevel;
     lblCheckAndAutoSave: TDividerBevel;
@@ -131,8 +130,6 @@ begin
   lblMouseAction.Caption := dlgMouseAction;
   PreferDoubleClickCheckBox.Caption := dlgPreferDoubleClickOverSingleClick;
   PreferDoubleClickCheckBox.Hint := dlgCurrentlyRespectedByMessagesWindow;
-  EmulateRightMouseButtonCheckBox.Caption := dlgEmulateRightButton;
-  EmulateRightMouseButtonCheckBox.Hint := dlgIfEnabledTheMessages;
 
   // hints
   lblHints.Caption := dlgDesktopHints;
@@ -190,7 +187,6 @@ begin
 
     // mouse action
     PreferDoubleClickCheckBox.Checked := MsgViewDblClickJumps;
-    EmulateRightMouseButtonCheckBox.Checked := EmulateRightMouseButton;
 
     // hints
     ShowHintsForMainSpeedButtonsCheckBox.Checked:=ShowHintsForMainSpeedButtons;
@@ -237,7 +233,6 @@ begin
 
     // mouse action
     MsgViewDblClickJumps := PreferDoubleClickCheckBox.Checked;
-    EmulateRightMouseButton := EmulateRightMouseButtonCheckBox.Checked;
 
     // hints
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
