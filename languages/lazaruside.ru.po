@@ -1729,10 +1729,6 @@ msgstr "Минимальная ширина эластичного ТАБа"
 msgid "Element Attributes"
 msgstr "Атрибуты элементов"
 
-#: lazarusidestrconsts.dlgemulaterightbutton
-msgid "Emulate right button"
-msgstr "Эмулировать правую кнопку"
-
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "End переводит к концу текста в строке"
@@ -2406,10 +2402,6 @@ msgstr "Неактивная директива $IFDEF"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Директива $IFDEF подключаемого условно активного кода"
-
-#: lazarusidestrconsts.dlgifenabledthemessages
-msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
-msgstr "Если параметр включён, окно сообщений покажет всплывающее меню при щелчке левой кнопкой мыши с удерживаемой клавишей Ctrl"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""

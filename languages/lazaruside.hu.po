@@ -1742,10 +1742,6 @@ msgstr ""
 msgid "Element Attributes"
 msgstr "Elem jellemzői"
 
-#: lazarusidestrconsts.dlgemulaterightbutton
-msgid "Emulate right button"
-msgstr ""
-
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "Az End billentyűre a legközelebbi sorvéghez ugrik"
@@ -2421,10 +2417,6 @@ msgstr "Nem aktív $IFDEF csomópont"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Kevert állapotú $IFDEF csomópont"
-
-#: lazarusidestrconsts.dlgifenabledthemessages
-msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
-msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""

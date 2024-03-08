@@ -1726,10 +1726,6 @@ msgstr "Elastik minimum Genişlikler"
 msgid "Element Attributes"
 msgstr "Öğe Öznitelikleri"
 
-#: lazarusidestrconsts.dlgemulaterightbutton
-msgid "Emulate right button"
-msgstr "Sağ düğmeyi taklit et"
-
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "End tuşu en yakın noktaya atlar"
@@ -2382,10 +2378,6 @@ msgstr "Pasif $IFDEF node"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Dahil edilen karma durum $IFDEF node"
-
-#: lazarusidestrconsts.dlgifenabledthemessages
-msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
-msgstr "Etkinleştirilirse, mesajlar penceresi Ctrl tuşuna basıldığında sol fare düğmesi tıklandığında açılır menüyü gösterecektir."
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""

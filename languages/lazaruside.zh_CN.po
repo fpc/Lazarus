@@ -1733,10 +1733,6 @@ msgstr "最小弹性宽度"
 msgid "Element Attributes"
 msgstr "元素属性"
 
-#: lazarusidestrconsts.dlgemulaterightbutton
-msgid "Emulate right button"
-msgstr ""
-
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "End 键跳转到最近的末尾"
@@ -2410,10 +2406,6 @@ msgstr "非激活的 $IFDEF 节点"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "包含混合状态的 $IFDEF 节点"
-
-#: lazarusidestrconsts.dlgifenabledthemessages
-msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
-msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""

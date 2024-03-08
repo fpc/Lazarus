@@ -1733,10 +1733,6 @@ msgstr ""
 msgid "Element Attributes"
 msgstr "Elementin määrite"
 
-#: lazarusidestrconsts.dlgemulaterightbutton
-msgid "Emulate right button"
-msgstr ""
-
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
 msgstr "End-näppäin hyppää lähimpään loppuun"
@@ -2393,10 +2389,6 @@ msgstr "Passiivinen $IFDEF solmu"
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
 msgstr "Luettu sekoitettua $IFDEF koodia"
-
-#: lazarusidestrconsts.dlgifenabledthemessages
-msgid "If enabled, the messages window will show the popup menu on left mouse button click with Ctrl pressed"
-msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 #, fuzzy
