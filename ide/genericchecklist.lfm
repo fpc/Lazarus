@@ -7,13 +7,13 @@ object GenericCheckListForm: TGenericCheckListForm
   Caption = 'GenericCheckListForm'
   ClientHeight = 277
   ClientWidth = 343
-  OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '3.99.0.0'
+  OnShow = FormShow
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 241
+    Height = 26
+    Top = 245
     Width = 331
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -36,18 +36,18 @@ object GenericCheckListForm: TGenericCheckListForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 200
-    Top = 31
+    Height = 218
+    Top = 13
     Width = 331
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
-    OnItemClick = CheckListBox1ItemClick
     TabOrder = 1
+    OnItemClick = CheckListBox1ItemClick
   end
   object InfoLabel: TLabel
     Left = 6
-    Height = 19
+    Height = 1
     Top = 6
     Width = 331
     Align = alTop

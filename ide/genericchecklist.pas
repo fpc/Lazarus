@@ -22,8 +22,11 @@ type
     procedure FormShow(Sender: TObject);
   private
     fActionBtn: TBitBtn;
+    fDisallowNoneSelected: Boolean;
     procedure UpdateButtons;
   public
+    property DisallowNoneSelected: Boolean read fDisallowNoneSelected write fDisallowNoneSelected;
+    constructor Create(TheOwner: TComponent); override;
     constructor CreateWithActionButton(aCaption: TCaption; aResourceGlyphName: string = '');
   end;
 
@@ -36,7 +39,7 @@ implementation
 constructor TGenericCheckListForm.CreateWithActionButton(aCaption: TCaption;
   aResourceGlyphName: string);
 begin
-  inherited Create(nil);
+  Create(nil);
   fActionBtn := TBitBtn.Create(ButtonPanel1);
   fActionBtn.Caption := aCaption;
   fActionBtn.ModalResult := mrYes; // ActionButton will return mrYes.
@@ -63,16 +66,24 @@ procedure TGenericCheckListForm.UpdateButtons;
 var
   i: Integer;
 begin
-  if Assigned(fActionBtn) then
+  if Assigned(fActionBtn) or DisallowNoneSelected then
   begin
     for i := 0 to CheckListBox1.Count-1 do
       if CheckListBox1.Checked[i] then
       begin
-        fActionBtn.Enabled := True;
+        if Assigned(fActionBtn) then fActionBtn.Enabled := True;
+        ButtonPanel1.OKButton.Enabled := True;
         Exit;
       end;
-    fActionBtn.Enabled := False;
+    if Assigned(fActionBtn) then fActionBtn.Enabled := False;
+    if DisallowNoneSelected then ButtonPanel1.OKButton.Enabled := False;
   end;
+end;
+
+constructor TGenericCheckListForm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  fDisallowNoneSelected := False;
 end;
 
 end.

@@ -344,6 +344,7 @@ begin
   BMList := TBuildModesCheckList.Create(lisCompileFollowingModes);
   ModeList := TList.Create;
   try
+    BMList.DisAllowNoneSelected := True;  //force user to select at least 1 buildmode
     if BMList.ShowModal <> mrOK then Exit;
     BMList.SaveManyModesSelection;      // Remember the selection for next time.
     ActiveMode := Project1.ActiveBuildMode;
@@ -366,12 +367,6 @@ begin
         DebugLn('BuildManyModes: Active Mode');
         LastMode := (ModeList.Count=0);
         if not BuildOneMode(LastMode) then Exit;
-      end
-      else if ModeList.Count=0 then
-      begin
-        IDEMessageDialog(lisExit, lisPleaseSelectAtLeastOneBuildMode,
-                         mtInformation, [mbOK]);
-        Exit;
       end;
       // Build rest of the modes.
       DebugLn('BuildManyModes: Rest of the Modes');
