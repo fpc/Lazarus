@@ -769,11 +769,14 @@ begin
     i := fOptions.FPageNamesCompNames.IndexOf(PgName);
     if i >= 0 then begin                // Add components reordered by user.
       sl := TStringList(fOptions.FPageNamesCompNames.Objects[i]);
-      for i := 0 to sl.Count-1 do
+      i := 0;
+      while i < sl.Count do
       begin
         RegComp := fPalette.FindRegComponent(sl[i]);
-        if Assigned(RegComp) then
-          DstComps.Add(RegComp)
+        if Assigned(RegComp) then begin
+          DstComps.Add(RegComp);
+          Inc(i);
+        end
         else begin                    // Component can be uninstalled, not found
           DebugLn(['TCompPaletteUserOrder.SortPagesAndCompsUserOrder: Not found "',sl[i],'". Removing.']);
           sl.Delete(i);               // Delete from configuration.
