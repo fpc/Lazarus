@@ -5468,9 +5468,14 @@ resourcestring
     +'not be deleted because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
   lisFileExtensionOfPrograms = 'File extension of programs';
-  lisEveryNThLineNumber = 'Every n-th line number';
+  lisEveryNThLineNumber = 'Show every n-th line number';
   lisShowOverviewGutter = 'Show overview gutter';
   lisTopInfoView = 'Show Class/Procedure hint';
+  lisLeftGutter = 'Left Gutter';
+  lisRightGutter = 'Right Gutter';
+  lisGutterPartVisible = 'Visible';
+  lisGutterPartWidth = 'Width';
+  lisGutterPartMargin = 'Margin';
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';
@@ -6441,6 +6446,10 @@ resourcestring
     +'You may want to rebuild the IDE with the packages installed. After the '
     +'rebuild, the debugger backend can be changed in the menu: Tools -> '
     +'Options.';
+  optDispGutterMarks = 'Marks';
+  optDispGutterChanges = 'Changes';
+  optDispGutterSeparator = 'Separator';
+  optDispGutterFolding = 'Folding';
 
 implementation
 

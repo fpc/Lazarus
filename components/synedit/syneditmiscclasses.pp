@@ -453,7 +453,7 @@ type
   private
     FOwner: TSynObjectList;
     function GetIndex: Integer;
-    procedure SetIndex(const AValue: Integer);
+    procedure SetIndex(AValue: Integer);
   protected
     function Compare(Other: TSynObjectListItem): Integer; virtual;
     function GetDisplayName: String; virtual;
@@ -1898,8 +1898,10 @@ begin
   //
 end;
 
-procedure TSynObjectListItem.SetIndex(const AValue: Integer);
+procedure TSynObjectListItem.SetIndex(AValue: Integer);
 begin
+  if AValue < 0 then AValue := 0;
+  if AValue >= Owner.Count then AValue := Owner.Count - 1;
   Owner.Move(GetIndex, AValue);
 end;
 

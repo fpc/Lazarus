@@ -443,11 +443,11 @@ begin
   Canvas.FillRect(AClip);
 
   if FLineOnRight then begin
-    AClip.Right := Min(AClip.Right, Left + Width - FLineOffset);
-    AClip.Left  := Max(AClip.Left,  Left + Width - FLineOffset  - FLineWidth);
+    AClip.Right := Min(AClip.Right, Left + LeftOffset + Width - FLineOffset);
+    AClip.Left  := Max(AClip.Left,  Left + LeftOffset + Width - FLineOffset  - FLineWidth);
   end else begin
-    AClip.Left  := Max(AClip.Left,  Left + FLineOffset);
-    AClip.Right := Min(AClip.Right, Left + FLineOffset  + FLineWidth);
+    AClip.Left  := Max(AClip.Left,  Left + LeftOffset + FLineOffset);
+    AClip.Right := Min(AClip.Right, Left + LeftOffset + FLineOffset  + FLineWidth);
   end;
   if AClip.Right > AClip.Left then begin
     Canvas.Brush.Color := MarkupInfo.Foreground;

@@ -27,11 +27,13 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls,
+  Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, Buttons, ExtCtrls,
   // SynEdit
-  SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview, SynGutter, SynEditTypes,
+  SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview,
+  SynGutter, SynEditTypes, SynGutterBase, SynGutterMarks, SynGutterChanges,
+  SynGutterCodeFolding,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEImagesIntf,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options, editor_color_options,
   SourceSynEditor, SourceMarks;
@@ -40,8 +42,8 @@ type
   { TEditorDisplayOptionsFrame }
 
   TEditorDisplayOptionsFrame = class(TAbstractIDEOptionsEditor)
+    GutterPartVisible: TCheckBox;
     chkTopInfoView: TCheckBox;
-    chkShowOverview: TCheckBox;
     DisableAntialiasingCheckBox: TCheckBox;
     DisplayPreview: TSynEdit;
     EditorFontButton: TButton;
@@ -53,17 +55,25 @@ type
     ExtraCharSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
     ExtraLineSpacingLabel: TLabel;
-    GutterSeparatorIndexLabel: TLabel;
+    lblGutterPartWidth: TLabel;
+    lblGutterPartMargin: TLabel;
+    lbGutterParts: TListBox;
     MarginAndGutterGroupBox: TGroupBox;
+    rgGutterSite: TRadioGroup;
     RightMarginColorLink: TLabel;
     RightMarginComboBox: TComboBox;
     RightMarginLabel: TLabel;
-    ShowLineNumbersCheckBox: TCheckBox;
     ShowOnlyLineNumbersMultiplesOfLabel: TLabel;
     ShowOnlyLineNumbersMultiplesOfSpinEdit: TSpinEdit;
-    GutterSeparatorIndexSpinBox: TSpinEdit;
+    btnGutterUp: TSpeedButton;
+    btnGutterDown: TSpeedButton;
+    spinGutterPartWidth: TSpinEdit;
+    spinGutterPartLeftOffs: TSpinEdit;
+    spinGutterPartRightOffs: TSpinEdit;
     VisibleGutterCheckBox: TCheckBox;
     VisibleRightMarginCheckBox: TCheckBox;
+    procedure btnGutterDownClick(Sender: TObject);
+    procedure btnGutterUpClick(Sender: TObject);
     procedure EditorFontButtonClick(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
     procedure EditorFontSizeSpinEditChange(Sender: TObject);
@@ -72,13 +82,20 @@ type
       Shift: TShiftState);
     procedure ComboboxOnChange(Sender: TObject);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
+    procedure lbGutterPartsClick(Sender: TObject);
+    procedure rgGutterSiteClick(Sender: TObject);
+    procedure FillGutterPartList;
     procedure RightMarginColorLinkClick(Sender: TObject);
     procedure RightMarginColorLinkMouseEnter(Sender: TObject);
     procedure RightMarginColorLinkMouseLeave(Sender: TObject);
-    procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
+    procedure spinGutterPartWidthChange(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FUpdatingFontSizeRange: Boolean;
+    FCurrentGutterPart: TEditorSynGutterOptions;
+    FCurGutterPartList: TEditorSynGutterOptionsList;
+    FCurGutterRightPartList: TEditorSynGutterOptionsList;
+    FGutterParsUpdating: Boolean;
     function FontSizeNegativeToPositive(NegativeSize: Integer): Integer;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     procedure SetEditorFontSizeSpinEditValue(FontSize: Integer);
@@ -87,11 +104,16 @@ type
     function DoSynEditMouse(var {%H-}AnInfo: TSynEditMouseActionInfo;
                          {%H-}HandleActionProc: TSynEditMouseActionHandler): Boolean;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure UpdatePreviews;
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    property CurGutterPartList: TEditorSynGutterOptionsList read FCurGutterPartList;
+    property CurGutterRightPartList: TEditorSynGutterOptionsList read FCurGutterRightPartList;
   end;
 
 implementation
@@ -129,6 +151,38 @@ function TEditorDisplayOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActi
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := true;
+end;
+
+constructor TEditorDisplayOptionsFrame.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCurGutterPartList := TEditorSynGutterOptionsList.Create(True);
+  FCurGutterRightPartList := TEditorSynGutterOptionsList.Create(True);
+end;
+
+destructor TEditorDisplayOptionsFrame.Destroy;
+begin
+  inherited Destroy;
+  FCurGutterPartList.Free;
+  FCurGutterRightPartList.Free;
+end;
+
+procedure TEditorDisplayOptionsFrame.UpdatePreviews;
+var
+  i, j: Integer;
+begin
+  with GeneralPage do
+    for i := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[i] <> nil then begin
+        for j := 0 to FCurGutterPartList.Count - 1 do begin
+          FCurGutterPartList[j].ApplyTo(PreviewEdits[i].Gutter.Parts.ByClass[FCurGutterPartList[j].GClass, 0]);
+          FCurGutterPartList[j].ApplyIndexTo(PreviewEdits[i].Gutter.Parts.ByClass[FCurGutterPartList[j].GClass, 0]);
+        end;
+        for j := 0 to FCurGutterRightPartList.Count - 1 do begin
+          FCurGutterRightPartList[j].ApplyTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
+          FCurGutterRightPartList[j].ApplyIndexTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
+        end;
+      end;
 end;
 
 procedure TEditorDisplayOptionsFrame.EditorFontButtonClick(Sender: TObject);
@@ -262,7 +316,6 @@ procedure TEditorDisplayOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
 var
   a: integer;
   AGeneralPage: TEditorGeneralOptionsFrame;
-  Separator: TSynGutterSeparator;
 begin
   AGeneralPage := GeneralPage;
 
@@ -274,20 +327,10 @@ begin
       if PreviewEdits[a] <> nil then
       begin
         PreviewEdits[a].Gutter.Visible := VisibleGutterCheckBox.Checked;
-        PreviewEdits[a].RightGutter.Visible := chkShowOverview.Checked;
-        PreviewEdits[a].Gutter.LineNumberPart.Visible
-          := ShowLineNumbersCheckBox.Checked;
         if Assigned(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterLineNumber, 0]) then
           TSynGutterLineNumber(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterLineNumber, 0])
             .ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
 
-        Separator := TSynGutterSeparator(PreviewEdits[a].Gutter.Parts.ByClass[TSynGutterSeparator, 0]);
-        if Assigned(Separator) then
-        begin
-          Separator.Visible := GutterSeparatorIndexSpinBox.Value <> -1;
-          if Separator.Visible then
-            Separator.Index := GutterSeparatorIndexSpinBox.Value;
-        end;
         PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80);
         if VisibleRightMarginCheckBox.Checked then
           PreviewEdits[a].Options := PreviewEdits[a].Options - [eoHideRightMargin]
@@ -298,6 +341,107 @@ begin
         else
           PreviewEdits[a].Font.Quality := fqDefault;
       end;
+end;
+
+procedure TEditorDisplayOptionsFrame.lbGutterPartsClick(Sender: TObject);
+begin
+  FCurrentGutterPart := nil;
+  if lbGutterParts.ItemIndex >= 0 then
+    FCurrentGutterPart := TEditorSynGutterOptions(lbGutterParts.Items.Objects[lbGutterParts.ItemIndex]);
+
+  FGutterParsUpdating := True;
+  GutterPartVisible.Checked := FCurrentGutterPart.Visible;
+  spinGutterPartWidth.Value := FCurrentGutterPart.Width;
+  spinGutterPartLeftOffs.Value := FCurrentGutterPart.OffsetLeft;
+  spinGutterPartRightOffs.Value := FCurrentGutterPart.OffsetRight;
+  FGutterParsUpdating := False;
+
+  btnGutterUp.Enabled := lbGutterParts.ItemIndex > 0;
+  btnGutterDown.Enabled := lbGutterParts.ItemIndex < lbGutterParts.Count - 1;
+
+  ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := (FCurrentGutterPart <> nil) and
+    (FCurrentGutterPart.GClass = TSynGutterLineNumber);
+  ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled;
+end;
+
+procedure TEditorDisplayOptionsFrame.btnGutterUpClick(Sender: TObject);
+var
+  l: TEditorSynGutterOptionsList;
+  i, i2: Integer;
+begin
+  if rgGutterSite.Buttons[0].Checked
+  then l := FCurGutterPartList
+  else l := FCurGutterRightPartList;
+
+  i := lbGutterParts.ItemIndex;
+  if (i < 1) or (i >= l.Count) then
+    exit;
+  i2 := l[i-1].Index;
+  l[i-1].Index := l[i].Index;
+  l[i].Index := i2;
+  l.Sort;
+
+  FillGutterPartList;
+  lbGutterParts.ItemIndex := i - 1;
+  lbGutterPartsClick(nil);
+
+  UpdatePreviews;
+end;
+
+procedure TEditorDisplayOptionsFrame.btnGutterDownClick(Sender: TObject);
+var
+  l: TEditorSynGutterOptionsList;
+  i, i2: Integer;
+begin
+  if rgGutterSite.Buttons[0].Checked
+  then l := FCurGutterPartList
+  else l := FCurGutterRightPartList;
+
+  i := lbGutterParts.ItemIndex;
+  if (i < 0) or (i >= l.Count-1) then
+    exit;
+  i2 := l[i+1].Index;
+  l[i+1].Index := l[i].Index;
+  l[i].Index := i2;
+  l.Sort;
+
+  FillGutterPartList;
+  lbGutterParts.ItemIndex := i + 1;
+  lbGutterPartsClick(nil);
+
+  UpdatePreviews;
+end;
+
+
+procedure TEditorDisplayOptionsFrame.rgGutterSiteClick(Sender: TObject);
+begin
+  FillGutterPartList;
+  lbGutterParts.ItemIndex := 0;
+  lbGutterPartsClick(nil);
+end;
+
+procedure TEditorDisplayOptionsFrame.FillGutterPartList;
+  function GPartName(aGClass: TSynGutterPartBaseClass): string;
+  begin
+    Result := '?';
+    if aGClass = TSynGutterMarks        then Result := optDispGutterMarks;
+    if aGClass = TSynGutterLineNumber   then Result := dlgAddHiAttrLineNumber;
+    if aGClass = TSynGutterChanges      then Result := optDispGutterChanges;
+    if aGClass = TSynGutterSeparator    then Result := optDispGutterSeparator;
+    if aGClass = TSynGutterCodeFolding  then Result := optDispGutterFolding;
+    if aGClass = TSynGutterLineOverview then Result := dlgMouseOptNodeGutterLineOverview;
+  end;
+var
+  l: TEditorSynGutterOptionsList;
+  i: Integer;
+begin
+  if rgGutterSite.Buttons[0].Checked
+  then l := FCurGutterPartList
+  else l := FCurGutterRightPartList;
+  lbGutterParts.Clear;
+  for i := 0 to l.Count - 1 do begin
+    lbGutterParts.AddItem(GPartName(l[i].GClass), l[i]);
+  end;
 end;
 
 procedure TEditorDisplayOptionsFrame.RightMarginColorLinkClick(Sender: TObject);
@@ -322,10 +466,16 @@ begin
   (Sender as TLabel).Font.Color := clBlue;
 end;
 
-procedure TEditorDisplayOptionsFrame.ShowLineNumbersCheckBoxClick(Sender: TObject);
+procedure TEditorDisplayOptionsFrame.spinGutterPartWidthChange(Sender: TObject);
 begin
-  ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
-  ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
+  if FGutterParsUpdating then
+    exit;
+  FCurrentGutterPart.Visible := GutterPartVisible.Checked;
+  FCurrentGutterPart.Width := spinGutterPartWidth.Value;
+  FCurrentGutterPart.OffsetLeft := spinGutterPartLeftOffs.Value;
+  FCurrentGutterPart.OffsetRight := spinGutterPartRightOffs.Value;
+
+  UpdatePreviews;
 end;
 
 function TEditorDisplayOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -363,9 +513,7 @@ begin
   MarginAndGutterGroupBox.Caption := dlgMarginGutter;
   VisibleRightMarginCheckBox.Caption := dlgVisibleRightMargin;
   VisibleGutterCheckBox.Caption := dlgVisibleGutter;
-  ShowLineNumbersCheckBox.Caption := dlgShowLineNumbers;
   ShowOnlyLineNumbersMultiplesOfLabel.Caption := lisEveryNThLineNumber;
-  GutterSeparatorIndexLabel.Caption := dlgGutterSeparatorIndex;
   RightMarginLabel.Caption := dlgRightMargin;
   EditorFontGroupBox.Caption := dlgDefaultEditorFont;
   EditorFontSizeLabel.Caption := dlgEditorFontSize;
@@ -373,8 +521,18 @@ begin
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
   RightMarginColorLink.Caption := dlgColorLink;
-  chkShowOverview.Caption := lisShowOverviewGutter;
   chkTopInfoView.Caption := lisTopInfoView;
+
+  btnGutterUp.Images := IDEImages.Images_16;
+  btnGutterDown.Images := IDEImages.Images_16;
+  btnGutterUp.ImageIndex := IDEImages.LoadImage('arrow_up', 16);
+  btnGutterDown.ImageIndex := IDEImages.LoadImage('arrow_down', 16);
+  rgGutterSite.Items[0] := lisLeftGutter;
+  rgGutterSite.Items[1] := lisRightGutter;
+  GutterPartVisible.Caption := lisGutterPartVisible;
+  lblGutterPartWidth.Caption := lisGutterPartWidth;
+  lblGutterPartMargin.Caption := lisGutterPartMargin;
+
 
   with GeneralPage do
     AddPreviewEdit(DisplayPreview);
@@ -408,10 +566,8 @@ begin
     // init the spin-edit first, since it does not trigger on change,
     // but is copied when checkboxes are initialized
     ShowOnlyLineNumbersMultiplesOfSpinEdit.Value := ShowOnlyLineNumbersMultiplesOf;
-    GutterSeparatorIndexSpinBox.Value := GutterSeparatorIndex;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
     VisibleGutterCheckBox.Checked := VisibleGutter;
-    ShowLineNumbersCheckBox.Checked := ShowLineNumbers;
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
     SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin),cstCaseInsensitive);
     SetComboBoxText(EditorFontComboBox, EditorFont,cstCaseInsensitive);
@@ -419,12 +575,17 @@ begin
     SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing),cstCaseInsensitive);
     SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing),cstCaseInsensitive);
     DisableAntialiasingCheckBox.Checked := DisableAntialiasing;
-    chkShowOverview.Checked := ShowOverviewGutter;
     chkTopInfoView.Checked := TopInfoView;
+    FCurGutterPartList.Assign(GutterPartList);
+    FCurGutterRightPartList.Assign(GutterRightPartList);
+    FCurGutterPartList.Sort;
+    GutterRightPartList.Sort;
   end;
 
-  ShowOnlyLineNumbersMultiplesOfLabel.Enabled := ShowLineNumbersCheckBox.Checked;
-  ShowOnlyLineNumbersMultiplesOfSpinEdit.Enabled := ShowLineNumbersCheckBox.Checked;
+  rgGutterSite.Buttons[0].Checked := True;
+  FillGutterPartList;
+  lbGutterParts.ItemIndex := 0;
+  lbGutterPartsClick(nil);
 end;
 
 procedure TEditorDisplayOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -433,9 +594,7 @@ begin
   begin
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;
     VisibleGutter := VisibleGutterCheckBox.Checked;
-    ShowLineNumbers := ShowLineNumbersCheckBox.Checked;
     ShowOnlyLineNumbersMultiplesOf := ShowOnlyLineNumbersMultiplesOfSpinEdit.Value;
-    GutterSeparatorIndex := GutterSeparatorIndexSpinBox.Value;
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;
     RightMargin := StrToIntDef(RightMarginComboBox.Text, 80);
     EditorFont := EditorFontComboBox.Text;
@@ -443,8 +602,9 @@ begin
     ExtraCharSpacing := StrToIntDef(ExtraCharSpacingComboBox.Text, ExtraCharSpacing);
     ExtraLineSpacing := StrToIntDef(ExtraLineSpacingComboBox.Text, ExtraLineSpacing);
     DisableAntialiasing := DisableAntialiasingCheckBox.Checked;
-    ShowOverviewGutter := chkShowOverview.Checked;
     TopInfoView := chkTopInfoView.Checked;
+    GutterPartList.AssignItems(FCurGutterPartList);
+    GutterRightPartList.AssignItems(FCurGutterRightPartList);
   end;
 end;
 

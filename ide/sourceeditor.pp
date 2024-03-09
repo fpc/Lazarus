@@ -11983,12 +11983,12 @@ begin
   ActEdit:=ActiveEditor;
   if ActEdit = nil then exit;
 
-  MenuItem.Checked := not EditorOpts.ShowLineNumbers;
+  MenuItem.Checked := not EditorOpts.GutterPartLine.Visible;
   ShowLineNumbers:=MenuItem.Checked;
 
   for i:=0 to SourceEditorCount-1 do
     SourceEditors[i].EditorComponent.Gutter.LineNumberPart.Visible := ShowLineNumbers;
-  EditorOpts.ShowLineNumbers := ShowLineNumbers;
+  EditorOpts.GutterPartLine.Visible := ShowLineNumbers;
   EditorOpts.Save;
 end;
 

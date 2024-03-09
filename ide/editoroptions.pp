@@ -63,7 +63,7 @@ uses
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
   SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
-  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition,
+  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition, SynGutterMarks,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -1467,6 +1467,48 @@ type
 
   TEditorOptsScrollPastEolMode = (optScrollFixed, optScrollPage, optScrollNone);
 
+  { TEditorSynGutterOptions }
+
+  TEditorSynGutterOptions = class(TPersistent)
+  private
+    FDefaults: TEditorSynGutterOptions;
+    FGClass: TSynGutterPartBaseClass;
+    FIndex: integer;
+    FOffsetLeft: integer;
+    FOffsetRight: integer;
+    FVisible: boolean;
+    FWidth: integer;
+  protected
+    constructor DoCreate(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
+  public
+    constructor Create(AIdx: Integer; AGClass: TSynGutterPartBaseClass);
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    procedure ApplyTo(AGutterPart: TSynGutterPartBase);
+    procedure ApplyIndexTo(AGutterPart: TSynGutterPartBase);
+
+    property Defaults: TEditorSynGutterOptions read FDefaults;
+    property GClass: TSynGutterPartBaseClass read FGClass;
+  published
+    property Visible: boolean read FVisible write FVisible;
+    property Index: integer read FIndex write FIndex;
+    property Width: integer read FWidth write FWidth;
+    property OffsetLeft: integer read FOffsetLeft write FOffsetLeft;
+    property OffsetRight: integer read FOffsetRight write FOffsetRight;
+  end;
+
+  { TEditorSynGutterOptionsList }
+
+  TEditorSynGutterOptionsList = class(specialize TFPGObjectList<TEditorSynGutterOptions>)
+  private
+    function GetByClass(AIndex: TSynGutterPartBaseClass): TEditorSynGutterOptions;
+  public
+    procedure Assign(Source: TEditorSynGutterOptionsList);
+    procedure AssignItems(Source: TEditorSynGutterOptionsList);
+    procedure Sort;
+    property ByClass[AIndex: TSynGutterPartBaseClass]: TEditorSynGutterOptions read GetByClass;
+  end;
+
   { TEditorOptionsBase }
 
   TEditorOptionsBase = class(TIDEEditorOptions)
@@ -1485,7 +1527,14 @@ type
     fMultiLineTab: Boolean;
     fTabPosition: TTabPosition;
     // Display options
-    fShowOverviewGutter: boolean;
+    FGutterPartMarks: TEditorSynGutterOptions;
+    FGutterPartChange: TEditorSynGutterOptions;
+    FGutterPartFold: TEditorSynGutterOptions;
+    FGutterPartLine: TEditorSynGutterOptions;
+    FGutterPartOver: TEditorSynGutterOptions;
+    FGutterPartSep: TEditorSynGutterOptions;
+    FGutterPartList: TEditorSynGutterOptionsList;
+    FGutterRightPartList: TEditorSynGutterOptionsList;
     fTopInfoView: boolean;
     // Code tools options
     fDbgHintAutoTypeCastClass: Boolean;
@@ -1540,6 +1589,16 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+
+    // Display
+    property GutterPartMarks: TEditorSynGutterOptions read FGutterPartMarks;
+    property GutterPartLine: TEditorSynGutterOptions read FGutterPartLine;
+    property GutterPartChange: TEditorSynGutterOptions read FGutterPartChange;
+    property GutterPartSep: TEditorSynGutterOptions read FGutterPartSep;
+    property GutterPartFold: TEditorSynGutterOptions read FGutterPartFold;
+    property GutterPartOver: TEditorSynGutterOptions read FGutterPartOver;
+    property GutterPartList: TEditorSynGutterOptionsList read FGutterPartList;
+    property GutterRightPartList: TEditorSynGutterOptionsList read FGutterRightPartList;
   published { use RTTIConf}
     // general options
     property MultiLineTab: Boolean read fMultiLineTab write fMultiLineTab default False;
@@ -1559,8 +1618,7 @@ type
     property ExportHtmlWithBackground: Boolean
       read fExportHtmlWithBackground write fExportHtmlWithBackground default False;
     // Display
-    property ShowOverviewGutter: boolean
-      read fShowOverviewGutter write fShowOverviewGutter default True;
+
     property TopInfoView: boolean read fTopInfoView write fTopInfoView default True;
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
@@ -1677,10 +1735,8 @@ type
     // Display options
     fVisibleRightMargin: Boolean;
     fVisibleGutter: Boolean;
-    fShowLineNumbers: Boolean;
     fShowOnlyLineNumbersMultiplesOf: integer;
     fGutterWidth: Integer;
-    fGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
     fEditorFont:  String;
     fEditorFontSize:   Integer;
@@ -1801,13 +1857,9 @@ type
     property VisibleRightMargin: Boolean
       read fVisibleRightMargin write fVisibleRightMargin default True;
     property VisibleGutter: Boolean read fVisibleGutter write fVisibleGutter default True;
-    property ShowLineNumbers: Boolean read fShowLineNumbers
-      write fShowLineNumbers default False;
     property ShowOnlyLineNumbersMultiplesOf: integer read fShowOnlyLineNumbersMultiplesOf
       write fShowOnlyLineNumbersMultiplesOf;
     property GutterWidth: Integer read fGutterWidth write fGutterWidth default 30;
-    property GutterSeparatorIndex: Integer read FGutterSeparatorIndex
-      write FGutterSeparatorIndex default 3;
     property RightMargin: Integer read fRightMargin write fRightMargin default 80;
     property EditorFont: String read fEditorFont write fEditorFont;
     property EditorFontSize: Integer read fEditorFontSize write fEditorFontSize;
@@ -2154,6 +2206,144 @@ end;
 function TEditorUserDefinedWordsList.Count: Integer;
 begin
   Result := FList.Count;
+end;
+
+{ TEditorSynGutterOptions }
+
+constructor TEditorSynGutterOptions.DoCreate(AIdx: Integer;
+  AGClass: TSynGutterPartBaseClass);
+begin
+  inherited Create;
+  FGClass := AGClass;
+  FIndex   := AIdx;
+  FVisible := True;
+
+  if FGClass = TSynGutterMarks then begin
+    FWidth := 2;
+  end
+  else
+  if FGClass = TSynGutterLineNumber then begin
+    FWidth := 2;
+  end;
+end;
+
+constructor TEditorSynGutterOptions.Create(AIdx: Integer;
+  AGClass: TSynGutterPartBaseClass);
+begin
+  DoCreate(AIdx, AGClass);
+  FDefaults := TEditorSynGutterOptions.DoCreate(AIdx, AGClass);
+end;
+
+destructor TEditorSynGutterOptions.Destroy;
+begin
+  FreeAndNil(FDefaults);
+  inherited Destroy;
+end;
+
+procedure TEditorSynGutterOptions.Assign(Source: TPersistent);
+begin
+  if Source is TEditorSynGutterOptions then begin
+    FGClass      := TEditorSynGutterOptions(Source).FGClass;
+    FIndex       := TEditorSynGutterOptions(Source).FIndex;
+    FOffsetLeft  := TEditorSynGutterOptions(Source).FOffsetLeft;
+    FOffsetRight := TEditorSynGutterOptions(Source).FOffsetRight;
+    FVisible     := TEditorSynGutterOptions(Source).FVisible;
+    FWidth       := TEditorSynGutterOptions(Source).FWidth;
+  end;
+end;
+
+procedure TEditorSynGutterOptions.ApplyTo(AGutterPart: TSynGutterPartBase);
+begin
+  if AGutterPart = nil then exit;
+
+  if FGClass = TSynGutterMarks then begin
+    TSynGutterMarks(AGutterPart).SetWidthForColumns(FWidth);
+  end
+  else
+  if FGClass = TSynGutterLineNumber then begin
+    AGutterPart.AutoSize := True;
+    TSynGutterLineNumber(AGutterPart).DigitCount := FWidth;
+  end
+  else
+  if FGClass = TSynGutterSeparator then begin
+    AGutterPart.AutoSize := FWidth = 0;
+    if FWidth = 0 then begin
+      TSynGutterSeparator(AGutterPart).Width := 2;
+      TSynGutterSeparator(AGutterPart).LineWidth := 1;
+    end
+    else begin
+      TSynGutterSeparator(AGutterPart).Width := FWidth;
+      TSynGutterSeparator(AGutterPart).LineWidth := FWidth;
+    end;
+  end
+  else
+  begin
+    AGutterPart.AutoSize := FWidth = 0;
+    AGutterPart.Width := FWidth;
+  end;
+  AGutterPart.Visible := FVisible;
+  AGutterPart.LeftOffset := FOffsetLeft;
+  AGutterPart.RightOffset := FOffsetRight;
+end;
+
+procedure TEditorSynGutterOptions.ApplyIndexTo(AGutterPart: TSynGutterPartBase);
+begin
+  if AGutterPart <> nil then
+    AGutterPart.Index := Index;
+end;
+
+{ TEditorSynGutterOptionsList }
+
+function SynGutterOptListSortCompare(const Item1, Item2: TEditorSynGutterOptions): Integer;
+begin
+  Result := Item1.Index - Item2.Index;
+end;
+
+function TEditorSynGutterOptionsList.GetByClass(AIndex: TSynGutterPartBaseClass
+  ): TEditorSynGutterOptions;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    if Items[i].GClass = AIndex then
+      exit(Items[i]);
+end;
+
+procedure TEditorSynGutterOptionsList.Assign(Source: TEditorSynGutterOptionsList);
+var
+  i: Integer;
+  n: TEditorSynGutterOptions;
+begin
+  Clear;
+  for i := 0 to Source.Count - 1 do begin
+    n := TEditorSynGutterOptions.Create(Source[i].Index, Source[i].GClass);
+    n.Assign(Source[i]);
+    Add(n);
+  end;
+end;
+
+procedure TEditorSynGutterOptionsList.AssignItems(Source: TEditorSynGutterOptionsList);
+var
+  i: Integer;
+  itm, dest: TEditorSynGutterOptions;
+begin
+  for i := 0 to Source.Count - 1 do begin
+    itm := Source.Items[i];
+    dest := ByClass[itm.GClass];
+    if dest <> nil then
+      dest.Assign(itm);
+  end;
+  Sort;
+end;
+
+procedure TEditorSynGutterOptionsList.Sort;
+var
+  i: Integer;
+begin
+  inherited Sort(@SynGutterOptListSortCompare);
+  // fix gaps
+  for i := 0 to Count - 1 do
+    Items[i].Index := i;
 end;
 
 { TEditorUserDefinedWords }
@@ -5127,10 +5317,29 @@ begin
   inherited Create;
   FScrollOnEditLeftOptions := TSynScrollOnEditLeftOptions.Create;
   FScrollOnEditRightOptions := TSynScrollOnEditRightOptions.Create;
+
+  FGutterPartMarks := TEditorSynGutterOptions.Create(0, TSynGutterMarks);
+  FGutterPartLine  := TEditorSynGutterOptions.Create(1, TSynGutterLineNumber);
+  FGutterPartChange:= TEditorSynGutterOptions.Create(2, TSynGutterChanges);
+  FGutterPartSep   := TEditorSynGutterOptions.Create(3, TSynGutterSeparator);
+  FGutterPartFold  := TEditorSynGutterOptions.Create(4, TSynGutterCodeFolding);
+
+  FGutterPartOver  := TEditorSynGutterOptions.Create(0, TSynGutterLineOverview);
+
+  FGutterPartList := TEditorSynGutterOptionsList.Create(True);
+  FGutterRightPartList := TEditorSynGutterOptionsList.Create(True);
+  FGutterPartList.Add(FGutterPartMarks);
+  FGutterPartList.Add(FGutterPartLine);
+  FGutterPartList.Add(FGutterPartChange);
+  FGutterPartList.Add(FGutterPartSep);
+  FGutterPartList.Add(FGutterPartFold);
+  FGutterRightPartList.Add(FGutterPartOver);
 end;
 
 destructor TEditorOptionsBase.Destroy;
 begin
+  FreeAndNil(FGutterPartList);
+  FreeAndNil(FGutterRightPartList);
   FreeAndNil(FScrollOnEditLeftOptions);
   FreeAndNil(FScrollOnEditRightOptions);
   inherited Destroy;
@@ -5147,7 +5356,6 @@ begin
   fMultiCaretDeleteSkipLineBreak := False;
   fExportHtmlWithBackground := False;
   // Display options
-  fShowOverviewGutter := True;
   fTopInfoView := True;
   // hints
   fDbgHintAutoTypeCastClass := True;
@@ -5307,7 +5515,6 @@ begin
   fElasticTabsMinWidth := 1;
   fBracketHighlightStyle := sbhsBoth;
   // Display options
-  fGutterSeparatorIndex := 3;
   fEditorFont := SynDefaultFontName;
   fEditorFontSize := SynDefaultFontSize;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
@@ -5353,6 +5560,8 @@ var
   SynEditOpt2: TSynEditorOption2;
   FileVersion: LongInt;
   DefOpts: TSynEditorOptions;
+  OldGutterSeparatorIndex: Int64;
+  OldShowLineNumbers: Boolean;
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', EditorOptsFormatVersion);
@@ -5438,25 +5647,53 @@ begin
       TSynEditBracketHighlightStyle(XMLConfig.GetValue('EditorOptions/General/Editor/BracketHighlightStyle', 2));
 
     // Display options
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Marks/',  FGutterPartMarks,  FGutterPartMarks.Defaults);
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Line/',   FGutterPartLine,   FGutterPartLine.Defaults);
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Change/', FGutterPartChange, FGutterPartChange.Defaults);
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Sep/',    FGutterPartSep,    FGutterPartSep.Defaults);
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Fold/',   FGutterPartFold,   FGutterPartFold.Defaults);
+    XMLConfig.ReadObject('EditorOptions/GutterParts/Over/',   FGutterPartOver,   FGutterPartOver.Defaults);
+    FGutterPartList.Sort;
+    FGutterRightPartList.Sort;
+
     fVisibleRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/VisibleRightMargin', True);
     fVisibleGutter :=
       XMLConfig.GetValue('EditorOptions/Display/VisibleGutter', True);
     if FileVersion<4 then begin
-      fShowLineNumbers :=
+      OldShowLineNumbers :=
         XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', False);
+      if OldShowLineNumbers then
+        FGutterPartLine.Visible := True;
       fShowOnlyLineNumbersMultiplesOf :=
         XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 1);
     end else begin
-      fShowLineNumbers :=
+      OldShowLineNumbers :=
         XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers', True);
+      if not OldShowLineNumbers then
+        FGutterPartLine.Visible := False;
       fShowOnlyLineNumbersMultiplesOf :=
         XMLConfig.GetValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf', 5);
     end;
+
+    OldGutterSeparatorIndex :=
+      XMLConfig.GetValue('EditorOptions/Display/GutterSeparatorIndex', 3);
+    if OldGutterSeparatorIndex = -1 then
+      FGutterPartSep.Visible := False
+    else
+    if OldGutterSeparatorIndex <> 3 then begin
+      for i := OldGutterSeparatorIndex+1 to FGutterPartList.Count - 1 do
+        FGutterPartList[i].Index := FGutterPartList[i].Index + 1;
+      FGutterPartSep.Index := OldGutterSeparatorIndex;
+      FGutterPartList.Sort;
+    end;
+
+    if not XMLConfig.GetValue('EditorOptions/Misc/ShowOverviewGutter', True) then
+      FGutterPartOver.Visible := False;
+
+
     fGutterWidth :=
       XMLConfig.GetValue('EditorOptions/Display/GutterWidth', 30);
-    FGutterSeparatorIndex :=
-      XMLConfig.GetValue('EditorOptions/Display/GutterSeparatorIndex', 3);
     fRightMargin :=
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
     fEditorFont  :=
@@ -5583,6 +5820,13 @@ begin
 
     XMLConfig.WriteObject('EditorOptions/Misc/', Self, FDefaultValues);
 
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Marks/',  FGutterPartMarks,  FGutterPartMarks.Defaults);
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Line/',   FGutterPartLine,   FGutterPartLine.Defaults);
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Change/', FGutterPartChange, FGutterPartChange.Defaults);
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Sep/',    FGutterPartSep,    FGutterPartSep.Defaults);
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Fold/',   FGutterPartFold,   FGutterPartFold.Defaults);
+    XMLConfig.WriteObject('EditorOptions/GutterParts/Over/',   FGutterPartOver,   FGutterPartOver.Defaults);
+
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
     begin
@@ -5659,14 +5903,13 @@ begin
       , fVisibleRightMargin, True);
     XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleGutter',
       fVisibleGutter, True);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
-      fShowLineNumbers, True);
+    XMLConfig.DeleteValue('EditorOptions/Display/ShowLineNumbers');
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowOnlyLineNumbersMultiplesOf',
       fShowOnlyLineNumbersMultiplesOf, 5);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
       fGutterWidth, 30);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/GutterSeparatorIndex',
-      fGutterSeparatorIndex, 3);
+    XMLConfig.DeleteValue('EditorOptions/Display/GutterSeparatorIndex');
+    XMLConfig.DeleteValue('EditorOptions/Misc/ShowOverviewGutter');
     XMLConfig.SetDeleteValue('EditorOptions/Display/RightMargin',
       fRightMargin, 80);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
@@ -6447,10 +6690,8 @@ begin
     // Display options
     ASynEdit.Gutter.Visible := fVisibleGutter;
     ASynEdit.Gutter.AutoSize := true;
-    ASynEdit.Gutter.LineNumberPart.Visible := fShowLineNumbers;
     ASynEdit.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf :=
       fShowOnlyLineNumbersMultiplesOf;
-    ASynEdit.RightGutter.Visible := ShowOverviewGutter;
     if ASynEdit is TIDESynEditor then
       TIDESynEditor(ASynEdit).ShowTopInfo := TopInfoView;
 
@@ -6460,9 +6701,6 @@ begin
     ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
 
     ASynEdit.Gutter.Width := fGutterWidth;
-    ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;
-    if FGutterSeparatorIndex <> -1 then
-    ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
 
     ASynEdit.RightEdge := fRightMargin;
     if fVisibleRightMargin then
@@ -6515,14 +6753,28 @@ begin
     if ASynEdit.Gutter.ChangesPart<> nil then
       ASynEdit.Gutter.ChangesPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
 
-    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex = 2) and ShowLineNumbers then
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and
+       (abs(FGutterPartSep.Index - FGutterPartLine.Index) = 1) and
+       FGutterPartLine.Visible
+    then
       ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsLines)
     else
-    if (ASynEdit.Gutter.SeparatorPart <> nil) and (GutterSeparatorIndex >= 2) then
+    if (ASynEdit.Gutter.SeparatorPart <> nil) and (abs(FGutterPartSep.Index - FGutterPartChange.Index) = 1) then
       ASynEdit.Gutter.SeparatorPart.MouseActions.Assign(FUserMouseSettings.GutterActionsChanges);
     if ASynEdit.RightGutter.LineOverviewPart <> nil then begin
       ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
       ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
+    end;
+
+    GutterPartList.Sort;
+    for i := 0 to GutterPartList.Count - 1 do begin
+      GutterPartList[i].ApplyTo(ASynEdit.Gutter.Parts.ByClass[GutterPartList[i].GClass, 0]);
+      GutterPartList[i].ApplyIndexTo(ASynEdit.Gutter.Parts.ByClass[GutterPartList[i].GClass, 0]);
+    end;
+    GutterRightPartList.Sort;
+    for i := 0 to GutterRightPartList.Count - 1 do begin
+      GutterRightPartList[i].ApplyTo(ASynEdit.RightGutter.Parts.ByClass[GutterRightPartList[i].GClass, 0]);
+      GutterRightPartList[i].ApplyIndexTo(ASynEdit.RightGutter.Parts.ByClass[GutterRightPartList[i].GClass, 0]);
     end;
 
     ASynEdit.ScrollOnEditLeftOptions.Assign(ScrollOnEditLeftOptions);
