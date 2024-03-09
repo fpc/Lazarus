@@ -1860,7 +1860,7 @@ begin
     // this form can focus => do some sanity checks and raise an exception to
     // to help programmers to understand why a control is not focused
     if (AWinControl = Self) or
-       (GetParentForm(AWinControl) <> Self) or
+       (GetParentForm(AWinControl, FDesigner = nil) <> Self) or
        not ((csLoading in ComponentState) or AWinControl.CanFocus) then
     begin
       DebugLn(['TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',
