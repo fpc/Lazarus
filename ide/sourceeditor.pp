@@ -137,6 +137,8 @@ type
     FActiveHistoryTextColor: TColor;
     FActiveEditTextSelectedColor: TColor;
     FActiveEditTextHighLightColor: TColor;
+    FicPopUpMenu: TPopupMenu;
+    FicPopUpMenuItems: array [TIdentComplSortMethod] of TMenuItem;
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
@@ -147,6 +149,7 @@ type
                  X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     function SynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
                                  ItemSelected: boolean; Index: integer): TPoint;
+    procedure ICPopUpMenuItemClick(Sender: TObject);
     procedure SynCompletionSearchPosition(var APosition: integer);
     procedure SynCompletionCompletePrefix(Sender: TObject);
     procedure SynCompletionNextChar(Sender: TObject);
@@ -2422,11 +2425,38 @@ var
   NewStr: String;
   SynEditor: TIDESynEditor;
   Template: TTemplate;
+  A: TIdentComplSortMethod;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
   {$ENDIF}
   TheForm.Font := Editor.Font;
+  if FicPopUpMenu=nil then begin
+    FicPopUpMenu:=TPopUpMenu.Create(TheForm);
+    for A in TIdentComplSortMethod do begin
+      FicPopUpMenuItems[A]:=TMenuItem.Create(FicPopUpMenu);
+      FicPopUpMenuItems[A].RadioItem:=true;
+      FicPopUpMenuItems[A].GroupIndex:=ord(A);
+      FicPopUpMenuItems[A].OnClick:=@ICPopUpMenuItemClick;
+      case  ord(A) of
+        0: FicPopUpMenuItems[A].Caption:=lisSortOrderScopedAlphabetic;
+        1: FicPopUpMenuItems[A].Caption:=lisSortOrderAlphabetic;
+        2: FicPopUpMenuItems[A].Caption:=lisSortOrderDefinition;
+        else
+          FicPopUpMenuItems[A].Caption:='Method'+(ord(A)).ToString;
+      end;
+      FicPopUpMenu.Items.Insert(ord(A),FicPopUpMenuItems[A]);
+      FicPopUpMenuItems[A].Checked:=
+        CodeToolBoss.IdentifierList.SortMethodForCompletion=A;
+    end;
+    FicPopUpMenu.Parent:=TheForm;
+    TheForm.PopupMenu:=FicPopUpMenu;
+    FicPopUpMenu.AutoPopup:=true;
+  end else begin
+    for A in TIdentComplSortMethod do
+      FicPopUpMenuItems[A].Checked:=
+        A=CodeToolBoss.IdentifierList.SortMethodForCompletion;
+  end;
 
   FActiveHistoryTextColor := clNone;
   FActiveEditTextColor := Editor.Font.Color;
@@ -2880,6 +2910,20 @@ begin
   end;
   if SrcEditHintWindow<>nil then
     SrcEditHintWindow.UpdateHints;
+end;
+
+procedure TSourceEditCompletion.ICPopUpMenuItemClick(Sender: TObject);
+var A:TIdentComplSortMethod;
+begin  //ready to change range of TIdentComplSortMethod
+  for A in TIdentComplSortMethod do begin
+    if Sender=FicPopUpMenuItems[A] then begin
+      FicPopUpMenuItems[A].Checked:= true;
+      CodeToolBoss.IdentifierList.SortMethodForCompletion:=A;
+      CodeToolsOpts.IdentComplSortMethod:=A; //changes global setting
+    end else
+      FicPopUpMenuItems[A].Checked:=false;
+  end;
+  Manager.DeactivateCompletionForm;
 end;
 
 procedure TSourceEditCompletion.SynCompletionCompletePrefix(Sender: TObject);
