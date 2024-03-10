@@ -1063,9 +1063,8 @@ begin
     //debugln(['TCustomTabControl.Change: Self=',DbgSName(Self),', APage',DbgSName(APage)]);
     //if Assigned(APage) then debugln(['APage.Visible=',APage.Visible,', APage.Enabled=',APage.Enabled,', (APage.ControlCount > 0)=',(APage.ControlCount > 0)]);
     ParentForm := GetParentForm(Self);
-    if not (Assigned(ParentForm) and Assigned(APage) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
-      Exit;
-    MaybeSelectFirstControlOnPage(APage);
+    if (Assigned(ParentForm) and Assigned(APage) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
+      MaybeSelectFirstControlOnPage(APage);
 
     DoChange;
   end;
