@@ -460,8 +460,8 @@ begin
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
-    AWidth := R.Right - R.Left + 8; // border
-    AHeight := R.Bottom - R.Top + 8; // border
+    AWidth := R.Right - R.Left;
+    AHeight := R.Bottom - R.Top;
   finally
     ReleaseDC(Parent.Handle, DC);
   end;

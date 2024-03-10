@@ -31,7 +31,7 @@ type
   THTML2TextRenderer = class
   private
     fHTML, fOutput: string;
-    fMaxLines: integer;
+    fMaxLines, fMaxLineLen: Integer;
     fLineEndMark: String; // End of line, by default standard LineEnding
     fTitleMark: String; // Text at start/end of title text: <div class="title">...</div>
     fHorzLine: String; // Text for <hr> tag
@@ -43,7 +43,7 @@ type
     fPendingSpace: Boolean;
     fPendingNewLineCnt: Integer;
     fIndentStep: integer; // Increment (in spaces) for each nested HTML level
-    fIndent: integer;
+    fIndent, fLineLen: Integer;
     fLineCnt, fHtmlLen: Integer;
     p: Integer;
     procedure AddNewLine;
@@ -52,6 +52,7 @@ type
     function HtmlTag: Boolean;
     function HtmlEntity: Boolean;
     procedure Reset;
+    function SplitLongLine: Boolean;
   public
     constructor Create(const aHTML: string);
     constructor Create(const Stream: TStream);
@@ -65,7 +66,8 @@ type
     property LinkEndMark: String read fLinkEnd write fLinkEnd;
     property ListItemMark: String read fListItemMark write fListItemMark;
     property MoreMark: String read fMoreMark write fMoreMark;
-    property IndentStep: integer read fIndentStep write fIndentStep;
+    property MaxLineLen: Integer read fMaxLineLen write fMaxLineLen;
+    property IndentStep: Integer read fIndentStep write fIndentStep;
   end;
 
   function RenderHTML2Text(const AHTML: String): String;
@@ -107,6 +109,7 @@ begin
   //fListItemMark:='⚫ ';
   //fListItemMark:='⚪ ';
   fMoreMark:='...';
+  fMaxLineLen:=80;
   fIndentStep:=2;
 end;
 
@@ -114,7 +117,7 @@ constructor THTML2TextRenderer.Create(const Stream: TStream);
 var
   s: string;
 begin
-  SetLength(s{%H-},Stream.Size);
+  SetLength(s,Stream.Size);
   if s<>'' then
     Stream.Read(s[1],length(s));
   Create(s);  // Call the constructor above.
@@ -132,6 +135,7 @@ begin
   fPendingSpace:=False;
   fPendingNewLineCnt:=0;
   fIndent:=0;
+  fLineLen:=0;
   fLineCnt:=1;
 end;
 
@@ -148,31 +152,47 @@ begin
     fPendingNewLineCnt:=1;
 end;
 
+function THTML2TextRenderer.SplitLongLine: Boolean;
+// Split long lines. Return True if actually split.
+begin
+  Result:=fLineLen>fMaxLineLen;
+  if Result then
+    AddNewLine;
+end;
+
 function THTML2TextRenderer.AddOutput(const aText: String): Boolean;
 var
   i: Integer;
 begin
   Result:=True;
-  if fPendingSpace and (fPendingNewLineCnt=0) then
+  if fPendingSpace and (fPendingNewLineCnt=0) and not SplitLongLine then
+  begin
     fOutput:=fOutput+' ';      // Don't add space at end of line (before newline)
+    Inc(fLineLen);
+  end;
   fPendingSpace:=False;
   for i:=0 to fPendingNewLineCnt-1 do
   begin
     fOutput:=fOutput+fLineEndMark;
+    fLineLen:=0;
     Inc(fLineCnt);
-    // Return False if max # of lines exceeded.
     if fLineCnt>fMaxLines then
     begin
       fOutput:=fOutput+fLineEndMark+fMoreMark;
-      Exit(False);
+      Exit(False);             // Return False if max # of lines exceeded.
     end;
   end;
   if fPendingNewLineCnt>0 then
   begin
-    fOutput:=fOutput+StringOfChar(' ',fIndent*fIndentStep);
+    i:=fIndent*fIndentStep;
+    fOutput:=fOutput+StringOfChar(' ', i);
+    Inc(fLineLen, i);
     fPendingNewLineCnt:=0;
   end;
   fOutput:=fOutput+aText;
+  Inc(fLineLen, Length(aText));
+  if aText='.' then            // Split also after '.'
+    SplitLongLine;
 end;
 
 function THTML2TextRenderer.HtmlTag: Boolean;
