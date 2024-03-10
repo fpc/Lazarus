@@ -670,7 +670,12 @@ end;
 procedure TTreeFilterEdit.MoveNext(ASelect: Boolean);
 begin
   if Assigned(fFilteredTreeview) then
+  begin
+    ASelect := ASelect
+      and (tvoAllowMultiSelect in fFilteredTreeview.Options)
+      and (msShiftSelect in fFilteredTreeview.MultiSelectStyle);
     fFilteredTreeview.MoveToNextNode(ASelect);
+  end;
 end;
 
 procedure TTreeFilterEdit.MovePageDown(ASelect: Boolean);
@@ -688,7 +693,12 @@ end;
 procedure TTreeFilterEdit.MovePrev(ASelect: Boolean);
 begin
   if Assigned(fFilteredTreeview) then
+  begin
+    ASelect := ASelect
+      and (tvoAllowMultiSelect in fFilteredTreeview.Options)
+      and (msShiftSelect in fFilteredTreeview.MultiSelectStyle);
     fFilteredTreeview.MoveToPrevNode(ASelect);
+  end;
 end;
 
 function TTreeFilterEdit.ReturnKeyHandled: Boolean;
@@ -707,31 +717,25 @@ begin
 end;
 
 procedure TTreeFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
-  //
-  function AllowMultiSelectWithShift: Boolean; inline;
-  begin
-    Result := (ssShift in Shift) and (msShiftSelect in fFilteredTreeview.MultiSelectStyle);
-  end;
-  //
 begin
   inherited EditKeyDown(Key, Shift);
   if Key = 0 then exit;
 
   if fFilteredTreeview <> nil then
   begin
-    // current node
+    // expand/collapse current node
     if (Key = VK_LEFT) and (Shift = [ssAlt]) then
     begin
-      fFilteredTreeview.MoveLeft(AllowMultiSelectWithShift);
+      fFilteredTreeview.MoveLeft;
       Key := 0;
     end
     else if (Key = VK_RIGHT) and (Shift = [ssAlt]) then
     begin
-      fFilteredTreeview.MoveRight(AllowMultiSelectWithShift);
+      fFilteredTreeview.MoveRight;
       Key := 0;
     end
 
-    // full tree
+    // expand/collapse full tree
     else if (Key = VK_LEFT) and (Shift = [ssShift, ssAlt]) then
     begin
       fFilteredTreeview.FullCollapse;
