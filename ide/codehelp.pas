@@ -40,7 +40,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, StrUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs,
   // CodeTools
@@ -2485,6 +2485,15 @@ begin
   end;
 end;
 
+function GetMinWidthRule: String;
+var
+  SpcWidth, SpcCnt: Integer;
+begin
+  SpcWidth := Screen.PixelsPerInch div 6 div 2;
+  SpcCnt := (3 * (Screen.WorkAreaWidth div 8)) div SpcWidth;
+  Result := DupeString('&nbsp;', SpcCnt);
+end;
+
 function TCodeHelpManager.GetHTMLHintForExpr(CTExprType: TExpressionType;
   XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions; out BaseURL,
   HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
@@ -2507,6 +2516,7 @@ var
   Cmd: TKeyCommandRelation;
   CTTool: TFindDeclarationTool;
   CTNode: TCodeTreeNode;
+  HasXML: Boolean;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2573,6 +2583,7 @@ begin
               Short:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
               Descr:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription])));
               s:=Short+Descr;
+              HasXML := (Trim(s) <> '');
               if chhoDeclarationHeader in Options then
               begin
                 // Add Description header only when requested. Save space otherwise.
@@ -2591,7 +2602,7 @@ begin
             end;
           end;
 
-          if chhoComments in Options then
+          if (chhoComments in Options) and (not HasXML) then
           begin
             // add pasdoc
             HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
@@ -2658,7 +2669,7 @@ begin
       end;
       HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css">'+LineEnding
         +'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'+LineEnding
-        +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
+        +'<body>'+HTMLHint+IfThen(HasXML,GetMinWidthRule,'') +'</body></html>';
       Result:=chprSuccess;
     end else
       Result:=chprFailed;
