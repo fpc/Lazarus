@@ -105,6 +105,10 @@ function StringCase(const AString: String; const ACase: array of String;
 function SamePChar(P1, P2: PChar): boolean;
 function StrLScan(P: PChar; c: Char; MaxLen: Cardinal): PChar;
 
+// To and from a file.
+function SaveStringToFile(const aString, aFileName: String): Boolean;
+function LoadStringFromFile(const aFileName: String): String;
+
 // Like IsValidIdent() in FPC 3.1.
 function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
                          StrictDots: Boolean = False): Boolean;
@@ -1397,6 +1401,34 @@ begin
   begin
     if P[i]=#0 then Exit;        // End of the string, c was not found.
     if P[i]=c then Exit(@P[i]);  // Found!
+  end;
+end;
+
+function SaveStringToFile(const aString, aFileName: String): Boolean;
+var
+  fs: TFileStream;
+begin
+  Result:=False;
+  fs:=TFileStream.Create(aFileName, fmCreate);
+  try
+    fs.Write(aString[1], length(aString));
+    Result:=True;
+  finally
+    fs.Free;
+  end;
+end;
+
+function LoadStringFromFile(const aFileName: String): String;
+var
+  fs: TFileStream;
+begin
+  fs:=TFileStream.Create(aFileName, fmOpenRead);
+  try
+    SetLength(Result, fs.Size);
+    if Result<>'' then
+      fs.Read(Result[1],length(Result));
+  finally
+    fs.Free;
   end;
 end;
 

@@ -2488,8 +2488,8 @@ begin
     PkgList.Free;
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';
-  Result:=SaveStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
-                           lisPkgMangstaticPackagesConfigFile);
+  Result:=SaveLazStringToFile(StaticPckIncludeFile,StaticPackagesInc,[],
+                              lisPkgMangstaticPackagesConfigFile);
 end;
 
 function TLazPackageGraph.IsCompiledInBasePackage(PackageName: string): boolean;
@@ -5764,9 +5764,9 @@ begin
   end;
 
   // save source
-  Result:=SaveStringToFile(SrcFilename,Src,[],lisPkgMangpackageMainSourceFile);
+  Result:=SaveLazStringToFile(SrcFilename,Src,[],lisPkgMangpackageMainSourceFile);
   if Result<>mrOk then begin
-    DebugLn('Error: (lazarus) [TLazPackageGraph.SavePackageMainSource] SaveStringToFile ',SrcFilename,' failed');
+    DebugLn('Error: (lazarus) [TLazPackageGraph.SavePackageMainSource] SaveLazStringToFile ',SrcFilename,' failed');
     exit;
   end;
 

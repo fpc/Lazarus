@@ -2912,7 +2912,7 @@ begin
   List:=TStringList.Create;
   try
     WriteNode(List,BrowseTreeView.Items.GetFirstNode);
-    Result:=SaveStringToFile(Filename,List.Text,[],
+    Result:=SaveLazStringToFile(Filename,List.Text,[],
       'exporting identifiers as text');
   finally
     List.Free;

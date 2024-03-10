@@ -111,7 +111,7 @@ function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function DeleteFileInteractive(const Filename: string;
                                ErrorButtons: TMsgDlgButtons = []): TModalResult;
-function SaveStringToFile(const Filename, Content: string;
+function SaveLazStringToFile(const Filename, Content: string;
                         ErrorButtons: TMsgDlgButtons; const Context: string = ''
                         ): TModalResult;
 function ConvertLFMToLRSFileInteractive(const LFMFilename,
@@ -608,7 +608,7 @@ begin
   until false;
 end;
 
-function SaveStringToFile(const Filename, Content: string;
+function SaveLazStringToFile(const Filename, Content: string;
   ErrorButtons: TMsgDlgButtons; const Context: string): TModalResult;
 var
   fs: TFileStream;

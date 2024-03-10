@@ -5348,8 +5348,8 @@ begin
       and (not AnUnitInfo.IsVirtual) then begin
         LRJFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lrj');
         DebugLn(['SaveUnitComponent save lrj: ',LRJFilename]);
-        Result:=SaveStringToFile(LRJFilename,Grubber.Grubbed.Text,
-                                 [mbIgnore,mbAbort],AnUnitInfo.Filename);
+        Result:=SaveLazStringToFile(LRJFilename,Grubber.Grubbed.Text,
+                                    [mbIgnore,mbAbort],AnUnitInfo.Filename);
         if (Result<>mrOk) and (Result<>mrIgnore) then exit;
       end;
 

@@ -1163,7 +1163,7 @@ begin
     tctSource:
       Converter.Source:=CodeBuf.Source;
     tctFile:
-      Result:=SaveStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
+      Result:=SaveLazStringToFile(Converter.Filename,CodeBuf.Source,[])=mrOk;
     tctStrings:
       CodeBuf.AssignTo(Converter.Strings,true);
     tctCodeBuffer:
