@@ -16153,10 +16153,6 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "Prosím pred spustením otvorte jednotku."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Prosím vyberte aspoň jeden režim vybudovania."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prosím vyberte kód pre oddelenie procedúry/metódy."

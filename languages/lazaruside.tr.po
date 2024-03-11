@@ -16011,10 +16011,6 @@ msgstr "Lütfen normalde kaynak düzenleyicinin altında olan mesaj penceresinde
 msgid "Please open a unit before run."
 msgstr "Lütfen çalıştırmadan önce bir ünite açın."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Lütfen en az bir yapım modu seçin."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Lütfen yeni bir prosedür / yöntem çıkarmak için bazı kodları seçin."

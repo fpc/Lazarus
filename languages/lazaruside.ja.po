@@ -16324,10 +16324,6 @@ msgstr "メッセージウィンドウ（通常ソースエディタの下にあ
 msgid "Please open a unit before run."
 msgstr "実行する前にユニットを開いて下さい。"
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"

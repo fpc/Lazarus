@@ -16360,10 +16360,6 @@ msgstr "Ištaisykite klaidą, rodomą pranešimų lange. Pranešimų langas įpr
 msgid "Please open a unit before run."
 msgstr "Prieš startuojant atverkite modulį."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."

@@ -16225,10 +16225,6 @@ msgstr "Prosím, opravte chybu zobrazenou v okně zpráv, které je zpravidla po
 msgid "Please open a unit before run."
 msgstr "Prosím otevřete jednotku před spuštěním."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Prosím vyberte nejméně jeden režim sestavení."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prosíme vyberte nějaký kód k vytažení nové procedury/metody."

@@ -16043,10 +16043,6 @@ msgstr "Korjaa viesti-ikkunassa näkyvä virhe."
 msgid "Please open a unit before run."
 msgstr "Avaa käänösyksikkö ennen suoritusta."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Valitse ainakin yksi koontamoodi."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"

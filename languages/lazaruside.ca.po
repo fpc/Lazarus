@@ -16495,10 +16495,6 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "Si us plau, obriu una unitat abans d'executar."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Si us plau, seleccioneu el codi per extraure'n un nou procediment/mètode."

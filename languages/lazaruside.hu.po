@@ -16147,10 +16147,6 @@ msgstr "Javítsa a hibát ami az üzenetablakban látható, ez alapértelmezette
 msgid "Please open a unit before run."
 msgstr "Nyisson meg egy unit-ot futtatás előtt!"
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Legalább egy építési módot ki kell választani."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Jelöljön ki kódot, amit új eljárásba/metódusba helyezhet!"

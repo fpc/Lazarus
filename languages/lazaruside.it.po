@@ -16428,10 +16428,6 @@ msgstr "Correggere l'errore mostrato nella finestra messaggi, che si trova norma
 msgid "Please open a unit before run."
 msgstr "Aprire una unit prima di eseguire."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Selezionare codice per estrarre una nuova procedura/metodo."

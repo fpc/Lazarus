@@ -16994,10 +16994,6 @@ msgstr "תקן בבקשה את שגיאה המופיעה בחלון ההודעו
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "אנא בחר את הקוד לחילוץ לפרוצדורה/מתודה חדשה."

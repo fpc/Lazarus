@@ -16287,11 +16287,6 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "Proszę otworzyć moduł przed uruchomieniem."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-#, fuzzy
-msgid "Please select at least one build mode."
-msgstr "Musi być przynajmniej jeden tryb budowania."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr ""

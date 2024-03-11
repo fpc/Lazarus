@@ -16032,10 +16032,6 @@ msgstr "Исправьте ошибку, указанную в окне сооб
 msgid "Please open a unit before run."
 msgstr "Откройте модуль перед запуском."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-msgid "Please select at least one build mode."
-msgstr "Выберите хотя бы один режим сборки."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Выделите некоторый код, чтобы извлечь новую процедуру/метод."

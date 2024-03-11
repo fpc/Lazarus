@@ -16104,11 +16104,6 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "请在运行前打开一个单元."
 
-#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
-#, fuzzy
-msgid "Please select at least one build mode."
-msgstr "那里必须至少一个构建模式."
-
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "请选择一些代码以提取一个新过程或方法."
