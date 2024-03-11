@@ -53,6 +53,7 @@ uses
 { $DEFINE ShowTriedUnits}
 { $DEFINE DebugDirCacheFindUnitSource}
 { $DEFINE DebugDirCacheFindIncFile}
+{ $DEFINE VerboseFindNamespacedInc}
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -1396,11 +1397,18 @@ const
     CurListing: TCTDirectoryListing;
     ChildCache: TCTDirectoryCache;
   begin
+    Result:='';
     Dir:=ExtractFilename(Cache.Directory);
     if SameText(Dir,'backup') then exit;
 
     Result:=Cache.FindIncludeFile(IncFilename,True);
-    if Result<>'' then exit;
+    if Result<>'' then begin
+      Result:=Cache.Directory+Result;
+      {$IFDEF VerboseFindNamespacedInc}
+      debugln(['TCTDirectoryCache.FindNamespacedIncludeFile.Traverse ',Cache.Directory,' Inc="',IncFilename,'" Result="',Result,'"']);
+      {$ENDIF}
+      exit;
+    end;
     if Lvl>4 then exit;
     inc(Lvl);
 
@@ -1424,23 +1432,35 @@ begin
 
   p:=Pos(NamespacedDir,Directory);
   if p<1 then exit;
-  //debugln(['TCTDirectoryCache.FindNamespacedIncludeFile ',Directory,' -> ',IncFilename]);
+  {$IFDEF VerboseFindNamespacedInc}
+  debugln(['TCTDirectoryCache.FindNamespacedIncludeFile ',Directory,' Inc="',IncFilename,'"']);
+  {$ENDIF}
   Dir:=LeftStr(Directory,p);
   SubDir:=copy(Directory,p+length(NamespacedDir),length(Directory));
   if SubDir<>'' then begin
     // first search in same subdir aka the directory without /namespaced/
     Result:=Dir+SubDir+IncFilename;
-    if Pool.FileExists(Result) then
+    if Pool.FileExists(Result) then begin
+      {$IFDEF VerboseFindNamespacedInc}
+      debugln(['TCTDirectoryCache.FindNamespacedIncludeFile ',Directory,' Inc="',IncFilename,'" Result="',Result,'"']);
+      {$ENDIF}
       exit;
+    end;
   end;
 
   // then search in subdir 'src'
   Result:=Dir+'src'+IncFilename;
-  if Pool.FileExists(Result) then
+  if Pool.FileExists(Result) then begin
+    {$IFDEF VerboseFindNamespacedInc}
+    debugln(['TCTDirectoryCache.FindNamespacedIncludeFile ',Directory,' Inc="',IncFilename,'" Result="',Result,'"']);
+    {$ENDIF}
     exit;
+  end;
 
   // finally search recursively
-  //debugln(['TCTDirectoryCache.FindNamespacedIncludeFile Dir=',Dir,' SubDir="',SubDir,'"']);
+  {$IFDEF VerboseFindNamespacedInc}
+  debugln(['TCTDirectoryCache.FindNamespacedIncludeFile Dir=',Dir,' SubDir="',SubDir,'"']);
+  {$ENDIF}
 
   Cache:=Pool.GetCache(Dir,true,false);
   Result:=Traverse(Cache,0);
