@@ -60,9 +60,9 @@ ancestor class to include properties and methods needed to associate Help
 Keywords to specific HTML files, and to retrieve and display the help content.
 </p>
 <p>
-The KeywordPrefix property determines the keywords that can be accessed in 
-the help database. BaseURL determines the path searched when accessing HTML 
-files for the help database.
+The KeywordPrefix property is the value found at the start of a HelpKeyword 
+which indicates that the topic belongs the HTML help database. BaseURL 
+determines the path searched when accessing HTML files for the help database.
 </p>
 <p>
 An application can create a THTMLHelpDatabase instance, assign the 
@@ -78,13 +78,17 @@ help file to be displayed for the keyword/url in a web browser when the F1
 key is pressed.
 </p>
 <p>
-There is an example program that demonstrates usage of the components in the 
-examples/helphtml directory for the Lazarus installation.
+There is an example program that demonstrates usage of the components:
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/examples/helphtml">
+<file>examples/helphtml</file>
+</url>
 </p>
 </descr>
 <seealso>
 <link id="THelpDatabase"/>
 <link id="THTMLBrowserHelpViewer"/>
+<link id="#lcl.controls.TControl.HelpKeyword">TControl.HelpKeyword</link>
+<link id="#lcl.controls.TControl.HelpType">TControl.HelpType</link>
 </seealso>
 </element>
 
@@ -452,10 +456,66 @@ Default value for the BaseURL used in the HTML help database.
 
 <element name="THTMLHelpDatabase.BaseURL">
 <short>
-BaseURL for the HTML help database.
+Protocol and Path to the directory where HTML help files are stored for the 
+HTML help database.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>BaseURL</var> is a String property which contains the protocol and path 
+used to access the HTML help files stored in the help database. The property 
+value starts with a URL protocol like:
+</p>
+<dl>
+<dt>'file://'</dt>
+<dd>Accesses a path on the local file system.</dd>
+<dt>'http://', https://'</dt>
+<dd>Accesses a location on a web server.</dd>
+</dl>
+<p>
+The property value must also include path information to the directory or 
+location where the help files are stored. For 'file://' access, the path can be 
+relative to application directory. For remote access, relative paths are not 
+resolvable. An absolute path for the host platform can also be used.
+</p>
+<p>
+For example:
+</p>
+<dl>
+<dt>'file://html/', 'file://../myapp/html/'</dt>
+<dd>
+Path on the local file system relative to the application directory.
+</dd>
+<dt>'file:///usr/share/myapp/html/'</dt>
+<dd>
+Absolute path to a directory on a UNIX-like file system. Not supported on 
+Windows; it is relative to the current drive.
+</dd>
+<dt>'file://c:/myapp/html/', 'file://c:\myapp\html\'</dt>
+<dd>
+Absolute path to a directory on the Windows platform. Not supported on 
+UNIX-like file systems; they do no support disk drive specifiers.
+</dd>
+<dt>'http://www.acme.org/myapp/html/', 'https://www.acme.org/myapp/html/'</dt>
+<dd>
+Absolute path to a location on a remote web server.
+</dd>
+</dl>
+<p>
+BaseURL is used in the GetEffectiveBaseURL and ShowURL methods when a request 
+URL is expanded / resolved to the storage location for the help database.
+</p>
+<p>
+Use DefaultBaseURL to set the URL used when BaseURL is not resolvable or 
+omitted. Use BuiltInBaseURL to access a value assigned in the Lazarus IDE Help 
+options.
+</p>
+</descr>
+<seealso>
+<link id="THTMLHelpDatabase.ShowURL"/>
+<link id="THTMLHelpDatabase.GetEffectiveBaseURL"/>
+<link id="THTMLHelpDatabase.DefaultBaseURL"/>
+<link id="THTMLHelpDatabase.BuiltInBaseURL"/>
+</seealso>
 </element>
 
 <element name="THTMLHelpDatabase.AutoRegister">
@@ -804,8 +864,8 @@ on the local file system for the browser application executable used to view
 HTML help topics. For example:
 </p>
 <code>
-  AViewer.BrowserPath := '/usr/bin/mozilla';  // or
-  AViewer.BrowserPath := ''"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe "'';
+AViewer.BrowserPath := '/usr/bin/mozilla';  // or
+AViewer.BrowserPath := '"C:\Program Files (X86)\Google\Chrome\Application\chrome.exe"';
 </code>
 <p>
 When BrowserPath contains an empty string (<b>''</b>), the FindDefaultBrowser 
