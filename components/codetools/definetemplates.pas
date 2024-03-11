@@ -10585,7 +10585,10 @@ begin
           Filename:=copy(Filename,2,length(Filename));
           FullFilename:=ExpandFileNameUTF8(TrimFileName(Filename),BaseDir);
           if CfgFileExists<>FileExistsCached(FullFilename) then begin
-            debugln(['Warning: [TPCTargetConfigCache.Update] '+ExtractFileName(Compiler)+' found cfg a file, the IDE did not: "',Filename,'"']);
+            if CfgFileExists then
+              debugln(['Warning: [TPCTargetConfigCache.Update] '+ExtractFileName(Compiler)+' found cfg a file, the IDE did not: "',Filename,'"'])
+            else
+              debugln(['Warning: [TPCTargetConfigCache.Update] '+ExtractFileName(Compiler)+' did not found a cfg file, the IDE did: "',Filename,'"']);
             CfgFileExists:=not CfgFileExists;
           end;
           CfgFileDate:=0;
