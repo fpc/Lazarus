@@ -774,9 +774,10 @@ var
   ParentForm: TCustomForm;
   C, ActiveControl: TWinControl;
 begin
+  Assert(Assigned(APage),'TCustomTabControl.MaybeSelectFirstControlOnPage: APage=nil');
   ParentForm := GetParentForm(Self);
   //Debugln(['TCustomTabControl.ActivateFirstControl: Self=',DbgSName(Self),', APage=',DbgSName(APage),', ParentForm=',DbgSName(ParentForm)]);
-  if not (Assigned(APage) and Assigned(ParentForm) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
+  if not (Assigned(ParentForm) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
     Exit;
   //Debugln(['TCustomTabControl.ActivateFirstControl: APage.Visible=',APage.Visible,', APage.Enabled=',APage.Enabled,', (APage.ControlCount > 0)=', (APage.ControlCount > 0)]);
   ActiveControl := ParentForm.ActiveControl;
@@ -1050,8 +1051,6 @@ end;
 procedure TCustomTabControl.Change;
 var
   APage: TCustomPage;
-  ParentForm: TCustomForm;
-  ActiveControl: TWinControl;
 begin
   //DebugLn(['TCustomTabControl.Change ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   ShowCurrentPage;
@@ -1061,9 +1060,7 @@ begin
   begin
     APage :=  ActivePageComponent;
     //debugln(['TCustomTabControl.Change: Self=',DbgSName(Self),', APage',DbgSName(APage)]);
-    //if Assigned(APage) then debugln(['APage.Visible=',APage.Visible,', APage.Enabled=',APage.Enabled,', (APage.ControlCount > 0)=',(APage.ControlCount > 0)]);
-    ParentForm := GetParentForm(Self);
-    if (Assigned(ParentForm) and Assigned(APage) and APage.Visible and APage.Enabled and (APage.ControlCount > 0)) then
+    if Assigned(APage) then
       MaybeSelectFirstControlOnPage(APage);
 
     DoChange;
@@ -1099,11 +1096,15 @@ begin
 end;
 
 procedure TCustomTabControl.InternalSetPageIndex(AValue: Integer);
+var
+  APage: TCustomPage;
 begin
   FPageIndex := AValue;
   UpdateAllDesignerFlags;
   DoSendPageIndex;
-  MaybeSelectFirstControlOnPage(GetActivePageComponent);
+  APage := GetActivePageComponent;
+  if Assigned(APage) then
+    MaybeSelectFirstControlOnPage(APage);
 end;
 
 {------------------------------------------------------------------------------
