@@ -1281,6 +1281,85 @@ location where c was located.
 <short>Maximum number of characters examined in the routine.</short>
 </element>
 
+<element name="SaveStringToFile">
+<short>
+Writes the specified string value to the specified file name.
+</short>
+<descr>
+<p>
+<var>SaveStringToFile</var> creates a TFileStream instance for the specified 
+file name, and writes the content in <var>AString</var> to the stream. The 
+stream is created with fmCreate mode. The Write method in the file stream is 
+used to store the value in AString. The return value is <b>True</b> if the 
+string value was successfully written to the stream instance.
+</p>
+<p>
+Use LoadStringFromFile to read a string value from a file.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
+<seealso>
+<link id="LoadStringFromFile"/>
+<link id="#rtl.classes.TFileStream">TFileStream</link>
+</seealso>
+</element>
+<element name="SaveStringToFile.Result">
+<short>
+Returns <b>True</b> if the string was successfully written to the file.
+</short>
+</element>
+<element name="SaveStringToFile.AString">
+<short>
+String value stored in the routine.
+</short>
+</element>
+<element name="SaveStringToFile.AFileName">
+<short>
+File name where the string value is stored.
+</short>
+</element>
+
+<element name="LoadStringFromFile">
+<short>
+Reads a string with the contents of the specified file name.
+</short>
+<descr>
+<p>
+<var>LoadStringFromFile</var> creates a TFileStream instance used to load the 
+values from the file name in <var>AFileName</var>. The stream is created with 
+the fmOpenREad file mode, and its Read method is called to read the contents of 
+the entire file stream.
+</p>
+<p>
+The return values is a String type with the values read from the stream, and 
+its size matches the size of the file stream. If the file stream has no 
+content, the return value is an empty string ('').
+</p>
+<p>
+Use SaveStringToFile to store a string to a specified file name.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
+<seealso>
+<link id="SaveStringToFile"/>
+<link id="#rtl.classes.TFileStream">TFileStream</link>
+</seealso>
+</element>
+<element name="LoadStringFromFile.Result">
+<short>
+String with content read from the specified file name.
+</short>
+</element>
+<element name="LoadStringFromFile.AFileName">
+<short>
+Qualified file name with the string value read in the routine.
+</short>
+</element>
+
 <element name="LazIsValidIdent">
 <short>
 Deprecated. Use SysUtils.IsValidIdent in RTL instead.
