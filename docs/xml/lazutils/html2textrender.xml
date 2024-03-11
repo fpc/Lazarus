@@ -101,6 +101,12 @@ class instance.
 <element name="THTML2TextRenderer.fMaxLines">
 <short>Maximum number of lines allowed in the output from the class.</short>
 </element>
+
+<!-- TODO: Added in 103d9f42. -->
+<element name="THTML2TextRenderer.fMaxLineLen">
+<short>Maximum length allowed for a line in the render output.</short>
+</element>
+
 <element name="THTML2TextRenderer.fLineEndMark">
 <short>End of line marker, by default standard LineEnding.</short>
 </element>
@@ -148,6 +154,11 @@ wrapped line.
 The current indentation level for the renderer.
 </short>
 </element>
+
+<element name="THTML2TextRenderer.fLineLen">
+<short></short>
+</element>
+
 <element name="THTML2TextRenderer.fLineCnt">
 <short>Number of lines added to the output for the class.</short>
 </element>
@@ -314,6 +325,18 @@ renderer. Reset sets values for internal flags used in the class, and clears
 any content stored in the render output.
 </p>
 </descr>
+</element>
+
+<element name="THTML2TextRenderer.SplitLongLine">
+<short>
+Adds a new line to split a line when it reaches the maximum length allowed in 
+the class.
+</short>
+</element>
+<element name="THTML2TextRenderer.SplitLongLine.Result">
+<short>
+Returns <b>True</b> if the line exceeded the allowed length and a new line was added.
+</short>
 </element>
 
 <element name="THTML2TextRenderer.Create">
@@ -528,6 +551,44 @@ text output for the renderer. The default value for the property is <b>2</b>,
 and is used in the implementation of the <var>AddOutput</var> method.
 </p>
 </descr>
+<seealso/>
+</element>
+
+<element name="THTML2TextRenderer.MaxLineLen">
+<short>
+Maximum number of characters allowed in a line output by the renderer.
+</short>
+<descr>
+<p>
+The default value for the property is 80 (characters) as assigned in the Create 
+constructor.
+</p>
+<p>
+<var>MaxLineLen</var> is used when the AddOutput method checks the length of 
+the generated output from the class.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="THTML2TextRenderer.IndentStep">
+<short>
+Increment (in spaces) for each nested HTML level.
+</short>
+<descr>
+<p>
+<var>IndentStep</var> contains the number of spaces included at the start a 
+line each time a new Indent level is set for the renderer. The default value 
+for the property is 2 (characters) per Indent level as assigned in the Create 
+constructor.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
 <seealso/>
 </element>
 
