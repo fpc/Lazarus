@@ -653,6 +653,30 @@ begin
       Tool.Release(Self);
     end;
 
+    if Clean then
+    begin
+      // build
+      Tool:=ExternalToolList.Add('make starter');
+      Tool.Reference(Self,ClassName);
+      try
+        Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'make starter',
+          MakeExe);
+        Tool.FreeData:=true;
+        Tool.Process.Executable:=MakeExe;
+        Tool.Process.Parameters.Add('starter');
+        Tool.AddParsers(SubToolFPC);
+        Tool.AddParsers(SubToolMake);
+        Tool.Process.CurrentDirectory:=fWorkingDir;
+        Tool.EnvironmentOverrides:=EnvironmentOverrides;
+        Tool.Execute;
+        Tool.WaitForExit;
+        if Tool.ErrorMessage<>'' then
+          exit(mrCancel);
+      finally
+        Tool.Release(Self);
+      end;
+    end;
+
   finally
     EnvironmentOverrides.Free;
   end;
