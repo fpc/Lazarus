@@ -93,7 +93,24 @@ const
   HelpShortcut = 'F1';
   {$ENDIF}
 begin
-  HTMLHelpDatabase1.BaseURL:='file://html';
+  // path relative to the application directory in BaseURL
+  HTMLHelpDatabase1.BaseURL:='file://html/'; // works
+
+  // absolute path in BaseURL
+  // for Windows
+  //HTMLHelpDatabase1.BaseURL:='file://c:/lazarus/examples/helphtml/html/'; // works
+  //HTMLHelpDatabase1.BaseURL:='file://c:\temp\html\'; //works
+  //HTMLHelpDatabase1.BaseURL:='c:\temp\html\'; // works
+  //HTMLHelpDatabase1.BaseURL:='c:/temp/html\'; // works
+  //HTMLHelpDatabase1.BaseURL:='file://c|/temp/html/'; // fails - | not supported
+  //HTMLHelpDatabase1.BaseURL:='file://c|\temp\html\'; // fails - | not supported
+  //HTMLHelpDatabase1.BaseURL:='file:///temp/html/'; // fails - not absolute on Windows
+
+  // absolute paths in BaseURL
+  // for Linux
+  //HTMLHelpDatabase1.BaseURL:='file:///usr/temp/html/';
+  //HTMLHelpDatabase1.BaseURL:='file://~/html/';
+
   Edit1.Text:='Edit1 - Press '+HelpShortcut+' for help';
   Edit2.Text:='Edit2 - Press '+HelpShortcut+' for help';
 end;
