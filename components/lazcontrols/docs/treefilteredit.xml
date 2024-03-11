@@ -411,8 +411,19 @@ control.
 </short>
 <descr>
 <p>
-Implements the abstract virtual method introduced in the 
-TCustomControlFilterEdit ancestor.
+Implements the abstract virtual method introduced in the TCustomControlFilterEdit ancestor. 
+</p>
+<p>
+MoveNext ensures that FilteredTreeview has been configured to allow 
+multi-selections and use of the Shift key when selecting nodes on the control.
+</p>
+<p>
+ASelect indicates whether the next Node is selected (<b>True</b>) or unselected 
+(<b>False</b>). If the tree view controls has not enabled multi-selections 
+using the Shift key, its value is changed to <b>False</b>.
+</p>
+<p>
+No actions are performed in the method if the FilteredTreeview property has not been assigned.
 </p>
 </descr>
 <seealso/>
@@ -433,6 +444,18 @@ control.
 <p>
 Implements the abstract virtual method introduced in the 
 TCustomControlFilterEdit ancestor.
+</p>
+<p>
+MovePrev ensures that FilteredTreeview has been configured to allow 
+multi-selections and use of the Shift key when selecting nodes on the control.
+</p>
+<p>
+ASelect indicates whether the previous Node is selected (<b>True</b>) or 
+unselected (<b>False</b>). If the tree view controls has not enabled 
+multi-selections using the Shift key, its value is changed to <b>False</b>.
+</p>
+<p>
+No actions are performed in the method if the FilteredTreeview property has not been assigned.
 </p>
 </descr>
 <seealso/>
@@ -574,11 +597,13 @@ When FilteredTreeview has been assigned in the control, the following values
 in Key and Shift are handled:
 </p>
 <dl>
-<dt>Alt+Left, Alt+Right</dt>
+<dt>Alt+Left</dt>
 <dd>
-Moves the selection in the associated tree view. Extends the selected cells in 
-the associated tree view when the option is enabled in the MultiSelectionStyle 
-for the tree view control.
+Moves the selection in the associated tree view and collapses its child nodes. 
+</dd>
+<dt>Alt+Right</dt>
+<dd>
+Moves the selection in the associated tree view and expands its child nodes. 
 </dd>
 <dt>Shift+Alt+Left</dt>
 <dd>
