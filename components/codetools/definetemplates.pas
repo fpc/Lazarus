@@ -1788,7 +1788,9 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         // skip keywords
         Inc(CurPos, 19);
         Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
-        ConfigFiles.Add('-'+Filename);
+        i:=ConfigFiles.IndexOf('-'+Filename);
+        if i<0 then
+          ConfigFiles.Add('-'+Filename);
       end else if IsUpLine(CurPos,'COMPILER: ') then begin
         // skip keywords
         Inc(CurPos, 10);
@@ -1840,9 +1842,12 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         // skip keywords
         Inc(CurPos, 26);
         Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
-        if (ConfigFiles.Count>0)
-        and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
-          ConfigFiles.Delete(ConfigFiles.Count-1);
+        i:=ConfigFiles.IndexOf('-'+Filename);
+        if i>=0 then
+          ConfigFiles.Delete(i);
+        i:=ConfigFiles.IndexOf('+'+Filename);
+        if i>=0 then
+          ConfigFiles.Delete(i);
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Used options file: "',Filename,'"');
         {$ENDIF}
