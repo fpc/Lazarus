@@ -4026,7 +4026,7 @@ var
   NodeCacheEntryFlags: TNodeCacheEntryFlags;
   Flags: TFindDeclarationFlags;
   OldFlags: TFindDeclarationFlags;
-  SearchInHelpersInTheEnd: Boolean;
+  SearchInHelpersInTheEnd, SkipThisNode: Boolean;
 
   procedure InitNodesAndCacheAccess;
   
@@ -4969,109 +4969,114 @@ begin
       {$ENDIF}
       // search identifier in current context
       LastContextNode:=ContextNode;
+      SkipThisNode := False;
       if not (fdfIgnoreCurContextNode in Flags) then begin
         // search in cache
         if FindInNodeCache then begin
-          if CheckResult(Params.NewNode<>nil,Params.NewNode<>nil) then
-            exit;
+          SkipThisNode := Params.NewNode = nil; // Cache says: this node does not have the value
+          if (not SkipThisNode) then
+            if CheckResult(True,True) then
+              exit;
         end;
-        if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
-        LastSearchedNode:=ContextNode;
+        if (not SkipThisNode) then begin
+          if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
+          LastSearchedNode:=ContextNode;
 
-        case ContextNode.Desc of
+          case ContextNode.Desc of
 
-        ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
-        ctnLabelSection, ctnPropertySection,
-        ctnInterface, ctnImplementation,
-        ctnProgram, ctnLibrary,
-        ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
-        ctnClassClassVar,
-        ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
-        ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
-        ctnRecordType, ctnRecordVariant,
-        ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
-        ctnEnumerationType,
-        ctnParameterList:
-          // these nodes build a parent-child relationship. But in pascal
-          // they just define a range and not a context.
-          // -> search in all children
-          MoveContextNodeToChildren;
-
-        ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
-        ctnGlobalProperty:
-          if SearchInTypeVarConstGlobPropDefinition then exit;
-
-        ctnGenericType:
-          if SearchInGenericType then exit;
-        // ctnGenericParams: skip here, it was searched before searching the ancestors
-
-        ctnIdentifier:
-          if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
-              and (ContextNode=ContextNode.Parent.LastChild)
-              and SearchInTypeOfVarConst then
-            exit;
-
-        ctnEnumIdentifier,ctnLabel:
-          if SearchInEnumLabelDefinition then exit;
-
-        ctnProcedure:
-          begin
-            IdentifierFoundResult:=FindIdentifierInProcContext(ContextNode,Params);
-            if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-              if CheckResult(IdentifierFoundResult=ifrSuccess,true) then begin
-                {$IFDEF ShowProcSearch}
-                DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, stopping']);
-                {$ENDIF}
-                exit;
-              end;
-              {$IFDEF ShowProcSearch}
-              DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, continue']);
-              {$ENDIF}
-            end;
-          end;
-
-        ctnProcedureHead:
-          begin
-            BuildSubTreeForProcHead(ContextNode);
-            if ContextNode.FirstChild<>nil then
-              ContextNode:=ContextNode.FirstChild; // the ctnParameterList
-          end;
-
-        ctnProperty:
-          if SearchInProperty then exit;
-          
-        ctnUsesSection:
-          begin
-            if FindIdentifierInUsesSection(ContextNode,Params,True)
-            and CheckResult(true,false) then
-              exit;
-          end;
-
-        ctnWithVariable:
-          begin
-            if FindIdentifierInWithVarContext(ContextNode,Params)
-            and CheckResult(true,false) then
-              exit;
-          end;
-          
-        ctnOnBlock:
-          if SearchInOnBlockDefinition then exit;
-
-        ctnPointerType,ctnClassOfType:
-          begin
-            // pointer and class-of can be forward definitions
-            // -> search in both directions
-            Params.ContextNode:=ContextNode.Parent;
-            if CheckResult(FindForwardIdentifier(Params,IsForward),false) then
-              exit;
-          end;
-
-        ctnRecordCase:
-          begin
-            // search in variable and variants
+          ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
+          ctnLabelSection, ctnPropertySection,
+          ctnInterface, ctnImplementation,
+          ctnProgram, ctnLibrary,
+          ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
+          ctnClassClassVar,
+          ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+          ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass,
+          ctnRecordType, ctnRecordVariant,
+          ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
+          ctnEnumerationType,
+          ctnParameterList:
+            // these nodes build a parent-child relationship. But in pascal
+            // they just define a range and not a context.
+            // -> search in all children
             MoveContextNodeToChildren;
+
+          ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
+          ctnGlobalProperty:
+            if SearchInTypeVarConstGlobPropDefinition then exit;
+
+          ctnGenericType:
+            if SearchInGenericType then exit;
+          // ctnGenericParams: skip here, it was searched before searching the ancestors
+
+          ctnIdentifier:
+            if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
+                and (ContextNode=ContextNode.Parent.LastChild)
+                and SearchInTypeOfVarConst then
+              exit;
+
+          ctnEnumIdentifier,ctnLabel:
+            if SearchInEnumLabelDefinition then exit;
+
+          ctnProcedure:
+            begin
+              IdentifierFoundResult:=FindIdentifierInProcContext(ContextNode,Params);
+              if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
+                if CheckResult(IdentifierFoundResult=ifrSuccess,true) then begin
+                  {$IFDEF ShowProcSearch}
+                  DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, stopping']);
+                  {$ENDIF}
+                  exit;
+                end;
+                {$IFDEF ShowProcSearch}
+                DebugLn(['TFindDeclarationTool.FindIdentifierInContext ctnProcedure FOUND, continue']);
+                {$ENDIF}
+              end;
+            end;
+
+          ctnProcedureHead:
+            begin
+              BuildSubTreeForProcHead(ContextNode);
+              if ContextNode.FirstChild<>nil then
+                ContextNode:=ContextNode.FirstChild; // the ctnParameterList
+            end;
+
+          ctnProperty:
+            if SearchInProperty then exit;
+
+          ctnUsesSection:
+            begin
+              if FindIdentifierInUsesSection(ContextNode,Params,True)
+              and CheckResult(true,false) then
+                exit;
+            end;
+
+          ctnWithVariable:
+            begin
+              if FindIdentifierInWithVarContext(ContextNode,Params)
+              and CheckResult(true,false) then
+                exit;
+            end;
+
+          ctnOnBlock:
+            if SearchInOnBlockDefinition then exit;
+
+          ctnPointerType,ctnClassOfType:
+            begin
+              // pointer and class-of can be forward definitions
+              // -> search in both directions
+              Params.ContextNode:=ContextNode.Parent;
+              if CheckResult(FindForwardIdentifier(Params,IsForward),false) then
+                exit;
+            end;
+
+          ctnRecordCase:
+            begin
+              // search in variable and variants
+              MoveContextNodeToChildren;
+            end;
+
           end;
-          
         end;
       end else begin
         Exclude(Params.Flags,fdfIgnoreCurContextNode);
