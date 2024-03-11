@@ -831,6 +831,8 @@ end;
 
 {$endif}
 
+{ TWin32WSTrackBar }
+
 function TrackBarParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
       Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
@@ -861,7 +863,27 @@ begin
   end;
 end;
 
-{ TWin32WSTrackBar }
+function TrackbarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+  LParam: Windows.LParam): LResult; stdcall;
+var
+  Control: TWinControl;
+  LMessage: TLMessage;
+begin
+  case Msg of
+    // prevent flickering
+    WM_ERASEBKGND:
+      begin
+        Control := GetWin32WindowInfo(Window)^.WinControl;
+        LMessage.msg := Msg;
+        LMessage.wParam := WParam;
+        LMessage.lParam := LParam;
+        LMessage.Result := 1;
+        Result := DeliverMessage(Control, LMessage);
+      end;
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
 
 class function TWin32WSTrackBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -875,6 +897,7 @@ begin
   begin
     pClassName := TRACKBAR_CLASS;
     WindowTitle := StrCaption;
+    SubClassWndProc := @TrackbarWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
