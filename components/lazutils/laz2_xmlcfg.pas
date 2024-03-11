@@ -623,7 +623,7 @@ procedure TXMLConfig.SetDeleteValue(const APath: String; const AValue,
   DefValue; const APTypeInfo: PTypeInfo);
 begin
   if CompareMem(@AValue, @DefValue, SizeOfTypeInfo(APTypeInfo)) then
-    DeletePath(APath)
+    DeleteValue(APath)
   else
     SetValue(APath, ValueWithTypeInfoToString(AValue, APTypeInfo));
 end;
@@ -641,7 +641,7 @@ begin
     else t := False;
   end;
   if t then
-    DeletePath(APath)
+    DeleteValue(APath)
   else
     SetValue(APath, AValue, APTypeInfo);
 end;
