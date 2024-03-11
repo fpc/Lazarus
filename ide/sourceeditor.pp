@@ -2913,8 +2913,9 @@ begin
 end;
 
 procedure TSourceEditCompletion.ICPopUpMenuItemClick(Sender: TObject);
-var A:TIdentComplSortMethod;
+var A,B:TIdentComplSortMethod;
 begin  //ready to change range of TIdentComplSortMethod
+  B:= CodeToolBoss.IdentifierList.SortMethodForCompletion;
   for A in TIdentComplSortMethod do begin
     if Sender=FicPopUpMenuItems[A] then begin
       FicPopUpMenuItems[A].Checked:= true;
@@ -2923,7 +2924,9 @@ begin  //ready to change range of TIdentComplSortMethod
     end else
       FicPopUpMenuItems[A].Checked:=false;
   end;
-  Manager.DeactivateCompletionForm;
+  if B<>CodeToolsOpts.IdentComplSortMethod then
+    ccExecute(FicPopUpMenu);
+
 end;
 
 procedure TSourceEditCompletion.SynCompletionCompletePrefix(Sender: TObject);
