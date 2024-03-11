@@ -32,9 +32,9 @@ uses
   // LCL
   Controls, Dialogs, Graphics, StdCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazUTF8,
+  LazFileUtils, LazStringUtils, LazUTF8, LazLoggerBase,
   // CodeTools
-  DefineTemplates,
+  DefineTemplates, CodeToolManager,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, IDEDialogs, IDEUtils,
   // IDE
@@ -78,6 +78,7 @@ type
     FIsPackage: boolean;
     procedure UpdateByTargetOS(aTargetOS: string);
     procedure UpdateByTargetCPU(aTargetCPU: string);
+    procedure FillSubTargetComboBox;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -258,6 +259,75 @@ begin
   ParsingFrame.grpAsmStyle.Visible := IsCPUX86(aTargetCPU);
 end;
 
+procedure TCompilerConfigTargetFrame.FillSubTargetComboBox;
+var
+  sl: TStringListUTF8Fast;
+  aCache: TFPCUnitSetCache;
+  Cfg: TPCTargetConfigCache;
+  CfgFiles: TPCConfigFileStateList;
+  i, j: Integer;
+  aFilename, Dir, SubTarget, CfgFilename, Prefix: String;
+  SearchedDirs, Files: TStrings;
+begin
+  sl:=TStringListUTF8Fast.Create;
+  try
+    sl.Assign(InputHistories.HistoryLists.GetList('Subtarget',true,rltCaseInsensitive));
+
+    // search for possible subtargets
+    // fpc searches subtarget configs in the same directories it searches for normal configs
+    // codetools has the list of searched cfg files as reported by fpc
+    aCache:=CodeToolBoss.GetUnitSetForDirectory('');
+    if aCache<>nil then begin
+      Cfg:=aCache.GetConfigCache(false);
+      if Cfg<>nil then begin
+        CfgFiles:=Cfg.ConfigFiles;
+        if CfgFiles<>nil then begin
+          SearchedDirs:=TStringListUTF8Fast.Create;
+          Files:=TStringListUTF8Fast.Create;
+          try
+            // iterate all cfg files reported by fpc
+            for i:=0 to CfgFiles.Count-1 do begin
+              CfgFilename:=CfgFiles[i].Filename;
+              aFilename:=ExtractFileNameOnly(CfgFilename);
+              if StartsStr('.fpc',aFilename) then
+                Prefix:='.fpc-'
+              else
+                Prefix:='fpc-';
+              Dir:=ExtractFilePath(CfgFilename);
+              if SearchedDirs.IndexOf(Dir)>=0 then continue;
+              SearchedDirs.Add(Dir);
+              Files.Clear;
+              // search for prefix<subtarget>.cfg files
+              CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
+              if Files<>nil then begin
+                for j:=0 to Files.Count-1 do begin
+                  aFilename:=Files[j];
+                  if CompareFileExt(aFilename,'cfg')<>0 then continue;
+                  if not AnsiStartsStr(Prefix,aFilename) then continue;
+                  SubTarget:=lowercase(copy(ExtractFileNameOnly(aFilename),length(Prefix)+1,length(aFilename)));
+                  if sl.IndexOf(SubTarget)>=0 then continue;
+                  sl.Add(SubTarget);
+                end;
+              end;
+            end;
+          finally
+            SearchedDirs.Free;
+            Files.Free;
+          end;
+        end;
+      end;
+    end;
+    with SubtargetComboBox do begin
+      Items.BeginUpdate;
+      Items.Assign(sl);
+      SetComboBoxText(SubtargetComboBox,Subtarget,cstCaseInsensitive);
+      Items.EndUpdate;
+    end;
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   s: ShortString;
@@ -363,12 +433,9 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-      with SubtargetComboBox do begin
-        Items.BeginUpdate;
-        Items.Assign(InputHistories.HistoryLists.GetList('Subtarget',true,rltCaseInsensitive));
-        SetComboBoxText(SubtargetComboBox,Subtarget,cstCaseInsensitive);
-        Items.EndUpdate;
-      end;
+      // SubTarget
+      FillSubTargetComboBox;
+
       PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
       CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
       LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
