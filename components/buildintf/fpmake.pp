@@ -3,7 +3,7 @@
 
    fpmake.pp for BuildIntf 1.0
 
-   This file was generated on 13.10.2020
+   This file was generated on 12.03.2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -47,6 +47,7 @@ begin
     T:=P.Targets.AddUnit('buildintf.pas');
     t.Dependencies.AddUnit('baseideintf');
     t.Dependencies.AddUnit('buildstrconsts');
+    t.Dependencies.AddUnit('componentreg');
     t.Dependencies.AddUnit('compoptsintf');
     t.Dependencies.AddUnit('fppkgintf');
     t.Dependencies.AddUnit('ideexterntoolintf');
@@ -65,6 +66,7 @@ begin
 
     T:=P.Targets.AddUnit('baseideintf.pas');
     T:=P.Targets.AddUnit('buildstrconsts.pas');
+    T:=P.Targets.AddUnit('componentreg.pas');
     T:=P.Targets.AddUnit('compoptsintf.pas');
     T:=P.Targets.AddUnit('fppkgintf.pas');
     T:=P.Targets.AddUnit('ideexterntoolintf.pas');
@@ -82,8 +84,8 @@ begin
     T:=P.Targets.AddUnit('publishmoduleintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('BuildIntf.compiled');
-    P.InstallFiles.Add('BuildIntf.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('buildintf.compiled');
+    P.InstallFiles.Add('buildintf.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

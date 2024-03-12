@@ -39,9 +39,10 @@ uses
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
   // LazUtils
   FileUtil, LazUTF8,
-  // BuildIntf, IdeIntf
-  IDEOptionsIntf,
-  ComponentReg, IDECommands, LazIDEIntf, IDEOptEditorIntf,
+  // BuildIntf
+  ComponentReg, IDEOptionsIntf,
+  // IdeIntf
+  IDECommands, LazIDEIntf, IDEOptEditorIntf,
   IDEScoutStrConsts;
 
 Type

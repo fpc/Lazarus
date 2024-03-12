@@ -38,8 +38,10 @@ uses
   LazLoggerBase, LazTracer,
   // LCL
   LCLIntf, LCLType, Forms, Controls, Graphics, Menus, ActnList,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
-  FormEditingIntf, ComponentReg;
+  FormEditingIntf;
 
 type
   TDesignerDCFlag = (

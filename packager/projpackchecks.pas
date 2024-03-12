@@ -13,9 +13,9 @@ uses
   // Codetools
   CodeToolManager, CodeCache,
   // BuildIntf
-  PackageIntf, PackageDependencyIntf,
+  PackageIntf, PackageDependencyIntf, ComponentReg,
   // IDEIntf
-  ComponentReg, IDEDialogs,
+  IDEDialogs,
   // IDE
   LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs, ProjPackCommon;
 

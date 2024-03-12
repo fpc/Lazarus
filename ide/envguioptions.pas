@@ -11,9 +11,9 @@ uses
   // LazUtils
   LazFileUtils, FileUtil, LazFileCache, LazUTF8, Laz2_XMLCfg, Laz2_DOM,
   // BuildIntf
-  ProjectIntf, IDEOptionsIntf, IDEExternToolIntf,
+  ProjectIntf, IDEOptionsIntf, IDEExternToolIntf, ComponentReg,
   // IDEIntf
-  ObjectInspector, IDEWindowIntf, IDEOptEditorIntf, ComponentReg, SrcEditorIntf,
+  ObjectInspector, IDEWindowIntf, IDEOptEditorIntf, SrcEditorIntf,
   // IdeConfig
   IDEOptionDefs, EnvironmentOpts, ModeMatrixOpts, CoolBarOptions, EditorToolBarOptions;
 

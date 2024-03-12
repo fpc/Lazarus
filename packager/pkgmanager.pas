@@ -58,10 +58,10 @@ uses
   FileProcs, CodeTree, CTUnitGraph,
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
-  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf,
+  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
-  IdeIntfStrConsts, ComponentReg, ComponentEditors, PropEdits, IDEDialogs,
+  IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
   UnitResources, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs,

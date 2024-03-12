@@ -26,6 +26,10 @@
         <UnitName Value="BuildStrConsts"/>
       </Item>
       <Item>
+        <Filename Value="componentreg.pas"/>
+        <UnitName Value="ComponentReg"/>
+      </Item>
+      <Item>
         <Filename Value="compoptsintf.pas"/>
         <UnitName Value="CompOptsIntf"/>
       </Item>

@@ -40,9 +40,10 @@ uses
   LazLoggerBase, LazUTF8, LazFileCache, AvgLvlTree,
   // LazControls
   TreeFilterEdit,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
-  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg, LazIDEIntf,
-  TextTools,
+  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, LazIDEIntf, TextTools,
   // IDE
   LazarusIDEStrConsts, ComponentPalette, PackageDefs, IDEOptionDefs, EnvGuiOptions,
   Designer;

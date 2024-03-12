@@ -36,12 +36,12 @@ type
     cpNormal,
     cpOptional
     );
-    
+
   TComponentPriority = record
     Category: TComponentPriorityCategory;
     Level: integer; // higher level means higher priority (range: -1000 to 1000)
   end;
-    
+
 const
   ComponentPriorityNormal: TComponentPriority = (Category: cpNormal; Level: 0);
 
@@ -192,7 +192,7 @@ type
   TBaseComponentPageClass = class of TBaseComponentPage;
 
   { TBaseComponentPalette }
-  
+
   TComponentPaletteHandlerType = (
     cphtVoteVisibility,  // Visibility of component palette icons is recomputed
     cphtComponentAdded,  // Typically selection is changed after component was added.
@@ -312,7 +312,7 @@ type
     property UserOrder: TCompPaletteUserOrder read fUserOrder;
     property OnClassSelected: TNotifyEvent read fOnClassSelected write fOnClassSelected;
   end;
-  
+
 
 var
   IDEComponentPalette: TBaseComponentPalette = nil;

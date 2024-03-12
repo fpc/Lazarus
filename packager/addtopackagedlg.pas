@@ -36,9 +36,10 @@ uses
   Dialogs, ComCtrls, ButtonPanel,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazUTF8,
+  // BuildIntf
+  ComponentReg,
   // IDEIntf
-  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg,
-  IDEDialogs, InputHistory,
+  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs, InputHistory,
   // IdeConfig
   EnvironmentOpts,
   // IDE

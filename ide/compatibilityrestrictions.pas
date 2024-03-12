@@ -39,8 +39,10 @@ uses
   Forms, LCLPlatformDef,
   // LazUtils
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, StringHashList, LazLoggerBase,
+  // BuildIntf
+  PackageIntf, ComponentReg,
   // IdeIntf
-  OIFavoriteProperties, PackageIntf, ComponentReg,
+  OIFavoriteProperties,
   // IDE
   PackageSystem, PackageDefs;
 

@@ -18,9 +18,11 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, LMessages, LCLType,
+  Forms, Controls, LMessages, LCLType,
+  // BuildIntf
+  ComponentReg,
   // IDEIntf
-  ComponentEditors, PropEdits, ComponentReg;
+  ComponentEditors, PropEdits;
 
 type
 

@@ -13,9 +13,10 @@ uses
   Laz2_XMLCfg, Laz2_DOM,
   // CodeTools
   FileProcs, SourceChanger, CodeCompletionTool,
+  // BuildIntf
+  ProjectIntf, IDEOptionsIntf, IDEExternToolIntf, ComponentReg,
   // IDEIntf
-  ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf,
-  ComponentReg, IDEExternToolIntf, SrcEditorIntf,
+  ObjectInspector, IDEWindowIntf, IDEOptEditorIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeConfig

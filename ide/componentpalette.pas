@@ -43,8 +43,10 @@ uses
   Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls, ImgList,
   // LazUtils
   LazFileUtils, LazFileCache, LazLoggerBase, AvgLvlTree,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
-  FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
+  FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits,
   // IDE
   MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvGuiOptions;
 

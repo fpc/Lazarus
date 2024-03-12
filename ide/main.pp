@@ -77,10 +77,10 @@ uses
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // BuildIntf
   BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker,
-  PackageIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf,
+  PackageIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, ComponentReg,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
-  IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
+  IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
   IdeIntfStrConsts, ToolBarIntf, SelEdits, InputHistoryCopy, InputHistory,
   // protocol

@@ -8,10 +8,11 @@ unit BuildIntf;
 interface
 
 uses
-  BaseIDEIntf, BuildStrConsts, CompOptsIntf, FppkgIntf, IDEExternToolIntf, 
-  IDEOptionsIntf, LazMsgWorker, MacroDefIntf, MacroIntf, NewItemIntf, 
-  PackageDependencyIntf, PackageIntf, PackageLinkIntf, ProjectIntf, 
-  ProjectResourcesIntf, ProjPackIntf, PublishModuleIntf, LazarusPackageIntf;
+  BaseIDEIntf, BuildStrConsts, ComponentReg, CompOptsIntf, FppkgIntf, 
+  IDEExternToolIntf, IDEOptionsIntf, LazMsgWorker, MacroDefIntf, MacroIntf, 
+  NewItemIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf, 
+  ProjectIntf, ProjectResourcesIntf, ProjPackIntf, PublishModuleIntf, 
+  LazarusPackageIntf;
 
 implementation
 

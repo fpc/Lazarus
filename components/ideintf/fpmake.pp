@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 10/02/2024
+   This file was generated on 12.03.2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -58,7 +58,6 @@ begin
     t.Dependencies.AddUnit('collectionpropeditform');
     t.Dependencies.AddUnit('columndlg');
     t.Dependencies.AddUnit('componenteditors');
-    t.Dependencies.AddUnit('componentreg');
     t.Dependencies.AddUnit('componenttreeview');
     t.Dependencies.AddUnit('dbgridcolumnspropeditform');
     t.Dependencies.AddUnit('dbpropedits');
@@ -119,7 +118,6 @@ begin
     T:=P.Targets.AddUnit('collectionpropeditform.pas');
     T:=P.Targets.AddUnit('columndlg.pp');
     T:=P.Targets.AddUnit('componenteditors.pas');
-    T:=P.Targets.AddUnit('componentreg.pas');
     T:=P.Targets.AddUnit('componenttreeview.pas');
     T:=P.Targets.AddUnit('dbgridcolumnspropeditform.pas');
     T:=P.Targets.AddUnit('dbpropedits.pas');

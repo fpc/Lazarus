@@ -75,10 +75,6 @@
         <UnitName Value="ComponentEditors"/>
       </Item>
       <Item>
-        <Filename Value="componentreg.pas"/>
-        <UnitName Value="ComponentReg"/>
-      </Item>
-      <Item>
         <Filename Value="componenttreeview.pas"/>
         <UnitName Value="ComponentTreeView"/>
       </Item>

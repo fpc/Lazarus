@@ -41,8 +41,10 @@ uses
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools
   CodeCache, CodeToolManager, CodeCompletionTool, LFMTrees,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
-  IDEExternToolIntf, ComponentReg, IDEImagesIntf,
+  IDEExternToolIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EditorOptions, CheckLFMDlg, Project, SourceMarks,
   // Converter

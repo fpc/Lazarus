@@ -34,9 +34,9 @@ uses
   // LazUtils
   FileUtil, Laz2_XMLCfg, ImgList,
   // BuildIntf
-  IDEOptionsIntf,
+  IDEOptionsIntf, ComponentReg,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf, ComponentReg,
+  IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs,
   // IDE

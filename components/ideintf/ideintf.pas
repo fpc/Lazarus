@@ -10,7 +10,7 @@ interface
 uses
   ActionsEditor, ActionsEditorStd, ChangeParentDlg, CheckGroupEditorDlg, 
   CheckListboxEditorDlg, CollectionPropEditForm, ColumnDlg, ComponentEditors, 
-  ComponentReg, ComponentTreeView, DBGridColumnsPropEditForm, DBPropEdits, 
+  ComponentTreeView, DBGridColumnsPropEditForm, DBPropEdits, 
   EditorSyntaxHighlighterDef, FieldsEditor, FieldsList, FileFilterPropEditor, 
   FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
   HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, IDEHelpIntf, 

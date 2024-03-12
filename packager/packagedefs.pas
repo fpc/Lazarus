@@ -48,10 +48,10 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, FileReferenceList,
   LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
-  MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf,
+  MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
   PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker,
   // IDEIntf
-  LazIDEIntf, ComponentReg,
+  LazIDEIntf,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
   // IDE

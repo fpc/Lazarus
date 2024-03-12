@@ -55,9 +55,9 @@ uses
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // BuildIntf
   IDEExternToolIntf, IDEOptionsIntf, MacroDefIntf, ProjectIntf, CompOptsIntf,
-  FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf,
+  FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, ComponentReg,
   // IDEIntf
-  IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf, ComponentReg,
+  IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf,
   // Package registration
   LazarusPackageIntf,
   // IdeConfig

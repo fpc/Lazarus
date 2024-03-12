@@ -45,10 +45,10 @@ uses
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
   // BuildIntf
   ProjectIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf,
-  IDEOptionsIntf, NewItemIntf,
+  IDEOptionsIntf, NewItemIntf, ComponentReg,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf, InputHistory,
-  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEOptEditorIntf,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs,
   // IDE

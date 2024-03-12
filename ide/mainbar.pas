@@ -46,8 +46,10 @@ uses
 {$ENDIF}
   // LazUtils
   LazFileCache,
+  // BuildIntf
+  ComponentReg,
   // IDEIntf
-  MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf, ComponentReg,
+  MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
   // IdeConfig
   CoolBarOptions,
   // IDE

@@ -47,10 +47,11 @@ uses
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // BuildIntf
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
+  ComponentReg,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
-  UnitResources, ComponentReg, InputHistory,
+  UnitResources, InputHistory,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
   // IDE

@@ -42,8 +42,10 @@ uses
   LazLoggerBase,
   // Codetools
   LFMTrees, CodeCache, CodeToolManager,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
-  ComponentReg, PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
+  PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, CheckLFMDlg, Project, MainIntf, EnvironmentOpts;
 

@@ -24,8 +24,10 @@ uses
   ExtCtrls, StdCtrls,
   // LazUtils
   LazConfigStorage, AvgLvlTree,
+  // BuildIntf
+  IDEOptionsIntf, ComponentReg,
   // IdeIntf
-  FormEditingIntf, IDEOptionsIntf, IDEOptEditorIntf, ComponentReg, IDEImagesIntf,
+  FormEditingIntf, IDEOptEditorIntf, IDEImagesIntf,
   // Education
   EduOptions;
 

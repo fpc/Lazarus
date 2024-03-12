@@ -25,9 +25,11 @@ uses
   Grids, CheckLst, ComCtrls, Dialogs,
   // LazUtils
   Maps, LazLoggerBase, LazUTF8,
+  // BuildIntf
+  ComponentReg,
   // IdeIntf
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
-  PropEdits, PropEditUtils, ComponentReg, ObjInspStrConsts;
+  PropEdits, PropEditUtils, ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }

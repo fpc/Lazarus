@@ -41,9 +41,10 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazStringUtils, LazLoggerBase,
   AvgLvlTree,
+  // BuildIntf
+  PackageIntf, ProjectIntf, ComponentReg, IDEExternToolIntf,
   // IDEIntf
-  ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
-  IDEExternToolIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
+  IDEDialogs, LazIDEIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
   // IdeConfig
   IDEProcs,
   // IDE

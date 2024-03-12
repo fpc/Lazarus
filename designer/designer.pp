@@ -44,10 +44,12 @@ uses
   Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
   GraphType, GraphMath, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
+  // BuildIntf
+  ProjectIntf, ComponentReg,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
-  IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,
-  ProjectIntf, ObjectInspector, IdeIntfStrConsts,
+  IDEImagesIntf, FormEditingIntf, IDECommands, LazIDEIntf,
+  ObjectInspector, IdeIntfStrConsts,
   // IDE
   LazarusIDEStrConsts, EnvGuiOptions, EditorOptions, SourceEditor,
   // Designer

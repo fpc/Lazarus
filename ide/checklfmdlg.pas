@@ -41,9 +41,11 @@ uses
   BasicCodeTools, CodeCache, CodeToolManager, LFMTrees,
   // SynEdit
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
+  // BuildIntf
+  PackageIntf, ComponentReg,
   // IDEIntf
-  IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils,
-  IdeIntfStrConsts, IDEMsgIntf, IDEImagesIntf, IDEDialogs, ComponentReg,
+  IDEExternToolIntf, IDEWindowIntf, PropEdits, PropEditUtils,
+  IdeIntfStrConsts, IDEMsgIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   CustomFormEditor, LazarusIDEStrConsts, EditorOptions, SourceMarks, JITForms;
 

@@ -48,8 +48,10 @@ uses
   LazUTF8, AvgLvlTree,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
+  // BuildIntf
+  ComponentReg,
   // IDEIntf
-  PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf, ComponentReg,
+  PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project, MainIntf, PackageDefs,
