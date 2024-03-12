@@ -233,6 +233,18 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgcpux86.pas"/>
         <UnitName Value="fpdbgcpux86"/>
       </Item>
+      <Item>
+        <Filename Value="fpdbgrspclasses.pas"/>
+        <UnitName Value="FpDbgRspClasses"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgdisasxtensa.pas"/>
+        <UnitName Value="FpDbgDisasXtensa"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgxtensaclasses.pas"/>
+        <UnitName Value="FpDbgXtensaClasses"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

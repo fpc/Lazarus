@@ -856,7 +856,7 @@ begin
   EnterCriticalSection(fCS);
   try
     result := SendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
-      and (length(reply) = 2*sz);
+      and (length(reply) >= 2*sz);
   finally
     LeaveCriticalSection(fCS);
   end;

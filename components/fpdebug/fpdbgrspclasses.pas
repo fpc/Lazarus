@@ -58,6 +58,9 @@ type
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     procedure StoreRegisters; override;
     procedure RestoreRegisters; override;
+
+    // Read access to internal registers
+    property InternalRegs: TInitializedRegisters read FRegs;
   end;
 
   { TDbgRspProcess }

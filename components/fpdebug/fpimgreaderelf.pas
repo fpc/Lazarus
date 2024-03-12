@@ -141,6 +141,7 @@ begin
     EM_IA_64:     result := mtIA_64;
     EM_X86_64:    result := mtX86_64;
     EM_AVR:       result := mtAVR8;
+    EM_XTENSA:    result := mtXTENSA;
     EM_ALPHA:     result := mtALPHA;
   else
     result := mtNone;
@@ -149,7 +150,7 @@ begin
   // If OS is not encoded in header, take some guess based on machine type
   if FTargetInfo.OS = osNone then
   begin
-    if result = mtAVR8 then
+    if result in [mtAVR8, mtXTENSA] then
       FTargetInfo.OS := osEmbedded
     else
       // Default to the same as host...
