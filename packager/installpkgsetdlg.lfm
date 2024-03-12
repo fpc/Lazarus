@@ -101,7 +101,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 0
     end
     object CancelButton: TBitBtn
-      Left = 164
+      Left = 523
       Height = 29
       Top = 6
       Width = 83
@@ -116,7 +116,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 1
     end
     object SaveAndExitButton: TBitBtn
-      Left = 442
+      Left = 378
       Height = 29
       Top = 6
       Width = 159
@@ -166,7 +166,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 3
     end
     object SaveAndRebuildButton: TBitBtn
-      Left = 253
+      Left = 216
       Height = 29
       Top = 6
       Width = 183
