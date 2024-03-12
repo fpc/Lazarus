@@ -1018,19 +1018,22 @@ Pointer to the RTTI type information for the value.
 </element>
 
 <element name="TXMLConfig.SetDeleteValue">
-<short>Updates or removes the value at the specified path </short>
+<short>
+Updates or removes the value stored at the specified path.
+</short>
 <descr>
 <p>
 <var>SetDeleteValue</var> is an overloaded method used to update or remove 
-the node at the path specified in APath. The AValue and DefValue arguments 
-determine whether the node is updated, or removed by calling DeletePath. When 
-AValue and DefValue are equal, this indicates the node value is the default 
-or unassigned value for the node and DeletePath is called to remove the node 
-at APath. Otherwise, SetValue is called to store AValue to the node path.
+the node at the path specified in APath. The <var>AValue</var> and 
+<var>DefValue</var> arguments determine whether the node is updated, or removed 
+by calling DeleteValue. When AValue and DefValue are equal, this indicates the 
+node has the default or unassigned value; DeleteValue is called to remove the 
+node at APath. Otherwise, SetValue is called to store AValue to the specified 
+node path.
 </p>
 <p>
 The overloaded variants allow the AValue and DefValue arguments to contain 
-various data types including String, Int64, Boolean, TRect, or untyped 
+various data types including: String, Int64, Boolean, TRect, or untyped 
 constants.
 </p>
 </descr>
