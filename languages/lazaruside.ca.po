@@ -462,6 +462,10 @@ msgstr ""
 msgid "Code folding tree"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr ""
@@ -2351,6 +2355,14 @@ msgstr ""
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Color del canal"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9647,7 +9659,7 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "S'ha produït un error mentre s'escrivia la llista de paquets al fitxer%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr ""
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10531,6 +10543,18 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
 msgstr ""
 
 #: lazarusidestrconsts.lishashelp
@@ -12090,6 +12114,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
+msgstr ""
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
 msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
@@ -17381,6 +17409,10 @@ msgstr ""
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr ""
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr ""
@@ -20446,6 +20478,34 @@ msgstr ""
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

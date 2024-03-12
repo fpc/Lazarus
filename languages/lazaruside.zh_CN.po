@@ -465,6 +465,10 @@ msgstr "括号高亮"
 msgid "Code folding tree"
 msgstr "源代码折叠树"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "默认文本"
@@ -2297,6 +2301,14 @@ msgstr "折叠"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "边栏颜色"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9449,7 +9461,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "写入软件包列表到文件 %s%s%s%s错误"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "行号间隔"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10366,6 +10380,18 @@ msgstr "启用或禁用调试输出的组.有效的选项是:"
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "扩展到最大"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -11924,6 +11950,10 @@ msgstr "左侧边界空格.这个值被添加到基本边界空格,并且被用�
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "左侧锚点"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16976,6 +17006,10 @@ msgstr "右侧锚点"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "右侧边界空格.这个值被添加到基本边界空格,并且被用于右侧控件的空间."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "这是锚点右侧的同级控件.在Delphi样式中保空以锚定到父级控件(边界空格和参考侧没有影响)"
@@ -19992,6 +20026,34 @@ msgstr "分隔"
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
 msgstr "伸直图"
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"

@@ -467,6 +467,10 @@ msgstr "Підсвічування дужок"
 msgid "Code folding tree"
 msgstr "Дерево згортань коду"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Текст за замовчуванням"
@@ -2295,6 +2299,14 @@ msgstr "Згорнуто"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Колір смужки"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9445,7 +9457,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Помилка запису списку пакунків у файл%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Кожен n-ний номер рядка"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10346,6 +10360,18 @@ msgstr "Увімкнення або вимкнення груп виводу з�
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Збільшити до найбільшого"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -11929,6 +11955,10 @@ msgstr "Лівий бордюр. Це значення додається до �
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Ліве якорювання"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16992,6 +17022,10 @@ msgstr "Праве якорювання"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "Правий бордюр. Значення додається до базового бордюру і використовується для відступу справа від елемента керування."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Це елемент керування одного рівня, за яким зафіксовано правий край. Залишити порожнім для фіксації за батьківським, як у Delphi (BorderSpacing і ReferenceSide не враховуються)."
@@ -20005,6 +20039,34 @@ msgstr "Окремі"
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
 msgstr "Вирівняти діаграму"
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"

@@ -466,6 +466,10 @@ msgstr "Zvýraznění závorky"
 msgid "Code folding tree"
 msgstr "Strom složení kódu"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Přednastavený text"
@@ -2322,6 +2326,14 @@ msgstr "Složeno"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Barva žlábku"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9517,7 +9529,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Chyba zápisu seznamu balíčků do souboru%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Každé n-té číslo řádku"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10430,6 +10444,18 @@ msgstr "Povolit nebo zakázat skupiny v ladicím výstupu. Platné volby jsou:"
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Narůst na největší"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -11991,6 +12017,10 @@ msgstr "Levý okraj. Tato hodnota je přidaná k základnímu okraji a použitá
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Levé ukotvení"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -17106,6 +17136,10 @@ msgstr "Pravé ukotvení"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "Pravý okraj. Tato hodnota je přidána k základnímu okraji a použitá pro odsazení vpravo od prvku."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Toto je sourozenec prvku, k jehož pravé straně je ukotvený. Ponechte prázdné pro ukotvení k rodiči v Delphi stylu (BorderSpacing a ReferenceSide nehrají roli)"
@@ -20118,6 +20152,34 @@ msgstr ""
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -468,6 +468,10 @@ msgstr "Skliaustelių paryškinimas"
 msgid "Code folding tree"
 msgstr "Kodo suskleidimo medis"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Numatytasis tekstas"
@@ -2356,6 +2360,14 @@ msgstr "Suskleista"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Kairiosios paraštės spalva"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9594,7 +9606,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Numeris kas kelintoje eilutėje"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10507,6 +10521,18 @@ msgstr "Aktyvinti arba pasyvinti derinimo išvesties grupes. Tinkamos parinktys 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Išplėsti iki didžiausio"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -12101,6 +12127,10 @@ msgstr ""
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Kairės prieraiša"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -17268,6 +17298,10 @@ msgstr ""
 "Dešinės kraštinės plotis.\n"
 "Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą dešiniosios kraštinės plotį.\n"
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tai kaimyninė komponentė, prie kurios bus pririštas dešinysis kraštas. Nurodant tėvą,  laukelis paliekamas tuščias („Delphi“ stilius; „BorderSpacing“ ir „ReferenceSide“ nesvarbūs)."
@@ -20307,6 +20341,34 @@ msgstr ""
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

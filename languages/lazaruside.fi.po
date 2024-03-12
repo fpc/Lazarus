@@ -462,6 +462,10 @@ msgstr "Sulkeiden korostus"
 msgid "Code folding tree"
 msgstr "Koodin laskostuspuu"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Oletus teksti"
@@ -2281,6 +2285,14 @@ msgstr "Supistettu"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Reunapalkin väri"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9446,7 +9458,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Virhe kirjoitettaessa pakettiluettelo tiedostoon%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Rivinumeroiden näyttöväli"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10337,6 +10351,18 @@ msgstr "Salli tai estä virheenjäljitysviestien ryhmät. Mahdolliset asetukset 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Kasvata suurimpaan"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -11892,6 +11918,10 @@ msgstr "Vasen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Vasemman reunan ankkurointi"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16918,6 +16948,10 @@ msgstr "Oikean reunan ankkurointi"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "Oikea reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Tämä on naapurikontrolli, mihin oikea reuna on ankkuroitu. Tyhjä tarkoittaa ankkurointia Delphi-tyyliin (BorderSpacing and ReferenceSide eivät vaikuta)."
@@ -19924,6 +19958,34 @@ msgstr ""
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -467,6 +467,10 @@ msgstr "Klammerhervorhebung"
 msgid "Code folding tree"
 msgstr "Codefaltungs-Baum"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Standardtext"
@@ -2338,6 +2342,14 @@ msgstr "Gefaltet"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Farbe der Randleiste"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9536,7 +9548,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Fehler beim Schreiben der Package-Liste in die Datei%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Jede n-te Zeile:"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10447,6 +10461,18 @@ msgstr "Gruppen von Debuggerausgaben aktivieren oder deaktivieren. Gültige Opti
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Zum größten hin wachsen"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -12006,6 +12032,10 @@ msgstr "Linker Randabstand. Der Wert wird zum Grund-Randabstand addiert und für
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Linke Verankerung"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
@@ -17097,6 +17127,10 @@ msgstr "Rechte Verankerung"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "Rechter Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz rechts vom Element verwendet."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy
 #| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
@@ -20136,6 +20170,34 @@ msgstr ""
 
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -464,6 +464,10 @@ msgstr "Zárójelek kiemelése"
 msgid "Code folding tree"
 msgstr "Kód összecsukási fa"
 
+#: lazarusidestrconsts.dlgaddhiattrcodefoldingtreecur
+msgid "Code folding (current)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Alapértelmezett szöveg"
@@ -2308,6 +2312,14 @@ msgstr "Összezárva"
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Hasábköz színe"
+
+#: lazarusidestrconsts.dlgguttercurrentlinenumber
+msgid "Current Line (number)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgguttercurrentlineother
+msgid "Current Line (other)"
+msgstr ""
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -9473,7 +9485,9 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Hiba a csomaglista %s%s%s%s fájlba írása közben"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-msgid "Every n-th line number"
+#, fuzzy
+#| msgid "Every n-th line number"
+msgid "Show every n-th line number"
 msgstr "Minden n-dik sorszám"
 
 #: lazarusidestrconsts.lisexamplefile
@@ -10376,6 +10390,18 @@ msgstr "Engedélyezi vagy letiltja a hibakereső kimenetének csoportjait. Érv�
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
 msgstr "Megnövelés a legnagyobbra"
+
+#: lazarusidestrconsts.lisgutterpartmargin
+msgid "Margin"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartvisible
+msgid "Visible"
+msgstr ""
+
+#: lazarusidestrconsts.lisgutterpartwidth
+msgid "Width"
+msgstr ""
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -11959,6 +11985,10 @@ msgstr "Bal oldali keret-térköz. Ez az érték hozzáadódik az alap oldaltér
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
 msgstr "Bal oldal horgonyozása"
+
+#: lazarusidestrconsts.lisleftgutter
+msgid "Left Gutter"
+msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -17033,6 +17063,10 @@ msgstr "Jobb oldal horgonyozása"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr "Jobb oldali keret-térköz. Ez az érték hozzáadódik az alap oldaltérközhöz és a vezérlő jobb oldalára vonatkozik."
 
+#: lazarusidestrconsts.lisrightgutter
+msgid "Right Gutter"
+msgstr ""
+
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Ez az a társvezérlő, amelyikhez a jobb oldal horgonyzása történik. Hagyja üresen, hogy a szülőhöz történjen Delphi stílusban (a BorderSpacing és a ReferenceSide értéke nem számít)."
@@ -20044,6 +20078,34 @@ msgstr "Külön"
 #: lazarusidestrconsts.lvlgraphstraightengraph
 msgid "Straighten graph"
 msgstr "Síkba rajzolható gráf"
+
+#: lazarusidestrconsts.optdispgutterchanges
+msgid "Changes"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterfolding
+msgid "Folding"
+msgstr ""
+
+#: lazarusidestrconsts.optdispguttermarks
+msgid "Marks"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutternocurrentlinecolor
+msgid "No current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterseparator
+msgid "Separator"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinecolor
+msgid "Use current line color"
+msgstr ""
+
+#: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
+msgid "Use current line number color"
+msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
