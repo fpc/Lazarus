@@ -44,7 +44,8 @@ uses
   FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg, LazIDEIntf,
   TextTools,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvGuiOptions, Designer;
+  LazarusIDEStrConsts, ComponentPalette, PackageDefs, IDEOptionDefs, EnvGuiOptions,
+  Designer;
 
 const
   ComponentListMenuRootName = 'ComponentList';
@@ -244,9 +245,9 @@ begin
   chbKeepOpen.Caption := lisKeepOpen;
   SelectionToolButton.Hint := lisSelectionTool;
 
-  ListTree.Images := TPkgComponent.Images;
-  PalletteTree.Images := TPkgComponent.Images;
-  InheritanceTree.Images := TPkgComponent.Images;
+  ListTree.Images := TPaletteComponent.Images;
+  PalletteTree.Images := TPaletteComponent.Images;
+  InheritanceTree.Images := TPaletteComponent.Images;
   if Assigned(IDEComponentPalette) then
   begin
     UpdateComponents;
@@ -471,8 +472,8 @@ begin
         // Add the node
         Node := InheritanceTree.Items.AddChildObject(ParentNode, aClassName, CurRegComp);
         ClassToNodeTree[aClass]:=Node;
-        if CurRegComp is TPkgComponent then
-          II := TPkgComponent(CurRegComp).ImageIndex
+        if CurRegComp is TPaletteComponent then
+          II := TPaletteComponent(CurRegComp).ImageIndex
         else
           II := -1;
         if II>=0 then
@@ -531,8 +532,8 @@ begin
         AListNode := ListTree.Items.AddChildObject(Nil, aClassName, Comp);
         // Palette layout item
         APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, aClassName, Comp);
-        if Comp is TPkgComponent then
-          CurIcon := TPkgComponent(Comp).ImageIndex
+        if Comp is TPaletteComponent then
+          CurIcon := TPaletteComponent(Comp).ImageIndex
         else
           CurIcon := -1;
         if CurIcon>=0 then

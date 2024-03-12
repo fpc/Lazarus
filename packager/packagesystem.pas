@@ -54,10 +54,10 @@ uses
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // BuildIntf
-  IDEExternToolIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, FppkgIntf,
-  PackageDependencyIntf, PackageLinkIntf, PackageIntf,
+  IDEExternToolIntf, IDEOptionsIntf, MacroDefIntf, ProjectIntf, CompOptsIntf,
+  FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf,
   // IDEIntf
-  IDEDialogs, IDEMsgIntf, LazIDEIntf, ComponentReg,
+  IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf, ComponentReg,
   // Package registration
   LazarusPackageIntf,
   // IdeConfig
@@ -6695,7 +6695,8 @@ begin
 end;
 
 initialization
-  PackageGraph:=nil;
+  RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
+  RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
 
 end.
 

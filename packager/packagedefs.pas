@@ -40,7 +40,7 @@ uses
   // FCL
   Classes, SysUtils, Contnrs, TypInfo, AVL_Tree, System.UITypes,
   // LCL
-  Forms, Controls, ImgList,
+  Forms,
   // Codetools
   LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs, BasicCodeTools,
@@ -49,9 +49,9 @@ uses
   LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
   MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf,
-  PackageDependencyIntf, PackageIntf, FppkgIntf,
+  PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker,
   // IDEIntf
-  LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
+  LazIDEIntf, ComponentReg,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
@@ -94,18 +94,16 @@ type
     function CanBeCreatedInDesigner: boolean; override;
     procedure ConsistencyCheck; override;
     function GetPriority: TComponentPriority; override;
-    function InheritsFromControl: boolean; override;
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
                        const ThePageName: string);
     destructor Destroy; override;
     function GetUnitName: string; override;
-    function HasIcon: boolean;
-    function ImageIndex: TImageIndex;
-    class function Images: TCustomImageList;
   public
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
+
+  TPkgComponentClass = class of TPkgComponent;
 
   { TPkgFile }
 
@@ -804,12 +802,12 @@ type
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
 
+
 const
   LazPkgXMLFileVersion = 5;
-  
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
     'Manually', 'OnRebuildingAll', 'AsNeeded');
-    
+
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
   PackageDependencies: TAVLTree = nil; // tree of TPkgDependency
@@ -818,6 +816,9 @@ var
   OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription = nil;
   OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory = nil;
   OnPackageFileLoaded: TNotifyEvent = nil;
+  PkgComponentClass: TPkgComponentClass;
+  Package1: TLazPackage; // don't use it - only for options dialog
+
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
@@ -878,9 +879,6 @@ procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
   const Path: string);
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
-
-var
-  Package1: TLazPackage; // don't use it - only for options dialog
 
 function dbgs(p: TPackageUpdatePolicy): string; overload;
 function dbgs(p: TLazPackageType): string; overload;
@@ -3187,7 +3185,7 @@ begin
   if NewUnitPaths='' then Exit;
   NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
   if NewUnitPaths='.' then Exit;
-  r:=IDEMessageDialog(lisExtendUnitPath,
+  r:=LazMessageWorker(lisExtendUnitPath,
         Format(lisExtendUnitSearchPathOfPackageWith, [Name, #13, NewUnitPaths]),
         mtConfirmation, [mbYes, mbNo, mbCancel]);
   case r of
@@ -3208,7 +3206,7 @@ begin
   if NewIncPaths='' then Exit;
   NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
   if NewIncPaths='.' then Exit;
-  r:=IDEMessageDialog(lisExtendIncludePath,
+  r:=LazMessageWorker(lisExtendIncludePath,
       Format(lisExtendIncludeFileSearchPathOfPackageWith, [Name, #13, NewIncPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
   case r of
@@ -3745,7 +3743,10 @@ end;
 function TLazPackage.AddComponent(PkgFile: TPkgFile; const Page: string;
   TheComponentClass: TComponentClass): TPkgComponent;
 begin
-  Result:=TPkgComponent.Create(PkgFile,TheComponentClass,Page);
+  // IDE sets this to TPaletteComponent. Outside the IDE use TPkgComponent.
+  if PkgComponentClass = Nil then
+    PkgComponentClass := TPkgComponent;
+  Result:=PkgComponentClass.Create(PkgFile,TheComponentClass,Page);
 end;
 
 procedure TLazPackage.AddPkgComponent(APkgComponent: TPkgComponent);
@@ -4054,11 +4055,6 @@ begin
   if (FPkgFile<>nil) then PkgFile.AddPkgComponent(Self);
 end;
 
-function TPkgComponent.InheritsFromControl: boolean;
-begin
-  Result:=ComponentClass.InheritsFrom(TControl);
-end;
-
 constructor TPkgComponent.Create(ThePkgFile: TPkgFile;
   TheComponentClass: TComponentClass; const ThePageName: string);
 begin
@@ -4103,25 +4099,6 @@ begin
     RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents=nil');
   if PkgFile.FComponents.IndexOf(Self)<0 then
     RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents.IndexOf(Self)<0');
-end;
-
-class function TPkgComponent.Images: TCustomImageList;
-begin
-  Result := IDEImages.Images_24;
-end;
-
-function TPkgComponent.HasIcon: boolean;
-begin
-  Result:=RealPage.PageName<>'';
-end;
-
-function TPkgComponent.ImageIndex: TImageIndex;
-begin
-  Result := IDEImages.GetImageIndex(ComponentClass.UnitName+'.'+ComponentClass.ClassName, 24);
-  if Result<0 then
-    Result := IDEImages.GetImageIndex(ComponentClass.ClassName, 24);
-  if Result=-1 then
-    Result := IDEImages.GetImageIndex('default', 24);
 end;
 
 function TPkgComponent.CanBeCreatedInDesigner: boolean;
@@ -4777,8 +4754,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
-  RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
   PackageDependencies:=TAVLTree.Create(@ComparePkgDependencyNames);
 
 finalization

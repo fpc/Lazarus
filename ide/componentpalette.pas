@@ -46,13 +46,25 @@ uses
   // IdeIntf
   FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
-  ComponentPalette_Options,
   MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvGuiOptions;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
   CompPaletteCompBtnPrefix = 'PaletteBtn';
+
 type
+
+  { TPaletteComponent }
+
+  TPaletteComponent = class(TPkgComponent)
+  protected
+    function InheritsFromControl: boolean; override;
+  public
+    function HasIcon: boolean;
+    function ImageIndex: TImageIndex;
+    class function Images: TCustomImageList;
+  end;
+
   { TComponentPage }
 
   TComponentPage = class(TBaseComponentPage)
@@ -66,8 +78,8 @@ type
     procedure RemoveSheet;
     procedure InsertVisiblePage(aCompNames: TRegisteredCompList);
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
-    procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
-      aScrollBox: TScrollBox);
+    procedure CreateOrDelButton(aComp: TpaletteComponent;
+      aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure CreateButtons;
   protected
   public
@@ -151,7 +163,13 @@ type
     property OnChangeActivePage: TNotifyEvent read FOnChangeActivePage write FOnChangeActivePage;
   end;
 
+  TOptionsClickEvent = Procedure();
+
+var
+  OnOptionsClick: TOptionsClickEvent;
+
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
+
 
 implementation
 
@@ -172,6 +190,32 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+{ TPaletteComponent }
+
+function TPaletteComponent.InheritsFromControl: boolean;
+begin
+  Result:=ComponentClass.InheritsFrom(TControl);
+end;
+
+function TPaletteComponent.HasIcon: boolean;
+begin
+  Result:=RealPage.PageName<>'';
+end;
+
+function TPaletteComponent.ImageIndex: TImageIndex;
+begin
+  Result := IDEImages.GetImageIndex(ComponentClass.UnitName+'.'+ComponentClass.ClassName, 24);
+  if Result<0 then
+    Result := IDEImages.GetImageIndex(ComponentClass.ClassName, 24);
+  if Result=-1 then
+    Result := IDEImages.GetImageIndex('default', 24);
+end;
+
+class function TPaletteComponent.Images: TCustomImageList;
+begin
+  Result := IDEImages.Images_24;
 end;
 
 { TComponentPage }
@@ -426,7 +470,7 @@ begin
   end;
 end;
 
-procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
+procedure TComponentPage.CreateOrDelButton(aComp: TpaletteComponent; aButtonUniqueName: string;
   aScrollBox: TScrollBox);
 var
   Pal: TComponentPalette;
@@ -490,7 +534,7 @@ procedure TComponentPage.CreateButtons;
 // Create speedbuttons for every visible component
 var
   ScrollBox: TScrollBox;
-  Comp: TPkgComponent;
+  Comp: TPaletteComponent;
   i: Integer;
 begin
   if not Visible then Exit;
@@ -508,7 +552,7 @@ begin
   fBtnIndex := 0;
   Assert(Assigned(fRegComps), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
   for i := 0 to fRegComps.Count-1 do begin
-    Comp := TPkgComponent(fRegComps[i]);
+    Comp := TPaletteComponent(fRegComps[i]);
     if Assigned(Comp) then
       CreateOrDelButton(Comp, Format('%d_%d_',[FIndex,i]), ScrollBox);
   end;
@@ -572,7 +616,8 @@ end;
 
 procedure TComponentPalette.OptionsClicked(Sender: TObject);
 begin
-  MainIDE.DoOpenIDEOptions(TCompPaletteOptionsFrame, '', [], []);
+  if Assigned(OnOptionsClick) then
+    OnOptionsClick();
 end;
 
 procedure TComponentPalette.PalettePopupMenuPopup(Sender: TObject);
@@ -1066,8 +1111,8 @@ begin
     ARegComp:=nil;
   if ARegComp<>nil then
   begin
-    ImageList := TPkgComponent(ARegComp).Images;
-    ImageIndex := TPkgComponent(ARegComp).ImageIndex;
+    ImageList := TPaletteComponent(ARegComp).Images;
+    ImageIndex := TPaletteComponent(ARegComp).ImageIndex;
   end else
   begin
     GetUnregisteredIcon(ImageList, ImageIndex);
@@ -1099,6 +1144,9 @@ function TComponentPalette.FindPkgCompByButton(Button: TComponent): TPkgComponen
 begin
   Result := TPkgComponent(FindCompByButton(TSpeedButton(Button)));
 end;
+
+initialization
+  PkgComponentClass := TPaletteComponent;
 
 end.
 

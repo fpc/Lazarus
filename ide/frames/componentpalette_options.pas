@@ -40,7 +40,7 @@ uses
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, EnvGuiOptions;
+  LazarusIDEStrConsts, MainBase, PackageDefs, ComponentPalette, EnvGuiOptions;
 
 type
 
@@ -126,11 +126,19 @@ type
     property ConfigChanged: Boolean read fConfigChanged;
   end;
 
+procedure OptionsClickHandler;
+
+
 implementation
 
 uses MainBar;
 
 {$R *.lfm}
+
+procedure OptionsClickHandler;
+begin
+  MainIDE.DoOpenIDEOptions(TCompPaletteOptionsFrame, '', [], []);
+end;
 
 { TCompPaletteOptionsFrame }
 
@@ -144,6 +152,7 @@ begin
   inherited Create(AOwner);
   fLocalOptions:=TCompPaletteOptions.Create;
   fLocalUserOrder:=TCompPaletteUserOrder.Create(IDEComponentPalette);
+  Assert(IDEComponentPalette is TComponentPalette, 'IDEComponentPalette is not TComponentPalette');
 end;
 
 destructor TCompPaletteOptionsFrame.Destroy;
@@ -650,9 +659,9 @@ var
 begin
   Comp := TRegisteredComponent(Item.Data);
   ARect := Item.DisplayRect(drIcon);
-  if Comp is TPkgComponent then begin
-    IL := TPkgComponent(Comp).Images;
-    II := TPkgComponent(Comp).ImageIndex;
+  if Comp is TPaletteComponent then begin
+    IL := TPaletteComponent(Comp).Images;
+    II := TPaletteComponent(Comp).ImageIndex;
     if (IL<>nil) and (II>=0) then
     begin
       Res := IL.ResolutionForControl[0, Sender];
@@ -871,6 +880,7 @@ end;
 
 initialization
   RegisterIDEOptionsEditor(GroupEnvironment, TCompPaletteOptionsFrame, EnvOptionsCompPalette);
+  ComponentPalette.OnOptionsClick := @OptionsClickHandler;
 
 end.
 

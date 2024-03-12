@@ -53,7 +53,7 @@ uses
   EnvironmentOpts, SearchPathProcs,
   // IDE
   MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
-  PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg,
+  PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ComponentPalette,
   AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
   MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;
   
@@ -1274,7 +1274,7 @@ end;
 procedure TPackageEditorForm.RegisteredListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
-  CurComponent: TPkgComponent;
+  CurComponent: TPaletteComponent;
   CurStr: string;
   CurObject: TObject;
   TxtH: Integer;
@@ -1289,9 +1289,9 @@ begin
   if LazPackage=nil then exit;
   if (Index<0) or (Index>=FPlugins.Count) then exit;
   CurObject:=FPlugins.Objects[Index];
-  if CurObject is TPkgComponent then begin
+  if CurObject is TPaletteComponent then begin
     // draw registered component
-    CurComponent:=TPkgComponent(CurObject);
+    CurComponent:=TPaletteComponent(CurObject);
     with FPropGui.RegisteredListBox do begin
       if Assigned(CurComponent.RealPage) then
         CurStr:=Format(lisPckEditPage,[CurComponent.ComponentClass.ClassName,
