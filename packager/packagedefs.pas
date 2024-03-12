@@ -40,7 +40,7 @@ uses
   // FCL
   Classes, SysUtils, Contnrs, TypInfo, AVL_Tree, System.UITypes,
   // LCL
-  Forms, ImgList,
+  Forms, Controls, ImgList,
   // Codetools
   LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs, BasicCodeTools,
@@ -90,17 +90,19 @@ type
   private
     FPkgFile: TPkgFile;
     procedure SetPkgFile(const AValue: TPkgFile);
+  protected
+    function CanBeCreatedInDesigner: boolean; override;
+    procedure ConsistencyCheck; override;
+    function GetPriority: TComponentPriority; override;
+    function InheritsFromControl: boolean; override;
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
                        const ThePageName: string);
     destructor Destroy; override;
     function GetUnitName: string; override;
-    function GetPriority: TComponentPriority; override;
-    procedure ConsistencyCheck; override;
+    function HasIcon: boolean;
     function ImageIndex: TImageIndex;
     class function Images: TCustomImageList;
-    function HasIcon: boolean;
-    function CanBeCreatedInDesigner: boolean; override;
   public
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
@@ -4050,6 +4052,11 @@ begin
   if (FPkgFile<>nil) then PkgFile.RemovePkgComponent(Self);
   FPkgFile:=AValue;
   if (FPkgFile<>nil) then PkgFile.AddPkgComponent(Self);
+end;
+
+function TPkgComponent.InheritsFromControl: boolean;
+begin
+  Result:=ComponentClass.InheritsFrom(TControl);
 end;
 
 constructor TPkgComponent.Create(ThePkgFile: TPkgFile;
