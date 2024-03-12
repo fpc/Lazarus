@@ -772,12 +772,10 @@ begin
     mlvl := lvl;
     x := ToIdx(SynEdit.LogicalCaretXY.X);
     i := ndList.Count;
-writeln('COUNT ',i);
     while i > 0 do begin
       dec(i);
       nd := ndList[i];
       act := nd.FoldAction;
-WriteLn('    ND   ', nd.LogXStart, ' - ', nd.LogXEnd, '  st lvl:',nd.FoldLvlStart, '  en lvl:', nd.FoldLvlEnd, ' act ', Dec2Numb( integer(act),0,2), ' lastl: ', sfaLastLineClose in act, ' nxt' , sfaCloseForNextLine in act , ' co ',sfaCloseAndOpen in act, ' sngl ', sfaSingleLine in act);
       if act * [sfaInvalid, sfaOneLineOpen, sfaOneLineClose] <> [] then
         continue;
       if act * [sfaFold, sfaFoldFold, sfaFoldHide] = [] then
@@ -835,7 +833,6 @@ WriteLn('    ND   ', nd.LogXStart, ' - ', nd.LogXEnd, '  st lvl:',nd.FoldLvlStar
 
   SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
   if lvl = 0 then begin
-writeln('000 >>> ', HasBefore, HasAfter, ' lvl: ',lvl, ' s:',s,' e:',e, ' // ndcur ',ndCur, ' ndmin ',ndMin , ' i ',i  );
     FInnerFoldStart := -1;
     FInnerFoldEnd := -1;
     exit;
@@ -860,7 +857,6 @@ writeln('000 >>> ', HasBefore, HasAfter, ' lvl: ',lvl, ' s:',s,' e:',e, ' // ndc
 
   SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
 
-  writeln('>>> ', FInnerFoldStart+1, '..', FInnerFoldEnd+1, ' ', HasBefore, HasAfter, ' lvl: ',lvl, ' s:',s,' e:',e, ' // ndcur ',ndCur, ' ndmin ',ndMin , ' i ',i  );
 end;
 
 function TSynGutterCodeFolding.PreferedWidth: Integer;
