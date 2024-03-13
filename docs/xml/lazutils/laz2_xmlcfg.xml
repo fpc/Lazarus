@@ -74,6 +74,7 @@ about using TXMLConfig.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TXMLConfig.ZeroSrc"/>
 <element name="TXMLConfig.FFilename"/>
 <element name="TXMLConfig.FReadFlags"/>
@@ -137,6 +138,119 @@ InitFormatSettings is called from the <var>Create</var> constructor.
 </element>
 <element name="TXMLConfig.SetFilename.AFilename">
 <short>New value for the property.</short>
+</element>
+
+<!-- protected -->
+<element name="TXMLConfig.TDomNodeArray">
+<short>
+Defines an array type used to store TDomNode instances.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache">
+<short>
+Advanced record type used to implement an array-based TDomNode cache.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.Node">
+<short>
+Top-level node for the cached list of nodes.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.NodeSearchName">
+<short>
+Element name used to locate a node in the cache.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.ChildrenValid">
+<short>
+Indicates whether cached child nodes are valid after refresh.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.Children">
+<short>
+Array with the named child nodes for the cached DOM node.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.NodeListName">
+<short>
+Element name for a list of child nodes in the cache.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.NodeList">
+<short>
+Array with the list of child nodes accessed retrieved using an XPath wildcard.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.GrowArray">
+<short>
+Increases the capacity for the specified array of DOM nodes.
+</short>
+</element>
+<element name="TXMLConfig.TNodeCache.GrowArray.AArray">
+<short>
+Array of DOM nodes resized in the method.
+</short>
+</element>
+<element name="TXMLConfig.TNodeCache.GrowArray.ACount">
+<short>
+New capacity requested for the specified array.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.RefreshChildren">
+<short>
+Collects and re-sorts the child nodes for the Node in the cache instance.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.RefreshChildrenIfNeeded">
+<short>
+Collects and re-sorts the child nodes for the Node in the cache instance if the 
+child nodes have not already been refreshed.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.RefreshNodeList">
+<short>
+Gathers child nodes with the specified node name into the NodeList for the 
+cache instance.
+</short>
+</element>
+<element name="TXMLConfig.TNodeCache.RefreshNodeList.ANodeName">
+<short>
+Element name for the child nodes handled in the method.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.RefreshNodeListIfNeeded">
+<short>
+Gathers child nodes with the specified node name into the NodeList if 
+NodeListName does not contain elements with the specified name.
+</short>
+</element>
+<element name="TXMLConfig.TNodeCache.RefreshNodeListIfNeeded.ANodeName">
+<short>
+Element name for the child nodes handled in the method.
+</short>
+</element>
+
+<element name="TXMLConfig.TNodeCache.AddNodeToList">
+<short>
+Creates and returns a new DOM node with the element name in NodeListName in the NodeList.
+</short>
+</element>
+<element name="TXMLConfig.TNodeCache.AddNodeToList.Result">
+<short>
+TDOMNode instance created and added to the NodeList in the method.
+</short>
 </element>
 
 <element name="TXMLConfig.doc">
