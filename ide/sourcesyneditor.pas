@@ -2356,12 +2356,15 @@ end;
 function TIDESynGutterMarks.PreferedWidthAtCurrentPPI: Integer;
 var
   img: TScaledImageListResolution;
+  c: Integer;
 begin
   if Assigned(SourceEditorMarks) and Assigned(SourceEditorMarks.ImgList) then
   begin
+    c := WantedColumns;
+    if c <= 0 then c := 2;
     img := GetImgListRes(nil, SourceEditorMarks.ImgList);
     // + 1 => right margin
-    Result := img.Width * 2 + LeftMarginAtCurrentPPI + Scale96ToFont(1);
+    Result := img.Width * c + LeftMarginAtCurrentPPI + Scale96ToFont(1);
   end else
     Result := inherited PreferedWidthAtCurrentPPI;
 end;

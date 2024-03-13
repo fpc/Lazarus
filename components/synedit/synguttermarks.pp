@@ -32,7 +32,7 @@ type
     function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
                        var aFirstCustomColumnIdx: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
-
+    property WantedColumns: integer read FWantedColumns;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
