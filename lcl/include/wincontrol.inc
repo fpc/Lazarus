@@ -124,13 +124,14 @@ type
 //           Commented in revision 55209
 //    procedure AlignToRight(TargetWidth: integer);
     procedure ComputeTableControlBounds(ChildSizing: TControlChildSizing;
-                                        BiDiMode: TBiDiMode);
+                                        BiDiMode: TBiDiMode;
+                                        const Ofs: TPoint);
     function SetTableControlBounds(ChildSizing: TControlChildSizing
                                    ): boolean;// true if changed
     function AlignControlsInTable(ListOfControls: TFPList;
                                   ChildSizing: TControlChildSizing;
                                   BiDiMode: TBiDiMode;
-                                  TargetWidth, TargetHeight: integer;
+                                  const TargetRect: TRect;
                                   Apply: boolean): boolean;// true if changed
 
     // debugging
@@ -939,9 +940,9 @@ begin
       ChildSizing.ShrinkVertical:=crsAnchorAligning;
       ChildSizing.EnlargeVertical:=crsAnchorAligning;
       // compute static layout
-      r:=WinControl.GetLogicalClientRect;
+      WinControl.GetAdjustedLogicalClientRect(r);
       Box.AlignControlsInTable(AlignList,ChildSizing,WinControl.BiDiMode,
-                               r.Right,r.Bottom,false);
+                               r,false);
       //Box.WriteDebugReport('TAutoSizeCtrlData.SetupNonAlignedChilds');
       // transfer the coords of the layout
       for y:=0 to Box.ChildCount[asboVertical]-1 do begin
@@ -2176,7 +2177,7 @@ begin
 end;
 }
 procedure TAutoSizeBox.ComputeTableControlBounds(
-  ChildSizing: TControlChildSizing; BiDiMode: TBiDiMode);
+  ChildSizing: TControlChildSizing; BiDiMode: TBiDiMode; const Ofs: TPoint);
 var
   y: Integer;
   RowBox: TAutoSizeBox;
@@ -2244,6 +2245,7 @@ begin
 
       NewBounds.Right:=NewBounds.Left+NewWidth;
       NewBounds.Bottom:=NewBounds.Top+NewHeight;
+      NewBounds.Offset(Ofs);
       ControlBox.NewControlBounds:=NewBounds;
       {$IFDEF CHECK_POSITION}
       if CheckPosition(CurControl) then
@@ -2290,15 +2292,14 @@ end;
 
 function TAutoSizeBox.AlignControlsInTable(ListOfControls: TFPList;
   ChildSizing: TControlChildSizing; BiDiMode: TBiDiMode;
-  TargetWidth, TargetHeight: integer;
-  Apply: boolean): boolean;
+  const TargetRect: TRect; Apply: boolean): boolean;
 // true if a control was modified
 begin
   SetTableControls(ListOfControls,ChildSizing,BiDiMode);
   //WriteDebugReport('after SetTableControls');
   SumTable;
   //WriteDebugReport('after SumTable');
-  ResizeTable(ChildSizing,TargetWidth,TargetHeight);
+  ResizeTable(ChildSizing,TargetRect.Width,TargetRect.Height);
   //WriteDebugReport('after ResizeTable');
 
 //  Michl: Commented procedure AlignToRight because of issue #28483, afaics
@@ -2308,7 +2309,7 @@ begin
 //    AlignToRight(TargetWidth);
 
   //WriteDebugReport('after AlignToRight');
-  ComputeTableControlBounds(ChildSizing,BiDiMode);
+  ComputeTableControlBounds(ChildSizing,BiDiMode, TargetRect.TopLeft);
   //WriteDebugReport('after ComputeTableControlBounds');
   Result:=Apply and SetTableControlBounds(ChildSizing);
 end;
@@ -6272,9 +6273,9 @@ begin
   
   Box:=TAutoSizeBox.Create;
   try
-    r:=GetLogicalClientRect;
+    GetAdjustedLogicalClientRect(r);
     BoundsModified:=Box.AlignControlsInTable(ListOfControls,ChildSizing,BiDiMode,
-                                             r.Right,r.Bottom,true);
+                                             r,true);
   finally
     Box.Free;
   end;
