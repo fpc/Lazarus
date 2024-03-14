@@ -4971,7 +4971,7 @@ begin
     OldId := MergeRng.RangeStartAddr;
     MergeRng.Merge(ARange);
     if assigned(FOnMerge)
-    then FOnMerge(ARange, MergeRng);
+    then FOnMerge(MergeRng, ARange);
     FFreeItemLock := True; // prevent destruction of MergeRng
     Delete(OldId);
     FFreeItemLock := False;
