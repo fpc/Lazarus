@@ -3375,11 +3375,11 @@ resourcestring
   srkmecSynPSyncroEdGrowCellLeft     = 'Grow cell on the left';
   srkmecSynPSyncroEdShrinkCellLeft   = 'Shrink cell on the left';
   srkmecSynPSyncroEdGrowCellRight    = 'Grow cell on the right';
-  srkmecSynPSyncroEdShrinkCellRight  = 'Shrink  cell on the right';
+  srkmecSynPSyncroEdShrinkCellRight  = 'Shrink cell on the right';
   srkmecSynPSyncroEdAddCell          = 'Add Cell';
-  srkmecSynPSyncroEdAddCellCase      = 'Add Cell (Case-sensitive)';
-  srkmecSynPSyncroEdAddCellCtx       = 'Add Cell (Context-sensitive))';
-  srkmecSynPSyncroEdAddCellCtxCase   = 'Add Cell (Context & case-sensitive))';
+  srkmecSynPSyncroEdAddCellCase      = 'Add Cell (case-sensitive)';
+  srkmecSynPSyncroEdAddCellCtx       = 'Add Cell (context-sensitive)';
+  srkmecSynPSyncroEdAddCellCtxCase   = 'Add Cell (context & case-sensitive)';
   srkmecSynPSyncroEdDelCell          = 'Remove current Cell';
 
   // run menu
