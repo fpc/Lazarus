@@ -2251,14 +2251,14 @@ For example:
 </p>
 <dl>
 <dt>dkOpen</dt>
-<dd>TOpenDialog is the type in return value</dd>
+<dd>TOpenDialog is the type in return value.</dd>
 <dt>dkPictureOpen</dt>
-<dd>TOpenPictureDialog is the type in return value</dd>
+<dd>TOpenPictureDialog is the type in return value.</dd>
 <dt>dkSave, dkPictureSave</dt>
-<dd>TSaveDialog is the type in return value</dd>
+<dd>TSaveDialog is the type in return value.</dd>
 </dl>
 <p>
-Properties relevant to the dialog kind are copied into the dialog, and mat 
+Properties relevant to the dialog kind are copied into the dialog, and may 
 include:
 </p>
 <ul>
@@ -2272,13 +2272,30 @@ include:
 <li>DialogTitle</li>
 </ul>
 <p>
+For an open dialog, path information in FileName is retained if the path is 
+valid. This causes use of InitialDir to be disabled in the dialog. If the path 
+in Filename is invalid, only the base file name and extension are copied to the 
+dialog. An explicit value in InitialDir is resolved (cleaned and expanded) when 
+valid, and stored to the dialog. Otherwise, the initial directory is determined 
+by the widgetset when the dialog is executed.
+</p>
+<p>
 CreateDialog is used in the implementation of the RunDialog method.
 </p>
 </descr>
 <seealso>
+<link id="TFileNameEdit.DefaultExt"/>
+<link id="TFileNameEdit.DialogOptions"/>
+<link id="TFileNameEdit.DialogTitle"/>
+<link id="TFileNameEdit.FileName"/>
+<link id="TFileNameEdit.Filter"/>
+<link id="TFileNameEdit.FilterIndex"/>
+<link id="TFileNameEdit.InitialDir"/>
+<link id="TFileNameEdit.RunDialog"/>
 <link id="#lcl.dialogs.TCommonDialog">TCommonDialog</link>
 <link id="#lcl.dialogs.TOpenDialog">TOpenDialog</link>
 <link id="#lcl.dialogs.TSaveDialog">TSaveDialog</link>
+<link id="#lazutils.lazfileutils.CleanAndExpandDirectory">CleanAndExpandDirectory</link>
 </seealso>
 </element>
 <element name="TFileNameEdit.CreateDialog.Result">
@@ -2448,10 +2465,36 @@ placed in the Text Box, or the value selected from the dialog.
 
 <element name="TFileNameEdit.InitialDir">
 <short>
-<var>InitialDir</var> is the directory from which the search starts.
+Initial directory displayed when the dialog is executed for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>InitialDir</var> determines the first directory displayed when the 
+RunDialog method is called. InitialDir is resolved (cleaned and expanded) 
+before it is used during dialog execution. If FileName contains qualified path 
+information, the value in InitialDir is ignored; the path information in 
+FileName is used instead. When omitted (contains ''), the widgetset determines 
+the active directory when the dialog for the control is executed.
+</p>
+<p>
+For a file open dialog, InitialDir is updated in the RunDialog method with the 
+value returned by the dialog. This occurs even when the Cancel button is used 
+to close the dialog. This mimics the behavior used in TOpenDialog.
+</p>
+<p>
+Use FileName to assign the default file name (and optional path information) 
+used when the dialog is executed for the control.
+</p>
+<p>
+Use the DialogOptions property to control whether the active directory can be 
+changed using the dialog for the control (ofNoChangeDir).
+</p>
+</descr>
+<seealso>
+<link id="TFileNameEdit.FileName"/>
+<link id="TFileNameEdit.DialogOptions"/>
+<link id="TFileNameEdit.RunDialog"/>
+</seealso>
 </element>
 
 <element name="TFileNameEdit.OnAcceptFileName">
