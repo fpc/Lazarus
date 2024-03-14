@@ -476,6 +476,26 @@ begin
   TestDis('lzcnt  ecx,[rdx]',           #$f3#$0f#$bd#$0a,              'lzcnt ecx,[rdx]');
   TestDis('lzcnt  cx,[rdx]',            #$66#$f3#$0f#$bd#$0a,          'lzcnt cx,[rdx]');
 
+  TestDis('pextrw edx,mm1,$2',                   #$0f#$c5#$d1#$02,                         'pextrw edx,mm1,$2');
+  TestDis('pextrw edx,xmm2,$2',                  #$66#$0f#$c5#$d2#$02,                     'pextrw edx,xmm2,$2');
+  TestDis('pextrw edx,xmm2,$2',                  #$66#$0f#$3a#$15#$d2#$02,                 'pextrw edx,xmm2,$2');
+  TestDis('pextrw WORD PTR [rsi-$F],xmm3,$2',    #$66#$0f#$3a#$15#$5e#$f1#$02,             'pextrw WORD PTR [rsi-$F],xmm3,$2');
+  TestDis('vpextrw edx,xmm1,$2',                 #$c5#$f9#$c5#$d1#$02,                     'vpextrw edx,xmm1,$2');
+  TestDis('vpextrw WORD PTR [rsi-$F],xmm2,$2',   #$c4#$e3#$79#$15#$56#$f1#$02,             'vpextrw WORD PTR [rsi-$F],xmm2,$2');
+  TestDis('pextrb edx,xmm1,$2',                  #$66#$0f#$3a#$14#$ca#$02,                 'pextrb edx,xmm1,$2');
+  TestDis('pextrd edx,xmm2,$2',                  #$66#$0f#$3a#$16#$d2#$02,                 'pextrd edx,xmm2,$2');
+  TestDis('pextrq rdx,xmm3,$2',                  #$66#$48#$0f#$3a#$16#$da#$02,             'pextrq rdx,xmm3,$2');
+  TestDis('vpextrb edx,xmm1,$2',                 #$c4#$e3#$79#$14#$ca#$02,                 'vpextrb edx,xmm1,$2');
+  TestDis('vpextrd edx,xmm2,$2',                 #$c4#$e3#$79#$16#$d2#$02,                 'vpextrd edx,xmm2,$2');
+  TestDis('vpextrq rdx,xmm3,$2',                 #$c4#$e3#$f9#$16#$da#$02,                 'vpextrq rdx,xmm3,$2');
+  TestDis('pextrb BYTE PTR [rsi-$F],xmm1,$2',    #$66#$0f#$3a#$14#$4e#$f1#$02,             'pextrb BYTE PTR [rsi-$F],xmm1,$2');
+  TestDis('pextrd DWORD PTR [rsi-$F],xmm2,$2',   #$66#$0f#$3a#$16#$56#$f1#$02,             'pextrd DWORD PTR [rsi-$F],xmm2,$2');
+  TestDis('pextrq QWORD PTR [rsi-$F],xmm3,$2',   #$66#$48#$0f#$3a#$16#$5e#$f1#$02,         'pextrq QWORD PTR [rsi-$F],xmm3,$2');
+  TestDis('vpextrb BYTE PTR [rsi-$F],xmm1,$2',   #$c4#$e3#$79#$14#$4e#$f1#$02,             'vpextrb BYTE PTR [rsi-$F],xmm1,$2');
+  TestDis('vpextrd DWORD PTR [rsi-$F],xmm2,$2',  #$c4#$e3#$79#$16#$56#$f1#$02,             'vpextrd DWORD PTR [rsi-$F],xmm2,$2');
+  TestDis('vpextrq QWORD PTR [rsi-$F],xmm3,$2',  #$c4#$e3#$f9#$16#$5e#$f1#$02,             'vpextrq QWORD PTR [rsi-$F],xmm3,$2');
+
+
 
   Process.NewMode := dm32;
 
@@ -649,7 +669,6 @@ begin
   TestDis('vpmovsxdq ymm6,xmm1',                 #$c4#$e2#$7d#$25#$f1,                 'vpmovsxdq ymm6,xmm1');
   TestDis('vpmovsxdq ymm6,XMMWORD PTR [edi+$3]', #$c4#$e2#$7d#$25#$77#$03,             'vpmovsxdq ymm6,XMMWORD PTR [edi+$3]');
 
-
   TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
   TestDis('vmovss xmm1,xmm2,xmm3',       #$C5#$EA#$10#$CB,                 'vmovss xmm1,xmm2,xmm3');
   TestDis('vmovsd xmm1,xmm2,xmm3',       #$C5#$EB#$10#$CB,                 'vmovsd xmm1,xmm2,xmm3');
@@ -776,6 +795,21 @@ begin
   TestDis('lzcnt  cx,dx',               #$66#$f3#$0f#$bd#$ca,         'lzcnt cx,dx');
   TestDis('lzcnt  ecx,[edx]',           #$f3#$0f#$bd#$0a,             'lzcnt ecx,[edx]');
   TestDis('lzcnt  cx,[edx]',            #$66#$f3#$0f#$bd#$0a,         'lzcnt cx,[edx]');
+
+  TestDis('pextrw edx,mm1,$2',                  #$0f#$c5#$d1#$02,                       'pextrw edx,mm1,$2');
+  TestDis('pextrw edx,xmm2,$2',                 #$66#$0f#$c5#$d2#$02,                   'pextrw edx,xmm2,$2');
+  TestDis('pextrw edx,xmm2,$2',                 #$66#$0f#$3a#$15#$d2#$02,               'pextrw edx,xmm2,$2');
+  TestDis('pextrw WORD PTR [esi-$F],xmm3,$2',   #$66#$0f#$3a#$15#$5e#$f1#$02,           'pextrw WORD PTR [esi-$F],xmm3,$2');
+  TestDis('vpextrw edx,xmm1,$2',                #$c5#$f9#$c5#$d1#$02,                   'vpextrw edx,xmm1,$2');
+  TestDis('vpextrw WORD PTR [esi-$F],xmm2,$2',  #$c4#$e3#$79#$15#$56#$f1#$02,           'vpextrw WORD PTR [esi-$F],xmm2,$2');
+  TestDis('pextrb edx,xmm1,$2',                 #$66#$0f#$3a#$14#$ca#$02,               'pextrb edx,xmm1,$2');
+  TestDis('pextrd edx,xmm2,$2',                 #$66#$0f#$3a#$16#$d2#$02,               'pextrd edx,xmm2,$2');
+  TestDis('vpextrb edx,xmm1,$2',                #$c4#$e3#$79#$14#$ca#$02,               'vpextrb edx,xmm1,$2');
+  TestDis('vpextrd edx,xmm2,$2',                #$c4#$e3#$79#$16#$d2#$02,               'vpextrd edx,xmm2,$2');
+  TestDis('pextrb BYTE PTR [esi-$F],xmm1,$2',   #$66#$0f#$3a#$14#$4e#$f1#$02,           'pextrb BYTE PTR [esi-$F],xmm1,$2');
+  TestDis('pextrd DWORD PTR [esi-$F],xmm2,$2',  #$66#$0f#$3a#$16#$56#$f1#$02,           'pextrd DWORD PTR [esi-$F],xmm2,$2');
+  TestDis('vpextrb BYTE PTR [esi-$F],xmm1,$2',  #$c4#$e3#$79#$14#$4e#$f1#$02,           'vpextrb BYTE PTR [esi-$F],xmm1,$2');
+  TestDis('vpextrd DWORD PTR [esi-$F],xmm2,$2', #$c4#$e3#$79#$16#$56#$f1#$02,           'vpextrd DWORD PTR [esi-$F],xmm2,$2');
 
 
   Process.NewMode := dm64;

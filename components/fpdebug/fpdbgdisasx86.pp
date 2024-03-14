@@ -403,6 +403,7 @@ type
     procedure AddQq;
     procedure AddRd;
     procedure AddRd_Mb;
+    procedure AddRd_Mw;
     procedure AddRd_q;
     procedure AddRy;
     procedure AddRy_Mb;
@@ -1645,9 +1646,20 @@ end;
 
 procedure TX86Disassembler.AddRd_Mb;
 begin
+  DecodeModRM;
+
   if ModRM.Mode = 3 // reg
   then AddModRM([modReg], os32, regGeneral)
   else AddModRM([modMem], os8, regNone);
+end;
+
+procedure TX86Disassembler.AddRd_Mw;
+begin
+  DecodeModRM;
+
+  if ModRM.Mode = 3 // reg
+  then AddModRM([modReg], os32, regGeneral)
+  else AddModRM([modMem], os16, regNone);
 end;
 
 procedure TX86Disassembler.AddRd_q;
@@ -3897,9 +3909,9 @@ begin
         $0D: begin SetOpcode(OPblend,       OPSx_pd,  True); AddVx;    AddHx;  AddWx;     AddIb;           end;
         $0E: begin SetOpcode(OPpblend,      OPSx_w,   True); AddVx;    AddHx;  AddWx;     AddIb;           end;
         $0F: begin SetOpcode(OPpalignr,     OPSnone,  True); AddVx;    AddHx;  AddWx;     AddIb;           end;
-        $14: begin SetOpcode(OPpextr,       OPSx_b,   True); AddRd_Mb; AddVqq; AddIb;                      end;
-        $15: begin SetOpcode(OPpextr,       OPSx_w,   True); AddRd_Mb; AddVqq; AddIb;                      end;
-        $16: begin SetOpcode(OPpextr,       OPS_d_q,  True); AddEy;    AddVdq; AddIb;                      end;
+        $14: begin SetOpcode(OPpextr,       OPSx_b,   True); AddRd_Mb; AddVq;  AddIb;                      end;
+        $15: begin SetOpcode(OPpextr,       OPSx_w,   True); AddRd_Mw; AddVq;  AddIb;                      end;
+        $16: begin SetOpcode(OPpextr,       OPS_d_q,  True); AddEy;    AddVq;  AddIb;                      end;
         $17: begin SetOpcode(OPextract,     OPSx_ps,  True); AddEd;    AddVdq; AddIb;                      end;
         $18: begin SetOpcode(OPinsert,      OPSx_f128,True); AddVqq;   AddHqq; AddWqq;    AddIb; CheckVex; end;
         $19: begin SetOpcode(OPextract,     OPSx_f128,True); AddWdq;   AddVqq; AddIb;            CheckVex; end;
