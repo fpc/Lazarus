@@ -1506,10 +1506,15 @@ end;
 procedure TFileNameEdit.RunDialog;
 var
   D: TCommonDialog;
+  Res: Boolean;
 begin
   D := CreateDialog(DialogKind);
   try
-    if D.Execute then
+    Res := D.Execute;
+    //this is analogue to how TOpenDialog behaves, InitialDir is retrieved from the dialog, even if user cancels the dialog.
+    if (D is TOpenDialog) then
+      InitialDir := TOpenDialog(D).InitialDir;
+    if Res then
       SaveDialogResult(DialogKind, D);
   finally
     D.Free;
