@@ -21330,6 +21330,22 @@ msgstr "Makro Oynat"
 msgid "Record Macro"
 msgstr "Makro Kaydet"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcell
+msgid "Add Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellcase
+msgid "Add Cell (case-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctx
+msgid "Add Cell (context-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctxcase
+msgid "Add Cell (context & case-sensitive)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
@@ -21344,10 +21360,22 @@ msgstr "Hücrenin ilk konumuna git"
 msgid "Select Cell"
 msgstr "Hücreyi seçin"
 
+#: lazarusidestrconsts.srkmecsynpsyncroeddelcell
+msgid "Remove current Cell"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedescape
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
 msgid "Escape"
 msgstr "Kaçış"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellleft
+msgid "Grow cell on the left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellright
+msgid "Grow cell on the right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
@@ -21389,9 +21417,29 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
 msgstr "Önceki Hücre (tüm seçilenler / sadece ilkler)"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellleft
+msgid "Shrink cell on the left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellright
+msgid "Shrink cell on the right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
 msgstr "Syncro düzenlenmeye başla"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartcase
+msgid "Start Syncro edit (case-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctx
+msgid "Start Syncro edit (context-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctxcase
+msgid "Start Syncro edit (context & case-sensitive)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"

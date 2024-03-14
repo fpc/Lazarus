@@ -21767,6 +21767,22 @@ msgstr "Leisti makrokomandą"
 msgid "Record Macro"
 msgstr "Įrašyti makrokomandą"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcell
+msgid "Add Cell"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellcase
+msgid "Add Cell (case-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctx
+msgid "Add Cell (context-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctxcase
+msgid "Add Cell (context & case-sensitive)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
@@ -21781,10 +21797,22 @@ msgstr "Šokti į pradinę langelio poziciją"
 msgid "Select Cell"
 msgstr "Pažymėti langelį"
 
+#: lazarusidestrconsts.srkmecsynpsyncroeddelcell
+msgid "Remove current Cell"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedescape
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
 msgid "Escape"
 msgstr "Baigti"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellleft
+msgid "Grow cell on the left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellright
+msgid "Grow cell on the right"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
@@ -21826,9 +21854,29 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
 msgstr "Ankstesnis langelis (visi pažymėti/tik pirmieji)"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellleft
+msgid "Shrink cell on the left"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellright
+msgid "Shrink cell on the right"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
 msgstr "Pradėti sinchronišką taisymą"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartcase
+msgid "Start Syncro edit (case-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctx
+msgid "Start Syncro edit (context-sensitive)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctxcase
+msgid "Start Syncro edit (context & case-sensitive)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"

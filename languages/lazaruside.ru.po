@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-03-12 19:06+0300\n"
+"PO-Revision-Date: 2024-03-14 18:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -21365,6 +21365,22 @@ msgstr "Воспроизвести макрос"
 msgid "Record Macro"
 msgstr "Записать макрос"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcell
+msgid "Add Cell"
+msgstr "Добавить поле"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellcase
+msgid "Add Cell (case-sensitive)"
+msgstr "Добавить поле (с учётом регистра)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctx
+msgid "Add Cell (context-sensitive)"
+msgstr "Добавить поле (с учётом контекста)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedaddcellctxcase
+msgid "Add Cell (context & case-sensitive)"
+msgstr "Добавить поле (с учётом контекста и регистра)"
+
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
@@ -21379,10 +21395,22 @@ msgstr "Перейти к началу поля"
 msgid "Select Cell"
 msgstr "Выбрать поле"
 
+#: lazarusidestrconsts.srkmecsynpsyncroeddelcell
+msgid "Remove current Cell"
+msgstr "Удалить текущее поле"
+
 #: lazarusidestrconsts.srkmecsynpsyncroedescape
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
 msgid "Escape"
 msgstr "Отменить"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellleft
+msgid "Grow cell on the left"
+msgstr "Удлинить поле по левому краю"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedgrowcellright
+msgid "Grow cell on the right"
+msgstr "Удлинить поле по правому краю"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
@@ -21424,9 +21452,29 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
 msgstr "Предыдущее поле (все выбранные / первое вхождение)"
 
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellleft
+msgid "Shrink cell on the left"
+msgstr "Укоротить поле по левому краю"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedshrinkcellright
+msgid "Shrink cell on the right"
+msgstr "Укоротить поле по правому краю"
+
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
 msgstr "Начать синхронное редактирование"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartcase
+msgid "Start Syncro edit (case-sensitive)"
+msgstr "Начать синхронное редактирование (с учётом регистра)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctx
+msgid "Start Syncro edit (context-sensitive)"
+msgstr "Начать синхронное редактирование (с учётом контекста)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedstartctxcase
+msgid "Start Syncro edit (context & case-sensitive)"
+msgstr "Начать синхронное редактирование (с учётом контекста и регистра)"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
