@@ -1429,7 +1429,10 @@ begin
     O.Options := DialogOptions;
     O.Filter := Filter;
     O.FilterIndex := FilterIndex;
-    O.InitialDir := CleanAndExpandDirectory(InitialDir);
+    if (InitialDir <> '') then   //don't force currentdir here, let WS do it's normal "magic" to decide where to open
+      O.InitialDir := CleanAndExpandDirectory(InitialDir)
+    else
+      O.InitialDir := '';
   end;
   // Set some common things.
   Result.Title := DialogTitle;
