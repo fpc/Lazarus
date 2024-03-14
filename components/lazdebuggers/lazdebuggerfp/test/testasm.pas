@@ -5,9 +5,9 @@ unit TestAsm;
 interface
 
 uses
-  Classes, SysUtils, FpPascalBuilder, FpDbgDisasX86, FpDbgClasses, FpDbgLoader,
-  FpDbgUtil, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, TestOutputLogger, TestDbgTestSuites, fpcunit,
-  testutils, testregistry, RegExpr;
+  Classes, SysUtils, FpPascalBuilder, FpDbgDisasX86, FpDbgClasses, FpDbgLoader, FpDbgUtil,
+  FpDbgCpuX86, LazLoggerBase, TestOutputLogger, TestDbgTestSuites, fpcunit, testutils,
+  testregistry, RegExpr;
 
 type
 
@@ -21,10 +21,21 @@ type
 implementation
 
 type
+
+  { TDummyProcess }
+
   TDummyProcess = class(TDbgProcess)
   public
+    function CreateBreakPointTargetHandler: TFpBreakPointTargetHandler; override;
     property NewMode: TFPDMode write SetMode;
   end;
+
+{ TDummyProcess }
+
+function TDummyProcess.CreateBreakPointTargetHandler: TFpBreakPointTargetHandler;
+begin
+  Result := TBreakPointx86Handler.Create(Self);
+end;
 
 procedure TTestAssembler.TestDisAsm;
 var
@@ -373,6 +384,36 @@ begin
   TestDis('vdppd  xmm3,xmm1,[rsi],$07', #$c4#$e3#$71#$41#$1e#$07,             'vdppd xmm3,xmm1,[rsi],$07');
 
 
+  TestDis('popcnt rcx,rdx',             #$f3#$48#$0f#$b8#$ca,          'popcnt rcx,rdx');
+  TestDis('popcnt ecx,edx',             #$f3#$0f#$b8#$ca,              'popcnt ecx,edx');
+  TestDis('popcnt cx,dx',               #$f3#$66#$0f#$b8#$ca,          'popcnt cx,dx');
+  TestDis('popcnt rcx,[rdx]',           #$f3#$48#$0f#$b8#$0a,          'popcnt rcx,[rdx]');
+  TestDis('popcnt ecx,[rdx]',           #$f3#$0f#$b8#$0a,              'popcnt ecx,[rdx]');
+  TestDis('popcnt cx,[rdx]',            #$f3#$66#$0f#$b8#$0a,          'popcnt cx,[rdx]');
+  TestDis('bsf    rcx,rdx',             #$48#$0f#$bc#$ca,              'bsf rcx,rdx');
+  TestDis('bsf    ecx,edx',             #$0f#$bc#$ca,                  'bsf ecx,edx');
+  TestDis('bsf    cx,dx',               #$66#$0f#$bc#$ca,              'bsf cx,dx');
+  TestDis('bsf    rcx,[rdx]',           #$48#$0f#$bc#$0a,              'bsf rcx,[rdx]');
+  TestDis('bsf    ecx,[rdx]',           #$0f#$bc#$0a,                  'bsf ecx,[rdx]');
+  TestDis('bsf    cx,[rdx]',            #$66#$0f#$bc#$0a,              'bsf cx,[rdx]');
+  TestDis('bsr    rcx,rdx',             #$48#$0f#$bd#$ca,              'bsr rcx,rdx');
+  TestDis('bsr    ecx,edx',             #$0f#$bd#$ca,                  'bsr ecx,edx');
+  TestDis('bsr    cx,dx',               #$66#$0f#$bd#$ca,              'bsr cx,dx');
+  TestDis('bsr    rcx,[rdx]',           #$48#$0f#$bd#$0a,              'bsr rcx,[rdx]');
+  TestDis('bsr    ecx,[rdx]',           #$0f#$bd#$0a,                  'bsr ecx,[rdx]');
+  TestDis('bsr    cx,[rdx]',            #$66#$0f#$bd#$0a,              'bsr cx,[rdx]');
+  TestDis('tzcnt  rcx,rdx',             #$f3#$48#$0f#$bc#$ca,          'tzcnt rcx,rdx');
+  TestDis('tzcnt  ecx,edx',             #$f3#$0f#$bc#$ca,              'tzcnt ecx,edx');
+  TestDis('tzcnt  cx,dx',               #$66#$f3#$0f#$bc#$ca,          'tzcnt cx,dx');
+  TestDis('tzcnt  rcx,[rdx]',           #$f3#$48#$0f#$bc#$0a,          'tzcnt rcx,[rdx]');
+  TestDis('tzcnt  ecx,[rdx]',           #$f3#$0f#$bc#$0a,              'tzcnt ecx,[rdx]');
+  TestDis('tzcnt  cx,[rdx]',            #$66#$f3#$0f#$bc#$0a,          'tzcnt cx,[rdx]');
+  TestDis('lzcnt  rcx,rdx',             #$f3#$48#$0f#$bd#$ca,          'lzcnt rcx,rdx');
+  TestDis('lzcnt  ecx,edx',             #$f3#$0f#$bd#$ca,              'lzcnt ecx,edx');
+  TestDis('lzcnt  cx,dx',               #$66#$f3#$0f#$bd#$ca,          'lzcnt cx,dx');
+  TestDis('lzcnt  rcx,[rdx]',           #$f3#$48#$0f#$bd#$0a,          'lzcnt rcx,[rdx]');
+  TestDis('lzcnt  ecx,[rdx]',           #$f3#$0f#$bd#$0a,              'lzcnt ecx,[rdx]');
+  TestDis('lzcnt  cx,[rdx]',            #$66#$f3#$0f#$bd#$0a,          'lzcnt cx,[rdx]');
 
 
   Process.NewMode := dm32;
@@ -588,6 +629,28 @@ begin
   TestDis('vdppd  xmm1,xmm2,[edi],$07', #$c4#$e3#$69#$41#$0f#$07,             'vdppd xmm1,xmm2,[edi],$07');
   TestDis('vdppd  xmm3,xmm4,[edi],$05', #$c4#$e3#$59#$41#$1f#$05,             'vdppd xmm3,xmm4,[edi],$05');
   TestDis('vdppd  xmm3,xmm1,[esi],$07', #$c4#$e3#$71#$41#$1e#$07,             'vdppd xmm3,xmm1,[esi],$07');
+
+
+  TestDis('popcnt ecx,edx',             #$f3#$0f#$b8#$ca,             'popcnt ecx,edx');
+  TestDis('popcnt cx,dx',               #$f3#$66#$0f#$b8#$ca,         'popcnt cx,dx');
+  TestDis('popcnt ecx,[edx]',           #$f3#$0f#$b8#$0a,             'popcnt ecx,[edx]');
+  TestDis('popcnt cx,[edx]',            #$f3#$66#$0f#$b8#$0a,         'popcnt cx,[edx]');
+  TestDis('bsf    ecx,edx',             #$0f#$bc#$ca,                 'bsf ecx,edx');
+  TestDis('bsf    cx,dx',               #$66#$0f#$bc#$ca,             'bsf cx,dx');
+  TestDis('bsf    ecx,[edx]',           #$0f#$bc#$0a,                 'bsf ecx,[edx]');
+  TestDis('bsf    cx,[edx]',            #$66#$0f#$bc#$0a,             'bsf cx,[edx]');
+  TestDis('bsr    ecx,edx',             #$0f#$bd#$ca,                 'bsr ecx,edx');
+  TestDis('bsr    cx,dx',               #$66#$0f#$bd#$ca,             'bsr cx,dx');
+  TestDis('bsr    ecx,[edx]',           #$0f#$bd#$0a,                 'bsr ecx,[edx]');
+  TestDis('bsr    cx,[edx]',            #$66#$0f#$bd#$0a,             'bsr cx,[edx]');
+  TestDis('tzcnt  ecx,edx',             #$f3#$0f#$bc#$ca,             'tzcnt ecx,edx');
+  TestDis('tzcnt  cx,dx',               #$66#$f3#$0f#$bc#$ca,         'tzcnt cx,dx');
+  TestDis('tzcnt  ecx,[edx]',           #$f3#$0f#$bc#$0a,             'tzcnt ecx,[edx]');
+  TestDis('tzcnt  cx,[edx]',            #$66#$f3#$0f#$bc#$0a,         'tzcnt cx,[edx]');
+  TestDis('lzcnt  ecx,edx',             #$f3#$0f#$bd#$ca,             'lzcnt ecx,edx');
+  TestDis('lzcnt  cx,dx',               #$66#$f3#$0f#$bd#$ca,         'lzcnt cx,dx');
+  TestDis('lzcnt  ecx,[edx]',           #$f3#$0f#$bd#$0a,             'lzcnt ecx,[edx]');
+  TestDis('lzcnt  cx,[edx]',            #$66#$f3#$0f#$bd#$0a,         'lzcnt cx,[edx]');
 
 
   Process.NewMode := dm64;

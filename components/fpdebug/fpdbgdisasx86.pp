@@ -3482,7 +3482,7 @@ begin
       AddGv; AddEw;
     end;
     $B8: begin
-      DecodeSIMD([soNone, soF3]);
+      DecodeSIMD([soNone, soF3], True);
       case SimdOpcode of
         soNone: begin SetOpcode(OPjmpe  ); AddIz;        end;  // Itanium SDM, volume 4, page 256.
         soF3:   begin SetOpcode(OPpopcnt); AddGv; AddEv; end;
@@ -3499,16 +3499,18 @@ begin
       AddEv; AddGv;
     end;
     $BC: begin
-      DecodeSIMD([soNone, soF3]);
+      DecodeSIMD([soNone, soF3], True);
       case SimdOpcode of
-        soNone: begin SetOpcode(OPbsf  ); AddGv; AddEv; end;
+        soNone,
+        so66:   begin SetOpcode(OPbsf  ); AddGv; AddEv; end;
         soF3:   begin SetOpcode(OPtzcnt); AddGv; AddEv; end;
       end;
     end;
     $BD: begin
-      DecodeSIMD([soNone, soF3]);
+      DecodeSIMD([soNone, soF3], True);
       case SimdOpcode of
-        soNone: begin SetOpcode(OPbsr  ); AddGv; AddEv; end;
+        soNone,
+        so66:   begin SetOpcode(OPbsr  ); AddGv; AddEv; end;
         soF3:   begin SetOpcode(OPlzcnt); AddGv; AddEv; end;
       end;
     end;
