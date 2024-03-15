@@ -150,13 +150,13 @@ type
     FPrevSameName: TRegisteredComponent;
     procedure AddToPalette;
   protected
-    function CanBeCreatedInDesigner: boolean; virtual;
     procedure ConsistencyCheck; virtual;
     function GetPriority: TComponentPriority; virtual;
     function InheritsFromControl: boolean; virtual; abstract;
   public
     constructor Create(TheComponentClass: TComponentClass; const ThePageName: string);
     destructor Destroy; override;
+    function CanBeCreatedInDesigner: boolean; virtual;
     function GetCreationClass: TComponentClass; virtual;
     function GetFullClassName(const UnitSep: char = '/'): string; virtual;
     function GetUnitName: string; virtual; abstract;
