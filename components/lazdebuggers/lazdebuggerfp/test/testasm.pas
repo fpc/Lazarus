@@ -646,8 +646,8 @@ begin
   TestDis('vcvtps2ph QWORD PTR [eax+edi+$3],xmm11,$35',   #$67#$c4#$63#$79#$1d#$5c#$07#$03#$35,                                 'vcvtps2ph QWORD PTR [eax+edi+$3],xmm11,$35');
   TestDis('vcvtps2ph XMMWORD PTR [eax+edi+$3],ymm3,$35',  #$67#$c4#$e3#$7d#$1d#$5c#$07#$03#$35,                                 'vcvtps2ph XMMWORD PTR [eax+edi+$3],ymm3,$35');
   TestDis('vcvtps2ph XMMWORD PTR [eax+edi+$3],ymm11,$35', #$67#$c4#$63#$7d#$1d#$5c#$07#$03#$35,                                 'vcvtps2ph XMMWORD PTR [eax+edi+$3],ymm11,$35');
-//  TestDis('vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm3,$35',  #$67#$62#$f3#$7d#$48#$1d#$9c#$07#$03#$00#$00#$00, 'vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm3,$35');
-//  TestDis('vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm11,$35', #$67#$62#$73#$7d#$48#$1d#$9c#$07#$03#$00#$00#$00, 'vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm11,$35');
+  TestDis('vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm3,$35',  #$67#$62#$f3#$7d#$48#$1d#$9c#$07#$03#$00#$00#$00#$35, 'vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm3,$35');
+  TestDis('vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm11,$35', #$67#$62#$73#$7d#$48#$1d#$9c#$07#$03#$00#$00#$00#$35, 'vcvtps2ph YMMWORD PTR [eax+edi+$3],zmm11,$35');
   IgnoreSizeWordPtr := False;
 
 
