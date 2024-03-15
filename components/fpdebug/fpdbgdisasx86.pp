@@ -576,7 +576,7 @@ type
       AnIsOutsideFrame: Boolean): Boolean; override;
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; override;
     // Only Modify the values if result is true
-    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean): boolean; override;
+    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean; ARegisterValueList: TDbgRegisterValueList): boolean; override;
   end;
 
   { TDbgStackUnwinderIntelDisAssembler }
@@ -5326,8 +5326,8 @@ begin
   end;
 end;
 
-function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
-  AFramePtr: TDBGPtr; AQuick: boolean): boolean;
+function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean;
+  ARegisterValueList: TDbgRegisterValueList): boolean;
 
   function IsRegister(Val, Reg: String): boolean;
   begin
@@ -5339,16 +5339,94 @@ function TX86AsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
     if (Reg <> '') and (Reg[1] = 'r') then
       Result := 8;
   end;
+  function CleanRegisterName(Reg: String): String;
+  var
+    l: Integer;
+  begin
+    Result := Reg;
+    l := Length(reg);
+    if (l > 2) and (Reg[l-1] = '%') and (Reg[l] = 's') then Delete(Result, l-1, 2);
+  end;
+  function FullRegisterName(Reg: String): String;
+  var
+    l: Integer;
+    pre: String;
+  begin
+    Result := '';
+    Reg := CleanRegisterName(Reg);
+    l := Length(reg);
+
+    if (l < 2) then
+      Exit;
+
+    if (Reg[1] = 'r') and (Reg[2] in ['0'..'9']) then begin
+      if (l >=3) and (Reg[3] in ['0'..'9']) then
+        l := 3+1
+      else
+        l := 2+1;
+      Result := Reg;
+      Delete(Result, l, Length(Reg));
+      exit;
+    end;
+
+    if (l > 3) then
+      Exit;
+    if FProcess.Mode = dm32
+    then pre := 'e'
+    else pre := 'r';
+
+    case Reg[l] of
+      'l', 'h': case Reg[l-1] of
+          'a', 'b', 'c', 'd':  // ah al
+            if l = 2 then Result := pre + Reg[l-1] + 'x';
+        end;
+      'x': case Reg[l-1] of
+          'a', 'b', 'c', 'd': // eax rax ax
+            if l = 2 then Result := pre + Reg
+            else
+            if Reg[1] in ['r', 'e'] then Result := pre +Reg[l-1] + Reg[l];
+        end;
+      'p': case Reg[l-1] of
+          's', 'b', 'i':  // Rsp Esp Eip Ebp
+            if l = 2 then Result := pre + Reg
+            else
+            if Reg[1] in ['r', 'e'] then Result := pre +Reg[l-1] + Reg[l];
+        end;
+      'i':case Reg[l-1] of
+          'd', 's':  // esi edi
+            if l = 2 then Result := pre + Reg
+            else
+            if Reg[1] in ['r', 'e'] then Result := pre +Reg[l-1] + Reg[l];
+        end;
+      //'s':
+    end;
+  end;
+  procedure ClearRegister(Reg: String);
+  var
+    r: TDbgRegisterValue;
+  begin
+    Reg := CleanRegisterName(Reg);
+    r := ARegisterValueList.FindRegisterByName(Reg);
+    if r <> nil then ARegisterValueList.Remove(r);
+    Reg := FullRegisterName(Reg);
+    if Reg <> '' then begin
+      r := ARegisterValueList.FindRegisterByName(Reg);
+      if r <> nil then ARegisterValueList.Remove(r);
+    end;
+  end;
+
 
 var
   NewAddr, NewStack, NewFrame: TDBGPtr;
   CurAddr: PByte;
 
-  function ValueFromOperand(constref Oper: TInstructionOperand; out AVal: TDBGPtr): boolean;
+  function ValueFromOperand(constref Oper: TInstructionOperand; out AVal: TDBGPtr; IsLea: Boolean = False): boolean;
   var
     OpVal: Int64;
     Src: TDBGPtr;
     RSize: Cardinal;
+    FullName: String;
+    r: TDbgRegisterValue;
   begin
     AVal := 0;
     Result := True;
@@ -5357,17 +5435,29 @@ var
 
     if (Oper.ByteCount = 0)
     then begin
+      if IsLea then exit(False);
       if (IsRegister(Oper.Value, 'bp')) then
         AVal := NewFrame
       else
       if (IsRegister(Oper.Value, 'sp')) then
         AVal := NewStack
       else
+      begin
+        FullName := FullRegisterName(Oper.Value);
+        if (LowerCase(FullName) = LowerCase(Oper.Value)) then begin
+          r := ARegisterValueList.FindRegisterByName(FullName);
+          if r <> nil then begin
+            AVal := r.NumValue;
+            Exit(True);
+          end;
+        end;
         exit(False);
+      end;
     end
     else
     if (Oper.ByteCount <> 0)
     then begin
+      if IsLea and not (ofMemory in Oper.Flags) then exit(False);
       OpVal := ValueFromMem(CurAddr[Oper.CodeIndex], Oper.ByteCount, Oper.FormatFlags);
 
       if (IsRegister(Oper.Value, 'bp%s')) then
@@ -5389,7 +5479,7 @@ var
     else
       exit(False);
 
-    if (ofMemory in Oper.Flags) then begin
+    if (ofMemory in Oper.Flags) and not IsLea then begin
       Src := AVal;
       AVal := 0;
       RSize := RegisterSize(Oper.Value);
@@ -5408,6 +5498,8 @@ var
   instr: TX86AsmInstruction;
   RSize: Cardinal;
   Val: Int64;
+  ClearRecValList: Boolean;
+  FullName: String;
 begin
   Result := False;
   NewAddr    := AnAddress;
@@ -5425,7 +5517,10 @@ begin
   Cnt := MAX_SEARCH_CNT;
   if AQuick then Cnt := 10;
 
+  ClearRecValList := False;
   while (NewAddr < MaxAddr) and (Cnt > 0) do begin
+    if ClearRecValList then ARegisterValueList.Clear;
+
     if NewAddr > MaxAddr2 then begin
       if (ConditionalForwardAddr > 0) and (BackwardJumpAddress > 0) and
          (ConditionalForwardAddr >= BackwardJumpAddress)
@@ -5446,9 +5541,11 @@ begin
     {$POP}
     CurAddr := @instr.FCodeBin[0];
 
+    ClearRecValList := True;
     case instr.X86OpCode of
       OPret:
         begin
+          ClearRecValList := False;
           if instr.X86Instruction.OperCnt > 1 then begin
             exit;
           end;
@@ -5475,6 +5572,7 @@ begin
         end;
       OPpush:
         begin
+          ClearRecValList := False;
           if AQuick then
             exit;
           if (instr.X86Instruction.OperCnt <> 1) or
@@ -5489,6 +5587,7 @@ begin
         end;
       OPpusha:
         begin
+          ClearRecValList := False;
           if (FProcess.Mode <> dm32) or (instr.X86Instruction.OpCode.Suffix <> OPSx_d) then
             exit;
           // push 8 registers
@@ -5497,13 +5596,18 @@ begin
           {$POP}
         end;
       OPpushf:
-        exit; // false
+        begin
+          ClearRecValList := False;
+          exit; // false
+        end;
       OPpopa, OPpopad:
         exit; // false
       OPpop:
         begin
           if instr.X86Instruction.OperCnt <> 1 then
             exit;
+          ClearRecValList := False;
+          ClearRegister(instr.X86Instruction.Operand[1].Value);
           if not(instr.X86Instruction.Operand[1].Value[1] in ['e', 'r'])
           then
             exit; // false
@@ -5515,6 +5619,15 @@ begin
             RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
             if not FProcess.ReadData(NewStack, RSize, NewFrame, RSize) then
               exit;
+          end
+          else
+          if NewStack >= StartStack then begin
+            Tmp := 0;
+            RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
+            if FProcess.ReadData(NewStack, RSize, Tmp, RSize) then begin
+              FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
+              ARegisterValueList.DbgRegisterAutoCreate[FullName].SetValue(Tmp, IntToStr(Tmp), RSize, 0);
+            end;
           end;
           {$PUSH}{$R-}{$Q-}
           NewStack := NewStack + RegisterSize(instr.X86Instruction.Operand[1].Value);
@@ -5522,6 +5635,7 @@ begin
         end;
       OPleave:
         begin
+          ClearRecValList := False;
           NewStack := NewFrame;
           NewFrame := 0;
           if FProcess.Mode = dm32 then begin
@@ -5539,6 +5653,7 @@ begin
         begin
           if instr.X86Instruction.OperCnt <> 2 then
             exit;
+          ClearRecValList := False;
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
@@ -5546,19 +5661,30 @@ begin
             if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
               exit;
             NewStack := Tmp;
-          end;
+          end
+          else
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
             if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
               exit;
             NewFrame := Tmp;
+          end
+          else begin
+            FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
+            if ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
+              RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
+              ARegisterValueList.DbgRegisterAutoCreate[FullName].SetValue(Tmp, IntToStr(Tmp), RSize, 0);
+            end
+            else
+              ClearRegister(instr.X86Instruction.Operand[1].Value);
           end;
         end;
       OPlea:
         begin
           if instr.X86Instruction.OperCnt <> 2 then
             exit;
+          ClearRecValList := False;
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp')
           then begin
             if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
@@ -5579,7 +5705,8 @@ begin
               NewFrame := NewFrame + Val;
               {$POP}
             end;
-          end;
+          end
+          else
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
           then begin
             if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
@@ -5602,12 +5729,30 @@ begin
             end
             else
               exit;
+          end
+          else begin
+            FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
+            if (Instr.X86Instruction.Operand[2].ByteCount = 0) or
+               (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
+               not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
+            then
+              ClearRegister(instr.X86Instruction.Operand[1].Value)
+            else begin
+              if ValueFromOperand(instr.X86Instruction.Operand[2], Tmp, True) then begin
+                RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
+                ARegisterValueList.DbgRegisterAutoCreate[FullName].SetValue(Tmp, IntToStr(Tmp), RSize, 0);
+              end
+              else
+                ClearRegister(instr.X86Instruction.Operand[1].Value)
+            end;
           end;
         end;
       OPadd:
         begin
           if instr.X86Instruction.OperCnt <> 2 then
             exit;
+          ClearRecValList := False;
+          ClearRegister(instr.X86Instruction.Operand[1].Value);
 
           if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
@@ -5678,6 +5823,8 @@ begin
         end;
       OPjmpe, OPint, OPint1, OPint3:
         exit; // false
+      OPtest, OPtpause, OPnop, OPcmp, OPcmps:
+        ClearRecValList := False;
       else
         begin
           if (instr.X86Instruction.OperCnt >= 1) and
@@ -5691,6 +5838,7 @@ begin
         end;
     end;
   end;
+  if ClearRecValList then ARegisterValueList.Clear;
 end;
 
 { TDbgStackUnwinderIntelDisAssembler }
@@ -5699,18 +5847,25 @@ function TDbgStackUnwinderIntelDisAssembler.Unwind(AFrameIndex: integer;
   var CodePointer, StackPointer, FrameBasePointer: TDBGPtr;
   ACurrentFrame: TDbgCallstackEntry; out ANewFrame: TDbgCallstackEntry
   ): TTDbgStackUnwindResult;
+var
+  ARegisterValueList: TDbgRegisterValueList;
 begin
   ANewFrame := nil;
   Result := suFailed;
+  ARegisterValueList := TDbgRegisterValueList.Create(True);
+  if (ACurrentFrame <> nil) and (ACurrentFrame.RegisterValueList <> nil) then
+    ARegisterValueList.Assign(ACurrentFrame.RegisterValueList);
 
-  if Process.Disassembler.UnwindFrame(CodePointer, StackPointer, FrameBasePointer, False)
+  if Process.Disassembler.UnwindFrame(CodePointer, StackPointer, FrameBasePointer, False, ARegisterValueList)
   then begin
     ANewFrame := TDbgCallstackEntry.Create(Thread, AFrameIndex, FrameBasePointer, CodePointer);
+    ANewFrame.RegisterValueList.Assign(ARegisterValueList);
     ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameIP].SetValue(CodePointer, IntToStr(CodePointer),AddressSize, FDwarfNumIP);
     ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameBP].SetValue(FrameBasePointer, IntToStr(FrameBasePointer),AddressSize, FDwarfNumBP);
     ANewFrame.RegisterValueList.DbgRegisterAutoCreate[FNameSP].SetValue(StackPointer, IntToStr(StackPointer),AddressSize, FDwarfNumSP);
     Result := suSuccess;
   end;
+  ARegisterValueList.free
 end;
 
 

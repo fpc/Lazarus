@@ -813,7 +813,7 @@ type
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
     function GetFunctionFrameInfo(AnAddress: TDBGPtr; out AnIsOutsideFrame: Boolean): Boolean; virtual;
     function IsAfterCallInstruction(AnAddress: TDBGPtr): boolean; virtual;
-    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean): boolean; virtual;
+    function UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean; ARegisterValueList: TDbgRegisterValueList): boolean; virtual;
 
     property LastErrorWasMemReadErr: Boolean read GetLastErrorWasMemReadErr;
     property MaxInstructionSize: integer read GetMaxInstrSize;  // abstract
@@ -2141,8 +2141,8 @@ begin
   Result := True; // if we don't know, then assume yes
 end;
 
-function TDbgAsmDecoder.UnwindFrame(var AnAddress, AStackPtr,
-  AFramePtr: TDBGPtr; AQuick: boolean): boolean;
+function TDbgAsmDecoder.UnwindFrame(var AnAddress, AStackPtr, AFramePtr: TDBGPtr; AQuick: boolean;
+  ARegisterValueList: TDbgRegisterValueList): boolean;
 begin
   Result := False;
 end;
