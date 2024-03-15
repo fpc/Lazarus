@@ -1625,6 +1625,8 @@ type
     property FixedCols;
     property FixedRows;
     property Flat;
+    property FocusColor;
+    property FocusRectVisible;
     property Font;
     property GridLineColor;
     property GridLineStyle;
@@ -1656,8 +1658,6 @@ type
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
-    property VisibleColCount;
-    property VisibleRowCount;
 
     property OnAfterSelection;
     property OnBeforeSelection;
@@ -1870,6 +1870,8 @@ type
     property FixedCols;
     property FixedRows;
     property Flat;
+    property FocusColor;
+    property FocusRectVisible;
     property Font;
     property GridLineColor;
     property GridLineStyle;
@@ -1900,8 +1902,6 @@ type
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
-    property VisibleColCount;
-    property VisibleRowCount;
 
     property OnAfterSelection;
     property OnBeforeSelection;
