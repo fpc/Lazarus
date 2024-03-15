@@ -949,7 +949,7 @@ begin
   actCurrentInstr.Enabled := HasDisassembler and (FLocation <> 0);
   actGotoAddr.Enabled := HasDisassembler and (StrToQWordDef(EditGotoAddr.Text, 0) <> 0);
   actCopy.Enabled := HasDisassembler;
-  popCopyAddr.Enabled := GetLinMapEntryForLine(FSelectLine, dummy);
+  popCopyAddr.Enabled := HasDisassembler and GetLinMapEntryForLine(FSelectLine, dummy);
   actStepOverInstr.Enabled := HasDisassembler;
   actStepIntoInstr.Enabled := HasDisassembler;
 end;
