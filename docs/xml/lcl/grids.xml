@@ -22868,6 +22868,8 @@ TStringGrid
 <element name="TDrawGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
 <element name="TDrawGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
 <element name="TDrawGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
+<element name="TDrawGrid.FocusColor" link="#lcl.grids.TCustomDrawGrid.FocusColor"/>
+<element name="TDrawGrid.FocusRectVisible" link="#lcl.grids.TCustomDrawGrid.FocusRectVisible"/>
 <element name="TDrawGrid.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TDrawGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
 <element name="TDrawGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
@@ -22931,8 +22933,6 @@ GetRGBColorResolvingParent method.
 <element name="TDrawGrid.TitleStyle" link="#lcl.grids.TCustomGrid.TitleStyle"/>
 <element name="TDrawGrid.UseXORFeatures" link="#lcl.grids.TCustomGrid.UseXORFeatures"/>
 <element name="TDrawGrid.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TDrawGrid.VisibleColCount" link="#lcl.grids.TCustomGrid.VisibleColCount"/>
-<element name="TDrawGrid.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount"/>
 <element name="TDrawGrid.OnAfterSelection" link="#lcl.grids.TCustomGrid.OnAfterSelection"/>
 <element name="TDrawGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection"/>
 <element name="TDrawGrid.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled"/>
@@ -25037,6 +25037,8 @@ TStringGrid
 <element name="TStringGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
 <element name="TStringGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
 <element name="TStringGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
+<element name="TStringGrid.FocusColor" link="#lcl.grids.TCustomDrawGrid.FocusColor"/>
+<element name="TStringGrid.FocusRectVisible" link="#lcl.grids.TCustomDrawGrid.FocusRectVisible"/>
 <element name="TStringGrid.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TStringGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
 <element name="TStringGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
@@ -25100,8 +25102,6 @@ GetRGBColorResolvingParent method.
 <element name="TStringGrid.TitleStyle" link="#lcl.grids.TCustomGrid.TitleStyle"/>
 <element name="TStringGrid.UseXORFeatures" link="#lcl.grids.TCustomGrid.UseXORFeatures"/>
 <element name="TStringGrid.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TStringGrid.VisibleColCount" link="#lcl.grids.TCustomGrid.VisibleColCount"/>
-<element name="TStringGrid.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount"/>
 <element name="TStringGrid.OnAfterSelection" link="#lcl.grids.TCustomGrid.OnAfterSelection"/>
 <element name="TStringGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection"/>
 <element name="TStringGrid.OnCellProcess" link="#lcl.grids.TCustomStringGrid.OnCellProcess"/>
