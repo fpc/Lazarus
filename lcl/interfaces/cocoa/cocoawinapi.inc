@@ -1571,20 +1571,22 @@ begin
   begin
     sc := NSScrollView(obj);
     case SBStyle of
-      SB_Vert: Result := sc.hasVerticalScroller;
-      SB_Horz: Result := sc.hasHorizontalScroller;
+      SB_Vert: Result := sc.hasVerticalScroller and not sc.verticalScroller.isHidden;
+      SB_Horz: Result := sc.hasHorizontalScroller and not sc.horizontalScroller.isHidden;
     else
-      Result := sc.hasHorizontalScroller and sc.hasVerticalScroller;
+      Result := sc.hasHorizontalScroller and not sc.horizontalScroller.isHidden
+                and sc.hasVerticalScroller and not sc.verticalScroller.isHidden;
     end;
   end
   else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     mn := TCocoaManualScrollView(obj);
     case SBStyle of
-      SB_Vert: Result := mn.hasVerticalScroller;
-      SB_Horz: Result := mn.hasHorizontalScroller;
+      SB_Vert: Result := mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
+      SB_Horz: Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden;
     else
-      Result := mn.hasHorizontalScroller and mn.hasVerticalScroller;
+      Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden
+                and mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
     end;
   end
   else
