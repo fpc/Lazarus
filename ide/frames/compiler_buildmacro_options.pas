@@ -35,7 +35,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, MacroIntf, IDEImagesIntf, IDEDialogs,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts, PackageDefs;
+  ParsedCompilerOpts, CompilerOptions, LazarusIDEStrConsts, PackageDefs;
 
 type
   TCBMNodeType = (

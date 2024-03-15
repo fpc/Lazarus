@@ -86,8 +86,8 @@ uses
   // protocol
   IDEProtocol,
   // compile
-  CompilerOptions, CheckCompilerOpts, BuildProjectDlg, BuildModesManager,
-  ApplicationBundle, ExtTools, ExtToolsIDE,
+  ParsedCompilerOpts, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
+  BuildModesManager, ApplicationBundle, ExtTools, ExtToolsIDE,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
   PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptorTypes,

@@ -15,7 +15,7 @@ uses
   // IdeConfig
   SearchPathProcs,
   // IDE
-  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
+  Project, ParsedCompilerOpts, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
   CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
 
 type

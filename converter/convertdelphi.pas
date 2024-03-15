@@ -48,7 +48,7 @@ uses
   // IdeConfig
   IDEProcs,
   // IDE
-  DialogProcs, CompilerOptions, ProjPackCommon, Project,
+  DialogProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon, Project,
   PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts, SearchPathProcs, SourceFileManager,
   // Converter

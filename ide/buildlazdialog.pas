@@ -62,9 +62,9 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, MainBar,
-  ApplicationBundle, ModeMatrixOpts, CompilerOptions, BuildProfileManager,
-  GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
+  LazarusIDEStrConsts, DialogProcs, MainBar, ApplicationBundle, ModeMatrixOpts,
+  ParsedCompilerOpts, CompilerOptions, BuildProfileManager, GenericListEditor,
+  GenericCheckList, PackageSystem, PackageDefs;
 
 type
 

@@ -52,7 +52,7 @@ uses
   // IdeConfig
   EnvironmentOpts, SearchPathProcs,
   // IDE
-  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
+  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, ParsedCompilerOpts, CompilerOptions,
   PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ComponentPalette,
   AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
   MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;

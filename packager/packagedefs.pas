@@ -48,12 +48,13 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, FileReferenceList,
   LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
-  MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
+  MacroIntf, MacroDefIntf, CompOptsIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
   PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
-  EditDefineTree, CompilerOptions, ProjPackCommon, LazarusIDEStrConsts, FppkgHelper;
+  EditDefineTree, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
+  LazarusIDEStrConsts, FppkgHelper;
 
 type
   TLazPackage = class;
@@ -394,7 +395,7 @@ type
     constructor Create(ThePackage: TLazPackage);
     procedure AssignOptions(Source: TObject); override;
     function GetOwnerName: string; override;
-    function GetBaseCompilerOptions: TBaseCompilerOptions; override;
+    function GetLazCompilerOptions: TLazCompilerOptions; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -4377,7 +4378,7 @@ begin
   Result:=LazPackage.IDAsString;
 end;
 
-function TPkgAdditionalCompilerOptions.GetBaseCompilerOptions: TBaseCompilerOptions;
+function TPkgAdditionalCompilerOptions.GetLazCompilerOptions: TLazCompilerOptions;
 begin
   Result:=LazPackage.CompilerOptions;
 end;

@@ -66,7 +66,7 @@ uses
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,
   // IDE
-  ProjectResources, ProjectIcon, CompilerOptions, RunParamsOpts,
+  ProjectResources, ProjectIcon, ParsedCompilerOpts, CompilerOptions, RunParamsOpts,
   ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
   ProjPackCommon, PackageDefs, PackageSystem;
 

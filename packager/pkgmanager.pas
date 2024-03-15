@@ -71,7 +71,7 @@ uses
   // IDE
   LazarusIDEStrConsts, DialogProcs, MiscOptions,
   Project, ProjPackEditing, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
-  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
+  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, ParsedCompilerOpts, CompilerOptions,
   IDETranslations, BuildLazDialog, NewDialog, FindInFilesDlg,
   ProjectInspector, PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,

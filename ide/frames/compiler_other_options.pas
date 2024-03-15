@@ -40,8 +40,8 @@ uses
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
   // IDE
-  LazarusIDEStrConsts, CompilerOptions, Compiler, AllCompilerOptions, DefinesGui,
-  EditorOptions, PackageDefs, SourceSynEditor;
+  LazarusIDEStrConsts, ParsedCompilerOpts, CompilerOptions, Compiler,
+  AllCompilerOptions, DefinesGui, EditorOptions, PackageDefs, SourceSynEditor;
 
 type
 

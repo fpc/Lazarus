@@ -42,7 +42,7 @@ uses
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs,
   // IDE
-  MainBase, MainBar, BasePkgManager, PackageDefs, Project, CompilerOptions,
+  MainBase, MainBar, BasePkgManager, PackageDefs, Project, ParsedCompilerOpts, CompilerOptions,
   BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg, GenericCheckList,
   LazarusIDEStrConsts;
 

@@ -57,7 +57,7 @@ uses
   // IDE
   DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
-  ProjectInspector, CompilerOptions, SourceSynEditor, SourceEditor,
+  ProjectInspector, ParsedCompilerOpts, CompilerOptions, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,

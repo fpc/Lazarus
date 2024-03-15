@@ -66,7 +66,7 @@ uses
   // IdeConfig
   EnvironmentOpts, TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
-  CompilerOptions, DialogProcs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
+  ParsedCompilerOpts, CompilerOptions, DialogProcs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

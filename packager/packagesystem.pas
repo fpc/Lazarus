@@ -63,7 +63,7 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, IDETranslations, CompilerOptions,
+  LazarusIDEStrConsts, DialogProcs, IDETranslations, ParsedCompilerOpts, CompilerOptions,
   PackageLinks, PackageDefs, FppkgHelper, PkgSysBasePkgs;
 
 const

@@ -45,7 +45,7 @@ uses
   // IdeConfig
   TransferMacros, SearchPathProcs, IDEProcs,
   // IDE
-  Project, PackageSystem, LazarusIDEStrConsts, PackageDefs, CompilerOptions;
+  Project, PackageSystem, LazarusIDEStrConsts, PackageDefs, ParsedCompilerOpts, CompilerOptions;
 
 type
   TCompilerOptionsTest = (
