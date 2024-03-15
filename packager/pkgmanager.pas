@@ -58,7 +58,7 @@ uses
   FileProcs, CodeTree, CTUnitGraph,
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
-  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg,
+  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg, BaseIDEIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,

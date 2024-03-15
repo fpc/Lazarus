@@ -47,7 +47,7 @@ uses
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // BuildIntf
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
-  ComponentReg,
+  ComponentReg, BaseIDEIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,

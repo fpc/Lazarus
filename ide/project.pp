@@ -56,10 +56,12 @@ uses
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
   LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
+  // BuildIntf
+  BaseIDEIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
+  CompOptsIntf, IDEOptionsIntf,
   // IDEIntf
-  PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory,
-  CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, LazIDEIntf, PackageIntf,
+  PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory, SrcEditorIntf,
+  IDEOptEditorIntf, IDEDialogs,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,

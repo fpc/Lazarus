@@ -46,8 +46,8 @@ uses
   TypInfo, Classes, SysUtils,
   LazFileUtils, LazLoggerBase,
   Forms, ComCtrls,
-  PackageIntf,
-  LazIDEIntf, MenuIntf, IdeIntfStrConsts,
+  PackageIntf, BaseIDEIntf,
+  MenuIntf, IdeIntfStrConsts,
   EnvironmentOpts,
   LazarusIDEStrConsts,
   CompilerOptions, PackageDefs, PackageSystem, Project;

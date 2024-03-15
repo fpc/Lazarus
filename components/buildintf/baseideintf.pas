@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazUTF8, LazConfigStorage,
+  LazUTF8, LazConfigStorage, AvgLvlTree,
   // BuildIntf
   MacroIntf;
   
@@ -28,6 +28,23 @@ type
     smsfsWaitTillDone, // scan now and wait till finished
     smsfsBackground    // start in background
     );
+
+  // new filename flags
+  // Normally you don't need to pass any flags.
+  TSearchIDEFileFlag = (
+    siffDoNotCheckAllPackages, // do not search filename in unrelated packages (e.g. installed but not used by project)
+    siffCheckAllProjects, // search filename in all loaded projects
+    siffCaseSensitive,  // check case sensitive, otherwise use Pascal case insensitivity (CompareText)
+    siffDoNotCheckOpenFiles,  // do not search in files opened in source editor
+    siffIgnoreExtension  // compare only filename, ignore file extension
+    );
+  TSearchIDEFileFlags = set of TSearchIDEFileFlag;
+
+  TLazBuildingFinishedEvent = procedure(Sender: TObject; BuildSuccessful: Boolean) of object;
+  TLazLoadSaveCustomDataEvent = procedure(Sender: TObject; Load: boolean;
+    CustomData: TStringToStringTree; // on save this is a temporary clone free for altering
+    PathDelimChanged: boolean
+    ) of object;
 
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
                                   ): TConfigStorage;

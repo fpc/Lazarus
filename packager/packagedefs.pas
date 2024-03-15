@@ -49,9 +49,7 @@ uses
   LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
   MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
-  PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker,
-  // IDEIntf
-  LazIDEIntf,
+  PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
