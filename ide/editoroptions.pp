@@ -5814,8 +5814,7 @@ begin
     FCompletionLongLineHintInMSec :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec', 0);
     FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
-    XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
-                         Self, Self, 'CompletionLongLineHintType');
+    XMLConfig.ReadObject('EditorOptions/CodeTools/',Self,Nil,'CompletionLongLineHintType');
 
     // Code Folding
     FUseCodeFolding :=
@@ -6019,8 +6018,9 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/CompletionLongLineHintInMSec',
       FCompletionLongLineHintInMSec, 0);
-    XMLConfig.WriteObject('EditorOptions/CodeTools/CompletionLongLineHintType',
-                         Self, nil, 'CompletionLongLineHintType');
+    XMLConfig.WriteObject('EditorOptions/CodeTools/',Self,nil,'CompletionLongLineHintType');
+    // Remove an old buggy value 'CompletionLongLineHintTypeCompletionLongLineHintType'
+    XMLConfig.DeleteValue('EditorOptions/CodeTools/CompletionLongLineHintTypeCompletionLongLineHintType');
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
