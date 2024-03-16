@@ -2137,13 +2137,50 @@ directory is accepted or rejected.
 </p>
 </descr>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TFileSearcher.Search"/>
 <link id="TFileSearcher.DoQueryDirectoryEnter"/>
 <link id="TFileSearcher.OnDirectoryFound"/>
 <link id="TQueryFileFoundEvent"/>
+</seealso>
+</element>
+
+<element name="TFileSearcher.OnQueryDirectoryEnter">
+<short>
+Event handler signalled to accept or reject a subdirectory in the Search method.
+</short>
+<descr>
+<p>
+<var>OnQueryDirectoryEnter</var> is a <var>TQueryDirectoryFoundEvent</var> 
+property signalled when a recursive directory search is performed in the Search 
+method. It allows an application to accept or reject a directory name on a 
+case-by-case basis even though it matches the path and mask provided to Search.
+</p>
+<p>
+Arguments passed to the event handler include information about the current 
+file system entry, the name for the directory, and a variable argument which 
+indicates whether the directory is accepted or rejected. See 
+<link id="TQueryDirectoryFoundEvent">TQueryDirectoryFoundEvent</link> for more 
+information.
+</p>
+<p>
+OnQueryDirectoryEnter is signalled (when assigned) from the Search method, and 
+occurs when subdirectory searches have been enabled in the method.
+</p>
+<p>
+Use OnQueryFileFound to accept or reject individual file names processed in the 
+Search method.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TFileSearcher.Search"/>
+<link id="TFileSearcher.OnQueryFileFound"/>
+<link id="TQueryDirectoryFoundEvent"/>
 </seealso>
 </element>
 
