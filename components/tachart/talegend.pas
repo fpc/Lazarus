@@ -102,13 +102,15 @@ type
   end;
 
   { TLegendItemLinePointerBrush }
+  { Draws a line with APen, a pointer on the line, and the area below the line
+    is filled with ABrush }
 
   TLegendItemLinePointerBrush = class(TLegendItemLinePointer)
   strict protected
-    FUseBrush: Boolean;
+    FAreaBrush: TBrush;
   public
     constructor Create(APen: TPen; ABrush: TBrush; APointer: TSeriesPointer;
-      const AText: String);
+      const AText: String; AreaBrush: TBrush = nil);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
@@ -497,6 +499,7 @@ begin
 end;
 
 { TLegendItemLinePointer }
+{ Draws a line segment and a pointer, in addition to the legend text. }
 
 constructor TLegendItemLinePointer.Create(
   APen: TPen; APointer: TSeriesPointer; const AText: String);
@@ -533,20 +536,19 @@ end;
 { TLegendItemLinePointerBrush }
 
 constructor TLegendItemLinePointerBrush.Create(APen: TPen; ABrush: TBrush;
-  APointer: TSeriesPointer; const AText: String);
+  APointer: TSeriesPointer; const AText: String; AreaBrush: TBrush = nil);
 begin
   CreateWithBrush(APen, ABrush, APointer, AText);
+  FAreaBrush := AreaBrush;
 end;
 
 procedure TLegendItemLinePointerBrush.Draw(
   ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ADrawer.SetBrush(FBrush);
-  if Assigned(FPointer) then
+  if Assigned(FAreaBrush) then
   begin
+    ADrawer.SetBrush(FAreaBrush);
     ADrawer.FillRect(ARect.Left, (ARect.Top + ARect.Bottom) div 2, ARect.Right, ARect.Bottom);
-    FPresetBrush := false;
-    ADrawer.SetBrush(FPointer.Brush);
   end;
   inherited;
 end;

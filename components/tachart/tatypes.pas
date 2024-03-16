@@ -107,6 +107,7 @@ type
     FOverrideColor: TOverrideColors;
     FPen: TChartPen;
     FStyle: TSeriesPointerStyle;
+    FUpdateLock: Integer;
     FVertSize: Integer;
 
     procedure SetBrush(AValue: TBrush);
@@ -115,6 +116,8 @@ type
     procedure SetPen(AValue: TChartPen);
     procedure SetStyle(AValue: TSeriesPointerStyle);
     procedure SetVertSize(AValue: Integer);
+  strict protected
+    procedure StyleChanged(Sender: TObject); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -124,6 +127,9 @@ type
       ABrushAlreadySet: Boolean = false);
     procedure DrawSize(ADrawer: IChartDrawer; ACenter, ASize: TPoint;
       AColor: TColor; AAngle: Double = 0.0; ABrushAlreadySet: Boolean = false);
+    procedure LockUpdate;
+    procedure UnlockUpdate;
+    function UpdateLocked: Boolean;
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
@@ -524,6 +530,21 @@ begin
   end;
 end;
 
+procedure TSeriesPointer.LockUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TSeriesPointer.UnlockUpdate;
+begin
+  dec(FUpdateLock);
+end;
+
+function TSeriesPointer.UpdateLocked: Boolean;
+begin
+  Result := FUpdateLock <> 0;
+end;
+
 procedure TSeriesPointer.SetBrush(AValue: TBrush);
 begin
   FBrush.Assign(AValue);
@@ -562,6 +583,12 @@ begin
   if FVertSize = AValue then exit;
   FVertSize := AValue;
   StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.StyleChanged(Sender: TObject);
+begin
+  if (FUpdateLock = 0) then
+    inherited StyleChanged(Sender);
 end;
 
 

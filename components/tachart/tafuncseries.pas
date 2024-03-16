@@ -1167,7 +1167,7 @@ var
   li: TLegendItemLinePointer;
   s: TChartStyle;
   i: Integer;
-  lBrush: TBrush;
+  lBrush, ptrBrush: TBrush;
   lPen: TPen;
 begin
   if FPen.Visible and (FPen.Style <> psClear) then
@@ -1193,13 +1193,17 @@ begin
       if Styles <> nil then begin
         if Assigned(p) then lBrush := p.Brush else lBrush := nil;
         for s in Styles.Styles do
+        begin
+          ptrBrush := IfThen(s.UsePointer, s.Pointer.Brush, s.Brush) as TBrush;
+          p := IfThen(s.UsePointer, s.Pointer, Pointer) as TSeriesPointer;
           AItems.Add(TLegendItemLinePointer.CreateWithBrush(
-            TAChartUtils.IfThen((lPen <> nil) and s.UsePen, s.Pen, lPen) as TPen,
-            TAChartUtils.IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
-            p,
+            IfThen((lPen <> nil) and s.UsePen, s.Pen, lPen) as TPen,
+            IfThen(s.UseBrush, ptrBrush, IfThen(s.UsePointer, s.Pointer.Brush, lBrush)) as TBrush,
+            IfThen(Pointer.Visible and p.Visible, p, nil) as TSeriesPointer,
             LegendTextStyle(s)
           ));
         end;
+      end;
   end;
 end;
 

@@ -15,29 +15,44 @@ unit TAStyles;
 interface
 
 uses
-  Classes, Graphics, SysUtils, TAChartUtils, TADrawUtils;
+  Classes, Graphics, SysUtils, TATypes, TAChartUtils, TADrawUtils;
 
 type
+  TChartStyle = class;
+
+  { TChartStylePointer }
+
+  TChartStylePointer = class(TSeriesPointer)
+  private
+    FStyle: TChartStyle;
+  protected
+    procedure StyleChanged(Sender: TObject); override;
+  end;
+
   { TChartStyle }
 
   TChartStyle = class(TCollectionItem)
   private
     FBrush: TBrush;
     FPen: TPen;
+    FPointer: TSeriesPointer;
     FFont: TFont;
     FRepeatCount: Cardinal;
     FText: String;
     FUseBrush: Boolean;
     FUsePen: Boolean;
+    FUsePointer: Boolean;
     FUseFont: Boolean;
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetPen(AValue: TPen);
+    procedure SetPointer(AValue: TSeriesPointer);
     procedure SetRepeatCount(AValue: Cardinal);
     procedure SetText(AValue: String);
     procedure SetUseBrush(AValue: Boolean);
     procedure SetUseFont(AValue: Boolean);
     procedure SetUsePen(AValue: Boolean);
+    procedure SetUsePointer(AValue: Boolean);
     procedure StyleChanged(ASender: TObject);
   protected
     function GetDisplayName: string; override;
@@ -51,12 +66,13 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
-    property RepeatCount: Cardinal
-      read FRepeatCount write SetRepeatCount default 1;
+    property Pointer: TSeriesPointer read FPointer write SetPointer;
+    property RepeatCount: Cardinal read FRepeatCount write SetRepeatCount default 1;
     property Text: String read FText write SetText;
     property UseBrush: Boolean read FUseBrush write SetUseBrush default true;
     property UseFont: Boolean read FUseFont write SetUseFont default true;
     property UsePen: Boolean read FUsePen write SetUsePen default true;
+    property UsePointer: Boolean read FUsePointer write SetUsePointer default false; // default false for compatibility reasons
   end;
 
   TChartStyles = class;
@@ -117,6 +133,14 @@ begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartStyles]);
 end;
 
+{ TChartStylePointer }
+
+procedure TChartStylePointer.StyleChanged(Sender: TObject);
+begin
+  if (not UpdateLocked) and Assigned(FStyle) then
+    FStyle.StyleChanged(FStyle);
+end;
+
 { TChartStyleEnumerator }
 
 function TChartStyleEnumerator.GetCurrent: TChartStyle;
@@ -143,6 +167,12 @@ begin
       Self.Brush := Brush;
       Self.Font := Font;
       Self.Pen := Pen;
+      Self.Pointer := Pointer;
+      Self.RepeatCount := RepeatCount;
+      Self.UseBrush := UseBrush;
+      Self.UseFont := UseFont;
+      Self.UsePen := UsePen;
+      Self.UsePointer := UsePointer;
     end;
   inherited Assign(Source);
 end;
@@ -156,14 +186,18 @@ begin
   FFont.OnChange := @StyleChanged;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
+  FPointer := TChartStylePointer.Create(nil);
+  TChartStylePointer(FPointer).FStyle := Self;
   FRepeatCount := 1;
   FUseBrush := true;
   FUseFont := true;
   FUsePen := true;
+  FUsePointer := false;
 end;
 
 destructor TChartStyle.Destroy;
 begin
+  FreeAndNil(FPointer);
   FreeAndNil(FBrush);
   FreeAndNil(FFont);
   FreeAndNil(FPen);
@@ -191,6 +225,13 @@ procedure TChartStyle.SetPen(AValue: TPen);
 begin
   if FPen = AValue then exit;
   FPen := AValue;
+end;
+
+procedure TChartStyle.SetPointer(AValue: TSeriesPointer);
+begin
+  if FPointer = AValue then exit;
+  FPointer := AValue;
+  StyleChanged(self);
 end;
 
 procedure TChartStyle.SetRepeatCount(AValue: Cardinal);
@@ -225,6 +266,13 @@ procedure TChartStyle.SetUsePen(AValue: Boolean);
 begin
   if FUsePen = AValue then exit;
   FUsePen := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartStyle.SetUsePointer(AValue: Boolean);
+begin
+  if FUsePointer = AValue then exit;
+  FUsePointer := AValue;
   StyleChanged(Self);
 end;
 

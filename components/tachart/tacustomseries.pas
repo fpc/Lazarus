@@ -1593,6 +1593,7 @@ var
   i: Integer;
   p: TDoublePoint;
   ai: TPoint;
+  lPointer: TSeriesPointer;
   ps, saved_ps: TSeriesPointerStyle;
   brushAlreadySet: boolean;
   c: TColor;
@@ -1600,34 +1601,55 @@ var
 begin
   Assert(Pointer <> nil, 'Series pointer');
   if (not Pointer.Visible) or (Length(FGraphPoints) = 0) then exit;
+  if (Styles <> nil) then
+  begin
+    style := Styles.StyleByIndex(AStyleIndex);
+    if (style <> nil) and style.UsePointer and (not style.Pointer.Visible) then
+      exit;
+  end;
+
   for i := FLoBound to FUpBound do begin
     p := FGraphPoints[i - FLoBound];
     if not ParentChart.IsPointInViewPort(p) then continue;
     ai := ParentChart.GraphToImage(p);
     if Assigned(FOnCustomDrawPointer) then
       FOnCustomDrawPointer(Self, ADrawer, i, ai)
-    else begin
-      if Assigned(FOnGetPointerStyle) then begin
-        saved_ps := Pointer.Style;
-        ps := saved_ps;
-        FOnGetPointerStyle(self, i, ps);
-        Pointer.SetOwner(nil);   // avoid recursion
-        Pointer.Style := ps;
-      end;
+    else
+    begin
+      lPointer := Pointer;
       brushAlreadySet := false;
       if (Styles <> nil) then
       begin
         style := Styles.StyleByIndex(AStyleIndex);
-        if style <> nil then brushAlreadySet := style.UseBrush;
+        if style <> nil then
+        begin
+          brushAlreadySet := style.UseBrush;
+          if style.UsePointer then
+          begin
+            lPointer := style.Pointer;
+            brushAlreadySet := false;
+          end;
+        end;
+      end;
+      if Assigned(FOnGetPointerStyle) then
+      begin
+        saved_ps := lPointer.Style;
+        ps := saved_ps;
+        FOnGetPointerStyle(self, i, ps);
+        lPointer.LockUpdate;   // Avoid recursion
+        lPointer.Style := ps;
+        lPointer.UnlockUpdate;
       end;
       if brushAlreadySet then
         Styles.Apply(ADrawer, AStyleIndex);
       if UseDataColors then c := Source[i]^.Color else c := clTAColor;
-      Pointer.Draw(ADrawer, ai, c, brushAlreadySet);
+      lPointer.Draw(ADrawer, ai, c, brushAlreadySet);
       AfterDrawPointer(ADrawer, i, ai);
-      if Assigned(FOnGetPointerStyle) then begin
-        Pointer.Style := saved_ps;
-        Pointer.SetOwner(ParentChart);
+      if Assigned(FOnGetPointerStyle) then
+      begin
+        lPointer.LockUpdate;
+        lPointer.Style := saved_ps;
+        lPointer.UnlockUpdate;
       end;
     end;
   end;

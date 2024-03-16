@@ -166,7 +166,7 @@ type
     FLinePen: TPen;
     FOriginX: Double;
     FOriginY: Double;
-    FShowPoints: Boolean;
+    function GetShowPoints: Boolean;
     function IsOriginXStored: Boolean;
     function IsOriginYStored: Boolean;
     procedure SetBrush(AValue: TBrush);
@@ -210,7 +210,7 @@ type
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Pointer;
-    property ShowPoints: Boolean read FShowPoints write SetShowPoints;
+    property ShowPoints: Boolean read GetShowPoints write SetShowPoints default false;
     property Source;
     property Styles;
     property OnCustomDrawPointer;
@@ -1218,7 +1218,7 @@ begin
       Self.LinePen := FLinePen;
       Self.FOriginX := FOriginX;
       Self.FOriginY := FOriginY;
-      Self.FShowPoints := FShowPoints;
+      Self.Pointer := Pointer;
     end;
   inherited Assign(ASource);
 end;
@@ -1233,9 +1233,7 @@ begin
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
   FFilled := true;      // needed for SetFilled to execute its code
-  FShowPoints := true;  // needed for SetShowPoints to execute its code
   SetFilled(false);
-  SetShowPoints(false);
 end;
 
 destructor TPolarSeries.Destroy;
@@ -1375,15 +1373,19 @@ begin
       end;
     lmStyle:
       if Styles <> nil then begin
-        if Assigned(p) then lBrush := p.Brush else lBrush := nil;
         for s in Styles.Styles do
-          AItems.Add(TLegendItemLinePointer.CreateWithBrush(
+        begin
+          lBrush := IfThen(s.UsePointer, s.Pointer.Brush, IfThen(s.UseBrush, s.Brush, Pointer.Brush)) as TBrush;
+          p := IfThen(s.UsePointer, s.Pointer, Pointer) as TSeriesPointer;
+          AItems.Add(TLegendItemLinePointerBrush.Create(
             IfThen((LinePen <> nil) and s.UsePen, s.Pen, LinePen) as TPen,
-            IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
-            p,
-            LegendTextStyle(s)
+            lBrush,                                                          // Pointer brush
+            IfThen(Pointer.Visible and p.Visible, p, nil) as TSeriespointer,
+            LegendTextStyle(s),
+            IfThen(Filled, IfThen(s.UseBrush, s.Brush, Brush), nil) as TBrush // Area brush
           ));
         end;
+      end;
   end;
 end;
 
@@ -1424,6 +1426,11 @@ begin
     if dist = 0 then break;
   end;
   Result := AResults.FIndex >= 0;
+end;
+
+function TPolarSeries.GetShowPoints: Boolean;
+begin
+  Result := Pointer.Visible;
 end;
 
 function TPolarSeries.GraphPoint(AIndex, AYIndex: Integer): TDoublePoint;
@@ -1543,8 +1550,7 @@ end;
 procedure TPolarSeries.SetShowPoints(AValue: Boolean);
 begin
   if ShowPoints = AValue then exit;
-  FShowPoints := AValue;
-  Pointer.Visible := FShowPoints;;
+  Pointer.Visible := AValue;
   UpdateParentChart;
 end;
 
