@@ -1566,7 +1566,6 @@ type
     fCtrlMiddleTabClickClosesOthers: Boolean;
     fMiddleTabClickClosesOthersModifier: TShiftState;
     fMiddleTabClickClosesToRightModifier: TShiftState;
-    fShowFileNameInCaption: Boolean;
     // Comment Continue
     FAnsiCommentContinueEnabled: Boolean;
     FAnsiCommentMatch: String;
@@ -1653,8 +1652,6 @@ type
       read fMiddleTabClickClosesOthersModifier write fMiddleTabClickClosesOthersModifier default [ssCtrl];
     property MiddleTabClickClosesToRightModifier: TShiftState
       read fMiddleTabClickClosesToRightModifier write fMiddleTabClickClosesToRightModifier default [];
-    property ShowFileNameInCaption: Boolean
-      read fShowFileNameInCaption write fShowFileNameInCaption default False;
     property TabFont: String read FTabFont write FTabFont;
     property TabFontSize: Integer read FTabFontSize write FTabFontSize;
     property TabFontDisableAntialiasing: Boolean read FTabFontDisableAntialiasing
@@ -1725,6 +1722,7 @@ type
     // General options
     fSynEditOptions: TSynEditorOptions;
     fSynEditOptions2: TSynEditorOptions2;
+    fShowFileNameInCaption: Boolean;
     fShowTabCloseButtons: Boolean;
     fHideSingleTabInWindow: Boolean;
     fShowTabNumbers: Boolean;
@@ -1839,6 +1837,8 @@ type
       read fSynEditOptions write fSynEditOptions default SynEditDefaultOptions;
     property SynEditOptions2: TSynEditorOptions2
       read fSynEditOptions2 write fSynEditOptions2 default SynEditDefaultOptions2;
+    property ShowFileNameInCaption: Boolean
+      read fShowFileNameInCaption write fShowFileNameInCaption;
     property ShowTabCloseButtons: Boolean
       read fShowTabCloseButtons write fShowTabCloseButtons;
     property HideSingleTabInWindow: Boolean
@@ -5406,7 +5406,6 @@ begin
   fCtrlMiddleTabClickClosesOthers := True;
   fMiddleTabClickClosesOthersModifier := [ssCtrl];
   fMiddleTabClickClosesToRightModifier := [];
-  fShowFileNameInCaption := False;
   TabFont := '';
   TabFontSize := 0;
   TabFontDisableAntialiasing := DefaultEditorDisableAntiAliasing;
@@ -5538,6 +5537,7 @@ begin
   // General options
   fSynEditOptions := SynEditDefaultOptions;
   fSynEditOptions2 := SynEditDefaultOptions2;
+  fShowFileNameInCaption := False;
   fShowTabCloseButtons := True;
   fHideSingleTabInWindow := False;
   fCopyWordAtCursorOnCopyNone := True;
@@ -5993,6 +5993,8 @@ begin
       FMarkupCurWordNoTimer, False);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowFileNameInCaption',
         FShowFileNameInCaption, False);
+    // Remove an old value from Misc section. Done in Lazarus 3.99, March 2024.
+    XMLConfig.DeleteValue('EditorOptions/Misc/ShowFileNameInCaption');
 
     // Code Tools options
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoBlockCompletion'
@@ -6011,18 +6013,15 @@ begin
       , fAutoHintDelayInMSec, 1000);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateFileName'
       , fCodeTemplateFileNameRaw, '');
-    XMLConfig.SetDeleteValue(
-      'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
       , fCTemplIndentToTokenStart, False);
-    XMLConfig.SetDeleteValue(
-      'EditorOptions/CodeTools/AutoRemoveEmptyMethods'
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods'
       , fAutoRemoveEmptyMethods, False);
-    XMLConfig.SetDeleteValue(
-      'EditorOptions/CodeTools/CompletionLongLineHintInMSec',
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec',
       FCompletionLongLineHintInMSec, 0);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CompletionLongLineHintType',
       FCompletionLongLineHintType, ord(DefaultCompletionLongLineHintType), TypeInfo(TSynCompletionLongHintType));
-    // Remove an old (buggy) values
+    // Remove an old (buggy) values. Done in Lazarus 3.99, March 2024.
     XMLConfig.DeleteValue('EditorOptions/CodeTools/CompletionLongLineHintTypeCompletionLongLineHintType');
     XMLConfig.DeleteValue('EditorOptions/Misc/CompletionLongLineHintType');
 
