@@ -1550,7 +1550,6 @@ type
     fTopInfoView: boolean;
     // Code tools options
     fDbgHintAutoTypeCastClass: Boolean;
-    fCompletionLongLineHintType: TSynCompletionLongHintType;
     // Code Folding
     fReverseFoldPopUpOrder: Boolean;
     fUseTabHistory: Boolean;
@@ -1620,9 +1619,6 @@ type
       read fDbgHintAutoTypeCastClass write fDbgHintAutoTypeCastClass default True;
     property DbgHintUseBackendDebugConverter: Boolean              // declaration hints
       read fDbgHintUseBackendDebugConverter write fDbgHintUseBackendDebugConverter default True;
-    property CompletionLongLineHintType: TSynCompletionLongHintType
-      read fCompletionLongLineHintType write fCompletionLongLineHintType
-      default sclpExtendRightOnly;
     // General - Misc
     {$IFDEF WinIME}
     property UseMinimumIme: Boolean read FUseMinimumIme write FUseMinimumIme default False;
@@ -1783,6 +1779,7 @@ type
     fCTemplIndentToTokenStart: Boolean;
     fAutoRemoveEmptyMethods: Boolean;
     fCompletionLongLineHintInMSec: Integer;
+    fCompletionLongLineHintType: TSynCompletionLongHintType;
     // Code Folding
     fUseCodeFolding: Boolean;
     fUseMarkupWordBracket: Boolean;
@@ -1929,6 +1926,9 @@ type
       read fAutoRemoveEmptyMethods write fAutoRemoveEmptyMethods default False;
     property CompletionLongLineHintInMSec: Integer
       read fCompletionLongLineHintInMSec write fCompletionLongLineHintInMSec;
+    property CompletionLongLineHintType: TSynCompletionLongHintType
+      read fCompletionLongLineHintType write fCompletionLongLineHintType
+      default sclpExtendRightOnly;
     // Code Folding
     property UseCodeFolding: Boolean
       read fUseCodeFolding write fUseCodeFolding default True;
@@ -5397,8 +5397,6 @@ begin
   // hints
   fDbgHintAutoTypeCastClass := True;
   fDbgHintUseBackendDebugConverter := True;
-  // Code Tools options
-  fCompletionLongLineHintType := DefaultCompletionLongLineHintType;
   // Code folding
   fReverseFoldPopUpOrder := True;
   // pas highlighter
@@ -5517,6 +5515,7 @@ begin
   CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
   FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
   FMultiWinEditAccessOrder.InitDefaults;
+  fCompletionLongLineHintType := DefaultCompletionLongLineHintType;
   // Default values for RttiXmlConfig
   FDefaultValues := TEditorOptionsDefaults.Create;
 end;
@@ -5813,17 +5812,12 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
     FCompletionLongLineHintInMSec :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec', 0);
-    FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
-    if XMLConfig.HasPath('EditorOptions/CodeTools/CompletionLongLineHintTypeCompletionLongLineHintType', False) then
-    begin
-      DebugLn(['TEditorOptions.Load CompletionLongLineHintType Long version']);
-      XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',Self,Nil,'CompletionLongLineHintType')
-    end
-    else begin
-      DebugLn(['TEditorOptions.Load CompletionLongLineHintType Short version']);
-      XMLConfig.ReadObject('EditorOptions/CodeTools/',Self,Nil,'CompletionLongLineHintType');
-    end;
-
+    // Read from old location
+    XMLConfig.GetValue('EditorOptions/Misc/CompletionLongLineHintType', ord(DefaultCompletionLongLineHintType),
+      FCompletionLongLineHintType, TypeInfo(TSynCompletionLongHintType));
+    // Read from new location / old value as default
+    XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintType', ord(FCompletionLongLineHintType),
+      FCompletionLongLineHintType, TypeInfo(TSynCompletionLongHintType));
     // Code Folding
     FUseCodeFolding :=
       XMLConfig.GetValue('EditorOptions/CodeFolding/UseCodeFolding', True);
@@ -6026,9 +6020,11 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/CompletionLongLineHintInMSec',
       FCompletionLongLineHintInMSec, 0);
-    XMLConfig.WriteObject('EditorOptions/CodeTools/',Self,nil,'CompletionLongLineHintType');
-    // Remove an old buggy value 'CompletionLongLineHintTypeCompletionLongLineHintType'
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CompletionLongLineHintType',
+      FCompletionLongLineHintType, ord(DefaultCompletionLongLineHintType), TypeInfo(TSynCompletionLongHintType));
+    // Remove an old (buggy) values
     XMLConfig.DeleteValue('EditorOptions/CodeTools/CompletionLongLineHintTypeCompletionLongLineHintType');
+    XMLConfig.DeleteValue('EditorOptions/Misc/CompletionLongLineHintType');
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
