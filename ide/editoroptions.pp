@@ -53,7 +53,8 @@ uses
   SynGutterChanges, SynCompletion,
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   SynEditMarkupSpecialChar,
-  SourceSynEditor,
+  // LazEdit
+  TextMateGrammar,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP,
   SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas,
@@ -69,12 +70,11 @@ uses
   // BuildIntf
   IDEOptionsIntf, MacroIntf,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs,
-  EditorSyntaxHighlighterDef, TextMateGrammar,
+  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs, EditorSyntaxHighlighterDef,
   // IdeConfig
   LazConf,
   // IDE
-  SourceMarks, LazarusIDEStrConsts, KeyMapping, AssemblerDlg;
+  SourceMarks, SourceSynEditor, LazarusIDEStrConsts, KeyMapping, AssemblerDlg;
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
@@ -5814,7 +5814,15 @@ begin
     FCompletionLongLineHintInMSec :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec', 0);
     FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
-    XMLConfig.ReadObject('EditorOptions/CodeTools/',Self,Nil,'CompletionLongLineHintType');
+    if XMLConfig.HasPath('EditorOptions/CodeTools/CompletionLongLineHintTypeCompletionLongLineHintType', False) then
+    begin
+      DebugLn(['TEditorOptions.Load CompletionLongLineHintType Long version']);
+      XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',Self,Nil,'CompletionLongLineHintType')
+    end
+    else begin
+      DebugLn(['TEditorOptions.Load CompletionLongLineHintType Short version']);
+      XMLConfig.ReadObject('EditorOptions/CodeTools/',Self,Nil,'CompletionLongLineHintType');
+    end;
 
     // Code Folding
     FUseCodeFolding :=
