@@ -1068,6 +1068,7 @@ resourcestring
   lisChooseDebuggerExecutable = 'Choose debugger executable';
   lisChooseTestBuildDir = 'Choose the directory for tests';
   lisChooseExecutable = 'Choose an executable';
+  lisChooseFppkgConfigurationFile = 'Choose the fppkg configuration file';
 
   // dialogs
   lisProjectChanged = 'Project changed';
@@ -1571,6 +1572,7 @@ resourcestring
   dlgFilterPascalFile = 'Pascal file';
   dlgFilterDciFile = 'DCI file';
   dlgFilterFPCMessageFile = 'FPC message file';
+  dlgFilterFppkgConfigurationFile = 'Fppkg configuration file';
   dlgFilterCodetoolsTemplateFile = 'CodeTools template file';
   dlgFilterImagesPng = 'PNG images';
   dlgFilterImagesBitmap = 'Bitmap images';
@@ -2529,6 +2531,7 @@ resourcestring
   lisUnableToReadProcessExitStatus = 'unable to read process ExitStatus';
   lisFreeingBufferLines = 'freeing buffer lines: %s';
   lisCompilerMessagesFileNotFound = 'Compiler messages file not found:%s%s';
+  lisFppkgConfigurationFileNotFound = 'Fppkg configuration file not found:%s%s';
   lisUnableToOpen = 'Unable to open "%s"';
   lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
   lisInvalidMode = 'Invalid mode %s';

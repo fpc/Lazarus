@@ -407,7 +407,7 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Width = 23
     Anchors = [akTop, akRight, akBottom]
     Caption = '...'
-    OnClick = FilesButtonClick
+    OnClick = FppkgConfigurationFileButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 17

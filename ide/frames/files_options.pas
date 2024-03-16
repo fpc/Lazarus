@@ -81,6 +81,7 @@ type
     procedure CompilerTranslationFileButtonClick(Sender:TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
+    procedure FppkgConfigurationFileButtonClick(Sender: TObject);
     procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
   private
     FOldLazarusDir: string;
@@ -104,6 +105,7 @@ type
     function CheckTestDir: boolean;
     function CheckMake: boolean;
     function CheckFPCMsgFile: boolean;
+    function CheckFppkgConfigurationFile: boolean;
   public
     function Check: Boolean; override;
     function GetTitle: String; override;
@@ -135,15 +137,16 @@ begin
     if Sender = CompilerPathButton then begin
       OpenDialog.Title := Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename]);
       lDirText := CompilerPathComboBox.Text;
+      lDirName := EnvironmentOptions.GetParsedValue(eopCompilerFilename, lDirText);
     end
     else if Sender=MakePathButton then begin
       OpenDialog.Title := lisChooseMakeExecutable;
       lDirText := MakePathComboBox.Text;
+      lDirName := EnvironmentOptions.GetParsedValue(eopMakeFilename, lDirText);
     end
     else
       exit;
 
-    lDirName := EnvironmentOptions.GetParsedValue(eopCompilerFilename, lDirText);
     lExpandedName := CleanAndExpandFilename(lDirName);
     lDirName := GetValidDirectoryAndFilename(lDirName, {out} lDirNameF);
     OpenDialog.InitialDir := lDirName;
@@ -162,6 +165,78 @@ begin
           // check make filename
           SetComboBoxText(MakePathComboBox,lDirText,cstFilename);
           CheckMake;
+        end;
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TFilesOptionsFrame.DirectoriesButtonClick(Sender: TObject);
+var
+  lDirText : string;
+
+  function ParsedDirName(aParseType: TEnvOptParseType): string;
+  begin
+    if lDirText = '' then
+      Result := EnvironmentOptions.GetParsedValue(aParseType, '')
+    else
+      Result := EnvironmentOptions.GetParsedValue(aParseType, lDirText);
+  end;
+
+var
+  OpenDialog: TSelectDirectoryDialog;
+  lDirName, loDirNameF, lExpandedName: string;
+begin
+  OpenDialog := TSelectDirectoryDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options := OpenDialog.Options+[ofExtensionDifferent, ofPathMustExist];
+    // set title
+    if Sender = LazarusDirButton then begin
+      OpenDialog.Title := lisChooseLazarusSourceDirectory;
+      lDirText := LazarusDirComboBox.Text;
+      lDirName := ParsedDirName(eopLazarusDirectory);
+    end
+    else if Sender = FPCSourceDirButton then begin
+      OpenDialog.Title := lisChooseFPCSourceDir;
+      lDirText := FPCSourceDirComboBox.Text;
+      lDirName := ParsedDirName(eopFPCSourceDirectory);
+    end
+    else if Sender=TestBuildDirButton then begin
+      OpenDialog.Title := lisChooseTestBuildDir;
+      lDirText := TestBuildDirComboBox.Text;
+      lDirName := ParsedDirName(eopTestBuildDirectory);
+    end
+    else
+      exit;
+
+    lExpandedName := CleanAndExpandDirectory(lDirName);
+    lDirName := GetValidDirectoryAndFilename(lDirName, loDirNameF);
+
+    OpenDialog.InitialDir := IncludeTrailingBackslash(lDirName);
+    OpenDialog.FileName := loDirNameF;
+
+    if OpenDialog.Execute then begin
+      lDirName := CleanAndExpandDirectory(OpenDialog.Filename);
+      if UpperCase(lDirName)<>UpperCase(lExpandedName) then begin
+        lDirText := lDirName;
+        if Sender = LazarusDirButton then begin
+          // check lazarus directory
+          SetComboBoxText(LazarusDirComboBox,lDirText,cstFilename);
+          CheckLazarusDir([mbOk]);
+        end
+        else if Sender = FPCSourceDirButton then begin
+          // check fpc source directory
+          SetComboBoxText(FPCSourceDirComboBox,lDirText,cstFilename);
+          CheckFPCSourceDir([mbOK]);
+        end
+        else if Sender = TestBuildDirButton then begin
+          // check test directory
+          SetComboBoxText(TestBuildDirComboBox,lDirText,cstFilename);
+          CheckTestDir;
         end;
       end;
     end;
@@ -193,64 +268,21 @@ begin
   end;
 end;
 
-procedure TFilesOptionsFrame.DirectoriesButtonClick(Sender: TObject);
+procedure TFilesOptionsFrame.FppkgConfigurationFileButtonClick(Sender: TObject);
 var
-  OpenDialog: TSelectDirectoryDialog;
-  lDirText : string;
-  lExpandedName: string;
-  lDirName, loDirNameF: string;
+  OpenDialog: TOpenDialog;
+  AFilename: string;
 begin
-  OpenDialog := TSelectDirectoryDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options := OpenDialog.Options+[ofExtensionDifferent, ofPathMustExist];
-    // set title
-    if Sender = LazarusDirButton then begin
-      OpenDialog.Title := lisChooseLazarusSourceDirectory;
-      lDirText := LazarusDirComboBox.Text;
-    end
-    else if Sender = FPCSourceDirButton then begin
-      OpenDialog.Title := lisChooseFPCSourceDir;
-      lDirText := FPCSourceDirComboBox.Text;
-    end
-    else if Sender=TestBuildDirButton then begin
-      OpenDialog.Title := lisChooseTestBuildDir;
-      lDirText := TestBuildDirComboBox.Text;
-    end
-    else
-      exit;
-
-    if lDirText = '' then
-      lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, '')
-    else
-      lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, lDirText);
-
-    lExpandedName := CleanAndExpandDirectory(lDirName);
-    lDirName := GetValidDirectoryAndFilename(lDirName, loDirNameF);
-
-    OpenDialog.InitialDir := IncludeTrailingBackslash(lDirName);
-    OpenDialog.FileName := loDirNameF;
-
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:=lisChooseFppkgConfigurationFile;
+    OpenDialog.Filter:=dlgFilterFppkgConfigurationFile+' (*.cfg)|*.cfg|'+
+      dlgFilterAll+'|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
-      lDirName := CleanAndExpandDirectory(OpenDialog.Filename);
-      if UpperCase(lDirName)<>UpperCase(lExpandedName) then begin
-        lDirText := lDirName;
-        if Sender = LazarusDirButton then begin
-          // check lazarus directory
-          SetComboBoxText(LazarusDirComboBox,lDirText,cstFilename);
-          CheckLazarusDir([mbOk]);
-        end
-        else if Sender = FPCSourceDirButton then begin
-          // check fpc source directory
-          SetComboBoxText(FPCSourceDirComboBox,lDirText,cstFilename);
-          CheckFPCSourceDir([mbOK]);
-        end
-        else if Sender = TestBuildDirButton then begin
-          // check test directory
-          SetComboBoxText(TestBuildDirComboBox,lDirText,cstFilename);
-          CheckTestDir;
-        end;
-      end;
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(FppkgConfigurationFileComboBox,AFilename,cstFilename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -350,6 +382,8 @@ begin
   if not CheckTestDir then exit;
   // check fpc messages file
   if not CheckFPCMsgFile then exit;
+  // check fppkg configuration file
+  if not CheckFppkgConfigurationFile then exit;
   Result := True;
 end;
 
@@ -585,6 +619,25 @@ begin
     if not FileExistsUTF8(NewMsgFile) then begin
       if IDEMessageDialog(lisCCOErrorCaption, Format(
         lisCompilerMessagesFileNotFound, [#13, NewMsgFile]), mtError, [mbCancel,
+        mbIgnore])<>mrIgnore
+      then
+        exit(false);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TFilesOptionsFrame.CheckFppkgConfigurationFile: boolean;
+var
+  NewFppkgCfgFile: String;
+begin
+  if EnvironmentOptions.FppkgConfigFile=fOldFppkcConfigurationFilename then exit(true);
+  EnvironmentOptions.FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
+  if EnvironmentOptions.FppkgConfigFile<>'' then begin
+    NewFppkgCfgFile:=EnvironmentOptions.GetParsedFppkgConfig;
+    if not FileExistsUTF8(NewFppkgCfgFile) then begin
+      if IDEMessageDialog(lisCCOErrorCaption, Format(
+        lisFppkgConfigurationFileNotFound, [#13, NewFppkgCfgFile]), mtError, [mbCancel,
         mbIgnore])<>mrIgnore
       then
         exit(false);
