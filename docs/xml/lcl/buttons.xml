@@ -127,6 +127,28 @@ Draw the button when the mouse cursor is hovered over the control.
 </short>
 </element>
 
+<element name="TButtonImage">
+<short>
+Represents button identifiers defined in the <file>lcltype.pp</file> unit.
+</short>
+<descr>
+<p>
+<var>TButtonImage</var> is a range type used to represent the button 
+identifier constants defined in the <file>lcltype.pp</file> unit, like: 
+idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, et. al. 
+TButtonImage is the type passed as an argument to routines like: 
+GetButtonImageIndex, BitBtnResNames, and LoadGlyphFromResource. It is also 
+passed as an argument to the TCustomBitBtn.LoadGlyphFromResource method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomBitBtn.LoadGlyphFromResource"/>
+<link id="GetButtonImageIndex"/>
+<link id="BitBtnResNames"/>
+<link id="LoadGlyphFromResource"/>
+</seealso>
+</element>
+
 <element name="TNumGlyphs">
 <short>Defines the range of values available to access button glyphs.</short>
 <descr>
@@ -2085,6 +2107,36 @@ Loads a glyph image from the Lazarus resource file (.lrs).
 <element name="TCustomBitBtn.LoadGlyphFromStock.idButton">
 <short>
 Button identifier used to determine the image loaded in the Glyph.
+</short>
+</element>
+
+<element name="TCustomBitBtn.LoadGlyphFromResource">
+<short>
+Loads the glyph image for the specified button identifier from the internal LCL 
+resource.
+</short>
+<descr>
+<p>
+<var>LoadGlyphFromResource</var> is a method used to load the glyph for the 
+specified button identifier from the internal LCL resource with the button 
+images. <var>idButton</var> contains a value in the TButtonImage range for the 
+button identifier. No actions are performed in the method if idButton is not in 
+the TButtonImage range.
+</p>
+<p>
+LoadGlyphFromResource calls the LoadGlyphFromResource routine using the 
+resource name in BitBtnResNames for the button identifier. 
+</p>
+</descr>
+<seealso>
+<link id="LoadGlyphFromResource"/>
+<link id="BitBtnResNames"/>
+<link id="TButtonImage"/>
+</seealso>
+</element>
+<element name="TCustomBitBtn.LoadGlyphFromResource.idButton">
+<short>
+Button identifier for glyph image loaded in the method.
 </short>
 </element>
 
@@ -4907,7 +4959,6 @@ Determines the default image loaded for the bitmapped button.
 </short>
 </element>
 
-
 <element name="LoadGlyphFromResourceName">
 <short>
 Loads a bitmap from a named resource into the specified Glyph.
@@ -5008,6 +5059,44 @@ both <var>TCustomBitBtn</var>.
 </element>
 <element name="LoadGlyphFromStock.idButton">
 <short>Button identifier for the image loaded in the routine.</short>
+</element>
+
+<element name="LoadGlyphFromResource">
+<short>
+Loads the image for the specified button glyph from the LCL glyph resource.
+</short>
+<descr>
+<p>
+<var>LoadGlyphFromResource</var> is a routine used to load the LCL glyph image 
+for the specified button identifier into the specified button glyph.
+</p>
+<p>
+<var>AGlyph</var> is the TButtonGlyph instance where the glyph image is stored 
+in the routine.
+</p>
+<p>
+<var>idButton</var> contains one of the button identifier constants defined in 
+the <file>lcltype.pp</file> unit, such as: idButtonOk, idButtonCancel, et. al. 
+idButton must be in the range allowed for the TButtonImage type; no actions are 
+performed in the routine if idButton is not within the required range.
+</p>
+<p>
+LoadGlyphFromResource assigns the resource name in BitBtnResNames for the 
+specified button identifier to the LCLGlyphName property in AGlyph. This causes 
+the image with that name to be loaded from the LCLGlyphs image list.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="LoadGlyphFromResource.AGlyph">
+<short>
+TButtonGlyph instance where the glyph image is stored.
+</short>
+</element>
+<element name="LoadGlyphFromResource.idButton">
+<short>
+Button identifier for the image resource loaded in the routine.
+</short>
 </element>
 
 <element name="GetButtonCaption">
@@ -5183,6 +5272,46 @@ Bitmap instance with the glyph for the specified button.
 <element name="GetButtonIcon.idButton">
 <short>
 Numeric button identifier for the glyph loaded in the routine.
+</short>
+</element>
+
+<element name="GetButtonImageIndex">
+<short>
+Gets the ordinal position in the LCL Glyph image list for the specified button 
+identifier.
+</short>
+<descr>
+<p>
+<var>GetButtonImageIndex</var> is an <var>Integer</var> function used to 
+retrieve the position for the specified button identifier in the LCL glyph 
+image list.
+</p>
+<p>
+<var>idButton</var> is the TButtonImage value for the button identifier 
+requested in the routine. It is used to identify the resource name in 
+BitBtnResNames for the button glyph. The resource name is located in the 
+LCLGlyphs image list using its GetImageIndex method.
+</p>
+<p>
+The return value contains the ordinal position in LCLGlyphs where the 
+corresponding resource name is stored, or -1 if the resource name is not found.
+</p>
+</descr>
+<seealso>
+<link id="TButtonImage"/>
+<link id="BitBtnResNames"/>
+<link id="#lcl.imglist.TLCLGlyphs.GetImageIndex">TLCLGlyphs.GetImageIndex</link>
+<link id="#lcl.imglist.LCLGlyphs">LCLGlyphs</link>
+</seealso>
+</element>
+<element name="GetButtonImageIndex.Result">
+<short>
+Ordinal position for the specified button identifier, or -1 when not found.
+</short>
+</element>
+<element name="GetButtonImageIndex.idButton">
+<short>
+Button identifier constant for the image requested in the routine.
 </short>
 </element>
 
