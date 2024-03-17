@@ -24,7 +24,7 @@ interface
 
 uses
   // rtl+ftl
-  Math, Classes, SysUtils,
+  Math, Classes, SysUtils, LclType,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
 
@@ -36,8 +36,14 @@ type
     callback: ICommonCallback;
     isCustomRange: Boolean;
 
+    // the corresponding LCL ScrollInfo,
+    // which are needed when documentView.frame changes.
+    lclHoriScrollInfo: TScrollInfo;
+    lclVertScrollInfo: TScrollInfo;
+
     docrect    : NSRect;    // have to remember old
     holdscroll : Integer; // do not send scroll messages
+
     function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
@@ -47,12 +53,19 @@ type
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
+    procedure scrollWheel(theEvent: NSEvent); override;
+    procedure ensureDocumentViewSizeChanged(newSize: NSSize;
+      ensureWidth: Boolean; ensureHeight: Boolean);
+      message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
     procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
-    procedure resetScrollRect; message 'resetScrollRect';
+    procedure resetScrollData; message 'resetScrollData';
 
     procedure lclUpdate; override;
     procedure lclInvalidateRect(const r: TRect); override;
     procedure lclInvalidate; override;
+
+    procedure fillScrollInfo(barFlag: Integer; var scrollInfo: TScrollInfo); message 'fillScrollInfo:barFlag:';
+    procedure applyScrollInfo(barFlag: Integer; const scrollInfo: TScrollInfo); message 'applyScrollInfo:barFlag:';
   end;
 
   { TCocoaManualScrollView }
@@ -133,6 +146,7 @@ type
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
     procedure scrollWheel(theEvent: NSEvent); override;
+    procedure setFrame(newValue: NSRect); override;
   end;
 
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
@@ -294,6 +308,86 @@ begin
   end;
 end;
 
+procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect; aVisible: Boolean);
+begin
+  sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
+  parent.addSubview(sc);
+  {$ifdef BOOLFIX}
+  sc.setEnabled_(Ord(true));
+  sc.setHidden_(Ord(not AVisible));
+  {$else}
+  sc.setEnabled(true);
+  sc.setHidden(not AVisible);
+  {$endif}
+  TCocoaScrollBar(sc).preventBlock := true;
+  //Suppress scrollers notifications.
+  TCocoaScrollBar(sc).callback := parent.callback;
+  TCocoaScrollBar(sc).suppressLCLMouse := true;
+  sc.setTarget(sc);
+  sc.setAction(objcselector('actionScrolling:'));
+end;
+
+procedure updateDocSize(parent: NSView; doc: NSView; hScroller, vScroller: NSScroller);
+var
+  docFrame  : NSRect;
+  hScrollerFrame : NSRect;
+  vScrollerFrame : NSRect;
+  hScrollerHeight : CGFLoat;
+  vScrollerWidth : CGFLoat;
+begin
+  if not Assigned(parent) or not Assigned(doc) then
+    Exit;
+
+  docFrame := parent.frame;
+  docFrame.origin := NSZeroPoint;
+  hScrollerFrame := docFrame;
+  vScrollerFrame := docFrame;
+
+  if Assigned(hScroller) and (not hScroller.isHidden) then
+  begin
+    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            hScroller.controlSize, hScroller.preferredScrollerStyle);
+    hScrollerFrame.size.height := hScrollerHeight;
+
+    docFrame.size.height := docFrame.size.height - hScrollerHeight;
+    if docFrame.size.height < 0 then
+      docFrame.size.height := 0;
+    docFrame.origin.y := hScrollerHeight;
+  end;
+
+  if Assigned(vScroller) and (not vScroller.isHidden) then
+  begin
+    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            vScroller.controlSize, vScroller.preferredScrollerStyle);
+    vScrollerFrame.size.width := vScrollerWidth;
+
+    docFrame.size.width := docFrame.size.width - vScrollerWidth;
+    if docFrame.size.width < 0 then
+      docFrame.size.width:= 0;
+  end;
+
+  hScrollerFrame.size.width := docFrame.size.width;
+  vScrollerFrame.size.height := docFrame.size.height;
+  vScrollerFrame.origin.x := docFrame.size.width;
+  vScrollerFrame.origin.y := docFrame.origin.y;
+
+  if Assigned(hScroller) then
+    hScroller.setFrame(hScrollerFrame);
+
+  if Assigned(vScroller) then
+    vScroller.setFrame(vScrollerFrame);
+
+  if not NSEqualRects(doc.frame, docFrame) then
+  begin
+    doc.setFrame(docFrame);
+    {$ifdef BOOLFIX}
+    doc.setNeedsDisplay__(Ord(true));
+    {$else}
+    doc.setNeedsDisplay_(true);
+    {$endif}
+  end;
+end;
+
 { TCocoaManualScrollHost }
 
 function TCocoaManualScrollHost.lclContentView: NSView;
@@ -321,6 +415,16 @@ begin
   // do not call inherited scrollWheel, it suppresses the scroll event
   if Assigned(nr) then nr.scrollWheel(theEvent)
   else inherited scrollWheel(theEvent);
+end;
+
+procedure TCocoaManualScrollHost.setFrame(newValue: NSRect);
+var
+  sc: TCocoaManualScrollView;
+begin
+  inherited setFrame(newValue);
+  sc:= TCocoaManualScrollView(self.documentView);
+  sc.setFrame(newValue);
+  updateDocSize(sc, sc.documentView, sc.horizontalScroller, sc.verticalScroller);
 end;
 
 { TCocoaManualScrollView }
@@ -399,87 +503,6 @@ end;
 function TCocoaManualScrollView.documentView: NSView;
 begin
   Result:=fdocumentView;
-end;
-
-procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect; aVisible: Boolean);
-begin
-  sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
-  parent.addSubview(sc);
-  {$ifdef BOOLFIX}
-  sc.setEnabled_(Ord(true));
-  sc.setHidden_(Ord(not AVisible));
-  {$else}
-  sc.setEnabled(true);
-  sc.setHidden(not AVisible);
-  {$endif}
-  TCocoaScrollBar(sc).preventBlock := true;
-  //Suppress scrollers notifications.
-  TCocoaScrollBar(sc).callback := parent.callback;
-  TCocoaScrollBar(sc).suppressLCLMouse := true;
-  sc.setTarget(sc);
-  sc.setAction(objcselector('actionScrolling:'));
-
-end;
-
-procedure updateDocSize(parent: NSView; doc: NSView; hScroller, vScroller: NSScroller);
-var
-  docFrame  : NSRect;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
-begin
-  if not Assigned(parent) or not Assigned(doc) then
-    Exit;
-
-  docFrame := parent.frame;
-  docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
-
-  if Assigned(hScroller) and (not hScroller.isHidden) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
-
-    docFrame.size.height := docFrame.size.height - hScrollerHeight;
-    if docFrame.size.height < 0 then
-      docFrame.size.height := 0;
-    docFrame.origin.y := hScrollerHeight;
-  end;
-
-  if Assigned(vScroller) and (not vScroller.isHidden) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
-
-    docFrame.size.width := docFrame.size.width - vScrollerWidth;
-    if docFrame.size.width < 0 then
-      docFrame.size.width:= 0;
-  end;
-
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
-
-  if Assigned(hScroller) then
-    hScroller.setFrame(hScrollerFrame);
-
-  if Assigned(vScroller) then
-    vScroller.setFrame(vScrollerFrame);
-
-  if not NSEqualRects(doc.frame, docFrame) then
-  begin
-    doc.setFrame(docFrame);
-    {$ifdef BOOLFIX}
-    doc.setNeedsDisplay__(Ord(true));
-    {$else}
-    doc.setNeedsDisplay_(true);
-    {$endif}
-  end;
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
@@ -644,7 +667,26 @@ end;
 procedure TCocoaScrollView.setDocumentView(aView: NSView);
 begin
   inherited setDocumentView(aView);
-  resetScrollRect;
+  resetScrollData;
+end;
+
+// ensure documentView Size be changed
+// setHasXxxScroller() only takes effect after documentView Size is changed
+procedure TCocoaScrollView.ensureDocumentViewSizeChanged(newSize: NSSize;
+  ensureWidth: Boolean; ensureHeight: Boolean);
+var
+  oldSize: NSSize;
+  tempSize: NSSize;
+begin
+  oldSize:= self.documentView.frame.size;
+  tempSize:= newSize;
+  if ensureWidth and (oldSize.width=tempSize.width) then
+    tempSize.width:= tempSize.width + 1;
+  if ensureHeight and (oldSize.height=tempSize.height) then
+    tempSize.height:= tempSize.height + 1;
+  if ensureWidth or ensureHeight then
+    self.documentView.setFrameSize( tempSize );
+  self.documentView.setFrameSize( newSize );
 end;
 
 procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification
@@ -679,9 +721,21 @@ begin
   end;
 end;
 
-procedure TCocoaScrollView.resetScrollRect;
+procedure TCocoaScrollView.resetScrollData;
 begin
   docrect:=documentVisibleRect;
+  lclHoriScrollInfo.fMask:= 0;
+  lclVertScrollInfo.fMask:= 0;
+end;
+
+procedure TCocoaScrollView.scrollWheel(theEvent: NSEvent);
+begin
+  if self.hasHorizontalScroller or self.hasVerticalScroller then
+    inherited scrollWheel( theEvent )
+  else if Assigned(self.enclosingScrollView) then
+    self.enclosingScrollView.scrollWheel( theEvent )
+  else
+    inherited scrollWheel( theEvent );
 end;
 
 procedure TCocoaScrollView.lclUpdate;
@@ -697,6 +751,61 @@ end;
 procedure TCocoaScrollView.lclInvalidate;
 begin
   documentView.lclInvalidate;
+end;
+
+procedure TCocoaScrollView.fillScrollInfo(barFlag: Integer;
+  var scrollInfo: TScrollInfo);
+var
+  docSize: NSSize;
+
+  procedure fillScrollerScrollInfo(maxValue: CGFloat; pageValue: CGFloat;
+    scroller: NSScroller);
+  begin
+    scrollInfo.cbSize:=sizeof(scrollInfo);
+    scrollInfo.fMask:=SIF_ALL;
+    scrollInfo.nPos:=round(scroller.doubleValue*(maxValue-pageValue));
+    scrollInfo.nTrackPos:=ScrollInfo.nPos;
+    scrollInfo.nMin:=0;
+    scrollInfo.nMax:=round(maxValue);
+    scrollInfo.nPage:=round(scroller.knobProportion*maxValue);
+  end;
+
+begin
+  if not Assigned(self.documentView) then begin
+    FillChar(scrollInfo, sizeof(scrollInfo),0);
+    scrollInfo.cbSize:=sizeof(scrollInfo);
+    Exit;
+  end;
+
+  docSize:= self.documentView.frame.size;
+  if barFlag = SB_Vert then
+    fillScrollerScrollInfo(docSize.height, self.contentSize.height, self.verticalScroller)
+  else
+    fillScrollerScrollInfo(docSize.width, self.contentSize.width, self.horizontalScroller);
+end;
+
+procedure TCocoaScrollView.applyScrollInfo(barFlag: Integer;
+  const scrollInfo: TScrollInfo);
+var
+  newOrigin : NSPoint;
+begin
+  if not Assigned(self.documentView) then Exit;
+
+  newOrigin:= self.contentView.bounds.origin;
+  if BarFlag = SB_Vert then
+  begin
+    self.lclVertScrollInfo:= scrollInfo;
+    if not self.documentView.isFlipped then
+      newOrigin.y := self.documentView.frame.size.height - scrollInfo.nPos - self.contentSize.height
+    else
+      newOrigin.y := scrollInfo.nPos;
+  end
+  else
+  begin
+    self.lclHoriScrollInfo:= scrollInfo;
+    newOrigin.x:= scrollInfo.nPos;
+  end;
+  self.contentView.setBoundsOrigin( newOrigin );
 end;
 
 function TCocoaScrollView.initWithFrame(ns: NSRect): id;
@@ -829,7 +938,7 @@ end;
 
 function TCocoaScrollBar.lclPos: Integer;
 begin
-  Result:=round( floatValue * (maxint-minInt-pageInt)) + minInt;
+  Result:=round( doubleValue * (maxint-minInt-pageInt)) + minInt;
 end;
 
 procedure TCocoaScrollBar.lclSetPos(aPos: integer);

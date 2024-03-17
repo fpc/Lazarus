@@ -1571,20 +1571,22 @@ begin
   begin
     sc := NSScrollView(obj);
     case SBStyle of
-      SB_Vert: Result := sc.hasVerticalScroller;
-      SB_Horz: Result := sc.hasHorizontalScroller;
+      SB_Vert: Result := sc.hasVerticalScroller and not sc.verticalScroller.isHidden;
+      SB_Horz: Result := sc.hasHorizontalScroller and not sc.horizontalScroller.isHidden;
     else
-      Result := sc.hasHorizontalScroller and sc.hasVerticalScroller;
+      Result := sc.hasHorizontalScroller and not sc.horizontalScroller.isHidden
+                and sc.hasVerticalScroller and not sc.verticalScroller.isHidden;
     end;
   end
   else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     mn := TCocoaManualScrollView(obj);
     case SBStyle of
-      SB_Vert: Result := mn.hasVerticalScroller;
-      SB_Horz: Result := mn.hasHorizontalScroller;
+      SB_Vert: Result := mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
+      SB_Horz: Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden;
     else
-      Result := mn.hasHorizontalScroller and mn.hasVerticalScroller;
+      Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden
+                and mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
     end;
   end
   else
@@ -1605,16 +1607,16 @@ begin
     obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
-    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), ScrollInfo)
+    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), scrollInfo)
   else
   if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     if BarFlag = SB_Vert then
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), ScrollInfo)
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
     else
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), ScrollInfo);
-  end else if obj.isKindOfClass(NSScrollView) then
-    NSScrollViewGetScrollInfo(NSScrollView(obj), BarFlag, ScrollInfo)
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
+  end else if obj.isKindOfClass(TCocoaScrollView) then
+    TCocoaScrollView(obj).fillScrollInfo(BarFlag, scrollInfo)
   else
     Result := False;
 end;
@@ -1694,14 +1696,25 @@ end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 var
-  si  : TScrollInfo;
   obj : NSObject;
   sc  : TCocoaScrollView;
+  lclControl: TScrollingWinControl;
   bar : TCocoaScrollBar;
-  f   : NSSize;
-  sz  : NSSize;
-  flg : NSUInteger;
+  contentSize  : NSSize;
+  documentSize : NSSize;
+  sizingMask : NSUInteger;
   hosted: Boolean;
+  ensureWidth: Boolean = false;
+  ensureHeight: Boolean = false;
+
+  function getNewScrollPos: Integer;
+  var
+    si: TScrollInfo;
+  begin
+    sc.fillScrollInfo(SBStyle, si);
+    Result:=si.nPos;
+  end;
+
 begin
   obj := NSObject(Handle);
   Result := 0;
@@ -1717,38 +1730,55 @@ begin
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
     sc:=TCocoaScrollView(obj);
+    if sc.lclGetTarget is TScrollingWinControl then
+      lclControl:=TScrollingWinControl(sc.lclGetTarget);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
-      f:=sc.frame.size;
-      sz:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
-      flg:=sc.documentView.autoresizingMask;
+      contentSize:=sc.contentSize;
+      documentSize:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
+      sizingMask:=sc.documentView.autoresizingMask;
 
       if SBStyle=SB_Horz then begin
-        if ScrollInfo.nMax>f.width then begin
-          sz.width := ScrollInfo.nMax;
-          flg:=flg and not NSViewWidthSizable;
+        if ScrollInfo.nMax>contentSize.width then begin
+          documentSize.width := ScrollInfo.nMax;
+          sizingMask:=sizingMask and not NSViewWidthSizable;
+          if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then begin
+            sc.setHasHorizontalScroller(true);
+            ensureHeight:= true;
+          end;
         end else begin
-          sz.width := f.width;
-          flg:=flg or NSViewWidthSizable;
+          documentSize.width := contentSize.width;
+          sizingMask:=sizingMask or NSViewWidthSizable;
         end;
       end else if SBStyle=SB_Vert then begin
-        if ScrollInfo.nMax>f.height then begin
-          sz.height := ScrollInfo.nMax;
-          flg:=flg and not NSViewHeightSizable;
+        if ScrollInfo.nMax>contentSize.height then begin
+          documentSize.height := ScrollInfo.nMax;
+          sizingMask:=sizingMask and not NSViewHeightSizable;
+          if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then begin
+            sc.setHasVerticalScroller(true);
+            ensureHeight:= true;
+          end;
         end else begin
-          sz.height := f.height;
-          flg:=flg or NSViewHeightSizable;
+          documentSize.height := contentSize.height;
+          sizingMask:=sizingMask or NSViewHeightSizable;
         end;
       end;
-      sc.documentView.setAutoresizingMask(flg);
-      sc.documentView.setFrameSize( sz );
+      sc.documentView.setAutoresizingMask(sizingMask);
+      sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
+
+      // frame changed, Need to update another ScrollBar too
+      if SbStyle=SB_Horz then begin
+        if sc.lclVertScrollInfo.fMask<>0 then
+          sc.applyScrollInfo(SB_Vert, sc.lclVertScrollInfo)
+      end else begin
+        if sc.lclHoriScrollInfo.fMask<>0 then
+          sc.applyScrollInfo(SB_Horz, sc.lclHoriScrollInfo);
+      end;
     end;
 
+    // if frame changed, another ScrollBar has been updated
     if ScrollInfo.fMask and SIF_ALL > 0 then
-      NSScrollViewSetScrollPos(NSScrollView(obj), SBStyle, ScrollInfo);
-    FillChar(si, sizeof(si), 0);
-    si.cbSize:=sizeof(si);
-    NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
-    Result:=si.nPos;
+      sc.applyScrollInfo(SBStyle, ScrollInfo);
+    Result:= getNewScrollPos();
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     bar:=nil;

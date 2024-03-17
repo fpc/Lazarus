@@ -250,10 +250,6 @@ var
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
-procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
-procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
-procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
-procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
@@ -412,76 +408,6 @@ begin
   ScrollInfo.nPos:=bar.lclPos;
   ScrollInfo.nTrackPos:=ScrollInfo.nPos;
   Result:=true;
-end;
-
-procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
-begin
-  ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  ScrollInfo.fMask:=SIF_ALL;
-  ScrollInfo.nPos:=round(rl.floatValue*(docSz-pageSz));
-  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
-  ScrollInfo.nMin:=0;
-  ScrollInfo.nMax:=round(docSz);
-  ScrollInfo.nPage:=round(rl.knobProportion*docSz);
-end;
-
-procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
-var
-  ns : NSView;
-  vr : NSRect;
-begin
-  ns:=sc.documentView;
-  if not Assigned(ns) then begin
-    FillChar(ScrollInfo, sizeof(ScrollInfo),0);
-    ScrollInfo.cbSize:=sizeof(ScrollInfo);
-    Exit;
-  end;
-  vr:=sc.documentVisibleRect;
-  if BarFlag = SB_Vert then
-    NSScrollerGetScrollInfo(ns.frame.size.height, vr.size.height, sc.verticalScroller, ScrollInfo)
-  else
-    NSScrollerGetScrollInfo(ns.frame.size.width, vr.size.width, sc.horizontalScroller, ScrollInfo);
-end;
-
-procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
-var
-  sz : CGFloat;
-begin
-  if ScrollInfo.fMask and SIF_POS>0 then begin
-    sz:=docSz-pageSz;
-    if sz=0 then rl.setFloatValue(0)
-    else rl.setFloatValue(ScrollInfo.nPos/sz);
-  end;
-  if ScrollInfo.fMask and SIF_PAGE>0 then begin
-    sz:=docSz-pageSz;
-    if sz=0 then rl.setKnobProportion(1)
-    else rl.setKnobProportion(1/sz);
-  end;
-end;
-
-procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
-var
-  ns : NSView;
-  vr : NSRect;
-begin
-  ns:=sc.documentView;
-  if not Assigned(ns) then Exit;
-
-  vr:=sc.documentVisibleRect;
-  if BarFlag = SB_Vert then
-  begin
-    //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
-    if not sc.documentView.isFlipped then
-      vr.origin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - vr.size.Height
-    else
-      vr.origin.y := ScrollInfo.nPos;
-  end
-  else
-  begin
-    //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
-    vr.origin.x:=ScrollInfo.nPos;
-  end;
-  ns.scrollRectToVisible(vr);
 end;
 
 { TModalSession }
