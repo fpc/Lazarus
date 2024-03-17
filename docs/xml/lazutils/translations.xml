@@ -1744,6 +1744,63 @@ system character set.
 </seealso>
 </element>
 
+<element name="GetLanguageIDFromLocaleName">
+<short>
+Gets the language identifier found in the specified locale identifier.
+</short>
+<descr>
+<p>
+<var>GetLanguageIDFromLocaleName</var> is a <var>TLanguageID</var> function 
+used to get a language identifier for the values in <var>LocaleName</var>. 
+LocaleName contains a value which consists of the following:
+</p>
+<code>
+[lang][_region][.codeset][.modifier]
+</code>
+<dl>
+<dt>[lang]</dt>
+<dd>Language code (ISO 639-1 or 639-2).</dd>
+<dt>[_region]</dt>
+<dd>Region (ISO 3166 country code).</dd>
+<dt>[.codeset]</dt>
+<dd>Code set (optional/currently ignored).</dd>
+<dt>[.modifier]</dt>
+<dd>Modifier (optional/currently ignored),</dd>
+</dl>
+<p>
+For example:
+</p>
+<ul>
+<li>EN_US</li>
+<li>en_GB.UTF-8</li>
+<li>de_DE</li>
+<li>es_MX.UTF-8</li>
+</ul>
+<p>
+Values are parsed and stored in the corresponding members in the TLanguageID 
+return value.
+</p>
+<p>
+GetLanguageIDFromLocaleName is used in the implementation of the GetLanguageID 
+routine for platforms other than Windows.
+</p>
+</descr>
+<seealso>
+<link id="GetLanguageID"/>
+<link id="TLanguageID"/>
+</seealso>
+</element>
+<element name="GetLanguageIDFromLocaleName.Result">
+<short>
+TLanguageID with the values found in LocaleName.
+</short>
+</element>
+<element name="GetLanguageIDFromLocaleName.LocaleName">
+<short>
+String with the language, region, and optional code page for a locale.
+</short>
+</element>
+
 <element name="GetPOFilenameParts">
 <short>
 Gets the unit name and language used in the specified Filename.
@@ -1853,19 +1910,28 @@ system locale.
 </element>
 
 <element name="UpdatePoFile">
-<short/>
+<short>
+Updates a specified .PO template using the list of translations specified.
+</short>
 <descr/>
 <seealso/>
-<notes><note>???</note></notes>
+<notes><note>How is this used? See: tools/updatepofiles.pas.</note></notes>
 </element>
 <element name="UpdatePoFile.Result">
-<short/>
+<short>
+Returns <b>True</b> if the .PO template was modified and stored in the 
+routine.
+</short>
 </element>
 <element name="UpdatePoFile.RSTFiles">
-<short/>
+<short>
+Translations where the template is applied.
+</short>
 </element>
 <element name="UpdatePoFile.POFilename">
-<short/>
+<short>
+.PO template processed in the routine.
+</short>
 </element>
 
 <element name="UpdatePoFileTranslations">
