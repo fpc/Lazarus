@@ -189,12 +189,30 @@ Not used in the current LCL implementation.
 </seealso>
 </element>
 <element name="TComboBoxExStyleEx.csExCaseSensitive">
-<short>Enables case-sensitive comparisons in the control.</short>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
-<element name="TComboBoxExStyleEx.csExNoEditImage"/>
-<element name="TComboBoxExStyleEx.csExNoEditImageIndent"/>
-<element name="TComboBoxExStyleEx.csExNoSizeLimit"/>
-<element name="TComboBoxExStyleEx.csExPathWordBreak"/>
+<element name="TComboBoxExStyleEx.csExNoEditImage">
+<short>
+Not used in the current LCL version.
+</short>
+</element>
+<element name="TComboBoxExStyleEx.csExNoEditImageIndent">
+<short>
+Not used in the current LCL version.
+</short>
+</element>
+<element name="TComboBoxExStyleEx.csExNoSizeLimit">
+<short>
+Not used in the current LCL version.
+</short>
+</element>
+<element name="TComboBoxExStyleEx.csExPathWordBreak">
+<short>
+Not used in the current LCL version.
+</short>
+</element>
 
 <element name="TComboBoxExStyles">
 <short>Set type used to store TComboBoxExStyle enumeration values.</short>
