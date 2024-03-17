@@ -287,6 +287,7 @@ begin
   p := AView.superview;
   p.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable);
   Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
+  Result.setAutoresizesSubviews(false);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
   {$ifdef BOOLFIX}
@@ -326,7 +327,7 @@ begin
   {$endif}
   Result.setDocumentView(AView);
   Result.setDrawsBackground(false); // everything is covered anyway
-  Result.contentView.setAutoresizesSubviews(true);
+  Result.contentView.setAutoresizesSubviews(false);
   AView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
 
   AView.release;

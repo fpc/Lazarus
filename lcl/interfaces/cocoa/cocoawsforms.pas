@@ -199,6 +199,9 @@ implementation
 uses
   GraphMath;
 
+type
+  TControlScrollBarAccess = class(TControlScrollBar);
+
 const
   // The documentation is using constants like "NSNormalWindowLevel=4" for normal forms,
   // however, these are macros of a function call to CGWindowLevelKey()
@@ -535,21 +538,23 @@ var
   docview: TCocoaCustomControl;
   lcl : TLCLCommonCallback;
 begin
-  docview := TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams);
-  scrollcon:=EmbedInScrollView(docView);
+  scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
+  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+  scrollcon.setDrawsBackground(false); // everything is covered anyway
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
-  scrollcon.setHasHorizontalScroller(True);
-  scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
+
+  docview:= TCocoaCustomControl.alloc.init;
+  docview.setFrameSize( scrollcon.contentSize );
+  scrollcon.setDocumentView(docview);
 
   lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
   lcl.BlockCocoaUpDown := true;
+  scrollcon.callback := lcl;
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
-  scrollcon.callback := lcl;
-  scrollcon.setDocumentView(docview);
-  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+
   Result := TLCLHandle(scrollcon);
 end;
 
@@ -697,6 +702,22 @@ begin
   Result := TCocoaWindow(TCocoaWindow.alloc);
 end;
 
+
+function hasScrollBar(AScrollBar: TControlScrollBar): Boolean; inline;
+begin
+  Result:= TControlScrollBarAccess(AScrollBar).ScrollBarShouldBeVisible;
+end;
+
+function hasHorzScrollBar(AWinControl: TWinControl): Boolean; inline;
+begin
+  Result:= hasScrollBar( TScrollingWinControl(AWinControl).HorzScrollBar );
+end;
+
+function hasVertScrollBar(AWinControl: TWinControl): Boolean; inline;
+begin
+  Result:= hasScrollBar( TScrollingWinControl(AWinControl).VertScrollBar );
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
@@ -732,8 +753,8 @@ begin
   cnt.wincallback := cb;
   cnt.isCustomRange := true;
 
-  cnt.setHasHorizontalScroller(True);
-  cnt.setHasVerticalScroller(True);
+  cnt.setHasHorizontalScroller( hasHorzScrollBar(AWinControl) );
+  cnt.setHasVerticalScroller( hasVertScrollBar(AWinControl) );
   cnt.setVerticalScrollElasticity(NSScrollElasticityNone);
   cnt.setHorizontalScrollElasticity(NSScrollElasticityNone);
   cnt.setDocumentView(doc);
