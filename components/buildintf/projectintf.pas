@@ -348,6 +348,8 @@ type
     property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
   end;
 
+  TRunParamsRedirectMode = (rprOff, rprOverwrite, rprAppend);
+
   { TAbstractRunParamsOptionsMode }
 
   TAbstractRunParamsOptionsMode = class(TPersistent)
@@ -373,6 +375,14 @@ type
     fUserOverrides: TStringList;
     fIncludeSystemVariables: boolean;
   protected
+    // Redirect
+    FRedirectStdIn:  TRunParamsRedirectMode;
+    FRedirectStdOut: TRunParamsRedirectMode;
+    FRedirectStdErr: TRunParamsRedirectMode;
+    FFileNameStdIn:  String;
+    FFileNameStdOut: String;
+    FFileNameStdErr: String;
+
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(const AName: string); virtual;
@@ -406,6 +416,13 @@ type
     property ConsoleWinPos: TPoint read FConsoleWinPos write FConsoleWinPos;
     property ConsoleWinSize: TPoint read FConsoleWinSize write FConsoleWinSize;
     property ConsoleWinBuffer: TPoint read FConsoleWinBuffer write FConsoleWinBuffer;
+    // Redirect
+    property RedirectStdIn:  TRunParamsRedirectMode read FRedirectStdIn  write FRedirectStdIn;
+    property RedirectStdOut: TRunParamsRedirectMode read FRedirectStdOut write FRedirectStdOut;
+    property RedirectStdErr: TRunParamsRedirectMode read FRedirectStdErr write FRedirectStdErr;
+    property FileNameStdIn:  String read FFileNameStdIn  write FFileNameStdIn;
+    property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
+    property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
   end;
 
   { TAbstractRunParamsOptions }
@@ -842,6 +859,13 @@ begin
     ADest.ConsoleWinPos    := ConsoleWinPos;
     ADest.ConsoleWinSize   := ConsoleWinSize;
     ADest.ConsoleWinBuffer := ConsoleWinBuffer;
+    // Redirect
+    ADest.FRedirectStdIn  := FRedirectStdIn;
+    ADest.FRedirectStdOut := FRedirectStdOut;
+    ADest.FRedirectStdErr := FRedirectStdErr;
+    ADest.FFileNameStdIn  := FFileNameStdIn;
+    ADest.FFileNameStdOut := FFileNameStdOut;
+    ADest.FFileNameStdErr := FFileNameStdErr;
 
     ADest.UserOverrides.Assign(UserOverrides);
     ADest.IncludeSystemVariables := IncludeSystemVariables;
@@ -866,6 +890,13 @@ begin
   FConsoleWinPos := Default(TPoint);
   FConsoleWinSize := Default(TPoint);
   FConsoleWinBuffer := Default(TPoint);
+  // Redirect
+  FRedirectStdIn  := rprOff;
+  FRedirectStdOut := rprOff;
+  FRedirectStdErr := rprOff;
+  FFileNameStdIn  := '';
+  FFileNameStdOut := '';
+  FFileNameStdErr := '';
 
   // environment options
   fUserOverrides.Clear;

@@ -52,6 +52,10 @@ Provides an interface to add debuggers to the IDE"/>
         <Filename Value="dbgintfcommonstrings.pas"/>
         <UnitName Value="DbgIntfCommonStrings"/>
       </Item>
+      <Item>
+        <Filename Value="dbgintfprocess.pas"/>
+        <UnitName Value="DbgIntfProcess"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

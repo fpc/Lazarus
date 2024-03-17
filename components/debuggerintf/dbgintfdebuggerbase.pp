@@ -64,6 +64,7 @@ type
     dfEvalFunctionCalls,   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
     dfThreadSuspension,
     dfConsoleWinPos,        // Able to set position of console Window
+    dfStdInOutRedirect,     // Able to redirect StdIn/Out
 
     (* dfNotSuitableForOsArch:
        If this is set, then this debugger can not be used on the current
@@ -1602,6 +1603,12 @@ type
     FExitCode: Integer;
     FExternalDebugger: String;
     FFileName: String;
+    FFileNameStdErr: String;
+    FFileNameStdIn: String;
+    FFileNameStdOut: String;
+    FFileOverwriteStdErr: Boolean;
+    FFileOverwriteStdIn: Boolean;
+    FFileOverwriteStdOut: Boolean;
     FIsInReset: Boolean;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
@@ -1754,6 +1761,14 @@ type
     procedure UnSetConsoleWinSize; virtual;
     procedure SetConsoleWinBuffer(AColumns, ARows: Integer); virtual;
     procedure UnSetConsoleWinBuffer; virtual;
+
+    property FileNameStdIn:  String read FFileNameStdIn  write FFileNameStdIn;
+    property FileNameStdOut: String read FFileNameStdOut write FFileNameStdOut;
+    property FileNameStdErr: String read FFileNameStdErr write FFileNameStdErr;
+    property FileOverwriteStdIn:  Boolean read FFileOverwriteStdIn  write FFileOverwriteStdIn;
+    property FileOverwriteStdOut: Boolean read FFileOverwriteStdOut write FFileOverwriteStdOut;
+    property FileOverwriteStdErr: Boolean read FFileOverwriteStdErr write FFileOverwriteStdErr;
+
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TCallStackSupplier read FCallStack;

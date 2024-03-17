@@ -2775,6 +2775,16 @@ resourcestring
   dlgUseConsoleSize   = 'Set Width/Height';
   dlgUseConsoleBuffer = 'Set Columns/Rows';
   dlgConsoleSizeNotSupported = 'Current debugger does not support this.';
+  dlgRedirStdIn  = 'Redirect StdIn';
+  dlgRedirStdOut = 'Redirect StdOut';
+  dlgRedirStdErr = 'Redirect StdErr';
+  dlgRedirOff  = 'No redirection';
+  dlgRedirAppend  = 'To file (Append)';
+  dlgRedirOverWrite  = 'To file (overwrite)';
+  dlgRedirInput  = 'From file';
+  dlgRedirInputEnd  = 'From file (at EOF)';
+
+  dlgRedirStdNotSupported = 'Current debugger does not support redirection';
   dlgRunOSystemVariables = 'System variables';
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';

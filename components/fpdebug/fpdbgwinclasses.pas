@@ -110,11 +110,12 @@ interface
 uses
   Classes,
   SysUtils,
+  Win32Proc,
   Windows,
   LazLinkedList,
   FpDbgUtil,
   FpDbgClasses,
-  process,
+  DbgIntfProcess,
   FpDbgWinExtra,
   strutils,
   FpDbgInfo,
@@ -205,7 +206,7 @@ type
   TDbgWinProcess = class(TDbgx86Process)
   private
     FInfo: TCreateProcessDebugInfo;
-    FProcProcess: TProcessUTF8;
+    FProcProcess: TProcessWithRedirect;
     FJustStarted, FTerminated: boolean;
     FBitness: TBitness;
     FThreadNameList: TDbgWinThreadNameList;
@@ -841,7 +842,7 @@ var
   LastErr: Integer;
 begin
   result := false;
-  FProcProcess := TProcessUTF8.Create(nil);
+  FProcProcess := TProcessWithRedirect.Create(nil);
   try
     // To debug sub-processes, this needs to be poDebugProcess
     FProcProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
@@ -866,6 +867,24 @@ begin
       FProcProcess.WindowColumns := Cardinal(Config.ConsoleWinBuffer.X);
       FProcProcess.WindowRows    := Cardinal(Config.ConsoleWinBuffer.Y);
     end;
+
+    if DBG_PROCESS_HAS_REDIRECT then begin
+      FProcProcess.SetRedirection(dtStdIn,  Config.StdInRedirFile,  Config.FileOverwriteStdIn);
+      if (Config.StdOutRedirFile = Config.StdErrRedirFile) then begin
+        if Config.StdOutRedirFile <> '' then begin
+          FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut or Config.FileOverwriteStdErr);
+          FProcProcess.Options := FProcProcess.Options + [poStdErrToOutPut];
+        end;
+      end
+      else begin
+        FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut);
+        FProcProcess.SetRedirection(dtStdErr, Config.StdErrRedirFile, Config.FileOverwriteStdErr);
+      end;
+
+      if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
+        FProcProcess.ApplyWin7Fix;
+    end;
+
     FProcProcess.Execute;
 
     Init(FProcProcess.ProcessID, 0);

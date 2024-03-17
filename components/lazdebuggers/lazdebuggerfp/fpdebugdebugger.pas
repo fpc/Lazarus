@@ -36,7 +36,7 @@ uses
   Classes, {$IfDef WIN64}windows,{$EndIf} SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
   Maps, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
-  DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntfBaseTypes,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase, LazDebuggerIntf,
   // FpDebug
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
@@ -4082,6 +4082,13 @@ begin
     FDbgController.CurrentProcess.Config.ConsoleWinSize   := FConsoleWinSize;
     FDbgController.CurrentProcess.Config.ConsoleWinBuffer := FConsoleWinBuffer;
 
+    FDbgController.CurrentProcess.Config.StdInRedirFile      := FileNameStdIn;
+    FDbgController.CurrentProcess.Config.FileOverwriteStdIn  := FileOverwriteStdIn;
+    FDbgController.CurrentProcess.Config.StdOutRedirFile     := FileNameStdOut;
+    FDbgController.CurrentProcess.Config.FileOverwriteStdOut := FileOverwriteStdOut;
+    FDbgController.CurrentProcess.Config.StdErrRedirFile     := FileNameStdErr;
+    FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
+
     FDbgController.AttachToPid := 0;
     if ACommand = dcAttach then begin
       FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
@@ -4944,6 +4951,8 @@ begin
     {$IFDEF windows}
     Result := Result + [dfConsoleWinPos];
     {$ENDIF}
+    if DBG_PROCESS_HAS_REDIRECT then
+      Result := Result + [dfStdInOutRedirect];
   {$ELSE}
   Result := [dfNotSuitableForOsArch];
   {$ENDIF}

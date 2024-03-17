@@ -50,7 +50,7 @@ uses
   Classes, SysUtils,
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
-  Spin,
+  Spin, EditBtn,
   // IdeIntf
   IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, InputHistory,
   IDEImagesIntf, IDEWindowIntf, MacroIntf,
@@ -126,6 +126,16 @@ type
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    cbRedirStdIn: TComboBox;
+    cbRedirStdOut: TComboBox;
+    cbRedirStdErr: TComboBox;
+    lbStdIn: TLabel;
+    lbStdOut: TLabel;
+    lbStdErr: TLabel;
+    RedirectWarnLabel: TLabel;
+    FileNameStdIn: TFileNameEdit;
+    FileNameStdOut: TFileNameEdit;
+    FileNameStdErr: TFileNameEdit;
     ScrollBox1: TScrollBox;
     UseConsoleSizeCheckBox: TCheckBox;
     UseConsoleBufferCheckBox: TCheckBox;
@@ -175,6 +185,7 @@ type
     WorkingDirectoryBtn: TButton;
     WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
+    procedure cbRedirStdInChange(Sender: TObject);
     procedure DeleteModeButtonClick(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -516,6 +527,13 @@ begin
     XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Rows/Value',     0)
   );
 
+  XMLConfig.GetValue(Path + 'local/RedirectStdIn/Value',  ord(rprOff), FRedirectStdIn,  TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.GetValue(Path + 'local/RedirectStdOut/Value', ord(rprOff), FRedirectStdOut, TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.GetValue(Path + 'local/RedirectStdErr/Value', ord(rprOff), FRedirectStdErr, TypeInfo(TRunParamsRedirectMode));
+  FileNameStdIn  := XMLConfig.GetValue(Path + 'local/FileNameStdIn/Value',  '');
+  FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
+  FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
+
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
   IncludeSystemVariables := XMLConfig.GetValue(
@@ -574,10 +592,12 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Columns/Value', ConsoleWinBuffer.X, 0);
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Rows/Value',    ConsoleWinBuffer.Y, 0);
 
-  // environment options
-  SaveUserOverrides(Path + 'environment/UserOverrides/');
-  XMLConfig.SetDeleteValue(Path + 'environment/IncludeSystemVariables/Value',
-    IncludeSystemVariables, False);
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdIn/Value',  FRedirectStdIn,  ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdOut/Value', FRedirectStdOut, ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdErr/Value', FRedirectStdErr, ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdIn/Value',  FileNameStdIn,  '');
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
   Result := mrOk;
 end;
@@ -636,6 +656,13 @@ begin
     XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Columns/Value', 0),
     XMLConfig.GetValue(Path + 'local/ConsoleWinBuffer/Rows/Value',     0)
   );
+
+  XMLConfig.GetValue(Path + 'local/RedirectStdIn/Value',  ord(rprOff), FRedirectStdIn,  TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.GetValue(Path + 'local/RedirectStdOut/Value', ord(rprOff), FRedirectStdOut, TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.GetValue(Path + 'local/RedirectStdErr/Value', ord(rprOff), FRedirectStdErr, TypeInfo(TRunParamsRedirectMode));
+  FileNameStdIn  := XMLConfig.GetValue(Path + 'local/FileNameStdIn/Value',  '');
+  FileNameStdOut := XMLConfig.GetValue(Path + 'local/FileNameStdOut/Value', '');
+  FileNameStdErr := XMLConfig.GetValue(Path + 'local/FileNameStdErr/Value', '');
 
   // environment options
   LoadUserOverrides(Path + 'environment/UserOverrides/');
@@ -696,6 +723,13 @@ begin
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinSize/Height/Value',    ConsoleWinSize.Y, 0);
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Columns/Value', ConsoleWinBuffer.X, 0);
   XMLConfig.SetDeleteValue(Path + 'local/ConsoleWinBuffer/Rows/Value',    ConsoleWinBuffer.Y, 0);
+
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdIn/Value',  FRedirectStdIn,  ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdOut/Value', FRedirectStdOut, ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/RedirectStdErr/Value', FRedirectStdErr, ord(rprOff), TypeInfo(TRunParamsRedirectMode));
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdIn/Value',  FileNameStdIn,  '');
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdOut/Value', FileNameStdOut, '');
+  XMLConfig.SetDeleteValue(Path + 'local/FileNameStdErr/Value', FileNameStdErr, '');
 
   // environment options
   SaveUserOverrides(Path + 'environment/UserOverrides/');
@@ -786,6 +820,18 @@ begin
   ModesComboBoxChange(ModesComboBox);
 end;
 
+procedure TRunParamsOptsDlg.cbRedirStdInChange(Sender: TObject);
+begin
+{$IFnDef LCLNoGui}
+  RedirectWarnLabel.Visible :=
+    ( (cbRedirStdIn.ItemIndex <> 0) or
+      (cbRedirStdOut.ItemIndex <> 0) or
+      (cbRedirStdErr.ItemIndex <> 0)
+    ) and
+    not (dfStdInOutRedirect in DebugBoss.DebuggerClass.SupportedFeatures);
+{$ENDIF}
+end;
+
 destructor TRunParamsOptsDlg.Destroy;
 begin
   fOptions.Free;
@@ -868,6 +914,27 @@ begin
   UseConsoleSizeCheckBox.Caption   := dlgUseConsoleSize;
   UseConsoleBufferCheckBox.Caption := dlgUseConsoleBuffer;
   ConsoleSizeWarnLabel.Caption := dlgConsoleSizeNotSupported;
+
+  cbRedirStdIn.Items.Add (dlgRedirOff);
+  cbRedirStdIn.Items.Add (dlgRedirInput);
+  cbRedirStdIn.Items.Add (dlgRedirInputEnd);
+
+  cbRedirStdOut.Items.Add(dlgRedirOff);
+  cbRedirStdOut.Items.Add(dlgRedirOverWrite);
+  cbRedirStdOut.Items.Add(dlgRedirAppend);
+
+  cbRedirStdErr.Items.Add(dlgRedirOff);
+  cbRedirStdErr.Items.Add(dlgRedirOverWrite);
+  cbRedirStdErr.Items.Add(dlgRedirAppend);
+
+  cbRedirStdIn.ItemIndex := 0;
+  cbRedirStdOut.ItemIndex := 0;
+  cbRedirStdErr.ItemIndex := 0;
+
+  lbStdIn.Caption  := dlgRedirStdIn;
+  lbStdOut.Caption := dlgRedirStdOut;
+  lbStdErr.Caption := dlgRedirStdErr;
+  RedirectWarnLabel.Caption := dlgRedirStdNotSupported;
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
@@ -1148,6 +1215,13 @@ begin
   edConsoleBufferColumns.Value  := AMode.ConsoleWinBuffer.X;
   edConsoleBufferRows.Value     := AMode.ConsoleWinBuffer.Y;
 
+  cbRedirStdIn.ItemIndex  := ord(AMode.RedirectStdIn);
+  cbRedirStdOut.ItemIndex := ord(AMode.RedirectStdOut);
+  cbRedirStdErr.ItemIndex := ord(AMode.RedirectStdErr);
+  FileNameStdIn.Text  := AMode.FileNameStdIn;
+  FileNameStdOut.Text := AMode.FileNameStdOut;
+  FileNameStdErr.Text := AMode.FileNameStdErr;
+
   // environment
   FillSystemVariablesListView;
   FillUserOverridesListView(AMode);
@@ -1277,6 +1351,13 @@ begin
   AMode.ConsoleWinSize      := Point(edConsoleSizeWidth.Value, edConsoleSizeHeight.Value);
   AMode.UseConsoleWinBuffer := UseConsoleBufferCheckBox.Checked;
   AMode.ConsoleWinBuffer    := Point(edConsoleBufferColumns.Value, edConsoleBufferRows.Value);
+
+  AMode.RedirectStdIn  := TRunParamsRedirectMode(cbRedirStdIn.ItemIndex);
+  AMode.RedirectStdOut := TRunParamsRedirectMode(cbRedirStdOut.ItemIndex);
+  AMode.RedirectStdErr := TRunParamsRedirectMode(cbRedirStdErr.ItemIndex);
+  AMode.FileNameStdIn  := FileNameStdIn.Text;
+  AMode.FileNameStdOut := FileNameStdOut.Text;
+  AMode.FileNameStdErr := FileNameStdErr.Text;
 
   // history list: WorkingDirectoryComboBox
   SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);

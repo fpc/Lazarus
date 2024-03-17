@@ -6,6 +6,14 @@ unit FpDbgLinuxClasses;
 {$modeswitch advancedrecords}
 {off $define DebuglnLinuxDebugEvents}
 
+// New FPC 331 TProcess to allow StdIn/StdOut redirection
+{$UnDef HAS_NEW_PROCESS}{$UnDef USES_NEW_PROCESS}
+{$IF FPC_Fullversion>=30301} {$define HAS_NEW_PROCESS}
+{$ELSE}
+{$IFDEF WINDOWS} {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
+{$IFDEF LINUX}    {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
@@ -13,13 +21,15 @@ uses
   SysUtils,
   BaseUnix,
   termio, fgl,
-  process,
+  {$IFDEF USES_NEW_PROCESS} process331 in 'fcl-proc331/process331.pp',
+  {$ELSE} process,
+  {$ENDIF}
   Contnrs,
   StrUtils,
   Types,
   FpDbgClasses,
   FpDbgLoader, FpDbgDisasX86,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfProcess,
   FpDbgLinuxExtra,
   FpDbgInfo,
   FpDbgUtil,
@@ -315,7 +325,7 @@ type
     FPostponedSignals: TFpDbgLinuxSignalQueue;
     FStatus: cint;
     FProcessStarted: boolean;
-    FProcProcess: TProcessUTF8;
+    FProcProcess: TProcessWithRedirect;
     FIsTerminating: boolean;
     FMasterPtyFd: cint;
     FCurrentThreadId: THandle;
@@ -477,30 +487,40 @@ begin
   if fpPTrace(PTRACE_TRACEME, 0, nil, nil) <> 0 then
     writeln('Failed to start trace of process. Errcode: '+inttostr(fpgeterrno));
 
+  ConsoleTtyFd := -1;
   if GConsoleTty<>'' then
-    begin
-    ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY);
-    if ConsoleTtyFd>-1 then
-      begin
-      if (FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil) = -1) then
-        begin
-        // This call always fails for some reason. That's also why login_tty can not be used. (login_tty
-        // also calls TIOCSCTTY, but when it fails it aborts) The failure is ignored.
-        // writeln('Failed to set tty '+inttostr(fpgeterrno));
-        end;
-
-      FpDup2(ConsoleTtyFd,0);
-      FpDup2(ConsoleTtyFd,1);
-      FpDup2(ConsoleTtyFd,2);
-      end
-    else
-      writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
-    end
+    ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY)
   else if GSlavePTyFd>-1 then
-    begin
-    if login_tty(GSlavePTyFd) <> 0 then
-      writeln('Failed to login to tty. Errcode: '+inttostr(fpgeterrno)+' - '+inttostr(GSlavePTyFd));
+    ConsoleTtyFd:=GSlavePTyFd;
+
+  if ConsoleTtyFd>-1 then begin
+    if FpSetsid <> -1 then
+      FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil);
+
+    {$IFDEF HAS_NEW_PROCESS}
+    if Config.StdInRedirFile = '' then begin
+      FpClose(0);
+      {$ENDIF}
+      FpDup2(ConsoleTtyFd,0);
+    {$IFDEF HAS_NEW_PROCESS}
     end;
+    if Config.StdOutRedirFile = '' then begin
+      FpClose(1);
+      {$ENDIF}
+      FpDup2(ConsoleTtyFd,1);
+    {$IFDEF HAS_NEW_PROCESS}
+    end;
+    if Config.StdErrRedirFile = '' then begin
+      FpClose(2);
+      {$ENDIF}
+      FpDup2(ConsoleTtyFd,2);
+    {$IFDEF HAS_NEW_PROCESS}
+    end;
+    {$ENDIF}
+    FpClose(ConsoleTtyFd);
+  end
+  else
+    writeln('Failed to open tty '+GConsoleTty+'. Errno: '+inttostr(fpgeterrno));
 
 end;
 
@@ -1176,7 +1196,7 @@ function TDbgLinuxProcess.StartInstance(AParams, AnEnvironment: TStrings;
   AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
   AnError: TFpError): boolean;
 var
-  AProcess: TProcessUTF8;
+  AProcess: TProcessWithRedirect;
   AMasterPtyFd: cint;
   AnExecutabeFilename: string;
 begin
@@ -1210,13 +1230,26 @@ begin
     GConsoleTty:=AConsoleTty;
     end;
 
-  AProcess := TProcessUTF8.Create(nil);
+  AProcess := TProcessWithRedirect.Create(nil);
   try
     AProcess.OnForkEvent:=@OnForkEvent;
     AProcess.Executable:=AnExecutabeFilename;
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
+    if DBG_PROCESS_HAS_REDIRECT then begin
+      AProcess.SetRedirection(dtStdIn,  Config.StdInRedirFile,  Config.FileOverwriteStdIn);
+      if (Config.StdOutRedirFile = Config.StdErrRedirFile) then begin
+        if Config.StdOutRedirFile <> '' then begin
+          FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut or Config.FileOverwriteStdErr);
+          FProcProcess.Options := FProcProcess.Options + [poStdErrToOutPut];
+        end;
+      end
+      else begin
+        FProcProcess.SetRedirection(dtStdOut, Config.StdOutRedirFile, Config.FileOverwriteStdOut);
+        FProcProcess.SetRedirection(dtStdErr, Config.StdErrRedirFile, Config.FileOverwriteStdErr);
+      end;
+    end;
 
     AProcess.Execute;
     Init(AProcess.ProcessID, 0);

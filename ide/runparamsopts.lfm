@@ -34,7 +34,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         Height = 422
         Top = 0
         Width = 523
-        HorzScrollBar.Page = 293
+        HorzScrollBar.Page = 314
         VertScrollBar.Page = 418
         Align = alClient
         ClientHeight = 418
@@ -43,7 +43,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object DisplayGroupBox: TGroupBox
           Left = 6
           Height = 80
-          Top = 214
+          Top = 310
           Width = 490
           Align = alTop
           AutoSize = True
@@ -78,14 +78,14 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
         object CmdLineParametersGroupBox: TGroupBox
           Left = 6
-          Height = 55
+          Height = 151
           Top = 67
           Width = 490
           Align = alTop
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'CmdLineParametersGroupBox'
-          ClientHeight = 35
+          ClientHeight = 131
           ClientWidth = 486
           TabOrder = 1
           object CmdLineParametersComboBox: TComboBox
@@ -99,11 +99,172 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
             TabOrder = 0
             Text = 'CmdLineParametersComboBox'
           end
+          object FileNameStdIn: TFileNameEdit
+            AnchorSideLeft.Control = cbRedirStdIn
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = CmdLineParametersComboBox
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CmdLineParametersGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 189
+            Height = 23
+            Top = 35
+            Width = 291
+            FilterIndex = 0
+            HideDirectories = False
+            ButtonWidth = 23
+            NumGlyphs = 1
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            MaxLength = 0
+            TabOrder = 1
+          end
+          object FileNameStdOut: TFileNameEdit
+            AnchorSideLeft.Control = FileNameStdIn
+            AnchorSideTop.Control = FileNameStdIn
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CmdLineParametersGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 189
+            Height = 23
+            Top = 61
+            Width = 291
+            FilterIndex = 0
+            HideDirectories = False
+            ButtonWidth = 23
+            NumGlyphs = 1
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 6
+            MaxLength = 0
+            TabOrder = 2
+          end
+          object FileNameStdErr: TFileNameEdit
+            AnchorSideLeft.Control = FileNameStdIn
+            AnchorSideTop.Control = FileNameStdOut
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CmdLineParametersGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 189
+            Height = 23
+            Top = 87
+            Width = 291
+            FilterIndex = 0
+            HideDirectories = False
+            ButtonWidth = 23
+            NumGlyphs = 1
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 6
+            BorderSpacing.Bottom = 3
+            MaxLength = 0
+            TabOrder = 3
+          end
+          object RedirectWarnLabel: TLabel
+            AnchorSideLeft.Control = CmdLineParametersGroupBox
+            AnchorSideTop.Control = FileNameStdErr
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = CmdLineParametersGroupBox
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 113
+            Width = 474
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            BorderSpacing.Bottom = 3
+            Caption = 'RedirectWarnLabel'
+            Font.Color = clRed
+            ParentFont = False
+            Visible = False
+          end
+          object cbRedirStdIn: TComboBox
+            AnchorSideLeft.Control = lbStdIn
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideTop.Control = CmdLineParametersComboBox
+            AnchorSideTop.Side = asrBottom
+            Left = 83
+            Height = 23
+            Top = 35
+            Width = 100
+            BorderSpacing.Left = 40
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 4
+          end
+          object cbRedirStdOut: TComboBox
+            AnchorSideLeft.Control = cbRedirStdIn
+            AnchorSideTop.Control = cbRedirStdIn
+            AnchorSideTop.Side = asrBottom
+            Left = 83
+            Height = 23
+            Top = 61
+            Width = 100
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 6
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 5
+          end
+          object cbRedirStdErr: TComboBox
+            AnchorSideLeft.Control = cbRedirStdIn
+            AnchorSideTop.Control = cbRedirStdOut
+            AnchorSideTop.Side = asrBottom
+            Left = 83
+            Height = 23
+            Top = 87
+            Width = 100
+            BorderSpacing.Top = 3
+            BorderSpacing.Right = 6
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 6
+          end
+          object lbStdIn: TLabel
+            AnchorSideLeft.Control = CmdLineParametersGroupBox
+            AnchorSideTop.Control = cbRedirStdIn
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 15
+            Top = 39
+            Width = 37
+            BorderSpacing.Left = 6
+            Caption = 'lbStdIn'
+          end
+          object lbStdOut: TLabel
+            AnchorSideLeft.Control = CmdLineParametersGroupBox
+            AnchorSideTop.Control = cbRedirStdOut
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 15
+            Top = 65
+            Width = 47
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbStdOut'
+          end
+          object lbStdErr: TLabel
+            AnchorSideLeft.Control = CmdLineParametersGroupBox
+            AnchorSideTop.Control = cbRedirStdErr
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 15
+            Top = 91
+            Width = 41
+            BorderSpacing.Left = 6
+            BorderSpacing.Right = 6
+            Caption = 'lbStdErr'
+          end
         end
         object UseLaunchingApplicationGroupBox: TGroupBox
           Left = 6
           Height = 80
-          Top = 128
+          Top = 224
           Width = 490
           Align = alTop
           AutoSize = True
@@ -186,7 +347,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object WorkingDirectoryGroupBox: TGroupBox
           Left = 6
           Height = 55
-          Top = 300
+          Top = 396
           Width = 490
           Align = alTop
           AutoSize = True
@@ -231,7 +392,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         object ConsoleWinSizeGroupBox: TGroupBox
           Left = 0
           Height = 128
-          Top = 361
+          Top = 457
           Width = 502
           Align = alTop
           AutoSize = True

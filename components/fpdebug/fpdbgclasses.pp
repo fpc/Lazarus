@@ -693,12 +693,20 @@ type
 
   TDbgConfig = class
   private
+    // WindowBounds
     FUseConsoleWinPos: boolean;
     FUseConsoleWinSize: boolean;
     FUseConsoleWinBuffer: boolean;
     FConsoleWinPos: TPoint;
     FConsoleWinSize: TPoint;
     FConsoleWinBuffer: TPoint;
+    // Redir
+    FStdInRedirFile: String;
+    FStdOutRedirFile: String;
+    FStdErrRedirFile: String;
+    FFileOverwriteStdIn: Boolean;
+    FFileOverwriteStdOut: Boolean;
+    FFileOverwriteStdErr: Boolean;
   public
     // WindowBounds
     property UseConsoleWinPos: boolean read FUseConsoleWinPos write FUseConsoleWinPos;
@@ -707,6 +715,13 @@ type
     property ConsoleWinPos: TPoint read FConsoleWinPos write FConsoleWinPos;
     property ConsoleWinSize: TPoint read FConsoleWinSize write FConsoleWinSize;
     property ConsoleWinBuffer: TPoint read FConsoleWinBuffer write FConsoleWinBuffer;
+    // Redir
+    property StdInRedirFile: String read FStdInRedirFile write FStdInRedirFile;
+    property StdOutRedirFile: String read FStdOutRedirFile write FStdOutRedirFile;
+    property StdErrRedirFile: String read FStdErrRedirFile write FStdErrRedirFile;
+    property FileOverwriteStdIn:  Boolean read FFileOverwriteStdIn  write FFileOverwriteStdIn;
+    property FileOverwriteStdOut: Boolean read FFileOverwriteStdOut write FFileOverwriteStdOut;
+    property FileOverwriteStdErr: Boolean read FFileOverwriteStdErr write FFileOverwriteStdErr;
   end;
 
   { TDbgInstance }

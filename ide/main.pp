@@ -72,7 +72,7 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils,
-  LCLExceptionStacktrace,
+  LCLExceptionStacktrace, {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // BuildIntf
@@ -103,7 +103,7 @@ uses
   // debugger
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
   DebugManager, debugger, DebuggerDlg, DebugAttachDialog,
-  DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
@@ -164,7 +164,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm,
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   CodeExplOpts, EditorMacroListViewer,
-  SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
+  SourceFileManager, EditorToolbarStatic, IDEInstances,
   WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter,
   // main ide
   MainBar, MainIntf, MainBase, SearchPathProcs;
@@ -197,6 +197,7 @@ type
     procedure HintWatchFreed(Sender: TObject);
     procedure HintWatchValidityChanged(Sender: TObject);
     procedure DlgDebugInfoHelpRequested(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean);
+    procedure RunWithoutDebugFinished(AnError: String);
 
   public
     // file menu
@@ -7479,6 +7480,14 @@ begin
   end;
 end;
 
+procedure TMainIDE.RunWithoutDebugFinished(AnError: String);
+begin
+  if AnError <> '' then
+    MessageDlg(lisCCOErrorCaption, AnError, mtError, [mbOK], 0);
+
+  DoCallRunFinishedHandler;
+end;
+
 function TMainIDE.DoRunProject: TModalResult;
 begin
   if Project1.CompilerOptions.RunWithoutDebug then
@@ -7489,8 +7498,8 @@ end;
 
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
-  Process: TProcessUTF8;
-  RunCmdLine, RunWorkingDirectory, ExeFile: string;
+  Process: TProcessWithRedirect;
+  RunCmdLine, RunWorkingDirectory, ExeFile, FileOut, FileErr: string;
   Params: TStringList;
   Handled: Boolean;
   ARunMode: TRunParamsOptionsMode;
@@ -7531,7 +7540,7 @@ begin
   end;
 
   Params := TStringList.Create;
-  Process := TProcessUTF8.Create(nil);
+  Process := TProcessWithRedirect.Create(nil);
   try
     SplitCmdLineParams(RunCmdLine,Params);
     if Params.Count=0 then begin
@@ -7548,9 +7557,9 @@ begin
     Process.Executable := ExeFile;
     Process.Parameters.Assign(Params);
     Process.CurrentDirectory := RunWorkingDirectory;
-    {$IFDEF Windows}
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
     if ARunMode <> nil then begin
+      {$IFDEF Windows}
       if ARunMode.UseConsoleWinPos then begin
         Process.StartupOptions := Process.StartupOptions + [suoUsePosition];
         Process.WindowLeft    := ARunMode.ConsoleWinPos.X;
@@ -7566,8 +7575,39 @@ begin
         Process.WindowColumns := ARunMode.ConsoleWinBuffer.X;
         Process.WindowRows    := ARunMode.ConsoleWinBuffer.Y;
       end;
+      {$ENDIF}
+      if DBG_PROCESS_HAS_REDIRECT then begin
+        if ARunMode.RedirectStdIn <> rprOff then
+          Process.SetRedirection(dtStdIn,  CreateAbsolutePath(ARunMode.FileNameStdIn, RunWorkingDirectory),  ARunMode.RedirectStdIn = rprOverwrite);
+
+        FileOut := '';
+        FileErr := '';
+        if ARunMode.RedirectStdOut <> rprOff then
+          FileOut := CreateAbsolutePath(ARunMode.FileNameStdOut, RunWorkingDirectory);
+        if ARunMode.RedirectStdErr <> rprOff then
+          FileErr := CreateAbsolutePath(ARunMode.FileNameStdErr, RunWorkingDirectory);
+
+        if (ARunMode.RedirectStdOut <> rprOff) and (ARunMode.RedirectStdErr <> rprOff) and
+           (FileOut = FileErr)
+        then begin
+          if ARunMode.FileNameStdOut <> '' then begin
+            Process.SetRedirection(dtStdOut, FileOut, (ARunMode.RedirectStdOut = rprOverwrite) or (ARunMode.RedirectStdErr = rprOverwrite));
+            Process.Options := Process.Options + [poStdErrToOutPut];
+          end;
+        end
+        else begin
+          if ARunMode.RedirectStdOut <> rprOff then
+            Process.SetRedirection(dtStdOut, FileOut, ARunMode.RedirectStdOut = rprOverwrite);
+          if ARunMode.RedirectStdErr <> rprOff then
+            Process.SetRedirection(dtStdErr, FileErr, ARunMode.RedirectStdErr = rprOverwrite);
+        end;
+
+        {$IFDEF MSWINDOWS}
+        if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
+          Process.ApplyWin7Fix;
+        {$ENDIF}
+      end;
     end;
-    {$ENDIF}
 
     if MainBuildBoss.GetProjectUsesAppBundle
     and (FileExistsUTF8(ExeFile) or DirectoryExistsUTF8(ExeFile))
@@ -7598,7 +7638,7 @@ begin
     try
       if EnvironmentGuiOpts.Desktop.HideIDEOnRun then
         HideIDE;
-      TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+      TNotifyProcessEnd.Create(Process, @RunWithoutDebugFinished);
       Process:=nil; // Process is freed by TNotifyProcessEnd
     except
       on E: Exception do

@@ -231,7 +231,7 @@ File(s) with other licenses (see also header in file(s):
       </Item>
       <Item>
         <Filename Value="fpdbgcpux86.pas"/>
-        <UnitName Value="fpdbgcpux86"/>
+        <UnitName Value="FpDbgCpuX86"/>
       </Item>
       <Item>
         <Filename Value="fpdbgrspclasses.pas"/>
@@ -251,6 +251,9 @@ File(s) with other licenses (see also header in file(s):
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
       <Item>
         <PackageName Value="fcl-net"/>
         <DependencyType Value="FPMake"/>

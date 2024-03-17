@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  UTF8Process, LazLoggerBase;
+  UTF8Process, LazLoggerBase, DbgIntfProcess;
   
 type
   { The TProcessList is used by the IDE to store all running programs and
@@ -35,19 +35,19 @@ type
     if the processes has terminated and will free them cleanly to avoid zombies. }
   TProcessList = class
   private
-    FItems: TList; // list of TProcessUTF8
+    FItems: TList; // list of TProcessWithRedirect
     FFreeing: Boolean; // set wehn freeing stopped processes
     function GetCount: integer;
-    function GetItems(Index: integer): TProcessUTF8;
+    function GetItems(Index: integer): TProcessWithRedirect;
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(NewProcess: TProcessUTF8): integer;
+    function Add(NewProcess: TProcessWithRedirect): integer;
     procedure Clear;
     procedure FreeStoppedProcesses;
   public
     property Count: integer read GetCount;
-    property Items[Index: integer]: TProcessUTF8 read GetItems; default;
+    property Items[Index: integer]: TProcessWithRedirect read GetItems; default;
   end;
   
 function GetDefaultProcessList: TProcessList;
@@ -71,9 +71,9 @@ begin
   Result:=FItems.Count;
 end;
 
-function TProcessList.GetItems(Index: integer): TProcessUTF8;
+function TProcessList.GetItems(Index: integer): TProcessWithRedirect;
 begin
-  Result:=TProcessUTF8(FItems[Index]);
+  Result:=TProcessWithRedirect(FItems[Index]);
 end;
 
 constructor TProcessList.Create;
@@ -89,7 +89,7 @@ begin
   inherited Destroy;
 end;
 
-function TProcessList.Add(NewProcess: TProcessUTF8): integer;
+function TProcessList.Add(NewProcess: TProcessWithRedirect): integer;
 begin
   Result:=FItems.Add(NewProcess);
 end;
@@ -105,7 +105,7 @@ end;
 
 procedure TProcessList.FreeStoppedProcesses;
 var
-  AProcess: TProcessUTF8;
+  AProcess: TProcessWithRedirect;
   i: Integer;
 begin
   // waitonexit or free may trigger another idle

@@ -2799,6 +2799,25 @@ begin
       if FDebugger <> nil then begin
         AMode := Project1.RunParameterOptions.GetActiveMode;
         if (AMode <> nil) then begin
+          if AMode.RedirectStdIn <> rprOff then begin
+            FDebugger.FileNameStdIn := CreateAbsolutePath(AMode.FileNameStdIn, NewWorkingDir);
+            FDebugger.FileOverwriteStdIn := AMode.RedirectStdIn = rprOverwrite;
+          end
+          else
+            FDebugger.FileNameStdIn := '';
+          if AMode.RedirectStdOut <> rprOff then begin
+            FDebugger.FileNameStdOut := CreateAbsolutePath(AMode.FileNameStdOut, NewWorkingDir);
+            FDebugger.FileOverwriteStdOut := AMode.RedirectStdOut = rprOverwrite;
+          end
+          else
+            FDebugger.FileNameStdOut := '';
+          if AMode.RedirectStdErr <> rprOff then begin
+            FDebugger.FileNameStdErr := CreateAbsolutePath(AMode.FileNameStdErr, NewWorkingDir);
+            FDebugger.FileOverwriteStdErr := AMode.RedirectStdErr = rprOverwrite;
+          end
+          else
+            FDebugger.FileNameStdErr := '';
+
           if AMode.UseConsoleWinPos then
             FDebugger.SetConsoleWinPos(AMode.ConsoleWinPos.X, AMode.ConsoleWinPos.Y)
           else

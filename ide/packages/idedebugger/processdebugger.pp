@@ -38,13 +38,14 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, SysUtils, Process,
+  Classes, SysUtils, process,
   // LCL
-  Dialogs,
+  Dialogs, {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
+
   // LazUtils
   FileUtil, UTF8Process, LazFileUtils, LazLoggerBase,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntfBaseTypes,
   // IDE
   ProcessList, Debugger;
 
@@ -54,7 +55,7 @@ type
 
   TProcessDebugger = class(TDebugger)
   private
-    FProcess: TProcessUTF8;
+    FProcess: TProcessWithRedirect;
     FUseConsoleWinPos: boolean;
     FUseConsoleWinSize: boolean;
     FUseConsoleWinBuffer: boolean;
@@ -88,7 +89,7 @@ type
 
   { TDBGProcess }
 
-  TDBGProcess = class(TProcessUTF8)
+  TDBGProcess = class(TProcessWithRedirect)
   private
     FOnDestroy: TNotifyEvent;
   protected
@@ -169,6 +170,25 @@ begin
       FProcess.WindowRows    := FConsoleWinBuffer.Y;
     end;
     {$ENDIF}
+    if DBG_PROCESS_HAS_REDIRECT then begin
+      FProcess.SetRedirection(dtStdIn,  FileNameStdIn,  FileOverwriteStdIn);
+      if (FileNameStdOut = FileNameStdErr) then begin
+        if FileNameStdOut <> '' then begin
+          FProcess.SetRedirection(dtStdOut, FileNameStdOut, FileOverwriteStdOut or FileOverwriteStdErr);
+          FProcess.Options := FProcess.Options + [poStdErrToOutPut];
+        end;
+      end
+      else begin
+        FProcess.SetRedirection(dtStdOut, FileNameStdOut, FileOverwriteStdOut);
+        FProcess.SetRedirection(dtStdErr, FileNameStdErr, FileOverwriteStdErr);
+      end;
+
+      {$IFDEF MSWINDOWS}
+      if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
+        FProcess.ApplyWin7Fix;
+      {$ENDIF}
+    end;
+
     FProcess.Execute;
   except
     on E: exception do begin
@@ -225,6 +245,8 @@ begin
   {$IFDEF windows}
   Result := Result + [dfConsoleWinPos];
   {$ENDIF}
+  if DBG_PROCESS_HAS_REDIRECT then
+    Result := Result + [dfStdInOutRedirect];
 end;
 
 procedure TProcessDebugger.SetConsoleWinPos(ALeft, ATop: Integer);
