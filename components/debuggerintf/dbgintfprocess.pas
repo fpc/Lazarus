@@ -60,6 +60,7 @@ type
   TDescriptorType = (dtStdIn, dtStdOut, dtStdErr);
 
   // forwards
+  EProcess = {$IFDEF USES_NEW_PROCESS} process331. {$ELSE} process. {$ENDIF} EProcess;
   TProcessOptions = {$IFDEF USES_NEW_PROCESS} process331. {$ELSE} process. {$ENDIF} TProcessOptions;
   TStartupOptions = {$IFDEF USES_NEW_PROCESS} process331. {$ELSE} process. {$ENDIF} TStartupOptions;
 
