@@ -465,7 +465,8 @@ function TTestDbgDebugger.RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer;
   AWaitForInternal: Boolean): Boolean;
 begin
   Result := False;
-  with CurLocation do DebugLnEnter('>>> RunToNextPause Starting at %s %d @ %x', [SrcFile, SrcLine, Address]);
+  if LazDebugger.State in [dsPause, dsInternalPause] then
+    with CurLocation do DebugLnEnter('>>> RunToNextPause Starting at %s %d @ %x', [SrcFile, SrcLine, Address]);
   case ACmd of
     dcRun:      LazDebugger.Run;
     dcStepOver: LazDebugger.StepOver;
