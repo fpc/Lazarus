@@ -4721,15 +4721,16 @@ begin
   {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
 
   Application.RemoveAsyncCalls(Self);
+
+  FreeAndNil(FFpDebugOutputQueue);
+  FreeAndNil(FBreakUpdateList);
+  FreeAndNil(FDbgController);
   try
     FExceptionStepper.DoDbgStopped;
   except
     assert(False, 'TFpDebugDebugger.Destroy: DoDbgStopped failed');
   end;
 
-  FreeAndNil(FFpDebugOutputQueue);
-  FreeAndNil(FBreakUpdateList);
-  FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FMemModel);
   FreeAndNil(FMemManager);
