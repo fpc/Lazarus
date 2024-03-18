@@ -134,6 +134,7 @@ resourcestring
   sccsLvEdtLabelImageIndex = 'Image Index:';
   sccsLvEdtLabelStateIndex = 'State Index:';
   sccsLvEdtItem            = 'Item';
+  sccsLvEdtMsgOwnerData    = 'List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead.';
 
   // Image editor strings
   oisImageListComponentEditor = 'I&mageList Editor ...';

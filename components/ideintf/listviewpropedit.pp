@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, ComCtrls, StdCtrls, Buttons, ButtonPanel,
+  Forms, Controls, ComCtrls, StdCtrls, Dialogs, Buttons, ButtonPanel,
   // IdeIntf
   PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
@@ -92,6 +92,13 @@ function EditListView(AListView: TListView): Boolean;
 var
   ListViewEditorDlg: TListViewItemsEditorForm;
 begin
+  if AListView.OwnerData then
+  begin
+    MessageDlg(sccsLvEdtMsgOwnerData, mtError, [mbOK], 0);
+    Result := false;
+    exit;
+  end;
+
   ListViewEditorDlg := TListViewItemsEditorForm.Create(Application);
   try
     ListViewEditorDlg.LoadFromList(AListView);

@@ -1597,6 +1597,10 @@ msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
 msgstr "ステートのインデックス:"
 
+#: objinspstrconsts.sccslvedtmsgownerdata
+msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
+msgstr ""
+
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
