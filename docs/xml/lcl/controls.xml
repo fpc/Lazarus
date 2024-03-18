@@ -27696,8 +27696,57 @@ Used in the AnchorDocking package for the Lazarus IDE.
 
 <element name="DefaultSideForAnchorKind">
 <short>
+Provides adjacent edges where controls are aligned for a given anchor kind.
 </short>
 <descr>
+<p>
+<var>DefaultSideForAnchorKind</var> is an array type which contains 
+TAnchorSideReference values, The values are accessed using the enumeration 
+values in TAnchorKind, and indicate the edge on a control where an adjacent 
+control is aligned for the anchor kind. For example:
+</p>
+<table>
+<tr>
+<td>
+<b>Anchor Kind</b>
+</td>
+<td>
+<b>Default Side</b>
+</td>
+</tr>
+<tr>
+<td>
+akTop
+</td>
+<td>
+asrBottom
+</td>
+</tr>
+<tr>
+<td>
+akLeft
+</td>
+<td>
+asrBottom
+</td>
+</tr>
+<tr>
+<td>
+akRight
+</td>
+<td>
+asrTop
+</td>
+</tr>
+<tr>
+<td>
+akBottom
+</td>
+<td>
+asrTop
+</td>
+</tr>
+</table>
 <p>
 Used in the <file>ldocktree</file> unit and in the TControl.AnchorToNeighbour 
 method.
