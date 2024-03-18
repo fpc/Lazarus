@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-04-06 00:06+0200\n"
+"PO-Revision-Date: 2024-03-18 21:06+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -242,11 +242,11 @@ msgstr "&Name:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset fields list."
-msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen"
+msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen."
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen"
+msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -1560,6 +1560,10 @@ msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
 msgstr "Status-Index:"
 
+#: objinspstrconsts.sccslvedtmsgownerdata
+msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
+msgstr "Listeneinträge können zur Entwurfszeit nicht bearbeitet werden, wenn OwnerData aktiviert ist. Verwenden Sie dafür stattdessen Items.Count und das OnData-Ereignis."
+
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
@@ -1649,8 +1653,6 @@ msgid "Load ..."
 msgstr "Laden..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Columns"
 msgid "Move rows/columns"
 msgstr "Zeilen/Spalten verschieben"
 
