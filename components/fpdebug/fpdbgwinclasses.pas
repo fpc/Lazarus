@@ -110,7 +110,6 @@ interface
 uses
   Classes,
   SysUtils,
-  Win32Proc,
   Windows,
   LazLinkedList,
   FpDbgUtil,
@@ -881,7 +880,9 @@ begin
         FProcProcess.SetRedirection(dtStdErr, Config.StdErrRedirFile, Config.FileOverwriteStdErr);
       end;
 
-      if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
+      if (Win32MajorVersion < 6) or
+         ( (Win32MajorVersion = 6) and (Win32MinorVersion <= 1) )
+      then
         FProcProcess.ApplyWin7Fix;
     end;
 
