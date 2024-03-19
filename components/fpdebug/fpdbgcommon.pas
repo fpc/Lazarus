@@ -73,8 +73,10 @@ var
 
 procedure AssertFpDebugThreadId(const AName: String);
 begin
+{$IFnDEF LINUX}
   if FCurrentFpDebugThreadIdValidForAssert then
     assert(GetCurrentThreadId = FCurrentFpDebugThreadIdForAssert, AName);
+{$ENDIF}
 end;
 
 procedure AssertFpDebugThreadIdNotMain(const AName: String);
