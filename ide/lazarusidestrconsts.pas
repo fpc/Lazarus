@@ -2779,12 +2779,12 @@ resourcestring
   dlgRedirStdOut = 'Redirect StdOut';
   dlgRedirStdErr = 'Redirect StdErr';
   dlgRedirOff  = 'No redirection';
-  dlgRedirAppend  = 'To file (Append)';
+  dlgRedirAppend  = 'To file (append)';
   dlgRedirOverWrite  = 'To file (overwrite)';
   dlgRedirInput  = 'From file';
   dlgRedirInputEnd  = 'From file (at EOF)';
 
-  dlgRedirStdNotSupported = 'Current debugger does not support redirection';
+  dlgRedirStdNotSupported = 'Current debugger does not support redirection.';
   dlgRunOSystemVariables = 'System variables';
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';
