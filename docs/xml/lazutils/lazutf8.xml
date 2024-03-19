@@ -2466,7 +2466,6 @@ defined for <var>UTF8CompareText</var>.
 <short>Position of the second text line.</short>
 </element>
 
-<!-- TODO: Modified ancestor in 890f92e3. -->
 <element name="TStringListUTF8Fast">
 <short>
 Implements a string list using fast ASCII comparison functions when its data is 
@@ -2484,7 +2483,6 @@ by the user.
 </seealso>
 </element>
 
-<!-- TODO: Added in 890f92e3. -->
 <element name="TStringListUTF8Fast.InsertItem">
 <short>
 Ensures that the UseLocale property is enabled when a new line with non-ASCII 
