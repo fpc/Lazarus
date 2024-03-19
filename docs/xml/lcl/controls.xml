@@ -357,6 +357,12 @@ Starting value for control message constants defined in the LCL.
 <element name="CM_PARENTTABLETOPTIONSCHANGED">
 <short>Control message constant.</short>
 </element>
+<element name="CM_MASKHITTEST">
+<short>
+Control message constant implement by controls with an irregular shape to check 
+if a point belongs to a shape.
+</short>
+</element>
 <element name="CM_APPSHOWBTNGLYPHCHANGED">
 <short>Control message constant.</short>
 </element>
