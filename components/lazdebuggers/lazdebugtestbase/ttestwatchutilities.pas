@@ -1320,7 +1320,7 @@ begin
   if not AWaitForEval then
     exit(True);
 
-  for i := 1 to 5 do begin
+  for i := 1 to 50 do begin
     Application.Idle(False);
     Result := AWatchExp^.TstWatch.Values[AThreadId, AWatchExp^.TstStackFrame].Validity <> ddsRequested;
     if Result then break;

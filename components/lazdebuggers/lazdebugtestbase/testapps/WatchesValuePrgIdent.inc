@@ -162,24 +162,24 @@
   // **** ARRAY ****
   // **** Dyn ARRAY ****
 
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__CharDynArray{e}    _O2_ array of char          _EQ_      (nil);          //@@ _pre3_CharDynArray{e3};  // open array if used as function arg;
   pre__CharDynArray2{e}   _O2_ array of char          _EQ_      (nil);          //@@ _pre3_CharDynArray2{e3}; // len = 3 // open array if used as function arg;
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
   pre__CharDynArray3{e}   _O2_ TCharDynArray          _EQ_      (nil);          //@@ _pre3_CharDynArray3{e3};
   pre__CharDynArray4{e}   _O2_ TCharDynArray          _EQ_      (nil);          //@@ _pre3_CharDynArray4{e3}; // len = 3;
 
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__WCharDynArray{e}   _O2_ array of widechar      _EQ_      (nil);          //@@ _pre3_WCharDynArray{e3};
   pre__WCharDynArray2{e}  _O2_ array of widechar      _EQ_      (nil);          //@@ _pre3_WCharDynArray2{e3}; // len = 3;
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
   pre__WCharDynArray3{e}  _O2_ TWCharDynArray         _EQ_      (nil);          //@@ _pre3_WCharDynArray3{e3};
   pre__WCharDynArray4{e}  _O2_ TWCharDynArray         _EQ_      (nil);          //@@ _pre3_WCharDynArray4{e3}; // len = 3;
 
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__IntDynArray{e}    _O2_ array of Integer        _EQ_      (nil);          //@@ _pre3_IntDynArray{e3};    // open array if used as function arg;
   pre__IntDynArray2{e}   _O2_ array of Integer        _EQ_      (nil);          //@@ _pre3_IntDynArray2{e3};   // len = 3 // open array if used as function arg;
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
   pre__IntDynArray3{e}   _O2_ TIntDynArray            _EQ_      (nil);          //@@ _pre3_IntDynArray3{e3};
   pre__IntDynArray4{e}   _O2_ TIntDynArray            _EQ_      (nil);          //@@ _pre3_IntDynArray4{e3};   // len = 3;
 
@@ -187,17 +187,17 @@
 
   pre__IntDynArray4_Int{e} _O2_ PtrUInt _EQ_ (0);    //@@ _pre3_IntDynArray4_Int{e3};
 
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__AnsiDynArray{e}    _O2_ array of AnsiString    _EQ_      (nil);          //@@ _pre3_AnsiDynArray{e3};    // open array if used as function arg;
   pre__AnsiDynArray2{e}   _O2_ array of AnsiString    _EQ_      (nil);          //@@ _pre3_AnsiDynArray2{e3};   // len = 3 // open array if used as function arg;
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
   pre__AnsiDynArray3{e}   _O2_ TAnsiDynArray          _EQ_      (nil);          //@@ _pre3_AnsiDynArray3{e3};
   pre__AnsiDynArray4{e}   _O2_ TAnsiDynArray          _EQ_      (nil);          //@@ _pre3_AnsiDynArray4{e3};   // len = 3;
 
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__ShortStrDynArray{e}    _O2_ array of ShortStr10 _EQ_      (nil);         //@@ _pre3_ShortStrDynArray{e3};    // open array if used as function arg;
   pre__ShortStrDynArray2{e}   _O2_ array of ShortStr10 _EQ_      (nil);         //@@ _pre3_ShortStrDynArray2{e3};   // len = 3 // open array if used as function arg;
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
   pre__ShortStrDynArray3{e}   _O2_ TShortStrDynArray   _EQ_      (nil);         //@@ _pre3_ShortStrDynArray3{e3};
   pre__ShortStrDynArray4{e}   _O2_ TShortStrDynArray   _EQ_      (nil);         //@@ _pre3_ShortStrDynArray4{e3};   // len = 3;
 
@@ -215,12 +215,12 @@
 {$IFnDEF TestAssignGC}
 {$IFnDEF TestParam}
 {$IFnDEF TestArg}
-  {$IFnDEF TestPointer}
+  {$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__FiveDynArray2{e}            _O2_        array of          record a:longint; b: byte end _EQ_ (nil);          //@@ _pre3_FiveDynArray2{e3};
   pre__FiveDynArrayPack2{e}        _O2_ packed array of          record a:longint; b: byte end _EQ_ (nil);          //@@ _pre3_FiveDynArrayPack2{e3};
   pre__FivePackDynArray2{e}        _O2_        array of   packed record a:longint; b: byte end _EQ_ (nil);          //@@ _pre3_FivePackDynArray2{e3};
   pre__FivePackDynArrayPack2{e}    _O2_ packed array of   packed record a:longint; b: byte end _EQ_ (nil);          //@@ _pre3_FivePackDynArrayPack2{e3};
-  {$ENDIF} // TestPointer
+  {$ENDIF} {$UNDEF NO_TYPE} // TestPointer
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
@@ -317,7 +317,7 @@
   // **** Static ARRAY ****
 {$IFnDEF TestParam}
 {$IFnDEF TestArg}
-{$IFnDEF TestPointer}
+{$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   {$IFnDEF TestAssign}
   pre__CharStatArray{e}     _O2_ array[1..5] of char       _EQ_      (CHR1, 'b',CHR1, 'B','c');                //@@ _pre3_CharStatArray{e3};
   pre__WCharStatArray{e}    _O2_ array[1..5] of widechar   _EQ_      (CHR1, 'b',CHR1, 'B','d');                //@@ _pre3_WCharStatArray{e3};
@@ -351,7 +351,7 @@
   pre__ArrayEnum2{e}    := _pre2_ArrayEnum2;    pre__ArrayEnum2{e}[EnVal1]    := 300+ADD;   //@@ _pre3_ArrayEnum2{e3}; // }}
   pre__ArrayEnumSub2{e} := _pre2_ArrayEnumSub2; pre__ArrayEnumSub2{e}[EnVal1] := 400+ADD;   //@@ _pre3_ArrayEnumSub2{e3}; // }}
   {$ENDIF}
-{$ENDIF} // TestPointer
+{$ENDIF} {$UNDEF NO_TYPE} // TestPointer
 {$ENDIF}
 {$ENDIF}
 
@@ -511,10 +511,10 @@
 
 {$IFnDEF TestParam}
 {$IFnDEF TestArg}
-{$IFnDEF TestPointer}
+{$IFnDEF TestPointer} {$DEFINE NO_TYPE}
   pre__Set2{e}      _O2_ set of TEnum       _EQ_ ([EnVal1, EnVal4]);      //@@ _pre3_Set2{e3};
   pre__SmallSet2{e} _O2_ set of TSmallRange _EQ_ ([21, 24,25]);           //@@ _pre3_SmallSet2{e3};
-{$ENDIF}
+{$ENDIF} {$UNDEF NO_TYPE}
 {$ENDIF}
 {$ENDIF}
 

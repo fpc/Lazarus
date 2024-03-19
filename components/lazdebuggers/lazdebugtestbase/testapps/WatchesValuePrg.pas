@@ -436,7 +436,7 @@ type
 
 
   // type TxByte: type Byte;
-  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== type ", (=;//, "_O2_= = type", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestType )
+  TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=Tx, "_OP_== {$IFnDEF NO_TYPE}type{$ENDIF} ", (=;//, "_O2_= = {$IFnDEF NO_TYPE}type{$ENDIF}", _EQ_=, _BLOCK_=TestVar, _BLOCK2_=TestType )
   // type PTxByte: ^TxByte;
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=PTx, _OP_={, _O2_={, _pre3_=^Tx, "//@@=} = ", _BLOCK_=TestVar, _BLOCK2_=TestType ) //}
 
