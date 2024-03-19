@@ -1928,6 +1928,10 @@ msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "FPC メッセージファイル"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "HTMLファイル"
@@ -3674,6 +3678,42 @@ msgstr "グリッドに留まる"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "デスクトップ \"%s\"を本当に削除しますか？"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6376,6 +6416,10 @@ msgstr "実行ファイルを選択してください"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "FPC ソースディレクトリを選択してください"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr ""
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10246,6 +10290,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed

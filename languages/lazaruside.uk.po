@@ -1871,6 +1871,10 @@ msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "Файл повідомлень FPC"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "Файли HTML"
@@ -3582,6 +3586,42 @@ msgstr "Прилипання до сітки"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "Справді видалити стільницю \"%s\"?"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6254,6 +6294,10 @@ msgstr "Виберіть виконуваний файл"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "Виберіть теку коду FPC"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr ""
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10101,6 +10145,11 @@ msgstr "Спочатку слід опрацювати попередження"
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr "Конфігураційний файл типово має назву \"fppkg.cfg\". Якщо він сконфігурований неправильно, може не вдатись розв'язати залежності пакунків Free Pascal. Залишіть порожнім, щоб скористатись типовим."
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format

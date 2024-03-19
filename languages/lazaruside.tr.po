@@ -1859,6 +1859,10 @@ msgstr "Çalıştırılabilir"
 msgid "FPC message file"
 msgstr "FPC mesaj dosyası"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "HTML dosyaları"
@@ -3551,6 +3555,42 @@ msgstr "Izgaraya yapış"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "Masaüstünü gerçekten silmek istiyormusunuz \"%s\"?"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6211,6 +6251,10 @@ msgstr "Çalıştırılabilir bir dosya seçin"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "FPC kaynak dizinini seçin"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr ""
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10042,6 +10086,11 @@ msgstr "İlk önce uyarılar çözülmek zorunda"
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr "Yapılandırma dosyası genellikle \"fppkg.cfg\" adına sahiptir. Yanlış olduğunda, Free Pascal paketlerindeki bağımlılıkları çözmek imkansız olabilir. Varsayılanı kullanmak için boş bırakın."
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format

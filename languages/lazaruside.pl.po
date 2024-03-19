@@ -1915,6 +1915,10 @@ msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "Plik z komunikatami FPC"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "Pliki HTML"
@@ -3696,6 +3700,42 @@ msgstr "Przyciągaj do siatki"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "Na pewno usunąć pulpit \"%s\"?"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6383,6 +6423,10 @@ msgstr "Wybierz plik wykonywalny"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "Wybierz katalog źródeł FPC"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr ""
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10264,6 +10308,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed

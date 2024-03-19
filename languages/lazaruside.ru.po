@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-03-14 18:05+0300\n"
+"PO-Revision-Date: 2024-03-19 19:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1869,6 +1869,10 @@ msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "Файл сообщений FPC"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr "Файл настройки Fppkg"
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "Файлы HTML"
@@ -3578,6 +3582,42 @@ msgstr "Выравнивать по сетке"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "Вы действительно хотите удалить рабочий стол \"%s\"?"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr "В файл (добавить)"
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr "Из файла"
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr "Из файла (при EOF)"
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr "Не перенаправлять"
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr "В файл (перезаписать)"
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr "Перенаправить StdErr"
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr "Перенаправить StdIn"
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr "Текущий отладчик не поддерживает перенаправление."
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr "Перенаправить StdOut"
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6228,6 +6268,10 @@ msgstr "Выберите исполнимый файл"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "Выберите каталог исходного кода FPC"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr "Выберите файл настройки Fppkg"
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10045,6 +10089,11 @@ msgstr "Сначала требуется устранить предупреж�
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
 msgstr "Файл настройки обычно называется \"fppkg.cfg\". Если он некорректен, может оказаться невозможным разрешение зависимостей от пакетов Free Pascal. Оставьте пустым для использования параметров по умолчанию."
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
+msgstr "Файл настройки Fppkg не найден:%s%s"
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format

@@ -1930,6 +1930,10 @@ msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
 msgid "FPC message file"
 msgstr "„FPC“ pranešimo failas"
 
+#: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
+msgid "Fppkg configuration file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfilterhtml
 msgid "HTML files"
 msgstr "„HTML“ failai"
@@ -3676,6 +3680,42 @@ msgstr "Pritraukti prie tinklelio taškų"
 #, object-pascal-format
 msgid "Really delete desktop \"%s\"?"
 msgstr "Ar tikrai šalinti darbalaukį „%s“?"
+
+#: lazarusidestrconsts.dlgredirappend
+msgid "To file (append)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinput
+msgid "From file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirinputend
+msgid "From file (at EOF)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroff
+msgid "No redirection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgrediroverwrite
+msgid "To file (overwrite)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstderr
+msgid "Redirect StdErr"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdin
+msgid "Redirect StdIn"
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdnotsupported
+msgid "Current debugger does not support redirection."
+msgstr ""
+
+#: lazarusidestrconsts.dlgredirstdout
+msgid "Redirect StdOut"
+msgstr ""
 
 #: lazarusidestrconsts.dlgreferencecolor
 msgid "Reference"
@@ -6380,6 +6420,10 @@ msgstr "Parinkite vykdomąjį failą"
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
 msgstr "Nurodykite FPC pirminio kodo aplanką"
+
+#: lazarusidestrconsts.lischoosefppkgconfigurationfile
+msgid "Choose the fppkg configuration file"
+msgstr ""
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -10250,6 +10294,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgconfigurationfilenotfound
+#, object-pascal-format
+msgid "Fppkg configuration file not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
