@@ -475,10 +475,60 @@ TComponent instance which is the parent for the component on the clipboard.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TClipboard.GetComponentAsText">
 <short>
-<var>GetComponentAsText</var> - read the component as text, if supported.
+Loads a component instance from a textual representation stored in the 
+clipboard.
+</short>
+<descr>
+<p>
+<var>GetComponentAsText</var> creates a temporary TMemoryStream used to load 
+the pcfText clipboard content returned by AsText. ReadComponentFromTextStream 
+(in <file>lresources.pp</file>) is called to get the component class reference 
+needed to instantiate and load the component in RootComponent. <var>Owner</var> 
+and <var>Parent</var> contain the values stored to the corresponding properties 
+in the newly created component instance.
+</p>
+<p>
+Use GetComponent to create and load a component instance from a pcfComponent 
+format stored in the clipboard.
+</p>
+<p>
+Use SetComponentAsText and SetComponent to store a component instance to the 
+clipboard using with the pcfText or pcfComponent format.
+</p>
+<p>
+Use SupportedFormats to determine which storage formats are supported in the 
+clipboard.
+</p>
+</descr>
+<seealso>
+<link id="TClipboard.AsText"/>
+<link id="TClipboard.SupportedFormats"/>
+<link id="TClipboard.SetComponent"/>
+<link id="TClipboard.SetComponentAsText"/>
+<link id="#lcl.lresources.ReadComponentFromTextStream">ReadComponentFromTextStream</link>
+</seealso>
+</element>
+<element name="TClipboard.GetComponentAsText.RootComponent">
+<short>
+Variable argument where the component loaded from the clipboard is stored.
+</short>
+</element>
+<element name="TClipboard.GetComponentAsText.OnFindComponentClass">
+<short>
+Routine used to the locate the component class reference need to create a new 
+component instance.
+</short>
+</element>
+<element name="TClipboard.GetComponentAsText.Owner">
+<short>
+Owner of the newly created component instance.
+</short>
+</element>
+<element name="TClipboard.GetComponentAsText.Parent">
+<short>
+Parent for the newly created component instance.
 </short>
 </element>
 
