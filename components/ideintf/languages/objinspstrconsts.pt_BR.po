@@ -569,7 +569,7 @@ msgstr "%d linhas, %d caracteres"
 
 #: objinspstrconsts.oisenablesetshint
 msgid "Only affects the EnableSets property of the Test Input"
-msgstr ""
+msgstr "Afeta apenas a propriedade EnableSets da entrada de teste"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -595,7 +595,7 @@ msgstr "Erro carregando imagem \"%s\":%s%s"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "Erro ao ler o arquivo %s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -637,7 +637,7 @@ msgstr "Método incompatível"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "Não há suporte para definir uma propriedade de ponto flutuante como infinito positivo ou negativo em tempo de design"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -645,7 +645,7 @@ msgstr "Entrar Máscara:"
 
 #: objinspstrconsts.oisinputmaskeditor
 msgid "Input Mask Editor"
-msgstr ""
+msgstr "Editor de máscara de entrada"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
@@ -704,7 +704,7 @@ msgstr "Máscaras ..."
 
 #: objinspstrconsts.oismasksamplefilter
 msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
-msgstr ""
+msgstr "Arquivos de amostra de máscara de entrada (*.lem;*.dem)|*.lem;*.dem|Todos os arquivos|*"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -733,7 +733,7 @@ msgstr "Mover campo acima"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "Não há suporte para definir uma propriedade de ponto flutuante como NaN em tempo de design"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -888,7 +888,7 @@ msgstr "Propriedades &Selecionadas"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
-msgstr ""
+msgstr "Selecione o arquivo de amostra da máscara de entrada"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1292,11 +1292,11 @@ msgstr "Desconhecido"
 
 #: objinspstrconsts.oisunload
 msgid "Unload"
-msgstr ""
+msgstr "Descarregar"
 
 #: objinspstrconsts.oisunloadhint
 msgid "Unloads the current sample file"
-msgstr ""
+msgstr "Descarrega o arquivo de amostra atual"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
@@ -1312,7 +1312,7 @@ msgstr "Valor:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "Valor da property fora do intervalo."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1585,7 +1585,7 @@ msgstr "Índice Estado:"
 
 #: objinspstrconsts.sccslvedtmsgownerdata
 msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
-msgstr ""
+msgstr "Os itens da lista não podem ser editados em tempo de design quando o OwnerData estiver habilitado. Use Items.Count e OnData em tempo de execução."
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1718,21 +1718,21 @@ msgstr "Editor Itens \"TreeView\""
 
 #: objinspstrconsts.sccstredtconfirmationcaption
 msgid "Confirmation"
-msgstr ""
+msgstr "Confirmação"
 
 #: objinspstrconsts.sccstredtconfirmationfilereplace
 msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
 msgid "The file already exists, replace it?"
-msgstr ""
+msgstr "O arquivo já existe, substitui-lo?"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
-msgstr ""
+msgstr "As informações sobre imagens dos nodes não podem ser armazenadas no arquivo. Continue de qualquer maneira?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
-msgstr ""
+msgstr "A Tree atual será sobrescrita, continuar?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1742,12 +1742,12 @@ msgstr "Excluir"
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
 msgid "\"%s\" not assigned"
-msgstr ""
+msgstr "\"%s\" não atribuido"
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
 msgid "\"%s\" has only %d images"
-msgstr ""
+msgstr "\"%s\" tem apenas %d images"
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1786,11 +1786,11 @@ msgstr "Novo Sub-item"
 
 #: objinspstrconsts.sccstredtno
 msgid "&No"
-msgstr ""
+msgstr "&Não"
 
 #: objinspstrconsts.sccstredtopen
 msgid "Open file"
-msgstr ""
+msgstr "Abrir arquivo"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1817,7 +1817,7 @@ msgstr "Salvar"
 
 #: objinspstrconsts.sccstredtyes
 msgid "&Yes"
-msgstr ""
+msgstr "&Sim"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
