@@ -229,7 +229,8 @@ type
                           aEntryType1, aEntryType2: TTestCreateDataKind;
                           aErr1, aErr2: Boolean;
                           aNil: Boolean = False;
-                          aOnlyFieldData: Boolean = False
+                          aOnlyFieldData: Boolean = False;
+                          abortFieldsAfterErr: Boolean = False
                          );
 
     function  CreateData(ResIntf: IDbgWatchDataIntf;
@@ -263,6 +264,8 @@ type
     procedure TestWatchArrayStuct;
     procedure TestWatchArrayStuctArrayStuct;
     procedure TestWatchArrayVariant;
+
+    procedure TestWatchArrayStructError;
 
   end;
 
@@ -1023,11 +1026,10 @@ begin
   CreateArrayOfNum(Result.NestPtr, ANum, AByteSize).NestNum;
 end;
 
-procedure TTestIdeDebuggerWatchResult.CreateStruct(
-  ResIntf: IDbgWatchDataIntf; StrctTyp: TLzDbgStructType; WithFld: Boolean;
-  WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
-  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
-  aOnlyFieldData: Boolean);
+procedure TTestIdeDebuggerWatchResult.CreateStruct(ResIntf: IDbgWatchDataIntf;
+  StrctTyp: TLzDbgStructType; WithFld: Boolean; WithAnch: Integer; WithAnch1Fld,
+  WithAnch2Fld: Boolean; aEntryType1, aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean;
+  aNil: Boolean; aOnlyFieldData: Boolean; abortFieldsAfterErr: Boolean);
 var
   ExpCnt: Integer;
   FldIntf, Anch1Intf: IDbgWatchDataIntf;
@@ -1052,6 +1054,8 @@ begin
     FldIntf := ResIntf.AddField('Foo', dfvProtected, []);
     if not aOnlyFieldData then
       CreateData(FldIntf, aEntryType1, aErr1, 'TMyFoo', 300, 1200);
+    if aErr1 and abortFieldsAfterErr then
+      exit;
     //if aErr3 then
     if aErr1 and not aErr2 then
       FldIntf.CreateError('bad');
@@ -2617,6 +2621,86 @@ begin
       t.Done;
   end;
 
+end;
+
+procedure TTestIdeDebuggerWatchResult.TestWatchArrayStructError;
+var
+  t: TTestWatchResWrapper;
+  ProtoIntf: IDbgWatchDataIntf;
+  Res: TWatchResultData;
+  i, x: Integer;
+begin
+  for x := 0 to 2 do
+  begin
+
+    t.Init;
+    ProtoIntf := t.ResIntf.CreateArrayValue(datDynArray, 10, 0);
+    t.ResIntf.SetTypeName('TMyArray');
+
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      ProtoIntf.CreateStructure(dstClass, 10);
+
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, True, False, False, False, True);
+      ProtoIntf.CreateError('Err');
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      ProtoIntf.CreateStructure(dstClass, 20);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, False, False);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, False, False);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      ProtoIntf.CreateStructure(dstClass, 20);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, False, False);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, False, False);
+      ProtoIntf.CreateError('Err');
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      ProtoIntf.CreateStructure(dstClass, 50);
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, False, False);
+
+
+    Res := t.GetIdeRes;
+    case x of
+      1: Res := SaveLoad(Res);
+      2: Res := Res.CreateCopy;
+    end;
+    if x > 0 then
+      t.Done;
+
+    AssertValKind('', Res, rdkArray);
+    AssertArrayData('', Res, datDynArray, 10, 0, 'TMyArray');
+
+    Res.SetSelectedIndex(0);
+    AssertStructData('idx:0', Res.SelectedEntry, dstClass, 10, -1, ''); // TODO: field cnt
+
+    Res.SetSelectedIndex(1);
+    AssertErrData('idx:1', Res.SelectedEntry, 'Err');
+
+    Res.SetSelectedIndex(2);
+    AssertStructData('idx:2', Res.SelectedEntry, dstClass, 20, -1, ''); // TODO: field cnt
+
+    Res.SetSelectedIndex(3);
+    AssertStructData('idx:3', Res.SelectedEntry, dstClass, 700, 3, '');
+
+
+    if x > 0 then
+      Res.Free
+    else
+      t.Done;
+  end;
 end;
 
 

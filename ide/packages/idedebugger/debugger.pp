@@ -2060,6 +2060,24 @@ begin
   if Result <> '' then Result := '[' + Result + ']';
 end;
 
+function dbgs(AFlag: TCurrentResData.TCurrentResDataFlag): String;
+begin
+  writestr(Result{%H-}, AFlag);
+end;
+
+function dbgs(AFlags: TCurrentResData.TCurrentResDataFlags): String;
+var
+  i: TCurrentResData.TCurrentResDataFlag;
+begin
+  Result:='';
+  for i := low(TCurrentResData.TCurrentResDataFlags) to high(TCurrentResData.TCurrentResDataFlags) do
+    if i in AFlags then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
+end;
+
 function HasConsoleSupport: Boolean;
 begin
   {$IFDEF DBG_ENABLE_TERMINAL}
@@ -3481,9 +3499,10 @@ procedure TCurrentResData.WriteFieldsToRes(AStartIdx: Integer;
 var
   i: Integer;
 begin
-  if FCurrentFields = nil then
+  if (FCurrentFields = nil) or (FCurrentIdx = 0) then
     exit;
 
+  assert(FCurrentIdx = FCurrentFields.Count, 'TCurrentResData.WriteFieldsToRes (Has full amount of fields): FCurrentIdx = FCurrentFields.Count');
   FNewResultData.SetFieldCount(FCurrentFields.Count);
   for i := 0 to FCurrentFields.Count - 1 do begin
     AClassResData.SetFieldData(AStartIdx + i, TCurrentResData(FCurrentFields[i]).FNewResultData);

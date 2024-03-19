@@ -1369,6 +1369,7 @@ type
 
   private
     FCurrentFields: array of TWatchResultData;
+    FHasFields: Boolean;
   protected
     class function GetStorageClass: TWatchResultStorageClass; override;
     function CreateStorage: TWatchResultStorage; override;
@@ -4507,6 +4508,8 @@ var
   i: Integer;
 begin
   inherited AfterSaveToIndex(AStorage, AnIndex, AnEntryTemplate, AnOverrideTemplate);
+  if not FHasFields then
+    exit;
 
   if Length(FType.FFieldData) > AStore.StoredFieldCount then begin
     assert(AStore.StoredFieldCount=0, 'TGenericWatchResultDataStruct.AfterSaveToIndex: AStore.StoredFieldCount=0');
@@ -4534,6 +4537,7 @@ begin
         AStore.FOverrideTempl[i]);
     end;
   end;
+  FHasFields := False;
 end;
 
 procedure TGenericWatchResultDataStruct.AfterLoadFromIndex(
@@ -4553,7 +4557,7 @@ begin
   else begin
     assert(AStore.StoredFieldCount = Length(FType.FFieldData), 'TGenericWatchResultDataStruct.AfterLoadFromIndex: AStore.StoredFieldCount = Length(FType.FFieldData)');
     SetLength(FCurrentFields, Length(FType.FFieldData));
-    if AStore.NestedStorage[0].Count = 0 then begin
+    if (AStore.NestedStorage[0] = nil) or (AStore.NestedStorage[0].Count = 0) then begin
       for i := 0 to Length(FCurrentFields) - 1 do
         FCurrentFields[i] := nil;
     end
@@ -4573,6 +4577,7 @@ var
 begin
   inherited ClearData;
 
+  FHasFields := False;
   for i := 0 to Length(FType.FFieldData) - 1 do
     if (FType.FFieldData[i].Field <> nil) then
       FType.FFieldData[i].Field.ClearData;
@@ -4601,6 +4606,7 @@ procedure TGenericWatchResultDataStruct.SetField(AnIndex: Integer;
   AFieldName: String; AVisibility: TLzDbgFieldVisibility;
   AFlags: TLzDbgFieldFlags; AData: TWatchResultData);
 begin
+  FHasFields := True;
   FType.FFieldData[AnIndex].FieldName := AFieldName;
   FType.FFieldData[AnIndex].FieldVisibility := AVisibility;
   FType.FFieldData[AnIndex].FieldFlags := AFlags;
@@ -4611,6 +4617,7 @@ function TGenericWatchResultDataStruct.AddField(AFieldName: String;
   AVisibility: TLzDbgFieldVisibility; AFlags: TLzDbgFieldFlags;
   AData: TWatchResultData): Integer;
 begin
+  FHasFields := True;
   Result := Length(FType.FFieldData);
   SetLength(FType.FFieldData, Result + 1);
   FType.FFieldData[Result].FieldName := AFieldName;
@@ -4622,6 +4629,7 @@ end;
 procedure TGenericWatchResultDataStruct.SetFieldData(AnIndex: Integer;
   AData: TWatchResultData);
 begin
+  FHasFields := True;
   if AnIndex >= Length(FType.FFieldData) then
     SetLength(FType.FFieldData, AnIndex+1);
   FType.FFieldData[AnIndex].Field := AData;
@@ -4850,6 +4858,7 @@ end;
 constructor TWatchResultDataStruct.Create(AStructType: TLzDbgStructType);
 begin
   FType.FStructType := AStructType;
+  FHasFields := False;
 end;
 
 { TWatchResultDataRefStruct }
@@ -4869,6 +4878,7 @@ constructor TWatchResultDataRefStruct.Create(AStructType: TLzDbgStructType;
 begin
   FData.FDataAddress := ADataAddress;
   FType.FStructType := AStructType;
+  FHasFields := False;
 end;
 
 { TWatchResultDataConverted }
@@ -4907,6 +4917,7 @@ begin
     if AHandler <> nil then
       AHandler.AddReference;
   end;
+  FHasFields := False;
 end;
 
 { TGenericWatchResultDataProc }
