@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-28 02:38+0300\n"
+"PO-Revision-Date: 2024-03-19 18:40+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1585,7 +1585,7 @@ msgstr "Индекс состояния:"
 
 #: objinspstrconsts.sccslvedtmsgownerdata
 msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
-msgstr ""
+msgstr "Элементы списка не могут быть отредактированы во время разработки при активном значении OwnerData. В этом случае следует использовать Items.Count и OnData во время исполнения."
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
