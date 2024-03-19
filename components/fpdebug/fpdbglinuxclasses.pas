@@ -1148,6 +1148,11 @@ destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
   FPostponedSignals.Free;
+
+  if FMasterPtyFd>-1 then
+    FpClose(FMasterPtyFd);
+  FMasterPtyFd:=-1;
+
   inherited Destroy;
 end;
 
@@ -1160,6 +1165,9 @@ var
   AnExecutabeFilename: string;
 begin
   Result := false;
+  if FMasterPtyFd>-1 then
+    FpClose(FMasterPtyFd);
+  FMasterPtyFd:=-1;
 
   AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
@@ -1213,6 +1221,7 @@ begin
       FpClose(GSlavePTyFd);
     if AMasterPtyFd>-1 then
       FpClose(AMasterPtyFd);
+    FMasterPtyFd:=-1;
     end;
   end;
 end;
@@ -1464,7 +1473,6 @@ end;
 function TDbgLinuxProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
 begin
   RemoveAllBreakPoints;
-
   fpPTrace(PTRACE_DETACH, AThread.ID, nil, pointer(TDbgLinuxThread(AThread).FExceptionSignal));
   Result := True;
 end;
