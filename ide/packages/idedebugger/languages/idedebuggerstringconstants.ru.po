@@ -39,7 +39,7 @@ msgstr "Некоторые группы в списке включения/от�
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Yes, do not show this message again"
-msgstr ""
+msgstr "Да, больше не показывать это сообщение"
 
 #: idedebuggerstringconstants.dispformatbasebin
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -494,7 +494,7 @@ msgstr "Файлы XML"
 
 #: idedebuggerstringconstants.dlghistorydeleteallconfirm
 msgid "Delete complete History?"
-msgstr ""
+msgstr "Удалить всю историю?"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -541,7 +541,7 @@ msgstr "Форматирование значений"
 
 #: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
 msgid "Delete all watches?"
-msgstr ""
+msgstr "Удалить все наблюдения?"
 
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
