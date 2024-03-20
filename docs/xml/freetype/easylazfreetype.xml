@@ -15,17 +15,18 @@
       </descr>
 
       <!-- unresolved externals -->
+      <element name="Math"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="fpimage"/>
-      <element name="Laz_AVL_Tree"/>
+      <element name="AVL_Tree"/>
       <element name="LazUTF8"/>
       <element name="LazFreeType"/>
       <element name="TTRaster"/>
       <element name="TTTypes"/>
       <element name="TTObjs"/>
       <element name="Types"/>
-
+      
       <element name="TGlyphRenderQuality">
         <short/>
         <descr/>
