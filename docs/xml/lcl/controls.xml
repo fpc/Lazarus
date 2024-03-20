@@ -20001,6 +20001,10 @@ anchoring operations. Do not use expensive code here, or cache the resulting
 client rectangle for subsequent access.
 </p>
 </descr>
+<version>
+Behavior modified in LCL version 3.4 to use the adjusted client rectangle when 
+controls are aligned.
+</version>
 <seealso>
 <link id="TWinControl.GetAdjustedLogicalClientRect"/>
 </seealso>
@@ -20069,8 +20073,14 @@ been determined. AlignControl is the boss; AlignControls performs the heavy
 lifting.
 </p>
 </descr>
+<version>
+Behavior modified in LCL version 3.4 to use the adjusted client rectangle when 
+controls are aligned.
+</version>
 <seealso>
 <link id="TWinControl.Controls"/>
+<link id="TWinControl.AdjustClientRect"/>
+<link id="TWinControl.ChildSizing"/>
 <link id="TWinControl.DoAdjustClientRectChange"/>
 <link id="TControl.DoAllAutoSize"/>
 <link id="TWinControlFlag"/>
@@ -23326,10 +23336,15 @@ See <link id="TControlChildSizing">TControlChildSizing</link> for more
 detailed information about the properties and methods in the class instance.
 </p>
 </descr>
+<version>
+Behavior modified in LCL version 3.4 to use the adjusted client rectangle when 
+controls are aligned.
+</version>
 <seealso>
 <link id="TWinControl.ControlCount"/>
 <link id="TWinControl.Controls"/>
 <link id="TWinControl.AlignControls"/>
+<link id="TWinControl.AdjustClientRect"/>
 <link id="TWinControl.DoChildSizingChange"/>
 <link id="TWinControl.InvalidatePreferredChildSizes"/>
 <link id="TControl.Align"/>
