@@ -11,6 +11,13 @@
 <descr>
 </descr>
 
+<!-- external references -->
+<element name="Use32"/>
+<element name="TTError"/>
+<element name="TTCalc"/>
+<element name="TTTypes"/>
+<element name="SysUtils"/>
+
 <!-- constant Visibility: default -->
 <element name="PoolMaxCapacity">
 <short></short>

@@ -42,6 +42,8 @@
       </descr>
 
       <!-- unresolved external references -->
+      <element name="SysUtils"/>
+      <element name="TTError"/>
       <element name="TTTypes"/>
       <element name="TTProfile"/>
 
