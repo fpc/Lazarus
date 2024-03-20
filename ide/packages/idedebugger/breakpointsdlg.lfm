@@ -10,9 +10,9 @@ object BreakpointsDlg: TBreakpointsDlg
   Caption = 'Breakpoint list'
   ClientHeight = 205
   ClientWidth = 560
-  OnCreate = BreakpointsDlgCREATE
   LCLVersion = '3.99.0.0'
   Visible = True
+  OnCreate = BreakpointsDlgCREATE
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -45,43 +45,50 @@ object BreakpointsDlg: TBreakpointsDlg
       Action = actDeleteSelected
     end
     object ToolSep1: TToolButton
-      Left = 103
+      Left = 131
       Height = 22
       Top = 2
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 111
+      Left = 146
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 134
+      Left = 169
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 157
+      Left = 108
       Top = 2
       Action = actDeleteAll
     end
     object ToolSep2: TToolButton
-      Left = 180
+      Left = 192
       Height = 22
       Top = 2
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object ToolButtonProperties: TToolButton
-      Left = 188
+      Left = 197
       Top = 2
       Action = actProperties
     end
     object tbGroupByBrkGroup: TToolButton
-      Left = 211
+      Left = 220
       Top = 2
       Caption = 'Grp'
-      OnClick = tbGroupByBrkGroupClick
       Style = tbsCheck
+      OnClick = tbGroupByBrkGroupClick
+    end
+    object ToolButton1: TToolButton
+      Left = 103
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
     end
   end
   object tvBreakPoints: TDbgTreeView
@@ -225,8 +232,8 @@ object BreakpointsDlg: TBreakpointsDlg
     Top = 72
     object actToggleCurrentEnable: TAction
       Caption = 'actToggleCurrentEnable'
-      OnExecute = popEnabledClick
       ShortCut = 16462
+      OnExecute = popEnabledClick
     end
     object actEnableSelected: TAction
       Caption = 'actEnableSelected'
@@ -241,8 +248,8 @@ object BreakpointsDlg: TBreakpointsDlg
     object actDeleteSelected: TAction
       Caption = 'actDeleteSelected'
       Enabled = False
-      OnExecute = popDeleteClick
       ShortCut = 46
+      OnExecute = popDeleteClick
     end
     object actEnableAll: TAction
       Caption = 'actEnableAll'
@@ -274,14 +281,14 @@ object BreakpointsDlg: TBreakpointsDlg
     object actProperties: TAction
       Caption = 'actProperties'
       Enabled = False
-      OnExecute = popPropertiesClick
       ShortCut = 13
+      OnExecute = popPropertiesClick
     end
     object actAddSourceBP: TAction
       Category = 'Add'
       Caption = 'actAddSourceBP'
-      OnExecute = actAddSourceBPExecute
       ShortCut = 45
+      OnExecute = actAddSourceBPExecute
     end
     object actAddAddressBP: TAction
       Category = 'Add'
@@ -295,8 +302,8 @@ object BreakpointsDlg: TBreakpointsDlg
     end
     object actShow: TAction
       Caption = 'actShow'
-      OnExecute = actShowExecute
       ShortCut = 16470
+      OnExecute = actShowExecute
     end
     object actGroupSetNew: TAction
       Caption = 'actGroupSetNew'

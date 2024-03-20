@@ -7,7 +7,7 @@ object HistoryDialog: THistoryDialog
   Caption = 'HistoryDialog'
   ClientHeight = 240
   ClientWidth = 422
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object lvHistory: TListView
     Left = 0
     Height = 214
@@ -46,8 +46,8 @@ object HistoryDialog: THistoryDialog
       Top = 2
       AllowAllUp = True
       Caption = 'tbHistorySelected'
-      OnClick = tbHistorySelectedClick
       Style = tbsCheck
+      OnClick = tbHistorySelectedClick
     end
     object tbPower: TToolButton
       Left = 1
@@ -55,11 +55,11 @@ object HistoryDialog: THistoryDialog
       AllowAllUp = True
       Caption = 'tbPower'
       Down = True
-      OnClick = tbPowerClick
       Style = tbsCheck
+      OnClick = tbPowerClick
     end
     object tbClear: TToolButton
-      Left = 155
+      Left = 157
       Top = 2
       Caption = 'tbClear'
       OnClick = tbClearClick
@@ -69,64 +69,71 @@ object HistoryDialog: THistoryDialog
       Height = 22
       Top = 2
       Caption = 'ToolButton1'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object tbHist: TToolButton
       Tag = 1
-      Left = 55
+      Left = 52
       Top = 2
       Caption = 'tbHist'
       Down = True
       Grouped = True
-      OnClick = tbHistClick
       Style = tbsCheck
+      OnClick = tbHistClick
     end
     object tbSnap: TToolButton
       Tag = 1
-      Left = 78
+      Left = 75
       Top = 2
       Caption = 'tbSnap'
       Grouped = True
-      OnClick = tbHistClick
       Style = tbsCheck
+      OnClick = tbHistClick
     end
     object ToolButton4: TToolButton
-      Left = 101
+      Left = 98
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object tbMakeSnap: TToolButton
-      Left = 109
+      Left = 103
       Top = 2
       Caption = 'tbMakeSnap'
       OnClick = tbMakeSnapClick
     end
     object tbRemove: TToolButton
-      Left = 132
+      Left = 126
       Top = 2
       Caption = 'tbRemove'
       OnClick = tbRemoveClick
     end
     object ToolButton2: TToolButton
-      Left = 178
+      Left = 180
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object tbExport: TToolButton
-      Left = 209
+      Left = 218
       Top = 2
       Caption = 'tbExport'
       OnClick = tbExportClick
     end
     object tbImport: TToolButton
-      Left = 186
+      Left = 195
       Top = 2
       Caption = 'tbImport'
       OnClick = tbImportClick
+    end
+    object ToolButton3: TToolButton
+      Left = 149
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton3'
+      Style = tbsSeparator
     end
   end
   object OpenDialog1: TOpenDialog

@@ -11,10 +11,10 @@ object WatchesDlg: TWatchesDlg
   ClientHeight = 240
   ClientWidth = 539
   KeyPreview = True
+  LCLVersion = '3.99.0.0'
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '2.3.0.0'
   object tvWatches: TDbgTreeView
     Left = 0
     Height = 214
@@ -89,29 +89,29 @@ object WatchesDlg: TWatchesDlg
       Action = actDeleteSelected
     end
     object ToolButton6: TToolButton
-      Left = 121
+      Left = 149
       Height = 22
       Top = 2
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 126
+      Left = 164
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 149
+      Left = 187
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 172
+      Left = 126
       Top = 2
       Action = actDeleteAll
     end
     object ToolButton10: TToolButton
-      Left = 195
+      Left = 210
       Height = 22
       Top = 2
       Caption = 'ToolButton10'
@@ -123,29 +123,29 @@ object WatchesDlg: TWatchesDlg
       Action = actAddWatch
     end
     object ToolButtonProperties: TToolButton
-      Left = 223
+      Left = 261
       Top = 2
       Action = actProperties
     end
     object ToolButtonInspectView: TToolButton
-      Left = 200
+      Left = 238
       Top = 2
       Action = actToggleInspectSite
       Style = tbsCheck
     end
-    object ToolButton1: TToolButton
-      Left = 246
-      Height = 22
-      Top = 2
-      ShowCaption = False
-      Style = tbsDivider
-    end
     object btnShowDataAddr: TToolButton
-      Left = 251
+      Left = 215
       Top = 2
       Caption = '$^'
-      OnClick = btnShowDataAddrClick
       Style = tbsCheck
+      OnClick = btnShowDataAddrClick
+    end
+    object ToolButton3: TToolButton
+      Left = 121
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton3'
+      Style = tbsSeparator
     end
   end
   object InspectSplitter: TSplitter
@@ -267,11 +267,11 @@ object WatchesDlg: TWatchesDlg
     end
     object actAddWatch: TAction
       Caption = 'actAddWatch'
-      OnExecute = popAddClick
       SecondaryShortCuts.Strings = (
         'ins'
       )
       ShortCut = 16449
+      OnExecute = popAddClick
     end
     object actEnableSelected: TAction
       Caption = 'actEnableSelected'
@@ -283,11 +283,11 @@ object WatchesDlg: TWatchesDlg
     end
     object actDeleteSelected: TAction
       Caption = 'actDeleteSelected'
-      OnExecute = popDeleteClick
       SecondaryShortCuts.Strings = (
         'del'
       )
       ShortCut = 16452
+      OnExecute = popDeleteClick
     end
     object actEnableAll: TAction
       Caption = 'actEnableAll'
@@ -303,11 +303,11 @@ object WatchesDlg: TWatchesDlg
     end
     object actProperties: TAction
       Caption = 'actProperties'
-      OnExecute = popPropertiesClick
       SecondaryShortCuts.Strings = (
         'enter'
       )
       ShortCut = 16453
+      OnExecute = popPropertiesClick
     end
     object actAddWatchPoint: TAction
       Caption = 'actAddWatchPoint'
@@ -333,20 +333,20 @@ object WatchesDlg: TWatchesDlg
     object actCopyValue: TAction
       Category = 'copy'
       Caption = 'actCopyValue'
-      OnExecute = actCopyValueExecute
       ShortCut = 24643
+      OnExecute = actCopyValueExecute
     end
     object actCopyRAWValue: TAction
       Category = 'copy'
       Caption = 'actCopyRAWValue'
-      OnExecute = actCopyRAWValueExecute
       ShortCut = 16451
+      OnExecute = actCopyRAWValueExecute
     end
     object actCopyAddr: TAction
       Category = 'copy'
       Caption = 'actCopyAddr'
-      OnExecute = actCopyAddrExecute
       ShortCut = 49219
+      OnExecute = actCopyAddrExecute
     end
     object actCopyEntry: TAction
       Category = 'copy'

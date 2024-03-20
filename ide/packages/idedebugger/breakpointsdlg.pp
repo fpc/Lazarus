@@ -75,6 +75,7 @@ type
     actDisableAllInSrc: TAction;
     ActionList1: TActionList;
     tbGroupByBrkGroup: TToolButton;
+    ToolButton1: TToolButton;
     tvBreakPoints: TDbgTreeView;
     popGroupSep: TMenuItem;
     popGroupSetNew: TMenuItem;
@@ -616,7 +617,7 @@ begin
 
   actDeleteAll.Caption := lisDeleteAll;
   actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
-  actDeleteAll.ImageIndex := IDEImages.LoadImage('menu_clean');
+  actDeleteAll.ImageIndex := IDEImages.LoadImage('delete_all_in_list');
 
   actProperties.Caption:= liswlProperties;
   actProperties.Hint := lisDbgBreakpointPropertiesHint;

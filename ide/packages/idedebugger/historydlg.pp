@@ -28,6 +28,7 @@ type
     tbRemove: TToolButton;
     ToolButton2: TToolButton;
     tbExport: TToolButton;
+    ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     tbImport: TToolButton;
     procedure lvHistoryDblClick(Sender: TObject);
@@ -335,7 +336,7 @@ begin
   tbPower.Hint := histdlgBtnPowerHint;
   tbHistorySelected.Hint := histdlgBtnEnableHint;
 
-  tbClear.ImageIndex := IDEImages.LoadImage('menu_clean');
+  tbClear.ImageIndex := IDEImages.LoadImage('delete_all_in_list');
   tbClear.Hint  := histdlgBtnClearHint;
 
   tbHist.ImageIndex := IDEImages.LoadImage('clock');

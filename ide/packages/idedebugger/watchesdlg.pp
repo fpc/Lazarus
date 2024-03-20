@@ -95,8 +95,8 @@ type
     ActionList1: TActionList;
     actProperties: TAction;
     InspectLabel: TLabel;
-    ToolButton1: TToolButton;
     btnShowDataAddr: TToolButton;
+    ToolButton3: TToolButton;
     tvWatches: TDbgTreeView;
     InspectMemo: TMemo;
     MenuItem1: TMenuItem;
@@ -328,7 +328,7 @@ begin
 
   actDeleteAll.Caption := liswlDeLeteAll; //lisDbgAllItemDelete;
   actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
-  actDeleteAll.ImageIndex := IDEImages.LoadImage('menu_clean');
+  actDeleteAll.ImageIndex := IDEImages.LoadImage('delete_all_in_list');
 
   actProperties.Caption:= liswlProperties;
   actProperties.ImageIndex := IDEImages.LoadImage('menu_environment_options');
@@ -348,7 +348,7 @@ begin
   actInspect.Caption := lisInspect;
   actEvaluate.Caption := lisEvaluateModify;
 
-  btnShowDataAddr.ImageIndex := IDEImages.LoadImage('ce_implementation');
+  btnShowDataAddr.ImageIndex := IDEImages.LoadImage('address');
 
   Caption:=liswlWatchList;
 

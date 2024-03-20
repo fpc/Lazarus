@@ -262,6 +262,12 @@ codetoolsdefines/da_undefineall_200.png
 codetoolsdefines/da_undefinerecurse.png
 codetoolsdefines/da_undefinerecurse_150.png
 codetoolsdefines/da_undefinerecurse_200.png
+debugger/address.png
+debugger/address_150.png
+debugger/address_200.png
+debugger/delete_all_in_list.png
+debugger/delete_all_in_list_150.png
+debugger/delete_all_in_list_200.png
 debugger/callstack_bottom.png
 debugger/callstack_bottom_150.png
 debugger/callstack_bottom_200.png
