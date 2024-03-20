@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-03-19 19:00+0300\n"
+"PO-Revision-Date: 2024-03-21 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8296,6 +8296,22 @@ msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
 msgstr "Отладочное"
 
+#: lazarusidestrconsts.lisdebugdialogconfirmdelbreaks
+msgid "Confirm to delete all Breakpoints"
+msgstr "Подтверждать удаление всех точек останова"
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelbreaksfile
+msgid "Confirm to delete Breakpoints in same file"
+msgstr "Подтверждать удаление точек останова в том же файле"
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelhistory
+msgid "Confirm to clear History"
+msgstr "Подтверждать очистку истории"
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelwatches
+msgid "Confirm to delete all Watches"
+msgstr "Подтверждать удаление всех наблюдений"
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -8359,6 +8375,10 @@ msgstr "Отладчик"
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
 msgstr "Механизм отладки:"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerdialogsettings
+msgid "Debugger dialogs"
+msgstr "Диалоговые окна отладчика"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"

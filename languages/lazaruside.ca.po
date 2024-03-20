@@ -8521,6 +8521,22 @@ msgctxt "lazarusidestrconsts.lisdebug"
 msgid "Debug"
 msgstr "Depuració"
 
+#: lazarusidestrconsts.lisdebugdialogconfirmdelbreaks
+msgid "Confirm to delete all Breakpoints"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelbreaksfile
+msgid "Confirm to delete Breakpoints in same file"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelhistory
+msgid "Confirm to clear History"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugdialogconfirmdelwatches
+msgid "Confirm to delete all Watches"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -8584,6 +8600,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmdebuggerdialogsettings
+msgid "Debugger dialogs"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
