@@ -68,8 +68,11 @@
     <!-- unresolved external references -->
     <element name="LazFreeType"/>
     <element name="TTTypes"/>
+    <element name="TTCalc"/>
     <element name="TTError"/>
+    <element name="TTMemory"/>
     <element name="TTCache"/>
+    <element name="TTFile"/>
     <element name="TTTables"/>
     <element name="TTCMap"/>
 

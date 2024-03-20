@@ -44,7 +44,11 @@ Changes between 2.0 and 1.2:
 </descr>
 
 <!-- unresolved external references -->
+<element name="SysUtils"/>
+<element name="Classes"/>
+<element name="TTCalc"/>
 <element name="TTTypes"/>
+<element name="TTMemory"/>
 <element name="TTObjs"/>
 
 <element name="Run_Ins">

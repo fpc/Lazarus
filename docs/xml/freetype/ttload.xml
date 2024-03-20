@@ -30,6 +30,8 @@ Difference between 1.0 and 1.1: HUGE!!!
 
 <!-- unresolved external references -->
 <element name="TTTypes"/>
+<element name="TTError"/>
+<element name="TTMemory"/>
 <element name="TTTables"/>
 <element name="TTCMap"/>
 <element name="TTObjs"/>

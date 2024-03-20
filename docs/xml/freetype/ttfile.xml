@@ -56,9 +56,10 @@ one opened file at a time.
 </descr>
 
 <!-- unresolved external references -->
+<element name="SysUtils"/>
+<element name="Classes"/>
 <element name="TTTypes"/>
 <element name="TTError"/>
-<element name="Classes"/>
 
 <element name="TFreeTypeStream">
 <short/>
