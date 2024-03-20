@@ -34,15 +34,13 @@ interface
 {$R-} // TODO: Fix out-of-bounds accesses.
 {$mode Delphi}
 
-uses TTTypes,
-     TTObjs;
+uses
+  SysUtils, Classes, TTCalc, TTTypes, TTMemory, TTObjs;
 
   function Run_Ins( exec : PExec_Context ; AErrorLog: boolean = false) : TError;
   (* Run the interpreter with the current code range and IP *)
 
 implementation
-uses
-  TTCalc, SysUtils, Classes, TTMemory;
 
 const
   maxStackSizeAllowed = 16000;

@@ -26,7 +26,7 @@ Unit TTLoad;
 interface
 
 {$R-}
-uses TTTypes, TTTables, TTCMap, TTObjs, TTFile;
+uses TTTypes, TTError, TTMemory, TTTables, TTCMap, TTObjs, TTFile;
 
  function LookUp_TrueType_Table( face : PFace;
                                  aTag : string ) : int;
@@ -56,8 +56,6 @@ uses TTTypes, TTTables, TTCMap, TTObjs, TTFile;
                              var length  : longint ) : TError;
 
 implementation
-
-uses TTError, TTMemory;
 
   (* Composite glyph decoding flags *)
 
