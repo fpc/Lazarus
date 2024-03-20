@@ -37,6 +37,10 @@ msgstr "Kesme noktasına gelindiğinde etkinleştirilecek grupları seç"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Etkin/Devre dışı listesindeki bazı gruplar mevcut değil.%0:sOluşturulsun mu?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -505,6 +509,10 @@ msgstr "Tüm dosyalar"
 msgid "XML files"
 msgstr "XML dosyaları"
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr "Hata ayıklayıcı"
@@ -545,6 +553,10 @@ msgstr "Veri-Adres"
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch

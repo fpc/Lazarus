@@ -43,12 +43,12 @@ uses
   // LazUtils
   LazLoggerBase, LazUTF8,
   // LCL
-  Clipbrd, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, LMessages, SpinEx,
+  Clipbrd, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, LMessages, Dialogs, SpinEx,
   laz.VirtualTrees,
   //SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
+  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf, IDEDialogs,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
   // LazDebuggerIntf
@@ -902,7 +902,17 @@ end;
 procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
 var
   VNode: PVirtualNode;
+  MsgResult: Integer;
 begin
+  if EnvironmentDebugOpts.ConfirmDeleteAllWatches then begin
+    MsgResult:=IDEQuestionDialog(dlgWatchesDeleteAllConfirm, dlgWatchesDeleteAllConfirm, mtConfirmation,
+               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    if MsgResult = mrNo then
+      exit;
+    if MsgResult = mrYesToAll then
+      EnvironmentDebugOpts.ConfirmDeleteAllWatches := False;
+  end;
+
   Include(FStateFlags, wdsfNeedDeleteAll);
   if wdsfUpdating in FStateFlags then exit;
   Exclude(FStateFlags, wdsfNeedDeleteAll);

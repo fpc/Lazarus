@@ -112,6 +112,10 @@ type
 
   TEnvDebuggerOptions = class(TIDESubOptions)
   private
+    FConfirmDeleteAllBreakPoints: boolean;
+    FConfirmDeleteAllHistory: boolean;
+    FConfirmDeleteAllWatches: boolean;
+    FConfirmDeleteFileBreakPoints: boolean;
     FDbgConfigStore: TXMLOptionsStorage;
     FDebuggerConfig: TDebuggerConfigStore;
     FDebuggerAllowFunctionCalls: boolean;
@@ -141,6 +145,7 @@ type
       const AValue: TDebuggerEventLogColor);
   public
     constructor Create;
+    constructor CreateForRtti;
     destructor Destroy; override;
     procedure ReadFromXml(OnlyDesktop: boolean); override;
     procedure WriteToXml(OnlyDesktop: boolean); override;
@@ -167,6 +172,11 @@ type
     property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
     property DebuggerEventLogUseColors: Boolean read FDebuggerEventLogUseColors write FDebuggerEventLogUseColors;
     property DebuggerEventLogColors[AIndex: TDBGEventType]: TDebuggerEventLogColor read GetDebuggerEventLogColors write SetDebuggerEventLogColors;
+  published
+    property ConfirmDeleteAllWatches: boolean read FConfirmDeleteAllWatches write FConfirmDeleteAllWatches;
+    property ConfirmDeleteAllBreakPoints: boolean read FConfirmDeleteAllBreakPoints write FConfirmDeleteAllBreakPoints;
+    property ConfirmDeleteFileBreakPoints: boolean read FConfirmDeleteFileBreakPoints write FConfirmDeleteFileBreakPoints;
+    property ConfirmDeleteAllHistory: boolean read FConfirmDeleteAllHistory write FConfirmDeleteAllHistory;
   end;
 
 var
@@ -276,12 +286,22 @@ end;
 
 constructor TEnvDebuggerOptions.Create;
 begin
+  CreateForRtti;
+
   FDebuggerFileHistory := TStringList.Create;
   FDebuggerFileHistory.OwnsObjects := True;
   FDebuggerEventLogColors := DebuggerDefaultColors;
   (* TODO: maybe revert relations.
     Create this in Debugger, and call environmentoptions for the configstore only? *)
   FDebuggerConfig := TDebuggerConfigStore.Create;
+end;
+
+constructor TEnvDebuggerOptions.CreateForRtti;
+begin
+  FConfirmDeleteAllBreakPoints := True;
+  FConfirmDeleteFileBreakPoints := True;
+  FConfirmDeleteAllHistory := True;
+  FConfirmDeleteAllWatches := True;
 end;
 
 destructor TEnvDebuggerOptions.Destroy;
@@ -297,10 +317,16 @@ var
   EventType: TDBGEventType;
   i: Integer;
   Path: String;
+  Def: TEnvDebuggerOptions;
 begin
   if OnlyDesktop then Exit;    // Debugger options are not part of desktop.
   Path:='EnvironmentOptions/';
   // DO not call   LoadDebuggerProperties; => not all debuggers are registered when this is first called
+
+  Def := TEnvDebuggerOptions.CreateForRtti;
+  XMLCfg.ReadObject(Path+'DebuggerOptions/', Self, Def);
+  Def.Free;
+
   FDebuggerConfig.Load;
   if XMLCfg.HasPath(Path+'DebuggerFilename/History', False) then begin
     i := FDebuggerFileHistory.AddObject('', TStringList.Create);
@@ -342,9 +368,15 @@ var
   EventType: TDBGEventType;
   i: Integer;
   Path: String;
+  Def: TEnvDebuggerOptions;
 begin
   if OnlyDesktop then Exit;
   Path:='EnvironmentOptions/';
+
+  Def := TEnvDebuggerOptions.CreateForRtti;
+  XMLCfg.WriteObject(Path+'DebuggerOptions/', Self, Def);
+  Def.Free;
+
   FDebuggerConfig.Save;
   XMLCfg.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
       FDebuggerShowStopMessage, True);

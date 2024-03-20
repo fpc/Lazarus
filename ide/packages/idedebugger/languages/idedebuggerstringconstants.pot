@@ -27,6 +27,10 @@ msgstr ""
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
@@ -476,6 +480,10 @@ msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr ""
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr ""
@@ -517,6 +525,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch

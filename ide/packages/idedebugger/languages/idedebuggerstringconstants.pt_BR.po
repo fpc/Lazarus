@@ -38,6 +38,10 @@ msgstr "Selecionar grupos à habilitar quando o ponto de parada for atingido"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Alguns grupos na lista Habilitar/Desabilitar não existem.%0:sCriá-los?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -520,6 +524,10 @@ msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Arquivos XML"
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr "Depurador"
@@ -561,6 +569,10 @@ msgstr "Endereço-Dados"
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch

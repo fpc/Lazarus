@@ -31,6 +31,10 @@ msgstr "Valitse sallittavat ryhmät, kun keskeytyskohta aktivoituu"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Joitain Salli/Estä listan ryhmiä ei ole.%0:sLuodaanko ne?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -485,6 +489,10 @@ msgstr "Kaikki tiedostot"
 msgid "XML files"
 msgstr "XML-tiedostot"
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr ""
@@ -526,6 +534,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch

@@ -5,9 +5,9 @@ unit HistoryDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, Forms,
-  IDEWindowIntf,
-  BaseDebugManager, IDEImagesIntf, Dialogs, IdeDebuggerStringConstants;
+  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, Forms, IDEWindowIntf, BaseDebugManager,
+  IDEImagesIntf, IDEDialogs, IdeIntfStrConsts, Dialogs, Controls, IdeDebuggerStringConstants,
+  EnvDebuggerOptions;
 
 type
 
@@ -118,7 +118,18 @@ begin
 end;
 
 procedure THistoryDialog.tbClearClick(Sender: TObject);
+var
+  MsgResult: Integer;
 begin
+  if EnvironmentDebugOpts.ConfirmDeleteAllHistory then begin
+    MsgResult:=IDEQuestionDialog(dlgHistoryDeleteAllConfirm, dlgHistoryDeleteAllConfirm, mtConfirmation,
+               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    if MsgResult = mrNo then
+      exit;
+    if MsgResult = mrYesToAll then
+      EnvironmentDebugOpts.ConfirmDeleteAllHistory := False;
+  end;
+
   if SnapshotManager <> nil
   then SnapshotManager.Clear;
 end;

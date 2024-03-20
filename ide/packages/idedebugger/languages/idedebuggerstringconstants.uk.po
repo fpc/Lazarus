@@ -39,6 +39,10 @@ msgstr "Виберіть групи для ввімкнення при заді�
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Деякі групи в списку ввімкнення/вимкнення не існують.%0:sСтворити їх?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -509,6 +513,10 @@ msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Файли XML"
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr "Зневаджувач"
@@ -550,6 +558,10 @@ msgstr "Дані-адреса"
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch

@@ -5352,8 +5352,14 @@ resourcestring
   lisDebugOptionsFrmEditClassWarn = 'Changing the type for the current debugger backend. Use "Add" or "Copy" to create a new backend with a new type.';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
   lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
+  lisDebugOptionsFrmDebuggerDialogSettings = 'Debugger dialogs';
   lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';
   lisDebugOptionsFrmShowExitCodeOnStop = 'Show message on stop with Error (Exit-code <> 0)';
+  lisDebugDialogConfirmDelWatches = 'Confirm to delete all Watches';
+  lisDebugDialogConfirmDelBreaks = 'Confirm to delete all Breakpoints';
+  lisDebugDialogConfirmDelBreaksFile = 'Confirm to delete Breakpoints in same file';
+  lisDebugDialogConfirmDelHistory = 'Confirm to clear History';
+
   lisDebugOptionsFrmResetDebuggerOnEachRun = 'Reset Debugger after each run';
   lisDebugOptionsFrmAutoCloseAsm = 'Automatically close the assembler window, after source not found';
   lisDebugOptionsFrmAutoInstanceClass = 'Automatically set "use instance class type" for new watches';

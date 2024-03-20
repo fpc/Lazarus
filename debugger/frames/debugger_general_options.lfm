@@ -52,8 +52,8 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '…'
-      OnClick = cmdOpenAdditionalPathClick
       TabOrder = 1
+      OnClick = cmdOpenAdditionalPathClick
     end
   end
   object gcbDebuggerGeneralOptions: TCheckGroup
@@ -80,5 +80,30 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     TabOrder = 1
+  end
+  object gcbDebuggerDialogSettings: TCheckGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gcbDebuggerGeneralOptions
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 92
+    Width = 519
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'Debugger general options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 2
   end
 end

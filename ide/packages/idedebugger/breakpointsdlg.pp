@@ -41,10 +41,9 @@ uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs, IDEWindowIntf,
   Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, IDEImagesIntf,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
-  DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager,
-  IdeDebuggerStringConstants, DebuggerTreeView, breakpointgroupframe,
-  IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees,
-  LazDebuggerIntf;
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager, IdeDebuggerStringConstants,
+  DebuggerTreeView, breakpointgroupframe, IdeDebuggerOpts, EnvDebuggerOptions, IdeIntfStrConsts,
+  SrcEditorIntf, IDEDialogs, laz.VirtualTrees, LazDebuggerIntf;
 
 type
   TBreakPointsDlgState = (
@@ -840,6 +839,7 @@ var
   VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
+  MsgResult: Integer;
 begin
   BeginUpdate;
   try
@@ -847,10 +847,15 @@ begin
     if VNode = nil then
       exit;
     Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
-    if MessageDlg(lisDeleteAllBreakpoints,
-      Format(lisDeleteAllBreakpoints2, [Filename]),
-      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-    then exit;
+
+    if EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints then begin
+      MsgResult:=IDEQuestionDialog(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints2, mtConfirmation,
+                 [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+      if MsgResult = mrNo then
+        exit;
+      if MsgResult = mrYesToAll then
+        EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints:= False;
+    end;
 
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
@@ -915,14 +920,19 @@ procedure TBreakPointsDlg.popDeleteAllClick(Sender: TObject);
 var
   VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
+  MsgResult: Integer;
 begin
+  if EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints then begin
+    MsgResult:=IDEQuestionDialog(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints, mtConfirmation,
+               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    if MsgResult = mrNo then
+      exit;
+    if MsgResult = mrYesToAll then
+      EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints := False;
+  end;
+
   BeginUpdate;
   try
-    if MessageDlg(lisDeleteAllBreakpoints,
-      lisDeleteAllBreakpoints,
-      mtConfirmation,[mbYes,mbCancel],0)<>mrYes
-    then exit;
-
     for VNode in tvBreakPoints.NoInitItemNodes do
     begin
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);

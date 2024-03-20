@@ -37,6 +37,10 @@ msgstr "Выберите группы для включения при дост�
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgdonotshowthismessageagain
+msgid "Yes, do not show this message again"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasebin
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
@@ -488,6 +492,10 @@ msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Файлы XML"
 
+#: idedebuggerstringconstants.dlghistorydeleteallconfirm
+msgid "Delete complete History?"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
 msgstr "Отладчик"
@@ -530,6 +538,10 @@ msgstr "Адрес данных"
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
 msgstr "Форматирование значений"
+
+#: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
+msgid "Delete all watches?"
+msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"

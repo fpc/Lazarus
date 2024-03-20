@@ -47,6 +47,7 @@ type
     cmdOpenAdditionalPath: TButton;
     gbAdditionalSearchPath: TGroupBox;
     gcbDebuggerGeneralOptions: TCheckGroup;
+    gcbDebuggerDialogSettings: TCheckGroup;
     txtAdditionalPath: TEdit;
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
   private
@@ -87,13 +88,18 @@ begin
   with EnvironmentDebugOpts do
   begin
     // IMPORTANT if more items are added the indexes must be updated here!
-    gcbDebuggerGeneralOptions.Checked[0] := DebuggerShowStopMessage;
-    gcbDebuggerGeneralOptions.Checked[1] := DebuggerShowExitCodeMessage;
-    gcbDebuggerGeneralOptions.Checked[2] := DebuggerResetAfterRun;
-    gcbDebuggerGeneralOptions.Checked[3] := DebuggerAutoCloseAsm;
-    gcbDebuggerGeneralOptions.Checked[4] := DebuggerAutoSetInstanceFromClass;
-    gcbDebuggerGeneralOptions.Checked[5] := DebuggerAllowFunctionCalls;
-    gcbDebuggerGeneralOptions.Checked[6] := DebuggerOptions.AlwaysBringDbgDialogsToFront;
+    gcbDebuggerGeneralOptions.Checked[0] := DebuggerResetAfterRun;
+    gcbDebuggerGeneralOptions.Checked[1] := DebuggerAutoCloseAsm;
+    gcbDebuggerGeneralOptions.Checked[2] := DebuggerAutoSetInstanceFromClass;
+    gcbDebuggerGeneralOptions.Checked[3] := DebuggerAllowFunctionCalls;
+    gcbDebuggerGeneralOptions.Checked[4] := DebuggerOptions.AlwaysBringDbgDialogsToFront;
+
+    gcbDebuggerDialogSettings.Checked[0] := DebuggerShowStopMessage;
+    gcbDebuggerDialogSettings.Checked[1] := DebuggerShowExitCodeMessage;
+    gcbDebuggerDialogSettings.Checked[2] := ConfirmDeleteAllWatches;
+    gcbDebuggerDialogSettings.Checked[3] := ConfirmDeleteAllBreakPoints;
+    gcbDebuggerDialogSettings.Checked[4] := ConfirmDeleteFileBreakPoints;
+    gcbDebuggerDialogSettings.Checked[5] := ConfirmDeleteAllHistory;
   end;
   txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
@@ -112,13 +118,19 @@ procedure TDebuggerGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDial
 begin
   gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;
   gcbDebuggerGeneralOptions.Caption := lisDebugOptionsFrmDebuggerGeneralOptions;
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowMessageOnStop);      // 0 Message on stop
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmShowExitCodeOnStop);     // 1 Exit-code on stop
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmResetDebuggerOnEachRun); // 2 reset dbg after each run
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoCloseAsm);           // 3 auto close asm
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoInstanceClass);      // 4 auto set class-from-instance
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAllowFunctionCalls);     // 5 allow function calls
-  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmDialogsToFront);     // 6 bring dialogs to front
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmResetDebuggerOnEachRun); // 0 reset dbg after each run
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoCloseAsm);           // 1 auto close asm
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAutoInstanceClass);      // 2 auto set class-from-instance
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmAllowFunctionCalls);     // 3 allow function calls
+  gcbDebuggerGeneralOptions.Items.Add(lisDebugOptionsFrmDialogsToFront);         // 4 bring dialogs to front
+
+  gcbDebuggerDialogSettings.Caption := lisDebugOptionsFrmDebuggerDialogSettings;
+  gcbDebuggerDialogSettings.Items.Add(lisDebugOptionsFrmShowMessageOnStop);      // 0 Message on stop
+  gcbDebuggerDialogSettings.Items.Add(lisDebugOptionsFrmShowExitCodeOnStop);     // 1 Exit-code on stop
+  gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelWatches);          // Confirm delete watches
+  gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelBreaks);           // Confirm delete breakpoints
+  gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelBreaksFile);       // Confirm delete breakpoints in same file
+  gcbDebuggerDialogSettings.Items.Add(lisDebugDialogConfirmDelHistory);          // Confirm delete history
 end;
 
 procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -137,13 +149,18 @@ begin
   with EnvironmentDebugOpts do
   begin
     // IMPORTANT if more items are added the indexes must be updated here!
-    DebuggerShowStopMessage          := gcbDebuggerGeneralOptions.Checked[0];
-    DebuggerShowExitCodeMessage      := gcbDebuggerGeneralOptions.Checked[1];
-    DebuggerResetAfterRun            := gcbDebuggerGeneralOptions.Checked[2];
-    DebuggerAutoCloseAsm             := gcbDebuggerGeneralOptions.Checked[3];
-    DebuggerAutoSetInstanceFromClass := gcbDebuggerGeneralOptions.Checked[4];
-    DebuggerAllowFunctionCalls       := gcbDebuggerGeneralOptions.Checked[5];
-    DebuggerOptions.AlwaysBringDbgDialogsToFront := gcbDebuggerGeneralOptions.Checked[6];
+    DebuggerResetAfterRun            := gcbDebuggerGeneralOptions.Checked[0];
+    DebuggerAutoCloseAsm             := gcbDebuggerGeneralOptions.Checked[1];
+    DebuggerAutoSetInstanceFromClass := gcbDebuggerGeneralOptions.Checked[2];
+    DebuggerAllowFunctionCalls       := gcbDebuggerGeneralOptions.Checked[3];
+    DebuggerOptions.AlwaysBringDbgDialogsToFront := gcbDebuggerGeneralOptions.Checked[4];
+
+    DebuggerShowStopMessage          := gcbDebuggerDialogSettings.Checked[0];
+    DebuggerShowExitCodeMessage      := gcbDebuggerDialogSettings.Checked[1];
+    ConfirmDeleteAllWatches          := gcbDebuggerDialogSettings.Checked[2];
+    ConfirmDeleteAllBreakPoints      := gcbDebuggerDialogSettings.Checked[3];
+    ConfirmDeleteFileBreakPoints     := gcbDebuggerDialogSettings.Checked[4];
+    ConfirmDeleteAllHistory          := gcbDebuggerDialogSettings.Checked[5];
   end;
 end;
 

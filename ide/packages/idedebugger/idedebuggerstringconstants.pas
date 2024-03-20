@@ -125,6 +125,7 @@ resourcestring
   liswlExpression = 'Expression';
   dlgValueColor = 'Value';
   dlgValueDataAddr = 'Data-Address';
+  dlgWatchesDeleteAllConfirm = 'Delete all watches?';
 
   lisWatch = '&Watch';
   lisWatchData = 'Watch:';
@@ -196,6 +197,7 @@ resourcestring
   histdlgBtnShowSnapHint = 'View Snapshots';
   histdlgBtnMakeSnapHint = 'Take Snapshot';
   histdlgBtnRemoveHint   = 'Remove selected entry';
+  dlgHistoryDeleteAllConfirm = 'Delete complete History?';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';
@@ -494,6 +496,8 @@ resourcestring
   DispFormatOptChangingDescrAll  = 'Setting fallback options for all windows.';
   DispFormatOptChangingDescrSome = 'Setting fallback options for all windows.';
   DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried.';
+
+  dbgDoNotShowThisMessageAgain = 'Yes, do not show this message again';
 
 implementation
 
