@@ -86,8 +86,11 @@ interface
 
 uses LazFreeType,
      TTTypes,
+     TTCalc,
      TTError,
+     TTMemory,
      TTCache,
+     TTFile,
      TTTables,
      TTCMap;
 
@@ -767,7 +770,7 @@ var
 
 implementation
 
-uses TTMemory, TTFile, TTCalc, TTLoad, TTInterp;
+uses TTLoad, TTInterp;
 
   function Face_Create( _face  : Pointer;
                         _input : Pointer ) : TError; forward;

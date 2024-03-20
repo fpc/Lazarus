@@ -52,9 +52,8 @@ interface
 {$I TTCONFIG.INC}
 {$R-}
 
-uses TTTypes,
-     TTError,
-     Classes;
+uses
+  SysUtils, Classes, TTTypes, TTError;
 
 type
   { TFreeTypeStream }
@@ -171,9 +170,6 @@ type
  function TT_Stream_Size( stream : TT_Stream ) : longint;
 
 implementation
-
-uses
-  SysUtils;
 
   (* THREADS: TTMutex, *)
 

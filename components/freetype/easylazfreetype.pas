@@ -19,11 +19,11 @@ unit EasyLazFreeType;
 interface
 
 uses
-  Classes, SysUtils, fpimage, Laz_AVL_Tree,
+  Math, Classes, SysUtils, fpimage, Laz_AVL_Tree,
   // LazUtils
   LazUTF8,
   // FreeType
-  LazFreeType, TTRASTER, TTTypes, TTObjs,
+  LazFreeType, TTRaster, TTTypes, TTObjs,
   Types;  // Note: Types must be after TTTypes for PByte.
 
 type
@@ -436,8 +436,6 @@ function StylesToArray(AStyles: string): ArrayOfString;
 const FreeTypeMinPointSize = 1;
 
 implementation
-
-uses Math;
 
 const
   TT_PLATFORM_APPLE_UNICODE = 0;
