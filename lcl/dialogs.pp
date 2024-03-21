@@ -915,6 +915,66 @@ function PasswordBox(const ACaption, APrompt : string) : string;
 function PromptForFileName(var AFileName: string; const AFilter: string = ''; const ADefaultExt: string = '';
                            const ATitle: string = ''; const AInitialDir: string = ''; AIsSaveDialog: Boolean = False): Boolean;
 
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+  // RadioButtons
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer = -1;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer = -1;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+  // CheckBox
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ACheckBoxText: string; out Checked: boolean;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ACheckBoxText: string; out Checked: boolean;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+  // CheckBox + RadioButtons
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer = -1;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer = -1;
+  const aFooter: string = ''; const aDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
+  // All Options
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; const ACustomButtons: array of string; ADefaultButton: Integer;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer = -1;
+  const aFooter: string = ''; const aDetails: string = '';
+  const aShowDetails: string = ''; const aHideDetails: string = '';
+  AFlags: TTaskDialogFlags = [tfAllowDialogCancellation]
+  ): TModalResult;  overload;
 
 type
   TCustomCopyToClipboardDialog = class(TForm)

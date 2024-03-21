@@ -281,6 +281,209 @@ begin
   end;
 end;
 
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  RadioIndex: integer;
+  Checked: Boolean;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], -1,
+    '', Checked, [], RadioIndex, -1,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  RadioIndex: integer;
+  Checked: Boolean;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], ord(ADefaultButton),
+    '', Checked, [], RadioIndex, -1,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  Checked: Boolean;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], -1,
+    '', Checked, ARadioButtons, RadioIndex, ADefaultRadio,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  Checked: Boolean;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], ord(ADefaultButton),
+    '', Checked, ARadioButtons, RadioIndex, ADefaultRadio,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ACheckBoxText: string; out Checked: boolean;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  RadioIndex: integer;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], -1,
+    ACheckBoxText, Checked, [], RadioIndex, -1,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ACheckBoxText: string; out Checked: boolean;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+var
+  RadioIndex: integer;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], ord(ADefaultButton),
+    ACheckBoxText, Checked, [], RadioIndex, -1,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], -1,
+    ACheckBoxText, Checked, ARadioButtons, RadioIndex, ADefaultRadio,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; ADefaultButton: TMsgDlgBtn;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer;
+  const aFooter: string; const aDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+begin
+  Result := TaskDlg(aCaption, aMsg, aInfo, DlgIcon, AButtons, [], ord(ADefaultButton),
+    ACheckBoxText, Checked, ARadioButtons, RadioIndex, ADefaultRadio,
+    aFooter, aDetails, '', '', AFlags);
+end;
+
+function TaskDlg(const aCaption, aMsg, aInfo: string; DlgIcon: TTaskDialogIcon;
+  AButtons: TMsgDlgButtons; const ACustomButtons: array of string; ADefaultButton: Integer;
+  const ACheckBoxText: string; out Checked: boolean;
+  const ARadioButtons: array of string; out RadioIndex: integer; ADefaultRadio: Integer;
+  const aFooter: string; const aDetails: string; const aShowDetails: string;
+  const aHideDetails: string;
+  AFlags: TTaskDialogFlags): TModalResult;
+const
+  //(mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp, mbClose);
+  MB2MR: array [TMsgDlgBtn] of TModalResult = (
+    mrYes, mrNo, mrOK, mrCancel, mrAbort, mrRetry, mrIgnore,
+    mrAll, mrNoToAll, mrYesToAll, -1 {help}, mrClose
+  );
+  MBCommonMask: TMsgDlgButtons = [mbOK, mbCancel, mbYes, mbNo, mbRetry, mbClose];
+  MB2Common: array [TMsgDlgBtn] of TTaskDialogCommonButton= (
+    tcbYes, tcbNo, tcbOk, tcbCancel, tcbNo{X}, tcbRetry, tcbNo{X},
+    tcbNo{X}, tcbNo{X}, tcbNo{X}, tcbNo{X}, tcbClose
+  );
+var
+  TheDlg: TTaskDialog;
+  btn: TMsgDlgBtn;
+  cbtn: TTaskDialogCommonButtons;
+  i: Integer;
+begin
+  Result := mrCancel;
+  RadioIndex := -1;
+  Checked := False;
+  TheDlg := TTaskDialog.Create(nil);
+  try
+    TheDlg.Flags := AFlags;
+    TheDlg.Caption := aCaption;
+    TheDlg.Title := aMsg;
+    TheDlg.Text := aInfo;
+    TheDlg.FooterText := aFooter;
+    TheDlg.ExpandedText:= aDetails;
+    TheDlg.ExpandButtonCaption := aShowDetails;
+    TheDlg.CollapseButtonCaption := aHideDetails;
+
+    TheDlg.MainIcon := DlgIcon;
+    if ACheckBoxText <> '' then
+      TheDlg.VerificationText := ACheckBoxText;
+
+    for i := 0 to Length(ACustomButtons) - 1 do
+      with TheDlg.Buttons.Add do begin
+        ModalResult := 500+i;
+        Default := 500+i = ADefaultButton;
+        Caption := ACustomButtons[i];
+      end;
+
+    if AButtons = AButtons * MBCommonMask then begin
+      cbtn := [];
+      for btn := low(AButtons) to high(AButtons) do
+        if btn in AButtons then
+          cbtn := cbtn + [MB2Common[btn]];
+      TheDlg.CommonButtons := cbtn;
+    end
+    else begin
+      TheDlg.CommonButtons := [];
+      for btn := low(AButtons) to high(AButtons) do
+        if btn in AButtons then
+          begin
+            with TheDlg.Buttons.Add do begin
+              ModalResult := MB2MR[btn];
+              Default := ord(btn) = ADefaultButton;
+              case btn of
+                mbYes:      Caption := rsMbYes;
+                mbNo:       Caption := rsMbNo;
+                mbOK:       Caption := rsMbOk;
+                mbCancel:   Caption := rsMbCancel;
+                mbAbort:    Caption := rsMbAbort;
+                mbRetry:    Caption := rsMbRetry;
+                mbIgnore:   Caption := rsMbIgnore;
+                mbAll:      Caption := rsMbAbort;
+                mbNoToAll:  Caption := rsMbNoToAll;
+                mbYesToAll: Caption := rsMbYesToAll;
+                mbHelp:     Caption := rsMbHelp;
+                mbClose:    Caption := rsMbClose;
+              end;
+            end;
+          end;
+    end;
+
+    for i := 0 to Length(ARadioButtons) - 1 do
+      with TheDlg.RadioButtons.Add do begin
+        ModalResult := i+1;
+        Default := i = ADefaultRadio;
+        Caption := ARadioButtons[i];
+      end;
+
+
+    if not TheDlg.Execute() then
+       exit;
+    Result := TheDlg.ModalResult;
+    if TheDlg.RadioButton <> nil then
+      RadioIndex := TheDlg.RadioButton.ModalResult - 1;
+    Checked := tfVerificationFlagChecked in TheDlg.Flags;
+  finally
+    TheDlg.free
+  end;
+end;
+
 
 //Helper functions
 {
