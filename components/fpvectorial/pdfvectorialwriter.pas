@@ -492,6 +492,9 @@ end;
 // add pdf page to document
 function TvPDFVectorialWriter.AddPage(APage: TvTextPageSequence): TvBoundBox;
 begin
+  if APage = nil then
+    raise Exception.Create('[TvPDFVectorialWriter.AddPage] APage is nil.');
+
   // add new page
   FPage := FDocument.Pages.AddPage;
   FSection.AddPage(FPage);
@@ -846,8 +849,10 @@ begin
   for i := 0 to AData.GetPageCount - 1 do  // iterate through pages
   begin
     TextPage := AData.GetPageAsText(i);
+    {
     if TextPage = nil then
       raise Exception.Create('No text page found.');
+      }
     Empty := AddPage(TextPage);
     for j := 0 to TextPage.GetEntitiesCount - 1 do  // iterate through entities
     begin
