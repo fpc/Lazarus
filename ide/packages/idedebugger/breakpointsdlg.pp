@@ -840,6 +840,7 @@ var
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
   MsgResult: Integer;
+  NotAgain: Boolean;
 begin
   BeginUpdate;
   try
@@ -849,11 +850,11 @@ begin
     Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
 
     if EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints then begin
-      MsgResult:=IDEQuestionDialog(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints2, mtConfirmation,
-                 [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+      MsgResult:=TaskDlg(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints2, '', tdiQuestion,
+                 [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
       if MsgResult = mrNo then
         exit;
-      if MsgResult = mrYesToAll then
+      if NotAgain then
         EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints:= False;
     end;
 
@@ -921,13 +922,14 @@ var
   VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   MsgResult: Integer;
+  NotAgain: Boolean;
 begin
   if EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints then begin
-    MsgResult:=IDEQuestionDialog(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints, mtConfirmation,
-               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    MsgResult:=TaskDlg(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints, '', tdiQuestion,
+               [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
     if MsgResult = mrNo then
       exit;
-    if MsgResult = mrYesToAll then
+    if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints := False;
   end;
 

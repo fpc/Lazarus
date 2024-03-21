@@ -903,13 +903,14 @@ procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
 var
   VNode: PVirtualNode;
   MsgResult: Integer;
+  NotAgain: Boolean;
 begin
   if EnvironmentDebugOpts.ConfirmDeleteAllWatches then begin
-    MsgResult:=IDEQuestionDialog(dlgWatchesDeleteAllConfirm, dlgWatchesDeleteAllConfirm, mtConfirmation,
-               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    MsgResult:=TaskDlg(dlgWatchesDeleteAllConfirm, dlgWatchesDeleteAllConfirm, '', tdiQuestion,
+               [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
     if MsgResult = mrNo then
       exit;
-    if MsgResult = mrYesToAll then
+    if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllWatches := False;
   end;
 

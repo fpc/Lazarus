@@ -38,7 +38,9 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
-msgid "Yes, do not show this message again"
+#, fuzzy
+#| msgid "Yes, do not show this message again"
+msgid "Do not ask again"
 msgstr "Да, больше не показывать это сообщение"
 
 #: idedebuggerstringconstants.dispformatbasebin

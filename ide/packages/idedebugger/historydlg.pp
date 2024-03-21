@@ -120,13 +120,14 @@ end;
 procedure THistoryDialog.tbClearClick(Sender: TObject);
 var
   MsgResult: Integer;
+  NotAgain: Boolean;
 begin
   if EnvironmentDebugOpts.ConfirmDeleteAllHistory then begin
-    MsgResult:=IDEQuestionDialog(dlgHistoryDeleteAllConfirm, dlgHistoryDeleteAllConfirm, mtConfirmation,
-               [mrYes, lisYes, mrNo, lisNo, mrYesToAll, dbgDoNotShowThisMessageAgain], '');
+    MsgResult:=TaskDlg(dlgHistoryDeleteAllConfirm, dlgHistoryDeleteAllConfirm, '', tdiQuestion,
+               [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
     if MsgResult = mrNo then
       exit;
-    if MsgResult = mrYesToAll then
+    if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllHistory := False;
   end;
 

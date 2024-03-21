@@ -497,7 +497,7 @@ resourcestring
   DispFormatOptChangingDescrSome = 'Setting fallback options for all windows.';
   DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried.';
 
-  dbgDoNotShowThisMessageAgain = 'Yes, do not show this message again';
+  dbgDoNotShowThisMessageAgain = 'Do not ask again';
 
 implementation
 
