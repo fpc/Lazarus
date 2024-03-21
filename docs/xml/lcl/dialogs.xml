@@ -9684,9 +9684,10 @@ instance.
 <descr>
 <p>
 <var>TaskDlg</var> is an overloaded function which implements a wrapper used to 
-execute a TTaskDialog with the specified parameter values. The overloaded 
-variants allow different features / behaviors to be enabled when the task 
-dialog is executed. 
+execute a TTaskDialog with the specified parameter values. TaskDlg is a 
+convenience routine that allows a task dialog to be used in a manner similar to 
+the MessageDlg routine. The overloaded variants allow different features / 
+behaviors to be enabled when the task dialog is executed.
 </p>
 <p>
 The parameter values are copied to the corresponding properties in the 
@@ -9700,17 +9701,41 @@ the ModalResult property for the TTaskdialog instance. The default value is
 <var>mrCancel</var>.
 </p>
 <p>
-TaskDlg is a convenience routine that allows a task dialog to be used in a 
-manner similar to the MessageDlg routine.
-</p>
-<p>
-Please note that TaskDlg does not provide access to the progress bar 
-functionality in TTaskDialog. You must use a TTaskDialog instance to configure 
-and enable that feature.
+Use the Flags argument to indicate whether specific features are enabled (or 
+disabled) when the task dialog is executed. See TTaskDialogFlag for the values 
+allows in the Flags argument and their usage.
 </p>
 <p>
 See TTaskDialog for more information about the features and behaviors supported 
 in the dialog type.
+</p>
+<p>
+For example:
+</p>
+<code>
+var
+  IsChecked: boolean;
+  RadioResult: integer;
+begin
+  TaskDlg('I am the caption', 'I am the message', 
+    'Some text as information. Lorem ipsum foo bar.',
+    tdiInformation, [mbOk, mbCancel], ['Custom', 'Button', 'first'], 500,
+    'Checkbox text', IsChecked, ['radio 1', 'radio 2', 'radio default'], 
+    RadioResult, 2 {0-based}, 'Example footer text',
+    { Can be in body or footer }
+    'If there is need for more DETAILS, then the can be added here. ' + 
+    'And can be controlled by tfExpandedByDefault, tfExpandFooterArea', 
+    { These have default text, rarely need to be changed }
+    'Click to see details', 'Click to hide details', 
+    [tfAllowDialogCancellation {, tfExpandedByDefault, tfExpandFooterArea}]
+    );
+end;    
+</code>
+<p>
+Please note that the TaskDlg wrapper does not provide access to all of the 
+features / behaviors available in TTaskDialog. You must use a TTaskDialog 
+instance to configure and enable those features when parameters are not 
+provided in TaskDlg.
 </p>
 </descr>
 <version>
@@ -9734,17 +9759,18 @@ TModalResult value returned when the task dialog is executed. The default value 
 </element>
 <element name="TaskDlg.aCaption">
 <short>
-Text displayed as the caption on the task dialog form.
+Text displayed as the title bar caption on the task dialog form.
 </short>
 </element>
 <element name="TaskDlg.aMsg">
 <short>
+Text displayed as the header-like text in the body of the task dialog.
 </short>
-Text displayed as the title on the task dialog.
 </element>
 <element name="TaskDlg.aInfo">
 <short>
-Text displayed in the main content area on the task dialog.
+Text displayed in the main content area on the task dialog immediately after 
+the header text in aMsg.
 </short>
 </element>
 <element name="TaskDlg.DlgIcon">
@@ -9754,17 +9780,22 @@ Indicates the icon displayed on the task dialog.
 </element>
 <element name="TaskDlg.AButtons">
 <short>
-Set with the common buttons displayed on the task dialog.
+Set with the common buttons displayed on the task dialog. These buttons have a 
+modal result value associated with the button, and can include values like 
+mbOK, mbCancel, mbYes, mbNo, mbRetry, and mbClose.
 </short>
 </element>
 <element name="TaskDlg.aFooter">
 <short>
-Text displayed in the footer area on the task dialog.
+Text displayed as the caption in the footer area on the task dialog.
 </short>
 </element>
 <element name="TaskDlg.aDetails">
 <short>
-Text displayed in the expandable text areas on the task dialog.
+Text displayed in an expandable text area on the task dialog. Include 
+tfExpandedByDefault in Flags to automatically expand the text area in the main 
+body of the task dialog. Include tfExpandFooterArea in Flags to place the 
+detail text in the expandable footer area.
 </short>
 </element>
 <element name="TaskDlg.AFlags">
@@ -9775,7 +9806,8 @@ Set of features or behaviors enabled in task dialog. The default value is
 </element>
 <element name="TaskDlg.ADefaultButton">
 <short>
-Indicates the default button on the task dialog.
+Indicates the default button on the task dialog. Button identifiers start at 
+500 for the task dialog.
 </short>
 </element>
 <element name="TaskDlg.ARadioButtons">
@@ -9793,7 +9825,9 @@ selected on the task dialog during execution.
 <element name="TaskDlg.ADefaultRadio">
 <short>
 Ordinal position for the default radio button selected when the task dialog is 
-executed. The default value is -1 and indicated that no radio button is pre-selected.
+executed. The default value is -1 and indicates that a default radio button has 
+not been specified. The task dialog will default at run-time to the first radio 
+button unless tfNoDefaultRadioButton has been included in Flags.
 </short>
 </element>
 <element name="TaskDlg.ACheckBoxText">
@@ -9810,6 +9844,18 @@ box on the task dialog.
 <element name="TaskDlg.ACustomButtons">
 <short>
 Array of string values with the captions for custom buttons displayed on the task dialog.
+</short>
+</element>
+<element name="TaskDlg.AShowDetails">
+<short>
+Text displayed as the caption for the expand/collapse button when the text area 
+is enabled and collapsed.
+</short>
+</element>
+<element name="TaskDlg.AHideDetails">
+<short>
+Text displayed as the caption for the expand/collapse button when the text area 
+is enabled and expanded.
 </short>
 </element>
 
