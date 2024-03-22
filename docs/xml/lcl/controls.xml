@@ -19192,13 +19192,21 @@ Type used for a callback method, to be called for all children of a control.
 </element>
 
 <element name="TChildControlResizeStyle">
-<short>Defines how child controls are resized / aligned.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TChildControlResizeStyle.crsAnchorAligning">
-<short>Using <link id="TControl.Anchors"/> (Delphi compatible).</short>
+<short>
+Defines how child controls are resized / aligned.
+</short>
 <descr>
+<p>
+<var>TChildControlResizeStyle</var> is the type used for the EnlargeHorizontal, 
+EnlargeVertical, ShrinkHorizontal, and ShrinkVertical properties in 
+TControlChildSizing.
+</p>
+<dl>
+<dt>crsAnchorAligning</dt>
+<dd>
+<p>
+Uses <link id="TControl.Anchors"/> (Delphi compatible).
+</p>
 <p>
 Anchors and Align work like Delphi. For example if Anchors property of the 
 control is [akLeft], it means fixed distance between left border of parent's 
@@ -19223,14 +19231,15 @@ children to Align=alClient does only make sense, if you set maximum
 Constraints.
 </p>
 <p>
-Order: First all alTop children are resized, then alBottom, then alLeft, then 
-alRight and finally alClient.
+Order: First all child controls with alTop alignment are resized, then 
+alBottom, then alLeft, then alRight and finally alClient.
 </p>
-</descr>
-</element>
-<element name="TChildControlResizeStyle.crsScaleChilds">
-<short>Scale children, keep space between children fixed.</short>
-<descr>
+</dd>
+<dt>crsScaleChilds</dt>
+<dd>
+<p>
+Scale children, keep space between children fixed.
+</p>
 <p>
 Scale children, keep space between them fixed. Children are resized to their 
 normal / advised size. If there is some space left in the client area of the 
@@ -19248,11 +19257,12 @@ scaled with 1.5 (A.Width=15, B.Width=30, C.Width=45). Then A and C (15+45=60
 and 30 pixel space left) will be scaled by 1.5 again, to a final result of: 
 A.Width=23, B.Width=30, C.Width=67 (23+30+67=120).
 </p>
-</descr>
-</element>
-<element name="TChildControlResizeStyle.crsHomogenousChildResize">
-<short>Enlarge children equally, i.e. by the same amount of pixels.</short>
-<descr>
+</dd>
+<dt>crsHomogenousChildResize</dt>
+<dd>
+<p>
+Enlarge children equally, i.e. by the same amount of pixels.
+</p>
 <p>
 Enlarge children equally. Children are resized to their normal/advised size. 
 If there is space left in the client area of the parent, the remaining space 
@@ -19268,12 +19278,13 @@ If B has a maximum constraint width of 30, then first 10 is added to all
 children (A.Width=20, B.Width=30, C.Width=40). Then A and C (20+40=60 and 30 
 pixel space left) will get 30/2=15 additional, resulting in: A.Width=35, 
 B.Width=30, C.Width=55 (35+30+55=120).
+</p>  
+</dd>
+<dt>crsHomogenousSpaceResize</dt>
+<dd>
+<p>
+Enlarge space between children equally.
 </p>
-</descr>
-</element>
-<element name="TChildControlResizeStyle.crsHomogenousSpaceResize">
-<short>Enlarge space between children equally.</short>
-<descr>
 <p>
 Enlarge space between children equally. Children are resized to their 
 normal/advised size. If there is some space left in the client area of the 
@@ -19284,20 +19295,52 @@ For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
 C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, 
 then there will be 60/2=30 space between A and B and between B and C.
 </p>
-</descr>
-</element>
-<element name="TChildControlResizeStyle.crsSameSize">
-<short>Each child gets the same size (maybe one pixel difference).</short>
-<descr>
-<remark>
-Not implemented in the current LCL version.
-</remark>
+</dd>
+<dt>crsSameSize</dt>
+<dd>
+<p>
+Each child gets the same size (maybe one pixel difference).
+</p>
 <p>
 Set each child to the same size (maybe one pixel difference). The client area 
 is divided by the number of controls and each control gets the same size. The 
 remainder is distributed to the first children.
 </p>
+</dd>
+</dl>
 </descr>
+<seealso>
+<link id="TControlChildSizing.EnlargeHorizontal"/>
+<link id="TControlChildSizing.EnlargeVertical"/>
+<link id="TControlChildSizing.ShrinkHorizontal"/>
+<link id="TControlChildSizing.ShrinkVertical"/>
+<link id="TWinControl.ChildSizing"/>
+</seealso>
+</element>
+<element name="TChildControlResizeStyle.crsAnchorAligning">
+<short>
+Uses TControl.Anchors (Delphi compatible).
+</short>
+</element>
+<element name="TChildControlResizeStyle.crsScaleChilds">
+<short>
+Scale children keeping fixed space between children.
+</short>
+</element>
+<element name="TChildControlResizeStyle.crsHomogenousChildResize">
+<short>
+Enlarge children equally, i.e. by the same number of pixels.
+</short>
+</element>
+<element name="TChildControlResizeStyle.crsHomogenousSpaceResize">
+<short>
+Enlarge space between children equally.
+</short>
+</element>
+<element name="TChildControlResizeStyle.crsSameSize">
+<short>
+Each child gets the same size (maybe one pixel difference).
+</short>
 </element>
 
 <element name="TControlChildrenLayout">
