@@ -951,7 +951,7 @@ function TSynPluginSyncroEdit.GetContextAt(APos: TPoint): String;
 var
   Ctx: Integer;
 begin
-  TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(APos, Ctx, FLastContextLine = APos.Y);
+  TCustomSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(APos, Ctx, FLastContextLine = APos.Y);
   FLastContextLine := APos.Y;
   SetLength(Result, SizeOf(Integer));
   PInteger(@Result[1])^ := Ctx;
