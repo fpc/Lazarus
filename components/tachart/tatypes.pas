@@ -500,7 +500,7 @@ begin
   if not ABrushAlreadySet then begin
     ADrawer.Brush := Brush;
     if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
-      ADrawer.BrushColor := AColor;
+      ADrawer.SetBrushParams(Brush.Style, AColor);
   end;
 
   ADrawer.Pen := Pen;
