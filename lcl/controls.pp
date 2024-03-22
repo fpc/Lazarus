@@ -1939,10 +1939,8 @@ type
       crsAnchorAligning, // (like Delphi)
       crsScaleChilds, // scale children equally, keep space between children fixed
       crsHomogenousChildResize, // enlarge children equally (i.e. by the same amount of pixel)
-      crsHomogenousSpaceResize // enlarge space between children equally
-      {$IFDEF EnablecrsSameSize}
-      ,crsSameSize  // each child gets the same size (maybe one pixel difference)
-      {$ENDIF}
+      crsHomogenousSpaceResize, // enlarge space between children equally
+      crsSameSize  // each child gets the same size (maybe one pixel difference)
     );
 
   TControlChildrenLayout = (

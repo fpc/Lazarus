@@ -1792,7 +1792,7 @@ var
   end;
   
   procedure GetChildMaxResize(out Factor: TResizeFactor;
-    out ResizeableCount: integer);
+    out ResizeableCount, ResizableSize: integer);
   // returns the number of children/gaps, that can grow (ResizeableCount)
   // and the maximum factor, by which the children/gaps can grow (TResizeFactor)
   var
@@ -1804,6 +1804,7 @@ var
     Factor.Scale:=0;
     Factor.Offset:=0;
     ResizeableCount:=0;
+    ResizableSize:=TargetSize;
     case EnlargeStyle of
     
     crsAnchorAligning:
@@ -1842,6 +1843,30 @@ var
 
         end;
       end;
+
+    crsSameSize:
+      begin
+        Factor.Offset:=1; // prevent abort
+        if ChildCount[Orientation] > 0 then
+          CurOffset := TargetSize div ChildCount[Orientation];
+        for i:=0 to ChildCount[Orientation]-1 do begin
+          Child:=Children[Orientation][i];
+          if (Child.MaximumSize[Orientation]>0)
+          and (CurOffset>=Child.MaximumSize[Orientation])
+          then begin
+            // this childs size will be set to its MaximumSize
+            ResizableSize:=ResizableSize - Child.MaximumSize[Orientation];
+            continue;
+          end;
+          if (CurOffset<=Child.MinimumSize[Orientation])
+          then begin
+            // this childs size will be set to its MinimumSize
+            ResizableSize:=ResizableSize - Child.MinimumSize[Orientation];
+            continue;
+          end;
+          inc(ResizeableCount);
+        end;
+      end;
       
     crsHomogenousSpaceResize:
       if ChildCount[Orientation]>0 then begin
@@ -1856,7 +1881,7 @@ var
     end;
   end;
   
-  procedure EnlargeChilds(const Factor: TResizeFactor);
+  procedure EnlargeChilds(const Factor: TResizeFactor; ResizeableCount, ResizableSize: integer);
   var
     i: Integer;
     Child: TAutoSizeBox;
@@ -1865,10 +1890,11 @@ var
     OldSize: LongInt;
   begin
     for i:=0 to ChildCount[Orientation]-1 do begin
-      if TargetSize=CurSize then break;
+      if (TargetSize=CurSize) and (EnlargeStyle<>crsSameSize) then break;
     
       Child:=Children[Orientation][i];
-      if (Child.MaximumSize[Orientation]<0)
+      if (EnlargeStyle<>crsSameSize)
+      and (Child.MaximumSize[Orientation]<0)
       and (Child.PreferredSize[Orientation]>=Child.MaximumSize[Orientation])
       then begin
         // this child can not be further enlarged
@@ -1917,13 +1943,35 @@ var
           if i<ChildCount[Orientation]-1 then
             Child.BorderLeftTop[Orientation]:=NewSize;
         end;
+
+        crsSameSize:
+          begin
+          OldSize:=Child.PreferredSize[Orientation];
+          if ResizeableCount <= 1 then
+            NewSize:=Max(1,OldSize+TargetSize-CurSize)
+          else
+            NewSize:=Max(1,round(double(ResizableSize)/ResizeableCount));
+          if (Child.MaximumSize[Orientation] > 0) and (NewSize >= Child.MaximumSize[Orientation]) then begin
+            NewSize := Child.MaximumSize[Orientation];
+          end
+          else
+          if (NewSize <= Child.MinimumSize[Orientation]) then begin
+            NewSize := Child.MinimumSize[Orientation];
+          end
+          else begin
+            dec(ResizableSize,NewSize);
+            dec(ResizeableCount);
+          end;
+          inc(CurSize,NewSize-OldSize);
+          Child.PreferredSize[Orientation]:=NewSize;
+          end;
       
       end;
     end;
   end;
 
   procedure GetChildMinResize(out Factor: TResizeFactor;
-    out ResizeableCount: integer);
+    out ResizeableCount, ResizableSize: integer);
   // returns the number of children/gaps, that can shrink (ResizeableCount)
   // and the maximum factor, by which the children/gaps can shrink (TResizeFactor)
   var
@@ -1935,6 +1983,7 @@ var
     Factor.Scale:=0;
     Factor.Offset:=0;
     ResizeableCount:=0;
+    ResizableSize:=TargetSize;
     case ShrinkStyle of
 
     crsAnchorAligning:
@@ -1980,6 +2029,30 @@ var
         end;
       end;
 
+    crsSameSize:
+      begin
+        Factor.Offset:=1; // prevent abort
+        if ChildCount[Orientation] > 0 then
+          CurOffset := TargetSize div ChildCount[Orientation];
+        for i:=0 to ChildCount[Orientation]-1 do begin
+          Child:=Children[Orientation][i];
+          if (Child.MaximumSize[Orientation]>0)
+          and (CurOffset>=Child.MaximumSize[Orientation])
+          then begin
+            // this childs size will be set to its MaximumSize
+            ResizableSize:=ResizableSize - Child.MaximumSize[Orientation];
+            continue;
+          end;
+          if (CurOffset<=Child.MinimumSize[Orientation])
+          then begin
+            // this childs size will be set to its MinimumSize
+            ResizableSize:=ResizableSize - Child.MinimumSize[Orientation];
+            continue;
+          end;
+          inc(ResizeableCount);
+        end;
+      end;
+
     crsHomogenousSpaceResize:
       for i:=0 to ChildCount[Orientation]-1 do begin
         Child:=Children[Orientation][i];
@@ -2011,7 +2084,7 @@ var
     end;
   end;
 
-  procedure ShrinkChilds(const Factor: TResizeFactor);
+  procedure ShrinkChilds(const Factor: TResizeFactor; ResizeableCount, ResizableSize: integer);
   var
     i: Integer;
     Child: TAutoSizeBox;
@@ -2021,8 +2094,9 @@ var
   begin
     for i:=0 to ChildCount[Orientation]-1 do begin
       Child:=Children[Orientation][i];
-      if (Child.PreferredSize[Orientation]<=1)
-      or (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
+      if (ShrinkStyle<>crsSameSize)
+      and ( (Child.PreferredSize[Orientation]<=1)
+            or (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation]) )
       then begin
         // this child can not be further shrinked
         continue;
@@ -2072,13 +2146,35 @@ var
             Child.BorderLeftTop[Orientation]:=NewSize;
         end;
 
+        crsSameSize:
+          begin
+          OldSize:=Child.PreferredSize[Orientation];
+          if ResizeableCount <= 1 then
+            NewSize:=Max(1,OldSize+TargetSize-CurSize)
+          else
+            NewSize:=Max(1,round(double(ResizableSize)/ResizeableCount));
+          if (Child.MaximumSize[Orientation] > 0) and (NewSize >= Child.MaximumSize[Orientation]) then begin
+            NewSize := Child.MaximumSize[Orientation];
+          end
+          else
+          if (NewSize <= Child.MinimumSize[Orientation]) then begin
+            NewSize := Child.MinimumSize[Orientation];
+          end
+          else begin
+            dec(ResizableSize,NewSize);
+            dec(ResizeableCount);
+          end;
+          dec(CurSize,OldSize-NewSize);
+          Child.PreferredSize[Orientation]:=NewSize;
+          end;
+
       end;
     end;
   end;
 
 var
   MaxResizeFactorPerItem, MinResizeFactorPerItem, CurScale: TResizeFactor;
-  ResizeableCount: integer;
+  ResizeableCount, ResizableSize: integer;
   i: Integer;
 begin
   CurSize:=GetChildTotalSize;
@@ -2094,21 +2190,21 @@ begin
       EnlargeStyle:=ChildSizing.EnlargeVertical;
     while TargetSize>CurSize do begin
       // shrink children
-      GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount);
+      GetChildMaxResize(MaxResizeFactorPerItem,ResizeableCount, ResizableSize);
       if (ResizeableCount=0) or (MaxResizeFactorPerItem.Offset=0) then break;
-      
+
       CurScale.Scale:=(double(TargetSize)/CurSize);
       if (MaxResizeFactorPerItem.Scale>0)
       and (MaxResizeFactorPerItem.Scale<CurScale.Scale) then
         CurScale.Scale:=MaxResizeFactorPerItem.Scale;
-        
+
       CurScale.Offset:=((TargetSize-CurSize-1) div ResizeableCount)+1;
       // note: the above formula makes sure, that Offset>0
       if (MaxResizeFactorPerItem.Offset>0)
       and (MaxResizeFactorPerItem.Offset<CurScale.Offset) then
         CurScale.Offset:=MaxResizeFactorPerItem.Offset;
-      
-      EnlargeChilds(CurScale);
+
+      EnlargeChilds(CurScale, ResizeableCount, ResizableSize);
       inc(i);
       if i>1000 then RaiseGDBException('TAutoSizeBox.ResizeChilds consistency error');
     end;
@@ -2119,7 +2215,7 @@ begin
     else
       ShrinkStyle:=ChildSizing.ShrinkVertical;
     while TargetSize<CurSize do begin
-      GetChildMinResize(MinResizeFactorPerItem,ResizeableCount);
+      GetChildMinResize(MinResizeFactorPerItem,ResizeableCount, ResizableSize);
       if (ResizeableCount=0) or (MinResizeFactorPerItem.Offset=0) then break;
 
       CurScale.Scale:=(double(TargetSize)/CurSize);
@@ -2133,7 +2229,7 @@ begin
       and (MinResizeFactorPerItem.Offset>CurScale.Offset) then
         CurScale.Offset:=MinResizeFactorPerItem.Offset;
 
-      ShrinkChilds(CurScale);
+      ShrinkChilds(CurScale, ResizeableCount, ResizableSize);
       inc(i);
       if i>1000 then RaiseGDBException('TAutoSizeBox.ResizeChilds consistency error');
     end;
@@ -2231,7 +2327,7 @@ begin
       end else if (NewWidth>ColBox.PreferredSize[asboHorizontal]) then begin
         // column is smaller than preferred width of the control
         if ChildSizing.ShrinkHorizontal
-        in [crsScaleChilds,crsHomogenousChildResize]
+        in [crsScaleChilds,crsHomogenousChildResize,crsSameSize]
         then
           NewWidth:=CellBounds.Right-CellBounds.Left;
       end;
@@ -2247,7 +2343,7 @@ begin
       end else if (NewHeight>ColBox.PreferredSize[asboVertical]) then begin
         // column is smaller than preferred height of the control
         if ChildSizing.ShrinkVertical
-        in [crsScaleChilds,crsHomogenousChildResize]
+        in [crsScaleChilds,crsHomogenousChildResize,crsSameSize]
         then
           NewHeight:=CellBounds.Bottom-CellBounds.Top;
       end;
