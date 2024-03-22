@@ -42,6 +42,7 @@ type
     procedure cbLocalPkgChange(Sender: TObject);
     procedure cbOnlinePkgChange(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
+    procedure DependPkgNameListBoxDblClick(Sender: TObject);
     procedure DependPkgNameListBoxDrawItem(Control: TWinControl;
       Index: Integer; ARect: TRect; State: TOwnerDrawState);
     procedure DependPkgNameListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
@@ -260,6 +261,11 @@ begin
     else
       UpdateAvailableDependencyNames;
   end;
+end;
+
+procedure TAddPkgDependencyDialog.DependPkgNameListBoxDblClick(Sender: TObject);
+begin
+  OKButtonClick(Self);
 end;
 
 procedure TAddPkgDependencyDialog.AddUniquePackagesToList(APackageID: TLazPackageID);

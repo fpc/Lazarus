@@ -63,6 +63,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     ItemHeight = 0
     MultiSelect = True
     OnDrawItem = DependPkgNameListBoxDrawItem
+    OnDblClick = DependPkgNameListBoxDblClick
     OnSelectionChange = DependPkgNameListBoxSelectionChange
     Options = []
     Style = lbOwnerDrawFixed
