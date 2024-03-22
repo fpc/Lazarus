@@ -1257,8 +1257,8 @@ type
     property FixedGridLineColor: TColor read FFixedGridLineColor write SetFixedGridLineColor default cl3DDKShadow;
     property FixedHotColor: TColor read FFixedHotColor write FFixedHotColor default cl3DLight;
     property Flat: Boolean read FFlat write SetFlat default false;
-    property FocusColor: TColor read FFocusColor write SetFocusColor;
-    property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
+    property FocusColor: TColor read FFocusColor write SetFocusColor default clRed;
+    property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible default true;
     property GCache: TGridDataCache read FGCAChe;
     property GridFlags: TGridFlags read FGridFlags write FGridFlags;
     property GridHeight: Integer read FGCache.GridHeight;
