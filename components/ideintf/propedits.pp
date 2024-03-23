@@ -4394,10 +4394,10 @@ var
 begin
   // do some checks
   if (Index<0) then
-    raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index));
+    raise Exception.Create('TListPropertyEditor.GetElement Index='+IntToStr(Index));
   ElementCount:=GetElementCount;
   if Index>=ElementCount then
-    raise Exception('TListPropertyEditor.GetElement Index='+IntToStr(Index)
+    raise Exception.Create('TListPropertyEditor.GetElement Index='+IntToStr(Index)
       +' Count='+IntToStr(ElementCount));
   // get element
   if not IsSaving then

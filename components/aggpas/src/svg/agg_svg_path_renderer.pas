@@ -461,7 +461,7 @@ var
 
 begin
  if m_attr_storage.size = 0 then
-  raise svg_exception(PChar('end_path : The path was not begun' ) );
+  raise svg_exception.Construct(PChar('end_path : The path was not begun' ) );
 
  attr.Construct(cur_attr );
 
@@ -636,7 +636,7 @@ end;
 procedure path_renderer.pop_attr;
 begin
  if m_attr_stack.size = 0 then
-  raise svg_exception(PChar('pop_attr : Attribute stack is empty' ) );
+  raise svg_exception.Construct(PChar('pop_attr : Attribute stack is empty' ) );
 
  m_attr_stack.remove_last;
 
