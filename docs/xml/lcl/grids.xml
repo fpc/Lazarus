@@ -17772,7 +17772,7 @@ The color used to draw the focus rectangle when a cell has focus.
 <var>FocusColor</var> is a <var>TColor</var> property with the color used to 
 draw the focus rectangle (or rubber band) for the focused cell in the grid 
 control. The default value for the property is clRed. Changing the value for 
-the property causes the current in Col and Row to be redrawn.
+the property causes the current cell at Col and Row to be redrawn.
 </p>
 <p>
 FocusColor is used in the DrawFocusRect method when DefaultDrawing is enabled 
@@ -17780,7 +17780,10 @@ for the grid control. But it is not used when UseXORFeatures is enabled;
 clWhite is used as the pixel color instead.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.DrawFocusRect"/>
+<link id="TCustomGrid.UseXORFeatures"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.FocusRectVisible">
@@ -17790,8 +17793,7 @@ clWhite is used as the pixel color instead.
 <var>FocusRectVisible</var> is a <var>Boolean</var> property which indicates 
 if the focus rectangle (or rubber band) is drawn for the focused cell, extent, 
 or row in the grid control. Changing the value for the property causes the 
-grid control to be redrawn. The default value for the property is <b>True</b> 
-as assigned in the Create constructor.
+grid control to be redrawn. The default value for the property is <b>True</b>.
 </p>
 <p>
 FocusRectVisible is used in the DrawRow method when the current cell or 
@@ -17802,7 +17804,9 @@ for the grid, the focus rectangle is drawn for the entire row.
 Set FocusRectVisible to <b>False</b> to disable the feature in the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.DrawRow"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.GCache">
