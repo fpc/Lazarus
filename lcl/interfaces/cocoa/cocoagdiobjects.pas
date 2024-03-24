@@ -1801,7 +1801,6 @@ var
   RunCount: Integer;
   Glyphs: array of CGGlyph;
   RunFont: CTFontRef;
-  transform: NSAffineTransform;
   Dict: NSMutableDictionary;
   YPrime, StrikeH, StrikeW: CGFloat;
   lForegroundColor: NSColor;
@@ -1866,14 +1865,9 @@ begin
           ctx.setShouldAntialias(Font.Antialiased);
           if FFont.RotationDeg <> 0 then
           begin
-            transform := NSAffineTransform.transform;
-            transform.translateXBy_yBy(X, Y);
-            if ctx.isFlipped then
-              transform.rotateByDegrees( FFont.RotationDeg )
-            else
-              transform.rotateByDegrees( -FFont.RotationDeg );
-            transform.translateXBy_yBy(-X, -Y);
-            transform.concat;
+            CGContextTranslateCTM(cg, X, Y);
+            CGContextRotateCTM(cg, -FFont.RotationDeg*Pi/180);
+            CGContextTranslateCTM(cg, -X, -Y);
           end;
 
           CGContextTranslateCTM(cg, 0, FSize.Height);
