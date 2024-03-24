@@ -2286,7 +2286,7 @@ begin
         then
           NewWidth:=CellBounds.Right-CellBounds.Left;
       end;
-      if (NewHeight<ColBox.PreferredSize[asboVertical]) then begin
+      if (NewHeight<RowBox.PreferredSize[asboVertical]) then begin
         // column is bigger than preferred height of the control
         case CurControl.BorderSpacing.CellAlignVertical of
         ccaFill:        NewHeight:=CellBounds.Bottom-CellBounds.Top;
@@ -2295,7 +2295,7 @@ begin
         ccaCenter:      NewBounds.Top:=NewBounds.Top
                             +(CellBounds.Bottom-CellBounds.Top-NewHeight) div 2;
         end;
-      end else if (NewHeight>ColBox.PreferredSize[asboVertical]) then begin
+      end else if (NewHeight>RowBox.PreferredSize[asboVertical]) then begin
         // column is smaller than preferred height of the control
         if ChildSizing.ShrinkVertical
         in [crsScaleChilds,crsHomogenousChildResize,crsSameSize]
