@@ -1,6 +1,7 @@
 unit IdeDebuggerWatchResPrinter;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -10,16 +11,31 @@ uses
 
 type
 
+  { TResolvedDisplayFormatNum }
+
+  TResolvedDisplayFormatNum = record
+    UseInherited:          boolean;
+    Visible:               boolean;
+    BaseFormat:            TValueDisplayFormatBase;
+    SignFormat:            TValueDisplayFormatSign;
+    MinDigits:             Integer;
+    SeparatorDec:          boolean;
+    SeparatorHexBin:       TValueDisplayFormatHexSeperator;
+    class operator = (a,b: TResolvedDisplayFormatNum): boolean;
+    class operator := (a: TWatchDisplayFormatNum): TResolvedDisplayFormatNum;
+    class operator := (a: TWatchDisplayFormatNum2): TResolvedDisplayFormatNum;
+  end;
+
   TResolvedDisplayFormat = record
-    NumBaseFormat:           TValueDisplayFormatBase;
-    NumSignFormat:           TValueDisplayFormatSign;
-    NumCharFormat:           TValueDisplayFormatNumChar;
-    EnumFormat:              TValueDisplayFormatEnum; // Also bool,char
-    FloatFormat:             TValueDisplayFormatFloat;
-    StructFormat:            TValueDisplayFormatStruct;
-    StructAddrFormat:        TValueDisplayFormatStructAddr;
-    PointerFormat:           TValueDisplayFormatPointer;
-    PointerDerefFormat:      TValueDisplayFormatPointerDeref;
+    Num1:    TResolvedDisplayFormatNum;
+    Num2:    TResolvedDisplayFormatNum; // Enum, Addr, ... // using "visible"
+    Enum:    TWatchDisplayFormatEnum;
+    Bool:    TWatchDisplayFormatBool;
+    Char:    TWatchDisplayFormatChar;
+    Float:   TWatchDisplayFormatFloat;
+    Struct:  TWatchDisplayFormatStruct;  // Ignore Addr part
+    Pointer: TWatchDisplayFormatPointer; // Ignore Addr part
+    Address:               TWatchDisplayFormatAddr;
   end;
 
   { TDisplayFormatResolver }
@@ -27,10 +43,6 @@ type
   TDisplayFormatResolver = class
   private
     FFallBackFormats: TWatchDisplayFormatList;
-    function DoResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
-      const AResValue: TWatchResultData
-    ): TResolvedDisplayFormat; inline;
-    function ResolveDefaults(var AResolved: TResolvedDisplayFormat; const ADefaults: TResolvedDisplayFormat): Boolean; inline;
   public
     constructor Create;
     destructor Destroy; override;
@@ -38,6 +50,7 @@ type
       const AResValue: TWatchResultData
     ): TResolvedDisplayFormat;
     // Resolving from FallBackFormats[n] to FallBackFormats[0]
+    // [0] must be the IDE global format, and will be used regardless of UseInherited
     property FallBackFormats: TWatchDisplayFormatList read FFallBackFormats;
   end;
 
@@ -61,7 +74,8 @@ type
   protected
     function PrintNumber(AUnsignedValue: QWord; ASignedValue: Int64;
                          AByteSize: Integer;
-                         const AResolvedFormat: TResolvedDisplayFormat
+                         const ANumFormat: TResolvedDisplayFormatNum;
+                         PrintNil: Boolean = False
                         ): String;
     function PrintArray(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
     function PrintStruct(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
@@ -82,10 +96,10 @@ type
 
 const
   {$WRITEABLECONST OFF}
-  FormatBoolToEnum: array [TValueDisplayFormatBool] of TValueDisplayFormatEnum = (vdfEnumDefault, vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd);
-  FormatCharToEnum: array [TValueDisplayFormatChar] of TValueDisplayFormatEnum = (vdfEnumDefault, vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd);
-  FormatEnumToBool: array [TValueDisplayFormatEnum] of TValueDisplayFormatBool = (vdfBoolDefault, vdfBoolName, vdfBoolOrd, vdfBoolNameAndOrd);
-  FormatEnumToChar: array [TValueDisplayFormatEnum] of TValueDisplayFormatChar = (vdfCharDefault, vdfCharLetter, vdfCharOrd, vdfCharLetterAndOrd);
+  FormatBoolToEnum: array [TValueDisplayFormatBool] of TValueDisplayFormatEnum = (vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd);
+  FormatCharToEnum: array [TValueDisplayFormatChar] of TValueDisplayFormatEnum = (vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd);
+  FormatEnumToBool: array [TValueDisplayFormatEnum] of TValueDisplayFormatBool = (vdfBoolName, vdfBoolOrd, vdfBoolNameAndOrd);
+  FormatEnumToChar: array [TValueDisplayFormatEnum] of TValueDisplayFormatChar = (vdfCharLetter, vdfCharOrd, vdfCharLetterAndOrd);
 
 
 implementation
@@ -93,61 +107,24 @@ implementation
 const
   {$WRITEABLECONST OFF}
   (* NO vdf...default in the below *)
-  SignedNumDefaults: TResolvedDisplayFormat = (
-    NumBaseFormat:      vdfBaseDecimal;
-    NumSignFormat:      vdfSignDefault;       // EXCEPTION: final format depends on NumBaseFormat (which may have been explicitly set)
-    NumCharFormat:      vdfNumCharOff;
-    EnumFormat:         vdfEnumName; // Also bool,char
-    FloatFormat:        vdfFloatPoint;
-    StructFormat:       vdfStructFields;
-    StructAddrFormat:   vdfStructAddressOff;
-    PointerFormat:      vdfPointerAddress;
-    PointerDerefFormat: vdfPointerDerefOn;
-  );
-  UnsignedNumDefaults: TResolvedDisplayFormat = (
-    NumBaseFormat:      vdfBaseDecimal;
-    NumSignFormat:      vdfSignUnsigned;
-    NumCharFormat:      vdfNumCharOff;
-    EnumFormat:         vdfEnumName; // Also bool,char
-    FloatFormat:        vdfFloatPoint;
-    StructFormat:       vdfStructFields;
-    StructAddrFormat:   vdfStructAddressOff;
-    PointerFormat:      vdfPointerAddress;
-    PointerDerefFormat: vdfPointerDerefOn;
-  );
-  HexPointerDefaults: TResolvedDisplayFormat = (
-    NumBaseFormat:      vdfBasePointer;  // display 0 as nil
-    NumSignFormat:      vdfSignUnsigned;
-    NumCharFormat:      vdfNumCharOff;
-    EnumFormat:         vdfEnumName; // Also bool,char
-    FloatFormat:        vdfFloatPoint;
-    StructFormat:       vdfStructFields;
-    StructAddrFormat:   vdfStructAddressOff;
-    PointerFormat:      vdfPointerAddress;
-    PointerDerefFormat: vdfPointerDerefOn;
-  );
-  BoolAndNumNumDefaults: TResolvedDisplayFormat = (
-    NumBaseFormat:      vdfBaseDecimal;
-    NumSignFormat:      vdfSignUnsigned;
-    NumCharFormat:      vdfNumCharOff;
-    EnumFormat:         vdfEnumNameAndOrd; // For bools with value not in 0,1
-    FloatFormat:        vdfFloatPoint;
-    StructFormat:       vdfStructFields;
-    StructAddrFormat:   vdfStructAddressOff;
-    PointerFormat:      vdfPointerAddress;
-    PointerDerefFormat: vdfPointerDerefOn;
-  );
-  EnumValDefaults: TResolvedDisplayFormat = (
-    NumBaseFormat:      vdfBaseDecimal;
-    NumSignFormat:      vdfSignUnsigned;
-    NumCharFormat:      vdfNumCharOff;
-    EnumFormat:         vdfEnumNameAndOrd;
-    FloatFormat:        vdfFloatPoint;
-    StructFormat:       vdfStructFields;
-    StructAddrFormat:   vdfStructAddressOff;
-    PointerFormat:      vdfPointerAddress;
-    PointerDerefFormat: vdfPointerDerefOn;
-  );
+    DefaultEnumNum: TResolvedDisplayFormatNum = (
+      UseInherited:         False;
+      Visible:              False;
+      BaseFormat:           vdfBaseDecimal;
+      SignFormat:           vdfSignSigned;
+      MinDigits:            0;
+      SeparatorDec:         False;
+      SeparatorHexBin:      vdfhsNone;
+    );
+    DefaultAddrNum: TResolvedDisplayFormatNum = (
+      UseInherited:         False;
+      Visible:              False;
+      BaseFormat:           vdfBaseHex;
+      SignFormat:           vdfSignUnsigned;
+      MinDigits:            0;
+      SeparatorDec:         False;
+      SeparatorHexBin:      vdfhsNone;
+    );
 
 function Dec64ToNumb(N: QWord; Len, Base: Byte): string; overload;
 var
@@ -179,95 +156,47 @@ begin
   Result := Dec64ToNumb(QWord(N), Len, Base);
 end;
 
+{ TResolvedDisplayFormatNum }
+
+class operator TResolvedDisplayFormatNum. = (a, b: TResolvedDisplayFormatNum): boolean;
+begin
+  Result :=
+    (a.UseInherited       = b.UseInherited) and
+    (a.Visible            = b.Visible) and
+    (a.BaseFormat         = b.BaseFormat) and
+    (a.SignFormat         = b.SignFormat) and
+    (a.MinDigits          = b.MinDigits) and
+    (a.SeparatorDec       = b.SeparatorDec) and
+    (a.SeparatorHexBin    = b.SeparatorHexBin)
+  ;
+end;
+
+class operator TResolvedDisplayFormatNum. := (a: TWatchDisplayFormatNum
+  ): TResolvedDisplayFormatNum;
+begin
+  Result.UseInherited       := a.UseInherited;
+  Result.Visible            := False;
+  Result.BaseFormat         := a.BaseFormat;
+  Result.SignFormat         := a.SignFormat;
+  Result.MinDigits          := a.MinDigits[a.BaseFormat];
+  Result.SeparatorDec       := a.SeparatorDec;
+  Result.SeparatorHexBin    := a.SeparatorHexBin;
+end;
+
+class operator TResolvedDisplayFormatNum. := (a: TWatchDisplayFormatNum2
+  ): TResolvedDisplayFormatNum;
+begin
+  Result.UseInherited       := a.UseInherited;
+  Result.Visible            := a.Visible;
+  Result.BaseFormat         := a.BaseFormat;
+  Result.SignFormat         := a.SignFormat;
+  Result.MinDigits          := a.MinDigits[a.BaseFormat];
+  Result.SeparatorDec       := a.SeparatorDec;
+  Result.SeparatorHexBin    := a.SeparatorHexBin;
+end;
+
 
 { TDisplayFormatResolver }
-
-function TDisplayFormatResolver.DoResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
-  const AResValue: TWatchResultData): TResolvedDisplayFormat;
-begin
-  Result.NumBaseFormat         := ADispFormat.NumBaseFormat;
-  Result.NumSignFormat         := ADispFormat.NumSignFormat;
-  Result.NumCharFormat      := vdfNumCharOff;  // Must be off for all non-num, so PrintNumber does not add chars to random types
-  Result.EnumFormat         := ADispFormat.EnumFormat;
-  Result.FloatFormat        := ADispFormat.FloatFormat;
-  Result.StructFormat       := ADispFormat.StructFormat;
-  Result.StructAddrFormat   := ADispFormat.StructAddrFormat;
-  Result.PointerFormat      := ADispFormat.PointerFormat;
-  Result.PointerDerefFormat := ADispFormat.PointerDerefFormat;
-
-  case AResValue.ValueKind of
-    rdkSignedNumVal, rdkUnsignedNumVal:
-      Result.NumCharFormat := ADispFormat.NumCharFormat;
-    rdkEnum, rdkEnumVal, rdkSet: begin
-      Result.NumBaseFormat := ADispFormat.EnumBaseFormat;
-      Result.NumSignFormat := ADispFormat.EnumSignFormat;
-    end;
-    rdkBool: begin
-      Result.EnumFormat := FormatBoolToEnum[ADispFormat.BoolFormat];
-      Result.NumBaseFormat := ADispFormat.BoolBaseFormat;
-      Result.NumSignFormat := ADispFormat.BoolSignFormat;
-    end;
-    rdkChar: begin
-      Result.EnumFormat := FormatCharToEnum[ADispFormat.CharFormat];
-      Result.NumBaseFormat := ADispFormat.CharBaseFormat;
-      Result.NumSignFormat := ADispFormat.CharSignFormat;
-    end;
-
-    rdkStruct: begin
-      Result.NumBaseFormat := ADispFormat.StructPointerBaseFormat;
-      Result.NumSignFormat := ADispFormat.StructPointerSignFormat;
-      Result.PointerFormat := ADispFormat.StructPointerFormat;
-    end;
-
-    rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef,
-    rdkPointerVal: begin
-      Result.NumBaseFormat := ADispFormat.PointerBaseFormat;
-      Result.NumSignFormat := ADispFormat.PointerSignFormat;
-    end;
-  end;
-end;
-
-function TDisplayFormatResolver.ResolveDefaults(var AResolved: TResolvedDisplayFormat;
-  const ADefaults: TResolvedDisplayFormat): Boolean;
-begin
-  Result := True; // no defaults left
-  if AResolved.NumBaseFormat      = vdfBaseDefault          then begin
-    AResolved.NumBaseFormat      := ADefaults.NumBaseFormat;
-    Result := False;
-  end;
-  if AResolved.NumSignFormat      = vdfSignDefault          then begin
-    AResolved.NumSignFormat      := ADefaults.NumSignFormat;
-    Result := False;
-  end;
-  if AResolved.NumCharFormat      = vdfNumCharDefault       then begin
-    AResolved.NumCharFormat      := ADefaults.NumCharFormat;
-    Result := False;
-  end;
-  if AResolved.EnumFormat         = vdfEnumDefault          then begin
-    AResolved.EnumFormat         := ADefaults.EnumFormat;
-    Result := False;
-  end;
-  if AResolved.FloatFormat        = vdfFloatDefault         then begin
-    AResolved.FloatFormat        := ADefaults.FloatFormat;
-    Result := False;
-  end;
-  if AResolved.StructFormat       = vdfStructDefault        then begin
-    AResolved.StructFormat       := ADefaults.StructFormat;
-    Result := False;
-  end;
-  if AResolved.StructAddrFormat   = vdfStructAddressDefault then begin
-    AResolved.StructAddrFormat   := ADefaults.StructAddrFormat;
-    Result := False;
-  end;
-  if AResolved.PointerFormat      = vdfPointerDefault       then begin
-    AResolved.PointerFormat      := ADefaults.PointerFormat;
-    Result := False;
-  end;
-  if AResolved.PointerDerefFormat = vdfPointerDerefDefault  then begin
-    AResolved.PointerDerefFormat := ADefaults.PointerDerefFormat;
-    Result := False;
-  end;
-end;
 
 constructor TDisplayFormatResolver.Create;
 begin
@@ -283,109 +212,305 @@ end;
 
 function TDisplayFormatResolver.ResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
   const AResValue: TWatchResultData): TResolvedDisplayFormat;
+
+  procedure ResolveSign(var ASign: TValueDisplayFormatSign; ABase: TValueDisplayFormatBase);
+  begin
+    if ASign = vdfSignAuto then begin
+      if ABase = vdfBaseDecimal then
+        ASign := vdfSignSigned
+      else
+        ASign := vdfSignUnsigned;
+    end;
+  end;
+  procedure ResolveSign(var ASign: TValueDisplayFormatSign; ADef: TValueDisplayFormatSign);
+  begin
+    if ASign = vdfSignAuto then
+      ASign := ADef;
+  end;
+  procedure ResolveMinDigits(var AMinDigits: Integer; ABase: TValueDisplayFormatBase);
+  begin
+    if AMinDigits = 0 then begin
+      if ABase = vdfBaseHex then
+        AMinDigits := -1;
+    end;
+  end;
+  procedure ResolveMinDigitsToFull(var AMinDigits: Integer);
+  begin
+    if AMinDigits = 0 then
+      AMinDigits := -1;
+  end;
+
 var
   i: Integer;
-  fb: TResolvedDisplayFormat;
+  fbf: TWatchDisplayFormat;
 begin
-  Result := DoResolveDispFormat(ADispFormat, AResValue);
-
-  for i := FFallBackFormats.Count -1 downto 0 do begin
-    fb := DoResolveDispFormat(FFallBackFormats[i], AResValue);
-    if ResolveDefaults(Result, fb) then
-      exit;
-  end;
 
   case AResValue.ValueKind of
-    rdkSignedNumVal:             ResolveDefaults(Result, SignedNumDefaults);
-    rdkUnsignedNumVal:           ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkEnumVal:                  ResolveDefaults(Result, EnumValDefaults);
-    rdkEnum, rdkSet:             ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkBool: if AResValue.AsQWord > 1 then
-        ResolveDefaults(Result, BoolAndNumNumDefaults)
-      else
-        ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkChar:           ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkFloatVal:       ResolveDefaults(Result, UnsignedNumDefaults);
-    rdkStruct:         ResolveDefaults(Result, HexPointerDefaults);
-    rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef,
-    rdkPointerVal:     ResolveDefaults(Result, HexPointerDefaults);
-    else               ResolveDefaults(Result, HexPointerDefaults);
-  end;
+    rdkSignedNumVal, rdkUnsignedNumVal: begin
+      Result.Num1 := ADispFormat.Num;
+      Result.Num2 := ADispFormat.Num2;
+      for i := Max(0, FFallBackFormats.Count -1) downto 0 do begin
+        fbf := FFallBackFormats[i];
+        if Result.Num1.UseInherited then Result.Num1 := fbf.Num;
+        if Result.Num2.UseInherited then Result.Num2 := fbf.Num2;
+        if not(Result.Num1.UseInherited or Result.Num2.UseInherited) then
+          break;
+      end;
+      ResolveSign(Result.Num1.SignFormat, Result.Num1.BaseFormat);
+      ResolveSign(Result.Num2.SignFormat, Result.Num2.BaseFormat);
+      ResolveMinDigits(Result.Num1.MinDigits, Result.Num1.BaseFormat);
+      ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
+    end;
 
-  if Result.NumSignFormat = vdfSignDefault then begin
-    if Result.NumBaseFormat = vdfBaseDecimal then
-      Result.NumSignFormat := vdfSignSigned
-    else
-      Result.NumSignFormat := vdfSignUnsigned;
+    rdkEnum, rdkEnumVal, rdkSet: begin
+      Result.Enum := ADispFormat.Enum;
+
+      if Result.Enum.UseInherited then begin
+        i := FFallBackFormats.Count -1;
+        while (i >0) and (FFallBackFormats[i].Enum.UseInherited) do
+          dec(i);
+        Result.Enum  := FFallBackFormats[i].Enum;
+      end;
+
+      Result.Num2            := DefaultEnumNum;
+      Result.Num2.Visible    := Result.Enum.MainFormat in [vdfEnumNameAndOrd, vdfEnumOrd];
+      Result.Num2.BaseFormat := Result.Enum.BaseFormat;
+      Result.Num2.SignFormat := Result.Enum.SignFormat;
+      ResolveSign(Result.Num2.SignFormat, DefaultEnumNum.SignFormat);
+    end;
+
+    rdkBool: begin
+      Result.Bool := ADispFormat.Bool;
+
+      if Result.Bool.UseInherited then begin
+        i := FFallBackFormats.Count -1;
+        while (i >0) and (FFallBackFormats[i].Bool.UseInherited) do
+          dec(i);
+        Result.Bool  := FFallBackFormats[i].Bool;
+      end;
+
+      Result.Num2            := DefaultEnumNum;
+      Result.Num2.Visible    := Result.Bool.MainFormat in [vdfBoolNameAndOrd, vdfBoolOrd];
+      Result.Num2.BaseFormat := Result.Bool.BaseFormat;
+      Result.Num2.SignFormat := Result.Bool.SignFormat;
+      ResolveSign(Result.Num2.SignFormat, DefaultEnumNum.SignFormat);
+    end;
+
+    rdkChar: begin
+      Result.Char := ADispFormat.Char;
+
+      if Result.Char.UseInherited then begin
+        i := FFallBackFormats.Count -1;
+        while (i >0) and (FFallBackFormats[i].Char.UseInherited) do
+          dec(i);
+        Result.Char  := FFallBackFormats[i].Char;
+      end;
+
+      Result.Num2            := DefaultEnumNum;
+      Result.Num2.Visible    := Result.Char.MainFormat in [vdfCharLetterAndOrd, vdfCharOrd];
+      Result.Num2.BaseFormat := Result.Char.BaseFormat;
+      Result.Num2.SignFormat := Result.Char.SignFormat;
+      ResolveSign(Result.Num2.SignFormat, DefaultEnumNum.SignFormat);
+    end;
+
+    rdkFloatVal: begin
+      Result.Float := ADispFormat.Float;
+
+      if Result.Float.UseInherited then begin
+        i := FFallBackFormats.Count -1;
+        while (i >0) and (FFallBackFormats[i].Float.UseInherited) do
+          dec(i);
+        Result.Float  := FFallBackFormats[i].Float;
+      end;
+    end;
+
+    rdkStruct: begin
+      Result.Struct := ADispFormat.Struct;
+      Result.Address := ADispFormat.Struct.Address;
+      for i := Max(0, FFallBackFormats.Count -1) downto 0 do begin
+        fbf := FFallBackFormats[i];
+        if Result.Struct.UseInherited  then Result.Struct  := fbf.Struct;
+        if Result.Address.UseInherited then Result.Address := fbf.Struct.Address;
+        if not(Result.Struct.UseInherited or Result.Struct.Address.UseInherited) then
+          break;
+      end;
+      Result.Num2            := DefaultAddrNum;
+      Result.Num2.Visible    := Result.Struct.ShowPointerFormat in [vdfStructPointerOn, vdfStructPointerOnly];
+      Result.Num2.BaseFormat := Result.Struct.Address.BaseFormat;
+      if Result.Struct.Address.Signed then
+        Result.Num2.SignFormat := vdfSignSigned;
+      ResolveSign(Result.Num2.SignFormat, DefaultAddrNum.SignFormat);
+      ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
+    end;
+
+    rdkFunction, rdkProcedure,
+    rdkFunctionRef, rdkProcedureRef,
+    rdkPointerVal: begin
+      Result.Pointer := ADispFormat.Pointer;
+      Result.Address := ADispFormat.Pointer.Address;
+      for i := Max(0, FFallBackFormats.Count -1) downto 0 do begin
+        fbf := FFallBackFormats[i];
+        if Result.Pointer.UseInherited then Result.Pointer := fbf.Pointer;
+        if Result.Address.UseInherited then Result.Address := fbf.Pointer.Address;
+        if not(Result.Pointer.UseInherited or Result.Pointer.Address.UseInherited) then
+          break;
+      end;
+      Result.Num2            := DefaultAddrNum;
+      Result.Num2.Visible    := Result.Pointer.DerefFormat <> vdfPointerDerefOnly;
+      Result.Num2.BaseFormat := Result.Pointer.Address.BaseFormat;
+      if Result.Pointer.Address.Signed then
+        Result.Num2.SignFormat := vdfSignSigned;
+      ResolveSign(Result.Num2.SignFormat, DefaultAddrNum.SignFormat);
+      ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
+    end;
+
+    //rdkString, rdkWideString,
+    //rdkVariant,
+    //rdkPCharOrString,
+    //rdkArray,
+    //rdkConvertRes,
   end;
 end;
 
 { TWatchResultPrinter }
 
 function TWatchResultPrinter.PrintNumber(AUnsignedValue: QWord; ASignedValue: Int64;
-  AByteSize: Integer; const AResolvedFormat: TResolvedDisplayFormat): String;
-var
-  s: String;
-begin
-  Result := '';
-  if AResolvedFormat.NumCharFormat <> vdfNumCharOnlyUnicode then
-  case AResolvedFormat.NumBaseFormat of
-    vdfBaseDecimal: case AResolvedFormat.NumSignFormat of
-      vdfSignSigned:   Result := IntToStr(ASignedValue);
-      vdfSignUnsigned: Result := IntToStr(AUnsignedValue);
-    end;
-    vdfBaseHex: begin
-      case AResolvedFormat.NumSignFormat of
-        vdfSignSigned: if (ASignedValue < 0) then
-                         Result := '-$'+IntToHex(abs(ASignedValue), AByteSize * 2)
-                       else
-                         Result :=  '$'+IntToHex(AUnsignedValue, AByteSize * 2);
-        vdfSignUnsigned: Result :=  '$'+IntToHex(AUnsignedValue, AByteSize * 2);
+  AByteSize: Integer; const ANumFormat: TResolvedDisplayFormatNum; PrintNil: Boolean): String;
+
+  function PadNumber(ANum: String; ANewLen, ASepPos: Integer; ASep: Char): String;
+  var
+    i, j: Integer;
+  begin
+    Result := ANum;
+    i := Length(Result);
+    ANewLen := ANewLen + (ANewLen-1) div ASepPos;
+    SetLength(Result, ANewLen);
+    inc(ASepPos);
+    j := 0;
+    while (ANewLen > i) and (ANewLen > 0) do begin
+      inc(j);
+      if j = ASepPos then begin
+        Result[ANewLen] := ASep;
+        dec(ANewLen);
+        j := 1;
       end;
-    end;
-    vdfBaseOct: begin
-      case AResolvedFormat.NumSignFormat of
-        vdfSignSigned: if (ASignedValue < 0) then
-                         Result := '-&'+Dec64ToNumb(abs(ASignedValue), 0, 8)
-                       else
-                         Result :=  '&'+Dec64ToNumb(AUnsignedValue, 0, 8);
-        vdfSignUnsigned: Result :=  '&'+Dec64ToNumb(AUnsignedValue, 0, 8);
-      end;
-    end;
-    vdfBaseBin: begin
-      case AResolvedFormat.NumSignFormat of
-        vdfSignSigned: if (ASignedValue < 0) then
-                         Result := '-&'+Dec64ToNumb(abs(ASignedValue), AByteSize * 8, 2)
-                       else
-                         Result :=  '&'+Dec64ToNumb(AUnsignedValue, AByteSize * 8, 2);
-        vdfSignUnsigned: Result :=  '&'+Dec64ToNumb(AUnsignedValue, AByteSize * 8, 2);
-      end;
-    end;
-    vdfBasePointer: begin
-      if AUnsignedValue = 0 then
-        Result := 'nil'
+      if i <= 0 then
+        Result[ANewLen] := '0'
       else
-        Result := '$'+IntToHex(AUnsignedValue, AByteSize * 2);
-    end;
-    else begin // should never happen
-      Result := IntToStr(AUnsignedValue);
+        Result[ANewLen] := Result[i];
+      dec(ANewLen);
+      dec(i);
     end;
   end;
 
-  case AResolvedFormat.NumCharFormat of
-    vdfNumCharOff: ;
-    vdfNumCharOnlyUnicode,
-    vdfNumCharOrdAndUnicode: begin
-      s := '';
-      if Result <> '' then s := ' = ';
-      if AUnsignedValue <= 31 then
-        Result := Result + s + '#'+IntToStr(AUnsignedValue)
-      else
-      if AUnsignedValue <= high(Cardinal) then
-        Result := Result + s + UnicodeToUTF8(AUnsignedValue)
-      else
-      if AResolvedFormat.NumCharFormat = vdfNumCharOnlyUnicode then
-        Result := IntToStr(AUnsignedValue);
+var
+  s: String;
+  i, d: Integer;
+begin
+  if PrintNil and (AUnsignedValue = 0) then
+    exit('nil');
+  Result := '';
+  s := '';
+  if (ANumFormat.SignFormat = vdfSignSigned) and (ASignedValue < 0) then
+    s := '-';
+  case ANumFormat.BaseFormat of
+    vdfBaseDecimal: begin
+        if ANumFormat.SignFormat = vdfSignSigned then Result := IntToStr(qword(abs(ASignedValue)))
+        else                                          Result := IntToStr(AUnsignedValue);
+        d := ANumFormat.MinDigits;
+        if d < 0 then case AByteSize of
+          1:    d := 3;
+          2:    d := 5;
+          3..4: d := 10;
+          else  d := 20;
+        end;
+        i := Length(Result);
+        if d < i then
+          d := i;
+
+        if ANumFormat.SeparatorDec then
+          Result := PadNumber(Result, d, 3, FormatSettings.ThousandSeparator)
+        else
+        if d > i then
+          Result := StringOfChar('0', d - i) + Result;
+        Result := s + Result;
+      end;
+    vdfBaseHex: begin
+        s := s + '$';
+        if ANumFormat.SignFormat = vdfSignSigned then Result := IntToHex(qword(abs(ASignedValue)), 1)
+        else                                          Result := IntToHex(AUnsignedValue, 1);
+        d := ANumFormat.MinDigits;
+        if d < 0 then case AByteSize of
+          1:    d := 2;
+          2:    d := 4;
+          3..4: d := 8;
+          else  d := 16;
+        end;
+        i := Length(Result);
+        if d < i then
+          d := i;
+
+        case ANumFormat.SeparatorHexBin of
+          vdfhsNone: if d > i then Result := StringOfChar('0', d - i) + Result;
+          vdfhsByte: Result := PadNumber(Result, d, 2, ' ');
+          vdfhsWord: Result := PadNumber(Result, d, 4, ' ');
+          vdfhsLong: Result := PadNumber(Result, d, 8, ' ');
+        end;
+        Result := s + Result;
+      end;
+    vdfBaseOct: begin
+        s := s + '&';
+        if ANumFormat.SignFormat = vdfSignSigned then Result := Dec64ToNumb(qword(abs(ASignedValue)), 0 , 8)
+        else                                          Result := Dec64ToNumb(AUnsignedValue, 0 , 8);
+        d := ANumFormat.MinDigits;
+        if d < 0 then case AByteSize of
+          1:    d :=  3;
+          2:    d :=  6;
+          3..4: d := 11;
+          else  d := 22;
+        end;
+        i := Length(Result);
+        if d < i then
+          d := i;
+
+        if d > i then Result := StringOfChar('0', d - i) + Result;
+        Result := s + Result;
+      end;
+    vdfBaseBin: begin
+        s := s + '%';
+        if ANumFormat.SignFormat = vdfSignSigned then Result := Dec64ToNumb(qword(abs(ASignedValue)), 0 , 2)
+        else                                          Result := Dec64ToNumb(AUnsignedValue, 0 , 2);
+        d := ANumFormat.MinDigits;
+        if d < 0 then case AByteSize of
+          1:    d :=  8;
+          2:    d := 16;
+          3..4: d := 32;
+          else  d := 64;
+        end;
+        i := Length(Result);
+        if d < i then
+          d := i;
+
+        case ANumFormat.SeparatorHexBin of
+          vdfhsNone: if d > i then Result := StringOfChar('0', d - i) + Result;
+          vdfhsByte: Result := PadNumber(Result, d,  8, ' ');
+          vdfhsWord: Result := PadNumber(Result, d, 16, ' ');
+          vdfhsLong: Result := PadNumber(Result, d, 32, ' ');
+        end;
+        Result := s + Result;
+    end;
+    vdfBaseChar: begin
+        if AUnsignedValue <= 31 then
+          Result := '#'+IntToStr(AUnsignedValue)
+        else
+        if AUnsignedValue <= high(Cardinal) then
+          Result := UnicodeToUTF8(AUnsignedValue)
+        else
+        //if ANumFormat.NumCharFormat = vdfNumCharOnlyUnicode then
+          Result := IntToStr(AUnsignedValue);
+    end;
+    else begin // should never happen
+      Result := IntToStr(AUnsignedValue);
     end;
   end;
 end;
@@ -399,14 +524,14 @@ begin
   if (AResValue.ArrayType = datDynArray) then begin
     tn := AResValue.TypeName;
     if (AResValue.Count = 0) and (AResValue.DataAddress = 0) then begin
-      if (ADispFormat.StructFormat = vdfStructFull) then
+      if (ADispFormat.Struct.DataFormat = vdfStructFull) then
         Result := AResValue.TypeName + '(nil)'
       else
         Result := 'nil';
       exit;
     end;
 
-    if (ADispFormat.StructAddrFormat = vdfStructAddressOnly) then begin
+    if (ADispFormat.Struct.ShowPointerFormat = vdfStructPointerOnly) then begin
       Result := '$'+IntToHex(AResValue.DataAddress, HexDigicCount(AResValue.DataAddress, 4, True));
 
       if tn <> '' then
@@ -456,20 +581,21 @@ begin
   if (AResValue.StructType in [dstClass, dstInterface])
   then begin
     if (AResValue.DataAddress = 0) then begin
-      Result := PrintNumber(0, 0, FTargetAddressSize, Resolved);
-      if (Resolved.PointerFormat = vdfPointerTypedAddress) and (tn <> '') then
+      //Result := PrintNumber(0, 0, FTargetAddressSize, Resolved.Num2);
+      Result := 'nil';
+      if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then
         Result := tn + '(' + Result + ')';
       exit;
     end;
 
-    if (Resolved.StructAddrFormat <> vdfStructAddressOff) or (AResValue.FieldCount = 0)
+    if (Resolved.Struct.ShowPointerFormat <> vdfStructPointerOff) or (AResValue.FieldCount = 0)
     then begin
       // TODO: for 32 bit target, sign extend the 2nd argument
-      Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, Resolved);
-      if (Resolved.PointerFormat = vdfPointerTypedAddress) and (tn <> '') then
+      Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, Resolved.Num2, True);
+      if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then
         Result := tn + '(' + Result + ')';
 
-      if (Resolved.StructAddrFormat = vdfStructAddressOnly) or (AResValue.FieldCount = 0) then
+      if (Resolved.Struct.ShowPointerFormat = vdfStructPointerOnly) or (AResValue.FieldCount = 0) then
         exit;
     end;
   end;
@@ -485,7 +611,7 @@ begin
   else
     sep := ' ';
 
-  InclVisSect := (Resolved.StructFormat = vdfStructFull) and (AResValue.StructType in [dstClass, dstObject]);
+  InclVisSect := (Resolved.Struct.DataFormat = vdfStructFull) and (AResValue.StructType in [dstClass, dstObject]);
   FldOwner := nil;
   vis := '';
   for FldInfo in AResValue do begin
@@ -493,7 +619,7 @@ begin
       FldOwner := FldInfo.Owner;
       vis := '';
 
-      if (Resolved.StructFormat = vdfStructFull) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
+      if (Resolved.Struct.DataFormat = vdfStructFull) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
          (AResValue.StructType in [dstClass, dstInterface, dstObject]) // record has no inheritance
       then begin
         if (Length(Result) > 0) then
@@ -512,7 +638,7 @@ begin
     if (Length(Result) > 0) then
       Result := Result + sep;
 
-    if Resolved.StructFormat <> vdfStructValOnly then
+    if Resolved.Struct.DataFormat <> vdfStructValOnly then
       Result := Result + indent + FldInfo.FieldName + ': '
     else
       Result := Result + indent;
@@ -541,7 +667,7 @@ begin
 
   tn := AResValue.TypeName;
   if (tn <> '') and (ANestLvl=0) and
-     ( (Resolved.StructFormat = vdfStructFull) or
+     ( (Resolved.Struct.DataFormat = vdfStructFull) or
        (AResValue.StructType in [dstClass, dstInterface])
      )
   then
@@ -588,11 +714,7 @@ var
   s: String;
 begin
   Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-
-  if AResValue.AsQWord = 0 then
-    Result := 'nil'
-  else
-    Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, TargetAddressSize, Resolved);
+  Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, TargetAddressSize, Resolved.Num2, True);
 
   if AResValue.AsString <> '' then
     Result := Result + ' = ' + AResValue.AsString;
@@ -625,22 +747,22 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 
     result := '';
     s := '';
-    if Resolved.EnumFormat <> vdfEnumOrd then begin
+    if Resolved.Char.MainFormat <> vdfCharOrd then begin
       s := ' = ';
       case AResValue.ByteSize of
          //1: Result := QuoteText(SysToUTF8(char(Byte(AResValue.AsQWord))));
          1: Result := QuoteText(char(Byte(AResValue.AsQWord)));
          2: Result := QuoteWideText(WideChar(Word(AResValue.AsQWord)));
          else
-           if Resolved.EnumFormat <> vdfEnumName then
+           if Resolved.Char.MainFormat <> vdfCharLetter then
              Result := '#' + IntToStr(AResValue.AsQWord)
            else
-             Result := '#' + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved);
+             Result := '#' + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
       end;
     end;
 
-    if Resolved.EnumFormat <> vdfEnumName then begin
-      Result := Result + s + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved);
+    if Resolved.Char.MainFormat <> vdfCharLetter then begin
+      Result := Result + s + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
     end;
   end;
 
@@ -654,15 +776,15 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 
     c := AResValue.AsQWord;
     result := '';
-    if Resolved.EnumFormat <> vdfEnumOrd then begin
+    if Resolved.Bool.MainFormat <> vdfBoolOrd then begin
       if c = 0 then
         Result := 'False'
       else
         Result := 'True';
     end;
 
-    if Resolved.EnumFormat <> vdfEnumName then begin
-      s := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved);
+    if Resolved.Bool.MainFormat <> vdfBoolName then begin
+      s := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
       if Result <> '' then
         Result := Result + '(' + s + ')'
       else
@@ -679,13 +801,13 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 
     result := '';
     s := '';
-    if Resolved.EnumFormat <> vdfEnumOrd then begin
+    if Resolved.Enum.MainFormat <> vdfEnumOrd then begin
       Result := AResValue.AsString;
       s := ' = ';
     end;
 
-    if Resolved.EnumFormat <> vdfEnumName then begin
-      Result := Result + s + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved);
+    if Resolved.Enum.MainFormat <> vdfEnumName then begin
+      Result := Result + s + PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
     end;
   end;
 
@@ -733,19 +855,24 @@ begin
         Result := ClearMultiline(Result);
     end;
     rdkSignedNumVal,
-    rdkUnsignedNumVal:
-      Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize,
-                            ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue));
+    rdkUnsignedNumVal: begin
+      Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+      Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num1);
+      if Resolved.Num2.Visible then begin;
+        Result := Result +' = ' +
+                  PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
+      end;
+    end;
     rdkPointerVal: begin
       Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
       Result := '';
 
       PtrDeref :=  PointerValue.DerefData;
-      if (Resolved.PointerDerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
+      if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
         n := AResValue.ByteSize;
         if n = 0 then n := FTargetAddressSize;
-        Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, n, Resolved);
-        if Resolved.PointerFormat = vdfPointerTypedAddress then begin
+        Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, n, Resolved.Num2, True);
+        if Resolved.Pointer.Address.TypeFormat = vdfAddressTyped then begin
           ResTypeName := AResValue.TypeName;
           if (ResTypeName = '') and (PtrDeref <> nil) then begin
             ResTypeName := PtrDeref.TypeName;
@@ -757,7 +884,7 @@ begin
         end;
       end;
 
-      if (Resolved.PointerDerefFormat <> vdfPointerDerefOff) and (PtrDeref <> nil) then begin
+      if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOff) and (PtrDeref <> nil) then begin
         while (PtrDeref.ValueKind = rdkPointerVal) and (PtrDeref.DerefData <> nil) do begin
           PtrDeref2 := PtrDeref;
           Result := Result + '^';
@@ -771,7 +898,7 @@ begin
     end;
     rdkFloatVal: begin
       Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-      if Resolved.FloatFormat = vdfFloatScientific then
+      if Resolved.Float.NumFormat = vdfFloatScientific then
         case AResValue.FloatPrecission of
           dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffExponent,  9, 0);
           dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffExponent, 17, 0);

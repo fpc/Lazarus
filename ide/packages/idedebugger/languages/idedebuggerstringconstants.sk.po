@@ -47,17 +47,16 @@ msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
 msgstr "Binárny"
 
+#: idedebuggerstringconstants.dispformatbasechar
+msgctxt "idedebuggerstringconstants.dispformatbasechar"
+msgid "Char"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatbasedecimal
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasedecimal"
 msgid "Decimal"
 msgstr "Desiatkovo"
-
-#: idedebuggerstringconstants.dispformatbasedefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatbasedefault"
-msgid "Default"
-msgstr "Predvolené"
 
 #: idedebuggerstringconstants.dispformatbasehex
 msgctxt "idedebuggerstringconstants.dispformatbasehex"
@@ -67,18 +66,6 @@ msgstr ""
 #: idedebuggerstringconstants.dispformatbaseoct
 msgid "Oct"
 msgstr ""
-
-#: idedebuggerstringconstants.dispformatbasepointer
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatbasepointer"
-msgid "Pointer"
-msgstr "Ukazovateľ"
-
-#: idedebuggerstringconstants.dispformatbooldefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatbooldefault"
-msgid "Default"
-msgstr "Predvolené"
 
 #: idedebuggerstringconstants.dispformatboolname
 #, fuzzy
@@ -106,12 +93,6 @@ msgstr "Hodnota"
 msgid "Memory dump"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatchardefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatchardefault"
-msgid "Default"
-msgstr "Predvolené"
-
 #: idedebuggerstringconstants.dispformatcharletter
 msgid "Letter"
 msgstr ""
@@ -127,7 +108,7 @@ msgid "Ordinal"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
-msgid "Address format"
+msgid "Address"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
@@ -159,17 +140,21 @@ msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
 msgid "Float"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatdlgbtnnum2visible
+msgid "Show value in a second format"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatdlgbtnnumber
 msgid "Number"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnnumber2
+msgid "Number(2nd)"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnord
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
 msgid "Ordinal"
-msgstr ""
-
-#: idedebuggerstringconstants.dispformatdlgbtnordformat
-msgid "Ordinal format"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnpointer
@@ -183,11 +168,6 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgcaptionaddress
 msgid "(Address)"
-msgstr ""
-
-#: idedebuggerstringconstants.dispformatdlgcaptiondefault
-msgctxt "idedebuggerstringconstants.dispformatdlgcaptiondefault"
-msgid "Default"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgcaptionderef
@@ -210,12 +190,6 @@ msgstr ""
 msgid "(Typed)"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatenumdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatenumdefault"
-msgid "Default"
-msgstr "Predvolené"
-
 #: idedebuggerstringconstants.dispformatenumname
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatenumname"
@@ -232,12 +206,6 @@ msgctxt "idedebuggerstringconstants.dispformatenumord"
 msgid "Ordinal"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatfloatdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatfloatdefault"
-msgid "Default"
-msgstr "Predvolené"
-
 #: idedebuggerstringconstants.dispformatfloatpoint
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatfloatpoint"
@@ -246,6 +214,11 @@ msgstr "Desiatkovo"
 
 #: idedebuggerstringconstants.dispformatfloatscientific
 msgid "Exponent"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatgroupaddress
+msgctxt "idedebuggerstringconstants.dispformatgroupaddress"
+msgid "Pointer (Addr)"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatgroupbase
@@ -275,18 +248,12 @@ msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
 msgid "Float"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatgroupnumchar
-msgid "Ordinal as char"
+#: idedebuggerstringconstants.dispformatgrouplead
+msgid "Leading zero"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatgrouppointer
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatgrouppointer"
-msgid "Pointer"
-msgstr "Ukazovateľ"
-
 #: idedebuggerstringconstants.dispformatgrouppointerderef
-msgid "Pointer (Deref)"
+msgid "Deref Pointer"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatgroupsign
@@ -301,23 +268,40 @@ msgstr ""
 msgid "Structures (Addr)"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatnumchardefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatnumchardefault"
-msgid "Default"
-msgstr "Predvolené"
+#: idedebuggerstringconstants.dispformatnumdigits
+msgid "Digits"
+msgstr ""
 
-#: idedebuggerstringconstants.dispformatnumcharoff
-msgctxt "idedebuggerstringconstants.dispformatnumcharoff"
+#: idedebuggerstringconstants.dispformatnumdigitsfull
+msgctxt "idedebuggerstringconstants.dispformatnumdigitsfull"
+msgid "Full"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumseperator
+msgid "Separator (1000)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumsepgroup
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatnumsepgroup"
+msgid "Group"
+msgstr "Skupina"
+
+#: idedebuggerstringconstants.dispformatnumsepgroupbyte
+msgid "Byte"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumsepgrouplong
+msgid "DWord"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatnumsepgroupnone
+msgctxt "idedebuggerstringconstants.dispformatnumsepgroupnone"
 msgid "Off"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatnumcharonlyunicode
-msgid "Unicode only"
-msgstr ""
-
-#: idedebuggerstringconstants.dispformatnumcharordandunicode
-msgid "Unicode + Number"
+#: idedebuggerstringconstants.dispformatnumsepgroupword
+msgid "Word"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrall
@@ -334,46 +318,35 @@ msgstr ""
 msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried."
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatpointeraddress
-msgid "Address"
+#: idedebuggerstringconstants.dispformatpointeraddressplain
+msgctxt "idedebuggerstringconstants.dispformatpointeraddressplain"
+msgid "Plain address"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatpointerdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatpointerdefault"
-msgid "Default"
-msgstr "Predvolené"
-
-#: idedebuggerstringconstants.dispformatpointerderefdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatpointerderefdefault"
-msgid "Default"
-msgstr "Predvolené"
+#: idedebuggerstringconstants.dispformatpointeraddresstyped
+msgctxt "idedebuggerstringconstants.dispformatpointeraddresstyped"
+msgid "Typed address"
+msgstr ""
 
 #: idedebuggerstringconstants.dispformatpointerderefoff
 msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
-msgid "Off"
+msgid "No deref data"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatpointerderefon
 msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
-msgid "On"
+msgid "Show deref data"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatpointerderefonly
 msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
-msgid "Only"
+msgid "Only deref data"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatpointertypedaddress
-msgid "Typed address"
+#: idedebuggerstringconstants.dispformatsignauto
+msgctxt "idedebuggerstringconstants.dispformatsignauto"
+msgid "Auto-sign"
 msgstr ""
-
-#: idedebuggerstringconstants.dispformatsigndefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatsigndefault"
-msgid "Default"
-msgstr "Predvolené"
 
 #: idedebuggerstringconstants.dispformatsignsigned
 msgid "Signed"
@@ -385,38 +358,24 @@ msgctxt "idedebuggerstringconstants.dispformatsignunsigned"
 msgid "Unsigned"
 msgstr "Unsigned"
 
-#: idedebuggerstringconstants.dispformatstructaddressdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatstructaddressdefault"
-msgid "Default"
-msgstr "Predvolené"
-
 #: idedebuggerstringconstants.dispformatstructaddressoff
-msgctxt "idedebuggerstringconstants.dispformatstructaddressoff"
-msgid "Off"
+msgid "Hide pointer"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatstructaddresson
-msgctxt "idedebuggerstringconstants.dispformatstructaddresson"
-msgid "On"
+msgid "Show pointer"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatstructaddressonly
-msgctxt "idedebuggerstringconstants.dispformatstructaddressonly"
-msgid "Only"
+msgid "Only pointer"
 msgstr ""
-
-#: idedebuggerstringconstants.dispformatstructdefault
-#, fuzzy
-msgctxt "idedebuggerstringconstants.dispformatstructdefault"
-msgid "Default"
-msgstr "Predvolené"
 
 #: idedebuggerstringconstants.dispformatstructfields
 msgid "Field names"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatstructfull
+msgctxt "idedebuggerstringconstants.dispformatstructfull"
 msgid "Full"
 msgstr ""
 
@@ -1221,6 +1180,7 @@ msgid "Goto selected"
 msgstr "Choď na vybraté"
 
 #: idedebuggerstringconstants.lisgroup
+msgctxt "idedebuggerstringconstants.lisgroup"
 msgid "Group"
 msgstr "Skupina"
 

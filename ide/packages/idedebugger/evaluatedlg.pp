@@ -153,6 +153,7 @@ begin
   //WatchInspectNav1.OnClear := @DoClear;
   WatchInspectNav1.OnBeforeEvaluate := @DoBeforeUpdate;
   WatchInspectNav1.OnWatchUpdated := @DoWatchUpdated;
+  //WatchInspectNav1.AllowMemDump := True;
 
   EnvironmentOptions.AddHandlerAfterWrite(@DoEnvOptChanged);
   DoEnvOptChanged(nil, False);
@@ -225,7 +226,8 @@ end;
 
 procedure TEvaluateDlg.DoDispFormatChanged(Sender: TObject);
 begin
-  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.CurrentWatchValue.Watch = nil)
+  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.CurrentWatchValue.Watch = nil) or
+     (WatchInspectNav1.CurrentWatchValue.IsMemDump <> WatchInspectNav1.DisplayFormat.MemDump)
   then begin
     if (not WatchInspectNav1.PowerIsDown) or (not Visible) then exit;
     WatchInspectNav1.UpdateData;

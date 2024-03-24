@@ -181,7 +181,7 @@ end;
 
 function TIdeDbgValueFormatterColorBase.SupportedDisplayFormatFilters: TValueDisplayFormatGroups;
 begin
-  Result := [vdfgBase, vdfgSign, vdfgNumChar];
+  Result := [vdfgBase, vdfgSign];
 end;
 
 class function TIdeDbgValueFormatterColor.GetRegisteredDisplayName: String;

@@ -29,18 +29,22 @@ type
   private
     FDisplayFormatConfig: TDisplayFormatConfig;
     FButtonStates: array [TDisplayFormatTarget] of boolean;
+    FShowOverrideChecks: boolean;
     FShowProjectInfo: boolean;
     procedure SetDisplayFormatConfig(AValue: TDisplayFormatConfig);
     procedure SaveButtonStates;
     procedure ApplyConfigs;
     procedure RetrieveConfigs;
+    procedure SetShowOverrideChecks(AValue: boolean);
     procedure SetShowProjectInfo(AValue: boolean);
 
   public
+    constructor Create(TheOwner: TComponent); override;
     procedure Setup;
     procedure SaveConfig;
     property DisplayFormatConfig: TDisplayFormatConfig read FDisplayFormatConfig write SetDisplayFormatConfig;
     property ShowProjectInfo: boolean read FShowProjectInfo write SetShowProjectInfo;
+    property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
   end;
 
 implementation
@@ -104,6 +108,11 @@ var
   j: Integer;
   t: TDisplayFormatTarget;
 begin
+  if FButtonStates[dtfGlobal] then
+    DisplayFormatFrame1.ShowOverrideChecks := FShowOverrideChecks
+  else
+    DisplayFormatFrame1.ShowOverrideChecks := True;
+
   j := 0;
   for t in TDisplayFormatTarget do if FButtonStates[t] then inc(j);
   DisplayFormatFrame1.DisplayFormatCount := j;
@@ -130,11 +139,25 @@ begin
     end;
 end;
 
+procedure TDisplayFormatDefaultsConfigFrame.SetShowOverrideChecks(AValue: boolean);
+begin
+  if FShowOverrideChecks = AValue then Exit;
+  FShowOverrideChecks := AValue;
+  if FButtonStates[dtfGlobal] then
+    DisplayFormatFrame1.ShowOverrideChecks := AValue;
+end;
+
 procedure TDisplayFormatDefaultsConfigFrame.SetShowProjectInfo(AValue: boolean);
 begin
   if FShowProjectInfo = AValue then Exit;
   FShowProjectInfo := AValue;
   lblProjectText.Visible := AValue;
+end;
+
+constructor TDisplayFormatDefaultsConfigFrame.Create(TheOwner: TComponent);
+begin
+  FShowOverrideChecks := True;
+  inherited Create(TheOwner);
 end;
 
 procedure TDisplayFormatDefaultsConfigFrame.Setup;
@@ -143,6 +166,7 @@ begin
   DisplayFormatFrame1.ShowCurrent := False;
   DisplayFormatFrame1.ShowMemDump := False;
   DisplayFormatFrame1.SelectDefaultButton;
+  DisplayFormatFrame1.ShowOverrideChecks := FShowOverrideChecks;
 
   btnGlobal.Down  := True;
   btnHint.Down    := False;

@@ -327,17 +327,17 @@ begin
        ( (not ADisplayFormat.MemDump) and (
            ( not(vffValueData in v.SupportedFeatures) ) or
            ( (vdfgCategory        in v.SupportedDisplayFormatFilters) and (not (vdfCategoryData in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumBaseFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumSignFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgNumChar         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumCharFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.EnumFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.BoolFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.CharFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.FloatFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.StructFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.StructAddrFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointer         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.PointerFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.PointerDerefFormat in f.FFilterDisplayFormats)) )
+           // TOOD: 2nd num
+           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgAddress         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in f.FFilterDisplayFormats)) )
        ) )
     then
       continue;
@@ -392,17 +392,17 @@ begin
        ( (not ADisplayFormat.MemDump) and (
            ( not(vffValueData in v.SupportedFeatures) ) or
            ( (vdfgCategory        in v.SupportedDisplayFormatFilters) and (not (vdfCategoryData in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumBaseFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumSignFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgNumChar         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.NumCharFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.EnumFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.BoolFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.CharFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.FloatFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.StructFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.StructAddrFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointer         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.PointerFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.PointerDerefFormat in f.FFilterDisplayFormats)) )
+           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in f.FFilterDisplayFormats)) ) or
+           // TODO  2nd num
+           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgAddress         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in f.FFilterDisplayFormats)) ) or
+           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in f.FFilterDisplayFormats)) )
        ) )
     then
       continue;

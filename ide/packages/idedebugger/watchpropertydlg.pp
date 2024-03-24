@@ -66,12 +66,14 @@ type
     chkUseInstanceClass: TCheckBox;
     DisplayFormatFrame1: TDisplayFormatFrame;
     dropFpDbgConv: TComboBox;
+    Panel2: TPanel;
+    Spacer1: TLabel;
     lblFpDbgConv: TLabel;
-    lblDigits: TLabel;
     lblExpression: TLabel;
     lblRepCount: TLabel;
+    Panel1: TPanel;
     PanelTop: TPanel;
-    txtDigits: TEdit;
+    Spacer2: TLabel;
     txtExpression: TEdit;
     txtRepCount: TEdit;
     procedure btnHelpClick(Sender: TObject);
@@ -79,9 +81,13 @@ type
     procedure chkAllowFuncChange(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
   private
+    FMode: (wpmWatch, wpmDispFormat);
     FWatch: TIdeWatch;
+    FDisplayFormat: TWatchDisplayFormat;
   public
     constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown); overload;
+    constructor Create(AOWner: TComponent; const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind; AShowMemDump: boolean = False); overload;
+    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     destructor Destroy; override;
   end;
 
@@ -93,6 +99,11 @@ implementation
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
 begin
+  if FMode = wpmDispFormat then begin
+    FDisplayFormat := DisplayFormatFrame1.DisplayFormat;
+    exit;
+  end;
+
   if txtExpression.Text = '' then
     exit;
   DebugBoss.Watches.CurrentWatches.BeginUpdate;
@@ -158,8 +169,11 @@ constructor TWatchPropertyDlg.Create(AOWner: TComponent; const AWatch: TIdeWatch
 var
   i, i2: Integer;
 begin
+  FMode := wpmWatch;
   FWatch := AWatch;
   inherited Create(AOwner);
+  PanelTop.Visible := True;
+  ButtonPanel.HelpButton.Visible := True;
   DisplayFormatFrame1.Setup;
   DisplayFormatFrame1.BeginUdpate;
   try
@@ -187,8 +201,6 @@ begin
   end;
   txtExpressionChange(nil);
 
-  lblDigits.Enabled := False;
-  txtDigits.Enabled := False;
   chkAllowFunc.Enabled := EnvironmentDebugOpts.DebuggerAllowFunctionCalls and
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures);
   chkAllowFuncThreads.Enabled := EnvironmentDebugOpts.DebuggerAllowFunctionCalls and
@@ -198,7 +210,6 @@ begin
   Caption:= lisWatchPropert;
   lblExpression.Caption:= lisExpression;
   lblRepCount.Caption:= lisRepeatCount;
-  lblDigits.Caption:= lisDigits;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
   chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
@@ -236,6 +247,26 @@ begin
   ButtonPanel.OKButton.Caption:=lisBtnOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
+end;
+
+constructor TWatchPropertyDlg.Create(AOWner: TComponent;
+  const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind;
+  AShowMemDump: boolean);
+begin
+  FMode := wpmDispFormat;
+  inherited Create(AOWner);
+  PanelTop.Visible := False;
+  ButtonPanel.HelpButton.Visible := False;
+  FDisplayFormat := ADisplayFormat;
+
+  Caption:= dlgDisplayFormatDebugOptions;
+  DisplayFormatFrame1.Setup;
+  DisplayFormatFrame1.ShowMemDump := AShowMemDump;
+  DisplayFormatFrame1.BeginUdpate;
+  DisplayFormatFrame1.DisplayFormat := FDisplayFormat;
+  DisplayFormatFrame1.CurrentResDataType := AResDataType;
+  DisplayFormatFrame1.SelectDefaultButton;
+  DisplayFormatFrame1.EndUdpate;
 end;
 
 destructor TWatchPropertyDlg.Destroy;

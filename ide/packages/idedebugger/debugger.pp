@@ -6884,23 +6884,24 @@ procedure TIdeWatch.DoLoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig;
     Result.MemDump := AnOldDispFormat = 'wdfmemdump';
     case AnOldDispFormat of
       //'wdfdefault':   ;
-      'wdfstructure': Result.StructFormat := vdfStructFull; // enum = FULL / pointer = WithDataDeref
-      'wdfchar':      Result.NumCharFormat := vdfNumCharOnlyUnicode;
+      'wdfstructure': Result.Struct.DataFormat := vdfStructFull; // enum = FULL / pointer = WithDataDeref
+      'wdfchar':      Result.Num.BaseFormat := vdfBaseChar;
       //'wdfstring':    ;  // nothing
       'wdfdecimal':   begin
-                      Result.NumBaseFormat   := vdfBaseDecimal;
-                      Result.NumSignFormat   := vdfSignSigned;
+                      Result.Num.BaseFormat   := vdfBaseDecimal;
+                      Result.Num.SignFormat   := vdfSignSigned;
                       end;
       'wdfunsigned':  begin
-                      Result.NumBaseFormat   := vdfBaseDecimal;
-                      Result.NumSignFormat   := vdfSignUnsigned;
+                      Result.Num.BaseFormat   := vdfBaseDecimal;
+                      Result.Num.SignFormat   := vdfSignUnsigned;
                       end;
       'wdffloat':     ;
-      'wdfhex':       Result.NumBaseFormat    := vdfBaseHex;
-      'wdfbinary':    Result.NumBaseFormat    := vdfBaseBin;
+      'wdfhex':       Result.Num.BaseFormat    := vdfBaseHex;
+      'wdfbinary':    Result.Num.BaseFormat    := vdfBaseBin;
       'wdfpointers':  begin
-                      Result.NumBaseFormat    := vdfBasePointer;
-                      Result.StructAddrFormat := vdfStructAddressOnly;
+                      Result.Num.BaseFormat    := vdfBaseHex;
+// TODO
+                      Result.Struct.ShowPointerFormat := vdfStructPointerOnly;
                       end;
       //'wdfmemdump':   ;
     end;

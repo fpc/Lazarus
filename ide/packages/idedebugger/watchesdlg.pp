@@ -1223,14 +1223,14 @@ begin
 
 
   if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
-     (Watch.DisplayFormat.StructFormat <> vdfStructDefault)
+     (not Watch.DisplayFormat.Struct.UseInherited)
   then begin
     InspectMemo.WordWrap := False;
     InspectMemo.Lines.BeginUpdate;
     try
       for i := 0 to t.Fields.Count - 1 do
         FldName := '';
-        if Watch.DisplayFormat.StructFormat in [vdfStructFields, vdfStructFull] then
+        if Watch.DisplayFormat.Struct.DataFormat in [vdfStructFields, vdfStructFull] then
           FldName := t.Fields[i].Name + ': ';
         case t.Fields[i].DBGType.Kind of
           skSimple:
@@ -1283,12 +1283,7 @@ procedure TWatchesDlg.UpdateItem(const VNode: PVirtualNode;
     end;
   end;
 var
-  WatchValue: TIdeWatchValue;
-  WatchValueStr: string;
-  TypInfo: TDBGType;
-  HasChildren, IsOuterUpdate: Boolean;
-  c: LongWord;
-  da: TDBGPtr;
+  IsOuterUpdate: Boolean;
 begin
   if (not ToolButtonPower.Down) or (not Visible) then exit;
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
@@ -1390,8 +1385,6 @@ begin
 end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);
-var
-  VNode: PVirtualNode;
 begin
   if AWatch.Collection <> FWatchesInView then
     exit;
@@ -1457,8 +1450,6 @@ begin
 end;
 
 function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf;
-var
-  nd: TObject;
 begin
   if AWatchAble = nil then exit(nil);
 

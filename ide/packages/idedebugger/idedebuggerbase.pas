@@ -83,7 +83,6 @@ type
     function GetResultData: TWatchResultData; virtual;
     procedure SetResultData(AResultData: TWatchResultData);
 
-    property IsMemDump: Boolean read FIsMemDump;
   protected
     FEvaluateFlags: TWatcheEvaluateFlags;
     FRepeatCount: Integer;
@@ -108,6 +107,7 @@ type
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;
     property Expression: String read GetExpression;
+    property IsMemDump: Boolean read FIsMemDump;
   public
     property Watch: TWatch read FWatch write SetWatch;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;

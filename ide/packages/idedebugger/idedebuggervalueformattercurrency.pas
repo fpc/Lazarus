@@ -104,7 +104,7 @@ end;
 
 function TIdeDbgValueFormatterCurrency.SupportedDisplayFormatFilters: TValueDisplayFormatGroups;
 begin
-  Result := [vdfgBase, vdfgSign, vdfgNumChar];
+  Result := [vdfgBase, vdfgSign];
 end;
 
 initialization

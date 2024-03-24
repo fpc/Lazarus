@@ -159,6 +159,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestVarious"/>
       </Unit>
+      <Unit>
+        <Filename Value="testwatchresprinter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestWatchResPrinter"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

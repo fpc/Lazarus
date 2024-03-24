@@ -243,7 +243,7 @@ begin
 
   GridDataSetup;
   df := WatchInspectNav1.DisplayFormat;
-  df.NumBaseFormat := vdfBasePointer;
+  df.Num.BaseFormat := vdfBaseHex; //xxxxxxxxxxxxxxxxxxxxxx
   v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, df));
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;

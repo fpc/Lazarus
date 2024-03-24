@@ -52,6 +52,7 @@ end;
 
 procedure TIdeDbgDisplayFormatOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  DisplayFormatDefaultsConfigFrame1.ShowOverrideChecks := False;
   DisplayFormatDefaultsConfigFrame1.Setup;
 end;
 

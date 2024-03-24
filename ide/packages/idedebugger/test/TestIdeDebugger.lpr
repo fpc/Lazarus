@@ -3,7 +3,7 @@ program TestIdeDebugger;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, TestWatchResult, TestXmlOpts, TestVarious;
+  Interfaces, Forms, GuiTestRunner, TestWatchResult, TestXmlOpts, TestVarious, TestWatchResPrinter;
 
 {$R *.res}
 

@@ -22,7 +22,15 @@ type
     dtfEvalMod
   );
 
-  TWatchDisplayFormatList = specialize TFPGList<TWatchDisplayFormat>;
+  { TWatchDisplayFormatList }
+
+  TWatchDisplayFormatList = class(specialize TFPGList<TWatchDisplayFormat>)
+  protected
+    function Get(Index: Integer): TWatchDisplayFormat; inline;
+    procedure Put(Index: Integer; const Item: TWatchDisplayFormat); inline;
+  public
+    property Items[Index: Integer]: TWatchDisplayFormat read Get write Put; default;
+  end;
 
   { TDisplayFormatConfig }
 
@@ -30,12 +38,13 @@ type
   private
     FDefaultDisplayFormats: array [TDisplayFormatTarget] of TWatchDisplayFormat;
   private
+    FGLobalDefault: Boolean;
     FChanged: Boolean;
     FOnChanged: TNotifyEvent;
     function GetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget): TWatchDisplayFormat;
     procedure SetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget; AValue: TWatchDisplayFormat);
   public
-    constructor Create;
+    constructor Create(AGLobalDefault: Boolean = False);
     procedure Clear;
 
     procedure Assign(ASource: TDisplayFormatConfig);
@@ -60,33 +69,33 @@ function DisplayFormatGroupName(ADispFormatGroup: TValueDisplayFormatGroup): str
 function DisplayFormatCount(ADispFormats: TValueDisplayFormats): integer;
 function DisplayFormatMask(ADispFormatGroups: TValueDisplayFormatGroups): TValueDisplayFormats;
 
-const
-  {$WRITEABLECONST OFF}
-  DataKindToDisplayFormatGroups: array [TWatchResultDataKind] of TValueDisplayFormatGroups = (
-    [],                                                 // rdkUnknown
-    [],                                                 // rdkError
-    [],                                                 // rdkPrePrinted
-    [{pointer}],                                        // rdkString
-    [],                                                 // rdkWideString
-    [vdfgChar, vdfgBase, vdfgSign],                     // rdkChar
-    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkSignedNumVal
-    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkUnsignedNumVal
-    [vdfgPointer, vdfgPointerDeref],                    // rdkPointerVal
-    [vdfgFloat],                                        // rdkFloatVal
-    [vdfgBool, vdfgBase, vdfgSign],                     // rdkBool
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnum
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnumVal
-    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkSet
-    [],                                                 // rdkVariant
-    [],                                                 // rdkPCharOrString
-    [],                                                 // rdkArray
-    [vdfgStruct, vdfgStructAddress, vdfgPointer],       // rdkStruct
-    [],                                                 // rdkConvertRes
-    [],                                                 // rdkFunction
-    [],                                                 // rdkProcedure
-    [],                                                 // rdkFunctionRef
-    []                                                  // rdkProcedureRe
-  );
+//const
+//  {$WRITEABLECONST OFF}
+//  DataKindToDisplayFormatGroups: array [TWatchResultDataKind] of TValueDisplayFormatGroups = (
+//    [],                                                 // rdkUnknown
+//    [],                                                 // rdkError
+//    [],                                                 // rdkPrePrinted
+//    [{pointer}],                                        // rdkString
+//    [],                                                 // rdkWideString
+//    [vdfgChar, vdfgBase, vdfgSign],                     // rdkChar
+//    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkSignedNumVal
+//    [vdfgBase, vdfgSign, vdfgNumChar],                  // rdkUnsignedNumVal
+//    [vdfgAddress, vdfgPointerDeref],                    // rdkPointerVal
+//    [vdfgFloat],                                        // rdkFloatVal
+//    [vdfgBool, vdfgBase, vdfgSign],                     // rdkBool
+//    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnum
+//    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkEnumVal
+//    [vdfgEnum, vdfgBase, vdfgSign],                     // rdkSet
+//    [],                                                 // rdkVariant
+//    [],                                                 // rdkPCharOrString
+//    [],                                                 // rdkArray
+//    [vdfgStruct, vdfgStructAddress, vdfgAddress],       // rdkStruct
+//    [],                                                 // rdkConvertRes
+//    [],                                                 // rdkFunction
+//    [],                                                 // rdkProcedure
+//    [],                                                 // rdkFunctionRef
+//    []                                                  // rdkProcedureRe
+//  );
 
 implementation
 
@@ -105,57 +114,108 @@ procedure LoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig; const APath:
   var ADisplayFormat: TWatchDisplayFormat);
 begin
   ADisplayFormat := DefaultWatchDisplayFormat;
-  ADisplayFormat.MemDump := AConfig.GetValue(APath + 'IsMemDump', False);
-  AConfig.GetValue(APath + 'Num',          ord(vdfBaseDefault),          ADisplayFormat.NumBaseFormat,              TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'Sign',         ord(vdfSignDefault),          ADisplayFormat.NumSignFormat,             TypeInfo(TValueDisplayFormatSign));
-  AConfig.GetValue(APath + 'NumChar',      ord(vdfNumCharDefault),       ADisplayFormat.NumCharFormat,          TypeInfo(TValueDisplayFormatNumChar));
-  AConfig.GetValue(APath + 'Enum',         ord(vdfEnumDefault),          ADisplayFormat.EnumFormat,             TypeInfo(TValueDisplayFormatEnum));
-  AConfig.GetValue(APath + 'EnumBase',     ord(vdfBaseDefault),          ADisplayFormat.EnumBaseFormat,          TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'EnumSign',     ord(vdfSignDefault),          ADisplayFormat.EnumSignFormat,         TypeInfo(TValueDisplayFormatSign));
-  AConfig.GetValue(APath + 'Bool',         ord(vdfBoolDefault),          ADisplayFormat.BoolFormat,             TypeInfo(TValueDisplayFormatBool));
-  AConfig.GetValue(APath + 'BoolBase',     ord(vdfBaseDefault),          ADisplayFormat.BoolBaseFormat,          TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'BoolSign',     ord(vdfSignDefault),          ADisplayFormat.BoolSignFormat,         TypeInfo(TValueDisplayFormatSign));
-  AConfig.GetValue(APath + 'Char',         ord(vdfCharDefault),          ADisplayFormat.CharFormat,             TypeInfo(TValueDisplayFormatChar));
-  AConfig.GetValue(APath + 'CharBase',     ord(vdfBaseDefault),          ADisplayFormat.CharBaseFormat,          TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'CharSign',     ord(vdfSignDefault),          ADisplayFormat.CharSignFormat,         TypeInfo(TValueDisplayFormatSign));
-  AConfig.GetValue(APath + 'Float',        ord(vdfFloatDefault),         ADisplayFormat.FloatFormat,            TypeInfo(TValueDisplayFormatFloat));
-  AConfig.GetValue(APath + 'Struct',       ord(vdfStructDefault),        ADisplayFormat.StructFormat,           TypeInfo(TValueDisplayFormatStruct));
-  AConfig.GetValue(APath + 'StructAddr',   ord(vdfStructAddressDefault), ADisplayFormat.StructAddrFormat,       TypeInfo(TValueDisplayFormatStructAddr));
-  AConfig.GetValue(APath + 'StructPtr',    ord(vdfPointerDefault),       ADisplayFormat.StructPointerFormat,    TypeInfo(TValueDisplayFormatPointer));
-  AConfig.GetValue(APath + 'StructBase',   ord(vdfBaseDefault),          ADisplayFormat.StructPointerBaseFormat, TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'StructSign',   ord(vdfSignDefault),          ADisplayFormat.StructPointerSignFormat,TypeInfo(TValueDisplayFormatSign));
-  AConfig.GetValue(APath + 'Pointer',      ord(vdfPointerDefault),       ADisplayFormat.PointerFormat,          TypeInfo(TValueDisplayFormatPointer));
-  AConfig.GetValue(APath + 'PointerDeref', ord(vdfPointerDerefDefault),  ADisplayFormat.PointerDerefFormat,     TypeInfo(TValueDisplayFormatPointerDeref));
-  AConfig.GetValue(APath + 'PointerBase',  ord(vdfBaseDefault),          ADisplayFormat.PointerBaseFormat,       TypeInfo(TValueDisplayFormatBase));
-  AConfig.GetValue(APath + 'PointerSign',  ord(vdfSignDefault),          ADisplayFormat.PointerSignFormat,      TypeInfo(TValueDisplayFormatSign));
+
+  ADisplayFormat.Num.UseInherited := AConfig.GetValue (APath + 'NumInherit', DefaultWatchDisplayFormat.Num.UseInherited);
+   AConfig.GetValue(APath + 'Num',           ord(DefaultWatchDisplayFormat.Num.BaseFormat),            ADisplayFormat.Num.BaseFormat,           TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'Sign',          ord(DefaultWatchDisplayFormat.Num.SignFormat),            ADisplayFormat.Num.SignFormat,           TypeInfo(TValueDisplayFormatSign));
+   ADisplayFormat.Num.MinDigits[vdfBaseDecimal]  := AConfig.GetValue(APath + 'DigitsDec', DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseDecimal]);
+   ADisplayFormat.Num.MinDigits[vdfBaseHex]      := AConfig.GetValue(APath + 'DigitsHex', DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseHex]);
+   ADisplayFormat.Num.MinDigits[vdfBaseOct]      := AConfig.GetValue(APath + 'DigitsOct', DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseOct]);
+   ADisplayFormat.Num.MinDigits[vdfBaseBin]      := AConfig.GetValue(APath + 'DigitsBin', DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseBin]);
+   ADisplayFormat.Num.SeparatorDec            := AConfig.GetValue(APath + 'SepDec',    DefaultWatchDisplayFormat.Num.SeparatorDec);
+   AConfig.GetValue(APath + 'SepHex',        ord(DefaultWatchDisplayFormat.Num.SeparatorHexBin),       ADisplayFormat.Num.SeparatorHexBin,      TypeInfo(TValueDisplayFormatHexSeperator));
+  ADisplayFormat.Num2.UseInherited               := AConfig.GetValue(APath + 'Num2Inherit', DefaultWatchDisplayFormat.Num2.UseInherited);
+   ADisplayFormat.Num2.Visible                := AConfig.GetValue(APath + 'Num2.Visible', DefaultWatchDisplayFormat.Num2.Visible);
+   AConfig.GetValue(APath + 'Num2',          ord(DefaultWatchDisplayFormat.Num2.BaseFormat),          ADisplayFormat.Num2.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'Sign2',         ord(DefaultWatchDisplayFormat.Num2.SignFormat),          ADisplayFormat.Num2.SignFormat,          TypeInfo(TValueDisplayFormatSign));
+   ADisplayFormat.Num2.MinDigits[vdfBaseDecimal] := AConfig.GetValue(APath + 'DigitsDec2', DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseDecimal]);
+   ADisplayFormat.Num2.MinDigits[vdfBaseHex]     := AConfig.GetValue(APath + 'DigitsHex2', DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseHex]);
+   ADisplayFormat.Num2.MinDigits[vdfBaseOct]     := AConfig.GetValue(APath + 'DigitsOct2', DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseOct]);
+   ADisplayFormat.Num2.MinDigits[vdfBaseBin]     := AConfig.GetValue(APath + 'DigitsBin2', DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseBin]);
+   ADisplayFormat.Num2.SeparatorDec           := AConfig.GetValue(APath + 'SepDec2',    DefaultWatchDisplayFormat.Num2.SeparatorDec);
+   AConfig.GetValue(APath + 'SepHex2',        ord(DefaultWatchDisplayFormat.Num2.SeparatorHexBin),       ADisplayFormat.Num2.SeparatorHexBin,    TypeInfo(TValueDisplayFormatHexSeperator));
+  ADisplayFormat.Enum.UseInherited := AConfig.GetValue(APath + 'ENumInherit', DefaultWatchDisplayFormat.Enum.UseInherited);
+   AConfig.GetValue(APath + 'Enum',         ord(DefaultWatchDisplayFormat.Enum.MainFormat),               ADisplayFormat.Enum.MainFormat,              TypeInfo(TValueDisplayFormatEnum));
+   AConfig.GetValue(APath + 'EnumBase',     ord(DefaultWatchDisplayFormat.Enum.BaseFormat),           ADisplayFormat.Enum.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'EnumSign',     ord(DefaultWatchDisplayFormat.Enum.SignFormat),           ADisplayFormat.Enum.SignFormat,          TypeInfo(TValueDisplayFormatSign));
+  ADisplayFormat.Bool.UseInherited := AConfig.GetValue(APath + 'BoolInherit', DefaultWatchDisplayFormat.Bool.UseInherited);
+   AConfig.GetValue(APath + 'Bool',         ord(DefaultWatchDisplayFormat.Bool.MainFormat),               ADisplayFormat.Bool.MainFormat,              TypeInfo(TValueDisplayFormatBool));
+   AConfig.GetValue(APath + 'BoolBase',     ord(DefaultWatchDisplayFormat.Bool.BaseFormat),           ADisplayFormat.Bool.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'BoolSign',     ord(DefaultWatchDisplayFormat.Bool.SignFormat),           ADisplayFormat.Bool.SignFormat,          TypeInfo(TValueDisplayFormatSign));
+  ADisplayFormat.Char.UseInherited := AConfig.GetValue(APath + 'CharInherit', DefaultWatchDisplayFormat.Char.UseInherited);
+   AConfig.GetValue(APath + 'Char',         ord(DefaultWatchDisplayFormat.Char.MainFormat),               ADisplayFormat.Char.MainFormat,              TypeInfo(TValueDisplayFormatChar));
+   AConfig.GetValue(APath + 'CharBase',     ord(DefaultWatchDisplayFormat.Char.BaseFormat),           ADisplayFormat.Char.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'CharSign',     ord(DefaultWatchDisplayFormat.Char.SignFormat),           ADisplayFormat.Char.SignFormat,          TypeInfo(TValueDisplayFormatSign));
+  ADisplayFormat.Float.UseInherited := AConfig.GetValue(APath + 'FloatInherit', DefaultWatchDisplayFormat.Float.UseInherited);
+   AConfig.GetValue(APath + 'Float',        ord(DefaultWatchDisplayFormat.Float.NumFormat),              ADisplayFormat.Float.NumFormat,             TypeInfo(TValueDisplayFormatFloat));
+   ADisplayFormat.Float.Precission := AConfig.GetValue(APath + 'Float.Precission', DefaultWatchDisplayFormat.Float.Precission);
+  ADisplayFormat.Struct.UseInherited := AConfig.GetValue(APath + 'StructInherit', DefaultWatchDisplayFormat.Struct.UseInherited);
+   AConfig.GetValue(APath + 'Struct',       ord(DefaultWatchDisplayFormat.Struct.DataFormat),             ADisplayFormat.Struct.DataFormat,            TypeInfo(TValueDisplayFormatStruct));
+   AConfig.GetValue(APath + 'StructPtr',    ord(DefaultWatchDisplayFormat.Struct.ShowPointerFormat),      ADisplayFormat.Struct.ShowPointerFormat,     TypeInfo(TValueDisplayFormatStructPointer));
+  ADisplayFormat.Struct.Address.UseInherited := AConfig.GetValue(APath + 'StructAddrInherit', DefaultWatchDisplayFormat.Struct.Address.UseInherited);
+   AConfig.GetValue(APath + 'StructAddr',   ord(DefaultWatchDisplayFormat.Struct.Address.TypeFormat),      ADisplayFormat.Struct.Address.TypeFormat,     TypeInfo(TValueDisplayFormatAddress));
+   AConfig.GetValue(APath + 'StructBase',   ord(DefaultWatchDisplayFormat.Struct.Address.BaseFormat),  ADisplayFormat.Struct.Address.BaseFormat, TypeInfo(TValueDisplayFormatBase));
+   ADisplayFormat.Struct.Address.Signed := AConfig.GetValue(APath + 'StructSign',   DefaultWatchDisplayFormat.Struct.Address.Signed);
+  ADisplayFormat.Pointer.UseInherited := AConfig.GetValue(APath + 'PointerInherit', DefaultWatchDisplayFormat.Pointer.UseInherited);
+   AConfig.GetValue(APath + 'PointerDeref', ord(DefaultWatchDisplayFormat.Pointer.DerefFormat),       ADisplayFormat.Pointer.DerefFormat,      TypeInfo(TValueDisplayFormatPointerDeref));
+  ADisplayFormat.Pointer.Address.UseInherited := AConfig.GetValue(APath + 'PointerAddrInherit', DefaultWatchDisplayFormat.Pointer.Address.UseInherited);
+   AConfig.GetValue(APath + 'PointerAddr',  ord(DefaultWatchDisplayFormat.Pointer.Address.TypeFormat),     ADisplayFormat.Pointer.Address.TypeFormat,    TypeInfo(TValueDisplayFormatAddress));
+   AConfig.GetValue(APath + 'PointerBase',  ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),        ADisplayFormat.Pointer.Address.BaseFormat,       TypeInfo(TValueDisplayFormatBase));
+   ADisplayFormat.Pointer.Address.Signed := AConfig.GetValue(APath + 'PointerSign', DefaultWatchDisplayFormat.Pointer.Address.Signed);
+  ADisplayFormat.MemDump := AConfig.GetValue(APath + 'IsMemDump', DefaultWatchDisplayFormat.MemDump);
 end;
 
 procedure SaveDisplayFormatToXMLConfig(const AConfig: TXMLConfig; const APath: string;
   ADisplayFormat: TWatchDisplayFormat);
 begin
-  AConfig.SetDeleteValue(APath + 'IsMemDump',    ADisplayFormat.MemDump, False);
-  AConfig.SetDeleteValue(APath + 'Num',          ADisplayFormat.NumBaseFormat,              ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'Sign',         ADisplayFormat.NumSignFormat,             ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
-  AConfig.SetDeleteValue(APath + 'NumChar',      ADisplayFormat.NumCharFormat,          ord(vdfNumCharDefault),       TypeInfo(TValueDisplayFormatNumChar));
-  AConfig.SetDeleteValue(APath + 'Enum',         ADisplayFormat.EnumFormat,             ord(vdfEnumDefault),          TypeInfo(TValueDisplayFormatEnum));
-  AConfig.SetDeleteValue(APath + 'EnumBase',     ADisplayFormat.EnumBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'EnumSign',     ADisplayFormat.EnumSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
-  AConfig.SetDeleteValue(APath + 'Bool',         ADisplayFormat.BoolFormat,             ord(vdfBoolDefault),          TypeInfo(TValueDisplayFormatBool));
-  AConfig.SetDeleteValue(APath + 'BoolBase',     ADisplayFormat.BoolBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'BoolSign',     ADisplayFormat.BoolSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
-  AConfig.SetDeleteValue(APath + 'Char',         ADisplayFormat.CharFormat,             ord(vdfCharDefault),          TypeInfo(TValueDisplayFormatChar));
-  AConfig.SetDeleteValue(APath + 'CharBase',     ADisplayFormat.CharBaseFormat,          ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'CharSign',     ADisplayFormat.CharSignFormat,         ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
-  AConfig.SetDeleteValue(APath + 'Float',        ADisplayFormat.FloatFormat,            ord(vdfFloatDefault),         TypeInfo(TValueDisplayFormatFloat));
-  AConfig.SetDeleteValue(APath + 'Struct',       ADisplayFormat.StructFormat,           ord(vdfStructDefault),        TypeInfo(TValueDisplayFormatStruct));
-  AConfig.SetDeleteValue(APath + 'StructAddr',   ADisplayFormat.StructAddrFormat,       ord(vdfStructAddressDefault), TypeInfo(TValueDisplayFormatStructAddr));
-  AConfig.SetDeleteValue(APath + 'StructPtr',    ADisplayFormat.StructPointerFormat,    ord(vdfPointerDefault),       TypeInfo(TValueDisplayFormatPointer));
-  AConfig.SetDeleteValue(APath + 'StructBase',   ADisplayFormat.StructPointerBaseFormat, ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'StructSign',   ADisplayFormat.StructPointerSignFormat,ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
-  AConfig.SetDeleteValue(APath + 'Pointer',      ADisplayFormat.PointerFormat,          ord(vdfPointerDefault),       TypeInfo(TValueDisplayFormatPointer));
-  AConfig.SetDeleteValue(APath + 'PointerDeref', ADisplayFormat.PointerDerefFormat,     ord(vdfPointerDerefDefault),  TypeInfo(TValueDisplayFormatPointerDeref));
-  AConfig.SetDeleteValue(APath + 'PointerBase',  ADisplayFormat.PointerBaseFormat,       ord(vdfBaseDefault),          TypeInfo(TValueDisplayFormatBase));
-  AConfig.SetDeleteValue(APath + 'PointerSign',  ADisplayFormat.PointerSignFormat,      ord(vdfSignDefault),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + 'NumInherit',         ADisplayFormat.Num.UseInherited,              DefaultWatchDisplayFormat.Num.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Num',               ADisplayFormat.Num.BaseFormat,             ord(DefaultWatchDisplayFormat.Num.BaseFormat),           TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'Sign',              ADisplayFormat.Num.SignFormat,             ord(DefaultWatchDisplayFormat.Num.SignFormat),           TypeInfo(TValueDisplayFormatSign));
+   AConfig.SetDeleteValue(APath + 'DigitsDec',         ADisplayFormat.Num.MinDigits[vdfBaseDecimal], DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseDecimal]);
+   AConfig.SetDeleteValue(APath + 'DigitsHex',         ADisplayFormat.Num.MinDigits[vdfBaseHex],     DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseHex]);
+   AConfig.SetDeleteValue(APath + 'DigitsOct',         ADisplayFormat.Num.MinDigits[vdfBaseOct],     DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseOct]);
+   AConfig.SetDeleteValue(APath + 'DigitsBin',         ADisplayFormat.Num.MinDigits[vdfBaseBin],     DefaultWatchDisplayFormat.Num.MinDigits[vdfBaseBin]);
+   AConfig.SetDeleteValue(APath + 'SepDec',            ADisplayFormat.Num.SeparatorDec,           DefaultWatchDisplayFormat.Num.SeparatorDec);
+   AConfig.SetDeleteValue(APath + 'SepHex',            ADisplayFormat.Num.SeparatorHexBin,        ord(DefaultWatchDisplayFormat.Num.SeparatorHexBin),       TypeInfo(TValueDisplayFormatHexSeperator));
+  AConfig.SetDeleteValue(APath + 'Num2Inherit',        ADisplayFormat.Num2.UseInherited,             DefaultWatchDisplayFormat.Num2.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Num2.Visible',       ADisplayFormat.Num2.Visible,               DefaultWatchDisplayFormat.Num2.Visible);
+   AConfig.SetDeleteValue(APath + 'Num2',              ADisplayFormat.Num2.BaseFormat,            ord(DefaultWatchDisplayFormat.Num2.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'Sign2',             ADisplayFormat.Num2.SignFormat,            ord(DefaultWatchDisplayFormat.Num2.SignFormat),          TypeInfo(TValueDisplayFormatSign));
+   AConfig.SetDeleteValue(APath + 'DigitsDec2',        ADisplayFormat.Num2.MinDigits[vdfBaseDecimal], DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseDecimal]);
+   AConfig.SetDeleteValue(APath + 'DigitsHex2',        ADisplayFormat.Num2.MinDigits[vdfBaseHex],     DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseHex]);
+   AConfig.SetDeleteValue(APath + 'DigitsOct2',        ADisplayFormat.Num2.MinDigits[vdfBaseOct],     DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseOct]);
+   AConfig.SetDeleteValue(APath + 'DigitsBin2',        ADisplayFormat.Num2.MinDigits[vdfBaseBin],     DefaultWatchDisplayFormat.Num2.MinDigits[vdfBaseBin]);
+   AConfig.SetDeleteValue(APath + 'SepDec2',           ADisplayFormat.Num2.SeparatorDec,           DefaultWatchDisplayFormat.Num2.SeparatorDec);
+   AConfig.SetDeleteValue(APath + 'SepHex2',           ADisplayFormat.Num2.SeparatorHexBin,        ord(DefaultWatchDisplayFormat.Num2.SeparatorHexBin),       TypeInfo(TValueDisplayFormatHexSeperator));
+  AConfig.SetDeleteValue(APath + 'ENumInherit',        ADisplayFormat.Enum.UseInherited,              DefaultWatchDisplayFormat.Enum.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Enum',              ADisplayFormat.Enum.MainFormat,                 ord(DefaultWatchDisplayFormat.Enum.MainFormat),              TypeInfo(TValueDisplayFormatEnum));
+   AConfig.SetDeleteValue(APath + 'EnumBase',          ADisplayFormat.Enum.BaseFormat,             ord(DefaultWatchDisplayFormat.Enum.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'EnumSign',          ADisplayFormat.Enum.SignFormat,             ord(DefaultWatchDisplayFormat.Enum.SignFormat),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + 'BoolInherit',        ADisplayFormat.Bool.UseInherited,              DefaultWatchDisplayFormat.Bool.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Bool',              ADisplayFormat.Bool.MainFormat,                 ord(DefaultWatchDisplayFormat.Bool.MainFormat),              TypeInfo(TValueDisplayFormatBool));
+   AConfig.SetDeleteValue(APath + 'BoolBase',          ADisplayFormat.Bool.BaseFormat,             ord(DefaultWatchDisplayFormat.Bool.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'BoolSign',          ADisplayFormat.Bool.SignFormat,             ord(DefaultWatchDisplayFormat.Bool.SignFormat),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + 'CharInherit',        ADisplayFormat.Char.UseInherited,              DefaultWatchDisplayFormat.Char.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Char',              ADisplayFormat.Char.MainFormat,                 ord(DefaultWatchDisplayFormat.Char.MainFormat),              TypeInfo(TValueDisplayFormatChar));
+   AConfig.SetDeleteValue(APath + 'CharBase',          ADisplayFormat.Char.BaseFormat,             ord(DefaultWatchDisplayFormat.Char.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'CharSign',          ADisplayFormat.Char.SignFormat,             ord(DefaultWatchDisplayFormat.Char.SignFormat),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + 'FloatInherit',       ADisplayFormat.Float.UseInherited,             DefaultWatchDisplayFormat.Float.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Float',             ADisplayFormat.Float.NumFormat,                ord(DefaultWatchDisplayFormat.Float.NumFormat),             TypeInfo(TValueDisplayFormatFloat));
+   AConfig.SetDeleteValue(APath + 'Float.Precission',   ADisplayFormat.Float.Precission,            DefaultWatchDisplayFormat.Float.Precission);
+  AConfig.SetDeleteValue(APath + 'StructInherit',      ADisplayFormat.Struct.UseInherited,            DefaultWatchDisplayFormat.Struct.UseInherited);
+   AConfig.SetDeleteValue(APath + 'Struct',            ADisplayFormat.Struct.DataFormat,               ord(DefaultWatchDisplayFormat.Struct.DataFormat),            TypeInfo(TValueDisplayFormatStruct));
+   AConfig.SetDeleteValue(APath + 'StructPtr',         ADisplayFormat.Struct.ShowPointerFormat,        ord(DefaultWatchDisplayFormat.Struct.ShowPointerFormat),     TypeInfo(TValueDisplayFormatStructPointer));
+  AConfig.SetDeleteValue(APath + 'StructAddrInherit',  ADisplayFormat.Struct.Address.UseInherited,        DefaultWatchDisplayFormat.Struct.Address.UseInherited);
+   AConfig.SetDeleteValue(APath + 'StructAddr',        ADisplayFormat.Struct.Address.TypeFormat,        ord(DefaultWatchDisplayFormat.Struct.Address.TypeFormat),     TypeInfo(TValueDisplayFormatAddress));
+   AConfig.SetDeleteValue(APath + 'StructSign',        ADisplayFormat.Struct.Address.Signed,        DefaultWatchDisplayFormat.Struct.Address.Signed);
+   AConfig.SetDeleteValue(APath + 'StructBase',        ADisplayFormat.Struct.Address.BaseFormat,    ord(DefaultWatchDisplayFormat.Struct.Address.BaseFormat), TypeInfo(TValueDisplayFormatBase));
+  AConfig.SetDeleteValue(APath + 'PointerInherit',     ADisplayFormat.Pointer.UseInherited,           DefaultWatchDisplayFormat.Pointer.UseInherited);
+   AConfig.SetDeleteValue(APath + 'PointerDeref',      ADisplayFormat.Pointer.DerefFormat,         ord(DefaultWatchDisplayFormat.Pointer.DerefFormat),      TypeInfo(TValueDisplayFormatPointerDeref));
+  AConfig.SetDeleteValue(APath + 'PointerAddrInherit', ADisplayFormat.Pointer.Address.UseInherited,       DefaultWatchDisplayFormat.Pointer.Address.UseInherited);
+   AConfig.SetDeleteValue(APath + 'PointerAddr',       ADisplayFormat.Pointer.Address.TypeFormat,       ord(DefaultWatchDisplayFormat.Pointer.Address.TypeFormat),    TypeInfo(TValueDisplayFormatAddress));
+   AConfig.SetDeleteValue(APath + 'PointerBase',       ADisplayFormat.Pointer.Address.BaseFormat,   ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),       TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'PointerSign',       ADisplayFormat.Pointer.Address.Signed,       DefaultWatchDisplayFormat.Pointer.Address.Signed);
+  AConfig.SetDeleteValue(APath + 'IsMemDump',          ADisplayFormat.MemDump, False);
 end;
 
 function DisplayFormatName(ADispFormat: TValueDisplayFormat): string;
@@ -163,50 +223,37 @@ begin
   Result := '?';
   WriteStr(Result, ADispFormat);
   case ADispFormat of
-    vdfBaseDefault:          Result := DispFormatBaseDefault;
     vdfBaseDecimal:          Result := DispFormatBaseDecimal;
-    vdfBaseHex:              Result := DispFormatBaseHex;
-    vdfBaseOct:              Result := DispFormatBaseOct;
-    vdfBaseBin:              Result := DispFormatBaseBin;
-    vdfBasePointer:          Result := DispFormatBasePointer;
-    vdfSignDefault:          Result := DispFormatSignDefault;
-    vdfSignSigned:           Result := DispFormatSignSigned;
-    vdfSignUnsigned:         Result := DispFormatSignUnsigned;
-    vdfNumCharDefault:       Result := DispFormatNumCharDefault;
-    vdfNumCharOff:           Result := DispFormatNumCharOff;
-    vdfNumCharOrdAndUnicode: Result := DispFormatNumCharOrdAndUnicode;
-    vdfNumCharOnlyUnicode:   Result := DispFormatNumCharOnlyUnicode;
-    vdfEnumDefault:          Result := DispFormatEnumDefault;
+     vdfBaseHex:             Result := DispFormatBaseHex;
+     vdfBaseOct:             Result := DispFormatBaseOct;
+     vdfBaseBin:             Result := DispFormatBaseBin;
+     vdfBaseChar:            Result := DispFormatBaseChar;
+    vdfSignAuto:             Result := DispFormatSignAuto;
+     vdfSignSigned:          Result := DispFormatSignSigned;
+     vdfSignUnsigned:        Result := DispFormatSignUnsigned;
     vdfEnumName:             Result := DispFormatEnumName;
-    vdfEnumOrd:              Result := DispFormatEnumOrd;
-    vdfEnumNameAndOrd:       Result := DispFormatEnumNameAndOrd;
-    vdfBoolDefault:          Result := DispFormatBoolDefault;
+     vdfEnumOrd:             Result := DispFormatEnumOrd;
+     vdfEnumNameAndOrd:      Result := DispFormatEnumNameAndOrd;
     vdfBoolName:             Result := DispFormatBoolName;
-    vdfBoolOrd:              Result := DispFormatBoolOrd;
-    vdfBoolNameAndOrd:       Result := DispFormatBoolNameAndOrd;
-    vdfCharDefault:          Result := DispFormatCharDefault;
+     vdfBoolOrd:             Result := DispFormatBoolOrd;
+     vdfBoolNameAndOrd:      Result := DispFormatBoolNameAndOrd;
     vdfCharLetter:           Result := DispFormatCharLetter;
-    vdfCharOrd:              Result := DispFormatCharOrd;
-    vdfCharLetterAndOrd:     Result := DispFormatCharLetterAndOrd;
-    vdfFloatDefault:         Result := DispFormatFloatDefault;
+     vdfCharOrd:             Result := DispFormatCharOrd;
+     vdfCharLetterAndOrd:    Result := DispFormatCharLetterAndOrd;
     vdfFloatPoint:           Result := DispFormatFloatPoint;
-    vdfFloatScientific:      Result := DispFormatFloatScientific;
-    vdfStructDefault:        Result := DispFormatStructDefault;
+     vdfFloatScientific:     Result := DispFormatFloatScientific;
     vdfStructValOnly:        Result := DispFormatStructValOnly;
-    vdfStructFields:         Result := DispFormatStructFields;
-    vdfStructFull:           Result := DispFormatStructFull;
-    vdfStructAddressDefault: Result := DispFormatStructAddressDefault;
-    vdfStructAddressOff:     Result := DispFormatStructAddressOff;
-    vdfStructAddressOn:      Result := DispFormatStructAddressOn;
-    vdfStructAddressOnly:    Result := DispFormatStructAddressOnly;
-    vdfPointerDefault:       Result := DispFormatPointerDefault;
-    vdfPointerAddress:       Result := DispFormatPointerAddress;
-    vdfPointerTypedAddress:  Result := DispFormatPointerTypedAddress;
-    vdfPointerDerefDefault:  Result := DispFormatPointerDerefDefault;
+     vdfStructFields:        Result := DispFormatStructFields;
+     vdfStructFull:          Result := DispFormatStructFull;
+    vdfStructPointerOff:     Result := DispFormatStructAddressOff;
+     vdfStructPointerOn:     Result := DispFormatStructAddressOn;
+     vdfStructPointerOnly:   Result := DispFormatStructAddressOnly;
+    vdfAddressPlain:         Result := DispFormatPointerAddressPlain;
+     vdfAddressTyped:        Result := DispFormatPointerAddressTyped;
     vdfPointerDerefOff:      Result := DispFormatPointerDerefOff;
-    vdfPointerDerefOn:       Result := DispFormatPointerDerefOn;
-    vdfPointerDerefOnly:     Result := DispFormatPointerDerefOnly;
-    vdfCategoryData:         Result := DispFormatCategoryData;
+     vdfPointerDerefOn:      Result := DispFormatPointerDerefOn;
+     vdfPointerDerefOnly:    Result := DispFormatPointerDerefOnly;
+     vdfCategoryData:        Result := DispFormatCategoryData;
     vdfCategoryMemDump:      Result := DispFormatCategoryMemDump;
   end;
 end;
@@ -221,15 +268,14 @@ begin
   case ADispFormatGroup of
     vdfgBase:          Result := DispFormatGroupBase;
     vdfgSign:          Result := DispFormatGroupSign;
-    vdfgNumChar:       Result := DispFormatGroupNumChar;
     vdfgEnum:          Result := DispFormatGroupEnum;
     vdfgBool:          Result := DispFormatGroupBool;
     vdfgChar:          Result := DispFormatGroupChar;
     vdfgFloat:         Result := DispFormatGroupFloat;
     vdfgStruct:        Result := DispFormatGroupStruct;
     vdfgStructAddress: Result := DispFormatGroupStructAddress;
-    vdfgPointer:       Result := DispFormatGroupPointer;
     vdfgPointerDeref:  Result := DispFormatGroupPointerDeref;
+    vdfgAddress:       Result := DispFormatGroupAddress;
     vdfgCategory:      Result := DispFormatGroupCategory;
     else Result := '?';
   end;
@@ -255,6 +301,21 @@ begin
       Result := Result + ValueDisplayFormatMaskMap[g];
 end;
 
+{ TWatchDisplayFormatList }
+
+function TWatchDisplayFormatList.Get(Index: Integer): TWatchDisplayFormat;
+begin
+  if (Index < 0) or (Count = 0) then
+    Result := DefaultWatchDisplayFormat
+  else
+    Result := inherited Get(Index);
+end;
+
+procedure TWatchDisplayFormatList.Put(Index: Integer; const Item: TWatchDisplayFormat);
+begin
+  inherited Put(Index, Item);
+end;
+
 { TDisplayFormatConfig }
 
 function TDisplayFormatConfig.GetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget
@@ -277,8 +338,9 @@ begin
   end;
 end;
 
-constructor TDisplayFormatConfig.Create;
+constructor TDisplayFormatConfig.Create(AGLobalDefault: Boolean);
 begin
+  FGLobalDefault := AGLobalDefault;
   inherited Create;
   Clear;
 end;
@@ -311,10 +373,13 @@ end;
 procedure TDisplayFormatConfig.AddToTargetedList(AList: TWatchDisplayFormatList;
   ATarget: TDisplayFormatTarget);
 begin
-  if not (FDefaultDisplayFormats[dtfGlobal] = DefaultWatchDisplayFormat) then
+  If FGLobalDefault then
+    FDefaultDisplayFormats[dtfGlobal].MakeAllOverrides;
+
+  if (FDefaultDisplayFormats[dtfGlobal].HasOverrides) then
     AList.Add(FDefaultDisplayFormats[dtfGlobal]);
   if ATarget <> dtfGlobal then
-    if not (FDefaultDisplayFormats[ATarget] = DefaultWatchDisplayFormat) then
+    if (FDefaultDisplayFormats[ATarget].HasOverrides) then
       AList.Add(FDefaultDisplayFormats[ATarget]);
 end;
 

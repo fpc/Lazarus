@@ -814,7 +814,7 @@ constructor TDebuggerOptions.Create;
 begin
   inherited Create;
   FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
-  FDisplayFormatConfigs := TDisplayFormatConfig.Create;
+  FDisplayFormatConfigs := TDisplayFormatConfig.Create(True);
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
   Init;

@@ -2,21 +2,19 @@ object WatchPropertyDlg: TWatchPropertyDlg
   Left = 513
   Height = 571
   Top = 271
-  Width = 680
-  AutoSize = True
+  Width = 580
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
   Caption = 'Watch Properties'
   ClientHeight = 571
-  ClientWidth = 680
-  Constraints.MinWidth = 680
+  ClientWidth = 580
+  Constraints.MinWidth = 500
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
     Top = 539
-    Width = 668
+    Width = 568
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = btnOKClick
@@ -34,14 +32,14 @@ object WatchPropertyDlg: TWatchPropertyDlg
   end
   object PanelTop: TPanel
     Left = 0
-    Height = 172
+    Height = 120
     Top = 0
-    Width = 680
+    Width = 580
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 172
-    ClientWidth = 680
+    ClientHeight = 120
+    ClientWidth = 580
     TabOrder = 0
     object lblExpression: TLabel
       AnchorSideLeft.Control = PanelTop
@@ -63,7 +61,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
       Left = 71
       Height = 23
       Top = 6
-      Width = 603
+      Width = 503
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -71,216 +69,186 @@ object WatchPropertyDlg: TWatchPropertyDlg
       TabOrder = 0
       OnChange = txtExpressionChange
     end
-    object lblRepCount: TLabel
+    object Panel1: TPanel
       AnchorSideLeft.Control = PanelTop
-      AnchorSideTop.Control = txtRepCount
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 39
-      Width = 75
-      BorderSpacing.Left = 6
-      Caption = 'Repeat Count:'
-      ParentColor = False
-    end
-    object txtRepCount: TEdit
-      AnchorSideLeft.Control = lblRepCount
-      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = txtExpression
       AnchorSideTop.Side = asrBottom
-      Left = 87
-      Height = 23
-      Top = 35
-      Width = 60
+      AnchorSideRight.Control = PanelTop
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 91
+      Top = 29
+      Width = 568
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BevelOuter = bvNone
+      ChildSizing.HorizontalSpacing = 5
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 91
+      ClientWidth = 568
       TabOrder = 1
-      Text = '0'
-    end
-    object txtDigits: TEdit
-      AnchorSideLeft.Control = lblDigits
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = txtRepCount
-      AnchorSideTop.Side = asrCenter
-      Left = 198
-      Height = 23
-      Top = 35
-      Width = 60
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      TabOrder = 2
-      Text = '0'
-    end
-    object lblDigits: TLabel
-      AnchorSideLeft.Control = txtRepCount
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = lblRepCount
-      AnchorSideTop.Side = asrCenter
-      Left = 159
-      Height = 15
-      Top = 39
-      Width = 33
-      BorderSpacing.Left = 12
-      Caption = 'Digits:'
-      ParentColor = False
-    end
-    object chkEnabled: TCheckBox
-      AnchorSideLeft.Control = lblExpression
-      AnchorSideTop.Control = txtRepCount
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 61
-      Width = 60
-      BorderSpacing.Top = 3
-      Caption = 'Enabled'
-      TabOrder = 3
-    end
-    object chkAllowFunc: TCheckBox
-      AnchorSideLeft.Control = lblExpression
-      AnchorSideTop.Control = chkEnabled
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 80
-      Width = 126
-      Caption = 'Allow Function Calls'
-      TabOrder = 4
-      OnChange = chkAllowFuncChange
-    end
-    object chkUseInstanceClass: TCheckBox
-      AnchorSideLeft.Control = lblExpression
-      AnchorSideTop.Control = chkAllowFuncThreads
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 118
-      Width = 127
-      BorderSpacing.Bottom = 6
-      Caption = 'chkUseInstanceClass'
-      TabOrder = 5
-    end
-    object dropFpDbgConv: TComboBox
-      AnchorSideLeft.Control = lblFpDbgConv
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = chkUseInstanceClass
-      AnchorSideTop.Side = asrBottom
-      Left = 88
-      Height = 23
-      Top = 143
-      Width = 160
-      BorderSpacing.Left = 6
-      BorderSpacing.Bottom = 6
-      ItemHeight = 15
-      Style = csDropDownList
-      TabOrder = 6
-    end
-    object lblFpDbgConv: TLabel
-      AnchorSideLeft.Control = lblExpression
-      AnchorSideTop.Control = dropFpDbgConv
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 147
-      Width = 76
-      Caption = 'lblFpDbgConv'
-    end
-    object chkAllowFuncThreads: TCheckBox
-      AnchorSideLeft.Control = lblExpression
-      AnchorSideTop.Control = chkAllowFunc
-      AnchorSideTop.Side = asrBottom
-      Left = 26
-      Height = 19
-      Top = 99
-      Width = 134
-      BorderSpacing.Left = 20
-      Caption = 'chkAllowFuncThreads'
-      TabOrder = 7
+      object Spacer1: TLabel
+        Left = 0
+        Height = 1
+        Top = 0
+        Width = 282
+        AutoSize = False
+      end
+      object Spacer2: TLabel
+        Left = 287
+        Height = 1
+        Top = 0
+        Width = 281
+        AutoSize = False
+      end
+      object chkEnabled: TCheckBox
+        AnchorSideLeft.Control = Spacer1
+        AnchorSideTop.Control = Panel1
+        AnchorSideRight.Control = Spacer1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 19
+        Top = 5
+        Width = 282
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 5
+        Caption = 'Enabled'
+        TabOrder = 0
+      end
+      object chkUseInstanceClass: TCheckBox
+        AnchorSideLeft.Control = Spacer1
+        AnchorSideTop.Control = chkEnabled
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Spacer1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 19
+        Top = 29
+        Width = 282
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 5
+        Caption = 'chkUseInstanceClass'
+        TabOrder = 1
+      end
+      object chkAllowFunc: TCheckBox
+        AnchorSideLeft.Control = Spacer1
+        AnchorSideTop.Control = chkUseInstanceClass
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Spacer1
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 19
+        Top = 53
+        Width = 282
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 5
+        Caption = 'Allow Function Calls'
+        TabOrder = 2
+        OnChange = chkAllowFuncChange
+      end
+      object chkAllowFuncThreads: TCheckBox
+        AnchorSideLeft.Control = chkAllowFunc
+        AnchorSideTop.Control = chkAllowFunc
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = chkAllowFunc
+        AnchorSideRight.Side = asrBottom
+        Left = 20
+        Height = 19
+        Top = 72
+        Width = 262
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 20
+        Caption = 'chkAllowFuncThreads'
+        TabOrder = 3
+      end
+      object Panel2: TPanel
+        AnchorSideLeft.Control = Spacer2
+        AnchorSideTop.Control = Panel1
+        AnchorSideRight.Control = Spacer2
+        AnchorSideRight.Side = asrBottom
+        Left = 287
+        Height = 62
+        Top = 0
+        Width = 281
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BevelOuter = bvNone
+        ChildSizing.HorizontalSpacing = 3
+        ChildSizing.EnlargeHorizontal = crsScaleChilds
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        ClientHeight = 62
+        ClientWidth = 281
+        TabOrder = 4
+        object lblRepCount: TLabel
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 9
+          Width = 92
+          BorderSpacing.Top = 5
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'Repeat Count:'
+          ParentColor = False
+        end
+        object txtRepCount: TEdit
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 98
+          Height = 23
+          Top = 5
+          Width = 183
+          Alignment = taRightJustify
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 5
+          TabOrder = 0
+          Text = '0'
+        end
+        object lblFpDbgConv: TLabel
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 37
+          Width = 92
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'lblFpDbgConv'
+        end
+        object dropFpDbgConv: TComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 98
+          Height = 23
+          Top = 33
+          Width = 183
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 5
+          BorderSpacing.Bottom = 6
+          Constraints.MinWidth = 150
+          ItemHeight = 15
+          Style = csDropDownList
+          TabOrder = 1
+        end
+      end
     end
   end
   inline DisplayFormatFrame1: TDisplayFormatFrame
     Left = 6
-    Height = 355
-    Top = 178
-    Width = 668
+    Height = 407
+    Top = 126
+    Width = 568
+    VertScrollBar.Increment = 40
+    VertScrollBar.Page = 407
     Align = alClient
     BorderSpacing.Around = 6
-    ClientHeight = 355
-    ClientWidth = 668
+    ClientHeight = 407
+    ClientWidth = 551
     TabOrder = 1
-    inherited PanelEnum: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelEnum: TDividerBevel
-        Width = 668
-      end
-      inherited PanelEnumRb1: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
-    inherited PanelFloat: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelFloat: TDividerBevel
-        Width = 668
-      end
-      inherited PanelFloatRb: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
-    inherited PanelStruct: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelStruct: TDividerBevel
-        Width = 668
-      end
-      inherited PanelStructFld: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-      inherited PanelStructAddr: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
-    inherited PanelPointer: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelPointer: TDividerBevel
-        Width = 668
-      end
-      inherited PanelPointerDeref: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
-    inherited PanelAddressFormat: TPanel
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelAddressFormat: TDividerBevel
-        Width = 668
-      end
-      inherited PanelPointerType: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-      inherited PanelPointerNum: TPanel
-        Width = 658
-        ClientWidth = 658
-      end
-    end
-    inherited PanelMemDump: TPanel
-      Top = 354
-      Width = 668
-      ClientWidth = 668
-      inherited DividerBevelMemDump: TDividerBevel
-        Width = 668
-      end
-      inherited cbMemDump: TCheckBox
-        Width = 658
-      end
-    end
   end
 end

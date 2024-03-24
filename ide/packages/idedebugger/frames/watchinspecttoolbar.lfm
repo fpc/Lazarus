@@ -133,14 +133,14 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object tbDivCol: TToolButton
-      Left = 516
+      Left = 506
       Height = 22
       Top = 2
       Caption = 'tbDivCol'
       Style = tbsDivider
     end
     object edFilter: TEditButton
-      Left = 366
+      Left = 356
       Height = 23
       Top = 2
       Width = 150
@@ -153,7 +153,7 @@ object WatchInspectNav: TWatchInspectNav
       Visible = False
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 521
+      Left = 511
       Height = 23
       Top = 2
       Width = 253
@@ -192,39 +192,39 @@ object WatchInspectNav: TWatchInspectNav
       end
     end
     object tbDivArray: TToolButton
-      Left = 774
+      Left = 764
       Height = 22
       Top = 2
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 779
+      Left = 769
       Top = 2
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 898
+      Left = 888
       Top = 2
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 846
+      Left = 836
       Top = 2
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 944
+      Left = 934
       Height = 22
       Top = 2
       Caption = 'tbDivAdd'
       Style = tbsDivider
     end
     object btnEvalHistory: TToolButton
-      Left = 949
+      Left = 939
       Top = 2
       Caption = 'History'
       DropdownMenu = mnuHistory
@@ -235,11 +235,10 @@ object WatchInspectNav: TWatchInspectNav
       Top = 2
       AllowAllUp = True
       Caption = 'df'
-      DropdownMenu = popDispForm
       ParentShowHint = False
       ShowHint = True
-      Style = tbsButtonDrop
       Visible = False
+      OnClick = btnDisplayFormatClick
     end
   end
   object Panel1: TPanel
@@ -295,9 +294,5 @@ object WatchInspectNav: TWatchInspectNav
   object popConverter: TPopupMenu
     Left = 204
     Top = 56
-  end
-  object popDispForm: TPopupMenu
-    Left = 334
-    Top = 62
   end
 end

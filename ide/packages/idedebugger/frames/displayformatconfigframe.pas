@@ -5,24 +5,138 @@ unit DisplayFormatConfigFrame;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons, Graphics,
-  DividerBevel, IdeDebuggerWatchValueIntf, IdeDebuggerWatchResPrinter,
+  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons, Graphics, Spin,
+  LCLType, DividerBevel, IdeDebuggerWatchValueIntf, LazLoggerBase, IdeDebuggerWatchResPrinter,
   IdeDebuggerStringConstants, IdeDebuggerDisplayFormats;
 
 type
+  TValueDisplayFormatArray = array of TValueDisplayFormat;
+  TValueDisplayFormatHexSeperatorArray = array of TValueDisplayFormatHexSeperator;
+  TBoolSet = set of boolean;
+
+  TRadioButton = class;
+
+  { TRadioMultiMarker }
+
+  TRadioMultiMarker = class(TPanel)
+  private
+    FRadio: TRadioButton;
+    procedure DoClicked(Sender: TObject);
+  protected
+    procedure VisibleChanged; override;
+    procedure BoundsChanged; override;
+  public
+    constructor Create(TheOwner: TComponent; TheRadio: TRadioButton); reintroduce;
+  end;
+
+  { TRadioButton }
+
+  TRadioButton = class(StdCtrls.TRadioButton)
+  private
+    FMultiMarker: TRadioMultiMarker;
+  protected
+    procedure ClearMultiMarkers;
+  public
+    procedure ShowMultiMarker;
+    procedure HideMultiMarker;
+  end;
 
   { TDisplayFormatFrame }
 
   TDisplayFormatFrame = class(TFrame)
+    cbAddrSign: TCheckBox;
     cbMemDump: TCheckBox;
-    DividerBevelFloat: TDividerBevel;
+    cbOverrideNum2Base: TCheckBox;
+    cbOverridePointerDeref: TCheckBox;
+    cbOverrideAddressFormat: TCheckBox;
+    cbOverrideNumBase: TCheckBox;
+    cbOverrideEnum: TCheckBox;
+    cbOverrideFloat: TCheckBox;
+    cbOverrideStruct: TCheckBox;
+    cbNum2Visibile: TCheckBox;
+    cbNumSeparator: TCheckBox;
+    cbNum2Separator: TCheckBox;
+    cbEnumSign: TCheckBox;
+    DigitSpacer3: TLabel;
+    DigitSpacer4: TLabel;
+    DividerBevelNum2: TDividerBevel;
+    DividerBevelPointerDeref: TDividerBevel;
+    DividerBevelAddressFormat: TDividerBevel;
     DividerBevelNum: TDividerBevel;
     DividerBevelMemDump: TDividerBevel;
-    DividerBevelNumChar: TDividerBevel;
-    DividerBevelAddressFormat: TDividerBevel;
-    DividerBevelStruct: TDividerBevel;
     DividerBevelEnum: TDividerBevel;
-    DividerBevelPointer: TDividerBevel;
+    DividerBevelFloat: TDividerBevel;
+    DividerBevelStruct: TDividerBevel;
+    Label1: TLabel;
+    Label3: TLabel;
+    lpAddrSpace: TLabel;
+    lbEnumBaseSpace: TLabel;
+    lbNum2Digits: TLabel;
+    lbOverrideFloat: TLabel;
+    lbOverridePointerDeref: TLabel;
+    lbOverrideStruct: TLabel;
+    lbOverrideNum2Base: TLabel;
+    lbOverrideEnum: TLabel;
+    lbNumSepGroup: TLabel;
+    lbNumDigits: TLabel;
+    lbOverrideAddressFormat: TLabel;
+    lbOverrideNumBase: TLabel;
+    lbNum2SepGroup: TLabel;
+    PanelNum2All: TPanel;
+    PanelNum2Digits: TPanel;
+    PanelENumBase: TPanel;
+    PanelNumSepGroup: TPanel;
+    PanelNum2: TPanel;
+    PanelNum2Base: TPanel;
+    PanelNum2Visible: TPanel;
+    PanelNum2Sign: TPanel;
+    PanelNum2SepGroup: TPanel;
+    rbClear: TRadioButton;
+    rbClear1: TRadioButton;
+    rbClear10: TRadioButton;
+    rbClear11: TRadioButton;
+    rbClear12: TRadioButton;
+    rbClear13: TRadioButton;
+    rbClear14: TRadioButton;
+    rbClear2: TRadioButton;
+    rbClear3: TRadioButton;
+    rbClear4: TRadioButton;
+    rbClear5: TRadioButton;
+    rbClear6: TRadioButton;
+    rbClear7: TRadioButton;
+    rbClear9: TRadioButton;
+    rbNum2SepByte: TRadioButton;
+    rbNum2SepLong: TRadioButton;
+    rbENumBin: TRadioButton;
+    rbENumChar: TRadioButton;
+    rbENumDec: TRadioButton;
+    rbENumHex: TRadioButton;
+    rbENumOct: TRadioButton;
+    rbAddrNumBin: TRadioButton;
+    rbNumSepNone: TRadioButton;
+    rbNumSepByte: TRadioButton;
+    rbNum2Char: TRadioButton;
+    rbNum2Bin: TRadioButton;
+    rbNum2Dec: TRadioButton;
+    rbNum2Hex: TRadioButton;
+    rbNum2Oct: TRadioButton;
+    rbNum2SepNone: TRadioButton;
+    rbNumSepWord: TRadioButton;
+    rbNumSepLong: TRadioButton;
+    rbNum2SepWord: TRadioButton;
+    rbSign2Auto: TRadioButton;
+    rbSign2Signed: TRadioButton;
+    rbSign2Unsigned: TRadioButton;
+    Shape10: TShape;
+    Shape11: TShape;
+    Shape12: TShape;
+    Shape13: TShape;
+    Shape16: TShape;
+    Shape17: TShape;
+    Shape18: TShape;
+    Spacer1: TLabel;
+    lbFloatPrec: TLabel;
+    Label5: TLabel;
     PanelAddressFormat: TPanel;
     PanelMemDump: TPanel;
     PanelPointerDeref: TPanel;
@@ -30,55 +144,61 @@ type
     PanelFloatRb: TPanel;
     PanelNumBase: TPanel;
     PanelNumSign: TPanel;
-    PanelNumChar: TPanel;
+    PanelNumDigits: TPanel;
     PanelNum: TPanel;
-    PanelPointerNum: TPanel;
+    PanelAddressBase: TPanel;
     PanelStruct: TPanel;
     PanelEnum: TPanel;
     PanelPointer: TPanel;
     PanelStructFld: TPanel;
     PanelEnumRb1: TPanel;
-    PanelPointerType: TPanel;
-    PanelStructAddr: TPanel;
-    rbPointerDerefDefault: TRadioButton;
-    rbPointerNumDefault: TRadioButton;
+    PanelAddressType: TPanel;
+    PanelStructPointer: TPanel;
     rbPointerDerefOff: TRadioButton;
-    rbPointerNumHex: TRadioButton;
-    rbPointerNumDec: TRadioButton;
+    rbAddrNumHex: TRadioButton;
+    rbAddrNumDec: TRadioButton;
     rbPointerDerefOnly: TRadioButton;
     rbPointerDerefOn: TRadioButton;
-    rbFloatDefault: TRadioButton;
     rbFloatPoint: TRadioButton;
     rbFloatScience: TRadioButton;
-    rbNumCharOff: TRadioButton;
-    rbNumCharDefault: TRadioButton;
-    rbNumCharUni: TRadioButton;
-    rbNumCharUniNum: TRadioButton;
     rbNumBin: TRadioButton;
     rbNumDec: TRadioButton;
-    rbNumDefault: TRadioButton;
     rbNumHex: TRadioButton;
     rbNumOct: TRadioButton;
-    rbNumPtr: TRadioButton;
-    rbPointerNumOct: TRadioButton;
-    rbSignDefault: TRadioButton;
+    rbNumChar: TRadioButton;
+    rbAddrNumOct: TRadioButton;
+    rbSignAuto: TRadioButton;
     rbSignSigned: TRadioButton;
     rbSignUnsigned: TRadioButton;
-    rbStructDefault: TRadioButton;
-    rbEnumDefault: TRadioButton;
-    rbPointerDefault: TRadioButton;
-    rbStructAddrDefault: TRadioButton;
     rbStructFields: TRadioButton;
     rbEnumOrd: TRadioButton;
-    rbPointerTypedAddress: TRadioButton;
+    rbAddressTyped: TRadioButton;
     rbStructAddrOn: TRadioButton;
     rbStructFull: TRadioButton;
     rbEnumNameAndOrd: TRadioButton;
     rbStructAddrOnly: TRadioButton;
     rbStructValOnly: TRadioButton;
     rbEnumName: TRadioButton;
-    rbPointerAddress: TRadioButton;
+    rbAddressPlain: TRadioButton;
     rbStructAddrOff: TRadioButton;
+    Spacer10: TLabel;
+    Spacer11: TLabel;
+    Spacer12: TLabel;
+    Spacer13: TLabel;
+    Spacer14: TLabel;
+    DigitSpacer1: TLabel;
+    DigitSpacer2: TLabel;
+    Spacer2: TLabel;
+    Spacer3: TLabel;
+    Spacer4: TLabel;
+    Spacer5: TLabel;
+    Spacer6: TLabel;
+    Spacer7: TLabel;
+    Spacer8: TLabel;
+    Spacer9: TLabel;
+    SpinFloatDigits: TSpinEdit;
+    SpinDigits: TSpinEdit;
+    Spin2Digits: TSpinEdit;
     ToolBar1: TToolBar;
     tbCurrent: TSpeedButton;
     tbStruct: TSpeedButton;
@@ -98,8 +218,15 @@ type
     tbChar: TSpeedButton;
     tbFloat: TSpeedButton;
     procedure cbMemDumpChange(Sender: TObject);
-    procedure FormatRadioClicked(Sender: TObject);
-    procedure FrameResize(Sender: TObject);
+    procedure cbNum2VisibleCheckedChange(Sender: TObject);
+    procedure CheckLabelClicked(Sender: TObject);
+    procedure FormatNumGroupChanged(Sender: TObject);
+    procedure FormatNumSepChanged(Sender: TObject);
+    procedure FormatRadioChanged(Sender: TObject);
+    procedure FormatSpinChanged(Sender: TObject);
+    procedure OverrideCheckChanged(Sender: TObject);
+    procedure Spin2DigitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Spin2DigitsKeyPress(Sender: TObject; var Key: char);
     procedure tbAllClick(Sender: TObject);
     procedure tbCurrentClick(Sender: TObject);
     procedure tbFormatClick(Sender: TObject);
@@ -108,20 +235,20 @@ type
   private
     FHighlightModifiedTabs: boolean;
     FShowCurrent: boolean;
-    FLastWidth: integer;
 
     FDisplayFormatCount: integer;
     FDisplayFormat: array of TWatchDisplayFormat;
     FCurrentResDataType: TWatchResultDataKind;
     FShowMemDump: boolean;
     FShowMultiRadio: boolean;
+    FShowOverrideChecks: boolean;
 
     FUpdateCount: integer;
-    FNeedUpdateDisplay, FUpdatingDisplay: boolean;
+    FNeedUpdateDisplay, FUpdatingDisplay, FUpdatingSpin: boolean;
     FInButtonClick: Boolean;
-    FRadioMap: array [TValueDisplayFormat] of TRadioButton;
     FButtonStates: array[TFmtButtons] of boolean;
 
+    procedure EnableParentOverride(c: TControl; AEnableVisible: Boolean = False);
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetDisplayFormats(AIndex: integer): TWatchDisplayFormat;
     procedure SetCurrentResDataType(AValue: TWatchResultDataKind);
@@ -132,10 +259,25 @@ type
     procedure SetShowCurrent(AValue: boolean);
     procedure SetShowMemDump(AValue: boolean);
     procedure SetShowMultiRadio(AValue: boolean);
+    procedure SetShowOverrideChecks(AValue: boolean);
   protected
-    procedure UpdateFormat;
-    procedure UpdateDisplay;
+    procedure ClearRadios(APanel: TWinControl; ARecursive: Boolean = False; AnExcludeSelf: boolean = False);
+    procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormats; AnRbOrder: TValueDisplayFormatArray);
+    procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormatHexSeperators; AnRbOrder: TValueDisplayFormatHexSeperatorArray);
+    function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
+    function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatHexSeperatorArray): TValueDisplayFormatHexSeperators;
+    function BtnDownCount: integer;
+
+    procedure UpdateButtonStates;
     procedure UpdateTabs;
+    procedure UpdateVisiblePanels;
+    procedure UpdateNumDigitPanel;
+    procedure UpdateNum2Visibility;
+    procedure UpdateNum2DigitPanel;
+    procedure UpdateDisplay;
+    procedure UpdateFormatOverrides;
+    procedure UpdateFormat;
+    procedure CreateHandle; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Setup;
@@ -150,12 +292,64 @@ type
     property ShowCurrent: boolean read FShowCurrent write SetShowCurrent;
     property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
     property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
+    property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
     property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write SetHighlightModifiedTabs;
   end;
 
 implementation
 
 {$R *.lfm}
+
+const
+  {$WriteableConst off}
+  RBA_Num: TValueDisplayFormatArray = (vdfBaseDecimal, vdfBaseHex, vdfBaseOct, vdfBaseBin, vdfBaseChar);
+  RBA_Sign: TValueDisplayFormatArray = (vdfSignAuto, vdfSignSigned, vdfSignUnsigned);
+  RBA_Group: TValueDisplayFormatHexSeperatorArray = (vdfhsNone, vdfhsByte, vdfhsWord, vdfhsLong);
+  RBA_Enum: TValueDisplayFormatArray = (vdfEnumName, vdfEnumOrd, vdfEnumNameAndOrd);
+  RBA_Float: TValueDisplayFormatArray = (vdfFloatPoint, vdfFloatScientific);
+  RBA_StructVal: TValueDisplayFormatArray = (vdfStructValOnly, vdfStructFields, vdfStructFull);
+  RBA_StructPtr: TValueDisplayFormatArray = (vdfStructPointerOff, vdfStructPointerOn, vdfStructPointerOnly);
+  RBA_PtrDeref: TValueDisplayFormatArray = (vdfPointerDerefOn, vdfPointerDerefOff, vdfPointerDerefOnly);
+  RBA_Addr: TValueDisplayFormatArray = (vdfAddressPlain, vdfAddressTyped);
+  RBA_AddrNum: TValueDisplayFormatArray = (vdfBaseHex, vdfBaseDecimal, vdfBaseOct, vdfBaseBin);
+
+  INT_MIX = low(integer);
+  INT_UNK = low(integer)+1;
+
+function BoolsetToCBState(bs: TBoolSet; ARevert: Boolean = True): TCheckBoxState;
+begin
+  if bs =[False, True] then
+    Result := cbGrayed
+  else
+  if (bs =[False]) xor ARevert then
+    Result := cbUnchecked
+  else
+    Result := cbChecked;
+end;
+
+procedure BoolFromCBState(cs: TCheckBoxState; var b: boolean; ARevert: Boolean = True);
+begin
+  case cs of
+    cbUnchecked: b := ARevert;
+    cbChecked:   b := not ARevert;
+    //cbGrayed: ;
+  end;
+end;
+
+procedure BoolFromCB(cb: TCheckBox; var b: boolean; ARevert: Boolean = True);
+begin
+  if cb.Visible and cb.Enabled and (cb.Tag = 0) then
+    BoolFromCBState(cb.State, b, ARevert);
+end;
+
+function HexSepCount(hs: TValueDisplayFormatHexSeperators): integer;
+var
+  d: TValueDisplayFormatHexSeperator;
+begin
+  Result := 0;
+  for d in TValueDisplayFormatHexSeperators do
+    if d in hs then inc(Result);
+end;
 
 procedure AddToStr(var txt: string; add, sep: string);
 begin
@@ -165,10 +359,83 @@ begin
   txt := txt + add;
 end;
 
+{ TRadioMultiMarker }
+
+procedure TRadioMultiMarker.DoClicked(Sender: TObject);
+begin
+  FRadio.Checked := True;
+end;
+
+procedure TRadioMultiMarker.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if IsVisible then BringToFront;
+end;
+
+procedure TRadioMultiMarker.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  if Parent = nil then
+    exit;
+  BorderSpacing.Left := max(0, (Parent.Height-5) div 2 - 2);
+  //Height := max(1, min(3, (Parent.Height + 3) div 6));
+  //Width := Height;
+  Height := max(1, min(3, (Parent.Height) div 12));
+  Width :=  max(3, min(15, (Parent.Height) div 3));
+  BorderSpacing.Left := Max(2, (Parent.Height - Width) div 2 - 2);
+end;
+
+constructor TRadioMultiMarker.Create(TheOwner: TComponent; TheRadio: TRadioButton);
+begin
+  inherited Create(TheOwner);
+  FRadio := TheRadio;
+  Parent := TheRadio.Parent;
+  AutoSize := False;
+  Visible := False;
+  Height := 3;
+  Width := 3;
+  Color := clGrayText;
+  BevelInner := bvNone;
+  BevelOuter := bvNone;
+  AnchorSide[akTop].Control  := TheRadio;
+  AnchorSide[akTop].Side     := asrCenter;
+  AnchorSide[akLeft].Control := TheRadio;
+  AnchorSide[akLeft].Side    := asrTop;
+  BorderSpacing.Left := 5;
+  OnClick := @DoClicked;
+end;
+
+{ TRadioButton }
+
+procedure TRadioButton.ClearMultiMarkers;
+var
+  i: Integer;
+begin
+  for i := 0 to Parent.ControlCount - 1 do
+    if Parent.Controls[i] is TRadioButton then
+      TRadioButton(Parent.Controls[i]).HideMultiMarker;
+end;
+
+procedure TRadioButton.ShowMultiMarker;
+begin
+  if FMultiMarker = nil then
+    FMultiMarker := TRadioMultiMarker.Create(Owner, Self);
+  FMultiMarker.Visible := True;
+end;
+
+procedure TRadioButton.HideMultiMarker;
+begin
+  if FMultiMarker <> nil then
+    FMultiMarker.Visible := False;
+end;
+
 { TDisplayFormatFrame }
 
 procedure TDisplayFormatFrame.cbMemDumpChange(Sender: TObject);
 begin
+  if FUpdatingDisplay then
+    exit;
+  TControl(Sender).Tag := 0;
   PanelNum.Enabled    := not cbMemDump.Checked;
   PanelEnum.Enabled := not cbMemDump.Checked;
   PanelFloat.Enabled := not cbMemDump.Checked;
@@ -177,40 +444,123 @@ begin
   PanelAddressFormat.Enabled := not cbMemDump.Checked;
 end;
 
-procedure TDisplayFormatFrame.FormatRadioClicked(Sender: TObject);
-var
-  i: Integer;
+procedure TDisplayFormatFrame.cbNum2VisibleCheckedChange(Sender: TObject);
 begin
   if FUpdatingDisplay then
     exit;
+  TControl(Sender).Tag := 0;
+  FUpdatingDisplay := True;
+  EnableParentOverride(TControl(Sender));
+  FUpdatingDisplay := False;
   UpdateFormat;
-  UpdateTabs;
-  for i := 0 to TRadioButton(Sender).Parent.ControlCount - 1 do
-    if TRadioButton(Sender).Parent.Controls[i] is TRadioButton then
-      TRadioButton(Sender).Parent.Controls[i].Font.Italic := False;
+  UpdateDisplay;
 end;
 
-procedure TDisplayFormatFrame.FrameResize(Sender: TObject);
+procedure TDisplayFormatFrame.CheckLabelClicked(Sender: TObject);
 var
-  w, i, pw, ph: Integer;
+  i: Integer;
+  p: TWinControl;
 begin
-  w := Width;
-  if abs(FLastWidth - w) < 3 then
-    exit;
-  FLastWidth := w;
-
-  DisableAutoSizing;
-  w := ((ClientWidth-10-9-8) div 4); // 10 = borderspacing // 9 = 3 * spacing of 3 // 8 = safety
-  for i := 0 to ComponentCount - 1 do
-    if (Components[i] is TRadioButton) or
-       ( (Components[i] is TLabel) {and (TLabel(Components[i]).Caption = '')} )
-    then begin
-      TControl(Components[i]).GetPreferredSize(pw, ph);
-      TControl(Components[i]).AutoSize := False;
-      TControl(Components[i]).Width := w;
-      TControl(Components[i]).Height := ph;
+  p := TControl(Sender).Parent;
+  for i := 0 to p.ControlCount-1 do
+    if p.Controls[i] is TCheckBox then begin
+      TCheckBox(p.Controls[i]).Checked := not TCheckBox(p.Controls[i]).Checked;
+      exit;
     end;
-  EnableAutoSizing;
+end;
+
+procedure TDisplayFormatFrame.FormatNumGroupChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay then
+    exit;
+  TControl(Sender).Tag := 0;
+  UpdateFormat;
+  TRadioButton(Sender).ClearMultiMarkers;
+end;
+
+procedure TDisplayFormatFrame.FormatNumSepChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay then
+    exit;
+  TControl(Sender).Tag := 0;
+  UpdateFormat;
+end;
+
+procedure TDisplayFormatFrame.FormatRadioChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay then
+    exit;
+
+  TControl(Sender).Tag := 0;
+  FUpdatingDisplay := True;
+  EnableParentOverride(TControl(Sender), True);
+  FUpdatingDisplay := False;
+
+  UpdateFormat;
+  TRadioButton(Sender).ClearMultiMarkers;
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.FormatSpinChanged(Sender: TObject);
+begin
+  if FUpdatingSpin then
+    exit;
+  if not FUpdatingDisplay then
+    TControl(Sender).Tag := 0;
+
+  if (TSpinEdit(Sender).Tag <> 0) then begin
+    FUpdatingSpin := True;
+    TSpinEdit(Sender).Text := '';
+    FUpdatingSpin := False;
+  end;
+  if (TSpinEdit(Sender).Tag = 0) and (TSpinEdit(Sender).Value = -1) and (Sender <> SpinFloatDigits)
+  then begin
+    FUpdatingSpin := True;
+    TSpinEdit(Sender).Text := DispFormatNumDigitsFull;
+    TSpinEdit(Sender).SelectAll;
+    FUpdatingSpin := False;
+  end;
+
+  if FUpdatingDisplay then
+    exit;
+
+  TControl(Sender).Tag := 0;
+  FUpdatingDisplay := True;
+  EnableParentOverride(TControl(Sender), True);
+  FUpdatingDisplay := False;
+  UpdateFormat;
+end;
+
+procedure TDisplayFormatFrame.OverrideCheckChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay or not FShowOverrideChecks then
+    exit;
+  TControl(Sender).Tag := 0;
+  UpdateFormatOverrides;
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.Spin2DigitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  if (TSpinEdit(Sender).Value = -1) then begin
+    if(Key = VK_DOWN) then
+      key := 0;
+    if (key >= VK_0) and (key <= VK_9) then begin
+      TSpinEdit(Sender).Value := Key - VK_0;
+      key := 0;
+    end;
+  end;
+end;
+
+procedure TDisplayFormatFrame.Spin2DigitsKeyPress(Sender: TObject; var Key: char);
+begin
+  TControl(Sender).Tag := 0;
+  if Key = '-' then begin
+    if (TSpinEdit(Sender).MinValue < 0) and (Sender <> SpinFloatDigits) then
+      TSpinEdit(Sender).Value := -1;
+    Key := #0;
+  end;
 end;
 
 procedure TDisplayFormatFrame.tbAllClick(Sender: TObject);
@@ -334,6 +684,28 @@ begin
   UpdateDisplay;
 end;
 
+procedure TDisplayFormatFrame.EnableParentOverride(c: TControl; AEnableVisible: Boolean);
+var
+  pnl: TWinControl;
+  i: Integer;
+begin
+  if not ShowOverrideChecks then
+    exit;
+  pnl := c.Parent;
+  while (pnl.Parent <> self) do
+    pnl := pnl.Parent;
+  if (pnl = PanelNum2) and AEnableVisible then begin
+    cbNum2Visibile.Tag := 0;
+    cbNum2Visibile.Checked := True;
+  end;
+  for i := 0 to pnl.ControlCount-1 do
+    if pnl.Controls[i] is TCheckBox then begin
+      if TCheckBox(pnl.Controls[i]).State = cbUnchecked then
+        TCheckBox(pnl.Controls[i]).Checked := True;
+      exit;
+    end;
+end;
+
 function TDisplayFormatFrame.GetDisplayFormat: TWatchDisplayFormat;
 begin
   UpdateFormat;
@@ -410,154 +782,154 @@ begin
   FShowMultiRadio := AValue;
 end;
 
-procedure TDisplayFormatFrame.UpdateFormat;
+procedure TDisplayFormatFrame.SetShowOverrideChecks(AValue: boolean);
+begin
+  if FShowOverrideChecks = AValue then Exit;
+  FShowOverrideChecks := AValue;
+  cbOverrideNumBase.Visible       := FShowOverrideChecks;
+  cbOverrideNum2Base.Visible      := FShowOverrideChecks;
+  cbOverrideEnum.Visible          := FShowOverrideChecks;
+  cbOverrideFloat.Visible         := FShowOverrideChecks;
+  cbOverrideStruct.Visible        := FShowOverrideChecks;
+  cbOverridePointerDeref.Visible  := FShowOverrideChecks;
+  cbOverrideAddressFormat.Visible := FShowOverrideChecks;
+end;
+
+procedure TDisplayFormatFrame.ClearRadios(APanel: TWinControl; ARecursive: Boolean;
+  AnExcludeSelf: boolean);
 var
-  d: TValueDisplayFormat;
-  ds, dsPtr: TValueDisplayFormats;
-  OnlyPointerOrStruct: Boolean;
   i: Integer;
 begin
-  OnlyPointerOrStruct := (FButtonStates[bsPtr] or FButtonStates[bsStruct]) and
-    not (FButtonStates[bsNum] or FButtonStates[bsEnum] or FButtonStates[bsBool] or FButtonStates[bsChar]);
-
-  ds := [];
-  for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
-    if (FRadioMap[d] <> nil) and (FRadioMap[d].Checked) then
-      include(ds, d);
-
-  if not OnlyPointerOrStruct then begin
-    dsPtr := [];
-    if rbPointerNumDefault.Checked then include(dsPtr, vdfBaseDefault);
-    if rbPointerNumHex.Checked     then include(dsPtr, vdfBaseHex);
-    if rbPointerNumDec.Checked     then include(dsPtr, vdfBaseDecimal);
-    if rbPointerNumOct.Checked     then include(dsPtr, vdfBaseOct);
-  end
-  else
-    dsPtr := ds;
-
-  for i := 0 to FDisplayFormatCount - 1 do begin
-    if FButtonStates[bsNum] then begin
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-        FDisplayFormat[i].NumBaseFormat := d;
-      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat[i].NumSignFormat := d;
-      for d := low(TValueDisplayFormatNumChar) to high(TValueDisplayFormatNumChar) do if d in ds then
-        FDisplayFormat[i].NumCharFormat := d;
+  for i := APanel.ControlCount - 1 downto 0 do begin
+    if (APanel.Controls[i] is TRadioButton) and not AnExcludeSelf and
+       (copy(APanel.Controls[i].Name, 1, 7) = 'rbClear')
+    then
+      TRadioButton(APanel.Controls[i]).Checked := True
+    else
+    if (APanel.Controls[i] is TRadioButton) and not AnExcludeSelf then begin
+      TRadioButton(APanel.Controls[i]).Checked := False;
+      TRadioButton(APanel.Controls[i]).HideMultiMarker;
     end;
-    if FButtonStates[bsEnum] then begin
-      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-        FDisplayFormat[i].EnumFormat := d;
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-        FDisplayFormat[i].EnumBaseFormat := d;
-      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat[i].EnumSignFormat := d;
+    if ARecursive then begin
+      if (APanel.Controls[i] is TCheckBox) and not AnExcludeSelf then
+        TCheckBox(APanel.Controls[i]).Checked := False;
+      if APanel.Controls[i] is TWinControl then
+        ClearRadios(TWinControl(APanel.Controls[i]), True);
     end;
-    if FButtonStates[bsBool] then begin
-      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-        FDisplayFormat[i].BoolFormat := FormatEnumToBool[d];
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-        FDisplayFormat[i].BoolBaseFormat := d;
-      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat[i].BoolSignFormat := d;
-    end;
-    if FButtonStates[bsChar] then begin
-      for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do if d in ds then
-        FDisplayFormat[i].CharFormat := FormatEnumToChar[d];
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do if d in ds then
-        FDisplayFormat[i].CharBaseFormat := d;
-      for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-        FDisplayFormat[i].CharSignFormat := d;
-    end;
-    if FButtonStates[bsFloat] then begin
-      for d := low(TValueDisplayFormatFloat) to high(TValueDisplayFormatFloat) do if d in ds then
-        FDisplayFormat[i].FloatFormat := d;
-    end;
-    if FButtonStates[bsStruct] then begin
-      for d := low(TValueDisplayFormatStruct) to high(TValueDisplayFormatStruct) do if d in ds then
-        FDisplayFormat[i].StructFormat := d;
-      for d := low(TValueDisplayFormatStructAddr) to high(TValueDisplayFormatStructAddr) do if d in ds then
-        FDisplayFormat[i].StructAddrFormat := d;
-      for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
-        FDisplayFormat[i].StructPointerFormat := d;
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-        if d in dsPtr then
-          FDisplayFormat[i].StructPointerBaseFormat := d;
-      if OnlyPointerOrStruct then
-        for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-          FDisplayFormat[i].StructPointerSignFormat := d;
-    end;
-    if FButtonStates[bsPtr] then begin
-      for d := low(TValueDisplayFormatPointer) to high(TValueDisplayFormatPointer) do if d in ds then
-        FDisplayFormat[i].PointerFormat := d;
-      for d := low(TValueDisplayFormatPointerDeref) to high(TValueDisplayFormatPointerDeref) do if d in ds then
-        FDisplayFormat[i].PointerDerefFormat := d;
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-        if d in dsPtr then
-          FDisplayFormat[i].PointerBaseFormat := d;
-      if OnlyPointerOrStruct then
-        for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do if d in ds then
-          FDisplayFormat[i].PointerSignFormat := d;
-    end;
-
-    if cbMemDump.State <> cbGrayed then
-      FDisplayFormat[i].MemDump := cbMemDump.Checked;
   end;
 end;
 
-procedure TDisplayFormatFrame.UpdateDisplay;
-  procedure ApplyDispForm(ADispForm: TValueDisplayFormats);
-  var
-    d, d2: TValueDisplayFormat;
-    m: TValueDisplayFormats;
-  begin
-    if IdeDebuggerDisplayFormats.DisplayFormatCount(ADispForm) = 1 then begin
-      for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do begin
-        if (FRadioMap[d] <> nil) and (d in ADispForm) then
-          FRadioMap[d].Checked := True;
-      end;
-    end
-    else
-    if FShowMultiRadio then begin
-      d2 := vdfCategoryData;
-      for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
-        if d in ADispForm then begin
-          d2 := d;
-          break;
-        end;
-      if d2 = vdfCategoryData then
-        exit;
-      m := DisplayFormatMask([ValueDisplayFormatGroupMap[d2]]);
-      for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do begin
-        if (FRadioMap[d] <> nil) and (d in m) then
-          FRadioMap[d].Font.Italic := (d in ADispForm);
-      end;
+procedure TDisplayFormatFrame.ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormats;
+  AnRbOrder: TValueDisplayFormatArray);
+var
+  i, j: Integer;
+begin
+  ClearRadios(APanel);
+
+  if IdeDebuggerDisplayFormats.DisplayFormatCount(ADispForm) = 1 then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).Checked := True;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
+    end;
+  end
+  else
+  if FShowMultiRadio then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).ShowMultiMarker
+      else
+        TRadioButton(APanel.Controls[i]).HideMultiMarker;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
     end;
   end;
+end;
 
+procedure TDisplayFormatFrame.ApplyDispForm(APanel: TPanel;
+  ADispForm: TValueDisplayFormatHexSeperators; AnRbOrder: TValueDisplayFormatHexSeperatorArray);
 var
-  CaptDivEnum, CaptRbEnumName, CaptDivNumber: String;
-  FormatOrdinal:      TValueDisplayFormats;
-  FormatSign:         TValueDisplayFormats;
-  FormatNumChar:      TValueDisplayFormats;
-  FormatEnum:         TValueDisplayFormats;
-  FormatFloat:        TValueDisplayFormats;
-  FormatStruct:       TValueDisplayFormats;
-  FormatStructAddr:   TValueDisplayFormats;
-  FormatPointer:      TValueDisplayFormats;
-  FormatPointerDeref: TValueDisplayFormats;
-  FormatPtrOrdinal:   TValueDisplayFormats; // Pointer uses separate ordinal radios
-  FormatIsMemDump: set of boolean;
-  OnlyPointerOrStruct: Boolean; // Pointer uses separate ordinal radios
-  d: TValueDisplayFormat;
-  fb: TFmtButtons;
-  BtnDownCount, y, i: Integer;
+  i, j: Integer;
 begin
-  if FUpdateCount > 0 then begin
-    FNeedUpdateDisplay := True;
-    exit;
-  end;
-  FUpdatingDisplay := True;
+  ClearRadios(APanel);
 
+  if HexSepCount(ADispForm) = 1 then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).Checked := True;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
+    end;
+  end
+  else
+  if FShowMultiRadio then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).ShowMultiMarker
+      else
+        TRadioButton(APanel.Controls[i]).HideMultiMarker;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
+    end;
+  end;
+end;
+
+function TDisplayFormatFrame.ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
+var
+  i, j: Integer;
+begin
+  Result := [];
+  j := 0;
+  for i := 0 to APanel.ControlCount - 1 do begin
+    if not (APanel.Controls[i] is TRadioButton) then
+      continue;
+    if TRadioButton(APanel.Controls[i]).Checked then
+      include(Result, AnRbOrder[j]);
+    inc(j);
+    if j >= Length(AnRbOrder) then break;
+  end
+end;
+
+function TDisplayFormatFrame.ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatHexSeperatorArray): TValueDisplayFormatHexSeperators;
+var
+  i, j: Integer;
+begin
+  Result := [];
+  j := 0;
+  for i := 0 to APanel.ControlCount - 1 do begin
+    if not (APanel.Controls[i] is TRadioButton) then
+      continue;
+    if TRadioButton(APanel.Controls[i]).Checked then
+      include(Result, AnRbOrder[j]);
+    inc(j);
+    if j >= Length(AnRbOrder) then break;
+  end
+end;
+
+function TDisplayFormatFrame.BtnDownCount: integer;
+var
+  i: TFmtButtons;
+begin
+  Result := 0;
+  for i := low(TFmtButtons) to high(TFmtButtons) do
+    if FButtonStates[i] then inc(Result);
+end;
+
+procedure TDisplayFormatFrame.UpdateButtonStates;
+begin
   FButtonStates[bsNum]    := tbNumber.Down;
   FButtonStates[bsEnum]   := tbEnum.Down;
   FButtonStates[bsBool]   := tbBool.Down;
@@ -565,193 +937,657 @@ begin
   FButtonStates[bsFloat]  := tbFloat.Down;
   FButtonStates[bsStruct] := tbStruct.Down;
   FButtonStates[bsPtr]    := tbPointer.Down;
+end;
 
-  // Not checking for float
-  OnlyPointerOrStruct := (FButtonStates[bsPtr] or FButtonStates[bsStruct]) and
-    not (FButtonStates[bsNum] or FButtonStates[bsEnum] or FButtonStates[bsBool] or FButtonStates[bsChar]);
+procedure TDisplayFormatFrame.UpdateVisiblePanels;
+var
+  CaptDivEnum, CaptRbEnumName: String;
+begin
+  PanelNum.Visible           := tbNumber.Down;
+  PanelNum2.Visible          := tbNumber.Down;
+  PanelEnum.Visible          := tbEnum.Down or tbBool.Down or tbChar.Down;
+  PanelFloat.Visible         := tbFloat.Down;
+  PanelStruct.Visible        := tbStruct.Down;
+  PanelPointer.Visible       := tbPointer.Down;
+  PanelAddressFormat.Visible := tbPointer.Down or tbStruct.Down;
 
-  BtnDownCount := 0;
-  for fb := low(TFmtButtons) to High(TFmtButtons) do
-    if FButtonStates[fb] then
-      inc(BtnDownCount);
+  CaptRbEnumName := '';
+  CaptDivEnum    := '';
+  if FButtonStates[bsEnum] then begin
+    CaptDivEnum    := DispFormatGroupEnum;
+    CaptRbEnumName := DispFormatEnumName;
+  end;
+  if FButtonStates[bsBool] then begin
+    AddToStr(CaptDivEnum,    DispFormatGroupBool, ', ');
+    AddToStr(CaptRbEnumName, DispFormatBoolName, '/');
+  end;
+  if FButtonStates[bsChar] then begin
+    AddToStr(CaptDivEnum,    DispFormatGroupChar, ', ');
+    AddToStr(CaptRbEnumName, DispFormatCharLetter, '/');
+  end;
 
-  DisableAutoSizing;
-  BeginUpdateBounds;
-  try
-    UpdateTabs;
+  rbEnumName.Caption        := CaptRbEnumName;
+  lbOverrideEnum.Caption    := CaptDivEnum;
+  if FButtonStates[bsStruct] and FButtonStates[bsPtr] then
+    lbOverrideAddressFormat.Caption := {DispFormatDlgBtnAdrFormat+ ': ' +} DispFormatDlgBtnStruct + ', ' + DispFormatDlgBtnPointer
+  else
+    lbOverrideAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
+end;
 
-    PanelNum.Visible           := tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbStruct.Down or tbPointer.Down;
-    PanelNumChar.Visible       := tbNumber.Down;
-    PanelEnum.Visible          := tbEnum.Down or tbBool.Down or tbChar.Down;
-    PanelFloat.Visible         := tbFloat.Down;
-    PanelStruct.Visible        := tbStruct.Down;
-    PanelPointer.Visible       := tbPointer.Down;
-    PanelAddressFormat.Visible := tbPointer.Down or tbStruct.Down;
+procedure TDisplayFormatFrame.UpdateNumDigitPanel;
+var
+  d: TValueDisplayFormats;
+  FormatNumDigits, i: integer;
+begin
+  PanelNumDigits.Enabled := (cbOverrideNumBase.State <> cbUnchecked) or ShowOverrideChecks;
 
-    PanelPointerNum.Visible     := not OnlyPointerOrStruct;  // Limited num-base for address
-    DividerBevelNum.Visible     := not OnlyPointerOrStruct;      // Hide "Numbers" header / settings for Ptr or Struct
-    DividerBevelNumChar.Visible := FButtonStates[bsNum] and (tbEnum.Down or tbBool.Down or tbChar.Down);
+  d := ReadDispForm(PanelNumBase, RBA_Num);
 
-    // Vertical ordering
-    ToolBar1.Top := 0;
-    y := ToolBar1.Height;
-    if tbNumber.Down then begin
-      PanelNum.Top          := y;    inc(y, PanelNum.Height);
+  PanelNumSign.Enabled   := d <> [vdfBaseChar];
+  PanelNumDigits.Enabled := d <> [vdfBaseChar];
+
+  if vdfBaseBin in d then SpinDigits.MaxValue := 64
+  else if vdfBaseOct in d then SpinDigits.MaxValue := 22
+  else if vdfBaseDecimal in d then SpinDigits.MaxValue := 20
+  else SpinDigits.MaxValue := 16;
+
+  if Spin2Digits.Tag = 0 then begin
+    FormatNumDigits     := INT_UNK;
+    for i := 0 to FDisplayFormatCount - 1 do begin
+      if (FormatNumDigits = INT_UNK) or (FormatNumDigits = FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat])
+      then FormatNumDigits :=    FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat]
+      else FormatNumDigits :=    INT_MIX;
     end;
-    PanelEnum.Top           :=  y;   inc(y, PanelEnum.Height);
-    if (not tbNumber.Down) and not OnlyPointerOrStruct then begin
-      PanelNum.Top          := y;    inc(y, PanelNum.Height);
+    if (FormatNumDigits = INT_MIX) or (FormatNumDigits = INT_UNK) then begin
+      SpinDigits.Tag   := 2;
+      SpinDigits.Value := 0;
+    end
+    else begin
+      SpinDigits.Value := FormatNumDigits;
+      SpinDigits.Text  := IntToStr(FormatNumDigits);
     end;
-    PanelFloat.Top          := y;    inc(y, PanelFloat.Height);
-    PanelStruct.Top         := y;    inc(y, PanelStruct.Height);
-    PanelPointer.Top        := y;    inc(y, PanelPointer.Height);
-    PanelAddressFormat.Top  := y;    inc(y, PanelAddressFormat.Height);
-    if (not tbNumber.Down) and OnlyPointerOrStruct then begin
-      PanelNum.Top          := y;    inc(y, PanelNum.Height);
+  end;
+
+  lbNumSepGroup.Visible    := (d * [vdfBaseHex, vdfBaseBin] = d) and (d <> []);
+  PanelNumSepGroup.Visible := (d * [vdfBaseHex, vdfBaseBin] = d) and (d <> []);
+  cbNumSeparator.Enabled   := d = [vdfBaseDecimal];
+  cbNumSeparator.Visible   := not lbNumSepGroup.Visible;
+end;
+
+procedure TDisplayFormatFrame.UpdateNum2Visibility;
+begin
+  PanelNum2All.Visible :=
+     ( (BtnDownCount = 1) and (FButtonStates[bsNum]) ) or
+     ( ((cbOverrideNum2Base.State <> cbUnchecked) or (not ShowOverrideChecks)) and
+       (cbNum2Visibile.State <> cbUnchecked) );
+end;
+
+procedure TDisplayFormatFrame.UpdateNum2DigitPanel;
+var
+  d: TValueDisplayFormats;
+  FormatNumDigits: LongInt;
+  i: Integer;
+begin
+  PanelNum2Digits.Enabled := (cbOverrideNum2Base.State <> cbUnchecked) or ShowOverrideChecks;
+
+  d := ReadDispForm(PanelNum2Base, RBA_Num);
+
+  PanelNum2Sign.Enabled   := d <> [vdfBaseChar];
+  PanelNum2Digits.Enabled := d <> [vdfBaseChar];
+
+  if vdfBaseBin in d then Spin2Digits.MaxValue := 64
+  else if vdfBaseOct in d then Spin2Digits.MaxValue := 22
+  else if vdfBaseDecimal in d then Spin2Digits.MaxValue := 20
+  else Spin2Digits.MaxValue := 16;
+
+  if Spin2Digits.Tag = 0 then begin
+    FormatNumDigits     := INT_UNK;
+    for i := 0 to FDisplayFormatCount - 1 do begin
+      if (FormatNumDigits = INT_UNK) or (FormatNumDigits = FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat])
+      then FormatNumDigits :=    FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat]
+      else FormatNumDigits :=    INT_MIX;
     end;
-    PanelMemDump.Top        := y;
+    if (FormatNumDigits = INT_MIX) or (FormatNumDigits = INT_UNK) then begin
+      Spin2Digits.Tag   := 2;
+      Spin2Digits.Value := 0;
+    end
+    else begin
+      Spin2Digits.Value := FormatNumDigits;
+      Spin2Digits.Text  := IntToStr(FormatNumDigits);
+    end;
+  end;
 
-    //
-    CaptRbEnumName := '';
-    CaptDivEnum    := '';
-    CaptDivNumber  := DispFormatDlgBtnOrdFormat;
-    if OnlyPointerOrStruct then
-      CaptDivNumber  := '';
+  lbNum2SepGroup.Visible    := (d * [vdfBaseHex, vdfBaseBin] = d) and (d <> []);
+  PanelNum2SepGroup.Visible := (d * [vdfBaseHex, vdfBaseBin] = d) and (d <> []);
+  cbNum2Separator.Enabled   := d = [vdfBaseDecimal];
+  cbNum2Separator.Visible   := not lbNum2SepGroup.Visible;
+end;
 
+procedure TDisplayFormatFrame.UpdateFormatOverrides;
+var
+  i: Integer;
+begin
+  if not ShowOverrideChecks then
+    exit;
+  for i := 0 to FDisplayFormatCount - 1 do begin
     if FButtonStates[bsNum] then begin
-      CaptDivNumber  := DispFormatDlgBtnNumber;
+      BoolFromCBState(cbOverrideNumBase.State, FDisplayFormat[i].Num.UseInherited);
+      BoolFromCBState(cbOverrideNum2Base.State, FDisplayFormat[i].Num2.UseInherited);
     end;
     if FButtonStates[bsEnum] then begin
-      CaptDivEnum    := DispFormatGroupEnum;
-      CaptRbEnumName := DispFormatEnumName;
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber, DispFormatDlgBtnEnum, ', ');
+      BoolFromCBState(cbOverrideEnum.State, FDisplayFormat[i].Enum.UseInherited);
     end;
     if FButtonStates[bsBool] then begin
-      AddToStr(CaptDivEnum,    DispFormatGroupBool, ', ');
-      AddToStr(CaptRbEnumName, DispFormatBoolName, '/');
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber,  DispFormatDlgBtnBool, ', ');
+      BoolFromCBState(cbOverrideEnum.State, FDisplayFormat[i].Bool.UseInherited);
     end;
     if FButtonStates[bsChar] then begin
-      AddToStr(CaptDivEnum,    DispFormatGroupChar, ', ');
-      AddToStr(CaptRbEnumName, DispFormatCharLetter, '/');
-      if (FButtonStates[bsNum]) then
-        AddToStr(CaptDivNumber,  DispFormatDlgBtnChar, ', ');
+      BoolFromCBState(cbOverrideEnum.State, FDisplayFormat[i].Char.UseInherited);
+    end;
+    if FButtonStates[bsFloat] then begin
+      BoolFromCBState(cbOverrideFloat.State, FDisplayFormat[i].Float.UseInherited);
+    end;
+    if FButtonStates[bsStruct] then begin
+      BoolFromCBState(cbOverrideStruct.State, FDisplayFormat[i].Struct.UseInherited);
+      BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Struct.Address.UseInherited);
+    end;
+    if FButtonStates[bsPtr] then begin
+      BoolFromCBState(cbOverridePointerDeref.State, FDisplayFormat[i].Pointer.UseInherited);
+      BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Pointer.Address.UseInherited);
+    end;
+  end;
+end;
+
+procedure TDisplayFormatFrame.UpdateFormat;
+var
+  d: TValueDisplayFormat;
+  ds: TValueDisplayFormats;
+  g: TValueDisplayFormatHexSeperator;
+  gs: TValueDisplayFormatHexSeperators;
+  i: Integer;
+begin
+  UpdateFormatOverrides;
+
+  for i := 0 to FDisplayFormatCount - 1 do begin
+    if FButtonStates[bsNum] then begin
+      // Primary format
+      // first values that depend on OLD base
+      if (FDisplayFormat[i].Num.BaseFormat = vdfBaseDecimal) then
+        BoolFromCB(cbNumSeparator, FDisplayFormat[i].Num.SeparatorDec, False);
+      if (FDisplayFormat[i].Num.BaseFormat in [vdfBaseHex, vdfBaseBin]) then begin
+        gs := ReadDispForm(PanelNumSepGroup, RBA_Group);
+        if HexSepCount(gs) = 1 then
+          for g := low(TValueDisplayFormatHexSeperator) to high(TValueDisplayFormatHexSeperator) do
+            if g in gs then
+              FDisplayFormat[i].Num.SeparatorHexBin := g;
+      end;
+      if (SpinDigits.Tag = 0) and (FDisplayFormat[i].Num.BaseFormat <> vdfBaseChar) then
+        FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat] := SpinDigits.Value;
+
+      ds := ReadDispForm(PanelNumBase, RBA_Num);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Num.BaseFormat := d;
+      ds := ReadDispForm(PanelNumSign, RBA_Sign);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do
+          if d in ds then
+            FDisplayFormat[i].Num.SignFormat := d;
+
+      // 2nd format
+      if PanelNum2All.Visible then begin
+        // first values that depend on OLD base
+        if (FDisplayFormat[i].Num2.BaseFormat = vdfBaseDecimal) then
+          BoolFromCB(cbNum2Separator, FDisplayFormat[i].Num2.SeparatorDec, False);
+        if (FDisplayFormat[i].Num2.BaseFormat in [vdfBaseHex, vdfBaseBin]) then begin
+          gs := ReadDispForm(PanelNum2SepGroup, RBA_Group);
+          if HexSepCount(gs) = 1 then
+            for g := low(TValueDisplayFormatHexSeperator) to high(TValueDisplayFormatHexSeperator) do
+              if g in gs then
+                FDisplayFormat[i].Num2.SeparatorHexBin := g;
+        end;
+        if (Spin2Digits.Tag = 0) and (FDisplayFormat[i].Num2.BaseFormat <> vdfBaseChar) then
+          FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat] := Spin2Digits.Value;
+
+        ds := ReadDispForm(PanelNum2Base, RBA_Num);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+            if d in ds then
+              FDisplayFormat[i].Num2.BaseFormat := d;
+        ds := ReadDispForm(PanelNum2Sign, RBA_Sign);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatSign) to high(TValueDisplayFormatSign) do
+            if d in ds then
+              FDisplayFormat[i].Num2.SignFormat := d;
+      end;
+      BoolFromCB(cbNum2Visibile, FDisplayFormat[i].Num2.Visible, False);
+    end;
+    if FButtonStates[bsEnum] then begin
+      ds := ReadDispForm(PanelEnumRb1, RBA_Enum);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do
+          if d in ds then
+            FDisplayFormat[i].Enum.MainFormat := d;
+      ds := ReadDispForm(PanelENumBase, RBA_Num);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Enum.BaseFormat := d;
+      if cbEnumSign.Tag = 0 then
+        case cbEnumSign.State of
+          cbUnchecked: FDisplayFormat[i].Enum.SignFormat := vdfSignAuto;
+          cbChecked:   FDisplayFormat[i].Enum.SignFormat := vdfSignUnsigned;
+        end;
+    end;
+    if FButtonStates[bsBool] then begin
+      ds := ReadDispForm(PanelEnumRb1, RBA_Enum);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do
+          if d in ds then
+            FDisplayFormat[i].Bool.MainFormat := FormatEnumToBool[d];
+      ds := ReadDispForm(PanelENumBase, RBA_Num);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Bool.BaseFormat := d;
+      if cbEnumSign.Tag = 0 then
+        case cbEnumSign.State of
+          cbUnchecked: FDisplayFormat[i].Bool.SignFormat := vdfSignAuto;
+          cbChecked:   FDisplayFormat[i].Bool.SignFormat := vdfSignUnsigned;
+        end;
+    end;
+    if FButtonStates[bsChar] then begin
+      ds := ReadDispForm(PanelEnumRb1, RBA_Enum);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do
+          if d in ds then
+            FDisplayFormat[i].Char.MainFormat := FormatEnumToChar[d];
+      ds := ReadDispForm(PanelENumBase, RBA_Num);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Char.BaseFormat := d;
+      if cbEnumSign.Tag = 0 then
+        case cbEnumSign.State of
+          cbUnchecked: FDisplayFormat[i].Char.SignFormat := vdfSignAuto;
+          cbChecked:   FDisplayFormat[i].Char.SignFormat := vdfSignUnsigned;
+        end;
+    end;
+    if FButtonStates[bsFloat] then begin
+      ds := ReadDispForm(PanelFloatRb, RBA_Float);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatFloat) to high(TValueDisplayFormatFloat) do
+          if d in ds then
+            FDisplayFormat[i].Float.NumFormat := d;
+      if (SpinFloatDigits.Tag = 0) then
+        FDisplayFormat[i].Float.Precission := SpinFloatDigits.Value;
+    end;
+    if FButtonStates[bsStruct] then begin
+      ds := ReadDispForm(PanelStructFld, RBA_StructVal);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatStruct) to high(TValueDisplayFormatStruct) do
+          if d in ds then
+            FDisplayFormat[i].Struct.DataFormat := d;
+      ds := ReadDispForm(PanelStructPointer, RBA_StructPtr);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatStructPointer) to high(TValueDisplayFormatStructPointer) do
+          if d in ds then
+            FDisplayFormat[i].Struct.ShowPointerFormat := d;
+
+      ds := ReadDispForm(PanelAddressType, RBA_Addr);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
+          if d in ds then
+            FDisplayFormat[i].Struct.Address.TypeFormat := d;
+      ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Struct.Address.BaseFormat := d;
+      BoolFromCB(cbAddrSign, FDisplayFormat[i].Struct.Address.Signed, False);
+    end;
+    if FButtonStates[bsPtr] then begin
+      ds := ReadDispForm(PanelPointerDeref, RBA_PtrDeref);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatPointerDeref) to high(TValueDisplayFormatPointerDeref) do
+          if d in ds then
+            FDisplayFormat[i].Pointer.DerefFormat := d;
+
+      ds := ReadDispForm(PanelAddressType, RBA_Addr);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
+          if d in ds then
+            FDisplayFormat[i].Pointer.Address.TypeFormat := d;
+      ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
+      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+          if d in ds then
+            FDisplayFormat[i].Pointer.Address.BaseFormat := d;
+      BoolFromCB(cbAddrSign, FDisplayFormat[i].Pointer.Address.Signed, False);
     end;
 
-    rbEnumName.Caption          := CaptRbEnumName;
-    DividerBevelEnum.Caption    := CaptDivEnum;
-    DividerBevelNum.Caption     := CaptDivNumber;
-    if FButtonStates[bsStruct] and FButtonStates[bsPtr] then
-      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat+ ': ' + DispFormatDlgBtnStruct + ', ' + DispFormatDlgBtnPointer
-    else
-      DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
+    BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
+DebugLn(dbgs(FDisplayFormat[i]));
+  end;
+end;
 
+procedure TDisplayFormatFrame.CreateHandle;
+begin
+  FUpdatingDisplay := True; // gtk2 send extra events
+  inherited;
+  FUpdatingDisplay := False;
+  UpdateDisplay;
+end;
 
-    FormatOrdinal := [];
-    FormatSign := [];
-    FormatNumChar := [];
-    FormatEnum := [];
-    FormatFloat := [];
-    FormatStruct := [];
-    FormatStructAddr := [];
-    FormatPointer := [];
-    FormatPointerDeref := [];
-    FormatPtrOrdinal := [];
+procedure TDisplayFormatFrame.UpdateDisplay;
+var
+  InherhitNum, InherhitNum2, InherhitEnum, InherhitFloat,
+  InherhitStruct, InherhitPtr, InherhitAddress: TBoolSet;
+
+  FormatNumBase:       TValueDisplayFormats;
+  FormatNumSign:       TValueDisplayFormats;
+  FormatNumSep:        TBoolSet;
+  FormatNumGroup:      TValueDisplayFormatHexSeperators;
+
+  FormatNum2Visible:   TBoolSet;
+  FormatNum2Base:      TValueDisplayFormats;
+  FormatNum2Sign:      TValueDisplayFormats;
+  FormatNum2Sep:       TBoolSet;
+  FormatNum2Group:     TValueDisplayFormatHexSeperators;
+
+  FormatEnum:          TValueDisplayFormats;
+  FormatEnumBase:      TValueDisplayFormats;
+  FormatEnumSign:      TBoolSet;
+  //FormatEnumSign:      TValueDisplayFormats;
+
+  FormatFloat:         TValueDisplayFormats;
+  FormatFloatPrec:     integer;
+
+  FormatStruct:        TValueDisplayFormats;
+  FormatStructPointer: TValueDisplayFormats;
+
+  FormatPointerDeref:  TValueDisplayFormats;
+
+  FormatAddress:       TValueDisplayFormats;
+  FormatAddressBase:   TValueDisplayFormats;
+  FormatAddressSign:   TBoolSet;
+
+  FormatIsMemDump: TBoolSet;
+
+  i: Integer;
+begin
+  if FUpdateCount > 0 then begin
+    FNeedUpdateDisplay := True;
+    exit;
+  end;
+  FUpdatingDisplay := True;
+
+  UpdateButtonStates;
+
+  DisableAutoSizing;
+  try
+    UpdateTabs;
+    UpdateVisiblePanels;
+
+    InherhitNum     := [];
+    InherhitNum2    := [];
+    InherhitEnum    := [];
+    InherhitFloat   := [];
+    InherhitStruct  := [];
+    InherhitPtr     := [];
+    InherhitAddress := [];
+
+    FormatNumBase       := [];
+    FormatNumSign       := [];
+    FormatNumSep        := [];
+    FormatNumGroup      := [];
+
+    FormatNum2Visible   := [];
+    FormatNum2Base      := [];
+    FormatNum2Sign      := [];
+    FormatNum2Sep       := [];
+    FormatNum2Group     := [];
+
+    FormatEnum          := [];
+    FormatENumBase      := [];
+    FormatENumSign      := [];
+
+    FormatFloat         := [];
+    FormatFloatPrec     := INT_UNK;
+
+    FormatStruct        := [];
+    FormatStructPointer := [];
+
+    FormatPointerDeref  := [];
+
+    FormatAddress       := [];
+    FormatAddressBase   := [];
+    FormatAddressSign   := [];
+
     FormatIsMemDump := [];
 
     for i := 0 to FDisplayFormatCount - 1 do begin
       FormatIsMemDump := FormatIsMemDump + [boolean(FDisplayFormat[i].MemDump)];
 
       if FButtonStates[bsNum] then begin
-        include(FormatOrdinal, FDisplayFormat[i].NumBaseFormat);
-        include(FormatSign,    FDisplayFormat[i].NumSignFormat);
-        include(FormatNumChar, FDisplayFormat[i].NumCharFormat);
+        include(InherhitNum,       FDisplayFormat[i].Num.UseInherited);
+        if (not FDisplayFormat[i].Num.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatNumBase,     FDisplayFormat[i].Num.BaseFormat);
+          include(FormatNumSign,     FDisplayFormat[i].Num.SignFormat);
+          include(FormatNumSep,      FDisplayFormat[i].Num.SeparatorDec);
+          include(FormatNumGroup,    FDisplayFormat[i].Num.SeparatorHexBin);
+        end;
+
+        include(InherhitNum2,      FDisplayFormat[i].Num2.UseInherited);
+        if (not FDisplayFormat[i].Num2.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatNum2Visible, FDisplayFormat[i].Num2.Visible);
+          include(FormatNum2Base,    FDisplayFormat[i].Num2.BaseFormat);
+          include(FormatNum2Sign,    FDisplayFormat[i].Num2.SignFormat);
+          include(FormatNum2Sep,     FDisplayFormat[i].Num2.SeparatorDec);
+          include(FormatNum2Group,   FDisplayFormat[i].Num2.SeparatorHexBin);
+        end;
       end;
       if FButtonStates[bsEnum] then begin
-        include(FormatEnum,    FDisplayFormat[i].EnumFormat);
-        include(FormatOrdinal, FDisplayFormat[i].EnumBaseFormat);
-        include(FormatSign,    FDisplayFormat[i].EnumSignFormat);
+        include(InherhitEnum,      FDisplayFormat[i].Enum.UseInherited);
+        if (not FDisplayFormat[i].Enum.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatEnum,        FDisplayFormat[i].Enum.MainFormat);
+          include(FormatEnumBase,    FDisplayFormat[i].Enum.BaseFormat);
+          include(FormatEnumSign,    FDisplayFormat[i].Enum.SignFormat = vdfSignUnsigned);
+        end;
       end;
       if FButtonStates[bsBool] then begin
-        include(FormatEnum,    FormatBoolToEnum[FDisplayFormat[i].BoolFormat]);
-        include(FormatOrdinal, FDisplayFormat[i].BoolBaseFormat);
-        include(FormatSign,    FDisplayFormat[i].BoolSignFormat);
+        include(InherhitEnum,      FDisplayFormat[i].Bool.UseInherited);
+        if (not FDisplayFormat[i].Bool.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatEnum,        FormatBoolToEnum[FDisplayFormat[i].Bool.MainFormat]);
+          include(FormatEnumBase,    FDisplayFormat[i].Bool.BaseFormat);
+          include(FormatEnumSign,    FDisplayFormat[i].Bool.SignFormat = vdfSignUnsigned);
+        end;
       end;
       if FButtonStates[bsChar] then begin
-        include(FormatEnum,    FormatCharToEnum[FDisplayFormat[i].CharFormat]);
-        include(FormatOrdinal, FDisplayFormat[i].CharBaseFormat);
-        include(FormatSign,    FDisplayFormat[i].CharSignFormat);
+        include(InherhitEnum,      FDisplayFormat[i].Char.UseInherited);
+        if (not FDisplayFormat[i].Char.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatEnum,        FormatCharToEnum[FDisplayFormat[i].Char.MainFormat]);
+          include(FormatEnumBase,    FDisplayFormat[i].Char.BaseFormat);
+          include(FormatEnumSign,    FDisplayFormat[i].Char.SignFormat = vdfSignUnsigned);
+        end;
       end;
       if FButtonStates[bsFloat] then begin
-        include(FormatFloat,   FDisplayFormat[i].FloatFormat);
+        include(InherhitFloat,     FDisplayFormat[i].Float.UseInherited);
+        if (not FDisplayFormat[i].Float.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatFloat,       FDisplayFormat[i].Float.NumFormat);
+          if (FormatFloatPrec = INT_UNK) or (FormatFloatPrec = FDisplayFormat[i].Float.Precission)
+          then FormatFloatPrec :=    FDisplayFormat[i].Float.Precission
+          else FormatFloatPrec :=    INT_MIX;
+        end;
       end;
       if FButtonStates[bsStruct] then begin
-        include(FormatStruct,     FDisplayFormat[i].StructFormat);
-        include(FormatStructAddr, FDisplayFormat[i].StructAddrFormat);
-        include(FormatPointer,    FDisplayFormat[i].StructPointerFormat);
-        if OnlyPointerOrStruct then begin
-          include(FormatOrdinal,    FDisplayFormat[i].StructPointerBaseFormat);
-          include(FormatSign,       FDisplayFormat[i].StructPointerSignFormat);
-        end
-        else
-          include(FormatPtrOrdinal, FDisplayFormat[i].StructPointerBaseFormat);
+        include(InherhitStruct,      FDisplayFormat[i].Struct.UseInherited);
+        if (not FDisplayFormat[i].Struct.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatStruct,        FDisplayFormat[i].Struct.DataFormat);
+          include(FormatStructPointer, FDisplayFormat[i].Struct.ShowPointerFormat);
+        end;
+        include(InherhitAddress,     FDisplayFormat[i].Struct.Address.UseInherited);
+        if (not FDisplayFormat[i].Struct.Address.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatAddress,       FDisplayFormat[i].Struct.Address.TypeFormat);
+          include(FormatAddressBase,   FDisplayFormat[i].Struct.Address.BaseFormat);
+          include(FormatAddressSign,   FDisplayFormat[i].Struct.Address.Signed);
+        end;
       end;
       if FButtonStates[bsPtr] then begin
-        include(FormatPointer,      FDisplayFormat[i].PointerFormat);
-        include(FormatPointerDeref, FDisplayFormat[i].PointerDerefFormat);
-        if OnlyPointerOrStruct then begin
-          include(FormatOrdinal,    FDisplayFormat[i].PointerBaseFormat);
-          include(FormatSign,       FDisplayFormat[i].PointerSignFormat);
-        end
-        else
-          include(FormatPtrOrdinal, FDisplayFormat[i].PointerBaseFormat);
+        include(InherhitPtr, FDisplayFormat[i].Pointer.UseInherited);
+        if (not FDisplayFormat[i].Pointer.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatPointerDeref, FDisplayFormat[i].Pointer.DerefFormat);
+        end;
+        include(InherhitAddress, FDisplayFormat[i].Pointer.Address.UseInherited);
+        if (not FDisplayFormat[i].Pointer.Address.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatAddress,       FDisplayFormat[i].Pointer.Address.TypeFormat);
+          include(FormatAddressBase,   FDisplayFormat[i].Pointer.Address.BaseFormat);
+          include(FormatAddressSign,   FDisplayFormat[i].Pointer.Address.Signed);
+        end;
       end;
     end;
 
-
-
-    for d := low(TValueDisplayFormat) to high(TValueDisplayFormat) do
-      if FRadioMap[d] <> nil then
-        FRadioMap[d].Checked := False;
-    rbPointerNumDefault.Checked := False;
-    rbPointerNumHex.Checked := False;
-    rbPointerNumDec.Checked := False;
-    rbPointerNumOct.Checked := False;
-    ApplyDispForm(FormatOrdinal);
-    ApplyDispForm(FormatSign);
-    ApplyDispForm(FormatNumChar);
-    ApplyDispForm(FormatEnum);
-    ApplyDispForm(FormatFloat);
-    ApplyDispForm(FormatStruct);
-    ApplyDispForm(FormatStructAddr);
-    ApplyDispForm(FormatPointer);
-    ApplyDispForm(FormatPointerDeref);
-    if IdeDebuggerDisplayFormats.DisplayFormatCount(FormatPtrOrdinal) = 1 then begin
-      for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-        if d in FormatPtrOrdinal then
-          case d of
-            vdfBaseDefault: rbPointerNumDefault.Checked := True;
-            vdfBaseHex:     rbPointerNumHex.Checked     := True;
-            vdfBaseDecimal: rbPointerNumDefault.Checked := True;
-            vdfBaseOct:      rbPointerNumOct.Checked    := True;
-          end;
+    if ShowOverrideChecks then begin
+      cbOverrideNumBase.State       := BoolsetToCBState(InherhitNum);
+      cbOverrideNum2Base.State      := BoolsetToCBState(InherhitNum2);
+      cbOverrideEnum.State          := BoolsetToCBState(InherhitEnum);
+      cbOverrideFloat.State         := BoolsetToCBState(InherhitFloat);
+      cbOverrideStruct.State        := BoolsetToCBState(InherhitStruct);
+      cbOverridePointerDeref.State  := BoolsetToCBState(InherhitPtr);
+      cbOverrideAddressFormat.State := BoolsetToCBState(InherhitAddress);
+    end
+    else begin
+      InherhitNum     := [False];
+      InherhitNum2    := [False];
+      InherhitEnum    := [False];
+      InherhitFloat   := [False];
+      InherhitStruct  := [False];
+      InherhitPtr     := [False];
+      InherhitAddress := [False];
     end;
 
-    if True in FormatIsMemDump then begin
-      if False in FormatIsMemDump then
-        cbMemDump.State := cbGrayed
-      else
-        cbMemDump.Checked := True;
-    end
-    else
-      cbMemDump.Checked := False;
 
+    if (InherhitNum = [True]) or (not FButtonStates[bsNum]) then begin
+      ClearRadios(PanelNumBase);
+      ClearRadios(PanelNumSign);
+      cbNumSeparator.State :=         cbUnchecked;
+      cbNumSeparator.Tag   :=         1; // do not read back
+      ClearRadios(PanelNumSepGroup);
+      SpinDigits.Tag        := 1;
+      SpinDigits.Value      := 0;
+      SpinDigits.Text       := '';
+    end
+    else begin
+      ApplyDispForm(PanelNumBase,     FormatNumBase, RBA_Num);
+      ApplyDispForm(PanelNumSign,     FormatNumSign, RBA_Sign);
+      cbNumSeparator.State :=         BoolsetToCBState(FormatNumSep, False);
+      cbNumSeparator.Tag   :=         0;
+      ApplyDispForm(PanelNumSepGroup, FormatNumGroup, RBA_Group);
+      SpinDigits.Tag       := 0;
+    end;
+
+    if InherhitNum2 = [True] then begin
+      cbNum2Visibile.State  :=         cbUnchecked;
+      cbNum2Visibile.Tag    :=         1;
+      ClearRadios(PanelNum2Base);
+      ClearRadios(PanelNum2Sign);
+      cbNum2Separator.State :=         cbUnchecked;
+      cbNum2Separator.Tag   :=         1;
+      ClearRadios(PanelNum2SepGroup);
+      Spin2Digits.Tag        := 1;
+      Spin2Digits.Value      := 0;
+      Spin2Digits.Text       := '';
+    end
+    else begin
+      cbNum2Visibile.State  :=         BoolsetToCBState(FormatNum2Visible, False);
+      cbNum2Visibile.Tag    :=         0;
+      ApplyDispForm(PanelNum2Base,     FormatNum2Base, RBA_Num);
+      ApplyDispForm(PanelNum2Sign,     FormatNum2Sign, RBA_Sign);
+      cbNum2Separator.State :=         BoolsetToCBState(FormatNum2Sep, False);
+      cbNum2Separator.Tag   :=         0;
+      ApplyDispForm(PanelNum2SepGroup, FormatNum2Group, RBA_Group);
+      Spin2Digits.Tag       := 0;
+    end;
+
+    if InherhitEnum = [True] then begin
+      ClearRadios(PanelEnumRb1);
+      ClearRadios(PanelEnumBase);
+      //ClearRadios(PanelEnumSign);
+      cbEnumSign.State := cbUnchecked;
+      cbEnumSign.Tag   := 1;
+    end
+    else begin
+      ApplyDispForm(PanelEnumRb1,  FormatEnum,     RBA_Enum);
+      ApplyDispForm(PanelEnumBase, FormatEnumBase, RBA_Num);
+      //ApplyDispForm(PanelEnumSign, FormatEnumSign, RBA_Sign);
+      cbEnumSign.State := BoolsetToCBState(FormatEnumSign, False);
+      cbEnumSign.Tag   := 0;
+    end;
+
+    if InherhitFloat = [True] then begin
+      ClearRadios(PanelFloat);
+      SpinFloatDigits.Tag   := 1;
+      SpinFloatDigits.Value := 0;
+      SpinFloatDigits.Text  := '';
+    end
+    else begin
+      ApplyDispForm(PanelFloatRb, FormatFloat, RBA_Float);
+      if (FormatFloatPrec = INT_MIX) or (FormatFloatPrec = INT_UNK) then begin
+        SpinFloatDigits.Tag      := 2;
+        SpinFloatDigits.Value    := 0;
+        SpinFloatDigits.Text     := '';
+      end
+      else begin
+        SpinFloatDigits.Tag      := 0;
+        SpinFloatDigits.Value    := FormatFloatPrec;
+        SpinFloatDigits.Text     := IntToStr(FormatFloatPrec);
+      end;
+    end;
+
+    if InherhitStruct = [True] then begin
+      ClearRadios(PanelStructFld);
+      ClearRadios(PanelStructPointer);
+    end
+    else begin
+      ApplyDispForm(PanelStructFld,     FormatStruct,        RBA_StructVal);
+      ApplyDispForm(PanelStructPointer, FormatStructPointer, RBA_StructPtr);
+    end;
+
+    if InherhitPtr = [True] then begin
+      ClearRadios(PanelPointerDeref);
+    end
+    else begin
+      ApplyDispForm(PanelPointerDeref,  FormatPointerDeref,  RBA_PtrDeref);
+    end;
+
+    if InherhitAddress = [True] then begin
+      ClearRadios(PanelAddressType);
+      ClearRadios(PanelAddressBase);
+      cbAddrSign.State := cbUnchecked;
+      cbAddrSign.Tag   := 1;
+    end
+    else begin
+      ApplyDispForm(PanelAddressType, FormatAddress,     RBA_Addr);
+      ApplyDispForm(PanelAddressBase, FormatAddressBase, RBA_AddrNum);
+      cbAddrSign.State := BoolsetToCBState(FormatAddressSign, False);
+      cbAddrSign.Tag   := 0;
+    end;
+
+    UpdateNumDigitPanel;
+    UpdateNum2Visibility;
+    UpdateNum2DigitPanel;
+
+
+    cbMemDump.State := BoolsetToCBState(FormatIsMemDump, False);
 
   finally
-    EndUpdateBounds;
     EnableAutoSizing;
+
+    // workaround issue that SpinEdit.Text / EmptyValue don't allways work
+    FormatSpinChanged(SpinDigits);
+    FormatSpinChanged(Spin2Digits);
+    FormatSpinChanged(SpinFloatDigits);
+
     FUpdatingDisplay := False;
   end;
 end;
@@ -773,52 +1609,73 @@ begin
   if FHighlightModifiedTabs then begin
     for i := 0 to FDisplayFormatCount - 1 do begin
       MarkTabNumber  := MarkTabNumber or
-                        (FDisplayFormat[i].NumBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].NumSignFormat <> vdfSignDefault) or
-                        (FDisplayFormat[i].NumCharFormat <> vdfNumCharDefault)
-                        ;
+      ((not FDisplayFormat[i].Num.UseInherited) and (
+        (FDisplayFormat[i].Num.BaseFormat            = DefaultWatchDisplayFormat.Num.BaseFormat) or
+        (FDisplayFormat[i].Num.SignFormat            = DefaultWatchDisplayFormat.Num.SignFormat) or
+        (FDisplayFormat[i].Num.MinDigits                = DefaultWatchDisplayFormat.Num.MinDigits) or
+        (FDisplayFormat[i].Num.SeparatorDec          = DefaultWatchDisplayFormat.Num.SeparatorDec) or
+        (FDisplayFormat[i].Num.SeparatorHexBin       = DefaultWatchDisplayFormat.Num.SeparatorHexBin)
+      )) or
+      ((not FDisplayFormat[i].Num2.UseInherited) and (
+        (FDisplayFormat[i].Num2.Visible              = DefaultWatchDisplayFormat.Num2.Visible) or
+        (FDisplayFormat[i].Num2.BaseFormat           = DefaultWatchDisplayFormat.Num2.BaseFormat) or
+        (FDisplayFormat[i].Num2.SignFormat           = DefaultWatchDisplayFormat.Num2.SignFormat) or
+        (FDisplayFormat[i].Num2.MinDigits               = DefaultWatchDisplayFormat.Num2.MinDigits) or
+        (FDisplayFormat[i].Num2.SeparatorDec         = DefaultWatchDisplayFormat.Num2.SeparatorDec) or
+        (FDisplayFormat[i].Num2.SeparatorHexBin      = DefaultWatchDisplayFormat.Num2.SeparatorHexBin)
+      ));
       MarkTabEnum    := MarkTabEnum or
-                        (FDisplayFormat[i].EnumFormat <> vdfEnumDefault) or
-                        (FDisplayFormat[i].EnumBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].EnumSignFormat <> vdfSignDefault)
-                        ;
+      ((not FDisplayFormat[i].Enum.UseInherited) and (
+        (FDisplayFormat[i].Enum.MainFormat               = DefaultWatchDisplayFormat.Enum.MainFormat) or
+        (FDisplayFormat[i].Enum.BaseFormat           = DefaultWatchDisplayFormat.Enum.BaseFormat) or
+        (FDisplayFormat[i].Enum.SignFormat           = DefaultWatchDisplayFormat.Enum.SignFormat)
+      ));
       MarkTabBool    := MarkTabBool or
-                        (FDisplayFormat[i].BoolFormat <> vdfBoolDefault) or
-                        (FDisplayFormat[i].BoolBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].BoolSignFormat <> vdfSignDefault)
-                        ;
+      ((not FDisplayFormat[i].Bool.UseInherited) and (
+        (FDisplayFormat[i].Bool.MainFormat               = DefaultWatchDisplayFormat.Bool.MainFormat) or
+        (FDisplayFormat[i].Bool.BaseFormat           = DefaultWatchDisplayFormat.Bool.BaseFormat) or
+        (FDisplayFormat[i].Bool.SignFormat           = DefaultWatchDisplayFormat.Bool.SignFormat)
+      ));
       MarkTabChar    := MarkTabChar or
-                        (FDisplayFormat[i].CharFormat <> vdfCharDefault) or
-                        (FDisplayFormat[i].CharBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].CharSignFormat <> vdfSignDefault)
-                        ;
+      ((not FDisplayFormat[i].Char.UseInherited) and (
+        (FDisplayFormat[i].Char.MainFormat               = DefaultWatchDisplayFormat.Char.MainFormat) or
+        (FDisplayFormat[i].Char.BaseFormat           = DefaultWatchDisplayFormat.Char.BaseFormat) or
+        (FDisplayFormat[i].Char.SignFormat           = DefaultWatchDisplayFormat.Char.SignFormat)
+      ));
       MarkTabFloat   := MarkTabFloat or
-                        (FDisplayFormat[i].FloatFormat <> vdfFloatDefault)
-                        ;
+      ((not FDisplayFormat[i].Float.UseInherited) and (
+        (FDisplayFormat[i].Float.NumFormat              = DefaultWatchDisplayFormat.Float.NumFormat) or
+        (FDisplayFormat[i].Float.Precission          = DefaultWatchDisplayFormat.Float.Precission)
+      ));
       MarkTabStruct  := MarkTabStruct or
-                        (FDisplayFormat[i].StructFormat <> vdfStructDefault) or
-                        (FDisplayFormat[i].StructAddrFormat <> vdfStructAddressDefault) or
-                        (FDisplayFormat[i].StructPointerFormat <> vdfPointerDefault) or
-                        (FDisplayFormat[i].StructPointerBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].StructPointerSignFormat <> vdfSignDefault)
-                        ;
+      ((not FDisplayFormat[i].Struct.UseInherited) and (
+        (FDisplayFormat[i].Struct.DataFormat             = DefaultWatchDisplayFormat.Struct.DataFormat) or
+        (FDisplayFormat[i].Struct.ShowPointerFormat      = DefaultWatchDisplayFormat.Struct.ShowPointerFormat)
+      )) or
+        ((not FDisplayFormat[i].Struct.Address.UseInherited) and (
+        (FDisplayFormat[i].Struct.Address.TypeFormat      = DefaultWatchDisplayFormat.Struct.Address.TypeFormat) or
+        (FDisplayFormat[i].Struct.Address.BaseFormat  = DefaultWatchDisplayFormat.Struct.Address.BaseFormat) or
+        (FDisplayFormat[i].Struct.Address.Signed      = DefaultWatchDisplayFormat.Struct.Address.Signed)
+      ));
       MarkTabPointer := MarkTabPointer or
-                        (FDisplayFormat[i].PointerDerefFormat <> vdfPointerDerefDefault) or
-                        (FDisplayFormat[i].PointerFormat <> vdfPointerDefault) or
-                        (FDisplayFormat[i].PointerBaseFormat <> vdfBaseDefault) or
-                        (FDisplayFormat[i].PointerSignFormat <> vdfSignDefault)
-                        ;
+      ((not FDisplayFormat[i].Pointer.UseInherited) and (
+        (FDisplayFormat[i].Pointer.DerefFormat       = DefaultWatchDisplayFormat.Pointer.DerefFormat)
+      )) or
+      ((not FDisplayFormat[i].Pointer.Address.UseInherited) and (
+        (FDisplayFormat[i].Pointer.Address.TypeFormat     = DefaultWatchDisplayFormat.Pointer.Address.TypeFormat) or
+        (FDisplayFormat[i].Pointer.Address.BaseFormat = DefaultWatchDisplayFormat.Pointer.Address.BaseFormat) or
+        (FDisplayFormat[i].Pointer.Address.Signed     = DefaultWatchDisplayFormat.Pointer.Address.Signed)
+      ));
     end;
   end;
 
-
-  tbNumber.Font.Italic  := MarkTabNumber;
-  tbEnum.Font.Italic    := MarkTabEnum;
-  tbBool.Font.Italic    := MarkTabBool;
-  tbChar.Font.Italic    := MarkTabChar;
-  tbFloat.Font.Italic   := MarkTabFloat;
-  tbStruct.Font.Italic  := MarkTabStruct;
-  tbPointer.Font.Italic := MarkTabPointer;
+  tbNumber.Font.Underline  := MarkTabNumber;
+  tbEnum.Font.Underline    := MarkTabEnum;
+  tbBool.Font.Underline    := MarkTabBool;
+  tbChar.Font.Underline    := MarkTabChar;
+  tbFloat.Font.Underline   := MarkTabFloat;
+  tbStruct.Font.Underline  := MarkTabStruct;
+  tbPointer.Font.Underline := MarkTabPointer;
 end;
 
 constructor TDisplayFormatFrame.Create(TheOwner: TComponent);
@@ -829,63 +1686,7 @@ begin
   FShowCurrent := True;
   FShowMemDump := True;
   FShowMultiRadio := True;
-
-  FillByte(FRadioMap, SizeOf(FRadioMap), 0);
-
-  FRadioMap[vdfBaseDefault]          := rbNumDefault;
-  FRadioMap[vdfBaseDecimal]          := rbNumDec;
-  FRadioMap[vdfBasePointer]           := rbNumPtr;
-  FRadioMap[vdfBaseHex]              := rbNumHex;
-  FRadioMap[vdfBaseOct]               := rbNumOct;
-  FRadioMap[vdfBaseBin]               := rbNumBin;
-
-  FRadioMap[vdfSignDefault]          := rbSignDefault;
-  FRadioMap[vdfSignSigned]           := rbSignSigned;
-  FRadioMap[vdfSignUnsigned]         := rbSignUnsigned;
-
-  FRadioMap[vdfNumCharDefault]       := rbNumCharDefault;
-  FRadioMap[vdfNumCharOff]           := rbNumCharOff;
-  FRadioMap[vdfNumCharOrdAndUnicode] := rbNumCharUniNum;
-  FRadioMap[vdfNumCharOnlyUnicode]   := rbNumCharUni;
-
-  FRadioMap[vdfEnumDefault]          := rbEnumDefault;
-  FRadioMap[vdfEnumName]             := rbEnumName;
-  FRadioMap[vdfEnumOrd]              := rbEnumOrd;
-  FRadioMap[vdfEnumNameAndOrd]       := rbEnumNameAndOrd;
-
-  FRadioMap[vdfBoolDefault]          := rbEnumDefault;
-  FRadioMap[vdfBoolName]             := rbEnumName;
-  FRadioMap[vdfBoolOrd]              := rbEnumOrd;
-  FRadioMap[vdfBoolNameAndOrd]       := rbEnumNameAndOrd;
-
-  FRadioMap[vdfCharDefault]          := rbEnumDefault;
-  FRadioMap[vdfCharLetter]           := rbEnumName;
-  FRadioMap[vdfCharOrd]              := rbEnumOrd;
-  FRadioMap[vdfCharLetterAndOrd]     := rbEnumNameAndOrd;
-
-  FRadioMap[vdfFloatDefault]         := rbFloatDefault;
-  FRadioMap[vdfFloatPoint]           := rbFloatPoint;
-  FRadioMap[vdfFloatScientific]      := rbFloatScience;
-
-  FRadioMap[vdfStructDefault]        := rbStructDefault;
-  FRadioMap[vdfStructValOnly]        := rbStructValOnly;
-  FRadioMap[vdfStructFields]         := rbStructFields;
-  FRadioMap[vdfStructFull]           := rbStructFull;
-
-  FRadioMap[vdfStructAddressDefault] := rbStructAddrDefault;
-  FRadioMap[vdfStructAddressOn]      := rbStructAddrOn;
-  FRadioMap[vdfStructAddressOff]     := rbStructAddrOff;
-  FRadioMap[vdfStructAddressOnly]    := rbStructAddrOnly;
-
-  FRadioMap[vdfPointerDefault]       := rbPointerDefault;
-  FRadioMap[vdfPointerAddress]       := rbPointerAddress;
-  FRadioMap[vdfPointerTypedAddress]  := rbPointerTypedAddress;
-
-  FRadioMap[vdfPointerDerefDefault]  := rbPointerDerefDefault;
-  FRadioMap[vdfPointerDerefOff]      := rbPointerDerefOff;
-  FRadioMap[vdfPointerDerefOn]       := rbPointerDerefOn;
-  FRadioMap[vdfPointerDerefOnly]     := rbPointerDerefOnly;
-
+  FShowOverrideChecks := True;
 end;
 
 procedure TDisplayFormatFrame.Setup;
@@ -904,65 +1705,86 @@ begin
   tbStruct.Caption  := DispFormatDlgBtnStruct;
   tbPointer.Caption := DispFormatDlgBtnPointer;
 
-  DividerBevelEnum.Caption          := DispFormatDlgBtnEnum +', ' + DispFormatDlgBtnBool +', ' + DispFormatDlgBtnChar;
-  DividerBevelNum.Caption           := DispFormatDlgBtnNumber;
-  DividerBevelNumChar.Caption       := DispFormatDlgBtnNumber;
-  DividerBevelFloat.Caption         := DispFormatDlgBtnFloat;
-  DividerBevelStruct.Caption        := DispFormatDlgBtnStruct;
-  DividerBevelPointer.Caption       := DispFormatDlgBtnPointer;
-  DividerBevelAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
-  DividerBevelMemDump.Caption       := '';
 
-  rbNumDefault.Caption          := DispFormatBaseDefault;
-  rbNumDec.Caption              := DispFormatBaseDecimal;
-  rbNumPtr.Caption              := DispFormatBasePointer;
-  rbNumHex.Caption              := DispFormatBaseHex;
-  rbNumOct.Caption              := DispFormatBaseOct;
-  rbNumBin.Caption              := DispFormatBaseBin;
-  rbSignDefault.Caption         := DispFormatSignDefault + ' ' + DispFormatDlgCaptionSign;
-  rbSignSigned.Caption          := DispFormatSignSigned;
-  rbSignUnsigned.Caption        := DispFormatSignUnsigned;
-  rbNumCharDefault.Caption      := DispFormatNumCharDefault + ' ' + DispFormatDlgCaptionShowChar;
-  rbNumCharOff.Caption          := DispFormatNumCharOff;
-  rbNumCharUniNum.Caption       := DispFormatNumCharOrdAndUnicode;
-  rbNumCharUni.Caption          := DispFormatNumCharOnlyUnicode;
+  lbOverrideNumBase.Caption       := DispFormatDlgBtnNumber;
+  rbNumDec.Caption                := DispFormatBaseDecimal;
+  rbNumHex.Caption                := DispFormatBaseHex;
+  rbNumOct.Caption                := DispFormatBaseOct;
+  rbNumBin.Caption                := DispFormatBaseBin;
+  rbNumChar.Caption               := DispFormatBaseChar;
+  rbSignAuto.Caption              := DispFormatSignAuto;
+  rbSignSigned.Caption            := DispFormatSignSigned;
+  rbSignUnsigned.Caption          := DispFormatSignUnsigned;
+  lbNumDigits.Caption             := DispFormatNumDigits;
+  cbNumSeparator.Caption          := DispFormatNumSeperator;
+  lbNumSepGroup.Caption           := DispFormatNumSepGroup;
+  rbNumSepNone.Caption            := DispFormatNumSepGroupNone;
+  rbNumSepByte.Caption            := DispFormatNumSepGroupByte;
+  rbNumSepWord.Caption            := DispFormatNumSepGroupWord;
+  rbNumSepLong.Caption            := DispFormatNumSepGroupLong;
 
-  rbEnumDefault.Caption         := DispFormatDlgCaptionDefault;
+  lbOverrideNum2Base.Caption      := DispFormatDlgBtnNumber2;
+  cbNum2Visibile.Caption          := DispFormatDlgBtnNum2Visible;
+  rbNum2Dec.Caption               := DispFormatBaseDecimal;
+  rbNum2Hex.Caption               := DispFormatBaseHex;
+  rbNum2Oct.Caption               := DispFormatBaseOct;
+  rbNum2Bin.Caption               := DispFormatBaseBin;
+  rbNum2Char.Caption              := DispFormatBaseChar;
+  rbSign2Auto.Caption             := DispFormatSignAuto;
+  rbSign2Signed.Caption           := DispFormatSignSigned;
+  rbSign2Unsigned.Caption         := DispFormatSignUnsigned;
+  lbNum2Digits.Caption            := DispFormatNumDigits;
+  cbNum2Separator.Caption         := DispFormatNumSeperator;
+  lbNum2SepGroup.Caption          := DispFormatNumSepGroup;
+  rbNum2SepNone.Caption           := DispFormatNumSepGroupNone;
+  rbNum2SepByte.Caption           := DispFormatNumSepGroupByte;
+  rbNum2SepWord.Caption           := DispFormatNumSepGroupWord;
+  rbNum2SepLong.Caption           := DispFormatNumSepGroupLong;
+
+  lbOverrideEnum.Caption          := DispFormatDlgBtnEnum +', ' + DispFormatDlgBtnBool +', ' + DispFormatDlgBtnChar;
   s := DispFormatEnumName;
   AddToStr(s, DispFormatBoolName,   '/');
   AddToStr(s, DispFormatCharLetter, '/');
   rbEnumName.Caption            := s;
   rbEnumOrd.Caption             := DispFormatEnumOrd;
   rbEnumNameAndOrd.Caption      := DispFormatEnumNameAndOrd;
+  rbENumDec.Caption                := DispFormatBaseDecimal;
+  rbENumHex.Caption                := DispFormatBaseHex;
+  rbENumOct.Caption                := DispFormatBaseOct;
+  rbENumBin.Caption                := DispFormatBaseBin;
+  rbENumChar.Caption               := DispFormatBaseChar;
+  cbEnumSign.Caption               := DispFormatSignUnsigned;
 
-  rbFloatDefault.Caption        := DispFormatFloatDefault;
+  lbOverrideFloat.Caption       := DispFormatDlgBtnFloat;
   rbFloatPoint.Caption          := DispFormatFloatPoint;
   rbFloatScience.Caption        := DispFormatFloatScientific;
+  lbFloatPrec.Caption           := DispFormatNumDigits;
 
-  rbStructDefault.Caption       := DispFormatStructDefault;
+  lbOverrideStruct.Caption      := DispFormatDlgBtnStruct;
   rbStructValOnly.Caption       := DispFormatStructValOnly;
   rbStructFields.Caption        := DispFormatStructFields;
   rbStructFull.Caption          := DispFormatStructFull;
-  rbStructAddrDefault.Caption   := DispFormatStructAddressDefault + ' ' + DispFormatDlgCaptionAddress;
-  rbStructAddrOn.Caption        := DispFormatStructAddressOff;
-  rbStructAddrOff.Caption       := DispFormatStructAddressOn;
+  rbStructAddrOn.Caption        := DispFormatStructAddressOn;
+  rbStructAddrOff.Caption       := DispFormatStructAddressOff;
   rbStructAddrOnly.Caption      := DispFormatStructAddressOnly;
 
-  rbPointerDefault.Caption      := DispFormatPointerDefault + ' ' + DispFormatDlgCaptionTyped;
-  rbPointerAddress.Caption      := DispFormatPointerAddress;
-  rbPointerTypedAddress.Caption := DispFormatPointerTypedAddress;
-  rbPointerDerefDefault.Caption := DispFormatPointerDerefDefault + ' ' + DispFormatDlgCaptionDeref;
+  lbOverridePointerDeref.Caption := DispFormatDlgBtnPointer;
   rbPointerDerefOff.Caption     := DispFormatPointerDerefOff;
   rbPointerDerefOn.Caption      := DispFormatPointerDerefOn;
   rbPointerDerefOnly.Caption    := DispFormatPointerDerefOnly;
 
-  rbPointerNumDefault.Caption   := DispFormatBaseDefault + ' ' +DispFormatDlgCaptionNumber;
-  rbPointerNumHex.Caption       := DispFormatBaseHex;
-  rbPointerNumDec.Caption       := DispFormatBaseDecimal;
-  rbPointerNumOct.Caption       := DispFormatBaseOct;
+  lbOverrideAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
+  rbAddressPlain.Caption        := DispFormatPointerAddressPlain;
+  rbAddressTyped.Caption        := DispFormatPointerAddressTyped;
+  rbAddrNumHex.Caption       := DispFormatBaseHex;
+  rbAddrNumDec.Caption       := DispFormatBaseDecimal;
+  rbAddrNumOct.Caption       := DispFormatBaseOct;
+  rbAddrNumBin.Caption       := DispFormatBaseBin;
+  cbAddrSign.Caption         := DispFormatSignSigned;
 
+
+  DividerBevelMemDump.Caption       := '';
   cbMemDump.Caption             := DispFormatCategoryMemDump;
-
 
 end;
 
