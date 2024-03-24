@@ -1417,19 +1417,6 @@ begin
     PreferredSize[asboVertical]:=
       Control.Constraints.MinMaxHeight(PreferredSize[asboVertical]);
 
-  if IsPrefWidthValid
-  and (Control.AutoSize or (Control.BorderSpacing.CellAlignHorizontal<>ccaFill))
-  then begin
-    // the control.width is fixed to its preferred width
-    MaximumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
-  end;
-  if IsPrefHeightValid
-  and (Control.AutoSize or (Control.BorderSpacing.CellAlignVertical<>ccaFill))
-  then begin
-    // the control.height is fixed to its preferred height
-    MaximumSize[asboVertical]:=PreferredSize[asboVertical];
-  end;
-
   // if no preferred size is valid use the class defaults
   if not IsPrefWidthValid then
     PreferredSize[asboHorizontal]:=
