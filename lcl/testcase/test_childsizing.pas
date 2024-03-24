@@ -61,7 +61,8 @@ type
     procedure Init1(
       out P: TTestContainer; AContainerWidth: integer;
       AStyle: TChildControlResizeStyle; APerLine: Integer;
-      out C: TTestChildArray; AWidths: array of integer);
+      out C: TTestChildArray; AWidths: array of integer;
+      AInitContainerHeight: boolean = False);
     procedure AddPaddingAround(var C: TTestChildArray; APadding: integer; ALowIdx: Integer = -1; AHighIdx: integer = -1);
     function GetLefts(C: TTestChildArray; ALowIdx, AHighIdx: integer): TIntegerArray;
     function GetWidths(C: TTestChildArray; ALowIdx, AHighIdx: integer): TIntegerArray;
@@ -78,6 +79,7 @@ type
     procedure TestHomogenousChildResize;
     procedure TestHomogenousChildResizeConstrained;
     procedure TestHomogenousSpaceResize;
+    procedure TestCalculateCellConstraints;
   end;
 
 implementation
@@ -178,21 +180,33 @@ end;
 
 procedure TTestChildSizing.Init1(out P: TTestContainer; AContainerWidth: integer;
   AStyle: TChildControlResizeStyle; APerLine: Integer; out C: TTestChildArray;
-  AWidths: array of integer);
+  AWidths: array of integer; AInitContainerHeight: boolean);
 var
   i: Integer;
 begin
   P := TTestContainer.Create(nil);
-  P.SetBounds(0,0, AContainerWidth, 150);
-  p.ChildSizing.ControlsPerLine := APerLine;
-  p.ChildSizing.EnlargeHorizontal := AStyle;
-  p.ChildSizing.ShrinkHorizontal  := AStyle;
-  p.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+  if AInitContainerHeight then begin
+    P.SetBounds(0,0, 150, AContainerWidth);
+    p.ChildSizing.ControlsPerLine := APerLine;
+    p.ChildSizing.EnlargeVertical := AStyle;
+    p.ChildSizing.ShrinkVertical  := AStyle;
+    p.ChildSizing.Layout := cclTopToBottomThenLeftToRight;
+  end
+  else begin
+    P.SetBounds(0,0, AContainerWidth, 150);
+    p.ChildSizing.ControlsPerLine := APerLine;
+    p.ChildSizing.EnlargeHorizontal := AStyle;
+    p.ChildSizing.ShrinkHorizontal  := AStyle;
+    p.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+  end;
 
   {$IFnDEF WITHOUT_AUTOSIZE_LOCK} p.DisableAutoSizing; {$ENDIF}
   SetLength(C, Length(AWidths));
   for i := 0 to Length(AWidths) - 1 do
-    C[i] := TTestChild.Create(P, AWidths[i], 10);
+    if AInitContainerHeight then
+      C[i] := TTestChild.Create(P, 10, AWidths[i])
+    else
+      C[i] := TTestChild.Create(P, AWidths[i], 10);
   {$IFnDEF WITHOUT_AUTOSIZE_LOCK} P.EnableAutoSizing; {$ENDIF}
 end;
 
@@ -816,6 +830,95 @@ begin
 
 
   end;
+end;
+
+procedure TTestChildSizing.TestCalculateCellConstraints;
+var
+  C: TTestChildArray;
+  w1, w2, w3: Integer;
+begin
+  Init1(FContainer, 1000,crsScaleChilds, 3, C,
+        [20, 90, 30,
+         25, 85, 30,
+         20, 95, 30]);
+
+  // preferred witd
+  w1 := 25 * 1000 div (25+95+30);
+  w2 := 95 * 1000 div (25+95+30);
+  w3 := 30 * 1000 div (25+95+30);
+  AssertApprox(w1, C[0].Width); AssertApprox(w2, C[1].Width); AssertApprox(w3, C[2].Width);
+  AssertApprox(w1, C[3].Width); AssertApprox(w2, C[4].Width); AssertApprox(w3, C[5].Width);
+  AssertApprox(w1, C[6].Width); AssertApprox(w2, C[7].Width); AssertApprox(w3, C[8].Width);
+
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  c[4].Constraints.MaxWidth := 70; // lowest MaxWidth
+  c[7].Constraints.MaxWidth := 75;
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  w1 := 25 * (1000-70) div (25+30);
+  w2 := 70;
+  w3 := 30 * (1000-70) div (25+30);
+  AssertApprox(w1, C[0].Width); AssertEquals(w2, C[1].Width); AssertApprox(w3, C[2].Width);
+  AssertApprox(w1, C[3].Width); AssertEquals(w2, C[4].Width); AssertApprox(w3, C[5].Width);
+  AssertApprox(w1, C[6].Width); AssertEquals(w2, C[7].Width); AssertApprox(w3, C[8].Width);
+
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  c[4].Constraints.MaxWidth := 900;
+  c[7].Constraints.MaxWidth := 900;
+  c[0].Constraints.MinWidth := 135; // highest MinWidth
+  c[3].Constraints.MinWidth := 115;
+  FContainer.Width := 200;
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  w1 := 135;
+  w2 := 95 * (200-135) div (95+30);
+  w3 := 30 * (200-135) div (95+30);
+  AssertEquals(w1, C[0].Width); AssertApprox(w2, C[1].Width); AssertApprox(w3, C[2].Width);
+  AssertEquals(w1, C[3].Width); AssertApprox(w2, C[4].Width); AssertApprox(w3, C[5].Width);
+  AssertEquals(w1, C[6].Width); AssertApprox(w2, C[7].Width); AssertApprox(w3, C[8].Width);
+
+  FreeAndNil(FContainer);
+
+  // check Height
+  Init1(FContainer, 1000,crsScaleChilds, 3, C,
+        [20, 90, 30,
+         25, 85, 30,
+         20, 95, 30],
+        True);
+
+  // preferred witd
+  w1 := 25 * 1000 div (25+95+30);
+  w2 := 95 * 1000 div (25+95+30);
+  w3 := 30 * 1000 div (25+95+30);
+  AssertApprox(w1, C[0].Height); AssertApprox(w2, C[1].Height); AssertApprox(w3, C[2].Height);
+  AssertApprox(w1, C[3].Height); AssertApprox(w2, C[4].Height); AssertApprox(w3, C[5].Height);
+  AssertApprox(w1, C[6].Height); AssertApprox(w2, C[7].Height); AssertApprox(w3, C[8].Height);
+
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  c[4].Constraints.MaxHeight := 70; // lowest MaxHeight
+  c[7].Constraints.MaxHeight := 75;
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  w1 := 25 * (1000-70) div (25+30);
+  w2 := 70;
+  w3 := 30 * (1000-70) div (25+30);
+  AssertApprox(w1, C[0].Height); AssertEquals(w2, C[1].Height); AssertApprox(w3, C[2].Height);
+  AssertApprox(w1, C[3].Height); AssertEquals(w2, C[4].Height); AssertApprox(w3, C[5].Height);
+  AssertApprox(w1, C[6].Height); AssertEquals(w2, C[7].Height); AssertApprox(w3, C[8].Height);
+
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  c[4].Constraints.MaxHeight := 900;
+  c[7].Constraints.MaxHeight := 900;
+  c[0].Constraints.MinHeight := 135; // highest MinHeight
+  c[3].Constraints.MinHeight := 115;
+  FContainer.Height := 200;
+  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  w1 := 135;
+  w2 := 95 * (200-135) div (95+30);
+  w3 := 30 * (200-135) div (95+30);
+  AssertEquals(w1, C[0].Height); AssertApprox(w2, C[1].Height); AssertApprox(w3, C[2].Height);
+  AssertEquals(w1, C[3].Height); AssertApprox(w2, C[4].Height); AssertApprox(w3, C[5].Height);
+  AssertEquals(w1, C[6].Height); AssertApprox(w2, C[7].Height); AssertApprox(w3, C[8].Height);
+
+  FreeAndNil(FContainer);
+
 end;
 
 
