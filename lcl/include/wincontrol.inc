@@ -1641,13 +1641,10 @@ var
   CurChild: TAutoSizeBox;
   CurBorder: integer;
   LastChild: TAutoSizeBox;
-  HasChildWithoutMax: array [TAutoSizeBoxOrientation] of Boolean;
 begin
   if DoInit then InitSums;
   Orthogonal:=SizeBoxOrthogonal[Orientation];
   if ChildCount[Orientation]>0 then begin
-    HasChildWithoutMax[asboHorizontal] := False;
-    HasChildWithoutMax[asboVertical] := False;
     for i:=0 to ChildCount[Orientation]-1 do begin
       CurChild:=Children[Orientation][i];
       
@@ -1662,29 +1659,18 @@ begin
       inc(MinimumSize[Orientation],CurBorder);
       inc(PreferredSize[Orientation],CurBorder);
       // add item size in Orientation
-      if not HasChildWithoutMax[Orientation] then begin
-        if CurChild.MaximumSize[Orientation]>0 then begin
-          inc(MaximumSize[Orientation],CurChild.MaximumSize[Orientation]);
-        end
-        else begin
-          MaximumSize[Orientation]:=0;
-          HasChildWithoutMax[Orientation] := True;
-        end;
-      end;
+      if CurChild.MaximumSize[Orientation]>0 then
+        inc(MaximumSize[Orientation],CurChild.MaximumSize[Orientation]);
       inc(MinimumSize[Orientation],CurChild.MinimumSize[Orientation]);
       inc(PreferredSize[Orientation],CurChild.PreferredSize[Orientation]);
       
       // maximize in Orthogonal
-      if not HasChildWithoutMax[Orthogonal] then begin
-        if CurChild.MaximumSize[Orthogonal]>0 then begin
-          MaximumSize[Orthogonal]:=Max(MaximumSize[Orthogonal],
-                                       CurChild.MaximumSize[Orthogonal]);
-        end
-        else begin
-          MaximumSize[Orthogonal]:=0;
-          HasChildWithoutMax[Orthogonal] := True;
-        end;
-      end;
+      if MaximumSize[Orthogonal] = 0 then
+        MaximumSize[Orthogonal] := CurChild.MaximumSize[Orthogonal]
+      else
+      if CurChild.MaximumSize[Orthogonal] > 0 then
+        MaximumSize[Orthogonal]:=Min(MaximumSize[Orthogonal],
+                                     CurChild.MaximumSize[Orthogonal]);
       MinimumSize[Orthogonal]:=Max(MinimumSize[Orthogonal],
                                    CurChild.MinimumSize[Orthogonal]);
       PreferredSize[Orthogonal]:=Max(PreferredSize[Orthogonal],
