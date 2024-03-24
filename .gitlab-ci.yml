@@ -330,3 +330,21 @@ tests-codetools: # run Codetools tests and output results in JUnit format (for t
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
+
+tests-lcl: # run LCL tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
+  stage: build
+  variables:
+    OUTPUT_FILE: testresults_lcl.xml
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
+    - cd lcl/testcase
+    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR test_lcl.lpi
+    - ./test_lcl --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
+  artifacts:
+    when: always
+    paths:
+      - $OUTPUT_FILE
+    reports:
+      junit: $OUTPUT_FILE
+  rules:
+    - !reference [.manualjob, rules]
