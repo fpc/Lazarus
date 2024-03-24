@@ -115,7 +115,7 @@ begin
   d.FileName := AFile;
   d.FileWriteMode := FMODE[AnOverwrite];
   {$ELSE}
-  Assert('SetRedirections not available');
+  Assert(False, 'SetRedirections not available');
   {$ENDIF}
 end;
 
