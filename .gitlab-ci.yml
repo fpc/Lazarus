@@ -347,4 +347,5 @@ tests-lcl: # run LCL tests and output results in JUnit format (for this FPC 3.3.
     reports:
       junit: $OUTPUT_FILE
   rules:
-    - !reference [.manualjob, rules]
+    - !reference [.runscheduled, rules]
+    - !reference [.onsuccessjob, rules]
