@@ -94,17 +94,26 @@ if [  "$Arch" = i386 ]; then
   ppcbin=ppc386
 else
   if [ "$Arch" = amd64 ]; then 
-    ppcbin=ppcx64 
+    ppcbin=ppcx64
     targetos=x86_64
   else
-    if [  "$Arch" = powerpc ]; then 
-      ppcbin=ppcppc 
+    if [  "$Arch" = arm ]; then
+      ppcbin=ppcarm
     else
-      if [  "$Arch" = sparc ]; then 
-        ppcbin=ppcsparc 
+      if [ "$Arch" = arm64 ]; then
+        ppcbin=ppcaarch64
+        targetos=aarch64
       else
-        echo "$Arch is not supported." 
-        exit -1 
+        if [  "$Arch" = powerpc ]; then
+          ppcbin=ppcppc
+        else
+          if [  "$Arch" = sparc ]; then
+            ppcbin=ppcsparc
+          else
+            echo "$Arch is not supported."
+            exit -1
+          fi
+        fi
       fi 
     fi 
   fi 
