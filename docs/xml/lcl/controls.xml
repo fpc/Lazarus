@@ -19241,15 +19241,18 @@ alBottom, then alLeft, then alRight and finally alClient.
 Scale children, keep space between children fixed.
 </p>
 <p>
-Scale children, keep space between them fixed. Children are resized to their 
-normal / advised size. If there is some space left in the client area of the 
-parent, then the children are scaled to fill the space. You can set maximum 
-Constraints. Then the other children are scaled more.
+Scales child controls while keeping the space between them fixed. Children are 
+resized so they keep the same size ratio as their preferred size (the size to 
+which they would autosize if they were not anchored/size-controlled). If there 
+is space left in the client area of the parent, then the children are scaled to 
+fill the space. You can set maximum width Constraints for a child control. Then 
+the other children are scaled to fill any space made available by the size 
+constraint.
 </p>
 <p>
-For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and 
-C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, 
-then the children are scaled with Factor 2.
+For example: 3 child controls A, B, C with A.PreferredWidth=10, 
+B.PreferredWidth=20 and C.PreferredWidth=30 (total=60). If the Parent's client 
+area has a ClientWidth of 120, then the children are scaled with Factor 2.
 </p>
 <p>
 If B has a maximum constraint width of 30, then first the children will be 
@@ -19264,9 +19267,9 @@ A.Width=23, B.Width=30, C.Width=67 (23+30+67=120).
 Enlarge children equally, i.e. by the same amount of pixels.
 </p>
 <p>
-Enlarge children equally. Children are resized to their normal/advised size. 
-If there is space left in the client area of the parent, the remaining space 
-is distributed equally to each child.
+Enlarge children equally. Children are resized to their preferred size. If 
+there is space left in the client area of the parent, the remaining space is 
+distributed equally to the size for each child.
 </p>
 <p>
 For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and 
@@ -19286,9 +19289,7 @@ B.Width=30, C.Width=55 (35+30+55=120).
 Enlarge space between children equally.
 </p>
 <p>
-Enlarge space between children equally. Children are resized to their 
-normal/advised size. If there is some space left in the client area of the 
-parent, then the space between the children is expanded.
+Enlarge space between children equally. Children are resized to their preferred size. If there is space left in the client area of the parent, then the space between the children is expanded equally.
 </p>
 <p>
 For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and 
@@ -19729,9 +19730,13 @@ child controls is not affected.
 </dd>
 <dt>crsScaleChilds</dt>
 <dd>
-Scales child controls so they all have a uniform width. The width for each 
-control is determined by the unused client area for the Control and the Layout 
-and ControlsPerLine properties.
+Scales the width for child controls while keeping the space between them fixed. 
+Children are resized so they keep the same width ratio as their preferred size 
+(the size to which they would autosize if they were not anchored / 
+size-controlled). If there is space left in the client area of the parent, then 
+the children are scaled to fill the space. You can set maximum width 
+Constraints for a child control. Then the other children are scaled to fill any 
+space made available by the size constraint.
 </dd>
 </dl>
 <p>
@@ -19771,9 +19776,13 @@ finally alRight.
 </dd>
 <dt>crsScaleChilds</dt>
 <dd>
-Scales child controls so they all have a uniform height. The height for each 
-control is determined by the unused client area for the Control and the Layout 
-and ControlsPerLine properties.
+Scales the height for child controls while keeping the space between them 
+fixed. Child controls are resized so they keep the same height ratio as their 
+preferred size (the size towhich they would autosize if they were not anchored 
+/ size-controlled). If there is space left in the client area of the parent, 
+then the children are scaled to fill the space. You can set maximum height  
+Constraints for a child control. Then the other children are scaled to fill any 
+space made available by the size constraint.
 </dd>
 <dt>crsHomogenousChildResize</dt>
 <dd>
@@ -19813,7 +19822,8 @@ Minimum space between child controls which are horizontally adjacent.
 <p>
 HorizontalSpacing is the number of pixels reserved as space between 
 horizontally adjacent child controls. It is used when Layout contains a value 
-other than cclNone.
+other than cclNone, but it also affects horizontal control spacing when using 
+Anchors for positioning child controls on a parent.
 </p>
 <p>
 Use VerticalSpacing to set the space reserved between vertically adjacent 
@@ -20112,6 +20122,10 @@ default value for the property is 0 (zero) and indicates that no additional
 space is reserved on the corresponding edges of the Control. Changing the 
 value for the property causes the Change method to be called to resize/realign 
 child controls. The OnChange event handler is also signalled (when assigned).
+</p>
+<p>
+VerticalSpacing also affects control spacing when using Anchors for positioning 
+child controls on a parent.
 </p>
 <p>
 Use HorizontalSpacing to set the space reserved between horizontally adjacent 
@@ -24268,19 +24282,45 @@ layout.
 <descr>
 <p>
 <var>ChildSizing</var> is a <var>TControlChildSizing</var> property which 
-contains properties and methods used to resize and layout child controls on 
-the control instance. ChildSizing provides an alternative to using Anchors and 
-Align to position and resize child controls. It allows a dynamic tabular (or 
-matrix) layout to be applied to its child Controls.
+contains properties and methods used to resize and layout the child controls on 
+a control instance. ChildSizing provides an alternative to using Anchors and 
+Align properties to position and resize child controls. It allows a dynamic 
+tabular (or matrix) layout to be applied to its child Controls.
+</p>
+<p>
+Use the Layout property to specify both the order and direction child controls 
+are aligned, and which algorithm is used to size and position child controls. 
+Values in ChildSizing are used and applied when its Layout property is set to a 
+value other than cclNone.
 </p>
 <p>
 See <link id="TControlChildSizing">TControlChildSizing</link> for more 
 detailed information about the properties and methods in the class instance.
 </p>
+<p>
+Additional information about child sizing and layout can be found on the 
+Lazarus Wiki at:
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/Autosize_/_Layout">
+Autosize / Layout
+(https://wiki.lazarus.freepascal.org/Autosize_/_Layout)
+</url>
+</p>
+<p>
+<url href="https://wiki.lazarus.freepascal.org/LCL_AutoSizing">
+LCL AutoSizing
+(https://wiki.lazarus.freepascal.org/LCL_AutoSizing)
+</url>
+</p>
 </descr>
 <version>
 Behavior modified in LCL version 3.4 to use the adjusted client rectangle when 
 controls are aligned.
+</version>
+<version>
+Implementation refactored in LCL version 4.0. This may result in behavior that 
+differs from previous LCL versions.
 </version>
 <seealso>
 <link id="TWinControl.ControlCount"/>
