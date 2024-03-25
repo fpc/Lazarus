@@ -78,7 +78,7 @@ type
     FIsPackage: boolean;
     procedure UpdateByTargetOS(aTargetOS: string);
     procedure UpdateByTargetCPU(aTargetCPU: string);
-    procedure FillSubTargetComboBox;
+    procedure FillSubTargetComboBox(UseSubTarget: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -259,7 +259,8 @@ begin
   ParsingFrame.grpAsmStyle.Visible := IsCPUX86(aTargetCPU);
 end;
 
-procedure TCompilerConfigTargetFrame.FillSubTargetComboBox;
+procedure TCompilerConfigTargetFrame.FillSubTargetComboBox(UseSubTarget: string
+  );
 var
   sl: TStringListUTF8Fast;
   aCache: TFPCUnitSetCache;
@@ -322,7 +323,7 @@ begin
     with SubtargetComboBox do begin
       Items.BeginUpdate;
       Items.Assign(sl);
-      SetComboBoxText(SubtargetComboBox,'',cstCaseInsensitive);
+      SetComboBoxText(SubtargetComboBox,UseSubTarget,cstCaseInsensitive);
       Items.EndUpdate;
     end;
   finally
@@ -436,7 +437,7 @@ begin
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
       // SubTarget
-      FillSubTargetComboBox;
+      FillSubTargetComboBox(Subtarget);
 
       PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
       CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
