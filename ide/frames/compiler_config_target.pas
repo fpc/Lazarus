@@ -272,6 +272,8 @@ begin
   sl:=TStringListUTF8Fast.Create;
   try
     sl.Assign(InputHistories.HistoryLists.GetList('Subtarget',true,rltCaseInsensitive));
+    if sl.IndexOf('')<0 then
+      sl.Add(''); // always have the default target
 
     // search for possible subtargets
     // fpc searches subtarget configs in the same directories it searches for normal configs
@@ -320,7 +322,7 @@ begin
     with SubtargetComboBox do begin
       Items.BeginUpdate;
       Items.Assign(sl);
-      SetComboBoxText(SubtargetComboBox,Subtarget,cstCaseInsensitive);
+      SetComboBoxText(SubtargetComboBox,'',cstCaseInsensitive);
       Items.EndUpdate;
     end;
   finally
