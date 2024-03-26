@@ -24,7 +24,11 @@ unit LazarusPackageIntf;
 interface
 
 uses
+  {$IFDEF FPC_DOTTEDUNITS}
+  System.Classes;
+  {$ELSE}
   Classes;
+  {$ENDIF}
 
 type
   TRegisterProc = procedure;

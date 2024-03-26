@@ -11,7 +11,11 @@
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CustomOptions Value="$(IDEBuildOptions)
+-dFPC_DottedUnits"/>
+        <OtherDefines Count="1">
+          <Define0 Value="FPC_DottedUnits"/>
+        </OtherDefines>
       </Other>
     </CompilerOptions>
     <Description Value="The FCL - FreePascal Component Library provides the base classes for object pascal. The FCL_UnicodeRTL is the FCL for the subtarget UnicodeRTL, which uses dotted unitnames and the default String is UnicodeString."/>
@@ -20,7 +24,6 @@
     <Files Count="8">
       <Item1>
         <Filename Value="lazaruspackageintf.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazarusPackageIntf"/>
       </Item1>
       <Item2>
@@ -46,18 +49,19 @@
       <Item6>
         <Filename Value="XMLConf.pas"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="XMLConf"/>
       </Item6>
       <Item7>
-        <Filename Value="fcllaz.pas"/>
-        <Type Value="Main Unit"/>
-        <UnitName Value="fcllaz"/>
-      </Item7>
-      <Item8>
         <Filename Value="System.Win.ServiceManager.pas"/>
         <Type Value="Virtual Unit"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="System.Win.ServiceManager"/>
+      </Item7>
+      <Item8>
+        <Filename Value="Lazarus.FCL.pas"/>
+        <Type Value="Main Unit"/>
+        <UnitName Value="fcllaz"/>
       </Item8>
     </Files>
     <CompatibilityMode Value="True"/>
@@ -73,6 +77,7 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
+      <CustomOptions Value="-dFPC_DOTTEDUNITS"/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
