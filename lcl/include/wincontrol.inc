@@ -367,10 +367,13 @@ begin
       end else if ChildData.Sides[a].CtrlData<>nil then begin
         SiblingData:=ChildData.Sides[a].CtrlData;
         // aligned or anchored to a sibling
+        NewSpace:=ChildData.Borders[a];
         if a in [akLeft,akTop] then begin
-          NewSpace:=ChildData.Borders[a];
           if ChildData.Sides[a].Side=asrRight then begin
-            NewSpace:=Max(NewSpace,WinControl.ChildSizing.HorizontalSpacing);
+            if a = akLeft then
+              NewSpace:=Max(NewSpace,WinControl.ChildSizing.HorizontalSpacing)
+            else
+              NewSpace:=Max(NewSpace,WinControl.ChildSizing.VerticalSpacing);
             if a=akLeft then
               NewSpace:=Max(NewSpace,SiblingData.Borders[akRight])
             else
@@ -379,11 +382,12 @@ begin
 
           else if ChildData.Sides[a].Side=asrCenter then
             NewSpace:=0;
-          ChildData.Sides[a].Space:=NewSpace;
         end else begin
-          NewSpace:=ChildData.Borders[a];
           if ChildData.Sides[a].Side=asrTop then begin
-            NewSpace:=Max(NewSpace,WinControl.ChildSizing.VerticalSpacing);
+            if a = akRight then
+              NewSpace:=Max(NewSpace,WinControl.ChildSizing.HorizontalSpacing)
+            else
+              NewSpace:=Max(NewSpace,WinControl.ChildSizing.VerticalSpacing);
             if a=akRight then
               NewSpace:=Max(NewSpace,SiblingData.Borders[akLeft])
             else
@@ -392,8 +396,8 @@ begin
 
           else if ChildData.Sides[a].Side=asrCenter then
             NewSpace:=0;
-          ChildData.Sides[a].Space:=NewSpace;
         end;
+        ChildData.Sides[a].Space:=NewSpace;
       end else if a in Child.Anchors then begin
         // anchored to parent via BaseBounds
         if a in [akLeft,akTop] then begin
