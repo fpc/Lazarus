@@ -50,6 +50,7 @@ type
     procedure CalcSize;
     procedure Paint; override;
     procedure FontChanged(Sender: TObject); override;
+    procedure BoundsChanged; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure TextChanged; override;
     procedure CalculatePreferredSize(
@@ -178,15 +179,25 @@ procedure TDividerBevel.CalcSize;
 begin
   if not FNeedCalcSize then exit;
   FNeedCalcSize := False;
-  if Caption = '' then
-    FTextExtent := Canvas.TextExtent(' ')
-  else
-    FTextExtent := Canvas.TextExtent(Caption);
-  if FBevelWidth < 0 then
+
+  if FBevelWidth < 0 then begin
+    if Orientation = trHorizontal then
+      Canvas.Font.Orientation := 0
+    else
+      Canvas.Font.Orientation := 900;
+    if Caption = '' then
+      FTextExtent := Canvas.TextExtent(' ')
+    else
+      FTextExtent := Canvas.TextExtent(Caption);
     FBevelHeight := Max(3, FTextExtent.cy div 5)
+  end
   else
     FBevelHeight := FBevelWidth;
-  FBevelTop := Max((FTextExtent.cy - FBevelHeight) div 2, 0);
+
+  if FOrientation = trHorizontal then
+    FBevelTop := Max((1 + ClientHeight - FBevelHeight) div 2, 0)
+  else
+    FBevelTop := Max((1 + ClientWidth - FBevelHeight) div 2, 0);
 end;
 
 procedure TDividerBevel.Paint;
@@ -227,8 +238,9 @@ var
       gsHorLines: begin
           aRect.TopLeft := PaintRect.TopLeft;
           aRect.Right :=  PaintRect.Right;
-          l := (PaintRect.Bottom - aRect.Top + 1) div 3;
-          inc(aRect.Top);
+          l := Max((PaintRect.Bottom - aRect.Top + 1) div 3, 1);
+          if l > 1 then
+            inc(aRect.Top);
           Canvas.Pen.Color := clBtnShadow;
           for w := 0 to l - 1 do
             Canvas.Line(aRect.Left, aRect.Top + w * 3, aRect.Right, aRect.Top + w * 3);
@@ -239,9 +251,10 @@ var
         end;
       gsVerLines: begin
           aRect.TopLeft := PaintRect.TopLeft;
-          l := (PaintRect.Right - aRect.Left + 1) div 3;
           aRect.Bottom :=  PaintRect.Bottom + 1;
-          inc(aRect.Left);
+          l := Max((PaintRect.Right - aRect.Left + 1) div 3, 1);
+          if l > 1 then
+            inc(aRect.Left);
           Canvas.Pen.Color := clBtnShadow;
           for w := 0 to l - 1 do
             Canvas.Line(aRect.Left + w * 3, aRect.Top, aRect.Left + w * 3, aRect.Bottom);
@@ -352,12 +365,14 @@ begin
   Canvas.Brush.Style := bsClear;
   j := Max((FBevelHeight - FTextExtent.cy) div 2, 0);
   if aHorizontal then begin
+    j := Max((ClientHeight - FTextExtent.cy) div 2, 0);
     Canvas.Font.Orientation := 0;
     if not IsRightToLeft then
       Canvas.TextOut(aIndent, j, Caption)
     else
       Canvas.TextOut(Width - FTextExtent.cx - aIndent, j, Caption);
   end else begin
+    j := Max((ClientWidth - FTextExtent.cy) div 2, 0);
     Canvas.Font.Orientation := 900;
     Canvas.TextOut(j, aIndent + FTextExtent.cx, Caption);
   end;
@@ -368,6 +383,12 @@ begin
   inherited FontChanged(Sender);
   FNeedCalcSize := True;
   Invalidate;
+end;
+
+procedure TDividerBevel.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  FNeedCalcSize := True;
 end;
 
 procedure TDividerBevel.SetAutoSize(Value: Boolean);
@@ -389,8 +410,15 @@ end;
 procedure TDividerBevel.CalculatePreferredSize(var PreferredWidth, PreferredHeight: Integer;
   WithThemeSpace: Boolean);
 begin
-  FNeedCalcSize := True;
-  CalcSize;
+  if Orientation = trHorizontal then
+    Canvas.Font.Orientation := 0
+  else
+    Canvas.Font.Orientation := 900;
+  if Caption = '' then
+    FTextExtent := Canvas.TextExtent(' ')
+  else
+    FTextExtent := Canvas.TextExtent(Caption);
+
   if Orientation = trHorizontal then begin
     PreferredHeight := Max(FTextExtent.cy, FBevelHeight);
     PreferredWidth := 0;
