@@ -46,7 +46,7 @@ type
     eAlignVars, eAlignConst, eAlignTypeDef, eAlignAssign, eAlignComment, eAlignField,
     eCapsReservedWord, eCapsSpecificWord,
     eIndent, eLineBreaking, eBlockStyle,
-    eWarning,
+    eWarning, eWarnAssignToFunctionName, eWarnCaseNoElse, eWarnEmptyBlock, eWarnUnusedParam,
     eFindReplace, eFindReplaceUses, eRemoveComments);
 
 
@@ -87,7 +87,7 @@ type
   end;
 
 const
-  FORMAT_FLAG_NAMES: array[1..29] of TRFlagNameData =
+  FORMAT_FLAG_NAMES: array[1..33] of TRFlagNameData =
     (
     (sName: 'format'; eFlags: [eAllFormat]),
     (sName: 'obfuscate'; eFlags: [eObfuscate]),
@@ -130,6 +130,10 @@ const
     (sName: 'blockstyle'; eFlags: [eBlockStyle]),
 
     (sName: 'warnings'; eFlags: [eWarning]),
+    (sName: 'warnassigntofunctionname'; eFlags: [eWarnAssignToFunctionName]),
+    (sName: 'warncasenoelse'; eFlags: [eWarnCaseNoElse]),
+    (sName: 'warnemptyblock'; eFlags: [eWarnEmptyBlock]),
+    (sName: 'warnunusedparam'; eFlags: [eWarnUnusedParam]),
     (sName: 'findreplace'; eFlags: [eFindReplace]),
     (sName: 'findreplaceuses'; eFlags: [eFindReplaceUses]),
 

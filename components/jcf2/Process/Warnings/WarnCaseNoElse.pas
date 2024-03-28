@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  ParseTreeNode, ParseTreeNodeType, jcfbaseConsts;
+  ParseTreeNode, ParseTreeNodeType, jcfbaseConsts, FormatFlags;
 
 
 
@@ -68,12 +68,16 @@ begin
   HasPreVisit := True;
   HasPostVisit := False;
   HasSourceTokenVisit := True;
+  FormatFlags := FormatFlags + [eWarnCaseNoElse];
 end;
 
 procedure TWarnCaseNoElse.PreVisitParseTreeNode(const pcNode: TObject);
 var
   lcNode: TParseTreeNode;
 begin
+  if not Enabled then
+    exit;
+
   lcNode := TParseTreeNode(pcNode);
 
   // when we have a case statement, does it have an else?

@@ -60,6 +60,7 @@ type
     function VisitSourceToken(const pcToken: TObject): Boolean; override;
 
     property FormatFlags: TFormatFlags Read feFormatFlags Write feFormatFlags;
+    property Enabled:boolean read fbEnabled;
   end;
 
 implementation

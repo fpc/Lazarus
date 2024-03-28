@@ -48,7 +48,7 @@ type
 
 implementation
 
-uses ParseTreeNode, ParseTreeNodeType, jcfbaseConsts;
+uses ParseTreeNode, ParseTreeNodeType, jcfbaseConsts, FormatFlags;
 
 constructor TWarnEmptyBlock.Create;
 begin
@@ -56,7 +56,8 @@ begin
 
   HasPreVisit := True;
   HasPostVisit := False;
-  HasSourceTokenVisit := False;
+  HasSourceTokenVisit := True; //Needed for take into account //jcf:warnings=off;
+  FormatFlags := FormatFlags + [eWarnEmptyBlock];
 end;
 
 procedure TWarnEmptyBlock.PreVisitParseTreeNode(const pcNode: TObject);
@@ -64,6 +65,9 @@ var
   lcNode: TParseTreeNode;
   liSolidChildCount: integer;
 begin
+  if not Enabled then
+    exit;
+
   lcNode := TParseTreeNode(pcNode);
 
   // only look in statements

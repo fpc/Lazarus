@@ -68,7 +68,7 @@ implementation
 
 uses
   { local }
-  ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils;
+  ParseTreeNode, ParseTreeNodeType, SourceToken, Tokens, TokenUtils, FormatFlags;
 
 
 
@@ -123,7 +123,8 @@ begin
 
   HasPreVisit := True;
   HasPostVisit := False;
-  HasSourceTokenVisit := False;
+  HasSourceTokenVisit := True; //Needed for take into account //jcf:warnings=off;
+  FormatFlags := FormatFlags + [eWarnAssignToFunctionName];
 end;
 
 procedure TWarnAssignToFunctionName.PreVisitParseTreeNode(const pcNode: TObject);
@@ -135,6 +136,9 @@ begin
   lcNode := TParseTreeNode(pcNode);
 
   if lcNode.NodeType <> nFunctionDecl then
+    exit;
+
+  if not Enabled then
     exit;
 
   { we now have a function decl

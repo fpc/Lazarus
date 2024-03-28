@@ -68,7 +68,7 @@ implementation
 
 uses
   { local }
-  ParseTreeNodeType, SourceToken, TokenUtils, JCfSettings, jcfbaseConsts;
+  ParseTreeNodeType, SourceToken, TokenUtils, JCfSettings, jcfbaseConsts, FormatFlags;
 
 constructor TWarnUnusedParam.Create;
 begin
@@ -76,7 +76,8 @@ begin
 
   HasPreVisit := True;
   HasPostVisit := False;
-  HasSourceTokenVisit := False;
+  HasSourceTokenVisit := True; //Needed for take into account //jcf:warnings=off;
+  FormatFlags := FormatFlags + [eWarnUnusedParam];
 end;
 
 procedure TWarnUnusedParam.PreVisitParseTreeNode(const pcNode: TObject);
@@ -85,6 +86,9 @@ var
   lcBlock, lcFunctionHeading, lcParams, lcParam: TParseTreeNode;
   liLoop: integer;
 begin
+  if not Enabled then
+    exit;
+
   lcNode := TParseTreeNode(pcNode);
 
   if not (lcNode.NodeType in ProcedureNodes) then
