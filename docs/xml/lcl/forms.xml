@@ -15625,22 +15625,43 @@ Application variables do not contain the same TCustomApplication instance.
 </element>
 
 <element name="TApplication.ActivateHint">
-<short>Configures a hint window for the specified mouse position.</short>
+<short>
+Configures a hint window for the specified mouse position.
+</short>
 <descr>
 <p>
-<var>ActivateHint</var> is a procedure used to configure a hint window 
-display at the coordinates specified in <var>CursorPos</var>.
+<var>ActivateHint</var> is a procedure used to configure and control a hint 
+window displayed at the coordinates specified in <var>CursorPos</var>. 
+ActivateHint retrieves the control with hint information at the specified mouse 
+position.
 </p>
 <p>
-ActivateHint retrieves the hint information at the mouse position. If the 
-control for the hint differs from the current hint control, the existing hint 
-is deactivated. The new hint window sets its hint timer and calculates the 
-rectangle for the hint window.
+<var>CheckHintControlChange</var> indicates whether the active Hint control is 
+compared to the control under the mouse position to determine if the active 
+hint control has changed. When set to <b>False</b>, only the mouse leaving the 
+hint rectangle causes the window to be updated. When set to <var>True</var>, a 
+change of control at the mouse position also causes the hint window to be 
+updated.
 </p>
 <p>
-If a hint is not available for the specified mouse position, the 
-<var>CancelHint</var> method is called.
+If the hint control at the specified coordinates differs from the one in the 
+active hint, an existing hint is deactivated. The new hint window sets its hint 
+timer and calculates the rectangle for the hint window.
 </p>
+<p>
+If hint text is not available for the specified control and mouse position, the 
+<var>CancelHint</var> method is called instead.
+</p>
+<p>
+Use the following properties to control the interval for the timer which  
+displays or hides a hint window in the application:
+</p>
+<ul>
+<li>HintPause</li>
+<li>HintHidePause</li>
+<li>HintHidePausePerChar</li>
+<li>HintShortPause</li>
+</ul>
 <p>
 ActivateHint is used in the implementation of the <var>DoOnMouseMove</var> 
 and <var>ShowHintWindow</var> methods.
@@ -15653,11 +15674,19 @@ and <var>ShowHintWindow</var> methods.
 <link id="TApplication.HideHint"/>
 <link id="TApplication.Hint"/>
 <link id="TApplication.HintPause"/>
+<link id="TApplication.HintHidePause"/>
+<link id="TApplication.HintHidePausePerChar"/>
+<link id="TApplication.HintShortPause"/>
 <link id="TApplication.OnHint"/>
+<link id="THintWindow.ActivateHint"/>
+<link id="THintWindow.HintRect"/>
+<link id="THintWindow.HintControl"/>
 </seealso>
 </element>
 <element name="TApplication.ActivateHint.CursorPos">
-<short>Mouse cursor position used to retrieve the hint information.</short>
+<short>
+Mouse cursor position used to retrieve the hint control information.
+</short>
 </element>
 <element name="TApplication.ActivateHint.CheckHintControlChange">
 <short>
