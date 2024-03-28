@@ -110,6 +110,8 @@ type
                                var {%H-}Abort: boolean): string;
     function MacroFuncFPCMsgFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
+    function MacroFuncFPCTarget(const {%H-}Param: string; const Data: PtrInt;
+                               var {%H-}Abort: boolean): string;
     function MacroFuncFPCVer(const {%H-}Param: string; const {%H-}Data: PtrInt;
                              var {%H-}Abort: boolean): string;
     function MacroFuncFPC_FULLVERSION(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -456,6 +458,8 @@ begin
                       lisSrcOS,@MacroFuncSrcOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
                       lisCompilerFilename,@MacroFuncCompPath,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('FPCTarget','',
+                      'Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty.', @MacroFuncFPCTarget, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
                       lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',
@@ -2547,6 +2551,33 @@ function TBuildManager.MacroFuncFPCMsgFile(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
+end;
+
+function TBuildManager.MacroFuncFPCTarget(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+// works similar to FPC's macro $fpctarget:
+// if subtarget is set:
+//   targetcpu-targetos-subtarget
+// else
+//   targetcpu-targetos
+// Supports same parameters as $TargetOS(param), i.e. $TargetOS(ide) returns
+// the IDE's target, otherwise the project's target platform.
+var
+  TargetCPU, TargetOS, SubTarget: String;
+begin
+  Result:='';
+  TargetCPU:=MacroFuncTargetCPU(Param,Data,Abort);
+  if Abort then exit;
+  TargetOS:=MacroFuncTargetOS(Param,Data,Abort);
+  if Abort then exit;
+  Result:=TargetCPU+'-'+TargetOS;
+  if Data=CompilerOptionMacroPlatformIndependent then
+    exit; // omit subtarget when creating a platform independent value
+
+  SubTarget:=MacroFuncSubtarget(Param,Data,Abort);
+  if Abort then exit;
+  if SubTarget<>'' then
+    Result+='-'+SubTarget;
 end;
 
 function TBuildManager.MacroFuncMake(const Param: string; const Data: PtrInt;
