@@ -546,6 +546,7 @@ begin
   tr('TargetOS',lisTargetOS);
   tr('Subtarget',lisSubtarget);
   tr('SrcOS',lisSrcOS);
+  tr('FPCTarget',lisShortFormOfTargetCPUParamTargetOSParamSubTargetPar);
   tr('FPCVer',lisFPCVersionEG222);
   tr('LAZVer',lisLAZVer);
   tr('FPC_FULLVERSION',lisFPCFullVersionEG20701);
