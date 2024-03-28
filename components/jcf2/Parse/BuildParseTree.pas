@@ -1704,6 +1704,12 @@ begin
   begin
     Recognise(ttComma);
     RecogniseTypedConstant;
+    // range   x..y
+    if fcTokenList.FirstSolidTokenType = ttDoubleDot then
+    begin
+      Recognise(ttDoubleDot);
+      RecogniseTypedConstant;
+    end;
   end;
 
   Recognise([ttCloseBracket,ttCloseSquareBracket]);
