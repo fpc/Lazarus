@@ -221,23 +221,31 @@ needed. No actions are performed in the method if the flag has not been set.
 </p>
 <p>
 CalcSize calls the TextExtent method in the control Canvas to get the text 
-extent for Caption.
+extent for Caption, and updates the canvas font for the value in Orientation.
 </p>
 <p>
 BevelWidth is used to set the height for the bevel in pixels when it has a 
-positive or zero value. When BevelWidth has a negative value, the height for 
-the bevel is set to the larger of 20% of the text height or 3 pixels. The 
-bevel is centered in the text height.
+positive or zero value. Otherwise, the bevel height is set to the larger of 20% 
+of the text height or 3 pixels. The bevel is centered in the text height. The 
+top coordinate for the Bevel is centered to the caption on the bevel 
+orientation.
 </p>
 <p>
 CalcSize is called from the CalculatePreferredSize and Paint methods.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TDividerBevel.BevelWidth"/>
+<link id="TDividerBevel.Orientation"/>
+<link id="TDividerBevel.CalculatePreferredSize"/>
+<link id="TDividerBevel.Paint"/>
+</seealso>
 </element>
 
 <element name="TDividerBevel.Paint">
-<short>Draws the control on its Canvas.</short>
+<short>
+Draws the control on its Canvas.
+</short>
 <descr>
 <p>
 <var>Paint</var> is an overridden method used to draw the control on its 
@@ -254,8 +262,8 @@ filled using the value in Color.
 </p>
 <p>
 Values in BevelStyle, Style, Orientation, and Caption are used to determine 
-the drawing area for the bevel on the control. The PaintBevel method is 
-called to render the bevel to the control Canvas.
+the drawing area and style for the bevel on the control. The PaintBevel method 
+is called to render the bevel to the control Canvas.
 </p>
 <p>
 When Caption has been assigned, it is positioned using the values in 
@@ -293,6 +301,36 @@ FontChanged is assigned as the OnChange event handler in the Font property.
 </element>
 <element name="TDividerBevel.FontChanged.Sender">
 <short>Object instance for the event notification.</short>
+</element>
+
+<element name="TDividerBevel.BoundsChanged">
+<short>
+Sets an internal flag to recalculate the size for the control when its bounds have been changed.
+</short>
+<descr>
+<p>
+<var>BoundsChanged</var> is an overridden method in <var>TDividerBevel</var>. 
+It calls the inherited method on entry, and sets an internal flag to indicate 
+that the size for the control needs to be recalculated. The flag is used and 
+reset in the CalcSize method.
+</p>
+<p>
+BoundsChanged is called from the ChangeBounds method (in the TControl 
+ancestor). It is called after anchor rules have been applied for the control, 
+but before autosizing and notifications using OnResize or OnChangeBounds.
+</p>
+</descr>
+<version>
+Added to LazControls in LCL version 4.0.
+</version>
+<seealso>
+<link id="TDividerBevel.CalcSize"/>
+<link id="#lcl.controls.TControl.BoundsChanged">TControl.BoundsChanged</link>
+<link id="#lcl.controls.TControl.ChangeBounds">TControl.ChangeBounds</link>
+<link id="#lcl.controls.TControl.ChangeBounds">TControl.ChangeBounds</link>
+<link id="#lcl.controls.TControl.OnChangeBounds">TControl.OnChangeBounds</link>
+<link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
+</seealso>
 </element>
 
 <element name="TDividerBevel.SetAutoSize">
@@ -337,37 +375,45 @@ TextChanged is called from the <var>CMTextChanged</var> method.
 </element>
 
 <element name="TDividerBevel.CalculatePreferredSize">
-<short>Calculates the preferred size for the control.</short>
+<short>
+Calculates the preferred size for the control.
+</short>
 <descr>
 <p>
-CalculatePreferredSize is an overridden method used to calculate the 
+<var>CalculatePreferredSize</var> is an overridden method used to calculate the 
 preferred width and height for the control. It re-implements the method from 
 the ancestor class, and does not call the inherited method.
 </p>
 <p>
-CalculatePreferredSize sets the internal flag to recalculate the text and 
-bevel height, and calls CalcSize to update the values.
+CalculatePreferredSize ensures that the canvas font is updated to use the 
+rotation needed for the bevel Orientation. 0 for a horizontal divider, 900 
+(tenths of a degree) for a vertical divider. The text extent for the Caption is 
+calculated too; an empty caption causes the text extent for a single Space 
+character to be used.
 </p>
 <p>
-The value in Orientation is used to determine the value calculated in the 
-method. When set to trHorizontal, PreferredHeight is set to the maximum of 
-the text height or the bevel height (Caption is empty). When set to 
-trVertical, the PreferredWidth is set to the maximum of the text height or 
-the bevel height (Caption is empty).
+The larger of the values in BevelHeight and the text extent are assigned to the 
+PreferredWidth and PreferredHeight arguments as needed. For a horizontal 
+divider, PreferredWidth always returns 0. For a vertical divider, 
+PreferredHeight always returns 0.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="TDividerBevel.CalculatePreferredSize.PreferredWidth">
-<short>The preferred width for the control.</short>
+<short>
+Returns the calculated preferred width for the control.
+</short>
 </element>
 <element name="TDividerBevel.CalculatePreferredSize.PreferredHeight">
-<short>The preferred height for the control.</short>
+<short>
+Returns the calculated preferred height for the control.
+</short>
 </element>
 <element name="TDividerBevel.CalculatePreferredSize.WithThemeSpace">
 <short>
-<b>True</b> if additional space is reserved for theme elements. Not used in 
-the method.
+<b>True</b> if additional space is reserved for theme element details. Not used 
+in the method; theme element details for a style are determined in Paint.
 </short>
 </element>
 
