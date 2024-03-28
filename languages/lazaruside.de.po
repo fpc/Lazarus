@@ -17610,6 +17610,10 @@ msgstr "(Standard-Einrückung festlegen)"
 msgid "Short:"
 msgstr "Kurz:"
 
+#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
+
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
 msgstr "Kurz, kein Pfad"

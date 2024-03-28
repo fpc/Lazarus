@@ -17781,6 +17781,10 @@ msgstr "(Nustatyti numatytą lygiavimą)"
 msgid "Short:"
 msgstr "Trumpai:"
 
+#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
+
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
 msgstr "Trumpas, be kelio"
