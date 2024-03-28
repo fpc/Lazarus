@@ -459,7 +459,8 @@ begin
   GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
                       lisCompilerFilename,@MacroFuncCompPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('FPCTarget','',
-                      'Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty.', @MacroFuncFPCTarget, []));
+                      lisShortFormOfTargetCPUParamTargetOSParamSubTargetPar,
+                      @MacroFuncFPCTarget, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
                       lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',

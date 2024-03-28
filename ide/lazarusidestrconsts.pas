@@ -192,6 +192,9 @@ resourcestring
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
   lisCursorRowInCUrrentEditor = 'Cursor row in current editor';
   lisCompilerFilename = 'Compiler filename';
+  lisShortFormOfTargetCPUParamTargetOSParamSubTargetPar = 'Short form of $'
+    +'TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is '
+    +'omitted if empty.';
   lisWordAtCursorInCurrentEditor = 'Word at cursor in current editor';
   lisExpandedFilenameOfCurrentEditor = 'Expanded filename of current editor file';
   lisFreePascalSourceDirectory = 'Free Pascal source directory';
