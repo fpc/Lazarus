@@ -888,7 +888,11 @@ var
 begin
   if fLockTopLevelWindowResizeOnNativeCall < 0 then
   begin
+    {$IFDEF HASX}
     AWindowManager := GTK2WidgetSet.GetWindowManager;
+    {$ELSE}
+    AWindowManager := 'Nil';
+    {$ENDIF}
     if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') then
       fLockTopLevelWindowResizeOnNativeCall := 1
     else
