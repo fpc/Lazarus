@@ -800,7 +800,8 @@ var
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
-    if HasLongOptIgnoreCase('get-expand-text',S) then begin
+    if HasLongOptIgnoreCase('get',S) or
+       HasLongOptIgnoreCase('get-expand-text',S) then begin
       // check for macros
       HasMacro := false;
       for i := 1 to length(S) - 1 do // skip last char
@@ -1538,6 +1539,7 @@ begin
   // ConsoleVerbosity
   if HasLongOptIgnoreCase('get-build-modes', p) or
      HasLongOptIgnoreCase('get-expand-text', p) or
+     HasLongOptIgnoreCase('get', p) or
      HasLongOptIgnoreCase('get-target-path', p)
   then
     ConsoleVerbosity := -100 // do not output anything other than the result
@@ -1583,6 +1585,7 @@ begin
     LongOptions.Add('max-process-count:');
     LongOptions.Add('no-write-project');
     LongOptions.Add('get-expand-text:');
+    LongOptions.Add('get:');
     LongOptions.Add('get-build-modes');
     LongOptions.Add('get-target-path');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
@@ -1826,7 +1829,7 @@ begin
   writeln('--no-write-project');
   w(lisDoNotWriteUpdatedProjectInfoAfterBuild);
   writeln('');
-  writeln('--get-expand-text=<text>');
+  writeln('--get=<text>, --get-expand-text=<text>');
   w(lisGetExpandText);
   writeln('');
   writeln('--get-build-modes');
