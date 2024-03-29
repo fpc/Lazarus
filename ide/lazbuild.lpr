@@ -770,6 +770,8 @@ var
 
   function StartBuilding : boolean;
   var
+    i: integer;
+    HasMacro: boolean;
     NeedBuildAllFlag: Boolean;
     CfgCode: TCodeBuffer;
     CfgFilename: String;
@@ -799,6 +801,17 @@ var
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
     if HasLongOptIgnoreCase('get-expand-text',S) then begin
+      // check for macros
+      HasMacro := false;
+      for i := 1 to length(S) - 1 do // skip last char
+        if (S[i] = '$') and (S[i + 1] <> '$') then begin // skip escaped '$'
+          HasMacro := true;
+          break;
+        end;
+      // if a macro is not specified, its name is assumed
+      if not HasMacro then
+        S := '$(' + S + ')';
+      // expand
       Project1.MacroEngine.SubstituteStr(S);
       WriteLn(S);
       exit(true);
