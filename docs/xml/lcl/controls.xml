@@ -19337,14 +19337,14 @@ C.Width = 55
 Enlarges the space between child controls equally.
 </p>
 <p>
-crsHomogenousSpaceResize applies a uniform number of pixels as horizontal 
-spacing between child controls on the same column or row. The size for the 
-controls are derived using the preferred size and any width constraints 
+crsHomogenousSpaceResize applies a uniform number of pixels as horizontal or 
+vertical spacing between child controls on the same column or row. The size for 
+the controls are derived using the preferred size and any size constraints 
 (minimum or maximum) for the child controls. The collective derived size is 
 applied to all controls in the same column or row. The remaining space on the 
-parent is allocated equally as spacing before, between, and after 
-each column or row in the tabular layout - including on the left/right or top/
-bottom edges of the Control.
+parent is allocated equally as spacing before, between, and after each column 
+or row in the tabular layout - including on the left / right or top / bottom 
+edges of the Control.
 </p>
 <p>
 For a horizontal left-to-right layout with 3 controls A, B, and C:
@@ -19370,8 +19370,8 @@ Each child gets the same size (maybe one pixel difference due to rounding).
 crsSameSize applies a uniform size to all columns or rows in the tabular 
 layout. The unused space on the parent control, after BorderSpacing and 
 ChildSizing spacings are applied, is allocated equally for the number of 
-controls per line in the columns or row. Size constraints (minimum or maximum) 
-for child controls are enforced if the constraint would be enabled for the 
+controls per line in the columns or rows. Size constraints (minimum or maximum) 
+for child controls are enforced if a constraint would be enabled for the 
 derived size. All child controls in the same column or row are given the same 
 derived size.
 </p>
