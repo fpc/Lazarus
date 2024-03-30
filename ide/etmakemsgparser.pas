@@ -131,7 +131,7 @@ begin
     inc(e);
     inc(len);
   end;
-  SetLength(Result,len);
+  SetLength(Result{%H-},len);
   if len>0 then
     System.Move(p^,Result[1],len);
 end;
@@ -344,7 +344,7 @@ begin
     Run:=p;
     while not (Run^ in [' ',#9,#0]) do inc(Run);
     if Run^<>#0 then begin
-      SetLength(Filename,Run-p);
+      SetLength(Filename{%H-},Run-p);
       System.Move(p^,Filename[1],length(Filename));
       Filename:=TrimFilename(Filename);
       if FilenameIsAbsolute(Filename)

@@ -225,7 +225,7 @@ begin
     try
       fs:=TFileStream.Create(IcoFileName,fmOpenRead);
       try
-        SetLength(NewData, fs.Size);
+        SetLength(NewData{%H-}, fs.Size);
         if length(NewData)>0 then
           fs.Read(NewData[0],length(NewData));
         IconData := NewData;

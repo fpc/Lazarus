@@ -89,13 +89,13 @@ type
     FPkgFile: TPkgFile;
     procedure SetPkgFile(const AValue: TPkgFile);
   protected
-    function CanBeCreatedInDesigner: boolean; override;
     procedure ConsistencyCheck; override;
     function GetPriority: TComponentPriority; override;
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
                        const ThePageName: string);
     destructor Destroy; override;
+    function CanBeCreatedInDesigner: boolean; override;
     function GetUnitName: string; override;
   public
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
