@@ -47,7 +47,7 @@ type
                                baoUseWASI,           // Use WASI browser app object
                                baoUseBrowserConsole, // use browserconsole unit to display Writeln()
                                baoUseModule,         // include as module as opposed to regular script
-                               baoLocationOnSWS,       // add location
+                               baoLocationOnSWS,     // location on Simple Web Server
                                baoStartServer,       // Start simple server
                                baoUseURL             // Use this URL to run/show project in browser
                                );
@@ -347,6 +347,11 @@ begin
   PJSOptions:=TPas2jsOptions.Create;
   PJSOptions.Load;
   TPJSController.Instance.Hook; // this registers macros and events
+
+  {$IFDEF EnablePas2jsInstall}
+  // register menu item
+  RegisterIDEMenuCommand(itmCustomTools,'Pas2jsInstall','Install/Update Pas2js',@OnInstallPas2js);
+  {$ENDIF}
 
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
