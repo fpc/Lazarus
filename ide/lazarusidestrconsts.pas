@@ -178,8 +178,6 @@ resourcestring
     'The absence of macros in the text means the name of the macro. '+
     'By default, active build mode is used.';
   lisGetBuildModes = 'Print a list of build modes in the project. Active mode is listed first.';
-  lisGetTargetPath = 'Print the full path to the executable file in the specified build mode.'
-    +' By default, active build mode is used.';
 
   lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
 

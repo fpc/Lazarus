@@ -818,12 +818,6 @@ var
       exit(true);
     end;
 
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-    if HasLongOptIgnoreCase('get-target-path',S) then begin
-      WriteLn(TargetExeName);
-      exit(true);
-    end;
-
     CompilerParams:=nil;
     CmdLineParams:=nil;
     try
@@ -868,6 +862,7 @@ var
         PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create project unit output directory "' + S + '"');
 
       // create target output directory
+      TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
       S := ExtractFileDir(TargetExeName);
       if not ForceDirectory(S) then
         PrintErrorAndHalt(ErrorBuildFailed, 'Unable to create project target directory "' + S + '"');
@@ -1539,8 +1534,7 @@ begin
   // ConsoleVerbosity
   if HasLongOptIgnoreCase('get-build-modes', p) or
      HasLongOptIgnoreCase('get-expand-text', p) or
-     HasLongOptIgnoreCase('get', p) or
-     HasLongOptIgnoreCase('get-target-path', p)
+     HasLongOptIgnoreCase('get', p)
   then
     ConsoleVerbosity := -100 // do not output anything other than the result
   else
@@ -1587,7 +1581,6 @@ begin
     LongOptions.Add('get-expand-text:');
     LongOptions.Add('get:');
     LongOptions.Add('get-build-modes');
-    LongOptions.Add('get-target-path');
     ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then
       PrintErrorAndHalt(ErrorInvalidSyntax, ErrorMsg);
@@ -1834,9 +1827,6 @@ begin
   writeln('');
   writeln('--get-build-modes');
   w(lisGetBuildModes);
-  writeln('');
-  writeln('--get-target-path');
-  w(lisGetTargetPath);
   writeln('');
 end;
 
