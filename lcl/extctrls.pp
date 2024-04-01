@@ -1073,6 +1073,7 @@ type
     property LabelPosition;
     property LabelSpacing;
     property MaxLength;
+    property NumbersOnly;
     property ParentBidiMode;
     property ParentColor;
     property ParentDoubleBuffered;
