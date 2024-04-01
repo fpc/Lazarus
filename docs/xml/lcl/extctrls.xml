@@ -7274,6 +7274,7 @@ and anchoring mechanisms for the composite control.
 <element name="TLabeledEdit.LabelPosition" link="#lcl.extctrls.TCustomLabeledEdit.LabelPosition"/>
 <element name="TLabeledEdit.LabelSpacing" link="#lcl.extctrls.TCustomLabeledEdit.LabelSpacing"/>
 <element name="TLabeledEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TLabeledEdit.NumbersOnly" link="#lcl.stdctrls.TCustomEdit.NumbersOnly"/>
 <element name="TLabeledEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TLabeledEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
 <element name="TLabeledEdit.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
