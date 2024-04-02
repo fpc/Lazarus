@@ -1740,8 +1740,11 @@ const
   end;
 
 begin
-  if HasLongOptIgnoreCase('language',CustomLang) then
-    TranslateResourceStrings(ProgramDirectoryWithBundle,CustomLang);
+  // Obtain 'language' option value if present.
+  // HasLongOptIgnoreCase correctly handles all cases, so no need to check its result:
+  // empty CustomLang means using default language.
+  HasLongOptIgnoreCase('language',CustomLang);
+  TranslateResourceStrings(ProgramDirectoryWithBundle,CustomLang);
   writeln('');
   writeln(lisLazbuildOptionsSyntax);
   writeln('');
