@@ -10396,12 +10396,7 @@ msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetexpandtext
-msgid "Print the result of substituting macros in the text for the specified build mode. By default, active build mode is used."
-msgstr ""
-
-#: lazarusidestrconsts.lisgettargetpath
-msgctxt "lazarusidestrconsts.lisgettargetpath"
-msgid "Print the full path to the executable file in the specified build mode. By default, active build mode is used."
+msgid "Print the result of substituting macros in the text. The absence of macros in the text means the name of the macro. By default, active build mode is used."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
