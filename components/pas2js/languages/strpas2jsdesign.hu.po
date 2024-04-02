@@ -160,6 +160,11 @@ msgstr "Pas2JS aktuális projekt URL"
 msgid "Pas2JS executable"
 msgstr "Pas2JS alkalmazás"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Pas2JS kiválasztott böngésző alkalmazás"
@@ -238,6 +243,10 @@ msgstr ""
 msgid "Select browser executable"
 msgstr "A böngésző alkalmazás kiválasztása"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "A Node.js alkalmazás kiválasztása"
@@ -272,8 +281,18 @@ msgstr ""
 msgid "Start HTTP Server on port"
 msgstr "HTTP kiszolgáló indítása ezen a porton"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
+msgstr ""
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
 msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
@@ -304,6 +323,10 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
+msgstr ""
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription

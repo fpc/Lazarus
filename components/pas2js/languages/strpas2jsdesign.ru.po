@@ -161,6 +161,11 @@ msgstr "Адрес текущего проекта Pas2JS"
 msgid "Pas2JS executable"
 msgstr "Исполнимый файл Pas2JS"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Выбранный исполнимый файл браузера для Pas2JS"
@@ -239,6 +244,10 @@ msgstr "Выберите каталог шаблона пакета Atom"
 msgid "Select browser executable"
 msgstr "Выберите исполнимый файл браузера"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "Выберите исполнимый файл Node.js"
@@ -273,9 +282,19 @@ msgstr "Программа pas2js, использующаяся в качест�
 msgid "Start HTTP Server on port"
 msgstr "Запускать сервер HTTP на порту"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
 msgstr "Простой веб-сервер вызывается автоматически при запуске. Расположение по поведению похоже на подкаталог в адресе, соответствующий каталогу файла HTML на диске."
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
+msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -304,6 +323,10 @@ msgstr "Запускать программу WebAssembly:"
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Каталог шаблона расширения Visual Studio Code"
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser."

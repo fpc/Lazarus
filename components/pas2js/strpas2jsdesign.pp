@@ -16,6 +16,9 @@ Resourcestring
     +'using Electron to run as desktop application.';
   pjsdOverwrite = 'Overwrite?';
   pjsdError = 'Error';
+  pjsdWarning = 'Warning';
+  pjsdThePas2jsExecutableFilenameDoesNotLookLikePas2js = 'The pas2js '
+    +'executable filename "%s" does not look like pas2js';
   pjsdNewProjectFile = 'New project file';
   pjsdProjectPascalFile = 'Project Pascal file';
   pjsdPleaseChooseAFileWithFullPath = 'Please choose a file with full path.';
@@ -36,8 +39,11 @@ Resourcestring
   pjsdSelectPas2jsExecutable = 'Select pas2js executable';
   pjsdSelectXExecutable = 'Select %s executable';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
+  pjsdUnableToFindPas2jsAt = 'Unable to find pas2js at "%s"';
+  pjsdPas2jsIsNotExecutableAt = 'pas2js is not executable at "%s"';
   pjsdSelectBrowserExecutable = 'Select browser executable';
   pjsdSelectAtomTemplateDir = 'Select Atom package template directory';
+  pjsdSelectElectronExecutable = 'Select Electron executable';
   pjsdSelectVSCodeTemplateDir = 'Select Visual Studio Code extension template directory';
   pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea = 'You can use IDE '
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';

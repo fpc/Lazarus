@@ -18,9 +18,9 @@ uses
   IDEDialogs, ProjectGroupIntf, IDEExternToolIntf, MacroIntf, PackageIntf,
   // Pas2js
   idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas,
-  frmpas2jsnodejsprojectoptions,
-  frmpas2jsbrowserprojectoptions, PJSProjectOptions, idehtmltools,
-  frmhtmltoform, PJSController, StrPas2JSDesign, ProjectGroup;
+  frmpas2jsnodejsprojectoptions, frmpas2jsbrowserprojectoptions,
+  PJSProjectOptions, idehtmltools, frmhtmltoform, PJSController,
+  StrPas2JSDesign, FrmPas2jsInstaller, ProjectGroup;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -314,6 +314,7 @@ Type
     Procedure OnRefreshProjHTMLFormAllContext(Sender : TObject); virtual;
     Procedure OnSrcEditPopup(Sender : TObject); virtual;
     Procedure OnPrjInspPopup(Sender : TObject); virtual;
+    Procedure OnInstallPas2js(Sender : TObject); virtual;
   end;
 
 Var
@@ -350,7 +351,7 @@ begin
 
   {$IFDEF EnablePas2jsInstall}
   // register menu item
-  RegisterIDEMenuCommand(itmCustomTools,'Pas2jsInstall','Install/Update Pas2js',@OnInstallPas2js);
+  RegisterIDEMenuCommand(itmOptionsDialogs,'Pas2jsInstall','Install/Update Pas2js',@Pas2JSHandler.OnInstallPas2js);
   {$ENDIF}
 
   // register new-project items
@@ -1857,6 +1858,11 @@ begin
     end;
   PrjMnuItem.Visible:=AllOK;
   PrjMnuItemAll.Visible:=AnyOK;
+end;
+
+procedure TPas2JSHandler.OnInstallPas2js(Sender: TObject);
+begin
+  ShowPas2jsInstallerDialog;
 end;
 
 function TPas2JSHandler.AskUserFile(aUnitName,aHTMLFileName: String): string;

@@ -21,6 +21,9 @@ uses
 const
   PJSDsgnOptsFile = 'pas2jsdsgnoptions.xml';
   PJSDefaultCompiler = '$MakeExe(IDE,pas2js)';
+  PJSDefaultPas2jsSrcDir = '';
+  PJSDefaultFPCSrcDir = '$(Pas2jsSrcDir)/compiler';
+  PJSDefaultFPCExe= '';
   PJSDefaultDTS2Pas = '$MakeExe(IDE,dts2pas)';
   PJSDefaultDTS2PasService = 'https://www.freepascal.org/~michael/service/dts2pas.cgi';
   PJSDefaultStartAtPort = 3000; // compileserver default port
@@ -32,6 +35,9 @@ const
 Type
   TPas2jsCachedOption = (
     p2jcoCompilerFilename,
+    p2jcoPas2jsSrcDir,
+    p2jcoFPCSrcDir, // fpc source directory used for compiling tools and pas2js
+    p2jcoFPCExe, // fpc used for compiling tools
     p2jcoNodeJSFilename,
     p2jcoElectronFilename,
     p2jcoAtomTemplateDir,
@@ -44,11 +50,16 @@ Type
 const
   p2jcoFilenames = [
     p2jcoCompilerFilename,
+    p2jcoFPCExe,
     p2jcoNodeJSFilename,
     p2jcoElectronFilename,
     p2jcoAtomTemplateDir,
     p2jcoVSCodeTemplateDir,
     p2jcoDTSToPas
+  ];
+  p2jcoDirectories = [
+    p2jcoPas2jsSrcDir,
+    p2jcoFPCSrcDir
   ];
 
 type
@@ -74,6 +85,9 @@ type
     function GetDTS2Pas: String;
     function GetDTS2PasService: String;
     function GetElectronFileName: string;
+    function GetFPCExe: string;
+    function GetFPCSrcDir: string;
+    function GetPas2jsSrcDir: string;
     function GetVSCodeTemplateDir: String;
     function GetModified: boolean;
     function GetNodeJSFileName: string;
@@ -82,6 +96,9 @@ type
     procedure SetDTS2Pas(AValue: String);
     procedure SetDTS2PasService(AValue: String);
     procedure SetElectronFileName(AValue: string);
+    procedure SetFPCExe(AValue: string);
+    procedure SetFPCSrcDir(AValue: string);
+    procedure SetPas2jsSrcDir(AValue: string);
     procedure SetVSCodeTemplateDir(AValue: String);
     procedure SetModified(AValue: boolean);
     procedure SetCompilerFilename(AValue: string);
@@ -95,6 +112,7 @@ type
     procedure Load;
     procedure Save;
     function GetParsedCompilerFilename: string;
+    function GetParsedPas2jsSrcDir: string;
     function GetParsedNodeJSFilename: string;
     function GetParsedElectronExe: string;
     procedure LoadFromConfig(Cfg: TConfigStorage);
@@ -103,6 +121,9 @@ type
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
     property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
+    property Pas2jsSrcDir: string read GetPas2jsSrcDir write SetPas2jsSrcDir; // with trailing pathdelim
+    property FPCSrcDir: string read GetFPCSrcDir write SetFPCSrcDir; // used for compiling tools and pas2js, with trailing pathdelim
+    property FPCExe: string read GetFPCExe write SetFPCExe; // used for compiling tools
     property NodeJSFileName : string Read GetNodeJSFileName Write SetNodeJSFileName;
     property ElectronFileName : string Read GetElectronFileName Write SetElectronFileName;
     property AtomTemplateDir : String Read GetAtomTemplateDir Write SetAtomTemplateDir;
@@ -218,6 +239,21 @@ begin
   Result:=FCachedOptions[p2jcoElectronFilename].RawValue;
 end;
 
+function TPas2jsOptions.GetFPCExe: string;
+begin
+  Result:=FCachedOptions[p2jcoFPCExe].RawValue;
+end;
+
+function TPas2jsOptions.GetFPCSrcDir: string;
+begin
+  Result:=FCachedOptions[p2jcoFPCSrcDir].RawValue;
+end;
+
+function TPas2jsOptions.GetPas2jsSrcDir: string;
+begin
+  Result:=FCachedOptions[p2jcoPas2jsSrcDir].RawValue;
+end;
+
 function TPas2jsOptions.GetVSCodeTemplateDir: String;
 begin
   Result:=FCachedOptions[p2jcoVSCodeTemplateDir].RawValue;
@@ -292,6 +328,9 @@ end;
 
 Const
   KeyCompiler = 'compiler/value';
+  KeyPas2jsSrcDir = 'sources/value';
+  KeyFPCSrcDir = 'fpcsrcdir/value';
+  KeyFPCExe= 'fpc/value';
   KeyHTTPServer = 'webserver/value';
   KeyBrowser = 'webbrowser/value';
   KeyNodeJS = 'nodejs/value';
@@ -306,6 +345,9 @@ procedure TPas2jsOptions.LoadFromConfig(Cfg: TConfigStorage);
 
 begin
   CompilerFilename:=Cfg.GetValue(KeyCompiler,PJSDefaultCompiler);
+  Pas2jsSrcDir:=Cfg.GetValue(KeyPas2jsSrcDir,PJSDefaultPas2jsSrcDir);
+  FPCSrcDir:=Cfg.GetValue(KeyFPCSrcDir,PJSDefaultFPCSrcDir);
+  FPCExe:=Cfg.GetValue(KeyFPCExe,PJSDefaultFPCExe);
   NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
   ElectronFileName:=Cfg.GetValue(KeyElectronExe,PJSDefaultElectronExe);
   AtomTemplateDir:=Cfg.GetValue(KeyAtomTemplate,'');
@@ -325,6 +367,9 @@ procedure TPas2jsOptions.SaveToConfig(Cfg: TConfigStorage);
 
 begin
   Cfg.SetDeleteValue(KeyCompiler,CompilerFilename,PJSDefaultCompiler);
+  Cfg.SetDeleteValue(KeyPas2jsSrcDir,Pas2jsSrcDir,PJSDefaultPas2jsSrcDir);
+  Cfg.SetDeleteValue(KeyFPCSrcDir,FPCSrcDir,PJSDefaultFPCSrcDir);
+  Cfg.SetDeleteValue(KeyFPCExe,FPCExe,PJSDefaultFPCExe);
   Cfg.SetDeleteValue(KeyStartPortAt,StartAtPort,PJSDefaultStartAtPort);
   Cfg.SetDeleteValue(KeyNodeJS,NodeJSFileName,PJSDefaultNodeJS);
   Cfg.SetDeleteValue(KeyElectronExe,ElectronFileName,PJSDefaultElectronExe);
@@ -345,6 +390,11 @@ begin
   Result:=GetParsedOptionValue(p2jcoCompilerFilename);
 end;
 
+function TPas2jsOptions.GetParsedPas2jsSrcDir: string;
+begin
+  Result:=GetParsedOptionValue(p2jcoPas2jsSrcDir);
+end;
+
 function TPas2jsOptions.GetParsedNodeJSFilename: string;
 begin
   Result:=GetParsedOptionValue(p2jcoNodeJSFilename);
@@ -359,7 +409,7 @@ function TPas2jsOptions.GetParsedOptionValue(Option: TPas2jsCachedOption
   ): string;
 var
   p: PPas2jsCachedValue;
-  IsFilename: Boolean;
+  IsFilename, IsDirectory: Boolean;
 begin
   p:=@FCachedOptions[Option];
   if p^.Stamp<>IDEMacros.BaseTimeStamp then
@@ -368,6 +418,7 @@ begin
     p^.ParsedValue:=p^.RawValue;
     IDEMacros.SubstituteMacros(p^.ParsedValue);
     IsFilename:=Option in p2jcoFilenames;
+    IsDirectory:=Option in p2jcoDirectories;
     if IsFilename then
     begin
       p^.ParsedValue:=TrimFilename(p^.ParsedValue);
@@ -378,6 +429,15 @@ begin
           p^.ParsedValue:=FindDefaultExecutablePath(p^.ParsedValue)
         else
           p^.ParsedValue:=''; // not found
+      end;
+    end;
+    if IsDirectory then
+    begin
+      p^.ParsedValue:=TrimFilename(p^.ParsedValue);
+      if (p^.ParsedValue<>'')
+          and not FilenameIsAbsolute(p^.ParsedValue) then
+      begin
+        p^.ParsedValue:=''; // not found
       end;
     end;
     if p^.ParsedValue='' then
@@ -421,6 +481,24 @@ procedure TPas2jsOptions.SetElectronFileName(AValue: string);
 begin
   AValue:=TrimFilename(AValue);
   SetCachedOption(p2jcoElectronFilename,AValue);
+end;
+
+procedure TPas2jsOptions.SetFPCExe(AValue: string);
+begin
+  AValue:=TrimFilename(AValue);
+  SetCachedOption(p2jcoFPCExe,AValue);
+end;
+
+procedure TPas2jsOptions.SetFPCSrcDir(AValue: string);
+begin
+  AValue:=AppendPathDelim(TrimFilename(AValue));
+  SetCachedOption(p2jcoFPCSrcDir,AValue);
+end;
+
+procedure TPas2jsOptions.SetPas2jsSrcDir(AValue: string);
+begin
+  AValue:=AppendPathDelim(TrimFilename(AValue));
+  SetCachedOption(p2jcoPas2jsSrcDir,AValue);
 end;
 
 procedure TPas2jsOptions.SetVSCodeTemplateDir(AValue: String);

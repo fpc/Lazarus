@@ -158,6 +158,11 @@ msgstr "URL du projet en cours Pas2JS"
 msgid "Pas2JS executable"
 msgstr "Exécutable Pas2JS"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Exécutable du navigateur sélectionné de Pas2JS"
@@ -236,6 +241,10 @@ msgstr "Sélectionner le répertoire du modèle de paquet Atom"
 msgid "Select browser executable"
 msgstr "Sélectionner l'exécutable du navigateur"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "Sélectionner l'exécutable Node.js"
@@ -270,8 +279,18 @@ msgstr ""
 msgid "Start HTTP Server on port"
 msgstr "Démarrer le serveur HTTP sur le port"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
+msgstr ""
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
 msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
@@ -303,6 +322,10 @@ msgstr ""
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Répertoire des modèles d'extension de code Visual Studio"
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser."

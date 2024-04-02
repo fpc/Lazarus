@@ -163,6 +163,11 @@ msgstr "URL поточного проєкту Pas2JS"
 msgid "Pas2JS executable"
 msgstr "Виконуваний файл Pas2JS"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Виконуваний файл вибраного оглядача Pas2JS"
@@ -241,6 +246,10 @@ msgstr "Виберіть теку шаблонів пакунка Atom"
 msgid "Select browser executable"
 msgstr "Вибрати виконуваний файл оглядача"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "Вибрати виконуваний файл Node.js"
@@ -275,9 +284,19 @@ msgstr "Програма на pas2js, що працює як кеш для ве�
 msgid "Start HTTP Server on port"
 msgstr "Запустити HTTP-сервер на порті"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
 msgstr "Простий вебсервер автоматично стартує під час запуску. Розташування схоже на вкладену теку в URL-адресі, яка обслуговує дискову теку файлу HTML."
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
+msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -306,6 +325,10 @@ msgstr "Запустити програму WebAssembly:"
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Теку шаблонів розширень Visual Studio Code"
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser."

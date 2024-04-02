@@ -162,6 +162,11 @@ msgstr "Pas2JS 当前项目 URL"
 msgid "Pas2JS executable"
 msgstr "Pas2JS 可执行文件"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Pas2JS 所选浏览器可执行文件"
@@ -240,6 +245,10 @@ msgstr "选择 Atom 软件包模板目录"
 msgid "Select browser executable"
 msgstr "选择浏览器可执行文件"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "选择 Node.js 可执行文件"
@@ -274,9 +283,19 @@ msgstr "作为网页应用程序缓存运行的 pas2js 程序。它不能独立�
 msgid "Start HTTP Server on port"
 msgstr "启动 HTTP 服务器在端口"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
 msgstr "运行时会自动启动简易网站服务器。路径就像 URL 中的一个子文件夹，为 HTML 文件的磁盘文件夹提供服务。"
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
+msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -305,6 +324,10 @@ msgstr "运行 WebAssembly 程序："
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Visual Studio Code 扩展模板目录"
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgid "A pas2js program running in the browser."

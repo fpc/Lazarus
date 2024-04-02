@@ -130,7 +130,7 @@ begin
   try
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:='Select Electron executable';
+    OpenDialog.Title:=pjsdSelectElectronExecutable;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(ElectronExeComboBox,AFilename,cstFilename,30);
@@ -175,19 +175,21 @@ begin
   PJSOptions.CompilerFilename:=NewExe;
   NewExe:=PJSOptions.GetParsedCompilerFilename;
   if (NewExe='') or not FileExistsUTF8(NewExe) then
-    ErrMsg:='Unable to find pas2js at "'+PJSOptions.CompilerFilename+'"'
+    ErrMsg:=Format(pjsdUnableToFindPas2jsAt, [PJSOptions.CompilerFilename])
   else if not FileIsExecutable(NewExe) then
-    ErrMsg:='pas2js is not executable at "'+PJSOptions.CompilerFilename+'"'
+    ErrMsg:=Format(pjsdPas2jsIsNotExecutableAt, [PJSOptions.CompilerFilename])
   else
     ErrMsg:='';
   if ErrMsg<>'' then
   begin
-    IDEMessageDialog('Error',ErrMsg,mtError,[mbOk]);
+    IDEMessageDialog(pjsdError, ErrMsg, mtError, [mbOk]);
     exit(false);
   end;
   if PosI('pas2js',ExtractFileNameOnly(NewExe))<1 then
   begin
-    IDEMessageDialog('Warning','The pas2js executable filename "'+NewExe+'" does not look like pas2js',mtWarning,[mbOk]);
+    IDEMessageDialog(pjsdWarning, Format(
+      pjsdThePas2jsExecutableFilenameDoesNotLookLikePas2js, [NewExe]),
+      mtWarning, [mbOk]);
     exit(true);
   end;
   // todo: run and check if this pas2js returns macros

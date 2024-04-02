@@ -1,20 +1,20 @@
 object AtomPackageSettingsForm: TAtomPackageSettingsForm
-  Left = 357
-  Height = 546
-  Top = 159
+  Left = 352
+  Height = 580
+  Top = 171
   Width = 588
   Caption = 'New Atom Package'
-  ClientHeight = 546
+  ClientHeight = 580
   ClientWidth = 588
+  LCLVersion = '3.99.0.0'
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
   object edtDescription: TEdit
     AnchorSideLeft.Control = dePackage
     AnchorSideTop.Control = dePackage
     AnchorSideTop.Side = asrBottom
     Left = 120
-    Height = 27
-    Top = 43
+    Height = 32
+    Top = 48
     Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 8
@@ -25,8 +25,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtDescription
     Left = 24
-    Height = 16
-    Top = 48
+    Height = 15
+    Top = 57
     Width = 88
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -40,21 +40,21 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = edtDescription
     AnchorSideTop.Side = asrBottom
     Left = 120
-    Height = 27
-    Top = 78
+    Height = 32
+    Top = 88
     Width = 280
     BorderSpacing.Top = 8
+    TabOrder = 1
     OnEditingDone = edtNameEditingDone
     OnKeyPress = edtNameKeyPress
-    TabOrder = 1
   end
   object lblName: TLabel
     AnchorSideTop.Control = edtName
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtName
     Left = 16
-    Height = 16
-    Top = 83
+    Height = 15
+    Top = 97
     Width = 96
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -69,8 +69,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrBottom
     Left = 120
     Height = 23
-    Top = 149
-    Width = 173
+    Top = 169
+    Width = 160
     BorderSpacing.Top = 8
     Caption = 'Link in Atom package dir'
     TabOrder = 2
@@ -81,7 +81,7 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrBottom
     Left = 120
     Height = 112
-    Top = 180
+    Top = 200
     Width = 446
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 8
@@ -102,8 +102,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 502
+    Height = 56
+    Top = 518
     Width = 576
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -121,8 +121,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtLicense
     Left = 56
-    Height = 16
-    Top = 305
+    Height = 15
+    Top = 329
     Width = 56
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -136,8 +136,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = vleCommands
     AnchorSideTop.Side = asrBottom
     Left = 120
-    Height = 27
-    Top = 300
+    Height = 32
+    Top = 320
     Width = 184
     BorderSpacing.Top = 8
     TabOrder = 5
@@ -146,8 +146,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = vleCommands
     AnchorSideRight.Control = vleCommands
     Left = 32
-    Height = 16
-    Top = 180
+    Height = 15
+    Top = 200
     Width = 80
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -161,8 +161,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtKeywords
     Left = 44
-    Height = 16
-    Top = 341
+    Height = 15
+    Top = 370
     Width = 68
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -176,8 +176,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = edtLicense
     AnchorSideTop.Side = asrBottom
     Left = 120
-    Height = 27
-    Top = 336
+    Height = 32
+    Top = 361
     Width = 445
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 9
@@ -187,8 +187,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = vleActivationCommands
     AnchorSideRight.Control = vleActivationCommands
     Left = 23
-    Height = 32
-    Top = 371
+    Height = 30
+    Top = 401
     Width = 89
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -203,7 +203,7 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrBottom
     Left = 120
     Height = 112
-    Top = 371
+    Top = 401
     Width = 445
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 8
@@ -224,7 +224,7 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
   end
   object dePackage: TDirectoryEdit
     Left = 120
-    Height = 27
+    Height = 32
     Top = 8
     Width = 447
     ShowHidden = False
@@ -239,8 +239,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = dePackage
     Left = 34
-    Height = 16
-    Top = 13
+    Height = 15
+    Top = 17
     Width = 78
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -254,8 +254,8 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtClassName
     Left = 32
-    Height = 16
-    Top = 119
+    Height = 15
+    Top = 138
     Width = 79
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight]
@@ -269,11 +269,11 @@ object AtomPackageSettingsForm: TAtomPackageSettingsForm
     AnchorSideTop.Control = edtName
     AnchorSideTop.Side = asrBottom
     Left = 120
-    Height = 27
-    Top = 114
+    Height = 32
+    Top = 129
     Width = 280
     BorderSpacing.Top = 9
-    OnKeyPress = edtClassNameKeyPress
     TabOrder = 9
+    OnKeyPress = edtClassNameKeyPress
   end
 end

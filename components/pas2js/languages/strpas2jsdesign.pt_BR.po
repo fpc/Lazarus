@@ -163,6 +163,11 @@ msgstr "URL atual de projeto Pas2JS"
 msgid "Pas2JS executable"
 msgstr "Executável Pas2JS"
 
+#: strpas2jsdesign.pjsdpas2jsisnotexecutableat
+#, object-pascal-format
+msgid "pas2js is not executable at \"%s\""
+msgstr ""
+
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
 msgstr "Executável selecionado do navegador Pas2JS"
@@ -241,6 +246,10 @@ msgstr "Selecionar diretório de modelos de pacote do Atom"
 msgid "Select browser executable"
 msgstr "Selecionar executável do navegador"
 
+#: strpas2jsdesign.pjsdselectelectronexecutable
+msgid "Select Electron executable"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
 msgstr "Selecionar executável Node.js"
@@ -274,9 +283,19 @@ msgstr "Um programa pas2js executando como cache para um app web. Ele não execu
 msgid "Start HTTP Server on port"
 msgstr "Iniciar servidor HTTP na porta"
 
+#: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
+#, object-pascal-format
+msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
 msgstr "Um Servidor Web Simples é automaticamente iniciado no Executar. A localização é como um subpasta na URL servindo a pasta no disco do arquivo HTML."
+
+#: strpas2jsdesign.pjsdunabletofindpas2jsat
+#, object-pascal-format
+msgid "Unable to find pas2js at \"%s\""
+msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -305,6 +324,10 @@ msgstr "Executar programa WebAssembly:"
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Diretório de modelos de extensão de código do Visual Studio"
+
+#: strpas2jsdesign.pjsdwarning
+msgid "Warning"
+msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
 msgctxt "strpas2jsdesign.pjsdwebappdescription"

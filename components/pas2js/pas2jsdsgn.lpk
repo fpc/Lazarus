@@ -14,11 +14,14 @@
           <AllowLabel Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
     <Description Value="Adds a Lazarus project for pas2js (Pascal to JavaScript transpiler) browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -102,6 +105,11 @@
         <Filename Value="idehtmltools.pas"/>
         <UnitName Value="idehtmltools"/>
       </Item20>
+      <Item21>
+        <Filename Value="frmpas2jsinstaller.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="FrmPas2jsInstaller"/>
+      </Item21>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
