@@ -526,6 +526,7 @@ begin
   if FDownloadReleaseThread.ErrorMsg<>'' then
   begin
     Pas2jsProgressDialog.ModalResult:=mrCancel;
+    DetailsMemo.Lines.Add('Error: '+FDownloadReleaseThread.ErrorMsg);
     IDEMessageDialog('Error','Download error:'+sLineBreak+FDownloadReleaseThread.ErrorMsg,mtError,[mbOk]);
   end else begin
     Pas2jsProgressDialog.ModalResult:=mrOk;
