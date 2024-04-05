@@ -21,7 +21,7 @@
     <Description Value="Adds a Lazarus project for pas2js (Pascal to JavaScript transpiler) browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
-    <Files Count="21">
+    <Files Count="22">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -110,6 +110,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FrmPas2jsInstaller"/>
       </Item21>
+      <Item22>
+        <Filename Value="frmpas2jsprogressdlg.pas"/>
+        <UnitName Value="frmpas2jsprogressdlg"/>
+      </Item22>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>

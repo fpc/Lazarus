@@ -7,6 +7,7 @@
     - set compileserver.exe in simplewebservergui
 
   ToDo:
+    - test download timeout or wrong url
     - download progress
     - download pas2js via https
     - download zip: delete old files
@@ -25,12 +26,39 @@ interface
 uses
   Classes, SysUtils, fphttpclient, ssockets, sslsockets, Zipper,
   LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   IDEUtils, IDEDialogs,
   SimpleWebSrvController,
-  StrPas2JSDesign, PJSDsgnOptions, PJSController;
+  StrPas2JSDesign, PJSDsgnOptions, PJSController, FrmPas2jsProgressDlg;
 
 type
+
+  { TPas2jsDownloadReleaseThread }
+
+  TPas2jsDownloadReleaseThread = class(TThread)
+  private
+    FHttpClient: TFPHTTPClient;
+    procedure OnWorkerHeaders(Sender: TObject); // in worker thread
+    procedure OnWorkerProgress(Sender: TObject; const aContentLength, aCurrentPos: Int64); // in worker thread
+    procedure OnWorkerShowRedirect(Sender: TObject; const ASrc: String; // in worker thread
+      var ADest: String);
+    procedure OnSyncProgress; // in main thread
+    procedure OnSyncFinish; // in main thread
+    {$IFDEF HasSSL}
+    procedure DoHaveSocketHandler(Sender: TObject; AHandler: TSocketHandler);
+    procedure DoVerifyCertificate(Sender: TObject; AHandler: TSSLSocketHandler; var aAllow: Boolean);
+    {$ENDIF}
+  public
+    URL: String;
+    Stream: TMemoryStream;
+    ContentLength, CurrentPos: Int64;
+    OnProgress: TNotifyEvent;
+    OnFinish: TNotifyEvent;
+    ErrorMsg: string;
+    procedure Execute; override; // in worker thread
+    destructor Destroy; override;
+    property HttpClient: TFPHTTPClient read FHttpClient;
+  end;
 
   { TPas2jsInstallerDialog }
 
@@ -65,35 +93,36 @@ type
     procedure Pas2jsExeBrowseButtonClick(Sender: TObject);
     procedure Pas2jsSrcDirBrowseBtnClick(Sender: TObject);
   private
+    FHTTPClient: TFPHTTPClient;
+    FFoundCompileserver: string;
+    FFoundPas2jsCfg: string;
+    FFoundPas2jsExe: string;
+    FFoundSystemPas: string;
+    FLastCheckedPas2js: boolean;
     FLastCheckedPas2jsExe: String;
     FLastCheckedPas2jsSrcDir: String;
-    FLastCheckedPas2js: boolean;
-    FOldPas2jsExe: string;
-    FOldPas2jsSrcDir: string;
     FOldFPCExe: string;
     FOldFPCSrcDir: string;
+    FOldPas2jsExe: string;
+    FOldPas2jsSrcDir: string;
     FReleaseURL: string;
     FZipStream: TMemoryStream;
-    FFoundPas2jsExe: string;
-    FFoundPas2jsCfg: string;
-    FFoundCompileserver: string;
-    FFoundSystemPas: string;
+    FDownloadReleaseThread: TPas2jsDownloadReleaseThread;
     procedure OnCloseUnzipStream(Sender: TObject; var AStream: TStream);
+    procedure OnDownloadReleaseFinish(Sender: TObject);
     procedure OnOpenUnzipStream(Sender: TObject; var AStream: TStream);
+    procedure OnProgressCancelClick(Sender: TObject);
+    procedure OnStartDownloadRelease(Sender: TObject);
     procedure OnUnzipStartFile(Sender: TObject; const AFileName: String);
     procedure UpdateButtons;
     function NeedsApply: boolean;
     function CheckPas2js: boolean;
-    {$IFDEF HasSSL}
-    procedure DoHaveSocketHandler(Sender: TObject; AHandler: TSocketHandler);
-    procedure DoVerifyCertificate(Sender: TObject; AHandler: TSSLSocketHandler; var aAllow: Boolean);
-    {$ENDIF}
-    procedure DoProgress(Sender: TObject; Const ContentLength, CurrentPos: Int64);
-    procedure DoHeaders(Sender: TObject);
-    procedure ShowRedirect(Sender: TObject; Const ASrc: String; Var ADest: String);
+    procedure OnDownloadReleaseProgress(Sender: TObject);
     procedure UnzipRelease(aDirectory: String);
     procedure Apply;
     procedure CheckSimpleWebserver(SetServerIfEmpty: boolean);
+    function ShowProgressDialog(aCaption, ANote: string; const OnExecute: TNotifyEvent): boolean;
+  protected
   public
     procedure Init;
     property ReleaseURL: string read FReleaseURL write FReleaseURL;
@@ -118,6 +147,99 @@ begin
 end;
 
 {$R *.lfm}
+
+{ TPas2jsDownloadReleaseThread }
+
+procedure TPas2jsDownloadReleaseThread.OnWorkerShowRedirect(Sender: TObject;
+  const ASrc: String; var ADest: String);
+begin
+  Debugln('TPas2jsDownloadReleaseThread.ShowRedirect Following redirect from '+ASrc+'  ==> '+ADest);
+end;
+
+procedure TPas2jsDownloadReleaseThread.OnSyncProgress();
+begin
+  if Assigned(OnProgress) then
+    OnProgress(Self);
+end;
+
+procedure TPas2jsDownloadReleaseThread.OnSyncFinish;
+begin
+  if Assigned(OnFinish) then
+    OnFinish(Self);
+end;
+
+procedure TPas2jsDownloadReleaseThread.OnWorkerHeaders(Sender: TObject);
+//Var
+//  I : Integer;
+begin
+  //debugln('TPas2jsInstallerDialog.DoHeaders Response headers received:');
+  //With (Sender as TFPHTTPClient) do
+  //  For I:=0 to ResponseHeaders.Count-1 do
+  //    debugln('TPas2jsInstallerDialog.DoHeaders '+ResponseHeaders[i]);
+end;
+
+procedure TPas2jsDownloadReleaseThread.OnWorkerProgress(Sender: TObject;
+  const aContentLength, aCurrentPos: Int64);
+begin
+  ContentLength:=aContentLength;
+  CurrentPos:=aCurrentPos;
+  Synchronize(@OnSyncProgress);
+end;
+
+{$IFDEF HasSSL}
+procedure TPas2jsDownloadReleaseThread.DoHaveSocketHandler(Sender: TObject;
+  AHandler: TSocketHandler);
+Var
+  SSLHandler: TSSLSocketHandler absolute aHandler;
+begin
+  if aHandler is TSSLSocketHandler then
+  begin
+    SSLHandler.CertificateData.TrustedCertsDir:='/etc/ssl/certs/';
+  end;
+end;
+
+procedure TPas2jsDownloadReleaseThread.DoVerifyCertificate(Sender: TObject;
+  AHandler: TSSLSocketHandler; var aAllow: Boolean);
+Var
+  S : String;
+begin
+  debugln('TPas2jsDownloadReleaseThread.DoVerifyCertificateSSL Certificate verification requested, allowing');
+  S:=TEncoding.ASCII.GetAnsiString( aHandler.CertificateData.Certificate.Value);
+  debugln('TPas2jsDownloadReleaseThread.DoVerifyCertificate Cert: '+S);
+  aAllow:=True;
+end;
+{$ENDIF}
+
+procedure TPas2jsDownloadReleaseThread.Execute;
+begin
+  FHTTPClient:=TFPHTTPClient.Create(Nil);
+  FHTTPClient.AllowRedirect:=True;
+  FHTTPClient.OnRedirect:=@OnWorkerShowRedirect;
+  FHTTPClient.OnDataReceived:=@OnWorkerProgress;
+  FHTTPClient.OnHeaders:=@OnWorkerHeaders;
+  FHTTPClient.IOTimeout:=30000;
+  FHTTPClient.ConnectTimeout:=60000;
+  {$IFDEF HasSSL}
+  Client.VerifySSlCertificate:=True;
+  Client.OnVerifySSLCertificate:=@DoVerifyCertificate;
+  Client.AfterSocketHandlerCreate:=@DoHaveSocketHandler;
+  {$ENDIF}
+
+  try
+    HttpClient.Get(URL,Stream);
+  except
+    on E: Exception do
+      ErrorMsg:=E.Message;
+  end;
+  if not Terminated then
+    Synchronize(@OnSyncFinish);
+end;
+
+destructor TPas2jsDownloadReleaseThread.Destroy;
+begin
+  FHttpClient.Free;
+  inherited Destroy;
+end;
 
 { TPas2jsInstallerDialog }
 
@@ -205,7 +327,6 @@ procedure TPas2jsInstallerDialog.DownloadReleaseButtonClick(Sender: TObject);
 var
   aDialog: TSelectDirectoryDialog;
   aDir, s, WebSrvExe: String;
-  Client: TFPHTTPClient;
 begin
   DetailsMemo.Clear;
 
@@ -224,7 +345,7 @@ begin
 
   // select target directory
   aDialog:=TSelectDirectoryDialog.Create(nil);
-  Client:=nil;
+  FHTTPClient:=nil;
   try
     //InputHistories.ApplyFileDialogSettings(aDialog);
     //aDialog.Options:=aDialog.Options+[ofPathMustExist];
@@ -243,28 +364,16 @@ begin
     end;
 
     // download
-    Client:=TFPHTTPClient.Create(Nil);
-    Client.AllowRedirect:=True;
-    Client.OnRedirect:=@ShowRedirect;
-    Client.OnDataReceived:=@DoProgress;
-    Client.OnHeaders:=@DoHeaders;
-    {$IF FPC_FULLVERSION>30300}
-    Client.VerifySSlCertificate:=True;
-    Client.OnVerifySSLCertificate:=@DoVerifyCertificate;
-    Client.AfterSocketHandlerCreate:=@DoHaveSocketHandler;
-    {$ENDIF}
     s:='Downloading "'+ReleaseURL+'" ...';
     DetailsMemo.Lines.Add('Note: '+s);
     DebugLn(['Note: TPas2jsInstallerDialog.DownloadReleaseButtonClick ',s]);
     FZipStream:=TMemoryStream.Create;
-    Client.Get(ReleaseURL,FZipStream);
+
+    if not ShowProgressDialog('Downloading',ReleaseURL,@OnStartDownloadRelease) then exit;
+
     s:='Downloaded '+IntToStr(FZipStream.Size)+' bytes';
     DetailsMemo.Lines.Add('Note: '+s);
     debugln(['Note: TPas2jsInstallerDialog.DownloadReleaseButtonClick ',s]);
-
-
-    // ToDo: progress meter
-    // ToDo: test timeout or wrong url
 
     // unzip
     UnzipRelease(aDir);
@@ -316,7 +425,7 @@ begin
   finally
     aDialog.Free;
     FreeAndNil(FZipStream);
-    Client.Free;
+    FHTTPClient.Free;
     UpdateButtons;
   end;
 end;
@@ -384,6 +493,25 @@ begin
   AStream:=FZipStream;
 end;
 
+procedure TPas2jsInstallerDialog.OnProgressCancelClick(Sender: TObject);
+begin
+  debugln(['TPas2jsInstallerDialog.OnProgressCancelClick']);
+  if FHTTPClient<>nil then
+    FHTTPClient.Terminate;
+end;
+
+procedure TPas2jsInstallerDialog.OnStartDownloadRelease(Sender: TObject);
+// called when progress dialog is shown
+begin
+  FDownloadReleaseThread:=TPas2jsDownloadReleaseThread.Create(true);
+  FDownloadReleaseThread.FreeOnTerminate:=false;
+  FDownloadReleaseThread.URL:=ReleaseURL;
+  FDownloadReleaseThread.Stream:=FZipStream;
+  FDownloadReleaseThread.OnProgress:=@OnDownloadReleaseProgress;
+  FDownloadReleaseThread.OnFinish:=@OnDownloadReleaseFinish;
+  FDownloadReleaseThread.Start;
+end;
+
 procedure TPas2jsInstallerDialog.OnCloseUnzipStream(Sender: TObject;
   var AStream: TStream);
 begin
@@ -391,12 +519,26 @@ begin
     FZipStream:=nil;
 end;
 
+procedure TPas2jsInstallerDialog.OnDownloadReleaseFinish(Sender: TObject);
+begin
+  debugln(['TPas2jsInstallerDialog.OnDownloadReleaseFinish ']);
+  if Pas2jsProgressDialog.ModalResult<>mrNone then exit;
+
+  if FDownloadReleaseThread.ErrorMsg<>'' then
+  begin
+    Pas2jsProgressDialog.ModalResult:=mrCancel;
+    IDEMessageDialog('Error','Download error:'+sLineBreak+FDownloadReleaseThread.ErrorMsg,mtError,[mbOk]);
+  end else begin
+    Pas2jsProgressDialog.ModalResult:=mrOk;
+  end;
+end;
+
 procedure TPas2jsInstallerDialog.OnUnzipStartFile(Sender: TObject;
   const AFileName: String);
 var
   ShortFilename: String;
 begin
-  debugln(['TPas2jsInstallerDialog.OnUnzipStartFile ',AFileName,' ...']);
+  //debugln(['TPas2jsInstallerDialog.OnUnzipStartFile ',AFileName,' ...']);
   ShortFilename:=ExtractFileName(AFileName);
   if ShortFilename='pas2js'+GetExeExt then
     FFoundPas2jsExe:=AFileName
@@ -442,57 +584,26 @@ begin
   Result:=FLastCheckedPas2js;
 end;
 
-{$IFDEF HasSSL}
-procedure TPas2jsInstallerDialog.DoHaveSocketHandler(Sender: TObject;
-  AHandler: TSocketHandler);
-Var
-  SSLHandler: TSSLSocketHandler absolute aHandler;
+procedure TPas2jsInstallerDialog.OnDownloadReleaseProgress(Sender: TObject);
+var
+  Bar: TProgressBar;
 begin
-  if aHandler is TSSLSocketHandler then
+  if Pas2jsProgressDialog=nil then exit;
+  Bar:=Pas2jsProgressDialog.ProgressBar1;
+  If (FDownloadReleaseThread.ContentLength=0) then
   begin
-    SSLHandler.CertificateData.TrustedCertsDir:='/etc/ssl/certs/';
+    //DebugLN(['TPas2jsInstallerDialog.DoProgress Reading headers : ',FDownloadReleaseThread.CurrentPos,' Bytes.']);
+    Bar.Style:=pbstMarquee;
+  end else If (FDownloadReleaseThread.ContentLength=-1) then
+  begin
+    //DebugLN(['TPas2jsInstallerDialog.DoProgress Reading data (no length available) : ',FDownloadReleaseThread.CurrentPos,' Bytes.']);
+    Bar.Style:=pbstMarquee;
+  end else begin
+    //DebugLN(['TPas2jsInstallerDialog.DoProgress Reading data : ',FDownloadReleaseThread.CurrentPos,' Bytes of ',FDownloadReleaseThread.ContentLength]);
+    Bar.Style:=pbstNormal;
+    Bar.Max:=FDownloadReleaseThread.ContentLength;
+    Bar.Position:=FDownloadReleaseThread.CurrentPos;
   end;
-end;
-
-procedure TPas2jsInstallerDialog.DoVerifyCertificate(Sender: TObject;
-  AHandler: TSSLSocketHandler; var aAllow: Boolean);
-Var
-  S : String;
-begin
-  debugln('TPas2jsInstallerDialog.DoVerifyCertificateSSL Certificate verification requested, allowing');
-  S:=TEncoding.ASCII.GetAnsiString( aHandler.CertificateData.Certificate.Value);
-  debugln('TPas2jsInstallerDialog.DoVerifyCertificate Cert: '+S);
-  aAllow:=True;
-end;
-{$ENDIF}
-
-procedure TPas2jsInstallerDialog.DoProgress(Sender: TObject;
-  const ContentLength, CurrentPos: Int64);
-begin
-  exit;
-
-  If (ContentLength=0) then
-    DebugLN(['TPas2jsInstallerDialog.DoProgress Reading headers : ',CurrentPos,' Bytes.'])
-  else If (ContentLength=-1) then
-    DebugLN(['TPas2jsInstallerDialog.DoProgress Reading data (no length available) : ',CurrentPos,' Bytes.'])
-  else
-    DebugLN(['TPas2jsInstallerDialog.DoProgress Reading data : ',CurrentPos,' Bytes of ',ContentLength]);
-end;
-
-procedure TPas2jsInstallerDialog.DoHeaders(Sender: TObject);
-Var
-  I : Integer;
-begin
-  debugln('TPas2jsInstallerDialog.DoHeaders Response headers received:');
-  With (Sender as TFPHTTPClient) do
-    For I:=0 to ResponseHeaders.Count-1 do
-      debugln('TPas2jsInstallerDialog.DoHeaders '+ResponseHeaders[i]);
-end;
-
-procedure TPas2jsInstallerDialog.ShowRedirect(Sender: TObject;
-  const ASrc: String; var ADest: String);
-begin
-  Debugln(['TPas2jsInstallerDialog.ShowRedirect Following redirect from ',ASrc,'  ==> ',ADest]);
 end;
 
 procedure TPas2jsInstallerDialog.UnzipRelease(aDirectory: String);
@@ -579,6 +690,45 @@ begin
   end;
 end;
 
+function TPas2jsInstallerDialog.ShowProgressDialog(aCaption, ANote: string;
+  const OnExecute: TNotifyEvent): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Pas2jsProgressDialog<>nil then
+  begin
+    debugln(['TPas2jsInstallerDialog.ShowProgressDialog Pas2jsProgressDialog<>nil']);
+    exit;
+  end;
+
+  Pas2jsProgressDialog:=TPas2jsProgressDialog.Create(Self);
+  Pas2jsProgressDialog.Caption:=aCaption;
+  Pas2jsProgressDialog.NoteLabel.Caption:=ANote;
+  Pas2jsProgressDialog.OnShow:=OnExecute;
+  Result:=Pas2jsProgressDialog.ShowModal=mrOk;
+  Pas2jsProgressDialog.Release;
+  if FDownloadReleaseThread<>nil then
+  begin
+    FDownloadReleaseThread.Terminate;
+    if FDownloadReleaseThread.HttpClient<>nil then
+    begin
+      FDownloadReleaseThread.HttpClient.Terminate;
+    end;
+    try
+      for i:=1 to 1000 do
+      begin
+        if FDownloadReleaseThread.Finished then break;
+        Sleep(10);
+        Application.ProcessMessages;
+      end;
+    finally
+      FDownloadReleaseThread.Free;
+      FDownloadReleaseThread:=nil;
+    end;
+  end;
+end;
+
 procedure TPas2jsInstallerDialog.Init;
 begin
   FOldPas2jsExe:=PJSOptions.CompilerFilename;
@@ -591,13 +741,7 @@ begin
   SetComboBoxText(FPCExeComboBox,PJSOptions.FPCExe,cstFilename,30);
   SetComboBoxText(FPCSrcDirComboBox,PJSOptions.FPCSrcDir,cstFilename,30);
 
-  {$IFDEF HasSSL}
-  FReleaseURL:='https';
-  {$ELSE}
-  FReleaseURL:='http';
-  {$ENDIF}
-  FReleaseURL+='://getpas2js.freepascal.org/downloads/';
-
+  FReleaseURL:='https://getpas2js.freepascal.org/downloads/';
   {$IF defined(MSWindows)}
   FReleaseURL+='windows/pas2js-win64-x86_64-current.zip';
   {$ELSEIF defined(Darwin) and defined(CPU64)}
