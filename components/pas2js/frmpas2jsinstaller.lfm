@@ -1,28 +1,28 @@
 object Pas2jsInstallerDialog: TPas2jsInstallerDialog
-  Left = 126
-  Height = 547
-  Top = 129
-  Width = 574
+  Left = 304
+  Height = 549
+  Top = 218
+  Width = 670
   Caption = 'Pas2jsInstallerDialog'
-  ClientHeight = 547
-  ClientWidth = 574
+  ClientHeight = 549
+  ClientWidth = 670
   Position = poWorkAreaCenter
   LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   object BtnPanel: TPanel
     Left = 0
     Height = 45
-    Top = 502
-    Width = 574
+    Top = 504
+    Width = 670
     Align = alBottom
     AutoSize = True
     ClientHeight = 45
-    ClientWidth = 574
+    ClientWidth = 670
     TabOrder = 0
     object CloseButton: TButton
       AnchorSideRight.Control = BtnPanel
       AnchorSideRight.Side = asrBottom
-      Left = 488
+      Left = 584
       Height = 31
       Top = 7
       Width = 75
@@ -41,7 +41,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       AnchorSideRight.Control = CloseButton
       AnchorSideBottom.Control = BtnPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 401
+      Left = 497
       Height = 31
       Top = 7
       Width = 75
@@ -54,6 +54,22 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       TabOrder = 1
       OnClick = ApplyButtonClick
     end
+    object DownloadButton: TButton
+      AnchorSideTop.Control = BtnPanel
+      AnchorSideBottom.Control = BtnPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 7
+      Height = 31
+      Top = 7
+      Width = 117
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Download Release'
+      Constraints.MinWidth = 75
+      TabOrder = 2
+      OnClick = DownloadReleaseButtonClick
+    end
   end
   object Pas2jsSrcDirGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -64,13 +80,13 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
     Left = 6
     Height = 81
     Top = 73
-    Width = 562
+    Width = 658
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Pas2js Source Directory'
     ClientHeight = 65
-    ClientWidth = 560
+    ClientWidth = 656
     TabOrder = 1
     object Pas2jsSrcDirComboBox: TComboBox
       AnchorSideLeft.Control = Pas2jsSrcDirGroupBox
@@ -79,7 +95,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       Left = 6
       Height = 32
       Top = 6
-      Width = 523
+      Width = 619
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -104,7 +120,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Pas2jsSrcDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 529
+      Left = 625
       Height = 32
       Top = 6
       Width = 25
@@ -127,15 +143,16 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
     Left = 6
     Height = 161
     Top = 160
-    Width = 562
+    Width = 658
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Free Pascal Compiler used for compiling tools and pas2js itself'
     ClientHeight = 145
-    ClientWidth = 560
+    ClientWidth = 656
     Enabled = False
     TabOrder = 2
+    Visible = False
     object FPCExeComboBox: TComboBox
       AnchorSideLeft.Control = FPCGroupBox
       AnchorSideTop.Control = FPCExeLabel
@@ -144,7 +161,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       Left = 6
       Height = 32
       Top = 27
-      Width = 523
+      Width = 619
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -158,7 +175,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FPCExeComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 529
+      Left = 625
       Height = 32
       Top = 27
       Width = 25
@@ -190,7 +207,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       Left = 6
       Height = 32
       Top = 86
-      Width = 523
+      Width = 619
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -205,7 +222,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = FPCSrcDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 529
+      Left = 625
       Height = 32
       Top = 86
       Width = 25
@@ -249,26 +266,28 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 169
+    Height = 171
     Top = 327
-    Width = 562
+    Width = 658
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Details'
-    ClientHeight = 153
-    ClientWidth = 560
+    ClientHeight = 155
+    ClientWidth = 656
     TabOrder = 3
     object DetailsMemo: TMemo
       Left = 6
-      Height = 141
+      Height = 143
       Top = 6
-      Width = 548
+      Width = 644
       Align = alClient
       BorderSpacing.Around = 6
       Lines.Strings = (
         'DetailsMemo1'
       )
+      ScrollBars = ssAutoBoth
       TabOrder = 0
+      WordWrap = False
     end
   end
   object Pas2jsExeGroupBox: TGroupBox
@@ -279,12 +298,12 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
     Left = 6
     Height = 61
     Top = 6
-    Width = 562
+    Width = 658
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Pas2js Command Executable'
     ClientHeight = 45
-    ClientWidth = 560
+    ClientWidth = 656
     TabOrder = 4
     object Pas2jsExeComboBox: TComboBox
       AnchorSideLeft.Control = Pas2jsExeGroupBox
@@ -293,7 +312,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       Left = 6
       Height = 32
       Top = 6
-      Width = 523
+      Width = 619
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -307,7 +326,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Pas2jsExeComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 529
+      Left = 625
       Height = 32
       Top = 6
       Width = 25
