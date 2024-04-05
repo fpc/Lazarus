@@ -15246,37 +15246,53 @@ Called from the <var>BeforeFinalization</var> routine which is used as the
 </element>
 
 <element name="TApplication.GetParams">
-<short>Returns the command line argument at the specified position.</short>
+<short>
+Returns the command line argument at the specified ordinal position.
+</short>
 <descr>
 <p>
 <var>GetParams</var> is an overridden <var>String</var> function in 
-<var>TApplication</var> used to get the argument at the specified position in 
-the command line. It re-implements the read access specifier for the property 
-from the ancestor class, and does not call the inherited method.
+TApplication and is used to get the argument at the specified position in the 
+command line. It re-implements the read access specifier for the Params 
+property from the ancestor class (TCustomApplication), and does not call the 
+inherited method.
 </p>
 <p>
 <var>Index</var> is the ordinal position for the requested parameter value. 
-Index must be in the range <b>0..<var>ParamCount</var>-1</b> or an 
-<var>EListError</var> exception is raised. Position <b>0</b> contains the 
-name of the executable file for the application.
+Index should be in the range <b>0..<var>ParamCount</var></b>. Values in Index 
+outside this range cause an empty string ('') to be returned for a parameter 
+value.
 </p>
 <p>
-The return value contains the UTF-8-encoded <var>String</var> with the value 
-for the parameter at the specified position. It is retrieved using the 
-<var>ParamStrUTF8</var> routine for the position in Index.
+In most cases, the parameter at position <b>0</b> contains the name and 
+optional path to the executable file for the application. For cross-platform 
+compatibility, use the ExeName property to get the path and name for the binary 
+instead. Subsequent index positions contain any command line arguments passed 
+to the executable.
+</p>
+<p>
+The return value contains the UTF-8-encoded string with the value for the 
+parameter at the specified position, or an empty string when not present. The 
+value is retrieved using the <var>ParamStrUTF8</var> routine for the position 
+in Index.
 </p>
 </descr>
 <seealso>
 <link id="#lazutils.lazutf8.ParamStrUTF8">ParamStrUTF8</link>
 <link id="#fcl.custapp.TCustomApplication.Params">TCustomApplication.Params</link>
 <link id="#fcl.custapp.TCustomApplication.ParamCount">TCustomApplication.ParamCount</link>
+<link id="#rtl.system.ParamStr">ParamStr</link>
 </seealso>
 </element>
 <element name="TApplication.GetParams.Result">
-<short>String with the parameter value, or an empty string.</short>
+<short>
+String with the requested parameter value, or an empty string when not found.
+</short>
 </element>
 <element name="TApplication.GetParams.Index">
-<short>Ordinal position for the requested parameter value.</short>
+<short>
+Ordinal position for the requested parameter value.
+</short>
 </element>
 
 <element name="TApplication.Create">
