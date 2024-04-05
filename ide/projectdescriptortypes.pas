@@ -15,7 +15,8 @@ uses
   // IdeIntf
   CompOptsIntf, ProjectIntf, LazIDEIntf,
   // IDE
-  frmCustomApplicationOptions, LazarusIDEStrConsts, Project, W32Manifest;
+  frmCustomApplicationOptions, LazarusIDEStrConsts, Project, W32Manifest,
+  SourceEditor;
 
 type
 
@@ -87,6 +88,7 @@ type
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  public
     property AddMainSource: boolean read FAddMainSource write FAddMainSource;
   end;
 
@@ -209,8 +211,8 @@ begin
 
   // create program source
   NewSource:='program Project1;'+LineEnding
-    +LineEnding
     +'begin'+LineEnding
+    +LineEnding
     +'end.'+LineEnding
     +LineEnding;
   AProject.MainFile.SetSourceText(NewSource,true);
@@ -223,6 +225,9 @@ function TProjectSimpleProgramDescriptor.CreateStartFiles(AProject: TLazProject)
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
+  // set caret position
+  if Assigned(SourceEditorManager.ActiveEditor) then
+    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,3);
 end;
 
 { TProjectProgramDescriptor }
@@ -270,6 +275,7 @@ begin
     +'  { you can add units after this };'+LineEnding
     +LineEnding
     +'begin'+LineEnding
+    +LineEnding
     +'end.'+LineEnding
     +LineEnding;
   AProject.MainFile.SetSourceText(NewSource,true);
@@ -282,6 +288,9 @@ function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject): TMod
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
+  // set caret position
+  if Assigned(SourceEditorManager.ActiveEditor) then
+    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,13);
 end;
 
 { TProjectManualProgramDescriptor }
@@ -332,6 +341,7 @@ begin
       +'  { you can add units after this };'+LineEnding
       +LineEnding
       +'begin'+LineEnding
+      +LineEnding
       +'end.'+LineEnding
       +LineEnding;
     AProject.MainFile.SetSourceText(NewSource,true);
@@ -343,8 +353,13 @@ function TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
 begin
   if AProject.MainFile<>nil then
+  begin
     Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
-                                        [ofProjectLoading,ofRegularFile])
+                                        [ofProjectLoading,ofRegularFile]);
+    // set caret position
+    if Assigned(SourceEditorManager.ActiveEditor) then
+      SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,10);
+  end
   else
     Result:=mrCancel;
 end;
@@ -570,6 +585,7 @@ begin
     +'  { you can add units after this };'+LineEnding
     +LineEnding
     +'begin'+LineEnding
+    +LineEnding
     +'end.'+LineEnding
     +LineEnding;
   AProject.MainFile.SetSourceText(NewSource,true);
@@ -584,6 +600,9 @@ function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject): TMod
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
+  // set caret position
+  if Assigned(SourceEditorManager.ActiveEditor) then
+    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,10);
 end;
 
 end.
