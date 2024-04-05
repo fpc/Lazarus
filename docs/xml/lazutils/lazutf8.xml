@@ -263,7 +263,8 @@ Converts the UTF-8-encoded string to the Windows code page encoding Used by
 
 <element name="ParamStrUTF8">
 <short>
-Converts the specified command line parameter to a UTF-8-encoded string.
+Gets the specified command line parameter and converts it to a UTF-8-encoded 
+string.
 </short>
 <descr>
 <p>
@@ -271,19 +272,43 @@ Converts the specified command line parameter to a UTF-8-encoded string.
 specified command line parameter to a UTF-8-encoded string. The 
 implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like 
 environments, SysToUTF8 is called to convert the value for the command line 
-parameter at the position in Param. For Windows platforms like WinCE, the 
-stub for the Ansi or WideString version of ParamStr is called.
+parameter at the position in Param. For Windows platforms, the stub for the 
+Ansi or WideString version of ParamStrUTF8 is called. ParamStrUTF8 is the 
+UTF-8-enabled counterpart to the ParamStr routine in RTL.
+</p>
+<p>
+<var>Index</var> is the ordinal position for the requested parameter value. 
+Index should be in the range <b>0..<var>ParamCount</var></b>. Values in Index 
+outside this range cause an empty string ('') to be returned for a parameter 
+value.
+</p>
+<p>
+In most cases, the parameter at position <b>0</b> contains the name and 
+optional path to the executable file for the application. For cross-platform 
+compatibility, use the ExeName property in TCustomApplication to get the path 
+and name for the binary instead. Subsequent index positions contain any command 
+line arguments passed to the executable.
+</p>
+<p>
+The return value contains the UTF-8-encoded string with the value for the 
+parameter at the specified position, or an empty string when not present.
 </p>
 </descr>
 <seealso>
 <link id="SysToUTF8"/>
+<link id="#fcl.custapp.TCustomApplication.ExeName">TCustomApplication.ExeName</link>
+<link id="#rtl.system.ParamStr">ParamStr</link>
 </seealso>
 </element>
 <element name="ParamStrUTF8.Result">
-<short>UTF-8-encoded value for the command line parameter.</short>
+<short>
+UTF-8-encoded value for the specified command line parameter.
+</short>
 </element>
 <element name="ParamStrUTF8.Param">
-<short>Ordinal position of the command line parameter.</short>
+<short>
+Ordinal position for the command line parameter retrieved in the routine.
+</short>
 </element>
 
 <element name="GetFormatSettingsUTF8">
