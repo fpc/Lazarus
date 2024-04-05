@@ -24,7 +24,7 @@ unit FrmPas2jsInstaller;
 interface
 
 uses
-  Classes, SysUtils, fphttpclient, ssockets, sslsockets, Zipper,
+  Classes, SysUtils, fphttpclient, Zipper,
   LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   IDEUtils, IDEDialogs,
