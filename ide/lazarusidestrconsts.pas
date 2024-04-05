@@ -2585,6 +2585,8 @@ resourcestring
     +'does not look correct:%s%s';
   lisTheLazarusDirectoryDoesNotLookCorrect = 'The Lazarus directory "%s" does '
     +'not look correct:%s%s';
+  lisTheFppkgConfigurationFileDoesNotLookCorrect = 'The Fppkg configuration file '
+    +'"%s" does not look correct:%s%s';
   lisTheContainsANotExistingDirectory = 'The %s contains a nonexistent directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
     +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '

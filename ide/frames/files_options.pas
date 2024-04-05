@@ -96,7 +96,7 @@ type
     FOldRealTestDir: string;
     fOldCompilerMessagesFilename: string;
     fOldRealCompilerMessagesFilename: string;
-    fOldFppkcConfigurationFilename: string;
+    fOldFppkgConfigurationFilename: string;
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
@@ -104,7 +104,7 @@ type
     function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
     function CheckTestDir: boolean;
     function CheckMake: boolean;
-    function CheckFPCMsgFile: boolean;
+    function CheckCompilerTranslationFile: boolean;
     function CheckFppkgConfigurationFile: boolean;
   public
     function Check: Boolean; override;
@@ -132,7 +132,10 @@ begin
   OpenDialog := IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options := OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Options := OpenDialog.Options+[ofFileMustExist, ofReadOnly]; // allow select read only files
+    OpenDialog.Filter:=
+      Format('%s (*%s)|*%s|', [dlgFilterExecutable, GetExecutableExt, GetExecutableExt]) +
+      Format('%s (%s)|%s', [dlgFilterAll, GetAllFilesMask, GetAllFilesMask]);
     // set title
     if Sender = CompilerPathButton then begin
       OpenDialog.Title := Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename]);
@@ -154,16 +157,18 @@ begin
 
     if OpenDialog.Execute then begin
       lDirNameF := CleanAndExpandFilename(OpenDialog.Filename);
-      if UpperCase(lExpandedName) <> UpperCase(lDirNameF) then begin // Changed ?
+      if CompareText(lExpandedName, lDirNameF) <> 0 then begin
         lDirText := lDirNameF;
         if Sender=CompilerPathButton then begin
           // check compiler filename
           SetComboBoxText(CompilerPathComboBox,lDirText,cstFilename);
+          EnvironmentOptions.CompilerFilename:=CompilerPathComboBox.Text;
           CheckCompiler([mbOk]);
         end
         else if Sender = MakePathButton then begin
           // check make filename
           SetComboBoxText(MakePathComboBox,lDirText,cstFilename);
+          EnvironmentOptions.MakeFilename:=MakePathComboBox.Text;
           CheckMake;
         end;
       end;
@@ -176,39 +181,34 @@ end;
 
 procedure TFilesOptionsFrame.DirectoriesButtonClick(Sender: TObject);
 var
-  lDirText : string;
-
-  function ParsedDirName(aParseType: TEnvOptParseType): string;
-  begin
-    if lDirText = '' then
-      Result := EnvironmentOptions.GetParsedValue(aParseType, '')
-    else
-      Result := EnvironmentOptions.GetParsedValue(aParseType, lDirText);
-  end;
-
-var
   OpenDialog: TSelectDirectoryDialog;
-  lDirName, loDirNameF, lExpandedName: string;
+  lDirText, lDirName, loDirNameF, lExpandedName: string;
 begin
   OpenDialog := TSelectDirectoryDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options := OpenDialog.Options+[ofExtensionDifferent, ofPathMustExist];
     // set title
     if Sender = LazarusDirButton then begin
       OpenDialog.Title := lisChooseLazarusSourceDirectory;
+      OpenDialog.Options := OpenDialog.Options
+        + [ofPathMustExist,ofReadOnly]; // allow select read only folder
       lDirText := LazarusDirComboBox.Text;
-      lDirName := ParsedDirName(eopLazarusDirectory);
+      lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, lDirText);
     end
     else if Sender = FPCSourceDirButton then begin
       OpenDialog.Title := lisChooseFPCSourceDir;
+      OpenDialog.Options := OpenDialog.Options
+        + [ofPathMustExist,ofReadOnly]; // allow select read only folder
       lDirText := FPCSourceDirComboBox.Text;
-      lDirName := ParsedDirName(eopFPCSourceDirectory);
+      lDirName := EnvironmentOptions.GetParsedValue(eopFPCSourceDirectory, lDirText);
     end
     else if Sender=TestBuildDirButton then begin
       OpenDialog.Title := lisChooseTestBuildDir;
+      OpenDialog.Options := OpenDialog.Options
+        - [ofPathMustExist]     // allow to choose a non-existent path
+        + [ofNoReadOnlyReturn]; // the folder must be writable
       lDirText := TestBuildDirComboBox.Text;
-      lDirName := ParsedDirName(eopTestBuildDirectory);
+      lDirName := EnvironmentOptions.GetParsedValue(eopTestBuildDirectory, lDirText);
     end
     else
       exit;
@@ -221,21 +221,24 @@ begin
 
     if OpenDialog.Execute then begin
       lDirName := CleanAndExpandDirectory(OpenDialog.Filename);
-      if UpperCase(lDirName)<>UpperCase(lExpandedName) then begin
+      if CompareText(lDirName, lExpandedName) <> 0 then begin
         lDirText := lDirName;
         if Sender = LazarusDirButton then begin
           // check lazarus directory
           SetComboBoxText(LazarusDirComboBox,lDirText,cstFilename);
+          EnvironmentOptions.LazarusDirectory:=LazarusDirComboBox.Text;
           CheckLazarusDir([mbOk]);
         end
         else if Sender = FPCSourceDirButton then begin
           // check fpc source directory
           SetComboBoxText(FPCSourceDirComboBox,lDirText,cstFilename);
+          EnvironmentOptions.FPCSourceDirectory:=FPCSourceDirComboBox.Text;
           CheckFPCSourceDir([mbOK]);
         end
         else if Sender = TestBuildDirButton then begin
           // check test directory
           SetComboBoxText(TestBuildDirComboBox,lDirText,cstFilename);
+          EnvironmentOptions.TestBuildDirectory:=TestBuildDirComboBox.Text;
           CheckTestDir;
         end;
       end;
@@ -256,11 +259,14 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseCompilerMessages;
-    OpenDialog.Filter:=dlgFilterFPCMessageFile+' (*.msg)|*.msg|'+dlgFilterAll+'|'+
-      GetAllFilesMask;
+    OpenDialog.Filter:=
+      Format('%s (%s)|%s|', [dlgFilterFPCMessageFile, '*.msg', '*.msg']) +
+      Format('%s (%s)|%s', [dlgFilterAll, GetAllFilesMask, GetAllFilesMask]);
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(CompilerTranslationFileComboBox,AFilename,cstFilename);
+      EnvironmentOptions.CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
+      CheckCompilerTranslationFile;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -278,11 +284,14 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     OpenDialog.Title:=lisChooseFppkgConfigurationFile;
-    OpenDialog.Filter:=dlgFilterFppkgConfigurationFile+' (*.cfg)|*.cfg|'+
-      dlgFilterAll+'|'+GetAllFilesMask;
+    OpenDialog.Filter:=
+      Format('%s (%s)|%s|', [dlgFilterFppkgConfigurationFile, '*.cfg', '*.cfg']) +
+      Format('%s (%s)|%s', [dlgFilterAll, GetAllFilesMask, GetAllFilesMask]);
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(FppkgConfigurationFileComboBox,AFilename,cstFilename);
+      EnvironmentOptions.FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
+      CheckFppkgConfigurationFile;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -381,7 +390,7 @@ begin
   // check test directory
   if not CheckTestDir then exit;
   // check fpc messages file
-  if not CheckFPCMsgFile then exit;
+  if not CheckCompilerTranslationFile then exit;
   // check fppkg configuration file
   if not CheckFppkgConfigurationFile then exit;
   Result := True;
@@ -452,7 +461,7 @@ begin
     SetComboBoxText(CompilerTranslationFileComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
 
     // fppkg configuration  file
-    fOldFppkcConfigurationFilename:=FppkgConfigFile;
+    fOldFppkgConfigurationFilename:=FppkgConfigFile;
     fOldRealCompilerMessagesFilename:=GetParsedFppkgConfig;
     if FppkgConfigFileHistory.Count>0 then
       FppkgConfigurationFileComboBox.Items.Assign(FppkgConfigFileHistory);
@@ -502,7 +511,7 @@ begin
     MakeFilename:=FOldMakeFilename;
     TestBuildDirectory:=FOldTestDir;
     CompilerMessagesFilename:=fOldCompilerMessagesFilename;
-    FppkgConfigFile:=fOldFppkcConfigurationFilename;
+    FppkgConfigFile:=fOldFppkgConfigurationFilename;
 
     // recent files and directories
     MaxRecentOpenFiles := FOldMaxRecentOpenFiles;
@@ -608,7 +617,7 @@ begin
     lisCCOWarningCaption, Format(lisThePathOfMakeIsNotCorrect, [NewMakeFilename]));
 end;
 
-function TFilesOptionsFrame.CheckFPCMsgFile: boolean;
+function TFilesOptionsFrame.CheckCompilerTranslationFile: boolean;
 var
   NewMsgFile: String;
 begin
@@ -617,9 +626,9 @@ begin
   if EnvironmentOptions.CompilerMessagesFilename<>'' then begin
     NewMsgFile:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
     if not FileExistsUTF8(NewMsgFile) then begin
-      if IDEMessageDialog(lisCCOErrorCaption, Format(
-        lisCompilerMessagesFileNotFound, [#13, NewMsgFile]), mtError, [mbCancel,
-        mbIgnore])<>mrIgnore
+      if IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisCompilerMessagesFileNotFound, [LineEnding, NewMsgFile]),
+        mtError, [mbCancel,mbIgnore]) <> mrIgnore
       then
         exit(false);
     end;
@@ -629,20 +638,32 @@ end;
 
 function TFilesOptionsFrame.CheckFppkgConfigurationFile: boolean;
 var
-  NewFppkgCfgFile: String;
+  NewFppkgCfgFile, Note: String;
 begin
-  if EnvironmentOptions.FppkgConfigFile=fOldFppkcConfigurationFilename then exit(true);
+  if EnvironmentOptions.FppkgConfigFile=fOldFppkgConfigurationFilename then exit(true);
   EnvironmentOptions.FppkgConfigFile:=FppkgConfigurationFileComboBox.Text;
+
   if EnvironmentOptions.FppkgConfigFile<>'' then begin
     NewFppkgCfgFile:=EnvironmentOptions.GetParsedFppkgConfig;
-    if not FileExistsUTF8(NewFppkgCfgFile) then begin
-      if IDEMessageDialog(lisCCOErrorCaption, Format(
-        lisFppkgConfigurationFileNotFound, [#13, NewFppkgCfgFile]), mtError, [mbCancel,
-        mbIgnore])<>mrIgnore
+
+    if not FileExistsUTF8(NewFppkgCfgFile) then
+    begin
+      if IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisFppkgConfigurationFileNotFound, [LineEnding, NewFppkgCfgFile]),
+        mtError, [mbCancel,mbIgnore]) <> mrIgnore
       then
         exit(false);
+    end else begin
+      if (CheckFppkgConfigFile   (NewFppkgCfgFile, Note) <> sddqCompatible) or
+         (CheckFppkgConfiguration(NewFppkgCfgFile, Note) <> sddqCompatible) then
+        if IDEMessageDialog(lisCCOWarningCaption,
+          Format(lisTheFppkgConfigurationFileDoesNotLookCorrect, [NewFppkgCfgFile, LineEnding, Note]),
+          mtError, [mbCancel,mbIgnore]) <> mrIgnore
+        then
+          exit(false);
     end;
   end;
+
   Result:=true;
 end;
 
