@@ -16,6 +16,20 @@ Resourcestring
     +'using Electron to run as desktop application.';
   pjsdOverwrite = 'Overwrite?';
   pjsdError = 'Error';
+  pjsdMissing2 = 'Missing %s';
+  pjsdDownloadError = 'Download error:%s';
+  pjsdNote2 = 'Note';
+  pjsdFound = 'Found %s';
+  pjsdMissing = 'Missing';
+  pjsdDownloading = 'Downloading "%s" ...';
+  pjsdNote = 'Note: %s';
+  pjsdDownloading2 = 'Downloading';
+  pjsdDownloadedBytes = 'Downloaded %s bytes';
+  pjsdDownloadPas2jsRelease = 'Download Pas2js Release?';
+  pjsdUnableToCreateDirectory = 'Unable to create directory "%s".';
+  pjsdConfirmation = 'Confirmation';
+  pjsdChangeSimpleWebServerFromTo = 'Change Simple Web Server from%s"%s"%sto%s'
+    +'"%s"%s?';
   pjsdWarning = 'Warning';
   pjsdThePas2jsExecutableFilenameDoesNotLookLikePas2js = 'The pas2js '
     +'executable filename "%s" does not look like pas2js';
@@ -37,6 +51,10 @@ Resourcestring
 
   // IDE options frame
   pjsdSelectPas2jsExecutable = 'Select pas2js executable';
+  pjsdSelectPas2jsSourceDirectory = 'Select pas2js source directory';
+  pjsdCancel = 'Cancel';
+  pjsdPas2jsInstaller = 'Pas2js Installer';
+  pjsdPas2jsExecutable2 = 'Pas2js executable';
   pjsdSelectXExecutable = 'Select %s executable';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
   pjsdUnableToFindPas2jsAt = 'Unable to find pas2js at "%s"';
@@ -49,6 +67,20 @@ Resourcestring
     +'macros like $MakeExe(). Without a full path, %s is searched in PATH.';
   pjsdPathOfXMacroPas2js = 'Path of %s, macro $(pas2js)';
   pjsdBrowse = 'Browse';
+  pjsdDetails = 'Details';
+  pjsdDownloadRelease = 'Download Release';
+  pjsdApply = 'Apply';
+  pjsdClose = 'Close';
+  pjsdSelectFreePascalCompilerExecutable = 'Select Free Pascal Compiler '
+    +'executable';
+  pjsdSelectFreePascalSourceDirectory = 'Select Free Pascal source directory';
+  pjsdThereIsNoReleaseForTarget = 'There is no release for target "%s-%s".';
+  pjsdError2 = 'Error: %s';
+  pjsdFPCSourceDirectory = 'FPC source directory:';
+  pjsdFreePascalCompilerUsedForCompilingToolsAndPas2jsIt = 'Free Pascal '
+    +'Compiler used for compiling tools and pas2js itself';
+  pjsdFPCExecutable = 'FPC executable:';
+  pjsdPas2jsSourceDirectory = 'Pas2js source directory';
   pjsdWebServerAndBrowserOptions = 'Web server and browser options';
   pjsdPortNumberToStartAllocatingFrom = 'Port number to start allocating '
     +'from, macro $(Pas2JSWebServerPort)';

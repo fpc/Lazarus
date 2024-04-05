@@ -33,7 +33,7 @@ implementation
 
 procedure TPas2jsProgressDialog.FormCreate(Sender: TObject);
 begin
-  CancelButton.Caption:='Cancel';
+  CancelButton.Caption:=pjsdCancel;
   Pas2jsProgressDialog:=Self;
 end;
 

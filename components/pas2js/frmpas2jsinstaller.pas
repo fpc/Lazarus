@@ -7,9 +7,8 @@
     - set compileserver.exe in simplewebservergui
 
   ToDo:
-    - download pas2js via https
+    - download pas2js via https checking cert
     - download zip: delete old files
-    - resourcestrings
 }
 unit FrmPas2jsInstaller;
 
@@ -244,26 +243,26 @@ end;
 
 procedure TPas2jsInstallerDialog.FormCreate(Sender: TObject);
 begin
-  Caption:='Pas2js Installer';
+  Caption:=pjsdPas2jsInstaller;
 
-  Pas2jsExeGroupBox.Caption:='Pas2js executable';
-  Pas2jsExeBrowseButton.Hint:='Browse';
+  Pas2jsExeGroupBox.Caption:=pjsdPas2jsExecutable2;
+  Pas2jsExeBrowseButton.Hint:=pjsdBrowse;
 
-  Pas2jsSrcDirComboBox.Caption:='Pas2js source directory';
-  Pas2jsSrcDirBrowseBtn.Hint:='Browse';
+  Pas2jsSrcDirComboBox.Caption:=pjsdPas2jsSourceDirectory;
+  Pas2jsSrcDirBrowseBtn.Hint:=pjsdBrowse;
 
-  FPCGroupBox.Caption:='Free Pascal Compiler used for compiling tools and pas2js itself';
-  FPCExeLabel.Caption:='FPC executable:';
-  FPCExeBrowseButton.Hint:='Browse';
-  FPCSrcDirLabel.Caption:='FPC source directory:';
-  FPCSrcDirBrowseButton.Hint:='Browse';
+  FPCGroupBox.Caption:=pjsdFreePascalCompilerUsedForCompilingToolsAndPas2jsIt;
+  FPCExeLabel.Caption:=pjsdFPCExecutable;
+  FPCExeBrowseButton.Hint:=pjsdBrowse;
+  FPCSrcDirLabel.Caption:=pjsdFPCSourceDirectory;
+  FPCSrcDirBrowseButton.Hint:=pjsdBrowse;
 
-  DetailsGroupBox.Caption:='Details';
+  DetailsGroupBox.Caption:=pjsdDetails;
   DetailsMemo.Clear;
 
-  DownloadButton.Caption:='Download Release';
-  ApplyButton.Caption:='Apply';
-  CloseButton.Caption:='Close';
+  DownloadButton.Caption:=pjsdDownloadRelease;
+  ApplyButton.Caption:=pjsdApply;
+  CloseButton.Caption:=pjsdClose;
 end;
 
 procedure TPas2jsInstallerDialog.FPCExeBrowseButtonClick(Sender: TObject);
@@ -275,7 +274,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(aDialog);
     aDialog.Options:=aDialog.Options+[ofPathMustExist];
-    aDialog.Title:='Select Free Pascal Compiler executable';
+    aDialog.Title:=pjsdSelectFreePascalCompilerExecutable;
     if not aDialog.Execute then exit;
     AFilename:=CleanAndExpandFilename(aDialog.Filename);
     SetComboBoxText(FPCExeComboBox,AFilename,cstFilename,30);
@@ -295,7 +294,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(aDialog);
     aDialog.Options:=aDialog.Options+[ofPathMustExist];
-    aDialog.Title:='Select Free Pascal source directory';
+    aDialog.Title:=pjsdSelectFreePascalSourceDirectory;
     if not aDialog.Execute then exit;
     AFilename:=CleanAndExpandDirectory(aDialog.Filename);
     SetComboBoxText(FPCSrcDirComboBox,AFilename,cstFilename,30);
@@ -332,14 +331,16 @@ begin
   // check if there is an URL
   if ReleaseURL='' then
   begin
-    s:='There is no release for target "'+GetCompiledTargetCPU+'-'+GetCompiledTargetOS+'".';
-    DetailsMemo.Lines.Add('Error: '+s);
-    IDEMessageDialog('Error',s,mtError,[mbOk,mbCancel]);
+    s:=Format(pjsdThereIsNoReleaseForTarget, [GetCompiledTargetCPU,
+      GetCompiledTargetOS]);
+    DetailsMemo.Lines.Add(Format(pjsdError2, [s]));
+    IDEMessageDialog(pjsdError, s, mtError, [mbOk, mbCancel]);
     exit;
   end;
 
   // confirm download
-  if IDEMessageDialog('Confirmation','Download Pas2js Release?',mtConfirmation,[mbOk,mbCancel])<>mrOk then
+  if IDEMessageDialog(pjsdConfirmation, pjsdDownloadPas2jsRelease,
+    mtConfirmation, [mbOk, mbCancel])<>mrOk then
     exit;
 
   // select target directory
@@ -355,23 +356,24 @@ begin
     begin
       if not ForceDirectoriesUTF8(aDir) then
       begin
-        s:='Unable to create directory "'+aDir+'".';
-        DetailsMemo.Lines.Add('Error: '+s);
-        IDEMessageDialog('Error',s,mtError,[mbOk]);
+        s:=Format(pjsdUnableToCreateDirectory, [aDir]);
+        DetailsMemo.Lines.Add(Format(pjsdError2, [s]));
+        IDEMessageDialog(pjsdError, s, mtError, [mbOk]);
         exit;
       end;
     end;
 
     // download
-    s:='Downloading "'+ReleaseURL+'" ...';
-    DetailsMemo.Lines.Add('Note: '+s);
+    s:=Format(pjsdDownloading, [ReleaseURL]);
+    DetailsMemo.Lines.Add(Format(pjsdNote, [s]));
     DebugLn(['Note: TPas2jsInstallerDialog.DownloadReleaseButtonClick ',s]);
     FZipStream:=TMemoryStream.Create;
 
-    if not ShowProgressDialog('Downloading',ReleaseURL,@OnStartDownloadRelease) then exit;
+    if not ShowProgressDialog(pjsdDownloading2, ReleaseURL, @OnStartDownloadRelease) then
+      exit;
 
-    s:='Downloaded '+IntToStr(FZipStream.Size)+' bytes';
-    DetailsMemo.Lines.Add('Note: '+s);
+    s:=Format(pjsdDownloadedBytes, [IntToStr(FZipStream.Size)]);
+    DetailsMemo.Lines.Add(Format(pjsdNote, [s]));
     debugln(['Note: TPas2jsInstallerDialog.DownloadReleaseButtonClick ',s]);
 
     // unzip
@@ -383,24 +385,24 @@ begin
     // set Pas2js compile exe
     if FFoundPas2jsExe='' then
     begin
-      IDEMessageDialog('Error','Missing pas2js'+GetExeExt,mtError,[mbOk]);
+      IDEMessageDialog(pjsdError, pjsdMissing+' pas2js'+GetExeExt, mtError, [mbOk]);
       exit;
     end;
     SetComboBoxText(Pas2jsExeComboBox,FFoundPas2jsExe,cstFilename,30);
 
     if FFoundPas2jsCfg='' then
     begin
-      IDEMessageDialog('Error','Missing pas2js.cfg',mtError,[mbOk]);
+      IDEMessageDialog(pjsdError, pjsdMissing+' pas2js.cfg', mtError, [mbOk]);
       exit;
     end;
     if FFoundSystemPas='' then
     begin
-      IDEMessageDialog('Error','Missing system.pas',mtError,[mbOk]);
+      IDEMessageDialog(pjsdError, pjsdMissing+' system.pas', mtError, [mbOk]);
       exit;
     end;
     if FFoundCompileserver='' then
     begin
-      IDEMessageDialog('Error','Missing compileserver'+GetExeExt,mtError,[mbOk]);
+      IDEMessageDialog(pjsdError, pjsdMissing+' compileserver'+GetExeExt,mtError, [mbOk]);
       exit;
     end;
 
@@ -410,11 +412,10 @@ begin
     WebSrvExe:=SimpleWebServerController.GetDefaultServerExe;
     if (FFoundCompileserver<>'') and (CompareFilenames(WebSrvExe,FFoundCompileserver)<>0) then
     begin
-      if IDEMessageDialog('Confirmation','Change Simple Web Server from'+sLineBreak
-        +WebSrvExe+sLineBreak
-        +'to'+sLineBreak
-        +FFoundCompileserver+sLineBreak
-        +'?',mtConfirmation,[mbYes,mbNo])=mrYes then
+      if IDEMessageDialog(pjsdConfirmation, Format(
+        pjsdChangeSimpleWebServerFromTo, [sLineBreak, WebSrvExe, sLineBreak,
+        sLineBreak, FFoundCompileserver, sLineBreak]), mtConfirmation, [mbYes,
+        mbNo])=mrYes then
       begin
         SimpleWebServerController.Options.ServerExe:=FFoundCompileserver;
         SimpleWebServerController.Options.SaveSafe;
@@ -463,7 +464,7 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(aDialog);
     aDialog.Options:=aDialog.Options+[ofPathMustExist];
-    aDialog.Title:='Select pas2js source directory';
+    aDialog.Title:=pjsdSelectPas2jsSourceDirectory;
     if not aDialog.Execute then exit;
     AFilename:=CleanAndExpandDirectory(aDialog.Filename);
     SetComboBoxText(Pas2jsSrcDirComboBox,AFilename,cstFilename,30);
@@ -479,10 +480,10 @@ begin
   if NeedsApply then
   begin
     ApplyButton.Enabled:=true;
-    CloseButton.Caption:='Cancel';
+    CloseButton.Caption:=pjsdCancel;
   end else begin
     ApplyButton.Enabled:=false;
-    CloseButton.Caption:='Close';
+    CloseButton.Caption:=pjsdClose;
   end;
 end;
 
@@ -526,8 +527,9 @@ begin
   if FDownloadReleaseThread.ErrorMsg<>'' then
   begin
     Pas2jsProgressDialog.ModalResult:=mrCancel;
-    DetailsMemo.Lines.Add('Error: '+FDownloadReleaseThread.ErrorMsg);
-    IDEMessageDialog('Error','Download error:'+sLineBreak+FDownloadReleaseThread.ErrorMsg,mtError,[mbOk]);
+    DetailsMemo.Lines.Add(Format(pjsdError2, [FDownloadReleaseThread.ErrorMsg]) );
+    IDEMessageDialog(pjsdError, Format(pjsdDownloadError, [sLineBreak+
+      FDownloadReleaseThread.ErrorMsg]), mtError, [mbOk]);
   end else begin
     Pas2jsProgressDialog.ModalResult:=mrOk;
   end;
@@ -613,10 +615,11 @@ procedure TPas2jsInstallerDialog.UnzipRelease(aDirectory: String);
     if Param<>'' then
     begin
       debugln(['Note: Found ',Title,': ',Param]);
-      DetailsMemo.Lines.Add('Note: Found '+Title+': '+Param);
+      DetailsMemo.Lines.Add(pjsdNote2+': '+Format(pjsdFound, [Title])+': '+Param
+        );
     end else begin
       debugln(['Error: Missing ',Title]);
-      DetailsMemo.Lines.Add('Error: Missing '+Title);
+      DetailsMemo.Lines.Add(pjsdError+': '+Format(pjsdMissing2, [Title]));
     end;
   end;
 
