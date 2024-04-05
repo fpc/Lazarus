@@ -23,6 +23,7 @@ interface
 
 uses
   Classes, SysUtils, fphttpclient, Zipper,
+  opensslsockets, // opensslsockets is needed for https download on windows
   LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   IDEUtils, IDEDialogs,
