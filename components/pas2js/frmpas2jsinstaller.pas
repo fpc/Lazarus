@@ -7,8 +7,6 @@
     - set compileserver.exe in simplewebservergui
 
   ToDo:
-    - test download timeout or wrong url
-    - download progress
     - download pas2js via https
     - download zip: delete old files
     - resourcestrings

@@ -349,10 +349,8 @@ begin
   PJSOptions.Load;
   TPJSController.Instance.Hook; // this registers macros and events
 
-  {$IFDEF EnablePas2jsInstall}
   // register menu item
   RegisterIDEMenuCommand(itmOptionsDialogs,'Pas2jsInstall','Install/Update Pas2js',@Pas2JSHandler.OnInstallPas2js);
-  {$ENDIF}
 
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
