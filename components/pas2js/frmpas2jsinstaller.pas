@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  StrPas2JSDesign, PJSDsgnOptions, IDEUtils, LazFileUtils;
+  StrPas2JSDesign, PJSDsgnOptions, PJSController, IDEUtils, LazFileUtils;
 
 type
 
@@ -33,9 +33,13 @@ type
     Pas2jsSrcDirComboBox: TComboBox;
     Pas2jsSrcDirGroupBox: TGroupBox;
     Pas2jsSrcVersionLabel: TLabel;
+    procedure ApplyButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FPCExeBrowseButtonClick(Sender: TObject);
+    procedure FPCSrcDirBrowseButtonClick(Sender: TObject);
     procedure Pas2jsExeBrowseButtonClick(Sender: TObject);
+    procedure Pas2jsSrcDirBrowseBtnClick(Sender: TObject);
   private
     FLastCheckedPas2jsExe: String;
     FLastCheckedPas2jsSrcDir: String;
@@ -96,6 +100,48 @@ begin
   CloseButton.Caption:='Close';
 end;
 
+procedure TPas2jsInstallerDialog.FPCExeBrowseButtonClick(Sender: TObject);
+var
+  aDialog: TOpenDialog;
+  AFilename: String;
+begin
+  aDialog:=TOpenDialog.Create(nil);
+  try
+    //InputHistories.ApplyFileDialogSettings(aDialog);
+    aDialog.Options:=aDialog.Options+[ofPathMustExist];
+    aDialog.Title:='Select Free Pascal Compiler executable';
+    if aDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(aDialog.Filename);
+      SetComboBoxText(FPCExeComboBox,AFilename,cstFilename,30);
+      // ToDo CheckCompiler([mbOk]);
+      UpdateButtons;
+    end;
+  finally
+    aDialog.Free;
+  end;
+end;
+
+procedure TPas2jsInstallerDialog.FPCSrcDirBrowseButtonClick(Sender: TObject);
+var
+  aDialog: TSelectDirectoryDialog;
+  AFilename: String;
+begin
+  aDialog:=TSelectDirectoryDialog.Create(nil);
+  try
+    //InputHistories.ApplyFileDialogSettings(aDialog);
+    aDialog.Options:=aDialog.Options+[ofPathMustExist];
+    aDialog.Title:='Select Free Pascal source directory';
+    if aDialog.Execute then begin
+      AFilename:=CleanAndExpandDirectory(aDialog.Filename);
+      SetComboBoxText(FPCSrcDirComboBox,AFilename,cstFilename,30);
+      // ToDo CheckCompiler([mbOk]);
+      UpdateButtons;
+    end;
+  finally
+    aDialog.Free;
+  end;
+end;
+
 procedure TPas2jsInstallerDialog.CloseButtonClick(Sender: TObject);
 begin
   // restore options
@@ -112,23 +158,68 @@ begin
     ModalResult:=mrCancel;
 end;
 
+procedure TPas2jsInstallerDialog.ApplyButtonClick(Sender: TObject);
+var
+  CurPas2jsExe, CurPas2jsSrcDir, CurFPCExe, CurFPCSrcDir: TCaption;
+begin
+  CurPas2jsExe:=Pas2jsExeComboBox.Text;
+  CurPas2jsSrcDir:=Pas2jsSrcDirComboBox.Text;
+  CurFPCExe:=FPCExeComboBox.Text;
+  CurFPCSrcDir:=FPCSrcDirComboBox.Text;
+
+  // todo: sanity check
+
+  PJSOptions.CompilerFilename:=CurPas2jsExe;
+  PJSOptions.Pas2jsSrcDir:=CurPas2jsSrcDir;
+  PJSOptions.FPCExe:=CurFPCExe;
+  PJSOptions.FPCSrcDir:=CurFPCSrcDir;
+
+  TPJSController.Instance.StoreMacros;
+  If PJSOptions.Modified then
+    PJSOptions.Save;
+
+  UpdateButtons;
+end;
+
 procedure TPas2jsInstallerDialog.Pas2jsExeBrowseButtonClick(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  aDialog: TOpenDialog;
   AFilename: String;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  aDialog:=TOpenDialog.Create(nil);
   try
-    //InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:=pjsdSelectPas2jsExecutable;
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+    //InputHistories.ApplyFileDialogSettings(aDialog);
+    aDialog.Options:=aDialog.Options+[ofPathMustExist];
+    aDialog.Title:=pjsdSelectPas2jsExecutable;
+    if aDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(aDialog.Filename);
       SetComboBoxText(Pas2jsExeComboBox,AFilename,cstFilename,30);
       // ToDo CheckCompiler([mbOk]);
+      UpdateButtons;
     end;
   finally
-    OpenDialog.Free;
+    aDialog.Free;
+  end;
+end;
+
+procedure TPas2jsInstallerDialog.Pas2jsSrcDirBrowseBtnClick(Sender: TObject);
+var
+  aDialog: TSelectDirectoryDialog;
+  AFilename: String;
+begin
+  aDialog:=TSelectDirectoryDialog.Create(nil);
+  try
+    //InputHistories.ApplyFileDialogSettings(aDialog);
+    aDialog.Options:=aDialog.Options+[ofPathMustExist];
+    aDialog.Title:='Select pas2js source directory';
+    if aDialog.Execute then begin
+      AFilename:=CleanAndExpandDirectory(aDialog.Filename);
+      SetComboBoxText(Pas2jsSrcDirComboBox,AFilename,cstFilename,30);
+      // ToDo CheckCompiler([mbOk]);
+      UpdateButtons;
+    end;
+  finally
+    aDialog.Free;
   end;
 end;
 
@@ -191,6 +282,8 @@ begin
   SetComboBoxText(FPCSrcDirComboBox,PJSOptions.FPCSrcDir,cstFilename,30);
 
   UpdateButtons;
+
+
 end;
 
 end.

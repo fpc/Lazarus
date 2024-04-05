@@ -1,7 +1,7 @@
 object Pas2jsInstallerDialog: TPas2jsInstallerDialog
-  Left = 317
+  Left = 126
   Height = 547
-  Top = 243
+  Top = 129
   Width = 574
   Caption = 'Pas2jsInstallerDialog'
   ClientHeight = 547
@@ -52,6 +52,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       Caption = 'Apply'
       Constraints.MinWidth = 75
       TabOrder = 1
+      OnClick = ApplyButtonClick
     end
   end
   object Pas2jsSrcDirGroupBox: TGroupBox
@@ -114,6 +115,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnClick = Pas2jsSrcDirBrowseBtnClick
     end
   end
   object FPCGroupBox: TGroupBox
@@ -167,6 +169,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnClick = FPCExeBrowseButtonClick
     end
     object FPCSrcDirVersionLabel: TLabel
       AnchorSideLeft.Control = FPCGroupBox
@@ -213,6 +216,7 @@ object Pas2jsInstallerDialog: TPas2jsInstallerDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+      OnClick = FPCSrcDirBrowseButtonClick
     end
     object FPCExeLabel: TLabel
       AnchorSideTop.Control = FPCGroupBox
