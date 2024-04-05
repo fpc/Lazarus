@@ -35,12 +35,12 @@ uses
   LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls,
   Dialogs, Graphics,
   // LazControls
-  TreeFilterEdit,
+  TreeFilterEdit, DividerBevel,
   // LazUtils
   LazLoggerBase,
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
-  IdeIntfStrConsts, ProjectIntf,
+  IdeIntfStrConsts, IDEImagesIntf, ProjectIntf,
   // IdeConfig
   EnvironmentOpts,
   // IDE
@@ -62,13 +62,16 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
-    BuildModeManageButton: TButton;
+    BuildModeManageButton: TSpeedButton;
     BuildModeSelectPanel: TPanel;
     ButtonPanel: TButtonPanel;
     CategoryPanel: TPanel;
     CategoryTree: TTreeView;
-    CatTVSplitter: TSplitter;
+    Splitter: TSplitter;
     EditorsPanel: TScrollBox;
+    LeftPanel: TPanel;
+    RightPanel: TPanel;
+    BuildModeDividerBevel: TDividerBevel;
     FilterEdit: TTreeFilterEdit;
     BuildModesLabel: TLabel;
     SettingsPanel: TPanel;
@@ -89,6 +92,8 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
+    FTitle: string;
+    FIsProjectOptionsDialog: boolean;
     FEditorsCreated: Boolean;
     FEditorToOpen: TAbstractIDEOptionsEditorClass;
     FNewLastSelected: PIDEOptionsEditorRec;
@@ -112,7 +117,8 @@ type
     procedure SetSettings(const AValue: TIDEOptionsEditorSettings);
     function AllBuildModes: boolean;
     procedure UpdateBuildModeButtons;
-    procedure SetBuildModeVisibility(AVisibility: Boolean);
+    procedure UpdateDialogCaption;
+    procedure SetTitle(ATitle: string);
   public
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
@@ -130,6 +136,7 @@ type
     procedure ReadAll;
     procedure WriteAll(Restore: boolean);
   public
+    property Title: string read FTitle write SetTitle;
     property OptionsFilter: TIDEOptionsEditorFilter read FOptionsFilter write FOptionsFilter;
     property Settings: TIDEOptionsEditorSettings read FSettings write SetSettings;
     property OnLoadIDEOptionsHook: TOnLoadIDEOptions read FOnLoadOptionsHook write FOnLoadOptionsHook;
@@ -164,7 +171,7 @@ begin
   FPrevEditor := nil;
   FEditorsCreated := False;
   FEditorToOpen := nil;
-  SetBuildModeVisibility(False);
+  BuildModeSelectPanel.Visible := False;
 
   btnApply := AddButton;
   btnApply.LoadGlyphFromResource(idButtonRetry);
@@ -176,6 +183,7 @@ begin
 
   // caption
   Caption := dlgIDEOptions;
+  FTitle := Caption;
   BuildModesLabel.Caption := lisBuildModes;
   ButtonPanel.OKButton.Caption := lisBtnOk;
   ButtonPanel.CancelButton.Caption := lisCancel;
@@ -185,6 +193,12 @@ begin
   // hint
   ButtonPanel.ShowHint := true;
   btnApply.Hint := '[Shift+Enter]';
+  BuildModeManageButton.Hint := lisEditBuildModes + ' [Ctrl+B]';
+  BuildModeComboBox.Hint := lisSelectBuildMode + ' [Ctrl+Shift+B]';
+  FilterEdit.TextHint := lisFindOption + ' [Ctrl+F]';
+
+  // images
+  IDEImages.AssignImage(BuildModeManageButton, 'menu_compiler_options');
 
   BuildModeComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -238,12 +252,17 @@ begin
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
     GroupClass := FindGroupClass(Node);
   end;
+  FIsProjectOptionsDialog := Assigned(GroupClass)
+    and (GroupClass.InheritsFrom(TAbstractIDEProjectOptions) or
+         GroupClass.InheritsFrom(TProjectCompilerOptions));
+  UpdateDialogCaption;
   // Show the Build Mode panel for project compiler options
-  SetBuildModeVisibility((GroupClass <> nil)
-                     and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
+  BuildModeSelectPanel.Visible := Assigned(GroupClass)
+    and GroupClass.InheritsFrom(TProjectCompilerOptions)
+    and not AEditor.InheritsFrom(TCompOptModeMatrixFrame); // exclude "Additions and Overrides" frame
   // Show the Apply button only for global options (not project or package options).
-  btnApply.Visible := (GroupClass <> nil)
-                  and (GroupClass.InheritsFrom(TAbstractIDEEnvironmentOptions));
+  btnApply.Visible := Assigned(GroupClass)
+    and GroupClass.InheritsFrom(TAbstractIDEEnvironmentOptions);
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     FNewLastSelected := AEditor.Rec;
@@ -252,7 +271,6 @@ begin
       FPrevEditor.Visible := False;
     if Assigned(AEditor) then begin
       AEditor.Align := alClient;
-      AEditor.BorderSpacing.Around := 6;
       SetDropDownCount(AEditor);
       AEditor.Visible := True;
     end;
@@ -262,18 +280,25 @@ end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
+  if not FIsProjectOptionsDialog then exit;
+  
   if AllBuildModes then
     ShowMessage(lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme)
   else begin
-    Assert(BuildModeSelectPanel.Visible, 'BuildModeComboBoxSelect: BuildModeSelectPanel not Visible');
     SwitchBuildMode(BuildModeComboBox.Text);
+    UpdateDialogCaption;    
   end;
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
 begin
+  if not FIsProjectOptionsDialog then exit;
+  
   if ShowBuildModesDlg(Project1.SessionStorage in pssHasSeparateSession) = mrOK then
+  begin
     UpdateBuildModeCombo(BuildModeComboBox);
+    UpdateDialogCaption;
+  end;
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -330,6 +355,7 @@ end;
 
 procedure TIDEOptionsDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  // dialog
   if (Key = VK_ESCAPE) and (Shift = []) then
   begin
     CancelButtonClick(Sender);
@@ -346,10 +372,29 @@ begin
     Key := 0;
   end
 
+  // filter
   else if (Key = VK_F) and (Shift = [ssCtrl]) then
   begin
     if FilterEdit.CanSetFocus then
       FilterEdit.SetFocus;
+    Key := 0;
+  end
+
+  // build modes
+  else if (Key = VK_B) and (Shift = [ssCtrl]) then
+  begin
+    BuildModeManageButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_B) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    with BuildModeComboBox do
+      if FIsProjectOptionsDialog and (Items.Count > 0) then
+      begin
+        // next mode (in a circle)
+        ItemIndex := (ItemIndex + 1) mod Items.Count;
+        BuildModeComboBoxSelect(Sender);
+      end;
     Key := 0;
   end;
 end;
@@ -399,6 +444,12 @@ begin
   if WindowState <> wsMaximized then
     IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
+end;
+
+procedure TIDEOptionsDialog.SetTitle(ATitle: string);
+begin
+  FTitle := ATitle;
+  UpdateDialogCaption;
 end;
 
 function TIDEOptionsDialog.FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
@@ -736,19 +787,13 @@ begin
     ModeMatrix.UpdateModes;
 end;
 
-procedure TIDEOptionsDialog.SetBuildModeVisibility(AVisibility: Boolean);
+procedure TIDEOptionsDialog.UpdateDialogCaption;
 begin
-  BuildModeSelectPanel.Visible := AVisibility;
-  if AVisibility then
-  begin
-    EditorsPanel.AnchorSide[akTop].Control := BuildModeSelectPanel;
-    EditorsPanel.AnchorSide[akTop].Side := asrBottom;
-  end
+  // Show current build mode in Caption for Project options dialog
+  if FIsProjectOptionsDialog then
+    Caption := Format('%s [%s]', [FTitle, BuildModeComboBox.Text])
   else
-  begin
-    EditorsPanel.AnchorSide[akTop].Control := Self;
-    EditorsPanel.AnchorSide[akTop].Side := asrTop;
-  end;
+    Caption := FTitle;
 end;
 
 procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
@@ -806,8 +851,9 @@ function TIDEOptionsDialog.AddControl(AControlClass: TControlClass): TControl;
 begin
   Result := AControlClass.Create(Self);
   Result.Parent := SettingsPanel;
+  Result.BorderSpacing.Top := 6;
+  Result.BorderSpacing.Bottom := 6;
   Result.Align := alBottom;
-  Result.BorderSpacing.Around := 6;
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);

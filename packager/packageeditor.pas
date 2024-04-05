@@ -1249,7 +1249,7 @@ begin
   Package1.IDEOptions.OnBeforeRead:=PackageEditors.OnBeforeReadPackage;
   Package1.IDEOptions.OnAfterWrite:=PackageEditors.OnAfterWritePackage;
   LazarusIDE.DoOpenIDEOptions(nil,
-    Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]),
+    Format(lisPckEditOptionsForPackage, [LazPackage.IDAsString]),
     [TPackageIDEOptions, TPkgCompilerOptions], Settings[LazPackage.ReadOnly]);
   UpdateTitle;
   UpdateButtons;

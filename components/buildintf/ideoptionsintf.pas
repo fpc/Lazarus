@@ -245,11 +245,11 @@ const
     CompilerOptionsDebugging             = 0500;
     CompilerOptionsVerbosity             = 0600;
     CompilerOptionsMessages              = 0700;
-    CompilerOptionsOther                 = 0800;
-    CompilerOptionsConditional           = 0900; // IDE Macros
-    CompilerOptionsAdditionsAndOverrides = 1000;
-    CompilerOptionsInherited             = 1100;
-    CompilerOptionsCompilation           = 1200;
+    CompilerOptionsConditional           = 0800; // IDE Macros
+    CompilerOptionsInherited             = 0900;
+    CompilerOptionsCompilation           = 1000;
+    CompilerOptionsOther                 = 1100;
+    CompilerOptionsAdditionsAndOverrides = 1200;
 
   GroupPkgCompiler  = 200200;
 

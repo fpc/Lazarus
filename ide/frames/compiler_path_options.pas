@@ -688,7 +688,6 @@ begin
   chkUseAsDefault.Caption := dlgCOSetAsDefault;
   chkUseAsDefault.ShowHint := True;
   chkUseAsDefault.Hint := lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW;
-  chkUseAsDefault.TabStop := False;
 end;
 
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

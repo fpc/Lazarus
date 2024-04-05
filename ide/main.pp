@@ -5050,7 +5050,7 @@ begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
   try
     if ACaption <> '' then
-      IDEOptionsDialog.Caption := ACaption;
+      IDEOptionsDialog.Title := ACaption;
     if Length(AOptionsFilter) = 0 then
     begin
       SetLength(OptionsFilter{%H-}, 1);
