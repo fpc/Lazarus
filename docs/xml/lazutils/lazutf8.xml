@@ -1828,13 +1828,13 @@ string.
 </descr>
 <seealso/>
 </element>
-<element namer="UTF8LeftStr.Result">
+<element name="UTF8LeftStr.Result">
 <short>Values from the specified string.</short>
 </element>
-<element namer="UTF8LeftStr.AText">
+<element name="UTF8LeftStr.AText">
 <short>Original string to examine in the function.</short>
 </element>
-<element namer="UTF8LeftStr.ACount">
+<element name="UTF8LeftStr.ACount">
 <short>Number of characters (codepoints) to get from the string.</short>
 </element>
 
