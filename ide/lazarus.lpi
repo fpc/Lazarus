@@ -1293,11 +1293,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="editdefinetree.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EditDefineTree"/>
-      </Unit>
-      <Unit>
         <Filename Value="runparamsopts.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="RunParamsOptsDlg"/>

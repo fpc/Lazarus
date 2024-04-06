@@ -40,6 +40,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="DiffPatch"/>
       </Item>
       <Item>
+        <Filename Value="editdefinetree.pas"/>
+        <UnitName Value="EditDefineTree"/>
+      </Item>
+      <Item>
         <Filename Value="editortoolbaroptions.pas"/>
         <UnitName Value="EditorToolBarOptions"/>
       </Item>

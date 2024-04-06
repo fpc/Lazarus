@@ -8,7 +8,7 @@ unit IdeConfig;
 interface
 
 uses
-  CompilerOptions, CompOptsModes, CoolBarOptions, DiffPatch, 
+  CompilerOptions, CompOptsModes, CoolBarOptions, DiffPatch, EditDefineTree, 
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, 
   IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 

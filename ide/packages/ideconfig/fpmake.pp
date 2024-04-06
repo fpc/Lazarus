@@ -54,6 +54,7 @@ begin
     t.Dependencies.AddUnit('compoptsmodes');
     t.Dependencies.AddUnit('coolbaroptions');
     t.Dependencies.AddUnit('diffpatch');
+    t.Dependencies.AddUnit('editdefinetree');
     t.Dependencies.AddUnit('editortoolbaroptions');
     t.Dependencies.AddUnit('environmentopts');
     t.Dependencies.AddUnit('etfpcmsgfilepool');
@@ -76,6 +77,7 @@ begin
     T:=P.Targets.AddUnit('compoptsmodes.pas');
     T:=P.Targets.AddUnit('coolbaroptions.pas');
     T:=P.Targets.AddUnit('diffpatch.pas');
+    P.Targets.AddImplicitUnit('editdefinetree.pas');
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');
     T:=P.Targets.AddUnit('environmentopts.pp');
     T:=P.Targets.AddUnit('etfpcmsgfilepool.pas');

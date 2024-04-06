@@ -1276,6 +1276,7 @@ resourcestring
   lisNumberOfFilesToConvert = 'Number of files to convert: %s';
   lisConvertEncoding = 'Convert Encoding';
   lisConvertProjectOrPackage = 'Convert project or package';
+  lisEdtDefCurrentProject = 'Current Project';
   lisNewEncoding = 'New encoding:';
   lisFileFilter = 'File filter';
   lisFilesInASCIIOrUTF8Encoding = 'Files in ASCII or UTF-8 encoding';
@@ -4243,21 +4244,6 @@ resourcestring
     +' Either local or external changes will be overwritten.';
   lisDiskDiffReloadCheckedFilesFromDisk = 'Reload checked files from disk';
   lisDiskDiffIgnoreAllDiskChanges = 'Ignore all disk changes';
-  
-  // edit define tree
-  lisEdtDefCurrentProject = 'Current Project';
-  lisEdtDefAllPackages = 'All packages';
-  lisEdtDefsAllProjects = 'All projects';
-  lisEdtDefsetFPCModeToDELPHI = 'set FPC mode to DELPHI';
-  lisEdtDefsetFPCModeToTP = 'set FPC mode to TP';
-  lisEdtDefsetFPCModeToGPC = 'set FPC mode to GPC';
-  lisEdtDefsetFPCModeToMacPas = 'set FPC mode to MacPas';
-  lisEdtDefsetFPCModeToFPC = 'set FPC mode to FPC';
-  lisEdtDefsetIOCHECKSOn = 'set IOCHECKS on';
-  lisEdtDefsetRANGECHECKSOn = 'set RANGECHECKS on';
-  lisEdtDefsetOVERFLOWCHECKSOn = 'set OVERFLOWCHECKS on';
-  lisEdtDefuseLineInfoUnit = 'use LineInfo unit';
-  lisEdtDefuseHeapTrcUnit = 'use HeapTrc unit';
   
   // external tools
   lisExtToolExternalTools = 'External Tools';
