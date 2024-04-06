@@ -42,8 +42,10 @@ uses
   FileProcs, CodeToolManager, DefineTemplates, LinkScanner,
   // BuildIntf
   CompOptsIntf,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 
 // global

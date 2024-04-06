@@ -17,10 +17,9 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDEExternToolIntf,
   IDEDialogs, IDEUtils, InputHistory,
   // IdeConfig
-  LazConf, EnvironmentOpts, RecentListProcs,
+  LazConf, EnvironmentOpts, RecentListProcs, CompilerOptions,
   // IDE
-  Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts,
-  DialogProcs, InitialSetupProc;
+  LazarusIDEStrConsts, Project, PackageDefs, DialogProcs, InitialSetupProc;
 
 type
 

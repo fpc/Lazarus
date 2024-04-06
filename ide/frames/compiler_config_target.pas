@@ -35,11 +35,14 @@ uses
   LazFileUtils, LazStringUtils, LazUTF8, LazLoggerBase,
   // CodeTools
   DefineTemplates, CodeToolManager,
+  // BuildIntf
+  IDEOptionsIntf, MacroIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, IDEDialogs, IDEUtils,
+  IDEOptEditorIntf, IDEDialogs, IDEUtils,
+  // IdeConfig
+  RecentListProcs, TransferMacros, CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts, TransferMacros, PackageDefs, Project,
-  RecentListProcs, InputHistory, compiler_parsing_options;
+  LazarusIDEStrConsts, PackageDefs, Project, InputHistory, compiler_parsing_options;
 
 type
 

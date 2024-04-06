@@ -72,9 +72,9 @@ uses
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
-  LazConf,
+  LazConf, CompilerOptions,
   // IDE
-  CompilerOptions, SourceEditor, ProjectDefs, Project, ProjectDebugLink,
+  SourceEditor, ProjectDefs, Project, ProjectDebugLink,
   LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
   DebugEventsForm, EnvGuiOptions, RunParamsOpts;
 

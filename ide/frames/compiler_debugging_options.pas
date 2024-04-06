@@ -9,10 +9,14 @@ uses
   StdCtrls,
   // LazUtils
   LazLoggerBase,
+  // BuildIntf
+  IDEOptionsIntf, CompOptsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf,
+  IDEOptEditorIntf,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

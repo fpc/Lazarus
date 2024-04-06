@@ -10,10 +10,14 @@ uses
   ExtCtrls, StdCtrls,
   // CodeTools
   LinkScanner,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  CompilerOptions, PackageDefs, LazarusIDEStrConsts;
+  PackageDefs, LazarusIDEStrConsts;
 
 type
 

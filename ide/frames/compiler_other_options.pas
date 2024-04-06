@@ -35,8 +35,10 @@ uses
   LazUTF8, LazLoggerBase,
   // Codetools
   CodeToolsCfgScript, KeywordFuncLists,
+  // BuildIntf
+  IDEOptionsIntf, CompOptsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDECommands,
+  IDEOptEditorIntf, IDECommands,
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
   // IdeConfig

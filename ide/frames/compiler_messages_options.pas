@@ -19,9 +19,9 @@ uses
   // IdeIntf
   IDEOptEditorIntf, IDEDialogs,
   // IdeConfig
-  etFPCMsgFilePool,
+  etFPCMsgFilePool, CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

@@ -32,9 +32,12 @@ uses
   Controls, Forms, StdCtrls, Buttons, ExtCtrls, Dialogs, ComCtrls,
   // CodeTools
   KeywordFuncLists, CodeToolsCfgScript,
+  // BuildIntf
+  IDEOptionsIntf, CompOptsIntf, MacroIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, MacroIntf, IDEImagesIntf,
-  IDEDialogs, ParsedCompilerOpts, CompilerOptions,
+  IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  // IdeConfig
+  ParsedCompilerOpts, CompilerOptions,
   // IDE
   LazarusIDEStrConsts, PackageDefs;
 

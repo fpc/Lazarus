@@ -61,8 +61,10 @@ uses
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
   FPCAdds, LazFileUtils, LazFileCache, LazTracer,
+  // BuildIntf
+  ProjectIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
-  ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
+  IDEWindowIntf, LazIDEIntf, IDEMsgIntf,
   // IdeConfig
   EnvironmentOpts, TransferMacros, IDEProcs, SearchPathProcs,
   ParsedCompilerOpts, CompilerOptions,

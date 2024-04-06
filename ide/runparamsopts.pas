@@ -51,15 +51,16 @@ uses
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   Spin, EditBtn,
-  // IdeIntf
-  IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, InputHistory,
-  IDEImagesIntf, IDEWindowIntf, MacroIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, DbgIntfDebuggerBase,
+  // BuildIntf
+  BaseIDEIntf, ProjectIntf, MacroIntf,
+  // IdeIntf
+  IdeIntfStrConsts, IDEHelpIntf, IDEDialogs, IDEImagesIntf, IDEWindowIntf,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE
-  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
+  InputHistory, MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
   {$IFnDef LCLNoGui}, BaseDebugManager {$ENDIF} ;
 
 { The xml format version:

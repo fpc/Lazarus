@@ -14,9 +14,10 @@ uses
   DividerBevel,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, Project, ProjectIcon, CompilerOptions,
-  ApplicationBundle, W32Manifest;
+  LazarusIDEStrConsts, Project, ProjectIcon, ApplicationBundle, W32Manifest;
 
 type
 

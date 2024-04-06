@@ -48,9 +48,9 @@ uses
   Forms, ComCtrls,
   PackageIntf, BaseIDEIntf,
   MenuIntf, IdeIntfStrConsts,
-  EnvironmentOpts,
+  EnvironmentOpts, CompilerOptions,
   LazarusIDEStrConsts,
-  CompilerOptions, PackageDefs, PackageSystem, Project;
+  PackageDefs, PackageSystem, Project;
 
 type
   { TBasePkgManager }

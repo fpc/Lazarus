@@ -10,8 +10,10 @@ uses
   StdCtrls,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

@@ -8,10 +8,14 @@ uses
   SysUtils,
   // LCL
   ExtCtrls, StdCtrls,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
+  // IdeConfig
+  CompilerOptions,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

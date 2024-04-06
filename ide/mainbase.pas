@@ -73,9 +73,9 @@ uses
   // IDEDebugger
   IdeDebuggerStringConstants,
   // IdeConfig
-  LazConf, EnvironmentOpts,
+  LazConf, EnvironmentOpts, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, CompilerOptions, EnvGuiOptions,
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
   Project, SourceEditor, SourceSynEditor, FindInFilesDlg,
   Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts, FindInFilesWnd;
 

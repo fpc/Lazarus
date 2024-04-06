@@ -11,7 +11,7 @@ uses
   LazTracer, FileReferenceList,
   // Codetools
   DefineTemplates, CodeToolManager,
-  // IDE
+  // IdeConfig
   CompilerOptions;
 
 type
