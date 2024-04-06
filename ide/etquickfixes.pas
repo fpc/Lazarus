@@ -570,7 +570,7 @@ begin
   end;
   ReplaceSubstring(Pattern,p,2,'$2');
 
-  if not GetFPCMsgValues2(Msg.Msg,Pattern,PkgName,Dir) then exit;
+  if not GetFPCMsgValuesTwo(Msg.Msg,Pattern,PkgName,Dir) then exit;
   if PkgName='' then exit;
   PkgName:=GetIdentifier(PChar(PkgName));
   Result:=IsValidIdent(PkgName);

@@ -56,7 +56,7 @@ uses
   // IDE
   LazarusIDEStrConsts, DialogProcs, EditDefineTree, ProjectResources,
   MiscOptions, ParsedCompilerOpts, CompilerOptions,
-  ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
+  ExtTools, etFPCMsgFilePool, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs;
   

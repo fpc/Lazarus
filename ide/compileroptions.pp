@@ -55,7 +55,7 @@ uses
   LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs, TransferMacros,
   IDEProcs, ModeMatrixOpts, CompOptsModes,
   // IDE
-  etFPCMsgParser, ParsedCompilerOpts;
+  etFPCMsgFilePool, ParsedCompilerOpts;
 
 const
   DefaultCompilerPath = '$(CompPath)';

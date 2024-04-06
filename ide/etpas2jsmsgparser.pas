@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   IDEExternToolIntf, LazFileUtils,
-  etFPCMsgParser, EnvironmentOpts;
+  etFPCMsgFilePool, etFPCMsgParser, EnvironmentOpts;
 
 type
 

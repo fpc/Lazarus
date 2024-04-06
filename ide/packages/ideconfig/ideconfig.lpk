@@ -44,6 +44,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="EnvironmentOpts"/>
       </Item>
       <Item>
+        <Filename Value="etfpcmsgfilepool.pas"/>
+        <UnitName Value="etFPCMsgFilePool"/>
+      </Item>
+      <Item>
         <Filename Value="etmakemsgparser.pas"/>
         <UnitName Value="etMakeMsgParser"/>
       </Item>

@@ -19,7 +19,7 @@ uses
   // IdeIntf
   IDEOptEditorIntf, IDEDialogs,
   // IDE
-  CompilerOptions, LazarusIDEStrConsts, etFPCMsgParser;
+  CompilerOptions, etFPCMsgFilePool, LazarusIDEStrConsts;
 
 type
 

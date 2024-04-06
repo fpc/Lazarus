@@ -55,6 +55,7 @@ begin
     t.Dependencies.AddUnit('diffpatch');
     t.Dependencies.AddUnit('editortoolbaroptions');
     t.Dependencies.AddUnit('environmentopts');
+    t.Dependencies.AddUnit('etfpcmsgfilepool');
     t.Dependencies.AddUnit('etmakemsgparser');
     t.Dependencies.AddUnit('idecmdline');
     t.Dependencies.AddUnit('ideconfstrconsts');
@@ -74,7 +75,8 @@ begin
     T:=P.Targets.AddUnit('diffpatch.pas');
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');
     T:=P.Targets.AddUnit('environmentopts.pp');
-    P.Targets.AddImplicitUnit('etmakemsgparser.pas');
+    P.Targets.AddImplicitUnit('etfpcmsgfilepool.pas');
+    T:=P.Targets.AddUnit('etmakemsgparser.pas');
     T:=P.Targets.AddUnit('idecmdline.pas');
     T:=P.Targets.AddUnit('ideconfstrconsts.pas');
     T:=P.Targets.AddUnit('ideguicmdline.pas');
