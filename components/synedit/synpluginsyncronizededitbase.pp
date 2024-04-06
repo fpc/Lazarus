@@ -68,7 +68,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function Add(aCell: TSynPluginSyncronizedEditCell): Integer;
+    function Add(aCell: TSynPluginSyncronizedEditCell; AnAddSorted: Boolean = False): Integer;
     function AddNew: TSynPluginSyncronizedEditCell; virtual; // only add sorted
     procedure Delete(aIndex: Integer);
     function IndexOf(aCell: TSynPluginSyncronizedEditCell): Integer;
@@ -443,13 +443,13 @@ begin
     FOnCellChange(aIndex, OldVal, AValue);
 end;
 
-function TSynPluginSyncronizedEditList.Add(aCell: TSynPluginSyncronizedEditCell): Integer;
+function TSynPluginSyncronizedEditList.Add(aCell: TSynPluginSyncronizedEditCell;
+  AnAddSorted: Boolean): Integer;
 var
   i, n: Integer;
 begin
-  if aCell.LogStart.Y = High(Integer) then
-    n := -1
-  else
+  n := -1;
+  if AnAddSorted then
     n := IndexOfNext(aCell.LogStart.x, aCell.LogStart.Y);
 
   i := length(FCells);
@@ -467,7 +467,6 @@ end;
 function TSynPluginSyncronizedEditList.AddNew: TSynPluginSyncronizedEditCell;
 begin
   Result := TSynPluginSyncronizedEditCell.Create;
-  Result.FLogStart.y := high(Integer);
   Add(Result);
 end;
 
@@ -1950,7 +1949,7 @@ var
     nc.LogEnd := p2;
     nc.Group := Grp;
     nc.FirstInGroup := AsFirst;
-    Cells.Add(nc);
+    Cells.Add(nc, True);
   end;
 var
   BndCell: TSynPluginSyncronizedEditCell;
