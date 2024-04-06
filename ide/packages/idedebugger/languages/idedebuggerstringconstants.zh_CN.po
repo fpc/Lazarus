@@ -151,7 +151,7 @@ msgid "Number"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber2
-msgid "Number(2nd)"
+msgid "Number (2nd)"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnord
@@ -248,10 +248,6 @@ msgstr ""
 #: idedebuggerstringconstants.dispformatgroupfloat
 msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
 msgid "Float"
-msgstr ""
-
-#: idedebuggerstringconstants.dispformatgrouplead
-msgid "Leading zero"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatgrouppointerderef

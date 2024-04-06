@@ -47,7 +47,6 @@ msgid "Binary"
 msgstr "Двоичный"
 
 #: idedebuggerstringconstants.dispformatbasechar
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasechar"
 msgid "Char"
 msgstr "Символ"
@@ -105,10 +104,8 @@ msgid "Ordinal"
 msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
-#, fuzzy
-#| msgid "Address format"
 msgid "Address"
-msgstr "Формат адреса"
+msgstr "Адрес"
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
 msgid "All"
@@ -140,15 +137,15 @@ msgstr "Вещественный"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnum2visible
 msgid "Show value in a second format"
-msgstr ""
+msgstr "Показывать значение во вторичном формате"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber
 msgid "Number"
 msgstr "Число"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber2
-msgid "Number(2nd)"
-msgstr ""
+msgid "Number (2nd)"
+msgstr "Число (вторичный)"
 
 #: idedebuggerstringconstants.dispformatdlgbtnord
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
@@ -213,11 +210,9 @@ msgid "Exponent"
 msgstr "С плавающей точкой"
 
 #: idedebuggerstringconstants.dispformatgroupaddress
-#, fuzzy
-#| msgid "Pointer"
 msgctxt "idedebuggerstringconstants.dispformatgroupaddress"
 msgid "Pointer (Addr)"
-msgstr "Указатель"
+msgstr "Указатель (адрес)"
 
 #: idedebuggerstringconstants.dispformatgroupbase
 msgid "Number base"
@@ -246,15 +241,9 @@ msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
 msgid "Float"
 msgstr "Вещественный"
 
-#: idedebuggerstringconstants.dispformatgrouplead
-msgid "Leading zero"
-msgstr ""
-
 #: idedebuggerstringconstants.dispformatgrouppointerderef
-#, fuzzy
-#| msgid "Pointer (Deref)"
 msgid "Deref Pointer"
-msgstr "Указатель (разыменованный)"
+msgstr "Разыменованный указатель"
 
 #: idedebuggerstringconstants.dispformatgroupsign
 msgid "Number sign"
@@ -270,41 +259,38 @@ msgstr "Структуры (адрес)"
 
 #: idedebuggerstringconstants.dispformatnumdigits
 msgid "Digits"
-msgstr ""
+msgstr "Разряды"
 
 #: idedebuggerstringconstants.dispformatnumdigitsfull
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatnumdigitsfull"
 msgid "Full"
-msgstr "Полный"
+msgstr "Целиком"
 
 #: idedebuggerstringconstants.dispformatnumseperator
 msgid "Separator (1000)"
-msgstr ""
+msgstr "Разделитель (1000)"
 
 #: idedebuggerstringconstants.dispformatnumsepgroup
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatnumsepgroup"
 msgid "Group"
-msgstr "Группа"
+msgstr "Группировка"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupbyte
 msgid "Byte"
-msgstr ""
+msgstr "Байт"
 
 #: idedebuggerstringconstants.dispformatnumsepgrouplong
 msgid "DWord"
-msgstr ""
+msgstr "Двойное слово"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupnone
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatnumsepgroupnone"
 msgid "Off"
-msgstr "Выключено"
+msgstr "Выключена"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupword
 msgid "Word"
-msgstr ""
+msgstr "Слово"
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrall
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrall"
@@ -321,43 +307,34 @@ msgid "General and specific project settings will be used first. Only if none of
 msgstr "Сначала будут использоваться общие и частные параметры проекта. Если ни один из них не задаёт нужного значения, будут использоваться глобальные параметры IDE."
 
 #: idedebuggerstringconstants.dispformatpointeraddressplain
-#, fuzzy
-#| msgid "Address"
 msgctxt "idedebuggerstringconstants.dispformatpointeraddressplain"
 msgid "Plain address"
-msgstr "Адрес"
+msgstr "Простой адрес"
 
 #: idedebuggerstringconstants.dispformatpointeraddresstyped
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatpointeraddresstyped"
 msgid "Typed address"
 msgstr "Типизированный адрес"
 
 #: idedebuggerstringconstants.dispformatpointerderefoff
-#, fuzzy
-#| msgid "Off"
 msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
 msgid "No deref data"
-msgstr "Выключено"
+msgstr "Без разыменованных данных"
 
 #: idedebuggerstringconstants.dispformatpointerderefon
-#, fuzzy
-#| msgid "On"
 msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
 msgid "Show deref data"
-msgstr "Включено"
+msgstr "Показывать разыменованные данные"
 
 #: idedebuggerstringconstants.dispformatpointerderefonly
-#, fuzzy
-#| msgid "Only"
 msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
 msgid "Only deref data"
-msgstr "Только это значение"
+msgstr "Только разыменованные данные"
 
 #: idedebuggerstringconstants.dispformatsignauto
 msgctxt "idedebuggerstringconstants.dispformatsignauto"
 msgid "Auto-sign"
-msgstr ""
+msgstr "Автоматический знак"
 
 #: idedebuggerstringconstants.dispformatsignsigned
 msgid "Signed"
@@ -370,15 +347,15 @@ msgstr "Беззнаковый"
 
 #: idedebuggerstringconstants.dispformatstructaddressoff
 msgid "Hide pointer"
-msgstr ""
+msgstr "Скрывать указатель"
 
 #: idedebuggerstringconstants.dispformatstructaddresson
 msgid "Show pointer"
-msgstr ""
+msgstr "Показывать указатель"
 
 #: idedebuggerstringconstants.dispformatstructaddressonly
 msgid "Only pointer"
-msgstr ""
+msgstr "Только указатель"
 
 #: idedebuggerstringconstants.dispformatstructfields
 msgid "Field names"
