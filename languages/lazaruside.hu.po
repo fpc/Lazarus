@@ -5594,7 +5594,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "A cím a tálcán így jelenik meg: projekt1.lpi - Kiadás - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "Építési módok"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9101,6 +9103,10 @@ msgstr "Szerkesztés"
 msgid "Edit additional help for messages"
 msgstr "Kiegészítő súgó szerkesztése üzenetekhez"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Tartalmi súgó szerkesztése"
@@ -9347,10 +9353,6 @@ msgstr "A sikertelenül átalakított fájlok száma: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "A(z) \"%s\"%sfájl kódolása a lemezen: %s. Az új kódolás: %s."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr "Végtelen ciklus a makrókban"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10062,6 +10064,10 @@ msgstr "Billentyűkombináció megkeresése"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Hiányzó unit megkeresése"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15064,11 +15070,6 @@ msgstr "Mindent lefordít?"
 msgid "Compile package"
 msgstr "Csomag lefordítása"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "A(z) %s csomag fordítási beállításai"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "fpmake.pp létrehozása"
@@ -15131,6 +15132,11 @@ msgstr "Függőség mozgatása lefelé"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Függőség mozgatása felfelé"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17428,6 +17434,10 @@ msgstr "Válasszon egy csomópontot"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "Másik LCL vezérlőkészlet választása (makró: LCLWidgetType)"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Válasszon Delphi form fájlokat (*.dfm)"
@@ -18301,6 +18311,11 @@ msgstr "A következő metódusok, melyeket a(z) %s használ, nincsenek a forrás
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "Az FPC források könyvtára \"%s\" nem tűnik megfelelőnek:%s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format

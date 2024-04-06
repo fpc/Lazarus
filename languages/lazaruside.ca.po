@@ -5733,7 +5733,7 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+msgid "Build mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9272,6 +9272,10 @@ msgstr "Edita"
 msgid "Edit additional help for messages"
 msgstr ""
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr ""
@@ -9521,10 +9525,6 @@ msgstr ""
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
-msgstr ""
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisenternewnameformacros
@@ -10227,6 +10227,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -15335,11 +15339,6 @@ msgstr "Voleu compilar-ho tot?"
 msgid "Compile package"
 msgstr "Compila el paquet"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "Opcions del compilador pel paquet %s"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr ""
@@ -15404,6 +15403,11 @@ msgstr "Mou la dependènncia avall"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Mou la dependència amunt"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17779,6 +17783,10 @@ msgstr "Selecciona un node"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Selecciona els fitxers de formes Delphi (*.dfm)"
@@ -18659,6 +18667,11 @@ msgstr ""
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename

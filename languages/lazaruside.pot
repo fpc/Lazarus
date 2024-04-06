@@ -5537,7 +5537,7 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+msgid "Build mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9021,6 +9021,10 @@ msgstr ""
 msgid "Edit additional help for messages"
 msgstr ""
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr ""
@@ -9266,10 +9270,6 @@ msgstr ""
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
-msgstr ""
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisenternewnameformacros
@@ -9960,6 +9960,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -14857,11 +14861,6 @@ msgstr ""
 msgid "Compile package"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr ""
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr ""
@@ -14923,6 +14922,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
@@ -17198,6 +17202,10 @@ msgstr ""
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr ""
@@ -18064,6 +18072,11 @@ msgstr ""
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename

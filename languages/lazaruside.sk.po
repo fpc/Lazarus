@@ -5610,7 +5610,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "Režimy vybudovania"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9110,6 +9112,10 @@ msgstr "Upraviť"
 msgid "Edit additional help for messages"
 msgstr ""
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Upraviť kontextovú pomoc"
@@ -9361,10 +9367,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "Kódovanie súboru %s%s%s%sna disku je %s. Nové kódovanie je %s."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr ""
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10061,6 +10063,10 @@ msgstr "Nájsť kombináciu klávesov"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -15034,11 +15040,6 @@ msgstr "Preložiť všetko?"
 msgid "Compile package"
 msgstr "Preložiť balíček"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "Voľby prekladača pre balíček %s"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr ""
@@ -15101,6 +15102,11 @@ msgstr "Posunúť závislosť dole"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Posunúť závislosť hore"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17429,6 +17435,10 @@ msgstr "Zvoľte uzol"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Zvoľte súbory formulárov Delphi (*.dfm)"
@@ -18310,6 +18320,11 @@ msgstr "Nasledujúce metódy použité v %s nie sú v zdrojovom kóde%s%s%s%s%s%
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename

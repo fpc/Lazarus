@@ -5707,7 +5707,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "Antraštė užduočių juostoje rodo pavyzdžiui: projektas1.lpi - laida - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "Darymo veiksenos"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9220,6 +9222,10 @@ msgstr "Keisti"
 msgid "Edit additional help for messages"
 msgstr "Redaguoti papildomą žinyną pranešimams"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Keisti kontekstinį žinyną"
@@ -9468,10 +9474,6 @@ msgstr "Nepavyko konvertuoti failų: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "Failo diske „%s“%skoduotė yra „%s“. Naujoji koduotė yra „%s“."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr "Makrokomandose begalinis ciklas"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10182,6 +10184,10 @@ msgstr "Klavišų kombinacijos paieška"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Ieškoti trūkstamo modulio"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15262,11 +15268,6 @@ msgstr "Kompiliuoti viską?"
 msgid "Compile package"
 msgstr "Kompiliuoti paketą"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "Paketo %s kompiliavimo parinktys"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "Kurti „fpmake.pp“"
@@ -15329,6 +15330,11 @@ msgstr "Perkelti priklausinį žemyn"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Perkelti priklausinį aukštyn"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17665,6 +17671,10 @@ msgstr "Pažymėkit mazgą"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "Parinkite kitą „LCL“ valdiklių tipą (makrokomanda „LCLWidgetType“)"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Nurodykite Delphi formos failus (*.dfm)"
@@ -18543,6 +18553,11 @@ msgstr "Šių metodų, kuriuos naudoja „%s“, nėra pirminiame kode%s%s%s%s%s
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "FPC pirminio kodo aplankas „%s“ nepanašus į tinkamą:%s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format

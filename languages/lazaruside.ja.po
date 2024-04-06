@@ -5702,7 +5702,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "タスクバーのタイトルは例えば project1.lpi - Release - Lazarusのように表示されます。"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "構築モード"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9216,6 +9218,10 @@ msgstr "編集"
 msgid "Edit additional help for messages"
 msgstr "メッセージの追加的なヘルプを編集"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
@@ -9464,10 +9470,6 @@ msgstr "変換に失敗したファイルの数: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "ファイル\"%s\"%sのディスク上でのエンコーディングは%sです。新しいエンコーディングは%sです。"
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr "マクロにエンドレスループ"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10178,6 +10180,10 @@ msgstr "キーの組み合わせを検索"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "欠けているUnitを検索"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15226,11 +15232,6 @@ msgstr "全てコンパイルしますか？"
 msgid "Compile package"
 msgstr "パッケージをコンパイル"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "パッケージ %s のコンパイラオプション"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "fpmake.ppを作成"
@@ -15293,6 +15294,11 @@ msgstr "依存ソースを下に移動"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "依存関係を上に移動"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17625,6 +17631,10 @@ msgstr "ノードを選択"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "もうひとつのLCLウィジェットセット（マクロLCLWidgetType）を選択"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphiフォームファイル (*.dfm)を選択"
@@ -18503,6 +18513,11 @@ msgstr "%sに用いられている以下のメソッドはソース%s%s%s%s%sに
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "FPCソースディレクトリ \"%s\" は正しくないようです:%s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format

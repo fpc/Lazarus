@@ -5879,7 +5879,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "אופני בנייה"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9496,6 +9498,10 @@ msgstr "עריכה"
 msgid "Edit additional help for messages"
 msgstr ""
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "ערוך עזרה תלויית הקשר"
@@ -9749,10 +9755,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "הקידוד של הקובץ s%s%s% בדיסק sהוא %. הקידוד החדש הוא s%. "
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr ""
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10472,6 +10474,10 @@ msgstr "חפש צירופי מקשים"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "חפש יחידות חסרות"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15819,11 +15825,6 @@ msgstr "להדר הכל?"
 msgid "Compile package"
 msgstr "הדר חבילה"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "אפשרויות מהדר לחבילה %s"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr ""
@@ -15888,6 +15889,11 @@ msgstr "הזז תלות למטה"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "הזז תלות למעלה"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -18313,6 +18319,10 @@ msgstr "בחר צומת"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "בחר טפסים של דלפי (dfm.*)"
@@ -19222,6 +19232,11 @@ msgstr "המתודות הבאות שבשימוש s% אינם במקורות %s%s
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename

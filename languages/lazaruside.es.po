@@ -5714,7 +5714,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "El título en la barra de tareas muestra por ejemplo: project1.lpi - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "Modos de construcción"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9242,6 +9244,10 @@ msgstr "Editar"
 msgid "Edit additional help for messages"
 msgstr "Editar ayuda adicional para mensajes"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Editar ayuda contextual"
@@ -9494,10 +9500,6 @@ msgstr "Número de ficheros fallidos al convertir: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "La codificación de página del archivo \"%s\"%sen disco es %s. La nueva codificación es %s."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr "Bucle sin fin en macros"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10204,6 +10206,10 @@ msgstr "Buscar combinación de teclas"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Encontrar unidad faltante"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15306,11 +15312,6 @@ msgstr "¿Compilar todo?"
 msgid "Compile package"
 msgstr "Compilar paquete"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "Opciones del Compilador para el paquete %s"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "Crear fpmake.pp"
@@ -15375,6 +15376,11 @@ msgstr "Mover dependencia abajo"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Mover dependencia arriba"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17686,6 +17692,10 @@ msgstr "Seleccionar un nodo"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "Seleccionar otro widgetset LCD (macro LCLWidgetType)"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Seleccionar desde archivos Delphi (*.dfm)"
@@ -18567,6 +18577,11 @@ msgstr "Los métodos siguientes usados por %s no están en el fuente%s%s%s%s%s¿
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "El directorio de origen FPC \"%s\" no se ve correcto:%s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format

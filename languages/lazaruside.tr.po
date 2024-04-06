@@ -5538,7 +5538,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "Başlık çubuğunda adı göster, örneğin şunu gösterir: project1.lpi - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "Yapı modları"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9030,6 +9032,10 @@ msgstr "Düzen"
 msgid "Edit additional help for messages"
 msgstr "Mesajlar için ek yardım düzenleme"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "Bağlam yardımını düzenle"
@@ -9276,10 +9282,6 @@ msgstr "Dönüştürülemeyen dosya sayısı: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "Diskteki \"%s\"%s dosyasının kodlaması%s. Yeni kodlama%s."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-msgid "Endless loop in macros"
-msgstr "Makrolarda sonsuz döngü"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -9975,6 +9977,10 @@ msgstr "Tuş kombinasyonunu bul"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Eksik birimi bul"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -14936,11 +14942,6 @@ msgstr "Komple derle?"
 msgid "Compile package"
 msgstr "Paketi Derle"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "Paket %s için Derleyici Seçenekleri"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "Fpmake.pp Oluştur"
@@ -15003,6 +15004,11 @@ msgstr "Bağımlılığı aşağıya kaydır"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "Bağımlılığı yukarı taşı"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17274,6 +17280,10 @@ msgstr "Bir düğüm seçin"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "Başka bir LCL widget'ı seçin (makro LCLWidgetType)"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Delphi form dosyalarını seçin (* .dfm)"
@@ -18146,6 +18156,11 @@ msgstr "%s tarafından kullanılan aşağıdaki yöntemler kaynakta değil %s%s%
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "FPC kaynak dizini \"%s\"doğru görünmüyor: %s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format

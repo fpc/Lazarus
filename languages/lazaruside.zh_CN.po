@@ -5576,7 +5576,9 @@ msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
 msgstr "在任务栏中显示的标题，例如：project1.lpi - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
-msgid "Build modes"
+#, fuzzy
+#| msgid "Build modes"
+msgid "Build mode"
 msgstr "构建模式"
 
 #: lazarusidestrconsts.lisbuildnewproject
@@ -9072,6 +9074,10 @@ msgstr "编辑"
 msgid "Edit additional help for messages"
 msgstr "为信息编辑附加的帮助"
 
+#: lazarusidestrconsts.liseditbuildmodes
+msgid "Edit build modes"
+msgstr ""
+
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
 msgstr "编辑上下文帮助"
@@ -9318,11 +9324,6 @@ msgstr "文件转换失败的数量: %d"
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "文件\"%s\"%s的编码在磁盘上是%s.新的编码是%s."
-
-#: lazarusidestrconsts.lisendlessloopinmacros
-#, fuzzy
-msgid "Endless loop in macros"
-msgstr "宏命令"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 #, object-pascal-format
@@ -10047,6 +10048,10 @@ msgstr "查找组合键"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "找到缺少单元"
+
+#: lazarusidestrconsts.lisfindoption
+msgid "Find option"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -15018,11 +15023,6 @@ msgstr "编译一切?"
 msgid "Compile package"
 msgstr "编译软件包"
 
-#: lazarusidestrconsts.lispckeditcompileroptionsforpackage
-#, object-pascal-format
-msgid "Compiler Options for Package %s"
-msgstr "编译器选项对于软件包%s"
-
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
 msgstr "创建fpmake.pp"
@@ -15086,6 +15086,11 @@ msgstr "下移依赖关系"
 #: lazarusidestrconsts.lispckeditmovedependencyup
 msgid "Move dependency up"
 msgstr "上移依赖关系"
+
+#: lazarusidestrconsts.lispckeditoptionsforpackage
+#, object-pascal-format
+msgid "Options for Package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditpackage
 #, object-pascal-format
@@ -17367,6 +17372,10 @@ msgstr "选择一个节点"
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr "选择另一个 LCL 控件集（宏 LCLWidgetType）"
 
+#: lazarusidestrconsts.lisselectbuildmode
+msgid "Select build mode"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
 msgstr "选择 Delphi 窗体文件(*.dfm)"
@@ -18242,6 +18251,11 @@ msgstr ""
 #, object-pascal-format
 msgid "The FPC source directory \"%s\" does not look correct:%s%s"
 msgstr "该FPC源代码目录\"%s\"看起来不正确:%s%s"
+
+#: lazarusidestrconsts.listhefppkgconfigurationfiledoesnotlookcorrect
+#, object-pascal-format
+msgid "The Fppkg configuration file \"%s\" does not look correct:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 #, object-pascal-format
