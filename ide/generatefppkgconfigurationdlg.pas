@@ -26,36 +26,23 @@ interface
 
 uses
   // Rtl
-  Classes,
-  SysUtils,
+  Classes, SysUtils,
   // Fcl
-  fpmkunit,
-  process,
+  fpmkunit, process,
   // Fppkg
   pkgglobals,
   // LazUtils
-  FPCAdds,
-  LazFileUtils,
-  LazFileCache,
-  UTF8Process,
+  FPCAdds, LazFileUtils, LazFileCache, UTF8Process,
   // Lcl
-  Forms,
-  Controls,
-  Graphics,
-  Dialogs,
-  StdCtrls,
-  ExtCtrls,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   // Codetools
   CodeToolManager, DefineTemplates,
-  // IdeConfig
-  IDEProcs, LazConf, EnvironmentOpts,
-  // IDE
-  LazarusIDEStrConsts,
-  InitialSetupProc,
-  // Packager
-  FppkgHelper,
   // Ideintf
-  IDEDialogs;
+  IDEDialogs,
+  // IdeConfig
+  IDEProcs, LazConf, EnvironmentOpts, FppkgHelper,
+  // IDE
+  LazarusIDEStrConsts, InitialSetupProc;
 
 type
 

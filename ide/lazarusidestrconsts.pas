@@ -1003,10 +1003,6 @@ resourcestring
   lisFppkgFpcmkcfgProbTooOld = 'It is probably too old to create the configuration files.';
   lisFppkgFpcmkcfgMissing = 'Could not find the fpcmkcfg configuration tool, ' +
     'which is needed to create the configuration files.';
-  lisFppkgRtlNotFound = 'Fppkg reports that the RTL is not installed.';
-  lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
-  lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
-  lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
   lisGenerateFppkgConfigurationCaption = 'Generate new Fppkg configuration files';
   lisGenerateFppkgConfiguration = 'Use this screen to generate new Fppkg configuration files ' +
     'with the fpcmkcfg tool.';

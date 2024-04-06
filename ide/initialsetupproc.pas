@@ -42,9 +42,9 @@ uses
   // IDEIntf
   IdeIntfStrConsts,
   // IDEConfig
-  LazConf, EnvironmentOpts,
+  LazConf, EnvironmentOpts, FppkgHelper,
   // IDE
-  LazarusIDEStrConsts, FppkgHelper;
+  LazarusIDEStrConsts;
 
 type
   TSDFilenameQuality = (

@@ -17,11 +17,9 @@ uses
   // IdeIntf
   IDEWindowIntf,
   // IdeConfig
-  ProjPackCommon,
+  ProjPackCommon, FppkgHelper,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, AddPkgDependencyDlg,
-  // fppkg
-  FppkgHelper;
+  LazarusIDEStrConsts, PackageDefs, AddPkgDependencyDlg;
 
 type
 

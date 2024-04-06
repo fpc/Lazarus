@@ -39,6 +39,11 @@ resourcestring
   lisEdtDefsetOVERFLOWCHECKSOn = 'set OVERFLOWCHECKS on';
   lisEdtDefuseLineInfoUnit = 'use LineInfo unit';
   lisEdtDefuseHeapTrcUnit = 'use HeapTrc unit';
+  // Fppkg checks
+  lisFppkgRtlNotFound = 'Fppkg reports that the RTL is not installed.';
+  lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
+  lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
+  lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
 
 
 implementation

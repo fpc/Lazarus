@@ -60,6 +60,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="etMakeMsgParser"/>
       </Item>
       <Item>
+        <Filename Value="fppkghelper.pas"/>
+        <UnitName Value="FppkgHelper"/>
+      </Item>
+      <Item>
         <Filename Value="idecmdline.pas"/>
         <UnitName Value="IDECmdLine"/>
       </Item>

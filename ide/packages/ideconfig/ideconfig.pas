@@ -10,8 +10,8 @@ interface
 uses
   CompilerOptions, CompOptsModes, CoolBarOptions, DiffPatch, EditDefineTree, 
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
-  IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, 
-  IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
+  FppkgHelper, IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, 
+  IDEProcs, IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
   ProjPackCommon, RecentListProcs, SearchPathProcs, ToolBarOptionsBase, 
   TransferMacros, LazarusPackageIntf;
 
