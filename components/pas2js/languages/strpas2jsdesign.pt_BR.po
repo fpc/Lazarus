@@ -89,7 +89,7 @@ msgid "Downloading"
 msgstr ""
 
 #: strpas2jsdesign.pjsddownloadpas2jsrelease
-msgid "Download Pas2js Release?"
+msgid "Download Pas2JS Release?"
 msgstr ""
 
 #: strpas2jsdesign.pjsddownloadrelease
@@ -158,6 +158,10 @@ msgstr "Arquivos HTML|*.html|Todos os arquivos|*.*"
 #: strpas2jsdesign.pjsdhtmlsourcefilenotfound
 msgid "HTML Source not found"
 msgstr "Fonte HTML não encontrado"
+
+#: strpas2jsdesign.pjsdinstallupdatepas2js
+msgid "Install/Update Pas2JS"
+msgstr ""
 
 #: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
 msgid "Let RTL show uncaught exceptions"
@@ -255,17 +259,13 @@ msgstr "URL atual de projeto Pas2JS"
 msgid "Pas2JS executable"
 msgstr "Executável Pas2JS"
 
-#: strpas2jsdesign.pjsdpas2jsexecutable2
-msgid "Pas2js executable"
-msgstr ""
-
 #: strpas2jsdesign.pjsdpas2jsinstaller
-msgid "Pas2js Installer"
+msgid "Pas2JS Installer"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsisnotexecutableat
 #, object-pascal-format
-msgid "pas2js is not executable at \"%s\""
+msgid "\"%s\" is not an executable"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
@@ -281,7 +281,7 @@ msgid "Pas2JS selected NodeJS excutable"
 msgstr "Executável NodeJS selecionado Pas2JS"
 
 #: strpas2jsdesign.pjsdpas2jssourcedirectory
-msgid "Pas2js source directory"
+msgid "Pas2JS source directory"
 msgstr ""
 
 #: strpas2jsdesign.pjsdpathofelectronexecutablemacropas2jselectron
@@ -378,11 +378,6 @@ msgstr ""
 msgid "Select Visual Studio Code extension template directory"
 msgstr "Selecionar diretório de modelos de extensão de código do Visual Studio"
 
-#: strpas2jsdesign.pjsdselectxexecutable
-#, object-pascal-format
-msgid "Select %s executable"
-msgstr "Selecionar executável %s"
-
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
 msgstr "Instâncias servidoras serão iniciadas com uma porta começando por este número, aumentando à cada novo projeto"
@@ -401,7 +396,7 @@ msgstr "Iniciar servidor HTTP na porta"
 
 #: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
 #, object-pascal-format
-msgid "The pas2js executable filename \"%s\" does not look like pas2js"
+msgid "The executable filename \"%s\" does not look like pas2js."
 msgstr ""
 
 #: strpas2jsdesign.pjsdthereisnoreleasefortarget
@@ -420,7 +415,7 @@ msgstr ""
 
 #: strpas2jsdesign.pjsdunabletofindpas2jsat
 #, object-pascal-format
-msgid "Unable to find pas2js at \"%s\""
+msgid "Unable to find \"%s\""
 msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
