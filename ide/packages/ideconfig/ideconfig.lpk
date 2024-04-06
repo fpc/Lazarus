@@ -24,6 +24,10 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
+        <Filename Value="compileroptions.pp"/>
+        <UnitName Value="CompilerOptions"/>
+      </Item>
+      <Item>
         <Filename Value="compoptsmodes.pas"/>
         <UnitName Value="CompOptsModes"/>
       </Item>
@@ -82,6 +86,10 @@ Files in this package are for the main configuration of the IDE."/>
       <Item>
         <Filename Value="modematrixopts.pas"/>
         <UnitName Value="ModeMatrixOpts"/>
+      </Item>
+      <Item>
+        <Filename Value="parsedcompileropts.pas"/>
+        <UnitName Value="ParsedCompilerOpts"/>
       </Item>
       <Item>
         <Filename Value="recentlistprocs.pas"/>

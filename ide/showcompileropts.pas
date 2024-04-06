@@ -44,10 +44,9 @@ uses
   CodeToolsCfgScript,
   // IdeIntf
   BaseIDEIntf, LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf,
-  PackageIntf, MacroIntf,
+  PackageIntf, MacroIntf, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, Project, PackageDefs,
-  ParsedCompilerOpts, CompilerOptions, ModeMatrixOpts, MiscOptions;
+  LazarusIDEStrConsts, Project, PackageDefs, ModeMatrixOpts, MiscOptions;
 
 type
   TShowCompToolOpts = class

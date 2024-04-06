@@ -43,9 +43,9 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
   // IdeConfig
-  TransferMacros, SearchPathProcs, IDEProcs,
+  TransferMacros, SearchPathProcs, IDEProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  Project, PackageSystem, LazarusIDEStrConsts, PackageDefs, ParsedCompilerOpts, CompilerOptions;
+  Project, PackageSystem, PackageDefs, LazarusIDEStrConsts;
 
 type
   TCompilerOptionsTest = (

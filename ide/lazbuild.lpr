@@ -40,9 +40,9 @@ uses
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
-  LazConf, IDECmdLine, TransferMacros, EnvironmentOpts,
+  LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  InitialSetupProc, ExtToolsConsole, ParsedCompilerOpts, CompilerOptions, ApplicationBundle,
+  InitialSetupProc, ExtToolsConsole, ApplicationBundle,
   IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;

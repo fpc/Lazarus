@@ -5977,7 +5977,6 @@ resourcestring
   lisPENoFilesMissingAllFilesExist = 'No files missing. All files exist.';
   lisCurrentLCLWidgetSet = 'Current LCL widgetset: "%s"';
   lisSelectAnotherLCLWidgetSet = 'Select another LCL widgetset (macro LCLWidgetType)';
-  lisEndlessLoopInMacros = 'Endless loop in macros';
 
   // Uses Unit dialog
   dlgUseUnitCaption = 'Add unit to Uses section';

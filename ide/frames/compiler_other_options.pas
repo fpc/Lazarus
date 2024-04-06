@@ -39,8 +39,10 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDECommands,
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
+  // IdeConfig
+  ParsedCompilerOpts, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, ParsedCompilerOpts, CompilerOptions, Compiler,
+  LazarusIDEStrConsts, Compiler,
   AllCompilerOptions, DefinesGui, EditorOptions, PackageDefs, SourceSynEditor;
 
 type

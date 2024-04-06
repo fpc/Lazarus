@@ -64,14 +64,14 @@ uses
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
   UnitResources, InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs,
-  SearchPathProcs, TransferMacros, IDECmdLine, IDEProcs,
+  EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
+  TransferMacros, IDECmdLine, IDEProcs, ParsedCompilerOpts, CompilerOptions,
   // FCL registration
   LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, MiscOptions,
   Project, ProjPackEditing, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
-  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, ParsedCompilerOpts, CompilerOptions,
+  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   IDETranslations, BuildLazDialog, NewDialog, FindInFilesDlg,
   ProjectInspector, PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,

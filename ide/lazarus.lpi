@@ -692,11 +692,6 @@
         <UnitName Value="etFPCMsgParser"/>
       </Unit>
       <Unit>
-        <Filename Value="etmakemsgparser.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="etMakeMsgParser"/>
-      </Unit>
-      <Unit>
         <Filename Value="etmessageframe.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MessagesFrame"/>
@@ -734,11 +729,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="MsgWnd_Options"/>
-      </Unit>
-      <Unit>
-        <Filename Value="compileroptions.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CompilerOptions"/>
       </Unit>
       <Unit>
         <Filename Value="exttools.pas"/>
@@ -1278,6 +1268,7 @@
         <Filename Value="showcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="ShowCompilerOpts"/>
       </Unit>
       <Unit>
         <Filename Value="cleandirdlg.pas"/>
@@ -1506,11 +1497,6 @@
         <ComponentName Value="ProjectDisplayFormatOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Project_DisplayFormat_Options"/>
-      </Unit>
-      <Unit>
-        <Filename Value="etfpcmsgfilepool.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="etFPCMsgFilePool"/>
       </Unit>
     </Units>
   </ProjectOptions>

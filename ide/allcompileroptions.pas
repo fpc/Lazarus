@@ -35,6 +35,7 @@ uses
   LazUTF8, LazLoggerBase,
   // IdeIntf
   IDEImagesIntf,
+  // IDE
   Compiler, LazarusIDEStrConsts;
 
 type

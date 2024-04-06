@@ -24,6 +24,7 @@ resourcestring
   lisTMunknownMacro = '(unknown macro: %s)';
   lisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';
   lisComponentNameIsAPascalKeyword = 'Component name "%s" is a Pascal keyword.';
+  lisEndlessLoopInMacros = 'Endless loop in macros';
 
 
 implementation

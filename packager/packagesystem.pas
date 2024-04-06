@@ -62,8 +62,9 @@ uses
   LazarusPackageIntf,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
+  ParsedCompilerOpts, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, IDETranslations, ParsedCompilerOpts, CompilerOptions,
+  LazarusIDEStrConsts, DialogProcs, IDETranslations,
   PackageLinks, PackageDefs, FppkgHelper, PkgSysBasePkgs;
 
 const

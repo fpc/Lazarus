@@ -54,10 +54,11 @@ uses
   UnitResources, InputHistory,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
+  ParsedCompilerOpts, CompilerOptions,
   // IDE
   DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
-  ProjectInspector, ParsedCompilerOpts, CompilerOptions, SourceSynEditor, SourceEditor,
+  ProjectInspector, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,

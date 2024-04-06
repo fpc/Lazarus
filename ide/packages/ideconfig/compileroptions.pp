@@ -4,9 +4,7 @@
                    Compiler options sets the switches for the project
                    file for the FPC compiler.
 
-
                    Initial Revision  : Sat May 10 23:15:32 CST 1999
-
 
  ***************************************************************************/
 
@@ -53,9 +51,7 @@ uses
   ProjectIntf, MacroIntf, IDEExternToolIntf, CompOptsIntf, IDEOptionsIntf,
   // IdeConfig
   LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs, TransferMacros,
-  IDEProcs, ModeMatrixOpts, CompOptsModes,
-  // IDE
-  etFPCMsgFilePool, ParsedCompilerOpts;
+  IDEProcs, ModeMatrixOpts, CompOptsModes, etFPCMsgFilePool, ParsedCompilerOpts;
 
 const
   DefaultCompilerPath = '$(CompPath)';

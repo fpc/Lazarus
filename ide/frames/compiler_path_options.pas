@@ -13,9 +13,9 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, CompOptsIntf, IDEImagesIntf, IDEDialogs,
   // IdeConfig
-  SearchPathProcs,
+  SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  Project, ParsedCompilerOpts, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
+  Project, LazarusIDEStrConsts, PathEditorDlg,
   CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
 
 type

@@ -40,9 +40,9 @@ uses
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
   IDEWindowIntf,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, SearchPathProcs,
+  EnvironmentOpts, TransferMacros, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  MainBase, MainBar, BasePkgManager, PackageDefs, Project, ParsedCompilerOpts, CompilerOptions,
+  MainBase, MainBar, BasePkgManager, PackageDefs, Project,
   BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg, GenericCheckList,
   LazarusIDEStrConsts;
 

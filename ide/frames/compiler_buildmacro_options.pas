@@ -33,9 +33,10 @@ uses
   // CodeTools
   KeywordFuncLists, CodeToolsCfgScript,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, MacroIntf, IDEImagesIntf, IDEDialogs,
+  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, MacroIntf, IDEImagesIntf,
+  IDEDialogs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  ParsedCompilerOpts, CompilerOptions, LazarusIDEStrConsts, PackageDefs;
+  LazarusIDEStrConsts, PackageDefs;
 
 type
   TCBMNodeType = (

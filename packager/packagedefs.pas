@@ -51,10 +51,10 @@ uses
   MacroIntf, MacroDefIntf, CompOptsIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
   PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
   // IdeConfig
-  TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
+  TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs,
+  IdeXmlConfigProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  EditDefineTree, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
-  LazarusIDEStrConsts, FppkgHelper;
+  EditDefineTree, ProjPackCommon, LazarusIDEStrConsts, FppkgHelper;
 
 type
   TLazPackage = class;
