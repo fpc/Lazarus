@@ -1160,7 +1160,7 @@ begin
   if ALen = 0 then
     exit;
   if Length(AResult) < ALen then
-    SetLength(AResult, Length(s));
+    SetLength(AResult, ALen);
   DoGetPhysicalCharWidths(s, ALen, Index, @AResult[0]);
 end;
 
