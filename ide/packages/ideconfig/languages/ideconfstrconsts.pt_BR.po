@@ -15,6 +15,10 @@ msgstr "Nome componente \"%s\" é uma palavra-chave Pascal."
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nome de componente \"%s\" não é um identificador válido"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Função: adicionar o delimitador de caminho"

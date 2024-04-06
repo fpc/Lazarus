@@ -16,6 +16,10 @@ msgstr ""
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Fungsi: tambah delimiter path"

@@ -15,6 +15,10 @@ msgstr "组件名\"%s\"是一个Pascal关键字."
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件名\"%s\"不是一个有效的标识符"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "功能: 附加路径分隔符"

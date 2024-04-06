@@ -15,6 +15,10 @@ msgstr "Bileşen adı \"%s\" Pascal bir anahtar kelimedir."
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Bileşen adı \"%s\" geçerli bir tanımlayıcı değil"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Fonksiyon: yol sınırlayıcı ekleme"

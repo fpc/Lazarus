@@ -15,6 +15,10 @@ msgstr "Jméno komponenty \"%s\" je klíčovým slovem Pascalu."
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Jméno komponenty \"%s\" není platný identifikátor"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Funkce: připojit oddělovač cesty"

@@ -16,6 +16,10 @@ msgstr ""
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Component Naam \"%s\" is geen geldige identifier"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Functie: toevoegen pad scheidingsteken"

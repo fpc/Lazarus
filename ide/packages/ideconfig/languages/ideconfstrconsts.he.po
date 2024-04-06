@@ -17,6 +17,10 @@ msgstr "שם הרכיב  \"%s\" הוא מילת מפתח של פסקל"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "פונקציה: הוסף את תוחם הנתיב"

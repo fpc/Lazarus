@@ -15,6 +15,10 @@ msgstr "Назва компонента \"%s\" є ключовим словом 
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Назва компонента \"%s\" є некоректним ідентифікатором"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Функція: додати розподілювач шляхів"

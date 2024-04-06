@@ -16,6 +16,10 @@ msgstr ""
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
 
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "Funkcia: pripojiť oddeľovač cesty"

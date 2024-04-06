@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -20,6 +20,10 @@ msgstr "Имя компонента \"%s\" является ключевым с�
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Имя компонента \"%s\" не является корректным идентификатором"
+
+#: ideconfstrconsts.lisendlessloopinmacros
+msgid "Endless loop in macros"
+msgstr "Порочный круг макросов"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
