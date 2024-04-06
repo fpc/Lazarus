@@ -410,7 +410,7 @@ resourcestring
   DispFormatDlgBtnCurrent   = 'Current';
   DispFormatDlgBtnAll       = 'All';
   DispFormatDlgBtnNumber    = 'Number';
-  DispFormatDlgBtnNumber2   = 'Number(2nd)';
+  DispFormatDlgBtnNumber2   = 'Number (2nd)';
   DispFormatDlgBtnOrd       = 'Ordinal';
   DispFormatDlgBtnEnum      = 'Enum';
   DispFormatDlgBtnBool      = 'Boolean';
@@ -429,7 +429,6 @@ resourcestring
 
   DispFormatGroupBase          = 'Number base';
   DispFormatGroupSign          = 'Number sign';
-  DispFormatGroupLead          = 'Leading zero';
   DispFormatGroupEnum          = 'Enum';
   DispFormatGroupBool          = 'Bool';
   DispFormatGroupChar          = 'Char';
