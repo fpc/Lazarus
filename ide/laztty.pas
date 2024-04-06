@@ -22,7 +22,8 @@
 }
 unit LazTTY;
 
-{-$i fpcdefs.inc}
+{$mode objfpc}
+{$H+}
 
 interface
 
