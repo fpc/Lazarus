@@ -12,8 +12,8 @@ uses
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, 
   IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
-  RecentListProcs, SearchPathProcs, ToolBarOptionsBase, TransferMacros, 
-  LazarusPackageIntf;
+  ProjPackCommon, RecentListProcs, SearchPathProcs, ToolBarOptionsBase, 
+  TransferMacros, LazarusPackageIntf;
 
 implementation
 

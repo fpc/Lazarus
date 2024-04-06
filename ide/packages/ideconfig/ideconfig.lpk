@@ -96,6 +96,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="ParsedCompilerOpts"/>
       </Item>
       <Item>
+        <Filename Value="projpackcommon.pas"/>
+        <UnitName Value="ProjPackCommon"/>
+      </Item>
+      <Item>
         <Filename Value="recentlistprocs.pas"/>
         <UnitName Value="RecentListProcs"/>
       </Item>

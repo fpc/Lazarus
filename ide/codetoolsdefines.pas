@@ -57,10 +57,10 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, IDEDialogs,
   // IdeConfig
-  LazConf, TransferMacros, IDEProcs, CompilerOptions,
+  LazConf, TransferMacros, IDEProcs, CompilerOptions, EditDefineTree,
   // IDE
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview,
-  EditorOptions, InputFileDialog, EditDefineTree;
+  EditorOptions, InputFileDialog;
 
 type
 

@@ -52,9 +52,9 @@ uses
   PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs,
-  IdeXmlConfigProcs, ParsedCompilerOpts, CompilerOptions,
+  IdeXmlConfigProcs, ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
   // IDE
-  EditDefineTree, ProjPackCommon, LazarusIDEStrConsts, FppkgHelper;
+  LazarusIDEStrConsts, FppkgHelper;
 
 type
   TLazPackage = class;

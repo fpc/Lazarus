@@ -16,8 +16,10 @@ uses
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDEWindowIntf, IDEDialogs,
+  // IdeConfig
+  ProjPackCommon,
   // IDE
-  MainIntf, LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackCommon, ProjPackChecks;
+  MainIntf, LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackChecks;
 
 type
 

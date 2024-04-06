@@ -46,10 +46,10 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
   // IdeConfig
-  IDEProcs, ParsedCompilerOpts, CompilerOptions,
+  IDEProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
   // IDE
-  DialogProcs, ProjPackCommon, Project, PackageDefs, PackageSystem, PackageEditor,
-  BasePkgManager, LazarusIDEStrConsts, SearchPathProcs, SourceFileManager,
+  DialogProcs, Project, PackageDefs, PackageSystem, PackageEditor,
+  BasePkgManager, LazarusIDEStrConsts, SourceFileManager,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;

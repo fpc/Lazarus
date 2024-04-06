@@ -65,11 +65,10 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,
-  ParsedCompilerOpts, CompilerOptions,
+  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
   // IDE
   ProjectResources, ProjectIcon, RunParamsOpts,
-  ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
-  ProjPackCommon, PackageDefs, PackageSystem;
+  ProjectDefs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;

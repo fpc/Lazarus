@@ -16,8 +16,10 @@ uses
   PackageIntf,
   // IdeIntf
   IDEWindowIntf,
+  // IdeConfig
+  ProjPackCommon,
   // IDE
-  LazarusIDEStrConsts, ProjPackCommon, PackageDefs, AddPkgDependencyDlg,
+  LazarusIDEStrConsts, PackageDefs, AddPkgDependencyDlg,
   // fppkg
   FppkgHelper;
 

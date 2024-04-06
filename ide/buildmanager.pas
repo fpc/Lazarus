@@ -53,8 +53,9 @@ uses
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   IDEProcs, etMakeMsgParser, etFPCMsgFilePool, ParsedCompilerOpts, CompilerOptions,
+  EditDefineTree,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, EditDefineTree, ProjectResources,
+  LazarusIDEStrConsts, DialogProcs, ProjectResources,
   MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs;
