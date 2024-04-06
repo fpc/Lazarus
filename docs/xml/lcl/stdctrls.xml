@@ -7654,10 +7654,10 @@ Use <var>HideSelection</var> to disable text selection in the edit control.
 </p>
 </descr>
 <seealso>
-<link id='TCustomEdit.SelText'/>
-<link id='TCustomEdit.SelStart'/>
-<link id='TCustomEdit.SelLength'/>
-<link id='TCustomEdit.HideSelection'/>
+<link id="TCustomEdit.SelText"/>
+<link id="TCustomEdit.SelStart"/>
+<link id="TCustomEdit.SelLength"/>
+<link id="TCustomEdit.HideSelection"/>
 </seealso>
 </element>
 
