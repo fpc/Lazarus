@@ -518,6 +518,7 @@ type
     FDefaultCompileReasons: TCompileReasons;
     procedure SetDefaultCompileReasons(const AValue: TCompileReasons);
   protected
+    procedure DoClearErrorLines; override;
     procedure SetCompileReasons(const AValue: TCompileReasons); override;
     procedure SubstituteMacros(var s: string); override;
   public
@@ -6383,6 +6384,12 @@ begin
                                 CompOpts.CompileReasons, Tool);
   if Result then exit;
   if inherited CreateDiff(CompOpts, Tool) then Result:=true;
+end;
+
+procedure TProjectCompilationToolOptions.DoClearErrorLines;
+begin
+  if Assigned(SourceEditorManagerIntf) then
+    SourceEditorManagerIntf.ClearErrorLines;
 end;
 
 procedure TProjectCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
