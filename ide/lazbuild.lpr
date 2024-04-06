@@ -42,7 +42,7 @@ uses
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts,
   // IDE
-  InitialSetupProc, ExtToolsConsole, CompilerOptions, ApplicationBundle,
+  InitialSetupProc, ExtToolsConsole, ParsedCompilerOpts, CompilerOptions, ApplicationBundle,
   IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
