@@ -58,6 +58,8 @@ type
   { TProjectConsoleApplicationDescriptor }
 
   TProjectConsoleApplicationDescriptor = class(TProjectDescriptor)
+  protected
+    FCaretPos: TPoint;
   public
     constructor Create; override;
     function GetLocalizedName: string; override;
@@ -101,6 +103,16 @@ type
 
 
 implementation
+
+procedure SetCaretPosInActiveEditor(aPos: TPoint);
+begin
+  if assigned(SourceEditorManager.ActiveEditor) then
+    with SourceEditorManager.ActiveEditor.EditorComponent do
+    begin
+      MoveCaretIgnoreEOL(aPos);
+      TopLine:=aPos.Y-LinesInWindow div 2;
+    end;
+end;
 
 { TProjectApplicationDescriptor }
 
@@ -225,9 +237,7 @@ function TProjectSimpleProgramDescriptor.CreateStartFiles(AProject: TLazProject)
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
-  // set caret position
-  if Assigned(SourceEditorManager.ActiveEditor) then
-    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,3);
+  SetCaretPosInActiveEditor(Point(3,3));
 end;
 
 { TProjectProgramDescriptor }
@@ -288,9 +298,7 @@ function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject): TMod
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
-  // set caret position
-  if Assigned(SourceEditorManager.ActiveEditor) then
-    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,13);
+  SetCaretPosInActiveEditor(Point(3,13));
 end;
 
 { TProjectManualProgramDescriptor }
@@ -356,9 +364,7 @@ begin
   begin
     Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                         [ofProjectLoading,ofRegularFile]);
-    // set caret position
-    if Assigned(SourceEditorManager.ActiveEditor) then
-      SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,10);
+    SetCaretPosInActiveEditor(Point(3,10));
   end
   else
     Result:=mrCancel;
@@ -380,6 +386,7 @@ begin
   Name:=ProjDescNameConsoleApplication;
   Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
+  FCaretPos := Point(1,1);
 end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedName: string;
@@ -482,9 +489,10 @@ begin
     NewSource.Add('    Terminate;');
     NewSource.Add('    Exit;');
     NewSource.Add('  end;');
+    NewSource.Add('');
     end;
   NewSource.Add('');
-  NewSource.Add('  { add your program here }');
+  FCaretPos := Point(3,NewSource.Count); // remember position for move the caret
   NewSource.Add('');
   NewSource.Add('  // stop program loop');
   NewSource.Add('  Terminate;');
@@ -540,6 +548,7 @@ function TProjectConsoleApplicationDescriptor.CreateStartFiles(
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
+  SetCaretPosInActiveEditor(FCaretPos);
 end;
 
 { TProjectLibraryDescriptor }
@@ -600,9 +609,7 @@ function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject): TMod
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
-  // set caret position
-  if Assigned(SourceEditorManager.ActiveEditor) then
-    SourceEditorManager.ActiveEditor.EditorComponent.LogicalCaretXY:=Point(3,10);
+  SetCaretPosInActiveEditor(Point(3,10));
 end;
 
 end.
