@@ -42,13 +42,14 @@ Implements an unsorted StringList with a fast lookup feature.
 <p>
 <var>TLookupStringList</var> is a <var>TStringList</var> descendant that 
 implements an unsorted string list with a fast lookup feature. Internally it 
-uses a map container to store the strings which are used in the 
-<var>Contains</var>, <var>IndexOf</var> and <var>Find</var> methods. The map 
-container does not reserve too much memory because the strings are reference 
-counted and not copied.
+uses a map container, <var>TStringMap</var> from unit <var>AvgLvlTree</var>,
+which is a balanced tree. The strings are stored in 2 places, in the string list
+itself and in the map container. The map is used in <var>Contains</var>,
+<var>IndexOf</var> and <var>Find</var> methods. The map container does not
+reserve too much memory because the strings are reference counted and not copied.
 </p>
 <p>
-All values for the Duplicates property are fully supported, including 
+All values for the <var>Duplicates</var> property are fully supported, including
 dupIgnore and dupError (unlike in unsorted TStringList class).
 </p>
 <p>
