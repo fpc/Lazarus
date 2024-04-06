@@ -4732,7 +4732,7 @@ resourcestring
   lisPckEditCompileEverything = 'Compile everything?';
   lisPckEditReCompileThisAndAllRequiredPackages = 'Re-Compile this and all '
    +'required packages?';
-  lisPckEditOptionsForPackage = 'Options for Package: %s';
+  lisPckEditOptionsForPackage = 'Options for Package %s';
   lisPckEditSavePackage = 'Save Package';
   lisPckEditCompilePackage = 'Compile package';
   lisPckEditAddFilesFromFileSystem = 'Add Files from File System';
@@ -5912,7 +5912,7 @@ resourcestring
     +'sources and compile, but functions like find declaration will show unit-'
     +'not-found errors. This can take a minute.';
   lisActive = 'Active';
-  lisBuildModes = 'Build mode:';
+  lisBuildModes = 'Build mode';
   lisEditBuildModes = 'Edit build modes';
   lisSelectBuildMode = 'Select build mode';
   lisFindOption = 'Find option';
