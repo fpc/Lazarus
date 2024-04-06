@@ -540,7 +540,7 @@ procedure TLazCompilationToolOptions.SetParsers(const AValue: TStrings);
 begin
   if FParsers.Equals(AValue) then Exit;
   {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetParsers ',AValue.Text]);
+  debugln(['TLazCompilationToolOptions.SetParsers ',AValue.Text]);
   {$ENDIF}
   FParsers.Assign(AValue);
   Owner.IncreaseChangeStamp;

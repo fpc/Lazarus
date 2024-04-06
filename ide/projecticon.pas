@@ -40,7 +40,7 @@ uses
   Graphics,
   // LazUtils
   LazFileUtils, LazFileCache, Laz2_XMLCfg, LazLoggerBase,
-  // IdeIntf
+  // BuildIntf
   ProjectResourcesIntf;
    
 type

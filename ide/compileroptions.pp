@@ -51,8 +51,6 @@ uses
   KeywordFuncLists, BasicCodeTools, LinkScanner, DirectoryCacher,
   // BuildIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, CompOptsIntf, IDEOptionsIntf,
-  // IDEIntf
-  SrcEditorIntf,
   // IdeConfig
   LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs, TransferMacros,
   IDEProcs, ModeMatrixOpts, CompOptsModes,
@@ -167,6 +165,7 @@ type
     FParsedCommandStamp: integer;
     FParsedCommand: string;
   protected
+    procedure DoClearErrorLines; virtual;
     procedure SetCommand(AValue: string); override;
     procedure SubstituteMacros(var s: string); virtual;
   public
@@ -3157,6 +3156,11 @@ end;
 
 { TCompilationToolOptions }
 
+procedure TCompilationToolOptions.DoClearErrorLines;
+begin
+  ; // Do nothing.
+end;
+
 procedure TCompilationToolOptions.SetCommand(AValue: string);
 begin
   inherited SetCommand(AValue);
@@ -3282,9 +3286,7 @@ var
   ExtTool: TAbstractExternalTool;
 begin
   if Command='' then exit(mrOk);
-  if SourceEditorManagerIntf<>nil then
-    SourceEditorManagerIntf.ClearErrorLines;
-
+  DoClearErrorLines;
   ExtTool:=CreateExtTool(WorkingDir,ToolTitle,CompileHint);
   if ExtTool=nil then exit(mrOk);
   ExtTool.Reference(Self,ClassName);
