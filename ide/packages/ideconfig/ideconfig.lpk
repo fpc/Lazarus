@@ -44,6 +44,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="EnvironmentOpts"/>
       </Item>
       <Item>
+        <Filename Value="etmakemsgparser.pas"/>
+        <UnitName Value="etMakeMsgParser"/>
+      </Item>
+      <Item>
         <Filename Value="idecmdline.pas"/>
         <UnitName Value="IDECmdLine"/>
       </Item>
@@ -93,6 +97,10 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <Filename Value="version.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="include\linux\lazconf.inc"/>
         <Type Value="Include"/>
       </Item>
     </Files>

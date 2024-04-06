@@ -36,7 +36,7 @@ uses
   KeywordFuncLists,
   // LazUtils
   FileUtil, LazFileUtils, AvgLvlTree,
-  // IDEIntf
+  // BuildIntf
   IDEExternToolIntf;
 
 const

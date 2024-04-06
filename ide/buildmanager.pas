@@ -52,11 +52,11 @@ uses
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
-  IDEProcs,
+  IDEProcs, etMakeMsgParser,
   // IDE
-  LazarusIDEStrConsts, DialogProcs,
-  EditDefineTree, ProjectResources, MiscOptions, ParsedCompilerOpts, CompilerOptions,
-  ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser, Compiler,
+  LazarusIDEStrConsts, DialogProcs, EditDefineTree, ProjectResources,
+  MiscOptions, ParsedCompilerOpts, CompilerOptions,
+  ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs;
   

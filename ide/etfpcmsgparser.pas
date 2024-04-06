@@ -45,9 +45,9 @@ uses
   // IDEIntf
   LazIDEIntf, IDEUtils,
   // IdeConfig
-  EnvironmentOpts, LazConf, TransferMacros, IDECmdLine, SearchPathProcs,
+  EnvironmentOpts, LazConf, TransferMacros, IDECmdLine, SearchPathProcs, etMakeMsgParser,
   // IDE
-  LazarusIDEStrConsts, etMakeMsgParser;
+  LazarusIDEStrConsts;
 
 const
   FPCMsgIDCompiling = 3104;

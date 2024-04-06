@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 23.07.2023
+   This file was generated on 06.04.2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -55,6 +55,7 @@ begin
     t.Dependencies.AddUnit('diffpatch');
     t.Dependencies.AddUnit('editortoolbaroptions');
     t.Dependencies.AddUnit('environmentopts');
+    t.Dependencies.AddUnit('etmakemsgparser');
     t.Dependencies.AddUnit('idecmdline');
     t.Dependencies.AddUnit('ideconfstrconsts');
     t.Dependencies.AddUnit('ideguicmdline');
@@ -73,6 +74,7 @@ begin
     T:=P.Targets.AddUnit('diffpatch.pas');
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');
     T:=P.Targets.AddUnit('environmentopts.pp');
+    P.Targets.AddImplicitUnit('etmakemsgparser.pas');
     T:=P.Targets.AddUnit('idecmdline.pas');
     T:=P.Targets.AddUnit('ideconfstrconsts.pas');
     T:=P.Targets.AddUnit('ideguicmdline.pas');
