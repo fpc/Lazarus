@@ -7,7 +7,7 @@ unit lr_ngcanvas;
 interface
 
 uses
-  Classes, SysUtils, Math, Types, LCLType, LCLProc, LazLogger, Graphics, FileUtil,
+  Classes, SysUtils, Math, Types, LCLType, LCLProc, LazLoggerBase, Graphics, FileUtil,
   fpjson, jsonparser, FPimage, FPImgCanv, FPCanvas, FPWriteBMP, FPWritePNG,
   fpparsettf, EasyLazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer;
 

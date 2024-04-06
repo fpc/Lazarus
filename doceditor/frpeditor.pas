@@ -27,7 +27,7 @@ unit frpeditor;
 interface
 
 uses SysUtils, Classes, DOM, Forms, Controls, ExtCtrls, ComCtrls,
-     StdCtrls, Dialogs, Menus, FPDEUtil, LazDEMsg, LazDEOpts, LazLogger;
+     StdCtrls, Dialogs, Menus, FPDEUtil, LazDEMsg, LazDEOpts, LazLoggerBase;
 
 Type
   { TPackageEditor }

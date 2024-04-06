@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazLogger, LazUtilities,
+  LazLoggerBase, LazUtilities,
   // BuildIntf
   IDEExternToolIntf,
   // IDE

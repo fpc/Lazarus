@@ -5,7 +5,7 @@ unit imguimain;
 interface
 
 uses
-  Classes, Forms, Controls, Graphics, ExtCtrls, OpenGLContext, LazLogger,
+  Classes, Forms, Controls, Graphics, ExtCtrls, OpenGLContext, LazLoggerBase,
   GL, GLExt, LCLType, fpImage, SysUtils;
 
 type

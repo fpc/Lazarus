@@ -77,7 +77,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLType, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources
-  {$ifdef debugspinex}, LazLogger{$endif};
+  {$ifdef debugspinex}, LazLoggerBase{$endif};
 
 
 

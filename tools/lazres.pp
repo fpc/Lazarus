@@ -40,7 +40,7 @@ program LazRes;
 {$ENDIF}
 
 uses
-  Classes, SysUtils, LazLogger, LResources, resource, reswriter,
+  Classes, SysUtils, LazLoggerBase, LResources, resource, reswriter,
   bitmapresource, groupresource, groupiconresource, groupcursorresource,
   LazFileUtils, LazUTF8;
 

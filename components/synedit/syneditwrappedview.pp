@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap,
   SynEditTypes, SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses,
-  Graphics, LazLogger, LazListClasses;
+  Graphics, LazLoggerBase, LazListClasses;
 
 type
   TLazSynEditLineWrapPlugin = class;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, pkgFppkg, fpmkunit, fprepos,
   // LazUtils
-  LazLogger, LazFileCache, FileUtil, LazFileUtils,
+  LazLoggerBase, LazFileCache, FileUtil, LazFileUtils,
   // IDE
   LazarusIDEStrConsts;
 

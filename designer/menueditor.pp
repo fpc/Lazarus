@@ -32,7 +32,7 @@ uses
   ActnList, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
   // LazUtils
-  LazLogger, LazTracer,
+  LazLoggerBase, LazTracer,
   // IdeIntf
   FormEditingIntf, IDEWindowIntf, IDEImagesIntf, ComponentEditors, IDEDialogs,
   IdeIntfStrConsts, PropEdits,

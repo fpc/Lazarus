@@ -53,7 +53,7 @@ interface
 uses
   SysUtils, Classes, Registry, Graphics, SynEditHighlighterFoldBase,
   SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase,
-  SynEditStrConst, SynEditMiscClasses, LazLogger;
+  SynEditStrConst, SynEditMiscClasses, LazLoggerBase;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);

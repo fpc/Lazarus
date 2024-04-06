@@ -9,7 +9,7 @@ uses
   // LCL
   Forms,
   // LazUtils
-  LazLogger,
+  LazLoggerBase,
   // IDEIntf
   IDEExternToolIntf, IDEMsgIntf, PackageIntf, LazIDEIntf,
   // IDE

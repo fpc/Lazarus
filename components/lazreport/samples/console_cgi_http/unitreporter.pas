@@ -5,7 +5,7 @@ unit UnitReporter;
 interface
 
 uses
-  Classes, SysUtils, LazLogger, Graphics, LR_Class, LR_DBSet, LR_BarC, LR_Shape,
+  Classes, SysUtils, LazLoggerBase, Graphics, LR_Class, LR_DBSet, LR_BarC, LR_Shape,
   LR_RRect, LR_ChBox, LR_CrossTab, LR_CodeReport,
   lr_e_pdf, lr_e_fclpdf, LR_E_TXT, LR_E_CSV, LR_E_HTM, LR_e_img, LR_e_htmldiv,
   le_e_spreadsheet,

@@ -34,7 +34,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, math, FileUtil, LazFileUtils, LazLogger, LazUTF8, SynEdit,
+  Classes, SysUtils, math, FileUtil, LazFileUtils, LazLoggerBase, LazUTF8, SynEdit,
   SynHighlighterXML, AnchorDocking, AnchorDockStorage, ADLayoutViewer, Forms,
   Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, Buttons, StdCtrls,
   XMLPropStorage;

@@ -49,7 +49,7 @@ uses
   LCLType, LCLIntf, Forms, Controls, Buttons, StdCtrls,
   ComCtrls, ExtCtrls, Menus, Graphics, Dialogs, ButtonPanel,
   // LazUtils
-  LazFileUtils, LazLogger, LazStringUtils,
+  LazFileUtils, LazLoggerBase, LazStringUtils,
   // SynEdit
   SynEdit,
   // Codetools

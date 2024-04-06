@@ -25,7 +25,7 @@ uses
   Classes, SysUtils, CustApp, WikiParser, WikiFormat,
   Wiki2XHTMLConvert, Wiki2HTMLConvert, Wiki2CHMConvert, Wiki2FPDocConvert,
   LazUtf8, LazFileUtils, FileUtil,
-  LazLogger, KeywordFuncLists;
+  LazLoggerBase, KeywordFuncLists;
 
 type
 
