@@ -25,14 +25,14 @@ Resourcestring
   pjsdNote = 'Note: %s';
   pjsdDownloading2 = 'Downloading';
   pjsdDownloadedBytes = 'Downloaded %s bytes';
-  pjsdDownloadPas2jsRelease = 'Download Pas2js Release?';
+  pjsdDownloadPas2jsRelease = 'Download Pas2JS Release?';
   pjsdUnableToCreateDirectory = 'Unable to create directory "%s".';
   pjsdConfirmation = 'Confirmation';
   pjsdChangeSimpleWebServerFromTo = 'Change Simple Web Server from%s"%s"%sto%s'
     +'"%s"%s?';
   pjsdWarning = 'Warning';
-  pjsdThePas2jsExecutableFilenameDoesNotLookLikePas2js = 'The pas2js '
-    +'executable filename "%s" does not look like pas2js';
+  pjsdThePas2jsExecutableFilenameDoesNotLookLikePas2js =
+    'The executable filename "%s" does not look like pas2js.';
   pjsdNewProjectFile = 'New project file';
   pjsdProjectPascalFile = 'Project Pascal file';
   pjsdPleaseChooseAFileWithFullPath = 'Please choose a file with full path.';
@@ -53,12 +53,10 @@ Resourcestring
   pjsdSelectPas2jsExecutable = 'Select pas2js executable';
   pjsdSelectPas2jsSourceDirectory = 'Select pas2js source directory';
   pjsdCancel = 'Cancel';
-  pjsdPas2jsInstaller = 'Pas2js Installer';
-  pjsdPas2jsExecutable2 = 'Pas2js executable';
-  pjsdSelectXExecutable = 'Select %s executable';
+  pjsdPas2jsInstaller = 'Pas2JS Installer';
   pjsdSelectNodeJSExecutable = 'Select Node.js executable';
-  pjsdUnableToFindPas2jsAt = 'Unable to find pas2js at "%s"';
-  pjsdPas2jsIsNotExecutableAt = 'pas2js is not executable at "%s"';
+  pjsdUnableToFindPas2jsAt = 'Unable to find "%s"';
+  pjsdPas2jsIsNotExecutableAt = '"%s" is not an executable';
   pjsdSelectBrowserExecutable = 'Select browser executable';
   pjsdSelectAtomTemplateDir = 'Select Atom package template directory';
   pjsdSelectElectronExecutable = 'Select Electron executable';
@@ -80,7 +78,7 @@ Resourcestring
   pjsdFreePascalCompilerUsedForCompilingToolsAndPas2jsIt = 'Free Pascal '
     +'Compiler used for compiling tools and pas2js itself';
   pjsdFPCExecutable = 'FPC executable:';
-  pjsdPas2jsSourceDirectory = 'Pas2js source directory';
+  pjsdPas2jsSourceDirectory = 'Pas2JS source directory';
   pjsdWebServerAndBrowserOptions = 'Web server and browser options';
   pjsdPortNumberToStartAllocatingFrom = 'Port number to start allocating '
     +'from, macro $(Pas2JSWebServerPort)';
@@ -163,6 +161,7 @@ Resourcestring
   pjsdButtonCancel = 'Cancel refresh';
 
   pjsRefreshClassFromHTML = 'Refresh class from HTML source';
+  pjsdInstallUpdatePas2JS = 'Install/Update Pas2JS';
   pjsRefreshAllClassesFromHTML = 'Refresh all classes from HTML source';
   rsHTTPRequestFailed = 'HTML request to service URL %s failed: %s';
 

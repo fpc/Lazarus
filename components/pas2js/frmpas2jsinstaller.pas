@@ -245,10 +245,10 @@ procedure TPas2jsInstallerDialog.FormCreate(Sender: TObject);
 begin
   Caption:=pjsdPas2jsInstaller;
 
-  Pas2jsExeGroupBox.Caption:=pjsdPas2jsExecutable2;
+  Pas2jsExeGroupBox.Caption:=pjsdPas2jsExecutable;
   Pas2jsExeBrowseButton.Hint:=pjsdBrowse;
 
-  Pas2jsSrcDirComboBox.Caption:=pjsdPas2jsSourceDirectory;
+  Pas2jsSrcDirGroupBox.Caption:=pjsdPas2jsSourceDirectory;
   Pas2jsSrcDirBrowseBtn.Hint:=pjsdBrowse;
 
   FPCGroupBox.Caption:=pjsdFreePascalCompilerUsedForCompilingToolsAndPas2jsIt;
