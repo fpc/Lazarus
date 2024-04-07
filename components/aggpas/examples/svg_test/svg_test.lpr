@@ -395,7 +395,8 @@ label
 BEGIN
  app.Construct(pix_format_bgra32 ,flip_y );
 
- fname:=app.file_source('../../svg' ,'tiger.svg' );
+ fname:=app.file_source('../../../svg' ,'tiger.svg' );
+ WriteLn(fname);
 
  if param_count > 0 then
   fname:=param_str(1 )

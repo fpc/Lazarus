@@ -450,20 +450,22 @@ VAR
  app : the_application;
  buf : array [0..255 ] of char;
  ext : string[10 ];
+ dir : string[30];
 
 BEGIN
  app.Construct(pix_format_bgr24 ,flip_y );
  app.caption_ ('AGG Example. Drawing Lines with Image Patterns (F1-Help)' );
 
- if not app.load_img(0 ,'1' ) or
-    not app.load_img(1 ,'2' ) or
-    not app.load_img(2 ,'3' ) or
-    not app.load_img(3 ,'4' ) or
-    not app.load_img(4 ,'5' ) or
-    not app.load_img(5 ,'6' ) or
-    not app.load_img(6 ,'7' ) or
-    not app.load_img(7 ,'8' ) or
-    not app.load_img(8 ,'9' ) then
+ dir := '../../line_patterns/';
+ if not app.load_img(0 ,dir+'1' ) or
+    not app.load_img(1 ,dir+'2' ) or
+    not app.load_img(2 ,dir+'3' ) or
+    not app.load_img(3 ,dir+'4' ) or
+    not app.load_img(4 ,dir+'5' ) or
+    not app.load_img(5 ,dir+'6' ) or
+    not app.load_img(6 ,dir+'7' ) or
+    not app.load_img(7 ,dir+'8' ) or
+    not app.load_img(8 ,dir+'9' ) then
   begin
    ext:=app._img_ext;
 

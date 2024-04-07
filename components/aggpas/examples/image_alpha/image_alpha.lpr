@@ -306,7 +306,7 @@ BEGIN
  app.Construct(pix_format_bgr24 ,flip_y );
  app.caption_ ('Image Affine Transformations with Alpha-function (F1-Help)' );
 
- img_name:='../spheres';
+ img_name:='../../spheres';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then
@@ -324,7 +324,7 @@ BEGIN
    img_name:=img_name + #0;
    ext     :=app._img_ext + #0;
 
-   if img_name = '../spheres'#0 then
+   if img_name = '../../spheres'#0 then
     begin
      sprintf(@buf[0 ]             ,'File not found: %s' ,ptrcomp(@img_name[1 ] ) );
      sprintf(@buf[StrLen(@buf ) ] ,'%s. '#13'Download http://www.antigrain.com/' ,ptrcomp(@ext[1 ] ) );

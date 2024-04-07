@@ -679,7 +679,8 @@ VAR
 
 BEGIN
  font_flip_y:=false;
- font_name  :='timesi.ttf';
+ font_name  := '../../FreeSerif.ttf'; //'timesi.ttf';
+ font_name := ExpandFileName(font_name);
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

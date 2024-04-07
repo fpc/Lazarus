@@ -531,7 +531,7 @@ BEGIN
  app.Construct(pix_format_bgra32 ,flip_y );
  app.caption_ ('AGG Example. Compositing Modes (F1-Help)' );
 
- img_name:='../compositing';
+ img_name:='../../compositing';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

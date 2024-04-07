@@ -404,7 +404,7 @@ BEGIN
  app.Construct(pix_format_bgra32 ,flip_y );
  app.caption_ ('AGG Example. Image Perspective Transformations (F1-Help)' );
 
- img_name:='../spheres';
+ img_name:='../../spheres';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

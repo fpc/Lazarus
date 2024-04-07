@@ -253,7 +253,7 @@ begin
  fsegm.approximation_scale_  (3.0 );
  fcurves.approximation_scale_(5.0 );
 
- if m_feng.load_font('../FreeSans.ttf' ,0 ,glyph_ren_outline ) then
+ if m_feng.load_font('../../FreeSans.ttf' ,0 ,glyph_ren_outline ) then
   begin
    x:=0.0;
    y:=3.0;

@@ -713,7 +713,7 @@ BEGIN
  app.Construct(pix_format_bgra32 ,flip_y );
  app.caption_ ('Agg2DDemo (F1-Help)' );
 
- img_name:='../spheres2';
+ img_name:='../../spheres2';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

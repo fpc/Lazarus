@@ -864,7 +864,7 @@ BEGIN
  app.Construct(pix_format_bgr24 ,flip_y );
  app.caption_ ('Image and Gradient Distortions (F1-Help)' );
 
- img_name:='../spheres';
+ img_name:='../../spheres';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

@@ -937,7 +937,7 @@ BEGIN
  app.Construct(pix_format_bgra32 ,flip_y );
  app.caption_ ('AGG Example - Flash Rasterizer with separate rendering (F1-Help)' );
 
- fname:='../shapes.txt';
+ fname:='../../shapes.txt';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then

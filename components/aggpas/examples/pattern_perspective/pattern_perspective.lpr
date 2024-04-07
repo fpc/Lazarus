@@ -390,7 +390,7 @@ BEGIN
  app.Construct(pix_format_bgr24 ,flip_y );
  app.caption_ ('AGG Example. Pattern Perspective Transformations (F1-Help)' );
 
- img_name:='../agg';
+ img_name:='../../agg';
 
 {$IFDEF WIN32 }
  if ParamCount > 0 then
