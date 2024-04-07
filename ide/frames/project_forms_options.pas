@@ -10,6 +10,8 @@ uses
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   // LazUtils
   LazUTF8,
+  // BuildIntf
+  ProjPackIntf,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf, IDEImagesIntf,
   // IDE

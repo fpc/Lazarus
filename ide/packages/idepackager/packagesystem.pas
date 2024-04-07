@@ -64,7 +64,7 @@ uses
   EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
   ParsedCompilerOpts, CompilerOptions, FppkgHelper,
   // IdePackager
-  IdePackagerStrConsts, PackageLinks, PackageDefs, PkgSysBasePkgs;
+  IdePackagerStrConsts, PackageLinks, PackageDefs, PkgSysBasePkgs, EditablePackage;
 
 const
   MakefileCompileVersion = 2;
@@ -123,10 +123,10 @@ type
 
   TLazPkgGraphBuildItem = class(TComponent)
   private
-    FLazPackage: TLazPackage;
+    FLazPackage: TEditablePackage;
     fTools: TFPList; // list of TExternalTools
     function GetTools(Index: integer): TAbstractExternalTool;
-    procedure SetLazPackage(AValue: TLazPackage);
+    procedure SetLazPackage(AValue: TEditablePackage);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -140,7 +140,7 @@ type
     function GetFirstOrDummy: TAbstractExternalTool;
     function GetLastOrDummy: TAbstractExternalTool;
     property Tools[Index: integer]: TAbstractExternalTool read GetTools; default;
-    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
+    property LazPackage: TEditablePackage read FLazPackage write SetLazPackage;
   end;
 
   { TLazPkgGraphExtToolData }
@@ -191,8 +191,11 @@ type
   private
     FAbortRegistration: boolean;
     fChanged: boolean;
-    FCodeToolsPackage: TLazPackage;
     FErrorMsg: string;
+    FItems: TFPList;   // unsorted list of TLazPackage
+    FLazarusBasePackages: TFPList;
+    // Lazarus Base Packages
+    FCodeToolsPackage: TLazPackage;
     FFCLPackage: TLazPackage;
     FBuildIntfPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
@@ -204,11 +207,12 @@ type
     FLazDebuggerGdbmiPackage: TLazPackage;
     FIdeDebuggerPackage: TLazPackage;
     FIdeConfigPackage: TLazPackage;
-    FItems: TFPList;   // unsorted list of TLazPackage
-    FLazarusBasePackages: TFPList;
     FLazUtilsPackage: TLazPackage;
     FLCLBasePackage: TLazPackage;
     FLCLPackage: TLazPackage;
+    FSynEditPackage: TLazPackage;
+    FLazControlsPackage: TLazPackage;
+    // Events
     FOnAddPackage: TPkgAddedEvent;
     FOnBeforeCompilePackages: TOnBeforeCompilePackages;
     FOnBeginUpdate: TNotifyEvent;
@@ -229,17 +233,15 @@ type
     FSrcBasePackages: TStringListUTF8Fast;
     FSrcBasePackagesFilename: string;
     FSrcBasePackagesFileChangeStep: integer;
-    FSynEditPackage: TLazPackage;
-    FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     FLockedChangeStamp: int64;
     FHasCompiledFpmakePackages: Boolean;
     FVerbosity: TPkgVerbosityFlags;
     FFindFileCache: TLazPackageGraphFileCache;
-    function CreateDefaultPackage: TLazPackage;
+    function CreateDefaultPackage: TEditablePackage;
     function GetCount: Integer;
-    function GetPackages(Index: integer): TLazPackage;
+    function GetPackages(Index: integer): TEditablePackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     procedure UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
@@ -248,7 +250,7 @@ type
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
-                                       Verbose: boolean): boolean;
+      Verbose: boolean): boolean;
     function GetPackageCompilerParams(APackage: TLazPackage): TStrings;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     CheckDependencies, SkipDesignTimePackages, GroupCompile: boolean;
@@ -289,8 +291,8 @@ type
     function MacroFunctionCTPkgIncPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgName(Data: Pointer): boolean;
     function MacroFunctionCTPkgOutDir(Data: Pointer): boolean;
-    function GetPackageFromMacroParameter(const TheID: string;
-                                          out APackage: TLazPackage): boolean;
+    function GetPackageFromMacroParameter(const TheID: string; out
+      APackage: TLazPackage): boolean;
     function SrcEditFileIsModified(const SrcFilename: string): boolean;
   public
     // searching
@@ -335,8 +337,8 @@ type
                                   Flags: TFindPackageFlags): TAVLTreeNode;
     function FindOpenPackage(Dependency: TPkgDependency;
                              Flags: TFindPackageFlags): TLazPackage;
-    function FindPackageWithName(const PkgName: string;
-                                 IgnorePackage: TLazPackage): TLazPackage;
+    function FindPackageWithName(const PkgName: string; IgnorePackage: TLazPackage
+      ): TLazPackage;
     function FindPackageWithFilename(const TheFilename: string): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
@@ -397,14 +399,13 @@ type
     procedure ConsistencyCheck;
   public
     // packages handling
-    function CreateNewPackage(const Prefix: string): TLazPackage;
+    function CreateNewPackage(const Prefix: string): TEditablePackage;
     procedure AddPackage(APackage: TLazPackage);
     procedure ReplacePackage(var OldPackage: TLazPackage; NewPackage: TLazPackage);
     procedure ClosePackage(APackage: TLazPackage);
     procedure CloseUnneededPackages;
-    procedure ChangePackageID(APackage: TLazPackage;
-                              const NewName: string; NewVersion: TPkgVersion;
-                              RenameDependencies, RenameMacros: boolean);
+    procedure ChangePackageID(APackage: TLazPackage; const NewName: string;
+      NewVersion: TPkgVersion; RenameDependencies, RenameMacros: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename: string; CompilerParams: TStrings;
                   Complete, MainPPUExists, ShowAbort: boolean): TModalResult;
@@ -463,8 +464,7 @@ type
     procedure RegisterComponentsHandler(const Page: string;
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
-    procedure RegisterStaticPackage(APackage: TLazPackage;
-                                    RegisterProc: TRegisterProc);
+    procedure RegisterStaticPackage(APackage: TLazPackage; RegisterProc: TRegisterProc);
     procedure CallRegisterProc(RegisterProc: TRegisterProc);
   public
     // dependency handling
@@ -488,7 +488,7 @@ type
     property QuietRegistration: boolean read FQuietRegistration
                                         write FQuietRegistration;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
-    property Packages[Index: integer]: TLazPackage read GetPackages; default; // see Count for the number
+    property Packages[Index: integer]: TEditablePackage read GetPackages; default; // see Count for the number
     property UpdateLock: integer read FUpdateLock;
     property Verbosity: TPkgVerbosityFlags read FVerbosity write FVerbosity;
 
@@ -935,7 +935,7 @@ begin
   Result:=TAbstractExternalTool(fTools[Index]);
 end;
 
-procedure TLazPkgGraphBuildItem.SetLazPackage(AValue: TLazPackage);
+procedure TLazPkgGraphBuildItem.SetLazPackage(AValue: TEditablePackage);
 begin
   if FLazPackage=AValue then Exit;
   if FLazPackage<>nil then
@@ -1016,9 +1016,9 @@ begin
   if Assigned(OnDependencyModified) then OnDependencyModified(Dependency);
 end;
 
-function TLazPackageGraph.GetPackages(Index: integer): TLazPackage;
+function TLazPackageGraph.GetPackages(Index: integer): TEditablePackage;
 begin
-  Result:=TLazPackage(FItems[Index]);
+  Result:=TEditablePackage(FItems[Index]);
 end;
 
 procedure TLazPackageGraph.SetRegistrationPackage(const AValue: TLazPackage);
@@ -1030,8 +1030,7 @@ begin
   RegisterNoIconProc:=@RegisterNoIconGlobalHandler;
 end;
 
-procedure TLazPackageGraph.UpdateBrokenDependenciesToPackage(
-  APackage: TLazPackage);
+procedure TLazPackageGraph.UpdateBrokenDependenciesToPackage(APackage: TLazPackage);
 var
   ANode: TAVLTreeNode;
   Dependency: TPkgDependency;
@@ -1055,10 +1054,9 @@ function TLazPackageGraph.OpenDependencyWithPackageLink(
   ): TModalResult;
 var
   AFilename: String;
-  NewPackage: TLazPackage;
+  NewPackage, OldPackage: TLazPackage;
   XMLConfig: TXMLConfig;
   Code: TCodeBuffer;
-  OldPackage: TLazPackage;
 begin
   NewPackage:=nil;
   XMLConfig:=nil;
@@ -1084,7 +1082,7 @@ begin
       PkgLink.LPKFileDate:=FileDateToDateTimeDef(FileAgeUTF8(AFilename));
       PkgLink.LPKFileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
-      NewPackage:=TLazPackage.Create;
+      NewPackage:=TEditablePackage.Create;
       NewPackage.BeginUpdate('TLazPackageGraph.OpenDependencyWithPackageLink');
       NewPackage.Filename:=AFilename;
       NewPackage.OnModifySilently := @PkgModify;
@@ -1189,8 +1187,7 @@ begin
   Result:=true;
 end;
 
-function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
-  ): TStrings;
+function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage): TStrings;
 begin
   Result:=APackage.CompilerOptions.MakeCompilerParams(
           APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths]);
@@ -1527,7 +1524,7 @@ begin
   NextNode:=FTree.FindSuccessor(ANode);
   if (NextNode=nil)
   or (SysUtils.CompareText(TLazPackage(ANode.Data).Name,
-                      TLazPackage(NextNode.Data).Name)<>0)
+                           TLazPackage(NextNode.Data).Name)<>0)
   then exit;
   Result:=NextNode;
 end;
@@ -1535,12 +1532,12 @@ end;
 function TLazPackageGraph.FindNodeOfDependency(Dependency: TPkgDependency;
   Flags: TFindPackageFlags): TAVLTreeNode;
 var
-  CurPkg: TLazPackage;
+  CurPkg: TEditablePackage;
 begin
   // search in all packages with the same name
   Result:=FindLowestPkgNodeByName(Dependency.PackageName);
   while Result<>nil do begin
-    CurPkg:=TLazPackage(Result.Data);
+    CurPkg:=TEditablePackage(Result.Data);
     // check version
     if (not (fpfIgnoreVersion in Flags))
     and (not Dependency.IsCompatible(CurPkg)) then begin
@@ -1616,8 +1613,7 @@ begin
 end;
 
 function TLazPackageGraph.FindPackageProvidingName(
-  FirstDependency: TPkgDependency;
-  const Name: string): TLazPackage;
+  FirstDependency: TPkgDependency; const Name: string): TLazPackage;
   
   function Search(ADependency: TPkgDependency; out Found: TLazPackage): boolean;
   begin
@@ -1770,8 +1766,8 @@ begin
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;
-  const TheUnitName: string;
-  WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
+  const TheUnitName: string; WithRequiredPackages, IgnoreDeleted: boolean
+  ): TPkgFile;
 var
   ADependency: TPkgDependency;
   ARequiredPackage: TLazPackage;
@@ -1901,8 +1897,7 @@ begin
   end;
 end;
 
-function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string
-  ): TLazPackage;
+function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string): TLazPackage;
 var
   Cnt: Integer;
   i: Integer;
@@ -1977,10 +1972,10 @@ begin
   end;
 end;
 
-function TLazPackageGraph.CreateNewPackage(const Prefix: string): TLazPackage;
+function TLazPackageGraph.CreateNewPackage(const Prefix: string): TEditablePackage;
 begin
   BeginUpdate(true);
-  Result:=TLazPackage.CreateAndClear;
+  Result:=TEditablePackage.CreateAndClear;
   Result.OnModifySilently:=@PkgModify;
   Result.Name:=CreateUniquePkgName(Prefix,nil);
   AddPackage(Result);
@@ -2232,9 +2227,9 @@ begin
   end;
 end;
 
-function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
+function TLazPackageGraph.CreateDefaultPackage: TEditablePackage;
 begin
-  Result:=TLazPackage.CreateAndClear;
+  Result:=TEditablePackage.CreateAndClear;
   with Result do begin
     Missing:=true;
     UserReadOnly:=true;
@@ -2401,7 +2396,8 @@ begin
   // save flags
   OldInstalled:=OldPackage.Installed;
   OldAutoInstall:=OldPackage.AutoInstall;
-  OldEditor:=OldPackage.Editor;
+  Assert(OldPackage is TEditablePackage, 'TLazPackageGraph.ReplacePackage: OldPackage is not TEditablePackage');
+  OldEditor:=TEditablePackage(OldPackage).Editor;
   if OldEditor<>nil then
     OldEditor.LazPackage:=nil;
   // migrate components
@@ -2418,7 +2414,7 @@ begin
   // add package to graph
   AddPackage(NewPackage);
   if OldEditor<>nil then
-    OldEditor.LazPackage:=NewPackage;
+    OldEditor.LazPackage:=TEditablePackage(NewPackage);
   EndUpdate;
 end;
 
@@ -2637,7 +2633,8 @@ end;
 procedure TLazPackageGraph.MarkNeededPackages;
 var
   StackPtr, i: Integer;
-  Pkg, RequiredPackage: TLazPackage;
+  Pkg: TLazPackage;
+  RequiredPackage: TLazPackage;
   Dependency: TPkgDependency;
   PkgStack: PLazPackage;
 begin
@@ -2989,8 +2986,8 @@ begin
     Result.Insert(0,APackage);
 end;
 
-function TLazPackageGraph.FindNotInstalledRegisterUnits(
-  APackage: TLazPackage; FirstDependency: TPkgDependency): TFPList;
+function TLazPackageGraph.FindNotInstalledRegisterUnits(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TFPList;
 // returns the list of required units (TPkgFile) with a Register procedure,
 // that are not installed in the IDE
 
@@ -3132,7 +3129,7 @@ var
     PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(Pkg1.Name);
     if PkgFile2<>nil then begin
       File1:=PkgFile2;
-      ConflictPkg:=Pkg1;
+      ConflictPkg:=TLazPackage(Pkg1);
       Result:=true;
       exit;
     end;
@@ -3151,7 +3148,7 @@ var
         // check if a unit of Pkg1 has the same name as Pkg2
         if SysUtils.CompareText(PkgFile1.Unit_Name,Pkg2.Name)=0 then begin
           File1:=PkgFile1;
-          ConflictPkg:=Pkg2;
+          ConflictPkg:=TLazPackage(Pkg2);
           Result:=true;
           exit;
         end;
@@ -3198,8 +3195,8 @@ end;
 
 function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
   FirstDependency: TPkgDependency; const Directory: string;
-  OnFindFPCUnit: TFindFPCUnitEvent;
-  var File1: TPkgFile; var ConflictPkg: TLazPackage): boolean;
+  OnFindFPCUnit: TFindFPCUnitEvent; var File1: TPkgFile;
+  var ConflictPkg: TLazPackage): boolean;
   
   function CheckUnitName(const AnUnitName: string): boolean;
   var Filename: string;
@@ -3225,7 +3222,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
     Pkg1.Flags:=Pkg1.Flags+[lpfVisited];
     Result:=CheckUnitName(Pkg1.Name);
     if Result then begin
-      ConflictPkg:=Pkg1;
+      ConflictPkg:=TLazPackage(Pkg1);
       exit;
     end;
     Cnt:=Pkg1.FileCount;
@@ -4223,7 +4220,7 @@ begin
             CurPkg:=TLazPackage(PkgList[i]);
             if CurPkg.AutoUpdate=pupManually then continue;
             BuildItem:=TLazPkgGraphBuildItem.Create(nil);
-            BuildItem.LazPackage:=CurPkg;
+            BuildItem.LazPackage:=TEditablePackage(CurPkg);
             BuildItems.Add(BuildItem);
             Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
             if Result<>mrOk then exit;
@@ -5940,7 +5937,7 @@ end;
 
 function TLazPackageGraph.GetBrokenDependenciesWhenChangingPkgID(
   APackage: TLazPackage; const NewName: string; NewVersion: TPkgVersion
-    ): TFPList;
+  ): TFPList;
 var
   Dependency: TPkgDependency;
 begin
@@ -6133,7 +6130,7 @@ begin
   // check if package is open, installed or will be installed
   if (APackage.Installed<>pitNope) or (APackage.AutoInstall<>pitNope)
   or APackage.Modified
-  or (APackage.Editor<>nil)
+  or ( (APackage is TEditablePackage) and (TEditablePackage(APackage).Editor<>nil) )
   or (APackage.HoldPackageCount>0) then
   begin
     exit;
@@ -6148,8 +6145,8 @@ begin
   Result:=false;
 end;
 
-function TLazPackageGraph.PackageCanBeReplaced(
-  OldPackage, NewPackage: TLazPackage): boolean;
+function TLazPackageGraph.PackageCanBeReplaced(OldPackage,
+  NewPackage: TLazPackage): boolean;
 begin
   if SysUtils.CompareText(OldPackage.Name,NewPackage.Name)<>0 then
     RaiseGDBException('TLazPackageGraph.PackageCanBeReplaced');
@@ -6543,7 +6540,7 @@ end;
 procedure TLazPackageGraph.OpenInstalledDependency(Dependency: TPkgDependency;
   InstallType: TPackageInstallType; var Quiet: boolean);
 var
-  BrokenPackage: TLazPackage;
+  BrokenPackage: TEditablePackage;
   CurResult: TModalResult;
   IsBasePkg: Boolean;
 begin
@@ -6552,7 +6549,7 @@ begin
     // a valid lpk file of the installed package can not be found
     IsBasePkg:=IsCompiledInBasePackage(Dependency.PackageName);
     // -> create a broken package
-    BrokenPackage:=TLazPackage.CreateAndClear;
+    BrokenPackage:=TEditablePackage.CreateAndClear;
     with BrokenPackage do begin
       BeginUpdate('TLazPackageGraph.OpenInstalledDependency');
       try
@@ -6672,7 +6669,7 @@ end;
 procedure TLazPackageGraph.IteratePackages(Flags: TFindPackageFlags;
   Event: TIteratePackagesEvent);
 var
-  CurPkg: TLazPackage;
+  CurPkg: TEditablePackage;
   i: Integer;
 begin
   // iterate opened packages
@@ -6698,11 +6695,11 @@ procedure TLazPackageGraph.IteratePackagesSorted(Flags: TFindPackageFlags;
   Event: TIteratePackagesEvent);
 var
   ANode: TAVLTreeNode;
-  CurPkg: TLazPackage;
+  CurPkg: TEditablePackage;
 begin
   ANode:=FTree.FindLowest;
   while ANode<>nil do begin
-    CurPkg:=TLazPackage(ANode.Data);
+    CurPkg:=TEditablePackage(ANode.Data);
     // check installed packages
     if ((fpfSearchInInstalledPckgs in Flags) and (CurPkg.Installed<>pitNope))
     // check autoinstall packages

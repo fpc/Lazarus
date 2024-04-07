@@ -92,8 +92,8 @@ uses
   ParsedCompilerOpts, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   BuildModesManager, ApplicationBundle, ExtTools, ExtToolsIDE,
   // projects
-  ProjectResources, Project, ProjectDefs, NewProjectDlg,
-  PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptorTypes,
+  ProjectResources, Project, ProjectDefs, NewProjectDlg, PublishModuleDlg,
+  ProjectInspector, PackageDefs, EditablePackage, ProjectDescriptorTypes,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IdeDebuggerWatchValueIntf, IDEHelpManager,
   CodeHelp, HelpOptions,
@@ -8875,7 +8875,7 @@ var
   i: integer;
   CurUnit: TUnitInfo;
   CurCode: TCodeBuffer;
-  CurPackage: TLazPackage;
+  CurPackage: TEditablePackage;
   Reload: TModalResult;
 begin
   Result:=mrOk;
@@ -8994,7 +8994,7 @@ begin
           // package should be reloaded
         else begin
           // keep package
-          CurPackage:=TLazPackage(APackageList.Objects[i]);
+          CurPackage:=TEditablePackage(APackageList.Objects[i]);
           if CurPackage.Editor=nil then begin
             if PkgBoss.DoOpenPackage(CurPackage,[pofMultiOpen],false)=mrAbort then
               exit;

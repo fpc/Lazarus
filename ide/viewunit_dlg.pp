@@ -50,6 +50,8 @@ uses
   CodeToolManager, FileProcs,
   // LazControls
   ListFilterEdit,
+  // BuildIntf
+  ProjPackIntf,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, TextTools,
   // IdeConfig

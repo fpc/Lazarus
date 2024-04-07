@@ -38,7 +38,7 @@ uses
   // IdeIntf
   PackageIntf,
   // IDE
-  PackageSystem, PackageDefs, LazarusIDEStrConsts;
+  PackageSystem, PackageDefs, EditablePackage, LazarusIDEStrConsts;
 
 type
 
@@ -55,13 +55,13 @@ type
     function GetPackageName: string;
   end;
 
-function ShowNewPkgComponentDialog(out aPackage: TLazPackage): TModalResult;
+function ShowNewPkgComponentDialog(out aPackage: TEditablePackage): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowNewPkgComponentDialog(out aPackage: TLazPackage): TModalResult;
+function ShowNewPkgComponentDialog(out aPackage: TEditablePackage): TModalResult;
 var
   NewPkgComponentDialog: TNewPkgComponentDialog;
   PkgName: String;
@@ -73,7 +73,7 @@ begin
     if Result<>mrOk then exit;
     PkgName:=NewPkgComponentDialog.GetPackageName;
     if PkgName<>'' then
-      aPackage:=PackageGraph.FindPackageWithName(PkgName,nil);
+      aPackage:=TEditablePackage(PackageGraph.FindPackageWithName(PkgName,nil));
   finally
     NewPkgComponentDialog.Free;
   end;

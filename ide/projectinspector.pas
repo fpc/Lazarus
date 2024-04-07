@@ -66,7 +66,7 @@ uses
   // Codetools
   CodeToolsStructs, CodeToolManager, FileProcs, CodeCache, CodeTree, FindDeclarationTool,
   // BuildIntf
-  ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
+  ProjPackIntf, ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, InputHistory,

@@ -52,7 +52,7 @@ uses
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs,
+  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, EditablePackage,
   PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ComponentPalette,
   AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
   MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;
@@ -116,25 +116,19 @@ var
 
 type
   TOnPkgEvent = function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
-  TOnAddPkgToProject =
-    function(Sender: TObject; APackage: TLazPackage;
-             OnlyTestIfPossible: boolean): TModalResult of object;
-  TOnCompilePackage =
-    function(Sender: TObject; APackage: TLazPackage;
-             CompileClean, CompileRequired: boolean): TModalResult of object;
-  TOnCreateNewPkgFile =
-    function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
-  TOnDeleteAmbiguousFiles =
-    function(Sender: TObject; APackage: TLazPackage;
-             const Filename: string): TModalResult of object;
-  TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
-  TOnOpenFile =
-    function(Sender: TObject; const Filename: string): TModalResult of object;
-  TOnOpenPkgFile =
-    function(Sender: TObject; PkgFile: TPkgFile): TModalResult of object;
-  TOnSavePackage =
-    function(Sender: TObject; APackage: TLazPackage;
-             SaveAs: boolean): TModalResult of object;
+  TOnAddPkgToProject = function(Sender: TObject; APackage: TLazPackage;
+                                OnlyTestIfPossible: boolean): TModalResult of object;
+  TOnCompilePackage = function(Sender: TObject; APackage: TLazPackage;
+                               CompileClean, CompileRequired: boolean): TModalResult of object;
+  TOnCreateNewPkgFile = function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
+  TOnDeleteAmbiguousFiles = function(Sender: TObject; APackage: TLazPackage;
+                                     const Filename: string): TModalResult of object;
+  TOnFreePkgEditor = procedure(APackage: TEditablePackage) of object;
+  TOnOpenFile    = function(Sender: TObject; const Filename: string): TModalResult of object;
+  TOnOpenPkgFile = function(Sender: TObject; PkgFile: TPkgFile): TModalResult of object;
+  TOnOpenPackage = function(Sender: TObject; APackage: TEditablePackage): TModalResult of object;
+  TOnSavePackage = function(Sender: TObject; APackage: TEditablePackage;
+                            SaveAs: boolean): TModalResult of object;
 
   TIDEPackageOptsDlgAction = (
     iodaRead,
@@ -265,7 +259,7 @@ type
     FIdleConnected: boolean;
     FCompiling: boolean;
     FCompileDesignTimePkg: boolean;
-    FLazPackage: TLazPackage;
+    FLazPackage: TEditablePackage;
     FNextSelectedPart: TPENodeData;// select this file/dependency on next update
     FFilesNode: TTreeNode;
     FRequiredPackagesNode: TTreeNode;
@@ -325,7 +319,8 @@ type
     procedure AddUserFiles(Filenames: TStrings);
   protected
     fFlags: TPEFlags;
-    procedure SetLazPackage(const AValue: TLazPackage); override;
+    function GetLazPackage: TEditablePackage; override;
+    procedure SetLazPackage(const AValue: TEditablePackage); override;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -372,7 +367,7 @@ type
     procedure EndUpdate;
     procedure UpdateAll(Immediately: boolean = false); override;
   public
-    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
+    //property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property FilesNode: TTreeNode read FFilesNode;
@@ -401,7 +396,7 @@ type
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnInstallPackage: TOnPkgEvent;
     FOnOpenFile: TOnOpenFile;
-    FOnOpenPackage: TOnPkgEvent;
+    FOnOpenPackage: TOnOpenPackage;
     FOnOpenPkgFile: TOnOpenPkgFile;
     FOnPublishPackage: TOnPkgEvent;
     FOnRevertPackage: TOnPkgEvent;
@@ -420,15 +415,17 @@ type
     function IndexOfPackage(const PkgName: string): integer;
     function FindEditor(Pkg: TLazPackage): TPackageEditorForm; overload;
     function FindEditor(const PkgName: string): TPackageEditorForm; overload;
-    function CreateEditor(Pkg: TLazPackage; DoDisableAutoSizing: boolean): TPackageEditorForm;
-    function OpenEditor(Pkg: TLazPackage; BringToFront: boolean): TPackageEditorForm;
+    function CreateEditor(Pkg: TEditablePackage; DoDisableAutoSizing: boolean
+      ): TPackageEditorForm;
+    function OpenEditor(Pkg: TEditablePackage; BringToFront: boolean
+      ): TPackageEditorForm;
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
     function OpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
     function OpenDependency(Sender: TObject;
                             Dependency: TPkgDependency): TModalResult;
-    procedure DoFreeEditor(Pkg: TLazPackage);
+    procedure DoFreeEditor(Pkg: TEditablePackage);
     function CreateNewFile(Sender: TObject; Params: TAddToPkgResult): TModalResult;
-    function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
+    function SavePackage(APackage: TEditablePackage; SaveAs: boolean): TModalResult;
     function RevertPackage(APackage: TLazPackage): TModalResult;
     function PublishPackage(APackage: TLazPackage): TModalResult;
     function CompilePackage(APackage: TLazPackage;
@@ -480,7 +477,7 @@ type
     property OnInstallPackage: TOnPkgEvent read FOnInstallPackage
                                                  write FOnInstallPackage;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
-    property OnOpenPackage: TOnPkgEvent read FOnOpenPackage
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
                                            write FOnOpenPackage;
     property OnOpenPkgFile: TOnOpenPkgFile read FOnOpenPkgFile
                                            write FOnOpenPkgFile;
@@ -1899,7 +1896,12 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
+function TPackageEditorForm.GetLazPackage: TEditablePackage;
+begin
+  Result:=FLazPackage;
+end;
+
+procedure TPackageEditorForm.SetLazPackage(const AValue: TEditablePackage);
 begin
   //force editor name change when package name changed!
   if (FLazPackage=Nil)
@@ -3105,7 +3107,7 @@ begin
   if Assigned(SourceEditorManagerIntf) and Assigned(PackageEditingInterface) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
   begin
     PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
-    if (LPackage is TLazPackage) and (TLazPackage(LPackage).Editor = Self) then
+    if (LPackage is TEditablePackage) and (TEditablePackage(LPackage).Editor = Self) then
       SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
   end;
 end;
@@ -3570,9 +3572,10 @@ begin
   if Assigned(SourceEditorManagerIntf.ActiveEditor) then
   begin
     PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
-    if (LPackage is TLazPackage) and (TLazPackage(LPackage).Editor is TPackageEditorForm) then
+    if (LPackage is TEditablePackage)
+    and (TEditablePackage(LPackage).Editor is TPackageEditorForm) then
     begin
-      LForm := TPackageEditorForm(TLazPackage(LPackage).Editor);
+      LForm := TPackageEditorForm(TEditablePackage(LPackage).Editor);
       LForm.SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
     end;
   end;
@@ -3620,7 +3623,7 @@ begin
     Result:=nil;
 end;
 
-function TPackageEditors.CreateEditor(Pkg: TLazPackage;
+function TPackageEditors.CreateEditor(Pkg: TEditablePackage;
   DoDisableAutoSizing: boolean): TPackageEditorForm;
 begin
   Result:=FindEditor(Pkg);
@@ -3645,7 +3648,7 @@ begin
   end;
 end;
 
-function TPackageEditors.OpenEditor(Pkg: TLazPackage; BringToFront: boolean
+function TPackageEditors.OpenEditor(Pkg: TEditablePackage; BringToFront: boolean
   ): TPackageEditorForm;
 begin
   Result:=CreateEditor(Pkg,true);
@@ -3675,14 +3678,14 @@ end;
 function TPackageEditors.OpenDependency(Sender: TObject;
   Dependency: TPkgDependency): TModalResult;
 var
-  APackage: TLazPackage;
+  APackage: TEditablePackage;
 begin
   Result:=mrCancel;
   if PackageGraph.OpenDependency(Dependency,false)=lprSuccess then
   begin
     if Dependency.DependencyType=pdtLazarus then
     begin
-      APackage:=Dependency.RequiredPackage;
+      APackage:=TEditablePackage(Dependency.RequiredPackage);
       if Assigned(OnOpenPackage) then
         Result:=OnOpenPackage(Sender,APackage);
     end
@@ -3691,7 +3694,7 @@ begin
   end;
 end;
 
-procedure TPackageEditors.DoFreeEditor(Pkg: TLazPackage);
+procedure TPackageEditors.DoFreeEditor(Pkg: TEditablePackage);
 begin
   if FItems<>nil then
     FItems.Remove(Pkg.Editor);
@@ -3719,7 +3722,7 @@ begin
     Result:=mrCancel;
 end;
 
-function TPackageEditors.SavePackage(APackage: TLazPackage;
+function TPackageEditors.SavePackage(APackage: TEditablePackage;
   SaveAs: boolean): TModalResult;
 begin
   if Assigned(OnSavePackage) then

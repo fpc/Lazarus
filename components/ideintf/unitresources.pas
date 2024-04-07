@@ -21,10 +21,11 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLMemManager, Forms, LResources;
+  LCLMemManager, Forms, LResources,
+  // BuildIntf
+  ProjPackIntf;
 
 type
-
   { TUnitResourcefileFormat }
 
   TUnitResourcefileFormat = class
@@ -70,6 +71,8 @@ var
 
 procedure RegisterUnitResourcefileFormat(AResourceFileFormat: TUnitResourcefileFormatClass);
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
+function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
+
 
 implementation
 
@@ -101,6 +104,22 @@ end;
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 begin
   Result := GUnitResourcefileFormats;
+end;
+
+function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
+begin
+  Result:=pfcbcNone;
+  if aClass=nil then exit;
+  if aClass.InheritsFrom(TForm) then
+    Result:=pfcbcForm
+  else if aClass.InheritsFrom(TFrame) then
+    Result:=pfcbcFrame
+  else if aClass.InheritsFrom(TDataModule) then
+    Result:=pfcbcDataModule
+  else if aClass.InheritsFrom(TCustomForm) then
+    Result:=pfcbcCustomForm
+  else
+    Result:=pfcbcOther;
 end;
 
 { TCustomLFMUnitResourceFileFormat }

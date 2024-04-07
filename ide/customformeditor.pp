@@ -49,7 +49,7 @@ uses
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // BuildIntf
-  ComponentReg, ProjectIntf,
+  ComponentReg, ProjPackIntf, ProjectIntf,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,

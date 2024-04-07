@@ -42,6 +42,11 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="idepackagerstrconsts.pas"/>
         <UnitName Value="IdePackagerStrConsts"/>
       </Item>
+      <Item>
+        <Filename Value="editablepackage.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="EditablePackage"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

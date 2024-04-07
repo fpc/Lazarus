@@ -50,7 +50,7 @@ uses
   // IdeConfig
   IDEProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
   // IDE
-  DialogProcs, Project, PackageDefs, PackageSystem, PackageEditor,
+  DialogProcs, Project, PackageDefs, EditablePackage, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts, SourceFileManager,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
@@ -173,7 +173,7 @@ type
   // Now they can't share much code.
   TConvertDelphiProjPack = class(TConvertDelphiPBase)
   private
-    // Either Project or LazPackage. Typecasted to right types in property getter.
+    // Either Project or EditablePackage. Typecasted to right types in property getter.
     fProjPack: iProjPack;
     fLazPInfoFilename: string;         // .lpi or .lpk file name
     fDelphiPFilename: string;          // .dpr or .dpk file name
@@ -259,8 +259,8 @@ type
   TConvertDelphiPackage = class(TConvertDelphiProjPack)
   private
     function AddUnit(AFileName: string): TModalResult;
-    function GetLazPackage: TLazPackage;
-    procedure SetLazPackage(const AValue: TLazPackage);
+    function GetLazPackage: TEditablePackage;
+    procedure SetLazPackage(const AValue: TEditablePackage);
   protected
     function CreateInstance: TModalResult; override;
     function CreateMainSourceFile: TModalResult; override;
@@ -276,7 +276,7 @@ type
     constructor Create(const aPackageFilename: string);
     destructor Destroy; override;
   public
-    property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
+    property LazPackage: TEditablePackage read GetLazPackage write SetLazPackage;
   end;
 
   { TConvertedDelphiProjectDescriptor }
@@ -2116,12 +2116,12 @@ begin
   Result:=mrOK;
 end;
 
-function TConvertDelphiPackage.GetLazPackage: TLazPackage;
+function TConvertDelphiPackage.GetLazPackage: TEditablePackage;
 begin
-  Result:=fProjPack as TLazPackage;
+  Result:=fProjPack as TEditablePackage;
 end;
 
-procedure TConvertDelphiPackage.SetLazPackage(const AValue: TLazPackage);
+procedure TConvertDelphiPackage.SetLazPackage(const AValue: TEditablePackage);
 begin
   fProjPack:=AValue;
 end;

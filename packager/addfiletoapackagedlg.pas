@@ -47,7 +47,7 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, PackageIntf,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, EnvironmentOpts;
+  LazarusIDEStrConsts, PackageDefs, EditablePackage, PackageSystem, EnvironmentOpts;
 
 type
 
@@ -148,7 +148,8 @@ begin
       // extend unit and include search path
       if not APackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
       if not APackage.ExtendIncSearchPath(NewIncPaths) then exit;
-      if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
+      if (APackage is TEditablePackage) and (TEditablePackage(APackage).Editor<>nil) then
+        TEditablePackage(APackage).Editor.UpdateAll(true);
     finally
       APackage.EndUpdate('TAddFileToAPackageDialog.OkButtonClick');
     end;

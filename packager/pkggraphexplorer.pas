@@ -49,7 +49,7 @@ uses
   IDECommands, PackageIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, Project, DependencyGraphOptions,
-  EnvironmentOpts, MainIntf, PackageDefs, PackageSystem, PackageEditor,
+  EnvironmentOpts, MainIntf, PackageDefs, EditablePackage, PackageSystem, PackageEditor,
   CleanPkgDeps;
   
 const
@@ -100,13 +100,12 @@ type
     ImgIndexUninstallPackage: integer;
     ImgIndexCyclePackage: integer;
     ImgIndexMissingPackage: integer;
-    FOnOpenPackage: TOnPkgEvent;
+    FOnOpenPackage: TOnOpenPackage;
     FChangedDuringLock: boolean;
     FUpdateLock: integer;
     FUpdatingSelection: boolean;
     procedure DoLoadedOpts(Sender: TObject);
-    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; {%H-}AGraph: TLvlGraph
-      );
+    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; {%H-}AGraph: TLvlGraph);
     procedure OpenDependencyOwner(DependencyOwner: TObject);
     procedure SetupComponents;
     function GetPackageImageIndex(Pkg: TLazPackage; InstallPkgList: TFPList): integer;
@@ -132,10 +131,10 @@ type
     function FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;
     procedure ShowPath(PathList: TFPList);
   public
-    property OnOpenPackage: TOnPkgEvent read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
     property OnOpenProject: TOnOpenProject read FOnOpenProject write FOnOpenProject;
     property OnUninstallPackage: TOnPkgEvent read FOnUninstallPackage
-                                                    write FOnUninstallPackage;
+                                            write FOnUninstallPackage;
   end;
   
 var
@@ -171,7 +170,7 @@ begin
   Pkg:=GetSelectedPackage;
   if Pkg=nil then exit;
   if Assigned(OnOpenPackage) then
-    OnOpenPackage(Self,Pkg);
+    OnOpenPackage(Self,TEditablePackage(Pkg));
 end;
 
 procedure TPkgGraphExplorerDlg.CleanPkgDepsMenuItemClick(Sender: TObject);
@@ -206,7 +205,7 @@ begin
         if Dependency=nil then continue;
         // open package editor
         if Assigned(OnOpenPackage) then
-          OnOpenPackage(Self,Pkg);
+          OnOpenPackage(Self,TEditablePackage(Pkg));
         // remove dependency
         PackageGraph.RemoveDependencyFromPackage(Pkg,Dependency,true);
       end;
@@ -292,7 +291,7 @@ begin
   Pkg:=FindPackage(TVNode.Text);
   if Pkg=nil then exit;
   if Assigned(OnOpenPackage) then
-    OnOpenPackage(Self,Pkg);
+    OnOpenPackage(Self,TEditablePackage(Pkg));
 end;
 
 procedure TPkgGraphExplorerDlg.PkgTreeViewExpanding(Sender: TObject;
@@ -720,9 +719,9 @@ end;
 
 procedure TPkgGraphExplorerDlg.OpenDependencyOwner(DependencyOwner: TObject);
 begin
-  if DependencyOwner is TLazPackage then begin
+  if DependencyOwner is TEditablePackage then begin
     if Assigned(OnOpenPackage) then
-      OnOpenPackage(Self,TLazPackage(DependencyOwner));
+      OnOpenPackage(Self,TEditablePackage(DependencyOwner));
   end else if DependencyOwner is TProject then begin
     if Assigned(OnOpenProject) then
       OnOpenProject(Self,TProject(DependencyOwner));

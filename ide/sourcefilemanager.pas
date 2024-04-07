@@ -46,8 +46,8 @@ uses
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // BuildIntf
-  NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
-  ComponentReg, BaseIDEIntf,
+  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
+  IDEExternToolIntf, ComponentReg, BaseIDEIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,

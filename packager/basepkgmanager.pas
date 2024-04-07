@@ -44,13 +44,18 @@ uses
   MemCheck,
 {$ENDIF}
   TypInfo, Classes, SysUtils,
+  // LazUtils
   LazFileUtils, LazLoggerBase,
+  // LCL
   Forms, ComCtrls,
+  // BuildIntf
   PackageIntf, BaseIDEIntf,
+  // IdeIntf
   MenuIntf, IdeIntfStrConsts,
+  // IdeConfig
   EnvironmentOpts, CompilerOptions,
-  LazarusIDEStrConsts,
-  PackageDefs, PackageSystem, Project;
+  // IDE
+  LazarusIDEStrConsts, PackageDefs, EditablePackage, PackageSystem, Project;
 
 type
   { TBasePkgManager }
@@ -110,15 +115,15 @@ type
     procedure ProjectInspectorCopyMoveFiles(Sender: TObject); virtual; abstract;
 
     // package editors
-    function CanClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function CanClosePackageEditor(APackage: TEditablePackage): TModalResult; virtual; abstract;
     function CanCloseAllPackageEditors: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
-    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
+    function DoOpenPackage(APackage: TEditablePackage; Flags: TPkgOpenFlags;
                            ShowAbort: boolean): TModalResult; virtual; abstract;
-    function DoSavePackage(APackage: TLazPackage;
+    function DoSavePackage(APackage: TEditablePackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
-    function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function DoClosePackageEditor(APackage: TEditablePackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;

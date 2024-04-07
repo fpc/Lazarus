@@ -41,7 +41,7 @@ uses
   // IdeIntf
   IDEWindowIntf, PackageIntf,
   // IDE
-  PackageDefs, LazarusIDEStrConsts, PackageSystem;
+  LazarusIDEStrConsts, PackageDefs, EditablePackage, PackageSystem;
 
 type
 
@@ -60,19 +60,19 @@ type
     procedure PkgListViewKeyPress(Sender: TObject; var Key: char);
     procedure PkgListViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
   private
-    Package: TLazPackage;
+    Package: TEditablePackage;
   public
     procedure UpdateSelection;
     procedure UpdatePackageList;
   end;
   
-function ShowOpenLoadedPkgDlg(out OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(out OpenPackage: TEditablePackage): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowOpenLoadedPkgDlg(out OpenPackage: TLazPackage): TModalResult;
+function ShowOpenLoadedPkgDlg(out OpenPackage: TEditablePackage): TModalResult;
 var
   Dlg: TOpenLoadedPackagesDlg;
 begin
@@ -139,7 +139,7 @@ procedure TOpenLoadedPackagesDlg.OpenButtonClick(Sender: TObject);
 begin
   if Assigned(PkgListView.Selected) then
   begin
-    Package:=PackageGraph.FindPackageWithName(PkgListView.Selected.Caption,nil);
+    Package:=TEditablePackage(PackageGraph.FindPackageWithName(PkgListView.Selected.Caption,nil));
     if Assigned(Package) then
     begin
       ModalResult:=mrOk;

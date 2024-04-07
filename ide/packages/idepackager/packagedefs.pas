@@ -39,8 +39,6 @@ interface
 uses
   // FCL
   Classes, SysUtils, Contnrs, TypInfo, AVL_Tree, System.UITypes,
-  // LCL
-  Forms,
   // Codetools
   LazConfigStorage, DefineTemplates, CodeToolManager,
   CodeCache, CodeToolsCfgScript, CodeToolsStructs, BasicCodeTools,
@@ -49,17 +47,15 @@ uses
   LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
   MacroIntf, MacroDefIntf, CompOptsIntf, IDEOptionsIntf, PublishModuleIntf, ComponentReg,
-  PackageDependencyIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
+  PackageDependencyIntf, ProjPackIntf, PackageIntf, FppkgIntf, LazMsgWorker, BaseIDEIntf,
   // IdeConfig
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs,
   IdeXmlConfigProcs, ParsedCompilerOpts, CompilerOptions, EditDefineTree,
-  ProjPackCommon, FppkgHelper,
-  IdePackagerStrConsts;
+  ProjPackCommon, FppkgHelper, IdePackagerStrConsts;
 
 type
   TLazPackage = class;
   TPkgFile = class;
-  TBasePackageEditor = class;
   TPkgDependency = class;
 
   TPackageUpdatePolicy = (
@@ -105,37 +101,6 @@ type
   TPkgComponentClass = class of TPkgComponent;
 
   { TPkgFile }
-
-type
-  TPFComponentBaseClass = (
-    pfcbcNone,      // unknown
-    pfcbcForm,      // is TForm
-    pfcbcFrame,     // is TFrame
-    pfcbcDataModule,// is TDataModule
-    pfcbcCustomForm,// is TCustomForm (not TForm)
-    pfcbcOther      // is a designer base class, see ResourceBaseClassname
-    );
-    
-const
-  PFComponentBaseClassNames: array[TPFComponentBaseClass] of string = (
-    'None',
-    'Form',
-    'Frame',
-    'DataModule',
-    'CustomForm',
-    'Other'
-    );
-  DefaultResourceBaseClassnames: array[TPFComponentBaseClass] of string = (
-    '',
-    'TForm',
-    'TFrame',
-    'TDataModule',
-    'TCustomForm',
-    ''
-    );
-
-function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
-function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
 
 type
   TPkgFileFlag = (
@@ -536,7 +501,6 @@ type
     FMissing: boolean;
     FModifiedLock: integer;
     FOutputStateFile: string;
-    FPackageEditor: TBasePackageEditor;
     FPOOutputDirectory: string;
     FProvides: TStrings;
     fPublishOptions: TPublishPackageOptions;
@@ -579,7 +543,6 @@ type
     procedure SetPOOutputDirectory(const AValue: string);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetRegistered(const AValue: boolean);
-    procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetUseLegacyLists(const AUseLegacyLists: Boolean);
@@ -746,7 +709,6 @@ type
     property DefineTemplates: TLazPackageDefineTemplates read FDefineTemplates
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
-    property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
@@ -789,19 +751,6 @@ type
   end;
 
   PLazPackage = ^TLazPackage;
-
-
-  { TBasePackageEditor }
-
-  TBasePackageEditor = class(TForm)
-  protected
-    function GetLazPackage: TLazPackage; virtual;
-    procedure SetLazPackage(const AValue: TLazPackage); virtual; abstract;
-  public
-    function CanCloseEditor: TModalResult; virtual; abstract;
-    procedure UpdateAll(Immediately: boolean = false); virtual; abstract;
-    property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
-  end;
 
 
 const
@@ -1105,29 +1054,6 @@ begin
       end;
     end;
   end;
-end;
-
-function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
-begin
-  for Result:=low(TPFComponentBaseClass) to high(TPFComponentBaseClass) do
-    if SysUtils.CompareText(PFComponentBaseClassNames[Result],s)=0 then exit;
-  Result:=pfcbcNone;
-end;
-
-function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
-begin
-  Result:=pfcbcNone;
-  if aClass=nil then exit;
-  if aClass.InheritsFrom(TForm) then
-    Result:=pfcbcForm
-  else if aClass.InheritsFrom(TFrame) then
-    Result:=pfcbcFrame
-  else if aClass.InheritsFrom(TDataModule) then
-    Result:=pfcbcDataModule
-  else if aClass.InheritsFrom(TCustomForm) then
-    Result:=pfcbcCustomForm
-  else
-    Result:=pfcbcOther;
 end;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
@@ -2600,8 +2526,6 @@ begin
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
   end;
-  if Modified and (Editor<>nil) then
-    Editor.UpdateAll(false);
 end;
 
 procedure TLazPackage.SetName(const NewName: TComponentName);
@@ -2610,12 +2534,6 @@ begin
   inherited SetName(NewName);
   FDefineTemplates.IDChanged;
   Modified:=true;
-end;
-
-procedure TLazPackage.SetPackageEditor(const AValue: TBasePackageEditor);
-begin
-  if FPackageEditor=AValue then exit;
-  FPackageEditor:=AValue;
 end;
 
 procedure TLazPackage.SetPackageType(const AValue: TLazPackageType);
@@ -4648,13 +4566,6 @@ destructor TPkgLastCompileStats.Destroy;
 begin
   FreeAndNil(Params);
   inherited Destroy;
-end;
-
-{ TBasePackageEditor }
-
-function TBasePackageEditor.GetLazPackage: TLazPackage;
-begin
-  Result:=nil;
 end;
 
 { TPublishPackageOptions }

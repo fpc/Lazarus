@@ -55,7 +55,7 @@ uses
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
   LazLoggerBase, LazTracer, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
   // BuildIntf
-  BaseIDEIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
+  BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory, SrcEditorIntf,

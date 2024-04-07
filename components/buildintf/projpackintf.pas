@@ -30,7 +30,36 @@ uses
   IDEOptionsIntf, CompOptsIntf;
 
 type
+  TPFComponentBaseClass = (
+    pfcbcNone,      // unknown
+    pfcbcForm,      // is TForm
+    pfcbcFrame,     // is TFrame
+    pfcbcDataModule,// is TDataModule
+    pfcbcCustomForm,// is TCustomForm (not TForm)
+    pfcbcOther      // is a designer base class, see ResourceBaseClassname
+    );
 
+const
+  PFComponentBaseClassNames: array[TPFComponentBaseClass] of string = (
+    'None',
+    'Form',
+    'Frame',
+    'DataModule',
+    'CustomForm',
+    'Other'
+    );
+  DefaultResourceBaseClassnames: array[TPFComponentBaseClass] of string = (
+    '',
+    'TForm',
+    'TFrame',
+    'TDataModule',
+    'TCustomForm',
+    ''
+    );
+
+function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
+
+type
   {$M+}
   TIDEOwnedFile = class
   protected
@@ -66,6 +95,13 @@ type
 
 
 implementation
+
+function StrToComponentBaseClass(const s: string): TPFComponentBaseClass;
+begin
+  for Result:=low(TPFComponentBaseClass) to high(TPFComponentBaseClass) do
+    if SysUtils.CompareText(PFComponentBaseClassNames[Result],s)=0 then exit;
+  Result:=pfcbcNone;
+end;
 
 { TIDEProjPackBase }
 

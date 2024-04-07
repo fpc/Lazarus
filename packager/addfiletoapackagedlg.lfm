@@ -7,28 +7,28 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   Caption = 'AddFileToAPackageDialog'
   ClientHeight = 272
   ClientWidth = 469
-  OnClose = AddFileToAPackageDlgClose
-  OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '4.99.0.0'
+  OnClose = AddFileToAPackageDlgClose
+  OnCreate = FormCreate
   object FileGroupBox: TGroupBox
     Left = 6
-    Height = 54
+    Height = 63
     Top = 6
     Width = 457
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FileGroupBox'
-    ClientHeight = 36
-    ClientWidth = 453
+    ClientHeight = 43
+    ClientWidth = 455
     TabOrder = 0
     object FileNameEdit: TEdit
       Left = 6
-      Height = 20
+      Height = 31
       Top = 6
-      Width = 439
+      Width = 441
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ReadOnly = True
@@ -38,44 +38,44 @@ object AddFileToAPackageDialog: TAddFileToAPackageDialog
   end
   object PackagesGroupBox: TGroupBox
     Left = 6
-    Height = 77
-    Top = 66
+    Height = 90
+    Top = 75
     Width = 457
     Align = alTop
     Anchors = [akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'PackagesGroupBox'
-    ClientHeight = 59
-    ClientWidth = 453
+    ClientHeight = 70
+    ClientWidth = 455
     TabOrder = 1
     object PackagesComboBox: TComboBox
       Left = 6
-      Height = 23
+      Height = 31
       Top = 6
-      Width = 441
+      Width = 443
       Align = alTop
       BorderSpacing.Around = 6
-      ItemHeight = 14
+      ItemHeight = 0
       TabOrder = 0
       Text = 'PackagesComboBox'
     end
     object ShowAllCheckBox: TCheckBox
       Left = 6
-      Height = 18
-      Top = 35
-      Width = 441
+      Height = 21
+      Top = 43
+      Width = 443
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'ShowAllCheckBox'
-      OnClick = ShowAllCheckBoxClick
       TabOrder = 1
+      OnClick = ShowAllCheckBoxClick
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 240
+    Height = 34
+    Top = 232
     Width = 457
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
