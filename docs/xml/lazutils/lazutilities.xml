@@ -56,6 +56,48 @@ Added in LazUtils version 3.0.
 </seealso>
 </element>
 
+<element name="TStringsSortCompare">
+<short>
+Specifies a comparison function type for string values in a TStrings instance.
+</short>
+<descr>
+<p>
+TStringsSortCompare is an Integer function type used to compare string values 
+to determine the relative sort order. The return value indicates the relative 
+sort order for the compared items, and normally contains a value like the one 
+returned from CompareText. For example:
+</p>
+<dl>
+<dt>&lt;0</dt>
+<dd>Item1 has a value that comes before Item2.</dd>
+<dt>0</dt>
+<dd>Item1 and Item2 have the same value.</dd>
+<dt>&gt;0</dt>
+<dd>Item1 has a value that comes after Item2.</dd>
+</dl>
+<p>
+The address for a TStringsSortCompare type is passed as an argument to the 
+MergeSort routine.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0. Replaces the TStringsSortCompare type in the 
+<file>lclproc.pas</file> unit (<b>LCL</b>).
+</version>
+<seealso>
+<link id="MergeSort"/>
+</seealso>
+</element>
+<element name="TStringsSortCompare.Result">
+<short>Integer with the relative sort order for the compared values.</short>
+</element>
+<element name="TStringsSortCompare.Item1">
+<short>First string value for the comparison.</short>
+</element>
+<element name="TStringsSortCompare.Item2">
+<short>Second string value for the comparison.</short>
+</element>
+
 <element name="GetSkipCheckByKey">
 <short>
 Gets and executes the function assigned to an implementation variable using 
@@ -281,6 +323,151 @@ the result to the <var>Double</var> data type used as the return value.
 </element>
 <element name="StrToDouble.s">
 <short>String value converted in the routine.</short>
+</element>
+
+<element name="CreateFirstIdentifier">
+<short>
+Gets the name for the first identifier represented by the value specified in 
+Identifier.
+</short>
+<descr>
+<p>
+<var>CreateFirstIdentifier</var> removes any numeric characters found at the 
+end of <var>Identifier</var>, and replaces them with the value '1'.
+</p>
+<p>
+For example:
+</p>
+<code>
+AIdent := CreateFirstIdentifier('Edit9');
+// AIdent = 'Edit1'
+</code>
+<p>
+CreateFirstIdentifier is used to implement code macros, key mappings, and menu 
+items in the Lazarus IDE.
+</p>
+<p>
+Use CreateNextIdentifier to get the next name for a specified identifier value.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0. Replaces the CreateFirstIdentifier routine in 
+the <file>lclproc.pas</file> unit (<b>LCL</b>).
+</version>
+<seealso>
+<link id="CreateNextIdentifier"/>
+</seealso>
+</element>
+<element name="CreateFirstIdentifier.Result">
+<short>
+First identifier name for the value specified in Identifier.
+</short>
+</element>
+<element name="CreateFirstIdentifier.Identifier">
+<short>
+Name for an identifier used as the base name in the generated value.
+</short>
+</element>
+
+<element name="CreateNextIdentifier">
+<short>
+Gets the name for the next identifier following the value specified in 
+Identifier.
+</short>
+<descr>
+<p>
+<var>CreateNextIdentifier</var> examines the value in <var>Identifier</var> to 
+get the numeric characters in the suffix for the identifier name. It converts 
+the digits to an Integer and increments the value. The value is converted to a 
+String and appended as the numeric suffix for the base identifier name.
+</p>
+<p>
+For example:
+</p>
+<code>
+AIdent := CreateNextIdentifier('Edit19');
+// AIdent = 'Edit20'
+</code>
+<p>
+CreateNextIdentifier is used to implement commands, menu items, component 
+editors, and design-time layouts in the Lazarus IDE.
+</p>
+<p>
+Use CreateFirstIdentifier to get the first identifier name for a specified 
+value.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0. Replaces the CreateNextIdentifier routine in the 
+<file>lclproc.pas</file> unit (<b>LCL</b>).
+</version>
+<seealso>
+<link id="CreateFirstIdentifier"/>
+</seealso>
+</element>
+<element name="CreateNextIdentifier.Result">
+Next identifier name for the value specified in Identifier.
+</element>
+<element name="CreateNextIdentifier.Identifier">
+<short>
+Name for an identifier with the base name and numeric suffix used to generate 
+the return value.
+</short>
+</element>
+
+<element name="MergeSort">
+<short>Implements a merge/sort for TStrings or TFPList.</short>
+<descr>
+<p>
+MergeSort is an overloaded routine used to implement a comparison-based sort 
+routine for values in List. List can be a TStrings or TFPList instance. No 
+actions are performed in the routine when List has not been assigned 
+(contains <b>Nil</b>).
+</p>
+<p>
+The StartIndex and EndIndex arguments allow the initial and final entries in 
+a TFPList instance to be specified. When the values are omitted, they default 
+to the first value (position 0) and the last value (Count-1) in List.
+</p>
+<p>
+OnCompare is the comparison routine used to determine the order for the 
+sorted values. It can be a TListSortCompare or TStringsSortCompare function, 
+depending on the overloaded variant of the called routine.
+</p>
+<p>
+MergeSort implements the J. von Nuemann divide-and-conquer algorithm, with an 
+insertion sort used for lists with 6 or fewer elements.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0. Replaces the MergeSort routine in the 
+<file>lclproc.pas</file> unit (<b>LCL</b>).
+</version>
+<seealso>
+<link id="TStringsSortCompare"/>
+<link id="#rtl.classes.TListSortCompare">TListSortCompare</link>
+</seealso>
+<seealso/>
+</element>
+<element name="MergeSort.List">
+<short>
+The list of values to sort (overloaded type).
+</short>
+</element>
+<element name="MergeSort.OnCompare">
+<short>
+The sort compare function used to compare items in the list.
+</short>
+</element>
+<element name="MergeSort.StartIndex">
+<short>
+The initial entry in List used in the merge/sort.
+</short>
+</element>
+<element name="MergeSort.EndIndex">
+<short>
+The final entry in List used in the merge/sort.
+</short>
 </element>
 
 <element name="MergeSortWithLen">
