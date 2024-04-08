@@ -226,7 +226,7 @@ begin
     exit;
 
   // Insert HW break...
-  result := TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(ALocation, wkpExec);
+  result := TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(ALocation, wkpExec, SizeOf(_BRK_STORE), true);
   if not result then
     DebugLn(DBG__WARNINGS, 'Failed to set break point.', []);
 end;
@@ -354,7 +354,7 @@ begin
     SetLength(tmpData, watchData.Size);
     if Process.ReadData(addr, watchData.Size, tmpData[0]) then
     begin
-      if not TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(addr, watchData.Kind) then
+      if not TDbgRspProcess(Process).RspConnection.SetBreakWatchPoint(addr, watchData.Kind, watchData.Size) then
         DebugLn(DBG_WARNINGS, 'Failed to set watch point.', []);
     end
     else
@@ -482,7 +482,7 @@ begin
     FConnection.Connect;
     try
       FStatus := FConnection.Init;
-      Result := true;
+      Result := FStatus <> SIGHUP;
     except
       on E: Exception do
       begin
@@ -526,15 +526,23 @@ begin
 end;
 
 procedure TDbgRspProcess.TerminateProcess;
+var
+  s: string;
 begin
   // Try to prevent access to the RSP socket after it has been closed
   if not (FIsTerminating or (TDbgRspProcess(Process).FStatus = SIGHUP)) then
   begin
+    // Qemu only accepts a kill command in the paused state
+    if not (TDbgRspProcess(Process).FStatus in [SIGINT, SIGTRAP]) then
+    begin
+      TDbgRspThread(Process.MainThread).RequestInternalPause;
+      TDbgRspProcess(Process).FStatus := FConnection.WaitForSignal(s);
+    end;
     DebugLn(DBG_VERBOSE, 'Removing all break points');
     RemoveAllBreakPoints;
     DebugLn(DBG_VERBOSE, 'Sending kill command from TDbgRspProcess.TerminateProcess');
     RspConnection.Kill();
-    FIsTerminating:=true;
+    FIsTerminating := true;
   end;
 end;
 
@@ -684,7 +692,8 @@ begin
   if FIsTerminating then
   begin
     DebugLn(DBG_VERBOSE, 'TDbgRspProcess.WaitForDebugEvent called while FIsTerminating is set.');
-    FStatus := SIGKILL;
+    FStatus := SIGHUP;
+    Exit(True);
   end
   else
   // Wait for S or T response from target, or if connection to target is lost

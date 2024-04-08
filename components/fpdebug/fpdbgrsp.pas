@@ -92,8 +92,11 @@ type
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
     FConfig: TRemoteConfig;
-    function WaitForData(timeout_ms: integer): integer; overload;
+    FSocketHandler: TSocketHandler;
 
+    procedure CloseSocket;
+
+    function WaitForData(timeout_ms: integer): integer; overload;
     // Wrappers to catch exceptions and set SockErr
     function SafeReadByte: byte;
     function SafeWrite(const buffer; count : Longint): Longint;
@@ -212,6 +215,11 @@ begin
   end;
 end;
 
+procedure TRspConnection.CloseSocket;
+begin
+  FpClose(FSocketHandler.Socket.Handle);
+end;
+
 function TRspConnection.WaitForData(timeout_ms: integer): integer;
 {$if defined(unix) or defined(windows)}
 var
@@ -299,21 +307,23 @@ begin
   result := false;
   if SockErr then exit;
   retryCount := 0;
+  c := '-';
 
-  repeat
-    if SendCommand(cmd) then
+  while not result and (retryCount < 5) and not SockErr do
+  begin
+    if c = '-' then
     begin
-      // now check if target returned error, resend ('-') or ACK ('+')
-      // No support for ‘QStartNoAckMode’, i.e. always expect a -/+
-      c := char(SafeReadByte);
-      result := c = '+';
-      if not result then
+      if not SendCommand(cmd) then
         inc(retryCount);
-    end
-    else
+    end;
+
+    // now check target return value, either ACK ('+'), resend ('-') or garbage
+    // No support for ‘QStartNoAckMode’, i.e. always expect a -/+
+    c := char(SafeReadByte);
+    result := c = '+';
+    if not result then
       inc(retryCount);
-  // Abort this command if no ACK after 5 attempts
-  until result or (retryCount > 5) or SockErr;
+  end;
 end;
 
 function TRspConnection.ReadReply(out retval: string): boolean;
@@ -399,9 +409,8 @@ begin
     end;
   until not outputPacket;
 
-  // Do not acknowledge OK
-  if retval <> 'OK' then
-    SafeWriteByte(byte('+'));
+  // Acknowledge all replies
+  SafeWriteByte(byte('+'));
   result := not SockErr;
   DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
@@ -516,18 +525,11 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    result := SendCommand('k');
-    // Swallow the last ack if send
-    if Result and not SockErr then
-      result := WaitForData(1000) > 0;
+    SendCommandAck('k');
+    result := true;
+    CloseSocket;
   finally
     LeaveCriticalSection(fCS);
-  end;
-
-  if result then
-  begin
-    c := char(SafeReadByte);
-    Result := c = '+';
   end;
 end;
 
@@ -538,16 +540,15 @@ begin
   EnterCriticalSection(fCS);
   try
     result := SendCmdWaitForReply('D', reply);
+    result := true;
+    CloseSocket;
   finally
     LeaveCriticalSection(fCS);
   end;
-  result := not(SockErr) and (pos('OK', reply) = 1);
 end;
 
 constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess;
   AConfig: TRemoteConfig);
-var
-  FSocketHandler: TSocketHandler;
 begin
   // Just copy reference to AConfig
   FConfig := AConfig;
@@ -732,16 +733,17 @@ var
 begin
   cmd := 'Z';
   case BreakWatchKind of
-    wpkWrite: cmd := cmd + '2,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
-    wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
-    wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
+    wpkWrite: cmd := cmd + '2,';
+    wpkRead:  cmd := cmd + '3,';
+    wpkReadWrite: cmd := cmd + '4,';
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
     wkpExec:
       if HWbreak then
-        cmd := cmd + '1,' + IntToHex(addr, 4) + ',00'
+        cmd := cmd + '1,';
       else
-        cmd := cmd + '0,' + IntToHex(addr, 4) + ',00';
+        cmd := cmd + '0,';
   end;
+  cmd := cmd + IntToHex(addr, 2) + ',' + IntToStr(watchsize);
 
   EnterCriticalSection(fCS);
   try
@@ -1004,10 +1006,11 @@ begin
   reply := '';
   EnterCriticalSection(fCS);
   try
-    if not SendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') or SockErr then
+    if not SendCmdWaitForReply('vMustReplyEmpty', reply) or
+       ((reply <> '') and (reply <> #0)) or SockErr then
     begin
       DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
-      exit;
+      Exit(SIGHUP);
     end;
 
     // Fancy stuff - load exe & sections, run monitor cmds etc
@@ -1086,7 +1089,9 @@ begin
   begin
     // Already wrapped in critical section
     result := WaitForSignal(reply);
-  end;
+  end
+  else
+    result := SIGHUP;
 end;
 
 initialization
