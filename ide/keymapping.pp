@@ -36,7 +36,7 @@ uses
   // LCL
   Forms, LCLType, LCLProc,
   // LazUtils
-  Laz2_XMLCfg, FileUtil,
+  Laz2_XMLCfg, FileUtil, LazUtilities, LazLoggerBase,
   // SynEdit
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
   SynPluginMultiCaret, SynEditMouseCmds,

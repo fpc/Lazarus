@@ -45,11 +45,9 @@ uses
   {$ENDIF}
   // FPC
   Classes, SysUtils, Contnrs, StrUtils, AVL_Tree, fpmkunit, System.UITypes,
-  // LCL
-  Forms, Dialogs, LCLProc,
   // LazUtils
   FileUtil, LazFileCache, LazLoggerBase, LazUtilities, LazFileUtils, LazUTF8,
-  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, AvgLvlTree, FPCAdds,
+  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, LazTracer, AvgLvlTree, FPCAdds,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,

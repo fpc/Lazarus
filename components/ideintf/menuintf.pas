@@ -20,9 +20,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Menus, ImgList, Graphics,
+  LCLType, Menus, ImgList, Graphics,
   // LazUtils
-  LazLoggerBase, LazTracer,
+  LazLoggerBase, LazTracer, LazUtilities, LazMethodList,
   // IdeIntf
   IDECommands;
   

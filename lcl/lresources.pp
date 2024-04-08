@@ -33,11 +33,11 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  Classes, SysUtils, Types, RtlConsts, TypInfo, variants,
+  Classes, SysUtils, Types, RtlConsts, TypInfo, Variants,
   // LCL
-  LCLProc, LCLStrConsts,
+  LCLStrConsts,
   // LazUtils
-  LazConfigStorage, FPCAdds, DynQueue, LazUTF8, LazLoggerBase;
+  LazConfigStorage, FPCAdds, DynQueue, LazUTF8, LazLoggerBase, LazTracer, LazUtilities;
 
 {$DEFINE UseLRS}
 {$DEFINE UseRES}
@@ -5855,6 +5855,4 @@ finalization
   FreeAndNil(PropertiesToSkip);
 
 end.
-
-
 

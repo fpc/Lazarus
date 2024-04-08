@@ -75,15 +75,14 @@ var
 
 function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
 function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
-
-
-type
-  TStringsSortCompare = function(const Item1, Item2: string): Integer;
-
 // sort so that for each i is OnCompare(List[i],List[i+1])<=0
-procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); overload; inline;
-procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer; const OnCompare: TListSortCompare); overload;
-procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); overload;
+// Deprecated in version 3.99, April 2024.
+procedure MergeSort(List: TFPList;
+  const OnCompare: TListSortCompare); overload; deprecated 'Use LazUtilities.MergeSort instead';
+procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer;
+  const OnCompare: TListSortCompare); overload; deprecated 'Use LazUtilities.MergeSort instead';
+procedure MergeSort(List: TStrings;
+  const OnCompare: TStringsSortCompare); overload; deprecated 'Use LazUtilities.MergeSort instead';
 
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
 function KeyStringIsIrregular(const s: string): boolean;
@@ -233,8 +232,9 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal; 
 function UnicodeToUTF16(u: cardinal): UnicodeString; deprecated 'Use LazUTF16.UnicodeToUTF16 instead';
 
 // identifier
-function CreateFirstIdentifier(const Identifier: string): string;
-function CreateNextIdentifier(const Identifier: string): string;
+// Deprecated in Lazarus 3.99 April 2024.
+function CreateFirstIdentifier(const Identifier: string): string; deprecated 'Use LazUtilities.CreateFirstIdentifier instead';
+function CreateNextIdentifier(const Identifier: string): string; deprecated 'Use LazUtilities.CreateNextIdentifier instead';
 
 // Font
 function IsFontNameDefault(const AName: string): boolean; inline;
@@ -932,179 +932,18 @@ end;
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
 begin
-  if List=nil then exit;
-  MergeSort(List,0,List.Count-1,OnCompare);
+  LazUtilities.MergeSort(List, OnCompare);
 end;
 
 procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer;
   const OnCompare: TListSortCompare);
-// sort so that for each i is OnCompare(List[i],List[i+1])<=0
-var
-  MergeList: PPointer;
-
-  procedure SmallSort(StartPos, EndPos: PtrInt);
-  // use insertion sort for small lists
-  var
-    i: PtrInt;
-    Best: PtrInt;
-    j: PtrInt;
-    Item: Pointer;
-  begin
-    for i:=StartPos to EndPos-1 do begin
-      Best:=i;
-      for j:=i+1 to EndPos do
-        if OnCompare(List[Best],List[j])>0 then
-          Best:=j;
-      if Best>i then begin
-        Item:=List[i];
-        List[i]:=List[Best];
-        List[Best]:=Item;
-      end;
-    end;
-  end;
-
-  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
-  // merge two sorted arrays
-  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-  var Src1Pos,Src2Pos,DestPos,cmp,a:PtrInt;
-  begin
-    while (Pos3>=Pos2) and (OnCompare(List[Pos2-1],List[Pos3])<=0) do
-      dec(Pos3);
-    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
-    Src1Pos:=Pos2-1;
-    Src2Pos:=Pos3;
-    DestPos:=Pos3;
-    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
-      cmp:=OnCompare(List[Src1Pos],List[Src2Pos]);
-      if cmp>0 then begin
-        MergeList[DestPos]:=List[Src1Pos];
-        dec(Src1Pos);
-      end else begin
-        MergeList[DestPos]:=List[Src2Pos];
-        dec(Src2Pos);
-      end;
-      dec(DestPos);
-    end;
-    while Src2Pos>=Pos2 do begin
-      MergeList[DestPos]:=List[Src2Pos];
-      dec(Src2Pos);
-      dec(DestPos);
-    end;
-    for a:=DestPos+1 to Pos3 do
-      List[a]:=MergeList[a];
-  end;
-
-  procedure Sort(StartPos, EndPos: PtrInt);
-  // sort an interval in List. Use MergeList as work space.
-  var
-    mid: integer;
-  begin
-    if EndPos-StartPos<6 then begin
-      SmallSort(StartPos,EndPos);
-    end else begin
-      mid:=(StartPos+EndPos) shr 1;
-      Sort(StartPos,mid);
-      Sort(mid+1,EndPos);
-      Merge(StartPos,mid+1,EndPos);
-    end;
-  end;
-
-var
-  Cnt: Integer;
 begin
-  if (List=nil) then exit;
-  Cnt:=List.Count;
-  if StartIndex<0 then StartIndex:=0;
-  if EndIndex>=Cnt then EndIndex:=Cnt-1;
-  if StartIndex>=EndIndex then exit;
-  MergeList:=GetMem(List.Count*SizeOf(Pointer));
-  Sort(StartIndex,EndIndex);
-  Freemem(MergeList);
+  LazUtilities.MergeSort(List, StartIndex, EndIndex, OnCompare);
 end;
 
 procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
-// sort so that for each i is OnCompare(List[i],List[i+1])<=0
-var
-  MergeList: PAnsiString;
-
-  procedure SmallSort(StartPos, EndPos: PtrInt);
-  // use insertion sort for small lists
-  var
-    i: PtrInt;
-    Best: PtrInt;
-    j: PtrInt;
-    Item: string;
-  begin
-    for i:=StartPos to EndPos-1 do begin
-      Best:=i;
-      for j:=i+1 to EndPos do
-        if OnCompare(List[Best],List[j])>0 then
-          Best:=j;
-      if Best>i then begin
-        Item:=List[i];
-        List[i]:=List[Best];
-        List[Best]:=Item;
-      end;
-    end;
-  end;
-
-  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
-  // merge two sorted arrays
-  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-  var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
-  begin
-    while (Pos3>=Pos2) and (OnCompare(List[Pos2-1],List[Pos3])<=0) do
-      dec(Pos3);
-    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
-    Src1Pos:=Pos2-1;
-    Src2Pos:=Pos3;
-    DestPos:=Pos3;
-    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
-      cmp:=OnCompare(List[Src1Pos],List[Src2Pos]);
-      if cmp>0 then begin
-        MergeList[DestPos]:=List[Src1Pos];
-        dec(Src1Pos);
-      end else begin
-        MergeList[DestPos]:=List[Src2Pos];
-        dec(Src2Pos);
-      end;
-      dec(DestPos);
-    end;
-    while Src2Pos>=Pos2 do begin
-      MergeList[DestPos]:=List[Src2Pos];
-      dec(Src2Pos);
-      dec(DestPos);
-    end;
-    for a:=DestPos+1 to Pos3 do
-      List[a]:=MergeList[a];
-  end;
-
-  procedure Sort(StartPos, EndPos: PtrInt);
-  // sort an interval in List. Use MergeList as work space.
-  var
-    mid: integer;
-  begin
-    if EndPos-StartPos<6 then begin
-      SmallSort(StartPos,EndPos);
-    end else begin
-      mid:=(StartPos+EndPos) shr 1;
-      Sort(StartPos,mid);
-      Sort(mid+1,EndPos);
-      Merge(StartPos,mid+1,EndPos);
-    end;
-  end;
-
-var
-  CurSize: PtrInt;
-  i: PtrInt;
 begin
-  if (List=nil) or (List.Count<=1) then exit;
-  CurSize:=PtrInt(List.Count)*SizeOf(Pointer);
-  MergeList:=GetMem(CurSize);
-  FillChar(MergeList^,CurSize,0);
-  Sort(0,List.Count-1);
-  for i:=0 to List.Count-1 do MergeList[i]:='';
-  Freemem(MergeList);
+  LazUtilities.MergeSort(List, OnCompare);
 end;
 
 
@@ -1741,24 +1580,13 @@ begin
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;
-// example: Ident59 becomes Ident1
-var
-  p: Integer;
 begin
-  p:=length(Identifier);
-  while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
-  Result:=copy(Identifier,1,p)+'1';
+  Result:=LazUtilities.CreateFirstIdentifier(Identifier);
 end;
 
 function CreateNextIdentifier(const Identifier: string): string;
-// example: Ident59 becomes Ident60
-var
-  p: Integer;
 begin
-  p:=length(Identifier);
-  while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
-  Result:=copy(Identifier,1,p)
-          +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
+  Result:=LazUtilities.CreateNextIdentifier(Identifier);
 end;
 
 function IsFontNameDefault(const AName: string): boolean;

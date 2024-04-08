@@ -5,7 +5,7 @@ unit PackageLinkIntf;
 interface
 
 uses
-  SysUtils, Classes, System.UITypes,
+  SysUtils, Classes, TypInfo, System.UITypes,
   // LazUtils
   LazFileUtils,
   // BuildIntf
@@ -40,6 +40,8 @@ type
     ploUser
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
+
+  function dbgs(p: TPkgLinkOrigin): string;
 
 const
   AllPkgLinkOrigins = [low(TPkgLinkOrigin)..high(TPkgLinkOrigin)];
@@ -133,6 +135,11 @@ var
   OPMInterface: TOPMInterface;
 
 implementation
+
+function dbgs(p: TPkgLinkOrigin): string;
+begin
+  Result:=GetEnumName(TypeInfo(p),ord(p));
+end;
 
 { TPackageLink }
 
