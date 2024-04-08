@@ -301,85 +301,25 @@ Compares the Item addresses.
 <short/>
 </element>
 
-<element name="TStringsSortCompare">
+<element name="MergeSort">
 <short>
-Specifies a comparison function type for string values in a TStrings instance.
+Deprecated.
 </short>
 <descr>
 <p>
-TStringsSortCompare is an Integer function type used to compare string values 
-to determine the relative sort order. The return value indicates the relative 
-sort order for the compared items, and normally contains a value like the one 
-returned from CompareText. For example:
-</p>
-<dl>
-<dt>&lt;0</dt>
-<dd>Item1 has a value that comes before Item2.</dd>
-<dt>0</dt>
-<dd>Item1 and Item2 have the same value.</dd>
-<dt>&gt;0</dt>
-<dd>Item1 has a value that comes after Item2.</dd>
-</dl>
-<p>
-The address for a TStringsSortCompare type is passed as an argument to the 
-MergeSort routine.
+Use the <var>MergeSort</var> routine in the <file>lazutilities.pas</file> unit 
+(LazUtils) instead.
 </p>
 </descr>
-<seealso>
-<link id="MergeSort"/>
-</seealso>
+<version>
+Deprecated in LCL version 3.99 (Apr 2024).
+</version>
+<seealso/>
 </element>
-<element name="TStringsSortCompare.Result">
-<short>Integer with the relative sort order for the compared values.</short>
-</element>
-<element name="TStringsSortCompare.Item1">
-<short>First string value for the comparison.</short>
-</element>
-<element name="TStringsSortCompare.Item2">
-<short>Second string value for the comparison.</short>
-</element>
-
-<element name="MergeSort">
-<short>Implements a merge/sort for TStrings or TFPList.</short>
-<descr>
-<p>
-MergeSort is an overloaded routine used to implement a comparison-based sort 
-routine for values in List. List can be a TStrings or TFPList instance. No 
-actions are performed in the routine when List has not been assigned 
-(contains <b>Nil</b>).
-</p>
-<p>
-The StartIndex and EndIndex arguments allow the initial and final entries in 
-a TFPList instance to be specified. When the values are omitted, they default 
-to the first value (position 0) and the last value (Count-1) in List.
-</p>
-<p>
-OnCompare is the comparison routine used to determine the order for the 
-sorted values. It can be a TListSortCompare or TStringsSortCompare function, 
-depending on the overloaded variant of the called routine.
-</p>
-<p>
-MergeSort implements the J. von Nuemann divide-and-conquer algorithm, with an 
-insertion sort used for lists with 6 or fewer elements.
-</p>
-</descr>
-<seealso>
-<link id="TListSortCompare"/>
-<link id="TStringsSortCompare"/>
-</seealso>
-</element>
-<element name="MergeSort.List">
-<short>The list of values to sort (overloaded type).</short>
-</element>
-<element name="MergeSort.OnCompare">
-<short>The sort compare function.</short>
-</element>
-<element name="MergeSort.StartIndex">
-<short>The initial entry in List used in the merge/sort.</short>
-</element>
-<element name="MergeSort.EndIndex">
-<short>The final entry in List used in the merge/sort.</short>
-</element>
+<element name="MergeSort.List"/>
+<element name="MergeSort.OnCompare"/>
+<element name="MergeSort.StartIndex"/>
+<element name="MergeSort.EndIndex"/>
 
 <element name="KeyAndShiftStateToKeyString">
 <short>
@@ -1630,33 +1570,40 @@ Deprecated in LCL version 4.0 (July 2023).
 </element>
 
 <element name="CreateFirstIdentifier">
-<short>Replaces last digits with 1.</short>
+<short>
+Deprecated.
+</short>
 <descr>
 <p>
-For example Name321 becomes Name1.
+Use the <var>CreateFirstIdentifier</var> routine in the 
+<file>lazutilities.pas</file> unit (<b>LazUtils</b>) instead.
 </p>
 </descr>
+<version>
+Deprecated in LCL version 3.99 (Apr 2024).
+</version>
 <seealso/>
 </element>
-<element name="CreateFirstIdentifier.Result">
-<short/>
-</element>
-<element name="CreateFirstIdentifier.Identifier">
-<short/>
-</element>
+<element name="CreateFirstIdentifier.Result"/>
+<element name="CreateFirstIdentifier.Identifier"/>
 
 <element name="CreateNextIdentifier">
 <short>
-Deprecated, see the <file>LazUTF8</file> unit in the <file>LazUtils</file> 
-package for replacements.
+Deprecated.
 </short>
+<descr>
+<p>
+Use the <var>CreateNextIdentifier</var> routine in the 
+<file>lazutilities.pas</file> unit (<b>LazUtils</b>) instead.
+</p>
+</descr>
+<version>
+Deprecated in LCL version 3.99 (Apr 2024).
+</version>
+<seealso/>
 </element>
-<element name="CreateNextIdentifier.Result">
-<short/>
-</element>
-<element name="CreateNextIdentifier.Identifier">
-<short/>
-</element>
+<element name="CreateNextIdentifier.Result"/>
+<element name="CreateNextIdentifier.Identifier"/>
 
 <element name="IsFontNameDefault">
 <short>
@@ -1676,7 +1623,6 @@ Font name examined in the routine.
 </short>
 </element>
 
-<!-- TODO: Added in f0eb9b84. Issue #40690. -->
 <element name="AddCmdLineParamDesc">
 <short>
 Adds the help displayed for a command line parameter (and options) to the 
