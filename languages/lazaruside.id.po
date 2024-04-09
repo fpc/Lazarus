@@ -9374,57 +9374,9 @@ msgstr ""
 msgid "Load a scheme"
 msgstr ""
 
-#: lazarusidestrconsts.lisedtdefallpackages
-msgid "All packages"
-msgstr "Semua paket"
-
 #: lazarusidestrconsts.lisedtdefcurrentproject
 msgid "Current Project"
 msgstr "Proyek Saat Ini"
-
-#: lazarusidestrconsts.lisedtdefsallprojects
-msgid "All projects"
-msgstr "Semua proyek"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
-msgid "set FPC mode to DELPHI"
-msgstr "set mode  FPC ke DELPHI"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetofpc
-msgid "set FPC mode to FPC"
-msgstr ""
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetogpc
-msgid "set FPC mode to GPC"
-msgstr "set mode FPC ke GPC"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetomacpas
-msgid "set FPC mode to MacPas"
-msgstr ""
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetotp
-msgid "set FPC mode to TP"
-msgstr "set mode FPC ke TP"
-
-#: lazarusidestrconsts.lisedtdefsetiocheckson
-msgid "set IOCHECKS on"
-msgstr "set IOCHECKS on"
-
-#: lazarusidestrconsts.lisedtdefsetoverflowcheckson
-msgid "set OVERFLOWCHECKS on"
-msgstr "set OVERFLOWCHECKS on"
-
-#: lazarusidestrconsts.lisedtdefsetrangecheckson
-msgid "set RANGECHECKS on"
-msgstr "set RANGECHECKS on"
-
-#: lazarusidestrconsts.lisedtdefuseheaptrcunit
-msgid "use HeapTrc unit"
-msgstr "gunakan unit HeapTrc"
-
-#: lazarusidestrconsts.lisedtdefuselineinfounit
-msgid "use LineInfo unit"
-msgstr "gunakan unit LineInfo"
 
 #: lazarusidestrconsts.lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -10402,21 +10354,6 @@ msgstr ""
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisfppkgcompilernotexecutable
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
-
-#: lazarusidestrconsts.lisfppkgcompilernotexists
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
-
-#: lazarusidestrconsts.lisfppkgcompilernotfound
-#, object-pascal-format
-msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
-
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
@@ -10490,10 +10427,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
-
-#: lazarusidestrconsts.lisfppkgrtlnotfound
-msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception

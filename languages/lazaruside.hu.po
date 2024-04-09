@@ -9144,57 +9144,9 @@ msgstr "A szerkesztő eszköztára látható"
 msgid "Load a scheme"
 msgstr "Séma betöltése"
 
-#: lazarusidestrconsts.lisedtdefallpackages
-msgid "All packages"
-msgstr "Minden csomag"
-
 #: lazarusidestrconsts.lisedtdefcurrentproject
 msgid "Current Project"
 msgstr "Jelenlegi projekt"
-
-#: lazarusidestrconsts.lisedtdefsallprojects
-msgid "All projects"
-msgstr "Minden projekt"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
-msgid "set FPC mode to DELPHI"
-msgstr "FPC mód beállítása DELPHI-re"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetofpc
-msgid "set FPC mode to FPC"
-msgstr "FPC mód beállítása FPC-re"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetogpc
-msgid "set FPC mode to GPC"
-msgstr "FPC mód beállítása GPC-re"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetomacpas
-msgid "set FPC mode to MacPas"
-msgstr "FPC mód beállítása MacPas-ra"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetotp
-msgid "set FPC mode to TP"
-msgstr "FPC mód beállítása TP-re"
-
-#: lazarusidestrconsts.lisedtdefsetiocheckson
-msgid "set IOCHECKS on"
-msgstr "IOCHECKS bekapcsolása"
-
-#: lazarusidestrconsts.lisedtdefsetoverflowcheckson
-msgid "set OVERFLOWCHECKS on"
-msgstr "OVERFLOWCHECKS bekapcsolása"
-
-#: lazarusidestrconsts.lisedtdefsetrangecheckson
-msgid "set RANGECHECKS on"
-msgstr "RANGECHECKS bekapcsolása"
-
-#: lazarusidestrconsts.lisedtdefuseheaptrcunit
-msgid "use HeapTrc unit"
-msgstr "HeapTrc unit használata"
-
-#: lazarusidestrconsts.lisedtdefuselineinfounit
-msgid "use LineInfo unit"
-msgstr "LineInfo unit használata"
 
 #: lazarusidestrconsts.lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -10175,21 +10127,6 @@ msgstr "FPDoc csomagnév. Alapértelmezett a projektfájl neve."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Szintaktikai hiba a(z) \"%s\" FPDoc elemben:%s%s"
 
-#: lazarusidestrconsts.lisfppkgcompilernotexecutable
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr "A fppkg számára beállított fordító (%s) nem futtatható fájl."
-
-#: lazarusidestrconsts.lisfppkgcompilernotexists
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr "A fppkg számára beállított fordító (%s) nem létezik."
-
-#: lazarusidestrconsts.lisfppkgcompilernotfound
-#, object-pascal-format
-msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr "A fppkg számára beállított fordító (%s) nem található."
-
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "probléma van a Free Pascal fordító futtatható állományával."
@@ -10264,10 +10201,6 @@ msgstr "Probléma van az Fppkg beállításaival"
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
 msgstr "Ellenőrizni kell, hogy a legutóbbi változat telepítve van-e és elérhető a PATH változóban megadott útvonalakon vagy a fordító könyvtárában."
-
-#: lazarusidestrconsts.lisfppkgrtlnotfound
-msgid "Fppkg reports that the RTL is not installed."
-msgstr "Az fppkg szerint az RTL nincs telepítve."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 #, object-pascal-format

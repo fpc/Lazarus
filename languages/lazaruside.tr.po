@@ -9073,57 +9073,9 @@ msgstr "Editör &Araç Çubuğu görünsün"
 msgid "Load a scheme"
 msgstr "Bir şema yükle"
 
-#: lazarusidestrconsts.lisedtdefallpackages
-msgid "All packages"
-msgstr "Tüm paketler"
-
 #: lazarusidestrconsts.lisedtdefcurrentproject
 msgid "Current Project"
 msgstr "Mevcut Proje"
-
-#: lazarusidestrconsts.lisedtdefsallprojects
-msgid "All projects"
-msgstr "Tüm projeler"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
-msgid "set FPC mode to DELPHI"
-msgstr "fPC modunu DELPHI olarak ayarla"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetofpc
-msgid "set FPC mode to FPC"
-msgstr "fPC modunu FPC'ye ayarla"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetogpc
-msgid "set FPC mode to GPC"
-msgstr "fPC modunu GPC'ye ayarla"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetomacpas
-msgid "set FPC mode to MacPas"
-msgstr "fPC modunu MacPas olarak ayarla"
-
-#: lazarusidestrconsts.lisedtdefsetfpcmodetotp
-msgid "set FPC mode to TP"
-msgstr "fPC modunu TP olarak ayarla"
-
-#: lazarusidestrconsts.lisedtdefsetiocheckson
-msgid "set IOCHECKS on"
-msgstr "iOCHECKS açık"
-
-#: lazarusidestrconsts.lisedtdefsetoverflowcheckson
-msgid "set OVERFLOWCHECKS on"
-msgstr "oVERFLOWCHECKS'yi açık"
-
-#: lazarusidestrconsts.lisedtdefsetrangecheckson
-msgid "set RANGECHECKS on"
-msgstr "rANGECHECKS'i açık"
-
-#: lazarusidestrconsts.lisedtdefuseheaptrcunit
-msgid "use HeapTrc unit"
-msgstr "heapTrc birimini kullanın"
-
-#: lazarusidestrconsts.lisedtdefuselineinfounit
-msgid "use LineInfo unit"
-msgstr "lineInfo birimini kullanın"
 
 #: lazarusidestrconsts.lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -10086,21 +10038,6 @@ msgstr "FPDoc paket adı, varsayılan proje dosyası adıdır."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Fpdoc öğesinde \"%s\"bir sözdizimi hatası var: %s %s"
 
-#: lazarusidestrconsts.lisfppkgcompilernotexecutable
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr "Fppkg için yapılandırılmış [%s] derleyicisi çalıştırılabilir değil."
-
-#: lazarusidestrconsts.lisfppkgcompilernotexists
-#, object-pascal-format
-msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr "Fppkg için yapılandırılmış derleyici [%s] mevcut değil."
-
-#: lazarusidestrconsts.lisfppkgcompilernotfound
-#, object-pascal-format
-msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr "Fppkg için yapılandırılmış derleyici [%s] bulunamadı."
-
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "free Pascal derleyicisinin çalıştırılabilirliği ile ilgili bir sorun var, "
@@ -10174,10 +10111,6 @@ msgstr "Fppkg yapılandırmasıyla ilgili sorun"
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
 msgstr "Son sürümün yüklendiğinden ve yolun mevcut olduğundan veya derleyici tarafından çalıştırılabilir olduğundan emin olun."
-
-#: lazarusidestrconsts.lisfppkgrtlnotfound
-msgid "Fppkg reports that the RTL is not installed."
-msgstr "Fppkg, RTL'nin yüklü olmadığını bildiriyor."
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 #, object-pascal-format
