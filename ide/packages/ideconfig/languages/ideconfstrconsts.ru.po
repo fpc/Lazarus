@@ -21,9 +21,76 @@ msgstr "Имя компонента \"%s\" является ключевым с�
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Имя компонента \"%s\" не является корректным идентификатором"
 
+#: ideconfstrconsts.lisedtdefallpackages
+msgid "All packages"
+msgstr "Все пакеты"
+
+#: ideconfstrconsts.lisedtdefsallprojects
+msgid "All projects"
+msgstr "Все проекты"
+
+#: ideconfstrconsts.lisedtdefsetfpcmodetodelphi
+msgid "set FPC mode to DELPHI"
+msgstr "установить режим FPC в DELPHI"
+
+#: ideconfstrconsts.lisedtdefsetfpcmodetofpc
+msgid "set FPC mode to FPC"
+msgstr "установить режим FPC в FPC"
+
+#: ideconfstrconsts.lisedtdefsetfpcmodetogpc
+msgid "set FPC mode to GPC"
+msgstr "установить режим FPC в GPC"
+
+#: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
+msgid "set FPC mode to MacPas"
+msgstr "установить режим FPC в MacPas"
+
+#: ideconfstrconsts.lisedtdefsetfpcmodetotp
+msgid "set FPC mode to TP"
+msgstr "установить режим FPC в TP"
+
+#: ideconfstrconsts.lisedtdefsetiocheckson
+msgid "set IOCHECKS on"
+msgstr "Включить IOCHECKS"
+
+#: ideconfstrconsts.lisedtdefsetoverflowcheckson
+msgid "set OVERFLOWCHECKS on"
+msgstr "Включить OVERFLOWCHECKS"
+
+#: ideconfstrconsts.lisedtdefsetrangecheckson
+msgid "set RANGECHECKS on"
+msgstr "Включить RANGECHECKS"
+
+#: ideconfstrconsts.lisedtdefuseheaptrcunit
+msgid "use HeapTrc unit"
+msgstr "использовать модуль HeapTrc"
+
+#: ideconfstrconsts.lisedtdefuselineinfounit
+msgid "use LineInfo unit"
+msgstr "использовать модуль LineInfo"
+
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Порочный круг макросов"
+
+#: ideconfstrconsts.lisfppkgcompilernotexecutable
+#, object-pascal-format
+msgid "The compiler [%s] configured for Fppkg is not an executable."
+msgstr "Компилятор [%s], назначенный для Fppkg, не является исполнимым файлом."
+
+#: ideconfstrconsts.lisfppkgcompilernotexists
+#, object-pascal-format
+msgid "The compiler [%s] configured for Fppkg does not exist."
+msgstr "Компилятор [%s], назначенный для Fppkg, отсутствует."
+
+#: ideconfstrconsts.lisfppkgcompilernotfound
+#, object-pascal-format
+msgid "Could not find the compiler [%s] configured for Fppkg."
+msgstr "Невозможно найти компилятор [%s], назначенный для Fppkg."
+
+#: ideconfstrconsts.lisfppkgrtlnotfound
+msgid "Fppkg reports that the RTL is not installed."
+msgstr "Fppkg сообщает, что RTL не установлена."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
