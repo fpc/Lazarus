@@ -1205,6 +1205,9 @@ begin
   if (d.ResultData <> nil) and
      not( (d.ResultData.ValueKind = rdkPrePrinted) and (t <> nil) )
   then begin
+    if defSkipValueFormatter in Watch.EvaluateFlags then
+      FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
+    FWatchPrinter.OnlyValueFormatter := Watch.DbgValueFormatter;
     s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat);
     InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
@@ -1502,6 +1505,10 @@ begin
           if (ResData <> nil) and
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
+            if defSkipValueFormatter in TheWatch.EvaluateFlags then
+              FWatchDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
+            FWatchDlg.FWatchPrinter.OnlyValueFormatter := TheWatch.DbgValueFormatter;
+
             Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
           end
           else begin
@@ -1558,7 +1565,11 @@ begin
       if (ResData <> nil) and
          not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
       then begin
-        FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen];
+        if defSkipValueFormatter in TheWatch.EvaluateFlags then
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen, rpfSkipValueFormatter]
+        else
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen];
+        FWatchDlg.FWatchPrinter.OnlyValueFormatter := TheWatch.DbgValueFormatter;
         WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
         TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := WatchValueStr;
 

@@ -154,11 +154,14 @@ type
 
   TWatch = class(TDelayedUdateItem)
   private
+    FDbgValueFormatter: TIdeDbgValueFormatterSelector;
     FFreeNotificationList: TMethodList;
     FFirstIndexOffs: Int64;
     FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
+    procedure DoDbgValueFormatterFreed(Sender: TObject);
     procedure FDbgBackendConverterFreed(Sender: TObject);
+    procedure SetDbgValueFormatter(AValue: TIdeDbgValueFormatterSelector);
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
     procedure SetEnabled(AValue: Boolean);
     procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
@@ -201,6 +204,7 @@ type
     property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
     property DbgBackendConverter: TIdeDbgValueConvertSelector read FDbgBackendConverter write SetDbgBackendConverter;
+    property DbgValueFormatter: TIdeDbgValueFormatterSelector read FDbgValueFormatter write SetDbgValueFormatter;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
     property ValueList: TWatchValueList read FValueList;
@@ -656,6 +660,27 @@ begin
   DoModified;
 end;
 
+procedure TWatch.DoDbgValueFormatterFreed(Sender: TObject);
+begin
+  FDbgValueFormatter := nil;
+  DoDisplayFormatChanged;
+end;
+
+procedure TWatch.SetDbgValueFormatter(AValue: TIdeDbgValueFormatterSelector);
+begin
+  if FDbgValueFormatter = AValue then Exit;
+
+  if FDbgValueFormatter <> nil then
+    FDbgValueFormatter.RemoveFreeNotification(@DoDbgValueFormatterFreed);
+
+  FDbgValueFormatter := AValue;
+
+  if FDbgValueFormatter <> nil then
+    FDbgValueFormatter.AddFreeNotification(@DoDbgValueFormatterFreed);
+
+  DoDisplayFormatChanged;
+end;
+
 function TWatch.GetDisplayFormat: TWatchDisplayFormat;
 begin
   Result := FDisplayFormat;
@@ -760,6 +785,7 @@ begin
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
     TWatch(Dest).DbgBackendConverter := DbgBackendConverter;
+    TWatch(Dest).DbgValueFormatter := DbgValueFormatter;
     TWatch(Dest).FValueList.Assign(FValueList);
   end
   else inherited;
@@ -820,6 +846,8 @@ destructor TWatch.Destroy;
 begin
   if FDbgBackendConverter <> nil then
     FDbgBackendConverter.RemoveFreeNotification(@FDbgBackendConverterFreed);
+  if FDbgValueFormatter <> nil then
+    FDbgValueFormatter.RemoveFreeNotification(@DoDbgValueFormatterFreed);
 
   FValueList.Clear;
 

@@ -51,8 +51,9 @@ uses
   // LazDebuggerIntf
   LazDebuggerIntf,
   // IdeDebugger
-  Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants,
-  EnvDebuggerOptions, ProjectDebugLink, IdeDebuggerBackendValueConv, DisplayFormatConfigFrame;
+  Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions,
+  ProjectDebugLink, IdeDebuggerBackendValueConv, IdeDebuggerValueFormatter,
+  DisplayFormatConfigFrame;
 
 type
 
@@ -66,6 +67,8 @@ type
     chkUseInstanceClass: TCheckBox;
     DisplayFormatFrame1: TDisplayFormatFrame;
     dropFpDbgConv: TComboBox;
+    dropValFormatter: TComboBox;
+    lblValFormatter: TLabel;
     Panel2: TPanel;
     Spacer1: TLabel;
     lblFpDbgConv: TLabel;
@@ -100,6 +103,7 @@ implementation
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
 var
   Conv: TIdeDbgValueConvertSelector;
+  VFormatter: TIdeDbgValueFormatterSelector;
 begin
   if FMode = wpmDispFormat then begin
     FDisplayFormat := DisplayFormatFrame1.DisplayFormat;
@@ -141,6 +145,20 @@ begin
       then
         Conv := nil;
       FWatch.DbgBackendConverter := Conv;
+    end;
+
+    if dropValFormatter.ItemIndex = 0 then
+      FWatch.DbgValueFormatter := nil
+    else
+    if dropValFormatter.ItemIndex = 1 then
+      FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValueFormatter]
+    else begin
+      VFormatter := TIdeDbgValueFormatterSelector(dropValFormatter.Items.Objects[dropValFormatter.ItemIndex]);
+      if (DebuggerOptions.ValueFormatterConfig.IndexOf(VFormatter) < 0) and
+         (DbgProjectLink.ValueFormatterConfig.IndexOf(VFormatter) < 0)
+      then
+        VFormatter := nil;
+      FWatch.DbgValueFormatter := VFormatter;
     end;
 
     FWatch.Enabled := chkEnabled.Checked;
@@ -236,6 +254,28 @@ begin
       assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
       if i > 0 then
         dropFpDbgConv.ItemIndex := i;
+    end;
+  end;
+
+  lblValFormatter.Caption := dlgVarFormatterDebugOptions;
+  dropValFormatter.AddItem(dlgBackendConvOptDefault, nil);
+  dropValFormatter.AddItem(dlgBackendConvOptDisabled, nil);
+  for i := 0 to DebuggerOptions.ValueFormatterConfig.Count - 1 do
+    dropValFormatter.AddItem(DebuggerOptions.ValueFormatterConfig.Items[i].Name, DebuggerOptions.ValueFormatterConfig.Items[i]);
+  for i := 0 to DbgProjectLink.ValueFormatterConfig.Count - 1 do
+    dropValFormatter.AddItem(DbgProjectLink.ValueFormatterConfig.Items[i].Name, DbgProjectLink.ValueFormatterConfig.Items[i]);
+
+  dropValFormatter.ItemIndex := 0;
+  if AWatch <> nil then begin
+    if defSkipValueFormatter in AWatch.EvaluateFlags then begin
+      dropValFormatter.ItemIndex := 1;
+    end
+    else
+    if AWatch.DbgValueFormatter <> nil then begin
+      i := dropValFormatter.Items.IndexOfObject(AWatch.DbgValueFormatter);
+      assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
+      if i > 0 then
+        dropValFormatter.ItemIndex := i;
     end;
   end;
 

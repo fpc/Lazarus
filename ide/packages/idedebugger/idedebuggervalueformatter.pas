@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, StrUtils,
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazClasses,
   // LazDebuggerIntf
   LazDebuggerIntf, DbgUtilsTypePatternList,
   // DebuggerIntf
@@ -21,7 +21,7 @@ type
 
   { TIdeDbgValueFormatterSelector }
 
-  TIdeDbgValueFormatterSelector = class
+  TIdeDbgValueFormatterSelector = class(TFreeNotifyingObject)
   private
     FOriginalValue: TLazDbgIdeValFormatterOriginalValue;
     FValFormatter: ILazDbgIdeValueFormatterIntf;
@@ -44,6 +44,11 @@ type
     procedure Assign(ASource: TIdeDbgValueFormatterSelector);
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+
+    function MatchesAll(AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat): Boolean;
+    function FormatValue(AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+      AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
+      ): Boolean;
 
     function IsMatchingTypeName(ATypeName: String): boolean;
     function IsMatchingInheritedTypeName(ATypeName: String): boolean;
@@ -77,6 +82,8 @@ type
 
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+
+    function ItemByName(AName: String): TIdeDbgValueFormatterSelector;
 
     property Changed: Boolean read FChanged write SetChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -212,6 +219,70 @@ begin
   Def.Free;
 end;
 
+function TIdeDbgValueFormatterSelector.MatchesAll(AWatchValue: IWatchResultDataIntf;
+  ADisplayFormat: TWatchDisplayFormat): Boolean;
+var
+  j: Integer;
+  a: IWatchResultDataIntf;
+begin
+  Result := False;
+  if (ValFormatter = nil) or
+     (not (vffFormatValue in ValFormatter.SupportedFeatures))
+     or
+     ( ADisplayFormat.MemDump and (
+         ( not(vffValueMemDump in ValFormatter.SupportedFeatures) ) or
+         ( (vdfgCategory in ValFormatter.SupportedDisplayFormatFilters) and (not (vdfCategoryMemDump in FFilterDisplayFormats)) )
+     ) )
+     or
+     ( (not ADisplayFormat.MemDump) and (
+         ( not(vffValueData in ValFormatter.SupportedFeatures) ) or
+         ( (vdfgCategory        in ValFormatter.SupportedDisplayFormatFilters) and (not (vdfCategoryData in FFilterDisplayFormats)) ) or
+         // TOOD: 2nd num
+         ( (vdfgBase            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgSign            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgEnum            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgBool            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgChar            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgFloat           in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgStruct          in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgStructAddress   in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgAddress         in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in FFilterDisplayFormats)) ) or
+         ( (vdfgPointerDeref    in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in FFilterDisplayFormats)) )
+     ) )
+  then
+    exit;
+//AWatchValue.ValueKind;
+
+  if not IsMatchingTypeName(AWatchValue.TypeName) then begin
+    if not MatchInherited then
+      exit;
+    j := AWatchValue.AnchestorCount - 1;
+    while (j >= 0) do begin
+      a := AWatchValue.Anchestors[j];
+      if (a <> nil) and IsMatchingInheritedTypeName(a.TypeName) then
+        break;
+      dec(j);
+    end;
+    if j < 0 then
+      exit;
+  end;
+
+  Result := True;
+end;
+
+function TIdeDbgValueFormatterSelector.FormatValue(AWatchValue: IWatchResultDataIntf;
+  ADisplayFormat: TWatchDisplayFormat; AWatchResultPrinter: IWatchResultPrinter; out
+  APrintedValue: String): Boolean;
+begin
+  Result := ValFormatter.FormatValue(AWatchValue, ADisplayFormat, AWatchResultPrinter, APrintedValue);
+  if Result then begin
+    case OriginalValue of
+      vfovAtEnd:   APrintedValue := APrintedValue + ' = ' + AWatchResultPrinter.PrintWatchValue(AWatchValue, ADisplayFormat);
+      vfovAtFront: APrintedValue := AWatchResultPrinter.PrintWatchValue(AWatchValue, ADisplayFormat) + ' = ' + APrintedValue;
+    end;
+  end;
+end;
+
 function TIdeDbgValueFormatterSelector.IsMatchingTypeName(ATypeName: String): boolean;
 begin
   Result := FMatchTypeNames.CheckTypeName(ATypeName);
@@ -306,6 +377,18 @@ begin
   Def.Free;
 end;
 
+function TIdeDbgValueFormatterSelectorList.ItemByName(AName: String): TIdeDbgValueFormatterSelector;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := Count - 1;
+  while (i >= 0) and (Items[i].Name <> AName) do
+    dec(i);
+  if i >= 0 then
+    Result := Items[i];
+end;
+
 destructor TIdeDbgValueFormatterSelectorList.Destroy;
 begin
   FreeChangeNotifications;
@@ -316,61 +399,17 @@ function TIdeDbgValueFormatterSelectorList.FormatValue(
   AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 var
-  i, j: Integer;
-  a: IWatchResultDataIntf;
+  i: Integer;
   f: TIdeDbgValueFormatterSelector;
-  v: ILazDbgIdeValueFormatterIntf;
 begin
   for i := 0 to Count - 1 do begin
     f := Items[i];
-    v := f.ValFormatter;
-    if (not (vffFormatValue in v.SupportedFeatures))
-       or (v = nil)
-       or
-       ( ADisplayFormat.MemDump and (
-           ( not(vffValueMemDump in v.SupportedFeatures) ) or
-           ( (vdfgCategory in v.SupportedDisplayFormatFilters) and (not (vdfCategoryMemDump in f.FFilterDisplayFormats)) )
-       ) )
-       or
-       ( (not ADisplayFormat.MemDump) and (
-           ( not(vffValueData in v.SupportedFeatures) ) or
-           ( (vdfgCategory        in v.SupportedDisplayFormatFilters) and (not (vdfCategoryData in f.FFilterDisplayFormats)) ) or
-           // TOOD: 2nd num
-           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgAddress         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in f.FFilterDisplayFormats)) )
-       ) )
-    then
+    if not f.MatchesAll(AWatchValue, ADisplayFormat) then
       continue;
 
-    if not f.IsMatchingTypeName(AWatchValue.TypeName) then begin
-      if not f.MatchInherited then
-        continue;
-      j := AWatchValue.AnchestorCount - 1;
-      while (j >= 0) do begin
-        a := AWatchValue.Anchestors[j];
-        if (a <> nil) and f.IsMatchingInheritedTypeName(a.TypeName) then
-          break;
-        dec(j);
-      end;
-      if j < 0 then
-        Continue;
-    end;
-    Result := f.ValFormatter.FormatValue(AWatchValue, ADisplayFormat, AWatchResultPrinter, APrintedValue);
-    if Result then begin
-      case f.OriginalValue of
-        vfovAtEnd:   APrintedValue := APrintedValue + ' = ' + AWatchResultPrinter.PrintWatchValue(AWatchValue, ADisplayFormat);
-        vfovAtFront: APrintedValue := AWatchResultPrinter.PrintWatchValue(AWatchValue, ADisplayFormat) + ' = ' + APrintedValue;
-      end;
+    Result := f.FormatValue(AWatchValue, ADisplayFormat, AWatchResultPrinter, APrintedValue);
+    if Result then
       exit;
-    end;
   end;
   Result := False;
 end;

@@ -7,8 +7,8 @@ interface
 
 uses
   Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils, IdeDebuggerDisplayFormats,
-  IdeDebuggerBase, IdeDebuggerStringConstants, LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf,
-  StrUtils;
+  IdeDebuggerBase, IdeDebuggerStringConstants, IdeDebuggerValueFormatter, LazDebuggerIntf, LazUTF8,
+  IdeDebuggerWatchValueIntf, StrUtils;
 
 type
 
@@ -59,7 +59,8 @@ type
     rpfIndent,           // use Indent. Only when MultiLine
     rpfMultiLine,
     rpfClearMultiLine,   // clean up pre-printed data
-    rpfPrefixOuterArrayLen
+    rpfPrefixOuterArrayLen,
+    rpfSkipValueFormatter
   );
   TWatchResultPrinterFormatFlags = set of TWatchResultPrinterFormatFlag;
 
@@ -69,6 +70,7 @@ type
   private
     FFormatFlags: TWatchResultPrinterFormatFlags;
     FLineSeparator: String;
+    FOnlyValueFormatter: TIdeDbgValueFormatterSelector;
     FTargetAddressSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
     FInValueFormatter: Boolean;
@@ -93,6 +95,8 @@ type
     function PrintWatchValue(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat): String;
 
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
+    property OnlyValueFormatter: TIdeDbgValueFormatterSelector read FOnlyValueFormatter write FOnlyValueFormatter;
+
     property TargetAddressSize: integer read FTargetAddressSize write FTargetAddressSize;
     property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver;
   end;
@@ -853,9 +857,14 @@ begin
   if AResValue = nil then
     exit('???');
 
-  if not FInValueFormatter then begin
+  if not (FInValueFormatter or (rpfSkipValueFormatter in FFormatFlags)) then begin
     FInValueFormatter := True;
     try
+      if OnlyValueFormatter <> nil then begin
+        if OnlyValueFormatter.FormatValue(AResValue, ADispFormat, Self, Result) then
+          exit;
+      end
+      else
       if GlobalValueFormatterSelectorList.FormatValue(AResValue, ADispFormat, Self, Result) then
         exit;
     finally
@@ -882,7 +891,7 @@ begin
     rdkUnsignedNumVal: begin
       Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
       Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num1);
-      if Resolved.Num2.Visible then begin;
+      if Resolved.Num2.Visible then begin
         Result := Result +' = ' +
                   PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
       end;

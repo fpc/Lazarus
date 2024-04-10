@@ -113,6 +113,7 @@ type
       defFunctionCallRunAllThreads, //
       defExtraDepth,        // Evaluate 1 extra level of sub-elements => i.e., evaluate each nested sub-item
       defSkipValConv,
+      defSkipValueFormatter, // Don't use any Valueformatter // not eval related
       defMemDump,           // Return Memory Dump, **instead** of value
       // deprecated
       defNoTypeInfo,        // No Typeinfo object will be returned // for structures that means a printed value will be returned

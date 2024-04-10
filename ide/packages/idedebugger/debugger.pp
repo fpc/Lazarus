@@ -6836,6 +6836,7 @@ begin
   Result.Enabled       := Enabled;
   Result.DisplayFormat := DisplayFormat;
   Result.DbgBackendConverter := DbgBackendConverter;
+  Result.DbgValueFormatter   := DbgValueFormatter;
   Result.FDisplayName := ADispName;
   if (defClassAutoCast in EvaluateFlags) then
     Result.EvaluateFlags := Result.EvaluateFlags + [defClassAutoCast];
@@ -6933,13 +6934,23 @@ begin
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
   then Include(FEvaluateFlags, defSkipValConv)
   else Exclude(FEvaluateFlags, defSkipValConv);
-
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
     if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
       DbgBackendConverter := DbgProjectLink.BackendConverterConfig.ItemByName(s)
     else
       DbgBackendConverter := DebuggerOptions.BackendConverterConfig.ItemByName(s);
+  end;
+
+  if AConfig.GetValue(APath + 'SkipValueFormatter', False)
+  then Include(FEvaluateFlags, defSkipValueFormatter)
+  else Exclude(FEvaluateFlags, defSkipValueFormatter);
+  s := AConfig.GetValue(APath + 'ValueFormatter', '');
+  if s <> '' then begin
+    if AConfig.GetValue(APath + 'ValueFormatterIsFromProject', False) then
+      DbgValueFormatter := DbgProjectLink.ValueFormatterConfig.ItemByName(s)
+    else
+      DbgValueFormatter := DebuggerOptions.ValueFormatterConfig.ItemByName(s);
   end;
 
   TIdeWatchValueList(FValueList).LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
@@ -6965,6 +6976,22 @@ begin
     AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
       (DbgProjectLink.BackendConverterConfig.IndexOf(DbgBackendConverter) >= 0),
       False);
+  end
+  else begin
+    AConfig.SetDeleteValue(APath + 'FpDbgConv', '', '');
+    AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject', False, False);
+  end;
+
+  AConfig.SetDeleteValue(APath + 'SkipValueFormatter', defSkipValueFormatter in FEvaluateFlags, False);
+  if DbgValueFormatter <> nil then begin
+    AConfig.SetDeleteValue(APath + 'ValueFormatter', DbgValueFormatter.Name, '');
+    AConfig.SetDeleteValue(APath + 'ValueFormatterIsFromProject',
+      (DbgProjectLink.ValueFormatterConfig.IndexOf(DbgValueFormatter) >= 0),
+      False);
+  end
+  else begin
+    AConfig.SetDeleteValue(APath + 'ValueFormatter', '', '');
+    AConfig.SetDeleteValue(APath + 'ValueFormatterIsFromProject', False, False);
   end;
 
   TIdeWatchValueList(FValueList).SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
@@ -7094,13 +7121,23 @@ begin
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
   then Include(FEvaluateFlags, defSkipValConv)
   else Exclude(FEvaluateFlags, defSkipValConv);
-
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
     if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
       DbgBackendConverter := DbgProjectLink.BackendConverterConfig.ItemByName(s)
     else
       DbgBackendConverter := DebuggerOptions.BackendConverterConfig.ItemByName(s);
+  end;
+
+  if AConfig.GetValue(APath + 'SkipValueFormatter', False)
+  then Include(FEvaluateFlags, defSkipValueFormatter)
+  else Exclude(FEvaluateFlags, defSkipValueFormatter);
+  s := AConfig.GetValue(APath + 'ValueFormatter', '');
+  if s <> '' then begin
+    if AConfig.GetValue(APath + 'ValueFormatterIsFromProject', False) then
+      DbgValueFormatter := DbgProjectLink.ValueFormatterConfig.ItemByName(s)
+    else
+      DbgValueFormatter := DebuggerOptions.ValueFormatterConfig.ItemByName(s);
   end;
 end;
 
@@ -7122,6 +7159,22 @@ begin
     AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
       (DbgProjectLink.BackendConverterConfig.IndexOf(DbgBackendConverter) >= 0),
       False);
+  end
+  else begin
+    AConfig.SetDeleteValue(APath + 'FpDbgConv', '', '');
+    AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject', False, False);
+  end;
+
+  AConfig.SetDeleteValue(APath + 'SkipValueFormatter', defSkipValueFormatter in FEvaluateFlags, False);
+  if DbgValueFormatter <> nil then begin
+    AConfig.SetDeleteValue(APath + 'ValueFormatter', DbgValueFormatter.Name, '');
+    AConfig.SetDeleteValue(APath + 'ValueFormatterIsFromProject',
+      (DbgProjectLink.ValueFormatterConfig.IndexOf(DbgValueFormatter) >= 0),
+      False);
+  end
+  else begin
+    AConfig.SetDeleteValue(APath + 'ValueFormatter', '', '');
+    AConfig.SetDeleteValue(APath + 'ValueFormatterIsFromProject', False, False);
   end;
 end;
 
