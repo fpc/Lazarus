@@ -45,6 +45,8 @@ uses
   // IdeIntf
   BaseIDEIntf, LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf,
   PackageIntf, MacroIntf, ParsedCompilerOpts, CompilerOptions,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE
   LazarusIDEStrConsts, Project, PackageDefs, ModeMatrixOpts, MiscOptions;
 

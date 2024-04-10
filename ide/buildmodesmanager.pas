@@ -39,6 +39,8 @@ uses
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
   IDEWindowIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE

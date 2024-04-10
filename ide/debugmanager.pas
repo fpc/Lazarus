@@ -76,7 +76,7 @@ uses
   // IDE
   SourceEditor, ProjectDefs, Project, ProjectDebugLink,
   LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
-  DebugEventsForm, EnvGuiOptions, RunParamsOpts;
+  DebugEventsForm, EnvGuiOptions, RunParamsOpts, RunParamOptions;
 
 type
 

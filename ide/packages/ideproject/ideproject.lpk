@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IdeProject"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Lazarus Team"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="-- This package is part of the IDE --
+This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.
+
+Files in this package are for the main configuration of the IDE."/>
+    <License Value="GPLv2"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="runparamoptions.pas"/>
+        <UnitName Value="RunParamOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="projecticon.pas"/>
+        <UnitName Value="ProjectIcon"/>
+      </Item>
+      <Item>
+        <Filename Value="w32manifest.pas"/>
+        <UnitName Value="W32Manifest"/>
+      </Item>
+      <Item>
+        <Filename Value="w32versioninfo.pas"/>
+        <UnitName Value="W32VersionInfo"/>
+      </Item>
+      <Item>
+        <Filename Value="projectuserresources.pas"/>
+        <UnitName Value="ProjectUserResources"/>
+      </Item>
+      <Item>
+        <Filename Value="ideprojectstrconsts.pas"/>
+        <UnitName Value="IdeProjectStrConsts"/>
+      </Item>
+      <Item>
+        <Filename Value="projectresources.pas"/>
+        <UnitName Value="ProjectResources"/>
+      </Item>
+      <Item>
+        <Filename Value="project.pp"/>
+        <UnitName Value="Project"/>
+      </Item>
+      <Item>
+        <Filename Value="projectdefs.pas"/>
+        <UnitName Value="ProjectDefs"/>
+      </Item>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IdePackager"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeUtilsPkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeConfig"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="BuildIntf"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

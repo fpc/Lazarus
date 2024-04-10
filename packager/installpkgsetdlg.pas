@@ -51,6 +51,10 @@ uses
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
   IDEImagesIntf, IdeIntfStrConsts, IDEHelpIntf, IDEDialogs, IDEWindowIntf, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IdeProject
+  IdeProjectStrConsts,
   // IdeConfig
   LazConf,
   // IDE

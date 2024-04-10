@@ -1265,11 +1265,6 @@ msgstr "编译器信息"
 msgid "Compiler messages language file (*.msg)"
 msgstr "编译器信息语言文件（*.msg）"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgctxt "lazarusidestrconsts.dlgcompileroptions"
-msgid "Compiler Options"
-msgstr "编译器选项"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "补全属性"
@@ -3540,10 +3535,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "项目"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "项目选项"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5061,11 +5052,6 @@ msgstr "显示所有"
 msgid "The package %s is read only."
 msgstr "该软件包%s为只读."
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "该文件\"%s\"已经存在.%s替换它?"
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5152,10 +5138,6 @@ msgstr "多义文件找到: \"%s\"%s这个文件可能被\"%s\"%s弄错 删除�
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "多义文件找到"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "多义单元找到"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5730,11 +5712,6 @@ msgstr "复制输出到剪贴板"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "错误"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "错误："
@@ -5878,12 +5855,6 @@ msgstr "(过滤器)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "跟随光标"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.liscein"
-msgid "%s in %s"
-msgstr "%s在%s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -7007,10 +6978,6 @@ msgstr "项目目录"
 msgid "%s project directory"
 msgstr "%s项目目录"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "读取错误"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "选择节点:"
@@ -7074,10 +7041,6 @@ msgstr "%s:%s值\"%s\"是无效的."
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "变量:"
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "写入错误"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -8037,31 +8000,6 @@ msgstr "扫描Make消息"
 msgid "Skip calling compiler"
 msgstr "跳过调用编译器"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "不能添加\"{$I %s}\"到main源代码!"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "不能添加\"{$R %s}\"到main源代码!"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "不能添加\"%s\"到main源代码!"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "不能移除\"{$I %s}\"从main源代码!"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "不能移除\"{$R %s}\"从main源代码!"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr ""
@@ -8596,10 +8534,6 @@ msgstr "删除所有这些文件？"
 msgid "Delete ambiguous file?"
 msgstr "删除多义文件？"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "删除文件失败"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8636,11 +8570,6 @@ msgstr "删除值\"%s\"?"
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "删除值%s"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "删除文件\"%s\"失败."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8740,10 +8669,6 @@ msgstr "未找到目录 \"%s\"。"
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "未找到目录 %s"
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "目录不可写"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9286,10 +9211,6 @@ msgstr "输入新名称对于宏命令\"%s\""
 msgid "Environment variable, name as parameter"
 msgstr "环境变量,名称作为参数"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "目录未找到"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "无效的调试器文件名"
@@ -9395,11 +9316,6 @@ msgstr "加载文件错误"
 msgid "Error loading file \"%s\":"
 msgstr "错误 加载文件\"%s\":"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "加载%s从%s%s%s%s错误"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "移动组件错误"
@@ -9457,11 +9373,6 @@ msgstr ",错误: %s"
 msgid "Error saving form"
 msgstr "保存窗体错误"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "错误 保存%s到%s%s%s%s"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9515,14 +9426,6 @@ msgstr "可执行的\"%s\"是一个目录"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "可执行的\"%s\"缺少权限来运行"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "执行命令后"
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "执行命令前"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9614,34 +9517,6 @@ msgstr "导出选择"
 msgid "Export >>"
 msgstr "导出>>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format, fuzzy, badformat
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "新的include尚不在include搜索路径.%s添加目录%s?"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr ""
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "展开(Extend)包含的路径?"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "扩展单元路径?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format, fuzzy, badformat
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "新的单元尚不在单元搜索路径.%s添加目录%s?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format, fuzzy
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "新的单元尚不在单元搜索路径.%s添加目录%s?"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "抽取(Extract)"
@@ -9706,12 +9581,6 @@ msgstr "文件"
 msgid "File: "
 msgstr "文件: "
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "文件\"%s\"%s看起来不是一个文本文件.%s仍然打开它?"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "程序的文件扩展名"
@@ -9769,14 +9638,6 @@ msgstr "文件是目录"
 msgid "File is not an executable"
 msgstr "文件不是可执行文件"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "文件不可写"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "文件是符号链接"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9789,12 +9650,6 @@ msgstr "文件名样式"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "文件未找到"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "文件\"%s\"未找到."
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9818,10 +9673,6 @@ msgstr "文件\"%s\"未找到.%s您想创建它?"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "文件名不是小写"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "文件不是文本文件"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10552,11 +10403,6 @@ msgstr "在安装/卸载软件包的过程中，IDE 将被重新编译和重新�
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "欢迎使用 Lazarus。%0:s找到的 IDE 配置被另一个之前的 Lazarus 使用过。%0:s如果您有两个或更多独立的 Lazarus ，它们不应共享相同的配置。这可能会引起不同 Lazarus 之间的配置冲突，从而导致您的部分或全部 Lazarus 无法使用。%0:s%0:s如果您只有一个 Lazarus，并且复制或移动了 Lazarus 的可执行文件，那么您可以升级此配置。%0:s%1:s%0:s%0:s选择：%0:s%0:s* 更新信息：使用此配置并进行更新，以适配当前版本的 Lazarus ，旧版的 Lazarus 将不再使用此配置%0:s* 忽略：使用此配置，但保留警告。这可能会导致与其他的 Lazarus 发生冲突。%0:s* 放弃：立即退出，然后用正确的配置启动 Lazarus。 %0:s%0:s其他信息：%0:s此配置为位于：%2:s%0:s它属于在以下位置安装的 Lazarus：%3:s%0:s当前 IDE 从以下位置启动：%4:s%0:s"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "为软件包%s创建Makefile"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "信息关于 IDE"
@@ -10668,10 +10514,6 @@ msgstr "如果您想使用两个不同版本的 Lazarus，您必需使用命令�
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "忽略所有"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "忽略并继续"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14313,15 +14155,6 @@ msgstr "没有模板选择"
 msgid "Nothing to do"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "没有implemented"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "还没有implemented:%s%s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "没有安装"
@@ -14584,14 +14417,6 @@ msgstr "再次打开项目"
 msgid "Open Project File"
 msgstr "打开项目文件"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "打开符号链接"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "打开目标"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "以常规源代码格式打开文件"
@@ -14698,14 +14523,6 @@ msgstr ""
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%s重写项目widgetset.例如. gtk gtk2 qt win32 carbon.默认: %s"
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "覆盖文件?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "覆盖磁盘上的文件"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Owner'已经被TReader/TWriter使用.请选择另一个名称."
@@ -14802,16 +14619,6 @@ msgstr "解析\"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "语法解析器:"
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr ""
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
-msgstr ""
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
@@ -14965,11 +14772,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "创建makefile"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s,默认:%s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "依赖属性"
@@ -14981,11 +14783,6 @@ msgstr "编辑常规选项"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "文件属性"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-#, fuzzy
-msgid "(fpmake)"
-msgstr "自定义fpmake选项"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15252,10 +15049,6 @@ msgstr "次要"
 msgid "Object"
 msgstr "对象"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "软件包选项"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "软件包类型"
@@ -15413,26 +15206,6 @@ msgstr "清理软件包依赖"
 msgid "Clear Selection"
 msgstr "清除选择"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "CompiledSrcPath附加"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr "名称空间(名称空间)"
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "输出目录"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "项目源代码目录标记(Mark)"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "单元路径"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "删除依赖"
@@ -15462,64 +15235,6 @@ msgstr ""
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "更多函数对于该软件包"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "二进制"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "包含文件"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "发布xml文件"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM-Lazarus窗体文本"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS-Lazarus资源"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "Main单元"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "文本"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "虚拟单元"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包目录.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包包括文件搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包名称.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包输出目录.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包源文件搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包单元搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15556,15 +15271,6 @@ msgstr "损坏的依赖关系"
 msgid "Circular dependencies found"
 msgstr "循环依赖项找到"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "编译软件包%s"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "删除失败"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "删除旧软件包文件?"
@@ -15579,18 +15285,9 @@ msgstr "删除旧软件包文件\"%s\"?"
 msgid "Dependency without Owner: %s"
 msgstr "依赖关系没有拥有者: %s"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "读取文件错误"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "读取包错误"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "写文件错误"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15678,10 +15375,6 @@ msgstr "软件包不是一个设计时软件包"
 msgid "Package is required"
 msgstr "需要软件包"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "软件包主要(main)源文件文件"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "软件包名已经存在"
@@ -15751,10 +15444,6 @@ msgstr ""
 msgid "Skip this package"
 msgstr "跳过这个软件包"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "静态软件包配置文件"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15780,11 +15469,6 @@ msgstr "文件名称\"%s\"是当前项目的一部分.%s项目和软件包不应
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "文件名称\"%s\"被%s使用,软件包\"%s\"%s在文件\"%s\"."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "该文件\"%s\"对于软件包\"%s\"未找到."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15891,62 +15575,15 @@ msgstr "这里有一个单元,带有相同名称:%s1. \"%s\"来自%s%s2. \"%s\""
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "这是一个虚软件包.它还没有源文件.请先保存软件包."
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "不能创建目录"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "不能创建输出目录\"%s\"%s对于软件包%s."
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "不能创建软件包源码目录目录\"%s\"%s对于软件包%s."
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "不能为Lazarus创建目标目录:%s\"%s\".%s这个目录被新使用自定义软件包更改的Lazarus IDE所需要."
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "不能删除文件\"%s\"."
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "不能删除文件"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "不能够删除旧的状态文件\"%s\"%s 对于软件包%s."
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "不能加载软件包"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "不能打开软件包\"%s\".%s,这个软件包已经被标记安装."
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "不能读取状态(state)文件\"%s\"%s关于软件包%s.%s错误:%s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "不能写入软件包\"%s\"%s到文件\"%s\".%s错误:%s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "不能写入状态(state)文件\"%s\"%s关于软件包%s.%s错误:%s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -15988,86 +15625,6 @@ msgstr "移除"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "选择一个软件包"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "不能注册没有单元的组件"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "组件类\"%s\"已经定义"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%s文件名:\"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "无效组件类"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "无效的单元名:%s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk文件:\"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "软件包文件未找到"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "软件包注册错误"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "注册过程是nil"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-#, fuzzy
-msgid "RegisterUnit was called but no package is registering."
-msgstr "注册单元(RegisterUnit)已经调用,但是没有软件包被注册."
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%s该lpk文件未找到."
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format, fuzzy
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "该软件包\"%s\" 已经安装, 但是未找到有效的软件包文件(.lpk) .%s一个残缺的虚拟的软件包被创建."
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "这是默认的软件包.仅使用于不带有软件包的组件.这些组件是过时的."
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "该软件包已经安装,但是lpk文件未找到.它的所有组件都不可用,请修复这个软件包."
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%s单元名:\"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr ""
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "单元\"%s\"已从软件包(lpk)移除"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
@@ -16561,16 +16118,6 @@ msgstr "从项目移除文件%s?"
 msgid "Remove %s items from project?"
 msgstr "从项目移除%s项目 ?"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "不能读取状态(state)文件%s对于项目\"%s%s错误:%s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "不能写入状态(state)文件对于项目\"%s%s错误:%s"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "总是构建（即使没有任何更改）"
@@ -16588,10 +16135,6 @@ msgstr "错误"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "不能更改自动创建窗体列表 在该程序源文件.%s请先修复错误."
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "项目源代码目录标记(Mark)"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16719,10 +16262,6 @@ msgstr "退出"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "退出Lazarus(&Q)"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "读取错误"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17627,10 +17166,6 @@ msgstr "跳过加载最后的(last)项目"
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "跳过这些警告"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "更慢但更准确."
@@ -17729,11 +17264,6 @@ msgstr "单词"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr ""
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "源文件和目标是相同的:%s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -17821,10 +17351,6 @@ msgstr "停止调试？"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "将路径分隔符 \\ 和 / 存储为"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "奇怪的 lpi 文件"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -18025,11 +17551,6 @@ msgstr "应用程序包是为 \"%s\" 创建的"
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "类 \"%s\" 是一个 TControl，不能粘贴到一个非控件上。%s无法粘贴。"
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "CodeTools 找到了一个错误：%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18111,29 +17632,14 @@ msgstr ""
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "该目录\"%s\"不再被需要在单元路径.%s移除它?"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "该目标%s是不可写的."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "文件\"%s\""
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "文件%s不看起来像一个lpi文件."
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr ""
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "该文件\"%s\"是一个符号链接.%s打开\"%s\"代替?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18159,11 +17665,6 @@ msgstr "文件\"%s\"看起来是一个程序.%s关闭当前的项目并为这个
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "文件%s看起来是一个现有Lazarus项目的程序文件."
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19105,39 +18606,6 @@ msgstr "不能转换文件%s\"%s\"%s的文本窗体数据到二进制流中.(%s)
 msgid "Unable to convert to encoding \"%s\""
 msgstr "不能转换到编码\"%s\""
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "不能复制文件"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "不能复制文件\"%s\"%s到\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "不能创建目录\"%s\"."
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "不能创建文件"
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "不能创建文件\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "不能创建文件%s\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "不能创建链接\"%s\"带有目标\"%s\""
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 #, fuzzy
 msgid "Unable to create new file because there is already a directory with this name."
@@ -19241,33 +18709,9 @@ msgstr "无法打开设计器，%s 类 %s 没有从一个可设计的类（如TF
 msgid "Unable to read %s"
 msgstr "无法读取 %s"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "无法读取文件"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "无法读取文件 \"%s\"。"
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "无法读取文件 \"%s\"%s 错误：%s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "无法读取 lpi"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "无法读取进程的退出状态码"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "无法读取项目信息文件 %s\"%s\"。"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19288,20 +18732,6 @@ msgstr "无法从源码中删除项目的标题，%s%s"
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "无法将不明确的文件 \"%s\"%s 重命名为 \"%s\""
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "无法重命名文件"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "无法将文件 \"%s\" 重命名为 \"%s\"！"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "无法将文件 \"%s\"%s 重命名为 \"%s\"。"
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19354,45 +18784,6 @@ msgstr "无法将 %s :T%s 的二进制组件流转换为文本。"
 msgid "Unable to update CreateForm statement in project source"
 msgstr "无法在项目源文件中更新 CreateForm 语句"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "无法写入\"%s\""
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "无法写入文件"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "无法写入文件 \"%s\"。"
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "无法写入文件 \"%s\" %s 错误：%s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "无法写入项目信息文件 %s \"%s\"，%s 错误：%s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "无法写入项目会话文件 %s \"%s\"，%s 错误：%s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "无法写入到文件 \"%s\"。"
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "无法将 xml 流写入到 %s%s，错误：%s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "取消所有勾选"
@@ -19422,79 +18813,6 @@ msgstr "卸载选中的"
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
 msgstr "把它们也卸载"
-
-#: lazarusidestrconsts.lisunit
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "单元"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "单元 \"%s\" 已经更改，是否保存？"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "单元标识符已经存在"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s 单元 %s 在软件包 %s"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr "单位 \"%s\" 必须先保存才能被继承。现在保存吗？"
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "单元名已存在项目中"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "单元名开头为 ..."
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "单元名包含 ..."
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "单元 %s 未找到"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "单元 %s 没有在新位置 \"%s\" 中找到"
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr "文件 %s 中没有找到一个单元"
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "单元输出目录"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "单元路径"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "单元路径"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "单元 %s 需要软件包 %s"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
-msgstr "文件 %s 中没有找到单元"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -19537,11 +18855,6 @@ msgstr "当只有字母大小写发生变化时，更新其他过程的签章"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "更新引用？"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "更新PO文件失败的软件包 %s"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -19831,15 +19144,6 @@ msgstr "运行的工作目录"
 msgid "Write config instead of command line parameters"
 msgstr "写入配置而不是使用命令行参数"
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "写入错误"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "写入错误：%s%s 文件：%s%s%s"
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr "写入软件包信息失败。"
@@ -19856,15 +19160,6 @@ msgstr ""
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "在 %s 中发现错误版本：%s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "XML 错误"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "在文件 %s%s 中发现 XML 解析错误，错误：%s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20170,117 +19465,13 @@ msgstr "如果可执行格式支持版本信息则会存储它。"
 msgid "Include version info in executable"
 msgstr "在可执行文件中包含版本信息"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "南非荷兰语"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "阿拉伯语"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "自动（或者英语）"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "加泰罗尼亚语"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "汉语"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr "科西嘉语"
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "捷克语"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "荷兰语"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "英语"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "芬兰语"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "法语"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "德语"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "希伯来语"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "匈牙利语"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "印度尼西亚语"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "意大利语"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "日语"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "立陶宛语"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "语言选项"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "波兰语"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "葡萄牙语"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "巴西葡萄牙语"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "俄罗斯语"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "语言选择:"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "斯洛伐克语"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "西班牙语"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "土耳其语"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "乌克兰语"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22205,4 +21396,76 @@ msgstr "单元图表选项"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "版本信息"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "单元 \"%s\" 已经更改，是否保存？"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "单元标识符已经存在"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s 单元 %s 在软件包 %s"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr "单位 \"%s\" 必须先保存才能被继承。现在保存吗？"
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "单元名已存在项目中"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "单元名开头为 ..."
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "单元名包含 ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "单元 %s 未找到"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "单元 %s 没有在新位置 \"%s\" 中找到"
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr "文件 %s 中没有找到一个单元"
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "单元输出目录"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "单元路径"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "单元路径"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "单元 %s 需要软件包 %s"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr "文件 %s 中没有找到单元"
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "不能删除文件"
 

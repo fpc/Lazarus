@@ -1,0 +1,330 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idepackagerstrconsts.dlgcompileroptions
+msgid "Compiler Options"
+msgstr "Voľby prekladača"
+
+#: idepackagerstrconsts.lisambiguousunitfound
+#, fuzzy
+#| msgid "Ambiguous Unit found"
+msgid "Ambiguous unit found"
+msgstr "Nájdená nejednoznačná jednotka"
+
+#: idepackagerstrconsts.liscein
+#, object-pascal-format
+msgid "%s in %s"
+msgstr ""
+
+#: idepackagerstrconsts.lisdeletingoffilefailed
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Deleting of file %s%s%s failed."
+msgid "Deleting of file \"%s\" failed."
+msgstr "Mazanie súboru %s%s%s zlyhalo."
+
+#: idepackagerstrconsts.lisexecutingcommandafter
+msgid "Executing command after"
+msgstr "Vykonať príkaz po"
+
+#: idepackagerstrconsts.lisexecutingcommandbefore
+msgid "Executing command before"
+msgstr "Vykonať príkaz pred"
+
+#: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendincludepath
+msgid "Extend include path?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendunitpath
+msgid "Extend unit path?"
+msgstr "Rozšíriť cestu jednotky?"
+
+#: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
+#, object-pascal-format
+msgid "Creating Makefile for package %s"
+msgstr ""
+
+#: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispckeditdefault
+#, object-pascal-format
+msgid "%s, default: %s"
+msgstr ""
+
+#: idepackagerstrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
+#: idepackagerstrconsts.lispckoptspackageoptions
+msgid "Package Options"
+msgstr "Voľby balíčka"
+
+#: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr "Doplnenie CompiledSrcPath"
+
+#: idepackagerstrconsts.lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr "Výstupný adresár"
+
+#: idepackagerstrconsts.lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr "Značka zdrojového adresára balíčka"
+
+#: idepackagerstrconsts.lispkgdefsunitpath
+msgid "Unit Path"
+msgstr "Cesta jednotky"
+
+#: idepackagerstrconsts.lispkgfiletypebinary
+msgid "Binary"
+msgstr "Binárny"
+
+#: idepackagerstrconsts.lispkgfiletypeinclude
+msgid "Include file"
+msgstr "Súbor include"
+
+#: idepackagerstrconsts.lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "Spravoanie súboru XML"
+
+#: idepackagerstrconsts.lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr "LFM - textový formulár Lazarus"
+
+#: idepackagerstrconsts.lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr "LRS - Lazarus resource"
+
+#: idepackagerstrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr "Hlavná jednotka"
+
+#: idepackagerstrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Text"
+
+#: idepackagerstrconsts.lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr "Virtuálna jednotka"
+
+#: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangcompilepackage
+#, object-pascal-format
+msgid "Compile package %s"
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr "Zmazanie zlyhalo"
+
+#: idepackagerstrconsts.lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr "Chyba čítania súboru"
+
+#: idepackagerstrconsts.lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr "Chyba zapisovania súboru"
+
+#: idepackagerstrconsts.lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr "základný súbor zdrojového kódu balíčka"
+
+#: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr "konfiguračný súbor statických balíčkov"
+
+#: idepackagerstrconsts.lispkgmangthefileofpackagewasnotfound
+#, object-pascal-format
+msgid "The file \"%s\" of package %s was not found."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create output directory \"%s\"%sfor package %s."
+msgstr "Nemožno vytvoriť výstupný adresár \"%s\"%sbalíčka %s."
+
+#: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr "Nemožno vytvoriť zdrojový adresár \"%s\"%spre balíček %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
+msgstr "Nemožno zmazať starý stavový súbor %s%s%s%sbalíčka %s."
+
+#: idepackagerstrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangunabletoopenthepackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
+msgstr "Nemožno otvoriť balíček %s%s%s.%sTento balíček bol označený na inštaláciu."
+
+#: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Nemožno čítať stavový súbor %s%s%s%sbalíčka %s.%sChyba: %s"
+
+#: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Nemožno zapísať stavový súbor %s%s%s%sbalíčka %s.%sChyba: %s"
+
+#: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
+#, fuzzy
+#| msgid "Can not register components without unit"
+msgid "Cannot register components without unit"
+msgstr "Nemožno registrovať komponent bez jednotky"
+
+#: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
+#, object-pascal-format
+msgid "Component Class \"%s\" already defined"
+msgstr "Trieda komponentu \"%s\" je už definovaná"
+
+#: idepackagerstrconsts.lispkgsysfilename
+#, object-pascal-format
+msgid "%s%sFile Name: \"%s\""
+msgstr "%s%sMeno súboru: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr "Neplatná trieda komponentu"
+
+#: idepackagerstrconsts.lispkgsysinvalidunitname
+#, object-pascal-format
+msgid "Invalid Unitname: %s"
+msgstr "Neplatné meno jednotky: %s"
+
+#: idepackagerstrconsts.lispkgsyslpkfilename
+#, object-pascal-format
+msgid "%s%slpk file: \"%s\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr "Súbor balíčka nenájdený"
+
+#: idepackagerstrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr "Procedúra Register je prázdna"
+
+#: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
+#, fuzzy
+#| msgid "RegisterUnit was called, but no package is registering."
+msgid "RegisterUnit was called but no package is registering."
+msgstr "Bolo volané RegisterUnit, ale neregistruje sa žiadny balíček."
+
+#: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
+#, object-pascal-format
+msgid "%s%sThe lpk file was not found."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+#, object-pascal-format, fuzzy, badformat
+#| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr "Balíček %s%s%s je nainštalovaný, ale nebol nájdený platný súbor balíčka (.lpk).%sBol vytvorený poškodený fiktívny balíček."
+
+#: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr "Toto je predvolený balíček. Určený len pre komponenty bez balíčkov (zastarané)."
+
+#: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+#, fuzzy
+#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr "Tento balíček je nainštalovaný, ale súbor lpk nebol nájdený. Všetky jeho komponenty sú deaktivované. Prosím opravte to."
+
+#: idepackagerstrconsts.lispkgsysunitname
+#, object-pascal-format
+msgid "%s%sUnit Name: \"%s\""
+msgstr "%s%sMeno jednotky: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+#, object-pascal-format
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
+#, object-pascal-format
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
+
+#: idepackagerstrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
+#: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
+#, object-pascal-format, fuzzy, badformat
+#| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
+msgstr "Súbor %s%s%s%sbol nájdený v jednom zo zdrojových adresárov balíčka %s a vyzerá ako preložená jednotka. Preložené jednotky musia byť vo výstupnom adresári balíčka, inak môžu mať iné balíčky problémy s použitím tohoto balíčka.%s%sZmazať tento súbor?"
+
+#: idepackagerstrconsts.lisunit
+msgid "Unit"
+msgstr "Jednotka"
+
+#: idepackagerstrconsts.lisupdatingpofilesfailedforpackage
+#, object-pascal-format
+msgid "Updating PO files failed for package %s"
+msgstr ""
+

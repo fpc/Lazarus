@@ -1,0 +1,315 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idepackagerstrconsts.dlgcompileroptions
+msgid "Compiler Options"
+msgstr "Derleyici Seçenekleri"
+
+#: idepackagerstrconsts.lisambiguousunitfound
+msgid "Ambiguous unit found"
+msgstr "Belirsiz birim bulundu"
+
+#: idepackagerstrconsts.liscein
+#, object-pascal-format
+msgid "%s in %s"
+msgstr "%s içinde %s"
+
+#: idepackagerstrconsts.lisdeletingoffilefailed
+#, object-pascal-format
+msgid "Deleting of file \"%s\" failed."
+msgstr "\"%s\" dosyasının silinmesi başarısız oldu."
+
+#: idepackagerstrconsts.lisexecutingcommandafter
+msgid "Executing command after"
+msgstr "Sonra komut çalıştırılıyor"
+
+#: idepackagerstrconsts.lisexecutingcommandbefore
+msgid "Executing command before"
+msgstr "Önce komut çalıştırılıyor"
+
+#: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr "\"%s\" paketinin dosya arama yolunu %s \"%s\" ile genişletilsin mi?"
+
+#: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr "Projenin include dosya arama yolunu %s ile genişlet \"%s\"?"
+
+#: idepackagerstrconsts.lisextendincludepath
+msgid "Extend include path?"
+msgstr "Yol genişletilsin mi?"
+
+#: idepackagerstrconsts.lisextendunitpath
+msgid "Extend unit path?"
+msgstr "Birim yolunu genişletilsin mi?"
+
+#: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr "Paketin birim arama yolunu \"%s\" %s \"%s\" ile uzat?"
+
+#: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
+#, object-pascal-format
+msgid "Creating Makefile for package %s"
+msgstr "%s paketi için Makefile oluşturuluyor"
+
+#: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr "derleyiciyi geçerek \"%s\" tanımını farklı değerlerle iki kez tanımlayın"
+
+#: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler option -%s twice with different values"
+msgstr "derleyici seçeneğinin geçilmesi - farklı değerlerle iki kez %s"
+
+#: idepackagerstrconsts.lispckeditdefault
+#, object-pascal-format
+msgid "%s, default: %s"
+msgstr "%s, varsayılan: %s"
+
+#: idepackagerstrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr "(fpmake)"
+
+#: idepackagerstrconsts.lispckoptspackageoptions
+msgid "Package Options"
+msgstr "Paket Seçenekleri"
+
+#: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr "CompiledSrcPath eklentisi"
+
+#: idepackagerstrconsts.lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr "Çıkış dizini"
+
+#: idepackagerstrconsts.lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr "Paket Kaynak Dizini İşareti"
+
+#: idepackagerstrconsts.lispkgdefsunitpath
+msgid "Unit Path"
+msgstr "Birim Yolu"
+
+#: idepackagerstrconsts.lispkgfiletypebinary
+msgid "Binary"
+msgstr "İkili"
+
+#: idepackagerstrconsts.lispkgfiletypeinclude
+msgid "Include file"
+msgstr "Dosyayı dahil et"
+
+#: idepackagerstrconsts.lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "Sorun xml dosyası"
+
+#: idepackagerstrconsts.lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr "LFM - Lazarus metin dosyası"
+
+#: idepackagerstrconsts.lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr "LRS - Lazarus kaynak dosyası"
+
+#: idepackagerstrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr "Ana Birim"
+
+#: idepackagerstrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Metin"
+
+#: idepackagerstrconsts.lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr "Sanal Birim"
+
+#: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket dizini.Parametresi paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket, dosya arama yolunu içerir. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket adı. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket çıkış dizini.Parametresi paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\"\""
+
+#: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket kaynağı arama yolu. Parametre paket kimliğidir, örneğin \" İsim\" veya \"İsim 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Paket birimi arama yolu. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
+
+#: idepackagerstrconsts.lispkgmangcompilepackage
+#, object-pascal-format
+msgid "Compile package %s"
+msgstr "%s paketini derle"
+
+#: idepackagerstrconsts.lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr "Silinemedi"
+
+#: idepackagerstrconsts.lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr "Dosya okunurken hata oluştu"
+
+#: idepackagerstrconsts.lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr "Dosya yazarken hata oluştu"
+
+#: idepackagerstrconsts.lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr "paket ana kaynak dosyası"
+
+#: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr "statik paketler yapılandırma dosyası"
+
+#: idepackagerstrconsts.lispkgmangthefileofpackagewasnotfound
+#, object-pascal-format
+msgid "The file \"%s\" of package %s was not found."
+msgstr "%s paketinin \"%s\" dosyası bulunamadı."
+
+#: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create output directory \"%s\"%sfor package %s."
+msgstr "Paket %s için \"%s\" %s çıktı klasörü oluşturulamadı."
+
+#: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr "Paket kaynağı klasörü \"%s\" %s için %s oluşturulamadı."
+
+#: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
+#, object-pascal-format
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
+msgstr "Eski durum dosyasını silemiyor \"%s\" %s paket %s için."
+
+#: idepackagerstrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr "Paket yüklenemiyor"
+
+#: idepackagerstrconsts.lispkgmangunabletoopenthepackage
+#, object-pascal-format
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
+msgstr "Paket \"%s\" açılamıyor.%sBu paket kurulum için işaretlendi."
+
+#: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
+msgstr "%s durum dosyasını okunamıyor \"%s\" paketi %s.%sHata: %s"
+
+#: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Durum dosyası yazılamıyor \"%s\"%s paketinin %s.%s Hata:%s"
+
+#: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
+msgid "Cannot register components without unit"
+msgstr "Birim olmayan bileşenler kaydedilemiyor"
+
+#: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
+#, object-pascal-format
+msgid "Component Class \"%s\" already defined"
+msgstr "Bileşen Sınıfı \"%s\" zaten tanımlandı"
+
+#: idepackagerstrconsts.lispkgsysfilename
+#, object-pascal-format
+msgid "%s%sFile Name: \"%s\""
+msgstr "%s%sDosya Adı: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr "Geçersiz bileşen sınıfı"
+
+#: idepackagerstrconsts.lispkgsysinvalidunitname
+#, object-pascal-format
+msgid "Invalid Unitname: %s"
+msgstr "Geçersiz Birim Adı: %s"
+
+#: idepackagerstrconsts.lispkgsyslpkfilename
+#, object-pascal-format
+msgid "%s%slpk file: \"%s\""
+msgstr "%s%slpk dosyası: \"%s\""
+
+#: idepackagerstrconsts.lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr "Paket dosyası bulunamadı"
+
+#: idepackagerstrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr "Paket kaydı hatası"
+
+#: idepackagerstrconsts.lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr "Kayıt prosedürü sıfır"
+
+#: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
+msgid "RegisterUnit was called but no package is registering."
+msgstr "RegisterUnit çağrıldı, ancak hiçbir paket kayıt yapmıyor."
+
+#: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
+#, object-pascal-format
+msgid "%s%sThe lpk file was not found."
+msgstr "%s%sLpk dosyası bulunamadı."
+
+#: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+#, object-pascal-format
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr "\"%s\" paketi kuruldu, ancak geçerli bir paket dosyası (.lpk) bulunamadı.%s Bozuk bir sahte paket oluşturuldu."
+
+#: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr "Bu varsayılan paket. Sadece paketi olmayan bileşenler için kullanılır. Bu bileşenler eski."
+
+#: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr "Bu paket yüklü ancak lpk dosyası bulunamadı. Tüm bileşenleri devre dışı bırakıldı. Lütfen bunu düzeltin."
+
+#: idepackagerstrconsts.lispkgsysunitname
+#, object-pascal-format
+msgid "%s%sUnit Name: \"%s\""
+msgstr "%s%sBirim Adı: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+#, object-pascal-format
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr "Birim \"%s\" lpk dosyasında bulunamadı. %s Muhtemelen bu lpk dosyası bu IDE'yi oluşturmak için kullanılmadı. Veya paket, RegisterUnit prosedürünü kötüye kullanır."
+
+#: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
+#, object-pascal-format
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr "Birim \"%s\" paketten kaldırıldı (lpk)"
+
+#: idepackagerstrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr "Bu uyarıları atla"
+
+#: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
+#, object-pascal-format
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
+msgstr "\"%s\"%s dosyası,%s paketinin kaynak dizinlerinden birinde bulundu ve derlenmiş bir birime benziyor. Derlenmiş birimler paketin çıkış dizininde olmalıdır, aksi takdirde diğer paketler bu paketi kullanırken sorun yaşayabilir.%s Belirsiz dosyayı sil?"
+
+#: idepackagerstrconsts.lisunit
+msgid "Unit"
+msgstr "Birim"
+
+#: idepackagerstrconsts.lisupdatingpofilesfailedforpackage
+#, object-pascal-format
+msgid "Updating PO files failed for package %s"
+msgstr "PO dosyası güncellemesi %s paketinde başarısız oldu"
+

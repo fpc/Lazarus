@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 06.04.2024
+   This file was generated on 11/04/2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -30,10 +30,11 @@ begin
 
     P.Author:='Lazarus Team';
     P.License:='GPLv2';
-    P.Description:='-- This package is part of the IDE --'#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#10''#10'Files in this package are for the main configuration of the IDE.';
+    P.Description:='-- This package is part of the IDE --'#13#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#13#10''#13#10'Files in this package are for the main configuration of the IDE.';
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('ideintf');
     D := P.Dependencies.Add('codetools');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('buildintf');
@@ -46,6 +47,8 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
+    P.Options.Add('-dLCL');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
@@ -59,6 +62,7 @@ begin
     t.Dependencies.AddUnit('environmentopts');
     t.Dependencies.AddUnit('etfpcmsgfilepool');
     t.Dependencies.AddUnit('etmakemsgparser');
+    t.Dependencies.AddUnit('fppkghelper');
     t.Dependencies.AddUnit('idecmdline');
     t.Dependencies.AddUnit('ideconfstrconsts');
     t.Dependencies.AddUnit('ideguicmdline');
@@ -73,6 +77,7 @@ begin
     t.Dependencies.AddUnit('searchpathprocs');
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('transfermacros');
+    t.Dependencies.AddUnit('inputhistory');
 
     T:=P.Targets.AddUnit('compileroptions.pp');
     T:=P.Targets.AddUnit('compoptsmodes.pas');
@@ -83,6 +88,7 @@ begin
     T:=P.Targets.AddUnit('environmentopts.pp');
     T:=P.Targets.AddUnit('etfpcmsgfilepool.pas');
     T:=P.Targets.AddUnit('etmakemsgparser.pas');
+    T:=P.Targets.AddUnit('fppkghelper.pas');
     T:=P.Targets.AddUnit('idecmdline.pas');
     T:=P.Targets.AddUnit('ideconfstrconsts.pas');
     T:=P.Targets.AddUnit('ideguicmdline.pas');
@@ -97,6 +103,7 @@ begin
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('toolbaroptionsbase.pas');
     T:=P.Targets.AddUnit('transfermacros.pp');
+    T:=P.Targets.AddUnit('inputhistory.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('ideconfig.compiled');

@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideprojectstrconsts.dlgprojectoptions
+msgid "Project Options"
+msgstr "Project Opties"
+
+#: ideprojectstrconsts.liscodetoolsdefsreaderror
+msgid "Read error"
+msgstr "Leesfout"
+
+#: ideprojectstrconsts.liscouldnotadditomainsource
+#, object-pascal-format
+msgid "Could not add \"{$I %s}\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotaddrtomainsource
+#, object-pascal-format
+msgid "Could not add \"{$R %s}\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotaddtomainsource
+#, object-pascal-format
+msgid "Could not add \"%s\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotremoveifrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$I %s}\" from main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotremoverfrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$R %s}\" from main source!"
+msgstr ""
+
+#: ideprojectstrconsts.lisextendunitsearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr ""
+
+#: ideprojectstrconsts.lisfilenotfound2
+#, object-pascal-format, fuzzy
+#| msgid "File %s%s%s not found.%s"
+msgid "File \"%s\" not found."
+msgstr "Bestand \"%s\" niet gevonden."
+
+#: ideprojectstrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr ""
+
+#: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
+#, object-pascal-format
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr "Kan het status bestand %s van project %s%s niet lezen. Fout: %s"
+
+#: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
+#, object-pascal-format
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr "Kan het status bestand van project %s%s niet schrijven. Four %s"
+
+#: ideprojectstrconsts.lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr "Project broncode directory merk"
+
+#: ideprojectstrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr ""
+
+#: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
+#, object-pascal-format
+msgid "The file %s does not look like a lpi file."
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletoreadtheprojectinfofile
+#, object-pascal-format
+msgid "Unable to read the project info file%s\"%s\"."
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
+#, object-pascal-format
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
+#, object-pascal-format
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+

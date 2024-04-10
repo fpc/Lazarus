@@ -29,7 +29,10 @@ type
     libpLazControlDsgn,
     libpLCLExtensions_package,
     libpLazVirtualtreeview_package,
+    libpIdeUtilsPkg,
     libpIdeConfig,
+    libpIdePackager,
+    libpIdeProject,
     libpIdeDebugger
     );
 const
@@ -56,7 +59,10 @@ const
     'LazControlDsgn',
     'lclextensions_package',
     'laz.virtualtreeview_package',
+    'IdeUtilsPkg',
     'IdeConfig',
+    'IdePackager',
+    'IdeProject',
     'IdeDebugger'
     );
 

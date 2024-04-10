@@ -114,8 +114,14 @@ uses
   etQuickFixes, etMessageFrame, etMessagesWnd,
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
+  // IdeUtils
+  IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig
   IdeConfig, LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine, IDEProcs,
+  // IdePackager,
+  IdePackager, IdePackagerStrConsts,
+  // IdeProject,
+  IdeProject, RunParamOptions,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, Files_Options, Desktop_Options, window_options, IdeStartup_Options,

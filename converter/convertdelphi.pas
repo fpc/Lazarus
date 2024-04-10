@@ -45,6 +45,8 @@ uses
   PackageIntf, ProjectIntf, ComponentReg, IDEExternToolIntf,
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   IDEProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
   // IDE

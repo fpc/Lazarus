@@ -40,6 +40,8 @@ uses
   ComponentReg,
   // IDEIntf
   NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts,
   // IDE

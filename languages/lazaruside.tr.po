@@ -1261,10 +1261,6 @@ msgstr "Derleyici mesajları"
 msgid "Compiler messages language file (*.msg)"
 msgstr "Derleyici ileti dil dosyası (* .msg)"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgid "Compiler Options"
-msgstr "Derleyici Seçenekleri"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Komple özellikleri"
@@ -3506,10 +3502,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Proje"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "Proje Seçenekleri"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5025,11 +5017,6 @@ msgstr "Tümünü göster"
 msgid "The package %s is read only."
 msgstr "%s paketi salt okunur."
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "\"%s\" dosyası zaten var.%s Değiştirilsin mi?"
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5116,10 +5103,6 @@ msgstr "Belirsiz dosya bulundu: \"%s\"%sBu dosya \"%s\" ile karıştırılabilir
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Belirsiz dosyalar bulundu"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "Belirsiz birim bulundu"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5692,11 +5675,6 @@ msgstr "Çıktıyı panoya kopyala"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPC'nin .ppu dosyalarının tarihleri bir saatten fazla farklılık göstermektedir.%s Bu iki kurulumdan kaynaklanabilir.%sDosya1: %s%sDosya2: %s"
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "Hata"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "HATA: "
@@ -5840,12 +5818,6 @@ msgstr "(Filtre)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "İmleci takip et"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.liscein"
-msgid "%s in %s"
-msgstr "%s içinde %s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -6968,10 +6940,6 @@ msgstr "Proje dizini"
 msgid "%s project directory"
 msgstr "%s  proje dizini"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "Okuma hatası"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Seçili Düğüm:"
@@ -7035,10 +7003,6 @@ msgstr "%s: %sdeğer \"%s\" geçersiz."
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Değişken:"
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "Yazma hatası"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -7998,31 +7962,6 @@ msgstr "Make Mesajları için tara"
 msgid "Skip calling compiler"
 msgstr "Çağıran derleyiciyi atla"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "Ana kaynağa \"{$I %s}\" eklenemedi!"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "\"{$R %s}\" ana kaynağa eklenemedi!"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "Ana kaynak \"%s\" eklenemedi!"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "Ana kaynaktan \"{$I %s}\" kaldırılamadı!"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "Ana kaynaktan \"{$R %s}\" kaldırılamadı!"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Uyarı: Ek derleyici yapılandırma dosyası, Free Pascal derleyicisinin aradığı standart yapılandırma dosya adlarından biriyle aynı ada sahiptir. Bu, YALNIZCA ek yapılandırmanın ayrıştırılmasına ve standart yapılandırmanın atlanmasına neden olabilir."
@@ -8555,10 +8494,6 @@ msgstr "Tüm dosyalar silinsin mi?"
 msgid "Delete ambiguous file?"
 msgstr "Belirsiz dosya silinsin mi?"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "Dosya silinemedi"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8595,11 +8530,6 @@ msgstr "%s değeri silinsin mi?"
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "%s değerini sil"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "\"%s\" dosyasının silinmesi başarısız oldu."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8699,10 +8629,6 @@ msgstr "Dizin \"%s\" bulunamadı."
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "dizin %s bulunamadı"
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "Dizin yazılabilir değil"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9244,10 +9170,6 @@ msgstr "Makro için \"%s\"\" yeni ad girin"
 msgid "Environment variable, name as parameter"
 msgstr "Ortam değişkeni, parametrenin adı"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "Dizin bulunamadı"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Geçersiz hata ayıklayıcı dosya adı"
@@ -9349,11 +9271,6 @@ msgstr "Dosya yüklenirken hata oluştu"
 msgid "Error loading file \"%s\":"
 msgstr "\"%s\" dosyasını yüklerken hata oluştu:"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "%s%s%s%s adresinden %s yüklenirken hata oluştu"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "Bileşeni hareket ettirirken hata oluştu"
@@ -9411,11 +9328,6 @@ msgstr ", Hatalar: %s"
 msgid "Error saving form"
 msgstr "Form kaydetme hatası"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "%s, %s %s %s %s'ye kaydedilirken hata oluştu"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9468,14 +9380,6 @@ msgstr "çalıştırılabilir \"%s\" bir dizin"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "çalıştırılabilir \"%s\" çalıştırılacak izin yok"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "Sonra komut çalıştırılıyor"
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "Önce komut çalıştırılıyor"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9562,34 +9466,6 @@ msgstr "Seçilenleri dışa aktar"
 msgid "Export >>"
 msgstr "Dışa Aktar >>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "\"%s\" paketinin dosya arama yolunu %s \"%s\" ile genişletilsin mi?"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Projenin include dosya arama yolunu %s ile genişlet \"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "Yol genişletilsin mi?"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "Birim yolunu genişletilsin mi?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "Paketin birim arama yolunu \"%s\" %s \"%s\" ile uzat?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "Projenin birim arama yolunu %s ile genişlet\"%s\"?"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "Çıkart"
@@ -9652,12 +9528,6 @@ msgstr "Dosya"
 msgid "File: "
 msgstr "Dosya: "
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "\"%s\"%s dosyası bir metin dosyasına benzemiyor.%s Yine de açılsın mı?"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Programların dosya uzantıları"
@@ -9715,14 +9585,6 @@ msgstr "Dosya dizin"
 msgid "File is not an executable"
 msgstr "Dosya yürütülebilir değil"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "Dosya yazılabilir değil"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "Dosya sembolik bağ"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9735,12 +9597,6 @@ msgstr "Dosya Adı Stili"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "Dosya bulunamadı"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "Dosya \"%s\" bulunamadı."
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9764,10 +9620,6 @@ msgstr "Dosya \"%s\" bulunamadı %s Oluşturmak ister misiniz?"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "Dosya küçük harf değil"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "Metin değil dosya"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10473,11 +10325,6 @@ msgstr "IDE paketleri kurulurken/kaldırılırken yeniden derlenecek ve yeniden 
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Lazarus'a hoş geldiniz.%0:s Bulunan IDE yapılandırması daha önce Lazarus'un başka bir kurulumu tarafından kullanılıyordu.%0:s Eğer iki veya daha fazla Lazarus kurulumunuz varsa, aynı konfigürasyonu paylaşmamaları gerekir. Bu, çakışmalara yol açabilir ve Lazarus kurulumlarınız kullanılamaz hale gelebilir.%0:s%0:s Yalnızca bir kurulumunuz varsa ve Lazarus çalıştırılabilir dosyasını kopyaladıysanız veya taşıdıysanız, bu yapılandırmayı yükseltebilirsiniz.%0:s%1:s%0:s%0:s Seçin:%0:s%0:s * Güncelleme bilgisi: Bu yapılandırmayı kullanın ve gelecekte bu Lazarus ile birlikte kullanılmak üzere güncelleyin. Eski kurulum artık bunu kullanmayacak.%0:s * Yoksay: Bu konfigürasyonu kullanın, ancak uyarıyı saklayın. Bu, diğer kurulumla çakışmalara neden olabilir.%0:s * İptal: Şimdi çıkın. Ardından, bu Lazarus'u doğru yapılandırma ile başlatarak sorunu çözebilirsiniz.%0:s%0:s Ek bilgiler:%0:s Bu yapılandırma şudur:%2:s%0:s Bu, Lazarus kurulumuna ait. :%3:s%0:s Geçerli IDE şu kaynaktan başlatıldı:%4:s%0:s"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "%s paketi için Makefile oluşturuluyor"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "IDE hakkında bilgi"
@@ -10589,10 +10436,6 @@ msgstr "İki farklı Lazarus sürümü kullanmak istiyorsanız, ikinci Lazarus'a
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Hepsini Yoksay"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "Yoksay ve devam et"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14240,15 +14083,6 @@ msgstr "şablon seçilmedi"
 msgid "Nothing to do"
 msgstr "Yapacak bir şey yok"
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "Uygulanmadı"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "Henüz uygulanmadı: %s %s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "yüklü değil"
@@ -14508,14 +14342,6 @@ msgstr "Projeyi tekrar Aç"
 msgid "Open Project File"
 msgstr "Proje Dosyasını Aç"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "Sembolik bağı aç"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "Hedefi Aç"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "Dosyayı normal kaynak olarak aç"
@@ -14622,14 +14448,6 @@ msgstr ""
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%s proje pencere setini geçersiz kılar. Örneğin. gtk gtk2 qt win32 karbon. varsayılan:%s"
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "Dosyanın üzerine yazılsın mı?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "Diskdeki dosya üzerine yaz"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Sahibi' zaten TReader / TWriter tarafından kullanılıyor, lütfen başka bir ad seçin."
@@ -14726,16 +14544,6 @@ msgstr "ayrıştırıcı \"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Ayrıştırma:"
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr "derleyiciyi geçerek \"%s\" tanımını farklı değerlerle iki kez tanımlayın"
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
-msgstr "derleyici seçeneğinin geçilmesi - farklı değerlerle iki kez %s"
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
@@ -14884,11 +14692,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Makefile Oluştur"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s, varsayılan: %s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "Bağımlılık Özellikleri"
@@ -14900,10 +14703,6 @@ msgstr "Genel seçenekleri düzenle"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "Dosya Özellikleri"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-msgid "(fpmake)"
-msgstr "(fpmake)"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15168,10 +14967,6 @@ msgstr "En küçük"
 msgid "Object"
 msgstr "Nesne"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "Paket Seçenekleri"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "Paket Tipi"
@@ -15328,26 +15123,6 @@ msgstr "Paket bağımlılıklarını temizle"
 msgid "Clear Selection"
 msgstr "Seçimi Temizle"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "CompiledSrcPath eklentisi"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr "Alanadı"
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "Çıkış dizini"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "Paket Kaynak Dizini İşareti"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "Birim Yolu"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "Bağımlılıkları sil"
@@ -15377,64 +15152,6 @@ msgstr "\"%s\" %s dosyası şu anda paketin birim yolunda değil.%s \"%s\" birim
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "Paket için daha fazla fonksiyon"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "İkili"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "Dosyayı dahil et"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "Sorun xml dosyası"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM - Lazarus metin dosyası"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS - Lazarus kaynak dosyası"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "Ana Birim"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "Metin"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "Sanal Birim"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket dizini.Parametresi paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket, dosya arama yolunu içerir. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket adı. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket çıkış dizini.Parametresi paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\"\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket kaynağı arama yolu. Parametre paket kimliğidir, örneğin \" İsim\" veya \"İsim 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paket birimi arama yolu. Parametre paket kimliğidir, örneğin \"İsim\" veya \"İsim 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15471,15 +15188,6 @@ msgstr "Bozuk bağımlılık"
 msgid "Circular dependencies found"
 msgstr "Dairesel bağımlılıklar bulundu"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "%s paketini derle"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "Silinemedi"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "Eski Paket Dosyasını Silsin mi?"
@@ -15494,18 +15202,9 @@ msgstr "Eski paket dosyasını \"%s\" silinsin mi?"
 msgid "Dependency without Owner: %s"
 msgstr "Sahibi Olmayan Bağımlılık: %s"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "Dosya okunurken hata oluştu"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Paket Okuma Hatası"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "Dosya yazarken hata oluştu"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15593,10 +15292,6 @@ msgstr "Paket bir tasarım zamanı paketi değil"
 msgid "Package is required"
 msgstr "Paket gerekiyor"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "paket ana kaynak dosyası"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "Paket adı zaten var"
@@ -15666,10 +15361,6 @@ msgstr "Dosya küçük harfe yeniden adlandırılsın mı?%s\"%s\"?"
 msgid "Skip this package"
 msgstr "Bu paketi atla"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "statik paketler yapılandırma dosyası"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgid "The file \"%s\"%sis already in the package %s."
@@ -15694,11 +15385,6 @@ msgstr "Dosya adı \"%s\" geçerli projenin bir parçası.%sProjeler ve Paketler
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "\"%s\" dosya ismi \"%s\" tarafından \"%s\"%s %s dosyasında kullanılıyor."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "%s paketinin \"%s\" dosyası bulunamadı."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15805,62 +15491,15 @@ msgstr "Bir paket olarak aynı adı taşıyan bir birim var: %s1. \"%s\" %s %s2.
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Bu sanal bir paket, henüz kaynağı yok, lütfen önce paketi kaydedin."
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "Dizin oluşturulamadı"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "Paket %s için \"%s\" %s çıktı klasörü oluşturulamadı."
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "Paket kaynağı klasörü \"%s\" %s için %s oluşturulamadı."
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Lazarus için hedef klasör oluşturulamadı: %s\"%s\".%sBu klasör, özel paketlerinizle birlikte değiştirilen yeni Lazarus IDE için gereklidir."
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "Dosya \"%s\" silinemiyor."
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Dosya silinemiyor"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "Eski durum dosyasını silemiyor \"%s\" %s paket %s için."
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "Paket yüklenemiyor"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "Paket \"%s\" açılamıyor.%sBu paket kurulum için işaretlendi."
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "%s durum dosyasını okunamıyor \"%s\" paketi %s.%sHata: %s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "\"%s\"%s paketi \"%s\" dosyasına yazılamıyor.%s Hata:%s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Durum dosyası yazılamıyor \"%s\"%s paketinin %s.%s Hata:%s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -15899,83 +15538,6 @@ msgstr "kaldırılacak"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Bir paket seçin"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "Birim olmayan bileşenler kaydedilemiyor"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "Bileşen Sınıfı \"%s\" zaten tanımlandı"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sDosya Adı: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "Geçersiz bileşen sınıfı"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "Geçersiz Birim Adı: %s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk dosyası: \"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "Paket dosyası bulunamadı"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "Paket kaydı hatası"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "Kayıt prosedürü sıfır"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called but no package is registering."
-msgstr "RegisterUnit çağrıldı, ancak hiçbir paket kayıt yapmıyor."
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%sLpk dosyası bulunamadı."
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "\"%s\" paketi kuruldu, ancak geçerli bir paket dosyası (.lpk) bulunamadı.%s Bozuk bir sahte paket oluşturuldu."
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Bu varsayılan paket. Sadece paketi olmayan bileşenler için kullanılır. Bu bileşenler eski."
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Bu paket yüklü ancak lpk dosyası bulunamadı. Tüm bileşenleri devre dışı bırakıldı. Lütfen bunu düzeltin."
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sBirim Adı: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "Birim \"%s\" lpk dosyasında bulunamadı. %s Muhtemelen bu lpk dosyası bu IDE'yi oluşturmak için kullanılmadı. Veya paket, RegisterUnit prosedürünü kötüye kullanır."
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "Birim \"%s\" paketten kaldırıldı (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
@@ -16469,16 +16031,6 @@ msgstr "%s dosyası projeden kaldırılsın mı?"
 msgid "Remove %s items from project?"
 msgstr "%s öğeler projeden kaldırsın mı?"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "%s projesinin %s durumu dosyası okunamıyor. %sHata:%s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "%s%sHata: %s projesi için durum dosyası yazılamıyor"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Her zaman derle (hiçbir şey değişmese bile)"
@@ -16496,10 +16048,6 @@ msgstr "Hata"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Program kaynağındaki otomatik oluşturma form listesini değiştiremiyor %sLütfen önce hataları düzeltin."
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "Proje Kaynak Dizini İşareti"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16621,10 +16169,6 @@ msgstr "Çıkış"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Lazarus'tan Çık"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "Okuma hatası"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17534,10 +17078,6 @@ msgstr "Son proje yüklemeyi atla"
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr "Başlangıçta seçilen kontrolleri atlayın."
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "Bu uyarıları atla"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Daha yavaş ama daha doğru."
@@ -17635,11 +17175,6 @@ msgstr "Kelimeler"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr "Kaynak \"%s\"%s ve Hedef \"%s\"%s dizinleri aynıdır. Lütfen başka bir dizin seçin."
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Kaynak ve Hedef aynı: %s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -17726,10 +17261,6 @@ msgstr "Hata ayıklama durdurulsun mu?"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "Yol sınırlayıcıları \\ ve / ekle"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "Garip lpi dosyası"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -17930,11 +17461,6 @@ msgstr "Uygulama Paketi oluşturuldu \"%s\""
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "\"%s\"sınıfı bir TControl'tir ve olmayan bir denetleyiciye yapıştırılamaz.%s Yapıştırılamadı."
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "Kod aracı bir hata buldu: %s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18016,29 +17542,14 @@ msgstr "\"%s\" dizini artık proje birimi içermiyor. Bu dizini projenin birim a
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "\"%s\" dizini birim yolunda artık gerekli değil %sKaldırılsın mı?"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "\"%s\"dizini yazılabilir değil."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "Dosyalar \"%s\""
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "Dosya %s bir lpi dosyası gibi görünmüyor."
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr "Dosya indeksi, bulma bildirimi gibi işlevler için gereklidir. Tarama yaparken kaynakları düzenleyebilir ve derleyebilirsiniz, ancak bildirim bulma gibi işlevler birimin bulunamadığı hataları gösterir. Bu bir dakika sürebilir."
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "\"%s\"dosyası bir sembolik bağ.%s \"%s\" yerine Aç?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18064,11 +17575,6 @@ msgstr "\"%s\"dosyası bir program gibi görünüyor.%s Geçerli projeyi kapatı
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "%s dosyası mevcut bir Lazarus Projesinin program dosyası gibi görünüyor."
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "\"%s\"%s dosyası,%s paketinin kaynak dizinlerinden birinde bulundu ve derlenmiş bir birime benziyor. Derlenmiş birimler paketin çıkış dizininde olmalıdır, aksi takdirde diğer paketler bu paketi kullanırken sorun yaşayabilir.%s Belirsiz dosyayı sil?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19003,39 +18509,6 @@ msgstr "%s dosyası \"%s\" %s akışı ikili sistem ( %s) dosyasının metin for
 msgid "Unable to convert to encoding \"%s\""
 msgstr "\"%s\" kodlamasına dönüştürülemez"
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "Dosya kopyalanamıyor"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "Dosya \"%s\"%s ye \"%s\" kopyalanamıyor"
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "\"%s\" dizini oluşturulamadı."
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "Dosya oluşturulamadı"
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "\"%s\" dosyası oluşturulamadı."
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "%s dosyası \" %s\" dosyası oluşturulamadı."
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "Hedef \"%s\"\" ile \" %s \" bağlantısı oluşturulamadı"
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Yeni bir dosya oluşturulamadı, çünkü zaten bu ada sahip bir klasör var."
@@ -19138,32 +18611,9 @@ msgstr "Tasarımcı açılamıyor.%s %s sınıfı, TForm veya TDataModule gibi b
 msgid "Unable to read %s"
 msgstr "%s  okunamadı"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "Dosyayı okunamıyor"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "Dosya \"%s\" okunamadı."
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Dosya okunamıyor \"%s\"%sHata: %s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "Lpi okunamıyor"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "exitStatus işlemi okunamıyor"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "Proje bilgi dosyası %s\"%s\" okunamadı."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19184,20 +18634,6 @@ msgstr "Proje başlığını kaynaktan kaldıramadı %s%s"
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "Belirsiz dosyayı \"%s\" %sto \"%s\"\" olarak yeniden adlandıramıyor"
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "Dosya yeniden adlandırılamıyor"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "\"%s\" dosyasını \"%s\" olarak yeniden adlandırılamadı!"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "\"%s\"%s Dosyasını \"%s\" yeniden adlandırılamıyor."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19250,45 +18686,6 @@ msgstr "%s:T%s'nin ikili bileşen akışını metin haline dönüştürülemez."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Proje kaynağında CreateForm deyimi güncelleştirilemiyor"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "\"%s\" yazamıyor"
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "Dosya yazamadı"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "Dosya \"%s\" yazılamadı."
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Dosya \"%s\"%sHata: %s yazılamıyor"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Proje bilgi dosyası %s\"%s\" yazılamadı %sHata: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Proje oturum dosyası %s\"%s\" yazılamadı %sHata: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "\"%s\" dosyasına yazılamıyor."
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "%s%s xml akışı yazılamadı Hata:%s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "Tüm işareti kaldır"
@@ -19317,79 +18714,6 @@ msgstr "Seçimi kaldır"
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
 msgstr "Onları da kaldırın"
-
-#: lazarusidestrconsts.lisunit
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "Birim"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "Birim \"%s\"değiştirildi. Değişiklikler kaydedilsin mi?"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "Birim tanımlayıcı var"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s  birimi %s, %s paketinde"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr "\"%s\" biriminin devralınabilmesi için kaydedilmesi gerekir. Şimdi kaydedilsin mi?"
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "Birim adı zaten projede"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "Birim adı başlıyor ..."
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "Birim adı içeriyor ..."
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "birim %s bulunamadı"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "%s birimi \"%s\" yeni konumunda bulunamadı \""
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr "%s dosyasında bir birim bulunamadı"
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "Birim Çıktı Dizini"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "birim yolu"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "Birim yolları"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "%s birimi %s paketini gerektiriyor"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
-msgstr "Birimler %s dosyasında bulunamadı"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -19431,11 +18755,6 @@ msgstr "Yalnızca harf durumu değiştiğinde diğer prosedür imzalarını gün
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Kaynaklar güncellensin mi?"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "PO dosyası güncellemesi %s paketinde başarısız oldu"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -19722,15 +19041,6 @@ msgstr "Çalıştırmak için çalışma dizini"
 msgid "Write config instead of command line parameters"
 msgstr "Komut satırı parametreleri yerine config yaz"
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "Yazma Hatası"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "Yazma hatası: %s%sDosya: %s%s%s"
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr "Paket bilgi dosyası yazılamadı."
@@ -19747,15 +19057,6 @@ msgstr ""
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "%s  içindeki yanlış sürüm: %s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "XML Hatası"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "%s  dosyasındaki XML ayrıştırıcı hatası %sHata:%s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20061,117 +19362,13 @@ msgstr "Çalıştırılabilir biçim destekliyorsa sürüm bilgisi saklanır."
 msgid "Include version info in executable"
 msgstr "Sürüm bilgilerini çalıştırılabilir dosyaya ekle"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "Afrika"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "Arapça"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Otomatik (veya İngilizce)"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "Katalan"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "Çince"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr "Korsika"
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "Çek"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "Flemenkçe"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "İngilizce"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "Fince"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "Fransızca"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "Almanca"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "İbranice"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "Macarca"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "Endonezya"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "İtalyan"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "Japonca"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "Litvanya"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "Dil seçenekleri"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "Polonya"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "Portekizce"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "Brezilya Portekizcesi"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "Rusça"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "Dil seçimi:"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "Slovak"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "İspanyol"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "Türkçe"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "Ukrayna"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22090,4 +21287,76 @@ msgstr "Birim grafiği için seçenekler"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiyon bilgisi"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "Birim \"%s\"değiştirildi. Değişiklikler kaydedilsin mi?"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "Birim tanımlayıcı var"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s  birimi %s, %s paketinde"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr "\"%s\" biriminin devralınabilmesi için kaydedilmesi gerekir. Şimdi kaydedilsin mi?"
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "Birim adı zaten projede"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "Birim adı başlıyor ..."
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "Birim adı içeriyor ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "birim %s bulunamadı"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "%s birimi \"%s\" yeni konumunda bulunamadı \""
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr "%s dosyasında bir birim bulunamadı"
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "Birim Çıktı Dizini"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "birim yolu"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "Birim yolları"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "%s birimi %s paketini gerektiriyor"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr "Birimler %s dosyasında bulunamadı"
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Dosya silinemiyor"
 

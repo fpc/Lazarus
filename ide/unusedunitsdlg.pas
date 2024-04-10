@@ -41,6 +41,8 @@ uses
   CodeCache, CodeToolManager,
   // IdeIntf
   IdeIntfStrConsts, SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IDE
   LazarusIDEStrConsts;
 

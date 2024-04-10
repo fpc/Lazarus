@@ -58,12 +58,13 @@ uses
   IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf,
   // Package registration
   LazarusPackageIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts, DialogProcs, IDETranslations,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
   ParsedCompilerOpts, CompilerOptions, FppkgHelper,
-  // IDE
-  LazarusIDEStrConsts, DialogProcs, IDETranslations,
-  PackageLinks, PackageDefs, PkgSysBasePkgs;
+  // IdePackager
+  IdePackagerStrConsts, PackageLinks, PackageDefs, PkgSysBasePkgs;
 
 const
   MakefileCompileVersion = 2;
@@ -191,6 +192,9 @@ type
     FBuildIntfPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
     FDebuggerIntfPackage: TLazPackage;
+    FIdePackagerPackage: TLazPackage;
+    FIdeProjectPackage: TLazPackage;
+    FIdeUtilsPkgPackage: TLazPackage;
     FLazDebuggerIntfPackage: TLazPackage;
     FLazDebuggerGdbmiPackage: TLazPackage;
     FIdeDebuggerPackage: TLazPackage;
@@ -496,7 +500,10 @@ type
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
     property IdeDebuggerPackage: TLazPackage read FIdeDebuggerPackage;
+    property IdeUtilsPkgPackage: TLazPackage read FIdeUtilsPkgPackage;
     property IdeConfigPackage: TLazPackage read FIdeConfigPackage;
+    property IdePackagerPackage: TLazPackage read FIdePackagerPackage;
+    property IdeProjectPackage: TLazPackage read FIdeProjectPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
 
     // events
@@ -1258,8 +1265,14 @@ begin
     FDebuggerIntfPackage:=nil
   else if CurPkg=LazDebuggerGdbmiPackage then
     FLazDebuggerGdbmiPackage:=nil
+  else if CurPkg=IdeUtilsPkgPackage then
+    FIdeUtilsPkgPackage:=nil
   else if CurPkg=IdeConfigPackage then
     FIdeConfigPackage:=nil
+  else if CurPkg=IdePackagerPackage then
+    FIdePackagerPackage:=nil
+  else if CurPkg=IdeProjectPackage then
+    FIdeProjectPackage:=nil
   else if CurPkg=IdeDebuggerPackage then
     FIdeDebuggerPackage:=nil
   else if CurPkg=SynEditPackage then
@@ -2110,7 +2123,7 @@ begin
   IgnoreAll:=mrLast+1;
   DlgResult:=IDEQuestionDialog(lisPkgSysPackageRegistrationError, ErrorMsg,
                      mtError, [mrIgnore,
-                               IgnoreAll, lisIgnoreAll,
+                               IgnoreAll, lispIgnoreAll,
                                mrAbort]);
   if DlgResult=IgnoreAll then
     QuietRegistration:=true;
@@ -2249,8 +2262,14 @@ begin
       SetBasePackage(FLazDebuggerGdbmiPackage)
     else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
       SetBasePackage(FIdeDebuggerPackage)
+    else if SysUtils.CompareText(APackage.Name,'IdeUtilsPkg')=0 then
+      SetBasePackage(FIdeUtilsPkgPackage)
     else if SysUtils.CompareText(APackage.Name,'IdeConfig')=0 then
       SetBasePackage(FIdeConfigPackage)
+    else if SysUtils.CompareText(APackage.Name,'IdePackagerConfig')=0 then
+      SetBasePackage(FIdePackagerPackage)
+    else if SysUtils.CompareText(APackage.Name,'IdeProject')=0 then
+      SetBasePackage(FIdeProjectPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -5306,7 +5325,7 @@ begin
       debugln(['Error: (lazarus) TLazPackageGraph.ParseBasePackages missing LazarusDir "',LazDir,'"']);
     exit;
   end;
-  SrcFilename:=AppendPathDelim(LazDir)+'packager'+PathDelim+'pkgsysbasepkgs.pas';
+  SrcFilename:=AppendPathDelim(LazDir)+'ide'+PathDelim+'packages'+PathDelim+'idepackager'+PathDelim+'pkgsysbasepkgs.pas';
   if not FileExistsCached(SrcFilename) then
   begin
     if Verbose then

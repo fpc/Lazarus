@@ -1,0 +1,315 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idepackagerstrconsts.dlgcompileroptions
+msgid "Compiler Options"
+msgstr "Параметри компілятора"
+
+#: idepackagerstrconsts.lisambiguousunitfound
+msgid "Ambiguous unit found"
+msgstr "Знайдено двозначний модуль"
+
+#: idepackagerstrconsts.liscein
+#, object-pascal-format
+msgid "%s in %s"
+msgstr "%s в %s"
+
+#: idepackagerstrconsts.lisdeletingoffilefailed
+#, object-pascal-format
+msgid "Deleting of file \"%s\" failed."
+msgstr "Видалити файл \"%s\" не вдалося."
+
+#: idepackagerstrconsts.lisexecutingcommandafter
+msgid "Executing command after"
+msgstr "Виконати команду після"
+
+#: idepackagerstrconsts.lisexecutingcommandbefore
+msgid "Executing command before"
+msgstr "Виконати команду до"
+
+#: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr "Доповнити список шляхів пошуку файлів для включення пакунка \"%s\" такими%s\"%s\"?"
+
+#: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr "Доповнити список шляхів пошуку файлів для включення проєкту такими%s\"%s\"?"
+
+#: idepackagerstrconsts.lisextendincludepath
+msgid "Extend include path?"
+msgstr "Доповнити шляхи до файлів для включення?"
+
+#: idepackagerstrconsts.lisextendunitpath
+msgid "Extend unit path?"
+msgstr "Розширити шлях до модулів?"
+
+#: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr "Доповнити список шляхів пошуку модулів пакету \"%s\" такими%s\"%s\"?"
+
+#: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
+#, object-pascal-format
+msgid "Creating Makefile for package %s"
+msgstr "Створюю Makefile для пакунка %s"
+
+#: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr "неодноразове передавання визначення компілятора \"%s\" з різними значеннями"
+
+#: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler option -%s twice with different values"
+msgstr "неодноразове передавання визначення компілятора -%s з різними значеннями"
+
+#: idepackagerstrconsts.lispckeditdefault
+#, object-pascal-format
+msgid "%s, default: %s"
+msgstr "%s, стандартний: %s"
+
+#: idepackagerstrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr "(fpmake)"
+
+#: idepackagerstrconsts.lispckoptspackageoptions
+msgid "Package Options"
+msgstr "Параметри пакунка"
+
+#: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr "Додавання CompiledSrcPath"
+
+#: idepackagerstrconsts.lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr "Вихідна тека"
+
+#: idepackagerstrconsts.lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr "Позначити теку сирців пакунка"
+
+#: idepackagerstrconsts.lispkgdefsunitpath
+msgid "Unit Path"
+msgstr "Шлях до модулів"
+
+#: idepackagerstrconsts.lispkgfiletypebinary
+msgid "Binary"
+msgstr "Бінарне"
+
+#: idepackagerstrconsts.lispkgfiletypeinclude
+msgid "Include file"
+msgstr "Включити файл"
+
+#: idepackagerstrconsts.lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "xml файл питань"
+
+#: idepackagerstrconsts.lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr "Текст форми LFM - Lazarus"
+
+#: idepackagerstrconsts.lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr "Ресурс LRS - Lazarus"
+
+#: idepackagerstrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr "Головний модуль"
+
+#: idepackagerstrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Текст"
+
+#: idepackagerstrconsts.lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr "Віртуальний модуль"
+
+#: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Тека пакунка. Параметром є ID пакунка, наприклад \"Name\" або \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Шлях пошуку заголовних файлів пакунка. Параметром є ID пакунка, наприклад, \"Name\" або \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Назва пакунка. Параметром є ID пакунка, наприклад \"Name\" або \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Вихідна тека пакунка. Параметром є ID пакунка, напр., \"Name\" or \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Шлях пошуку сирців пакунка. Параметром є ID пакунка, наприклад, \"Name\" або \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Шлях пошуку модуля пакунка. Параметром є ID пакунка, наприклад, \"Name\" або \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmangcompilepackage
+#, object-pascal-format
+msgid "Compile package %s"
+msgstr "Скомпілювати пакунок %s"
+
+#: idepackagerstrconsts.lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr "Видалення не вдалося"
+
+#: idepackagerstrconsts.lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr "Помилка читання файлу"
+
+#: idepackagerstrconsts.lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr "Помилка запису файлу"
+
+#: idepackagerstrconsts.lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr "головний сирцевий файл пакунка"
+
+#: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr "статичний файл налаштувань пакунка"
+
+#: idepackagerstrconsts.lispkgmangthefileofpackagewasnotfound
+#, object-pascal-format
+msgid "The file \"%s\" of package %s was not found."
+msgstr "Файл \"%s\" пакунка %s не знайдено."
+
+#: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create output directory \"%s\"%sfor package %s."
+msgstr "Неможливо створити теку виведення \"%s\"%sдля пакунка %s."
+
+#: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr "Неможливо створити теку сирців пакунка \"%s\"%sдля пакунка %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
+#, object-pascal-format
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
+msgstr "Неможливо видалити старий файл \"%s\"%sдля пакунка %s."
+
+#: idepackagerstrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr "Неможливо завантажити пакунок"
+
+#: idepackagerstrconsts.lispkgmangunabletoopenthepackage
+#, object-pascal-format
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
+msgstr "Неможливо відкрити пакунок\"%s\".%sЦей пакунок було позначено для встановлення."
+
+#: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Неможливо прочитати файл стану \"%s\"%sпакунку %s.%sПомилка: %s"
+
+#: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Неможливо записати файл стану \"%s\"%sпакунку %s.%sПомилка: %s"
+
+#: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
+msgid "Cannot register components without unit"
+msgstr "Неможливо зареєструвати компоненти без модуля"
+
+#: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
+#, object-pascal-format
+msgid "Component Class \"%s\" already defined"
+msgstr "Клас компонента \"%s\" вже визначено"
+
+#: idepackagerstrconsts.lispkgsysfilename
+#, object-pascal-format
+msgid "%s%sFile Name: \"%s\""
+msgstr "%s%sНазва файлу: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr "Неправильний клас компонента"
+
+#: idepackagerstrconsts.lispkgsysinvalidunitname
+#, object-pascal-format
+msgid "Invalid Unitname: %s"
+msgstr "Неправильна назва модуля: %s"
+
+#: idepackagerstrconsts.lispkgsyslpkfilename
+#, object-pascal-format
+msgid "%s%slpk file: \"%s\""
+msgstr "%s%slpk файл: \"%s\""
+
+#: idepackagerstrconsts.lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr "Файл пакунка не знайдено"
+
+#: idepackagerstrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr "Помилка реєстрації пакунка"
+
+#: idepackagerstrconsts.lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr "Порожня процедура реєстрації"
+
+#: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
+msgid "RegisterUnit was called but no package is registering."
+msgstr "Було викликано RegisterUnit, але пакунків не зареєстровано."
+
+#: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
+#, object-pascal-format
+msgid "%s%sThe lpk file was not found."
+msgstr "%s%sФайл lpk не знайдено."
+
+#: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+#, object-pascal-format
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr "Пакунок \"%s\" встановлено, але не знайдено правильного файлу з пакунком (.lpk).%sБуло створено неробочий фіктивний пакунок."
+
+#: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr "Це типовий пакунок. Використовується тільки для компонентів без пакунка. Такі компоненти є застарілими."
+
+#: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr "Цей пакунок встановлено, але lpk-файл не знайдено. Всі його компоненти деактивовано. Будь-ласка, виправте проблему."
+
+#: idepackagerstrconsts.lispkgsysunitname
+#, object-pascal-format
+msgid "%s%sUnit Name: \"%s\""
+msgstr "%s%sНазва модуля: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+#, object-pascal-format
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr "Модуль \"%s\" не знайдено в lpk файлі.%sНапевне цей lpk файл не був використаний для збирання цього ІСР. Або пакунок зловживає процедурою RegisterUnit."
+
+#: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
+#, object-pascal-format
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr "Модуль \"%s\" був видалений з пакунка (lpk)"
+
+#: idepackagerstrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr "Пропустити ці попередження"
+
+#: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
+#, object-pascal-format
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
+msgstr "Файл \"%s\"%sзнайдено в одному з каталогів сирцевого коду пакунка %s, і він виглядає як скомпільований модуль. Такі модулі повинні бути у вихідній теці пакунка, інакше інші пакунки можуть мати проблеми з використанням цього пакунка.%sВидалити невизначений файл?"
+
+#: idepackagerstrconsts.lisunit
+msgid "Unit"
+msgstr "Модуль"
+
+#: idepackagerstrconsts.lisupdatingpofilesfailedforpackage
+#, object-pascal-format
+msgid "Updating PO files failed for package %s"
+msgstr "Не вдалось оновити файли PO для пакунка %s"
+

@@ -44,6 +44,8 @@ uses
   ProjectIntf, PackageIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, CompilerOptions,
   // IDE

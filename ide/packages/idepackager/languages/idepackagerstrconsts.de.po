@@ -1,0 +1,320 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idepackagerstrconsts.dlgcompileroptions
+msgid "Compiler Options"
+msgstr "Compilereinstellungen"
+
+#: idepackagerstrconsts.lisambiguousunitfound
+msgid "Ambiguous unit found"
+msgstr "Mehrdeutige Unit gefunden"
+
+#: idepackagerstrconsts.liscein
+#, object-pascal-format
+msgid "%s in %s"
+msgstr "%s in %s"
+
+#: idepackagerstrconsts.lisdeletingoffilefailed
+#, object-pascal-format
+msgid "Deleting of file \"%s\" failed."
+msgstr "Löschen der Datei \"%s\" ist fehlgeschlagen."
+
+#: idepackagerstrconsts.lisexecutingcommandafter
+msgid "Executing command after"
+msgstr "Ausführen des Befehls nach"
+
+#: idepackagerstrconsts.lisexecutingcommandbefore
+msgid "Executing command before"
+msgstr "Ausführen des Befehls vor"
+
+#: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr "Den Include-Dateisuchpfad von Package \"%s\" mit%s\"%s\" erweitern?"
+
+#: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr "Den Includedateien-Suchpfad des Projekts mit%s\"%s\" erweitern?"
+
+#: idepackagerstrconsts.lisextendincludepath
+msgid "Extend include path?"
+msgstr "Includepfad erweitern?"
+
+#: idepackagerstrconsts.lisextendunitpath
+msgid "Extend unit path?"
+msgstr "Unit-Pfad erweitern?"
+
+#: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr "Unit-Suchpfad von Package \"%s\" um%s\"%s\" erweitern?"
+
+#: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
+#, object-pascal-format
+msgid "Creating Makefile for package %s"
+msgstr "Erzeuge Makedatei für Package %s"
+
+#: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispckeditdefault
+#, object-pascal-format
+msgid "%s, default: %s"
+msgstr "%s, Standard: %s"
+
+#: idepackagerstrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
+#: idepackagerstrconsts.lispckoptspackageoptions
+msgid "Package Options"
+msgstr "Package-Einstellungen"
+
+#: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr "CompiledSrcPath-Erweiterung"
+
+#: idepackagerstrconsts.lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr "Ausgabeverzeichnis"
+
+#: idepackagerstrconsts.lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr "Package-Quellverzeichnismaske"
+
+#: idepackagerstrconsts.lispkgdefsunitpath
+msgid "Unit Path"
+msgstr "Unit-Pfad"
+
+#: idepackagerstrconsts.lispkgfiletypebinary
+msgid "Binary"
+msgstr "Binär"
+
+#: idepackagerstrconsts.lispkgfiletypeinclude
+msgid "Include file"
+msgstr "Include-Datei"
+
+#: idepackagerstrconsts.lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "Ausgaben-XML-Datei"
+
+#: idepackagerstrconsts.lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr "LFM - Lazarus-Formtext"
+
+#: idepackagerstrconsts.lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr "LRS - Lazarus-Ressource"
+
+#: idepackagerstrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr "Haupt-Unit"
+
+#: idepackagerstrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Text"
+
+#: idepackagerstrconsts.lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr "Virtuelle Unit"
+
+#: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Verzeichnis. Parameter ist die Package-ID"
+
+#: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Includedateien-Suchpfad. Parameter ist die Package-ID."
+
+#: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Name. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Ausgabeverzeichnis. Parameter ist Package ID, z.B. \"Name\" oder \"Name 1.0\""
+
+#: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Quellcode-Suchpfad. Parameter ist die Package-ID."
+
+#: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr "Package-Unitsuchpfad. Parameter ist die Package-ID."
+
+#: idepackagerstrconsts.lispkgmangcompilepackage
+#, object-pascal-format
+msgid "Compile package %s"
+msgstr "Kompiliere Package %s"
+
+#: idepackagerstrconsts.lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr "Löschen fehlgeschlagen"
+
+#: idepackagerstrconsts.lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr "Fehler beim Lesen der Datei"
+
+#: idepackagerstrconsts.lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr "Fehler beim Schreiben der Datei"
+
+#: idepackagerstrconsts.lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr "Package-Hauptquelldatei"
+
+#: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr "Konfigurationsdatei für statische Packages"
+
+#: idepackagerstrconsts.lispkgmangthefileofpackagewasnotfound
+#, object-pascal-format
+msgid "The file \"%s\" of package %s was not found."
+msgstr "Die Datei \"%s\" von Package %s wurde nicht gefunden."
+
+#: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create output directory \"%s\"%sfor package %s."
+msgstr "Kann Ausgabeverzeichnis \"%s\"%sfür das Package %s nicht erzeugen."
+
+#: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
+#, object-pascal-format
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr "Kann das Package-Quelltextverzeichnis \"%s\"%s für das Package %s nicht erzeugen."
+
+#: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
+#, object-pascal-format
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
+msgstr "Die alte Statusdatei \"%s\"%sdes Packages %s kann nicht gelöscht werden."
+
+#: idepackagerstrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr "Kann Package nicht laden"
+
+#: idepackagerstrconsts.lispkgmangunabletoopenthepackage
+#, object-pascal-format
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
+msgstr "Das Package \"%s\".%s kann nicht geöffnet werden. Es war zur Installation vorgemerkt."
+
+#: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Die Statusdatei \"%s\"%sdes Packages %s kann nicht gelesen werden.%sFehler: %s"
+
+#: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
+#, object-pascal-format
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
+msgstr "Kann Statusdatei \"%s\"%sdes Packages %s nicht schreiben.%sFehler: %s"
+
+#: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
+msgid "Cannot register components without unit"
+msgstr "Kann Komponenten nicht ohne Unit registrieren"
+
+#: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
+#, object-pascal-format
+msgid "Component Class \"%s\" already defined"
+msgstr "Komponentenklasse \"%s\" bereits definiert"
+
+#: idepackagerstrconsts.lispkgsysfilename
+#, object-pascal-format
+msgid "%s%sFile Name: \"%s\""
+msgstr "%s%sDateiname: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr "Ungültige Komponentenklasse"
+
+#: idepackagerstrconsts.lispkgsysinvalidunitname
+#, object-pascal-format
+msgid "Invalid Unitname: %s"
+msgstr "Ungültiger Unit-Name: %s"
+
+#: idepackagerstrconsts.lispkgsyslpkfilename
+#, object-pascal-format
+msgid "%s%slpk file: \"%s\""
+msgstr "%s%slpk-Datei: \"%s\""
+
+#: idepackagerstrconsts.lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr "Package-Konflikte"
+
+#: idepackagerstrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr "Packageregistrierungsfehler"
+
+#: idepackagerstrconsts.lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr "Registerprozedur ist NIL"
+
+#: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
+#, fuzzy
+#| msgid "RegisterUnit was called, but no package is registering."
+msgid "RegisterUnit was called but no package is registering."
+msgstr "RegisterUnit wurde aufgerufen aber es wurde kein Package registriert."
+
+#: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
+#, object-pascal-format
+msgid "%s%sThe lpk file was not found."
+msgstr "%s%sDie .lpk-Datei wurde nicht gefunden."
+
+#: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+#, object-pascal-format, fuzzy
+#| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr "Das Package \"%s\" ist installiert, es gibt aber keine gültige Package-Datei (.lpk).%sEs wurde ein defektes Dummy-Package erzeugt."
+
+#: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr "Das ist das Standard-Package nur für Komponenten ohne Package. Solche Komponenten sind veraltet."
+
+#: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+#, fuzzy
+#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr "Dieses Package ist installiert, aber die .lpk-Datei wurde nicht gefunden. Alle enthaltenen Komponenten sind abgeschaltet. Bitte beheben Sie den Fehler."
+
+#: idepackagerstrconsts.lispkgsysunitname
+#, object-pascal-format
+msgid "%s%sUnit Name: \"%s\""
+msgstr "%s%sUnit-Name: \"%s\""
+
+#: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+#, object-pascal-format
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr "Die Unit \"%s\" wurde nicht in der .lpk-Datei gefunden.%sWahrscheinlich wurde diese .lpk-Datei nicht für die Erstellung dieser IDE verwendet. Oder das Package verwendet die Prozedur RegisterUnit falsch."
+
+#: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
+#, object-pascal-format
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr "Unit \"%s\" wurde aus Package (lpk) entfernt"
+
+#: idepackagerstrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr "Diese Warnungen überspringen"
+
+#: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
+#, object-pascal-format
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
+msgstr "Die Datei  \"%s\"%swurde in einem der Quellverzeichnisse des Packages %s gefunden und sieht wie eine kompilierte Unit aus. Kompilierte Units müssen sich im Ausgabeverzeichnis des Packages befinden, sonst kann das zu Problemen mit diesem Package führen.%sDie zweifelhafte Datei löschen?"
+
+#: idepackagerstrconsts.lisunit
+msgid "Unit"
+msgstr "Unit"
+
+#: idepackagerstrconsts.lisupdatingpofilesfailedforpackage
+#, object-pascal-format
+msgid "Updating PO files failed for package %s"
+msgstr "Aktualisierung der PO-Dateien für Package %s fehlgeschlagen"
+

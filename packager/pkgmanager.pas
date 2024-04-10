@@ -63,9 +63,13 @@ uses
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
   UnitResources, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
   TransferMacros, IDECmdLine, IDEProcs, ParsedCompilerOpts, CompilerOptions,
+  // IdePackager
+  IdePackagerStrConsts,
   // FCL registration
   LazarusPackageIntf,
   // IDE

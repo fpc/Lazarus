@@ -52,9 +52,15 @@ uses
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
   UnitResources, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
   ParsedCompilerOpts, CompilerOptions,
+  // IdePackager
+  IdePackagerStrConsts,
+  // IdeProject
+  IdeProjectStrConsts,
   // IDE
   DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,

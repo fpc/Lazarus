@@ -42,6 +42,8 @@ uses
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   ProjectGroupIntf, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   SearchPathProcs,
   // IDE

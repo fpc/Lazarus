@@ -41,6 +41,8 @@ uses
   AvgLvlTree,
   // BuildIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgWorker,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   TransferMacros,
   // IDE

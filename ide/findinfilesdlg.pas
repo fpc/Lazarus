@@ -27,6 +27,8 @@ uses
   // IdeIntf
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
   IdeIntfStrConsts, ProjectGroupIntf, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs,
   // IDE

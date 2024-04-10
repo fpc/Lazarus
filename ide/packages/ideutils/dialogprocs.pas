@@ -46,7 +46,7 @@ uses
   // IdeIntf
   LazIDEIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts;
+  IdeUtilsPkgStrConsts;
 
 type
   // load buffer flags

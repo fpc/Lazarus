@@ -3094,7 +3094,10 @@ lcl:
 basecomponents:
 	$(MAKE) -C components lazbuildlclpackages
 	$(MAKE) -C components idepackages
+	$(MAKE) -C ide/packages/ideutils
 	$(MAKE) -C ide/packages/ideconfig
+	$(MAKE) -C ide/packages/idepackager
+	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
 	$(MAKE) -C components bigide
@@ -3128,7 +3131,10 @@ lazbuild: registration
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C components lazbuildlclpackages LCL_PLATFORM=nogui
 	$(MAKE) -C tools
+	$(MAKE) -C ide/packages/ideutils LCL_PLATFORM=nogui
 	$(MAKE) -C ide/packages/ideconfig LCL_PLATFORM=nogui
+	$(MAKE) -C ide/packages/idepackager LCL_PLATFORM=nogui
+	$(MAKE) -C ide/packages/ideproject LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
@@ -3140,7 +3146,10 @@ cleanlaz: cleanide
 	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
+	$(MAKE) -C ide/packages/ideutils clean
 	$(MAKE) -C ide/packages/ideconfig clean
+	$(MAKE) -C ide/packages/idepackager clean
+	$(MAKE) -C ide/packages/ideproject clean
 	$(MAKE) -C ide/packages/idedebugger clean
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
@@ -3151,7 +3160,10 @@ purge:
 	$(MAKE) -C packager/registration distclean
 	$(MAKE) -C lcl distclean
 	$(MAKE) -C components distclean
+	$(MAKE) -C ide/packages/ideutils distclean
 	$(MAKE) -C ide/packages/ideconfig distclean
+	$(MAKE) -C ide/packages/idepackager distclean
+	$(MAKE) -C ide/packages/ideproject distclean
 	$(MAKE) -C ide/packages/idedebugger distclean
 	$(MAKE) -C tools distclean
 cleanall: purge

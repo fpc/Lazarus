@@ -37,6 +37,8 @@ uses
   FileProcs, CodeToolManager, DirectoryCacher,
   // IDEIntf
   IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, PackageIntf, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE

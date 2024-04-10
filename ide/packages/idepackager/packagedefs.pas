@@ -54,8 +54,7 @@ uses
   TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs,
   IdeXmlConfigProcs, ParsedCompilerOpts, CompilerOptions, EditDefineTree,
   ProjPackCommon, FppkgHelper,
-  // IDE
-  LazarusIDEStrConsts;
+  IdePackagerStrConsts;
 
 type
   TLazPackage = class;

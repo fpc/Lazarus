@@ -46,8 +46,10 @@ uses
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   // IdeIntf
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
-  // IDE
-  LazarusIDEStrConsts, DialogProcs,
+  // IdeUtils
+  DialogProcs,
+  // IdeProject
+  IdeProjectStrConsts,
   W32Manifest, W32VersionInfo, ProjectIcon, ProjectUserResources;
 
 type

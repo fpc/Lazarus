@@ -74,6 +74,8 @@ uses
   BaseDebugManager, Debugger, IdeDebuggerStringConstants,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, TransferMacros, IDECmdLine, IDEProcs,
+  // IdeProject
+  IdeProjectStrConsts,
   // IDE units
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
   WordCompletion, FindReplaceDialog, IDEHelpManager, MacroPromptDlg, CodeContextForm,

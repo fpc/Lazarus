@@ -1268,11 +1268,6 @@ msgstr "Fordító üzenetei"
 msgid "Compiler messages language file (*.msg)"
 msgstr "Fordító üzenetek nyelvi fájlja (*.msg)"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgctxt "lazarusidestrconsts.dlgcompileroptions"
-msgid "Compiler Options"
-msgstr "Fordító beállításai"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Tulajdonságok kiegészítése"
@@ -3550,10 +3545,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Projekt"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "Projekt beállításai"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5079,11 +5070,6 @@ msgstr "Összes megjelenítése"
 msgid "The package %s is read only."
 msgstr "A(z) %s csomag csak olvasható"
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "A(z) \"%s\" fájl már létezik.%sLecseréli?"
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5170,10 +5156,6 @@ msgstr "Megtévesztő fájl: \"%s\"%sEz a fájl összetéveszthető ezzel: \"%s\
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Megtévesztő fájlok találhatók"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "Megtévesztő unit található"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5748,11 +5730,6 @@ msgstr "Kimenet másolása a vágólapra"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "Az FPC .ppu fájljainak dátuma több mint egy órával eltér.%sEz azt jelentheti, hogy különböző telepítésből származnak.%sFájl1: %s%sFájl2: %s"
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "Hiba"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "HIBA:"
@@ -5896,12 +5873,6 @@ msgstr "(szűrő)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "beszúrási jel követése"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.liscein"
-msgid "%s in %s"
-msgstr "%s itt: %s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -7030,10 +7001,6 @@ msgstr "Projekt könyvtár"
 msgid "%s project directory"
 msgstr "%s projekt könyvtár"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "Olvasási hiba"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Kijelölt csomópont:"
@@ -7103,10 +7070,6 @@ msgstr "%s:%saz érték érvénytelen: \"%s\"."
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Változó:"
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "Írási hiba"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -8068,31 +8031,6 @@ msgstr "Make üzenet keresése"
 msgid "Skip calling compiler"
 msgstr "Kihagyja a fordító hivását"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "Nem adható hozzá \"{$I %s}\" a fő forráskódhoz!"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "Nem adható hozzá \"{$R %s}\" a fő forráskódhoz!"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "Nem adható hozzá \"%s\" a fő forráskódhoz!"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "Nem távolítható el \"{$I %s}\" a főforráskódból!"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "Nem távolítható el \"{$R %s}\" a fő forráskódból!"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Figyelmeztetés: A hozzáadott fordító beállítási fájl neve megegyezik az egyik szabványos beállítási fájllal, amelyet a Free Pascal keres. Ez azt okozhatja, hogy CSAK a hozzáadott beállítási fájl lesz elemezve és kimarad a szabványos beállítás."
@@ -8626,10 +8564,6 @@ msgstr "Az összes fájlt töröli?"
 msgid "Delete ambiguous file?"
 msgstr "Törli a megtévesztő fájlt?"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "A fájl törlése sikertelen"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8666,11 +8600,6 @@ msgstr "\"%s\" érték törlése?"
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "%s érték törlése"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "A(z) \"%s\" fájl törlése sikertelen."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8770,10 +8699,6 @@ msgstr "A(z) \"%s\" könyvtár nem található."
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "A(z) %s könyvtár nem található."
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "A könyvtár nem írható"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9315,10 +9240,6 @@ msgstr "Új név megadása a \"%s\" makró számára"
 msgid "Environment variable, name as parameter"
 msgstr "Környezeti változó, neve, mint paraméter"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "Könyvtár nem található"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Érvénytelen hibakereső fájlnév"
@@ -9420,11 +9341,6 @@ msgstr "Hiba fájl betöltés közben"
 msgid "Error loading file \"%s\":"
 msgstr "Hiba a(z) \"%s\" fájl betöltése közben:"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "Hiba %s innen történő betöltése közben:%s%s%s%s"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "Hiba a komponens mozgatása közben"
@@ -9482,11 +9398,6 @@ msgstr ", Hibák: %s"
 msgid "Error saving form"
 msgstr "Hiba a form mentésekor"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "Hiba %s ide történő mentése közben:%s%s%s%s"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9539,14 +9450,6 @@ msgstr "a(z) \"%s\" állomány egy könyvtár"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "a \"%s\" állománynak nincs futási engedélye"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "Utólag végrehajtandó művelet futtatása"
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "Előzőleg végrehajtandó művelet futtatása"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9637,34 +9540,6 @@ msgstr "Kijelölt exportálása"
 msgid "Export >>"
 msgstr "Exportálás >>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "Kibővíti a(z) \"%s\" csomag beemelt fájlok keresési útvonalát ezzel:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Kibővíti a projekt beemelt fájlok keresési útvonalát ezzel:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "Include útvonal kibővítése?"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "Kibővíti a unit útvonalat?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "Kibővíti a(z) \"%s\" csomag unit keresési útvonalát ezzel:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "Kibővíti a projekt unit keresési útvonalát ezzel:%s\"%s\"?"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "Áthelyezés"
@@ -9727,12 +9602,6 @@ msgstr "Fájl"
 msgid "File: "
 msgstr "Fájl:"
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "A(z) \"%s\"%s fájl nem tűnik szövegfájlnak.%sMindenképpen megnyitja?"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Programok fájlkiterjesztése"
@@ -9790,14 +9659,6 @@ msgstr "A fájl egy könyvtár"
 msgid "File is not an executable"
 msgstr "A fájl nem futtatható"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "Fájl nem írható"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "A fájl egy szimbolikus hivatkozás"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9810,12 +9671,6 @@ msgstr "Fájlnév stílusa"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "A fájl nem található"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "A(z) \"%s\" fájl nem található."
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9839,10 +9694,6 @@ msgstr "A(z) \"%s\" fájl nem található.%sLétre szeretné hozni?"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "A fájl nem kisbetűs"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "A fájl nem szöveges típusú"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10563,11 +10414,6 @@ msgstr "Az IDE újra lesz fordítva és indítva a csomagok telepítése/eltávo
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Üdvözli a Lazarus!%0:sA megtalált IDE beállításokat korábban egy másik Lazarus telepítés használta.%0:sHa kettő vagy több különálló Lazarus példányt telepített, akkor azok nem osztozhatnak ugyanazon a beállításon. Ez ütközésekhez vezethet és használhatatlanná teheti a Lazarus telepítéseket.%0:s%0:sHa csak egy Lazarus példányt telepített és másolta vagy áthelyezte a Lazarus programot, akkor frissítheti ezen beállításokat.%0:s%1:s%0:s%0:sLehetőségek:%0:s%0:s* Információk frissítése: A beállítások használata és frissítése a Lazarus ezen példányával történő jövőbeni használathoz. A régi telepítés többé nem használja ezt..%0:s* Figyelmen kívül hagyás: Használja ezen beállításokat, de életben tartja a figyelmeztetéseket. Ez ütközésekhez vezethet az másik telepítéssel.%0:s* Megszakítás: Kilépés most. Ezután javíthatja a hibát a Lazarus megfelelő beállításokkal történő indításával.%0:s%0:sTovábbi információk:%0:sEzen beállítások: %2:s%0:sA következő Lazarus telepítéshez tartoznak: %3:s%0:sA jelenlegi IDE innen lett indítva: %4:s%0:s"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "Makefile létrehozása a következő csomaghoz: %s"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "Információk az IDE-ről"
@@ -10679,10 +10525,6 @@ msgstr "Ha különböző Lazarus változatokat akar használni, a második Lazar
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Összes kihagyása"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "Kihagyás és folytatás"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14362,15 +14204,6 @@ msgstr "nincs kiválasztva sablon"
 msgid "Nothing to do"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "Nincs megvalósítva"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "Egyelőre nincs megvalósítva: %s%s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "Nincs telepítve"
@@ -14633,14 +14466,6 @@ msgstr "Projekt megnyitása újra"
 msgid "Open Project File"
 msgstr "Projektfájl megnyitása"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "Szimbolikus hivatkozás megnyitása"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "Cél megnyitása"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "Fájl megnyitása normál forrásként"
@@ -14747,14 +14572,6 @@ msgstr ""
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%sA projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "Felülírja a fájlt?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "Lemezen lévő fájl felülírása"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "Az 'Owner'-t már használja a TReader/TWritter. Válasszon másik nevet!"
@@ -14851,16 +14668,6 @@ msgstr "\"%s\" elemző: %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Elemzők:"
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr "a(z) \"%s\" fordítói definíció kétszer fordul elő, eltérő értékekkel"
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
-msgstr "a fordító -%s kapcsolója kétszer fordul elő, eltérő értékekkel"
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
@@ -15012,11 +14819,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Makefile készítése"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s, alapértelmezett: %s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "Függőség tulajdonságai"
@@ -15028,10 +14830,6 @@ msgstr "Általános beállítások szerkesztése"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "Fájl tulajdonságok"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-msgid "(fpmake)"
-msgstr "(fpmake)"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15298,10 +15096,6 @@ msgstr "Al"
 msgid "Object"
 msgstr "Objektum"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "Csomag beállításai"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "Csomag típus"
@@ -15459,26 +15253,6 @@ msgstr "Csomag függőségeinek tisztítása"
 msgid "Clear Selection"
 msgstr "Kijelölés törlése"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "CompiledSrcPath hozzáadása"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr "Névterek"
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "Kimeneti könyvtár"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "Csomag forráskönyvtár"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "Unit útvonal"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "Függőségek törlése"
@@ -15508,64 +15282,6 @@ msgstr "A(z) \"%s\" fájl%sjelenleg nem szerepel a csomag unit útvonalai közö
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "További műveletek a csomaggal"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "Bináris"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "Include fájl"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "Issues XML fájl"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM - Lazarus form szöveg"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS - Lazarus forrás"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "Fő-unit"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "Szöveg"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "Virtuális unit"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag könyvtára. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag include fájlok keresési útvonala. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag neve. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag kimeneti könyvtára. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag forrás keresési útvonala. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Csomag unit keresési útvonala. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15602,15 +15318,6 @@ msgstr "Megszakadt függőség"
 msgid "Circular dependencies found"
 msgstr "Körkörös függőség észlelve"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "Csomag fordítása: %s"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "Törlés sikertelen"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "Törli a régi csomag fájlt?"
@@ -15625,18 +15332,9 @@ msgstr "Törli a(z) \"%s\" régi csomagfájlt?"
 msgid "Dependency without Owner: %s"
 msgstr "Függőség tulajdonos nélkül: %s"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "Hiba a fájl olvasása közben"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Hiba a csomag olvasása közben"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "Hiba a fájl írása közben"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15724,10 +15422,6 @@ msgstr "A csomag nem tervezési csomag"
 msgid "Package is required"
 msgstr "A csomag szükséges"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "csomag fő forrás fájlja"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "A csomagnév már létezik"
@@ -15797,10 +15491,6 @@ msgstr "A fájlnév átnevezhető kisbetűsre a következőképpen:%s\"%s\"?"
 msgid "Skip this package"
 msgstr "E csomag átugrása"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "statikus csomagok beállítási fájlja"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15826,11 +15516,6 @@ msgstr "A(z) \"%s\" fájl része a jelenlegi projektnek.%sA projektek és a csom
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "A(z) \"%s\" fájlnevet%sa(z) \"%s\" csomag használja%sa(z) \"%s\" fájlban."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "A(z) \"%s\" fájl a %s csomagból nem található."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15937,62 +15622,15 @@ msgstr "Van egy unit ugyanazzal a névvel, mint egy csomag:%s1. \"%s\" innen: %s
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Ez egy virtuális csomag. Még nincs forrása. Először mentse a csomagot!"
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "Könyvtár létrehozása nem lehetséges"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "A(z) \"%s\" kimeneti könyvtár létrehozása nem lehetséges%sa(z) %s csomaghoz."
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "A(z) \"%s\" forrás könyvtár létrehozása nem lehetséges%sa(z) %s csomaghoz."
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Ezen Lazarus célkönyvtár létrehozása nem lehetséges:%s\"%s\".%sEz a könyvtár szükséges az új, megváltozott Lazarus IDE-hez, amely már tartalmazza az egyéni csomagjait."
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "A(z) \"%s\" fájl törlése nem lehetséges"
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "A fájl törlése nem lehetséges"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "A(z) \"%s\" régi állapotfájl törlése,%samely a(z) %s csomaghoz tartozik, nem lehetséges."
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "Csomag betöltése nem lehetséges"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "A(z) \"%s\" csomag megnyitása nem lehetséges.%sEz a csomag meg lett jelölve telepítésre."
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "A(z) \"%s\" állapotfájl,%sami a(z) %s csomaghoz tartozik nem olvasható.%sHiba: %s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "A(z) \"%s\" csomag írása%sa(z) \"%s\" fájlba nem lehetséges.%sHiba: %s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "A(z) \"%s\" állapotfájl írása,%sami a(z) %s csomaghoz tartozik, nem lehetséges.%sHiba: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -16034,84 +15672,6 @@ msgstr "eltávolítás"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Válasszon egy csomagot"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "Unit nélküli komponenseket nem lehet regisztrálni"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "A(z) \"%s\" komponens osztály már definiálva van"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sFájlnév: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "Érvénytelen komponens osztály"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "Érvénytelen unit-név: %s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk fájl: \"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "A csomagfájl nem található"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "Hiba a csomag regisztrálásakor"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "A \"Register\" eljárás nil"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called but no package is registering."
-msgstr "A RegisterUnit meg lett hívva, de nem regisztrálódik egy csomag sem."
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%sAz lpk fájl nincs meg."
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "A(z) \"%s\" csomag telepítve van, de nem található érvényes csomagfájl (.lpk).%sEgy törött, látszólagos csomag lett létrehozva."
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Ez az alapértelmezett csomag. Csak csomag nélküli komponensekhez van használva. E komponensek idejétmúltak."
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Ez a csomag telepítve van, de az .lpk fájl nem található. Minden komponense deaktiválva van. Javítsa!"
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sUnit-név: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "A(z) \"%s\" unit nem található az lpk fájlban.%s Lehet, hogy ez az lpk fájl nem volt használva ezen IDE építéséhez vagy a csomag helytelenül használja a RegisterUnit eljárást."
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "A \"%s\" unit el lett távolítva a csomagból (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
@@ -16605,16 +16165,6 @@ msgstr "Eltávolítja a projektből ezt: %s?"
 msgid "Remove %s items from project?"
 msgstr "%s elem eltávolítása a projektből?"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "A(z) %s állapotfájl beolvasása, a(z) %s projektből, nem lehetséges.%sHiba: %s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "Állapotfájl írása a sikertelen a(z) %s projekthez%sHiba: %s"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Építés mindig (még ha nem is történt változás)"
@@ -16632,10 +16182,6 @@ msgstr "Hiba"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Az automatikusan létrehozandó form-ok listájának megváltoztatása nem lehetséges a program forrásában.%sElőször javítsa a hibákat!"
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "Projekt forráskönyvtár"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16762,10 +16308,6 @@ msgstr "Kilépés"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Kilépés a Lazarus-ból"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "Olvasási hiba"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17687,10 +17229,6 @@ msgstr "Legutóbbi projekt betöltésének kihagyása"
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "Ezen figyelmeztetések átugrása"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Lassabb, de pontosabb."
@@ -17789,11 +17327,6 @@ msgstr "Kifejezések"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr "A forrás \"%s\"%sés a cél \"%s\"%s ugyanaz a könyvtár. Másik könyvtárak kell választani."
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Forrás és cél megegyezik:%s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -17881,10 +17414,6 @@ msgstr "Leállítja a hibakeresést?"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "Az útvonal-elválasztók \\ és / tárolása:"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "Furcsa lpi fájl"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -18085,11 +17614,6 @@ msgstr "Az alkalmazásköteg létre lett hozva ehhez: \"%s\""
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "A(z) \"%s\" osztály egy TControl és nem illeszthető egy nem-vezérlő elemre.%sA beillesztés nem lehetséges."
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "A CodeTools talált egy hibát:%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18171,29 +17695,14 @@ msgstr "A(z) \"%s\" könyvtár már nem tartalmaz projekt unit-ot. Eltávolítja
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "A(z) \"%s\" könyvtár többé nem szükséges a unit elérési útban.%sEltávolítja?"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "A(z) \"%s\" könyvtár nem írható."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "A(z) \"%s\" fájl"
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "A(z) %s fájl nem tűnik lpi fájlnak"
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr "A fájlindex szükséges az olyan műveletekhez mint a deklaráció keresése. Átvizsgálás közben szerkesztheti a forrásokat és fordíthat, de az olyan műveletek mint a deklaráció keresése a \"unit nem található\" hibát fogja megjeleníteni. Ez akár egy percig is tarthat."
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "A(z) \"%s\" fájl egy szimbolikus hivatkozás.%sMegnyitja a(z) \"%s\"-t helyette?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18219,11 +17728,6 @@ msgstr "A(z) \"%s\" fájl egy programnak tűnik.%sBezárja a jelenlegi projektet
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "A(z) %s fájl egy létező Lazarus projekt program fájljának tűnik."
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "A(z) \"%s\"%sfájl a(z) %s csomag egyik forráskönyvtárában található és egy lefordított unit-nak látszik. A lefordított unit-oknak a csomag kimeneti könyvtárában kell lenniük, különben más csomagoknak problémái lehetnek ennek a csomagnak a használatával.%sTörli a megtévesztő fájlt?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19159,39 +18663,6 @@ msgstr "A fájl szövegadata nem alakítható át bináris adatfolyammá:%s\"%s\
 msgid "Unable to convert to encoding \"%s\""
 msgstr "Nem lehet átalakítani \"%s\" kódolásra"
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "A fájl másolása nem lehetséges"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "A fájl nem másolható innen: \"%s\"%side: \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "A könyvtár nem hozható létre: \"%s\"."
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "A fájl létrehozása nem lehetséges"
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "A fájl nem hozható létre: \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "A fájl nem hozható létre:%s\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "A(z) \"%s\" hivatkozás nem hozható létre erre: \"%s\""
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Nem hozható létre az új fájl, mert már létezik egy könyvtár ezzel a névvel."
@@ -19294,33 +18765,9 @@ msgstr "A tervező megnyitása nem lehetséges.%sA(z) %s osztály nem olyan szer
 msgid "Unable to read %s"
 msgstr "A(z) %s olvasása nem lehetséges"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "A fájl olvasása nem lehetséges"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "Nem olvasható a fájl: \"%s\"."
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Nem olvasható a fájl: \"%s\"%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "Nem olvasható az lpi"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "Nem olvasható a folyamat kilépési állapota (ExitStatus)"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "Nem olvasható a projekt infó fájlja:%s\"%s\"."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19341,20 +18788,6 @@ msgstr "Nem lehet eltávolítani a projekt címét a forrásból.%s%s"
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "A megtévesztő fájl nem nevezhető át erről: \"%s\"%serre: \"%s\""
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "A fájl átnevezése nem lehetséges"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "A fájl nem nevethető át erről: \"%s\" erre: \"%s\"!"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "A fájl nem nevethető át erről: \"%s\"%serre: \"%s\"."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19407,45 +18840,6 @@ msgstr "A(z) %s:T%s bináris komponens adatfolyamának szövegre alakítása nem
 msgid "Unable to update CreateForm statement in project source"
 msgstr "A CreateForm állomány frissítése nem lehetséges a projekt forrásban"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "Nem írható: \"%s\""
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "Nem írható a fájl"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "Nem írható a fájl: \"%s\"."
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Nem írható a fájl: \"%s\"%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Nem írható a projekt infó fájlja:%s\"%s\".%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Nem írható a projekt munkamenet fájlja:%s\"%s\".%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "Nem írható a fájl: \"%s\"."
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "Nem írható az XML folyam ide: %s%sHiba: %s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "Kijelölések megszüntetése"
@@ -19474,79 +18868,6 @@ msgstr "Kijelölés eltávolítása"
 
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
-msgstr ""
-
-#: lazarusidestrconsts.lisunit
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "Unit"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "A(z) \"%s\" unit megváltozott. Mentés?"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "A unit-azonosító létezik"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s unit %s a(z) %s csomagban"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "A unit-név már szerepel a projektben"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "Unit-név kezdete ..."
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "Unit-név tartalmazza ..."
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "a(z) %s unit nem található"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "a %s unit nem található az új helyen: \"%s\""
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "Unit kimeneti könyvtár"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "unit útvonal"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "Unit útvonalak"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "a(z) %s unit igényli a(z) %s csomagot"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
@@ -19590,11 +18911,6 @@ msgstr "Csak betűméret változása esetén frissítse az eljárás többi beg�
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Frissíti a hivatkozásokat?"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "A(z) %s csomag PO fájljainak frissítése nem sikerült"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -19884,15 +19200,6 @@ msgstr "Munkakönyvtár a futtatáshoz"
 msgid "Write config instead of command line parameters"
 msgstr ""
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "Írási hiba"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "Írási hiba: %s%sFájl: %s%s%s"
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr "A csomaginformációs fájl írása nem sikerült."
@@ -19909,15 +19216,6 @@ msgstr ""
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "a(z) %s rossz változatot tartalmaz: %s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "XML Hiba"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "XML elemző hiba a(z) %s%s fájlban. Hiba: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20227,117 +19525,13 @@ msgstr "A változatinformáció tárolva lesz a programban ha a formátuma támo
 msgid "Include version info in executable"
 msgstr "Változat adatok tárolása a programban"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "Dél-afrikai holland"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "Arab"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Automatikus (vagy Angol)"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "Katalán"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "Kínai"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr ""
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "Cseh"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "Holland"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "Angol"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "Finn"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "Francia"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "Német"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "Héber"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "Magyar"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "Indonéz"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "Olasz"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "Japán"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "Litván"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "Nyelvi beállítások"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "Lengyel"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "Portugál"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "Brazil portugál"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "Orosz"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "Nyelv kiválasztása:"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "Szlovák"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "Spanyol"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "Török"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "Ukrán"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22263,4 +21457,76 @@ msgstr "Unit-fa beállítása"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Változatinformációk"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "A(z) \"%s\" unit megváltozott. Mentés?"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "A unit-azonosító létezik"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s unit %s a(z) %s csomagban"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "A unit-név már szerepel a projektben"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "Unit-név kezdete ..."
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "Unit-név tartalmazza ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "a(z) %s unit nem található"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "a %s unit nem található az új helyen: \"%s\""
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "Unit kimeneti könyvtár"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "unit útvonal"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "Unit útvonalak"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "a(z) %s unit igényli a(z) %s csomagot"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "A fájl törlése nem lehetséges"
 

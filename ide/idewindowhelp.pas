@@ -37,6 +37,8 @@ uses
   LazFileUtils, LazConfigStorage, LazLoggerBase,
   // IdeIntf
   IDEDialogs,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IDE
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
   

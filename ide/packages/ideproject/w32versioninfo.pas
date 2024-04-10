@@ -34,8 +34,6 @@ unit W32VersionInfo;
 
 {$mode objfpc}{$H+}
 
-{$I ide.inc}
-
 interface
 
 uses

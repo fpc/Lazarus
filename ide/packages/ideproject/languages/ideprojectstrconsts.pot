@@ -1,0 +1,92 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: ideprojectstrconsts.dlgprojectoptions
+msgid "Project Options"
+msgstr ""
+
+#: ideprojectstrconsts.liscodetoolsdefsreaderror
+msgid "Read error"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotadditomainsource
+#, object-pascal-format
+msgid "Could not add \"{$I %s}\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotaddrtomainsource
+#, object-pascal-format
+msgid "Could not add \"{$R %s}\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotaddtomainsource
+#, object-pascal-format
+msgid "Could not add \"%s\" to main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotremoveifrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$I %s}\" from main source!"
+msgstr ""
+
+#: ideprojectstrconsts.liscouldnotremoverfrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$R %s}\" from main source!"
+msgstr ""
+
+#: ideprojectstrconsts.lisextendunitsearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr ""
+
+#: ideprojectstrconsts.lisfilenotfound2
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr ""
+
+#: ideprojectstrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr ""
+
+#: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
+#, object-pascal-format
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr ""
+
+#: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
+#, object-pascal-format
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr ""
+
+#: ideprojectstrconsts.lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr ""
+
+#: ideprojectstrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr ""
+
+#: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
+#, object-pascal-format
+msgid "The file %s does not look like a lpi file."
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletoreadtheprojectinfofile
+#, object-pascal-format
+msgid "Unable to read the project info file%s\"%s\"."
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
+#, object-pascal-format
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
+msgstr ""
+
+#: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
+#, object-pascal-format
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+

@@ -50,6 +50,10 @@ uses
   PascalParserTool,
   // IDEIntf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs, IDEImagesIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, CodeExplOpts;
 

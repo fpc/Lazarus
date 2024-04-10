@@ -38,6 +38,16 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="IdePackager"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeUtilsPkg"/>
+        <MaxVersion Major="1"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeProject"/>
+      </Item>
+      <Item>
         <PackageName Value="LazControlDsgn"/>
       </Item>
       <Item>
@@ -254,24 +264,6 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
-        <Filename Value="projectresources.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectResources"/>
-      </Unit>
-      <Unit>
-        <Filename Value="w32manifest.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="projecticon.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectIcon"/>
-      </Unit>
-      <Unit>
-        <Filename Value="w32versioninfo.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="sourceeditor.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SourceNotebook"/>
@@ -348,11 +340,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="CodeBrowser"/>
-      </Unit>
-      <Unit>
-        <Filename Value="project.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Project"/>
       </Unit>
       <Unit>
         <Filename Value="customformeditor.pp"/>
@@ -869,19 +856,10 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="dialogprocs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="DialogProcs"/>
-      </Unit>
-      <Unit>
         <Filename Value="abstractsmethodsdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="projectuserresources.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectUserResources"/>
+        <UnitName Value="AbstractsMethodsDlg"/>
       </Unit>
       <Unit>
         <Filename Value="buildfiledlg.pas"/>
@@ -941,6 +919,7 @@
         <Filename Value="unusedunitsdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="UnusedUnitsDlg"/>
       </Unit>
       <Unit>
         <Filename Value="fpdocselectlink.pas"/>
@@ -1004,6 +983,7 @@
         <Filename Value="emptymethodsdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="EmptyMethodsDlg"/>
       </Unit>
       <Unit>
         <Filename Value="newdialog.pas"/>
@@ -1103,6 +1083,7 @@
         <Filename Value="codeexplorer.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CodeExplorer"/>
       </Unit>
       <Unit>
         <Filename Value="projectwizarddlg.pas"/>
@@ -1111,11 +1092,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ProjectWizardDlg"/>
-      </Unit>
-      <Unit>
-        <Filename Value="projectdefs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectDefs"/>
       </Unit>
       <Unit>
         <Filename Value="codemacroprompt.pas"/>
@@ -1263,6 +1239,7 @@
       <Unit>
         <Filename Value="idewindowhelp.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEWindowHelp"/>
       </Unit>
       <Unit>
         <Filename Value="showcompileropts.pas"/>
@@ -1299,11 +1276,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RunParamsOpts"/>
-      </Unit>
-      <Unit>
-        <Filename Value="idetranslations.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IDETranslations"/>
       </Unit>
       <Unit>
         <Filename Value="useunitdlg.pas"/>
@@ -1457,11 +1429,6 @@
         <Filename Value="idetransfermacros.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="IdeTransferMacros"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../packager/pkgsysbasepkgs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PkgSysBasePkgs"/>
       </Unit>
       <Unit>
         <Filename Value="envguioptions.pas"/>

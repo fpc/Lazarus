@@ -40,6 +40,8 @@ uses
   IDEOptionsIntf,
   // IdeIntf
   IDEOptEditorIntf, IDEDialogs, IDEUtils, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, LazConf,
   // IDE

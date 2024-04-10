@@ -44,6 +44,8 @@ uses
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, Menus,
   SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IDE
   IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;

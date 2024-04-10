@@ -48,6 +48,8 @@ uses
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   RecentListProcs,
   // IDE

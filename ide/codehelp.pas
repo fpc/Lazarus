@@ -55,6 +55,8 @@ uses
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, TransferMacros, IDEProcs,
   // IDE

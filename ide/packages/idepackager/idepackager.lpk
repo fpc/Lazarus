@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IdePackager"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Lazarus Team"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="-- This package is part of the IDE --
+This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.
+
+Files in this package are for the main configuration of the IDE."/>
+    <License Value="GPLv2"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="packagedefs.pas"/>
+        <UnitName Value="PackageDefs"/>
+      </Item>
+      <Item>
+        <Filename Value="packagelinks.pas"/>
+        <UnitName Value="PackageLinks"/>
+      </Item>
+      <Item>
+        <Filename Value="packagesystem.pas"/>
+        <UnitName Value="PackageSystem"/>
+      </Item>
+      <Item>
+        <Filename Value="pkgsysbasepkgs.pas"/>
+        <UnitName Value="PkgSysBasePkgs"/>
+      </Item>
+      <Item>
+        <Filename Value="idepackagerstrconsts.pas"/>
+        <UnitName Value="IdePackagerStrConsts"/>
+      </Item>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IdeUtilsPkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeConfig"/>
+      </Item>
+      <Item>
+        <PackageName Value="BuildIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

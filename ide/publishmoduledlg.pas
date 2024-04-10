@@ -42,6 +42,8 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf,
   LazIDEIntf, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, RecentListProcs,
   // IDE

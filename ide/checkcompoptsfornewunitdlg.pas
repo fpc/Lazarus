@@ -35,6 +35,8 @@ uses
   Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
   BasicCodeTools, DefineTemplates,
   CompOptsIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   IDEDialogs, InputHistory, IdeIntfStrConsts,
   TransferMacros,
   Project, LazarusIDEStrConsts;

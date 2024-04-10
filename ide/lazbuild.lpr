@@ -41,6 +41,8 @@ uses
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts, CompilerOptions,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE
   InitialSetupProc, ExtToolsConsole, ApplicationBundle,
   IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,

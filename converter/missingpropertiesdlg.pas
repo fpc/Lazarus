@@ -45,6 +45,10 @@ uses
   ComponentReg,
   // IdeIntf
   IDEExternToolIntf, IDEImagesIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IdeProject
+  IdeProjectStrConsts,
   // IDE
   LazarusIDEStrConsts, EditorOptions, CheckLFMDlg, Project, SourceMarks,
   // Converter

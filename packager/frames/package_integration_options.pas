@@ -12,6 +12,8 @@ uses
   LazFileUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, PackageIntf,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   IDEProcs,
   // IDE

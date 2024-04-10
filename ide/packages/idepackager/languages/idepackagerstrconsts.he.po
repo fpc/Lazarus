@@ -1,0 +1,336 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: idepackagerstrconsts.dlgcompileroptions
+msgid "Compiler Options"
+msgstr "אפשרויות מהדר"
+
+#: idepackagerstrconsts.lisambiguousunitfound
+#, fuzzy
+#| msgid "Ambiguous Unit found"
+msgid "Ambiguous unit found"
+msgstr "נמצאה יחידה רב משמעית"
+
+#: idepackagerstrconsts.liscein
+#, object-pascal-format
+msgid "%s in %s"
+msgstr "%s ב %s"
+
+#: idepackagerstrconsts.lisdeletingoffilefailed
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Deleting of file %s%s%s failed."
+msgid "Deleting of file \"%s\" failed."
+msgstr "מחיקת הקובץ s%s%s% נכשלה."
+
+#: idepackagerstrconsts.lisexecutingcommandafter
+msgid "Executing command after"
+msgstr "ביצוע פקודה אחרי"
+
+#: idepackagerstrconsts.lisexecutingcommandbefore
+msgid "Executing command before"
+msgstr "ביצוע פקודה לפני"
+
+#: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendincludepath
+msgid "Extend include path?"
+msgstr ""
+
+#: idepackagerstrconsts.lisextendunitpath
+msgid "Extend unit path?"
+msgstr "ייצא את נתיב היחידה"
+
+#: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
+#, object-pascal-format
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr ""
+
+#: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
+#, object-pascal-format
+msgid "Creating Makefile for package %s"
+msgstr "יוצר Makefile עבור חבילה %s"
+
+#: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
+#, object-pascal-format
+msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
+#: idepackagerstrconsts.lispckeditdefault
+#, object-pascal-format, fuzzy, badformat
+msgid "%s, default: %s"
+msgstr "ברירת מחדל"
+
+#: idepackagerstrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
+#: idepackagerstrconsts.lispckoptspackageoptions
+msgid "Package Options"
+msgstr "אפשרויות חבילה"
+
+#: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
+msgid "CompiledSrcPath addition"
+msgstr "הוספת CompiledSrcPath"
+
+#: idepackagerstrconsts.lispkgdefsoutputdirectory
+msgid "Output directory"
+msgstr "תיקיית הפלט"
+
+#: idepackagerstrconsts.lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr "סימון ספריית קוד המקור של החבילה"
+
+#: idepackagerstrconsts.lispkgdefsunitpath
+msgid "Unit Path"
+msgstr "נתיב היחידה"
+
+#: idepackagerstrconsts.lispkgfiletypebinary
+msgid "Binary"
+msgstr "בינארי"
+
+#: idepackagerstrconsts.lispkgfiletypeinclude
+msgid "Include file"
+msgstr "קובץ \"כלול\""
+
+#: idepackagerstrconsts.lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "סוגיות של קובץ xml"
+
+#: idepackagerstrconsts.lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr "טקסט של טופס לזארוס - LFM"
+
+#: idepackagerstrconsts.lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr "משאבים של לזארוס - LRS"
+
+#: idepackagerstrconsts.lispkgfiletypemainunit
+msgid "Main Unit"
+msgstr "יחידה ראשית"
+
+#: idepackagerstrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "טקסט"
+
+#: idepackagerstrconsts.lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr "יחידה ווירטואלית"
+
+#: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
+msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
+msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangcompilepackage
+#, object-pascal-format
+msgid "Compile package %s"
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangdeletefailed
+msgid "Delete failed"
+msgstr "המחיקה נכשלה"
+
+#: idepackagerstrconsts.lispkgmangerrorreadingfile
+msgid "Error reading file"
+msgstr "שגיאה בקריאת קובץ"
+
+#: idepackagerstrconsts.lispkgmangerrorwritingfile
+msgid "Error writing file"
+msgstr "שגיאה בכתיבת קובץ"
+
+#: idepackagerstrconsts.lispkgmangpackagemainsourcefile
+msgid "package main source file"
+msgstr "קובץ קוד המקור הראשי של החבילה"
+
+#: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
+msgid "static packages config file"
+msgstr "קובץ הגדרות לחבילות סטטיות"
+
+#: idepackagerstrconsts.lispkgmangthefileofpackagewasnotfound
+#, object-pascal-format
+msgid "The file \"%s\" of package %s was not found."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create output directory %s%s%s%sfor package %s."
+msgid "Unable to create output directory \"%s\"%sfor package %s."
+msgstr "לא ניתן ליצור את ספריית הפלט %s%s%s%sעבור החבילה %s."
+
+#: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create package source directory %s%s%s%sfor package %s."
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr "לא ניתן ליצור את ספריית הקוד %s%s%s%sעבור החבילה %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
+msgstr "לא ניתן למחוק את קובץ המצב הישן %s%s%s%sעבור החבילה %s."
+
+#: idepackagerstrconsts.lispkgmangunabletoloadpackage
+msgid "Unable to load package"
+msgstr "לא מצליח לטעון את החבילה."
+
+#: idepackagerstrconsts.lispkgmangunabletoopenthepackage
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
+msgstr "לא ניתן לפתוח את החבילה %s%s%s.%sהחבילה סומנה להתקנה."
+
+#: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
+msgstr "לא ניתן לקרוא את מצב הקובץ %s%s%s%sשל החבילה %s.%sשגיאה: %s"
+
+#: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
+msgstr "לא מצליח לכתוב קובץ מצב %s%s%s% של חבילה %s. שגיאה: %s"
+
+#: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
+#, fuzzy
+#| msgid "Can not register components without unit"
+msgid "Cannot register components without unit"
+msgstr "לא יכול לרשום את הרכיבים ללא יחידה"
+
+#: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Component Class %s%s%s already defined"
+msgid "Component Class \"%s\" already defined"
+msgstr "מחלקת רכיבים %s%s%s כבר מוגדרת"
+
+#: idepackagerstrconsts.lispkgsysfilename
+#, object-pascal-format, fuzzy
+#| msgid "%s%sFile Name: %s%s%s"
+msgid "%s%sFile Name: \"%s\""
+msgstr "שם קובץ: %s%s%s"
+
+#: idepackagerstrconsts.lispkgsysinvalidcomponentclass
+msgid "Invalid component class"
+msgstr "מחלקת רכיבים לא חוקית"
+
+#: idepackagerstrconsts.lispkgsysinvalidunitname
+#, object-pascal-format, fuzzy, badformat
+msgid "Invalid Unitname: %s"
+msgstr "שם יחידה לא חוקי: s%"
+
+#: idepackagerstrconsts.lispkgsyslpkfilename
+#, object-pascal-format
+msgid "%s%slpk file: \"%s\""
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsyspackagefilenotfound
+msgid "Package file not found"
+msgstr "הקובץ של החבילה לא נמצא"
+
+#: idepackagerstrconsts.lispkgsyspackageregistrationerror
+msgid "Package registration error"
+msgstr "שגיאה ברישום החבילה"
+
+#: idepackagerstrconsts.lispkgsysregisterprocedureisnil
+msgid "Register procedure is nil"
+msgstr "פרוצדורת הרישום ריקה"
+
+#: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
+#, fuzzy
+#| msgid "RegisterUnit was called, but no package is registering."
+msgid "RegisterUnit was called but no package is registering."
+msgstr "יחידת הרישום נקראה, אבל אף חבילה לא נרשמת."
+
+#: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
+#, object-pascal-format
+msgid "%s%sThe lpk file was not found."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
+#, object-pascal-format, fuzzy, badformat
+#| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgstr "החבילה %s%s%s מותקנת, אבל לא נמצא קובץ חוקי לחבילה (lpk.). חבילה שבורה מדומה נוצרה. "
+
+#: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
+msgid "This is the default package. Used only for components without a package. These components are outdated."
+msgstr "זאת היא חבילת ברירת המחדל. משמשת רק לרכיבים ללא חבילה. רכיבים אלו לא מעודכנים."
+
+#: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
+#, fuzzy
+#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
+msgstr "חבילה זאת מותקנת, אבל קובץ lpk לא נמצא. כל רכיביה נוטרלו. תקן זאת."
+
+#: idepackagerstrconsts.lispkgsysunitname
+#, object-pascal-format, fuzzy
+#| msgid "%s%sUnit Name: %s%s%s"
+msgid "%s%sUnit Name: \"%s\""
+msgstr "שם יחידה: %s%s%s"
+
+#: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+#, object-pascal-format
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
+#, object-pascal-format
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
+
+#: idepackagerstrconsts.lisskipthesewarnings
+msgid "Skip these warnings"
+msgstr ""
+
+#: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
+#, object-pascal-format, fuzzy
+#| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
+msgstr "הקובץ %s%s%s%s נמצא באחת מתיקיות הקוד של החבילה ונראה כמו יחידה מהודרת. יחידות מהודרות חייבות להיות בתיקיית הפלט של החבילה, אחרת חבילות אחרות ייתקלו בבעיות בשימוש בחבילה זאת. האם למחוק את הקובץ הבעייתי?"
+
+#: idepackagerstrconsts.lisunit
+#, fuzzy
+msgid "Unit"
+msgstr "יחידה"
+
+#: idepackagerstrconsts.lisupdatingpofilesfailedforpackage
+#, object-pascal-format
+msgid "Updating PO files failed for package %s"
+msgstr ""
+

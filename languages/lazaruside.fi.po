@@ -1265,11 +1265,6 @@ msgstr "Kääntäjän viestit"
 msgid "Compiler messages language file (*.msg)"
 msgstr "Kääntäjän viestien kielitiedosto (*.msg)"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgctxt "lazarusidestrconsts.dlgcompileroptions"
-msgid "Compiler Options"
-msgstr "Kääntäjän asetukset"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Täydennyksen ominaisuudet"
@@ -3532,10 +3527,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Projekti"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "Projektin asetukset"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5073,11 +5064,6 @@ msgstr "Näytä kaikki"
 msgid "The package %s is read only."
 msgstr "Pakettia %s voidaan vain lukea."
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "Tiedosto \"%s\" on jo olemassa.%sKorvataanko se? "
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5164,10 +5150,6 @@ msgstr "Ristiriitainen tiedosto löytyi: \"%s\"%smikä voi sekoittua tähän: \"
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Ristiriitaisia tiedostoja löytyi"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "Ristiriitainen käännösyksikkö löytyi"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5742,11 +5724,6 @@ msgstr "Kopioi tuloste leikepöydälle"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPC:n .ppu-tiedostojen aikaleimat eroavat yli tunnilla.%sSe voi tarkoittaa, että ne ovat kahdesta eri asennuksesta.%sTiedosto1: %s%sTiedosto2: %s"
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "Virhe"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "VIRHE: "
@@ -5890,11 +5867,6 @@ msgstr "(suodatin)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Seuraa kursoria"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgid "%s in %s"
-msgstr "%s %s:ssa"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -7013,10 +6985,6 @@ msgstr "Projektin hakemisto"
 msgid "%s project directory"
 msgstr "%s projektin hakemisto"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "Lukuvirhe"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Valittu solmu:"
@@ -7086,10 +7054,6 @@ msgstr "%s:%sarvo \"%s\" is invalid."
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Muuttuja:"
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "Tiedoston tallentaminen ei onnistunut"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -8047,31 +8011,6 @@ msgstr "Tutki Make-viestit"
 msgid "Skip calling compiler"
 msgstr "Ohita kääntäjän kutsu"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "\"{$I %s}\" lisäys päälähdekoodiin ei onnistu!"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "\"{$R %s}\" lisäys päälähdekoodiin ei onnistu!"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "\"%s\" lisäys päälähdekoodiin ei onnistu!"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "\"{$I %s}\" poisto päälähdekoodista ei onnistu!"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "\"{$R %s}\" poisto päälähdekoodista ei onnistu!"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Kääntäjän lisäasetustiedostolla on sama nimi kuin Free Pascal kääntäjän omalla tiedostolla. Sen johdosta ehkä VAIN lisäasetukset luetaan ja perusasetukset jäävät pois."
@@ -8605,10 +8544,6 @@ msgstr "Poistetaanko kaikki nämä tiedostot?"
 msgid "Delete ambiguous file?"
 msgstr "Poista ristiriitainen tiedosto"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "Tiedoston poistaminen epäonnistui"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8645,11 +8580,6 @@ msgstr "Poista arvo \"%s\""
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "Poista arvo %s"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "Tiedoston \"%s\" poistaminen epäonnistui."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8749,10 +8679,6 @@ msgstr "Hakemistoa \"%s\" ei löydy."
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "hakemistoa %s ei löydy"
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "Hakemistoon ei voi kirjoittaa"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9288,10 +9214,6 @@ msgstr "Anna uusi nimi Macrolle \"%s\""
 msgid "Environment variable, name as parameter"
 msgstr "Ympäristömuuttuja, nimi parametrina"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "Kansiota ei löytynyt"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Kelvoton debuggerin tiedostonimi"
@@ -9393,11 +9315,6 @@ msgstr "Virhe ladattaessa tiedostoa"
 msgid "Error loading file \"%s\":"
 msgstr "Virhe ladattaessa tiedostoa \"%s\":"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "Virhe ladattaessa %s täältä:%s%s%s%s"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "Virhe siirrettäessä komponenttia"
@@ -9455,11 +9372,6 @@ msgstr ", Virheet: %s"
 msgid "Error saving form"
 msgstr "Virhe tallennettaessa lomaketta"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "Virhe tallennettaessa %s tänne:%s%s%s%s"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9512,14 +9424,6 @@ msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "ohjelmalla \"%s\" ei ole suoritusoikeutta"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "Suorittaa komennon jälkeen"
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "Suorittaa komennon ennen"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9610,34 +9514,6 @@ msgstr "Vie valitut"
 msgid "Export >>"
 msgstr "Vie >>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "Laajenna paketin \"%s\" include-tiedostojen hakupolku tällä:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Laajenna projektin include-tiedostojen hakupolku tällä:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "Laajenna include-tiedostojen polku?"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "Laajennetaanko käännösyksikköjen polkua?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "Laajenna paketin \"%s\" käännösyksikköjen hakupolku tällä:%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "Laajenna projektin käännösyksikköjen hakupolku tällä:%s\"%s\"?"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "Erota"
@@ -9699,11 +9575,6 @@ msgstr "Tiedosto"
 msgid "File: "
 msgstr "Tiedosto: "
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "Tiedosto \"%s\"%s ei näytä olevan tekstitiedosto.%s Yritetäänkö silti avata?"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Ohjelmien tiedostopääte"
@@ -9761,14 +9632,6 @@ msgstr "Tiedosto on hakemisto"
 msgid "File is not an executable"
 msgstr "Tiedosto ei ole suoritettava"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "Tiedoston tallentaminen ei onnistunut"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "Tiedosto on symbolinen linkki"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9781,12 +9644,6 @@ msgstr "Tiedostonimen tyyli"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "Tiedostoa ei löytynyt"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "Tiedostoa \"%s\" ei löytynyt."
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9810,10 +9667,6 @@ msgstr "Tiedostoa \"%s\" ei löytynyt.%sHaluatko luoda sen?"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "Tiedosto ei ole pienillä kirjoitettu"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "Tiedosto ei ole tekstiä"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10524,11 +10377,6 @@ msgstr "IDE käännetään ja käynnistetään pakettien asennuksen/poistamisen 
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Tervetuloa Lazarukseen.%0:sLöydetyt IDE:n asetukset kuuluvat toiselle Lazarus-asennukselle.%0:sEri Lazarus-asennusten ei pitäisi jakaa samoja asetuksia. Se voi johtaa ristiriitoihin eikä Lazarus-asennus enää toimi kunnolla.%0:s%0:sJos on vain yksi asennus ja Lazarus on kopioitu, asetukset voi huoletta päivittää.%0:s%1:s%0:s%0:sValitse:%0:s%0:s* Päivitys-info: Käytä näitä asetuksia ja päivitä ne käytettäväksi Lazaruksen kanssa jatkossa. Vanha asennus ei enää käytä sitä.%0:s* Ohita: Käytä näitä asetuksia, mutta varoita uudelleen jatkossa. Tämä voi johtaa ristiriitaan toisten asennusten kanssa.%0:s* Keskeytä: Poistu nyt. Ongelmat voi sen jälkeen ratkaista käynnistämällä Lazarus oikeiden asetusten kanssa.%0:s%0:sLisätietoa:%0:sNämä asetukset ovat: %2:s%0:sNe kuuluvat Lazarus asennukseen täällä: %3:s%0:sNykyinen IDE käynnistettiin täältä: %4:s%0:s"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "Luodaan Make-tiedosto paketille %s"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "Tietoja IDE:sta"
@@ -10640,10 +10488,6 @@ msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää par
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Ohita kaikki"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "Jätä huomiotta ja jatka"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14260,15 +14104,6 @@ msgstr "Mallinetta ei ole valittu"
 msgid "Nothing to do"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "Ei toteutettu"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "Ei toteutettu vielä:%s%s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "ei asennettu"
@@ -14529,14 +14364,6 @@ msgstr "Avaa projekti uudelleen"
 msgid "Open Project File"
 msgstr "Avaa projektitiedosto"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "Avaa symlink"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "Avaa kohde"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "Avaa tiedosto normaalina lähdekoodina"
@@ -14643,14 +14470,6 @@ msgstr ""
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%ssyrjäytä projektin widgetset. Esim. gtk2 qt win32 carbon. Oletus: %s"
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "Korvataanko tiedosto?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "Korvaa tällä tiedostolla"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "TReader/TWriter käyttää jo nimeä 'Owner'. Valitse toinen nimi."
@@ -14746,16 +14565,6 @@ msgstr "jäsentäjä \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr ""
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
 msgstr ""
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
@@ -14908,11 +14717,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Luo Make-tiedosto"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s, oletus: %s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "Riippuvuuden ominaisuudet"
@@ -14924,10 +14728,6 @@ msgstr "Muokkaa yleisiä asetuksia"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "Tiedoston ominaisuudet"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-msgid "(fpmake)"
-msgstr ""
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15193,10 +14993,6 @@ msgstr "Pieni"
 msgid "Object"
 msgstr "Objekti"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "Paketin asetukset"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "Paketin tyyppi"
@@ -15353,26 +15149,6 @@ msgstr "Siivoa pakettien riippuvuudet"
 msgid "Clear Selection"
 msgstr "Tyhjennä valinta"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "CompiledSrcPath lisäys"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr "Nimiavaruudet"
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "Käännöshakemisto"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "Paketin lähdehakemiston merkki"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "Käännösyksiköiden polku"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "Poista riippuvuudet"
@@ -15402,64 +15178,6 @@ msgstr "Tiedosto \"%s\"%sei ole paketin hakupolussa.%sLisätäänkö \"%s\" polk
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "Lisää toimintoja paketille"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "Binaari"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "Include-tiedosto"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "Ongelmien xml-tiedosto"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM - Lazarus-lomake tekstinä"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS - Lazarus-resurssi"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "Pääkäännösyksikkö"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "Teksti"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "Virtuaalinen käännösyksikkö"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Pakettihakemisto. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paketin include-tiedostojen hakupolku. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paketin nimi. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paketin käännöshakemisto. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paketin lähdetiedostojen hakupolku. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Paketin käännösyksikköjen hakupolku. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15496,15 +15214,6 @@ msgstr "Rikkinäinen riippuvuus"
 msgid "Circular dependencies found"
 msgstr "Kehäriippuvuus löydetty"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "Käännä paketti %s"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "Poistaminen epäonnistui"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "Poistetaanko vanha pakettitiedosto?"
@@ -15519,18 +15228,9 @@ msgstr "Poistetaanko vanha pakettitiedosto \"%s\"?"
 msgid "Dependency without Owner: %s"
 msgstr "Riippuvuus ilman omistajaa: %s"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "Virhe luettaessa tiedostoa"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Virhe luettaessa pakettia"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "Virhe kirjoitettaessa tiedostoa"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15618,10 +15318,6 @@ msgstr "Ei ole suunnitteluaikainen paketti"
 msgid "Package is required"
 msgstr "Paketti tarvitaan"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "paketin päälähdekooditiedosto"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "Paketti samalla nimellä on jo olemassa"
@@ -15694,10 +15390,6 @@ msgstr "Pitäisikö tiedoston nimi olla pienillä kirjaimilla:%s\"%s\"?"
 msgid "Skip this package"
 msgstr "Ohita tämä paketti"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "staattisten pakettien config-tiedosto"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15723,11 +15415,6 @@ msgstr "Tiedosto \"%s\" on osa nykyistä projektia.%sProjektin ja paketin ei tul
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Tiedosto \"%s\" on käytössä%spaketissa \"%s\"%stiedostossa \"%s\"."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "Paketin %s tiedostoa \"%s\" ei löydy."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15834,62 +15521,15 @@ msgstr "Käännösuksikkö on saman niminen kuin paketti:%s1. \"%s\" %s:sta%s2. 
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Tämä on virtuaalinen paketti eikä sillä ole vielä lähdekoodia. Tallenna se ensin."
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "Kansion luonti epäonnistui"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "Käännöshakemiston \"%s\"%sluominen paketille %s ei onnistu."
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "Lähdehakemiston \"%s\"%sluominen paketille %s ei onnistu."
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Kohdehakemiston luominen Lazarusta varten ei onnistu:%s\"%s\".%sHakemisto tarvitaan."
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "Tiedoston \"%s\" poistaminen ei onnistu."
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Tiedoston poistaminen ei onnistu"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "Vanhan tilatiedoston \"%s\"%spoistaminen paketille %s ei onnistu."
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "Paketin lataaminen ei onnistu"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "Ei pystytä avaamaan pakettia \"%s\".%sPaketti oli merkitty asennettavaksi."
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Tilatiedoston \"%s\"%slukeminen paketille %s ei onnistu.%sVirhe: %s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "Paketin \"%s\"%skirjoittaminen tiedostoon \"%s\" ei onnistu.%sVirhe: %s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Tilatiedoston \"%s\"%skirjoittaminen paketille %s ei onnistu.%sVirhe: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -15931,83 +15571,6 @@ msgstr "poista"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Valitse paketti"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "Ei voi rekisteröidä komponenttia ilman käännösyksikköä"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "Komponenttiluokka \"%s\" on jo määritelty"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sTiedoston nimi: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "Kelvoton komponenttiluokka"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "Kelvoton käännösyksikön nimi: %s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk tiedosto: \"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "Pakettitiedostoa ei löydy"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "Paketin rekisteröintivirhe"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "'Register' aliohjelma on Nil"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called but no package is registering."
-msgstr "RegisterUnit kutsuttiin, mutta paketteja ei ole rekisteröity."
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%slpk tiedostoa ei löydy."
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "Paketti \"%s\" on asennettu, mutta kelvollista pakettitiedostoa (.lpk) ei löydy.%sTyhjä rikkinäinen paketti luotiin."
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Tämä on oletuspaketti. Käytetään vain komponenteille, millä ei ole pakettia. Komponentit ovat vanhentuneet."
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Tämä paketti on asennettu, mutta pakettitiedostoa (.lpk) ei löydy. Komponentit eivät ole käytössä. Korjaa vika."
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sKäännösyksikön nimi: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "Käännösyksikköä \"%s\" ei löydy .lpk tiedostosta.%sEhkä tätä lpk:ta ei käytetty IDEn käännöksessä, tai paketti käyttää väärin RegisterUnit:a."
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "Käännösyksikkö \"%s\" poistettiin paketista (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
@@ -16501,16 +16064,6 @@ msgstr "Poistetaanko tiedosto %s projektista?"
 msgid "Remove %s items from project?"
 msgstr "Poista %s kohdat projektista?"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "Tilatiedon %s lukeminen projektille %s epäonnistui%sVirhe: %s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "Tilatiedon kirjoittaminen projektilta %s epäonnistui%sVirhe: %s"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Kokoa aina kaikki (vaikka mikään ei muuttuisi)"
@@ -16528,10 +16081,6 @@ msgstr "Virhe"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Automaattisesti luotua lomakelistaa ohjelman lähdekoodissa ei voi muuttaa.%sKorjaa ensin virheet."
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "Projektin lähdehakemiston merkki"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16654,10 +16203,6 @@ msgstr "Poistu"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "&Poistu Lazaruksesta"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "Lukuvirhe"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17569,10 +17114,6 @@ msgstr "Ohita viime projektin lataaminen"
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "Ohita nämä varoitukset"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Hitaampi mutta tarkempi."
@@ -17671,11 +17212,6 @@ msgstr "Sanat"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr "Lähde \"%s\"%sja kohde \"%s\"%shakemistot ovat samoja. Valitse toinen hakemisto."
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Lähde ja kohde ovat samat:%s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -17762,10 +17298,6 @@ msgstr "Pysäytetäänkö virheenjäljitys?"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "Tallenna polkujen erottimet \\ ja / kuten"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "Outo lpi-tiedosto"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -17966,11 +17498,6 @@ msgstr "\"Application Bundle\" luotiin \"%s\":lle"
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "Luokka \"%s\" on TControl eikä sitä voi liittää muuhun kuin kontrolliin.%sLiittäminen ei onnistu."
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "Codetools löysi virheen:%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18052,29 +17579,14 @@ msgstr "Hakemistossa \"%s\" ei ole enää käännösyksiköitä. Poistetaanko ha
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "Kansiota \"%s\" ei enää tarvita käännösyksikön tiedostopolussa.%sPoistetaanko se?"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "Hakemistoon \"%s\" ei voi kirjoittaa."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "Tiedosto \"%s\""
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "Tiedosto %s ei vaikuttaisi olevan lpi-tiedosto."
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr "Tiedostoindexiä tarvitaan esim. määrittelyjen hakemiseen. Tiedostoja tutkittaessa koodia voi muokata, mutta määrittelyn haku antaa virheen käännösyksikköä-ei-löydy. Tämä voi kestää minuutin."
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "Tiedosto \"%s\" symbolinen linkki.%sAvataanko \"%s\" sen sijaan?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18100,11 +17612,6 @@ msgstr "Tiedosto \"%s\" näyttää olevan Pascal-ohjelma.%sSuljetaanko nykyinen 
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "Tiedosto %s vaikuttaa Lazarus-projektin ohjelmatiedostolta."
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "Tiedosto \"%s\"%slöytyy paketin %s lähdehakemistosta ja näyttää käännetyltä yksiköltä. Käännetyn yksikön pitää olla paketin käännöshakemistossa, muuten muilla paketeilla on vaikeuksia käyttää tätä pakettia.%sPoistetaanko ristiriitainen tiedosto?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19040,39 +18547,6 @@ msgstr "Teksti-lomakedatan tiedostossa %s\"%s\"%sbinaarivuoksi ei onnistu. (%s)"
 msgid "Unable to convert to encoding \"%s\""
 msgstr "Muunnos merkkikoodaukselle \"%s\" ei onnistu"
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "Tiedoston kopiointi ei onnistunut"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "Tiedoston \"%s\"%skopiointi ei onnistunut tiedostoksi \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "Hakemiston \"%s\" luominen ei onnistu."
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "Tiedoston luominen ei onnistu."
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "Tiedoston \"%s\" luominen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "Tiedoston%s\"%s\" luominen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "Linkin \"%s\" luominen kohteeseen \"%s\" ei onnistu"
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Tiedoston luominen ei onnistu, koska samanniminen hakemisto on jo olemassa."
@@ -19175,32 +18649,9 @@ msgstr "Lomake-editorin avaaminen ei onnistu.%sLuokka %s ei periydy sopivasta lu
 msgid "Unable to read %s"
 msgstr "%s:n lukeminen ei onnistu"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "Tiedoston lukeminen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "Tiedoston \"%s\" lukeminen ei onnistu."
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Tiedoston \"%s\" lukeminen ei onnistu%sVirhe: %s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "lpi:n lukeminen ei onnistu"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "Prosessin ExitStatus lukeminen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "Projektin lukeminen ei onnistu tiedostoon%s\"%s\"."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19221,20 +18672,6 @@ msgstr "Projektin otsikon %s%s poisto ei onnistu!"
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "Ristiriitaisen tiedoston \"%s\"%s nimeäminen \"%s\":ksi ei onnistu"
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "Tiedoston nimeäminen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "Tiedoston \"%s\" nimeäminen \"%s\":ksi ei onnistu!"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "Tiedoston \"%s\"%snimeäminen \"%s\":ksi ei onnistu."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19287,45 +18724,6 @@ msgstr "%s:T%s binaari komponenttivuon muuttaminen tekstiksi ei onnistu."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "CreateForm lausekkeen päivitys projektin lähdekoodissa ei onnistu"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "\"%s\":n kirjoittaminen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "Tallentaminen tiedostoon ei onnistu"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "Kirjoittaminen tiedostoon \"%s\" ei onnistu."
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Tallentaminen tiedostoon \"%s\" ei onnistu%sVirhe: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Tallentaminen projektin infotiedostoon%s\"%s\" ei onnistu%sVirhe: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Tallentaminen projektin istuntotiedostoon%s\"%s\" ei onnistu%sVirhe: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "Kirjoittaminen tiedostoon \"%s\" ei onnistu."
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "Xml vuon kirjoittaminen tiedostoon %s ei onnistu%sVirhe: %s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "Poista valinta kaikista"
@@ -19354,79 +18752,6 @@ msgstr "Poista asennuksesta"
 
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
-msgstr ""
-
-#: lazarusidestrconsts.lisunit
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "Käännösyksikkö"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "Käännösyksikkö \"%s\" on muuttunut. Talletetaanko?"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "Käännösyksikön tunniste on olemassa"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s käännösyksikkö %s paketissa %s"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "Tätä käännösyksikön nimeä käytetään jo projektissa"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "Käännösyksikön nimi alkaa ..."
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "Käännösyksikön nimi sisältää ..."
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "käännösyksikköä %s ei löydy"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "käännösyksikköä %s ei löydy uudesta paikasta \"%s\""
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "Käännösyksiköiden kirjoitushakemisto"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "Käännösyksiköiden polku"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "Käännösyksiköiden polut"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "käännösyksikkö %s riippuu paketista %s"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
@@ -19470,11 +18795,6 @@ msgstr "Päivitä muut aliohjelman määritykset, kun vain kirjainten koko on mu
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Päivitetäänkö viittaukset?"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "PO tiedostojen päivitys epäonnistui paketille %s"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -19763,15 +19083,6 @@ msgstr "Työhakemisto suoritusta varten"
 msgid "Write config instead of command line parameters"
 msgstr ""
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "Tiedoston tallentaminen ei onnistunut"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "Virhe kirjoittaessa: %s%sTiedosto: %s%s%s"
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr "Virhe kirjoittaessa paketin info tiedostoa."
@@ -19788,15 +19099,6 @@ msgstr ""
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "väärä versio %s: %s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "XML-virhe"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "XML jäsentäjän virhe tiedostossa %s%sVirhe: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20108,117 +19410,13 @@ msgstr "Versiotieto talletetaan jos ohjelmatiedoston formaatti tukee sitä."
 msgid "Include version info in executable"
 msgstr "Lisää versiotieto suoritettavaan ohjelmaan"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "afrikaans"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "arabia"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Oletuskieli (tai englanti)"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "katalaani"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "kiina"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr ""
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "tsekki"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "hollanti"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "englanti"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "suomi"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "ranska"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "saksa"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "heprea"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "unkari"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "indonesia"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "italia"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "japani"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "liettua"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "Kielivalinnat"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "puola"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "portugali"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "Brasilian portugali"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "venäjä"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "Kielen valinta:"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "slovakki"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "espanja"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "turkki"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "ukraina"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22141,4 +21339,76 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiotiedot"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "Käännösyksikkö \"%s\" on muuttunut. Talletetaanko?"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "Käännösyksikön tunniste on olemassa"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s käännösyksikkö %s paketissa %s"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "Tätä käännösyksikön nimeä käytetään jo projektissa"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "Käännösyksikön nimi alkaa ..."
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "Käännösyksikön nimi sisältää ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "käännösyksikköä %s ei löydy"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "käännösyksikköä %s ei löydy uudesta paikasta \"%s\""
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "Käännösyksiköiden kirjoitushakemisto"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "Käännösyksiköiden polku"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "Käännösyksiköiden polut"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "käännösyksikkö %s riippuu paketista %s"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Tiedoston poistaminen ei onnistu"
 

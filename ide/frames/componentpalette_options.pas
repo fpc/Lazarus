@@ -39,6 +39,8 @@ uses
   IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE
   LazarusIDEStrConsts, MainBase, PackageDefs, ComponentPalette, EnvGuiOptions;
 

@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideprojectstrconsts.dlgprojectoptions
+msgid "Project Options"
+msgstr "Projekt beállításai"
+
+#: ideprojectstrconsts.liscodetoolsdefsreaderror
+msgid "Read error"
+msgstr "Olvasási hiba"
+
+#: ideprojectstrconsts.liscouldnotadditomainsource
+#, object-pascal-format
+msgid "Could not add \"{$I %s}\" to main source!"
+msgstr "Nem adható hozzá \"{$I %s}\" a fő forráskódhoz!"
+
+#: ideprojectstrconsts.liscouldnotaddrtomainsource
+#, object-pascal-format
+msgid "Could not add \"{$R %s}\" to main source!"
+msgstr "Nem adható hozzá \"{$R %s}\" a fő forráskódhoz!"
+
+#: ideprojectstrconsts.liscouldnotaddtomainsource
+#, object-pascal-format
+msgid "Could not add \"%s\" to main source!"
+msgstr "Nem adható hozzá \"%s\" a fő forráskódhoz!"
+
+#: ideprojectstrconsts.liscouldnotremoveifrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$I %s}\" from main source!"
+msgstr "Nem távolítható el \"{$I %s}\" a főforráskódból!"
+
+#: ideprojectstrconsts.liscouldnotremoverfrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$R %s}\" from main source!"
+msgstr "Nem távolítható el \"{$R %s}\" a fő forráskódból!"
+
+#: ideprojectstrconsts.lisextendunitsearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr "Kibővíti a projekt unit keresési útvonalát ezzel:%s\"%s\"?"
+
+#: ideprojectstrconsts.lisfilenotfound2
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr "A(z) \"%s\" fájl nem található."
+
+#: ideprojectstrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr "Névterek"
+
+#: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
+#, object-pascal-format
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr "A(z) %s állapotfájl beolvasása, a(z) %s projektből, nem lehetséges.%sHiba: %s"
+
+#: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
+#, object-pascal-format
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr "Állapotfájl írása a sikertelen a(z) %s projekthez%sHiba: %s"
+
+#: ideprojectstrconsts.lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr "Projekt forráskönyvtár"
+
+#: ideprojectstrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr "Furcsa lpi fájl"
+
+#: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
+#, object-pascal-format
+msgid "The file %s does not look like a lpi file."
+msgstr "A(z) %s fájl nem tűnik lpi fájlnak"
+
+#: ideprojectstrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr "Nem olvasható az lpi"
+
+#: ideprojectstrconsts.lisunabletoreadtheprojectinfofile
+#, object-pascal-format
+msgid "Unable to read the project info file%s\"%s\"."
+msgstr "Nem olvasható a projekt infó fájlja:%s\"%s\"."
+
+#: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
+#, object-pascal-format
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
+msgstr "Nem írható a projekt infó fájlja:%s\"%s\".%sHiba: %s"
+
+#: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
+#, object-pascal-format
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr "Nem írható a projekt munkamenet fájlja:%s\"%s\".%sHiba: %s"
+

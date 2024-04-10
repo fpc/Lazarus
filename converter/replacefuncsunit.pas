@@ -11,6 +11,8 @@ uses
   Buttons, ButtonPanel, Grids, CheckLst, Menus, StdCtrls,
   // LazUtils
   FileUtil,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE, converter
   IdeIntfStrConsts, LazarusIDEStrConsts, ConverterTypes;
 

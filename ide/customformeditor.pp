@@ -53,6 +53,10 @@ uses
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IdeProject
+  IdeProjectStrConsts,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project, MainIntf, PackageDefs,
   // Designer

@@ -14,6 +14,10 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
   // IdeConfic
   IDEProcs,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IdePackager
+  IdePackagerStrConsts,
   // IDE
   PathEditorDlg, LazarusIDEStrConsts, SearchPathProcs, PackageDefs;
 

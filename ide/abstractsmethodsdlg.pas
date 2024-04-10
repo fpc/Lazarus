@@ -38,6 +38,9 @@ uses
   LazLoggerBase,
   CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
+  // IDE
   IdeIntfStrConsts, LazarusIDEStrConsts;
 
 type

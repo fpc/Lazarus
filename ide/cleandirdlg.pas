@@ -37,6 +37,8 @@ uses
   FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   RecentListProcs, LazConf, EnvironmentOpts, TransferMacros,
   // IDE

@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideprojectstrconsts.dlgprojectoptions
+msgid "Project Options"
+msgstr "Options du projet"
+
+#: ideprojectstrconsts.liscodetoolsdefsreaderror
+msgid "Read error"
+msgstr "Erreur de lecture"
+
+#: ideprojectstrconsts.liscouldnotadditomainsource
+#, object-pascal-format
+msgid "Could not add \"{$I %s}\" to main source!"
+msgstr "Impossible d'ajouter \"{$I %s}\" au code source principal !"
+
+#: ideprojectstrconsts.liscouldnotaddrtomainsource
+#, object-pascal-format
+msgid "Could not add \"{$R %s}\" to main source!"
+msgstr "Impossible d'ajouter \"{$R %s}\" au code source principal !"
+
+#: ideprojectstrconsts.liscouldnotaddtomainsource
+#, object-pascal-format
+msgid "Could not add \"%s\" to main source!"
+msgstr "Impossible d'ajouter \"%s\" au code source principal !"
+
+#: ideprojectstrconsts.liscouldnotremoveifrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$I %s}\" from main source!"
+msgstr "Impossible de supprimer \"{$I %s}\" du code source principal !"
+
+#: ideprojectstrconsts.liscouldnotremoverfrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$R %s}\" from main source!"
+msgstr "Impossible de supprimer \"{$R %s}\" du code source principal !"
+
+#: ideprojectstrconsts.lisextendunitsearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr "Faut-il étendre le chemin de recherche du projet avec %s\"%s\"?"
+
+#: ideprojectstrconsts.lisfilenotfound2
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr "Fichier \"%s\" non trouvé."
+
+#: ideprojectstrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr "Espaces de nommage"
+
+#: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
+#, object-pascal-format
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr "Impossible de lire l'état du fichier %s du projet %s%sErreur : %s"
+
+#: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
+#, object-pascal-format
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr "Impossible d'écrire l'état du fichier pour le projet %s%sErreur : %s"
+
+#: ideprojectstrconsts.lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr "Marque de répertoire du code source du projet"
+
+#: ideprojectstrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr "Fichier .lpi inconnu"
+
+#: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
+#, object-pascal-format
+msgid "The file %s does not look like a lpi file."
+msgstr "Le fichier %s ne semble pas être un fichier de type lpi."
+
+#: ideprojectstrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr "Impossible de lire le fichier lpi"
+
+#: ideprojectstrconsts.lisunabletoreadtheprojectinfofile
+#, object-pascal-format
+msgid "Unable to read the project info file%s\"%s\"."
+msgstr "Impossible de lire le fichier d'information du projet%s\"%s\"."
+
+#: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
+#, object-pascal-format
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
+msgstr "Impossible d'écrire le fichier d'information du projet %s\"%s\".%sErreur : %s"
+
+#: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
+#, object-pascal-format
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr "Impossible d'écrire le fichier de session du projet %s\"%s\".%sErreur : %s"
+

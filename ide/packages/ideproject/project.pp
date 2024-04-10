@@ -40,8 +40,6 @@ unit Project;
 
 interface
 
-{$I ide.inc}
-
 uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -62,13 +60,18 @@ uses
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory, SrcEditorIntf,
   IDEOptEditorIntf, IDEDialogs,
+  // IdeUtils
+  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,
   ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
-  // IDE
-  ProjectResources, ProjectIcon, RunParamsOpts,
-  ProjectDefs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
+  // IdePackager
+  IdePackagerStrConsts, PackageDefs, PackageSystem,
+  // IdeProject,
+  RunParamOptions,
+  // IdeProject
+  ProjectResources, ProjectIcon, ProjectDefs, IdeProjectStrConsts;
 
 type
   TUnitInfo = class;

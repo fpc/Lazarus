@@ -1261,11 +1261,6 @@ msgstr "Сообщения компилятора"
 msgid "Compiler messages language file (*.msg)"
 msgstr "Языковой файл сообщений компилятора (*.msg)"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgctxt "lazarusidestrconsts.dlgcompileroptions"
-msgid "Compiler Options"
-msgstr "Параметры компилятора"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "Завершать свойства"
@@ -3533,10 +3528,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Проект"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "Параметры проекта"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5052,11 +5043,6 @@ msgstr "Показать все"
 msgid "The package %s is read only."
 msgstr "Пакет %s только для чтения."
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "Файл \"%s\" уже существует.%sЗаменить его?"
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5143,10 +5129,6 @@ msgstr "Найден файл с дублирующимся именем: \"%s\"
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Найдены файлы с дублирующимися именами"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "Найден модуль с дублирующимся именем"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5707,11 +5689,6 @@ msgstr "Копировать вывод в буфер обмена"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "Даты файлов .ppu FPC отличаются более, чем на один час.%sЭто может означать, что они принадлежат разным установкам.%sФайл1: %s%sФайл2: %s"
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "Ошибка"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "ОШИБКА: "
@@ -5855,12 +5832,6 @@ msgstr "(фильтр)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "Следовать за курсором"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.liscein"
-msgid "%s in %s"
-msgstr "%s в %s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -6980,10 +6951,6 @@ msgstr "Имя каталога проекта"
 msgid "%s project directory"
 msgstr "Каталог проекта %s"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "Ошибка чтения"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Выбранный элемент:"
@@ -7047,10 +7014,6 @@ msgstr "%s:%sзначение \"%s\" некорректно."
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Переменная:"
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "Ошибка записи"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -8010,31 +7973,6 @@ msgstr "Искать сообщения Make"
 msgid "Skip calling compiler"
 msgstr "Пропустить вызов компилятора"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "Не удалось добавить \"{$I %s}\" в главный файл исходного кода!"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "Не удалось добавить \"{$R %s}\" в главный файл исходного кода!"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "Не удалось добавить \"%s\" в главный файл исходного кода!"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "Не удалось удалить \"{$I %s}\" из главного файла исходного кода!"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "Не удалось удалить \"{$R %s}\" из главного файла исходного кода!"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Внимание: дополнительный файл настройки компилятора имеет то же имя, что и один из стандартных файлов настройки компилятора Free Pascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
@@ -8567,10 +8505,6 @@ msgstr "Удалить все эти файлы?"
 msgid "Delete ambiguous file?"
 msgstr "Удалить файл с дублирующимся именем?"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "Удаление файла не удалось"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8607,11 +8541,6 @@ msgstr "Удалить значение \"%s\"?"
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "Удалить значение %s"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "Не удалось удалить файл \"%s\"."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8711,10 +8640,6 @@ msgstr "Каталог \"%s\" не найден."
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "каталог %s не найден"
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "Каталог недоступен для записи"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9250,10 +9175,6 @@ msgstr "Введите новое имя макроса \"%s\""
 msgid "Environment variable, name as parameter"
 msgstr "Переменная окружения; параметром является имя"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "Каталог не найден"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Некорректное имя отладчика"
@@ -9354,11 +9275,6 @@ msgstr "Ошибка загрузки файла"
 msgid "Error loading file \"%s\":"
 msgstr "Ошибка загрузки файла \"%s\":"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "Ошибка при загрузке %s из%s%s%s%s"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "Ошибка перемещения компонента"
@@ -9416,11 +9332,6 @@ msgstr ", ошибок: %s"
 msgid "Error saving form"
 msgstr "Ошибка сохранения формы"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "Ошибка при сохранении %s в%s%s%s%s"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9471,14 +9382,6 @@ msgstr "исполнимый файл \"%s\" является каталогом
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "исполнимый файл \"%s\" не имеет прав на запуск"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "Выполнить команду после"
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "Выполнить команду до"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9565,34 +9468,6 @@ msgstr "Экспортировать выбранный"
 msgid "Export >>"
 msgstr "Экспортировать >>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "Дополнить список путей поиска включаемых файлов пакета \"%s\" следующими%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "Дополнить список путей поиска включаемых файлов проекта следующими%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "Дополнить пути к включаемым файлам?"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "Дополнить пути к модулям?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "Дополнить список путей поиска модулей пакета \"%s\" следующими%s\"%s\"?"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "Дополнить список путей поиска модулей проекта следующими%s\"%s\"?"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "Извлечь"
@@ -9655,12 +9530,6 @@ msgstr "Файл"
 msgid "File: "
 msgstr "Файл: "
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "Файл \"%s\"%sне похож на текстовый.%sВсё равно открыть?"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Расширение файлов программ"
@@ -9718,14 +9587,6 @@ msgstr "Файл является каталогом"
 msgid "File is not an executable"
 msgstr "Файл не является исполнимым"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "Файл недоступен для записи"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "Файл является символической ссылкой"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9738,12 +9599,6 @@ msgstr "Стиль имени файла"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "Файл не найден"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "Файл \"%s\" не найден."
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9767,10 +9622,6 @@ msgstr "Файл \"%s\" не найден.%sСоздать его?"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "Файл не в нижнем регистре"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "Файл не текстовый"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10473,11 +10324,6 @@ msgstr "При установке/удалении пакетов IDE будет
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Добро пожаловать в Lazarus.%0:sНайденный каталог настройки использовался другим экземпляром Lazarus.%0:sДва или более экземпляра Lazarus не должны иметь общий каталог настройки. Это может привести к конфликтам и невозможности использования IDE.%0:s%0:sЕсли вы имеете только один экземпляр и скопировали либо переместили исполнимый файл Lazarus, каталог настройки можно обновить.%0:s%1:s%0:s%0:sВыберите:%0:s%0:s* Обновить данные: Использовать этот каталог настройки и обновить его. Старый экземпляр Lazarus больше не будет его использовать.%0:s* Пропустить: Использовать этот каталог настройки, но предупредить в дальнейшем. Это может привести к конфликтам с другими экземплярами Lazarus.%0:s* Прервать: Завершить работу. Проблему можно будет исправить, запустив Lazarus с указанием корректного каталога настройки.%0:s%0:sДополнительные сведения:%0:sПуть к каталогу настройки: %2:s%0:sЭкземпляр Lazarus, владеющий им: %3:s%0:sПуть запуска текущего экземпляра IDE: %4:s%0:s"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "Создание Makefile для пакета %s"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "Сведения об IDE"
@@ -10589,10 +10435,6 @@ msgstr "Если вы хотите использовать два экземп�
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Игнорировать все"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "Игнорировать и продолжить"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14252,15 +14094,6 @@ msgstr "шаблон не выбран"
 msgid "Nothing to do"
 msgstr "Нечего выполнять"
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "Не реализовано"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "Ещё не реализовано:%s%s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "не установлен"
@@ -14523,14 +14356,6 @@ msgstr "Открыть проект снова"
 msgid "Open Project File"
 msgstr "Открыть проект"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "Открыть символическую ссылку"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "Открыть цель ссылки"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "Открыть файл как обычный исходный код"
@@ -14628,14 +14453,6 @@ msgstr "Перекрыть подцель проекта."
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "Перекрыть библиотеку виджетов проекта. Например: gtk, gtk2, qt, win32, carbon. Значение по умолчанию: %s."
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "Перезаписать файл?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "Перезаписать файл на диске"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Owner' уже используется классами TReader/TWriter. Выберите другое имя."
@@ -14732,16 +14549,6 @@ msgstr "анализатор \"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Анализаторы:"
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr "неоднократная передача определения компилятора \"%s\" с разными значениями"
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
-msgstr "неоднократная передача параметра компилятора -%s с разными значениями"
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
@@ -14893,11 +14700,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Создать Makefile"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s, по умолчанию: %s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "Свойства зависимости"
@@ -14909,10 +14711,6 @@ msgstr "Изменить общие параметры"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "Свойства файла"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-msgid "(fpmake)"
-msgstr "(fpmake)"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15179,10 +14977,6 @@ msgstr "Младшая"
 msgid "Object"
 msgstr "Объект"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "Параметры пакета"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "Тип пакета"
@@ -15340,26 +15134,6 @@ msgstr "Очистка зависимостей пакетов"
 msgid "Clear Selection"
 msgstr "Снять выделение"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "добавление CompiledSrcPath"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr "Пространства имён"
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "Каталог вывода"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "Метка каталога исходного кода пакета"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "Пути к модулям"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "Удалить зависимости"
@@ -15389,64 +15163,6 @@ msgstr "Файл \"%s\"%sсейчас не находится в списке п
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "Прочие возможности управления пакетом"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "Двоичный"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "Включаемый файл"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "Файл XML ограничений"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM - текст формы Lazarus"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS - ресурс Lazarus"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "Главный модуль"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "Текстовый"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "Виртуальный модуль"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Каталог пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Имя пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Каталог вывода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15483,15 +15199,6 @@ msgstr "Нарушенная зависимость"
 msgid "Circular dependencies found"
 msgstr "Обнаружен порочный круг зависимостей"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "Компиляция пакета %s"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "Удаление не удалось"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "Удалить старый файл пакета?"
@@ -15506,18 +15213,9 @@ msgstr "Удалить старый файл пакета \"%s\"?"
 msgid "Dependency without Owner: %s"
 msgstr "Зависимость без владельца:%s"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "Ошибка чтения файла"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "Ошибка чтения пакета"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "Ошибка записи файла"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15605,10 +15303,6 @@ msgstr "Пакет не является пакетом времени разр�
 msgid "Package is required"
 msgstr "Требуется пакет"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "главный файл исходного кода пакета"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "Имя пакета уже занято"
@@ -15678,10 +15372,6 @@ msgstr "Переименовать файл в нижний регистр%s(в 
 msgid "Skip this package"
 msgstr "Пропустить это сообщение"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "файл настройки статических пакетов"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15707,11 +15397,6 @@ msgstr "Файл с именем \"%s\" имеется в текущем про�
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Имя файла \"%s\" упоминается%sв пакете \"%s\"%s(в файле \"%s\")."
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "Файл \"%s\" пакета %s не найден."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15818,62 +15503,15 @@ msgstr "Имеется модуль с тем же именем, что и па�
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Это виртуальный пакет. Он ещё не имеет исходного кода. Сначала сохраните пакет."
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "Невозможно создать каталог"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "Невозможно создать каталог вывода \"%s\"%sдля пакета %s."
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "Невозможно создать каталог исходного кода пакета \"%s\"%sдля пакета %s."
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Невозможно создать целевой каталог для Lazarus:%s\"%s\".%sЭтот каталог нужен для вновь изменённой IDE Lazarus с вашими пакетами."
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "Невозможно удалить файл \"%s\"."
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Невозможно удалить файл"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "Невозможно удалить старый файл состояния \"%s\"%sдля пакета %s."
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "Невозможно загрузить пакет"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "Невозможно открыть пакет \"%s\".%sЭтот пакет был отмечен для установки."
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Невозможно прочитать файл состояния \"%s\"%sпакета %s.%sОшибка: %s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "Невозможно записать пакет \"%s\"%sв файл \"%s\".%sОшибка: %s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "Невозможно записать файл состояния \"%s\"%sпакета %s.%sОшибка: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -15915,84 +15553,6 @@ msgstr "удалить"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Выбор пакета"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "Невозможно зарегистрировать компоненты без модуля"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "Класс компонента \"%s\" уже определён"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sИмя файла: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "Неверный класс компонента"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "Неверное имя модуля: %s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%sФайл LPK: \"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "Файл пакета не найден"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "Ошибка регистрации пакета"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "Процедура регистрации пуста"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called but no package is registering."
-msgstr "Был вызван RegisterUnit, но ни один пакет не регистрируется."
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%sФайл LPK не найден."
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "Пакет \"%s\" установлен, но не был найден корректный файл пакета (.lpk).%sБыл создан неработающий пакет-пустышка."
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Это пакет по умолчанию. Используется только для компонентов без пакета. Такие компоненты устарели."
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Пакет установлен, но файл lpk не найден. Все его компоненты отключены. Исправьте эту ошибку."
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sИмя модуля: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "Модуль \"%s\" не был найден в файле LPK.%sВероятно, этот файл LPK не использовался при сборке IDE, либо пакет неверно использует процедуру RegisterUnit."
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "Модуль \"%s\" был удалён из пакета (LPK)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
@@ -16485,16 +16045,6 @@ msgstr "Удалить файл %s из проекта?"
 msgid "Remove %s items from project?"
 msgstr "Удалить элементы (%s шт.) из проекта?"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "Невозможно прочитать файл состояния %s проекта %s%sОшибка: %s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "Невозможно записать файл состояния для проекта %s%sОшибка: %s"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "Собирать всегда (даже при отсутствии изменений)"
@@ -16512,10 +16062,6 @@ msgstr "Ошибка"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Невозможно изменить список автосоздаваемых форм в исходном коде программы.%sИсправьте сначала ошибки."
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "Метка каталога с исходным кодом проекта"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16642,10 +16188,6 @@ msgstr "Выход"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "В&ыход из Lazarus"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "Ошибка чтения"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17556,10 +17098,6 @@ msgstr "Пропустить загрузку предыдущего проек�
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr "Пропустить выбранные проверки при запуске. Возможные параметры:"
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "Пропустить эти предупреждения"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "Медленный, но более точный метод"
@@ -17658,11 +17196,6 @@ msgstr "Слова"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr "Исходный каталог \"%s\"%sи каталог назначения \"%s\"%sсовпадают. Выберите другой."
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Источник и назначение одинаковы:%s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -17750,10 +17283,6 @@ msgstr "Остановить отладку?"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "Сохранение разделителей пути \\ и /:"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "Странный файл LPI"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -17954,11 +17483,6 @@ msgstr "Application Bundle для \"%s\" успешно создан"
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "Класс \"%s\" имеет тип TControl и может быть вставлен только в управляющий элемент.%sНевозможно вставить."
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "Средством CodeTools найдена ошибка:%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18040,29 +17564,14 @@ msgstr "Каталог \"%s\" больше не содержит модулей 
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "Присутствие каталога \"%s\" в списке путей к модулям больше не требуется.%sУдалить его?"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "Каталог \"%s\" недоступен для записи."
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "Файл \"%s\""
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "Файл %s не выглядит, как файл LPI."
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr "Индекс файлов требуется для обеспечения работы функции поиска и ей подобных. Во время просмотра можно редактировать исходный код и компилировать, но функция поиска и ей подобные будут сообщать, что требуемые модули не найдены. Процесс может занять некоторое время."
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "Файл \"%s\" является символической ссылкой.%sОткрыть \"%s\" вместо него?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18088,11 +17597,6 @@ msgstr "Файл \"%s\" выглядит как программа.%sЗакры�
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "Файл %s, вероятно, является файлом программы уже существующего проекта Lazarus."
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "Файл \"%s\"%sнайден в одном из каталогов исходного кода пакета %s, и он выглядит как откомпилированный модуль. Такие модули должны быть в каталоге вывода пакета, иначе другие пакеты не смогут правильно использовать пакет.%sУдалить этот файл?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19026,39 +18530,6 @@ msgstr "Невозможно преобразовать текстовые да�
 msgid "Unable to convert to encoding \"%s\""
 msgstr "Невозможно провести преобразование в кодировку \"%s\""
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "Невозможно скопировать файл"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "Невозможно скопировать файл \"%s\"%sв \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "Невозможно создать каталог \"%s\"."
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "Невозможно создать файл"
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "Невозможно создать файл \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "Невозможно создать файл%s\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "Невозможно создать ссылку \"%s\" на \"%s\""
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Невозможно создать новый файл, так как уже имеется каталог с таким именем."
@@ -19161,33 +18632,9 @@ msgstr "Невозможно открыть редактор форм. %sКла�
 msgid "Unable to read %s"
 msgstr "Невозможно прочитать %s"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "Невозможно прочитать файл"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "Невозможно прочитать файл \"%s\"."
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "Невозможно прочитать файл \"%s\"%sОшибка: %s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "Невозможно прочитать файл LPI"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "невозможно прочитать код завершения процесса"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "Невозможно прочитать файл сведений о проекте%s\"%s\"."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19208,20 +18655,6 @@ msgstr "Невозможно удалить заголовок проекта и
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "Невозможно переименовать файл с дублирующимся именем \"%s\"%sв \"%s\""
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "Невозможно переименовать файл"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "Невозможно переименовать файл \"%s\" в \"%s\"!"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "Невозможно переименовать файл \"%s\"%sв \"%s\"."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19274,45 +18707,6 @@ msgstr "Невозможно преобразовать двоичный пот�
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Невозможно обновить выражение CreateForm в исходном коде проекта"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "Невозможно записать \"%s\""
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "Невозможно записать файл"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "Невозможно записать файл \"%s\"."
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "Невозможно записать файл \"%s\"%sОшибка: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "Невозможно записать файл сведений о проекте%s\"%s\".%sОшибка: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Невозможно записать файл сеанса проекта%s\"%s\".%sОшибка: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "Невозможно произвести запись в файл \"%s\"."
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "Невозможно записать поток XML в %s%sОшибка: %s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "Снять отметку со всех"
@@ -19342,79 +18736,6 @@ msgstr "Удалить выбранное"
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
 msgstr "Удалить их тоже"
-
-#: lazarusidestrconsts.lisunit
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "Модуль"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "Модуль \"%s\" был изменён. Сохранить?"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "Идентификатор модуля существует"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s Модуль %s в пакете %s"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr "Перед наследованием от модуля \"%s\" его требуется сохранить. Сделать это сейчас?"
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "Модуль с таким именем уже имеется в проекте"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "Имя модуля начинается с ..."
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "Имя модуля содержит ..."
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "модуль %s не найден"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "модуль %s не найден по новому местонахождению \"%s\""
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr "Не найден модуль в файле %s"
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "Каталог вывода модулей"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "пути к модулям"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "Пути к модулям"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "модуль %s требует пакет %s"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
-msgstr "Не найдены модули в файле %s"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -19457,11 +18778,6 @@ msgstr "Обновлять остальные сигнатуры процеду�
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Обновить ссылки?"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "Не удалось обновить файлы PO для пакета %s"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -19751,15 +19067,6 @@ msgstr "Рабочий каталог для запуска"
 msgid "Write config instead of command line parameters"
 msgstr "Записывать файл настройки вместо параметров командной строки"
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "Ошибка записи"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "Ошибка записи: %s%sФайл: %s%s%s"
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr "Не удалось записать файл сведений о пакете."
@@ -19776,15 +19083,6 @@ msgstr "Вывести ищущиеся и найденные файлы пак�
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "некорректная версия в %s: %s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "Ошибка XML"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "Ошибка анализа XML в файле %s%sОшибка: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20090,117 +19388,13 @@ msgstr "Сведения о версии сохраняются только п�
 msgid "Include version info in executable"
 msgstr "Добавлять сведения о версии в исполнимый файл"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "Африкаанс"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "Арабский"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Автовыбор (или английский)"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "Каталанский"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "Китайский"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr "Корсиканский"
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "Чешский"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "Голландский"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "Английский"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "Финский"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "Французский"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "Немецкий"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "Иврит"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "Венгерский"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "Индонезийский"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "Итальянский"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "Японский"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "Литовский"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "Параметры языка"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "Польский"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "Португальский"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "Бразильский португальский"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "Русский"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "Выбор языка:"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "Словацкий"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "Испанский"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "Турецкий"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "Украинский"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22125,4 +21319,76 @@ msgstr "Параметры диаграммы модулей"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Сведения о версии"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "Модуль \"%s\" был изменён. Сохранить?"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "Идентификатор модуля существует"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s Модуль %s в пакете %s"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr "Перед наследованием от модуля \"%s\" его требуется сохранить. Сделать это сейчас?"
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "Модуль с таким именем уже имеется в проекте"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "Имя модуля начинается с ..."
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "Имя модуля содержит ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "модуль %s не найден"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "модуль %s не найден по новому местонахождению \"%s\""
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr "Не найден модуль в файле %s"
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "Каталог вывода модулей"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "пути к модулям"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "Пути к модулям"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "модуль %s требует пакет %s"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr "Не найдены модули в файле %s"
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Невозможно удалить файл"
 

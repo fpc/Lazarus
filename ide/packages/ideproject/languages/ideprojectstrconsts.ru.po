@@ -1,0 +1,96 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideprojectstrconsts.dlgprojectoptions
+msgid "Project Options"
+msgstr "Параметры проекта"
+
+#: ideprojectstrconsts.liscodetoolsdefsreaderror
+msgid "Read error"
+msgstr "Ошибка чтения"
+
+#: ideprojectstrconsts.liscouldnotadditomainsource
+#, object-pascal-format
+msgid "Could not add \"{$I %s}\" to main source!"
+msgstr "Не удалось добавить \"{$I %s}\" в главный файл исходного кода!"
+
+#: ideprojectstrconsts.liscouldnotaddrtomainsource
+#, object-pascal-format
+msgid "Could not add \"{$R %s}\" to main source!"
+msgstr "Не удалось добавить \"{$R %s}\" в главный файл исходного кода!"
+
+#: ideprojectstrconsts.liscouldnotaddtomainsource
+#, object-pascal-format
+msgid "Could not add \"%s\" to main source!"
+msgstr "Не удалось добавить \"%s\" в главный файл исходного кода!"
+
+#: ideprojectstrconsts.liscouldnotremoveifrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$I %s}\" from main source!"
+msgstr "Не удалось удалить \"{$I %s}\" из главного файла исходного кода!"
+
+#: ideprojectstrconsts.liscouldnotremoverfrommainsource
+#, object-pascal-format
+msgid "Could not remove \"{$R %s}\" from main source!"
+msgstr "Не удалось удалить \"{$R %s}\" из главного файла исходного кода!"
+
+#: ideprojectstrconsts.lisextendunitsearchpathofprojectwith
+#, object-pascal-format
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr "Дополнить список путей поиска модулей проекта следующими%s\"%s\"?"
+
+#: ideprojectstrconsts.lisfilenotfound2
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr "Файл \"%s\" не найден."
+
+#: ideprojectstrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr "Пространства имён"
+
+#: ideprojectstrconsts.lisprojmangunabletoreadstatefileofprojecterror
+#, object-pascal-format
+msgid "Unable to read state file %s of project %s%sError: %s"
+msgstr "Невозможно прочитать файл состояния %s проекта %s%sОшибка: %s"
+
+#: ideprojectstrconsts.lisprojmangunabletowritestatefileforprojecterror
+#, object-pascal-format
+msgid "Unable to write state file for project %s%sError: %s"
+msgstr "Невозможно записать файл состояния для проекта %s%sОшибка: %s"
+
+#: ideprojectstrconsts.lisprojprojectsourcedirectorymark
+msgid "Project Source Directory Mark"
+msgstr "Метка каталога с исходным кодом проекта"
+
+#: ideprojectstrconsts.lisstrangelpifile
+msgid "Strange lpi file"
+msgstr "Странный файл LPI"
+
+#: ideprojectstrconsts.listhefiledoesnotlooklikealpifile
+#, object-pascal-format
+msgid "The file %s does not look like a lpi file."
+msgstr "Файл %s не выглядит, как файл LPI."
+
+#: ideprojectstrconsts.lisunabletoreadlpi
+msgid "Unable to read lpi"
+msgstr "Невозможно прочитать файл LPI"
+
+#: ideprojectstrconsts.lisunabletoreadtheprojectinfofile
+#, object-pascal-format
+msgid "Unable to read the project info file%s\"%s\"."
+msgstr "Невозможно прочитать файл сведений о проекте%s\"%s\"."
+
+#: ideprojectstrconsts.lisunabletowritetheprojectinfofileerror
+#, object-pascal-format
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
+msgstr "Невозможно записать файл сведений о проекте%s\"%s\".%sОшибка: %s"
+
+#: ideprojectstrconsts.lisunabletowritetheprojectsessionfileerror
+#, object-pascal-format
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr "Невозможно записать файл сеанса проекта%s\"%s\".%sОшибка: %s"
+

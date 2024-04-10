@@ -27,7 +27,7 @@ unit IDETranslations;
 
 {$mode objfpc}{$H+}
 
-{$I ide.inc}
+{ $I ide.inc}
 
 interface
 
@@ -38,7 +38,7 @@ uses
   // Codetools
   FileProcs, CodeToolManager, DirectoryCacher, CodeCache,
   // IDE
-  LazarusIDEStrConsts;  { IDE Language (Human, not computer) }
+  IdeUtilsPkgStrConsts;  { IDE Language (Human, not computer) }
 
 type
   { TLazarusTranslation }

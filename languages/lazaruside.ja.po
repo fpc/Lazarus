@@ -1290,11 +1290,6 @@ msgstr "コンパイラメッセージ"
 msgid "Compiler messages language file (*.msg)"
 msgstr "コンパイラメッセージの言語ファイル"
 
-#: lazarusidestrconsts.dlgcompileroptions
-msgctxt "lazarusidestrconsts.dlgcompileroptions"
-msgid "Compiler Options"
-msgstr "コンパイラオプション"
-
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"
 msgstr "プロパティを補完"
@@ -3629,10 +3624,6 @@ msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "プロジェクト"
 
-#: lazarusidestrconsts.dlgprojectoptions
-msgid "Project Options"
-msgstr "プロジェクトオプション"
-
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
@@ -5186,11 +5177,6 @@ msgstr "すべて表示"
 msgid "The package %s is read only."
 msgstr "パッケージ %s は読み込み専用です。"
 
-#: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, object-pascal-format
-msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "ファイル \"%s\" は既に存在します。%s置き換えますか？"
-
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 #, object-pascal-format
 msgid "A filter with the name \"%s\" already exists."
@@ -5277,10 +5263,6 @@ msgstr "曖昧なファイルが見つかりました。 \"%s\"%sこのファイ
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "曖昧なファイルが見つかりました"
-
-#: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous unit found"
-msgstr "曖昧なユニットがみつかりました"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -5856,11 +5838,6 @@ msgstr "出力をクリップボードにコピー"
 msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPCの.ppuファイルの日付が１時間以上異なっています。%sこれは異なる二つのインストールから作成されている可能性があることを意味しています。%sFile1: %s%sFile2: %s"
 
-#: lazarusidestrconsts.lisccoerrorcaption
-msgctxt "lazarusidestrconsts.lisccoerrorcaption"
-msgid "Error"
-msgstr "エラー"
-
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
 msgstr "エラー"
@@ -6004,12 +5981,6 @@ msgstr "(フィルター)"
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
 msgstr "カーソルを追跡"
-
-#: lazarusidestrconsts.liscein
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.liscein"
-msgid "%s in %s"
-msgstr "%s in %s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
@@ -7139,10 +7110,6 @@ msgstr "プロジェクトディレクトリ"
 msgid "%s project directory"
 msgstr "%s プロジェクトディレクトリ"
 
-#: lazarusidestrconsts.liscodetoolsdefsreaderror
-msgid "Read error"
-msgstr "読み込みエラー"
-
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "選択されたノード:"
@@ -7212,10 +7179,6 @@ msgstr "%s:%s 値\"%s\" は無効です。"
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "変数："
-
-#: lazarusidestrconsts.liscodetoolsdefswriteerror
-msgid "Write error"
-msgstr "書き込みエラー"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
@@ -8178,31 +8141,6 @@ msgstr "Makeメッセージをスキャン"
 msgid "Skip calling compiler"
 msgstr "コンパイラ呼び出しをスキップ"
 
-#: lazarusidestrconsts.liscouldnotadditomainsource
-#, object-pascal-format
-msgid "Could not add \"{$I %s}\" to main source!"
-msgstr "\"{$I %s}\"をメインソースに追加できませんでした！"
-
-#: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, object-pascal-format
-msgid "Could not add \"{$R %s}\" to main source!"
-msgstr "\"{$R %s}\"をメインソースに追加できませんでした！"
-
-#: lazarusidestrconsts.liscouldnotaddtomainsource
-#, object-pascal-format
-msgid "Could not add \"%s\" to main source!"
-msgstr "\"%s\" をメインソースに追加できませんでした！"
-
-#: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$I %s}\" from main source!"
-msgstr "\"{$I %s}\" をメインソースから削除できませんでした！"
-
-#: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, object-pascal-format
-msgid "Could not remove \"{$R %s}\" from main source!"
-msgstr "\"{$R %s}\" をメインソースから削除できませんでした！"
-
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "警告：追加コンパイラ設定ファイルの名前が Free Pascal が探している標準コンパイラ設定ファイルの一つと同じです。これでは追加設定のみを読み込み、標準設定を無視することになってしまいます。"
@@ -8739,10 +8677,6 @@ msgstr "これらすべてのファイルを削除しますか？"
 msgid "Delete ambiguous file?"
 msgstr "曖昧なファイルを削除しますか？"
 
-#: lazarusidestrconsts.lisdeletefilefailed
-msgid "Delete file failed"
-msgstr "ファイル削除に失敗"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -8779,11 +8713,6 @@ msgstr "\"%s\"の値を削除しますか？"
 #, object-pascal-format
 msgid "Delete value %s"
 msgstr "%sの値を削除"
-
-#: lazarusidestrconsts.lisdeletingoffilefailed
-#, object-pascal-format
-msgid "Deleting of file \"%s\" failed."
-msgstr "ファイル \"%s\"の削除に失敗しました。"
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
@@ -8885,10 +8814,6 @@ msgstr "フォルダ \"%s\" が見つかりません。"
 #, object-pascal-format
 msgid "directory %s not found"
 msgstr "ディレクトリ %s が見つかりません"
-
-#: lazarusidestrconsts.lisdirectorynotwritable
-msgid "Directory not writable"
-msgstr "フォルダは書き込み可能ではありません。"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
@@ -9432,10 +9357,6 @@ msgstr "マクロ \"%s\"の新しい名前を入力してください"
 msgid "Environment variable, name as parameter"
 msgstr "環境変数、引数としての名前"
 
-#: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
-msgid "Directory not found"
-msgstr "ディレクトリが見つかりません"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "無効なデバッガファイル名"
@@ -9537,11 +9458,6 @@ msgstr "ファイル読み込み中にエラー"
 msgid "Error loading file \"%s\":"
 msgstr "ファイル \"%s\"の読み込み中にエラー:"
 
-#: lazarusidestrconsts.liserrorloadingfrom
-#, object-pascal-format
-msgid "Error loading %s from%s%s%s%s"
-msgstr "%s%s%s%sからの%sの読み込み中にエラー"
-
 #: lazarusidestrconsts.liserrormovingcomponent
 msgid "Error moving component"
 msgstr "コンポーネントの移動中にエラー"
@@ -9599,11 +9515,6 @@ msgstr "、エラー: %s"
 msgid "Error saving form"
 msgstr "フォームを保存する際にエラー"
 
-#: lazarusidestrconsts.liserrorsavingto
-#, object-pascal-format
-msgid "Error saving %s to%s%s%s%s"
-msgstr "%s%s%s%sを%sに保存中にエラー"
-
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 #, object-pascal-format
 msgid "Error setting the name of a component %s to %s"
@@ -9656,14 +9567,6 @@ msgstr "実行ファイル\"%s\"はディレクトリです"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "実行ファイル\"%s\"は実行が許可されていません"
-
-#: lazarusidestrconsts.lisexecutingcommandafter
-msgid "Executing command after"
-msgstr "次の後にコマンドを実行："
-
-#: lazarusidestrconsts.lisexecutingcommandbefore
-msgid "Executing command before"
-msgstr "次の前にコマンドを実行："
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
@@ -9754,34 +9657,6 @@ msgstr "選択対象をエクスポート"
 msgid "Export >>"
 msgstr "エクスポート >>"
 
-#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "パッケージ\"%s\"のインクルードファイル検索パスを%s\"%s\"に拡張しますか？"
-
-#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr "プロジェクトのインクルードファイル検索パスを%s\"%s\"に拡張しますか？"
-
-#: lazarusidestrconsts.lisextendincludepath
-msgid "Extend include path?"
-msgstr "インクルードファイルを拡張しますか？"
-
-#: lazarusidestrconsts.lisextendunitpath
-msgid "Extend unit path?"
-msgstr "ユニットのパスを拡張しますか？"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format
-msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "パッケージ\"%s\"のユニット検索パスを%s\"%s\"に拡張しますか？"
-
-#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
-#, object-pascal-format
-msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr "プロジェクトのユニット検索パスを%s\"%s\"に拡張しますか？"
-
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
 msgstr "展開"
@@ -9844,12 +9719,6 @@ msgstr "ファイル"
 msgid "File: "
 msgstr "ファイル："
 
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "ファイル \"%s\"%sはテキストファイルではないようです。%sそれでも開きますか？"
-
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "プログラムのファイル拡張子"
@@ -9907,14 +9776,6 @@ msgstr "ファイルはディレクトリです"
 msgid "File is not an executable"
 msgstr "ファイルは実行可能ではありません"
 
-#: lazarusidestrconsts.lisfileisnotwritable
-msgid "File is not writable"
-msgstr "ファイルは書き込み不可です"
-
-#: lazarusidestrconsts.lisfileissymlink
-msgid "File is symlink"
-msgstr "ファイルはシンボリックリンクです"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9927,12 +9788,6 @@ msgstr "ファイル名スタイル"
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "ファイルが見つかりません"
-
-#: lazarusidestrconsts.lisfilenotfound2
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisfilenotfound2"
-msgid "File \"%s\" not found."
-msgstr "ファイル \"%s\"は見つかりません"
 
 #: lazarusidestrconsts.lisfilenotfound3
 #, object-pascal-format
@@ -9956,10 +9811,6 @@ msgstr "ファイル \"%s\"は見つかりません%s作成しますか？"
 #: lazarusidestrconsts.lisfilenotlowercase
 msgid "File not lowercase"
 msgstr "ファイルは小文字ではありません"
-
-#: lazarusidestrconsts.lisfilenottext
-msgid "File not text"
-msgstr "ファイルはテキストでない"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10692,11 +10543,6 @@ msgstr "パッケージのインストール／アンインストールの過程
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Lazarusへようこそ。%0:s見つかったIDE設定は以前のLazarusのインストールに用いられたものです。%0:sもしあなたが２つかそれ以上の別Lazarusをインストールしている場合、同じ設定を共有すべきではありません。それをすると衝突が起こり、Lazarusが不安定になるかもしれません。%0:s%0:sもし一つだけインストールしていて、Lazarus実行ファイルをコピーあるいは移動したとしたら、この設定にアップグレードできます%0:s%1:s%0:s%0:s以下を選択してください:%0:s%0:s* 情報を更新: この設定を用いて、それを今後Lazarusに用いるためにアップデートします。古いインストールはもはやこれを用いません。%0:s* 無視：この設定を用いるものの、警告を続けます。これはまた他のインストールとの衝突を導くかもしれません。%0:s* 中止：いますぐ退出。正しい設定でこのLazarusを開始することで問題を修復できます。%0:s%0:s補足説明：%0:sこの設定は %2:s%0:s。それは%3:s%0:sのLazarusインストールに属します。現在のIDEは%4:s%0:sから開始されました。"
 
-#: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
-#, object-pascal-format
-msgid "Creating Makefile for package %s"
-msgstr "パッケージ%sのためのMakefileを作成中"
-
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
 msgstr "IDEに関する情報"
@@ -10808,10 +10654,6 @@ msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたい�
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "すべて無視"
-
-#: lazarusidestrconsts.lisignoreandcontinue
-msgid "Ignore and continue"
-msgstr "無視して継続"
 
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
@@ -14521,15 +14363,6 @@ msgstr "選択されているテンプレートはありません"
 msgid "Nothing to do"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotimplemented
-msgid "Not implemented"
-msgstr "実装されていません"
-
-#: lazarusidestrconsts.lisnotimplementedyet
-#, object-pascal-format
-msgid "Not implemented yet:%s%s"
-msgstr "まだ実装されていません:%s%s"
-
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "インストールされていません"
@@ -14793,14 +14626,6 @@ msgstr "プロジェクトを再オープン"
 msgid "Open Project File"
 msgstr "プロジェクトファイルを開く"
 
-#: lazarusidestrconsts.lisopensymlink
-msgid "Open symlink"
-msgstr "シンボリックリンクを開く"
-
-#: lazarusidestrconsts.lisopentarget
-msgid "Open target"
-msgstr "ターゲットを開く"
-
 #: lazarusidestrconsts.lisopenthefileasnormalsource
 msgid "Open the file as normal source"
 msgstr "通常のソースとしてファイルを開く"
@@ -14909,14 +14734,6 @@ msgstr ""
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
 msgstr "%sプロジェクトウィジェットセットをオーバーライド。例：gtk gtk2 qt win32 carbon。デフォルト：%s"
 
-#: lazarusidestrconsts.lisoverwritefile
-msgid "Overwrite file?"
-msgstr "ファイルを上書きしますか?"
-
-#: lazarusidestrconsts.lisoverwritefileondisk
-msgid "Overwrite file on disk"
-msgstr "ディスク上のファイルを上書き"
-
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Owner'は既にTReaderもしくはTWriterに使用されています。他の名前を選んでください。"
@@ -15013,16 +14830,6 @@ msgstr "パーサ \"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr ""
-
-#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler define \"%s\" twice with different values"
-msgstr "コンパイラ定義\"%s\"を２回違う値で通過"
-
-#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
-#, object-pascal-format
-msgid "passing compiler option -%s twice with different values"
-msgstr "コンパイラオプション-%sを２回違う値で通過"
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."
@@ -15174,11 +14981,6 @@ msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Makefileを作成"
 
-#: lazarusidestrconsts.lispckeditdefault
-#, object-pascal-format
-msgid "%s, default: %s"
-msgstr "%s, 既定: %s"
-
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
 msgstr "依存関係属性"
@@ -15190,10 +14992,6 @@ msgstr "一般的なオプションを編集"
 #: lazarusidestrconsts.lispckeditfileproperties
 msgid "File Properties"
 msgstr "ファイルのプロパティ"
-
-#: lazarusidestrconsts.lispckeditfpmakepackage
-msgid "(fpmake)"
-msgstr ""
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15460,10 +15258,6 @@ msgstr "マイナー"
 msgid "Object"
 msgstr "オブジェクト"
 
-#: lazarusidestrconsts.lispckoptspackageoptions
-msgid "Package Options"
-msgstr "パッケージオプション"
-
 #: lazarusidestrconsts.lispckoptspackagetype
 msgid "Package type"
 msgstr "パッケージタイプ"
@@ -15621,26 +15415,6 @@ msgstr "パッケージ依存関係をクリーンアップ"
 msgid "Clear Selection"
 msgstr "選択をクリア"
 
-#: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
-msgid "CompiledSrcPath addition"
-msgstr "コンパイルのソースパスを追加"
-
-#: lazarusidestrconsts.lispkgdefsnamespaces
-msgid "Namespaces"
-msgstr ""
-
-#: lazarusidestrconsts.lispkgdefsoutputdirectory
-msgid "Output directory"
-msgstr "出力ディレクトリ"
-
-#: lazarusidestrconsts.lispkgdefssrcdirmark
-msgid "Package Source Directory Mark"
-msgstr "パッケージソースディレクトリマーク"
-
-#: lazarusidestrconsts.lispkgdefsunitpath
-msgid "Unit Path"
-msgstr "ユニットパス"
-
 #: lazarusidestrconsts.lispkgdeletedependencies
 msgid "Delete dependencies"
 msgstr "依存関係を削除"
@@ -15670,64 +15444,6 @@ msgstr "ファイル \"%s\"%sはまだパッケージのユニットパスにあ
 #: lazarusidestrconsts.lispkgedmorefunctionsforthepackage
 msgid "More functions for the package"
 msgstr "パッケージにより多くの関数"
-
-#: lazarusidestrconsts.lispkgfiletypebinary
-msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
-msgid "Binary"
-msgstr "バイナリ"
-
-#: lazarusidestrconsts.lispkgfiletypeinclude
-msgid "Include file"
-msgstr "インクルードファイル"
-
-#: lazarusidestrconsts.lispkgfiletypeissues
-msgid "Issues xml file"
-msgstr "xmlファイルを発行する"
-
-#: lazarusidestrconsts.lispkgfiletypelfm
-msgid "LFM - Lazarus form text"
-msgstr "LFM - Lazarusフォームテキスト"
-
-#: lazarusidestrconsts.lispkgfiletypelrs
-msgid "LRS - Lazarus resource"
-msgstr "LRS - Lazarusリソース"
-
-#: lazarusidestrconsts.lispkgfiletypemainunit
-msgid "Main Unit"
-msgstr "メインユニット"
-
-#: lazarusidestrconsts.lispkgfiletypetext
-msgctxt "lazarusidestrconsts.lispkgfiletypetext"
-msgid "Text"
-msgstr "テキスト"
-
-#: lazarusidestrconsts.lispkgfiletypevirtualunit
-msgid "Virtual Unit"
-msgstr "仮想ユニット"
-
-#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
-msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージディレクトリ。引数はパッケージID"
-
-#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
-msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージのインクルードファイルのパス。引数はパッケージID, 例: \"Name\" or \"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagenameparameterispackageid
-msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージ名。引数はパッケージID。例：\"Name\" もしくは \"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
-msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージ出力ディレクトリ。引数はパッケージID。例：\"Name\" もしくは \"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
-msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージのソースファイルのパス。引数はパッケージID 例：\"Name\" もしくは \"Name 1.0\""
-
-#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
-msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "パッケージのユニット検索パス。引数はパッケージID 例：\"Name\" もしくは \"Name 1.0\""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 #, object-pascal-format
@@ -15764,15 +15480,6 @@ msgstr "壊れた依存関係"
 msgid "Circular dependencies found"
 msgstr "循環参照が見つかりました"
 
-#: lazarusidestrconsts.lispkgmangcompilepackage
-#, object-pascal-format
-msgid "Compile package %s"
-msgstr "パッケージ%sをコンパイル"
-
-#: lazarusidestrconsts.lispkgmangdeletefailed
-msgid "Delete failed"
-msgstr "削除に失敗"
-
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile
 msgid "Delete Old Package File?"
 msgstr "古いパッケージファイルを削除しますか？"
@@ -15787,18 +15494,9 @@ msgstr "古いパッケージ\"%s\"を削除しますか？"
 msgid "Dependency without Owner: %s"
 msgstr "オーナー %s のいない依存関係"
 
-#: lazarusidestrconsts.lispkgmangerrorreadingfile
-msgid "Error reading file"
-msgstr "ファイルの読みとり中にエラー"
-
 #: lazarusidestrconsts.lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
 msgstr "パッケージ読み込み中にエラー"
-
-#: lazarusidestrconsts.lispkgmangerrorwritingfile
-msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
-msgid "Error writing file"
-msgstr "ファイルへの書き込み中にエラー"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingpackage
 msgid "Error Writing Package"
@@ -15886,10 +15584,6 @@ msgstr "パッケージは設計時パッケージではありません"
 msgid "Package is required"
 msgstr "パッケージが要求されています"
 
-#: lazarusidestrconsts.lispkgmangpackagemainsourcefile
-msgid "package main source file"
-msgstr "パッケージメインソースファイル"
-
 #: lazarusidestrconsts.lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "パッケージ名はすでに存在します"
@@ -15962,10 +15656,6 @@ msgstr "ファイルの名前を小文字の\"%s\"%sに変更していいです�
 msgid "Skip this package"
 msgstr "このパッケージをスキップ"
 
-#: lazarusidestrconsts.lispkgmangstaticpackagesconfigfile
-msgid "static packages config file"
-msgstr "静的パッケージ設定ファイル"
-
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
@@ -15991,11 +15681,6 @@ msgstr "ファイル名 \"%s\"は現在のプロジェクトの一部です。%s
 #, object-pascal-format
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "ファイル名 \"%s\"は、%sパッケージ\"%s\"%sのファイル \"%s\"で用いられています。"
-
-#: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
-#, object-pascal-format
-msgid "The file \"%s\" of package %s was not found."
-msgstr "ファイル \"%s\" （パッケージ %s ）は見つかりませんでした。"
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -16105,62 +15790,15 @@ msgstr "パッケージと同じ名前のユニットがあります: %s1. \"%s\
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "これは仮想パッケージです。まだソースがありません。まずパッケージを保存してください。"
 
-#: lazarusidestrconsts.lispkgmangunabletocreatedirectory
-msgid "Unable to create directory"
-msgstr "ディレクトリを作成できません。"
-
-#: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "パッケージ%sの出力ディレクトリ\"%s\"%sを作成できません。"
-
-#: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, object-pascal-format
-msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "パッケージ%sのパッケージソースディレクトリ\"%s\"%sを作成できません。"
-
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 #, object-pascal-format
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Lazarus の対象ディレクトリ %s\"%s\"を作成できません。%sこのディレクトリはあなたのカスタムパッケージで新たに変更された Lazarus IDE に必要です。"
 
-#: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, object-pascal-format
-msgid "Unable to delete file \"%s\"."
-msgstr "ファイル\"%s\"を削除できません。"
-
-#: lazarusidestrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "ファイルを削除できません。"
-
-#: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, object-pascal-format
-msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "パッケージ%sの古い状態ファイル\"%s\"%sを削除できません。"
-
-#: lazarusidestrconsts.lispkgmangunabletoloadpackage
-msgid "Unable to load package"
-msgstr "パッケージを読み込めません"
-
-#: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, object-pascal-format
-msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "パッケージ\"%s\"を開けません。%sこのパッケージをインストールするようマークされています。"
-
-#: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "パッケージ%sの状態ファイル\"%s\"%sを読めません。%sエラー: %s"
-
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
 #, object-pascal-format
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "パッケージ \"%s\"%sをファイル \"%s\"に書き込めません。%sエラー: %s"
-
-#: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, object-pascal-format
-msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "パッケージ%sの状態ファイル \"%s\"%sに書き込めません。%sエラー: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
@@ -16202,89 +15840,6 @@ msgstr "削除"
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "パッケージを選択してください"
-
-#: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
-msgid "Cannot register components without unit"
-msgstr "ユニット無しではコンポーネントを登録できません"
-
-#: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, object-pascal-format
-msgid "Component Class \"%s\" already defined"
-msgstr "コンポーネントクラス \"%s\" はすでに定義されています"
-
-#: lazarusidestrconsts.lispkgsysfilename
-#, object-pascal-format
-msgid "%s%sFile Name: \"%s\""
-msgstr "%s%sファイル名: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysinvalidcomponentclass
-msgid "Invalid component class"
-msgstr "無効なコンポーネントクラス"
-
-#: lazarusidestrconsts.lispkgsysinvalidunitname
-#, object-pascal-format
-msgid "Invalid Unitname: %s"
-msgstr "無効なユニット名: %s"
-
-#: lazarusidestrconsts.lispkgsyslpkfilename
-#, object-pascal-format
-msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk ファイル: \"%s\""
-
-#: lazarusidestrconsts.lispkgsyspackagefilenotfound
-msgid "Package file not found"
-msgstr "パッケージファイルが見つかりません"
-
-#: lazarusidestrconsts.lispkgsyspackageregistrationerror
-msgid "Package registration error"
-msgstr "パッケージ登録エラー"
-
-#: lazarusidestrconsts.lispkgsysregisterprocedureisnil
-msgid "Register procedure is nil"
-msgstr "Register手続きが空です"
-
-#: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-#, fuzzy
-#| msgid "RegisterUnit was called, but no package is registering."
-msgid "RegisterUnit was called but no package is registering."
-msgstr "ユニット登録が呼び出されましたが、どのパッケージも登録中ではありません。"
-
-#: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
-#, object-pascal-format
-msgid "%s%sThe lpk file was not found."
-msgstr "%s%s そのlpkは見つかりませんでした。"
-
-#: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format, fuzzy
-#| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "パッケージ \"%s\"がインストールされましたが、有効なパッケージファイル(.lpk)が見つかりません。%s壊れたダミーパッケージが作成されました。"
-
-#: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
-msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "これはデフォルトのパッケージです。パッケージのないコンポーネントにのみ用いられます。これらのコンポーネントは時代遅れです。"
-
-#: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy
-#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
-msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "このパッケージはインストールされましたが、lpkファイルが見つかりません。そのすべてのコンポーネントは無効にされています。修復してください。"
-
-#: lazarusidestrconsts.lispkgsysunitname
-#, object-pascal-format
-msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%sユニット名: \"%s\""
-
-#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
-#, object-pascal-format
-msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "ユニット \"%s\"はlpkファイルに見つかりませんでした。%sおそらくこのlpkファイルはこのIDEを構築した際に用いられていません。あるいはそのパッケージはRegisterUnit手続きを誤使用しています。"
-
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
-msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "ユニット \"%s\"はパッケージ(lpk)から削除されました"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
 #, fuzzy
@@ -16783,16 +16338,6 @@ msgstr "ファイル %s をプロジェクトから削除してよろしいで�
 msgid "Remove %s items from project?"
 msgstr "プロジェクトから%sの項目を削除しますか？"
 
-#: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
-#, object-pascal-format
-msgid "Unable to read state file %s of project %s%sError: %s"
-msgstr "プロジェクト%s%sの状態ファイル%sを読めません。エラー: %s"
-
-#: lazarusidestrconsts.lisprojmangunabletowritestatefileforprojecterror
-#, object-pascal-format
-msgid "Unable to write state file for project %s%sError: %s"
-msgstr "プロジェクト%sの状態ファイルに書き込めません。%sエラー: %s"
-
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
 msgstr "常に構築（変更がなくても）"
@@ -16810,10 +16355,6 @@ msgstr "エラー"
 #, object-pascal-format
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "プログラムソースの自動生成フォームリストを変更できません。%sまずエラーを修復してください。"
-
-#: lazarusidestrconsts.lisprojprojectsourcedirectorymark
-msgid "Project Source Directory Mark"
-msgstr "プロジェクトソースディレクトリマーク"
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
@@ -16940,10 +16481,6 @@ msgstr "終了"
 #: lazarusidestrconsts.lisquitlazarus
 msgid "&Quit Lazarus"
 msgstr "Lazarus を終了(&Q)"
-
-#: lazarusidestrconsts.lisreaderror
-msgid "Read Error"
-msgstr "読み取りエラー"
 
 #: lazarusidestrconsts.lisreallydelete
 msgid "Really delete?"
@@ -17888,10 +17425,6 @@ msgstr "最後のプロジェクトの読み込みをスキップ"
 msgid "Skip selected checks at startup. Valid options are:"
 msgstr ""
 
-#: lazarusidestrconsts.lisskipthesewarnings
-msgid "Skip these warnings"
-msgstr "これらの警告をスキップ"
-
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
 msgstr "遅いがより正確"
@@ -17990,11 +17523,6 @@ msgstr "単語"
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
 msgstr ""
 
-#: lazarusidestrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "出所(Source)と行き先が同じです:%s%s"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -18082,10 +17610,6 @@ msgstr "デバッグを停止してよろしいですか?"
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
 msgstr "パス区切り記号 \\ と / の保存時の変換方法"
-
-#: lazarusidestrconsts.lisstrangelpifile
-msgid "Strange lpi file"
-msgstr "奇妙なlpiファイル"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
@@ -18286,11 +17810,6 @@ msgstr "アプリケーションバンドルが\"%s\"について作成されま
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "クラス\"%s\"はTControlで、非コントロールの上には貼り付けることができません。%s貼り付け不能"
 
-#: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, object-pascal-format
-msgid "The Codetools found an error:%s%s"
-msgstr "コードツールがエラーを見つけました:%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, object-pascal-format
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -18373,29 +17892,14 @@ msgstr "ディレクトリ\"%s\"はプロジェクトユニットをもはや含
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "ディレクトリ\"%s\"はもうユニットパスに必要ではありません。%s削除しますか？"
 
-#: lazarusidestrconsts.listhedirectoryisnotwritable
-#, object-pascal-format
-msgid "The directory \"%s\" is not writable."
-msgstr "フォルダ \"%s\" は、書き込み可能ではありません。"
-
 #: lazarusidestrconsts.listhefile
 #, object-pascal-format
 msgid "The file \"%s\""
 msgstr "ファイル \"%s\""
 
-#: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
-#, object-pascal-format
-msgid "The file %s does not look like a lpi file."
-msgstr "ファイル %s は、 lpiファイルのようには見えません。"
-
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
 msgstr "そのファイル索引は宣言の検索などの機能に必要です。スキャニング中にソースの編集やコンパイルはできますが、宣言の検索のような機能は「ユニットが見つかりません」エラーを表示するでしょう。これには少々時間がかかります。"
-
-#: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, object-pascal-format
-msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "ファイル\"%s\"はシンボリックリンクです。%s \"%s\"を代わりに開きますか？ "
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
@@ -18421,11 +17925,6 @@ msgstr "ファイル \"%s\" はプログラムのようです。%s現在のプ�
 #, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "ファイル %s は既にある Lazarus プロジェクトのプログラムファイルのようです。"
-
-#: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, object-pascal-format
-msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "ファイル\"%s\"%sはパッケージのソースディレクトリの一つに見つかりました。%s それはコンパイルされたユニットのようです。コンパイルされたユニットはパッケージの出力ディレクトリになければならず、さもなければ他のパッケージがこのパッケージを利用することで問題が生じかねません。%s曖昧なファイルを削除しますか？"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 #, object-pascal-format
@@ -19375,39 +18874,6 @@ msgstr "ファイル%s\"%s\"%sのテキストフォームデータをバイナ�
 msgid "Unable to convert to encoding \"%s\""
 msgstr "エンコーディング\"%s\"に変換できません"
 
-#: lazarusidestrconsts.lisunabletocopyfile
-msgid "Unable to copy file"
-msgstr "ファイルをコピーできません。"
-
-#: lazarusidestrconsts.lisunabletocopyfileto
-#, object-pascal-format
-msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "ファイル\"%s\"%sを\"%s\"にコピーできません。"
-
-#: lazarusidestrconsts.lisunabletocreatedirectory
-#, object-pascal-format
-msgid "Unable to create directory \"%s\"."
-msgstr "ディレクトリ\"%s\"を作成できません。"
-
-#: lazarusidestrconsts.lisunabletocreatefile
-msgid "Unable to create file"
-msgstr "ファイルを作成できません。"
-
-#: lazarusidestrconsts.lisunabletocreatefile2
-#, object-pascal-format
-msgid "Unable to create file \"%s\""
-msgstr "ファイル\"%s\"を作成できません。"
-
-#: lazarusidestrconsts.lisunabletocreatefile3
-#, object-pascal-format
-msgid "Unable to create file%s\"%s\""
-msgstr "ファイル%s\"%s\"を作成できません。"
-
-#: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, object-pascal-format
-msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "リンク\"%s\"をターゲット\"%s\"で作成できません。"
-
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 #, fuzzy
 #| msgid "Unable to create new file, because there is already a directory with this name."
@@ -19513,33 +18979,9 @@ msgstr "デザイナを開くことができません。%sクラス%sはTFormや
 msgid "Unable to read %s"
 msgstr "%sを読めません"
 
-#: lazarusidestrconsts.lisunabletoreadfile
-msgid "Unable to read file"
-msgstr "ファイルを読めません。"
-
-#: lazarusidestrconsts.lisunabletoreadfile2
-#, object-pascal-format
-msgid "Unable to read file \"%s\"."
-msgstr "ファイル\"%s\"を読めません！"
-
-#: lazarusidestrconsts.lisunabletoreadfileerror
-#, object-pascal-format
-msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "ファイル\"%s\"%sを読めません。エラー: %s"
-
-#: lazarusidestrconsts.lisunabletoreadlpi
-msgid "Unable to read lpi"
-msgstr "lpiを読めません"
-
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "ExitStatusプロセスを読めません。"
-
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s\"%s\"."
-msgstr "プロジェクト情報ファイル%s\"%s\"を読み込めません。"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
@@ -19560,20 +19002,6 @@ msgstr "ソースからプロジェクトタイトルを削除できません。
 #, object-pascal-format
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "曖昧なファイル名\"%s\"%sを\"%s\"に変更できません。"
-
-#: lazarusidestrconsts.lisunabletorenamefile
-msgid "Unable to rename file"
-msgstr "名称を変更できません。"
-
-#: lazarusidestrconsts.lisunabletorenamefileto
-#, object-pascal-format
-msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "ファイル\"%s\"を\"%s\"に名称変更できません！"
-
-#: lazarusidestrconsts.lisunabletorenamefileto2
-#, object-pascal-format
-msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "ファイル\"%s\"%sを\"%s\"に名称変更できません。"
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."
@@ -19626,45 +19054,6 @@ msgstr "%s:T%sのバイナリコンポーネントストリームをテキスト
 msgid "Unable to update CreateForm statement in project source"
 msgstr "プロジェクトソースのCreateForm文を更新できません。"
 
-#: lazarusidestrconsts.lisunabletowrite2
-#, object-pascal-format
-msgid "Unable to write \"%s\""
-msgstr "\"%s\"を書き込めません"
-
-#: lazarusidestrconsts.lisunabletowritefile
-msgid "Unable to write file"
-msgstr "ファイルに書き込めません。"
-
-#: lazarusidestrconsts.lisunabletowritefile2
-#, object-pascal-format
-msgid "Unable to write file \"%s\"."
-msgstr "ファイル\"%s\"に書き込めません"
-
-#: lazarusidestrconsts.lisunabletowritefileerror
-#, object-pascal-format
-msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "ファイル\"%s\"に書き込めません。%sエラー: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, object-pascal-format
-msgid "Unable to write the project info file%s\"%s\".%sError: %s"
-msgstr "プロジェクト情報ファイル %s\"%s\"に書き込むことができません 。%sエラー: %s"
-
-#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
-#, object-pascal-format
-msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "プロジェクトセッションファイル%s\"%s\"に書き込むことができません 。%sエラー: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile2
-#, object-pascal-format
-msgid "Unable to write to file \"%s\"."
-msgstr "ファイル \"%s\" に書き込めません。"
-
-#: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
-#, object-pascal-format
-msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "xmlストリームを%s%sに書き込めません。エラー：%s"
-
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
 msgstr "すべてチェックを外す"
@@ -19693,80 +19082,6 @@ msgstr "選択対象をアンインストール"
 
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
-msgstr ""
-
-#: lazarusidestrconsts.lisunit
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisunit"
-msgid "Unit"
-msgstr "ユニット"
-
-#: lazarusidestrconsts.lisunithaschangedsave
-#, object-pascal-format
-msgid "Unit \"%s\" has changed. Save?"
-msgstr "ユニット\"%s\"は変更されています。保存しますか？"
-
-#: lazarusidestrconsts.lisunitidentifierexists
-msgid "Unit identifier exists"
-msgstr "ユニットの識別子が存在します"
-
-#: lazarusidestrconsts.lisunitinpackage
-#, object-pascal-format
-msgid "%s unit %s in package %s"
-msgstr "%s unit %s in package %s"
-
-#: lazarusidestrconsts.lisunitmustsavebeforeinherit
-#, object-pascal-format
-msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitnamealreadyexistscap
-msgid "Unitname already in project"
-msgstr "ユニット名がすでにプロジェクトに存在します"
-
-#: lazarusidestrconsts.lisunitnamebeginswith
-msgid "Unit name begins with ..."
-msgstr "ユニット名が次から始まります"
-
-#: lazarusidestrconsts.lisunitnamecontains
-msgid "Unit name contains ..."
-msgstr "ユニット名が次を含みます"
-
-#: lazarusidestrconsts.lisunitnotfound
-#, object-pascal-format
-msgid "unit %s not found"
-msgstr "ユニット%sが見つかりません"
-
-#: lazarusidestrconsts.lisunitnotfoundatnewposition
-#, object-pascal-format
-msgid "unit %s not found at new position \"%s\""
-msgstr "ユニット%sが新しい位置に見つかりません\"%s\""
-
-#: lazarusidestrconsts.lisunitnotfoundinfile
-#, object-pascal-format
-msgid "A unit not found in file %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunitoutputdirectory
-msgid "Unit Output directory"
-msgstr "ユニット出力ディレクトリ"
-
-#: lazarusidestrconsts.lisunitpath
-msgid "unit path"
-msgstr "ユニットパス"
-
-#: lazarusidestrconsts.lisunitpaths
-msgid "Unit paths"
-msgstr "ユニットパス"
-
-#: lazarusidestrconsts.lisunitrequirespackage
-#, object-pascal-format
-msgid "unit %s requires package %s"
-msgstr "ユニット%sはパッケージ%sを必要とします"
-
-#: lazarusidestrconsts.lisunitsnotfoundinfile
-#, object-pascal-format
-msgid "Units not found in file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
@@ -19810,11 +19125,6 @@ msgstr "大文字小文字が変更された場合のみ他の手続き署名を
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "参照を更新しますか？"
-
-#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#, object-pascal-format
-msgid "Updating PO files failed for package %s"
-msgstr "パッケージ%sに関するPOファイルの修正に失敗"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
@@ -20106,16 +19416,6 @@ msgstr "実行の際の作業ディレクトリ"
 msgid "Write config instead of command line parameters"
 msgstr ""
 
-#: lazarusidestrconsts.liswriteerror
-msgid "Write Error"
-msgstr "書き込みエラー"
-
-#: lazarusidestrconsts.liswriteerrorfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Write error: %s%sFile: \"%s\""
-msgid "Write error: %s%sFile: %s%s%s"
-msgstr "書き込みエラー: %s%sファイル: \"%s\""
-
 #: lazarusidestrconsts.liswritepackageinfofailed
 msgid "Writing the package info file failed."
 msgstr ""
@@ -20132,15 +19432,6 @@ msgstr ""
 #, object-pascal-format
 msgid "wrong version in %s: %s"
 msgstr "%sに間違ったバージョン: %s"
-
-#: lazarusidestrconsts.lisxmlerror
-msgid "XML Error"
-msgstr "XMLエラー"
-
-#: lazarusidestrconsts.lisxmlparsererrorinfileerror
-#, object-pascal-format
-msgid "XML parser error in file %s%sError: %s"
-msgstr "ファイル%s%sでXMLパーサエラー: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
@@ -20455,117 +19746,13 @@ msgstr "バージョン情報は実行ファイルがそれをサポートして
 msgid "Include version info in executable"
 msgstr "実行ファイルにバージョン情報を含める"
 
-#: lazarusidestrconsts.rslanguageafrikaans
-msgid "Afrikaans"
-msgstr "アフリカ語"
-
-#: lazarusidestrconsts.rslanguagearabic
-msgid "Arabic"
-msgstr "アラビア語"
-
-#: lazarusidestrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "自動（もしくは英語）"
-
-#: lazarusidestrconsts.rslanguagecatalan
-msgid "Catalan"
-msgstr "カタロニア語"
-
-#: lazarusidestrconsts.rslanguagechinese
-msgid "Chinese"
-msgstr "中国語"
-
-#: lazarusidestrconsts.rslanguagecorsican
-msgid "Corsican"
-msgstr ""
-
-#: lazarusidestrconsts.rslanguageczech
-msgid "Czech"
-msgstr "チェコ語"
-
-#: lazarusidestrconsts.rslanguagedutch
-msgid "Dutch"
-msgstr "ドイツ語"
-
-#: lazarusidestrconsts.rslanguageenglish
-msgid "English"
-msgstr "英語"
-
-#: lazarusidestrconsts.rslanguagefinnish
-msgid "Finnish"
-msgstr "フィンランド語"
-
-#: lazarusidestrconsts.rslanguagefrench
-msgid "French"
-msgstr "フランス語"
-
-#: lazarusidestrconsts.rslanguagegerman
-msgid "German"
-msgstr "ドイツ語"
-
-#: lazarusidestrconsts.rslanguagehebrew
-msgid "Hebrew"
-msgstr "ヘブライ語"
-
-#: lazarusidestrconsts.rslanguagehungarian
-msgid "Hungarian"
-msgstr "ハンガリー語"
-
-#: lazarusidestrconsts.rslanguageindonesian
-msgid "Indonesian"
-msgstr "インドネシア語"
-
-#: lazarusidestrconsts.rslanguageitalian
-msgid "Italian"
-msgstr "イタリア語"
-
-#: lazarusidestrconsts.rslanguagejapanese
-msgid "Japanese"
-msgstr "日本語"
-
-#: lazarusidestrconsts.rslanguagelithuanian
-msgid "Lithuanian"
-msgstr "リトアニア語"
-
 #: lazarusidestrconsts.rslanguageoptions
 msgid "Language options"
 msgstr "言語オプション"
 
-#: lazarusidestrconsts.rslanguagepolish
-msgid "Polish"
-msgstr "ポーランド語"
-
-#: lazarusidestrconsts.rslanguageportuguese
-msgid "Portuguese"
-msgstr "ポルトガル語"
-
-#: lazarusidestrconsts.rslanguageportuguesebr
-msgid "Brazilian Portuguese"
-msgstr "ブラジリアンポルトガル語"
-
-#: lazarusidestrconsts.rslanguagerussian
-msgid "Russian"
-msgstr "ロシア語"
-
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
 msgstr "言語選択"
-
-#: lazarusidestrconsts.rslanguageslovak
-msgid "Slovak"
-msgstr "スロバキア語"
-
-#: lazarusidestrconsts.rslanguagespanish
-msgid "Spanish"
-msgstr "スペイン語"
-
-#: lazarusidestrconsts.rslanguageturkish
-msgid "Turkish"
-msgstr "トルコ語"
-
-#: lazarusidestrconsts.rslanguageukrainian
-msgid "Ukrainian"
-msgstr "ウクライナ語"
 
 #: lazarusidestrconsts.rsmajorversion
 msgid "&Major version:"
@@ -22495,4 +21682,76 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "バージョン情報"
+
+#: lazarusidestrconsts.lisunithaschangedsave
+#, object-pascal-format
+msgid "Unit \"%s\" has changed. Save?"
+msgstr "ユニット\"%s\"は変更されています。保存しますか？"
+
+#: lazarusidestrconsts.lisunitidentifierexists
+msgid "Unit identifier exists"
+msgstr "ユニットの識別子が存在します"
+
+#: lazarusidestrconsts.lisunitinpackage
+#, object-pascal-format
+msgid "%s unit %s in package %s"
+msgstr "%s unit %s in package %s"
+
+#: lazarusidestrconsts.lisunitmustsavebeforeinherit
+#, object-pascal-format
+msgid "Unit \"%s\" must be saved before it can be inherited from. Save now?"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr "ユニット名がすでにプロジェクトに存在します"
+
+#: lazarusidestrconsts.lisunitnamebeginswith
+msgid "Unit name begins with ..."
+msgstr "ユニット名が次から始まります"
+
+#: lazarusidestrconsts.lisunitnamecontains
+msgid "Unit name contains ..."
+msgstr "ユニット名が次を含みます"
+
+#: lazarusidestrconsts.lisunitnotfound
+#, object-pascal-format
+msgid "unit %s not found"
+msgstr "ユニット%sが見つかりません"
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+#, object-pascal-format
+msgid "unit %s not found at new position \"%s\""
+msgstr "ユニット%sが新しい位置に見つかりません\"%s\""
+
+#: lazarusidestrconsts.lisunitnotfoundinfile
+#, object-pascal-format
+msgid "A unit not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr "ユニット出力ディレクトリ"
+
+#: lazarusidestrconsts.lisunitpath
+msgid "unit path"
+msgstr "ユニットパス"
+
+#: lazarusidestrconsts.lisunitpaths
+msgid "Unit paths"
+msgstr "ユニットパス"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+#, object-pascal-format
+msgid "unit %s requires package %s"
+msgstr "ユニット%sはパッケージ%sを必要とします"
+
+#: lazarusidestrconsts.lisunitsnotfoundinfile
+#, object-pascal-format
+msgid "Units not found in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "ファイルを削除できません。"
 

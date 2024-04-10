@@ -45,7 +45,7 @@ uses
   // IdeIntf
   IDEMsgIntf,
   // IDE
-  LazarusIDEStrConsts;
+  IdeProjectStrConsts;
 
 type
   TUserResourceType = (
