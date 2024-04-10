@@ -137,78 +137,87 @@ function CompareHandles(h1, h2: TLCLHandle): integer;
 function ComparePoints(const p1, p2: TPoint): integer;
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 
-// Call debugging procedure in LazLoggerBase.
-procedure RaiseGDBException(const Msg: string); inline;
+// Call debugging procedures in LazLoggerBase and RaiseGDBException in LazTracer.
+// Deprecated in version 3.99, April 2024.
+procedure RaiseGDBException(const Msg: string); deprecated 'Use LazTracer.RaiseGDBException instead';
 
-procedure DbgOut(const s: string = ''); inline; overload;
-procedure DbgOut(Args: array of const); {inline;} overload;
-procedure DbgOut(const S: String; Args: array of const); {inline;} overload;// similar to Format(s,Args)
+procedure DbgOut(const s: string = ''); overload; deprecated 'Use DebugLogger.DbgOut instead';
+procedure DbgOut(Args: array of const); overload; deprecated 'Use DebugLogger.DbgOut instead';
+procedure DbgOut(const S: String; Args: array of const); overload; deprecated 'Use DebugLogger.DbgOut instead';
 procedure DbgOut(const s1, s2: string; const s3: string = '';
                  const s4: string = ''; const s5: string = ''; const s6: string = '';
                  const s7: string = ''; const s8: string = ''; const s9: string = '';
                  const s10: string = ''; const s11: string = ''; const s12: string = '';
                  const s13: string = ''; const s14: string = ''; const s15: string = '';
-                 const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+                 const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+   deprecated 'Use DebugLogger.DbgOut instead';
 
-procedure DebugLn(const s: string = ''); inline; overload;
-procedure DebugLn(Args: array of const); {inline;} overload;
-procedure DebugLn(const S: String; Args: array of const); {inline;} overload;// similar to Format(s,Args)
+procedure DebugLn(const s: string = ''); overload; deprecated 'Use DebugLogger.DebugLn instead';
+procedure DebugLn(Args: array of const); overload; deprecated 'Use DebugLogger.DebugLn instead';
+procedure DebugLn(const S: String; Args: array of const); overload; deprecated 'Use DebugLogger.DebugLn instead';
 procedure DebugLn(const s1, s2: string; const s3: string = '';
                   const s4: string = ''; const s5: string = ''; const s6: string = '';
                   const s7: string = ''; const s8: string = ''; const s9: string = '';
                   const s10: string = ''; const s11: string = ''; const s12: string = '';
                   const s13: string = ''; const s14: string = ''; const s15: string = '';
-                  const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+                  const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+   deprecated 'Use DebugLogger.DebugLn instead';
 
-procedure DebugLnEnter(const s: string = ''); inline; overload;
-procedure DebugLnEnter(Args: array of const); {inline;} overload;
-procedure DebugLnEnter(s: string; Args: array of const); {inline;} overload;
+procedure DebugLnEnter(const s: string = ''); overload; deprecated 'Use DebugLogger.DebugLnEnter instead';
+procedure DebugLnEnter(Args: array of const); overload; deprecated 'Use DebugLogger.DebugLnEnter instead';
+procedure DebugLnEnter(s: string; Args: array of const); overload; deprecated 'Use DebugLogger.DebugLnEnter instead';
 procedure DebugLnEnter(const s1, s2: string; const s3: string = '';
                        const s4: string = ''; const s5: string = ''; const s6: string = '';
                        const s7: string = ''; const s8: string = ''; const s9: string = '';
                        const s10: string = ''; const s11: string = ''; const s12: string = '';
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
-                       const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+                       const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+   deprecated 'Use DebugLogger.DebugLnEnter instead';
 
-procedure DebugLnExit(const s: string = ''); inline; overload;
-procedure DebugLnExit(Args: array of const); {inline;} overload;
-procedure DebugLnExit(s: string; Args: array of const); {inline;} overload;
+procedure DebugLnExit(const s: string = ''); overload; deprecated 'Use DebugLogger.DebugLnExit instead';
+procedure DebugLnExit(Args: array of const); overload; deprecated 'Use DebugLogger.DebugLnExit instead';
+procedure DebugLnExit(s: string; Args: array of const); overload; deprecated 'Use DebugLogger.DebugLnExit instead';
 procedure DebugLnExit (const s1, s2: string; const s3: string = '';
                        const s4: string = ''; const s5: string = ''; const s6: string = '';
                        const s7: string = ''; const s8: string = ''; const s9: string = '';
                        const s10: string = ''; const s11: string = ''; const s12: string = '';
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
-                       const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
+                       const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
+   deprecated 'Use DebugLogger.DebugLnExit instead';
 
-procedure CloseDebugOutput; inline;
+procedure CloseDebugOutput; deprecated 'Use DebugLogger.CloseDebugOutput instead';
 
-function DbgS(const c: cardinal): string; overload; inline;
-function DbgS(const i: longint): string; overload; inline;
-function DbgS(const i: int64): string; overload; inline;
-function DbgS(const q: qword): string; overload; inline;
-function DbgS(const r: TRect): string; overload; inline;
-function DbgS(const p: TPoint): string; overload; inline;
-function DbgS(const p: pointer): string; overload; inline;
-function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; inline;
-function DbgS(const b: boolean): string; overload; inline;
-function DbgS(const s: TComponentState): string; overload; inline;
-function DbgS(const m: TMethod): string; overload; inline;
-function DbgSName(const p: TObject): string; overload; inline;
-function DbgSName(const p: TClass): string; overload; inline;
-function DbgStr(const StringWithSpecialChars: string): string; overload; inline;
-function DbgWideStr(const StringWithSpecialChars: widestring): string; overload; inline;
-function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload; inline;
-function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload; inline;
-function dbgObjMem(AnObject: TObject): string; overload; inline;
-function dbgHex(i: Int64): string; overload; inline;
+function DbgS(const c: cardinal): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const i: longint): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const i: int64): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const q: qword): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const r: TRect): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const p: TPoint): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const p: pointer): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const b: boolean): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const s: TComponentState): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const m: TMethod): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgSName(const p: TObject): string; overload; deprecated 'Use DebugLogger.DbgSName instead';
+function DbgSName(const p: TClass): string; overload; deprecated 'Use DebugLogger.DbgSName instead';
+
+function DbgStr(const StringWithSpecialChars: string): string; overload;
+  deprecated 'Use DebugLogger.DbgStr instead';
+function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
+  deprecated 'Use DebugLogger.DbgWideStr instead';
+function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
+  deprecated 'Use DebugLogger.dbgMemRange instead';
+function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
+  deprecated 'Use DebugLogger.dbgMemStream instead';
+function dbgObjMem(AnObject: TObject): string; overload; deprecated 'Use DebugLogger.dbgObjMem instead';
+function dbgHex(i: Int64): string; overload; deprecated 'Use DebugLogger.dbgHex instead';
+function DbgS(const i1,i2,i3,i4: integer): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const Shift: TShiftState): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+function DbgS(const ASize: TSize): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+
 function DbgSWindowPosFlags(Flags: UInt): String;
-
-function DbgS(const i1,i2,i3,i4: integer): string; overload; inline;
-function DbgS(const Shift: TShiftState): string; overload; inline;
 function DbgsVKCode(c: word): string;
-
-function DbgS(const ASize: TSize): string; overload; inline;
-function DbgS(const ATM: TTextMetric): string; overload;
+function DbgS(const ATM: TTextMetric): string;
 function DbgS(const AScrollInfo: TScrollInfo): string; overload;
 function DbgS(const AVariant: Variant): string; overload;
 
@@ -1148,6 +1157,21 @@ begin
   Result:=LazLoggerBase.dbghex(i);
 end;
 
+function DbgS(const i1, i2, i3, i4: integer): string;
+begin
+  Result:=LazLoggerBase.DbgS(i1,i2,i3,i4);
+end;
+
+function DbgS(const Shift: TShiftState): string;
+begin
+  Result:=LazLoggerBase.DbgS(Shift);
+end;
+
+function DbgS(const ASize: TSize): string;
+begin
+  Result:=LazLoggerBase.DbgS(ASize);
+end;
+
 function DbgSWindowPosFlags(Flags: UInt): String;
 begin
   Result := '';
@@ -1183,16 +1207,6 @@ begin
     Result := Result + 'SWP_SourceIsInterface, ';
   if Result <> '' then
     Delete(Result, Length(Result) - 1, 2);
-end;
-
-function DbgS(const i1, i2, i3, i4: integer): string;
-begin
-  Result:=LazLoggerBase.DbgS(i1,i2,i3,i4);
-end;
-
-function DbgS(const Shift: TShiftState): string;
-begin
-  Result:=LazLoggerBase.DbgS(Shift);
 end;
 
 function DbgsVKCode(c: word): string;
@@ -1370,11 +1384,6 @@ begin
   else
     Result:='VK_('+dbgs(c)+')';
   end;
-end;
-
-function DbgS(const ASize: TSize): string;
-begin
-  Result:=LazLoggerBase.DbgS(ASize);
 end;
 
 function DbgS(const ATM: TTextMetric): string;
