@@ -18,6 +18,7 @@ type
     bbtnCreateHTML: TBitBtn;
     bbtnSave: TBitBtn;
     bbtnShow: TBitBtn;
+    bbtnPreview: TBitBtn;
     cbDarkMode: TCheckBox;
     DirectoryEdit: TDirectoryEdit;
     ImageList: TImageList;
@@ -28,6 +29,7 @@ type
     TaskDialog: TTaskDialog;
     procedure bbtnCloseClick(Sender: TObject);
     procedure bbtnCreateHTMLClick(Sender: TObject);
+    procedure bbtnPreviewClick(Sender: TObject);
     procedure bbtnSaveClick(Sender: TObject);
     procedure bbtnShowClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
@@ -41,8 +43,8 @@ type
   private
     ImgDirectory: String;
     function GetImgDirectory(P: String): String;
-    procedure ErrorMsg(const AMsg: String);
-    procedure InfoMsg(const AMsg: String);
+    procedure CreateHTML(HTMLLines: TStrings; Preview: Boolean);
+    procedure ShowMsg(const AMsgCaption: String; const AMsg: String);
     procedure UpdateLastDirs(ImgDir: String; Delete: Boolean);
   public
 
@@ -61,6 +63,7 @@ const
   ConfigFileName = 'IconTableConfig.ini';
   IconTableFileName = 'IconTable.html';
   InfoTextFileName = 'lazarus_general_purpose_images.txt';
+  TempFileName = 'IconTableTemp.html';
   DefaultDirectory = '../../images/general_purpose/';
   LastDirsMax = 9;
 
@@ -163,20 +166,83 @@ begin
 
       Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
     except
-      ErrorMsg('The configuration could not be saved.');
+      ShowMsg('Error', 'The configuration could not be saved.');
     end;
   finally
     Config.Free;
+  end;
+
+  try
+    if FileExists(Application.Location + TempFileName) then
+      DeleteFile(Application.Location + TempFileName);
+  except
+    ShowMsg('Error', 'The temp file could not be deleted.');
   end;
 end;
 
 procedure TMainForm.cbDarkModeChange(Sender: TObject);
 begin
+  bbtnPreview.Enabled := False;
   bbtnSave.Enabled := False;
   bbtnShow.Enabled := False;
 end;
 
 procedure TMainForm.bbtnCreateHTMLClick(Sender: TObject);
+begin
+  SynEdit.Lines.Clear;
+  CreateHTML(SynEdit.Lines, False);
+
+  bbtnPreview.Enabled := True;
+  bbtnSave.Enabled := True;
+  bbtnShow.Enabled := False;
+  bbtnPreview.SetFocus;
+  UpdateLastDirs(ImgDirectory, False);
+end;
+
+procedure TMainForm.bbtnPreviewClick(Sender: TObject);
+var
+  HTMLLines: TStrings;
+begin
+  HTMLLines := TStringList.Create;
+  CreateHTML(HTMLLines, True);
+  try
+    HTMLLines.SaveToFile(Application.Location + TempFileName);
+  except
+    ShowMsg('Error', 'The file could not be saved as: ' + Application.Location + TempFileName);
+  end;
+  HTMLLines.Free;
+
+  if FileExists(Application.Location + TempFileName) then
+    OpenURL(Application.Location + TempFileName);
+
+  bbtnSave.SetFocus;
+end;
+
+procedure TMainForm.bbtnSaveClick(Sender: TObject);
+begin
+  try
+    SynEdit.Lines.SaveToFile(ImgDirectory + IconTableFileName);
+    ShowMsg('Information', 'Saved as: ' + ImgDirectory + IconTableFileName);
+    bbtnShow.Enabled := True;
+    bbtnShow.SetFocus;
+  except
+    ShowMsg('Error', 'The file could not be saved as: ' + ImgDirectory + IconTableFileName);
+  end;
+end;
+
+procedure TMainForm.bbtnShowClick(Sender: TObject);
+begin
+  if FileExists(ImgDirectory + IconTableFileName) then
+    OpenURL(ImgDirectory + IconTableFileName);
+  bbtnCreateHTML.SetFocus;
+end;
+
+procedure TMainForm.bbtnCloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TMainForm.CreateHTML(HTMLLines: TStrings; Preview: Boolean);
 var
   AllFileList: TStringList;
   IcoFileList: TStringList;
@@ -201,19 +267,18 @@ var
   HoverColors: String = 'color: #ffffff; background-color: #303030;}';
 begin
   try
+    Screen.BeginWaitCursor;
     AllFileList := TStringList.Create;
     IcoFileList := TStringList.Create;
     IcoNameList := TStringList.Create;
     IcoSizeList := TStringList.Create;
     PixSizeList := TStringList.Create;
-    Screen.BeginWaitCursor;
-    SynEdit.Lines.BeginUpdate;
 
     FindAllFiles(AllFileList, ImgDirectory, '*.png', False);
 
     if AllFileList.Count = 0 then
     begin
-      ErrorMsg('No png image files found in ' + ImgDirectory);
+      ShowMsg('Error', 'No png image files found in ' + ImgDirectory);
       Exit;
     end;
 
@@ -232,7 +297,11 @@ begin
       else
         IcoName := Utf8Copy(IcoFile, 1, DPos - 1);
 
-      IcoFileList.Add(IcoFile);
+      if Preview then
+        IcoFileList.Add('file:///' + ImgDirectory + IcoFile)
+      else
+        IcoFileList.Add(IcoFile);
+
       IcoNameList.Add(IcoName);
       IcoSizeList.Add(IcoSize);
       if PixSizeList.IndexOf(IcoSize) = -1 then
@@ -242,7 +311,7 @@ begin
 
     if IcoFileList.Count = 0 then
     begin
-      ErrorMsg('No matching png image files found in ' + ImgDirectory);
+      ShowMsg('Error', 'No matching png image files found in ' + ImgDirectory);
       Exit;
     end;
 
@@ -254,44 +323,44 @@ begin
       HoverColors := 'color: #000000; background-color: #ffffff;}';
     end;
 
-    SynEdit.Lines.Clear;
-    SynEdit.Lines.Add('<!DOCTYPE html>');
-    SynEdit.Lines.Add('<html>');
-    SynEdit.Lines.Add('<head>');
-    SynEdit.Lines.Add('<title>Icons</title>');
-    SynEdit.Lines.Add('<meta charset="UTF-8">');
-    SynEdit.Lines.Add('<style media="all">');
-    SynEdit.Lines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px; ' + BodyColors);
-    SynEdit.Lines.Add('  table {border-collapse: collapse; margin-left: auto; margin-right: auto;}');
-    SynEdit.Lines.Add('  tr {border-bottom: 1px solid #ddd;}');
-    SynEdit.Lines.Add('  tr:hover {' + HoverColors);
-    SynEdit.Lines.Add('  td {padding: 10px 15px 10px 15px;}');
-    SynEdit.Lines.Add('  .colorset1 {' + ColorSet1);
-    SynEdit.Lines.Add('  .colorset2 {' + ColorSet2);
-    SynEdit.Lines.Add('  .text_center {text-align: center;}');
-    SynEdit.Lines.Add('  .right_border {border-right: 1px solid #ddd;}');
-    SynEdit.Lines.Add('  .no_border {border: 0;}');
-    SynEdit.Lines.Add('  .infobox {margin: 0 auto; width: 500px; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 10px 15px 10px 15px; margin-top: 30px;}');
-    SynEdit.Lines.Add('</style>');
-    SynEdit.Lines.Add('</head>');
-    SynEdit.Lines.Add('<body>');
-    SynEdit.Lines.Add('<table>');
-    SynEdit.Lines.Add('  <tr class="no_border">');
-    SynEdit.Lines.Add('    <td class="colorset1 right_border"></td>');
-    SynEdit.Lines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Appendix</td>');
-    SynEdit.Lines.Add('  </tr>');
-    SynEdit.Lines.Add('  <tr>');
-    SynEdit.Lines.Add('    <td class="colorset1 right_border">Name</td>');
+    HTMLLines.Clear;
+    HTMLLines.Add('<!DOCTYPE html>');
+    HTMLLines.Add('<html>');
+    HTMLLines.Add('<head>');
+    HTMLLines.Add('<title>Icons</title>');
+    HTMLLines.Add('<meta charset="UTF-8">');
+    HTMLLines.Add('<style media="all">');
+    HTMLLines.Add('  body {font-family: sans-serif; font-size: 16px; font-weight: 400; margin: 0 auto; padding: 30px 0px 80px 0px; ' + BodyColors);
+    HTMLLines.Add('  table {border-collapse: collapse; margin-left: auto; margin-right: auto;}');
+    HTMLLines.Add('  tr {border-bottom: 1px solid #ddd;}');
+    HTMLLines.Add('  tr:hover {' + HoverColors);
+    HTMLLines.Add('  td {padding: 10px 15px 10px 15px;}');
+    HTMLLines.Add('  .colorset1 {' + ColorSet1);
+    HTMLLines.Add('  .colorset2 {' + ColorSet2);
+    HTMLLines.Add('  .text_center {text-align: center;}');
+    HTMLLines.Add('  .right_border {border-right: 1px solid #ddd;}');
+    HTMLLines.Add('  .no_border {border: 0;}');
+    HTMLLines.Add('  .infobox {margin: 0 auto; width: 500px; box-shadow: 0px 0px 5px 3px rgba(192, 192, 192, 0.37); padding: 10px 15px 10px 15px; margin-top: 30px;}');
+    HTMLLines.Add('</style>');
+    HTMLLines.Add('</head>');
+    HTMLLines.Add('<body>');
+    HTMLLines.Add('<table>');
+    HTMLLines.Add('  <tr class="no_border">');
+    HTMLLines.Add('    <td class="colorset1 right_border"></td>');
+    HTMLLines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Appendix</td>');
+    HTMLLines.Add('  </tr>');
+    HTMLLines.Add('  <tr>');
+    HTMLLines.Add('    <td class="colorset1 right_border">Name</td>');
     for i := 0 to PixSizeList.Count - 1 do
-      SynEdit.Lines.Add('    <td class="colorset2 text_center">' + PixSizeList[i] + '</td>');
-    SynEdit.Lines.Add('  </tr>');
+      HTMLLines.Add('    <td class="colorset2 text_center">' + PixSizeList[i] + '</td>');
+    HTMLLines.Add('  </tr>');
 
     for i := 0 to IcoFileList.Count - 1 do
     begin
       if (i = IcoFileList.Count - 1) or (IcoNameList[i + 1] <> IcoNameList[i]) then
       begin
-        SynEdit.Lines.Add('  <tr>');
-        SynEdit.Lines.Add('    <td class="right_border">' + IcoNameList[i] + '</td>');
+        HTMLLines.Add('  <tr>');
+        HTMLLines.Add('    <td class="right_border">' + IcoNameList[i] + '</td>');
         for ips := 0 to PixSizeList.Count - 1 do
         begin
           LineStr := '';
@@ -299,74 +368,44 @@ begin
             if IcoSizeList[isl] = PixSizeList[ips] then
               LineStr := '    <td><img src="' + IcoFileList.Strings[isl] + '.png" loading="lazy" alt=""></td>';
           if LineStr > '' then
-            SynEdit.Lines.Add(LineStr)
+            HTMLLines.Add(LineStr)
           else
-            SynEdit.Lines.Add('    <td></td>');
+            HTMLLines.Add('    <td></td>');
         end;
-        SynEdit.Lines.Add('  </tr>');
+        HTMLLines.Add('  </tr>');
         StartIdx := i + 1;
         IconGroups := IconGroups + 1;
       end;
     end;
 
-    SynEdit.Lines.Add('</table>');
+    HTMLLines.Add('</table>');
 
-    SynEdit.Lines.Add('<div class="infobox colorset2">');
-    SynEdit.Lines.Add('This folder contains ' + IcoFileList.Count.ToString + ' icons in ' + IconGroups.ToString + ' icon groups with ' + PixSizeList.Count.ToString + ' icon sizes.');
+    HTMLLines.Add('<div class="infobox colorset2">');
+    HTMLLines.Add('This folder contains ' + IcoFileList.Count.ToString + ' icons in ' + IconGroups.ToString + ' icon groups with ' + PixSizeList.Count.ToString + ' icon sizes.');
     if FileExists(ImgDirectory + InfoTextFileName) then
     begin
       try
         InfoTxtList := TStringList.Create;
         InfoTxtList.LoadFromFile(ImgDirectory + InfoTextFileName);
-        SynEdit.Lines.Add('<hr>');
+        HTMLLines.Add('<hr>');
         for i := 0 to InfoTxtList.Count - 1 do
-          SynEdit.Lines.Add(InfoTxtList[i] + '<br>');
+          HTMLLines.Add(InfoTxtList[i] + '<br>');
       finally
         InfoTxtList.Free;
       end;
     end;
-    SynEdit.Lines.Add('</div>');
+    HTMLLines.Add('</div>');
 
-    SynEdit.Lines.Add('</body>');
-    SynEdit.Lines.Add('</html>');
-
-    bbtnSave.Enabled := True;
-    bbtnSave.SetFocus;
-    bbtnShow.Enabled := False;
-    UpdateLastDirs(ImgDirectory, False);
+    HTMLLines.Add('</body>');
+    HTMLLines.Add('</html>');
   finally
     AllFileList.Free;
     IcoFileList.Free;
     IcoNameList.Free;
     IcoSizeList.Free;
     PixSizeList.Free;
-    SynEdit.Lines.EndUpdate;
     Screen.EndWaitCursor;
   end;
-end;
-
-procedure TMainForm.bbtnSaveClick(Sender: TObject);
-begin
-  try
-    SynEdit.Lines.SaveToFile(ImgDirectory + IconTableFileName);
-    InfoMsg('Saved as: ' + ImgDirectory + IconTableFileName);
-    bbtnShow.Enabled := True;
-    bbtnShow.SetFocus;
-  except
-    ErrorMsg('The file could not be saved as: ' + ImgDirectory + IconTableFileName);
-  end;
-end;
-
-procedure TMainForm.bbtnShowClick(Sender: TObject);
-begin
-  if FileExists(ImgDirectory + IconTableFileName) then
-    OpenURL(ImgDirectory + IconTableFileName);
-  bbtnCreateHTML.SetFocus;
-end;
-
-procedure TMainForm.bbtnCloseClick(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TMainForm.DirectoryEditChange(Sender: TObject);
@@ -376,6 +415,7 @@ begin
     ImgDirectory := CleanAndExpandDirectory(DirectoryEdit.Directory);
     SynEdit.Clear;
     bbtnCreateHTML.Enabled := True;
+    bbtnPreview.Enabled := False;
     bbtnSave.Enabled := False;
     bbtnShow.Enabled := False;
     bbtnCreateHTML.SetFocus;
@@ -438,22 +478,14 @@ begin
   sbtnLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
 end;
 
-procedure TMainForm.InfoMsg(const AMsg: String);
+procedure TMainForm.ShowMsg(const AMsgCaption: String; const AMsg: String);
 begin
-  TaskDialog.Caption := 'Information';
-  TaskDialog.MainIcon := tdiInformation;
-  TaskDialog.Title := 'Information';
-  TaskDialog.CommonButtons := [tcbOk];
-  TaskDialog.DefaultButton := tcbOk;
-  TaskDialog.Text := AMsg;
-  TaskDialog.Execute;
-end;
-
-procedure TMainForm.ErrorMsg(const AMsg: String);
-begin
-  TaskDialog.Caption := 'Error';
-  TaskDialog.MainIcon := tdiError;
-  TaskDialog.Title := 'Error';
+  if AMsgCaption = 'Error' then
+    TaskDialog.MainIcon := tdiError
+  else
+    TaskDialog.MainIcon := tdiInformation;
+  TaskDialog.Caption := AMsgCaption;
+  TaskDialog.Title := AMsgCaption;
   TaskDialog.CommonButtons := [tcbOk];
   TaskDialog.DefaultButton := tcbOk;
   TaskDialog.Text := AMsg;
