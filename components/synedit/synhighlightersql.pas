@@ -213,15 +213,16 @@ const
   //---SQLite keywords------------------------------------------------------------
   SQLiteKW: string =
     'abort,action,add,after,all,alter,analyze,and,as,asc,attach,autoincrement,' +
-    'before,begin,between,by,cascade,case,cast,check,collate,column,commit,' +
-    'conflict,constraint,create,cross,current_date,current_time,current_timestamp,' +
-    'database,default,deferrable,deferred,delete,desc,detach,distinct,drop,each,else,' +
-    'end,escape,except,exclusive,exists,explain,fail,for,foreign,from,full,glob,group,' +
-    'having,if,ignore,immediate,in,index,indexed,initially,inner,insert,instead,intersect,' +
-    'into,is,isnull,join,key,left,like,limit,match,natural,no,not,notnull,null,of,offset,on,' +
-    'or,order,outer,plan,pragma,primary,query,raise,references,regexp,reindex,release,rename,' +
-    'replace,restrict,right,rollback,row,savepoint,select,set,table,temp,temporary,then,to,' +
-    'transaction,trigger,union,unique,update,using,vacuum,values,view,virtual,when,where';
+    'before,begin,between,by,cascade,case,cast,check,collate,column,' +
+    'commit,conflict,constraint,create,cross,current_date,current_time,' +
+    'current_timestamp,database,default,deferrable,deferred,delete,desc,' +
+    'detach,distinct,drop,each,else,end,escape,except,exclusive,exists,explain,' +
+    'fail,for,foreign,from,full,glob,group,having,if,ignore,immediate,in,index,indexed,' +
+    'initially,inner,insert,instead,intersect,into,is,isnull,join,key,left,like,limit,' +
+    'match,natural,no,not,notnull,null,of,offset,on,or,order,outer,plan,pragma,' +
+    'primary,query,replace,raise,references,regexp,reindex,release,rename,restrict,right,' +
+    'rollback,row,savepoint,select,set,table,temp,temporary,then,to,transaction,' +
+    'trigger,union,unique,update,using,vacuum,values,view,virtual,when,where';
 
   SQLiteTypes: string =
     'int,integer,tinyint,smallint,mediumint,bigint,int2,int8,character,varchar,' +
@@ -229,11 +230,18 @@ const
     'date,datetime';
 
   SQLiteFunctions: string =
-    'abs,avg,changes,coalesce,count,group_concat,hex,ifnull,' +
-    'julianday,last_insert_rowid,length,load_extension,lower,ltrim,max,min,' +
-    'nullif,quote,random,randomblob,round,rtrim,soundex,sqlite_compileoption_get,' +
-    'sqlite_compileoption_used,sqlite_source_id,sqlite_version,strftim,substr,sum,time,' +
-    'total,total_changes,trim,typeof,upper,zeroblob';
+    'abs,avg,changes,char,coalesce,concat,concat_ws,count,format,group_concat,' +
+    'hex,ifnull,iif,instr,julianday,last_insert_rowid,json,json_array,' +
+    'json_array_length,json_each,json_error_position,json_extract,json_group_array,' +
+    'json_group_object,json_insert,json_object,json_patch,json_quote,json_remove,' +
+    'json_replace,json_set,json_tree,json_type,json_valid,jsonb,jsonb_array,' +
+    'jsonb_insert,jsonb_extract,jsonb_group_array,jsonb_group_object,jsonb_object,' +
+    'jsonb_patch,jsonb_remove,jsonb_replace,jsonb_set,length,likelihood,likely,' +
+    'load_extension,lower,ltrim,max,min,nullif,octet_length,printf,quote,random,' +
+    'randomblob,round,rtrim,sign,soundex,sqlite_compileoption_get,' +
+    'sqlite_compileoption_used,sqlite_offset,sqlite_source_id,sqlite_version,' +
+    'strftim,substr,substring,sum,time,total,total_changes,trim,typeof,unhex,' +
+    'unicode,unlikely,upper,zeroblob';
 
 //---"Standard" (ANSI SQL keywords (Version 1, 2 and 3) (www.sql.org)---------
   StandardKW: string =
