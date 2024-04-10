@@ -87,7 +87,6 @@ type
     fSearchProject: boolean;
     fSearchProjectGroup: boolean;
     fResultsPageIndex: integer;
-    fAborting: boolean;
     fLastUpdateProgress: DWORD;
     fWasActive: boolean;
     procedure AddMatchHandler(const Filename: string; const StartPos, EndPos: TPoint;
@@ -104,6 +103,7 @@ type
     procedure SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
     procedure DoSearchAndAddToSearchResults;
     function DoSearch: integer;
+    procedure SearchEvent(FileIterator: TFileIterator);
   public
     procedure DoSearchOpenFiles;
     procedure DoSearchActiveFile;
@@ -782,7 +782,6 @@ function TSearchProgressForm.DoSearch: integer;
 begin
   Result:= 0;
   PromptOnReplace:=true;
-  fAborting:=false;
   Progress.Abort:=false;
   lblSearchText.Caption:= fSearchFor;
   fMatches:= 0;
@@ -812,79 +811,9 @@ begin
   Close;
 end;//DoSearch
 
-type
-
-  { TLazFileSearcher }
-
-  TLazFileSearcher = class(TFileSearcher)
-  private
-    FParent: TSearchProgressForm;
-    procedure CheckAbort;
-  protected
-    procedure DoDirectoryEnter; override;
-    procedure DoDirectoryFound; override;
-    procedure DoFileFound; override;
-  public
-    constructor Create(AParent: TSearchProgressForm);
-    destructor Destroy; override;
-  end;
-
-{ TLazFileSearcher }
-
-procedure TLazFileSearcher.CheckAbort;
-begin
-  if FParent.Progress.Abort then
-  begin
-    if not FParent.FAborting then
-    begin
-      FParent.FAborting := True;
-      FParent.FResultsList.Insert(0, FParent.FAbortString);
-    end;
-
-    Stop;
-  end;
-end;
-
-procedure TLazFileSearcher.DoDirectoryEnter;
-begin
-  CheckAbort;
-end;
-
-procedure TLazFileSearcher.DoDirectoryFound;
-begin
-  CheckAbort;
-end;
-
-procedure TLazFileSearcher.DoFileFound;
-var
-  F: String;
-begin
-  F := FileName;
-  if FileIsTextCached(F) then
-  begin
-    FParent.UpdateProgress(F);
-    FParent.SearchFile(F);
-  end;
-  CheckAbort;
-end;
-
-constructor TLazFileSearcher.Create(AParent: TSearchProgressForm);
-begin
-  inherited Create;
-  FParent := AParent;
-end;
-
-destructor TLazFileSearcher.Destroy;
-begin
-  FParent:=nil;
-  inherited Destroy;
-end;
-
-{ TSearchProgressForm }
-
 procedure TSearchProgressForm.DoFindInFiles(ADirectories: string);
 var
-  Searcher: TLazFileSearcher;
+  Searcher: TFileSearcher;
   SearchPath: String;
   p: Integer;
   Dir: String;
@@ -900,11 +829,32 @@ begin
   until false;
   if SearchPath='' then
     exit;
-  Searcher := TLazFileSearcher.Create(Self);
+  Searcher := TFileSearcher.Create;
+  Searcher.OnDirectoryFound := @SearchEvent;
+  Searcher.OnDirectoryEnter := @SearchEvent;
+  Searcher.OnFileFound      := @SearchEvent;
   try
     Searcher.Search(SearchPath, FMask, FRecursive);
   finally
     Searcher.Free;
+  end;
+end;
+
+procedure TSearchProgressForm.SearchEvent(FileIterator: TFileIterator);
+begin
+  // File found
+  if not FileIterator.IsDirectory then
+    if FileIsTextCached(FileIterator.FileName) then
+    begin
+      UpdateProgress(FileIterator.FileName);
+      SearchFile(FileIterator.FileName);
+    end;
+
+  // Check abort
+  if Progress.Abort then
+  begin
+    FileIterator.Stop;
+    FResultsList.Insert(0, FAbortString);
   end;
 end;
 
