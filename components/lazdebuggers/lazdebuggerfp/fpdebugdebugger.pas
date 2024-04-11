@@ -3900,6 +3900,8 @@ begin
       ALocationAddr := GetLocation;
       if Assigned(EventLogHandler) then
         EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
+      if ALocationAddr.SrcLine = 0 then
+        ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source. Breakpoint hit should be at frame 0
 
       if assigned(ABreakPoint) then
         ABreakPoint.Hit(&continue, NeedInternalPause);
@@ -3921,8 +3923,11 @@ begin
     Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
     if not (dboIgnoreAll in Opts) then begin
       &continue:=False;
-      if not AMoreHitEventsPending then
+      if not AMoreHitEventsPending then begin
         ALocationAddr := GetLocation;
+        if ALocationAddr.SrcLine = 0 then
+          ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source. Breakpoint hit should be at frame 0
+      end;
     end;
     if  continue then
       exit;
@@ -3934,8 +3939,11 @@ begin
     end
   else
     // Debugger returned after a step/next/step-out etc..
-  if not AMoreHitEventsPending then
+  if not AMoreHitEventsPending then begin
     ALocationAddr := GetLocation;
+    if (AnEventType = deFinishedStep) and (ALocationAddr.SrcLine = 0) then // Maybe Stepped out ???
+      ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source.
+  end;
 
 
   if not continue then
