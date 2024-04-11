@@ -260,8 +260,8 @@ begin
 
   SetLength(U, MAX_PATH+1);
   SetLength(U, GetFinalPathNameByHandle(Handle, @U[1], Length(U), 0));
-  if Copy(U, 1, 4)='\\?\' then
-    Delete(U, 1, 4);
+//  if Copy(U, 1, 4)='\\?\' then
+//    Delete(U, 1, 4);
   Result := U;
 end;
 {$endif}

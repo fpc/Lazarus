@@ -540,8 +540,6 @@ begin
       u := '';
       LogLastError;
     end;
-    // Remove the \\?\ prefix
-    Delete(S,1,4);
     result := S;
   end;
 end;
