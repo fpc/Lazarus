@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, types, math,
   // LazUtils
-  LazLoggerBase, LazClasses, LazFileUtils, LazStringUtils, LazUTF8;
+  LazLoggerBase, LazClasses, LazFileUtils, LazStringUtils, LazUTF8, laztty;
 
 type
 
@@ -536,7 +536,13 @@ begin
     DoOpenFile;
     if FActiveLogText = nil then exit;
 
-    WriteLn(FActiveLogText^, s);
+
+    //WriteLn(FActiveLogText^, s);
+    if TTYCheckSupported and IsATTY(FActiveLogText^) then
+      WriteLn(FActiveLogText^, Colorize(s))
+    else
+      WriteLn(FActiveLogText^, s);
+
 
     if FCloseLogFileBetweenWrites then
       DoCloseFile;
