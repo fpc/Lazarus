@@ -127,9 +127,6 @@ type
     property Progress: TIDESearchInTextProgress read FProgress;
   end;
 
-var
-  SearchProgressForm: TSearchProgressForm;
-  
 function SearchInText(const TheFileName: string;
   var TheText: string;// if TheFileName='' then use TheText
   SearchFor, ReplaceText: string;
