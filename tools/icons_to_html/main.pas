@@ -17,7 +17,6 @@ type
     bbtnClose: TBitBtn;
     bbtnCreateHTML: TBitBtn;
     bbtnSave: TBitBtn;
-    bbtnShow: TBitBtn;
     bbtnPreview: TBitBtn;
     cbDarkMode: TCheckBox;
     DirectoryEdit: TDirectoryEdit;
@@ -31,7 +30,6 @@ type
     procedure bbtnCreateHTMLClick(Sender: TObject);
     procedure bbtnPreviewClick(Sender: TObject);
     procedure bbtnSaveClick(Sender: TObject);
-    procedure bbtnShowClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
     procedure DirectoryEditChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -78,7 +76,7 @@ begin
   begin
     MenItem := TMenuItem.Create(popLastDirs);
     MenItem.OnClick := @LastDirClick;
-    MenItem.ImageIndex := 6;
+    MenItem.ImageIndex := 0;
     popLastDirs.Items.Add(MenItem);
   end;
 end;
@@ -184,7 +182,6 @@ procedure TMainForm.cbDarkModeChange(Sender: TObject);
 begin
   bbtnPreview.Enabled := False;
   bbtnSave.Enabled := False;
-  bbtnShow.Enabled := False;
 end;
 
 procedure TMainForm.bbtnCreateHTMLClick(Sender: TObject);
@@ -194,7 +191,6 @@ begin
 
   bbtnPreview.Enabled := True;
   bbtnSave.Enabled := True;
-  bbtnShow.Enabled := False;
   bbtnPreview.SetFocus;
   UpdateLastDirs(ImgDirectory, False);
 end;
@@ -223,18 +219,9 @@ begin
   try
     SynEdit.Lines.SaveToFile(ImgDirectory + IconTableFileName);
     ShowMsg('Information', 'Saved as: ' + ImgDirectory + IconTableFileName);
-    bbtnShow.Enabled := True;
-    bbtnShow.SetFocus;
   except
     ShowMsg('Error', 'The file could not be saved as: ' + ImgDirectory + IconTableFileName);
   end;
-end;
-
-procedure TMainForm.bbtnShowClick(Sender: TObject);
-begin
-  if FileExists(ImgDirectory + IconTableFileName) then
-    OpenURL(ImgDirectory + IconTableFileName);
-  bbtnCreateHTML.SetFocus;
 end;
 
 procedure TMainForm.bbtnCloseClick(Sender: TObject);
@@ -417,7 +404,6 @@ begin
     bbtnCreateHTML.Enabled := True;
     bbtnPreview.Enabled := False;
     bbtnSave.Enabled := False;
-    bbtnShow.Enabled := False;
     bbtnCreateHTML.SetFocus;
   end
   else
