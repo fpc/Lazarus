@@ -1508,16 +1508,24 @@ enable/disable them, as it discards all logging anyway.
 
 <!-- included from LazLoggerIntf.inc -->
 <element name="DebuglnStack">
-<short>Writes a message to the log.</short>
+<short>
+Writes a message to the log.
+</short>
 <descr>
 <p>
-Calls the DebuglnStack method for the logger class instance.
+Calls the DebugLnStack method for the logger class instance.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazLogger.DoDebuglnStack"/>
+<link id="TLazLogger.DebuglnStack"/>
+<link id="TLazLoggerLogEnabled"/>
+</seealso>
 </element>
 <element name="DebuglnStack.s">
-<short/>
+<short>
+Message written to the debugger output.
+</short>
 </element>
 
 <!-- procedure Visibility: default -->
@@ -1525,20 +1533,24 @@ Calls the DebuglnStack method for the logger class instance.
 <short>Writes a message to the log.</short>
 <descr>
 <p>
-Writes the text to the log. Does not append a new line.
+Writes the text to the log. Does not append an end-of-line sequence.
 The Argument can be:
 </p>
 <ul>
-<li>One or more string(s)</li>
-<li>An open array of const: All values are converted to string and joined</li>
-<li>A single string and open array of const:  Will be passed to Format</li>
-<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+<li>One or more string(s).</li>
+<li>An open array of const: All values are converted to string and joined.</li>
+<li>A single string and open array of const:  Will be passed to Format.</li>
+<li>Any of the above with a PLazLoggerLogGroup as a filter.</li>
 </ul>
 <p>
-This is a forwarder to the log TLazLogger object. See there for details.
+This routine forwards output operations to the DbgOut method in a TLazLogger 
+class instance.
 </p>
 </descr>
 <seealso>
+<link id="TLazLogger.DbgOut"/>
+<link id="TLazLogger.DoDbgOut"/>
+<link id="TLazLogger.ArgsToString"/>
 <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
 <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
 </seealso>
@@ -1547,7 +1559,9 @@ This is a forwarder to the log TLazLogger object. See there for details.
 <short>String argument for the routine.</short>
 </element>
 <element name="DbgOut.Args">
-<short></short>
+<short>
+Array of constant values written to the debugger output.
+</short>
 </element>
 <element name="DbgOut.s1">
 <short>String argument for the routine.</short>
@@ -1605,22 +1619,32 @@ This is a forwarder to the log TLazLogger object. See there for details.
 </element>
 
 <element name="DebugLn">
-<short>Writes a message to the log.</short>
+<short>
+Writes a message to the debugger output followed by an end-of-line sequence.
+</short>
 <descr>
 <p>
-Writes the text to the log. Does append a new line.
+Writes the text to the log. Appends an end-of-line sequence after values are 
+written.
 </p>
 <p>
-The Argument can be:
+The Argument(s) can be:
 </p>
 <ul>
-<li>One or more string</li>
-<li>An open array of const: All values are converted to string and joined</li>
-<li>A single string and open array of const:  Will be passed to Format</li>
-<li>Any of the above with a PLazLoggerLogGroup as filter</li>
+<li>One or more string values.</li>
+<li>
+An open array of const. All values are converted to string and joined.
+</li>
+<li>
+A single string or open array of const. Passed to Format() to get the value 
+written.
+</li>
+<li>Any of the above with a PLazLoggerLogGroup as a filter.</li>
 </ul>
-<p>This is a forwarder to the log TLazLogger object. See there for 
-details.</p>
+<p>
+DebugLn forwards the output operation to the DebugLn method in a TLazlogger 
+instance. 
+</p>
 </descr>
 <seealso>
 <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
@@ -1631,7 +1655,9 @@ details.</p>
 <short>String argument for the routine.</short>
 </element>
 <element name="DebugLn.Args">
-<short></short>
+<short>
+Array of constant values converted to a string and written in the routine.
+</short>
 </element>
 <element name="DebugLn.s1">
 <short>String argument for the routine.</short>
@@ -1689,11 +1715,14 @@ details.</p>
 </element>
 
 <element name="DebugLnEnter">
-<short>Writes a message to the log.</short>
+<short>
+Writes a message line to the log and increases the indentation level.
+</short>
 <descr>
 <p>
-Writes the text to the log. Does append a new line. Increases the current 
-intend.
+Writes the specified values text to the debugger output. Appends an end-of-line 
+sequence to the end of the values. Increases the current indentation level 
+after the value(s) are written to the debugger output.
 </p>
 <p>
 The Argument can be:
@@ -1716,7 +1745,10 @@ details.</p>
 <short>String argument for the routine.</short>
 </element>
 <element name="DebugLnEnter.Args">
-<short></short>
+<short>
+Array of constant values converted to strings, joined, and written in the 
+routine.
+</short>
 </element>
 <element name="DebugLnEnter.s1">
 <short>String argument for the routine.</short>
@@ -1774,7 +1806,7 @@ details.</p>
 </element>
 
 <element name="DebugLnExit">
-<short>Writes a message to the log.</short>
+<short>Writes a message line to the debugger .</short>
 <descr>
 <p>
 Writes the text to the log. Does append a new line. Increases the current 
@@ -1784,15 +1816,18 @@ indentation level.
 The Argument can be:
 </p>
 <ul>
-<li>One or more string</li>
-<li>An open array of const: All values are converted to string and joined</li>
-<li>A single string and open array of const:  Will be passed to Format</li>
-<li>Any of the above with a PLazLoggerLogGroup as filter</li>
-<li>This is a forwarder to the log TLazLogger object. See there for 
-details.</li>
+<li>One or more string values.</li>
+<li>An open array of const. All values are converted to string and joined.</li>
+<li>A single string and open array of const. Passed to Format().</li>
+<li>Any of the above with a PLazLoggerLogGroup as a filter.</li>
 </ul>
+<p>
+DebugLnExit forwards the output operation to the DebugLnExit method in a 
+TLazLogger class instance.
+</p>
 </descr>
 <seealso>
+<link id="TLazLogger.DebugLnExit"/>
 <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
 <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
 </seealso>
@@ -1801,7 +1836,10 @@ details.</li>
 <short>String argument for the routine.</short>
 </element>
 <element name="DebugLnExit.Args">
-<short></short>
+<short>
+Array of constant values converted to strings, joined, and output in the 
+routine.
+</short>
 </element>
 <element name="DebugLnExit.s1">
 <short>String argument for the routine.</short>
@@ -1861,14 +1899,16 @@ details.</li>
 <!-- function Visibility: default -->
 <element name="DbgS">
 <short>
-Generates a debugger message formatted with the value(s) for the specified 
+Generates a formatted debugger message with the value(s) for the specified 
 type(s).
 </short>
 <descr>
+<p>
+DbgS is used to implement the ArgsToString method in TLazLogger.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLazLogger.ArgsToString"/>
 </seealso>
 </element>
 <element name="DbgS.Result">
@@ -1902,7 +1942,9 @@ type(s).
 <short>TMethod value for the message. </short>
 </element>
 <element name="DbgS.ASize">
-<short></short>
+<short>
+TSize instance with the cx and cy values for the message.
+</short>
 </element>
 <element name="DbgS.s">
 <short>String value for the message.</short>
@@ -1926,15 +1968,21 @@ type(s).
 <!-- function Visibility: default -->
 <element name="DbgSJoin">
 <short>
-Generates a debugger message with the combined values of the specified 
+Generates a debugger message with the combined values for the specified string 
 arguments.
 </short>
-<descr/>
-<seealso/>
+<descr>
+DbgSJoin is used to implement the DbgS routine for enumeration values in a set 
+type.
+</descr>
+<seealso>
+<link id="DbgS"/>
+</seealso>
 </element>
 <element name="DbgSJoin.Result">
 <short>
-Message with the values in s1 and s2 combined into a single string.
+Message with the values in s1 and s2 combined into a comma-separated string 
+value.
 </short>
 </element>
 <element name="DbgSJoin.s1">
@@ -2040,15 +2088,14 @@ Generates a message with the tick count for the computer system.
 Generates a message with the hexadecimal-encoded content for the specified 
 block of memory and size.
 </short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<descr/>
+<seealso/>
 </element>
 <element name="dbgMemRange.Result">
-<short></short>
+<short>
+String with the contents from the specified memory block formatted as 
+hexadecimal characters.
+</short>
 </element>
 <element name="dbgMemRange.P">
 <short>Untyped pointer to the byte values examined in the routine.</short>
@@ -2070,20 +2117,31 @@ Generates a message with the hexadecimal-encoded values from the specified
 memory stream.
 </short>
 <descr>
+<p>
+Reads the content from MemStream and calls DbgMemRange to convert the buffer to 
+hexadecimal.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="DbgMemRange"/>
 </seealso>
 </element>
 <element name="dbgMemStream.Result">
-<short></short>
+<short>
+String with the contents read from MemStream and formatted as Hexadecimal 
+characters. Contains an empty string if MemStream is unassigned, not derived 
+from TMemoryStream, or Count is not a positive non-zero value.
+</short>
 </element>
 <element name="dbgMemStream.MemStream">
-<short></short>
+<short>
+TCustomMemoryStream with the content converted in the routine.
+</short>
 </element>
 <element name="dbgMemStream.Count">
-<short></short>
+<short>
+Number of bytes in MemStream to read and convert in the routine.
+</short>
 </element>
 
 <element name="DumpExceptionBackTrace">
@@ -2236,12 +2294,15 @@ created.
 <!-- procedure Visibility: default -->
 <element name="RecreateDebugLogger">
 <short>
-Discards an re-creates the logger class instance got the logger type.
+Discards an recreates the reference-counted logger class instance using the 
+logger class type for the unit.
 </short>
 <descr>
+<p>
+RecreateDebugLogger is called from the initialization section for the 
+<file>lazlogger.pas</file> unit.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
@@ -2252,7 +2313,11 @@ Discards an re-creates the logger class instance got the logger type.
 Unit property with the logger class instance for the logger type.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TLazLogger"/>
+<link id="GetDebugLogger"/>
+<link id="SetDebugLogger"/>
+</seealso>
 </element>
 
 <!-- property Visibility: default -->
@@ -2270,23 +2335,44 @@ Unit property with the list of log groups defined for a logger class instance.
 <short>
 Generates a debugger message with the content from the specified value.
 </short>
-<descr/>
+<descr>
+<p>
+DbgStr is an overloaded String function used to generate a string value using 
+the content and formatting specified in the parameter values. The overloaded 
+variants allow the string (or a range of characters in the string) which may 
+contain multi-byte UTF-8 characters to be formatted for use in a debugger 
+message. Any character with an ordinal value not in the range #32..#126 is 
+converted to its hexadecimal character notation like #$FF. Any character with a 
+value in the range #32..#126 is not altered.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="DbgStr.Result">
-<short/>
+<short>
+String with the value after special characters are converted to hexadecimal 
+notation.
+</short>
 </element>
 <element name="DbgStr.StringWithSpecialChars">
-<short/>
+<short>
+String with the special characters converted to hexadecimal notation.
+</short>
 </element>
 <element name="DbgStr.StartPos">
-<short/>
+<short>
+Ordinal position for the first character examined in the routine.
+</short>
 </element>
 <element name="DbgStr.Len">
-<short/>
+<short>
+Pointer an Integer with the number of characters examined in the routine.
+</short>
 </element>
 <element name="DbgStr.p">
-<short/>
+<short>
+Constant PChar type with the content examined and converted in the routine.
+</short>
 </element>
 
 <element name="DbgWideStr">
@@ -2297,10 +2383,15 @@ Generates a debugger message with the specified WideString content.
 <seealso/>
 </element>
 <element name="DbgWideStr.Result">
-<short/>
+<short>
+String with the value after special characters are converted to hexadecimal 
+notation.
+</short>
 </element>
 <element name="DbgWideStr.StringWithSpecialChars">
-<short/>
+<short>
+String with the special characters converted to hexadecimal notation.
+</short>
 </element>
 
 <element name="DumpStack">
