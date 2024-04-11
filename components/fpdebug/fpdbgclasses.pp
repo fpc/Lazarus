@@ -335,7 +335,7 @@ type
     destructor Destroy; override;
     function CompareStepInfo(AnAddr: TDBGPtr = 0; ASubLine: Boolean = False): TFPDCompareStepInfo;
     function IsAtStartOfLine: boolean;
-    procedure StoreStepInfo(AnAddr: TDBGPtr = 0);
+    function StoreStepInfo(AnAddr: TDBGPtr = 0): boolean;
     property ID: Integer read FID;
     property Num: Integer read FNum;
     property Handle: THandle read FHandle;
@@ -936,7 +936,7 @@ type
     function  FindProcSymbol(const AName: String): TFpSymbol; overload; // deprecated 'backward compatible / use FindProcSymbol(AName, TheDbgProcess)';
     function  FindProcSymbol(const AName: String; ASymInstance: TDbgInstance): TFpSymbol; overload;
     procedure FindProcSymbol(const AName: String; ASymInstance: TDbgInstance; out ASymList: TFpSymbolArray; AIgnoreCase: Boolean = False);
-    function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
+    function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;deprecated 'XXXXXXXXXXXXXXXXXXXXXXXXXX';
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
     function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
@@ -3449,7 +3449,7 @@ begin
   sym.ReleaseReference;
 end;
 
-procedure TDbgThread.StoreStepInfo(AnAddr: TDBGPtr);
+function TDbgThread.StoreStepInfo(AnAddr: TDBGPtr): boolean;
 var
   Sym: TFpSymbol;
 begin
@@ -3480,6 +3480,7 @@ begin
     debugln(FPDBG_COMMANDS, ['StoreStepInfo @IP=',AnAddr,' - No symbol']);
     FStoreStepSrcLineNo:=-1;
   end;
+  Result := (FStoreStepSrcFilename <> '') or (FStoreStepSrcLineNo > 0);
 end;
 
 procedure TDbgThread.LoadRegisterValues;

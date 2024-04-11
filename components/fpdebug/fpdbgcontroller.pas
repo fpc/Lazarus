@@ -98,6 +98,7 @@ type
 
     procedure CallProcessContinue(ASingleStep: boolean; ASkipCheckNextInstr: Boolean = False);
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
+    procedure DoResolveEventForStepOverAsmInstr(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
   public
     destructor Destroy; override;
     function DoContinue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
@@ -123,6 +124,7 @@ type
     FStartedInFuncName: String;
     FStepInfoUpdatedForStepOut, FStepInfoUnavailAfterStepOut: Boolean;
     FStoreStepInfoAtInit: Boolean;
+    FHasStepInfo: Boolean;
   protected
     procedure Init; override;
     procedure UpdateThreadStepInfoAfterStepOut(ANextOnlyStopOnStartLine: Boolean);
@@ -958,6 +960,23 @@ begin
   FProcess.Continue(FProcess, FThread, ASingleStep);
 end;
 
+procedure TDbgControllerHiddenBreakStepBaseCmd.DoResolveEventForStepOverAsmInstr(
+  var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
+begin
+  if FHiddenBreakpoint <> nil then
+    Finished := IsAtOrOutOfHiddenBreakFrame
+  else
+    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
+  if Finished then
+  begin
+    AnEvent := deFinishedStep;
+    RemoveHiddenBreak;
+  end
+  else
+  if AnEvent = deFinishedStep then
+    AnEvent := deInternalContinue;
+end;
+
 destructor TDbgControllerHiddenBreakStepBaseCmd.Destroy;
 begin
   RemoveHiddenBreak;
@@ -990,18 +1009,7 @@ end;
 procedure TDbgControllerStepOverInstructionCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  if FHiddenBreakpoint <> nil then
-    Finished := IsAtOrOutOfHiddenBreakFrame
-  else
-    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
-  if Finished then
-  begin
-    AnEvent := deFinishedStep;
-    RemoveHiddenBreak;
-  end
-  else
-  if AnEvent = deFinishedStep then
-    AnEvent := deInternalContinue;
+  DoResolveEventForStepOverAsmInstr(AnEvent, AnEventThread, Finished);
 end;
 
 { TDbgControllerLineStepBaseCmd }
@@ -1011,7 +1019,7 @@ begin
   InitStackFrameInfo;
 
   if FStoreStepInfoAtInit then begin
-    FThread.StoreStepInfo;
+    FHasStepInfo := FThread.StoreStepInfo;
     FStartedInFuncName := FThread.StoreStepFuncName;
   end;
   inherited Init;
@@ -1117,6 +1125,11 @@ procedure TDbgControllerStepIntoLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepIntoLineCmd.DoContinue: FProcess=AProcess');
+  if not FHasStepInfo then begin
+    FProcess.Continue(FProcess, FThread, True);
+    exit;
+  end;
+
   if (FState = siSteppingCurrent) then
   begin
     if CheckForCallAndSetBreak then begin
@@ -1141,6 +1154,13 @@ procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
 var
   CompRes: TFPDCompareStepInfo;
 begin
+  if not FHasStepInfo then begin
+    Finished := (AnEvent<>deInternalContinue);
+    if Finished then
+      AnEvent := deFinishedStep;
+    exit;
+  end;
+
   UpdateThreadStepInfoAfterStepOut(True);
 
   if IsAtOrOutOfHiddenBreakFrame then begin
@@ -1196,6 +1216,12 @@ procedure TDbgControllerStepOverLineCmd.InternalContinue(AProcess: TDbgProcess;
   AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerStepOverLineCmd.DoContinue: FProcess=AProcess');
+  if not FHasStepInfo then begin
+    CheckForCallAndSetBreak;
+    CallProcessContinue(FHiddenBreakpoint = nil);
+    exit;
+  end;
+
   CheckForCallAndSetBreak;
 
   if FHiddenBreakpoint = nil then
@@ -1217,6 +1243,11 @@ end;
 procedure TDbgControllerStepOverLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 begin
+  if not FHasStepInfo then begin
+    DoResolveEventForStepOverAsmInstr(AnEvent, AnEventThread, Finished);
+    exit;
+  end;
+
   UpdateThreadStepInfoAfterStepOut(True);
   if IsAtOrOutOfHiddenBreakFrame then
       RemoveHiddenBreak;
