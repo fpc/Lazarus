@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Documentation for LCL (Lazarus Component Library) and LazUtils (Lazarus 
+Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0 
+International public license.
+
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+file://../../cc-by-sa-4-0.txt
+
+Copyright (c) 1997-2024, by the Lazarus Development Team.
+
+-->
+<fpdoc-descriptions>
+<package name="lazutils">
+<!--
+====================================================================
+LazTty
+====================================================================
+-->
+<module name="laztty">
+<short>
+Contains platform-specific code for checking TTY output.
+</short>
+<descr>
+<p>
+<file>laztty.pas</file> is copied from Free Pascal Compiler source files 
+<file>comptty.pas</file> and <file>comphook.pas</file>. Copyright (c) 2020 by 
+the Free Pascal development team.
+</p>
+<p>
+This program is free software; you can redistribute it and/or modify it under 
+the terms of the GNU General Public License as published by the Free Software 
+Foundation; either version 2 of the License, or (at your option) any later 
+version.
+</p>
+<p>
+This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+</p>
+<p>
+You should have received a copy of the GNU General Public License along with 
+this program; if not, write to the Free Software Foundation, Inc., 675 Mass 
+Ave, Cambridge, MA 02139, USA.
+</p>
+</descr>
+
+<element name="IsATTY">
+<short>
+Indicates whether the specified Text file type supports colorization on a given 
+platform.
+</short>
+<descr>
+<p>
+The return value is platform-dependent, and returns <b>True</b> if the platform 
+supports ANSI escape sequences in TTY output.
+</p>
+<dl>
+<dt>Linux and Darwin (macOS) </dt>
+<dd>
+Returns <b>True</b> when termio indicates the file type is a TTY device.
+</dd>
+<dt>Windows</dt>
+<dd>
+Returns <b>True</b> when ENABLE_VIRTUAL_TERMINAL_PROCESSING can be enabled for 
+the Text file type. Please note that this facility is available for Windows 
+version 10 or higher. Previous versions cannot handle ANSI escape sequences.
+</dd>
+<dt>OS/2</dt>
+<dd>
+Returns <b>True</b> if DosQueryHType indicates the file type is a hardware 
+device and not a pipe.
+</dd>
+<dt>Go32V32 and Watcom</dt>
+<dd>
+Returns <b>True</b> is ANSI.SYS is available for the platform and bit 7 is set 
+for the Text file type.
+</dd>
+</dl>
+<p>
+The default return value is <b>False</b>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="IsATTY.Result">
+<short>
+Returns <b>True</b> if colorization is supported for the platform.
+</short>
+</element>
+<element name="IsATTY.t">
+<short>
+Text file type examined in the routine.  
+</short>  
+</element>
+
+<element name="TTYCheckSupported">
+<short>
+Constant which allows compile-time removal of the coloring functionality on 
+unsupported platforms.
+</short>
+<descr>
+<p>
+Colorization is supported for:
+</p>
+<ul>
+<li>Linux</li>
+<li>Windows (version 10+)</li>
+<li>Darwin (macOS)</li>
+<li>OS/2</li>
+<li>Go32V2</li>
+<li>WATCOM</li>
+</ul>
+</descr>
+<seealso>
+<link id="IsATTY"/>
+</seealso>
+</element>
+
+<element name="TOutputColor">
+<short>
+Represents the colors allowed for colorized text output on a TTY device.
+</short>
+<descr>
+<p>
+<var>TOutputColor</var> is the type passed as an argument to the 
+<var>WriteColoredOutput</var> routine. Values in the enumeration are also used 
+in the implementation of the <var>Colorize</var> routine.
+</p>
+</descr>
+<seealso>
+<link id="WriteColoredOutput"/>
+<link id="Colorize"/>
+</seealso>
+</element>
+<element name="TOutputColor.oc_black">
+<short>Represents the color Black.</short>
+</element>
+<element name="TOutputColor.oc_red">
+<short>Represents the color Red.</short>
+</element>
+<element name="TOutputColor.oc_green">
+<short>Represents the color Green.</short>
+</element>
+<element name="TOutputColor.oc_orange">
+<short>Represents the color Orange.</short>
+</element>
+<element name="TOutputColor.oc_blue">
+<short>Represents the color Blue.</short>
+</element>
+<element name="TOutputColor.oc_magenta">
+<short>Represents the color Magenta.</short>
+</element>
+<element name="TOutputColor.oc_cyan">
+<short>Represents the color Cyan.</short>
+</element>
+<element name="TOutputColor.oc_lightgray">
+<short>Represents the color Light Gray.</short>
+</element>
+
+<element name="WriteColoredOutput">
+<short>
+Writes text using the specified color to a Text file type when enabled.
+</short>
+<descr>
+<p>
+<var>WriteColoredOutput</var> colorizes the value in <var>s</var> when 
+TTYCheckSupported indicates that the action is supported for the platform and 
+<var>t</var> is a TTY device. If both conditions are not met, the text in 
+<var>s</var> is not colorized and is written as-is to the Text file type.
+</p>
+<p>
+WriteColoredOutput surrounds a write operation to <var>t</var> with ANSI escape 
+codes needed to set the text color and reset the text when done. The text color 
+in <var>color</var> uses the Bold attribute when the color is set. Both the 
+color and the style are removed using another ANSI escape code when the write 
+is completed.
+</p>
+<p>
+See <link id="TOutputColor">TOutputColor</link> for the color values supported 
+in the routine.
+</p>
+<p>
+Use <link id="Colorize">Colorize</link> to examine and colorize compiler- or 
+build-related keywords found in a string value.
+</p>
+</descr>
+<seealso>
+<link id="Colorize"/>
+<link id="TOutputColor"/>
+<link id="TTYCheckSupported"/>
+<link id="IsATTY"/>
+</seealso>
+</element>
+<element name="WriteColoredOutput.t">
+<short>
+Text file type where the string value is written.  
+</short>
+</element>
+<element name="WriteColoredOutput.color">
+<short>
+Foreground color for the specified text.  
+</short>
+</element>
+<element name="WriteColoredOutput.s">
+<short>
+Text colorized (optional) and written in the routine.
+</short>
+</element>
+
+<element name="Colorize">
+<short>
+Gets a string with colorized compiler and build keywords.
+</short>
+<descr>
+<p>
+<var>Colorize</var> is an <var>AnsiString</var> function used to examine and to 
+colorize any keywords found in <var>s</var>.
+</p>
+<p>
+Colorize recognizes and applies colors for the following compiler- and 
+build-related keywords:
+</p>
+<table>
+<tr>
+<td><b>Keyword</b></td>
+<td><b>Color</b></td>
+</tr>
+<tr>
+<td>'Note:'</td>
+<td>oc_orange</td>
+</tr>
+<tr>
+<td>'Hint:'</td>
+<td>oc_lightgray</td>
+</tr>
+<tr>
+<td>'Warning:'</td>
+<td>oc_magenta</td>
+</tr>
+<tr>
+<td>'Error:'</td>
+<td>oc_red</td>
+</tr>
+<tr>
+<td>'(lazbuild)'</td>
+<td>oc_lightgray</td>
+</tr>
+<tr>
+<td>'(lazarus)'</td>
+<td>oc_cyan</td>
+</tr>
+<tr>
+<td>gtk2</td>
+<td>oc_green</td>
+</tr>
+</table>
+<p>
+The keyword is surrounded by ANSI escape codes to set and reset both the color 
+and style for the keyword. Any text in s which is not a keyword is returned in 
+its unmodified form.
+</p>
+<p>
+Use WriteColoredOutput to colorize the contents of a string and write the value 
+to a Text file type.
+</p>
+<p>
+Colorize is used in the implementation of the 
+<link id="#lazutils.lazlogger.TLazLoggerFileHandle.WriteLnToFile">
+WriteLnToFile</link> method in TLazLoggerFileHandle.
+</p>
+</descr>
+<seealso>
+<link id="WriteColoredOutput"/>
+<link id="TOutputColor"/>
+<link id="#lazutils.lazlogger.TLazLoggerFileHandle.WriteLnToFile">TLazLoggerFileHandle.WriteLnToFile</link>
+</seealso>
+</element>
+<element name="Colorize.Result">
+<short>
+String with the value after keywords have been colorized.
+</short>
+</element>
+<element name="Colorize.s">
+<short>
+String with keywords colorized in the routine.
+</short>
+</element>
+
+</module>
+<!-- LazTty -->
+</package>
+</fpdoc-descriptions>
