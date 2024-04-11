@@ -3641,7 +3641,8 @@ begin
     end;
     if CurPos.Flag<>cafSemicolon then
       SaveRaiseCharExpectedButAtomFound(20170421195628,';');
-  end else if UpAtomIs('SECTION') and CanExternal and Scanner.Values.IsDefined('EMBEDDED')
+  end else if UpAtomIs('SECTION') and CanExternal
+      and (Scanner.Values.IsDefined('EMBEDDED') or Scanner.Values.IsDefined('WASI'))
   then begin
     // section 'sectionname'
     ReadNextAtom;
