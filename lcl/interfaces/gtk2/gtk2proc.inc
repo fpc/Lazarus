@@ -7162,8 +7162,13 @@ begin
   // resize
   gtk_window_resize(Window, Width, Height);
   // reposition
-  gtk_window_get_position(Window, @x, @y);
-  if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
+  if LockTopLevelWindowResizeOnNativeCall then
+  begin
+    gtk_window_get_position(Window, @x, @y);
+    if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
+      gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
+  end
+  else
     gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
   // force early resize
   allocation := PGtkWidget(Window)^.allocation;
@@ -7175,10 +7180,15 @@ begin
   if (PGtkWidget(Window)^.Window <> nil) then
   begin
     // resize gdkwindow directly (sometimes the gtk forgets this)
-    if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
-      gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,AWinControl.Top,Width,Height)
+    if LockTopLevelWindowResizeOnNativeCall then
+    begin
+      if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
+        gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,AWinControl.Top,Width,Height)
+      else
+        gdk_window_resize(PGtkWidget(Window)^.Window,Width,Height);
+    end
     else
-      gdk_window_resize(PGtkWidget(Window)^.Window,Width,Height);
+      gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,AWinControl.Top,Width,Height);
   end;
 
   {$IFDEF VerboseSizeMsg}
