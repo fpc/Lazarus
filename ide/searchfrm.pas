@@ -36,9 +36,9 @@ uses
   // LCL
   LCLIntf, Forms, Controls, ComCtrls, Dialogs, ExtCtrls, StdCtrls, Buttons,
   // CodeTools
-  SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
+  SourceLog, BasicCodeTools, FileProcs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazTracer,
+  FileUtil, LazFileUtils, LazFileCache, LazTracer, LazUTF8,
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   ProjectGroupIntf, InputHistory,
@@ -582,8 +582,8 @@ begin
     end else begin
       // convert case if necessary
       if not (sesoMatchCase in Flags) then begin
-        CaseFile:=TSourceLog.Create(UpperCaseStr(OriginalFile.Source));
-        TempSearch:=UpperCaseStr(TempSearch);
+        CaseFile:=TSourceLog.Create(UTF8UpperCase(OriginalFile.Source));
+        TempSearch:=UTF8UpperCase(TempSearch);
         Src:=CaseFile.Source;
       end else
         Src:=OriginalFile.Source;
