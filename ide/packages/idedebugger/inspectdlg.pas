@@ -45,7 +45,7 @@ uses
   BaseDebugManager, Debugger, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult,
   IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame, WatchInspectToolbar,
   DebuggerDlg, IdeDebuggerStringConstants, IdeDebuggerUtils, EnvDebuggerOptions,
-  IdeDebuggerDisplayFormats, IdeDebuggerOpts;
+  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink;
 
 type
 
@@ -1327,10 +1327,10 @@ procedure TIDEInspectDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
   FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
-  if ProjectDisplayFormatConfigsUseIde then
+  if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
     DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
-  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
-    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
+  if DbgProjectLink.UseDisplayFormatConfigsFromProject then
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
   DoDispFormatChanged(Nil);
 end;
 

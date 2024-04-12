@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls,
   IdeDbgValueFormatterSettingsFrame, IdeDebuggerValueFormatter,
-  IdeDebuggerStringConstants, LazarusIDEStrConsts, DebugManager, Project,
+  IdeDebuggerStringConstants, ProjectDebugLink, LazarusIDEStrConsts, DebugManager, Project,
   DividerBevel, IDEOptionsIntf, IDEOptEditorIntf, DbgIntfDebuggerBase;
 
 type
@@ -62,13 +62,13 @@ procedure TIdeProjectValueFormatterOptionsFrame.ReadSettings(AOptions: TAbstract
 begin
   if FValFormatList = nil then
     FValFormatList := TIdeDbgValueFormatterSelectorList.Create;
-  FValFormatList.Assign(DebugBossMgr.ProjectLink.ValueFormatterConfig);
+  FValFormatList.Assign(DbgProjectLink.ValueFormatterConfig);
   FValFormatList.Changed := False;
   IdeDbgVarFormatterFrame1.ValFormmaterList := FValFormatList;
 
-  chkStoreInSession.Checked := DebugBossMgr.ProjectLink.StoreValueFormatterConfigInSession;
-  chkUseGlobalList.Checked  := DebugBossMgr.ProjectLink.UseValueFormatterFromIDE;
-  chkUseProjList.Checked    := DebugBossMgr.ProjectLink.UseValueFormatterFromProject;
+  chkStoreInSession.Checked := DbgProjectLink.StoreValueFormatterConfigInSession;
+  chkUseGlobalList.Checked  := DbgProjectLink.UseValueFormatterFromIDE;
+  chkUseProjList.Checked    := DbgProjectLink.UseValueFormatterFromProject;
 end;
 
 procedure TIdeProjectValueFormatterOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -78,17 +78,17 @@ begin
   IdeDbgVarFormatterFrame1.SaveCurrent;
 
   HasChg :=
-    (DebugBossMgr.ProjectLink.UseValueFormatterFromIDE <> chkUseGlobalList.Checked) or
-    (DebugBossMgr.ProjectLink.UseValueFormatterFromProject <> chkUseProjList.Checked) or
+    (DbgProjectLink.UseValueFormatterFromIDE <> chkUseGlobalList.Checked) or
+    (DbgProjectLink.UseValueFormatterFromProject <> chkUseProjList.Checked) or
     FValFormatList.Changed;
 
-  DebugBossMgr.ProjectLink.StoreValueFormatterConfigInSession := chkStoreInSession.Checked;
-  DebugBossMgr.ProjectLink.UseValueFormatterFromIDE := chkUseGlobalList.Checked;
-  DebugBossMgr.ProjectLink.UseValueFormatterFromProject := chkUseProjList.Checked;
+  DbgProjectLink.StoreValueFormatterConfigInSession := chkStoreInSession.Checked;
+  DbgProjectLink.UseValueFormatterFromIDE := chkUseGlobalList.Checked;
+  DbgProjectLink.UseValueFormatterFromProject := chkUseProjList.Checked;
 
   if FValFormatList.Changed then begin
-    DebugBossMgr.ProjectLink.ValueFormatterConfig.Assign(FValFormatList);
-    DebugBossMgr.ProjectLink.ValueFormatterConfig.Changed := True;
+    DbgProjectLink.ValueFormatterConfig.Assign(FValFormatList);
+    DbgProjectLink.ValueFormatterConfig.Changed := True;
 
   end;
   if (DebugBossManager <> nil) and HasChg then

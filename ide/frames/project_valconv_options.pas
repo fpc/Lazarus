@@ -18,7 +18,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeDebugger
   IdeDebuggerStringConstants, IdeDbgValueConverterSettingsFrame, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv,
+  IdeDebuggerBackendValueConv, ProjectDebugLink,
   // IDE
   Project, DebugManager, LazarusIDEStrConsts;
 
@@ -76,13 +76,13 @@ procedure TIdeProjectValConvOptionsFrame.ReadSettings(
 begin
   if FValConvList = nil then
     FValConvList := TIdeDbgValueConvertSelectorList.Create;
-  FValConvList.Assign(DebugBossMgr.ProjectLink.BackendConverterConfig);
+  FValConvList.Assign(DbgProjectLink.BackendConverterConfig);
   FValConvList.Changed := False;
   DbgValConvFrame1.ValConvList := FValConvList;
 
-  chkStoreInSession.Checked := DebugBossMgr.ProjectLink.StoreBackendConverterConfigInSession;
-  chkUseGlobalList.Checked  := DebugBossMgr.ProjectLink.UseBackendConverterFromIDE;
-  chkUseProjList.Checked    := DebugBossMgr.ProjectLink.UseBackendConverterFromProject;
+  chkStoreInSession.Checked := DbgProjectLink.StoreBackendConverterConfigInSession;
+  chkUseGlobalList.Checked  := DbgProjectLink.UseBackendConverterFromIDE;
+  chkUseProjList.Checked    := DbgProjectLink.UseBackendConverterFromProject;
 end;
 
 procedure TIdeProjectValConvOptionsFrame.WriteSettings(
@@ -93,17 +93,17 @@ begin
   DbgValConvFrame1.SaveCurrent;
 
   HasChg :=
-    (DebugBossMgr.ProjectLink.UseBackendConverterFromIDE <> chkUseGlobalList.Checked) or
-    (DebugBossMgr.ProjectLink.UseBackendConverterFromProject <> chkUseProjList.Checked) or
+    (DbgProjectLink.UseBackendConverterFromIDE <> chkUseGlobalList.Checked) or
+    (DbgProjectLink.UseBackendConverterFromProject <> chkUseProjList.Checked) or
     FValConvList.Changed;
 
-  DebugBossMgr.ProjectLink.StoreBackendConverterConfigInSession := chkStoreInSession.Checked;
-  DebugBossMgr.ProjectLink.UseBackendConverterFromIDE := chkUseGlobalList.Checked;
-  DebugBossMgr.ProjectLink.UseBackendConverterFromProject := chkUseProjList.Checked;
+  DbgProjectLink.StoreBackendConverterConfigInSession := chkStoreInSession.Checked;
+  DbgProjectLink.UseBackendConverterFromIDE := chkUseGlobalList.Checked;
+  DbgProjectLink.UseBackendConverterFromProject := chkUseProjList.Checked;
 
   if FValConvList.Changed then begin
-    DebugBossMgr.ProjectLink.BackendConverterConfig.Assign(FValConvList);
-    DebugBossMgr.ProjectLink.BackendConverterConfig.Changed := True;
+    DbgProjectLink.BackendConverterConfig.Assign(FValConvList);
+    DbgProjectLink.BackendConverterConfig.Changed := True;
 
   end;
   if (DebugBossManager <> nil) and HasChg then

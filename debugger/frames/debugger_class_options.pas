@@ -38,7 +38,7 @@ uses
   // LazDebuggerGDBMI
   GDBMIDebugger,
   // IdeDebugger
-  Debugger, IdeDebuggerOpts, EnvDebuggerOptions,
+  Debugger, IdeDebuggerOpts, EnvDebuggerOptions, ProjectDebugLink,
   // IdeConfig
   EnvironmentOpts, TransferMacros,
   // IDE
@@ -592,10 +592,10 @@ begin
 
   if ShowWarningOverridenByProject and Assigned(FSelectedDbgPropertiesConfig) then
     lblWarningProject.Visible := not (
-      (DebugBossMgr.ProjectLink.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
-      (DebugBossMgr.ProjectLink.DebuggerBackend = 'IDE') or
-      ( (DebugBossMgr.ProjectLink.DebuggerBackend = '') and
-        (DebugBossMgr.ProjectLink.DebuggerPropertiesConfigList.Count = 0) )
+      (DbgProjectLink.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
+      (DbgProjectLink.DebuggerBackend = 'IDE') or
+      ( (DbgProjectLink.DebuggerBackend = '') and
+        (DbgProjectLink.DebuggerPropertiesConfigList.Count = 0) )
     );
 end;
 

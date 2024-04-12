@@ -148,7 +148,6 @@ type
   private
     FDebugger: TDebuggerIntf;
     FEventLogManager: TDebugEventLogManager;
-    FProjectLink: TProjectDebugLink;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FInStateChange: Boolean;
@@ -318,8 +317,6 @@ type
     procedure UnregisterStateChangeHandler(AHandler: TDebuggerStateChangeNotification); override;
     procedure RegisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); override;
     procedure UnregisterWatchesInvalidatedHandler(AHandler: TNotifyEvent); override;
-
-    property ProjectLink: TProjectDebugLink read FProjectLink;
   end;
 
 function GetDebugManager: TDebugManager;
@@ -2115,7 +2112,6 @@ begin
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 
   FEventLogManager := TDebugEventLogManager.Create;
-  FProjectLink := TProjectDebugLink.Create;
 end;
 
 destructor TDebugManager.Destroy;
@@ -2136,7 +2132,6 @@ begin
   SetDebugger(nil);
 
   FreeAndNil(FCurrentWatches);
-  FreeAndNil(FProjectLink);
   FreeAndNil(FEventLogManager);
   FreeAndNil(FSnapshots);
   FreeAndNil(FWatches);
@@ -2499,37 +2494,25 @@ var
   d: TDebugDialogType;
 begin
   ValueConverterSelectorList.Lock;
-  ProjectValueConverterSelectorList := nil;
-  ProjectValueFormatterSelectorList := nil;
-  ProjectDisplayFormatConfigs := nil;
 
   try
     ValueConverterSelectorList.Clear;
     ValueFormatterSelectorList.Clear;
-    if {(Project1 <> nil) and} (FProjectLink.UseBackendConverterFromProject) then
-      FProjectLink.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
-    if (Project1 = nil) or (FProjectLink.UseBackendConverterFromIDE) then
+    if {(Project1 <> nil) and} (DbgProjectLink.UseBackendConverterFromProject) then
+      DbgProjectLink.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
+    if (Project1 = nil) or (DbgProjectLink.UseBackendConverterFromIDE) then
       DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
 
-    if {(Project1 <> nil) and} (FProjectLink.UseValueFormatterFromProject) then
-      FProjectLink.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
-    if (Project1 = nil) or (FProjectLink.UseValueFormatterFromIDE) then
+    if {(Project1 <> nil) and} (DbgProjectLink.UseValueFormatterFromProject) then
+      DbgProjectLink.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
+    if (Project1 = nil) or (DbgProjectLink.UseValueFormatterFromIDE) then
       DebuggerOptions.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
 
-    if (Project1 <> nil) then begin
-      ProjectValueConverterSelectorList := FProjectLink.BackendConverterConfig;
-      ProjectDisplayFormatConfigs       := FProjectLink.DisplayFormatConfigs;
-      ProjectValueFormatterSelectorList := FProjectLink.ValueFormatterConfig;
-    end;
-
-    ProjectDisplayFormatConfigsUseIde     := FProjectLink.UseDisplayFormatConfigsFromIDE;
-    ProjectDisplayFormatConfigsUseProject := FProjectLink.UseDisplayFormatConfigsFromProject;
-
     HintWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
-    if ProjectDisplayFormatConfigsUseIde then
+    if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
       DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
-    if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
-      ProjectDisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
+    if DbgProjectLink.UseDisplayFormatConfigsFromProject then
+      DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
 
     for d in TDebugDialogType do
       if FDialogs[d] <> nil then
@@ -2650,16 +2633,16 @@ begin
 
     // check if debugger needs an Exe and the exe is there
     if (NewDebuggerClass.NeedsExePath)
-    and not FileIsExecutable(FProjectLink.GetParsedDebuggerFilename)
+    and not FileIsExecutable(DbgProjectLink.GetParsedDebuggerFilename)
     then begin
       if not PromptOnError then
         ClearPathAndExe
       else begin
         debugln(['Info: (lazarus) [TDebugManager.GetLaunchPathAndExe] Project1.DebuggerFilename="',
-                 FProjectLink.DebuggerFilename,'"']);
+                 DbgProjectLink.DebuggerFilename,'"']);
         IDEMessageDialog(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro,
-            [FProjectLink.DebuggerFilename, LineEnding, LineEnding+LineEnding]),
+            [DbgProjectLink.DebuggerFilename, LineEnding, LineEnding+LineEnding]),
           mtError,[mbOK]);
         Exit;
       end;
@@ -2710,7 +2693,7 @@ begin
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
     and (not (FDebugger.ClassType = NewDebuggerClass) // exact class match
-          or (FDebugger.ExternalDebugger <> FProjectLink.GetParsedDebuggerFilename)
+          or (FDebugger.ExternalDebugger <> DbgProjectLink.GetParsedDebuggerFilename)
           or (FDebugger.State in [dsError])
         )
     then begin
@@ -2721,7 +2704,7 @@ begin
 
     // create debugger object
     if FDebugger = nil
-    then SetDebugger(NewDebuggerClass.Create(FProjectLink.GetParsedDebuggerFilename));
+    then SetDebugger(NewDebuggerClass.Create(DbgProjectLink.GetParsedDebuggerFilename));
 
     if FDebugger = nil
     then begin
@@ -2729,7 +2712,7 @@ begin
       Exit;
     end;
 
-  DbgCfg := FProjectLink.CurrentDebuggerPropertiesConfig;
+  DbgCfg := DbgProjectLink.CurrentDebuggerPropertiesConfig;
 
     if (DbgCfg <> nil) and (DbgCfg.DebuggerProperties <> nil) then
       FDebugger.GetProperties.Assign(DbgCfg.DebuggerProperties);
@@ -2871,10 +2854,10 @@ function TDebugManager.DoSetBreakkPointWarnIfNoDebugger: boolean;
 var
   DbgClass: TDebuggerClass;
 begin
-  DbgClass := FProjectLink.CurrentDebuggerClass;
+  DbgClass := DbgProjectLink.CurrentDebuggerClass;
   if (DbgClass=nil)
   or (DbgClass.NeedsExePath
-    and (not FileIsExecutableCached(FProjectLink.GetParsedDebuggerFilename)))
+    and (not FileIsExecutableCached(DbgProjectLink.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
@@ -3474,7 +3457,7 @@ end;
 
 function TDebugManager.GetDebuggerClass: TDebuggerClass;
 begin
-  Result := FProjectLink.CurrentDebuggerClass;
+  Result := DbgProjectLink.CurrentDebuggerClass;
   if Result = nil then
     Result := TProcessDebugger;
 end;

@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, DebugManager, LazarusIDEStrConsts,
   Project, DisplayFormatDefaultsConfigFrame, IdeDebuggerDisplayFormats, IdeDebuggerStringConstants,
-  IdeDebuggerOpts, DividerBevel, IDEOptionsIntf, IDEOptEditorIntf, DbgIntfDebuggerBase;
+  IdeDebuggerOpts, ProjectDebugLink, DividerBevel, IDEOptionsIntf, IDEOptEditorIntf,
+  DbgIntfDebuggerBase;
 
 type
 
@@ -61,12 +62,12 @@ procedure TProjectDisplayFormatOptionsFrame.ReadSettings(AOptions: TAbstractIDEO
 begin
   if FDisplayFormatConfig = nil then
     FDisplayFormatConfig := TDisplayFormatConfig.Create;
-  FDisplayFormatConfig.Assign(DebugBossMgr.ProjectLink.DisplayFormatConfigs);
+  FDisplayFormatConfig.Assign(DbgProjectLink.DisplayFormatConfigs);
   DisplayFormatDefaultsConfigFrame1.DisplayFormatConfig := FDisplayFormatConfig;
 
-  chkStoreInSession.Checked := DebugBossMgr.ProjectLink.StoreDisplayFormatConfigsInSession;
-  chkUseGlobalList.Checked  := DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromIDE;
-  chkUseProjList.Checked    := DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromProject;
+  chkStoreInSession.Checked := DbgProjectLink.StoreDisplayFormatConfigsInSession;
+  chkUseGlobalList.Checked  := DbgProjectLink.UseDisplayFormatConfigsFromIDE;
+  chkUseProjList.Checked    := DbgProjectLink.UseDisplayFormatConfigsFromProject;
 end;
 
 procedure TProjectDisplayFormatOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -74,24 +75,24 @@ var
   c, HasChg: Boolean;
 begin
   DisplayFormatDefaultsConfigFrame1.SaveConfig;
-  c := DebugBossMgr.ProjectLink.DisplayFormatConfigs.Changed;
-  DebugBossMgr.ProjectLink.DisplayFormatConfigs.Changed := False;
-  DebugBossMgr.ProjectLink.DisplayFormatConfigs.Assign(FDisplayFormatConfig); // assign will trigger changed, if anything changed
+  c := DbgProjectLink.DisplayFormatConfigs.Changed;
+  DbgProjectLink.DisplayFormatConfigs.Changed := False;
+  DbgProjectLink.DisplayFormatConfigs.Assign(FDisplayFormatConfig); // assign will trigger changed, if anything changed
 
   HasChg :=
-    (DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromIDE <> chkUseGlobalList.Checked) or
-    (DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromProject <> chkUseProjList.Checked);
+    (DbgProjectLink.UseDisplayFormatConfigsFromIDE <> chkUseGlobalList.Checked) or
+    (DbgProjectLink.UseDisplayFormatConfigsFromProject <> chkUseProjList.Checked);
 
-  DebugBossMgr.ProjectLink.StoreDisplayFormatConfigsInSession := chkStoreInSession.Checked;
-  DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromIDE := chkUseGlobalList.Checked;
-  DebugBossMgr.ProjectLink.UseDisplayFormatConfigsFromProject := chkUseProjList.Checked;
+  DbgProjectLink.StoreDisplayFormatConfigsInSession := chkStoreInSession.Checked;
+  DbgProjectLink.UseDisplayFormatConfigsFromIDE := chkUseGlobalList.Checked;
+  DbgProjectLink.UseDisplayFormatConfigsFromProject := chkUseProjList.Checked;
 
-  if HasChg or DebugBossMgr.ProjectLink.DisplayFormatConfigs.Changed then begin
+  if HasChg or DbgProjectLink.DisplayFormatConfigs.Changed then begin
     if (DebugBossManager <> nil) then
       DebugBossManager.DoBackendConverterChanged;
   end
   else
-    DebugBossMgr.ProjectLink.DisplayFormatConfigs.Changed := c;
+    DbgProjectLink.DisplayFormatConfigs.Changed := c;
 end;
 
 class function TProjectDisplayFormatOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

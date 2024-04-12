@@ -289,9 +289,13 @@
       <Item>
         <Filename Value="idedebugger_displayformat_options.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="idedebugger_displayformat_options"/>
+        <UnitName Value="IdeDebugger_DisplayFormat_Options"/>
         <ResourceBaseClass Value="Frame"/>
         <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="projectdebuglink.pas"/>
+        <UnitName Value="ProjectDebugLink"/>
       </Item>
     </Files>
     <i18n>
@@ -299,6 +303,9 @@
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="IdeProject"/>
+      </Item>
       <Item>
         <PackageName Value="LazDebuggerGdbmi"/>
       </Item>

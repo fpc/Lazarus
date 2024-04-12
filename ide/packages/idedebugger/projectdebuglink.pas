@@ -11,9 +11,9 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeDebugger
-  IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,
+  IdeDebuggerOpts, IdeDebuggerBackendValueConv,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
-  // IDE
+  // IdeProject
   Project;
 
 type
@@ -109,7 +109,21 @@ type
                                                   write SetUseValueFormatterFromProject default True;
   end;
 
+function GetDbgProjectLink: TProjectDebugLink;
+
+property DbgProjectLink: TProjectDebugLink read GetDbgProjectLink;
+
 implementation
+
+var
+  TheDbgProjectLink: TProjectDebugLink;
+
+function GetDbgProjectLink: TProjectDebugLink;
+begin
+  if TheDbgProjectLink = nil then
+    TheDbgProjectLink := TProjectDebugLink.Create;
+  Result := TheDbgProjectLink;
+end;
 
 { TProjectDebugLink }
 
@@ -128,8 +142,6 @@ begin
   FValueFormatterConfig.OnChanged := @ValueFormatterConfigChanged;
   FUseValueFormatterFromIDE := True;
   FUseValueFormatterFromProject := True;
-  if DebugBossManager <> nil then
-    DebugBossManager.DoBackendConverterChanged;
 end;
 
 destructor TProjectDebugLink.Destroy;
@@ -160,6 +172,8 @@ begin
   FProject := AValue;
   if Assigned(FProject) then
     FProject.DebuggerLink := Self;
+  if DebugBossManager <> nil then
+    DebugBossManager.DoBackendConverterChanged;
 end;
 
 procedure TProjectDebugLink.SetStoreDebuggerClassConfInSession(AValue: boolean);
@@ -293,7 +307,6 @@ begin
   FStoreBackendConverterConfigInSession := aXMLConfig.GetValue(Path+'Debugger/StoreBackendConverterConfigInSession/Value', False);
   if not FStoreBackendConverterConfigInSession then begin
     FBackendConverterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/BackendConv/');
-    ProjectValueConverterSelectorList := FBackendConverterConfig;
     FBackendConverterConfigWasFromLPI := True;
   end;
   // This is for backward compatibility (only trunk 2.1 did use this / Can be removed in some time after 2.2 / but needs LoadFromSession to change default to '')
@@ -301,13 +314,11 @@ begin
 
   if not FStoreDisplayFormatConfigsInSession then begin
     FDisplayFormatConfigs.LoadFromXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/');
-    ProjectDisplayFormatConfigs := FDisplayFormatConfigs;
     FDisplayFormatConfigsWasFromLPI := True;
   end;
 
   if not FStoreValueFormatterConfigInSession then begin
     FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
-    ProjectValueFormatterSelectorList := FValueFormatterConfig;
     FValueFormatterConfigWasFromLPI := True;
   end;
 
@@ -326,19 +337,16 @@ begin
   FUseBackendConverterFromProject := aXMLConfig.GetValue(Path+'Debugger/BackendConvOpts/UseBackendConverterFromProject', True);
   if FStoreBackendConverterConfigInSession then begin
     FBackendConverterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/BackendConv/');
-    ProjectValueConverterSelectorList := FBackendConverterConfig;
     FBackendConverterConfigWasFromSession := True;
   end;
 
   if FStoreDisplayFormatConfigsInSession then begin
     FDisplayFormatConfigs.LoadFromXml(aXMLConfig, Path+'Debugger/DisplayFormatConfigs/');
-    ProjectDisplayFormatConfigs := FDisplayFormatConfigs;
     FDisplayFormatConfigsWasFromSession := True;
   end;
 
   if FStoreValueFormatterConfigInSession then begin
     FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
-    ProjectValueFormatterSelectorList := FValueFormatterConfig;
     FValueFormatterConfigWasFromSession := True;
   end;
 
@@ -481,5 +489,7 @@ begin
     FProject.Modified := True;
 end;
 
+finalization
+  FreeAndNil(TheDbgProjectLink);
 end.
 

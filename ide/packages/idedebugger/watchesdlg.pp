@@ -55,9 +55,9 @@ uses
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
-  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, ArrayNavigationFrame,
-  IdeDebuggerUtils, IdeDebuggerStringConstants, DbgTreeViewWatchData,
-  EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerOpts;
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, ArrayNavigationFrame, IdeDebuggerUtils,
+  IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions, IdeDebuggerValueFormatter,
+  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink;
 
 type
 
@@ -380,10 +380,10 @@ procedure TWatchesDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
   FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
-  if ProjectDisplayFormatConfigsUseIde then
+  if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
     DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
-  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
-    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
+  if DbgProjectLink.UseDisplayFormatConfigsFromProject then
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
   UpdateAll;
 end;
 

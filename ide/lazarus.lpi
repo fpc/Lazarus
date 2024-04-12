@@ -1436,11 +1436,6 @@
         <UnitName Value="EnvGuiOptions"/>
       </Unit>
       <Unit>
-        <Filename Value="projectdebuglink.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectDebugLink"/>
-      </Unit>
-      <Unit>
         <Filename Value="frames/editor_color_tml_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TEditorColorOptionsTMLFrame"/>

@@ -49,10 +49,10 @@ uses
   // LazDebuggerIntf
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE Debugger
-  IdeDebuggerStringConstants, BaseDebugManager, Debugger, DebuggerDlg,
-  IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
-  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData,
-  EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerOpts,
+  IdeDebuggerStringConstants, BaseDebugManager, Debugger, DebuggerDlg, IdeDebuggerWatchResPrinter,
+  IdeDebuggerUtils, DebuggerTreeView, IdeDebuggerWatchResult, IdeDebuggerBase,
+  DbgTreeViewWatchData, EnvDebuggerOptions, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
+  IdeDebuggerOpts, ProjectDebugLink,
   {$ifdef Windows}ActiveX{$else}laz.FakeActiveX{$endif};
 
 type
@@ -380,10 +380,10 @@ procedure TLocalsDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
   FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
-  if ProjectDisplayFormatConfigsUseIde then
+  if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
     DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
-  if ProjectDisplayFormatConfigsUseProject and (ProjectDisplayFormatConfigs <> nil) then
-    ProjectDisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
+  if DbgProjectLink.UseDisplayFormatConfigsFromProject then
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
   LocalsChanged(nil);
 end;
 

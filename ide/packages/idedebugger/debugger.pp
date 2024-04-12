@@ -47,7 +47,7 @@ uses
   IdeDebuggerWatchValueIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   LazDebuggerValueConverter, LazDebuggerTemplate, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
-  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
+  IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -2028,14 +2028,6 @@ function HasConsoleSupport: Boolean;
 (******************************************************************************)
 (******************************************************************************)
 (******************************************************************************)
-
-var
-  // filled in by the IDE, as the IdeDebugger can not (yet) see ProjectOptions
-  ProjectValueConverterSelectorList: TIdeDbgValueConvertSelectorList;
-  ProjectValueFormatterSelectorList: TIdeDbgValueFormatterSelectorList;
-  ProjectDisplayFormatConfigs: TDisplayFormatConfig;
-  ProjectDisplayFormatConfigsUseIde,
-  ProjectDisplayFormatConfigsUseProject: Boolean;
 
 implementation
 
@@ -6944,10 +6936,8 @@ begin
 
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
-    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then begin
-      if ProjectValueConverterSelectorList <> nil then
-        DbgBackendConverter := ProjectValueConverterSelectorList.IdeItemByName(s);
-    end
+    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
+      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItemByName(s)
     else
       DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
   end;
@@ -6973,7 +6963,7 @@ begin
   if DbgBackendConverter <> nil then begin
     AConfig.SetDeleteValue(APath + 'FpDbgConv', DbgBackendConverter.Name, '');
     AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
-      (ProjectValueConverterSelectorList<>nil) and (ProjectValueConverterSelectorList.IndexOf(DbgBackendConverter) >= 0),
+      (DbgProjectLink.BackendConverterConfig.IndexOf(DbgBackendConverter) >= 0),
       False);
   end;
 
@@ -7107,10 +7097,8 @@ begin
 
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
-    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then begin
-      if ProjectValueConverterSelectorList <> nil then
-        DbgBackendConverter := ProjectValueConverterSelectorList.IdeItemByName(s);
-    end
+    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
+      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItemByName(s)
     else
       DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
   end;
@@ -7132,7 +7120,7 @@ begin
   if DbgBackendConverter <> nil then begin
     AConfig.SetDeleteValue(APath + 'FpDbgConv', DbgBackendConverter.Name, '');
     AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
-      (ProjectValueConverterSelectorList<>nil) and (ProjectValueConverterSelectorList.IndexOf(DbgBackendConverter) >= 0),
+      (DbgProjectLink.BackendConverterConfig.IndexOf(DbgBackendConverter) >= 0),
       False);
   end;
 end;

@@ -171,7 +171,7 @@ uses
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   CodeExplOpts, EditorMacroListViewer,
   SourceFileManager, EditorToolbarStatic, IDEInstances,
-  WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter,
+  WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter, ProjectDebugLink,
   // main ide
   MainBar, MainIntf, MainBase, SearchPathProcs;
 
@@ -6399,8 +6399,7 @@ begin
     if (GetActiveMode=nil) and (Count>0) then
       ActiveModeName:=Modes[0].Name;
 
-  Assert(Assigned(DebugBossMgr.ProjectLink), 'CreateProjectObject: ProjectLink=Nil');
-  DebugBossMgr.ProjectLink.Project:=Result;
+  DbgProjectLink.Project:=Result;
   Result.MainProject:=true;
   Result.OnFileBackup:=@MainBuildBoss.BackupFileForWrite;
   Result.OnLoadProjectInfo:=@LoadProjectInfoFromXMLConfig;

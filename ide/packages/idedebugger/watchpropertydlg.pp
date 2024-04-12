@@ -52,7 +52,7 @@ uses
   LazDebuggerIntf,
   // IdeDebugger
   Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants,
-  EnvDebuggerOptions, DisplayFormatConfigFrame;
+  EnvDebuggerOptions, ProjectDebugLink, DisplayFormatConfigFrame;
 
 type
 
@@ -137,8 +137,7 @@ begin
       FWatch.DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
     end
     else begin
-      if ProjectValueConverterSelectorList <> nil then
-        FWatch.DbgBackendConverter := ProjectValueConverterSelectorList.IdeItems[dropFpDbgConv.ItemIndex - 2 - DebuggerOptions.BackendConverterConfig.Count];
+      FWatch.DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2 - DebuggerOptions.BackendConverterConfig.Count];
     end;
 
     FWatch.Enabled := chkEnabled.Checked;
@@ -221,9 +220,8 @@ begin
   for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
     dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.IdeItems[i].Name, nil);
   i2 := dropFpDbgConv.Items.Count;
-  if (ProjectValueConverterSelectorList <> nil) then
-    for i := 0 to ProjectValueConverterSelectorList.Count - 1 do
-      dropFpDbgConv.AddItem(ProjectValueConverterSelectorList.IdeItems[i].Name, nil);
+  for i := 0 to DbgProjectLink.BackendConverterConfig.Count - 1 do
+    dropFpDbgConv.AddItem(DbgProjectLink.BackendConverterConfig.IdeItems[i].Name, nil);
 
   dropFpDbgConv.ItemIndex := 0;
   if AWatch <> nil then begin
@@ -237,7 +235,7 @@ begin
         dropFpDbgConv.ItemIndex := i + 2;
       end
       else begin
-        i := ProjectValueConverterSelectorList.IndexOf(AWatch.DbgBackendConverter);
+        i := DbgProjectLink.BackendConverterConfig.IndexOf(AWatch.DbgBackendConverter);
         if i >= 0 then
           dropFpDbgConv.ItemIndex := i2 + i;
       end;
