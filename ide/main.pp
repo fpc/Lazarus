@@ -82,7 +82,7 @@ uses
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
-  IdeIntfStrConsts, ToolBarIntf, SelEdits, InputHistoryCopy, InputHistory,
+  IdeIntfStrConsts, ToolBarIntf, SelEdits, InputHistory, InputHistory,
   // protocol
   IDEProtocol,
   // compile
@@ -1423,8 +1423,6 @@ begin
   Assert(InputHistories = nil, 'TMainIDE.LoadGlobalOptions: InputHistories is already assigned.');
   InputHistoriesSO := TInputHistoriesWithSearchOpt.Create;
   InputHistories := InputHistoriesSO;
-  // A temporary copy. To be deleted.
-  InputHistoryCopy.InputHistories := {%H-}InputHistoryCopy.TInputHistories(InputHistoriesSO);
   MainBuildBoss.SetupInputHistories(InputHistories);
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
