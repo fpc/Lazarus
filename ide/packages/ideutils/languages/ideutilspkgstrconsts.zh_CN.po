@@ -74,6 +74,10 @@ msgstr "还没有implemented:%s%s"
 msgid "Open symlink"
 msgstr "打开符号链接"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "打开目标"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "覆盖文件?"
@@ -94,6 +98,11 @@ msgstr "不能删除文件\"%s\"."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "读取错误"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "源文件和目标是相同的:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "南非荷兰语"
 msgid "Arabic"
 msgstr "阿拉伯语"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "自动（或者英语）"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
@@ -317,17 +330,4 @@ msgstr "土耳其语"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "乌克兰语"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "打开目标"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "源文件和目标是相同的:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "自动（或者英语）"
 

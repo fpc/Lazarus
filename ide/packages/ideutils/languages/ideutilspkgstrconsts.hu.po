@@ -74,6 +74,10 @@ msgstr "Egyelőre nincs megvalósítva: %s%s"
 msgid "Open symlink"
 msgstr "Szimbolikus hivatkozás megnyitása"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Cél megnyitása"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Felülírja a fájlt?"
@@ -94,6 +98,11 @@ msgstr "A(z) \"%s\" fájl törlése nem lehetséges"
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Olvasási hiba"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Forrás és cél megegyezik:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "Dél-afrikai holland"
 msgid "Arabic"
 msgstr "Arab"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Automatikus (vagy Angol)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalán"
@@ -317,17 +330,4 @@ msgstr "Török"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukrán"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Cél megnyitása"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Forrás és cél megegyezik:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Automatikus (vagy Angol)"
 

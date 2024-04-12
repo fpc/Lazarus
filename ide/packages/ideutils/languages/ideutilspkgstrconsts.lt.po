@@ -74,6 +74,10 @@ msgstr "Dar neįgyvendinta:%s%s"
 msgid "Open symlink"
 msgstr "Atverti simbolinę nuorodą"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Atvert paskyrą"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Perrašyti failą?"
@@ -94,6 +98,11 @@ msgstr "Nepavyko ištrinti failą „%s“."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Skaitymo klaida"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Šaltinis ir tikslas sutampa:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "Afrikiečių"
 msgid "Arabic"
 msgstr "Arabų"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Automatiškai (arba Anglų)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalanų"
@@ -317,17 +330,4 @@ msgstr "Turkų"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukrainiečių"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Atvert paskyrą"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Šaltinis ir tikslas sutampa:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Automatiškai (arba Anglų)"
 

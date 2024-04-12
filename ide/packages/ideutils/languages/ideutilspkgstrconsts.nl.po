@@ -76,6 +76,10 @@ msgstr ""
 msgid "Open symlink"
 msgstr ""
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Bestand overschrijven?"
@@ -97,6 +101,11 @@ msgstr "Kan het bestand \"%s\" niet verwijderen."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Leesfout"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Bron en doel zijn het zelfde:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -237,6 +246,12 @@ msgstr ""
 msgid "Arabic"
 msgstr "Arabisch"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
+msgstr "Automatisch (of Engels)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Catalaans"
@@ -328,19 +343,4 @@ msgstr ""
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Oekraiens"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr ""
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Bron en doel zijn het zelfde:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-#, fuzzy
-#| msgid "Automatic (or english)"
-msgid "Automatic (or English)"
-msgstr "Automatisch (of Engels)"
 

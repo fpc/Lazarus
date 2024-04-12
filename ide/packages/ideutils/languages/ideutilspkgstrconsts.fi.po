@@ -74,6 +74,10 @@ msgstr "Ei toteutettu vielä:%s%s"
 msgid "Open symlink"
 msgstr "Avaa symlink"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Avaa kohde"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Korvataanko tiedosto?"
@@ -94,6 +98,11 @@ msgstr "Tiedoston \"%s\" poistaminen ei onnistu."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Lukuvirhe"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Lähde ja kohde ovat samat:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "afrikaans"
 msgid "Arabic"
 msgstr "arabia"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Oletuskieli (tai englanti)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "katalaani"
@@ -317,17 +330,4 @@ msgstr "turkki"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "ukraina"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Avaa kohde"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Lähde ja kohde ovat samat:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Oletuskieli (tai englanti)"
 

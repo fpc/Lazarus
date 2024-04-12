@@ -75,6 +75,10 @@ msgstr "Zatiaľ neimplementované:%s%s"
 msgid "Open symlink"
 msgstr "Otvoriť symbolický odkaz"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Otvoriť cieľ"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Prepísať súbor?"
@@ -95,6 +99,11 @@ msgstr "Nemožno zmazať súbor \"%s\"."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Chyba čítania"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Zdroj a cieľ sú rovnaké: %s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format, fuzzy, badformat
@@ -230,6 +239,10 @@ msgstr "Africky"
 msgid "Arabic"
 msgstr "Arabsky"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Automaticky (alebo Anglicky)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalánsky"
@@ -321,17 +334,4 @@ msgstr "Turecky"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukrajinsky"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Otvoriť cieľ"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Zdroj a cieľ sú rovnaké: %s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Automaticky (alebo Anglicky)"
 

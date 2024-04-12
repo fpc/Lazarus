@@ -70,6 +70,10 @@ msgstr ""
 msgid "Open symlink"
 msgstr ""
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr ""
@@ -89,6 +93,11 @@ msgstr ""
 
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
+msgstr ""
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
@@ -222,6 +231,10 @@ msgstr ""
 msgid "Arabic"
 msgstr ""
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr ""
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr ""
@@ -312,18 +325,5 @@ msgstr ""
 
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
-msgstr ""
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr ""
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr ""
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
 msgstr ""
 

@@ -76,6 +76,10 @@ msgstr ""
 msgid "Open symlink"
 msgstr ""
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Timpa file?"
@@ -97,6 +101,11 @@ msgstr "Tidak bisa menghapus file %s%s%s."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Pembacaan Salah"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Sumber dan Tujuan adalah sama:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -237,6 +246,12 @@ msgstr "Afrikaans"
 msgid "Arabic"
 msgstr "Bahasa Arab"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
+msgstr "Otomatis (atau Inggris)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Catalian"
@@ -328,19 +343,4 @@ msgstr ""
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukraina"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr ""
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Sumber dan Tujuan adalah sama:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-#, fuzzy
-#| msgid "Automatic (or english)"
-msgid "Automatic (or English)"
-msgstr "Otomatis (atau Inggris)"
 

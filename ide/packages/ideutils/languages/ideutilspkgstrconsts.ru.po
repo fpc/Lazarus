@@ -74,6 +74,10 @@ msgstr "Ещё не реализовано:%s%s"
 msgid "Open symlink"
 msgstr "Открыть символическую ссылку"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Открыть цель ссылки"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Перезаписать файл?"
@@ -94,6 +98,11 @@ msgstr "Невозможно удалить файл \"%s\"."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Ошибка чтения"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Источник и назначение одинаковы:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "Африкаанс"
 msgid "Arabic"
 msgstr "Арабский"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Автовыбор (или английский)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Каталанский"
@@ -317,17 +330,4 @@ msgstr "Турецкий"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Украинский"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Открыть цель ссылки"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Источник и назначение одинаковы:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Автовыбор (или английский)"
 

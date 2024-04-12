@@ -74,6 +74,10 @@ msgstr "Henüz uygulanmadı: %s %s"
 msgid "Open symlink"
 msgstr "Sembolik bağı aç"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Hedefi Aç"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Dosyanın üzerine yazılsın mı?"
@@ -94,6 +98,11 @@ msgstr "Dosya \"%s\" silinemiyor."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Okuma hatası"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Kaynak ve Hedef aynı: %s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "Afrika"
 msgid "Arabic"
 msgstr "Arapça"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Otomatik (veya İngilizce)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalan"
@@ -317,17 +330,4 @@ msgstr "Türkçe"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukrayna"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Hedefi Aç"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Kaynak ve Hedef aynı: %s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Otomatik (veya İngilizce)"
 

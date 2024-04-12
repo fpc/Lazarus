@@ -74,6 +74,10 @@ msgstr "まだ実装されていません:%s%s"
 msgid "Open symlink"
 msgstr "シンボリックリンクを開く"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "ターゲットを開く"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "ファイルを上書きしますか?"
@@ -94,6 +98,11 @@ msgstr "ファイル\"%s\"を削除できません。"
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "読み取りエラー"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "出所(Source)と行き先が同じです:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -227,6 +236,10 @@ msgstr "アフリカ語"
 msgid "Arabic"
 msgstr "アラビア語"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "自動（もしくは英語）"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "カタロニア語"
@@ -318,17 +331,4 @@ msgstr "トルコ語"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "ウクライナ語"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "ターゲットを開く"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "出所(Source)と行き先が同じです:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "自動（もしくは英語）"
 

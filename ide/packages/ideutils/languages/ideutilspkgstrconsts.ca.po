@@ -76,6 +76,10 @@ msgstr ""
 msgid "Open symlink"
 msgstr ""
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Voleu sobrescriure el fitxer?"
@@ -97,6 +101,11 @@ msgstr "No es pot eliminar el fitxer %s%s%s."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "S'ha produït un error de lectura"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Font i destinació son el mateix:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -237,6 +246,12 @@ msgstr ""
 msgid "Arabic"
 msgstr "Aràbic"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
+msgstr "Automàtic (o Anglès)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Català"
@@ -328,19 +343,4 @@ msgstr ""
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ucrainés"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr ""
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Font i destinació son el mateix:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-#, fuzzy
-#| msgid "Automatic (or english)"
-msgid "Automatic (or English)"
-msgstr "Automàtic (o Anglès)"
 

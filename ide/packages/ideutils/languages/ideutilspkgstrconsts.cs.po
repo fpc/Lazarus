@@ -74,6 +74,10 @@ msgstr "Zatím neimplementováno:%s%s"
 msgid "Open symlink"
 msgstr "Otevřít symbolický odkaz"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Otevřít cíl"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Přepsat soubor?"
@@ -94,6 +98,11 @@ msgstr "Nelze smazat soubor \"%s\"."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Chyba čtení"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "Zdroj a cíl jsou stejné:%s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -226,6 +235,10 @@ msgstr "Afrikánština"
 msgid "Arabic"
 msgstr "Arabština"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Automaticky (nebo Angličtina)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalánština"
@@ -317,17 +330,4 @@ msgstr "Turečtina"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "Ukrajinština"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "Otevřít cíl"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "Zdroj a cíl jsou stejné:%s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-msgid "Automatic (or English)"
-msgstr "Automaticky (nebo Angličtina)"
 

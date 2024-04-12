@@ -76,6 +76,10 @@ msgstr "לא ממומש עדיין: %s%s"
 msgid "Open symlink"
 msgstr "פתח symlink"
 
+#: ideutilspkgstrconsts.lisopentarget
+msgid "Open target"
+msgstr "פתח את המטרה"
+
 #: ideutilspkgstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "האם לשכתב את הקובץ מחדש?"
@@ -97,6 +101,11 @@ msgstr "לא ניתן למחוק את הקובץ %s%s%s."
 #: ideutilspkgstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "שגיאת קריאה"
+
+#: ideutilspkgstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr "המקור והיעד זהים: %s%s"
 
 #: ideutilspkgstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format, fuzzy, badformat
@@ -243,6 +252,12 @@ msgstr "אפריקנית"
 msgid "Arabic"
 msgstr "ערבית"
 
+#: ideutilspkgstrconsts.rslanguageautomatic
+#, fuzzy
+#| msgid "Automatic (or english)"
+msgid "Automatic (or English)"
+msgstr "אוטומטי (או אנגלית)"
+
 #: ideutilspkgstrconsts.rslanguagecatalan
 msgid "Catalan"
 msgstr "קטלנית"
@@ -334,19 +349,4 @@ msgstr "טורקית"
 #: ideutilspkgstrconsts.rslanguageukrainian
 msgid "Ukrainian"
 msgstr "אוקראינית"
-
-#: ideutilspkgstrconsts.lisopentarget
-msgid "Open target"
-msgstr "פתח את המטרה"
-
-#: ideutilspkgstrconsts.lissourceanddestinationarethesame
-#, object-pascal-format
-msgid "Source and Destination are the same:%s%s"
-msgstr "המקור והיעד זהים: %s%s"
-
-#: ideutilspkgstrconsts.rslanguageautomatic
-#, fuzzy
-#| msgid "Automatic (or english)"
-msgid "Automatic (or English)"
-msgstr "אוטומטי (או אנגלית)"
 
