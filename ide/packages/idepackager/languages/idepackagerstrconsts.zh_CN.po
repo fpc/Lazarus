@@ -83,6 +83,10 @@ msgstr "自定义fpmake选项"
 msgid "Package Options"
 msgstr "软件包选项"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath附加"
@@ -194,6 +198,10 @@ msgstr "不能创建输出目录\"%s\"%s对于软件包%s."
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "不能创建软件包源码目录目录\"%s\"%s对于软件包%s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

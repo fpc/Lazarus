@@ -82,6 +82,10 @@ msgstr "(fpmake)"
 msgid "Package Options"
 msgstr "Csomag beállításai"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath hozzáadása"
@@ -193,6 +197,10 @@ msgstr "A(z) \"%s\" kimeneti könyvtár létrehozása nem lehetséges%sa(z) %s c
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "A(z) \"%s\" forrás könyvtár létrehozása nem lehetséges%sa(z) %s csomaghoz."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

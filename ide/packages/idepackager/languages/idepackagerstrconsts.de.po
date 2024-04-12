@@ -82,6 +82,10 @@ msgstr ""
 msgid "Package Options"
 msgstr "Package-Einstellungen"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath-Erweiterung"
@@ -193,6 +197,10 @@ msgstr "Kann Ausgabeverzeichnis \"%s\"%sfür das Package %s nicht erzeugen."
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Kann das Package-Quelltextverzeichnis \"%s\"%s für das Package %s nicht erzeugen."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

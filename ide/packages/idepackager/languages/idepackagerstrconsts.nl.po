@@ -85,6 +85,10 @@ msgstr ""
 msgid "Package Options"
 msgstr "Pakketopties"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath toevoeging"
@@ -198,6 +202,10 @@ msgstr "Kan de uitvoerdirectory \"%s\"%svoor package %s niet maken."
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Kan geen package broncode directory \"%s\"%svoor package %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy

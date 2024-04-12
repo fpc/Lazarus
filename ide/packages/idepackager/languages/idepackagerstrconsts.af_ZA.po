@@ -82,6 +82,10 @@ msgstr ""
 msgid "Package Options"
 msgstr ""
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr ""
@@ -192,6 +196,10 @@ msgstr ""
 #: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
+msgstr ""
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
 msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage

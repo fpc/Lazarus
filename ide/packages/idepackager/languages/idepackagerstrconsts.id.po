@@ -85,6 +85,10 @@ msgstr ""
 msgid "Package Options"
 msgstr "Opsi Paket"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Tambahan CompiledSrcPath"
@@ -198,6 +202,10 @@ msgstr "Tidak bisa membuat direktori output %s%s%s%suntuk paket %s."
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Tidak bisa membuat direktori sumber paket %s%s%s%suntuk paket %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy, badformat

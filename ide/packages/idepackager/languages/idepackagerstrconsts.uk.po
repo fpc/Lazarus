@@ -82,6 +82,10 @@ msgstr "(fpmake)"
 msgid "Package Options"
 msgstr "Параметри пакунка"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Додавання CompiledSrcPath"
@@ -193,6 +197,10 @@ msgstr "Неможливо створити теку виведення \"%s\"%s
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Неможливо створити теку сирців пакунка \"%s\"%sдля пакунка %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

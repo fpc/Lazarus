@@ -4,6 +4,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: idepackagerstrconsts.dlgcompileroptions
 msgid "Compiler Options"
@@ -81,6 +87,10 @@ msgstr "(fpmake)"
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Параметры пакета"
+
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr "Игнорировать все"
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -193,6 +203,10 @@ msgstr "Невозможно создать каталог вывода \"%s\"%s
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Невозможно создать каталог исходного кода пакета \"%s\"%sдля пакета %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Невозможно удалить файл"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

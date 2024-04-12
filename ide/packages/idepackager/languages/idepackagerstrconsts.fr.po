@@ -82,6 +82,10 @@ msgstr "(fpmake)"
 msgid "Package Options"
 msgstr "Options du paquet"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Chemin de code source compilé additionnel"
@@ -193,6 +197,10 @@ msgstr "Impossible de créer le répertoire de destination \"%s\"%spour le paque
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Impossible de créer le répertoire \"%s\"%spour les codes sources du paquet %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format

@@ -82,6 +82,10 @@ msgstr "(fpmake)"
 msgid "Package Options"
 msgstr "Nastavení balíčku"
 
+#: idepackagerstrconsts.lispignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Doplněk CompiledSrcPath"
@@ -193,6 +197,10 @@ msgstr "Nelze vytvořit výstupní adresář \"%s\"%sbalíčku %s."
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Nelze vytvořit zdrojový adresář \"%s\"%sbalíčku %s."
+
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr ""
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
