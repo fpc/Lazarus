@@ -200,7 +200,7 @@ msgstr "Incapaz de criar um diretório fonte de pacote \"%s\"%spara o pacote %s.
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Incapaz de excluir arquivo"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Unidade"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "Atualizar arquivos PO falhou para o pacote %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Incapaz de excluir arquivo"
 

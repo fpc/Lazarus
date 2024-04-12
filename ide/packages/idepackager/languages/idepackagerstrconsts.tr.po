@@ -200,7 +200,7 @@ msgstr "Paket kaynağı klasörü \"%s\" %s için %s oluşturulamadı."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Dosya silinemiyor"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Birim"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "PO dosyası güncellemesi %s paketinde başarısız oldu"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Dosya silinemiyor"
 

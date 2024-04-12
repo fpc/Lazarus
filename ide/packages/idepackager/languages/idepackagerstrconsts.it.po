@@ -208,7 +208,7 @@ msgstr "Impossibile creare la cartella dei sorgenti del pacchetto \"%s\"%sper il
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Impossibile cancellare il file"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -333,8 +333,4 @@ msgstr "Unit"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "Aggiornamento dei file po fallito per il pacchetto %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Impossibile cancellare il file"
 

@@ -205,7 +205,7 @@ msgstr "Nie można utworzyć katalogu ze źródłami \"%s\"%sdla pakietu %s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Nie można usunąć pliku"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -325,8 +325,4 @@ msgstr "Moduł"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Nie można usunąć pliku"
 

@@ -200,7 +200,7 @@ msgstr "Lähdehakemiston \"%s\"%sluominen paketille %s ei onnistu."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Tiedoston poistaminen ei onnistu"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Käännösyksikkö"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "PO tiedostojen päivitys epäonnistui paketille %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Tiedoston poistaminen ei onnistu"
 

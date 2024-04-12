@@ -200,7 +200,7 @@ msgstr "Неможливо створити теку сирців пакунка
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Неможливо видалити файл"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Модуль"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "Не вдалось оновити файли PO для пакунка %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Неможливо видалити файл"
 

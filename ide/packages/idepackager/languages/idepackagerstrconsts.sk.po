@@ -203,7 +203,7 @@ msgstr "Nemožno vytvoriť zdrojový adresár \"%s\"%spre balíček %s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Nemožno zmazať súbor"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy, badformat
@@ -335,8 +335,4 @@ msgstr "Jednotka"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Nemožno zmazať súbor"
 

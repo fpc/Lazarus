@@ -200,7 +200,7 @@ msgstr "Kann das Package-Quelltextverzeichnis \"%s\"%s für das Package %s nicht
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Kann die Datei nicht löschen"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -325,8 +325,4 @@ msgstr "Unit"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "Aktualisierung der PO-Dateien für Package %s fehlgeschlagen"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Kann die Datei nicht löschen"
 

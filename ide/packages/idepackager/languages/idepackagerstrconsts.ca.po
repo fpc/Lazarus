@@ -203,7 +203,7 @@ msgstr "No es pot crear el directori sortida font %s%s%s%s pel paquet %s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "No es pot eliminar el fitxer"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy, badformat
@@ -334,8 +334,4 @@ msgstr "Unitat"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "No es pot eliminar el fitxer"
 

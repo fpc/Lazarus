@@ -205,7 +205,7 @@ msgstr "Kan geen package broncode directory \"%s\"%svoor package %s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Kan het bestand niet verwijderen"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy
@@ -340,8 +340,4 @@ msgstr "Unit"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Kan het bestand niet verwijderen"
 

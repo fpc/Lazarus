@@ -205,7 +205,7 @@ msgstr "לא ניתן ליצור את ספריית הקוד %s%s%s%sעבור ה�
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "לא ניתן למחוק את הקובץ"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy, badformat
@@ -341,8 +341,4 @@ msgstr "יחידה"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "לא ניתן למחוק את הקובץ"
 

@@ -205,7 +205,7 @@ msgstr "Tidak bisa membuat direktori sumber paket %s%s%s%suntuk paket %s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Tidak bisa menghapus file"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format, fuzzy, badformat
@@ -340,8 +340,4 @@ msgstr "Unit"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr ""
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Tidak bisa menghapus file"
 

@@ -201,7 +201,7 @@ msgstr "不能创建软件包源码目录目录\"%s\"%s对于软件包%s."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "不能删除文件"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -323,8 +323,4 @@ msgstr "单元"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "更新PO文件失败的软件包 %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "不能删除文件"
 

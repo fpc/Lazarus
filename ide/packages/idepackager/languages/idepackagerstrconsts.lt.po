@@ -200,7 +200,7 @@ msgstr "Nepavyko sukurti aplanką „%s“%s paketo „%s“ pradiniam kodui."
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Nepavyko ištrinti failą"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -325,8 +325,4 @@ msgstr "Modulis"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "Nepavyko naujinti paketui „%s“ skirtus „PO“ failus"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Nepavyko ištrinti failą"
 

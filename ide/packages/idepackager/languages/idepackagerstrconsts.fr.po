@@ -200,7 +200,7 @@ msgstr "Impossible de créer le répertoire \"%s\"%spour les codes sources du pa
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "Impossible de supprimer le fichier"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Unité"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "La mise à jour des fichiers de traduction PO a échoué pour le paquet %s"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "Impossible de supprimer le fichier"
 

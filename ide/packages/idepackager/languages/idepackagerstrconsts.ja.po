@@ -200,7 +200,7 @@ msgstr "パッケージ%sのパッケージソースディレクトリ\"%s\"%s�
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "ファイルを削除できません。"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -326,8 +326,4 @@ msgstr "ユニット"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "パッケージ%sに関するPOファイルの修正に失敗"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "ファイルを削除できません。"
 

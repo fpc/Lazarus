@@ -200,7 +200,7 @@ msgstr "A(z) \"%s\" forrás könyvtár létrehozása nem lehetséges%sa(z) %s cs
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
-msgstr ""
+msgstr "A fájl törlése nem lehetséges"
 
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
@@ -320,8 +320,4 @@ msgstr "Unit"
 #, object-pascal-format
 msgid "Updating PO files failed for package %s"
 msgstr "A(z) %s csomag PO fájljainak frissítése nem sikerült"
-
-#: idepackagerstrconsts.lispkgmangunabletodeletefilename
-msgid "Unable to delete file"
-msgstr "A fájl törlése nem lehetséges"
 
