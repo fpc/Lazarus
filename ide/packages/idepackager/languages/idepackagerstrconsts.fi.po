@@ -321,3 +321,7 @@ msgstr "Käännösyksikkö"
 msgid "Updating PO files failed for package %s"
 msgstr "PO tiedostojen päivitys epäonnistui paketille %s"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Tiedoston poistaminen ei onnistu"
+

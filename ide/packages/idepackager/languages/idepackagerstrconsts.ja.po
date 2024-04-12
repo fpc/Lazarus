@@ -327,3 +327,7 @@ msgstr "ユニット"
 msgid "Updating PO files failed for package %s"
 msgstr "パッケージ%sに関するPOファイルの修正に失敗"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "ファイルを削除できません。"
+

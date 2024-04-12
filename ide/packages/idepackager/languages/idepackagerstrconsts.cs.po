@@ -321,3 +321,7 @@ msgstr "Jednotka"
 msgid "Updating PO files failed for package %s"
 msgstr "Aktualizace PO souborů selhala pro balíček %s"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Nelze smazat soubor"
+

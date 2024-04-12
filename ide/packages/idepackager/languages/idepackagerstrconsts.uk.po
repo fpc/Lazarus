@@ -321,3 +321,7 @@ msgstr "Модуль"
 msgid "Updating PO files failed for package %s"
 msgstr "Не вдалось оновити файли PO для пакунка %s"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Неможливо видалити файл"
+

@@ -321,3 +321,7 @@ msgstr "Unit"
 msgid "Updating PO files failed for package %s"
 msgstr "A(z) %s csomag PO fájljainak frissítése nem sikerült"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "A fájl törlése nem lehetséges"
+

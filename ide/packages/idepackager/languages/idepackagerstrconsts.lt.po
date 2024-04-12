@@ -326,3 +326,7 @@ msgstr "Modulis"
 msgid "Updating PO files failed for package %s"
 msgstr "Nepavyko naujinti paketui „%s“ skirtus „PO“ failus"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Nepavyko ištrinti failą"
+

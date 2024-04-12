@@ -321,3 +321,7 @@ msgstr "Birim"
 msgid "Updating PO files failed for package %s"
 msgstr "PO dosyası güncellemesi %s paketinde başarısız oldu"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Dosya silinemiyor"
+

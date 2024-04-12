@@ -321,3 +321,7 @@ msgstr "Unidade"
 msgid "Updating PO files failed for package %s"
 msgstr "Atualizar arquivos PO falhou para o pacote %s"
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Incapaz de excluir arquivo"
+

@@ -341,3 +341,7 @@ msgstr "Unit"
 msgid "Updating PO files failed for package %s"
 msgstr ""
 
+#: idepackagerstrconsts.lispkgmangunabletodeletefilename
+msgid "Unable to delete file"
+msgstr "Kan het bestand niet verwijderen"
+
