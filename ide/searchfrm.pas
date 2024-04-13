@@ -529,6 +529,7 @@ var
   Src: String;
   NewMatchStartPos: PtrInt;
   NewMatchEndPos: PtrInt;
+  i, l, n1, n2: Integer;
 begin
   //debugln(['SearchInText TheFileName=',TheFileName,' SearchFor=',SearchFor,'" ReplaceText=',ReplaceText,'"']);
 
@@ -584,6 +585,35 @@ begin
         CaseFile:=TSourceLog.Create(UTF8UpperCase(OriginalFile.Source));
         TempSearch:=UTF8UpperCase(TempSearch);
         Src:=CaseFile.Source;
+
+        // Comparing character lengths after UTF8UpperCase:
+        // their difference can lead to damage to the text when replacing
+        // issue #40893
+        if sesoReplace in Flags then
+        begin
+          // length of strings in bytes (not use UTF8Length)
+          n1 := length(OriginalFile.Source);
+          n2 := length(CaseFile.Source);
+          l := n1; // assumed n1=n2
+          i := 1;
+          while (n1 = n2) and (i <= l) do
+          begin
+            // length of characters in bytes
+            n1 := UTF8CodepointSize(@OriginalFile.Source[i]);
+            n2 := UTF8CodepointSize(@CaseFile.Source[i]);
+            inc(i, n1); // assumed n1=n2
+          end;
+          if n1 <> n2 then
+          begin
+            if IDEMessageDialog(lisCCOWarningCaption,
+              lisFindFileReplacementIsNotPossible + LineEnding + LineEnding + TheFileName,
+              mtWarning, [mbOK, mbCancel]) = mrCancel
+            then
+              DoAbort;
+
+            exit(mrAbort);
+          end;
+        end;
       end else
         Src:=OriginalFile.Source;
     end;

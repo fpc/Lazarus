@@ -4191,6 +4191,10 @@ resourcestring
   lisDirectories = 'Directories';
   lisFindFileFileMask = 'Fi&le mask';
   lisFindFileIncludeSubDirectories = 'Include &sub directories';
+  lisFindFileReplacementIsNotPossible = 'This file contains characters that have '
+    + 'different lengths in upper and lower case. The current implementation does '
+    + 'not allow for correct replacement in this case (but you can use '
+    + 'case-sensitive replacement). This file will have to be skipped:';
 
   // package manager
   lisPkgMangPackage = 'Package: %s';
