@@ -127,6 +127,10 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="include\linux\lazconf.inc"/>
         <Type Value="Include"/>
       </Item>
+      <Item>
+        <Filename Value="ideconfigpcktest.pas"/>
+        <UnitName Value="IdeConfigPckTest"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
