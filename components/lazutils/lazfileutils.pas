@@ -69,7 +69,7 @@ function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: bo
 function CreateRelativePath(const Filename, BaseDirectory: string;
   UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string;
 function FileIsInPath(const Filename, Path: string): boolean;
-function PathIsInPath(const Path, Directory: string): boolean;
+function PathIsInPath(const Path, Directory: string): boolean; // check if Directory is in Path
 // Storten a file name for display.
 function ShortDisplayFilename(const aFileName: string; aLimit: Integer = 80): string;
 
