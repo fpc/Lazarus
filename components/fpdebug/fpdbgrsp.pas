@@ -520,8 +520,6 @@ begin
 end;
 
 function TRspConnection.Kill(): boolean;
-var
-  c: char;
 begin
   EnterCriticalSection(fCS);
   try
