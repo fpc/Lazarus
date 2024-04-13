@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeUtilsPkg 1.0
 
-   This file was generated on 11/04/2024
+   This file was generated on 13/04/2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('ideconfig');
     D := P.Dependencies.Add('ideintf');
     D := P.Dependencies.Add('codetools');
     D := P.Dependencies.Add('lclbase');
@@ -51,10 +52,12 @@ begin
     t.Dependencies.AddUnit('dialogprocs');
     t.Dependencies.AddUnit('idetranslations');
     t.Dependencies.AddUnit('ideutilspkgstrconsts');
+    t.Dependencies.AddUnit('inputhistory');
 
     T:=P.Targets.AddUnit('dialogprocs.pas');
     T:=P.Targets.AddUnit('idetranslations.pas');
     T:=P.Targets.AddUnit('ideutilspkgstrconsts.pas');
+    T:=P.Targets.AddUnit('inputhistory.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('ideutilspkg.compiled');

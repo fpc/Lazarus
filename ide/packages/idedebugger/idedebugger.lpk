@@ -229,11 +229,6 @@
         <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
-        <Filename Value="inputhistorycopy.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="InputHistoryCopy"/>
-      </Item>
-      <Item>
         <Filename Value="idedbgvalueformattersettingsframe.pas"/>
         <UnitName Value="IdeDbgValueFormatterSettingsFrame"/>
         <ResourceBaseClass Value="Frame"/>

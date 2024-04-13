@@ -12,7 +12,7 @@ uses
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, FppkgHelper, 
   IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IdeXmlConfigProcs, 
   LazConf, ModeMatrixOpts, ParsedCompilerOpts, ProjPackCommon, RecentListProcs, SearchPathProcs, 
-  ToolBarOptionsBase, TransferMacros, InputHistory, LazarusPackageIntf;
+  ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
 
 implementation
 

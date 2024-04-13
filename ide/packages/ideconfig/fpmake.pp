@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 11/04/2024
+   This file was generated on 13/04/2024
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,7 +34,6 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
-    D := P.Dependencies.Add('ideintf');
     D := P.Dependencies.Add('codetools');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('buildintf');
@@ -47,8 +46,6 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
-    P.Options.Add('-dLCL');
-    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
@@ -77,7 +74,6 @@ begin
     t.Dependencies.AddUnit('searchpathprocs');
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('transfermacros');
-    t.Dependencies.AddUnit('inputhistory');
 
     T:=P.Targets.AddUnit('compileroptions.pp');
     T:=P.Targets.AddUnit('compoptsmodes.pas');
@@ -103,7 +99,6 @@ begin
     T:=P.Targets.AddUnit('searchpathprocs.pas');
     T:=P.Targets.AddUnit('toolbaroptionsbase.pas');
     T:=P.Targets.AddUnit('transfermacros.pp');
-    T:=P.Targets.AddUnit('inputhistory.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('ideconfig.compiled');
