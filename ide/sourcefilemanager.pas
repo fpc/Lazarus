@@ -2979,6 +2979,23 @@ var
     AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,AddSearchPath);
   end;
 
+  procedure CheckSubPath(const SearchFile: string; var FoundFilename: string);
+  var
+    SearchSubPath, FoundPath: String;
+    l: SizeInt;
+  begin
+    if FoundFilename='' then exit;
+    SearchSubPath:=ExtractFilePath(SearchFile);
+    if SearchSubPath='' then exit;
+    // e.g. SearchFile = 'sub/foo/bar.inc' -> check SubPath
+    FoundPath:=ExtractFilePath(FoundFilename);
+    l:=length(SearchSubPath);
+    if (length(FoundPath)<=l)
+        or (FoundPath[length(FoundPath)-l]<>PathDelim)
+        or (CompareFilenames(RightStr(FoundPath,l),SearchSubPath)<>0) then
+      FoundFilename:='';
+  end;
+
   function SearchIndirectIncludeFile: string;
   var
     UnitPath: String;
@@ -3029,9 +3046,6 @@ var
     debugln(['SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"']);
     {$ENDIF}
 
-    // add fpc src directories
-    // ToDo
-
     // collect all include paths
     AllIncPaths:=AllSrcPaths;
     PathPos:=1;
@@ -3045,9 +3059,10 @@ var
     debugln(['SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"']);
     {$ENDIF}
 
-    SearchFile:=AFilename;
+    SearchFile:=ExtractFilename(AFilename);
     SearchPath:=AllIncPaths;
     Result:=SearchFileInSearchPath(SearchFile,BaseDir,SearchPath);
+    CheckSubPath(AFilename,Result);
     {$IFDEF VerboseFindSourceFile}
     debugln(['SearchIndirectIncludeFile Result="',Result,'"']);
     {$ENDIF}
@@ -3062,7 +3077,8 @@ var
     Filename:='';
     SearchPath:=RemoveSearchPaths(TheSearchPath,AlreadySearchedPaths);
     if SearchPath<>'' then begin
-      Filename:=SearchFileInSearchPath(SearchFile,BaseDir,SearchPath);
+      Filename:=SearchFileInSearchPath(ExtractFilename(SearchFile),BaseDir,SearchPath);
+      CheckSubPath(SearchFile,Filename);
       {$IFDEF VerboseFindSourceFile}
       debugln(['FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
       {$ENDIF}
@@ -3080,6 +3096,8 @@ begin
   debugln(['FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
   {$ENDIF}
   if AFilename='' then exit('');
+
+  // Beware: AFilename can be 'sub/foo/bar.inc' !
 
   if fsfMapTempToVirtualFiles in Flags then
   begin
@@ -3158,10 +3176,11 @@ begin
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);
     if SearchInPath(SearchPath,AFilename,Result) then exit;
 
-    if not(fsfSkipPackages in Flags) then begin
+    if not (fsfSkipPackages in Flags) then begin
       // search include file in source directories of all required packages
-      SearchFile:=AFilename;
+      SearchFile:=ExtractFilename(AFilename);
       Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+      CheckSubPath(AFilename,Result);
       {$IFDEF VerboseFindSourceFile}
       debugln(['FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
       {$ENDIF}
@@ -4490,7 +4509,7 @@ function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
 var
   NewShortFilename: String;
   NewFileExt: String;
-  SearchFlags: TSearchIDEFileFlags;
+  SearchFlags: BaseIDEIntf.TSearchIDEFileFlags;
 begin
   //debugln('CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
