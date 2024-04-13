@@ -1625,10 +1625,14 @@ procedure TGenericBreakPointTargetHandler.MaskBreakpointsInReadData(const AAdres
   const ASize: Cardinal; var AData);
 var
   MapEnumData: TFpBreakPointMap.TFpBreakPointMapEnumerationData;
+  offset: TDbgPtr;
 begin
   for MapEnumData in BreakMap do begin
     if not HPtr(MapEnumData.TargetHandlerDataPtr)^.ErrorSetting and (MapEnumData.Location >= AAdress) and (MapEnumData.Location < (AAdress+ASize)) then
-      P_BRK_STORE(@AData)[MapEnumData.Location-AAdress] := HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+    begin
+      offset := MapEnumData.Location - AAdress;
+      P_BRK_STORE(@AData + offset)^ := HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+    end;
   end;
 end;
 
