@@ -94,8 +94,6 @@ type
     FConfig: TRemoteConfig;
     FSocketHandler: TSocketHandler;
 
-    procedure CloseSocket;
-
     function WaitForData(timeout_ms: integer): integer; overload;
     // Wrappers to catch exceptions and set SockErr
     function SafeReadByte: byte;
@@ -158,6 +156,7 @@ implementation
 uses
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, StrUtils,
   FpImgReaderBase,
+  sockets,
   {$IFNDEF WINDOWS}BaseUnix, termio;
   {$ELSE}winsock2, windows;
   {$ENDIF}
@@ -213,11 +212,6 @@ begin
     stopReason := srNone;
     watchPointAddress := 0;
   end;
-end;
-
-procedure TRspConnection.CloseSocket;
-begin
-  FpClose(FSocketHandler.Socket.Handle);
 end;
 
 function TRspConnection.WaitForData(timeout_ms: integer): integer;
@@ -525,7 +519,7 @@ begin
   try
     SendCommandAck('k');
     result := true;
-    CloseSocket;
+    sockets.CloseSocket(FSocketHandler.Socket.Handle);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -539,7 +533,7 @@ begin
   try
     result := SendCmdWaitForReply('D', reply);
     result := true;
-    CloseSocket;
+    sockets.CloseSocket(FSocketHandler.Socket.Handle);
   finally
     LeaveCriticalSection(fCS);
   end;
