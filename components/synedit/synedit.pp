@@ -8297,6 +8297,10 @@ begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
       ZeroLen := ptFoundStart = ptFoundEnd;
+      if ssoRegExpr in AOptions then begin
+        ptFoundStart.X := FTheLinesView.LogicPosAdjustToChar(FTheLinesView[ToIdx(ptFoundStart.Y)], ptFoundStart.X, False);
+        ptFoundEnd.X   := FTheLinesView.LogicPosAdjustToChar(FTheLinesView[ToIdx(ptFoundEnd.Y)], ptFoundEnd.X, True);
+      end;
       if ( (not SelIsColumn) or
            ( (ptFoundStart.Y=ptFoundEnd.Y) and
              (ptFoundStart.X >= ReplaceBlockSelection.ColumnStartBytePos[ptFoundStart.Y]) and
@@ -8306,7 +8310,8 @@ begin
            not( ZeroLen and (ptStart = ptFoundStart) and
                 (ssoFindContinue in AOptions) and (not SelAvail)
               )
-         )
+         ) and
+         ( ZeroLen = (ptFoundStart = ptFoundEnd) )
       then
       begin
         // pattern found
