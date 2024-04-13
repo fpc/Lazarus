@@ -187,7 +187,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       BorderSpacing.Left = 6
       ItemHeight = 24
       TabOrder = 2
-      Text = '*.pas;*.pp;*.inc'
+      Text = '*.pas;*.pp;*.inc;*.lpr'
     end
     object IncludeSubDirsCheckBox: TCheckBox
       AnchorSideLeft.Control = DirectoriesOptionsGroupBox
