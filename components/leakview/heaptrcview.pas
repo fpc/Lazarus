@@ -362,7 +362,7 @@ begin
   trace := TStackTrace(nd.Parent.Data);
   if not Assigned(trace) or (idx >= trace.Count) then Exit;
 
-  searchFile := trace.Lines[idx].FileName;
+  searchFile := Trim(SetDirSeparators(trace.Lines[idx].FileName));
   if searchFile = '' then Exit;
 
   StackLine:= trace.Lines[idx];
