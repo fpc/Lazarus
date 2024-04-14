@@ -256,8 +256,14 @@ begin
         if not(Result.Num1.UseInherited or Result.Num2.UseInherited) then
           break;
       end;
-      ResolveSign(Result.Num1.SignFormat, Result.Num1.BaseFormat);
-      ResolveSign(Result.Num2.SignFormat, Result.Num2.BaseFormat);
+      if AResValue.ValueKind = rdkUnsignedNumVal then begin
+        ResolveSign(Result.Num1.SignFormat, TValueDisplayFormatSign(vdfSignUnsigned));
+        ResolveSign(Result.Num2.SignFormat, TValueDisplayFormatSign(vdfSignUnsigned));
+      end
+      else begin
+        ResolveSign(Result.Num1.SignFormat, Result.Num1.BaseFormat);
+        ResolveSign(Result.Num2.SignFormat, Result.Num2.BaseFormat);
+      end;
       ResolveMinDigits(Result.Num1.MinDigits, Result.Num1.BaseFormat);
       ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
     end;
@@ -415,7 +421,9 @@ begin
     s := '-';
   case ANumFormat.BaseFormat of
     vdfBaseDecimal: begin
+        {$PUSH}{$Q-}// abs may overflow
         if ANumFormat.SignFormat = vdfSignSigned then Result := IntToStr(qword(abs(ASignedValue)))
+        {$POP}
         else                                          Result := IntToStr(AUnsignedValue);
         d := ANumFormat.MinDigits;
         if d < 0 then case AByteSize of

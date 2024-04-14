@@ -18,11 +18,15 @@ type
     FWatchResWrapper: TTestWatchResWrapper;
 
     function GetNumRes(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0): TWatchResultData; virtual;
+    function TestPrint(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat): String;
+    Procedure AssertPrint(AExp: String; AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat);
+    Procedure AssertPrint(AName: String; AExp: String; AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat);
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
     procedure TestPrintNumber;
+    procedure TestPrintNumberSignFormat;
   end;
 
 implementation
@@ -33,6 +37,24 @@ begin
   FWatchResWrapper.Done;
   FWatchResWrapper.ResIntf.CreateNumValue(ANumValue, ASigned, AByteSize);
   Result := FWatchResWrapper.IdeRes;
+end;
+
+function TTestWatchResPrinter.TestPrint(AResValue: TWatchResultData;
+  const ADispFormat: TWatchDisplayFormat): String;
+begin
+  Result := FWatchResPrinter.PrintWatchValue(AResValue, ADispFormat);
+end;
+
+procedure TTestWatchResPrinter.AssertPrint(AExp: String; AResValue: TWatchResultData;
+  const ADispFormat: TWatchDisplayFormat);
+begin
+  AssertPrint('', AExp, AResValue, ADispFormat);
+end;
+
+procedure TTestWatchResPrinter.AssertPrint(AName: String; AExp: String;
+  AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat);
+begin
+  AssertEquals(AName, AExp, TestPrint(AResValue, ADispFormat));
 end;
 
 procedure TTestWatchResPrinter.SetUp;
@@ -166,6 +188,54 @@ begin
 
   d.Num.MinDigits[vdfBaseBin] := 12;
   AssertEquals('Hex grp', '%000011001001', FWatchResPrinter.PrintWatchValue(Res, d));
+end;
+
+procedure TTestWatchResPrinter.TestPrintNumberSignFormat;
+var
+  d: TWatchDisplayFormat;
+begin
+  DefaultFormatSettings.ThousandSeparator := '.';
+
+  d := DefaultWatchDisplayFormat;
+  d.MakeAllOverrides;
+  d.Num.BaseFormat                := vdfBaseDecimal;
+  d.Num.SignFormat                := vdfSignAuto;
+  d.Num.MinDigits[vdfBaseDecimal] := 0;
+  d.Num.SeparatorDec              := False;
+  d.Num.SeparatorHexBin           := vdfhsNone;
+
+  AssertPrint('auto, int64:  1',                   '1',                    GetNumRes(QWord(1), True, 8), d);
+  AssertPrint('auto, int64: -1',                   '-1',                   GetNumRes(QWord(-1), True, 8), d);
+  AssertPrint('auto, int64: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775807', '-9223372036854775807', GetNumRes(QWord(-9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775808', '-9223372036854775808', GetNumRes(QWord($8000000000000000), True, 8), d);
+  AssertPrint('auto, QWord:  1',                   '1',                    GetNumRes(QWord(1), False, 8), d);
+  AssertPrint('auto, QWord: 18446744073709551615', '18446744073709551615', GetNumRes(QWord(-1), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775808',  '9223372036854775808',  GetNumRes(QWord($8000000000000000), False, 8), d);
+
+  d.Num.SignFormat                := vdfSignSigned;
+  AssertPrint('auto, int64:  1',                   '1',                    GetNumRes(QWord(1), True, 8), d);
+  AssertPrint('auto, int64: -1',                   '-1',                   GetNumRes(QWord(-1), True, 8), d);
+  AssertPrint('auto, int64: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775807', '-9223372036854775807', GetNumRes(QWord(-9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775808', '-9223372036854775808', GetNumRes(QWord($8000000000000000), True, 8), d);
+  AssertPrint('auto, QWord:  1',                   '1',                    GetNumRes(QWord(1), False, 8), d);
+  AssertPrint('auto, QWord: 18446744073709551615', '-1',                   GetNumRes(QWord(-1), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775808',  '-9223372036854775808', GetNumRes(QWord($8000000000000000), False, 8), d);
+
+  d.Num.SignFormat                := vdfSignUnsigned;
+  AssertPrint('auto, int64:  1',                   '1',                    GetNumRes(QWord(1), True, 8), d);
+  AssertPrint('auto, int64: -1',                   '18446744073709551615', GetNumRes(QWord(-1), True, 8), d);
+  AssertPrint('auto, int64: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775807', '9223372036854775809',  GetNumRes(QWord(-9223372036854775807), True, 8), d);
+  AssertPrint('auto, int64: -9223372036854775808', '9223372036854775808',  GetNumRes(QWord($8000000000000000), True, 8), d);
+  AssertPrint('auto, QWord:  1',                   '1',                    GetNumRes(QWord(1), False, 8), d);
+  AssertPrint('auto, QWord: 18446744073709551615', '18446744073709551615', GetNumRes(QWord(-1), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775807',  '9223372036854775807',  GetNumRes(QWord(9223372036854775807), False, 8), d);
+  AssertPrint('auto, QWord: 9223372036854775808',  '9223372036854775808',  GetNumRes(QWord($8000000000000000), False, 8), d);
+
 end;
 
 
