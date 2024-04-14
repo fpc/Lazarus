@@ -3,6 +3,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   Height = 331
   Top = 243
   Width = 410
+  ActiveControl = TypeEdit
   Caption = 'CodyDeclareVarDialog'
   ClientHeight = 331
   ClientWidth = 410
@@ -19,7 +20,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
     HelpButton.Name = 'HelpButton'
     CloseButton.Name = 'CloseButton'
     CancelButton.Name = 'CancelButton'
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object Panel1: TPanel
@@ -31,7 +32,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
     BevelOuter = bvNone
     ClientHeight = 277
     ClientWidth = 410
-    TabOrder = 1
+    TabOrder = 0
     object TypeLabel: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = TypeEdit
@@ -60,7 +61,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
-      TabOrder = 0
+      TabOrder = 1
       Text = 'TypeEdit'
     end
     object WhereRadioGroup: TRadioGroup
@@ -82,7 +83,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      TabOrder = 1
+      TabOrder = 0
     end
     object RedefineLabel: TLabel
       Left = 6
