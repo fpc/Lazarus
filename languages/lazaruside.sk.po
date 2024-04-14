@@ -9830,6 +9830,10 @@ msgstr "Vrátane podadre&sárov"
 msgid "&Multiline pattern"
 msgstr "&Viacriadkový vzor"
 
+#: lazarusidestrconsts.lisfindfilereplacementisnotpossible
+msgid "This file contains characters that have different lengths in upper and lower case. The current implementation does not allow for correct replacement in this case (but you can use case-sensitive replacement). This file will have to be skipped:"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "all files in &project"
 msgstr "všetky súbory v &projekte"

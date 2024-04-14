@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-06 19:31+0300\n"
+"PO-Revision-Date: 2024-04-14 19:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9749,6 +9749,10 @@ msgstr "&Искать в подкаталогах"
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr "Многострочный &шаблон"
+
+#: lazarusidestrconsts.lisfindfilereplacementisnotpossible
+msgid "This file contains characters that have different lengths in upper and lower case. The current implementation does not allow for correct replacement in this case (but you can use case-sensitive replacement). This file will have to be skipped:"
+msgstr "Этот файл содержит символы, для которых длина в верхнем и нижнем регистрах не совпадает. Текущая реализация не позволяет осуществить корректную замену в таком случае (но можно использовать замену с учётом регистра). Этот файл будет пропущен:"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "all files in &project"

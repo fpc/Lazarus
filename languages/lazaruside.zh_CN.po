@@ -9808,6 +9808,10 @@ msgstr "包括子目录(&S)"
 msgid "&Multiline pattern"
 msgstr "多线路的模式(pattern)(&M)"
 
+#: lazarusidestrconsts.lisfindfilereplacementisnotpossible
+msgid "This file contains characters that have different lengths in upper and lower case. The current implementation does not allow for correct replacement in this case (but you can use case-sensitive replacement). This file will have to be skipped:"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 #, fuzzy
 #| msgid "search all files in &project"
