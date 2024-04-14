@@ -7907,7 +7907,7 @@ begin
 
   if FindClassContext then begin
     // search ancestor class context
-    if (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType]) then
+    if (AncestorContext.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnSpecialize]) then
     begin
       Params:=TFindDeclarationParams.Create;
       Params.GenParams := ResultParams.GenParams;
@@ -14458,7 +14458,15 @@ begin
       GenParams.ParamValuesTool:=nil;
       GenParams.SpecializeParamsNode:=nil;
     end;
-    Result:=DoFindIdentifierInContext(ContextTool);
+    Result := (ContextNode.FirstChild <> nil) and (ContextNode.FirstChild.Desc = ctnSpecialize);
+    if Result then begin
+      NewNode:= ContextNode.FirstChild;
+      NewCodeTool:=ContextTool;
+      Include(Flags, fdfDoNotCache);
+      Include(NewFlags, fodDoNotCache);
+    end
+    else
+      Result:=DoFindIdentifierInContext(ContextTool);
 
     if not Result then begin
       GenParamType := ContextNode.FirstChild;
