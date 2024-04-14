@@ -3214,7 +3214,6 @@ procedure QString_push_back(handle: QStringH; s: PWideString); cdecl; external Q
 procedure QString_push_front(handle: QStringH; c: PWideChar); cdecl; external Qt6PasLib name 'QString_push_front';
 procedure QString_push_front(handle: QStringH; s: PWideString); cdecl; external Qt6PasLib name 'QString_push_front2';
 function QString_isNull(handle: QStringH): Boolean; cdecl; external Qt6PasLib name 'QString_isNull';
-function QString_isSimpleText(handle: QStringH): Boolean; cdecl; external Qt6PasLib name 'QString_isSimpleText';
 function QString_isRightToLeft(handle: QStringH): Boolean; cdecl; external Qt6PasLib name 'QString_isRightToLeft';
 function QString_Create(size: Integer; AnonParam2: QtInitialization): QStringH; cdecl; external Qt6PasLib name 'QString_Create8';
 procedure QString_chopped(handle: QStringH; len: integer; retval: PWideString); cdecl; external Qt6PasLib name 'QString_chopped';

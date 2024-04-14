@@ -166,7 +166,6 @@ C_EXPORT void QString_push_back2(QStringH handle, PWideString s);
 C_EXPORT void QString_push_front(QStringH handle, PWideChar c);
 C_EXPORT void QString_push_front2(QStringH handle, PWideString s);
 C_EXPORT bool QString_isNull(QStringH handle);
-C_EXPORT bool QString_isSimpleText(QStringH handle);
 C_EXPORT bool QString_isRightToLeft(QStringH handle);
 C_EXPORT void QString_chopped(QStringH handle, int len, PWideString retval);
 C_EXPORT void QString_first(QStringH handle, int n, PWideString retval);

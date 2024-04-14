@@ -1073,11 +1073,6 @@ bool QString_isNull(QStringH handle)
 	return (bool) ((QString *)handle)->isNull();
 }
 
-bool QString_isSimpleText(QStringH handle)
-{
-	return (bool) ((QString *)handle)->isSimpleText();
-}
-
 bool QString_isRightToLeft(QStringH handle)
 {
 	return (bool) ((QString *)handle)->isRightToLeft();
