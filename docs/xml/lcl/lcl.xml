@@ -6,7 +6,7 @@ Utilities) are published under the Creative Commons Attribution-ShareAlike 4.0
 International public license.
 
 https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
-file://../../cc-by-sa-4-0.txt
+https://gitlab.com/freepascal.org/lazarus/lazarus/-/blob/main/docs/cc-by-sa-4-0.txt
 
 Copyright (c) 1997-2024, by the Lazarus Development Team.
 
@@ -32,7 +32,7 @@ Details about the Creative Commons Attribution-ShareAlike 4.0 International
 public license is available both locally and online:
 </p>
 <code>
-file://docs/cc-by-sa-4-0.txt
+https://gitlab.com/freepascal.org/lazarus/lazarus/-/blob/main/docs/cc-by-sa-4-0.txt
 https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
 https://wiki.lazarus.freepascal.org/licensing
 </code>
