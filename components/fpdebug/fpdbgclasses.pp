@@ -1625,13 +1625,45 @@ procedure TGenericBreakPointTargetHandler.MaskBreakpointsInReadData(const AAdres
   const ASize: Cardinal; var AData);
 var
   MapEnumData: TFpBreakPointMap.TFpBreakPointMapEnumerationData;
-  offset: TDbgPtr;
+  i, len: TDBGPtr;
+  PtrOrig: Pointer;
 begin
   for MapEnumData in BreakMap do begin
-    if not HPtr(MapEnumData.TargetHandlerDataPtr)^.ErrorSetting and (MapEnumData.Location >= AAdress) and (MapEnumData.Location < (AAdress+ASize)) then
-    begin
-      offset := MapEnumData.Location - AAdress;
-      P_BRK_STORE(@AData + offset)^ := HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+    // Does break instruction fall completely outside AData
+    if (MapEnumData.Location + SizeOf(_BRK_STORE) <= AAdress) or
+       (MapEnumData.Location >= (AAdress + ASize)) or
+       HPtr(MapEnumData.TargetHandlerDataPtr)^.ErrorSetting then
+      continue;
+
+    if (MapEnumData.Location >= AAdress) and (MapEnumData.Location + SizeOf(_BRK_STORE) <= (AAdress + ASize)) then begin
+      // Breakpoint is completely inside AData
+      // MapEnumData.Location >= AAdress
+      i := MapEnumData.Location - AAdress;
+      P_BRK_STORE(@AData + i)^ := HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+    end
+    else
+    if (MapEnumData.Location < AAdress) then begin
+      // Breakpoint starts on or partially overlaps with start of AData
+      // Breakpoint may overhang past end of AData
+      // AAdress > MapEnumData.Location
+      i := AAdress - MapEnumData.Location;
+      // i < SizeOf(_BRK_STORE) / since MapEnumData.Location + SizeOf(_BRK_STORE) > AAdress
+      len := SizeOf(_BRK_STORE) - i;
+      // Do not write past end of AData
+      if len > ASize then
+        len := ASize;
+
+      PtrOrig := @HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+      move(PByte(PtrOrig+i)^, PByte(@AData)^, len);
+    end
+    else begin
+      // Breakpoint partially overlaps with end of AData
+      // MapEnumData.Location > AAdress
+      // MapEnumData.Location < AAdress + ASize;
+      i := MapEnumData.Location - AAdress;
+      len := ASize - i;  // AAdress + ASize - MapEnumData.Location;
+      PtrOrig := @HPtr(MapEnumData.TargetHandlerDataPtr)^.OrigValue;
+      move(PByte(PtrOrig)^, PByte(@AData+i)^, len);
     end;
   end;
 end;
