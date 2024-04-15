@@ -2032,8 +2032,6 @@ begin
 end;
 
 procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
-var
-  lPos: TPoint;
 begin
   //debugln(['TDesigner.HandlePopupMenu ',DbgSName(Sender),' ',Message.XPos,',',Message.YPos]);
   {$IFDEF EnableDesignerPopupRightClick}
@@ -2042,10 +2040,7 @@ begin
   begin
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
-    if Message.XPos >= 0
-      then lPos := Point(Message.XPos,Message.YPos)
-      else lPos := Form.ClientToScreen(Point(Selection.Left + Selection.Width, Selection.Top));
-    FDesignerPopupMenu.Popup(lPos.X, lPos.Y);
+    FDesignerPopupMenu.Popup(Message.XPos, Message.YPos);
   end;
   Message.Result := 1;
 end;
