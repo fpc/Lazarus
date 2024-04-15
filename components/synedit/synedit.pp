@@ -218,6 +218,7 @@ type
     sfPreventScrollAfterSelect,
     sfIgnoreNextChar, sfPainting, sfHasPainted, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
+    sfGutterResized,
     sfAfterLoadFromFileNeeded,
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
@@ -535,7 +536,7 @@ type
     FUndoBlockAtPaintLock: Integer;
     FStatusChangeLock: Integer;
     FRecalcCharsAndLinesLock: Integer;
-    FScrollBarUpdateLock: Integer;
+    FDoingResizeLock: Integer;
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
     FScrollBars: TScrollStyle;
@@ -2198,7 +2199,7 @@ begin
   inherited Create(AOwner);
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
-  FScrollBarUpdateLock := 0;
+  FDoingResizeLock := 0;
   FPaintLock := 0;
   FStatusChangeLock := 0;
   FUndoBlockAtPaintLock := 0;
@@ -4932,15 +4933,29 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
-  DoIncPaintLock(nil);
+  DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
   try
     inherited CreateHandle;   //SizeOrFontChanged will be called
+    fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
+    UpdateScrollBars; // just set sfScrollbarChanged
+  finally
+    DoDecPaintLock(nil); // run UpdateScrollBars
+
+    inc(FDoingResizeLock);
+    try
     FLeftGutter.RecalcBounds;
     FRightGutter.RecalcBounds;
-    fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
-    UpdateScrollBars;
-  finally
-    DoDecPaintLock(nil);
+    finally
+      dec(FDoingResizeLock);
+      if sfGutterResized in fStateFlags then begin
+        Exclude(fStateFlags, sfGutterResized);
+        RecalcCharsAndLinesInWin(False);
+        UpdateScrollBars;
+      end
+      else
+      if sfScrollbarChanged in fStateFlags then
+        UpdateScrollBars;
+    end;
   end;
 end;
 
@@ -5135,8 +5150,7 @@ procedure TCustomSynEdit.UpdateScrollBars;
 var
   ScrollInfo: TScrollInfo;
 begin
-  if FScrollBarUpdateLock <> 0 then exit;
-  if not HandleAllocated or (PaintLock <> 0) then
+  if (not HandleAllocated) or (PaintLock <> 0) or (FDoingResizeLock <> 0) then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
     Exclude(fStateFlags, sfScrollbarChanged);
@@ -5356,18 +5370,19 @@ begin
   inherited;
   if (not HandleAllocated) then
     exit;
-  inc(FScrollBarUpdateLock);
+  inc(FDoingResizeLock);
   FScreenCaret.Lock;
   try
     FLeftGutter.RecalcBounds;
     FRightGutter.RecalcBounds;
+    // SizeOrFontChanged will call RecalcCharsAndLinesInWin which may have been skipped in GutterResized
     SizeOrFontChanged(FALSE);
     if sfEnsureCursorPosAtResize in fStateFlags then
       EnsureCursorPosVisible;
     Exclude(fStateFlags, sfEnsureCursorPosAtResize);
   finally
     FScreenCaret.UnLock;
-    dec(FScrollBarUpdateLock);
+    dec(FDoingResizeLock);
     UpdateScrollBars;
   end;
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
@@ -8034,6 +8049,11 @@ begin
   if (csLoading in ComponentState) then exit;
 
   GutterChanged(Sender);
+
+  if (FDoingResizeLock <> 0) then begin
+    Include(fStateFlags, sfGutterResized);
+    exit
+  end;
 
   if HandleAllocated then begin
     RecalcCharsAndLinesInWin(False);
