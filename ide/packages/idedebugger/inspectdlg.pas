@@ -1326,11 +1326,11 @@ end;
 procedure TIDEInspectDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
-  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  FWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
   if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
-    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfInspect);
   if DbgProjectLink.UseDisplayFormatConfigsFromProject then
-    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfInspect);
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfInspect);
   DoDispFormatChanged(Nil);
 end;
 

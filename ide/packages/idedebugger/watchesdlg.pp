@@ -379,11 +379,11 @@ end;
 procedure TWatchesDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
-  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  FWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
   if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
-    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfWatches);
   if DbgProjectLink.UseDisplayFormatConfigsFromProject then
-    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfWatches);
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfWatches);
   UpdateAll;
 end;
 

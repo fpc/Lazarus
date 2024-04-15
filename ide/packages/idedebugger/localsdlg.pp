@@ -379,11 +379,11 @@ end;
 procedure TLocalsDlg.DebugConfigChanged;
 begin
   inherited DebugConfigChanged;
-  FWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+  FWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
   if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
-    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfLocals);
   if DbgProjectLink.UseDisplayFormatConfigsFromProject then
-    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.ValueFormatResolver.FallBackFormats, dtfLocals);
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfLocals);
   LocalsChanged(nil);
 end;
 

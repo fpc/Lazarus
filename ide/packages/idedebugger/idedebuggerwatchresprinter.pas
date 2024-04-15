@@ -68,7 +68,7 @@ type
     FFormatFlags: TWatchResultPrinterFormatFlags;
     FLineSeparator: String;
     FTargetAddressSize: integer;
-    FValueFormatResolver: TDisplayFormatResolver;
+    FDisplayFormatResolver: TDisplayFormatResolver;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected
@@ -91,7 +91,7 @@ type
 
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
     property TargetAddressSize: integer read FTargetAddressSize write FTargetAddressSize;
-    property ValueFormatResolver: TDisplayFormatResolver read FValueFormatResolver;
+    property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver;
   end;
 
 const
@@ -582,7 +582,7 @@ var
   vis, indent, sep, tn, Header: String;
   InclVisSect: Boolean;
 begin
-  Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+  Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
   Result := '';
 
   tn := AResValue.TypeName;
@@ -721,7 +721,7 @@ var
   Resolved: TResolvedDisplayFormat;
   s: String;
 begin
-  Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+  Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
   Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, TargetAddressSize, Resolved.Num2, True);
 
   if AResValue.AsString <> '' then
@@ -751,7 +751,7 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
     Resolved: TResolvedDisplayFormat;
     s: String;
   begin
-    Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+    Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
 
     result := '';
     s := '';
@@ -780,7 +780,7 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
     c: QWord;
     s: String;
   begin
-    Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+    Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
 
     c := AResValue.AsQWord;
     result := '';
@@ -805,7 +805,7 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
     Resolved: TResolvedDisplayFormat;
     s: String;
   begin
-    Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+    Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
 
     result := '';
     s := '';
@@ -864,7 +864,7 @@ begin
     end;
     rdkSignedNumVal,
     rdkUnsignedNumVal: begin
-      Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
       Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num1);
       if Resolved.Num2.Visible then begin;
         Result := Result +' = ' +
@@ -872,7 +872,7 @@ begin
       end;
     end;
     rdkPointerVal: begin
-      Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
       Result := '';
 
       PtrDeref :=  PointerValue.DerefData;
@@ -905,7 +905,7 @@ begin
       end;
     end;
     rdkFloatVal: begin
-      Resolved := ValueFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
       if Resolved.Float.NumFormat = vdfFloatScientific then
         case AResValue.FloatPrecission of
           dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffExponent,  9, 0);
@@ -948,13 +948,13 @@ constructor TWatchResultPrinter.Create;
 begin
   FFormatFlags := [rpfMultiLine, rpfIndent];
   FTargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
-  FValueFormatResolver := TDisplayFormatResolver.Create;
+  FDisplayFormatResolver := TDisplayFormatResolver.Create;
 end;
 
 destructor TWatchResultPrinter.Destroy;
 begin
   inherited Destroy;
-  FValueFormatResolver.Free;
+  FDisplayFormatResolver.Free;
 end;
 
 function TWatchResultPrinter.PrintWatchValue(AResValue: TWatchResultData;

@@ -2508,11 +2508,11 @@ begin
     if (Project1 = nil) or (DbgProjectLink.UseValueFormatterFromIDE) then
       DebuggerOptions.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
 
-    HintWatchPrinter.ValueFormatResolver.FallBackFormats.Clear;
+    HintWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
     if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
-      DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
+      DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
     if DbgProjectLink.UseDisplayFormatConfigsFromProject then
-      DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.ValueFormatResolver.FallBackFormats, dtfHint);
+      DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
 
     for d in TDebugDialogType do
       if FDialogs[d] <> nil then
