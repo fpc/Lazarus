@@ -73,9 +73,6 @@ begin
   if FValFormatList.Changed then begin
     DebuggerOptions.ValueFormatterConfig.Assign(FValFormatList);
     DebuggerOptions.ValueFormatterConfig.Changed := True;
-
-    if DebugBossManager <> nil then
-      DebugBossManager.DoBackendConverterChanged;
   end;
 end;
 

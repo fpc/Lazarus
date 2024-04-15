@@ -74,9 +74,6 @@ begin
   if FValConvList.Changed then begin
     DebuggerOptions.BackendConverterConfig.Assign(FValConvList);
     DebuggerOptions.BackendConverterConfig.Changed := True;
-
-    if DebugBossManager <> nil then
-      DebugBossManager.DoBackendConverterChanged;
   end;
 end;
 

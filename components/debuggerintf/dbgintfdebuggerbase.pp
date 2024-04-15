@@ -1837,8 +1837,6 @@ type
 
     class property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
     class property DebuggersByClassName[const AIndex: String]: TDebuggerClass read GetDebuggerClassByName;
-  public
-    procedure DoBackendConverterChanged; virtual; abstract;
   end;
 
 (* RegisterDebugger

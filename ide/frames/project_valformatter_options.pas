@@ -86,13 +86,11 @@ begin
   DbgProjectLink.UseValueFormatterFromIDE := chkUseGlobalList.Checked;
   DbgProjectLink.UseValueFormatterFromProject := chkUseProjList.Checked;
 
-  if FValFormatList.Changed then begin
+  if FValFormatList.Changed or HasChg then begin
     DbgProjectLink.ValueFormatterConfig.Assign(FValFormatList);
     DbgProjectLink.ValueFormatterConfig.Changed := True;
 
   end;
-  if (DebugBossManager <> nil) and HasChg then
-    DebugBossManager.DoBackendConverterChanged;
 end;
 
 class function TIdeProjectValueFormatterOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

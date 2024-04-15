@@ -172,8 +172,9 @@ begin
   FProject := AValue;
   if Assigned(FProject) then
     FProject.DebuggerLink := Self;
-  if DebugBossManager <> nil then
-    DebugBossManager.DoBackendConverterChanged;
+  FBackendConverterConfig.CallChangeNotifications;
+  FValueFormatterConfig.CallChangeNotifications;
+  FDisplayFormatConfigs.CallChangeNotifications;
 end;
 
 procedure TProjectDebugLink.SetStoreDebuggerClassConfInSession(AValue: boolean);
@@ -293,8 +294,7 @@ end;
 
 procedure TProjectDebugLink.AfterReadProject;
 begin
-  if DebugBossManager <> nil then
-    DebugBossManager.DoBackendConverterChanged;
+  //
 end;
 
 procedure TProjectDebugLink.LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string);

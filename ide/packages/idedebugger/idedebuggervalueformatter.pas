@@ -12,7 +12,8 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeIntf
-  IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, IdeDebuggerDisplayFormats;
+  IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, IdeDebuggerDisplayFormats,
+  IdeDebuggerUtils;
 
 type
 
@@ -60,7 +61,9 @@ type
 
   { TIdeDbgValueFormatterSelectorList }
 
-  TIdeDbgValueFormatterSelectorList = class(specialize TFPGObjectList<TIdeDbgValueFormatterSelector>)
+  TIdeDbgValueFormatterSelectorList = class(
+    specialize TChangeNotificationGeneric< specialize TFPGObjectList<TIdeDbgValueFormatterSelector> >
+  )
   private
     FChanged: Boolean;
     FDefaultsAdded: integer;
@@ -78,6 +81,7 @@ type
     property Changed: Boolean read FChanged write SetChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   public
+    destructor Destroy; override;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
       ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
@@ -92,10 +96,6 @@ type
     // Do not copy in assign / do not clear
     property DefaultsAdded: integer read FDefaultsAdded write FDefaultsAdded;
   end;
-
-var
-  ValueFormatterSelectorList: TIdeDbgValueFormatterSelectorList;
-
 
 implementation
 
@@ -227,12 +227,13 @@ end;
 
 procedure TIdeDbgValueFormatterSelectorList.SetChanged(AValue: Boolean);
 begin
-  if FChanged = AValue then
-    exit;
-  FChanged := AValue;
+  if FChanged <> AValue then begin
+    FChanged := AValue;
 
-  if FOnChanged <> nil then
-    FOnChanged(Self);
+    if FOnChanged <> nil then
+      FOnChanged(Self);
+  end;
+  CallChangeNotifications;
 end;
 
 procedure TIdeDbgValueFormatterSelectorList.Assign(
@@ -287,6 +288,7 @@ begin
   Def := TIdeDbgValueFormatterSelectorList.Create;
   AConfig.ReadObject(APath+'Conf/', Self, Def);
   Def.Free;
+  CallChangeNotifications;
 end;
 
 procedure TIdeDbgValueFormatterSelectorList.SaveDataToXMLConfig(
@@ -302,6 +304,12 @@ begin
   Def := TIdeDbgValueFormatterSelectorList.Create;
   AConfig.WriteObject(APath+'Conf/', Self, Def);
   Def.Free;
+end;
+
+destructor TIdeDbgValueFormatterSelectorList.Destroy;
+begin
+  FreeChangeNotifications;
+  inherited Destroy;
 end;
 
 function TIdeDbgValueFormatterSelectorList.FormatValue(
@@ -421,10 +429,5 @@ begin
   Result := False;
 end;
 
-initialization
-  ValueFormatterSelectorList := TIdeDbgValueFormatterSelectorList.Create;
-
-finalization
-  FreeAndNil(ValueFormatterSelectorList);
 end.
 

@@ -115,6 +115,8 @@ type
     procedure DoProjectModified(Sender: TObject);
   private
     FAsmWindowShouldAutoClose: Boolean;
+    procedure DoDebugConfChanged(Sender: TObject);
+    procedure DoDisplayFormatChanged(Sender: TObject);
     procedure BreakAutoContinueTimer(Sender: TObject);
     procedure RunTimer(Sender: TObject);
     // Menu events
@@ -233,7 +235,6 @@ type
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
     procedure ClearDebugOutputLog;
     procedure ClearDebugEventsLog;
-    procedure DoBackendConverterChanged; override;
 
     function RequiredCompilerOpts(ATargetCPU, ATargetOS: String
       ): TDebugCompilerRequirements; override;
@@ -1157,6 +1158,26 @@ procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
 begin
   FAutoContinueTimer.Enabled := False;
   FDebugger.Run;
+end;
+
+procedure TDebugManager.DoDebugConfChanged(Sender: TObject);
+var
+  d: TDebugDialogType;
+begin
+  for d in TDebugDialogType do
+    if FDialogs[d] <> nil then
+      FDialogs[d].DebugConfigChanged;
+end;
+
+procedure TDebugManager.DoDisplayFormatChanged(Sender: TObject);
+begin
+  HintWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
+  if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
+    DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
+  if DbgProjectLink.UseDisplayFormatConfigsFromProject then
+    DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
+
+  DoDebugConfChanged(Sender);
 end;
 
 procedure TDebugManager.RunTimer(Sender: TObject);
@@ -2112,6 +2133,13 @@ begin
   LazarusIDE.AddHandlerOnProjectClose(@DoProjectClose);
 
   FEventLogManager := TDebugEventLogManager.Create;
+
+  DbgProjectLink.ValueFormatterConfig.AddChangeNotification(@DoDisplayFormatChanged);
+  DebuggerOptions.ValueFormatterConfig.AddChangeNotification(@DoDisplayFormatChanged);
+  DbgProjectLink.BackendConverterConfig.AddChangeNotification(@DoDebugConfChanged);
+  DebuggerOptions.BackendConverterConfig.AddChangeNotification(@DoDebugConfChanged);
+  DbgProjectLink.DisplayFormatConfigs.AddChangeNotification(@DoDebugConfChanged);
+  DebuggerOptions.DisplayFormatConfigs.AddChangeNotification(@DoDebugConfChanged);
 end;
 
 destructor TDebugManager.Destroy;
@@ -2487,39 +2515,6 @@ end;
 procedure TDebugManager.ClearDebugEventsLog;
 begin
   FEventLogManager.ClearDebugEventsLog;
-end;
-
-procedure TDebugManager.DoBackendConverterChanged;
-var
-  d: TDebugDialogType;
-begin
-  ValueConverterSelectorList.Lock;
-
-  try
-    ValueConverterSelectorList.Clear;
-    ValueFormatterSelectorList.Clear;
-    if {(Project1 <> nil) and} (DbgProjectLink.UseBackendConverterFromProject) then
-      DbgProjectLink.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
-    if (Project1 = nil) or (DbgProjectLink.UseBackendConverterFromIDE) then
-      DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
-
-    if {(Project1 <> nil) and} (DbgProjectLink.UseValueFormatterFromProject) then
-      DbgProjectLink.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
-    if (Project1 = nil) or (DbgProjectLink.UseValueFormatterFromIDE) then
-      DebuggerOptions.ValueFormatterConfig.AssignEnabledTo(ValueFormatterSelectorList, True);
-
-    HintWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
-    if DbgProjectLink.UseDisplayFormatConfigsFromIDE then
-      DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
-    if DbgProjectLink.UseDisplayFormatConfigsFromProject then
-      DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(HintWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfHint);
-
-    for d in TDebugDialogType do
-      if FDialogs[d] <> nil then
-        FDialogs[d].DebugConfigChanged;
-  finally
-    ValueConverterSelectorList.Unlock;
-  end;
 end;
 
 function TDebugManager.RequiredCompilerOpts(ATargetCPU, ATargetOS: String

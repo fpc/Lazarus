@@ -1205,7 +1205,7 @@ begin
   if (d.ResultData <> nil) and
      not( (d.ResultData.ValueKind = rdkPrePrinted) and (t <> nil) )
   then begin
-    if ValueFormatterSelectorList.FormatValue(d.ResultData, Watch.DisplayFormat, FWatchPrinter, s)
+    if GlobalValueFormatterSelectorList.FormatValue(d.ResultData, Watch.DisplayFormat, FWatchPrinter, s)
     then begin
       InspectMemo.WordWrap := True;
       InspectMemo.Text := s;
@@ -1214,7 +1214,7 @@ begin
   end
   else
   if (t <> nil) and
-     ValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s)
+     GlobalValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s)
   then begin
     InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
@@ -1508,7 +1508,7 @@ begin
           if (ResData <> nil) and
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
-            if not ValueFormatterSelectorList.FormatValue(ResData,
+            if not GlobalValueFormatterSelectorList.FormatValue(ResData,
                DispFormat, FWatchDlg.FWatchPrinter, Result)
             then begin
               Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
@@ -1516,7 +1516,7 @@ begin
           end
           else begin
             if (AWatchAbleResult.TypeInfo = nil) or
-               not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
+               not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
                AWatchAbleResult.Value, DispFormat, Result)
             then begin
               Result := AWatchAbleResult.Value;
@@ -1569,7 +1569,7 @@ begin
          not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
       then begin
         FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
-        if not ValueFormatterSelectorList.FormatValue(ResData,
+        if not GlobalValueFormatterSelectorList.FormatValue(ResData,
            DispFormat, FWatchDlg.FWatchPrinter, WatchValueStr)
         then begin
           WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
@@ -1588,7 +1588,7 @@ begin
       end
       else begin
         if (AWatchAbleResult.TypeInfo = nil) or
-           not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
+           not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
            AWatchAbleResult.Value, DispFormat, WatchValueStr)
         then begin
           WatchValueStr := AWatchAbleResult.Value;

@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils, LazClasses, LazLoggerBase, LazMethodList,
   IdeDebuggerWatchResult, IdeDebuggerBackendValueConv,
-  IdeDebuggerWatchResultJSon, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  IdeDebuggerWatchResultJSon, IdeDebuggerValueFormatter,
+  ProjectDebugLink, IdeDebuggerOpts, Project, DbgIntfDebuggerBase, DbgIntfMiscClasses,
   IdeDebuggerWatchValueIntf, LazDebuggerIntf, LazDebuggerTemplate,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, FpDebugConvDebugForJson;
 
@@ -294,10 +295,108 @@ type
     destructor Destroy; override;
   end;
 
+  { TIdeGlobalDbgValueConvertSelectorList }
+
+  TIdeGlobalDbgValueConvertSelectorList = class(TIdeDbgValueConvertSelectorList)
+  private
+    procedure ConfigChanged(Sender: TObject);
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  { TIdeDbgGlobalValueFormatterSelectorList }
+
+  TIdeDbgGlobalValueFormatterSelectorList = class(TIdeDbgValueFormatterSelectorList)
+  private
+    procedure ConfigChanged(Sender: TObject);
+  public
+    constructor Create;
+  end;
+
+function GetGlobalValueConverterSelectorList: TIdeGlobalDbgValueConvertSelectorList;
+function GetGlobalValueFormatterSelectorList: TIdeDbgGlobalValueFormatterSelectorList;
+
+property GlobalValueConverterSelectorList: TIdeGlobalDbgValueConvertSelectorList read GetGlobalValueConverterSelectorList;
+property GlobalValueFormatterSelectorList: TIdeDbgGlobalValueFormatterSelectorList read GetGlobalValueFormatterSelectorList;
+
 implementation
 
 var
   DBG_DATA_MONITORS: PLazLoggerLogGroup;
+  TheGlobalValueConverterSelectorList: TIdeGlobalDbgValueConvertSelectorList = nil;
+  TheGlobalValueFormatterSelectorList: TIdeDbgGlobalValueFormatterSelectorList = nil;
+
+function GetGlobalValueConverterSelectorList: TIdeGlobalDbgValueConvertSelectorList;
+begin
+  if TheGlobalValueConverterSelectorList = nil then begin
+    TheGlobalValueConverterSelectorList := TIdeGlobalDbgValueConvertSelectorList.Create;
+    ValueConverterConfigList := TheGlobalValueConverterSelectorList;
+  end;
+  Result := TheGlobalValueConverterSelectorList;
+end;
+
+function GetGlobalValueFormatterSelectorList: TIdeDbgGlobalValueFormatterSelectorList;
+begin
+  if TheGlobalValueFormatterSelectorList = nil then
+    TheGlobalValueFormatterSelectorList := TIdeDbgGlobalValueFormatterSelectorList.Create;
+  Result := TheGlobalValueFormatterSelectorList;
+end;
+
+{ TIdeGlobalDbgValueConvertSelectorList }
+
+procedure TIdeGlobalDbgValueConvertSelectorList.ConfigChanged(Sender: TObject);
+begin
+  Lock;
+  try
+    Clear;
+    if {(Project1 <> nil) and} (DbgProjectLink.UseBackendConverterFromProject) then
+      DbgProjectLink.BackendConverterConfig.AssignEnabledTo(Self, True);
+    if (Project1 = nil) or (DbgProjectLink.UseBackendConverterFromIDE) then
+      DebuggerOptions.BackendConverterConfig.AssignEnabledTo(Self, True);
+
+    CallChangeNotifications;
+  finally
+    Unlock;
+  end;
+end;
+
+constructor TIdeGlobalDbgValueConvertSelectorList.Create;
+begin
+  inherited Create;
+
+  DbgProjectLink.BackendConverterConfig.AddChangeNotification(@ConfigChanged);
+  DebuggerOptions.BackendConverterConfig.AddChangeNotification(@ConfigChanged);
+  ConfigChanged(nil);
+end;
+
+destructor TIdeGlobalDbgValueConvertSelectorList.Destroy;
+begin
+  ValueConverterConfigList := nil;
+  inherited Destroy;
+end;
+
+{ TIdeDbgGlobalValueFormatterSelectorList }
+
+procedure TIdeDbgGlobalValueFormatterSelectorList.ConfigChanged(Sender: TObject);
+begin
+  Clear;
+  if {(Project1 <> nil) and} (DbgProjectLink.UseValueFormatterFromProject) then
+    DbgProjectLink.ValueFormatterConfig.AssignEnabledTo(Self, True);
+  if (Project1 = nil) or (DbgProjectLink.UseValueFormatterFromIDE) then
+    DebuggerOptions.ValueFormatterConfig.AssignEnabledTo(Self, True);
+
+  CallChangeNotifications;
+end;
+
+constructor TIdeDbgGlobalValueFormatterSelectorList.Create;
+begin
+  inherited Create;
+
+  DbgProjectLink.ValueFormatterConfig.AddChangeNotification(@ConfigChanged);
+  DebuggerOptions.ValueFormatterConfig.AddChangeNotification(@ConfigChanged);
+  ConfigChanged(nil);
+end;
 
 { TWatchValue }
 
@@ -1083,7 +1182,12 @@ begin
 end;
 
 initialization
+  GetGlobalValueConverterSelectorList; // init ValueConverterConfigList
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
+
+finalization
+  FreeAndNil(TheGlobalValueConverterSelectorList);
+  FreeAndNil(TheGlobalValueFormatterSelectorList);
 
 end.
 

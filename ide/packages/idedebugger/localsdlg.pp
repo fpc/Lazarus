@@ -892,7 +892,7 @@ begin
           if (ResData <> nil) and
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
-            if not ValueFormatterSelectorList.FormatValue(ResData,
+            if not GlobalValueFormatterSelectorList.FormatValue(ResData,
                DispFormat, FLocalsDlg.FWatchPrinter, Result)
             then begin
               Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
@@ -900,7 +900,7 @@ begin
           end
           else begin
             if (AWatchAbleResult.TypeInfo = nil) or
-               not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
+               not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
                AWatchAbleResult.Value, DispFormat, Result)
             then begin
               Result := AWatchAbleResult.Value;
@@ -934,7 +934,7 @@ begin
   if (ResData <> nil) and
      not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
   then begin
-    if not ValueFormatterSelectorList.FormatValue(ResData,
+    if not GlobalValueFormatterSelectorList.FormatValue(ResData,
        DispFormat, FLocalsDlg.FWatchPrinter, WatchValueStr)
     then begin
       WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
@@ -942,7 +942,7 @@ begin
   end
   else begin
     if (AWatchAbleResult.TypeInfo = nil) or
-       not ValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
+       not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
        AWatchAbleResult.Value, DispFormat, WatchValueStr)
     then begin
       WatchValueStr := AWatchAbleResult.Value;

@@ -72,14 +72,14 @@ end;
 
 procedure TProjectDisplayFormatOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  c, HasChg: Boolean;
+  HasChg: Boolean;
 begin
   DisplayFormatDefaultsConfigFrame1.SaveConfig;
-  c := DbgProjectLink.DisplayFormatConfigs.Changed;
   DbgProjectLink.DisplayFormatConfigs.Changed := False;
   DbgProjectLink.DisplayFormatConfigs.Assign(FDisplayFormatConfig); // assign will trigger changed, if anything changed
 
   HasChg :=
+    DbgProjectLink.DisplayFormatConfigs.Changed or
     (DbgProjectLink.UseDisplayFormatConfigsFromIDE <> chkUseGlobalList.Checked) or
     (DbgProjectLink.UseDisplayFormatConfigsFromProject <> chkUseProjList.Checked);
 
@@ -87,12 +87,7 @@ begin
   DbgProjectLink.UseDisplayFormatConfigsFromIDE := chkUseGlobalList.Checked;
   DbgProjectLink.UseDisplayFormatConfigsFromProject := chkUseProjList.Checked;
 
-  if HasChg or DbgProjectLink.DisplayFormatConfigs.Changed then begin
-    if (DebugBossManager <> nil) then
-      DebugBossManager.DoBackendConverterChanged;
-  end
-  else
-    DbgProjectLink.DisplayFormatConfigs.Changed := c;
+  DbgProjectLink.DisplayFormatConfigs.Changed := HasChg;
 end;
 
 class function TProjectDisplayFormatOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

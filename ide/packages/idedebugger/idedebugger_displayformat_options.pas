@@ -65,20 +65,13 @@ begin
 end;
 
 procedure TIdeDbgDisplayFormatOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  c: Boolean;
 begin
   DisplayFormatDefaultsConfigFrame1.SaveConfig;
-  c := DebuggerOptions.DisplayFormatConfigs.Changed;
   DebuggerOptions.DisplayFormatConfigs.Changed := False;
   DebuggerOptions.DisplayFormatConfigs.Assign(FDisplayFormatConfig); // assign will trigger changed, if anything changed
 
-  if DebuggerOptions.DisplayFormatConfigs.Changed then begin
-    if (DebugBossManager <> nil) then
-      DebugBossManager.DoBackendConverterChanged;
-  end
-  else
-    DebuggerOptions.DisplayFormatConfigs.Changed := c;
+  // trigger chnage notification
+  DebuggerOptions.DisplayFormatConfigs.Changed := DebuggerOptions.DisplayFormatConfigs.Changed;
 end;
 
 class function TIdeDbgDisplayFormatOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

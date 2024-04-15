@@ -10,7 +10,7 @@ uses
   // LazUtils
   Laz2_XMLCfg, Classes, fgl,
   // IdeDebugger
-  IdeDebuggerStringConstants;
+  IdeDebuggerStringConstants, IdeDebuggerUtils;
 
 type
   TDisplayFormatTarget = (
@@ -34,17 +34,20 @@ type
 
   { TDisplayFormatConfig }
 
-  TDisplayFormatConfig = class
+  TDisplayFormatConfig = class(specialize TChangeNotificationGeneric<TObject>)
   private
     FDefaultDisplayFormats: array [TDisplayFormatTarget] of TWatchDisplayFormat;
   private
     FGLobalDefault: Boolean;
     FChanged: Boolean;
     FOnChanged: TNotifyEvent;
+    procedure DoChanged;
     function GetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget): TWatchDisplayFormat;
+    procedure SetChanged(AValue: Boolean);
     procedure SetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget; AValue: TWatchDisplayFormat);
   public
     constructor Create(AGLobalDefault: Boolean = False);
+    destructor Destroy; override;
     procedure Clear;
 
     procedure Assign(ASource: TDisplayFormatConfig);
@@ -55,7 +58,7 @@ type
 
     property DefaultDisplayFormats[AnIndex: TDisplayFormatTarget]: TWatchDisplayFormat
       read GetDefaultDisplayFormats write SetDefaultDisplayFormats; default;
-    property Changed: Boolean read FChanged write FChanged;
+    property Changed: Boolean read FChanged write SetChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
@@ -318,10 +321,24 @@ end;
 
 { TDisplayFormatConfig }
 
+procedure TDisplayFormatConfig.DoChanged;
+begin
+  if (FOnChanged <> nil) then
+    FOnChanged(Self);
+  CallChangeNotifications;
+end;
+
 function TDisplayFormatConfig.GetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget
   ): TWatchDisplayFormat;
 begin
   Result := FDefaultDisplayFormats[AnIndex];
+end;
+
+procedure TDisplayFormatConfig.SetChanged(AValue: Boolean);
+begin
+  FChanged := AValue;
+  if AValue then
+    CallChangeNotifications;
 end;
 
 procedure TDisplayFormatConfig.SetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget;
@@ -333,8 +350,7 @@ begin
   FDefaultDisplayFormats[AnIndex] := AValue;
   if c then begin
     FChanged := True;
-    if (FOnChanged <> nil) then
-      FOnChanged(Self);
+    DoChanged;
   end;
 end;
 
@@ -343,6 +359,12 @@ begin
   FGLobalDefault := AGLobalDefault;
   inherited Create;
   Clear;
+end;
+
+destructor TDisplayFormatConfig.Destroy;
+begin
+  inherited Destroy;
+  FreeChangeNotifications;
 end;
 
 procedure TDisplayFormatConfig.Clear;
@@ -365,8 +387,7 @@ begin
   end;
   if c then begin
     FChanged := True;
-    if (FOnChanged <> nil) then
-      FOnChanged(Self);
+    DoChanged;
   end;
 end;
 
@@ -389,6 +410,7 @@ var
 begin
   for i in TDisplayFormatTarget do
     LoadDisplayFormatFromXMLConfig(AXMLCfg, APath + XmlDisplayFormatTargetNames[i] + '/', FDefaultDisplayFormats[i]);
+  CallChangeNotifications;
 end;
 
 procedure TDisplayFormatConfig.SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String);

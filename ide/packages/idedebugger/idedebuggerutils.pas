@@ -5,7 +5,24 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LazMethodList;
+
+type
+
+  { TChangeNotificationGeneric }
+
+  generic TChangeNotificationGeneric<_BASE: TObject> = class(_BASE)
+  strict private
+    FChangeNotifications: TMethodList;
+  protected
+    procedure FreeChangeNotifications;
+  public
+    // destructor Destroy; override; // not supported by fpc
+    procedure AddChangeNotification(AHandler: TNotifyEvent);
+    procedure RemoveChangeNotification(AHandler: TNotifyEvent);
+    procedure CallChangeNotifications;
+  end;
+
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String): UTf8String;
@@ -415,6 +432,32 @@ function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
   AnIndex: Int64): AnsiString;
 begin
   Result := GetExpressionForArrayElement(AnArrayExpression, IntToStr(AnIndex));
+end;
+
+{ TChangeNotificationGeneric }
+
+procedure TChangeNotificationGeneric.FreeChangeNotifications;
+begin
+  FreeAndNil(FChangeNotifications);
+end;
+
+procedure TChangeNotificationGeneric.AddChangeNotification(AHandler: TNotifyEvent);
+begin
+  if FChangeNotifications = nil then
+    FChangeNotifications := TMethodList.Create;
+  FChangeNotifications.Add(TMethod(AHandler));
+end;
+
+procedure TChangeNotificationGeneric.RemoveChangeNotification(AHandler: TNotifyEvent);
+begin
+  if FChangeNotifications <> nil then
+    FChangeNotifications.Remove(TMethod(AHandler));
+end;
+
+procedure TChangeNotificationGeneric.CallChangeNotifications;
+begin
+  if FChangeNotifications <> nil then
+    FChangeNotifications.CallNotifyEvents(Self);
 end;
 
 end.

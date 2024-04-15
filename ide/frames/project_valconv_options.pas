@@ -106,8 +106,6 @@ begin
     DbgProjectLink.BackendConverterConfig.Changed := True;
 
   end;
-  if (DebugBossManager <> nil) and HasChg then
-    DebugBossManager.DoBackendConverterChanged;
 end;
 
 class function TIdeProjectValConvOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

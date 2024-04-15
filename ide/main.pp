@@ -104,7 +104,7 @@ uses
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
   DebugManager, debugger, DebuggerDlg, DebugAttachDialog,
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv,
+  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv, IdeDebuggerBase,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
@@ -1417,8 +1417,6 @@ begin
   DebuggerOptions.PrimaryConfigPath := GetPrimaryConfigPath;
   DebuggerOptions.CreateConfig;
   DebuggerOptions.Load;
-  if DebugBoss <> nil then
-    DebugBoss.DoBackendConverterChanged;
 
   Assert(InputHistories = nil, 'TMainIDE.LoadGlobalOptions: InputHistories is already assigned.');
   InputHistoriesSO := TInputHistoriesWithSearchOpt.Create;
@@ -11513,7 +11511,7 @@ begin
     if (ResData <> nil) and
        not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
     then begin
-      if not ValueFormatterSelectorList.FormatValue(ResData,
+      if not GlobalValueFormatterSelectorList.FormatValue(ResData,
          DispFormat, WatchPrinter, ResultText)
       then begin
         ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
@@ -11525,7 +11523,7 @@ begin
     end
     else begin
       if (FHintWatchData.WatchValue.TypeInfo = nil) or
-         not ValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
+         not GlobalValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
          FHintWatchData.WatchValue.Value, DispFormat, ResultText)
       then begin
         ResultText := FHintWatchData.WatchValue.Value;

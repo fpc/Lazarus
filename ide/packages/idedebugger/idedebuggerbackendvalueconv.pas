@@ -5,7 +5,7 @@ unit IdeDebuggerBackendValueConv;
 interface
 
 uses
-  Classes, SysUtils, fgl, Laz2_XMLCfg, LazClasses, lazCollections,
+  Classes, SysUtils, fgl, Laz2_XMLCfg, LazClasses, lazCollections, IdeDebuggerUtils,
   LazDebuggerValueConverter;
 
 type
@@ -43,7 +43,7 @@ type
   { TIdeDbgValueConvertSelectorList }
 
   TIdeDbgValueConvertSelectorList = class(
-    specialize TFPGObjectList<TIdeDbgValueConvertSelector>,
+    specialize TChangeNotificationGeneric< specialize TFPGObjectList<TIdeDbgValueConvertSelector> >,
     ILazDbgValueConvertSelectorListIntf
   )
   private
@@ -74,9 +74,6 @@ type
     property Changed: Boolean read FChanged write SetChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
-
-var
-  ValueConverterSelectorList: TIdeDbgValueConvertSelectorList;
 
 implementation
 
@@ -188,10 +185,12 @@ end;
 
 procedure TIdeDbgValueConvertSelectorList.SetChanged(AValue: Boolean);
 begin
-  if FChanged = AValue then Exit;
-  FChanged := AValue;
-  if FChanged and (FOnChanged <> nil) then
-    FOnChanged(Self);
+  if FChanged <> AValue then begin
+    FChanged := AValue;
+    if FChanged and (FOnChanged <> nil) then
+      FOnChanged(Self);
+  end;
+  CallChangeNotifications;
 end;
 
 constructor TIdeDbgValueConvertSelectorList.Create;
@@ -202,6 +201,7 @@ end;
 
 destructor TIdeDbgValueConvertSelectorList.Destroy;
 begin
+  FreeChangeNotifications;
   inherited Destroy;
   FLock.Free;
 end;
@@ -255,7 +255,8 @@ begin
       Add(obj)
     else
       obj.Free;
-  end
+  end;
+  CallChangeNotifications;
 end;
 
 procedure TIdeDbgValueConvertSelectorList.SaveDataToXMLConfig(
@@ -280,14 +281,6 @@ begin
   if i >= 0 then
     Result := IdeItems[i];
 end;
-
-initialization
-  ValueConverterSelectorList := TIdeDbgValueConvertSelectorList.Create;
-  ValueConverterConfigList := ValueConverterSelectorList;
-
-finalization
-  ValueConverterConfigList := nil;
-  FreeAndNil(ValueConverterSelectorList);
 
 end.
 
