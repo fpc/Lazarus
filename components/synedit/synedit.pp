@@ -530,8 +530,6 @@ type
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
 
     fMaxLeftChar: Integer; // 1024
-    FOldWidth, FOldHeight: Integer;
-
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
     FUndoBlockAtPaintLock: Integer;
@@ -2268,8 +2266,6 @@ begin
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
   FFontDummy := TFont.Create;
-  FOldWidth := -1;
-  FOldHeight := -1;
 
   with FTheLinesView do begin
     AddChangeHandler(senrLineCount, @LineCountChanged);
@@ -5358,9 +5354,8 @@ end;
 procedure TCustomSynEdit.DoOnResize;
 begin
   inherited;
-  if (not HandleAllocated) or ((ClientWidth = FOldWidth) and (ClientHeight = FOldHeight)) then exit;
-  FOldWidth := ClientWidth;
-  FOldHeight := ClientHeight;
+  if (not HandleAllocated) then
+    exit;
   inc(FScrollBarUpdateLock);
   FScreenCaret.Lock;
   try
