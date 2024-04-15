@@ -220,6 +220,9 @@ function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags):TModalResult;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 // interactive unit selection
+//function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
+//                            Ask: boolean; out NewResult: TModalResult): boolean;
+function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem): TModalResult;
 function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
   Files: TStringList): TModalResult;
@@ -3408,6 +3411,36 @@ begin
     NormalUnits.Free;
     PkgList.Free;
     Files.Free;
+  end;
+end;
+{
+function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
+  Ask: boolean; out NewResult: TModalResult): boolean;
+begin
+  if Ok then begin
+    NewResult:=mrOk;
+    Result:=true;
+  end else begin
+    NewResult:=JumpToCodetoolErrorAndAskToAbort(Ask);
+    Result:=NewResult<>mrAbort;
+  end;
+end;
+}
+function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
+// returns mrCancel or mrAbort
+var
+  ErrMsg: String;
+begin
+  ErrMsg:=CodeToolBoss.ErrorMessage;
+  LazarusIDE.DoJumpToCodeToolBossError;
+  if Ask then begin
+    Result:=IDEQuestionDialog(lisCCOErrorCaption,
+      Format(lisTheCodetoolsFoundAnError, [LineEnding, ErrMsg]),
+      mtWarning, [mrIgnore, lisIgnoreAndContinue,
+                  mrAbort]);
+    if Result=mrIgnore then Result:=mrCancel;
+  end else begin
+    Result:=mrCancel;
   end;
 end;
 
