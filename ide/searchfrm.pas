@@ -529,6 +529,7 @@ var
   Src: String;
   NewMatchStartPos: PtrInt;
   NewMatchEndPos: PtrInt;
+  lFoundUnmatchCaseChars: Boolean;
   i, l, n1, n2: Integer;
 begin
   //debugln(['SearchInText TheFileName=',TheFileName,' SearchFor=',SearchFor,'" ReplaceText=',ReplaceText,'"']);
@@ -567,6 +568,7 @@ begin
     if OriginalFile.Source='' then exit;
 
     CaseFile:=nil;
+    lFoundUnmatchCaseChars := false;
 
     if sesoRegExpr in Flags then begin
       // Setup the regular expression search engine
@@ -603,16 +605,7 @@ begin
             n2 := UTF8CodepointSize(@CaseFile.Source[i]);
             inc(i, n1); // assumed n1=n2
           end;
-          if n1 <> n2 then
-          begin
-            if IDEMessageDialog(lisCCOWarningCaption,
-              lisFindFileReplacementIsNotPossible + LineEnding + LineEnding + TheFileName,
-              mtWarning, [mbOK, mbCancel]) = mrCancel
-            then
-              DoAbort;
-
-            exit(mrAbort);
-          end;
+          lFoundUnmatchCaseChars := n1 <> n2;
         end;
       end else
         Src:=OriginalFile.Source;
@@ -652,7 +645,17 @@ begin
                                        FoundEndPos.Y,FoundEndPos.X);
         //DebugLn(['SearchInText NewMatchStartPos=',NewMatchStartPos,' NewMatchEndPos=',NewMatchEndPos,' FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' Found="',dbgstr(copy(Src,NewMatchStartPos,NewMatchEndPos-NewMatchStartPos)),'" Replace=',sesoReplace in Flags]);
         if sesoReplace in Flags then begin
-          DoReplaceLine
+          if lFoundUnmatchCaseChars then
+          begin
+            if IDEMessageDialog(lisCCOWarningCaption,
+              lisFindFileReplacementIsNotPossible + LineEnding + LineEnding + TheFileName,
+              mtWarning, [mbOK, mbCancel]) = mrCancel
+            then
+              DoAbort;
+
+            exit(mrAbort);
+          end;
+          DoReplaceLine;
         end else begin
           if (Progress<>nil)
           and (Progress.OnAddMatch<>nil) then begin
