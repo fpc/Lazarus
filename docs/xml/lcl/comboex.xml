@@ -1348,66 +1348,85 @@ Performs actions needed when the BiDiMode setting is changed for the control.
 </element>
 
 <element name="TCustomComboBoxEx.DrawItem">
-<short>Draws an item in the control.</short>
+<short>
+Draws an item on the extended combo-box control.
+</short>
 <descr>
 <p>
-<var>DrawItem</var> is an overridden procedure used to draw an item in the 
+<var>DrawItem</var> is an overridden procedure used to draw an item on the 
 extended combo-box control.
 </p>
 <p>
-Index contains the ordinal position for the TComboExItem instance in 
+<var>Index</var> contains the ordinal position for the TComboExItem instance in 
 <var>ItemsEx</var> that is drawn in the method.
 </p>
 <p>
-<var>ARect</var> is the rectangle with the coordinates for the item. The 
+<var>ARect</var> is the TRect instance with the coordinates for the item. The 
 values in ARect are set in the calling procedure (LMDrawListItem in 
-TCustomComboBox). When the left coordinate is greater than zero (0), the item 
+TCustomComboBox). When the left coordinate is greater than zero (0), the item
 is a sub-item (or not a main item). Sub-items are drawn with the additional 
 spacing in Indent applied to the drawing rectangle.
 </p>
 <p>
-<var>State</var> contains the owner draw state used to render the item, and 
-determines the window, border, and font colors for the control.
+<var>State</var> contains the owner draw state used to render the item on the 
+control. It is used along with the Focused, DroppedDown, and IsEnabled to 
+determine the brush color and style used to render the item on the Canvas.
 </p>
 <p>
-DrawItem uses <var>ThemeServices</var> to get theme details applied to 
-enabled items in the combo-box. DrawItem ensures that a valid text height is 
-available for the control <var>Canvas</var>, and is used to draw the text for 
-the item.
+DrawItem calculates the vertical space needed for the text on the item. It also 
+ensures that the Indent for the item is used to position output horizontally on 
+the control.
 </p>
 <p>
-When <var>Images</var> have been assigned for the control, the image index 
+If <var>Images</var> have been assigned for the control, the image index 
 appropriate for the value in State is determined. The value 
 <var>odSelected</var> causes the <var>SelectedImageIndex</var> for the item 
 is be used. Otherwise, the <var>ImageIndex</var> for the item is used.
 </p>
 <p>
-The image size is determined by calling the <var>SizeForPPI</var> method in 
-<var>Images</var> using the <var>ImagesWidth</var> and the display density 
-for the current <var>Font</var>. DrawItem determines the location for the 
-image and the indent spacing for the current BiDiMode setting for the 
-control. Right-to-Left rendering aligns the image and indent to the 
-right-hand edge of the drawing rectangle. The <var>DrawIcon</var> method in 
-<var>ThemeServices</var> is called to render the icon to the control Canvas 
-using the theme details.
+The image size is determined using the SizeForPPI method in <var>Images</var> 
+with the value in its ImagesWidth and the display density for the control Font. 
+DrawItem gets the location for the image and the indent spacing for the current 
+BiDiMode setting for the control. Right-to-Left rendering aligns the image and 
+indent to the right-hand edge of the drawing rectangle. The DrawForPPI method 
+in Images is called to scale the selected image to the current PixelsPerInch 
+setting in Font, and to render the image on the control Canvas.
 </p>
 <p>
-Images are <b>not</b> drawn when Images is unassigned or contains zero (0) 
+An image is <b>not</b> drawn when Images is unassigned or contains zero (0) 
 images, or when values have not been explicitly assigned to either ImageIndex 
 or SelectedImageIndex for the extended item in Index.
 </p>
 <p>
 DrawItem configures the Canvas to use the brush style and font color needed 
-for the value in State. Text drawing flags are derived for the item, and the 
-text is rendered by calling the <var>DrawText</var> method.
+for the values in State, DroppedDown, and Focused. clHighlight is used as the 
+Font color for an item where any one of these values is <b>True</b>. Otherwise, 
+clWindowText is used. If the item is Focused and Enabled but not DroppedDown, 
+the background color is set to clBtnFace and the focus rectangle is drawn.
+</p>
+<p>
+Text drawing flags are derived for the item; text is on an single line and 
+ellipsified when too long. Text is aligned for the Bidi mode on the control, 
+and centered vertically in the output rectangle. The text is rendered on the 
+Canvas by calling the <var>DrawText</var> method in the LCL interface.
 </p>
 <remark>
 DrawItem does <b>NOT</b> call the inherited method in 
-<var>TCustomComboBox</var> or trigger its <var>OnDrawItem</var> event 
-handler. The item is rendered entirely in this method.
+<var>TCustomComboBox</var> or trigger its <var>OnDrawItem</var> event handler. 
+The extended combo-box item is rendered entirely in this method.
 </remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomComboBoxEx.Images"/>
+<link id="TCustomComboBoxEx.ItemsEx"/>
+<link id="TComboExItem"/>
+<link id="#lcl.stdctrls.TCustomComboBox.Canvas">TCustomComboBox.Canvas</link>
+<link id="#lcl.stdctrls.TCustomComboBox.DroppedDown">TCustomComboBox.DroppedDown</link>
+<link id="#lcl.stdctrls.TCustomComboBox.DrawItem">TCustomComboBox.DrawItem</link>
+<link id="#lcl.stdctrls.TOwnerDrawState">TOwnerDrawState</link>
+<link id="#lcl.controls.TWinControl.Focused">TWinControl.Focused</link>
+<link id="#lcl.controls.TControl.IsEnabled">TControl.IsEnabled</link>
+</seealso>
 </element>
 <element name="TCustomComboBoxEx.DrawItem.Index">
 <short>Ordinal position for the item drawn in the method.</short>
