@@ -423,7 +423,7 @@ var
 begin
   try
     lsTemp := TrimLeft(psValue);
-    if lsTemp = '' then
+    if (lsTemp = '') or (lsTemp[1]='+') or (lsTemp[1]='-') then  // {$I+} {$I-}
       Exit;
     if lsTemp[1] = '%' then    // %DATE%  %var%
       Exit;
