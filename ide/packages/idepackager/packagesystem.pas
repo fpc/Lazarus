@@ -54,8 +54,9 @@ uses
   // BuildIntf
   IDEExternToolIntf, IDEOptionsIntf, MacroDefIntf, ProjectIntf, CompOptsIntf,
   FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, ComponentReg,
+  LazMsgWorker,
   // IDEIntf
-  IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf,
+  IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf,
   // Package registration
   LazarusPackageIntf,
   // IdeUtils
@@ -1162,7 +1163,7 @@ begin
   // the directory does not exist, and its parent is writable => try creating it
   if not ForceDirectoriesUTF8(Directory) then begin
     if Verbose then begin
-      IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+      LazMessageWorker(lisPkgMangUnableToCreateDirectory,
         Format(lisPkgMangUnableToCreateOutputDirectoryForPackage,
                [Directory, LineEnding, APackage.IDAsString]),
         mtError,[mbCancel]);
@@ -2121,7 +2122,7 @@ begin
 
   // tell user
   IgnoreAll:=mrLast+1;
-  DlgResult:=IDEQuestionDialog(lisPkgSysPackageRegistrationError, ErrorMsg,
+  DlgResult:=LazQuestionWorker(lisPkgSysPackageRegistrationError, ErrorMsg,
                      mtError, [mrIgnore,
                                IgnoreAll, lispIgnoreAll,
                                mrAbort]);
@@ -2406,7 +2407,7 @@ begin
     Dependency.PackageName:=PackageName;
     Dependency.AddToList(FirstInstallDependency,pddRequires);
     if OpenDependency(Dependency,false)<>lprSuccess then begin
-      IDEMessageDialog(lisPkgMangUnableToLoadPackage,
+      LazMessageWorker(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, [PackageName, LineEnding]),
         mtWarning,[mbOk]);
       continue;
@@ -3345,7 +3346,7 @@ begin
     Stats.StateFileLoaded:=true;
   except
     on E: Exception do begin
-      Result:=IDEMessageDialogAb(lisPkgMangErrorWritingFile,
+      Result:=LazMessageDialogAb(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError,
                [StateFile, LineEnding, APackage.IDAsString, LineEnding, E.Message]),
         mtError,[mbCancel],ShowAbort);
@@ -4035,7 +4036,7 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=IDEMessageDialogAb(lisPkgMangErrorReadingFile,
+          Result:=LazMessageDialogAb(lisPkgMangErrorReadingFile,
             Format(lisPkgMangUnableToReadStateFileOfPackageError,
               [StateFile, LineEnding, APackage.IDAsString, LineEnding, E.Message]),
             mtError,[mbCancel],ShowAbort);
@@ -4452,7 +4453,7 @@ begin
             CfgFilename:=APackage.GetWriteConfigFilePath;
             CfgCode:=WriteCompilerCfgFile(CfgFilename,CompilerParams,CmdLineParams);
             if CfgCode=nil then begin
-              IDEMessageDialog(lisReadError,Format(lisUnableToReadFile2,
+              LazMessageWorker(lisReadError,Format(lisUnableToReadFile2,
                                [CfgFilename]),mtError,[mbOk]);
               exit(mrCancel);
             end;
@@ -4706,7 +4707,7 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+      Result:=LazMessageWorker(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError,
           [TargetCompiledFile, LineEnding, APackage.IDAsString, LineEnding, E.Message]),
         mtError,[mbCancel],'');
@@ -5458,7 +5459,7 @@ begin
 
   // delete old Compile State file
   if FileExistsUTF8(StateFile) and not DeleteFileUTF8(StateFile) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
+    Result:=LazMessageWorker(lisPkgMangUnableToDeleteFilename,
       Format(lisPkgMangUnableToDeleteOldStateFileForPackage,
              [StateFile, LineEnding, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort]);
@@ -5469,7 +5470,7 @@ begin
 
   // create the package src directory
   if not ForceDirectoriesUTF8(PkgSrcDir) then begin
-    Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+    Result:=LazMessageWorker(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage,
              [PkgSrcDir, LineEnding, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort]);
@@ -5563,7 +5564,7 @@ var
       AmbiguousFilename:=SearchFileInSearchPath(ShortFilename,PkgDir,SrcDirs,SearchFlags);
       if (AmbiguousFilename='') then exit;
       if not YesToAll then
-        Result:=IDEMessageDialog(lisAmbiguousUnitFound,
+        Result:=LazMessageWorker(lisAmbiguousUnitFound,
           Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac,
             [AmbiguousFilename, LineEnding, APackage.IDAsString, LineEnding+LineEnding]),
           mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
@@ -5574,7 +5575,7 @@ var
       if Result in [mrYes,mrYesToAll] then begin
         YesToAll:=Result=mrYesToAll;
         if (not DeleteFileUTF8(AmbiguousFilename))
-        and (IDEMessageDialog(lisPkgMangDeleteFailed,
+        and (LazMessageWorker(lisPkgMangDeleteFailed,
               Format(lisDeletingOfFileFailed, [AmbiguousFilename]),
               mtError, [mbIgnore, mbCancel])<>mrIgnore)
         then
@@ -6430,7 +6431,7 @@ begin
     if (not Quiet) and DirPathExistsCached(LazPackageLinks.GetGlobalLinkDirectory)
     then begin
       // tell the user
-      CurResult:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
+      CurResult:=LazQuestionWorker(lisPkgSysPackageFileNotFound,
         Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound,
                [BrokenPackage.Name, LineEnding]),
         mtError, [mrOk, mrYesToAll, lisSkipTheseWarnings]);
