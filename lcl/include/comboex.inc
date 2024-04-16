@@ -396,7 +396,7 @@ begin  { do not call inherited ! }
             then aImgPoint.X:=ARect.Left+aIndent
             else aImgPoint.X:=ARect.Right-aIndent-ImagesSize.cx;
           aImgPoint.Y:=(ARect.Bottom+ARect.Top-ImagesSize.cy) div 2;
-          ThemeServices.DrawIcon(Canvas, aDetail, aImgPoint, Images, aItemIndex);
+          Images.DrawForPPI(Canvas, aImgPoint.X, aImgPoint.Y, aItemIndex, 0, Font.PixelsPerInch, GetCanvasScaleFactor, aEnabled)
         end;
       inc(aIndent, ImagesSize.cx+2*cItemIndent);
     end;
