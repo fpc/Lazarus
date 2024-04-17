@@ -17,8 +17,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 432
-    Top = 36
+    Height = 437
+    Top = 31
     Width = 193
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -31,9 +31,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Control = PagesGroupBox
       AnchorSideTop.Control = PagesGroupBox
       AnchorSideRight.Control = PageMoveUpBtn
-      AnchorSideBottom.Control = AddPageButton
+      AnchorSideBottom.Control = AddRestoreFlowPanel
       Left = 3
-      Height = 331
+      Height = 329
       Top = 3
       Width = 152
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -42,46 +42,13 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       BorderSpacing.Right = 6
       DragMode = dmAutomatic
       ItemHeight = 0
+      PopupMenu = PagesPopupMenu
+      ScrollWidth = 150
+      TabOrder = 0
       OnDragDrop = PagesListBoxDragDrop
       OnDragOver = PagesListBoxDragOver
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
-      PopupMenu = PagesPopupMenu
-      ScrollWidth = 150
-      TabOrder = 0
-      TopIndex = -1
-    end
-    object AddPageButton: TBitBtn
-      AnchorSideLeft.Control = PagesListBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideBottom.Control = ImportDividerBevel
-      Left = 3
-      Height = 25
-      Top = 340
-      Width = 46
-      Anchors = [akLeft, akBottom]
-      AutoSize = True
-      BorderSpacing.Top = 6
-      BorderSpacing.Bottom = 6
-      Caption = '&Add ...'
-      OnClick = AddPageButtonClick
-      TabOrder = 1
-    end
-    object RestoreButton: TBitBtn
-      AnchorSideLeft.Control = AddPageButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = AddPageButton
-      AnchorSideBottom.Side = asrBottom
-      Left = 55
-      Height = 25
-      Top = 340
-      Width = 99
-      AutoSize = True
-      BorderSpacing.Left = 6
-      BorderSpacing.Bottom = 6
-      Caption = '&Restore default'
-      OnClick = RestoreButtonClick
-      TabOrder = 2
     end
     object PageMoveDownBtn: TSpeedButton
       AnchorSideLeft.Control = PageMoveUpBtn
@@ -93,9 +60,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
-      OnClick = PageMoveDownBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = PageMoveDownBtnClick
     end
     object PageMoveUpBtn: TSpeedButton
       AnchorSideLeft.Side = asrBottom
@@ -109,9 +76,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       Enabled = False
-      OnClick = PageMoveUpBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = PageMoveUpBtnClick
     end
     object ImportDividerBevel: TDividerBevel
       AnchorSideLeft.Control = ExportButton
@@ -120,8 +87,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ImportButton
       Left = 3
-      Height = 13
-      Top = 371
+      Height = 15
+      Top = 369
       Width = 186
       Caption = 'Import / Export'
       Anchors = [akLeft, akRight, akBottom]
@@ -136,17 +103,17 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Control = PagesGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 70
+      Left = 81
       Height = 25
       Top = 386
-      Width = 61
+      Width = 74
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'Import ...'
+      TabOrder = 3
       OnClick = ImportButtonClick
-      TabOrder = 4
     end
     object ExportButton: TBitBtn
       AnchorSideLeft.Control = PagesListBox
@@ -157,14 +124,68 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       Left = 3
       Height = 25
       Top = 386
-      Width = 61
+      Width = 72
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 3
       BorderSpacing.Bottom = 6
       Caption = 'Export ...'
+      TabOrder = 2
       OnClick = ExportButtonClick
-      TabOrder = 3
+    end
+    object AddRestoreFlowPanel: TFlowPanel
+      AnchorSideLeft.Control = PagesListBox
+      AnchorSideRight.Control = PagesGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = ImportDividerBevel
+      Left = 3
+      Height = 25
+      Top = 338
+      Width = 180
+      Anchors = [akLeft, akRight, akBottom]
+      AutoSize = True
+      BevelOuter = bvNone
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ControlList = <      
+        item
+          Control = AddPageButton
+          WrapAfter = waAuto
+          Index = 0
+        end      
+        item
+          Control = RestoreButton
+          WrapAfter = waAuto
+          Index = 1
+        end>
+      FlowLayout = tlTop
+      FlowStyle = fsLeftRightTopBottom
+      TabOrder = 1
+      object AddPageButton: TBitBtn
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 60
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Caption = '&Add ...'
+        TabOrder = 0
+        OnClick = AddPageButtonClick
+      end
+      object RestoreButton: TBitBtn
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 66
+        Height = 25
+        Top = 0
+        Width = 105
+        AutoSize = True
+        Caption = '&Restore default'
+        TabOrder = 1
+        OnClick = RestoreButtonClick
+      end
     end
   end
   object ComponentsGroupBox: TGroupBox
@@ -182,7 +203,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 453
+    ClientHeight = 448
     ClientWidth = 383
     TabOrder = 3
     object ComponentsListView: TListView
@@ -192,7 +213,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ComponentsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 441
+      Height = 436
       Top = 6
       Width = 343
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -248,9 +269,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       Enabled = False
-      OnClick = CompMoveUpBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = CompMoveUpBtnClick
     end
     object CompMoveDownBtn: TSpeedButton
       AnchorSideLeft.Control = CompMoveUpBtn
@@ -262,9 +283,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       Width = 22
       BorderSpacing.Top = 7
       Enabled = False
-      OnClick = CompMoveDownBtnClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = CompMoveDownBtnClick
     end
   end
   object Splitter1: TSplitter
@@ -280,26 +301,27 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   object cbPaletteVisible: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Left = 0
-    Height = 24
+    Left = 3
+    Height = 19
     Top = 6
-    Width = 114
+    Width = 101
+    BorderSpacing.Left = 3
     BorderSpacing.Top = 6
     Caption = 'Palette is visible'
     TabOrder = 0
   end
   object ImportDialog: TOpenDialog
-    left = 272
-    top = 256
+    Left = 272
+    Top = 256
   end
   object ExportDialog: TSaveDialog
-    left = 408
-    top = 256
+    Left = 408
+    Top = 256
   end
   object PagesPopupMenu: TPopupMenu
     OnPopup = PagesPopupMenuPopup
-    left = 272
-    top = 120
+    Left = 272
+    Top = 120
     object RenameMenuItem: TMenuItem
       Caption = 'Rename'
       OnClick = RenameMenuItemClick
