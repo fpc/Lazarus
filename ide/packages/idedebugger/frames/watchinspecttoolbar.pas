@@ -17,7 +17,7 @@ uses
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
-  IdeDebuggerDisplayFormats, WatchPropertyDlg;
+  IdeDebuggerDisplayFormats, WatchPropertyDlg, ProjectDebugLink;
 
 type
 
@@ -108,6 +108,7 @@ type
     FExecAfterUpdate: Boolean;
 
     procedure ArrayNavSizeChanged(Sender: TObject);
+    procedure DoBackConverterChanged(Sender: TObject);
     procedure DoDbpConvMenuClicked(Sender: TObject);
     function GetDisplayFormat: TWatchDisplayFormat;
     function  GetButtonDown(AIndex: Integer): Boolean;
@@ -121,7 +122,6 @@ type
     function  GetShowButtons(AIndex: Integer): Boolean;
     procedure SetShowButtons(AIndex: Integer; AValue: Boolean);
 
-    procedure DoDbgOptChanged(Sender: TObject; Restore: boolean);
     procedure AddToHistory(AnExpression: String);
     procedure DoClear;
     procedure DoWatchUpdated(AWatch: TIdeWatch);
@@ -431,6 +431,36 @@ begin
   FrameResize(nil);
 end;
 
+procedure TWatchInspectNav.DoBackConverterChanged(Sender: TObject);
+  function MnItm(c: String; e: TNotifyEvent; t: SizeInt): TMenuItem;
+  begin
+    Result := TMenuItem.Create(Self);
+    Result.Caption := c;
+    Result.OnClick := e;
+    Result.Tag := t;
+  end;
+
+var
+  m: TMenuItem;
+  i: Integer;
+begin
+  popConverter.Items.Clear;
+
+  popConverter.Items.Add(MnItm(drsDebugConverter, @DoDbpConvMenuClicked, -2));
+  popConverter.Items.Add(MnItm(drsNoDebugConverter, @DoDbpConvMenuClicked, -1));
+
+  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
+    popConverter.Items.Add(MnItm(DebuggerOptions.BackendConverterConfig[i].Name, @DoDbpConvMenuClicked, PtrInt(DebuggerOptions.BackendConverterConfig[i])));
+  for i := 0 to DbgProjectLink.BackendConverterConfig.Count - 1 do
+    popConverter.Items.Add(MnItm(DbgProjectLink.BackendConverterConfig[i].Name, @DoDbpConvMenuClicked, PtrInt(DbgProjectLink.BackendConverterConfig[i])));
+
+  btnUseConverter.Visible := DebuggerOptions.BackendConverterConfig.Count + DbgProjectLink.BackendConverterConfig.Count > 0;
+  btnUseConverter.Tag := -2;
+  btnUseConverter.Caption := drsDebugConverter;
+  FrameResize(nil);
+  UpdateData;
+end;
+
 procedure TWatchInspectNav.SetHistoryList(AValue: TStrings);
 begin
   if FHistoryList = AValue then Exit;
@@ -465,40 +495,6 @@ begin
   tbDivAdd.Visible   := (ShowAddWatch or ShowAddEval or ShowAddInspect) and
                         ShowEvalHist;
   FrameResize(nil);
-end;
-
-procedure TWatchInspectNav.DoDbgOptChanged(Sender: TObject; Restore: boolean);
-var
-  m: TMenuItem;
-  i: Integer;
-begin
-  popConverter.Items.Clear;
-
-  m := TMenuItem.Create(Self);
-  m.Caption := drsDebugConverter;
-  m.OnClick := @DoDbpConvMenuClicked;
-  m.Tag := -2;
-  popConverter.Items.Add(m);
-
-  m := TMenuItem.Create(Self);
-  m.Caption := drsNoDebugConverter;
-  m.OnClick := @DoDbpConvMenuClicked;
-  m.Tag := -1;
-  popConverter.Items.Add(m);
-
-  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do begin
-    m := TMenuItem.Create(Self);
-    m.Caption := DebuggerOptions.BackendConverterConfig[i].Name;
-    m.OnClick := @DoDbpConvMenuClicked;
-    m.Tag := i;
-    popConverter.Items.Add(m)
-  end;
-
-  btnUseConverter.Visible := DebuggerOptions.BackendConverterConfig.Count > 0;
-  btnUseConverter.Tag := -2;
-  btnUseConverter.Caption := drsDebugConverter;
-  FrameResize(nil);
-  UpdateData;
 end;
 
 procedure TWatchInspectNav.AddToHistory(AnExpression: String);
@@ -598,15 +594,17 @@ begin
 
   ArrayNavigationBar1.OnSizeChanged := @ArrayNavSizeChanged;
 
-  DebuggerOptions.AddHandlerAfterWrite(@DoDbgOptChanged);
-  DoDbgOptChanged(nil, False);
+  DebuggerOptions.BackendConverterConfig.AddChangeNotification(@DoBackConverterChanged);
+  DbgProjectLink.BackendConverterConfig.AddChangeNotification(@DoBackConverterChanged);
+  DoBackConverterChanged(nil);
 
   EdInspectChange(nil);
 end;
 
 destructor TWatchInspectNav.Destroy;
 begin
-  DebuggerOptions.RemoveHandlerAfterWrite(@DoDbgOptChanged);
+  DebuggerOptions.BackendConverterConfig.RemoveChangeNotification(@DoBackConverterChanged);
+  DbgProjectLink.BackendConverterConfig.RemoveChangeNotification(@DoBackConverterChanged);
   inherited Destroy;
   FBrowseHistory.Free;
   ReleaseRefAndNil(FCurrentWatchValue);
@@ -654,7 +652,11 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.BackendConverterConfig[btnUseConverter.Tag];
+      Conv := TIdeDbgValueConvertSelector(btnUseConverter.Tag);
+      if (DebuggerOptions.BackendConverterConfig.IndexOf(Conv) < 0) and
+         (DbgProjectLink.BackendConverterConfig.IndexOf(Conv) < 0)
+      then
+        Conv := nil;
     end
   end;
 
@@ -669,7 +671,6 @@ var
 begin
   BeginUpdate;
   try
-
     btnUseInstance.Down := defClassAutoCast in AWatch.EvaluateFlags;
     btnFunctionEval.Down := defAllowFunctionCall in AWatch.EvaluateFlags;
 
@@ -682,11 +683,10 @@ begin
         popConverter.Items[0].Click;
     end
     else begin
-      i := DebuggerOptions.BackendConverterConfig.Count - 1;
+      i := popConverter.Items.Count - 1;
       while i >= 0 do begin
-        if DebuggerOptions.BackendConverterConfig[i] = AWatch.DbgBackendConverter then begin
-          if popConverter.Items.Count > i+2 then
-            popConverter.Items[i+2].Click;
+        if popConverter.Items[i].Tag = PtrUInt(AWatch.DbgBackendConverter) then begin
+          popConverter.Items[i].Click;
           break;
         end;
         dec(i);
@@ -819,7 +819,11 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.BackendConverterConfig[btnUseConverter.Tag];
+      Conv := TIdeDbgValueConvertSelector(btnUseConverter.Tag);
+      if (DebuggerOptions.BackendConverterConfig.IndexOf(Conv) < 0) and
+         (DbgProjectLink.BackendConverterConfig.IndexOf(Conv) < 0)
+      then
+        Conv := nil;
     end
   end;
 
