@@ -488,7 +488,7 @@ begin
 
   for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do begin
     m := TMenuItem.Create(Self);
-    m.Caption := DebuggerOptions.BackendConverterConfig.IdeItems[i].Name;
+    m.Caption := DebuggerOptions.BackendConverterConfig[i].Name;
     m.OnClick := @DoDbpConvMenuClicked;
     m.Tag := i;
     popConverter.Items.Add(m)
@@ -654,7 +654,7 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.BackendConverterConfig.IdeItems[btnUseConverter.Tag];
+      Conv := DebuggerOptions.BackendConverterConfig[btnUseConverter.Tag];
     end
   end;
 
@@ -684,7 +684,7 @@ begin
     else begin
       i := DebuggerOptions.BackendConverterConfig.Count - 1;
       while i >= 0 do begin
-        if DebuggerOptions.BackendConverterConfig.IdeItems[i] = AWatch.DbgBackendConverter then begin
+        if DebuggerOptions.BackendConverterConfig[i] = AWatch.DbgBackendConverter then begin
           if popConverter.Items.Count > i+2 then
             popConverter.Items[i+2].Click;
           break;
@@ -819,7 +819,7 @@ begin
     -2: ;
     -1: include(Opts, defSkipValConv);
     otherwise begin
-      Conv := DebuggerOptions.BackendConverterConfig.IdeItems[btnUseConverter.Tag];
+      Conv := DebuggerOptions.BackendConverterConfig[btnUseConverter.Tag];
     end
   end;
 

@@ -134,10 +134,10 @@ begin
       FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValConv]
     else
     if dropFpDbgConv.ItemIndex - 2 < DebuggerOptions.BackendConverterConfig.Count then begin
-      FWatch.DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
+      FWatch.DbgBackendConverter := DebuggerOptions.BackendConverterConfig[dropFpDbgConv.ItemIndex - 2];
     end
     else begin
-      FWatch.DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2 - DebuggerOptions.BackendConverterConfig.Count];
+      FWatch.DbgBackendConverter := DbgProjectLink.BackendConverterConfig[dropFpDbgConv.ItemIndex - 2 - DebuggerOptions.BackendConverterConfig.Count];
     end;
 
     FWatch.Enabled := chkEnabled.Checked;
@@ -218,10 +218,10 @@ begin
   dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);
   dropFpDbgConv.AddItem(dlgBackendConvOptDisabled, nil);
   for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
-    dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.IdeItems[i].Name, nil);
+    dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.Items[i].Name, nil);
   i2 := dropFpDbgConv.Items.Count;
   for i := 0 to DbgProjectLink.BackendConverterConfig.Count - 1 do
-    dropFpDbgConv.AddItem(DbgProjectLink.BackendConverterConfig.IdeItems[i].Name, nil);
+    dropFpDbgConv.AddItem(DbgProjectLink.BackendConverterConfig.Items[i].Name, nil);
 
   dropFpDbgConv.ItemIndex := 0;
   if AWatch <> nil then begin

@@ -6937,9 +6937,9 @@ begin
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
     if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
-      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItemByName(s)
+      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.ItemByName(s)
     else
-      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.ItemByName(s);
   end;
 
   TIdeWatchValueList(FValueList).LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
@@ -7098,9 +7098,9 @@ begin
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
   if s <> '' then begin
     if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then
-      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.IdeItemByName(s)
+      DbgBackendConverter := DbgProjectLink.BackendConverterConfig.ItemByName(s)
     else
-      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.ItemByName(s);
   end;
 end;
 
