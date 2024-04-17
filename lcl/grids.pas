@@ -4185,7 +4185,7 @@ begin
     Hint := txt;
     //set Application.Hint as well (issue #0026957)
     Application.Hint := GetLongHint(AppHint);
-    Application.ActivateHint(APoint, true);
+    Application.ActivateHint(ClientToScreen(APoint), true);
   end else
     HideCellHintWindow;
 end;
