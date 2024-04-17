@@ -51,6 +51,7 @@ type
   TCompPaletteOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddPageButton: TBitBtn;
     cbPaletteVisible: TCheckBox;
+    AddRestoreFlowPanel: TFlowPanel;
     ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
