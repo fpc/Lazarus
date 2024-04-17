@@ -4855,7 +4855,7 @@ begin
   if PointsEnd = nil then
   begin
     if Len <> 0 then
-      Exception.Create('[TPath.AppendSegment] Assertion failed Len <> 0 with PointsEnd = nil');
+      raise Exception.Create('[TPath.AppendSegment] Assertion failed Len <> 0 with PointsEnd = nil');
 
     Points := ASegment;
     PointsEnd := ASegment;

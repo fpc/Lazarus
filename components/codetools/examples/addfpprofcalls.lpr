@@ -124,7 +124,7 @@ begin
   // delete space behind
   while Tool.Src[ToPos] in [' ',#9] do inc(ToPos);
   if not Changer.Replace(gtNone,gtNone,FromPos,ToPos,'') then
-    Exception.Create('source not writable');
+    raise Exception.Create('source not writable');
 end;
 
 begin
@@ -225,7 +225,7 @@ begin
                   EnterInsertPos,EnterInsertPos,
                   Beauty.GetIndentStr(Beauty.GetLineIndent(Tool.Src,Node.StartPos)+Indent)+EnterCall+'('''+Signature+''');')
                 then
-                  Exception.Create('source not writable');
+                  raise Exception.Create('source not writable');
               end;
               if (not HasExitCall) then begin
                 // add Exit call
@@ -233,7 +233,7 @@ begin
                   ExitInsertPos,ExitInsertPos,
                   Beauty.GetIndentStr(Beauty.GetLineIndent(Tool.Src,Node.StartPos)+Indent)+ExitCall+'('''+Signature+''');')
                 then
-                  Exception.Create('source not writable');
+                  raise Exception.Create('source not writable');
               end;
             end;
           end;
