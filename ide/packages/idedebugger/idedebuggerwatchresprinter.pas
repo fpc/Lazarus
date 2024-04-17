@@ -7,7 +7,8 @@ interface
 
 uses
   Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils, IdeDebuggerDisplayFormats,
-  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils;
+  IdeDebuggerBase, IdeDebuggerStringConstants, LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf,
+  StrUtils;
 
 type
 
@@ -57,7 +58,8 @@ type
   TWatchResultPrinterFormatFlag = (
     rpfIndent,           // use Indent. Only when MultiLine
     rpfMultiLine,
-    rpfClearMultiLine    // clean up pre-printed data
+    rpfClearMultiLine,   // clean up pre-printed data
+    rpfPrefixOuterArrayLen
   );
   TWatchResultPrinterFormatFlags = set of TWatchResultPrinterFormatFlag;
 
@@ -69,6 +71,7 @@ type
     FLineSeparator: String;
     FTargetAddressSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
+    FInValueFormatter: Boolean;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected
@@ -567,6 +570,9 @@ begin
   if AResValue.Count < AResValue.ArrayLength then
     Result := Result + sep +'...';
   Result := '(' + Result +')';
+
+  if (rpfPrefixOuterArrayLen in FFormatFlags) and (ANestLvl = 0) and (AResValue.ArrayLength > 0) then
+    Result := Format(drsLen, [AResValue.ArrayLength]) + Result;
 end;
 
 function TWatchResultPrinter.PrintStruct(AResValue: TWatchResultData;
@@ -846,6 +852,16 @@ begin
     exit('...');
   if AResValue = nil then
     exit('???');
+
+  if not FInValueFormatter then begin
+    FInValueFormatter := True;
+    try
+      if GlobalValueFormatterSelectorList.FormatValue(AResValue, ADispFormat, Self, Result) then
+        exit;
+    finally
+      FInValueFormatter := False;
+    end;
+  end;
 
   Result := '';
   case AResValue.ValueKind of

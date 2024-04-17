@@ -11502,6 +11502,7 @@ begin
 
   ResultText := '';
   WatchPrinter := DebugBoss.HintWatchPrinter;
+  WatchPrinter.FormatFlags := [rpfMultiLine, rpfIndent, rpfPrefixOuterArrayLen];
   DispFormat := DefaultWatchDisplayFormat;
   if FHintWatchData.WatchValue.Watch <> nil then
     DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;
@@ -11511,15 +11512,7 @@ begin
     if (ResData <> nil) and
        not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
     then begin
-      if not GlobalValueFormatterSelectorList.FormatValue(ResData,
-         DispFormat, WatchPrinter, ResultText)
-      then begin
-        ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
-        if (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0)
-        then
-          ResultText := Format(drsLen, [ResData.ArrayLength]) + ResultText;
-      end;
-
+      ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
     end
     else begin
       if (FHintWatchData.WatchValue.TypeInfo = nil) or
