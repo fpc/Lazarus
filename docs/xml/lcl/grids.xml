@@ -15969,23 +15969,39 @@ Gets and displays the cell hint(s) for the current cell in the grid.
 </short>
 <descr>
 <p>
-<var>ShowCellHintWindow</var> is a procedure used to gets the value(s) and 
-display cell hint(s) for the cell located at the screen position in 
-<var>APoint</var>. Values in the <var>Options</var> and the 
-<var>CellHintPriority</var> properties determine the text available for use 
-as cell hints.
+<var>ShowCellHintWindow</var> is a procedure used to get and display cell 
+hint(s) for the cell located at the position in <var>APoint</var>. APoint 
+contains client-relative coordinates for the mouse pointer used to locate the 
+cell for the hint. The values in APoint are translated to screen coordinates 
+(using ClientToScreen) when the cell hint is displayed by the application.
 </p>
 <p>
-<var>GetCellHintText</var> and <var>GetTruncCellHintText</var> are called to 
-get the corresponding hint text for the options and hint priority. 
-<var>AddToHint</var> is called to apply the derived text to the values 
-displayed in the control using its <var>Hint</var> property. 
-<var>Application.ActivateHint</var> is called to display the hint window.
+Values in the Options and the CellHintPriority properties determine the text 
+available for use as cell hints. The grid can display three types of hint: the 
+default hint for the control (Hint property), individual cell hints (OnCellHint 
+event), and hints for truncated cells. TCellHintPriority determines how the 
+overall hint is combined when multiple hint texts are to be displayed.
 </p>
 <p>
-No actions are performed in the method when <var>ShowHints</var> contains 
-<b>False</b>, when the mouse pointer is not positioned over a grid cell, when 
-<var>EditorMode</var> is <b>True</b>, or at design-time.
+GetCellHintText and GetTruncCellHintText are called to get the corresponding 
+hint text(s) for the options and hint priority. AddToHint is called to apply 
+the derived text to the values displayed in the control using its Hint 
+property. The Application.ActivateHint method is called to display the hint 
+window at the screen coordinates for the value in APoint.
+</p>
+<p>
+No actions are performed in the method when:
+</p>
+<ul>
+<li>ShowHints contains <b>False</b>,</li>
+<li>The mouse pointer is not positioned over a grid cell,</li>
+<li>EditorMode is <b>True</b>,</li>
+<li>or at design-time.</li>
+</ul>
+<p>
+ShowCellHintWindow is called from the MouseMove method, and occurs after a 
+prior hint displayed by the application has been cancelled and the cell for the 
+mouse pointer has has been updated in the grid cache.
 </p>
 </descr>
 <seealso>
@@ -15994,10 +16010,16 @@ No actions are performed in the method when <var>ShowHints</var> contains
 <link id="TCustomGrid.GetCellHintText"/>
 <link id="TCustomGrid.GetTruncCellHintText"/>
 <link id="TCustomGrid.HideCellHintWindow"/>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TGridDataCache"/>
+<link id="#lcl.forms.TApplication.ActivateHint">TApplication.ActivateHint</link>
+<link id="#lcl.controls.TControl.ClientToScreen">TControl.ClientToScreen</link>
 </seealso>
 </element>
 <element name="TCustomGrid.ShowCellHintWindow.APoint">
-<short>Screen coordinates for the mouse pointer.</short>
+<short>
+Client coordinates for the mouse pointer.
+</short>
 </element>
 
 <element name="TCustomGrid.SizeChanged">
