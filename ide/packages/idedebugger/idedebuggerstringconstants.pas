@@ -412,6 +412,8 @@ resourcestring
   ValFormatterCurrencyName = 'Currency';
   ValFormatterCharArrayToStringName = 'CharArray as String';
 
+  ValFormatterCharArrayToStringStopNull = 'Stop at #0';
+
   DispFormatDlgBtnCurrent   = 'Current';
   DispFormatDlgBtnAll       = 'All';
   DispFormatDlgBtnNumber    = 'Number';

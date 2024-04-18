@@ -1746,6 +1746,10 @@ msgstr "切换断点(&B)"
 msgid "CharArray as String"
 msgstr ""
 
+#: idedebuggerstringconstants.valformatterchararraytostringstopnull
+msgid "Stop at #0"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

@@ -1703,6 +1703,10 @@ msgstr ""
 msgid "CharArray as String"
 msgstr ""
 
+#: idedebuggerstringconstants.valformatterchararraytostringstopnull
+msgid "Stop at #0"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""
