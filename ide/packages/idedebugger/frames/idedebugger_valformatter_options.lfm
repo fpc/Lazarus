@@ -14,59 +14,5 @@ object IdeDbgValFormatOptionsFrame: TIdeDbgValFormatOptionsFrame
     Align = alClient
     ClientHeight = 240
     ClientWidth = 346
-    inherited Panel1: TPanel
-      Width = 346
-      ClientWidth = 346
-      inherited lstFormatters: TCheckListBox
-        Width = 166
-      end
-      inherited Panel2: TPanel
-        Left = 176
-      end
-    end
-    inherited pnlCurrentFormatter: TPanel
-      Height = 120
-      Width = 346
-      ClientHeight = 120
-      ClientWidth = 346
-      inherited lblDesc: TLabel
-        Width = 336
-      end
-      inherited Panel5: TPanel
-        Height = 100
-        Width = 96
-        ClientHeight = 100
-        ClientWidth = 96
-        inherited lblName: TLabel
-          Width = 86
-        end
-        inherited EdName: TEdit
-          Width = 86
-        end
-        inherited lblTypeNames: TLabel
-          Width = 86
-        end
-        inherited memoTypeNames: TMemo
-          Height = 0
-          Top = 70
-          Width = 86
-        end
-        inherited cbAppendOriginalValue: TComboBox
-          Top = 71
-          Width = 84
-        end
-      end
-      inherited vtvDisplayFormat: TLazVirtualStringTree
-        Left = 96
-        Height = 100
-      end
-    end
-    inherited Splitter1: TSplitter
-      Width = 346
-    end
-    inherited pnlCurFormatterSetting: TPanel
-      Top = 240
-      Width = 346
-    end
   end
 end

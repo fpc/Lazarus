@@ -70,59 +70,5 @@ object IdeProjectValueFormatterOptionsFrame: TIdeProjectValueFormatterOptionsFra
     Align = alClient
     ClientHeight = 270
     ClientWidth = 433
-    inherited Panel1: TPanel
-      Width = 433
-      ClientWidth = 433
-      inherited lstFormatters: TCheckListBox
-        Width = 253
-      end
-      inherited Panel2: TPanel
-        Left = 263
-      end
-    end
-    inherited pnlCurrentFormatter: TPanel
-      Height = 120
-      Width = 433
-      ClientHeight = 120
-      ClientWidth = 433
-      inherited lblDesc: TLabel
-        Width = 423
-      end
-      inherited Panel5: TPanel
-        Height = 100
-        Width = 183
-        ClientHeight = 100
-        ClientWidth = 183
-        inherited lblName: TLabel
-          Width = 173
-        end
-        inherited EdName: TEdit
-          Width = 173
-        end
-        inherited lblTypeNames: TLabel
-          Width = 173
-        end
-        inherited memoTypeNames: TMemo
-          Height = 0
-          Top = 70
-          Width = 173
-        end
-        inherited cbAppendOriginalValue: TComboBox
-          Top = 71
-          Width = 171
-        end
-      end
-      inherited vtvDisplayFormat: TLazVirtualStringTree
-        Left = 183
-        Height = 100
-      end
-    end
-    inherited Splitter1: TSplitter
-      Width = 433
-    end
-    inherited pnlCurFormatterSetting: TPanel
-      Top = 270
-      Width = 433
-    end
   end
 end

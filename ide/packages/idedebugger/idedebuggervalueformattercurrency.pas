@@ -33,7 +33,6 @@ type
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures; override;
-    function SupportedDisplayFormatFilters: TValueDisplayFormatGroups; override;
   end;
   TIdeDbgValueFormatterRegistryCurrency =
     specialize TLazDbgIdeValueFormatterRegistryEntryGeneric<TIdeDbgValueFormatterCurrency>;
@@ -100,11 +99,6 @@ end;
 function TIdeDbgValueFormatterCurrency.SupportedFeatures: TLazDbgIdeValFormatterFeatures;
 begin
   Result := [vffFormatValue, vffFormatOldValue, vffValueData];
-end;
-
-function TIdeDbgValueFormatterCurrency.SupportedDisplayFormatFilters: TValueDisplayFormatGroups;
-begin
-  Result := [vdfgBase, vdfgSign];
 end;
 
 initialization

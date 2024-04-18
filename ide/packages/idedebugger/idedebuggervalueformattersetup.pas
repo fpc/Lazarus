@@ -68,7 +68,6 @@ begin
     f := TIdeDbgValueFormatterSelector.Create(TIdeDbgValueFormatterRegistryCurrency);
     f.Name := 'Currency formatter';
     f.Enabled := True;
-    f.FilterDisplayFormats := [low(TValueDisplayFormat)..high(TValueDisplayFormat)] - [vdfCategoryMemDump, vdfBaseDecimal..vdfBaseChar];
     f.MatchTypeNames.Add('Currency');
     f.OriginalValue := vfovHide;
     vc.Add(f);

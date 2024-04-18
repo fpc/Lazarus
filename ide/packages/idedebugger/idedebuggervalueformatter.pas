@@ -25,7 +25,6 @@ type
   private
     FOriginalValue: TLazDbgIdeValFormatterOriginalValue;
     FValFormatter: ILazDbgIdeValueFormatterIntf;
-    FFilterDisplayFormats: TValueDisplayFormats;
     FMatchTypeNames: TDbgTypePatternList;
     FEnabled: Boolean;
     FName: String;
@@ -34,7 +33,6 @@ type
     procedure FreeValFormater;
     function GetMatchInherited: boolean;
     function GetMatchTypeNames: TStrings;
-    procedure SetFilterDisplayFormats(AValue: TValueDisplayFormats);
   public
     constructor Create;
     constructor Create(AFormatter: TLazDbgIdeValueFormatterRegistryEntryClass);
@@ -52,7 +50,6 @@ type
 
     function IsMatchingTypeName(ATypeName: String): boolean;
     function IsMatchingInheritedTypeName(ATypeName: String): boolean;
-    property FilterDisplayFormats: TValueDisplayFormats read FFilterDisplayFormats write SetFilterDisplayFormats;
   published
     property ValFormatter: ILazDbgIdeValueFormatterIntf read FValFormatter;
     property ValFormatterRegEntry: TLazDbgIdeValueFormatterRegistryEntryClass read FValFormatterRegEntry;
@@ -125,19 +122,10 @@ begin
   Result := FMatchTypeNames;
 end;
 
-procedure TIdeDbgValueFormatterSelector.SetFilterDisplayFormats( AValue: TValueDisplayFormats);
-begin
-  if FFilterDisplayFormats = AValue then Exit;
-  if FValFormatter <> nil then
-    AValue := AValue * DisplayFormatMask(FValFormatter.SupportedDisplayFormatFilters);
-  FFilterDisplayFormats := AValue;
-end;
-
 constructor TIdeDbgValueFormatterSelector.Create;
 begin
   inherited Create;
   FMatchTypeNames := TDbgTypePatternList.Create;
-  FFilterDisplayFormats := [low(TValueDisplayFormats)..high(TValueDisplayFormats)] - [vdfCategoryMemDump];
 end;
 
 constructor TIdeDbgValueFormatterSelector.Create(
@@ -148,7 +136,6 @@ begin
   FValFormatterRegEntry := AFormatter;
   if FValFormatterRegEntry <> nil then begin
     FValFormatter := FValFormatterRegEntry.CreateValueFormatter;
-    FFilterDisplayFormats := FFilterDisplayFormats * DisplayFormatMask(FValFormatter.SupportedDisplayFormatFilters);
   end;
 end;
 
@@ -174,7 +161,6 @@ begin
   FName     := ASource.FName;
   FEnabled  := ASource.FEnabled;
   FOriginalValue := ASource.FOriginalValue;
-  FFilterDisplayFormats := ASource.FFilterDisplayFormats;
 end;
 
 procedure TIdeDbgValueFormatterSelector.LoadDataFromXMLConfig(
@@ -182,7 +168,6 @@ procedure TIdeDbgValueFormatterSelector.LoadDataFromXMLConfig(
 var
   s: String;
   Def: TObject;
-  df: TValueDisplayFormats;
 begin
   FreeValFormater;
   AConfig.ReadObject(APath + 'Filter/', Self);
@@ -194,9 +179,6 @@ begin
     exit;
 
   FValFormatter := FValFormatterRegEntry.CreateValueFormatter;
-
-  df := [];
-  AConfig.GetValue(APath + 'FilterDisplayFormats', df, FFilterDisplayFormats, TypeInfo(TValueDisplayFormats));
 
   Def := FValFormatter.GetDefaultsObject;
   AConfig.ReadObject(APath + 'Formatter/', FValFormatter.GetObject, Def);
@@ -212,7 +194,6 @@ begin
   AConfig.SetDeleteValue(APath + 'Filter/MatchTypeNames', MatchTypeNames.CommaText, '');
 
   AConfig.SetValue(APath + 'FormatterClass', FValFormatterRegEntry.GetClassName);
-  AConfig.SetValue(APath + 'FilterDisplayFormats', FFilterDisplayFormats, TypeInfo(TValueDisplayFormats));
 
   Def := FValFormatter.GetDefaultsObject;
   AConfig.WriteObject(APath + 'Formatter/', FValFormatter.GetObject, Def);
@@ -227,28 +208,9 @@ var
 begin
   Result := False;
   if (ValFormatter = nil) or
-     (not (vffFormatValue in ValFormatter.SupportedFeatures))
-     or
-     ( ADisplayFormat.MemDump and (
-         ( not(vffValueMemDump in ValFormatter.SupportedFeatures) ) or
-         ( (vdfgCategory in ValFormatter.SupportedDisplayFormatFilters) and (not (vdfCategoryMemDump in FFilterDisplayFormats)) )
-     ) )
-     or
-     ( (not ADisplayFormat.MemDump) and (
-         ( not(vffValueData in ValFormatter.SupportedFeatures) ) or
-         ( (vdfgCategory        in ValFormatter.SupportedDisplayFormatFilters) and (not (vdfCategoryData in FFilterDisplayFormats)) ) or
-         // TOOD: 2nd num
-         ( (vdfgBase            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgSign            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgEnum            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgBool            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgChar            in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgFloat           in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgStruct          in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgStructAddress   in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgAddress         in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in FFilterDisplayFormats)) ) or
-         ( (vdfgPointerDeref    in ValFormatter.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in FFilterDisplayFormats)) )
-     ) )
+     (not (vffFormatValue in ValFormatter.SupportedFeatures)) or
+     ( ADisplayFormat.MemDump       and (not(vffValueMemDump in ValFormatter.SupportedFeatures)) ) or
+     ( (not ADisplayFormat.MemDump) and (not(vffValueData in ValFormatter.SupportedFeatures)) )
   then
     exit;
 //AWatchValue.ValueKind;
@@ -428,29 +390,11 @@ begin
   for i := 0 to Count - 1 do begin
     f := Items[i];
     v := f.ValFormatter;
-    if (not (vffFormatOldValue in v.SupportedFeatures))
-       or (v = nil)
-       or
-       ( ADisplayFormat.MemDump and (
-           ( not(vffValueMemDump in v.SupportedFeatures) ) or
-           ( (vdfgCategory in v.SupportedDisplayFormatFilters) and (not (vdfCategoryMemDump in f.FFilterDisplayFormats)) )
-       ) )
-       or
-       ( (not ADisplayFormat.MemDump) and (
-           ( not(vffValueData in v.SupportedFeatures) ) or
-           ( (vdfgCategory        in v.SupportedDisplayFormatFilters) and (not (vdfCategoryData in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBase            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.BaseFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgSign            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Num.SignFormat in f.FFilterDisplayFormats)) ) or
-           // TODO  2nd num
-           ( (vdfgEnum            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Enum.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgBool            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Bool.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgChar            in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Char.MainFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgFloat           in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Float.NumFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStruct          in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.DataFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgStructAddress   in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Struct.ShowPointerFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgAddress         in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.Address.TypeFormat in f.FFilterDisplayFormats)) ) or
-           ( (vdfgPointerDeref    in v.SupportedDisplayFormatFilters) and (not (ADisplayFormat.Pointer.DerefFormat in f.FFilterDisplayFormats)) )
-       ) )
+
+    if (v = nil) or
+       (not (vffFormatOldValue in v.SupportedFeatures)) or
+       ( ADisplayFormat.MemDump       and (not(vffValueMemDump in v.SupportedFeatures)) ) or
+       ( (not ADisplayFormat.MemDump) and (not(vffValueData in v.SupportedFeatures)) )
     then
       continue;
 
