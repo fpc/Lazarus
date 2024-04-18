@@ -45,6 +45,7 @@ type
                         ): boolean; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures;
+    function SupportedDataKinds: TWatchResultDataKinds;
 
     // Config
     function  GetObject: TObject;  // for TXmlConfig.WriteObject / must have all config in published fields
@@ -115,6 +116,7 @@ type
                         ): boolean; virtual; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures; virtual;
+    function SupportedDataKinds: TWatchResultDataKinds; virtual;
   end;
 
   { TLazDbgIdeValueFormatterRegistryEntryGeneric }
@@ -230,6 +232,11 @@ end;
 function TLazDbgIdeValueFormatterGeneric.SupportedFeatures: TLazDbgIdeValFormatterFeatures;
 begin
   Result := [vffValueData];
+end;
+
+function TLazDbgIdeValueFormatterGeneric.SupportedDataKinds: TWatchResultDataKinds;
+begin
+  Result := [low(TWatchResultDataKind)..high(TWatchResultDataKind)];
 end;
 
 { TLazDbgIdeValueFormatterRegistryEntryGeneric }

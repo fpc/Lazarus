@@ -273,6 +273,7 @@ type
     rdkFunction, rdkProcedure,
     rdkFunctionRef, rdkProcedureRef
   );
+  TWatchResultDataKinds = set of TWatchResultDataKind;
 
   IWatchResultDataIntf = interface;
 

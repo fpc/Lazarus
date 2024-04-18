@@ -209,11 +209,11 @@ begin
   Result := False;
   if (ValFormatter = nil) or
      (not (vffFormatValue in ValFormatter.SupportedFeatures)) or
+     (not (AWatchValue.ValueKind in ValFormatter.SupportedDataKinds)) or
      ( ADisplayFormat.MemDump       and (not(vffValueMemDump in ValFormatter.SupportedFeatures)) ) or
      ( (not ADisplayFormat.MemDump) and (not(vffValueData in ValFormatter.SupportedFeatures)) )
   then
     exit;
-//AWatchValue.ValueKind;
 
   if not IsMatchingTypeName(AWatchValue.TypeName) then begin
     if not MatchInherited then

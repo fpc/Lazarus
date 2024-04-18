@@ -57,6 +57,7 @@ type
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures; override;
+    function SupportedDataKinds: TWatchResultDataKinds; override;
   published
     property DateTimeFormat: String read FDateTimeFormat write FDateTimeFormat;
     property DateFormat: String read FDateFormat write FDateFormat;
@@ -193,6 +194,11 @@ end;
 function TIdeDbgValueFormatterDateTime.SupportedFeatures: TLazDbgIdeValFormatterFeatures;
 begin
   Result := [vffFormatValue, vffFormatOldValue, vffValueData];
+end;
+
+function TIdeDbgValueFormatterDateTime.SupportedDataKinds: TWatchResultDataKinds;
+begin
+  Result := [rdkFloatVal];
 end;
 
 initialization
