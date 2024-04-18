@@ -1754,6 +1754,10 @@ msgstr "Derintuvė negali keisti vertės."
 msgid "Toggle &Breakpoint"
 msgstr "Įjungti ar išjungti stabd&os tašką"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

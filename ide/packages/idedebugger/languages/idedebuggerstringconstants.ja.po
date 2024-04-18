@@ -1754,6 +1754,10 @@ msgstr "デバッガは値を修正できませんでした。"
 msgid "Toggle &Breakpoint"
 msgstr "ブレークポイントの切り替え(&B)"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

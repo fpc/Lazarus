@@ -1744,6 +1744,10 @@ msgstr "Зневаджувач не зміг змінити значення."
 msgid "Toggle &Breakpoint"
 msgstr "Перемкнути &точку зупинки"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

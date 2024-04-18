@@ -1746,6 +1746,10 @@ msgstr "Hata ayıklayıcı değeri değiştiremiyor."
 msgid "Toggle &Breakpoint"
 msgstr "Kesme &noktası değiştir"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

@@ -1724,6 +1724,10 @@ msgstr ""
 msgid "Toggle &Breakpoint"
 msgstr ""
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

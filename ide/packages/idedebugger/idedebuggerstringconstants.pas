@@ -410,6 +410,7 @@ resourcestring
   ValFormatterColorRgbDec = 'RGB in decimal';
 
   ValFormatterCurrencyName = 'Currency';
+  ValFormatterCharArrayToStringName = 'CharArray as String';
 
   DispFormatDlgBtnCurrent   = 'Current';
   DispFormatDlgBtnAll       = 'All';

@@ -178,6 +178,7 @@ type
     VKind = rdkChar;
   protected
     function GetAsString: String; inline;
+    function GetAsWideString: WideString; inline;
   end;
 
   { TWatchResultValuePointer }
@@ -1857,6 +1858,11 @@ end;
 { TWatchResultValueChar }
 
 function TWatchResultValueChar.GetAsString: String;
+begin
+  Result := WideChar(FNumValue);
+end;
+
+function TWatchResultValueChar.GetAsWideString: WideString;
 begin
   Result := WideChar(FNumValue);
 end;

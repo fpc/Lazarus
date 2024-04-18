@@ -1766,6 +1766,10 @@ msgstr "O depurador foi incapaz de modificar o valor."
 msgid "Toggle &Breakpoint"
 msgstr "&Alternar pontos de parada"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

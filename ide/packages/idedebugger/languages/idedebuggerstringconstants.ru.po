@@ -1736,6 +1736,10 @@ msgstr "Отладчику не удалось изменить значение
 msgid "Toggle &Breakpoint"
 msgstr "П&ереключить точку останова"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr "TColor"

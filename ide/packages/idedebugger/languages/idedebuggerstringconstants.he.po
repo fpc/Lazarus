@@ -1785,6 +1785,10 @@ msgstr ""
 msgid "Toggle &Breakpoint"
 msgstr "החלף נקודת עצירה"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

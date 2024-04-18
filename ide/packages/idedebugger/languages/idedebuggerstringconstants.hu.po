@@ -1751,6 +1751,10 @@ msgstr "A hibakereső nem tudta megváltoztatni az értéket."
 msgid "Toggle &Breakpoint"
 msgstr "Töréspont ki-/&bekapcsolása"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""

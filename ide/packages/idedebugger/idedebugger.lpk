@@ -292,6 +292,10 @@
         <Filename Value="projectdebuglink.pas"/>
         <UnitName Value="ProjectDebugLink"/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformatterarrayofchartostring.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterArrayOfCharToString"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

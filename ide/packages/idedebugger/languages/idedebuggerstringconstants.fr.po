@@ -1751,6 +1751,10 @@ msgstr "Le débogueur n'est pas parvenu à modifier la valeur."
 msgid "Toggle &Breakpoint"
 msgstr "&Inverser le point d'arrêt"
 
+#: idedebuggerstringconstants.valformatterchararraytostringname
+msgid "CharArray as String"
+msgstr ""
+
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
 msgstr ""
