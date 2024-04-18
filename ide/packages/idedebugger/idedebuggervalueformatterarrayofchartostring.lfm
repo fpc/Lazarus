@@ -1,0 +1,22 @@
+object IdeDebuggerValueFormatterCharArrayToStringFrame: TIdeDebuggerValueFormatterCharArrayToStringFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  AutoSize = True
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 491
+  DesignTop = 10
+  object cbStopAtNull: TCheckBox
+    Left = 3
+    Height = 19
+    Top = 3
+    Width = 314
+    Align = alTop
+    BorderSpacing.Around = 3
+    Caption = 'cbStopAtNull'
+    TabOrder = 0
+  end
+end
