@@ -125,17 +125,17 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
       Left = 0
       Height = 354
       Top = 20
-      Width = 638
+      Width = 408
       Align = alClient
       BevelOuter = bvNone
       ClientHeight = 354
-      ClientWidth = 638
+      ClientWidth = 408
       TabOrder = 0
       object lblName: TLabel
         Left = 5
         Height = 15
         Top = 5
-        Width = 628
+        Width = 398
         Align = alTop
         BorderSpacing.Around = 5
         Caption = 'lblName'
@@ -144,7 +144,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 23
         Top = 25
-        Width = 628
+        Width = 398
         Align = alTop
         BorderSpacing.Around = 5
         TabOrder = 0
@@ -154,7 +154,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 15
         Top = 53
-        Width = 628
+        Width = 398
         Align = alTop
         BorderSpacing.Around = 5
         Caption = 'lblTypeNames'
@@ -163,7 +163,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 5
         Height = 246
         Top = 73
-        Width = 628
+        Width = 398
         Align = alClient
         BorderSpacing.Around = 5
         TabOrder = 1
@@ -172,12 +172,86 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
         Left = 6
         Height = 23
         Top = 325
-        Width = 626
+        Width = 396
         Align = alBottom
         BorderSpacing.Around = 6
         ItemHeight = 15
         Style = csDropDownList
         TabOrder = 2
+      end
+    end
+    object PanelOpts: TPanel
+      Left = 408
+      Height = 354
+      Top = 20
+      Width = 230
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 354
+      ClientWidth = 230
+      Constraints.MinWidth = 100
+      TabOrder = 1
+      object cbNesting: TCheckBox
+        AnchorSideLeft.Control = PanelOpts
+        AnchorSideTop.Control = PanelOpts
+        AnchorSideRight.Control = PanelOpts
+        AnchorSideRight.Side = asrBottom
+        Left = 3
+        Height = 19
+        Top = 3
+        Width = 224
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 3
+        Caption = 'cbNesting'
+        TabOrder = 0
+      end
+      object lblNestLvl: TLabel
+        AnchorSideLeft.Control = cbNesting
+        AnchorSideTop.Control = SpinMinNest
+        AnchorSideTop.Side = asrCenter
+        Left = 31
+        Height = 15
+        Top = 29
+        Width = 51
+        BorderSpacing.Left = 25
+        BorderSpacing.Around = 3
+        Caption = 'lblNestLvl'
+      end
+      object SpinMinNest: TSpinEdit
+        AnchorSideLeft.Control = lblNestLvl
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbNesting
+        AnchorSideTop.Side = asrBottom
+        Left = 85
+        Height = 23
+        Top = 25
+        Width = 60
+        Alignment = taRightJustify
+        BorderSpacing.Around = 3
+        Constraints.MaxWidth = 60
+        Constraints.MinWidth = 60
+        MaxValue = 99
+        TabOrder = 1
+        OnChange = SpinMinNestChange
+      end
+      object SpinMaxNest: TSpinEdit
+        AnchorSideLeft.Control = SpinMinNest
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbNesting
+        AnchorSideTop.Side = asrBottom
+        Left = 148
+        Height = 23
+        Top = 25
+        Width = 60
+        Alignment = taRightJustify
+        BorderSpacing.Right = 3
+        BorderSpacing.Around = 3
+        Constraints.MaxWidth = 60
+        Constraints.MinWidth = 60
+        MaxValue = 99
+        TabOrder = 2
+        Value = 99
+        OnChange = SpinMaxNestChange
       end
     end
   end

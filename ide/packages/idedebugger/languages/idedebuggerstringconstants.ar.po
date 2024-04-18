@@ -412,6 +412,14 @@ msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgbackconvoptnesting
+msgid "Limit to (un)nested"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgbackconvoptnestlvl
+msgid "Min/Max level"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
 msgstr ""

@@ -60,6 +60,8 @@ resourcestring
   dlgIdeDbgNewItem = 'New Item';
   dlgIdeDbgEnterName = 'Enter name';
   dlgBackConvOptName = 'Name';
+  dlgBackConvOptNesting = 'Limit to (un)nested';
+  dlgBackConvOptNestLvl = 'Min/Max level';
 
   drsUseInstanceClass = 'Instance';
   drsUseInstanceClassHint = 'Use Instance class type';

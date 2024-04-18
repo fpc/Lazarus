@@ -74,6 +74,7 @@ type
     FTargetAddressSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
     FInValueFormatter: Boolean;
+    FInValFormNestLevel: integer;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected
@@ -859,13 +860,14 @@ begin
 
   if not (FInValueFormatter or (rpfSkipValueFormatter in FFormatFlags)) then begin
     FInValueFormatter := True;
+    FInValFormNestLevel := ANestLvl;
     try
       if OnlyValueFormatter <> nil then begin
-        if OnlyValueFormatter.FormatValue(AResValue, ADispFormat, Self, Result) then
+        if OnlyValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
           exit;
       end
       else
-      if GlobalValueFormatterSelectorList.FormatValue(AResValue, ADispFormat, Self, Result) then
+      if GlobalValueFormatterSelectorList.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
         exit;
     finally
       FInValueFormatter := False;
@@ -990,7 +992,10 @@ begin
   else
     FLineSeparator := ' ';
 
-  Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
+  if FInValueFormatter then
+    Result := PrintWatchValueEx(AResValue, ADispFormat, FInValFormNestLevel) // This will increase it by one, compared to the value given to the formatter
+  else
+    Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
 end;
 
 function TWatchResultPrinter.PrintWatchValue(AResValue: IWatchResultDataIntf;

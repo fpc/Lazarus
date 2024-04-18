@@ -5,7 +5,7 @@ unit IdeDbgValueFormatterSettingsFrame;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs,
+  Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs, Spin,
   StrUtils, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
   laz.VirtualTrees, LazDebuggerIntf, IdeDebuggerStringConstants,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
@@ -20,8 +20,10 @@ type
     btnRemove: TButton;
     btnUp: TButton;
     cbAppendOriginalValue: TComboBox;
+    cbNesting: TCheckBox;
     dropAction: TComboBox;
     EdName: TEdit;
+    lblNestLvl: TLabel;
     lblDesc: TLabel;
     lblName: TLabel;
     lblTypeNames: TLabel;
@@ -29,9 +31,12 @@ type
     memoTypeNames: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
+    PanelOpts: TPanel;
     Panel5: TPanel;
     pnlCurFormatterSetting: TPanel;
     pnlCurrentFormatter: TPanel;
+    SpinMinNest: TSpinEdit;
+    SpinMaxNest: TSpinEdit;
     Splitter1: TSplitter;
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
@@ -40,6 +45,8 @@ type
     procedure EdNameEditingDone(Sender: TObject);
     procedure lstFormattersClick(Sender: TObject);
     procedure lstFormattersItemClick(Sender: TObject; Index: integer);
+    procedure SpinMaxNestChange(Sender: TObject);
+    procedure SpinMinNestChange(Sender: TObject);
   private
     FValFormmaterList: TIdeDbgValueFormatterSelectorList;
     FCurIdx: Integer;
@@ -175,6 +182,13 @@ begin
     lblDesc.Caption := '';
     EdName.Text := '';
     memoTypeNames.Text := '';
+
+    PanelOpts.Enabled := False;
+    cbNesting.Checked := False;
+    SpinMinNest.Value := 0;
+    SpinMaxNest.Value := 0;
+
+    cbAppendOriginalValue.ItemIndex := -1;
   end
   else begin
     pnlCurrentFormatter.Enabled := True;
@@ -182,9 +196,15 @@ begin
     lblDesc.Caption := FCurFormatter.ValFormatterRegEntry.GetDisplayName;
     EdName.Text := FCurFormatter.Name;
     memoTypeNames.Text := FCurFormatter.MatchTypeNames.Text;
+
+    PanelOpts.Enabled := True;
+    cbNesting.Checked := FCurFormatter.LimitByNestLevel;
+    SpinMinNest.Value := FCurFormatter.LimitByNestMin;
+    SpinMaxNest.Value := FCurFormatter.LimitByNestMax;
+
+    cbAppendOriginalValue.ItemIndex := ord(FCurFormatter.OriginalValue);
   end;
 
-  cbAppendOriginalValue.ItemIndex := ord(FCurFormatter.OriginalValue);
 
   btnRemove.Enabled := FCurIdx >= 0;
   btnUp.Enabled     := FCurIdx >= 1;
@@ -211,6 +231,18 @@ begin
     lstFormattersClick(nil);
 
   UpdateButtons;
+end;
+
+procedure TIdeDbgVarFormatterFrame.SpinMaxNestChange(Sender: TObject);
+begin
+  if SpinMinNest.Value > SpinMaxNest.Value then
+    SpinMinNest.Value := SpinMaxNest.Value;
+end;
+
+procedure TIdeDbgVarFormatterFrame.SpinMinNestChange(Sender: TObject);
+begin
+  if SpinMaxNest.Value < SpinMinNest.Value then
+    SpinMaxNest.Value := SpinMinNest.Value;
 end;
 
 procedure TIdeDbgVarFormatterFrame.SetCurFormatter(
@@ -322,11 +354,18 @@ begin
         (FCurFormatterFrame as ILazDbgIdeValueFormatterSettingsFrameIntf).WriteTo(FCurFormatter.ValFormatter)
      ) or
      (TrimSet(FCurFormatter.MatchTypeNames.Text, [#1..#32]) <> TrimSet(memoTypeNames.Text, [#1..#32])) or
-     (EdName.Text <> FCurFormatter.Name)
+     (EdName.Text <> FCurFormatter.Name) or
+     (FCurFormatter.LimitByNestLevel <> cbNesting.Checked) or
+     (FCurFormatter.LimitByNestMin <> SpinMinNest.Value) or
+     (FCurFormatter.LimitByNestMax <> SpinMaxNest.Value)
   then begin
     FValFormmaterList.Changed := True;
     FCurFormatter.MatchTypeNames.Text := memoTypeNames.Text;
-    FCurFormatter.Name := EdName.Text
+    FCurFormatter.Name := EdName.Text;
+
+    FCurFormatter.LimitByNestLevel := cbNesting.Checked;
+    FCurFormatter.LimitByNestMin := SpinMinNest.Value;
+    FCurFormatter.LimitByNestMax := SpinMaxNest.Value;
   end;
 
 
@@ -344,6 +383,9 @@ begin
   btnRemove.Caption    := dlgBackConvOptRemove;
   lblName.Caption      := dlgBackConvOptName;
   lblTypeNames.Caption := dlgBackConvOptMatchTypesByName;
+
+  cbNesting.Caption := dlgBackConvOptNesting;
+  lblNestLvl.Caption := dlgBackConvOptNestLvl;
 
   cbAppendOriginalValue.Clear;
   // same order as enum / ItemIndex to match ord(enum)
