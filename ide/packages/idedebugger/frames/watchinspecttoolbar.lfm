@@ -11,7 +11,7 @@ object WatchInspectNav: TWatchInspectNav
   DesignTop = 35
   object ToolBar1: TToolBar
     Left = 0
-    Height = 25
+    Height = 46
     Top = 25
     Width = 1040
     AutoSize = True
@@ -91,15 +91,26 @@ object WatchInspectNav: TWatchInspectNav
       ShowHint = True
       Style = tbsButtonDrop
     end
-    object tbDivFlags: TToolButton
+    object btnUseValFormatter: TToolButton
       Left = 259
+      Hint = 'Use Value-formatter'
+      Top = 2
+      AllowAllUp = True
+      Caption = 'Formatter'
+      DropdownMenu = popValFormatter
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsButtonDrop
+    end
+    object tbDivFlags: TToolButton
+      Left = 329
       Height = 22
       Top = 2
       Caption = 'tbDivFlags'
       Style = tbsDivider
     end
     object btnColClass: TToolButton
-      Left = 264
+      Left = 334
       Hint = 'Show Class Column'
       Top = 2
       AllowAllUp = True
@@ -111,7 +122,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object btnColType: TToolButton
-      Left = 287
+      Left = 357
       Top = 2
       AllowAllUp = True
       Caption = 'T'
@@ -122,7 +133,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object btnColVisibility: TToolButton
-      Left = 310
+      Left = 380
       Top = 2
       AllowAllUp = True
       Caption = 'V'
@@ -133,14 +144,14 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object tbDivCol: TToolButton
-      Left = 506
+      Left = 576
       Height = 22
       Top = 2
       Caption = 'tbDivCol'
       Style = tbsDivider
     end
     object edFilter: TEditButton
-      Left = 356
+      Left = 426
       Height = 23
       Top = 2
       Width = 150
@@ -153,7 +164,7 @@ object WatchInspectNav: TWatchInspectNav
       Visible = False
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 511
+      Left = 581
       Height = 23
       Top = 2
       Width = 253
@@ -192,46 +203,46 @@ object WatchInspectNav: TWatchInspectNav
       end
     end
     object tbDivArray: TToolButton
-      Left = 764
+      Left = 834
       Height = 22
       Top = 2
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 769
+      Left = 839
       Top = 2
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 888
+      Left = 958
       Top = 2
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 836
+      Left = 906
       Top = 2
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 934
+      Left = 1004
       Height = 22
       Top = 2
       Caption = 'tbDivAdd'
       Style = tbsDivider
     end
     object btnEvalHistory: TToolButton
-      Left = 939
-      Top = 2
+      Left = 1
+      Top = 24
       Caption = 'History'
       DropdownMenu = mnuHistory
       Style = tbsButtonDrop
     end
     object btnDisplayFormat: TToolButton
-      Left = 333
+      Left = 403
       Top = 2
       AllowAllUp = True
       Caption = 'df'
@@ -293,6 +304,10 @@ object WatchInspectNav: TWatchInspectNav
   end
   object popConverter: TPopupMenu
     Left = 204
+    Top = 56
+  end
+  object popValFormatter: TPopupMenu
+    Left = 280
     Top = 56
   end
 end

@@ -598,6 +598,10 @@ msgstr "值列"
 msgid "Converter"
 msgstr ""
 
+#: idedebuggerstringconstants.drsdebugvalformatter
+msgid "Value formatter"
+msgstr ""
+
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
@@ -693,6 +697,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnovalformatter
+msgid "No value formatter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat

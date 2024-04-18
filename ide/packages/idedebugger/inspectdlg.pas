@@ -104,6 +104,7 @@ type
     procedure DoColumnsChanged(Sender: TObject);
     procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
     procedure DoDispFormatChanged(Sender: TObject);
+    procedure SetWatchPrinterFlags(AFlags: TWatchResultPrinterFormatFlags);
     procedure DoEnvOptChanged(Sender: TObject; Restore: boolean);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
@@ -1367,6 +1368,7 @@ begin
 
   TimerClearData.Enabled := False;
 
+  SetWatchPrinterFlags([rpfMultiLine, rpfIndent]);
   FAlternateExpression := '';
   FExpressionWasEvaluated := True;
   FCurrentResData := WatchInspectNav1.CurrentWatchValue.ResultData;
@@ -1511,6 +1513,15 @@ procedure TIDEInspectDlg.DoDispFormatChanged(Sender: TObject);
 begin
   if WatchInspectNav1.CurrentWatchValue <> nil then
     DoWatchUpdated(WatchInspectNav1.Watches, WatchInspectNav1.CurrentWatchValue.Watch);
+end;
+
+procedure TIDEInspectDlg.SetWatchPrinterFlags(AFlags: TWatchResultPrinterFormatFlags);
+begin
+  if WatchInspectNav1.SkipDbgValueFormatter then
+    FWatchPrinter.FormatFlags := AFlags + [rpfSkipValueFormatter]
+  else
+    FWatchPrinter.FormatFlags := AFlags - [rpfSkipValueFormatter];
+  FWatchPrinter.OnlyValueFormatter := WatchInspectNav1.DbgValueFormatter;
 end;
 
 procedure TIDEInspectDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);

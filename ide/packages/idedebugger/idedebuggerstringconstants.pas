@@ -72,6 +72,8 @@ resourcestring
   drsHistory = 'History';
   drsDebugConverter = 'Converter';
   drsNoDebugConverter= 'No Converter';
+  drsDebugValFormatter = 'Value formatter';
+  drsNoValFormatter= 'No value formatter';
   drsDisableEnableUpdatesForTh = 'Disable/Enable updates for the entire window';
   drsNoHistoryKept = 'No history kept';
   drsInsertResultAtTopOfHistor = 'Insert result at top of history';

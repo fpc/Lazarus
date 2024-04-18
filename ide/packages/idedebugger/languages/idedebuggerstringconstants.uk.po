@@ -601,6 +601,10 @@ msgstr "Графа значення"
 msgid "Converter"
 msgstr "Конвертер"
 
+#: idedebuggerstringconstants.drsdebugvalformatter
+msgid "Value formatter"
+msgstr ""
+
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
@@ -696,6 +700,10 @@ msgstr "Без конвертера"
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
 msgstr "Історія не зберігається"
+
+#: idedebuggerstringconstants.drsnovalformatter
+msgid "No value formatter"
+msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"

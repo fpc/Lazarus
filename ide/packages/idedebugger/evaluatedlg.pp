@@ -275,6 +275,11 @@ begin
   ResultText := '';
 
   if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
+    if WatchInspectNav1.SkipDbgValueFormatter then
+      FWatchPrinter.FormatFlags := FWatchPrinter.FormatFlags + [rpfSkipValueFormatter]
+    else
+      FWatchPrinter.FormatFlags := FWatchPrinter.FormatFlags - [rpfSkipValueFormatter];
+    FWatchPrinter.OnlyValueFormatter := WatchInspectNav1.DbgValueFormatter;
     ResultText := FWatchPrinter.PrintWatchValue(WatchInspectNav1.CurrentWatchValue.ResultData, WatchInspectNav1.DisplayFormat);
     if (WatchInspectNav1.CurrentWatchValue.ResultData <> nil) and
        (WatchInspectNav1.CurrentWatchValue.ResultData.ValueKind = rdkArray) and (WatchInspectNav1.CurrentWatchValue.ResultData.ArrayLength > 0)

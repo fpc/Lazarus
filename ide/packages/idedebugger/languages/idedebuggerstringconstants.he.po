@@ -592,6 +592,10 @@ msgstr ""
 msgid "Converter"
 msgstr ""
 
+#: idedebuggerstringconstants.drsdebugvalformatter
+msgid "Value formatter"
+msgstr ""
+
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 #, fuzzy
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
@@ -687,6 +691,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
+msgstr ""
+
+#: idedebuggerstringconstants.drsnovalformatter
+msgid "No value formatter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat

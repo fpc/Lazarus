@@ -17,7 +17,7 @@ uses
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
-  IdeDebuggerDisplayFormats, WatchPropertyDlg, ProjectDebugLink;
+  IdeDebuggerDisplayFormats, WatchPropertyDlg, ProjectDebugLink, IdeDebuggerValueFormatter;
 
 type
 
@@ -39,6 +39,7 @@ type
     Panel1: TPanel;
     EdInspect: TComboBox;
     popConverter: TPopupMenu;
+    popValFormatter: TPopupMenu;
     BtnExecute: TSpeedButton;
     ToolBar1: TToolBar;
     btnPower: TToolButton;
@@ -49,6 +50,7 @@ type
     btnUseInstance: TToolButton;
     btnFunctionEval: TToolButton;
     btnUseConverter: TToolButton;
+    btnUseValFormatter: TToolButton;
     tbDivFlags: TToolButton;
     btnColClass: TToolButton;
     btnColType: TToolButton;
@@ -108,8 +110,12 @@ type
     FExecAfterUpdate: Boolean;
 
     procedure ArrayNavSizeChanged(Sender: TObject);
+    procedure DoDbgValFormatterMenuClicked(Sender: TObject);
     procedure DoBackConverterChanged(Sender: TObject);
+    procedure DoValFormatterChanged(Sender: TObject);
     procedure DoDbpConvMenuClicked(Sender: TObject);
+    function GetDbgValueFormatter: TIdeDbgValueFormatterSelector;
+    function GetSkipDbgValueFormatter: Boolean;
     function GetDisplayFormat: TWatchDisplayFormat;
     function  GetButtonDown(AIndex: Integer): Boolean;
     function GetButtonEnabled(AIndex: Integer): Boolean;
@@ -125,6 +131,7 @@ type
     procedure AddToHistory(AnExpression: String);
     procedure DoClear;
     procedure DoWatchUpdated(AWatch: TIdeWatch);
+    procedure DoDisplaySettingsUpdated;
   protected
     procedure VisibleChanged; override;
   public
@@ -158,6 +165,8 @@ type
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
     property HistoryListMaxCount: integer read FHistoryListMaxCount write FHistoryListMaxCount;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
+    property DbgValueFormatter: TIdeDbgValueFormatterSelector read GetDbgValueFormatter;
+    property SkipDbgValueFormatter: Boolean read GetSkipDbgValueFormatter;
     property EvalHistDirection: TEvalHistDirection read FEvalHistDirection;
     property DropDownOpen: boolean read GetDropDownOpen;
   published
@@ -301,6 +310,7 @@ begin
   d := TWatchPropertyDlg.Create(Self.Owner, FDisplayFormat, r, FAllowMemDump);
   if d.ShowModal = mrOK then begin
     FDisplayFormat := d.DisplayFormat;
+    // DoDisplaySettingsUpdated;
     if FOnDisplayFormatChanged <> nil then
       FOnDisplayFormatChanged(Self);
   end;
@@ -410,12 +420,41 @@ begin
   Result := EdInspect.Text;
 end;
 
-procedure TWatchInspectNav.DoDbpConvMenuClicked(Sender: TObject);
+procedure TWatchInspectNav.DoDbgValFormatterMenuClicked(Sender: TObject);
 begin
-  btnUseConverter.Tag := TMenuItem(Sender).Tag;
-  btnUseConverter.Caption := TMenuItem(Sender).Caption;
+  btnUseValFormatter.Tag := TMenuItem(Sender).Tag;
+  btnUseValFormatter.Caption := TMenuItem(Sender).Caption;
   FrameResize(nil);
-  UpdateData;
+  DoDisplaySettingsUpdated;
+end;
+
+procedure TWatchInspectNav.DoValFormatterChanged(Sender: TObject);
+  function MnItm(c: String; e: TNotifyEvent; t: SizeInt): TMenuItem;
+  begin
+    Result := TMenuItem.Create(Self);
+    Result.Caption := c;
+    Result.OnClick := e;
+    Result.Tag := t;
+  end;
+
+var
+  i: Integer;
+begin
+  popValFormatter.Items.Clear;
+
+  popValFormatter.Items.Add(MnItm(drsDebugValFormatter, @DoDbgValFormatterMenuClicked, -2));
+  popValFormatter.Items.Add(MnItm(drsNoValFormatter, @DoDbgValFormatterMenuClicked, -1));
+
+  for i := 0 to DebuggerOptions.ValueFormatterConfig.Count - 1 do
+    popValFormatter.Items.Add(MnItm(DebuggerOptions.ValueFormatterConfig[i].Name, @DoDbgValFormatterMenuClicked, PtrInt(DebuggerOptions.ValueFormatterConfig[i])));
+  for i := 0 to DbgProjectLink.ValueFormatterConfig.Count - 1 do
+    popValFormatter.Items.Add(MnItm(DbgProjectLink.ValueFormatterConfig[i].Name, @DoDbgValFormatterMenuClicked, PtrInt(DbgProjectLink.ValueFormatterConfig[i])));
+
+  btnUseValFormatter.Visible := DebuggerOptions.ValueFormatterConfig.Count + DbgProjectLink.ValueFormatterConfig.Count > 0;
+  btnUseValFormatter.Tag := -2;
+  btnUseValFormatter.Caption := drsDebugValFormatter;
+  FrameResize(nil);
+  DoDisplaySettingsUpdated;
 end;
 
 function TWatchInspectNav.GetDisplayFormat: TWatchDisplayFormat;
@@ -431,6 +470,31 @@ begin
   FrameResize(nil);
 end;
 
+procedure TWatchInspectNav.DoDbpConvMenuClicked(Sender: TObject);
+begin
+  btnUseConverter.Tag := TMenuItem(Sender).Tag;
+  btnUseConverter.Caption := TMenuItem(Sender).Caption;
+  FrameResize(nil);
+  UpdateData;
+end;
+
+function TWatchInspectNav.GetDbgValueFormatter: TIdeDbgValueFormatterSelector;
+begin
+  Result := nil;
+  if (btnUseValFormatter.Tag=-1) or (btnUseValFormatter.Tag=-2) then
+    exit;
+  Result := TIdeDbgValueFormatterSelector(btnUseValFormatter.Tag);
+  if (DebuggerOptions.ValueFormatterConfig.IndexOf(Result) < 0) and
+     (DbgProjectLink.ValueFormatterConfig.IndexOf(Result) < 0)
+  then
+    Result := nil;
+end;
+
+function TWatchInspectNav.GetSkipDbgValueFormatter: Boolean;
+begin
+  Result := btnUseValFormatter.Tag = -1;
+end;
+
 procedure TWatchInspectNav.DoBackConverterChanged(Sender: TObject);
   function MnItm(c: String; e: TNotifyEvent; t: SizeInt): TMenuItem;
   begin
@@ -441,7 +505,6 @@ procedure TWatchInspectNav.DoBackConverterChanged(Sender: TObject);
   end;
 
 var
-  m: TMenuItem;
   i: Integer;
 begin
   popConverter.Items.Clear;
@@ -598,6 +661,10 @@ begin
   DbgProjectLink.BackendConverterConfig.AddChangeNotification(@DoBackConverterChanged);
   DoBackConverterChanged(nil);
 
+  DebuggerOptions.ValueFormatterConfig.AddChangeNotification(@DoValFormatterChanged);
+  DbgProjectLink.ValueFormatterConfig.AddChangeNotification(@DoValFormatterChanged);
+  DoValFormatterChanged(nil);
+
   EdInspectChange(nil);
 end;
 
@@ -605,6 +672,8 @@ destructor TWatchInspectNav.Destroy;
 begin
   DebuggerOptions.BackendConverterConfig.RemoveChangeNotification(@DoBackConverterChanged);
   DbgProjectLink.BackendConverterConfig.RemoveChangeNotification(@DoBackConverterChanged);
+  DebuggerOptions.ValueFormatterConfig.RemoveChangeNotification(@DoValFormatterChanged);
+  DbgProjectLink.ValueFormatterConfig.RemoveChangeNotification(@DoValFormatterChanged);
   inherited Destroy;
   FBrowseHistory.Free;
   ReleaseRefAndNil(FCurrentWatchValue);
@@ -640,6 +709,7 @@ procedure TWatchInspectNav.InitWatch(AWatch: TIdeWatch);
 var
   Opts: TWatcheEvaluateFlags;
   Conv: TIdeDbgValueConvertSelector;
+  ValForm: TIdeDbgValueFormatterSelector;
 begin
   Opts := AWatch.EvaluateFlags;
   if btnUseInstance.Down then
@@ -659,9 +729,23 @@ begin
         Conv := nil;
     end
   end;
+  AWatch.DbgBackendConverter := Conv;
+
+  ValForm := nil;
+  case btnUseValFormatter.Tag of
+    -2: ;
+    -1: include(Opts, defSkipValueFormatter);
+    otherwise begin
+      ValForm := TIdeDbgValueFormatterSelector(btnUseValFormatter.Tag);
+      if (DebuggerOptions.ValueFormatterConfig.IndexOf(ValForm) < 0) and
+         (DbgProjectLink.ValueFormatterConfig.IndexOf(ValForm) < 0)
+      then
+        ValForm := nil;
+    end
+  end;
+  AWatch.DbgValueFormatter := ValForm;
 
   AWatch.EvaluateFlags := Opts;
-  AWatch.DbgBackendConverter := Conv;
 end;
 
 procedure TWatchInspectNav.ReadFromWatch(AWatch: TWatch;
@@ -687,6 +771,25 @@ begin
       while i >= 0 do begin
         if popConverter.Items[i].Tag = PtrUInt(AWatch.DbgBackendConverter) then begin
           popConverter.Items[i].Click;
+          break;
+        end;
+        dec(i);
+      end;
+    end;
+
+    if defSkipValueFormatter in AWatch.EvaluateFlags then begin
+      if popValFormatter.Items.Count > 1 then
+        popValFormatter.Items[1].Click;
+    end
+    else if AWatch.DbgValueFormatter = nil then begin
+      if popValFormatter.Items.Count > 0 then
+        popValFormatter.Items[0].Click;
+    end
+    else begin
+      i := popValFormatter.Items.Count - 1;
+      while i >= 0 do begin
+        if popValFormatter.Items[i].Tag = PtrUInt(AWatch.DbgValueFormatter) then begin
+          popValFormatter.Items[i].Click;
           break;
         end;
         dec(i);
@@ -874,6 +977,17 @@ procedure TWatchInspectNav.DoWatchUpdated(AWatch: TIdeWatch);
 begin
   if FOnWatchUpdated <> nil then
     FOnWatchUpdated(FInspectWatches, AWatch);
+end;
+
+procedure TWatchInspectNav.DoDisplaySettingsUpdated;
+begin
+  if FOnDisplayFormatChanged <> nil then
+    FOnDisplayFormatChanged(Self)
+  else
+  if FCurrentWatchValue <> nil then
+    DoWatchUpdated(FCurrentWatchValue.Watch)
+  else
+    UpdateData;
 end;
 
 procedure TWatchInspectNav.VisibleChanged;
