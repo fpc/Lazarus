@@ -217,7 +217,7 @@ begin
   if Rec = nil then
   begin
     if not AutoCreateGroup then
-      raise Exception.Create('RegisterIDEOptionsEditor: missing Group');
+      raise Exception.Create('RegisterIDEOptionsEditor: missing Group '+IntToStr(AGroupIndex));
     Rec := RegisterIDEOptionsGroup(AGroupIndex, nil);
   end;
 

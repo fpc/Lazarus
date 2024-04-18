@@ -44,6 +44,7 @@ uses
   IDEOptionsIntf,
   IDEOptEditorIntf,
   EnvironmentOpts, IDECmdLine, LazConf,
+  PackageDefs,
   LazarusIDEStrConsts;
 
 type
@@ -994,6 +995,8 @@ initialization
   RegisterIDEOptionsGroup(GroupEnvironment, TEnvironmentOptions);
   FLazIDEInstances := TIDEInstances.Create(nil);
   FLazIDEInstances.InitIDEInstances;
+  RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
+  RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
 
 finalization
   FreeAndNil(FLazIDEInstances);

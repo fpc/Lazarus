@@ -52,11 +52,10 @@ uses
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // BuildIntf
-  IDEExternToolIntf, IDEOptionsIntf, MacroDefIntf, ProjectIntf, CompOptsIntf,
+  IDEExternToolIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, LazMsgWorker,
   FppkgIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, ComponentReg,
-  LazMsgWorker,
   // IDEIntf
-  IDEMsgIntf, LazIDEIntf, IDEOptEditorIntf,
+  IDEMsgIntf, LazIDEIntf,
   // Package registration
   LazarusPackageIntf,
   // IdeUtils
@@ -6712,10 +6711,6 @@ begin
     AddConnections(Pkg.FirstRequiredDependency);
   end;
 end;
-
-initialization
-  RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
-  RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
 
 end.
 
