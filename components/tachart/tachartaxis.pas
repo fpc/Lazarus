@@ -112,6 +112,7 @@ type
     FAlignment: TChartAxisAlignment;
     FAtDataOnly: Boolean;
     FAxisPen: TChartAxisPen;
+    FEnabledHitTests: TChartAxisHitTests;
     FGroup: Integer;
     FHelper: TAxisDrawHelper;
     FInverted: Boolean;
@@ -196,6 +197,7 @@ type
     property Arrow;
     property AtDataOnly: Boolean read FAtDataOnly write SetAtDataOnly default false;
     property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
+    property EnabledHitTests: TChartAxisHitTests read FEnabledHitTests write FEnabledHitTests default ALL_CHARTAXIS_HITTESTS;
     property Group: Integer read FGroup write SetGroup default 0;
     property Inverted: boolean read FInverted write SetInverted default false;
     property LabelSize: Integer read FLabelSize write SetLabelSize default 0;
@@ -469,6 +471,7 @@ begin
   if ASource is TChartAxis then
     with TChartAxis(ASource) do begin
       Self.FAxisPen.Assign(AxisPen);
+      Self.FEnabledHitTests := EnabledHitTests;
       Self.FGroup := Group;
       Self.FInverted := Inverted;
       Self.FRange.Assign(Range);
@@ -488,6 +491,7 @@ begin
   inherited Create(ACollection, ACollection.Owner as TCustomChart);
   FAxisPen := TChartAxisPen.Create;
   FAxisPen.OnChange := @StyleChanged;
+  FEnabledHitTests := ALL_CHARTAXIS_HITTESTS;
   FListener := TListener.Create(@FTransformations, @StyleChanged);
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);
@@ -521,6 +525,8 @@ var
   t: TChartValueText;
 begin
   Result := [];
+
+  ATest := ATest * FEnabledHitTests;
 
   if (ahtTitle in ATest) and IsPointInPolygon(APoint, FTitlePolygon) then
   begin
