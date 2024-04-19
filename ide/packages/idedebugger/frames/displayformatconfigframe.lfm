@@ -1388,6 +1388,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 80
         Caption = 'cbEnumSign'
         TabOrder = 5
+        OnChange = FormatSignCBChanged
       end
       object lbEnumBaseSpace: TLabel
         Left = 0
@@ -1700,6 +1701,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 80
         Caption = 'cbEnumSign'
         TabOrder = 5
+        OnChange = FormatSignCBChanged
       end
       object lbEnumValBaseSpace: TLabel
         Left = 0
@@ -2454,6 +2456,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 80
         Caption = 'cbAddrSign'
         TabOrder = 4
+        OnChange = FormatSignCBChanged
       end
       object rbClear14: TRadioButton
         AnchorSideBottom.Control = PanelAddressBase

@@ -243,6 +243,7 @@ type
     procedure FormatNumGroupChanged(Sender: TObject);
     procedure FormatNumSepChanged(Sender: TObject);
     procedure FormatRadioChanged(Sender: TObject);
+    procedure FormatSignCBChanged(Sender: TObject);
     procedure FormatSpinChanged(Sender: TObject);
     procedure OverrideCheckChanged(Sender: TObject);
     procedure Spin2DigitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -265,7 +266,8 @@ type
     FShowOverrideChecks: boolean;
 
     FUpdateCount: integer;
-    FNeedUpdateDisplay, FUpdatingDisplay, FUpdatingSpin: boolean;
+    FNeedUpdateDisplay, FUpdatingSpin: boolean;
+    FUpdatingDisplay: Integer;
     FInButtonClick: Boolean;
     FButtonStates: array[TFmtButtons] of boolean;
 
@@ -456,7 +458,7 @@ end;
 
 procedure TDisplayFormatFrame.cbMemDumpChange(Sender: TObject);
 begin
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
   TControl(Sender).Tag := 0;
   PanelNum.Enabled    := not cbMemDump.Checked;
@@ -469,12 +471,10 @@ end;
 
 procedure TDisplayFormatFrame.cbNum2VisibleCheckedChange(Sender: TObject);
 begin
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
   TControl(Sender).Tag := 0;
-  FUpdatingDisplay := True;
   EnableParentOverride(TControl(Sender));
-  FUpdatingDisplay := False;
   UpdateFormat;
   UpdateDisplay;
 end;
@@ -494,33 +494,45 @@ end;
 
 procedure TDisplayFormatFrame.FormatNumGroupChanged(Sender: TObject);
 begin
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
   TControl(Sender).Tag := 0;
+  EnableParentOverride(TControl(Sender));
   UpdateFormat;
   TRadioButton(Sender).ClearMultiMarkers;
 end;
 
 procedure TDisplayFormatFrame.FormatNumSepChanged(Sender: TObject);
 begin
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
   TControl(Sender).Tag := 0;
+  EnableParentOverride(TControl(Sender));
   UpdateFormat;
 end;
 
 procedure TDisplayFormatFrame.FormatRadioChanged(Sender: TObject);
 begin
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
 
   TControl(Sender).Tag := 0;
-  FUpdatingDisplay := True;
   EnableParentOverride(TControl(Sender), True);
-  FUpdatingDisplay := False;
 
   UpdateFormat;
   TRadioButton(Sender).ClearMultiMarkers;
+  UpdateDisplay;
+end;
+
+procedure TDisplayFormatFrame.FormatSignCBChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay > 0 then
+    exit;
+
+  TControl(Sender).Tag := 0;
+  EnableParentOverride(TControl(Sender), True);
+
+  UpdateFormat;
   UpdateDisplay;
 end;
 
@@ -528,7 +540,7 @@ procedure TDisplayFormatFrame.FormatSpinChanged(Sender: TObject);
 begin
   if FUpdatingSpin then
     exit;
-  if not FUpdatingDisplay then
+  if FUpdatingDisplay = 0 then
     TControl(Sender).Tag := 0;
 
   if (TSpinEdit(Sender).Tag <> 0) then begin
@@ -544,19 +556,17 @@ begin
     FUpdatingSpin := False;
   end;
 
-  if FUpdatingDisplay then
+  if FUpdatingDisplay > 0 then
     exit;
 
   TControl(Sender).Tag := 0;
-  FUpdatingDisplay := True;
   EnableParentOverride(TControl(Sender), True);
-  FUpdatingDisplay := False;
   UpdateFormat;
 end;
 
 procedure TDisplayFormatFrame.OverrideCheckChanged(Sender: TObject);
 begin
-  if FUpdatingDisplay or not FShowOverrideChecks then
+  if (FUpdatingDisplay > 0) or not FShowOverrideChecks then
     exit;
   TControl(Sender).Tag := 0;
   UpdateFormatOverrides;
@@ -714,19 +724,25 @@ var
 begin
   if not ShowOverrideChecks then
     exit;
-  pnl := c.Parent;
-  while (pnl.Parent <> self) do
-    pnl := pnl.Parent;
-  if (pnl = PanelNum2) and AEnableVisible then begin
-    cbNum2Visibile.Tag := 0;
-    cbNum2Visibile.Checked := True;
-  end;
-  for i := 0 to pnl.ControlCount-1 do
-    if pnl.Controls[i] is TCheckBox then begin
-      if TCheckBox(pnl.Controls[i]).State = cbUnchecked then
-        TCheckBox(pnl.Controls[i]).Checked := True;
-      exit;
+
+  inc(FUpdatingDisplay);
+  try
+    pnl := c.Parent;
+    while (pnl.Parent <> self) do
+      pnl := pnl.Parent;
+    if (pnl = PanelNum2) and AEnableVisible then begin
+      cbNum2Visibile.Tag := 0;
+      cbNum2Visibile.Checked := True;
     end;
+    for i := 0 to pnl.ControlCount-1 do
+      if pnl.Controls[i] is TCheckBox then begin
+        if TCheckBox(pnl.Controls[i]).State = cbUnchecked then
+          TCheckBox(pnl.Controls[i]).Checked := True;
+        exit;
+      end;
+  finally
+    dec(FUpdatingDisplay);
+  end;
 end;
 
 function TDisplayFormatFrame.GetDisplayFormat: TWatchDisplayFormat;
@@ -1327,9 +1343,12 @@ end;
 
 procedure TDisplayFormatFrame.CreateHandle;
 begin
-  FUpdatingDisplay := True; // gtk2 send extra events
-  inherited;
-  FUpdatingDisplay := False;
+  inc(FUpdatingDisplay); // gtk2 send extra events
+  try
+    inherited;
+  finally
+    dec(FUpdatingDisplay);
+  end;
   UpdateDisplay;
 end;
 
@@ -1377,7 +1396,7 @@ begin
     FNeedUpdateDisplay := True;
     exit;
   end;
-  FUpdatingDisplay := True;
+  inc(FUpdatingDisplay);
 
   UpdateButtonStates;
 
@@ -1671,7 +1690,7 @@ begin
     FormatSpinChanged(Spin2Digits);
     FormatSpinChanged(SpinFloatDigits);
 
-    FUpdatingDisplay := False;
+    dec(FUpdatingDisplay);
   end;
 end;
 
