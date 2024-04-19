@@ -420,7 +420,7 @@ resourcestring
   DispFormatDlgBtnNumber2   = 'Number (2nd)';
   DispFormatDlgBtnOrd       = 'Ordinal';
   DispFormatDlgBtnEnum      = 'Enum';
-  DispFormatDlgBtnEnumVal   = 'Enum(Identifier)';
+  DispFormatDlgBtnEnumVal   = 'Enum (Identifier)';
   DispFormatDlgBtnBool      = 'Boolean';
   DispFormatDlgBtnChar      = 'Char';
   DispFormatDlgBtnFloat     = 'Float';
