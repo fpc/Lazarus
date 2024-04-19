@@ -423,11 +423,11 @@ msgstr "Имя"
 
 #: idedebuggerstringconstants.dlgbackconvoptnesting
 msgid "Limit to (un)nested"
-msgstr ""
+msgstr "Ограничить по вложенности"
 
 #: idedebuggerstringconstants.dlgbackconvoptnestlvl
 msgid "Min/Max level"
-msgstr ""
+msgstr "Уровень (от/до)"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgctxt "idedebuggerstringconstants.dlgbackconvoptremove"
@@ -603,7 +603,7 @@ msgstr "Преобразование"
 
 #: idedebuggerstringconstants.drsdebugvalformatter
 msgid "Value formatter"
-msgstr ""
+msgstr "Форматирование значений"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
@@ -703,7 +703,7 @@ msgstr "Не сохранять историю"
 
 #: idedebuggerstringconstants.drsnovalformatter
 msgid "No value formatter"
-msgstr ""
+msgstr "Без форматирования значений"
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
@@ -1738,11 +1738,11 @@ msgstr "П&ереключить точку останова"
 
 #: idedebuggerstringconstants.valformatterchararraytostringname
 msgid "CharArray as String"
-msgstr ""
+msgstr "Массив символов как строка"
 
 #: idedebuggerstringconstants.valformatterchararraytostringstopnull
 msgid "Stop at #0"
-msgstr ""
+msgstr "Останавливаться на #0"
 
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
