@@ -141,6 +141,10 @@ begin
    AConfig.GetValue(APath + 'Enum',         ord(DefaultWatchDisplayFormat.Enum.MainFormat),               ADisplayFormat.Enum.MainFormat,              TypeInfo(TValueDisplayFormatEnum));
    AConfig.GetValue(APath + 'EnumBase',     ord(DefaultWatchDisplayFormat.Enum.BaseFormat),           ADisplayFormat.Enum.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
    AConfig.GetValue(APath + 'EnumSign',     ord(DefaultWatchDisplayFormat.Enum.SignFormat),           ADisplayFormat.Enum.SignFormat,          TypeInfo(TValueDisplayFormatSign));
+  ADisplayFormat.EnumVal.UseInherited := AConfig.GetValue(APath + 'ENumValInherit', DefaultWatchDisplayFormat.EnumVal.UseInherited);
+   AConfig.GetValue(APath + 'EnumVal',         ord(DefaultWatchDisplayFormat.EnumVal.MainFormat),           ADisplayFormat.EnumVal.MainFormat,          TypeInfo(TValueDisplayFormatEnum));
+   AConfig.GetValue(APath + 'EnumValBase',     ord(DefaultWatchDisplayFormat.EnumVal.BaseFormat),           ADisplayFormat.EnumVal.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
+   AConfig.GetValue(APath + 'EnumValSign',     ord(DefaultWatchDisplayFormat.EnumVal.SignFormat),           ADisplayFormat.EnumVal.SignFormat,          TypeInfo(TValueDisplayFormatSign));
   ADisplayFormat.Bool.UseInherited := AConfig.GetValue(APath + 'BoolInherit', DefaultWatchDisplayFormat.Bool.UseInherited);
    AConfig.GetValue(APath + 'Bool',         ord(DefaultWatchDisplayFormat.Bool.MainFormat),               ADisplayFormat.Bool.MainFormat,              TypeInfo(TValueDisplayFormatBool));
    AConfig.GetValue(APath + 'BoolBase',     ord(DefaultWatchDisplayFormat.Bool.BaseFormat),           ADisplayFormat.Bool.BaseFormat,          TypeInfo(TValueDisplayFormatBase));
@@ -194,6 +198,10 @@ begin
    AConfig.SetDeleteValue(APath + 'Enum',              ADisplayFormat.Enum.MainFormat,                 ord(DefaultWatchDisplayFormat.Enum.MainFormat),              TypeInfo(TValueDisplayFormatEnum));
    AConfig.SetDeleteValue(APath + 'EnumBase',          ADisplayFormat.Enum.BaseFormat,             ord(DefaultWatchDisplayFormat.Enum.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
    AConfig.SetDeleteValue(APath + 'EnumSign',          ADisplayFormat.Enum.SignFormat,             ord(DefaultWatchDisplayFormat.Enum.SignFormat),          TypeInfo(TValueDisplayFormatSign));
+  AConfig.SetDeleteValue(APath + 'ENumValInherit',     ADisplayFormat.EnumVal.UseInherited,        DefaultWatchDisplayFormat.EnumVal.UseInherited);
+   AConfig.SetDeleteValue(APath + 'EnumVal',           ADisplayFormat.EnumVal.MainFormat,          ord(DefaultWatchDisplayFormat.EnumVal.MainFormat),              TypeInfo(TValueDisplayFormatEnum));
+   AConfig.SetDeleteValue(APath + 'EnumValBase',       ADisplayFormat.EnumVal.BaseFormat,          ord(DefaultWatchDisplayFormat.EnumVal.BaseFormat),          TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'EnumValSign',       ADisplayFormat.EnumVal.SignFormat,          ord(DefaultWatchDisplayFormat.EnumVal.SignFormat),          TypeInfo(TValueDisplayFormatSign));
   AConfig.SetDeleteValue(APath + 'BoolInherit',        ADisplayFormat.Bool.UseInherited,              DefaultWatchDisplayFormat.Bool.UseInherited);
    AConfig.SetDeleteValue(APath + 'Bool',              ADisplayFormat.Bool.MainFormat,                 ord(DefaultWatchDisplayFormat.Bool.MainFormat),              TypeInfo(TValueDisplayFormatBool));
    AConfig.SetDeleteValue(APath + 'BoolBase',          ADisplayFormat.Bool.BaseFormat,             ord(DefaultWatchDisplayFormat.Bool.BaseFormat),          TypeInfo(TValueDisplayFormatBase));

@@ -276,7 +276,7 @@ begin
       ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
     end;
 
-    rdkEnum, rdkEnumVal, rdkSet: begin
+    rdkEnum, rdkSet: begin
       Result.Enum := ADispFormat.Enum;
 
       if Result.Enum.UseInherited then begin
@@ -284,6 +284,23 @@ begin
         while (i >0) and (FFallBackFormats[i].Enum.UseInherited) do
           dec(i);
         Result.Enum  := FFallBackFormats[i].Enum;
+      end;
+
+      Result.Num2            := DefaultEnumNum;
+      Result.Num2.Visible    := Result.Enum.MainFormat in [vdfEnumNameAndOrd, vdfEnumOrd];
+      Result.Num2.BaseFormat := Result.Enum.BaseFormat;
+      Result.Num2.SignFormat := Result.Enum.SignFormat;
+      ResolveSign(Result.Num2.SignFormat, DefaultEnumNum.SignFormat);
+    end;
+
+    rdkEnumVal: begin
+      Result.Enum := ADispFormat.Enum;
+
+      if Result.Enum.UseInherited then begin
+        i := FFallBackFormats.Count -1;
+        while (i >0) and (FFallBackFormats[i].EnumVal.UseInherited) do
+          dec(i);
+        Result.Enum  := FFallBackFormats[i].EnumVal;
       end;
 
       Result.Num2            := DefaultEnumNum;

@@ -45,7 +45,9 @@ type
 
   TDisplayFormatFrame = class(TFrame)
     cbAddrSign: TCheckBox;
+    cbEnumValSign: TCheckBox;
     cbMemDump: TCheckBox;
+    cbOverrideEnumVal: TCheckBox;
     cbOverrideNum2Base: TCheckBox;
     cbOverridePointerDeref: TCheckBox;
     cbOverrideAddressFormat: TCheckBox;
@@ -59,6 +61,7 @@ type
     cbEnumSign: TCheckBox;
     DigitSpacer3: TLabel;
     DigitSpacer4: TLabel;
+    DividerBevelEnumVal: TDividerBevel;
     DividerBevelNum2: TDividerBevel;
     DividerBevelPointerDeref: TDividerBevel;
     DividerBevelAddressFormat: TDividerBevel;
@@ -69,6 +72,8 @@ type
     DividerBevelStruct: TDividerBevel;
     Label1: TLabel;
     Label3: TLabel;
+    lbEnumValBaseSpace: TLabel;
+    lbOverrideEnumVal: TLabel;
     lpAddrSpace: TLabel;
     lbEnumBaseSpace: TLabel;
     lbNum2Digits: TLabel;
@@ -82,6 +87,9 @@ type
     lbOverrideAddressFormat: TLabel;
     lbOverrideNumBase: TLabel;
     lbNum2SepGroup: TLabel;
+    PanelEnumVal: TPanel;
+    PanelENumValBase: TPanel;
+    PanelEnumValRb: TPanel;
     PanelNum2All: TPanel;
     PanelNum2Digits: TPanel;
     PanelENumBase: TPanel;
@@ -98,13 +106,23 @@ type
     rbClear12: TRadioButton;
     rbClear13: TRadioButton;
     rbClear14: TRadioButton;
+    rbClear15: TRadioButton;
     rbClear2: TRadioButton;
     rbClear3: TRadioButton;
     rbClear4: TRadioButton;
     rbClear5: TRadioButton;
     rbClear6: TRadioButton;
     rbClear7: TRadioButton;
+    rbClear8: TRadioButton;
     rbClear9: TRadioButton;
+    rbENumValBin: TRadioButton;
+    rbENumValChar: TRadioButton;
+    rbENumValDec: TRadioButton;
+    rbENumValHex: TRadioButton;
+    rbEnumValName: TRadioButton;
+    rbEnumValNameAndOrd: TRadioButton;
+    rbENumValOct: TRadioButton;
+    rbEnumValOrd: TRadioButton;
     rbNum2SepByte: TRadioButton;
     rbNum2SepLong: TRadioButton;
     rbENumBin: TRadioButton;
@@ -188,6 +206,8 @@ type
     Spacer14: TLabel;
     DigitSpacer1: TLabel;
     DigitSpacer2: TLabel;
+    Spacer15: TLabel;
+    Spacer16: TLabel;
     Spacer2: TLabel;
     Spacer3: TLabel;
     Spacer4: TLabel;
@@ -239,6 +259,7 @@ type
     FDisplayFormatCount: integer;
     FDisplayFormat: array of TWatchDisplayFormat;
     FCurrentResDataType: TWatchResultDataKind;
+    FShowExtraSettings: boolean;
     FShowMemDump: boolean;
     FShowMultiRadio: boolean;
     FShowOverrideChecks: boolean;
@@ -257,6 +278,7 @@ type
     procedure SetDisplayFormats(AIndex: integer; AValue: TWatchDisplayFormat);
     procedure SetHighlightModifiedTabs(AValue: boolean);
     procedure SetShowCurrent(AValue: boolean);
+    procedure SetShowExtraSettings(AValue: boolean);
     procedure SetShowMemDump(AValue: boolean);
     procedure SetShowMultiRadio(AValue: boolean);
     procedure SetShowOverrideChecks(AValue: boolean);
@@ -293,6 +315,7 @@ type
     property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
     property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
     property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
+    property ShowExtraSettings: boolean read FShowExtraSettings write SetShowExtraSettings;
     property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write SetHighlightModifiedTabs;
   end;
 
@@ -769,6 +792,12 @@ begin
   tbCurrent.Visible := FShowCurrent;
 end;
 
+procedure TDisplayFormatFrame.SetShowExtraSettings(AValue: boolean);
+begin
+  if FShowExtraSettings = AValue then Exit;
+  FShowExtraSettings := AValue;
+end;
+
 procedure TDisplayFormatFrame.SetShowMemDump(AValue: boolean);
 begin
   if FShowMemDump = AValue then Exit;
@@ -789,6 +818,7 @@ begin
   cbOverrideNumBase.Visible       := FShowOverrideChecks;
   cbOverrideNum2Base.Visible      := FShowOverrideChecks;
   cbOverrideEnum.Visible          := FShowOverrideChecks;
+  cbOverrideEnumVal.Visible          := FShowOverrideChecks;
   cbOverrideFloat.Visible         := FShowOverrideChecks;
   cbOverrideStruct.Visible        := FShowOverrideChecks;
   cbOverridePointerDeref.Visible  := FShowOverrideChecks;
@@ -946,10 +976,15 @@ begin
   PanelNum.Visible           := tbNumber.Down;
   PanelNum2.Visible          := tbNumber.Down;
   PanelEnum.Visible          := tbEnum.Down or tbBool.Down or tbChar.Down;
+  PanelEnumVal.Visible       := FShowExtraSettings and
+                                tbEnum.Down and
+                                not(tbNumber.Down or tbFloat.Down or tbStruct.Down or tbPointer.Down);
   PanelFloat.Visible         := tbFloat.Down;
   PanelStruct.Visible        := tbStruct.Down;
   PanelPointer.Visible       := tbPointer.Down;
   PanelAddressFormat.Visible := tbPointer.Down or tbStruct.Down;
+
+
 
   CaptRbEnumName := '';
   CaptDivEnum    := '';
@@ -1076,6 +1111,8 @@ begin
     end;
     if FButtonStates[bsEnum] then begin
       BoolFromCBState(cbOverrideEnum.State, FDisplayFormat[i].Enum.UseInherited);
+      if PanelEnumVal.Visible then
+        BoolFromCBState(cbOverrideEnumVal.State, FDisplayFormat[i].EnumVal.UseInherited);
     end;
     if FButtonStates[bsBool] then begin
       BoolFromCBState(cbOverrideEnum.State, FDisplayFormat[i].Bool.UseInherited);
@@ -1178,6 +1215,23 @@ begin
           cbUnchecked: FDisplayFormat[i].Enum.SignFormat := vdfSignAuto;
           cbChecked:   FDisplayFormat[i].Enum.SignFormat := vdfSignUnsigned;
         end;
+      if ShowExtraSettings then begin
+        ds := ReadDispForm(PanelEnumValRb, RBA_Enum);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do
+            if d in ds then
+              FDisplayFormat[i].EnumVal.MainFormat := d;
+        ds := ReadDispForm(PanelENumValBase, RBA_Num);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+            if d in ds then
+              FDisplayFormat[i].EnumVal.BaseFormat := d;
+        if cbEnumValSign.Tag = 0 then
+          case cbEnumValSign.State of
+            cbUnchecked: FDisplayFormat[i].EnumVal.SignFormat := vdfSignAuto;
+            cbChecked:   FDisplayFormat[i].EnumVal.SignFormat := vdfSignUnsigned;
+          end;
+      end;
     end;
     if FButtonStates[bsBool] then begin
       ds := ReadDispForm(PanelEnumRb1, RBA_Enum);
@@ -1281,7 +1335,7 @@ end;
 
 procedure TDisplayFormatFrame.UpdateDisplay;
 var
-  InherhitNum, InherhitNum2, InherhitEnum, InherhitFloat,
+  InherhitNum, InherhitNum2, InherhitEnum, InherhitEnumVal, InherhitFloat,
   InherhitStruct, InherhitPtr, InherhitAddress: TBoolSet;
 
   FormatNumBase:       TValueDisplayFormats;
@@ -1298,7 +1352,10 @@ var
   FormatEnum:          TValueDisplayFormats;
   FormatEnumBase:      TValueDisplayFormats;
   FormatEnumSign:      TBoolSet;
-  //FormatEnumSign:      TValueDisplayFormats;
+
+  FormatEnumVal:          TValueDisplayFormats;
+  FormatEnumValBase:      TValueDisplayFormats;
+  FormatEnumValSign:      TBoolSet;
 
   FormatFloat:         TValueDisplayFormats;
   FormatFloatPrec:     integer;
@@ -1332,6 +1389,7 @@ begin
     InherhitNum     := [];
     InherhitNum2    := [];
     InherhitEnum    := [];
+    InherhitEnumVal := [];
     InherhitFloat   := [];
     InherhitStruct  := [];
     InherhitPtr     := [];
@@ -1351,6 +1409,10 @@ begin
     FormatEnum          := [];
     FormatENumBase      := [];
     FormatENumSign      := [];
+
+    FormatEnumVal       := [];
+    FormatENumValBase   := [];
+    FormatENumValSign   := [];
 
     FormatFloat         := [];
     FormatFloatPrec     := INT_UNK;
@@ -1393,6 +1455,12 @@ begin
           include(FormatEnum,        FDisplayFormat[i].Enum.MainFormat);
           include(FormatEnumBase,    FDisplayFormat[i].Enum.BaseFormat);
           include(FormatEnumSign,    FDisplayFormat[i].Enum.SignFormat = vdfSignUnsigned);
+        end;
+        include(InherhitEnumVal,   FDisplayFormat[i].EnumVal.UseInherited);
+        if (not FDisplayFormat[i].EnumVal.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatEnumVal,     FDisplayFormat[i].EnumVal.MainFormat);
+          include(FormatEnumValBase, FDisplayFormat[i].EnumVal.BaseFormat);
+          include(FormatEnumValSign, FDisplayFormat[i].EnumVal.SignFormat = vdfSignUnsigned);
         end;
       end;
       if FButtonStates[bsBool] then begin
@@ -1451,6 +1519,7 @@ begin
       cbOverrideNumBase.State       := BoolsetToCBState(InherhitNum);
       cbOverrideNum2Base.State      := BoolsetToCBState(InherhitNum2);
       cbOverrideEnum.State          := BoolsetToCBState(InherhitEnum);
+      cbOverrideEnumVal.State       := BoolsetToCBState(InherhitEnumVal);
       cbOverrideFloat.State         := BoolsetToCBState(InherhitFloat);
       cbOverrideStruct.State        := BoolsetToCBState(InherhitStruct);
       cbOverridePointerDeref.State  := BoolsetToCBState(InherhitPtr);
@@ -1460,6 +1529,7 @@ begin
       InherhitNum     := [False];
       InherhitNum2    := [False];
       InherhitEnum    := [False];
+      InherhitEnumVal := [False];
       InherhitFloat   := [False];
       InherhitStruct  := [False];
       InherhitPtr     := [False];
@@ -1522,6 +1592,19 @@ begin
       //ApplyDispForm(PanelEnumSign, FormatEnumSign, RBA_Sign);
       cbEnumSign.State := BoolsetToCBState(FormatEnumSign, False);
       cbEnumSign.Tag   := 0;
+    end;
+
+    if InherhitEnumVal = [True] then begin
+      ClearRadios(PanelEnumValRb);
+      ClearRadios(PanelEnumValBase);
+      cbEnumValSign.State := cbUnchecked;
+      cbEnumValSign.Tag   := 1;
+    end
+    else begin
+      ApplyDispForm(PanelEnumValRb,   FormatEnumVal,     RBA_Enum);
+      ApplyDispForm(PanelEnumValBase, FormatEnumValBase, RBA_Num);
+      cbEnumValSign.State := BoolsetToCBState(FormatEnumValSign, False);
+      cbEnumValSign.Tag   := 0;
     end;
 
     if InherhitFloat = [True] then begin
@@ -1626,9 +1709,14 @@ begin
       ));
       MarkTabEnum    := MarkTabEnum or
       ((not FDisplayFormat[i].Enum.UseInherited) and (
-        (FDisplayFormat[i].Enum.MainFormat               = DefaultWatchDisplayFormat.Enum.MainFormat) or
+        (FDisplayFormat[i].Enum.MainFormat           = DefaultWatchDisplayFormat.Enum.MainFormat) or
         (FDisplayFormat[i].Enum.BaseFormat           = DefaultWatchDisplayFormat.Enum.BaseFormat) or
         (FDisplayFormat[i].Enum.SignFormat           = DefaultWatchDisplayFormat.Enum.SignFormat)
+      )) or
+      ((not FDisplayFormat[i].EnumVal.UseInherited) and (
+        (FDisplayFormat[i].EnumVal.MainFormat        = DefaultWatchDisplayFormat.EnumVal.MainFormat) or
+        (FDisplayFormat[i].EnumVal.BaseFormat        = DefaultWatchDisplayFormat.EnumVal.BaseFormat) or
+        (FDisplayFormat[i].EnumVal.SignFormat        = DefaultWatchDisplayFormat.EnumVal.SignFormat)
       ));
       MarkTabBool    := MarkTabBool or
       ((not FDisplayFormat[i].Bool.UseInherited) and (
@@ -1754,6 +1842,17 @@ begin
   rbENumBin.Caption                := DispFormatBaseBin;
   rbENumChar.Caption               := DispFormatBaseChar;
   cbEnumSign.Caption               := DispFormatSignUnsigned;
+
+  lbOverrideEnumVal.Caption     := DispFormatDlgBtnEnumVal;
+  rbEnumValName.Caption         := DispFormatEnumName;
+  rbEnumValOrd.Caption          := DispFormatEnumOrd;
+  rbEnumValNameAndOrd.Caption   := DispFormatEnumNameAndOrd;
+  rbENumValDec.Caption          := DispFormatBaseDecimal;
+  rbENumValHex.Caption          := DispFormatBaseHex;
+  rbENumValOct.Caption          := DispFormatBaseOct;
+  rbENumValBin.Caption          := DispFormatBaseBin;
+  rbENumValChar.Caption         := DispFormatBaseChar;
+  cbEnumValSign.Caption         := DispFormatSignUnsigned;
 
   lbOverrideFloat.Caption       := DispFormatDlgBtnFloat;
   rbFloatPoint.Caption          := DispFormatFloatPoint;

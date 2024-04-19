@@ -156,6 +156,7 @@ type
     Num:     TWatchDisplayFormatNum;
     Num2:    TWatchDisplayFormatNum2;
     Enum:    TWatchDisplayFormatEnum;
+    EnumVal: TWatchDisplayFormatEnum;
     Bool:    TWatchDisplayFormatBool;
     Char:    TWatchDisplayFormatChar;
     Float:   TWatchDisplayFormatFloat;
@@ -192,6 +193,11 @@ const
           );
     Enum: (UseInherited:        True;
            MainFormat:          vdfEnumName;
+           BaseFormat:          vdfBaseDecimal;
+           SignFormat:          vdfSignAuto;
+          );
+    EnumVal: (UseInherited:     True;
+           MainFormat:          vdfEnumNameAndOrd;
            BaseFormat:          vdfBaseDecimal;
            SignFormat:          vdfSignAuto;
           );
@@ -448,6 +454,7 @@ begin
     'Num2: '+' '+dbgs(df.Num2.UseInherited)+' '+dbgs(df.Num2.Visible)+' '+dbgs(df.Num2.BaseFormat)+' '+dbgs(df.Num2.SignFormat)+' '+
             dbgs(df.Num2.MinDigits)+' '+dbgs(df.Num2.SeparatorDec)+' '+dbgs(df.Num2.SeparatorHexBin) + LineEnding+
     'Enum: '+dbgs(df.Enum.UseInherited)+' '+dbgs(df.Enum.MainFormat)+' '+dbgs(df.Enum.BaseFormat)+' '+dbgs(df.Enum.SignFormat) + LineEnding+
+    'EnumVal: '+dbgs(df.EnumVal.UseInherited)+' '+dbgs(df.EnumVal.MainFormat)+' '+dbgs(df.EnumVal.BaseFormat)+' '+dbgs(df.EnumVal.SignFormat) + LineEnding+
     'Bool: '+dbgs(df.Bool.UseInherited)+' '+dbgs(df.Bool.MainFormat)+' '+dbgs(df.Bool.BaseFormat)+' '+dbgs(df.Bool.SignFormat) + LineEnding+
     'Char: '+dbgs(df.Char.UseInherited)+' '+dbgs(df.Char.MainFormat)+' '+dbgs(df.Char.BaseFormat)+' '+dbgs(df.Char.SignFormat) + LineEnding+
     'Float: '+dbgs(df.Float.UseInherited)+' '+dbgs(df.Float.NumFormat)+' '+dbgs(df.Float.Precission) + LineEnding+
@@ -597,6 +604,7 @@ begin
     (a.Num     = b.Num) and
     (a.Num2    = b.Num2) and
     (a.Enum    = b.Enum) and
+    (a.EnumVal = b.EnumVal) and
     (a.Bool    = b.Bool) and
     (a.Char    = b.Char) and
     (a.Float   = b.Float) and
@@ -608,7 +616,7 @@ end;
 function TWatchDisplayFormat.HasOverrides: boolean;
 begin
   Result := not(Num.UseInherited and Num2.UseInherited and
-                Enum.UseInherited and Bool.UseInherited and Char.UseInherited and
+                Enum.UseInherited and EnumVal.UseInherited and Bool.UseInherited and Char.UseInherited and
                 Float.UseInherited and
                 Struct.UseInherited and Struct.Address.UseInherited and
                 Pointer.UseInherited and Pointer.Address.UseInherited
@@ -620,6 +628,7 @@ begin
   Num.UseInherited             := False;
   Num2.UseInherited            := False;
   Enum.UseInherited            := False;
+  EnumVal.UseInherited         := False;
   Bool.UseInherited            := False;
   Char.UseInherited            := False;
   Float.UseInherited           := False;

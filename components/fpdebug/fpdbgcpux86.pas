@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfBaseTypes, FpDbgClasses, FpdMemoryTools,
-  FpDbgDwarfCFI, FpDbgDwarfDataClasses, FpDbgDisasX86;
+  FpDbgDwarfCFI, FpDbgDwarfDataClasses, FpDbgDisasX86, LazLogger;
 
 type
 
@@ -107,9 +107,9 @@ function TDbgStackUnwinderX86FramePointer.Unwind(AFrameIndex: integer;
   ACurrentFrame: TDbgCallstackEntry; out ANewFrame: TDbgCallstackEntry
   ): TTDbgStackUnwindResult;
 var
-  OutSideFrame: Boolean;
+  OutSideFrame, UnknownOutsideFrame, AfterCallOut, AfterCallIn: Boolean;
   Dummy: QWord;
-  LastFrameBase: TDBGPtr;
+  LastFrameBase, TmpCodePointer: TDBGPtr;
   NewRes: TTDbgStackUnwindResult;
 begin
   ANewFrame := nil;
@@ -122,9 +122,12 @@ begin
     exit;
 
   OutSideFrame := False;
+  UnknownOutsideFrame := False;
+  TmpCodePointer := 0;
   LastFrameBase := FrameBasePointer;
 
   if not Process.Disassembler.GetFunctionFrameInfo(CodePointer, OutSideFrame) then begin
+    UnknownOutsideFrame := True;
     if Process.Disassembler.LastErrorWasMemReadErr then begin
       inc(FCodeReadErrCnt);
       if FCodeReadErrCnt > 5 then // If the code cannot be read the stack pointer is wrong.
@@ -136,9 +139,11 @@ begin
   if (not OutSideFrame) {and (AFrameIndex = 1)} and (ACurrentFrame.ProcSymbol <> nil) then begin
     // the frame must be outside frame, if it is at entrypoint / needed for exceptions
     OutSideFrame := CodePointer = LocToAddrOrNil(ACurrentFrame.ProcSymbol.Address);
+    if OutSideFrame then
+      UnknownOutsideFrame := False;
   end;
 
-  if OutSideFrame then begin
+  if OutSideFrame or UnknownOutsideFrame then begin
     if not Process.ReadData(StackPointer, AddressSize, CodePointer) or (CodePointer = 0) then
       exit;
 
@@ -147,13 +152,30 @@ begin
       NewRes := suGuessed;
     end
     else begin
-      {$PUSH}{$R-}{$Q-}
-      StackPointer := StackPointer + 1 * AddressSize; // After popping return-addr from "StackPointer"
-      if LastFrameBase > 0 then
-        LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
-      {$POP}
-      // last stack has no frame
-      //ACurrentFrame.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',AddressSize, BP);
+      if UnknownOutsideFrame then begin
+        NewRes := suGuessed;
+        if Process.ReadData(FrameBasePointer + AddressSize, AddressSize, TmpCodePointer) and
+          (TmpCodePointer <> 0)
+        then begin
+          AfterCallOut := Process.Disassembler.IsAfterCallInstruction(CodePointer);
+          AfterCallIn := Process.Disassembler.IsAfterCallInstruction(TmpCodePointer);
+          if AfterCallOut = AfterCallIn then
+            OutSideFrame := StackPointer + 1 * AddressSize < FrameBasePointer + 2 * AddressSize
+          else
+            OutSideFrame := AfterCallOut;
+if not OutSideFrame then debugln(['>>>>>>>>>>>> ####### FRAME UNWIND - new code update to better']);
+        end;
+      end;
+
+      if OutSideFrame then begin
+        {$PUSH}{$R-}{$Q-}
+        StackPointer := StackPointer + 1 * AddressSize; // After popping return-addr from "StackPointer"
+        if LastFrameBase > 0 then
+          LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
+        {$POP}
+        // last stack has no frame
+        //ACurrentFrame.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',AddressSize, BP);
+      end;
     end;
   end;
 
@@ -161,8 +183,11 @@ begin
     {$PUSH}{$R-}{$Q-}
     StackPointer := FrameBasePointer + 2 * AddressSize; // After popping return-addr from "FrameBasePointer + AddressSize"
     {$POP}
-    if not Process.ReadData(FrameBasePointer + AddressSize, AddressSize, CodePointer) or (CodePointer = 0) then
-      exit;
+    if TmpCodePointer <> 0 then
+      CodePointer := TmpCodePointer
+    else
+      if not Process.ReadData(FrameBasePointer + AddressSize, AddressSize, CodePointer) or (CodePointer = 0) then
+        exit;
     if not Process.ReadData(FrameBasePointer, AddressSize, FrameBasePointer) then
       exit;
   end;

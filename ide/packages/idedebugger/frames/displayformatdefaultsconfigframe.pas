@@ -166,6 +166,7 @@ begin
   DisplayFormatFrame1.ShowCurrent := False;
   DisplayFormatFrame1.ShowMemDump := False;
   DisplayFormatFrame1.SelectDefaultButton;
+  DisplayFormatFrame1.ShowExtraSettings := True;
   DisplayFormatFrame1.ShowOverrideChecks := FShowOverrideChecks;
 
   btnGlobal.Down  := True;

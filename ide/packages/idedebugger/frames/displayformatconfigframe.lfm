@@ -1472,15 +1472,264 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
   end
-  object PanelFloat: TPanel
+  object PanelEnumVal: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PanelEnum
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 26
+    Height = 42
     Top = 255
+    Width = 592
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Bottom = 4
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 42
+    ClientWidth = 592
+    TabOrder = 9
+    Visible = False
+    object Spacer15: TLabel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 107
+      BorderSpacing.Right = 4
+      Caption = '  '
+      Constraints.MaxHeight = 1
+    end
+    object Spacer16: TLabel
+      Left = 111
+      Height = 1
+      Top = 0
+      Width = 481
+      Caption = '         '
+      Constraints.MaxHeight = 1
+    end
+    object DividerBevelEnumVal: TDividerBevel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 592
+      Align = alTop
+      AutoSize = False
+      BevelWidth = 1
+      BorderSpacing.Bottom = 2
+      CaptionSpacing = 5
+      Font.Height = 2
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      Style = gsHorLines
+    end
+    object cbOverrideEnumVal: TCheckBox
+      AnchorSideLeft.Control = Spacer15
+      AnchorSideTop.Control = DividerBevelEnumVal
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 17
+      Top = 3
+      Width = 18
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnChange = OverrideCheckChanged
+    end
+    object lbOverrideEnumVal: TLabel
+      AnchorSideLeft.Control = cbOverrideEnumVal
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbOverrideEnumVal
+      AnchorSideRight.Control = Spacer15
+      AnchorSideRight.Side = asrBottom
+      Left = 18
+      Height = 15
+      Top = 3
+      Width = 89
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'lbOverrideEnum'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = CheckLabelClicked
+    end
+    object PanelEnumValRb: TPanel
+      AnchorSideLeft.Control = Spacer16
+      AnchorSideTop.Control = DividerBevelEnumVal
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer16
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 19
+      Top = 3
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 19
+      ClientWidth = 481
+      TabOrder = 1
+      object rbEnumValName: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 160
+        AutoSize = False
+        Caption = 'rbEnumName'
+        TabOrder = 0
+        OnChange = FormatRadioChanged
+      end
+      object rbEnumValOrd: TRadioButton
+        Left = 160
+        Height = 19
+        Top = 0
+        Width = 161
+        AutoSize = False
+        Caption = 'rbEnumOrd'
+        TabOrder = 1
+        OnChange = FormatRadioChanged
+      end
+      object rbEnumValNameAndOrd: TRadioButton
+        Left = 321
+        Height = 19
+        Top = 0
+        Width = 160
+        AutoSize = False
+        Caption = 'rbEnumNameAndOrd'
+        TabOrder = 2
+        OnChange = FormatRadioChanged
+      end
+      object rbClear8: TRadioButton
+        AnchorSideBottom.Control = PanelEnumValRb
+        Left = -99
+        Height = 1
+        Top = -1
+        Width = 1
+        Anchors = [akLeft, akBottom]
+        AutoSize = False
+        TabOrder = 3
+      end
+    end
+    object PanelENumValBase: TPanel
+      AnchorSideLeft.Control = Spacer16
+      AnchorSideTop.Control = PanelEnumValRb
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer16
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 20
+      Top = 22
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 6
+      ClientHeight = 20
+      ClientWidth = 481
+      ParentBackground = False
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 2
+      object rbENumValDec: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 80
+        AutoSize = False
+        Caption = 'rbNumDec'
+        ParentColor = False
+        TabOrder = 0
+        OnChange = FormatRadioChanged
+      end
+      object rbENumValHex: TRadioButton
+        Left = 80
+        Height = 19
+        Top = 0
+        Width = 80
+        AutoSize = False
+        Caption = 'rbNumHex'
+        TabOrder = 1
+        OnChange = FormatRadioChanged
+      end
+      object rbENumValOct: TRadioButton
+        Left = 160
+        Height = 19
+        Top = 0
+        Width = 81
+        AutoSize = False
+        Caption = 'rbNumOct'
+        TabOrder = 2
+        OnChange = FormatRadioChanged
+      end
+      object rbENumValBin: TRadioButton
+        Left = 241
+        Height = 19
+        Top = 0
+        Width = 80
+        AutoSize = False
+        Caption = 'rbNumBin'
+        TabOrder = 3
+        OnChange = FormatRadioChanged
+      end
+      object rbENumValChar: TRadioButton
+        Left = 321
+        Height = 19
+        Top = 0
+        Width = 80
+        AutoSize = False
+        BorderSpacing.CellAlignHorizontal = ccaLeftTop
+        Caption = 'rbNumChar'
+        TabOrder = 4
+        OnChange = FormatRadioChanged
+      end
+      object cbEnumValSign: TCheckBox
+        Left = 401
+        Height = 19
+        Top = 0
+        Width = 80
+        Caption = 'cbEnumSign'
+        TabOrder = 5
+      end
+      object lbEnumValBaseSpace: TLabel
+        Left = 0
+        Height = 1
+        Top = 19
+        Width = 80
+        Constraints.MaxHeight = 1
+        Visible = False
+      end
+      object rbClear15: TRadioButton
+        AnchorSideBottom.Control = PanelENumValBase
+        Left = -99
+        Height = 1
+        Top = -1
+        Width = 1
+        Anchors = [akLeft, akBottom]
+        AutoSize = False
+        TabOrder = 6
+      end
+    end
+  end
+  object PanelFloat: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelEnumVal
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 26
+    Top = 301
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1644,7 +1893,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 43
-    Top = 285
+    Top = 331
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1853,7 +2102,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 22
-    Top = 332
+    Top = 378
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1998,7 +2247,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 41
-    Top = 358
+    Top = 404
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2226,7 +2475,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 403
+    Top = 449
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
