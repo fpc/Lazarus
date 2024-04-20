@@ -185,7 +185,7 @@ procedure DebugLnExit (const s1, s2: string; const s3: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
    deprecated 'Use DebugLogger.DebugLnExit instead';
 
-procedure CloseDebugOutput; deprecated 'Use DebugLogger.CloseDebugOutput instead';
+procedure CloseDebugOutput; deprecated 'Use DebugLogger.Finish instead';
 
 function DbgS(const c: cardinal): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
 function DbgS(const i: longint): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
