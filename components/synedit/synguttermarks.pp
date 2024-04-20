@@ -11,11 +11,20 @@ uses
 
 type
 
+  TSynGutterMarksOption = (
+    sgmoDeDuplicateMarks,            // don't show consecutive marks with same icon
+    sgmoDeDuplicateMarksKeepTwo,     // show max 2 consecutive, if not limited by MaxMarksCount
+    sgmoDeDuplicateMarksOnOverflow   // remove consecutive dups, until there are more than MaxMarksCount marks
+  );
+  TSynGutterMarksOptions = set of TSynGutterMarksOption;
+
   { TSynGutterMarks }
 
   TSynGutterMarks = class(TSynGutterPartBase)
   private
     FColumnCount: Integer;
+    FMaxExtraMarksColums: Integer;
+    FOptions: TSynGutterMarksOptions;
     FWantedColumns: integer;
     FColumnWidth: Integer;
     FDebugMarksImageIndex: Integer;
@@ -43,6 +52,9 @@ type
     property ColumnWidth: Integer read FColumnWidth; // initialized in Paint
     property ColumnCount: Integer read FColumnCount;
   published
+    // Max amount of marks show in addition to ColumnCount
+    property MaxExtraMarksColums: Integer read FMaxExtraMarksColums write FMaxExtraMarksColums;
+    property Options: TSynGutterMarksOptions read FOptions write FOptions;
     property MarkupInfoCurrentLine;
   end;
 
@@ -55,6 +67,7 @@ begin
   FInternalImage := nil;
   FDebugMarksImageIndex := -1;
   FNoInternalImage := False;
+  FOptions := [sgmoDeDuplicateMarksOnOverflow];
   inherited Create(AOwner);
 end;
 
@@ -148,10 +161,11 @@ var
   end;
 
 var
-  j, lm, StoredColumnWidth, lx, vcnt: Integer;
+  j, lm, StoredColumnWidth, lx, vcnt, VCntU, VCnt2, k2cnt, del3cnt: Integer;
   MLine: TSynEditMarkLine;
   MarkRect: TRect;
   iRange: TLineRange;
+  prev_iidx, pprev_iidx: LongInt;
 begin
   Result := False;
   aFirstCustomColumnIdx := 0;
@@ -173,13 +187,48 @@ begin
     MLine.Sort(smsoBookMarkLast, smsoPriority);
 
   vcnt := MLine.VisibleCount;
-//  if (vcnt >= ColumnCount) then
-  aFirstCustomColumnIdx := 0;
 
+  if (FOptions * [sgmoDeDuplicateMarks, sgmoDeDuplicateMarksKeepTwo] <> []) or
+     ((sgmoDeDuplicateMarksOnOverflow in FOptions) and (vcnt > ColumnCount))
+  then begin
+    VCntU := 1;
+    VCnt2 := 0;
+    for j := 1 to MLine.Count - 1 do
+      if MLine[j].ImageIndex <> MLine[j-1].ImageIndex then
+        inc(VCntU)  // Uniq
+      else
+      if (j=1) or (MLine[j].ImageIndex <> MLine[j-2].ImageIndex) then
+        inc(VCnt2); // sgmoDeDuplicateMarksKeepTwo
+
+    if (sgmoDeDuplicateMarks in FOptions) then begin
+      vcnt := Min(vcntU, ColumnCount + MaxExtraMarksColums);
+      k2cnt := 0;
+    end
+    else
+    if (sgmoDeDuplicateMarksKeepTwo in FOptions) then begin
+      k2cnt := Min(VCnt2, Max(0, ColumnCount + MaxExtraMarksColums - vcntU));
+      vcnt := Min(vcntU+k2cnt, ColumnCount + MaxExtraMarksColums);
+    end
+    else begin
+      // only dedup for MaxExtraMarksColums
+      k2cnt := Min(VCnt2, Max(0, ColumnCount + MaxExtraMarksColums - vcntU));
+      vcnt := Min(vcntU+k2cnt, ColumnCount + MaxExtraMarksColums);
+    end;
+    del3cnt := MLine.VisibleCount - vcnt;
+  end
+  else begin
+    vcnt := Min(vcnt, ColumnCount + MaxExtraMarksColums);
+    k2cnt := MaxInt; // keep duplicate if exactly 2nd
+    del3cnt := 0;    // del 3rd or later
+  end;
+
+  aFirstCustomColumnIdx := 0;
   LineHeight := SynEdit.LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   lm := LeftMarginAtCurrentPPI;
   StoredColumnWidth := FColumnWidth;
+  prev_iidx := low(integer);
+  pprev_iidx := low(integer);
   try
     lx := 0;
     if vcnt > ColumnCount then begin
@@ -208,12 +257,28 @@ begin
         inc(aFirstCustomColumnIdx);
       end;
 
+      if MLine[j].ImageIndex = prev_iidx then begin
+        if (MLine[j].ImageIndex = pprev_iidx) and (del3cnt > 0) then begin
+          dec(del3cnt);
+          continue;
+        end;
+        if k2cnt = 0 then
+          Continue;
+        dec(k2cnt);
+      end;
+
       DoPaintMark(MLine[j], MarkRect);
       MarkRect.Left := MarkRect.Right;
       MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
 
       Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
       inc(aFirstCustomColumnIdx);
+
+      if aFirstCustomColumnIdx > ColumnCount + MaxExtraMarksColums then
+        break;
+
+      pprev_iidx := prev_iidx;
+      prev_iidx := MLine[j].ImageIndex;
     end;
   finally
     FColumnWidth := StoredColumnWidth;

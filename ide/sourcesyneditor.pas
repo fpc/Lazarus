@@ -454,6 +454,7 @@ type
     function GetImgListRes(const ACanvas: TCanvas;
       const AImages: TCustomImageList): TScaledImageListResolution; override;
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginSetDebugMarks;
     procedure EndSetDebugMarks;
@@ -2332,7 +2333,7 @@ var
         iTop := (LineHeight - img.Height) div 2;
 
       img.Draw
-        (Canvas, AClip.Left + LeftMarginAtCurrentPPI + aGutterOffs * ColumnWidth,
+        (Canvas, AClip.Left + LeftMarginAtCurrentPPI + (ColumnCount-1) * ColumnWidth,
          AClip.Top + iTop, DebugMarksImageIndex, True);
     end
   end;
@@ -2347,7 +2348,7 @@ begin
     exit;
   if (TxtIdx < 0) or (TxtIdx >= TSynEdit(SynEdit).Lines.Count) then
     exit;
-  if (not HasAnyMark) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
+  if (aGutterOffs < ColumnCount) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
      (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
   then
     DrawDebugMark(aScreenLine);
@@ -2447,6 +2448,13 @@ begin
   if ACanvas is TControlCanvas then
     Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor;
   Result := AImages.ResolutionForPPI[ImageHeight, PPI, Scale];
+end;
+
+constructor TIDESynGutterMarks.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Options := [sgmoDeDuplicateMarksOnOverflow, sgmoDeDuplicateMarksKeepTwo];
+  MaxExtraMarksColums := 3;
 end;
 
 procedure TIDESynGutterMarks.SetDebugMarks(AFirstLinePos, ALastLinePos: Integer);
