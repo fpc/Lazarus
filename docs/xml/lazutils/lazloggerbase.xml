@@ -273,7 +273,7 @@ Indicates the destination where output from a logger is written or stored.
 <short>Logger output is written to a text file.</short>
 </element>
 
-<element name="LazLoggerWriteExEventInfo">
+<element name="TLazLoggerWriteExEventInfo">
 <short>
 Contains extended information for a write event in a logger.
 </short>
@@ -283,7 +283,7 @@ Passed as an argument to a TLazLoggerWriteExEvent handler routine.
 </p>
 </descr>
 <version>
-Added in LazUtils version 3.0.
+Added in LazUtils version 3.0. LogText member added in Lazarus version 4.0.
 </version>
 <seealso>
 <link id="TLazLoggerWriteExEvent"/>
@@ -299,6 +299,12 @@ Remember the nesting level count if there is a single group.
 <element name="TLazLoggerWriteExEventInfo.DbgOutAtBOL">
 <short>
 Only for DbgOut. <b>True</b> if the first segment in a new line.
+</short>
+</element>
+<element name="TLazLoggerWriteExEventInfo.LogText">
+<short>
+Contains a pointer to the Text type where extended logging information is 
+written.
 </short>
 </element>
 
