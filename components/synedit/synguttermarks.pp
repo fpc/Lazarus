@@ -145,6 +145,9 @@ var
   iRange: TLineRange;
 begin
   Result := False;
+  aFirstCustomColumnIdx := 0;
+  if FBookMarkOpt.DrawBookmarksFirst then
+    aFirstCustomColumnIdx := 1;
   aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
   j := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
   if aScreenLine <> iRange.Top then
@@ -159,10 +162,6 @@ begin
     MLine.Sort(smsoBookmarkFirst, smsoPriority)
   else
     MLine.Sort(smsoBookMarkLast, smsoPriority);
-
-  aFirstCustomColumnIdx := 0;
-  if (FBookMarkOpt.DrawBookmarksFirst) and (MLine.Count < ColumnCount) then
-    aFirstCustomColumnIdx := 1;
 
   LineHeight := SynEdit.LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
@@ -181,7 +180,7 @@ begin
       continue;
 
     if (MLine[j].IsBookmark <> LastMarkIsBookmark) and
-       (j = 0) and (aFirstCustomColumnIdx >= 1)
+       (j = 0) and (FColumnCount > 1)
     then begin
       // leave one column empty
       MarkRect.Left := MarkRect.Right;
