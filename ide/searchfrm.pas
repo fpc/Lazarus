@@ -530,6 +530,7 @@ var
   NewMatchStartPos: PtrInt;
   NewMatchEndPos: PtrInt;
   lCaseMismatchCheckCompleted: Boolean;
+  p1, p2: PChar;
   i, l, n1, n2: Integer;
 begin
   //debugln(['SearchInText TheFileName=',TheFileName,' SearchFor=',SearchFor,'" ReplaceText=',ReplaceText,'"']);
@@ -637,14 +638,21 @@ begin
             n1 := length(OriginalFile.Source);
             n2 := length(CaseFile.Source);
 
+            // length check has been done above
+            p1 := @OriginalFile.Source[1];
+            p2 := @CaseFile.Source[1];
+
             l := n1; // assumed n1=n2
             i := 1;
             while (n1 = n2) and (i <= l) do
             begin
               // length of characters in bytes
-              n1 := UTF8CodepointSize(@OriginalFile.Source[i]);
-              n2 := UTF8CodepointSize(@CaseFile.Source[i]);
-              inc(i, n1); // assumed n1=n2
+              n1 := UTF8CodepointSizeFast(p1);
+              n2 := UTF8CodepointSizeFast(p2);
+              // assumed n1=n2
+              inc(p1, n1);
+              inc(p2, n1);
+              inc(i, n1);
             end;
 
             if n1 <> n2 then
