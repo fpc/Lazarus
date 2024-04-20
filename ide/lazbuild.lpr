@@ -24,7 +24,10 @@ program lazbuild;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF unix}
+  {$IF defined(HASAMIGA)}
+  athreads,
+  {$ENDIF}
+  {$IF defined(UNIX)}
   cthreads,
   {$ENDIF}
   Classes, SysUtils, Math, CustApp, System.UITypes,

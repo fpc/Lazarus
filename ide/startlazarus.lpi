@@ -32,12 +32,12 @@
         </Mode0>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="IdeConfig"/>
+        <PackageName Value="IdePackager"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="IdeConfig"/>
       </Item2>
       <Item3>
         <PackageName Value="IDEIntf"/>
@@ -45,9 +45,6 @@
       <Item4>
         <PackageName Value="CodeTools"/>
       </Item4>
-      <Item5>
-        <PackageName Value="LCL"/>
-      </Item5>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>

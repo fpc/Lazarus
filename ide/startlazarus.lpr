@@ -31,6 +31,12 @@ program StartLazarus;
 {$mode objfpc}{$H+}
 
 uses
+  {$IF defined(HASAMIGA)}
+  athreads,
+  {$ENDIF}
+  {$IF defined(UNIX)}
+  cthreads,
+  {$ENDIF}
   redirect_stderr,
   Interfaces, SysUtils,
   Forms,
