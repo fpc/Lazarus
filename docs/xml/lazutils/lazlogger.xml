@@ -54,7 +54,6 @@ setup.
 <element name="LazFileUtils"/>
 <element name="LazStringUtils"/>
 <element name="LazUTF8"/>
-<element name="laztty"/>
 
 <element name="PLazLoggerLogGroup">
 <short>
@@ -918,10 +917,7 @@ output handle, no additional actions are performed in the method.
 </p>
 <p>
 The RTL WriteLn routine is called to write the value in S to the output 
-handle for the TextRec. The Colorize routine <file>LazTTY</file> is called to 
-colrize keywords in S when the facility is supported for the platform and 
-output device. See <link id="#lazutils.laztty.Colorize">Colorize</link> 
-for more information.
+handle for the TextRec.
 </p>
 <p>
 When CloseLogFileBetweenWrites is set to <b>True</b>, the output handle is 
@@ -933,13 +929,7 @@ values in WriteFailedCount and LastWriteFailed are updated to reflect the
 error condition.
 </p>
 </descr>
-<version>
-Modified in LazUtils version 4.0 to add colorization of keywords on supported 
-platforms and output devices.
-</version>
-<seealso>
-<link id="#lazutils.laztty.Colorize">Colorize</link>
-</seealso>
+<seealso/>
 </element>
 <element name="TLazLoggerFileHandle.WriteLnToFile.s">
 <short>Log message written in the method.</short>
