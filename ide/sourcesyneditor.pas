@@ -2427,6 +2427,8 @@ begin
       if LineHeight > 11 then
         LineHeight := LineHeight - 1;
     end;
+    if (LineHeight > ColumnWidth + 1) and (ColumnWidth > 0) then
+      LineHeight := ColumnWidth + (LineHeight - ColumnWidth) div 2;
     ImageHeight := AllowedHeights[0];
     for I := High(AllowedHeights) downto Low(AllowedHeights) do
       if AllowedHeights[I] <= LineHeight then

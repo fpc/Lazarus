@@ -5,7 +5,7 @@ unit SynGutterMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, Controls, ImgList,
+  Classes, SysUtils, Graphics, LCLType, LCLIntf, Controls, ImgList, FPCanvas,
   SynGutterBase, SynEditMiscClasses, SynEditMarks, LazSynEditText,
   SynEditMiscProcs;
 
@@ -148,7 +148,7 @@ var
   end;
 
 var
-  j, lm: Integer;
+  j, lm, StoredColumnWidth, lx: Integer;
   MLine: TSynEditMarkLine;
   MarkRect: TRect;
   LastMarkIsBookmark: Boolean;
@@ -177,39 +177,50 @@ begin
   LineHeight := SynEdit.LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   lm := LeftMarginAtCurrentPPI;
-  MarkRect := Rect(AClip.Left + lm,
-                   AClip.Top,
-                   AClip.Left + lm + FColumnWidth,
-                   AClip.Top + LineHeight);
+  StoredColumnWidth := FColumnWidth;
+  try
+    lx := 0;
+    if MLine.Count > ColumnCount then begin
+      lx := FColumnWidth;
+      FColumnWidth := Min(lx, Max(2, (Width + MLine.Count - 1) div MLine.Count));
+      lx := (lx - FColumnWidth - 1) div 2;
+    end;
+    MarkRect := Rect(AClip.Left + lm - lx,
+                     AClip.Top,
+                     AClip.Left + lm - lx + FColumnWidth,
+                     AClip.Top + LineHeight);
 
 
-  LastMarkIsBookmark := FBookMarkOpt.DrawBookmarksFirst;
-  for j := 0 to MLine.Count - 1 do begin
-    if (not MLine[j].Visible) or
-       (MLine[j].IsBookmark and (not FBookMarkOpt.GlyphsVisible))
-    then
-      continue;
+    LastMarkIsBookmark := FBookMarkOpt.DrawBookmarksFirst;
+    for j := 0 to MLine.Count - 1 do begin
+      if (not MLine[j].Visible) or
+         (MLine[j].IsBookmark and (not FBookMarkOpt.GlyphsVisible))
+      then
+        continue;
 
-    if (MLine[j].IsBookmark <> LastMarkIsBookmark) and
-       (j = 0) and (aFirstCustomColumnIdx >= 1)
-    then begin
-      // leave one column empty
+      if (MLine[j].IsBookmark <> LastMarkIsBookmark) and
+         (j = 0) and (aFirstCustomColumnIdx >= 1)
+      then begin
+        // leave one column empty
+        MarkRect.Left := MarkRect.Right;
+        MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
+      end;
+
+      DoPaintMark(MLine[j], MarkRect);
       MarkRect.Left := MarkRect.Right;
       MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
+
+      Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
+      if (MLine[j].IsBookmark <> LastMarkIsBookmark)  and
+         (not MLine[j].IsBookmark) and (j > 0)
+      then
+        aFirstCustomColumnIdx := j; // first none-bookmark column
+
+      //if j >= ColumnCount then break;
+      LastMarkIsBookmark := MLine[j].IsBookmark;
     end;
-
-    DoPaintMark(MLine[j], MarkRect);
-    MarkRect.Left := MarkRect.Right;
-    MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
-
-    Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
-    if (MLine[j].IsBookmark <> LastMarkIsBookmark)  and
-       (not MLine[j].IsBookmark) and (j > 0)
-    then
-      aFirstCustomColumnIdx := j; // first none-bookmark column
-
-    if j >= ColumnCount then break;
-    LastMarkIsBookmark := MLine[j].IsBookmark;
+  finally
+    FColumnWidth := StoredColumnWidth;
   end;
 end;
 
@@ -225,7 +236,8 @@ procedure TSynGutterMarks.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, Last
 var
   i: integer;
   LineHeight: Integer;
-  rcLine: TRect;
+  rcLine, clpr: TRect;
+  clp: Boolean;
 begin
   if not Visible then exit;
   PaintBackground(Canvas, AClip);
@@ -239,15 +251,25 @@ begin
   else
     FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
 
-  rcLine := AClip;
-  rcLine.Bottom := rcLine.Top;
   if FBookMarkOpt.GlyphsVisible and (LastLine >= FirstLine) then
   begin
-    LineHeight := SynEdit.LineHeight;
-    for i := FirstLine to LastLine do begin
-      rcLine.Top := rcLine.Bottom;
-      rcLine.Bottom := Min(AClip.Bottom, rcLine.Top + LineHeight);
-      PaintLine(i, Canvas, rcLine);
+    clp  := Canvas.Clipping;
+    clpr := Canvas.ClipRect;
+    try
+      rcLine := AClip;
+      Canvas.ClipRect := rcLine;
+      Canvas.Clipping := True;
+      LineHeight := SynEdit.LineHeight;
+      rcLine := AClip;
+      rcLine.Bottom := rcLine.Top;
+      for i := FirstLine to LastLine do begin
+        rcLine.Top := rcLine.Bottom;
+        rcLine.Bottom := Min(AClip.Bottom, rcLine.Top + LineHeight);
+        PaintLine(i, Canvas, rcLine);
+      end;
+    finally
+      Canvas.ClipRect := clpr;
+      Canvas.Clipping := clp;
     end;
   end;
 end;
