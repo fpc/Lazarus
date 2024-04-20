@@ -81,7 +81,8 @@ uses
     OnlinePackageManager,
     SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn, charactermap_ide_pkg,
   {$ENDIF}
-  MainBase;
+  MainBase,
+  ColorTTY;
 
 {$I revision.inc}
 {$R lazarus.res}

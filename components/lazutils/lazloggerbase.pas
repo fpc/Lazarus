@@ -55,6 +55,7 @@ type
   TLazLoggerWriteExEventInfo = record
     Group: PLazLoggerLogGroup; // if only one group / remember nestlevel count
     DbgOutAtBOL: Boolean;      // Only for DbgOut, True if first segment in new line
+    LogText: PText;
   end;
 
   TLazLoggerWriteEvent = procedure(Sender: TObject; S: string; var Handled: Boolean) of object;

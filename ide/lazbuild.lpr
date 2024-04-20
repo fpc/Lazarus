@@ -50,7 +50,8 @@ uses
   InitialSetupProc, ExtToolsConsole, ApplicationBundle,
   IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
-  BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
+  BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts,
+  ColorTTY;
 
 type
   TPkgAction = (
@@ -1859,7 +1860,7 @@ end;
 procedure TLazBuildApplication.PrintErrorAndHalt(Code: Byte; const Msg: string);
 begin
   if Msg <> '' then
-    writeln('Error: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
+    debugln('Error: (lazbuild) ', LineBreaksToSystemLineBreaks(Msg));
   halt(Code);
 end;
 

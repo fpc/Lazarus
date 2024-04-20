@@ -1,5 +1,6 @@
 {
-    This is copied from Free Pascal Compiler source files comptty.pas and comphook.pas.
+    * This is copied from the Free Pascal Compiler source file comptty.pas
+
     Copyright (c) 2020 by the Free Pascal development team
 
     This unit contains platform-specific code for checking TTY output
@@ -37,11 +38,6 @@ const
   TTYCheckSupported = false;
 {$endif defined(linux) or defined(MSWINDOWS) or defined(OS2) or defined(GO32V2) or defined(WATCOM) or defined(DARWIN)}
 
-type
-  TOutputColor = (oc_black,oc_red,oc_green,oc_orange,og_blue,oc_magenta,oc_cyan,oc_lightgray);
-
-procedure WriteColoredOutput(var t: Text;color: TOutputColor;const s : AnsiString);
-function Colorize(const s : AnsiString):AnsiString;
 
 implementation
 
@@ -174,75 +170,5 @@ begin
     end;
   Result:=IsATTYValue;
 end;
-
-function open_esc(color: TOutputColor):ansistring;
-begin
-   case color of
-   oc_black:
-     Result:=#27'[1m'#27'[30m';
-   oc_red:
-     Result:=#27'[1m'#27'[31m';
-   oc_green:
-     Result:=#27'[1m'#27'[32m';
-   oc_orange:
-     Result:=#27'[1m'#27'[33m';
-   og_blue:
-     Result:=#27'[1m'#27'[34m';
-   oc_magenta:
-     Result:=#27'[1m'#27'[35m';
-   oc_cyan:
-     Result:=#27'[1m'#27'[36m';
-   oc_lightgray:
-     Result:=#27'[1m'#27'[37m';
-   end;
-end;
-
-type tkeyword=record
-    t:pchar;
-    c:TOutputColor;
- end;
-
-const terms:array[0..6] of tkeyword =
-(
-  (t:'Note:';c:oc_orange),
-  (t:'Hint:';c:oc_lightgray),
-  (t:'Warning:';c:oc_magenta),
-  (t:'Error:';c:oc_red),
-  (t:'(lazbuild)';c:oc_lightgray),
-  (t:'(lazarus)';c:oc_cyan),
-  (t:'gtk2';c:oc_green)
-);
-
-function Colorize(const s : AnsiString):AnsiString;
-var
-  i,p,ll:integer;
-  color:ToutputColor;
-  p1,p2,p3:ansistring;
-begin
-  for i:=0 to high(terms) do
-  begin
-    p:=pos(terms[i].t,s);
-    if p<=0 then continue;
-    ll:=length(terms[i].t);
-    p1:=copy(s,1,p-1);
-    p2:=copy(s,p,ll);
-    p3:=copy(s,p+ll,length(s));
-    Result:=p1+
-       open_esc(terms[i].c)+p2+#27'[0m'+
-       p3;
-    exit;
-  end;
-  Result:=s;
-end;
-
-procedure WriteColoredOutput(var t: Text;color: TOutputColor;const s : AnsiString);
-begin
-   if TTYCheckSupported and IsATTY(t) then
-       write(t,open_esc(color));
-  write(t,s);
-  if TTYCheckSupported and IsATTY(t) then
-    write(t,#27'[0m');
-end;
-
 
 end.
