@@ -148,13 +148,15 @@ var
   end;
 
 var
-  j, lm, StoredColumnWidth, lx: Integer;
+  j, lm, StoredColumnWidth, lx, vcnt: Integer;
   MLine: TSynEditMarkLine;
   MarkRect: TRect;
-  LastMarkIsBookmark: Boolean;
   iRange: TLineRange;
 begin
   Result := False;
+  aFirstCustomColumnIdx := 0;
+  if (FBookMarkOpt.DrawBookmarksFirst) then
+    aFirstCustomColumnIdx := 1;
   aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
   j := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
   if aScreenLine <> iRange.Top then
@@ -170,9 +172,9 @@ begin
   else
     MLine.Sort(smsoBookMarkLast, smsoPriority);
 
+  vcnt := MLine.VisibleCount;
+//  if (vcnt >= ColumnCount) then
   aFirstCustomColumnIdx := 0;
-  if (FBookMarkOpt.DrawBookmarksFirst) and (MLine.Count < ColumnCount) then
-    aFirstCustomColumnIdx := 1;
 
   LineHeight := SynEdit.LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
@@ -180,9 +182,9 @@ begin
   StoredColumnWidth := FColumnWidth;
   try
     lx := 0;
-    if MLine.Count > ColumnCount then begin
+    if vcnt > ColumnCount then begin
       lx := FColumnWidth;
-      FColumnWidth := Min(lx, Max(2, (Width + MLine.Count - 1) div MLine.Count));
+      FColumnWidth := Min(lx, Max(2, (Width + vcnt - 1) div vcnt));
       lx := (lx - FColumnWidth - 1) div 2;
     end;
     MarkRect := Rect(AClip.Left + lm - lx,
@@ -191,19 +193,19 @@ begin
                      AClip.Top + LineHeight);
 
 
-    LastMarkIsBookmark := FBookMarkOpt.DrawBookmarksFirst;
     for j := 0 to MLine.Count - 1 do begin
       if (not MLine[j].Visible) or
          (MLine[j].IsBookmark and (not FBookMarkOpt.GlyphsVisible))
       then
         continue;
 
-      if (MLine[j].IsBookmark <> LastMarkIsBookmark) and
-         (j = 0) and (aFirstCustomColumnIdx >= 1)
+      if (j = 0) and FBookMarkOpt.DrawBookmarksFirst and
+         (vcnt < ColumnCount) and (not MLine[j].IsBookmark)
       then begin
         // leave one column empty
         MarkRect.Left := MarkRect.Right;
         MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
+        inc(aFirstCustomColumnIdx);
       end;
 
       DoPaintMark(MLine[j], MarkRect);
@@ -211,13 +213,7 @@ begin
       MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
 
       Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
-      if (MLine[j].IsBookmark <> LastMarkIsBookmark)  and
-         (not MLine[j].IsBookmark) and (j > 0)
-      then
-        aFirstCustomColumnIdx := j; // first none-bookmark column
-
-      //if j >= ColumnCount then break;
-      LastMarkIsBookmark := MLine[j].IsBookmark;
+      inc(aFirstCustomColumnIdx);
     end;
   finally
     FColumnWidth := StoredColumnWidth;

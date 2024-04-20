@@ -143,6 +143,7 @@ type
     function  Remove(Item: TSynEditMark): Integer;
     procedure Clear(FreeMarks: Boolean = False);
     function  Count: Integer;
+    function  VisibleCount: Integer;
     function  IndexOf(AMark: TSynEditMark): Integer;
     property  Items[Index: Integer]: TSynEditMark read GetMark write SetMark; default;
     property  LineNum: Integer read GetLineNum;
@@ -666,6 +667,16 @@ end;
 function TSynEditMarkLine.Count: Integer;
 begin
   Result := FMarks.Count;
+end;
+
+function TSynEditMarkLine.VisibleCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to FMarks.Count - 1 do
+    if Items[i].Visible then
+      inc(Result);
 end;
 
 function TSynEditMarkLine.IndexOf(AMark: TSynEditMark): Integer;
