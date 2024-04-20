@@ -36,7 +36,7 @@ uses
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
   LazUTF8, Laz2_XMLCfg, LazStringUtils, FPCAdds,
   // LCL
-  LCLPlatformDef, Forms,
+  LCLPlatformDef,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // BuildIntf
@@ -1870,8 +1870,6 @@ begin
 
   HasGUI:=false;
   FilterConfigFileContent;
-  // free LCL Application to help debugging nogui issues
-  Application.Free;
   // start our own LazBuildApp
   LazBuildApp:=TLazBuildApplication.Create(nil);
   LazBuildApp.Run;
