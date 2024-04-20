@@ -20,7 +20,9 @@ uses
   // LCL
   Forms,
   // LazUtils
-  IDEExternToolIntf, LazLoggerBase,
+  LazLoggerBase,
+  // BuildIntf
+  IDEExternToolIntf,
   // IdeIntf
   MenuIntf;
 

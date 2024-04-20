@@ -143,6 +143,9 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const AUnitName, Directory: string;
                                       var Filename: string);
+    function ShowMessageHandler(aUrgency: TMessageLineUrgency;
+                         aMsg, aSrcFilename: string; aLineNumber, aColumn: integer;
+                         aViewCaption: string): TMessageLine;
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
@@ -172,8 +175,7 @@ type
                                 Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
-    function PackageGraphSrcEditFileIsModified(const SrcFilename: string
-      ): boolean;
+    function PackageGraphSrcEditFileIsModified(const SrcFilename: string): boolean;
   public
     // component palette
     procedure IDEComponentPaletteOpenPackage(Sender: TObject); override;
@@ -1041,6 +1043,14 @@ begin
     RaiseGDBException(Directory);
   //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
   Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory, AUnitName);
+end;
+
+function TPkgManager.ShowMessageHandler(aUrgency: TMessageLineUrgency;
+  aMsg, aSrcFilename: string; aLineNumber, aColumn: integer; aViewCaption: string
+  ): TMessageLine;
+begin
+  Assert(Assigned(IDEMessagesWindow), 'TPkgManager.ShowMessageHandler: IDEMessagesWindow=Nil');
+  IDEMessagesWindow.AddCustomMessage(aUrgency, aMsg, aSrcFilename, aLineNumber, aColumn, aViewCaption);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
@@ -2898,6 +2908,7 @@ begin
   PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
   PackageGraph.OnSrcEditFileIsModified:=@PackageGraphSrcEditFileIsModified;
+  PackageGraph.OnShowMessage:=@ShowMessageHandler;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;

@@ -7134,9 +7134,8 @@ begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] SaveStateFile before compile failed']);
           exit;
         end;
-
-        WarnSuspiciousCompilerOptions('Project checks','',CompilerParams);
-
+        // Use PackageGraph method also for project compiler options.
+        PackageGraph.WarnSuspiciousCompilerOptions('Project checks','',CompilerParams);
         StartTime:=Now;
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CmdLineParams,
