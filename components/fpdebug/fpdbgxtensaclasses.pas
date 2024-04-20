@@ -436,11 +436,12 @@ const
 var
   Address, returnAddress: TDBGPtr;
   callSize: byte;
-  j, k, stackRegCount: integer;
+  j, k, stackRegCount, numRegsRead: integer;
   spilled: boolean;
   stackRegs: array of TDBGPtr;
   tmpReg: uint32;
   LastFrameBase: TDBGPtr;
+  regName: string;
 begin
   ANewFrame := nil;
   Result := suFailed;
@@ -476,12 +477,14 @@ begin
   begin
     // Live registers, read from register file
     j := ((4*FWindowBase) and 63);
+    numRegsRead := stackRegCount;
     for k := 0 to stackRegCount-1 do
       stackRegs[k] := TDbgRspThread(Thread).InternalRegs.regs[((j+k) and 63)+1];  // wraparound indexing
   end
   else
   begin
     // Registers spilled to stack, read from memory
+    numRegsRead := 0;
     for j := 0 to callSize-1 do
     begin
       for k := 0 to 3 do
@@ -497,6 +500,7 @@ begin
             Break;
         end;
         stackRegs[4*j + k] := NtoLE(tmpReg);
+        inc(numRegsRead);
       end;
     end;
   end;
@@ -506,13 +510,13 @@ begin
   FrameBasePointer := StackPointer;
 
   ANewFrame:= TDbgCallstackEntry.create(Thread, AFrameIndex, FrameBasePointer, Address);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCIndexDwarf);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nReturnPC].SetValue(returnAddress, IntToStr(returnAddress),Size, ReturnPCIndexDwarf);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPointer, IntToStr(StackPointer),Size, SPindexDwarf);
-  // In case a7 is used as frame pointer
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate['a7'].SetValue(byte(FrameBasePointer), IntToStr(byte(FrameBasePointer)),Size, 7);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nWindowBase].SetValue(FWindowBase, IntToStr(FWindowBase), 1, WindowBaseIndex);
-  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nWindowStart].SetValue(FWindowStart, IntToStr(FWindowStart), 2 , WindowStartIndex);
+  ANewFrame.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address), Size, PCIndexDwarf);
+  for j := 0 to numRegsRead-1 do
+  begin
+    regName := 'a' + IntToStr(j);
+    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[regName].SetValue(stackRegs[j],
+      IntToStr(stackRegs[j]), Size, j);
+  end;
 
   FLastFrameBaseIncreased := (FrameBasePointer <> 0) and (FrameBasePointer > LastFrameBase);
   Result := suSuccess;
