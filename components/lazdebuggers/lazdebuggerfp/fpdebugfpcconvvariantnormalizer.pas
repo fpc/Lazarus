@@ -227,8 +227,14 @@ begin
     try
       i := vtype.AsInteger;
       case i of
-           0: AnResData.CreatePrePrinted('<Empty>');
-           1: AnResData.CreatePrePrinted('<Null>');
+           0: begin
+               AnResData.CreatePrePrinted('<Empty>');
+               exit;
+             end;
+           1: begin
+               AnResData.CreatePrePrinted('<Null>');
+               exit;
+             end;
            2: Result := ASourceValue.MemberByName['VSMALLINT'];
            3: Result := ASourceValue.MemberByName['VINTEGER'];
            4: Result := ASourceValue.MemberByName['VSINGLE'];
