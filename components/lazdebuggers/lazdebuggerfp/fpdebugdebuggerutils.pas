@@ -32,7 +32,7 @@ interface
 uses
   FpDbgUtil, FpdMemoryTools, FpPascalParser, FpErrorMessages,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
-  DbgIntfDebuggerBase, sysutils, Classes, syncobjs, Forms, FpDebugStringConstants;
+  DbgIntfDebuggerBase, sysutils, Classes, Math, syncobjs, Forms, FpDebugStringConstants;
 
 type
 
@@ -106,6 +106,7 @@ type
   TFpDebugDebuggerProperties = class(TCommonDebuggerProperties)
   private
     FAutoDeref: Boolean;
+    FBreakpointSearchMaxLines: integer;
     FConsoleTty: string;
     {$ifdef windows}
     FForceNewConsole: boolean;
@@ -114,6 +115,7 @@ type
     FIntrinsicPrefix: TFpIntrinsicPrefix;
     FMemLimits: TFpDebugDebuggerPropertiesMemLimits;
     FNextOnlyStopOnStartLine: boolean;
+    procedure SetBreakpointSearchMaxLines(AValue: integer);
     procedure SetMemLimits(AValue: TFpDebugDebuggerPropertiesMemLimits);
   public
     constructor Create; override;
@@ -133,6 +135,7 @@ type
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
     property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
     property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
+    property BreakpointSearchMaxLines: integer read FBreakpointSearchMaxLines write SetBreakpointSearchMaxLines default 3;
     property InternalExceptionBreakPoints;
   end;
 
@@ -401,6 +404,13 @@ begin
   FMemLimits.Assign(AValue);
 end;
 
+procedure TFpDebugDebuggerProperties.SetBreakpointSearchMaxLines(AValue: integer);
+begin
+  AValue := Max(0, Min(25, AValue));
+  if FBreakpointSearchMaxLines = AValue then Exit;
+  FBreakpointSearchMaxLines := AValue;
+end;
+
 constructor TFpDebugDebuggerProperties.Create;
 begin
   inherited Create;
@@ -412,6 +422,7 @@ begin
   FHandleDebugBreakInstruction := [dboIgnoreAll];
   FIntrinsicPrefix := ipColon;
   FAutoDeref := False;
+  FBreakpointSearchMaxLines := 3;
 end;
 
 destructor TFpDebugDebuggerProperties.Destroy;
@@ -433,6 +444,7 @@ begin
     FHandleDebugBreakInstruction:=TFpDebugDebuggerProperties(Source).FHandleDebugBreakInstruction;
     FIntrinsicPrefix:=TFpDebugDebuggerProperties(Source).FIntrinsicPrefix;
     FAutoDeref:=TFpDebugDebuggerProperties(Source).FAutoDeref;
+    FBreakpointSearchMaxLines:=TFpDebugDebuggerProperties(Source).FBreakpointSearchMaxLines;
   end;
 end;
 

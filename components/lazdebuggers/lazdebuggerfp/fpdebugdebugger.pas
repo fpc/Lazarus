@@ -4097,6 +4097,8 @@ begin
     FDbgController.CurrentProcess.Config.StdErrRedirFile     := FileNameStdErr;
     FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
 
+    FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
+
     FDbgController.AttachToPid := 0;
     if ACommand = dcAttach then begin
       FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);

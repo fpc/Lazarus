@@ -654,7 +654,8 @@ type
     procedure UpdateState; override;
     procedure UpdateForLibraryLoaded(ALib: TDbgLibrary); override;
   public
-    constructor Create(const AProcess: TDbgProcess; const AFileName: String; ALine: Cardinal; AnEnabled: Boolean; ASymInstance: TDbgInstance = nil); virtual;
+    constructor Create(const AProcess: TDbgProcess; const AFileName: String; ALine: Cardinal;
+      AnEnabled: Boolean; ASymInstance: TDbgInstance = nil); virtual;
   end;
 
   { TFpInternalWatchpoint }
@@ -693,6 +694,7 @@ type
 
   TDbgConfig = class
   private
+    FBreakpointSearchMaxLines: integer;
     // WindowBounds
     FUseConsoleWinPos: boolean;
     FUseConsoleWinSize: boolean;
@@ -722,6 +724,8 @@ type
     property FileOverwriteStdIn:  Boolean read FFileOverwriteStdIn  write FFileOverwriteStdIn;
     property FileOverwriteStdOut: Boolean read FFileOverwriteStdOut write FFileOverwriteStdOut;
     property FileOverwriteStdErr: Boolean read FFileOverwriteStdErr write FFileOverwriteStdErr;
+    // Breakpoints
+    property BreakpointSearchMaxLines: integer read FBreakpointSearchMaxLines  write FBreakpointSearchMaxLines;
   end;
 
   { TDbgInstance }
@@ -739,7 +743,8 @@ type
     function GetOSDbgClasses: TOSDbgClasses;
     function GetPointerSize: Integer;
 
-    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AMaxSiblingDistance: integer = 0): Boolean;
     function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
   protected
@@ -941,7 +946,8 @@ type
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
     function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
-    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance = nil): Boolean;
+    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance = nil;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AMaxSiblingDistance: integer = 0): Boolean;
     //function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LibMap: TLibraryMap read FLibMap;
@@ -2230,12 +2236,14 @@ begin
   inherited;
 end;
 
-function TDbgInstance.GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+function TDbgInstance.GetLineAddresses(AFileName: String; ALine: Cardinal;
+  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling;
+  AMaxSiblingDistance: integer): Boolean;
 var
   FoundLine: Integer;
 begin
   if Assigned(DbgInfo) and DbgInfo.HasInfo then
-    Result := DbgInfo.GetLineAddresses(AFileName, ALine, AResultList, fsNone, @FoundLine, @FLastLineAddressesFoundFile)
+    Result := DbgInfo.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, @FoundLine, @FLastLineAddressesFoundFile, AMaxSiblingDistance)
   else
     Result := False;
 end;
@@ -2628,24 +2636,25 @@ begin
 end;
 
 function TDbgProcess.GetLineAddresses(AFileName: String; ALine: Cardinal;
-  var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance): Boolean;
+  var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance;
+  AFindSibling: TGetLineAddrFindSibling; AMaxSiblingDistance: integer): Boolean;
 var
   Lib: TDbgLibrary;
 begin
   if ASymInstance <> nil then begin
     if ASymInstance = self then begin
-      Result := inherited GetLineAddresses(AFileName, ALine, AResultList);
+      Result := inherited GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance);
     end
     else begin
-      Result := ASymInstance.GetLineAddresses(AFileName, ALine, AResultList);
+      Result := ASymInstance.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance);
       FLastLineAddressesFoundFile := ASymInstance.FLastLineAddressesFoundFile;
     end;
     exit;
   end;
 
-  Result := inherited GetLineAddresses(AFileName, ALine, AResultList);
+  Result := inherited GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance);
   for Lib in FLibMap do begin
-    if Lib.GetLineAddresses(AFileName, ALine, AResultList) then
+    if Lib.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance) then
       Result := True;
     if Lib.FLastLineAddressesFoundFile then
       FLastLineAddressesFoundFile := True;
@@ -4197,29 +4206,38 @@ procedure TFpInternalBreakpointAtFileLine.UpdateForLibraryLoaded(
   ALib: TDbgLibrary);
 var
   addr: TDBGPtrArray;
+  m: Integer;
 begin
   if FSymInstance <> nil then // Can not be the newly created ...
     exit;
 
   addr := nil;
-  Process.GetLineAddresses(FFileName, FLine, addr, ALib);
+  m := Process.Config.BreakpointSearchMaxLines;
+  if m > 0 then
+    Process.GetLineAddresses(FFileName, FLine, addr, ALib, fsNextFuncLazy, m)
+  else
+    Process.GetLineAddresses(FFileName, FLine, addr, ALib);
   if Process.FLastLineAddressesFoundFile and (Length(addr) = 0) then
     FFoundFileWithoutLine := True;
   AddAddress(addr);
 end;
 
 constructor TFpInternalBreakpointAtFileLine.Create(const AProcess: TDbgProcess;
-  const AFileName: String; ALine: Cardinal; AnEnabled: Boolean;
-  ASymInstance: TDbgInstance);
+  const AFileName: String; ALine: Cardinal; AnEnabled: Boolean; ASymInstance: TDbgInstance);
 var
   addr: TDBGPtrArray;
+  m: Integer;
 begin
   FFileName := AFileName;
   FLine := ALine;
   FSymInstance := ASymInstance;
 
   addr := nil;
-  AProcess.GetLineAddresses(AFileName, ALine, addr, ASymInstance);
+  m := AProcess.Config.BreakpointSearchMaxLines;
+  if m > 0 then
+    AProcess.GetLineAddresses(AFileName, ALine, addr, ASymInstance, fsNextFuncLazy, m)
+  else
+    AProcess.GetLineAddresses(AFileName, ALine, addr, ASymInstance);
   FFoundFileWithoutLine := AProcess.FLastLineAddressesFoundFile and (Length(addr) = 0);
   inherited Create(AProcess, addr, AnEnabled);
 end;

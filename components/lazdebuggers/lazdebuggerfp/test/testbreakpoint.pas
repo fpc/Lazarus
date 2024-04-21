@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, TTestDebuggerClasses,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, LazLoggerBase, Forms;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, FpDebugDebugger, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, LazLoggerBase, FPDbgController, FpDbgInfo, Forms;
 
 type
 
@@ -57,6 +57,7 @@ type
     procedure TestLocation(ATestName, ABrkName: String; ABreakHitCount: Integer = 1);
     procedure TestHitCnt(ATestName, ABrkName: String; ABreakHitCount: Integer);
   published
+    procedure TestGetAddressForLine;
     (* Ensure the debugger can correctly run/step after hidding a breakpoit
        - the original instruction is executed
        - the breakpoint can be hit again
@@ -96,7 +97,7 @@ type
 implementation
 
 var
-  ControlTest, ControlTestBreak, ControlTestThreadNoSkip,
+  ControlTest, ControlTestGetAddressForLine, ControlTestBreak, ControlTestThreadNoSkip,
   ControlTestThreadMove1, ControlTestThreadMove2, ControlTestThreadHit,
   ControlTestThreadIgnoreOther: Pointer;
 
@@ -116,6 +117,153 @@ procedure TTestBreakPoint.TestHitCnt(ATestName, ABrkName: String;
   ABreakHitCount: Integer);
 begin
   TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount);
+end;
+
+procedure TTestBreakPoint.TestGetAddressForLine;
+var
+  ExeName: String;
+  FpDbg: TFpDebugDebugger;
+  Ctrl: TDbgController;
+  LNum1, LNum2: LongInt;
+  fs: TGetLineAddrFindSibling;
+
+  procedure TestLineExist(ALine: Cardinal; AFindSibling: TGetLineAddrFindSibling;
+    AMaxAfter: integer = 0; ExpFoundLine: Integer = -1);
+  var
+    AName: String;
+    ResLst: TDBGPtrArray;
+    FndLine: Integer;
+    FndFile, r: Boolean;
+  begin
+    AName := 'Found '+IntToStr(ALine);
+    if ExpFoundLine = -1 then ExpFoundLine := ALine;
+    r := Ctrl.CurrentProcess.DbgInfo.GetLineAddresses('StepOverPrg.pas',
+      ALine, ResLst, AFindSibling, @FndLine, @FndFile, AMaxAfter);
+    AssertTrue(AName, r);
+    AssertTrue(AName, FndFile);
+    AssertEquals(AName, ExpFoundLine, FndLine);
+    AssertTrue(AName, Length(ResLst) > 0);
+    AssertTrue(AName, ResLst[0] <> 0);
+  end;
+
+  procedure TestLineNotFound(ALine: Cardinal; AFindSibling: TGetLineAddrFindSibling;
+    AMaxAfter: integer = 0);
+  var
+    AName: String;
+    ResLst: TDBGPtrArray;
+    FndLine: Integer;
+    FndFile, r: Boolean;
+  begin
+    AName := 'Found '+IntToStr(ALine);
+    r := Ctrl.CurrentProcess.DbgInfo.GetLineAddresses('StepOverPrg.pas',
+      ALine, ResLst, AFindSibling, @FndLine, @FndFile, AMaxAfter);
+    AssertFalse(AName, r);
+    //AssertTrue(AName, FndFile);
+  end;
+
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestGetAddressForLine) then exit;
+  Src := GetCommonSourceFor(AppDir + 'StepOverPrg.pas');
+  TestCompile(Src, ExeName);
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+  try
+    Debugger.SetBreakPoint(Src, 'BrkStart');
+    Debugger.RunToNextPause(dcRun);
+
+    FpDbg := dbg as TFpDebugDebugger;
+    Ctrl := FpDbg.DbgController;
+
+    LNum1 := Src.BreakPoints['StepOverBegin'];
+    LNum2 := Src.BreakPoints['StepOverEnd'];
+
+    for fs := low(TGetLineAddrFindSibling) to high(TGetLineAddrFindSibling) do begin
+      TestLineExist(LNum1,   fs, 0, LNum1);
+      TestLineExist(LNum1+1, fs, 0, LNum1+1);
+      TestLineExist(LNum2,   fs, 0, LNum2);
+    end;
+
+    // Before begin
+
+    TestLineNotFound(LNum1-1,   fsNone);
+    TestLineNotFound(LNum1-1,   fsNone, 9); // maxafter ignored
+    TestLineNotFound(LNum1-2,   fsNone);
+
+    TestLineNotFound(LNum1-3,   fsNext, 1);
+    TestLineNotFound(LNum1-2,   fsNext, 1);
+    TestLineExist   (LNum1-1,   fsNext, 1, LNum1);
+
+    TestLineNotFound(LNum1-3,   fsNext, 2);
+    TestLineExist   (LNum1-2,   fsNext, 2, LNum1);
+    TestLineExist   (LNum1-1,   fsNext, 2, LNum1);
+
+    TestLineExist   (LNum1-3,   fsNext, 0, LNum1);
+    TestLineExist   (LNum1-2,   fsNext, 0, LNum1);
+    TestLineExist   (LNum1-1,   fsNext, 0, LNum1);
+
+
+    TestLineNotFound(LNum1-2,   fsNextFunc, 1);
+    TestLineNotFound(LNum1-2,   fsNextFunc, 2);
+    TestLineNotFound(LNum1-2,   fsNextFunc, 0);
+    TestLineNotFound(LNum1-1,   fsNextFunc, 1);
+    TestLineNotFound(LNum1-1,   fsNextFunc, 2);
+    TestLineNotFound(LNum1-1,   fsNextFunc, 0);
+
+    TestLineNotFound(LNum1-2,   fsNextFuncLazy, 1);
+    TestLineNotFound(LNum1-2,   fsNextFuncLazy, 2);
+    TestLineNotFound(LNum1-2,   fsNextFuncLazy, 0);
+    TestLineExist   (LNum1-1,   fsNextFuncLazy, 1, LNum1);
+    TestLineExist   (LNum1-1,   fsNextFuncLazy, 2, LNum1);
+    TestLineExist   (LNum1-1,   fsNextFuncLazy, 0, LNum1);
+
+    // mid function
+    TestLineNotFound(LNum2-1,   fsNone);
+    TestLineNotFound(LNum2-1,   fsNone, 9); // maxafter ignored
+    TestLineNotFound(LNum2-2,   fsNone);
+
+    TestLineNotFound(LNum2-3,   fsNext, 1);
+    TestLineNotFound(LNum2-2,   fsNext, 1);
+    TestLineExist   (LNum2-1,   fsNext, 1, LNum2);
+
+    TestLineNotFound(LNum2-3,   fsNext, 2);
+    TestLineExist   (LNum2-2,   fsNext, 2, LNum2);
+    TestLineExist   (LNum2-1,   fsNext, 2, LNum2);
+
+    TestLineExist   (LNum2-3,   fsNext, 0, LNum2);
+    TestLineExist   (LNum2-2,   fsNext, 0, LNum2);
+    TestLineExist   (LNum2-1,   fsNext, 0, LNum2);
+
+
+    TestLineNotFound(LNum2-2,   fsNextFunc, 1);
+    TestLineExist   (LNum2-2,   fsNextFunc, 2, LNum2);
+    TestLineExist   (LNum2-2,   fsNextFunc, 0, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFunc, 1, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFunc, 2, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFunc, 0, LNum2);
+
+    TestLineNotFound(LNum2-3,   fsNextFuncLazy, 1);
+    TestLineNotFound(LNum2-3,   fsNextFuncLazy, 2);
+    TestLineExist   (LNum2-3,   fsNextFuncLazy, 3, LNum2);
+    TestLineExist   (LNum2-3,   fsNextFuncLazy, 4, LNum2);
+    TestLineExist   (LNum2-3,   fsNextFuncLazy, 0, LNum2);
+    TestLineNotFound(LNum2-2,   fsNextFuncLazy, 1);
+    TestLineExist   (LNum2-2,   fsNextFuncLazy, 2, LNum2);
+    TestLineExist   (LNum2-2,   fsNextFuncLazy, 0, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFuncLazy, 1, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFuncLazy, 2, LNum2);
+    TestLineExist   (LNum2-1,   fsNextFuncLazy, 0, LNum2);
+
+
+
+    dbg.Stop;
+  finally
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
 end;
 
 procedure TTestBreakPoint.TestBreakPoints;
@@ -988,6 +1136,7 @@ initialization
 
   RegisterDbgTest(TTestBreakPoint);
   ControlTest                  := TestControlRegisterTest('TTestBreak');
+  ControlTestGetAddressForLine := TestControlRegisterTest('TestGetAddressForLine', ControlTest);
   ControlTestBreak             := TestControlRegisterTest('TTestBreakPoint', ControlTest);
   ControlTestThreadNoSkip      := TestControlRegisterTest('TTestBreakThreadNoSkip', ControlTest);
   ControlTestThreadMove1       := TestControlRegisterTest('TTestBreakThreadMove1', ControlTest);

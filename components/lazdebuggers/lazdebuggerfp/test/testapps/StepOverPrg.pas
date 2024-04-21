@@ -29,11 +29,13 @@ begin
   x := 1;
 end;
 
-Procedure StepOverEnd(a: integer);
+Procedure StepOverEnd(a: integer); // USED FOR line lookup // do not add lines
 var
   b: integer;
-begin
+begin                                  // TEST_BREAKPOINT=StepOverBegin
   b := a;
+// 3 empty lines in function (for line lookup test)
+//
 // end returns to the same line
 if a < 1 then StepOverEnd(a+1); end;   // TEST_BREAKPOINT=StepOverEnd
 

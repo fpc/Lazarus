@@ -679,7 +679,7 @@ type
   end;
 
   { TDbgInfo }
-  TGetLineAddrFindSibling = (fsNone, fsBefore, fsNext);
+  TGetLineAddrFindSibling = (fsNone, fsBefore, fsNext, fsNextFunc, fsNextFuncLazy);
 
   TDbgInfo = class(TObject)
   private
@@ -705,7 +705,8 @@ type
 
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
-      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil; AFoundFilename: PBoolean = nil): Boolean; virtual;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil; AFoundFilename: PBoolean = nil;
+      AMaxSiblingDistance: integer = 0): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
@@ -2162,8 +2163,8 @@ begin
 end;
 
 function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
-  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling;
-  AFoundLine: PInteger; AFoundFilename: PBoolean): Boolean;
+  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
+  AFoundFilename: PBoolean; AMaxSiblingDistance: integer): Boolean;
 begin
   Result := False;
 end;
