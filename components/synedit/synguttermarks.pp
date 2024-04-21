@@ -191,14 +191,23 @@ begin
   if (FOptions * [sgmoDeDuplicateMarks, sgmoDeDuplicateMarksKeepTwo] <> []) or
      ((sgmoDeDuplicateMarksOnOverflow in FOptions) and (vcnt > ColumnCount))
   then begin
-    VCntU := 1;
+    VCntU := 0;
     VCnt2 := 0;
-    for j := 1 to MLine.Count - 1 do
-      if MLine[j].ImageIndex <> MLine[j-1].ImageIndex then
+    prev_iidx := low(integer);
+    pprev_iidx := low(integer);
+    for j := 0 to MLine.Count - 1 do begin
+      if (not MLine[j].Visible) or
+         (MLine[j].IsBookmark and (not FBookMarkOpt.GlyphsVisible))
+      then
+        continue;
+      if MLine[j].ImageIndex <> prev_iidx then
         inc(VCntU)  // Uniq
       else
-      if (j=1) or (MLine[j].ImageIndex <> MLine[j-2].ImageIndex) then
+      if (j=1) or (MLine[j].ImageIndex <> pprev_iidx) then
         inc(VCnt2); // sgmoDeDuplicateMarksKeepTwo
+      pprev_iidx := prev_iidx;
+      prev_iidx := MLine[j].ImageIndex;
+    end;
 
     if (sgmoDeDuplicateMarks in FOptions) then begin
       vcnt := Min(vcntU, ColumnCount + MaxExtraMarksColums);
