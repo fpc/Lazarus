@@ -1136,7 +1136,7 @@ begin
   Result.Line:=Line;
   Result.Column:=Column;
   Result.Visible:=true;
-  Result.Priority:=Priority;
+  Result.Priority:= 100 + Priority; // show before breakpoints (breakpoints lowest prior are kept to the right)
   Result.Urgency:=MsgLine.Urgency;
   Result.ImageList:=ImageList;
   Result.ImageIndex:=MarkStyles[Result.Urgency].ImageIndex;
