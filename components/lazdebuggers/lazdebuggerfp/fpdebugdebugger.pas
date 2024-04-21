@@ -2094,8 +2094,10 @@ end;
 procedure TFPBreakpoint.DoPropertiesChanged(AChanged: TDbgBpChangeIndicators);
 var
   ADebugger: TFpDebugDebugger;
+  PauseReq: Boolean;
 begin
   ADebugger := TFpDebugDebugger(Debugger);
+  PauseReq := False;
 
   if ciLocation in AChanged then begin
     if Enabled then begin
@@ -2105,6 +2107,7 @@ begin
       end
       else if (ADebugger.State = dsRun) then begin
         ADebugger.QuickPause;
+        PauseReq := True;
       end;
     end;
   end;
@@ -2120,8 +2123,10 @@ begin
       end;
     end
     else if (ADebugger.State = dsRun) then begin
-      if Enabled and (not FIsSet) then
-        ADebugger.QuickPause
+      if Enabled and (not FIsSet) then begin
+        if not PauseReq then
+          ADebugger.QuickPause;
+      end
       else
       if (not Enabled) and FIsSet then
         ADebugger.FRunQuickPauseTasks := True;
