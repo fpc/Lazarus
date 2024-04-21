@@ -871,6 +871,7 @@ type
     FBreakpointList, FWatchPointList: TFpInternalBreakpointList;
     FCurrentBreakpoint: TFpInternalBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
+    FCurrentBreakpointList: TFpInternalBreakpointArray; // further current breakpoint
     FCurrentWatchpoint: Pointer;         // Indicates the owner
     FReEnableBreakStep: Boolean;         // Set when we are reenabling a breakpoint
                                          // We need a single step, so the IP is after the break to set
@@ -1014,6 +1015,7 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TFpInternalBreakpoint read FCurrentBreakpoint;
+    property CurrentBreakpointList: TFpInternalBreakpointArray read FCurrentBreakpointList; experimental; // need getter
     property CurrentWatchpoint: Pointer read FCurrentWatchpoint;
     property PauseRequested: boolean read GetPauseRequested write SetPauseRequested;
     function GetAndClearPauseRequested: Boolean;
@@ -2478,6 +2480,7 @@ begin
   FBreakTargetHandler.BreakMap := FBreakMap;
 
   FCurrentBreakpoint := nil;
+  FCurrentBreakpointList := nil;
   FCurrentWatchpoint := nil;
 
   FSymInstances := TList.Create;
@@ -2832,6 +2835,7 @@ begin
     if (FCurrentWatchpoint <> nil) and (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) then
       FCurrentWatchpoint := Pointer(-1);
     FCurrentBreakpoint:=nil;
+    FCurrentBreakpointList := nil;
     AThread.NextIsSingleStep:=false;
 
     // Whatever reason there was to change the result to deInternalContinue,
@@ -2956,9 +2960,27 @@ begin
 end;
 
 procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
+var
+  i: SizeInt;
 begin
-  if ABreakPoint=FCurrentBreakpoint then
+  if ABreakPoint=FCurrentBreakpoint then begin
     FCurrentBreakpoint := nil;
+    if Length(FCurrentBreakpointList) > 0 then begin
+      FCurrentBreakpoint := FCurrentBreakpointList[0];
+      SetLength(FCurrentBreakpointList, Length(FCurrentBreakpointList) - 1);
+    end;
+  end;
+
+  i := Length(FCurrentBreakpointList) - 1;
+  while (i >= 0) and (FCurrentBreakpointList[i] <> ABreakPoint) do
+    dec(i);
+  if i >= 0 then begin
+    while i < Length(FCurrentBreakpointList) - 2 do begin
+      FCurrentBreakpointList[i] := FCurrentBreakpointList[i+1];
+      inc(i);
+    end;
+    SetLength(FCurrentBreakpointList, Length(FCurrentBreakpointList) - 1);
+  end;
 end;
 
 procedure TDbgProcess.DoBeforeBreakLocationMapChange;
@@ -3078,7 +3100,7 @@ end;
 function TDbgProcess.DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
 var
   BList: TFpInternalBreakpointArray;
-  i: Integer;
+  i, xtra: Integer;
 begin
   Result := False;
 
@@ -3086,16 +3108,24 @@ begin
   if BList = nil then exit;
   i := 0;
   FCurrentBreakpoint := nil;
-  while (i < Length(BList)) and (FCurrentBreakpoint = nil) do
-    if BList[0].FInternal then
-      inc(i)
-    else
-      FCurrentBreakpoint := BList[i];
-  if FCurrentBreakpoint = nil then Exit;
+  SetLength(FCurrentBreakpointList, Length(BList));
+  xtra := 0;
+  for i := 0 to Length(BList) - 1 do begin
+    if not BList[0].FInternal then begin
+      BList[i].Hit(AThreadId, BreakpointAddress);
+      if (FCurrentBreakpoint = nil) then begin
+        FCurrentBreakpoint := BList[i];
+      end
+      else begin
+        FCurrentBreakpointList[xtra] := BList[i];
+        inc(xtra);
+        BList[i].Hit(AThreadId, BreakpointAddress);
+      end;
+    end;
+  end;
 
-  Result := True;
-  if not FCurrentBreakpoint.Hit(AThreadId, BreakpointAddress)
-  then FCurrentBreakpoint := nil; // no need for a singlestep if we continue
+  SetLength(FCurrentBreakpointList, xtra);
+  Result := (FCurrentBreakpoint <> nil);
 end;
 
 procedure TDbgProcess.SetLastLibraryUnloaded(ALib: TDbgLibrary);
@@ -3159,6 +3189,7 @@ end;
 procedure TDbgProcess.AfterBreakpointAdded(ABreak: TFpDbgBreakpoint);
 begin
   if (FMainThread <> nil) and not assigned(FCurrentBreakpoint) then begin
+    // TODO: what if there is a hardcoded int3?
     if ABreak.HasLocation(FMainThread.GetInstructionPointerRegisterValue) then
       FCurrentBreakpoint := TFpInternalBreakpoint(ABreak);
   end;

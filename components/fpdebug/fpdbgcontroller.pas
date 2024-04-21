@@ -2009,6 +2009,7 @@ procedure TDbgController.SendEvents(out continue: boolean);
 var
   HasPauseRequest: Boolean;
   CurWatch: TFpInternalWatchpoint;
+  i: integer;
 begin
   // reset pause request. If Pause() is called after this, it will be seen in the next loop
   HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;
@@ -2071,8 +2072,17 @@ begin
           if (CurWatch <> nil) then
             OnHitBreakpointEvent(continue, CurWatch, deBreakpoint, (FCurrentProcess.CurrentBreakpoint <> nil));
 
-          if assigned(FCurrentProcess.CurrentBreakpoint) then
+          if assigned(FCurrentProcess.CurrentBreakpoint) then begin
+            i := Length(FCurrentProcess.CurrentBreakpointList) - 1;
+            while i >= 0 do begin
+              OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpointList[i], deBreakpoint, True);
+              dec(i);
+              if i > Length(FCurrentProcess.CurrentBreakpointList) - 1 then
+                i := Length(FCurrentProcess.CurrentBreakpointList) - 1;
+            end;
+
             OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint, deBreakpoint, False);
+          end;
 
           if not continue then
             HasPauseRequest := False; // The debugger will enter Pause, so the internal-pause is handled.

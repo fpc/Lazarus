@@ -3863,102 +3863,95 @@ var
   Opts: TFpInt3DebugBreakOptions;
   NeedInternalPause: Boolean;
 begin
-  // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
-  NeedInternalPause := False;
-  if AnEventType = deBreakpoint then
-    if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
-      exit;
+    // If a user single steps to an excepiton handler, do not open the dialog (there is no continue possible)
+  try
+    (* FExceptionStepper.BreakpointHit may call EnterPause, and with that set a location.
+       In that case the EnterPause in the finally block will detect the state, and do nothing.
+    *)
+    if AnEventType = deBreakpoint then
+      if FExceptionStepper.BreakpointHit(&continue, Breakpoint) then
+        exit;
 
-  if assigned(Breakpoint) then begin
-    ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
-    if (ABreakPoint <> nil) and (ABreakPoint.Enabled) then begin
+    if assigned(Breakpoint) then begin
+      ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+      if (ABreakPoint <> nil) and (ABreakPoint.Enabled) then begin
 
-      // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
-      if ABreakPoint.Expression <> '' then begin
-        Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
-        if Context <> nil then begin
-          PasExpr := nil;
-          try
-            PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context, True);
-            PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
-            PasExpr.Parse;
-            PasExpr.ResultValue; // trigger full validation
-            if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
-               (not PasExpr.ResultValue.AsBool) // false => do not pause
-            then
-              &continue := True;
-          finally
-            PasExpr.Free;
-            Context.ReleaseReference;
+        // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
+        if ABreakPoint.Expression <> '' then begin
+          Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
+          if Context <> nil then begin
+            PasExpr := nil;
+            try
+              PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context, True);
+              PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
+              PasExpr.Parse;
+              PasExpr.ResultValue; // trigger full validation
+              if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
+                 (not PasExpr.ResultValue.AsBool) // false => do not pause
+              then
+                &continue := True;
+            finally
+              PasExpr.Free;
+              Context.ReleaseReference;
+            end;
+
+            if &continue then
+              exit;
           end;
-
-          if &continue then
-            exit;
         end;
-      end;
+
+        ALocationAddr := GetLocation;
+        if Assigned(EventLogHandler) then
+          EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
+
+        NeedInternalPause := False;
+        if assigned(ABreakPoint) then
+          ABreakPoint.Hit(&continue, NeedInternalPause);
+        FInternalPauseForEvent := FInternalPauseForEvent or NeedInternalPause;
+
+        if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
+          // For message use location(Address - 1)
+          OnFeedback(self,
+              Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
+                     [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
+              '', ftInformation, [frOk]);
+        end;
+      end
+      else
+        continue := True; // removed or disabled breakpoint
+    end
+    else
+    if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
+      &continue:=true;
+      Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
+      if not (dboIgnoreAll in Opts) then
+        &continue:=False;
+      if  continue then
+        exit;
+    end
+    else if (AnEventType = deInternalContinue) and FQuickPause then begin
+        &continue:=true;
+        exit;
+    end;
+
+
+    if not continue then
+      FPauseForEvent := True;
+
+  finally
+    if (not AMoreHitEventsPending) and (FPauseForEvent or FInternalPauseForEvent) then begin
+      FQuickPause := False; // Ok, because we will SetState => RunQuickPauseTasks is not needed
+      FRunQuickPauseTasks := False;
+
+      if FPauseForEvent then
+        &continue := False; // Only continue, if ALL events did say to continue
 
       ALocationAddr := GetLocation;
-      if Assigned(EventLogHandler) then
-        EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
       if ALocationAddr.SrcLine = 0 then
         ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source. Breakpoint hit should be at frame 0
 
-      if assigned(ABreakPoint) then
-        ABreakPoint.Hit(&continue, NeedInternalPause);
-
-      if (not &continue) and (ABreakPoint.Kind = bpkData) and (OnFeedback <> nil) then begin
-        // For message use location(Address - 1)
-        OnFeedback(self,
-            Format('The Watchpoint for "%1:s" was triggered.%0:s%0:s', // 'Old value: %2:s%0:sNew value: %3:s',
-                   [LineEnding, ABreakPoint.WatchData{, AOldVal, ANewVal}]),
-            '', ftInformation, [frOk]);
-      end;
-    end
-    else
-      continue := True; // removed or disabled breakpoint
-  end
-  else
-  if (AnEventType = deHardCodedBreakpoint) and (FDbgController.CurrentThread <> nil) then begin
-    &continue:=true;
-    Opts := TFpDebugDebuggerProperties(GetProperties).HandleDebugBreakInstruction;
-    if not (dboIgnoreAll in Opts) then begin
-      &continue:=False;
-      if not AMoreHitEventsPending then begin
-        ALocationAddr := GetLocation;
-        if ALocationAddr.SrcLine = 0 then
-          ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source. Breakpoint hit should be at frame 0
-      end;
+      EnterPause(ALocationAddr, &continue);
     end;
-    if  continue then
-      exit;
-  end
-  else if (AnEventType = deInternalContinue) and FQuickPause then
-    begin
-      &continue:=true;
-      exit;
-    end
-  else
-    // Debugger returned after a step/next/step-out etc..
-  if not AMoreHitEventsPending then begin
-    ALocationAddr := GetLocation;
-    if (AnEventType = deFinishedStep) and (ALocationAddr.SrcLine = 0) then // Maybe Stepped out ???
-      ALocationAddr.SrcLine := -2; // Prevent stack search for caller with source.
-  end;
-
-
-  if not continue then
-    FPauseForEvent := True;
-
-  FInternalPauseForEvent := FInternalPauseForEvent or NeedInternalPause;
-
-  if (not AMoreHitEventsPending) and (FPauseForEvent or FInternalPauseForEvent) then begin
-    FQuickPause := False; // Ok, because we will SetState => RunQuickPauseTasks is not needed
-    FRunQuickPauseTasks := False;
-
-    if FPauseForEvent then
-      &continue := False; // Only continue, if ALL events did say to continue
-
-    EnterPause(ALocationAddr, &continue);
   end;
 end;
 
