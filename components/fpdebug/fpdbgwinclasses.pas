@@ -140,6 +140,7 @@ type
     FIsSuspended: Boolean;
     FBreakPointState: TBreakPointState;
     FDoNotPollName: Boolean;
+    FIgnoreNextInt3: Boolean;
     FName: String;
     FUnwinder: TDbgStackUnwinderX86MultiMethod;
   protected
@@ -207,6 +208,7 @@ type
     FInfo: TCreateProcessDebugInfo;
     FProcProcess: TProcessWithRedirect;
     FJustStarted, FTerminated: boolean;
+    FDbgUiRemoteBreakin: TDBGPtr;
     FBitness: TBitness;
     FThreadNameList: TDbgWinThreadNameList;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
@@ -1454,6 +1456,8 @@ var
   InterceptAtFirst: Boolean;
   threadname: String;
   t: TDbgThread;
+  Lib: TDbgLibrary;
+  FpProc: TFpSymbol;
 begin
   if AThread <> nil then
     TDbgWinThread(AThread).EndSingleStepOverBreakPoint;
@@ -1471,6 +1475,11 @@ begin
             begin
               FJustStarted:=false;
               result := deInternalContinue;
+            end
+            else
+            if (AThread <> nil) and (TDbgWinThread(AThread).FIgnoreNextInt3) then begin
+              result := deInternalContinue; // pause request
+              TDbgWinThread(AThread).FIgnoreNextInt3 := False;
             end
             else begin
               result := deBreakpoint;
@@ -1522,6 +1531,24 @@ begin
       CREATE_THREAD_DEBUG_EVENT: begin
         //DumpEvent('CREATE_THREAD_DEBUG_EVENT');
         result := deInternalContinue;
+        if PauseRequested then begin
+          if FDbgUiRemoteBreakin = 0 then begin
+            FDbgUiRemoteBreakin := TDBGPtr(-1);
+            for Lib in LibMap do
+              if (lowercase(Lib.Name) = 'ntdll.dll') or
+                 (lowercase(copy(Lib.Name, length(Lib.Name)-9, 10)) = '\ntdll.dll')
+              then begin
+                FpProc := Lib.SymbolTableInfo.FindProcSymbol('DbgUiRemoteBreakin', True);
+                if (FpProc <> nil) and (FpProc.Address.Address <> 0) then begin
+                  FDbgUiRemoteBreakin := FpProc.Address.Address;
+                  FpProc.ReleaseReference;
+                end;
+                break;
+              end;
+          end;
+          if (FDbgUiRemoteBreakin <> TDBGPtr(-1)) and (TDBGPtr(MDebugEvent.CreateThread.lpStartAddress) = FDbgUiRemoteBreakin) and (AThread <> nil) then
+            TDbgWinThread(AThread).FIgnoreNextInt3 := True;
+        end;
       end;
       CREATE_PROCESS_DEBUG_EVENT: begin
         //DumpEvent('CREATE_PROCESS_DEBUG_EVENT');
