@@ -132,7 +132,7 @@ msgstr "Перечислимый"
 
 #: idedebuggerstringconstants.dispformatdlgbtnenumval
 msgid "Enum (Identifier)"
-msgstr ""
+msgstr "Перечислимый (идентификатор)"
 
 #: idedebuggerstringconstants.dispformatdlgbtnfloat
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
