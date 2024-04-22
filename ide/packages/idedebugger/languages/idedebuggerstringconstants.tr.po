@@ -504,6 +504,14 @@ msgstr "Sınırlar: %d .. %d"
 msgid "Index of first item to show"
 msgstr "Gösterilecek ilk öğenin dizini"
 
+#: idedebuggerstringconstants.dlgsortdown
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgsortup
+msgid "Up"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgid "Refresh"
 msgstr "Yenile"

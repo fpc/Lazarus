@@ -499,6 +499,14 @@ msgstr ""
 msgid "Index of first item to show"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgsortdown
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgsortup
+msgid "Up"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"

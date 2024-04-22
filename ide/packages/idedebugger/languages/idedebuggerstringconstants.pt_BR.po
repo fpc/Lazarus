@@ -520,6 +520,14 @@ msgstr "Limites: %d .. %d"
 msgid "Index of first item to show"
 msgstr "Índice do primeiro item a exibir"
 
+#: idedebuggerstringconstants.dlgsortdown
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgsortup
+msgid "Up"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"

@@ -46,6 +46,9 @@ resourcestring
   //
   lisMenuViewCallStack = 'Call Stack';
 
+  dlgSortUp = 'Up';
+  dlgSortDown = 'Down';
+
   dlgInspectIndexOfFirstItemToShow = 'Index of first item to show';
   dlgInspectAmountOfItemsToShow = 'Amount of items to show';
   dlgInspectBoundsDD = 'Bounds: %d .. %d';

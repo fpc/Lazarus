@@ -500,6 +500,14 @@ msgstr "Границы: %d .. %d"
 msgid "Index of first item to show"
 msgstr "Индекс первого показываемого элемента"
 
+#: idedebuggerstringconstants.dlgsortdown
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgsortup
+msgid "Up"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"

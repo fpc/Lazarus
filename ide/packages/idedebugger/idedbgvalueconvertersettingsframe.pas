@@ -309,6 +309,8 @@ var
 begin
   btnAdd.Caption       := dlgBackConvOptAddNew;
   btnRemove.Caption    := dlgBackConvOptRemove;
+  btnUp.Caption        := dlgSortUp;
+  btnDown.Caption      := dlgSortDown;
   lblName.Caption      := dlgBackConvOptName;
   lblTypeNames.Caption := dlgBackConvOptMatchTypesByName;
   lblAction.Caption    := dlgBackConvOptAction;

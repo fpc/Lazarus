@@ -508,6 +508,14 @@ msgstr "Межі: %d .. %d"
 msgid "Index of first item to show"
 msgstr "Індекс першого елемента для показу"
 
+#: idedebuggerstringconstants.dlgsortdown
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgsortup
+msgid "Up"
+msgstr ""
+
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
 msgid "Refresh"
