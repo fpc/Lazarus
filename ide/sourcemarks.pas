@@ -185,11 +185,12 @@ type
   public
     property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
   end;
-  
+
   TSourceMarkClass = class of TSourceMark;
   PSourceMark = ^TSourceMark;
-  
-  
+
+  TExecutionMark = class(TSourceMark) end;
+
   { TSourceMarks }
   
   TSourceMarks = class(TComponent)

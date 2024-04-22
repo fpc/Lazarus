@@ -446,6 +446,7 @@ type
   private
     FDebugMarkInfo: TIDESynDebugMarkInfo;
     FMarkInfoTextBuffer: TSynEditStrings;
+    FCurLineHasDebugMark: boolean;
   protected
     procedure CheckTextBuffer;       // Todo: Add a notification, when TextBuffer Changes
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); override;
@@ -453,6 +454,9 @@ type
 
     function GetImgListRes(const ACanvas: TCanvas;
       const AImages: TCustomImageList): TScaledImageListResolution; override;
+    function MarksToDrawInfo(AMLine: TSynEditMarkLine; var ADrawInfo: TSynEditMarkDrawInfoArray;
+      AMaxEntries: integer; out aFirstCustomColumnIdx: integer; out AHasNonBookmark: boolean
+      ): integer; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2311,8 +2315,7 @@ end;
 
 procedure TIDESynGutterMarks.PaintLine(aScreenLine: Integer; Canvas: TCanvas; AClip: TRect);
 var
-  aGutterOffs, TxtIdx: Integer;
-  HasAnyMark: Boolean;
+  aGutterOffs, TxtIdx, aScreenLine2: Integer;
   iRange: TLineRange;
 
   procedure DrawDebugMark(Line: Integer);
@@ -2321,37 +2324,35 @@ var
     LineHeight: LongInt;
     img: TScaledImageListResolution;
   begin
-    if Line < 0 then Exit;
-    if Assigned(FBookMarkOpt.BookmarkImages) and
-       (DebugMarksImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
-       (DebugMarksImageIndex >= 0) then
-    begin
-      LineHeight := TSynEdit(SynEdit).LineHeight;
-      img := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages);
-      iTop := 0;
-      if LineHeight > img.Height then
-        iTop := (LineHeight - img.Height) div 2;
+    LineHeight := TSynEdit(SynEdit).LineHeight;
+    img := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages);
+    iTop := 0;
+    if LineHeight > img.Height then
+      iTop := (LineHeight - img.Height) div 2;
 
-      img.Draw
-        (Canvas, AClip.Left + LeftMarginAtCurrentPPI + (ColumnCount-1) * ColumnWidth,
-         AClip.Top + iTop, DebugMarksImageIndex, True);
-    end
+    img.Draw
+      (Canvas, AClip.Left + LeftMarginAtCurrentPPI + (ColumnCount-1) * ColumnWidth,
+       AClip.Top + iTop, DebugMarksImageIndex, True);
   end;
 
 begin
   CheckTextBuffer;
+
+  aScreenLine2 := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
+  TxtIdx:= ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine2, iRange);
+  FCurLineHasDebugMark := (aScreenLine2 = iRange.Top) and (aScreenLine2 >= 0) and
+    (TxtIdx >= 0) and (TxtIdx < TSynEdit(SynEdit).Lines.Count) and
+    (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
+    (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0) and
+    Assigned(FBookMarkOpt.BookmarkImages) and
+    (DebugMarksImageIndex <= FBookMarkOpt.BookmarkImages.Count) and
+    (DebugMarksImageIndex >= 0);
+
   aGutterOffs := 0;
-  HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
-  aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
-  TxtIdx:= ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
-  if aScreenLine <> iRange.Top then
-    exit;
-  if (TxtIdx < 0) or (TxtIdx >= TSynEdit(SynEdit).Lines.Count) then
-    exit;
-  if (aGutterOffs < ColumnCount) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
-     (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
-  then
-    DrawDebugMark(aScreenLine);
+  PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
+
+  if FCurLineHasDebugMark then
+    DrawDebugMark(aScreenLine2);
 end;
 
 function TIDESynGutterMarks.PreferedWidthAtCurrentPPI: Integer;
@@ -2448,6 +2449,71 @@ begin
   if ACanvas is TControlCanvas then
     Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor;
   Result := AImages.ResolutionForPPI[ImageHeight, PPI, Scale];
+end;
+
+function TIDESynGutterMarks.MarksToDrawInfo(AMLine: TSynEditMarkLine;
+  var ADrawInfo: TSynEditMarkDrawInfoArray; AMaxEntries: integer; out
+  aFirstCustomColumnIdx: integer; out AHasNonBookmark: boolean): integer;
+var
+  i, j: Integer;
+begin
+  Result := inherited MarksToDrawInfo(AMLine, ADrawInfo, AMaxEntries, aFirstCustomColumnIdx,
+    AHasNonBookmark);
+
+  if (Result > 1) and (ADrawInfo[0].Mark = nil) and (ADrawInfo[1].Mark is TETMark) and
+     ( (ColumnCount <= 2) or
+       ((Result = ColumnCount) and (ADrawInfo[Result-1].Mark is TETMark)) )
+  then begin
+    dec(Result);
+    for i := 0 to Result - 1 do
+      ADrawInfo[i] := ADrawInfo[i+1];
+  end;
+
+  if Result <= ColumnCount then begin
+    i := Result - 1;
+    while (i >= 0) and (ADrawInfo[i].Mark <> nil) and
+          ( (ADrawInfo[i].Mark is TExecutionMark) or
+            ((ADrawInfo[i].Mark is TSourceMark) and (TSourceMark(ADrawInfo[i].Mark).IsBreakPoint))
+          )
+    do
+      dec(i);
+    inc(i);
+    if i < Result then begin
+      if Result < ColumnCount then begin
+        i := Result - i; // columns to move
+        if Length(ADrawInfo) < ColumnCount then
+          SetLength(ADrawInfo, Max(ColumnCount, AMaxEntries));
+        for j := 1 to i do
+          ADrawInfo[ColumnCount - j] := ADrawInfo[Result - j];
+        for j := Result - i to ColumnCount - 1 - i do begin
+          ADrawInfo[j].Mark  := nil;
+          ADrawInfo[j].Images := nil;
+        end;
+        Result := ColumnCount;
+      end;
+    end
+    else begin
+      // debug line mark ?
+      if FCurLineHasDebugMark then begin
+        if Length(ADrawInfo) < ColumnCount+1 then
+          SetLength(ADrawInfo, Max(ColumnCount+1, AMaxEntries));
+        for i := Result to ColumnCount - 1 do begin
+          ADrawInfo[i].Mark  := nil;
+          ADrawInfo[i].Images := nil;
+        end;
+
+        if Result < ColumnCount then
+          Result := ColumnCount
+        else
+          Result := ColumnCount + 1;
+        ADrawInfo[Result-1].Mark    := nil;
+        ADrawInfo[Result-1].Images  := FBookMarkOpt.BookmarkImages;
+        ADrawInfo[Result-1].IconIdx := DebugMarksImageIndex;
+      end;
+    end;
+  end;
+
+  FCurLineHasDebugMark := False; // done
 end;
 
 constructor TIDESynGutterMarks.Create(AOwner: TComponent);

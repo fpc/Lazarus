@@ -3429,7 +3429,7 @@ end;
 
 procedure TSourceEditorSharedValues.CreateExecutionMark;
 begin
-  FExecutionMark := TSourceMark.Create(SharedEditors[0], nil);
+  FExecutionMark := TExecutionMark.Create(SharedEditors[0], nil);
   SourceEditorMarks.Add(FExecutionMark);
   FExecutionMark.LineColorAttrib := ahaExecutionPoint;
   FExecutionMark.Priority := 1;
