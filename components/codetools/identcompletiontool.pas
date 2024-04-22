@@ -2089,6 +2089,20 @@ type
       Add(IsKeyWordProcedureTypeSpecifier.GetItem(i).KeyWord+';');
   end;
 
+  procedure AddTypeKeywords;
+  begin
+    if CurrentIdentifierList.IdentComplIncludeKeywords then begin
+      Add('array');
+      Add('set');
+      Add('class');
+      Add('object');
+      Add('interface');
+      Add('record');
+      Add('helper');
+      Add('of');  // array of // set of
+    end;
+  end;
+
 var
   Node, SubNode, NodeInFront: TCodeTreeNode;
   p, AtomStartPos, AtomEndPos: Integer;
@@ -2161,6 +2175,7 @@ begin
         Add('procedure');
         Add('function');
         Add('property');
+        Add('end');
         if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
           Add('constructor');
           Add('destructor');
@@ -2168,6 +2183,7 @@ begin
         if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
           Add('case');
         end;
+        AddTypeKeywords;
         LastChild:=Node.LastChild;
         if (LastChild<>nil) and (CleanPos>LastChild.StartPos)
         and (LastChild.EndPos>LastChild.StartPos)
@@ -2180,6 +2196,13 @@ begin
             CheckProperty(SubNode);
           end;
         end;
+      end;
+
+    ctnRecordCase:
+      begin
+        AddTypeKeywords;
+        Add('case');
+        Add('end');
       end;
 
     ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnCPPClass:
@@ -2271,6 +2294,7 @@ begin
         if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
           Add('case');
         end;
+        AddTypeKeywords;
       end
       else
       if Node.Parent.Desc = ctnOnBlock then
@@ -2293,6 +2317,10 @@ begin
           Add('initialization');
           Add('finalization');
           Add('begin');
+        end
+        else
+        if Node.Desc in [ctnTypeSection,ctnVarSection,ctnConstSection] then begin
+          AddTypeKeywords;
         end;
       end;
 
@@ -2314,6 +2342,7 @@ begin
           then begin
             Add('asm');
             Add('begin');
+            Add('end');
             Add('case');
             Add('except');
             Add('finally');
