@@ -186,7 +186,7 @@ type
     // This is used by CreateIDEMakeOptions and IsWriteProtected
     function CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
     // Methods used by CreateIDEMakeOptions :
-    procedure BackupExe(Flags: TBuildLazarusFlags);
+    function BackupExe(var aTargetFilename: string; const aTitle: string; Flags: TBuildLazarusFlags; AllowAltTargetFile: boolean): boolean;
     function CreateAppleBundle: TModalResult;
     procedure AppendExtraOption(const aOption: string; AutoQuote: boolean = True);
     // This is used by MakeLazarus and SaveIDEMakeOptions
@@ -566,7 +566,7 @@ end;
 
 function TLazarusBuilder.MakeIDEUsingLazbuild(Clean: boolean): TModalResult;
 var
-  s, MakeExe, LazbuildExe: String;
+  s, MakeExe, LazbuildExe, StarterFilename: String;
   Tool: TAbstractExternalTool;
   EnvironmentOverrides: TStringList;
 begin
@@ -608,6 +608,9 @@ begin
     end;
 
     // build lazbuild
+    LazbuildExe:=AppendPathDelim(fWorkingDir)+'lazbuild'+GetExeExt;
+    if not BackupExe(LazbuildExe,'lazbuild',[blfBackupOldExe],false) then
+      exit(mrCancel);
     Tool:=ExternalToolList.Add('make lazbuild');
     Tool.Reference(Self,ClassName);
     try
@@ -655,6 +658,9 @@ begin
     if Clean then
     begin
       // build
+      StarterFilename:=AppendPathDelim(fWorkingDir)+'startlazarus'+GetExeExt;
+      if not BackupExe(StarterFilename,'startlazarus',[blfBackupOldExe],false) then
+        exit(mrCancel);
       Tool:=ExternalToolList.Add('make starter');
       Tool.Reference(Self,ClassName);
       try
@@ -885,7 +891,9 @@ begin
   //DebugLn(['CreateIDEMakeOptions ',MMDef.Name,' ',fExtraOptions]);
 end;
 
-procedure TLazarusBuilder.BackupExe(Flags: TBuildLazarusFlags);
+function TLazarusBuilder.BackupExe(var aTargetFilename: string;
+  const aTitle: string; Flags: TBuildLazarusFlags; AllowAltTargetFile: boolean
+  ): boolean;
 { Try to delete old backups and try to rename old exe.
   Some OS (Win) locks the exe while running, so it cannot be deleted.
   Some OS (Win XP) forbids renaming while exe is running.
@@ -896,10 +904,13 @@ var
   Backup2Filename: String;
   AltFilename: String;
 begin
-  if not FileExistsUTF8(fTargetFilename) then exit;
+  Result:=false;
+  //debugln(['TLazarusBuilder.BackupExe "',aTargetFilename,'" Exists=',FileExistsUTF8(aTargetFilename),' AllowAltTargetFile=',AllowAltTargetFile,' BackupOldExe=',blfBackupOldExe in Flags]);
+  if not FileExistsUTF8(aTargetFilename) then
+    exit(true);
   // the exe already exists
-  Ext:=ExtractFileExt(fTargetFilename);
-  AltFilename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.new'+Ext;
+  Ext:=ExtractFileExt(aTargetFilename);
+  AltFilename:=LeftStr(aTargetFilename,length(aTargetFilename)-length(Ext))+'.new'+Ext;
   if blfBackupOldExe in Flags then begin
     // first try to delete the lazarus.new exe, so that users/startlazarus are
     // not confused which one is the newest.
@@ -912,14 +923,14 @@ begin
     end;
 
     // try to rename the old exe
-    BackupFilename:=GetBackupExeFilename(fTargetFilename);
+    BackupFilename:=GetBackupExeFilename(aTargetFilename);
     if FileExistsUTF8(BackupFilename) then begin
       if DeleteFileUTF8(BackupFilename) then begin
         debugln(['Note: (lazarus) deleted backup "',BackupFilename,'"']);
       end else begin
         // unable to delete old backup file, maybe an old IDE is still running
         // => try to backup the backup
-        Backup2Filename:=LeftStr(fTargetFilename,length(fTargetFilename)-length(Ext))+'.old2'+Ext;
+        Backup2Filename:=LeftStr(aTargetFilename,length(aTargetFilename)-length(Ext))+'.old2'+Ext;
         if FileExistsUTF8(Backup2Filename) then begin
           if DeleteFileUTF8(Backup2Filename) then
             debugln(['Note: (lazarus) deleted backup "',Backup2Filename,'"'])
@@ -935,24 +946,31 @@ begin
       end;
     end;
     if not FileExistsUTF8(BackupFilename) then begin
-      if RenameFileUTF8(fTargetFilename,BackupFilename) then
-        debugln(['Note: (lazarus) renamed file "'+fTargetFilename+'" to "',BackupFilename,'"'])
+      if RenameFileUTF8(aTargetFilename,BackupFilename) then
+        debugln(['Note: (lazarus) renamed file "'+aTargetFilename+'" to "',BackupFilename,'"'])
       else
-        debugln(['Warning: (lazarus) unable to rename file "'+fTargetFilename+'" to "',BackupFilename,'"']);
+        debugln(['Warning: (lazarus) unable to rename file "'+aTargetFilename+'" to "',BackupFilename,'"']);
     end;
 
-    if FileExistsUTF8(fTargetFilename)
-    and FileExistsUTF8(AltFilename) then begin
+    if not FileExistsUTF8(aTargetFilename) then
+      exit(true);
+
+    if FileExistsUTF8(AltFilename) then begin
       IDEMessageDialog('Delete Error','Unable to rename'#13
-        +fTargetFilename+#13
+        +aTargetFilename+#13
         +'and unable to delete'#13
         +AltFilename+#13
-        +'One of them must be gone, before building the IDE. Maybe you have another IDE still running?',mtError,[mbCancel]);
-      exit;
+        +'One of them must be gone, before building the '+aTitle+'. Maybe there is another '+aTitle+' still running?',mtError,[mbCancel]);
+      exit(false);
     end;
   end;
-  if FileExistsUTF8(fTargetFilename) then
-    fTargetFilename:=AltFilename;  // backup didn't work => use another file name
+  if not AllowAltTargetFile then
+    exit(false);
+  // backup didn't work => use another file name
+  if FileExistsUTF8(AltFilename) then
+    exit(false);
+  aTargetFilename:=AltFilename;
+  Result:=true;
 end;
 
 function TLazarusBuilder.CreateAppleBundle: TModalResult;
@@ -996,7 +1014,7 @@ end;
 function TLazarusBuilder.PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
 begin
   // backup old exe
-  BackupExe(Flags);
+  BackupExe(fTargetFilename,'IDE',Flags,true);
 
   // create output directories
   if fOutputDirRedirected then begin
