@@ -189,6 +189,7 @@ begin
     SpinMaxNest.Value := 0;
 
     cbAppendOriginalValue.ItemIndex := -1;
+    cbAppendOriginalValue.Enabled := False;
   end
   else begin
     pnlCurrentFormatter.Enabled := True;
@@ -202,7 +203,16 @@ begin
     SpinMinNest.Value := FCurFormatter.LimitByNestMin;
     SpinMaxNest.Value := FCurFormatter.LimitByNestMax;
 
-    cbAppendOriginalValue.ItemIndex := ord(FCurFormatter.OriginalValue);
+    if (FCurFormatter.ValFormatter = nil) or
+       (vffPreventOrigValue in FCurFormatter.ValFormatter.SupportedFeatures)
+    then begin
+      cbAppendOriginalValue.ItemIndex := -1;
+      cbAppendOriginalValue.Enabled := False;
+    end
+    else begin
+      cbAppendOriginalValue.ItemIndex := ord(FCurFormatter.OriginalValue);
+      cbAppendOriginalValue.Enabled := True;
+    end;
   end;
 
 

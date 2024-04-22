@@ -168,6 +168,7 @@ type
     class operator = (a,b: TWatchDisplayFormat): boolean;
     function HasOverrides: boolean;
     procedure MakeAllOverrides;
+    procedure CopyInheritedFrom(AnOther: TWatchDisplayFormat);
   end;
   PWatchDisplayFormat = ^TWatchDisplayFormat;
 
@@ -283,8 +284,40 @@ type
 
   IWatchResultDataIntf = interface;
 
-  IWatchResultPrinter = interface
-    function PrintWatchValue(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat): String;
+  (* IWatchResultPrinter & ValueFormmatters:
+     If a Valueformatter's FormatValue is called, it is given an IWatchResultPrinter.
+     Calling PrintWatchValue on this, will format the value WITHOUT ANY ValueFormmatters.
+     This can be changed by
+     - Setting a specific ValueFormatter with SetValueFormatter
+     - Specifing flags
+       ~ "Default Valueformatter" is the formatter that was used before calling
+         (the outermost) value formatter.
+         This is either the global list, or list set by the IDE, or a specific
+         fomatter set by the IDE (e.g. due to watch properties specifing a
+         formatter)
+       ~ "Current Valueformatter" is the formatter or list that was in use before
+         the current formatter was called.
+         This can be the "default", or it can be the formatter specified by the
+         next outer value formatter (if they are called nested)
+     In either case, the top "AResValue" passed from a value formatter to
+     IWatchResultPrinter is NOT going to any value formatter (to avoid circles).
+     The exception is, if wpfResValueIsNestedValue is used, as then the value
+     should be a nested value.
+  *)
+  TWatchResultPrinterFlag = (
+    wpfResValueIsNestedValue,        // inc nest level / allow ValueFormatter directly on new top AResValue
+    wpfUseCurrentValueFormatterList,
+    wpfUseDefaultValueFormatterList
+  );
+  TWatchResultPrinterFlags = set of TWatchResultPrinterFlag;
+
+  IWatchResultPrinter = interface ['{DD3F17BB-0875-4882-8D8B-348A30166984}']
+    function PrintWatchValue(AResValue: IWatchResultDataIntf;
+                             const ADispFormat: TWatchDisplayFormat;
+                             AFlags: TWatchResultPrinterFlags = []
+                            ): String;
+
+    //procedure SetValueFormatter
   end;
 
 
@@ -297,7 +330,7 @@ type
   end;
 
 
-  IWatchResultDataIntf = interface
+  IWatchResultDataIntf = interface ['{C69FF0ED-94F1-4F1A-BB67-CCED487A3DE5}']
 //    function GetClassID: TWatchResultDataClassID;
     function GetInternalObject: TObject;
 
@@ -636,6 +669,25 @@ begin
   Struct.Address.UseInherited  := False;
   Pointer.UseInherited         := False;
   Pointer.Address.UseInherited := False;
+end;
+
+procedure TWatchDisplayFormat.CopyInheritedFrom(AnOther: TWatchDisplayFormat);
+var
+  a: TWatchDisplayFormatAddr;
+begin
+  if Num.UseInherited             then Num             := AnOther.Num;
+  if Num2.UseInherited            then Num2            := AnOther.Num2;
+  if Enum.UseInherited            then Enum            := AnOther.Enum;
+  if EnumVal.UseInherited         then EnumVal         := AnOther.EnumVal;
+  if Bool.UseInherited            then Bool            := AnOther.Bool;
+  if Char.UseInherited            then Char            := AnOther.Char;
+  if Float.UseInherited           then Float           := AnOther.Float;
+  a := Struct.Address;
+  if Struct.UseInherited          then Struct          := AnOther.Struct;
+  if not a.UseInherited           then Struct.Address  := a;
+  a := Pointer.Address;
+  if Pointer.UseInherited         then Pointer         := AnOther.Pointer;
+  if not a.UseInherited           then Pointer.Address  := a;
 end;
 
 end.

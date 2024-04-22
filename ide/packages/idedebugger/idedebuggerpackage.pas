@@ -21,7 +21,8 @@ uses
   IdeDebuggerValueFormatterDateTime, IdeDebuggerValueFormatterColor, 
   IdeDebuggerValueFormatterSetup, IdeDebuggerValueFormatterCurrency, DisplayFormatConfigFrame, 
   DisplayFormatDefaultsConfigFrame, IdeDebuggerDisplayFormats, IdeDebugger_DisplayFormat_Options, 
-  ProjectDebugLink, IdeDebuggerValueFormatterArrayOfCharToString, LazarusPackageIntf;
+  ProjectDebugLink, IdeDebuggerValueFormatterArrayOfCharToString, 
+  IdeDebuggerValueFormatterDisplayFormat, LazarusPackageIntf;
 
 implementation
 

@@ -1695,6 +1695,10 @@ msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
 msgstr "Pozorovania"
 
+#: idedebuggerstringconstants.optdispguttercustomdisplayformat
+msgid "Custom Displayformat"
+msgstr ""
+
 #: idedebuggerstringconstants.regdlgbinary
 msgctxt "lazarusidestrconsts.regdlgbinary"
 msgid "Binary"

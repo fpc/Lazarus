@@ -254,7 +254,9 @@ type
   private type
     TFmtButtons = (bsNum, bsEnum, bsBool, bsChar, bsFloat, bsStruct, bsPtr);
   private
+    FAllowMultiTabs: boolean;
     FHighlightModifiedTabs: boolean;
+    FShowAll: boolean;
     FShowCurrent: boolean;
 
     FDisplayFormatCount: integer;
@@ -279,6 +281,7 @@ type
     procedure SetDisplayFormatCount(AValue: integer);
     procedure SetDisplayFormats(AIndex: integer; AValue: TWatchDisplayFormat);
     procedure SetHighlightModifiedTabs(AValue: boolean);
+    procedure SetShowAll(AValue: boolean);
     procedure SetShowCurrent(AValue: boolean);
     procedure SetShowExtraSettings(AValue: boolean);
     procedure SetShowMemDump(AValue: boolean);
@@ -314,6 +317,8 @@ type
     property CurrentResDataType: TWatchResultDataKind read FCurrentResDataType write SetCurrentResDataType;
   published
     property ShowCurrent: boolean read FShowCurrent write SetShowCurrent;
+    property ShowAll: boolean read FShowAll write SetShowAll;
+    property AllowMultiTabs: boolean read FAllowMultiTabs write FAllowMultiTabs;
     property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
     property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
     property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
@@ -629,9 +634,16 @@ begin
 
   if FCurrentResDataType = rdkUnknown then begin
     FInButtonClick := True;
-    tbAll.Down := True;
-    FInButtonClick := False;
-    tbAllClick(nil);
+    if FShowAll then begin
+      tbAll.Down := True;
+      FInButtonClick := False;
+      tbAllClick(nil);
+    end
+    else begin
+      tbNumber.Down := True;
+      FInButtonClick := False;
+      tbFormatClick(tbNumber);
+    end;
     exit;
   end;
 
@@ -686,6 +698,7 @@ begin
   try
     UpdateFormat;
     if (not(ssShift in GetKeyShiftState)) or
+       (not FAllowMultiTabs) or
        (not(tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down or tbStruct.Down or tbPointer.Down))
     then begin
       tbNumber.Down  := tbNumber  = Sender;
@@ -709,8 +722,9 @@ begin
       rdkStruct:         tbCurrent.Down := tbStruct.Down;
       else tbCurrent.Down := False;
     end;
-    tbAll.Down := tbNumber.Down and tbEnum.Down and tbBool.Down and tbChar.Down and
-                  tbFloat.Down and tbStruct.Down and tbPointer.Down;
+    if FShowAll then
+      tbAll.Down := tbNumber.Down and tbEnum.Down and tbBool.Down and tbChar.Down and
+                    tbFloat.Down and tbStruct.Down and tbPointer.Down;
   finally
     FInButtonClick := False;
   end;
@@ -801,11 +815,20 @@ begin
     UpdateTabs;
 end;
 
+procedure TDisplayFormatFrame.SetShowAll(AValue: boolean);
+begin
+  if FShowAll = AValue then Exit;
+  FShowAll := AValue;
+  tbAll.Visible := AValue;
+  ToolButton4.Visible := FShowCurrent;
+end;
+
 procedure TDisplayFormatFrame.SetShowCurrent(AValue: boolean);
 begin
   if FShowCurrent = AValue then Exit;
   FShowCurrent := AValue;
   tbCurrent.Visible := FShowCurrent;
+  ToolButton2.Visible := FShowCurrent;
 end;
 
 procedure TDisplayFormatFrame.SetShowExtraSettings(AValue: boolean);
@@ -1791,6 +1814,8 @@ begin
   DisplayFormatCount := 1;
   FHighlightModifiedTabs := True;
   FShowCurrent := True;
+  FShowAll := True;
+  FAllowMultiTabs := True;
   FShowMemDump := True;
   FShowMultiRadio := True;
   FShowOverrideChecks := True;
@@ -1944,7 +1969,7 @@ begin
         rdkSet:            tbEnum.Down := True;
         rdkStruct:         tbStruct.Down := True;
         else begin
-                           tbAll.Down := True;
+                           if FShowAll then tbAll.Down := True;
                            tbNumber.Down  := True;
                            tbEnum.Down    := True;
                            tbBool.Down    := True;

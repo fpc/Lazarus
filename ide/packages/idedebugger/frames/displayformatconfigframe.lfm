@@ -15,6 +15,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   ClientWidth = 592
   Constraints.MaxWidth = 850
   Constraints.MinWidth = 480
+  LCLVersion = '3.99.0.0'
   TabOrder = 0
   DesignLeft = 427
   DesignTop = 213
@@ -43,7 +44,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton2: TToolButton
       Left = 45
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton2'
       Enabled = False
@@ -65,7 +66,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton4: TToolButton
       Left = 71
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton4'
       Enabled = False
@@ -171,7 +172,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton12: TToolButton
       Left = 132
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton12'
       Enabled = False
@@ -180,7 +181,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton13: TToolButton
       Left = 175
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton13'
       Enabled = False
@@ -189,7 +190,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton14: TToolButton
       Left = 211
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton14'
       Enabled = False
@@ -198,7 +199,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton15: TToolButton
       Left = 248
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton15'
       Enabled = False
@@ -207,7 +208,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton16: TToolButton
       Left = 286
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton16'
       Enabled = False
@@ -216,7 +217,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton17: TToolButton
       Left = 351
-      Height = 22
+      Height = 8
       Top = 2
       Caption = 'ToolButton17'
       Enabled = False

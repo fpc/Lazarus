@@ -70,14 +70,24 @@ type
   private
     FFormatFlags: TWatchResultPrinterFormatFlags;
     FLineSeparator: String;
-    FOnlyValueFormatter: TIdeDbgValueFormatterSelector;
+    FOnlyValueFormatter: IIdeDbgValueFormatterIntf;
+    FDefaultValueFormatter, FCurrentValueFormatter, FNextValueFormatter: IIdeDbgValueFormatterIntf;
     FTargetAddressSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
-    FInValueFormatter: Boolean;
+    FNextCallIsValueFormatter: Boolean;
     FInValFormNestLevel: integer;
+    FResValueInFormatter: TWatchResultData;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
+  protected type
+    TWatchResStoredSettings = record
+      FFormatFlags: TWatchResultPrinterFormatFlags;
+      FCurrentValueFormatter: IIdeDbgValueFormatterIntf;
+      FResValueInFormatter: TWatchResultData;
+    end;
   protected
+    procedure StoreSetting(var AStorage: TWatchResStoredSettings); inline;
+    procedure RestoreSetting(const AStorage: TWatchResStoredSettings); inline;
     function PrintNumber(AUnsignedValue: QWord; ASignedValue: Int64;
                          AByteSize: Integer;
                          const ANumFormat: TResolvedDisplayFormatNum;
@@ -93,10 +103,11 @@ type
     constructor Create;
     destructor Destroy; override;
     function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat): String;
-    function PrintWatchValue(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat): String;
+    function PrintWatchValueIntf(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat; AFlags: TWatchResultPrinterFlags = []): String;
+    function IWatchResultPrinter.PrintWatchValue = PrintWatchValueIntf;
 
     property FormatFlags: TWatchResultPrinterFormatFlags read FFormatFlags write FFormatFlags;
-    property OnlyValueFormatter: TIdeDbgValueFormatterSelector read FOnlyValueFormatter write FOnlyValueFormatter;
+    property OnlyValueFormatter: IIdeDbgValueFormatterIntf read FOnlyValueFormatter write FOnlyValueFormatter;
 
     property TargetAddressSize: integer read FTargetAddressSize write FTargetAddressSize;
     property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver;
@@ -404,6 +415,20 @@ begin
 end;
 
 { TWatchResultPrinter }
+
+procedure TWatchResultPrinter.StoreSetting(var AStorage: TWatchResStoredSettings);
+begin
+  AStorage.FFormatFlags           := FFormatFlags;
+  AStorage.FCurrentValueFormatter := FCurrentValueFormatter;
+  AStorage.FResValueInFormatter   := FResValueInFormatter;
+end;
+
+procedure TWatchResultPrinter.RestoreSetting(const AStorage: TWatchResStoredSettings);
+begin
+  FFormatFlags           := AStorage.FFormatFlags;
+  FCurrentValueFormatter := AStorage.FCurrentValueFormatter;
+  FResValueInFormatter   := AStorage.FResValueInFormatter;
+end;
 
 function TWatchResultPrinter.PrintNumber(AUnsignedValue: QWord; ASignedValue: Int64;
   AByteSize: Integer; const ANumFormat: TResolvedDisplayFormatNum; PrintNil: Boolean): String;
@@ -868,6 +893,7 @@ var
   PtrDeref, PtrDeref2: TWatchResultData;
   Resolved: TResolvedDisplayFormat;
   n: Integer;
+  StoredSettings: TWatchResStoredSettings;
 begin
   inc(ANestLvl);
   if ANestLvl > MAX_ALLOWED_NEST_LVL then
@@ -875,21 +901,23 @@ begin
   if AResValue = nil then
     exit('???');
 
-  if not (FInValueFormatter or (rpfSkipValueFormatter in FFormatFlags)) then begin
-    FInValueFormatter := True;
-    FInValFormNestLevel := ANestLvl;
+  if FCurrentValueFormatter <> nil then begin
+    StoreSetting(StoredSettings);
+    // for the next IWatchResultPrinter.FormatValue call
+    FNextCallIsValueFormatter := True;
+    FInValFormNestLevel  := ANestLvl;
+    FResValueInFormatter := AResValue;
+    //
     try
-      if OnlyValueFormatter <> nil then begin
-        if OnlyValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
-          exit;
-      end
-      else
-      if GlobalValueFormatterSelectorList.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
+      if FCurrentValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
         exit;
     finally
-      FInValueFormatter := False;
+      FNextCallIsValueFormatter := False;
+      RestoreSetting(StoredSettings);
     end;
-  end;
+  end
+  else
+    FCurrentValueFormatter := FNextValueFormatter;
 
   Result := '';
   case AResValue.ValueKind of
@@ -1004,21 +1032,56 @@ end;
 function TWatchResultPrinter.PrintWatchValue(AResValue: TWatchResultData;
   const ADispFormat: TWatchDisplayFormat): String;
 begin
+  FNextValueFormatter := nil;
+  if FOnlyValueFormatter <> nil then
+    FDefaultValueFormatter := FOnlyValueFormatter
+  else
+    FDefaultValueFormatter := GlobalValueFormatterSelectorList;
+
+  if rpfSkipValueFormatter in FormatFlags then
+    FCurrentValueFormatter := nil
+  else
+    FCurrentValueFormatter := FDefaultValueFormatter;
+
   if rpfMultiLine in FFormatFlags then
     FLineSeparator := LineEnding
   else
     FLineSeparator := ' ';
 
-  if FInValueFormatter then
-    Result := PrintWatchValueEx(AResValue, ADispFormat, FInValFormNestLevel) // This will increase it by one, compared to the value given to the formatter
-  else
-    Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
+  Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
 end;
 
-function TWatchResultPrinter.PrintWatchValue(AResValue: IWatchResultDataIntf;
-  const ADispFormat: TWatchDisplayFormat): String;
+function TWatchResultPrinter.PrintWatchValueIntf(AResValue: IWatchResultDataIntf;
+  const ADispFormat: TWatchDisplayFormat; AFlags: TWatchResultPrinterFlags): String;
+var
+  AResValObj: TWatchResultData;
+  IncLvl: Integer;
 begin
-  Result := PrintWatchValue(TWatchResultData(AResValue.GetInternalObject), ADispFormat);
+  AResValObj := TWatchResultData(AResValue.GetInternalObject);
+  FNextValueFormatter := nil;
+  if wpfUseDefaultValueFormatterList in AFlags then
+    FNextValueFormatter := FCurrentValueFormatter;
+  if wpfUseCurrentValueFormatterList in AFlags then
+    FNextValueFormatter := FDefaultValueFormatter;
+
+  FCurrentValueFormatter := nil;
+
+  IncLvl := 0;
+  if wpfResValueIsNestedValue in AFlags then begin
+    if AResValObj <> FResValueInFormatter then
+      FCurrentValueFormatter := FNextValueFormatter;
+    IncLvl := 1; // Incrementing the level protects against endless loop
+  end;
+
+  if FNextCallIsValueFormatter then begin
+    FNextCallIsValueFormatter := False;
+    Result := PrintWatchValueEx(AResValObj, ADispFormat, FInValFormNestLevel - 1 + IncLvl); // This will increase it by one, compared to the value given to the formatter
+  end
+  else begin
+    // TOOD: full init? Or Call PrintWatchValueEx ?
+    // TODO: inc level/count of iterations
+    Result := PrintWatchValueEx(AResValObj, ADispFormat, -1);
+  end;
 end;
 
 end.

@@ -15,15 +15,23 @@ unit IdeDebuggerValueFormatterIntf experimental;
 interface
 
 uses fgl, SysUtils, IdeDebuggerWatchValueIntf,
-  DbgIntfDebuggerBase;
+  DbgIntfDebuggerBase, Laz2_XMLCfg;
 
 type
+
+  ILazDbgIdeValueFormatterConfigStorageIntf = interface ['{FCB5F11D-47EF-4701-AEE2-7E22A2B2601C}']
+    procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
+  end;
 
   TLazDbgIdeValFormatterFeature = (
     vffFormatValue,    // FormatValue() for IWatchResultDataIntf
     vffFormatOldValue,  // FormatValue() for older backends TDBGType
     vffValueData,       // Normal data
-    vffValueMemDump     // MemDump
+    vffValueMemDump,    // MemDump
+
+    vffPreventOrigValue, // Does not support having the orig value shown with the translated result
+    vffSkipOnRecursion  // The formatter may match during printing the value => skip it in this case
   ) experimental;
   TLazDbgIdeValFormatterFeatures = set of TLazDbgIdeValFormatterFeature;
 
@@ -52,6 +60,7 @@ type
     function  GetDefaultsObject: TObject;  // for TXmlConfig.WriteObject / all published fields with DEFAULT values
     function CreateCopy: ILazDbgIdeValueFormatterIntf;
     procedure Free;
+    function GetInterface(const iidstr : shortstring;out obj) : boolean; // provided by TObject
   end;
 
   (* ILazDbgIdeValueFormatterSettingsFrameIntf
