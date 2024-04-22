@@ -833,7 +833,7 @@ end;
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
   const Handler: TMethod; AsFirst: Boolean);
 begin
-  if Handler.Code=nil then RaiseGDBException('TCustomForm.AddHandler');
+  if Handler.Code=nil then LazTracer.RaiseGDBException('TCustomForm.AddHandler');
   if FFormHandlers[HandlerType]=nil then
     FFormHandlers[HandlerType]:=TMethodList.Create;
   FFormHandlers[HandlerType].Add(Handler,not AsFirst);

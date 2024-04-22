@@ -132,7 +132,7 @@ procedure TMenuItem.CreateHandle;
 begin
   //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
-  if not FVisible then RaiseGDBException('');
+  if not FVisible then LazTracer.RaiseGDBException('');
   FHandle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
   CheckChildrenHandles;
 
@@ -876,7 +876,7 @@ procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
   if (Item = nil) then exit;
   if Item.Parent <> nil then
-    RaiseGDBException('Menu inserted twice');
+    LazTracer.RaiseGDBException('Menu inserted twice');
 
   // create Items if needed
   if FItems = nil then FItems := TMenuItems.Create(Self);

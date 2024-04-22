@@ -129,7 +129,7 @@ var
   HandlerType: TApplicationHandlerType;
 begin
   if Self=nil then
-    RaiseGDBException('TApplication.Destroy Self=nil');
+    LazTracer.RaiseGDBException('TApplication.Destroy Self=nil');
   Include(FFlags,AppDestroying);
 
   if Assigned(FOnDestroy) then FOnDestroy(Self);
@@ -1514,7 +1514,7 @@ end;
 procedure TApplication.AddHandler(HandlerType: TApplicationHandlerType;
   const Handler: TMethod; AsFirst: Boolean);
 begin
-  if Handler.Code=nil then RaiseGDBException('TApplication.AddHandler');
+  if Handler.Code=nil then LazTracer.RaiseGDBException('TApplication.AddHandler');
   if FApplicationHandlers[HandlerType]=nil then
     FApplicationHandlers[HandlerType]:=TMethodList.Create;
   FApplicationHandlers[HandlerType].Add(Handler,not AsFirst);
@@ -1651,7 +1651,7 @@ end;
 procedure TApplication.EnableIdleHandler;
 begin
   if FIdleLockCount<=0 then
-    RaiseGDBException('TApplication.EnableIdleHandler');
+    LazTracer.RaiseGDBException('TApplication.EnableIdleHandler');
   dec(FIdleLockCount);
 end;
 

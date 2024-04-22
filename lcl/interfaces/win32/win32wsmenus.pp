@@ -33,7 +33,7 @@ uses
   WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
   LCLProc, Themes, UxTheme, Win32Themes, Win32Extra,
-  FileUtil, LazUTF8;
+  FileUtil, LazUTF8, LazLoggerBase, LazTracer;
 
 type
 
@@ -1509,14 +1509,14 @@ begin
         MenuInfo.hSubmenu := ParentMenuHandle;
         CallMenuRes := SetMenuItemInfoW(ParentOfParent, AMenuItem.MergedParent.Command, False, @MenuInfo);
         if not CallMenuRes then
-          DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
+          LazLoggerBase.DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
       end;
     end;
   end;
 
   ItemIndex := AMenuItem.MergedParent.VisibleIndexOf(AMenuItem);
   if ItemIndex<0 then
-    RaiseGDBException('Invisible menu item: '+AMenuItem.Name+' ('+AMenuItem.Caption+')');
+    LazTracer.RaiseGDBException('Invisible menu item: '+AMenuItem.Name+' ('+AMenuItem.Caption+')');
   // MDI forms with a maximized MDI child insert a menu at the first index for
   // the MDI child's window menu, so we need to take that into account
   if Assigned(Application.MainForm) and
@@ -1571,7 +1571,7 @@ begin
   end;
   CallMenuRes := InsertMenuItemW(ParentMenuHandle, ItemIndex, True, @MenuInfo);
   if not CallMenuRes then
-    DebugLn(['InsertMenuItem failed with error: ', GetLastErrorReport]);
+    LazLoggerBase.DebugLn(['InsertMenuItem failed with error: ', GetLastErrorReport]);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1608,7 +1608,7 @@ begin
         MenuInfo.hSubmenu := 0;
         CallMenuRes := SetMenuItemInfoW(ParentOfParentHandle, AMenuItem.MergedParent.Command, False, @MenuInfo);
         if not CallMenuRes then
-          DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
+          LazLoggerBase.DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
         // Set menu item info destroys/corrupts our internal popup menu for the
         // unknown reason. We need to recreate it.
         if not IsMenu(ParentHandle) then

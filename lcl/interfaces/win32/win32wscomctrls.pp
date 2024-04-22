@@ -27,7 +27,7 @@ uses
   // LCL
   ComCtrls, LCLType, Controls, Graphics, Themes,
   ImgList, StdCtrls, Forms, LCLIntf, LCLProc,
-  LMessages, LazUTF8, LCLMessageGlue, InterfaceBase,
+  LMessages, LazUTF8, LCLMessageGlue, InterfaceBase, LazLoggerBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // win32 widgetset
@@ -318,7 +318,7 @@ begin
   if PreferredSizeStatusBar = 0 then
   begin
     AErrorCode := GetLastError;
-    DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+    LazLoggerBase.DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
     raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
   end;
   GetWindowRect(PreferredSizeStatusBar, R);

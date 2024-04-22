@@ -35,7 +35,7 @@ uses
   WSReferences, Graphics, ImgList, ActnList, Themes, Menus,
   Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
   // LazUtils
-  GraphType, LazUTF8, LazLoggerBase, LazUtilities, IntegerList;
+  GraphType, LazUTF8, LazLoggerBase, LazTracer, LazUtilities, IntegerList;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,

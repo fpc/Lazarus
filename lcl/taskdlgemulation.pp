@@ -46,8 +46,8 @@ uses
   Classes, SysUtils,
   LazUTF8,
   LCLType, LCLStrConsts, LCLIntf, LMessages, InterfaceBase, ImgList, LCLProc, DateUtils, Math, ComCtrls,
-  LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes;
-
+  LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes,
+  LazLoggerBase;
 
 type
 
@@ -1269,9 +1269,9 @@ begin
   // wParam: TRUE turns on marquee mode, FALSE turns off marquee mode.
   // lParam: Must be zero.
   // The return value is ignored
-  debugln(['TLCLTaskDialog.SetProgressBarType']);
-  debugln(['  Msg.wParam=',Msg.wParam]);
-  debugln(['  Msg.lParam=',Msg.lParam]);
+  LazLoggerBase.debugln(['TLCLTaskDialog.SetProgressBarType']);
+  LazLoggerBase.debugln(['  Msg.wParam=',Msg.wParam]);
+  LazLoggerBase.debugln(['  Msg.lParam=',Msg.lParam]);
   //if both tfShowMarqueeProgressBar and tfShowProgressBar are set, user can switch ProgressBar.Style
   if Assigned(ProgressBar) and (Msg.lParam = 0) then
   begin
@@ -1279,7 +1279,7 @@ begin
     begin
       if (tfShowMarqueeProgressBar in FDlg.Flags) then
       begin
-        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstMarquee');
+        LazLoggerBase.Debugln('TLCLTaskDialog.SetProgressBarType: set pbstMarquee');
         ProgressBar.Style := pbstMarquee;
       end;
     end
@@ -1287,7 +1287,7 @@ begin
     begin
       if (tfShowProgressBar in FDlg.Flags) then
       begin
-        Debugln('TLCLTaskDialog.SetProgressBarType: set pbstNormal');
+        LazLoggerBase.Debugln('TLCLTaskDialog.SetProgressBarType: set pbstNormal');
         ProgressBar.Style := pbstNormal;
       end;
     end;
@@ -1301,10 +1301,10 @@ begin
   // wParam: must be zero
   // lParam: The LOWORD specifies the minimum value. The HIWORD specifies the maximum value.
   // Returns the previous range if sucessfull, zero otherwise
-  debugln(['TLCLTaskDialog.SetProgressBarRange']);
-  debugln(['  Msg.wParam=',Msg.wParam]);
-  debugln(['  Msg.lParam LoWord=',LParamLoWord(Msg.lParam)]);
-  debugln(['  Msg.lParam HiWord=',LParamHiWord(Msg.lParam)]);
+  LazLoggerBase.debugln(['TLCLTaskDialog.SetProgressBarRange']);
+  LazLoggerBase.debugln(['  Msg.wParam=',Msg.wParam]);
+  LazLoggerBase.debugln(['  Msg.lParam LoWord=',LParamLoWord(Msg.lParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam HiWord=',LParamHiWord(Msg.lParam)]);
   if Assigned(ProgressBar) and (Msg.wParam = 0) then
   begin
     OldMin := ProgressBar.Min;
@@ -1324,9 +1324,9 @@ begin
   // wParam: An int that specifies the new position.
   // lParam: Must be zero
   // Returns the previous position
-  debugln(['TLCLTaskDialog.SetProgressBarPos']);
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln(['TLCLTaskDialog.SetProgressBarPos']);
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
   if Assigned(ProgressBar) and (Msg.lParam = 0) then
   begin
     OldPos := ProgressBar.Position;
@@ -1342,9 +1342,9 @@ begin
   // wParam: TRUE to set the state of the checkbox to be checked; FALSE to set it to be unchecked.
   // lParam  TRUE to set the keyboard focus to the checkbox; FALSE otherwise.
   // Return value is ignored
-  debugln('TLCLTaskDialog.ClickVerification');
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln('TLCLTaskDialog.ClickVerification');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
   if Assigned(VerifyCheckBox) then
   begin
     VerifyCheckBox.Checked := BOOL(Msg.wParam);
@@ -1363,9 +1363,9 @@ begin
   // wParam: An int value that specifies the ID of the button to be clicked.
   // lParam: Must be zero.
   // Return value is ignored
-  debugln('TLCLTaskDialog.ClickButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln('TLCLTaskDialog.ClickButton');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
 
   if (Msg.lPARAM = 0) then
   begin
@@ -1383,9 +1383,9 @@ begin
   // wParam: An int value that specifies the ID of the radio button to be clicked.
   // lParam: Must be zero.
   // Return value is ignored
-  debugln('TLCLTaskDialog.ClickRadioButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln('TLCLTaskDialog.ClickRadioButton');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
   if (Msg.lParam = 0) and (FDlg.RadioButtons.Count > 0) then
   begin
     RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
@@ -1401,9 +1401,9 @@ begin
   // wParam: An int value that specifies the ID of the button to be enabled/disabled.
   // lParam: 0: disable the button, otherwise enable
   // Return value is ignored
-  debugln('TLCLTaskDialog.EnableButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln('TLCLTaskDialog.EnableButton');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
   Btn := FindButtonByButtonID(Msg.wParam);
   if Assigned(Btn) then
     Btn.Enabled := (Msg.lParam <> 0);
@@ -1416,9 +1416,9 @@ begin
   // wParam: An int value that specifies the ID of the radio button to be enabled/disabled.
   // lParam: 0: disable the button, otherwise enable
   // Return value is ignored
-  debugln('TLCLTaskDialog.EnableRadioButton');
-  debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
-  debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
+  LazLoggerBase.debugln('TLCLTaskDialog.EnableRadioButton');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]); //ID of radiobutton
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]); //must be 0
   RadioBtn := FindRadioButtonByButtonID(Msg.wParam);
   if Assigned(RadioBtn) then
     RadioBtn.Enabled := (Msg.lParam <> 0);
@@ -1433,11 +1433,11 @@ begin
   // wParam: Indicates the element to update.
   // lParam: Pointer to a Unicode string that contains the new text.
   // Return value is ignored.
-  debugln('TLCLTaskDialog.UpdateElementText');
-  debugln(['  Msg.wParam=',(Msg.wParam)]);
-  debugln(['  Msg.lParam=',(Msg.lParam)]);
+  LazLoggerBase.debugln('TLCLTaskDialog.UpdateElementText');
+  LazLoggerBase.debugln(['  Msg.wParam=',(Msg.wParam)]);
+  LazLoggerBase.debugln(['  Msg.lParam=',(Msg.lParam)]);
   NewText := Utf16ToUtf8(Unicodestring(PWideChar(Msg.lParam)));
-  debugln('  NewText=',NewText);
+  LazLoggerBase.debugln('  NewText=',NewText);
   //It seems to be that the native Vista+ dialog does not adjust heights (properly),
   //if new label height is bigger, then e.g. FooterText may end up falling off the dialog...
   // ToDo: do this properly:

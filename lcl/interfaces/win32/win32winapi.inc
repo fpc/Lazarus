@@ -554,7 +554,8 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   begin
     DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, SourceStream.Size);
     if (DataHandle=HWND(0)) then begin
-      debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(SourceStream.Size));
+      LazLoggerBase.debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',
+        LazLoggerBase.dbgs(DataHandle),' DataSize=',LazLoggerBase.dbgs(SourceStream.Size));
       Result := false;
       exit;
     end;
@@ -689,7 +690,7 @@ begin
     end;
     try
       if not Windows.EmptyClipboard then begin
-        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A EmptyClipboard failed');
+        LazLoggerBase.debugln('TWin32WidgetSet.ClipboardGetOwnerShip A EmptyClipboard failed');
         exit;
       end;
       Result := true;
@@ -702,7 +703,7 @@ begin
       end;
     finally
       if not Windows.CloseClipboard then begin
-        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
+        LazLoggerBase.debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
       end;
     end;
   end;
@@ -1441,7 +1442,7 @@ begin
   // Note Michl: When style PS_USERSTYLE is used, lpStyle can't be nil, there
   //             must be dwSytleCount >= 1, see issue #30661
   if Result = 0 then
-    DebugLn('TWin32WidgetSet.ExtCreatePen returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+    LazLoggerBase.DebugLn('TWin32WidgetSet.ExtCreatePen returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
 end;
 
 function IsCharSurrogateHigh(ch: WideChar): Boolean; inline;

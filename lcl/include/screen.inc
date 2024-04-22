@@ -152,7 +152,7 @@ begin
      (csDestroying in ACustomForm.ComponentState) or
      (FCustomForms.IndexOf(ACustomForm)<0)
   then
-    RaiseGDBException('TScreen.MoveFormToFocusFront');
+    LazTracer.RaiseGDBException('TScreen.MoveFormToFocusFront');
   if (FCustomForms.Count=0) or (TObject(FCustomForms[0])<>ACustomForm) then
   begin
     FCustomForms.Remove(ACustomForm);
@@ -175,7 +175,7 @@ begin
      (csDestroying in ACustomForm.ComponentState) or
      (FCustomForms.IndexOf(ACustomForm)<0)
   then
-    RaiseGDBException('TScreen.MoveFormToZFront');
+    LazTracer.RaiseGDBException('TScreen.MoveFormToZFront');
 
   if (FCustomFormsZOrdered.Count = 0) or
      (TObject(FCustomFormsZOrdered[0]) <> ACustomForm) then
@@ -497,7 +497,7 @@ begin
   for i := 0 to MonitorCount - 1 do
     if Monitors[i].Handle = AHandle then
       Exit(Monitors[i]);
-  RaiseGDBException(AErrorMsg); // internal error
+  LazTracer.RaiseGDBException(AErrorMsg); // internal error
 end;
 
 function TScreen.MonitorFromPoint(const Point: TPoint;
@@ -1145,7 +1145,7 @@ procedure TScreen.AddHandler(HandlerType: TScreenNotification;
   const Handler: TMethod; AsFirst: Boolean);
 begin
   if Handler.Code = nil then
-    RaiseGDBException('TScreen.AddHandler');
+    LazTracer.RaiseGDBException('TScreen.AddHandler');
   if FScreenHandlers[HandlerType] = nil then
     FScreenHandlers[HandlerType] := TMethodList.Create;
   FScreenHandlers[HandlerType].Add(Handler, not AsFirst);

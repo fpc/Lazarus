@@ -48,7 +48,7 @@ var
   ScrollInfo: TScrollInfo;
 begin
   inherited CreateWnd;
-  if not HandleAllocated then RaiseGDBException('TCustomScrollBar.CreateWnd HandleAllocated=false');
+  if not HandleAllocated then LazTracer.RaiseGDBException('TCustomScrollBar.CreateWnd HandleAllocated=false');
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.nMin := FMin;
   ScrollInfo.nMax := FMax;

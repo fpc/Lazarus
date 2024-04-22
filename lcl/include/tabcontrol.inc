@@ -112,7 +112,7 @@ end;
 procedure TTabControlStrings.EndUpdate;
 begin
   if FUpdateCount=0 then
-    RaiseGDBException('TTabControlStrings.EndUpdate');
+    LazTracer.RaiseGDBException('TTabControlStrings.EndUpdate');
   dec(FUpdateCount);
 end;
 

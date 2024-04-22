@@ -24,8 +24,7 @@ unit WSProc;
 interface
 
 uses
-  LCLClasses, LCLProc, Controls, Menus;
-
+  LCLClasses, LCLProc, Controls, Menus, LazLoggerBase;
 
 function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
                                    const AProcName: String): Boolean;
@@ -43,7 +42,7 @@ function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
 
   procedure Warn;
   begin
-    DebugLn('[WARNING] %s called without reference for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
+    LazLoggerBase.DebugLn('[WARNING] %s called without reference for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
   end;
 begin
   Result := AComponent.ReferenceAllocated;
@@ -56,7 +55,7 @@ function WSCheckHandleAllocated(const AWincontrol: TWinControl;
 
   procedure Warn;
   begin
-    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
+    LazLoggerBase.DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AWincontrol.Name, AWincontrol.ClassName]);
   end;
 begin
   Result := AWinControl.HandleAllocated;
@@ -68,7 +67,7 @@ function WSCheckHandleAllocated(const AMenu: TMenu;
                                 const AProcName: String): Boolean;
   procedure Warn;
   begin
-    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AMenu.Name, AMenu.ClassName]);
+    LazLoggerBase.DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AMenu.Name, AMenu.ClassName]);
   end;
 begin
   Result := AMenu.HandleAllocated;

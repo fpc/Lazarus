@@ -248,7 +248,7 @@ end;
 
 procedure TStatusBar.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseGDBException('TStatusBar.EndUpdate');
+  if FUpdateLock<=0 then LazTracer.RaiseGDBException('TStatusBar.EndUpdate');
   if FUpdateLock=1 then begin
     // end update in Panels before decreasing FUpdateLock, so that
     // multiple changes of Panels will be combined

@@ -37,7 +37,7 @@ uses
   Controls, Buttons, Forms, Dialogs, StdCtrls,
   Graphics, Menus, ComCtrls, Themes, Win32Def, Spin,
   // LazUtils
-  GraphType, GraphMath, LazUTF8, Translations;
+  GraphType, GraphMath, LazLoggerBase, LazUTF8, Translations;
   {, Win32Debug}
 
 const

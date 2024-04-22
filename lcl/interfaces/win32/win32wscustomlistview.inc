@@ -326,7 +326,7 @@ var
   var
     DataHintInfo: PNMLVCACHEHINT;
   begin
-    debugln('HandleListViewOwnerDataHint');
+    LazLoggerBase.debugln('HandleListViewOwnerDataHint');
     DataHintInfo := PNMLVCACHEHINT(LPARAM);
     if not Assigned(DataHintInfo) or (not ALV.OwnerData) then
       Exit;

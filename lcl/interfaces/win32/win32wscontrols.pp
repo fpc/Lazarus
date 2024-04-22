@@ -32,7 +32,7 @@ uses
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { LCL }
-  InterfaceBase, LCLType, LCLIntf, LCLProc, LazUTF8, Themes, Forms;
+  InterfaceBase, LCLType, LCLIntf, LCLProc, LazUTF8, LazLoggerBase, Themes, Forms;
 
 type
   { TWin32WSDragImageListResolution }
@@ -223,7 +223,7 @@ begin
       if Window = 0 then
       begin
         AErrorCode := GetLastError;
-        DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+        LazLoggerBase.DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
         raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
       end;
     end;

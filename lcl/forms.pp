@@ -40,7 +40,7 @@ uses
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
   LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList, LazLoggerBase,
-  LazUtilities, GraphType;
+  Laztracer, LazUtilities, GraphType;
 
 type
   TProcedure = procedure;

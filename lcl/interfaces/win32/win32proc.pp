@@ -23,7 +23,7 @@ interface
 
 uses
   Windows, Win32Extra, Classes, SysUtils,
-  LMessages, LCLType, LCLProc, LCLMessageGlue, LazUTF8, Controls, Forms, Menus,
+  LMessages, LCLType, LCLProc, LCLMessageGlue, LazUTF8, LazLoggerBase, Controls, Forms, Menus,
   GraphType, IntfGraphics, Themes;
 
 const
@@ -1165,7 +1165,7 @@ end;
 function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): TRawImageLineOrder;
   procedure DbgLog(const AFunc: String);
   begin
-    DebugLn('GetBitmapOrder - GetDIBits ', AFunc, ' failed: ', GetLastErrorText(Windows.GetLastError));
+    LazLoggerBase.DebugLn('GetBitmapOrder - GetDIBits ', AFunc, ' failed: ', GetLastErrorText(Windows.GetLastError));
   end;
 
 var

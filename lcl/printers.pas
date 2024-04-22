@@ -978,7 +978,7 @@ end;
 procedure TPrinter.DoSetBinName(aName: string);
 begin
   if SupportedBins.Count>0 then
-    DebugLn('Warning: bin %s is not allowed',[aName]);
+    LazLoggerBase.DebugLn('Warning: bin %s is not allowed',[aName]);
 end;
 
 //Initialise aPaperRc with the aName paper rect

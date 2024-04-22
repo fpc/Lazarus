@@ -187,33 +187,33 @@ procedure DebugLnExit (const s1, s2: string; const s3: string = '';
 
 procedure CloseDebugOutput; deprecated 'Use DebugLogger.Finish instead';
 
-function DbgS(const c: cardinal): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const i: longint): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const i: int64): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const q: qword): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const r: TRect): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const p: TPoint): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const p: pointer): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const b: boolean): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const s: TComponentState): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const m: TMethod): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgSName(const p: TObject): string; overload; deprecated 'Use DebugLogger.DbgSName instead';
-function DbgSName(const p: TClass): string; overload; deprecated 'Use DebugLogger.DbgSName instead';
+function DbgS(const c: cardinal): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const i: longint): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const i: int64): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const q: qword): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const r: TRect): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const p: TPoint): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const p: pointer): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const b: boolean): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const s: TComponentState): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const m: TMethod): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgSName(const p: TObject): string; overload; deprecated 'Use LazLoggerBase.DbgSName instead';
+function DbgSName(const p: TClass): string; overload; deprecated 'Use LazLoggerBase.DbgSName instead';
 
 function DbgStr(const StringWithSpecialChars: string): string; overload;
-  deprecated 'Use DebugLogger.DbgStr instead';
+  deprecated 'Use LazLoggerBase.DbgStr instead';
 function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
-  deprecated 'Use DebugLogger.DbgWideStr instead';
+  deprecated 'Use LazLoggerBase.DbgWideStr instead';
 function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
-  deprecated 'Use DebugLogger.dbgMemRange instead';
+  deprecated 'Use LazLoggerBase.dbgMemRange instead';
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
-  deprecated 'Use DebugLogger.dbgMemStream instead';
-function dbgObjMem(AnObject: TObject): string; overload; deprecated 'Use DebugLogger.dbgObjMem instead';
-function dbgHex(i: Int64): string; overload; deprecated 'Use DebugLogger.dbgHex instead';
-function DbgS(const i1,i2,i3,i4: integer): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const Shift: TShiftState): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
-function DbgS(const ASize: TSize): string; overload; deprecated 'Use DebugLogger.Dbgs instead';
+  deprecated 'Use LazLoggerBase.dbgMemStream instead';
+function dbgObjMem(AnObject: TObject): string; overload; deprecated 'Use LazLoggerBase.dbgObjMem instead';
+function dbgHex(i: Int64): string; overload; deprecated 'Use LazLoggerBase.dbgHex instead';
+function DbgS(const i1,i2,i3,i4: integer): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const Shift: TShiftState): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
+function DbgS(const ASize: TSize): string; overload; deprecated 'Use LazLoggerBase.Dbgs instead';
 
 function DbgSWindowPosFlags(Flags: UInt): String;
 function DbgsVKCode(c: word): string;
@@ -1382,7 +1382,7 @@ begin
   VK_LCL_ENDCALL: Result:='VK_LCL_ENDCALL';
   VK_LCL_AT: Result:='VK_LCL_AT';
   else
-    Result:='VK_('+dbgs(c)+')';
+    Result:='VK_('+LazLoggerBase.dbgs(c)+')';
   end;
 end;
 
@@ -1390,26 +1390,26 @@ function DbgS(const ATM: TTextMetric): string;
 begin
   with ATM do
     Result :=
-      'tmHeight: ' + DbgS(tmHeight) +
-      ' tmAscent: ' + DbgS(tmAscent) +
-      ' tmDescent: ' + DbgS(tmDescent) +
-      ' tmInternalLeading: ' + DbgS(tmInternalLeading) +
-      ' tmExternalLeading: ' + DbgS(tmExternalLeading) +
-      ' tmAveCharWidth: ' + DbgS(tmAveCharWidth) +
-      ' tmMaxCharWidth: ' + DbgS(tmMaxCharWidth) +
-      ' tmWeight: ' + DbgS(tmWeight) +
-      ' tmOverhang: ' + DbgS(tmOverhang) +
-      ' tmDigitizedAspectX: ' + DbgS(tmDigitizedAspectX) +
-      ' tmDigitizedAspectY: ' + DbgS(tmDigitizedAspectY) +
+      'tmHeight: ' + LazLoggerBase.DbgS(tmHeight) +
+      ' tmAscent: ' + LazLoggerBase.DbgS(tmAscent) +
+      ' tmDescent: ' + LazLoggerBase.DbgS(tmDescent) +
+      ' tmInternalLeading: ' + LazLoggerBase.DbgS(tmInternalLeading) +
+      ' tmExternalLeading: ' + LazLoggerBase.DbgS(tmExternalLeading) +
+      ' tmAveCharWidth: ' + LazLoggerBase.DbgS(tmAveCharWidth) +
+      ' tmMaxCharWidth: ' + LazLoggerBase.DbgS(tmMaxCharWidth) +
+      ' tmWeight: ' + LazLoggerBase.DbgS(tmWeight) +
+      ' tmOverhang: ' + LazLoggerBase.DbgS(tmOverhang) +
+      ' tmDigitizedAspectX: ' + LazLoggerBase.DbgS(tmDigitizedAspectX) +
+      ' tmDigitizedAspectY: ' + LazLoggerBase.DbgS(tmDigitizedAspectY) +
       ' tmFirstChar: ' + tmFirstChar +
       ' tmLastChar: ' + tmLastChar +
       ' tmDefaultChar: ' + tmDefaultChar +
       ' tmBreakChar: ' + tmBreakChar +
-      ' tmItalic: ' + DbgS(tmItalic) +
-      ' tmUnderlined: ' + DbgS(tmUnderlined) +
-      ' tmStruckOut: ' + DbgS(tmStruckOut) +
-      ' tmPitchAndFamily: ' + DbgS(tmPitchAndFamily) +
-      ' tmCharSet: ' + DbgS(tmCharSet);
+      ' tmItalic: ' + LazLoggerBase.DbgS(tmItalic) +
+      ' tmUnderlined: ' + LazLoggerBase.DbgS(tmUnderlined) +
+      ' tmStruckOut: ' + LazLoggerBase.DbgS(tmStruckOut) +
+      ' tmPitchAndFamily: ' + LazLoggerBase.DbgS(tmPitchAndFamily) +
+      ' tmCharSet: ' + LazLoggerBase.DbgS(tmCharSet);
 end;
 
 function DbgS(const AScrollInfo: TScrollInfo): string;
@@ -1417,14 +1417,14 @@ begin
   Result := '';
 
   if (SIF_POS and AScrollInfo.fMask) > 0 then
-    Result := 'Pos: ' + DbgS(AScrollInfo.nPos);
+    Result := 'Pos: ' + LazLoggerBase.DbgS(AScrollInfo.nPos);
   if (SIF_RANGE and AScrollInfo.fMask) > 0 then
-    Result := Result + ' Min: ' + DbgS(AScrollInfo.nMin) + ' Max: ' +
-      DbgS(AScrollInfo.nMax);
+    Result := Result + ' Min: ' + LazLoggerBase.DbgS(AScrollInfo.nMin) +
+      ' Max: ' + LazLoggerBase.DbgS(AScrollInfo.nMax);
   if (SIF_PAGE and AScrollInfo.fMask) > 0 then
-    Result := Result + ' Page: ' + DbgS(AScrollInfo.nPage);
+    Result := Result + ' Page: ' + LazLoggerBase.DbgS(AScrollInfo.nPage);
   if (SIF_TRACKPOS and AScrollInfo.fMask) > 0 then
-    Result := Result + ' TrackPos: ' + DbgS(AScrollInfo.nTrackPos);
+    Result := Result + ' TrackPos: ' + LazLoggerBase.DbgS(AScrollInfo.nTrackPos);
 
   if Result = '' then Result := '(no scrollinfo)';
 end;
@@ -1473,18 +1473,18 @@ begin
   s:='';
   for i:=Low(Args) to High(Args) do begin
     case Args[i].VType of
-    vtInteger: s:=s+dbgs(Args[i].vinteger);
-    vtInt64: s:=s+dbgs(Args[i].VInt64^);
-    vtQWord: s:=s+dbgs(Args[i].VQWord^);
-    vtBoolean: s:=s+dbgs(Args[i].vboolean);
-    vtExtended: s:=s+dbgs(Args[i].VExtended^);
+    vtInteger: s:=s+LazLoggerBase.dbgs(Args[i].vinteger);
+    vtInt64: s:=s+LazLoggerBase.dbgs(Args[i].VInt64^);
+    vtQWord: s:=s+LazLoggerBase.dbgs(Args[i].VQWord^);
+    vtBoolean: s:=s+LazLoggerBase.dbgs(Args[i].vboolean);
+    vtExtended: s:=s+LazLoggerBase.dbgs(Args[i].VExtended^);
 {$ifdef FPC_CURRENCY_IS_INT64}
     // MWE:
     // ppcppc 2.0.2 has troubles in choosing the right dbgs()
     // so we convert here (i don't know about other versions
-    vtCurrency: s:=s+dbgs(int64(Args[i].vCurrency^)/10000, 4);
+    vtCurrency: s:=s+LazLoggerBase.dbgs(int64(Args[i].vCurrency^)/10000, 4);
 {$else}
-    vtCurrency: s:=s+dbgs(Args[i].vCurrency^);
+    vtCurrency: s:=s+LazLoggerBase.dbgs(Args[i].vCurrency^);
 {$endif}
     vtString: s:=s+Args[i].VString^;
     vtAnsiString: s:=s+AnsiString(Args[i].VAnsiString);
@@ -1494,9 +1494,9 @@ begin
     vtWideChar: s:=AnsiString(WideString(s)+Args[i].VWideChar);
     vtWidestring: s:=AnsiString(WideString(s)+WideString(Args[i].VWideString));
     vtUnicodeString: s:=AnsiString(UnicodeString(s)+UnicodeString(Args[i].VUnicodeString));
-    vtObject: s:=s+DbgSName(Args[i].VObject);
-    vtClass: s:=s+DbgSName(Args[i].VClass);
-    vtPointer: s:=s+Dbgs(Args[i].VPointer);
+    vtObject: s:=s+LazLoggerBase.DbgSName(Args[i].VObject);
+    vtClass: s:=s+LazLoggerBase.DbgSName(Args[i].VClass);
+    vtPointer: s:=s+LazLoggerBase.Dbgs(Args[i].VPointer);
     else
       DbgOutThreadLog('?unknown variant?');
     end;
@@ -1683,18 +1683,18 @@ var
 
   procedure RaiseNotCreated;
   begin
-    DebugLn('TDebugLCLItems.MarkDestroyed not created: p=',dbgs(p));
+    LazLoggerBase.DebugLn('TDebugLCLItems.MarkDestroyed not created: p=',LazLoggerBase.dbgs(p));
     DumpStack;
-    RaiseGDBException('TDebugLCLItems.MarkDestroyed');
+    LazTracer.RaiseGDBException('TDebugLCLItems.MarkDestroyed');
   end;
 
   procedure RaiseDoubleDestroyed;
   begin
-    debugLn('TDebugLCLItems.MarkDestroyed Double destroyed:');
-    debugln(Info.AsString(true));
-    debugln('Now:');
-    DebugLn(GetStackTrace(true));
-    RaiseGDBException('RaiseDoubleDestroyed');
+    LazLoggerBase.debugLn('TDebugLCLItems.MarkDestroyed Double destroyed:');
+    LazLoggerBase.debugln(Info.AsString(true));
+    LazLoggerBase.debugln('Now:');
+    LazLoggerBase.DebugLn(GetStackTrace(true));
+    LazTracer.RaiseGDBException('RaiseDoubleDestroyed');
   end;
 
 begin
@@ -1726,11 +1726,11 @@ var
 
   procedure RaiseDoubleCreated;
   begin
-    debugLn('TDebugLCLItems.MarkCreated CREATED TWICE. Old:');
-    debugln(Info.AsString(true));
-    debugln(' New=',dbgs(p),' InfoText="',InfoText,'"');
-    DebugLn(GetStackTrace(true));
-    RaiseGDBException('RaiseDoubleCreated');
+    LazLoggerBase.debugLn('TDebugLCLItems.MarkCreated CREATED TWICE. Old:');
+    LazLoggerBase.debugln(Info.AsString(true));
+    LazLoggerBase.debugln(' New=',LazLoggerBase.dbgs(p),' InfoText="',InfoText,'"');
+    LazLoggerBase.DebugLn(GetStackTrace(true));
+    LazTracer.RaiseGDBException('RaiseDoubleCreated');
   end;
 
 begin
@@ -1755,8 +1755,8 @@ end;
 
 function TDebugLCLItemInfo.AsString(WithStackTraces: boolean): string;
 begin
-  Result:='Item='+Dbgs(Item)+LineEnding
-          +'Info="'+DbgStr(Info)+LineEnding;
+  Result:='Item='+LazLoggerBase.Dbgs(Item)+LineEnding
+          +'Info="'+LazLoggerBase.DbgStr(Info)+LineEnding;
   if WithStackTraces then
     Result:=Result+'Creation:'+LineEnding+StackTraceAsString(CreationStack,true);
   if IsDestroyed then begin

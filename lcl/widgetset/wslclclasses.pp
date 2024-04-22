@@ -39,7 +39,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils, LCLProc, LazLoggerBase;
 
 type
   { TWSPrivate }
@@ -320,7 +320,7 @@ begin
 
   if WSPrivate = TWSPrivate then begin
     if ParentWSNode^.VClass = nil then begin
-      DebugLN('[WARNING] Missing VClass for: ', ParentWSNode^.WSClass.ClassName);
+      LazLoggerBase.DebugLN('[WARNING] Missing VClass for: ', ParentWSNode^.WSClass.ClassName);
       PClass(ANode^.VClass + vmtWSPrivate)^ := TWSPrivate;
     end
     else PClass(ANode^.VClass + vmtWSPrivate)^ :=
@@ -391,7 +391,7 @@ begin
             Break;
           end;
           if idx = VvmtCount - 1 then begin
-            DebugLn('[WARNING] VMT entry "', Cmnt^.Entries[n].Name^,
+            LazLoggerBase.DebugLn('[WARNING] VMT entry "', Cmnt^.Entries[n].Name^,
               '" not found in "', CommonClass.ClassName, '"');
             Break;
           end;

@@ -844,7 +844,7 @@ var
 
     if ABitmap = 0
     then begin
-      DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+      LazLoggerBase.DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
       Exit(False);
     end;
     if DstLinePtr = nil then Exit(False);
@@ -926,7 +926,7 @@ begin
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
   if AMask = 0 then  
-    DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+    LazLoggerBase.DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
   Result := AMask <> 0;
   //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;

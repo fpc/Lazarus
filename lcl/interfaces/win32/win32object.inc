@@ -60,7 +60,7 @@ begin
   n := FTimerData.Count;
   if (n > 0) then
   begin
-    DebugLn(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    LazLoggerBase.DebugLn(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
     while (n > 0) do
     begin
       dec(n);
@@ -120,7 +120,7 @@ begin
   Done := True;
   if not WinRegister then
   begin
-    DebugLn('Trace:Win32Object.Init - Register Failed');
+    LazLoggerBase.DebugLn('Trace:Win32Object.Init - Register Failed');
     Exit;
   end;
 
@@ -430,7 +430,7 @@ begin
     end else
     if retVal = $FFFFFFFF then
     begin
-      DebugLn('[TWin32WidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
+      LazLoggerBase.DebugLn('[TWin32WidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
       break;
     end;
   until false;

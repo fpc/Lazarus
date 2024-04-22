@@ -72,7 +72,7 @@ procedure TCustomComboBox.DestroyWnd;
 var
   NewStrings: TStrings;
 begin
-  if not HandleAllocated then RaiseGDBException('');
+  if not HandleAllocated then LazTracer.RaiseGDBException('');
   // store itemindex
   FItemIndex := TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   // create an internal list for storing items internally

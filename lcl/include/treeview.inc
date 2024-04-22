@@ -1438,7 +1438,7 @@ begin
     // remove from parents list
     OldIndex:=FIndex;
     if OldIndex<0 then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     for i:=OldIndex to FParent.FCount-2 do begin
       FParent.FItems[i]:=FParent.FItems[i+1];
       FParent.FItems[i].FIndex:=i;
@@ -2095,70 +2095,70 @@ var
   Node1: TTreeNode;
 begin
   if FCapacity<0 then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if FCapacity<FCount then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if FCount<0 then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if FHeight<0 then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FItems<>nil) and (FCapacity<=0) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FCapacity>0) and (FItems=nil) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FNextBrother<>nil) and (FNextBrother.FPrevBrother<>Self) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FPrevBrother<>nil) and (FPrevBrother.FNextBrother<>Self) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FNextMultiSelected<>nil) and (FNextMultiSelected.FPrevMultiSelected<>Self) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FPrevMultiSelected<>nil) and (FPrevMultiSelected.FNextMultiSelected<>Self) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if MultiSelected then begin
     Node1:=TreeView.GetFirstMultiSelected;
     while (Node1<>nil) and (Node1<>Self) do Node1:=Node1.FNextMultiSelected;
     if Node1=nil then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
   end;
   if Selected and (TreeView<>nil) and (tvoAllowMultiselect in TreeView.Options)
   and (not MultiSelected) then
-    RaiseGDBException('');// selected, but not multiselected
+    LazTracer.RaiseGDBException('');// selected, but not multiselected
 
   // check children
   RealSubTreeCount:=1;
   for i:=0 to FCount-1 do begin
-    if (Items[i]=nil) then RaiseGDBException('');
+    if (Items[i]=nil) then LazTracer.RaiseGDBException('');
     Node1:=Items[i];
-    if Node1.FParent<>Self then RaiseGDBException('');
+    if Node1.FParent<>Self then LazTracer.RaiseGDBException('');
     if (i=0) and (Node1.FPrevBrother<>nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i>0) and (Node1.FPrevBrother=nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i>0) and (Node1.FPrevBrother<>Items[i-1]) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i<FCount-1) and (Node1.FNextBrother=nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i<FCount-1) and (Node1.FNextBrother<>Items[i+1]) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i=FCount-1) and (Node1.FNextBrother<>nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if Node1.FIndex<>i then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     Node1.ConsistencyCheck;
     inc(RealSubTreeCount,Node1.SubTreeCount);
   end;
   if FParent<>nil then begin
-    if FParent.IndexOf(Self)<0 then RaiseGDBException('');
+    if FParent.IndexOf(Self)<0 then LazTracer.RaiseGDBException('');
   end;
-  if RealSubTreeCount<>SubTreeCount then RaiseGDBException('');
-  if FTop<0 then RaiseGDBException('');
+  if RealSubTreeCount<>SubTreeCount then LazTracer.RaiseGDBException('');
+  if FTop<0 then LazTracer.RaiseGDBException('');
   // check for circles
-  if FNextBrother=Self then RaiseGDBException('');
-  if FPrevBrother=Self then RaiseGDBException('');
-  if FParent=Self then RaiseGDBException('');
+  if FNextBrother=Self then LazTracer.RaiseGDBException('');
+  if FPrevBrother=Self then LazTracer.RaiseGDBException('');
+  if FParent=Self then LazTracer.RaiseGDBException('');
   Node1:=FParent;
   while Node1<>nil do begin
-    if (Node1=Self) then RaiseGDBException('');
+    if (Node1=Self) then LazTracer.RaiseGDBException('');
     Node1:=Node1.FParent;
   end;
 end;
@@ -3135,7 +3135,7 @@ var
   OldCache: TNodeCache;
 begin
   if FUpdateCount<0 then
-    RaiseGDBException('FUpdateCount<0');
+    LazTracer.RaiseGDBException('FUpdateCount<0');
   RealCount:=0;
   Node:=GetFirstNode;
   while Node<>nil do begin
@@ -3146,37 +3146,37 @@ begin
   end;
   //DebugLn(' ConsistencyCheck: B  ',RealCount,',',FCount);
   if RealCount<>FCount then
-    RaiseGDBException('RealCount<>FCount');
+    LazTracer.RaiseGDBException('RealCount<>FCount');
   if (FTopLvlCapacity<=0) and (FTopLvlItems<>nil) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FTopLvlCapacity>0) and (FTopLvlItems=nil) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if FTopLvlCapacity<FTopLvlCount then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FTopLvlCount<0) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   for i:=0 to FTopLvlCount-1 do begin
     Node:=FTopLvlItems[i];
     if (i=0) and (Node.FPrevBrother<>nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i>0) and (Node.FPrevBrother<>FTopLvlItems[i-1]) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if (i<FTopLvlCount-1) and (Node.FNextBrother<>FTopLvlItems[i+1])
     then begin
       DebugLn(' CONSISTENCY i=%d FTopLvlCount=%d FTopLvlItems[i]=%p FTopLvlItems[i].FNextBrother=%p FTopLvlItems[i+1]=%p',
              [i, FTopLvlCount, Pointer(Node), Pointer(Node.FNextBrother), Pointer(FTopLvlItems[i+1])]);
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     end;
     if (i=FTopLvlCount-1) and (Node.FNextBrother<>nil) then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
     if Node.FIndex<>i then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
   end;
   if FNodeCache.CacheNode<>nil then begin
     OldCache:=FNodeCache;
     ClearCache;
     if GetNodeFromIndex(OldCache.CacheIndex)<>OldCache.CacheNode then
-      RaiseGDBException('');
+      LazTracer.RaiseGDBException('');
   end;
 end;
 
@@ -3612,7 +3612,7 @@ end;
 procedure TCustomTreeView.EndUpdate;
 begin
   UnlockSelectionChangeEvent;
-  if Items.FUpdateCount<=0 then RaiseGDBException('TCustomTreeView.EndUpdate');
+  if Items.FUpdateCount<=0 then LazTracer.RaiseGDBException('TCustomTreeView.EndUpdate');
   Items.EndUpdate;
   if Items.FUpdateCount=0 then begin
     // ToDo: only refresh if something changed
@@ -6600,25 +6600,25 @@ var OldMaxRight, OldLastTop, OldMaxLvl: integer;
   OldTopItem, OldBottomItem: TTreeNode;
 begin
   if Canvas=nil then
-    RaiseGDBException('Canvas=nil');
+    LazTracer.RaiseGDBException('Canvas=nil');
   if FDefItemHeight<0 then
-    RaiseGDBException('FDefItemHeight='+IntToStr(FDefItemHeight));
+    LazTracer.RaiseGDBException('FDefItemHeight='+IntToStr(FDefItemHeight));
   if FIndent<0 then
-    RaiseGDBException('FIndent='+IntToStr(FIndent));
+    LazTracer.RaiseGDBException('FIndent='+IntToStr(FIndent));
   if FMaxRight<0 then
-    RaiseGDBException('FMaxRight='+IntToStr(FMaxRight));
+    LazTracer.RaiseGDBException('FMaxRight='+IntToStr(FMaxRight));
   if FTreeNodes=nil then
-    RaiseGDBException('FTreeNodes=nil');
+    LazTracer.RaiseGDBException('FTreeNodes=nil');
   FTreeNodes.ConsistencyCheck;
   if Items.FUpdateCount<0 then
-    RaiseGDBException('FUpdateCount='+IntToStr(Items.FUpdateCount));
+    LazTracer.RaiseGDBException('FUpdateCount='+IntToStr(Items.FUpdateCount));
   if (not (tvsTopsNeedsUpdate in FStates)) then begin
     if Items.GetLastSubNode<>nil then begin
       OldLastTop:=Items.GetLastSubNode.Top;
       Include(FStates,tvsTopsNeedsUpdate);
       UpdateAllTops;
       if OldLastTop<>Items.GetLastSubNode.Top then
-        RaiseGDBException('OldLastTop='+DbgS(OldLastTop)
+        LazTracer.RaiseGDBException('OldLastTop='+DbgS(OldLastTop)
         +'<>Items.GetLastSubNode.Top='+DbgS(Items.GetLastSubNode.Top));
     end;
   end;
@@ -6627,32 +6627,32 @@ begin
     Include(FStates,tvsMaxRightNeedsUpdate);
     UpdateMaxRight;
     if OldMaxRight<>FMaxRight then
-      RaiseGDBException('OldMaxRight<>FMaxRight');
+      LazTracer.RaiseGDBException('OldMaxRight<>FMaxRight');
   end;
   if not (tvsMaxLvlNeedsUpdate in FStates) then begin
     OldMaxLvl:=FMaxLvl;
     Include(FStates,tvsMaxLvlNeedsUpdate);
     UpdateMaxLvl;
     if OldMaxLvl<>FMaxLvl then
-      RaiseGDBException('OldMaxLvl<>FMaxLvl');
+      LazTracer.RaiseGDBException('OldMaxLvl<>FMaxLvl');
   end;
   if (tvsIsEditing in FStates) and (FSelectedNode=nil) then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
   if (FSelectedNode<>nil) then begin
     if not FSelectedNode.IsVisible then
-      RaiseGDBException('not FSelectedNode.IsVisible');
+      LazTracer.RaiseGDBException('not FSelectedNode.IsVisible');
   end;
   if not (tvsTopItemNeedsUpdate in FStates) then begin
     OldTopItem:=FTopItem;
     UpdateTopItem;
     if FTopItem<>OldTopItem then
-      RaiseGDBException('FTopItem<>OldTopItem');
+      LazTracer.RaiseGDBException('FTopItem<>OldTopItem');
   end;
   if not (tvsBottomItemNeedsUpdate in FStates) then begin
     OldBottomItem:=FBottomItem;
     UpdateBottomItem;
     if FBottomItem<>OldBottomItem then
-      RaiseGDBException('FBottomItem<>OldBottomItem');
+      LazTracer.RaiseGDBException('FBottomItem<>OldBottomItem');
   end;
 end;
 
@@ -6675,7 +6675,7 @@ procedure TCustomTreeView.UnlockSelectionChangeEvent;
 begin
   dec(FSelectionChangeEventLock);
   if FSelectionChangeEventLock<0 then
-    RaiseGDBException('TCustomTreeView.UnlockSelectionChangeEvent');
+    LazTracer.RaiseGDBException('TCustomTreeView.UnlockSelectionChangeEvent');
   if (FSelectionChangeEventLock=0) and (tvsSelectionChanged in FStates) then
     InternalSelectionChanged;
 end;

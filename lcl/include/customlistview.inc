@@ -1277,7 +1277,7 @@ end;
 procedure TCustomListView.EndUpdate;
 begin
   if FUpdateCount <= 0
-  then RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
+  then LazTracer.RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
   
   Dec(FUpdateCount);
   if FUpdateCount=0 then Exclude(FFlags, lffPreparingSorting);
