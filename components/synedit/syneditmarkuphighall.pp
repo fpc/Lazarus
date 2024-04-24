@@ -2133,8 +2133,6 @@ var
       // New StartPoint from existing matches
       Result := True;
       FStartPoint := FMatches.StartPoint[0];
-      if AFirstKeptValidIdx = 0 then
-        AFirstKeptValidIdx := -1;
     end
 
     else begin
