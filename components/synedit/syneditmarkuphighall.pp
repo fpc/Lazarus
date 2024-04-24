@@ -2025,23 +2025,10 @@ var
        );
   end;
 
-  function HasInvalidationBetween(ARangeStart, ARangeEnd: TPoint): Boolean; // Check if point is in invalid range
-  begin
-    Result :=
-      ((FFirstInvalidLine >= ARangeStart.y) and (FFirstInvalidLine <= ARangeEnd.y)) or
-      ((FLastInvalidLine >= ARangeStart.y) and (FLastInvalidLine <= ARangeEnd.y));
-  end;
-
   function IsStartAtMatch0: Boolean; // Check if FStartPoint = FMatches[0]
   begin
     Result := (FMatches.Count > 0) and
               (FStartPoint.y = FMatches.StartPoint[0].y)and (FStartPoint.x = FMatches.StartPoint[0].x);
-  end;
-
-  function IsEndAtMatch(APoint: TPoint): Boolean;
-  begin
-    Result := (FMatches.Count > 0) and
-              (APoint.y = FMatches.EndPoint[FMatches.Count].y)and (APoint.x = FMatches.EndPoint[FMatches.Count].x);
   end;
 
   function AdjustedSearchStrMaxLines: Integer;
