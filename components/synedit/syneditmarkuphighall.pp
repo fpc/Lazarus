@@ -1819,8 +1819,7 @@ begin
   if AIndex >= Count then
     exit;
   if AIndex + ACount > Count then
-    ACount := Count - AIndex
-  else
+    ACount := Count - AIndex;
   DeleteRows(AIndex, ACount);
 end;
 
