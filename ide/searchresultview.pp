@@ -44,7 +44,7 @@ uses
   // LazControls
   TreeFilterEdit, ExtendedNotebook,
   // LazUtils
-  LazUTF8, LazUtilities, LazFileUtils, LazLoggerBase, LazStringUtils,
+  LazUTF8, LazUtilities, LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils,
   // IdeIntf
   IDEImagesIntf, IDECommands, InputHistory,
   // IdeConfig
@@ -1804,7 +1804,7 @@ var
   i: integer;
 begin
   if (fUpdateCount = 0) then
-    RaiseGDBException('TLazSearchResultTV.EndUpdate');
+    LazTracer.RaiseGDBException('TLazSearchResultTV.EndUpdate');
   Dec(fUpdateCount);
   if (fUpdateCount = 0) then
   begin

@@ -21,6 +21,8 @@ uses
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, Dialogs, PairSplitter, ComCtrls,
   LCLType, IDEDialogs,
+  // LazUtils
+  LazLoggerBase,
   // DockedFormEditor
   DockedOptionsIDE, DockedStrConsts, DockedTools;
 
@@ -240,7 +242,7 @@ end;
 
 procedure TAnchorControl.AnchorControlShowHint(Sender: TObject; HintInfo: PHintInfo);
 begin
-  HintInfo^.HintStr := 'Name [' + DbgSName(RootControl) + ']' + LineEnding +
+  HintInfo^.HintStr := 'Name [' + LazLoggerBase.DbgSName(RootControl) + ']' + LineEnding +
                        'Bounds [' + BoundsString + ']' + LineEnding +
                        'Align [' + DbgS(Align) + ']' + LineEnding +
                        AnchorsString +

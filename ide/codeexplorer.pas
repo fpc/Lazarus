@@ -41,7 +41,7 @@ uses
   // RTL+FCL
   Classes, SysUtils, Types, AVL_Tree,
   // LazUtils
-  LazStringUtils, LazLoggerBase,
+  LazStringUtils, LazLoggerBase, LazTracer,
   // LCL
   LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
   // CodeTools
@@ -2055,7 +2055,7 @@ var
   CurPage: TCodeExplorerPage;
 begin
   if FUpdateCount<=0 then
-    RaiseGDBException('TCodeExplorerView.EndUpdate');
+    LazTracer.RaiseGDBException('TCodeExplorerView.EndUpdate');
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
     CurPage:=CurrentPage;
@@ -2942,7 +2942,7 @@ end;
 function TCodeObserverStatementState.Pop: TCodeObsStackItemType;
 begin
   if StackPtr=0 then
-    RaiseGDBException('inconsistency');
+    LazTracer.RaiseGDBException('inconsistency');
   dec(StackPtr);
   Result:=Stack[StackPtr].Typ;
   if IgnoreConstLevel>StackPtr then

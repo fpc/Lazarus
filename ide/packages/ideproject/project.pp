@@ -53,7 +53,7 @@ uses
   LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
-  LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
+  LazLoggerBase, LazTracer, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf,
@@ -2124,7 +2124,7 @@ end;
 procedure TUnitInfo.SetFilename(const AValue: string);
 begin
   if fSource<>nil then
-    RaiseGDBException('TUnitInfo.SetFilename Source<>nil')
+    LazTracer.RaiseGDBException('TUnitInfo.SetFilename Source<>nil')
   else
     SetInternalFilename(AValue);
 end;
@@ -2324,8 +2324,8 @@ end;
 function TUnitInfo.AddRequiresComponentDependency(RequiredUnit: TUnitInfo;
   Types: TUnitCompDependencyTypes): TUnitComponentDependency;
 begin
-  if RequiredUnit=nil then RaiseGDBException('inconsistency');
-  if RequiredUnit=Self then RaiseGDBException('inconsistency');
+  if RequiredUnit=nil then LazTracer.RaiseGDBException('inconsistency');
+  if RequiredUnit=Self then LazTracer.RaiseGDBException('inconsistency');
   // search a dependency to this RequiredUnit
   Result:=FirstRequiredComponent;
   while Result<>nil do begin
@@ -4068,7 +4068,7 @@ end;
 
 procedure TProject.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseGDBException('TProject.EndUpdate');
+  if FUpdateLock<=0 then LazTracer.RaiseGDBException('TProject.EndUpdate');
   dec(FUpdateLock);
   FSourceDirectories.EndUpdate;
   FDefineTemplates.EndUpdate;
@@ -4140,7 +4140,7 @@ end;
 procedure TProject.SetMainUnitID(const AValue: Integer);
 begin
   if AValue>=UnitCount then
-    RaiseGDBException('');
+    LazTracer.RaiseGDBException('');
     
   if MainUnitID=AValue then exit;
   if (MainUnitID>=0) and (MainUnitID<UnitCount) then

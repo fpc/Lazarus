@@ -42,7 +42,7 @@ uses
   LCLProc, LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
   Graphics, Dialogs, Themes, Buttons,
   // LazUtils
-  LazStringUtils, GraphMath,
+  LazStringUtils, GraphMath, LazLoggerBase,
   // SynEdit
   SynEdit, SynEditKeyCmds,
   // CodeTools
@@ -438,7 +438,7 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
           Result:=true;
         end;
         if not Result then
-          debugln(['TCodeContextFrm.CreateHints.FindBaseType: not yet supported: ',ExprTypeToString(Expr)]);
+          LazLoggerBase.debugln(['TCodeContextFrm.CreateHints.FindBaseType: not yet supported: ',ExprTypeToString(Expr)]);
       except
       end;
     finally

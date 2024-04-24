@@ -20,6 +20,8 @@ uses
   Classes, SysUtils,
   // LCL
   LCLProc, Forms, Controls,
+  //LazUtils
+  LazLoggerBase,
   // IDEIntf
   IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf,
   // DockedFormEditor
@@ -77,7 +79,7 @@ end;
 
 procedure IDEMessage(AString: String);
 begin
-  LCLProc.DebugLn(AString);
+  LazLoggerBase.DebugLn(AString);
   if Assigned(IDEMessagesWindow) then
     IDEMessagesWindow.AddCustomMessage(mluNone, AString, '');
 end;

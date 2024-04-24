@@ -17,7 +17,7 @@ uses
   // RTL
   Classes, SysUtils,
   // LazUtils
-  LazConfigStorage, LazFileUtils, LazFileCache,
+  LazConfigStorage, LazFileUtils, LazFileCache, LazLoggerBase,
   // LCL
   LCLProc, ComCtrls, Graphics, DockedStrConsts,
   // IdeIntf
@@ -286,7 +286,7 @@ begin
     Modified := False;
   except
     on E: Exception do
-      DebugLn(['Error: (lazarus) [TDockedOptions.SaveSafe] ', E.Message]);
+      LazLoggerBase.DebugLn(['Error: (lazarus) [TDockedOptions.SaveSafe] ', E.Message]);
   end;
 end;
 
@@ -296,7 +296,7 @@ begin
     LoadFromFile(DockedOptionsFileName);
   except
     on E: Exception do
-      DebugLn(['Error: (lazarus) [TDockedOptions.LoadSafe] ', E.Message]);
+      LazLoggerBase.DebugLn(['Error: (lazarus) [TDockedOptions.LoadSafe] ', E.Message]);
   end;
   Modified := False;
 end;

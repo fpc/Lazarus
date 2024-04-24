@@ -71,7 +71,7 @@ uses
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
-  GraphType, LazStringUtils,
+  GraphType, LazStringUtils, LazTracer,
   LCLExceptionStacktrace, {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
@@ -6510,7 +6510,7 @@ begin
   AFilename:=ExpandFileNameUTF8(TrimFilename(AFilename));
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
-    RaiseGDBException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
+    LazTracer.RaiseGDBException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
   DiskFilename:=GetPhysicalFilenameCached(AFilename,false);
   if DiskFilename<>AFilename then begin
     // e.g. encoding changed
@@ -8744,10 +8744,10 @@ begin
   ActiveUnitInfo:=nil;
   if AForm<>nil then begin
     if (AForm.Designer=nil) then
-      RaiseGDBException('TMainIDE.GetUnitWithForm AForm.Designer');
+      LazTracer.RaiseGDBException('TMainIDE.GetUnitWithForm AForm.Designer');
     AComponent:=AForm.Designer.LookupRoot;
     if AComponent=nil then
-      RaiseGDBException('TMainIDE.GetUnitWithForm AComponent=nil');
+      LazTracer.RaiseGDBException('TMainIDE.GetUnitWithForm AComponent=nil');
     GetUnitWithPersistent(AComponent,ActiveSourceEditor,ActiveUnitInfo);
   end;
 end;
@@ -12016,7 +12016,7 @@ begin
         AComponent.Name,NewName,AComponent.ClassName,true);
       ApplyBossResult(lisUnableToRenameVariableInSource);
     end else begin
-      RaiseGDBException('TMainIDE.DesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
+      LazTracer.RaiseGDBException('TMainIDE.DesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
     end;
 
     // rename inherited components
@@ -13026,7 +13026,7 @@ var
 begin
   AComponent:=ADesigner.LookupRoot;
   if AComponent=nil then
-    RaiseGDBException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
+    LazTracer.RaiseGDBException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
   Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 
@@ -13558,11 +13558,11 @@ begin
   if not BeginCodeTool(CurDesigner,SrcEdit,UnitInfo,[ctfSwitchToFormSource]) then
     exit;
   if CurDesigner.Form=nil then
-    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
+    LazTracer.RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
   // find source for form
   Assert(UnitInfo=Project1.UnitWithComponent(CurDesigner.LookupRoot), 'TMainIDE.PropHookPersistentDeleting check fail.');
   if UnitInfo=nil then
-    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
+    LazTracer.RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
   // mark references modified
   MarkUnitsModifiedUsingSubComponent(Comp);
   // remember cursor position

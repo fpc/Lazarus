@@ -1228,7 +1228,7 @@ end;
 procedure TFPDocEditor.EndUpdate;
 begin
   dec(fUpdateLock);
-  if fUpdateLock<0 then RaiseGDBException('');
+  if fUpdateLock<0 then LazTracer.RaiseGDBException('');
   if fUpdateLock=0 then begin
     if fpdefCaptionNeedsUpdate in FFlags then UpdateCaption;
   end;
