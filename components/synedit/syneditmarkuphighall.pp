@@ -62,6 +62,19 @@ type
   public
     constructor Create;
     Function MaybeReduceCapacity : Boolean;
+    (* IndexOfFirstMatchForLine
+       Index for the first Item (match) that ENDS AT/AFTER the ALine
+       That is either it - includes ALine
+                         - is after ALine (aka: is in the RANGE ALine..infinity)
+       RESULT = 0..Count
+       // Count => for not found (all items are before ALine)
+     * IndexOfLastMatchForLine
+       Index for the last item that is STARTS BEFORE/At the ALine
+       That is either it - includes ALine
+                         - is before ALine (aka: is in the RANGE 0..ALine)
+       RESULT = -1..Count-1
+       // -1 => for not found (all items are after ALine)
+    *)
     function IndexOfFirstMatchForLine(ALine: Integer): Integer;
     function IndexOfLastMatchForLine(ALine: Integer): Integer;
     procedure Delete(AIndex: Integer; ACount: Integer = 1);
@@ -1779,7 +1792,7 @@ var
   l, h: Integer;
 begin
   if Count = 0 then
-    exit(-1);
+    exit(0); // past the last element
   l := 0;
   h := Count -1;
   Result := (l+h) div 2;
@@ -2060,18 +2073,29 @@ var
     // remove matches, that are too far off the current visible area
     if (FMatches.Count > MATCHES_CLEAN_CNT_THRESHOLD) then begin
       if TopLine - FMatches.EndPoint[0].y > MATCHES_CLEAN_LINE_THRESHOLD then begin
-        Idx := FMatches.IndexOfFirstMatchForLine(TopLine - MATCHES_CLEAN_LINE_KEEP) - 1;
-        FMatches.Delete(0, Idx);
-        if FMatches.Count > 0
-        then FStartPoint := FMatches.StartPoint[0]
-        else FStartPoint.y := -1;
+        Idx := FMatches.IndexOfFirstMatchForLine(TopLine - MATCHES_CLEAN_LINE_KEEP);
+        // Using the Idx as Count => Delete only "up to before that Idx"
+        if Idx > 0 then begin
+          FMatches.Delete(0, Idx);
+          if FMatches.Count > 0 then begin
+            FStartPoint := FMatches.StartPoint[0];
+          end
+          else begin
+            FStartPoint.y := -1;
+            FSearchedEnd.y := -1;
+            exit;
+          end;
+        end;
       end;
       if FMatches.StartPoint[FMatches.Count-1].y - LastScreenLine > MATCHES_CLEAN_LINE_THRESHOLD then begin
-        Idx := FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP) + 1;
-        FMatches.Delete(Idx, FMatches.Count - Idx);
-        if FMatches.Count > 0
-        then FSearchedEnd := FMatches.EndPoint[FMatches.Count-1]
-        else FSearchedEnd.y := -1;
+        Idx := Max(0, FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP)) + 1;
+        // Deleting above the Idx (Idx is already "+ 1")
+        if Idx < FMatches.Count then begin
+          FMatches.Delete(Idx, FMatches.Count - Idx);
+          if FMatches.Count > 0
+          then FSearchedEnd := FMatches.EndPoint[FMatches.Count-1]
+          else FSearchedEnd.y := -1;
+        end;
       end;
     end;
   end;
@@ -2085,13 +2109,15 @@ var
     LastInvalIdx  := -1;
     if (FFirstInvalidLine > 0) or (FLastInvalidLine > 0) then begin
       FirstInvalIdx := FMatches.IndexOfFirstMatchForLine(FFirstInvalidLine);
-      LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
-      if (FirstInvalIdx >= 0) and (FirstInvalIdx <= LastInvalIdx) then begin
-        if (not SkipPaint) and HasVisibleMatch then
-          SendLineInvalidation(FirstInvalIdx, LastInvalIdx);
-        FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
-        if FirstInvalIdx > FMatches.Count then
-          FirstInvalIdx := FMatches.Count;
+      if FirstInvalIdx < FMatches.Count then begin
+        LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
+        if FirstInvalIdx <= LastInvalIdx then begin
+          if (not SkipPaint) and HasVisibleMatch then
+            SendLineInvalidation(FirstInvalIdx, LastInvalIdx);
+          FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
+          if FirstInvalIdx > FMatches.Count then
+            FirstInvalIdx := FMatches.Count;
+        end;
       end;
     end;
     Result := FirstInvalIdx;
