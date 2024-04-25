@@ -1516,6 +1516,10 @@ msgstr "イメージを追加"
 msgid "New Image"
 msgstr ""
 
+#: objinspstrconsts.sccsiledtpastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "透明色"

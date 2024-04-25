@@ -1516,6 +1516,10 @@ msgstr "Pridať obrázky"
 msgid "New Image"
 msgstr "Nový obrázok"
 
+#: objinspstrconsts.sccsiledtpastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Transparentná farba:"

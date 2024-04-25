@@ -1,18 +1,18 @@
 object ImageListEditorDlg: TImageListEditorDlg
   Left = 453
-  Height = 455
+  Height = 476
   Top = 144
-  Width = 579
+  Width = 580
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
-  ClientHeight = 455
-  ClientWidth = 579
+  ClientHeight = 476
+  ClientWidth = 580
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object GroupBoxR: TGroupBox
     AnchorSideLeft.Control = GroupBoxL
     AnchorSideLeft.Side = asrBottom
@@ -21,14 +21,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 372
-    Height = 411
+    Height = 432
     Top = 6
-    Width = 201
+    Width = 202
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 391
-    ClientWidth = 197
+    ClientHeight = 412
+    ClientWidth = 198
     TabOrder = 1
     object LabelTransparent: TLabel
       AnchorSideLeft.Control = RadioGroup
@@ -36,7 +36,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = RadioGroup
       Left = 93
       Height = 15
-      Top = 275
+      Top = 296
       Width = 96
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -49,9 +49,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = RadioGroup
       Left = 6
-      Height = 263
+      Height = 284
       Top = 6
-      Width = 185
+      Width = 186
       HorzScrollBar.Increment = 1
       HorzScrollBar.Page = 1
       HorzScrollBar.Smooth = True
@@ -72,7 +72,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 110
-      Top = 275
+      Top = 296
       Width = 81
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -98,8 +98,8 @@ object ImageListEditorDlg: TImageListEditorDlg
         'Crop'
         'Center'
       )
-      OnClick = ColorBoxTransparentClick
       TabOrder = 1
+      OnClick = ColorBoxTransparentClick
     end
     object ColorBoxTransparent: TColorBox
       AnchorSideLeft.Control = LabelTransparent
@@ -107,7 +107,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 93
       Height = 22
-      Top = 294
+      Top = 315
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
@@ -115,8 +115,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Right = 6
       Enabled = False
       ItemHeight = 16
-      OnChange = ColorBoxTransparentClick
       TabOrder = 2
+      OnChange = ColorBoxTransparentClick
     end
   end
   object GroupBoxL: TGroupBox
@@ -124,14 +124,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 411
+    Height = 432
     Top = 6
     Width = 360
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 391
+    ClientHeight = 412
     ClientWidth = 356
     TabOrder = 0
     object BtnAdd: TButton
@@ -148,8 +148,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Add...'
-      OnClick = BtnAddClick
       TabOrder = 0
+      OnClick = BtnAddClick
     end
     object BtnClear: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -159,33 +159,33 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 180
+      Top = 209
       Width = 53
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Clear'
+      TabOrder = 7
       OnClick = BtnClearClick
-      TabOrder = 6
     end
     object BtnDelete: TButton
       AnchorSideLeft.Control = ImageListBox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnReplaceAll
+      AnchorSideTop.Control = BtnPasteFromClipboard
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 151
+      Top = 180
       Width = 59
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = '&Delete'
+      TabOrder = 6
       OnClick = BtnDeleteClick
-      TabOrder = 5
     end
     object BtnMoveUp: TButton
       Tag = -1
@@ -196,15 +196,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 209
+      Top = 238
       Width = 74
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Move Up'
+      TabOrder = 8
       OnClick = BtnMoveUpDownClick
-      TabOrder = 7
     end
     object BtnMoveDown: TButton
       Tag = 1
@@ -215,15 +215,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 238
+      Top = 267
       Width = 90
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Move Down'
+      TabOrder = 9
       OnClick = BtnMoveUpDownClick
-      TabOrder = 8
     end
     object BtnSave: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -233,15 +233,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 267
+      Top = 296
       Width = 59
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Save...'
+      TabOrder = 10
       OnClick = BtnSaveClick
-      TabOrder = 9
     end
     object btnSaveAll: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -251,15 +251,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 296
+      Top = 325
       Width = 76
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Save All...'
+      TabOrder = 11
       OnClick = btnSaveAllClick
-      TabOrder = 10
     end
     object BtnReplace: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -276,8 +276,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = '&Replace...'
-      OnClick = BtnReplaceClick
       TabOrder = 3
+      OnClick = BtnReplaceClick
     end
     object ImageListBox: TListBox
       AnchorSideLeft.Control = GroupBoxL
@@ -285,17 +285,17 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Control = GroupBoxL
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 379
+      Height = 400
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
-      OnDrawItem = ImageListBoxDrawItem
-      OnSelectionChange = ImageListBoxSelectionChange
       Options = []
       Style = lbOwnerDrawFixed
-      TabOrder = 11
+      TabOrder = 14
+      OnDrawItem = ImageListBoxDrawItem
+      OnSelectionChange = ImageListBoxSelectionChange
     end
     object btnAddNewResolution: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -305,15 +305,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 325
+      Top = 354
       Width = 138
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Add new resolution...'
-      OnClick = btnAddNewResolutionClick
       TabOrder = 12
+      OnClick = btnAddNewResolutionClick
     end
     object BtnReplaceAll: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -330,8 +330,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = '&Replace all resolutions...'
-      OnClick = BtnReplaceClick
       TabOrder = 4
+      OnClick = BtnReplaceClick
     end
     object BtnAddMoreResolutions: TButton
       Tag = 1
@@ -349,8 +349,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Add more resolutions...'
-      OnClick = BtnAddClick
       TabOrder = 1
+      OnClick = BtnAddClick
     end
     object btnDeleteResolution: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -360,15 +360,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       Left = 198
       Height = 25
-      Top = 354
+      Top = 383
       Width = 127
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Delete resolution ...'
-      OnClick = btnDeleteResolutionClick
       TabOrder = 13
+      OnClick = btnDeleteResolutionClick
     end
     object BtnAddSliced: TButton
       AnchorSideLeft.Control = ImageListBox
@@ -384,15 +384,32 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Add sliced...'
-      OnClick = BtnAddSlicedClick
       TabOrder = 2
+      OnClick = BtnAddSlicedClick
+    end
+    object BtnPasteFromClipboard: TButton
+      AnchorSideLeft.Control = ImageListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnReplaceAll
+      AnchorSideTop.Side = asrBottom
+      Left = 198
+      Height = 25
+      Top = 151
+      Width = 136
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 6
+      Caption = 'Paste from clipboard'
+      TabOrder = 5
+      OnClick = BtnPasteFromClipboardClick
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
     Height = 26
-    Top = 423
-    Width = 567
+    Top = 444
+    Width = 568
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

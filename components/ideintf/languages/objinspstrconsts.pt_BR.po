@@ -1502,6 +1502,10 @@ msgstr "Adicionar Imagens"
 msgid "New Image"
 msgstr "Nova Imagem"
 
+#: objinspstrconsts.sccsiledtpastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Cor Transparente:"

@@ -63,6 +63,7 @@ type
     btnSaveAll: TButton;
     BtnPanel: TButtonPanel;
     BtnAddSliced: TButton;
+    BtnPasteFromClipboard: TButton;
     ColorBoxTransparent: TColorBox;
     GroupBoxL: TGroupBox;
     GroupBoxR: TGroupBox;
@@ -81,6 +82,7 @@ type
     procedure BtnAddSlicedClick(Sender: TObject);
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
+    procedure BtnPasteFromClipboardClick(Sender: TObject);
     procedure BtnReplaceClick(Sender: TObject);
     procedure BtnMoveUpDownClick(Sender: TObject);
     procedure btnSaveAllClick(Sender: TObject);
@@ -107,11 +109,13 @@ type
     function GetGlyphInfo(const aItemIndex: Integer): TGlyphInfo;
     procedure RefreshItemHeight;
     procedure FreeGlyphInfos;
+    procedure InternalAddImageToList(const Picture: TPicture; AddType: TAddType);
     procedure RecreatePreviewImages(const aForce: Boolean = False);
     procedure UpdatePreviewImage;
     procedure UpdateImagesGroupBoxWidth;
     procedure UpdateImagesGroupBoxWidthQueue({%H-}Data: PtrInt);
     class function ResolutionToString(const ARes: TCustomImageListResolution): string;
+    procedure PasteFromClipboardAndAdd;
   protected
     procedure DoDestroy; override;
   public
@@ -139,6 +143,9 @@ type
 implementation
 
 {$R *.lfm}
+
+uses
+  ClipBrd;
 
 procedure AlignButtons(AButtons: array of TControl);
 var
@@ -252,6 +259,7 @@ begin
   BtnDelete.Caption := sccsILEdtDelete;
   BtnReplace.Caption := sccsILEdtReplace;
   BtnReplaceAll.Caption := sccsILEdtReplaceAllResolutions;
+  BtnPasteFromClipboard.Caption := sccsILEdtPasteFromClipboard;
   BtnClear.Caption := sccsILEdtClear;
   BtnMoveUp.Caption := sccsILEdtMoveUp;
   BtnMoveDown.Caption := sccsILEdtMoveDown;
@@ -465,6 +473,11 @@ begin
   ImageListBox.SetFocus;
 end;
 
+procedure TImageListEditorDlg.BtnPasteFromClipboardClick(Sender: TObject);
+begin
+  PasteFromClipboardAndAdd;
+end;
+
 procedure TImageListEditorDlg.BtnReplaceClick(Sender: TObject);
 var
   i: Integer;
@@ -673,6 +686,24 @@ begin
   Result := Format('%d x %d', [ARes.Width, ARes.Height]);
 end;
 
+procedure TImageListEditorDlg.PasteFromClipboardAndAdd;
+var
+  Picture: TPicture;
+  cf: TClipboardFormat;
+begin
+  cf := Clipboard.FindPictureFormatID;
+  if cf <> 0 then
+  begin
+    Picture := TPicture.Create;
+    try
+      Picture.LoadFromClipboardFormat(cf);
+      InternalAddImageToList(Picture, atAdd);
+    finally
+      Picture.Free;
+    end;
+  end;
+end;
+
 procedure TImageListEditorDlg.btnApplyClick(Sender: TObject);
 begin
   SaveToImageList;
@@ -686,6 +717,7 @@ begin
     BtnAddSliced,
     BtnReplace,
     BtnReplaceAll,
+    BtnPasteFromClipboard,
     BtnDelete,
     BtnClear,
     BtnMoveUp,
@@ -697,7 +729,7 @@ begin
 
   Constraints.MinWidth := GroupboxL.Width + GroupboxL.BorderSpacing.Around*2 +
     LabelTransparent.Left + Max(LabelTransparent.Width, ColorBoxTransparent.Width) + LabelTransparent.BorderSpacing.Right +
-    GroupBoxR.BorderSpacing.Around;
+    GroupBoxR.BorderSpacing.Around * 2;
   Constraints.MinHeight := GroupBoxL.BorderSpacing.Around*2 + GroupBoxL.Height - GroupBoxL.ClientHeight +
     btnDeleteResolution.Top + btnDeleteResolution.Height +
     ImageListbox.BorderSpacing.Around + BtnPanel.Height + BtnPanel.BorderSpacing.Around;
@@ -857,6 +889,80 @@ begin
   UpdateImagesGroupBoxWidth;
 end;
 
+procedure TImageListEditorDlg.InternalAddImageToList(const Picture: TPicture;
+  AddType: TAddType);
+var
+  SrcBmp, DestBmp: TBitmap;
+  P: TGlyphInfo = nil;
+begin
+  SrcBmp := nil;
+
+  ImageList.BeginUpdate;
+  try
+    if Picture.Graphic is TCustomIcon then
+    begin
+      ImageListBox.Items.Add('');
+      case AddType of
+        atAdd: ImageList.AddIcon(TCustomIcon(Picture.Graphic));
+        atInsert: ImageList.InsertIcon(ImageListBox.ItemIndex+1, TCustomIcon(Picture.Graphic));
+        atReplace, atReplaceAllResolutions: ImageList.ReplaceIcon(ImageListBox.ItemIndex, TCustomIcon(Picture.Graphic));
+      end;
+    end else
+    begin
+      SrcBmp := TBitmap.Create;
+      if (AddType in [atReplace, atReplaceAllResolutions]) and (GetSelGlyphInfo<>nil) then
+      begin
+        P := GetSelGlyphInfo;
+        P.Bitmap.Free;
+        P.Bitmap := SrcBmp;
+      end else
+      begin
+        P := TGlyphInfo.Create;
+        P.Bitmap := SrcBmp;
+      end;
+      P.TransparentColor := clDefault;
+      P.Adjustment := gaNone;
+      if not (AddType in [atReplace, atReplaceAllResolutions]) then
+        ImageListBox.Items.AddObject('', P);
+
+      SrcBmp.Assign(Picture.Graphic);
+      DestBmp := CreateGlyph(SrcBmp, SrcBmp.Width, SrcBmp.Height, P.Adjustment, P.TransparentColor);
+      try
+        case AddType of
+          atAdd: ImageList.Add(DestBmp, nil);
+          atInsert: ImageList.Insert(ImageListBox.ItemIndex+1, DestBmp, nil);
+          atReplace, atReplaceAllResolutions: ImageList.Replace(ImageListBox.ItemIndex, DestBmp, nil, AddType=atReplaceAllResolutions);
+        end;
+      finally
+        DestBmp.Free;
+      end;
+    end;
+
+    case AddType of
+      atAdd: ImageListBox.ItemIndex := ImageListBox.Count-1;
+      atInsert: ImageListBox.ItemIndex := ImageListBox.ItemIndex+1;
+    end;
+  finally
+    ImageList.EndUpdate;
+  end;
+end;
+
+procedure TImageListEditorDlg.AddImageToList(const FileName: String;
+  AddType: TAddType);
+var
+  Picture: TPicture;
+begin
+  SaveDialog.InitialDir := ExtractFileDir(FileName);
+  Picture := TPicture.Create;
+  try
+    Picture.LoadFromFile(FileName);
+    InternalAddImageToList(Picture, AddType);
+  finally
+    Picture.Free;
+  end;
+end;
+
+(*
 procedure TImageListEditorDlg.AddImageToList(const FileName: String;
   AddType: TAddType);
 var
@@ -919,6 +1025,7 @@ begin
     ImageList.EndUpdate;
   end;
 end;
+*)
 
 procedure TImageListEditorDlg.AddSlicedImagesToList(const FileName: String);
 var

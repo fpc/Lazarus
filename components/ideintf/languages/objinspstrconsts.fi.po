@@ -1506,6 +1506,10 @@ msgstr "Lisää Kuvat"
 msgid "New Image"
 msgstr "Uusi kuva"
 
+#: objinspstrconsts.sccsiledtpastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Läpinäkyvä väri:"

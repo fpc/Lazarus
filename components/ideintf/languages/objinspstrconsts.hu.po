@@ -1506,6 +1506,10 @@ msgstr "Képek hozzáadása"
 msgid "New Image"
 msgstr "Új kép"
 
+#: objinspstrconsts.sccsiledtpastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Átlátszó szín:"

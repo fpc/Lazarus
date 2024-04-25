@@ -146,6 +146,7 @@ resourcestring
   sccsILEdtAddSliced   = 'Add sliced ...';
   sccsILEdtReplace     = '&Replace ...';
   sccsILEdtReplaceAllResolutions = 'Replace all resolutions ...';
+  sccsILEdtPasteFromClipboard    = 'Paste from clipboard';
   sccsILEdtDelete      = '&Delete';
   sccsILEdtApply       = '&Apply';
   sccsILEdtClear       = '&Clear';
