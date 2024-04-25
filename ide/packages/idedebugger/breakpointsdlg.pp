@@ -852,7 +852,7 @@ begin
     if EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints then begin
       MsgResult:=TaskDlg(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints2, '', tdiQuestion,
                  [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
-      if MsgResult = mrNo then
+      if MsgResult <> mrYes then
         exit;
       if NotAgain then
         EnvironmentDebugOpts.ConfirmDeleteFileBreakPoints:= False;
@@ -927,7 +927,7 @@ begin
   if EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints then begin
     MsgResult:=TaskDlg(lisDeleteAllBreakpoints, lisDeleteAllBreakpoints, '', tdiQuestion,
                [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
-    if MsgResult = mrNo then
+    if MsgResult <> mrYes then
       exit;
     if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllBreakPoints := False;

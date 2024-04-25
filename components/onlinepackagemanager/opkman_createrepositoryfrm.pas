@@ -300,7 +300,7 @@ begin
     Data := FVSTPackages.GetNodeData(Node);
     if Data^.FDataType = 1 then
     begin
-      if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf1, [Data^.FDisplayname]), mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+      if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf1, [Data^.FDisplayname]), mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
         Exit;
       CanGo := False;
       PackageIndex := FSerializablePackages.FindPackageIndex(Data^.FName, fpbPackageName);

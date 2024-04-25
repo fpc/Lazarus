@@ -181,7 +181,7 @@ var
 begin
   if MessageDlg('This will add all files in the project directory ' + LineEnding +
                 'recursively. Do you want to continue?',
-                mtConfirmation, [mbYes, mbNo],0) = mrNo then exit;
+                mtConfirmation, [mbYes, mbNo],0) <> mrYes then exit;
   Modified := True;
   Files := TStringList.Create;
   try
@@ -384,7 +384,7 @@ begin
   If SaveDialog1.Execute then
   begin
     if FileExists(SaveDialog1.FileName)
-    and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrNo) then Exit;
+    and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) <> mrYes) then Exit;
     OpenProject(SaveDialog1.FileName);
     Project.SaveToFile(SaveDialog1.FileName);
   end;

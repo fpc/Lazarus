@@ -908,7 +908,7 @@ begin
   if EnvironmentDebugOpts.ConfirmDeleteAllWatches then begin
     MsgResult:=TaskDlg(dlgWatchesDeleteAllConfirm, dlgWatchesDeleteAllConfirm, '', tdiQuestion,
                [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
-    if MsgResult = mrNo then
+    if MsgResult <> mrYes then
       exit;
     if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllWatches := False;

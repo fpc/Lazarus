@@ -1213,7 +1213,7 @@ var
   Node: PVirtualNode;
   MetaPkg: TMetaPackage;
 begin
-  if MessageDlgEx(rsMainFrm_miResetRating + '?', mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+  if MessageDlgEx(rsMainFrm_miResetRating + '?', mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
     Exit;
   Node := VisualTree.VST.GetFirstSelected;
   if Node <> nil then

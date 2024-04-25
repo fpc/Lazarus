@@ -289,7 +289,7 @@ begin
   if Dataset.TableExists then
   begin
     if MessageDlg(Format(sATableNamedAlreadyExistsAreYouSureYouWantToReplace, [Dataset.TableName, LineEnding]),
-       mtWarning,[mbYes,MbNo],0) = mrNo then
+       mtWarning,[mbYes,mbNo],0) <> mrYes then
       exit
     else
       DataSet.ExecSQL('DROP TABLE '+DataSet.TableName+';');

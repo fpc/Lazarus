@@ -93,7 +93,7 @@ begin
     if SDRep.Execute then
     begin
       if (not IsDirectoryEmpty(ExtractFilePath(SDRep.FileName))) then
-        if MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(SDRep.FileName)]), mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+        if MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(SDRep.FileName)]), mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
           Exit;
       if not DirectoryIsWritable(ExtractFilePath(SDRep.FileName)) then
       begin

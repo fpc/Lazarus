@@ -306,7 +306,7 @@ begin
 
   if IDEMessageDialog(dlgMarkupUserDefinedDelCaption,
                 Format(dlgMarkupUserDefinedDelPrompt, [FUserWords.Name]),
-                mtConfirmation, mbYesNo) = mrNo
+                mtConfirmation, mbYesNo) <> mrYes
   then
     exit;
 

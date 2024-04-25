@@ -125,7 +125,7 @@ begin
   if EnvironmentDebugOpts.ConfirmDeleteAllHistory then begin
     MsgResult:=TaskDlg(dlgHistoryDeleteAllConfirm, dlgHistoryDeleteAllConfirm, '', tdiQuestion,
                [mbYes, mbNo], dbgDoNotShowThisMessageAgain, NotAgain);
-    if MsgResult = mrNo then
+    if MsgResult <> mrYes then
       exit;
     if NotAgain then
       EnvironmentDebugOpts.ConfirmDeleteAllHistory := False;
