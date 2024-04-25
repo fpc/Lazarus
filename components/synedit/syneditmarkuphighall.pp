@@ -2075,7 +2075,7 @@ var
         end;
       end;
       if FMatches.StartPoint[FMatches.Count-1].y - LastScreenLine > MATCHES_CLEAN_LINE_THRESHOLD then begin
-        Idx := Max(0, FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP)) + 1;
+        Idx := FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP) + 1;
         // Deleting above the Idx (Idx is already "+ 1")
         if Idx < FMatches.Count then begin
           FMatches.Delete(Idx, FMatches.Count - Idx);
