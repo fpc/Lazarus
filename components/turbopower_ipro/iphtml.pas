@@ -5678,6 +5678,7 @@ begin
     ResetPrint;
     Result := true;
   end;
+  printDialog.Free;
 end;
 
 procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
