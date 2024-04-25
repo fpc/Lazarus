@@ -831,8 +831,9 @@ begin
 
   FFirstInvalidLine := -1;
 
-  SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
   if lvl = 0 then begin
+    if FInnerFoldStart >= 0 then
+      SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
     FInnerFoldStart := -1;
     FInnerFoldEnd := -1;
     exit;
@@ -844,7 +845,13 @@ begin
     while (y2 > 0) and (hl.FoldBlockMinLevel(y2, 1) >= lvl) do
       dec(y2);
   end;
-  FInnerFoldStart := y2;
+  if FInnerFoldStart <> y2 then begin
+    if y2 > FInnerFoldStart then
+      SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(y2))
+    else
+      SynEdit.InvalidateGutterLines(ToPos(y2), ToPos(FInnerFoldStart));
+    FInnerFoldStart := y2;
+  end;
 
   y2 := y;
   c := SynEdit.Lines.Count-1;
@@ -853,10 +860,13 @@ begin
     while (y2 < c) and (hl.FoldBlockMinLevel(y2, 1) >= lvl) do
       inc(y2);
   end;
-  FInnerFoldEnd := y2;
-
-  SynEdit.InvalidateGutterLines(ToPos(FInnerFoldStart), ToPos(FInnerFoldEnd));
-
+  if FInnerFoldEnd <> y2 then begin
+    if y2 > FInnerFoldEnd then
+      SynEdit.InvalidateGutterLines(ToPos(FInnerFoldEnd), ToPos(y2))
+    else
+      SynEdit.InvalidateGutterLines(ToPos(y2), ToPos(FInnerFoldEnd));
+    FInnerFoldEnd := y2;
+  end;
 end;
 
 function TSynGutterCodeFolding.PreferedWidth: Integer;
