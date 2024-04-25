@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, TestBase, Controls, Graphics, LazLoggerBase,
-  SynEdit, SynEditMarkupHighAll;
+  SynEdit, SynEditMarkupHighAll, SynEditMiscProcs;
 
 type
 
@@ -464,12 +464,21 @@ type
 var
   M: TTestSynEditMarkupHighlightAllMulti;
 
+  function Mtxt(i: Integer): String;
+  begin
+    Result := 'a'+IntToStr(i)+'a';
+  end;
+
   function l(y, x1, x2: Integer) : TMatchLoc;
   begin
     Result.y1 := y;
     Result.x1 := x1;
     Result.y2 := y;
     Result.x2 := x2;
+  end;
+  function l_a(n: Integer) : TMatchLoc; // location for a match of a123a
+  begin
+    Result := l(n, 3, 3+Length(Mtxt(n)));
   end;
 
   procedure StartMatch(Words: Array of string);
@@ -508,7 +517,13 @@ var
       do
         dec(j);
       AssertEquals(BaseTestName+' '+AName+'('+IntToStr(i)+')', not ExpMusNotExist, j >= 0);
-    end
+    end;
+    // check: no duplicates
+    for j := 0 to M.Matches.Count - 1 do begin
+      AssertTrue('Not zero len', CompareCarets(m.Matches.StartPoint[j], m.Matches.EndPoint[j]) > 0);
+      if j > 0 then
+        AssertTrue('no overlap', CompareCarets(m.Matches.EndPoint[j-1], m.Matches.StartPoint[j]) >= 0);
+    end;
   end;
 
   Procedure TestHasMatches(AName: String; AExpCount: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
@@ -539,6 +554,9 @@ var
   var
     i: Integer;
   begin
+    (* Create lines:  a123a  b  c123d
+       40.5 visible lines
+    *)
     ReCreateEdit;
     SynEdit.BeginUpdate;
     for i := 1 to 700 do
@@ -552,19 +570,89 @@ var
     SynEdit.EndUpdate;
   end;
 
-  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean;
-    Words: Array of string;
-    AName: String= ''; AExpMin: Integer = -1; AExpMax: Integer = -1);
+  procedure SetTextAndStart(ATopLine: Integer = 1; HideSingle: Boolean = False; Words: Array of string);
   begin
     SetText(ATopLine, HideSingle);
     StartMatch(Words);
+  end;
+
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
+    AName: String= ''; AExpMin: Integer = -1; AExpMax: Integer = -1);
+  begin
+    SetTextAndStart(ATopLine, HideSingle, Words);
     if AExpMin >= 0 then
       TestHasMCount(AName + ' init', AExpMin, AExpMax);
   end;
 
-  function Mtxt(i: Integer): String;
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
+    AExp: Array of TMAtchLoc; AExpMax: Integer;
+    AName: String = '');
   begin
-    Result := 'a'+IntToStr(i)+'a';
+    SetText(ATopLine, HideSingle);
+    StartMatch(Words);
+    TestHasMatches(AName + ' init', length(AExp), AExpMax, AExp);
+  end;
+
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
+    AExp: Array of TMAtchLoc;
+    AName: String = '');
+  begin
+    SetTextAndMatch(ATopLine, HideSingle, Words, AExp, -1, AName);
+  end;
+
+  procedure ScrollAndMatch(ATopLine: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
+    AName: String = '');
+  begin
+    M.ResetScannedCount;
+    SynEdit.TopLine := ATopLine;
+    TestHasMatches(AName + ' scrolled ', length(AExp), AExpMax, AExp);
+  end;
+
+  procedure ScrollAndMatch(ATopLine: Integer; AExp: Array of TMAtchLoc;
+    AName: String = '');
+  begin
+    ScrollAndMatch(ATopLine, AExp, -1, AName);
+  end;
+
+  procedure HeightAndMatch(ALineCnt: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
+    AName: String = '');
+  begin
+    M.ResetScannedCount;
+    SynEdit.Height := SynEdit.LineHeight * ALineCnt + SynEdit.LineHeight div 2;
+    TestHasMatches(AName + ' height ', length(AExp), AExpMax, AExp);
+  end;
+
+  procedure HeightAndMatch(ALineCnt: Integer; AExp: Array of TMAtchLoc;
+    AName: String = '');
+  begin
+    HeightAndMatch(ALineCnt, AExp, -1, AName);
+  end;
+
+  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; AExp: Array of TMAtchLoc; AExpMax: Integer;
+    AName: String = '');
+  begin
+    M.ResetScannedCount;
+    SynEdit.TextBetweenPoints[point(X, Y), point(X2, Y2)] := ATxt;
+    SynEdit.SimulatePaintText;
+    TestHasMatches(AName + ' inserted ', length(AExp), AExpMax, AExp);
+  end;
+
+  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; AExp: Array of TMAtchLoc;
+    AName: String = '');
+  begin
+    EditReplaceAndMatch(Y, X, Y2, X2, ATxt, AExp, -1, AName);
+  end;
+
+  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; AExp: Array of TMAtchLoc; AExpMax: Integer;
+    AName: String = '');
+  begin
+    EditReplaceAndMatch(Y, X, Y, X, ATxt, AExp, AExpMax, AName);
+  end;
+
+  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; AExp: Array of TMAtchLoc;
+    AName: String = '');
+  begin
+    EditInsertAndMatch(Y, X, ATxt, AExp, -1, AName);
   end;
 
 var
@@ -577,176 +665,46 @@ begin
     PushBaseName('Searchrange');
     PushBaseName('HideSingleMatch=False');
 
-    N := 'Find match on first line';
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a250a']);
-    TestHasMCount (N, 1);
-    TestHasMatches(N, [l(250, 3, 8)]);
-
-    N := 'Find match on last line';
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a289a']);
-    TestHasMCount (N, 1);
-    TestHasMatches(N, [l(289, 3, 8)]);
-
-    N := 'Find match on last part visible) line';
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a290a']);
-    TestHasMCount (N, 1);
-    TestHasMatches(N, [l(290, 3, 8)]);
-
-    // Before topline
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a249a']);
-    TestHasMCount ('NOT Found before topline', 0);
-
-    // after lastline
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a291a']);
-    TestHasMCount ('NOT Found after lastline', 0);
-
+    SetTextAndMatch(250, False, ['a250a'],                   [l(250, 3, 8)], 'Find match on first line');
+    SetTextAndMatch(250, False, ['a289a'],                   [l(289, 3, 8)], 'Find match on last line');
+    SetTextAndMatch(250, False, ['a290a'],                   [l(290, 3, 8)], 'Find match on last part visible) line');
+    SetTextAndMatch(250, False, ['a249a'],                   [], 'NOT Found before topline');
+    SetTextAndMatch(250, False, ['a291a'],                   [], 'NOT Found after lastline');
     // first and last
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a250a', 'a290a']);
-    TestHasMCount ('Found on first and last line', 2);
-    TestHasMatches('Found on first and last line', [l(250, 3, 8), l(290, 3, 8)]);
-
+    SetTextAndMatch(250, False, ['a250a', 'a290a'],          [l(250, 3, 8), l(290, 3, 8)], 'Found on first and last line');
     // first and last + before
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a250a', 'a290a', 'a249a']);
-    TestHasMCount ('Found on first/last (but not before) line', 2);
-    TestHasMatches('Found on first/last (but not before) line', [l(250, 3, 8), l(290, 3, 8)]);
-
+    SetTextAndMatch(250, False, ['a250a', 'a290a', 'a249a'], [l(250, 3, 8), l(290, 3, 8)], 'Found on first/last (but not before) line');
     // first and last + after
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a250a', 'a290a', 'a291a']);
-    TestHasMCount ('Found on first/last (but not after) line', 2);
-    TestHasMatches('Found on first/last (but not after) line', [l(250, 3, 8), l(290, 3, 8)]);
+    SetTextAndMatch(250, False, ['a250a', 'a290a', 'a291a'], [l(250, 3, 8), l(290, 3, 8)], 'Found on first/last (but not after) line');
 
     PopPushBaseName('HideSingleMatch=True');
 
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a']);
-    TestHasMCount ('Found on first line', 1);
-    TestHasMatches('Found on first line', [l(250, 3, 8)]);
-
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a289a']);
-    TestHasMCount ('Found on last line', 1);
-    TestHasMatches('Found on last line', [l(289, 3, 8)]);
-
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a290a']);
-    TestHasMCount ('Found on last (partly) line', 1);
-    TestHasMatches('Found on last (partly) line', [l(290, 3, 8)]);
-
-    // Before topline
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a249a']);
-    TestHasMCount ('NOT Found before topline', 0);
-
-    // after lastline
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a291a']);
-    TestHasMCount ('NOT Found after lastline', 0);
-
+    SetTextAndMatch(250, True, ['a250a'],                    [l(250, 3, 8)], 'Found on first line');
+    SetTextAndMatch(250, True, ['a289a'],                    [l(289, 3, 8)], 'Found on last line');
+    SetTextAndMatch(250, True, ['a290a'],                    [l(290, 3, 8)], 'Found on last (partly) line');
+    SetTextAndMatch(250, True, ['a249a'],                    [], 'NOT Found before topline');
+    SetTextAndMatch(250, True, ['a291a'],                    [], 'NOT Found after lastline');
     // first and last
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a290a']);
-    TestHasMCount ('Found on first and last line', 2);
-    TestHasMatches('Found on first and last line', [l(250, 3, 8), l(290, 3, 8)]);
-
+    SetTextAndMatch(250, True, ['a250a', 'a290a'],           [l(250, 3, 8), l(290, 3, 8)], 'Found on first and last line');
     // first and last + before
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a290a', 'a249a']);
-    TestHasMCount ('Found on first/last (but not before) line', 2);
-    TestHasMatches('Found on first/last (but not before) line', [l(250, 3, 8), l(290, 3, 8)]);
-
+    SetTextAndMatch(250, True, ['a250a', 'a290a', 'a249a'],  [l(250, 3, 8), l(290, 3, 8)], 'Found on first/last (but not before) line');
     // first and last + after
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a290a', 'a291a']);
-    TestHasMCount ('Found on first/last (but not after) line', 2);
-    TestHasMatches('Found on first/last (but not after) line', [l(250, 3, 8), l(290, 3, 8)]);
+    SetTextAndMatch(250, True, ['a250a', 'a290a', 'a291a'],  [l(250, 3, 8), l(290, 3, 8)], 'Found on first/last (but not after) line');
 
     // extend for HideSingle, before
-    N := 'Look for 2nd match before startpoint (first match at topline)';
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a249a']);
-    TestHasMCount (N, 2);
-    TestHasMatches(N, [l(250, 3, 8), l(249, 3, 8)]);
-
-    N := 'Look for 2nd match before startpoint (first match at lastline)';
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a290a', 'a249a']);
-    TestHasMCount (N, 2);
-    TestHasMatches(N, [l(290, 3, 8), l(249, 3, 8)]);
-
-    N := 'Look for 2nd match FAR (99l) before startpoint (first match at topline)';
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a151a']);
-    TestHasMCount (N, 2);
-    TestHasMatches(N, [l(250, 3, 8), l(151, 3, 8)]);
-
-    N := 'Look for 2nd match FAR (99l) before startpoint (first match at lastline)';
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a290a', 'a151a']);
-    TestHasMCount (N, 2);
-    TestHasMatches(N, [l(290, 3, 8), l(151, 3, 8)]);
-
-    N := 'Look for 2nd match before startpoint, find ONE of TWO';
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a200a', 'a210a']);
-    TestHasMCount (N, 2);
-    TestHasMatches(N, [l(250, 3, 8), l(210, 3, 8)]);
+    SetTextAndMatch(250, True, ['a250a', 'a249a'],           [l(250, 3, 8), l(249, 3, 8)], 'Look for 2nd match before startpoint (first match at topline)');
+    SetTextAndMatch(250, True, ['a290a', 'a249a'],           [l(290, 3, 8), l(249, 3, 8)], 'Look for 2nd match before startpoint (first match at lastline)');
+    SetTextAndMatch(250, True, ['a250a', 'a151a'],           [l(250, 3, 8), l(151, 3, 8)], 'Look for 2nd match FAR (99l) before startpoint (first match at topline)');
+    SetTextAndMatch(250, True, ['a290a', 'a151a'],           [l(290, 3, 8), l(151, 3, 8)], 'Look for 2nd match FAR (99l) before startpoint (first match at lastline)');
+    SetTextAndMatch(250, True, ['a250a', 'a200a', 'a210a'],  [l(250, 3, 8), l(210, 3, 8)], 'Look for 2nd match before startpoint, find ONE of TWO');
 
     // TODO: Not extend too far...
 
     // extend for HideSingle, after
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a291a']);
-    TestHasMCount ('Found on first/ext-after line', 2);
-    TestHasMatches('Found on first/ext-after line', [l(250, 3, 8), l(291, 3, 8)]);
-
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a290a', 'a291a']);
-    TestHasMCount ('Found on last/ext-after line', 2);
-    TestHasMatches('Found on last/ext-after line', [l(290, 3, 8), l(291, 3, 8)]);
-
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a250a', 'a389a']);
-    TestHasMCount ('Found on first/ext-after-99 line', 2);
-    TestHasMatches('Found on first/ext-after-99 line', [l(250, 3, 8), l(389, 3, 8)]);
-
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a290a', 'a389a']);
-    TestHasMCount ('Found on last/ext-after-99 line', 2);
-    TestHasMatches('Found on last/ext-after-99 line', [l(290, 3, 8), l(389, 3, 8)]);
-
+    SetTextAndMatch(250, True, ['a250a', 'a291a'],           [l(250, 3, 8), l(291, 3, 8)], 'Found on first/ext-after line');
+    SetTextAndMatch(250, True, ['a290a', 'a291a'],           [l(290, 3, 8), l(291, 3, 8)], 'Found on last/ext-after line');
+    SetTextAndMatch(250, True, ['a250a', 'a389a'],           [l(250, 3, 8), l(389, 3, 8)], 'Found on first/ext-after-99 line');
+    SetTextAndMatch(250, True, ['a290a', 'a389a'],           [l(290, 3, 8), l(389, 3, 8)], 'Found on last/ext-after-99 line');
 
     PopBaseName;
     PopBaseName;
@@ -757,125 +715,67 @@ begin
     PushBaseName('HideSingleMatch=False');
 
 
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a249a']);
-    TestHasMCount ('Not Found before first line', 0);
-
-    M.ResetScannedCount;
-    SynEdit.TopLine := 251;
-    TestHasMCount ('Not Found before first line (250=>251)', 0);
+    SetTextAndMatch(250, False, ['a249a'], [], 'Not Found before first line');
+    ScrollAndMatch (251,                   [], 'Not Found before first line (250=>251)');
     TestHasScanCnt('Not Found before first line (250=>251)', 1, 2); // Allow some range
 
-    M.ResetScannedCount;
-    SynEdit.TopLine := 249;
-    TestHasMCount ('Found on first line (251=<249', 1);
-    TestHasMatches('Found on first line (251=>249)', [l(249, 3, 8)]);
+    ScrollAndMatch(249,                   [l(249, 3, 8)], 'Found on first line (251=>249)');
     TestHasScanCnt('Found on first line (251=>249)', 1, 2); // Allow some range
 
 
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a291a']);
-    TestHasMCount ('Not Found after last line', 0);
 
-    M.ResetScannedCount;
-    SynEdit.TopLine := 249;
-    TestHasMCount ('Not Found after last line (250=>249)', 0);
+    SetTextAndMatch(250, False, ['a291a'], [], 'Not Found after last line');
+    ScrollAndMatch (249,                   [], 'Not Found after last line (250=>249)');
     TestHasScanCnt('Not Found after last line (250=>249)', 1, 2); // Allow some range
 
-    M.ResetScannedCount;
-    SynEdit.TopLine := 251;
-    TestHasMCount ('Found on last line (249=<251', 1);
-    TestHasMatches('Found on last line (249=>251)', [l(291, 3, 8)]);
+    ScrollAndMatch (251,                   [l(291, 3, 8)], 'Found on last line (249=>251)');
     TestHasScanCnt('Found on last line (249=>251)', 1, 2); // Allow some range
 
 
-    SetText(250);
-    M.HideSingleMatch := False;
-    StartMatch(['a291a']);
-    TestHasMCount ('Not Found after last line', 0);
-
-    M.ResetScannedCount;
-    SynEdit.Height := SynEdit.LineHeight * 41 + SynEdit.LineHeight div 2;
-    TestHasMCount ('Found on last line (40=>41', 1);
-    TestHasMatches('Found on last line (40=>41)', [l(291, 3, 8)]);
+    SetTextAndMatch(250, False, ['a291a'], [], 'Not Found after last line');
+    HeightAndMatch (41,                    [l(291, 3, 8)], 'Found on last line (40=>41)' );
     TestHasScanCnt('Found on last line (40=>41)', 1, 2); // Allow some range
 
 
     PopPushBaseName('HideSingleMatch=True');
 
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a249a', 'a248a']);
-    TestHasMCount ('Not Found before first line', 0);
-
-    M.ResetScannedCount;
-    SynEdit.TopLine := 251;
-    TestHasMCount ('Not Found before first line (250=>251)', 0);
+    SetTextAndMatch(250, True, ['a249a', 'a248a'], [], 'Not Found before first line');
+    ScrollAndMatch (251,                           [], 'Not Found before first line (250=>251)');
     TestHasScanCnt('Not Found before first line (250=>251)', 1, 2); // Allow some range
 
-    M.ResetScannedCount;
-    SynEdit.TopLine := 249;
-    TestHasMCount ('Found on first line+ext (251=<249', 2);
-    TestHasMatches('Found on first line+ext (251=>249)', [l(249, 3, 8), l(248, 3, 8)]);
+    ScrollAndMatch (249,                           [l(249, 3, 8), l(248, 3, 8)], 'Found on first line+ext (251=>249)');
 
 
-    SetText(250);
-    M.HideSingleMatch := True;
-    StartMatch(['a291a', 'a292a']);
-    TestHasMCount ('Not Found after last line', 0);
-
-    M.ResetScannedCount;
-    SynEdit.TopLine := 249;
-    TestHasMCount ('Not Found after last line (250=>249)', 0);
+    SetTextAndMatch(250, True, ['a291a', 'a292a'], [], 'Not Found after last line');
+    ScrollAndMatch (249,                           [], 'Not Found after last line (250=>249)');
     TestHasScanCnt('Not Found after last line (250=>249)', 1, 2); // Allow some range
 
-    M.ResetScannedCount;
-    SynEdit.TopLine := 251;
-    TestHasMCount ('Found on last line+ext (249=<251', 2);
-    TestHasMatches('Found on last line+ext (249=>251)', [l(291, 3, 8), l(292, 3, 8)]);
+    ScrollAndMatch (251,                           [l(291, 3, 8), l(292, 3, 8)], 'Found on last line+ext (249=>251)');
 
 
-    for i := -205 to 205 do begin
-      if abs(i) in [0..2, 5..15, 25..35, 50..95, 105..195] then continue;
+    for i := -249 to 315 do begin
+      // MATCHES_CLEAN_LINE_THRESHOLD = 300  div 4 = 75
+      // MATCHES_CLEAN_LINE_KEEP = 200       div 4 = 50
+      // SynEdit.LinesInWindow = 50          div 4 = 10
+      if not( (abs(i) div 4) in [1,    9,10,   49,50,51,   74,75,76 ]) then continue;
 
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches top/last > last ';
-      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(290+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(290+i)], [l_a(250), l_a(290)],   3);
+      ScrollAndMatch (250 + i,                                         [          l_a(290+i)], 3, 'Far Scroll '+IntToStr(i)+' to %d matches top/last > last ' + 'Found ');
 
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(250+i)], [l_a(250), l_a(290)], 3);
+      ScrollAndMatch (250 + i,                                         [l_a(250+i)        ], 3,  'Far Scroll '+IntToStr(i)+' to %d matches top/last > top ' + 'Found ');
 
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches top/last > top ';
-      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290), Mtxt(250+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290+i)], [l_a(250)],   2);
+      ScrollAndMatch (250 + i,                              [l_a(290+i)], 2, 'Far Scroll '+IntToStr(i)+' to %d matches top > last ' + 'Found ');
 
+      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(250+i)], [l_a(250)],   2);
+      ScrollAndMatch (250 + i,                              [l_a(250+i)], 2, 'Far Scroll '+IntToStr(i)+' to %d matches top > top ' + 'Found ');
 
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches top > last ';
-      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(290+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
+      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(290+i)], [l_a(290)],   2);
+      ScrollAndMatch (250 + i,                              [l_a(290+i)], 2, 'Far Scroll '+IntToStr(i)+' to %d matches last > last ' + 'Found ');
 
-
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches top > top ';
-      SetTextAndMatch(250, False, [Mtxt(250), Mtxt(250+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
-
-
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches last > last ';
-      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(290+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(290+i, 3, 3+length(Mtxt(290+i)))]);
-
-
-      N := 'Far Scroll '+IntToStr(i)+' to %d matches last > top ';
-      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(250+i)]);
-      SynEdit.TopLine := 250 + i;
-      TestHasMatches(N + 'Found ', [l(250+i, 3, 3+length(Mtxt(250+i)))]);
-
-
+      SetTextAndMatch(250, False, [Mtxt(290), Mtxt(250+i)], [l_a(290)],   2);
+      ScrollAndMatch (250 + i,                              [l_a(250+i)], 2, 'Far Scroll '+IntToStr(i)+' to %d matches last > top ' + 'Found ');
     end;
 
 
@@ -891,11 +791,8 @@ begin
       if ((i > 259) and (i < 280)) then continue;
 
       N := 'Edit at '+IntToStr(i)+' / NO match';
-      SetTextAndMatch(250, False,   ['DontMatchMe'],   N+' init/found', 0);
-      M.ResetScannedCount;
-      SynEdit.TextBetweenPoints[point(1, i), point(1, i)] := 'X';
-      SynEdit.SimulatePaintText;
-      TestHasMCount (N+' Found after edit', 0);
+      SetTextAndMatch(250, False,   ['DontMatchMe'], [],  N+' init/found');
+      EditInsertAndMatch(i,1,'X',                    [],  N+' Found after edit');
       if (i >= 250) and (i <= 290)
       then TestHasScanCnt(N+' Found after edit', 1, 3)
       else
@@ -905,34 +802,15 @@ begin
 
 
       N := 'Edit (new line) at '+IntToStr(i)+' / NO match';
-      SetTextAndMatch(250, False,   ['DontMatchMe'],   N+' init/found', 0);
-      M.ResetScannedCount;
-      SynEdit.TextBetweenPoints[point(1, i), point(1, i)] := LineEnding;
-      SynEdit.SimulatePaintText;
-      TestHasMCount (N+' Found after edit', 0);
-      //if (i >= 250) and (i <= 290)
-      //then TestHasScanCnt(N+' Found after edit', 1, 3)
-      //else
-      //if (i < 247) or (i > 293)
-      //then TestHasScanCnt(N+' Found after edit', 0)
-      //else TestHasScanCnt(N+' Found after edit', 0, 3);
+      SetTextAndMatch(250, False,   ['DontMatchMe'], [],  N+' init/found');
+      EditInsertAndMatch (i,1,LineEnding,            [],  N+' Found after edit');
 
 
       N := 'Edit (join line) at '+IntToStr(i)+' / NO match';
-      SetTextAndMatch(250, False,   ['DontMatchMe'],   N+' init/found', 0);
-      M.ResetScannedCount;
-      SynEdit.TextBetweenPoints[point(10, i), point(1, i+1)] := '';
-      SynEdit.SimulatePaintText;
-      TestHasMCount (N+' Found after edit', 0);
-      //if (i >= 250) and (i <= 290)
-      //then TestHasScanCnt(N+' Found after edit', 1, 3)
-      //else
-      //if (i < 247) or (i > 293)
-      //then TestHasScanCnt(N+' Found after edit', 0)
-      //else TestHasScanCnt(N+' Found after edit', 0, 3);
+      SetTextAndMatch(250, False,   ['DontMatchMe'], [],  N+' init/found');
+      EditReplaceAndMatch (i,10, i+1,1, '',          [],  N+' Found after edit');
 
     end;
-
 
 
     for j := 245 to 295 do begin
@@ -946,16 +824,13 @@ begin
         then TestHasMatches(N+' init/found',   1,   [l(j, 3, 8)])
         else TestHasMCount (N+' init/not found', 0);
 
-        M.ResetScannedCount;
-        SynEdit.TextBetweenPoints[point(1, i), point(1, i)] := 'X';
-        SynEdit.SimulatePaintText;
         if (j >= 250) and (j <= 290) then begin
           if i = j
-          then TestHasMatches(N+' Found after edit',   1,  [l(j, 4, 9)])
-          else TestHasMatches(N+' Found after edit',   1,  [l(j, 3, 8)]);
+          then EditInsertAndMatch(i,1,'X', [l(j, 4, 9)],  N+' Found after edit')
+          else EditInsertAndMatch(i,1,'X', [l(j, 3, 8)],  N+' Found after edit');
         end
         else
-          TestHasMCount (N+' still not Found after edit', 0);
+          EditInsertAndMatch(i,1,'X', [],  N+' still not found after edit');
 
         if (i >= 250) and (i <= 290)
         then TestHasScanCnt(N+' Found after edit', 1, 3)
@@ -1067,6 +942,62 @@ begin
     PopBaseName;
   {%endregion}
 
+  // Edit / before,after,gap
+  for i := -2 to 2 do begin
+    SetTextAndMatch   (250, False, [Mtxt(260), 'FOO'], [l_a(260)]);
+    EditInsertAndMatch(260+i,10, ' FOO ',              [l_a(260), l(260+i,11,14)]);
+
+    for j := 1 to 3 do begin  // distance
+      // 2 lines
+      SetTextAndMatch   (250, False, [Mtxt(260),Mtxt(260+j),'FOO'], [l_a(260),l_a(260+j)]);
+      EditInsertAndMatch(260+i,10, ' FOO ',                         [l_a(260),l_a(260+j), l(260+i,11,14)]);
+
+      SetTextAndMatch   (250, False, [Mtxt(260),Mtxt(260+j),'FOO'], [l_a(260),l_a(260+j)]);
+      EditInsertAndMatch(260+j+i,10, ' FOO ',                       [l_a(260),l_a(260+j), l(260+j+i,11,14)]);
+
+      // 3 lines
+      SetTextAndMatch   (250, False, [Mtxt(260),Mtxt(260+j),Mtxt(260+j*2),'FOO'],
+                                                      [l_a(260),l_a(260+j),l_a(260+j*2)]);
+      EditInsertAndMatch(260+i,10, ' FOO ',           [l_a(260),l_a(260+j),l_a(260+j*2), l(260+i,11,14)]);
+
+      SetTextAndMatch   (250, False, [Mtxt(260),Mtxt(260+j),Mtxt(260+j*2),'FOO'],
+                                                      [l_a(260),l_a(260+j),l_a(260+j*2)]);
+      EditInsertAndMatch(260+j+i,10, ' FOO ',         [l_a(260),l_a(260+j),l_a(260+j*2), l(260+j+i,11,14)]);
+
+      SetTextAndMatch   (250, False, [Mtxt(260),Mtxt(260+j),Mtxt(260+j*2),'FOO'],
+                                                      [l_a(260),l_a(260+j),l_a(260+j*2)]);
+      EditInsertAndMatch(260+j*2+i,10, ' FOO ',         [l_a(260),l_a(260+j),l_a(260+j*2), l(260+j*2+i,11,14)]);
+
+    end;
+  end;
+
+  //Delete part of match
+
+  SetTextAndMatch   (250, False, [Mtxt(260), Mtxt(263), Mtxt(266), Mtxt(269)],
+                                       [l_a(260),l_a(263),l_a(266),l_a(269)]);
+  EditReplaceAndMatch(260,3,260,7, '', [         l_a(263),l_a(266),l_a(269)]);
+  EditReplaceAndMatch(266,3,266,7, '', [         l_a(263),         l_a(269)]);
+  EditReplaceAndMatch(269,3,269,7, '', [         l_a(263)                  ]);
+  EditReplaceAndMatch(263,3,263,7, '', [                                   ]);
+
+
+  SetTextAndMatch   (250, False, [Mtxt(260), Mtxt(263), Mtxt(266), Mtxt(269)],
+                                       [l_a(260),l_a(263),l_a(266),l_a(269)]);
+  EditReplaceAndMatch(263,3,263,7, '', [l_a(260),         l_a(266),l_a(269)]);
+  EditReplaceAndMatch(269,3,269,7, '', [l_a(260),         l_a(266)         ]);
+  EditReplaceAndMatch(260,3,260,7, '', [                  l_a(266)         ]);
+  EditReplaceAndMatch(266,3,266,7, '', [                                   ]);
+
+  SetTextAndMatch   (250, False, [Mtxt(260), Mtxt(263), Mtxt(266), Mtxt(269)],
+                                       [l_a(260),l_a(263),l_a(266),l_a(269)]);
+  EditReplaceAndMatch(266,3,266,7, '', [l_a(260),l_a(263),         l_a(269)]);
+  EditReplaceAndMatch(269,3,269,7, '', [l_a(260),l_a(263)                  ]);
+  EditReplaceAndMatch(260,3,260,7, '', [         l_a(263)                  ]);
+
+  SetTextAndMatch   (250, False, [Mtxt(260), Mtxt(263), Mtxt(266), Mtxt(269)],
+                                       [l_a(260),l_a(263),l_a(266),l_a(269)]);
+  EditReplaceAndMatch(269,3,269,7, '', [l_a(260),l_a(263),l_a(266)         ]);
+  EditReplaceAndMatch(263,3,263,7, '', [l_a(260),         l_a(266)         ]);
 
 
 end;
