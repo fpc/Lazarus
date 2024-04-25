@@ -1568,7 +1568,7 @@ begin
     LongOptions.Add('add-package');
     LongOptions.Add('add-package-link');
     LongOptions.Add('build-all');
-    LongOptions.Add('build-ide:');
+    LongOptions.Add('build-ide::');
     LongOptions.Add('recursive');
     LongOptions.Add('skip-dependencies');
     LongOptions.Add('widgetset:');
