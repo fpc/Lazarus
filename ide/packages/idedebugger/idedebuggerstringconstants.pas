@@ -503,7 +503,7 @@ resourcestring
   DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried.';
 
   dbgDoNotShowThisMessageAgain = 'Do not ask again';
-  optDispGutterCustomDisplayformat = 'Custom Displayformat';
+  optDispGutterCustomDisplayformat = 'Custom Display Format';
 
 implementation
 
