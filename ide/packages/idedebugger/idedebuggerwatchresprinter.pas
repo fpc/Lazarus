@@ -864,6 +864,12 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
     s := '';
     if Resolved.Enum.MainFormat <> vdfEnumOrd then begin
       Result := AResValue.AsString;
+      if Result = '' then begin
+        Result := AResValue.TypeName;
+        if Result <> ''
+        then Result := Result + '(' + IntToStr(AResValue.AsInt64) + ')'
+        else Result := IntToStr(AResValue.AsInt64);
+      end;
       s := ' = ';
     end;
 
