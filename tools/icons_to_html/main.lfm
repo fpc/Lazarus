@@ -9,13 +9,13 @@ object MainForm: TMainForm
   ClientWidth = 700
   Constraints.MinHeight = 515
   Constraints.MinWidth = 700
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
   OnShow = FormShow
-  Position = poScreenCenter
-  ShowHint = True
-  LCLVersion = '3.2.0.0'
   object DirectoryEdit: TDirectoryEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = sbtnLastDirs
@@ -516,6 +516,8 @@ object MainForm: TMainForm
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
         MouseActions = <>
+        MaxExtraMarksColums = 0
+        Options = [sgmoDeDuplicateMarksOnOverflow]
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 15
@@ -596,9 +598,9 @@ object MainForm: TMainForm
     Caption = 'Close'
     Images = ImageList
     ImageIndex = 6
-    OnClick = bbtnCloseClick
     Spacing = 5
     TabOrder = 6
+    OnClick = bbtnCloseClick
   end
   object bbtnSave: TBitBtn
     AnchorSideTop.Control = bbtnClose
@@ -616,9 +618,9 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 5
-    OnClick = bbtnSaveClick
     Spacing = 5
     TabOrder = 5
+    OnClick = bbtnSaveClick
   end
   object bbtnCreateHTML: TBitBtn
     AnchorSideTop.Control = bbtnPreview
@@ -637,9 +639,9 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 3
-    OnClick = bbtnCreateHTMLClick
     Spacing = 5
     TabOrder = 3
+    OnClick = bbtnCreateHTMLClick
   end
   object bbtnPreview: TBitBtn
     AnchorSideTop.Control = bbtnSave
@@ -655,12 +657,13 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 4
-    OnClick = bbtnPreviewClick
     TabOrder = 4
+    OnClick = bbtnPreviewClick
   end
   object TaskDialog: TTaskDialog
     Buttons = <>
     RadioButtons = <>
+    QueryItemIndex = 0
     Left = 96
     Top = 64
   end

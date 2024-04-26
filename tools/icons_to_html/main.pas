@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
+  Classes, SysUtils, Forms, FPImage, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
   LazUTF8, LazFileUtils, LCLIntf, LCLType, Buttons, Menus, IniFiles,
   SynEdit, SynHighlighterHTML;
 
@@ -44,6 +44,7 @@ type
     procedure CreateHTML(HTMLLines: TStrings; Preview: Boolean);
     procedure ShowMsg(const AMsgCaption: String; const AMsg: String);
     procedure UpdateLastDirs(ImgDir: String; Delete: Boolean);
+    procedure GetPixSize(FileName: String; var PixWidth: Integer; var PixHeight: Integer);
   public
 
   end;
@@ -241,6 +242,8 @@ var
   IcoFile: String;
   IcoSize: String;
   IcoName: String;
+  IcoWidth: Integer = 0;
+  IcoHeight: Integer = 0;
   DPos: Integer;
   IntDummy: Integer;
   i: Integer;
@@ -273,16 +276,14 @@ begin
     for i := 0 to AllFileList.Count - 1 do
     begin
       IcoFile := ChangeFileExt(ExtractFileName(AllFileList.Strings[i]), '');
+      GetPixSize(AllFileList.Strings[i], IcoWidth, IcoHeight);
+      IcoSize := IntToStr(IcoWidth);
+
       DPos := LastDelimiter('_', IcoFile);
-      IcoSize := RightStr(IcoFile, Utf8Length(IcoFile) - DPos);
-
-      if not TryStrToInt(IcoSize, IntDummy) then
-        IcoSize := '';
-
-      if IcoSize = '' then
-        IcoName := IcoFile
+      if TryStrToInt(RightStr(IcoFile, Utf8Length(IcoFile) - DPos), IntDummy) then
+        IcoName := Utf8Copy(IcoFile, 1, DPos - 1)
       else
-        IcoName := Utf8Copy(IcoFile, 1, DPos - 1);
+        IcoName := IcoFile;
 
       if Preview then
         IcoFileList.Add('file:///' + ImgDirectory + IcoFile)
@@ -334,7 +335,7 @@ begin
     HTMLLines.Add('<table>');
     HTMLLines.Add('  <tr class="no_border">');
     HTMLLines.Add('    <td class="colorset1 right_border"></td>');
-    HTMLLines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Appendix</td>');
+    HTMLLines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Size</td>');
     HTMLLines.Add('  </tr>');
     HTMLLines.Add('  <tr>');
     HTMLLines.Add('    <td class="colorset1 right_border">Name</td>');
@@ -487,6 +488,24 @@ begin
     Exit(CleanAndExpandDirectory(P));
 
   Result := '';
+end;
+
+procedure TMainForm.GetPixSize(FileName: String; var PixWidth: Integer; var PixHeight: Integer);
+var
+  stream: TStream;
+  reader: TFPCustomImageReaderClass;
+begin
+  stream := TFileStream.Create(FileName, fmOpenRead + fmShareDenyWrite);
+  try
+    reader :=  TFPCustomImage.FindReaderFromStream(stream);
+    with reader.ImageSize(stream) do
+    begin
+      PixWidth := X;
+      PixHeight := Y;
+    end;
+  finally
+    stream.Free;
+  end;
 end;
 
 function CustomSortProc(List: TStringList; X1, X2: Integer): Integer;
