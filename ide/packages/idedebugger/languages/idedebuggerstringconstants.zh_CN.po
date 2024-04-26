@@ -1699,7 +1699,7 @@ msgid "Watches"
 msgstr "监视(&W)"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
+msgid "Custom Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.regdlgbinary

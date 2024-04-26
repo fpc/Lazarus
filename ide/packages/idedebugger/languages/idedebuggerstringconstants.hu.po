@@ -1708,7 +1708,7 @@ msgid "Watches"
 msgstr "Figyelt elemek"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
+msgid "Custom Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.regdlgbinary

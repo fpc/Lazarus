@@ -1711,7 +1711,7 @@ msgid "Watches"
 msgstr "監視リスト"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
+msgid "Custom Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.regdlgbinary

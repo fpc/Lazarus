@@ -1740,7 +1740,7 @@ msgid "Watches"
 msgstr "רשימת המשגיחים"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
+msgid "Custom Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.regdlgbinary

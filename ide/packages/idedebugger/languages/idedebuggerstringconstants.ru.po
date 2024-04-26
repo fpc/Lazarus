@@ -502,11 +502,11 @@ msgstr "Индекс первого показываемого элемента"
 
 #: idedebuggerstringconstants.dlgsortdown
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: idedebuggerstringconstants.dlgsortup
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
@@ -1693,8 +1693,8 @@ msgid "Watches"
 msgstr "Наблюдения"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
-msgstr ""
+msgid "Custom Display Format"
+msgstr "Пользовательский формат отображения"
 
 #: idedebuggerstringconstants.regdlgbinary
 msgctxt "lazarusidestrconsts.regdlgbinary"

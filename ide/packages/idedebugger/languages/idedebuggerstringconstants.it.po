@@ -1713,7 +1713,7 @@ msgid "Watches"
 msgstr "Elenco delle viste di Watch"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
-msgid "Custom Displayformat"
+msgid "Custom Display Format"
 msgstr ""
 
 #: idedebuggerstringconstants.regdlgbinary
