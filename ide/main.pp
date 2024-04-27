@@ -11485,7 +11485,7 @@ procedure TMainIDE.HintWatchValidityChanged(Sender: TObject);
 var
   p: SizeInt;
   WatchPrinter: TWatchResultPrinter;
-  ResultText: String;
+  ResultText, s: String;
   ResData: TWatchResultData;
   DispFormat: TWatchDisplayFormat;
 begin
@@ -11511,12 +11511,13 @@ begin
     if (ResData <> nil) and
        not( (ResData.ValueKind = rdkPrePrinted) and (FHintWatchData.WatchValue.TypeInfo <> nil) )
     then begin
-      ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat);
+      ResultText := WatchPrinter.PrintWatchValue(ResData, DispFormat, FHintWatchData.WatchValue.Expression);
     end
     else begin
+      s := AnsiUpperCase(FHintWatchData.WatchValue.Expression);
       if (FHintWatchData.WatchValue.TypeInfo = nil) or
          not GlobalValueFormatterSelectorList.FormatValue(FHintWatchData.WatchValue.TypeInfo,
-         FHintWatchData.WatchValue.Value, DispFormat, ResultText)
+         FHintWatchData.WatchValue.Value, DispFormat, ResultText, s, s)
       then begin
         ResultText := FHintWatchData.WatchValue.Value;
         if (FHintWatchData.WatchValue.TypeInfo <> nil) and

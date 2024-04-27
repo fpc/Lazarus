@@ -787,7 +787,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat));
+      Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat, LVal.Name));
       Clipboard.Close;
     end;
   end;
@@ -807,7 +807,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat);
+      Clipboard.AsText := FWatchPrinter.PrintWatchValue(LVal.ResultData, DefaultWatchDisplayFormat, LVal.Name);
       Clipboard.Close;
     end;
   end;
@@ -850,6 +850,7 @@ var
   ResData: TWatchResultData;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
+  s: String;
 begin
   if AWatchAbleResult = nil then
     exit(inherited);
@@ -892,12 +893,13 @@ begin
           if (ResData <> nil) and
              not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
           then begin
-            Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
+            Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TIdeLocalsValue(AWatchAble).Name);
           end
           else begin
+            s := AnsiUpperCase(TIdeLocalsValue(AWatchAble).Name);
             if (AWatchAbleResult.TypeInfo = nil) or
                not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-               AWatchAbleResult.Value, DispFormat, Result)
+               AWatchAbleResult.Value, DispFormat, Result, s, s)
             then begin
               Result := AWatchAbleResult.Value;
             end;
@@ -920,7 +922,7 @@ end;
 procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;
   AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode);
 var
-  WatchValueStr: String;
+  WatchValueStr, s: String;
   ResData: TWatchResultData;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
@@ -930,12 +932,13 @@ begin
   if (ResData <> nil) and
      not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
   then begin
-    WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
+    WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TIdeLocalsValue(AWatchAble).Name);
   end
   else begin
+    s := AnsiUpperCase(TIdeLocalsValue(AWatchAble).Name);
     if (AWatchAbleResult.TypeInfo = nil) or
        not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-       AWatchAbleResult.Value, DispFormat, WatchValueStr)
+       AWatchAbleResult.Value, DispFormat, WatchValueStr, s, s)
     then begin
       WatchValueStr := AWatchAbleResult.Value;
     end;

@@ -212,7 +212,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat));
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -239,13 +239,13 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat));
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   df := WatchInspectNav1.DisplayFormat;
   df.Num.BaseFormat := vdfBaseHex; //xxxxxxxxxxxxxxxxxxxxxx
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, df));
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, df, WatchInspectNav1.CurrentWatchValue.Expression));
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;
   FGridData.Cells[3,1]:=v;
@@ -255,7 +255,7 @@ begin
     FGridData.RowCount := 3;
     FGridData.Cells[1,2]:=Format(lisInspectPointerTo, ['']);
     FGridData.Cells[2,2]:=Res.TypeName;
-    FGridData.Cells[3,2]:=ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat));
+    FGridData.Cells[3,2]:=ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
   end;
 end;
 
@@ -277,7 +277,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat));
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -367,7 +367,7 @@ begin
         Res.SetSelectedIndex(i);
         Entry := Res.SelectedEntry;
         Entry := Entry.ConvertedRes;
-        s := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, WatchInspectNav1.DisplayFormat));
+        s := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
 
         if (filter <> '') and
            // index
@@ -512,7 +512,7 @@ begin
       else begin
         s := '';
         if Fld <> nil then
-          s := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, WatchInspectNav1.DisplayFormat));
+          s := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
         if (filter <> '') and
            // name
            (pos(filter, LowerCase(FldInfo.FieldName)) < 1) and
@@ -1373,7 +1373,7 @@ begin
   FExpressionWasEvaluated := True;
   FCurrentResData := WatchInspectNav1.CurrentWatchValue.ResultData;
   FCurrentTypePrefix := '';
-  FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentResData, DefaultWatchDisplayFormat);
+  FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentResData, DefaultWatchDisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
 
   if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
     if WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil then begin

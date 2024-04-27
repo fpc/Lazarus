@@ -1208,7 +1208,7 @@ begin
     if defSkipValueFormatter in Watch.EvaluateFlags then
       FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
     FWatchPrinter.OnlyValueFormatter := Watch.DbgValueFormatter;
-    s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat);
+    s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat, Watch.Expression);
     InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
     exit;
@@ -1216,7 +1216,7 @@ begin
 
   // Old style value
   if (t <> nil) and
-     GlobalValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s)
+     GlobalValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s, AnsiUpperCase(Watch.Expression), AnsiUpperCase(Watch.Expression))
   then begin
     InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
@@ -1461,6 +1461,7 @@ var
   ResData: TWatchResultData;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
+  s: String;
 begin
   if AWatchAbleResult = nil then
     exit(inherited);
@@ -1509,12 +1510,13 @@ begin
               FWatchDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
             FWatchDlg.FWatchPrinter.OnlyValueFormatter := TheWatch.DbgValueFormatter;
 
-            Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
+            Result := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TheWatch.Expression);
           end
           else begin
+            s := AnsiUpperCase(TheWatch.Expression);
             if (AWatchAbleResult.TypeInfo = nil) or
                not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-               AWatchAbleResult.Value, DispFormat, Result)
+               AWatchAbleResult.Value, DispFormat, Result, s, s)
             then begin
               Result := AWatchAbleResult.Value;
             end;
@@ -1539,7 +1541,7 @@ procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;
 var
   TheWatch: TIdeWatch absolute AWatchAble;
   ResData: TWatchResultData;
-  WatchValueStr: String;
+  WatchValueStr, s: String;
   da: TDBGPtr;
   DispFormat: TWatchDisplayFormat;
 begin
@@ -1570,7 +1572,7 @@ begin
         else
           FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen];
         FWatchDlg.FWatchPrinter.OnlyValueFormatter := TheWatch.DbgValueFormatter;
-        WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat);
+        WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TheWatch.Expression);
         TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := WatchValueStr;
 
         if ResData.HasDataAddress then begin
@@ -1581,9 +1583,10 @@ begin
         end
       end
       else begin
+        s := AnsiUpperCase(TheWatch.Expression);
         if (AWatchAbleResult.TypeInfo = nil) or
            not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
-           AWatchAbleResult.Value, DispFormat, WatchValueStr)
+           AWatchAbleResult.Value, DispFormat, WatchValueStr, s, s)
         then begin
           WatchValueStr := AWatchAbleResult.Value;
           if (AWatchAbleResult.TypeInfo <> nil) and

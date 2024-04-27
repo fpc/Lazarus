@@ -35,7 +35,9 @@ type
 
   TDbgTypePatternList = class(TStringList)
   private
+    FMatchesExpression: boolean;
     FMatchesInheritedTypes: boolean;
+    FMatchesName: boolean;
   protected
     procedure Put(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string); override;
@@ -44,8 +46,14 @@ type
     constructor Create;
     function AddObject(const S: string; AObject: TObject): Integer; override;
     function CheckTypeName(ATypeName: String): boolean;
+    function CheckUpperCaseTypeName(const AnUpperTypeName: String): boolean; // already upper case
     function CheckInheritedTypeName(ATypeName: String): boolean;
+    function CheckUpperCaseName(const AnUpperName: String): boolean;
+    function CheckUpperCaseExpression(const AnUpperExpression: String): boolean;
+
     property MatchesInheritedTypes: boolean read FMatchesInheritedTypes; // perform "is TFooClass"
+    property MatchesExpression: boolean read FMatchesExpression; // expr: pattern
+    property MatchesName: boolean read FMatchesName; // var: pattern
   end;
 
 implementation
@@ -57,13 +65,17 @@ type
   TDbgTypePattern = class
   private
     FMatchesInheritedTypes: boolean;
+    FMatchesExpression: boolean;
+    FMatchesName: boolean;
     FPatterType: (ptNever, ptAny, ptExact, ptExactAtStart, ptExactAtEnd, ptSubString, ptMatch);
     FStartsWithMatch, FEndsWithMatch: Boolean;
     FPatternParts: array of string;
   public
     procedure SetPattern(APattern: String);
     function CheckTypeName(const ATypeName: String): boolean;
-    property MatchesInheritedTypes: boolean read FMatchesInheritedTypes; // perform "is TFooClass"
+    property MatchesInheritedTypes: boolean read FMatchesInheritedTypes; // is: pattern // perform "is TFooClass"
+    property MatchesExpression: boolean read FMatchesExpression; // expr: pattern
+    property MatchesName: boolean read FMatchesName; // var: pattern
   end;
 
 { TDbgTypePattern }
@@ -77,6 +89,21 @@ begin
      (APattern[1] = 'I') and (APattern[2] = 'S') and  (APattern[3] = ':');
   if FMatchesInheritedTypes then begin
     Delete(APattern, 1, 3);
+    APattern := TrimLeft(APattern);
+  end;
+
+  FMatchesExpression := (Length(APattern) >= 5) and
+     (APattern[1] = 'E') and (APattern[2] = 'X') and
+     (APattern[3] = 'P') and  (APattern[4] = 'R') and  (APattern[5] = ':');
+  if FMatchesExpression then begin
+    Delete(APattern, 1, 5);
+    APattern := TrimLeft(APattern);
+  end;
+
+  FMatchesName := (Length(APattern) >= 4) and
+     (APattern[1] = 'V') and (APattern[2] = 'A') and  (APattern[3] = 'R') and  (APattern[4] = ':');
+  if FMatchesName then begin
+    Delete(APattern, 1, 4);
     APattern := TrimLeft(APattern);
   end;
 
@@ -213,7 +240,7 @@ end;
 procedure TDbgTypePatternList.Put(Index: Integer; const S: string);
 var
   p: TDbgTypePattern;
-  wasInheritMatch: Boolean;
+  wasInheritMatch, wasNameMatch, wasExpressionMatch: Boolean;
   i: Integer;
 begin
   inherited Put(Index, S);
@@ -223,7 +250,10 @@ begin
     Objects[Index] := p;
   end;
   wasInheritMatch := p.MatchesInheritedTypes;
+  wasNameMatch := p.MatchesName;
+  wasExpressionMatch := p.MatchesExpression;
   p.SetPattern(S);
+
   if p.MatchesInheritedTypes then begin
     FMatchesInheritedTypes := True;
   end
@@ -233,6 +263,28 @@ begin
     while (i >= 0) and not TDbgTypePattern(Objects[Index]).MatchesInheritedTypes do
       dec(i);
     FMatchesInheritedTypes := i >= 0;
+  end;
+
+  if p.MatchesName then begin
+    FMatchesName := True;
+  end
+  else
+  if wasInheritMatch then begin
+    i := Count - 1;
+    while (i >= 0) and not TDbgTypePattern(Objects[Index]).MatchesName do
+      dec(i);
+    FMatchesName := i >= 0;
+  end;
+
+  if p.MatchesExpression then begin
+    FMatchesExpression := True;
+  end
+  else
+  if wasInheritMatch then begin
+    i := Count - 1;
+    while (i >= 0) and not TDbgTypePattern(Objects[Index]).MatchesExpression do
+      dec(i);
+    FMatchesExpression := i >= 0;
   end;
 end;
 
@@ -245,6 +297,10 @@ begin
   p.SetPattern(S);
   if p.MatchesInheritedTypes then
     FMatchesInheritedTypes := True;
+  if p.MatchesName then
+    FMatchesName := True;
+  if p.MatchesExpression then
+    FMatchesExpression := True;
 end;
 
 procedure TDbgTypePatternList.InsertItem(Index: Integer; const S: string;
@@ -280,15 +336,62 @@ begin
   Result := i >= 0;
 end;
 
+function TDbgTypePatternList.CheckUpperCaseTypeName(const AnUpperTypeName: String): boolean;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while (i >= 0) and not TDbgTypePattern(Objects[i]).CheckTypeName(AnUpperTypeName) do
+    dec(i);
+  Result := i >= 0;
+end;
+
 function TDbgTypePatternList.CheckInheritedTypeName(ATypeName: String): boolean;
 var
   i: Integer;
 begin
+  Result := FMatchesInheritedTypes;
+  if not Result then
+    exit;
   ATypeName := AnsiUpperCase(ATypeName);
   i := Count - 1;
   while (i >= 0) and
         ( (not TDbgTypePattern(Objects[i]).MatchesInheritedTypes) or
           (not TDbgTypePattern(Objects[i]).CheckTypeName(ATypeName))
+        )
+  do
+    dec(i);
+  Result := i >= 0;
+end;
+
+function TDbgTypePatternList.CheckUpperCasename(const AnUpperName: String): boolean;
+var
+  i: Integer;
+begin
+  Result := FMatchesName;
+  if not Result then
+    exit;
+  i := Count - 1;
+  while (i >= 0) and not
+        ( TDbgTypePattern(Objects[i]).MatchesName and
+          TDbgTypePattern(Objects[i]).CheckTypeName(AnUpperName)
+        )
+  do
+    dec(i);
+  Result := i >= 0;
+end;
+
+function TDbgTypePatternList.CheckUpperCaseExpression(const AnUpperExpression: String): boolean;
+var
+  i: Integer;
+begin
+  Result := FMatchesExpression;
+  if not Result then
+    exit;
+  i := Count - 1;
+  while (i >= 0) and not
+        ( TDbgTypePattern(Objects[i]).MatchesExpression and
+          TDbgTypePattern(Objects[i]).CheckTypeName(AnUpperExpression)
         )
   do
     dec(i);

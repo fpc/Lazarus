@@ -72,11 +72,13 @@ type
     FLineSeparator: String;
     FOnlyValueFormatter: IIdeDbgValueFormatterIntf;
     FDefaultValueFormatter, FCurrentValueFormatter, FNextValueFormatter: IIdeDbgValueFormatterIntf;
+    FWatchedVarName: String;
     FTargetAddressSize: integer;
     FDisplayFormatResolver: TDisplayFormatResolver;
     FNextCallIsValueFormatter: Boolean;
     FInValFormNestLevel: integer;
     FResValueInFormatter: TWatchResultData;
+    FWatchedExprInFormatter: String;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -93,16 +95,16 @@ type
                          const ANumFormat: TResolvedDisplayFormatNum;
                          PrintNil: Boolean = False
                         ): String;
-    function PrintArray(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
-    function PrintStruct(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
-    function PrintConverted(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+    function PrintArray(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
+    function PrintStruct(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
+    function PrintConverted(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
     function PrintProc(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
 
-    function PrintWatchValueEx(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+    function PrintWatchValueEx(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
   public
     constructor Create;
     destructor Destroy; override;
-    function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat): String;
+    function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; const AWatchedExpr: String): String;
     function PrintWatchValueIntf(AResValue: IWatchResultDataIntf; const ADispFormat: TWatchDisplayFormat; AFlags: TWatchResultPrinterFlags = []): String;
     function IWatchResultPrinter.PrintWatchValue = PrintWatchValueIntf;
 
@@ -574,7 +576,7 @@ begin
 end;
 
 function TWatchResultPrinter.PrintArray(AResValue: TWatchResultData;
-  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
 var
   i: Integer;
   sep, tn: String;
@@ -608,7 +610,7 @@ begin
     if Result <> '' then
       Result := Result + sep;
     AResValue.SetSelectedIndex(i);
-    Result := Result + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl);
+    Result := Result + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
     if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
       Result := Result + sep +'...';
       break;
@@ -623,7 +625,7 @@ begin
 end;
 
 function TWatchResultPrinter.PrintStruct(AResValue: TWatchResultData;
-  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
 const
   VisibilityNames: array [TLzDbgFieldVisibility] of string = (
     '', 'private', 'protected', 'public', 'published'
@@ -632,7 +634,7 @@ var
   Resolved: TResolvedDisplayFormat;
   FldInfo: TWatchResultDataFieldInfo;
   FldOwner: TWatchResultData;
-  vis, indent, sep, tn, Header: String;
+  vis, indent, sep, tn, Header, we: String;
   InclVisSect: Boolean;
 begin
   Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
@@ -672,6 +674,7 @@ begin
   else
     sep := ' ';
 
+  we := AWatchedExpr + '.';
   InclVisSect := (Resolved.Struct.DataFormat = vdfStructFull) and (AResValue.StructType in [dstClass, dstObject]);
   FldOwner := nil;
   vis := '';
@@ -703,7 +706,7 @@ begin
       Result := Result + indent + FldInfo.FieldName + ': '
     else
       Result := Result + indent;
-    Result := Result + PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl) + ';';
+    Result := Result + PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl, we + UpperCase(FldInfo.FieldName)) + ';';
 
     if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
       Result := Result + sep +'...';
@@ -739,7 +742,7 @@ begin
 end;
 
 function TWatchResultPrinter.PrintConverted(AResValue: TWatchResultData;
-  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
 begin
   if AResValue.FieldCount = 0 then
     exit('Error: No result');
@@ -749,18 +752,18 @@ begin
        ((AResValue.Fields[0].Field.ValueKind <> rdkError))
      )
   then begin
-    Result := PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl);
+    Result := PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl, AWatchedExpr);
     exit;
   end;
 
   if (AResValue.FieldCount > 1) then begin
-    Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl);
+    Result := PrintWatchValueEx(AResValue.Fields[1].Field, ADispFormat, ANestLvl, AWatchedExpr);
     if (AResValue.Fields[0].Field = nil) or
        (AResValue.Fields[0].Field.ValueKind <> rdkError) or
        (AResValue.Fields[0].Field.AsString <> '')
     then
     Result := Result + ' { '
-      + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl)
+      + PrintWatchValueEx(AResValue.Fields[0].Field, ADispFormat, ANestLvl, AWatchedExpr)
       + ' }';
     exit;
   end;
@@ -797,7 +800,7 @@ begin
 end;
 
 function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
-  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
+  const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
 
   function PrintChar: String;
   var
@@ -913,9 +916,10 @@ begin
     FNextCallIsValueFormatter := True;
     FInValFormNestLevel  := ANestLvl;
     FResValueInFormatter := AResValue;
+    FWatchedExprInFormatter := AWatchedExpr;
     //
     try
-      if FCurrentValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result) then
+      if FCurrentValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result, FWatchedVarName, AWatchedExpr) then
         exit;
     finally
       FNextCallIsValueFormatter := False;
@@ -977,9 +981,9 @@ begin
           PtrDeref :=  PtrDeref.DerefData;
         end;
         if PtrDeref <> nil then
-          Result := Result + '^: ' + PrintWatchValueEx(PtrDeref, ADispFormat, ANestLvl)
+          Result := Result + '^: ' + PrintWatchValueEx(PtrDeref, ADispFormat, ANestLvl, AWatchedExpr+'^')
         else
-          Result := Result + ': ' + PrintWatchValueEx(PtrDeref2, ADispFormat, ANestLvl);
+          Result := Result + ': ' + PrintWatchValueEx(PtrDeref2, ADispFormat, ANestLvl, AWatchedExpr+'^');
       end;
     end;
     rdkFloatVal: begin
@@ -1006,19 +1010,19 @@ begin
     rdkSet:        Result := PrintSet;
     rdkPCharOrString: begin
       AResValue.SetSelectedIndex(0); // pchar res
-      Result := 'PChar: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl);
+      Result := 'PChar: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
       AResValue.SetSelectedIndex(1); // string res
       Result := Result + FLineSeparator
-              + 'String: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl);
+              + 'String: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
     end;
-    rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl);
-    rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl);
-    rdkConvertRes: Result := PrintConverted(AResValue, ADispFormat, ANestLvl);
+    rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
+    rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
+    rdkConvertRes: Result := PrintConverted(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
     rdkFunction,
     rdkProcedure,
     rdkFunctionRef,
     rdkProcedureRef: Result := PrintProc(AResValue, ADispFormat, ANestLvl);
-    rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl);
+    rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl, AWatchedExpr);
   end;
 end;
 
@@ -1036,7 +1040,7 @@ begin
 end;
 
 function TWatchResultPrinter.PrintWatchValue(AResValue: TWatchResultData;
-  const ADispFormat: TWatchDisplayFormat): String;
+  const ADispFormat: TWatchDisplayFormat; const AWatchedExpr: String): String;
 begin
   FNextValueFormatter := nil;
   if FOnlyValueFormatter <> nil then
@@ -1054,7 +1058,8 @@ begin
   else
     FLineSeparator := ' ';
 
-  Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
+  FWatchedVarName := UpperCase(AWatchedExpr);
+  Result := PrintWatchValueEx(AResValue, ADispFormat, -1, FWatchedVarName);
 end;
 
 function TWatchResultPrinter.PrintWatchValueIntf(AResValue: IWatchResultDataIntf;
@@ -1081,12 +1086,12 @@ begin
 
   if FNextCallIsValueFormatter then begin
     FNextCallIsValueFormatter := False;
-    Result := PrintWatchValueEx(AResValObj, ADispFormat, FInValFormNestLevel - 1 + IncLvl); // This will increase it by one, compared to the value given to the formatter
+    Result := PrintWatchValueEx(AResValObj, ADispFormat, FInValFormNestLevel - 1 + IncLvl, FWatchedExprInFormatter); // This will increase it by one, compared to the value given to the formatter
   end
   else begin
     // TOOD: full init? Or Call PrintWatchValueEx ?
     // TODO: inc level/count of iterations
-    Result := PrintWatchValueEx(AResValObj, ADispFormat, -1);
+    Result := PrintWatchValueEx(AResValObj, ADispFormat, -1, FWatchedExprInFormatter);
   end;
 end;
 
