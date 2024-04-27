@@ -3555,7 +3555,7 @@ var
   LineOffsets: Array of Byte;
   Addresses: Array of TDBGPtr;
   o: Byte;
-  i, j, k, l, CurOffs: Integer;
+  i, j, k, l, ln, CurOffs: Integer;
   TmpResList: TDBGPtrArray;
 begin
   Result := False;
@@ -3629,15 +3629,15 @@ begin
     end;
   until False;
 
-  l := 256 * idx + CurOffs;
-  if l <> ALine then
+  ln := 256 * idx + CurOffs;
+  if ln <> ALine then
     case AFindSibling of
       fsBefore:
-        if (AMaxSiblingDistance > 0) and (ALine - l > AMaxSiblingDistance) then exit;
+        if (AMaxSiblingDistance > 0) and (ALine - ln > AMaxSiblingDistance) then exit;
       fsNext, fsNextFunc, fsNextFuncLazy: begin
-        if (AMaxSiblingDistance > 0) and (l - ALine > AMaxSiblingDistance) then exit;
+        if (AMaxSiblingDistance > 0) and (ln - ALine > AMaxSiblingDistance) then exit;
         if (AFindSibling = fsNextFunc) or
-           ((AFindSibling = fsNextFuncLazy) and (l - ALine > 1))
+           ((AFindSibling = fsNextFuncLazy) and (ln - ALine > 1))
         then begin
           // check same function
           if ACU = nil then exit;
@@ -3649,8 +3649,8 @@ begin
         end;
 
         if (AFoundLine <> nil) and (AFoundLine^ <> -1) then begin
-          if (l > AFoundLine^) then exit; // already have better match
-          if (l < AFoundLine^) then
+          if (ln > AFoundLine^) then exit; // already have better match
+          if (ln < AFoundLine^) then
             AResultList := nil;  // found better match
         end;
       end;
