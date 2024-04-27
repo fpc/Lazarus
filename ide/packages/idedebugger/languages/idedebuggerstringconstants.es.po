@@ -31,6 +31,10 @@ msgstr "Seleccionar grupos para activar cuando salte punto de interrupción"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Algunos grupos en la lista Activar/Desactivar no existen.%0:s¿Crearlos?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgconvertordinaltoname
+msgid "Convert ordinal to name"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr ""

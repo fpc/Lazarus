@@ -111,7 +111,7 @@ type
     procedure DoFree; virtual;
     procedure ILazDbgIdeValueFormatterIntf.Free = DoFree;
   public
-    constructor Create; // only call init, if overridden can be skipped if init is called directly
+    constructor Create; // inherited Create may not be called => use init
     function FormatValue(AWatchValue: IWatchResultDataIntf;
                          ADisplayFormat: TWatchDisplayFormat;
                          AWatchResultPrinter: IWatchResultPrinter;

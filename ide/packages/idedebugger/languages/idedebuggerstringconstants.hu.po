@@ -31,6 +31,10 @@ msgstr "Csoportok kijelölése, amelyek engedélyezve lesznek a töréspont elé
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Néhány csoport az Engedélyezés/Letiltás listában nem létezik.%0:sLétre legyenek hozva?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgconvertordinaltoname
+msgid "Convert ordinal to name"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr ""

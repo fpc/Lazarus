@@ -304,6 +304,10 @@
         <ResourceBaseClass Value="Frame"/>
         <ResourceBaseClassname Value=""/>
       </Item>
+      <Item>
+        <Filename Value="idedebuggervalueformatterordinaltoname.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterOrdinalToName"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

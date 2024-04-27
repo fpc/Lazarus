@@ -1,0 +1,34 @@
+object IdeDebuggerValueFormatterOrdinalToNameFrame: TIdeDebuggerValueFormatterOrdinalToNameFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  AutoSize = True
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 327
+  DesignTop = 67
+  object Label1: TLabel
+    Left = 3
+    Height = 15
+    Top = 3
+    Width = 314
+    Align = alTop
+    BorderSpacing.Around = 3
+    Caption = 'Label1'
+  end
+  object Memo1: TMemo
+    Left = 3
+    Height = 300
+    Top = 21
+    Width = 314
+    Align = alClient
+    BorderSpacing.Around = 3
+    Constraints.MinHeight = 300
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+end

@@ -22,7 +22,8 @@ uses
   IdeDebuggerValueFormatterSetup, IdeDebuggerValueFormatterCurrency, DisplayFormatConfigFrame, 
   DisplayFormatDefaultsConfigFrame, IdeDebuggerDisplayFormats, IdeDebugger_DisplayFormat_Options, 
   ProjectDebugLink, IdeDebuggerValueFormatterArrayOfCharToString, 
-  IdeDebuggerValueFormatterDisplayFormat, LazarusPackageIntf;
+  IdeDebuggerValueFormatterDisplayFormat, IdeDebuggerValueFormatterOrdinalToName, 
+  LazarusPackageIntf;
 
 implementation
 

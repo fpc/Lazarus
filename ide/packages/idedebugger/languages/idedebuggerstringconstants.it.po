@@ -31,6 +31,10 @@ msgstr "Gruppi da abilitare quando è raggiunto il breakpoint"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Alcuni gruppi nella lista Abilita/Disabilita non esistono.%0:sCrearli?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgconvertordinaltoname
+msgid "Convert ordinal to name"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr ""

@@ -31,6 +31,10 @@ msgstr "ブレークポイントのヒットを有効にするグループを選
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "有効/無効リストのグループのいくつかが存在しません。%0:s作成しますか？%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgconvertordinaltoname
+msgid "Convert ordinal to name"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr ""

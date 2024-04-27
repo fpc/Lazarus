@@ -31,6 +31,10 @@ msgstr "Vybrat skupiny, které se mají povolit při dosáhnutí bodu přerušen
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Některé skupiny v seznamu Povolené/Zakázané neexistují.%0:sMají se vytvořit?%0:s%0:s%1:s"
 
+#: idedebuggerstringconstants.dbgconvertordinaltoname
+msgid "Convert ordinal to name"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr ""
