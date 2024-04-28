@@ -124,7 +124,6 @@ type
     property ResultsPageIndex: integer read fResultsPageIndex write fResultsPageIndex;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
-    property ResultsWindow: TTabSheet read fResultsWindow write fResultsWindow;
     property PromptOnReplace: boolean read fPromptOnReplace write fPromptOnReplace;// this is asked once and can be changed when prompting
     property Progress: TIDESearchInTextProgress read FProgress;
   end;
@@ -983,23 +982,19 @@ begin
 end;
 
 procedure TSearchProgressForm.DoSearchAndAddToSearchResults;
-var
-  ListPage: TTabSheet;
-  State: TIWGetFormState;
 begin
   LazarusIDE.DoShowSearchResultsView(iwgfShow);
   if fResultsPageIndex >= 0 then
-    ListPage := SearchResultsView.GetResultsPage(fResultsPageIndex)
+    fResultsWindow:=SearchResultsView.GetResultsPage(fResultsPageIndex)
   else
-    ListPage := SearchResultsView.AddSearch(SearchText, ReplaceText,
+    fResultsWindow:=SearchResultsView.AddSearch(SearchText, ReplaceText,
       SearchDirectories, SearchMask, SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
       other pages can still be closed or inserted, so PageIndex can change *)
-    SearchResultsView.BeginUpdate(ListPage.PageIndex);
-    ResultsList:= SearchResultsView.Items[ListPage.PageIndex];
+    SearchResultsView.BeginUpdate(fResultsWindow.PageIndex);
+    ResultsList:= SearchResultsView.Items[fResultsWindow.PageIndex];
     ResultsList.Clear;
-    ResultsWindow:= ListPage;
     try
       Show; // floating window, not dockable
       DoSearch;
@@ -1011,11 +1006,10 @@ begin
   finally
     // show, but bring to front only if Search Progress dialog was active
     if fWasActive then
-      State := iwgfShowOnTop
+      LazarusIDE.DoShowSearchResultsView(iwgfShowOnTop)
     else
-      State := iwgfShow;
-    LazarusIDE.DoShowSearchResultsView(State);
-    SearchResultsView.EndUpdate(ListPage.PageIndex, SearchText);
+      LazarusIDE.DoShowSearchResultsView(iwgfShow);
+    SearchResultsView.EndUpdate(fResultsWindow.PageIndex, SearchText);
   end;
 end;
 
