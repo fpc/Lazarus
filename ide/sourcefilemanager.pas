@@ -247,7 +247,6 @@ function SaveProjectIfChanged: TModalResult;
 function CloseProject: TModalResult;
 procedure OpenProject(aMenuItem: TIDEMenuItem);
 function CompleteLoadingProjectInfo: TModalResult;
-procedure CloseAll;
 procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook; CloseOnRightSideOnly: Boolean = False);
 function UpdateAppTitleInSource: Boolean;
 function UpdateAppScaledInSource: Boolean;
@@ -611,7 +610,6 @@ begin
         AnUnitInfo.Source, False, AShareEditor);
       NewSrcEdit.EditorComponent.BeginUpdate;
       MainIDEBar.itmFileClose.Enabled:=True;
-      MainIDEBar.itmFileCloseAll.Enabled:=True;
       NewCaretXY := AnEditorInfo.CursorPos;
       NewTopLine := AnEditorInfo.TopLine;
       FoldState := AnEditorInfo.FoldState;
@@ -2263,7 +2261,6 @@ begin
       CreateSrcEditPageName(NewUnitInfo.Unit_Name, NewUnitInfo.Filename, AShareEditor),
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
-    MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit.SyntaxHighlighterId:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
     NewSrcEdit.EditorComponent.CaretXY := Point(1,1);
@@ -2790,7 +2787,6 @@ begin
     // close source editor
     SourceEditorManager.CloseFile(AnEditorInfo.EditorComponent);
     MainIDEBar.itmFileClose.Enabled:=SourceEditorManager.SourceEditorCount > 0;
-    MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
     // free sources, forget changes
     if AnUnitInfo.Source<>nil then
@@ -4375,40 +4371,6 @@ begin
           end;
       end;
     end;
-end;
-
-procedure CloseAll;
-// Close editor files
-var
-  Ed: TSourceEditor;
-  EditorList: TList;
-  i: Integer;
-begin
-  EditorList := TList.Create;
-  try
-    // Collect changed editors into a list and save them after asking from user.
-    for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do
-    begin
-      Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
-      if CheckEditorNeedsSave(Ed, False) then
-        EditorList.Add(Ed);
-    end;
-    if AskToSaveEditors(EditorList) <> mrOK then Exit;
-  finally
-    EditorList.Free;
-  end;
-  // Now close them all.
-  SourceEditorManager.IncUpdateLock;
-  try
-    while (SourceEditorManager.SourceEditorCount > 0) and
-      (CloseEditorFile(SourceEditorManager.SourceEditors[0], []) = mrOk)
-    do ;
-  finally
-    SourceEditorManager.DecUpdateLock;
-  end;
-
-  // Close packages
-  PkgBoss.DoCloseAllPackageEditors;
 end;
 
 procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook;

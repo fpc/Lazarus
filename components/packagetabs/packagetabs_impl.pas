@@ -620,7 +620,7 @@ begin
   FTabLabelMenu.Images := IDEImages.Images_16;
   FTabLabelMenu.OnPopup := @TabLabelMenuPopup;
   FTabLabelMenuCloseAllGroup := TMenuItem.Create(Self);
-  FTabLabelMenuCloseAllGroup.Caption := IDECommandList.FindIDECommand(ecCloseAll).LocalizedName;
+  FTabLabelMenuCloseAllGroup.Caption := sCloseAll;
   FTabLabelMenuCloseAllGroup.OnClick := @TabLabelCloseAllGroupClick;
   FTabLabelMenuCloseAllGroup.ImageIndex := IDEImages.LoadImage('menu_close_all');
   FTabLabelMenu.Items.Add(FTabLabelMenuCloseAllGroup);

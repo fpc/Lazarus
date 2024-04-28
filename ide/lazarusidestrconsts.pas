@@ -60,7 +60,6 @@ resourcestring
   lisOpen = 'Open';
   lisSave = 'Save';
   lisSaveAll = 'Save All';
-  lisCloseAll = 'Close All';
   lisFile = 'File';
   lisNew = 'New';
   lisClose = 'Close';
@@ -290,7 +289,6 @@ resourcestring
   lrsPLDLpkFileValid = 'lpk file valid (%s)';
   lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';
   lisCTDefDefineTemplates = 'Define templates';
-  lisMenuCloseAll = 'Close A&ll';
   lisMenuCloseEditorFile = '&Close Editor File';
   lisMenuCleanDirectory = 'Clean Directory ...';
 

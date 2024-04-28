@@ -102,7 +102,6 @@ type
         itmFileSaveAll: TIDEMenuCommand;
         itmFileExportHtml: TIDEMenuCommand;
         itmFileClose: TIDEMenuCommand;
-        itmFileCloseAll: TIDEMenuCommand;
       //itmFileDirectories: TIDEMenuSection;
         itmFileCleanDirectory: TIDEMenuCommand;
       //itmFileIDEStart: TIDEMenuSection;

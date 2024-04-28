@@ -974,7 +974,6 @@ begin
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisSaveAll,'menu_save_all');
     CreateMenuItem(ParentMI,itmFileExportHtml,'itmFileExportHtml',lisExportHtml, 'menu_exporthtml');
     CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuCloseEditorFile,'menu_close',false);
-    CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'menu_close_all',false);
 
     CreateMenuSeparatorSection(mnuFile,itmFileDirectories,'itmFileDirectories');
     ParentMI:=itmFileDirectories;

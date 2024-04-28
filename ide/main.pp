@@ -218,7 +218,6 @@ type
     procedure mnuSaveAllClicked(Sender: TObject);
     procedure mnuExportHtml(Sender: TObject);
     procedure mnuCloseClicked(Sender: TObject);
-    procedure mnuCloseAllClicked(Sender: TObject);
     procedure mnuCleanDirectoryClicked(Sender: TObject);
     procedure mnuRestartClicked(Sender: TObject);
     procedure mnuQuitClicked(Sender: TObject);
@@ -2693,8 +2692,6 @@ begin
     itmFileExportHtml.OnClick  := @mnuExportHtml;
     itmFileClose.Enabled := False;
     itmFileClose.OnClick := @mnuCloseClicked;
-    itmFileCloseAll.Enabled := False;
-    itmFileCloseAll.OnClick := @mnuCloseAllClicked;
     itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
     itmFileRestart.OnClick := @mnuRestartClicked;
     itmFileQuit.OnClick := @mnuQuitClicked;
@@ -2934,7 +2931,6 @@ begin
     itmFileSaveAs.Command:=GetIdeCmdRegToolBtn(ecSaveAs);
     itmFileSaveAll.Command:=GetIdeCmdRegToolBtn(ecSaveAll);
     itmFileClose.Command:=GetIdeCmdRegToolBtn(ecClose);
-    itmFileCloseAll.Command:=GetIdeCmdRegToolBtn(ecCloseAll);
     itmFileCleanDirectory.Command:=GetIdeCmdRegToolBtn(ecCleanDirectory);
     itmFileQuit.Command:=GetIdeCmdRegToolBtn(ecQuit);
 
@@ -3429,11 +3425,6 @@ begin
     PageIndex := SourceEditorManager.ActiveSourceWindow.PageIndex;
   end;
   DoCloseEditorFile(NB.FindSourceEditorWithPageIndex(PageIndex), [cfSaveFirst]);
-end;
-
-procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
-begin
-  CloseAll;
 end;
 
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
@@ -3968,9 +3959,7 @@ begin
   GetCurrentUnit(ASrcEdit,AnUnitInfo);
   if not UpdateFileCommandsStamp.Changed(ASrcEdit) then
     Exit;
-
   IDECommandList.FindIDECommand(ecClose).Enabled := ASrcEdit<>nil;
-  IDECommandList.FindIDECommand(ecCloseAll).Enabled := ASrcEdit<>nil;
 end;
 
 procedure TMainIDE.UpdateMainIDECommands(Sender: TObject);

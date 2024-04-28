@@ -170,7 +170,6 @@ const
   ecSaveAs                  = ecFirstLazarus + 208;
   ecSaveAll                 = ecFirstLazarus + 209;
   ecClose                   = ecFirstLazarus + 210;
-  ecCloseAll                = ecFirstLazarus + 211;
   ecCleanDirectory          = ecFirstLazarus + 212;
   ecRestart                 = ecFirstLazarus + 213;
   ecQuit                    = ecFirstLazarus + 214;
@@ -1985,7 +1984,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..337] of TIdentMapEntry = (         // DRB reduced elements from 323
+  IDEEditorCommandStrs: array[0..336] of TIdentMapEntry = (         // DRB reduced elements from 323
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2099,7 +2098,6 @@ const
     (Value: ecSaveAs;                                 Name: 'ecSaveAs'),
     (Value: ecSaveAll;                                Name: 'ecSaveAll'),
     (Value: ecClose;                                  Name: 'ecClose'),
-    (Value: ecCloseAll;                               Name: 'ecCloseAll'),
     (Value: ecCleanDirectory;                         Name: 'ecCleanDirectory'),
     (Value: ecRestart;                                Name: 'ecRestart'),
     (Value: ecQuit;                                   Name: 'ecQuit'),
