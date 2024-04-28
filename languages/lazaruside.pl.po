@@ -6580,11 +6580,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Zamknij"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Zamknij wszystko"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Zamknij zaznaczone"
@@ -12292,10 +12287,6 @@ msgstr "Wyczyść katalogi..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Wyczyść i buduj ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Zamknij wszystko"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

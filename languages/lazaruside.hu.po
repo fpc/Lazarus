@@ -6464,11 +6464,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Bezárás"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Összes bezárása"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Minden kijelölt bezárása"
@@ -12174,10 +12169,6 @@ msgstr "Könyvtár tisztítása ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Tisztítás és építés ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Minden fáj&l bezárása"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

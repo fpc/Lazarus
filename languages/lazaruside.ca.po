@@ -6611,11 +6611,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Tan&ca"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr ""
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr ""
@@ -12304,12 +12299,6 @@ msgstr "Neteja el directori ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr ""
-
-#: lazarusidestrconsts.lismenucloseall
-#, fuzzy
-#| msgid "Close A&ll Editor Files"
-msgid "Close A&ll"
-msgstr "Tanca tots els fitxers de l'editor"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

@@ -6573,11 +6573,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "閉じる"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "すべて閉じる"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "チェックされたものすべてを閉じる"
@@ -12300,10 +12295,6 @@ msgstr "ディレクトリの中身を掃除 ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "掃除して構築 ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "すべて閉じる(&l)"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

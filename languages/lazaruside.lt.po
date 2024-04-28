@@ -6577,11 +6577,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Užverti"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Užverti visus"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Užverti visus pažymėtus"
@@ -12330,10 +12325,6 @@ msgstr "Apvalyti aplanką…"
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Išvalyti ir daryti…"
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Užverti &visus"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

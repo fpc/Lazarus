@@ -6409,11 +6409,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Kapat"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Hepsini kapat"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Tüm İşaretlileri Kapat"
@@ -12074,10 +12069,6 @@ msgstr "Klasörü temizle ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Temizle ve kur ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Hepsini kapat"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

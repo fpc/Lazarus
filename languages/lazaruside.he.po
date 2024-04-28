@@ -6783,11 +6783,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "ס&גור"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "סגור הכל"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr ""
@@ -12729,12 +12724,6 @@ msgstr "נקה ספרייה ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr ""
-
-#: lazarusidestrconsts.lismenucloseall
-#, fuzzy
-#| msgid "Close A&ll Editor Files"
-msgid "Close A&ll"
-msgstr "סגור את כל הקבצים בעורך"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

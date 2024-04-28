@@ -6453,11 +6453,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Sulje"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Sulje kaikki"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Sulje kaikki ruksatut"
@@ -12100,10 +12095,6 @@ msgstr "Siivoa hakemisto ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Siivoa ja kokoa ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Sulje &kaikki"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

@@ -6439,11 +6439,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "أغلق"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr ""
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr ""
@@ -12058,12 +12053,6 @@ msgstr "نظّف الملفّ ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr ""
-
-#: lazarusidestrconsts.lismenucloseall
-#, fuzzy
-#| msgid "Close A&ll Editor Files"
-msgid "Close A&ll"
-msgstr "أغلق كلّ الجذاذات المفتوحة في المحرّر"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"

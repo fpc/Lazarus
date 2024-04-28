@@ -6504,11 +6504,6 @@ msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Zavřít"
 
-#: lazarusidestrconsts.liscloseall
-msgctxt "lazarusidestrconsts.liscloseall"
-msgid "Close All"
-msgstr "Zavřít vše"
-
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
 msgstr "Zavřít všechny vybrané"
@@ -12216,10 +12211,6 @@ msgstr "Vyčistit adresář ..."
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
 msgstr "Vyčistit a sestavit ..."
-
-#: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll"
-msgstr "Zavřít &vše"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"
