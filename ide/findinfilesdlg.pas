@@ -101,13 +101,6 @@ function FindInFilesDialog: TLazFindInFilesDialog;
 
 implementation
 
-var  // WhereRadioGroup's ItemIndex in a more informative form.
-  ItemIndProject: integer = 0;
-  ItemIndProjectGroup: integer = -1;
-  ItemIndOpenFiles: integer   = 1;
-  ItemIndDirectories: integer = 2;
-  ItemIndActiveFile: integer = 3;
-
 var
   FindInFilesDialogSingleton: TLazFindInFilesDialog = nil;
 
@@ -182,25 +175,28 @@ begin
   TextToFindLabel.Caption := dlgTextToFind;
   ReplaceCheckBox.Caption := dlgReplaceWith;
 
-  OptionsCheckGroupBox.Caption := lisOptions;
-  OptionsCheckGroupBox.Items[0] := dlgCaseSensitive;
-  OptionsCheckGroupBox.Items[1] := dlgWholeWordsOnly;
-  OptionsCheckGroupBox.Items[2] := dlgRegularExpressions;
-  OptionsCheckGroupBox.Items[3] := lisFindFileMultiLinePattern;
-
-  WhereRadioGroup.Caption:=lisFindFileWhere;
-  WhereRadioGroup.Items[ItemIndProject]     := lisFindFilesearchAllFilesInProject;
-  if ProjectGroupManager<>nil then
+  with OptionsCheckGroupBox do
   begin
-    ItemIndProjectGroup:=1;
-    WhereRadioGroup.Items.Insert(ItemIndProjectGroup, lisFindFilesSearchInProjectGroup);
-    ItemIndOpenFiles:=2;
-    ItemIndDirectories:=3;
-    ItemIndActiveFile:=4;
+    Caption := lisOptions;
+    Items.Clear; // remove all designed-time items
+    Buttons[ Items.Add(dlgCaseSensitive           ) ].Tag := PtrInt(fifMatchCase);
+    Buttons[ Items.Add(dlgWholeWordsOnly          ) ].Tag := PtrInt(fifWholeWord);
+    Buttons[ Items.Add(dlgRegularExpressions      ) ].Tag := PtrInt(fifRegExpr  );
+    Buttons[ Items.Add(lisFindFileMultiLinePattern) ].Tag := PtrInt(fifMultiLine);
   end;
-  WhereRadioGroup.Items[ItemIndOpenFiles]   := lisFindFilesearchAllOpenFiles;
-  WhereRadioGroup.Items[ItemIndDirectories] := lisFindFilesearchInDirectories;
-  WhereRadioGroup.Items[ItemIndActiveFile]  := lisFindFilesearchInActiveFile;
+
+  with WhereRadioGroup do
+  begin
+    Caption:=lisFindFileWhere;
+    Items.Clear; // remove all designed-time items
+    Buttons[ Items.Add(lisFindFilesearchAllFilesInProject) ].Tag := PtrInt(fifSearchProject     );
+    if assigned(ProjectGroupManager) then
+      Buttons[ Items.Add(lisFindFilesSearchInProjectGroup) ].Tag := PtrInt(fifSearchProjectGroup);
+    Buttons[ Items.Add(lisFindFilesearchAllOpenFiles     ) ].Tag := PtrInt(fifSearchOpen        );
+    ItemIndex := Items.Count - 1; // select previous item
+    Buttons[ Items.Add(lisFindFilesearchInDirectories    ) ].Tag := PtrInt(fifSearchDirectories );
+    Buttons[ Items.Add(lisFindFilesearchInActiveFile     ) ].Tag := PtrInt(fifSearchActive      );
+  end;
 
   DirectoriesOptionsGroupBox.Caption := lisDirectories;
   DirectoriesComboBox.Hint:=lisMultipleDirectoriesAreSeparatedWithSemicolons;
@@ -239,7 +235,9 @@ var
   Directories, Dir: String;
   p: Integer;
 begin
-  if (WhereRadioGroup.ItemIndex=ItemIndDirectories) then
+  // checking the existence of folders
+  if fifSearchDirectories = TLazFindInFileSearchOption(
+    WhereRadioGroup.Buttons[WhereRadioGroup.ItemIndex].Tag) then
   begin
     Directories:=GetResolvedDirectories;
     p:=1;
@@ -264,24 +262,17 @@ end;
 
 procedure TLazFindInFilesDialog.SetOptions(NewOptions: TLazFindInFileSearchOptions);
 var
-  NewItemIndex: Integer;
+  i: Integer;
 begin
-  OptionsCheckGroupBox.Checked[0] := fifMatchCase in NewOptions;
-  OptionsCheckGroupBox.Checked[1] := fifWholeWord in NewOptions;
-  OptionsCheckGroupBox.Checked[2] := fifRegExpr in NewOptions;
-  OptionsCheckGroupBox.Checked[3] := fifMultiLine in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
-  ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
-
-  NewItemIndex:=ItemIndProject;
-  if fifSearchProject in NewOptions then
-    NewItemIndex := ItemIndProject;
-  if (fifSearchProjectGroup in NewOptions) and (ItemIndProjectGroup>=0) then
-    NewItemIndex := ItemIndProjectGroup;
-  if fifSearchOpen        in NewOptions then NewItemIndex := ItemIndOpenFiles;
-  if fifSearchDirectories in NewOptions then NewItemIndex := ItemIndDirectories;
-  if fifSearchActive      in NewOptions then NewItemIndex := ItemIndActiveFile;
-  WhereRadioGroup.ItemIndex:=NewItemIndex;
+  ReplaceCheckBox       .Checked := [fifReplace, fifReplaceAll] * NewOptions <> [];
+  with OptionsCheckGroupBox do
+    for i := 0 to Items.Count - 1 do
+      Buttons[i].Checked := TLazFindInFileSearchOption(Buttons[i].Tag) in NewOptions;
+  with WhereRadioGroup do
+    for i := 0 to Items.Count - 1 do
+      if TLazFindInFileSearchOption(Buttons[i].Tag) in NewOptions then
+        ItemIndex := i;
 
   UpdateReplaceCheck;
   UpdateDirectoryOptions;
@@ -289,33 +280,35 @@ end;
 
 function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
 var
-  Where: Integer;
+  i: Integer;
 begin
   Result := [];
-  if OptionsCheckGroupBox.Checked[0] then Include(Result, fifMatchCase);
-  if OptionsCheckGroupBox.Checked[1] then Include(Result, fifWholeWord);
-  if OptionsCheckGroupBox.Checked[2] then Include(Result, fifRegExpr);
-  if OptionsCheckGroupBox.Checked[3] then Include(Result, fifMultiLine);
   if IncludeSubDirsCheckBox.Checked then Include(Result, fifIncludeSubDirs);
-  if ReplaceCheckBox.Checked then Include(Result, fifReplace);
-
-  Where:=WhereRadioGroup.ItemIndex;
-  if Where=ItemIndProject then Include(Result, fifSearchProject)
-  else if Where=ItemIndProjectGroup then Include(Result, fifSearchProjectGroup)
-  else if Where=ItemIndOpenFiles then Include(Result, fifSearchOpen)
-  else if Where=ItemIndDirectories then Include(Result, fifSearchDirectories)
-  else Include(Result, fifSearchActive);
+  if ReplaceCheckBox       .Checked then Include(Result, fifReplace);
+  with OptionsCheckGroupBox do
+    for i := 0 to Items.Count - 1 do
+      if Buttons[i].Checked then
+        Include(Result, TLazFindInFileSearchOption(Buttons[i].Tag));
+  with WhereRadioGroup do
+    Include(Result, TLazFindInFileSearchOption(Buttons[ItemIndex].Tag));
 end;
 
 function TLazFindInFilesDialog.GetSynOptions: TSynSearchOptions;
+var
+  i: Integer;
 begin
   Result := [];
-  if OptionsCheckGroupBox.Checked[0] then Include(Result, ssoMatchCase);
-  if OptionsCheckGroupBox.Checked[1] then Include(Result, ssoWholeWord);
-  if OptionsCheckGroupBox.Checked[2] then Include(Result, ssoRegExpr);
-  if OptionsCheckGroupBox.Checked[3] then Include(Result, ssoRegExprMultiLine);
   if ReplaceCheckBox.Checked then Include(Result, ssoReplace);
-end;//GetSynOptions
+  with OptionsCheckGroupBox do
+    for i := 0 to Items.Count - 1 do
+      if Buttons[i].Checked then
+        case TLazFindInFileSearchOption(Buttons[i].Tag) of
+          fifMatchCase: Include(Result, ssoMatchCase       );
+          fifWholeWord: Include(Result, ssoWholeWord       );
+          fifRegExpr  : Include(Result, ssoRegExpr         );
+          fifMultiLine: Include(Result, ssoRegExprMultiLine);
+        end;
+end;
 
 procedure TLazFindInFilesDialog.SetReplaceText(const AValue: string);
 begin
@@ -323,15 +316,21 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.SetSynOptions(NewOptions: TSynSearchOptions);
+var
+  i: Integer;
 begin
-  OptionsCheckGroupBox.Checked[0] := ssoMatchCase in NewOptions;
-  OptionsCheckGroupBox.Checked[1] := ssoWholeWord in NewOptions;
-  OptionsCheckGroupBox.Checked[2] := ssoRegExpr in NewOptions;
-  OptionsCheckGroupBox.Checked[3] := ssoRegExprMultiLine in NewOptions;
-  ReplaceCheckBox.Checked := ([ssoReplace,ssoReplaceAll]*NewOptions <> []);
+  ReplaceCheckBox.Checked := ([ssoReplace, ssoReplaceAll] * NewOptions <> []);
+  with OptionsCheckGroupBox do
+    for i := 0 to Items.Count - 1 do
+      case TLazFindInFileSearchOption(Buttons[i].Tag) of
+        fifMatchCase: Buttons[i].Checked := ssoMatchCase        in NewOptions;
+        fifWholeWord: Buttons[i].Checked := ssoWholeWord        in NewOptions;
+        fifRegExpr  : Buttons[i].Checked := ssoRegExpr          in NewOptions;
+        fifMultiLine: Buttons[i].Checked := ssoRegExprMultiLine in NewOptions;
+      end;
 
   UpdateReplaceCheck;
-end;//SetSynOptions
+end;
 
 procedure TLazFindInFilesDialog.UpdateReplaceCheck;
 begin
@@ -344,19 +343,21 @@ end;
 
 procedure TLazFindInFilesDialog.UpdateDirectoryOptions;
 begin
-  if WhereRadioGroup.ItemIndex = ItemIndDirectories then
-  begin
-    DirectoriesOptionsGroupBox.Enabled := true;
-    DirectoriesBrowse.Enabled:=true;
-    DirectoriesComboBox.Enabled:=true;
-  end
-  else if WhereRadioGroup.ItemIndex = ItemIndProjectGroup then
-  begin
-    DirectoriesOptionsGroupBox.Enabled := true;
-    DirectoriesBrowse.Enabled:=false;
-    DirectoriesComboBox.Enabled:=false;
-  end else
-    DirectoriesOptionsGroupBox.Enabled := false;
+  with WhereRadioGroup do
+    case TLazFindInFileSearchOption(Buttons[ItemIndex].Tag) of
+      fifSearchDirectories: begin
+        DirectoriesOptionsGroupBox.Enabled := true;
+        DirectoriesBrowse         .Enabled := true;
+        DirectoriesComboBox       .Enabled := true;
+      end;
+      fifSearchProjectGroup: begin
+        DirectoriesOptionsGroupBox.Enabled := true;
+        DirectoriesBrowse         .Enabled := false;
+        DirectoriesComboBox       .Enabled := false;
+      end;
+      else
+        DirectoriesOptionsGroupBox.Enabled := false;
+    end;
 end;
 
 function TLazFindInFilesDialog.GetBaseDirectory: string;
@@ -449,12 +450,20 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.FindInSearchPath(SearchPath: string);
+var
+  i: Integer;
 begin
   debugln(['TLazFindInFilesDialog.FindInSearchPath ',SearchPath]);
   InitFindText;
   LoadHistory;
   DirectoriesComboBox.Text:=SearchPath;
-  WhereRadioGroup.ItemIndex:=ItemIndDirectories;
+
+  // select fifSearchDirectories
+  with WhereRadioGroup do
+    for i := 0 to Items.Count - 1 do
+      if fifSearchDirectories = TLazFindInFileSearchOption(Buttons[i].Tag) then
+        ItemIndex := i;
+
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
   Options := Options-[fifReplace,fifReplaceAll];
@@ -553,7 +562,6 @@ end;
 procedure TLazFindInFilesDialog.Execute(aResultsPage: integer = -1);
 var
   SearchForm: TSearchProgressForm;
-  Where: Integer;
 begin
   { Only then in manual dialog data entry }
   if aResultsPage < 0 then
@@ -571,26 +579,22 @@ begin
 
   try
     if FindText <> '' then
-    begin
-      Where:=WhereRadioGroup.ItemIndex;
-      if Where=ItemIndProject then
-      begin
-        if LazProject=nil then
-          SearchForm.DoSearchProject(Project1)
-        else
-          SearchForm.DoSearchProject(LazProject);
-      end else if Where=ItemIndProjectGroup then
-      begin
-        SearchForm.SearchOptions:=SearchForm.SearchOptions-[fifIncludeSubDirs];
-        SearchForm.DoSearchProjectGroup;
-      end
-      else if Where=ItemIndOpenFiles then
-        SearchForm.DoSearchOpenFiles
-      else if Where=ItemIndDirectories then
-        SearchForm.DoSearchDirs
-      else
-        SearchForm.DoSearchActiveFile;
-    end;
+      with WhereRadioGroup do
+        case TLazFindInFileSearchOption(Buttons[ItemIndex].Tag) of
+          fifSearchActive     : SearchForm.DoSearchActiveFile;
+          fifSearchOpen       : SearchForm.DoSearchOpenFiles;
+          fifSearchDirectories: SearchForm.DoSearchDirs;
+          fifSearchProject: begin
+            if assigned(LazProject) then
+              SearchForm.DoSearchProject(LazProject)
+            else
+              SearchForm.DoSearchProject(Project1);
+          end;
+          fifSearchProjectGroup: begin
+            SearchForm.SearchOptions:=SearchForm.SearchOptions-[fifIncludeSubDirs];
+            SearchForm.DoSearchProjectGroup;
+          end;
+        end;
   finally
     FreeAndNil(SearchForm);
   end;
