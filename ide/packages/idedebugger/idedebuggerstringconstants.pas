@@ -504,7 +504,7 @@ resourcestring
 
   dbgDoNotShowThisMessageAgain = 'Do not ask again';
   optDispGutterCustomDisplayformat = 'Custom Display Format';
-  dbgConvertOrdinalToName = 'Convert ordinal to name';
+  dbgConvertOrdinalToName = 'Conversion of ordinal to name';
 
 implementation
 
