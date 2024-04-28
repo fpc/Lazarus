@@ -20,6 +20,10 @@ msgstr "Pridėti į projektą"
 msgid "Clone To"
 msgstr "Klonuoti į"
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr "Failo kelią kopijuoti iškarpinėn"

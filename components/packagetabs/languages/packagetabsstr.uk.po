@@ -21,6 +21,10 @@ msgstr "Додати до проєкту"
 msgid "Clone To"
 msgstr "Клонувати в"
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr "Скопіювати шлях до файлу в буфер обміну"

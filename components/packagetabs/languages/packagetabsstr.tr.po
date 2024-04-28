@@ -20,6 +20,10 @@ msgstr "Projeye Ekle"
 msgid "Clone To"
 msgstr "Klonla"
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr "Dosya Adını Panoya Kopyala"

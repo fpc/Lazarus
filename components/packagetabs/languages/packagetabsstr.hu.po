@@ -19,6 +19,10 @@ msgstr "Hozzáadás a projekthez"
 msgid "Clone To"
 msgstr "Klónozás"
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr "Fájl útvonalának másolása a vágólapra"

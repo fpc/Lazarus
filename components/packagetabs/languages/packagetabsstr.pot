@@ -9,6 +9,10 @@ msgstr ""
 msgid "Clone To"
 msgstr ""
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr ""

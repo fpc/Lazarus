@@ -21,6 +21,10 @@ msgstr "添加到工程"
 msgid "Clone To"
 msgstr "克隆到"
 
+#: packagetabsstr.scloseall
+msgid "Close All"
+msgstr ""
+
 #: packagetabsstr.scopyfilepathtoclipboard
 msgid "Copy File Path To Clipboard"
 msgstr "复制文件路径到剪贴板"
