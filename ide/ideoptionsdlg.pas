@@ -258,8 +258,7 @@ begin
   UpdateDialogCaption;
   // Show the Build Mode panel for project compiler options
   BuildModeSelectPanel.Visible := Assigned(GroupClass)
-    and GroupClass.InheritsFrom(TProjectCompilerOptions)
-    and not AEditor.InheritsFrom(TCompOptModeMatrixFrame); // exclude "Additions and Overrides" frame
+    and GroupClass.InheritsFrom(TProjectCompilerOptions);
   // Show the Apply button only for global options (not project or package options).
   btnApply.Visible := Assigned(GroupClass)
     and GroupClass.InheritsFrom(TAbstractIDEEnvironmentOptions);
