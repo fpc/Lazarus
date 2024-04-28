@@ -792,29 +792,33 @@ end;
 procedure TSynXMLSyn.Next;
 begin
   fTokenPos := Run;
-  case fRange of
-  rsText:
-    begin
-      TextProc();
+  while fTokenPos = Run do begin
+    case fRange of
+    rsText:
+      begin
+        TextProc();
+      end;
+    rsComment:
+      begin
+        CommentProc();
+      end;
+    rsProcessingInstruction:
+      begin
+        ProcessingInstructionProc();
+      end;
+    rsDocType, rsDocTypeSquareBraces:                                            //ek 2001-11-11
+      begin
+        DocTypeProc();
+      end;
+    rsCDATA:
+      begin
+        CDATAProc();
+      end;
+    else
+      fProcTable[fLine[Run]]();
     end;
-  rsComment:
-    begin
-      CommentProc();
-    end;
-  rsProcessingInstruction:
-    begin
-      ProcessingInstructionProc();
-    end;
-  rsDocType, rsDocTypeSquareBraces:                                            //ek 2001-11-11
-    begin
-      DocTypeProc();
-    end;
-  rsCDATA:
-    begin
-      CDATAProc();
-    end;
-  else
-    fProcTable[fLine[Run]]();
+    if fTokenId = tkNull then // EOL
+      break;
   end;
 end;
 
