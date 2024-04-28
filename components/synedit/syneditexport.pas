@@ -351,15 +351,21 @@ begin
         if (i = Start.Y) and (X < Start.X) then
           UTF8Delete(Token, 1, Start.X - X);
 
-        X := X + l; // TODO: compound chars
-        if Token = '' then
+        if Token = '' then begin
+          // Get next token to prevent an infinite loop
+          Highlighter.Next;
           continue;
+        end;
 
         if (i = Stop.Y) and (X >= Stop.X) then begin
           UTF8Delete(Token, 1 + X - Stop.X, MaxInt);
-          if Token = '' then
+          if Token = '' then begin
+            // Get next token to prevent an infinite loop
+            Highlighter.Next;
             continue;
+          end;
         end;
+        X := X + l; // TODO: compound chars
 
         Token := ReplaceReservedChars(Token, IsSpace);
         if fImmediateAttrWrite then begin
