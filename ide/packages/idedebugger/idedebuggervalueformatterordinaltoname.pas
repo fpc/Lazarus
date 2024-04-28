@@ -70,6 +70,11 @@ implementation
 
 { TIdeDebuggerValueFormatterOrdinalToNameFrame }
 
+function DoCompareIdents(const Data1, Data2: string): Integer;
+begin
+  Result := CompareStr(UpperCase(Data1), UpperCase(Data2));
+end;
+
 procedure TIdeDebuggerValueFormatterOrdinalToNameFrame.ReadFrom(
   AFormatter: ILazDbgIdeValueFormatterIntf);
 var
@@ -302,6 +307,7 @@ end;
 procedure TIdeDbgValueFormatterOrdinalToName.Init;
 begin
   FNameMap := TNameMap.Create;
+  FNameMap.OnDataCompare := @DoCompareIdents;
   inherited Init;
 end;
 
