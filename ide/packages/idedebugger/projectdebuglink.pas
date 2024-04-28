@@ -280,16 +280,29 @@ procedure TProjectDebugLink.Clear;
 begin
   FUseBackendConverterFromIDE := True;
   FUseBackendConverterFromProject := True;
+  FStoreBackendConverterConfigInSession := False;
+
   FUseDisplayFormatConfigsFromIDE := True;
   FUseDisplayFormatConfigsFromProject := True;
+  FStoreDisplayFormatConfigsInSession := False;
+
   FUseValueFormatterFromIDE := True;
   FUseValueFormatterFromProject := True;
+  FStoreValueFormatterConfigInSession := False;
+
+  FDebuggerBackend := '';
+
+  FDebuggerProperties.Clear;
+  FDisplayFormatConfigs.Clear;
+  FValueFormatterConfig.Clear;
+  FBackendConverterConfig.Clear;
 end;
 
 procedure TProjectDebugLink.BeforeReadProject;
 begin
   FDebuggerClassConfWasFromSession := False;
   FDebuggerClassConfWasFromLPI := False;
+  FDebuggerBackend := '';
 end;
 
 procedure TProjectDebugLink.AfterReadProject;

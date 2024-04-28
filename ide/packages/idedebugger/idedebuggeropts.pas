@@ -83,6 +83,7 @@ type
     XML_PATH_DEBUGGER_CONF     = 'Config[%d]/';
     XML_PATH_DEBUGGER_CONF_OLD = 'Class%s/';
   private
+    FIsGlobalList: boolean;
     FForcedUnsuitableClass: TDebuggerClass;
     FHasActiveDebuggerEntry: Boolean;
     FKnownDebuggerClassCount: Integer;
@@ -94,7 +95,7 @@ type
   protected
     property HasActiveDebuggerEntry: Boolean read FHasActiveDebuggerEntry write FHasActiveDebuggerEntry; // for the initial setup dialog / entry may be of unknown class
   public
-    constructor Create;
+    constructor Create(AnIsGlobalList: boolean = False);
     destructor Destroy; override;
     procedure Clear; override;
     procedure LoadFromXml(AXMLCfg: TRttiXMLConfig; APath: String);
@@ -614,7 +615,7 @@ procedure TDebuggerPropertiesConfigList.SetCurrentDebuggerPropertiesOpt(
   AValue: TDebuggerPropertiesConfig);
 begin
   if FCurrentDebuggerPropertiesConfig = AValue then Exit;
-  assert(AValue.IsLoaded, 'TDebuggerPropertiesConfigList.SetCurrentDebuggerPropertiesOpt: AValue.IsLoaded');
+  assert((AValue=nil) or AValue.IsLoaded, 'TDebuggerPropertiesConfigList.SetCurrentDebuggerPropertiesOpt: (AValue.IsLoaded');
   if (AValue <> nil) and (IndexOfObject(AValue) < 0) then
     AddEntry(AValue);
   FCurrentDebuggerPropertiesConfig := AValue;
@@ -629,8 +630,9 @@ begin
     FForcedUnsuitableClass := AnEntry.DebuggerClass;
 end;
 
-constructor TDebuggerPropertiesConfigList.Create;
+constructor TDebuggerPropertiesConfigList.Create(AnIsGlobalList: boolean);
 begin
+  FIsGlobalList := AnIsGlobalList;
   FUnsuitable := TDebuggerPropertiesConfigListBase.Create;
   FUnloaded := TDebuggerPropertiesConfigListBase.Create;
   inherited Create;
@@ -657,11 +659,13 @@ var
   Entry: TDebuggerPropertiesConfig;
 begin
   // Check if new Debugger-Classes were registered since the last load.
-  if (Count > 0) and
-     (TBaseDebugManagerIntf.DebuggerCount = FKnownDebuggerClassCount)
-  then
-    exit;
-  FKnownDebuggerClassCount := TBaseDebugManagerIntf.DebuggerCount;
+  if FIsGlobalList then begin
+    if (Count > 0) and
+       (TBaseDebugManagerIntf.DebuggerCount = FKnownDebuggerClassCount)
+    then
+      exit;
+    FKnownDebuggerClassCount := TBaseDebugManagerIntf.DebuggerCount;
+  end;
   HasActiveDebuggerEntry := False;
 
 
@@ -691,7 +695,7 @@ var
   nd, nd2: TDOMNode;
   s: String;
 begin
-  if (Count > 0) and
+  if (Count > 0) and FIsGlobalList and
      (TBaseDebugManagerIntf.DebuggerCount = FKnownDebuggerClassCount)
   then
     exit;
@@ -813,7 +817,7 @@ end;
 constructor TDebuggerOptions.Create;
 begin
   inherited Create;
-  FDebuggerConfigList := TDebuggerPropertiesConfigList.Create;
+  FDebuggerConfigList := TDebuggerPropertiesConfigList.Create(True);
   FDisplayFormatConfigs := TDisplayFormatConfig.Create(True);
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;

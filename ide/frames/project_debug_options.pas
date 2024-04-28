@@ -130,6 +130,7 @@ begin
     FDebuggerBackendUnknown := FDebuggerBackend;
   end;
   cbProjectDebugger.ItemIndex := sel;
+  UpdateResolvedDebuggerHint;
 end;
 
 procedure TProjectDebugOptionsFrame.UpdateResolvedDebuggerHint;
