@@ -39,7 +39,7 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Alguns grupos na lista Habilitar/Desabilitar não existem.%0:sCriá-los?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgconvertordinaltoname
-msgid "Convert ordinal to name"
+msgid "Conversion of ordinal to name"
 msgstr ""
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain

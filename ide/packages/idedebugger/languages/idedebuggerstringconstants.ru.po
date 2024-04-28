@@ -38,8 +38,8 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgconvertordinaltoname
-msgid "Convert ordinal to name"
-msgstr ""
+msgid "Conversion of ordinal to name"
+msgstr "Преобразование значения простого типа в имя"
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"

@@ -32,7 +32,7 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Aktyvinimo/pasyvinimo sąraše yra neegzistuojančių grupių.%0:sJas sukurti?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgconvertordinaltoname
-msgid "Convert ordinal to name"
+msgid "Conversion of ordinal to name"
 msgstr ""
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
