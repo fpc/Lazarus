@@ -136,8 +136,13 @@ begin
       if (ImgList <> nil) and (AMenuItem.ImageIndex >= 0) and
         (AMenuItem.ImageIndex < ImgList.Count) then
       begin
-        ImgList.ResolutionForPPI[16, ScreenInfo.PixelsPerInchX, 1].GetBitmap(AMenuItem.ImageIndex, AMenuItem.Bitmap); // Qt bindings support only 16px icons for menu items
-        Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+        Bmp := TBitmap.Create;
+        try
+          ImgList.ResolutionForPPI[16, ScreenInfo.PixelsPerInchX, 1].GetBitmap(AMenuItem.ImageIndex, Bmp); // Qt bindings support only 16px icons for menu items
+          Result.setImage(TQtImage(Bmp.Handle));
+        finally
+          Bmp.Free;
+        end;
       end else
       if Assigned(AMenuItem.Bitmap) then
       begin
