@@ -105,7 +105,7 @@ type
   private
     fSearchObject: TLazSearch;
     FSkipped: integer;
-    fUpdateStrings: TStrings;
+    fUpdateStrings: TStringList;
     fUpdating: boolean;
     fUpdateCount: integer;
     FSearchInListPhrases: string;
@@ -120,12 +120,10 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ShortenPaths;
-    procedure FreeObjectsTN(tnItems: TTreeNodes);
-    procedure FreeObjects(slItems: TStrings);
     function BeautifyLineAt(SearchPos: TLazSearchMatchPos): string;
     property Filtered: Boolean read fFiltered write fFiltered;
     property SearchInListPhrases: string read FSearchInListPhrases write FSearchInListPhrases;
-    property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
+    property UpdateItems: TStringList read fUpdateStrings write fUpdateStrings;
     property Updating: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
     function ItemsAsStrings: TStrings;
@@ -261,7 +259,6 @@ type
                        const MatchStart: integer; const MatchLen: integer);
     procedure BeginUpdate(APageIndex: integer);
     procedure EndUpdate(APageIndex: integer; APageName: string = '');
-    procedure Parse_Search_Phrases(var slPhrases: TStrings);
     procedure ClosePage(PageIndex: integer);
 
     property MaxItems: integer read FMaxItems write SetMaxItems;
@@ -294,20 +291,6 @@ var
 begin
   aFilename:=String(Filename);
   Result:=CompareFilenames(aFilename,TVNode.Text);
-end;
-
-function CopySearchMatchPos(var Src, Dest: TLazSearchMatchPos): Boolean;
-begin
-  Result := False;
-  if ((Src = nil) or (Dest = nil)) then Exit;
-  Dest.MatchStart := Src.MatchStart;
-  Dest.MatchLen := Src.MatchLen;
-  Dest.Filename := Src.Filename;
-  Dest.FileStartPos := Src.FileStartPos;
-  Dest.FileEndPos := Src.FileEndPos;
-  Dest.TheText := Src.TheText;
-  Dest.ShownFilename := Src.ShownFilename;
-  Result := True;
 end;
 
 function GetTreeSelectedItemsAsText(ATreeView: TCustomTreeView): string;
@@ -984,30 +967,6 @@ begin
   else
     if SearchInListEdit.CanSetFocus then
       ActivateControl(SearchInListEdit);
-end;
-
-procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
-var
-  i, iLength: Integer;
-  sPhrases, sPhrase: string;
-begin
-  //Parse Phrases
-  sPhrases := SearchInListEdit.Text;
-  iLength := Length(sPhrases);
-  sPhrase := '';
-  for i:=1 to iLength do
-  begin
-    if ((sPhrases[i] = ' ') or (sPhrases[i] = ',') or (i = iLength)) then
-    begin
-      if not ((sPhrases[i] = ' ') or (sPhrases[i] = ',')) then
-        sPhrase := sPhrase + sPhrases[i];
-      if (sPhrase > ' ') then
-        slPhrases.Add(UpperCase(sPhrase)); //End of phrase, add to phrase list
-      sPhrase := '';//Reset sPhrase
-    end
-    else if (sPhrases[i] > ' ') then
-      sPhrase := sPhrase + sPhrases[i];
-  end; //End for-loop i
 end;
 
 procedure TSearchResultsView.ResultsNoteBookChanging(Sender: TObject;
@@ -1773,10 +1732,10 @@ begin
   //if UpdateStrings is empty, the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
-    FreeObjectsTN(Items);
+    Items.FreeAllNodeData;
   FreeThenNil(fFilenameToNode);
   Assert(Assigned(fUpdateStrings), 'fUpdateStrings = Nil');
-  FreeObjects(fUpdateStrings);
+  fUpdateStrings.OwnsObjects := true; // set only right before Free!
   FreeThenNil(fUpdateStrings);
   inherited Destroy;
 end;//Destroy
@@ -1810,7 +1769,7 @@ begin
   begin
     ShortenPaths;
     fUpdating:= false;
-    FreeObjectsTN(Items);
+    Items.FreeAllNodeData;
     Items.BeginUpdate;
     Items.Clear;
     fFilenameToNode.Clear;
@@ -1887,24 +1846,6 @@ begin
   finally
     if FreeSrcList then FreeThenNil(SrcList);
   end;
-end;
-
-procedure TLazSearchResultTV.FreeObjectsTN(tnItems: TTreeNodes);
-var i: Integer;
-begin
-  fFilenameToNode.Clear;
-  for i:=0 to tnItems.Count-1 do
-    if Assigned(tnItems[i].Data) then
-      TLazSearchMatchPos(tnItems[i].Data).Free;
-end;
-
-procedure TLazSearchResultTV.FreeObjects(slItems: TStrings);
-var i: Integer;
-begin
-  if (slItems.Count <= 0) then Exit;
-  for i:=0 to slItems.Count-1 do
-    if Assigned(slItems.Objects[i]) then
-      slItems.Objects[i].Free;
 end;
 
 function TLazSearchResultTV.BeautifyLineAt(SearchPos: TLazSearchMatchPos): string;
