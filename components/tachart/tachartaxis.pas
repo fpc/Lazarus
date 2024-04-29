@@ -190,6 +190,7 @@ type
     procedure UpdateBidiMode;
     procedure UpdateBounds(var AMin, AMax: Double);
     property DisplayName: String read GetDisplayName;
+    property TitlePolygon: TPointArray read FTitlePolygon;
     property Value[AIndex: Integer]: TChartValueText read GetValue;
     property ValueCount: Integer read GetValueCount;
   published
