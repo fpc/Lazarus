@@ -166,9 +166,9 @@
         <Node63 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
         <Node64 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
         <Node65 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-        <Node66 Name="IdeDbgValFormatOptionsFrame" Path="IDE Optiorns - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
+        <Node66 Name="IdeDbgValFormatOptionsFrame" Path="IDE Options - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
         <Node67 Name="ProjectDisplayFormatOptionsFrame" Path="IDE Options - Debugger DisplayFormat" HasHelp="True" IsRoot="True"/>
-        <Node68 Name="IdeProjectValueFormatterOptionsFrame" Path="IDE Optiorns - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
+        <Node68 Name="IdeProjectValueFormatterOptionsFrame" Path="IDE Options - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
       </Node2>
     </Node1>
   </Node55>
