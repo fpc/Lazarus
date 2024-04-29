@@ -246,6 +246,8 @@ begin
         if axis <> nil then
         begin
           titleSize := axis.MeasureTitleSize(ch.Drawer);
+          if (maxTitleSize[al] <> 0) and (not axis.Title.Visible or (axis.Title.Caption = '')) then
+            dec(titleSize, axis.Title.Distance);
           axis.LabelSize := maxTitleSize[al] + maxLabelSize[al] - titleSize;
         end;
       end;
