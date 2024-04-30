@@ -1028,10 +1028,16 @@ end;
 
 function TChartAxis.MeasureTitleSize(ADrawer: IChartDrawer): Integer;
 var
+  ttl: String;
   sz: TSize;
 begin
-  sz := Title.MeasureLabel(ADrawer, GetRealTitle);
-  Result := IfThen(IsVertical, sz.CX, sz.CY);
+  ttl := GetRealTitle;
+  if Title.Visible and (ttl <> '') then
+  begin
+    sz := Title.MeasureLabel(ADrawer, GetRealTitle);
+    Result := IfThen(IsVertical, sz.CX, sz.CY);
+  end else
+    Result := 0;
 end;
 
 function TChartAxis.PositionIsStored: Boolean;

@@ -201,6 +201,7 @@ var
   ch: TChart;
   maxLabelSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
   maxTitleSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
+  maxTitleDistance: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
   titleSize: Integer;
   al: TChartAxisAlignment;
   axis: TChartAxis;
@@ -231,8 +232,12 @@ begin
         axis := ch.AxisList.GetAxisByAlign(al);
         if axis <> nil then
         begin
+          titleSize := axis.MeasureTitleSize(ch.Drawer);
+          if axis.Title.DistanceToCenter then
+            titleSize := titleSize div 2;
           maxTitleSize[al] := Max(maxTitleSize[al], axis.MeasureTitleSize(ch.Drawer));
           maxLabelSize[al] := Max(maxLabelSize[al], axis.MeasureLabelSize(ch.Drawer));
+          maxTitleDistance[al] := Max(maxTitleDistance[al], axis.Title.Distance);
         end;
       end;
   end;
@@ -246,9 +251,11 @@ begin
         if axis <> nil then
         begin
           titleSize := axis.MeasureTitleSize(ch.Drawer);
+          if axis.Title.DistanceToCenter then
+            titleSize := titleSize div 2;
           if (maxTitleSize[al] <> 0) and (not axis.Title.Visible or (axis.Title.Caption = '')) then
             dec(titleSize, axis.Title.Distance);
-          axis.LabelSize := maxTitleSize[al] + maxLabelSize[al] - titleSize;
+          axis.LabelSize := maxTitleSize[al] + maxTitleDistance[al] + maxLabelSize[al] - titleSize;
         end;
       end;
     end;
