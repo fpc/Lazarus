@@ -894,7 +894,7 @@ begin
     end;
 
   // Check abort
-  if Progress.Abort then
+  if Application.Terminated or Progress.Abort then
   begin
     FileIterator.Stop;
     FResultsList.Insert(0, FAbortString);
