@@ -4231,7 +4231,8 @@ begin
           else
           if Size.cx < MaxWidth then
             MaxCount^ := AMaxCount
-          else
+          else begin
+            MaxCount^ := 0;
             for i := 0 to AMaxCount - 1 do
             begin
               QString_at(AQtStr, @WC, I);
@@ -4242,6 +4243,7 @@ begin
               else
                 break;
             end;
+          end;
         end;
       end else
       begin
