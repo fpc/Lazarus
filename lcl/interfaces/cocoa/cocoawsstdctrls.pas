@@ -203,6 +203,7 @@ type
     function Get(Index: Integer): string; override;
   public
     constructor Create(ATextView: TCocoaTextView);
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
@@ -1431,6 +1432,16 @@ end;
 procedure TCocoaMemoStrings.Clear;
 begin
   SetTextStr('');
+end;
+
+procedure TCocoaMemoStrings.Assign(Source: TPersistent);
+begin
+  if (Source=Self) or (Source=nil) then
+     exit;
+  if Source is TStrings then
+    SetTextStr(TStrings(Source).Text)
+  else
+    inherited Assign(Source);
 end;
 
 procedure TCocoaMemoStrings.Delete(Index:Integer);
