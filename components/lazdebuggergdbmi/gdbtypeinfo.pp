@@ -1373,7 +1373,7 @@ begin
     if (ptprfPointer in PTReq.Result.Flags) and
        ( ( s = 'char') or (s = 'character') or (s = 'wchar') or (s = 'widechar') )
     then begin
-      if IsNumber(IdxPart.GetPlainText)
+      if IsNumeric(IdxPart.GetPlainText)
       then begin
         FMaybeString := True;
       end
@@ -1389,7 +1389,7 @@ begin
         if (PTReq.Result.Kind = ptprkSimple)
         then begin
           ResultList := TGDBMINameValueList.Create(PTReq.Result.GdbDescription);
-          FMaybeString := IsNumber(ResultList.Values['value']);
+          FMaybeString := IsNumeric(ResultList.Values['value']);
           ResultList.Free;
         end;
       end;

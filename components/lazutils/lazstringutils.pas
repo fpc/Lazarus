@@ -42,7 +42,8 @@ function LazEndsStr(const ASubText, AText: string): Boolean;
 function LazStartsText(const ASubText, AText: string): Boolean;
 function LazEndsText(const ASubText, AText: string): Boolean;
 function PosI(const SubStr, S: string): integer;
-function IsNumber(s: String): Boolean;
+function IsNumeric(s: String): Boolean;
+function IsNumber(s: String): Boolean; deprecated 'Use IsNumeric; to be removed in v4.99';
 
 // Functions for line endings
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
@@ -204,14 +205,23 @@ begin
   end;
 end;
 
-function IsNumber(s: String): Boolean;
+function IsNumeric(s: String): Boolean;
 var
   i: Integer;
 begin
   i := Length(s);
-  while (i >= 1) and (s[i] in ['0'..'9']) do
-    dec(i);
-  Result := i = 0;
+  if i > 0 then
+  begin
+    while (i >= 1) and (s[i] in ['0'..'9']) do
+      dec(i);
+    Result := i = 0;
+  end else
+    Result := false;
+end;
+
+function IsNumber(s: String): Boolean;
+begin
+  Result := IsNumeric(s);
 end;
 
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;

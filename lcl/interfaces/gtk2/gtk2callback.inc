@@ -446,7 +446,7 @@ begin
   LCLObject := TObject(data);
   if (widget <> nil) and (LCLObject is TCustomEdit) then
     { NumbersOnly: stop signal if inserted text is not a number }
-    if TCustomEdit(LCLObject).NumbersOnly and not IsNumber(ANewText) then
+    if TCustomEdit(LCLObject).NumbersOnly and not IsNumeric(ANewText) then
     begin
       gtk_entry_set_text(PGtkEntry(widget), EntryText);
       g_signal_stop_emission_by_name(Widget, 'insert-text');
@@ -535,7 +535,7 @@ begin
       FClip := gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
       if (FClip <> nil) and gtk_clipboard_wait_is_text_available(FClip) then
         FClipText := gtk_clipboard_wait_for_text(FClip);
-      if Assigned(FClip) and not IsNumber(FClipText) then
+      if Assigned(FClip) and not IsNumeric(FClipText) then
         g_signal_stop_emission_by_name(Widget, 'paste-clipboard');
     end;
 end;

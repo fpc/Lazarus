@@ -1114,7 +1114,7 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then
     Exit;
-  if TCustomEdit(AWinControl).NumbersOnly and not IsNumber(AText) then
+  if TCustomEdit(AWinControl).NumbersOnly and not IsNumeric(AText) then
     Exit;
   {$IFDEF VerboseTWinControlRealText}
   DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
@@ -1156,7 +1156,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelText') then
     Exit;
-  if ACustomEdit.NumbersOnly and not IsNumber(NewSelText) then
+  if ACustomEdit.NumbersOnly and not IsNumeric(NewSelText) then
     Exit;
   Widget:={%H-}PGtkWidget(ACustomEdit.Handle);
   if GTK_IS_SPIN_BUTTON(Widget) then
