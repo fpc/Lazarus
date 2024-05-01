@@ -285,15 +285,61 @@ Position of the sub-string within the searched value, or 0 when not found.
 <short>Value searched for the specified sub-string.</short>
 </element>
 
-<element name="IsNumber">
+<element name="IsNumeric">
 <short>
-<b>True</b> when characters in S are in the range <b>'0'..'9'</b>
+Indicates whether the characters in the specified value are numeric digits in 
+the range '0'..'9'.
 </short>
-<descr/>
+<descr>
+<p>
+Examines each character in <var>s</var> (in reverse order).
+</p>
+<p>
+Returns <b>True</b> if all of the characters in <var>s</var> are in the range 
+'0'..'9'. Returns <b>False</b> if any character is not in the required range, or when <var>s</var> is an empty string ('').
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0. Replaces the deprecated IsNumber() routine. 
+</version>
 <seealso/>
 </element>
+<element name="IsNumeric.Result">
+<short>
+Returns <b>True</b> if all of the characters in <var>s</var> are in the range 
+'0'..'9'.
+</short>
+</element>
+<element name="IsNumeric.s">
+<short>
+String with the characters examined in the routine.
+</short>
+</element>
+
+<element name="IsNumber">
+<short>
+Deprecated. Use IsNumeric instead.
+</short>
+<descr>
+<p>
+Calls the IsNumeric routine to determine the return value.
+</p>
+<p>
+Returns <b>True</b> if all of the characters in <var>s</var> are in the range 
+'0'..'9'. Returns <b>False</b> if any character is not in the required range, 
+or when <var>s</var> is an empty string ('').
+</p>
+</descr>
+<version>
+Deprecated in LazUtils version 4.0 to avoid confusion with the RTL routine 
+of the same name. Use IsNumeric instead.
+</version>
+<seealso>
+<link id="IsNumeric"/>
+</seealso>
+</element>
 <element name="IsNumber.Result">
-<short><b>True</b> when characters in S are in the range '0'..'9'</short>
+<short><b>True</b> when characters in s are in the range '0'..'9'</short>
 </element>
 <element name="IsNumber.s">
 <short>String with values examined in the routine.</short>
