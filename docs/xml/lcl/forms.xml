@@ -5045,17 +5045,18 @@ Use <var>OnChangeBounds</var> or <var>OnResize</var> to respond to delayed
 changes to the form bounds (position) or resize events.
 </p>
 <p>
-See Deactivate for the actions performed when the form instance loses focus.
+See <var>Deactivate</var> for the actions performed when the form instance 
+loses focus.
 </p>
 </descr>
 <seealso>
 <link id="TCustomForm.OnActivate"/>
 <link id="TCustomForm.OnShow"/>
-<link id="TCustomForm.OnChangeBounds"/>
 <link id="TCustomForm.OnResize"/>
 <link id="TCustomForm.OnWindowStateChange"/>
 <link id="TCustomForm.Deactivate"/>
 <link id="TCustomForm.Visible"/>
+<link id="TForm.OnChangeBounds"/>
 <link id="TCustomForm.WindowState"/>
 <link id="#lcl.controls.TControl.OnChangeBounds">TControl.OnChangeBounds</link>
 <link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
