@@ -5011,17 +5011,20 @@ window message is handled for the form.
 </element>
 
 <element name="TCustomForm.Activate">
-<short>Notifies the OnActivate event handler.</short>
+<short>
+Signals the OnActivate event handler when a form is focused in an application.
+</short>
 <descr>
 <p>
 <var>Activate</var> is a procedure used to signal the <var>OnActivate</var> 
-event handler (if assigned) when the form is activated. Activate is called 
-when the <b>CM_Activate</b> message is handled for the form.
+event handler (if assigned) when the form is focused in an application.  
+Activate is called when the <b>CM_Activate</b> message is handled for the form. 
+It is called after the OnShow event is signalled in the DoShow method.
 </p>
 <p>
 Activate uses an internal member to determine whether the form is being 
-displayed for the first time, or following a change of focus between forms. 
-No actions are performed in the method when the form is being displayed for 
+focused for the first time, or following a change of focus between forms. 
+No actions are performed in the method when the form is being focused for 
 the first time and the <var>WindowState</var> property contains 
 <var>wsMaximized</var> or <var>wsFullScreen</var>.
 </p>
@@ -5033,13 +5036,21 @@ form is displayed for the first time.
 Use <var>OnChangeBounds</var> or <var>OnResize</var> to respond to delayed 
 changes to the form bounds (position) or resize events.
 </p>
+<p>
+See Deactivate for the actions performed when the form instance loses focus.
+</p>
 </descr>
 <seealso>
 <link id="TCustomForm.OnActivate"/>
 <link id="TCustomForm.OnShow"/>
+<link id="TCustomForm.OnChangeBounds"/>
 <link id="TCustomForm.OnResize"/>
+<link id="TCustomForm.OnWindowStateChange"/>
+<link id="TCustomForm.Deactivate"/>
+<link id="TCustomForm.Visible"/>
 <link id="TCustomForm.WindowState"/>
 <link id="#lcl.controls.TControl.OnChangeBounds">TControl.OnChangeBounds</link>
+<link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
 </seealso>
 </element>
 
@@ -5170,16 +5181,20 @@ menu glyphs, and to post the changes to the widgetset class.
 </element>
 
 <element name="TCustomForm.Deactivate">
-<short>Performs actions when the form loses focus.</short>
+<short>
+Performs actions when the form loses focus.
+</short>
 <descr>
 <p>
-Called when the form loses focus in the application. Signals the 
+Called when the form loses focus in the application. It signals the 
 <var>OnDeactivate</var> event handler (when assigned). Called from the 
 <var>CMDeactivate</var> and <var>WndProc</var> methods.
 </p>
 </descr>
 <seealso>
 <link id="TCustomForm.OnDeactivate"/>
+<link id="TCustomForm.Activate"/>
+<link id="TCustomForm.OnActivate"/>
 <link id="TCustomForm.CMDeactivate"/>
 <link id="TCustomForm.WndProc"/>
 </seealso>
@@ -8351,20 +8366,52 @@ Added in LCL version 3.0.
 </element>
 
 <element name="TCustomForm.OnActivate">
-<short>Handler called when the form receives focus.</short>
+<short>
+Handler signalled when the form instance receives focus.
+</short>
 <descr>
 <p>
-This handler is called when the form receives focus for the first time at 
-application start up, and then subsequently each time focus is changed from 
-another window for the same application to this window.
+<var>OnActivate</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the form instance receives focus. OnActivate is 
+signalled when assigned from the Activate method, and occurs the first time the 
+form is focused at application start up, and each time focus is changed from 
+another form in the same application to this form instance.
+</p>
+<remark>
+OnActivate is <b>not</b> signalled the very first time a maximized or 
+fullscreen form is activated. This is done to suppress the notification until 
+resize and bounds changes are handled in delayed events that occur during LCL 
+component streaming.
+</remark>
+<p>
+Use OnDeactivate to perform actions needed when a form instance loses focus.
 </p>
 <p>
-For focus changes between different applications, the 
-<var>Application.OnActivate</var> event handler is called instead.
+Use OnShow or OnHide to perform actions needed when the Visible property for a 
+form instance is changed.
+</p>
+<p>
+Use OnWindowStateChange to perform actions needed when a form is minimized, 
+maximized, or changed from the fullscreen to the normal state.
+</p>
+<p>
+Use the <var>Application.OnActivate</var> event handler to perform actions 
+needed when the Application is given focus over another process or program.
 </p>
 </descr>
 <seealso>
-<link id="#lcl.forms.TApplication.OnActivate">TApplication.OnActivate</link>
+<link id="TCustomForm.Activate"/>
+<link id="TCustomForm.Deactivate"/>
+<link id="TCustomForm.OnDeactivate"/>
+<link id="TCustomForm.WindowState"/>
+<link id="TCustomForm.OnShow"/>
+<link id="TCustomForm.OnHide"/>
+<link id="TCustomForm.OnWindowStateChange"/>
+<link id="TCustomForm.Visible"/>
+<link id="TApplication.OnActivate"/>
+<link id="TApplication.QueueAsyncCall"/>
+<link id="#lcl.controls.TControl.OnChangeBounds">TControl.OnChangeBounds</link>
+<link id="#lcl.controls.TControl.OnResize">TControl.OnResize</link>
 </seealso>
 </element>
 
@@ -8458,15 +8505,25 @@ signature for the handler to allow responding to the notification.
 </element>
 
 <element name="TCustomForm.OnDeactivate">
-<short>Handler called when the form is deactivated (loses focus).</short>
+<short>
+Handler signalled when the form is deactivated (loses focus).
+</short>
 <descr>
 <p>
 <var>OnDeactivate</var> is a <var>TNotifyEvent</var> property which contains 
-an event handler signalled when form is deactivated (loses focus). 
-OnDeactivate is signalled from the Deactivate method (when assigned).
+an event handler signalled when a form is deactivated (loses focus). 
+OnDeactivate is signalled from the Deactivate method (when assigned), and 
+occurs when the CM_DEACTIVATE message is handled in the CMDeactivate method.
+OnDeactivate is signalled each time the focus is changed from the current form 
+instance to another form instance in the application.
 </p>
 </descr>
 <seealso>
+<link id="TCustomForm.Deactivate"/>
+<link id="TCustomForm.WMActivate"/>
+<link id="TCustomForm.OnActivate"/>
+<link id="TCustomForm.OnShow"/>
+<link id="TCustomForm.OnHide"/>
 <link id="TApplication.OnDeactivate"/>
 </seealso>
 </element>
