@@ -297,7 +297,7 @@ begin
 
   lw := 0;
   SetLength(lwid, arr.count);
-  for i := 0 to arr.count - 1 do
+  for i := 0 to Integer(arr.count) - 1 do
   begin
     vi := NSTabViewItem( arr.objectAtIndex(i) );
     sz := vi.sizeOfLabel(false);
@@ -948,10 +948,10 @@ var
   currentIndex: Integer;
 begin
   currentIndex := _tabControl.currentIndex;
-  if currentIndex = _tabControl.fulltabs.count - 1 then
+  if currentIndex = Integer(_tabControl.fulltabs.count) - 1 then
     Exit;
   if shouldSpeedUp() then
-    currentIndex := _tabControl.fulltabs.count - 1
+    currentIndex := Integer(_tabControl.fulltabs.count) - 1
   else
     inc(currentIndex);
   _tabControl.extselectTabViewItemAtIndex(currentIndex);

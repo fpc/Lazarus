@@ -860,7 +860,7 @@ begin
     ofs := (tr.Right - tr.Left - mw) / length(w);
 
     x := tr.Left;
-    for i := 0 to idx-1 do
+    for i := 0 to Integer(idx)-1 do
       x := x+ofs+w[i];
 
     Result.Left := Round(x);
@@ -882,7 +882,7 @@ begin
     ofs := (tr.Bottom - tr.Top - mw) / length(w);
 
     x := tr.Top;
-    for i := 0 to idx-1 do
+    for i := 0 to Integer(idx)-1 do
       x := x+ofs+w[i];
 
     Result.Left := tr.Left;
