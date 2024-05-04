@@ -6686,8 +6686,7 @@ begin
   if Result then
     exit;
 
-  Result := (GetAnyValidParentWatchValue(AThreadId, AStackFrame) <> nil) and
-            FParentWatch.HasAllValidParents(AThreadId, AStackFrame);
+  Result := (GetAnyValidParentWatchValue(AThreadId, AStackFrame) <> nil);
 end;
 
 procedure TIdeWatch.DoEnableChange;
