@@ -6759,7 +6759,7 @@ begin
   vl := FParentWatch.FValueList;
   i := vl.Count - 1;
   while (i >= 0) and (
-    (vl.EntriesByIdx[i].Validity <> ddsValid) or
+    (not vl.EntriesByIdx[i].IsValid) or
     (vl.EntriesByIdx[i].ThreadId <> AThreadId) or
     (vl.EntriesByIdx[i].StackFrame <> AStackFrame)
   ) do

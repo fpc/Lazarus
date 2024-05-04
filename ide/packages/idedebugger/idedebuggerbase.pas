@@ -77,6 +77,7 @@ type
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState; virtual;
+    function GetIsValid: boolean; virtual;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
     procedure SetTypeInfo(AValue: TDBGType);
     procedure SetTypeInfo(AValue: TDBGTypeBase);
@@ -112,6 +113,7 @@ type
   public
     property Watch: TWatch read FWatch write SetWatch;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
+    property IsValid: boolean read GetIsValid;
     property Value: String read GetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
     property ResultData: TWatchResultData read GetResultData;
@@ -422,6 +424,13 @@ begin
     Result := FValidity
   else
     Result := ddsUnknown;
+end;
+
+function TWatchValue.GetIsValid: boolean;
+begin
+  Result := (FValidity = ddsValid);
+  if Result then
+    Result := Validity = ddsValid;
 end;
 
 function TWatchValue.GetStackFrame: Integer;
