@@ -31,11 +31,13 @@
       <Item3>
         <Filename Value="process.pas"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="process"/>
       </Item3>
       <Item4>
         <Filename Value="simpleipc.pas"/>
         <Type Value="Virtual Unit"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="simpleipc"/>
       </Item4>
       <Item5>
