@@ -360,6 +360,7 @@ function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject; overload;
 function ImgRoundChecked(A: Double): Integer; inline;
 function IncQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
+function IncToStartOfTheQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsEquivalent(const A1, A2: Double): Boolean; inline;
@@ -512,6 +513,11 @@ end;
 function IncQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
 begin
   Result := IncMonth(ADate, NumberOfQuarters*3);
+end;
+
+function IncToStartOfTheQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
+begin
+  Result := StartOfTheQuarter(IncQuarter(ADate, NumberOfQuarters));
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;

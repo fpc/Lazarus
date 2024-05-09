@@ -227,7 +227,7 @@ begin
       else
         Result := IncYear(AValue, Round(FBestStepCoeff));
     dtsQuarter: 
-      Result := IncQuarter(AValue, Round(FStepLen/DATE_STEP_INTERVALS[dtsQuarter]));
+      Result := IncToStartOfTheQuarter(AValue, Round(FStepLen/DATE_STEP_INTERVALS[dtsQuarter]));
     dtsMonth: Result := IncMonth(AValue, Round(FBestStepCoeff));
     otherwise Result := AValue + FStepLen;
   end;
