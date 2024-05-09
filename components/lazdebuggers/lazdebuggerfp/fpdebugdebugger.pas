@@ -3604,6 +3604,12 @@ begin
   if StrAddr = 0 then
     exit;
   ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
+  // len > max len ....
+  if (len = 0) or (len > MaxInt) then // MaxInt: not a valid string
+    exit;
+  if len > 16 * 1024 then
+    len := 16 * 1024; // reading exception name/msg
+
   setlength(result, len);
   if not ReadData(StrAddr, len, result[1]) then
     result := '';
