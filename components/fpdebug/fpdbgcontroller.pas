@@ -1631,12 +1631,14 @@ begin
   if assigned(FMainProcess) then
     begin
     DebugLn(DBG_WARNINGS, 'The debuggee is already running');
+    FLastError := CreateError(fpInternalErr, ['The debugger is already running']);
     Exit;
     end;
 
   if FExecutableFilename = '' then
     begin
     DebugLn(DBG_WARNINGS, 'No filename given to execute.');
+    FLastError := CreateError(fpInternalErr, ['No filename given to execute.']);
     Exit;
     end;
 
@@ -1652,6 +1654,7 @@ begin
     begin
     result := false;
     DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
+    FLastError := CreateError(fpInternalErr, ['Unknown target for file: ' + FExecutableFilename]);
     Exit;
     end;
 
@@ -1663,6 +1666,7 @@ begin
     begin
     Result := false;
     DebugLn(DBG_WARNINGS, 'Error - could not create TDbgProcess');
+    FLastError := CreateError(fpInternalErr, ['could not create TDbgProcess']);
     Exit;
     end;
 
