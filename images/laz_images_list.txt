@@ -340,6 +340,9 @@ debugger/debugger_event_log_200.png
 debugger/debugger_inspect.png
 debugger/debugger_inspect_150.png
 debugger/debugger_inspect_200.png
+debugger/line_wrap.png
+debugger/line_wrap_150.png
+debugger/line_wrap_200.png
 debugger/debugger_modify.png
 debugger/debugger_modify_150.png
 debugger/debugger_modify_200.png

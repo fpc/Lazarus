@@ -63,6 +63,7 @@ type
     BtnEvaluate: TToolButton;
     tbDivAdd: TToolButton;
     btnEvalHistory: TToolButton;
+    btnWordWrap: TToolButton;
     procedure BtnAddWatchClick(Sender: TObject);
     procedure btnBackwardClick(Sender: TObject);
     procedure btnColTypeClick(Sender: TObject);
@@ -72,6 +73,7 @@ type
     procedure btnFunctionEvalClick(Sender: TObject);
     procedure BtnInspectClick(Sender: TObject);
     procedure btnPowerClick(Sender: TObject);
+    procedure btnWordWrapClick(Sender: TObject);
     procedure EdInspectChange(Sender: TObject);
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word;
@@ -101,6 +103,7 @@ type
     FHistoryList: TStrings;
     FBrowseHistoryIndex: Integer;
     FBrowseHistory: TStringList;
+    FOnWordWrapChanged: TNotifyEvent;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
 
     FThreadsMonitor:   TIdeThreadsMonitor;
@@ -108,6 +111,7 @@ type
     FInspectWatches: TCurrentWatches;
     FUpdateCount: Integer;
     FExecAfterUpdate: Boolean;
+    FInSetButtonDown: Boolean;
 
     procedure ArrayNavSizeChanged(Sender: TObject);
     procedure DoDbgValFormatterMenuClicked(Sender: TObject);
@@ -123,6 +127,7 @@ type
     function GetExpression: String;
     function  GetOnArrayNavChanged(AIndex: Integer): TArrayNavChangeEvent;
     procedure SetButtonEnabled(AIndex: Integer; AValue: Boolean);
+    procedure SetButtorDown(AIndex: Integer; AValue: Boolean);
     procedure SetHistoryList(AValue: TStrings);
     procedure SetOnArrayNavChanged(AIndex: Integer; AValue: TArrayNavChangeEvent);
     function  GetShowButtons(AIndex: Integer): Boolean;
@@ -178,6 +183,7 @@ type
     property ShowEvalHist:       Boolean index 5 read GetShowButtons write SetShowButtons;
     property ShowCallFunction:   Boolean index 6 read GetShowButtons write SetShowButtons;
     property ShowDisplayFormat:  Boolean index 7 read GetShowButtons write SetShowButtons;
+    property ShowWordWrap:       Boolean index 8 read GetShowButtons write SetShowButtons;
     property AllowMemDump:       Boolean read FAllowMemDump write FAllowMemDump;
 
     property ColClassIsDown:        Boolean index 0 read GetButtonDown;
@@ -185,6 +191,7 @@ type
     property ColVisibilityIsDown:   Boolean index 2 read GetButtonDown;
     property PowerIsDown:           Boolean index 3 read GetButtonDown;
     property UseInstanceIsDown:     Boolean index 4 read GetButtonDown;
+    property WordWrapIsDown:        Boolean index 5 read GetButtonDown write SetButtorDown;
 
     property ColClassEnabled:        Boolean index 0 read GetButtonEnabled write SetButtonEnabled;
     property ColTypeEnabled:         Boolean index 1 read GetButtonEnabled write SetButtonEnabled;
@@ -201,6 +208,7 @@ type
     property OnArrayPageSize:     TArrayNavChangeEvent index 1 read GetOnArrayNavChanged write SetOnArrayNavChanged;
     property OnDisplayFormatChanged: TNotifyEvent read FOnDisplayFormatChanged write FOnDisplayFormatChanged;
     property OnEvalHistDirectionChanged: TEvalHistDirectionChangedEvent read FOnEvalHistDirectionChanged write FOnEvalHistDirectionChanged;
+    property OnWordWrapChanged: TNotifyEvent read FOnWordWrapChanged write FOnWordWrapChanged;
   end;
 
 implementation
@@ -228,6 +236,7 @@ begin
     5: Result := btnEvalHistory.Visible;
     6: Result := btnFunctionEval .Visible;
     7: Result := btnDisplayFormat.Visible;
+    8: Result := btnWordWrap.Visible;
   end;
 end;
 
@@ -364,6 +373,12 @@ begin
   end;
 end;
 
+procedure TWatchInspectNav.btnWordWrapClick(Sender: TObject);
+begin
+  if Assigned(FOnWordWrapChanged) and not FInSetButtonDown then
+    FOnWordWrapChanged(Self);
+end;
+
 procedure TWatchInspectNav.EdInspectChange(Sender: TObject);
 begin
   BtnExecute.Enabled := EdInspect.Text <> '';
@@ -390,6 +405,15 @@ begin
   end;
 end;
 
+procedure TWatchInspectNav.SetButtorDown(AIndex: Integer; AValue: Boolean);
+begin
+  FInSetButtonDown := True;
+  case AIndex of
+    5: btnWordWrap.Down := AValue;
+  end;
+  FInSetButtonDown := False;
+end;
+
 function TWatchInspectNav.GetButtonDown(AIndex: Integer): Boolean;
 begin
   case AIndex of
@@ -398,6 +422,7 @@ begin
     2: Result := btnColVisibility.Down;
     3: Result := btnPower.Down;
     4: Result := btnUseInstance.Down;
+    5: Result := btnWordWrap.Down;
   end;
 end;
 
@@ -551,6 +576,7 @@ begin
          btnFunctionEval.Down      := False;
        end;
     7: btnDisplayFormat.Visible    := AValue;
+    8: btnWordWrap.Visible         := AValue;
   end;
 
   tbDivCol.Visible   := (ShowInspectColumns or ShowDisplayFormat);
@@ -622,6 +648,9 @@ begin
   btnColClass.Hint       := lisInspectShowColClass;
   btnColType.Hint        := lisInspectShowColType;
   btnColVisibility.Hint  := lisInspectShowColVisibility;
+  btnWordWrap.Hint       := lisWordWrapBtnHint;
+
+  btnWordWrap.ImageIndex := IDEImages.LoadImage('line_wrap');
 
   BtnAddWatch.ImageIndex := IDEImages.LoadImage('debugger_watches');
   BtnAddWatch.Caption := drsAddWatch;

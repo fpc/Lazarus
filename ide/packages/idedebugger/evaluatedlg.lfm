@@ -10,27 +10,27 @@ object EvaluateDlg: TEvaluateDlg
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
   KeyPreview = True
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
-  LCLVersion = '2.3.0.0'
   object txtResult: TMemo
     Left = 0
     Height = 150
     Top = 112
     Width = 420
     Align = alClient
-    OnMouseDown = FormMouseDown
-    ScrollBars = ssAutoVertical
+    ScrollBars = ssAutoBoth
     TabOrder = 1
+    OnMouseDown = FormMouseDown
   end
   inline WatchInspectNav1: TWatchInspectNav
     Width = 420
     Align = alTop
     ClientWidth = 420
     inherited ToolBar1: TToolBar
-      Height = 68
+      Height = 90
       Width = 420
       inherited tbDivPower: TToolButton
         Height = 22
@@ -41,16 +41,27 @@ object EvaluateDlg: TEvaluateDlg
       inherited tbDivFlags: TToolButton
         Height = 22
       end
+      inherited btnWordWrap: TToolButton
+        Left = 1
+        Top = 24
+      end
       inherited tbDivCol: TToolButton
+        Left = 197
         Height = 22
+        Top = 24
+      end
+      inherited edFilter: TEditButton
+        Left = 47
+        Top = 24
       end
       inherited ArrayNavigationBar1: TArrayNavigationBar
         Left = 1
         Height = 23
-        Top = 24
+        Top = 46
         Width = 253
         ClientHeight = 23
         ClientWidth = 253
+        TabOrder = 1
         inherited btnArrayFastDown: TSpeedButton
           Height = 23
         end
@@ -85,28 +96,32 @@ object EvaluateDlg: TEvaluateDlg
       inherited tbDivArray: TToolButton
         Left = 254
         Height = 22
-        Top = 24
+        Top = 46
       end
       inherited BtnAddWatch: TToolButton
         Left = 259
-        Top = 24
+        Top = 46
       end
       inherited BtnInspect: TToolButton
         Left = 1
-        Top = 46
+        Top = 68
       end
       inherited BtnEvaluate: TToolButton
         Left = 326
-        Top = 24
+        Top = 46
       end
       inherited tbDivAdd: TToolButton
         Left = 47
         Height = 22
-        Top = 46
+        Top = 68
       end
       inherited btnEvalHistory: TToolButton
         Left = 52
-        Top = 46
+        Top = 68
+      end
+      inherited btnDisplayFormat: TToolButton
+        Left = 24
+        Top = 24
       end
     end
     inherited Panel1: TPanel
@@ -139,11 +154,11 @@ object EvaluateDlg: TEvaluateDlg
       Width = 398
       Align = alClient
       ItemHeight = 15
-      OnKeyDown = EdModifyKeyDown
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
       TextHint = 'New Value'
+      OnKeyDown = EdModifyKeyDown
     end
     object BtnExecModify: TSpeedButton
       Left = 399

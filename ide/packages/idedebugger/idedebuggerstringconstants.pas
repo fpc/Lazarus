@@ -86,6 +86,7 @@ resourcestring
   lisInspectShowColClass = 'Show class column';
   lisInspectShowColType = 'Show type column';
   lisInspectShowColVisibility = 'Show visibility column';
+  lisWordWrapBtnHint = 'Word wrap';
   drsNewValue = 'New Value';
   drsNewValueToAssignToTheVari = 'New value to assign to the variable in the '
     +'debugged process (use Shift-Enter to confirm)';

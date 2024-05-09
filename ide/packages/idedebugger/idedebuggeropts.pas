@@ -125,6 +125,7 @@ type
     FAlwaysBringDbgDialogsToFront: boolean;
     FBreakpointsDialogShowTree: TBreakpointsDialogShowTreeType;
     FDisplayFormatConfigs: TDisplayFormatConfig;
+    FEvaluateWordWrap: boolean;
     FFilename: string;
     FFileVersion: integer;
 
@@ -133,6 +134,7 @@ type
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
+    FWatchesDetailPaneWordWrap: boolean;
     FXMLCfg: TRttiXMLConfig;
 
     FDebuggerConfigList: TDebuggerPropertiesConfigList; // named entries
@@ -180,6 +182,8 @@ type
     property SetupCheckIgnoreNoDefault: Boolean read FSetupCheckIgnoreNoDefault write FSetupCheckIgnoreNoDefault;
     property BreakpointsDialogShowTree: TBreakpointsDialogShowTreeType read FBreakpointsDialogShowTree write FBreakpointsDialogShowTree default bstBrkGroup;
     property AlwaysBringDbgDialogsToFront: boolean read FAlwaysBringDbgDialogsToFront write FAlwaysBringDbgDialogsToFront default true;
+    property WatchesDetailPaneWordWrap: boolean read FWatchesDetailPaneWordWrap write FWatchesDetailPaneWordWrap default False;
+    property EvaluateWordWrap: boolean read FEvaluateWordWrap write FEvaluateWordWrap default False;
   end;
 
   TCurrentDebuggerSetupResult = (

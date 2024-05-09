@@ -143,15 +143,21 @@ object WatchInspectNav: TWatchInspectNav
       Style = tbsCheck
       OnClick = btnColTypeClick
     end
+    object btnWordWrap: TToolButton
+      Left = 403
+      Top = 2
+      Style = tbsCheck
+      OnClick = btnWordWrapClick
+    end
     object tbDivCol: TToolButton
-      Left = 576
+      Left = 599
       Height = 22
       Top = 2
       Caption = 'tbDivCol'
       Style = tbsDivider
     end
     object edFilter: TEditButton
-      Left = 426
+      Left = 449
       Height = 23
       Top = 2
       Width = 150
@@ -164,7 +170,7 @@ object WatchInspectNav: TWatchInspectNav
       Visible = False
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 581
+      Left = 604
       Height = 23
       Top = 2
       Width = 253
@@ -203,32 +209,32 @@ object WatchInspectNav: TWatchInspectNav
       end
     end
     object tbDivArray: TToolButton
-      Left = 834
+      Left = 857
       Height = 22
       Top = 2
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 839
+      Left = 862
       Top = 2
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 958
+      Left = 981
       Top = 2
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 906
+      Left = 929
       Top = 2
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 1004
+      Left = 1027
       Height = 22
       Top = 2
       Caption = 'tbDivAdd'
@@ -242,7 +248,7 @@ object WatchInspectNav: TWatchInspectNav
       Style = tbsButtonDrop
     end
     object btnDisplayFormat: TToolButton
-      Left = 403
+      Left = 426
       Top = 2
       AllowAllUp = True
       Caption = 'df'

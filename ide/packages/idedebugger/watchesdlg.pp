@@ -96,6 +96,9 @@ type
     actProperties: TAction;
     InspectLabel: TLabel;
     btnShowDataAddr: TToolButton;
+    pnlL: TPanel;
+    ToolBar2: TToolBar;
+    tbWordWrap: TToolButton;
     ToolButton3: TToolButton;
     tvWatches: TDbgTreeView;
     InspectMemo: TMemo;
@@ -154,6 +157,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure tbWordWrapClick(Sender: TObject);
     procedure tvWatchesChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvWatchesDragDrop(Sender: TBaseVirtualTree; Source: TObject;
       DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
@@ -179,6 +183,7 @@ type
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
   private
+    FInSetup: integer;
     FWatchTreeMgr: TDbgTreeViewWatchValueMgr;
     FWatchPrinter: TWatchResultPrinter;
     FWatchesInView: TIdeWatches;
@@ -293,6 +298,7 @@ begin
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
+  ToolBar2.Images := IDEImages.Images_16;
   mnuPopup.Images := IDEImages.Images_16;
 
   FPowerImgIdx := IDEImages.LoadImage('debugger_power');
@@ -349,6 +355,7 @@ begin
   actEvaluate.Caption := lisEvaluateModify;
 
   btnShowDataAddr.ImageIndex := IDEImages.LoadImage('address');
+  tbWordWrap.ImageIndex := IDEImages.LoadImage('line_wrap');
 
   Caption:=liswlWatchList;
 
@@ -358,6 +365,10 @@ begin
   tvWatches.Header.Columns[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
   tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
   tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
+
+  inc(FInSetup);
+  tbWordWrap.Down := DebuggerOptions.WatchesDetailPaneWordWrap;
+  dec(FInSetup);
 
   //tvWatches.OnItemRemoved := @DoItemRemovedFromView;
   DebugConfigChanged;
@@ -737,6 +748,15 @@ end;
 procedure TWatchesDlg.FormShow(Sender: TObject);
 begin
   UpdateAll;
+end;
+
+procedure TWatchesDlg.tbWordWrapClick(Sender: TObject);
+begin
+  InspectMemo.WordWrap := tbWordWrap.Down;
+  if FInSetup = 0 then begin
+    DebuggerOptions.WatchesDetailPaneWordWrap := tbWordWrap.Down;
+    DebuggerOptions.Save;
+  end;
 end;
 
 procedure TWatchesDlg.actPowerExecute(Sender: TObject);
@@ -1186,14 +1206,12 @@ begin
   InspectLabel.Caption := Watch.Expression;
 
   if not(Watch.Enabled and Watch.HasAllValidParents(GetThreadId, GetStackframe)) then begin
-    InspectMemo.WordWrap := True;
     InspectMemo.Text := '<evaluating>';
     exit;
   end;
 
   d := Watch.Values[GetThreadId, GetStackframe];
   if d = nil then begin
-    InspectMemo.WordWrap := True;
     InspectMemo.Text := '<evaluating>';
     exit;
   end;
@@ -1209,7 +1227,6 @@ begin
       FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine, rpfSkipValueFormatter];
     FWatchPrinter.OnlyValueFormatter := Watch.DbgValueFormatter;
     s := FWatchPrinter.PrintWatchValue(d.ResultData, Watch.DisplayFormat, Watch.Expression);
-    InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
     exit;
   end;
@@ -1218,7 +1235,6 @@ begin
   if (t <> nil) and
      GlobalValueFormatterSelectorList.FormatValue(t, d.Value, Watch.DisplayFormat, s, AnsiUpperCase(Watch.Expression), AnsiUpperCase(Watch.Expression))
   then begin
-    InspectMemo.WordWrap := True;
     InspectMemo.Text := s;
     exit;
   end;
@@ -1226,7 +1242,6 @@ begin
   if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
      (not Watch.DisplayFormat.Struct.UseInherited)
   then begin
-    InspectMemo.WordWrap := False;
     InspectMemo.Lines.BeginUpdate;
     try
       for i := 0 to t.Fields.Count - 1 do
@@ -1255,7 +1270,6 @@ begin
     exit;
   end;
 
-  InspectMemo.WordWrap := True;
   InspectMemo.Text := d.Value;
   finally
     FWatchPrinter.FormatFlags := [rpfClearMultiLine];

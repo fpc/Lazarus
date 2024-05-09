@@ -1706,6 +1706,10 @@ msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
 msgstr "Liste der überwachten Ausdrücke"
 
+#: idedebuggerstringconstants.liswordwrapbtnhint
+msgid "Word wrap"
+msgstr ""
+
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"
 msgstr ""

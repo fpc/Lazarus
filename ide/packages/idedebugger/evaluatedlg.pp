@@ -86,6 +86,7 @@ type
     procedure DoHistDirChanged(Sender: TObject; NewDir: TEvalHistDirection);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure DoWordWrapChanged(Sender: TObject);
     function GetEvalExpression: string;
     procedure SetEvalExpression(const NewExpression: string);
     procedure Modify;
@@ -141,6 +142,10 @@ begin
   WatchInspectNav1.ShowEvalHist := True;
   WatchInspectNav1.ShowAddEval:= False;
   WatchInspectNav1.ShowDisplayFormat := True;
+  WatchInspectNav1.ShowWordWrap := True;
+  WatchInspectNav1.WordWrapIsDown := DebuggerOptions.EvaluateWordWrap;
+  WatchInspectNav1.OnWordWrapChanged := @DoWordWrapChanged;
+  txtResult.WordWrap := DebuggerOptions.EvaluateWordWrap;
 
   WatchInspectNav1.OnAddWatchClicked := @DoAddWatch;
   WatchInspectNav1.OnAddInspectClicked := @DoAddInspect;
@@ -314,6 +319,13 @@ begin
     end
   else
     txtResult.Lines.Text := ResultText;
+end;
+
+procedure TEvaluateDlg.DoWordWrapChanged(Sender: TObject);
+begin
+  txtResult.WordWrap := WatchInspectNav1.WordWrapIsDown;
+  DebuggerOptions.EvaluateWordWrap := WatchInspectNav1.WordWrapIsDown;
+  DebuggerOptions.Save;
 end;
 
 procedure TEvaluateDlg.DoAddInspect(Sender: TObject);
