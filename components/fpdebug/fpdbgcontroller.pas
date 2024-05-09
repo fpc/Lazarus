@@ -1679,6 +1679,7 @@ begin
 
   if assigned(FMainProcess) then begin
     DebugLn(DBG_WARNINGS, 'The debuggee is already running');
+    FLastError := CreateError(fpInternalErr, ['The debugger is already running']);
     Exit;
   end;
 
