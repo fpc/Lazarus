@@ -933,18 +933,18 @@ begin
           Result.cy := QStyle_pixelMetric(Style, QStylePM_IndicatorHeight, nil, nil);
           Result.cx := QStyle_pixelMetric(Style, QStylePM_IndicatorWidth, nil, nil);
           if (Result.cx>0) then
-            Result.cx := MulDiv(Result.cx, PPI, 96);
+            Result.cx := MulDiv(Result.cx, PPI, ScreenInfo.PixelsPerInchX);
           if (Result.cy>0) then
-            Result.cy := MulDiv(Result.cy, PPI, 96);
+            Result.cy := MulDiv(Result.cy, PPI, ScreenInfo.PixelsPerInchY);
         end else
         if Details.Part = BP_RADIOBUTTON then
         begin
           Result.cy := QStyle_pixelMetric(Style, QStylePM_ExclusiveIndicatorHeight, nil, nil);
           Result.cx := QStyle_pixelMetric(Style, QStylePM_ExclusiveIndicatorWidth, nil, nil);
           if (Result.cx>0) then
-            Result.cx := MulDiv(Result.cx, PPI, 96);
+            Result.cx := MulDiv(Result.cx, PPI, ScreenInfo.PixelsPerInchX);
           if (Result.cy>0) then
-            Result.cy := MulDiv(Result.cy, PPI, 96);
+            Result.cy := MulDiv(Result.cy, PPI, ScreenInfo.PixelsPerInchY);
         end else
           Result := inherited;
       end;
@@ -968,7 +968,7 @@ begin
         Result.cy := -1;
         Result.cx := QStyle_pixelMetric(Style, QStylePM_MenuButtonIndicator, nil, nil);
         if (Result.cx>0) then
-          Result.cx := MulDiv(Result.cx, PPI, 96);
+          Result.cx := MulDiv(Result.cx, PPI, ScreenInfo.PixelsPerInchX);
       end else
         Result := inherited;
     else
