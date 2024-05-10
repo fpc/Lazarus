@@ -163,12 +163,14 @@ begin
    AConfig.GetValue(APath + 'StructAddr',   ord(DefaultWatchDisplayFormat.Struct.Address.TypeFormat),      ADisplayFormat.Struct.Address.TypeFormat,     TypeInfo(TValueDisplayFormatAddress));
    AConfig.GetValue(APath + 'StructBase',   ord(DefaultWatchDisplayFormat.Struct.Address.BaseFormat),  ADisplayFormat.Struct.Address.BaseFormat, TypeInfo(TValueDisplayFormatBase));
    ADisplayFormat.Struct.Address.Signed := AConfig.GetValue(APath + 'StructSign',   DefaultWatchDisplayFormat.Struct.Address.Signed);
+   ADisplayFormat.Struct.Address.NoLeadZero := AConfig.GetValue(APath + 'StructLeadZero',   DefaultWatchDisplayFormat.Struct.Address.NoLeadZero);
   ADisplayFormat.Pointer.UseInherited := AConfig.GetValue(APath + 'PointerInherit', DefaultWatchDisplayFormat.Pointer.UseInherited);
    AConfig.GetValue(APath + 'PointerDeref', ord(DefaultWatchDisplayFormat.Pointer.DerefFormat),       ADisplayFormat.Pointer.DerefFormat,      TypeInfo(TValueDisplayFormatPointerDeref));
   ADisplayFormat.Pointer.Address.UseInherited := AConfig.GetValue(APath + 'PointerAddrInherit', DefaultWatchDisplayFormat.Pointer.Address.UseInherited);
    AConfig.GetValue(APath + 'PointerAddr',  ord(DefaultWatchDisplayFormat.Pointer.Address.TypeFormat),     ADisplayFormat.Pointer.Address.TypeFormat,    TypeInfo(TValueDisplayFormatAddress));
    AConfig.GetValue(APath + 'PointerBase',  ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),        ADisplayFormat.Pointer.Address.BaseFormat,       TypeInfo(TValueDisplayFormatBase));
    ADisplayFormat.Pointer.Address.Signed := AConfig.GetValue(APath + 'PointerSign', DefaultWatchDisplayFormat.Pointer.Address.Signed);
+   ADisplayFormat.Pointer.Address.NoLeadZero := AConfig.GetValue(APath + 'PointerLeadZero', DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
   ADisplayFormat.MemDump := AConfig.GetValue(APath + 'IsMemDump', DefaultWatchDisplayFormat.MemDump);
 end;
 
@@ -218,14 +220,16 @@ begin
    AConfig.SetDeleteValue(APath + 'StructPtr',         ADisplayFormat.Struct.ShowPointerFormat,        ord(DefaultWatchDisplayFormat.Struct.ShowPointerFormat),     TypeInfo(TValueDisplayFormatStructPointer));
   AConfig.SetDeleteValue(APath + 'StructAddrInherit',  ADisplayFormat.Struct.Address.UseInherited,        DefaultWatchDisplayFormat.Struct.Address.UseInherited);
    AConfig.SetDeleteValue(APath + 'StructAddr',        ADisplayFormat.Struct.Address.TypeFormat,        ord(DefaultWatchDisplayFormat.Struct.Address.TypeFormat),     TypeInfo(TValueDisplayFormatAddress));
-   AConfig.SetDeleteValue(APath + 'StructSign',        ADisplayFormat.Struct.Address.Signed,        DefaultWatchDisplayFormat.Struct.Address.Signed);
    AConfig.SetDeleteValue(APath + 'StructBase',        ADisplayFormat.Struct.Address.BaseFormat,    ord(DefaultWatchDisplayFormat.Struct.Address.BaseFormat), TypeInfo(TValueDisplayFormatBase));
+   AConfig.SetDeleteValue(APath + 'StructSign',        ADisplayFormat.Struct.Address.Signed,        DefaultWatchDisplayFormat.Struct.Address.Signed);
+   AConfig.SetDeleteValue(APath + 'StructLeadZero',    ADisplayFormat.Struct.Address.NoLeadZero,    DefaultWatchDisplayFormat.Struct.Address.NoLeadZero);
   AConfig.SetDeleteValue(APath + 'PointerInherit',     ADisplayFormat.Pointer.UseInherited,           DefaultWatchDisplayFormat.Pointer.UseInherited);
    AConfig.SetDeleteValue(APath + 'PointerDeref',      ADisplayFormat.Pointer.DerefFormat,         ord(DefaultWatchDisplayFormat.Pointer.DerefFormat),      TypeInfo(TValueDisplayFormatPointerDeref));
   AConfig.SetDeleteValue(APath + 'PointerAddrInherit', ADisplayFormat.Pointer.Address.UseInherited,       DefaultWatchDisplayFormat.Pointer.Address.UseInherited);
    AConfig.SetDeleteValue(APath + 'PointerAddr',       ADisplayFormat.Pointer.Address.TypeFormat,       ord(DefaultWatchDisplayFormat.Pointer.Address.TypeFormat),    TypeInfo(TValueDisplayFormatAddress));
    AConfig.SetDeleteValue(APath + 'PointerBase',       ADisplayFormat.Pointer.Address.BaseFormat,   ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),       TypeInfo(TValueDisplayFormatBase));
    AConfig.SetDeleteValue(APath + 'PointerSign',       ADisplayFormat.Pointer.Address.Signed,       DefaultWatchDisplayFormat.Pointer.Address.Signed);
+   AConfig.SetDeleteValue(APath + 'PointerLeadZero',   ADisplayFormat.Pointer.Address.NoLeadZero,   DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
   AConfig.SetDeleteValue(APath + 'IsMemDump',          ADisplayFormat.MemDump, False);
 end;
 

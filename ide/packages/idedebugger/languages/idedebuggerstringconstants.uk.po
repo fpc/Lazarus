@@ -275,6 +275,10 @@ msgstr ""
 msgid "Structures (Addr)"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatnoleadzero
+msgid "Hide leading zeros"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatnumdigits
 msgid "Digits"
 msgstr ""

@@ -2275,7 +2275,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 41
+    Height = 60
     Top = 404
     Width = 592
     Anchors = [akTop, akLeft, akRight]
@@ -2286,7 +2286,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 41
+    ClientHeight = 60
     ClientWidth = 592
     TabOrder = 7
     object Spacer11: TLabel
@@ -2496,6 +2496,46 @@ object DisplayFormatFrame: TDisplayFormatFrame
         TabOrder = 5
       end
     end
+    object PanelAddressLeadZero: TPanel
+      AnchorSideLeft.Control = Spacer12
+      AnchorSideTop.Control = PanelAddressBase
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer12
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 19
+      Top = 41
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 6
+      ClientHeight = 19
+      ClientWidth = 481
+      TabOrder = 3
+      object cbAddrNoLeadZero: TCheckBox
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 481
+        Caption = 'cbAddrNoLeadZero'
+        TabOrder = 0
+        OnChange = cbAddrNoLeadZeroChange
+      end
+      object rbClear16: TRadioButton
+        AnchorSideBottom.Control = PanelAddressLeadZero
+        Left = -99
+        Height = 1
+        Top = -1
+        Width = 1
+        Anchors = [akLeft, akBottom]
+        AutoSize = False
+        TabOrder = 1
+      end
+    end
   end
   object PanelMemDump: TPanel
     AnchorSideLeft.Control = Owner
@@ -2505,7 +2545,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 449
+    Top = 468
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

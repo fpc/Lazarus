@@ -459,6 +459,7 @@ resourcestring
   DispFormatSignAuto             = 'Auto-sign';
   DispFormatSignSigned           = 'Signed';
   DispFormatSignUnsigned         = 'Unsigned';
+  DispFormatNoLeadZero           = 'Hide leading zeros';
   DispFormatDlgBtnNum2Visible    = 'Show value in a second format';
   DispFormatNumDigits            = 'Digits';
   DispFormatNumDigitsFull        = 'Full';

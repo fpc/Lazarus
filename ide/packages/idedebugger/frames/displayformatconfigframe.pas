@@ -45,6 +45,7 @@ type
 
   TDisplayFormatFrame = class(TFrame)
     cbAddrSign: TCheckBox;
+    cbAddrNoLeadZero: TCheckBox;
     cbEnumValSign: TCheckBox;
     cbMemDump: TCheckBox;
     cbOverrideEnumVal: TCheckBox;
@@ -90,6 +91,7 @@ type
     lbOverrideAddressFormat: TLabel;
     lbOverrideNumBase: TLabel;
     lbNum2SepGroup: TLabel;
+    PanelAddressLeadZero: TPanel;
     PanelEnumVal: TPanel;
     PanelENumValBase: TPanel;
     PanelEnumValRb: TPanel;
@@ -110,6 +112,7 @@ type
     rbClear13: TRadioButton;
     rbClear14: TRadioButton;
     rbClear15: TRadioButton;
+    rbClear16: TRadioButton;
     rbClear2: TRadioButton;
     rbClear3: TRadioButton;
     rbClear4: TRadioButton;
@@ -240,6 +243,7 @@ type
     tbBool: TSpeedButton;
     tbChar: TSpeedButton;
     tbFloat: TSpeedButton;
+    procedure cbAddrNoLeadZeroChange(Sender: TObject);
     procedure cbMemDumpChange(Sender: TObject);
     procedure cbNum2VisibleCheckedChange(Sender: TObject);
     procedure CheckLabelClicked(Sender: TObject);
@@ -479,6 +483,16 @@ begin
   PanelStruct.Enabled := not cbMemDump.Checked;
   PanelPointer.Enabled := not cbMemDump.Checked;
   PanelAddressFormat.Enabled := not cbMemDump.Checked;
+end;
+
+procedure TDisplayFormatFrame.cbAddrNoLeadZeroChange(Sender: TObject);
+begin
+  if FUpdatingDisplay > 0 then
+    exit;
+  TControl(Sender).Tag := 0;
+  EnableParentOverride(TControl(Sender));
+  UpdateFormat;
+  UpdateDisplay;
 end;
 
 procedure TDisplayFormatFrame.cbNum2VisibleCheckedChange(Sender: TObject);
@@ -1379,6 +1393,7 @@ begin
             if d in ds then
               FDisplayFormat[i].Struct.Address.BaseFormat := d;
         BoolFromCB(cbAddrSign, FDisplayFormat[i].Struct.Address.Signed, False);
+        BoolFromCB(cbAddrNoLeadZero, FDisplayFormat[i].Struct.Address.NoLeadZero, False);
       end;
     end;
     if FButtonStates[bsPtr] then begin
@@ -1406,6 +1421,7 @@ begin
             if d in ds then
               FDisplayFormat[i].Pointer.Address.BaseFormat := d;
         BoolFromCB(cbAddrSign, FDisplayFormat[i].Pointer.Address.Signed, False);
+        BoolFromCB(cbAddrNoLeadZero, FDisplayFormat[i].Pointer.Address.NoLeadZero, False);
       end;
     end;
 
@@ -1462,6 +1478,7 @@ var
   FormatAddressPtr_Ty:    TBoolSet;
   FormatAddressBase:   TValueDisplayFormats;
   FormatAddressSign:   TBoolSet;
+  FormatAddressLead:   TBoolSet;
 
   FormatIsMemDump: TBoolSet;
 
@@ -1521,6 +1538,7 @@ begin
     FormatAddressPtr_Ty    := [];
     FormatAddressBase   := [];
     FormatAddressSign   := [];
+    FormatAddressLead   := [];
 
     FormatIsMemDump := [];
 
@@ -1596,6 +1614,7 @@ begin
           include(FormatAddressStr_Ty, FDisplayFormat[i].Struct.Address.TypeFormat = vdfAddressTyped);
           include(FormatAddressBase,   FDisplayFormat[i].Struct.Address.BaseFormat);
           include(FormatAddressSign,   FDisplayFormat[i].Struct.Address.Signed);
+          include(FormatAddressLead,   FDisplayFormat[i].Struct.Address.NoLeadZero);
         end
         else
         if (FDisplayFormat[i].Struct.Address.UseInherited) then
@@ -1612,6 +1631,7 @@ begin
           include(FormatAddressPtr_Ty, FDisplayFormat[i].Pointer.Address.TypeFormat = vdfAddressTyped);
           include(FormatAddressBase,   FDisplayFormat[i].Pointer.Address.BaseFormat);
           include(FormatAddressSign,   FDisplayFormat[i].Pointer.Address.Signed);
+          include(FormatAddressLead,   FDisplayFormat[i].Pointer.Address.NoLeadZero);
         end
         else
         if (FDisplayFormat[i].Pointer.Address.UseInherited) then
@@ -1751,6 +1771,7 @@ begin
       ClearRadios(PanelAddressType);
       ClearRadios(PanelAddressBase);
       cbAddrSign.State := cbUnchecked;
+      cbAddrNoLeadZero.State := cbUnchecked;
       cbStructAddrTyped.State  := cbGrayed;
       cbPointerAddrTyped.State := cbGrayed;
       cbAddrSign.Tag   := 1;
@@ -1759,6 +1780,7 @@ begin
       ApplyDispForm(PanelAddressType, FormatAddress,     RBA_Addr);
       ApplyDispForm(PanelAddressBase, FormatAddressBase, RBA_AddrNum);
       cbAddrSign.State := BoolsetToCBState(FormatAddressSign, False);
+      cbAddrNoLeadZero.State := BoolsetToCBState(FormatAddressLead, False);
       cbStructAddrTyped.State  := BoolsetToCBState(FormatAddressStr_Ty, False);
       cbPointerAddrTyped.State := BoolsetToCBState(FormatAddressPtr_Ty, False);
       cbAddrSign.Tag   := 0;
@@ -1990,6 +2012,7 @@ begin
   rbAddrNumOct.Caption       := DispFormatBaseOct;
   rbAddrNumBin.Caption       := DispFormatBaseBin;
   cbAddrSign.Caption         := DispFormatSignSigned;
+  cbAddrNoLeadZero.Caption   := DispFormatNoLeadZero;
 
   cbStructAddrTyped.Caption  := DispFormatPointerAddressTyped;
   cbPointerAddrTyped.Caption := DispFormatPointerAddressTyped;

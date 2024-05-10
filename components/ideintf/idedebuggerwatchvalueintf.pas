@@ -133,6 +133,7 @@ type
     TypeFormat:            TValueDisplayFormatAddress;
     BaseFormat:            TValueDisplayFormatBase;
     Signed:                boolean;
+    NoLeadZero:            boolean;
     class operator = (a,b: TWatchDisplayFormatAddr): boolean;
   end;
 
@@ -223,6 +224,7 @@ const
                        TypeFormat:     vdfAddressPlain;
                        BaseFormat: vdfBaseHex;
                        Signed:     False;
+                       NoLeadZero: False;
                       );
             );
     Pointer: (UseInherited:     True;
@@ -231,6 +233,7 @@ const
                         TypeFormat:    vdfAddressPlain;
                         BaseFormat:vdfBaseHex;
                         Signed:    False;
+                        NoLeadZero: False;
                        );
              );
     MemDump:       False;
@@ -492,9 +495,9 @@ begin
     'Char: '+dbgs(df.Char.UseInherited)+' '+dbgs(df.Char.MainFormat)+' '+dbgs(df.Char.BaseFormat)+' '+dbgs(df.Char.SignFormat) + LineEnding+
     'Float: '+dbgs(df.Float.UseInherited)+' '+dbgs(df.Float.NumFormat)+' '+dbgs(df.Float.Precission) + LineEnding+
     'Struct: '+dbgs(df.Struct.UseInherited)+' '+dbgs(df.Struct.DataFormat)+' '+dbgs(df.Struct.ShowPointerFormat) + LineEnding+
-    'Addr: '+dbgs(df.Struct.Address.UseInherited)+' '+dbgs(df.Struct.Address.TypeFormat)+' '+dbgs(df.Struct.Address.BaseFormat)+' '+dbgs(df.Struct.Address.Signed) + LineEnding+
+    'Addr: '+dbgs(df.Struct.Address.UseInherited)+' '+dbgs(df.Struct.Address.TypeFormat)+' '+dbgs(df.Struct.Address.BaseFormat)+' '+dbgs(df.Struct.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
     'Ptr: '+dbgs(df.Pointer.UseInherited)+' '+dbgs(df.Pointer.DerefFormat) + LineEnding+
-    'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed) + LineEnding+
+    'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
     'Dmp: '+dbgs(df.MemDump);
 end;
 
@@ -604,7 +607,8 @@ begin
     (a.UseInherited           = b.UseInherited) and
     (a.TypeFormat             = b.TypeFormat) and
     (a.BaseFormat             = b.BaseFormat) and
-    (a.Signed                 = b.Signed)
+    (a.Signed                 = b.Signed) and
+    (a.NoLeadZero             = b.NoLeadZero)
   ;
 end;
 

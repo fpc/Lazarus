@@ -384,7 +384,8 @@ begin
       if Result.Struct.Address.Signed then
         Result.Num2.SignFormat := vdfSignSigned;
       ResolveSign(Result.Num2.SignFormat, DefaultAddrNum.SignFormat);
-      ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
+      if not Result.Address.NoLeadZero then
+        ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
     end;
 
     rdkFunction, rdkProcedure,
@@ -405,7 +406,8 @@ begin
       if Result.Pointer.Address.Signed then
         Result.Num2.SignFormat := vdfSignSigned;
       ResolveSign(Result.Num2.SignFormat, DefaultAddrNum.SignFormat);
-      ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
+      if not Result.Address.NoLeadZero then
+        ResolveMinDigits(Result.Num2.MinDigits, Result.Num2.BaseFormat);
     end;
 
     //rdkString, rdkWideString,
