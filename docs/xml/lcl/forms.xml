@@ -6931,25 +6931,43 @@ not available.
 <element name="TCustomForm.GetPreferredSize.WithThemeSpace"/>
 
 <element name="TCustomForm.Release">
-<short>Marks the form for destruction.</short>
+<short>
+Marks the form for destruction.
+</short>
 <descr>
 <p>
 <var>Release</var> is a procedure used to request destruction of the current 
-form instance.
+form instance. 
+</p>
+<p>
+Release is called from the ShowModal method when a value other than mrNone is 
+returned in the ModalResult property - including when the Application has been 
+terminated while the dialog is active. While the method is public (just like in 
+Delphi), it is not meant to be called from application code; ShowModal handles 
+freeing the form instance in its processing loop. Calling Release when the form 
+instance has already been freed in ShowModal raises an Access Violation (AV). 
+You can use CloseQuery / OnCloseQuery to set the form close action to caFree to 
+force the dialog to be closed and freed.
 </p>
 <p>
 <var>Release</var> checks for a <var>TApplication</var> instance in the 
-<var>Application</var> singleton. When it is assigned (contains a value other 
-than <b>Nil</b>), its <var>ReleaseComponent</var> method is called to free 
-the form instance by posting an asynchronous application message. When 
-<var>Application</var> is not assigned, the <var>Free</var> method is called 
-to destroy the form instance.
+<var>Application</var> singleton. If it is assigned (contains a value other 
+than <b>Nil</b>), its <var>ReleaseComponent</var> method is called to free the 
+form instance by posting an asynchronous application message. When 
+<var>Application</var> is not assigned, the <var>Free</var> method is called to 
+destroy the form instance.
 </p>
 </descr>
 <seealso>
-<link id="TApplication.ReleaseComponent"/>
+<link id="TCustomForm.ShowModal"/>
+<link id="TCustomForm.ModalResult"/>
+<link id="TCustomForm.CloseQuery"/>
+<link id="TCustomForm.OnCloseQuery"/>
 <link id="TCustomForm.Destroy"/>
+<link id="TApplication.ReleaseComponent"/>
 <link id="Application"/>
+<link id="TCloseAction"/>
+<link id="#fcl.custapp.TCustomApplication.Terminated">TCustomApplication.Terminated</link>
 </seealso>
 </element>
 
@@ -7063,26 +7081,38 @@ instance and its siblings.
 </element>
 
 <element name="TCustomForm.ShowModal">
-<short>Displays the form as a modal dialog.</short>
+<short>
+Displays the form as a modal dialog.
+</short>
 <descr>
 <p>
-Shows the form in a modal state and waits until it is closed by the user or 
-by the program. Modal state means that neither the user nor the program can 
-switch to or display another form before exiting the method.
+<var>ShowModal</var> is the method used to show the form in a modal state and 
+wait until it is closed by the user or by the program. Modal state means that 
+neither the user nor the program can switch to or display another form before 
+exiting the method.
 </p>
 <p>
+Before the dialog form is displayed and executed, the following actions are 
+performed:
+</p>
+<ul>
+<li>An active drag operation is cancelled.</li>
+<li>An active pop-up menu is closed.</li>
+<li>An active capture is killed and released in the widget instance.</li>
+</ul>
+<p>
 The form must be <var>Enabled</var> with its <var>Visible</var> property set 
-to <b>False</b> when calling ShowModal. It cannot have fsModal in its 
+to <b>False</b> when calling ShowModal. It cannot already have fsModal in its 
 FormState property, and it cannot be a MDI Child form. An 
 <var>EInvalidOperation</var> exception is raised if the form cannot be
-displayed as a modal form.
+displayed as a modal form for any of these reasons.
 </p>
 <p>
 ShowModal updates the Application instance by calling its ModalStarted method. 
 This maintains its internal members and signals any OnModalBegin event 
 handlers assigned for the application. The application switches to modal state 
 until ShowModal is completed. The ModalFinished method for the Application is 
-called prior to exit.
+called to end the modal state prior to exit.
 </p>
 <p>
 ShowModal implements its own message processing loop. It calls 
@@ -7094,13 +7124,28 @@ exception is re-raised.
 </p>
 <p>
 ShowModal sets the value in the ModalResult property to indicate the action 
-performed to close the modal form. mrNone indicates that the form has not been 
-(or should not be) closed. mrCancel indicates the the Cancel button was 
-pressed, the form was closed using a window decoration, or the application has 
-been Terminated.
+performed to close the modal dialog form. mrNone indicates that the form has 
+not been (or should not be) closed. mrCancel indicates the the Cancel button 
+was pressed, the form was closed using a window decoration, or the application 
+was Terminated while ShowModal was running.
 </p>
 <p>
-ShowModal uses the value from ModalResult as the return value for the method.
+Any value in ModalResult other than mrNone causes DoClose to be called where  
+CloseQuery / OnCloseQuery is used to determine the close action for the dialog 
+form. If the close action is caNone, ModalResult is set to mrNone to continue 
+the message processing loop. caFree in the close action causes the Release 
+method to be called to free the form instance. There is no need to call the 
+Release method in application code; it is handled in the message processing 
+loop in the method. The OnCloseQuery event can be used to return caFree as the 
+close action which forces the dialog form to be closed.
+</p>
+<p>
+When the message processing loop has been completed, the form instance is 
+hidden and other enabled forms in the application are restored. The previously 
+focused form is also restored.
+</p>
+<p>
+ShowModal uses the value in ModalResult as the return value for the method.
 </p>
 </descr>
 <errors>
@@ -7113,10 +7158,21 @@ displayed as a modal form.
 Modified in LCL version 3.0.0 to allow the application to handle an exception 
 when its CaptureExceptions property is enabled.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomForm.ModalResult"/>
+<link id="TCustomForm."/>
+<link id="TApplication.ModalStarted"/>
+<link id="TApplication.ModalFinished"/>
+<link id="TApplication.CaptureExceptions"/>
+<link id="TApplication.HandleException"/>
+<link id="#lcl.menus.ActivePopupMenu">ActivePopupMenu</link>
+<link id="#fcl.custapp.TCustomApplication.Terminated">TCustomApplication.Terminated</link>
+</seealso>
 </element>
 <element name="TCustomForm.ShowModal.Result">
-<short>The modal result for the dialog.</short>
+<short>
+The modal result for the dialog.
+</short>
 </element>
 
 <element name="TCustomForm.ShowOnTop">
