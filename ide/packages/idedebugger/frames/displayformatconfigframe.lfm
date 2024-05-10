@@ -15,10 +15,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
   ClientWidth = 592
   Constraints.MaxWidth = 850
   Constraints.MinWidth = 480
-  LCLVersion = '3.99.0.0'
   TabOrder = 0
-  DesignLeft = 427
-  DesignTop = 213
+  DesignLeft = 387
+  DesignTop = 68
   object ToolBar1: TToolBar
     Left = 0
     Height = 24
@@ -44,7 +43,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton2: TToolButton
       Left = 45
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton2'
       Enabled = False
@@ -66,7 +65,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton4: TToolButton
       Left = 71
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton4'
       Enabled = False
@@ -172,7 +171,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton12: TToolButton
       Left = 132
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton12'
       Enabled = False
@@ -181,7 +180,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton13: TToolButton
       Left = 175
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton13'
       Enabled = False
@@ -190,7 +189,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton14: TToolButton
       Left = 211
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton14'
       Enabled = False
@@ -199,7 +198,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton15: TToolButton
       Left = 248
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton15'
       Enabled = False
@@ -208,7 +207,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton16: TToolButton
       Left = 286
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton16'
       Enabled = False
@@ -217,7 +216,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     end
     object ToolButton17: TToolButton
       Left = 351
-      Height = 8
+      Height = 22
       Top = 2
       Caption = 'ToolButton17'
       Enabled = False
@@ -1988,7 +1987,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.EnlargeHorizontal = crsSameSize
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 3
+      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
@@ -1997,27 +1996,27 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 0
         Height = 19
         Top = 0
-        Width = 160
+        Width = 120
         AutoSize = False
         Caption = 'rbStructValOnly'
         TabOrder = 0
         OnChange = FormatRadioChanged
       end
       object rbStructFields: TRadioButton
-        Left = 160
+        Left = 120
         Height = 19
         Top = 0
-        Width = 161
+        Width = 120
         AutoSize = False
         Caption = 'rbStructFields'
         TabOrder = 1
         OnChange = FormatRadioChanged
       end
       object rbStructFull: TRadioButton
-        Left = 321
+        Left = 240
         Height = 19
         Top = 0
-        Width = 160
+        Width = 121
         AutoSize = False
         Caption = 'rbStructFull'
         TabOrder = 2
@@ -2032,6 +2031,13 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Anchors = [akLeft, akBottom]
         AutoSize = False
         TabOrder = 3
+      end
+      object lbStructAddrTypedFiller: TLabel
+        Left = 361
+        Height = 19
+        Top = 0
+        Width = 120
+        Visible = False
       end
     end
     object PanelStructPointer: TPanel
@@ -2050,7 +2056,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.EnlargeHorizontal = crsSameSize
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 3
+      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
@@ -2059,31 +2065,41 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 0
         Height = 19
         Top = 0
-        Width = 160
+        Width = 120
         AutoSize = False
         Caption = 'rbStructAddrOff'
         TabOrder = 0
         OnChange = FormatRadioChanged
       end
       object rbStructAddrOn: TRadioButton
-        Left = 160
+        Left = 120
         Height = 19
         Top = 0
-        Width = 161
+        Width = 120
         AutoSize = False
         Caption = 'rbStructAddrOn'
         TabOrder = 1
         OnChange = FormatRadioChanged
       end
       object rbStructAddrOnly: TRadioButton
-        Left = 321
+        Left = 240
         Height = 19
         Top = 0
-        Width = 160
+        Width = 121
         AutoSize = False
         Caption = 'rbStructAddrOnly'
         TabOrder = 2
         OnChange = FormatRadioChanged
+      end
+      object cbStructAddrTyped: TCheckBox
+        Left = 361
+        Height = 19
+        Top = 0
+        Width = 120
+        Caption = 'cbStructAddrTyped'
+        TabOrder = 4
+        Visible = False
+        OnChange = FormatAddrTypeChanged
       end
       object rbClear11: TRadioButton
         AnchorSideBottom.Control = PanelStructPointer
@@ -2196,7 +2212,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.EnlargeHorizontal = crsSameSize
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 3
+      ChildSizing.ControlsPerLine = 4
       ClientHeight = 19
       ClientWidth = 481
       TabOrder = 1
@@ -2204,31 +2220,41 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 0
         Height = 19
         Top = 0
-        Width = 160
+        Width = 120
         AutoSize = False
         Caption = 'rbPointerDerefOn'
         TabOrder = 0
         OnChange = FormatRadioChanged
       end
       object rbPointerDerefOff: TRadioButton
-        Left = 160
+        Left = 120
         Height = 19
         Top = 0
-        Width = 161
+        Width = 120
         AutoSize = False
         Caption = 'rbPointerDerefOff'
         TabOrder = 1
         OnChange = FormatRadioChanged
       end
       object rbPointerDerefOnly: TRadioButton
-        Left = 321
+        Left = 240
         Height = 19
         Top = 0
-        Width = 160
+        Width = 121
         AutoSize = False
         Caption = 'rbPointerDerefOnly'
         TabOrder = 2
         OnChange = FormatRadioChanged
+      end
+      object cbPointerAddrTyped: TCheckBox
+        Left = 361
+        Height = 19
+        Top = 0
+        Width = 120
+        Caption = 'cbPointerAddrTyped'
+        TabOrder = 4
+        Visible = False
+        OnChange = FormatAddrTypeChanged
       end
       object rbClear12: TRadioButton
         AnchorSideBottom.Control = PanelPointerDeref

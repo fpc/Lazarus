@@ -59,6 +59,8 @@ type
     cbNumSeparator: TCheckBox;
     cbNum2Separator: TCheckBox;
     cbEnumSign: TCheckBox;
+    cbStructAddrTyped: TCheckBox;
+    cbPointerAddrTyped: TCheckBox;
     DigitSpacer3: TLabel;
     DigitSpacer4: TLabel;
     DividerBevelEnumVal: TDividerBevel;
@@ -71,6 +73,7 @@ type
     DividerBevelFloat: TDividerBevel;
     DividerBevelStruct: TDividerBevel;
     Label1: TLabel;
+    lbStructAddrTypedFiller: TLabel;
     Label3: TLabel;
     lbEnumValBaseSpace: TLabel;
     lbOverrideEnumVal: TLabel;
@@ -240,6 +243,7 @@ type
     procedure cbMemDumpChange(Sender: TObject);
     procedure cbNum2VisibleCheckedChange(Sender: TObject);
     procedure CheckLabelClicked(Sender: TObject);
+    procedure FormatAddrTypeChanged(Sender: TObject);
     procedure FormatNumGroupChanged(Sender: TObject);
     procedure FormatNumSepChanged(Sender: TObject);
     procedure FormatRadioChanged(Sender: TObject);
@@ -263,6 +267,7 @@ type
     FDisplayFormat: array of TWatchDisplayFormat;
     FCurrentResDataType: TWatchResultDataKind;
     FShowExtraSettings: boolean;
+    FShowFullAddressInMulti: boolean;
     FShowMemDump: boolean;
     FShowMultiRadio: boolean;
     FShowOverrideChecks: boolean;
@@ -322,7 +327,9 @@ type
     property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
     property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
     property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
+    // ShowExtraSettings: Show PanelEnumVal  (project and global opts)
     property ShowExtraSettings: boolean read FShowExtraSettings write SetShowExtraSettings;
+    property ShowFullAddressInMulti: boolean read FShowFullAddressInMulti write FShowFullAddressInMulti;
     property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write SetHighlightModifiedTabs;
   end;
 
@@ -495,6 +502,14 @@ begin
       TCheckBox(p.Controls[i]).Checked := not TCheckBox(p.Controls[i]).Checked;
       exit;
     end;
+end;
+
+procedure TDisplayFormatFrame.FormatAddrTypeChanged(Sender: TObject);
+begin
+  if FUpdatingDisplay > 0 then
+    exit;
+  TControl(Sender).Tag := 0;
+  UpdateFormat;
 end;
 
 procedure TDisplayFormatFrame.FormatNumGroupChanged(Sender: TObject);
@@ -1011,7 +1026,12 @@ end;
 procedure TDisplayFormatFrame.UpdateVisiblePanels;
 var
   CaptDivEnum, CaptRbEnumName: String;
+  CheckAddrFormatVis: Boolean;
 begin
+  CheckAddrFormatVis := (tbPointer.Down or tbStruct.Down) and
+                        (tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down) and // any other
+                        (not FShowFullAddressInMulti);
+
   PanelNum.Visible           := tbNumber.Down;
   PanelNum2.Visible          := tbNumber.Down;
   PanelEnum.Visible          := tbEnum.Down or tbBool.Down or tbChar.Down;
@@ -1021,7 +1041,11 @@ begin
   PanelFloat.Visible         := tbFloat.Down;
   PanelStruct.Visible        := tbStruct.Down;
   PanelPointer.Visible       := tbPointer.Down;
-  PanelAddressFormat.Visible := tbPointer.Down or tbStruct.Down;
+  PanelAddressFormat.Visible := (tbPointer.Down or tbStruct.Down) and (not CheckAddrFormatVis);
+
+  lbStructAddrTypedFiller.Visible := CheckAddrFormatVis;
+  cbStructAddrTyped.Visible       := CheckAddrFormatVis;
+  cbPointerAddrTyped.Visible      := CheckAddrFormatVis;
 
 
 
@@ -1164,11 +1188,21 @@ begin
     end;
     if FButtonStates[bsStruct] then begin
       BoolFromCBState(cbOverrideStruct.State, FDisplayFormat[i].Struct.UseInherited);
-      BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Struct.Address.UseInherited);
+      if cbStructAddrTyped.Visible then begin
+        if cbStructAddrTyped.State <> cbGrayed then
+          FDisplayFormat[i].Struct.Address.UseInherited := False;
+      end
+      else
+        BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Struct.Address.UseInherited);
     end;
     if FButtonStates[bsPtr] then begin
       BoolFromCBState(cbOverridePointerDeref.State, FDisplayFormat[i].Pointer.UseInherited);
-      BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Pointer.Address.UseInherited);
+      if cbPointerAddrTyped.Visible then begin
+        if cbPointerAddrTyped.State <> cbGrayed then
+          FDisplayFormat[i].Pointer.Address.UseInherited := False;
+      end
+      else
+        BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Pointer.Address.UseInherited);
     end;
   end;
 end;
@@ -1254,7 +1288,7 @@ begin
           cbUnchecked: FDisplayFormat[i].Enum.SignFormat := vdfSignAuto;
           cbChecked:   FDisplayFormat[i].Enum.SignFormat := vdfSignUnsigned;
         end;
-      if ShowExtraSettings then begin
+      if FShowExtraSettings then begin
         ds := ReadDispForm(PanelEnumValRb, RBA_Enum);
         if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
           for d := low(TValueDisplayFormatEnum) to high(TValueDisplayFormatEnum) do
@@ -1327,17 +1361,25 @@ begin
           if d in ds then
             FDisplayFormat[i].Struct.ShowPointerFormat := d;
 
-      ds := ReadDispForm(PanelAddressType, RBA_Addr);
-      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
-        for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
-          if d in ds then
-            FDisplayFormat[i].Struct.Address.TypeFormat := d;
-      ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
-      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
-        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-          if d in ds then
-            FDisplayFormat[i].Struct.Address.BaseFormat := d;
-      BoolFromCB(cbAddrSign, FDisplayFormat[i].Struct.Address.Signed, False);
+      if cbStructAddrTyped.Visible then begin
+        case cbStructAddrTyped.State of
+          cbUnchecked: FDisplayFormat[i].Struct.Address.TypeFormat := vdfAddressPlain;
+          cbChecked:   FDisplayFormat[i].Struct.Address.TypeFormat := vdfAddressTyped;
+        end;
+      end
+      else begin
+        ds := ReadDispForm(PanelAddressType, RBA_Addr);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
+            if d in ds then
+              FDisplayFormat[i].Struct.Address.TypeFormat := d;
+        ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+            if d in ds then
+              FDisplayFormat[i].Struct.Address.BaseFormat := d;
+        BoolFromCB(cbAddrSign, FDisplayFormat[i].Struct.Address.Signed, False);
+      end;
     end;
     if FButtonStates[bsPtr] then begin
       ds := ReadDispForm(PanelPointerDeref, RBA_PtrDeref);
@@ -1346,17 +1388,25 @@ begin
           if d in ds then
             FDisplayFormat[i].Pointer.DerefFormat := d;
 
-      ds := ReadDispForm(PanelAddressType, RBA_Addr);
-      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
-        for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
-          if d in ds then
-            FDisplayFormat[i].Pointer.Address.TypeFormat := d;
-      ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
-      if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
-        for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
-          if d in ds then
-            FDisplayFormat[i].Pointer.Address.BaseFormat := d;
-      BoolFromCB(cbAddrSign, FDisplayFormat[i].Pointer.Address.Signed, False);
+      if cbPointerAddrTyped.Visible then begin
+        case cbPointerAddrTyped.State of
+          cbUnchecked: FDisplayFormat[i].Pointer.Address.TypeFormat := vdfAddressPlain;
+          cbChecked:   FDisplayFormat[i].Pointer.Address.TypeFormat := vdfAddressTyped;
+        end;
+      end
+      else begin
+        ds := ReadDispForm(PanelAddressType, RBA_Addr);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatAddress) to high(TValueDisplayFormatAddress) do
+            if d in ds then
+              FDisplayFormat[i].Pointer.Address.TypeFormat := d;
+        ds := ReadDispForm(PanelAddressBase, RBA_AddrNum);
+        if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
+          for d := low(TValueDisplayFormatBase) to high(TValueDisplayFormatBase) do
+            if d in ds then
+              FDisplayFormat[i].Pointer.Address.BaseFormat := d;
+        BoolFromCB(cbAddrSign, FDisplayFormat[i].Pointer.Address.Signed, False);
+      end;
     end;
 
     BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
@@ -1408,6 +1458,8 @@ var
   FormatPointerDeref:  TValueDisplayFormats;
 
   FormatAddress:       TValueDisplayFormats;
+  FormatAddressStr_Ty:    TBoolSet;
+  FormatAddressPtr_Ty:    TBoolSet;
   FormatAddressBase:   TValueDisplayFormats;
   FormatAddressSign:   TBoolSet;
 
@@ -1465,6 +1517,8 @@ begin
     FormatPointerDeref  := [];
 
     FormatAddress       := [];
+    FormatAddressStr_Ty    := [];
+    FormatAddressPtr_Ty    := [];
     FormatAddressBase   := [];
     FormatAddressSign   := [];
 
@@ -1539,9 +1593,13 @@ begin
         include(InherhitAddress,     FDisplayFormat[i].Struct.Address.UseInherited);
         if (not FDisplayFormat[i].Struct.Address.UseInherited) or (not ShowOverrideChecks) then begin
           include(FormatAddress,       FDisplayFormat[i].Struct.Address.TypeFormat);
+          include(FormatAddressStr_Ty, FDisplayFormat[i].Struct.Address.TypeFormat = vdfAddressTyped);
           include(FormatAddressBase,   FDisplayFormat[i].Struct.Address.BaseFormat);
           include(FormatAddressSign,   FDisplayFormat[i].Struct.Address.Signed);
-        end;
+        end
+        else
+        if (FDisplayFormat[i].Struct.Address.UseInherited) then
+          FormatAddressStr_Ty := [True, False];
       end;
       if FButtonStates[bsPtr] then begin
         include(InherhitPtr, FDisplayFormat[i].Pointer.UseInherited);
@@ -1551,9 +1609,13 @@ begin
         include(InherhitAddress, FDisplayFormat[i].Pointer.Address.UseInherited);
         if (not FDisplayFormat[i].Pointer.Address.UseInherited) or (not ShowOverrideChecks) then begin
           include(FormatAddress,       FDisplayFormat[i].Pointer.Address.TypeFormat);
+          include(FormatAddressPtr_Ty, FDisplayFormat[i].Pointer.Address.TypeFormat = vdfAddressTyped);
           include(FormatAddressBase,   FDisplayFormat[i].Pointer.Address.BaseFormat);
           include(FormatAddressSign,   FDisplayFormat[i].Pointer.Address.Signed);
-        end;
+        end
+        else
+        if (FDisplayFormat[i].Pointer.Address.UseInherited) then
+          FormatAddressPtr_Ty := [True, False];
       end;
     end;
 
@@ -1689,12 +1751,16 @@ begin
       ClearRadios(PanelAddressType);
       ClearRadios(PanelAddressBase);
       cbAddrSign.State := cbUnchecked;
+      cbStructAddrTyped.State  := cbGrayed;
+      cbPointerAddrTyped.State := cbGrayed;
       cbAddrSign.Tag   := 1;
     end
     else begin
       ApplyDispForm(PanelAddressType, FormatAddress,     RBA_Addr);
       ApplyDispForm(PanelAddressBase, FormatAddressBase, RBA_AddrNum);
       cbAddrSign.State := BoolsetToCBState(FormatAddressSign, False);
+      cbStructAddrTyped.State  := BoolsetToCBState(FormatAddressStr_Ty, False);
+      cbPointerAddrTyped.State := BoolsetToCBState(FormatAddressPtr_Ty, False);
       cbAddrSign.Tag   := 0;
     end;
 
@@ -1924,6 +1990,9 @@ begin
   rbAddrNumOct.Caption       := DispFormatBaseOct;
   rbAddrNumBin.Caption       := DispFormatBaseBin;
   cbAddrSign.Caption         := DispFormatSignSigned;
+
+  cbStructAddrTyped.Caption  := DispFormatPointerAddressTyped;
+  cbPointerAddrTyped.Caption := DispFormatPointerAddressTyped;
 
 
   DividerBevelMemDump.Caption       := '';
