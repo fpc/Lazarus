@@ -1701,16 +1701,6 @@ type
     procedure WriteToStrings(AStrings: TStrings; AData: TvVectorialDocument); virtual;
   end;
 
-  {@@ List of registered formats }
-
-  TvVectorialFormatData = record
-    ReaderClass: TvVectorialReaderClass;
-    WriterClass: TvVectorialWriterClass;
-    ReaderRegistered: Boolean;
-    WriterRegistered: Boolean;
-    Format: TvVectorialFormat;
-  end;
-
   TvRenderer = class
   public
     procedure BeginRender(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean); virtual; abstract;
@@ -1719,9 +1709,6 @@ type
     procedure TPath_Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean; APath: TPath); virtual; abstract;
   end;
   TvRendererClass = class of TvRenderer;
-
-var
-  GvVectorialFormats: array of TvVectorialFormatData;
 
 const
   FormulaOperators = [fekSubtraction, fekMultiplication, fekSum, fekFraction, fekRoot, fekPower];
@@ -1742,6 +1729,14 @@ implementation
 
 uses fpvutils;
 
+type
+  {@@ List of registered formats }
+  TvVectorialFormatData = record
+    ReaderClass: TvVectorialReaderClass;
+    WriterClass: TvVectorialWriterClass;
+    Format: TvVectorialFormat;
+  end;
+
 const
   Str_Error_Nil_Path = ' The program attempted to add a segment before creating a path';
   INVALID_RENDERINFO_CANVAS_XY = Low(Integer);
@@ -1753,6 +1748,7 @@ var
 {$endif}
 
 var
+  GvVectorialFormats: array of TvVectorialFormatData = nil;
   gDefaultRenderer: TvRendererClass = nil;
 
 {@@
@@ -1763,80 +1759,56 @@ procedure RegisterVectorialReader(
   AFormat: TvVectorialFormat);
 var
   i, len: Integer;
-  FormatInTheList: Boolean;
 begin
   len := Length(GvVectorialFormats);
-  FormatInTheList := False;
 
   { First search for the format in the list }
   for i := 0 to len - 1 do
   begin
     if GvVectorialFormats[i].Format = AFormat then
     begin
-      //if GvVectorialFormats[i].ReaderRegistered then
-       //raise Exception.Create('RegisterVectorialReader: Reader class for format ' {+ AFormat} + ' already registered.');
-
-      GvVectorialFormats[i].ReaderRegistered := True;
+      { If found, register the reader class. }
       GvVectorialFormats[i].ReaderClass := AReaderClass;
-
-      FormatInTheList := True;
-      Break;
+      Exit;
     end;
   end;
 
   { If not already in the list, then add it }
-  if not FormatInTheList then
-  begin
-    SetLength(GvVectorialFormats, len + 1);
-
-    GvVectorialFormats[len].ReaderClass := AReaderClass;
-    GvVectorialFormats[len].WriterClass := nil;
-    GvVectorialFormats[len].ReaderRegistered := True;
-    GvVectorialFormats[len].WriterRegistered := False;
-    GvVectorialFormats[len].Format := AFormat;
-  end;
+  SetLength(GvVectorialFormats, len + 1);
+  GvVectorialFormats[len].Format := AFormat;
+  GvVectorialFormats[len].ReaderClass := AReaderClass;
+  GvVectorialFormats[len].WriterClass := nil;
 end;
 
 {@@
   Registers a new writer for a format
+
+  An already-registered writer is replaced.
 }
 procedure RegisterVectorialWriter(
   AWriterClass: TvVectorialWriterClass;
   AFormat: TvVectorialFormat);
 var
   i, len: Integer;
-  FormatInTheList: Boolean;
 begin
   len := Length(GvVectorialFormats);
-  FormatInTheList := False;
 
   { First search for the format in the list }
   for i := 0 to len - 1 do
   begin
     if GvVectorialFormats[i].Format = AFormat then
     begin
-      if GvVectorialFormats[i].WriterRegistered then
-       raise Exception.Create('RegisterVectorialWriter: Writer class for format ' + {AFormat +} ' already registered.');
-
-      GvVectorialFormats[i].WriterRegistered := True;
+      { If found, register the writer class. }
       GvVectorialFormats[i].WriterClass := AWriterClass;
-
-      FormatInTheList := True;
-      Break;
+      Exit;
     end;
   end;
 
   { If not already in the list, then add it }
-  if not FormatInTheList then
-  begin
-    SetLength(GvVectorialFormats, len + 1);
-
-    GvVectorialFormats[len].ReaderClass := nil;
-    GvVectorialFormats[len].WriterClass := AWriterClass;
-    GvVectorialFormats[len].ReaderRegistered := False;
-    GvVectorialFormats[len].WriterRegistered := True;
-    GvVectorialFormats[len].Format := AFormat;
-  end;
+  SetLength(GvVectorialFormats, len + 1);
+  GvVectorialFormats[len].Format := AFormat;
+  GvVectorialFormats[len].ReaderClass := nil;
+  GvVectorialFormats[len].WriterClass := AWriterClass;
 end;
 
 function Make2DPoint(AX, AY: Double): T3DPoint;
