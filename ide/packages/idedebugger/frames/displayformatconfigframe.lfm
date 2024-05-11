@@ -1,6 +1,6 @@
 object DisplayFormatFrame: TDisplayFormatFrame
   Left = 0
-  Height = 533
+  Height = 581
   Top = 0
   Width = 592
   HorzScrollBar.Page = 1
@@ -11,7 +11,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   VertScrollBar.Tracking = True
   AutoScroll = True
   AutoSize = True
-  ClientHeight = 533
+  ClientHeight = 581
   ClientWidth = 592
   Constraints.MaxWidth = 850
   Constraints.MinWidth = 480
@@ -222,6 +222,28 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Enabled = False
       Style = tbsSeparator
       Visible = False
+    end
+    object ToolButton5: TToolButton
+      Left = 401
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton5'
+      Enabled = False
+      Style = tbsSeparator
+    end
+    object tbIndent: TSpeedButton
+      Left = 409
+      Height = 19
+      Top = 2
+      Width = 38
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'Indent'
+      Flat = True
+      GroupIndex = 9166
+      Transparent = False
+      ParentFont = False
+      OnClick = tbIndentClick
     end
   end
   object PanelNum: TPanel
@@ -2537,15 +2559,144 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
     end
   end
-  object PanelMemDump: TPanel
+  object PanelIndent: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PanelAddressFormat
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 34
+    Height = 26
     Top = 468
+    Width = 592
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Bottom = 4
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 26
+    ClientWidth = 592
+    TabOrder = 10
+    object Spacer17: TLabel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 107
+      BorderSpacing.Right = 4
+      Caption = '  '
+      Constraints.MaxHeight = 1
+    end
+    object Spacer18: TLabel
+      Left = 111
+      Height = 1
+      Top = 0
+      Width = 481
+      Caption = '         '
+      Constraints.MaxHeight = 1
+    end
+    object DividerBevelPointerDeref1: TDividerBevel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 592
+      Align = alTop
+      AutoSize = False
+      BevelWidth = 1
+      BorderSpacing.Bottom = 2
+      CaptionSpacing = 5
+      Font.Height = 2
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      Style = gsHorLines
+    end
+    object cbOverrideIndent: TCheckBox
+      AnchorSideLeft.Control = Spacer17
+      AnchorSideTop.Control = DividerBevelPointerDeref1
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 17
+      Top = 3
+      Width = 18
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnChange = OverrideCheckChanged
+    end
+    object lbOverrideIndent: TLabel
+      AnchorSideLeft.Control = cbOverrideIndent
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbOverrideIndent
+      AnchorSideRight.Control = Spacer17
+      AnchorSideRight.Side = asrBottom
+      Left = 18
+      Height = 15
+      Top = 3
+      Width = 89
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'lbOverrideIndent'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = CheckLabelClicked
+    end
+    object PanelIndentMax: TPanel
+      AnchorSideLeft.Control = Spacer18
+      AnchorSideTop.Control = DividerBevelPointerDeref1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer18
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 23
+      Top = 3
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.ControlsPerLine = 4
+      ClientHeight = 23
+      ClientWidth = 481
+      TabOrder = 1
+      object lbMaxWrapLvl: TLabel
+        AnchorSideTop.Control = SpinIndentMaxWrap
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 15
+        Top = 4
+        Width = 75
+        BorderSpacing.Right = 3
+        Caption = 'lbMaxWrapLvl'
+      end
+      object SpinIndentMaxWrap: TSpinEdit
+        AnchorSideLeft.Control = lbMaxWrapLvl
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 78
+        Height = 23
+        Top = 0
+        Width = 50
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 90
+        MaxValue = 999
+        TabOrder = 0
+        OnChange = FormatSpinChanged
+      end
+    end
+  end
+  object PanelMemDump: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelIndent
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 34
+    Top = 498
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

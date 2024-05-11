@@ -431,6 +431,7 @@ resourcestring
   DispFormatDlgBtnStruct    = 'Structure';
   DispFormatDlgBtnPointer   = 'Pointer';
   DispFormatDlgBtnAdrFormat = 'Address';
+  DispFormatDlgBtnIndent    = 'Multiline';
 
   DispFormatDlgCaptionShowChar = '(Show Char)';
   DispFormatDlgCaptionAddress  = '(Address)';
@@ -491,6 +492,7 @@ resourcestring
   DispFormatPointerDerefOff      = 'No deref data';
   DispFormatPointerDerefOn       = 'Show deref data';
   DispFormatPointerDerefOnly     = 'Only deref data';
+  DispFormatIndentMaxWrap        = 'Max multiline level';
   DispFormatCategoryData         = 'Value';
   DispFormatCategoryMemDump      = 'Memory dump';
 

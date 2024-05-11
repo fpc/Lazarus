@@ -79,6 +79,9 @@ type
     FInValFormNestLevel: integer;
     FResValueInFormatter: TWatchResultData;
     FWatchedExprInFormatter: String;
+    FIndentLvl: integer;
+    FIndentString: String;
+    FHasLineBreak: Boolean;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -582,6 +585,7 @@ function TWatchResultPrinter.PrintArray(AResValue: TWatchResultData;
 var
   i: Integer;
   sep, tn: String;
+  SepHasBreak, SepUsed, OldHasLineBreak: Boolean;
 begin
   if (AResValue.ArrayType = datDynArray) then begin
     tn := AResValue.TypeName;
@@ -602,28 +606,51 @@ begin
     end;
   end;
 
-  if ANestLvl = 0 then
-    sep := ',' + FLineSeparator
-  else
-    sep := ', ';
+  sep := ', ';
+  SepHasBreak := False;
+  SepUsed := False;
+  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < ADispFormat.MultiLine.MaxMultiLineDepth ) then begin
+    sep := ',' + FLineSeparator;
+    SepHasBreak := True;
+    if (rpfIndent in FFormatFlags) then begin
+      sep := sep + FIndentString;
+      FIndentString := FIndentString + '  ';
+      inc(FIndentLvl);
+    end;
+  end;
+  OldHasLineBreak := FHasLineBreak;
+  FHasLineBreak := False;
 
   Result := '';
   for i := 0 to AResValue.Count - 1 do begin
-    if Result <> '' then
+    if Result <> '' then begin
       Result := Result + sep;
+      SepUsed := True;
+    end;
     AResValue.SetSelectedIndex(i);
+    OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
+    FHasLineBreak := False;
     Result := Result + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
     if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
       Result := Result + sep +'...';
+      SepUsed := True;
       break;
     end;
   end;
-  if AResValue.Count < AResValue.ArrayLength then
+  if AResValue.Count < AResValue.ArrayLength then begin
     Result := Result + sep +'...';
-  Result := '(' + Result +')';
+    SepUsed := True;
+  end;
+  if FHasLineBreak then
+    Result := '(' + Result + sep +')'
+  else
+    Result := '(' + Result +')';
 
   if (rpfPrefixOuterArrayLen in FFormatFlags) and (ANestLvl = 0) and (AResValue.ArrayLength > 0) then
     Result := Format(drsLen, [AResValue.ArrayLength]) + Result;
+
+  if (SepUsed and SepHasBreak) or OldHasLineBreak then
+    FHasLineBreak := True;
 end;
 
 function TWatchResultPrinter.PrintStruct(AResValue: TWatchResultData;
@@ -636,8 +663,8 @@ var
   Resolved: TResolvedDisplayFormat;
   FldInfo: TWatchResultDataFieldInfo;
   FldOwner: TWatchResultData;
-  vis, indent, sep, tn, Header, we: String;
-  InclVisSect: Boolean;
+  vis, sep, tn, Header, we: String;
+  InclVisSect, SepUsed, OldHasLineBreak: Boolean;
 begin
   Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
   Result := '';
@@ -657,8 +684,10 @@ begin
     then begin
       // TODO: for 32 bit target, sign extend the 2nd argument
       Result := PrintNumber(AResValue.DataAddress, Int64(AResValue.DataAddress), FTargetAddressSize, Resolved.Num2, True);
-      if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then
+      if (Resolved.Address.TypeFormat = vdfAddressTyped) and (tn <> '') then begin
         Result := tn + '(' + Result + ')';
+        tn := '';
+      end;
 
       if (Resolved.Struct.ShowPointerFormat = vdfStructPointerOnly) or (AResValue.FieldCount = 0) then
         exit;
@@ -667,14 +696,19 @@ begin
   Header := Result;
   Result := '';
 
-  if FFormatFlags * [rpfIndent, rpfMultiLine] = [rpfIndent, rpfMultiLine] then
-    indent := StringOfChar(' ', (ANestLvl+1)*2) // TODO: first line should only be indented, if it starts on new line...
-  else
-    indent := '';
-  if ANestLvl < 2 then
-    sep := FLineSeparator
-  else
-    sep := ' ';
+  sep := '';
+  SepUsed := False;
+  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < ADispFormat.MultiLine.MaxMultiLineDepth ) then begin
+    sep := FLineSeparator;
+    if (rpfIndent in FFormatFlags) then begin
+      sep := sep + FIndentString;
+      FIndentString := FIndentString + '  ';
+      inc(FIndentLvl);
+    end;
+  end;
+
+  OldHasLineBreak := FHasLineBreak;
+  FHasLineBreak := False;
 
   we := AWatchedExpr + '.';
   InclVisSect := (Resolved.Struct.DataFormat = vdfStructFull) and (AResValue.StructType in [dstClass, dstObject]);
@@ -688,59 +722,65 @@ begin
       if (Resolved.Struct.DataFormat = vdfStructFull) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
          (AResValue.StructType in [dstClass, dstInterface, dstObject]) // record has no inheritance
       then begin
-        if (Length(Result) > 0) then
+        if (Length(Result) > 0) then begin
           Result := Result + sep;
-        Result := Result + indent + '{' + FldOwner.TypeName + '}';
+          SepUsed := True;
+        end;
+        Result := Result + '{' + FldOwner.TypeName + '}';
       end;
     end;
 
     if InclVisSect and (vis <> VisibilityNames[FldInfo.FieldVisibility]) then begin
       vis := VisibilityNames[FldInfo.FieldVisibility];
-      if (Length(Result) > 0) then
+      if (Length(Result) > 0) then begin
         Result := Result + sep;
-      Result := Result + indent + vis;
+        SepUsed := True;
+      end;
+      Result := Result + vis;
     end;
 
-    if (Length(Result) > 0) then
+    if (Length(Result) > 0) then begin
       Result := Result + sep;
+      SepUsed := True;
+    end;
 
     if Resolved.Struct.DataFormat <> vdfStructValOnly then
-      Result := Result + indent + FldInfo.FieldName + ': '
-    else
-      Result := Result + indent;
+      Result := Result + FldInfo.FieldName + ': ';
+    OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
+    FHasLineBreak := False;
     Result := Result + PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl, we + UpperCase(FldInfo.FieldName)) + ';';
 
     if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
       Result := Result + sep +'...';
+      SepUsed := True;
       break;
     end;
   end;
 
-  if Result = '' then
-    Result := '()'
-  else begin
-    if indent = '' then
-      Result := '(' + Result + ')'
-    else
-    begin
-      UniqueString(Result);
-      Result[ANestLvl*2+1] := '(';
-      Result[Length(Result)] := ')';
-      //Delete(Result, Length(Result), 1)
-      //Result := Result + sep + ')';
-    end;
-  end;
-
-  tn := AResValue.TypeName;
-  if (tn <> '') and (ANestLvl=0) and
-     ( (Resolved.Struct.DataFormat = vdfStructFull) or
-       (AResValue.StructType in [dstClass, dstInterface])
-     )
-  then
-    Result := tn + Result;
-
   if Header <> '' then
-    Result := Header + ': ' + Result;
+    Header := Header + ': ';
+  if (Resolved.Struct.DataFormat <> vdfStructFull) and
+     not(AResValue.StructType in [dstClass, dstInterface])
+  then
+    tn := '';
+
+  if Result = '' then begin
+    Result := Header + tn + '()';
+  end
+  else begin
+    if (Header <> '') or (tn <> '') then begin
+      Result := Header + tn + '(' + Sep + Result;
+      SepUsed := True;
+    end
+    else
+      Result := '(' + Result;
+    if FHasLineBreak then
+      Result := Result + sep + ')'
+    else
+      Result := Result + ')';
+  end;
+  if (SepUsed and (Sep <> '')) or OldHasLineBreak then
+    FHasLineBreak := True;
 end;
 
 function TWatchResultPrinter.PrintConverted(AResValue: TWatchResultData;
@@ -900,137 +940,146 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 
 var
   PointerValue: TWatchResultDataPointer absolute AResValue;
-  ResTypeName: String;
+  ResTypeName, CurIndentString: String;
   PtrDeref, PtrDeref2: TWatchResultData;
   Resolved: TResolvedDisplayFormat;
-  n: Integer;
+  n, CurIndentLvl: Integer;
   StoredSettings: TWatchResStoredSettings;
 begin
   inc(ANestLvl);
-  if ANestLvl > MAX_ALLOWED_NEST_LVL then
-    exit('...');
-  if AResValue = nil then
-    exit('???');
+  CurIndentLvl := FIndentLvl;
+  CurIndentString := FIndentString;
+  try
+    if ANestLvl > MAX_ALLOWED_NEST_LVL then
+      exit('...');
+    if AResValue = nil then
+      exit('???');
 
-  if FCurrentValueFormatter <> nil then begin
-    StoreSetting(StoredSettings);
-    // for the next IWatchResultPrinter.FormatValue call
-    FNextCallIsValueFormatter := True;
-    FInValFormNestLevel  := ANestLvl;
-    FResValueInFormatter := AResValue;
-    FWatchedExprInFormatter := AWatchedExpr;
-    //
-    try
-      if FCurrentValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result, FWatchedVarName, AWatchedExpr) then
-        exit;
-    finally
-      FNextCallIsValueFormatter := False;
-      RestoreSetting(StoredSettings);
-    end;
-  end
-  else
-    FCurrentValueFormatter := FNextValueFormatter;
-
-  Result := '';
-  case AResValue.ValueKind of
-    rdkError:
-      begin
-      Result := 'Error: ' + AResValue.AsString;
-      if rpfClearMultiLine in FFormatFlags then
-        Result := ClearMultiline(Result);
-    end;
-    rdkUnknown:
-      Result := 'Error: Unknown';
-    rdkPrePrinted: begin
-      Result := AResValue.AsString;
-      if rpfClearMultiLine in FFormatFlags then
-        Result := ClearMultiline(Result);
-    end;
-    rdkSignedNumVal,
-    rdkUnsignedNumVal: begin
-      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-      Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num1);
-      if Resolved.Num2.Visible then begin
-        Result := Result +' = ' +
-                  PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
+    if FCurrentValueFormatter <> nil then begin
+      StoreSetting(StoredSettings);
+      // for the next IWatchResultPrinter.FormatValue call
+      FNextCallIsValueFormatter := True;
+      FInValFormNestLevel  := ANestLvl;
+      FResValueInFormatter := AResValue;
+      FWatchedExprInFormatter := AWatchedExpr;
+      //
+      try
+        if FCurrentValueFormatter.FormatValue(AResValue, ADispFormat, ANestLvl, Self, Result, FWatchedVarName, AWatchedExpr) then
+          exit;
+      finally
+        FNextCallIsValueFormatter := False;
+        RestoreSetting(StoredSettings);
       end;
-    end;
-    rdkPointerVal: begin
-      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-      Result := '';
+    end
+    else
+      FCurrentValueFormatter := FNextValueFormatter;
 
-      PtrDeref :=  PointerValue.DerefData;
-      if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
-        n := AResValue.ByteSize;
-        if n = 0 then n := FTargetAddressSize;
-        Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, n, Resolved.Num2, True);
-        if Resolved.Pointer.Address.TypeFormat = vdfAddressTyped then begin
-          ResTypeName := AResValue.TypeName;
-          if (ResTypeName = '') and (PtrDeref <> nil) then begin
-            ResTypeName := PtrDeref.TypeName;
+    Result := '';
+    case AResValue.ValueKind of
+      rdkError:
+        begin
+        Result := 'Error: ' + AResValue.AsString;
+        if rpfClearMultiLine in FFormatFlags then
+          Result := ClearMultiline(Result);
+      end;
+      rdkUnknown:
+        Result := 'Error: Unknown';
+      rdkPrePrinted: begin
+        Result := AResValue.AsString;
+        if rpfClearMultiLine in FFormatFlags then
+          Result := ClearMultiline(Result);
+      end;
+      rdkSignedNumVal,
+      rdkUnsignedNumVal: begin
+        Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+        Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num1);
+        if Resolved.Num2.Visible then begin
+          Result := Result +' = ' +
+                    PrintNumber(AResValue.AsQWord, AResValue.AsInt64, AResValue.ByteSize, Resolved.Num2);
+        end;
+      end;
+      rdkPointerVal: begin
+        Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+        Result := '';
+
+        PtrDeref :=  PointerValue.DerefData;
+        if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
+          n := AResValue.ByteSize;
+          if n = 0 then n := FTargetAddressSize;
+          Result := PrintNumber(AResValue.AsQWord, AResValue.AsInt64, n, Resolved.Num2, True);
+          if Resolved.Pointer.Address.TypeFormat = vdfAddressTyped then begin
+            ResTypeName := AResValue.TypeName;
+            if (ResTypeName = '') and (PtrDeref <> nil) then begin
+              ResTypeName := PtrDeref.TypeName;
+              if ResTypeName <> '' then
+                ResTypeName := '^'+ResTypeName;
+            end;
             if ResTypeName <> '' then
-              ResTypeName := '^'+ResTypeName;
+              Result := ResTypeName + '(' + Result + ')';
           end;
-          if ResTypeName <> '' then
-            Result := ResTypeName + '(' + Result + ')';
         end;
-      end;
 
-      if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOff) and (PtrDeref <> nil) then begin
-        while (PtrDeref.ValueKind = rdkPointerVal) and (PtrDeref.DerefData <> nil) do begin
-          PtrDeref2 := PtrDeref;
-          Result := Result + '^';
-          PtrDeref :=  PtrDeref.DerefData;
+        if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOff) and (PtrDeref <> nil) then begin
+          while (PtrDeref.ValueKind = rdkPointerVal) and (PtrDeref.DerefData <> nil) do begin
+            PtrDeref2 := PtrDeref;
+            Result := Result + '^';
+            PtrDeref :=  PtrDeref.DerefData;
+          end;
+          if PtrDeref <> nil then
+            Result := Result + '^: ' + PrintWatchValueEx(PtrDeref, ADispFormat, ANestLvl, AWatchedExpr+'^')
+          else
+            Result := Result + ': ' + PrintWatchValueEx(PtrDeref2, ADispFormat, ANestLvl, AWatchedExpr+'^');
         end;
-        if PtrDeref <> nil then
-          Result := Result + '^: ' + PrintWatchValueEx(PtrDeref, ADispFormat, ANestLvl, AWatchedExpr+'^')
-        else
-          Result := Result + ': ' + PrintWatchValueEx(PtrDeref2, ADispFormat, ANestLvl, AWatchedExpr+'^');
       end;
+      rdkFloatVal: begin
+        Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
+        if Resolved.Float.NumFormat = vdfFloatScientific then
+          case AResValue.FloatPrecission of
+            dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffExponent,  9, 0);
+            dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffExponent, 17, 0);
+            dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffExponent, 21, 0);
+          end
+        else
+          case AResValue.FloatPrecission of
+            dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral,  9, 0);
+            dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 17, 0);
+            dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 21, 0);
+          end;
+      end;
+      rdkChar:       Result := PrintChar;
+      rdkString:     Result := QuoteText(AResValue.AsString);
+      rdkWideString: Result := QuoteWideText(AResValue.AsWideString);
+      rdkBool:       Result := PrintBool;
+      rdkEnum, rdkEnumVal:
+                     Result := PrintEnum;
+      rdkSet:        Result := PrintSet;
+      rdkPCharOrString: begin
+        AResValue.SetSelectedIndex(0); // pchar res
+        Result := 'PChar: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
+        AResValue.SetSelectedIndex(1); // string res
+        Result := Result + FLineSeparator
+                + 'String: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
+      end;
+      rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
+      rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
+      rdkConvertRes: Result := PrintConverted(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
+      rdkFunction,
+      rdkProcedure,
+      rdkFunctionRef,
+      rdkProcedureRef: Result := PrintProc(AResValue, ADispFormat, ANestLvl);
+      rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl, AWatchedExpr);
     end;
-    rdkFloatVal: begin
-      Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
-      if Resolved.Float.NumFormat = vdfFloatScientific then
-        case AResValue.FloatPrecission of
-          dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffExponent,  9, 0);
-          dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffExponent, 17, 0);
-          dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffExponent, 21, 0);
-        end
-      else
-        case AResValue.FloatPrecission of
-          dfpSingle:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral,  9, 0);
-          dfpDouble:   Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 17, 0);
-          dfpExtended: Result := FloatToStrF(AResValue.AsFloat, ffGeneral, 21, 0);
-        end;
-    end;
-    rdkChar:       Result := PrintChar;
-    rdkString:     Result := QuoteText(AResValue.AsString);
-    rdkWideString: Result := QuoteWideText(AResValue.AsWideString);
-    rdkBool:       Result := PrintBool;
-    rdkEnum, rdkEnumVal:
-                   Result := PrintEnum;
-    rdkSet:        Result := PrintSet;
-    rdkPCharOrString: begin
-      AResValue.SetSelectedIndex(0); // pchar res
-      Result := 'PChar: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
-      AResValue.SetSelectedIndex(1); // string res
-      Result := Result + FLineSeparator
-              + 'String: ' + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
-    end;
-    rdkArray:  Result := PrintArray(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
-    rdkStruct: Result := PrintStruct(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
-    rdkConvertRes: Result := PrintConverted(AResValue, ADispFormat, ANestLvl, AWatchedExpr);
-    rdkFunction,
-    rdkProcedure,
-    rdkFunctionRef,
-    rdkProcedureRef: Result := PrintProc(AResValue, ADispFormat, ANestLvl);
-    rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl, AWatchedExpr);
+  finally
+    FIndentLvl := CurIndentLvl;
+    FIndentString := CurIndentString;
   end;
 end;
 
 constructor TWatchResultPrinter.Create;
 begin
   FFormatFlags := [rpfMultiLine, rpfIndent];
+  FIndentLvl    := 0;
+  FIndentString := '';
   FTargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
   FDisplayFormatResolver := TDisplayFormatResolver.Create;
 end;

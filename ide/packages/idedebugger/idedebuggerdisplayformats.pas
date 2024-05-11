@@ -171,6 +171,8 @@ begin
    AConfig.GetValue(APath + 'PointerBase',  ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),        ADisplayFormat.Pointer.Address.BaseFormat,       TypeInfo(TValueDisplayFormatBase));
    ADisplayFormat.Pointer.Address.Signed := AConfig.GetValue(APath + 'PointerSign', DefaultWatchDisplayFormat.Pointer.Address.Signed);
    ADisplayFormat.Pointer.Address.NoLeadZero := AConfig.GetValue(APath + 'PointerLeadZero', DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
+  ADisplayFormat.MultiLine.UseInherited := AConfig.GetValue(APath + 'MultiLineInherit', DefaultWatchDisplayFormat.MultiLine.UseInherited);
+   ADisplayFormat.MultiLine.MaxMultiLineDepth := AConfig.GetValue(APath + 'MultiLineMaxWrapDepth', DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
   ADisplayFormat.MemDump := AConfig.GetValue(APath + 'IsMemDump', DefaultWatchDisplayFormat.MemDump);
 end;
 
@@ -230,6 +232,8 @@ begin
    AConfig.SetDeleteValue(APath + 'PointerBase',       ADisplayFormat.Pointer.Address.BaseFormat,   ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),       TypeInfo(TValueDisplayFormatBase));
    AConfig.SetDeleteValue(APath + 'PointerSign',       ADisplayFormat.Pointer.Address.Signed,       DefaultWatchDisplayFormat.Pointer.Address.Signed);
    AConfig.SetDeleteValue(APath + 'PointerLeadZero',   ADisplayFormat.Pointer.Address.NoLeadZero,   DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
+  AConfig.SetDeleteValue(APath + 'MultiLineInherit',   ADisplayFormat.MultiLine.UseInherited,       DefaultWatchDisplayFormat.MultiLine.UseInherited);
+   AConfig.SetDeleteValue(APath + 'MultiLineMaxWrapDepth',ADisplayFormat.MultiLine.MaxMultiLineDepth, DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
   AConfig.SetDeleteValue(APath + 'IsMemDump',          ADisplayFormat.MemDump, False);
 end;
 

@@ -148,6 +148,10 @@ msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
 msgid "Float"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatdlgbtnindent
+msgid "Multiline"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatdlgbtnnum2visible
 msgid "Show value in a second format"
 msgstr ""
@@ -270,6 +274,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformatgroupstructaddress
 msgid "Structures (Addr)"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatindentmaxwrap
+msgid "Max multiline level"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatnoleadzero
