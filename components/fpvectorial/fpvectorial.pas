@@ -1423,13 +1423,20 @@ type
     procedure AssignTo(ADest: TvVectorialDocument);
     procedure WriteToFile(AFileName: string; AFormat: TvVectorialFormat); overload;
     procedure WriteToFile(AFileName: string); overload;
-    procedure WriteToStream(AStream: TStream; AFormat: TvVectorialFormat);
-    procedure WriteToStrings(AStrings: TStrings; AFormat: TvVectorialFormat);
+    procedure WriteToFile(AFileName: String; AWriter: TvCustomVectorialWriter); overload;
+    procedure WriteToStream(AStream: TStream; AFormat: TvVectorialFormat); overload;
+    procedure WriteToStream(AStream: TStream; AWriter: TvCustomVectorialWriter); overload;
+    procedure WriteToStrings(AStrings: TStrings; AFormat: TvVectorialFormat); overload;
+    procedure WriteToStrings(AStrings: TStrings; AWriter: TvCustomVectorialWriter); overload;
     procedure ReadFromFile(AFileName: string; AFormat: TvVectorialFormat); overload;
     procedure ReadFromFile(AFileName: string); overload;
-    procedure ReadFromStream(AStream: TStream; AFormat: TvVectorialFormat);
-    procedure ReadFromStrings(AStrings: TStrings; AFormat: TvVectorialFormat);
-    procedure ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat);
+    procedure ReadFromFile(AFileName: String; AReader: TvCustomVectorialReader); overload;
+    procedure ReadFromStream(AStream: TStream; AFormat: TvVectorialFormat); overload;
+    procedure ReadFromStream(AStream: TStream; AReader: TvCustomVectorialReader); overload;
+    procedure ReadFromStrings(AStrings: TStrings; AFormat: TvVectorialFormat); overload;
+    procedure ReadFromStrings(AStrings: TStrings; AReader: TvCustomVectorialReader); overload;
+    procedure ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat); overload;
+    procedure ReadFromXML(ADoc: TXMLDocument; AReader: TvCustomVectorialReader); overload;
     class function GetFormatFromExtension(AFileName: string; ARaiseException: Boolean = True): TvVectorialFormat;
     function  GetDetailedFileFormat(): string;
     procedure GuessDocumentSize();
@@ -10317,6 +10324,13 @@ begin
   WriteToFile(AFileName, lFormat);
 end;
 
+procedure TvVectorialDocument.WriteToFile(AFilename: String;
+  AWriter: TvCustomVectorialWriter);
+begin
+  if AWriter <> nil then
+    AWriter.WriteToFile(AFileName, Self);
+end;
+
 {@@
   Writes the document to a stream
 }
@@ -10332,6 +10346,13 @@ begin
   end;
 end;
 
+procedure TvVectorialDocument.WriteToStream(AStream: TStream;
+  AWriter: TvCustomVectorialWriter);
+begin
+  if AWriter <> nil then
+    AWriter.WriteToStream(AStream, self);
+end;
+
 procedure TvVectorialDocument.WriteToStrings(AStrings: TStrings;
   AFormat: TvVectorialFormat);
 var
@@ -10343,6 +10364,13 @@ begin
   finally
     AWriter.Free;
   end;
+end;
+
+procedure TvVectorialDocument.WriteToStrings(AStrings: TStrings;
+  AWriter: TvCustomVectorialWriter);
+begin
+  if AWriter <> nil then
+    AWriter.WriteToStrings(AStrings, Self);
 end;
 
 {@@
@@ -10378,6 +10406,19 @@ begin
 end;
 
 {@@
+  Reads the document from a file. A variant that allow to use to an unregistered, custom reader.
+}
+procedure TvVectorialDocument.ReadFromFile(AFileName: String;
+  AReader: TvCustomVectorialReader);
+begin
+  if AReader <> nil then
+  begin
+    Self.Clear;
+    AReader.ReadFromFile(AFileName, Self);
+  end;
+end;
+
+{@@
   Reads the document from a stream.
 
   Any current contents in this object will be removed.
@@ -10398,6 +10439,16 @@ begin
   end;
 end;
 
+procedure TvVectorialDocument.ReadFromStream(AStream: TStream;
+  AReader: TvCustomVectorialReader);
+begin
+  if AReader <> nil then
+  begin
+    Self.Clear;
+    AReader.ReadFromStream(AStream, Self);
+  end;
+end;
+
 procedure TvVectorialDocument.ReadFromStrings(AStrings: TStrings;
   AFormat: TvVectorialFormat);
 var
@@ -10414,6 +10465,16 @@ begin
   end;
 end;
 
+procedure TvVectorialDocument.ReadFromStrings(AStrings: TStrings;
+  AReader: TvCustomVectorialReader);
+begin
+  if AReader <> nil then
+  begin
+    Self.Clear;
+    AReader.ReadFromStrings(AStrings, Self);
+  end;
+end;
+
 procedure TvVectorialDocument.ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat);
 var
   AReader: TvCustomVectorialReader;
@@ -10425,6 +10486,15 @@ begin
     AReader.ReadFromXML(ADoc, Self);
   finally
     AReader.Free;
+  end;
+end;
+
+procedure TvVectorialDocument.ReadFromXML(ADoc: TXMLDocument; AReader: TvCustomVectorialReader);
+begin
+  if AReader <> nil then
+  begin
+    Self.Clear;
+    AReader.ReadFromXML(ADoc, Self);
   end;
 end;
 
