@@ -5306,7 +5306,7 @@ procedure LoadBitmapFromResource(ABitmap: TBitmap; AResName: String);
 var
   bm: TCustomBitmap;
 begin
-  bm := CreateBitmapFromResourceName(0, BuildResourceName(AResName));
+  bm := CreateBitmapFromResourceName(HINSTANCE, BuildResourceName(AResName));
   try
     bm.Transparent := true;
     ABitmap.Assign(bm);
@@ -5331,7 +5331,7 @@ begin
   Result.RegisterResolutions([16, 24, 32]);
   Result.Scaled := true;
   resname := BuildResourceName(CheckImagesStrings[CheckKind]);
-  bm := CreateBitmapFromResourceName(0, resname);
+  bm := CreateBitmapFromResourceName(HINSTANCE, resname);
   try
     bm.Transparent := true;
     Result.AddSliced(bm, 25, 1);
@@ -25363,7 +25363,7 @@ begin
   else
     ImageName := 'LAZ_VT_MOVENS_BMP';
 
-  bm := CreateBitmapFromResourceName(0, BuildResourceName(ImageName));  // is png!
+  bm := CreateBitmapFromResourceName(HINSTANCE, BuildResourceName(ImageName));  // is png!
   try
     FPanningWindow.Image.SetSize(bm.Width, bm.Height);
     FPanningWindow.Image.Canvas.Brush.Color := TRANSPARENT_COLOR;
