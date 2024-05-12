@@ -50,8 +50,6 @@ type
       APage: TvVectorialPage; AEllipse: TvEllipse);
     procedure WriteEntities(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage);
-    procedure WriteEntity(AStrings: TStrings; ADoc: TvVectorialDocument;
-      APage: TvVectorialPage; AEntity: TvEntity);
     procedure WriteLayer(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; ALayer: Tvlayer);
     procedure WriteParagraph(AStrings: TStrings; ADoc: TvVectorialDocument;
@@ -71,6 +69,10 @@ type
     procedure WriteCircle(circle: TvCircle; AStrings: TStrings; AData: TvVectorialPage);
     procedure WriteEntities(AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     }
+  protected
+    procedure WriteEntity(AStrings: TStrings; ADoc: TvVectorialDocument;
+      APage: TvVectorialPage; AEntity: TvEntity); virtual;
+
   public
     { General reading methods }
     procedure WriteToStrings(AStrings: TStrings; AData: TvVectorialDocument); override;
