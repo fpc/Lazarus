@@ -15,14 +15,14 @@ unit svgvectorialwriter;
 interface
 
 uses
-  Classes, SysUtils, math, fpvectorial, fpvutils, fpimage, fpcanvas;
+  Classes, SysUtils, Math, fpvectorial, fpvutils, fpimage, fpcanvas;
 
 type
   { TvSVGVectorialWriter }
 
   TvSVGVectorialWriter = class(TvCustomVectorialWriter)
   private
-    FPointSeparator, FCommaSeparator: TFormatSettings;
+    FPointSeparator: TFormatSettings;
     FLayerIndex: Integer;
     FPathIndex: Integer;
     FGradientIndex: Integer;
@@ -62,13 +62,7 @@ type
       APage: TvVectorialPage; ARectangle: TvRectangle);
     procedure WriteText(AStrings: TStrings; {%H-}ADoc: TvVectorialDocument;
       APage: TvVectorialPage; AText: TvText);
-    {
-    procedure WriteLayer(layer: TvLayer; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure WritePath(AIndex: Integer; APath: TPath; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure WriteText(AStrings: TStrings; lText: TvText; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure WriteCircle(circle: TvCircle; AStrings: TStrings; AData: TvVectorialPage);
-    procedure WriteEntities(AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    }
+
   protected
     procedure WriteEntity(AStrings: TStrings; ADoc: TvVectorialDocument;
       APage: TvVectorialPage; AEntity: TvEntity); virtual;
@@ -668,43 +662,52 @@ begin
     FontName := AText.Font.Name;
   FontSize:= AText.Font.Size * FLOAT_PIXELS_PER_MILLIMETER;
 
-  AStrings.Add('  <text ');
+  AStrings.Add(
+      '  <text ');
   // Discussion about this offset in bugs 22091 and 26817
   {$IFDEF FPVECTORIAL_SVGWRITER_TEXT_OFFSET}
-  AStrings.Add('    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
-  AStrings.Add('    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
+  AStrings.Add(
+      '    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
+  AStrings.Add(
+      '    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
   {$ELSE}
-  AStrings.Add('    x="' + FloatToSVGStr(PtX) + '"');
-  AStrings.Add('    y="' + FloatToSVGStr(PtY) + '"');
+  AStrings.Add(
+      '    x="' + FloatToSVGStr(PtX) + '"');
+  AStrings.Add(
+      '    y="' + FloatToSVGStr(PtY) + '"');
   {$ENDIF}
 
-  if AText.TextAnchor <> vtaStart then AStrings.Add(
-        Format('    text-anchor="%s"', [TEXT_ANCHORS[AText.TextAnchor]]));
+  if AText.TextAnchor <> vtaStart then
+    AStrings.Add(Format(
+      '    text-anchor="%s"', [TEXT_ANCHORS[AText.TextAnchor]]));
 
   if AText.Font.Bold then
-  AStrings.Add('    font-weight="bold"');
+    AStrings.Add(
+      '    font-weight="bold"');
 
   if AText.Font.Italic then
-  AStrings.Add('    font-style="oblique"');
+    AStrings.Add(
+      '    font-style="oblique"');
 
   if AText.Font.Underline or AText.Font.Strikethrough then
-    AStrings.Add(
-        Format('    text-decoration="%s"', [TEXT_DECO[ord(AText.Font.UnderLine)+2*ord(AText.Font.StrikeThrough)]]));
+    AStrings.Add(Format(
+      '    text-decoration="%s"', [TEXT_DECO[ord(AText.Font.UnderLine)+2*ord(AText.Font.StrikeThrough)]]));
 
   if AText.Font.Orientation <> 0 then
-    AStrings.Add(
-        Format('    transform="rotate(%g,%g,%g)"', [-AText.Font.Orientation, PtX, PtY], FPointSeparator));
+    AStrings.Add(Format(
+      '    transform="rotate(%g,%g,%g)"', [-AText.Font.Orientation, PtX, PtY], FPointSeparator));
+
+  AStrings.Add(Format(
+      '    font-family="%s"', [FontName]));
+
+  AStrings.Add(Format(
+      '    font-size="%f"', [FontSize], FPointSeparator));
+
+  AStrings.Add(Format(
+      '    fill="#%s"', [FPColorToRGBHexString(AText.Font.Color)]));
 
   AStrings.Add(
-        Format('    font-family="%s"', [FontName]));
-
-  AStrings.Add(
-        Format('    font-size="%f"', [FontSize], FPointSeparator));
-
-  AStrings.Add(
-        Format('    fill="#%s"', [FPColorToRGBHexString(AText.Font.Color)]));
-
-  AStrings.Add('  >' + TextStr + '</text>');
+      '  >' + TextStr + '</text>');
 end;
 
 procedure TvSVGVectorialWriter.WriteToStrings(AStrings: TStrings;
@@ -716,9 +719,6 @@ begin
   FPointSeparator := DefaultFormatSettings;
   FPointSeparator.DecimalSeparator := '.';
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
-  FCommaSeparator := DefaultFormatSettings;
-  FCommaSeparator.DecimalSeparator := ',';
-  FCommaSeparator.ThousandSeparator := '#';// disable the thousand separator
 
   // Headers
   AStrings.Add('<?xml version="1.0" encoding="UTF-8" standalone="no"?>');
