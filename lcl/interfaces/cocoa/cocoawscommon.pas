@@ -1190,6 +1190,7 @@ begin
       // mouse is over auxillary area that's "blind" to mouse moves
       // even though the mouse cursos is within the control bounds.
       // (i.e. scrollbars)
+      CursorHelper.ForceSetDefaultCursor;
       Result := false;
       Exit;
     end;
