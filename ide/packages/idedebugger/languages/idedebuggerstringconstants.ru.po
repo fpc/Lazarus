@@ -145,7 +145,7 @@ msgstr "Вещественный"
 
 #: idedebuggerstringconstants.dispformatdlgbtnindent
 msgid "Multiline"
-msgstr ""
+msgstr "Многострочный"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnum2visible
 msgid "Show value in a second format"
@@ -271,11 +271,11 @@ msgstr "Структуры (адрес)"
 
 #: idedebuggerstringconstants.dispformatindentmaxwrap
 msgid "Max multiline level"
-msgstr ""
+msgstr "Максимальный уровень многострочного"
 
 #: idedebuggerstringconstants.dispformatnoleadzero
 msgid "Hide leading zeros"
-msgstr ""
+msgstr "Скрывать начальные нули"
 
 #: idedebuggerstringconstants.dispformatnumdigits
 msgid "Digits"
@@ -1710,7 +1710,7 @@ msgstr "Наблюдения"
 
 #: idedebuggerstringconstants.liswordwrapbtnhint
 msgid "Word wrap"
-msgstr ""
+msgstr "Перенос слов"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"
