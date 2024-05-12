@@ -27,6 +27,11 @@ type
 // Use when target information not yet loaded - assumes that debug target is the same as host
 function hostDescriptor: TTargetDescriptor;
 
+function dbgs(AMachineType: TMachineType): String; overload;
+function dbgs(ABitness: TBitness): String; overload;
+function dbgs(AByteOrder: TByteOrder): String; overload;
+function dbgs(AOperatingSystem: TOperatingSystem): String; overload;
+
 {$IFDEF FPDEBUG_THREAD_CHECK}
 procedure AssertFpDebugThreadId(const AName: String);
 procedure AssertFpDebugThreadIdNotMain(const AName: String);
@@ -64,6 +69,26 @@ begin
                    {$elseif defined(UNIX)} osUnix
                    {$elseif defined(MSWINDOWS)} osWindows {$endif};
   end;
+end;
+
+function dbgs(AMachineType: TMachineType): String;
+begin
+  writestr(Result{%H-}, AMachineType);
+end;
+
+function dbgs(ABitness: TBitness): String;
+begin
+  writestr(Result{%H-}, ABitness);
+end;
+
+function dbgs(AByteOrder: TByteOrder): String;
+begin
+  writestr(Result{%H-}, AByteOrder);
+end;
+
+function dbgs(AOperatingSystem: TOperatingSystem): String;
+begin
+  writestr(Result{%H-}, AOperatingSystem);
 end;
 
 {$IFDEF FPDEBUG_THREAD_CHECK}

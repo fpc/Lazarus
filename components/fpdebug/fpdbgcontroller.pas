@@ -2027,10 +2027,10 @@ begin
 
         DebugLn(DBG_WARNINGS and (not Assigned(FCurrentProcess.DbgInfo) or not(FCurrentProcess.DbgInfo.HasInfo)),
           ['TDbgController.SendEvents called - deCreateProcess - No debug info. [CurrentProcess=',dbgsname(FCurrentProcess),',DbgInfo=',dbgsname(FCurrentProcess.DbgInfo),']']);
-        DebugLn(DBG_VERBOSE, Format('  Target.MachineType = %d', [FCurrentProcess.DbgInfo.TargetInfo.machineType]));
-        DebugLn(DBG_VERBOSE, Format('  Target.Bitness     = %d', [FCurrentProcess.DbgInfo.TargetInfo.bitness]));
-        DebugLn(DBG_VERBOSE, Format('  Target.byteOrder   = %d', [FCurrentProcess.DbgInfo.TargetInfo.byteOrder]));
-        DebugLn(DBG_VERBOSE, Format('  Target.OS          = %d', [FCurrentProcess.DbgInfo.TargetInfo.OS]));
+        DebugLn(DBG_VERBOSE, '  Target.MachineType = ', dbgs(FCurrentProcess.DbgInfo.TargetInfo.machineType));
+        DebugLn(DBG_VERBOSE, '  Target.Bitness     = ', dbgs(FCurrentProcess.DbgInfo.TargetInfo.bitness));
+        DebugLn(DBG_VERBOSE, '  Target.byteOrder   = ', dbgs(FCurrentProcess.DbgInfo.TargetInfo.byteOrder));
+        DebugLn(DBG_VERBOSE, '  Target.OS          = ', dbgs(FCurrentProcess.DbgInfo.TargetInfo.OS));
 
         DoOnDebugInfoLoaded(self);
 
