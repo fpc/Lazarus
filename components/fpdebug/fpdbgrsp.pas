@@ -381,10 +381,11 @@ begin
 
     cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
     if not (calcSum = cksum) then
-      DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval]);
+      DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval])
+    else
+      // Acknowledge all replies
+      SafeWriteByte(byte('+'));
 
-    // Check if this packet is a console output packet, which isn't acknowledged
-    // Todo: display output somewhere
     if (length(retval) > 2) and (retval[1] = 'O') and (retval[2] <> 'K') then
     begin
       outputPacket := True;
@@ -403,10 +404,13 @@ begin
     end;
   until not outputPacket;
 
-  // Acknowledge all replies
-  SafeWriteByte(byte('+'));
   result := not SockErr;
-  DebugLn(DBG_RSP, ['RSP <- ', retval]);
+  // Ignore empty output packet unless both RSP and VERBOSE logging is enabled
+  // OpenOCD sends empty output packets while target is running
+  if (retval = 'O') then
+    DebugLn(DBG_RSP and DBG_VERBOSE, ['RSP <- ', retval])
+  else
+    DebugLn(DBG_RSP, ['RSP <- ', retval])
 end;
 
 function TRspConnection.SendCmdWaitForReply(const cmd: string; out reply: string
@@ -574,7 +578,7 @@ begin
   EnterCriticalSection(fCS);
   try
     // -1 if no data could be read, e.g. socket is closed
-    // 0 if timeout.  Use timeout so that asynchronous evens such as break can also be processed
+    // 0 if timeout.  Use timeout so that asynchronous events such as break can also be processed
     i := WaitForData(500);
     if i <= 0 then
     begin
@@ -698,7 +702,8 @@ begin
       end;
     end
     else
-      DebugLn(DBG_WARNINGS, ['Unexpected WaitForSignal reply: ', msg]);
+      if msg <> 'O' then  // Ignore empty output messages from OpenOCD
+        DebugLn(DBG_WARNINGS, ['Unexpected WaitForSignal reply: ', msg]);
   end;
 end;
 
