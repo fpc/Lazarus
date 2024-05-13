@@ -143,22 +143,36 @@ const
     offset: Integer;
     inc: Integer;
   begin
+    if NOT (Sender is TWinControl) then
+      Exit;
+    if NOT winControl.HandleAllocated then
+      Exit;
+
     if NOT GetScrollInfo(winControl.Handle, barFlag, barInfo{%H-}) then
       Exit;
 
+    inc:= 1;
     if winControl is TScrollingWinControl then
     begin
       if barFlag = SB_Vert then
         barControl:= scrollControl.VertScrollBar
       else
         barControl:= scrollControl.HorzScrollBar;
-      inc:= barControl.Increment;
+      if Assigned(barControl) then
+        inc:= barControl.Increment;
     end
     else
       inc:= Mouse.WheelScrollLines;
 
     wheelDelta := TLMMouseEvent(Message).WheelDelta;
     offset:= WheelDelta * inc div 120;
+    if offset=0 then begin
+      if WheelDelta>0 then
+        offset:= 1
+      else
+        offset:= -1;
+    end;
+
     if barFlag = SB_Vert then
       offset:= -offset;
 
@@ -170,13 +184,13 @@ const
 
     FillChar(scrollMsg{%H-}, SizeOf(TLMScroll), #0);
     if barFlag = SB_Vert then
-      scrollMsg.Msg := LM_VSCROLL
+      scrollMsg.Msg:= LM_VSCROLL
     else
-      scrollMsg.Msg := LM_HSCROLL;
-    scrollMsg.Pos := pos;
-    scrollMsg.ScrollCode := SB_THUMBPOSITION;
+      scrollMsg.Msg:= LM_HSCROLL;
+    scrollMsg.Pos:= pos;
+    scrollMsg.ScrollCode:= SB_THUMBPOSITION;
     pMsg:= @scrollMsg;
-    winControl.WindowProc( pMsg^ );
+    winControl.WindowProc(pMsg^);
   end;
 
 begin
