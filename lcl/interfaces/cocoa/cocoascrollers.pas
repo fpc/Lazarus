@@ -1062,11 +1062,10 @@ end;
 
 procedure TCocoaScrollBar.scrollWheel(event: NSEvent);
 begin
-  if suppressLCLMouse then
-    inherited scrollWheel(event)
+  if Assigned(callback) then
+    callback.scrollWheel(event)
   else
-  if not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
+    Inherited;
 end;
 
 function TCocoaScrollBar.acceptsFirstResponder: LCLObjCBoolean;
