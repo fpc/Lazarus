@@ -817,7 +817,7 @@ Frees the component.
 <p>
 <var>Destroy</var> is the destructor for the component instance. Destroy 
 calls the <var>Hide</var> method for the pop-up notification form, and frees 
-the the vNotifierForm member. Destroy calls the inherited destructor prior to 
+the vNotifierForm member. Destroy calls the inherited destructor prior to 
 exiting from the method.
 </p>
 </descr>

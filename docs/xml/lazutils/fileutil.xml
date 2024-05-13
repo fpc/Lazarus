@@ -2247,7 +2247,7 @@ Constructor for the class instance.
 <p>
 <var>Create</var> is an alternate constructor for the class instance. Create 
 calls the inherited constructor, and stores the <var>TStrings</var> instance 
-in <var>AList</var> to the the internal member used in the class instance.
+in <var>AList</var> to the internal member used in the class instance.
 </p>
 <remark>
 Resources allocated to the TStrings instance must be freed by the caller. 

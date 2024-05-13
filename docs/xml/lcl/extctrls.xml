@@ -511,7 +511,7 @@ Ordinal position in the page list where the page object was stored.
 <p>
 <var>Clear</var> is an overridden method which implements the abstract 
 virtual method declared in the <var>TStrings</var> ancestor. Clear is used to 
-remove all <var>TPage</var> instances stored in the the internal page list. 
+remove all <var>TPage</var> instances stored in the internal page list. 
 It calls the <var>Delete</var> method to remove the last TPage instance in 
 the list until all items in the list have been deleted.
 </p>
@@ -8020,7 +8020,7 @@ will need to be resolved using the <var>GetDefaultColor</var> method.
 Convenience routines which obtain the color by resolving clDefault and 
 ParentColor are also provided in <var>TControl.GetColorResolvingParent</var> 
 and <var>TControl.GetRGBColorResolvingParent</var>. If UseCLDefault is not 
-defined, the the default value is clWindow. 
+defined, the default value is clWindow. 
 </p>
 <p>
 Setting an explicit value in Color causes both ParentColor and 
@@ -10662,7 +10662,7 @@ Control drawn on the band, its visibility, and position and size information.
 <p>
 <var>BandRect</var> is a <var>TRect</var> property which contains the bounds 
 for the band control. BandRect is used in methods which set the layout and 
-placement for the the band control, like <var>InitializeBand</var> and 
+placement for the band control, like <var>InitializeBand</var> and 
 <var>MoveBand</var>.
 </p>
 <p>

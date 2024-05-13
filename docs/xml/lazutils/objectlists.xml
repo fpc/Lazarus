@@ -617,7 +617,7 @@ Assign calls the <var>Clear</var> method to remove all existing item/object
 associations stored in List.
 </p>
 <p>
-Assign sets the the value in <var>Count</var> to the the length in SrcList. 
+Assign sets the value in <var>Count</var> to the length in SrcList. 
 The method iterates over the values in the TList instance, and stores the 
 TItem instances in the corresponding positions in List. The associated object 
 for all entries in List is unassigned (<b>Nil</b>).

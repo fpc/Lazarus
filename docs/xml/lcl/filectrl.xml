@@ -845,7 +845,7 @@ displayed in the combo-box.
 <p>
 Use <var>AutoComplete</var> to enable or disable case-insensitive automatic 
 text completion in the edit area for the combo-box. When set to <b>True</b>, 
-the Filter which starts the the typed value is located and selected in the 
+the Filter which starts the typed value is located and selected in the 
 control. Please note that AutoComplete works when the text area is empty, or 
 when the entire contents of the editable are are selected.
 </p>
@@ -1099,7 +1099,7 @@ name is displayed in the combo-box.
 <p>
 Use <var>AutoComplete</var> to enable or disable case-insensitive automatic 
 text completion in the edit area for the combo-box. When set to <b>True</b>, 
-the Filter which starts the the typed value is located and selected in the 
+the Filter which starts the typed value is located and selected in the 
 control. Please note that AutoComplete works when the text area is empty, or 
 the entire contents of the editable are are selected.
 </p>

@@ -1897,7 +1897,7 @@ a property value in a linked object.
 </short>
 <descr>
 <p>
-<var>TTICustomEdit</var> extends <var>TCustomEdit</var> to allow the the 
+<var>TTICustomEdit</var> extends <var>TCustomEdit</var> to allow the 
 RTTI-enabled edit control to read and write its value from an associated edit 
 control.
 </p>

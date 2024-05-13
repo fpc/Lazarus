@@ -1477,7 +1477,7 @@ handler (when assigned) when the control receives focus.
 <var>TCustomDateTimePicker</var>. It resets the internal member used to track 
 the selected text part when dtpoResetSelection has been included in the 
 Options property. DoEnter calls the inherited method (in TWinControl) to 
-signal the the OnEnter event handler (when assigned). Invalidate is called and 
+signal the OnEnter event handler (when assigned). Invalidate is called and 
 the control is subsequently redrawn.
 </p>
 <p>
@@ -3935,7 +3935,7 @@ the value for the selected part.
 </ul>
 <p>
 Paint calls the inherited method (in TCustomControl) prior to exit to signal 
-the the OnPaint event handler (when assigned).
+the OnPaint event handler (when assigned).
 </p>
 <p>
 Paint is called from the PaintWindow method, and occurs when a LM_PAINT 

@@ -7349,7 +7349,7 @@ Indicates whether a default color applies to a font or a brush.
 <descr>
 <p>
 Values from TDefaultColorType are passed as an argument to the 
-GetdefaultColor method in TCanvas. It allows the the color clDefault to be 
+GetdefaultColor method in TCanvas. It allows the color clDefault to be 
 resolved to the correct color value in the class instance.
 </p>
 </descr>
@@ -7359,12 +7359,12 @@ resolved to the correct color value in the class instance.
 </element>
 <element name="TDefaultColorType.dctBrush">
 <short>
-Default color refers to the the Brush color.
+Default color refers to the Brush color.
 </short>
 </element>
 <element name="TDefaultColorType.dctFont">
 <short>
-Default color refers to the the Font color.
+Default color refers to the Font color.
 </short>
 </element>
 
@@ -8811,21 +8811,21 @@ were added in LCL version 2.6.1.
 </element>
 <element name="TCanvas.Arc.SX">
 <short>
-Horizontal coordinate for the the starting radial point in the arc.
+Horizontal coordinate for the starting radial point in the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.SY">
 <short>
-Vertical coordinate for the the starting radial point in the arc.
+Vertical coordinate for the starting radial point in the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.EX">
 <short>
-Horizontal coordinate for the the ending radial point in the arc.
+Horizontal coordinate for the ending radial point in the arc.
 </short>
 </element>
 <element name="TCanvas.Arc.EY">
-<short>Vertical coordinate for the the ending radial point in the arc.</short>
+<short>Vertical coordinate for the ending radial point in the arc.</short>
 </element>
 
 <element name="TCanvas.ArcTo">
@@ -10227,7 +10227,7 @@ the rectangle
 rectangle (vertically)
 </li>
 <li>
-<var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge 
+<var>TextStyle.Layout = tlBottom</var>: Text sits above the bottom edge 
 of the rectangle
 </li>
 </ul>
@@ -13016,7 +13016,7 @@ action which modifies member values in RawImage.
 <p>
 <var>ScanLine</var> is a read-only indexed <var>Pointer</var> property which 
 provides access to a scan line in the raster image. The scan line consists of 
-a single row of pixels in the the raw image data.
+a single row of pixels in the raw image data.
 </p>
 <p>
 <var>Row</var> contains the row number read from the <var>TRawImage</var> 
@@ -13836,7 +13836,7 @@ Ensures that the <var>RawImage</var> property is allocated prior to accessing
 values in the raw image data.
 </p>
 <p>
-<var>ADescOnly</var> indicates whether the image descriptor or the the 
+<var>ADescOnly</var> indicates whether the image descriptor or the 
 complete raw image data is required. When ADescOnly is <b>True</b>, only the 
 <var>TRawImageDescription</var> in the raw image is needed. When set to 
 <var>False</var>, all values in the <var>TRawImage</var> instance are 
@@ -15933,7 +15933,7 @@ Palette information is handled in the .ICO image format.
 <short>Indicates whether the image class type has a shared handle.</short>
 <descr>
 <p>
-Determines whether the the image class type can be shared. Returns 
+Determines whether the image class type can be shared. Returns 
 <b>True</b> when <var>AClass</var> is derived from <var>TSharedIcon</var>.
 </p>
 <p>

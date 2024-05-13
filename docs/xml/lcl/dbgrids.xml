@@ -1009,7 +1009,7 @@ determine if it is active. An EInvalidGridOperation exception is raised if
 the dataset is not already active.
 </p>
 <p>
-CheckActive compares the dataset in the bookmark list to the the dataset in 
+CheckActive compares the dataset in the bookmark list to the dataset in 
 the associated Grid control. If they are the same Dataset, no additional 
 processing is performed in the method. Otherwise, the Dataset for the 
 bookmark list is set to the Dataset from the associated Grid control.
@@ -2262,7 +2262,7 @@ in the column.
 </seealso>
 </element>
 <element name="TColumn.GetDefaultWidth.Result">
-<short>Effective width for the the column.</short>
+<short>Effective width for the column.</short>
 </element>
 
 <element name="TColumn.GetPickList">
@@ -5866,9 +5866,9 @@ its display width.
 <p>
 <var>IsColumnVisible</var> is a <var>Boolean</var> function which indicates 
 if the specified column number is a visible column for the grid control. 
-IsColumnVisible uses the Columns collection (when Enabled) to get  the 
+IsColumnVisible uses the Columns collection (when Enabled) to get the 
 TColumn instance at the specified position. Its Visible property is used as 
-the the return value for the method. When Columns is not used in the control, 
+the return value for the method. When Columns is not used in the control, 
 the ColWidths property is checked to ensure that the specified column number 
 has a positive non-zero width.
 </p>

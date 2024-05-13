@@ -481,7 +481,7 @@ resources.
 </element>
 
 <element name="TCommonDialog.IsTitleStored">
-<short>Implements the storage specifier for the the Title property.</short>
+<short>Implements the storage specifier for the Title property.</short>
 <descr>
 <p>
 Returns <b>True</b> when <var>Title</var> contains a value other than 
@@ -5217,7 +5217,7 @@ Implemented for native Windows Vista or later platforms.
 <element name="TTaskDialogFlag.tfSizeToContent">
 <short>
 Indicates the width for the dialog is determined by the caption, title, or 
-lines of text in the the content areas areas. The flag is ignored if the 
+lines of text in the content areas areas. The flag is ignored if the 
 dialog width is not set to 0 (zero). Implemented for native Windows Vista 
 or later platforms.
 </short>
@@ -8078,7 +8078,7 @@ Added in LCL version 4.0.
 
 <element name="TCustomTaskDialog.Expanded">
 <short>
-Indicates the expanded or collapsed state for the the ExpandedText on the task 
+Indicates the expanded or collapsed state for the ExpandedText on the task 
 dialog form.
 </short>
 <descr>

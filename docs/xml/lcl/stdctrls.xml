@@ -3540,7 +3540,7 @@ empty string (<b>''</b>) which forces the value in ItemIndex to be changed
 to <b>-1</b>.
 </p>
 <p>
-Use the Clear method in Items to remove all of the the values stored in Items 
+Use the Clear method in Items to remove all of the values stored in Items 
 but keep the current value in Text.
 </p>
 <p>
@@ -4217,7 +4217,7 @@ when a matching value could not be located in Items.
 <p>
 When AutoComplete is disabled (set to <b>False</b>), the entered value is 
 still located located and highlighted in the drop-down list for Items. 
-However, the value in Text is not expanded and the the value in ItemIndex is 
+However, the value in Text is not expanded and the value in ItemIndex is 
 not updated. The item must be selected using the drop-down list to apply the 
 value to Text and update the value in ItemIndex.
 </p>
@@ -7519,7 +7519,7 @@ AutoSelect has not been enabled. AutoSelect is enabled by default in
 AutoSelected is updated when the <b>Enter</b> (<b>^M</b>) key is handled for 
 the control, or when a left mouse up event is handled for an already focused 
 control. When AutoSelect is set to <b>True</b>, the <var>SelectAll</var> 
-method is called to select all of the the text in the control. AutoSelected 
+method is called to select all of the text in the control. AutoSelected 
 is set to <b>True</b> when <var>SelText</var> has the same value as the 
 <var>Text</var> property.
 </p>
@@ -7744,7 +7744,7 @@ in the control.
 CutToClipboard is performed when the <b>Ctrl+X</b> or <b>Shift+Delete</b> key 
 combination is handled in the control (macOS uses <b>Meta+X</b> or 
 <b>Shift+Delete</b>). Pressing <b>Shift+Delete</b> when text is not selected 
-(<var>SelLength</var> is 0) causes the the character prior to the editing 
+(<var>SelLength</var> is 0) causes the character prior to the editing 
 cursor to be deleted but not copied to the clipboard. No actions are 
 performed if the editing cursor is positioned before the first character in 
 the Text for the control.
@@ -8784,7 +8784,7 @@ parameters.
 InitializeWnd ensures that property values from widgetset class are stored in 
 the current class instance when handle for the control is created (or 
 re-created). InitializeWnd is called after the handle for the control was 
-created, but before the the handle for child controls is created.
+created, but before the handle for child controls is created.
 </p>
 <p>
 InitializeWnd ensures that string values in the widgetset class (if any) are 

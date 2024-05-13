@@ -713,7 +713,7 @@ Owner of the emulated task dialog form instance.
 </short>
 <descr>
 <p>
-Contains the the task dialog instance (TTaskDialog) which owns the form 
+Contains the task dialog instance (TTaskDialog) which owns the form 
 instance. The value for the member is passed as an argument to the 
 CreateNew constructor. Re-implements the Owner property defined in the 
 TComponent ancestor.

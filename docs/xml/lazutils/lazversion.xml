@@ -59,7 +59,7 @@ family.
 </p>
 <p>
 Patch numbers identify a release candidate or a general availability release. 
-For example: 3.0.0 RC1 has the the full version value of 3.0.0.1. RC2 has the 
+For example: 3.0.0 RC1 has the full version value of 3.0.0.1. RC2 has the 
 value 3.0.0.2, and the released product could be 3.0.0.3.
 </p>
 <p>

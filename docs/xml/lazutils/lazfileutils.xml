@@ -2255,7 +2255,7 @@ Gets the value of file attributes for the specified file name.
 attributes for the specified file name. For the Windows environment, 
 GetFileAttributesW in Windows is called to the file attribute value for 
 Filename. For UNIX-like environments, FileGetAttr in SysUtils is called to 
-the the return value.
+the return value.
 </p>
 <p>
 The return value contains a numeric value that can be OR-ed with the 

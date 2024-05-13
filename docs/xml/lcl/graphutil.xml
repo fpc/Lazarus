@@ -437,7 +437,7 @@ Draws a gradient from top to bottom with parabolic color variation.
 <short>Rectangle for the window drawn using a gradient .</short>
 </element>
 <element name="DrawGradientWindow.TitleHeight">
-<short>Height of the the title bar in the window.</short>
+<short>Height of the title bar in the window.</short>
 </element>
 <element name="DrawGradientWindow.BaseColor">
 <short>Base color for the window.</short>
