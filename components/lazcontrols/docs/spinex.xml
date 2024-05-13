@@ -2330,7 +2330,7 @@ in TCustomSpinEditEx to ensure that the incremented value is valid for the
 <var>Int64</var> data type.
 </p>
 <p>
-<var>AValue</var> contains the the numeric value to be incremented.
+<var>AValue</var> contains the numeric value to be incremented.
 </p>
 <p>
 The return value contains the Int64 value after Increment has been added. The 

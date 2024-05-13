@@ -9437,7 +9437,7 @@ TRect instance with the coordinates for the specified display region.
 
 <element name="TListItem.DisplayRectSubItem">
 <short>
-Gets the the display rectangle coordinates for a region in the specified 
+Gets the display rectangle coordinates for a region in the specified 
 sub-item on its list view control.
 </short>
 <descr>
@@ -12650,7 +12650,7 @@ control.
 <p>
 <var>TLVInsertEvent</var> is an alias for the <var>TLVDeletedEvent</var> 
 type, and uses the same arguments. TLVInsertEvent is the type used to 
-implement the the <var>OnInsert</var> event handler in 
+implement the <var>OnInsert</var> event handler in 
 <var>TCustomListView</var>.
 </p>
 </descr>
@@ -18031,7 +18031,7 @@ This feature can be used in List View and in Tab controls.
 <p>
 <var>HotTrackStyles</var> is a <var>TListHotTrackStyles</var> property which 
 contains the extended list view style options for hot tracking. It contains 
-zero or more values from the the TListHotTrackStyle enumeration. The values 
+zero or more values from the TListHotTrackStyle enumeration. The values 
 control the cursor shape or the font attributes applied to list items when 
 the mouse pointer is hovered over the items.
 </p>
@@ -20484,7 +20484,7 @@ used to display and edit the value for the Position property in the control.
 </p>
 <p>
 Changing the value for the property causes a previously assigned control to be 
-disconnected; its event handlers are unassigned and the the Associate property 
+disconnected; its event handlers are unassigned and the Associate property 
 is <b>Nil</b>'d prior to setting the new value for the property.
 </p>
 <p>
@@ -20738,7 +20738,7 @@ on the control.
 <var>Orientation</var> is a <var>TUDOrientation</var> property which indicates 
 the horizontal or vertical orientation for the buttons displayed on the 
 control. The default value for the property is udVertical, and causes the 
-speed buttons to be stacked vertically with the the button glyphs drawn in the 
+speed buttons to be stacked vertically with the button glyphs drawn in the 
 upwards and downwards directions. Use udHorizontal to orient the buttons 
 side-by-side with their glyphs pointing towards the left and right.
 </p>
@@ -21063,7 +21063,7 @@ Values from TToolButton are stored in the TToolButtonFlags set type.
 <short>The mouse cursor is hovered over the drop-down indicator.</short>
 </element>
 <element name="TToolButtonFlag.tbfDropDownMenuShown">
-<short>The the drop-down menu for the tool button is visible.</short>
+<short>The drop-down menu for the tool button is visible.</short>
 </element>
 
 <element name="TToolButtonFlags">
@@ -21647,7 +21647,7 @@ the control.
 <descr>
 <p>
 <var>Paint</var> is an overridden method in <var>TToolButton</var>, and 
-provides nested routines used to draw the the tool button using the style, 
+provides nested routines used to draw the tool button using the style, 
 caption, and image for the control. Paint requires <var>ToolBar</var> to be 
 assigned before it can render the button control using the routines in the 
 overridden method. When ToolBar is unassigned, only the inherited Paint 
@@ -27512,7 +27512,7 @@ enumeration are stored in the TNodeStates type.
 </seealso>
 </element>
 <element name="TNodeState.nsCut">
-<short>Cut has been set in the the TTreeNode.</short>
+<short>Cut has been set in the TTreeNode.</short>
 </element>
 <element name="TNodeState.nsDropHilited">
 <short>DropTarget has been set in the TTreeNode.</short>
@@ -28385,7 +28385,7 @@ structure displayed in a <var>TTreeView</var> control.
 <p>
 TTreeNode has properties with the content displayed for the tree node like: 
 Text, Data, ImageIndex, and OverlayIndex. It has properties which indicate 
-the the the state for the node on the tree view control like: Cut, Deleting, 
+the state for the node on the tree view control like: Cut, Deleting, 
 Expanded, Focused, IsVisible, Selected, MultiSelected, States, Visible, and 
 Enabled. It also includes properties that represent its relationship and 
 position in the hierarchical tree structure like: TreeView, Owner / 
@@ -30645,7 +30645,7 @@ contains -1 if the node does not have an assigned Parent node.
 Changing the value for the property causes the tree node to be relocated in 
 the Parent node, or the Owner for top-level nodes. An ETreeViewError exception 
 is raised if the Index for a top-level node is changed and Owner has not been 
-assigned. The MoveTo method is called to relocate the the tree node to the new 
+assigned. The MoveTo method is called to relocate the tree node to the new 
 position in the property value.
 </p>
 <p>
@@ -30807,7 +30807,7 @@ TGraphicsDrawEffect</link> for the other values allowed in the property, and
 their meanings.
 </p>
 <p>
-Changing the value for the property causes the the Update method to be called 
+Changing the value for the property causes the Update method to be called 
 to redraw the TreeView control for the node. The Changed method is called to 
 notify the TreeView control of the reason that the node was changed.
 </p>
@@ -30897,7 +30897,7 @@ property value is <b>True</b> when <var>nsSelected</var> or
 <var>nsMultiSelected</var> has been included in the <var>States</var> 
 property. nsSelected indicates that the node is assigned to the 
 <var>TCustomTreeView.Selected</var> property. nsMultiSelected indicates that 
-the node is stored in the the <var>TCustomTreeView.Selections</var> property 
+the node is stored in the <var>TCustomTreeView.Selections</var> property 
 when it has <var>MultiSelect</var> enabled.
 </p>
 <p>
@@ -37631,7 +37631,7 @@ found at the position.
 </short>
 </element>
 <element name="TCustomTreeView.GetNodeAt.X">
-<short>Horizontal coordinate for the the node or row.</short>
+<short>Horizontal coordinate for the node or row.</short>
 </element>
 <element name="TCustomTreeView.GetNodeAt.Y">
 <short>Vertical coordinate for the tree node or row.</short>

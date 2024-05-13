@@ -1093,7 +1093,7 @@ Values in AMin and AMax are not used or assigned in the overridden method.
 </p>
 <p>
 GetAutoFillColumnInfo is called when AutoFillColumns is set to <b>True</b>, 
-and the column sizes are recalculated for the the grid control.
+and the column sizes are recalculated for the grid control.
 </p>
 </descr>
 <seealso>

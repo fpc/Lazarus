@@ -1553,7 +1553,7 @@ prior to calling the inherited Compile method.
 </p>
 <p>
 Compile may raise an exception when an invalid or incomplete mask is 
-encountered. The the Compile method is called again with the same value in 
+encountered. The Compile method is called again with the same value in 
 Mask, is simply returns <b>False</b> rather than re-raise the exception.
 </p>
 <p>

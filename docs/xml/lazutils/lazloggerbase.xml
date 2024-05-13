@@ -2218,7 +2218,7 @@ line for the application.
 <!-- function Visibility: default -->
 <element name="GetParamByName">
 <short>
-The the value for the specified parameter name from the command line for the 
+The value for the specified parameter name from the command line for the 
 application.
 </short>
 <descr/>

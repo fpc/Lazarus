@@ -2794,7 +2794,7 @@ instantiated and used as the return value is actually
 <p>
 CreateDialog ensures that values for the InitialDir and FileName properties 
 in the dialog are set using the properties in the class instance. 
-<var>Directory</var> and <var>Filename</var> are used in the the dialog when 
+<var>Directory</var> and <var>Filename</var> are used in the dialog when 
 the directory exists on the local file system. Otherwise, the initial 
 directory is set to the value in <var>RootDir</var> and the file name is set 
 to the value in <var>Directory</var>.
@@ -3767,7 +3767,7 @@ property. The value in DateOrder determines the date format used for the text
 value.
 </p>
 <p>
-Loaded calls the the inherited method prior to exit to update the spacing and 
+Loaded calls the inherited method prior to exit to update the spacing and 
 color for the control.
 </p>
 </descr>

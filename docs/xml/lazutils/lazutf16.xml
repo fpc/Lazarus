@@ -146,7 +146,7 @@ specified value.
 </short>
 </element>
 <element name="UTF16Copy.CharCount">
-<short>Number of characters (code points) copied in the the routine.</short>
+<short>Number of characters (code points) copied in the routine.</short>
 </element>
 
 <element name="UTF16CharStart">

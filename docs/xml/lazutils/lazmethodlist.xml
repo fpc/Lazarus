@@ -371,7 +371,7 @@ end of the memory allocated to the Items property. ReAllocMem is used to set
 the new size for the memory allocation.
 </p>
 <p>
-Add ensures the the internal member used for the Count function is 
+Add ensures the internal member used for the Count function is 
 incremented when necessary.
 </p>
 <p>

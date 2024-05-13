@@ -7215,7 +7215,7 @@ when SPI_SETMENUANIMATION is disabled.
 
 <element name="SPI_SETMENUFADE">
 <short>
-Used to enable or disable the the menu fade animation effect on displays using 
+Used to enable or disable the menu fade animation effect on displays using 
 a color depth higher than 256. Set pvParam to TRUE to enable the menu fade 
 animation effect. Set pvParam to FALSE to enable the menu slide animation 
 effect instead. Use SPI_SETMENUANIMATION to enable or disable all animation 
@@ -7241,7 +7241,7 @@ selection fade effect.
 <element name="SPI_GETTOOLTIPANIMATION">
 <short>
 Used to determine whether ToolTip animation is enabled. pvParam returns TRUE if 
-the the animation effect is enabled. Use SPI_GETTOOLTIPFADE to control whether 
+the animation effect is enabled. Use SPI_GETTOOLTIPFADE to control whether 
 fade or slide animation effects are used for ToolTip animations.
 </short>
 </element>

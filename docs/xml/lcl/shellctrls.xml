@@ -1745,7 +1745,7 @@ logical device) used to fill the list of items in the tree view control.
 Changing the value in Root causes the Items in the control to be re-populated.
 </p>
 <p>
-No actions are performed in the method when a new value is set for the the 
+No actions are performed in the method when a new value is set for the 
 Root property while the component is being loaded using the LCL streaming 
 mechanism. The actions are performed when the Loaded method is called.
 </p>
@@ -1796,7 +1796,7 @@ path delimiter appended for a directory entry. If the path is not absolute,
 the base path name is prepended to the path value.
 </p>
 <p>
-Setting the value for the property causes the the new value to be resolved to 
+Setting the value for the property causes the new value to be resolved to 
 a fully-qualified path name when needed. A relative path is expanded into a 
 fully-qualified absolute path value resolved relative to the base path in 
 <var>Root</var>.
@@ -3430,7 +3430,7 @@ Indicates if the tree node is a directory on the local file system.
 <descr>
 <p>
 <var>IsDirectory</var> is a <var>Boolean</var> function which indicates if 
-the file system object for the the tree node is a directory on the local file 
+the file system object for the tree node is a directory on the local file 
 system. The return value is <b>True</b> when the file attributes in the 
 internal <var>TSearchRec</var> instance for the tree node includes the 
 <var>faDirectory</var> attribute.

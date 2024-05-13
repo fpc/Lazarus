@@ -4384,7 +4384,7 @@ printer canvas.
 </p>
 <p>
 But notice that in the process page is magnified. The Printer.papersize is 
-considerably bigger than the the size of the bitmap, but the copy process 
+considerably bigger than the size of the bitmap, but the copy process 
 fills the destination rectangle nicely. So, when we want to do this, we must 
 make sure that the page dimensions have the same ratio as the paper 
 dimension. You can figure out how to do it.

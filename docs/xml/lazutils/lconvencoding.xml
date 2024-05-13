@@ -1384,7 +1384,7 @@ translation array in ArrayKOI8RToUTF8.
 
 <element name="MacintoshToUTF8">
 <short>
-Converts a value encoded using the the Macintosh Code Page to UTF-8.
+Converts a value encoded using the Macintosh Code Page to UTF-8.
 </short>
 <descr>
 <p>

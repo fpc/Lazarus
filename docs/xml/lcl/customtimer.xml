@@ -443,7 +443,7 @@ calling the destructor for an executing timer class instance.
 <p>
 <var>OnStartTimer</var> is a <var>TNotifyEvent</var> property that implements 
 the event handler signalled when the timer class instance is started. Assign 
-a TNotifyEvent procedure to the the event handler to perform actions needed 
+a TNotifyEvent procedure to the event handler to perform actions needed 
 to reflect the change in the timer state. No actions are performed for the 
 event notification when OnStartTimer is unassigned (contains <b>Nil</b>).
 </p>

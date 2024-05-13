@@ -666,7 +666,7 @@ cache then creates a Glyph Bitmap.
 <p>
 If you drop a component on the form in the form editor, you don't need to add 
 code to explicitly create it. The component is automatically created together 
-with the the form, and destroyed when the form is destroyed.
+with the form, and destroyed when the form is destroyed.
 </p>
 <p>
 However, if you create the component by code, don't forget to free it when it 
@@ -3966,7 +3966,7 @@ scaling factor for the control are used to scale the image.
 </p>
 <p>
 The return value is a TRect instance with are needed to draw the glyph image 
-on the the specified canvas. Its member values are set to 0 (zero) when a 
+on the specified canvas. Its member values are set to 0 (zero) when a 
 TButtonGlyph instance has not been assigned by setting a Glyph bitmap for the 
 control.
 </p>

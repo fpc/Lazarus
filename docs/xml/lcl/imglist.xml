@@ -1584,7 +1584,7 @@ TScaledImageListResolution is used in the implementation of the
 </seealso>
 </element>
 <element name="TScaledImageListResolution.GetValid.Result">
-<short>Value for the the Valid property.</short>
+<short>Value for the Valid property.</short>
 </element>
 
 <element name="TScaledImageListResolution.Create">
@@ -4623,7 +4623,7 @@ such as:
 
 <element name="TCustomImageList.Clear">
 <short>
-Removes all images store in the the image list.
+Removes all images store in the image list.
 </short>
 <descr>
 <p>
@@ -6269,7 +6269,7 @@ densities.
 <short>Initial image width used for the derived value.</short>
 </element>
 <element name="TCustomImageList.WidthForPPI.APPI">
-<short>Display density for the the derived image width.</short>
+<short>Display density for the derived image width.</short>
 </element>
 
 <element name="TCustomImageList.SizeForPPI">
@@ -6701,7 +6701,7 @@ WidthForPPI properties (respectively).
 <p>
 <var>ShareImages</var> is a <var>Boolean</var> property that indicates if the 
 handle for an image list is shared. When ShareImages contains <b>False</b>, 
-the handle to the image list is freed when the the image list is destroyed.
+the handle to the image list is freed when the image list is destroyed.
 </p>
 <p>
 This property exists only for Delphi compatibility. ShareImages is not used 

@@ -1035,7 +1035,7 @@ from an index key field in the linked lookup dataset.
 defined as key fields in the Field for the linked dataset. When ValueIndex 
 contains a valid position for the list of fields names, the corresponding 
 field value from the lookup dataset is returned. Otherwise, the <b>Null</b> 
-value is used as the the return value for the method.
+value is used as the return value for the method.
 </p>
 <p>
 GetKeyField is called from methods in controls which use TDBLookup in their 
@@ -3245,7 +3245,7 @@ TDBLookupListBox allows selection of a value from a list of items, and stores
 the value to a field in a linked dataset. The database lookup feature allows 
 a separate dataset to be used which contains the values for the items 
 available in the control. Individual fields can be specified for both the 
-stored value and the the associated display value. Internally, it uses a 
+stored value and the associated display value. Internally, it uses a 
 TDBLookup component to enable the database lookup feature.
 </p>
 <p>
@@ -4022,7 +4022,7 @@ the control.
 <descr>
 <p>
 <var>UpdateRadioButtonStates</var> is an overridden method in 
-<var>TDBRadioGroup</var> used to update the the linked dataset for the 
+<var>TDBRadioGroup</var> used to update the linked dataset for the 
 data-aware control when the value in ItemIndex has been changed.
 </p>
 <p>
@@ -5436,7 +5436,7 @@ Implements the message to get the data link for the control.
 <seealso/>
 </element>
 <element name="TCustomDBComboBox.CMGetDataLink.Message">
-<short>Control message updated in the the method.</short>
+<short>Control message updated in the method.</short>
 </element>
 
 <element name="TCustomDBComboBox.DoEdit">

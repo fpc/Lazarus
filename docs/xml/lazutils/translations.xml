@@ -357,7 +357,7 @@ comment.
 </p>
 <p>
 The value in Comments is detected when the ReadPOText method in TPOFile is 
-called to process the the contents of a .po file, and stored when the FillItem 
+called to process the contents of a .po file, and stored when the FillItem 
 method in TPOFile is called.
 </p>
 <p>

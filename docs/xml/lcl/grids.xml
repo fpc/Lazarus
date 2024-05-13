@@ -5436,7 +5436,7 @@ TGridColumn instance. It is called from the ScaleFontsPPI method in
 TCustomGrid when Columns have been defined for the grid control.
 </p>
 <p>
-ScaleFontsPPI calls the The DoScaleFontPPI method in Grid to adjust the 
+ScaleFontsPPI calls the DoScaleFontPPI method in Grid to adjust the 
 control font using the arguments in AToPPI and AProportion.
 </p>
 <p>
@@ -11443,7 +11443,7 @@ deactivated by setting EditorMode to False.
 <p>
 The ColRowDeleted method is called when the affected data has been removed 
 from the grid control and the cached values in GCache. In a descendent class 
-(TCustomDrawGrid), the the OnColRowDeleted event handler is signalled (when 
+(TCustomDrawGrid), the OnColRowDeleted event handler is signalled (when 
 assigned).
 </p>
 <p>
@@ -12766,7 +12766,7 @@ or the column index is not valid, APriority is set to <b>1</b>.
 </p>
 <p>
 GetAutoFillColumnInfo is called when AutoFillColumns is set to <b>True</b>, 
-and the column sizes are recalculated for the the grid control.
+and the column sizes are recalculated for the grid control.
 </p>
 </descr>
 <seealso>
@@ -15858,7 +15858,7 @@ SetCursor calls the inherited method to perform the
 <short>Sets the value used in the cell Editor to the specified text.</short>
 <descr>
 <p>
-Sets the the text displayed in the <var>Editor</var> for the cell at the 
+Sets the text displayed in the <var>Editor</var> for the cell at the 
 position specified in <var>ACol</var> and <var>ARow</var> to the given value.
 </p>
 <p>
@@ -18820,7 +18820,7 @@ rectangle using the <var>FocusColor</var> property.
 </p>
 <p>
 It also controls the look of column/row resizing operations. When 
-<b>True</b>, a line shows visually the size that the the column or row will 
+<b>True</b>, a line shows visually the size that the column or row will 
 have if the user ends the operation. When <b>False</b>, the column or row 
 resizing takes effect as the user drags the mouse.
 </p>
@@ -20761,7 +20761,7 @@ not already in the array).
 </p>
 <p>
 Use SelectedRange to access the selection rectangles by the ordinal position 
-in the the internal TGridRectArray instance.
+in the internal TGridRectArray instance.
 </p>
 <p>
 Use AddSelectedRange to add a selection rectangle when RangeSelectMode is set 
@@ -21390,7 +21390,7 @@ TVirtualGrid instance created for the control.
 
 <element name="TCustomDrawGrid.DrawCell">
 <short>
-Draws the the content for the cell specified in the ACol and ARow arguments.
+Draws the content for the cell specified in the ACol and ARow arguments.
 </short>
 <descr>
 <p>
@@ -21996,7 +21996,7 @@ the new state value for the CheckBox.
 <short>Sets the value used in the cell Editor to the specified text.</short>
 <descr>
 <p>
-<var>SetEditText</var> is an overridden method used to set the the text 
+<var>SetEditText</var> is an overridden method used to set the text 
 displayed in the <var>Editor</var> for the cell specified in <var>ACol</var> 
 and <var>ARow</var>.
 </p>
@@ -23532,7 +23532,7 @@ translated into HTML-safe tags or HTML character entities.
 </remark>
 <p>
 Include goCopyWithoutTrailingLinebreak in the Options2 property to discard 
-a trailing end-of-line sequence at the end of rows in the the copied cell 
+a trailing end-of-line sequence at the end of rows in the copied cell 
 rectangle.
 </p>
 </descr>

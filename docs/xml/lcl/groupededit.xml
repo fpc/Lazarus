@@ -351,7 +351,7 @@ that they will have the correct class types.
 <element name="TCustomAbstractGroupedEdit.GetPasswordChar">
 <short>Gets the value for the PasswordChar property.</short>
 <descr>
-Read access for the the value is redirected to the PasswordChar property in 
+Read access for the value is redirected to the PasswordChar property in 
 BaseEditor.
 </descr>
 <seealso>
@@ -1450,7 +1450,7 @@ event.
 <p>
 <var>EditEditingDone</var> is a method used to signal the OnEditingDone event 
 handler (when assigned) for the grouped edit control. The method is assigned 
-to the the OnEditingDone event handler in BaseEditor in the constructor for 
+to the OnEditingDone event handler in BaseEditor in the constructor for 
 the class instance. It ensures that the grouped edit control performs the 
 OnEditingDone event as a surrogate for the BaseEditor control.
 </p>

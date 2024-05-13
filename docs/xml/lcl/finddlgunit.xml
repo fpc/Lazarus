@@ -80,7 +80,7 @@ Button used to perform the "Find More" action.
 
 <element name="TFindDialogForm.CancelButton">
 <short>
-Button used to cancel and close the the dialog form.
+Button used to cancel and close the dialog form.
 </short>
 <descr/>
 <seealso/>
