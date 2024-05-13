@@ -129,6 +129,56 @@ const
   WantTab   : array [boolean] of integer = (0, DLGC_WANTTAB);
   WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
   WantKeys  : array [boolean] of integer = (0, DLGC_WANTALLKEYS);
+
+  procedure CallMouseWheelHandler(barFlag: Integer);
+  var
+    scrollMsg: TLMScroll;
+    pMsg: PLMessage;
+    winControl: TWinControl Absolute Sender;
+    scrollControl: TScrollingWinControl Absolute Sender;
+    barControl: TControlScrollBar;
+    barInfo: TScrollInfo;
+    wheelDelta: Integer;
+    pos: Integer;
+    offset: Integer;
+    inc: Integer;
+  begin
+    if NOT GetScrollInfo(winControl.Handle, barFlag, barInfo{%H-}) then
+      Exit;
+
+    if winControl is TScrollingWinControl then
+    begin
+      if barFlag = SB_Vert then
+        barControl:= scrollControl.VertScrollBar
+      else
+        barControl:= scrollControl.HorzScrollBar;
+      inc:= barControl.Increment;
+    end
+    else
+      inc:= Mouse.WheelScrollLines;
+
+    wheelDelta := TLMMouseEvent(Message).WheelDelta;
+    offset:= WheelDelta * inc div 120;
+    if barFlag = SB_Vert then
+      offset:= -offset;
+
+    pos:= barInfo.nPos + offset;
+    if pos > barInfo.nMax then
+      pos:= barInfo.nMax;
+    if pos < barInfo.nMin then
+      pos:= barInfo.nMin;
+
+    FillChar(scrollMsg{%H-}, SizeOf(TLMScroll), #0);
+    if barFlag = SB_Vert then
+      scrollMsg.Msg := LM_VSCROLL
+    else
+      scrollMsg.Msg := LM_HSCROLL;
+    scrollMsg.Pos := pos;
+    scrollMsg.ScrollCode := SB_THUMBPOSITION;
+    pMsg:= @scrollMsg;
+    winControl.WindowProc( pMsg^ );
+  end;
+
 begin
   case TLMessage(Message).Msg of
     LM_GETDLGCODE: begin
@@ -146,8 +196,11 @@ begin
         ks := ks or rt; // Return is handled by LCL as part of ALLKey
         TLMessage(Message).Result := TLMessage(Message).Result or WantTab[tb] or WantArrow[ar] or WantKeys[ks];
       end;
-
     end;
+    LM_MOUSEWHEEL:
+      CallMouseWheelHandler(SB_Vert);
+    LM_MOUSEHWHEEL:
+      CallMouseWheelHandler(SB_Horz);
   else
     TLMessage(Message).Result := 0;
   end;
