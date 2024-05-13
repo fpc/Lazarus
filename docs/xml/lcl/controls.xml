@@ -1077,8 +1077,8 @@ Uncomment when the topic exists in the RTL documentation.
 <short>Set type used to store values from the TAnchorKind enumeration.</short>
 <descr>
 <p>
-TAnchors is the the type used to implement the Anchors property in TControl 
-and descendent classes.
+TAnchors is the type used to implement the Anchors property in TControl and 
+descendent classes.
 </p>
 </descr>
 <version>
@@ -3944,8 +3944,8 @@ and <var>DragImages</var>.
 <short>Asks the Control to provide a drag cursor.</short>
 <descr>
 <p>
-Called when a TDragPerformer repositions the the mouse pointer during an 
-active drag operation.
+Called when a TDragPerformer repositions the mouse pointer during an active 
+drag operation.
 </p>
 </descr>
 <seealso>
@@ -5287,10 +5287,36 @@ TSizeConstraints.
 
 <element name="TSizeConstraints">
 <short>
-Holds maximum and minimum values that can be used in sizing objects.
+Holds minimum and maximum values for the width or height of a control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TSizeConstraints</var> is a <var>TPersistent</var> descendant which 
+contains size constraints used to control the minimum or maximum width or 
+height for an associated control. TSizeConstraints is the type used to 
+implement the Constraints property in TControl and descendent classes.
+</p>
+<p>
+The initial values for properties are retrieved from the widgetset class 
+instance for the Control when its handle has been allocated. Values in 
+TSizeConstraints properties are used when the Control is resized or its layout 
+is adjusted, and prevent the control from being resized to Width or Height 
+values that are in excess of the specified minimum or maximum values. If 
+properties are modified in TSizeConstraints, the associated control is updated 
+to apply the new size constraints (when needed).
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.EffectiveMaxHeight"/>
+<link id="TSizeConstraints.EffectiveMaxWidth"/>
+<link id="TSizeConstraints.EffectiveMinHeight"/>
+<link id="TSizeConstraints.EffectiveMinWidth"/>
+<link id="TSizeConstraints.MinMaxHeight"/>
+<link id="TSizeConstraints.MinMaxWidth"/>
+<link id="TControl.Constraints"/>
+<link id="TControl.AdjustSize"/>
+<link id="TControl.AutoAdjustLayout"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.FControl"/>
@@ -5315,20 +5341,74 @@ Holds maximum and minimum values that can be used in sizing objects.
 </element>
 
 <element name="TSizeConstraints.Change">
-<short>Signals an OnChange handler if assigned.</short>
-<descr/>
-<seealso/>
+<short>
+Adjusts the size for the associated Control, and signals the OnChange handler 
+when assigned.
+</short>
+<descr>
+<p>
+Change causes the AdjustSize method to be called in the associated Control. 
+It signals the OnChange event handler (when assigned) using the 
+TSizeConstraints instance as the Sender argument in the notification.
+</p>
+<p>
+Change is called when a new value is assigned to the MaxWidth, MinWidth, 
+MaxHeight, or MinHeight properties. It is called when AssignTo is used to store 
+property values from the class instance to another persistent object. It is 
+also called when the AutoAdjustLayout is used to scale values in MaxWidth, 
+MinWidth, MaxHeight, or MinHeight properties by a specified size factor.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Control"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TSizeConstraints.AssignTo"/>
+<link id="TSizeConstraints.AutoAdjustLayout"/>
+<link id="TControl.AdjustSize"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.AssignTo">
-<short>Copies property values to the specified persistent object.</short>
-<descr/>
+<short>
+Copies property values to the specified persistent object.
+</short>
+<descr>
+<p>
+<var>AssignTo</var> is an overridden method in <var>TSizeConstraints</var> used 
+to implement object persistence. It ensures that properties specific to 
+TSizeConstraints are stored to the persistent object in the <var>Dest</var> 
+parameter, and includes the MaxHeight, MaxWidth, MinHeight, and MinWidth 
+properties. The Change method is called to adjust the size for the associated 
+Control, and to signal the OnChange event handler when assigned.
+</p>
+<p>
+No actions are performed in the method if the properties in the class instance
+have the same values as their counterparts in the Dest argument.
+</p>
+<p>
+If Dest is not derived from TSizeConstraints, the inherited AssignTo method is 
+called.
+</p>
+</descr>
 <seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TControl.AdjustSize"/>
 <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
 </seealso>
 </element>
 <element name="TSizeConstraints.AssignTo.Dest">
-<short>Persistent object where property values are stored.</short>
+<short>
+Persistent object where property values are stored.
+</short>
 </element>
 
 <element name="TSizeConstraints.SetMaxHeight">
@@ -5376,23 +5456,73 @@ Holds maximum and minimum values that can be used in sizing objects.
 </element>
 
 <element name="TSizeConstraints.Create">
-<short>Constructor for the class instance.</short>
-<descr/>
-<seealso/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance, and calls the 
+inherited constructor on entry. Create sets the default values for properties 
+including:
+</p>
+<ul>
+<li>MaxHeight (0)</li>
+<li>MaxWidth (0)</li>
+<li>MinHeight (0)</li>
+<li>MinWidth (0)</li>
+</ul>
+<p>
+It also sets the value in the Control property to the associated control 
+specified in the AControl argument.
+</p>
+<p>
+Create calls the UpdateInterfaceConstraints method to ensure that size 
+constraints from the Control are applied to the widgetset class instance when 
+Control is a TWinControl instance and its handle has been allocated.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Control"/>
+<link id="TSizeConstraints.UpdateInterfaceConstraints"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.Create.AControl">
-<short>TControl instance where the size constraints are applied.</short>
+<short>
+TControl instance where the size constraints are implemented.
+</short>
 </element>
 
 <element name="TSizeConstraints.UpdateInterfaceConstraints">
-<short>Asks the interface for size constraints.</short>
-<descr/>
-<seealso/>
+<short>
+Applies size constraints from the specified Control to the widgetset class 
+instance.
+</short>
+<descr>
+<p>
+No actions are performed in the method if Control is not derived from 
+TWinControl, or its handle has not been allocated. UpdateInterfaceConstraints 
+is called from the Create constructor after setting default property values, 
+and assigning the associated Control for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Control"/>
+<link id="TSizeConstraints.Create"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.SetInterfaceConstraints">
 <short>
-Used by the LCL interface to set the widgetset constraints.
+Used by the LCL interface to set the widgetset constraints in the class 
+instance.
 </short>
 <descr>
 <p>
@@ -5402,75 +5532,95 @@ Should only be used by custom components, not by applications.
 <seealso/>
 </element>
 <element name="TSizeConstraints.SetInterfaceConstraints.MinW">
-<short/>
+<short>
+Minimum width provided by the widgetset class instance.
+</short>
 </element>
 <element name="TSizeConstraints.SetInterfaceConstraints.MinH">
-<short/>
+<short>
+Minimum height provided by the widgetset class instance.
+</short>
 </element>
 <element name="TSizeConstraints.SetInterfaceConstraints.MaxW">
-<short/>
+<short>
+Maximum width provided by the widgetset class instance.
+</short>
 </element>
 <element name="TSizeConstraints.SetInterfaceConstraints.MaxH">
-<short/>
+<short>
+Maximum height provided by the widgetset class instance.
+</short>
 </element>
 
 <element name="TSizeConstraints.EffectiveMinWidth">
 <short>
-Determines the minimum applicable width, given the local and interface 
+Determines the minimum applicable width given the local and interface 
 constraints.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TSizeConstraints.MinMaxWidth"/>
+<link id="TSizeConstraints.SetInterfaceConstraints"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.EffectiveMinWidth.Result">
-<short>Zero means no constraints.</short>
+<short>Zero means no size constraint is defined.</short>
 </element>
 
 <element name="TSizeConstraints.EffectiveMinHeight">
 <short>
-Determines the minimum applicable height, given the local and interface 
+Determines the minimum applicable height given the local and interface 
 constraints.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TSizeConstraints.MinMaxHeight"/>
+<link id="TSizeConstraints.SetInterfaceConstraints"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.EffectiveMinHeight.Result">
-<short>Zero means no constraints.</short>
+<short>Zero means no size constraint is defined.</short>
 </element>
 
 <element name="TSizeConstraints.EffectiveMaxWidth">
 <short>
-Determines the maximum applicable width, given the local and interface 
+Determines the maximum applicable width given the local and interface 
 constraints.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TSizeConstraints.MinMaxWidth"/>
+<link id="TSizeConstraints.SetInterfaceConstraints"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.EffectiveMaxWidth.Result">
-<short>Zero means no constraints.</short>
+<short>Zero means no size constraint is defined.</short>
 </element>
 
 <element name="TSizeConstraints.EffectiveMaxHeight">
 <short>
-Determines the maximum applicable height, given the local and interface 
+Determines the maximum applicable height given the local and interface 
 constraints.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TSizeConstraints.MinMaxHeight"/>
+<link id="TSizeConstraints.SetInterfaceConstraints"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.EffectiveMaxHeight.Result">
-<short>Zero means no constraints.</short>
+<short>Zero means no size constraint is defined.</short>
 </element>
 
 <element name="TSizeConstraints.MinMaxWidth">
 <short>
-Determines the constrained Width, and transfers it to the widget.
+Determines the constrained Width and transfers it to the widget.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TSizeConstraints.MinMaxWidth.Result">
-<short>The constrained width.</short>
+<short>The actual constrained width.</short>
 </element>
 <element name="TSizeConstraints.MinMaxWidth.Width">
 <short>The suggested width.</short>
@@ -5478,13 +5628,13 @@ Determines the constrained Width, and transfers it to the widget.
 
 <element name="TSizeConstraints.MinMaxHeight">
 <short>
-Determines the constrained Height, and transfers it to the widget.
+Determines the constrained Height and transfers it to the widget.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TSizeConstraints.MinMaxHeight.Result">
-<short>The constrained height.</short>
+<short>The actual constrained height.</short>
 </element>
 <element name="TSizeConstraints.MinMaxHeight.Height">
 <short>The suggested height.</short>
@@ -5495,8 +5645,33 @@ Determines the constrained Height, and transfers it to the widget.
 Adjusts width and height values in the class using the specified scaling 
 factors.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AutoAdjustLayout</var> ensures that assigned (non-zero) values in 
+MinHeight, MaxHeight, MinWidth, and MaxWidth are scaled by the corresponding 
+scaling factor. If any of the property values are scaled, the Change method is 
+called to notify the associated Control that it should adjust it size. The 
+OnChange event is signalled (when assigned).
+</p>
+<p>
+AutoAdjustLayout is called from the DoAutoAdjustLayout method in Control, and 
+occurs after values in BorderSpacing have been scaled. It occurs before the new 
+height and width for the Control are calculated and applied to its BaseBounds.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Control"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TControl.DoConstraintsChange"/>
+<link id="TControl.DoAutoAdjustLayout"/>
+<link id="TControl.BorderSpacing"/>
+<link id="TControl.AdjustSize"/>
+<link id="TControl.BaseBounds"/>
+</seealso>
 </element>
 <element name="TSizeConstraints.AutoAdjustLayout.AXProportion">
 <short>Scaling factor applied to width values.</short>
@@ -5530,45 +5705,218 @@ factors.
 </element>
 
 <element name="TSizeConstraints.Control">
-<short>The <var>Control</var> to which these constraints apply.</short>
-<descr/>
-<seealso/>
+<short>
+The associated Control to which these constraints apply.
+</short>
+<descr>
+<p>
+<var>Control</var> contains the value passed as an argument to the Create 
+constructor. It represents the control which is notified and updated when 
+values in the MaxHeight, MaxWidth, MinHeight, or MinWidth properties are 
+changed. Control is used in the Change method to apply the new size 
+constraints. It also allows access to properties in both the control and its 
+widget instance - like the handle and component state.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.Create"/>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TControl.Constraints"/>
+<link id="TControl.DoConstraintsChange"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.Options">
-<short>Options used to determine the size constraints.</short>
-<descr/>
-<seealso/>
+<short>
+Options used to determine the size constraints.
+</short>
+<descr>
+<p>
+<var>Options</var> is a <var>TSizeConstraintsOptions</var> property which 
+contains zero (0) or more values from the <var>TSizeConstraintsOption</var> 
+enumeration. The default value for the property is an empty set (<b>[]</b>). 
+Values in Options are <b>not</b> used in the current LCL implementation.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraintsOption"/>
+<link id="TSizeConstraintsOptions"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.OnChange">
-<short>Event handler for a change in the constraints.</short>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled when a value in the class instance has been changed.
+</short>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TNotifyEvent</var> property with the even handler 
+signalled when one of the values in MaxHeight, MaxWidth, MinHeight, or MinWidth 
+has been changed. OnChange is signalled (when assigned) from the Change method 
+using the current class instance as the Sender for the notification. OnChange 
+occurs after the modified constraints have been applied to the associated 
+Control and its size has been adjusted.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.Control"/>
+<link id="TControl.Constraints"/>
+<link id="TControl.DoConstraintsChange"/>
+<link id="TControl.AdjustSize"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.MaxHeight">
-<short>The maximum height.</short>
-<descr/>
-<seealso/>
+<short>
+The maximum height for the associated Control.
+</short>
+<descr>
+<p>
+<var>MaxHeight</var> is a <var>TConstraintSize</var> property which contains 
+the maximum height in pixels allowed for the associated Control. The default 
+value for the property is 0 (zero) and indicates that the size constraint has 
+not been assigned and is not enforced.
+</p>
+<p>
+Changing the value for the property causes assigned (non-zero) values in 
+MaxHeight and MinHeight to be normalized; the smaller of the two values becomes 
+the MinHeight, and the larger of the two values becomes the MaxHeight. The 
+Change method is called to apply the new size constraints to Control, and to 
+signal the OnChange event handler (when assigned).
+</p>
+<p>
+Use MinHeight to set minimum height for the associated Control.
+</p>
+<p>
+Use MaxWidth and MinWidth to set the constrained width for the associated 
+Control.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TSizeConstraints.Control"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.MaxWidth">
-<short>The maximum width.</short>
-<descr/>
-<seealso/>
+<short>
+The maximum width for the associated Control.
+</short>
+<descr>
+<p>
+<var>MaxWidth</var> is a <var>TConstraintSize</var> property which contains 
+the maximum width in pixels allowed for the associated Control. The default 
+value for the property is 0 (zero) and indicates that the size constraint has 
+not been assigned and is not enforced.
+</p>
+<p>
+Changing the value for the property causes assigned (non-zero) values in 
+MaxWidth and MinWidth to be normalized; the smaller of the two values becomes 
+the MinWidth, and the larger of the two values becomes the MaxWidth. The 
+Change method is called to apply the new size constraints to Control, and to 
+signal the OnChange event handler (when assigned).
+</p>
+<p>
+Use MinWidth to set minimum width for the associated Control.
+</p>
+<p>
+Use MaxHeight and MinHeight to set the constrained height for the associated 
+Control.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TSizeConstraints.Control"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.MinHeight">
-<short>The minimum height.</short>
-<descr/>
-<seealso/>
+<short>
+The minimum height for the associated Control.
+</short>
+<descr>
+<p>
+<var>MinHeight</var> is a <var>TConstraintSize</var> property which contains 
+the minimum height in pixels allowed for the associated Control. The default 
+value for the property is 0 (zero) and indicates that the size constraint has 
+not been assigned and is not enforced.
+</p>
+<p>
+Changing the value for the property causes assigned (non-zero) values in 
+MaxHeight and MinHeight to be normalized; the smaller of the two values becomes 
+the MinHeight, and the larger of the two values becomes the MaxHeight. The 
+Change method is called to apply the new size constraints to Control, and to 
+signal the OnChange event handler (when assigned).
+</p>
+<p>
+Use MaxHeight to set minimum height for the associated Control.
+</p>
+<p>
+Use MaxWidth and MinWidth to set the constrained width for the associated 
+Control.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.MinWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TSizeConstraints.Control"/>
+</seealso>
 </element>
 
 <element name="TSizeConstraints.MinWidth">
-<short>The minimum width.</short>
-<descr/>
-<seealso/>
+<short>
+The minimum width for the associated Control.
+</short>
+<descr>
+<p>
+<var>MixWidth</var> is a <var>TConstraintSize</var> property which contains 
+the minimum width in pixels allowed for the associated Control. The default 
+value for the property is 0 (zero) and indicates that the size constraint has 
+not been assigned and is not enforced.
+</p>
+<p>
+Changing the value for the property causes assigned (non-zero) values in 
+MaxWidth and MinWidth to be normalized; the smaller of the two values becomes 
+the MinWidth, and the larger of the two values becomes the MaxWidth. The 
+Change method is called to apply the new size constraints to Control, and to 
+signal the OnChange event handler (when assigned).
+</p>
+<p>
+Use MaxWidth to set maximum width for the associated Control.
+</p>
+<p>
+Use MaxHeight and MinHeight to set the constrained height for the associated 
+Control.
+</p>
+</descr>
+<seealso>
+<link id="TSizeConstraints.MaxHeight"/>
+<link id="TSizeConstraints.MinHeight"/>
+<link id="TSizeConstraints.MaxWidth"/>
+<link id="TSizeConstraints.Change"/>
+<link id="TSizeConstraints.OnChange"/>
+<link id="TSizeConstraints.Control"/>
+</seealso>
 </element>
 
 <element name="TConstrainedResizeEvent">
@@ -10422,7 +10770,7 @@ Contains the result for the Drag message.
 The Result member is polymorphic:
 </p>
 <p>
-For dmFindTarget, the result is a reference to the the target control. For 
+For dmFindTarget, the result is a reference to the target control. For 
 dmDragDropm the result is zero (0). For other drag messages, the result 
 indicates acceptance of the drop message.
 </p>
@@ -11588,7 +11936,7 @@ in the LCL translation facilities.
 </seealso>
 </element>
 <element name="TControl.SetParent.NewParent">
-<short>New value for the the Parent property.</short>
+<short>New value for the Parent property.</short>
 </element>
 
 <element name="TControl.SetParentBackground">
@@ -12086,7 +12434,7 @@ RemoveHandler can be used if the control handler type is passed as an
 argument.
 </p>
 <p>
-See EnabledChanged for the actions performed after the value in Enabled  is 
+See EnabledChanged for the actions performed after the value in Enabled is 
 updated.
 </p>
 </descr>
@@ -16279,7 +16627,7 @@ conditions are satisfied.
 </dd>
 </dl>
 <p>
-ShowHelp is called from methods in the the TApplication instance. It occurs 
+ShowHelp is called from methods in the TApplication instance. It occurs 
 when the F1 key is pressed when the control has focus, or when its 
 ShowHelpForObject method is called for a specific control instance.
 </p>
@@ -23799,7 +24147,7 @@ event like: Ctrl, Shift, Alt, or Meta.
 </p>
 <remark>
 When a key is held down, the OnKeyDown event is re-triggered. The first 
-re-triggered event occurs after approximately 500ms, and subsequent events  
+re-triggered event occurs after approximately 500ms, and subsequent events 
 cycle between 30ms and 50ms until the key is released.
 </remark>
 <p>
@@ -23984,7 +24332,7 @@ instance. Setting the property to <b>0</b> (zero) causes the handle to be
 destroyed. <b>0</b> is the unassigned handle value.
 </p>
 <p>
-ParentWindow is used in the the CreateWnd method to form an association 
+ParentWindow is used in the CreateWnd method to form an association 
 between the Handle in the widgetset class instance and the window handle 
 for a control.
 </p>
