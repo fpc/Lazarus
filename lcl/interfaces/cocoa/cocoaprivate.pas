@@ -816,21 +816,16 @@ begin
 
   if (isdrawing=0) and (faileddraw) then
   begin
-    // Similar to Carbon. Cocoa doesn't welcome changing a framerects during paint event
-    // If such thing happens, the results are pretty much inpredicatable. #32970
-    // TreeView tries to updatedScrollBars during paint event. That sometimes is causing
-    // the frame to be changed (i.e. scroll bar showed or hidden, resized the client rect)
-    // as a result, the final image is shown up-side-down.
-    //
-    // Below is an attempt to prevent graphical artifacts and to redraw
-    // the control again.
-    inherited drawRect(dirtyRect);
-
-    if Assigned(callback) then
-      callback.DrawBackground(NSGraphicsContext.currentContext, bounds, dirtyRect);
-
-    if CheckMainThread and Assigned(callback) then
-      callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+    // if the frame is changed during the Paint event,
+    // redrawing must be triggered to ensure that the
+    // correctly updated NSGraphicsContext is obtained.
+    // 1. for the new version of macOS, just set setNeedsDisplay()
+    // 2. for older versions of macOS, display() must be called by itself,
+    //    and just setting by setNeedsDisplay() will not work.
+    if NSAppKitVersionNumber >= NSAppKitVersionNumber11_0 then
+      self.lclInvalidate
+    else
+      self.display;
   end;
 end;
 
