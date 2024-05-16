@@ -815,6 +815,9 @@ begin
   Result:=inherited initWithFrame(ns);
   sc:=TCocoaScrollView(Result);
 
+  if NOT sc.isCustomRange then
+    Exit;
+
   //sc.contentView.setPostsBoundsChangedNotifications(true);
   NSNotificationCenter.defaultCenter
     .addObserver_selector_name_object(sc, ObjCSelector('scrollContentViewBoundsChanged:')
