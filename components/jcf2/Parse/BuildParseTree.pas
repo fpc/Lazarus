@@ -273,7 +273,7 @@ type
     function IdentifierNext(const peStrictness: TIdentifierStrictness): boolean;
     function ArrayConstantNext: boolean;
     function SubrangeTypeNext: boolean;
-    function TypePastAttribute: boolean;
+    function TypePastAttributes: boolean;
     procedure RecogniseGenericConstraints;
     procedure RecogniseGenericConstraint;
     procedure RecogniseHeritageList;
@@ -1145,7 +1145,7 @@ begin
 
   { In Delphi.Net, the type can be preceeded by an attribute in '[ ]' }
   lc := fcTokenList.FirstSolidToken;
-  while (lc <> nil) and ((lc.WordType in IdentifierTypes) or TypePastAttribute) do
+  while (lc <> nil) and ((lc.WordType in IdentifierTypes) or TypePastAttributes) do
   begin
     { Can be an empty nested type section
      TFoo=class
@@ -1177,8 +1177,8 @@ begin
   PopNode;
 end;
 
-// is there an attribute followed by a type name?
-function TBuildParseTree.TypePastAttribute: boolean;
+// are there attribute(s) followed by a type name?
+function TBuildParseTree.TypePastAttributes: boolean;
 var
   lc: TSourceToken;
   i: integer;
@@ -1194,35 +1194,23 @@ var
 
 begin
   i := fcTokenList.CurrentTokenIndex;
-
-  lc := fcTokenList.SourceTokens[i];
-  AdvanceToSolid;
-
-  if (lc = nil) or (lc.TokenType <> ttOpenSquareBracket) then
-  begin
-    Result := False;
-    exit;
-  end;
-
-  while (lc <> nil) and (lc.TokenType <> ttCloseSquareBracket) do
-  begin
-    inc(i);
+  repeat
     lc := fcTokenList.SourceTokens[i];
-  end;
-
-  inc(i);
-  lc := fcTokenList.SourceTokens[i];
-
-  if lc = nil then
-  begin
-    Result := False;
-    exit;
-  end;
-
-  AdvanceToSolid;
-
+    AdvanceToSolid;
+    if (lc = nil) or (lc.TokenType <> ttOpenSquareBracket) then
+      Exit(False);
+    while (lc <> nil) and (lc.TokenType <> ttCloseSquareBracket) do
+    begin
+      Inc(i);
+      lc := fcTokenList.SourceTokens[i];
+    end;
+    Inc(i);
+    lc := fcTokenList.SourceTokens[i];
+    if lc = nil then
+      Exit(False);
+    AdvanceToSolid;
+  until (lc = nil) or (lc.TokenType <> ttOpenSquareBracket);
   Result := (lc <> nil) and (lc.WordType in IdentifierTypes);
-
 end;
 
 procedure TBuildParseTree.RecogniseTypeHelper;

@@ -212,7 +212,11 @@ begin
   if (pt.TokenType = ttOpenSquareBracket) and
     pt.HasParentNode(nTypeDecl, 2) and
     (not pt.HasParentNode([nClassType, nRecordType])) then
+  begin
+    if (pt.PriorSolidTokenType = ttCloseSquareBracket) and pt.PriorSolidToken.HasParentNode(nAttribute) then
+      exit(False); // don't duplicate return if there are more than one attribute
     exit(True);
+  end;
 
 end;
 
