@@ -3551,7 +3551,8 @@ function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal; var AResultList: TDB
   NoData: Boolean; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
   AMaxSiblingDistance: integer; ACU: TDwarfCompilationUnit): Boolean;
 var
-  idx, offset, Addr1, Addr2: TDBGPtr;
+  idx: integer;
+  offset, Addr1, Addr2: TDBGPtr;
   LineOffsets: Array of Byte;
   Addresses: Array of TDBGPtr;
   o: Byte;
@@ -3563,7 +3564,7 @@ begin
   offset := ALine mod 256;
   if idx >= Length(FLineIndexList) then begin
     if AFindSibling  = fsBefore then begin
-      idx := Length(FLineIndexList);
+      idx := Length(FLineIndexList)-1;
       offset := 255;
     end
     else
@@ -3606,7 +3607,15 @@ begin
           fsBefore: begin
               if i > 0 then begin
                 dec(i);
+                CurOffs := CurOffs - o;
                 offset := 0;  // found line before
+              end
+              else begin
+                // i=0 => will trigger continue for outer loop
+                dec(idx);
+                if idx < 0 then
+                  exit;
+                offset := 255; // Must be last entry from block before (if there is a block before)
               end;
             end;
           fsNext, fsNextFunc, fsNextFuncLazy: begin
@@ -3625,7 +3634,19 @@ begin
       break;
     case AFindSibling of
       fsNone: exit;
-      else    continue;
+      fsBefore: begin
+        if i = 0 then
+          continue;
+        assert(i=l, 'TDWarfLineMap.GetAddressesForLine: i=l');
+        dec(i);
+        break;
+      end;
+      else begin
+        inc(idx);
+        if idx >= Length(FLineIndexList) then
+          exit;
+        continue;
+      end;
     end;
   until False;
 

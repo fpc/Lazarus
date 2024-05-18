@@ -63,7 +63,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="FpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -113,6 +113,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestErrorHandler"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="testlinemap.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLineMap"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
