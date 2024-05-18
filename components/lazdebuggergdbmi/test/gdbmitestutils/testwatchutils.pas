@@ -449,7 +449,7 @@ begin
       if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then
         exit;
 
-      s := TheWatchPrinter.PrintWatchValue(WV.ResultData, AWatch.DisplayFormat);
+      s := TheWatchPrinter.PrintWatchValue(WV.ResultData, AWatch.DisplayFormat, '');
       IsValid := WV.Validity = ddsValid;
       HasTpInfo := IsValid and (
         (WV.TypeInfo <> nil) or
