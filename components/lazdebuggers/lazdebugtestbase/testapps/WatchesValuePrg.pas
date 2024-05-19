@@ -1422,12 +1422,20 @@ begin
   SetLength(dotdotArrayP1b, 5);
   SetLength(dotdotArrayP2a, 6, 5);
   SetLength(dotdotArrayP2b, 6, 5);
-  for i1 := 0 to 4 do
-  for i2 := 0 to 5 do begin
+  for i1 := 0 to 4 do begin
     dotdotArrayP1a[i1] := @dotdotArray1a[i1];
     dotdotArrayP1b[i1] := @dotdotArray1b[i1];
-    dotdotArrayP2a[i1][i2] := @dotdotArray2a[i1][i2];
-    dotdotArrayP2b[i1][i2] := @dotdotArray2b[i1][i2];
+  end;
+  for i1 := 0 to 5 do
+  for i2 := 0 to 4 do begin
+    if dotdotArray2a[i1] = nil then
+      dotdotArrayP2a[i1] := nil
+    else
+      dotdotArrayP2a[i1][i2] := @dotdotArray2a[i1][i2];
+    if dotdotArray2b[i1] = nil then
+      dotdotArrayP2b[i1] := nil
+    else
+      dotdotArrayP2b[i1][i2] := @dotdotArray2b[i1][i2];
   end;
 
   dotdotArrayPPa := @dotdotArray1a;
