@@ -420,10 +420,13 @@ end;
 procedure TCocoaManualScrollHost.setFrame(newValue: NSRect);
 var
   sc: TCocoaManualScrollView;
+  scFrame: NSRect;
 begin
   inherited setFrame(newValue);
   sc:= TCocoaManualScrollView(self.documentView);
-  sc.setFrame(newValue);
+  scFrame.origin:= NSZeroPoint;
+  scFrame.size:= self.contentSize;
+  sc.setFrame( scFrame );
   updateDocSize(sc, sc.documentView, sc.horizontalScroller, sc.verticalScroller);
 end;
 
