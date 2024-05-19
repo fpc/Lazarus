@@ -4021,7 +4021,7 @@ end;
 
 procedure TFpValueDwarfArray.DoGetBounds;
 var
-  t: TFpSymbol;
+  t,t2: TFpSymbol;
   c: Integer;
   i: Integer;
 begin
@@ -4035,8 +4035,8 @@ begin
       end;
     SetLength(FBounds, c);
     for i := 0 to c -1 do begin
-      t := t.NestedSymbol[i];
-      if not t.GetValueBounds(self, FBounds[i][0], FBounds[i][1]) then
+      t2 := t.NestedSymbol[i];
+      if not t2.GetValueBounds(self, FBounds[i][0], FBounds[i][1]) then
         Include(FEvalFlags, efBoundsUnavail)
     end;
   end;
