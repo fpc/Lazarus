@@ -75,6 +75,19 @@ type
 
   end;
 
+  { TTestDebugEventLogManager }
+
+  TTestDebugEventLogManager = class(TObject, TDebuggerEventLogInterface)
+  public
+    procedure LogCustomEvent(const ACategory: TDBGEventCategory;
+                const AEventType: TDBGEventType; const AText: String);
+    procedure LogEventBreakPointHit(const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
+    procedure LogEventWatchPointTriggered(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec; const AOldWatchedVal, ANewWatchedVal: String);
+    procedure LogEventWatchPointScope(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec);
+  end;
+
   TTestDbgCompilerClass = class of TTestDbgCompiler;
 
   { TTestDbgDebugger }
@@ -95,6 +108,7 @@ type
     FTestBreakPoints: TStringList;
     FDebuggerStateCounts: array[TDBGState] of integer;
     FCurLocation: TDBGLocationRec;
+    FTestDebugEventLogManager: TTestDebugEventLogManager;
 
     function GetCpuBitTypes: TCpuBitTypes;
     function GetCurLocation: TDBGLocationRec; inline;
@@ -407,6 +421,9 @@ begin
   ADebugger.Exceptions := FExceptions;
 
   ADebugger.OnState  := @DoDebuggerState;
+
+  FTestDebugEventLogManager := TTestDebugEventLogManager.Create;
+  ADebugger.EventLogHandler  := FTestDebugEventLogManager;
 end;
 
 procedure TTestDbgDebugger.ClearDebuggerMonitors;
@@ -451,6 +468,7 @@ begin
   end;
   ClearDebuggerMonitors;
   FreeAndNil(FLazDebugger);
+  FreeAndNil(FTestDebugEventLogManager);
 end;
 
 procedure TTestDbgDebugger.ClearDbgStateCounts;
@@ -545,6 +563,32 @@ end;
 procedure TTestDbgDebugger.CleanAfterTestDone;
 begin
   //
+end;
+
+{ TTestDebugEventLogManager }
+
+procedure TTestDebugEventLogManager.LogCustomEvent(const ACategory: TDBGEventCategory;
+  const AEventType: TDBGEventType; const AText: String);
+begin
+  debugln(['{{Log-Event*Custom}}:', dbgs(ACategory), ' - ', ord(AEventType), ' - ', AText, ' {{<<<}}']);
+end;
+
+procedure TTestDebugEventLogManager.LogEventBreakPointHit(const ABreakpoint: TDBGBreakPoint;
+  const ALocation: TDBGLocationRec);
+begin
+//
+end;
+
+procedure TTestDebugEventLogManager.LogEventWatchPointTriggered(const ABreakpoint: TDBGBreakPoint;
+  const ALocation: TDBGLocationRec; const AOldWatchedVal, ANewWatchedVal: String);
+begin
+//
+end;
+
+procedure TTestDebugEventLogManager.LogEventWatchPointScope(const ABreakpoint: TDBGBreakPoint;
+  const ALocation: TDBGLocationRec);
+begin
+//
 end;
 
 procedure CreateCompilerList(ACompilerConfigsList: TBaseList;
