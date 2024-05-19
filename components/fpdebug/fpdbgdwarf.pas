@@ -6659,6 +6659,7 @@ destructor TFpSymbolDwarfDataProc.Destroy;
 begin
   if FProcTypeInfo <> nil then
     TFpSymbolDwarfTypeProc(FProcTypeInfo).FProcValue := nil;
+  FreeAndNil(FFrameBaseParser);
   FreeAndNil(FStateMachine);
   inherited Destroy;
 end;
