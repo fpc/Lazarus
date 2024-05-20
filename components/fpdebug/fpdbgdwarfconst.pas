@@ -381,6 +381,8 @@ const
   DW_OP_form_tls_address      = $9b;    // 0
   DW_OP_call_frame_cfa        = $9c;    // 0
   DW_OP_bit_piece             = $9d;    // 2
+  // --- DWARF4 ---
+  DW_OP_stack_value           = $9f;    // 0
   // ---  ---
   DW_OP_lo_user               = $e0;    //
   DW_OP_hi_user               = $ff;    //

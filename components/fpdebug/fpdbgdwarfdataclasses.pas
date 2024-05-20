@@ -2633,6 +2633,12 @@ begin
   DW_OP_call_frame_cfa        = $9c;    // 0
   DW_OP_bit_piece             = $9d;    // 2
 *)
+      // dwarf 4
+      DW_OP_stack_value: begin
+          EntryP := FStack.Peek;
+          EntryP^.MType := mlfConstantDeref;
+      end;
+
       else
         begin
           debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TDwarfLocationExpression.Evaluate UNKNOWN ', CurInstr^]);
