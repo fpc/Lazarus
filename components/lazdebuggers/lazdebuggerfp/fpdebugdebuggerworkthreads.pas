@@ -980,7 +980,8 @@ begin
           end
           else
           if (TempSymbol.Kind <> rk) and
-             not ( (TempSymbol.Kind in [skInteger, skCardinal]) and (rk in [skInteger, skCardinal]) )
+             not ( (TempSymbol.Kind in [skInteger, skCardinal]) and (rk in [skInteger, skCardinal]) ) and
+             not ( (TempSymbol.Kind in [skString, skAnsiString]) and (rk in [skString, skAnsiString]) )
           then begin
             DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Error kind mismatch for arg %d : %s <> %s', [FoundIdx, dbgs(TempSymbol.Kind), dbgs(rk)]);
             AnError := CreateError(fpErrAnyError, ['wrong type for parameter']);

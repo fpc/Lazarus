@@ -510,13 +510,21 @@ type
   private
     FValue: String;
     FValueDone: Boolean;
-    function GetStringLen: Int64;
+    FLenSize: TFpDbgValueSize;
+    FHasLenSize, FLenSizeDone: Boolean;
   protected
+    function GetLenSize(out ASize: TFpDbgValueSize): boolean;
+    function GetStringLen: Int64;
+
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
     function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
       AIgnoreBounds: Boolean = False): Boolean; override;
+    function GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString;
+      AIgnoreBounds: Boolean = False): Boolean; override;
   public
+    procedure Reset; override;
   end;
 
   { TFpValueDwarfSubroutine }
@@ -1057,6 +1065,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   protected
     //function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
     procedure KindNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
+    function DoReadLenSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean;
     function  DoReadLengthLocation(const AValueObj: TFpValueDwarf; out ALocation: TFpDbgMemLocation): Boolean;
   public
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -2089,7 +2099,9 @@ end;
 
 function TFpValueDwarf.IsValidTypeCast: Boolean;
 begin
-  Result := False;
+  // At least for array GetMember this should always be true.
+  Result := TypeCastSourceValue is TFpValueConstAddress;
+  //Result := False;
 end;
 
 function TFpValueDwarf.GetKind: TDbgSymbolKind;
@@ -4052,6 +4064,34 @@ end;
 
 { TFpValueDwarfString }
 
+function TFpValueDwarfString.GetLenSize(out ASize: TFpDbgValueSize): boolean;
+var
+  t: TFpSymbolDwarfType;
+begin
+  ASize := FLenSize;
+  Result := FHasLenSize;
+  if FLenSizeDone then
+    exit;
+
+  FLenSize := ZeroSize;
+  FHasLenSize := False;
+  FLenSizeDone := True;
+
+
+  t := TypeInfo;
+  if t <> nil then
+    t := TFpSymbolDwarfType(t.InternalTypeInfo);
+  if (t = nil) or not(t is TFpSymbolDwarfTypeString) then
+    exit;
+
+  FHasLenSize := TFpSymbolDwarfTypeString(t).DoReadLenSize(Self, FLenSize);
+  if not FHasLenSize then
+    FLenSize := SizeVal(0);
+
+  ASize  := FLenSize;
+  Result := FHasLenSize;
+end;
+
 function TFpValueDwarfString.GetStringLen: Int64;
 var
   t: TFpSymbolDwarfType;
@@ -4062,10 +4102,12 @@ begin
   Result := -1;
 
   t := TypeInfo;
+  if t <> nil then
+    t := TFpSymbolDwarfType(t.InternalTypeInfo);
   if (t = nil) or not(t is TFpSymbolDwarfTypeString) then
     exit;
 
-  HasSize := t.DoReadSize(Self, ASize);
+  HasSize := GetLenSize(ASize);
 
   if TFpSymbolDwarfTypeString(t).DoReadLengthLocation(Self, ALenLoc) then begin
     if not HasSize then
@@ -4088,12 +4130,16 @@ end;
 function TFpValueDwarfString.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [svfString];
+  if Kind = skWideString then
+    Result := Result + [svfWideString]
+  else
+    Result := Result + [svfString];
 end;
 
 function TFpValueDwarfString.GetAsString: AnsiString;
 var
   ALen: Int64;
+  WResult: WideString;
 begin
   if FValueDone then
     exit(FValue);
@@ -4111,19 +4157,38 @@ begin
   then
     ALen := MemManager.MemLimits.MaxStringLen;
 
-  SetLength(Result, ALen);
-  if not (Context.ReadMemory(DataAddress, SizeVal(ALen), @Result[1]))
-  then begin
-    SetLastError(Context.LastMemError);
-    Result := '';
+  if Kind = skWideString then begin
+    SetLength(WResult, ALen);
+    if not (Context.ReadMemory(DataAddress, SizeVal(ALen*2), @WResult[1]))
+    then begin
+      SetLastError(Context.LastMemError);
+      Result := '';
+    end
+    else
+      Result := WResult;
+  end
+  else begin
+    SetLength(Result, ALen);
+    if not (Context.ReadMemory(DataAddress, SizeVal(ALen), @Result[1]))
+    then begin
+      SetLastError(Context.LastMemError);
+      Result := '';
+    end;
   end;
+
   FValue := Result;
+end;
+
+function TFpValueDwarfString.GetAsWideString: WideString;
+begin
+  Result := GetAsString;
 end;
 
 function TFpValueDwarfString.GetSubString(AStartIndex, ALen: Int64; out
   ASubStr: AnsiString; AIgnoreBounds: Boolean): Boolean;
 var
   AFullLen: Int64;
+  WResult: WideString;
 begin
   // TODO: if FValueDone, and covers selected range, then use FValue;
   ASubStr := '';
@@ -4157,13 +4222,42 @@ begin
   then
     ALen := MemManager.MemLimits.MaxStringLen;
 
-  SetLength(ASubStr, ALen);
-  if not (Context.ReadMemory(DataAddress + AStartIndex, SizeVal(ALen), @ASubStr[1]))
-  then begin
-    SetLastError(Context.LastMemError);
-    ASubStr := '';
-    exit;
+  if Kind = skWideString then begin
+    SetLength(WResult, ALen);
+    if not (Context.ReadMemory(DataAddress + AStartIndex*2, SizeVal(ALen*2), @WResult[1]))
+    then begin
+      SetLastError(Context.LastMemError);
+      WResult := '';
+      exit;
+    end
+    else
+      ASubStr := WResult;
+  end
+  else begin
+    SetLength(ASubStr, ALen);
+    if not (Context.ReadMemory(DataAddress + AStartIndex, SizeVal(ALen), @ASubStr[1]))
+    then begin
+      SetLastError(Context.LastMemError);
+      ASubStr := '';
+      exit;
+    end;
   end;
+end;
+
+function TFpValueDwarfString.GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString;
+  AIgnoreBounds: Boolean): Boolean;
+var
+  AnsiSubStr: AnsiString;
+begin
+  Result := GetSubString(AStartIndex, ALen, AnsiSubStr, AIgnoreBounds);
+  ASubStr := AnsiSubStr;
+end;
+
+procedure TFpValueDwarfString.Reset;
+begin
+  FValueDone := False;
+  FLenSizeDone := False;
+  inherited Reset;
 end;
 
 { TDbgDwarfIdentifier }
@@ -6600,8 +6694,31 @@ end;
 { TFpSymbolDwarfTypeString }
 
 procedure TFpSymbolDwarfTypeString.KindNeeded;
+var
+  t: TFpSymbolDwarfType;
+  CharSize: TFpDbgValueSize;
 begin
-  SetKind(skString);
+  t := NestedTypeInfo;
+  if (t <> nil) and (t.Kind = skChar) and t.ReadSize(nil, CharSize) then begin
+    if CharSize.Size = 2 then
+      SetKind(skWideString)
+    else
+      SetKind(skString);
+  end
+  else
+    SetKind(skString);
+end;
+
+function TFpSymbolDwarfTypeString.DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize
+  ): Boolean;
+begin
+  Result := False;
+end;
+
+function TFpSymbolDwarfTypeString.DoReadLenSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
+begin
+  Result := inherited DoReadSize(AValueObj, ASize);
 end;
 
 function TFpSymbolDwarfTypeString.DoReadLengthLocation(
@@ -6612,8 +6729,8 @@ var
 begin
   Result := False;
   if InformationEntry.GetAttribData(DW_AT_string_length, AttrData) then begin
-    ALocation := AValueObj.Address;
-    InitLocParserData.ObjectDataAddress := AValueObj.Address;
+    ALocation := AValueObj.OrdOrAddress;
+    InitLocParserData.ObjectDataAddress := ALocation;
     InitLocParserData.ObjectDataAddrPush := False;
     Result := LocationFromAttrData(AttrData, AValueObj, ALocation, @InitLocParserData);
   end;

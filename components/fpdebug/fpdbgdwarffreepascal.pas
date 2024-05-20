@@ -237,6 +237,34 @@ type
 
   (* *** Array vs AnsiString *** *)
 
+  { TFpSymbolDwarfFreePascalTypeString }
+
+  TFpSymbolDwarfFreePascalTypeString = class(TFpSymbolDwarfTypeString)
+  protected
+    //procedure KindNeeded; override; // Could return diff for ansi / short, but will be done in TFpValue // Short has DW_AT_byte_size for size of length == 1 *)
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
+  public
+    function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
+  end;
+
+  { TFpValueDwarfFreePascalString }
+
+  TFpValueDwarfFreePascalString = class(TFpValueDwarfString) // DW_TAG_String
+  protected
+    function IsValidTypeCast: Boolean; override;
+    function GetFieldFlags: TFpValueFieldFlags; override;
+    function GetKind: TDbgSymbolKind; override;
+    //function GetAsString: AnsiString; override;
+    //function GetAsWideString: WideString; override;
+    function GetMemberCount: Integer; override;
+    procedure SetAsCardinal(AValue: QWord); override;
+    function GetAsCardinal: QWord; override;
+    //function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
+    //  AIgnoreBounds: Boolean = False): Boolean; override;
+    //function GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString;
+    //  AIgnoreBounds: Boolean = False): Boolean; override;
+  end;
+
   { TFpSymbolDwarfV3FreePascalSymbolTypeArray }
 
   TFpSymbolDwarfV3FreePascalSymbolTypeArray = class(TFpSymbolDwarfFreePascalSymbolTypeArray)
@@ -430,6 +458,7 @@ begin
     DW_TAG_structure_type,
     DW_TAG_class_type:       Result := TFpSymbolDwarfFreePascalTypeStructure;
     DW_TAG_array_type:       Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
+    DW_TAG_string_type:      Result := TFpSymbolDwarfFreePascalTypeString;
     DW_TAG_subprogram:       Result := TFpSymbolDwarfFreePascalDataProc;
     DW_TAG_formal_parameter: Result := TFpSymbolDwarfFreePascalDataParameter;
     else                     Result := inherited GetDwarfSymbolClass(ATag);
@@ -1482,6 +1511,91 @@ begin
 
   Addr:= Addr - (AddressSize * 2);
   Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
+end;
+
+{ TFpSymbolDwarfFreePascalTypeString }
+
+function TFpSymbolDwarfFreePascalTypeString.DoReadSize(const AValueObj: TFpValue; out
+  ASize: TFpDbgValueSize): Boolean;
+begin
+  Result := DoReadLenSize(nil, ASize) and (ASize  >= 4); // not shortstring
+
+  ASize := ZeroSize;
+  ASize.Size := CompilationUnit.AddressSize;
+end;
+
+function TFpSymbolDwarfFreePascalTypeString.GetTypedValueObject(ATypeCast: Boolean;
+  AnOuterType: TFpSymbolDwarfType): TFpValueDwarf;
+begin
+  if AnOuterType = nil then
+    AnOuterType := Self;
+  Result := TFpValueDwarfFreePascalString.Create(AnOuterType);
+end;
+
+{ TFpValueDwarfFreePascalString }
+
+function TFpValueDwarfFreePascalString.IsValidTypeCast: Boolean;
+var
+  f: TFpValueFieldFlags;
+begin
+  Result := inherited IsValidTypeCast;
+  if Result then
+    exit;
+  Result := HasTypeCastInfo;
+  If not Result then
+    exit;
+
+  f := TypeCastSourceValue.FieldFlags;
+  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) or
+     (svfOrdinal in f)
+  then
+    exit;
+end;
+
+function TFpValueDwarfFreePascalString.GetFieldFlags: TFpValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+
+  if Kind in [skWideString, skAnsiString] then
+    Result := Result + [svfDataAddress, svfSizeOfPointer, svfOrdinal];
+end;
+
+function TFpValueDwarfFreePascalString.GetKind: TDbgSymbolKind;
+var
+  s: TFpDbgValueSize;
+begin
+  Result := inherited GetKind;
+  if (Result = skString) and GetLenSize(s) and (s >= 4) then
+    Result := skAnsiString;
+end;
+
+function TFpValueDwarfFreePascalString.GetMemberCount: Integer;
+var
+  ALen: Int64;
+begin
+  if GetStringLen(ALen) and (ALen < MaxInt) then
+    Result := ALen
+  else
+    Result := 0;
+end;
+
+procedure TFpValueDwarfFreePascalString.SetAsCardinal(AValue: QWord);
+begin
+  if not Context.WriteUnsignedInt(Address, SizeVal(AddressSize), AValue) then begin
+    SetLastError(Context.LastMemError);
+  end;
+  Reset;
+end;
+
+function TFpValueDwarfFreePascalString.GetAsCardinal: QWord;
+var
+  d: TFpDbgMemLocation;
+begin
+  d := DataAddress;
+  if IsTargetAddr(d) then
+    Result := DataAddress.Address
+  else
+    Result := inherited GetAsCardinal;
 end;
 
 { TFpSymbolDwarfV3FreePascalSymbolTypeArray }
