@@ -5716,7 +5716,7 @@ begin
         Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus,
                [APackage.IDAsString, LineEnding, LineEnding+LineEnding]),
         mtConfirmation,[mbYes,mbNo]);
-      if Result=mrNo then begin
+      if Result<>mrYes then begin
         Result:=mrOk;
         exit;
       end;

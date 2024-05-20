@@ -368,7 +368,7 @@ begin
           if TargetPackageFile <> APackageFile then
           begin
             if FileExists(TargetPackageFile) then
-              if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf2, [TargetPackageFile]), mtInformation, [mbYes, mbNo], Self) = mrNo then
+              if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf2, [TargetPackageFile]), mtInformation, [mbYes, mbNo], Self) <> mrYes then
                 Result := True;
 
             if (not Result) and (not CopyFile(APackageFile, TargetPackageFile, [cffOverwriteFile], True)) then

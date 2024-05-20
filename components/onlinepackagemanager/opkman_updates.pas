@@ -335,8 +335,8 @@ begin
              if OpenSSLFrm.cbPermanent.Checked then
              begin
                 case OpenSSLFrm.ModalResult of
-                   mrYes: Options.OpenSSLDownloadType := 0;
-                   mrNo:  Options.OpenSSLDownloadType := 2;
+                   mrYes         : Options.OpenSSLDownloadType := 0;
+                   mrNo, mrCancel: Options.OpenSSLDownloadType := 2;
                 end
              end;
            finally

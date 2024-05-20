@@ -1762,7 +1762,7 @@ begin
             if IDEMessageDialog(lisDeleteAmbiguousFile,
               Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete,
                      [CurFilename, LineEnding, ShortFilename, LineEnding+LineEnding]),
-              mtConfirmation,[mbYes,mbNo])=mrNo
+              mtConfirmation,[mbYes,mbNo])<>mrYes
             then continue;
           end;
           if EnvironmentOptions.AmbiguousFileAction in [afaAutoDelete,afaAsk]
