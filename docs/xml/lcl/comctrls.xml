@@ -3644,16 +3644,11 @@ Performs actions to show or hide pages when the current page is changed.
 pages in the tabbed control.
 </p>
 <p>
-Change causes the TCustomPage instance in Page at the position in PageIndex to 
-become visible, and hides the previously visible page on the tabbed control. If 
-a control was focused on the previous page, the new page is focused prior to 
-hiding the previous page.
-</p>
-<p>
-At run-time, MaybeSelectFirstControlOnPage is called when the active page 
-component is visible, enabled, and has child controls. It selects the focused 
-control for the ActivePage. DoChange is called to signal the OnChange event 
-handler (when assigned).
+Change calls ShowCurrentPage to display the page in PageIndex, and hide the 
+previously visible page in the tabbed control. MaybeSelectFirstControlOnPage is 
+called to select the focused control for the ActivePage. Change calls DoChange 
+when the control is not being destroyed, or loaded in the LCL component 
+streaming mechanism.
 </p>
 <p>
 Change is called from the MoveTab method, and when selection change messages 
@@ -3666,7 +3661,6 @@ OnChange is signalled for the active page.
 </version>
 <seealso>
 <link id="TCustomTabControl.ActivePage"/>
-<link id="TCustomTabControl.Page"/>
 <link id="TCustomTabControl.PageIndex"/>
 <link id="TCustomTabControl.TabIndex"/>
 <link id="TCustomTabControl.MaybeSelectFirstControlOnPage"/>
