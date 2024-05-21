@@ -206,9 +206,15 @@ end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);
 begin
-  // make the category visible in the treeview
-  if (CategoryTree.Selected<>nil) and (CategoryTree.Selected.Parent<>nil) then
-    CategoryTree.TopItem:=CategoryTree.Selected.Parent;
+  // make sure the Selected Item is Visible,
+  // and try to set the Top Category to TopItem.
+  // 1. make the Top Category the TopItem and visible in the treeview
+  // 2. make sure the Selected Item is Visible in the treeview
+  if CategoryTree.Selected<>nil then begin
+    CategoryTree.TopItem:=CategoryTree.Selected.GetParentNodeOfAbsoluteLevel(0);
+    CategoryTree.Selected.MakeVisible;
+  end;
+
   // select first not empty category
   if (CategoryTree.Selected <> nil) and
      (CategoryTree.Selected.Data = nil) and // is group category
