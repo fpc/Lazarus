@@ -3645,10 +3645,10 @@ pages in the tabbed control.
 </p>
 <p>
 Change calls ShowCurrentPage to display the page in PageIndex, and hide the 
-previously visible page in the tabbed control. MaybeSelectFirstControlOnPage is 
-called to select the focused control for the ActivePage. Change calls DoChange 
-when the control is not being destroyed, or loaded in the LCL component 
-streaming mechanism.
+previously visible page in the tabbed control. ActivateFirstControlOnPage is 
+called to select the focused control for the ActivePage or parent form. Change 
+calls DoChange when the control is not being destroyed, or loaded in the LCL 
+component streaming mechanism.
 </p>
 <p>
 Change is called from the MoveTab method, and when selection change messages 
@@ -3661,9 +3661,9 @@ OnChange is signalled for the active page.
 </version>
 <seealso>
 <link id="TCustomTabControl.ActivePage"/>
+<link id="TCustomTabControl.ActivateFirstControlOnPage"/>
 <link id="TCustomTabControl.PageIndex"/>
 <link id="TCustomTabControl.TabIndex"/>
-<link id="TCustomTabControl.MaybeSelectFirstControlOnPage"/>
 <link id="TCustomTabControl.DoChange"/>
 <link id="TCustomTabControl.OnChange"/>
 </seealso>
@@ -4188,14 +4188,14 @@ Ordinal position for the page object removed from the page list.
 </short>
 </element>
 
-<element name="TCustomTabControl.MaybeSelectFirstControlOnPage">
+<element name="TCustomTabControl.ActivateFirstControlOnPage">
 <short>
 Updates the ActiveControl on the parent form when the specified page becomes 
 active.
 </short>
 <descr>
 <p>
-<var>MaybeSelectFirstControlOnPage</var> is a method used to ensure that the 
+<var>ActivateFirstControlOnPage</var> is a method used to ensure that the 
 active control on a form is properly updated when the page on the tab control 
 is changed. It prevents the tabbed control from stealing focus if there is an 
 enabled child control on the page specified in <var>APage</var>. It sets the 
@@ -4224,9 +4224,9 @@ APage does not have any child controls.
 </li>
 </ul>
 <p>
-MaybeSelectFirstControlOnPage is called from the Change method, and when a new 
+ActivateFirstControlOnPage is called from the Change method, and when a new 
 value is assigned to the TabIndex property. It occurs after the current Page on 
-the tab control has been made visible and given focus. It is called before the 
+the tab control has been made visible and given focus. It occurs before the 
 OnChange event handler is signalled.
 </p>
 </descr>
