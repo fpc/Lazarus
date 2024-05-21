@@ -3645,10 +3645,9 @@ pages in the tabbed control.
 </p>
 <p>
 Change calls ShowCurrentPage to display the page in PageIndex, and hide the 
-previously visible page in the tabbed control. ActivateFirstControlOnPage is 
-called to select the focused control for the ActivePage or parent form. Change 
-calls DoChange when the control is not being destroyed, or loaded in the LCL 
-component streaming mechanism.
+previously visible page in the tabbed control. Change calls DoChange when the 
+control is not being destroyed, or loaded in the LCL component streaming 
+mechanism.
 </p>
 <p>
 Change is called from the MoveTab method, and when selection change messages 
@@ -4185,70 +4184,6 @@ No actions are performed in the method if Index is not in the range
 <element name="TCustomTabControl.RemovePage.Index">
 <short>
 Ordinal position for the page object removed from the page list.
-</short>
-</element>
-
-<element name="TCustomTabControl.ActivateFirstControlOnPage">
-<short>
-Updates the ActiveControl on the parent form when the specified page becomes 
-active.
-</short>
-<descr>
-<p>
-<var>ActivateFirstControlOnPage</var> is a method used to ensure that the 
-active control on a form is properly updated when the page on the tab control 
-is changed. It prevents the tabbed control from stealing focus if there is an 
-enabled child control on the page specified in <var>APage</var>. It sets the 
-ActiveControl property on the parent form to the first child control in APage 
-(when available).
-</p>
-<p>
-No actions are performed in the method if any of the following conditions are 
-detected:
-</p>
-<ul>
-<li>
-The parent form for the tab control has not been assigned.
-</li>
-<li>
-APage has not been assigned.
-</li>
-<li>
-APage is not visible.
-</li>
-<li>
-APage is not enabled.
-</li>
-<li>
-APage does not have any child controls.
-</li>
-</ul>
-<p>
-ActivateFirstControlOnPage is called from the Change method, and when a new 
-value is assigned to the TabIndex property. It occurs after the current Page on 
-the tab control has been made visible and given focus. It occurs before the 
-OnChange event handler is signalled.
-</p>
-</descr>
-<version>
-Added in LCL version 4.0.
-</version>
-<seealso>
-<link id="TCustomTabControl.ActivePage"/>
-<link id="TCustomTabControl.ActivePageComponent"/>
-<link id="TCustomTabControl.Change"/>
-<link id="TCustomTabControl.CanChange"/>
-<link id="TCustomTabControl.OnChanging"/>
-<link id="TCustomTabControl.OnChange"/>
-<link id="TCustomTabControl.TabIndex"/>
-<link id="#lcl.forms.GetParentForm">GetParentForm</link>
-<link id="#lcl.forms.TCustomForm.ActiveControl">TCustomForm.ActiveControl</link>
-<link id="#lcl.controls.TWinControl.FindNextControl">TWinControl.FindNextControl</link>
-</seealso>
-</element>
-<element name="TCustomTabControl.ActivateFirstControlOnPage.APage">
-<short>
-Tab page with child controls examined in the method.
 </short>
 </element>
 
