@@ -5,13 +5,22 @@ unit Unit1;
 interface
 
 uses
-  FpImgReaderWinPE, Classes, SysUtils, math, FileUtil, LazLogger,
-  LazLoggerProfiling, LazSysUtils, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst,
-  FpPascalParser, FpDbgInfo, FpDbgDwarfDataClasses, FpDbgUtil, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ComCtrls, EditBtn, Menus, Clipbrd, maps, types,
-  strutils;
+  FpImgReaderWinPE, Classes, SysUtils, math, FileUtil, LazLogger, LazLoggerProfiling, LazSysUtils,
+  FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, FpPascalParser, FpDbgInfo, FpDbgDwarfDataClasses,
+  FpDbgUtil, FpdMemoryTools, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, EditBtn,
+  Menus, Clipbrd, maps, laz.VirtualTrees, types, fgl, strutils;
 
 type
+  TTreeNodeData = record
+    Text: String;
+    Data: Integer;
+    Num, Link: Integer;
+  end;
+
+  PTreeNodeData = ^TTreeNodeData;
+
+  TNameMap = specialize TFPGMap<AnsiString, AnsiString>;
+
 
   { TForm1 }
 
@@ -21,28 +30,43 @@ type
     btnShowUnit: TButton;
     btnCopyOne: TButton;
     btnLines: TButton;
+    btnUnload: TButton;
     FileNameEdit1: TFileNameEdit;
     CompUnitListBox: TListBox;
+    VStringTree: TLazVirtualStringTree;
     StatusBar1: TStatusBar;
-    TreeView1: TTreeView;
     procedure btnCopyAllClick(Sender: TObject);
     procedure btnCopyOneClick(Sender: TObject);
     procedure btnLoadClick(Sender: TObject);
     procedure btnShowUnitClick(Sender: TObject);
     procedure btnLinesClick(Sender: TObject);
+    procedure btnUnloadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
+    procedure VStringTreeDblClick(Sender: TObject);
+    procedure VStringTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure VStringTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
+    procedure VStringTreeInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
+      var InitialStates: TVirtualNodeInitStates);
+    procedure VStringTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+      Column: TColumnIndex; const NewText: String);
+    procedure VStringTreeNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private
     { private declarations }
-    NameList: TStringList;
+    NameList: TNameMap;
     FFileName: String;
     FTestCaseTexts: TStringList;
     FImageLoaderList: TDbgImageLoaderList;
+    FMemModel: TFpDbgMemModel;
     FDwarfInfo: TFpDwarfInfo;
     FCUCount : Integer;
     FShowingUnit: Boolean;
+    function GetDataPtr(n: PVirtualNode): PTreeNodeData; inline;
+    procedure GotoNode(n: PVirtualNode);
   public
+    constructor Create(TheOwner: TComponent); override;
     { public declarations }
     procedure LoadDwarf;
     procedure UnLoadDwarf;
@@ -85,12 +109,13 @@ end;
 
 procedure TForm1.btnCopyOneClick(Sender: TObject);
 var
-  n: TTreeNode;
+  n: PVirtualNode;
   i: PtrInt;
 begin
-  n := TreeView1.Selected;
+  n := VStringTree.GetFirstSelected;
   if n = nil then exit;
-  i := ptrint(n.Data)-1;
+
+  i := GetDataPtr(n)^.Data - 1;
   if i < 0 then exit;
 debugln(['TForm1.MenuItem1Click ']);
   Clipboard.AsText := FTestCaseTexts[i];
@@ -101,13 +126,13 @@ const
   B: Array [Boolean] of string = ('F', 'T');
 var
   i: Integer;
-  Node, ParentNode: TTreeNode;
+  Node, ParentNode: PVirtualNode;
   CU: TDwarfCompilationUnitHack;
   SM: TDwarfLineInfoStateMachine;
 begin
-  TreeView1.BeginUpdate;
+  VStringTree.BeginUpdate;
   try
-    TreeView1.Items.Clear;
+    VStringTree.Clear;
     i := CompUnitListBox.ItemIndex;
     if i < 0 then exit;
     CU := TDwarfCompilationUnitHack(CompUnitListBox.Items.Objects[i]);
@@ -120,10 +145,13 @@ begin
     while SM.NextLine do
     begin
 
-      Node := TreeView1.Items.AddChild(ParentNode,
+      Node := VStringTree.AddChild(ParentNode);
+      if VStringTree.IsVisible[Node] then ; // init the node
+
+      GetDataPtr(Node)^.Text :=
         Format('Line: %2d, Col: %2d, Addr: %s,  IsStmt: %s,  Basic: %s, EndSeq: %s, Prol: %s, Epil: %s, ISA: %u,  File: %s // Ended: %s',
         [SM.Line, SM.Column, IntToHex(SM.Address,16), b[SM.IsStmt], b[SM.BasicBlock],
-        b[SM.EndSequence], b[SM.PrologueEnd], b[SM.EpilogueBegin], SM.Isa, sm.FileName, b[SM.Ended] ]));
+        b[SM.EndSequence], b[SM.PrologueEnd], b[SM.EpilogueBegin], SM.Isa, sm.FileName, b[SM.Ended] ]);
 
       if ParentNode = nil then ParentNode := Node;
       if SM.EndSequence then begin
@@ -133,23 +161,28 @@ begin
     end;
 
   finally
-    TreeView1.EndUpdate;
+    VStringTree.EndUpdate;
   end;
 
+end;
+
+procedure TForm1.btnUnloadClick(Sender: TObject);
+begin
+  UnLoadDwarf;
 end;
 
 procedure TForm1.btnCopyAllClick(Sender: TObject);
 var
   nm: TStringList;
   vars: String;
-  procedure AddChildren(n: TTreeNode; var s: string; idnt: String);
+  procedure AddChildren(n: PVirtualNode; var s: string; idnt: String);
   var
     i: PtrInt;
     s2: String;
   begin
-    n := n.GetFirstChild;
+    n := VStringTree.GetFirstChildNoInit(n);
     while n <> nil do begin
-      i := ptrint(n.Data)-1;
+      i := GetDataPtr(n)^.Data-1;
       s2 := 'XXXXXXXXXXX.';
       if i >= 0 then
         s2 := FTestCaseTexts[i];
@@ -166,19 +199,19 @@ var
       end;
       AddChildren(n, s, idnt+'  ');
       nm.Delete(nm.Count-1);
-      n := n.GetNextSibling;
+      VStringTree.GetNextSiblingNoInit(n);
     end;
   end;
 var
   s: String;
-  n: TTreeNode;
   i: PtrInt;
   i2: Integer;
+  n: PVirtualNode;
 begin
   nm := TStringList.Create;
-  n := TreeView1.Selected;
+  n := VStringTree.GetFirstSelected;
   if n = nil then exit;
-  i := ptrint(n.Data)-1;
+  i := GetDataPtr(n)^.Data-1;
   if i < 0 then exit;
 debugln(['TForm1.MenuItem1Click ']);
   s := FTestCaseTexts[i] + LineEnding;
@@ -189,7 +222,7 @@ debugln(['TForm1.MenuItem1Click ']);
 
   s := 'var '+vars + LineEnding + LineEnding + LineEnding + s;
   for i2 := 0 to NameList.count - 1 do
-    s := AnsiReplaceStr(s, NameList.Names[i2], NameList.ValueFromIndex[i2]);
+    s := AnsiReplaceStr(s, NameList.Keys[i2], NameList.Data[i2]);
 
   Clipboard.AsText := s;
   nm.Free;
@@ -204,7 +237,8 @@ begin
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   ImageLoader.AddToLoaderList(FImageLoaderList);
 
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, nil);
+  FMemModel := TFpDbgMemModel.Create;
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList, nil, FMemModel);
   FCUCount := FDwarfInfo.LoadCompilationUnits;
 end;
 
@@ -484,7 +518,7 @@ var
     end;
   end;
 
-  function AddAbbrev(AParent: TTreeNode;   s: TDwarfScopeInfo; Def: TDwarfAbbrev;
+  function AddAbbrev(AParent: PVirtualNode;   s: TDwarfScopeInfo; Def: TDwarfAbbrev;
     var PascalTestCAseCode: String; namePreFix: String = ''): String;
   var
     p: Pointer;
@@ -496,7 +530,9 @@ var
     Value: qword;
     SValue: int64;
     p2: Pointer;
-    addednode: TTreeNode;
+    AddedNode: PVirtualNode;
+    lnk: Integer;
+    nptr: PTreeNodeData;
   begin
     Result := '';
     PascalTestCAseCode := '';
@@ -625,6 +661,7 @@ var
           end;
           DW_FORM_ref4     : begin
             stest := ToHexCommaList(p,4);
+            lnk := PInteger(p)^ -11;
             s4 := IntToHex(PInteger(p)^ -11, 8);;
             s3 := ToHex(p, 4) + '    // '+ s4;
             PascalTestCAseCode := PascalTestCAseCode +
@@ -688,31 +725,37 @@ var
         s3 := s3 + ' // ' +stest;
       end;
 
-      addednode := TreeView1.Items.AddChild(AParent, Format('  --  Attr: %20s(%4x) Form: %18s(%4x) >> %s', [s1, Attribute, s2, Form, s3]));
-
+      AddedNode := VStringTree.AddChild(AParent);
+      if VStringTree.IsVisible[AddedNode] then ; // init the node
+      nptr := GetDataPtr(AddedNode);
+      VStringTree.Text[AddedNode, 0]  := Format('  --  Attr: %20s(%4x) Form: %18s(%4x) >> %s', [s1, Attribute, s2, Form, s3]);
+      nptr^.Link := lnk;
     end;
   end;
 
-  function AddNode(AParent, Asibling: TTreeNode;   s: TDwarfScopeInfo): TTreeNode;
+  function AddNode(AParent, Asibling: PVirtualNode;   s: TDwarfScopeInfo): PVirtualNode;
   var
     p: Pointer;
     Abbrev: QWord;
-    Node: TTreeNode;
+    Node: PVirtualNode;
     s2: TDwarfScopeInfo;
-    n: TTreeNode;
+    n: PVirtualNode;
     i: Integer;
     Def: TDwarfAbbrev;
     entryname: String;
     TestCaseText: String;
     NMLIdx: Integer;
-    pre, sName: String;
+    pre, sName, t: String;
+    nptr: PTreeNodeData;
   begin
      Result := nil;
      p := s.Entry;
      Abbrev := ULEB128toOrdinal(p);
      p := s.Entry;
      CU.GetDefinition(p, Def);
-     Node := TreeView1.Items.AddChild(AParent, Format('Abr: %d Tag: %d %s ', [Abbrev, Def.tag, DwarfTagToString(Def.tag)]));
+     Node := VStringTree.AddChild(AParent);
+     if VStringTree.IsVisible[Node] then ; // init the node
+     GetDataPtr(Node)^.Text := Format('Abr: %d Tag: %d %s ', [Abbrev, Def.tag, DwarfTagToString(Def.tag)]);
 
      sName := 'Info__'+IntToStr(s.Entry - BaseScopeAddr + 11)+'_.';
      entryname := AddAbbrev(Node, s, Def, TestCaseText, sName);
@@ -738,7 +781,7 @@ var
      pre := AnsiReplaceStr(pre, '  ', '_');
      pre := AnsiReplaceStr(pre, ' ', '_');
 
-     NameList.Values['Info__'+IntToStr(s.Entry - BaseScopeAddr + 11)+'_']
+     NameList['Info__'+IntToStr(s.Entry - BaseScopeAddr + 11)+'_']
        := pre+'_'+IntToStr(FTestCaseTexts.Count);
      i := 0;
      if s.HasChild then i := 1;
@@ -747,7 +790,7 @@ var
                      [sName, DwarfTagToString(Def.tag), LineEnding])
               + Format('%sChildren := %d;%s', [sName, i, LineEnding])
               + TestCaseText;
-     node.Data := pointer(ptruint(FTestCaseTexts.Add(TestCaseText)+1));
+     GetDataPtr(node)^.Data := FTestCaseTexts.Add(TestCaseText)+1;
 
      i := 0;
      if s.HasChild then begin
@@ -757,7 +800,7 @@ var
          n := AddNode(Node,n,s2);
          s2.GoNext;
          inc(i);
-         if (i and 31) = 0 then begin
+         if (i and 255) = 0 then begin
            StatusBar1.SimpleText := IntToHex(s2.Index,8) + ' / '+ IntToHex(s2.ScopeListPtr^.HighestKnown,8)+' // '+format('%2.1f',[s2.Index*100/s2.ScopeListPtr^.HighestKnown]);
            Application.ProcessMessages;
            if not FShowingUnit then break;
@@ -765,19 +808,22 @@ var
        end;
      end;
 
-     Node.Text := Format('At %4x  Abr: %d  Tag: %d %s  ChildCnt: %d   %s', [s.Entry-BaseScopeAddr, Abbrev, Def.tag, DwarfTagToString(Def.tag), i, entryname]);
+     t := Format('At %4x  Abr: %d  Tag: %d %s  ChildCnt: %d   %s', [s.Entry-BaseScopeAddr, Abbrev, Def.tag, DwarfTagToString(Def.tag), i, entryname]);
+     nptr := GetDataPtr(Node);
+     nptr^.Text := t;
+     nptr^.Num:= s.Entry-BaseScopeAddr;
   end;
 
 var
   i: Integer;
   s: TDwarfScopeInfo;
-  Node: TTreeNode;
+  Node: PVirtualNode;
 begin
   FShowingUnit := not FShowingUnit;//////////////////
   if not FShowingUnit then exit;/////////////////
-  TreeView1.BeginUpdate;
+  VStringTree.BeginUpdate;
   try
-    TreeView1.Items.Clear;
+    VStringTree.Clear;
     i := CompUnitListBox.ItemIndex;
     if i < 0 then exit;
     CU := TDwarfCompilationUnitHack(CompUnitListBox.Items.Objects[i]);
@@ -791,7 +837,7 @@ begin
       s.GoNext;
     end;
   finally
-    TreeView1.EndUpdate;
+    VStringTree.EndUpdate;
     FShowingUnit := False; ////////////////////
   end;
 end;
@@ -800,7 +846,9 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   FTestCaseTexts:= TStringList.Create;
-  NameList:= TStringList.Create;
+  FTestCaseTexts.Capacity := 5000;
+  NameList:= TNameMap.Create;
+  NameList.Capacity := 5000;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -816,10 +864,76 @@ begin
     FileNameEdit1.Text := FileNames[0];
 end;
 
+procedure TForm1.VStringTreeDblClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.VStringTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+begin
+  PTreeNodeData(VStringTree.GetNodeData(Node))^.Text := '';
+end;
+
+procedure TForm1.VStringTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
+var
+  nd: PTreeNodeData;
+begin
+  nd := PTreeNodeData(VStringTree.GetNodeData(Node));
+  CellText := nd^.Text;
+end;
+
+procedure TForm1.VStringTreeInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
+  var InitialStates: TVirtualNodeInitStates);
+begin
+  Pointer(PTreeNodeData(VStringTree.GetNodeData(Node))^.Text) := nil;
+end;
+
+procedure TForm1.VStringTreeNewText(Sender: TBaseVirtualTree; Node: PVirtualNode;
+  Column: TColumnIndex; const NewText: String);
+begin
+  PTreeNodeData(VStringTree.GetNodeData(Node))^.Text := NewText;
+end;
+
+procedure TForm1.VStringTreeNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+var
+  n: PVirtualNode;
+  nptr, nptr2: PTreeNodeData;
+begin
+  if HitInfo.HitNode = nil then exit;
+  nptr := GetDataPtr(HitInfo.HitNode);
+  if nptr^.Link = 0 then exit;
+
+  for n in VStringTree.Nodes do begin
+    nptr2 := GetDataPtr(n);
+    if nptr2^.Num = nptr^.Link then begin
+      GotoNode(n);
+      exit;
+    end;
+  end;
+end;
+
+function TForm1.GetDataPtr(n: PVirtualNode): PTreeNodeData;
+begin
+  result := PTreeNodeData(VStringTree.GetNodeData(N));
+end;
+
+procedure TForm1.GotoNode(n: PVirtualNode);
+begin
+  VStringTree.FocusedNode := n;
+end;
+
+constructor TForm1.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  VStringTree.NodeDataSize := sizeof(TTreeNodeData);
+end;
+
 procedure TForm1.UnLoadDwarf;
 begin
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoaderList);
+  FreeAndNil(FMemModel);
   FCUCount := 0;
 end;
 

@@ -1,16 +1,16 @@
 object Form1: TForm1
-  Left = 432
+  Left = 24
   Height = 440
-  Top = 211
-  Width = 643
+  Top = 428
+  Width = 687
   AllowDropFiles = True
   Caption = 'test fp'
   ClientHeight = 440
-  ClientWidth = 643
+  ClientWidth = 687
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '2.1.0.0'
   object FileNameEdit1: TFileNameEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,7 +18,7 @@ object Form1: TForm1
     Left = 3
     Height = 23
     Top = 3
-    Width = 524
+    Width = 532
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
@@ -33,9 +33,8 @@ object Form1: TForm1
   object btnLoad: TButton
     AnchorSideTop.Control = FileNameEdit1
     AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 565
+    AnchorSideRight.Control = btnUnload
+    Left = 573
     Height = 25
     Top = 2
     Width = 75
@@ -44,8 +43,8 @@ object Form1: TForm1
     BorderSpacing.Bottom = 3
     BorderSpacing.Around = 3
     Caption = 'load'
-    OnClick = btnLoadClick
     TabOrder = 1
+    OnClick = btnLoadClick
   end
   object CompUnitListBox: TListBox
     AnchorSideLeft.Control = Owner
@@ -73,8 +72,8 @@ object Form1: TForm1
     Width = 79
     BorderSpacing.Around = 3
     Caption = 'Show Symbols'
-    OnClick = btnShowUnitClick
     TabOrder = 3
+    OnClick = btnShowUnitClick
   end
   object btnCopyOne: TButton
     AnchorSideLeft.Control = btnShowUnit
@@ -91,8 +90,8 @@ object Form1: TForm1
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
     Caption = 'Copy'
-    OnClick = btnCopyOneClick
     TabOrder = 4
+    OnClick = btnCopyOneClick
   end
   object btnCopyAll: TButton
     AnchorSideLeft.Control = btnCopyOne
@@ -108,28 +107,15 @@ object Form1: TForm1
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
     Caption = 'Copy Incl'
-    OnClick = btnCopyAllClick
     TabOrder = 5
+    OnClick = btnCopyAllClick
   end
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
     Top = 417
-    Width = 643
+    Width = 687
     Panels = <>
-  end
-  object TreeView1: TTreeView
-    AnchorSideLeft.Control = CompUnitListBox
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = StatusBar1
-    Left = 253
-    Height = 384
-    Top = 33
-    Width = 390
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    TabOrder = 7
   end
   object btnLines: TButton
     AnchorSideLeft.Control = Owner
@@ -141,7 +127,47 @@ object Form1: TForm1
     Width = 75
     BorderSpacing.Around = 3
     Caption = 'Show Lines'
+    TabOrder = 7
     OnClick = btnLinesClick
+  end
+  object btnUnload: TButton
+    AnchorSideTop.Control = FileNameEdit1
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 651
+    Height = 25
+    Hint = 'Unload'
+    Top = 3
+    Width = 33
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 3
+    Caption = 'X'
     TabOrder = 8
+    OnClick = btnUnloadClick
+  end
+  object VStringTree: TLazVirtualStringTree
+    AnchorSideLeft.Control = CompUnitListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar1
+    Left = 253
+    Height = 384
+    Top = 33
+    Width = 434
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
+    Header.Columns = <>
+    Header.MainColumn = -1
+    NodeDataSize = 32
+    TabOrder = 9
+    OnDblClick = VStringTreeDblClick
+    OnFreeNode = VStringTreeFreeNode
+    OnGetText = VStringTreeGetText
+    OnInitNode = VStringTreeInitNode
+    OnNewText = VStringTreeNewText
+    OnNodeDblClick = VStringTreeNodeDblClick
   end
 end
