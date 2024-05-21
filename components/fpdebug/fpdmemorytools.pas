@@ -163,6 +163,9 @@ type
     //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: Extended;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean; inline;
+
+    function ReadString(const ALocation: TFpDbgMemLocation; ALen: Int64; out AValue: RawByteString; AnIgnoreMaxStringLen: boolean = False): Boolean;
+    function ReadWString(const ALocation: TFpDbgMemLocation; ALen: Int64; out AValue: WideString; AnIgnoreMaxStringLen: boolean = False): Boolean;
   end;
 
 
@@ -1104,6 +1107,56 @@ begin
   Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, (SizeOf(AValue)), Self);
 end;
 
+function TFpDbgLocationContext.ReadString(const ALocation: TFpDbgMemLocation; ALen: Int64; out
+  AValue: RawByteString; AnIgnoreMaxStringLen: boolean): Boolean;
+begin
+  Result := False;
+  AValue := '';
+
+  if (not AnIgnoreMaxStringLen) and
+     (MemManager.MemLimits.MaxStringLen > 0) and
+     (ALen > MemManager.MemLimits.MaxStringLen)
+  then
+    ALen := MemManager.MemLimits.MaxStringLen;
+
+  if ALen = 0 then begin
+    Result := True;
+    exit;
+  end;
+
+  if not MemManager.SetLength(AValue, ALen) then
+    exit;
+
+  Result := ReadMemory(ALocation, SizeVal(Length(AValue)), @AValue[1]);
+  if not Result then
+    AValue := ''
+end;
+
+function TFpDbgLocationContext.ReadWString(const ALocation: TFpDbgMemLocation; ALen: Int64; out
+  AValue: WideString; AnIgnoreMaxStringLen: boolean): Boolean;
+begin
+  Result := False;
+  AValue := '';
+
+  if (not AnIgnoreMaxStringLen) and
+     (MemManager.MemLimits.MaxStringLen > 0) and
+     (ALen > MemManager.MemLimits.MaxStringLen)
+  then
+    ALen := MemManager.MemLimits.MaxStringLen;
+
+  if ALen = 0 then begin
+    Result := True;
+    exit;
+  end;
+
+  if not MemManager.SetLength(AValue, ALen) then
+    exit;
+
+  Result := ReadMemory(ALocation, SizeVal(Length(AValue)*2), @AValue[1]);
+  if not Result then
+    AValue := ''
+end;
+
 { TFpDbgMemLimits }
 
 procedure TFpDbgMemLimits.SetMaxMemReadSize(AValue: QWord);
@@ -2013,7 +2066,9 @@ function TFpDbgMemManager.SetLength(var ADest: RawByteString; ALength: Int64
   ): Boolean;
 begin
   Result := False;
-  if (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) then begin
+  if (ALength < 0) or
+     ( (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) )
+  then begin
     FLastError := CreateError(fpErrReadMemSizeLimit);
     exit;
   end;
@@ -2025,7 +2080,9 @@ function TFpDbgMemManager.SetLength(var ADest: AnsiString; ALength: Int64
   ): Boolean;
 begin
   Result := False;
-  if (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) then begin
+  if (ALength < 0) or
+     ( (FMemLimits.MaxMemReadSize > 0) and (ALength > FMemLimits.MaxMemReadSize) )
+  then begin
     FLastError := CreateError(fpErrReadMemSizeLimit);
     exit;
   end;
@@ -2037,7 +2094,9 @@ function TFpDbgMemManager.SetLength(var ADest: WideString; ALength: Int64
   ): Boolean;
 begin
   Result := False;
-  if (FMemLimits.MaxMemReadSize > 0) and (ALength * 2 > FMemLimits.MaxMemReadSize) then begin
+  if (ALength < 0) or
+     ( (FMemLimits.MaxMemReadSize > 0) and (ALength * 2 > FMemLimits.MaxMemReadSize) )
+  then begin
     FLastError := CreateError(fpErrReadMemSizeLimit);
     exit;
   end;

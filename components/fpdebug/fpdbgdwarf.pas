@@ -508,22 +508,22 @@ type
 
   TFpValueDwarfString  = class(TFpValueDwarf)
   private
-    FValue: String;
-    FValueDone: Boolean;
     FLenSize: TFpDbgValueSize;
     FHasLenSize, FLenSizeDone: Boolean;
   protected
+    FValue: String;
+    FValueDone: Boolean;
     function GetLenSize(out ASize: TFpDbgValueSize): boolean;
-    function GetStringLen: Int64;
+    function GetStringLen(out ALen: Int64): boolean;
 
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
+  public
     function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
       AIgnoreBounds: Boolean = False): Boolean; override;
     function GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString;
       AIgnoreBounds: Boolean = False): Boolean; override;
-  public
     procedure Reset; override;
   end;
 
@@ -4092,14 +4092,15 @@ begin
   Result := FHasLenSize;
 end;
 
-function TFpValueDwarfString.GetStringLen: Int64;
+function TFpValueDwarfString.GetStringLen(out ALen: Int64): boolean;
 var
   t: TFpSymbolDwarfType;
-  HasSize: Boolean;
-  ASize: TFpDbgValueSize;
+  HasLenSize: Boolean;
+  LenSize: TFpDbgValueSize;
   ALenLoc: TFpDbgMemLocation;
 begin
-  Result := -1;
+  Result := False;
+  ALen := -1;
 
   t := TypeInfo;
   if t <> nil then
@@ -4107,23 +4108,25 @@ begin
   if (t = nil) or not(t is TFpSymbolDwarfTypeString) then
     exit;
 
-  HasSize := GetLenSize(ASize);
+  HasLenSize := GetLenSize(LenSize);
 
   if TFpSymbolDwarfTypeString(t).DoReadLengthLocation(Self, ALenLoc) then begin
-    if not HasSize then
-      ASize := SizeVal(AddressSize);
-    if not Context.ReadSignedInt(ALenLoc, ASize, Result) then begin
+    if not HasLenSize then
+      LenSize := SizeVal(AddressSize);
+    Result := Context.ReadSignedInt(ALenLoc, LenSize, ALen);
+    if not Result then begin
       SetLastError(Context.LastMemError);
-      Result := -1;
+      ALen := -1;
     end;
   end
   else
-  if HasSize then begin
-    Result := SizeToFullBytes(ASize);
+  if HasLenSize then begin
+    ALen := SizeToFullBytes(LenSize);
+    Result := True;
   end
   else begin
     SetLastError(CreateError(fpErrAnyError));
-    Result := -1;
+    ALen := -1;
   end;
 end;
 
@@ -4140,6 +4143,7 @@ function TFpValueDwarfString.GetAsString: AnsiString;
 var
   ALen: Int64;
   WResult: WideString;
+  RResult: RawByteString;
 begin
   if FValueDone then
     exit(FValue);
@@ -4148,32 +4152,20 @@ begin
   FValue := '';
   FValueDone := True;
 
-  ALen := GetStringLen;
-  if ALen <= 0 then
-    exit;
-
-  if (MemManager.MemLimits.MaxStringLen > 0) and
-     (QWord(ALen) > MemManager.MemLimits.MaxStringLen)
-  then
-    ALen := MemManager.MemLimits.MaxStringLen;
+  if not GetStringLen(ALen) then
+    exit; // Error should be set by GetStringLen
 
   if Kind = skWideString then begin
-    SetLength(WResult, ALen);
-    if not (Context.ReadMemory(DataAddress, SizeVal(ALen*2), @WResult[1]))
-    then begin
-      SetLastError(Context.LastMemError);
-      Result := '';
-    end
+    if not Context.ReadWString(DataAddress, ALen, WResult) then
+      SetLastError(Context.LastMemError)
     else
       Result := WResult;
   end
   else begin
-    SetLength(Result, ALen);
-    if not (Context.ReadMemory(DataAddress, SizeVal(ALen), @Result[1]))
-    then begin
-      SetLastError(Context.LastMemError);
-      Result := '';
-    end;
+    if not Context.ReadString(DataAddress, ALen, RResult) then
+      SetLastError(Context.LastMemError)
+    else
+      Result := RResult;
   end;
 
   FValue := Result;
@@ -4189,6 +4181,7 @@ function TFpValueDwarfString.GetSubString(AStartIndex, ALen: Int64; out
 var
   AFullLen: Int64;
   WResult: WideString;
+  RResult: RawByteString;
 begin
   // TODO: if FValueDone, and covers selected range, then use FValue;
   ASubStr := '';
@@ -4203,8 +4196,7 @@ begin
     AStartIndex := 0;
   end;
 
-  AFullLen := GetStringLen;
-  if AFullLen <= 0 then begin
+  if (not GetStringLen(AFullLen)) or (AFullLen <= 0) then begin
     Result := AIgnoreBounds;
     exit;
   end;
@@ -4217,30 +4209,21 @@ begin
   if ALen <= 0 then
     exit;
 
-  if (MemManager.MemLimits.MaxStringLen > 0) and
-     (QWord(ALen) > MemManager.MemLimits.MaxStringLen)
-  then
-    ALen := MemManager.MemLimits.MaxStringLen;
-
   if Kind = skWideString then begin
-    SetLength(WResult, ALen);
-    if not (Context.ReadMemory(DataAddress + AStartIndex*2, SizeVal(ALen*2), @WResult[1]))
-    then begin
-      SetLastError(Context.LastMemError);
-      WResult := '';
-      exit;
-    end
+    {$PUSH}{$Q-}{$R-}
+    if not Context.ReadWString(DataAddress+AStartIndex*2, ALen, WResult, True) then
+    {$POP}
+      SetLastError(Context.LastMemError)
     else
       ASubStr := WResult;
   end
   else begin
-    SetLength(ASubStr, ALen);
-    if not (Context.ReadMemory(DataAddress + AStartIndex, SizeVal(ALen), @ASubStr[1]))
-    then begin
-      SetLastError(Context.LastMemError);
-      ASubStr := '';
-      exit;
-    end;
+    {$PUSH}{$Q-}{$R-}
+    if not Context.ReadString(DataAddress+AStartIndex, ALen, RResult, True) then
+    {$POP}
+      SetLastError(Context.LastMemError)
+    else
+      ASubStr := RResult;
   end;
 end;
 
