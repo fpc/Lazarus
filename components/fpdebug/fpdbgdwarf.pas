@@ -7030,19 +7030,18 @@ begin
     FFrameBaseParser.Evaluate;
   end;
 
-  rd := FFrameBaseParser.ResultData;
-  // TODO: should mlfConstant be allowed?
-  assert(rd.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarfDataProc.GetFrameBase: rd.MType in [mlfTargetMem, mlfConstant]');
-  if IsValidLoc(rd) then
-    Result := rd.Address;
-
   if IsError(FFrameBaseParser.LastError) then begin
     ASender.SetLastError(FFrameBaseParser.LastError);
     debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(ASender.LastError)]);
   end
-  else
-  if Result = 0 then begin
-    debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed. result is 0']);
+  else begin
+    rd := FFrameBaseParser.ResultData;
+    // TODO: should mlfConstant be allowed?
+    assert(rd.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarfDataProc.GetFrameBase: rd.MType in [mlfTargetMem, mlfConstant]');
+    if IsValidLoc(rd) then
+      Result := rd.Address;
+    if Result = 0 then
+      debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed. result is 0']);
   end;
 
 end;
