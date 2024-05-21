@@ -48,8 +48,7 @@ uses
   // FpDebug
   FpDbgCommon,
   FpDbgUtil,
-  FpDbgDwarfConst,
-  FpDbgClasses;
+  FpDbgDwarfConst;
 
 type
   PDwarfCIEEntryHeader32 = ^TDwarfCIEEntryHeader32;
@@ -189,15 +188,6 @@ type
     function FindFDEForAddress(AnAddress: TDBGPtr): TDwarfFDE;
     function FindCIEForOffset(AnOffset: QWord): TDwarfCIE;
     function GetRow(TargetInfo: TTargetDescriptor; AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean;
-
-    class function TryObtainNextCallFrame(
-      CurrentCallStackEntry: TDbgCallstackEntry;
-      CIE: TDwarfCIE;
-      Size, NextIdx: Integer;
-      Thread: TDbgThread;
-      Row: TDwarfCallFrameInformationRow;
-      Process: TDbgProcess;
-      out NewCallStackEntry: TDbgCallstackEntry): Boolean;
   end;
 
 implementation
@@ -603,140 +593,6 @@ begin
       begin
       FInitialInstructionsCache := CloneRow(Row);
       Result := ProcessInstructions(CIE, Row, FDE.Instructions, FDE.InitialLocation, AnAddress);
-      end;
-    end;
-end;
-
-class function TDwarfCallFrameInformation.TryObtainNextCallFrame(
-  CurrentCallStackEntry: TDbgCallstackEntry;
-  CIE: TDwarfCIE;
-  Size, NextIdx: Integer;
-  Thread: TDbgThread;
-  Row: TDwarfCallFrameInformationRow;
-  Process: TDbgProcess;
-  out NewCallStackEntry: TDbgCallstackEntry): Boolean;
-
-  function ProcessCFIColumn(Row: TDwarfCallFrameInformationRow; Column: Byte; CFA: QWord; AddressSize: Integer; Entry: TDbgCallstackEntry; out Value: TDbgPtr): Boolean;
-  var
-    Rule: TDwarfCallFrameInformationRule;
-    Reg: TDbgRegisterValue;
-  begin
-    Result := True;
-    Value := 0;
-    Rule := Row.RegisterArray[Column];
-    case Rule.RegisterRule of
-      cfiUndefined:
-        begin
-        Result := False;
-        end;
-      cfiSameValue:
-        begin
-        Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(Column);
-        if Assigned(Reg) then
-          Value := Reg.NumValue
-        else
-          Result := False;
-        end;
-      cfiOffset:
-        begin
-        {$PUSH}{$R-}{$Q-}
-        Process.ReadData(CFA+TDBGPtr(Rule.Offset), AddressSize, Value);
-        {$POP}
-        end;
-      cfiValOffset:
-        begin
-        {$PUSH}{$R-}{$Q-}
-        Value := CFA+TDBGPtr(Rule.Offset);
-        {$POP}
-        end;
-      cfiRegister:
-        begin
-        Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(Rule.&Register);
-        if Assigned(Reg) then
-          Value := Reg.NumValue
-        else
-          Result := False;
-        end
-      else
-        begin
-        DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'Encountered unsupported CFI registerrule.');
-        Result := False;
-        end;
-    end; // case
-  end;
-
-var
-  Rule: TDwarfCallFrameInformationRule;
-  Reg: TDbgRegisterValue;
-  i: Integer;
-  ReturnAddress, Value: TDbgPtr;
-  FrameBase: TDBGPtr;
-  RegName: String;
-begin
-  Result := False;
-  NewCallStackEntry := nil;
-  // Get CFA (framebase)
-  Rule := Row.CFARule;
-  case Rule.CFARule of
-    cfaRegister:
-      begin
-      Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(Rule.&Register);
-      if Assigned(Reg) then
-        begin
-        FrameBase := Reg.NumValue;
-        {$PUSH}{$R-}{$Q-}
-        FrameBase := FrameBase + TDBGPtr(Rule.Offset);
-        {$POP}
-        end
-      else
-        begin
-        DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI requested a register [' +IntToStr(Rule.&Register)+ '] that is not available.');
-        Exit;
-        end;
-      end;
-    cfaExpression:
-      begin
-      DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI-expressions are not supported. Not possible to obtain the CFA.');
-      Exit;
-      end;
-    else
-      begin
-      DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI available but no rule to obtain the CFA.');
-      Exit;
-      end;
-  end; // case
-
-  Result := True;
-  // Get return ReturnAddress
-  if not ProcessCFIColumn(Row, CIE.ReturnAddressRegister, FrameBase, Size, CurrentCallStackEntry, ReturnAddress) then
-    // Yes, we were succesfull, but there is no return ReturnAddress, so keep
-    // NewCallStackEntry nil
-    begin
-    Result := True;
-    Exit;
-    end;
-
-  if ReturnAddress=0 then
-    // Yes, we were succesfull, but there is no frame left, so keep
-    // NewCallStackEntry nil
-    begin
-    Result := True;
-    Exit;
-    end;
-
-  NewCallStackEntry := TDbgCallstackEntry.create(Thread, NextIdx, FrameBase, ReturnAddress);
-
-  // Fill other registers
-  for i := 0 to High(Row.RegisterArray) do
-    begin
-    if ProcessCFIColumn(Row, i, FrameBase, Size, CurrentCallStackEntry, Value) then
-      begin
-      Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(i);
-      if Assigned(Reg) then
-        RegName := Reg.Name
-      else
-        RegName := IntToStr(i);
-      NewCallStackEntry.RegisterValueList.DbgRegisterAutoCreate[RegName].SetValue(Value, IntToStr(Value),Size, i);
       end;
     end;
 end;

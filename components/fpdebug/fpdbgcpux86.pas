@@ -226,8 +226,8 @@ begin
     PrevStmtAddressOffs := 0;
 
   {$PUSH}{$R-}{$Q-}
-  if (Process.DbgInfo as TFpDwarfInfo).FindCallFrameInfo(CodePointer - PrevStmtAddressOffs, CIE, Row) and
-     TDwarfCallFrameInformation.TryObtainNextCallFrame(
+  if Process.FindCallFrameInfo(CodePointer - PrevStmtAddressOffs, CIE, Row) and
+     TryObtainNextCallFrame(
        ACurrentFrame, CIE, AddressSize, AFrameIndex, Thread, Row, Process, ANewFrame
      )
   {$POP}

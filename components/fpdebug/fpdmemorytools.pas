@@ -80,8 +80,16 @@ type
 
   { TFpDbgLocationContext }
 
+  TFpDbgLocationContext = class;
+
+  TGetCfiFrameBaseCallback = function(AScope: TFpDbgLocationContext; AnAddr: TDBGPtr): TDBGPtr of object;
+
   TFpDbgLocationContext = class(TRefCountedObject)
   private
+    FCfiFrameBaseCallback: TGetCfiFrameBaseCallback;
+    FCfiFrameBase: TDBGPtr;
+
+    function GetCfiFrameBase: TDBGPtr;
     function GetLastMemError: TFpError;
     function GetPartialReadResultLenght: QWord;
   protected
@@ -93,12 +101,14 @@ type
     function GetMemModel: TFpDbgMemModel; virtual; abstract;
   public
     property Address: TDbgPtr read GetAddress;
+    property CfiFrameBase: TDBGPtr read GetCfiFrameBase;
     property ThreadId: Integer read GetThreadId;
     property StackFrame: Integer read GetStackFrame;
     property SizeOfAddress: Integer read GetSizeOfAddress;
     property MemManager: TFpDbgMemManager read GetMemManager;
     property MemModel: TFpDbgMemModel read GetMemModel;
   public
+    procedure SetCfiFrameBaseCallback(ACallback: TGetCfiFrameBaseCallback);
     procedure ClearLastMemError;
     property LastMemError: TFpError read GetLastMemError;
     property PartialReadResultLenght: QWord read GetPartialReadResultLenght;
@@ -977,9 +987,22 @@ begin
   Result := MemManager.LastError;
 end;
 
+function TFpDbgLocationContext.GetCfiFrameBase: TDBGPtr;
+begin
+  if FCfiFrameBaseCallback <> nil then
+    FCfiFrameBase := FCfiFrameBaseCallback(Self, Address);
+  FCfiFrameBaseCallback := nil; // Only call once
+  Result := FCfiFrameBase;
+end;
+
 function TFpDbgLocationContext.GetPartialReadResultLenght: QWord;
 begin
   Result := MemManager.PartialReadResultLenght;
+end;
+
+procedure TFpDbgLocationContext.SetCfiFrameBaseCallback(ACallback: TGetCfiFrameBaseCallback);
+begin
+  FCfiFrameBaseCallback := ACallback;
 end;
 
 procedure TFpDbgLocationContext.ClearLastMemError;

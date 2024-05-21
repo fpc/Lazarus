@@ -2624,13 +2624,21 @@ begin
         end;
         Push(FCurrentObjectAddress);
       end;
+
+      DW_OP_call_frame_cfa: begin
+          NewValue := Context.CfiFrameBase;
+          if NewValue = 0 then begin
+            SetError(fpErrLocationParser);
+            exit;
+          end;
+          FStack.PushTargetMem(NewValue);
+        end;
 (*
   // --- DWARF3 ---
   DW_OP_call2                 = $98;    // 1 2-byte offset of DIE
   DW_OP_call4                 = $99;    // 1 4-byte offset of DIE
   DW_OP_call_ref              = $9a;    // 1 4- or 8-byte offset of DIE
   DW_OP_form_tls_address      = $9b;    // 0
-  DW_OP_call_frame_cfa        = $9c;    // 0
   DW_OP_bit_piece             = $9d;    // 2
 *)
       // dwarf 4

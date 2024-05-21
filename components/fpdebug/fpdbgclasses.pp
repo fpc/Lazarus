@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, Maps, FpDbgUtil, FpDbgLoader, FpDbgInfo,
   FpdMemoryTools, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses, LazFileUtils, DbgIntfBaseTypes,
   fgl, DbgIntfDebuggerBase, fpDbgSymTableContext,
-  FpDbgCommon, FpErrorMessages, LazDebuggerIntf;
+  FpDbgCommon, FpErrorMessages, FpDbgDwarfCFI, LazDebuggerIntf;
 
 type
   TFPDEvent = (
@@ -752,6 +752,7 @@ type
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
+    function FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean;
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -861,6 +862,7 @@ type
     FWatchPointData: TFpWatchPointData;
     FProcessConfig: TDbgProcessConfig;
     FConfig: TDbgConfig;
+    function DoGetCfiFrameBase(AScope: TFpDbgLocationContext; AnAddr: TDBGPtr): TDBGPtr;
     function GetDisassembler: TDbgAsmDecoder;
     function GetLastLibrariesLoaded: TDbgLibraryArr;
     function GetLastLibrariesUnloaded: TDbgLibraryArr;
@@ -946,6 +948,7 @@ type
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
     function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+    function FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out Row: TDwarfCallFrameInformationRow): Boolean; reintroduce;
 
     function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance = nil;
       AFindSibling: TGetLineAddrFindSibling = fsNone; AMaxSiblingDistance: integer = 0): Boolean;
@@ -1089,6 +1092,16 @@ const
     'deFailed'
   );
 
+
+(* TODO:  refactor those methods to work with a Context, and move (partly) to CFI *)
+// GetCanonicalFrameAddress: Get FrameBase
+function GetCanonicalFrameAddress(RegisterValueList: TDbgRegisterValueList;
+  Row: TDwarfCallFrameInformationRow; out FrameBase: TDBGPtr): Boolean;
+function TryObtainNextCallFrame( CurrentCallStackEntry: TDbgCallstackEntry;
+  CIE: TDwarfCIE; Size, NextIdx: Integer; Thread: TDbgThread;
+  Row: TDwarfCallFrameInformationRow; Process: TDbgProcess;
+  out NewCallStackEntry: TDbgCallstackEntry): Boolean;
+
 function GetDbgProcessClass(ATargetInfo: TTargetDescriptor): TOSDbgClasses;
 
 procedure RegisterDbgOsClasses(ADbgOsClasses: TOSDbgClasses);
@@ -1097,7 +1110,6 @@ implementation
 
 uses
   FpDbgDwarfDataClasses,
-  FpDbgDwarfCFI,
   FpDbgDwarf;
 
 type
@@ -1106,7 +1118,7 @@ type
     function Find(a: TOSDbgClasses): Integer;
   end;
 var
-  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS, FPDBG_COMMANDS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, DBG_BREAKPOINTS, FPDBG_COMMANDS, FPDBG_DWARF_CFI_WARNINGS: PLazLoggerLogGroup;
   RegisteredDbgProcessClasses: TOSDbgClassesList;
 
 function GetDbgProcessClass(ATargetInfo: TTargetDescriptor): TOSDbgClasses;
@@ -2315,6 +2327,15 @@ begin
   FMode := AMode;
 end;
 
+function TDbgInstance.FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out
+  Row: TDwarfCallFrameInformationRow): Boolean;
+begin
+  if FDbgInfo <> nil then
+    Result := (FDbgInfo as TFpDwarfInfo).FindCallFrameInfo(AnAddress, CIE, Row)
+  else
+    Result := False;
+end;
+
 function TDbgInstance.GetPointerSize: Integer;
 const
   PTRSZ: array[TFPDMode] of Integer = (4, 8); // (dm32, dm64)
@@ -2601,6 +2622,7 @@ begin
       if Frame <> nil then begin
         Addr := Frame.AnAddress;
         Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
+        Ctx.SetCfiFrameBaseCallback(@DoGetCfiFrameBase);
         sym := Frame.ProcSymbol;
         if sym <> nil then
           Result := sym.CreateSymbolScope(Ctx);
@@ -2635,6 +2657,22 @@ begin
     Inst := TDbgInstance(FSymInstances[n]);
     Result := Inst.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
     if Result then Exit;
+  end;
+end;
+
+function TDbgProcess.FindCallFrameInfo(AnAddress: TDBGPtr; out CIE: TDwarfCIE; out
+  Row: TDwarfCallFrameInformationRow): Boolean;
+var
+  Lib: TDbgLibrary;
+begin
+  Result := inherited FindCallFrameInfo(AnAddress, CIE, Row);
+  if Result then
+    exit;
+
+  for Lib in FLibMap do begin
+    Result := Lib.FindCallFrameInfo(AnAddress, CIE, Row);
+    if Result then
+      exit;
   end;
 end;
 
@@ -3057,6 +3095,29 @@ begin
   if FDisassembler = nil then
     FDisassembler := OSDbgClasses.DbgDisassemblerClass.Create(Self);
   Result := FDisassembler;
+end;
+
+function TDbgProcess.DoGetCfiFrameBase(AScope: TFpDbgLocationContext; AnAddr: TDBGPtr): TDBGPtr;
+var
+  CIE: TDwarfCIE;
+  ROW: TDwarfCallFrameInformationRow;
+  Thrd: TDbgThread;
+  CStck: TDbgCallstackEntry;
+begin
+  Result := 0;
+  if (not GetThread(AScope.ThreadId, Thrd)) or (Thrd = nil) then
+    exit;
+  if AScope.StackFrame >= Thrd.CallStackEntryList.Count then
+    exit;
+  CStck := Thrd.CallStackEntryList[AScope.StackFrame];
+  if CStck = nil then
+    exit;
+
+  if not FindCallFrameInfo(AnAddr, CIE, ROW) then
+    exit;
+
+  if not GetCanonicalFrameAddress(CStck.RegisterValueList ,ROW, Result) then
+    Result := 0;
 end;
 
 function TDbgProcess.GetLastLibrariesLoaded: TDbgLibraryArr;
@@ -4401,11 +4462,161 @@ begin
   Process.WatchPointData.RemoveOwnedWatchpoint(Self);
 end;
 
+function GetCanonicalFrameAddress(
+  RegisterValueList: TDbgRegisterValueList; Row: TDwarfCallFrameInformationRow; out
+  FrameBase: TDBGPtr): Boolean;
+var
+  Rule: TDwarfCallFrameInformationRule;
+  Reg: TDbgRegisterValue;
+begin
+  Result := False;
+  // Get CFA (framebase)
+
+  Rule := Row.CFARule;
+  case Rule.CFARule of
+    cfaRegister:
+      begin
+      Reg := RegisterValueList.FindRegisterByDwarfIndex(Rule.&Register);
+      if Assigned(Reg) then
+        begin
+        FrameBase := Reg.NumValue;
+        {$PUSH}{$R-}{$Q-}
+        FrameBase := FrameBase + TDBGPtr(Rule.Offset);
+        {$POP}
+        Result := True;
+        end
+      else
+        begin
+        DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI requested a register [' +IntToStr(Rule.&Register)+ '] that is not available.');
+        Exit;
+        end;
+      end;
+    cfaExpression:
+      begin
+      DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI-expressions are not supported. Not possible to obtain the CFA.');
+      Exit;
+      end;
+    else
+      begin
+      DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'CFI available but no rule to obtain the CFA.');
+      Exit;
+      end;
+  end; // case
+end;
+
+function TryObtainNextCallFrame(
+  CurrentCallStackEntry: TDbgCallstackEntry;
+  CIE: TDwarfCIE;
+  Size, NextIdx: Integer;
+  Thread: TDbgThread;
+  Row: TDwarfCallFrameInformationRow;
+  Process: TDbgProcess;
+  out NewCallStackEntry: TDbgCallstackEntry): Boolean;
+
+  function ProcessCFIColumn(Row: TDwarfCallFrameInformationRow; Column: Byte; CFA: QWord; AddressSize: Integer; Entry: TDbgCallstackEntry; out Value: TDbgPtr): Boolean;
+  var
+    Rule: TDwarfCallFrameInformationRule;
+    Reg: TDbgRegisterValue;
+  begin
+    Result := True;
+    Value := 0;
+    Rule := Row.RegisterArray[Column];
+    case Rule.RegisterRule of
+      cfiUndefined:
+        begin
+        Result := False;
+        end;
+      cfiSameValue:
+        begin
+        Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(Column);
+        if Assigned(Reg) then
+          Value := Reg.NumValue
+        else
+          Result := False;
+        end;
+      cfiOffset:
+        begin
+        {$PUSH}{$R-}{$Q-}
+        Process.ReadData(CFA+TDBGPtr(Rule.Offset), AddressSize, Value);
+        {$POP}
+        end;
+      cfiValOffset:
+        begin
+        {$PUSH}{$R-}{$Q-}
+        Value := CFA+TDBGPtr(Rule.Offset);
+        {$POP}
+        end;
+      cfiRegister:
+        begin
+        Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(Rule.&Register);
+        if Assigned(Reg) then
+          Value := Reg.NumValue
+        else
+          Result := False;
+        end
+      else
+        begin
+        DebugLn(FPDBG_DWARF_CFI_WARNINGS, 'Encountered unsupported CFI registerrule.');
+        Result := False;
+        end;
+    end; // case
+  end;
+
+var
+  //Rule: TDwarfCallFrameInformationRule;
+  Reg: TDbgRegisterValue;
+  i: Integer;
+  ReturnAddress, Value: TDbgPtr;
+  FrameBase: TDBGPtr;
+  RegName: String;
+begin
+  Result := False;
+  NewCallStackEntry := nil;
+  // Get CFA (framebase)
+  if not GetCanonicalFrameAddress(CurrentCallStackEntry.RegisterValueList, Row, FrameBase) then
+    exit;
+
+  Result := True;
+  // Get return ReturnAddress
+  if not ProcessCFIColumn(Row, CIE.ReturnAddressRegister, FrameBase, Size, CurrentCallStackEntry, ReturnAddress) then
+    // Yes, we were succesfull, but there is no return ReturnAddress, so keep
+    // NewCallStackEntry nil
+    begin
+    Result := True;
+    Exit;
+    end;
+
+  if ReturnAddress=0 then
+    // Yes, we were succesfull, but there is no frame left, so keep
+    // NewCallStackEntry nil
+    begin
+    Result := True;
+    Exit;
+    end;
+
+  NewCallStackEntry := TDbgCallstackEntry.create(Thread, NextIdx, FrameBase, ReturnAddress);
+
+  // Fill other registers
+  for i := 0 to High(Row.RegisterArray) do
+    begin
+    if ProcessCFIColumn(Row, i, FrameBase, Size, CurrentCallStackEntry, Value) then
+      begin
+      Reg := CurrentCallStackEntry.RegisterValueList.FindRegisterByDwarfIndex(i);
+      if Assigned(Reg) then
+        RegName := Reg.Name
+      else
+        RegName := IntToStr(i);
+      NewCallStackEntry.RegisterValueList.DbgRegisterAutoCreate[RegName].SetValue(Value, IntToStr(Value),Size, i);
+      end;
+    end;
+end;
+
 initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_BREAKPOINTS := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINTS' {$IFDEF DBG_BREAKPOINTS} , True {$ENDIF} );
   FPDBG_COMMANDS := DebugLogger.FindOrRegisterLogGroup('FPDBG_COMMANDS' {$IFDEF FPDBG_COMMANDS} , True {$ENDIF} );
+  FPDBG_DWARF_CFI_WARNINGS  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_CFI_WARNINGS' {$IFDEF FPDBG_DWARF_CFI_WARNINGS} , True {$ENDIF} );
 
   TFpBreakPointTargetHandler.DBG__VERBOSE     := DBG_VERBOSE;
   TFpBreakPointTargetHandler.DBG__WARNINGS    := DBG_WARNINGS;
