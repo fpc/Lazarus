@@ -467,7 +467,7 @@ begin
   Result := '';
   if ASize > 8
   then begin
-    Result := 'HexValue: size to large';
+    Result := 'HexValue: size too large';
     Exit;
   end;
   if ASize = 0
