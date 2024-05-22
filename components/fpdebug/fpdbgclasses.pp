@@ -862,7 +862,8 @@ type
     FWatchPointData: TFpWatchPointData;
     FProcessConfig: TDbgProcessConfig;
     FConfig: TDbgConfig;
-    function DoGetCfiFrameBase(AScope: TFpDbgLocationContext; AnAddr: TDBGPtr): TDBGPtr;
+    function DoGetCfiFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
+    function DoGetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function GetDisassembler: TDbgAsmDecoder;
     function GetLastLibrariesLoaded: TDbgLibraryArr;
     function GetLastLibrariesUnloaded: TDbgLibraryArr;
@@ -2622,7 +2623,8 @@ begin
       if Frame <> nil then begin
         Addr := Frame.AnAddress;
         Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
-        Ctx.SetCfiFrameBaseCallback(@DoGetCfiFrameBase);
+        Ctx.SetFrameBaseCallback(@DoGetFrameBase);
+        Ctx.SetCfaFrameBaseCallback(@DoGetCfiFrameBase);
         sym := Frame.ProcSymbol;
         if sym <> nil then
           Result := sym.CreateSymbolScope(Ctx);
@@ -3097,27 +3099,54 @@ begin
   Result := FDisassembler;
 end;
 
-function TDbgProcess.DoGetCfiFrameBase(AScope: TFpDbgLocationContext; AnAddr: TDBGPtr): TDBGPtr;
+function TDbgProcess.DoGetCfiFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError
+  ): TDBGPtr;
 var
-  CIE: TDwarfCIE;
-  ROW: TDwarfCallFrameInformationRow;
   Thrd: TDbgThread;
   CStck: TDbgCallstackEntry;
+  CIE: TDwarfCIE;
+  ROW: TDwarfCallFrameInformationRow;
 begin
   Result := 0;
-  if (not GetThread(AScope.ThreadId, Thrd)) or (Thrd = nil) then
+  AnError := nil;
+  if (not GetThread(AContext.ThreadId, Thrd)) or (Thrd = nil) then
     exit;
-  if AScope.StackFrame >= Thrd.CallStackEntryList.Count then
+  if AContext.StackFrame >= Thrd.CallStackEntryList.Count then
     exit;
-  CStck := Thrd.CallStackEntryList[AScope.StackFrame];
+  CStck := Thrd.CallStackEntryList[AContext.StackFrame];
   if CStck = nil then
     exit;
 
-  if not FindCallFrameInfo(AnAddr, CIE, ROW) then
+  if not FindCallFrameInfo(AContext.Address, CIE, ROW) then
     exit;
 
   if not GetCanonicalFrameAddress(CStck.RegisterValueList ,ROW, Result) then
     Result := 0;
+end;
+
+function TDbgProcess.DoGetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError
+  ): TDBGPtr;
+var
+  Thrd: TDbgThread;
+  CStck: TDbgCallstackEntry;
+  p: TFpSymbol;
+begin
+  Result := 0;
+  AnError := nil;
+  if (not GetThread(AContext.ThreadId, Thrd)) or (Thrd = nil) then
+    exit;
+  if AContext.StackFrame >= Thrd.CallStackEntryList.Count then
+    exit;
+  CStck := Thrd.CallStackEntryList[AContext.StackFrame];
+  if CStck = nil then
+    exit;
+
+  p := CStck.ProcSymbol;
+  if p =nil then
+    exit;
+
+  if p is TFpSymbolDwarfDataProc then
+    Result := TFpSymbolDwarfDataProc(p).GetFrameBase(AContext, AnError);
 end;
 
 function TDbgProcess.GetLastLibrariesLoaded: TDbgLibraryArr;

@@ -872,7 +872,6 @@ type
     FFrameBase: TDbgPtr;
     FIsDwAtFrameBase: Boolean;
     FLastError: TFpError;
-    FOnFrameBaseNeeded: TNotifyEvent;
     FStack: TDwarfLocationStack;
     FCU: TDwarfCompilationUnit;
     FData: PByte;
@@ -885,8 +884,7 @@ type
     procedure Evaluate;
     function ResultData: TFpDbgMemLocation;
     procedure Push(const AValue: TFpDbgMemLocation);
-    property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
-    property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
+    //property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property LastError: TFpError read FLastError;
     property Context: TFpDbgLocationContext read FContext write FContext;
     // for DW_OP_push_object_address
@@ -2170,6 +2168,17 @@ var
   CurInstr, CurData: PByte;
   AddrSize: Byte;
 
+  procedure SetError(AnError: TFpError);
+  begin
+    FStack.Push(InvalidLoc); // Mark as failed
+    FLastError := AnError;
+    debugln(FPDBG_DWARF_ERRORS,
+            ['DWARF ERROR in TDwarfLocationExpression: Failed at Pos=', CurInstr-FData,
+             ' OpCode=', IntToHex(CurInstr^, 2), ' Depth=', FStack.Count,
+             ' Data: ', dbgMemRange(FData, FMaxData-FData),
+             ' Extra: ', ErrorHandler.ErrorAsString(AnError) ]);
+  end;
+
   procedure SetError(AnInternalErrorCode: TFpErrorCode = fpErrNoError);
   begin
     FStack.Push(InvalidLoc); // Mark as failed
@@ -2345,12 +2354,13 @@ begin
         end;
 
       DW_OP_fbreg: begin
-          if (FFrameBase = 0) and (FOnFrameBaseNeeded <> nil) then FOnFrameBaseNeeded(Self);
-          if FFrameBase = 0 then begin
-            if not IsError(FLastError) then
-              SetError;
-            exit;
+          if (FFrameBase = 0) then begin
+            FFrameBase := FContext.FrameBase;
+            if FFrameBase = 0 then
+              SetError(FContext.FrameBaseError);
           end;
+          if FFrameBase = 0 then
+            exit;
           {$PUSH}{$R-}{$Q-}
           FStack.PushTargetMem(FFrameBase+SLEB128toOrdinal(CurData));
           {$POP}
@@ -2626,9 +2636,9 @@ begin
       end;
 
       DW_OP_call_frame_cfa: begin
-          NewValue := Context.CfiFrameBase;
+          NewValue := Context.CfaFrameBase;
           if NewValue = 0 then begin
-            SetError(fpErrLocationParser);
+            SetError(Context.FCfarameBaseError);
             exit;
           end;
           FStack.PushTargetMem(NewValue);

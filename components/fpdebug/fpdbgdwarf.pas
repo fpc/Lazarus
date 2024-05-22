@@ -558,23 +558,16 @@ type
   TFpSymbolDwarf = class(TDbgDwarfSymbolBase)
   private
     FNestedTypeInfo: TFpSymbolDwarfType;
-    (* FLocalProcInfo: the procedure in which a local symbol is defined/used *)
-    FLocalProcInfo: TFpSymbolDwarf;
     FDwarfReadFlags: set of (didtNameRead, didtTypeRead, didtArtificialRead, didtIsArtifical);
     function GetNestedTypeInfo: TFpSymbolDwarfType;
     function GetTypeInfo: TFpSymbolDwarfType; inline;
   protected
-    procedure SetLocalProcInfo(AValue: TFpSymbolDwarf); virtual;
-
     function  DoGetNestedTypeInfo: TFpSymbolDwarfType; virtual;
     function  ReadMemberVisibility(out AMemberVisibility: TDbgSymbolMemberVisibility): Boolean;
     function  IsArtificial: Boolean; // usud by formal param and subprogram
     procedure NameNeeded; override;
     procedure TypeInfoNeeded; override;
     property NestedTypeInfo: TFpSymbolDwarfType read GetNestedTypeInfo;
-
-    // LocalProcInfo: funtion for local var / param
-    property LocalProcInfo: TFpSymbolDwarf read FLocalProcInfo write SetLocalProcInfo;
 
     function DoForwardReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; inline;
     function DoReadDataSize(const AValueObj: TFpValue; out ADataSize: TFpDbgValueSize): Boolean; virtual;
@@ -650,12 +643,8 @@ type
   { TFpSymbolDwarfDataWithLocation }
 
   TFpSymbolDwarfDataWithLocation = class(TFpSymbolDwarfData)
-  private
-    procedure FrameBaseNeeded(ASender: TObject); // Sender = TDwarfLocationExpression
   protected
     function GetValueObject: TFpValue; override;
-    function InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-                                AnInitLocParserData: PInitLocParserData): Boolean; override;
   end;
 
   TFpSymbolDwarfThirdPartyExtension = class(TFpSymbolDwarf)
@@ -1091,7 +1080,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure DoReferenceReleased; override;
     function GetLineEndAddress: TDBGPtr; override;
     function GetLineStartAddress: TDBGPtr; override;
-    function GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
     function GetFlags: TDbgSymbolFlags; override;
     procedure TypeInfoNeeded; override;
 
@@ -1115,6 +1103,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
+    function GetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDbgPtr;
 
     function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; virtual; // so it can be overriden by the fpc classes
 
@@ -1719,8 +1708,6 @@ begin
     exit;
   if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
-    if ADbgValue <> nil then
-      TFpSymbolDwarf(ADbgValue.DbgSymbol).LocalProcInfo := TFpSymbolDwarfDataProc(FSymbol);
   end;
   Result := ADbgValue <> nil;
 end;
@@ -4265,18 +4252,6 @@ begin
   Result := TFpSymbolDwarfType(inherited TypeInfo);
 end;
 
-procedure TFpSymbolDwarf.SetLocalProcInfo(AValue: TFpSymbolDwarf);
-begin
-  if FLocalProcInfo = AValue then exit;
-
-  FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
-
-  FLocalProcInfo := AValue;
-
-  if (FLocalProcInfo <> nil) then
-    FLocalProcInfo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
-end;
-
 function TFpSymbolDwarf.DoGetNestedTypeInfo: TFpSymbolDwarfType;
 var
   FwdInfoPtr: Pointer;
@@ -4945,7 +4920,6 @@ destructor TFpSymbolDwarf.Destroy;
 begin
   inherited Destroy;
   FNestedTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FNestedTypeInfo, ClassName+'.FNestedTypeInfo'){$ENDIF};
-  FLocalProcInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLocalProcInfo, 'FLocalProcInfo'){$ENDIF};
 end;
 
 function TFpSymbolDwarf.StartScope: TDbgPtr;
@@ -5045,39 +5019,6 @@ begin
 end;
 
 { TFpSymbolDwarfDataWithLocation }
-
-function TFpSymbolDwarfDataWithLocation.InitLocationParser(const ALocationParser: TDwarfLocationExpression;
-  AnInitLocParserData: PInitLocParserData): Boolean;
-begin
-  Result := inherited InitLocationParser(ALocationParser, AnInitLocParserData);
-  ALocationParser.OnFrameBaseNeeded := @FrameBaseNeeded;
-end;
-
-procedure TFpSymbolDwarfDataWithLocation.FrameBaseNeeded(ASender: TObject);
-var
-  p: TFpSymbolDwarf;
-  fb: TDBGPtr;
-begin
-  debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataVariable.FrameBaseNeeded ']);
-  p := LocalProcInfo;
-  // TODO: what if parent is declaration?
-  if p is TFpSymbolDwarfDataProc then begin
-    fb := TFpSymbolDwarfDataProc(p).GetFrameBase(ASender as TDwarfLocationExpression);
-    (ASender as TDwarfLocationExpression).FrameBase := fb;
-    if fb = 0 then begin
-      debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataWithLocation.FrameBaseNeeded result is 0']);
-    end;
-    exit;
-  end;
-
-{$warning TODO}
-  //else
-  //if ParentTypeInfo <> nil then
-  //  ParentTypeInfo.fr;
-  // TODO: check owner
-  debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataWithLocation.FrameBaseNeeded no parent type info']);
-  (ASender as TDwarfLocationExpression).FrameBase := 0;
-end;
 
 function TFpSymbolDwarfDataWithLocation.GetValueObject: TFpValue;
 var
@@ -7005,12 +6946,14 @@ begin
     NilThenReleaseRef(TFpSymbolDwarfTypeProc(TypeInfo).FLastMember {$IFDEF WITH_REFCOUNT_DEBUG}, 'TFpSymbolDwarfDataProc.FLastMember'{$ENDIF});
 end;
 
-function TFpSymbolDwarfDataProc.GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
+function TFpSymbolDwarfDataProc.GetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError
+  ): TDbgPtr;
 var
   Val: TByteDynArray;
   rd: TFpDbgMemLocation;
 begin
   Result := 0;
+  AnError := nil;
   if FFrameBaseParser = nil then begin
     //TODO: avoid copying data
     if not  InformationEntry.ReadValue(DW_AT_frame_base, Val) then begin
@@ -7024,15 +6967,14 @@ begin
       exit;
     end;
 
-    FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
-      ASender.Context);
+    FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit, AContext);
     FFrameBaseParser.IsDwAtFrameBase := True;
     FFrameBaseParser.Evaluate;
   end;
 
   if IsError(FFrameBaseParser.LastError) then begin
-    ASender.SetLastError(FFrameBaseParser.LastError);
-    debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(ASender.LastError)]);
+    AnError := FFrameBaseParser.LastError;
+    debugln(FPDBG_DWARF_ERRORS, ['TFpSymbolDwarfDataProc.GetFrameBase location parser failed ', ErrorHandler.ErrorAsString(AnError)]);
   end
   else begin
     rd := FFrameBaseParser.ResultData;
@@ -7129,7 +7071,6 @@ begin
         Result := TFpValueDwarf(TFpSymbolDwarfData.CreateValueSubClass('self', InfoEntry).Value);
         if Result <> nil then begin
           Result.FDataSymbol.ReleaseReference;
-          Result.FDataSymbol.LocalProcInfo := Self;
         end;
         debugln(FPDBG_DWARF_SEARCH, ['TFpSymbolDwarfDataProc.GetSelfParameter ', InfoEntry.ScopeDebugText, DbgSName(Result)]);
       end;
@@ -7207,8 +7148,6 @@ begin
   FLastMember := TFpSymbolDwarf.CreateSubClass('', TDwarfInformationEntry(FProcMembers[AIndex]));
   {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember');{$ENDIF}
   Result := FLastMember;
-  //if Result <> nil then
-  //  TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolExByName(const AIndex: String;
@@ -7231,8 +7170,6 @@ begin
     end;
   end;
   Result := FLastMember;
-  //if Result <> nil then
-  //  TFpSymbolDwarf(Result).LocalProcInfo := FProcValue;
 end;
 
 function TFpSymbolDwarfTypeProc.GetNestedSymbolCount: Integer;
