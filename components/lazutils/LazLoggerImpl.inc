@@ -484,28 +484,15 @@ begin
 end;
 
 function dbghex(i: Int64): string;
-{$IFnDEF USED_BY_LAZLOGGER_DUMMY}
-const
-  Hex = '0123456789ABCDEF';
-var
-  Negated: Boolean;
-{$ENDIF}
 begin
-  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   Result:='';
-  if i<0 then begin
-    Negated:=true;
-    i:=-i;
-  end else
-    Negated:=false;
-  repeat
-    Result:=Hex[(i mod 16)+1]+Result;
-    i:=i div 16;
-  until i=0;
-  if Negated then
-    Result:='-'+Result;
-  {$ELSE}
-  Result := '';
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  if i<0 then
+    {$PUSH}{$R-}{$Q-}
+    Result:='-' + dbghex(qword(-i))
+    {$POP}
+  else
+    Result:=dbghex(qword(i));
   {$ENDIF}
 end;
 
@@ -515,14 +502,12 @@ const
   Hex = '0123456789ABCDEF';
 {$ENDIF}
 begin
-  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   Result:='';
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   repeat
     Result:=Hex[(i mod 16)+1]+Result;
     i:=i div 16;
   until i=0;
-  {$ELSE}
-  Result := '';
   {$ENDIF}
 end;
 
