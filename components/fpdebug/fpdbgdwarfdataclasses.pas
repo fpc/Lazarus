@@ -4151,9 +4151,11 @@ begin
   for i := 0 to high(FFiles) do
     begin
     inf := FFiles[i].Sections[dsFrame];
+    if inf.Size = 0 then
+      continue;
+
     CFI := TDwarfCallFrameInformation.Create;
     FCallFrameInformationList.Add(CFI);
-
     p := inf.RawData;
     pe := inf.RawData + inf.Size;
     while (p <> nil) and (p < pe) do
