@@ -128,14 +128,24 @@ begin
 end;
 
 function ColorToHex(AColor: TFPColor): String;
+var
+  r, g, b: String[2];
 begin
   if AColor = colBlack then
     Result := 'black'
   else if AColor = colWhite then
     Result := 'white'
   else
-    with AColor do
-      Result := Format('#%.2x%.2x%.2x', [red shr 8, green shr 8, blue shr 8]);
+  begin
+    r := IntToHex(AColor.Red shr 8, 2);
+    g := IntToHex(AColor.Green shr 8, 2);
+    b := IntToHex(AColor.Blue shr 8, 2);
+    SetLength(Result, 7);
+    Result[1] := '#';            // #rrggbb
+    Move(r[1], Result[2], 2);
+    Move(g[1], Result[4], 2);
+    Move(b[1], Result[6], 2);
+  end;
 end;
 
 function DP2S(AValue: TDoublePoint): String;
