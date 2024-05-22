@@ -666,6 +666,7 @@ type
     FCompDir:  String;
     FUnitName: String;
     FIdentifierCase: Integer;
+    FLanguageId: Integer;
     FProducer: String;
 
     FAbbrevList: TDwarfAbbrevList;
@@ -763,6 +764,7 @@ type
     property FileName: String read FFileName;
     property UnitName: String read GetUnitName;
     property IdentifierCase: Integer read FIdentifierCase;
+    property LanguageId: Integer read FLanguageId;
     property Producer: String read FProducer;
     property BaseAddress: TDBGPtr read FMinPC;
 
@@ -5189,6 +5191,9 @@ begin
 
   if LocateAttribute(Scope.Entry, DW_AT_producer, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FProducer);
+
+  if LocateAttribute(Scope.Entry, DW_AT_language, AttribList, Attrib, Form)
+  then ReadValue(Attrib, Form, FLanguageId);
 
   FDwarfSymbolClassMap := DwarfSymbolClassMapList.FindMapForCompUnit(Self);
   assert(FDwarfSymbolClassMap <> nil, 'TDwarfCompilationUnit.Create: FDwarfSymbolClassMap <> nil');

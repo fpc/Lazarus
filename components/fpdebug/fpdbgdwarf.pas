@@ -5552,11 +5552,22 @@ var
 begin
   assert((AValueObj = nil) or (AValueObj is TFpValueDwarf), 'TFpSymbolDwarfTypeSubRange.GetValueLowBound: AValueObj is TFpValueDwarf(');
   if FLowBoundState = rfNotRead then begin
-    if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then
-      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FLowBoundState, @FLowBoundSymbol)
-    else
-      FLowBoundState := rfNotFound;
-    FLowBoundConst := t;
+    if InformationEntry.GetAttribData(DW_AT_lower_bound, AttrData) then begin
+      ConstRefOrExprFromAttrData(AttrData, TFpValueDwarf(AValueObj), t, @FLowBoundState, @FLowBoundSymbol);
+      FLowBoundConst := t;
+    end
+    else begin
+      FLowBoundState := rfConst;
+      case CompilationUnit.LanguageId of
+        DW_LANG_Ada83, DW_LANG_Cobol74, DW_LANG_Cobol85,
+        DW_LANG_Fortran77, DW_LANG_Fortran90, DW_LANG_Pascal83,
+        DW_LANG_Modula2, DW_LANG_Ada95, DW_LANG_Fortran95,
+        DW_LANG_PLI:
+          FLowBoundConst := 1;
+        else
+          FLowBoundConst := 0;
+      end;
+    end;
   end;
 
   Result := FLowBoundState in [rfConst, rfValue, rfExpression];
