@@ -1197,6 +1197,20 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
+  function NormalizeLazExe(LazExe: string): string;
+  {$IFDEF Darwin}
+  var
+    p: SizeInt;
+  {$ENDIF}
+  begin
+    Result:=TrimFilename(LazExe);
+    {$IFDEF Darwin}
+    p:=Pos('.app/Contents/MacOS/',Result);
+    if p>0 then
+      Result:=LeftStr(LazExe,p-1);
+    {$ENDIF}
+  end;
+
   function GetSecondConfDirWarning: String;
   var
     StartFile: String;
@@ -1210,24 +1224,10 @@ procedure TMainIDE.LoadGlobalOptions;
       Result+=StartFile+' --pcp=C:\test_lazarus\configs';
     {$ELSE}
       {$IFDEF darwin}
-      Result+='open '+StartFile+' --pcp=~/.lazarus_test';
+      Result+='open '+NormalizeLazExe(StartFile)+'.app --args --pcp=~/.lazarus_test';
       {$ELSE}
       Result+=StartFile+' --pcp=~/.lazarus_test';
       {$ENDIF}
-    {$ENDIF}
-  end;
-
-  function NormalizeLazExe(LazExe: string): string;
-  {$IFDEF Darwin}
-  var
-    p: SizeInt;
-  {$ENDIF}
-  begin
-    Result:=TrimFilename(LazExe);
-    {$IFDEF Darwin}
-    p:=Pos('.app/Contents/MacOS/',Result);
-    if p>0 then
-      Result:=LeftStr(LazExe,p-1);
     {$ENDIF}
   end;
 
