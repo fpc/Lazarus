@@ -72,13 +72,13 @@ type
     FFileHandle: THandle;
     FMapHandle: THandle;
     FModulePtr: Pointer;
-    {$else}
+    {$endif}
     FStream: TStream;
     FList: TList;
-    {$endif}
     FFileName: String;
 
     function GetFileName: String;
+    procedure OpenStream;
   public
     constructor Create(AFileName: String);
     {$ifdef USE_WIN_FILE_MAPPING}
@@ -324,6 +324,13 @@ begin
   FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
   if FMapHandle = 0
   then begin
+    if GetLastError = 8 then begin // not enough memory, use a stream instead
+      FList := TList.Create;
+      FStream := THandleStream.Create(AFileHandle);
+      inherited Create;
+      exit;
+    end;
+
     raise Exception.CreateFmt('Could not create module mapping, error %d', [GetLastError]);
     Exit;
   end;
@@ -348,63 +355,77 @@ begin
   then CloseHandle(FMapHandle);
   if FFileHandle <> INVALID_HANDLE_VALUE
   then CloseHandle(FFileHandle);
-  {$else}
-  while FList.Count > 0 do
-    UnloadMemory(FList[0]);
+  {$endif}
+  if FList <> nil then
+    while FList.Count > 0 do
+      UnloadMemory(FList[0]);
   FreeAndNil(FList);
   FreeAndNil(FStream);
   inherited Destroy;
+end;
+
+procedure TDbgFileLoader.OpenStream;
+begin
+  if FStream <> nil then
+    exit;
+  if FFileName <> '' then
+    FStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone)
+  {$ifdef USE_WIN_FILE_MAPPING}
+  else
+    FStream := THandleStream.Create(FFileHandle)
   {$endif}
+  ;
 end;
 
 procedure TDbgFileLoader.Close;
 begin
-  {$ifNdef USE_WIN_FILE_MAPPING}
   FreeAndNil(FStream);
-  {$endif}
 end;
 
 function TDbgFileLoader.Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
 begin
   {$ifdef USE_WIN_FILE_MAPPING}
-  move((FModulePtr + AOffset)^, AMem^, ASize);
-  Result := ASize;
-  {$else}
+  if FMapHandle <> 0 then begin
+    move((FModulePtr + AOffset)^, AMem^, ASize);
+    Result := ASize;
+    exit;
+  end;
+  {$endif}
   Result := 0;
   if AMem = nil then
     exit;
   if FStream = nil then
-    FStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
+    OpenStream;
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);
-  {$endif}
 end;
 
 function TDbgFileLoader.LoadMemory(AOffset, ASize: QWord; out AMem: Pointer): QWord;
 begin
   {$ifdef USE_WIN_FILE_MAPPING}
-  AMem := FModulePtr + AOffset;
-  Result := ASize;
-  {$else}
+  if FMapHandle <> 0 then begin
+    AMem := FModulePtr + AOffset;
+    Result := ASize;
+    exit;
+  end;
+  {$endif}
   Result := 0;
   AMem := AllocMem(ASize);
   if AMem = nil then
     exit;
   if FStream = nil then
-    FStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
+    OpenStream;
   FList.Add(AMem);
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);
-  {$endif}
 end;
 
 procedure TDbgFileLoader.UnloadMemory(AMem: Pointer);
 begin
-  {$ifdef USE_WIN_FILE_MAPPING}
-  {$else}
+  if FList = nil then
+    exit;
   FList.Remove(AMem);
   Freemem(AMem);
-  {$endif}
 end;
 
 { TDbgImageReader }
