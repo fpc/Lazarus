@@ -169,6 +169,7 @@ begin
     +'begin'+LineEnding
     +'  RequireDerivedFormResource:=True;'+LineEnding
     +'  Application.Scaled:=True;'+LineEnding
+    +'  Application.MainFormOnTaskbar:=True;'+LineEnding
     +'  Application.Initialize;'+LineEnding
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
