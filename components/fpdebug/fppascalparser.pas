@@ -5152,7 +5152,7 @@ begin
       end;
     end;
 
-    if (tmp.Kind in [skClass, skRecord, skObject]) then begin
+    if (tmp.Kind in [skClass, skInterface, skRecord, skObject]) then begin
       Result := tmp.MemberByName[MemberName];
       if Result = nil then begin
         SetError(fpErrNoMemberWithName, [MemberName]);
@@ -5167,7 +5167,7 @@ begin
   end;
 
   if (tmp.Kind in [skType]) and
-     (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind in [skClass, skRecord, skObject])
+     (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind in [skClass, skInterface, skRecord, skObject])
   then begin
     Result := tmp.MemberByName[MemberName];
     if Result <> nil then begin
