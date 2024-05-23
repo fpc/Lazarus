@@ -5010,9 +5010,15 @@ begin
             then begin
               ReadAddressValue(Attrib, Form, Info.StartPC);
 
-              if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-              then ReadAddressValue(Attrib, Form, Info.EndPC)
-              else Info.EndPC := Info.StartPC;
+              if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form) then begin
+                ReadAddressValue(Attrib, Form, Info.EndPC);
+                if (Form = DW_FORM_data1) or (Form = DW_FORM_data2) or (Form = DW_FORM_data4) or
+                   (Form = DW_FORM_data8) or (Form = DW_FORM_udata) or (Form = DW_FORM_sdata)
+                then
+                  Info.EndPC := Info.StartPC + Info.EndPC;
+              end
+              else
+                Info.EndPC := Info.StartPC;
 
               // TODO (dafHasName in Abbrev.flags)
               if (dafHasName in AttribList.Abbrev^.flags) and
@@ -5261,8 +5267,13 @@ begin
   if LocateAttribute(Scope.Entry, DW_AT_low_pc, AttribList, Attrib, Form)
   then ReadAddressValue(Attrib, Form, FMinPC);
 
-  if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
-  then ReadAddressValue(Attrib, Form, FMaxPC);
+  if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form) then begin
+    ReadAddressValue(Attrib, Form, FMaxPC);
+    if (Form = DW_FORM_data1) or (Form = DW_FORM_data2) or (Form = DW_FORM_data4) or
+       (Form = DW_FORM_data8) or (Form = DW_FORM_udata) or (Form = DW_FORM_sdata)
+    then
+      FMaxPC := FMinPC + FMaxPC;
+  end;
 
   if FMinPC = 0 then FMinPC := FMaxPC;
   if FMaxPC = 0 then FMAxPC := FMinPC;
