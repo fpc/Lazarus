@@ -338,6 +338,14 @@ begin
   FModulePtr := MapViewOfFile(FMapHandle, FILE_MAP_READ, 0, 0, 0);
   if FModulePtr = nil
   then begin
+    if GetLastError = 8 then begin // not enough memory, use a stream instead
+      CloseHandle(FMapHandle);
+      FMapHandle := 0;
+      FList := TList.Create;
+      FStream := THandleStream.Create(AFileHandle);
+      inherited Create;
+      exit;
+    end;
     raise Exception.Create('Could not map view: ' + IntToStr(GetLastOSError));
     Exit;
   end;
