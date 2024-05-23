@@ -1207,7 +1207,7 @@ procedure TMainIDE.LoadGlobalOptions;
     {$IFDEF Darwin}
     p:=Pos('.app/Contents/MacOS/',Result);
     if p>0 then
-      Result:=LeftStr(LazExe,p-1);
+      Result:=LeftStr(Result,p-1);
     {$ENDIF}
   end;
 
