@@ -90,6 +90,15 @@ const
     PDFEscx = 0.792553191;
     PDFEscy = 0.785447761;
 
+function CornerSetToPdfCorners(cs: TCornerSet): TPdfCorners;
+begin
+  result := [];
+  if ctTopLeft in cs then Include(result, pcTopLeft);
+  if ctBottomLeft in cs then Include(result, pcBottomLeft);
+  if ctBottomRight in cs then Include(result, pcBottomRight);
+  if ctTopRight in cs then Include(result, pcTopRight);
+end;
+
 procedure TfrTNPDFExportFilter.AddShape(Data: TShapeData; x, y, h, w: integer);
 
   function CreateShape(ShapeClass: TPRShapeClass): TPRShape;
@@ -117,7 +126,7 @@ begin
     frstRoundRect:
       with TPRRect(CreateShape(TPRRect)) do begin
         Radius := Data.Radius;
-        SquaredCorners := TPdfCorners(Data.Corners);
+        SquaredCorners := CornerSetToPdfCorners(Data.Corners);
         GradientColor := Data.GradientColor;
         GradientDirection := Data.GradientDirection;
       end;
