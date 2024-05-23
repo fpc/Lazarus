@@ -4662,7 +4662,7 @@ begin
   AnAddress := InvalidLoc;
 
   AForm :=  AnAttribData.InformationEntry.AttribForm[AnAttribData.Idx];
-  if (AForm = DW_FORM_data4) or (AForm = DW_FORM_data8) then begin
+  if (AForm = DW_FORM_data4) or (AForm = DW_FORM_data8) or (AForm = DW_FORM_sec_offset) then begin
     // location list
     if not LocationExprFromLocationList(AnAttribData, AValueObj, Val) then begin
       DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location from loc-list']);

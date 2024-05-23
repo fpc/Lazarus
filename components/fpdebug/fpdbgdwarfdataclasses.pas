@@ -992,7 +992,8 @@ begin
   Result := True;
   case AForm of
     DW_FORM_addr     : Inc(AEntryData, AddrSize);
-    DW_FORM_block    : begin
+    DW_FORM_block,
+    DW_FORM_exprloc  : begin
         UValue := ULEB128toOrdinal(AEntryData);
         Inc(AEntryData, UValue);
       end;
@@ -1020,7 +1021,9 @@ begin
         while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
         Inc(AEntryData);
       end;
-    DW_FORM_strp: begin
+    DW_FORM_ref_sig8 : Inc(AEntryData, 8);
+    DW_FORM_strp,
+    DW_FORM_sec_offset: begin
         if IsDwarf64 then
           Inc(AEntryData, 8)
         else
@@ -1047,6 +1050,7 @@ begin
         while AForm = DW_FORM_indirect do AForm := ULEB128toOrdinal(AEntryData);
         Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize, IsDwarf64, Version);
       end;
+    DW_FORM_flag_present: ; // No data
   else begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', AForm]);
       Result := False;
@@ -5571,6 +5575,7 @@ begin
     DW_FORM_ref_addr : begin
       AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
+    DW_FORM_flag_present: AValue := 1;
     DW_FORM_flag,
     DW_FORM_ref1,
     DW_FORM_data1    : begin
@@ -5587,6 +5592,12 @@ begin
     DW_FORM_ref8,
     DW_FORM_data8    : begin
       AValue := PQWord(AAttribute)^;
+    end;
+    DW_FORM_sec_offset: begin
+      if IsDwarf64 then
+        AValue := PQWord(AAttribute)^
+      else
+        AValue := PLongWord(AAttribute)^;
     end;
     DW_FORM_sdata    : begin
       AValue := SLEB128toOrdinal(AAttribute);
@@ -5609,6 +5620,7 @@ begin
     DW_FORM_ref_addr : begin
       AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
+    DW_FORM_flag_present: AValue := 1;
     DW_FORM_flag,
     DW_FORM_ref1,
     DW_FORM_data1    : begin
@@ -5625,6 +5637,12 @@ begin
     DW_FORM_ref8,
     DW_FORM_data8    : begin
       AValue := PInt64(AAttribute)^;
+    end;
+    DW_FORM_sec_offset: begin
+      if IsDwarf64 then
+        AValue := PQWord(AAttribute)^
+      else
+        AValue := PLongWord(AAttribute)^;
     end;
     DW_FORM_sdata    : begin
       AValue := SLEB128toOrdinal(AAttribute);
@@ -5647,6 +5665,7 @@ begin
     DW_FORM_ref_addr : begin
       AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
+    DW_FORM_flag_present: AValue := 1;
     DW_FORM_flag,
     DW_FORM_ref1,
     DW_FORM_data1    : begin
@@ -5663,6 +5682,12 @@ begin
     DW_FORM_ref8,
     DW_FORM_data8    : begin
       AValue := PInt64(AAttribute)^;
+    end;
+    DW_FORM_sec_offset: begin
+      if IsDwarf64 then
+        AValue := PQWord(AAttribute)^
+      else
+        AValue := PLongWord(AAttribute)^;
     end;
     DW_FORM_sdata    : begin
       AValue := SLEB128toOrdinal(AAttribute);
@@ -5703,6 +5728,7 @@ begin
     DW_FORM_ref_addr : begin
       AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
+    DW_FORM_flag_present: AValue := 1;
     DW_FORM_flag,
     DW_FORM_ref1,
     DW_FORM_data1    : begin
@@ -5719,6 +5745,12 @@ begin
     DW_FORM_ref8,
     DW_FORM_data8    : begin
       AValue := PQWord(AAttribute)^;
+    end;
+    DW_FORM_sec_offset: begin
+      if IsDwarf64 then
+        AValue := PQWord(AAttribute)^
+      else
+        AValue := PLongWord(AAttribute)^;
     end;
     DW_FORM_sdata    : begin
       AValue := QWord(SLEB128toOrdinal(AAttribute));
@@ -5758,7 +5790,8 @@ var
 begin
   Result := True;
   case AForm of
-    DW_FORM_block    : begin
+    DW_FORM_block,
+    DW_FORM_exprloc  : begin
       Size := ULEB128toOrdinal(AAttribute);
     end;
     DW_FORM_block1   : begin

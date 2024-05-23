@@ -205,8 +205,8 @@ const
   DW_FORM_block2    = $03;    // block
   DW_FORM_block4    = $04;    // block
   DW_FORM_data2     = $05;    // constant
-  DW_FORM_data4     = $06;    // constant, lineptr, loclistptr, macptr, rangelistptr
-  DW_FORM_data8     = $07;    // constant, lineptr, loclistptr, macptr, rangelistptr
+  DW_FORM_data4     = $06;    // constant // DWARF-3: lineptr, loclistptr, macptr, rangelistptr
+  DW_FORM_data8     = $07;    // constant // DWARF-3: lineptr, loclistptr, macptr, rangelistptr
   DW_FORM_string    = $08;    // string
   DW_FORM_block     = $09;    // block
   DW_FORM_block1    = $0a;    // block
@@ -222,8 +222,13 @@ const
   DW_FORM_ref8      = $14;    // reference
   DW_FORM_ref_udata = $15;    // reference
   DW_FORM_indirect  = $16;    //
+  // -- DWARF 4 --
+  DW_FORM_sec_offset   = $17; // lineptr, loclistptr, macptr, rangelistptr
+  DW_FORM_exprloc      = $18; // exprloc
+  DW_FORM_flag_present = $19; // flag
+  DW_FORM_ref_sig8     = $20; // reference
 
-  DW_FORM_MAX  = $16;    //
+  DW_FORM_MAX  = $20;    //
 
 
   { DWARF operation encodings }
@@ -776,6 +781,7 @@ begin
     DW_AT_elemental           : Result := 'DW_AT_elemental';
     DW_AT_pure                : Result := 'DW_AT_pure';
     DW_AT_recursive           : Result := 'DW_AT_recursive';
+    DW_AT_data_bit_offset     : Result := 'DW_AT_data_bit_offset';
     DW_AT_lo_user             : Result := 'DW_AT_lo_user';
     DW_AT_hi_user             : Result := 'DW_AT_hi_user';
   else
@@ -807,6 +813,10 @@ begin
     DW_FORM_ref8     : Result := 'DW_FORM_ref8';
     DW_FORM_ref_udata: Result := 'DW_FORM_ref_udata';
     DW_FORM_indirect : Result := 'DW_FORM_indirect';
+    DW_FORM_sec_offset:   Result := 'DW_FORM_sec_offset';
+    DW_FORM_exprloc:      Result := 'DW_FORM_exprloc';
+    DW_FORM_flag_present: Result := 'DW_FORM_flag_present';
+    DW_FORM_ref_sig8:     Result := 'DW_FORM_ref_sig8';
   else
     Result := Format('DW_FORM_%d', [AValue]);
   end;
