@@ -109,6 +109,7 @@ type
   PDwarfLNPInfoHeader = ^TDwarfLNPInfoHeader;
   TDwarfLNPInfoHeader = record
     MinimumInstructionLength: Byte;
+    //MaximumInstructionLength: Byte; // Version 4 and up
     DefaultIsStmt: Byte;
     LineBase: ShortInt;
     LineRange: Byte;
@@ -678,9 +679,11 @@ type
       DataEnd: Pointer;
 
       Valid: Boolean;
+      Version: Word;
       Addr64: Boolean;
       AddrSize: Byte;
       MinimumInstructionLength: Byte;
+      MaximumInstructionLength: Byte; // Dwarf 4
       DefaultIsStmt: Boolean;
       LineBase: ShortInt;
       LineRange: Byte;
@@ -4530,13 +4533,8 @@ begin
   if FEndSequence
   then begin
     Reset;
-  end
-  else begin
-    FBasicBlock := False;
-    FPrologueEnd := False;
-    FEpilogueBegin := False;
   end;
-  
+
   while pbyte(FLineInfoPtr) < FMaxPtr do
   begin
     Opcode := pbyte(FLineInfoPtr)^;
@@ -4576,6 +4574,7 @@ begin
           then Inc(FAddress, Opcode * FOwner.FLineInfo.MinimumInstructionLength)
           else Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
           {$POP}
+          // version 4 also op_index register, if architecture has VLIW
         end;
         DW_LNS_fixed_advance_pc: begin
           {$PUSH}{$R-}{$Q-}
@@ -4629,6 +4628,12 @@ begin
               //length
               //ULEB128toOrdinal(p));
             end;
+            // Version-4
+             DW_LNE_set_discriminator: begin
+               // for now just skif the value
+               //p := pbyte(FLineInfoPtr);
+               //FDiscriminator := ULEB128toOrdinal(pbyte(p));
+             end;
           else
             // unknown extendend opcode
           end;
@@ -4636,6 +4641,11 @@ begin
         end;
       else
         // unknown opcode
+        if Opcode >= Length(FOwner.FLineInfo.StandardOpcodeLengths) then begin
+          debugln(FPDBG_DWARF_ERRORS, ['Error, unknown line machine opcode: ', Opcode]);
+          exit(False); // can't handle unknow upcode
+        end;
+        debugln(FPDBG_DWARF_WARNINGS, ['Skipping unknown line machine opcode: ', Opcode]);
         Inc(pbyte(FLineInfoPtr), FOwner.FLineInfo.StandardOpcodeLengths[Opcode])
       end;
       Continue;
@@ -4653,6 +4663,11 @@ begin
       Inc(FLine, FOwner.FLineInfo.LineBase + (Opcode mod FOwner.FLineInfo.LineRange));
     end;
     {$POP}
+    FBasicBlock    := False;
+    FPrologueEnd   := False;
+    FEpilogueBegin := False;
+    //FDiscriminator := False;
+
     Result := True;
     Exit;
   end;
@@ -5065,8 +5080,19 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     FLineInfo.Addr64 := FAddressSize = 8;
     FLineInfo.AddrSize := FAddressSize;
     FLineInfo.DataStart := PByte(Info) + HeaderLength;
+    FLineInfo.Version := Version;
+
 
     FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
+    FLineInfo.MaximumInstructionLength := 1;
+    if Version >= 4 then begin
+      // FreePascal writes an incorrect header
+      //if (PosI('free pascal 3.2.3', FProducer) <= 0) then begin
+      if (Pos('free pascal', LowerCase(FProducer)) <= 0) then begin
+        inc(PByte(Info)); // All fields move by 1 byte // Dwarf-4 has a new field
+        FLineInfo.MaximumInstructionLength := Info^.MinimumInstructionLength;
+      end;
+    end;
     FLineInfo.DefaultIsStmt := Info^.DefaultIsStmt <> 0;
     FLineInfo.LineBase := Info^.LineBase;
     FLineInfo.LineRange := Info^.LineRange;
@@ -5080,6 +5106,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     FLineInfo.Directories.Add(''); // current dir
     Name := PChar(@Info^.StandardOpcodeLengths);
     Inc(Name, Info^.OpcodeBase-1);
+
     // directories
     while Name^ <> #0 do
     begin
@@ -5115,6 +5142,9 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     FLineInfo.StateMachine := TDwarfLineInfoStateMachine.Create(Self, FLineInfo.DataStart, FLineInfo.DataEnd);
     FLineInfo.StateMachines := TFPObjectList.Create(True);
 
+    // MaximumInstructionLength is currently not supported
+    if FLineInfo.MaximumInstructionLength <> 1 then
+      exit;
     FLineInfo.Valid := True;
   end;
 

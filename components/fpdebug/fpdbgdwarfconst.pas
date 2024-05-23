@@ -553,6 +553,9 @@ const
   DW_LNE_set_address  = $02;
   DW_LNE_define_file  = $03;
   // --- DWARF3 ---
+  // --- DWARF4 ---
+  DW_LNE_set_discriminator = $04;
+
   DW_LNE_lo_user      = $80;
   DW_LNE_hi_user      = $ff;
   // ---  ---
