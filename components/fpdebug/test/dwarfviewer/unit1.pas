@@ -551,6 +551,7 @@ var
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddAddr(%s, %s, $%s);%s', [s1, s2, s3, LineEnding]);
           end;
+          DW_FORM_exprloc,
           DW_FORM_block    : begin
             p2 := p;
             ValueSize := ULEB128toOrdinal(p);
@@ -709,6 +710,26 @@ var
             //Continue;
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddULEB(%s, %s, %u);%s', [s1, s2, Value, LineEnding]);
+          end;
+          DW_FORM_sec_offset: begin
+            if CU.IsDwarf64 then begin
+              Value := PQWord(p)^;
+              s3 := ToHex(p, 8);
+              inc(p, 8);
+            end
+            else begin
+              Value := PLongWord(P)^;
+              s3 := ToHex(p, 4);
+              inc(p, 4);
+            end;
+          end;
+          DW_FORM_flag_present: begin
+            s3 := 'Yes';
+          end;
+          DW_FORM_ref_sig8: begin
+            Value := PQWord(p)^;
+            s3 := ToHex(p, 8);
+            inc(p, 8);
           end;
         else
           s3 := '?????';
