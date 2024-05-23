@@ -128,8 +128,10 @@ begin
 end;
 
 function ColorToHex(AColor: TFPColor): String;
+const
+  SHexDigits: PChar = '0123456789ABCDEF';   // PChar for indices to begin with 0
 var
-  r, g, b: String[2];
+  r, g, b: byte;
 begin
   if AColor = colBlack then
     Result := 'black'
@@ -137,14 +139,17 @@ begin
     Result := 'white'
   else
   begin
-    r := IntToHex(AColor.Red shr 8, 2);
-    g := IntToHex(AColor.Green shr 8, 2);
-    b := IntToHex(AColor.Blue shr 8, 2);
+    r:= AColor.Red shr 8;
+    g:= AColor.Green shr 8;
+    b:= AColor.Blue shr 8;
     SetLength(Result, 7);
-    Result[1] := '#';            // #rrggbb
-    Move(r[1], Result[2], 2);
-    Move(g[1], Result[4], 2);
-    Move(b[1], Result[6], 2);
+    Result[1]:= '#'; // #rrggbb
+    Result[2]:= SHexDigits[Hi(r)];
+    Result[3]:= SHexDigits[Lo(r)];
+    Result[4]:= SHexDigits[Hi(g)];
+    Result[5]:= SHexDigits[Lo(g)];
+    Result[6]:= SHexDigits[Hi(b)];
+    Result[7]:= SHexDigits[Lo(b)];
   end;
 end;
 
