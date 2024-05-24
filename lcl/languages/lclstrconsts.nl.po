@@ -842,7 +842,7 @@ msgstr "Verberg andere"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Voorkeuren…"
+msgstr "Voorkeuren..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

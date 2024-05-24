@@ -837,7 +837,7 @@ msgstr "Andere ausblenden"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Einstellungen…"
+msgstr "Einstellungen..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

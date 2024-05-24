@@ -836,7 +836,7 @@ msgstr "기타 가리기"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "환경설정…"
+msgstr "환경설정..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

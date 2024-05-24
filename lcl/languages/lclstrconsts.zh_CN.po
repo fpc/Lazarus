@@ -816,7 +816,7 @@ msgstr "隐藏其他"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "偏好设置"
+msgstr "偏好设置..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

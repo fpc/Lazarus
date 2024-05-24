@@ -828,7 +828,7 @@ msgstr "Ocultar otros"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Preferencias…"
+msgstr "Preferencias..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

@@ -799,7 +799,7 @@ msgstr "Скрыть остальные"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Настройки…"
+msgstr "Настройки..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

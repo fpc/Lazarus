@@ -837,7 +837,7 @@ msgstr "Skrýt ostatní"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Předvolby…"
+msgstr "Předvolby..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format

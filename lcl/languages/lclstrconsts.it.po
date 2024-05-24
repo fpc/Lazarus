@@ -839,7 +839,7 @@ msgstr "Nascondi altre"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr "Preferenze…"
+msgstr "Preferenze..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
