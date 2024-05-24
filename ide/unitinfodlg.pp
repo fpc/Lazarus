@@ -57,10 +57,10 @@ type
     PathsGroupBox: TGroupBox;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure clearIncludedByClick(Sender: TObject);
+    procedure ClearIncludedByClick(Sender: TObject);
   private
     FFilePath: string;
-    function getIncludedBy: string;
+    function GetIncludedBy: string;
   end;
 
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
@@ -130,7 +130,7 @@ begin
 
   Result:=Dlg.ShowModal;
   ClearIncludedBy:=(Result in [mrOk,mrYes]) and (IncludedBy<>'')
-                   and (Dlg.getIncludedBy='');
+                   and (Dlg.GetIncludedBy='');
   Dlg.Free;
 end;
 
@@ -166,12 +166,12 @@ begin
   GotoIncludeDirectiveButton.Caption:=lisMenuGotoIncludeDirective;
 end;
 
-procedure TUnitInfoDialog.clearIncludedByClick(Sender: TObject);
+procedure TUnitInfoDialog.ClearIncludedByClick(Sender: TObject);
 begin
   ListValues.Items[6].SubItems[0]:='';
 end;
 
-function TUnitInfoDialog.getIncludedBy: string;
+function TUnitInfoDialog.GetIncludedBy: string;
 begin
   Result:=ListValues.Items[6].SubItems[0];
 end;

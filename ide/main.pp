@@ -5955,7 +5955,7 @@ var ActiveSrcEdit:TSourceEditor;
   UnitLineCountWithIncludes: LongInt;
   UnitLineCountParsed: LongInt;
   Code: TCodeBuffer;
-  CTTool: TCodeTool;
+  CTTool, aCodeTool: TCodeTool;
   TreeOfSourceCodes: TAVLTree;
   Node: TAVLTreeNode;
   SubCode: TCodeBuffer;
@@ -6015,8 +6015,12 @@ begin
     TrimSearchPath(CodeToolBoss.GetIncludePathForDirectory(FileDir),FileDir),
     TrimSearchPath(CodeToolBoss.GetCompleteSrcPathForDirectory(FileDir),FileDir)
     );
-  if ClearIncludedByFile then
+  if ClearIncludedByFile then begin
     ActiveUnitInfo.Source.LastIncludedByFile:='';
+    CodeToolBoss.SourceCache.ClearIncludedByEntry(ActiveUnitInfo.Source.Filename);
+    CodeToolBoss.Explore(ActiveUnitInfo.Source,aCodeTool,false,true);
+    SaveIncludeLinks;
+  end;
   if (DlgResult=mrYes) and (ActiveUnitInfo.Source.LastIncludedByFile<>'') then
     DoGotoIncludeDirective;
 end;
