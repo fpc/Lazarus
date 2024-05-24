@@ -95,11 +95,22 @@ resourceString
   rsRefreshRecordsHint = 'Refresh';
 
   // macOS (cocoa) interface
+  rsMacOSMenuAbout = 'About %s';
+  rsMacOSMenuPreferences = 'Preferences...';
   rsMacOSMenuHide = 'Hide %s';
   rsMacOSMenuHideOthers = 'Hide Others';
   rsMacOSMenuQuit = 'Quit %s';
   rsMacOSMenuServices = 'Services';
   rsMacOSMenuShowAll = 'Show All';
+
+  rsMacOSEditMenu = 'Edit';
+  rsMacOSEditMenuUndo = 'Undo';
+  rsMacOSEditMenuRedo = 'Redo';
+  rsMacOSEditMenuCut = 'Cut';
+  rsMacOSEditMenuCopy = 'Copy';
+  rsMacOSEditMenuPaste = 'Paste';
+  rsMacOSEditMenuSelectAll = 'Select All';
+
   rsMacOSFileFormat = 'File Format:'; // used of FileDialog
 
   // gtk interface

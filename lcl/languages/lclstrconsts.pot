@@ -243,10 +243,12 @@ msgid "&Directory"
 msgstr ""
 
 #: lclstrconsts.rsdocopy
+msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
 msgstr ""
 
 #: lclstrconsts.rsdopaste
+msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
 msgstr ""
 
@@ -255,6 +257,7 @@ msgid "Duplicate icon format."
 msgstr ""
 
 #: lclstrconsts.rseditrecordhint
+msgctxt "lclstrconsts.rseditrecordhint"
 msgid "Edit"
 msgstr ""
 
@@ -738,8 +741,44 @@ msgstr ""
 msgid "List index exceeds bounds (%d)"
 msgstr ""
 
+#: lclstrconsts.rsmacoseditmenu
+msgctxt "lclstrconsts.rsmacoseditmenu"
+msgid "Edit"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenucopy
+msgctxt "lclstrconsts.rsmacoseditmenucopy"
+msgid "Copy"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenucut
+msgid "Cut"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenupaste
+msgctxt "lclstrconsts.rsmacoseditmenupaste"
+msgid "Paste"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenuredo
+msgid "Redo"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenuselectall
+msgid "Select All"
+msgstr ""
+
+#: lclstrconsts.rsmacoseditmenuundo
+msgid "Undo"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenuabout
+#, object-pascal-format
+msgid "About %s"
 msgstr ""
 
 #: lclstrconsts.rsmacosmenuhide
@@ -749,6 +788,10 @@ msgstr ""
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
+msgstr ""
+
+#: lclstrconsts.rsmacosmenupreferences
+msgid "Preferences..."
 msgstr ""
 
 #: lclstrconsts.rsmacosmenuquit
