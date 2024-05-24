@@ -72,7 +72,7 @@ type
   private
     FAutoDeref: Boolean;
     FError: TFpError;
-    FContext: TFpDbgSymbolScope;
+    FScope: TFpDbgSymbolScope;
     FFixPCharIndexAccess: Boolean;
     FHasPCharIndexAccess: Boolean;
     FIntrinsicPrefix: TFpIntrinsicPrefix;
@@ -93,9 +93,9 @@ type
     function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpValue;
     function GetRegisterValue({%H-}AnIdent: String): TFpValue;
     property ExpressionPart: TFpPascalExpressionPart read FExpressionPart;
-    property Context: TFpDbgSymbolScope read FContext;
+    property Scope: TFpDbgSymbolScope read FScope;
   public
-    constructor Create(ATextExpression: String; AContext: TFpDbgSymbolScope; ASkipParse: Boolean = False);
+    constructor Create(ATextExpression: String; AScope: TFpDbgSymbolScope; ASkipParse: Boolean = False);
     destructor Destroy; override;
     procedure Parse;
     function DebugDump(AWithResults: Boolean = False): String;
@@ -876,7 +876,7 @@ end;
 constructor TFpPasParserValue.Create(AnExpressionPart: TFpPascalExpressionPart);
 begin
   FExpressionPart := AnExpressionPart;
-  FContext := AnExpressionPart.Expression.Context.LocationContext;
+  FContext := AnExpressionPart.Expression.Scope.LocationContext;
   inherited Create;
 end;
 
@@ -1475,7 +1475,7 @@ constructor TPasParserSymbolPointer.Create(const APointedTo: TFpSymbol;
 begin
   inherited Create('');
   FExpressionPart := AnExpressionPart;
-  FContext := FExpressionPart.Expression.Context.LocationContext;
+  FContext := FExpressionPart.Expression.Scope.LocationContext;
   FPointerLevels := APointerLevels;
   FPointedTo := APointedTo;
   FPointedTo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(FPointedTo, 'TPasParserSymbolPointer'){$ENDIF};
@@ -2396,7 +2396,7 @@ begin
         Size := SizeVal(1);
     end;
 
-    ctx := Expression.Context.LocationContext;
+    ctx := Expression.Scope.LocationContext;
     {$PUSH}{$R-}{$Q-}
     if (Tmp.Kind = skWideString) or
        ( (Tmp.Kind = skPointer) and (Size.Size = 2))
@@ -3168,8 +3168,8 @@ end;
 
 function TFpPascalExpression.GetDbgSymbolForIdentifier(AnIdent: String): TFpValue;
 begin
-  if FContext <> nil then
-    Result := FContext.FindSymbol(AnIdent)
+  if FScope <> nil then
+    Result := FScope.FindSymbol(AnIdent)
   else
     Result := nil;
 end;
@@ -3181,28 +3181,28 @@ var
   RVal: QWord;
 begin
   Result := nil;
-  if FContext = nil then
+  if FScope = nil then
     exit;
 
-  if not FContext.MemManager.RegisterNumber(AnIdent, RNum) then
+  if not FScope.MemManager.RegisterNumber(AnIdent, RNum) then
     exit;
 
-  RSize := FContext.MemManager.RegisterSize(RNum);
+  RSize := FScope.MemManager.RegisterSize(RNum);
   if RSize > 8 then
     exit;
-  if not FContext.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal) then
+  if not FScope.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal) then
     exit;
 
   Result := TFpValueConstNumber.Create(RVal, False);
 end;
 
-constructor TFpPascalExpression.Create(ATextExpression: String;
-  AContext: TFpDbgSymbolScope; ASkipParse: Boolean);
+constructor TFpPascalExpression.Create(ATextExpression: String; AScope: TFpDbgSymbolScope;
+  ASkipParse: Boolean);
 begin
   FFpuMask := GetExceptionMask;
   SetExceptionMask([low(TFPUExceptionMask)..high(TFPUExceptionMask)]);
-  FContext := AContext;
-  FContext.AddReference;
+  FScope := AScope;
+  FScope.AddReference;
   FTextExpression := ATextExpression;
   FError := NoError;
   FValid := True;
@@ -3213,7 +3213,7 @@ end;
 destructor TFpPascalExpression.Destroy;
 begin
   FreeAndNil(FExpressionPart);
-  FContext.ReleaseReference;
+  FScope.ReleaseReference;
   inherited Destroy;
   ClearExceptions(False);
   SetExceptionMask(FFpuMask);
@@ -5211,7 +5211,7 @@ begin
        then it would hide the unitname, but otherwise a unit in the uses clause would
        hide the structure.
     *)
-    Result := Expression.FContext.FindSymbol(MemberName, Items[0].GetText);
+    Result := Expression.FScope.FindSymbol(MemberName, Items[0].GetText);
     if Result <> nil then begin
       {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
       exit;
