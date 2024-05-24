@@ -68,6 +68,7 @@ function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inl
 function NSStringToString(ns: NSString): String;
 
 function NSStringRemoveLineBreak(const str: NSString): NSString;
+function StringRemoveAcceleration(const str: String): String;
 
 function GetNSObjectWindow(obj: NSObject): NSWindow;
 
@@ -127,9 +128,9 @@ function GetMacOSXVersion: Integer;
 function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
 function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
 
-// The function removes single & and replaced && with &
+// The function removes single '&' and '(...)', and replaced '&&' with '&'
 // (removing LCL (Windows) specific caption convention
-function ControlTitleToStr(const ATitle: string): String;
+function ControlTitleToStr(const ATitle: string): String; inline;
 // The returned NSString doesn't require a release
 // (it would happen in NSAutoRelease pool)
 function ControlTitleToNSStr(const ATitle: string): NSString;
@@ -936,6 +937,28 @@ begin
   Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_PARAGRAPH_SEPARATOR, NSString.string_ );
 end;
 
+function StringRemoveAcceleration(const str: String): String;
+var
+  posAmp: Integer;
+  posRight: Integer;
+  posLeft: Integer;
+begin
+  Result:= str;
+  posAmp:= DeleteAmpersands(Result);
+  if posAmp < 0 then
+    Exit;
+
+  posRight:= str.IndexOf( ')' );
+  if (posRight<0) or (posRight<posAmp) then
+    Exit;
+
+  posLeft:= str.IndexOf( '(' );
+  if (posLeft<0) or (posLeft>posAmp) then
+    Exit;
+
+  Result:= str.Substring(0,posLeft).Trim;
+end;
+
 procedure SetNSText(text: NSText; const s: String); inline;
 var
   ns: NSString;
@@ -1265,8 +1288,7 @@ end;
 
 function ControlTitleToStr(const ATitle: string): String;
 begin
-  Result := ATitle;
-  DeleteAmpersands(Result);
+  Result:= StringRemoveAcceleration(ATitle);
 end;
 
 function ControlTitleToNSStr(const ATitle: string): NSString;
