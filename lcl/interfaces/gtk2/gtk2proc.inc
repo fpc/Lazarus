@@ -4665,6 +4665,7 @@ begin
     if ClientWindow <> nil then
     begin
       // fix for buggy compiz. issue #40659
+      {$IFDEF HASX}
       if Gtk2WidgetSet.compositeManagerRunning and GTK_WIDGET_TOPLEVEL(TheWidget)  then
       begin
         LCLObject := GetLCLObject(ClientWidget);
@@ -4676,6 +4677,7 @@ begin
              Exit(TWinControl(LCLObject).BoundsRect.TopLeft);
         end;
       end;
+      {$ENDIF}
       {$IFDEF DebugGDK}
       BeginGDKErrorTrap;
       {$ENDIF}
