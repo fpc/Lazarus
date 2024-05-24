@@ -1349,7 +1349,8 @@ end;
 function TCodeBuffer.GetLastIncludedByFile: string;
 begin
   Result:=FLastIncludedByFile;
-  if Result=Filename then Result:='';
+  if CompareFilenames(Result,Filename)=0 then
+    Result:='';
 end;
 
 procedure TCodeBuffer.SetFilename(Value: string);
