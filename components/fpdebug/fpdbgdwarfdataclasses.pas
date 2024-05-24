@@ -2865,6 +2865,9 @@ begin
   if not HasValidScope then
     exit;
 
+  h := objpas.Hash(QuickUtf8UpperCase(CompUnit.UnitName)) and $7fff or $8000;
+  AKNownHashes^[h and KnownNameHashesBitMask] := True;
+
   NextTopLevel := 0;
   dec(FScope.FIndex);
   while (FScope.Index < FScope.ScopeListPtr^.HighestKnown) do begin

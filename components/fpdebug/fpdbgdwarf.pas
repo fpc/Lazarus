@@ -82,9 +82,14 @@ type
 
   TDwarfCompilationUnitArray = array of TDwarfCompilationUnit;
 
+  TFindExportedSymbolsFlag = (fsfIgnoreEnumVals, fsfMatchUnitName);
+  TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
+
   { TFpThreadWorkerFindSymbolInUnits }
 
   TFpThreadWorkerFindSymbolInUnits = class(TFpThreadWorkerItem)
+  private
+    FFindFlags: TFindExportedSymbolsFlags;
   protected
     FScope: TFpDwarfInfoSymbolScope;
     FCUs: TDwarfCompilationUnitArray;
@@ -96,10 +101,8 @@ type
   public
     constructor Create(AScope: TFpDwarfInfoSymbolScope; CUs: TDwarfCompilationUnitArray; const ANameInfo: TNameSearchInfo);
     destructor Destroy; override;
+    property FindFlags: TFindExportedSymbolsFlags read FFindFlags write FFindFlags;
   end;
-
-  TFindExportedSymbolsFlag = (fsfIgnoreEnumVals);
-  TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
 
   { TFpDwarfInfoSymbolScope }
 
@@ -1344,7 +1347,7 @@ var
 begin
   FFoundInfoEntry := nil;
   for i := 0 to Length(FCUs) - 1 do begin
-    if FScope.FindExportedSymbolInUnit(FCUs[i], FNameInfo, InfoEntry, IsExt) then begin
+    if FScope.FindExportedSymbolInUnit(FCUs[i], FNameInfo, InfoEntry, IsExt, FFindFlags) then begin
       FFoundInfoEntry.ReleaseReference;
       FFoundInfoEntry := InfoEntry;
       if FIsExt then
@@ -1464,7 +1467,9 @@ begin
   // compile_unit can not have startscope
 
   s := CU.UnitName;
-  if (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1])) then begin
+  if (fsfMatchUnitName in AFindFlags) and
+     (s <> '') and (CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.NameLower), @s[1]))
+  then begin
     Result := True;
     AnInfoEntry := InfoEntry;
     AnIsExternal := True;
@@ -1501,6 +1506,7 @@ var
   FoundInfoEntry: TDwarfInformationEntry;
   IsExt: Boolean;
   WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
+  AFindFlags: TFindExportedSymbolsFlags;
 begin
   Result := False;
 
@@ -1508,6 +1514,9 @@ begin
   FoundInfoEntry := nil;
   PrevWorkItem := nil;
   IsExt := False;
+  AFindFlags := [];
+  if OnlyUnitNameLower = '' then
+    AFindFlags := [fsfMatchUnitName];
 
   i := FDwarf.CompilationUnitsCount;
   while i > 0 do begin
@@ -1535,6 +1544,7 @@ begin
 
     if j > 0 then begin
       WorkItem := TFpThreadWorkerFindSymbolInUnits.Create(Self, CUList, ANameInfo);
+      WorkItem.FFindFlags := AFindFlags;
       WorkItem.AddRef;
     end
     else
@@ -1745,10 +1755,12 @@ var
   CU: TDwarfCompilationUnit;
   //Scope,
   StartScopeIdx: Integer;
-  InfoEntry: TDwarfInformationEntry;
+  InfoEntry, UnitInfoEntry: TDwarfInformationEntry;
   NameInfo: TNameSearchInfo;
   InfoName: PChar;
   tg: Cardinal;
+  i: SizeInt;
+  s: String;
 begin
   Result := nil;
   //if (FSymbol = nil) or not(FSymbol is TFpSymbolDwarfDataProc) or (AName = '') then
@@ -1760,6 +1772,7 @@ begin
   if OnlyUnitName <> '' then begin
     // TODO: dwarf info for libraries
     FindExportedSymbolInUnits(AName, NameInfo, nil, Result, LowerCase(OnlyUnitName));
+    ApplyContext(Result);
     exit;
   end;
 
@@ -1776,6 +1789,7 @@ begin
     exit;
   end;
 
+  UnitInfoEntry := nil;
   try
     CU := Symbol.CompilationUnit;
     InfoEntry := Symbol.InformationEntry.Clone;
@@ -1785,10 +1799,11 @@ begin
       StartScopeIdx := InfoEntry.ScopeIndex;
 
       tg := InfoEntry.AbbrevTag;
-      if (tg = DW_TAG_compile_unit) and
-         (not CU.KnownNameHashes^[NameInfo.NameHash and KnownNameHashesBitMask])
-      then
-        break;
+      if (tg = DW_TAG_compile_unit) then begin
+        UnitInfoEntry := InfoEntry.Clone;
+        if (not CU.KnownNameHashes^[NameInfo.NameHash and KnownNameHashesBitMask]) then
+          break;
+      end;
 
       //if InfoEntry.Abbrev = nil then
       //  exit;
@@ -1853,6 +1868,14 @@ begin
       InfoEntry.GoParent;
     end;
 
+    if UnitInfoEntry <> nil then begin
+      s := CU.UnitName;
+      if (CompareUtf8BothCase(PChar(NameInfo.NameUpper), PChar(NameInfo.NameLower), PChar(s))) then begin
+        Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, UnitInfoEntry));
+        exit;
+      end;
+    end;
+
     FindExportedSymbolInUnits(AName, NameInfo, CU, Result);
 
   finally
@@ -1860,6 +1883,7 @@ begin
     then DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier NOT found  Name=', AName])
     else DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier(',AName,') found Scope=', TFpSymbolDwarf(Result.DbgSymbol).InformationEntry.ScopeDebugText, '  ResultSymbol=', DbgSName(Result.DbgSymbol), ' ', Result.DbgSymbol.Name, ' in ', TFpSymbolDwarf(Result.DbgSymbol).CompilationUnit.FileName]);
     ReleaseRefAndNil(InfoEntry);
+    ReleaseRefAndNil(UnitInfoEntry);
 
     assert((Result = nil) or (Result is TFpValueDwarfBase), 'TDbgDwarfInfoAddressContext.FindSymbol: (Result = nil) or (Result is TFpValueDwarfBase)');
     ApplyContext(Result);
@@ -1872,7 +1896,10 @@ end;
 
 function TFpValueDwarfTypeDefinition.GetKind: TDbgSymbolKind;
 begin
-  Result := skType;
+  if FSymbol.Kind = skUnit then
+    Result := skUnit
+  else
+    Result := skType;
 end;
 
 function TFpValueDwarfTypeDefinition.GetDbgSymbol: TFpSymbol;

@@ -861,7 +861,10 @@ begin
 
     //skNone: ;
     //skInstance: ;
-    //skUnit: ;
+    skUnit: begin
+        AnResData.CreatePrePrinted('Unit: '+AnFpValue.DbgSymbol.Name);
+        Result := True;
+      end;
     skType: Result := TypeToResData(AnFpValue, AnResData);
     skProcedure,
     skFunction,
