@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
+  CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
 
 type
 
@@ -429,7 +429,7 @@ var
       appMenu.release;
     end;
 
-    editMenuIndex:= mainMenu.indexOfItemWithTitle(NSSTR('Edit'));
+    editMenuIndex:= mainMenu.indexOfItemWithTitle(CocoaConst.NSSTR_EDIT_MENU);
     if editMenuIndex < 0 then begin
       editMenuIndex:= mainMenu.numberOfItems;
     end else begin
@@ -442,20 +442,24 @@ var
     mainMenu.insertItem_atIndex(editMenu, editMenuIndex);
     editMenu.release;
 
-    editSubmenu:= NSMenu.alloc.initWithTitle(NSSTR('Edit'));
+    editSubmenu:= NSMenu.alloc.initWithTitle(CocoaConst.NSSTR_EDIT_MENU);
     editMenu.setSubmenu(editSubmenu);
     editSubmenu.release;
 
-    editSubmenu.addItemWithTitle_action_keyEquivalent(NSSTR('Undo'), objcselector('undo:'), NSSTR('z'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(NSSTR('Redo'), objcselector('redo:'), NSSTR('Z'));
+    editSubmenu.addItemWithTitle_action_keyEquivalent(
+      CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
+    editSubmenu.addItemWithTitle_action_keyEquivalent(
+      CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
     editSubmenu.addItem(NSMenuItem.separatorItem);
 
-    editSubmenu.addItemWithTitle_action_keyEquivalent(NSSTR('Cut'), objcselector('cut:'), NSSTR('x'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(NSSTR('Copy'), objcselector('copy:'), NSSTR('c'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(NSSTR('Paste'), objcselector('paste:'), NSSTR('v'));
-
     editSubmenu.addItemWithTitle_action_keyEquivalent(
-      NSSTR('Select All'), objcselector('selectAll:'), NSSTR('a'));
+      CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
+    editSubmenu.addItemWithTitle_action_keyEquivalent(
+      CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
+    editSubmenu.addItemWithTitle_action_keyEquivalent(
+      CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
+    editSubmenu.addItemWithTitle_action_keyEquivalent(
+      CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
   end;
 
   class procedure RestoreEditMenu();

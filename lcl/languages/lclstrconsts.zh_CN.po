@@ -251,10 +251,12 @@ msgid "&Directory"
 msgstr "目录(&D)"
 
 #: lclstrconsts.rsdocopy
+msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
 msgstr "复制"
 
 #: lclstrconsts.rsdopaste
+msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
 msgstr "粘贴"
 
@@ -263,6 +265,7 @@ msgid "Duplicate icon format."
 msgstr "重复图标格式。"
 
 #: lclstrconsts.rseditrecordhint
+msgctxt "lclstrconsts.rseditrecordhint"
 msgid "Edit"
 msgstr "编辑"
 
@@ -762,31 +765,71 @@ msgstr "青柠色"
 msgid "List index exceeds bounds (%d)"
 msgstr "列表索引超过限制 (%d)"
 
+#: lclstrconsts.rsmacoseditmenu
+msgctxt "lclstrconsts.rsmacoseditmenu"
+msgid "Edit"
+msgstr "编辑"
+
+#: lclstrconsts.rsmacoseditmenucopy
+msgctxt "lclstrconsts.rsmacoseditmenucopy"
+msgid "Copy"
+msgstr "复制"
+
+#: lclstrconsts.rsmacoseditmenucut
+msgid "Cut"
+msgstr "剪切"
+
+#: lclstrconsts.rsmacoseditmenupaste
+msgctxt "lclstrconsts.rsmacoseditmenupaste"
+msgid "Paste"
+msgstr "粘贴"
+
+#: lclstrconsts.rsmacoseditmenuredo
+msgid "Redo"
+msgstr "重做"
+
+#: lclstrconsts.rsmacoseditmenuselectall
+msgid "Select All"
+msgstr "全选"
+
+#: lclstrconsts.rsmacoseditmenuundo
+msgid "Undo"
+msgstr "撤销"
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr ""
 
+#: lclstrconsts.rsmacosmenuabout
+#, object-pascal-format
+msgid "About %s"
+msgstr "关于 %s"
+
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
 msgid "Hide %s"
-msgstr ""
+msgstr "隐藏 %s"
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
-msgstr ""
+msgstr "隐藏其他"
+
+#: lclstrconsts.rsmacosmenupreferences
+msgid "Preferences..."
+msgstr "偏好设置..."
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
 msgid "Quit %s"
-msgstr ""
+msgstr "退出 %s"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
-msgstr ""
+msgstr "服务"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr ""
+msgstr "全部显示"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"

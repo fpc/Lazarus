@@ -6,7 +6,7 @@ unit CocoaConst;
 interface
 
 uses
-  CocoaAll;
+  CocoaAll, LCLStrConsts;
 
 function NSSTR_EMPTY: NSString;
 
@@ -25,6 +25,14 @@ function NSSTR_KEY_PLUS: NSString;
 
 function NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
 function NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+
+function NSSTR_EDIT_MENU: NSSTRING;
+function NSSTR_EDIT_MENU_UNDO: NSSTRING;
+function NSSTR_EDIT_MENU_REDO: NSSTRING;
+function NSSTR_EDIT_MENU_CUT: NSSTRING;
+function NSSTR_EDIT_MENU_COPY: NSSTRING;
+function NSSTR_EDIT_MENU_PASTE: NSSTRING;
+function NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
 
 implementation
 
@@ -50,6 +58,14 @@ var
 
   _NSSTR_TABCONTROL_PREV_ARROW: NSSTRING;
   _NSSTR_TABCONTROL_NEXT_ARROW: NSSTRING;
+
+  _NSSTR_EDIT_MENU: NSSTRING;
+  _NSSTR_EDIT_MENU_UNDO: NSSTRING;
+  _NSSTR_EDIT_MENU_REDO: NSSTRING;
+  _NSSTR_EDIT_MENU_CUT: NSSTRING;
+  _NSSTR_EDIT_MENU_COPY: NSSTRING;
+  _NSSTR_EDIT_MENU_PASTE: NSSTRING;
+  _NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
 
 function NSSTR_EMPTY: NSString;
 begin
@@ -119,6 +135,62 @@ begin
   Result:= _NSSTR_TABCONTROL_NEXT_ARROW;
 end;
 
+function NSSTR_EDIT_MENU: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU) then
+    _NSSTR_EDIT_MENU:= NSString.alloc.initWithUTF8String(pchar(
+                         LCLStrConsts.rsMacOSEditMenu));
+  Result:= _NSSTR_EDIT_MENU;
+end;
+
+function NSSTR_EDIT_MENU_UNDO: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_UNDO) then
+    _NSSTR_EDIT_MENU_UNDO:= NSString.alloc.initWithUTF8String(pchar(
+                              LCLStrConsts.rsMacOSEditMenuUndo));
+  Result:= _NSSTR_EDIT_MENU_UNDO;
+end;
+
+function NSSTR_EDIT_MENU_REDO: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_REDO) then
+    _NSSTR_EDIT_MENU_REDO:= NSString.alloc.initWithUTF8String(pchar(
+                              LCLStrConsts.rsMacOSEditMenuRedo));
+  Result:= _NSSTR_EDIT_MENU_REDO;
+end;
+
+function NSSTR_EDIT_MENU_CUT: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_CUT) then
+    _NSSTR_EDIT_MENU_CUT:= NSString.alloc.initWithUTF8String(pchar(
+                             LCLStrConsts.rsMacOSEditMenuCut));
+  Result:= _NSSTR_EDIT_MENU_CUT;
+end;
+
+function NSSTR_EDIT_MENU_COPY: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_COPY) then
+    _NSSTR_EDIT_MENU_COPY:= NSString.alloc.initWithUTF8String(pchar(
+                             LCLStrConsts.rsMacOSEditMenuCopy));
+  Result:= _NSSTR_EDIT_MENU_COPY;
+end;
+
+function NSSTR_EDIT_MENU_PASTE: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_PASTE) then
+    _NSSTR_EDIT_MENU_PASTE:= NSString.alloc.initWithUTF8String(pchar(
+                             LCLStrConsts.rsMacOSEditMenuPaste));
+  Result:= _NSSTR_EDIT_MENU_PASTE;
+end;
+
+function NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
+begin
+  if NOT Assigned(_NSSTR_EDIT_MENU_SELECTALL) then
+    _NSSTR_EDIT_MENU_SELECTALL:= NSString.alloc.initWithUTF8String(pchar(
+                             LCLStrConsts.rsMacOSEditMenuSelectAll));
+  Result:= _NSSTR_EDIT_MENU_SELECTALL;
+end;
+
 
 initialization
   _NSSTR_EMPTY:= NSString.string_;
@@ -145,6 +217,14 @@ finalization;
 
   _NSSTR_TABCONTROL_PREV_ARROW.release;
   _NSSTR_TABCONTROL_NEXT_ARROW.release;
+
+  _NSSTR_EDIT_MENU.release;
+  _NSSTR_EDIT_MENU_UNDO.release;
+  _NSSTR_EDIT_MENU_REDO.release;
+  _NSSTR_EDIT_MENU_CUT.release;
+  _NSSTR_EDIT_MENU_COPY.release;
+  _NSSTR_EDIT_MENU_PASTE.release;
+  _NSSTR_EDIT_MENU_SELECTALL.release;
 
 end.
 
