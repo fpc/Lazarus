@@ -34,7 +34,7 @@ Run a script:
   ./build_html.sh
 
 Run the program:
-  ./build_lcl_docs --fpdoc /path/to/trunk/fpdoc/fpdoc --fpcdocs=../chm --outfmt chm --footer locallclfooter.xml
+  ./build_lcl_docs --fpdoc /path/to/trunk/fpdoc/fpdoc --fpcdocs=../chm --outfmt chm --footer @locallclfooter.xml
 
 
 For Windows:
