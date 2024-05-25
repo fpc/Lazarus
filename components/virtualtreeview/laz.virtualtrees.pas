@@ -89,12 +89,13 @@ uses
   LCLType, LMessages, LCLVersion, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs,  // Thread support
-  Clipbrd // Clipboard support
+  Clipbrd,   // Clipboard support
+  TypInfo,   // for migration stuff
+  ActnList,
+  StdActns,  // for standard action support
+  GraphType
   {$ifdef LCLCocoa}
   ,CocoaGDIObjects // hack: while using buffered drawing, multiply the context
-                   //       by the retina scale to achieve the needed scale for Retina
-                   //       Ideally - not to use Buffered. but Unbuffered drawing
-                   //       seems to need a fix
   {$endif}
   {$ifdef ThemeSupport}
   , Themes , TmSchema
@@ -4148,21 +4149,17 @@ implementation
 {$R laz.virtualtrees.res}
 
 uses
-  StrUtils, Math,
+  StrUtils, Math
   {$ifdef EnableOLE}
-  //AxCtrls,       // TOLEStream
+  //, AxCtrls       // TOLEStream
   {$endif}
   {$ifdef Windows}
-  MMSystem,                // for animation timer (does not include further resources)
+  , MMSystem        // for animation timer (does not include further resources)
   {$else}
-  laz.FakeMMSystem,
+  , laz.FakeMMSystem
   {$endif}
-  TypInfo,                 // for migration stuff
-  ActnList,
-  StdActns,                // for standard action support
-  GraphType
   {$ifdef EnableAccessible}
-  ,laz.VTAccessibilityFactory
+  , laz.VTAccessibilityFactory
   {$endif};  // accessibility helper class
 
 resourcestring
