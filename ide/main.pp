@@ -72,7 +72,7 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils, LazTracer,
-  LCLExceptionStacktrace, {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
+  LCLExceptionStacktrace, {$IFDEF LCLWin} Win32Proc, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // BuildIntf
@@ -7595,7 +7595,7 @@ begin
             Process.SetRedirection(dtStdErr, FileErr, ARunMode.RedirectStdErr = rprOverwrite);
         end;
 
-        {$IFDEF MSWINDOWS}
+        {$IFDEF LCLWin}
         if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
           Process.ApplyWin7Fix;
         {$ENDIF}

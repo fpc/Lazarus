@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, process,
   // LCL
-  Dialogs, {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
+  Dialogs, {$IFDEF LCLWin} Win32Proc, {$ENDIF}
 
   // LazUtils
   FileUtil, UTF8Process, LazFileUtils, LazLoggerBase,
@@ -183,7 +183,7 @@ begin
         FProcess.SetRedirection(dtStdErr, FileNameStdErr, FileOverwriteStdErr);
       end;
 
-      {$IFDEF MSWINDOWS}
+      {$IFDEF LCLWin}
       if (WindowsVersion > wvUnknown) and (WindowsVersion <= wv7) then
         FProcess.ApplyWin7Fix;
       {$ENDIF}
