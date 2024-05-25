@@ -78,6 +78,8 @@ function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0
 function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
 
+function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
+
 implementation
 
 type
@@ -193,6 +195,46 @@ const
   menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
   ANSMenuItem.setState( menustate[Checked] );
+end;
+
+function FindEditMenuByKeyEquivalent(const menu: NSMenu;
+  const keyEquivalent:NSString): NSMenuItem;
+var
+  item: NSMenuItem;
+  subItem: NSMenuItem;
+begin
+  Result:= nil;
+  if NOT Assigned(menu) then
+    Exit;
+
+  for item in menu.itemArray do begin
+    if item.hasSubmenu then begin
+      for subItem in item.submenu.itemArray do begin
+        if NOT keyEquivalent.isEqualToString(subItem.keyEquivalent) then
+          continue;
+        if subItem.keyEquivalentModifierMask <> NSCommandKeyMask then
+          continue;
+        Result:= item;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+function FindEditMenu(const menu: NSMenu; const title: NSString): NSMenuItem;
+var
+  index: NSInteger;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+
+  index:= menu.indexOfItemWithTitle(title);
+  if index >= 0 then begin
+    Result:= menu.itemAtIndex(index);
+    Exit;
+  end;
+
+  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
 end;
 
 function getHotkeyFromTitle( aTitle:String ): Word;

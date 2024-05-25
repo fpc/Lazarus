@@ -416,6 +416,7 @@ var
     appMenu: NSMenuItem;
     editMenu: NSMenuItem;
     editSubmenu: NSMenu;
+    editMenuTitle: NSString;
   begin
     oldMainMenu:= NSApplication(NSApp).mainMenu;
     mainMenu:= oldMainMenu;
@@ -429,20 +430,22 @@ var
       appMenu.release;
     end;
 
-    editMenuIndex:= mainMenu.indexOfItemWithTitle(CocoaConst.NSSTR_EDIT_MENU);
-    if editMenuIndex < 0 then begin
-      editMenuIndex:= mainMenu.numberOfItems;
-    end else begin
-      oldEditMenu:= mainMenu.itemAtIndex(editMenuIndex);
+    oldEditMenu:= FindEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
+    if Assigned(oldEditMenu) then begin
+      editMenuIndex:= mainMenu.indexOfItem(oldEditMenu);
       oldEditMenu.retain;
       mainMenu.removeItemAtIndex(editMenuIndex);
+      editMenuTitle:= oldEditMenu.title;
+    end else begin
+      editMenuIndex:= mainMenu.numberOfItems;
+      editMenuTitle:= CocoaConst.NSSTR_EDIT_MENU;
     end;
 
     editMenu:= NSMenuItem.alloc.init;
     mainMenu.insertItem_atIndex(editMenu, editMenuIndex);
     editMenu.release;
 
-    editSubmenu:= NSMenu.alloc.initWithTitle(CocoaConst.NSSTR_EDIT_MENU);
+    editSubmenu:= NSMenu.alloc.initWithTitle(editMenuTitle);
     editMenu.setSubmenu(editSubmenu);
     editSubmenu.release;
 
