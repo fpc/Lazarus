@@ -72,7 +72,9 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils, LazTracer,
-  LCLExceptionStacktrace, {$IFDEF LCLWin} Win32Proc, {$ENDIF}
+  LCLExceptionStacktrace,
+  {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
+  {$IFDEF LCLCocoa} CocoaMenus, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // BuildIntf
@@ -2631,6 +2633,10 @@ begin
   SetupToolsMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
+  {$ifdef LCLCocoa}
+  macOS_AppMenuIntf.aboutItem:= MainIDEBar.itmHelpAboutLazarus.MenuItem;
+  macOS_AppMenuIntf.preferencesItem:= MainIDEBar.itmEnvGeneralOptions.MenuItem;
+  {$endif}
 end;
 
 procedure TMainIDE.SetupStandardIDEMenuItems;

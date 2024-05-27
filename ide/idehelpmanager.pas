@@ -1391,12 +1391,7 @@ end;
 
 procedure TIDEHelpManager.ConnectMainBarEvents;
 begin
-  {$IFDEF Darwin}
-  // ToDo: Place the "About Lazarus" under MacOS Application menu. See issue #12294.
   MainIDEBar.itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-  {$ELSE}
-  MainIDEBar.itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-  {$ENDIF}
   MainIDEBar.itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
   MainIDEBar.itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
 

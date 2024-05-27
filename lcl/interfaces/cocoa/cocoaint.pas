@@ -62,6 +62,7 @@ type
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
     procedure applicationWillFinishLaunching(notification: NSNotification);
+    function applicationDockMenu(sender: NSApplication): NSMenu;
     procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
   end;
 
@@ -770,20 +771,19 @@ var
   lCurItem: TMenuItem;
   lMenuObj: NSObject;
   lNSMenu: NSMenu absolute AMenu;
+  appleMenuFound: Boolean = false;
 begin
   if Assigned(PrevMenu) then PrevMenu.release;
   PrevMenu := NSApplication(NSApp).mainMenu;
   PrevMenu.retain;
 
   PrevLCLMenu := CurLCLMenu;
-
-  if (lNSMenu.isKindOfClass(TCocoaMenu)) then
-    TCocoaMenu(lNSMenu).attachAppleMenu();
-
-  NSApp.setMainMenu(lNSMenu);
   CurLCLMenu := ALCLMenu;
 
-  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
+  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
+    NSApp.setMainMenu(lNSMenu);
+    Exit;
+  end;
 
   // Find the Apple menu, if the user provided any by setting the Caption to 
   // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
@@ -800,9 +800,18 @@ begin
     if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
     begin
       TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+      appleMenuFound:= true;
       Break;
     end;
   end;
+
+  if lNSMenu.isKindOfClass(TCocoaMenu) then begin
+    if NOT appleMenuFound then
+      TCocoaMenu(lNSMenu).createAppleMenu();
+    TCocoaMenu(lNSMenu).attachAppleMenu();
+  end;
+
+  NSApp.setMainMenu(lNSMenu);
 end;
 
 procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);

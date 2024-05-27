@@ -722,6 +722,13 @@ begin
     kAEQuitApplication);
 end;
 
+function TAppDelegate.applicationDockMenu(sender: NSApplication): NSMenu;
+begin
+  Result:= NSMenu.alloc.init;
+  if Assigned(macOS_DockMenuIntf.customMenus) then
+    NSMenuAddItemsFromLCLMenu(Result, macOS_DockMenuIntf.customMenus);
+end;
+
 procedure TAppDelegate.handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor);
 { Capture "Quit Application" Apple Events, either from system shutdown/logout
   or sent by another application.  Don't use [applicationShouldTerminate:]

@@ -147,7 +147,6 @@ end;
 class function TCocoaWSMainMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := HMENU(AllocCocoaMenu);
-  TCocoaMenu(Result).createAppleMenu();
 end;
 
 { TCocoaWSMenuItem }
@@ -529,5 +528,14 @@ begin
   menu.popUpMenuPositioningItem_atLocation_inView(nil, NSMakePoint(x,menuY), nil);
   APopupMenu.Close; // notify LCL popup menu
 end;
+
+
+function CreateMenuItemHandle(const AMenuItem: TMenuItem): NSMenuItem;
+begin
+  Result:= NSMenuItem( TCocoaWSMenuItem.CreateHandle(AMenuItem) );
+end;
+
+initialization
+  CocoaMenus.menuItemHandleCreateFunc:= @CreateMenuItemHandle;
 
 end.

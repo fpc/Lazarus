@@ -48,6 +48,7 @@ type
     FMenuItemTarget: TMenuItem;
     procedure UncheckSiblings(AIsChangingToChecked: LCLObjCBoolean = False); message 'UncheckSiblings:';
     function GetMenuItemHandle(): TMenuItem; message 'GetMenuItemHandle';
+    function FindSubmenuByLclItem(lclItem: TMenuItem): TCocoaMenuItem; message 'FindSubmenuByLclItem:';
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
     procedure lclClearCallback; override;
@@ -62,8 +63,39 @@ type
     function worksWhenModal: LCLObjCBoolean; message 'worksWhenModal';
   end;
 
+  { TMacOS_AppMenuIntf }
+
+  // Application interface provided to facilitate APP to operate App Menu.
+  // it's easy to set About, Preferences, and customized menus,
+  // only the LCL TMenuItem is needed to pass in.
+  // and we can control whether Cocoa is needed to automatically add
+  // Hide, Hide Others, Show All, and Quit menu items.
+  TMacOS_AppMenuIntf = class
+  public
+    aboutItem: TMenuItem;
+    preferencesItem: TMenuItem;
+    customMenus: TMenuItem;
+    dontAutoCreateAppMenuItems: Boolean;
+  end;
+
+  { TMacOS_DockMenuIntf }
+
+  // Application interface provided to facilitate APP to operate Dock Menu.
+  // only the LCL TMenuItem is needed to pass in.
+  TMacOS_DockMenuIntf = class
+  public
+    customMenus: TMenuItem;
+  end;
+
+  TMenuItemHandleCreateFunc = function(const AMenuItem: TMenuItem): NSMenuItem;
+
 const
   isMenuEnabled : Boolean = true;
+
+var
+  macOS_AppMenuIntf: TMacOS_AppMenuIntf;
+  macOS_DockMenuIntf: TMacOS_DockMenuIntf;
+  menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
 procedure MenuTrackStarted(mn: NSMenu);
 procedure MenuTrackEnded(mn: NSMenu);
@@ -79,6 +111,7 @@ function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
 
 function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
+procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
 
 implementation
 
@@ -221,22 +254,6 @@ begin
   end;
 end;
 
-function FindEditMenu(const menu: NSMenu; const title: NSString): NSMenuItem;
-var
-  index: NSInteger;
-begin
-  if NOT Assigned(menu) then
-    Exit;
-
-  index:= menu.indexOfItemWithTitle(title);
-  if index >= 0 then begin
-    Result:= menu.itemAtIndex(index);
-    Exit;
-  end;
-
-  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
-end;
-
 function getHotkeyFromTitle( aTitle:String ): Word;
 var
   i: Integer;
@@ -294,6 +311,40 @@ begin
   Result := LCLMenuItemInit(item, atitle, ShortCut(VKKey, State));
 end;
 
+function FindEditMenu(const menu: NSMenu; const title: NSString): NSMenuItem;
+var
+  index: NSInteger;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+
+  index:= menu.indexOfItemWithTitle(title);
+  if index >= 0 then begin
+    Result:= menu.itemAtIndex(index);
+    Exit;
+  end;
+
+  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
+end;
+
+procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
+var
+  index: Integer;
+  lclItem: TMenuItem;
+  item: NSMenuItem;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+  if NOT Assigned(lclMenu) then
+    Exit;
+
+  for index:=0 to lclMenu.Count-1 do begin
+    lclItem:= lclMenu.Items[index];
+    item:= menuItemHandleCreateFunc(lclItem);
+    menu.addItem(item);
+  end;
+end;
+
 { TCocoaMenu }
 
 procedure TCocoaMenu.dealloc;
@@ -328,8 +379,6 @@ begin
   lNSSubmenu := NSMenu.alloc.initWithTitle(NSString.string_);
   appleMenu.setSubmenu(lNSSubmenu);
   lNSSubmenu.release;
-
-  appleMenu.attachAppleMenuItems();
 end;
 
 // For when there is a menu item with title 
@@ -350,6 +399,7 @@ procedure TCocoaMenu.attachAppleMenu();
 begin
   if attachedAppleMenu then Exit;
   if appleMenu = nil then Exit;
+  appleMenu.attachAppleMenuItems();
   attachedAppleMenu := True;
   insertItem_atIndex(appleMenu, 0);
 end;
@@ -409,6 +459,24 @@ begin
   Result := menuItemCallback.MenuItemTarget;
 end;
 
+function TCocoaMenuItem.FindSubmenuByLclItem(lclItem: TMenuItem): TCocoaMenuItem;
+var
+  nsItem: NSMenuItem;
+begin
+  Result:= nil;
+  if NOT Assigned(lclItem) then
+    Exit;
+
+  for nsItem in self.submenu.itemArray do begin
+    if NOT nsItem.isKindOfClass(TCocoaMenuItem) then
+      continue;
+    if TCocoaMenuItem(nsItem).FMenuItemTarget<>lclItem then
+      continue;
+    Result:= TCocoaMenuItem(nsItem);
+    break;
+  end;
+end;
+
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
 begin
   menuItemCallback.ItemSelected;
@@ -429,51 +497,101 @@ procedure TCocoaMenuItem.attachAppleMenuItems();
 var
   item    : NSMenuItem;
   itemSubMenu: NSMenu;
+  currentIndex: NSInteger = 0;
+
+  procedure attachSpecialMenuItem(
+    lclItem: TMenuItem;
+    title: String;
+    key: Word = 0;
+    state: TShiftState = [] );
+  var
+    keyEquivalent: NSString;
+    keyMask: NSUInteger;
+  begin
+    if NOT Assigned(lclItem) then
+      Exit;
+
+    item:= self.FindSubmenuByLclItem(lclItem);
+    if NOT Assigned(item) then begin
+      item:= menuItemHandleCreateFunc(lclItem);
+      submenu.insertItem_atIndex(item, currentIndex);
+      item.release;
+      inc(currentIndex);
+      submenu.insertItem_atIndex(NSMenuItem.separatorItem, currentIndex);
+      inc(currentIndex);
+    end;
+    item.setTitle( StrToNSString(title) );
+    item.setImage(nil);
+    ShortcutToKeyEquivalent(ShortCut(key,state), keyEquivalent, keyMask );
+    item.setKeyEquivalent(keyEquivalent);
+    item.setKeyEquivalentModifierMask(keyMask);
+  end;
+
 begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
+  attachedAppleMenuItems := True;
+
+  if NOT Assigned(self.FMenuItemTarget) then
+    self.FMenuItemTarget:= macOS_AppMenuIntf.customMenus;
+
+  // APP Custom
+  NSMenuAddItemsFromLCLMenu(self.submenu, macOS_AppMenuIntf.customMenus);
+
+  // About
+  attachSpecialMenuItem(
+    macOS_AppMenuIntf.aboutItem,
+    Format(rsMacOSMenuAbout, [Application.Title]) );
+
+  // Preferences
+  attachSpecialMenuItem(
+    macOS_AppMenuIntf.preferencesItem,
+    rsMacOSMenuPreferences,
+    VK_OEM_COMMA, [ssMeta]);
+
+  // Auto Create App Menu below?
+  if macOS_AppMenuIntf.dontAutoCreateAppMenuItems then
+    Exit;
 
   // Separator
-  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  submenu.addItem(NSMenuItem.separatorItem);
 
   // Services
   item := LCLMenuItemInit( TCocoaMenuItem.alloc, rsMacOSMenuServices);
   item.setTarget(nil);
   item.setAction(nil);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  submenu.addItem(item);
   itemSubMenu := NSMenu.alloc.initWithTitle( ControlTitleToNSStr(rsMacOSMenuServices));
   item.setSubmenu(itemSubMenu);
+  NSApplication(NSApp).setServicesMenu(itemSubMenu);
   itemSubMenu.release;
-  NSApplication(NSApp).setServicesMenu(item.submenu);
   item.release;
 
   // Separator
-  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  submenu.addItem(NSMenuItem.separatorItem);
 
   // Hide App     Meta-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  submenu.addItem(item);
   item.release;
 
   // Hide Others  Meta-Alt-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  submenu.addItem(item);
   item.release;
 
   // Show All
   item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  submenu.addItem(item);
   item.release;
 
   // Separator
-  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+  submenu.addItem(NSMenuItem.separatorItem);
 
   // Quit   Meta-Q
   item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
-  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  submenu.addItem(item);
   item.release;
-
-  attachedAppleMenuItems := True;
 end;
 
 function TCocoaMenuItem.isValidAppleMenu(): LCLObjCBoolean;
@@ -606,10 +724,14 @@ begin
 end;
 
 initialization
+  macOS_AppMenuIntf:= TMacOS_AppMenuIntf.Create;
+  macOS_DockMenuIntf:= TMacOS_DockMenuIntf.Create;
 
 finalization
   MenuTrackCancelAll;
   if menuTrack <> nil then menuTrack.release;
+  FreeAndNil(macOS_AppMenuIntf);
+  FreeAndNil(macOS_DockMenuIntf);
 
 end.
 
