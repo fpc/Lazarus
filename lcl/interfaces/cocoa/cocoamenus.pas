@@ -78,6 +78,15 @@ type
     dontAutoCreateAppMenuItems: Boolean;
   end;
 
+  { TMacOS_DockMenuIntf }
+
+  // Application interface provided to facilitate APP to operate Dock Menu.
+  // only the LCL TMenuItem is needed to pass in.
+  TMacOS_DockMenuIntf = class
+  public
+    customMenus: TMenuItem;
+  end;
+
   TMenuItemHandleCreateFunc = function(const AMenuItem: TMenuItem): NSMenuItem;
 
 const
@@ -85,6 +94,7 @@ const
 
 var
   macOS_AppMenuIntf: TMacOS_AppMenuIntf;
+  macOS_DockMenuIntf: TMacOS_DockMenuIntf;
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
 procedure MenuTrackStarted(mn: NSMenu);
@@ -715,11 +725,13 @@ end;
 
 initialization
   macOS_AppMenuIntf:= TMacOS_AppMenuIntf.Create;
+  macOS_DockMenuIntf:= TMacOS_DockMenuIntf.Create;
 
 finalization
   MenuTrackCancelAll;
   if menuTrack <> nil then menuTrack.release;
   FreeAndNil(macOS_AppMenuIntf);
+  FreeAndNil(macOS_DockMenuIntf);
 
 end.
 

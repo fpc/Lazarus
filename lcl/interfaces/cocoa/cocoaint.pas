@@ -62,6 +62,7 @@ type
     procedure applicationDidResignActive(notification: NSNotification);
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
     procedure applicationWillFinishLaunching(notification: NSNotification);
+    function applicationDockMenu(sender: NSApplication): NSMenu;
     procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
   end;
 
