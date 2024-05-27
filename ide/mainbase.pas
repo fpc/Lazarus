@@ -1362,13 +1362,8 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuTools,itmOptionsDialogs,'itmOptionsDialogs');
     ParentMI:=itmOptionsDialogs;
-    {$ifndef LCLCocoa}
-    CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
+    CreateMenuItem({$ifndef LCLCocoa}ParentMI{$else}itmApplePref{$endif},itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environment_options');
-    {$else}
-    CreateMenuItem(itmApplePref,itmEnvGeneralOptions,'itmEnvGeneralOptions',
-                   lisMacPreferences,'menu_environment_options');
-    {$endif}
     CreateMenuItem(ParentMI,itmToolRescanFPCSrcDir,'itmToolRescanFPCSrcDir',
                    lisMenuRescanFPCSourceDirectory);
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',lisMenuEditCodeTemplates,'');
