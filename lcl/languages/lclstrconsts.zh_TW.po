@@ -243,23 +243,26 @@ msgid "&Directory"
 msgstr ""
 
 #: lclstrconsts.rsdocopy
+#, fuzzy
 msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
-msgstr ""
+msgstr "複製"
 
 #: lclstrconsts.rsdopaste
+#, fuzzy
 msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
-msgstr ""
+msgstr "貼上"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr ""
 
 #: lclstrconsts.rseditrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rseditrecordhint"
 msgid "Edit"
-msgstr ""
+msgstr "編輯"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
@@ -795,6 +798,7 @@ msgid "Preferences..."
 msgstr "偏好設定..."
 
 #: lclstrconsts.rsmacosmenuquit
+#, object-pascal-format
 msgid "Quit %s"
 msgstr "結束 %s"
 

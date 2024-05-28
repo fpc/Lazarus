@@ -258,23 +258,26 @@ msgid "&Directory"
 msgstr "&Direktori"
 
 #: lclstrconsts.rsdocopy
+#, fuzzy
 msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
-msgstr ""
+msgstr "Menyalin"
 
 #: lclstrconsts.rsdopaste
+#, fuzzy
 msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
-msgstr ""
+msgstr "Tempel"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr ""
 
 #: lclstrconsts.rseditrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rseditrecordhint"
 msgid "Edit"
-msgstr ""
+msgstr "Sunting"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"

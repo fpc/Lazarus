@@ -256,14 +256,16 @@ msgid "&Directory"
 msgstr "תיקייה"
 
 #: lclstrconsts.rsdocopy
+#, fuzzy
 msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
-msgstr ""
+msgstr "העתק את הבחירה ללוח הזמני"
 
 #: lclstrconsts.rsdopaste
+#, fuzzy
 msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
-msgstr ""
+msgstr "הדבק מלוח הגזירים למיקום הנוכחי"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."

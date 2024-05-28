@@ -1246,6 +1246,7 @@ msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " 警告：还剩 %d 个 TimerInfo 结构，我将释放它们"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
+#, object-pascal-format
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " 警告：队列中尚有 %s个未移除的LM_PAINT/LM_GtkPAINT消息。"
 
@@ -1465,6 +1466,7 @@ msgid "%s bytes"
 msgstr "%s字节"
 
 #: lclstrconsts.sshellctrlsinvalidpath
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
@@ -1487,6 +1489,7 @@ msgstr ""
 "“%s”"
 
 #: lclstrconsts.sshellctrlsinvalidroot
+#, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
@@ -1510,6 +1513,7 @@ msgid "Name"
 msgstr "名称"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
+#, object-pascal-format
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\""

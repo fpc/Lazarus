@@ -243,23 +243,26 @@ msgid "&Directory"
 msgstr ""
 
 #: lclstrconsts.rsdocopy
+#, fuzzy
 msgctxt "lclstrconsts.rsdocopy"
 msgid "Copy"
-msgstr ""
+msgstr "Αντιγραφή"
 
 #: lclstrconsts.rsdopaste
+#, fuzzy
 msgctxt "lclstrconsts.rsdopaste"
 msgid "Paste"
-msgstr ""
+msgstr "Επικόλληση"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
 msgstr ""
 
 #: lclstrconsts.rseditrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rseditrecordhint"
 msgid "Edit"
-msgstr ""
+msgstr "Επεξεργασία"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
@@ -777,7 +780,7 @@ msgid "File Format:"
 msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "About %s"
 msgstr "Πληροφορίες για το ^s"
 
