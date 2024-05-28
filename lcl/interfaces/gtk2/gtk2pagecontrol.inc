@@ -565,7 +565,7 @@ begin
   if (ANewIndex < 0) then
     exit;
   GtkNotebook := {%H-}PGtkNoteBook(ATabControl.Handle);
-  if gtk_notebook_get_current_page(GtkNotebook) <> AIndex then
+  if gtk_notebook_get_current_page(GtkNotebook) <> ANewIndex then
   begin
     // gtk2 cannot set page if some tab in between tabvisible=false, so
     // we must compare page handles.
