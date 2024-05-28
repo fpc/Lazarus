@@ -73,7 +73,7 @@ uses
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils, LazTracer,
   LCLExceptionStacktrace,
-  {$IFDEF WINDOWS} Win32Proc, {$ENDIF}
+  {$IFDEF LCLWin} Win32Proc, {$ENDIF}
   {$IFDEF LCLCocoa} CocoaMenus, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
