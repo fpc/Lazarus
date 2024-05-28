@@ -8998,21 +8998,39 @@ Draws the image content in SrcGraphic on the canvas at the specified position.
 <p>
 <var>Draw</var> is reintroduced method in TCanvas; it reimplements the 
 inherited method to use the TGraphic instance in SrcGraphic as the container 
-for the image content drawn in the method.
+with the image content drawn in the method.
 </p>
 <p>
 No actions are performed in the method if SrcGraphic has not been assigned.
 </p>
 <p>
-Draw calls the StretchDraw method to draw the content in SrcGraphic on the 
-canvas at the position specified in X and Y. The Width and Height in 
-SrcGraphic are used to size the destination rectangle on the canvas.
+Draw calls the StretchDraw method to render the content in SrcGraphic on the 
+canvas at the position specified in X and Y. The Width and Height in SrcGraphic 
+set the bounds for the image rectangle applied to the canvas using StretchDraw. 
+Since a stretch mode is not enabled when StretchDraw is called, the source 
+graphic is not enlarged or shrunk to the canvas size. The source graphic is 
+clipped if its bounds exceeds the canvas bounds. The Draw method in SrcGraphic 
+performs the actions needed to position and rendering the content to the Pixels 
+in the canvas.
+</p>
+<p>
+CopyMode determines the raster operation performed for the Pixels affected on 
+the canvas.
+</p>
+<p>
+Calling Draw causes the OnChanging and OnChange events to be signalled (when 
+assigned). OnChanging occurs prior to calling Draw in the TGraphic instance. 
+OnChange occurs after calling Draw in the TGraphic instance.
 </p>
 </descr>
 <seealso>
 <link id="TCanvas.StretchDraw"/>
+<link id="TCanvas.CopyMode"/>
+<link id="TCanvas.OnChange"/>
+<link id="TCanvas.OnChanging"/>
 <link id="TGraphic.Width"/>
 <link id="TGraphic.Height"/>
+<link id="TGraphic.Draw"/>
 <link id="#rtl.classes.TRect">TRect</link>
 </seealso>
 </element>
