@@ -236,11 +236,7 @@ begin
   lcl.BlockCocoaUpDown := true;
   ctrl.callback := lcl;
 
-  sl := EmbedInManualScrollView(ctrl);
-  sl.callback := ctrl.callback;
-  lcl.HandleFrame:=sl;
-
-  Result := TLCLIntfHandle(sl);
+  Result := TLCLIntfHandle(ctrl);
 end;
 
 end.
