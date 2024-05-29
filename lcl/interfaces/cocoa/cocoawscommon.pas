@@ -935,9 +935,9 @@ function isContextMenuEvent(event: NSEvent): Boolean;
 begin
   Result := Assigned(event)
     and (
-      (Event.type_ = NSRightMouseDown)
+      (Event.type_ = NSRightMouseUp)
       or(
-        (Event.type_ = NSLeftMouseDown)
+        (Event.type_ = NSLeftMouseUp)
         and (event.modifierFlags and NSControlKeyMask <> 0)
         and (event.clickCount = 1)
       )
@@ -1035,14 +1035,6 @@ begin
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
 
-      // TODO: Check if Cocoa has special context menu check event
-      //       it does (menuForEvent:), but it doesn't work all the time
-      //       http://sound-of-silence.com/?article=20150923
-      if (GetTarget is TControl) and isContextMenuEvent(Event) then
-      begin
-        SendContextMenu(Event, menuHandled);
-        if menuHandled then Result := true;
-      end;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -1058,6 +1050,15 @@ begin
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
+
+      // TODO: Check if Cocoa has special context menu check event
+      //       it does (menuForEvent:), but it doesn't work all the time
+      //       http://sound-of-silence.com/?article=20150923
+      if (GetTarget is TControl) and isContextMenuEvent(Event) then
+      begin
+        SendContextMenu(Event, menuHandled);
+        if menuHandled then Result := true;
+      end;
     end;
   end;
 
