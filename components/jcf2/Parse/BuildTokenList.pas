@@ -513,7 +513,7 @@ begin
     { read until the close ''' }
     repeat
       if Current = #0 then
-        Raise Exception.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]));
+        raise TEParseError.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]),pcToken);
 
       if (Current = NativeSingleQuote) then
       begin
@@ -556,7 +556,7 @@ begin
       if Current = #0 then
         break;
       if CharIsReturn(Current) then
-        Raise Exception.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]));
+        raise TEParseError.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]),pcToken);
 
       { two quotes in a row are still part of the string }
       if (Current = pcDelimiter) then

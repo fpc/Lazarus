@@ -164,7 +164,16 @@ begin
     fcTokeniser.SourceCode := InputCode;
     fcTokeniser.FileName   := FileName;
     lcTokenList := TSourceTokenList.Create;
-    fcTokeniser.BuildTokenList(lcTokenList);
+    try
+      fcTokeniser.BuildTokenList(lcTokenList);
+    except
+      on E: Exception do
+      begin
+        fbConvertError := True;
+        SendStatusMessage('', Format(lisMsgExpectionClassMsg, ['', E.Message]), mtException, -1, -1);
+        Exit;
+      end;
+    end;
     try   { finally free the list  }
       try { show exceptions }
         fiTokenCount := lcTokenList.Count;
