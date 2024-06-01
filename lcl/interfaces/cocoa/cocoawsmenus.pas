@@ -166,7 +166,7 @@ end;
 
 class function TCocoaWSMenuItem.NSMenuRadio: NSImage;
 begin
-  Result:=NSImage.imageNamed(NSStringUtf8('NSMenuRadio'))
+  Result:=NSImage.imageNamed(NSStringUtf8('NSDatePickerCalendarHome'))
 end;
 
 class function TCocoaWSMenuItem.isSeparator(const ACaption: AnsiString): Boolean;
