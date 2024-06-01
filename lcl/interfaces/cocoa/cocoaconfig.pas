@@ -6,7 +6,7 @@ unit CocoaConfig;
 interface
 
 uses
-  CocoaAll, Cocoa_Extra;
+  CocoaAll, Cocoa_Extra, CocoaConst;
 
 var
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
@@ -26,6 +26,10 @@ var
   // default NSTableViewStyle
   CocoaTableViewStyle : NSTableViewStyle = NSTableViewStyleAutomatic;
 
+  // default Image Name for MenuItem
+  CocoaDefaultCheckMenuImageName : NSString;
+  CocoaDefaultRadioMenuImageName : NSString;
+
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
   // The flag is checked in Menus to avoid "double" Cmd+Q menu
@@ -33,6 +37,10 @@ var
   {$endif}
 
 implementation
+
+initialization
+  CocoaDefaultCheckMenuImageName:= NSSTR('NSMenuCheckmark');
+  CocoaDefaultRadioMenuImageName:= NSSTR('NSDatePickerCalendarHome');
 
 end.
 
