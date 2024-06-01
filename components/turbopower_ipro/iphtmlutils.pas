@@ -224,7 +224,7 @@ function TryColorFromString(S: String; out AColor: TColor; out AErrMsg: String):
   end;
 
 var
-  R, G, B, Err: Integer;
+  R, G, B: Integer;
 begin
   Result := false;
   
