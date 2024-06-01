@@ -187,8 +187,10 @@ type
     fSupportedCategories: TStringListUTF8Fast;
     // Hierarchy of options parsed from "fpc -h".
     fRootOptGroup: TCompilerOptGroup;
-    fCompilerExecutable: string;  // Compiler path must be set by caller.
-    fFpcVersion: string;          // Parsed from "fpc -h".
+    // Compiler path must be set by caller
+    fCompilerExecutable: string;
+    // Parsed from "fpc -h"
+    fCompilerVersion: string;
     fIsNewFpc: Boolean;
     fParsedTarget: String;
     fErrorMsg: String;
@@ -221,6 +223,7 @@ type
     //property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
+    property CompilerVersion: string read fCompilerVersion;
     property ParsedTarget: String read fParsedTarget write fParsedTarget;
     property ErrorMsg: String read fErrorMsg write fErrorMsg;
   end;
@@ -920,6 +923,8 @@ end;
 constructor TCompilerOptReader.Create;
 begin
   inherited Create;
+  fCompilerExecutable := '';
+  fCompilerVersion := '';
   fDefines := TStringList.Create;
   fInvalidOptions := TStringList.Create;
   fSupportedCategories := TStringListUTF8Fast.Create;
@@ -1068,10 +1073,10 @@ begin
     V1 := PosEx(' ', s, Start);
     if V1 > 0 then
     begin
-      fFpcVersion := Copy(s, Start, V1-Start);
-      if (Length(fFpcVersion)>2) then begin
-        V1 := StrToIntDef(fFpcVersion[1], 0);
-        V2 := StrToIntDef(fFpcVersion[3], 0);
+      fCompilerVersion := Copy(s, Start, V1-Start);
+      if (Length(fCompilerVersion)>2) then begin
+        V1 := StrToIntDef(fCompilerVersion[1], 0);
+        V2 := StrToIntDef(fCompilerVersion[3], 0);
         fIsNewFpc := ((V1=2) and (V2>=7)) or (V1>2);
       end;
       // The rest 2 fields are date and target CPU.
@@ -1137,7 +1142,7 @@ begin
         ThisInd := OptSetInd;
     end;
     // Top header line for compiler version, check only once.
-    if (fFpcVersion = '') and ReadVersion(ThisLine) then Continue;
+    if (fCompilerVersion = '') and ReadVersion(ThisLine) then Continue;
     if ThisInd < 2 then Continue;
     if (ThisLine = '') or (ThisInd > 30)
     or (ThisLine[1] = '@')

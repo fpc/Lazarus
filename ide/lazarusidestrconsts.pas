@@ -2380,7 +2380,8 @@ resourcestring
   lisWriteConfigInsteadOfCommandLineParameters = 'Write config instead of '
     +'command line parameters';
   dlgUseCustomConfig = 'Use additional compiler config file';
-  lisAllOptions = 'All Options';
+  lisAllOptions = 'All options of FPC%s ("%s")';
+  lisCheckCompilerPath = 'Please make sure that the path to the compiler in the IDE options is correct';
   lisFilterTheAvailableOptionsList = 'Filter the available options list';
   lisClearTheFilterForOptions = 'Clear the filter for options';
   lisShowOnlyModified = 'Show only modified';

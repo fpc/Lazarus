@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazUTF8, LazLoggerBase,
   // IdeIntf
-  IDEImagesIntf,
+  IDEImagesIntf, IDEWindowIntf,
   // IDE
   Compiler, LazarusIDEStrConsts;
 
@@ -50,6 +50,7 @@ type
     edOptionsFilter: TEdit;
     pnlFilter: TPanel;
     sbAllOptions: TScrollBox;
+    txtErrorMsg: TStaticText;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
     procedure sbMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
@@ -63,7 +64,7 @@ type
     FGeneratedControls: TComponentList;
     FEffectiveFilter: string;
     FEffectiveShowModified: Boolean;
-    FRenderedOnce: Boolean;
+    FInitialRender: Boolean;
     procedure SetIdleConnected(AValue: Boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure CheckBoxClick(Sender: TObject);
@@ -99,6 +100,7 @@ end;
 
 destructor TfrmAllCompilerOptions.Destroy;
 begin
+  IDEDialogLayoutList.SaveLayout(self);
   IdleConnected:=false;
   FGeneratedControls.Clear;
   FreeAndNil(FGeneratedControls);
@@ -112,7 +114,7 @@ end;
 
 procedure TfrmAllCompilerOptions.FormCreate(Sender: TObject);
 begin
-  Caption:=lisAllOptions;
+  Caption:=Format(lisAllOptions, ['', 'fpc']);
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
   IDEImages.AssignImage(btnResetOptionsFilter, ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
@@ -121,8 +123,9 @@ begin
   cbUseComments.Caption:=lisUseCommentsInCustomOptions;
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
   ButtonPanel1.ShowBevel := False;
-  FRenderedOnce := False;
+  FInitialRender := True;
   IdleConnected := True;
+  IDEDialogLayoutList.ApplyLayout(self, 600, 500);
 end;
 
 procedure TfrmAllCompilerOptions.edOptionsFilterChange(Sender: TObject);
@@ -172,20 +175,35 @@ begin
   if FOptionsThread=nil then exit;
   Screen.BeginWaitCursor;
   try
-    FOptionsThread.EndParsing;            // Make sure the options are read.
+    FOptionsThread.EndParsing; // make sure the options are read
+
+    with FOptionsReader do
+      if FOptionsReader.CompilerVersion = '' then
+        Caption := Format(lisAllOptions, ['', CompilerExecutable])
+      else
+        Caption := Format(lisAllOptions, [' ' + CompilerVersion, CompilerExecutable]);
+
+    txtErrorMsg.Visible := FOptionsReader.ErrorMsg <> '';
     if FOptionsReader.ErrorMsg <> '' then
-      DebugLn(FOptionsReader.ErrorMsg)
+      txtErrorMsg.Caption := FOptionsReader.ErrorMsg
     else begin
       StartTime := Now;
       RenderAndFilterOptions;
       DebugLn(Format('AllCompilerOptions: Time for reading options: %s, rendering GUI: %s',
                      [FormatTimeWithMs(FOptionsThread.ReadTime),
                       FormatTimeWithMs(Now-StartTime)]));
+
+      if FInitialRender then
+      begin
+        txtErrorMsg.Caption := lisCheckCompilerPath;
+        txtErrorMsg.Visible := FOptionsReader.RootOptGroup.CompilerOpts.Count <= 0;
+      end;
     end;
+
   finally
     Screen.EndWaitCursor;
   end;
-  FRenderedOnce := True;
+  FInitialRender := False;
 end;
 
 procedure TfrmAllCompilerOptions.sbMouseWheel(Sender: TObject;
