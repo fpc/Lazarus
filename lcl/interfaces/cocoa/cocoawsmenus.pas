@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSMenus,
   // LCL Cocoa
-  CocoaInt, CocoaMenus, CocoaWSCommon, CocoaUtils, CocoaGDIObjects;
+  CocoaConfig, CocoaInt, CocoaMenus, CocoaWSCommon, CocoaUtils, CocoaGDIObjects;
 
 type
 
@@ -162,12 +162,12 @@ end;
 // used from the MenuMadness example
 class function TCocoaWSMenuItem.NSMenuCheckmark: NSImage;
 begin
-  Result:=NSImage.imageNamed(NSStringUtf8('NSMenuCheckmark'));
+  Result:=NSImage.imageNamed(CocoaConfig.CocoaDefaultCheckMenuImageName);
 end;
 
 class function TCocoaWSMenuItem.NSMenuRadio: NSImage;
 begin
-  Result:=NSImage.imageNamed(NSStringUtf8('NSDatePickerCalendarHome'))
+  Result:=NSImage.imageNamed(CocoaConfig.CocoaDefaultRadioMenuImageName)
 end;
 
 class function TCocoaWSMenuItem.isSeparator(const ACaption: AnsiString): Boolean;
