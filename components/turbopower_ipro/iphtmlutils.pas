@@ -211,6 +211,18 @@ begin
 end;
 
 function TryColorFromString(S: String; out AColor: TColor; out AErrMsg: String): Boolean;
+
+  function ByteValue(HighNibble, LowNibble: Char): Byte;
+  var
+    S: String[3] = '$xx';
+    Err: Integer;
+  begin
+    S[2] := HighNibble;
+    S[3] := LowNibble;
+    val(S, Result, Err);
+    if Err <> 0 then Result := 255;
+  end;
+
 var
   R, G, B, Err: Integer;
 begin
@@ -226,21 +238,23 @@ begin
   S := UpperCase(S);
   if S[1] = '#' then
   begin
-    if Length(S) <> 7 then
+    if not (Length(S) in [4, 7]) then
     begin
       AErrMsg := SHtmlInvColor + S;
       Result := false;
-    end
-    else begin
-      val('$'+Copy(S,2,2), R, Err);
-      if Err <> 0 then
-        R := 255;
-      val('$'+Copy(S,4,2), G, Err);
-      if Err <> 0 then
-        G := 255;
-      val('$'+Copy(S,6,2), B, Err);
-      if Err <> 0 then
-        B := 255;
+    end else
+    begin
+      if Length(S) = 7 then
+      begin
+        R := ByteValue(S[2], S[3]);
+        G := ByteValue(S[4], S[5]);
+        B := ByteValue(S[6], S[7]);
+      end else
+      begin
+        R := ByteValue(S[2], S[2]);
+        G := ByteValue(S[3], S[3]);
+        B := ByteValue(S[4], S[4]);
+      end;
       AColor := RGBToColor(R, G, B);
       Result := true;
     end;
@@ -252,15 +266,9 @@ begin
   end else
   if Length(S) = 6 then
     try
-      val('$'+Copy(S,1,2), R, Err);
-      if Err <> 0 then
-        R := 255;
-      val('$'+Copy(S,3,2), G, Err);
-      if Err <> 0 then
-        G := 255;
-      val('$'+Copy(S,5,2), B, Err);
-      if Err <> 0 then
-        B := 255;
+      R := ByteValue(S[1], S[2]);
+      G := ByteValue(S[3], S[4]);
+      B := ByteValue(S[5], S[6]);
       AColor := RGBToColor(R, G, B);
       Result := true;
     except
