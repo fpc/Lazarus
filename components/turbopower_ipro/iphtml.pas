@@ -52,7 +52,7 @@ interface
 uses
   // LCL
   LCLType, LCLIntf,
-  Types, contnrs, SysUtils, Classes, TypInfo,
+  Types, contnrs, SysUtils, Classes, TypInfo, Variants,
   // LCL
   LResources, LMessages, Messages, LCLMemManager,
   Graphics, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
@@ -2161,7 +2161,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
 
   function GetVariantProperty : string;
   begin
-    Result := AnsiString(GetVariantProp(AObject, PI));
+    Result := VarToStr(GetVariantProp(AObject, PI));
   end;
 
   function GetStringProperty : string;
