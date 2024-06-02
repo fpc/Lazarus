@@ -368,6 +368,10 @@ const
     ttWhile, ttFor, ttRepeat, ttUntil, ttWith,
     ttAsm, ttCase, ttInitialization, ttFinalization];
 
+  { prior statement don't need ';' }
+  BlockExitWords: TTokenTypeSet = [ttTo, ttThen, ttElse, ttEnd, ttDo, ttUntil,
+    ttFinally, ttExcept, ttOtherwise];
+
   PropertyDirectives: TTokenTypeSet =
     { the basics }
     [ttRead, ttWrite,
