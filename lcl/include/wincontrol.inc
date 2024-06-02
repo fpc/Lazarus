@@ -4954,7 +4954,8 @@ begin
 
   //DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
-  or ((DC=0) and (not HandleAllocated)) then
+  or ((DC=0) and (not HandleAllocated))
+  or WidgetSet.IsDesignerDC(self.Handle,DC) then
     exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
