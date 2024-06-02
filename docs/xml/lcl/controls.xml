@@ -21495,7 +21495,7 @@ TControl.
 
 <element name="TWinControl.PaintControls">
 <short>
-Paints all child controls which do not have a Handle as part of their Parent.
+Paints all child controls which do not have a Handle.
 </short>
 <descr>
 <p>
@@ -21503,11 +21503,17 @@ Controls which do <b>not</b> descend from <var>TWinControl</var> have no
 handle of their own; they are repainted when the parent control is redrawn.
 </p>
 <p>
-No actions are performed in the method when the device context in DC is 
-unassigned (0), the Handle has not been allocated for the control, or an 
-internal TFPList has not been created to store the child controls in the 
-Controls property.
+No actions are performed in PaintControls for the following conditions:
 </p>
+<ul>
+<li>The device context in DC is unassigned (0).</li>
+<li>The device context in DC is a handle for a design-time window.</li>
+<li>The Handle has not been allocated for the control.</li>
+<li>
+The internal TFPList has not been created to store child controls in the 
+Controls property.
+</li>
+</ul>
 <p>
 PaintControls tries to locate and paint controls (starting with the control 
 in First) not derived from TWinControl. When First is omitted (<b>Nil</b>) or 
@@ -21523,7 +21529,8 @@ parent control.
 </p>
 <p>
 The ControlState property is updated prior to and following the paint 
-operation for each child control to include or exclude the csPaintCopy value.
+operation for each child control to include or exclude the csPaintCopy control 
+state value.
 </p>
 <p>
 PaintControls is called from the PaintHandler method, and occurs when the 
