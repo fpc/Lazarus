@@ -2881,7 +2881,7 @@ begin
   begin
     Recognise(ttInherited);
 
-    if not (fcTokenList.FirstSolidTokenType in Operators + BlockExitWords + [ttSemicolon, ttCloseBracket, ttComma]) then
+    if not (fcTokenList.FirstSolidTokenType in Operators + BlockExitWords + [ttSemicolon, ttCloseBracket, ttCloseSquareBracket, ttComma]) then
     begin
       RecogniseDesignator;
       if fcTokenList.FirstSolidTokenType = ttOpenBracket then
