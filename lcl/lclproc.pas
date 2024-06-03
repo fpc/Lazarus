@@ -716,7 +716,7 @@ var
   function HasFront(const Front: string): Boolean;
   begin
     Result := (Front<>'') and (StartPos+length(Front)-1 <= length(ShortCutText))
-       and (AnsiStrLIComp(@ShortCutText[StartPos],PChar(Front),Length(Front))=0);
+       and (AnsiStrLIComp(@ShortCutText[StartPos],@Front[1],Length(Front))=0);
     if Result then
       inc(StartPos,length(Front));
   end;
