@@ -5089,7 +5089,9 @@ msgid "All inherited options"
 msgstr "Todas opções herdadas"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Todas as opções"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6192,6 +6194,10 @@ msgstr "Alterar para \\ Windows"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Verificar tudo"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9459,6 +9465,14 @@ msgstr "executável \"%s\" é um diretório"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "executável \"%s\" não tem permissão para execução"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

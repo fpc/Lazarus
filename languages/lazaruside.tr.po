@@ -5036,7 +5036,9 @@ msgid "All inherited options"
 msgstr "Devralınan tüm seçenekler"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Tüm Seçenekler"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6094,6 +6096,10 @@ msgstr "Windows a göre değiştir \\"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Hepsini Kontrol Edin"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9349,6 +9355,14 @@ msgstr "çalıştırılabilir \"%s\" bir dizin"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "çalıştırılabilir \"%s\" çalıştırılacak izin yok"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

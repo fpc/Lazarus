@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-14 19:53+0300\n"
+"PO-Revision-Date: 2024-06-04 22:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5069,8 +5069,9 @@ msgid "All inherited options"
 msgstr "Все унаследованные параметры"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
-msgstr "Все параметры"
+#, object-pascal-format
+msgid "All options of FPC%s (\"%s\")"
+msgstr "Все параметры FPC%s (\"%s\")"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
@@ -6127,6 +6128,10 @@ msgstr "Заменять на \\ Windows"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Отметить все"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr "Убедитесь, что путь к компилятору в параметрах IDE указан корректно."
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9377,6 +9382,14 @@ msgstr "исполнимый файл \"%s\" является каталогом
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "исполнимый файл \"%s\" не имеет прав на запуск"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr "Выполнить после компиляции"
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr "Выполнить перед компиляцией"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

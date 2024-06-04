@@ -5205,7 +5205,9 @@ msgid "All inherited options"
 msgstr "Viso paveldėtos parinktys"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Visos parinktys"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6281,6 +6283,10 @@ msgstr "Keisti į Windows naudojamą „\\“"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Tikrinti viską"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9566,6 +9572,14 @@ msgstr "vykdomasis failas „%s“ yra aplankas"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "nėra leidimo paleisti vykdomąjį failą „%s“"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

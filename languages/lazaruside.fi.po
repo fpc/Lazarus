@@ -5090,7 +5090,9 @@ msgid "All inherited options"
 msgstr "Kaikki periytyvät asetukset"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Kaikki asetukset"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6161,6 +6163,10 @@ msgstr "Vaihda Windowsin \\"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Ruksaa kaikki"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgid "Check for disk file changes via content rather than timestamp"
@@ -9419,6 +9425,14 @@ msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "ohjelmalla \"%s\" ei ole suoritusoikeutta"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

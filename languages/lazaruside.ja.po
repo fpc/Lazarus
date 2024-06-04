@@ -5203,7 +5203,9 @@ msgid "All inherited options"
 msgstr "すべての継承されたオプション"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "すべてのオプション"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6276,6 +6278,10 @@ msgstr "Windows \\ に変換"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "すべてチェック"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 #, fuzzy
@@ -9562,6 +9568,14 @@ msgstr "実行ファイル\"%s\"はディレクトリです"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "実行ファイル\"%s\"は実行が許可されていません"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

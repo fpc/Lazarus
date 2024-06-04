@@ -5083,7 +5083,9 @@ msgid "All inherited options"
 msgstr "Всі успадковані параметри"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Всі параметри"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6155,6 +6157,10 @@ msgstr "Змінити на Windows \\"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Відмітити все"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9417,6 +9423,14 @@ msgstr "виконуваний файл \"%s\" є текою"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "виконуваний файл \"%s\" не має прав на запуск"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

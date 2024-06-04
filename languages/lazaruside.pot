@@ -5051,7 +5051,8 @@ msgid "All inherited options"
 msgstr ""
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format
+msgid "All options of FPC%s (\"%s\")"
 msgstr ""
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6108,6 +6109,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
+msgstr ""
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
@@ -9359,6 +9364,14 @@ msgstr ""
 #: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
 msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped

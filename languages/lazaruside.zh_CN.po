@@ -5078,7 +5078,9 @@ msgid "All inherited options"
 msgstr "所有继承的选项"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "所有选项"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6150,6 +6152,10 @@ msgstr "更改为 Windows \\"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "检查所有"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9421,6 +9427,14 @@ msgstr "可执行的\"%s\"是一个目录"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "可执行的\"%s\"缺少权限来运行"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"

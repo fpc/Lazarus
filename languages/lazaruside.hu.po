@@ -5096,7 +5096,9 @@ msgid "All inherited options"
 msgstr "Minden örökölt beállítás"
 
 #: lazarusidestrconsts.lisalloptions
-msgid "All Options"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "All Options"
+msgid "All options of FPC%s (\"%s\")"
 msgstr "Minden beállítás"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
@@ -6168,6 +6170,10 @@ msgstr "Váltás Windows-ra: \\"
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Mindet kijelöli"
+
+#: lazarusidestrconsts.lischeckcompilerpath
+msgid "Please make sure that the path to the compiler in the IDE options is correct."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
@@ -9445,6 +9451,14 @@ msgstr "a(z) \"%s\" állomány egy könyvtár"
 #, object-pascal-format
 msgid "executable \"%s\" lacks the permission to run"
 msgstr "a \"%s\" állománynak nincs futási engedélye"
+
+#: lazarusidestrconsts.lisexecuteafter
+msgid "Execute After"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutebefore
+msgid "Execute Before"
+msgstr ""
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
