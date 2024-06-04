@@ -1244,7 +1244,9 @@
       <Unit>
         <Filename Value="showcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ShowCompilerOptionsDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="ShowCompilerOpts"/>
       </Unit>
       <Unit>

@@ -2297,6 +2297,8 @@ resourcestring
   dlgCOAsmStyle = 'Assembler style';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
   lisExcludedAtRunTime = '%s excluded at run time';
+  lisExecuteBefore = 'Execute Before';
+  lisExecuteAfter = 'Execute After';
   lisAllInheritedOptions = 'All inherited options';
   lisunitPath = 'unit path';
   lisincludePath = 'include path';
@@ -2381,7 +2383,7 @@ resourcestring
     +'command line parameters';
   dlgUseCustomConfig = 'Use additional compiler config file';
   lisAllOptions = 'All options of FPC%s ("%s")';
-  lisCheckCompilerPath = 'Please make sure that the path to the compiler in the IDE options is correct';
+  lisCheckCompilerPath = 'Please make sure that the path to the compiler in the IDE options is correct.';
   lisFilterTheAvailableOptionsList = 'Filter the available options list';
   lisClearTheFilterForOptions = 'Clear the filter for options';
   lisShowOnlyModified = 'Show only modified';
