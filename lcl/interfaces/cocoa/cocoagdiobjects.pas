@@ -1510,8 +1510,11 @@ begin
   FSize.cx := width;
   FSize.cy := height;
 
-  CGContextTranslateCTM(cg, 0, height);
-  CGContextScaleCTM(cg, 1, -1);
+  if NOT ctx.isFlipped then begin
+    CGContextTranslateCTM(cg, 0, height);
+    CGContextScaleCTM(cg, 1, -1);
+  end;
+
   FPenPos.x := 0;
   FPenPos.y := 0;
 end;
@@ -2195,10 +2198,16 @@ var
   Bmp: TCocoaBitmap;
   MskImage: CGImageRef;
   ImgRect: CGRect;
+
+  dcWidth: Integer;
+  dcHeight: Integer;
 begin
   Bmp := SrcDC.Bitmap;
   if not Assigned(Bmp) then
     Exit(False);
+
+  dcWidth:= Max(Width,FSize.Width);
+  dcHeight:= Max(Height,FSize.Height);
 
   // Make sure that bitmap is the most up-to-date
   Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
@@ -2212,15 +2221,17 @@ begin
   if (Msk <> nil) and (Msk.Image <> nil) then
   begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
-    ImgRect := CGRectMake(x, -y, SrcWidth, SrcHeight);
+    ImgRect := CGRectMake(x, y, dcWidth, dcHeight);
     CGContextSaveGState(CGContext);
-    CGContextScaleCTM(CGContext, 1, -1);
-    CGContextTranslateCTM(CGContext, 0, -SrcHeight);
     CGContextClipToMask(CGContext, ImgRect, MskImage );
 
-    NSGraphicsContext.setCurrentContext(ctx);
+    if NOT ctx.isFlipped then begin
+      CGContextScaleCTM(CGContext, 1, -1);
+      CGContextTranslateCTM(CGContext, 0, -dcHeight);
+      Y:= dcHeight - (Height + Y);
+    end;
     Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
-      GetNSRect(X, -Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
+      GetNSRect(X, Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
