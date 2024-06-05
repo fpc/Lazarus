@@ -374,8 +374,6 @@ type
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
-    procedure SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
-    procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
     procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
     procedure AttachedBitmap_SetModified(); virtual;
@@ -2103,36 +2101,6 @@ procedure TCocoaContext.FrameRect(const ARect: TRect; const ABrush: TCocoaBrush)
 begin
   Rectangle(Arect.Left,ARect.Top,Arect.Right,ARect.Bottom, False, ABrush);
   AttachedBitmap_SetModified();
-end;
-
-procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
-begin
-  if Width < 0 then
-  begin
-    CGContextTranslateCTM(Ctx, -Width, 0);
-    CGContextScaleCTM(Ctx, -1, 1);
-  end;
-
-  if Height < 0 then
-  begin
-    CGContextTranslateCTM(Ctx, 0, -Height);
-    CGContextScaleCTM(Ctx, 1, -1);
-  end;
-end;
-
-procedure TCocoaContext.RestoreCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
-begin
-  if Height < 0 then
-  begin
-    CGContextTranslateCTM(Ctx, 0, Height);
-    CGContextScaleCTM(Ctx, 1, -1);
-  end;
-
-  if Width < 0 then
-  begin
-    CGContextScaleCTM(Ctx, -1, 1);
-    CGContextTranslateCTM(Ctx, Width, 0);
-  end;
 end;
 
 procedure TCocoaContext.ApplyTransform(Trans: CGAffineTransform);
