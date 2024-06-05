@@ -2164,7 +2164,7 @@ function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
   Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
   Bmp: TCocoaBitmap;
-  MskImage: CGImageRef;
+  MskImage: CGImageRef = nil;
   ImgRect: CGRect;
 
   dcWidth: Integer;
@@ -2185,31 +2185,31 @@ begin
   inc(XSrc, -SrcDC.WindowOfs.X);
   inc(YSrc, -SrcDC.WindowOfs.Y);
 
+  CGContextSaveGState(CGContext);
   //apply window offset
-  if (Msk <> nil) and (Msk.Image <> nil) then
-  begin
+  if (Msk <> nil) and (Msk.Image <> nil) then begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
     ImgRect := CGRectMake(x, y, dcWidth, dcHeight);
-    CGContextSaveGState(CGContext);
-    CGContextClipToMask(CGContext, ImgRect, MskImage );
-
-    if NOT ctx.isFlipped then begin
-      CGContextScaleCTM(CGContext, 1, -1);
-      CGContextTranslateCTM(CGContext, 0, -dcHeight);
-      Y:= dcHeight - (Height + Y);
-    end;
-    Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
-      GetNSRect(X, Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
-
-    CGImageRelease(MskImage);
-    CGContextRestoreGState(CGContext);
-  end
-  else
-  begin
-    // convert Y coordinate of the source bitmap
-    YSrc := Bmp.Height - (SrcHeight + YSrc);
-    Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
+    CGContextClipToMask(CGContext, ImgRect, MskImage);
   end;
+
+  if NOT ctx.isFlipped then begin
+    CGContextScaleCTM(CGContext, 1, -1);
+    CGContextTranslateCTM(CGContext, 0, -dcHeight);
+    Y:= dcHeight - (Height + Y);
+  end;
+
+  if NOT SrcDC.ctx.isFlipped then begin
+    YSrc := Bmp.Height - (SrcHeight + YSrc);
+  end;
+
+  Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
+    GetNSRect(X, Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
+
+  if Assigned(MskImage) then
+    CGImageRelease(MskImage);
+  CGContextRestoreGState(CGContext);
+
   AttachedBitmap_SetModified();
 end;
 
