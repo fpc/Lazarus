@@ -521,6 +521,7 @@ begin
   inherited;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  ctx.InitDraw(round(clipRect.size.width), round(clipRect.size.height));
   try
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
