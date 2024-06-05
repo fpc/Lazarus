@@ -36,9 +36,9 @@ type
     function SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
     procedure SetButtonCellToDetails(btn: NSButtonCell; Details: TThemedElementDetails);
 
-    procedure CellDrawStart(dst: TCocoaContext; const r: Trect; out cur: NSGraphicsContext; out dstRect: NSRect);
+    procedure CellDrawStart(dst: TCocoaContext; const r: Trect; out dstRect: NSRect);
     procedure CellDrawFrame(cell: NSCell; const dst: NSRect);
-    procedure CellDrawEnd(dst: TCocoaContext; cur: NSGraphicsContext);
+    procedure CellDrawEnd(dst: TCocoaContext);
 
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -197,7 +197,6 @@ var
   lState: TCDControlState = [];
   lDrawer: TCDDrawer;
   lPt: TPoint;
-  cur : NSGraphicsContext;
   nsr : NSRect;
   b   : NSButtonCell;
 begin
@@ -207,9 +206,9 @@ begin
     if SetButtonCellType(b, Details) then
     begin
       SetButtonCellToDetails(b, Details);
-      CellDrawStart(DC, R, cur, nsr);
+      CellDrawStart(DC, R, nsr);
       CellDrawFrame(b, nsr);
-      CellDrawEnd(DC, cur);
+      CellDrawEnd(DC);
       Exit;
     end;
   finally
@@ -261,14 +260,13 @@ end;
 function TCocoaThemeServices.DrawHeaderElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
-  cur : NSGraphicsContext;
   nsr : NSRect;
 begin
   if (HdrCell=nil) then
   begin
     hdrCell := NSTableHeaderCell.alloc.initTextCell(NSSTR_EMPTY);
   end;
-  CellDrawStart(DC, R, cur, nsr);
+  CellDrawStart(DC, R, nsr);
 
   // this draws a header background
   hdrCell.setDrawsBackground(true);
@@ -279,7 +277,7 @@ begin
   hdrCell.setDrawsBackground(false);
   CellDrawFrame(hdrCell, nsr);
 
-  CellDrawEnd(DC, cur);
+  CellDrawEnd(DC);
   Result := R;
 end;
 
@@ -346,7 +344,6 @@ var
   lCDToolbarItem: TCDToolBarItem;
   lCDToolbar: TCDToolBarStateEx;
   lDrawer: TCDDrawer;
-  cur : NSGraphicsContext;
   nsr : NSRect;
 begin
   if Details.Part = TP_BUTTON then
@@ -354,9 +351,9 @@ begin
     //BtnCell.setBezeled(true);
     SetButtonCellType(BtnCell, Details);
     SetButtonCellToDetails(BtnCell, Details);
-    CellDrawStart(DC, R, cur, nsr);
+    CellDrawStart(DC, R, nsr);
     CellDrawFrame(btnCell, nsr);
-    CellDrawEnd(DC, cur);
+    CellDrawEnd(DC);
     Result := R;
   end
   else
@@ -941,18 +938,17 @@ begin
     btn.setIntValue(0);
 end;
 
-procedure TCocoaThemeServices.CellDrawStart(dst: TCocoaContext; const r: Trect; out cur: NSGraphicsContext; out dstRect: NSRect);
+procedure TCocoaThemeServices.CellDrawStart(dst: TCocoaContext; const r: Trect; out dstRect: NSRect);
 var
   acc : TCocoaContextAccess absolute dst;
 begin
   NSGraphicsContext.classSaveGraphicsState;
-  cur := NSGraphicsContext.currentContext;
-  NSGraphicsContext.setCurrentContext( acc.ctx );
+  NSGraphicsContext.setCurrentContext(acc.ctx);
 
   if NOT acc.ctx.isFlipped then begin
     CGContextTranslateCTM(acc.ctx.CGContext, 0, acc.Size.cy);
     CGContextScaleCTM(acc.ctx.CGContext, 1, -1);
-    LCLToNSRect( R, acc.size.cy, dstRect);
+    LCLToNSRect(R, acc.size.cy, dstRect);
   end else begin
     dstRect:= RectTONSRect(R);
   end;
@@ -963,9 +959,8 @@ begin
   cell.drawWithFrame_inView(dst, nil);
 end;
 
-procedure TCocoaThemeServices.CellDrawEnd(dst: TCocoaContext; cur: NSGraphicsContext);
+procedure TCocoaThemeServices.CellDrawEnd(dst: TCocoaContext);
 begin
-  NSGraphicsContext.setCurrentContext(cur);
   NSGraphicsContext.classRestoreGraphicsState;
 end;
 
