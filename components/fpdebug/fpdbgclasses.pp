@@ -425,6 +425,7 @@ type
     TFpBreakPointMapEntry = record
       InternalBreakPoint: Pointer;  // TFpInternalBreakpoint or TFpInternalBreakpointArray
       IsBreakList: ByteBool;
+      ErrorSetting: ByteBool;
       TargetHandlerData: TFpBreakPointTargetHandlerData; // must be last
     end;
     PFpBreakPointMapEntry = ^TFpBreakPointMapEntry;
@@ -486,7 +487,7 @@ type
     constructor Create(AProcess: TDbgProcess);
     function GetDataSize: integer; virtual; abstract;
 
-    procedure InsertBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer); virtual; abstract;
+    function InsertBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer): boolean; virtual; abstract;
     procedure RemoveBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer); virtual; abstract;
 
     // When the debugger modifies the debuggee's code, it might be that the
@@ -510,7 +511,6 @@ type
     { TInternalBreakLocationEntry }
     TInternalBreakLocationEntry = packed record
       OrigValue: _BRK_STORE;
-      ErrorSetting: ByteBool;
     end;
     PInternalBreakLocationEntry = ^TInternalBreakLocationEntry;
     P_BRK_STORE = ^_BRK_STORE;
@@ -529,7 +529,7 @@ type
   public
     function GetDataSize: integer; override;
 
-    procedure InsertBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer); override;
+    function InsertBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer): boolean; override;
     procedure RemoveBreakInstructionCode(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer); override;
 
     // When the debugger modifies the debuggee's code, it might be that the
@@ -1452,7 +1452,7 @@ begin
   FTmpDataPtr^.InternalBreakPoint := AInternalBreak;
 
   FProcess.DoBeforeBreakLocationMapChange; // Only if a new breakpoint is set => memory changed
-  TargetHandler.InsertBreakInstructionCode(ALocation, AInternalBreak, @FTmpDataPtr^.TargetHandlerData);
+  MapEntryPtr^.ErrorSetting := not TargetHandler.InsertBreakInstructionCode(ALocation, AInternalBreak, @FTmpDataPtr^.TargetHandlerData);
 
   Add(ALocation, FTmpDataPtr^);
 end;
@@ -1496,7 +1496,8 @@ begin
   end;
 
   FProcess.DoBeforeBreakLocationMapChange; // Only if a breakpoint is removed => memory changed
-  TargetHandler.RemoveBreakInstructionCode(ALocation, AInternalBreak, @MapEntryPtr^.TargetHandlerData);
+  if not MapEntryPtr^.ErrorSetting then
+    TargetHandler.RemoveBreakInstructionCode(ALocation, AInternalBreak, @MapEntryPtr^.TargetHandlerData);
   Delete(ALocation);
 end;
 
@@ -1653,7 +1654,8 @@ begin
     // Does break instruction fall completely outside AData
     if (MapEnumData.Location + SizeOf(_BRK_STORE) <= AAdress) or
        (MapEnumData.Location >= (AAdress + ASize)) or
-       HPtr(MapEnumData.TargetHandlerDataPtr)^.ErrorSetting then
+       (MapEnumData.MapDataPtr^.ErrorSetting)
+    then
       continue;
 
     if (MapEnumData.Location >= AAdress) and (MapEnumData.Location + SizeOf(_BRK_STORE) <= (AAdress + ASize)) then begin
@@ -1743,13 +1745,15 @@ begin
   Result := PInternalBreakLocationEntry(Src);
 end;
 
-procedure TGenericBreakPointTargetHandler.InsertBreakInstructionCode(const ALocation: TDBGPtr;
-  const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer);
+function TGenericBreakPointTargetHandler.InsertBreakInstructionCode(const ALocation: TDBGPtr;
+  const AInternalBreak: TFpInternalBreakpoint; AnEntry: PFpBreakPointTargetHandlerDataPointer
+  ): boolean;
 var
   LocData: PInternalBreakLocationEntry absolute AnEntry;
   IsTempRemoved: Boolean;
   i: Integer;
 begin
+  Result := False;
   IsTempRemoved := False;
   for i := 0 to high(FTmpRemovedBreaks) do begin
     IsTempRemoved := ALocation = FTmpRemovedBreaks[i];
@@ -1757,7 +1761,7 @@ begin
       break;
   end;
 
-  LocData^.ErrorSetting := not DoInsertBreakInstructionCode(ALocation, LocData^.OrigValue, IsTempRemoved);
+  Result := DoInsertBreakInstructionCode(ALocation, LocData^.OrigValue, IsTempRemoved);
 end;
 
 procedure TGenericBreakPointTargetHandler.RemoveBreakInstructionCode(const ALocation: TDBGPtr;
@@ -1765,8 +1769,7 @@ procedure TGenericBreakPointTargetHandler.RemoveBreakInstructionCode(const ALoca
 var
   LocData: PInternalBreakLocationEntry absolute AnEntry;
 begin
-  if not LocData^.ErrorSetting then
-    DoRemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
+  DoRemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
 end;
 
 { TDbgCallstackEntry }
