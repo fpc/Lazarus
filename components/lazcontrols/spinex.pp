@@ -268,6 +268,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property SpinButtonWidth: Integer read GetBuddyWidth write SetBuddyWidth default 0;
     property TabOrder;
     property TabStop;
     property TextHint;
@@ -376,6 +377,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property SpinButtonWidth: Integer read GetBuddyWidth write SetBuddyWidth default 0;
     property TabOrder;
     property TabStop;
     property TextHint;
