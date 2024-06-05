@@ -107,6 +107,7 @@ case "$CPU_TARGET" in
   powerpc) ppcbin=ppc;   FPCArch=powerpc;;
   sparc)   ppcbin=sparc; FPCArch=sparc;;
   arm)     ppcbin=arm;   FPCArch=arm;;
+  arm64)   ppcbin=a64;   FPCArch=aarch64;;
   *)    echo "$CPU_TARGET is not supported."
         exit -1;;
 esac
