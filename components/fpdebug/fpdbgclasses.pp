@@ -637,6 +637,19 @@ type
 
   end;
 
+  { TFpInternalBreakpointAtAddress }
+
+  TFpInternalBreakpointAtAddress = class(TFpInternalBreakpoint) // single address ONLY
+  private
+    FRemovedLoc: TDBGPtrArray;
+  protected
+    procedure UpdateState; override;
+    procedure UpdateForLibraryLoaded(ALib: TDbgLibrary); override;
+    procedure UpdateForLibrareUnloaded(ALib: TDbgLibrary); override; // Don't remove from location list
+  public
+    destructor Destroy; override;
+  end;
+
   { TFpInternalBreakpointAtSymbol }
 
   TFpInternalBreakpointAtSymbol = class(TFpInternalBreakpoint)
@@ -939,6 +952,7 @@ type
     function  AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil): TFpDbgBreakpoint; overload;
     function  AddBreak(const AFuncName: String; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil; AIgnoreCase: Boolean = False): TFpDbgBreakpoint; overload;
+    function  AddUserBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope): TFpInternalWatchpoint;
     property WatchPointData: TFpWatchPointData read FWatchPointData;
@@ -2433,6 +2447,17 @@ function TDbgProcess.AddBreak(const AFuncName: String; AnEnabled: Boolean;
 begin
   Result := TFpInternalBreakpointAtSymbol.Create(Self, AFuncName, AnEnabled, ASymInstance, AIgnoreCase);
   AfterBreakpointAdded(Result);
+end;
+
+function TDbgProcess.AddUserBreak(const ALocation: TDBGPtr; AnEnabled: Boolean): TFpDbgBreakpoint;
+var
+  a: TDBGPtrArray;
+begin
+  SetLength(a, 1);
+  a[0] := ALocation;
+  Result := TFpInternalBreakpointAtAddress.Create(Self, a, AnEnabled);
+  AfterBreakpointAdded(Result);
+// TODO: if a = GetInstructionPointerRegisterValue (of any thread?)
 end;
 
 function TDbgProcess.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
@@ -4311,6 +4336,7 @@ begin
   BeginUpdate;
   ResetBreak;
   SetLength(FLocation, 0);
+  FErrorSettingCount := 0;
   TriggerUpdateState;
   EndUpdate;
 end;
@@ -4345,6 +4371,59 @@ begin
     Process.FBreakMap.AddLocation(FLocation[i], Self, True);
   TriggerUpdateState;
   EndUpdate;
+end;
+
+{ TFpInternalBreakpointAtAddress }
+
+procedure TFpInternalBreakpointAtAddress.UpdateState;
+begin
+  if FErrorSettingCount > 0 then begin
+    FRemovedLoc := FLocation;
+    SetLength(FRemovedLoc, Length(FRemovedLoc));
+    RemoveAllAddresses;
+    exit;
+  end;
+
+  if (Length(FLocation) > 0) and (FErrorSettingCount = 0) then
+    SetState(bksOk)
+  else
+    SetState(bksPending);
+end;
+
+procedure TFpInternalBreakpointAtAddress.UpdateForLibraryLoaded(ALib: TDbgLibrary);
+var
+  a: TDBGPtrArray;
+begin
+  if (Length(FRemovedLoc) = 0) or
+     (not ALib.EnclosesAddress(FRemovedLoc[0]))
+  then
+    exit;
+
+  a := FRemovedLoc;
+  FRemovedLoc := nil;
+  BeginUpdate;
+  AddAddress(a);
+  Enabled := True; // Must have been enabled when FRemovedLoc was assigned
+  EndUpdate;
+end;
+
+procedure TFpInternalBreakpointAtAddress.UpdateForLibrareUnloaded(ALib: TDbgLibrary);
+begin
+  if (Length(FLocation) = 0) or
+     (not ALib.EnclosesAddress(FLocation[0]))
+  then
+    exit;
+
+  FRemovedLoc := FLocation;
+  SetLength(FRemovedLoc, Length(FRemovedLoc));
+  RemoveAllAddresses;
+end;
+
+destructor TFpInternalBreakpointAtAddress.Destroy;
+begin
+  BeginUpdate; // no need to call EndUpdate
+  inherited Destroy;
+  FRemovedLoc := nil;
 end;
 
 { TFpInternalBreakpointAtSymbol }

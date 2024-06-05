@@ -1414,7 +1414,7 @@ begin
   if InterlockedExchange(FResetBreakPoint, 0) = 0 then begin
     case FKind of
       bpkAddress:
-        FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FAddress, True);
+        FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddUserBreak(FAddress, True);
       bpkSource:
         FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FSource, FLine, True);
       bpkData: begin
