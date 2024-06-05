@@ -2309,6 +2309,7 @@ function TDbgInstance.GetLineAddresses(AFileName: String; ALine: Cardinal;
 var
   FoundLine: Integer;
 begin
+  FLastLineAddressesFoundFile := False;
   if Assigned(DbgInfo) and DbgInfo.HasInfo then
     Result := DbgInfo.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, @FoundLine, @FLastLineAddressesFoundFile, AMaxSiblingDistance)
   else
@@ -2747,13 +2748,15 @@ function TDbgProcess.GetLineAddresses(AFileName: String; ALine: Cardinal;
 var
   Lib: TDbgLibrary;
 begin
+  FLastLineAddressesFoundFile := False;
   if ASymInstance <> nil then begin
     if ASymInstance = self then begin
       Result := inherited GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance);
     end
     else begin
       Result := ASymInstance.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AMaxSiblingDistance);
-      FLastLineAddressesFoundFile := ASymInstance.FLastLineAddressesFoundFile;
+      if ASymInstance.FLastLineAddressesFoundFile then
+        FLastLineAddressesFoundFile := True;
     end;
     exit;
   end;
