@@ -1,0 +1,13 @@
+Source: lazarus
+Package: lazarusqt5
+Version: LAZVERSION
+Section: devel
+Priority: optional
+Maintainer: Mattias Gaertner <mattias@freepascal.org>
+Architecture: ARCH 
+Depends: libqt5pas1, libqt5pas-dev, libqt5gui5, fpc-laz (>=FPCVERSION), fpc-src (>=FPCVERSION)
+Installed-Size: LAZSIZE
+Description: RAD tool for freepascal
+  Lazarus is a free and opensource IDE and RAD tool for Free Pascal using the
+  Lazarus component library LCL. The LCL is included in this package too.
+  See http://www.lazarus.freepascal.org
