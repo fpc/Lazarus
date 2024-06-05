@@ -313,7 +313,7 @@ type
     procedure ConfirmChanges; virtual;
     procedure UndoChanges; virtual;
 
-    procedure DropDownCalendarForm;
+    procedure DropDownCalendarForm; virtual;
 
     function GetCheckBoxRect(IgnoreRightToLeft: Boolean = False): TRect;
     function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
@@ -454,6 +454,7 @@ type
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Options: TDateTimePickerOptions read FOptions write SetOptions default cDefOptions;
+    property CalendarForm: TCustomForm read FCalendarForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -913,6 +914,7 @@ constructor TDTCalendarForm.CreateNewDTCalendarForm(AOwner: TComponent;
 var
   P: TPoint;
   CalClass: TCalendarControlWrapperClass;
+  CalControl: TControl;
 begin
   inherited CreateNew(AOwner);
 
@@ -942,11 +944,12 @@ begin
 
   Cal := CalClass.Create;
 
-  Cal.GetCalendarControl.ParentBiDiMode := True;
-  Cal.GetCalendarControl.AutoSize := True;
-  Cal.GetCalendarControl.GetPreferredSize(P.x, P.y);
-  Cal.GetCalendarControl.Align := alNone;
-  Cal.GetCalendarControl.SetBounds(1, 1, P.x, P.y);
+  CalControl:=Cal.GetCalendarControl;
+  CalControl.ParentBiDiMode := True;
+  CalControl.AutoSize := True;
+  CalControl.GetPreferredSize(P.x, P.y);
+  CalControl.Align := alNone;
+  CalControl.SetBounds(1, 1, P.x, P.y);
 
   SetBounds(-8000, -8000, P.x + 2, P.y + 2);
   RememberedCalendarFormOrigin := Point(-8000, -8000);
@@ -968,17 +971,17 @@ begin
   else
     Cal.SetDate(DTPicker.Date);
 
-  Cal.GetCalendarControl.OnResize := @CalendarResize;
-  Cal.GetCalendarControl.OnClick := @CalendarClick;
-  if Cal.GetCalendarControl is TWinControl then begin
-    TWinControl(Cal.GetCalendarControl).TabStop := True;
-    TWinControl(Cal.GetCalendarControl).SetFocus;
+  CalControl.OnResize := @CalendarResize;
+  CalControl.OnClick := @CalendarClick;
+  if CalControl is TWinControl then begin
+    TWinControl(CalControl).TabStop := True;
+    TWinControl(CalControl).SetFocus;
   end;
   Self.KeyPreview := True;
 
   Shape.Parent := Self;
-  Cal.GetCalendarControl.Parent := Self;
-  Cal.GetCalendarControl.BringToFront;
+  CalControl.Parent := Self;
+  CalControl.BringToFront;
 end;
 
 destructor TDTCalendarForm.Destroy;
