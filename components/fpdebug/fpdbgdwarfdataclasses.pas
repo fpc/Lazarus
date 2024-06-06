@@ -5066,6 +5066,8 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     diridx: Cardinal;
     S, S2: String;
     pb: PByte absolute Name;
+    oldFpc: Boolean;
+    i: SizeInt;
   begin
     FLineInfo.Header := AData;
     if LNP64^.Signature = DWARF_HEADER64_SIGNATURE
@@ -5095,9 +5097,19 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
     FLineInfo.MaximumInstructionLength := 1;
     if Version >= 4 then begin
-      // FreePascal writes an incorrect header
-      //if (PosI('free pascal 3.2.3', FProducer) <= 0) then begin
-      if (Pos('free pascal', LowerCase(FProducer)) <= 0) then begin
+      // Older FreePascal writes an incorrect header
+      oldFpc := False;
+      s := LowerCase(FProducer);
+      i := Pos('free pascal ',  s);
+      if i > 0 then begin
+        s := copy(s, i+12,5);
+        oldFpc := (Length(s) = 5) and (
+          (s[1] = '2') or                                   // fpc 2.x
+          ( (s[1] = '3') and (s[3] in ['0', '1']) ) or      // fpc 3.0 / 3.1
+          ( (s[1] = '3') and (s[3] = '2') and (s[5] in ['0', '1', '2', '3']) ) // fpc 3.2.[0123]]
+        );
+      end;
+      if not oldFpc then begin
         inc(PByte(Info)); // All fields move by 1 byte // Dwarf-4 has a new field
         FLineInfo.MaximumInstructionLength := Info^.MinimumInstructionLength;
       end;
