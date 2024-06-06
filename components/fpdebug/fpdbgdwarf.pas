@@ -465,7 +465,6 @@ type
   private
     FEvalFlags: set of (efMemberSizeDone, efMemberSizeUnavail,
                         efStrideDone, efStrideUnavail,
-                        efMainStrideDone, efMainStrideUnavail,
                         efRowMajorDone, efRowMajorUnavail,
                         efBoundsDone, efBoundsUnavail);
     FAddrObj: TFpValueDwarfConstAddress;
@@ -473,9 +472,10 @@ type
     FLastMember: TFpValueDwarf;
     FRowMajor: Boolean;
     FMemberSize: TFpDbgValueSize;
-    FStride, FMainStride: TFpDbgValueSize;
+    FStride: TFpDbgValueSize;
     FStrides: array of bitpacked record Stride: TFpDbgValueSize; Done, Unavail: Boolean; end; // nested idx
     FBounds: array of array[0..1] of int64;
+    FStartIndex: Integer;
     procedure DoGetBounds; virtual;
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
@@ -491,20 +491,22 @@ type
     function GetIndexType(AIndex: Integer): TFpSymbol; override;
     function GetIndexTypeCount: Integer; override;
     function IsValidTypeCast: Boolean; override;
+
+    //read raw values
     function DoGetOrdering(out ARowMajor: Boolean): Boolean; virtual;
     function DoGetStride(out AStride: TFpDbgValueSize): Boolean; virtual;
-    function DoGetMemberSize(out ASize: TFpDbgValueSize): Boolean; virtual; // array.stride or typeinfe.size
-    function DoGetMainStride(out AStride: TFpDbgValueSize): Boolean; virtual;
-    function DoGetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; virtual;
+    function DoGetMemberSize(out ASize: TFpDbgValueSize): Boolean; virtual;                    // array.stride or typeinfe.size
+    function DoGetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; virtual; // *GAP* to next entry in Dimension
+    // cached values
+    function GetOrdering(out ARowMajor: Boolean): Boolean; inline;
+    function GetStride(out AStride: TFpDbgValueSize): Boolean; inline;    // array.stride, if available (stride of most inner element)
+    function GetMemberSize(out ASize: TFpDbgValueSize): Boolean; inline;  // array.stride or typeinfe.size
+    (* GetDimStride: Fully calculated stride for each dimension *)
+    function GetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; inline;
   public
     constructor Create(ADwarfTypeSymbol: TFpSymbolDwarfType; AnArraySymbol :TFpSymbolDwarfTypeArray);
     destructor Destroy; override;
     procedure Reset; override;
-    function GetOrdering(out ARowMajor: Boolean): Boolean; inline;
-    function GetStride(out AStride: TFpDbgValueSize): Boolean; inline; // UnAdjusted Stride
-    function GetMemberSize(out ASize: TFpDbgValueSize): Boolean; inline;  // array.stride or typeinfe.size
-    function GetMainStride(out AStride: TFpDbgValueSize): Boolean; inline; // Most inner idx
-    function GetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; inline; // outer idx // AnIndex start at 1
   end;
 
   { TFpValueDwarfString }
@@ -1044,7 +1046,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     // GetNestedSymbolEx: returns the TYPE/range of each index. NOT the data
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
-    function GetMemberAddress(AValueObj: TFpValueDwarf; const AIndex: Array of Int64): TFpDbgMemLocation;
+    function GetMemberAddress(AValueObj: TFpValueDwarf; const AnIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
@@ -3735,13 +3737,23 @@ function TFpValueDwarfArray.GetMemberEx(const AIndex: array of Int64
 var
   Addr: TFpDbgMemLocation;
   i: Integer;
-  Stride: TFpDbgValueSize;
+  Stride, s: TFpDbgValueSize;
 begin
   Result := nil;
   assert((FArraySymbol is TFpSymbolDwarfTypeArray) and (FArraySymbol.Kind = skArray));
 
   Addr := TFpSymbolDwarfTypeArray(FArraySymbol).GetMemberAddress(Self, AIndex);
   if not Context.MemModel.IsReadableLocation(Addr) then exit;
+
+  if FLastMember <> nil then begin
+    if (Length(AIndex) < FArraySymbol.NestedSymbolCount - FStartIndex)
+       <>
+       ( (FLastMember is TFpValueDwarfArray) and
+         (TFpValueDwarfArray(FLastMember).FArraySymbol = FArraySymbol) )
+    then begin
+      ReleaseRefAndNil(FLastMember);
+    end;
+  end;
 
   // FAddrObj.RefCount: hold by self
   i := 1;
@@ -3757,9 +3769,29 @@ begin
     FAddrObj.Update(Addr);
   end;
 
-  if (FLastMember = nil) or (FLastMember.RefCount > 1) then begin
+  if (FLastMember = nil) or (FLastMember.RefCount > 1) or
+     (FLastMember is TFpValueDwarfArray) // TODO: change address, without calling Reset();
+  then begin
     FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpValueDwarfArray.FLastMember'){$ENDIF};
-    FLastMember := TFpValueDwarf(FArraySymbol.TypeInfo.TypeCastValue(FAddrObj));
+    if (Length(AIndex) < FArraySymbol.NestedSymbolCount - FStartIndex) then begin
+      FLastMember := TFpValueDwarf(FArraySymbol.TypeCastValue(FAddrObj));
+      assert(FLastMember is TFpValueDwarfArray, 'TFpValueDwarfArray.GetMemberEx: FLastMember is TFpValueDwarfArray');
+      // All attributes must be read by the outer array, as the nested array have the wrong data address
+      TFpValueDwarfArray(FLastMember).FStartIndex := Length(AIndex) + FStartIndex;
+      GetOrdering  (TFpValueDwarfArray(FLastMember).FRowMajor);
+      GetMemberSize(TFpValueDwarfArray(FLastMember).FMemberSize);
+      GetStride    (TFpValueDwarfArray(FLastMember).FStride);
+      if FStartIndex = 0 then
+        for i := 0 to TypeInfo.NestedSymbolCount - 1 do GetDimStride(i, s);  // trigger reading
+      TFpValueDwarfArray(FLastMember).FStrides := FStrides;
+      GetHasBounds; // trigger reading
+      TFpValueDwarfArray(FLastMember).FBounds := FBounds;
+      TFpValueDwarfArray(FLastMember).FEvalFlags := FEvalFlags;
+      // TODO: FForcedSize = GetDimStride ?
+    end
+    else begin
+      FLastMember := TFpValueDwarf(FArraySymbol.TypeInfo.TypeCastValue(FAddrObj));
+    end;
     {$IFDEF WITH_REFCOUNT_DEBUG}FLastMember.DbgRenameReference(@FLastMember, 'TFpValueDwarfArray.FLastMember'){$ENDIF};
     FLastMember.Context := Context;
     if GetStride(Stride) then
@@ -3780,9 +3812,11 @@ begin
     DoGetBounds;
   if (efBoundsUnavail in FEvalFlags) then
     Exit;
-  if Abs(FBounds[0][1]-FBounds[0][0]) >= MaxLongint then
+  if FStartIndex > High(FBounds) then
+    Exit;
+  if Abs(FBounds[FStartIndex][1]-FBounds[FStartIndex][0]) >= MaxLongint then
     Exit(0); // TODO: error
-  Result := FBounds[0][1]-FBounds[0][0] + 1;
+  Result := FBounds[FStartIndex][1]-FBounds[FStartIndex][0] + 1;
   if Result < 0 then
     Exit(0); // TODO: error
 end;
@@ -3797,7 +3831,7 @@ begin
     DoGetBounds;
   if (efBoundsUnavail in FEvalFlags) then
     Exit;
-  i := Length(AIndex);
+  i := Length(AIndex)+FStartIndex;
   if i > High(FBounds) then
     Exit;
   if Abs(FBounds[i][1]-FBounds[i][0]) >= MaxLongint then
@@ -3809,12 +3843,12 @@ end;
 
 function TFpValueDwarfArray.GetIndexType(AIndex: Integer): TFpSymbol;
 begin
-  Result := TypeInfo.NestedSymbol[AIndex];
+  Result := TypeInfo.NestedSymbol[AIndex+FStartIndex];
 end;
 
 function TFpValueDwarfArray.GetIndexTypeCount: Integer;
 begin
-  Result := TypeInfo.NestedSymbolCount;
+  Result := TypeInfo.NestedSymbolCount - FStartIndex;
 end;
 
 function TFpValueDwarfArray.IsValidTypeCast: Boolean;
@@ -3887,35 +3921,14 @@ begin
   end;
 end;
 
-function TFpValueDwarfArray.DoGetMainStride(out AStride: TFpDbgValueSize
-  ): Boolean;
-var
-  ExtraStride: TFpDbgValueSize;
-begin
-  Result := GetMemberSize(AStride);
-  if Result and (not IsError(LastError)) then begin
-    assert(TypeInfo.NestedSymbolCount > 0, 'TFpValueDwarfArray.DoGetMainStride: TypeInfo.NestedSymbolCount > 0');
-    Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[0]).DoReadStride(Self, ExtraStride);
-    if Result then
-      AStride := AStride + ExtraStride
-    else
-      Result := not IsError(LastError);
-  end;
-end;
-
 function TFpValueDwarfArray.DoGetDimStride(AnIndex: integer; out
   AStride: TFpDbgValueSize): Boolean;
-var
-  ExtraStride: TFpDbgValueSize;
 begin
-  Result := GetMemberSize(AStride);
-  if Result and (not IsError(LastError)) then begin
-    assert(TypeInfo.NestedSymbolCount > AnIndex, 'TFpValueDwarfArray.DoGetDimStride(): TypeInfo.NestedSymbolCount > 0');
-    Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[AnIndex]).DoReadStride(Self, ExtraStride);
-    if Result then
-      AStride := AStride + ExtraStride
-    else
-      Result := not IsError(LastError);
+  assert(TypeInfo.NestedSymbolCount > AnIndex, 'TFpValueDwarfArray.DoGetDimStride(): TypeInfo.NestedSymbolCount > 0');
+  Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[AnIndex]).DoReadStride(Self, AStride);
+  if (not Result) and (not IsError(LastError)) then begin
+    Result := True;
+    AStride := ZeroSize;
   end;
 end;
 
@@ -3985,44 +3998,54 @@ begin
   ASize := FMemberSize;
 end;
 
-function TFpValueDwarfArray.GetMainStride(out AStride: TFpDbgValueSize
-  ): Boolean;
-begin
-  AStride := ZeroSize;
-  Result := not (efMainStrideUnavail in FEvalFlags);
-  if not Result then // If there was an error, then LastError should still be set
-    exit;
-
-  if not (efMainStrideDone in FEvalFlags) then begin
-    Result := DoGetMainStride(FMainStride);
-    if Result then
-      Include(FEvalFlags, efMainStrideDone)
-    else
-      Include(FEvalFlags, efMainStrideUnavail);
-  end;
-
-  AStride := FMainStride;
-end;
-
 function TFpValueDwarfArray.GetDimStride(AnIndex: integer; out
   AStride: TFpDbgValueSize): Boolean;
+var
+  RowM: Boolean;
+  s, ExtraDimStride: TFpDbgValueSize;
 begin
   AStride := ZeroSize;
-  Result := AnIndex < MemberCount;
+  Result := AnIndex + FStartIndex < TypeInfo.NestedSymbolCount;
   if not Result then
     exit;
-  if AnIndex < Length(FStrides) then
-    SetLength(FStrides, MemberCount);
+  if AnIndex + FStartIndex >= Length(FStrides) then
+    SetLength(FStrides, TypeInfo.NestedSymbolCount);
 
-  Result := not FStrides[AnIndex].Unavail;
+  Result := not FStrides[AnIndex + FStartIndex].Unavail;
   if not Result then
     exit;
   if not FStrides[AnIndex].Done then begin
-    Result := DoGetDimStride(AnIndex, FStrides[AnIndex].Stride);
+    assert(FStartIndex=0, 'TFpValueDwarfArray.GetDimStride: FStartIndex=0');
+    Result := GetOrdering(RowM);
+    if Result then
+      Result := DoGetDimStride(AnIndex, ExtraDimStride);
+    if Result then begin
+      // calculate from bounds
+      if RowM then begin
+        if AnIndex = TypeInfo.NestedSymbolCount - 1 then begin
+          Result := GetMemberSize(FStrides[AnIndex].Stride);
+          FStrides[AnIndex].Stride := FStrides[AnIndex].Stride + ExtraDimStride;
+        end
+        else begin
+          Result := HasBounds and GetDimStride(AnIndex + 1, s);
+          FStrides[AnIndex].Stride := s * Int64(GetMemberCountEx(AnIndex + 1)) + ExtraDimStride;
+        end;
+      end
+      else begin
+        if AnIndex = 0 then begin
+          Result := GetMemberSize(FStrides[AnIndex].Stride);
+          FStrides[AnIndex].Stride := FStrides[AnIndex].Stride + ExtraDimStride;
+        end
+        else begin
+          Result := HasBounds and GetDimStride(AnIndex - 1, s);
+          FStrides[AnIndex].Stride := s * Int64(GetMemberCountEx(AnIndex - 1)) + ExtraDimStride;
+        end;
+      end;
+    end;
     FStrides[AnIndex].Done := Result;
     FStrides[AnIndex].Unavail := not Result;
   end;
-  AStride := FStrides[AnIndex].Stride;
+  AStride := FStrides[AnIndex + FStartIndex].Stride;
 end;
 
 function TFpValueDwarfArray.GetOrdHighBound: Int64;
@@ -4054,14 +4077,14 @@ begin
   if not (efBoundsDone in FEvalFlags) then begin
     Include(FEvalFlags, efBoundsDone);
     t := TypeInfo;
-    c := t.NestedSymbolCount;
+    c := t.NestedSymbolCount - FStartIndex;
     if c < 1 then begin
       Include(FEvalFlags, efBoundsUnavail);
       exit;
       end;
     SetLength(FBounds, c);
     for i := 0 to c -1 do begin
-      t2 := t.NestedSymbol[i];
+      t2 := t.NestedSymbol[i+FStartIndex];
       if not t2.GetValueBounds(self, FBounds[i][0], FBounds[i][1]) then
         Include(FEvalFlags, efBoundsUnavail)
     end;
@@ -6541,27 +6564,19 @@ begin
 end;
 
 function TFpSymbolDwarfTypeArray.GetMemberAddress(AValueObj: TFpValueDwarf;
-  const AIndex: array of Int64): TFpDbgMemLocation;
+  const AnIndex: array of Int64): TFpDbgMemLocation;
 var
-  Idx, Factor: Int64;
-  LowBound, HighBound: int64;
+  Idx: Int64;
+  LowBound: int64;
   i: Integer;
   m: TFpSymbolDwarf;
-  RowMajor: Boolean;
-  Offs, StrideInBits: TFpDbgValueSize;
+  StrideInBits: TFpDbgValueSize;
 begin
   assert((AValueObj is TFpValueDwarfArray), 'TFpSymbolDwarfTypeArray.GetMemberAddress AValueObj');
-//  ReadOrdering;
-//  ReadStride(AValueObj); // TODO Stride per member (member = dimension/index)
   Result := InvalidLoc;
 
-  if not TFpValueDwarfArray(AValueObj).GetMainStride(StrideInBits) then
-    exit;
-  if (StrideInBits <= 0) then
-    exit;
-
   CreateMembers;
-  if Length(AIndex) > FMembers.Count then
+  if Length(AnIndex) > FMembers.Count then
     exit;
 
   if AValueObj is TFpValueDwarfArray then begin
@@ -6584,56 +6599,21 @@ begin
     Exit;
   end;
 
-  Offs := ZeroSize;
-  Factor := 1;
 
-
-  if not TFpValueDwarfArray(AValueObj).GetOrdering(RowMajor) then
-    exit;
-  {$PUSH}{$R-}{$Q-} // TODO: check range of index
-  if RowMajor then begin
-    for i := Length(AIndex) - 1 downto 0 do begin
-      Idx := AIndex[i];
-      m := TFpSymbolDwarf(FMembers[i]);
-      if i > 0 then begin
-        if not m.GetValueBounds(AValueObj, LowBound, HighBound) then begin
-          Result := InvalidLoc;
-          exit;
-        end;
-        Idx := Idx - LowBound;
-        Offs := Offs + StrideInBits * Idx * Factor;
-        Factor := Factor * (HighBound - LowBound + 1);  // TODO range check
-      end
-      else begin
-        if m.GetValueLowBound(AValueObj, LowBound) then
-          Idx := Idx - LowBound;
-        Offs := Offs + StrideInBits * Idx * Factor;
-      end;
+  for i := 0 to Length(AnIndex) - 1 do begin
+    if not TFpValueDwarfArray(AValueObj).GetDimStride(i, StrideInBits) then begin
+      Result := InvalidLoc;
+      SetLastError(AValueObj, CreateError(fpErrAnyError));
+      exit;
     end;
-  end
-  else begin
-    for i := 0 to Length(AIndex) - 1 do begin
-      Idx := AIndex[i];
-      m := TFpSymbolDwarf(FMembers[i]);
-      if i > 0 then begin
-        if not m.GetValueBounds(AValueObj, LowBound, HighBound) then begin
-          Result := InvalidLoc;
-          exit;
-        end;
-        Idx := Idx - LowBound;
-        Offs := Offs + StrideInBits * Idx * Factor;
-        Factor := Factor * (HighBound - LowBound + 1);  // TODO range check
-      end
-      else begin
-        if m.GetValueLowBound(AValueObj, LowBound) then
-          Idx := Idx - LowBound;
-        Offs := Offs + StrideInBits * Idx * Factor;
-      end;
-    end;
+    Idx := AnIndex[i];
+    m := TFpSymbolDwarf(FMembers[i]);
+    if m.GetValueLowBound(AValueObj, LowBound) then
+      Idx := Idx - LowBound;
+    {$PUSH}{$R-}{$Q-}
+    Result := Result + StrideInBits * Idx;
+    {$POP}
   end;
-
-  Result := Result + Offs;
-  {$POP}
 end;
 
 destructor TFpSymbolDwarfTypeArray.Destroy;

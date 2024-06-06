@@ -229,7 +229,6 @@ type
     function GetKind: TDbgSymbolKind; override;
     function GetMemberCount: Integer; override;
     function DoGetStride(out AStride: TFpDbgValueSize): Boolean; override;
-    function DoGetMainStride(out AStride: TFpDbgValueSize): Boolean; override;
     function DoGetDimStride(AnIndex: integer; out AStride: TFpDbgValueSize): Boolean; override;
   public
     function GetFpcRefCount(out ARefCount: Int64): Boolean; override;
@@ -1495,16 +1494,6 @@ begin
     Result := inherited DoGetStride(AStride)
   else
     Result := TFpSymbolDwarfType(TypeInfo.NestedSymbol[0]).ReadStride(Self, AStride);
-end;
-
-function TFpValueDwarfFreePascalArray.DoGetMainStride(out
-  AStride: TFpDbgValueSize): Boolean;
-begin
-  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
-  then
-    Result := inherited DoGetMainStride(AStride)
-  else
-    Result := GetMemberSize(AStride);
 end;
 
 function TFpValueDwarfFreePascalArray.DoGetDimStride(AnIndex: integer; out
