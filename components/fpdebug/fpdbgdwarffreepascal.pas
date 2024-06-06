@@ -363,7 +363,9 @@ begin
       CodepageOffset := TypeInfo.CompilationUnit.AddressSize + SizeOf(Longint) + SizeOf(Word) + SizeOf(Word)
     else
       CodepageOffset := TypeInfo.CompilationUnit.AddressSize * 3;
+    {$PUSH}{$Q-}{$R-}
     Addr.Address := Addr.Address - CodepageOffset;
+    {$POP}
     if AContext.ReadMemory(Addr, SizeVal(2), @Codepage) then
       Result := CodePageToCodePageName(Codepage) <> '';
   end;
@@ -2047,6 +2049,8 @@ begin
     exit;
 
   GetStringLen(Len);
+  if Len = 0 then
+    exit('');
 
   if Kind = skWideString then begin
     if not Context.ReadWString(Addr, Len, WResult) then

@@ -4191,6 +4191,8 @@ begin
 
   if not GetStringLen(ALen) then
     exit; // Error should be set by GetStringLen
+  if ALen = 0 then
+    exit('');
 
   if Kind = skWideString then begin
     if not Context.ReadWString(DataAddress, ALen, WResult) then
