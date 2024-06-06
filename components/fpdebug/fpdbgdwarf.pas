@@ -4022,13 +4022,17 @@ begin
     if Result then begin
       // calculate from bounds
       if RowM then begin
+        DoGetBounds;
         if AnIndex = TypeInfo.NestedSymbolCount - 1 then begin
           Result := GetMemberSize(FStrides[AnIndex].Stride);
           FStrides[AnIndex].Stride := FStrides[AnIndex].Stride + ExtraDimStride;
         end
         else begin
           Result := HasBounds and GetDimStride(AnIndex + 1, s);
-          FStrides[AnIndex].Stride := s * Int64(GetMemberCountEx(AnIndex + 1)) + ExtraDimStride;
+          {$PUSH}{$Q-}
+          FStrides[AnIndex].Stride := s * Int64(FBounds[AnIndex + 1][1]-FBounds[AnIndex + 1][0] + 1)
+            + ExtraDimStride;
+          {$POP}
         end;
       end
       else begin
@@ -4038,7 +4042,10 @@ begin
         end
         else begin
           Result := HasBounds and GetDimStride(AnIndex - 1, s);
-          FStrides[AnIndex].Stride := s * Int64(GetMemberCountEx(AnIndex - 1)) + ExtraDimStride;
+          {$PUSH}{$Q-}
+          FStrides[AnIndex].Stride := s * Int64(FBounds[AnIndex - 1][1]-FBounds[AnIndex - 1][0] + 1)
+            + ExtraDimStride;
+          {$POP}
         end;
       end;
     end;
