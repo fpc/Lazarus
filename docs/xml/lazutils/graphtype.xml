@@ -1317,6 +1317,26 @@ boundaries.
 <seealso/>
 </element>
 
+<element name="DisabledDrawEffectStyle">
+<short>Controls the appearance of disabled images.</short>
+<descr>
+<p>
+This variable controls how <link id="TRawImage.PerformEffect"/> 
+represents <link id="TGraphicsDrawEffect.gdeDisabled">gdeDisabled</link>.
+Applications should set it based on the background color for their 
+interfaces.
+</p>
+</descr>
+</element>
+<element name="DisabledDrawEffectStyle.ddesGrayscale">
+<short>Convert RGB values to grayscale.</short>
+</element>
+<element name="DisabledDrawEffectStyle.ddesDarken">
+<short>Convert to black with alpha representing grayscale.</short>
+</element>
+<element name="DisabledDrawEffectStyle.ddesLighten">
+<short>Convert to white with alpha representing grayscale.</short>
+</element>
 </module>
 <!-- GraphType -->
 </package>

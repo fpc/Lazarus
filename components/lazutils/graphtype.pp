@@ -268,9 +268,6 @@ function RawImageQueryFlagsToString(AFlags: TRawImageQueryFlags): string;
 
 var
   MissingBits: array[0..15] of array[0..7] of word;
-  // Control whether gdeDisabled is a grayscale image (classic), or uses
-  // alpha-transparent black or alpha-transparent white, improving appearance
-  // on non-grey light and dark backgrounds
   DisabledDrawEffectStyle: (ddesGrayscale, ddesDarken, ddesLighten) = ddesGrayscale;
 
 implementation
