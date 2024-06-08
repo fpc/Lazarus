@@ -503,7 +503,7 @@ begin
       if Current = #0 then
         break;
       if CharIsReturn(Current) then
-        Raise Exception.Create('Unterminated string: ' + pcToken.SourceCode);
+        Raise TEParseError.Create('Unterminated string: ' + pcToken.SourceCode, pcToken);
 
       { two quotes in a row are still part of the string }
       if (Current = pcDelimiter) then
