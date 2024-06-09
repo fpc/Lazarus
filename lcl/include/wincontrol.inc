@@ -5467,6 +5467,8 @@ begin
            Assigned(HostDockSite.DockManager) then
           HostDockSite.DockManager.MessageHandler(Self, Message);
       end;
+    CM_THEMECHANGED:
+      Broadcast(Message);
   end;
 
   inherited WndProc(Message);
