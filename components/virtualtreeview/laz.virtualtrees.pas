@@ -31174,12 +31174,14 @@ begin
                     StretchBlt(
                       TargetCanvas.Handle,
                       Left,
-                      Top {$ifdef ManualClipNeeded} + YCorrect{$endif},
-                      PaintWidth, PaintInfo.Node.NodeHeight,
+                      Top + YCorrect,
+                      PaintWidth,
+                      PaintInfo.Node.NodeHeight - YCorrect,
                       Canvas.Handle,
                       Window.Left,
-                      {$ifdef ManualClipNeeded}YCorrect{$else}0{$endif},
-                      NodeBitmap.Width, NodeBitmap.Height,
+                      Round(YCorrect * sc),
+                      NodeBitmap.Width,
+                      NodeBitmap.Height - Round(YCorrect * sc),
                       SRCCOPY
                     );
                     {$else}
