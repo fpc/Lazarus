@@ -2193,18 +2193,11 @@ begin
     CGContextClipToMask(CGContext, ImgRect, MskImage);
   end;
 
-  if NOT ctx.isFlipped then begin
-    CGContextScaleCTM(CGContext, 1, -1);
-    CGContextTranslateCTM(CGContext, 0, -dcHeight);
-    Y:= dcHeight - (Height + Y);
-  end;
-
   if NOT SrcDC.ctx.isFlipped then begin
     YSrc := Bmp.Height - (SrcHeight + YSrc);
   end;
 
-  Result := bmp.ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
-    GetNSRect(X, Y, Width, Height), GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), NSCompositeSourceOver, 1.0, True, nil );
+  Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
 
   if Assigned(MskImage) then
     CGImageRelease(MskImage);
