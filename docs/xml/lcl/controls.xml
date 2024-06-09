@@ -23932,9 +23932,14 @@ Handles the following messages:
 <dt>LM_NCHITTEST</dt>
 <dd>Checks the transparency for the control, etc.</dd>
 <dt>Mouse messages</dt>
-<dd>Sent to the DockManager</dd>
+<dd>Sent to the DockManager (when used).</dd>
+<dt>CM_THEMECHANGED</dt>
+<dd>Broadcasts the message received for a theme change event.</dd>
 </dl>
 </descr>
+<version>
+Modified in LCL version 3.6 to handle CM_THEMECHANGED messages.
+</version>
 <seealso>
 <link id="TControl.WndProc"/>
 </seealso>
