@@ -36,7 +36,7 @@ const
   lisMsgEmptyExceptEndBlock = 'Empty except..end block';
   lisMsgEmptyFinallyEndBlock = 'Empty finally..end block';
   lisMsgEmptyTryBlock = 'Empty try block';
-  lisMsgExpectionClassMsg = 'Exception %s  %s';
+  lisMsgExceptionClassMsg = 'Exception %s  %s';
   lisMsgExceptionParsing = 'Exception parsing "%s": %s';
   lisMsgExceptionTokenising = 'Exception tokenising "%s": %s';
   lisMsgExistsAlreadyRemoveIt = '%s %s %s exists already. Remove it?';

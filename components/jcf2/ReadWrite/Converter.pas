@@ -170,7 +170,7 @@ begin
       on E: Exception do
       begin
         fbConvertError := True;
-        SendStatusMessage('', Format(lisMsgExpectionClassMsg, ['', E.Message]), mtException, -1, -1);
+        SendStatusMessage('', Format(lisMsgExceptionClassMsg, ['', E.Message]), mtException, -1, -1);
         Exit;
       end;
     end;
@@ -338,7 +338,7 @@ var
   leParseError:  TEParseError;
   leMessageType: TStatusMessageType;
 begin
-  lsMessage := Format(lisMsgExpectionClassMsg, [pe.ClassName, pe.Message]);
+  lsMessage := Format(lisMsgExceptionClassMsg, [pe.ClassName, pe.Message]);
 
   if pe is TEParseError then
   begin
