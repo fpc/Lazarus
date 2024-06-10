@@ -1634,6 +1634,7 @@ begin
       dr := lclFrame;
       Types.OffsetRect(dr, -dr.Left, -dr.Top);
       SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
+      ctx.InitDraw(dr.Width, dr.Height);
 
       // magic offsets are based on the macOS 10.13.6 visual style
       // but hard-coding is never reliable
