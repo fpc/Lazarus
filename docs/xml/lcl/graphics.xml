@@ -18579,21 +18579,101 @@ be represented in the image data.
 
 <element name="GraphicFilter">
 <short>
-Gets a filter string for files using the specified image class type.
+Gets a filter string for files using the specified graphic class type.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GraphicFilter</var> is a <var>String</var> function used to get a filter 
+value for image files compatible with the graphics class type specified in 
+<var>GraphicClass</var>. The return value contains a description of the graphic 
+class and one or more file masks which represent files for the specified type.
+</p>
+<p>
+GraphicClass is a TGraphicClass type which identifies the image class type for 
+the requested filter value. It can be one of the graphic classes like TBitmap, 
+TCursorImage, TIcon, TPNGImage, TJPEGImage, et. al. If TGraphic is passed in 
+the argument, a list with filters for all of the registered image formats is 
+returned.
+</p>
+<p>
+For example:
+</p>
+<code>sFilter := GraphicFilter(TJpegImage);</code>
+<p>
+Returns:
+</p>
+<code>JPEG Files (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif</code>
+<p>
+While:
+</p>
+<code>sFilter := GraphicFilter(TGraphic);</code>
+<p>
+Returns:
+</p>
+<code>
+Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.
+tiff;*.gif;*.pbm;*.pgm;*.ppm)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;
+*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm|
+PNG Files (*.png)|*.png|
+Pixmap Files (*.xpm)|*.xpm|
+Bitmap Files (*.bmp)|*.bmp|
+Cursor Files (*.cur)|*.cur|
+Icon Files (*.ico)|*.ico|
+macOS Icon Files (*.icns)|*.icns|
+JPEG Files (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|
+Tagged Image File Format Files (*.tif;*.tiff)|*.tif;*.tiff|
+Graphics Interchange Format Files (*.gif)|*.gif|
+Portable Pixmap Files (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm
+</code>
+<remark>
+Formatted for readability; the return value is a string without line breaks. 
+Content depends on the images types supported on a given platform.
+</remark>
+<p>
+The return value can be used to set the Filter property in dialogs like 
+TFileDialog, TOpenDialog, and TSaveDialog. It contains localized description(s) 
+for the graphic class(es) and a delimited list of file mask(s) compatible with 
+the class type(s).
+</p>
+<p>
+Use GraphicFileMask to get a delimited list of file masks for a graphic class 
+type without the descriptive text.
+</p>
+<p>
+Use GraphicExtension to get a single file extension (without the leading '.') 
+for a graphic class type.
+</p>
+</descr>
+<seealso>
+<link id="TGraphic"/>
+<link id="TGraphicClass"/>
+<link id="TIcon"/>
+<link id="TIcnsIcon"/>
+<link id="TCursorImage"/>
+<link id="TBitmap"/>
+<link id="TJpegImage"/>
+<link id="TPortableNetworkGraphic"/>
+<link id="TPortableAnyMapGraphic"/>
+<link id="TPixmap"/>
+<link id="TTiffImage"/>
+<link id="TGifImage"/>
+<link id="#lcl.dialogs.TFileDialog.Filter">TFileDialog.Filter</link>
+</seealso>
 </element>
 <element name="GraphicFilter.Result">
-<short/>
+<short>
+String with a filter value compatible with file dialogs.
+</short>
 </element>
 <element name="GraphicFilter.GraphicClass">
-<short/>
+<short>
+TGraphic class or descendant for the requested filter value.
+</short>
 </element>
 
 <element name="GraphicExtension">
 <short>
-Gets a string with the file extension used for the specified image class type.
+Gets a string with the file extension used for the specified graphic class type.
 </short>
 <descr>
 <p>
@@ -18612,6 +18692,22 @@ GraphicClass is not found in the list.
 </p>
 </descr>
 </element>
+<seealso>
+<link id="TGraphic"/>
+<link id="TGraphicClass"/>
+<link id="TIcon"/>
+<link id="TIcnsIcon"/>
+<link id="TCursorImage"/>
+<link id="TBitmap"/>
+<link id="TJpegImage"/>
+<link id="TPortableNetworkGraphic"/>
+<link id="TPortableAnyMapGraphic"/>
+<link id="TPixmap"/>
+<link id="TTiffImage"/>
+<link id="TGifImage"/>
+<link id="GraphicFilter"/>
+<link id="GraphicFileMask"/>
+</seealso>
 <element name="GraphicExtension.Result">
 <short>File extension for the image type.</short>
 </element>
@@ -18621,21 +18717,82 @@ GraphicClass is not found in the list.
 
 <element name="GraphicFileMask">
 <short>
-Gets a file filter which can be used to select image files for the specified 
-TGraphicClass instance.
+Gets one or more file masks which can be used to select image files for the 
+specified TGraphicClass instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GraphicFileMask</var> is a <var>String</var> function used to get a list 
+of file mask(s) which can be used for files compatible with the specified 
+graphics class.
+</p>
+<p>
+<var>GraphicClass</var> is the TGraphicClass instance with the TGraphic 
+descendant requested in the routine. It can contain one of the graphic classes 
+like TBitmap, TCursorImage, TIcon, TPNGImage, TJPEGImage, et. al. If TGraphic 
+is passed in the argument, a list with file masks for all of the registered 
+image formats is returned. File masks are separated by the ';' delimiter.
+</p>
+<p>
+For example:
+</p>
+<code>sMask := GraphicFileMask(TJpegImage);</code>
+<p>
+Returns:
+</p>
+<code>*.jpeg;*.jpg;*.jpe;*.jfif</code>
+<p>
+While:
+</p>
+<code>sMask := GraphicFileMask(TGraphic);</code>
+<p>
+Returns:
+</p>
+<code>
+*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;
+*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm
+</code>
+<remark>
+Formatted for readability; the return value is a string without line breaks. 
+Content depends on the images types supported on a given platform.
+</remark>
+<p>
+Use GraphicFilter to get a filter value for graphic class type(s) which can be 
+assigned to the Filter property in a dialog.
+</p>
+<p>
+Use GraphicExtension to get a single file extension (without the leading '.') 
+for a graphic class type.
+</p>
+</descr>
+<seealso>
+<link id="TGraphic"/>
+<link id="TGraphicClass"/>
+<link id="TIcon"/>
+<link id="TIcnsIcon"/>
+<link id="TCursorImage"/>
+<link id="TBitmap"/>
+<link id="TJpegImage"/>
+<link id="TPortableNetworkGraphic"/>
+<link id="TPortableAnyMapGraphic"/>
+<link id="TPixmap"/>
+<link id="TTiffImage"/>
+<link id="TGifImage"/>
+<link id="GraphicFilter"/>
+<link id="GraphicExtension"/>
+<link id="#lcl.dialogs.TFileDialog.Filter">TFileDialog.Filter</link>
+</seealso>
 </element>
 <element name="GraphicFileMask.Result">
 <short>
-File filter for the graphics class, or an empty string when the graphics 
-class is not supported.
+Delimited list of file masks for the graphics class, or an empty string when 
+the graphics class is not supported.
 </short>
 </element>
 <element name="GraphicFileMask.GraphicClass">
 <short>
-TGraphicsClass instance to locate in the supported graphic formats.
+TGraphicClass instance to locate in the registered graphic formats for the 
+platform.
 </short>
 </element>
 
