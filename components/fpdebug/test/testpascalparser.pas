@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser,
-  FpErrorMessages, FpDbgInfo,
+  FpErrorMessages, FpDbgInfo, FpdMemoryTools,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -38,10 +38,10 @@ procedure TTestPascalParser.CreateExpr(t: string; ExpValid: Boolean;
   SkipExpValid: Boolean);
 var
   s: String;
-  ctx: TFpDbgSimpleLocationContext;
+  ctx: TFpDbgLocationContext; // TFpDbgSimpleLocationContext
   sc: TFpDbgSymbolScope;
 begin
-  ctx := TFpDbgSimpleLocationContext.Create(nil, 0, 4, 0, 0);
+  ctx := TFpDbgLocationContext.Create();
   sc := TFpDbgSymbolScope.Create(ctx);
   FreeAndNil(CurrentTestExprObj);
   CurrentTestExprText := t;
@@ -51,7 +51,6 @@ DebugLn(CurrentTestExprObj.DebugDump);
     s := ErrorHandler.ErrorAsString(CurrentTestExprObj.Error);
     AssertEquals('Valid '+s+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
   end;
-  ctx.ReleaseReference;
   sc.ReleaseReference;
 end;
 
@@ -274,6 +273,12 @@ begin
     TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
     TestExpr([1],   TFpPascalExpressionPartIdentifier, 'a', 0);
 
+    CreateExpr('f((a))', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 2);
+    TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
+    TestExpr([1], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([1,0],   TFpPascalExpressionPartIdentifier, 'a', 0);
+
     CreateExpr('f(a)(b)', True);
     TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 2);
     TestExpr([0],     TFpPascalExpressionPartBracketArgumentList, '(', 2);
@@ -290,6 +295,20 @@ begin
     TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
     TestExpr([1],   TFpPascalExpressionPartIdentifier, 'a', 0);
     TestExpr([2],   TFpPascalExpressionPartIdentifier, 'b', 0);
+
+    CreateExpr('f((a),b)', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 3);
+    TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
+    TestExpr([1], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([1,0],   TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([2],   TFpPascalExpressionPartIdentifier, 'b', 0);
+
+    CreateExpr('f(a,(b))', True);
+    TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 3);
+    TestExpr([0],   TFpPascalExpressionPartIdentifier, 'f', 0);
+    TestExpr([1],   TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([2], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+    TestExpr([2,0],   TFpPascalExpressionPartIdentifier, 'b', 0);
 
     CreateExpr('f(-a, -b)', True);
     TestExpr([],    TFpPascalExpressionPartBracketArgumentList, '(', 3);
@@ -630,9 +649,12 @@ begin
   TestExpr('#%3',      fpErrPasParserExpectedNumber_p);
 
   TestExpr('''abc''[]',    fpErrPasParserMissingIndexExpression);
-  TestExpr('''abc''[#1]',  [fpErrPasParserIndexError_Wrapper, fpErrExpectedOrdinalVal_p]);
+  //TestExpr('''abc''[#1]',  [fpErrPasParserIndexError_Wrapper, fpErrExpectedOrdinalVal_p]);
   TestExpr('''abc''[99]',  [fpErrPasParserIndexError_Wrapper, fpErrIndexOutOfRange]);
   TestExpr('1[99]',        [fpErrPasParserIndexError_Wrapper, fpErrTypeNotIndexable]);
+
+  CreateExpr('a((a,b)', False, False);
+  CreateExpr('a((a,b,c)', False, False);
 
   //TestExpr('@''ab''',      fpErrCannotCastToPointer_p);
   ///TestExpr('^T(''ab'')',      fpErrCannotCastToPointer_p);

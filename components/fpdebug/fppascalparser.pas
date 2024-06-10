@@ -343,6 +343,7 @@ type
   protected
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function DoGetResultValue: TFpValue; override;
+    function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   end;
 
   { TFpPascalExpressionPartBracketArgumentList }
@@ -2059,6 +2060,15 @@ begin
     Result := Items[0].ResultValue;
   if Result <> nil then
     Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
+end;
+
+function TFpPascalExpressionPartBracketSubExpression.HandleSeparator(
+  ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean;
+begin
+  if IsClosed then
+    inherited HandleSeparator(ASeparatorType, APart)
+  else
+    Result := False;
 end;
 
 { TFpPascalExpressionPartIdentifier }
