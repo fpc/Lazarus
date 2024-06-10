@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -312,14 +312,13 @@ msgid "New project group"
 msgstr "Новая группа проектов"
 
 #: projectgroupstrconst.lisprojectgroupopencaption
-#, fuzzy
 msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
 msgid "Open"
 msgstr "Открыть"
 
 #: projectgroupstrconst.lisprojectgroupopenhint
 msgid "Open project group"
-msgstr ""
+msgstr "Открыть группу проектов"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
