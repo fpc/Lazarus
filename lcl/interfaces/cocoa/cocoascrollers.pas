@@ -619,7 +619,10 @@ begin
            fvscroll.controlSize, fvscroll.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
     allocScroller( self, fvscroll, r, avisible);
-    fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+    if self.isFlipped then
+      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
+    else
+      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
     Result := fvscroll;
   end;
 end;
@@ -697,6 +700,7 @@ procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification
 var
   nw    : NSRect;
   dx,dy : CGFloat;
+  scrollY: CGFloat;
 begin
   if not assigned(documentView) then Exit;
   nw:=documentVisibleRect;
@@ -710,6 +714,11 @@ begin
   if holdscroll>0 then Exit;
   inc(holdscroll);
   try
+    if self.documentView.isFlipped then
+      scrollY:= nw.origin.y
+    else
+      scrollY:= self.documentView.frame.size.height - nw.origin.y - nw.size.height;
+
     // update scrollers (this is required, if scrollWheel was called)
     // so processing LM_xSCROLL will not cause any actually scrolling,
     // as the current position will match!
@@ -718,7 +727,7 @@ begin
       callback.scroll(false, round(nw.origin.x));
 
     if (dy<>0) and assigned(callback) then
-      callback.scroll(true, round(self.documentView.frame.size.height - self.documentVisibleRect.origin.y - self.documentVisibleRect.size.height));
+      callback.scroll(true, round(scrollY));
   finally
     dec(holdscroll);
   end;

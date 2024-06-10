@@ -2117,7 +2117,7 @@ begin
   lRect.Right := lRect.Right - SPINEDIT_DEFAULT_STEPPER_WIDTH;
   lStepperRect.Left := lRect.Right;
   svHeight := GetNSViewSuperViewHeight(Self);
-  if Assigned(superview)  then
+  if Assigned(superview) and NOT superview.isFlipped then
   begin
     LCLToNSRect(lRect, svHeight, ns);
     LCLToNSRect(lStepperRect, svHeight, lStepperNS);
