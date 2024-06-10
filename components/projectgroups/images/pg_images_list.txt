@@ -15,6 +15,9 @@ pg_new_200.png
 pg_open.png
 pg_open_150.png
 pg_open_200.png
+pg_open_simple.png
+pg_open_simple_150.png
+pg_open_simple_200.png
 pg_open_recent.png
 pg_open_recent_150.png
 pg_open_recent_200.png

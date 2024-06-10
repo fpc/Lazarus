@@ -311,6 +311,16 @@ msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Yeni proje grubu"
 
+#: projectgroupstrconst.lisprojectgroupopencaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
+msgid "Open"
+msgstr "Aç"
+
+#: projectgroupstrconst.lisprojectgroupopenhint
+msgid "Open project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
 msgstr "Tekrar yükle"
@@ -484,6 +494,7 @@ msgid "Open Target"
 msgstr "Hedefi Aç"
 
 #: projectgroupstrconst.listargetopencaption
+msgctxt "projectgroupstrconst.listargetopencaption"
 msgid "Open"
 msgstr "Aç"
 

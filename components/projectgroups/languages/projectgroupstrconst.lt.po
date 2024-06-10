@@ -324,6 +324,16 @@ msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Nauja projekto grupė"
 
+#: projectgroupstrconst.lisprojectgroupopencaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
+msgid "Open"
+msgstr "Atverti"
+
+#: projectgroupstrconst.lisprojectgroupopenhint
+msgid "Open project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
 msgstr "Įkelti iš naujo"
@@ -499,6 +509,7 @@ msgid "Open Target"
 msgstr "Atverti tikslą"
 
 #: projectgroupstrconst.listargetopencaption
+msgctxt "projectgroupstrconst.listargetopencaption"
 msgid "Open"
 msgstr "Atverti"
 

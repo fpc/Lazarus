@@ -309,6 +309,16 @@ msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Nová skupina projektov"
 
+#: projectgroupstrconst.lisprojectgroupopencaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
+msgid "Open"
+msgstr "Otvoriť"
+
+#: projectgroupstrconst.lisprojectgroupopenhint
+msgid "Open project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
 msgstr "Znovu načítať"
@@ -482,6 +492,7 @@ msgid "Open Target"
 msgstr "Otvoriť cieľ"
 
 #: projectgroupstrconst.listargetopencaption
+msgctxt "projectgroupstrconst.listargetopencaption"
 msgid "Open"
 msgstr "Otvoriť"
 

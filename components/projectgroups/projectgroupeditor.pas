@@ -51,6 +51,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupOpen: TAction;
     AProjectGroupAddAll: TAction;
     AProjectGroupNew: TAction;
     AProjectGroupAddCurrent: TAction;
@@ -98,6 +99,7 @@ type
     PMICompile: TMenuItem;
     OpenDialogTarget: TOpenDialog;
     PopupMenuAdd: TPopupMenu;
+    PopupMenuOpen: TPopupMenu;
     PopupMenuMore: TPopupMenu;
     PopupMenuTree: TPopupMenu;
     SBPG: TStatusBar;
@@ -109,6 +111,7 @@ type
     TBDelete: TToolButton;
     TBCompile: TToolButton;
     TBCompileClean: TToolButton;
+    TBOpen: TToolButton;
     ToolButton1: TToolButton;
     TBTargetUp: TToolButton;
     TBTargetLater: TToolButton;
@@ -125,6 +128,7 @@ type
     procedure AProjectGroupDeleteExecute(Sender: TObject);
     procedure AProjectGroupDeleteUpdate(Sender: TObject);
     procedure AProjectGroupNewExecute(Sender: TObject);
+    procedure AProjectGroupOpenExecute(Sender: TObject);
     procedure AProjectGroupOptionsExecute(Sender: TObject);
     procedure AProjectGroupRedoExecute(Sender: TObject);
     procedure AProjectGroupRedoUpdate(Sender: TObject);
@@ -164,6 +168,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PopupMenuMorePopup(Sender: TObject);
+    procedure PopupMenuOpenPopup(Sender: TObject);
     procedure TVPGAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
       var {%H-}PaintImages, {%H-}DefaultDraw: Boolean);
@@ -256,6 +261,8 @@ type
     function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
     procedure UpdateStatusBarTargetCount;
+    procedure UpdateRecentProjectGroupMenu;
+    procedure DoOpenRecentClick(Sender: TObject);
   protected
     procedure Localize;
     procedure ShowProjectGroup;
@@ -418,6 +425,7 @@ procedure TProjectGroupEditorForm.Localize;
   end;
 
 begin
+  ConfigAction(AProjectGroupOpen,'pg_open_simple',lisProjectGroupOpenCaption,lisProjectGroupOpenHint,Nil);
   ConfigAction(AProjectGroupSave,'pg_save_simple',lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
   ConfigAction(AProjectGroupSaveAs,'pg_save_as_simple',lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
   ConfigAction(AProjectGroupNew,'pg_new',lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
@@ -659,6 +667,11 @@ begin
   PMIRunMenuItem.Visible:=taRun in AllowedActions;
 end;
 
+procedure TProjectGroupEditorForm.PopupMenuOpenPopup(Sender: TObject);
+begin
+  UpdateRecentProjectGroupMenu;
+end;
+
 procedure TProjectGroupEditorForm.TVPGAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
@@ -764,6 +777,12 @@ begin
     if Shift=[ssCtrl] then
     begin
       TBTargetLater.Click;
+      Key := 0;
+    end;
+    Ord('O'):
+    if Shift=[ssCtrl] then
+    begin
+      TBOpen.Click;
       Key := 0;
     end;
     Ord('S'):
@@ -1136,6 +1155,11 @@ end;
 procedure TProjectGroupEditorForm.AProjectGroupNewExecute(Sender: TObject);
 begin
   IDEProjectGroupManager.DoNewClick(Sender);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupOpenExecute(Sender: TObject);
+begin
+  IDEProjectGroupManager.DoOpenClick(Sender);
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupOptionsExecute(Sender: TObject);
@@ -1582,6 +1606,17 @@ begin
   Result:=DisplayFileName(TNodeData(Node.Data));
 end;
 
+procedure TProjectGroupEditorForm.DoOpenRecentClick(Sender: TObject);
+var
+  Item: TMenuItem;
+  aFilename: String;
+begin
+  Item:=Sender as TMenuItem;
+  aFilename:=Item.Caption;
+  //debugln(['TProjectGroupEditorForm.DoOpenRecentClick ',aFilename]);
+  IDEProjectGroupManager.LoadProjectGroup(aFilename,[pgloBringToFront, pgloLoadRecursively]);
+end;
+
 function TProjectGroupEditorForm.DisplayFileName(NodeData: TNodeData): string;
 begin
   if NodeData=nil then exit('');
@@ -1707,6 +1742,30 @@ begin
   finally
     TVPG.EndUpdate;
   end;
+end;
+
+procedure TProjectGroupEditorForm.UpdateRecentProjectGroupMenu;
+var
+  i: Integer;
+  Item: TMenuItem;
+  aFilename: String;
+begin
+  i:=0;
+  while i<IDEProjectGroupManager.Options.RecentProjectGroups.Count do begin
+    aFilename:=IDEProjectGroupManager.Options.RecentProjectGroups[i];
+    if i<PopupMenuOpen.Items.Count then begin
+      Item:=PopupMenuOpen.Items[i];
+    end
+    else begin
+      Item:=TMenuItem.Create(Self);
+      PopupMenuOpen.Items.Add(Item);
+      Item.OnClick:=@DoOpenRecentClick;
+    end;
+    Item.Caption:=aFilename;
+    inc(i);
+  end;
+  while i<PopupMenuOpen.Items.Count do
+    PopupMenuOpen.Items[i].Free;
 end;
 
 procedure TProjectGroupEditorForm.FillProjectGroupNode(TVNode: TTreeNode;

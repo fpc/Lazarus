@@ -61,6 +61,8 @@ Resourcestring
   lisTargetCount             = '%d targets';
   lisActiveTarget            = 'Target: %s';
 
+  lisProjectGroupOpenCaption   = 'Open';
+  lisProjectGroupOpenHint      = 'Open project group';
   lisProjectGroupSaveCaption   = 'Save';
   lisProjectGroupSaveHint      = 'Save project group';
   lisProjectGroupSaveAsCaption = 'Save As ...';

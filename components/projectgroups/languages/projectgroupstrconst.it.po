@@ -319,6 +319,16 @@ msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Nuovo gruppo di progetti"
 
+#: projectgroupstrconst.lisprojectgroupopencaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
+msgid "Open"
+msgstr "Apri"
+
+#: projectgroupstrconst.lisprojectgroupopenhint
+msgid "Open project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
 msgstr "Ricarica"
@@ -498,6 +508,7 @@ msgid "Open Target"
 msgstr "Apri destinazione"
 
 #: projectgroupstrconst.listargetopencaption
+msgctxt "projectgroupstrconst.listargetopencaption"
 msgid "Open"
 msgstr "Apri"
 

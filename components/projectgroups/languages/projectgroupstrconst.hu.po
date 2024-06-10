@@ -311,6 +311,16 @@ msgctxt "projectgroupstrconst.lisprojectgroupnewhint"
 msgid "New project group"
 msgstr "Új projektcsoport"
 
+#: projectgroupstrconst.lisprojectgroupopencaption
+#, fuzzy
+msgctxt "projectgroupstrconst.lisprojectgroupopencaption"
+msgid "Open"
+msgstr "Megnyitás"
+
+#: projectgroupstrconst.lisprojectgroupopenhint
+msgid "Open project group"
+msgstr ""
+
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
 msgstr "Újratöltés"
@@ -484,6 +494,7 @@ msgid "Open Target"
 msgstr "Cél megnyitása"
 
 #: projectgroupstrconst.listargetopencaption
+msgctxt "projectgroupstrconst.listargetopencaption"
 msgid "Open"
 msgstr "Megnyitás"
 
