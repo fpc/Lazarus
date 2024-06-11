@@ -2040,7 +2040,13 @@ begin
   begin
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
-    FDesignerPopupMenu.Popup(Message.XPos, Message.YPos);
+    if (Message.XPos = -1) and (Message.YPos = -1) then
+      // called from keyboard (VK_APPS or Shift+F10)
+      with Form.ClientToScreen(Point(Selection.Left, Selection.Top)) do
+        FDesignerPopupMenu.Popup(X, Y)
+    else
+      // coordinates can be negative with multiple monitors
+      FDesignerPopupMenu.Popup(Message.XPos, Message.YPos);
   end;
   Message.Result := 1;
 end;
