@@ -1050,7 +1050,7 @@ function TPkgManager.ShowMessageHandler(aUrgency: TMessageLineUrgency;
   ): TMessageLine;
 begin
   Assert(Assigned(IDEMessagesWindow), 'TPkgManager.ShowMessageHandler: IDEMessagesWindow=Nil');
-  IDEMessagesWindow.AddCustomMessage(aUrgency, aMsg, aSrcFilename, aLineNumber, aColumn, aViewCaption);
+  Result:=IDEMessagesWindow.AddCustomMessage(aUrgency, aMsg, aSrcFilename, aLineNumber, aColumn, aViewCaption);
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
