@@ -399,7 +399,7 @@ begin
     // FPC on darwin has a bug with -Cr
     fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Ci -Sa');
     {$ELSE}
-    fOptions.Add('-gw3 -gl -gh -gt -Co -Cr -Ci -Sa -Sy');
+    fOptions.Add('-gw3 -gl -gh -gt -Co -Cr -Ci -Sa');
     {$ENDIF}
   end;
   Add(Profile);
