@@ -291,23 +291,25 @@ begin
     exit(mrCancel);
   end;
   DeclarationCaretXY:=Point(DeclX,DeclY);
-  Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCode.Filename, DeclarationCaretXY,
-    DeclTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
-  if Result<>mrOk then
-    exit;
 
   CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
   CurUnitname:=ExtractFileNameOnly(DeclCode.Filename);
 
   // ToDo: Support renaming and saving a unit also here.
   // Now just inform a user that renaming is not possible.
-  if CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+  if SetRenameActive and (CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0) then
   begin
     IDEMessageDialog(srkmecRenameIdentifier,
       lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
       mtInformation,[mbCancel],'');
     exit(mrCancel);
   end;
+
+  // open unit with declaration
+  Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCode.Filename, DeclarationCaretXY,
+    DeclTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
+  if Result<>mrOk then
+    exit;
 
   //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=',dbgs(DeclarationCaretXY));
   Files:=nil;
