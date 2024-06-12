@@ -1679,20 +1679,16 @@ begin
             with AData^ do
             begin
               Gray := (Red + Green + Blue) div 3;
+              // Apply existing alpha and reduce visibility by a further 66%
               if DisabledDrawEffectStyle = ddesLighten then
               begin
-                // Apply existing alpha and reduce visibility by a further 66%
                 Alpha := Byte((Integer(Gray) * Alpha) div 768);
                 Gray := $FF;
               end
-              else begin
-                Gray := Byte(Integer(Gray) + Integer((DimPercent * (DimColor - Gray)) div 100));
-                if DisabledDrawEffectStyle = ddesDarken then
-                begin
-                  // Apply existing alpha and Reduce visibility by a further 25%
-                  Alpha := Byte((Integer($FF - Gray) * Alpha) div 384);
-                  Gray := $00;
-                end;
+              else if DisabledDrawEffectStyle = ddesDarken then
+              begin
+                Alpha := Byte((Integer($FF - Gray) * Alpha) div 768);
+                Gray := $00;
               end;
               Red := Gray;
               Green := Gray;
