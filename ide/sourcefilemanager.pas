@@ -2098,6 +2098,22 @@ begin
     end;
   end;
 
+  if NewOwner is TProject then
+    AProject:=TProject(NewOwner)
+  else
+    AProject:=Project1;
+  if NewOwner is TLazPackage then
+    APackage:=TLazPackage(NewOwner)
+  else
+    APackage:=nil;
+
+  IsPartOfProject:=(nfIsPartOfProject in NewFlags)
+                   or (NewOwner is TProject)
+                   or (AProject.FileIsInProjectDir(NewFilename)
+                       and (not (nfIsNotPartOfProject in NewFlags)));
+  if IsPartOfProject then
+    NewOwner:=AProject;
+
   Result:=NewFileDescriptor.Init(NewFilename,NewOwner,NewSource,nfQuiet in NewFlags);
   if Result<>mrOk then exit;
 
@@ -2108,15 +2124,6 @@ begin
       mtError,[mbCancel]);
     exit(mrCancel);
   end;
-
-  if NewOwner is TProject then
-    AProject:=TProject(NewOwner)
-  else
-    AProject:=Project1;
-  if NewOwner is TLazPackage then
-    APackage:=TLazPackage(NewOwner)
-  else
-    APackage:=nil;
 
   OldUnitIndex:=AProject.IndexOfFilename(NewFilename);
   if OldUnitIndex>=0 then begin
@@ -2130,11 +2137,6 @@ begin
       exit;
     end;
   end;
-
-  IsPartOfProject:=(nfIsPartOfProject in NewFlags)
-                   or (NewOwner is TProject)
-                   or (AProject.FileIsInProjectDir(NewFilename)
-                       and (not (nfIsNotPartOfProject in NewFlags)));
 
   // add required packages
   //debugln(['NewFile NewFileDescriptor.RequiredPackages="',NewFileDescriptor.RequiredPackages,'" ',DbgSName(NewFileDescriptor)]);
