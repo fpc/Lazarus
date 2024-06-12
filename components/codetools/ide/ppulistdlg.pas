@@ -135,7 +135,7 @@ type
     FIdleConnected: boolean;
     FSearchingItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
     FItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
-    FSort: array[1..3] of TPPUListSortRec;
+    FSort: array[1..6] of TPPUListSortRec;
     FDlgLinkedFiles: TAvlTree; // tree of TPPUDlgLinkedFile sorted for ID, file, flags
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
@@ -265,6 +265,9 @@ begin
   FSort[1].Category:=plsOSize;
   FSort[2].Category:=plsName;
   FSort[3].Category:=plsPPUSize;
+  FSort[4].Category:=plsUsedByCount;
+  FSort[5].Category:=plsUsesCount;
+  FSort[6].Category:=plsPackage;
 
   PageControl1.PageIndex:=0;
 
