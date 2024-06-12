@@ -268,6 +268,7 @@ function RawImageQueryFlagsToString(AFlags: TRawImageQueryFlags): string;
 
 var
   MissingBits: array[0..15] of array[0..7] of word;
+  DisabledDrawEffectStyle: (ddesGrayscale, ddesDarken, ddesLighten) = ddesGrayscale;
 
 implementation
 
@@ -1651,6 +1652,7 @@ var
   AData: PRGBAQuad;
   P: Pointer;
   i, j: integer;
+  Gray: Byte;
 begin
   // check here for Description. Only RGBA data can be processed here.
   if not CheckDescription then
@@ -1676,9 +1678,21 @@ begin
           begin
             with AData^ do
             begin
-              Red := (Red + Green + Blue) div 3;
-              Green := Red;
-              Blue := Red;
+              Gray := (Red + Green + Blue) div 3;
+              // Apply existing alpha and reduce visibility by a further 66%
+              if DisabledDrawEffectStyle = ddesLighten then
+              begin
+                Alpha := Byte((Integer(Gray) * Alpha) div 768);
+                Gray := $FF;
+              end
+              else if DisabledDrawEffectStyle = ddesDarken then
+              begin
+                Alpha := Byte((Integer($FF - Gray) * Alpha) div 768);
+                Gray := $00;
+              end;
+              Red := Gray;
+              Green := Gray;
+              Blue := Gray;
             end;
             inc(AData);
           end;
