@@ -240,8 +240,8 @@ Returns <b>True</b> if the specified values are a valid UTF-16 character
 Based on the specification defined by the Unicode consortium, at:
 </p>
 <p>
-<url href="http://unicode.org/faq/utf_bom.html#utf16-7">
-http://unicode.org/faq/utf_bom.html#utf16-7
+<url href="https://unicode.org/faq/utf_bom.html#utf16-7">
+https://unicode.org/faq/utf_bom.html#utf16-7
 </url>
 </p>
 <p>

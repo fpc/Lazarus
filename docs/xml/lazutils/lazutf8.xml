@@ -610,7 +610,7 @@ Colin Percival:
 </p>
 <p>
 <url 
-href="http://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html">
+href="https://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html">
 Even faster UTF-8 character counting
 </url>
 </p>
@@ -1402,9 +1402,10 @@ Converts the specified string to lowercase using Unicode case mapping rules.
 <p>
 <var>UTF8LowerCase</var> is a <var>String</var> function used to convert the 
 UTF-8-encoded value in AInStr to its lowercase equivalent. UTF8LowerCase uses 
-Unicode Data defined at the 
-<url href="ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt">Unicode.org website</url>. The conversion is performed using the Case Mapping Rules defined
-<url href="http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#CaseMappings">here</url>.
+Unicode Data defined on on the Unicode.org website at 
+ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt. FTP lik removed.
+The conversion is performed using the Case Mapping Rules defined
+in https://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#CaseMappings [dead link renoved].
 </p>
 <p>
 ALanguage indicates the language code to use for the conversion. ALanguage 
@@ -1454,14 +1455,10 @@ Converts the specified string to uppercase using Unicode case mapping rules.
 <p>
 <var>UTF8UpperCase</var> is a <var>String</var> function used to convert the 
 UTF-8-encoded value in AInStr to its uppercase equivalent. UTF8UpperCase uses 
-Unicode Data as defined at the 
-<url href="ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt">
-Unicode.org website
-</url>. 
-The conversion is performed using the Case Mapping Rules defined 
-<url href="http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#CaseMappings">
-here
-</url>.
+Unicode Data as defined at the Unicode.org website. 
+[ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt] FTP link removed.
+The conversion is performed using the Case Mapping Rules defined at 
+https://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#CaseMappings. Dead link removed.
 </p>
 <p>
 ALanguage indicates the language code to use for the conversion. ALanguage 
