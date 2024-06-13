@@ -39,8 +39,8 @@ specific language identifier, use the <file>LCLTranslator</file> unit instead.
 <p>
 For more information, see the Lazarus Wiki article:
 <url 
-href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">Creating 
-Multi-Language Applications</url>
+href="https://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">
+Creating Multi-Language Applications</url>
 </p>
 </descr>
 

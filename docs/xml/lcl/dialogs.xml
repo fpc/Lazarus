@@ -5867,7 +5867,7 @@ example:
 </p>
 <code>
 ADialog.ExpandedText := 'Please read the Terms of Service.'+#10+
-  'Available on our &lt;a href="https://www.bogus.org/tos.html"&gt;Website&lt;/a&gt;';
+  'Available on our Website.';
 </code>
 <p>
 Or, the multi-line value can be entered in the object inspector property 
@@ -5952,10 +5952,9 @@ editor at design-time.
 </p>
 <p>
 Text, ExpandedText, and FooterText allow an HTML-like hyperlinking capability 
-using the &lt;a href="linktarget"&gt;Link Text&lt;/a&gt; notation. The 
-feature must be enabled by including tfEnableHyperlinks in the Flags 
-property. Use tfExpandFooterArea to position the expanded text in the footer 
-area.
+using the &lt;a href=""&gt;Link Text&lt;/a&gt; notation. The feature must be 
+enabled by including tfEnableHyperlinks in the Flags property. Use 
+tfExpandFooterArea to position the expanded text in the footer area.
 </p>
 </descr>
 <version>
@@ -6079,8 +6078,8 @@ multi-line text when line ending characters (#13,#10) are embedded in the
 String value. For example:
 </p>
 <code>
-ADialog.Text := 'Please read and accept the &lt;a href="file://tos.pdf"&gt;Terms of Service&lt;/a&gt;. '+
-  #10+'You must agree before the application can be installed.';
+ADialog.Text := 'Please read and accept the Terms of Service. ' + #10 + 
+'You must agree before the application can be installed.';
 </code>
 <p>
 Or, the multi-line value can be entered in the object inspector property 
@@ -6202,8 +6201,7 @@ begin
      Title := 'Task Title';
 
     Text := 'This tells the user the purpose for the dialog. ' +
-      'Please read and accept the ' +
-      '&lt;a href="https://www.acme.org/tos.html"&gt;Terms of Service&lt;/a&gt;. '+#10+#10+
+      'Please read and accept the Terms of Service. '+#10+#10+
       'Some users prefer a little conversation before they will agree. ' +
       'Along with a progress bar. Please tell us your level of interest.';
 

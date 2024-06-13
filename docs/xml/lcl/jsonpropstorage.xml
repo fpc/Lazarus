@@ -180,12 +180,12 @@ used for the JSON notation in the JSONConfig storage mechanism.
 </short>
 <descr>
 <p>
-<url href="https://lazarus-ccr.sourceforge.io/fpcdoc/fcl/fpjson/index.html">
+<url href="https://lazarus-ccr.sourceforge.io/docs/fcl/fpjson/index.html">
 fpjson Reference
 </url>
 </p>
 <p>
-<url href="http://wiki.freepascal.org/fcl-json">
+<url href="https://wiki.freepascal.org/fcl-json">
 FCL JSON
 </url>
 </p>
