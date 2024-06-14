@@ -92,6 +92,8 @@ type
     procedure ResignFirstResponder;
     procedure DidBecomeKeyNotification;
     procedure DidResignKeyNotification;
+    function SendOnEditCut: Boolean;
+    function SendOnEditPaste: Boolean;
     procedure SendOnChange;
     procedure SendOnTextChanged;
     procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart = NSScrollerNoPart);

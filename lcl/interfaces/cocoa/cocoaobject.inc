@@ -338,11 +338,10 @@ begin
   case ACapability of
     lcCanDrawOutsideOnPaint,
     lcNeedMininimizeAppWithMainForm,
-    lcApplicationTitle,
     {$ifndef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
     {$endif}
-    lcReceivesLMClearCutCopyPasteReliably:
+    lcApplicationTitle:
       Result := LCL_CAPABILITY_NO;
     {$ifdef COCOA_USE_NATIVE_MODAL}
     lcModalWindow,
