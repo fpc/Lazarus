@@ -128,6 +128,18 @@ begin
     VK_RETURN:
       if FDatalink.Editing then // soner: take changes, without this you must
         FDatalink.UpdateRecord; // change focus to other dbctrl
+{$IFDEF DARWIN}
+// see also the comments in TDBMemo.KeyDown()
+    VK_0..VK_9,
+    VK_A..VK_Z,
+    VK_NUMPAD0..VK_DIVIDE,
+    VK_OEM_1..VK_OEM_3,
+    VK_OEM_4..VK_OEM_8:
+      begin
+        if not FDatalink.Edit then
+          Key:= 0;
+      end;
+{$ENDIF}
   end;
 end;
 
