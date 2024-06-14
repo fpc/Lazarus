@@ -97,6 +97,8 @@ type
     procedure ResignFirstResponder; virtual;
     procedure DidBecomeKeyNotification; virtual;
     procedure DidResignKeyNotification; virtual;
+    function SendOnEditCut: Boolean; virtual;
+    function SendOnEditPaste: Boolean; virtual;
     procedure SendOnChange; virtual;
     procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
     procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart); virtual;
@@ -1402,6 +1404,20 @@ begin
   if not Assigned(Target) then Exit;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
   LCLSendKillFocusMsg(Target);
+end;
+
+function TLCLCommonCallback.SendOnEditCut: Boolean;
+begin
+  Result:= false;
+  if Assigned(Target) then
+    Result:= SendSimpleMessage(Target, LM_CUT)=0;
+end;
+
+function TLCLCommonCallback.SendOnEditPaste: Boolean;
+begin
+  Result:= false;
+  if Assigned(Target) then
+    Result:= SendSimpleMessage(Target, LM_PASTE)=0;
 end;
 
 procedure TLCLCommonCallback.SendOnChange;
