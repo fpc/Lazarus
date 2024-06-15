@@ -1418,7 +1418,50 @@ Calls the <var>UpdateRecord</var> method in the internal
 <var>TFieldDataLink</var> instance when it is in an edit state.
 </dd>
 </dl>
+<p>
+For the macOS (Darwin) platform, additional virtual key codes are detected (and 
+discarded) if the contents of the field in the linked dataset cannot be 
+modified. These keys include:
+</p>
+<dl>
+<dt>VK_0..VK_9</dt>
+<dd>numeric characters not on the numeric keypad</dd>
+<dt>VK_A..VK_Z</dt>
+<dd>alphabetic characters</dd>
+<dt>VK_NUMPAD0..VK_NUMPAD9</dt>
+<dd>numeric digits on the numeric keypad</dd>
+<dt>VK_MULTIPLY, VK_DIVIDE, VK_ADD, VK_SUBTRACT</dt>
+<dd>operators on the numeric keypad</dd>
+<dt>VK_SEPARATOR, VK_DECIMAL </dt>
+<dd>padded and non-padded Decimal separators</dd>
+<dt>VK_OEM_1</dt>
+<dd>';:' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_2</dt> 
+<dd>'/?' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_3</dt>
+<dd>'`~' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_4</dt>
+<dd>'[{' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_5</dt>
+<dd>'\|' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_6</dt>
+<dd>']}' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_7</dt>
+<dd>
+'&apos;&quot;' (Apostrophe and Quote) keycap on the US standard keyboard
+</dd>
+<dt>VK_OEM_8</dt>
+<dd>miscellaneous character; varies by keyboard layout</dd>
+</dl>
+<p>
+For these macOS-specific keys, the value in Key is set to 0 if the field cannot 
+be modified.
+</p>
 </descr>
+<version>
+Modified in LCL version 3.6 to handle additional data keys on the macOS 
+(Darwin) platform.
+</version>
 <seealso>
 <link id="TFieldDataLink.Reset"/>
 <link id="TFieldDataLink.Editing"/>
@@ -6878,6 +6921,7 @@ other handlers implemented in the ancestor class.
 <link id="#lcl.stdctrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
 </seealso>
 </element>
+
 <element name="TDBMemo.KeyDown">
 <short>Handles key down events in the data-aware control.</short>
 <descr>
@@ -6910,7 +6954,50 @@ internal <var>TFieldDataLink</var> is not editable, the value in Key is set
 <b>VK_UNKNOWN</b>.
 </dd>
 </dl>
+<p>
+For the macOS (Darwin) platform, additional virtual key codes are detected (and 
+discarded) if the contents of the field in the linked dataset cannot be 
+modified. These keys include:
+</p>
+<dl>
+<dt>VK_0..VK_9</dt>
+<dd>numeric characters not on the numeric keypad</dd>
+<dt>VK_A..VK_Z</dt>
+<dd>alphabetic characters</dd>
+<dt>VK_NUMPAD0..VK_NUMPAD9</dt>
+<dd>numeric digits on the numeric keypad</dd>
+<dt>VK_MULTIPLY, VK_DIVIDE, VK_ADD, VK_SUBTRACT</dt>
+<dd>operators on the numeric keypad</dd>
+<dt>VK_SEPARATOR, VK_DECIMAL </dt>
+<dd>padded and non-padded Decimal separators</dd>
+<dt>VK_OEM_1</dt>
+<dd>';:' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_2</dt> 
+<dd>'/?' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_3</dt>
+<dd>'`~' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_4</dt>
+<dd>'[{' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_5</dt>
+<dd>'\|' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_6</dt>
+<dd>']}' keycap on the US standard keyboard</dd>
+<dt>VK_OEM_7</dt>
+<dd>
+'&apos;&quot;' (Apostrophe and Quote) keycap on the US standard keyboard
+</dd>
+<dt>VK_OEM_8</dt>
+<dd>miscellaneous character; varies by keyboard layout</dd>
+</dl>
+<p>
+For these macOS-specific keys, the value in Key is set to 0 if the field cannot 
+be modified.
+</p>
 </descr>
+<version>
+Modified in LCL version 3.6 to handle additional data keys on the macOS 
+(Darwin) platform.
+</version>
 <seealso>
 <link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
 </seealso>
