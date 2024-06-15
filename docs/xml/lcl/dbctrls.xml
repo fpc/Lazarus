@@ -7094,6 +7094,7 @@ key code is handled, and when the focus is changed to another control.
 <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
 </seealso>
 </element>
+
 <element name="TDBMemo.LoadMemo">
 <short>
 Loads the lines of text for the memo from the field in the linked data set.
@@ -7106,14 +7107,16 @@ the value for the memo has already been loaded, the field in the data link
 has not been assigned, or the field does not use the TBlobField field type.
 </p>
 <p>
-LoadMemo signals the <var>OnGetText</var> event handler (when assigned) in 
-the field data link to get the value that is stored in the <var>Lines</var> 
-property. If the event handler has not been assigned, the <var>AsString</var> 
-method in the linked data field is used to get the value for the control.
+LoadMemo signals the <var>OnGetText</var> event handler (when assigned in 
+the field data link) to get the Text value for the blob field. If OnGetText has 
+not been assigned, the AsString value for the blob field is retrieved. The 
+retrieved value is stored to the Lines property when it differs from the 
+existing value in Lines.
 </p>
 <p>
 If an <var>EInvalidOperation</var> exception occurs while getting the value 
-for the control, the exception message is stored in the Lines property.
+for the control, the exception is caught and the message is stored in the Lines 
+property.
 </p>
 <p>
 LoadMemo is called when the value in <var>AutoDisplay</var> is changed to 
@@ -7121,8 +7124,23 @@ LoadMemo is called when the value in <var>AutoDisplay</var> is changed to
 <b>Enter</b> key is handled in the <var>KeyPress</var> method.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 3.6 to update Lines when the field value differs from 
+the existing value in Lines.
+</version>
+<seealso>
+<link id="TDBMemo.AutoDisplay"/>
+<link id="TDBMemo.DataChange"/>
+<link id="TDBMemo.KeyPress"/>
+<link id="TFieldDataLink"/>
+<link id="#lcl.stdctrls.TCustomMemo.Lines"/>
+<link id="#fcl.db.TBlobField.IsBlob">TBlobField.IsBlob</link>
+<link id="#fcl.db.TField.OnGetText">TField.OnGetText</link>
+<link id="#fcl.db.TField.Text">TField.Text</link>
+<link id="#fcl.db.TField.AsString">TField.AsString</link>
+</seealso>
 </element>
+
 <element name="TDBMemo.ExecuteAction">
 <short>Provides support for TBasicAction in the control.</short>
 <descr>
