@@ -255,15 +255,19 @@ begin
 end;
 
 procedure TDBMemo.LoadMemo;
+var
+  newText: String;
 begin
   if not FDBMemoLoaded and (FDataLink.Field<>nil)
   and FDataLink.Field.IsBlob then begin
     try
       // issue #33598: Possibility to change field text in OnGetText
       if Assigned(FDataLink.Field.OnGetText) then
-        Lines.Text := FDataLink.Field.Text
+        newText := FDataLink.Field.Text
       else 
-        Lines.Text := FDataLink.Field.AsString;
+        newText := FDataLink.Field.AsString;
+      if Lines.Text <> newText then
+        Lines.Text:= newText;
       FDBMemoLoaded:=True;
     except
       on E:EInvalidOperation do
