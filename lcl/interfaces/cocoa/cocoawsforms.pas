@@ -553,7 +553,6 @@ begin
   lcl.BlockCocoaUpDown := true;
   scrollcon.callback := lcl;
   docview.callback := lcl;
-  docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
 
   Result := TLCLHandle(scrollcon);
 end;

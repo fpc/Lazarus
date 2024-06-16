@@ -1769,7 +1769,6 @@ var
   bar : TCocoaScrollBar;
   contentSize  : NSSize;
   documentSize : NSSize;
-  sizingMask : NSUInteger;
   hosted: Boolean;
   ensureWidth: Boolean = false;
   ensureHeight: Boolean = false;
@@ -1802,34 +1801,28 @@ begin
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
       contentSize:=sc.contentSize;
       documentSize:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
-      sizingMask:=sc.documentView.autoresizingMask;
 
       if SBStyle=SB_Horz then begin
         if ScrollInfo.nMax>contentSize.width then begin
           documentSize.width := ScrollInfo.nMax;
-          sizingMask:=sizingMask and not NSViewWidthSizable;
           if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then begin
             sc.setHasHorizontalScroller(true);
             ensureHeight:= true;
           end;
         end else begin
           documentSize.width := contentSize.width;
-          sizingMask:=sizingMask or NSViewWidthSizable;
         end;
       end else if SBStyle=SB_Vert then begin
         if ScrollInfo.nMax>contentSize.height then begin
           documentSize.height := ScrollInfo.nMax;
-          sizingMask:=sizingMask and not NSViewHeightSizable;
           if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then begin
             sc.setHasVerticalScroller(true);
             ensureHeight:= true;
           end;
         end else begin
           documentSize.height := contentSize.height;
-          sizingMask:=sizingMask or NSViewHeightSizable;
         end;
       end;
-      sc.documentView.setAutoresizingMask(sizingMask);
       sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
 
       // frame changed, Need to update another ScrollBar too
