@@ -1601,24 +1601,35 @@ end;
 
 function TCocoaWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
 var
-  sc  : NSScrollView;
   obj : NSObject;
+  scroller: NSScroller;
 begin
-  obj := NSObject(Handle);
   Result := 0;
-  if not Assigned(obj) then Exit;
 
-  if obj.isKindOfClass(NSScrollView) then
-  begin
-    if (BarKind = SB_Vert) and Assigned(NSScrollView(obj).verticalScroller) then
-      Result:=round(NSScrollView(obj).verticalScroller.frame.size.width)
-    else if (BarKind = SB_Horz) and Assigned(NSScrollView(obj).horizontalScroller) then
-      Result:=round(NSScrollView(obj).verticalScroller.frame.size.height)
-    else
-      Result := GetSystemMetrics(SM_CXVSCROLL);
-  end
+  obj:= NSObject(Handle);
+  if NOT Assigned(obj) then
+    Exit;
+
+  if NOT obj.isKindOfClass(NSScrollView) then begin
+    Result:= GetSystemMetrics(SM_CXVSCROLL);
+    Exit;
+  end;
+
+  if BarKind = SB_VERT then
+    scroller:= NSScrollView(obj).verticalScroller
   else
-    Result := GetSystemMetrics(SM_CXVSCROLL);
+    scroller:= NSScrollView(obj).horizontalScroller;
+
+  if NOT Assigned(scroller) then
+    Exit;
+
+  if scroller.scrollerStyle = NSScrollerStyleOverlay then
+    Exit;
+
+  if BarKind = SB_Vert then
+    Result:= Round(scroller.frame.size.width)
+  else
+    Result:= Round(scroller.frame.size.height);
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
