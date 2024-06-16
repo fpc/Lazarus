@@ -26,6 +26,7 @@ uses
   // rtl+ftl
   Math, Classes, SysUtils, LclType,
   // Libs
+  Controls, Forms,
   MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
 
 type
@@ -846,62 +847,33 @@ end;
 
 procedure TCocoaScrollView.setFrame(aframe: NSRect);
 var
-  flg  : NSUInteger;
-  iflg : NSUInteger;
-  docsz : NSSize;
-  scrlsz : NSSize;
-
-  viewRect : NSRect;
-  dRect  : NSRect;
-  hh       : Single;
-  r        : NSRect;
-const
-  NSBothSizable = NSViewWidthSizable or NSViewHeightSizable;
+  newDocSize: NSSize;
+  lclControl : TScrollingWinControl;
+  lclBar: TControlScrollBar;
 begin
   if not isCustomRange then begin
     inherited setFrame(aframe);
     Exit;
   end;
 
-  viewRect := documentVisibleRect;
-  dRect := NSView(documentView).frame;
+  lclControl:= TScrollingWinControl(lclGetTarget);
+
 
   inherited setFrame(aframe);
 
-  flg := documentView.autoresizingMask;
-  if (flg and NSBothSizable) = NSBothSizable then Exit; // no need to checl
 
-  iflg := flg;
-  docsz := NSView(documentView).frame.size;
-  scrlsz := frame.size;
-
-  if (docsz.width<scrlsz.width) and (flg and NSViewWidthSizable = 0) then
-    flg := flg or NSViewWidthSizable;
-
-  if (docsz.height<scrlsz.height) and (flg and NSViewHeightSizable = 0) then
-  begin
-    // force automatic resize for isCustomRange
-    flg := flg or NSViewHeightSizable;
-    documentView.setFrameOrigin( NSMakePoint(0, aframe.size.height));
-    documentView.setFrameSize(aframe.size);
-    //documentView.setAutoresizingMask(flg);
-  end;
-
-  if iflg <> flg then
-    documentView.setAutoresizingMask(flg);
-
-  // the reason for this code here, is the need to re-allign the position
-  // if the control Size adjusted after ScrollInfo got changed.
-  if (documentVisibleRect.size.height < viewRect.size.height)
-    and (flg and NSViewHeightSizable = 0) then
-  begin
-    hh := dRect.size.height - viewRect.origin.y - viewRect.size.height;
-
-    r := documentVisibleRect;
-    r.origin.y := NSView(documentView).frame.size.height - r.size.height - hh;
-
-    NSView(documentView).scrollRectToVisible(r);
-  end;
+  newDocSize:= contentSize;
+  lclBar:= lclControl.HorzScrollBar;
+  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+    newDocSize.Width:= lclBar.Range;
+  lclBar:= lclControl.VertScrollBar;
+  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+    newDocSize.Height:= lclBar.Range;
+  documentView.setFrameSize(newDocSize);
+  if lclHoriScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Horz, lclHoriScrollInfo);
+  if lclVertScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Vert, lclVertScrollInfo);
 end;
 
 function TCocoaScrollView.acceptsFirstResponder: LCLObjCBoolean;
