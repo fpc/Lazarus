@@ -1047,6 +1047,49 @@ control for the grouped edit control.
 </seealso>
 </element>
 
+<element name="TSpinEditExBase.SpinButtonWidth">
+<short>
+Width for the spin buttons on the grouped edit control.
+</short>
+<descr>
+<p>
+<var>SpinButtonWidth</var> is an <var>Integer</var> property which controls the 
+width for the spin buttons displayed for the control. The value for the 
+property is read from and written to the Width for the Buddy property on the 
+grouped edit control. The initial value for the property is the default width
+assigned to the control in UpDown (17 pixels at 96ppi).
+</p>
+<p>
+SpinButtonWidth allows the width for the buttons to be maintained when the 
+control is auto-sized and the spin buttons are too wide or too narrow for the 
+resulting control height. In general, the width of the spin buttons should be 
+increased when the font size is increased or reduced when the font size is 
+reduced.
+</p>
+<p>
+Use AutoSize to resize the height for the control when the Font size is changed.
+</p>
+<p>
+Use AutoSizeHeightIsEditHeight to set the preferred height for the grouped edit 
+control to the preferred height for the text edit on the control when AutoSize 
+is enabled.
+</p>
+</descr>
+<version>
+Added to LazControls in LCL version 4.0.
+</version>
+<seealso>
+<link id="TSpinEditExBase.UpDown"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize">TCustomAbstractGroupedEdit.AutoSize</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight">TCustomAbstractGroupedEdit.AutoSizeHeightIsEditHeight</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.GetBuddyWidth">TCustomAbstractGroupedEdit.GetBuddyWidth</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.SetBuddyWidth">TCustomAbstractGroupedEdit.SetBuddyWidth</link>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Buddy">TCustomAbstractGroupedEdit.Buddy</link>
+<link id="TFloatSpinEditEx"/>
+<link id="TSpinEditEx"/>
+</seealso>
+</element>
+
 <!-- public methods and properties -->
 <element name="TSpinEditExBase.Create">
 <short>Constructor for the class instance.</short>
@@ -2176,6 +2219,9 @@ properties including: <var>Increment</var>, <var>MinValue</var>,
 <element name="TFloatSpinEditEx.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
 <element name="TFloatSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 <element name="TFloatSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+
+<element name="TFloatSpinEditEx.SpinButtonWidth" link="#lazcontrols.spinex.TSpinEditExBase.SpinButtonWidth"/>
+
 <element name="TFloatSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TFloatSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
 <element name="TFloatSpinEditEx.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
@@ -2605,6 +2651,9 @@ value.
 <element name="TSpinEditEx.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
 <element name="TSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 <element name="TSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+
+<element name="TSpinEditEx.SpinButtonWidth" link="#lacontrols.spinex.TSpinEditExBase.SpinButtonWidth"/>
+
 <element name="TSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.ShowHint"/>
 <element name="TSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
 <element name="TSpinEditEx.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
