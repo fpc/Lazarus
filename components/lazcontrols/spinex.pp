@@ -167,6 +167,7 @@ type
     property UpDownVisible: Boolean read GetBuddyVisible write SetBuddyVisible default True;
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default DefMinRepeatValue;
     property Orientation: TUDOrientation read GetOrientation write SetOrientation default udVertical;
+    property SpinButtonWidth: Integer read GetBuddyWidth write SetBuddyWidth;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: T): T; virtual;
@@ -268,7 +269,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
-    property SpinButtonWidth: Integer read GetBuddyWidth write SetBuddyWidth default 0;
+    property SpinButtonWidth;
     property TabOrder;
     property TabStop;
     property TextHint;
@@ -377,7 +378,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
-    property SpinButtonWidth: Integer read GetBuddyWidth write SetBuddyWidth default 0;
+    property SpinButtonWidth;
     property TabOrder;
     property TabStop;
     property TextHint;
