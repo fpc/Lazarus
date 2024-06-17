@@ -67,7 +67,7 @@ uses
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
-  EditorSyntaxHighlighterDef, IdeIntfStrConsts,
+  EditorSyntaxHighlighterDef, IdeIntfStrConsts, IDEOptEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
   // IdeDebugger
@@ -12015,7 +12015,7 @@ end;
 
 procedure TSourceEditorManager.EditorPropertiesClicked(Sender: TObject);
 begin
-  LazarusIDE.DoOpenIDEOptions(TEditorGeneralOptionsFrame);
+  LazarusIDE.DoOpenIDEOptions(nil, '', [TIDEEditorOptions, TCodeToolsOptions], []);
 end;
 
 initialization
