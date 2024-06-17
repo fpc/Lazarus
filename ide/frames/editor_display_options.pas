@@ -561,6 +561,7 @@ begin
   btnGutterDown.Images := IDEImages.Images_16;
   btnGutterUp.ImageIndex := IDEImages.LoadImage('arrow_up', 16);
   btnGutterDown.ImageIndex := IDEImages.LoadImage('arrow_down', 16);
+  rgGutterSite.Caption := dlfMouseSimpleGutterSect;
   rgGutterSite.Items[0] := lisLeftGutter;
   rgGutterSite.Items[1] := lisRightGutter;
   GutterPartVisible.Caption := lisGutterPartVisible;
