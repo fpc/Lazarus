@@ -1807,6 +1807,7 @@ resourcestring
   dlgMultiCaretMode = 'Navigation keys move all carets';
   dlgMultiCaretDelSkipCr = 'Skip delete key at EOL (do not join lines)';
   dlgColorLink = '(Edit Color)';
+  dlgEditMaxLength = '(Edit Max Length)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';
   dlgNoBracketHighlight = 'No Highlight';

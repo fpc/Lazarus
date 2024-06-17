@@ -35,8 +35,9 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEImagesIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, editor_general_options, editor_color_options,
-  SourceSynEditor, SourceMarks;
+  EditorOptions, LazarusIDEStrConsts, editor_general_options,
+  editor_color_options, codetools_linesplitting_options, SourceSynEditor,
+  SourceMarks;
 
 type
   { TEditorDisplayOptionsFrame }
@@ -62,6 +63,7 @@ type
     MarginAndGutterGroupBox: TGroupBox;
     rgGutterSite: TRadioGroup;
     RightMarginColorLink: TLabel;
+    RightMarginMaxLengthLink: TLabel;
     RightMarginComboBox: TComboBox;
     RightMarginLabel: TLabel;
     ShowOnlyLineNumbersMultiplesOfLabel: TLabel;
@@ -87,8 +89,9 @@ type
     procedure rgGutterSiteClick(Sender: TObject);
     procedure FillGutterPartList;
     procedure RightMarginColorLinkClick(Sender: TObject);
-    procedure RightMarginColorLinkMouseEnter(Sender: TObject);
-    procedure RightMarginColorLinkMouseLeave(Sender: TObject);
+    procedure RightMarginMaxLengthLinkClick(Sender: TObject);
+    procedure LinkLabelMouseEnter(Sender: TObject);
+    procedure LinkLabelMouseLeave(Sender: TObject);
     procedure spinGutterPartWidthChange(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -469,13 +472,23 @@ begin
   col.SelectAhaColor(ahaRightMargin);
 end;
 
-procedure TEditorDisplayOptionsFrame.RightMarginColorLinkMouseEnter(Sender: TObject);
+procedure TEditorDisplayOptionsFrame.RightMarginMaxLengthLinkClick(
+  Sender: TObject);
+var
+  col: TCodetoolsLineSplittingOptionsFrame;
+begin
+  col := TCodetoolsLineSplittingOptionsFrame(FDialog.FindEditor(TCodetoolsLineSplittingOptionsFrame));
+  if col = nil then exit;
+  FDialog.OpenEditor(TCodetoolsLineSplittingOptionsFrame);
+end;
+
+procedure TEditorDisplayOptionsFrame.LinkLabelMouseEnter(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := True;
   (Sender as TLabel).Font.Color := clRed;
 end;
 
-procedure TEditorDisplayOptionsFrame.RightMarginColorLinkMouseLeave(Sender: TObject);
+procedure TEditorDisplayOptionsFrame.LinkLabelMouseLeave(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := False;
   (Sender as TLabel).Font.Color := clBlue;
@@ -541,6 +554,7 @@ begin
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
   RightMarginColorLink.Caption := dlgColorLink;
+  RightMarginMaxLengthLink.Caption := dlgEditMaxLength;
   chkTopInfoView.Caption := lisTopInfoView;
 
   btnGutterUp.Images := IDEImages.Images_16;
