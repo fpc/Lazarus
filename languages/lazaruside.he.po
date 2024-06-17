@@ -1770,6 +1770,10 @@ msgstr "כתב נטוי"
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr ""
@@ -12370,8 +12374,10 @@ msgid "Left anchoring"
 msgstr "עיגון לשמאל"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "שמאל"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
@@ -17461,8 +17467,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "רווח גבול ימני. ערך זה מתווסף לרווח הבסיסי ומשמש לרווח מימין לפקד."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "ימין"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy

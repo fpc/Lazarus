@@ -1686,6 +1686,10 @@ msgstr "斜体"
 msgid "Use Background color in HTML export"
 msgstr "在 HTML 导出中使用背景色"
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "编辑器字体大小"
@@ -11809,8 +11813,10 @@ msgid "Left anchoring"
 msgstr "左侧锚点"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "左"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16557,8 +16563,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "右侧边界空格.这个值被添加到基本边界空格,并且被用于右侧控件的空间."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "右"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."

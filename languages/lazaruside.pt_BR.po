@@ -1689,6 +1689,10 @@ msgstr "Itálico"
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Tamanho da fonte do editor"
@@ -11861,8 +11865,10 @@ msgid "Left anchoring"
 msgstr "Ancoragem a esquerda"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "Esquerda"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16632,8 +16638,10 @@ msgstr ""
 "usado para o espaço à direita do controle."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "Direita"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."

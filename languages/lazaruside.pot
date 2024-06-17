@@ -1672,6 +1672,10 @@ msgstr ""
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr ""
@@ -11691,7 +11695,8 @@ msgid "Left anchoring"
 msgstr ""
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
 msgstr ""
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
@@ -16390,7 +16395,8 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr ""
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
 msgstr ""
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint

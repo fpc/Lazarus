@@ -1719,6 +1719,10 @@ msgstr "Kursiv"
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Editor-Zeichengröße"
@@ -11892,8 +11896,10 @@ msgid "Left anchoring"
 msgstr "Linke Verankerung"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "Links"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
@@ -16677,8 +16683,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Rechter Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz rechts vom Element verwendet."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "Rechts"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy

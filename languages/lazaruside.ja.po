@@ -1732,6 +1732,10 @@ msgstr "イタリック"
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "エディタのフォントサイズ"
@@ -11957,8 +11961,10 @@ msgid "Left anchoring"
 msgstr "左にアンカー"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "左"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16806,8 +16812,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "左側の境界間隔。この値は基本境界間隔に追加されコントロールの左側の余白に用いられます。"
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "右"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."

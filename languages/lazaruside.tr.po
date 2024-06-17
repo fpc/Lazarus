@@ -1680,6 +1680,10 @@ msgstr "İtalik"
 msgid "Use Background color in HTML export"
 msgstr "HTML dışa aktarımında Arka Plan rengini kullanma"
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Editör yazıtipi boyutu"
@@ -11710,7 +11714,10 @@ msgid "Left anchoring"
 msgstr "Sola tuttur"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
+#, fuzzy
+#| msgid "Left Gutter"
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
 msgstr "Sol Oluk"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
@@ -16426,7 +16433,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Sağ kenarlık Bu değer taban sınırına eklenir ve kontrol hakkı için kullanılır."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
+#, fuzzy
+#| msgid "Right Gutter"
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
 msgstr "Sağ Oluk"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint

@@ -1685,6 +1685,10 @@ msgstr "Šikmé"
 msgid "Use Background color in HTML export"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr ""
@@ -11824,8 +11828,10 @@ msgid "Left anchoring"
 msgstr "Ľavé ukotvenie"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "Vľavo"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 #, fuzzy
@@ -16599,8 +16605,10 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Pravý okraj.·Táto·hodnota·je·pridaná·k·základnému·okraju·a·použitá·pre·medzeru·vprav od prvku."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "Vpravo"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 #, fuzzy

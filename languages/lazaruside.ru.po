@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-04 22:59+0300\n"
+"PO-Revision-Date: 2024-06-18 00:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1681,6 +1681,10 @@ msgstr "Курсив"
 #: lazarusidestrconsts.dlgeditexportbackcolor
 msgid "Use Background color in HTML export"
 msgstr "Использовать цвет фона при экспорте HTML"
+
+#: lazarusidestrconsts.dlgeditmaxlength
+msgid "(Edit Max Length)"
+msgstr "(Изменить максимальную длину)"
 
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
@@ -11745,8 +11749,9 @@ msgid "Left anchoring"
 msgstr "Левая привязка"
 
 #: lazarusidestrconsts.lisleftgutter
-msgid "Left Gutter"
-msgstr "Боковое поле слева"
+msgctxt "lazarusidestrconsts.lisleftgutter"
+msgid "Left"
+msgstr "Слева"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -16497,8 +16502,9 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Правый зазор. Его значение добавляется к базовуму зазору и используется для определения пространства справа от компонента."
 
 #: lazarusidestrconsts.lisrightgutter
-msgid "Right Gutter"
-msgstr "Боковое поле справа"
+msgctxt "lazarusidestrconsts.lisrightgutter"
+msgid "Right"
+msgstr "Справа"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
