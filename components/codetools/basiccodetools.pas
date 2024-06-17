@@ -1828,8 +1828,11 @@ begin
   while (IdentStart<Position)
   and (not IsIdentStartChar[Source[IdentStart]]) do
     inc(IdentStart);
-  if (IdentStart>1) and (Source[IdentStart-1]='&') then
+  if (IdentStart>1) and (Source[IdentStart-1]='&') then begin
     dec(IdentStart);
+    if (IdentStart>length(Source)) or not IsIdentStartChar[Source[IdentStart+1]] then
+      IdentEnd:=IdentStart;
+  end  else
   if (IdentStart>length(Source)) or not IsIdentStartChar[Source[IdentStart]] then
     IdentEnd:=IdentStart;
 end;
