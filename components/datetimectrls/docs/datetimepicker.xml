@@ -944,11 +944,38 @@ Creates and displays the drop-down calendar dialog for the control.
 </short>
 <descr>
 <p>
-Called when the drop-down button is clicked, or the Alt+Down cursor key is 
-pressed for a date or date/time value.
+<var>DropDownCalendarForm</var> ensures that the form instance in the 
+<var>CalendarForm</var> property is allocated, configured, and displayed. 
+CalendarForm is the form the where the embedded calendar/time picker for the 
+control is displayed, and its value is assigned in the method when:
+</p>
+<ul>
+<li>
+The control does not already have an assigned form instance in CalendarForm.
+</li>
+<li>
+Checked is set to <b>True</b>, or <var>dtpoEnabledIfUnchecked</var> has been enabled in <var>Options</var> property.
+</li>
+<li>
+The control is not configured as <var>ReadOnly</var>.
+</li>
+</ul>
+<p>
+The value in CalendarForm is not updated and the form is not displayed at 
+design-time.
+</p>
+<p>
+DropDownCalendarForm is called when the drop-down button is clicked, or the 
+Alt+Down cursor key is pressed in the edit for the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomDateTimePicker.CalendarForm"/>
+<link id="TCustomDateTimePicker.Checked"/>
+<link id="TCustomDateTimePicker.Options"/>
+<link id="TCustomDateTimePicker.ReadOnly"/>
+<link id="TDateTimePickerOptions"/>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.GetCheckBoxRect">
@@ -3604,6 +3631,48 @@ When the control receives focus, the selection is always in the first part
 </dl>
 </descr>
 <seealso>
+<link id="TDateTimePickerOptions"/>
+<link id="TDateTimePickerOption"/>
+</seealso>
+</element>
+
+<element name="TCustomDateTimePicker.CalendarForm">
+<short/>
+<descr>
+<p>
+<var>CalendarForm</var> is a read-only <var>TCustomForm</var> property which 
+contains the form instance where the embedded calendar/time picker for the 
+control is displayed. Its value is assigned and the form is displayed in the
+<var>DropDownCalendarForm</var> method, and occurs when:
+</p>
+<ul>
+<li>
+The control does not already have an assigned form instance in CalendarForm.
+</li>
+<li>
+Checked is set to <b>True</b>, or <var>dtpoEnabledIfUnchecked</var> has been 
+enabled in <var>Options</var> property.
+</li>
+<li>
+The control is not configured as <var>ReadOnly</var>.
+</li>
+</ul>
+<p>
+This occurs at run-time when the drop-down button for the control is clicked, 
+or when Alt+Down is pressed in the edit control. CalendarForm is not assigned 
+or displayed at design-time.
+</p>
+<p>
+The value assigned to CalendarForm is freed when the form instance in the 
+property is destroyed. It is automatically freed and recreated when the 
+drop-down arrow for the control is created.
+</p>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.Checked"/>
+<link id="TCustomDateTimePicker.DropDownCalendarForm"/>
+<link id="TCustomDateTimePicker.Options"/>
+<link id="TCustomDateTimePicker.ReadOnly"/>
 <link id="TDateTimePickerOptions"/>
 <link id="TDateTimePickerOption"/>
 </seealso>
