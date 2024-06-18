@@ -18,7 +18,7 @@ uses
   // WS
   WSComCtrls,
   // Cocoa WS
-  CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
+  CocoaPrivate, CocoaScrollers, CocoaWSScrollers, CocoaTabControls, CocoaUtils,
   CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects, CocoaButtons;
 
 type

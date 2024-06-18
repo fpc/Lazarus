@@ -34,7 +34,8 @@ uses
   MacOSAll,
   // private
   CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaUtils, Cocoa_Extra,
-  CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows, CocoaScrollers,
+  CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
+  CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType,

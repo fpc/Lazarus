@@ -32,7 +32,7 @@ uses
   // LCL Cocoa
   CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
   CocoaGDIObjects,
-  CocoaWindows, CocoaScrollers, cocoa_extra;
+  CocoaWindows, CocoaScrollers, CocoaWSScrollers, cocoa_extra;
 
 type
   { TLCLWindowCallback }
