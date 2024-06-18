@@ -170,6 +170,18 @@ type
       const ABorderStyle: TBorderStyle); override;
   end;
 
+  { ASyncLCLControlAdjustSizer }
+
+  TASyncLCLControlAdjustSizer = class
+  private
+    _control: TWinControl;
+    _doing: Boolean;
+    procedure doAdjustSize(data: PtrInt);
+  public
+    procedure adjustSize(control: TWinControl);
+  end;
+
+
 // Utility WS functions. todo: it makes sense to put them into CocoaScollers
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
@@ -187,6 +199,9 @@ function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUIn
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
 procedure DebugDumpParents(fromView: NSView);
+
+var
+  ASyncLCLControlAdjustSizer: TASyncLCLControlAdjustSizer;
 
 implementation
 
@@ -2061,6 +2076,23 @@ begin
   ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
 end;
 
+{ TASyncLCLControlAdjustSizer }
+
+procedure TASyncLCLControlAdjustSizer.doAdjustSize(data: PtrInt);
+begin
+  _control.AdjustSize;
+  _doing:= False;
+end;
+
+procedure TASyncLCLControlAdjustSizer.adjustSize(control: TWinControl);
+begin
+  _control:= control;
+  _control.InvalidateClientRectCache(true);
+  if NOT _doing then
+    Application.QueueAsyncCall(@doAdjustSize, 0);
+  _doing:= True;
+end;
+
 function NSObjectDebugStr(obj: NSObject): string;
 begin
   Result := IntToStr(PtrUInt(obj));
@@ -2093,6 +2125,9 @@ begin
     fromView := fromView.superView;
   end;
 end;
+
+initialization
+  ASyncLCLControlAdjustSizer:= TASyncLCLControlAdjustSizer.Create;
 
 end.
 

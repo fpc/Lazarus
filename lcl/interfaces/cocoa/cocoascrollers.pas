@@ -150,6 +150,8 @@ type
     procedure setFrame(newValue: NSRect); override;
   end;
 
+procedure LCLScrollViewAdjustSize(control: TWinControl);
+
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
 
 // These settings are set by a user in "System Preferences"
@@ -166,6 +168,9 @@ function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 
 implementation
+
+uses
+  CocoaWSCommon;
 
 function SysPrefScrollShow: string;
 begin
@@ -631,6 +636,13 @@ end;
 function TCocoaManualScrollView.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
+end;
+
+procedure LCLScrollViewAdjustSize(control: TWinControl);
+begin
+  if NSScroller.preferredScrollerStyle = NSScrollerStyleOverlay then
+    Exit;
+  ASyncLCLControlAdjustSizer.adjustSize(control);
 end;
 
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
