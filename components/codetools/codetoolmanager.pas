@@ -6073,13 +6073,15 @@ var
   UnitSet: TFPCUnitSetCache;
   Dir: String;
 begin
+  Result:=False;
   Dir:=ExtractFilePath(Sender.MainFilename);
   // search the include file in directories defines in fpc.cfg (by -Fi option)
   UnitSet:=CodeToolBoss.GetUnitSetForDirectory(Dir);
   if UnitSet<>nil then begin
     CfgCache:=UnitSet.GetConfigCache(false);
-    Result:=Assigned(CfgCache) and Assigned(CfgCache.Includes)
-      and CfgCache.Includes.GetString(IncName,ExpFilename);
+    if CfgCache=nil then exit;
+    if CfgCache.Includes=nil then exit;
+    Result:=CfgCache.Includes.GetString(IncName,ExpFilename);
   end
   else
     Result:=False;

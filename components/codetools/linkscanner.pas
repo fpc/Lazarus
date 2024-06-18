@@ -4141,7 +4141,7 @@ var
       FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
       if FoundFilename<>'' then begin
         {$IFDEF VerboseIncludeSearch}
-        DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+        DebugLn('TLinkScanner.Search Filename="',RelFilename,'" Found="',FoundFilename,'"');
         {$ENDIF}
         NewCode:=FOnLoadSource(Self,FoundFilename,true);
         if (NewCode<>nil) then
@@ -4155,7 +4155,7 @@ var
     FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
     if FoundFilename<>'' then begin
       {$IFDEF VerboseIncludeSearch}
-      DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+      DebugLn('TLinkScanner.Search Filename="',RelFilename,'" Found="',FoundFilename,'"');
       {$ENDIF}
       NewCode:=FOnLoadSource(Self,FoundFilename,true);
       if (NewCode<>nil) then
@@ -4166,7 +4166,7 @@ var
     FoundFilename:=DirectoryCachePool.FindIncludeFileInCompletePath(Dir,RelFilename,AnyCase);
     if FoundFilename<>'' then begin
       {$IFDEF VerboseIncludeSearch}
-      DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+      DebugLn('TLinkScanner.Search Filename="',RelFilename,'" Found="',FoundFilename,'"');
       {$ENDIF}
       NewCode:=FOnLoadSource(Self,FoundFilename,true);
       if (NewCode<>nil) then
@@ -4177,7 +4177,7 @@ var
       // search the include file in directories defines in fpc.cfg (by -Fi option)
       if FilenameIsAbsolute(Dir)
           and Values.IsDefined('FPC')
-          and OnFindIncFileInFPCSrcDir(Self,AFilename,FoundFilename) then
+          and OnFindIncFileInFPCSrcDir(Self,RelFilename,FoundFilename) then
       begin
         NewCode:=FOnLoadSource(Self,FoundFilename,true);
         if NewCode<>nil then

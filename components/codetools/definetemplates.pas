@@ -1983,7 +1983,7 @@ var
   FileCount: Integer;
   Abort: boolean;
   FileInfo: TSearchRec;
-  ShortFilename, Filename, File_Name: String;
+  ShortFilename, Filename, File_Name, Ext: String;
 begin
   // units sources
   Units:=TStringToStringTree.Create(false);
@@ -2040,14 +2040,13 @@ begin
             ShortFilename:=FileInfo.Name;
             if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
               continue;
-            //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+            Ext:=ExtractFileExt(ShortFilename);
+            if IsPascalIncExt(PChar(Ext))=pietNone then
+              continue;
+
             Filename:=Directory+ShortFilename;
-            if FilenameExtIs(ShortFilename,'.inc') then begin
-              File_Name:=ExtractFileName(Filename);
-              if (not Includes.Contains(File_Name))
-              then
-                Includes[File_Name]:=Filename;
-            end;
+            if not Includes.Contains(ShortFilename) then
+              Includes[ShortFilename]:=Filename;
           until FindNextUTF8(FileInfo)<>0;
         finally
           FindCloseUTF8(FileInfo);
