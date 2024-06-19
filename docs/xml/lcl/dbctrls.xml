@@ -1428,6 +1428,8 @@ modified. These keys include:
 <dd>numeric characters not on the numeric keypad</dd>
 <dt>VK_A..VK_Z</dt>
 <dd>alphabetic characters</dd>
+<dt>VK_SPACE</dt>
+<dd>space character</dd>
 <dt>VK_NUMPAD0..VK_NUMPAD9</dt>
 <dd>numeric digits on the numeric keypad</dd>
 <dt>VK_MULTIPLY, VK_DIVIDE, VK_ADD, VK_SUBTRACT</dt>
@@ -6964,6 +6966,8 @@ modified. These keys include:
 <dd>numeric characters not on the numeric keypad</dd>
 <dt>VK_A..VK_Z</dt>
 <dd>alphabetic characters</dd>
+<dt>VK_SPACE</dt>
+<dd>space character</dd>
 <dt>VK_NUMPAD0..VK_NUMPAD9</dt>
 <dd>numeric digits on the numeric keypad</dd>
 <dt>VK_MULTIPLY, VK_DIVIDE, VK_ADD, VK_SUBTRACT</dt>
