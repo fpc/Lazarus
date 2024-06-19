@@ -1413,17 +1413,16 @@ end;
 procedure TLCLCommonCallback.DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect);
 var
   lTarget: TWinControl;
-  nsr:NSRect;
 begin
   // Implement Color property
   lTarget := TWinControl(GetTarget());
   if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace) then
   begin
     ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
-    nsr:=dirtyRect;
-    if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
-       nsr.origin.y:=bounds.size.height-dirtyRect.origin.y-dirtyRect.size.height;
-    NSRectFill(nsr);
+    // NSRectFill() always requires the coordinate system of the lower left corner
+    // of the origin, contrary to the Rect provided to LCL in
+    // TLCLCommonCallback.Draw() and TLCLCommonCallback.DrawOverlay()
+    NSRectFill(dirtyRect);
   end;
 end;
 
