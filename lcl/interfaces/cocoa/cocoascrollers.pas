@@ -743,9 +743,10 @@ end;
 
 procedure TCocoaScrollView.scrollWheel(theEvent: NSEvent);
 begin
-  if self.hasHorizontalScroller or self.hasVerticalScroller then
-    inherited scrollWheel( theEvent )
-  else if Assigned(self.enclosingScrollView) then
+  if self.hasHorizontalScroller or self.hasVerticalScroller then begin
+    inherited scrollWheel( theEvent );
+    callback.scrollWheel( theEvent );
+  end else if Assigned(self.enclosingScrollView) then
     self.enclosingScrollView.scrollWheel( theEvent )
   else
     inherited scrollWheel( theEvent );
