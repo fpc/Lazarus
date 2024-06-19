@@ -130,7 +130,7 @@ const
   WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
   WantKeys  : array [boolean] of integer = (0, DLGC_WANTALLKEYS);
 
-  procedure CallMouseWheelHandler(barFlag: Integer);
+  function CallMouseWheelHandler(barFlag: Integer): LRESULT;
   var
     scrollMsg: TLMScroll;
     pMsg: PLMessage;
@@ -143,6 +143,7 @@ const
     offset: Integer;
     inc: Integer;
   begin
+    Result:= 0;
     if NOT (Sender is TWinControl) then
       Exit;
     if NOT winControl.HandleAllocated then
@@ -191,6 +192,7 @@ const
     scrollMsg.ScrollCode:= SB_THUMBPOSITION;
     pMsg:= @scrollMsg;
     winControl.WindowProc(pMsg^);
+    Result:= scrollMsg.Result;
   end;
 
 begin
@@ -212,9 +214,9 @@ begin
       end;
     end;
     LM_MOUSEWHEEL:
-      CallMouseWheelHandler(SB_Vert);
+      TLMMouseEvent(Message).Result:= CallMouseWheelHandler(SB_Vert);
     LM_MOUSEHWHEEL:
-      CallMouseWheelHandler(SB_Horz);
+      TLMMouseEvent(Message).Result:= CallMouseWheelHandler(SB_Horz);
   else
     TLMessage(Message).Result := 0;
   end;
