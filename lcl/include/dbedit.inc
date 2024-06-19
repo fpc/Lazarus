@@ -132,6 +132,7 @@ begin
 // see also the comments in TDBMemo.KeyDown()
     VK_0..VK_9,
     VK_A..VK_Z,
+    VK_SPACE,
     VK_NUMPAD0..VK_DIVIDE,
     VK_OEM_1..VK_OEM_3,
     VK_OEM_4..VK_OEM_8:
