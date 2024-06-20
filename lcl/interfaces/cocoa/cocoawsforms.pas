@@ -32,7 +32,7 @@ uses
   // LCL Cocoa
   CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaMenus,
   CocoaGDIObjects,
-  CocoaWindows, CocoaScrollers, cocoa_extra;
+  CocoaWindows, CocoaScrollers, CocoaWSScrollers, cocoa_extra;
 
 type
   { TLCLWindowCallback }
@@ -553,7 +553,6 @@ begin
   lcl.BlockCocoaUpDown := true;
   scrollcon.callback := lcl;
   docview.callback := lcl;
-  docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
 
   Result := TLCLIntfHandle(scrollcon);
 end;

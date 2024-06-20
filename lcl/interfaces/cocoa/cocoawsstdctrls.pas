@@ -35,7 +35,7 @@ uses
   // LCL Cocoa
   CocoaConst, CocoaConfig,
   CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
-  CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;
+  CocoaTables, CocoaTextEdits, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
 
 type
 

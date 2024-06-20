@@ -117,6 +117,11 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.isSendingScrollWheelFromInterface(): Boolean;
+begin
+  Result:= self.FSendingScrollWheelCount > 0;
+end;
+
 procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   hnd : NSObject;
@@ -130,7 +135,7 @@ const
   WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
   WantKeys  : array [boolean] of integer = (0, DLGC_WANTALLKEYS);
 
-  procedure CallMouseWheelHandler(barFlag: Integer);
+  function CallMouseWheelHandler(barFlag: Integer): LRESULT;
   var
     scrollMsg: TLMScroll;
     pMsg: PLMessage;
@@ -143,6 +148,7 @@ const
     offset: Integer;
     inc: Integer;
   begin
+    Result:= 0;
     if NOT (Sender is TWinControl) then
       Exit;
     if NOT winControl.HandleAllocated then
@@ -191,6 +197,18 @@ const
     scrollMsg.ScrollCode:= SB_THUMBPOSITION;
     pMsg:= @scrollMsg;
     winControl.WindowProc(pMsg^);
+    Result:= scrollMsg.Result;
+  end;
+
+  function SendMouseWheel(barFlag: Integer): LRESULT;
+  begin
+    Result:= 0;
+    inc( self.FSendingScrollWheelCount );
+    try
+      Result:= CallMouseWheelHandler( barFlag );
+    finally
+      dec( self.FSendingScrollWheelCount );
+    end;
   end;
 
 begin
@@ -212,9 +230,9 @@ begin
       end;
     end;
     LM_MOUSEWHEEL:
-      CallMouseWheelHandler(SB_Vert);
+      TLMMouseEvent(Message).Result:= SendMouseWheel(SB_Vert);
     LM_MOUSEHWHEEL:
-      CallMouseWheelHandler(SB_Horz);
+      TLMMouseEvent(Message).Result:= SendMouseWheel(SB_Horz);
   else
     TLMessage(Message).Result := 0;
   end;
@@ -1601,24 +1619,35 @@ end;
 
 function TCocoaWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
 var
-  sc  : NSScrollView;
   obj : NSObject;
+  scroller: NSScroller;
 begin
-  obj := NSObject(Handle);
   Result := 0;
-  if not Assigned(obj) then Exit;
 
-  if obj.isKindOfClass(NSScrollView) then
-  begin
-    if (BarKind = SB_Vert) and Assigned(NSScrollView(obj).verticalScroller) then
-      Result:=round(NSScrollView(obj).verticalScroller.frame.size.width)
-    else if (BarKind = SB_Horz) and Assigned(NSScrollView(obj).horizontalScroller) then
-      Result:=round(NSScrollView(obj).verticalScroller.frame.size.height)
-    else
-      Result := GetSystemMetrics(SM_CXVSCROLL);
-  end
+  obj:= NSObject(Handle);
+  if NOT Assigned(obj) then
+    Exit;
+
+  if NOT obj.isKindOfClass(NSScrollView) then begin
+    Result:= GetSystemMetrics(SM_CXVSCROLL);
+    Exit;
+  end;
+
+  if BarKind = SB_VERT then
+    scroller:= NSScrollView(obj).verticalScroller
   else
-    Result := GetSystemMetrics(SM_CXVSCROLL);
+    scroller:= NSScrollView(obj).horizontalScroller;
+
+  if NOT Assigned(scroller) then
+    Exit;
+
+  if scroller.scrollerStyle = NSScrollerStyleOverlay then
+    Exit;
+
+  if BarKind = SB_Vert then
+    Result:= Round(scroller.frame.size.width)
+  else
+    Result:= Round(scroller.frame.size.height);
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
@@ -1769,7 +1798,6 @@ var
   bar : TCocoaScrollBar;
   contentSize  : NSSize;
   documentSize : NSSize;
-  sizingMask : NSUInteger;
   hosted: Boolean;
   ensureWidth: Boolean = false;
   ensureHeight: Boolean = false;
@@ -1802,35 +1830,30 @@ begin
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
       contentSize:=sc.contentSize;
       documentSize:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
-      sizingMask:=sc.documentView.autoresizingMask;
 
       if SBStyle=SB_Horz then begin
         if ScrollInfo.nMax>contentSize.width then begin
           documentSize.width := ScrollInfo.nMax;
-          sizingMask:=sizingMask and not NSViewWidthSizable;
           if (documentSize.width>contentSize.width) and Assigned(lclControl) and lclControl.HorzScrollBar.Visible then begin
             sc.setHasHorizontalScroller(true);
             ensureHeight:= true;
           end;
         end else begin
           documentSize.width := contentSize.width;
-          sizingMask:=sizingMask or NSViewWidthSizable;
         end;
       end else if SBStyle=SB_Vert then begin
         if ScrollInfo.nMax>contentSize.height then begin
           documentSize.height := ScrollInfo.nMax;
-          sizingMask:=sizingMask and not NSViewHeightSizable;
           if (documentSize.height>contentSize.height) and Assigned(lclControl) and lclControl.VertScrollBar.Visible then begin
             sc.setHasVerticalScroller(true);
             ensureHeight:= true;
           end;
         end else begin
           documentSize.height := contentSize.height;
-          sizingMask:=sizingMask or NSViewHeightSizable;
         end;
       end;
-      sc.documentView.setAutoresizingMask(sizingMask);
       sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
+      LCLScrollViewAdjustSize(lclControl);
 
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
@@ -1843,8 +1866,10 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if ScrollInfo.fMask and SIF_ALL > 0 then
-      sc.applyScrollInfo(SBStyle, ScrollInfo);
+    if NOT self.isSendingScrollWheelFromInterface then begin
+      if ScrollInfo.fMask and SIF_ALL > 0 then
+        sc.applyScrollInfo(SBStyle, ScrollInfo);
+    end;
     Result:= getNewScrollPos();
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin

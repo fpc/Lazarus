@@ -26,6 +26,7 @@ uses
   // rtl+ftl
   Math, Classes, SysUtils, LclType,
   // Libs
+  Controls, Forms,
   MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
 
 type
@@ -44,7 +45,6 @@ type
     docrect    : NSRect;    // have to remember old
     holdscroll : Integer; // do not send scroll messages
 
-    function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -57,7 +57,6 @@ type
     procedure ensureDocumentViewSizeChanged(newSize: NSSize;
       ensureWidth: Boolean; ensureHeight: Boolean);
       message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
-    procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
     procedure resetScrollData; message 'resetScrollData';
 
     procedure lclUpdate; override;
@@ -695,44 +694,6 @@ begin
   self.documentView.setFrameSize( newSize );
 end;
 
-procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification
-  );
-var
-  nw    : NSRect;
-  dx,dy : CGFloat;
-  scrollY: CGFloat;
-begin
-  if not assigned(documentView) then Exit;
-  nw:=documentVisibleRect;
-
-  dx:=nw.origin.x-docrect.origin.x;
-  dy:=docrect.origin.y-nw.origin.y; // cocoa flipped coordinates
-
-  docrect:=nw;
-  if (dx=0) and (dy=0) then Exit;
-
-  if holdscroll>0 then Exit;
-  inc(holdscroll);
-  try
-    if self.documentView.isFlipped then
-      scrollY:= nw.origin.y
-    else
-      scrollY:= self.documentView.frame.size.height - nw.origin.y - nw.size.height;
-
-    // update scrollers (this is required, if scrollWheel was called)
-    // so processing LM_xSCROLL will not cause any actually scrolling,
-    // as the current position will match!
-    self.reflectScrolledClipView(contentView);
-    if (dx<>0) and assigned(callback) then
-      callback.scroll(false, round(nw.origin.x));
-
-    if (dy<>0) and assigned(callback) then
-      callback.scroll(true, round(scrollY));
-  finally
-    dec(holdscroll);
-  end;
-end;
-
 procedure TCocoaScrollView.resetScrollData;
 begin
   docrect:=documentVisibleRect;
@@ -742,9 +703,10 @@ end;
 
 procedure TCocoaScrollView.scrollWheel(theEvent: NSEvent);
 begin
-  if self.hasHorizontalScroller or self.hasVerticalScroller then
-    inherited scrollWheel( theEvent )
-  else if Assigned(self.enclosingScrollView) then
+  if self.hasHorizontalScroller or self.hasVerticalScroller then begin
+    inherited scrollWheel( theEvent );
+    callback.scrollWheel( theEvent );
+  end else if Assigned(self.enclosingScrollView) then
     self.enclosingScrollView.scrollWheel( theEvent )
   else
     inherited scrollWheel( theEvent );
@@ -820,23 +782,6 @@ begin
   self.contentView.setBoundsOrigin( newOrigin );
 end;
 
-function TCocoaScrollView.initWithFrame(ns: NSRect): id;
-var
-  sc : TCocoaScrollView;
-begin
-  Result:=inherited initWithFrame(ns);
-  sc:=TCocoaScrollView(Result);
-
-  if NOT sc.isCustomRange then
-    Exit;
-
-  //sc.contentView.setPostsBoundsChangedNotifications(true);
-  NSNotificationCenter.defaultCenter
-    .addObserver_selector_name_object(sc, ObjCSelector('scrollContentViewBoundsChanged:')
-      ,NSViewBoundsDidChangeNotification
-      ,sc.contentView);
-end;
-
 procedure TCocoaScrollView.dealloc;
 begin
   NSNotificationCenter.defaultCenter
@@ -846,62 +791,35 @@ end;
 
 procedure TCocoaScrollView.setFrame(aframe: NSRect);
 var
-  flg  : NSUInteger;
-  iflg : NSUInteger;
-  docsz : NSSize;
-  scrlsz : NSSize;
-
-  viewRect : NSRect;
-  dRect  : NSRect;
-  hh       : Single;
-  r        : NSRect;
-const
-  NSBothSizable = NSViewWidthSizable or NSViewHeightSizable;
+  newDocSize: NSSize;
+  lclControl : TScrollingWinControl;
+  lclBar: TControlScrollBar;
 begin
   if not isCustomRange then begin
     inherited setFrame(aframe);
     Exit;
   end;
 
-  viewRect := documentVisibleRect;
-  dRect := NSView(documentView).frame;
-
   inherited setFrame(aframe);
 
-  flg := documentView.autoresizingMask;
-  if (flg and NSBothSizable) = NSBothSizable then Exit; // no need to checl
+  lclControl:= TScrollingWinControl(lclGetTarget);
+  newDocSize:= contentSize;
 
-  iflg := flg;
-  docsz := NSView(documentView).frame.size;
-  scrlsz := frame.size;
+  lclBar:= lclControl.HorzScrollBar;
+  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+    newDocSize.Width:= lclBar.Range;
 
-  if (docsz.width<scrlsz.width) and (flg and NSViewWidthSizable = 0) then
-    flg := flg or NSViewWidthSizable;
+  lclBar:= lclControl.VertScrollBar;
+  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+    newDocSize.Height:= lclBar.Range;
 
-  if (docsz.height<scrlsz.height) and (flg and NSViewHeightSizable = 0) then
-  begin
-    // force automatic resize for isCustomRange
-    flg := flg or NSViewHeightSizable;
-    documentView.setFrameOrigin( NSMakePoint(0, aframe.size.height));
-    documentView.setFrameSize(aframe.size);
-    //documentView.setAutoresizingMask(flg);
-  end;
+  documentView.setFrameSize(newDocSize);
 
-  if iflg <> flg then
-    documentView.setAutoresizingMask(flg);
+  if lclHoriScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Horz, lclHoriScrollInfo);
 
-  // the reason for this code here, is the need to re-allign the position
-  // if the control Size adjusted after ScrollInfo got changed.
-  if (documentVisibleRect.size.height < viewRect.size.height)
-    and (flg and NSViewHeightSizable = 0) then
-  begin
-    hh := dRect.size.height - viewRect.origin.y - viewRect.size.height;
-
-    r := documentVisibleRect;
-    r.origin.y := NSView(documentView).frame.size.height - r.size.height - hh;
-
-    NSView(documentView).scrollRectToVisible(r);
-  end;
+  if lclVertScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Vert, lclVertScrollInfo);
 end;
 
 function TCocoaScrollView.acceptsFirstResponder: LCLObjCBoolean;
