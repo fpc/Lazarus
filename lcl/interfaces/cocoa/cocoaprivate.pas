@@ -29,7 +29,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, LazLoggerBase, Forms,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaCursor,
   cocoa_extra,
@@ -897,8 +897,14 @@ end;
 
 procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.scrollWheel(event) then
+  if Assigned(self.lclGetTarget) and (self.lclGetTarget is TScrollingWinControl) then begin
     inherited scrollWheel(event);
+    if Assigned(callback) then
+      callback.scrollWheel(event);
+  end else begin
+    if NOT Assigned(callback) or NOT callback.scrollWheel(event) then
+      inherited scrollWheel(event);
+  end;
 end;
 
 procedure TCocoaCustomControl.setFrame(aframe: NSRect);

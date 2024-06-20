@@ -30,7 +30,7 @@ uses
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaWSStdCtrls, CocoaTables,
-  CocoaScrollers;
+  CocoaScrollers, CocoaWSScrollers;
 
 type
 
