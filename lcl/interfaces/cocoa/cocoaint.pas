@@ -123,6 +123,7 @@ type
     FNSApp_Delegate: TAppDelegate;
     FCaptureControl: HWND;
     FWaitingDropFiles: NSMutableArray;
+    FSendingScrollWheelCount: Integer;
 
   protected
     FStockNullBrush: HBRUSH;
@@ -154,6 +155,8 @@ type
 
     function nextEvent(const eventExpDate: NSDate): NSEvent;
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
+
+    function isSendingScrollWheelFromInterface(): Boolean;
 
     procedure SyncClipboard();
     procedure DropWaitingFiles;

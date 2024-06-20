@@ -117,6 +117,11 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.isSendingScrollWheelFromInterface(): Boolean;
+begin
+  Result:= self.FSendingScrollWheelCount > 0;
+end;
+
 procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   hnd : NSObject;
@@ -195,6 +200,17 @@ const
     Result:= scrollMsg.Result;
   end;
 
+  function SendMouseWheel(barFlag: Integer): LRESULT;
+  begin
+    Result:= 0;
+    inc( self.FSendingScrollWheelCount );
+    try
+      Result:= CallMouseWheelHandler( barFlag );
+    finally
+      dec( self.FSendingScrollWheelCount );
+    end;
+  end;
+
 begin
   case TLMessage(Message).Msg of
     LM_GETDLGCODE: begin
@@ -214,9 +230,9 @@ begin
       end;
     end;
     LM_MOUSEWHEEL:
-      TLMMouseEvent(Message).Result:= CallMouseWheelHandler(SB_Vert);
+      TLMMouseEvent(Message).Result:= SendMouseWheel(SB_Vert);
     LM_MOUSEHWHEEL:
-      TLMMouseEvent(Message).Result:= CallMouseWheelHandler(SB_Horz);
+      TLMMouseEvent(Message).Result:= SendMouseWheel(SB_Horz);
   else
     TLMessage(Message).Result := 0;
   end;
@@ -1850,8 +1866,10 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if ScrollInfo.fMask and SIF_ALL > 0 then
-      sc.applyScrollInfo(SBStyle, ScrollInfo);
+    if NOT self.isSendingScrollWheelFromInterface then begin
+      if ScrollInfo.fMask and SIF_ALL > 0 then
+        sc.applyScrollInfo(SBStyle, ScrollInfo);
+    end;
     Result:= getNewScrollPos();
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
