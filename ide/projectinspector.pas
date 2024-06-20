@@ -566,7 +566,7 @@ begin
   Handled := True;
   try
     if Key = VK_ESCAPE then
-      Close
+      begin if NOT self.Docked then Close end
     else if Key = VK_RETURN then
       OpenButtonClick(Nil)
     else if Key = VK_DELETE then
