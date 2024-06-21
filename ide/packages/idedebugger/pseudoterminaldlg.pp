@@ -74,6 +74,7 @@ type
     fColsPerRow: integer;
     fFirstLine: integer;
     FMemoEndsInEOL: Boolean;
+    FMemoEndsInCR: Boolean;
     procedure getCharHeightAndWidth(consoleFont: TFont; out h, w: word);
     procedure consoleSizeChanged;
   protected
@@ -86,6 +87,11 @@ type
     property CharWidth: word read fCharWidth;
     property RowsPerScreen: integer read fRowsPerScreen;
     property ColsPerRow: integer read fColsPerRow;
+  end;
+
+  TTerminalStringList = class(TStringList)
+  protected
+    procedure SetTextStr(const Value: string); override;
   end;
 
 var
@@ -363,8 +369,10 @@ const
   dot = #$C2#$B7;                        // ·
 var
   lineLimit, numLength, i: integer;
-  buffer: TStringList;
-  TextEndsInEOL: Boolean;
+  buffer: TTerminalStringList;
+  TextEndsInEOL, AAppendText: Boolean;
+  ALine, AMemoLine, ASubLine: string;
+  CRPos: SizeInt;
 
 
   (* Translate C0 control codes to "control pictures", and optionally C1 codes
@@ -444,7 +452,7 @@ var
         $0a: u[i] := lf;
         $0b: u[i] := vt;
         $0c: u[i] := ff;
-        $0d: u[i] := cr;
+        //$0d: u[i] := cr; // carrige return resets the cursor to line beginning for rewrite (both Linux and Windows)
         $0e: u[i] := so;
         $0f: u[i] := si;
         $10: u[i] := dle;
@@ -645,7 +653,7 @@ var
     be text. Convert the text to hex possibly inserting extra lines after the
     one being processed, only the first (i.e. original) line has a line number.
   *)
-  procedure expandAsHex(var stringList: TStringList; currentLine, lineNumberLength: integer);
+  procedure expandAsHex(const stringList: TStringList; currentLine, lineNumberLength: integer);
 
   var
     lineNumberAsText: string;
@@ -714,8 +722,10 @@ var
     hexLines(startLastBlock, lengthLastBlock)
   end { expandAsHex } ;
 
-
 begin
+  if (AText='') then
+    Exit;
+
   if ttyHandle = handleUnopened then begin (* Do this at first output only      *)
     //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput Calling consoleSizeChanged']);
     consoleSizeChanged
@@ -756,14 +766,10 @@ begin
 (* "interesting" behavior once the amount of text causes it to start scrolling  *)
 (* so having an intermediate that can be inspected might be useful.             *)
 
-  TextEndsInEOL := (AText <> '') and (AText[Length(AText)] in [#10]);
-  buffer := TStringList.Create;
+  TextEndsInEOL := (AText[Length(AText)] in [#10]);
+  buffer := TTerminalStringList.Create;
   try
     buffer.Text := AText;     (* Decides what line breaks it wants to swallow   *)
-    if buffer.Count = 1 then
-      i := 12345              (* Good place for a breakpoint                    *)
-    else
-      i := 67890;             (* Another good place for a breakpoint            *)
     case RadioGroupRight.ItemIndex of
       0: for i := 0 to buffer.Count - 1 do
            buffer[i] := widen(buffer[i]);
@@ -786,16 +792,42 @@ begin
 
 (* Add the buffered text to the visible control(s), and clean up.               *)
 
-    if (not FMemoEndsInEOL) and (Memo1.Lines.Count > 0) and (AText <> '') then begin
-      Memo1.Lines[Memo1.Lines.Count-1] := Memo1.Lines[Memo1.Lines.Count-1] + buffer[0];
-      buffer.Delete(0);
+    for i := 0 to buffer.Count-1 do
+    begin
+      // CR character = carrige return = overwrite the current line
+      ALine := buffer[i];
+      while ALine<>'' do
+      begin
+        // -> split the text by CR
+        CRPos := Pos(#13, ALine);
+        AAppendText := not FMemoEndsInCR;
+        // if there is a CR, the next ASubLine will overwrite the AMemoLine
+        FMemoEndsInCR := CRPos>0;
+        if CRPos=0 then
+          CRPos := Length(ALine)+1;
+        ASubLine := LeftStr(ALine, CRPos-1);
+        Delete(ALine, 1, CRPos);
+
+        if (not FMemoEndsInEOL) and (Memo1.Lines.Count > 0) then
+        begin // work with the last line
+          AMemoLine := Memo1.Lines[Memo1.Lines.Count-1];
+          if AAppendText then // append
+            AMemoLine := AMemoLine + ASubLine
+          else // overwrite console buffer (do not clear the line but write over)
+            AMemoLine := ASubLine + Copy(AMemoLine, Length(ASubLine)+1);
+          Memo1.Lines[Memo1.Lines.Count-1] := AMemoLine;
+        end else // add new line
+          Memo1.Lines.Add(ASubLine);
+        FMemoEndsInEOL := False; // do not add new line for CR
+      end;
+      FMemoEndsInEOL := True; // add new line
+      FMemoEndsInCR := False; // new line never overwrites
     end;
-    if (AText <> '') then
-      Memo1.Lines.AddStrings(buffer);
     FMemoEndsInEOL := TextEndsInEOL;
+    FMemoEndsInCR := (AText[Length(AText)] = #13);
   finally
     buffer.Free;
-    Memo1.Lines.EndUpdate
+    Memo1.Lines.EndUpdate;
   end;
   Memo1.SelStart := length(Memo1.Text)
 end { TPseudoConsoleDlg.AddOutput } ;
@@ -817,6 +849,25 @@ end { TPseudoConsoleDlg.Clear } ;
 
 
 {$R *.lfm}
+
+{ TTerminalStringList }
+
+procedure TTerminalStringList.SetTextStr(const Value: string);
+  Var
+    S : String;
+    P : SizeInt;
+  begin
+    beginUpdate;
+    Try
+      TextLineBreakStyle := tlbsLF; // keep CR
+      Clear;
+      P:=1;
+      While GetNextLineBreak (Value,S,P) do
+        Add(S);
+    finally
+      EndUpdate;
+    end;
+end;
 
 initialization
   //DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
