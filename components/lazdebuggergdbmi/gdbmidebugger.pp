@@ -103,6 +103,7 @@ type
     tfPidDetectionDone,
     tfRTLUsesRegCall, // the RTL is compiled with RegCall calling convention
     tfClassIsPointer,  // with dwarf class names are pointer. with stabs they are not
+    tfHasMonitorData,  // TObject has _MonitorData field
     tfExceptionIsPointer, // Can happen, if stabs and dwarf are mixed
     tfFlagHasTypeObject,
     tfFlagHasTypeException,
@@ -2857,6 +2858,8 @@ begin
   then begin
     if LazStartsText('type = ^TOBJECT', R.Values)
     then include(TargetInfo^.TargetFlags, tfClassIsPointer);
+    if PosI('_MONITORDATA', UpperCase(R.Values)) > 1
+    then include(TargetInfo^.TargetFlags, tfHasMonitorData);
   end;
   R := CheckHasType('Exception', tfFlagHasTypeException);
   HadTimeout := HadTimeout and LastExecwasTimeOut;
@@ -6083,6 +6086,8 @@ begin
       DoSetPascal; // TODO: check with ALL versions of gdb, if that value needs to be refreshed or not.
       DoSetCaseSensitivity();
     end;
+    if PosI('_MONITORDATA', UpperCase(R.Values)) > 1
+    then include(TargetInfo^.TargetFlags, tfHasMonitorData);
   end;
 
 
@@ -6305,13 +6310,20 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
               if FLastExecResult.State <> dsError then
                 Exclude(TargetInfo^.TargetFlags, tfExceptionIsPointer);
             end;
-            if FLastExecResult.State = dsError then
-              ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+            if FLastExecResult.State = dsError then begin
+              if tfHasMonitorData in TargetInfo^.TargetFlags then
+                ExceptionMessage := GetText('^^char(^%s(%s)+2)^', [PointerTypeCast, ExceptInfo.ObjAddr])
+              else
+                ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+            end;
           end;
           //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
         end else begin
           // Only works if Exception class is not changed. FMessage must be first member
-          ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+          if tfHasMonitorData in TargetInfo^.TargetFlags then
+            ExceptionMessage := GetText('^^char(^%s(%s)+2)^', [PointerTypeCast, ExceptInfo.ObjAddr])
+          else
+            ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
         end;
       end
       else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
