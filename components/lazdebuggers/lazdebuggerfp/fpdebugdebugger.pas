@@ -3714,6 +3714,8 @@ var
   ExceptionMessage: string;
   ExceptItem: TBaseException;
   Offs: Integer;
+  AnTObjSize: Int64;
+  AnErr: TFpError;
 begin
   Offs := 0;
   if not FDbgController.DefaultContext.ReadUnsignedInt(FDbgController.CurrentProcess.CallParamDefaultLocation(1),
@@ -3731,8 +3733,16 @@ begin
   ExceptionClass := '';
   ExceptionMessage := '';
   if AnExceptionObjectLocation <> 0 then begin
+    if TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(FDbgController.CurrentProcess.DbgInfo)
+       .GetInstanceSizeFromPVmt
+       (AnExceptionObjectLocation, FDbgController.DefaultContext, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], AnTObjSize, AnErr, -1)
+    then
+      {$PUSH}{$Q-}{$R-}
+      ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+AnTObjSize);
+      {$POP}
+
+
     ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
-    ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
   end;
 
   ExceptItem := Exceptions.Find(ExceptionClass);
