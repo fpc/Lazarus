@@ -831,23 +831,46 @@ the member variable used for the parent menu item.
 <short>Represents a menu item displayed in a menu.</short>
 <descr>
 <p>
-<var>TMenuItem</var> is a <var>TLCLComponent</var> descendant which represent 
+<var>TMenuItem</var> is a <var>TLCLComponent</var> descendant which represents 
 a menu item displayed on a <var>TMenu</var> instance, or one of its derived 
 classes like <link id="TMainMenu">TMainMenu</link> and <link 
 id="TPopUpMenu">TPopUpMenu</link>.
 </p>
 <p>
-TMenuItem has properties which define the display attributes for the menu 
-item, and allows accelerator keys to be defined in the <var>Caption</var> for 
-the item. Event handlers are also provided which perform actions needed when 
-the menu item is measured, drawn, or clicked.
+TMenuItem has properties which define the behavior and display attributes for 
+the menu item, such as whether it is displayed as a radio button and whether it 
+automatically checked when the menu item is clicked. It allows accelerator keys 
+to be defined in the <var>Caption</var> for an item displayed on a main menu. 
+An image can be displayed for a menu item - whether assigned to the menu item 
+or in the image list for a parent menu or menu item. Event handlers are also 
+provided which perform actions needed when the menu item is measured, drawn, or 
+clicked.
 </p>
 <p>
-TMenuItem is the type added and maintained in the <var>TMenu.Items</var> 
-property.
+TMenuItem instances are normally created at design-time using the menu editor 
+for a menu component, but they can also be created and configured at run-time.
+</p>
+<p>
+TMenuItem is the type maintained in both the <var>TMenu.Items</var> and 
+<var>TMenuItem.Items</var> properties.
 </p>
 </descr>
 <seealso>
+<link id="TMenuItem.Caption"/>
+<link id="TMenuItem.ShortCut"/>
+<link id="TMenuItem.ShortCutKey2"/>
+<link id="TMenuItem.RadioItem"/>
+<link id="TMenuItem.GroupIndex"/>
+<link id="TMenuItem.Action"/>
+<link id="TMenuItem.AutoCheck"/>
+<link id="TMenuItem.Bitmap"/>
+<link id="TMenuItem.ImageIndex"/>
+<link id="TMenuItem.Items"/>
+<link id="TMenuItem.Menu"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.OnClick"/>
+<link id="TMenuItem.OnDrawItem"/>
+<link id="TMenuItem.OnMeasureItem"/>
 <link id="TMenu.Items"/>
 </seealso>
 </element>
@@ -2156,12 +2179,23 @@ design-time.
 <p>
 Otherwise, the OnClick event handler is used. When <var>AutoCheck</var> is 
 enabled, the value for the <var>Checked</var> property is toggled when the 
-menu item has not been configured as a <var>RadioItem</var>. AutoCheck is not 
-performed at design-time. The OnClick event handler is signalled to perform 
-the menu item.
+menu item. If the menu item has been configured as a <var>RadioItem</var>, 
+Checked <b>cannot</b> be set to <b>False</b>; that is handled using the logic 
+for the radio button group.
+</p>
+<p>
+The OnClick event handler is signalled to perform the actions for the menu item.
+</p>
+<p>
+AutoCheck does not cause the item to become checked at design-time.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TMenuItem.AutoCheck"/>
+<link id="TMenuItem.Checked"/>
+<link id="TMenuItem.OnClick"/>
+<link id="OnMenuPopupHandler"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.Delete">
@@ -2325,9 +2359,44 @@ property, and from the UpdateImages method.
 <short>
 Update the images for the menu item and its child items.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>UpdateImages</var> is a method used to ensure that changes to image 
+settings in the menu item (or its parent) are applied the menu item and its 
+child Items. It is called when a new image list is assigned to the owner Menu, 
+to the Parent menu item, or to the SubMenuImages for the menu item. It is also 
+called if the image width is changed (which causes the image list to be 
+updated).
+</p>
+<p>
+<var>Forced</var> indicates whether an existing image assigned directly to 
+Bitmap is invalidated - even when an image list or image index is not available 
+for the menu item.
+</p>
+<p>
+UpdateImages calls the UpdateImage method in the class instance to apply 
+changes to Bitmap (when needed) and to notify the widget of the new icon. It 
+calls the UpdateImages method for each of the Items to cascade the change to 
+sub-menu items.
+</p>
+</descr>
+<seealso>
+<link id="TMenuItem.Bitmap"/>
+<link id="TMenuItem.ImageIndex"/>
+<link id="TMenuItem.Menu"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.Items"/>
+<link id="TMenu.ImagesWidth"/>
+<link id="TMenu.Images"/>
+</seealso>
 </element>
+<element name="TMenuItem.UpdateImages.Forced">
+<short>
+<b>True</b> causes an image assigned to Bitmap to be invalidated - even when an 
+image list is not available or an image index has not been specified.
+</short>
+</element>
+
 
 <element name="TMenuItem.IsCheckItem">
 <short>
@@ -2800,10 +2869,35 @@ ActionLink to be created and configured as needed.
 
 <element name="TMenuItem.AutoCheck">
 <short>
-Indicates whether a check mark state is read from the Action for the menu item (when assigned).
+Indicates whether the menu item automatically toggles the value in Checked when 
+executed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AutoCheck</var> is a <var>Boolean</var> property which determines whether 
+the value in Checked is updated when the menu item is clicked or executed. The 
+default value for the property is <b>False</b> and does not update the value in 
+Checked.
+</p>
+<p>
+Changing the value for the property causes the handle for the menu item to be 
+recreated if it has already been allocated.
+</p>
+<p>
+AutoCheck is used in the Click method when the menu item has its RadioItem 
+property enabled. The value in Checked is toggled if it has not already been 
+set. It is also used when a new Action is assigned for a menu item; 
+<b>False</b> allows the corresponding setting in the action to be used for the 
+menu item.
+</p>
+</descr>
+<seealso>
+<link id="TMenuItem.Checked"/>
+<link id="TMenuItem.IsCheckItem"/>
+<link id="TMenuItem.RadioItem"/>
+<link id="TMenuItem.Click"/>
+<link id="TMenuItem.Action"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.Caption">
@@ -2812,17 +2906,30 @@ The caption text displayed for the menu item.
 </short>
 <descr>
 <p>
-Caption is a TTranslateString property which contains the text displayed for 
-the menu item. Caption can include a prefixed character which is used as the 
-accelerator key for the menu item. Use the value in cHotkeyPrefix to identify 
-the character used as the ShortCut key for the menu item.
+<var>Caption</var> is a <var>TTranslateString</var> property which contains the 
+text displayed for the menu item. Caption can include a prefixed character 
+which is used as the accelerator key for the menu item. Use the value in 
+cHotkeyPrefix to identify the character used as accelerator for the menu item. 
+The accelerator key is drawn at run-time using the style implemented for a 
+specific widgetset; this generally involves highlighting and/or underlining the 
+accelerator key.
 </p>
+<p>
+For example:
+</p>
+<code>
+AMenuItem.Caption := cHotkeyPrefix + 'Open'; // or
+AMenuItem.Caption := '&amp;Open';
+</code>
 <p>
 Changing the value in the property causes the widgetset class to be notified 
 when the Handle has been allocated and the Parent property is assigned.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="cHotkeyPrefix"/>
+<link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
+</seealso>
 </element>
 
 <element name="TMenuItem.Checked">
@@ -3030,7 +3137,7 @@ property in a parent menu item.
 <remark>
 Use of Checked and an assigned image using ImageIndex are mutually exclusive 
 on the Windows platform. At run-time, an image assigned using ImageIndex takes 
-precedence and the check mark is not drawn.
+precedence and the check mark (radio button) is not drawn.
 </remark>
 </descr>
 <seealso>
@@ -3044,8 +3151,31 @@ precedence and the check mark is not drawn.
 <short>
 Indicates if the menu item is displayed as a radio button.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>RadioItem</var> is a <var>Boolean</var> property which controls the 
+appearance and behavior for the menu item. When enabled, the menu item acts as 
+a radio button which is part of the group specified in the GroupIndex property. 
+Only one of the radio buttons for GroupIndex can be selected (Checked) at any 
+given time. The default value for the property is False, and indicates that the 
+menu item does not display radio button behavior.
+</p>
+<p>
+RadioItem is used in conjunction with the AutoCheck property. AutoCheck 
+indicates whether the Checked in toggled when the radio button menu item is 
+executed.
+</p>
+<p>
+Use ShowAlwaysCheckable if space is reserved for the checked icon even when the 
+menu item is not Checked.
+</p>
+</descr>
+<seealso>
+<link id="TMenuItem.GroupIndex"/>
+<link id="TMenuItem.Checked"/>
+<link id="TMenuItem.AutoCheck"/>
+<link id="TMenuItem.ShowAlwaysCheckable"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.RightJustify">
@@ -3124,17 +3254,51 @@ list to be used.
 Indicates whether the menu item is visible (<b>True</b>) or hidden 
 (<b>False</b>).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Visible</var> is a <var>Boolean</var> property which determines whether 
+the menu item is visible on its Menu or on a sub-menu for a Parent menu item.
+The default value for the property is <b>True</b>.
+</p>
+<p>
+Changing the value for the property causes a Parent or MergedParent menu to 
+redrawn at run-time, and the affected widget is notified of the change in 
+visibility.
+</p>
+</descr>
+<seealso>
+<link id="TMenuItem.VisibleIndexOf"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.MergedParent"/>
+<link id="TMergedMenuItems.VisibleItems"/>
+<link id="TMergedMenuItems.VisibleCount"/>
+<link id="TMergedMenuItems.InvisibleItems"/>
+<link id="TMergedMenuItems.InvisibleCount"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.OnClick">
 <short>
 Event handler signalled to perform the actions needed when the menu item is 
-selected.
+executed.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnClick</var> is a <var>TNotifyEvent</var> property with the event handler 
+signalled when the menu item is executed. OnClick is signalled from the Click 
+method (when assigned) if the menu item is Enabled. OnClick is not signalled 
+(even when assigned) if the menu item has an Action with an OnExecute event 
+handler; the action is used instead.
+</p>
+<p>
+OnClick (or OnExecute in an action) occurs after values in AutoCheck and 
+Checked has been examined and optionally updated in the Click method.
+</p>
+</descr>
 <seealso>
+<link id="TMenuItem.Click"/>
+<link id="TMenuItem.Enabled"/>
+<link id="TMenuItem.Visible"/>
 <link id="TMenuItem.Action"/>
 <link id="TMenuItem.ActionLink"/>
 <link id="TMenuActionLink"/>
@@ -3149,10 +3313,22 @@ Event handler signalled to draw the menu item.
 <descr>
 <p>
 <var>OnDrawItem</var> is a <var>TMenuDrawItemEvent</var> property with the 
-event handler signalled to draw the menu item.
+event handler signalled to draw the menu item. OnDrawItem is signalled (when 
+assigned) from the DoDrawItem method using the canvas, rectangle, and drawing 
+state passed as arguments.
+</p>
+<p>
+A menu item may use the OnDrawItem handler found in a parent Menu if it does 
+not have one of its own.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TMenuItem.Menu"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.DoDrawItem"/>
+<link id="TMenu.OnDrawItem"/>
+<link id="TMenuDrawItemEvent"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.OnMeasureItem">
