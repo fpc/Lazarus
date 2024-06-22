@@ -2220,8 +2220,6 @@ properties including: <var>Increment</var>, <var>MinValue</var>,
 <element name="TFloatSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 <element name="TFloatSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 
-<element name="TFloatSpinEditEx.SpinButtonWidth" link="#lazcontrols.spinex.TSpinEditExBase.SpinButtonWidth"/>
-
 <element name="TFloatSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TFloatSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
 <element name="TFloatSpinEditEx.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
@@ -2651,8 +2649,6 @@ value.
 <element name="TSpinEditEx.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
 <element name="TSpinEditEx.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 <element name="TSpinEditEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-
-<element name="TSpinEditEx.SpinButtonWidth" link="#lacontrols.spinex.TSpinEditExBase.SpinButtonWidth"/>
 
 <element name="TSpinEditEx.TabOrder" link="#lcl.controls.TWinControl.ShowHint"/>
 <element name="TSpinEditEx.TabStop" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TabStop"/>
