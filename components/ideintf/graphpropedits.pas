@@ -30,6 +30,8 @@ type
   TPixmap, TIcon, etc.). }
 
   TGraphicPropertyEditor = class(TClassPropertyEditor)
+  protected
+    class function GetEditorFormClass: TGraphicPropertyEditorFormClass; virtual;
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -175,7 +177,7 @@ var
   FreeGraphic: Boolean;
 begin
   AGraphic := TGraphic(GetObjectValue(TGraphic));
-  TheDialog := TGraphicPropertyEditorForm.Create(nil);
+  TheDialog := GetEditorFormClass.Create(nil);
   FreeGraphic:=false;
   try
     TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
@@ -225,6 +227,12 @@ begin
   Result := [paDialog, paRevertable, paReadOnly];
 end;
 
+class function TGraphicPropertyEditor.GetEditorFormClass: TGraphicPropertyEditorFormClass;
+begin
+  Result := TGraphicPropertyEditorForm;
+end;
+
+
 { TPicturePropertyEditor }
 
 procedure TPicturePropertyEditor.Edit;
@@ -241,7 +249,7 @@ var
   Picture: TPicture;
 begin
   Picture := TPicture(GetObjectValue(TPicture));
-  TheDialog := TGraphicPropertyEditorForm.Create(nil);
+  TheDialog := GetEditorFormClass.Create(nil);
   try
     TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
     if (Picture.Graphic <> nil) then
@@ -280,7 +288,7 @@ var
   ABitmap: TBitmap;
 begin
   ABitmap := TBitmap(GetObjectValue(TBitmap));
-  TheDialog := TGraphicPropertyEditorForm.Create(nil);
+  TheDialog := GetEditorFormClass.Create(nil);
   try
     TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
     if not ABitmap.Empty then

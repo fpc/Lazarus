@@ -74,6 +74,8 @@ type
     property Graphic: TGraphic read GetGraphic write SetGraphic;
   end;
 
+  TGraphicPropertyEditorFormClass = class of TGraphicPropertyEditorForm;
+
 implementation
 
 {$R *.lfm}

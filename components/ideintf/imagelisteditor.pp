@@ -109,21 +109,21 @@ type
     function GetGlyphInfo(const aItemIndex: Integer): TGlyphInfo;
     procedure RefreshItemHeight;
     procedure FreeGlyphInfos;
-    procedure InternalAddImageToList(const Picture: TPicture; AddType: TAddType);
     procedure RecreatePreviewImages(const aForce: Boolean = False);
-    procedure UpdatePreviewImage;
     procedure UpdateImagesGroupBoxWidth;
     procedure UpdateImagesGroupBoxWidthQueue({%H-}Data: PtrInt);
     class function ResolutionToString(const ARes: TCustomImageListResolution): string;
     procedure PasteFromClipboardAndAdd;
   protected
     procedure DoDestroy; override;
+    procedure InternalAddImageToList(const Picture: TPicture; AddType: TAddType);
+    procedure UpdatePreviewImage;
   public
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
-
     procedure AddImageToList(const FileName: String; AddType: TAddType);
     procedure AddSlicedImagesToList(const FileName: String);
+    property Modified: Boolean read FModified write FModified;
   end;
 
   //Editor call by Lazarus with 1 verbe only

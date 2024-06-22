@@ -9,26 +9,26 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   ClientWidth = 436
   Constraints.MinHeight = 180
   Constraints.MinWidth = 200
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object GroupBox1: TGroupBox
     Left = 6
-    Height = 336
+    Height = 337
     Top = 6
     Width = 424
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 309
+    ClientHeight = 317
     ClientWidth = 420
     TabOrder = 0
     object ScrollBox: TScrollBox
       AnchorSideRight.Control = GroupBox1
       AnchorSideBottom.Control = GroupBox1
       Left = 6
-      Height = 297
+      Height = 305
       Top = 6
       Width = 322
       HorzScrollBar.Page = 100
@@ -37,7 +37,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       VertScrollBar.Tracking = True
       Align = alClient
       BorderSpacing.Around = 6
-      ClientHeight = 293
+      ClientHeight = 301
       ClientWidth = 318
       ParentShowHint = False
       ShowHint = True
@@ -55,12 +55,12 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     end
     object LoadSaveBtnPanel: TPanel
       Left = 334
-      Height = 309
+      Height = 317
       Top = 0
       Width = 86
       Align = alRight
       BevelOuter = bvNone
-      ClientHeight = 309
+      ClientHeight = 317
       ClientWidth = 86
       TabOrder = 1
       object LoadButton: TButton
@@ -142,8 +142,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   end
   object OkCancelButtonPanel: TButtonPanel
     Left = 6
-    Height = 27
-    Top = 348
+    Height = 26
+    Top = 349
     Width = 424
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -158,51 +158,51 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     ShowBevel = False
   end
   object OpenDialog: TOpenPictureDialog
-    left = 138
-    top = 182
+    Left = 138
+    Top = 182
   end
   object SaveDialog: TSavePictureDialog
-    left = 186
-    top = 182
+    Left = 186
+    Top = 182
   end
   object ActionList: TActionList
-    left = 355
-    top = 244
+    Left = 355
+    Top = 244
     object CopyAction: TEditCopy
       Category = 'Edit'
       Caption = '&Copy'
       Hint = 'Copy'
+      ShortCut = 16451
       OnExecute = CopyActionExecute
       OnUpdate = CopyActionUpdate
-      ShortCut = 16451
     end
     object PasteAction: TEditPaste
       Category = 'Edit'
       Caption = '&Paste'
       Hint = 'Paste'
+      ShortCut = 16470
       OnExecute = PasteActionExecute
       OnUpdate = PasteActionUpdate
-      ShortCut = 16470
     end
     object FileOpenAction: TAction
       Category = 'File'
       Caption = 'Load'
-      OnExecute = FileOpenActionExecute
       ShortCut = 16463
+      OnExecute = FileOpenActionExecute
     end
     object FileSaveAction: TAction
       Category = 'File'
       Caption = 'Save'
+      ShortCut = 16467
       OnExecute = FileSaveActionExecute
       OnUpdate = FileSaveActionUpdate
-      ShortCut = 16467
     end
     object ClearAction: TEditDelete
       Category = 'Edit'
       Caption = 'Clear'
       Hint = 'Delete'
-      OnExecute = ClearActionExecute
       ShortCut = 46
+      OnExecute = ClearActionExecute
     end
   end
 end
