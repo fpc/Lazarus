@@ -872,33 +872,15 @@ end;
 
 { poolCopyString }
 function poolCopyString(pool : STRING_POOL_ptr; s : XML_Char_ptr ) : XML_Char_ptr;
-label
- _w0 ;
-
 begin
- goto _w0;
-
- while s^ <> XML_Char(0 ) do
-  begin
-  _w0:
-   if poolAppendChar(pool ,s^ ) = 0 then
-    begin
-     result:=NIL;
-
-     exit;
-
-    end;
-
+ repeat
+   if (poolAppendChar(pool, s^)=0) then
+     exit(nil);
    inc(ptrcomp(s ) ,sizeof(XML_Char ) );
-
-  end;
-
- s:=pool.start;
-
- poolFinish(pool );
-
+ until s^ = XML_Char(0 );
+ s := pool.start;
+ poolFinish(pool);
  result:=s;
-
 end;
 
 { poolAppendString {..}
@@ -1376,10 +1358,6 @@ var
  da : DEFAULT_ATTRIBUTE_ptr;
 
  p : TAG_ptr;
-
-label
- _w0 ,_w1 ;
-
 begin
  uri:=nil;
  dtd:=parser.m_dtd; { save one level of indirection }
@@ -1796,26 +1774,16 @@ begin
        while s^ <> XML_T(':' ) do
         inc(ptrcomp(s ) ,sizeof(XML_Char ) );
 
-       goto _w0;
-
-       while s^ <> XML_Char(0 ) do { copies null terminator }
-        begin
-        _w0:
+       repeat
          c:=s^;
-
          if poolAppendChar(@parser.m_tempPool ,s^ ) = 0 then
-          begin
+         begin
            result:=XML_ERROR_NO_MEMORY;
-
            exit;
-
-          end;
-
+         end;
          uriHash:=CHAR_HASH(uriHash ,c );
-
          inc(ptrcomp(s ) ,sizeof(XML_Char ) );
-
-        end;
+       until s^ = XML_Char(0 );
 
       { Check hash table for duplicate of expanded name (uriName).
         Derived from code in lookup(HASH_TABLE *table, ...). }
@@ -1862,27 +1830,18 @@ begin
 
        if parser.m_ns_triplets <> 0 then { append namespace separator and prefix }
         begin
-         XML_Char_ptr(ptrcomp(parser.m_tempPool.ptr ) - 1 * sizeof(XML_Char ) )^:=parser.m_namespaceSeparator;
+          XML_Char_ptr(ptrcomp(parser.m_tempPool.ptr ) - 1 * sizeof(XML_Char ) )^:=parser.m_namespaceSeparator;
 
-         s:=b.prefix.name;
+          s:=b.prefix.name;
 
-         goto _w1;
-
-         while s^ <> XML_Char(0 ) do
-          begin
-          _w1:
-           if poolAppendChar(@parser.m_tempPool ,s^ ) = 0 then
+          repeat
+            if poolAppendChar(@parser.m_tempPool ,s^ ) = 0 then
             begin
              result:=XML_ERROR_NO_MEMORY;
-
              exit;
-
             end;
-
-           inc(ptrcomp(s ) ,sizeof(XML_Char ) );
-
-          end;
-
+            inc(ptrcomp(s ) ,sizeof(XML_Char ) );
+          until s^ = XML_Char(0 );
         end;
 
       { store expanded name in attribute list }
