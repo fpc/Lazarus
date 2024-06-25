@@ -738,6 +738,7 @@ begin
   if not (SynEdit.Highlighter is TSynCustomFoldHighlighter) then
     exit;
   hl := TSynCustomFoldHighlighter(SynEdit.Highlighter);
+  hl.CurrentLines := ViewedTextBuffer;
   if hl.NeedScan then
     exit;
   if not FMarkupInfoCurrentFold.IsEnabled then begin
