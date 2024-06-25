@@ -1141,7 +1141,10 @@ end;
 
 function TSynEditStringList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
 begin
-  Result := FList.GetPChar(ALineIndex, ALen);
+  if (ALineIndex = 0) and (Count = 0) then  // simulate empty line
+    Result := nil
+  else
+    Result := FList.GetPChar(ALineIndex, ALen);
 end;
 
 {end}                                                                           // DJLP 2000-11-01
