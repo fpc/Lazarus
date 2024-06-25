@@ -43,7 +43,7 @@
       <Item3>
         <PackageName Value="pack_powerpdf"/>
         <MaxVersion Minor="9" Release="15"/>
-        <MinVersion Minor="9" Release="16" Valid="True"/>
+        <MinVersion Minor="9" Release="17" Valid="True"/>
       </Item3>
       <Item4>
         <PackageName Value="lazreport"/>
