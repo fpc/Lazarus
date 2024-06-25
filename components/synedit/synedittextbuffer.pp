@@ -1778,9 +1778,12 @@ begin
 end;
 
 function TSynEditStringMemory.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+var
+  ip: Pointer;
 begin
-  ALen   := length((PString(ItemPointer[ALineIndex]))^);
-  Result := (PPChar(ItemPointer[ALineIndex]))^;
+  ip := ItemPointer[ALineIndex];
+  ALen   := length(PString(ip)^);
+  Result := PPChar(ip)^;
 end;
 
 procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);
