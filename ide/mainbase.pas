@@ -335,19 +335,18 @@ end;
 function UpdateTargetFilename(const ABaseFN: String): Boolean;
 // Return True if Project1.TargetFilename was actually changed.
 var
-  TargetF, StemFN, NewTargetFN: String;
+  StemFN, OldTarget, NewTarget: String;
   i: Integer;
 begin
-  TargetF:=ExtractFileName(Project1.TargetFilename);
+  OldTarget:=ExtractFileName(Project1.TargetFilename);
   StemFN:=ExtractFileNameOnly(ABaseFN);
-  if (TargetF='') or (StemFN='') then exit(False);   // Using default -> ok
-  Result:=CompareFilenames(TargetF,StemFN)<>0;       // Names differ -> update.
+  if (OldTarget='') or (StemFN='') then exit(False); // Using default -> ok
+  Result:=CompareFilenames(OldTarget,StemFN)<>0;     // Names differ -> update.
   if Result then
   begin
-    NewTargetFN:=ExtractFilePath(Project1.TargetFilename) + StemFN
-               + ExtractFileExt(TargetF);
+    NewTarget:=ExtractFilePath(Project1.TargetFilename) + StemFN;
     for i := 0 to Project1.BuildModes.Count-1 do     // Update all buildmodes.
-      Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTargetFN;
+      Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTarget;
   end;
 end;
 
