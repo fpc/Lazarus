@@ -246,9 +246,46 @@ type
     procedure onDestroy; override;
   end;
 
+  { TCocoaScrollBarEffectOverlay }
+
+  TCocoaScrollBarEffectOverlay = objcclass(TCocoaScrollBarEffectAlpha)
+  private
+    procedure onDelayHidingTimer( timer:NSTimer ); message 'onDelayHidingTimer:';
+    procedure onExpandTimer( timer:NSTimer ); message 'onExpandTimer:';
+  protected
+    currentKnobPosition: Double;
+    currentKnobProportion: Double;
+    entered: Boolean;
+    expandedSize: Integer;
+
+    delayHidingTimer: NSTimer;
+    expandTimer: NSTimer;
+  protected
+    procedure setDelayHidingTimer; message 'setDelayHidingTimer';
+    procedure setExpandTimer; message 'setExpandTimer';
+
+    procedure onDestroy; override;
+  end;
+
   { TCocoaScrollStyleManagerLegacy }
 
   TCocoaScrollStyleManagerLegacy = class(TCocoaScrollStyleManager)
+  public
+    procedure onKnobValueUpdated( scroller:NSScroller;
+      var knobPosition:Double; var knobProportion:Double ); override;
+    procedure onDrawKnob( scroller:NSScroller );  override;
+    function onDrawKnobSlot( scroller:NSScroller; var slotRect: NSRect ):
+      Boolean; override;
+    procedure onMouseEntered( scroller:NSScroller );  override;
+    procedure onMouseExited( scroller:NSScroller ); override;
+    function createScrollBarEffect( scroller:NSScroller ): TCocoaScrollBarEffect; override;
+    procedure activeScrollBar( scroller:NSScroller; active:Boolean ); override;
+    procedure updateLayOut; override;
+  end;
+
+  { TCocoaScrollStyleManagerOverlay }
+
+  TCocoaScrollStyleManagerOverlay = class(TCocoaScrollStyleManager)
   public
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); override;
@@ -493,8 +530,8 @@ end;
 
 function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
 begin
-  Result:=inherited;
-  self.manager:= TCocoaScrollStyleManagerLegacy.createForScrollView(self);
+  Result:= inherited;
+  self.manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
 end;
 
 procedure TCocoaManualScrollView.dealloc;
@@ -1192,6 +1229,81 @@ begin
   end;
 end;
 
+{ TCocoaScrollBarEffectOverlay }
+
+procedure TCocoaScrollBarEffectOverlay.onDelayHidingTimer( timer:NSTimer );
+begin
+  self.delayHidingTimer:= nil;
+  self.fade( -0.1, 0 );
+end;
+
+procedure TCocoaScrollBarEffectOverlay.onExpandTimer(timer: NSTimer);
+var
+  done: Boolean = false;
+begin
+  if timer<>expandTimer then begin
+    timer.invalidate;
+    Exit;
+  end;
+
+  if self.expandedSize < 4 then begin
+    self.expandedSize:= self.expandedSize + 1;
+  end else begin
+    done:= True;
+  end;
+
+  if done then begin
+    timer.invalidate;
+    self.expandTimer:= nil;
+  end;
+
+  self.scroller.setNeedsDisplay_(True);
+end;
+
+procedure TCocoaScrollBarEffectOverlay.setDelayHidingTimer;
+begin
+  if Assigned(self.delayHidingTimer) then
+    self.delayHidingTimer.invalidate;
+
+  self.delayHidingTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+    0.9,
+    self,
+    ObjCSelector('onDelayHidingTimer:'),
+    nil,
+    false );
+end;
+
+procedure TCocoaScrollBarEffectOverlay.setExpandTimer;
+begin
+  if Assigned(self.delayHidingTimer) then begin
+    self.delayHidingTimer.invalidate;
+    self.delayHidingTimer:= nil;
+  end;
+
+  if Assigned(self.expandTimer) then
+    self.expandTimer.invalidate;
+
+  self.expandTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+    0.03,
+    self,
+    ObjCSelector('onExpandTimer:'),
+    nil,
+    True );
+end;
+
+procedure TCocoaScrollBarEffectOverlay.onDestroy;
+begin
+  if Assigned(self.delayHidingTimer) then begin
+    self.delayHidingTimer.invalidate;
+    self.delayHidingTimer:= nil;
+  end;
+  if Assigned(self.expandTimer) then begin
+    self.expandTimer.invalidate;
+    self.expandTimer:= nil;
+  end;
+  inherited onDestroy;
+end;
+
 { TCocoaScrollStyleManager }
 
 constructor TCocoaScrollStyleManager.createForScrollBar;
@@ -1361,6 +1473,211 @@ var
 begin
   effect:= TCocoaScrollBarEffectAlpha(TCocoaScrollBar(scroller).effect);
   effect.fade( -0.05, 0.25 );
+end;
+
+{ TCocoaScrollStyleManagerOverlay }
+
+procedure TCocoaScrollStyleManagerOverlay.onDrawKnob(scroller: NSScroller);
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+  rect: NSRect;
+  path: NSBezierPath;
+  radius: CGFloat;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+
+  radius:= 4;
+  rect:= scrollBar.rectForPart(NSScrollerKnob);
+  rect:= NSInsetRect(rect, 1, 1);
+  if scrollBar.IsHorizontal then begin
+    rect.origin.y:= rect.origin.y + 5 - effect.expandedSize;
+    rect.size.height:= rect.size.height - 6 + effect.expandedSize;
+  end else begin
+    rect.origin.x:= rect.origin.x + 5 - effect.expandedSize;
+    rect.size.width:= rect.size.width - 6 + effect.expandedSize;
+  end;
+
+  radius:= radius + effect.expandedSize/2;
+  path:= NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius( rect, radius, radius );
+  NSColor.controlTextColor.set_;
+  path.fill;
+
+  scroller.setAlphaValue( effect.currentAlpha );
+  if effect.currentAlpha = 0 then begin
+    scroller.setHidden( true );
+    effect.expandedSize:= 0;
+  end else begin
+    if scroller.knobProportion < 1 then
+      scroller.setHidden( false );
+  end;
+end;
+
+function TCocoaScrollStyleManagerOverlay.onDrawKnobSlot(scroller: NSScroller;
+  var slotRect: NSRect): Boolean;
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+  Result:= effect.expandedSize>0;
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.onKnobValueUpdated( scroller:NSScroller;
+  var knobPosition:Double; var knobProportion:Double );
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+  slotRect: NSRect;
+  slotSize: CGFloat;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+
+  if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
+    Exit;
+
+  slotRect:= scroller.rectForPart(NSScrollerKnobSlot);
+  if scrollBar.IsHorizontal then
+    slotSize:= slotRect.size.width
+  else
+    slotSize:= slotRect.size.height;
+
+  if knobProportion*slotSize <= 25 then begin
+    if slotSize<=25 then
+      knobProportion:= 0.99
+    else
+      knobProportion:= 25/slotSize;
+  end;
+
+  effect.currentKnobPosition:= knobPosition;
+  effect.currentKnobProportion:= knobProportion;
+
+  if knobProportion=1 then begin
+    scroller.setAlphaValue(0);
+    scroller.setHidden(True);
+    Exit;
+  end;
+
+  if NOT effect.entered then begin
+    effect.setDelayHidingTimer;
+    effect.currentAlpha:= 0.5;
+  end;
+
+  // on old versions of macOS, alpha=0 is considered hidden.
+  // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
+  // otherwise it is considered hidden and setNeedsDisplay() does not take effect.
+  scroller.setAlphaValue( effect.currentAlpha );
+  scroller.setHidden( False );
+  scroller.setNeedsDisplay_( true );
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.onMouseEntered(scroller: NSScroller);
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+  effect.entered:= True;
+  effect.setExpandTimer;
+  scroller.setNeedsDisplay_(true);
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.onMouseExited(scroller: NSScroller);
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+  effect.entered:= False;
+  effect.setDelayHidingTimer;
+end;
+
+function TCocoaScrollStyleManagerOverlay.createScrollBarEffect(
+  scroller: NSScroller): TCocoaScrollBarEffect;
+var
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  effect:= TCocoaScrollBarEffectOverlay.alloc.Init;
+  effect.scroller:= scroller;
+  effect.manager:= self;
+  effect.currentKnobPosition:= -1;
+  effect.currentKnobProportion:= -1;
+  effect.currentAlpha:= 0.25;
+  Result:= effect;
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.activeScrollBar(
+  scroller: NSScroller; active: Boolean);
+begin
+  if NOT Assigned(scroller) then
+    Exit;
+
+  if scroller.knobProportion=1 then begin
+    scroller.setAlphaValue( 0 );
+    scroller.setHidden( True );
+    Exit;
+  end;
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.updateLayOut;
+var
+  doc: NSView;
+  docFrame  : NSRect;
+  hScroller: NSScroller;
+  vScroller: NSScroller;
+  hScrollerFrame : NSRect;
+  vScrollerFrame : NSRect;
+  hScrollerHeight : CGFLoat;
+  vScrollerWidth : CGFLoat;
+begin
+  doc:= _scrollView.documentView;
+  if NOT Assigned(doc) then
+    Exit;
+
+  docFrame := _scrollView.frame;
+  docFrame.origin := NSZeroPoint;
+  hScrollerFrame := docFrame;
+  vScrollerFrame := docFrame;
+
+  hScroller:= _scrollView.fhscroll;
+  vScroller:= _scrollView.fvscroll;
+
+  if Assigned(hScroller) then
+  begin
+    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            hScroller.controlSize, hScroller.preferredScrollerStyle);
+    hScrollerFrame.size.height := hScrollerHeight;
+  end;
+
+  if Assigned(vScroller) then
+  begin
+    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+            vScroller.controlSize, vScroller.preferredScrollerStyle);
+    vScrollerFrame.size.width := vScrollerWidth;
+  end;
+
+  hScrollerFrame.size.width := docFrame.size.width;
+  vScrollerFrame.size.height := docFrame.size.height;
+  vScrollerFrame.origin.x := docFrame.size.width - vScrollerFrame.size.width;
+  vScrollerFrame.origin.y := docFrame.origin.y;
+
+  if Assigned(hScroller) then begin
+    hScroller.setFrame(hScrollerFrame);
+  end;
+
+  if Assigned(vScroller) then begin
+    vScroller.setFrame(vScrollerFrame);
+  end;
+
+  if not NSEqualRects(doc.frame, docFrame) then
+  begin
+    doc.setFrame(docFrame);
+    {$ifdef BOOLFIX}
+    doc.setNeedsDisplay__(Ord(true));
+    {$else}
+    doc.setNeedsDisplay_(true);
+    {$endif}
+  end;
 end;
 
 end.
