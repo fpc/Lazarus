@@ -89,7 +89,7 @@ var
   Lines: TObject;
 const
   StringProperties: array[0..1] of string = ('Caption', 'Text');
-  TStringsProperties: array[0..2] of string = ('Lines', 'Items', 'SQL');
+  TStringsProperties: array[0..3] of string = ('Lines', 'Items', 'SQL', 'Script');
 begin
   // first check simple string properties
   for ATextPropertyName in StringProperties do
