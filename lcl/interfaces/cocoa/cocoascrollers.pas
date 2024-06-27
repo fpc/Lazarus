@@ -113,7 +113,9 @@ type
 
   TCocoaScrollBar = objcclass(NSScroller)
   private
+    manager: TCocoaScrollBarStyleManager;
     effect: TCocoaScrollBarEffect;
+    trackingArea: NSTrackingArea;
   public
     callback: ICommonCallback;
     preventBlock : Boolean;
@@ -124,6 +126,16 @@ type
     suppressLCLMouse: Boolean;
     largeInc: Integer;
     smallInc: Integer;
+
+    procedure dealloc; override;
+
+    procedure drawKnob; override;
+    procedure drawKnobSlotInRect_highlight(slotRect: NSRect; flag: ObjCBOOL); override;
+    procedure setDoubleValue(newValue: double); override;
+    procedure setKnobProportion(newValue: CGFloat); override;
+    procedure updateTrackingAreas; override;
+    procedure mouseEntered(theEvent: NSEvent); override;
+    procedure mouseExited(theEvent: NSEvent); override;
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
@@ -151,12 +163,16 @@ type
 
   TCocoaManualScrollView = objcclass(NSView)
   private
+    manager: TCocoaScrollStyleManager;
     fdocumentView: NSView;
-    fhscroll : NSScroller;
-    fvscroll : NSScroller;
+    fhscroll : TCocoaScrollBar;
+    fvscroll : TCocoaScrollBar;
   public
     callback: ICommonCallback;
+    function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
+    procedure setFrame(newValue: NSRect); override;
+
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclContentView: NSView; override;
@@ -177,8 +193,8 @@ type
     function horizontalScroller: NSScroller; message 'horizontalScroller';
     function verticalScroller: NSScroller; message 'verticalScroller';
 
-    function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
-    function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
+    function allocHorizontalScroller(avisible: Boolean): TCocoaScrollBar; message 'allocHorizontalScroller:';
+    function allocVerticalScroller(avisible: Boolean): TCocoaScrollBar; message 'allocVerticalScroller:';
     // mouse
     function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
   end;
@@ -228,8 +244,6 @@ type
     procedure fade( inc:Double; max:Double );
       message 'fadeInc:max:';
     procedure onDestroy; override;
-  public
-    procedure dealloc; override;
   end;
 
   { TCocoaScrollStyleManagerLegacy }
@@ -409,65 +423,29 @@ begin
   sc.setAction(objcselector('actionScrolling:'));
 end;
 
-procedure updateDocSize(parent: NSView; doc: NSView; hScroller, vScroller: NSScroller);
+function allocScroller(parent: TCocoaManualScrollView; dst: NSRect; aVisible: Boolean)
+  :TCocoaScrollBar;
 var
-  docFrame  : NSRect;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
+  scrollBar: TCocoaScrollBar;
 begin
-  if not Assigned(parent) or not Assigned(doc) then
-    Exit;
-
-  docFrame := parent.frame;
-  docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
-
-  if Assigned(hScroller) and (not hScroller.isHidden) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
-
-    docFrame.size.height := docFrame.size.height - hScrollerHeight;
-    if docFrame.size.height < 0 then
-      docFrame.size.height := 0;
-    docFrame.origin.y := hScrollerHeight;
-  end;
-
-  if Assigned(vScroller) and (not vScroller.isHidden) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
-
-    docFrame.size.width := docFrame.size.width - vScrollerWidth;
-    if docFrame.size.width < 0 then
-      docFrame.size.width:= 0;
-  end;
-
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
-
-  if Assigned(hScroller) then
-    hScroller.setFrame(hScrollerFrame);
-
-  if Assigned(vScroller) then
-    vScroller.setFrame(vScrollerFrame);
-
-  if not NSEqualRects(doc.frame, docFrame) then
-  begin
-    doc.setFrame(docFrame);
-    {$ifdef BOOLFIX}
-    doc.setNeedsDisplay__(Ord(true));
-    {$else}
-    doc.setNeedsDisplay_(true);
-    {$endif}
-  end;
+  scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
+  scrollBar.manager:= parent.manager;
+  scrollBar.effect:= parent.manager.createScrollBarEffect(scrollBar);
+  parent.addSubview(scrollBar);
+  {$ifdef BOOLFIX}
+  scrollBar.setEnabled_(Ord(true));
+  scrollBar.setHidden_(Ord(not AVisible));
+  {$else}
+  scrollBar.setEnabled(true);
+  scrollBar.setHidden(not AVisible);
+  {$endif}
+  scrollBar.preventBlock := true;
+  //Suppress scrollers notifications.
+  scrollBar.callback := parent.callback;
+  scrollBar.suppressLCLMouse := true;
+  scrollBar.setTarget(scrollBar);
+  scrollBar.setAction(objcselector('actionScrolling:'));
+  Result:= scrollBar;
 end;
 
 { TCocoaManualScrollHost }
@@ -509,16 +487,35 @@ begin
   scFrame.origin:= NSZeroPoint;
   scFrame.size:= self.contentSize;
   sc.setFrame( scFrame );
-  updateDocSize(sc, sc.documentView, sc.horizontalScroller, sc.verticalScroller);
 end;
 
 { TCocoaManualScrollView }
 
+function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
+begin
+  Result:=inherited;
+  self.manager:= TCocoaScrollStyleManagerLegacy.createForScrollView(self);
+end;
+
 procedure TCocoaManualScrollView.dealloc;
 begin
-  if Assigned(fhscroll) then fhscroll.release;
-  if Assigned(fvscroll) then fvscroll.release;
-  inherited dealloc;
+  if Assigned(fhscroll) then begin
+    fhscroll.removeFromSuperview;
+    fhscroll.manager:= nil;
+    fhscroll.release;
+  end;
+  if Assigned(fvscroll) then begin
+    fvscroll.removeFromSuperview;
+    fvscroll.manager:= nil;
+    fvscroll.release;
+  end;
+  FreeAndNil(manager);
+end;
+
+procedure TCocoaManualScrollView.setFrame(newValue: NSRect);
+begin
+  inherited setFrame(newValue);
+  manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -592,58 +589,18 @@ end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 begin
-  if doshow then
-  begin
-    if not Assigned(fvscroll) then
-      fvscroll := allocVerticalScroller(true);
-
-    if fvscroll.isHidden then
-    begin
-      {$ifdef BOOLFIX}
-      fvscroll.setHidden_(Ord(false));
-      {$else}
-      fvscroll.setHidden(false);
-      {$endif}
-    end;
-  end
-  else if Assigned(fvscroll) and not fvscroll.isHidden then
-  begin
-    {$ifdef BOOLFIX}
-    fvscroll.setHidden_(Ord(true));
-    {$else}
-    fvscroll.setHidden(true);
-    {$endif}
-  end;
-
-  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+  if NOT Assigned(fvscroll) and doshow then
+    fvscroll:= self.allocVerticalScroller( True );
+  manager.activeScrollBar( fvscroll, doshow );
+  manager.updateLayout;
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 begin
-  if doshow then
-  begin
-    if not Assigned(fhscroll) then
-      fhscroll := allocHorizontalScroller(true);
-
-    if fhscroll.isHidden then
-    begin
-      {$ifdef BOOLFIX}
-      fhscroll.setHidden_(Ord(false));
-      {$else}
-      fhscroll.setHidden(false);
-      {$endif}
-    end;
-  end
-  else if Assigned(fhscroll) and (not fhscroll.isHidden) then
-  begin
-    {$ifdef BOOLFIX}
-    fhscroll.setHidden_(Ord(true));
-    {$else}
-    fhscroll.setHidden(true);
-    {$endif}
-  end;
-
-  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+  if NOT Assigned(fhscroll) and doshow then
+    fhscroll:= self.allocHorizontalScroller( True );
+  manager.activeScrollBar( fhscroll, doshow );
+  manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
@@ -666,7 +623,7 @@ begin
   Result:=fvscroll;
 end;
 
-function TCocoaManualScrollView.allocHorizontalScroller(avisible: Boolean): NSScroller;
+function TCocoaManualScrollView.allocHorizontalScroller(avisible: Boolean): TCocoaScrollBar;
 var
   r : NSRect;
   f : NSRect;
@@ -680,13 +637,13 @@ begin
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
            fhscroll.controlSize, fhscroll.preferredScrollerStyle);
     r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
-    allocScroller( self, fhscroll, r, avisible);
-    fhscroll.setAutoresizingMask(NSViewWidthSizable);
+    fhscroll := allocScroller( self, r, avisible);
+        fhscroll.setAutoresizingMask(NSViewWidthSizable);
     Result := fhscroll;
   end;
 end;
 
-function TCocoaManualScrollView.allocVerticalScroller(avisible: Boolean): NSScroller;
+function TCocoaManualScrollView.allocVerticalScroller(avisible: Boolean): TCocoaScrollBar;
 var
   r : NSRect;
   f : NSRect;
@@ -700,7 +657,7 @@ begin
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
            fvscroll.controlSize, fvscroll.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
-    allocScroller( self, fvscroll, r, avisible);
+    fvscroll := allocScroller( self, r, avisible);
     if self.isFlipped then
       fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
     else
@@ -921,6 +878,81 @@ begin
 end;
 
 { TCocoaScrollBar }
+
+procedure TCocoaScrollBar.dealloc;
+begin
+  FreeAndNil(manager);
+  effect.onDestroy;
+  effect.release;
+  inherited dealloc;
+end;
+
+procedure TCocoaScrollBar.drawKnob;
+var
+  rect: NSRect;
+  path: NSBezierPath;
+begin
+  self.manager.onDrawKnob(self);
+end;
+
+procedure TCocoaScrollBar.drawKnobSlotInRect_highlight(slotRect: NSRect;
+  flag: ObjCBOOL);
+var
+  drawSlot: Boolean;
+begin
+  drawSlot:= self.manager.onDrawKnobSlot(self, slotRect);
+  if drawSlot then
+    Inherited;
+end;
+
+procedure TCocoaScrollBar.setDoubleValue(newValue: double);
+var
+  proportion: CGFloat;
+begin
+  proportion:= self.knobProportion;
+  manager.onKnobValueUpdated( self, newValue, proportion );
+  inherited;
+end;
+
+procedure TCocoaScrollBar.setKnobProportion(newValue: CGFloat);
+var
+  position: CGFloat;
+begin
+  position:= self.doubleValue;
+  manager.onKnobValueUpdated( self, position, newValue );
+  inherited;
+end;
+
+procedure TCocoaScrollBar.updateTrackingAreas;
+var
+  i: NSTrackingArea;
+const
+  options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
+                                or NSTrackingActiveAlways;
+begin
+  if Assigned(trackingArea) then begin
+    removeTrackingArea(trackingArea);
+    trackingArea:= nil;
+  end;
+
+  trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
+                 self.bounds,
+                 options,
+                 self,
+                 nil);
+  self.addTrackingArea( trackingArea );
+  trackingArea.release;
+end;
+
+procedure TCocoaScrollBar.mouseEntered(theEvent: NSEvent);
+begin
+  manager.onMouseEntered(self);
+end;
+
+procedure TCocoaScrollBar.mouseExited(theEvent: NSEvent);
+begin
+  manager.onMouseExited( self );
+end;
 
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
 var
@@ -1160,12 +1192,6 @@ begin
   end;
 end;
 
-procedure TCocoaScrollBarEffectAlpha.dealloc;
-begin
-  Writeln( 'TCocoaScrollBarEffectAlpha.dealloc' );
-  inherited dealloc;
-end;
-
 { TCocoaScrollStyleManager }
 
 constructor TCocoaScrollStyleManager.createForScrollBar;
@@ -1324,7 +1350,6 @@ procedure TCocoaScrollStyleManagerLegacy.onMouseEntered(scroller: NSScroller
 var
   effect: TCocoaScrollBarEffectAlpha;
 begin
-  Writeln( 'onMouseEntered' );
   effect:= TCocoaScrollBarEffectAlpha(TCocoaScrollBar(scroller).effect);
   effect.fade( 0.05, 0.5 );
 end;
@@ -1334,7 +1359,6 @@ procedure TCocoaScrollStyleManagerLegacy.onMouseExited(scroller: NSScroller
 var
   effect: TCocoaScrollBarEffectAlpha;
 begin
-  Writeln( 'onMouseExited' );
   effect:= TCocoaScrollBarEffectAlpha(TCocoaScrollBar(scroller).effect);
   effect.fade( -0.05, 0.25 );
 end;
