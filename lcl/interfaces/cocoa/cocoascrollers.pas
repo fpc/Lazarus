@@ -208,6 +208,8 @@ type
     procedure setFrame(newValue: NSRect); override;
   end;
 
+function createLegacyScroller: TCocoaScrollBar;
+
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
 
 // These settings are set by a user in "System Preferences"
@@ -441,23 +443,15 @@ begin
   end;
 end;
 
-procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect; aVisible: Boolean);
+// for the Scroller created separately through TCocoaWSScrollBar.CreateHandle(),
+// due to the lack of the control over the Layout by TCocoaManualScrollView,
+// only the Legacy Style can be used for compatibility.
+// it's the same logical relationship as NSScrollView and NSScroller.
+function createLegacyScroller: TCocoaScrollBar;
 begin
-  sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
-  parent.addSubview(sc);
-  {$ifdef BOOLFIX}
-  sc.setEnabled_(Ord(true));
-  sc.setHidden_(Ord(not AVisible));
-  {$else}
-  sc.setEnabled(true);
-  sc.setHidden(not AVisible);
-  {$endif}
-  TCocoaScrollBar(sc).preventBlock := true;
-  //Suppress scrollers notifications.
-  TCocoaScrollBar(sc).callback := parent.callback;
-  TCocoaScrollBar(sc).suppressLCLMouse := true;
-  sc.setTarget(sc);
-  sc.setAction(objcselector('actionScrolling:'));
+  Result:= TCocoaScrollBar(TCocoaScrollBar.alloc);
+  Result.manager:= TCocoaScrollStyleManagerLegacy.createForScrollBar;
+  Result.effect:= Result.manager.createScrollBarEffect(Result);
 end;
 
 function allocScroller(parent: TCocoaManualScrollView; dst: NSRect; aVisible: Boolean)
