@@ -55,7 +55,7 @@ type
   private
   public
     MyBitmap: TBitmap;
-    procedure PaintToRGB32bitScanLine(Row, ImgWidth: integer; LineStart: Pointer);
+    procedure PaintToRGBScanLine(Row, ImgWidth: integer; LineStart: Pointer);
   end;
 
 var
@@ -76,22 +76,22 @@ var
 begin
   MyBitmap:=TBitmap.Create;
 
-  // create an image with a format similar to Delphi's pf32bit
-  // keep in mind that you access it in bytes, not words or dwords
+  // Create an image with a format similar to Delphi's pf24bit.
+  // Keep in mind that you access it in bytes, not words nor dwords
   // For example PowerPC uses another byte order (endian big)
   ScanLineImage:=TLazIntfImage.Create(0,0);
-  ImgFormatDescription.Init_BPP32_B8G8R8_BIO_TTB(30,20);
+  ImgFormatDescription.Init_BPP24_B8G8R8_BIO_TTB(30,20);
   ScanLineImage.DataDescription:=ImgFormatDescription;
 
   // call the pf24bit specific drawing function
   for y:=0 to ScanLineImage.Height-1 do
-    PaintToRGB32bitScanLine(y,ScanLineImage.Width,
-                            ScanLineImage.GetDataLineStart(y));
+    PaintToRGBScanLine(y, ScanLineImage.Width, ScanLineImage.GetDataLineStart(y));
 
   // create IntfImage with the format of the current LCL interface
   MyBitmap.Width:=ScanLineImage.Width;
   MyBitmap.Height:=ScanLineImage.Height;
   IntfImage:=MyBitmap.CreateIntfImage;
+
   // convert the content from the very specific to the current format
   IntfImage.CopyPixels(ScanLineImage);
   MyBitmap.LoadFromIntfImage(IntfImage);
@@ -110,19 +110,21 @@ begin
   Canvas.Draw(10,10,MyBitmap);
 end;
 
-procedure TForm1.PaintToRGB32bitScanLine(Row, ImgWidth: integer;
+procedure TForm1.PaintToRGBScanLine(Row, ImgWidth: integer;
   LineStart: Pointer);
-// LineStart is pointer to the start of a scanline with the following format:
-// 4 bytes per pixel. First byte is blue, second green, third is red.
+// LineStart is a pointer to the start of a scanline with the following format:
+// - 3 bytes per pixel.
+// - First byte is blue, second green, third is red.
 // Black is 0,0,0, white is 255,255,255
 var
   i: Integer;
 begin
-  // fill line with gray
-  for i:=0 to (ImgWidth*4)-1 do
-    PByte(LineStart)[i]:=0; // set red, green and blue to 0 (i.e. black)
-  // set one pixel to red (this creates a red line)
-  PByte(LineStart)[(Row mod ImgWidth)*4+2]:=255;
+  // Fill line with background color
+  for i := 0 to ImgWidth * 3 - 1 do
+    PByte(LineStart)[i] := 0;  // Set red, green and blue to 0 (i.e. black)
+
+  // Set one pixel to red (this creates a red line)
+  PByte(LineStart)[(Row mod ImgWidth) * 3 + 2] := 255;  // We add 2 to address the "red" byte
 end;
 
 end.
