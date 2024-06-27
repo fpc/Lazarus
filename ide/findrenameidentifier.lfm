@@ -67,6 +67,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       BorderSpacing.Around = 6
       TabOrder = 2
       Text = 'NewEdit'
+      OnChange = NewEditChange
     end
     object RenameCheckBox: TCheckBox
       Left = 6
