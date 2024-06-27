@@ -67,40 +67,46 @@ type
     procedure applyScrollInfo(barFlag: Integer; const scrollInfo: TScrollInfo); message 'applyScrollInfo:barFlag:';
   end;
 
-  { TCocoaManualScrollView }
+  // it would be more appropriate to use Interface to define the interface of
+  // each component, but FreePascal's Interface is so weak that it can only be
+  // replaced by abstract classes here.
 
-  TCocoaManualScrollView = objcclass(NSView)
-  private
-    fdocumentView: NSView;
-    fhscroll : NSScroller;
-    fvscroll : NSScroller;
+  { TCocoaScrollBarEffect }
+
+  TCocoaScrollBarEffect = objcclass(NSObject)
+  protected
+    procedure onDestroy; message 'onDestroy';
+  end;
+
+  { TCocoaScrollBarStyleManager }
+
+  TCocoaScrollBarStyleManager = class
+    procedure onKnobValueUpdated( scroller:NSScroller;
+      var knobPosition:Double; var knobProportion:Double ); virtual; abstract;
+    procedure onDrawKnob( scroller:NSScroller ); virtual; abstract;
+    function onDrawKnobSlot( scroller:NSScroller; var slotRect: NSRect ):
+      Boolean; virtual; abstract;
+
+    procedure onMouseEntered( scroller:NSScroller ); virtual; abstract;
+    procedure onMouseExited( scroller:NSScroller ); virtual; abstract;
+
+    function createScrollBarEffect( scroller:NSScroller ):
+      TCocoaScrollBarEffect; virtual; abstract;
+    procedure activeScrollBar( scroller:NSScroller; active:Boolean ); virtual; abstract;
+  end;
+
+  TCocoaManualScrollView = objcclass;
+
+  { TCocoaScrollStyleManager }
+
+  TCocoaScrollStyleManager = class(TCocoaScrollBarStyleManager)
+  protected
+    _scrollView: TCocoaManualScrollView;
   public
-    callback: ICommonCallback;
-    procedure dealloc; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    function lclContentView: NSView; override;
-    function lclClientFrame: TRect; override;
-    function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
-    procedure lclUpdate; override;
-    procedure lclInvalidateRect(const r: TRect); override;
-    procedure lclInvalidate; override;
-
-    procedure setDocumentView(AView: NSView); message 'setDocumentView:';
-    function documentView: NSView; message 'documentView';
-
-    procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
-    procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
-    function hasVerticalScroller: Boolean; message 'hasVerticalScroller';
-    function hasHorizontalScroller: Boolean; message 'hasHorizontalScroller';
-
-    function horizontalScroller: NSScroller; message 'horizontalScroller';
-    function verticalScroller: NSScroller; message 'verticalScroller';
-
-    function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
-    function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
-    // mouse
-    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
+    procedure updateLayout; virtual; abstract;
+  public
+    constructor createForScrollBar;
+    constructor createForScrollView( scrollView:TCocoaManualScrollView );
   end;
 
   { TCocoaScrollBar }
@@ -137,6 +143,42 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
+  end;
+
+  { TCocoaManualScrollView }
+
+  TCocoaManualScrollView = objcclass(NSView)
+  private
+    fdocumentView: NSView;
+    fhscroll : NSScroller;
+    fvscroll : NSScroller;
+  public
+    callback: ICommonCallback;
+    procedure dealloc; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    function lclContentView: NSView; override;
+    function lclClientFrame: TRect; override;
+    function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
+    procedure lclUpdate; override;
+    procedure lclInvalidateRect(const r: TRect); override;
+    procedure lclInvalidate; override;
+
+    procedure setDocumentView(AView: NSView); message 'setDocumentView:';
+    function documentView: NSView; message 'documentView';
+
+    procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
+    procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
+    function hasVerticalScroller: Boolean; message 'hasVerticalScroller';
+    function hasHorizontalScroller: Boolean; message 'hasHorizontalScroller';
+
+    function horizontalScroller: NSScroller; message 'horizontalScroller';
+    function verticalScroller: NSScroller; message 'verticalScroller';
+
+    function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
+    function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
   end;
 
   { TCocoaManualScrollHost }
@@ -1014,6 +1056,24 @@ end;
 procedure TCocoaScrollBar.lclClearCallback;
 begin
   callback := nil;
+end;
+
+{ TCocoaScrollBarEffect }
+
+procedure TCocoaScrollBarEffect.onDestroy;
+begin
+end;
+
+{ TCocoaScrollStyleManager }
+
+constructor TCocoaScrollStyleManager.createForScrollBar;
+begin
+end;
+
+constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
+  );
+begin
+  _scrollView:= scrollView;
 end;
 
 end.
