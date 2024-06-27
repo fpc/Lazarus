@@ -2195,7 +2195,7 @@ begin
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
   //debugln(['NewFile ',NewUnitInfo.Filename,' ',NewFilename]);
-  if (CompareText(NewUnitInfo.Unit_Name,NewUnitName)=0) then
+  if (CompareText(NewUnitInfo.Unit_Name,NewUnitName)<>0) then
     NewUnitInfo.Unit_Name:=NewUnitName;
   NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
