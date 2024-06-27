@@ -5297,7 +5297,7 @@ function CompareDottedIdentifiersCaseSens(Identifier1, Identifier2: PChar): inte
 begin
   if (Identifier1<>nil) then begin
     if (Identifier2<>nil) then begin
-      while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
+      while (Identifier1[0]=Identifier2[0]) do begin
         if (IsDottedIdentChar[Identifier1[0]]) then begin
           inc(Identifier1);
           inc(Identifier2);
@@ -5308,7 +5308,7 @@ begin
       end;
       if (IsDottedIdentChar[Identifier1[0]]) then begin
         if (IsDottedIdentChar[Identifier2[0]]) then begin
-          if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
+          if Identifier1[0]>Identifier2[0] then
             Result:=-1 // for example  'aab' 'aaa'
           else
             Result:=1; // for example  'aaa' 'aab'
