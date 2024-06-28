@@ -1090,7 +1090,11 @@ begin
   FColor := AValue;
   ColorToCairoRGB(FColor, ARed, AGreen, ABlue);
   if Assigned(FContext) and Assigned(FContext.pcr) then
+  begin
+    cairo_stroke(fContext.Pcr);
+    cairo_new_path(fContext.Pcr);
     cairo_set_source_rgb(FContext.pcr, ARed, AGreen, ABlue);
+  end;
 end;
 
 constructor TGtk3Pen.Create;
@@ -1114,6 +1118,7 @@ begin
   if not Assigned(fContext) then exit(nil);
   Result := FContext.CurrentPen;
   fContext.CurrentPen := Self;
+  Self.SetColor(fColor); // update Cairo
 end;
 
 function TGtk3Pen.Get(szbuf: integer; pbuf: pointer): integer;
