@@ -107,6 +107,7 @@ type
     procedure SetColor(AValue: TColor); virtual;
     function GetFontColor: TColor; virtual;
     procedure SetFontColor(AValue: TColor); virtual;
+    function GetWidget:PGtkWidget;
   public
     LCLObject: TWinControl;
   public
@@ -187,7 +188,7 @@ type
     property StyleContext: PGtkStyleContext read GetStyleContext write SetStyleContext;
     property Text: String read getText write setText;
     property Visible: Boolean read GetVisible write SetVisible;
-    property Widget: PGtkWidget read FWidget;
+    property Widget: PGtkWidget read GetWidget;
     property WidgetType: TGtk3WidgetTypes read FWidgetType;
   end;
 
@@ -2594,6 +2595,13 @@ end;
 function TGtk3Widget.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   Result := PGtkWidget(TGtkWidget.newv(32, 0 ,nil));
+end;
+
+function TGtk3Widget.GetWidget:PGtkWidget;
+begin
+  if not Assigned(fWidget) then
+    Self.InitializeWidget;
+  Result:=fWidget;
 end;
 
 procedure TGtk3Widget.DestroyWidget;

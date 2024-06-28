@@ -1211,21 +1211,34 @@ end;
 class procedure TGtk3WSOpenDialog.CreatePreviewDialogControl(
   PreviewDialog: TPreviewFileDialog; Chooser: PGtkFileChooser);
 var
-  PreviewWidget: PGtkWidget;
+  PreviewWidget,SubWidget: PGtkWidget;
   AControl: TPreviewFileControl;
+  AHnd,Ahnd1:TGtk3Widget;
   alloc:TGtkAllocation;
+  Win,SubWin:TWinControl;
 begin
   AControl := PreviewDialog.PreviewFileControl;
   if AControl = nil then Exit;
-  PreviewWidget := TGtk3CustomControl(AControl.Handle).Widget;
+
+  AHnd:=TGtk3CustomControl(AControl.Handle);
+  PreviewWidget := AHnd.Widget;
+
   g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',PreviewWidget);
   gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
-  {alloc.height:=AControl.Height;
-  alloc.width:=AControl.Width;
-  alloc.x:=0;
-  alloc.y:=0;
-  PreviewWidget^.size_allocate(@alloc);
-  PreviewWidget^.queue_resize;}
+
+  // manually resize the preview objects, it seems, automatic resize is not
+  // working when parent of LCL control is not a LCL control.
+  if (AControl.ControlCount>0) and (AControl.Controls[0] is TWinControl) then begin
+    Win := TWinControl(AControl.Controls[0]);  // groupbox
+    SubWin := TWinControl(Win.Controls[0]);    // image
+    AHnd1:=TGtk3Widget(Win.Handle);
+    SubWidget:=AHnd1.Widget;
+    AHnd1.SetParent(Ahnd,0,0);
+    gtk_widget_set_size_request({%H-}SubWidget, AControl.Width, AControl.Height);
+    SubWin.width := AControl.Width-4;          // skip borders
+    SubWin.height := AControl.Height-15;       //
+  end;
+
   gtk_file_chooser_set_preview_widget(Chooser, PreviewWidget);
   gtk_widget_show(PreviewWidget);
 end;
