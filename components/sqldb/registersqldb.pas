@@ -217,6 +217,21 @@ Type
    function GetVerbCount: integer; override;
  end;
 
+ { TSQLScriptEditor }
+
+ TSQLScriptEditor = class(TComponentEditor)
+ Private
+   FVOffset: Integer;
+ Protected
+   procedure EditScript(aScript: TSQLScript); virtual;
+   procedure DoEditScript(aScript: TSQLScript); virtual;
+ public
+   constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
+   procedure ExecuteVerb(Index: integer); override;
+   function GetVerb(Index: integer): string; override;
+   function GetVerbCount: integer; override;
+ end;
+
 procedure Register;
 
 implementation
@@ -430,6 +445,92 @@ end;
 function TSQLQueryEditor.GetVerbCount: integer;
 begin
   Result := FVOffset + 3;
+end;
+
+{ TSQLScriptEditor }
+
+procedure TSQLScriptEditor.EditScript(aScript: TSQLScript);
+var
+  TheDialog: TSQLStringsPropertyEditorDlg = nil;
+begin
+  try
+    TheDialog := TSQLStringsPropertyEditorDlg.Create(Application);
+    TheDialog.IsSQLScript := True;
+    TheDialog.SQLEditor.Text := aScript.Script.Text;
+    TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, ['Script']);
+    if (TheDialog.ShowModal = mrOk) then begin
+      aScript.Script.Text := TheDialog.SQLEditor.Text;
+      Modified;
+    end;
+  finally
+    FreeAndNil(TheDialog);
+  end;
+end;
+
+constructor TSQLScriptEditor.Create(AComponent: TComponent;
+  ADesigner: TComponentEditorDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+  FVOffset := Inherited GetVerbCount;
+end;
+
+procedure TSQLScriptEditor.DoEditScript(aScript: TSQLScript);
+var
+  AHook: TPropertyEditorHook;
+  PEC: TPropertyEditorClass;
+  PE: TPropertyEditor;
+  SQLPropInfo: PPropInfo;
+begin
+  PEC := nil;
+  SQLPropInfo := GetPropInfo(aScript, 'Script');
+  if Assigned(SQLPropInfo) then
+    PEC := GetEditorClass(SQLPropInfo, aScript);
+  if (PEC = nil) or not GetHook(AHook) then
+    EditScript(aScript)
+  else
+  begin
+    PE := PEC.Create(AHook, 1);
+    try
+      PE.SetPropEntry(0, aScript, SQLPropInfo);
+      PE.Edit;
+    finally
+      PE.Free;
+    end;
+  end;
+end;
+
+procedure TSQLScriptEditor.ExecuteVerb(Index: integer);
+var
+  Q: TSQLScript;
+begin
+  if Index < FVOffset then
+    inherited
+  else
+  begin
+    Q := Component as TSQLScript;
+    case Index - FVOffset of
+      0: DoEditScript(Q);
+      1: // Separator, do nothing
+      else
+      // Do nothing
+    end;
+  end;
+end;
+
+function TSQLScriptEditor.GetVerb(Index: integer): string;
+begin
+  if Index < FVOffset then
+    Result := inherited
+  else
+    case Index - FVOffset of
+      0: Result := SSQLEdit;
+      1: Result := '-';
+    end;
+end;
+
+function TSQLScriptEditor.GetVerbCount: integer;
+begin
+  Result := FVOffset + 2;
 end;
 
 { TSQLDBLibraryLoaderConnectionTypePropertyEditor }
@@ -720,6 +821,7 @@ begin
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLScript, 'Script'   , TSQLStringsPropertyEditor);
   RegisterProjectFileDescriptor(TSQLFileDescriptor.Create);
   RegisterComponentEditor(TSQLQuery, TSQLQueryEditor);
+  RegisterComponentEditor(TSQLScript, TSQLScriptEditor);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
   AChecker:=TSQLSyntaxChecker.Create(Nil);

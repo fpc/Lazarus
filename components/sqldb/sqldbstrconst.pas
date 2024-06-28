@@ -10,6 +10,7 @@ resourcestring
   lrsSQLDataSetOpen = 'Dataset not open: %s';
   lrsSQLGenSelect = 'You must select fields to be updated and key fields.';
 
+  SSQLEdit = 'Edit Script ...';
   SSQLScript     = 'SQL Script file';
   SSQLScriptDesc = 'Create a new SQL Script file';
   SSQLSource = 'Insert your SQL statements here';
