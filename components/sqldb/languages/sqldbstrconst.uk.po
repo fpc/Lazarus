@@ -26,6 +26,10 @@ msgstr "Набір даних не відкрито: %s"
 msgid "You must select fields to be updated and key fields."
 msgstr "Потрібно вибрати поля для оновлення і ключові поля."
 
+#: sqldbstrconst.screatestringconstant
+msgid "Create string constant"
+msgstr ""
+
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
 msgstr "Змінити SQL ..."
@@ -112,6 +116,10 @@ msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
 msgid "Delimiters for field/table names"
 msgstr "Розділювачі для назв полів/таблиць"
 
+#: sqldbstrconst.ssqledit
+msgid "Edit SQL Script ..."
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "Можливо, помилка SQL"
@@ -195,8 +203,9 @@ msgid "Insert your SQL statements here"
 msgstr "Вставте інструкцію SQL тут"
 
 #: sqldbstrconst.ssqlstringspropertyeditordlgtitle
-#, object-pascal-format
-msgid "Editing %s"
+#, object-pascal-format, fuzzy
+#| msgid "Editing %s"
+msgid "Statement Editor (%s)"
 msgstr "Редагування %s"
 
 #: sqldbstrconst.ssqlsyntaxerror

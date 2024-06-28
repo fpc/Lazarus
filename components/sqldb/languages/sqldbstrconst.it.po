@@ -25,6 +25,10 @@ msgstr ""
 msgid "You must select fields to be updated and key fields."
 msgstr ""
 
+#: sqldbstrconst.screatestringconstant
+msgid "Create string constant"
+msgstr ""
+
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
 msgstr ""
@@ -111,6 +115,10 @@ msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
 msgid "Delimiters for field/table names"
 msgstr ""
 
+#: sqldbstrconst.ssqledit
+msgid "Edit SQL Script ..."
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "Probabile errore SQL"
@@ -194,8 +202,9 @@ msgid "Insert your SQL statements here"
 msgstr "Inserire qui i comandi SQL"
 
 #: sqldbstrconst.ssqlstringspropertyeditordlgtitle
-#, object-pascal-format
-msgid "Editing %s"
+#, object-pascal-format, fuzzy
+#| msgid "Editing %s"
+msgid "Statement Editor (%s)"
 msgstr "Modifica di %s in corso"
 
 #: sqldbstrconst.ssqlsyntaxerror

@@ -24,6 +24,10 @@ msgstr "Datenmenge nicht offen: %s"
 msgid "You must select fields to be updated and key fields."
 msgstr "Zu aktualisierende Felder und Schlüsselfelder müssen ausgewählt werden."
 
+#: sqldbstrconst.screatestringconstant
+msgid "Create string constant"
+msgstr ""
+
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
 msgstr "SQL bearbeiten..."
@@ -110,6 +114,10 @@ msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
 msgid "Delimiters for field/table names"
 msgstr "Begrenzer für Feld-/Tabellennamen"
 
+#: sqldbstrconst.ssqledit
+msgid "Edit SQL Script ..."
+msgstr ""
+
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
 msgstr "Wahrscheinlicher SQL-Fehler"
@@ -193,8 +201,9 @@ msgid "Insert your SQL statements here"
 msgstr "Geben sie ihre SQL-Anweisungen hier ein"
 
 #: sqldbstrconst.ssqlstringspropertyeditordlgtitle
-#, object-pascal-format
-msgid "Editing %s"
+#, object-pascal-format, fuzzy
+#| msgid "Editing %s"
+msgid "Statement Editor (%s)"
 msgstr "Bearbeite %s"
 
 #: sqldbstrconst.ssqlsyntaxerror
