@@ -9,6 +9,12 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 var
+  // the style of the TCocoaScrollBar managed by TCocoaManualScrollView,
+  // the default value is System Preferred.
+  // note: TCocoaScrollBar not managed by TCocoaManualScrollView is always
+  //       Legacy Style.
+  CocoaScrollerPreferredStyle : NSScrollerStyle = -1;
+
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
 

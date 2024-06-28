@@ -27,7 +27,7 @@ uses
   Math, Classes, SysUtils, LclType,
   // Libs
   Controls, Forms,
-  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate;
+  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate, CocoaConfig;
 
 type
   { TCocoaScrollView }
@@ -523,9 +523,19 @@ end;
 { TCocoaManualScrollView }
 
 function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
+var
+  style: NSScrollerStyle;
 begin
   Result:= inherited;
-  self.manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
+
+  style:= CocoaConfig.CocoaScrollerPreferredStyle;
+  if style < 0 then
+    style:= NSScroller.preferredScrollerStyle;
+
+  if style = NSScrollerStyleLegacy then
+    self.manager:= TCocoaScrollStyleManagerLegacy.createForScrollView(self)
+  else
+    self.manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
 end;
 
 procedure TCocoaManualScrollView.dealloc;
