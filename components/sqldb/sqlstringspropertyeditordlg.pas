@@ -110,6 +110,7 @@ begin
   SaveToolButton.Hint := SSaveSQLCodeHint;
   ExecuteToolButton.Hint := SRunSQLCodeHint;
   TBCheck.Hint := SQuickCheckOfSQLSyntaxHint;
+  TBConst.Hint := SCreateStringConstant;
   CbxMetaData.Items.Add(SMetaTables);
   CbxMetaData.Items.Add(SMetaSysTables);
   CbxMetaData.Items.Add(SMetaColumns);

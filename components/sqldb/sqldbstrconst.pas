@@ -10,7 +10,7 @@ resourcestring
   lrsSQLDataSetOpen = 'Dataset not open: %s';
   lrsSQLGenSelect = 'You must select fields to be updated and key fields.';
 
-  SSQLEdit = 'Edit Script ...';
+  SSQLEdit = 'Edit SQL Script ...';
   SSQLScript     = 'SQL Script file';
   SSQLScriptDesc = 'Create a new SQL Script file';
   SSQLSource = 'Insert your SQL statements here';
@@ -22,7 +22,7 @@ resourcestring
   SFireBirdDatabases = 'Firebird databases';
   SSQLite3Databases = 'SQLite3 databases';
   SInterbaseDatabases = 'Interbase databases';
-  SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
+  SSQLStringsPropertyEditorDlgTitle = 'Statement Editor (%s)';
 
   sLibraries = 'Shared libraries';
 
@@ -40,6 +40,7 @@ resourcestring
   SSaveSQLCodeHint = 'Save SQL code ...';
   SRunSQLCodeHint = 'Run SQL code';
   SQuickCheckOfSQLSyntaxHint = 'Quick check of SQL syntax';
+  SCreateStringConstant = 'Create string constant';
 
   // SQL Parser results:
   // Note: sql parser is not quite exact, so indicate it's not completely sure
