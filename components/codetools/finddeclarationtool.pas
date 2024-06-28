@@ -3810,10 +3810,10 @@ var
             FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
             // search include file
             MissingIncludeFile:=nil;
-            if Scanner.SearchIncludeFile(FoundFilename,NewSrcLog,
-              MissingIncludeFile)
+            if Scanner.SearchIncludeFile(FoundFilename,NewSrcLog,MissingIncludeFile)
             then
               FoundFilename:=TCodeBuffer(NewSrcLog).Filename;
+            MissingIncludeFile.Free;
           end;
           exit;
         end;
