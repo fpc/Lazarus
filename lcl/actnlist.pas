@@ -167,18 +167,6 @@ type
     FSecondaryShortCuts: TShortCutList;// nil as default
     FShortCut: TShortCut;
     FVisible: Boolean;
-    procedure SetAutoCheck(Value: Boolean);
-    procedure SetCaption(const Value: TTranslateString);
-    procedure SetChecked(Value: Boolean);
-    procedure SetEnabled(Value: Boolean);
-    procedure SetGroupIndex(const Value: Integer);
-    procedure SetHelpContext(Value: THelpContext); virtual;
-    procedure SetHelpKeyword(const Value: string); virtual;
-    procedure SetHelpType(Value: THelpType);
-    procedure SetHint(const Value: TTranslateString);
-    procedure SetImageIndex(Value: TImageIndex);
-    procedure SetShortCut(Value: TShortCut);
-    procedure SetVisible(Value: Boolean);
     function GetSecondaryShortCuts: TShortCutList;
     procedure SetSecondaryShortCuts(const Value: TShortCutList);
     function IsSecondaryShortCutsStored: Boolean;
@@ -186,8 +174,21 @@ type
     FImage: TObject;
     FMask: TObject;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure SetName(const Value: TComponentName); override;
     function HandleShortCut: Boolean; virtual;
+    procedure SetAutoCheck(Value: Boolean); virtual;
+    procedure SetCaption(const Value: TTranslateString); virtual;
+    procedure SetChecked(Value: Boolean); virtual;
+    procedure SetEnabled(Value: Boolean); virtual;
+    procedure SetGroupIndex(const Value: Integer); virtual;
+    procedure SetHelpContext(Value: THelpContext); virtual;
+    procedure SetHelpKeyword(const Value: string); virtual;
+    procedure SetHelpType(Value: THelpType); virtual;
+    procedure SetHint(const Value: TTranslateString); virtual;
+    procedure SetImageIndex(Value: TImageIndex); virtual;
+    procedure SetName(const Value: TComponentName); override;
+    procedure SetShortCut(Value: TShortCut); virtual;
+    procedure SetVisible(Value: Boolean); virtual;
+
     property SavedEnabledState: Boolean
       read FSavedEnabledState write FSavedEnabledState;
   public
