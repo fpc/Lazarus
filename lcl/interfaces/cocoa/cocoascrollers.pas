@@ -92,7 +92,9 @@ type
 
     function createScrollBarEffect( scroller:NSScroller ):
       TCocoaScrollBarEffect; virtual; abstract;
-    procedure activeScrollBar( scroller:NSScroller; active:Boolean ); virtual; abstract;
+    procedure availScrollBar( scroller:NSScroller; available:Boolean ); virtual; abstract;
+    function isAvailableScrollBar( scroller:NSScroller ): Boolean; virtual; abstract;
+    procedure showScrollBar( scroller:NSScroller ); virtual; abstract;
   end;
 
   TCocoaManualScrollView = objcclass;
@@ -281,7 +283,9 @@ type
     procedure onMouseEntered( scroller:NSScroller );  override;
     procedure onMouseExited( scroller:NSScroller ); override;
     function createScrollBarEffect( scroller:NSScroller ): TCocoaScrollBarEffect; override;
-    procedure activeScrollBar( scroller:NSScroller; active:Boolean ); override;
+    procedure availScrollBar( scroller:NSScroller; available:Boolean ); override;
+    function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
+    procedure showScrollBar( scroller:NSScroller ); override;
     procedure updateLayOut; override;
   end;
 
@@ -297,7 +301,9 @@ type
     procedure onMouseEntered( scroller:NSScroller );  override;
     procedure onMouseExited( scroller:NSScroller ); override;
     function createScrollBarEffect( scroller:NSScroller ): TCocoaScrollBarEffect; override;
-    procedure activeScrollBar( scroller:NSScroller; active:Boolean ); override;
+    procedure availScrollBar( scroller:NSScroller; available:Boolean ); override;
+    function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
+    procedure showScrollBar( scroller:NSScroller ); override;
     procedure updateLayOut; override;
   end;
 
@@ -632,26 +638,26 @@ procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 begin
   if NOT Assigned(fvscroll) and doshow then
     fvscroll:= self.allocVerticalScroller( True );
-  manager.activeScrollBar( fvscroll, doshow );
-  manager.updateLayout;
+  self.manager.availScrollBar( fvscroll, doshow );
+  self.manager.updateLayout;
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 begin
   if NOT Assigned(fhscroll) and doshow then
     fhscroll:= self.allocHorizontalScroller( True );
-  manager.activeScrollBar( fhscroll, doshow );
-  manager.updateLayout;
+  self.manager.availScrollBar( fhscroll, doshow );
+  self.manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
 begin
-  Result:=Assigned(fvscroll) and (not fvscroll.isHidden);
+  Result:= self.manager.isAvailableScrollBar(fvscroll);
 end;
 
 function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
 begin
-  Result:=Assigned(fhscroll) and (not fhscroll.isHidden);
+  Result:= self.manager.isAvailableScrollBar(fhscroll);
 end;
 
 function TCocoaManualScrollView.horizontalScroller: NSScroller;
@@ -1345,7 +1351,7 @@ begin
   hScroller:= _scrollView.fhscroll;
   vScroller:= _scrollView.fvscroll;
 
-  if Assigned(hScroller) and (not hScroller.isHidden) then
+  if self.isAvailableScrollBar(hScroller) then
   begin
     hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
             hScroller.controlSize, hScroller.preferredScrollerStyle);
@@ -1357,7 +1363,7 @@ begin
     docFrame.origin.y := hScrollerHeight;
   end;
 
-  if Assigned(vScroller) and (not vScroller.isHidden) then
+  if self.isAvailableScrollBar(vScroller) then
   begin
     vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
             vScroller.controlSize, vScroller.preferredScrollerStyle);
@@ -1402,23 +1408,35 @@ begin
   Result:= effect;
 end;
 
-procedure TCocoaScrollStyleManagerLegacy.activeScrollBar(
-  scroller: NSScroller; active: Boolean);
+procedure TCocoaScrollStyleManagerLegacy.availScrollBar(
+  scroller: NSScroller; available: Boolean);
 begin
-  if NOT active then begin
-    if Assigned(scroller) and NOT scroller.isHidden then
-      scroller.setHidden( True );
+  if NOT Assigned(scroller) then
+    Exit;
+
+  if NOT available then begin
+    scroller.setHidden( True );
     Exit;
   end;
 
-  if NOT Assigned(scroller) then
-    scroller := _scrollView.allocVerticalScroller(true);
-
   if scroller.isHidden then
   begin
-    scroller.setHidden(false);
-    scroller.setAlphaValue(1);
+    scroller.setHidden( false );
+    scroller.setAlphaValue( 1 );
   end;
+end;
+
+function TCocoaScrollStyleManagerLegacy.isAvailableScrollBar(scroller: NSScroller
+  ): Boolean;
+begin
+  Result:= Assigned(scroller) and NOT scroller.isHidden;
+end;
+
+procedure TCocoaScrollStyleManagerLegacy.showScrollBar(scroller: NSScroller);
+begin
+  scroller.setHidden( False );
+  scroller.setAlphaValue( 1 );
+  scroller.setNeedsDisplay_( True );
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.onDrawKnob(scroller: NSScroller);
@@ -1553,26 +1571,7 @@ begin
       knobProportion:= 25/slotSize;
   end;
 
-  effect.currentKnobPosition:= knobPosition;
-  effect.currentKnobProportion:= knobProportion;
-
-  if knobProportion=1 then begin
-    scroller.setAlphaValue(0);
-    scroller.setHidden(True);
-    Exit;
-  end;
-
-  if NOT effect.entered then begin
-    effect.setDelayHidingTimer;
-    effect.currentAlpha:= 0.5;
-  end;
-
-  // on old versions of macOS, alpha=0 is considered hidden.
-  // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
-  // otherwise it is considered hidden and setNeedsDisplay() does not take effect.
-  scroller.setAlphaValue( effect.currentAlpha );
-  scroller.setHidden( False );
-  scroller.setNeedsDisplay_( true );
+  self.showScrollBar( scroller );
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.onMouseEntered(scroller: NSScroller);
@@ -1610,8 +1609,8 @@ begin
   Result:= effect;
 end;
 
-procedure TCocoaScrollStyleManagerOverlay.activeScrollBar(
-  scroller: NSScroller; active: Boolean);
+procedure TCocoaScrollStyleManagerOverlay.availScrollBar(
+  scroller: NSScroller; available: Boolean);
 begin
   if NOT Assigned(scroller) then
     Exit;
@@ -1619,8 +1618,39 @@ begin
   if scroller.knobProportion=1 then begin
     scroller.setAlphaValue( 0 );
     scroller.setHidden( True );
+  end;
+end;
+
+function TCocoaScrollStyleManagerOverlay.isAvailableScrollBar(scroller: NSScroller
+  ): Boolean;
+begin
+  Result:= Assigned(scroller) and (scroller.knobProportion<1);
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.showScrollBar(scroller: NSScroller);
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+
+  if scroller.knobProportion=1 then begin
+    scroller.setAlphaValue(0);
+    scroller.setHidden(True);
     Exit;
   end;
+
+  if NOT effect.entered then begin
+    effect.setDelayHidingTimer;
+    effect.currentAlpha:= 0.5;
+  end;
+
+  // on old versions of macOS, alpha=0 is considered hidden.
+  // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
+  // otherwise it is considered hidden and setNeedsDisplay() does not take effect.
+  scroller.setAlphaValue( effect.currentAlpha );
+  scroller.setHidden( False );
+  scroller.setNeedsDisplay_( true );
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.updateLayOut;
