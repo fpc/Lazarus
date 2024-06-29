@@ -1654,8 +1654,6 @@ var
 begin
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
-  if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
-    Exit;
 
   slotRect:= scroller.rectForPart(NSScrollerKnobSlot);
   if scrollBar.IsHorizontal then
@@ -1669,6 +1667,9 @@ begin
     else
       knobProportion:= 25/slotSize;
   end;
+
+  if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
+    Exit;
 
   effect.currentKnobPosition:= knobPosition;
   effect.currentKnobProportion:= knobProportion;
