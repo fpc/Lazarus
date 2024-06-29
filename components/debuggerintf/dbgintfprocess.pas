@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF USES_NEW_PROCESS} process331
+  {$IFDEF USES_NEW_PROCESS} process331 in 'fcl-proc331/process331.pp'
   {$ELSE} process
   {$ENDIF}
   ;
