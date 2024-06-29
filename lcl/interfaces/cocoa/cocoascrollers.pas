@@ -702,19 +702,27 @@ begin
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
+var
+  available: Boolean;
 begin
+  available:= _manager.isAvailableScrollBar(fvscroll);
   if NOT Assigned(fvscroll) and doshow then
     fvscroll:= self.allocVerticalScroller( True );
   _manager.availScrollBar( fvscroll, doshow );
-  _manager.updateLayout;
+  if available <> _manager.isAvailableScrollBar(fvscroll) then
+    _manager.updateLayout;
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
+var
+  available: Boolean;
 begin
+  available:= _manager.isAvailableScrollBar(fhscroll);
   if NOT Assigned(fhscroll) and doshow then
     fhscroll:= self.allocHorizontalScroller( True );
   _manager.availScrollBar( fhscroll, doshow );
-  _manager.updateLayout;
+  if available <> _manager.isAvailableScrollBar(fhscroll) then
+    _manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
