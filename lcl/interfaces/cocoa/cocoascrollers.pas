@@ -102,7 +102,7 @@ type
   { TCocoaScrollStyleManager }
 
   TCocoaScrollStyleManager = class(TCocoaScrollBarStyleManager)
-  protected
+  private
     _scrollView: TCocoaManualScrollView;
   public
     procedure updateLayout; virtual; abstract;
@@ -115,9 +115,12 @@ type
 
   TCocoaScrollBar = objcclass(NSScroller)
   private
-    manager: TCocoaScrollBarStyleManager;
-    effect: TCocoaScrollBarEffect;
-    trackingArea: NSTrackingArea;
+    _scrollView: TCocoaManualScrollView;
+    _manager: TCocoaScrollBarStyleManager;
+    _effect: TCocoaScrollBarEffect;
+    _trackingArea: NSTrackingArea;
+  private
+    procedure releaseManager; message 'releaseManager';
   public
     callback: ICommonCallback;
     preventBlock : Boolean;
@@ -130,6 +133,13 @@ type
     smallInc: Integer;
 
     procedure dealloc; override;
+
+    function manager: TCocoaScrollBarStyleManager;
+      message 'manager';
+    function effect: TCocoaScrollBarEffect;
+      message 'effect';
+    procedure setManager( newManager:TCocoaScrollBarStyleManager );
+      message 'setManager:';
 
     procedure drawKnob; override;
     procedure drawKnobSlotInRect_highlight(slotRect: NSRect; flag: ObjCBOOL); override;
@@ -165,7 +175,7 @@ type
 
   TCocoaManualScrollView = objcclass(NSView)
   private
-    manager: TCocoaScrollStyleManager;
+    _manager: TCocoaScrollStyleManager;
     fdocumentView: NSView;
     fhscroll : TCocoaScrollBar;
     fvscroll : TCocoaScrollBar;
@@ -174,6 +184,9 @@ type
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(newValue: NSRect); override;
+
+    procedure resetManager; message 'resetManager';
+    procedure onScrollerStyleUpdated; message 'onScrollerStyleUpdated';
 
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -208,6 +221,8 @@ type
     function lclClientFrame: TRect; override;
     procedure scrollWheel(theEvent: NSEvent); override;
     procedure setFrame(newValue: NSRect); override;
+
+    procedure setScrollerStyle(newValue: NSScrollerStyle); override;
   end;
 
 function createLegacyScroller: TCocoaScrollBar;
@@ -454,20 +469,22 @@ end;
 // only the Legacy Style can be used for compatibility.
 // it's the same logical relationship as NSScrollView and NSScroller.
 function createLegacyScroller: TCocoaScrollBar;
+var
+  scrollBar: TCocoaScrollBar Absolute Result;
+  manager: TCocoaScrollStyleManager;
 begin
-  Result:= TCocoaScrollBar(TCocoaScrollBar.alloc);
-  Result.manager:= TCocoaScrollStyleManagerLegacy.createForScrollBar;
-  Result.effect:= Result.manager.createScrollBarEffect(Result);
+  scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc);
+  manager:= TCocoaScrollStyleManagerLegacy.createForScrollBar;
+  scrollBar.setManager( manager );
 end;
 
 function allocScroller(parent: TCocoaManualScrollView; dst: NSRect; aVisible: Boolean)
   :TCocoaScrollBar;
 var
-  scrollBar: TCocoaScrollBar;
+  scrollBar: TCocoaScrollBar Absolute Result;
 begin
   scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
-  scrollBar.manager:= parent.manager;
-  scrollBar.effect:= parent.manager.createScrollBarEffect(scrollBar);
+  scrollBar.setManager( parent._manager );
   parent.addSubview(scrollBar);
   {$ifdef BOOLFIX}
   scrollBar.setEnabled_(Ord(true));
@@ -482,7 +499,6 @@ begin
   scrollBar.suppressLCLMouse := true;
   scrollBar.setTarget(scrollBar);
   scrollBar.setAction(objcselector('actionScrolling:'));
-  Result:= scrollBar;
 end;
 
 { TCocoaManualScrollHost }
@@ -526,43 +542,94 @@ begin
   sc.setFrame( scFrame );
 end;
 
+procedure TCocoaManualScrollHost.setScrollerStyle(newValue: NSScrollerStyle);
+begin
+  inherited setScrollerStyle(newValue);
+  if Assigned(self.lclGetTarget) and Assigned(self.documentView) then
+    TCocoaManualScrollView(self.documentView).onScrollerStyleUpdated;
+end;
+
 { TCocoaManualScrollView }
 
 function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
-var
-  style: NSScrollerStyle;
 begin
   Result:= inherited;
-
-  style:= CocoaConfig.CocoaScrollerPreferredStyle;
-  if style < 0 then
-    style:= NSScroller.preferredScrollerStyle;
-
-  if style = NSScrollerStyleLegacy then
-    self.manager:= TCocoaScrollStyleManagerLegacy.createForScrollView(self)
-  else
-    self.manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
+  resetManager;
 end;
 
 procedure TCocoaManualScrollView.dealloc;
 begin
   if Assigned(fhscroll) then begin
     fhscroll.removeFromSuperview;
-    fhscroll.manager:= nil;
+    fhscroll.setManager( nil );
     fhscroll.release;
   end;
   if Assigned(fvscroll) then begin
     fvscroll.removeFromSuperview;
-    fvscroll.manager:= nil;
+    fvscroll.setManager( nil );
     fvscroll.release;
   end;
-  FreeAndNil(manager);
+  FreeAndNil( _manager );
 end;
 
 procedure TCocoaManualScrollView.setFrame(newValue: NSRect);
 begin
   inherited setFrame(newValue);
-  manager.updateLayout;
+  _manager.updateLayout;
+end;
+
+procedure TCocoaManualScrollView.resetManager;
+var
+  oldManager: TCocoaScrollStyleManager;
+  style: NSScrollerStyle;
+begin
+  oldManager:= _manager;
+
+  style:= CocoaConfig.CocoaScrollerPreferredStyle;
+  if style < 0 then
+    style:= NSScroller.preferredScrollerStyle;
+
+  if style = NSScrollerStyleLegacy then
+    _manager:= TCocoaScrollStyleManagerLegacy.createForScrollView(self)
+  else
+    _manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
+
+  if Assigned(self.fhscroll) then begin
+    self.fhscroll.setManager( _manager );
+  end;
+  if Assigned(self.fvscroll) then begin
+    self.fvscroll.setManager( _manager );
+  end;
+
+  oldManager.Free;
+end;
+
+procedure TCocoaManualScrollView.onScrollerStyleUpdated;
+var
+  horzAvailable: Boolean;
+  vertAvailabl: Boolean;
+begin
+  horzAvailable:= _manager.isAvailableScrollBar( self.fhscroll );
+  vertAvailabl:= _manager.isAvailableScrollBar( self.fvscroll );
+
+  self.resetManager;
+
+  _manager.availScrollBar( self.fhscroll, horzAvailable );
+  _manager.availScrollBar( self.fvscroll, vertAvailabl );
+
+  if self.lclGetTarget is TWinControl then begin
+///    TWinControl(self.lclGetTarget).InvalidateClientRectCache(True);
+///    TWinControl(self.lclGetTarget).InvalidatePreferredSize;
+    TWinControl(self.lclGetTarget).AdjustSize;
+///    TWinControl(self.lclGetTarget).Invalidate;
+  end;
+
+  _manager.updateLayout;
+
+  if self.hasHorizontalScroller then
+    _manager.showScrollBar(self.fhscroll);
+  if self.hasVerticalScroller then
+    _manager.showScrollBar(self.fvscroll);
 end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -638,26 +705,26 @@ procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 begin
   if NOT Assigned(fvscroll) and doshow then
     fvscroll:= self.allocVerticalScroller( True );
-  self.manager.availScrollBar( fvscroll, doshow );
-  self.manager.updateLayout;
+  _manager.availScrollBar( fvscroll, doshow );
+  _manager.updateLayout;
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 begin
   if NOT Assigned(fhscroll) and doshow then
     fhscroll:= self.allocHorizontalScroller( True );
-  self.manager.availScrollBar( fhscroll, doshow );
-  self.manager.updateLayout;
+  _manager.availScrollBar( fhscroll, doshow );
+  _manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
 begin
-  Result:= self.manager.isAvailableScrollBar(fvscroll);
+  Result:= _manager.isAvailableScrollBar(fvscroll);
 end;
 
 function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
 begin
-  Result:= self.manager.isAvailableScrollBar(fhscroll);
+  Result:= _manager.isAvailableScrollBar(fhscroll);
 end;
 
 function TCocoaManualScrollView.horizontalScroller: NSScroller;
@@ -926,20 +993,52 @@ end;
 
 { TCocoaScrollBar }
 
+procedure TCocoaScrollBar.releaseManager;
+begin
+  if NOT Assigned(_manager) then
+    Exit;
+
+  if NOT Assigned(_scrollView) then
+    FreeAndNil(_manager);
+
+  if Assigned(_effect) then begin
+    _effect.onDestroy;
+    _effect.release;
+    _effect:= nil;
+  end;
+end;
+
 procedure TCocoaScrollBar.dealloc;
 begin
-  FreeAndNil(manager);
-  effect.onDestroy;
-  effect.release;
+  releaseManager;
   inherited dealloc;
 end;
 
-procedure TCocoaScrollBar.drawKnob;
-var
-  rect: NSRect;
-  path: NSBezierPath;
+function TCocoaScrollBar.manager: TCocoaScrollBarStyleManager;
 begin
-  self.manager.onDrawKnob(self);
+  Result:= _manager;
+end;
+
+function TCocoaScrollBar.effect: TCocoaScrollBarEffect;
+begin
+  Result:= _effect;
+end;
+
+procedure TCocoaScrollBar.setManager( newManager: TCocoaScrollBarStyleManager);
+begin
+  releaseManager;
+  _scrollView:= nil;
+  _manager:= newManager;
+  if Assigned(_manager) then begin
+    if _manager is TCocoaScrollStyleManager then
+      _scrollView:= TCocoaScrollStyleManager(_manager)._scrollView;
+    _effect:= _manager.createScrollBarEffect(self);
+  end;
+end;
+
+procedure TCocoaScrollBar.drawKnob;
+begin
+  _manager.onDrawKnob(self);
 end;
 
 procedure TCocoaScrollBar.drawKnobSlotInRect_highlight(slotRect: NSRect;
@@ -947,7 +1046,7 @@ procedure TCocoaScrollBar.drawKnobSlotInRect_highlight(slotRect: NSRect;
 var
   drawSlot: Boolean;
 begin
-  drawSlot:= self.manager.onDrawKnobSlot(self, slotRect);
+  drawSlot:= _manager.onDrawKnobSlot(self, slotRect);
   if drawSlot then
     Inherited;
 end;
@@ -957,7 +1056,7 @@ var
   proportion: CGFloat;
 begin
   proportion:= self.knobProportion;
-  manager.onKnobValueUpdated( self, newValue, proportion );
+  _manager.onKnobValueUpdated( self, newValue, proportion );
   inherited;
 end;
 
@@ -966,7 +1065,7 @@ var
   position: CGFloat;
 begin
   position:= self.doubleValue;
-  manager.onKnobValueUpdated( self, position, newValue );
+  _manager.onKnobValueUpdated( self, position, newValue );
   inherited;
 end;
 
@@ -977,28 +1076,28 @@ const
   options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
                                 or NSTrackingActiveAlways;
 begin
-  if Assigned(trackingArea) then begin
-    removeTrackingArea(trackingArea);
-    trackingArea:= nil;
+  if Assigned(_trackingArea) then begin
+    removeTrackingArea(_trackingArea);
+    _trackingArea:= nil;
   end;
 
-  trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
+  _trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
                  self.bounds,
                  options,
                  self,
                  nil);
-  self.addTrackingArea( trackingArea );
-  trackingArea.release;
+  self.addTrackingArea( _trackingArea );
+  _trackingArea.release;
 end;
 
 procedure TCocoaScrollBar.mouseEntered(theEvent: NSEvent);
 begin
-  manager.onMouseEntered(self);
+  _manager.onMouseEntered(self);
 end;
 
 procedure TCocoaScrollBar.mouseExited(theEvent: NSEvent);
 begin
-  manager.onMouseExited( self );
+  _manager.onMouseExited( self );
 end;
 
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
@@ -1571,6 +1670,9 @@ begin
       knobProportion:= 25/slotSize;
   end;
 
+  effect.currentKnobPosition:= knobPosition;
+  effect.currentKnobProportion:= knobProportion;
+
   self.showScrollBar( scroller );
 end;
 
@@ -1634,7 +1736,7 @@ var
 begin
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
-  if scroller.knobProportion=1 then begin
+  if effect.currentKnobProportion=1 then begin
     scroller.setAlphaValue(0);
     scroller.setHidden(True);
     Exit;
