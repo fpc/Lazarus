@@ -617,12 +617,8 @@ begin
   _manager.availScrollBar( self.fhscroll, horzAvailable );
   _manager.availScrollBar( self.fvscroll, vertAvailabl );
 
-  if self.lclGetTarget is TWinControl then begin
-///    TWinControl(self.lclGetTarget).InvalidateClientRectCache(True);
-///    TWinControl(self.lclGetTarget).InvalidatePreferredSize;
+  if self.lclGetTarget is TWinControl then
     TWinControl(self.lclGetTarget).AdjustSize;
-///    TWinControl(self.lclGetTarget).Invalidate;
-  end;
 
   _manager.updateLayout;
 
@@ -1303,6 +1299,9 @@ begin
   end;
 
   self.currentAlpha:= self.currentAlpha + self.stepAlpha;
+  if self.currentAlpha < 0.01 then
+    self.currentAlpha:= 0;
+
   if self.stepAlpha > 0 then begin
     if self.currentAlpha >= self.maxAlpha then begin
       self.currentAlpha:= self.maxAlpha;
@@ -1616,6 +1615,13 @@ var
 begin
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
+  scroller.setAlphaValue( effect.currentAlpha );
+  if effect.currentAlpha = 0 then begin
+    scroller.setHidden( true );
+    effect.expandedSize:= 0;
+    Exit;
+  end;
+
   radius:= 4;
   rect:= scrollBar.rectForPart(NSScrollerKnob);
   rect:= NSInsetRect(rect, 1, 1);
@@ -1632,14 +1638,8 @@ begin
   NSColor.controlTextColor.set_;
   path.fill;
 
-  scroller.setAlphaValue( effect.currentAlpha );
-  if effect.currentAlpha = 0 then begin
-    scroller.setHidden( true );
-    effect.expandedSize:= 0;
-  end else begin
-    if scroller.knobProportion < 1 then
-      scroller.setHidden( false );
-  end;
+  if scroller.knobProportion < 1 then
+    scroller.setHidden( false );
 end;
 
 function TCocoaScrollStyleManagerOverlay.onDrawKnobSlot(scroller: NSScroller;
