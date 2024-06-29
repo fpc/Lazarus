@@ -931,8 +931,8 @@ end;
 
 function NameInfoForSearch(const AName: String): TNameSearchInfo;
 begin
-  Result.NameLower := QuickUtf8LowerCase(AName);
-  Result.NameUpper := QuickUtf8UpperCase(AName);
+  Result.NameLower := UTF8LowerCaseFast(AName);
+  Result.NameUpper := UTF8UpperCaseFast(AName);
   Result.NameHash := objpas.Hash(Result.NameUpper) and $7fff or $8000;
 end;
 
@@ -2866,7 +2866,7 @@ begin
   if not HasValidScope then
     exit;
 
-  h := objpas.Hash(QuickUtf8UpperCase(CompUnit.UnitName)) and $7fff or $8000;
+  h := objpas.Hash(UTF8UpperCaseFast(CompUnit.UnitName)) and $7fff or $8000;
   AKNownHashes^[h and KnownNameHashesBitMask] := True;
 
   NextTopLevel := 0;
@@ -2889,7 +2889,7 @@ begin
         NextTopLevel := FScope.GetNextIndex;
       Continue;
     end;
-    h := objpas.Hash(QuickUtf8UpperCase(EntryName)) and $7fff or $8000;
+    h := objpas.Hash(UTF8UpperCaseFast(EntryName)) and $7fff or $8000;
     FScope.Current^.NameHash := h;
     if (FScope.Index >= NextTopLevel) or InEnum then
       AKNownHashes^[h and KnownNameHashesBitMask] := True;
@@ -2932,8 +2932,8 @@ begin
   GoChild;
   if not HasValidScope then
     exit;
-  s1 := QuickUtf8UpperCase(AName);
-  s2 := UTF8LowerCase(AName);
+  s1 := UTF8UpperCaseFast(AName);
+  s2 := UTF8LowerCase(AName); // Should this be UTF8LowerCaseFast(AName) ?
   while HasValidScope do begin
     PrepareAbbrev;
     if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
@@ -2945,7 +2945,7 @@ begin
       Continue;
     end;
 
-      if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
+    if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
       // TODO: check DW_AT_start_scope;
       DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AName]);
       Result := True;

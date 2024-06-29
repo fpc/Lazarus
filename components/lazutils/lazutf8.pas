@@ -126,6 +126,10 @@ function UTF8LowerCase(const AInStr: string; const ALanguage: string=''): string
 function UTF8LowerString(const s: string): string; inline;
 function UTF8UpperCase(const AInStr: string; const ALanguage: string=''): string;
 function UTF8UpperString(const s: string): string; inline;
+// Optimistic upper/lower case. Attempt ASCII only, but if non-ASCII is found, do UTF8
+function UTF8UpperCaseFast(const AText: String): String;
+function UTF8LowerCaseFast(const AText: String): String;
+
 function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
 // Capitalize the first letters of every word
 function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
@@ -2872,6 +2876,55 @@ begin
   Result:=UTF8UpperCase(s);
 end;
 
+function UTF8UpperCaseFast(const AText: String): String;
+var
+  src, dst: PChar;
+  c: Integer;
+  t: Char;
+begin
+  SetLength(Result, Length(AText));
+  if Result = '' then
+    exit;
+  src := @AText[1];
+  dst := @Result[1];
+  c := Length(Result);
+  while c > 0 do begin
+    t := src^;
+    if (ord(t) and 128) <>  0 then
+      exit(UTF8UpperCase(AText));
+    if (t in ['a'..'z']) then
+      t := chr(ord(t) - 32);
+    dst^ := t;
+    dec(c);
+    inc(src);
+    inc(dst);
+  end;
+end;
+
+function UTF8LowerCaseFast(const AText: String): String;
+var
+  src, dst: PChar;
+  c: Integer;
+  t: Char;
+begin
+  SetLength(Result, Length(AText));
+  if Result = '' then
+    exit;
+  src := @AText[1];
+  dst := @Result[1];
+  c := Length(Result);
+  while c > 0 do begin
+    t := src^;
+    if (ord(t) and 128) <>  0 then
+      exit(UTF8UpperCase(AText));
+    if (t in ['A'..'Z']) then
+      t := chr(ord(t) + 32);
+    dst^ := t;
+    dec(c);
+    inc(src);
+    inc(dst);
+  end;
+end;
 
 function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean): PtrInt;
 // return -1 if ok
