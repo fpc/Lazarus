@@ -67,9 +67,9 @@ uses
   ProjectInspector, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
-  EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,
-  CheckLFMDlg, etMessagesWnd, DebugManager, EnvGuiOptions,
-  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
+  EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckLFMDlg,
+  etMessagesWnd, DebugManager, EnvGuiOptions, ConvCodeTool,
+  BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type
 
@@ -8373,6 +8373,72 @@ begin
   i:=FormEditingHook.DescendFromDesignerBaseClass(TComponentClass(aCompClass.ClassType));
   if i<0 then exit;
   Result:=FormEditingHook.DesignerBaseClasses[i].ClassName;
+end;
+
+function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
+  SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+var
+  ListOfPCodeXYPosition: TFPList;
+  LoadResult: TModalResult;
+  Code: TCodeBuffer;
+  i: Integer;
+begin
+  Result:=mrCancel;
+  ListOfPCodeXYPosition:=nil;
+  TreeOfPCodeXYPosition:=nil;
+  try
+    CleanUpFileList(Files);
+
+    Result:=mrOk;
+    // search in every file
+    for i:=0 to Files.Count-1 do begin
+      if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
+      if IgnoreMissingFiles then
+      begin
+        if FilenameIsAbsolute(Files[i]) then
+        begin
+          if not FileExistsCached(Files[i]) then continue;
+        end else begin
+          Code:=CodeToolBoss.LoadFile(Files[i],false,false);
+          if (Code=nil) then continue;
+        end;
+      end;
+      LoadResult:=
+          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
+      if LoadResult=mrAbort then begin
+        debugln('GatherUnitReferences unable to load "',Files[i],'"');
+        if IgnoreErrors then
+          continue;
+        Result:=mrCancel;
+        exit;
+      end;
+      if LoadResult<>mrOk then continue;
+
+      // search references
+      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      if not CodeToolBoss.FindUnitReferences(
+        UnitCode, Code, not SearchInComments, ListOfPCodeXYPosition) then
+      begin
+        debugln('GatherUnitReferences unable to FindUnitReferences in "',Code.Filename,'"');
+        if IgnoreErrors then
+          continue;
+        Result:=mrCancel;
+        exit;
+      end;
+      //debugln('GatherUnitReferences FindUnitReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
+
+      // add to tree
+      if ListOfPCodeXYPosition<>nil then begin
+        if TreeOfPCodeXYPosition=nil then
+          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
+        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
+                                              TreeOfPCodeXYPosition,true,false);
+      end;
+    end;
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+  end;
 end;
 
 function ReplaceUnitUse(OldFilename, OldUnitName, NewFilename, NewUnitName: string;

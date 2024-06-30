@@ -32,8 +32,11 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazFileCache, FileUtil, AvgLvlTree, CompOptsIntf,
-  CodeToolManager, DirectoryCacher, FileProcs;
+  LazFileUtils, LazFileCache, FileUtil, AvgLvlTree,
+  // CodeTools
+  CodeToolManager, DirectoryCacher, FileProcs,
+  // BuildIntf
+  CompOptsIntf;
 
 type
   TSPMaskType = (
@@ -61,6 +64,7 @@ type
     function FindPathDelim(Index: integer{starting at 1}): PChar;
   end;
 
+procedure CleanUpFileList(Files: TStringList);
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string;
                   DeleteDoubles: boolean = false; ExpandPaths: boolean = false): string;
@@ -121,6 +125,27 @@ function dbgs(t: TSPMaskType): string; overload;
 function dbgs(r: TSPFileMaskRelation): string; overload;
 
 implementation
+
+procedure CleanUpFileList(Files: TStringList);
+var
+  i: Integer;
+begin
+  // sort files
+  Files.Sort;
+  // remove doubles
+  i:=0;
+  while i<=Files.Count-2 do begin
+    while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
+      Files.Delete(i+1);
+    inc(i);
+  end;
+  // remove non files
+  for i:=Files.Count-1 downto 0 do
+    if ExtractFilename(Files[i])='' then begin
+      debugln(['Note: (lazarus) [CleanUpFileList] invalid file "',Files[i],'"']);
+      Files.Delete(i);
+    end;
+end;
 
 {-------------------------------------------------------------------------------
   function TrimSearchPath(const SearchPath, BaseDirectory: string): boolean;

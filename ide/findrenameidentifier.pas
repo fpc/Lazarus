@@ -41,10 +41,12 @@ uses
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
   IDEDialogs, InputHistory,
+  // IdeUtils
+  DialogProcs,
   // LazConfig
   TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
-  LazarusIDEStrConsts, MiscOptions, DialogProcs, SearchResultView, CodeHelp;
+  LazarusIDEStrConsts, MiscOptions, SearchResultView, CodeHelp;
 
 type
 
@@ -93,8 +95,6 @@ type
     property IsPrivate: boolean read FIsPrivate write SetIsPrivate;
   end;
 
-procedure CleanUpFileList(Files: TStringList);
-
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint;
   AllowRename: boolean; // allow user to disable/enable rename
@@ -107,9 +107,6 @@ function DoFindRenameIdentifier(
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   SearchInComments: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
-function GatherUnitReferences(Files: TStringList;
-  UnitCode: TCodeBuffer; SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -132,27 +129,6 @@ function GatherReferencesInFPDocFile(
 implementation
 
 {$R *.lfm}
-
-procedure CleanUpFileList(Files: TStringList);
-var
-  i: Integer;
-begin
-  // sort files
-  Files.Sort;
-  // remove doubles
-  i:=0;
-  while i<=Files.Count-2 do begin
-    while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
-      Files.Delete(i+1);
-    inc(i);
-  end;
-  // remove non files
-  for i:=Files.Count-1 downto 0 do
-    if ExtractFilename(Files[i])='' then begin
-      debugln(['Note: (lazarus) [FindRenameIdentifier.CleanUpFileList] invalid file "',Files[i],'"']);
-      Files.Delete(i);
-    end;
-end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint; AllowRename: boolean; SetRenameActive: boolean;
@@ -528,72 +504,6 @@ begin
     if Result<>mrOk then
       CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
     Cache.Free;
-  end;
-end;
-
-function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
-  SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
-var
-  ListOfPCodeXYPosition: TFPList;
-  LoadResult: TModalResult;
-  Code: TCodeBuffer;
-  i: Integer;
-begin
-  Result:=mrCancel;
-  ListOfPCodeXYPosition:=nil;
-  TreeOfPCodeXYPosition:=nil;
-  try
-    CleanUpFileList(Files);
-
-    Result:=mrOk;
-    // search in every file
-    for i:=0 to Files.Count-1 do begin
-      if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
-      if IgnoreMissingFiles then
-      begin
-        if FilenameIsAbsolute(Files[i]) then
-        begin
-          if not FileExistsCached(Files[i]) then continue;
-        end else begin
-          Code:=CodeToolBoss.LoadFile(Files[i],false,false);
-          if (Code=nil) then continue;
-        end;
-      end;
-      LoadResult:=
-          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
-      if LoadResult=mrAbort then begin
-        debugln('GatherUnitReferences unable to load "',Files[i],'"');
-        if IgnoreErrors then
-          continue;
-        Result:=mrCancel;
-        exit;
-      end;
-      if LoadResult<>mrOk then continue;
-
-      // search references
-      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-      if not CodeToolBoss.FindUnitReferences(
-        UnitCode, Code, not SearchInComments, ListOfPCodeXYPosition) then
-      begin
-        debugln('GatherUnitReferences unable to FindUnitReferences in "',Code.Filename,'"');
-        if IgnoreErrors then
-          continue;
-        Result:=mrCancel;
-        exit;
-      end;
-      //debugln('GatherUnitReferences FindUnitReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
-
-      // add to tree
-      if ListOfPCodeXYPosition<>nil then begin
-        if TreeOfPCodeXYPosition=nil then
-          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
-        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
-                                              TreeOfPCodeXYPosition,true,false);
-      end;
-    end;
-  finally
-    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
   end;
 end;
 
