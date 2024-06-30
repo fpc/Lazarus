@@ -1202,6 +1202,11 @@ derive it from this class.
 You can assign a action to a component by using the Object Inspector.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions. Some methods were redefined as virtual and changed to protected 
+visibility.
+</version>
 <seealso>
 <link id="TAction"/>
 </seealso>
@@ -1227,31 +1232,6 @@ You can assign a action to a component by using the Object Inspector.
 <element name="TCustomAction.FVisible"/>
 
 <!-- private -->
-<element name="TCustomAction.SetAutoCheck"/>
-<element name="TCustomAction.SetAutoCheck.Value"/>
-<element name="TCustomAction.SetCaption"/>
-<element name="TCustomAction.SetCaption.Value"/>
-<element name="TCustomAction.SetChecked"/>
-<element name="TCustomAction.SetChecked.Value"/>
-<element name="TCustomAction.SetEnabled"/>
-<element name="TCustomAction.SetEnabled.Value"/>
-<element name="TCustomAction.SetGroupIndex"/>
-<element name="TCustomAction.SetGroupIndex.Value"/>
-<element name="TCustomAction.SetHelpContext"/>
-<element name="TCustomAction.SetHelpContext.Value"/>
-<element name="TCustomAction.SetHelpKeyword"/>
-<element name="TCustomAction.SetHelpKeyword.Value"/>
-<element name="TCustomAction.SetHelpType"/>
-<element name="TCustomAction.SetHelpType.Value"/>
-<element name="TCustomAction.SetHint"/>
-<element name="TCustomAction.SetHint.Value"/>
-<element name="TCustomAction.SetImageIndex"/>
-<element name="TCustomAction.SetImageIndex.Value"/>
-
-<element name="TCustomAction.SetShortCut"/>
-<element name="TCustomAction.SetShortCut.Value"/>
-<element name="TCustomAction.SetVisible"/>
-<element name="TCustomAction.SetVisible.Value"/>
 <element name="TCustomAction.GetSecondaryShortCuts"/>
 <element name="TCustomAction.GetSecondaryShortCuts.Result"/>
 <element name="TCustomAction.SetSecondaryShortCuts"/>
@@ -1303,6 +1283,242 @@ the persistent class instance in Dest.
 <short>Persistent object where property values are stored.</short>
 </element>
 
+<element name="TCustomAction.HandleShortCut">
+<short>
+Returns <b>True</b> if the action is enabled and executed successfully.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomAction.HandleShortCut.Result">
+<short>
+<b>True</b> if the action is enabled and executed successfully.
+</short>
+</element>
+
+<element name="TCustomAction.SetAutoCheck">
+<short>
+  Sets the value for the AutoCheck property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.AutoCheck"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetAutoCheck.Value">
+<short>
+New value for the AutoCheck property.
+</short>
+</element>
+
+<element name="TCustomAction.SetCaption">
+<short>
+Sets the value for the Caption property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Caption"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetCaption.Value">
+<short>
+New value for the Caption property.
+</short>
+</element>
+
+<!-- TODO: Needs content from HERE. -->
+
+<element name="TCustomAction.SetChecked">
+<short>
+Sets the value for the Checked property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Checked"/>
+<link id="TCustomAction.Grayed"/>
+<link id="TCustomAction.GroupIndex"/>
+<link id="TContainedAction.ActionList"/>
+<link id="TActionLink"/>
+</seealso>
+</element>
+<element name="TCustomAction.SetChecked.Value">
+<short>
+New value for the Checked property.
+</short>
+</element>
+
+<element name="TCustomAction.SetEnabled">
+<short>
+Sets the value for the Enabled property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Enabled"/>
+<link id="TContainedAction.ActionList"/>
+<link id="TCustomActionList.State"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicaction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetEnabled.Value">
+<short>
+New value for the Enabled property.
+</short>
+</element>
+
+<element name="TCustomAction.SetGroupIndex">
+<short>
+Sets the value for the GroupIndex property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.GroupIndex"/>
+<link id="TCustomAction.Checked"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetGroupIndex.Value">
+<short>
+New value for the GroupIndex property.
+</short>
+</element>
+
+<element name="TCustomAction.SetHelpContext">
+<short>
+Sets the value for the HelpContext property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.HelpContext"/>
+<link id="TCustomAction.HelpKeyword"/>
+<link id="TCustomAction.HelpType"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetHelpContext.Value">
+<short>
+New value for the HelpContext property.
+</short>
+</element>
+
+<element name="TCustomAction.SetHelpKeyword">
+<short>
+Sets the value for the HelpKeyword property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.HelpKeyword"/>
+<link id="TCustomAction.HelpContext"/>
+<link id="TCustomAction.HelpType"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetHelpKeyword.Value">
+<short>
+New value for the HelpKeyword property.
+</short>
+</element>
+
+<element name="TCustomAction.SetHelpType">
+<short>
+Sets the value for the HelpType property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.HelpKeyword"/>
+<link id="TCustomAction.HelpContext"/>
+<link id="TCustomAction.HelpType"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetHelpType.Value">
+<short>
+New value for the HelpKeyword property.
+</short>
+</element>
+
+<element name="TCustomAction.SetHint">
+<short>
+Sets the value for the Hint property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Hint"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetHint.Value">
+<short>
+New value for the HelpType property.
+</short>
+</element>
+
+<element name="TCustomAction.SetImageIndex">
+<short>
+Sets the value for the ImageIndex property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.ImageIndex"/>
+<link id="TActionLink"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetImageIndex.Value">
+<short>
+New value for the HelpType property.
+</short>
+</element>
+
 <element name="TCustomAction.SetName">
 <short>Sets the value for the Name property.</short>
 <descr>
@@ -1315,24 +1531,58 @@ also assigned to the Caption property in the action when the number of
 control clients is 0.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; changed to protected visibility.
+</version>
 <seealso>
-<link id="#rtl.classes.TComponent">TComponent</link>
+<link id="TCustomAction.Caption"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+<link id="#rtl.classes.TComponent.Name">TComponent.Name</link>
+<link id="#rtl.classes.TComponentName">TComponentName</link>
 </seealso>
 </element>
 <element name="TCustomAction.SetName.Value">
 <short>New value for the Name property.</short>
 </element>
 
-<element name="TCustomAction.HandleShortCut">
+<element name="TCustomAction.SetShortCut">
 <short>
-Returns <b>True</b> if the action is enabled and executed successfully.
+Sets the value for the ShortCut property.
 </short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Shortcut"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
 </element>
-<element name="TCustomAction.HandleShortCut.Result">
+<element name="TCustomAction.SetShortCut.Value">
 <short>
-<b>True</b> if the action is enabled and executed successfully.
+New value for the ShortCut property.
+</short>
+</element>
+
+<element name="TCustomAction.SetVisible">
+<short>
+Sets the value for the Visible property.
+</short>
+<descr/>
+<version>
+Modified in LCL version 4.0 to improve compatibility with newer Delphi VCL 
+versions; redefined as virtual and changed to protected visibility.
+</version>
+<seealso>
+<link id="TCustomAction.Visible"/>
+<link id="#rtl.classes.TBasicAction">TBasicAction</link>
+</seealso>
+</element>
+<element name="TCustomAction.SetVisible.Value">
+<short>
+New value for the Visible property.
 </short>
 </element>
 
