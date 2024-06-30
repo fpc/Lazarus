@@ -806,6 +806,7 @@ begin
     fhscroll := allocScroller( self, r, avisible);
         fhscroll.setAutoresizingMask(NSViewWidthSizable);
     Result := fhscroll;
+    _manager.updateLayout;
   end;
 end;
 
@@ -829,6 +830,7 @@ begin
     else
       fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
     Result := fvscroll;
+    _manager.updateLayout;
   end;
 end;
 
@@ -1107,6 +1109,8 @@ procedure TCocoaScrollBar.setDoubleValue(newValue: double);
 var
   proportion: CGFloat;
 begin
+  if newValue < 0 then newValue:= 0;
+  if newValue > 1 then newValue:= 1;
   proportion:= self.knobProportion;
   _manager.onKnobValueUpdated( self, newValue, proportion );
   inherited;
@@ -1116,6 +1120,8 @@ procedure TCocoaScrollBar.setKnobProportion(newValue: CGFloat);
 var
   position: CGFloat;
 begin
+  if newValue < 0 then newValue:= 0;
+  if newValue > 1 then newValue:= 1;
   position:= self.doubleValue;
   _manager.onKnobValueUpdated( self, position, newValue );
   inherited;
@@ -1723,7 +1729,6 @@ var
 begin
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
-
   slotRect:= scroller.rectForPart(NSScrollerKnobSlot);
   if scrollBar.IsHorizontal then
     slotSize:= slotRect.size.width
@@ -1796,7 +1801,7 @@ end;
 function TCocoaScrollStyleManagerOverlay.isAvailableScrollBar(scroller: NSScroller
   ): Boolean;
 begin
-  Result:= Assigned(scroller) and (scroller.knobProportion<1);
+  Result:= Assigned(scroller) and (0<scroller.knobProportion) and (scroller.knobProportion<1);
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.showScrollBar(scroller: NSScroller);
