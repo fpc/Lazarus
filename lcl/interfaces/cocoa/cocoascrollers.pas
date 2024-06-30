@@ -31,6 +31,10 @@ uses
 
 type
   { TCocoaScrollView }
+  // TCocoaScrollView is based on NSScrollView with native Scroller.
+  // it requires the document to have the full size it claims, so it is usually
+  // suitable for components of limited size.
+  // it corresponds to components such as ListBox, ListView, ScrollBox, Form.
 
   TCocoaScrollView = objcclass(NSScrollView)
   public
@@ -67,11 +71,31 @@ type
     procedure applyScrollInfo(barFlag: Integer; const scrollInfo: TScrollInfo); message 'applyScrollInfo:barFlag:';
   end;
 
-  // it would be more appropriate to use Interface to define the interface of
-  // each component, but FreePascal's Interface is so weak that it can only be
-  // replaced by abstract classes here.
+  {
+    TCocoaManualScrollView is based on NSView without native Scroller.
+    it doesn't require the document to have the full size it claims, so it is
+    usually suitable for components of unlimited size.
+    it corresponds to components such as TreeView, Grid, SynEdit.
+
+    the following implements modern macOS scrollbars for TCocoaManualScrollView.
+    Legacy and Overlay style Scroller were implemented.
+
+    in the architecture design, it is mainly decomposed into four structures:
+    1. ScrollBar: the Scroll Info Modal, not related to a specific style
+    2. ScrollView: the Container, not related to a specific style
+    3. Manager: core component, called by ScrollBar and ScrollView.
+                currently ther are two implementations: Legacy and Overlay style.
+    4. Effect: animation effects, called by the Manager.
+               currently there are Alpha and Overlay Style.
+
+    it would be more appropriate to use Interface to define the interface of
+    each component, but FreePascal's Interface is so weak that it can only be
+    replaced by abstract classes here.
+  }
 
   { TCocoaScrollBarEffect }
+  // there are many animation effects, which are concentrated in TCocoaScrollBarEffect.
+  // currently there are Alpha and Overlay (DelayHidding/Expand) implementations.
 
   TCocoaScrollBarEffect = objcclass(NSObject)
   protected
@@ -79,32 +103,56 @@ type
   end;
 
   { TCocoaScrollBarStyleManager }
+  // manager for Scroller, with Legacy and Overlay style implementations
 
   TCocoaScrollBarStyleManager = class
+    // called by TCocoaScrollBar when the value changes.
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); virtual; abstract;
+
+    // draw the Knob, called by TCocoaScrollBar
     procedure onDrawKnob( scroller:NSScroller ); virtual; abstract;
+
+    // draw the KnobSlot, called by TCocoaScrollBar
     function onDrawKnobSlot( scroller:NSScroller; var slotRect: NSRect ):
       Boolean; virtual; abstract;
 
+    // called by TCocoaScrollBar after the mouse entered
     procedure onMouseEntered( scroller:NSScroller ); virtual; abstract;
+    // called by TCocoaScrollBar after the mouse exited
     procedure onMouseExited( scroller:NSScroller ); virtual; abstract;
 
+    // Create the corresponding Effect
     function createScrollBarEffect( scroller:NSScroller ):
       TCocoaScrollBarEffect; virtual; abstract;
+
+    // Make isAvailableScrollBar return Ture(Available)/False(not Available) if necessary
     procedure availScrollBar( scroller:NSScroller; available:Boolean ); virtual; abstract;
+    // Returns the Availability of the Scroller
+    // with Legacy Style, Availability means 'Shown/not Hidden'
+    // with Overlay Style, Availability means 'KnobProportion<1'
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; virtual; abstract;
+    // Show the Scroller if it can be made Available
     procedure showScrollBar( scroller:NSScroller ); virtual; abstract;
   end;
 
   TCocoaManualScrollView = objcclass;
 
   { TCocoaScrollStyleManager }
+  // manager for ScrollView, with Legacy and Overlay style implementations.
+  // TCocoaScrollStyleManager and TCocoaScrollBarStyleManager should be two
+  // independent interfaces, but due to the limitations of FreePascal mentioned
+  // earlier, only abstract classes can be used here, so they can only become
+  // an inheritance relationship.
+  // the existence of createForScrollBar() and createForScrollView()
+  // is a compromise in this situation.
 
   TCocoaScrollStyleManager = class(TCocoaScrollBarStyleManager)
   private
     _scrollView: TCocoaManualScrollView;
   public
+    // place the document, horizontal scroller, and vertical scroller
+    // in the appropriate positions
     procedure updateLayout; virtual; abstract;
   public
     constructor createForScrollBar;
