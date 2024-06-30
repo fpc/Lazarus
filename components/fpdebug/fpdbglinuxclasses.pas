@@ -21,9 +21,6 @@ uses
   SysUtils,
   BaseUnix,
   termio, fgl,
-  {$IFDEF USES_NEW_PROCESS} process331 in 'fcl-proc331/process331.pp',
-  {$ELSE} process,
-  {$ENDIF}
   Contnrs,
   StrUtils,
   Types,
