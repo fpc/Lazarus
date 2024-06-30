@@ -1550,7 +1550,9 @@ begin
 end;
 
 initialization
+  {$IFOPT T-}
   RegisterDebugger(TFPDServerDebugger);
+  {$ENDIF}
 
 end.
 

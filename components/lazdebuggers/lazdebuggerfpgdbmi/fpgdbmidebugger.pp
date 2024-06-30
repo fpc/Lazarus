@@ -1276,7 +1276,9 @@ begin
 end;
 
 initialization
+  {$IFOPT T-}
   RegisterDebugger(TFpGDBMIDebugger);
+  {$ENDIF}
 
   DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_ERRORS         := DebugLogger.FindOrRegisterLogGroup('DBG_ERRORS' {$IFDEF DBG_ERRORS} , True {$ENDIF} );

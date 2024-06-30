@@ -27,7 +27,6 @@ unit FpDebugDebugger;
 
 {$mode objfpc}{$H+}
 {$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
-{$TYPEDADDRESS on}
 {$ModeSwitch advancedrecords}
 
 interface
@@ -4984,7 +4983,9 @@ begin
 end;
 
 initialization
+  {$IFOPT T-}
   RegisterDebugger(TFpDebugDebugger);
+  {$ENDIF}
 
   DBG_VERBOSE     := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS    := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
