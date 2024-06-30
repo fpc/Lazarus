@@ -1530,6 +1530,76 @@ Inline variant of UTF8UpperCase.
 <short>Values to convert in the function.</short>
 </element>
 
+<element name="UTF8UpperCaseFast">
+<short>
+Gets the uppercase value for the specified text. Optimized to improve speed for ASCII content in the argument.
+</short>
+<descr>
+<p>
+<var>UTF8UpperCaseFast</var> examines the ordinal values for the characters in 
+<var>AText</var> to determine how the return value is derived. It is optimized 
+for ASCII content (byte values in the range 1..128). It converts individual 
+characters in the range ['a'..'z'] by subtracting 32 from their ordinal values.
+</p>
+<p>
+If a non-ASCII byte value is found in AText, the return value is derived by 
+calling UTF8UpperCase with the value in AText as an argument.
+</p>
+</descr>
+<version>
+Added in LazUtils version 4.0.
+</version>
+<seealso>
+<link id="UTF8UpperCase"/>
+<link id="UTF8LowerCaseFast"/>
+</seealso>
+</element>
+<element name="UTF8UpperCaseFast.Result">
+<short>
+Uppercase value for the specified text.
+</short>
+</element>
+<element name="UTF8UpperCaseFast.AText">
+<short>
+String with the content examined and converted to its uppercase representation.
+</short>
+</element>
+
+<element name="UTF8LowerCaseFast">
+<short>
+Gets the lowercase value for the specified text. Optimized to improve speed for ASCII content in the argument.
+</short>
+<descr>
+<p>
+<var>UTF8LowerCaseFast</var> examines the ordinal values for the characters in 
+<var>AText</var> to determine how the return value is derived. It is optimized 
+for ASCII content (byte values in the range 1..128). It converts individual 
+characters in the range ['A'..'Z'] by adding 32 to their ordinal values.
+</p>
+<p>
+If a non-ASCII byte value is found in AText, the return value is derived by 
+calling UTF8UpperCase with the value in AText as an argument. (n.b.)
+</p>
+</descr><version>
+Added in LazUtils version 4.0.
+</version>
+<seealso>
+<link id="UTF8UpperCase"/>
+<link id="UTF8UpperCaseFast"/>
+</seealso>
+</element>
+<element name="UTF8LowerCaseFast.Result">
+<short>
+Lowercase value for the specified text. (n.b. For UTF-8-encoded content the 
+result is actually converted to uppercase.)
+</short>
+</element>
+<element name="UTF8LowerCaseFast.AText">
+<short>
+String with the content examined and converted to its lowercase representation.
+</short>
+</element>
+
 <element name="UTF8SwapCase">
 <short>
 Provides a simplistic implementation of UTF8UpperCase and UTF8LowerCase.
