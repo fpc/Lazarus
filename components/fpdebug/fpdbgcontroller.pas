@@ -1,7 +1,6 @@
 unit FPDbgController;
 
 {$mode objfpc}{$H+}
-{$TYPEDADDRESS on}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 interface

@@ -255,7 +255,9 @@ begin
 end;
 
 initialization
+  {$IFOPT T-}
   RegisterDebugger(TFpRspRemoteDebugger);
+  {$ENDIF}
 
 end.
 
