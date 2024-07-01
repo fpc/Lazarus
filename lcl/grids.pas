@@ -8149,7 +8149,9 @@ begin
   NeedUpdate := FHSbVisible <> Ord(AVisible);
   if NeedUpdate then
     ScrollBarShow(SB_HORZ, aVisible);
+  {$if NOT defined(DARWIN)}  // on Cocoa, Overly Style ScrollBar always needs the latest data
   if aVisible or NeedUpdate then
+  {$endif}
     ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
 end;
 
@@ -8162,7 +8164,9 @@ begin
   {$endif}
   if FVSbVisible<>Ord(aVisible) then
     ScrollBarShow(SB_VERT, aVisible);
+  {$if NOT defined(DARWIN)}  // on Cocoa, Overly Style ScrollBar always needs the latest data
   if aVisible then
+  {$endif}
     ScrollbarRange(SB_VERT, aRange, aPage, aPos );
 end;
 
