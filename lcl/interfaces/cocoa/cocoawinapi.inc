@@ -1678,11 +1678,10 @@ begin
   begin
     mn := TCocoaManualScrollView(obj);
     case SBStyle of
-      SB_Vert: Result := mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
-      SB_Horz: Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden;
+      SB_Vert: Result := mn.hasVerticalScroller;
+      SB_Horz: Result := mn.hasHorizontalScroller;
     else
-      Result := mn.hasHorizontalScroller and not mn.horizontalScroller.isHidden
-                and mn.hasVerticalScroller and not mn.verticalScroller.isHidden;
+      Result := mn.hasHorizontalScroller and mn.hasVerticalScroller;
     end;
   end
   else
