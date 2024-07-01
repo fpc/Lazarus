@@ -340,6 +340,7 @@ type
     procedure mnuProjectInspectorClicked(Sender: TObject);
     procedure mnuAddToProjectClicked(Sender: TObject);
     procedure mnuRemoveFromProjectClicked(Sender: TObject);
+    procedure mnuRenameUnitsLowerCaseClicked(Sender: TObject);
     procedure mnuViewUnitsClicked(Sender: TObject);
     procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
@@ -2843,6 +2844,7 @@ begin
     itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
+    itmProjectRenameLowerCase.OnClick := @mnuRenameUnitsLowerCaseClicked;
     itmProjectViewUnits.OnClick := @mnuViewUnitsClicked;
     itmProjectViewForms.OnClick := @mnuViewFormsClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
@@ -4437,8 +4439,23 @@ begin
 end;
 
 procedure TMainIDE.mnuRemoveFromProjectClicked(Sender: TObject);
+var
+  Selector: TRemoveFilesSelector;
 begin
-  RemoveFromProjectDialog;
+  Selector := TRemoveFilesSelector.Create;
+  Selector.SelectAndRun;
+  Selector.Free;
+  //RemoveFromProjectDialog;
+end;
+
+procedure TMainIDE.mnuRenameUnitsLowerCaseClicked(Sender: TObject);
+var
+  Selector: TRenameFilesSelector;
+begin
+  Selector := TRenameFilesSelector.Create;
+  Selector.SelectAndRun;
+  Selector.Free;
+  //RenameUnitsLowerCaseDialog;
 end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
@@ -12811,16 +12828,11 @@ end;
 
 function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult;
 var
-  UnitInfos: TFPList;
+  Selector: TRemoveFilesSelector;
 begin
-  if not AnUnitInfo.IsPartOfProject then exit(mrOk);
-  UnitInfos:=TFPList.Create;
-  try
-    UnitInfos.Add(AnUnitInfo);
-    Result:=RemoveFilesFromProject(UnitInfos);
-  finally
-    UnitInfos.Free;
-  end;
+  Selector := TRemoveFilesSelector.Create;
+  Result := Selector.RunOneUnit(AnUnitInfo);
+  Selector.Free;
 end;
 
 procedure TMainIDE.CompilerOptionsDialogTest(Sender: TObject);

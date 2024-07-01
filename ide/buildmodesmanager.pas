@@ -296,7 +296,7 @@ begin
 
       // Find build modes that have unneeded search paths
       ResolvedDir:=bm.CompilerOptions.ParsedOpts.DoParseOption(CurDir,pcos,false);
-      if (ResolvedDir<>'')
+      if (ResolvedDir<>'') and (ResolvedDir<>ChompPathDelim(Project1.Directory))
       and (SearchDirectoryInSearchPath(ObsoletePaths,ResolvedDir)>0) then begin
         // Ask confirmation once for each path.
         // In fact there should be only one path after one source file is removed.

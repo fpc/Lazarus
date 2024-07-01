@@ -462,6 +462,7 @@ resourcestring
   lisKMViewProjectSource = 'View Project Source';
   lisMenuAddToProject = 'Add Editor File to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
+  lisMenuRenameLowerCase = 'Rename Units to LowerCase ...';
   lisMenuViewProjectSource = '&View Project Source';
   lisMenuProjectOptions = 'Project Options ...';
 

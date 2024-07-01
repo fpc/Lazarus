@@ -286,6 +286,7 @@ type
       //itmProjectAddRemoveSection: TIDEMenuSection;
         itmProjectAddTo: TIDEMenuCommand;
         itmProjectRemoveFrom: TIDEMenuCommand;
+        itmProjectRenameLowerCase: TIDEMenuCommand;
         itmProjectViewUnits: TIDEMenuCommand;
         itmProjectViewForms: TIDEMenuCommand;
         itmProjectViewSource: TIDEMenuCommand;
