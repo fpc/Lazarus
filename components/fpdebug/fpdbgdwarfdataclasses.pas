@@ -2933,7 +2933,7 @@ begin
   if not HasValidScope then
     exit;
   s1 := UTF8UpperCaseFast(AName);
-  s2 := UTF8LowerCase(AName); // Should this be UTF8LowerCaseFast(AName) ?
+  s2 := UTF8LowerCaseFast(AName);
   while HasValidScope do begin
     PrepareAbbrev;
     if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
