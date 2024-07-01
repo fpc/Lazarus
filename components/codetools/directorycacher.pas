@@ -933,20 +933,16 @@ end;
 
 constructor TCTDirectoryCache.Create(const TheDirectory: string;
   ThePool: TCTDirectoryCachePool);
-  
-  procedure RaiseDirNotAbsolute;
-  begin
-    raise Exception.Create('directory not absolute "'+FDirectory+'"');
-  end;
-  
 begin
   FDirectory:=TrimFilename(TheDirectory);
   if FDirectory='.' then
     FDirectory:=''
   else
     FDirectory:=AppendPathDelim(FDirectory);
-  if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
-    RaiseDirNotAbsolute;
+  // A non-existent unit name is not absolute, but the compiler may accept it.
+  //  eg. 'process331 in fcl-proc331/'  Do not raise exception then.
+  //if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
+  //  raise Exception.Create('directory not absolute "'+FDirectory+'"');
   FListing:=TCTDirectoryListing.Create;
   FPool:=ThePool;
   FRefCount:=1;
