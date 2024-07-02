@@ -1413,7 +1413,7 @@ msgstr "添加...(&A)"
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 #, fuzzy
 #| msgid "Add more resolutions ..."
-msgid "Add image from multiple resolutions ..."
+msgid "Add image with multiple resolutions ..."
 msgstr "添加更多分辨率(resolution)..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
@@ -1424,7 +1424,7 @@ msgstr "新分辨率(resolution)..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
+msgid "Add image(s) with single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1546,11 +1546,11 @@ msgstr "替换(&R) ..."
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 #, fuzzy
 #| msgid "Replace all resolutions ..."
-msgid "Replace image by all resolutions ..."
+msgid "Replace all resolutions of an image ..."
 msgstr "替换所有分辨率(resolution)..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
+msgid "Replace single resolution of an image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtresolutionsbtn

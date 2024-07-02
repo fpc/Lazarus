@@ -1416,7 +1416,7 @@ msgstr "&Lisää ..."
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 #, fuzzy
 #| msgid "Add more resolutions ..."
-msgid "Add image from multiple resolutions ..."
+msgid "Add image with multiple resolutions ..."
 msgstr "Lisää tarkkuuksia ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
@@ -1427,7 +1427,7 @@ msgstr "Uusi tarkkuus ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
+msgid "Add image(s) with single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1551,11 +1551,11 @@ msgstr "&Korvaa ..."
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 #, fuzzy
 #| msgid "Replace all resolutions ..."
-msgid "Replace image by all resolutions ..."
+msgid "Replace all resolutions of an image ..."
 msgstr "Korvaa kaikki tarkkuudet ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
+msgid "Replace single resolution of an image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtresolutionsbtn

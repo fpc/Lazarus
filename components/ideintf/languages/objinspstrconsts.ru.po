@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-26 16:42+0300\n"
+"PO-Revision-Date: 2024-07-02 16:35+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1403,38 +1403,30 @@ msgid "Sections Editor ..."
 msgstr "Редактор секций..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "&Add ..."
 msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
-msgstr "&Добавить ..."
+msgstr "Добавить"
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-#, fuzzy
-#| msgid "Add more resolutions ..."
-msgid "Add image from multiple resolutions ..."
-msgstr "Добавить других разрешений ..."
+msgid "Add image with multiple resolutions ..."
+msgstr "Добавить изображение с несколькими разрешениями ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-#, fuzzy
-#| msgid "New resolution ..."
 msgid "Register new resolution (image size) ..."
-msgstr "Новое разрешение ..."
+msgstr "Зарегистрировать новое разрешение (размер изображения) ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
-msgstr ""
+msgid "Add image(s) with single resolution..."
+msgstr "Добавить изображения с единственным разрешением ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Добавить с разрезанием ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-#, fuzzy
-#| msgid "Adding sliced icons is not supported."
 msgid "Adding sliced images is not supported."
-msgstr "Добавление значков с разрезанием не поддерживается."
+msgstr "Добавление изображений с разрезанием не поддерживается."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1462,34 +1454,26 @@ msgid "Center"
 msgstr "По центру"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear list"
-msgstr "&Очистить"
+msgstr "&Очистить список"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Обрезать"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete image"
-msgstr "&Удалить"
+msgstr "&Удалить изображение"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-#, fuzzy
-#| msgid "Delete resolution ..."
 msgid "Delete resolution (image size) ..."
-msgstr "Удалить разрешение ..."
+msgstr "Удалить разрешение (размер изображения) ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-#, fuzzy
-#| msgid "Select the resolution to delete."
 msgid "Select the resolution (image size) to delete."
-msgstr "Выберите разрешение для удаления."
+msgstr "Выберите разрешение (размер изображения) для удаления."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1500,8 +1484,6 @@ msgid "Selected Image"
 msgstr "Выбранное изображение"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
-#, fuzzy
-#| msgid "Image width of the new resolution:"
 msgid "Image width of the new resolution:"
 msgstr "Ширина изображения в новом разрешении:"
 
@@ -1528,10 +1510,8 @@ msgid "New Image"
 msgstr "Новое изображение"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-#, fuzzy
-#| msgid "Paste from clipboard"
 msgid "Paste image from clipboard"
-msgstr "Вставить из буфера обмена"
+msgstr "Вставить изображение из буфера обмена"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1539,44 +1519,35 @@ msgstr "Прозрачный цвет:"
 
 #: objinspstrconsts.sccsiledtremove
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts.sccsiledtreplace
-#, fuzzy
-#| msgid "&Replace ..."
 msgctxt "objinspstrconsts.sccsiledtreplace"
 msgid "Replace"
-msgstr "&Заменить ..."
+msgstr "Заменить"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-#, fuzzy
-#| msgid "Replace all resolutions ..."
-msgid "Replace image by all resolutions ..."
-msgstr "Заменить все разрешения ..."
+msgid "Replace all resolutions of an image ..."
+msgstr "Заменить все разрешения изображения ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
-msgstr ""
+msgid "Replace single resolution of an image ..."
+msgstr "Заменить единственное разрешение изображения ..."
 
 #: objinspstrconsts.sccsiledtresolutionsbtn
 msgid "Resolutions"
-msgstr ""
+msgstr "Разрешения"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save image ..."
-msgstr "&Сохранить ..."
+msgstr "&Сохранить изображение ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All ..."
 msgid "Save all ..."
 msgstr "Сохранить все ..."
 
 #: objinspstrconsts.sccsiledtsavebtn
-#, fuzzy
 msgctxt "objinspstrconsts.sccsiledtsavebtn"
 msgid "Save"
 msgstr "Сохранить"

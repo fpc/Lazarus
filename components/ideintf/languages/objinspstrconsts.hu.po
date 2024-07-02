@@ -1416,7 +1416,7 @@ msgstr "Hozzá&adás ..."
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 #, fuzzy
 #| msgid "Add more resolutions ..."
-msgid "Add image from multiple resolutions ..."
+msgid "Add image with multiple resolutions ..."
 msgstr "További felbontások hozzáadása ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
@@ -1427,7 +1427,7 @@ msgstr "Új felbontás ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
+msgid "Add image(s) with single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1553,11 +1553,11 @@ msgstr "Csere ..."
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 #, fuzzy
 #| msgid "Replace all resolutions ..."
-msgid "Replace image by all resolutions ..."
+msgid "Replace all resolutions of an image ..."
 msgstr "Az összes felbontás cseréléje ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
+msgid "Replace single resolution of an image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtresolutionsbtn

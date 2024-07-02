@@ -1399,7 +1399,7 @@ msgid "Add"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add image from multiple resolutions ..."
+msgid "Add image with multiple resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddnewresolution
@@ -1408,7 +1408,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
+msgid "Add image(s) with single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1518,11 +1518,11 @@ msgid "Replace"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace image by all resolutions ..."
+msgid "Replace all resolutions of an image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
+msgid "Replace single resolution of an image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtresolutionsbtn

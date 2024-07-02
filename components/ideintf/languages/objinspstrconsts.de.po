@@ -1409,7 +1409,9 @@ msgid "Add"
 msgstr "Hinzufügen"
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add image from multiple resolutions ..."
+#, fuzzy
+#| msgid "Add image from multiple resolutions ..."
+msgid "Add image with multiple resolutions ..."
 msgstr "Bild aus mehreren Auflösungen hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddnewresolution
@@ -1417,8 +1419,10 @@ msgid "Register new resolution (image size) ..."
 msgstr "Neue Auflösung (Bild-Größe) registrieren ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
+#, fuzzy
+#| msgid "Add image(s) from single resolution..."
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
-msgid "Add image(s) from single resolution..."
+msgid "Add image(s) with single resolution..."
 msgstr "Bild(er) aus einzelner Auflösung hinzufügen ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1528,11 +1532,15 @@ msgid "Replace"
 msgstr "Ersetzen"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace image by all resolutions ..."
+#, fuzzy
+#| msgid "Replace image by all resolutions ..."
+msgid "Replace all resolutions of an image ..."
 msgstr "Bild durch alle Auflösungen ersetzen …"
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-msgid "Replace image by appropriate resolution ..."
+#, fuzzy
+#| msgid "Replace image by appropriate resolution ..."
+msgid "Replace single resolution of an image ..."
 msgstr "Bild durch passende Auflösung ersetzen ..."
 
 #: objinspstrconsts.sccsiledtresolutionsbtn
@@ -1897,3 +1905,4 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
+
