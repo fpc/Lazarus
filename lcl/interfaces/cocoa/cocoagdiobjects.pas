@@ -1436,10 +1436,12 @@ begin
   FBkBrush.Free;
 
   if Assigned(ctx) then begin
-    if Assigned(CGContext()) and Flipped then
+    if Clipped then
+      CGContextRestoreGState(CGContext());
+    if Flipped then
       CGContextRestoreGState(CGContext());
     ctx.release;
-    end;
+  end;
   if Assigned(boxview) then boxview.release;
   inherited Destroy;
 end;
