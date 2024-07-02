@@ -1433,6 +1433,11 @@ end;
 
 procedure TCocoaScrollBarEffectOverlay.setDelayHidingTimer;
 begin
+  if Assigned(self.expandTimer) then begin
+    self.expandTimer.invalidate;
+    self.expandTimer:= nil;
+  end;
+
   if Assigned(self.delayHidingTimer) then
     self.delayHidingTimer.invalidate;
 
