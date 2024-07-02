@@ -1249,6 +1249,7 @@ msgid "&Replace"
 msgstr "&Değiştir"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "Değiştir"
 
@@ -1402,23 +1403,37 @@ msgid "Sections Editor ..."
 msgstr "Bölüm Editörü ..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
+#, fuzzy
+#| msgid "&Add ..."
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
 msgstr "&Ekle ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
+#, fuzzy
+#| msgid "Add more resolutions ..."
+msgid "Add image from multiple resolutions ..."
 msgstr "Daha fazla çözünürlük ekle ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
+#, fuzzy
+#| msgid "New resolution ..."
+msgid "Register new resolution (image size) ..."
 msgstr "Yeni çözünürlük ..."
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Dilim ekle ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
+#, fuzzy
+#| msgid "Adding sliced icons is not supported."
+msgid "Adding sliced images is not supported."
 msgstr "Dilimlenmiş simgeler ekleme desteklenmez."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1447,8 +1462,10 @@ msgid "Center"
 msgstr "Ortala"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
+msgid "&Clear list"
 msgstr "&Temizle"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1456,16 +1473,22 @@ msgid "Crop"
 msgstr "Kırp"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
+msgid "&Delete image"
 msgstr "&Sil"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
+#, fuzzy
+#| msgid "Delete resolution ..."
+msgid "Delete resolution (image size) ..."
 msgstr "Çözünürlüğü sil...."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
+#, fuzzy
+#| msgid "Select the resolution to delete."
+msgid "Select the resolution (image size) to delete."
 msgstr "Silinecek çözünürlüğü seçin."
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1477,6 +1500,8 @@ msgid "Selected Image"
 msgstr "Seçilen Resim"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
+#, fuzzy
+#| msgid "Image width of the new resolution:"
 msgid "Image width of the new resolution:"
 msgstr "Yeni çözünürlüğün görüntü genişliği:"
 
@@ -1503,29 +1528,56 @@ msgid "New Image"
 msgstr "Yeni resim"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
+msgid "Paste image from clipboard"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Transparent Renk:"
 
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
+#, fuzzy
+#| msgid "&Replace ..."
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
 msgstr "&Değiştir ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
+#, fuzzy
+#| msgid "Replace all resolutions ..."
+msgid "Replace image by all resolutions ..."
 msgstr "Tüm çözünürlükleri değiştir ..."
 
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
+msgid "&Save image ..."
 msgstr "&Kaydet.."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
+#, fuzzy
+#| msgid "Save All ..."
+msgid "Save all ..."
 msgstr "Hepsini kaydet.."
+
+#: objinspstrconsts.sccsiledtsavebtn
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "Kaydet"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"

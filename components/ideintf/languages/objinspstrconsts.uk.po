@@ -1252,6 +1252,7 @@ msgid "&Replace"
 msgstr "За&мінити"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "Замінити"
 
@@ -1405,23 +1406,37 @@ msgid "Sections Editor ..."
 msgstr "Редактор секцій ..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
+#, fuzzy
+#| msgid "&Add ..."
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
 msgstr "&Додати ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
+#, fuzzy
+#| msgid "Add more resolutions ..."
+msgid "Add image from multiple resolutions ..."
 msgstr "Додати більше роздільностей ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
+#, fuzzy
+#| msgid "New resolution ..."
+msgid "Register new resolution (image size) ..."
 msgstr "Нова роздільність ..."
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Додати нарізане ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
+#, fuzzy
+#| msgid "Adding sliced icons is not supported."
+msgid "Adding sliced images is not supported."
 msgstr "Додавання нарізаних піктограм не підтримується."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1450,8 +1465,10 @@ msgid "Center"
 msgstr "Центр"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
+msgid "&Clear list"
 msgstr "&Очистити"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1459,16 +1476,22 @@ msgid "Crop"
 msgstr "Обрізати"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
+msgid "&Delete image"
 msgstr "Ви&далити"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
+#, fuzzy
+#| msgid "Delete resolution ..."
+msgid "Delete resolution (image size) ..."
 msgstr "Видалити роздільність ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
+#, fuzzy
+#| msgid "Select the resolution to delete."
+msgid "Select the resolution (image size) to delete."
 msgstr "Виберіть роздільність для видалення."
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1480,6 +1503,8 @@ msgid "Selected Image"
 msgstr "Вибране зображення"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
+#, fuzzy
+#| msgid "Image width of the new resolution:"
 msgid "Image width of the new resolution:"
 msgstr "Ширина зображення з новою роздільністю:"
 
@@ -1506,29 +1531,56 @@ msgid "New Image"
 msgstr "Нове зображення"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
+msgid "Paste image from clipboard"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Прозорий колір:"
 
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
+#, fuzzy
+#| msgid "&Replace ..."
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
 msgstr "За&мінити ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
+#, fuzzy
+#| msgid "Replace all resolutions ..."
+msgid "Replace image by all resolutions ..."
 msgstr "Замінити всі роздільності ..."
 
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
+msgid "&Save image ..."
 msgstr "&Зберегти ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
+#, fuzzy
+#| msgid "Save All ..."
+msgid "Save all ..."
 msgstr "Зберегти все ..."
+
+#: objinspstrconsts.sccsiledtsavebtn
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "Зберегти"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"

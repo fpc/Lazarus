@@ -1255,6 +1255,7 @@ msgid "&Replace"
 msgstr "&Reemplazar"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "Reemplazar"
 
@@ -1408,15 +1409,23 @@ msgid "Sections Editor ..."
 msgstr "Editor de secciones ..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
+#, fuzzy
+#| msgid "&Add ..."
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
 msgstr "Añadir ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
+msgid "Add image from multiple resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
+msgid "Register new resolution (image size) ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1424,7 +1433,7 @@ msgid "Add sliced ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
+msgid "Adding sliced images is not supported."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1453,8 +1462,10 @@ msgid "Center"
 msgstr "Centrar"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
+msgid "&Clear list"
 msgstr "Limpiar"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1462,16 +1473,18 @@ msgid "Crop"
 msgstr "Recortar"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
+msgid "&Delete image"
 msgstr "Suprimir"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
+msgid "Delete resolution (image size) ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
+msgid "Select the resolution (image size) to delete."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1509,29 +1522,53 @@ msgid "New Image"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
+msgid "Paste image from clipboard"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Color transparente:"
 
-#: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
 msgstr ""
 
+#: objinspstrconsts.sccsiledtreplace
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
+msgstr "Reemplazar"
+
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
+msgid "Replace image by all resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
+msgid "&Save image ..."
 msgstr "Guardar ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
+#, fuzzy
+#| msgid "Save All ..."
+msgid "Save all ..."
 msgstr "Guardar Todo ..."
+
+#: objinspstrconsts.sccsiledtsavebtn
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "Guardar"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"

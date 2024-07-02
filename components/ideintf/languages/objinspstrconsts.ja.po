@@ -1259,6 +1259,7 @@ msgid "&Replace"
 msgstr "置換(&R)"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "置換"
 
@@ -1416,15 +1417,23 @@ msgid "Sections Editor ..."
 msgstr "Sections エディタ ..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
+#, fuzzy
+#| msgid "&Add ..."
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
 msgstr "追加(&A) ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
+msgid "Add image from multiple resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
+msgid "Register new resolution (image size) ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
@@ -1432,7 +1441,7 @@ msgid "Add sliced ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
+msgid "Adding sliced images is not supported."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1461,8 +1470,10 @@ msgid "Center"
 msgstr "中央"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
+msgid "&Clear list"
 msgstr "クリア(全消去)(&C)"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1470,16 +1481,18 @@ msgid "Crop"
 msgstr "トリミング"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
+msgid "&Delete image"
 msgstr "削除(&D)"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
+msgid "Delete resolution (image size) ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
+msgid "Select the resolution (image size) to delete."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1517,29 +1530,53 @@ msgid "New Image"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
+msgid "Paste image from clipboard"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "透明色"
 
-#: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
 msgstr ""
 
+#: objinspstrconsts.sccsiledtreplace
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
+msgstr "置換"
+
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
+msgid "Replace image by all resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
+msgid "&Save image ..."
 msgstr "保存(&S) ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
+#, fuzzy
+#| msgid "Save All ..."
+msgid "Save all ..."
 msgstr "すべて保存 ..."
+
+#: objinspstrconsts.sccsiledtsavebtn
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "保存"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"

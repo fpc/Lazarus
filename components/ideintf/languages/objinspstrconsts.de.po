@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-25 16:30+0200\n"
+"PO-Revision-Date: 2024-07-02 13:08+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -172,10 +172,8 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "Prüfe Dataset-Einstellungen"
+msgstr "Prüfe Dataset-Einstellungen."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -312,39 +310,39 @@ msgstr "Wert setzen"
 
 #: objinspstrconsts.lrsbufdsfilters
 msgid "XML data files|*.xml;Binary data files|*.dat"
-msgstr ""
+msgstr "XML-Dateien|*.xml|Binär-Dateien|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "Daten aus anderer Datenmenge kopieren"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "Datenmenge erzeugen"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "Datenmenge ist bereits aktive. Zuerst schließen"
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "Daten aus Datei laden"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr ""
+msgstr "Keine Datenmenge zum Kopieren verfügbar"
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr ""
+msgstr "Datei auswählen zum Speichern der Daten"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "Daten in Datei speichern"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr ""
+msgstr "Datei auswählen, deren Daten in die Datenmenge geladen werden sollen"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -598,7 +596,7 @@ msgstr "Fehler beim Laden des Bilds \"%s\":%s%s"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "Fehler beim Lesen der Datei %s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -640,7 +638,7 @@ msgstr "Inkompatible Methode"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "Eine Gleitkomma-Eigenschaft zur Entwurfszeit auf +/- Unendlich zu setzen, wird nicht unterstützt"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -648,7 +646,7 @@ msgstr "Eingabemaske:"
 
 #: objinspstrconsts.oisinputmaskeditor
 msgid "Input Mask Editor"
-msgstr ""
+msgstr "Editor für Eingabemasken"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
@@ -1252,6 +1250,7 @@ msgid "&Replace"
 msgstr "&Ersetzen"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "Ersetzen"
 
@@ -1405,28 +1404,34 @@ msgid "Sections Editor ..."
 msgstr "Sections-Editor .."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
-msgstr "Hinzufügen …"
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
+msgstr "Hinzufügen"
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
-msgstr "Mehrere Größen hinzufügen …"
+msgid "Add image from multiple resolutions ..."
+msgstr "Bild aus mehreren Auflösungen hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
-msgstr "Neue Größe/Auflösung ..."
+msgid "Register new resolution (image size) ..."
+msgstr "Neue Auflösung (Bild-Größe) registrieren ..."
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
+msgstr "Bild(er) aus einzelner Auflösung hinzufügen ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Zerteilen und hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
-msgstr "Zerteilen eines Icons wird nicht unterstützt."
+msgid "Adding sliced images is not supported."
+msgstr "Zerteilen eines Bildes wird nicht unterstützt."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
-msgstr "Justierung"
+msgstr "Anpassung"
 
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
@@ -1435,7 +1440,7 @@ msgstr "Zuweisen"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr "Die Standardauflösung kann nicht gelöscht werden."
+msgstr "Die Standard-Auflösung kann nicht gelöscht werden."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
@@ -1451,8 +1456,8 @@ msgstr "Zentriert"
 
 #: objinspstrconsts.sccsiledtclear
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
-msgstr "Leeren"
+msgid "&Clear list"
+msgstr "Ganze Liste löschen"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
@@ -1460,16 +1465,16 @@ msgstr "Ausschneiden"
 
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
-msgstr "Löschen"
+msgid "&Delete image"
+msgstr "Bild löschen"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
-msgstr "Größe/Auflösung löschen ..."
+msgid "Delete resolution (image size) ..."
+msgstr "Auflösung (Bild-Größe) löschen ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
-msgstr "Auflösung auswählen, die gelöscht werden soll."
+msgid "Select the resolution (image size) to delete."
+msgstr "Auflösung (Bild-Größe) auswählen, die gelöscht werden soll."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1481,17 +1486,17 @@ msgstr "Ausgewähltes Bild"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr "Bild-Breite für die neue Auflösung:"
+msgstr "Breite der Bilder für die neue Auflösung:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Nach unten bewegen"
+msgstr "Nach unten"
 
 #: objinspstrconsts.sccsiledtmoveup
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Nach oben bewegen"
+msgstr "Nach oben"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1506,29 +1511,47 @@ msgid "New Image"
 msgstr "Neues Bild"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
-msgstr "Einfügen aus Zwischenablage"
+msgid "Paste image from clipboard"
+msgstr "Bild aus Zwischenablage hinzufügen"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Transparente Farbe:"
 
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
+msgstr "Entfernen"
+
 #: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
-msgstr "E&rsetzen ..."
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
+msgstr "Ersetzen"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
-msgstr "Alle Größen ersetzen …"
+msgid "Replace image by all resolutions ..."
+msgstr "Bild durch alle Auflösungen ersetzen …"
+
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr "Bild durch passende Auflösung ersetzen ..."
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
+msgstr "Auflösungen"
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
-msgstr "&Sichern ..."
+msgid "&Save image ..."
+msgstr "Bild speichern ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
-msgstr "Alle sichern ..."
+msgid "Save all ..."
+msgstr "Alle speichern ..."
+
+#: objinspstrconsts.sccsiledtsavebtn
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "Speichern"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1644,8 +1667,6 @@ msgid "Delete column #%d?"
 msgstr "Spalte Nr. %d löschen?"
 
 #: objinspstrconsts.sccssgedtdelrow
-#, fuzzy
-#| msgid "Delete Row"
 msgid "Delete row"
 msgstr "Zeile löschen"
 
@@ -1803,14 +1824,11 @@ msgid "Open"
 msgstr "Öffnen"
 
 #: objinspstrconsts.sccstredtrename
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtrename"
 msgid "Rename"
 msgstr "Umbenennen"
 
 #: objinspstrconsts.sccstredtsave
-#, fuzzy
-#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save to file"
 msgstr "Sichern"
@@ -1879,4 +1897,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

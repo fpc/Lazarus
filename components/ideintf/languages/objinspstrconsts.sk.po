@@ -1260,6 +1260,7 @@ msgid "&Replace"
 msgstr "&Nahradiť"
 
 #: objinspstrconsts.oistdactsearchreplacehint
+msgctxt "objinspstrconsts.oistdactsearchreplacehint"
 msgid "Replace"
 msgstr "Nahradiť"
 
@@ -1416,23 +1417,35 @@ msgid "Sections Editor ..."
 msgstr "Editor sekcií .."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "&Add ..."
+#, fuzzy
+#| msgid "&Add ..."
+msgctxt "objinspstrconsts.sccsiledtadd"
+msgid "Add"
 msgstr "Pridať..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-msgid "Add more resolutions ..."
+#, fuzzy
+#| msgid "Add more resolutions ..."
+msgid "Add image from multiple resolutions ..."
 msgstr "Pridať ďalšie rozlíšenia ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-msgid "New resolution ..."
+#, fuzzy
+#| msgid "New resolution ..."
+msgid "Register new resolution (image size) ..."
 msgstr "Nové rozlíšenie ..."
+
+#: objinspstrconsts.sccsiledtaddsingleresolution
+msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
+msgid "Add image(s) from single resolution..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-msgid "Adding sliced icons is not supported."
+msgid "Adding sliced images is not supported."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1461,8 +1474,10 @@ msgid "Center"
 msgstr "Vystredniť"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "&Clear"
+msgid "&Clear list"
 msgstr "Vyčistiť"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1470,16 +1485,22 @@ msgid "Crop"
 msgstr "Orezať"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "&Delete"
+msgid "&Delete image"
 msgstr "&Zmazať"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-msgid "Delete resolution ..."
+#, fuzzy
+#| msgid "Delete resolution ..."
+msgid "Delete resolution (image size) ..."
 msgstr "Zmazať rozlíšenie ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-msgid "Select the resolution to delete."
+#, fuzzy
+#| msgid "Select the resolution to delete."
+msgid "Select the resolution (image size) to delete."
 msgstr "Vyberte rozlíšenie, ktoré chcete zmazať."
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1517,29 +1538,56 @@ msgid "New Image"
 msgstr "Nový obrázok"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
-msgid "Paste from clipboard"
+msgid "Paste image from clipboard"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
 msgstr "Transparentná farba:"
 
+#: objinspstrconsts.sccsiledtremove
+msgid "Remove"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtreplace
-msgid "&Replace ..."
+#, fuzzy
+#| msgid "&Replace ..."
+msgctxt "objinspstrconsts.sccsiledtreplace"
+msgid "Replace"
 msgstr "Nahradiť ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-msgid "Replace all resolutions ..."
+#, fuzzy
+#| msgid "Replace all resolutions ..."
+msgid "Replace image by all resolutions ..."
 msgstr "Nahradiť všetky rozlíšenia ..."
 
+#: objinspstrconsts.sccsiledtreplacesingleresolution
+msgid "Replace image by appropriate resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtresolutionsbtn
+msgid "Resolutions"
+msgstr ""
+
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "&Save ..."
+msgid "&Save image ..."
 msgstr "Uložiť ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All ..."
+#, fuzzy
+#| msgid "Save All ..."
+msgid "Save all ..."
 msgstr "Uložiť všetko ..."
+
+#: objinspstrconsts.sccsiledtsavebtn
+#, fuzzy
+msgctxt "objinspstrconsts.sccsiledtsavebtn"
+msgid "Save"
+msgstr "Uložiť"
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
