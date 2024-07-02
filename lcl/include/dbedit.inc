@@ -137,7 +137,7 @@ begin
     VK_OEM_1..VK_OEM_3,
     VK_OEM_4..VK_OEM_8:
       begin
-        if not FDatalink.Edit then
+        if (FDataLink.Field <> nil) and (not FDatalink.Edit) then
           Key:= 0;
       end;
 {$ENDIF}
