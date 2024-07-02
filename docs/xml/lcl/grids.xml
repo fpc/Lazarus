@@ -16300,19 +16300,27 @@ position.
 </short>
 <descr>
 <p>
-<var>UpdateHorzScrollBar</var> calls <var>ScrollBarShow</var> to updated the 
+<var>UpdateHorzScrollBar</var> calls <var>ScrollBarShow</var> to update the 
 scroll bar visibility when it differs from the value in <var>aVisible</var>. 
-The <var>ScrollBarRange</var> method is called to apply the values in ARange, 
-APage, and APos to the horizontal scroll bar for the control. No actions are 
-performed if the visibility has not been changed and the scroll bar is not 
-visible.
+The <var>ScrollBarRange</var> method is called to apply the values in the 
+ARange, APage, and APos arguments to the horizontal scroll bar for the control. 
+</p>
+<p>
+The scroll bar range is not updated if the scroll bar visibility has not been 
+changed or if the scroll bar is not visible. For the Darwin platform, 
+ScrollBarRange is always called - regardless of visibility; overlay-style 
+scroll bars on macOS require the latest range, page, and position values.
 </p>
 <p>
 UpdateHorzScrollBar is called from the CalcScrollbarsRange method when the 
 visible area in the grid is scrolled.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.ScrollBarShow"/>
+<link id="TCustomGrid.ScrollBarRange"/>
+<link id="TCustomGrid.ScrollBarIsVisible"/>
+</seealso>
 </element>
 <element name="TCustomGrid.UpdateHorzScrollBar.AVisible">
 <short><b>True</b> if the scroll bar is visible.</short>
@@ -16368,19 +16376,27 @@ page values.
 </short>
 <descr>
 <p>
-<var>UpdateVertScrollbar</var> calls <var>ScrollBarShow</var> to updated the 
+<var>UpdateVertScrollbar</var> calls <var>ScrollBarShow</var> to update the 
 scroll bar visibility when it differs from the value in <var>aVisible</var>. 
 The <var>ScrollBarRange</var> method is called to apply the values in ARange, 
-APage, and APos to the vertical scroll bar for the control. No actions are 
-performed if the visibility has not been changed and the scroll bar is not 
-visible.
+APage, and APos to the vertical scroll bar for the control. 
+</p>
+<p>
+The scroll bar range is not updated if the scroll bar visibility has not been 
+changed or if the scroll bar is not visible. For the Darwin platform, 
+ScrollBarRange is always called - regardless of visibility; overlay-style 
+scroll bars on macOS require the latest range, page, and position values.
 </p>
 <p>
 UpdateVertScrollbar is called from the CalcScrollbarsRange method when the 
 visible area in the grid is scrolled.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.ScrollBarShow"/>
+<link id="TCustomGrid.ScrollBarRange"/>
+<link id="TCustomGrid.ScrollBarIsVisible"/>
+</seealso>
 </element>
 <element name="TCustomGrid.UpdateVertScrollbar.AVisible">
 <short><b>True</b> if the scroll bar should be visible.</short>
