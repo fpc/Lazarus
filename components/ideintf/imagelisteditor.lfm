@@ -9,13 +9,12 @@ object ImageListEditorDlg: TImageListEditorDlg
   ClientWidth = 532
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   object GroupBoxR: TGroupBox
     Left = 219
-    Height = 354
+    Height = 342
     Top = 46
     Width = 307
     Align = alClient
@@ -24,17 +23,17 @@ object ImageListEditorDlg: TImageListEditorDlg
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'Selected Image'
-    ClientHeight = 334
-    ClientWidth = 303
+    ClientHeight = 325
+    ClientWidth = 305
     TabOrder = 1
     object LabelTransparent: TLabel
       AnchorSideLeft.Control = RadioGroup
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RadioGroup
-      Left = 93
-      Height = 15
-      Top = 218
-      Width = 96
+      Left = 94
+      Height = 16
+      Top = 196
+      Width = 108
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Transparent Color:'
@@ -46,9 +45,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = RadioGroup
       Left = 6
-      Height = 206
+      Height = 184
       Top = 6
-      Width = 291
+      Width = 293
       HorzScrollBar.Increment = 1
       HorzScrollBar.Page = 1
       HorzScrollBar.Smooth = True
@@ -68,9 +67,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Control = GroupBoxR
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 110
-      Top = 218
-      Width = 81
+      Height = 123
+      Top = 196
+      Width = 82
       Anchors = [akLeft, akBottom]
       AutoFill = True
       AutoSize = True
@@ -85,8 +84,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 90
-      ClientWidth = 77
+      ClientHeight = 106
+      ClientWidth = 80
       Enabled = False
       ItemIndex = 0
       Items.Strings = (
@@ -102,10 +101,10 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideLeft.Control = LabelTransparent
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
-      Left = 93
-      Height = 22
-      Top = 237
-      Width = 96
+      Left = 94
+      Height = 28
+      Top = 216
+      Width = 176
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       BorderSpacing.Top = 4
@@ -118,7 +117,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object GroupBoxL: TGroupBox
     Left = 6
-    Height = 354
+    Height = 342
     Top = 46
     Width = 202
     Align = alLeft
@@ -127,14 +126,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
     Caption = 'Images'
-    ClientHeight = 334
-    ClientWidth = 198
+    ClientHeight = 325
+    ClientWidth = 200
     TabOrder = 0
     object ImageListBox: TListBox
       Left = 6
-      Height = 322
+      Height = 313
       Top = 6
-      Width = 186
+      Width = 188
       Align = alClient
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
@@ -142,14 +141,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       Options = []
       Style = lbOwnerDrawFixed
       TabOrder = 0
+      TopIndex = -1
       OnDrawItem = ImageListBoxDrawItem
       OnSelectionChange = ImageListBoxSelectionChange
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 406
+    Height = 38
+    Top = 394
     Width = 520
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -182,59 +182,59 @@ object ImageListEditorDlg: TImageListEditorDlg
       Style = tbsButtonDrop
     end
     object tbReplace: TToolButton
-      Left = 55
+      Left = 58
       Top = 0
       Caption = 'tbReplace'
       DropdownMenu = ReplacePopupMenu
       Style = tbsButtonDrop
     end
     object tbMoveUp: TToolButton
-      Left = 202
+      Left = 224
       Top = 0
       Action = acMoveUp
     end
     object tbMoveDown: TToolButton
-      Left = 267
+      Left = 295
       Top = 0
       Action = acMoveDown
     end
     object tbRemove: TToolButton
-      Left = 125
+      Left = 138
       Top = 0
       Caption = 'tbRemove'
       DropdownMenu = RemovePopupMenu
       Style = tbsButtonDrop
     end
     object tbSave: TToolButton
-      Left = 353
+      Left = 388
       Top = 0
       Caption = 'tbSave'
       DropdownMenu = SavePopupMenu
       Style = tbsButtonDrop
     end
     object tbSeparator1: TToolButton
-      Left = 197
+      Left = 219
       Height = 40
       Top = 0
       Caption = 'tbSeparator1'
       Style = tbsDivider
     end
     object tbSeparator2: TToolButton
-      Left = 348
+      Left = 383
       Height = 40
       Top = 0
       Caption = 'tbSeparator2'
       Style = tbsDivider
     end
     object tbSeparator3: TToolButton
-      Left = 407
+      Left = 450
       Height = 40
       Top = 0
       Caption = 'tbSeparator3'
       Style = tbsDivider
     end
     object tbSizes: TToolButton
-      Left = 412
+      Left = 455
       Top = 0
       Caption = 'tbSizes'
       DropdownMenu = SizesPopupMenu
@@ -243,7 +243,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object Splitter1: TSplitter
     Left = 211
-    Height = 360
+    Height = 348
     Top = 40
     Width = 5
     ResizeStyle = rsPattern
