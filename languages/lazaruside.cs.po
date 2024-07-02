@@ -5199,10 +5199,6 @@ msgstr "Nalezen nejasný soubor"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Nalezen nejednoznačný soubor: \"%s\"%sTento soubor může být chybě zaměněn za \"%s\"%sSmazat nejednoznačný soubor?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Víceznačné soubory nalezeny"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Ukotvit spodní okraj ke spodnímu okraji sourozence. Použijte BorderSpacing pro nastavení vzdálenosti. BorderSpacing sourozence je ignorováno."
@@ -8624,10 +8620,6 @@ msgstr "Smazat mód \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Odstranit starý soubor \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Smazat starý soubor?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13301,6 +13293,10 @@ msgstr "Odebrat z projektu..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Přejmenovat identifikátor ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

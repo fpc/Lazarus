@@ -5327,10 +5327,6 @@ msgstr "File dwimakna ditemukan"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "File yang tidak jelas ditemukan: %s%s%s%sFile ini mungkin salah dengan %s%s%s%s%sHapus file tidak jelas?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "File yang meragukan ditemukan"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr ""
@@ -8809,10 +8805,6 @@ msgstr ""
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "Hapus file lama %s%s%s?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr ""
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13641,6 +13633,10 @@ msgstr "Hapus dari Proyek ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Ganti nama Pengenal ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy

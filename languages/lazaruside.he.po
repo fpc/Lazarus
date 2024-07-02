@@ -5428,10 +5428,6 @@ msgstr "קובץ רב משמעי נמצא"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "נמצא קובץ רב משמעי: s%s%s% יכול להיות שהוא נלקח בטעות במקום s%s%s%s%s%. האם למחוק אותו?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "נמצא קובץ רב משמעי"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr ""
@@ -8964,10 +8960,6 @@ msgstr "מחק אופן  \"%s\""
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "האם למחוק קובץ ישן s%s%s%?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "למחוק קובץ ישן ?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13909,6 +13901,10 @@ msgstr "הסר מהפרוייקט"
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "שנה שם מזהה"
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy

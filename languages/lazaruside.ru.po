@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-06-18 00:37+0300\n"
+"PO-Revision-Date: 2024-07-02 15:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -5131,10 +5131,6 @@ msgstr "Найден файл с дублирующимся именем"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Найден файл с дублирующимся именем: \"%s\"%sОн может быть перепутан с \"%s\"%sУдалить этот файл?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Найдены файлы с дублирующимися именами"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Привязать низ компонента к низу соседа. Используйте зазор для задания расстояния. Зазор соседа игнорируется."
@@ -8523,10 +8519,6 @@ msgstr "Удалить режим \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Удалить старый файл \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Удалить старый файл?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13141,6 +13133,10 @@ msgstr "Убрать из проекта ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Переименовать идентификатор ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr "Переименовать модули в нижний регистр ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

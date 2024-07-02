@@ -5159,10 +5159,6 @@ msgstr "Megtévesztő fájl"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Megtévesztő fájl: \"%s\"%sEz a fájl összetéveszthető ezzel: \"%s\"%sTörli a megtévesztő fájlt?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Megtévesztő fájlok találhatók"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Alsó szél horgonyzása a testvér alsó széléhez. A BorderSpacing használható a távolság beállításához. A testvér BorderSpacing tulajdonsága nem számít."
@@ -8583,10 +8579,6 @@ msgstr "Mód törlése: \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Törli a \"%s\" régi fájlt?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Törli a régi fájlt?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13248,6 +13240,10 @@ msgstr "Eltávolítás a projektből ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Azonosító átnevezése ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

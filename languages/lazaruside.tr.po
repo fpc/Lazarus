@@ -5099,10 +5099,6 @@ msgstr "Belirsiz dosya bulundu"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Belirsiz dosya bulundu: \"%s\"%sBu dosya \"%s\" ile karıştırılabilir %sBelirsiz dosya silinsin mi?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Belirsiz dosyalar bulundu"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Kardeşin alt tarafından alt tarafına tutturun. Bir mesafe ayarlamak için BorderSpacing'i kullanın. Kardeşin BorderSpacing'i yok sayılır."
@@ -8496,10 +8492,6 @@ msgstr "Modu sil \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Eski dosyayı sil \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Eski dosyayı sil?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13099,6 +13091,10 @@ msgstr "Projeden Kaldır ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Tanımlayıcıyı Yeniden Adlandır ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgid "Reporting a Bug"

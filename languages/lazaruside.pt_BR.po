@@ -5152,10 +5152,6 @@ msgstr "Arquivo ambíguo encontrado"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Arquivo ambíguo encontrado: \"%s\"%sEste arquivo pode ser confundido com \"%s\"%sExcluir o arquivo ambíguo?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Arquivos ambíguos encontrados"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr ""
@@ -8595,10 +8591,6 @@ msgstr "Excluir modo \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Excluir arquivo antigo \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Excluir arquivo antigo?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13260,6 +13252,10 @@ msgstr "Remover do projeto ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Renomear identificador ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

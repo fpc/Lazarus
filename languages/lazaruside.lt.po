@@ -5268,10 +5268,6 @@ msgstr "Rastas neaiškus failas"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Rastas neaiškus failas: „%s“%sŠis failas gali būti supainiotas su „%s“%sIštrinti neaiškųjį failą?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Rastas neaiškus failas"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Apatinį kraštą pririšti prie kaimyno apatinio krašto. Atstumą lemia kraštinės plotis. Kaimyno kratinės plotis ignoruojamas."
@@ -8700,10 +8696,6 @@ msgstr "Pašalinti veikseną „%s“"
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Ištrinti senąjį failą „%s“?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Ar ištrinti senąjį failą?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13415,6 +13407,10 @@ msgstr "Pašalinti iš projekto…"
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Pervadinti identifikatorių…"
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

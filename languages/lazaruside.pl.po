@@ -5272,10 +5272,6 @@ msgstr "Znaleziono dwuznaczny plik"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Znaleziono dwuznaczną nazwę pliku: \"%s\"%sTen plik może być pomylony z \"%s\"%sCzy chcesz usunąć dwuznaczy plik?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "Znaleziono dwuznaczny plik"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr ""
@@ -8714,10 +8710,6 @@ msgstr "Usuń tryb \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "Czy chcesz usunąć poprzedni plik \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "Usunąć poprzedni plik?"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13374,6 +13366,10 @@ msgstr "Usuń z projektu..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "Zaznacz i zmień nazwę identyfikatora..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

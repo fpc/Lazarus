@@ -5141,10 +5141,6 @@ msgstr "多义文件找到"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "多义文件找到: \"%s\"%s这个文件可能被\"%s\"%s弄错 删除多义文件?"
 
-#: lazarusidestrconsts.lisambiguousfilesfound
-msgid "Ambiguous files found"
-msgstr "多义文件找到"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "锚点底侧到同级控件的底侧.使用边界空格来设置一个距离.同级控件的边界空间被格忽略."
@@ -8553,10 +8549,6 @@ msgstr "删除模式 \"%s\""
 #, object-pascal-format
 msgid "Delete old file \"%s\"?"
 msgstr "删除旧文件\"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteoldfile2
-msgid "Delete old file?"
-msgstr "删除旧文件？"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
@@ -13206,6 +13198,10 @@ msgstr "从项目中移除(&D) ..."
 #: lazarusidestrconsts.lismenurenameidentifier
 msgid "Rename Identifier ..."
 msgstr "重命名标识符(&I) ..."
+
+#: lazarusidestrconsts.lismenurenamelowercase
+msgid "Rename Units to LowerCase ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"
