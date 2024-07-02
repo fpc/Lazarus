@@ -718,7 +718,6 @@ resourcestring
     +'%sRename it to lowercase?';
   lisRenameToLowercase = 'Rename to lowercase';
   lisKeepName = 'Keep name';
-  lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files in '
     +'the directory with the same name,'
     +'%swhich only differ in case:'
@@ -5306,7 +5305,6 @@ resourcestring
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';
   lisInsertPrintshortTag2 = 'Insert printshort tag';
-  lisDeleteOldFile2 = 'Delete old file?';
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
     +'path of "%s" contains the source directory "%s" of package %s';
   lisFPCVersionEG222 = 'FPC Version (e.g. 2.2.2)';

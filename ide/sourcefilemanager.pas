@@ -1834,7 +1834,6 @@ begin
   try
     Result:=ActionForFiles;
   finally
-    // all changes were handled automatically by events, just clear the logs
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     Project1.EndUpdate;
   end;
@@ -1931,33 +1930,19 @@ function TRenameFilesSelector.ActionForFiles: TModalResult;
 var
   i: Integer;
   AnUnitInfo: TUnitInfo;
-  UnitPath, ShortUnitN, FileN, LowerFileN, FullFileName: String;
 begin
   Assert(fUnitInfos.Count > 0, 'TRemoveFilesSelector.ActionForFiles: No files');
+  Result:=mrOK;
   for i:=0 to fUnitInfos.Count-1 do
   begin
     AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
     Assert(AnUnitInfo.IsPartOfProject, 'TRenameFilesSelector.ActionForFiles: '
          + AnUnitInfo.Unit_Name + ' is not part of project');
-    UnitPath:=ExtractFilePath(AnUnitInfo.Filename);
-    FileN:=ExtractFileName(AnUnitInfo.Filename);
-    ShortUnitN:=ExtractFileNameOnly(FileN);
-    LowerFileN:=LowerCase(FileN);
-    DebugLn(['TRenameFilesSelector.ActionForFiles: UnitPath=', UnitPath,
-             ', FileN=', FileN, ', LowerFileN=', LowerFileN]);
-    if LowerFileN<>FileN then begin
-      FullFileName:=UnitPath+LowerFileN;
-      Result:=RenameFileWithErrorDialogs(AnUnitInfo.Filename, FullFileName, [mbAbort]);
-      if Result<>mrOK then begin
-        //MainIDE.DoJumpToCodeToolBossError;  // ToDo
-        exit(mrCancel);
-      end;
-      AnUnitInfo.Unit_Name:=ShortUnitN;
-      AnUnitInfo.Modified:=true;
-      //AnUnitInfo.ReadUnitSource(false,false);
-      Project1.Modified:=true;
-    end;
+    Result:=RenameUnitLowerCase(AnUnitInfo, false);
+    if Result<>mrOK then exit;
   end;
+  if Result=mrOK then
+    Result:=SaveProject([sfDoNotSaveVirtualFiles,sfCanAbort]);
 end;
 
 // ---
@@ -5900,7 +5885,7 @@ begin
         else
           S:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
                           [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
-        Result:=IDEMessageDialog(lisAmbiguousFilesFound, S,
+        Result:=IDEMessageDialog(lisAmbiguousFileFound, S,
           mtWarning,[mbYes,mbNo,mbAbort]);
         if Result=mrAbort then exit;
         if Result=mrYes then begin
@@ -5942,7 +5927,7 @@ begin
     // delete old pas, .pp, .ppu
     if (CompareFilenames(NewFilename,OldFilename)<>0)
     and OldFileExisted then begin
-      if IDEMessageDialog(lisDeleteOldFile2, Format(lisDeleteOldFile,[OldFilename]),
+      if IDEMessageDialog(lisDelete2, Format(lisDeleteOldFile,[OldFilename]),
         mtConfirmation,[mbYes,mbNo])=mrYes then
       begin
         Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
