@@ -111,8 +111,7 @@ type
     tbSeparator2: TToolButton;
     tbSeparator3: TToolButton;
     tbSizes: TToolButton;
-    procedure acAddMultipleExecute(Sender: TObject);
-    procedure acAddSingleExecute(Sender: TObject);
+    procedure acAddExecute(Sender: TObject);
     procedure acAddSlicedExecute(Sender: TObject);
     procedure acClearExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
@@ -421,34 +420,7 @@ begin
   UpdateCmds;
 end;
 
-procedure TImageListEditorDlg.acAddMultipleExecute(Sender: TObject);
-var
-  I: Integer;
-begin
-  OpenDialog.Title := sccsILEdtOpenDialog;
-  OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-  if OpenDialog.Execute then
-  begin
-    ImageList.BeginUpdate;
-    ImageListBox.Items.BeginUpdate;
-    try
-      for I := 0 to OpenDialog.Files.Count - 1 do
-      begin
-        if (I = 0) or (Sender <> acAddMultiple) then //BtnAddMoreResolutions) then
-          AddImageToList(TrimRight(OpenDialog.Files[I]), atAdd)
-        else
-          AddImageToList(TrimRight(OpenDialog.Files[I]), atReplace);
-      end;
-    finally
-      ImageListBox.Items.EndUpdate;
-      ImageList.EndUpdate;
-    end;
-    UpdatePreviewImage;
-    ImageListBox.SetFocus;
-  end;
-end;
-
-procedure TImageListEditorDlg.acAddSingleExecute(Sender: TObject);
+procedure TImageListEditorDlg.acAddExecute(Sender: TObject);
 var
   I: Integer;
 begin
@@ -461,7 +433,7 @@ begin
     try
       for I := 0 to OpenDialog.Files.Count - 1 do
       begin
-        if (I = 0) or (Sender <> acAddMultiple) then //BtnAddMoreResolutions) then
+        if (I = 0) or (Sender <> acAddMultiple) then
           AddImageToList(TrimRight(OpenDialog.Files[I]), atAdd)
         else
           AddImageToList(TrimRight(OpenDialog.Files[I]), atReplace);

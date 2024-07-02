@@ -2,38 +2,39 @@ object ImageListEditorDlg: TImageListEditorDlg
   Left = 476
   Height = 438
   Top = 182
-  Width = 532
+  Width = 553
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
   ClientHeight = 438
-  ClientWidth = 532
+  ClientWidth = 553
   Position = poScreenCenter
   ShowHint = True
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   object GroupBoxR: TGroupBox
     Left = 219
-    Height = 342
+    Height = 354
     Top = 46
-    Width = 307
+    Width = 328
     Align = alClient
     BorderSpacing.Left = 3
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'Selected Image'
-    ClientHeight = 325
-    ClientWidth = 305
+    ClientHeight = 334
+    ClientWidth = 324
     TabOrder = 1
     object LabelTransparent: TLabel
       AnchorSideLeft.Control = RadioGroup
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RadioGroup
-      Left = 94
-      Height = 16
-      Top = 196
-      Width = 108
+      Left = 93
+      Height = 15
+      Top = 218
+      Width = 96
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Transparent Color:'
@@ -45,9 +46,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = RadioGroup
       Left = 6
-      Height = 184
+      Height = 206
       Top = 6
-      Width = 293
+      Width = 312
       HorzScrollBar.Increment = 1
       HorzScrollBar.Page = 1
       HorzScrollBar.Smooth = True
@@ -67,9 +68,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Control = GroupBoxR
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 123
-      Top = 196
-      Width = 82
+      Height = 110
+      Top = 218
+      Width = 81
       Anchors = [akLeft, akBottom]
       AutoFill = True
       AutoSize = True
@@ -84,8 +85,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 106
-      ClientWidth = 80
+      ClientHeight = 90
+      ClientWidth = 77
       Enabled = False
       ItemIndex = 0
       Items.Strings = (
@@ -101,9 +102,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideLeft.Control = LabelTransparent
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
-      Left = 94
-      Height = 28
-      Top = 216
+      Left = 93
+      Height = 22
+      Top = 237
       Width = 176
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
@@ -117,7 +118,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object GroupBoxL: TGroupBox
     Left = 6
-    Height = 342
+    Height = 354
     Top = 46
     Width = 202
     Align = alLeft
@@ -126,14 +127,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
     Caption = 'Images'
-    ClientHeight = 325
-    ClientWidth = 200
+    ClientHeight = 334
+    ClientWidth = 198
     TabOrder = 0
     object ImageListBox: TListBox
       Left = 6
-      Height = 313
+      Height = 322
       Top = 6
-      Width = 188
+      Width = 186
       Align = alClient
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
@@ -141,16 +142,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       Options = []
       Style = lbOwnerDrawFixed
       TabOrder = 0
-      TopIndex = -1
       OnDrawItem = ImageListBoxDrawItem
       OnSelectionChange = ImageListBoxSelectionChange
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 394
-    Width = 520
+    Height = 26
+    Top = 406
+    Width = 541
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -166,7 +166,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     Left = 0
     Height = 40
     Top = 0
-    Width = 532
+    Width = 553
     AutoSize = True
     ButtonHeight = 40
     ButtonWidth = 44
@@ -182,59 +182,59 @@ object ImageListEditorDlg: TImageListEditorDlg
       Style = tbsButtonDrop
     end
     object tbReplace: TToolButton
-      Left = 58
+      Left = 55
       Top = 0
       Caption = 'tbReplace'
       DropdownMenu = ReplacePopupMenu
       Style = tbsButtonDrop
     end
     object tbMoveUp: TToolButton
-      Left = 224
+      Left = 202
       Top = 0
       Action = acMoveUp
     end
     object tbMoveDown: TToolButton
-      Left = 295
+      Left = 267
       Top = 0
       Action = acMoveDown
     end
     object tbRemove: TToolButton
-      Left = 138
+      Left = 125
       Top = 0
       Caption = 'tbRemove'
       DropdownMenu = RemovePopupMenu
       Style = tbsButtonDrop
     end
     object tbSave: TToolButton
-      Left = 388
+      Left = 353
       Top = 0
       Caption = 'tbSave'
       DropdownMenu = SavePopupMenu
       Style = tbsButtonDrop
     end
     object tbSeparator1: TToolButton
-      Left = 219
+      Left = 197
       Height = 40
       Top = 0
       Caption = 'tbSeparator1'
       Style = tbsDivider
     end
     object tbSeparator2: TToolButton
-      Left = 383
+      Left = 348
       Height = 40
       Top = 0
       Caption = 'tbSeparator2'
       Style = tbsDivider
     end
     object tbSeparator3: TToolButton
-      Left = 450
+      Left = 407
       Height = 40
       Top = 0
       Caption = 'tbSeparator3'
       Style = tbsDivider
     end
     object tbSizes: TToolButton
-      Left = 455
+      Left = 412
       Top = 0
       Caption = 'tbSizes'
       DropdownMenu = SizesPopupMenu
@@ -243,7 +243,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object Splitter1: TSplitter
     Left = 211
-    Height = 348
+    Height = 360
     Top = 40
     Width = 5
     ResizeStyle = rsPattern
@@ -329,12 +329,12 @@ object ImageListEditorDlg: TImageListEditorDlg
     object acAddSingle: TAction
       Category = 'Add'
       Caption = 'acAddSingle'
-      OnExecute = acAddSingleExecute
+      OnExecute = acAddExecute
     end
     object acAddMultiple: TAction
       Category = 'Add'
       Caption = 'acAddMultiple'
-      OnExecute = acAddMultipleExecute
+      OnExecute = acAddExecute
     end
     object acAddSliced: TAction
       Category = 'Add'
