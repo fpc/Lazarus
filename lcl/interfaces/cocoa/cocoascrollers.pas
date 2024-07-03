@@ -254,6 +254,10 @@ type
     procedure delayShowScrollBars; message 'delayShowScrollBars';
     procedure showScrollBarsAndAutoHide( tapping:Integer ); message 'showScrollBarsAndAutoHide:';
 
+    procedure touchesBeganWithEvent(event: NSEvent); override;
+    procedure touchesEndedWithEvent(event: NSEvent); override;
+    procedure touchesCancelledWithEvent(event: NSEvent); override;
+
     procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
     procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
     function hasVerticalScroller: Boolean; message 'hasVerticalScroller';
@@ -771,6 +775,64 @@ begin
     _manager.showScrollBar(self.fhscroll);
   if (tapping=SB_VERT) or (tapping=SB_BOTH) then
     _manager.showScrollBar(self.fvscroll);
+end;
+
+procedure TCocoaManualScrollView.touchesBeganWithEvent(event: NSEvent);
+var
+  touches: NSSet;
+  show: Boolean = False;
+begin
+  inherited;
+
+  touches:= event.touchesMatchingPhase_inView(NSTouchPhaseTouching, self);
+  if touches.count = 2 then begin
+    show:= True;
+    _tapping:= SB_BOTH;
+  end else begin
+    if _tapping >= 0 then
+      show:= True;
+    _tapping:= -1;
+  end;
+
+  if show then
+    delayShowScrollBars;
+end;
+
+procedure TCocoaManualScrollView.touchesEndedWithEvent(event: NSEvent);
+var
+  touches: NSSet;
+  lastTapping: Integer;
+  show: Boolean = False;
+begin
+  inherited;
+
+  touches:= event.touchesMatchingPhase_inView(NSTouchPhaseTouching, self);
+  if (touches.count=0) and (_tapping=SB_BOTH) then begin
+    _tapping:= -1;
+    show:= True;
+  end else if (touches.count=2) and (_tapping<>SB_BOTH) then begin
+    _tapping:= SB_BOTH;
+    show:= True;
+  end else if (touches.count<>2) and (_tapping>=0) then begin
+    lastTapping:= _tapping;
+    _tapping:= -1;
+    showScrollBarsAndAutoHide( lastTapping );
+  end else begin
+    _tapping:= -1;
+  end;
+
+  if show then
+    delayShowScrollBars;
+end;
+
+procedure TCocoaManualScrollView.touchesCancelledWithEvent(event: NSEvent);
+var
+  lastTapping: Integer;
+begin
+  inherited;
+  lastTapping:= _tapping;
+  _tapping:= -1;
+  showScrollBarsAndAutoHide( lastTapping );
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
