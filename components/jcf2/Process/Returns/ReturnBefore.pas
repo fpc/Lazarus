@@ -283,6 +283,10 @@ begin
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProperty],1) then
     exit(True);
 
+  {start of class var/threadvar}
+  if (pt.TokenType = ttClass) and (pt.NextSolidTokenType in [ttVar, ttThreadVar] ) then
+    exit(True);
+
   { start of class function decl in class }
   if (pt.TokenType = ttClass) and pt.HasParentNode([nProcedureDecl, nFunctionDecl, nProperty]) and
     (not IsGenericFunctionOrProperty(pt)) and
