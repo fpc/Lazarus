@@ -547,8 +547,10 @@ var
   Tool: TIDEExternalToolOptions;
 begin
   Result:=mrCancel;
-  Item:=Items[Index];
+  if (Index < 0) or (Index >= fItems.Count) then
+    exit;
 
+  Item:=Items[Index];
   Tool:=TIDEExternalToolOptions.Create;
   try
     Tool.Title:=Item.Title;
