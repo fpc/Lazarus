@@ -133,7 +133,9 @@ type
     // with Overlay Style, Availability means 'KnobProportion<1'
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; virtual; abstract;
     // Show the Scroller if it can be made Available
-    procedure showScrollBar( scroller:NSScroller ); virtual; abstract;
+    procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); virtual; abstract;
+    // Hide the Scroller but keep the Availability, only for Overlay Style
+    procedure tempHideScrollBar( scroller:NSScroller ); virtual; abstract;
   end;
 
   TCocoaManualScrollView = objcclass;
@@ -224,6 +226,7 @@ type
   TCocoaManualScrollView = objcclass(NSView)
   private
     _manager: TCocoaScrollStyleManager;
+    _tapping: Integer;             // two finger tapping, SB_VERT / SB_HORZ / SB_BOTH
     fdocumentView: NSView;
     fhscroll : TCocoaScrollBar;
     fvscroll : TCocoaScrollBar;
@@ -247,6 +250,15 @@ type
 
     procedure setDocumentView(AView: NSView); message 'setDocumentView:';
     function documentView: NSView; message 'documentView';
+
+    procedure delayShowScrollBars; message 'delayShowScrollBars';
+    procedure showScrollBarsAndAutoHide( tapping:Integer ); message 'showScrollBarsAndAutoHide:';
+
+    function isTapping( scroller:NSScroller ): Boolean; message 'isTapping:';
+    procedure onBarScrolled( scroller:NSScroller ); message 'onBarScrolled:';
+    procedure touchesBeganWithEvent(event: NSEvent); override;
+    procedure touchesEndedWithEvent(event: NSEvent); override;
+    procedure touchesCancelledWithEvent(event: NSEvent); override;
 
     procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
     procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
@@ -317,21 +329,28 @@ type
 
   TCocoaScrollBarEffectOverlay = objcclass(TCocoaScrollBarEffectAlpha)
   private
+    procedure onDelayShowingTimer( timer:NSTimer ); message 'onDelayShowingTimer:';
     procedure onDelayHidingTimer( timer:NSTimer ); message 'onDelayHidingTimer:';
     procedure onExpandTimer( timer:NSTimer ); message 'onExpandTimer:';
+
+    procedure setDelayTimer( timeInterval:Double; onTimer:SEL );
+      message 'setDelayTimer:timeInterval:';
   protected
     currentKnobPosition: Double;
     currentKnobProportion: Double;
     entered: Boolean;
     expandedSize: Integer;
 
-    delayHidingTimer: NSTimer;
+    delayTimer: NSTimer;
     expandTimer: NSTimer;
   protected
+    procedure setDelayShowingTimer; message 'setDelayShowingTimer';
     procedure setDelayHidingTimer; message 'setDelayHidingTimer';
     procedure setExpandTimer; message 'setExpandTimer';
 
     procedure onDestroy; override;
+  public
+    procedure cancelDelay; message 'cancelDelay';
   end;
 
   { TCocoaScrollStyleManagerLegacy }
@@ -348,7 +367,8 @@ type
     function createScrollBarEffect( scroller:NSScroller ): TCocoaScrollBarEffect; override;
     procedure availScrollBar( scroller:NSScroller; available:Boolean ); override;
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
-    procedure showScrollBar( scroller:NSScroller ); override;
+    procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
+    procedure tempHideScrollBar( scroller:NSScroller ); override;
     procedure updateLayOut; override;
   end;
 
@@ -366,7 +386,8 @@ type
     function createScrollBarEffect( scroller:NSScroller ): TCocoaScrollBarEffect; override;
     procedure availScrollBar( scroller:NSScroller; available:Boolean ); override;
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
-    procedure showScrollBar( scroller:NSScroller ); override;
+    procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
+    procedure tempHideScrollBar( scroller:NSScroller ); override;
     procedure updateLayOut; override;
   end;
 
@@ -602,6 +623,7 @@ end;
 function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
 begin
   Result:= inherited;
+  _tapping:= -1;
   resetManager;
 end;
 
@@ -670,10 +692,8 @@ begin
 
   _manager.updateLayout;
 
-  if self.hasHorizontalScroller then
-    _manager.showScrollBar(self.fhscroll);
-  if self.hasVerticalScroller then
-    _manager.showScrollBar(self.fvscroll);
+  _manager.showScrollBar(self.fhscroll);
+  _manager.showScrollBar(self.fvscroll);
 end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -743,6 +763,105 @@ end;
 function TCocoaManualScrollView.documentView: NSView;
 begin
   Result:=fdocumentView;
+end;
+
+function TCocoaManualScrollView.isTapping(scroller: NSScroller): Boolean;
+begin
+  if _tapping < 0 then
+    Exit( False );
+  if _tapping = SB_BOTH then
+    Exit( True );
+  if (_tapping = SB_HORZ) and (scroller=self.fhscroll) then
+    Exit( True );
+  if (_tapping = SB_VERT) and (scroller=self.fvscroll) then
+    Exit( True );
+  Result:= False;
+end;
+
+procedure TCocoaManualScrollView.onBarScrolled(scroller: NSScroller);
+begin
+  if _tapping < 0 then
+    Exit;
+
+  if scroller=self.fvscroll then begin
+    _tapping:= SB_VERT;
+    _manager.tempHideScrollBar( fhscroll );
+  end else if scroller=self.fhscroll then begin
+    _tapping:= SB_HORZ;
+    _manager.tempHideScrollBar( fvscroll );
+  end;
+end;
+
+procedure TCocoaManualScrollView.delayShowScrollBars();
+begin
+  _manager.showScrollBar( self.fhscroll, False );
+  _manager.showScrollBar( self.fvscroll, False );
+end;
+
+procedure TCocoaManualScrollView.showScrollBarsAndAutoHide( tapping:Integer );
+begin
+  if (tapping=SB_HORZ) or (tapping=SB_BOTH) then
+    _manager.showScrollBar(self.fhscroll);
+  if (tapping=SB_VERT) or (tapping=SB_BOTH) then
+    _manager.showScrollBar(self.fvscroll);
+end;
+
+procedure TCocoaManualScrollView.touchesBeganWithEvent(event: NSEvent);
+var
+  touches: NSSet;
+  show: Boolean = False;
+begin
+  inherited;
+
+  touches:= event.touchesMatchingPhase_inView(NSTouchPhaseTouching, self);
+  if touches.count = 2 then begin
+    show:= True;
+    _tapping:= SB_BOTH;
+  end else begin
+    if _tapping >= 0 then
+      show:= True;
+    _tapping:= -1;
+  end;
+
+  if show then
+    delayShowScrollBars;
+end;
+
+procedure TCocoaManualScrollView.touchesEndedWithEvent(event: NSEvent);
+var
+  touches: NSSet;
+  lastTapping: Integer;
+  show: Boolean = False;
+begin
+  inherited;
+
+  touches:= event.touchesMatchingPhase_inView(NSTouchPhaseTouching, self);
+  if (touches.count=0) and (_tapping=SB_BOTH) then begin
+    _tapping:= -1;
+    show:= True;
+  end else if (touches.count=2) and (_tapping<>SB_BOTH) then begin
+    _tapping:= SB_BOTH;
+    show:= True;
+  end else if (touches.count<>2) and (_tapping>=0) then begin
+    lastTapping:= _tapping;
+    _tapping:= -1;
+    showScrollBarsAndAutoHide( lastTapping );
+  end else begin
+    _tapping:= -1;
+  end;
+
+  if show then
+    delayShowScrollBars;
+end;
+
+procedure TCocoaManualScrollView.touchesCancelledWithEvent(event: NSEvent);
+var
+  lastTapping: Integer;
+begin
+  inherited;
+  lastTapping:= _tapping;
+  _tapping:= -1;
+  showScrollBarsAndAutoHide( lastTapping );
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
@@ -1401,9 +1520,15 @@ end;
 
 { TCocoaScrollBarEffectOverlay }
 
+procedure TCocoaScrollBarEffectOverlay.onDelayShowingTimer( timer: NSTimer );
+begin
+  self.delayTimer:= nil;
+  self.manager.showScrollBar( self.scroller );
+end;
+
 procedure TCocoaScrollBarEffectOverlay.onDelayHidingTimer( timer:NSTimer );
 begin
-  self.delayHidingTimer:= nil;
+  self.delayTimer:= nil;
   self.fade( CocoaConfig.CocoaScrollerOverlayStyleFadeStep,
              CocoaConfig.CocoaScrollerOverlayStyleFadeTo );
 end;
@@ -1431,30 +1556,41 @@ begin
   self.scroller.setNeedsDisplay_(True);
 end;
 
-procedure TCocoaScrollBarEffectOverlay.setDelayHidingTimer;
+procedure TCocoaScrollBarEffectOverlay.setDelayTimer(
+  timeInterval:Double; onTimer:SEL );
 begin
   if Assigned(self.expandTimer) then begin
     self.expandTimer.invalidate;
     self.expandTimer:= nil;
   end;
 
-  if Assigned(self.delayHidingTimer) then
-    self.delayHidingTimer.invalidate;
+  self.cancelDelay;
 
-  self.delayHidingTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-    CocoaConfig.CocoaScrollerOverlayStyleAutoHideDelayTime,
+  self.delayTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+    timeInterval,
     self,
-    ObjCSelector('onDelayHidingTimer:'),
+    onTimer,
     nil,
     false );
 end;
 
+procedure TCocoaScrollBarEffectOverlay.setDelayShowingTimer;
+begin
+  self.setDelayTimer(
+    CocoaScrollerOverlayStyleAutoShowDelayTime,
+    ObjCSelector('onDelayShowingTimer:') );
+end;
+
+procedure TCocoaScrollBarEffectOverlay.setDelayHidingTimer;
+begin
+  self.setDelayTimer(
+    CocoaConfig.CocoaScrollerOverlayStyleAutoHideDelayTime,
+    ObjCSelector('onDelayHidingTimer:') );
+end;
+
 procedure TCocoaScrollBarEffectOverlay.setExpandTimer;
 begin
-  if Assigned(self.delayHidingTimer) then begin
-    self.delayHidingTimer.invalidate;
-    self.delayHidingTimer:= nil;
-  end;
+  self.cancelDelay;
 
   if Assigned(self.expandTimer) then
     self.expandTimer.invalidate;
@@ -1469,15 +1605,20 @@ end;
 
 procedure TCocoaScrollBarEffectOverlay.onDestroy;
 begin
-  if Assigned(self.delayHidingTimer) then begin
-    self.delayHidingTimer.invalidate;
-    self.delayHidingTimer:= nil;
-  end;
+  self.cancelDelay;
   if Assigned(self.expandTimer) then begin
     self.expandTimer.invalidate;
     self.expandTimer:= nil;
   end;
   inherited onDestroy;
+end;
+
+procedure TCocoaScrollBarEffectOverlay.cancelDelay;
+begin
+  if Assigned(self.delayTimer) then begin
+    self.delayTimer.invalidate;
+    self.delayTimer:= nil;
+  end;
 end;
 
 { TCocoaScrollStyleManager }
@@ -1598,11 +1739,20 @@ begin
   Result:= Assigned(scroller) and NOT scroller.isHidden;
 end;
 
-procedure TCocoaScrollStyleManagerLegacy.showScrollBar(scroller: NSScroller);
+procedure TCocoaScrollStyleManagerLegacy.showScrollBar(
+  scroller: NSScroller; now:Boolean );
 begin
+  if NOT Assigned(scroller) then
+    Exit;
+
   scroller.setHidden( False );
   scroller.setAlphaValue( 1 );
   scroller.setNeedsDisplay_( True );
+end;
+
+procedure TCocoaScrollStyleManagerLegacy.tempHideScrollBar(scroller: NSScroller
+  );
+begin
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.onDrawKnob(scroller: NSScroller);
@@ -1750,6 +1900,9 @@ begin
   if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
     Exit;
 
+  if effect.currentKnobPosition <> knobPosition then
+    _scrollView.onBarScrolled( scroller );
+
   effect.currentKnobPosition:= knobPosition;
   effect.currentKnobProportion:= knobProportion;
 
@@ -1809,11 +1962,15 @@ begin
   Result:= Assigned(scroller) and (0<scroller.knobProportion) and (scroller.knobProportion<1);
 end;
 
-procedure TCocoaScrollStyleManagerOverlay.showScrollBar(scroller: NSScroller);
+procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
+  scroller: NSScroller; now:Boolean );
 var
   scrollBar: TCocoaScrollBar Absolute scroller;
   effect: TCocoaScrollBarEffectOverlay;
 begin
+  if NOT Assigned(scroller) then
+    Exit;
+
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
   if effect.currentKnobProportion = 1 then begin
@@ -1822,17 +1979,38 @@ begin
     Exit;
   end;
 
-  if NOT effect.entered then begin
-    effect.setDelayHidingTimer;
-    effect.currentAlpha:= CocoaConfig.CocoaScrollerOverlayStyleAlpha;
+  if NOT now then begin
+    effect.setDelayShowingTimer;
+    Exit;
   end;
+
+  if NOT _scrollView.isTapping(scroller) and NOT effect.entered then
+    effect.setDelayHidingTimer;
 
   // on old versions of macOS, alpha=0 is considered hidden.
   // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
   // otherwise it is considered hidden and setNeedsDisplay() does not take effect.
+  effect.currentAlpha:= CocoaConfig.CocoaScrollerOverlayStyleAlpha;
   scroller.setAlphaValue( effect.currentAlpha );
   scroller.setHidden( False );
   scroller.setNeedsDisplay_( true );
+end;
+
+procedure TCocoaScrollStyleManagerOverlay.tempHideScrollBar(scroller: NSScroller
+  );
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  if NOT Assigned(scroller) then
+    Exit;
+
+  effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
+  effect.cancelDelay;
+
+  scroller.setAlphaValue( 0 );
+  scroller.setHidden( True );
+  effect.expandedSize:= 0;
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.updateLayOut;
