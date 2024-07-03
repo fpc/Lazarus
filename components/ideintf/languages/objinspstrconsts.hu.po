@@ -1413,6 +1413,10 @@ msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
 msgstr "Hozzá&adás ..."
 
+#: objinspstrconsts.sccsiledtaddimg
+msgid "Add image ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 #, fuzzy
 #| msgid "Add more resolutions ..."
@@ -1555,6 +1559,10 @@ msgstr "Csere ..."
 #| msgid "Replace all resolutions ..."
 msgid "Replace all resolutions of an image ..."
 msgstr "Az összes felbontás cseréléje ..."
+
+#: objinspstrconsts.sccsiledtreplaceimg
+msgid "Replace image ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."

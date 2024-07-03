@@ -1458,6 +1458,10 @@ msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
 msgstr "הוסף ..."
 
+#: objinspstrconsts.sccsiledtaddimg
+msgid "Add image ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add image with multiple resolutions ..."
 msgstr ""
@@ -1590,6 +1594,10 @@ msgstr "החלף"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions of an image ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceimg
+msgid "Replace image ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution

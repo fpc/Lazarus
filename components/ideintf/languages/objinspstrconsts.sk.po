@@ -1423,6 +1423,10 @@ msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
 msgstr "Pridať..."
 
+#: objinspstrconsts.sccsiledtaddimg
+msgid "Add image ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 #, fuzzy
 #| msgid "Add more resolutions ..."
@@ -1561,6 +1565,10 @@ msgstr "Nahradiť ..."
 #| msgid "Replace all resolutions ..."
 msgid "Replace all resolutions of an image ..."
 msgstr "Nahradiť všetky rozlíšenia ..."
+
+#: objinspstrconsts.sccsiledtreplaceimg
+msgid "Replace image ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."

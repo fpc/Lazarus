@@ -149,8 +149,9 @@ type
   protected
     procedure DoDestroy; override;
     procedure InternalAddImageToList(const Picture: TPicture; AddType: TAddType);
-    procedure UpdateCmds;
-    procedure UpdatePreviewImage;
+    procedure UpdateCmds; virtual;
+    procedure UpdateMenus; virtual;
+    procedure UpdatePreviewImage; virtual;
   public
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
@@ -322,8 +323,8 @@ begin
   tbRemove.ImageIndex := IDEImages.GetImageIndex('laz_delete', 16);
     acDelete.ImageIndex := IDEImages.GetImageIndex('item_delete', 16);
     acClear.ImageIndex := IDEImages.GetImageIndex('menu_clean', 16);
-  acMoveUp.ImageIndex := IDEImages.GetImageIndex('item_up', 16);
-  acMoveDown.ImageIndex := IDEImages.GetImageIndex('item_down', 16);
+  acMoveUp.ImageIndex := IDEImages.GetImageIndex('arrow_up', 16);     //'item_up', 16);
+  acMoveDown.ImageIndex := IDEImages.GetImageIndex('arrow_down', 16); //'item_down', 16);
   tbSave.ImageIndex := IDEImages.GetImageIndex('laz_save', 16);
     acSave.ImageIndex := IDEImages.GetImageIndex('menu_saveas', 16);
     acSaveAll.ImageIndex := IDEImages.GetImageIndex('menu_save_all', 16);
@@ -353,6 +354,8 @@ begin
   OpenDialog.Title := sccsILEdtOpenDialog;
   SaveDialog.Title := sccsILEdtSaveDialog;
   IDEDialogLayoutList.ApplyLayout(Self);
+
+  UpdateMenus;
 end;
 
 procedure TImageListEditorDlg.FormResize(Sender: TObject);
@@ -530,7 +533,7 @@ begin
     ImageList.DeleteResolution(RA[TD.SelectionRes]);
     ImageListBox.Repaint;
     UpdatePreviewImage;
-//    UpdateImagesGroupBoxWidth;
+    UpdateMenus;
   end;
 end;
 
@@ -583,6 +586,7 @@ begin
     RefreshItemHeight;
     ImageListBox.Repaint;
 //    UpdateImagesGroupBoxWidth;
+    UpdateMenus;
   end;
 
   cInputQueryEditSizePercents := perc;
@@ -851,6 +855,25 @@ begin
   acSave.Enabled := tbReplace.Enabled;
   acSaveAll.Enabled := ImageListbox.Items.Count > 0;
   tbSave.Enabled := acSave.Enabled or acSaveAll.Enabled;
+end;
+
+procedure TImageListEditorDlg.UpdateMenus;
+var
+  multipleRes: Boolean;
+begin
+  multipleRes := ImageList.ResolutionCount > 1;
+  acAddMultiple.Visible := multipleRes;
+  acReplaceAll.Visible := multipleRes;
+  if multipleRes then
+  begin
+    acAddSingle.Caption := sccsILEdtAddSingleResolution;
+    acReplaceSingle.Caption := sccsILEdtReplaceSingleResolution;
+  end else
+  begin
+    acAddSingle.Caption := sccsILEdtAddImg;
+    acReplaceSingle.Caption := sccsILEdtReplaceImg;
+  end;
+
 end;
 
 procedure TImageListEditorDlg.UpdatePreviewImage;

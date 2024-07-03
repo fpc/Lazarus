@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-02 13:08+0200\n"
+"PO-Revision-Date: 2024-07-03 12:28+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -322,7 +322,7 @@ msgstr "Datenmenge erzeugen"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr "Datenmenge ist bereits aktive. Zuerst schließen"
+msgstr "Datenmenge ist bereits aktive. Zuerst schließen."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
@@ -330,7 +330,7 @@ msgstr "Daten aus Datei laden"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr "Keine Datenmenge zum Kopieren verfügbar"
+msgstr "Keine Datenmenge zum Kopieren verfügbar."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
@@ -1408,22 +1408,22 @@ msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
 msgstr "Hinzufügen"
 
+#: objinspstrconsts.sccsiledtaddimg
+msgid "Add image ..."
+msgstr "Bild hinzufügen ..."
+
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-#, fuzzy
-#| msgid "Add image from multiple resolutions ..."
 msgid "Add image with multiple resolutions ..."
-msgstr "Bild aus mehreren Auflösungen hinzufügen …"
+msgstr "Bild in mehreren Auflösungen hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "Register new resolution (image size) ..."
 msgstr "Neue Auflösung (Bild-Größe) registrieren ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
-#, fuzzy
-#| msgid "Add image(s) from single resolution..."
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
 msgid "Add image(s) with single resolution..."
-msgstr "Bild(er) aus einzelner Auflösung hinzufügen ..."
+msgstr "Bild(er) in einzelner Auflösung hinzufügen ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
@@ -1532,14 +1532,14 @@ msgid "Replace"
 msgstr "Ersetzen"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-#, fuzzy
-#| msgid "Replace image by all resolutions ..."
 msgid "Replace all resolutions of an image ..."
-msgstr "Bild durch alle Auflösungen ersetzen …"
+msgstr "Alle Auflösungen eines Bildes ersetzen …"
+
+#: objinspstrconsts.sccsiledtreplaceimg
+msgid "Replace image ..."
+msgstr "Bild ersetzen ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
-#, fuzzy
-#| msgid "Replace image by appropriate resolution ..."
 msgid "Replace single resolution of an image ..."
 msgstr "Bild durch passende Auflösung ersetzen ..."
 
@@ -1905,4 +1905,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

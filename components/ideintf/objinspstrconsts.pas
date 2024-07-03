@@ -142,10 +142,12 @@ resourcestring
   sccsILEdtGrpLCaption = 'Images';
   sccsILEdtGrpRCaption = 'Selected Image';
   sccsILEdtAdd         = 'Add';
+  sccsILEdtAddImg      = 'Add image ...';
   sccsILEdtAddSingleResolution = 'Add image(s) with single resolution...';
   sccsILEdtAddMoreResolutions  = 'Add image with multiple resolutions ...';
   sccsILEdtAddSliced   = 'Add sliced ...';
   sccsILEdtReplace     = 'Replace';
+  sccsILEdtReplaceImg  = 'Replace image ...';
   sccsILEdtReplaceSingleResolution = 'Replace single resolution of an image ...';
   sccsILEdtReplaceAllResolutions   = 'Replace all resolutions of an image ...';
   sccsILEdtPasteFromClipboard      = 'Paste image from clipboard';
