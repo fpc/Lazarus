@@ -75,6 +75,7 @@ begin
   p := AView.superview;
   p.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable);
   Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
+  Result.setAcceptsTouchEvents(true);
   Result.setAutoresizesSubviews(false);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
