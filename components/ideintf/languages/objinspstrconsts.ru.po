@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-02 16:35+0300\n"
+"PO-Revision-Date: 2024-07-03 15:32+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1409,7 +1409,7 @@ msgstr "Добавить"
 
 #: objinspstrconsts.sccsiledtaddimg
 msgid "Add image ..."
-msgstr ""
+msgstr "Добавить изображение ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add image with multiple resolutions ..."
@@ -1536,7 +1536,7 @@ msgstr "Заменить все разрешения изображения ..."
 
 #: objinspstrconsts.sccsiledtreplaceimg
 msgid "Replace image ..."
-msgstr ""
+msgstr "Заменить изображение ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."
