@@ -203,6 +203,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       Hint = 'Delete'
       ShortCut = 46
       OnExecute = ClearActionExecute
+      OnUpdate = ClearActionUpdate
     end
   end
 end

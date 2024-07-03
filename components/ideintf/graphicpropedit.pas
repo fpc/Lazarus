@@ -47,6 +47,7 @@ type
     GroupBox1: TGroupBox;
     SaveDialog: TSavePictureDialog;
     ScrollBox: TScrollBox;
+    procedure ClearActionUpdate(Sender: TObject);
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -113,6 +114,11 @@ end;
 procedure TGraphicPropertyEditorForm.CopyActionExecute(Sender: TObject);
 begin
   Clipboard.Assign(ImagePreview.Picture.Graphic);
+end;
+
+procedure TGraphicPropertyEditorForm.ClearActionUpdate(Sender: TObject);
+begin
+  ClearAction.Enabled := ImagePreview.Picture.Graphic <> nil;
 end;
 
 procedure TGraphicPropertyEditorForm.CopyActionUpdate(Sender: TObject);
