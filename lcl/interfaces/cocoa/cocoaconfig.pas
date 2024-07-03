@@ -49,6 +49,12 @@ var
   // Overly Style Scroller Knob Color
   CocoaScrollerLegacyStyleKnobColor : NSColorFunction = @getCocoaScrollerDefaultKnobColor;
 
+  // Overly Style Scroller Auto Show Delay Time, in Seconds
+  // the scrollbar is not shown because the value is updated,
+  // but because it is triggered by other factors, such as
+  // double-finger tapping the touchpad
+  CocoaScrollerOverlayStyleAutoShowDelayTime : Double = 0.2;
+
   // Overly Style Scroller Auto Hide Delay Time, in Seconds
   CocoaScrollerOverlayStyleAutoHideDelayTime : Double = 0.9;
 
