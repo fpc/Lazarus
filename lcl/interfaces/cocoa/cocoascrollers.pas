@@ -226,6 +226,7 @@ type
   TCocoaManualScrollView = objcclass(NSView)
   private
     _manager: TCocoaScrollStyleManager;
+    _tapping: Integer;             // two finger tapping, SB_VERT / SB_HORZ / SB_BOTH
     fdocumentView: NSView;
     fhscroll : TCocoaScrollBar;
     fvscroll : TCocoaScrollBar;
@@ -249,6 +250,9 @@ type
 
     procedure setDocumentView(AView: NSView); message 'setDocumentView:';
     function documentView: NSView; message 'documentView';
+
+    procedure delayShowScrollBars; message 'delayShowScrollBars';
+    procedure showScrollBarsAndAutoHide( tapping:Integer ); message 'showScrollBarsAndAutoHide:';
 
     procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
     procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
@@ -613,6 +617,7 @@ end;
 function TCocoaManualScrollView.initWithFrame(frameRect: NSRect): id;
 begin
   Result:= inherited;
+  _tapping:= -1;
   resetManager;
 end;
 
@@ -752,6 +757,20 @@ end;
 function TCocoaManualScrollView.documentView: NSView;
 begin
   Result:=fdocumentView;
+end;
+
+procedure TCocoaManualScrollView.delayShowScrollBars();
+begin
+  _manager.showScrollBar( self.fhscroll, False );
+  _manager.showScrollBar( self.fvscroll, False );
+end;
+
+procedure TCocoaManualScrollView.showScrollBarsAndAutoHide( tapping:Integer );
+begin
+  if (tapping=SB_HORZ) or (tapping=SB_BOTH) then
+    _manager.showScrollBar(self.fhscroll);
+  if (tapping=SB_VERT) or (tapping=SB_BOTH) then
+    _manager.showScrollBar(self.fvscroll);
 end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
