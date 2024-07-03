@@ -254,6 +254,8 @@ type
     procedure delayShowScrollBars; message 'delayShowScrollBars';
     procedure showScrollBarsAndAutoHide( tapping:Integer ); message 'showScrollBarsAndAutoHide:';
 
+    function isTapping( scroller:NSScroller ): Boolean; message 'isTapping:';
+    procedure onBarScrolled( scroller:NSScroller ); message 'onBarScrolled:';
     procedure touchesBeganWithEvent(event: NSEvent); override;
     procedure touchesEndedWithEvent(event: NSEvent); override;
     procedure touchesCancelledWithEvent(event: NSEvent); override;
@@ -761,6 +763,33 @@ end;
 function TCocoaManualScrollView.documentView: NSView;
 begin
   Result:=fdocumentView;
+end;
+
+function TCocoaManualScrollView.isTapping(scroller: NSScroller): Boolean;
+begin
+  if _tapping < 0 then
+    Exit( False );
+  if _tapping = SB_BOTH then
+    Exit( True );
+  if (_tapping = SB_HORZ) and (scroller=self.fhscroll) then
+    Exit( True );
+  if (_tapping = SB_VERT) and (scroller=self.fvscroll) then
+    Exit( True );
+  Result:= False;
+end;
+
+procedure TCocoaManualScrollView.onBarScrolled(scroller: NSScroller);
+begin
+  if _tapping < 0 then
+    Exit;
+
+  if scroller=self.fvscroll then begin
+    _tapping:= SB_VERT;
+    _manager.tempHideScrollBar( fhscroll );
+  end else if scroller=self.fhscroll then begin
+    _tapping:= SB_HORZ;
+    _manager.tempHideScrollBar( fvscroll );
+  end;
 end;
 
 procedure TCocoaManualScrollView.delayShowScrollBars();
@@ -1871,6 +1900,9 @@ begin
   if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
     Exit;
 
+  if effect.currentKnobPosition <> knobPosition then
+    _scrollView.onBarScrolled( scroller );
+
   effect.currentKnobPosition:= knobPosition;
   effect.currentKnobProportion:= knobProportion;
 
@@ -1951,6 +1983,9 @@ begin
     effect.setDelayShowingTimer;
     Exit;
   end;
+
+  if NOT _scrollView.isTapping(scroller) and NOT effect.entered then
+    effect.setDelayHidingTimer;
 
   // on old versions of macOS, alpha=0 is considered hidden.
   // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
