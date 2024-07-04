@@ -194,7 +194,6 @@ type
     constructor Create;
     destructor Destroy; override;
     function SelectAndRun: TModalResult;
-    function RunOneUnit(AnUnitInfo: TUnitInfo): TModalResult;
   end;
 
   { TRemoveFilesSelector }
@@ -204,6 +203,7 @@ type
     function ActionForFiles: TModalResult; override;
   public
     constructor Create;
+    function RunOneUnit(AnUnitInfo: TUnitInfo): TModalResult;
   end;
 
   { TRenameFilesSelector }
@@ -1798,43 +1798,15 @@ end;
 
 function TProjectUnitFileSelector.SelectAndRun: TModalResult;
 begin
-  Result:=Select;
+  Result:=Select;   // Let the user select files in a dialog.
   if Result<>mrOK then Exit;
   if Assigned(fUnitInfos) and (fUnitInfos.Count>0) then begin
     // check ToolStatus
     if (MainIDE.ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
       debugln('RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(MainIDE.ToolStatus)));
-      exit(mrOK);
+      exit;
     end;
-    // commit changes from source editor to codetools
-    //SaveEditorChangesToCodeCache(nil);
-    //Project1.BeginUpdate(true);
-    try
-      Result:=ActionForFiles;
-    finally
-      // all changes were handled automatically by events, just clear the logs
-      //CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-      //Project1.EndUpdate;
-    end;
-  end
-  else
-    Result:=mrOk;
-end;
-
-function TProjectUnitFileSelector.RunOneUnit(AnUnitInfo: TUnitInfo): TModalResult;
-begin
-  Assert(AnUnitInfo.IsPartOfProject, 'TProjectUnitFileSelector.RunOneUnit: '
-       + AnUnitInfo.Unit_Name + ' is not part of project');
-  fUnitInfos:=TFPList.Create;
-  fUnitInfos.Add(AnUnitInfo);
-  // commit changes from source editor to codetools
-  SaveEditorChangesToCodeCache(nil);
-  Project1.BeginUpdate(true);
-  try
     Result:=ActionForFiles;
-  finally
-    CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-    Project1.EndUpdate;
   end;
 end;
 
@@ -1857,64 +1829,90 @@ begin
   ObsoleteUnitPaths:='';
   ObsoleteIncPaths:='';
   Assert(fUnitInfos.Count > 0, 'TRemoveFilesSelector.ActionForFiles: No files');
-  for i:=0 to fUnitInfos.Count-1 do
-  begin
-    AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
-    Assert(AnUnitInfo.IsPartOfProject, 'TRemoveFilesSelector.ActionForFiles: '
-         + AnUnitInfo.Unit_Name + ' is not part of project');
-    UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
-    AnUnitInfo.IsPartOfProject:=false;
-    Project1.Modified:=true;
-    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+  // commit changes from source editor to codetools
+  SaveEditorChangesToCodeCache(nil);
+  Project1.BeginUpdate(true);
+  try
+    for i:=0 to fUnitInfos.Count-1 do
     begin
-      if FilenameIsAbsolute(AnUnitInfo.Filename) then
-        ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,UnitPath);
-      // remove from project's unit section
-      if (Project1.MainUnitID>=0) and (pfMainUnitIsPascalSource in Project1.Flags)
-      then begin
-        ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
-        if (ShortUnitName<>'') then begin
-          if not CodeToolBoss.RemoveUnitFromAllUsesSections(
-                               Project1.MainUnitInfo.Source,ShortUnitName) then
-          begin
-            MainIDE.DoJumpToCodeToolBossError;
-            exit(mrCancel);
+      AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
+      Assert(AnUnitInfo.IsPartOfProject, 'TRemoveFilesSelector.ActionForFiles: '
+           + AnUnitInfo.Unit_Name + ' is not part of project');
+      UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
+      AnUnitInfo.IsPartOfProject:=false;
+      Project1.Modified:=true;
+      if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      begin
+        if FilenameIsAbsolute(AnUnitInfo.Filename) then
+          ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,UnitPath);
+        // remove from project's unit section
+        if (Project1.MainUnitID>=0) and (pfMainUnitIsPascalSource in Project1.Flags)
+        then begin
+          ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
+          if (ShortUnitName<>'') then begin
+            if not CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                 Project1.MainUnitInfo.Source,ShortUnitName) then
+            begin
+              MainIDE.DoJumpToCodeToolBossError;
+              exit(mrCancel);
+            end;
           end;
         end;
+        // remove CreateForm statement from project
+        if (Project1.MainUnitID>=0) and (AnUnitInfo.ComponentName<>'')
+        and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+          // Do not care if this fails. A user may have removed the line from source.
+          Project1.RemoveCreateFormFromProjectFile(AnUnitInfo.ComponentName);
       end;
-      // remove CreateForm statement from project
-      if (Project1.MainUnitID>=0) and (AnUnitInfo.ComponentName<>'')
-      and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
-        // Do not care if this fails. A user may have removed the line from source.
-        Project1.RemoveCreateFormFromProjectFile(AnUnitInfo.ComponentName);
-    end;
-    if FilenameExtIs(AnUnitInfo.Filename,'inc') then
-      // include file
-      if FilenameIsAbsolute(AnUnitInfo.Filename) then
-        ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,UnitPath);
-  end;
-
-  // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
-  AnUnitInfo:=Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
-      UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
-      if FilenameIsPascalUnit(AnUnitInfo.Filename) then
-        ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,UnitPath);
       if FilenameExtIs(AnUnitInfo.Filename,'inc') then
-        ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,UnitPath);
+        // include file
+        if FilenameIsAbsolute(AnUnitInfo.Filename) then
+          ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,UnitPath);
     end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-  end;
 
-  // check if compiler options contain paths of ObsoleteUnitPaths
-  if ObsoleteUnitPaths<>'' then begin
-    DebugLn(['TRemoveFilesSelector.ActionForFiles: ObsoleteUnitPaths=', ObsoleteUnitPaths]);
-    RemovePathFromBuildModes(ObsoleteUnitPaths, pcosUnitPath);
+    // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
+    AnUnitInfo:=Project1.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
+        UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
+        if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+          ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,UnitPath);
+        if FilenameExtIs(AnUnitInfo.Filename,'inc') then
+          ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,UnitPath);
+      end;
+      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+    end;
+
+    // check if compiler options contain paths of ObsoleteUnitPaths
+    if ObsoleteUnitPaths<>'' then begin
+      DebugLn(['TRemoveFilesSelector.ActionForFiles: ObsoleteUnitPaths=', ObsoleteUnitPaths]);
+      RemovePathFromBuildModes(ObsoleteUnitPaths, pcosUnitPath);
+    end;
+    // or paths of ObsoleteIncPaths
+    if ObsoleteIncPaths<>'' then
+      RemovePathFromBuildModes(ObsoleteIncPaths, pcosIncludePath);
+  finally
+    // all changes were handled automatically by events, just clear the logs
+    CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
+    Project1.EndUpdate;
   end;
-  // or paths of ObsoleteIncPaths
-  if ObsoleteIncPaths<>'' then
-    RemovePathFromBuildModes(ObsoleteIncPaths, pcosIncludePath);
+end;
+
+function TRemoveFilesSelector.RunOneUnit(AnUnitInfo: TUnitInfo): TModalResult;
+begin
+  Assert(AnUnitInfo.IsPartOfProject, 'TRemoveFilesSelector.RunOneUnit: '
+       + AnUnitInfo.Unit_Name + ' is not part of project');
+  fUnitInfos:=TFPList.Create;
+  fUnitInfos.Add(AnUnitInfo);
+  // commit changes from source editor to codetools
+  SaveEditorChangesToCodeCache(nil);
+  Project1.BeginUpdate(true);
+  try
+    Result:=ActionForFiles;
+  finally
+    CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
+    Project1.EndUpdate;
+  end;
 end;
 
 { TRenameFilesSelector }
