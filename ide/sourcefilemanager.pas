@@ -1807,15 +1807,14 @@ begin
       exit(mrOK);
     end;
     // commit changes from source editor to codetools
-    SaveEditorChangesToCodeCache(nil);
-    Project1.BeginUpdate(true);
+    //SaveEditorChangesToCodeCache(nil);
+    //Project1.BeginUpdate(true);
     try
       Result:=ActionForFiles;
     finally
       // all changes were handled automatically by events, just clear the logs
-      Assert(Assigned(fUnitInfos) and (fUnitInfos.Count>0), 'TProjectUnitFileSelector.Run: No units');
-      CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-      Project1.EndUpdate;
+      //CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
+      //Project1.EndUpdate;
     end;
   end
   else
@@ -1932,17 +1931,18 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   Assert(fUnitInfos.Count > 0, 'TRemoveFilesSelector.ActionForFiles: No files');
-  Result:=mrOK;
+  Result:=SaveProject([sfDoNotSaveVirtualFiles,sfCanAbort]);
   for i:=0 to fUnitInfos.Count-1 do
   begin
     AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
     Assert(AnUnitInfo.IsPartOfProject, 'TRenameFilesSelector.ActionForFiles: '
          + AnUnitInfo.Unit_Name + ' is not part of project');
+    // Marked here means to remove old files silently.
+    AnUnitInfo.Marked:=True;
     Result:=RenameUnitLowerCase(AnUnitInfo, false);
+    AnUnitInfo.Marked:=False;
     if Result<>mrOK then exit;
   end;
-  if Result=mrOK then
-    Result:=SaveProject([sfDoNotSaveVirtualFiles,sfCanAbort]);
 end;
 
 // ---
@@ -5769,7 +5769,7 @@ var
   AmbiguousFiles: TStringList;
   i: Integer;
   DirRelation: TSPFileMaskRelation;
-  OldFileRemoved: Boolean;
+  OldFileRemoved, Silence: Boolean;
   ConvTool: TConvDelphiCodeTool;
   AEditor: TSourceEditor;
 begin
@@ -5938,6 +5938,7 @@ begin
 
     // delete ambiguous files
     OldFileRemoved:=false;
+    Silence:=false;
     AmbiguousFiles:=FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
     if AmbiguousFiles<>nil then begin
       try
@@ -5947,11 +5948,17 @@ begin
         then begin
           S:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)]);
           OldFileRemoved:=true;
+          // Marked here means to remove an old file silently.
+          if AnUnitInfo.Marked then
+            Silence:=true;
         end
         else
           S:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
                     [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
-        Result:=IDEMessageDialog(lisAmbiguousFileFound,S,mtWarning,[mbYes,mbNo,mbAbort]);
+        if Silence then
+          Result:=mrYes
+        else
+          Result:=IDEMessageDialog(lisAmbiguousFileFound,S,mtWarning,[mbYes,mbNo,mbAbort]);
         if Result=mrAbort then exit;
         if Result=mrYes then begin
           NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
