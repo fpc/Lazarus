@@ -2077,7 +2077,7 @@ begin
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
       Application.ProcessMessages;
       Result:=AddUnit(fUnitsToAddToProject[i]);
-      if Result=mrNo then Continue;
+      if Result in [mrNo, mrCancel] then Continue;
       if Result=mrAbort then Exit;
       if Assigned(CurUnitInfo) then begin
         Result:=ConvertOne(CurUnitInfo);
