@@ -5649,22 +5649,127 @@ begin
   end;
 end;
 
+function RenameLRSFile(AnUnitInfo: TUnitInfo; NewFileName, OldFileName: String;
+  var LRSCode: TCodeBuffer): TModalResult;
+var
+  OldFilePath, NewFilePath: String;
+  NewLRSFilename, NewLRSFilePath, OldLRSFilePath: String;
+begin
+  NewFilePath:=ExtractFilePath(NewFilename);
+  OldFilePath:=ExtractFilePath(OldFilename);
+  // the resource include line in the code will be changed later after
+  // changing the unitname
+  if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
+  and (pfLRSFilesInOutputDirectory in Project1.Flags) then
+  begin
+    NewLRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
+    NewLRSFilename:=AppendPathDelim(ExtractFilePath(NewLRSFilename))
+      +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
+  end else begin
+    OldLRSFilePath:=ExtractFilePath(LRSCode.Filename);
+    NewLRSFilePath:=OldLRSFilePath;
+    if FilenameIsAbsolute(OldFilePath)
+    and PathIsInPath(OldLRSFilePath,OldFilePath) then begin
+      // resource code was in the same or in a sub directory of source
+      // -> try to keep this relationship
+      NewLRSFilePath:=NewFilePath
+        +copy(LRSCode.Filename,length(OldFilePath)+1,length(LRSCode.Filename));
+      if not DirPathExists(NewLRSFilePath) then
+        NewLRSFilePath:=NewFilePath;
+    end else begin
+      // resource code was not in the same or in a sub directory of source
+      // copy resource into the same directory as the source
+      NewLRSFilePath:=NewFilePath;
+    end;
+    NewLRSFilename:=NewLRSFilePath+ExtractFileNameOnly(NewFilename)+ResourceFileExt;
+  end;
+  Result:=ForceDirectoryInteractive(ExtractFilePath(NewLRSFilename),[mbRetry,mbIgnore]);
+  if Result=mrCancel then exit;
+  if Result=mrOk then begin
+    if not CodeToolBoss.SaveBufferAs(LRSCode,NewLRSFilename,LRSCode) then
+      DebugLn(['RenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewLRSFilename,'"']);
+  end;
+
+  {$IFDEF IDE_DEBUG}
+  debugln(['RenameUnit C ',ResourceCode<>nil]);
+  debugln(['   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"']);
+  if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
+  {$ENDIF}
+end;
+
+function DeleteOldFilesAfterRename(NewFilename, NewLFMFilename, OldFilename: string;
+  LRSCode: TCodeBuffer): TModalResult;
+var
+  OldName, OutDir: String;
+  Owners: TFPList;
+  i: Integer;
+begin
+  // delete old lfm
+  if FileExistsUTF8(NewLFMFilename) then begin
+    // the new file has a lfm, so it is safe to delete the old
+    // (if NewLFMFilename does not exist, it didn't belong to the unit
+    //  or there was an error during delete. Never delete files in doubt.)
+    OldName:=ChangeFileExt(OldFilename,'.lfm');
+    Result:=DeleteFileInteractive(OldName,[mbAbort]);
+    if Result=mrAbort then exit;
+  end;
+  // delete old lrs
+  if (LRSCode<>nil) and FileExistsUTF8(LRSCode.Filename) then begin
+    // the new file has a lrs, so it is safe to delete the old
+    // (if the new lrs does not exist, it didn't belong to the unit
+    //  or there was an error during delete. Never delete files in doubt.)
+    OldName:=ChangeFileExt(OldFilename,ResourceFileExt);
+    Result:=DeleteFileInteractive(OldName,[mbAbort]);
+    if Result=mrAbort then exit;
+  end;
+  // delete ppu in source directory
+  OldName:=ChangeFileExt(OldFilename,'.ppu');
+  Result:=DeleteFileInteractive(OldName,[mbAbort]);
+  if Result=mrAbort then exit;
+  OldName:=ChangeFileExt(OldName,'.o');
+  Result:=DeleteFileInteractive(OldName,[mbAbort]);
+  if Result=mrAbort then exit;
+  Owners:=PkgBoss.GetOwnersOfUnit(NewFilename);
+  try
+    if Owners<>nil then begin
+      for i:=0 to Owners.Count-1 do begin
+        OutDir:='';
+        if TObject(Owners[i]) is TProject then begin
+          // delete old files in project output directory
+          OutDir:=TProject(Owners[i]).CompilerOptions.GetUnitOutPath(false);
+        end else if TObject(Owners[i]) is TLazPackage then begin
+          // delete old files in package output directory
+          OutDir:=TLazPackage(Owners[i]).CompilerOptions.GetUnitOutPath(false);
+        end;
+        if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
+          OldName:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilename(OldFilename),'.ppu');
+          Result:=DeleteFileInteractive(OldName,[mbAbort]);
+          if Result=mrAbort then exit;
+          OldName:=ChangeFileExt(OldName,'.o');
+          Result:=DeleteFileInteractive(OldName,[mbAbort]);
+          if Result=mrAbort then exit;
+          OldName:=ChangeFileExt(OldName,ResourceFileExt);
+          Result:=DeleteFileInteractive(OldName,[mbAbort]);
+          if Result=mrAbort then exit;
+        end;
+      end;
+    end;
+  finally
+    Owners.Free;
+  end;
+end;
+
 function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
   var LFMCode, LRSCode: TCodeBuffer): TModalResult;
 var
   NewSource: TCodeBuffer;
-  NewLFMFilename, NewLRSFilename: String;
-  NewFilePath, NewLRSFilePath: String;
-  OldFilename, OldLFMFilename, OldLRSFilename, OldPPUFilename: String;
-  OldFilePath, OldLRSFilePath: String;
-  OldSourceCode, OldUnitPath: String;
-  AmbiguousFilename, OutDir, S: string;
+  NewFilePath, OldFilePath: String;
+  OldFilename, OldLFMFilename, NewLFMFilename, S: String;
   NewHighlighter: TIdeSyntaxHighlighterID;
   AmbiguousFiles: TStringList;
   i: Integer;
   DirRelation: TSPFileMaskRelation;
-  Owners: TFPList;
-  OldFileExisted: Boolean;
+  OldFileRemoved: Boolean;
   ConvTool: TConvDelphiCodeTool;
   AEditor: TSourceEditor;
 begin
@@ -5706,7 +5811,7 @@ begin
     end;
 
     // create new source with the new filename
-    OldSourceCode:=AnUnitInfo.Source.Source;
+    S:=AnUnitInfo.Source.Source;
     NewSource:=CodeToolBoss.CreateFile(NewFilename);
     if NewSource=nil then begin
       Result:=IDEMessageDialog(lisUnableToCreateFile,
@@ -5714,7 +5819,7 @@ begin
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
-    NewSource.Source:=OldSourceCode;
+    NewSource.Source:=S;
     if (AnUnitInfo.Source.DiskEncoding<>'') and (AnUnitInfo.Source.DiskEncoding<>EncodingUTF8)
     then begin
       NewSource.DiskEncoding:=AnUnitInfo.Source.DiskEncoding;
@@ -5732,8 +5837,8 @@ begin
     // add new path to unit path
     if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(NewFilename)
     and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
-      OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-      if SearchDirectoryInMaskedSearchPath(OldUnitPath,NewFilePath)<1 then
+      S:=Project1.CompilerOptions.GetUnitPath(false);
+      if SearchDirectoryInMaskedSearchPath(S,NewFilePath)<1 then
         AddPathToBuildModes(NewFilePath, False);
     end;
 
@@ -5761,49 +5866,10 @@ begin
         end;
       end;
     end;
-
     // rename Resource file (.lrs)
     if (LRSCode<>nil) then begin
-      // the resource include line in the code will be changed later after
-      // changing the unitname
-      if AnUnitInfo.IsPartOfProject
-      and (not Project1.IsVirtual)
-      and (pfLRSFilesInOutputDirectory in Project1.Flags) then begin
-        NewLRSFilename:=MainBuildBoss.GetDefaultLRSFilename(AnUnitInfo);
-        NewLRSFilename:=AppendPathDelim(ExtractFilePath(NewLRSFilename))
-          +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
-      end else begin
-        OldLRSFilePath:=ExtractFilePath(LRSCode.Filename);
-        NewLRSFilePath:=OldLRSFilePath;
-        if FilenameIsAbsolute(OldFilePath)
-        and PathIsInPath(OldLRSFilePath,OldFilePath) then begin
-          // resource code was in the same or in a sub directory of source
-          // -> try to keep this relationship
-          NewLRSFilePath:=NewFilePath
-            +copy(LRSCode.Filename,length(OldFilePath)+1,length(LRSCode.Filename));
-          if not DirPathExists(NewLRSFilePath) then
-            NewLRSFilePath:=NewFilePath;
-        end else begin
-          // resource code was not in the same or in a sub directory of source
-          // copy resource into the same directory as the source
-          NewLRSFilePath:=NewFilePath;
-        end;
-        NewLRSFilename:=NewLRSFilePath+ExtractFileNameOnly(NewFilename)+ResourceFileExt;
-      end;
-      Result:=ForceDirectoryInteractive(ExtractFilePath(NewLRSFilename),[mbRetry,mbIgnore]);
-      if Result=mrCancel then exit;
-      if Result=mrOk then begin
-        if not CodeToolBoss.SaveBufferAs(LRSCode,NewLRSFilename,LRSCode) then
-          DebugLn(['RenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewLRSFilename,'"']);
-      end;
-
-      {$IFDEF IDE_DEBUG}
-      debugln(['RenameUnit C ',ResourceCode<>nil]);
-      debugln(['   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"']);
-      if ResourceCode<>nil then debugln('*** ResourceFileName ',ResourceCode.Filename);
-      {$ENDIF}
-    end else begin
-      NewLRSFilename:='';
+      Result:=RenameLRSFile(AnUnitInfo, NewFileName, OldFileName, LRSCode);
+      if Result=mrAbort then exit;
     end;
     // rename unit name of jit class
     if (AnUnitInfo.Component<>nil) then
@@ -5870,33 +5936,30 @@ begin
                                  AnUnitInfo.IsPartOfProject);
     if Result=mrAbort then exit;
 
-    OldFileExisted:=FilenameIsAbsolute(OldFilename) and FileExistsUTF8(OldFilename);
-
     // delete ambiguous files
-    AmbiguousFiles:=
-      FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
+    OldFileRemoved:=false;
+    AmbiguousFiles:=FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
     if AmbiguousFiles<>nil then begin
       try
         if (AmbiguousFiles.Count=1)
         and (CompareFilenames(OldFilePath,NewFilePath)=0)
         and (CompareFilenames(AmbiguousFiles[0],ExtractFilename(OldFilename))=0)
-        then
-          S:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)])
+        then begin
+          S:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)]);
+          OldFileRemoved:=true;
+        end
         else
           S:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
-                          [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
-        Result:=IDEMessageDialog(lisAmbiguousFileFound, S,
-          mtWarning,[mbYes,mbNo,mbAbort]);
+                    [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
+        Result:=IDEMessageDialog(lisAmbiguousFileFound,S,mtWarning,[mbYes,mbNo,mbAbort]);
         if Result=mrAbort then exit;
         if Result=mrYes then begin
           NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
           for i:=0 to AmbiguousFiles.Count-1 do begin
-            AmbiguousFilename:=NewFilePath+AmbiguousFiles[i];
-            if (FileExistsUTF8(AmbiguousFilename))
-            and (not DeleteFileUTF8(AmbiguousFilename))
-            and (IDEMessageDialog(lisPkgMangDeleteFailed,
-                  Format(lisDeletingOfFileFailed, [AmbiguousFilename]),
-                  mtError, [mbIgnore, mbCancel])=mrCancel)
+            S:=NewFilePath+AmbiguousFiles[i];
+            if FileExistsUTF8(S) and (not DeleteFileUTF8(S))
+            and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,[S]),
+                                  mtError, [mbIgnore,mbCancel])=mrCancel)
             then
               exit(mrCancel);
           end;
@@ -5925,82 +5988,9 @@ begin
     end;
 
     // delete old pas, .pp, .ppu
-    if (CompareFilenames(NewFilename,OldFilename)<>0)
-    and OldFileExisted then begin
-      if IDEMessageDialog(lisDelete2, Format(lisDeleteOldFile,[OldFilename]),
-        mtConfirmation,[mbYes,mbNo])=mrYes then
-      begin
-        Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
-        if Result=mrAbort then exit;
-        // delete old lfm
-        //debugln(['RenameUnit NewLFMFilename=',NewLFMFilename,' exists=',FileExistsUTF8(NewLFMFilename),' Old=',OldLFMFilename,' exists=',FileExistsUTF8(OldLFMFilename)]);
-        if FileExistsUTF8(NewLFMFilename) then begin
-          // the new file has a lfm, so it is safe to delete the old
-          // (if NewLFMFilename does not exist, it didn't belong to the unit
-          //  or there was an error during delete. Never delete files in doubt.)
-          OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
-          if FileExistsUTF8(OldLFMFilename) then begin
-            Result:=DeleteFileInteractive(OldLFMFilename,[mbAbort]);
-            if Result=mrAbort then exit;
-          end;
-        end;
-        // delete old lrs
-        if (LRSCode<>nil) and FileExistsUTF8(LRSCode.Filename) then begin
-          // the new file has a lrs, so it is safe to delete the old
-          // (if the new lrs does not exist, it didn't belong to the unit
-          //  or there was an error during delete. Never delete files in doubt.)
-          OldLRSFilename:=ChangeFileExt(OldFilename,ResourceFileExt);
-          if FileExistsUTF8(OldLRSFilename) then begin
-            Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
-            if Result=mrAbort then exit;
-          end;
-        end;
-        // delete ppu in source directory
-        OldPPUFilename:=ChangeFileExt(OldFilename,'.ppu');
-        if FileExistsUTF8(OldPPUFilename) then begin
-          Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
-          if Result=mrAbort then exit;
-        end;
-        OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
-        if FileExistsUTF8(OldPPUFilename) then begin
-          Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
-          if Result=mrAbort then exit;
-        end;
-        Owners:=PkgBoss.GetOwnersOfUnit(NewFilename);
-        try
-          if Owners<>nil then begin
-            for i:=0 to Owners.Count-1 do begin
-              OutDir:='';
-              if TObject(Owners[i]) is TProject then begin
-                // delete old files in project output directory
-                OutDir:=TProject(Owners[i]).CompilerOptions.GetUnitOutPath(false);
-              end else if TObject(Owners[i]) is TLazPackage then begin
-                // delete old files in package output directory
-                OutDir:=TLazPackage(Owners[i]).CompilerOptions.GetUnitOutPath(false);
-              end;
-              if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
-                OldPPUFilename:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilename(OldFilename),'.ppu');
-                if FileExistsUTF8(OldPPUFilename) then begin
-                  Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
-                  if Result=mrAbort then exit;
-                end;
-                OldPPUFilename:=ChangeFileExt(OldPPUFilename,'.o');
-                if FileExistsUTF8(OldPPUFilename) then begin
-                  Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
-                  if Result=mrAbort then exit;
-                end;
-                OldLRSFilename:=ChangeFileExt(OldPPUFilename,ResourceFileExt);
-                if FileExistsUTF8(OldLRSFilename) then begin
-                  Result:=DeleteFileInteractive(OldLRSFilename,[mbAbort]);
-                  if Result=mrAbort then exit;
-                end;
-              end;
-            end;
-          end;
-        finally
-          Owners.Free;
-        end;
-      end;
+    if (CompareFilenames(NewFilename,OldFilename)<>0) and OldFileRemoved then begin
+      Result:=DeleteOldFilesAfterRename(NewFilename,NewLFMFilename,OldFilename,LRSCode);
+      if Result=mrAbort then exit;
     end;
 
     // notify IDE addons
