@@ -26,6 +26,9 @@ uses
   LazFileUtils;
 
 type
+
+  { TDrawTreeForm }
+
   TDrawTreeForm = class(TForm)
     VDT1: TLazVirtualDrawTree;
     Label7: TLabel;
@@ -39,6 +42,10 @@ type
     procedure VDT1DrawHint(Sender: TBaseVirtualTree; Canvas: TCanvas; Node: PVirtualNode; R: TRect; Column: TColumnIndex);
     procedure VDT1DrawNode(Sender: TBaseVirtualTree; const PaintInfo: TVTPaintInfo);
     procedure VDT1FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure VDT1GetHint(Sender: TBaseVirtualTree;  Node: PVirtualNode; Column: TColumnIndex;
+        var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
+    procedure VDT1GetHintKind(Sender: TBaseVirtualTree; Node: PVirtualNode;
+        Column: TColumnIndex; var Kind: TVTHintKind);
     procedure VDT1GetHintSize(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var R: TRect);
     procedure VDT1GetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var Index: Integer);
@@ -180,6 +187,7 @@ begin
   VDT1.NodeDataSize := SizeOf(TShellObjectData);
   GetLogicalDrivesInfo(FDriveStrings,Count);
   VDT1.RootNodeCount := Count;
+
 
   //todo
   {
@@ -603,6 +611,26 @@ begin
             Index := 1;
     end;
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TDrawTreeForm.VDT1GetHint(Sender: TBaseVirtualTree;
+    Node: PVirtualNode; Column: TColumnIndex;
+    var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
+var
+  Data: PShellObjectData;
+begin
+  Data := Sender.GetNodeData(Node);
+  if Column = 0 then HintText := Data.Display;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TDrawTreeForm.VDT1GetHintKind(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex; var Kind: TVTHintKind);
+begin
+  if Column = 0 then Kind := vhkText else Kind := vhkOwnerDraw;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

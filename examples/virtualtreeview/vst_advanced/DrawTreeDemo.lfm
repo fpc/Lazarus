@@ -7,8 +7,8 @@ object DrawTreeForm: TDrawTreeForm
   Caption = 'DrawTreeForm'
   ClientHeight = 453
   ClientWidth = 710
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object Label7: TLabel
     Left = 8
     Height = 30
@@ -53,6 +53,7 @@ object DrawTreeForm: TDrawTreeForm
     AnchorSideBottom.Control = TrackBar1
     Left = 8
     Height = 361
+    Hint = '(dummy)'
     Top = 46
     Width = 694
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -111,6 +112,8 @@ object DrawTreeForm: TDrawTreeForm
     OnDrawHint = VDT1DrawHint
     OnDrawNode = VDT1DrawNode
     OnFreeNode = VDT1FreeNode
+    OnGetHint = VDT1GetHint
+    OnGetHintKind = VDT1GetHintKind
     OnGetHintSize = VDT1GetHintSize
     OnGetImageIndex = VDT1GetImageIndex
     OnGetNodeWidth = VDT1GetNodeWidth
@@ -129,9 +132,9 @@ object DrawTreeForm: TDrawTreeForm
     Top = 415
     Width = 197
     Max = 100
-    OnChange = TrackBar1Change
     Position = 50
     TickStyle = tsNone
+    OnChange = TrackBar1Change
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 7
     TabOrder = 1
