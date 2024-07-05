@@ -43,7 +43,7 @@ type
 
     // the corresponding LCL ScrollInfo,
     // which are needed when documentView.frame changes.
-    lclHoriScrollInfo: TScrollInfo;
+    lclHorzScrollInfo: TScrollInfo;
     lclVertScrollInfo: TScrollInfo;
 
     docrect    : NSRect;    // have to remember old
@@ -227,9 +227,9 @@ type
   private
     _manager: TCocoaScrollStyleManager;
     _tapping: Integer;             // two finger tapping, SB_VERT / SB_HORZ / SB_BOTH
-    fdocumentView: NSView;
-    fhscroll : TCocoaScrollBar;
-    fvscroll : TCocoaScrollBar;
+    _documentView: NSView;
+    _horzScrollBar : TCocoaScrollBar;
+    _vertScrollBar : TCocoaScrollBar;
   public
     callback: ICommonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
@@ -629,15 +629,15 @@ end;
 
 procedure TCocoaManualScrollView.dealloc;
 begin
-  if Assigned(fhscroll) then begin
-    fhscroll.removeFromSuperview;
-    fhscroll.setManager( nil );
-    fhscroll.release;
+  if Assigned(_horzScrollBar) then begin
+    _horzScrollBar.removeFromSuperview;
+    _horzScrollBar.setManager( nil );
+    _horzScrollBar.release;
   end;
-  if Assigned(fvscroll) then begin
-    fvscroll.removeFromSuperview;
-    fvscroll.setManager( nil );
-    fvscroll.release;
+  if Assigned(_vertScrollBar) then begin
+    _vertScrollBar.removeFromSuperview;
+    _vertScrollBar.setManager( nil );
+    _vertScrollBar.release;
   end;
   FreeAndNil( _manager );
 end;
@@ -664,11 +664,11 @@ begin
   else
     _manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
 
-  if Assigned(self.fhscroll) then begin
-    self.fhscroll.setManager( _manager );
+  if Assigned(_horzScrollBar) then begin
+    _horzScrollBar.setManager( _manager );
   end;
-  if Assigned(self.fvscroll) then begin
-    self.fvscroll.setManager( _manager );
+  if Assigned(_vertScrollBar) then begin
+    _vertScrollBar.setManager( _manager );
   end;
 
   oldManager.Free;
@@ -679,21 +679,21 @@ var
   horzAvailable: Boolean;
   vertAvailabl: Boolean;
 begin
-  horzAvailable:= _manager.isAvailableScrollBar( self.fhscroll );
-  vertAvailabl:= _manager.isAvailableScrollBar( self.fvscroll );
+  horzAvailable:= _manager.isAvailableScrollBar( _horzScrollBar );
+  vertAvailabl:= _manager.isAvailableScrollBar( _vertScrollBar );
 
   self.resetManager;
 
-  _manager.availScrollBar( self.fhscroll, horzAvailable );
-  _manager.availScrollBar( self.fvscroll, vertAvailabl );
+  _manager.availScrollBar( _horzScrollBar, horzAvailable );
+  _manager.availScrollBar( _vertScrollBar, vertAvailabl );
 
   if self.lclGetTarget is TWinControl then
     TWinControl(self.lclGetTarget).AdjustSize;
 
   _manager.updateLayout;
 
-  _manager.showScrollBar(self.fhscroll);
-  _manager.showScrollBar(self.fvscroll);
+  _manager.showScrollBar(_horzScrollBar);
+  _manager.showScrollBar(_vertScrollBar);
 end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -708,14 +708,14 @@ end;
 
 function TCocoaManualScrollView.lclContentView: NSView;
 begin
-  Result:=fdocumentView;
+  Result:=_documentView;
 end;
 
 function TCocoaManualScrollView.lclClientFrame: TRect;
 begin
-  if Assigned(fdocumentView) then
+  if Assigned(_documentView) then
   begin
-    Result:=fdocumentView.lclClientFrame;
+    Result:=_documentView.lclClientFrame;
   end
   else Result:=inherited lclClientFrame;
 end;
@@ -744,25 +744,25 @@ procedure TCocoaManualScrollView.setDocumentView(AView: NSView);
 var
   f  : NSrect;
 begin
-  if fdocumentView=AView then Exit;
-  if Assigned(fdocumentView) then
-    fdocumentView.removeFromSuperview;
+  if _documentView=AView then Exit;
+  if Assigned(_documentView) then
+    _documentView.removeFromSuperview;
 
-  fdocumentView:=AView;
-  if Assigned(fdocumentView) then
+  _documentView:=AView;
+  if Assigned(_documentView) then
   begin
-    addSubview(fdocumentView);
-    f:=fdocumentView.frame;
+    addSubview(_documentView);
+    f:=_documentView.frame;
     f.origin.x:=0;
     f.origin.y:=0;
-    fdocumentView.setFrame(f);
-    fdocumentView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+    _documentView.setFrame(f);
+    _documentView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   end;
 end;
 
 function TCocoaManualScrollView.documentView: NSView;
 begin
-  Result:=fdocumentView;
+  Result:=_documentView;
 end;
 
 function TCocoaManualScrollView.isTapping(scroller: NSScroller): Boolean;
@@ -771,9 +771,9 @@ begin
     Exit( False );
   if _tapping = SB_BOTH then
     Exit( True );
-  if (_tapping = SB_HORZ) and (scroller=self.fhscroll) then
+  if (_tapping = SB_HORZ) and (scroller=_horzScrollBar) then
     Exit( True );
-  if (_tapping = SB_VERT) and (scroller=self.fvscroll) then
+  if (_tapping = SB_VERT) and (scroller=_vertScrollBar) then
     Exit( True );
   Result:= False;
 end;
@@ -783,27 +783,27 @@ begin
   if _tapping < 0 then
     Exit;
 
-  if scroller=self.fvscroll then begin
+  if scroller=_vertScrollBar then begin
     _tapping:= SB_VERT;
-    _manager.tempHideScrollBar( fhscroll );
-  end else if scroller=self.fhscroll then begin
+    _manager.tempHideScrollBar( _horzScrollBar );
+  end else if scroller=_horzScrollBar then begin
     _tapping:= SB_HORZ;
-    _manager.tempHideScrollBar( fvscroll );
+    _manager.tempHideScrollBar( _vertScrollBar );
   end;
 end;
 
 procedure TCocoaManualScrollView.delayShowScrollBars();
 begin
-  _manager.showScrollBar( self.fhscroll, False );
-  _manager.showScrollBar( self.fvscroll, False );
+  _manager.showScrollBar( _horzScrollBar, False );
+  _manager.showScrollBar( _vertScrollBar, False );
 end;
 
 procedure TCocoaManualScrollView.showScrollBarsAndAutoHide( tapping:Integer );
 begin
   if (tapping=SB_HORZ) or (tapping=SB_BOTH) then
-    _manager.showScrollBar(self.fhscroll);
+    _manager.showScrollBar(_horzScrollBar);
   if (tapping=SB_VERT) or (tapping=SB_BOTH) then
-    _manager.showScrollBar(self.fvscroll);
+    _manager.showScrollBar(_vertScrollBar);
 end;
 
 procedure TCocoaManualScrollView.touchesBeganWithEvent(event: NSEvent);
@@ -868,11 +868,11 @@ procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 var
   available: Boolean;
 begin
-  available:= _manager.isAvailableScrollBar(fvscroll);
-  if NOT Assigned(fvscroll) and doshow then
-    fvscroll:= self.allocVerticalScroller( True );
-  _manager.availScrollBar( fvscroll, doshow );
-  if available <> _manager.isAvailableScrollBar(fvscroll) then
+  available:= _manager.isAvailableScrollBar(_vertScrollBar);
+  if NOT Assigned(_vertScrollBar) and doshow then
+    _vertScrollBar:= self.allocVerticalScroller( True );
+  _manager.availScrollBar( _vertScrollBar, doshow );
+  if available <> _manager.isAvailableScrollBar(_vertScrollBar) then
     _manager.updateLayout;
 end;
 
@@ -880,32 +880,32 @@ procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 var
   available: Boolean;
 begin
-  available:= _manager.isAvailableScrollBar(fhscroll);
-  if NOT Assigned(fhscroll) and doshow then
-    fhscroll:= self.allocHorizontalScroller( True );
-  _manager.availScrollBar( fhscroll, doshow );
-  if available <> _manager.isAvailableScrollBar(fhscroll) then
+  available:= _manager.isAvailableScrollBar(_horzScrollBar);
+  if NOT Assigned(_horzScrollBar) and doshow then
+    _horzScrollBar:= self.allocHorizontalScroller( True );
+  _manager.availScrollBar( _horzScrollBar, doshow );
+  if available <> _manager.isAvailableScrollBar(_horzScrollBar) then
     _manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
 begin
-  Result:= _manager.isAvailableScrollBar(fvscroll);
+  Result:= _manager.isAvailableScrollBar(_vertScrollBar);
 end;
 
 function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
 begin
-  Result:= _manager.isAvailableScrollBar(fhscroll);
+  Result:= _manager.isAvailableScrollBar(_horzScrollBar);
 end;
 
 function TCocoaManualScrollView.horizontalScroller: NSScroller;
 begin
-  Result:=fhscroll;
+  Result:=_horzScrollBar;
 end;
 
 function TCocoaManualScrollView.verticalScroller: NSScroller;
 begin
-  Result:=fvscroll;
+  Result:=_vertScrollBar;
 end;
 
 function TCocoaManualScrollView.allocHorizontalScroller(avisible: Boolean): TCocoaScrollBar;
@@ -914,17 +914,17 @@ var
   f : NSRect;
   w : CGFloat;
 begin
-  if Assigned(fhscroll) then
-    Result := fhscroll
+  if Assigned(_horzScrollBar) then
+    Result := _horzScrollBar
   else
   begin
     f := frame;
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-           fhscroll.controlSize, fhscroll.preferredScrollerStyle);
+           _horzScrollBar.controlSize, _horzScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
-    fhscroll := allocScroller( self, r, avisible);
-        fhscroll.setAutoresizingMask(NSViewWidthSizable);
-    Result := fhscroll;
+    _horzScrollBar := allocScroller( self, r, avisible);
+        _horzScrollBar.setAutoresizingMask(NSViewWidthSizable);
+    Result := _horzScrollBar;
     _manager.updateLayout;
   end;
 end;
@@ -935,20 +935,20 @@ var
   f : NSRect;
   w : CGFloat;
 begin
-  if Assigned(fvscroll) then
-    Result := fvscroll
+  if Assigned(_vertScrollBar) then
+    Result := _vertScrollBar
   else
   begin
     f := frame;
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-           fvscroll.controlSize, fvscroll.preferredScrollerStyle);
+           _vertScrollBar.controlSize, _vertScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
-    fvscroll := allocScroller( self, r, avisible);
+    _vertScrollBar := allocScroller( self, r, avisible);
     if self.isFlipped then
-      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
+      _vertScrollBar.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
     else
-      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
-    Result := fvscroll;
+      _vertScrollBar.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+    Result := _vertScrollBar;
     _manager.updateLayout;
   end;
 end;
@@ -963,20 +963,20 @@ var
   pt : NSPoint;
 begin
   Result := false;
-  if Assigned(host.fhscroll) and (not host.fhscroll.isHidden) then
+  if Assigned(host._horzScrollBar) and (not host._horzScrollBar.isHidden) then
   begin
-    pt := host.fhscroll.convertPoint_fromView(event.locationInWindow, nil);
-    if NSPointInRect(pt, host.fhscroll.bounds) then
+    pt := host._horzScrollBar.convertPoint_fromView(event.locationInWindow, nil);
+    if NSPointInRect(pt, host._horzScrollBar.bounds) then
     begin
       Result := true;
       Exit;
     end;
   end;
 
-  if Assigned(host.fvscroll) and (not host.fvscroll.isHidden) then
+  if Assigned(host._vertScrollBar) and (not host._vertScrollBar.isHidden) then
   begin
-    pt := host.fvscroll.convertPoint_fromView(event.locationInWindow, nil);
-    if NSPointInRect(pt, host.fvscroll.bounds) then
+    pt := host._vertScrollBar.convertPoint_fromView(event.locationInWindow, nil);
+    if NSPointInRect(pt, host._vertScrollBar.bounds) then
     begin
       Result := true;
       Exit;
@@ -1024,7 +1024,7 @@ end;
 procedure TCocoaScrollView.resetScrollData;
 begin
   docrect:=documentVisibleRect;
-  lclHoriScrollInfo.fMask:= 0;
+  lclHorzScrollInfo.fMask:= 0;
   lclVertScrollInfo.fMask:= 0;
 end;
 
@@ -1103,7 +1103,7 @@ begin
   end
   else
   begin
-    self.lclHoriScrollInfo:= scrollInfo;
+    self.lclHorzScrollInfo:= scrollInfo;
     newOrigin.x:= scrollInfo.nPos;
   end;
   self.contentView.setBoundsOrigin( newOrigin );
@@ -1142,8 +1142,8 @@ begin
 
   documentView.setFrameSize(newDocSize);
 
-  if lclHoriScrollInfo.fMask<>0 then
-    applyScrollInfo(SB_Horz, lclHoriScrollInfo);
+  if lclHorzScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Horz, lclHorzScrollInfo);
 
   if lclVertScrollInfo.fMask<>0 then
     applyScrollInfo(SB_Vert, lclVertScrollInfo);
@@ -1655,8 +1655,8 @@ begin
   hScrollerFrame := docFrame;
   vScrollerFrame := docFrame;
 
-  hScroller:= _scrollView.fhscroll;
-  vScroller:= _scrollView.fvscroll;
+  hScroller:= _scrollView._horzScrollBar;
+  vScroller:= _scrollView._vertScrollBar;
 
   if self.isAvailableScrollBar(hScroller) then
   begin
@@ -2033,8 +2033,8 @@ begin
   hScrollerFrame := docFrame;
   vScrollerFrame := docFrame;
 
-  hScroller:= _scrollView.fhscroll;
-  vScroller:= _scrollView.fvscroll;
+  hScroller:= _scrollView._horzScrollBar;
+  vScroller:= _scrollView._vertScrollBar;
 
   if Assigned(hScroller) then
   begin
