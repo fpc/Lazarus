@@ -555,13 +555,6 @@ begin
   scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   scrollBar.setManager( parent._manager );
   parent.addSubview(scrollBar);
-  {$ifdef BOOLFIX}
-  scrollBar.setEnabled_(Ord(true));
-  scrollBar.setHidden_(Ord(not AVisible));
-  {$else}
-  scrollBar.setEnabled(true);
-  scrollBar.setHidden(not AVisible);
-  {$endif}
   scrollBar.preventBlock := true;
   //Suppress scrollers notifications.
   scrollBar.callback := parent.callback;
