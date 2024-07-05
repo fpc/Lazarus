@@ -384,13 +384,24 @@ end;
 
 
 function TfrHTMExportFilter.ColorToHex(c: TColor): AnsiString;
+const
+  SHexDigits: PChar = '0123456789ABCDEF';
 var
-  s: AnsiString;
+  r, g, b: byte;
 begin
-  s:= IntToHex(ColorToRGB(c), 8);
-  Result:= '#' + Copy(s, 7, 2) + Copy(s, 5, 2) + Copy(s, 3, 2);
+  C:= ColorToRGB(C);
+  r:= Red(C);
+  g:= Green(C);
+  b:= Blue(C);
+  SetLength(Result{%H-}, 7); // #rrggbb
+  Result[1]:= '#';
+  Result[2]:= SHexDigits[Hi(r)];
+  Result[3]:= SHexDigits[Lo(r)];
+  Result[4]:= SHexDigits[Hi(g)];
+  Result[5]:= SHexDigits[Lo(g)];
+  Result[6]:= SHexDigits[Hi(b)];
+  Result[7]:= SHexDigits[Lo(b)];
 end;
-
 
 procedure TfrHTMExportFilter.AppendLine(const s: AnsiString);
 begin
