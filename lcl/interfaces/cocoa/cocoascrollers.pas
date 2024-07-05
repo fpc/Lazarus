@@ -193,6 +193,11 @@ type
     procedure setManager( newManager:TCocoaScrollBarStyleManager );
       message 'setManager:';
 
+    // Note:
+    // Do not override isCompatibleWithOverlayScrollers(), which will cause
+    // the Scroller to enable NSView.Layer, leading to various problems.
+    // class function isCompatibleWithOverlayScrollers: ObjCBOOL; override;
+
     procedure drawKnob; override;
     procedure drawKnobSlotInRect_highlight(slotRect: NSRect; flag: ObjCBOOL); override;
     procedure setDoubleValue(newValue: double); override;
@@ -203,6 +208,7 @@ type
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
+
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
