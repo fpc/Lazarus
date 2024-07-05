@@ -1738,6 +1738,9 @@ begin
     Exit;
   end;
 
+  if scroller.knobProportion = 1 then
+    Exit;
+
   if scroller.isHidden then
   begin
     scroller.setHidden( false );
@@ -1748,13 +1751,17 @@ end;
 function TCocoaScrollStyleManagerLegacy.isAvailableScrollBar(scroller: NSScroller
   ): Boolean;
 begin
-  Result:= Assigned(scroller) and NOT scroller.isHidden;
+  Result:= Assigned(scroller) and NOT scroller.isHidden and
+           (0<scroller.knobProportion) and (scroller.knobProportion<1);;
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.showScrollBar(
   scroller: NSScroller; now:Boolean );
 begin
   if NOT Assigned(scroller) then
+    Exit;
+
+  if scroller.knobProportion = 1 then
     Exit;
 
   scroller.setHidden( False );
