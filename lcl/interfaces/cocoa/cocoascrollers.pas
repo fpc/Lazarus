@@ -1680,11 +1680,17 @@ begin
     vertScrollerFrame.origin.x := docFrame.size.width - vertScrollerFrame.size.width;
   vertScrollerFrame.origin.y := docFrame.origin.y;
 
-  if Assigned(horzScroller) then
+  if Assigned(horzScroller) then begin
+    if horzScrollerFrame.size.width <= horzScrollerFrame.size.height then
+      horzScrollerFrame.size.width:= horzScrollerFrame.size.height + 1;
     horzScroller.setFrame(horzScrollerFrame);
+  end;
 
-  if Assigned(vertScroller) then
+  if Assigned(vertScroller) then begin
+    if vertScrollerFrame.size.height <= vertScrollerFrame.size.width then
+      vertScrollerFrame.size.height:= vertScrollerFrame.size.width + 1;
     vertScroller.setFrame(vertScrollerFrame);
+  end;
 
   if not NSEqualRects(doc.frame, docFrame) then
   begin
