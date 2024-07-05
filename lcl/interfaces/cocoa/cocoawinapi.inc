@@ -1859,8 +1859,8 @@ begin
         if sc.lclVertScrollInfo.fMask<>0 then
           sc.applyScrollInfo(SB_Vert, sc.lclVertScrollInfo)
       end else begin
-        if sc.lclHoriScrollInfo.fMask<>0 then
-          sc.applyScrollInfo(SB_Horz, sc.lclHoriScrollInfo);
+        if sc.lclHorzScrollInfo.fMask<>0 then
+          sc.applyScrollInfo(SB_Horz, sc.lclHorzScrollInfo);
       end;
     end;
 

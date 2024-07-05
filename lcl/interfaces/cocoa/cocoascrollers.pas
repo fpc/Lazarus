@@ -43,7 +43,7 @@ type
 
     // the corresponding LCL ScrollInfo,
     // which are needed when documentView.frame changes.
-    lclHoriScrollInfo: TScrollInfo;
+    lclHorzScrollInfo: TScrollInfo;
     lclVertScrollInfo: TScrollInfo;
 
     docrect    : NSRect;    // have to remember old
@@ -152,10 +152,12 @@ type
   TCocoaScrollStyleManager = class(TCocoaScrollBarStyleManager)
   private
     _scrollView: TCocoaManualScrollView;
+  protected
+    function isBarOccupyBound: Boolean; virtual; abstract;
   public
     // place the document, horizontal scroller, and vertical scroller
     // in the appropriate positions
-    procedure updateLayout; virtual; abstract;
+    procedure updateLayout; virtual;
   public
     constructor createForScrollBar;
     constructor createForScrollView( scrollView:TCocoaManualScrollView );
@@ -191,6 +193,11 @@ type
     procedure setManager( newManager:TCocoaScrollBarStyleManager );
       message 'setManager:';
 
+    // Note:
+    // Do not override isCompatibleWithOverlayScrollers(), which will cause
+    // the Scroller to enable NSView.Layer, leading to various problems.
+    // class function isCompatibleWithOverlayScrollers: ObjCBOOL; override;
+
     procedure drawKnob; override;
     procedure drawKnobSlotInRect_highlight(slotRect: NSRect; flag: ObjCBOOL); override;
     procedure setDoubleValue(newValue: double); override;
@@ -201,6 +208,7 @@ type
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
+
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -227,9 +235,9 @@ type
   private
     _manager: TCocoaScrollStyleManager;
     _tapping: Integer;             // two finger tapping, SB_VERT / SB_HORZ / SB_BOTH
-    fdocumentView: NSView;
-    fhscroll : TCocoaScrollBar;
-    fvscroll : TCocoaScrollBar;
+    _documentView: NSView;
+    _horzScrollBar : TCocoaScrollBar;
+    _vertScrollBar : TCocoaScrollBar;
   public
     callback: ICommonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
@@ -297,9 +305,7 @@ function SysPrefScrollShow: string;
 // "AppleScrollerPagingBehavior": 0 - adjust by page, 1 - jump to the position
 function SysPrefScrollClick: Integer;
 
-function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
 procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
-function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 
 implementation
@@ -356,6 +362,8 @@ type
   { TCocoaScrollStyleManagerLegacy }
 
   TCocoaScrollStyleManagerLegacy = class(TCocoaScrollStyleManager)
+  protected
+    function isBarOccupyBound: Boolean; override;
   public
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); override;
@@ -369,12 +377,15 @@ type
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
     procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
     procedure tempHideScrollBar( scroller:NSScroller ); override;
-    procedure updateLayOut; override;
   end;
 
   { TCocoaScrollStyleManagerOverlay }
 
   TCocoaScrollStyleManagerOverlay = class(TCocoaScrollStyleManager)
+  private
+    procedure doShowScrollBar( scroller:NSScroller; now:Boolean=True );
+  protected
+    function isBarOccupyBound: Boolean; override;
   public
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); override;
@@ -388,7 +399,6 @@ type
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
     procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
     procedure tempHideScrollBar( scroller:NSScroller ); override;
-    procedure updateLayOut; override;
   end;
 
 function SysPrefScrollShow: string;
@@ -401,12 +411,10 @@ begin
   Result := Integer(NSUserDefaults.standardUserDefaults.integerForKey(NSSTR('AppleScrollerPagingBehavior')));
 end;
 
-function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
+function isPagePart(prt: NSScrollerPart): Boolean; inline;
 begin
   Result := (prt = NSScrollerDecrementPage)
-         or (prt = NSScrollerIncrementPage)
-         or (prt = NSScrollerDecrementLine)
-         or (prt = NSScrollerIncrementLine);
+         or (prt = NSScrollerIncrementPage);
 end;
 
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
@@ -459,43 +467,6 @@ begin
   {$endif}
 end;
 
-function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
-var
-  adj : Integer;
-  sz  : Integer;
-  dlt : double;
-  v   : double;
-begin
-  Result := (prt = NSScrollerDecrementLine)
-         or (prt = NSScrollerIncrementLine);
-  if not Result then Exit;
-
-  sz := sc.maxInt - sc.minInt - sc.pageInt;
-  if sz = 0 then Exit; // do nothing!
-
-  if prt = NSScrollerDecrementLine
-    then adj := -1
-    else adj := 1;
-  dlt := 1 / sz * adj;
-
-  v := sc.doubleValue;
-  v := v + dlt;
-  if v < 0 then v := 0
-  else if v > 1 then v := 1;
-
-  if v <> sc.doubleValue then
-  begin
-  // todo: call scroll event?
-    sc.setDoubleValue(v);
-    {$ifdef BOOLFIX}
-    sc.setNeedsDisplay__(Ord(true));
-    {$else}
-    sc.setNeedsDisplay_(true);
-    {$endif}
-  end;
-end;
-
-
 procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
 var
   adj : Integer;
@@ -504,11 +475,6 @@ var
   ps  : double;
   newPos: Integer;
 begin
-  if (prt = NSScrollerDecrementLine) or (prt = NSScrollerIncrementLine) then
-  begin
-    AdjustScrollerArrow(sc, prt);
-    Exit;
-  end;
   adj := SysPrefScrollClick;
   if adj = 0 then begin
     // single page jump
@@ -555,13 +521,6 @@ begin
   scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   scrollBar.setManager( parent._manager );
   parent.addSubview(scrollBar);
-  {$ifdef BOOLFIX}
-  scrollBar.setEnabled_(Ord(true));
-  scrollBar.setHidden_(Ord(not AVisible));
-  {$else}
-  scrollBar.setEnabled(true);
-  scrollBar.setHidden(not AVisible);
-  {$endif}
   scrollBar.preventBlock := true;
   //Suppress scrollers notifications.
   scrollBar.callback := parent.callback;
@@ -629,15 +588,15 @@ end;
 
 procedure TCocoaManualScrollView.dealloc;
 begin
-  if Assigned(fhscroll) then begin
-    fhscroll.removeFromSuperview;
-    fhscroll.setManager( nil );
-    fhscroll.release;
+  if Assigned(_horzScrollBar) then begin
+    _horzScrollBar.removeFromSuperview;
+    _horzScrollBar.setManager( nil );
+    _horzScrollBar.release;
   end;
-  if Assigned(fvscroll) then begin
-    fvscroll.removeFromSuperview;
-    fvscroll.setManager( nil );
-    fvscroll.release;
+  if Assigned(_vertScrollBar) then begin
+    _vertScrollBar.removeFromSuperview;
+    _vertScrollBar.setManager( nil );
+    _vertScrollBar.release;
   end;
   FreeAndNil( _manager );
 end;
@@ -664,11 +623,11 @@ begin
   else
     _manager:= TCocoaScrollStyleManagerOverlay.createForScrollView(self);
 
-  if Assigned(self.fhscroll) then begin
-    self.fhscroll.setManager( _manager );
+  if Assigned(_horzScrollBar) then begin
+    _horzScrollBar.setManager( _manager );
   end;
-  if Assigned(self.fvscroll) then begin
-    self.fvscroll.setManager( _manager );
+  if Assigned(_vertScrollBar) then begin
+    _vertScrollBar.setManager( _manager );
   end;
 
   oldManager.Free;
@@ -679,21 +638,21 @@ var
   horzAvailable: Boolean;
   vertAvailabl: Boolean;
 begin
-  horzAvailable:= _manager.isAvailableScrollBar( self.fhscroll );
-  vertAvailabl:= _manager.isAvailableScrollBar( self.fvscroll );
+  horzAvailable:= _manager.isAvailableScrollBar( _horzScrollBar );
+  vertAvailabl:= _manager.isAvailableScrollBar( _vertScrollBar );
 
   self.resetManager;
 
-  _manager.availScrollBar( self.fhscroll, horzAvailable );
-  _manager.availScrollBar( self.fvscroll, vertAvailabl );
+  _manager.availScrollBar( _horzScrollBar, horzAvailable );
+  _manager.availScrollBar( _vertScrollBar, vertAvailabl );
 
   if self.lclGetTarget is TWinControl then
     TWinControl(self.lclGetTarget).AdjustSize;
 
   _manager.updateLayout;
 
-  _manager.showScrollBar(self.fhscroll);
-  _manager.showScrollBar(self.fvscroll);
+  _manager.showScrollBar(_horzScrollBar);
+  _manager.showScrollBar(_vertScrollBar);
 end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -708,14 +667,14 @@ end;
 
 function TCocoaManualScrollView.lclContentView: NSView;
 begin
-  Result:=fdocumentView;
+  Result:=_documentView;
 end;
 
 function TCocoaManualScrollView.lclClientFrame: TRect;
 begin
-  if Assigned(fdocumentView) then
+  if Assigned(_documentView) then
   begin
-    Result:=fdocumentView.lclClientFrame;
+    Result:=_documentView.lclClientFrame;
   end
   else Result:=inherited lclClientFrame;
 end;
@@ -744,25 +703,25 @@ procedure TCocoaManualScrollView.setDocumentView(AView: NSView);
 var
   f  : NSrect;
 begin
-  if fdocumentView=AView then Exit;
-  if Assigned(fdocumentView) then
-    fdocumentView.removeFromSuperview;
+  if _documentView=AView then Exit;
+  if Assigned(_documentView) then
+    _documentView.removeFromSuperview;
 
-  fdocumentView:=AView;
-  if Assigned(fdocumentView) then
+  _documentView:=AView;
+  if Assigned(_documentView) then
   begin
-    addSubview(fdocumentView);
-    f:=fdocumentView.frame;
+    addSubview(_documentView);
+    f:=_documentView.frame;
     f.origin.x:=0;
     f.origin.y:=0;
-    fdocumentView.setFrame(f);
-    fdocumentView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+    _documentView.setFrame(f);
+    _documentView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   end;
 end;
 
 function TCocoaManualScrollView.documentView: NSView;
 begin
-  Result:=fdocumentView;
+  Result:=_documentView;
 end;
 
 function TCocoaManualScrollView.isTapping(scroller: NSScroller): Boolean;
@@ -771,9 +730,9 @@ begin
     Exit( False );
   if _tapping = SB_BOTH then
     Exit( True );
-  if (_tapping = SB_HORZ) and (scroller=self.fhscroll) then
+  if (_tapping = SB_HORZ) and (scroller=_horzScrollBar) then
     Exit( True );
-  if (_tapping = SB_VERT) and (scroller=self.fvscroll) then
+  if (_tapping = SB_VERT) and (scroller=_vertScrollBar) then
     Exit( True );
   Result:= False;
 end;
@@ -783,27 +742,27 @@ begin
   if _tapping < 0 then
     Exit;
 
-  if scroller=self.fvscroll then begin
+  if scroller=_vertScrollBar then begin
     _tapping:= SB_VERT;
-    _manager.tempHideScrollBar( fhscroll );
-  end else if scroller=self.fhscroll then begin
+    _manager.tempHideScrollBar( _horzScrollBar );
+  end else if scroller=_horzScrollBar then begin
     _tapping:= SB_HORZ;
-    _manager.tempHideScrollBar( fvscroll );
+    _manager.tempHideScrollBar( _vertScrollBar );
   end;
 end;
 
 procedure TCocoaManualScrollView.delayShowScrollBars();
 begin
-  _manager.showScrollBar( self.fhscroll, False );
-  _manager.showScrollBar( self.fvscroll, False );
+  _manager.showScrollBar( _horzScrollBar, False );
+  _manager.showScrollBar( _vertScrollBar, False );
 end;
 
 procedure TCocoaManualScrollView.showScrollBarsAndAutoHide( tapping:Integer );
 begin
   if (tapping=SB_HORZ) or (tapping=SB_BOTH) then
-    _manager.showScrollBar(self.fhscroll);
+    _manager.showScrollBar(_horzScrollBar);
   if (tapping=SB_VERT) or (tapping=SB_BOTH) then
-    _manager.showScrollBar(self.fvscroll);
+    _manager.showScrollBar(_vertScrollBar);
 end;
 
 procedure TCocoaManualScrollView.touchesBeganWithEvent(event: NSEvent);
@@ -868,11 +827,11 @@ procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 var
   available: Boolean;
 begin
-  available:= _manager.isAvailableScrollBar(fvscroll);
-  if NOT Assigned(fvscroll) and doshow then
-    fvscroll:= self.allocVerticalScroller( True );
-  _manager.availScrollBar( fvscroll, doshow );
-  if available <> _manager.isAvailableScrollBar(fvscroll) then
+  available:= _manager.isAvailableScrollBar(_vertScrollBar);
+  if NOT Assigned(_vertScrollBar) and doshow then
+    _vertScrollBar:= self.allocVerticalScroller( True );
+  _manager.availScrollBar( _vertScrollBar, doshow );
+  if available <> _manager.isAvailableScrollBar(_vertScrollBar) then
     _manager.updateLayout;
 end;
 
@@ -880,32 +839,32 @@ procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 var
   available: Boolean;
 begin
-  available:= _manager.isAvailableScrollBar(fhscroll);
-  if NOT Assigned(fhscroll) and doshow then
-    fhscroll:= self.allocHorizontalScroller( True );
-  _manager.availScrollBar( fhscroll, doshow );
-  if available <> _manager.isAvailableScrollBar(fhscroll) then
+  available:= _manager.isAvailableScrollBar(_horzScrollBar);
+  if NOT Assigned(_horzScrollBar) and doshow then
+    _horzScrollBar:= self.allocHorizontalScroller( True );
+  _manager.availScrollBar( _horzScrollBar, doshow );
+  if available <> _manager.isAvailableScrollBar(_horzScrollBar) then
     _manager.updateLayout;
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
 begin
-  Result:= _manager.isAvailableScrollBar(fvscroll);
+  Result:= _manager.isAvailableScrollBar(_vertScrollBar);
 end;
 
 function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
 begin
-  Result:= _manager.isAvailableScrollBar(fhscroll);
+  Result:= _manager.isAvailableScrollBar(_horzScrollBar);
 end;
 
 function TCocoaManualScrollView.horizontalScroller: NSScroller;
 begin
-  Result:=fhscroll;
+  Result:=_horzScrollBar;
 end;
 
 function TCocoaManualScrollView.verticalScroller: NSScroller;
 begin
-  Result:=fvscroll;
+  Result:=_vertScrollBar;
 end;
 
 function TCocoaManualScrollView.allocHorizontalScroller(avisible: Boolean): TCocoaScrollBar;
@@ -914,17 +873,17 @@ var
   f : NSRect;
   w : CGFloat;
 begin
-  if Assigned(fhscroll) then
-    Result := fhscroll
+  if Assigned(_horzScrollBar) then
+    Result := _horzScrollBar
   else
   begin
     f := frame;
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-           fhscroll.controlSize, fhscroll.preferredScrollerStyle);
+           _horzScrollBar.controlSize, _horzScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
-    fhscroll := allocScroller( self, r, avisible);
-        fhscroll.setAutoresizingMask(NSViewWidthSizable);
-    Result := fhscroll;
+    _horzScrollBar := allocScroller( self, r, avisible);
+        _horzScrollBar.setAutoresizingMask(NSViewWidthSizable);
+    Result := _horzScrollBar;
     _manager.updateLayout;
   end;
 end;
@@ -935,20 +894,20 @@ var
   f : NSRect;
   w : CGFloat;
 begin
-  if Assigned(fvscroll) then
-    Result := fvscroll
+  if Assigned(_vertScrollBar) then
+    Result := _vertScrollBar
   else
   begin
     f := frame;
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-           fvscroll.controlSize, fvscroll.preferredScrollerStyle);
+           _vertScrollBar.controlSize, _vertScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
-    fvscroll := allocScroller( self, r, avisible);
+    _vertScrollBar := allocScroller( self, r, avisible);
     if self.isFlipped then
-      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
+      _vertScrollBar.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
     else
-      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
-    Result := fvscroll;
+      _vertScrollBar.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+    Result := _vertScrollBar;
     _manager.updateLayout;
   end;
 end;
@@ -963,20 +922,20 @@ var
   pt : NSPoint;
 begin
   Result := false;
-  if Assigned(host.fhscroll) and (not host.fhscroll.isHidden) then
+  if Assigned(host._horzScrollBar) and (not host._horzScrollBar.isHidden) then
   begin
-    pt := host.fhscroll.convertPoint_fromView(event.locationInWindow, nil);
-    if NSPointInRect(pt, host.fhscroll.bounds) then
+    pt := host._horzScrollBar.convertPoint_fromView(event.locationInWindow, nil);
+    if NSPointInRect(pt, host._horzScrollBar.bounds) then
     begin
       Result := true;
       Exit;
     end;
   end;
 
-  if Assigned(host.fvscroll) and (not host.fvscroll.isHidden) then
+  if Assigned(host._vertScrollBar) and (not host._vertScrollBar.isHidden) then
   begin
-    pt := host.fvscroll.convertPoint_fromView(event.locationInWindow, nil);
-    if NSPointInRect(pt, host.fvscroll.bounds) then
+    pt := host._vertScrollBar.convertPoint_fromView(event.locationInWindow, nil);
+    if NSPointInRect(pt, host._vertScrollBar.bounds) then
     begin
       Result := true;
       Exit;
@@ -1024,7 +983,7 @@ end;
 procedure TCocoaScrollView.resetScrollData;
 begin
   docrect:=documentVisibleRect;
-  lclHoriScrollInfo.fMask:= 0;
+  lclHorzScrollInfo.fMask:= 0;
   lclVertScrollInfo.fMask:= 0;
 end;
 
@@ -1103,7 +1062,7 @@ begin
   end
   else
   begin
-    self.lclHoriScrollInfo:= scrollInfo;
+    self.lclHorzScrollInfo:= scrollInfo;
     newOrigin.x:= scrollInfo.nPos;
   end;
   self.contentView.setBoundsOrigin( newOrigin );
@@ -1142,8 +1101,8 @@ begin
 
   documentView.setFrameSize(newDocSize);
 
-  if lclHoriScrollInfo.fMask<>0 then
-    applyScrollInfo(SB_Horz, lclHoriScrollInfo);
+  if lclHorzScrollInfo.fMask<>0 then
+    applyScrollInfo(SB_Horz, lclHorzScrollInfo);
 
   if lclVertScrollInfo.fMask<>0 then
     applyScrollInfo(SB_Vert, lclVertScrollInfo);
@@ -1295,7 +1254,7 @@ begin
     locInWin := event.locationInWindow;
 
   prt := testPart(locInWin);
-  if isIncDecPagePart(prt) then
+  if isPagePart(prt) then
     HandleMouseDown(self, locInWin, prt);
 
   if Assigned(callback) then
@@ -1623,28 +1582,16 @@ end;
 
 { TCocoaScrollStyleManager }
 
-constructor TCocoaScrollStyleManager.createForScrollBar;
-begin
-end;
-
-constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
-  );
-begin
-  _scrollView:= scrollView;
-end;
-
-{ TCocoaScrollViewStyleManagerLegacy }
-
-procedure TCocoaScrollStyleManagerLegacy.updateLayOut;
+procedure TCocoaScrollStyleManager.updateLayout;
 var
   doc: NSView;
   docFrame  : NSRect;
-  hScroller: NSScroller;
-  vScroller: NSScroller;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
+  horzScroller: NSScroller;
+  vertScroller: NSScroller;
+  horzScrollerFrame : NSRect;
+  vertScrollerFrame : NSRect;
+  horzScrollerHeight : CGFLoat;
+  vertScrollerWidth : CGFLoat;
 begin
   doc:= _scrollView.documentView;
   if NOT Assigned(doc) then
@@ -1652,45 +1599,60 @@ begin
 
   docFrame := _scrollView.frame;
   docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
+  horzScrollerFrame := docFrame;
+  vertScrollerFrame := docFrame;
 
-  hScroller:= _scrollView.fhscroll;
-  vScroller:= _scrollView.fvscroll;
+  horzScroller:= _scrollView._horzScrollBar;
+  vertScroller:= _scrollView._vertScrollBar;
 
-  if self.isAvailableScrollBar(hScroller) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
+  if Assigned(horzScroller) then begin
+    if NOT isBarOccupyBound or isAvailableScrollBar(horzScroller) then begin
+      horzScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+              horzScroller.controlSize, horzScroller.scrollerStyle);
+      horzScrollerFrame.size.height := horzScrollerHeight;
 
-    docFrame.size.height := docFrame.size.height - hScrollerHeight;
-    if docFrame.size.height < 0 then
-      docFrame.size.height := 0;
-    docFrame.origin.y := hScrollerHeight;
+      if isBarOccupyBound then begin
+        docFrame.size.height := docFrame.size.height - horzScrollerHeight;
+        if docFrame.size.height < 0 then
+          docFrame.size.height := 0;
+        docFrame.origin.y := horzScrollerHeight;
+      end;
+    end;
   end;
 
-  if self.isAvailableScrollBar(vScroller) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
+  if Assigned(vertScroller) then begin
+    if NOT isBarOccupyBound or isAvailableScrollBar(vertScroller) then begin
+      vertScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+              vertScroller.controlSize, vertScroller.scrollerStyle);
+      vertScrollerFrame.size.width := vertScrollerWidth;
 
-    docFrame.size.width := docFrame.size.width - vScrollerWidth;
-    if docFrame.size.width < 0 then
-      docFrame.size.width:= 0;
+      if isBarOccupyBound then begin
+        docFrame.size.width := docFrame.size.width - vertScrollerWidth;
+        if docFrame.size.width < 0 then
+          docFrame.size.width:= 0;
+      end;
+    end;
   end;
 
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
+  horzScrollerFrame.size.width := docFrame.size.width;
+  vertScrollerFrame.size.height := docFrame.size.height;
+  if isBarOccupyBound then
+    vertScrollerFrame.origin.x := docFrame.size.width
+  else
+    vertScrollerFrame.origin.x := docFrame.size.width - vertScrollerFrame.size.width;
+  vertScrollerFrame.origin.y := docFrame.origin.y;
 
-  if Assigned(hScroller) then
-    hScroller.setFrame(hScrollerFrame);
+  if Assigned(horzScroller) then begin
+    if horzScrollerFrame.size.width <= horzScrollerFrame.size.height then
+      horzScrollerFrame.size.width:= horzScrollerFrame.size.height + 1;
+    horzScroller.setFrame(horzScrollerFrame);
+  end;
 
-  if Assigned(vScroller) then
-    vScroller.setFrame(vScrollerFrame);
+  if Assigned(vertScroller) then begin
+    if vertScrollerFrame.size.height <= vertScrollerFrame.size.width then
+      vertScrollerFrame.size.height:= vertScrollerFrame.size.width + 1;
+    vertScroller.setFrame(vertScrollerFrame);
+  end;
 
   if not NSEqualRects(doc.frame, docFrame) then
   begin
@@ -1702,6 +1664,18 @@ begin
     {$endif}
   end;
 end;
+
+constructor TCocoaScrollStyleManager.createForScrollBar;
+begin
+end;
+
+constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
+  );
+begin
+  _scrollView:= scrollView;
+end;
+
+{ TCocoaScrollViewStyleManagerLegacy }
 
 function TCocoaScrollStyleManagerLegacy.createScrollBarEffect( scroller:NSScroller ):
   TCocoaScrollBarEffect;
@@ -1726,6 +1700,9 @@ begin
     Exit;
   end;
 
+  if scroller.knobProportion = 1 then
+    Exit;
+
   if scroller.isHidden then
   begin
     scroller.setHidden( false );
@@ -1736,13 +1713,17 @@ end;
 function TCocoaScrollStyleManagerLegacy.isAvailableScrollBar(scroller: NSScroller
   ): Boolean;
 begin
-  Result:= Assigned(scroller) and NOT scroller.isHidden;
+  Result:= Assigned(scroller) and NOT scroller.isHidden and
+           (0<scroller.knobProportion) and (scroller.knobProportion<1);;
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.showScrollBar(
   scroller: NSScroller; now:Boolean );
 begin
   if NOT Assigned(scroller) then
+    Exit;
+
+  if scroller.knobProportion = 1 then
     Exit;
 
   scroller.setHidden( False );
@@ -1791,6 +1772,11 @@ function TCocoaScrollStyleManagerLegacy.onDrawKnobSlot(scroller: NSScroller;
   var slotRect: NSRect): Boolean;
 begin
   Result:= true;
+end;
+
+function TCocoaScrollStyleManagerLegacy.isBarOccupyBound: Boolean;
+begin
+  Result:= True;
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.onKnobValueUpdated( scroller:NSScroller;
@@ -1874,6 +1860,11 @@ begin
   Result:= effect.expandedSize>0;
 end;
 
+function TCocoaScrollStyleManagerOverlay.isBarOccupyBound: Boolean;
+begin
+  Result:= False;
+end;
+
 procedure TCocoaScrollStyleManagerOverlay.onKnobValueUpdated( scroller:NSScroller;
   var knobPosition:Double; var knobProportion:Double );
 var
@@ -1906,7 +1897,7 @@ begin
   effect.currentKnobPosition:= knobPosition;
   effect.currentKnobProportion:= knobProportion;
 
-  self.showScrollBar( scroller );
+  self.doShowScrollBar( scroller );
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.onMouseEntered(scroller: NSScroller);
@@ -1962,15 +1953,12 @@ begin
   Result:= Assigned(scroller) and (0<scroller.knobProportion) and (scroller.knobProportion<1);
 end;
 
-procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
+procedure TCocoaScrollStyleManagerOverlay.doShowScrollBar(
   scroller: NSScroller; now:Boolean );
 var
   scrollBar: TCocoaScrollBar Absolute scroller;
   effect: TCocoaScrollBarEffectOverlay;
 begin
-  if NOT Assigned(scroller) then
-    Exit;
-
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
   if effect.currentKnobProportion = 1 then begin
@@ -1996,13 +1984,25 @@ begin
   scroller.setNeedsDisplay_( true );
 end;
 
+procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
+  scroller: NSScroller; now:Boolean );
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  if NOT isAvailableScrollBar(scroller) then
+    Exit;
+
+  doShowScrollBar( scroller, now );
+end;
+
 procedure TCocoaScrollStyleManagerOverlay.tempHideScrollBar(scroller: NSScroller
   );
 var
   scrollBar: TCocoaScrollBar Absolute scroller;
   effect: TCocoaScrollBarEffectOverlay;
 begin
-  if NOT Assigned(scroller) then
+  if NOT isAvailableScrollBar(scroller) then
     Exit;
 
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
@@ -2011,67 +2011,6 @@ begin
   scroller.setAlphaValue( 0 );
   scroller.setHidden( True );
   effect.expandedSize:= 0;
-end;
-
-procedure TCocoaScrollStyleManagerOverlay.updateLayOut;
-var
-  doc: NSView;
-  docFrame  : NSRect;
-  hScroller: NSScroller;
-  vScroller: NSScroller;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
-begin
-  doc:= _scrollView.documentView;
-  if NOT Assigned(doc) then
-    Exit;
-
-  docFrame := _scrollView.frame;
-  docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
-
-  hScroller:= _scrollView.fhscroll;
-  vScroller:= _scrollView.fvscroll;
-
-  if Assigned(hScroller) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
-  end;
-
-  if Assigned(vScroller) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
-  end;
-
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width - vScrollerFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
-
-  if Assigned(hScroller) then begin
-    hScroller.setFrame(hScrollerFrame);
-  end;
-
-  if Assigned(vScroller) then begin
-    vScroller.setFrame(vScrollerFrame);
-  end;
-
-  if not NSEqualRects(doc.frame, docFrame) then
-  begin
-    doc.setFrame(docFrame);
-    {$ifdef BOOLFIX}
-    doc.setNeedsDisplay__(Ord(true));
-    {$else}
-    doc.setNeedsDisplay_(true);
-    {$endif}
-  end;
 end;
 
 end.
