@@ -152,10 +152,12 @@ type
   TCocoaScrollStyleManager = class(TCocoaScrollBarStyleManager)
   private
     _scrollView: TCocoaManualScrollView;
+  protected
+    function isBarOccupyBound: Boolean; virtual; abstract;
   public
     // place the document, horizontal scroller, and vertical scroller
     // in the appropriate positions
-    procedure updateLayout; virtual; abstract;
+    procedure updateLayout; virtual;
   public
     constructor createForScrollBar;
     constructor createForScrollView( scrollView:TCocoaManualScrollView );
@@ -356,6 +358,8 @@ type
   { TCocoaScrollStyleManagerLegacy }
 
   TCocoaScrollStyleManagerLegacy = class(TCocoaScrollStyleManager)
+  protected
+    function isBarOccupyBound: Boolean; override;
   public
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); override;
@@ -369,12 +373,13 @@ type
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
     procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
     procedure tempHideScrollBar( scroller:NSScroller ); override;
-    procedure updateLayOut; override;
   end;
 
   { TCocoaScrollStyleManagerOverlay }
 
   TCocoaScrollStyleManagerOverlay = class(TCocoaScrollStyleManager)
+  protected
+    function isBarOccupyBound: Boolean; override;
   public
     procedure onKnobValueUpdated( scroller:NSScroller;
       var knobPosition:Double; var knobProportion:Double ); override;
@@ -388,7 +393,6 @@ type
     function isAvailableScrollBar( scroller:NSScroller ): Boolean; override;
     procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
     procedure tempHideScrollBar( scroller:NSScroller ); override;
-    procedure updateLayOut; override;
   end;
 
 function SysPrefScrollShow: string;
@@ -1616,28 +1620,16 @@ end;
 
 { TCocoaScrollStyleManager }
 
-constructor TCocoaScrollStyleManager.createForScrollBar;
-begin
-end;
-
-constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
-  );
-begin
-  _scrollView:= scrollView;
-end;
-
-{ TCocoaScrollViewStyleManagerLegacy }
-
-procedure TCocoaScrollStyleManagerLegacy.updateLayOut;
+procedure TCocoaScrollStyleManager.updateLayout;
 var
   doc: NSView;
   docFrame  : NSRect;
-  hScroller: NSScroller;
-  vScroller: NSScroller;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
+  horzScroller: NSScroller;
+  vertScroller: NSScroller;
+  horzScrollerFrame : NSRect;
+  vertScrollerFrame : NSRect;
+  horzScrollerHeight : CGFLoat;
+  vertScrollerWidth : CGFLoat;
 begin
   doc:= _scrollView.documentView;
   if NOT Assigned(doc) then
@@ -1645,45 +1637,54 @@ begin
 
   docFrame := _scrollView.frame;
   docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
+  horzScrollerFrame := docFrame;
+  vertScrollerFrame := docFrame;
 
-  hScroller:= _scrollView._horzScrollBar;
-  vScroller:= _scrollView._vertScrollBar;
+  horzScroller:= _scrollView._horzScrollBar;
+  vertScroller:= _scrollView._vertScrollBar;
 
-  if self.isAvailableScrollBar(hScroller) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
+  if Assigned(horzScroller) then begin
+    if NOT isBarOccupyBound or isAvailableScrollBar(horzScroller) then begin
+      horzScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+              horzScroller.controlSize, horzScroller.scrollerStyle);
+      horzScrollerFrame.size.height := horzScrollerHeight;
 
-    docFrame.size.height := docFrame.size.height - hScrollerHeight;
-    if docFrame.size.height < 0 then
-      docFrame.size.height := 0;
-    docFrame.origin.y := hScrollerHeight;
+      if isBarOccupyBound then begin
+        docFrame.size.height := docFrame.size.height - horzScrollerHeight;
+        if docFrame.size.height < 0 then
+          docFrame.size.height := 0;
+        docFrame.origin.y := horzScrollerHeight;
+      end;
+    end;
   end;
 
-  if self.isAvailableScrollBar(vScroller) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
+  if Assigned(vertScroller) then begin
+    if NOT isBarOccupyBound or isAvailableScrollBar(vertScroller) then begin
+      vertScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
+              vertScroller.controlSize, vertScroller.scrollerStyle);
+      vertScrollerFrame.size.width := vertScrollerWidth;
 
-    docFrame.size.width := docFrame.size.width - vScrollerWidth;
-    if docFrame.size.width < 0 then
-      docFrame.size.width:= 0;
+      if isBarOccupyBound then begin
+        docFrame.size.width := docFrame.size.width - vertScrollerWidth;
+        if docFrame.size.width < 0 then
+          docFrame.size.width:= 0;
+      end;
+    end;
   end;
 
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
+  horzScrollerFrame.size.width := docFrame.size.width;
+  vertScrollerFrame.size.height := docFrame.size.height;
+  if isBarOccupyBound then
+    vertScrollerFrame.origin.x := docFrame.size.width
+  else
+    vertScrollerFrame.origin.x := docFrame.size.width - vertScrollerFrame.size.width;
+  vertScrollerFrame.origin.y := docFrame.origin.y;
 
-  if Assigned(hScroller) then
-    hScroller.setFrame(hScrollerFrame);
+  if Assigned(horzScroller) then
+    horzScroller.setFrame(horzScrollerFrame);
 
-  if Assigned(vScroller) then
-    vScroller.setFrame(vScrollerFrame);
+  if Assigned(vertScroller) then
+    vertScroller.setFrame(vertScrollerFrame);
 
   if not NSEqualRects(doc.frame, docFrame) then
   begin
@@ -1695,6 +1696,18 @@ begin
     {$endif}
   end;
 end;
+
+constructor TCocoaScrollStyleManager.createForScrollBar;
+begin
+end;
+
+constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
+  );
+begin
+  _scrollView:= scrollView;
+end;
+
+{ TCocoaScrollViewStyleManagerLegacy }
 
 function TCocoaScrollStyleManagerLegacy.createScrollBarEffect( scroller:NSScroller ):
   TCocoaScrollBarEffect;
@@ -1786,6 +1799,11 @@ begin
   Result:= true;
 end;
 
+function TCocoaScrollStyleManagerLegacy.isBarOccupyBound: Boolean;
+begin
+  Result:= True;
+end;
+
 procedure TCocoaScrollStyleManagerLegacy.onKnobValueUpdated( scroller:NSScroller;
   var knobPosition:Double; var knobProportion:Double );
 begin
@@ -1865,6 +1883,11 @@ var
 begin
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
   Result:= effect.expandedSize>0;
+end;
+
+function TCocoaScrollStyleManagerOverlay.isBarOccupyBound: Boolean;
+begin
+  Result:= False;
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.onKnobValueUpdated( scroller:NSScroller;
@@ -2004,67 +2027,6 @@ begin
   scroller.setAlphaValue( 0 );
   scroller.setHidden( True );
   effect.expandedSize:= 0;
-end;
-
-procedure TCocoaScrollStyleManagerOverlay.updateLayOut;
-var
-  doc: NSView;
-  docFrame  : NSRect;
-  hScroller: NSScroller;
-  vScroller: NSScroller;
-  hScrollerFrame : NSRect;
-  vScrollerFrame : NSRect;
-  hScrollerHeight : CGFLoat;
-  vScrollerWidth : CGFLoat;
-begin
-  doc:= _scrollView.documentView;
-  if NOT Assigned(doc) then
-    Exit;
-
-  docFrame := _scrollView.frame;
-  docFrame.origin := NSZeroPoint;
-  hScrollerFrame := docFrame;
-  vScrollerFrame := docFrame;
-
-  hScroller:= _scrollView._horzScrollBar;
-  vScroller:= _scrollView._vertScrollBar;
-
-  if Assigned(hScroller) then
-  begin
-    hScrollerHeight := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            hScroller.controlSize, hScroller.preferredScrollerStyle);
-    hScrollerFrame.size.height := hScrollerHeight;
-  end;
-
-  if Assigned(vScroller) then
-  begin
-    vScrollerWidth := NSScroller.scrollerWidthForControlSize_scrollerStyle(
-            vScroller.controlSize, vScroller.preferredScrollerStyle);
-    vScrollerFrame.size.width := vScrollerWidth;
-  end;
-
-  hScrollerFrame.size.width := docFrame.size.width;
-  vScrollerFrame.size.height := docFrame.size.height;
-  vScrollerFrame.origin.x := docFrame.size.width - vScrollerFrame.size.width;
-  vScrollerFrame.origin.y := docFrame.origin.y;
-
-  if Assigned(hScroller) then begin
-    hScroller.setFrame(hScrollerFrame);
-  end;
-
-  if Assigned(vScroller) then begin
-    vScroller.setFrame(vScrollerFrame);
-  end;
-
-  if not NSEqualRects(doc.frame, docFrame) then
-  begin
-    doc.setFrame(docFrame);
-    {$ifdef BOOLFIX}
-    doc.setNeedsDisplay__(Ord(true));
-    {$else}
-    doc.setNeedsDisplay_(true);
-    {$endif}
-  end;
 end;
 
 end.
