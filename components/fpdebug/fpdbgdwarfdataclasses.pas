@@ -35,7 +35,7 @@
 unit FpDbgDwarfDataClasses;
 
 {$mode objfpc}{$H+}
-{$IFOPT T+}{$ERROR Typedaddress not allowed}{$ENDIF}
+{$IFOPT T+}{$ERROR Typedaddress (-Sy) not allowed}{$ENDIF}
 {$ModeSwitch advancedrecords}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
