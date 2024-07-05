@@ -378,6 +378,8 @@ type
   { TCocoaScrollStyleManagerOverlay }
 
   TCocoaScrollStyleManagerOverlay = class(TCocoaScrollStyleManager)
+  private
+    procedure doShowScrollBar( scroller:NSScroller; now:Boolean=True );
   protected
     function isBarOccupyBound: Boolean; override;
   public
@@ -1935,7 +1937,7 @@ begin
   effect.currentKnobPosition:= knobPosition;
   effect.currentKnobProportion:= knobProportion;
 
-  self.showScrollBar( scroller );
+  self.doShowScrollBar( scroller );
 end;
 
 procedure TCocoaScrollStyleManagerOverlay.onMouseEntered(scroller: NSScroller);
@@ -1991,15 +1993,12 @@ begin
   Result:= Assigned(scroller) and (0<scroller.knobProportion) and (scroller.knobProportion<1);
 end;
 
-procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
+procedure TCocoaScrollStyleManagerOverlay.doShowScrollBar(
   scroller: NSScroller; now:Boolean );
 var
   scrollBar: TCocoaScrollBar Absolute scroller;
   effect: TCocoaScrollBarEffectOverlay;
 begin
-  if NOT Assigned(scroller) then
-    Exit;
-
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
 
   if effect.currentKnobProportion = 1 then begin
@@ -2025,13 +2024,25 @@ begin
   scroller.setNeedsDisplay_( true );
 end;
 
+procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
+  scroller: NSScroller; now:Boolean );
+var
+  scrollBar: TCocoaScrollBar Absolute scroller;
+  effect: TCocoaScrollBarEffectOverlay;
+begin
+  if NOT isAvailableScrollBar(scroller) then
+    Exit;
+
+  doShowScrollBar( scroller, now );
+end;
+
 procedure TCocoaScrollStyleManagerOverlay.tempHideScrollBar(scroller: NSScroller
   );
 var
   scrollBar: TCocoaScrollBar Absolute scroller;
   effect: TCocoaScrollBarEffectOverlay;
 begin
-  if NOT Assigned(scroller) then
+  if NOT isAvailableScrollBar(scroller) then
     Exit;
 
   effect:= TCocoaScrollBarEffectOverlay(scrollBar.effect);
