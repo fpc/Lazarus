@@ -299,9 +299,7 @@ function SysPrefScrollShow: string;
 // "AppleScrollerPagingBehavior": 0 - adjust by page, 1 - jump to the position
 function SysPrefScrollClick: Integer;
 
-function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
 procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
-function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
 
 implementation
@@ -407,12 +405,10 @@ begin
   Result := Integer(NSUserDefaults.standardUserDefaults.integerForKey(NSSTR('AppleScrollerPagingBehavior')));
 end;
 
-function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
+function isPagePart(prt: NSScrollerPart): Boolean; inline;
 begin
   Result := (prt = NSScrollerDecrementPage)
-         or (prt = NSScrollerIncrementPage)
-         or (prt = NSScrollerDecrementLine)
-         or (prt = NSScrollerIncrementLine);
+         or (prt = NSScrollerIncrementPage);
 end;
 
 function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
@@ -465,43 +461,6 @@ begin
   {$endif}
 end;
 
-function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
-var
-  adj : Integer;
-  sz  : Integer;
-  dlt : double;
-  v   : double;
-begin
-  Result := (prt = NSScrollerDecrementLine)
-         or (prt = NSScrollerIncrementLine);
-  if not Result then Exit;
-
-  sz := sc.maxInt - sc.minInt - sc.pageInt;
-  if sz = 0 then Exit; // do nothing!
-
-  if prt = NSScrollerDecrementLine
-    then adj := -1
-    else adj := 1;
-  dlt := 1 / sz * adj;
-
-  v := sc.doubleValue;
-  v := v + dlt;
-  if v < 0 then v := 0
-  else if v > 1 then v := 1;
-
-  if v <> sc.doubleValue then
-  begin
-  // todo: call scroll event?
-    sc.setDoubleValue(v);
-    {$ifdef BOOLFIX}
-    sc.setNeedsDisplay__(Ord(true));
-    {$else}
-    sc.setNeedsDisplay_(true);
-    {$endif}
-  end;
-end;
-
-
 procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
 var
   adj : Integer;
@@ -510,11 +469,6 @@ var
   ps  : double;
   newPos: Integer;
 begin
-  if (prt = NSScrollerDecrementLine) or (prt = NSScrollerIncrementLine) then
-  begin
-    AdjustScrollerArrow(sc, prt);
-    Exit;
-  end;
   adj := SysPrefScrollClick;
   if adj = 0 then begin
     // single page jump
@@ -1294,7 +1248,7 @@ begin
     locInWin := event.locationInWindow;
 
   prt := testPart(locInWin);
-  if isIncDecPagePart(prt) then
+  if isPagePart(prt) then
     HandleMouseDown(self, locInWin, prt);
 
   if Assigned(callback) then
