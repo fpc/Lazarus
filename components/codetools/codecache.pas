@@ -749,9 +749,10 @@ end;
 function TCodeCache.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=FindFile(AFileName);
-  if Result<>nil then begin
-    Result.Clear;
-  end else begin
+  // Create a new buffer also when only char case differs in names.
+  if (Result<>nil) and (Result.Filename=AFilename) then
+    Result.Clear
+  else begin
     Result:=TCodeBuffer.Create;
     Result.FileName:=AFileName;
     FItems.Add(Result);

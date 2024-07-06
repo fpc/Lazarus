@@ -6024,7 +6024,7 @@ begin
   // check if file is already lowercase (or it does not matter in current OS)
   OldShortFilename:=ExtractFilename(OldFilename);
   NewShortFilename:=lowercase(OldShortFilename);
-  if CompareFilenames(OldShortFilename,NewShortFilename)=0 then exit;
+  if OldShortFilename=NewShortFilename then exit;
   // create new filename
   NewFilename:=ExtractFilePath(OldFilename)+NewShortFilename;
 
