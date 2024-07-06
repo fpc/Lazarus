@@ -8737,6 +8737,11 @@ msgstr "行き先のディレクトリ"
 msgid "Destructor code"
 msgstr "デストラクタコード"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "大文字と小文字を区別しない"
@@ -13379,7 +13384,7 @@ msgid "Rename Identifier ..."
 msgstr "識別子名を変更 ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

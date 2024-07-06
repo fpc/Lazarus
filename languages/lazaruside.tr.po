@@ -8535,6 +8535,11 @@ msgstr "Hedef klasör"
 msgid "Destructor code"
 msgstr "Destructor kodu"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Büyük/Küçük Harfe Duyarlı"
@@ -13093,7 +13098,7 @@ msgid "Rename Identifier ..."
 msgstr "Tanımlayıcıyı Yeniden Adlandır ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

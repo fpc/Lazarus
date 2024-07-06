@@ -8631,6 +8631,11 @@ msgstr "Cieľový adresár"
 msgid "Destructor code"
 msgstr "Kód deštruktora"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Necitlivé na veľkosť"
@@ -13219,7 +13224,7 @@ msgid "Rename Identifier ..."
 msgstr "Premenovať identifikátor ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

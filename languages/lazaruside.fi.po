@@ -8602,6 +8602,11 @@ msgstr "Kohdehakemisto"
 msgid "Destructor code"
 msgstr "Destructor koodi"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Kirjaimen koolla ei väliä"
@@ -13164,7 +13169,7 @@ msgid "Rename Identifier ..."
 msgstr "Vaihda tunnisteen nimeä ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

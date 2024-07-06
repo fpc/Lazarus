@@ -8848,6 +8848,11 @@ msgstr "Direktori Tujuan"
 msgid "Destructor code"
 msgstr ""
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Huruf Diabaikan"
@@ -13635,7 +13640,7 @@ msgid "Rename Identifier ..."
 msgstr "Ganti nama Pengenal ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

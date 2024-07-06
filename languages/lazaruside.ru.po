@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-02 15:25+0300\n"
+"PO-Revision-Date: 2024-07-06 21:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8562,6 +8562,11 @@ msgstr "Каталог назначения"
 msgid "Destructor code"
 msgstr "Код деструктора"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr "Файлы (%d шт.) переименованы в нижний регистр."
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Игнорировать регистр"
@@ -13135,8 +13140,8 @@ msgid "Rename Identifier ..."
 msgstr "Переименовать идентификатор ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
-msgstr "Переименовать модули в нижний регистр ..."
+msgid "Rename Unit Files to LowerCase ..."
+msgstr "Переименовать файлы модулей в нижний регистр ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"

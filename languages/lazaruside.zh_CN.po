@@ -8592,6 +8592,11 @@ msgstr "目标目录"
 msgid "Destructor code"
 msgstr "析构代码"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "不区分大小写"
@@ -13200,7 +13205,7 @@ msgid "Rename Identifier ..."
 msgstr "重命名标识符(&I) ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug

@@ -8753,6 +8753,11 @@ msgstr "Katalog docelowy"
 msgid "Destructor code"
 msgstr "Kod destruktora"
 
+#: lazarusidestrconsts.lisdfileswererenamedtol
+#, object-pascal-format
+msgid "%d files were renamed to lowercase."
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgcaseinsensitive
 msgid "Case Insensitive"
 msgstr "Bez rozróżniania wielkości liter"
@@ -13368,7 +13373,7 @@ msgid "Rename Identifier ..."
 msgstr "Zaznacz i zmień nazwę identyfikatora..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
-msgid "Rename Units to LowerCase ..."
+msgid "Rename Unit Files to LowerCase ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
