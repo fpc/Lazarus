@@ -10,9 +10,9 @@ object ImageListEditorDlg: TImageListEditorDlg
   Position = poScreenCenter
   ShowHint = True
   LCLVersion = '3.99.0.0'
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
-  OnResize = FormResize
   object GroupBoxR: TGroupBox
     Left = 219
     Height = 354
@@ -233,10 +233,10 @@ object ImageListEditorDlg: TImageListEditorDlg
       Caption = 'tbSeparator3'
       Style = tbsDivider
     end
-    object tbSizes: TToolButton
+    object tbResolutions: TToolButton
       Left = 412
       Top = 0
-      Caption = 'tbSizes'
+      Caption = 'tbResolutions'
       DropdownMenu = SizesPopupMenu
       Style = tbsButtonDrop
     end
@@ -317,10 +317,10 @@ object ImageListEditorDlg: TImageListEditorDlg
     Left = 88
     Top = 312
     object mNewSize: TMenuItem
-      Action = acNewIconSize
+      Action = acNewResolution
     end
     object mDeleteSize: TMenuItem
-      Action = acDeleteIconSize
+      Action = acDeleteResolution
     end
   end
   object ActionList: TActionList
@@ -386,15 +386,15 @@ object ImageListEditorDlg: TImageListEditorDlg
       Caption = 'acSaveAll'
       OnExecute = acSaveOneOrAllExecute
     end
-    object acNewIconSize: TAction
-      Category = 'Sizes'
+    object acNewResolution: TAction
+      Category = 'Resolutions'
       Caption = 'acNewIconSize'
-      OnExecute = acNewIconSizeExecute
+      OnExecute = acNewResolutionExecute
     end
-    object acDeleteIconSize: TAction
-      Category = 'Sizes'
+    object acDeleteResolution: TAction
+      Category = 'Resolutions'
       Caption = 'acDeleteIconSize'
-      OnExecute = acDeleteIconSizeExecute
+      OnExecute = acDeleteResolutionExecute
     end
   end
 end

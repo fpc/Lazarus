@@ -67,8 +67,8 @@ type
     acMoveDown: TAction;
     acSave: TAction;
     acSaveAll: TAction;
-    acNewIconSize: TAction;
-    acDeleteIconSize: TAction;
+    acNewResolution: TAction;
+    acDeleteResolution: TAction;
     ActionList: TActionList;
     BtnPanel: TButtonPanel;
     ColorBoxTransparent: TColorBox;
@@ -110,23 +110,23 @@ type
     tbSeparator1: TToolButton;
     tbSeparator2: TToolButton;
     tbSeparator3: TToolButton;
-    tbSizes: TToolButton;
+    tbResolutions: TToolButton;
     procedure acAddExecute(Sender: TObject);
     procedure acAddSlicedExecute(Sender: TObject);
     procedure acClearExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
-    procedure acDeleteIconSizeExecute(Sender: TObject);
+    procedure acDeleteResolutionExecute(Sender: TObject);
     procedure acMoveUpDownExecute(Sender: TObject);
-    procedure acNewIconSizeExecute(Sender: TObject);
+    procedure acNewResolutionExecute(Sender: TObject);
     procedure acPasteFromClipboardExecute(Sender: TObject);
     procedure acReplaceAllExecute(Sender: TObject);
     procedure acReplaceSingleExecute(Sender: TObject);
     procedure acSaveOneOrAllExecute(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure ImageListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure ImageListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
@@ -280,6 +280,11 @@ end;
 
 { TImageListEditorDlg }
 
+procedure TImageListEditorDlg.FormActivate(Sender: TObject);
+begin
+  UpdateMenus;
+end;
+
 procedure TImageListEditorDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -302,7 +307,7 @@ begin
   tbReplace.Caption := sccsILEdtReplace;
   tbRemove.Caption := sccsILEdtRemove;
   tbSave.Caption := sccsILEdtSaveBtn;
-  tbSizes.Caption := sccsILEdtResolutionsBtn;
+  tbResolutions.Caption := sccsILEdtResolutionsBtn;
   acAddSingle.Caption := sccsILEdtAddSingleResolution;
   acAddMultiple.Caption := sccsILEdtAddMoreResolutions;
   acAddSliced.Caption := sccsILEdtAddSliced;
@@ -315,20 +320,27 @@ begin
   acMoveDown.Caption := sccsILEdtMoveDown;
   acSave.Caption := sccsILEdtSave;
   acSaveAll.Caption := sccsILEdtSaveAll;
-  acNewIconSize.Caption := sccsILEdtAddNewResolution;
-  acDeleteIconSize.Caption := sccsILEdtDeleteResolution;
+  acNewResolution.Caption := sccsILEdtAddNewResolution;
+  acDeleteResolution.Caption := sccsILEdtDeleteResolution;
 
   tbAdd.ImageIndex := IDEImages.GetImageIndex('laz_add', 16);
+    acAddSingle.ImageIndex := IDEImages.GetImageIndex('add_icon_single', 16);
+    acAddMultiple.ImageIndex := IDEImages.GetImageIndex('add_icon_multiple', 16);
+    acPasteFromClipboard.ImageIndex := IDEImages.GetImageIndex('add_icon_from_clipboard', 16);
   tbReplace.ImageIndex := IDEImages.GetImageIndex('laz_refresh', 16);
+    acReplaceSingle.ImageIndex := IDEImages.GetImageIndex('replace_icon_single', 16);
+    acReplaceAll.ImageIndex := IDEImages.GetImageIndex('replace_icon_multiple', 16);
   tbRemove.ImageIndex := IDEImages.GetImageIndex('laz_delete', 16);
-    acDelete.ImageIndex := IDEImages.GetImageIndex('item_delete', 16);
-    acClear.ImageIndex := IDEImages.GetImageIndex('menu_clean', 16);
-  acMoveUp.ImageIndex := IDEImages.GetImageIndex('arrow_up', 16);     //'item_up', 16);
-  acMoveDown.ImageIndex := IDEImages.GetImageIndex('arrow_down', 16); //'item_down', 16);
+    acDelete.ImageIndex := IDEImages.GetImageIndex('remove_icon_single', 16);
+    acClear.ImageIndex := IDEImages.GetImageIndex('remove_icon_multiple', 16);
+  acMoveUp.ImageIndex := IDEImages.GetImageIndex('arrow_up', 16);
+  acMoveDown.ImageIndex := IDEImages.GetImageIndex('arrow_down', 16);
   tbSave.ImageIndex := IDEImages.GetImageIndex('laz_save', 16);
     acSave.ImageIndex := IDEImages.GetImageIndex('menu_saveas', 16);
     acSaveAll.ImageIndex := IDEImages.GetImageIndex('menu_save_all', 16);
-  tbSizes.ImageIndex := IDEImages.GetImageIndex('menu_compile', 16);
+  tbResolutions.ImageIndex := IDEImages.GetImageIndex('oi_options', 16);
+    acNewResolution.ImageIndex := IDEImages.GetImageIndex('resolution_add', 16);
+    acDeleteResolution.ImageIndex := IDEImages.GetImageIndex('resolution_remove', 16);
 
   GroupBoxL.Caption := sccsILEdtGrpLCaption;
   GroupBoxR.Caption := sccsILEdtGrpRCaption;
@@ -354,13 +366,6 @@ begin
   OpenDialog.Title := sccsILEdtOpenDialog;
   SaveDialog.Title := sccsILEdtSaveDialog;
   IDEDialogLayoutList.ApplyLayout(Self);
-
-  UpdateMenus;
-end;
-
-procedure TImageListEditorDlg.FormResize(Sender: TObject);
-begin
-//  UpdateImagesGroupBoxWidth;
 end;
 
 procedure TImageListEditorDlg.FreeGlyphInfos;
@@ -497,7 +502,7 @@ begin
   ImageListBox.SetFocus;
 end;
 
-procedure TImageListEditorDlg.acDeleteIconSizeExecute(Sender: TObject);
+procedure TImageListEditorDlg.acDeleteResolutionExecute(Sender: TObject);
 var
   TD: LCLTaskDialog.TTaskDialog;
   R: TCustomImageListResolution;
@@ -568,7 +573,7 @@ begin
   end;
 end;
 
-procedure TImageListEditorDlg.acNewIconSizeExecute(Sender: TObject);
+procedure TImageListEditorDlg.acNewResolutionExecute(Sender: TObject);
 var
   R: Longint;
   Res: TDragImageListResolution;
@@ -585,7 +590,6 @@ begin
     Res.AutoCreatedInDesignTime := False;
     RefreshItemHeight;
     ImageListBox.Repaint;
-//    UpdateImagesGroupBoxWidth;
     UpdateMenus;
   end;
 
@@ -860,8 +864,11 @@ end;
 procedure TImageListEditorDlg.UpdateMenus;
 var
   multipleRes: Boolean;
+  nRes: Integer;
 begin
-  multipleRes := ImageList.ResolutionCount > 1;
+  nRes := ImageList.ResolutionCount;
+  if (ImageList.Count = 0) then inc(nRes);  // In this case ResolutionCount is not correct.
+  multipleRes := nRes > 1;
   acAddMultiple.Visible := multipleRes;
   acReplaceAll.Visible := multipleRes;
   if multipleRes then
