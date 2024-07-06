@@ -60,7 +60,7 @@ type
     function  GetAnchorContainer: TWinControl;
     function  GetFakeMenu: TCustomControl;
     function  GetFormClient: TWinControl;
-    function  GetFormContainer: TWinControl;
+    function  GetFormContainer: TResizeFormContainer;
     function  GetSizerGripSize: Integer;
     procedure RefreshAnchorDesigner;
     procedure ResizeBarPaint(Sender: TObject);
@@ -82,7 +82,7 @@ type
     property DesignForm: TDesignForm read FDesignForm write SetDesignForm;
     property FakeMenu: TCustomControl read GetFakeMenu;
     property FormClient: TWinControl read GetFormClient;
-    property FormContainer: TWinControl read GetFormContainer;
+    property FormContainer: TResizeFormContainer read GetFormContainer;
     property NewFormSize: TPoint read FNewFormSize;
     property OnResized: TNotifyEvent read FOnResized write FOnResized;
     property Resizing: Boolean read FResizing;
@@ -275,7 +275,7 @@ begin
   Result := FResizeContainer.FormClient;
 end;
 
-function TResizeControl.GetFormContainer: TWinControl;
+function TResizeControl.GetFormContainer: TResizeFormContainer;
 begin
   Result := FResizeContainer.FormContainer;
 end;
