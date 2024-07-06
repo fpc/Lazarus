@@ -1270,7 +1270,7 @@ begin
     ParentMI:=itmProjectAddRemoveSection;
     CreateMenuItem(ParentMI,itmProjectAddTo,'itmProjectAddTo',lisMenuAddToProject, 'menu_project_add');
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject, 'menu_project_remove');
-    CreateMenuItem(ParentMI,itmProjectRenameLowerCase,'itmProjectRenameLowerCase',lisMenuRenameLowerCase, 'menu_search_replace');
+    CreateMenuItem(ParentMI,itmProjectRenameLowerCase,'itmProjectRenameLowerCase',lisMenuRenameLowerCase, 'menu_edit_lowercase');
     CreateMenuItem(ParentMI,itmProjectViewUnits,'itmProjectViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmProjectViewForms,'itmProjectViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewProjectSource, 'item_project_source');

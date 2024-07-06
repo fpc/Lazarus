@@ -1935,12 +1935,15 @@ begin
     AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
     Assert(AnUnitInfo.IsPartOfProject, 'TRenameFilesSelector.ActionForFiles: '
          + AnUnitInfo.Unit_Name + ' is not part of project');
+    if AnUnitInfo.Source=nil then
+      AnUnitInfo.ReadUnitSource(false,false);
     // Marked here means to remove old files silently.
     AnUnitInfo.Marked:=True;
     Result:=RenameUnitLowerCase(AnUnitInfo, false);
     AnUnitInfo.Marked:=False;
     if Result<>mrOK then exit;
   end;
+  ShowMessage(Format('%d files were renamed to lowercase.', [fUnitInfos.Count]));
 end;
 
 // ---
