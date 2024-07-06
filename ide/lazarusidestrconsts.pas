@@ -717,6 +717,7 @@ resourcestring
     +'various problems on some filesystems and different compilers.'
     +'%sRename it to lowercase?';
   lisRenameToLowercase = 'Rename to lowercase';
+  lisDFilesWereRenamedToL = '%d files were renamed to lowercase.';
   lisKeepName = 'Keep name';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files in '
     +'the directory with the same name,'

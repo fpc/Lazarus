@@ -1943,7 +1943,7 @@ begin
     AnUnitInfo.Marked:=False;
     if Result<>mrOK then exit;
   end;
-  ShowMessage(Format('%d files were renamed to lowercase.', [fUnitInfos.Count]));
+  ShowMessage(Format(lisDFilesWereRenamedToL, [fUnitInfos.Count]));
 end;
 
 // ---
