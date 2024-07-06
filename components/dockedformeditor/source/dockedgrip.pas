@@ -180,6 +180,13 @@ type
     property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
   end;
 
+  { TResizeFormContainer }
+
+  TResizeFormContainer = class(TWinControl)
+  protected
+    procedure AlignControls(AControl: TControl; var RemainingClientRect: TRect); override;
+  end;
+
   { TResizeContainer }
 
   TResizeContainer = class(TComponent)
@@ -188,7 +195,7 @@ type
     FBoundsRect: TRect;
     FFakeMenu: TCustomControl;
     FFormClient: TWinControl;
-    FFormContainer: TWinControl;
+    FFormContainer: TResizeFormContainer;
     FParent: TWinControl;
     FResizeBars: TResizeBars;
     FResizeGrips: TResizeGrips;
@@ -203,7 +210,7 @@ type
     property BoundsRect: TRect read FBoundsRect;
     property FakeMenu: TCustomControl read FFakeMenu;
     property FormClient: TWinControl read FFormClient;
-    property FormContainer: TWinControl read FFormContainer;
+    property FormContainer: TResizeFormContainer read FFormContainer;
     property Parent: TWinControl read FParent;
     property ResizeBars: TResizeBars read FResizeBars;
     property ResizeGrips: TResizeGrips read FResizeGrips;
@@ -578,6 +585,13 @@ begin
   FBar[7].SetBounds(ARect.Left, ARect.Top + BarSize, BarSize, LMiddleTop - ARect.Top - BarSize);
 end;
 
+{ TResizeFormContainer }
+
+procedure TResizeFormContainer.AlignControls(AControl: TControl; var RemainingClientRect: TRect);
+begin
+  // Do not align the form
+end;
+
 { TResizeContainer }
 
 constructor TResizeContainer.Create(AWinControl: TWinControl);
@@ -599,7 +613,7 @@ begin
   FFormClient.ControlStyle:= FFormClient.ControlStyle + [csOpaque];
   FFormClient.Parent := Parent;
 
-  FFormContainer := TWinControl.Create(FFormClient);
+  FFormContainer := TResizeFormContainer.Create(FFormClient);
   FFormContainer.Parent := FFormClient;
 
   FAnchorContainer := TWinControl.Create(Parent);
