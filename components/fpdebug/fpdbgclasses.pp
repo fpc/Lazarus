@@ -3670,7 +3670,7 @@ begin
   begin
     CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
     Result := False;
-    CU.GetLineAddresses(sym.FileName, sym.Line, a);
+    CU.Owner.GetLineAddresses(sym.FileName, sym.Line, a);
     for b in a do begin
       Result := b = AnAddr;
       if Result then break;

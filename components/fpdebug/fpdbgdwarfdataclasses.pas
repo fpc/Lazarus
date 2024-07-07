@@ -44,7 +44,7 @@ unit FpDbgDwarfDataClasses;
 interface
 
 uses
-  Classes, Types, SysUtils, Contnrs, Math,
+  Classes, Types, SysUtils, Contnrs, Math, fgl,
   // LazUtils
   Maps, LazClasses, LazFileUtils, LazUTF8, LazCollections,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
@@ -498,7 +498,7 @@ type
       AFindSibling: TGetLineAddrFindSibling = fsNone;
       AFoundLine: PInteger = nil;
       AMaxSiblingDistance: integer = 0;
-      ACU: TDwarfCompilationUnit = nil
+      ADbgInfo: TFpDwarfInfo = nil
     ): Boolean; inline;
       // NoData: only return True/False, but nothing in AResultList
     procedure Compress;
@@ -698,8 +698,6 @@ type
     {$IFDEF DwarfTestAccess} private {$ENDIF}
     FInitialStateMachine: TDwarfLineInfoStateMachine;
 
-    FLineNumberMap: TStringListUTF8Fast;
-
     FAddressMap: TMap; // Holds a key for each DW_TAG_subprogram / TFpSymbolDwarfDataProc, stores TDwarfAddressInfo
     FAddressMapBuild: Boolean;
     
@@ -744,10 +742,6 @@ type
     procedure WaitForScopeScan; inline; // MUST be called, before accessing the CU
     procedure WaitForComputeHashes; inline;
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
-    function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
-      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil; AFoundFilename: PBoolean = nil;
-      AMaxSiblingDistance: integer = 0): boolean;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
@@ -797,7 +791,9 @@ type
     property AbbrevList: TDwarfAbbrevList read FAbbrevList;
     property KnownNameHashes: PKnownNameHashesArray read GetKnownNameHashes; // Only for TOP-LEVEL entries
   end;
-  
+
+  TLineNumberFileMap = specialize TFPGMap<AnsiString, PDWarfLineMap>;
+
   { TFpDwarfInfo }
 
   TFpDwarfInfo = class(TDbgInfo)
@@ -807,6 +803,8 @@ type
     FWorkQueue: TFpGlobalThreadWorkerQueue;
     FFiles: array of TDwarfDebugFile;
   private
+    FLineNumberMap: TLineNumberFileMap;
+    FLineNumberMapDone: Boolean;
     FImageBase: QWord;
     FRelocationOffset: QWord;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit; inline;
@@ -3586,7 +3584,7 @@ end;
 
 function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
   NoData: Boolean; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
-  AMaxSiblingDistance: integer; ACU: TDwarfCompilationUnit): Boolean;
+  AMaxSiblingDistance: integer; ADbgInfo: TFpDwarfInfo): Boolean;
 var
   idx: integer;
   offset, Addr1, Addr2: TDBGPtr;
@@ -3698,8 +3696,8 @@ begin
            ((AFindSibling = fsNextFuncLazy) and (ln - ALine > 1))
         then begin
           // check same function
-          if ACU = nil then exit;
-          if not ACU.GetProcStartEnd(Addresses[i], Addr1, Addr2) then exit;
+          if ADbgInfo = nil then exit;
+          if not ADbgInfo.FindProcStartEndPC(Addresses[i], Addr1, Addr2) then exit;
           if GetAddressesForLine(ALine, TmpResList, False, fsBefore) then begin
             if (Length(TmpResList) = 0) or (TmpResList[0] < Addr1) or (TmpResList[0] > Addr2) then
               exit;
@@ -3759,6 +3757,7 @@ var
   p: PDbgImageSection;
   i: Integer;
 begin
+  FLineNumberMap := TLineNumberFileMap.Create;
   FWorkQueue := FpDbgGlobalWorkerQueue;
   FWorkQueue.AddRef;
 
@@ -3787,6 +3786,17 @@ begin
 end;
 
 destructor TFpDwarfInfo.Destroy;
+  procedure FreeLineNumberMap;
+  var
+    n: Integer;
+  begin
+    if FLineNumberMap = nil then
+      exit;
+    for n := 0 to FLineNumberMap.Count - 1 do
+      Dispose(FLineNumberMap.Data[n]);
+    FreeAndNil(FLineNumberMap);
+  end;
+
 var
   n: integer;
 begin
@@ -3795,6 +3805,7 @@ begin
     TObject(FCompilationUnits[n]).Free;
   FreeAndNil(FCompilationUnits);
   FreeAndNil(FCallFrameInformationList);
+  FreeLineNumberMap;
 
   inherited Destroy;
 end;
@@ -4032,35 +4043,67 @@ function TFpDwarfInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
   var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
   AFoundFilename: PBoolean; AMaxSiblingDistance: integer): Boolean;
 var
-  n: Integer;
-  CU: TDwarfCompilationUnit;
+  Map: PDWarfLineMap;
 begin
   Result := False;
   if AFoundLine <> nil then
     AFoundLine^ := -1;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    CU.WaitForScopeScan;
-    Result := CU.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AFoundLine, AFoundFilename, AMaxSiblingDistance)
-              or Result;
-  end;
+
+  Map := GetLineAddressMap(AFileName);
+  if Map = nil then
+    exit;
+
+  if AFoundFilename <> nil then
+    AFoundFilename^ := True;
+  Result := Map^.GetAddressesForLine(ALine, AResultList, False, AFindSibling, AFoundLine, AMaxSiblingDistance, Self);
 end;
 
 function TFpDwarfInfo.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
+
+
+  function FindIndex: Integer;
+  var
+    Name: String;
+  begin
+    // try fullname first
+    Result := FLineNumberMap.IndexOf(AFileName);
+    if Result <> -1 then Exit;
+
+    Name := ExtractFileName(AFileName);
+    Result := FLineNumberMap.IndexOf(Name);
+    if Result <> -1 then Exit;
+
+    for Result := 0 to FLineNumberMap.Count - 1 do
+      if AnsiCompareText(Name, ExtractFileName(FLineNumberMap.Keys[Result])) = 0 then
+        Exit;
+    Result := -1;
+  end;
+
 var
-  n: Integer;
+  n, idx: Integer;
   CU: TDwarfCompilationUnit;
 begin
-  // TODO: Deal with line info split on 2 compilation units?
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    CU.WaitForScopeScan;
-    Result := CU.GetLineAddressMap(AFileName);
-    if Result <> nil then Exit;
-  end;
   Result := nil;
+  if FLineNumberMap = nil then Exit;
+
+  if not FLineNumberMapDone then begin
+    // make sure all filenames are there
+    for n := 0 to FCompilationUnits.Count - 1 do
+    begin
+      CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+      CU.WaitForScopeScan;
+      if CU.Valid then
+        CU.BuildLineInfo(nil, True);
+    end;
+    for n := 0 to FLineNumberMap.Count - 1 do
+      FLineNumberMap.Data[n]^.Compress;
+    FLineNumberMapDone := True;
+  end;
+
+  idx := FindIndex;
+  if idx = -1 then Exit;
+
+  Result := FLineNumberMap.Data[idx];
 end;
 
 procedure TFpDwarfInfo.LoadCallFrameInstructions;
@@ -4849,15 +4892,15 @@ begin
     Line := FLineInfo.StateMachine.Line;
 
     if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
-      idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
+      idx := FOwner.FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
       if idx = -1
       then begin
         LineMap := New(PDWarfLineMap);
         LineMap^.Init;
-        FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, TObject(LineMap));
+        FOwner.FLineNumberMap.Add(FLineInfo.StateMachine.FileName, LineMap);
       end
       else begin
-        LineMap := PDWarfLineMap(FLineNumberMap.Objects[idx]);
+        LineMap := FOwner.FLineNumberMap.Data[idx];
       end;
       CurrentFileName := FLineInfo.StateMachine.FileName;
     end;
@@ -4895,8 +4938,9 @@ begin
 
   Iter.Free;
 
-  for Idx := 0 to FLineNumberMap.Count - 1 do
-    PDWarfLineMap(FLineNumberMap.Objects[idx])^.Compress;
+  if not ADoAll then
+    for Idx := 0 to FOwner.FLineNumberMap.Count - 1 do
+      FOwner.FLineNumberMap.Data[idx]^.Compress;
 end;
 
 function TDwarfCompilationUnit.GetAddressMap: TMap;
@@ -5212,9 +5256,6 @@ begin
 
   // use internally 64 bit target pointer
   FAddressMap := TMap.Create(itu8, SizeOf(TDwarfAddressInfo));
-  FLineNumberMap := TStringListUTF8Fast.Create;
-  FLineNumberMap.Sorted := True;
-  FLineNumberMap.Duplicates := dupError;
 
   FFirstScope.Init(nil); // invalid
 
@@ -5299,17 +5340,6 @@ begin
 end;
 
 destructor TDwarfCompilationUnit.Destroy;
-  procedure FreeLineNumberMap;
-  var
-    n: Integer;
-  begin
-    if FLineNumberMap = nil then
-      exit;
-    for n := 0 to FLineNumberMap.Count - 1 do
-      Dispose(PDWarfLineMap(FLineNumberMap.Objects[n]));
-    FreeAndNil(FLineNumberMap);
-  end;
-
 begin
   FOwner.WorkQueue.RemoveItem(FComputeNameHashesWorker);
   FOwner.WorkQueue.RemoveItem(FScanAllWorker);
@@ -5318,7 +5348,6 @@ begin
 
   FreeAndNil(FAbbrevList);
   FreeAndNil(FAddressMap);
-  FreeLineNumberMap;
   FreeAndNil(FInitialStateMachine);
   FreeAndNil(FLineInfo.StateMachines);
   FreeAndNil(FLineInfo.StateMachine);
@@ -5326,56 +5355,6 @@ begin
   FreeAndNil(FLineInfo.FileNames);
 
   inherited Destroy;
-end;
-
-function TDwarfCompilationUnit.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
-
-  function FindIndex: Integer;
-  var
-    Name: String;
-  begin
-    // try fullname first
-    Result := FLineNumberMap.IndexOf(AFileName);
-    if Result <> -1 then Exit;
-    
-    Name := ExtractFileName(AFileName);
-    Result := FLineNumberMap.IndexOf(Name);
-    if Result <> -1 then Exit;
-
-    for Result := 0 to FLineNumberMap.Count - 1 do
-      if AnsiCompareText(Name, ExtractFileName(FLineNumberMap[Result])) = 0 then
-        Exit;
-    Result := -1;
-  end;
-
-var
-  idx: Integer;
-begin
-  Result := nil;
-  if not Valid then Exit;
-
-  // make sure all filenames are there
-  BuildLineInfo(nil, True);
-  idx := FindIndex;
-  if idx = -1 then Exit;
-  
-  Result := PDWarfLineMap(FLineNumberMap.Objects[idx]);
-end;
-
-function TDwarfCompilationUnit.GetLineAddresses(const AFileName: String; ALine: Cardinal;
-  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
-  AFoundFilename: PBoolean; AMaxSiblingDistance: integer): boolean;
-var
-  Map: PDWarfLineMap;
-begin
-  Result := False;
-  Map := GetLineAddressMap(AFileName);
-  if Map = nil then
-    exit;
-
-  if AFoundFilename <> nil then
-    AFoundFilename^ := True;
-  Result := Map^.GetAddressesForLine(ALine, AResultList, False, AFindSibling, AFoundLine, AMaxSiblingDistance, Self);
 end;
 
 function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;

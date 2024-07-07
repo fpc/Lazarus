@@ -2380,7 +2380,7 @@ begin
     AnAddresses := nil;
     if
        //(FndLine = HelpSymbol.Line) and
-       HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line, AnAddresses, fsBefore, @FndLine) and
+       HelpSymbol.CompilationUnit.Owner.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line, AnAddresses, fsBefore, @FndLine) and
        (Length(AnAddresses) > 1)  // may be an internal finally on the begin/end line, sharing a line number
     then begin
       for i := 0 to Length(AnAddresses) - 1 do
@@ -2401,7 +2401,7 @@ begin
     end;
 
     AnAddresses := nil;
-    if HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
+    if HelpSymbol.CompilationUnit.Owner.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
     then begin
       TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[0]);
       if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
