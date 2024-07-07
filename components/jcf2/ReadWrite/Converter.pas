@@ -106,6 +106,10 @@ type
     property ShowTree: boolean Read fbShowParseTree Write fbShowParseTree;	
   end;
 
+const
+  FORMAT_START = '{<JCF_!*$>}';
+  FORMAT_END   = '{</JCF_!*$>}';
+
 implementation
 
 uses
@@ -371,9 +375,6 @@ end;
 
 procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer;
                                  aOnlyOutputSelection: boolean);
-const
-  FORMAT_START = '{<JCF_!*$>}';
-  FORMAT_END   = '{</JCF_!*$>}';
 var
   liRealInputStart, liRealInputEnd: Integer;
   liOutputStart, liOutputEnd: Integer;

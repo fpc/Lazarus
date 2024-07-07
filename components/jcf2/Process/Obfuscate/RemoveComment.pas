@@ -49,7 +49,7 @@ implementation
 
 uses
   JcfStringUtils,
-  SourceToken, Tokens, ParseTreeNodeType, FormatFlags;
+  SourceToken, Tokens, ParseTreeNodeType, FormatFlags, Converter;
 
 function CommentMustStay(const pc: TSourceToken): boolean;
 var
@@ -77,6 +77,9 @@ begin
     (StrLeft(pc.SourceCode, FORMAT_COMMENT_PREFIX_LEN) = FORMAT_COMMENT_PREFIX)) then
     Result := True;
 
+  // these comments are used to process only selected text.
+  if (pc.CommentStyle in CURLY_COMMENTS) and ((pc.SourceCode = FORMAT_START) or (pc.SourceCode = FORMAT_END)) then
+    Result := True;
 end;
 
 constructor TRemoveComment.Create;
