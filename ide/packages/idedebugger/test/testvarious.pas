@@ -74,6 +74,8 @@ begin
   Test('e1 in [x[1..15]]',     11, 'e1 in [x[11]]');
   Test('e1 in [x[1..15]..x[33..35]]',     11, 'e1 in [x[11]..x[33..35]]');
 
+  Test('PFoo((TList(FData).FList)^[0..TList(FData).FCount-1].FObject)^',     11, 'PFoo((TList(FData).FList)^[11].FObject)^');
+  Test('PFoo((TList(FData).FList)^[-1..TList(FData).FCount-1].FObject)^',    11, 'PFoo((TList(FData).FList)^[11].FObject)^');
 end;
 
 initialization

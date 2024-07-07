@@ -324,6 +324,11 @@ begin
     if p^ in ['@', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then begin
       MaybeBeforeArrayIdx := False;  // after operator. A [1..5] would be a set of byte
 
+      if (p^ = '(') and (InArrayIdxBracket > 0) then begin
+        inc(InRndBracket);
+        MaybeBeforeArrayIdx := False;
+      end
+      else
       if (InArrayIdxBracket > 0) and (InSqrBracket = 0) and (InRndBracket = 0) then begin
         if (p^ = '.') and (p[1] = '.') then begin
           if FoundDotDot then
@@ -386,12 +391,6 @@ begin
       end;
     end
 
-
-    else
-    if (p^ = '(') and (InArrayIdxBracket > 0) then begin
-      inc(InRndBracket);
-      MaybeBeforeArrayIdx := False;
-    end
 
     else
     if (p^ = '[') then begin
