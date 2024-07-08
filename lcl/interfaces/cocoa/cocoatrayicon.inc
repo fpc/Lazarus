@@ -139,8 +139,17 @@ begin
 end;
 
 class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  nc: NSUserNotificationCenter;
+  message: NSUserNotification;
 begin
-  Result := False;
+  Result := True;
+  message:= NSUserNotification.alloc.init;
+  message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
+  message.setInformativeText( StrToNSString(ATrayIcon.BalloonHint) );
+  nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
+  nc.deliverNotification( message );
+  message.release;
 end;
 
 class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
