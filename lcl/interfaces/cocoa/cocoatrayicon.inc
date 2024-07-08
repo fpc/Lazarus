@@ -15,6 +15,12 @@ type
     procedure menuWillOpen(menu: NSMenu); message 'menuWillOpen:';
   end;
 
+  { TCocoaUserNotificationCenterDelegate }
+
+  TCocoaUserNotificationCenterDelegate = objcclass(NSObject, NSUserNotificationCenterDelegateProtocol)
+    function userNotificationCenter_shouldPresentNotification (center: NSUserNotificationCenter; notification: NSUserNotification): ObjCBOOL; message 'userNotificationCenter:shouldPresentNotification:';
+  end;
+
 { TCocoaStatusItemHandle }
 
 procedure TCocoaStatusItemHandle.lclAction(sender: id);
@@ -34,7 +40,10 @@ begin
   if (ATrayIcon.icon <> nil) and (ATrayIcon.icon.Handle <> 0) then
   begin
     image := TCocoaBitmap(ATrayIcon.icon.Handle).image;
-    if image <> nil then statusitem.setImage(image);
+    if image <> nil then begin
+      statusItem.button.setImageScaling(NSImageScaleProportionallyUpOrDown);
+      statusItem.button.setImage(image);
+    end;
   end;
 
   // Show the menu
@@ -59,6 +68,13 @@ begin
     and (TrayIcon.PopUpMenu = nil) // LCL changes the value w/o letting WS know! :(
   then
     menu.cancelTrackingWithoutAnimation;
+end;
+
+function TCocoaUserNotificationCenterDelegate.userNotificationCenter_shouldPresentNotification
+  (center: NSUserNotificationCenter; notification: NSUserNotification
+  ): ObjCBOOL;
+begin
+  Result:= True;
 end;
 
 { TCocoaWSCustomTrayIcon }
@@ -139,8 +155,23 @@ begin
 end;
 
 class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  nc: NSUserNotificationCenter;
+  message: NSUserNotification;
 begin
-  Result := False;
+  Result := True;
+  message:= NSUserNotification.alloc.init;
+  message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
+  message.setInformativeText( StrToNSString(ATrayIcon.BalloonHint) );
+
+  nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
+  if CocoaConfig.CocoaAlwaysPresentNotification then begin
+    if NOT Assigned(nc.delegate) then
+      nc.setDelegate( TCocoaUserNotificationCenterDelegate.new );
+  end;
+  nc.deliverNotification( message );
+
+  message.release;
 end;
 
 class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
