@@ -15,6 +15,12 @@ type
     procedure menuWillOpen(menu: NSMenu); message 'menuWillOpen:';
   end;
 
+  { TCocoaUserNotificationCenterDelegate }
+
+  TCocoaUserNotificationCenterDelegate = objcclass(NSObject, NSUserNotificationCenterDelegateProtocol)
+    function userNotificationCenter_shouldPresentNotification (center: NSUserNotificationCenter; notification: NSUserNotification): ObjCBOOL; message 'userNotificationCenter:shouldPresentNotification:';
+  end;
+
 { TCocoaStatusItemHandle }
 
 procedure TCocoaStatusItemHandle.lclAction(sender: id);
@@ -59,6 +65,13 @@ begin
     and (TrayIcon.PopUpMenu = nil) // LCL changes the value w/o letting WS know! :(
   then
     menu.cancelTrackingWithoutAnimation;
+end;
+
+function TCocoaUserNotificationCenterDelegate.userNotificationCenter_shouldPresentNotification
+  (center: NSUserNotificationCenter; notification: NSUserNotification
+  ): ObjCBOOL;
+begin
+  Result:= True;
 end;
 
 { TCocoaWSCustomTrayIcon }
@@ -147,8 +160,14 @@ begin
   message:= NSUserNotification.alloc.init;
   message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
   message.setInformativeText( StrToNSString(ATrayIcon.BalloonHint) );
+
   nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
+  if CocoaConfig.CocoaAlwaysPresentNotification then begin
+    if NOT Assigned(nc.delegate) then
+      nc.setDelegate( TCocoaUserNotificationCenterDelegate.new );
+  end;
   nc.deliverNotification( message );
+
   message.release;
 end;
 

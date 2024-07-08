@@ -31,7 +31,7 @@ uses
   WSExtCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaMenus, CocoaWSCommon, CocoaGDIObjects, CocoaScrollers,
-  Cocoa_Extra, CocoaUtils;
+  Cocoa_Extra, CocoaUtils, CocoaConfig;
 
 type
 
