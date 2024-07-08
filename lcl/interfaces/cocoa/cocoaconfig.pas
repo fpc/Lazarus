@@ -86,6 +86,12 @@ var
   CocoaScrollerOverlayStyleKnobMinSize : Double = 25;
 
 
+  // by default on macOS, Notification is only Presented when the APP is
+  // in the background.
+  // when CocoaAlwaysPresentNotification is set to True, Notification is
+  // always Presented.
+  CocoaAlwaysPresentNotification : Boolean = True;
+
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
 
