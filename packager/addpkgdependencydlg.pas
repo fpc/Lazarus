@@ -378,6 +378,7 @@ begin
     end;
     ModalResult := mrOk;
   finally
+    NewDependency.Free;
     MinVerTest.Free;
     MaxVerTest.Free;
   end;
