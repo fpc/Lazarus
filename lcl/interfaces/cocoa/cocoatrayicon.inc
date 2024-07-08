@@ -40,7 +40,10 @@ begin
   if (ATrayIcon.icon <> nil) and (ATrayIcon.icon.Handle <> 0) then
   begin
     image := TCocoaBitmap(ATrayIcon.icon.Handle).image;
-    if image <> nil then statusitem.setImage(image);
+    if image <> nil then begin
+      statusItem.button.setImageScaling(NSImageScaleProportionallyUpOrDown);
+      statusItem.button.setImage(image);
+    end;
   end;
 
   // Show the menu
