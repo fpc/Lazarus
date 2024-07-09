@@ -154,15 +154,52 @@ begin
   StatusItemHandle.lclSetTrayIcon(ATrayIcon);
 end;
 
-class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+// macOS 10.14+ required
+// APP codesign required
+// codesign --deep --force --verify --verbose --sign '-' 'your.app'
+class function TCocoaWSCustomTrayIcon.newUserNotify(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  nc: UNUserNotificationCenter;
+  trigger: UNTimeIntervalNotificationTrigger;
+  message: UNMutableNotificationContent;
+  request: UNNotificationRequest;
+const
+  options: NSInteger = UNAuthorizationOptionAlert or
+                       UNAuthorizationOptionBadge or
+                       UNAuthorizationOptionSound;
+begin
+  Result:= True;
+
+  nc:= UNUserNotificationCenter.currentNotificationCenter;
+  nc.requestAuthorizationWithOptions_completionHandler( options );
+
+  trigger:= UNTimeIntervalNotificationTrigger.triggerWithTimeInterval_repeats(
+    0.01, False);
+
+  message:= UNMutableNotificationContent.new;
+  message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
+  message.setBody( StrToNSString(ATrayIcon.BalloonHint) );
+  message.setSound( UNNotificationSound.defaultSound );
+
+  request:= UNNotificationRequest.requestWithIdentifier_content_trigger(
+    NSString.string_, message, trigger );
+
+  nc.addNotificationRequest_withCompletionHandler( request );
+
+  message.release;
+end;
+
+class function TCocoaWSCustomTrayIcon.legacyUserNotify(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   nc: NSUserNotificationCenter;
   message: NSUserNotification;
 begin
   Result := True;
-  message:= NSUserNotification.alloc.init;
+  message:= NSUserNotification.new;
   message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
   message.setInformativeText( StrToNSString(ATrayIcon.BalloonHint) );
+  if NOT NSApplication(NSApp).isActive then
+    message.setSoundName( NSUserNotificationDefaultSoundName );
 
   nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
   if CocoaConfig.CocoaAlwaysPresentNotification then begin
@@ -172,6 +209,14 @@ begin
   nc.deliverNotification( message );
 
   message.release;
+end;
+
+class function TCocoaWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+begin
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber11_0 then
+    Result:= newUserNotify( ATrayIcon )       // APP codesign required
+  else
+    Result:= legacyUserNotify( ATrayIcon );
 end;
 
 class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
