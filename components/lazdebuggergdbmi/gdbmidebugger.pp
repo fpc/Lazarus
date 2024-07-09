@@ -2082,6 +2082,9 @@ begin
       FreeAndNil(List);
     end;
 
+    for i := 0 to Length(FGDBMIRegSupplier.FRegNamesCache) - 1 do
+      if FRegisters.EntriesByName[FGDBMIRegSupplier.FRegNamesCache[i]].DataValidity = ddsUnknown then
+        FRegisters.EntriesByName[FGDBMIRegSupplier.FRegNamesCache[i]].DataValidity := ddsRequested;
 
     if FRegisters.DataValidity = ddsRequested then begin
       ChangedRegList := nil;
@@ -2111,7 +2114,7 @@ begin
 
     // check for individual updates / displayformat
     for i := 0 to FRegisters.Count - 1 do begin
-      if not FRegisters[i].HasValue then
+      if (not FRegisters[i].HasValue) and (FRegisters[i].DataValidity = ddsRequested) then
         UpdateFormat(FRegisters[i].DisplayFormat);
     end;
   finally
