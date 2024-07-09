@@ -56,7 +56,68 @@ var
   NSPasteboardTypeRuler: NSPasteboardType; cvar; external;
   NSPasteboardTypeSound: NSPasteboardType; cvar; external;
 
+const
+  UNAuthorizationOptionBadge   = 1 shl 0;
+  UNAuthorizationOptionSound   = 1 shl 1;
+  UNAuthorizationOptionAlert   = 1 shl 2;
+  UNAuthorizationOptionCarPlay = 1 shl 3;
+
 type
+  UNNotificationContent = objcclass external (NSObject)
+  public
+    function title: NSString; message 'title';
+    function subtitle: NSString; message 'subtitle';
+    function body: NSString; message 'body';
+    function badge: NSNumber; message 'badge';
+  end;
+
+  UNMutableNotificationContent = objcclass external (UNNotificationContent)
+  public
+    procedure setTitle( newValue: NSString ); message 'setTitle:';
+    procedure setSubtitle( newValue: NSString ); message 'setSubtitle:';
+    procedure setBody( newValue: NSString ); message 'setBody:';
+    procedure setBadge( newValue: NSNumber); message 'setBadge:';
+  end;
+
+  UNNotificationTrigger = objcclass external (NSObject)
+  public
+    function repeats: ObjCBool; message 'repeats';
+  end;
+
+  UNTimeIntervalNotificationTrigger = objcclass external (UNNotificationTrigger)
+  public
+    class function triggerWithTimeInterval_repeats(
+      timeInterval: NSTimeInterval; repeats_: ObjCBool ): id;
+      message 'triggerWithTimeInterval:repeats:';
+  end;
+
+  UNNotificationRequest = objcclass external (NSObject)
+  public
+    class function requestWithIdentifier_content_trigger(
+      identifier: NSString;
+      content: UNNotificationContent;
+      trigger: UNNotificationTrigger ): id;
+      message 'requestWithIdentifier:content:trigger:';
+    function identifier: NSString; message 'identifier';
+    function content: UNNotificationContent; message 'content';
+    function trigger: UNNotificationTrigger; message 'trigger';
+  end;
+
+  UNAuthorizationOptions = NSUInteger;
+
+  UNUserNotificationCenter = objcclass external (NSObject)
+  public
+    class function currentNotificationCenter: UNUserNotificationCenter;
+      message 'currentNotificationCenter';
+    procedure requestAuthorizationWithOptions_completionHandler(
+      options: UNAuthorizationOptions; completionHandler: OpaqueCBlock = nil );
+      message 'requestAuthorizationWithOptions:completionHandler:';
+    procedure addNotificationRequest_withCompletionHandler(
+      request: UNNotificationRequest;
+      completionHandler: OpaqueCBlock = nil );
+      message 'addNotificationRequest:withCompletionHandler:';
+  end;
+
   NSMenuFix = objccategory external (NSMenu)
     function itemAtIndex(index: NSInteger): NSMenuItem; message 'itemAtIndex:';
   end;
