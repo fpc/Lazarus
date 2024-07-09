@@ -63,12 +63,17 @@ const
   UNAuthorizationOptionCarPlay = 1 shl 3;
 
 type
+  UNNotificationSound = objcclass external (NSObject)
+    class function defaultSound: UNNotificationSound; message 'defaultSound';
+  end;
+
   UNNotificationContent = objcclass external (NSObject)
   public
     function title: NSString; message 'title';
     function subtitle: NSString; message 'subtitle';
     function body: NSString; message 'body';
     function badge: NSNumber; message 'badge';
+    function sound: UNNotificationSound; message 'sound';
   end;
 
   UNMutableNotificationContent = objcclass external (UNNotificationContent)
@@ -76,7 +81,8 @@ type
     procedure setTitle( newValue: NSString ); message 'setTitle:';
     procedure setSubtitle( newValue: NSString ); message 'setSubtitle:';
     procedure setBody( newValue: NSString ); message 'setBody:';
-    procedure setBadge( newValue: NSNumber); message 'setBadge:';
+    procedure setBadge( newValue: NSNumber ); message 'setBadge:';
+    procedure setSound( newValue: UNNotificationSound ); message 'setSound:';
   end;
 
   UNNotificationTrigger = objcclass external (NSObject)

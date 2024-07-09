@@ -179,6 +179,7 @@ begin
   message:= UNMutableNotificationContent.new;
   message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
   message.setBody( StrToNSString(ATrayIcon.BalloonHint) );
+  message.setSound( UNNotificationSound.defaultSound );
 
   request:= UNNotificationRequest.requestWithIdentifier_content_trigger(
     NSString.string_, message, trigger );
@@ -197,6 +198,8 @@ begin
   message:= NSUserNotification.new;
   message.setTitle( StrToNSString(ATrayIcon.BalloonTitle) );
   message.setInformativeText( StrToNSString(ATrayIcon.BalloonHint) );
+  if NOT NSApplication(NSApp).isActive then
+    message.setSoundName( NSUserNotificationDefaultSoundName );
 
   nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
   if CocoaConfig.CocoaAlwaysPresentNotification then begin
