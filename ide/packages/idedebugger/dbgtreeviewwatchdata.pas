@@ -188,6 +188,7 @@ var
   ExistingNode, nd: PVirtualNode;
   Nav: TArrayNavigationBar;
   Offs, KeepCnt, KeepBelow: Int64;
+  ForceIdx: Boolean;
 begin
   ChildCount := 0;
   ResData := AWatchAbleResult.ResultData;
@@ -226,6 +227,17 @@ begin
     FTreeView.NodeControl[ExistingNode] := Nav;
     FTreeView.NodeText[ExistingNode, 0] := ' ';
     FTreeView.NodeText[ExistingNode, 1] := ' ';
+  end
+  else begin
+    ForceIdx := (Nav.LowBound <> ResData.LowBound) or
+                ( (Nav.Index <= Nav.HighBound) and
+                  (Nav.Index >  ResData.LowBound + TotalCount - 1)
+                );
+    Nav.LowBound := ResData.LowBound;
+    Nav.HighBound := ResData.LowBound + TotalCount - 1;
+    if ForceIdx then
+      Nav.Index := ResData.LowBound;
+    Nav.HardLimits := not(ResData.ValueKind = rdkArray);
   end;
   Nav.OwnerData := AWatchAble;
   ChildCount := Nav.LimitedPageSize;
