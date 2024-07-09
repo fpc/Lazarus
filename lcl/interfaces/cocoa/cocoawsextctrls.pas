@@ -174,6 +174,9 @@ type
   { TCocoaWSCustomTrayIcon }
 
   TCocoaWSCustomTrayIcon = class(TWSCustomTrayIcon)
+  private
+    class function newUserNotify(const ATrayIcon: TCustomTrayIcon): Boolean;
+    class function legacyUserNotify(const ATrayIcon: TCustomTrayIcon): Boolean;
   published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
