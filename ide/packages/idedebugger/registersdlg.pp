@@ -512,6 +512,8 @@ begin
 
       for n := 0 to Cnt - 1 do
       begin
+        if Reg[n].DataValidity = ddsUnknown then
+          Continue;
         idx := List.IndexOf(Reg[n].Name);
         if idx = -1
         then begin

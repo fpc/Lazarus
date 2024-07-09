@@ -2658,6 +2658,14 @@ function TRegisterValue.GetValue: String;
 var
   v: TRegisterDisplayValue;
 begin
+  case DataValidity of
+    ddsUnknown:    exit('<?>');
+    ddsRequested:  exit('<Requested>');
+    ddsEvaluating: exit('<Evaluating>');
+    ddsInvalid:    exit('<Invalid>');
+    ddsError:      exit('<Error>');
+  end;
+
   v :=  GetValueObject();
   if v <> nil then begin
     Result := v.Value[FDisplayFormat];
