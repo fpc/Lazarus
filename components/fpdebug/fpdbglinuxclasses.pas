@@ -6,14 +6,6 @@ unit FpDbgLinuxClasses;
 {$modeswitch advancedrecords}
 {off $define DebuglnLinuxDebugEvents}
 
-// New FPC 331 TProcess to allow StdIn/StdOut redirection
-{$UnDef HAS_NEW_PROCESS}{$UnDef USES_NEW_PROCESS}
-{$IF FPC_Fullversion>=30301} {$define HAS_NEW_PROCESS}
-{$ELSE}
-{$IFDEF WINDOWS} {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
-{$IFDEF LINUX}    {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
-{$ENDIF}
-
 interface
 
 uses
@@ -494,26 +486,19 @@ begin
     if FpSetsid <> -1 then
       FpIOCtl(ConsoleTtyFd, TIOCSCTTY, nil);
 
-    {$IFDEF HAS_NEW_PROCESS}
     if Config.StdInRedirFile = '' then begin
+      //if DBG_PROCESS_HAS_REDIRECT then ????????????
       FpClose(0);
-      {$ENDIF}
       FpDup2(ConsoleTtyFd,0);
-    {$IFDEF HAS_NEW_PROCESS}
     end;
     if Config.StdOutRedirFile = '' then begin
       FpClose(1);
-      {$ENDIF}
       FpDup2(ConsoleTtyFd,1);
-    {$IFDEF HAS_NEW_PROCESS}
     end;
     if Config.StdErrRedirFile = '' then begin
       FpClose(2);
-      {$ENDIF}
       FpDup2(ConsoleTtyFd,2);
-    {$IFDEF HAS_NEW_PROCESS}
     end;
-    {$ENDIF}
     FpClose(ConsoleTtyFd);
   end
   else
