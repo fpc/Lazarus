@@ -5126,8 +5126,25 @@ begin
       AnInfo.InstrTargetOffs := Int64(TDbgPtr(AAddress) - TDbgPtr(Code)) + TargetAddrOffs;
       {$POP}
     end;
+  end
+  else
+  if (Instr.OperCnt = 2) and (ofMemory in Instr.Operand[n].Flags) and (Instr.Segment = '') and
+     ( (Instr.Operand[2].Value = 'rip%s') or (Instr.Operand[2].Value = 'eip%s') )
+  then begin
+    TargetAddrOffs := 1;
+    case Instr.Operand[2].ByteCount of
+      1: TargetAddrOffs := shortint(PByte(@Code[Instr.Operand[2].CodeIndex])^);
+      2: TargetAddrOffs := smallint(PWord(@Code[Instr.Operand[2].CodeIndex])^);
+      4: TargetAddrOffs := Integer(PDWord(@Code[Instr.Operand[2].CodeIndex])^);
+      8: TargetAddrOffs := Int64(PQWord(@Code[Instr.Operand[2].CodeIndex])^);
+    end;
+    if TargetAddrOffs <> 1 then begin
+      AnInfo.InstrType := itAny;
+      {$PUSH}{$R-}{$Q-}
+      AnInfo.InstrTargetOffs := Int64(TDbgPtr(AAddress) - TDbgPtr(Code)) + TargetAddrOffs;
+      {$POP}
+    end;
   end;
-
 
   OpcodeName := OPCODE_PREFIX[Instr.OpCode.Prefix];
   OpcodeName := OpcodeName + OPCODE_NAME[Instr.OpCode.Opcode];

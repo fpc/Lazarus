@@ -2216,6 +2216,7 @@ var
     AnEntry.TargetFile := '';
     AnEntry.TargetLine := 0;
     if AnInfo.InstrType = itJump then begin
+      AnEntry.IsJump := True;
       {$PUSH}{$R-}{$Q-}
       AnEntry.TargetAddr := ALineAddr + AnInfo.InstrTargetOffs;
       {$POP}
@@ -2231,6 +2232,12 @@ var
           AnEntry.TargetName := AnEntry.TargetName + '+' + IntToStr(AOffset);
         Sym.ReleaseReference;
       end;
+    end
+    else
+    if AnInfo.InstrTargetOffs <> 0 then begin
+      {$PUSH}{$R-}{$Q-}
+      AnEntry.TargetAddr := ALineAddr + AnInfo.InstrTargetOffs;
+      {$POP}
     end;
     ATargetRange.Append(@AnEntry);
     inc(StatIndex);

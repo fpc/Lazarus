@@ -49,6 +49,7 @@ type
     SourceLine: Integer;
     ImageIndex: Integer;
     TargetAddr: TDbgPtr;             // Absolute Addr for relative jump/call
+    IsJump: Boolean;
   end;
   TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
 
@@ -693,6 +694,7 @@ begin
       end
       else
       if (y >= 0) and (y <= FLineCount) and
+         FLineMap[y].IsJump and
          (FLineMap[y].TargetAddr <> 0) and (FDebugger <> nil)
       then begin
         FLinkLine := y;
@@ -719,6 +721,7 @@ begin
       if (ssCtrl in Shift) and
          (Y >= 0) and (y <= FLineCount) and
          (FLineMap[y].TargetAddr <> 0) and (FDebugger <> nil) and
+         FLineMap[y].IsJump and
          (X > FGutterWidth)
       then begin
         if (FLinkLine <> y) then
@@ -745,6 +748,7 @@ begin
   if (ssCtrl in Shift) and (FLinkLine = y div FLineHeight) and
      (FLinkLine >= 0) and (FLinkLine <= FLineCount) and
      (FLineMap[FLinkLine].TargetAddr <> 0) and (FDebugger <> nil) and
+     FLineMap[FLinkLine].IsJump and
      (X > FGutterWidth) and (FMouseDownX > FGutterWidth)
   then begin
     SetLocation(FDebugger, FLineMap[FLinkLine].TargetAddr);
@@ -1519,6 +1523,7 @@ begin
       ALineMap[Line].SourceLine := Itm^.SrcFileLine;
       ALineMap[Line].ImageIndex := -1;
       ALineMap[Line].TargetAddr := Itm^.TargetAddr;
+      ALineMap[Line].IsJump     := Itm^.IsJump;
 
       s := StringOfChar(' ', min(4, 40 - Length(ALineMap[Line].Statement))) + '#';
       if Itm^.TargetAddr <> 0 then begin

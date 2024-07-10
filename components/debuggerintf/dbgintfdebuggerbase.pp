@@ -1015,6 +1015,7 @@ type
     TargetAddr: TDbgPtr;             // Absolute Addr for relative jump/call
     TargetName, TargetFile: String;
     TargetLine: Integer;
+    IsJump: boolean;
   end;
 
   TDisassemblerAddressValidity =
