@@ -2916,7 +2916,7 @@ begin
   while c > 0 do begin
     t := src^;
     if (ord(t) and 128) <>  0 then
-      exit(UTF8UpperCase(AText));
+      exit(UTF8LowerCase(AText));
     if (t in ['A'..'Z']) then
       t := chr(ord(t) + 32);
     dst^ := t;
