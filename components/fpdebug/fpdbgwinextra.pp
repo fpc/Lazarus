@@ -39,6 +39,7 @@ interface
 
 {$ifdef windows}
 uses
+  FpDbgUtil,
   Windows;
 {$endif}
 
@@ -131,14 +132,6 @@ type
    PWOW64_CONTEXT = ^WOW64_CONTEXT;
 
 {$ifdef cpui386}
-     M128A = record
-          Low: ULONGLONG;
-          High: LONGLONG;
-       end;
-     _M128A = M128A;
-     TM128A = M128A;
-     PM128A = TM128A;
-
      TCONTEXT = record
           ContextFlags : DWORD;
           Dr0 : DWORD;

@@ -40,8 +40,8 @@ unit FpDbgUtil;
 interface
 
 uses
-  Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
   {$IFDEF WINDOWS} Windows, {$ENDIF}
+  Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
   UTF8Process, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, syncobjs;
 
 type
@@ -66,7 +66,7 @@ type
     EVENT_DONE_INDICATOR = Pointer(1);
   private
     FWorkerItemEventPtr: PPRTLEvent;
-    FState: Cardinal;
+    FState: cardinal;
     FError: Exception;
     FRefCnt: LongInt;
     FStopRequested: Boolean;
@@ -222,12 +222,19 @@ function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): Int64;
 
 type
   {$IFDEF WINDOWS}
-  M128A = Windows.TM128A;
-  {$ELSE}
-  M128A = record
+    {$ifdef cpux86_64}
+    M128A = Windows.TM128A;
+    {$ELSE}
+    M128A = record
        Low: QWord;
        High: Int64;
     end;
+    {$ENDIF}
+  {$ELSE}
+  M128A = record
+     Low: QWord;
+     High: Int64;
+  end;
   {$ENDIF}
   PM128A = ^M128A;
 
@@ -588,7 +595,7 @@ end;
 
 destructor TFpGlobalThreadWorkerQueue.Destroy;
 begin
-  Assert(InterLockedExchangeAdd(FRefCnt, 0) = 0);
+  Assert(system.InterLockedExchangeAdd(FRefCnt, 0) = 0);
   inherited Destroy;
 end;
 
@@ -615,12 +622,12 @@ end;
 
 function TFpThreadWorkerItem.GetIsDone: Boolean;
 begin
-  Result := InterLockedExchangeAdd(FState, 0) = TWSTATE_DONE;
+  Result := system.InterLockedExchangeAdd(FState, 0) = TWSTATE_DONE;
 end;
 
 function TFpThreadWorkerItem.GetIsCancelled: Boolean;
 begin
-  Result := InterLockedExchangeAdd(FState, 0) = TWSTATE_CANCEL;
+  Result := system.InterLockedExchangeAdd(FState, 0) = TWSTATE_CANCEL;
 end;
 
 procedure TFpThreadWorkerItem.DoExecute;
@@ -630,7 +637,7 @@ end;
 
 procedure TFpThreadWorkerItem.DoFinished;
 begin
-  if InterLockedExchangeAdd(FRefCnt, 0) <= 0 then
+  if system.InterLockedExchangeAdd(FRefCnt, 0) <= 0 then
     Destroy;
 end;
 
@@ -644,7 +651,7 @@ var
   OldState: Cardinal;
   Evnt: PPRTLEvent;
 begin
-  OldState := InterlockedCompareExchange(FState, TWSTATE_RUNNING, TWSTATE_NEW);
+  OldState := system.InterlockedCompareExchange(FState, TWSTATE_RUNNING, TWSTATE_NEW);
   DebugLn(FLogGroup, '%s!%s Executing WorkItem: %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
 
   if (OldState in [TWSTATE_NEW, TWSTATE_WAIT_WORKER]) then begin
@@ -655,18 +662,18 @@ begin
         DoExecute;
     finally
       DebugLnExit(FLogGroup);
-      OldState := InterLockedExchange(FState, TWSTATE_DONE);
+      OldState := system.InterLockedExchange(FState, TWSTATE_DONE);
       if (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]) then begin
         // The FState is in TWSTATE_WAIT___ or TWSTATE_CANCEL
         // => so the event will exist, until it returned from RTLEventWaitFor
         // It is save to access
-        Evnt := InterlockedExchange(FWorkerItemEventPtr, EVENT_DONE_INDICATOR);
+        Evnt := system.InterlockedExchange(FWorkerItemEventPtr, EVENT_DONE_INDICATOR);
         if Evnt <> nil then
           RTLEventSetEvent(Evnt^);
       end
       else
       // If other threads have a ref, they may call WaitForFinish and read data from this.
-      if (InterLockedExchangeAdd(FRefCnt, 0) > 1) then
+      if (system.InterLockedExchangeAdd(FRefCnt, 0) > 1) then
         WriteBarrier;
       DebugLn(FLogGroup, '%s!%s Finished WorkItem: %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     end;
@@ -684,7 +691,7 @@ begin
        belongs to the thread, until it has been waited for
      - If there is an ExistingEvnt, it must be SET once our event was waited for.
   *)
-  ExistingEvnt := InterlockedExchange(FWorkerItemEventPtr, AnEvntPtr);
+  ExistingEvnt := system.InterlockedExchange(FWorkerItemEventPtr, AnEvntPtr);
 
   if ExistingEvnt <> nil then begin
     // Someone is already waiting for this Item
@@ -715,7 +722,7 @@ var
   ExistingEvntPtr: PPRTLEvent;
 begin
   Result := False;
-  ExistingEvntPtr := InterlockedExchange(FWorkerItemEventPtr, EVENT_DONE_INDICATOR);
+  ExistingEvntPtr := system.InterlockedExchange(FWorkerItemEventPtr, EVENT_DONE_INDICATOR);
   if (ExistingEvntPtr <> nil) and (ExistingEvntPtr^ <> nil) and (ExistingEvntPtr^ <> AnEvnt) then begin    // Some one else is waiting
     RTLEventSetEvent(ExistingEvntPtr^);
     RTLEventWaitFor(AnEvnt);
@@ -760,7 +767,7 @@ begin
   *)
 
   if AWaitForExecInThread then begin
-    OldState := InterlockedExchange(FState, TWSTATE_WAIT_WORKER);
+    OldState := system.InterlockedExchange(FState, TWSTATE_WAIT_WORKER);
     DebugLn(FLogGroup, '%s!%s WaitForFinish (WITH exe): %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]), 'TFpThreadWorkerItem.WaitForFinish: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL])');
     if (OldState in [TWSTATE_NEW, TWSTATE_RUNNING]) then begin
@@ -777,13 +784,13 @@ begin
   end
   else
   begin
-    OldState := InterlockedExchange(FState, TWSTATE_WAITING);
+    OldState := system.InterlockedExchange(FState, TWSTATE_WAITING);
     DebugLn(FLogGroup, '%s!%s WaitForFinish (NO exe): %s "%s" StopRequested=%s', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText, dbgs(StopRequested)]);
     assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL]), 'TFpThreadWorkerItem.WaitForFinish: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER, TWSTATE_CANCEL])');
     if OldState = TWSTATE_NEW then begin
       DoExecute;
 
-      InterLockedExchange(FState, TWSTATE_DONE);
+      system.InterLockedExchange(FState, TWSTATE_DONE);
       MaybeWaitForEvent(Evnt);
     end
     else
@@ -832,7 +839,7 @@ begin
   *)
 
 
-  OldState := InterLockedExchange(FState, TWSTATE_CANCEL); // Prevent thread form executing this
+  OldState := system.InterLockedExchange(FState, TWSTATE_CANCEL); // Prevent thread form executing this
   Debugln(FLogGroup, '%s!%s WaitForCancel: %s "%s"', [dbgsThread, DbgSTime, dbgsWorkItemState(OldState), DebugText]);
   assert(not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER]), 'TFpThreadWorkerItem.WaitForCancel: not (OldState in [TWSTATE_WAITING, TWSTATE_WAIT_WORKER])');
   if OldState = TWSTATE_RUNNING then begin
@@ -870,13 +877,13 @@ end;
 
 function TFpThreadWorkerItem.RefCount: Integer;
 begin
-  Result := InterLockedExchangeAdd(FRefCnt, 0);
+  Result := system.InterLockedExchangeAdd(FRefCnt, 0);
 end;
 
 procedure TFpThreadWorkerItem.RequestStop;
 begin
   FStopRequested := True;
-  InterlockedCompareExchange(FState, TWSTATE_CANCEL, TWSTATE_NEW); // if not running, then WaitForcancel
+  system.InterlockedCompareExchange(FState, TWSTATE_CANCEL, TWSTATE_NEW); // if not running, then WaitForcancel
 end;
 
 function TFpThreadWorkerItem.DebugText: String;
@@ -989,17 +996,17 @@ end;
 
 function TFpThreadWorkerQueue.GetCurrentCount: Integer;
 begin
-  Result := InterLockedExchangeAdd(FCurrentCount, 0);
+  Result := system.InterLockedExchangeAdd(FCurrentCount, 0);
 end;
 
 function TFpThreadWorkerQueue.GetIdleThreadCount: integer;
 begin
-  Result := InterLockedExchangeAdd(FIdleThreadCount, 0);
+  Result := system.InterLockedExchangeAdd(FIdleThreadCount, 0);
 end;
 
 function TFpThreadWorkerQueue.GetWantedCount: Integer;
 begin
-  Result := InterLockedExchangeAdd(FWantedCount, 0);
+  Result := system.InterLockedExchangeAdd(FWantedCount, 0);
 end;
 
 procedure TFpThreadWorkerQueue.SetThreadCount(AValue: integer);
@@ -1011,7 +1018,7 @@ begin
   {$ENDIF}
   FThreadMonitor.Enter;
   try
-    InterLockedExchange(FWantedCount, AValue);
+    system.InterLockedExchange(FWantedCount, AValue);
     FWantedCount := AValue;
 
     c := FWorkerThreadList.Count;
@@ -1020,14 +1027,14 @@ begin
         dec(c);
         PushItem(TFpThreadWorkerTerminateItem.Create); // will terminate one thread, if no more work is to be done
       end;
-      InterLockedExchange(FCurrentCount, FWorkerThreadList.Count);
+      system.InterLockedExchange(FCurrentCount, FWorkerThreadList.Count);
     end
 
     else
     begin
       // increase
       FWorkerThreadList.Count := AValue;
-      InterLockedExchange(FCurrentCount, AValue);
+      system.InterLockedExchange(FCurrentCount, AValue);
       while c < AValue do begin
         FWorkerThreadList[c] := TFpWorkerThread.Create(Self);
         inc(c);
@@ -1040,7 +1047,7 @@ end;
 
 function TFpThreadWorkerQueue.GetRtlEvent: PRTLEvent;
 begin
-  Result := InterlockedExchange(FMainWaitEvent, nil);
+  Result := system.InterlockedExchange(FMainWaitEvent, nil);
   if Result = nil then
     Result := RTLEventCreate;
 end;
@@ -1049,7 +1056,7 @@ procedure TFpThreadWorkerQueue.FreeRtrEvent(AnEvent: PRTLEvent);
 begin
   assert(AnEvent <> nil, 'TFpThreadWorkerQueue.FreeRtrEvent: AnEvent <> nil');
   RTLEventResetEvent(AnEvent);
-  AnEvent := InterlockedExchange(FMainWaitEvent, AnEvent);
+  AnEvent := system.InterlockedExchange(FMainWaitEvent, AnEvent);
   if AnEvent <> nil then
     RTLEventDestroy(AnEvent);
 end;
@@ -1059,7 +1066,7 @@ begin
   FThreadMonitor.Enter;
   try
     FWorkerThreadList.Remove(Item);
-    InterLockedExchange(FCurrentCount, FWorkerThreadList.Count);
+    system.InterLockedExchange(FCurrentCount, FWorkerThreadList.Count);
   finally
     FThreadMonitor.Leave;
   end;
