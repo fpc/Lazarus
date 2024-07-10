@@ -111,8 +111,7 @@ uses
   Classes,
   SysUtils,
   Windows,
-  ufloatx80,
-  sfpux80,
+  {$ifNdef cpui386} ufloatx80, sfpux80, {$endif}
   LazLinkedList,
   FpDbgUtil,
   FpDbgClasses,
