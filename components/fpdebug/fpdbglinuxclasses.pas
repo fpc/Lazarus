@@ -265,6 +265,8 @@ type
 
   TDbgLinuxThread = class(TDbgx86Thread)
   private
+    FFpRegs: user_fpxregs_struct32;
+    FFpRegsAvail: Boolean;
     FUserRegs: TUserRegs;
     FStoredUserRegs: TUserRegs;
     FUserRegsChanged: boolean;
@@ -583,6 +585,7 @@ begin
   result := true;
   if FHasThreadState then
     exit;
+  FFpRegsAvail:=False;
   io.iov_base:=@(FUserRegs.regs32[0]);
   io.iov_len:= sizeof(FUserRegs);
   if fpPTrace(PTRACE_GETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
@@ -594,6 +597,13 @@ begin
   FRegisterValueListValid:=false;
   FHasThreadState := Result;
   FHasResetInstructionPointerAfterBreakpoint := False;
+
+  io.iov_base:=@FFpRegs;
+  io.iov_len:= sizeof(FFpRegs);
+  if fpPTrace(PTRACE_GETREGSET, ID, pointer(PtrUInt(NT_PRFPREG)), @io) = 0 then
+    FFpRegsAvail:=True
+  else
+    DebugLn(DBG_WARNINGS, 'Failed to read thread registers from threadid '+inttostr(ID)+'. Errcode: '+inttostr(fpgeterrno));
 end;
 
 function TDbgLinuxThread.RequestInternalPause: Boolean;
@@ -824,6 +834,36 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(FUserRegs.regs64[cs], IntToStr(FUserRegs.regs64[cs]),8,43);
     FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(FUserRegs.regs64[fs], IntToStr(FUserRegs.regs64[fs]),8,46);
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs64[gs], IntToStr(FUserRegs.regs64[gs]),8,47);
+
+    if FFpRegsAvail then begin
+      FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 0*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 1*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 2*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st3'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 3*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st4'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 4*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 5*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 6*4])^),10,0);
+      FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 7*4])^),10,0);
+
+      FRegisterValueList.DbgRegisterAutoCreate['fctrl'].SetValue(FFpRegs.cwd, IntToStr(FFpRegs.cwd),2,0);
+      FRegisterValueList.DbgRegisterAutoCreate['fstat'].SetValue(FFpRegs.swd, IntToStr(FFpRegs.swd),2,0);
+      FRegisterValueList.DbgRegisterAutoCreate['ftwd'].SetValue(FFpRegs.twd, IntToStr(FFpRegs.twd),2,0);
+      FRegisterValueList.DbgRegisterAutoCreate['fop'].SetValue(FFpRegs.fop, IntToStr(FFpRegs.fop),2,0);
+      FRegisterValueList.DbgRegisterAutoCreate['fcs'].SetValue(FFpRegs.fcs, IntToStr(FFpRegs.fcs),4,0);
+      FRegisterValueList.DbgRegisterAutoCreate['fip'].SetValue(FFpRegs.fip, IntToStr(FFpRegs.fip),4,0);
+      FRegisterValueList.DbgRegisterAutoCreate['foo'].SetValue(FFpRegs.foo, IntToStr(FFpRegs.foo),4,0);
+      FRegisterValueList.DbgRegisterAutoCreate['fos'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.fos),4,0);
+
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[0*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[1*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[2*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[3*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[4*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[5*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[6*4])^),16,0);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[7*4])^),16,0);
+
+    end;
   end;
   FRegisterValueListValid:=true;
 end;

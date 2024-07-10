@@ -41,6 +41,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
+  {$IFDEF WINDOWS} Windows, {$ENDIF}
   UTF8Process, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, syncobjs;
 
 type
@@ -218,6 +219,19 @@ function SLEB128toOrdinal(var p: PByte): Int64;
 
 function ReadUnsignedFromExpression(var CurInstr: Pointer; ASize: Integer): QWord;
 function ReadSignedFromExpression(var CurInstr: Pointer; ASize: Integer): Int64;
+
+type
+  {$IFDEF WINDOWS}
+  M128A = Windows.TM128A;
+  {$ELSE}
+  M128A = record
+       Low: QWord;
+       High: Int64;
+    end;
+  {$ENDIF}
+  PM128A = ^M128A;
+
+function XmmToString(xmm: M128A): String;
 
 var
   ProcessMessagesProc: procedure of object; // Application.ProcessMessages, if needed. To be called while waiting.
@@ -441,6 +455,35 @@ begin
   then Result := Result + '$';
 
   Result := Result + HexStr(i, ASize * 2);
+end;
+
+function XmmToString(xmm: M128A): String;
+begin
+  Result := format('D: %s, %s | S: %s, %s, %s, %s | I64: %s, %s | I32: %s, %s, %s, %s | I16: %s, %s, %s, %s, %s, %s, %s, %s | I8: %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s', [
+    FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
+
+    FloatToStr(PSingle(@xmm+0)^), FloatToStr(PSingle(@xmm+4)^),
+    FloatToStr(PSingle(@xmm+8)^), FloatToStr(PSingle(@xmm+12)^),
+
+    IntToStr(PInt64(@xmm+0)^), IntToStr(PInt64(@xmm+8)^),
+
+    IntToStr(PInt32(@xmm+0)^), IntToStr(PInt32(@xmm+4)^),
+    IntToStr(PInt32(@xmm+8)^), IntToStr(PInt32(@xmm+12)^),
+
+    IntToStr(Pint16(@xmm+ 0)^), IntToStr(Pint16(@xmm+ 2)^),
+    IntToStr(Pint16(@xmm+ 4)^), IntToStr(Pint16(@xmm+ 6)^),
+    IntToStr(Pint16(@xmm+ 8)^), IntToStr(Pint16(@xmm+10)^),
+    IntToStr(Pint16(@xmm+12)^), IntToStr(Pint16(@xmm+14)^),
+
+    IntToStr(PInt8(@xmm+ 0)^), IntToStr(PInt8(@xmm+ 1)^),
+    IntToStr(PInt8(@xmm+ 2)^), IntToStr(PInt8(@xmm+ 3)^),
+    IntToStr(PInt8(@xmm+ 4)^), IntToStr(PInt8(@xmm+ 5)^),
+    IntToStr(PInt8(@xmm+ 6)^), IntToStr(PInt8(@xmm+ 7)^),
+    IntToStr(PInt8(@xmm+ 8)^), IntToStr(PInt8(@xmm+ 9)^),
+    IntToStr(PInt8(@xmm+10)^), IntToStr(PInt8(@xmm+11)^),
+    IntToStr(PInt8(@xmm+12)^), IntToStr(PInt8(@xmm+13)^),
+    IntToStr(PInt8(@xmm+14)^), IntToStr(PInt8(@xmm+15)^)
+    ]);
 end;
 
 type
