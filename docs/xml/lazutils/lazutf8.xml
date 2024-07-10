@@ -1578,20 +1578,20 @@ characters in the range ['A'..'Z'] by adding 32 to their ordinal values.
 </p>
 <p>
 If a non-ASCII byte value is found in AText, the return value is derived by 
-calling UTF8UpperCase with the value in AText as an argument. (n.b.)
+calling UTF8LowerCase with the value in AText as an argument.
 </p>
 </descr><version>
 Added in LazUtils version 4.0.
 </version>
 <seealso>
+<link id="UTF8LowerCase"/>
 <link id="UTF8UpperCase"/>
 <link id="UTF8UpperCaseFast"/>
 </seealso>
 </element>
 <element name="UTF8LowerCaseFast.Result">
 <short>
-Lowercase value for the specified text. (n.b. For UTF-8-encoded content the 
-result is actually converted to uppercase.)
+Lowercase value for the specified text.
 </short>
 </element>
 <element name="UTF8LowerCaseFast.AText">
