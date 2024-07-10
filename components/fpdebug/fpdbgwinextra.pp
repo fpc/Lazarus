@@ -88,6 +88,7 @@ const
   STATUS_WX86_BREAKPOINT  = $4000001F;
 
 type
+
    WOW64_FLOATING_SAVE_AREA = record
         ControlWord : DWORD;
         StatusWord : DWORD;
@@ -125,9 +126,47 @@ type
         EFlags : DWORD;
         Esp : DWORD;
         SegSs : DWORD;
-        ExtendedRegisters: array [1..WOW64_MAXIMUM_SUPPORTED_EXTENSION] of byte;
+        ExtendedRegisters: array [0..WOW64_MAXIMUM_SUPPORTED_EXTENSION-1] of byte;
      end;
    PWOW64_CONTEXT = ^WOW64_CONTEXT;
+
+{$ifdef cpui386}
+     M128A = record
+          Low: ULONGLONG;
+          High: LONGLONG;
+       end;
+     _M128A = M128A;
+     TM128A = M128A;
+     PM128A = TM128A;
+
+     TCONTEXT = record
+          ContextFlags : DWORD;
+          Dr0 : DWORD;
+          Dr1 : DWORD;
+          Dr2 : DWORD;
+          Dr3 : DWORD;
+          Dr6 : DWORD;
+          Dr7 : DWORD;
+          FloatSave : _FLOATING_SAVE_AREA;
+          SegGs : DWORD;
+          SegFs : DWORD;
+          SegEs : DWORD;
+          SegDs : DWORD;
+          Edi : DWORD;
+          Esi : DWORD;
+          Ebx : DWORD;
+          Edx : DWORD;
+          Ecx : DWORD;
+          Eax : DWORD;
+          Ebp : DWORD;
+          Eip : DWORD;
+          SegCs : DWORD;
+          EFlags : DWORD;
+          Esp : DWORD;
+          SegSs : DWORD;
+          ExtendedRegisters: array [0..WOW64_MAXIMUM_SUPPORTED_EXTENSION-1] of byte;
+       end;
+{$endif}
 
   TFpContext = record
 {$ifdef windows}
@@ -139,6 +178,9 @@ type
     {$endif}
     2: ( def: TCONTEXT;
          Alignment2: array[1..16] of Byte;
+       );
+    3: ( def_w: windows.TCONTEXT;
+         Alignment3: array[1..16] of Byte;
        );
 {$endif}
   end;
