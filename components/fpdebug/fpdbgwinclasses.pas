@@ -111,7 +111,9 @@ uses
   Classes,
   SysUtils,
   Windows,
+  {$IF FPC_Fullversion>30202}
   {$ifNdef cpui386} ufloatx80, sfpux80, {$endif}
+  {$ENDIF}
   LazLinkedList,
   FpDbgUtil,
   FpDbgClasses,
@@ -1721,10 +1723,10 @@ end;
 { TDbgWinThread }
 
 procedure TDbgWinThread.LoadRegisterValues;
-{$ifNdef cpui386}
+{$IF FPC_Fullversion>30202}{$ifNdef cpui386}
 type
   PExtended = ^floatx80;
-{$endif}
+{$endif}{$ENDIF}
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.LoadRegisterValues');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.LoadRegisterValues: MDebugEvent.dwProcessId <> 0');
@@ -1810,6 +1812,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
 
   // TODO: 64bit extended is not 10 byte // currently downgrading to double
+    {$IF FPC_Fullversion>30202}
     FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[ 0])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[10])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[20])^),10,0);
@@ -1818,6 +1821,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[50])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[60])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FloatSave.RegisterArea[70])^),10,0);
+    {$ENDIF}
 
     FRegisterValueList.DbgRegisterAutoCreate['fctrl'  ].SetValue(FloatSave.ControlWord,   IntToStr(FloatSave.ControlWord),2,0);
     FRegisterValueList.DbgRegisterAutoCreate['fstat'  ].SetValue(FloatSave.StatusWord,    IntToStr(FloatSave.StatusWord),2,0);
@@ -1874,6 +1878,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),8,47);
 
   // TODO: 64bit extended is not 10 byte // currently downgrading to double
+    {$IF FPC_Fullversion>30202}
     FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[0])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[1])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[2])^),10,0);
@@ -1882,6 +1887,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['st5'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[5])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st6'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[6])^),10,0);
     FRegisterValueList.DbgRegisterAutoCreate['st7'].SetValue(0, FloatToStr(PExtended(@FltSave.FloatRegisters[7])^),10,0);
+    {$ENDIF}
 
     FRegisterValueList.DbgRegisterAutoCreate['fctrl'  ].SetValue(FltSave.ControlWord,   IntToStr(FltSave.ControlWord),2,0);
     FRegisterValueList.DbgRegisterAutoCreate['fstat'  ].SetValue(FltSave.StatusWord,    IntToStr(FltSave.StatusWord),2,0);
