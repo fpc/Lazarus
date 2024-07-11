@@ -3189,6 +3189,7 @@ var
   RNum: Cardinal;
   RSize: Integer;
   RVal: QWord;
+  Reg: TDbgRegisterValue;
 begin
   Result := nil;
   if FScope = nil then
@@ -3198,12 +3199,16 @@ begin
     exit;
 
   RSize := FScope.MemManager.RegisterSize(RNum);
-  if RSize > 8 then
-    exit;
-  if not FScope.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal) then
-    exit;
-
-  Result := TFpValueConstNumber.Create(RVal, False);
+  if (RSize <= 8) and
+     FScope.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal)
+  then begin
+    Result := TFpValueConstNumber.Create(RVal, False);
+  end
+  else begin
+    Reg := FScope.LocationContext.GetRegister(RNum);
+    if Reg <> nil then
+      Result := TFpValueConstString.Create(Reg.StrValue);
+  end;
 end;
 
 constructor TFpPascalExpression.Create(ATextExpression: String; AScope: TFpDbgSymbolScope;

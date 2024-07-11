@@ -466,7 +466,7 @@ end;
 
 function XmmToString(xmm: M128A): String;
 begin
-  Result := format('D: %s, %s | S: %s, %s, %s, %s | I64: %s, %s | I32: %s, %s, %s, %s | I16: %s, %s, %s, %s, %s, %s, %s, %s | I8: %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s', [
+  Result := format('{"D": [%s, %s], "S": [%s, %s, %s, %s], "I64": [%s, %s], "I32": [%s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
     FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
 
     FloatToStr(PSingle(@xmm+0)^), FloatToStr(PSingle(@xmm+4)^),

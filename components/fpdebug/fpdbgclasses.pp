@@ -57,28 +57,6 @@ type
     deFailed);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
-  { TDbgRegisterValue }
-
-  TDbgRegisterValue = class
-  private
-    FDwarfIdx: cardinal;
-    FName: string;
-    FNumValue: TDBGPtr;
-    FSize: byte;
-    FStrValue: string;
-  public
-    constructor Create(const AName: String);
-    procedure Assign(ASource: TDbgRegisterValue);
-    function HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
-    procedure SetValue(ANumValue: TDBGPtr; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
-    procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
-    property Name: string read FName;
-    property NumValue: TDBGPtr read FNumValue;
-    property StrValue: string read FStrValue;
-    property Size: byte read FSize;
-    property DwarfIdx: cardinal read FDwarfIdx;
-  end;
-
   TGDbgRegisterValueList = specialize TFPGObjectList<TDbgRegisterValue>;
 
   { TDbgRegisterValueList }
@@ -163,6 +141,7 @@ type
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
     function RegisterNumber(ARegName: String; out ARegNum: Cardinal): Boolean; override;
+    function GetRegister(const ARegNum: Cardinal; AContext: TFpDbgLocationContext): TDbgRegisterValue; override;
 
     function WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; AContext: TFpDbgLocationContext): Boolean; override;
   end;
@@ -2043,6 +2022,41 @@ begin
     ARegNum := ARegister.DwarfIdx;
 end;
 
+function TDbgMemReader.GetRegister(const ARegNum: Cardinal; AContext: TFpDbgLocationContext
+  ): TDbgRegisterValue;
+var
+  ARegister: TDbgRegisterValue;
+  StackFrame: Integer;
+  AFrame: TDbgCallstackEntry;
+  CtxThread: TDbgThread;
+begin
+  // TODO: Thread with ID
+  result := nil;
+  CtxThread := GetDbgThread(AContext);
+  if CtxThread = nil then
+    exit;
+
+  if AContext <> nil then // TODO: Always true?
+    StackFrame := AContext.StackFrame
+  else
+    StackFrame := 0;
+  if StackFrame = 0 then
+    begin
+    Result:=CtxThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    end
+  else
+    begin
+    CtxThread.PrepareCallStackEntryList(StackFrame+1);
+    if CtxThread.CallStackEntryList.Count <= StackFrame then
+      exit;
+    AFrame := CtxThread.CallStackEntryList[StackFrame];
+    if AFrame <> nil then
+      Result:=AFrame.RegisterValueList.FindRegisterByDwarfIndex(ARegNum)
+    else
+      Result:=nil;
+    end;
+end;
+
 { TDbgRegisterValueList }
 
 function TDbgRegisterValueList.GetDbgRegister(AName: string
@@ -2117,65 +2131,6 @@ function TDbgRegisterValueList.FindRegisterByName(AnName: String
   ): TDbgRegisterValue;
 begin
   Result := GetDbgRegister(AnName);
-end;
-
-{ TDbgRegisterValue }
-
-constructor TDbgRegisterValue.Create(const AName: String);
-begin
-  FName:=AName;
-end;
-
-procedure TDbgRegisterValue.Assign(ASource: TDbgRegisterValue);
-begin
-  FDwarfIdx := ASource.FDwarfIdx;
-  FName     := ASource.FName;
-  FNumValue := ASource.FNumValue;
-  FSize     := ASource.FSize;
-  FStrValue := ASource.FStrValue;
-end;
-
-function TDbgRegisterValue.HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
-begin
-  Result :=
-    (FNumValue = AnOther.FNumValue) and
-    (FSize     = AnOther.FSize)     and
-    (FStrValue = AnOther.FStrValue);
-end;
-
-procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr;
-  const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
-begin
-  FStrValue:=AStrValue;
-  FNumValue:=ANumValue;
-  FSize:=ASize;
-  FDwarfIdx:=ADwarfIdx;
-end;
-
-procedure TDbgRegisterValue.Setx86EFlagsValue(ANumValue: TDBGPtr);
-var
-  FlagS: string;
-begin
-  FlagS := '';
-  if ANumValue and (1 shl 0) <> 0 then FlagS := FlagS + 'CF ';
-  if ANumValue and (1 shl 2) <> 0 then FlagS := FlagS + 'PF ';
-  if ANumValue and (1 shl 4) <> 0 then FlagS := FlagS + 'AF ';
-  if ANumValue and (1 shl 6) <> 0 then FlagS := FlagS + 'ZF ';
-  if ANumValue and (1 shl 7) <> 0 then FlagS := FlagS + 'SF ';
-  if ANumValue and (1 shl 8) <> 0 then FlagS := FlagS + 'TF ';
-  if ANumValue and (1 shl 9) <> 0 then FlagS := FlagS + 'IF ';
-  if ANumValue and (1 shl 10) <> 0 then FlagS := FlagS + 'DF ';
-  if ANumValue and (1 shl 11) <> 0 then FlagS := FlagS + 'OF ';
-  if (ANumValue shr 12) and 3 <> 0 then FlagS := FlagS + 'IOPL=' + IntToStr((ANumValue shr 12) and 3);
-  if ANumValue and (1 shl 14) <> 0 then FlagS := FlagS + 'NT ';
-  if ANumValue and (1 shl 16) <> 0 then FlagS := FlagS + 'RF ';
-  if ANumValue and (1 shl 17) <> 0 then FlagS := FlagS + 'VM ';
-  if ANumValue and (1 shl 18) <> 0 then FlagS := FlagS + 'AC ';
-  if ANumValue and (1 shl 19) <> 0 then FlagS := FlagS + 'VIF ';
-  if ANumValue and (1 shl 20) <> 0 then FlagS := FlagS + 'VIP ';
-  if ANumValue and (1 shl 21) <> 0 then FlagS := FlagS + 'ID ';
-
-  SetValue(ANumValue, trim(FlagS),4,Cardinal(-1));
 end;
 
 { TDbgAsmInstruction }
