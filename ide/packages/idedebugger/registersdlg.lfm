@@ -76,6 +76,7 @@ object RegistersDlg: TRegistersDlg
         Width = 600
       end>
     FixedCols = 0
+    MouseWheelOption = mwGrid
     Options = [goFixedVertLine, goRangeSelect, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll, goFixedColSizing]
     ParentFont = False
     PopupMenu = PopupMenu1
