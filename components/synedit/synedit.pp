@@ -1009,7 +1009,8 @@ type
       out Attri: TSynHighlighterAttributes): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
       out TokenType, Start: Integer;
-      out Attri: TSynHighlighterAttributes): boolean;
+      out Attri: TSynHighlighterAttributes;
+      ContinueIfPossible: boolean = False): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out TokenType: Integer; ContinueIfPossible: boolean = False): boolean;
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); override;
@@ -9684,9 +9685,9 @@ begin
   Result := GetHighlighterAttriAtRowColEx(XY, Token, TmpType, TmpStart, Attri);
 end;
 
-function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint;
-  out Token: string; out TokenType, Start: Integer;
-  out Attri: TSynHighlighterAttributes): boolean;
+function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string; out
+  TokenType, Start: Integer; out Attri: TSynHighlighterAttributes; ContinueIfPossible: boolean
+  ): boolean;
 var
   PosX, PosY: integer;
   Line: string;
@@ -9697,8 +9698,14 @@ begin
     Line := FTheLinesView[PosY];
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then begin
-      fHighlighter.CurrentLines := FTheLinesView;
-      Highlighter.StartAtLineIndex(PosY);
+      if (not ContinueIfPossible) or
+         (fHighlighter.CurrentLines <> FTheLinesView) or
+         (fHighlighter.LineIndex <> PosY) or
+         (fHighlighter.GetTokenPos + 1 + Highlighter.GetTokenLen >= PosX)
+      then begin
+        fHighlighter.CurrentLines := FTheLinesView;
+        Highlighter.StartAtLineIndex(PosY);
+      end;
       while not Highlighter.GetEol do begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;
