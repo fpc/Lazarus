@@ -114,6 +114,7 @@ uses
   {$IF FPC_Fullversion>30202}
   {$ifNdef cpui386} ufloatx80, sfpux80, {$endif}
   {$ENDIF}
+  Math,
   LazLinkedList,
   FpDbgUtil,
   FpDbgClasses,
