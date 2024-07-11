@@ -1727,6 +1727,8 @@ procedure TDbgWinThread.LoadRegisterValues;
 type
   PExtended = ^floatx80;
 {$endif}{$ENDIF}
+var
+  EM: TFPUExceptionMask;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.LoadRegisterValues');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.LoadRegisterValues: MDebugEvent.dwProcessId <> 0');
@@ -1734,6 +1736,11 @@ begin
   if FCurrentContext = nil then
     if not ReadThreadState then
       exit;
+
+  EM := GetExceptionMask;
+  try
+  SetExceptionMask(EM + [exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+
   {$ifdef cpui386}
   with FCurrentContext^.def do
   begin
@@ -1920,6 +1927,9 @@ begin
 
   end;
 {$endif}
+  finally
+    SetExceptionMask(EM);
+  end;
   FRegisterValueListValid:=true;
 end;
 
