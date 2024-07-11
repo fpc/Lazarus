@@ -1729,7 +1729,7 @@ type
   PExtended = ^floatx80;
 {$endif}{$ENDIF}
 var
-  EM: TFPUExceptionMask;
+  EM, SEM: TFPUExceptionMask;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.LoadRegisterValues');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.LoadRegisterValues: MDebugEvent.dwProcessId <> 0');
@@ -1739,8 +1739,14 @@ begin
       exit;
 
   EM := GetExceptionMask;
+  {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
+  SEM := softfloat_exception_mask;
+  {$endif}{$ENDIF}
   try
   SetExceptionMask(EM + [exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
+  {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
+  softfloat_exception_mask := SEM + [exInvalidOp, exDenormalized, exZeroDivide,exOverflow, exUnderflow, exPrecision];
+  {$endif}{$ENDIF}
 
   {$ifdef cpui386}
   with FCurrentContext^.def do
@@ -1930,6 +1936,9 @@ begin
 {$endif}
   finally
     SetExceptionMask(EM);
+    {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
+    softfloat_exception_mask := SEM;
+    {$endif}{$ENDIF}
   end;
   FRegisterValueListValid:=true;
 end;
