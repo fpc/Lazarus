@@ -238,7 +238,8 @@ type
   {$ENDIF}
   PM128A = ^M128A;
 
-function XmmToString(xmm: M128A): String;
+function XmmToString(const xmm: M128A): String;
+function YmmToString(const Xmm, Ymm: M128A): String;
 
 var
   ProcessMessagesProc: procedure of object; // Application.ProcessMessages, if needed. To be called while waiting.
@@ -464,7 +465,7 @@ begin
   Result := Result + HexStr(i, ASize * 2);
 end;
 
-function XmmToString(xmm: M128A): String;
+function XmmToString(const xmm: M128A): String;
 begin
   Result := format('{"D": [%s, %s], "S": [%s, %s, %s, %s], "I64": [%s, %s], "I32": [%s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
     FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
@@ -491,6 +492,54 @@ begin
     IntToStr(PInt8(@xmm+12)^), IntToStr(PInt8(@xmm+13)^),
     IntToStr(PInt8(@xmm+14)^), IntToStr(PInt8(@xmm+15)^)
     ]);
+end;
+
+function YmmToString(const Xmm, Ymm: M128A): String;
+begin
+  Result := format('{"D": [%s, %s, %s, %s], "S": [%s, %s, %s, %s, %s, %s, %s, %s], "I64": [%s, %s, %s, %s], "I32": [%s, %s, %s, %s, %s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
+    FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
+    FloatToStr(PDouble(@ymm+0)^), FloatToStr(PDouble(@ymm+8)^),
+
+    FloatToStr(PSingle(@xmm+0)^), FloatToStr(PSingle(@xmm+4)^),
+    FloatToStr(PSingle(@xmm+8)^), FloatToStr(PSingle(@xmm+12)^),
+    FloatToStr(PSingle(@ymm+0)^), FloatToStr(PSingle(@ymm+4)^),
+    FloatToStr(PSingle(@ymm+8)^), FloatToStr(PSingle(@ymm+12)^),
+
+    IntToStr(PInt64(@xmm+0)^), IntToStr(PInt64(@xmm+8)^),
+    IntToStr(PInt64(@ymm+0)^), IntToStr(PInt64(@ymm+8)^),
+
+    IntToStr(PInt32(@xmm+0)^), IntToStr(PInt32(@xmm+4)^),
+    IntToStr(PInt32(@xmm+8)^), IntToStr(PInt32(@xmm+12)^),
+    IntToStr(PInt32(@ymm+0)^), IntToStr(PInt32(@ymm+4)^),
+    IntToStr(PInt32(@ymm+8)^), IntToStr(PInt32(@ymm+12)^),
+
+    IntToStr(Pint16(@xmm+ 0)^), IntToStr(Pint16(@xmm+ 2)^),
+    IntToStr(Pint16(@xmm+ 4)^), IntToStr(Pint16(@xmm+ 6)^),
+    IntToStr(Pint16(@xmm+ 8)^), IntToStr(Pint16(@xmm+10)^),
+    IntToStr(Pint16(@xmm+12)^), IntToStr(Pint16(@xmm+14)^),
+    IntToStr(Pint16(@ymm+ 0)^), IntToStr(Pint16(@ymm+ 2)^),
+    IntToStr(Pint16(@ymm+ 4)^), IntToStr(Pint16(@ymm+ 6)^),
+    IntToStr(Pint16(@ymm+ 8)^), IntToStr(Pint16(@ymm+10)^),
+    IntToStr(Pint16(@ymm+12)^), IntToStr(Pint16(@ymm+14)^),
+
+    IntToStr(PInt8(@xmm+ 0)^), IntToStr(PInt8(@xmm+ 1)^),
+    IntToStr(PInt8(@xmm+ 2)^), IntToStr(PInt8(@xmm+ 3)^),
+    IntToStr(PInt8(@xmm+ 4)^), IntToStr(PInt8(@xmm+ 5)^),
+    IntToStr(PInt8(@xmm+ 6)^), IntToStr(PInt8(@xmm+ 7)^),
+    IntToStr(PInt8(@xmm+ 8)^), IntToStr(PInt8(@xmm+ 9)^),
+    IntToStr(PInt8(@xmm+10)^), IntToStr(PInt8(@xmm+11)^),
+    IntToStr(PInt8(@xmm+12)^), IntToStr(PInt8(@xmm+13)^),
+    IntToStr(PInt8(@xmm+14)^), IntToStr(PInt8(@xmm+15)^),
+    IntToStr(PInt8(@ymm+ 0)^), IntToStr(PInt8(@ymm+ 1)^),
+    IntToStr(PInt8(@ymm+ 2)^), IntToStr(PInt8(@ymm+ 3)^),
+    IntToStr(PInt8(@ymm+ 4)^), IntToStr(PInt8(@ymm+ 5)^),
+    IntToStr(PInt8(@ymm+ 6)^), IntToStr(PInt8(@ymm+ 7)^),
+    IntToStr(PInt8(@ymm+ 8)^), IntToStr(PInt8(@ymm+ 9)^),
+    IntToStr(PInt8(@ymm+10)^), IntToStr(PInt8(@ymm+11)^),
+    IntToStr(PInt8(@ymm+12)^), IntToStr(PInt8(@ymm+13)^),
+    IntToStr(PInt8(@ymm+14)^), IntToStr(PInt8(@ymm+15)^)
+    ]);
+
 end;
 
 type
