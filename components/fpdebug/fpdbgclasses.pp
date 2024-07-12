@@ -67,10 +67,12 @@ type
 
     function GetDbgRegister(AName: string): TDbgRegisterValue;
     function GetDbgRegisterAutoCreate(const AName: string): TDbgRegisterValue;
+    function GetDbgRegisterCreate(AName: string): TDbgRegisterValue;
     function GetIsModified(AReg: TDbgRegisterValue): boolean;
   public
     procedure Assign(ASource: TDbgRegisterValueList);
     property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
+    property DbgRegisterCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterCreate;
     function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
     function FindRegisterByName(AnName: String): TDbgRegisterValue;
     property IsModified[AReg: TDbgRegisterValue]: boolean read GetIsModified;
@@ -87,12 +89,12 @@ type
   TDbgCallstackEntry = class
   private
     FAnAddress: TDBGPtr;
+    FAutoFillRegisters: boolean;
     FFrameAdress: TDBGPtr;
     FThread: TDbgThread;
     FIsSymbolResolved: boolean;
     FSymbol: TFpSymbol;
     FRegisterValueList: TDbgRegisterValueList;
-    FRegisterValueListDone: Boolean;
     FIndex: integer;
     function GetFunctionName: string;
     function GetProcSymbol: TFpSymbol;
@@ -112,6 +114,7 @@ type
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property ProcSymbol: TFpSymbol read GetProcSymbol;
     property Index: integer read FIndex;
+    property AutoFillRegisters: boolean read FAutoFillRegisters write FAutoFillRegisters;
   end;
 
   { TDbgCallstackEntryList }
@@ -1857,12 +1860,9 @@ var
   L: TDbgRegisterValueList;
   R: TDbgRegisterValue;
 begin
-  if (not FRegisterValueListDone) and (FRegisterValueList.Count = 0) then begin
-    L := FThread.RegisterValueList;
-    for i := 0 to L.Count - 1 do begin
-      R := L[i];
-      FRegisterValueList.DbgRegisterAutoCreate[R.Name].SetValue(R.NumValue, R.StrValue, R.Size, R.DwarfIdx);
-    end;
+  if (FAutoFillRegisters) and (FRegisterValueList.Count = 0) then begin
+    FRegisterValueList.Assign(FThread.RegisterValueList);
+    FAutoFillRegisters := False;
   end;
   Result := FRegisterValueList;
 end;
@@ -2101,6 +2101,12 @@ begin
     result := TDbgRegisterValue.Create(AName);
     add(result);
     end;
+end;
+
+function TDbgRegisterValueList.GetDbgRegisterCreate(AName: string): TDbgRegisterValue;
+begin
+  result := TDbgRegisterValue.Create(AName);
+  add(result);
 end;
 
 function TDbgRegisterValueList.GetIsModified(AReg: TDbgRegisterValue): boolean;
@@ -3562,6 +3568,7 @@ begin
   StackPointer     := Thread.GetStackPointerRegisterValue;
   FrameBasePointer := Thread.GetStackBasePointerRegisterValue;
   ANewFrame        := TDbgCallstackEntry.create(Thread, 0, FrameBasePointer, CodePointer);
+  ANewFrame.AutoFillRegisters := True;
 end;
 
 { TDbgThread }
