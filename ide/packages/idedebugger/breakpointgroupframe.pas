@@ -185,6 +185,7 @@ begin
 
     if (Source = FTree) and (FTree.SelectedCount > 0) then begin
       for VNode in FTree.SelectedNodes(True) do begin
+        if Brk = nil then Continue; // Header row selected
         Brk := TIDEBreakPoint(FTree.NodeItem[VNode]);
         Brk.Group := NewGroup;
       end;
@@ -214,6 +215,7 @@ begin
     if not Accept then begin
       for VNode in FTree.SelectedNodes(True) do begin
         Brk := TIDEBreakPoint(FTree.NodeItem[VNode]);
+        if Brk = nil then Continue; // Header row selected
         if Brk.Group <> FBrkGroup then begin
           Accept := True;
           Break;
