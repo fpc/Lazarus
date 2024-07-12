@@ -553,12 +553,22 @@ var
   itmApplePref: TIDEMenuSection;
 {$ENDIF}
 
+// corresponds to InitMenuItem procedure
 function FormMatchesCmd(aForm: TCustomForm; aCmd: TIDEMenuCommand): Boolean;
 begin
-  if EnvironmentGuiOpts.Desktop.IDENameForDesignedFormList and IsFormDesign(aForm) then
-    Result := aForm.Name = aCmd.Caption
+  if not IsFormDesign(aForm) then
+    Result := aCmd.Caption = aForm.Caption
   else
-    Result := aForm.Caption = aCmd.Caption;
+    case aForm.ClassName of
+      'TFrameProxyDesignerForm',         // frame
+      'TNonControlProxyDesignerForm':    // datamodule
+          Result := aCmd.Caption = AForm.Caption;
+    else                                 // form
+      if EnvironmentGuiOpts.Desktop.IDENameForDesignedFormList then
+        Result := aCmd.Caption = aForm.Name
+      else
+        Result := aCmd.Caption = aForm.Caption;
+    end;
 end;
 
 { TMainIDEBase }
@@ -1531,9 +1541,9 @@ begin
           AMenuItem.Caption := AForm.Caption;
     else                                 // form
       if EnvironmentGuiOpts.Desktop.IDENameForDesignedFormList then
-        AMenuItem.Caption := AForm.Name+' - Designer'
+        AMenuItem.Caption := AForm.Name
       else
-        AMenuItem.Caption := AForm.Caption+' - Designer';
+        AMenuItem.Caption := AForm.Caption;
     end;
   AMenuItem.UserTag := {%H-}PtrUInt(AForm);
 end;
