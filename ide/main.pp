@@ -13321,7 +13321,8 @@ begin
     end else begin
       DebugLn(['Error: (lazarus) TMainIDE.PropHookCreateMethod failed adding method "'+ShortMethodName+'" to source']);
       DoJumpToCodeToolBossError;
-      raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+      //Firing the exception twice + its handling message dialog causes high CPU load. Issue #41019.
+      //raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
   finally
     OpenEditorsOnCodeToolChange:=OldChange;

@@ -915,7 +915,7 @@ resourcestring
     +'is inherited from %s.%sTo rename an inherited component open the '
     +'ancestor and rename it there.';
   lisUnableToFindMethod = 'Unable to find method.';
-  lisUnableToCreateNewMethod = 'Unable to create new method.';
+  //lisUnableToCreateNewMethod = 'Unable to create new method.';
   lisUnableToShowMethod = 'Unable to show method.';
   lisPleaseFixTheErrorInTheMessageWindow = 'Please fix the error shown in the'
     +' message window which is normally below the source editor.';
