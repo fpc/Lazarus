@@ -61,6 +61,9 @@ imagelisteditor/replace_icon_multiple_200.png
 imagelisteditor/replace_icon_single.png
 imagelisteditor/replace_icon_single_150.png
 imagelisteditor/replace_icon_single_200.png
+imagelisteditor/resolution.png
+imagelisteditor/resolution_150.png
+imagelisteditor/resolution_200.png
 imagelisteditor/resolution_add.png
 imagelisteditor/resolution_add_150.png
 imagelisteditor/resolution_add_200.png

@@ -338,7 +338,7 @@ begin
   tbSave.ImageIndex := IDEImages.GetImageIndex('laz_save', 16);
     acSave.ImageIndex := IDEImages.GetImageIndex('menu_saveas', 16);
     acSaveAll.ImageIndex := IDEImages.GetImageIndex('menu_save_all', 16);
-  tbResolutions.ImageIndex := IDEImages.GetImageIndex('oi_options', 16);
+  tbResolutions.ImageIndex := IDEImages.GetImageIndex('resolution', 16);
     acNewResolution.ImageIndex := IDEImages.GetImageIndex('resolution_add', 16);
     acDeleteResolution.ImageIndex := IDEImages.GetImageIndex('resolution_remove', 16);
 

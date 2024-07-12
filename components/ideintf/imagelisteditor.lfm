@@ -214,21 +214,21 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object tbSeparator1: TToolButton
       Left = 197
-      Height = 40
+      Height = 5
       Top = 0
       Caption = 'tbSeparator1'
       Style = tbsDivider
     end
     object tbSeparator2: TToolButton
       Left = 348
-      Height = 40
+      Height = 5
       Top = 0
       Caption = 'tbSeparator2'
       Style = tbsDivider
     end
     object tbSeparator3: TToolButton
       Left = 407
-      Height = 40
+      Height = 5
       Top = 0
       Caption = 'tbSeparator3'
       Style = tbsDivider
