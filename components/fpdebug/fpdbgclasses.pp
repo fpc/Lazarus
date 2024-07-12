@@ -92,10 +92,12 @@ type
     FIsSymbolResolved: boolean;
     FSymbol: TFpSymbol;
     FRegisterValueList: TDbgRegisterValueList;
+    FRegisterValueListDone: Boolean;
     FIndex: integer;
     function GetFunctionName: string;
     function GetProcSymbol: TFpSymbol;
     function GetLine: integer;
+    function GetRegisterValueList: TDbgRegisterValueList;
     function GetSourceFile: string;
     function GetSrcClassName: string;
   public
@@ -107,7 +109,7 @@ type
     property FunctionName: string read GetFunctionName;
     property SrcClassName: string read GetSrcClassName;
     property Line: integer read GetLine;
-    property RegisterValueList: TDbgRegisterValueList read FRegisterValueList;
+    property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property ProcSymbol: TFpSymbol read GetProcSymbol;
     property Index: integer read FIndex;
   end;
@@ -1849,6 +1851,22 @@ begin
     result := -1;
 end;
 
+function TDbgCallstackEntry.GetRegisterValueList: TDbgRegisterValueList;
+var
+  i: Integer;
+  L: TDbgRegisterValueList;
+  R: TDbgRegisterValue;
+begin
+  if (not FRegisterValueListDone) and (FRegisterValueList.Count = 0) then begin
+    L := FThread.RegisterValueList;
+    for i := 0 to L.Count - 1 do begin
+      R := L[i];
+      FRegisterValueList.DbgRegisterAutoCreate[R.Name].SetValue(R.NumValue, R.StrValue, R.Size, R.DwarfIdx);
+    end;
+  end;
+  Result := FRegisterValueList;
+end;
+
 function TDbgCallstackEntry.GetSourceFile: string;
 var
   Symbol: TFpSymbol;
@@ -3544,13 +3562,6 @@ begin
   StackPointer     := Thread.GetStackPointerRegisterValue;
   FrameBasePointer := Thread.GetStackBasePointerRegisterValue;
   ANewFrame        := TDbgCallstackEntry.create(Thread, 0, FrameBasePointer, CodePointer);
-
-  i := Thread.RegisterValueList.Count;
-  while i > 0 do begin
-    dec(i);
-    R := Thread.RegisterValueList[i];
-    ANewFrame.RegisterValueList.DbgRegisterAutoCreate[R.Name].SetValue(R.NumValue, R.StrValue, R.Size, R.DwarfIdx);
-  end;
 end;
 
 { TDbgThread }
