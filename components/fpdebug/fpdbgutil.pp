@@ -36,13 +36,13 @@ unit FpDbgUtil;
 {$mode objfpc}{$H+}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
-
+{$WARN 4066 off : Arithmetic "$1" on untyped pointer is unportable to ?$T+?, suggest typecast}
 interface
 
 uses
   {$IFDEF WINDOWS} Windows, {$ENDIF}
-  Classes, SysUtils, fgl, math, LazUTF8, lazCollections,
-  UTF8Process, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, syncobjs;
+  Classes, SysUtils, fgl, math, LazUTF8, lazCollections, UTF8Process, LazLoggerBase,
+  DbgIntfDebuggerBase, FpdMemoryTools, LazDebuggerUtils, syncobjs;
 
 type
   TFPDMode = (dm32, dm64);
@@ -240,6 +240,8 @@ type
 
 function XmmToString(const xmm: M128A): String;
 function YmmToString(const Xmm, Ymm: M128A): String;
+function XmmToFormat(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat = rdDefault): String;
+function YmmToFormat(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat = rdDefault): String;
 
 var
   ProcessMessagesProc: procedure of object; // Application.ProcessMessages, if needed. To be called while waiting.
@@ -540,6 +542,99 @@ begin
     IntToStr(PInt8(@ymm+14)^), IntToStr(PInt8(@ymm+15)^)
     ]);
 
+end;
+
+function XmmToFormat(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat): String;
+var
+  b: Integer;
+  p: String;
+begin
+  b := 10;
+  p := '';
+  case AFormat of
+    rdRaw,
+    rdDefault:
+      exit(XmmToString(PM128A(AReg.Data)^));
+    rdHex:     begin b := 16; p := '$'; end;
+    rdBinary:  begin b :=  2; p := '%'; end;
+    rdOctal:   begin b :=  8; p := '&'; end;
+    rdDecimal: begin b := 10; p := '';  end;
+  end;
+
+  Result := format('{"I64": [%s, %s], "I32": [%s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
+    p+Dec64ToNumb(PInt64(@AReg.Data+0)^,0,b), p+Dec64ToNumb(PInt64(@AReg.Data+8)^,0,b),
+
+    p+Dec64ToNumb(PInt32(@AReg.Data+0)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+4)^,0,b),
+    p+Dec64ToNumb(PInt32(@AReg.Data+8)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+12)^,0,b),
+
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 0)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+ 2)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 4)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+ 6)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 8)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+10)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+12)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+14)^,0,b),
+
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 0)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 1)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 2)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 3)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 4)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 5)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 6)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 7)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 8)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 9)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+10)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+11)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+12)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+13)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+14)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+15)^,0,b)
+    ]);
+end;
+
+function YmmToFormat(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat): String;
+var
+  b: Integer;
+  p: String;
+begin
+  b := 10;
+  p := '';
+  case AFormat of
+    rdRaw,
+    rdDefault:
+      exit(YmmToString(PM128A(AReg.Data)^, PM128A(AReg.Data+16)^));
+    rdHex:     begin b := 16; p := '$'; end;
+    rdBinary:  begin b :=  2; p := '%'; end;
+    rdOctal:   begin b :=  8; p := '&'; end;
+    rdDecimal: begin b := 10; p := '';  end;
+  end;
+
+  Result := format('{"I64": [%s, %s, %s, %s], "I32": [%s, %s, %s, %s, %s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
+    p+Dec64ToNumb(PInt64(@AReg.Data+0)^,0,b), p+Dec64ToNumb(PInt64(@AReg.Data+8)^,0,b),
+    p+Dec64ToNumb(PInt64(@AReg.Data+16+0)^,0,b), p+Dec64ToNumb(PInt64(@AReg.Data+16+8)^,0,b),
+
+    p+Dec64ToNumb(PInt32(@AReg.Data+0)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+4)^,0,b),
+    p+Dec64ToNumb(PInt32(@AReg.Data+8)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+12)^,0,b),
+    p+Dec64ToNumb(PInt32(@AReg.Data+16+0)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+16+4)^,0,b),
+    p+Dec64ToNumb(PInt32(@AReg.Data+16+8)^,0,b), p+Dec64ToNumb(PInt32(@AReg.Data+16+12)^,0,b),
+
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 0)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+ 2)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 4)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+ 6)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+ 8)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+10)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+12)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+14)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+16+ 0)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+16+ 2)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+16+ 4)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+16+ 6)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+16+ 8)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+16+10)^,0,b),
+    p+Dec64ToNumb(Pint16(@AReg.Data+16+12)^,0,b), p+Dec64ToNumb(Pint16(@AReg.Data+16+14)^,0,b),
+
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 0)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 1)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 2)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 3)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 4)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 5)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 6)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 7)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+ 8)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+ 9)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+10)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+11)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+12)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+13)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+14)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+15)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+ 0)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+ 1)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+ 2)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+ 3)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+ 4)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+ 5)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+ 6)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+ 7)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+ 8)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+ 9)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+10)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+11)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+12)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+13)^,0,b),
+    p+Dec64ToNumb(PInt8(@AReg.Data+16+14)^,0,b), p+Dec64ToNumb(PInt8(@AReg.Data+16+15)^,0,b)
+    ]);
 end;
 
 type

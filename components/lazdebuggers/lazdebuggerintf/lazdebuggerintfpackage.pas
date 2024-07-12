@@ -8,8 +8,8 @@ unit lazdebuggerintfpackage;
 interface
 
 uses
-  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes, 
-  LazDebuggerValueConverter, DbgUtilsTypePatternList;
+  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, 
+  DbgUtilsTypePatternList, LazDebuggerUtils;
 
 implementation
 

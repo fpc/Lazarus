@@ -26,8 +26,9 @@ unit FpdMemoryTools;
 interface
 
 uses
-  Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages, LazClasses,
-  AVL_Tree, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
+  Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpErrorMessages, LazClasses,
+  AVL_Tree, LazDebuggerUtils,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 const
   MINIMUM_MEMREAD_LIMIT = 1024;
@@ -80,23 +81,34 @@ type
 
   { TDbgRegisterValue }
 
+  TDbgRegisterValue = class;
+  TRegisterFormatterProc = function(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat = rdDefault): String;
+
   TDbgRegisterValue = class
   private
     FDwarfIdx: cardinal;
     FName: string;
     FNumValue: TDBGPtr;
     FSize: byte;
+    FMem: Pointer;
     FStrValue: string;
+    FFormatter: TRegisterFormatterProc;
+    function GetStrFormatted(AFormat: TRegisterDisplayFormat): string;
+    function GetStrValue: string;
   public
     constructor Create(const AName: String);
+    destructor Destroy; override;
     procedure Assign(ASource: TDbgRegisterValue);
     function HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
     procedure SetValue(ANumValue: TDBGPtr; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
+    procedure SetValue(const AData: Pointer; ASize: byte; ADwarfIdx: cardinal; AFormatter: TRegisterFormatterProc);
     procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
     property Name: string read FName;
     property NumValue: TDBGPtr read FNumValue;
-    property StrValue: string read FStrValue;
+    property StrValue: string read GetStrValue;
+    property StrFormatted[AFormat: TRegisterDisplayFormat]: string read GetStrFormatted;
     property Size: byte read FSize;
+    property Data: Pointer read FMem;
     property DwarfIdx: cardinal read FDwarfIdx;
   end;
 
@@ -1016,9 +1028,41 @@ end;
 
 { TDbgRegisterValue }
 
+function TDbgRegisterValue.GetStrFormatted(AFormat: TRegisterDisplayFormat): string;
+begin
+  if FFormatter <> nil then
+    exit(FFormatter(Self, AFormat));
+  if FStrValue <> '' then
+    exit(FStrValue);
+
+  case AFormat of
+    rdDefault: Result := IntToStr(FNumValue);
+    rdHex:     Result := '$'+IntToHex(FNumValue);
+    rdBinary:  Result := '%'+Dec64ToNumb(FNumValue, 0, 2);
+    rdOctal:   Result := '&'+Dec64ToNumb(FNumValue, 0, 8);
+    rdDecimal: Result := IntToStr(FNumValue);
+    rdRaw:     Result := IntToStr(FNumValue);
+  end;
+end;
+
+function TDbgRegisterValue.GetStrValue: string;
+begin
+  if (FStrValue = '') and (FFormatter <> nil) then
+    FStrValue := FFormatter(Self);
+  if (FStrValue = '') then
+    FStrValue := '?';
+  Result := FStrValue;
+end;
+
 constructor TDbgRegisterValue.Create(const AName: String);
 begin
   FName:=AName;
+end;
+
+destructor TDbgRegisterValue.Destroy;
+begin
+  inherited Destroy;
+  Freemem(FMem);
 end;
 
 procedure TDbgRegisterValue.Assign(ASource: TDbgRegisterValue);
@@ -1045,6 +1089,21 @@ begin
   FNumValue:=ANumValue;
   FSize:=ASize;
   FDwarfIdx:=ADwarfIdx;
+end;
+
+procedure TDbgRegisterValue.SetValue(const AData: Pointer; ASize: byte; ADwarfIdx: cardinal;
+  AFormatter: TRegisterFormatterProc);
+begin
+  FStrValue:='';
+  FNumValue:=0;
+  FSize := ASize;
+  FDwarfIdx:=ADwarfIdx;
+  FFormatter := AFormatter;
+  if FMem <> nil then
+    FMem := ReAllocMem(FMem, ASize)
+  else
+    FMem := AllocMem(ASize);
+  move(AData^, FMem^, ASize);
 end;
 
 procedure TDbgRegisterValue.Setx86EFlagsValue(ANumValue: TDBGPtr);

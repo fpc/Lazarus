@@ -854,14 +854,14 @@ begin
       FRegisterValueList.DbgRegisterAutoCreate['foo'].SetValue(FFpRegs.foo, IntToStr(FFpRegs.foo),4,516);
       FRegisterValueList.DbgRegisterAutoCreate['fos'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.fos),4,517);
 
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[0*4])^),16,600);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[1*4])^),16,601);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[2*4])^),16,602);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[3*4])^),16,603);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[4*4])^),16,604);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[5*4])^),16,605);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[6*4])^),16,606);
-      FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(0,  XmmToString(PM128A(@FFpRegs.xmm_space[7*4])^),16,607);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm0' ].SetValue(@FFpRegs.xmm_space[0*4],16,600, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm1' ].SetValue(@FFpRegs.xmm_space[1*4],16,601, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm2' ].SetValue(@FFpRegs.xmm_space[2*4],16,602, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm3' ].SetValue(@FFpRegs.xmm_space[3*4],16,603, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm4' ].SetValue(@FFpRegs.xmm_space[4*4],16,604, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm5' ].SetValue(@FFpRegs.xmm_space[5*4],16,605, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm6' ].SetValue(@FFpRegs.xmm_space[6*4],16,606, @XmmToFormat);
+      FRegisterValueList.DbgRegisterAutoCreate['Xmm7' ].SetValue(@FFpRegs.xmm_space[7*4],16,607, @XmmToFormat);
 
       FRegisterValueList.DbgRegisterAutoCreate['mxcsr'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.mxcsr),4,620);
 

@@ -2477,8 +2477,9 @@ begin
   for i := 0 to ARegisterList.Count-1 do
     begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
-    ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, ARegisterList[i].Size);
-    ARegisterValue.ValueObj.SetAsText(ARegisterList[i].StrValue);
+    if ARegisterList[i].Size <= 8 then
+      ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, ARegisterList[i].Size);
+    ARegisterValue.ValueObj.SetAsText(ARegisterList[i].StrFormatted[ARegisterValue.DisplayFormat]);
     ARegisterValue.Modified := ARegisterList.IsModified[ARegisterList[i]];
     ARegisterValue.DataValidity:=ddsValid;
     end;
