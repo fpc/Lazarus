@@ -31,7 +31,7 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  PropEdits,
+  IDEDialogs, PropEdits,
   // IDE
   LazarusIDEStrConsts;
 
@@ -141,6 +141,35 @@ type
     property OldShortcut: TShortCut write FOldShortcut;
   end;
 
+  TMenuShortcuts = class;
+
+  { TEditShortcutCaptionDialog }
+
+  TEditShortcutCaptionDialog = class(TForm)
+  strict private
+    FEditingCaption: boolean;
+    FInfo: TSCInfo;
+    FNewCaption: string;
+    FNewShortcut: TShortCut;
+    FOldCaption: string;
+    // GUI controls
+    FButtonPanel: TButtonPanel;
+    FEdit: TEdit;
+    FGrabBox: TCustomShortCutGrabBox;
+    FGroupBox: TGroupBox;
+    FShortcuts: TMenuShortcuts;
+    procedure CaptionEditChange(Sender: TObject);
+    procedure GrabBoxEnter(Sender: TObject);
+    procedure GrabBoxExit(Sender: TObject);
+    procedure OKButtonOnClick(Sender: TObject);
+  protected
+    procedure Activate; override;
+  public
+    constructor {%H-}CreateNew(aShortcuts: TMenuShortcuts; aSCInfo: TSCInfo);
+    property NewCaption: string read FNewCaption;
+    property NewShortcut: TShortCut read FNewShortcut;
+  end;
+
   TDualDisplay = class;
 
   TContents = class(TCustomControl)
@@ -243,6 +272,9 @@ function AmpersandStripped(const aText: string): string;
 function AddNewOrEditShortcutDlg(aMI: TMenuItem; isMainSCut: boolean;
                                  var aShortcut: TShortCut): boolean;
 function HasAccelerator(const aText: string; out aShortcut: TShortCut): boolean;
+function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo;
+                                        out aNewShortcut: TShortCut;
+                                        out aNewCaption: string): boolean;
 function KindToPropertyName(aKind: TSCKind): string;
 function SplitCommaText(const aCommaText: string; out firstBit: string): string;
 function SortByComponentPropertyName(List: TStringList; Index1, Index2: Integer): Integer;
@@ -412,6 +444,41 @@ begin
   end;
   Assert(aSCList.AcceleratorsInContainerCount+aSCList.ShortcutsInContainerCount=
          aSCList.ScanList.Count,'DoShortcutAccelScanCount: internal counting error');
+end;
+
+function NewShortcutOrCaptionIsValidDlg(aConflictingInfo: TSCInfo; out
+  aNewShortcut: TShortCut; out aNewCaption: string): boolean;
+var
+  dlg: TEditShortcutCaptionDialog;
+  ok: boolean;
+  sc: TShortCut;
+begin
+  dlg:=TEditShortcutCaptionDialog.CreateNew(nil, aConflictingInfo);
+  try
+    Result:=(dlg.ShowModal = mrOK);
+    case (aConflictingInfo.Kind in Accelerator_Kinds) of
+      True: begin
+        if HasAccelerator(dlg.NewCaption, sc) then
+          ok:=(sc <> aConflictingInfo.Shortcut)
+        else
+          ok:=True;
+      end;
+      False: ok:=(aConflictingInfo.Shortcut <> dlg.NewShortcut);
+    end;
+    Result:=Result and ok;
+    if Result then
+      begin
+        aNewShortcut:=dlg.NewShortcut;
+        aNewCaption:=dlg.NewCaption;
+      end
+    else
+      begin
+        aNewShortcut:=0;
+        aNewCaption:='';
+      end;
+  finally
+    FreeAndNil(dlg);
+  end;
 end;
 
 function KindToPropertyName(aKind: TSCKind): string;
@@ -728,6 +795,196 @@ procedure TAddShortcutDialog.GrabBoxCloseUp(Sender: TObject);
 begin
   if (FShortCutGrabBox.KeyComboBox.ItemIndex = 0) then
     FShortCutGrabBox.ShiftState:=[];
+end;
+
+{ TEditShortcutCaptionDialog }
+
+constructor TEditShortcutCaptionDialog.CreateNew(aShortcuts: TMenuShortcuts;
+  aSCInfo: TSCInfo);
+var
+  s: string;
+  sse: TShiftStateEnum;
+  i: integer;
+begin
+  FShortcuts:=aShortcuts;
+  FInfo:=aSCInfo;
+  Assert(aSCInfo<>nil,'TEditShortcutCaptionDialog.CreateNew: aSCInfo is nil');
+  Assert(aSCInfo.Kind<>scUnknown,'TEditShortcutCaptionDialog.CreateNew: aSCInfo is unknown type');
+  Assert(FShortcuts.ShortcutList.UniqueCount>0,'TEditShortcutCaptionDialog.CreateNew: unique list is empty');
+  inherited CreateNew(Nil);
+  FEditingCaption:=(FInfo.Kind in Accelerator_Kinds);
+  Position:=poScreenCenter;
+  BorderStyle:=bsDialog;
+  Constraints.MinWidth:=300;
+
+  FGroupBox:=TGroupBox.Create(Self);
+  if FEditingCaption then
+    begin
+      Caption:=Format(lisMenuEditorChangeConflictingAcceleratorS,
+                      [ShortCutToText(FInfo.Shortcut)]);
+      if (FInfo.Kind = scMenuItemAccel) then
+        FOldCaption:=FInfo.MenuItem.Caption;
+      FEdit:=TEdit.Create(Self);
+      with FEdit do
+      begin
+        Align:=alClient;
+        BorderSpacing.Around:=Margin;
+        AutoSize:=True;
+        Text:=FOldCaption;
+        OnChange:=@CaptionEditChange;
+        Parent:=FGroupBox;
+      end;
+      s:=lisMenuEditorCaption;
+    end
+  else
+    begin
+      Caption:=Format(lisMenuEditorChangeShortcutConflictS,
+                      [ShortCutToText(FInfo.Shortcut)]);
+      s:=KindToPropertyName(FInfo.Kind);
+      // don't set values to old shortcut since they need to be changed anyhow
+      FGrabBox:=TCustomShortCutGrabBox.Create(Self);
+      with FGrabBox do
+      begin
+        Align:=alClient;
+        BorderSpacing.Around:=Margin;
+        AutoSize:=True;
+        GrabButton.Caption:=lisMenuEditorGrabKey;
+       // this rather restricted list covers most of the common values needed
+        with KeyComboBox.Items do
+        begin
+          Clear;
+          BeginUpdate;
+          for i:=Low(ShortCutKeys) to High(ShortCutKeys) do
+            Add(ShortCutToText(ShortCutKeys[i]));
+          EndUpdate;
+        end;
+        GrabButton.OnEnter:=@GrabBoxEnter; // we can't alter any grabBox OnClick event
+        KeyComboBox.OnEnter:=@GrabBoxEnter;
+        for sse in ShiftButtons do
+          ShiftCheckBox[sse].OnEnter:=@GrabBoxEnter;
+        OnExit:=@GrabBoxExit;
+        FGrabBox.Caption:=Format(lisMenuEditorChangeShortcutCaptionForComponent,
+                                 [s, FInfo.Component.Name]);
+        Parent:=FGroupBox;
+      end;
+    end;
+  FGroupBox.Caption:=Format(lisMenuEditorEditingSForS,[s, FInfo.Component.Name]);
+  FGroupBox.Align:=alTop;
+  FGroupBox.BorderSpacing.Around:=Margin;
+  FGroupBox.AutoSize:=True;
+  FGroupBox.Parent:=Self;
+
+  FButtonPanel:=TButtonPanel.Create(Self);
+  with FButtonPanel do
+  begin
+    ShowButtons:=[pbOK, pbCancel];
+    Top:=1;
+    Align:=alTop;
+    OKButton.OnClick:=@OKButtonOnClick;
+    OKButton.ModalResult:=mrNone;
+    OKButton.Enabled:=False;
+    ShowBevel:=False;
+    Parent:=Self;
+  end;
+  AutoSize:=True;
+end;
+
+procedure TEditShortcutCaptionDialog.CaptionEditChange(Sender: TObject);
+var
+  newSC: TShortCut;
+  hasAccel: boolean;
+  ed: TEdit absolute Sender;
+  inf: TSCInfo;
+begin
+  if not (Sender is TEdit) then
+    Exit;
+  if HasAccelerator(ed.Text, newSC) then
+    begin
+      if FShortcuts.ShortcutList.UniqueListContainsShortcut(newSC) then
+        begin
+          inf:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(newSC);
+          IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
+                     Format(lisMenuEditorSIsAlreadyInUse,
+                     [ShortCutToText(newSC), inf.Component.Name]),
+                     mtWarning, [mbOK], False);
+          FEdit.Text:=AmpersandStripped(FOldCaption);
+          FEdit.SetFocus;
+        end
+      else
+        begin
+          FNewShortcut:=newSC;
+          FNewCaption:=ed.Text;
+        end;
+    end
+  else
+    begin
+      FNewShortcut:=0;
+      FNewCaption:=ed.Text;
+    end;
+  hasAccel:=HasAccelerator(FEdit.Text, newSC);
+  FButtonPanel.OKButton.Enabled:=not hasAccel or (hasAccel and (newSC <> FInfo.Shortcut));
+end;
+
+procedure TEditShortcutCaptionDialog.GrabBoxEnter(Sender: TObject);
+begin
+  if not FButtonPanel.OKButton.Enabled then
+    FButtonPanel.OKButton.Enabled:=True;
+end;
+
+procedure TEditShortcutCaptionDialog.GrabBoxExit(Sender: TObject);
+var
+  newSC: TShortCut;
+  inf: TSCInfo;
+begin
+  newSC:=KeyToShortCut(FGrabBox.Key, FGrabBox.ShiftState);
+  if (FInfo.Shortcut = newSC) then
+    begin
+      IDEMessageDialogAb(lisMenuEditorShortcutNotYetChanged,
+           Format(lisMenuEditorYouHaveToChangeTheShortcutFromSStoAvoidAConflict,
+                  [ShortCutToText(FInfo.Shortcut)]),
+                  mtWarning, [mbOK], False);
+      FGrabBox.KeyComboBox.SetFocus;
+      Exit;
+    end;
+  if FShortcuts.ShortcutList.UniqueListContainsShortcut(newSC) then
+    begin
+      inf:=FShortcuts.ShortcutList.FindUniqueInfoForShortcut(newSC);
+      IDEMessageDialogAb(lisMenuEditorFurtherShortcutConflict,
+           Format(lisMenuEditorSIsAlreadyInUse,
+                  [ShortCutToText(newSC), inf.Component.Name]),
+                  mtWarning, [mbOK], False);
+      FGrabBox.KeyComboBox.SetFocus;
+    end
+  else
+    begin
+      FNewShortcut:=newSC;
+      FButtonPanel.OKButton.Enabled:=True;
+    end;
+end;
+
+procedure TEditShortcutCaptionDialog.OKButtonOnClick(Sender: TObject);
+begin
+  if FEditingCaption then
+  begin
+    if (FEdit.Text = '') then
+    begin
+      IDEMessageDialogAb(lisMenuEditorCaptionShouldNotBeBlank,
+                 lisMenuEditorYouMustEnterTextForTheCaption,
+                 mtWarning, [mbOK], False);
+      FEdit.Text:=AmpersandStripped(FOldCaption);
+      FEdit.SetFocus;
+    end
+    else
+      ModalResult:=mrOK;
+  end
+  else
+    ModalResult:=mrOK;
+end;
+
+procedure TEditShortcutCaptionDialog.Activate;
+begin
+  inherited Activate;
+  FButtonPanel.OKButton.Enabled:=False;
 end;
 
 { TContents }

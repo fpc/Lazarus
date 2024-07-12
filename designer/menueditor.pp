@@ -38,7 +38,7 @@ uses
   IdeIntfStrConsts, PropEdits,
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, MenuDesignerBase, MenuEditorForm, MenuShortcutDisplay,
-  MenuTemplates;
+  MenuTemplates, MenuResolveConflicts;
 
 type
 
@@ -168,7 +168,7 @@ type
      popAddImgListIcon, popItemAddOnClick,
      popItemOISep,
      popShortcuts_,
-       popListShortcuts, popListShortcutsAccelerators,
+       popListShortcuts, popListShortcutsAccelerators, popResolveShortcutConflicts,
      popTemplates_,
        popSaveAsTemplate, popAddFromTemplate, popDeleteTemplate);{%endregion}
 
@@ -221,6 +221,7 @@ type
     procedure MoveItemAfter(Sender: TObject);
     procedure MoveItemBefore(Sender: TObject);
     procedure RemoveAllSeparators(Sender: TObject);
+    procedure ResolveShortcutConflicts(Sender: TObject);
     procedure SaveAsTemplate(Sender: TObject);
   private
     FDesigner: TMenuDesigner;
@@ -1207,6 +1208,8 @@ begin
         NewPopSub(primaryItem, '', @ListShortcuts);
       popListShortcutsAccelerators:
         NewPopSub(primaryItem, '', @ListShortcutsAndAccelerators);
+      popResolveShortcutConflicts:
+        NewPopSub(primaryItem, lisMenuEditorResolveShortcutConflicts, @ResolveshortcutConflicts);
       popTemplates_:
         NewPopPrimary(lisMenuEditorTemplates);
       popSaveAsTemplate:
@@ -1401,6 +1404,19 @@ end;
 procedure TShadowMenu.ListShortcutsAndAccelerators(Sender: TObject);
 begin
   ListShortCutDlg(FDesigner.Shortcuts, False, Self, Nil);
+end;
+
+procedure TShadowMenu.ResolveShortcutConflicts(Sender: TObject);
+var
+  dlg: TResolveConflictsDlg;
+begin
+  dlg:=TResolveConflictsDlg.Create(FDesigner.Shortcuts, Self);
+  try
+    if dlg.ShowModal <> mrCancel then
+      UpdateActionsEnabledness;
+  finally
+    dlg.Free;
+  end;
 end;
 
 procedure TShadowMenu.SaveAsTemplate(Sender: TObject);
@@ -1627,7 +1643,7 @@ end;
 
 procedure TShadowMenu.UpdateActionsEnabledness;
 var
-  ac, ac1, ac2: TAction;
+  ac, ac1, ac2, ac3: TAction;
   pe: TPopEnum;
   isInBar, isFirst, isSeparator, isLast, prevIsSeparator, nextIsSeparator,
     levelZero, levelZeroOr1, primarySCEnabled: boolean;
@@ -1731,6 +1747,8 @@ begin
         ac.Enabled:=(FDesigner.Shortcuts.ShortcutList.AcceleratorsInContainerCount > 0);
         ac.Caption:=Format(lisMenuEditorListShortcutsAndAccelerators,[FLookupRoot.Name]);
       end;
+      popResolveShortcutConflicts: ac.Enabled:=
+        (FDesigner.Shortcuts.ShortcutList.InitialDuplicates.Count > 0);
       popTemplates_:          ac.Enabled:=levelZero or FDesigner.TemplatesSaved;
       popSaveAsTemplate:      ac.Enabled:=levelZeroOr1;
       popAddFromTemplate:     ac.Enabled:=levelZero;
@@ -1740,7 +1758,8 @@ begin
   ac:=GetActionForEnum(popShortcuts_);
   ac1:=GetActionForEnum(popListShortcuts);
   ac2:=GetActionForEnum(popListShortcutsAccelerators);
-  ac.Enabled:=ac1.Enabled or ac2.Enabled;
+  ac3:=GetActionForEnum(popResolveShortcutConflicts);
+  ac.Enabled:=ac1.Enabled or ac2.Enabled or ac3.Enabled;
 end;
 
 constructor TShadowMenu.Create(aDesigner: TMenuDesigner; aForm: TForm;
