@@ -4854,6 +4854,7 @@ procedure TMethodPropertyEditor.Edit;
 var
   NewMethodName: String;
   r: TModalResult;
+  m: TMethod;
 begin
   NewMethodName := GetValue;
   {$IFDEF VerboseMethodPropEdit}
@@ -4889,8 +4890,9 @@ begin
         {$IFDEF VerboseMethodPropEdit}
         debugln(['TMethodPropertyEditor.Edit CreateMethod "',NewMethodName,'"...']);
         {$ENDIF}
-        SetMethodValue(PropertyHook.CreateMethod(NewMethodName, GetPropType,
-                                                 GetComponent(0), GetPropertyPath(0)));
+        m:=PropertyHook.CreateMethod(NewMethodName,GetPropType,GetComponent(0),GetPropertyPath(0));
+        if m.Code=nil then exit;
+        SetMethodValue(m);
         {$IFDEF VerboseMethodPropEdit}
         debugln(['TMethodPropertyEditor.Edit CHANGED new method=',GetValue]);
         {$ENDIF}
