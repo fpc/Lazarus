@@ -5855,7 +5855,7 @@ msgid "Mode:"
 msgstr "אופן:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -19189,7 +19189,9 @@ msgid "&Title"
 msgstr "כותרת&"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr "הכותרת בסרגל המשימות מראה למשל: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -19615,10 +19617,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr ""
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "לא יכול ליצור מתודה חדשה."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."

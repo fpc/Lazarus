@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-06 21:44+0300\n"
+"PO-Revision-Date: 2024-07-13 01:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5534,8 +5534,8 @@ msgid "Mode:"
 msgstr "Режим:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgstr "Пример отображаемых данных в заголовке в панели задач: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
+msgstr "Пример отображаемых данных в заголовке в панели задач: project1 - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build mode"
@@ -18136,8 +18136,8 @@ msgid "&Title"
 msgstr "&Заголовок"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
-msgstr "Заголовок в панели задач имеет следующий вид: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
+msgstr "Пример отображаемых данных в заголовке в панели задач: project1 - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
@@ -18548,10 +18548,6 @@ msgstr "Невозможно провести преобразование в к
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Невозможно создать новый файл, так как уже имеется каталог с таким именем."
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "Не удалось создать новый метод."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."

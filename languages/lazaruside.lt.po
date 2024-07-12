@@ -5687,7 +5687,9 @@ msgid "Mode:"
 msgstr "Veiksena:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr "Antraštė užduočių juostoje rodo pavyzdžiui: projektas1.lpi - laida - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -18516,7 +18518,9 @@ msgid "&Title"
 msgstr "&Antraštė"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr "Antraštė programų juostoje, pavyzdžiui, bus tokia: projektas1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -18938,10 +18942,6 @@ msgstr "Konversija į koduotę „%s“ nepavyko"
 #| msgid "Unable to create new file, because there is already a directory with this name."
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Nepavyko sukurti naujo failo, nes egzistuoja aplankas tokiu pat pavadinimu."
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "Neina sukurti naujo metodo."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."

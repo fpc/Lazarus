@@ -5574,7 +5574,9 @@ msgid "Mode:"
 msgstr "Mód:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr "A cím a tálcán így jelenik meg: projekt1.lpi - Kiadás - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -18272,7 +18274,9 @@ msgid "&Title"
 msgstr "Cím"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr "A cím a tálcán így jelenik meg: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -18684,10 +18688,6 @@ msgstr "Nem lehet átalakítani \"%s\" kódolásra"
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Nem hozható létre az új fájl, mert már létezik egy könyvtár ezzel a névvel."
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "Nem lehet új metódust létrehozni."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."

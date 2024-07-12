@@ -5745,7 +5745,7 @@ msgid "Mode:"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -18837,7 +18837,7 @@ msgid "&Title"
 msgstr ""
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -19263,10 +19263,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
-msgstr ""
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer

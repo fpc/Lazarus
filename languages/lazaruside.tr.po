@@ -5502,7 +5502,9 @@ msgid "Mode:"
 msgstr "Mod:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr "Görev çubuğundaki başlık örneğin şunları gösterir: project1.lpi - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -18062,7 +18064,9 @@ msgid "&Title"
 msgstr "&Başlık"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr "Görev çubuğundaki başlık, örneğin: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -18473,10 +18477,6 @@ msgstr "\"%s\" kodlamasına dönüştürülemez"
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Yeni bir dosya oluşturulamadı, çünkü zaten bu ada sahip bir klasör var."
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "Yeni yöntem oluşturulamadı."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."

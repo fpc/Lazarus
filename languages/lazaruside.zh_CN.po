@@ -5556,7 +5556,9 @@ msgid "Mode:"
 msgstr "模式:"
 
 #: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
 msgstr "在任务栏中显示的标题，例如：project1.lpi - Release - Lazarus"
 
 #: lazarusidestrconsts.lisbuildmodes
@@ -18210,7 +18212,9 @@ msgid "&Title"
 msgstr "标题(Title)(&T)"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgstr "在任务栏中显示的标题,例如: project1.lpi  - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
@@ -18628,10 +18632,6 @@ msgstr "不能转换到编码\"%s\""
 #, fuzzy
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "不能创建新的文件,因为这里已经有一个带有相同名称的目录."
-
-#: lazarusidestrconsts.lisunabletocreatenewmethod
-msgid "Unable to create new method."
-msgstr "无法创建新方法。"
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
