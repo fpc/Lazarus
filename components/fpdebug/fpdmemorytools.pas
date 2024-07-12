@@ -1037,7 +1037,7 @@ begin
 
   case AFormat of
     rdDefault: Result := IntToStr(FNumValue);
-    rdHex:     Result := '$'+IntToHex(FNumValue);
+    rdHex:     Result := '$'+Dec64ToNumb(FNumValue, 0, 16);
     rdBinary:  Result := '%'+Dec64ToNumb(FNumValue, 0, 2);
     rdOctal:   Result := '&'+Dec64ToNumb(FNumValue, 0, 8);
     rdDecimal: Result := IntToStr(FNumValue);
