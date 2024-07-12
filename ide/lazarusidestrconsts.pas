@@ -1318,9 +1318,9 @@ resourcestring
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
-    +'shows for example: project1.lpi - Lazarus';
+    +'shows for example: project1 - Lazarus';
   lisBuildModeInTitleInExample = 'Title in taskbar '
-    +'shows for example: project1.lpi - Release - Lazarus';
+    +'shows for example: project1 - Release - Lazarus';
   lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
     +'shows also directory path of the project';
 
