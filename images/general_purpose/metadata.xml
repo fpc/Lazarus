@@ -18819,6 +18819,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -18827,6 +18828,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -18835,6 +18837,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -18843,6 +18846,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -18851,6 +18855,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -18859,6 +18864,7 @@
         <keyword>redo</keyword>
         <keyword>refresh</keyword>
         <keyword>repeat</keyword>
+        <keyword>replace</keyword>
         <keyword>revert</keyword>
       </keywords>
     </icon>
@@ -23863,6 +23869,7 @@
     <icon filename="Zoom_01_16.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -23872,6 +23879,7 @@
     <icon filename="Zoom_01_24.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -23881,6 +23889,7 @@
     <icon filename="Zoom_01_32.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -23890,6 +23899,7 @@
     <icon filename="Zoom_01_36.png" width="36" height="36" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -23899,6 +23909,7 @@
     <icon filename="Zoom_01_48.png" width="48" height="48" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -23908,6 +23919,7 @@
     <icon filename="Zoom_01_64.png" width="64" height="64" style="classic">
       <keywords>
         <keyword>decrease</keyword>
+        <keyword>magnify</keyword>
         <keyword>minus</keyword>
         <keyword>reduce</keyword>
         <keyword>zoom</keyword>
@@ -25106,6 +25118,696 @@
     <icon filename="WiFi_02_64.png" width="64" height="64" style="flat">
       <keywords>
         <keyword>wifi</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Add_11_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Folder_21_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_16_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>grid</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_17_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>grid</keyword>
+        <keyword>magnify</keyword>
+        <keyword>search</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_18_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>grid</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_19_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>grid</keyword>
+        <keyword>remove</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Grid_20_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>grid</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>thumbnails</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_09_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_49_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_50_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_51_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_52_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Arrow_53_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Remove_10_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Replace_08_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>replace</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
       </keywords>
     </icon>
   </icons>
