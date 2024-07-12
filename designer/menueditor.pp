@@ -165,7 +165,7 @@ type
        popAddSeparatorBefore, popAddSeparatorAfter, popRemoveAllSeparators,
      popItemDelete, popItemAddBefore, popItemAddAfter, popItemAddSubMenu,
      popItemSep,
-     popAddImgListIcon, popItemAddOnClick, popItemEditCaption,
+     popAddImgListIcon, popItemAddOnClick,
      popItemOISep,
      popShortcuts_,
        popListShortcuts, popListShortcutsAccelerators, popResolveShortcutConflicts,
@@ -185,8 +185,6 @@ type
     FInitialSelectedMenuItem: TMenuItem;
     FItemsPopupMenu: TPopupMenu;
     FRootBox: TShadowBox;
-    FInPlaceEditor: TEdit;
-    FEditedMenuItem: TMenuItem;
     procedure DeleteBox(aMI: TMenuItem);
     procedure DeleteItm(anItem: TMenuItem);
     function GetActionForEnum(anEnum: TPopEnum): TAction;
@@ -202,13 +200,11 @@ type
     procedure CreateShadowBoxesAndItems;
     procedure DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
     procedure DeleteShadowAndItemAndChildren(anExistingSI: TShadowItem);
-    procedure InPlaceEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnDesignerModified(Sender: TObject);
     procedure OnObjectPropertyChanged(Sender: TObject; NewObject: TPersistent);
     procedure OnDesignerRefreshPropertyValues;
     procedure RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
     procedure SetupPopupMenu;
-    procedure StopEditingCaption;
     procedure UpdateButtonGlyphs(isInBar: boolean);
     // user actions
     procedure AddFromTemplate(Sender: TObject);
@@ -220,7 +216,6 @@ type
     procedure AddSubMenu(Sender: TObject);
     procedure AddFirstMenu(Sender: TObject);
     procedure DeleteTemplate(Sender: TObject);
-    procedure EditCaption(Sender: TObject);
     procedure ListShortcuts(Sender: TObject);
     procedure ListShortcutsAndAccelerators(Sender: TObject);
     procedure MoveItemAfter(Sender: TObject);
@@ -714,59 +709,6 @@ begin
   end;
 end;
 
-procedure TShadowMenu.EditCaption(Sender: TObject);
-var
-  SelShadow: TShadowItem;
-begin
-  SelShadow := SelectedShadowItem;
-  if (SelShadow <> nil) then begin
-    HideFakes;
-    FEditedMenuItem := FSelectedMenuItem;
-    FInPlaceEditor.Parent := SelShadow;
-    // ToDo: Calculate Left and Width properly.
-    FInPlaceEditor.Left := 24;
-    FInPlaceEditor.Width := SelShadow.Width - 24;
-    FInPlaceEditor.Text := FEditedMenuItem.Caption;
-    FInPlaceEditor.Visible := True;
-    FInPlaceEditor.SetFocus;
-  end;
-end;
-
-procedure TShadowMenu.StopEditingCaption;
-var
-  EditedShadow: TShadowItem;
-  s: TCaption;
-begin
-  if not FInPlaceEditor.Visible then Exit;
-  Assert(Assigned(FEditedMenuItem), 'TShadowMenu.StopEditingCaption: FEditedMenuItem = Nil');
-  EditedShadow := TShadowItem(GetShadowForMenuItem(FEditedMenuItem));
-  s := FInPlaceEditor.Text;
-  if s <> '' then
-  begin
-    FEditedMenuItem.Caption:=s;
-    if (s = cLineCaption) and AnsiStartsStr('MenuItem', FEditedMenuItem.Name) then
-      FEditedMenuItem.Name:=FEditorDesigner.CreateUniqueComponentName('Separator');
-    GlobalDesignHook.RefreshPropertyValues;
-    GlobalDesignHook.Modified(FEditedMenuItem);
-    EditedShadow.Invalidate;
-  end;
-  EditedShadow.SetFocus;
-  FInPlaceEditor.Text := '';
-  FInPlaceEditor.Visible := False;
-  FInPlaceEditor.Parent := Nil;
-  FEditedMenuItem := Nil;
-  RefreshFakes;
-end;
-
-procedure TShadowMenu.InPlaceEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  case Key of
-    VK_ESCAPE: begin Key:=0; FInPlaceEditor.Text := ''; StopEditingCaption; end;
-    VK_RETURN: begin Key:=0; StopEditingCaption; end;
-    else inherited KeyDown(Key, Shift);
-  end;
-end;
-
 procedure TShadowMenu.AddSeparatorAbove(Sender: TObject);
 var
   selected: TShadowItem;
@@ -901,7 +843,6 @@ var
   nearestMI, mi: TMenuItem;
   box: TShadowBox;
 begin
-  StopEditingCaption;
   FDesigner.FGui.BeginUpdate;
   try
     mi:=anExistingSI.RealItem;
@@ -1233,8 +1174,6 @@ begin
       end;
       popItemOISep:
         NewSeparatorAction;
-      popItemEditCaption:
-        NewPopItem(lisMenuEditorEditCaption, @EditCaption, KeyToShortCut(VK_RETURN, []));
       popItemMoveBefore: begin
         NewPopItem('', @MoveItemBefore, KeyToShortCut(VK_UP,[ssCtrl]));
         MoveItemUpButton.Action:=ac;
@@ -1664,7 +1603,6 @@ begin
   begin
     if (prevSelectedItem <> nil) then
     begin
-      StopEditingCaption;
       prevShadow:=TShadowItem(GetShadowForMenuItem(prevSelectedItem));
       if (prevShadow <> nil)
       and (selectedShadow.ParentBox.ParentMenuItem <> prevSelectedItem)
@@ -1758,7 +1696,6 @@ begin
       end;
       popItemDelete: ac.Enabled:=(FMenu.Items.Count > 0);
       //popItemOISep
-      //popItemEditCaption
       popItemMoveBefore: begin
         ac.Enabled:=not isFirst;
         if isInBar then begin
@@ -1856,9 +1793,6 @@ begin
     FAddFirstItemFake.Name := 'AddFirstItemFake';
     FAddFirstItemFake.Left := Popup_Origin.x;
     FAddFirstItemFake.Top := Popup_Origin.y;
-    FInPlaceEditor := TEdit.Create(Self);
-    FInPlaceEditor.OnKeyDown := @InPlaceEditKeyDown;
-    FInPlaceEditor.Visible := False;
     ConnectSpeedButtonOnClickMethods;
     GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
     GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
