@@ -1,0 +1,1 @@
+lazres ../pascalscript.lrs @images.txt
