@@ -13373,7 +13373,7 @@ begin
   end else begin
     DebugLn(['Error: (lazarus) TMainIDE.PropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+    //raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
 end;
 
