@@ -95,6 +95,7 @@ type
 
 function AllocCocoaCollectionView: TCocoaCollectionView;
 function indexPathsWithOneIndex( cv: NSCollectionView; AIndex: Integer ): NSSet;
+function realVisibleItems( cv: NSCollectionView ): NSArray;
 
 implementation
 
@@ -129,6 +130,22 @@ begin
   item:= cv.itemAtIndex( AIndex );
   indexPath:= cv.indexPathForItem( item );
   Result:= NSSet.setWithObject( indexPath );
+end;
+
+// get the Real Visible Items.
+// NSCollectionView returns the items that have been displayed.
+function realVisibleItems( cv: NSCollectionView ): NSArray;
+var
+  visibleRect: NSRect;
+  item: NSCollectionViewItem;
+  items: NSMutableArray Absolute Result;
+begin
+  Result:= NSMutableArray.new;
+  visibleRect:= cv.visibleRect;
+  for item in cv.visibleItems do begin
+    if NSIntersectsRect( item.view.frame, visibleRect ) then
+      items.addObject( item );
+  end;
 end;
 
 { TCocoaCollectionItem }
@@ -247,7 +264,7 @@ procedure TCocoaCollectionView.redrawVisibleItems;
 var
   item: NSCollectionViewItem;
 begin
-  for item in self.visibleItems do begin
+  for item in realVisibleItems(self) do begin
     item.view.setNeedsDisplay_( True );
   end;
 end;

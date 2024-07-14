@@ -1200,7 +1200,7 @@ var
   item: NSCollectionViewItem;
 begin
   Result:= -1;
-  items:= _collectionView.visibleItems;
+  items:= CocoaCollectionView.realVisibleItems( _collectionView );
   if items.count > 0 then begin
     item:= NSCollectionViewItem(items.firstObject);
     Result:= _collectionView.indexPathForItem(item).item;
@@ -1209,7 +1209,7 @@ end;
 
 function TCocoaWSListView_CollectionViewHandler.GetVisibleRowCount: Integer;
 begin
-  Result:= _collectionView.visibleItems.count;
+  Result:= CocoaCollectionView.realVisibleItems(_collectionView).count;
 end;
 
 procedure TCocoaWSListView_CollectionViewHandler.SelectAll(const AIsSet: Boolean
