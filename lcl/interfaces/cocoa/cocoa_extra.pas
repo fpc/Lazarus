@@ -56,6 +56,182 @@ var
   NSPasteboardTypeRuler: NSPasteboardType; cvar; external;
   NSPasteboardTypeSound: NSPasteboardType; cvar; external;
 
+type
+  NSCollectionViewItemHighlightState = NSInteger; { available in 10_11 }
+const
+  NSCollectionViewItemHighlightNone: NSInteger           = 0;
+  NSCollectionViewItemHighlightForSelection: NSInteger   = 1;
+  NSCollectionViewItemHighlightForDeselection: NSInteger = 2;
+  NSCollectionViewItemHighlightAsDropTarget: NSInteger   = 3;
+
+type
+  NSCollectionViewScrollPosition = NSUInteger; { available in 10_11 }
+const
+  NSCollectionViewScrollPositionNone: NSUInteger                  = 0;
+  NSCollectionViewScrollPositionTop: NSUInteger                   = 1 shl 0;
+  NSCollectionViewScrollPositionCenteredVertically: NSUInteger    = 1 shl 1;
+  NSCollectionViewScrollPositionBottom: NSUInteger                = 1 shl 2;
+  NSCollectionViewScrollPositionLeft: NSUInteger                  = 1 shl 3;
+  NSCollectionViewScrollPositionCenteredHorizontally: NSUInteger  = 1 shl 4;
+  NSCollectionViewScrollPositionRight: NSUInteger                 = 1 shl 5;
+  NSCollectionViewScrollPositionLeadingEdge: NSUInteger           = 1 shl 6;
+  NSCollectionViewScrollPositionTrailingEdge: NSUInteger          = 1 shl 7;
+  NSCollectionViewScrollPositionNearestVerticalEdge: NSUInteger   = 1 shl 8;
+  NSCollectionViewScrollPositionNearestHorizontalEdge: NSUInteger = 1 shl 9;
+
+type
+  NSUserInterfaceItemIdentifier = NSString; { available in 10_12 }
+  NSCollectionViewSupplementaryElementKind = NSString; { available in 10_11 }
+
+  NSCollectionViewLayout = objcclass external  (NSObject)
+  end;
+
+  NSCollectionViewFlowLayout = objcclass external (NSCollectionViewLayout)
+  public
+    procedure setMinimumInteritemSpacing( newValue:CGFloat );
+      message 'setMinimumInteritemSpacing:'; { available in 10_11 }
+    procedure setMinimumLineSpacing( newValue:CGFloat );
+      message 'setMinimumLineSpacing:'; { available in 10_11 }
+    function itemSize: NSSize; message 'itemSize'; { available in 10_11 }
+    procedure setItemSize( newValue:NSSize );
+      message 'setItemSize:'; { available in 10_11 }
+  end;
+
+  NSCollectionViewGridLayout = objcclass external (NSCollectionViewLayout)
+  public
+    procedure setMinimumItemSize( newValue:NSSize );
+      message 'setMinimumItemSize:'; { available in 10_11 }
+    procedure setMaximumItemSize( newValue:NSSize );
+      message 'setMaximumItemSize:'; { available in 10_11 }
+    procedure setMinimumInteritemSpacing( newValue:CGFloat );
+      message 'setMinimumInteritemSpacing:'; { available in 10_11 }
+    procedure setMinimumLineSpacing( newValue:CGFloat );
+      message 'setMinimumLineSpacing:'; { available in 10_11 }
+    procedure setMargins( newValue:NSEdgeInsets );
+      message 'setMargins:'; { available in 10_11 }
+    procedure setBackgroundColors( newValue:NSArray );
+      message 'setBackgroundColors:'; { available in 10_11 }
+  end;
+
+  NSCollectionViewDataSourceProtocol = objcprotocol external name 'NSCollectionViewDataSource'
+    function collectionView_numberOfItemsInSection(
+      collectionView: NSCollectionView; section: NSInteger ): NSInteger;
+      message 'collectionView:numberOfItemsInSection:'; { available in 10_11 }
+    function collectionView_itemForRepresentedObjectAtIndexPath(
+      collectionView: NSCollectionView; indexPath: NSIndexPath ): NSCollectionViewItem;
+      message 'collectionView:itemForRepresentedObjectAtIndexPath:'; { available in 10_11 }
+  optional
+    function numberOfSectionsInCollectionView(collectionView: NSCollectionView): NSInteger;
+      message 'numberOfSectionsInCollectionView:'; { available in 10_11 }
+    function collectionView_viewForSupplementaryElementOfKind_atIndexPath(
+      collectionView: NSCollectionView;
+      kind: NSCollectionViewSupplementaryElementKind;
+      indexPath: NSIndexPath ): NSView;
+      message 'collectionView:viewForSupplementaryElementOfKind:atIndexPath:'; { available in 10_11 }
+  end;
+
+  NSCollectionViewDelegateProtocol_1011 = objcprotocol (NSCollectionViewDelegateProtocol)
+  optional
+    function collectionView_shouldSelectItemsAtIndexPaths(
+      collectionView: NSCollectionView; indexPaths:NSSet ): NSSet;
+      message 'collectionView:shouldSelectItemsAtIndexPaths:';
+    procedure collectionView_didSelectItemsAtIndexPaths(
+      collectionView: NSCollectionView; indexPaths:NSSet );
+      message 'collectionView:didSelectItemsAtIndexPaths:';
+    function collectionView_shouldDeselectItemsAtIndexPaths(
+      collectionView: NSCollectionView; indexPaths:NSSet ): NSSet;
+      message 'collectionView:shouldDeselectItemsAtIndexPaths:';
+    procedure collectionView_didDeselectItemsAtIndexPaths(
+      collectionView: NSCollectionView; indexPaths:NSSet );
+      message 'collectionView:didDeselectItemsAtIndexPaths:';
+
+    function collectionView_shouldChangeItemsAtIndexPaths_toHighlightState(
+      collectionView: NSCollectionView;
+      indexPaths: NSSet;
+      highlightState: NSCollectionViewItemHighlightState ): NSSet;
+      message 'collectionView:shouldChangeItemsAtIndexPaths:toHighlightState:';
+    procedure collectionView_didChangeItemsAtIndexPaths_toHighlightState(
+      collectionView: NSCollectionView;
+      indexPaths: NSSet;
+      highlightState: NSCollectionViewItemHighlightState );
+      message 'collectionView:didChangeItemsAtIndexPaths:toHighlightState:';
+
+    procedure collectionView_willDisplayItem_forRepresentedObjectAtIndexPath(
+      collectionView: NSCollectionView;
+      item:NSCollectionViewItem;
+      indexPath:NSIndexPath );
+      message 'collectionView:willDisplayItem:forRepresentedObjectAtIndexPath:';
+    procedure collectionView_didEndDisplayingItem_forRepresentedObjectAtIndexPath(
+      collectionView: NSCollectionView;
+      item:NSCollectionViewItem;
+      indexPath:NSIndexPath );
+      message 'collectionView:didEndDisplayingItem:forRepresentedObjectAtIndexPath:';
+  end;
+
+  NSCollectionViewItemFix = objccategory external (NSCollectionViewItem)
+    function highlightState: NSCollectionViewItemHighlightState;
+      message 'highlightState'; { available in 10_11 }
+    procedure setHighlightState( newValue:NSCollectionViewItemHighlightState );
+      message 'setHighlightState:'; { available in 10_11 }
+  end;
+
+  NSCollectionViewFix = objccategory external (NSCollectionView)
+    procedure registerClass_forItemWithIdentifier(
+      itemClass: pobjc_class; itemIdentifier: NSUserInterfaceItemIdentifier );
+      message 'registerClass:forItemWithIdentifier:'; { available in 10_11 }
+    function makeItemWithIdentifier_forIndexPath(
+      identifier_: NSUserInterfaceItemIdentifier;
+      indexPath: NSIndexPath ): NSCollectionViewItem;
+      message 'makeItemWithIdentifier:forIndexPath:';  { available in 10_11 }
+
+    function numberOfItemsInSection( section: NSInteger ): NSInteger;
+      message 'numberOfItemsInSection:'; { available in 10_11 }
+    function indexPathForItem( item:NSCollectionViewItem ): NSIndexPath;
+      message 'indexPathForItem:'; { available in 10_11 }
+    function indexPathForItemAtPoint( point: NSPoint ): NSIndexPath;
+      message 'indexPathForItemAtPoint:'; { available in 10_11 }
+
+    function dataSource: NSCollectionViewDataSourceProtocol;
+      message 'dataSource'; { available in 10_11 }
+    procedure setDataSource(newValue: NSCollectionViewDataSourceProtocol);
+      message 'setDataSource:'; { available in 10_11 }
+
+    function collectionViewLayout: NSCollectionViewLayout;
+      message 'collectionViewLayout'; { available in 10_11 }
+    procedure setCollectionViewLayout( newValue: NSCollectionViewLayout );
+      message 'setCollectionViewLayout:'; { available in 10_11 }
+
+    function visibleItems: NSArray;
+      message 'visibleItems'; { available in 10_11 }
+    procedure scrollToItemsAtIndexPaths_scrollPosition(
+      indexPaths: NSSet; scrollPosition: NSCollectionViewScrollPosition );
+      message 'scrollToItemsAtIndexPaths:scrollPosition:'; { available in 10_11 }
+
+    procedure reloadData; message 'reloadData'; { available in 10_11 }
+
+    function allowsEmptySelection: Boolean;
+      message 'allowsEmptySelection'; { available in 10_11 }
+    procedure setAllowsEmptySelection( newValue: Boolean );
+      message 'setAllowsEmptySelection:'; { available in 10_11 }
+
+    function selectionIndexPaths: NSSet;
+      message 'selectionIndexPaths'; { available in 10_11 }
+    procedure selectItemsAtIndexPaths_scrollPosition(
+      indexPaths: NSSet; scrollPosition: NSCollectionViewScrollPosition );
+      message 'selectItemsAtIndexPaths:scrollPosition:'; { available in 10_11 }
+    procedure deselectItemsAtIndexPaths( indexPaths: NSSet );
+      message 'deselectItemsAtIndexPaths:'; { available in 10_11 }
+    procedure selectAll( sender: id );
+      message 'selectAll:'; { available in 10_11 }
+    procedure deselectAll( sender: id );
+      message 'deselectAll:'; { available in 10_11 }
+  end;
+
+  NSIndexPathFix = objccategory external (NSIndexPath)
+    function item: NSInteger; message 'item';
+    procedure setItem( newValue:NSInteger ); message 'setItem:';
+  end;
+
 const
   UNAuthorizationOptionBadge   = 1 shl 0;
   UNAuthorizationOptionSound   = 1 shl 1;
@@ -177,13 +353,6 @@ type
   end;
   {$endif}
 
-  NSEdgeInsets = packed record
-    top     : CGFloat;
-    left    : CGFloat;
-    bottom  : CGFloat;
-    right   : CGFloat;
-  end;
-
   NSViewFix = objccategory external (NSView)
     // 10.7+
     function fittingSize: NSSize; message 'fittingSize';
@@ -276,8 +445,6 @@ type
     procedure setHidden_(flag: ObjCBool); message 'setHidden:';
     {$endif}
   end;
-
-  NSUserInterfaceItemIdentifier = NSString;
 
   NSTableViewAnimationOptions = NSUInteger;
 
