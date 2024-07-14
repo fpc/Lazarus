@@ -1,1 +1,1 @@
-lazres ../pascalscript.lrs @images.txt
+..\..\..\..\tools\lazres ..\pascalscript.lrs @images.txt
