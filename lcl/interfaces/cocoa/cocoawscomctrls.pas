@@ -114,6 +114,55 @@ type
 
   TCocoaListView = TCocoaScrollView;
 
+  { TCocoaWSListViewHandler }
+
+  TCocoaWSListViewHandler = class
+  public
+    // Column
+    procedure ColumnDelete( const AIndex: Integer ); virtual; abstract;
+    function  ColumnGetWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; virtual; abstract;
+    procedure ColumnInsert( const AIndex: Integer; const AColumn: TListColumn); virtual; abstract;
+    procedure ColumnMove( const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); virtual; abstract;
+    procedure ColumnSetAlignment( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAlignment: TAlignment); virtual; abstract;
+    procedure ColumnSetAutoSize( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAutoSize: Boolean); virtual; abstract;
+    procedure ColumnSetCaption( const AIndex: Integer; const {%H-}AColumn: TListColumn; const ACaption: String); virtual; abstract;
+    procedure ColumnSetMaxWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMaxWidth: Integer); virtual; abstract;
+    procedure ColumnSetMinWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMinWidth: integer); virtual; abstract;
+    procedure ColumnSetWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AWidth: Integer); virtual; abstract;
+    procedure ColumnSetVisible( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AVisible: Boolean); virtual; abstract;
+    procedure ColumnSetSortIndicator( const AIndex: Integer; const AColumn: TListColumn; const ASortIndicator: TSortIndicator); virtual; abstract;
+
+    // Item
+    procedure ItemDelete( const AIndex: Integer); virtual; abstract;
+    function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual; abstract;
+    function  ItemGetChecked( const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; virtual; abstract;
+    function  ItemGetPosition( const AIndex: Integer): TPoint; virtual; abstract;
+    function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; abstract; // returns True if supported
+    procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); virtual; abstract;
+    procedure ItemSetChecked( const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); virtual; abstract;
+    procedure ItemSetImage( const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); virtual; abstract;
+    procedure ItemSetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); virtual; abstract;
+    procedure ItemSetText( const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String); virtual; abstract;
+    procedure ItemShow( const AIndex: Integer; const {%H-}AItem: TListItem; const PartialOK: Boolean); virtual; abstract;
+
+    function GetFocused: Integer; virtual; abstract;
+    function GetItemAt( x,y: integer): Integer; virtual; abstract;
+    function GetSelCount: Integer; virtual; abstract;
+    function GetSelection: Integer; virtual; abstract;
+    function GetTopItem: Integer; virtual; abstract;
+    function GetVisibleRowCount: Integer; virtual; abstract;
+
+    procedure SelectAll( const AIsSet: Boolean); virtual; abstract;
+    procedure SetDefaultItemHeight( const AValue: Integer); virtual; abstract;
+    procedure SetImageList( const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); virtual; abstract;
+    procedure SetItemsCount( const Avalue: Integer); virtual; abstract;
+    procedure SetOwnerData( const {%H-}AValue: Boolean); virtual; abstract;
+    procedure SetProperty( const AProp: TListViewProperty; const AIsSet: Boolean); virtual; abstract;
+    procedure SetScrollBars( const AValue: TScrollStyle); virtual; abstract;
+    procedure SetSort( const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
+      const {%H-}ASortDirection: TSortDirection); virtual; abstract;
+  end;
+
   { TLCLListViewCallback }
 
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
