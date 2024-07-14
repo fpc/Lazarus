@@ -13,7 +13,7 @@ uses
   // RTL, FCL, LCL
   MacOSAll, CocoaAll,
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
-  Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList,
+  Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   Math,
   // WS
   WSComCtrls,
@@ -420,9 +420,11 @@ type
   private
     _listView: TCocoaListView;
     _collectionView: TCocoaCollectionView;
+  private
+    function getCallback: TLCLListViewCallback;
+    procedure doReloadDataAfterDelete( AIndex: PtrInt);
   public
     constructor Create( listView: TCocoaListView );
-    function getCallback: TLCLListViewCallback;
   public
     // Column
     procedure ColumnDelete( const AIndex: Integer ); override;
@@ -1050,16 +1052,21 @@ procedure TCocoaWSListView_CollectionViewHandler.ColumnSetSortIndicator(
 begin
 end;
 
+// when LCL call ItemDelete, the Item isn't Deleted at LCL
+// delayed reload is necessary
 procedure TCocoaWSListView_CollectionViewHandler.ItemDelete(
   const AIndex: Integer);
+begin
+  Application.QueueAsyncCall( doReloadDataAfterDelete, AIndex );
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.doReloadDataAfterDelete( AIndex: PtrInt);
 var
   lclcb : TLCLListViewCallback;
 begin
   lclcb:= getCallback;
-  lclcb.tempItemsCountDelta:= -1;
-  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by(AIndex, -1);
+  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   _collectionView.reloadData;
-  lclcb.tempItemsCountDelta:= 0;
 end;
 
 /// to do
