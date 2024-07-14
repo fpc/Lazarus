@@ -45,8 +45,8 @@ type
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
-    procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
-    function shouldTableSelectionChange(NewSel: Integer): Boolean;
+    procedure selectionChanged(ARow: Integer; Added, Removed: NSIndexSet);
+    function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
@@ -655,7 +655,7 @@ end;
 function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
   row: NSInteger): Boolean;
 begin
-  Result:= callback.shouldTableSelectionChange( row );
+  Result:= callback.shouldSelectionChange( row );
 end;
 
 procedure TCocoaTableListView.tableView_didClickTableColumn(
@@ -856,7 +856,7 @@ begin
     CompareIndexSets(beforeSel, selectedRowIndexes, rm, ad);
 
     NewSel := Self.selectedRow();
-    callback.tableSelectionChange(NewSel, ad, rm);
+    callback.selectionChanged(NewSel, ad, rm);
 
     beforeSel.release;
     beforeSel := nil;

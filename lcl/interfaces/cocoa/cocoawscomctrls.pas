@@ -184,8 +184,8 @@ type
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
-    procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
-    function shouldTableSelectionChange(NewSel: Integer): Boolean;
+    procedure selectionChanged(NewSel: Integer; Added, Removed: NSIndexSet);
+    function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState);
@@ -2027,7 +2027,7 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
-procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
+procedure TLCLListViewCallback.selectionChanged(NewSel: Integer; Added, Removed: NSIndexSet);
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -2096,7 +2096,7 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);}
 end;
 
-function TLCLListViewCallback.shouldTableSelectionChange(NewSel: Integer
+function TLCLListViewCallback.shouldSelectionChange(NewSel: Integer
   ): Boolean;
 var
   item: TListItem = nil;
