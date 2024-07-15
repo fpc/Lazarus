@@ -131,8 +131,8 @@ lcl:
 basecomponents:
 	$(MAKE) -C components lazbuildlclpackages
 	$(MAKE) -C components idepackages
-	$(MAKE) -C ide/packages/ideutils
 	$(MAKE) -C ide/packages/ideconfig
+	$(MAKE) -C ide/packages/ideutils
 	$(MAKE) -C ide/packages/idepackager
 	$(MAKE) -C ide/packages/ideproject
 	$(MAKE) -C ide/packages/idedebugger
