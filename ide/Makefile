@@ -460,7 +460,6 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_OPT+= -WG
-BIG_IDE_OPTIONS+= -WG
 endif
 ifeq ($(CPU_OS_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazarus startlazarus lazbuild
@@ -4814,7 +4813,7 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(OPT)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 starter: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 lazbuilder: $(COMPILER_UNITTARGETDIR)

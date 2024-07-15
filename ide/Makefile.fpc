@@ -164,7 +164,6 @@ LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 # apptype gui
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_OPT+= -WG
-BIG_IDE_OPTIONS+= -WG
 endif
 
 #-----------------------------------------------------------------------------
@@ -198,7 +197,7 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 # compile IDE with some extra packages
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
         -$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(OPT)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)

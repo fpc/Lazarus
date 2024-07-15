@@ -385,6 +385,9 @@ endif
 endif
 endif
 export LCL_PLATFORM
+ifeq ($(LCL_PLATFORM),cocoa)
+LHELP_OPT+=-k-framework -kCocoa -k-weak_framework -kUserNotifications
+endif
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LHELP_OPT+= -WG
 endif
