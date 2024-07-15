@@ -113,6 +113,14 @@ type
       message 'setBackgroundColors:'; { available in 10_11 }
   end;
 
+  NSCollectionViewLayoutAttributes = objcclass external (NSObject)
+    function frame: NSRect; message 'frame'; { available in 10_11 }
+    function size: NSSize; message 'size'; { available in 10_11 }
+    function alpha: CGFloat; message 'alpha'; { available in 10_11 }
+    function hidden: Boolean; message 'hidden'; { available in 10_11 }
+    function zIndex: NSInteger; message 'zIndex'; { available in 10_11 }
+  end;
+
   NSCollectionViewDataSourceProtocol = objcprotocol external name 'NSCollectionViewDataSource'
     function collectionView_numberOfItemsInSection(
       collectionView: NSCollectionView; section: NSInteger ): NSInteger;
@@ -186,6 +194,8 @@ type
 
     function numberOfItemsInSection( section: NSInteger ): NSInteger;
       message 'numberOfItemsInSection:'; { available in 10_11 }
+    function itemAtIndexPath( indexPath: NSIndexPath ): NSCollectionViewItem;
+      message 'itemAtIndexPath:'; { available in 10_11 }
     function indexPathForItem( item:NSCollectionViewItem ): NSIndexPath;
       message 'indexPathForItem:'; { available in 10_11 }
     function indexPathForItemAtPoint( point: NSPoint ): NSIndexPath;
@@ -200,6 +210,9 @@ type
       message 'collectionViewLayout'; { available in 10_11 }
     procedure setCollectionViewLayout( newValue: NSCollectionViewLayout );
       message 'setCollectionViewLayout:'; { available in 10_11 }
+    function layoutAttributesForItemAtIndexPath(
+      indexPaht: NSIndexPath ): NSCollectionViewLayoutAttributes;
+      message 'layoutAttributesForItemAtIndexPath:'; { available in 10_11 }
 
     function visibleItems: NSArray;
       message 'visibleItems'; { available in 10_11 }
@@ -216,6 +229,8 @@ type
 
     function selectionIndexPaths: NSSet;
       message 'selectionIndexPaths'; { available in 10_11 }
+    procedure setSelectionIndexPaths( newValue: NSSet );
+      message 'setSelectionIndexPaths:'; { available in 10_11 }
     procedure selectItemsAtIndexPaths_scrollPosition(
       indexPaths: NSSet; scrollPosition: NSCollectionViewScrollPosition );
       message 'selectItemsAtIndexPaths:scrollPosition:'; { available in 10_11 }
@@ -229,7 +244,10 @@ type
 
   NSIndexPathFix = objccategory external (NSIndexPath)
     function item: NSInteger; message 'item';
-    procedure setItem( newValue:NSInteger ); message 'setItem:';
+    function section: NSInteger; message 'section';
+    class function indexPathForItem_inSection(
+      item: NSInteger; section: NSInteger ): id;
+      message 'indexPathForItem:inSection:'; { available in 10_11 }
   end;
 
 const

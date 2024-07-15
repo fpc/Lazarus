@@ -124,11 +124,9 @@ end;
 
 function indexPathsWithOneIndex( cv: NSCollectionView; AIndex: Integer ): NSSet;
 var
-  item: NSCollectionViewItem;
   indexPath: NSIndexPath;
 begin
-  item:= cv.itemAtIndex( AIndex );
-  indexPath:= cv.indexPathForItem( item );
+  indexPath:= NSIndexPath.indexPathForItem_inSection( AIndex, 0 );
   Result:= NSSet.setWithObject( indexPath );
 end;
 
@@ -283,12 +281,10 @@ end;
 procedure TCocoaCollectionView.selectOneItemByIndex(
   index: Integer; isSelected: Boolean );
 var
-  item: NSCollectionViewItem;
   indexPath: NSIndexPath;
   indexPaths: NSSet;
 begin
-  item:= self.itemAtIndex( index );
-  indexPath:= self.indexPathForItem( item );
+  indexPath:= NSIndexPath.indexPathForItem_inSection( index, 0 );
   indexPaths:= NSSet.setWithObject( indexPath );
 
   if isSelected then begin
@@ -373,7 +369,7 @@ var
   item: TCocoaCollectionItem;
 begin
   for indexPath in indexPaths do begin
-    item:= TCocoaCollectionItem( self.itemAtIndex(indexPath.item) );
+    item:= TCocoaCollectionItem( self.itemAtIndexPath(indexPath) );
     item.setSelected( True );
     item.textField.setToolTip( item.textField.stringValue );
     item.view.setNeedsDisplay_(True);
@@ -394,7 +390,7 @@ var
   item: TCocoaCollectionItem;
 begin
   for indexPath in indexPaths do begin
-    item:= TCocoaCollectionItem( self.itemAtIndex(indexPath.item) );
+    item:= TCocoaCollectionItem( self.itemAtIndexPath(indexPath) );
     item.setSelected( False );
     item.textField.setToolTip( nil );
     item.view.setNeedsDisplay_(True);
