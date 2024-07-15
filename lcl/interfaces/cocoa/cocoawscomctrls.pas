@@ -159,27 +159,6 @@ type
       const {%H-}ASortDirection: TSortDirection); virtual; abstract;
   end;
 
-  { TCocoaListView }
-
-  TCocoaListView = objcclass(NSView)
-  private
-    _viewStyle: TViewStyle;
-    _scrollView: TCocoaScrollView;
-    _backendControl: NSView; // NSTableView or NSCollectionView
-    _WSHandler: TCocoaWSListViewHandler;
-    _lclListView: TCustomListView;
-    _needsCallLclInit: Boolean;
-  private
-    procedure createControls; message 'createControls';
-    procedure releaseControls; message 'releaseControls';
-  public
-    procedure setLclListView( lclListView: TCustomListView ); message 'setLclListView:';
-    procedure setViewStyle( viewStyle: TViewStyle ); message 'setViewStyle:';
-    function documentView: NSView; message 'documentView';
-    function scrollView: TCocoaScrollView; message 'scrollView';
-    function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
-  end;
-
   { TLCLListViewCallback }
 
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
@@ -213,6 +192,32 @@ type
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
+  { TCocoaListView }
+
+  TCocoaListView = objcclass(NSView)
+  private
+    _viewStyle: TViewStyle;
+    _scrollView: TCocoaScrollView;
+    _backendControl: NSView; // NSTableView or NSCollectionView
+    _WSHandler: TCocoaWSListViewHandler;
+    _lclListView: TCustomListView;
+    _needsCallLclInit: Boolean;
+  private
+    procedure createControls; message 'createControls';
+    procedure releaseControls; message 'releaseControls';
+  public
+    callback: TLCLListViewCallback;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+  public
+    procedure setLclListView( lclListView: TCustomListView ); message 'setLclListView:';
+    procedure setViewStyle( viewStyle: TViewStyle ); message 'setViewStyle:';
+    function documentView: NSView; message 'documentView';
+    function scrollView: TCocoaScrollView; message 'scrollView';
+    function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
+    procedure addSubview(aView: NSView); override;
+    procedure setScrollView(aView: TCocoaScrollView); message 'setScrollView:';
+  end;
 
   { TCocoaWSCustomListView }
 
@@ -1069,11 +1074,33 @@ begin
   _collectionView.reloadData;
 end;
 
-/// to do
 function TCocoaWSListView_CollectionViewHandler.ItemDisplayRect(const AIndex,
   ASubItem: Integer; ACode: TDisplayCode): TRect;
+var
+  item: NSCollectionViewItem;
+  frame: NSRect;
 begin
-  Result:= TRect.Create(0,0,100,30);
+  item:= _collectionView.itemAtIndex( AIndex );
+
+  case ACode of
+    drLabel:
+      begin
+        frame:= item.textField.frame;
+        frame:= item.view.convertRect_toView( frame, _collectionView );
+        frame.origin.x:= frame.origin.x + 1;
+        frame.size.width:= frame.size.width - 2;
+        frame.size.height:= frame.size.height + 8;
+      end;
+    drIcon:
+      begin
+        frame:= item.imageView.frame;
+        frame:= item.view.convertRect_toView( frame, _collectionView );
+      end
+    else
+      frame:= item.view.frame;
+  end;
+
+  Result:= NSRectToRect( frame );
 end;
 
 function TCocoaWSListView_CollectionViewHandler.ItemGetChecked(
@@ -1082,11 +1109,13 @@ begin
   Result:= False;
 end;
 
-/// to do
 function TCocoaWSListView_CollectionViewHandler.ItemGetPosition(
   const AIndex: Integer): TPoint;
+var
+  rect: TRect;
 begin
-  Result:= Point( 0, 0 );
+  rect:= self.ItemDisplayRect( AIndex, 0, drBounds );
+  Result:= rect.TopLeft;
 end;
 
 function TCocoaWSListView_CollectionViewHandler.ItemGetState(
@@ -1168,11 +1197,18 @@ begin
   Result:= self.GetSelection;
 end;
 
-/// to do
 function TCocoaWSListView_CollectionViewHandler.GetItemAt(x, y: integer
   ): Integer;
+var
+  cocoaPoint: NSPoint;
+  indexPath: NSIndexPath;
 begin
   Result:= -1;
+  cocoaPoint.x:= x;
+  cocoaPoint.y:= y;
+  indexPath:= _collectionView.indexPathForItemAtPoint( cocoaPoint );
+  if Assigned(indexPath) then
+    Result:= indexPath.item;
 end;
 
 function TCocoaWSListView_CollectionViewHandler.GetSelCount: Integer;
@@ -1981,6 +2017,17 @@ begin
   Result:= _WSHandler;
 end;
 
+procedure TCocoaListView.addSubview(aView: NSView);
+begin
+  self.documentView.addSubview(aView);
+end;
+
+procedure TCocoaListView.setScrollView(aView: TCocoaScrollView);
+begin
+  _scrollView:= aView;
+  Inherited addSubview(aView);
+end;
+
 procedure initCocoaTableListView(
   lclListView: TCustomListView; cocoaListView:TCocoaTableListView );
 var
@@ -2002,7 +2049,6 @@ end;
 procedure TCocoaListView.createControls;
 var
   controlFrame: NSRect;
-  lclcb: TLCLListViewCallback;
 begin
   if _viewStyle = vsReport then begin
     _backendControl:= AllocCocoaTableListView;
@@ -2015,21 +2061,17 @@ begin
   controlFrame:= self.bounds;
   _backendControl.initWithFrame( controlFrame );
   _scrollView:= TCocoaScrollView.alloc.initWithFrame( controlFrame );
-  ScrollViewSetBorderStyle( _scrollView, _lclListView.BorderStyle);
   _scrollView.setDocumentView( _backendControl );
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
-  self.setAutoresizesSubviews( True );
-  self.addSubview( _scrollView );
-
-  lclcb := TLCLListViewCallback.Create( _backendControl, _lclListView, self );
-  lclcb.listView := _lclListView;
-  _scrollView.callback := lclcb;
+  _scrollView.callback:= self.callback;
+  self.setScrollView( _scrollView );
+  ScrollViewSetBorderStyle( _scrollView, _lclListView.BorderStyle);
 
   if _viewStyle = vsReport then begin
     initCocoaTableListView( _lclListView, TCocoaTableListView(_backendControl) );
-    TCocoaTableListView(_backendControl).callback:= lclcb;
+    TCocoaTableListView(_backendControl).callback:= self.callback;
   end else begin
-    TCocoaCollectionView(_backendControl).callback:= lclcb;
+    TCocoaCollectionView(_backendControl).callback:= self.callback;
   end;
 end;
 
@@ -2043,6 +2085,16 @@ begin
   _scrollView:= nil;
   _backendControl.release;
   _backendControl:= nil;
+end;
+
+function TCocoaListView.lclGetCallback: ICommonCallback;
+begin
+  Result:= callback;
+end;
+
+procedure TCocoaListView.lclClearCallback;
+begin
+  callback:= nil;
 end;
 
 procedure TCocoaListView.setLclListView(lclListView: TCustomListView);
@@ -2070,9 +2122,14 @@ class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinContro
 var
   cocoaListView: TCocoaListView;
   lclListView: TCustomListViewAccess Absolute AWinControl;
+  lclcb: TLCLListViewCallback;
 begin
   cocoaListView:= TCocoaListView.alloc.lclInitWithCreateParams(AParams);
   cocoaListView.setLclListView( lclListView );
+  cocoaListView.setAutoresizesSubviews( True );
+  lclcb := TLCLListViewCallback.Create( cocoaListView, lclListView, cocoaListView );
+  lclcb.listView := lclListView;
+  cocoaListView.callback:= lclcb;
   Result:= TLCLHandle( cocoaListView );
 end;
 

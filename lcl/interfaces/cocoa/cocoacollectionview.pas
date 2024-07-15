@@ -11,7 +11,7 @@ interface
 uses
   Classes, SysUtils, Controls, ComCtrls,
   MacOSAll, CocoaAll, CocoaPrivate, Cocoa_Extra, CocoaUtils,
-  CocoaWSComCtrls;
+  CocoaWSComCtrls, CocoaTextEdits;
 
 type
 
@@ -165,7 +165,7 @@ begin
   itemView.addSubview( imageControl );
 
   fieldControl:= NSTextField.alloc.initWithFrame(NSZeroRect);
-  fieldControl.setAlignment( 1 );  // center
+  fieldControl.setAlignment( NSTextAlignmentCenter );
   fieldControl.setBordered( False );
   fieldControl.setDrawsBackground( False );
   fieldControl.setEditable( False );
@@ -254,9 +254,9 @@ begin
   item.imageView.setFrame( aFrame );
 
   aFrame.origin.x:= 0;
-  aFrame.origin.y:= 10;
+  aFrame.origin.y:= 9;
   aFrame.size.width:= self.itemSize.Width;
-  aFrame.size.height:= 14;
+  aFrame.size.height:= 15;
   item.textField.setFrame( aFrame );
 end;
 
@@ -294,21 +294,21 @@ begin
   if isSelected then begin
     if NOT self.allowsMultipleSelection then begin
       if NOT self.selectionIndexPaths.containsObject(indexPath) then begin
-        self.collectionView_didDeselectItemsAtIndexPaths( self, self.selectionIndexPaths );
         self.deselectAll( self );
+        self.collectionView_didDeselectItemsAtIndexPaths( self, self.selectionIndexPaths );
       end;
     end;
     if NOT self.selectionIndexPaths.containsObject(indexPath) then begin
-      self.collectionView_didSelectItemsAtIndexPaths( self, indexPaths );
       self.selectItemsAtIndexPaths_scrollPosition(
         indexPaths, NSCollectionViewScrollPositionNone );
+      self.collectionView_didSelectItemsAtIndexPaths( self, indexPaths );
     end;
   end else begin
     if self.selectionIndexPaths.containsObject(indexPath) then begin
-      self.collectionView_didDeselectItemsAtIndexPaths( self, indexPaths );
       self.deselectItemsAtIndexPaths( indexPaths );
+      self.collectionView_didDeselectItemsAtIndexPaths( self, indexPaths );
     end;
-  end
+  end;
 end;
 
 function TCocoaCollectionView.collectionView_numberOfItemsInSection(
