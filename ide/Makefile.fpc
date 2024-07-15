@@ -72,18 +72,21 @@ endif
 endif
 export LCL_PLATFORM
 
+
 DBG_OPTIONS=
 ifeq ($(OS_TARGET),darwin)
 DBG_OPTIONS=-gw
 endif
 
 #
-# idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
+ifeq ($(LCL_PLATFORM),cocoa)
+LAZARUS_OPT+=-k-framework -kCocoa -k-weak_framework -kUserNotifications
+endif
 
 #
 # Options to compile an IDE without extra packages
-DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
+DEFAULT_IDE_OPTIONS=  \
   -Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
@@ -166,7 +169,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: ide bigide starter lazbuilder all clean cleanide purge revisioninc codepage
+.PHONY: ide bigide starter lazbuilder all clean cleanide purge revisioninc
 
 #-----------------------------------------------------------------------------
 revisioninc:
@@ -195,7 +198,7 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 # compile IDE with some extra packages
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
         -$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(OPT)'
 
 #-----------------------------------------------------------------------------
 starter: $(COMPILER_UNITTARGETDIR)
@@ -203,7 +206,7 @@ starter: $(COMPILER_UNITTARGETDIR)
 
 #-----------------------------------------------------------------------------
 lazbuilder: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
+        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZBUILD_OPT) $(OPT)'
 
 #-----------------------------------------------------------------------------
 all: ide starter lazbuilder
