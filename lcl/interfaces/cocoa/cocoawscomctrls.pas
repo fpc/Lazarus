@@ -719,6 +719,9 @@ var
   lclcb : TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.tempItemsCountDelta:= -1;
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
   _tableView.lclInsDelRow(AIndex, false);
@@ -740,7 +743,11 @@ function TCocoaWSListView_TableViewHandler.ItemGetChecked(
 var
   lclcb : TLCLListViewCallback;
 begin
+  Result:= False;
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   Result := lclcb.checkedIdx.containsIndex(AIndex);
 end;
 
@@ -773,6 +780,9 @@ var
   lclcb: TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
   _tableView.lclInsDelRow(AIndex, true);
   _tableView.sizeToFit();
@@ -784,6 +794,9 @@ var
   lclcb: TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
     lclcb.checkedIdx.addIndex(AIndex);
     _tableView.reloadDataForRow_column(AIndex, 0);
@@ -914,6 +927,9 @@ var
   lclcb: TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.ownerData := AValue;
   if lclcb.ownerData then
     lclcb.checkedIdx.removeAllIndexes; // releasing memory
@@ -978,6 +994,7 @@ begin
   lclcb:= getCallback;
   if NOT Assigned(lclcb) then
     Exit;
+
   if Assigned(lclcb.checkedIdx) then
     lclcb.checkedIdx.removeAllIndexes;
   _tableView.reloadData();
@@ -1081,6 +1098,9 @@ var
   lclcb : TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   _collectionView.reloadData;
 end;
@@ -1091,7 +1111,10 @@ var
   item: NSCollectionViewItem;
   frame: NSRect;
 begin
+  Result:= Rect( 0, 0, 0, 0 );
   item:= _collectionView.itemAtIndex( AIndex );
+  if NOT Assigned(item) then
+    Exit;
 
   case ACode of
     drLabel:
@@ -1137,6 +1160,9 @@ var
 begin
   Result:= false;
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   case AState of
     lisSelected: begin
       Result:= (AIndex>=0) and (AIndex < _collectionView.numberOfItemsInSection(0));
@@ -1151,6 +1177,9 @@ var
   lclcb: TLCLListViewCallback;
 begin
   lclcb:= self.getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
@@ -1176,9 +1205,12 @@ procedure TCocoaWSListView_CollectionViewHandler.ItemSetState(
 var
   lclcb: TLCLListViewCallback;
 begin
+  lclcb:= self.getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   case AState of
     lisSelected: begin
-      lclcb:= self.getCallback;
       if lclcb.getItemStableSelection(AIndex) <> AIsSet then begin
         _collectionView.selectOneItemByIndex( AIndex, AIsSet );
         _collectionView.redrawVisibleItems;
@@ -1329,6 +1361,9 @@ var
   lclcb : TLCLListViewCallback;
 begin
   lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.selectionIndexSet.removeAllIndexes;
   _collectionView.reloadData();
 end;

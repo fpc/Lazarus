@@ -229,12 +229,14 @@ begin
   lclListView:= TCustomListView( self.lclGetTarget );
   if NOT Assigned(lclListView) then
     Exit;
+  if NOT Assigned(self.callback) then
+    Exit;
 
   lclItem:= lclListView.Items[indexPath.item];
-  cocoaImage:= callback.GetImageFromIndex( lclItem.ImageIndex );
+  cocoaImage:= self.callback.GetImageFromIndex( lclItem.ImageIndex );
   cocoaItem.imageView.setImage( cocoaImage );
 
-  callback.GetItemTextAt( indexPath.item, 0, lclText );
+  self.callback.GetItemTextAt( indexPath.item, 0, lclText );
   cocoaItem.textField.setStringValue( StrToNSString(lclText) );
 
   isSelected:= self.callback.getItemStableSelection(indexPath.item);
@@ -289,11 +291,15 @@ end;
 
 procedure TCocoaCollectionView.restoreFromStableSelection;
 begin
-  self.setSelectionIndexes( callback.selectionIndexSet );
+  if Assigned(self.callback) then
+    self.setSelectionIndexes( self.callback.selectionIndexSet );
 end;
 
 procedure TCocoaCollectionView.reloadData;
 begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
   if NOT TCocoaListView(self.callback.Owner).initializing then begin
     inherited reloadData;
     self.cancelPreviousPerformRequestsWithTarget_selector_object(
@@ -400,7 +406,8 @@ begin
       item.textField.setToolTip( item.textField.stringValue );
       item.view.setNeedsDisplay_(True);
     end;
-    callback.selectOne( indexPath.item, True );
+    if Assigned(self.callback) then
+      self.callback.selectOne( indexPath.item, True );
   end;
 end;
 
@@ -423,7 +430,8 @@ begin
       item.textField.setToolTip( nil );
       item.view.setNeedsDisplay_(True);
     end;
-    callback.selectOne( indexPath.item, False );
+    if Assigned(self.callback) then
+      self.callback.selectOne( indexPath.item, False );
   end;
 end;
 
