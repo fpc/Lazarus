@@ -33,7 +33,8 @@ type
   TCocoaCollectionView = objcclass(
     NSCollectionView,
     NSCollectionViewDataSourceProtocol,
-    NSCollectionViewDelegateProtocol_1011 )
+    NSCollectionViewDelegateProtocol_1011,
+    TCocoaListViewBackendControlProtocol )
   public
     iconSize: NSSize;
     itemSize: NSSize;
@@ -41,6 +42,11 @@ type
     callback: TLCLListViewCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+
+    procedure backend_setCallback( cb: TLCLListViewCallback );
+    procedure backend_reloadData;
+    procedure backend_onInit( lclListView: TCustomListView );
+  public
     procedure updateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem );
       message 'updateItemValue:cocoaItem:';
     procedure updateItemSize( baseSize: NSSize );
@@ -197,6 +203,20 @@ begin
   callback:= nil;
 end;
 
+procedure TCocoaCollectionView.backend_setCallback(cb: TLCLListViewCallback);
+begin
+  self.callback:= cb;
+end;
+
+procedure TCocoaCollectionView.backend_reloadData;
+begin
+  self.reloadData;
+end;
+
+procedure TCocoaCollectionView.backend_onInit( lclListView: TCustomListView );
+begin
+end;
+
 procedure TCocoaCollectionView.updateItemValue(
   indexPath:NSIndexPath; cocoaItem: TCocoaCollectionItem );
 var
@@ -274,8 +294,13 @@ end;
 
 procedure TCocoaCollectionView.reloadData;
 begin
-  inherited reloadData;
-  restoreFromStableSelection;
+  if NOT TCocoaListView(self.callback.Owner).initializing then begin
+    inherited reloadData;
+    self.cancelPreviousPerformRequestsWithTarget_selector_object(
+      self, ObjcSelector('restoreFromStableSelection'), nil );
+    self.performSelector_withObject_afterDelay(
+      ObjcSelector('restoreFromStableSelection'), nil, 0 );
+  end;
 end;
 
 procedure TCocoaCollectionView.selectOneItemByIndex(
@@ -370,9 +395,11 @@ var
 begin
   for indexPath in indexPaths do begin
     item:= TCocoaCollectionItem( self.itemAtIndexPath(indexPath) );
-    item.setSelected( True );
-    item.textField.setToolTip( item.textField.stringValue );
-    item.view.setNeedsDisplay_(True);
+    if Assigned(item) then begin
+      item.setSelected( True );
+      item.textField.setToolTip( item.textField.stringValue );
+      item.view.setNeedsDisplay_(True);
+    end;
     callback.selectOne( indexPath.item, True );
   end;
 end;
@@ -391,9 +418,11 @@ var
 begin
   for indexPath in indexPaths do begin
     item:= TCocoaCollectionItem( self.itemAtIndexPath(indexPath) );
-    item.setSelected( False );
-    item.textField.setToolTip( nil );
-    item.view.setNeedsDisplay_(True);
+    if Assigned(item) then begin
+      item.setSelected( False );
+      item.textField.setToolTip( nil );
+      item.view.setNeedsDisplay_(True);
+    end;
     callback.selectOne( indexPath.item, False );
   end;
 end;

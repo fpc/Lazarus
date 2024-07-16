@@ -192,6 +192,14 @@ type
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
+  { TCocoaListViewBackendControl }
+  TCocoaListViewBackendControlProtocol = objcprotocol
+    procedure backend_setCallback( cb: TLCLListViewCallback ); message 'backend_setCallback:';
+    procedure backend_reloadData; message 'backend_reloadData';
+    procedure backend_onInit( lclListView: TCustomListView );
+      message 'backend_onInit:';
+  end;
+
   { TCocoaListView }
 
   TCocoaListView = objcclass(NSView)
@@ -202,9 +210,11 @@ type
     _WSHandler: TCocoaWSListViewHandler;
     _lclListView: TCustomListView;
     _needsCallLclInit: Boolean;
+    _initializing: Boolean;
   private
     procedure createControls; message 'createControls';
     procedure releaseControls; message 'releaseControls';
+    procedure initData; message 'initData';
   public
     callback: TLCLListViewCallback;
     function lclGetCallback: ICommonCallback; override;
@@ -217,6 +227,7 @@ type
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
     procedure addSubview(aView: NSView); override;
     procedure setScrollView(aView: TCocoaScrollView); message 'setScrollView:';
+    function initializing: Boolean; message 'isinitializing';
   end;
 
   { TCocoaWSCustomListView }
@@ -1140,6 +1151,9 @@ var
   lclcb: TLCLListViewCallback;
 begin
   lclcb:= self.getCallback;
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   _collectionView.reloadData;
 end;
@@ -1311,7 +1325,11 @@ end;
 procedure TCocoaWSListView_CollectionViewHandler.SetSort(
   const AType: TSortType; const AColumn: Integer;
   const ASortDirection: TSortDirection);
+var
+  lclcb : TLCLListViewCallback;
 begin
+  lclcb:= getCallback;
+  lclcb.selectionIndexSet.removeAllIndexes;
   _collectionView.reloadData();
 end;
 
@@ -1984,24 +2002,6 @@ end;
 
 { TCocoaListView }
 
-procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);
-var
-  needsInit: Boolean = False;
-begin
-  if Assigned(_backendControl) and (_viewStyle=viewStyle) then
-    Exit;
-
-  _viewStyle:= viewStyle;
-  releaseControls;
-  createControls;
-
-  needsInit:= _needsCallLclInit;
-  _needsCallLclInit:= False;
-  if needsInit then
-    TCustomListViewAccess(_lclListView).InitializeWnd;
-  _needsCallLclInit:= True;
-end;
-
 function TCocoaListView.documentView: NSView;
 begin
   Result:= _backendControl;
@@ -2028,27 +2028,26 @@ begin
   Inherited addSubview(aView);
 end;
 
-procedure initCocoaTableListView(
-  lclListView: TCustomListView; cocoaListView:TCocoaTableListView );
-var
-  sz: NSSize;
+function TCocoaListView.initializing: Boolean;
 begin
-  cocoaListView.setDataSource(cocoaListView);
-  cocoaListView.setDelegate(cocoaListView);
-  cocoaListView.setAllowsColumnReordering(False);
-  cocoaListView.setAllowsColumnSelection(False);
+  Result:= _initializing;
+end;
 
-  UpdateFocusRing( cocoaListView, lclListView.BorderStyle );
+procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);
+begin
+  if Assigned(_backendControl) and (_viewStyle=viewStyle) then
+    Exit;
 
-  sz := cocoaListView.intercellSpacing;
-  // Windows compatibility. on Windows there's no extra space between columns
-  sz.width := 0;
-  cocoaListView.setIntercellSpacing(sz);
+  _viewStyle:= viewStyle;
+  releaseControls;
+  createControls;
+  initData;
 end;
 
 procedure TCocoaListView.createControls;
 var
   controlFrame: NSRect;
+  backendControlAccess: TCocoaListViewBackendControlProtocol;
 begin
   if _viewStyle = vsReport then begin
     _backendControl:= AllocCocoaTableListView;
@@ -2067,12 +2066,9 @@ begin
   self.setScrollView( _scrollView );
   ScrollViewSetBorderStyle( _scrollView, _lclListView.BorderStyle);
 
-  if _viewStyle = vsReport then begin
-    initCocoaTableListView( _lclListView, TCocoaTableListView(_backendControl) );
-    TCocoaTableListView(_backendControl).callback:= self.callback;
-  end else begin
-    TCocoaCollectionView(_backendControl).callback:= self.callback;
-  end;
+  backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);
+  backendControlAccess.backend_onInit( _lclListView );
+  backendControlAccess.backend_setCallback( self.callback );
 end;
 
 procedure TCocoaListView.releaseControls;
@@ -2085,6 +2081,21 @@ begin
   _scrollView:= nil;
   _backendControl.release;
   _backendControl:= nil;
+end;
+
+procedure TCocoaListView.initData;
+var
+  needsInit: Boolean = False;
+begin
+  needsInit:= _needsCallLclInit;
+  _needsCallLclInit:= False;
+  if needsInit then begin
+    _initializing:= True;
+    TCustomListViewAccess(_lclListView).InitializeWnd;
+    _initializing:= False;
+    TCocoaListViewBackendControlProtocol(_backendControl).backend_reloadData;
+  end;
+  _needsCallLclInit:= True;
 end;
 
 function TCocoaListView.lclGetCallback: ICommonCallback;

@@ -1001,6 +1001,7 @@ var
   newResponder : NSResponder;
   lastCb : ICommonCallback;
   newCb : ICommonCallback;
+  newRespsonderClassName: String;
 begin
   inc( makeFirstResponderCount );
   try
@@ -1040,6 +1041,7 @@ begin
     if Assigned(newCb) then
       newCb.BecomeFirstResponder;
 
+    newRespsonderClassName:= newResponder.lclClassName;
   finally
     dec( makeFirstResponderCount );
   end;
