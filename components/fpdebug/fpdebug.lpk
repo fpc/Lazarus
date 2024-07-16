@@ -238,6 +238,14 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="FpDbgRspClasses"/>
       </Item>
       <Item>
+        <Filename Value="fpdbgdisasriscv.pas"/>
+        <UnitName Value="fpdbgdisasriscv"/>
+      </Item>
+      <Item>
+        <Filename Value="fpdbgriscvclasses.pas"/>
+        <UnitName Value="fpdbgriscvclasses"/>
+      </Item>
+      <Item>
         <Filename Value="fpdbgdisasxtensa.pas"/>
         <UnitName Value="FpDbgDisasXtensa"/>
       </Item>

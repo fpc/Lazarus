@@ -16,8 +16,8 @@ uses
   FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
   fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, FpDbgRsp, FpDbgCommon, 
   FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo, 
-  FpWatchResultData, FpDbgDwarfCFI, FpDbgCpuX86, FpDbgRspClasses,
-  FpDbgDisasXtensa, FpDbgXtensaClasses;
+  FpWatchResultData, FpDbgDwarfCFI, FpDbgCpuX86, FpDbgRspClasses, 
+  FpDbgDisasRiscv, FpDbgRiscvClasses, FpDbgDisasXtensa, FpDbgXtensaClasses;
 
 implementation
 

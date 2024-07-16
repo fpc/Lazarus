@@ -11,7 +11,7 @@ type
 // Target information, could be different from host debugger
   TMachineType = (mtNone, mtSPARC, mt386, mt68K, mtPPC, mtPPC64, mtARM, mtARM64,
                   mtOLD_ALPHA, mtIA_64, mtX86_64, mtAVR8, mtALPHA,
-                  mtMIPS, mtMIPSEL,mtLA64, mtXTENSA);
+                  mtMIPS, mtMIPSEL,mtLA64, mtXTENSA, mtRISCV);
   TBitness = (bNone, b32, b64);
   TByteOrder = (boNone, boLSB, boMSB);
   TOperatingSystem = (osNone, osBSD, osDarwin, osEmbedded, osLinux, osUnix, osMac, osWindows);
