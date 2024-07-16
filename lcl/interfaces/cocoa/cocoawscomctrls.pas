@@ -152,7 +152,6 @@ type
     procedure SetDefaultItemHeight( const AValue: Integer); virtual; abstract;
     procedure SetImageList( const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); virtual; abstract;
     procedure SetItemsCount( const Avalue: Integer); virtual; abstract;
-    procedure SetOwnerData( const {%H-}AValue: Boolean); virtual; abstract;
     procedure SetProperty( const AProp: TListViewProperty; const AIsSet: Boolean); virtual; abstract;
     procedure SetScrollBars( const AValue: TScrollStyle); virtual; abstract;
     procedure SetSort( const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
@@ -237,6 +236,8 @@ type
   private
     class function getWSHandler( const lclListView: TCustomListView ):
       TCocoaWSListViewHandler;
+    class function getCallback( const lclListView: TCustomListView ):
+      TLCLListViewCallback;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -424,7 +425,6 @@ type
     procedure SetDefaultItemHeight( const AValue: Integer); override;
     procedure SetImageList( const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
     procedure SetItemsCount( const Avalue: Integer); override;
-    procedure SetOwnerData( const {%H-}AValue: Boolean); override;
     procedure SetProperty( const AProp: TListViewProperty; const AIsSet: Boolean); override;
     procedure SetScrollBars( const AValue: TScrollStyle); override;
     procedure SetSort( const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
@@ -481,7 +481,6 @@ type
     procedure SetDefaultItemHeight( const AValue: Integer); override;
     procedure SetImageList( const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
     procedure SetItemsCount( const Avalue: Integer); override;
-    procedure SetOwnerData( const {%H-}AValue: Boolean); override;
     procedure SetProperty( const AProp: TListViewProperty; const AIsSet: Boolean); override;
     procedure SetScrollBars( const AValue: TScrollStyle); override;
     procedure SetSort( const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
@@ -922,20 +921,6 @@ begin
   _tableView.noteNumberOfRowsChanged();
 end;
 
-procedure TCocoaWSListView_TableViewHandler.SetOwnerData(
-  const AValue: Boolean);
-var
-  lclcb: TLCLListViewCallback;
-begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.ownerData := AValue;
-  if lclcb.ownerData then
-    lclcb.checkedIdx.removeAllIndexes; // releasing memory
-end;
-
 procedure TCocoaWSListView_TableViewHandler.SetProperty(
   const AProp: TListViewProperty; const AIsSet: Boolean);
 const
@@ -1326,12 +1311,6 @@ procedure TCocoaWSListView_CollectionViewHandler.SetItemsCount(
   const Avalue: Integer);
 begin
   _collectionView.reloadData;
-end;
-
-procedure TCocoaWSListView_CollectionViewHandler.SetOwnerData(
-  const AValue: Boolean);
-begin
-
 end;
 
 procedure TCocoaWSListView_CollectionViewHandler.SetProperty(
@@ -2170,6 +2149,20 @@ begin
   Result:= cocoaListView.WSHandler;
 end;
 
+class function TCocoaWSCustomListView.getCallback(
+  const lclListView: TCustomListView): TLCLListViewCallback;
+var
+  cocoaListView: TCocoaListView;
+begin
+  Result:= nil;
+  if NOT Assigned(lclListView) or NOT lclListView.HandleAllocated then
+    Exit;
+  cocoaListView:= TCocoaListView( lclListView.Handle );
+  if NOT Assigned(cocoaListView) then
+    Exit;
+  Result:= cocoaListView.callback;
+end;
+
 class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   cocoaListView: TCocoaListView;
@@ -2552,11 +2545,15 @@ end;
 class procedure TCocoaWSCustomListView.SetOwnerData(const ALV: TCustomListView;
   const AValue: Boolean);
 var
-  WSHandler: TCocoaWSListViewHandler;
+  lclcb: TLCLListViewCallback;
 begin
-  WSHandler:= getWSHandler( ALV );
-  if Assigned(WSHandler) then
-    WSHandler.SetOwnerData( AValue );
+  lclcb:= self.getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  lclcb.ownerData := AValue;
+  if lclcb.ownerData then
+    lclcb.checkedIdx.removeAllIndexes; // releasing memory
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
