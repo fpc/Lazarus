@@ -42,6 +42,7 @@ type
     callback: TLCLListViewCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
 
     procedure backend_setCallback( cb: TLCLListViewCallback );
     procedure backend_reloadData;
@@ -201,6 +202,16 @@ end;
 procedure TCocoaCollectionView.lclClearCallback;
 begin
   callback:= nil;
+end;
+
+procedure TCocoaCollectionView.lclExpectedKeys(var wantTabs, wantKeys,
+  wantReturn, wantAllKeys: Boolean);
+begin
+  wantTabs := false;
+  wantKeys := true;
+  wantReturn := false; // todo: this should be "true" for editting purposes.
+                       //       or false, to let LCL handle editting
+  wantAllKeys := false;
 end;
 
 procedure TCocoaCollectionView.backend_setCallback(cb: TLCLListViewCallback);

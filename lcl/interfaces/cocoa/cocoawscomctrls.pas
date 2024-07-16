@@ -219,6 +219,7 @@ type
     callback: TLCLListViewCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    function lclContentView: NSView; override;
   public
     procedure setLclListView( lclListView: TCustomListView ); message 'setLclListView:';
     procedure setViewStyle( viewStyle: TViewStyle ); message 'setViewStyle:';
@@ -2141,6 +2142,11 @@ end;
 procedure TCocoaListView.lclClearCallback;
 begin
   callback:= nil;
+end;
+
+function TCocoaListView.lclContentView: NSView;
+begin
+  Result:= documentView;
 end;
 
 procedure TCocoaListView.setLclListView(lclListView: TCustomListView);
