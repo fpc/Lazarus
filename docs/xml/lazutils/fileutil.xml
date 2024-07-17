@@ -639,29 +639,71 @@ Returns '.exe' on Windows, or an empty string for other platforms.
 
 <element name="ReadFileToString">
 <short>
-<var>ReadFileToString</var> - returns a string with the contents of the named 
-file.
+Returns a string with the contents of the named text file.
 </short>
 <descr>
 <p>
-<var>ReadFileToString</var> opens the file and reads its contents into a 
-Stream, then reads the stream to construct the <var>Result</var> string.
+<var>ReadFileToString</var> opens the file specified in the <var>FileName</var> 
+argument, then reads its contents into the <var>Result</var> string.
+</p>
+<p>
+<var>FileName</var> can include a path to the file, but cannot include a value 
+which needs to be resolved (like '~' for the home directory on UNIX-like file 
+systems). Relative path notation can be used in FileName.
+</p>
+<p>
+ReadFileToString does not check whether FileName contains an expanded value or 
+whether it exists on the local file system. It does not complain if the file 
+does not exist or cannot be accessed; the return value is an empty string ('') 
+for these conditions. ExpandFileName() or ExpandFileNameUTF8() can be used to 
+resolve a path with '~' notation. FileExists() or FileExistsUTF8() can be used 
+to verify whether the file path/name exists before ReadFileToString is called.
+</p>
+<p>
+FileSize is used to determine the storage size needed for the return value. 
+UNIX-like file systems usually return 0 as the file size if FileName is located 
+on a virtual file system (like /proc). In this case, the return value is an 
+empty string. Another mechanism (like TStringList.LoadfromFile) should be used 
+for virtual files.
+</p>
+<p>
+FileOpenUTF8 is called to get a shared handle used to read from (but not write 
+to) the specified file name. If an invalid handle is returned, the routine 
+quietly exits with an empty return value.
+</p>
+<p>
+FileRead is called for the handle to read the number of bytes in the file size 
+into the return value.
+</p>
+<p>
+FileClose is called to close the handle for the file when the operation has 
+been completed.
 </p>
 </descr>
 <errors>
-If there is an error while reading the file, an Exception is raised and an 
-empty string is returned.
+If an error occurs while reading from or closing the file handle, the Exception 
+is handled in the routine and an empty string is returned.
 </errors>
+<seealso>
+<link id="FileSize"/>
+<link id="#lazutils.lazfileutils.FileOpenUTF8">FileOpenUTF8</link>
+<link id="#lazutils.lazfileutils.FileExistsUTF8">FileExistsUTF8</link>
+<link id="#lazutils.lazfileutils.ExpandFileNameUTF8">ExpandFileNameUTF8</link>
+<link id="#rtl.sysutils.FileRead">FileRead</link>
+<link id="#rtl.sysutils.FileClose">FileClose</link>
+<link id="#rtl.sysutils.FileExists">FileExists</link>
+<link id="#rtl.sysutils.feInvalidHandle">feInvalidHandle</link>
+</seealso>
 </element>
 <element name="ReadFileToString.Result">
 <short>
-The contents of the file as a string, or an empty string if there is an error 
-or the file is empty.
+The contents of the file as a string. Returns an empty string if there is an 
+error, the file does not exist, or the file is empty.
 </short>
 </element>
 <element name="ReadFileToString.Filename">
 <short>
-The name of the file for processing.
+The qualified name for the file read in the routine.
 </short>
 </element>
 
