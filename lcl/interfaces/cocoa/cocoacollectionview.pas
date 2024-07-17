@@ -19,6 +19,8 @@ type
   TCocoaCollectionItem = objcclass(NSCollectionViewItem)
   public
     procedure loadView; override;
+    procedure prepareForReuse; message 'prepareForReuse';
+    procedure dealloc; override;
   end;
 
   { TCocoaCollectionItemView }
@@ -145,7 +147,7 @@ var
   item: NSCollectionViewItem;
   items: NSMutableArray Absolute Result;
 begin
-  Result:= NSMutableArray.new;
+  Result:= NSMutableArray.new.autorelease;
   visibleRect:= cv.visibleRect;
   for item in cv.visibleItems do begin
     if NSIntersectsRect( item.view.frame, visibleRect ) then
@@ -179,6 +181,22 @@ begin
   itemView.addSubview( fieldControl );
 
   self.setView( itemView );
+end;
+
+procedure TCocoaCollectionItem.prepareForReuse;
+begin
+  self.view.removeFromSuperview;
+end;
+
+procedure TCocoaCollectionItem.dealloc;
+begin
+  self.imageView.removeFromSuperview;
+  self.textField.removeFromSuperview;
+  self.view.removeFromSuperview;
+  self.imageView.release;
+  self.textField.release;
+  self.view.release;
+  inherited dealloc;
 end;
 
 { TCocoaCollectionItemView }

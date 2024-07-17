@@ -220,6 +220,8 @@ type
     procedure lclClearCallback; override;
     function lclContentView: NSView; override;
   public
+    procedure dealloc; override;
+  public
     procedure setLclListView( lclListView: TCustomListView ); message 'setLclListView:';
     procedure setViewStyle( viewStyle: TViewStyle ); message 'setViewStyle:';
     function documentView: NSView; message 'documentView';
@@ -2090,6 +2092,7 @@ procedure TCocoaListView.releaseControls;
 begin
   if not Assigned(_backendControl) then
     Exit;
+  FreeAndNil( _WSHandler );
   _scrollView.removeFromSuperview;
   _scrollView.setDocumentView( nil );
   _scrollView.release;
@@ -2126,6 +2129,12 @@ end;
 function TCocoaListView.lclContentView: NSView;
 begin
   Result:= documentView;
+end;
+
+procedure TCocoaListView.dealloc;
+begin
+  self.releaseControls;
+  inherited dealloc;
 end;
 
 procedure TCocoaListView.setLclListView(lclListView: TCustomListView);
