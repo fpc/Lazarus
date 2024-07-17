@@ -279,6 +279,7 @@ type
     procedure ColumnClicked(ACol: Integer); virtual;
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
+    function GetBorderStyle: TBorderStyle;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -712,6 +713,11 @@ procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
 begin
   if TCustomListBox(Target).Style = lbOwnerDrawVariable then
     TCustomListBox(Target).MeasureItem(rowidx, h);
+end;
+
+function TLCLListBoxCallback.GetBorderStyle: TBorderStyle;
+begin
+  Result:= TCustomListBox(Target).BorderStyle;
 end;
 
 { TLCLCheckBoxCallback }

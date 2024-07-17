@@ -9,7 +9,7 @@ unit CocoaCollectionView;
 interface
 
 uses
-  Classes, SysUtils, Controls, ComCtrls,
+  Classes, SysUtils, Controls,
   MacOSAll, CocoaAll, CocoaPrivate, Cocoa_Extra, CocoaUtils,
   CocoaWSComCtrls, CocoaTextEdits;
 
@@ -48,7 +48,7 @@ type
 
     procedure backend_setCallback( cb: TLCLListViewCallback );
     procedure backend_reloadData;
-    procedure backend_onInit( lclListView: TCustomListView );
+    procedure backend_onInit;
   public
     procedure updateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem );
       message 'updateItemValue:cocoaItem:';
@@ -242,27 +242,23 @@ begin
   self.reloadData;
 end;
 
-procedure TCocoaCollectionView.backend_onInit( lclListView: TCustomListView );
+procedure TCocoaCollectionView.backend_onInit;
 begin
 end;
 
 procedure TCocoaCollectionView.updateItemValue(
   indexPath:NSIndexPath; cocoaItem: TCocoaCollectionItem );
 var
-  lclListView: TCustomListView;
-  lclItem: TListItem;
   cocoaImage: NSImage;
+  lclImageIndex: Integer;
   lclText: String;
   isSelected: Boolean;
 begin
-  lclListView:= TCustomListView( self.lclGetTarget );
-  if NOT Assigned(lclListView) then
-    Exit;
   if NOT Assigned(self.callback) then
     Exit;
 
-  lclItem:= lclListView.Items[indexPath.item];
-  cocoaImage:= self.callback.GetImageFromIndex( lclItem.ImageIndex );
+  self.callback.GetItemImageAt( indexPath.item, 0, lclImageIndex );
+  cocoaImage:= self.callback.GetImageFromIndex( lclImageIndex );
   cocoaItem.imageView.setImage( cocoaImage );
 
   self.callback.GetItemTextAt( indexPath.item, 0, lclText );

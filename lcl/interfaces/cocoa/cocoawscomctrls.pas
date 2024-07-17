@@ -188,6 +188,9 @@ type
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
+    function GetBorderStyle: TBorderStyle;
+    function GetImageListType( out lvil: TListViewImageList ): Boolean;
+    procedure callTargetInitializeWnd;
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -195,8 +198,7 @@ type
   TCocoaListViewBackendControlProtocol = objcprotocol
     procedure backend_setCallback( cb: TLCLListViewCallback ); message 'backend_setCallback:';
     procedure backend_reloadData; message 'backend_reloadData';
-    procedure backend_onInit( lclListView: TCustomListView );
-      message 'backend_onInit:';
+    procedure backend_onInit; message 'backend_onInit';
   end;
 
   { TCocoaListView }
@@ -207,7 +209,6 @@ type
     _scrollView: TCocoaScrollView;
     _backendControl: NSView; // NSTableView or NSCollectionView
     _WSHandler: TCocoaWSListViewHandler;
-    _lclListView: TCustomListView;
     _needsCallLclInit: Boolean;
     _initializing: Boolean;
   private
@@ -222,7 +223,6 @@ type
   public
     procedure dealloc; override;
   public
-    procedure setLclListView( lclListView: TCustomListView ); message 'setLclListView:';
     procedure setViewStyle( viewStyle: TViewStyle ); message 'setViewStyle:';
     function documentView: NSView; message 'documentView';
     function scrollView: TCocoaScrollView; message 'scrollView';
@@ -1299,9 +1299,18 @@ end;
 procedure TCocoaWSListView_CollectionViewHandler.SetImageList(
   const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
+  lclcb: TLCLListViewCallback;
+  lvil: TListViewImageList;
   iconSize: NSSize;
 begin
-  if AList=lvilState then
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if NOT lclcb.GetImageListType(lvil) then
+    Exit;
+
+  if AList <> lvil then
     Exit;
 
   iconSize.Width:= AValue.Width;
@@ -2081,11 +2090,11 @@ begin
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
   _scrollView.callback:= self.callback;
   self.setScrollView( _scrollView );
-  ScrollViewSetBorderStyle( _scrollView, _lclListView.BorderStyle);
+  ScrollViewSetBorderStyle( _scrollView, callback.getBorderStyle );
 
   backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);
-  backendControlAccess.backend_onInit( _lclListView );
   backendControlAccess.backend_setCallback( self.callback );
+  backendControlAccess.backend_onInit;
 end;
 
 procedure TCocoaListView.releaseControls;
@@ -2109,7 +2118,7 @@ begin
   _needsCallLclInit:= False;
   if needsInit then begin
     _initializing:= True;
-    TCustomListViewAccess(_lclListView).InitializeWnd;
+    callback.callTargetInitializeWnd;
     _initializing:= False;
     TCocoaListViewBackendControlProtocol(_backendControl).backend_reloadData;
   end;
@@ -2135,11 +2144,6 @@ procedure TCocoaListView.dealloc;
 begin
   self.releaseControls;
   inherited dealloc;
-end;
-
-procedure TCocoaListView.setLclListView(lclListView: TCustomListView);
-begin
-  _lclListView:= lclListView;
 end;
 
 { TCocoaWSCustomListView }
@@ -2179,7 +2183,6 @@ var
   lclcb: TLCLListViewCallback;
 begin
   cocoaListView:= TCocoaListView.alloc.lclInitWithCreateParams(AParams);
-  cocoaListView.setLclListView( lclListView );
   cocoaListView.setAutoresizesSubviews( True );
   lclcb := TLCLListViewCallback.Create( cocoaListView, lclListView, cocoaListView );
   lclcb.listView := lclListView;
@@ -2756,23 +2759,30 @@ end;
 function TLCLListViewCallback.GetImageFromIndex(imgIdx: Integer): NSImage;
 var
   bmp : TBitmap;
+  lvil: TListViewImageList;
   lst : TCustomImageList;
   x,y : integer;
   img : NSImage;
   rep : NSBitmapImageRep;
   cb  : TCocoaBitmap;
 begin
-  lst := TCustomListViewAccess(listView).LargeImages;
-  if NOT Assigned(lst) then
-    lst := TCustomListViewAccess(listView).SmallImages;
+  Result:= nil;
+  if imgIdx < 0 then
+    Exit;
+
+  if NOT self.GetImageListType( lvil ) then
+    Exit;
+
+  if lvil = lvilLarge then
+    lst:= TCustomListViewAccess(listView).LargeImages
+  else
+    lst:= TCustomListViewAccess(listView).SmallImages;
+
   bmp := TBitmap.Create;
   try
     lst.GetBitmap(imgIdx, bmp);
-
-    if bmp.Handle = 0 then begin
-      Result := nil;
+    if bmp.Handle = 0 then
       Exit;
-    end;
 
     // Bitmap Handle should be nothing but TCocoaBitmap
     cb := TCocoaBitmap(bmp.Handle);
@@ -3001,6 +3011,45 @@ end;
 procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
 begin
 
+end;
+
+function TLCLListViewCallback.GetBorderStyle: TBorderStyle;
+begin
+  Result:= TCustomListView(Target).BorderStyle;
+end;
+
+function TLCLListViewCallback.GetImageListType( out lvil: TListViewImageList ): Boolean;
+const
+  preferredImages: array [TViewStyle] of TListViewImageList = (
+    lvilLarge, lvilSmall, lvilSmall, lvilSmall );
+  alternativeImages: array [TViewStyle] of TListViewImageList = (
+    lvilSmall, lvilLarge, lvilLarge, lvilLarge );
+var
+  viewStyle: TViewStyle;
+  LVA: TCustomListViewAccess;
+begin
+  Result:= True;
+  LVA:= TCustomListViewAccess(listView);
+  viewStyle:= LVA.ViewStyle;
+
+  lvil:= preferredImages[viewStyle];
+  if (lvil=lvilLarge) and Assigned(LVA.LargeImages) then
+    Exit;
+  if (lvil=lvilSmall) and Assigned(LVA.SmallImages) then
+    Exit;
+
+  lvil:= alternativeImages[viewStyle];
+  if (lvil=lvilLarge) and Assigned(LVA.LargeImages) then
+    Exit;
+  if (lvil=lvilSmall) and Assigned(LVA.SmallImages) then
+    Exit;
+
+  Result:= False;
+end;
+
+procedure TLCLListViewCallback.callTargetInitializeWnd;
+begin
+  TCustomListViewAccess(Target).InitializeWnd;
 end;
 
 { TCocoaWSTrackBar }

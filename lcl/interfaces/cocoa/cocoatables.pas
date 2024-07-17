@@ -31,7 +31,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate, CocoaConst, CocoaConfig,
   // LCL
-  LCLType;
+  LCLType, Controls;
 
 type
 
@@ -50,6 +50,7 @@ type
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
+    function GetBorderStyle: TBorderStyle;
   end;
 
   { TCocoaStringList }
@@ -237,7 +238,7 @@ const
 implementation
 
 uses
-  ComCtrls, CocoaWSComCtrls, CocoaWSCommon;
+  CocoaWSComCtrls, CocoaWSCommon;
 
 type
   { TCellCocoaTableListView }
@@ -250,7 +251,7 @@ type
   public
     procedure backend_setCallback( cb: TLCLListViewCallback );
     procedure backend_reloadData;
-    procedure backend_onInit( lclListView: TCustomListView );
+    procedure backend_onInit;
   public
     function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
@@ -1008,7 +1009,7 @@ begin
   self.reloadData;
 end;
 
-procedure TCellCocoaTableListView.backend_onInit(lclListView: TCustomListView );
+procedure TCellCocoaTableListView.backend_onInit;
 var
   sz: NSSize;
 begin
@@ -1017,7 +1018,7 @@ begin
   self.setAllowsColumnReordering(False);
   self.setAllowsColumnSelection(False);
 
-  UpdateFocusRing( self, lclListView.BorderStyle );
+  UpdateFocusRing( self, self.callback.getBorderStyle );
 
   sz := self.intercellSpacing;
   // Windows compatibility. on Windows there's no extra space between columns
