@@ -1666,6 +1666,14 @@ var
         ReadNextAtom;
         if not ParseOptionParams(Operand) then exit;
         exit(true);
+      end else
+      if CompareIdentifiers(AtomStart,'ORD')=0 then begin
+        // ORD not fully supported yet, return '0' (like HIGH and LOW)
+        ReadNextAtom;
+        if AtomStart^<>'(' then StrExpectedAtPos(AtomStart,'(');
+        if not ReadTilEndBracket then exit;
+        SetOperandValueChar(Operand,'0');
+        exit(true);
       end;
     'S':
       if CompareIdentifiers(AtomStart,'SIZEOF')=0 then begin
