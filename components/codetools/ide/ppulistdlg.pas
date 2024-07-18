@@ -386,13 +386,12 @@ end;
 procedure TPPUListDialog.UnitStringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Grid: TStringGrid;
+  Grid: TStringGrid absolute Sender;
   Col: Longint;
   Row: Longint;
   AnUnitName: string;
 begin
   if FItems=nil then exit;
-  Grid:=TStringGrid(Sender);
   if Shift=[ssLeft,ssDouble] then begin
     Col:=0;
     Row:=0;
@@ -568,7 +567,6 @@ procedure TPPUListDialog.UpdateUnitsGrid;
   end;
 
 var
-  Grid: TStringGrid;
   Node: TAvlTreeNode;
   Item: TPPUDlgListItem;
   Row: Integer;
@@ -576,8 +574,7 @@ var
   TotalPPUBytes, TotalOBytes: int64;
   SortedItems: TAvlTree;
 begin
-  Grid:=UnitsStringGrid;
-  Grid.BeginUpdate;
+  UnitsStringGrid.BeginUpdate;
 
   SortedItems:=TAvlTree.CreateObjectCompare(@CompareUnits);
   try
@@ -594,22 +591,22 @@ begin
       Node:=FItems.FindSuccessor(Node);
     end;
 
-    Grid.RowCount:=Grid.FixedRows+SortedItems.Count;
+    UnitsStringGrid.RowCount:=UnitsStringGrid.FixedRows+SortedItems.Count;
 
     // total
-    Grid.Cells[0,1]:=crsTotal;
-    Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
-    Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
-    Grid.Cells[3,1]:=IntToStr(SortedItems.Count);
-    Grid.Cells[4,1]:='';
-    Grid.Cells[5,1]:='';
+    UnitsStringGrid.Cells[0,1]:=crsTotal;
+    UnitsStringGrid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
+    UnitsStringGrid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
+    UnitsStringGrid.Cells[3,1]:=IntToStr(SortedItems.Count);
+    UnitsStringGrid.Cells[4,1]:='';
+    UnitsStringGrid.Cells[5,1]:='';
 
     // fill grid
-    Row:=Grid.FixedRows;
+    Row:=UnitsStringGrid.FixedRows;
     Node:=SortedItems.FindLowest;
     while Node<>nil do begin
       Item:=TPPUDlgListItem(Node.Data);
-      Grid.Cells[0,Row]:=Item.TheUnitName;
+      UnitsStringGrid.Cells[0,Row]:=Item.TheUnitName;
 
       // .ppu size
       s:='';
@@ -619,7 +616,7 @@ begin
         s:=crsMissing
       else
         s:=SizeToStr(Item.PPUFileSize,double(Item.PPUFileSize)/TotalPPUBytes);
-      Grid.Cells[1,Row]:=s;
+      UnitsStringGrid.Cells[1,Row]:=s;
 
       // .o size
       s:='';
@@ -629,16 +626,16 @@ begin
         s:=crsMissing
       else
         s:=SizeToStr(Item.OFileSize,double(Item.OFileSize)/TotalOBytes);
-      Grid.Cells[2,Row]:=s;
+      UnitsStringGrid.Cells[2,Row]:=s;
 
       // uses
-      Grid.Cells[3,Row]:=IntToStr(Item.UsesCount);
+      UnitsStringGrid.Cells[3,Row]:=IntToStr(Item.UsesCount);
 
       // used by
-      Grid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
+      UnitsStringGrid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
 
       // used by
-      Grid.Cells[5,Row]:=Item.PackageName;
+      UnitsStringGrid.Cells[5,Row]:=Item.PackageName;
 
       inc(Row);
       Node:=SortedItems.FindSuccessor(Node);
@@ -648,7 +645,7 @@ begin
     SortedItems.Free;
   end;
 
-  Grid.EndUpdate;
+  UnitsStringGrid.EndUpdate;
 end;
 
 function TPPUListDialog.DoubleAsPercentage(const d: double): string;
@@ -779,7 +776,6 @@ var
   UsedByUnitName: string;
   UsesPath: TFPList;
   LinkedFile: TPPULinkedFile;
-  Grid: TStringGrid;
 begin
   Item:=FindUnit(AnUnitName);
   if Item=nil then begin
@@ -825,17 +821,16 @@ begin
     end;
 
     // linked files
-    Grid:=UnitLinkedFilesStringGrid;
     if Item.LinkedFiles<>nil then begin
-      Grid.RowCount:=Grid.FixedRows+Item.LinkedFiles.Count;
+      UnitLinkedFilesStringGrid.RowCount:=UnitLinkedFilesStringGrid.FixedRows+Item.LinkedFiles.Count;
       for i:=0 to Item.LinkedFiles.Count-1 do begin
         LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
-        Grid.Cells[0,Grid.FixedRows+i]:=PPUEntryName(LinkedFile.ID);
-        Grid.Cells[1,Grid.FixedRows+i]:=LinkedFile.Filename;
-        Grid.Cells[2,Grid.FixedRows+i]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
+        UnitLinkedFilesStringGrid.Cells[0,UnitLinkedFilesStringGrid.FixedRows+i]:=PPUEntryName(LinkedFile.ID);
+        UnitLinkedFilesStringGrid.Cells[1,UnitLinkedFilesStringGrid.FixedRows+i]:=LinkedFile.Filename;
+        UnitLinkedFilesStringGrid.Cells[2,UnitLinkedFilesStringGrid.FixedRows+i]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
       end;
     end else begin
-      Grid.RowCount:=Grid.FixedRows;
+      UnitLinkedFilesStringGrid.RowCount:=UnitLinkedFilesStringGrid.FixedRows;
     end;
   end;
 end;
