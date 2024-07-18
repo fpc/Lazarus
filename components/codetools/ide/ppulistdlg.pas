@@ -163,9 +163,6 @@ type
 
     // linked files
     procedure UpdateLinkedFilesTreeView;
-
-    function DoubleAsPercentage(const d: double): string;
-    function BytesToStr(b: int64): string;
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -555,12 +552,37 @@ begin
 end;
 
 procedure TPPUListDialog.UpdateUnitsGrid;
-
-  function SizeToStr(TheBytes: int64; ThePercent: double): string;
+  //
+  function BytesToStr(aBytes: double): string;
+  const
+    cSizeFactor = 1024.0;
+  begin
+    Result:='';
+    if aBytes>=cSizeFactor then begin
+      Result:=crsKbytes;
+      aBytes:=aBytes/cSizeFactor;
+      if aBytes>=cSizeFactor then begin
+        Result:=crsMbytes;
+        aBytes:=aBytes/cSizeFactor;
+        if aBytes>=cSizeFactor then begin
+          Result:=crsGbytes;
+          aBytes:=aBytes/cSizeFactor;
+        end;
+      end;
+    end;
+    Result:=FloatToStrF(aBytes,ffFixed,3,2)+' '+Result;
+  end;
+  //
+  function DoubleAsPercentage(const d: double): string; inline;
+  begin
+    Result := FloatToStrF(100.0*d,ffFixed,3,2)+'%';
+  end;
+  //
+  function SizeToStr(TheBytes: int64; ThePercent: double): string; inline;
   begin
     Result:=BytesToStr(TheBytes)+' / '+DoubleAsPercentage(ThePercent);
   end;
-
+  //
 var
   Node: TAvlTreeNode;
   Item: TPPUDlgListItem;
@@ -641,32 +663,6 @@ begin
   end;
 
   UnitsStringGrid.EndUpdate;
-end;
-
-function TPPUListDialog.DoubleAsPercentage(const d: double): string;
-begin
-  Result:=IntToStr(round(d*10000));
-  while length(Result)<3 do Result:='0'+Result;
-  Result:=copy(Result,1,length(Result)-2)
-          +DefaultFormatSettings.DecimalSeparator+RightStr(Result,2)+'%';
-end;
-
-function TPPUListDialog.BytesToStr(b: int64): string;
-begin
-  Result:='';
-  if b>80000 then begin
-    Result:=crsKbytes;
-    b:=b div 1000;
-  end;
-  if b>80000 then begin
-    Result:=crsMbytes;
-    b:=b div 1000;
-  end;
-  if b>80000 then begin
-    Result:=crsGbytes;
-    b:=b div 1000;
-  end;
-  Result:=IntToStr(b)+' '+Result;
 end;
 
 function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
