@@ -3,7 +3,7 @@ unit CocoaWSComCtrls;
 interface
 
 {$mode delphi}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
 {$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_TABCONTROL}
@@ -2095,6 +2095,29 @@ begin
   backendControlAccess.backend_onInit;
 end;
 
+type
+  TWinControlAccess = class(TWinControl);
+
+// LCL has built-in editing functionality in TListItem.EditCaption(),
+// which creates a TextEditor to Edit Caption. at the Cocoa level,
+// it will be loaded into TCocoaListView.TCocoaScrollView.backendControl.
+// because TCocoaScrollView and backendControl will be rebuilt when
+// switching the viewStyle, the Editor handle needs to be destroyed at Cocoa,
+// so that the Editor can be recreated normally when needed after the switch.
+procedure releaseCaptionEditor( container:NSView );
+var
+  view: NSView;
+  control: TWinControlAccess;
+begin
+  for view in container.subviews do begin
+    control:= TWinControlAccess( view.lclGetTarget );
+    if Assigned(control) then begin
+      control.Hide;
+      control.DestroyHandle;
+    end;
+  end;
+end;
+
 procedure TCocoaListView.releaseControls;
 begin
   if not Assigned(_backendControl) then
@@ -2104,6 +2127,7 @@ begin
   _scrollView.setDocumentView( nil );
   _scrollView.release;
   _scrollView:= nil;
+  releaseCaptionEditor( _backendControl );
   _backendControl.release;
   _backendControl:= nil;
 end;
