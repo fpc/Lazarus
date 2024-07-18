@@ -52,9 +52,9 @@ resourcestring
   crsFile = 'File';
   crsFlags = 'Flags';
   crsPackage = 'Package';
-  crsKbytes = 'kbytes';
-  crsMbytes = 'Mbytes';
-  crsGbytes = 'Gbytes';
+  crsKbytes = 'KB';
+  crsMbytes = 'MB';
+  crsGbytes = 'GB';
   crsByFpcCfg = 'by fpc.cfg';
   crsNoUnitSelected = 'No unit selected';
   crsUnit2 = 'Unit: %s';

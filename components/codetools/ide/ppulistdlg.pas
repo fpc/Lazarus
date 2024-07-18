@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, contnrs, math, AVL_Tree,
   // LCL
   FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
-  ExtCtrls, ComCtrls,
+  ExtCtrls, ComCtrls, LCLType,
   // LazUtils
   AvgLvlTree, LazUTF8,
   // BuildIntf
@@ -121,6 +121,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LinkedFilesTreeViewDblClick(Sender: TObject);
     procedure UnitsStringGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -135,7 +136,7 @@ type
     FIdleConnected: boolean;
     FSearchingItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
     FItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
-    FSort: array[1..6] of TPPUListSortRec;
+    FColumnSortPrior: array[1..6] of TPPUListSortRec;
     FDlgLinkedFiles: TAvlTree; // tree of TPPUDlgLinkedFile sorted for ID, file, flags
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
@@ -163,9 +164,6 @@ type
 
     // linked files
     procedure UpdateLinkedFilesTreeView;
-
-    function DoubleAsPercentage(const d: double): string;
-    function BytesToStr(b: int64): string;
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -181,20 +179,19 @@ implementation
 {$R *.lfm}
 
 procedure ShowPPUList(Sender: TObject);
-var
-  Dlg: TPPUListDialog;
 begin
   if LazarusIDE.ActiveProject=nil then begin
     IDEMessageDialog(crsNoProject, crsPleaseOpenAProjectFirst, mtError, [mbCancel]);
     exit;
   end;
-  Dlg:=TPPUListDialog.Create(nil);
-  try
-    Dlg.AProject:=LazarusIDE.ActiveProject;
-    Dlg.ShowModal;
-  finally
-    Dlg.Free;
-  end;
+
+  with TPPUListDialog.Create(nil) do
+    try
+      AProject:=LazarusIDE.ActiveProject;
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 function ComparePPUListItems(Item1, Item2: Pointer): integer;
@@ -262,24 +259,27 @@ begin
   FItems:=TAvlTree.Create(@ComparePPUListItems);
   FDlgLinkedFiles:=TAvlTree.Create(@ComparePPULinkedFiles);
 
-  FSort[1].Category:=plsOSize;
-  FSort[2].Category:=plsName;
-  FSort[3].Category:=plsPPUSize;
-  FSort[4].Category:=plsUsedByCount;
-  FSort[5].Category:=plsUsesCount;
-  FSort[6].Category:=plsPackage;
+  FColumnSortPrior[1].Category:=plsOSize;
+  FColumnSortPrior[2].Category:=plsName;
+  FColumnSortPrior[3].Category:=plsPPUSize;
+  FColumnSortPrior[4].Category:=plsUsedByCount;
+  FColumnSortPrior[5].Category:=plsUsesCount;
+  FColumnSortPrior[6].Category:=plsPackage;
 
   PageControl1.PageIndex:=0;
 
   UnitsTabSheet.Caption:=crsUnits;
 
   // UnitsStringGrid header
-  UnitsStringGrid.Columns[0].Title.Caption:=crsUnit;
-  UnitsStringGrid.Columns[1].Title.Caption:=crsSizeOfPpuFile;
-  UnitsStringGrid.Columns[2].Title.Caption:=crsSizeOfOFile;
-  UnitsStringGrid.Columns[3].Title.Caption:=crsUses;
-  UnitsStringGrid.Columns[4].Title.Caption:=crsUsedBy;
-  UnitsStringGrid.Columns[5].Title.Caption:=crsPackage;
+  with UnitsStringGrid do
+  begin
+    Columns[0].Title.Caption:=crsUnit;
+    Columns[1].Title.Caption:=crsSizeOfPpuFile;
+    Columns[2].Title.Caption:=crsSizeOfOFile;
+    Columns[3].Title.Caption:=crsUses;
+    Columns[4].Title.Caption:=crsUsedBy;
+    Columns[5].Title.Caption:=crsPackage;
+  end;
 
   InfoTabSheet.Caption:=crsCOGeneral;
 
@@ -293,9 +293,12 @@ begin
   UsesPathStringGrid.Columns[0].Title.Caption:=crsUnit;
 
   UnitLinkedFilesTabSheet.Caption:=crsLinkedFiles;
-  UnitLinkedFilesStringGrid.Columns[0].Title.Caption:=crsType;
-  UnitLinkedFilesStringGrid.Columns[1].Title.Caption:=crsFile;
-  UnitLinkedFilesStringGrid.Columns[2].Title.Caption:=crsFlags;
+  with UnitLinkedFilesStringGrid do
+  begin
+    Columns[0].Title.Caption:=crsType;
+    Columns[1].Title.Caption:=crsFile;
+    Columns[2].Title.Caption:=crsFlags;
+  end;
 
   UnitPageControl.PageIndex:=0;
 
@@ -317,17 +320,24 @@ begin
   FreeAndNil(FDlgLinkedFiles);
 end;
 
+procedure TPPUListDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    Close;
+    Key := 0;
+  end;
+end;
+
 procedure TPPUListDialog.LinkedFilesTreeViewDblClick(Sender: TObject);
 var
   Node: TTreeNode;
-  TheUnitName: string;
 begin
   Node:=LinkedFilesTreeView.Selected;
-  if Node=nil then exit;
-  if Node.Data=nil then begin
-    TheUnitName:=Node.Text;
-    JumpToUnit(TheUnitName);
-  end;
+  if assigned(Node) then
+    if Node.Data=nil then // is not category node
+      JumpToUnit(Node.Text);
 end;
 
 procedure TPPUListDialog.UnitsStringGridMouseDown(Sender: TObject;
@@ -340,10 +350,8 @@ var
   l: Integer;
 begin
   if FItems=nil then exit;
-  Col:=-1;
-  Row:=-1;
   UnitsStringGrid.MouseToCell(X,Y,Col,Row);
-  if (Row<=1) and (Shift=[ssLeft,ssDouble]) then begin
+  if (Row<UnitsStringGrid.FixedRows) and (Shift=[ssLeft,ssDouble]) then begin
     // double left click => sort
     case Col of
     0: s:=plsName;
@@ -354,17 +362,17 @@ begin
     5: s:=plsPackage;
     else exit;
     end;
-    l:=low(FSort);
-    if FSort[l].Category=s then begin
+    l:=low(FColumnSortPrior);
+    if FColumnSortPrior[l].Category=s then begin
       // reverse direction
-      FSort[l].Reverse:=not FSort[l].Reverse;
+      FColumnSortPrior[l].Reverse:=not FColumnSortPrior[l].Reverse;
     end else begin
       // new primary sort
       i:=l;
-      while (i<=High(FSort)) and (FSort[i].Category<>s) do inc(i);
-      System.Move(FSort[l],FSort[succ(l)],(i-l)*SizeOf(FSort[l]));
-      FSort[l].Category:=s;
-      FSort[l].Reverse:=false;
+      while (i<=High(FColumnSortPrior)) and (FColumnSortPrior[i].Category<>s) do inc(i);
+      System.Move(FColumnSortPrior[l],FColumnSortPrior[succ(l)],(i-l)*SizeOf(FColumnSortPrior[l]));
+      FColumnSortPrior[l].Category:=s;
+      FColumnSortPrior[l].Reverse:=false;
     end;
     UpdateUnitsGrid;
   end;
@@ -372,36 +380,30 @@ end;
 
 procedure TPPUListDialog.UnitsStringGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
-var
-  AnUnitName: String;
 begin
   if FItems=nil then exit;
-  if (aRow<2) or (aRow>=UnitsStringGrid.RowCount) then
-    AnUnitName:=''
-  else
-    AnUnitName:=UnitsStringGrid.Cells[0,aRow];
-  FillUnitsInfo(AnUnitName);
+
+  with UnitsStringGrid do
+    if (aRow<FixedRows) or (aRow>=RowCount) then
+      FillUnitsInfo('')
+    else
+      FillUnitsInfo(Cells[0,aRow]);
 end;
 
 procedure TPPUListDialog.UnitStringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Grid: TStringGrid;
+  Grid: TStringGrid absolute Sender;
   Col: Longint;
   Row: Longint;
-  AnUnitName: string;
 begin
   if FItems=nil then exit;
-  Grid:=TStringGrid(Sender);
+
   if Shift=[ssLeft,ssDouble] then begin
-    Col:=0;
-    Row:=0;
     Grid.MouseToCell(X,Y,Col,Row);
-    if (Row<1) or (Row>=Grid.RowCount) then exit;
-    if (Col=0) then begin
-      AnUnitName:=Grid.Cells[0,Row];
-      JumpToUnit(AnUnitName);
-    end;
+    if (Row>=Grid.FixedRows) and (Row<Grid.RowCount) then
+      if Col=0 then
+        JumpToUnit(Grid.Cells[0,Row]);
   end;
 end;
 
@@ -561,14 +563,38 @@ begin
 end;
 
 procedure TPPUListDialog.UpdateUnitsGrid;
-
-  function SizeToStr(TheBytes: int64; ThePercent: double): string;
+  //
+  function BytesToStr(aBytes: double): string;
+  const
+    cSizeFactor = 1024.0;
+  begin
+    Result:='';
+    if aBytes>=cSizeFactor then begin
+      Result:=crsKbytes;
+      aBytes:=aBytes/cSizeFactor;
+      if aBytes>=cSizeFactor then begin
+        Result:=crsMbytes;
+        aBytes:=aBytes/cSizeFactor;
+        if aBytes>=cSizeFactor then begin
+          Result:=crsGbytes;
+          aBytes:=aBytes/cSizeFactor;
+        end;
+      end;
+    end;
+    Result:=FloatToStrF(aBytes,ffFixed,3,2)+' '+Result;
+  end;
+  //
+  function DoubleAsPercentage(const d: double): string; inline;
+  begin
+    Result := FloatToStrF(100.0*d,ffFixed,3,2)+'%';
+  end;
+  //
+  function SizeToStr(TheBytes: int64; ThePercent: double): string; inline;
   begin
     Result:=BytesToStr(TheBytes)+' / '+DoubleAsPercentage(ThePercent);
   end;
-
+  //
 var
-  Grid: TStringGrid;
   Node: TAvlTreeNode;
   Item: TPPUDlgListItem;
   Row: Integer;
@@ -576,8 +602,7 @@ var
   TotalPPUBytes, TotalOBytes: int64;
   SortedItems: TAvlTree;
 begin
-  Grid:=UnitsStringGrid;
-  Grid.BeginUpdate;
+  UnitsStringGrid.BeginUpdate;
 
   SortedItems:=TAvlTree.CreateObjectCompare(@CompareUnits);
   try
@@ -594,22 +619,22 @@ begin
       Node:=FItems.FindSuccessor(Node);
     end;
 
-    Grid.RowCount:=2+SortedItems.Count;
+    UnitsStringGrid.RowCount:=UnitsStringGrid.FixedRows+SortedItems.Count;
 
     // total
-    Grid.Cells[0,1]:=crsTotal;
-    Grid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
-    Grid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
-    Grid.Cells[3,1]:=IntToStr(SortedItems.Count);
-    Grid.Cells[4,1]:='';
-    Grid.Cells[5,1]:='';
+    UnitsStringGrid.Cells[0,1]:=crsTotal;
+    UnitsStringGrid.Cells[1,1]:=SizeToStr(TotalPPUBytes,1.0);
+    UnitsStringGrid.Cells[2,1]:=SizeToStr(TotalOBytes,1.0);
+    UnitsStringGrid.Cells[3,1]:=IntToStr(SortedItems.Count);
+    UnitsStringGrid.Cells[4,1]:='';
+    UnitsStringGrid.Cells[5,1]:='';
 
     // fill grid
-    Row:=2;
+    Row:=UnitsStringGrid.FixedRows;
     Node:=SortedItems.FindLowest;
     while Node<>nil do begin
       Item:=TPPUDlgListItem(Node.Data);
-      Grid.Cells[0,Row]:=Item.TheUnitName;
+      UnitsStringGrid.Cells[0,Row]:=Item.TheUnitName;
 
       // .ppu size
       s:='';
@@ -619,7 +644,7 @@ begin
         s:=crsMissing
       else
         s:=SizeToStr(Item.PPUFileSize,double(Item.PPUFileSize)/TotalPPUBytes);
-      Grid.Cells[1,Row]:=s;
+      UnitsStringGrid.Cells[1,Row]:=s;
 
       // .o size
       s:='';
@@ -629,16 +654,16 @@ begin
         s:=crsMissing
       else
         s:=SizeToStr(Item.OFileSize,double(Item.OFileSize)/TotalOBytes);
-      Grid.Cells[2,Row]:=s;
+      UnitsStringGrid.Cells[2,Row]:=s;
 
       // uses
-      Grid.Cells[3,Row]:=IntToStr(Item.UsesCount);
+      UnitsStringGrid.Cells[3,Row]:=IntToStr(Item.UsesCount);
 
       // used by
-      Grid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
+      UnitsStringGrid.Cells[4,Row]:=IntToStr(Item.UsedByCount);
 
       // used by
-      Grid.Cells[5,Row]:=Item.PackageName;
+      UnitsStringGrid.Cells[5,Row]:=Item.PackageName;
 
       inc(Row);
       Node:=SortedItems.FindSuccessor(Node);
@@ -648,33 +673,7 @@ begin
     SortedItems.Free;
   end;
 
-  Grid.EndUpdate;
-end;
-
-function TPPUListDialog.DoubleAsPercentage(const d: double): string;
-begin
-  Result:=IntToStr(round(d*10000));
-  while length(Result)<3 do Result:='0'+Result;
-  Result:=copy(Result,1,length(Result)-2)
-          +DefaultFormatSettings.DecimalSeparator+RightStr(Result,2)+'%';
-end;
-
-function TPPUListDialog.BytesToStr(b: int64): string;
-begin
-  Result:='';
-  if b>80000 then begin
-    Result:=crsKbytes;
-    b:=b div 1000;
-  end;
-  if b>80000 then begin
-    Result:=crsMbytes;
-    b:=b div 1000;
-  end;
-  if b>80000 then begin
-    Result:=crsGbytes;
-    b:=b div 1000;
-  end;
-  Result:=IntToStr(b)+' '+Result;
+  UnitsStringGrid.EndUpdate;
 end;
 
 function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
@@ -682,7 +681,7 @@ function TPPUListDialog.FindUnitInList(AnUnitName: string; List: TStrings
 begin
   if List=nil then exit(-1);
   Result:=List.Count-1;
-  while (Result>=0) and (SysUtils.CompareText(AnUnitName,List[Result])<>0) do
+  while (Result>=0) and (CompareText(AnUnitName,List[Result])<>0) do
     dec(Result);
 end;
 
@@ -704,41 +703,41 @@ var
   i: Integer;
 begin
   Result:=0;
-  for i:=low(FSort) to High(FSort) do begin
-    case FSort[i].Category of
+  for i:=low(FColumnSortPrior) to High(FColumnSortPrior) do begin
+    case FColumnSortPrior[i].Category of
     plsName:
       begin
-        Result:=SysUtils.CompareText(Item1.TheUnitName,Item2.TheUnitName);
-        if FSort[i].Reverse then
+        Result:=CompareText(Item1.TheUnitName,Item2.TheUnitName);
+        if FColumnSortPrior[i].Reverse then
           Result:=-Result;
         if Result<>0 then exit;
       end;
     plsOSize:
       begin
         Result:=CompareInt(Max(0,Item1.OFileSize),Max(0,Item2.OFileSize),
-                           FSort[i].Reverse);
+                           FColumnSortPrior[i].Reverse);
         if Result<>0 then exit;
       end;
     plsPPUSize:
       begin
         Result:=CompareInt(Max(0,Item1.PPUFileSize),Max(0,Item2.PPUFileSize),
-                           FSort[i].Reverse);
+                           FColumnSortPrior[i].Reverse);
         if Result<>0 then exit;
       end;
     plsUsesCount:
       begin
-        Result:=CompareInt(Item1.UsesCount,Item2.UsesCount,FSort[i].Reverse);
+        Result:=CompareInt(Item1.UsesCount,Item2.UsesCount,FColumnSortPrior[i].Reverse);
         if Result<>0 then exit;
       end;
     plsUsedByCount:
       begin
-        Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,FSort[i].Reverse);
+        Result:=CompareInt(Item1.UsedByCount,Item2.UsedByCount,FColumnSortPrior[i].Reverse);
         if Result<>0 then exit;
       end;
     plsPackage:
       begin
-        Result:=SysUtils.CompareText(Item1.PackageName,Item2.PackageName);
-        if FSort[i].Reverse then
+        Result:=CompareText(Item1.PackageName,Item2.PackageName);
+        if FColumnSortPrior[i].Reverse then
           Result:=-Result;
         if Result<>0 then exit;
       end;
@@ -750,36 +749,31 @@ procedure TPPUListDialog.JumpToUnit(TheUnitName: string);
 var
   i: Integer;
 begin
-  for i:=2 to UnitsStringGrid.RowCount-1 do begin
-    if SysUtils.CompareText(UnitsStringGrid.Cells[0,i],TheUnitName)<>0 then
-      continue;
-    PageControl1.PageIndex:=0;
-    UnitsStringGrid.Row:=i;
-    UnitsStringGrid.Col:=0;
-    exit;
-  end;
+  with UnitsStringGrid do
+    for i:=FixedRows to RowCount-1 do
+      if CompareText(Cells[0,i],TheUnitName)=0 then begin
+        PageControl1.PageIndex:=0;
+        Row:=i;
+        Col:=0;
+        exit;
+      end;
 end;
 
 procedure TPPUListDialog.UpdateUnitsInfo;
-var
-  AnUnitName: String;
 begin
-  if (UnitsStringGrid.Row<2) or (UnitsStringGrid.Row>=UnitsStringGrid.RowCount) then
-    AnUnitName:=''
-  else
-    AnUnitName:=UnitsStringGrid.Cells[0,UnitsStringGrid.Row];
-  FillUnitsInfo(AnUnitName);
+  with UnitsStringGrid do
+    if (Row<FixedRows) or (Row>=RowCount) then
+      FillUnitsInfo('')
+    else
+      FillUnitsInfo(Cells[0,Row]);
 end;
 
 procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
 var
   Item: TPPUDlgListItem;
   i: Integer;
-  UsesUnitName: string;
-  UsedByUnitName: string;
   UsesPath: TFPList;
   LinkedFile: TPPULinkedFile;
-  Grid: TStringGrid;
 begin
   Item:=FindUnit(AnUnitName);
   if Item=nil then begin
@@ -794,49 +788,43 @@ begin
     SourceFileLabel.Caption:=Format(crsSource, [Item.SrcFile]);
     PPUFileLabel.Caption:=Format(crsPPU, [Item.PPUFile]);
     // uses
-    if Item.UsesUnits<>nil then begin
-      UsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
-      for i:=0 to Item.UsesUnits.Count-1 do begin
-        UsesUnitName:=Item.UsesUnits[i];
-        UsesStringGrid.Cells[0,i+1]:=UsesUnitName;
-      end;
-    end else begin
-      UsesStringGrid.RowCount:=1;
-    end;
+    with UsesStringGrid do
+      if Item.UsesUnits<>nil then begin
+        RowCount:=FixedRows+Item.UsesUnits.Count;
+        for i:=0 to Item.UsesUnits.Count-1 do
+          Cells[0,FixedRows+i]:=Item.UsesUnits[i];
+      end else
+        RowCount:=FixedRows;
     // used by
-    if Item.UsedByUnits<>nil then begin
-      UsedByStringGrid.RowCount:=1+Item.UsedByUnits.Count;
-      for i:=0 to Item.UsedByUnits.Count-1 do begin
-        UsedByUnitName:=Item.UsedByUnits[i];
-        UsedByStringGrid.Cells[0,i+1]:=UsedByUnitName;
-      end;
-    end else begin
-      UsedByStringGrid.RowCount:=1;
-    end;
+    with UsedByStringGrid do
+      if Item.UsedByUnits<>nil then begin
+        RowCount:=FixedRows+Item.UsedByUnits.Count;
+        for i:=0 to Item.UsedByUnits.Count-1 do
+          Cells[0,FixedRows+i]:=Item.UsedByUnits[i];
+      end else
+        RowCount:=FixedRows;
     // uses path
     UsesPath:=FindUsesPath(MainItem,Item);
-    try
-      UsesPathStringGrid.RowCount:=UsesPath.Count+1;
-      for i:=0 to UsesPath.Count-1 do begin
-        UsesPathStringGrid.Cells[0,i+1]:=TPPUDlgListItem(UsesPath[i]).TheUnitName;
+    with UsesPathStringGrid do
+      try
+        RowCount:=FixedRows+UsesPath.Count;
+        for i:=0 to UsesPath.Count-1 do
+          Cells[0,FixedRows+i]:=TPPUDlgListItem(UsesPath[i]).TheUnitName;
+      finally
+        UsesPath.Free;
       end;
-    finally
-      UsesPath.Free;
-    end;
-
     // linked files
-    Grid:=UnitLinkedFilesStringGrid;
-    if Item.LinkedFiles<>nil then begin
-      Grid.RowCount:=1+Item.LinkedFiles.Count;
-      for i:=0 to Item.LinkedFiles.Count-1 do begin
-        LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
-        Grid.Cells[0,i+1]:=PPUEntryName(LinkedFile.ID);
-        Grid.Cells[1,i+1]:=LinkedFile.Filename;
-        Grid.Cells[2,i+1]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
-      end;
-    end else begin
-      Grid.RowCount:=1;
-    end;
+    with UnitLinkedFilesStringGrid do
+      if Item.LinkedFiles<>nil then begin
+        RowCount:=FixedRows+Item.LinkedFiles.Count;
+        for i:=0 to Item.LinkedFiles.Count-1 do begin
+          LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
+          Cells[0,FixedRows+i]:=PPUEntryName(LinkedFile.ID);
+          Cells[1,FixedRows+i]:=LinkedFile.Filename;
+          Cells[2,FixedRows+i]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
+        end;
+      end else
+        RowCount:=FixedRows;
   end;
 end;
 

@@ -6,10 +6,12 @@ object PPUListDialog: TPPUListDialog
   Caption = 'PPUListDialog'
   ClientHeight = 531
   ClientWidth = 740
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
+  OnKeyDown = FormKeyDown
+  Position = poWorkAreaCenter
   LCLVersion = '3.99.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
@@ -56,54 +58,59 @@ object PPUListDialog: TPPUListDialog
         Height = 209
         Top = 6
         Width = 724
-        Align = alTop
+        Align = alClient
         AutoFillColumns = True
         BorderSpacing.Around = 6
         ColCount = 6
         Columns = <        
           item
-            SizePriority = 10
+            SizePriority = 1
             Title.Caption = 'Unit'
             Width = 120
           end        
           item
-            SizePriority = 10
+            SizePriority = 0
             Title.Caption = 'Size of .ppu file'
-            Width = 120
+            Width = 130
           end        
           item
-            SizePriority = 10
+            SizePriority = 0
             Title.Caption = 'Size of .o file'
-            Width = 120
+            Width = 130
           end        
           item
-            SizePriority = 5
+            SizePriority = 0
             Title.Caption = 'Uses'
-            Width = 120
+            Width = 100
           end        
           item
-            SizePriority = 5
+            SizePriority = 0
             Title.Caption = 'Used by'
-            Width = 120
+            Width = 100
           end        
           item
             Title.Caption = 'Package'
-            Width = 120
+            Width = 119
           end>
         DefaultColWidth = 150
         FixedCols = 0
         FixedRows = 2
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+        FocusRectVisible = False
+        MouseWheelOption = mwGrid
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goThumbTracking, goDblClickAutoSize, goSmoothScroll, goTruncCellHints, goCellEllipsis, goRowHighlight]
+        ParentShowHint = False
+        RowCount = 2
+        ShowHint = True
         TabOrder = 0
         OnMouseDown = UnitsStringGridMouseDown
         OnSelectCell = UnitsStringGridSelectCell
         ColWidths = (
           120
           120
-          120
-          120
-          120
-          120
+          119
+          119
+          119
+          119
         )
       end
       object Splitter1: TSplitter
@@ -112,15 +119,15 @@ object PPUListDialog: TPPUListDialog
         Height = 5
         Top = 221
         Width = 736
-        Align = alTop
-        ResizeAnchor = akTop
+        Align = alBottom
+        ResizeAnchor = akBottom
       end
       object UnitGroupBox: TGroupBox
         Left = 6
         Height = 179
         Top = 232
         Width = 724
-        Align = alClient
+        Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'UnitGroupBox'
         ClientHeight = 149
@@ -170,18 +177,24 @@ object PPUListDialog: TPPUListDialog
               Width = 716
               Align = alClient
               AutoFillColumns = True
+              BorderSpacing.Around = 6
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 712
+                  Width = 704
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
+              FocusRectVisible = False
+              MouseWheelOption = mwGrid
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goThumbTracking, goSmoothScroll, goTruncCellHints, goCellEllipsis, goRowHighlight]
+              ParentShowHint = False
+              RowCount = 1
+              ShowHint = True
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                712
+                704
               )
             end
           end
@@ -196,18 +209,24 @@ object PPUListDialog: TPPUListDialog
               Width = 716
               Align = alClient
               AutoFillColumns = True
+              BorderSpacing.Around = 6
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 712
+                  Width = 704
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
+              FocusRectVisible = False
+              MouseWheelOption = mwGrid
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goThumbTracking, goSmoothScroll, goTruncCellHints, goCellEllipsis, goRowHighlight]
+              ParentShowHint = False
+              RowCount = 1
+              ShowHint = True
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                712
+                704
               )
             end
           end
@@ -222,18 +241,24 @@ object PPUListDialog: TPPUListDialog
               Width = 716
               Align = alClient
               AutoFillColumns = True
+              BorderSpacing.Around = 6
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 712
+                  Width = 704
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goSmoothScroll]
+              FocusRectVisible = False
+              MouseWheelOption = mwGrid
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goThumbTracking, goSmoothScroll, goTruncCellHints, goCellEllipsis, goRowHighlight]
+              ParentShowHint = False
+              RowCount = 1
+              ShowHint = True
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                712
+                704
               )
             end
           end
@@ -248,27 +273,34 @@ object PPUListDialog: TPPUListDialog
               Width = 716
               Align = alClient
               AutoFillColumns = True
+              BorderSpacing.Around = 6
               ColCount = 3
               Columns = <              
                 item
                   Title.Caption = 'Type'
-                  Width = 231
+                  Width = 235
                 end              
                 item
                   Title.Caption = 'File'
-                  Width = 230
+                  Width = 235
                 end              
                 item
+                  SizePriority = 0
                   Title.Caption = 'Flags'
-                  Width = 230
+                  Width = 160
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goSmoothScroll]
+              FocusRectVisible = False
+              MouseWheelOption = mwGrid
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll, goTruncCellHints, goCellEllipsis, goRowHighlight]
+              ParentShowHint = False
+              RowCount = 1
+              ShowHint = True
               TabOrder = 0
               ColWidths = (
-                231
-                230
-                230
+                235
+                235
+                234
               )
             end
           end
