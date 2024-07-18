@@ -8078,6 +8078,7 @@ begin
     FUpdateFlags := [];
     DebugLn(SRCED_LOCK, ['TSourceNotebook.IncUpdateLockInternal']);
     FPageIndex := PageIndex;
+    FNotebook.DisableAutoSizing;
   end;
   inc(FUpdateLock);
 end;
@@ -8095,6 +8096,7 @@ begin
     if (ufFocusEditor in FUpdateFlags)  then FocusEditor;
     if (ufActiveEditorChanged in FUpdateFlags) then DoActiveEditorChanged;
     FUpdateFlags := [];
+    FNotebook.EnableAutoSizing;
     DebugLnExit(SRCED_LOCK, ['<< TSourceNotebook.DecUpdateLockInternal']);
   end;
 end;
