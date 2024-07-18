@@ -295,28 +295,20 @@ end;
 procedure TShowCompilerOptionsDlg.UpdateMemo;
 var
   Flags: TCompilerCmdLineOptions;
-  CompPath: String;
   CompOptions: TStringListUTF8Fast;
 begin
   if CompilerOpts=nil then exit;
 
   // set flags
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
-  Include(Flags, ccloAddCompilerPath);
+  Include(Flags,ccloAddCompilerPath);
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
 
   // get command line parameters (include compiler path)
   CompOptions := CompilerOpts.MakeCompilerParams(Flags);
   try
-    // add the main project unit after the compiler path
-    if (Project1<>nil) and (Project1.MainUnitInfo<>nil) and (CompOptions.Count>0) then
-    begin
-      if RelativePathsCheckBox.Checked then
-        CompOptions.Insert(1, Project1.MainUnitInfo.ShortFilename)
-      else
-        CompOptions.Insert(1, Project1.MainUnitInfo.GetFullFilename);
-    end;
+    CompOptions.Add(CompilerOpts.CreateTargetFilename);
 
     // show
     FillMemo(CmdLineMemo,CompOptions);

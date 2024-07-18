@@ -154,6 +154,18 @@ type
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
 
+const
+  CompilerCmdLineOptionNames: array[TCompilerCmdLineOption] of string = (
+    'NoLinkerOpts',
+    'AddVerboseAll',
+    'DoNotAppendOutFileOption',
+    'AbsolutePaths',
+    'NoMacroParams',
+    'AddCompilerPath'
+  );
+
+type
+
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class(TLazCompilationToolOptions)
@@ -221,7 +233,7 @@ type
     function GetEnumerator: TCompilerMsgIDFlagsEnumerator;
     function GetMsgIdList(Delim: char; aValue: TCompilerFlagValue; FPCMsgFile: TFPCMsgFilePoolItem = nil): string;
     function CreateDiff(Tool: TCompilerDiffTool; Other: TCompilerMsgIDFlags): boolean;
-    function Count: SizeInt; inline;
+    function Count: SizeInt;
     property ChangeStamp: int64 read FChangeStamp;
   end;
 
@@ -427,6 +439,8 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 
 function EnumToStr(Flag: TCompilerFlagValue): string; overload;
 function CompareCompMsgIdFlag(Data1, Data2: Pointer): integer;
+
+function dbgs(const Opts: TCompilerCmdLineOptions): string; overload;
 
 var
   TestCompilerOptions: TNotifyEvent = nil;
@@ -755,6 +769,19 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+function dbgs(const Opts: TCompilerCmdLineOptions): string;
+var
+  o: TCompilerCmdLineOption;
+begin
+  Result:='';
+  for o in Opts do
+  begin
+    if Result<>'' then Result+=',';
+    Result+=CompilerCmdLineOptionNames[o];
+  end;
+  Result:='['+Result+']';
 end;
 
 { TCompilerMsgIDFlagsEnumerator }
@@ -2663,7 +2690,7 @@ begin
   CurMainSrcFile:=GetDefaultMainSourceFileName;
   CurTargetFilename:='';
   CurTargetDirectory:='';
-  //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
+  DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',dbgs(Flags),' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags))
     and (not (ccloNoMacroParams in Flags))
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
