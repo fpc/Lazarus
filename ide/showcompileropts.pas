@@ -308,7 +308,7 @@ begin
   // get command line parameters (include compiler path)
   CompOptions := CompilerOpts.MakeCompilerParams(Flags);
   try
-    CompOptions.Add(CompilerOpts.CreateTargetFilename);
+    CompOptions.Add(CompilerOpts.GetDefaultMainSourceFileName);
 
     // show
     FillMemo(CmdLineMemo,CompOptions);

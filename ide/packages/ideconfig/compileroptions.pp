@@ -2690,7 +2690,7 @@ begin
   CurMainSrcFile:=GetDefaultMainSourceFileName;
   CurTargetFilename:='';
   CurTargetDirectory:='';
-  DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',dbgs(Flags),' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
+  //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',dbgs(Flags),' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags))
     and (not (ccloNoMacroParams in Flags))
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
