@@ -136,6 +136,7 @@ type
     procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
     procedure TestFindDeclaration_GenericsDelphi_FuncParam;
     procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
+    procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
@@ -307,7 +308,6 @@ var
   NewExprType: TExpressionType;
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
-  CodePos: PCodeXYPosition;
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
@@ -899,8 +899,7 @@ begin
   FindDeclarations(Code);
 end;
 
-procedure TTestFindDeclaration.
-  TestFindDeclaration_GenericsDelphi_PublicProcType;
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_PublicProcType;
 begin
   StartProgram;
   Add([
@@ -920,6 +919,36 @@ begin
   'var Bird: TBird;',
   'begin',
   '  Bird.Fly(nil);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_MultiGenParams;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TBird = class',
+  '    A: boolean;',
+  '    function Fly: boolean;',
+  '  end;',
+  '  TBird<T> = class',
+  '    B: T;',
+  '    function Fly: T;',
+  '  end;',
+  'function TBird.Fly: boolean;',
+  'begin',
+  'end;',
+  'function TBird<T>.Fly: T;',
+  'begin',
+  'end;',
+  'var',
+  '  One: TBird;',
+  '  Two: TBird<word>;',
+  'begin',
+  '  One.Fly;',
+  '  Two.Fly;',
   'end.']);
   FindDeclarations(Code);
 end;

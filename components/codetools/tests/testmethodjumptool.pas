@@ -37,6 +37,7 @@ type
     procedure TestMethodJump_SingleMethod;
     procedure TestMethodJump_MultiMethodWrongName;
     procedure TestMethodJump_DelphiGenericClass;
+    procedure TestMethodJump_DelphiGenericClass_GenOverload; // todo
     procedure TestMethodJump_DelphiGenericMethod;
     procedure TestMethodJump_ObjFPCGenericMethod;
     procedure TestMethodJump_ParamWithAttribute;
@@ -272,6 +273,45 @@ begin
   'end.']);
   TestJumpToMethod('a',false,'c',false,2);
   TestJumpToMethod('b',false,'d',true,0);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericClass_GenOverload;
+begin
+  exit;
+
+  Add([
+  'unit Test1;',
+  '{$mode delphi}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    procedure {a1}DoIt(s: word);',
+  '    procedure {b1}DoIt;',
+  '  end;',
+  '  TBird<T> = class',
+  '    procedure {c1}DoIt(s: T);',
+  '    procedure {d1}DoIt;',
+  '  end;',
+  'implementation',
+  'procedure TBird.{a2}Do2It(s: word);',
+  'begin',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  '{b2}',
+  'end;',
+  'procedure TBird<T>.{c2}Do2It(s: T);',
+  'begin',
+  'end;',
+  'procedure TBird<T>.DoIt;',
+  'begin',
+  '{d2}',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a1',false,'a2',false,2);
+  TestJumpToMethod('b1',false,'b2',true,0);
+  TestJumpToMethod('c1',false,'c2',false,2);
+  TestJumpToMethod('d1',false,'d2',true,0);
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericMethod;
