@@ -388,7 +388,9 @@ msgid "Frameworks"
 msgstr "Framework"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "Gbyte"
 
 #: codystrconsts.crshelp
@@ -475,7 +477,9 @@ msgid "Jump to"
 msgstr ""
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "Kbyte"
 
 #: codystrconsts.crslinkedfiles
@@ -502,7 +506,9 @@ msgid "Main source file: %s"
 msgstr "File sorgente principale: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "Mbyte"
 
 #: codystrconsts.crsmemberof

@@ -387,7 +387,9 @@ msgid "Frameworks"
 msgstr "Çerçeveler"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "Gbytes"
 
 #: codystrconsts.crshelp
@@ -474,7 +476,9 @@ msgid "Jump to"
 msgstr "Atla"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "kbytes"
 
 #: codystrconsts.crslinkedfiles
@@ -501,7 +505,9 @@ msgid "Main source file: %s"
 msgstr "Ana kaynak dosyası : %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "Mbytes"
 
 #: codystrconsts.crsmemberof

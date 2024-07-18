@@ -387,7 +387,9 @@ msgid "Frameworks"
 msgstr "Keretrendszerek"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "Gbájt"
 
 #: codystrconsts.crshelp
@@ -474,7 +476,9 @@ msgid "Jump to"
 msgstr "Ugrás"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "kbájt"
 
 #: codystrconsts.crslinkedfiles
@@ -501,7 +505,9 @@ msgid "Main source file: %s"
 msgstr "Fő-forrásfájl: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "Mbájt"
 
 #: codystrconsts.crsmemberof

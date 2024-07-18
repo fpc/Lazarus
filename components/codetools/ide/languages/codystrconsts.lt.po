@@ -388,7 +388,9 @@ msgid "Frameworks"
 msgstr "Karkasai"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "GiB"
 
 #: codystrconsts.crshelp
@@ -475,7 +477,9 @@ msgid "Jump to"
 msgstr "Šokti ties"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "kiB"
 
 #: codystrconsts.crslinkedfiles
@@ -502,7 +506,9 @@ msgid "Main source file: %s"
 msgstr "Pagrindinis pirminio kodo failas: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "MiB"
 
 #: codystrconsts.crsmemberof

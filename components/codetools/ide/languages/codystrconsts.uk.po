@@ -389,7 +389,9 @@ msgid "Frameworks"
 msgstr "Платформи"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "ГБ"
 
 #: codystrconsts.crshelp
@@ -476,7 +478,9 @@ msgid "Jump to"
 msgstr "Перейти до"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "кБ"
 
 #: codystrconsts.crslinkedfiles
@@ -503,7 +507,9 @@ msgid "Main source file: %s"
 msgstr "Основний файл коду: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "МБ"
 
 #: codystrconsts.crsmemberof

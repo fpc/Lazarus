@@ -388,7 +388,9 @@ msgid "Frameworks"
 msgstr ""
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "GB"
 
 #: codystrconsts.crshelp
@@ -475,7 +477,9 @@ msgid "Jump to"
 msgstr "跳转到"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "KB"
 
 #: codystrconsts.crslinkedfiles
@@ -502,7 +506,9 @@ msgid "Main source file: %s"
 msgstr "主源码文件: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "MB"
 
 #: codystrconsts.crsmemberof

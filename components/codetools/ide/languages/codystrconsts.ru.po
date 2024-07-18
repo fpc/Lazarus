@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -387,7 +387,7 @@ msgid "Frameworks"
 msgstr "Платформы"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+msgid "GB"
 msgstr "ГБ"
 
 #: codystrconsts.crshelp
@@ -474,7 +474,7 @@ msgid "Jump to"
 msgstr "Перейти"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+msgid "KB"
 msgstr "кБ"
 
 #: codystrconsts.crslinkedfiles
@@ -501,7 +501,7 @@ msgid "Main source file: %s"
 msgstr "Главный файл исходного кода: %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+msgid "MB"
 msgstr "МБ"
 
 #: codystrconsts.crsmemberof

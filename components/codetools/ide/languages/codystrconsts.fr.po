@@ -387,7 +387,9 @@ msgid "Frameworks"
 msgstr "Ensembles de règles"
 
 #: codystrconsts.crsgbytes
-msgid "Gbytes"
+#, fuzzy
+#| msgid "Gbytes"
+msgid "GB"
 msgstr "Giga-octets"
 
 #: codystrconsts.crshelp
@@ -474,7 +476,9 @@ msgid "Jump to"
 msgstr "Aller à"
 
 #: codystrconsts.crskbytes
-msgid "kbytes"
+#, fuzzy
+#| msgid "kbytes"
+msgid "KB"
 msgstr "kilo-octets"
 
 #: codystrconsts.crslinkedfiles
@@ -501,7 +505,9 @@ msgid "Main source file: %s"
 msgstr "Fichier de code source principal : %s"
 
 #: codystrconsts.crsmbytes
-msgid "Mbytes"
+#, fuzzy
+#| msgid "Mbytes"
+msgid "MB"
 msgstr "Méga-octets"
 
 #: codystrconsts.crsmemberof
