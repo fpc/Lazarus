@@ -343,7 +343,7 @@ begin
   Col:=-1;
   Row:=-1;
   UnitsStringGrid.MouseToCell(X,Y,Col,Row);
-  if (Row<=1) and (Shift=[ssLeft,ssDouble]) then begin
+  if (Row<UnitsStringGrid.FixedRows) and (Shift=[ssLeft,ssDouble]) then begin
     // double left click => sort
     case Col of
     0: s:=plsName;
@@ -376,7 +376,7 @@ var
   AnUnitName: String;
 begin
   if FItems=nil then exit;
-  if (aRow<2) or (aRow>=UnitsStringGrid.RowCount) then
+  if (aRow<UnitsStringGrid.FixedRows) or (aRow>=UnitsStringGrid.RowCount) then
     AnUnitName:=''
   else
     AnUnitName:=UnitsStringGrid.Cells[0,aRow];
@@ -397,7 +397,7 @@ begin
     Col:=0;
     Row:=0;
     Grid.MouseToCell(X,Y,Col,Row);
-    if (Row<1) or (Row>=Grid.RowCount) then exit;
+    if (Row<Grid.FixedRows) or (Row>=Grid.RowCount) then exit;
     if (Col=0) then begin
       AnUnitName:=Grid.Cells[0,Row];
       JumpToUnit(AnUnitName);
@@ -594,7 +594,7 @@ begin
       Node:=FItems.FindSuccessor(Node);
     end;
 
-    Grid.RowCount:=2+SortedItems.Count;
+    Grid.RowCount:=Grid.FixedRows+SortedItems.Count;
 
     // total
     Grid.Cells[0,1]:=crsTotal;
@@ -605,7 +605,7 @@ begin
     Grid.Cells[5,1]:='';
 
     // fill grid
-    Row:=2;
+    Row:=Grid.FixedRows;
     Node:=SortedItems.FindLowest;
     while Node<>nil do begin
       Item:=TPPUDlgListItem(Node.Data);
@@ -750,7 +750,7 @@ procedure TPPUListDialog.JumpToUnit(TheUnitName: string);
 var
   i: Integer;
 begin
-  for i:=2 to UnitsStringGrid.RowCount-1 do begin
+  for i:=UnitsStringGrid.FixedRows to UnitsStringGrid.RowCount-1 do begin
     if SysUtils.CompareText(UnitsStringGrid.Cells[0,i],TheUnitName)<>0 then
       continue;
     PageControl1.PageIndex:=0;
@@ -764,7 +764,7 @@ procedure TPPUListDialog.UpdateUnitsInfo;
 var
   AnUnitName: String;
 begin
-  if (UnitsStringGrid.Row<2) or (UnitsStringGrid.Row>=UnitsStringGrid.RowCount) then
+  if (UnitsStringGrid.Row<UnitsStringGrid.FixedRows) or (UnitsStringGrid.Row>=UnitsStringGrid.RowCount) then
     AnUnitName:=''
   else
     AnUnitName:=UnitsStringGrid.Cells[0,UnitsStringGrid.Row];
@@ -795,30 +795,30 @@ begin
     PPUFileLabel.Caption:=Format(crsPPU, [Item.PPUFile]);
     // uses
     if Item.UsesUnits<>nil then begin
-      UsesStringGrid.RowCount:=1+Item.UsesUnits.Count;
+      UsesStringGrid.RowCount:=UsesStringGrid.FixedRows+Item.UsesUnits.Count;
       for i:=0 to Item.UsesUnits.Count-1 do begin
         UsesUnitName:=Item.UsesUnits[i];
-        UsesStringGrid.Cells[0,i+1]:=UsesUnitName;
+        UsesStringGrid.Cells[0,UsesStringGrid.FixedRows+i]:=UsesUnitName;
       end;
     end else begin
-      UsesStringGrid.RowCount:=1;
+      UsesStringGrid.RowCount:=UsesStringGrid.FixedRows;
     end;
     // used by
     if Item.UsedByUnits<>nil then begin
-      UsedByStringGrid.RowCount:=1+Item.UsedByUnits.Count;
+      UsedByStringGrid.RowCount:=UsedByStringGrid.FixedRows+Item.UsedByUnits.Count;
       for i:=0 to Item.UsedByUnits.Count-1 do begin
         UsedByUnitName:=Item.UsedByUnits[i];
-        UsedByStringGrid.Cells[0,i+1]:=UsedByUnitName;
+        UsedByStringGrid.Cells[0,UsedByStringGrid.FixedRows+i]:=UsedByUnitName;
       end;
     end else begin
-      UsedByStringGrid.RowCount:=1;
+      UsedByStringGrid.RowCount:=UsedByStringGrid.FixedRows;
     end;
     // uses path
     UsesPath:=FindUsesPath(MainItem,Item);
     try
-      UsesPathStringGrid.RowCount:=UsesPath.Count+1;
+      UsesPathStringGrid.RowCount:=UsesPathStringGrid.FixedRows+UsesPath.Count;
       for i:=0 to UsesPath.Count-1 do begin
-        UsesPathStringGrid.Cells[0,i+1]:=TPPUDlgListItem(UsesPath[i]).TheUnitName;
+        UsesPathStringGrid.Cells[0,UsesPathStringGrid.FixedRows+i]:=TPPUDlgListItem(UsesPath[i]).TheUnitName;
       end;
     finally
       UsesPath.Free;
@@ -827,15 +827,15 @@ begin
     // linked files
     Grid:=UnitLinkedFilesStringGrid;
     if Item.LinkedFiles<>nil then begin
-      Grid.RowCount:=1+Item.LinkedFiles.Count;
+      Grid.RowCount:=Grid.FixedRows+Item.LinkedFiles.Count;
       for i:=0 to Item.LinkedFiles.Count-1 do begin
         LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
-        Grid.Cells[0,i+1]:=PPUEntryName(LinkedFile.ID);
-        Grid.Cells[1,i+1]:=LinkedFile.Filename;
-        Grid.Cells[2,i+1]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
+        Grid.Cells[0,Grid.FixedRows+i]:=PPUEntryName(LinkedFile.ID);
+        Grid.Cells[1,Grid.FixedRows+i]:=LinkedFile.Filename;
+        Grid.Cells[2,Grid.FixedRows+i]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
       end;
     end else begin
-      Grid.RowCount:=1;
+      Grid.RowCount:=Grid.FixedRows;
     end;
   end;
 end;
