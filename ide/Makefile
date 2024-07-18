@@ -388,7 +388,10 @@ ifeq ($(OS_TARGET),darwin)
 DBG_OPTIONS=-gw
 endif
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
-DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
+ifeq ($(LCL_PLATFORM),cocoa)
+LAZARUS_OPT+=-k-framework -kCocoa -k-weak_framework -kUserNotifications
+endif
+DEFAULT_IDE_OPTIONS= \
   -Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
@@ -4801,11 +4804,11 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
+	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(BIG_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 starter: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 lazbuilder: $(COMPILER_UNITTARGETDIR)
-	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
+	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZBUILD_OPT) $(OPT)'
 all: ide starter lazbuilder
 cleanide:
 	-$(DEL) $(wildcard *$(OEXT))
