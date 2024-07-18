@@ -80,6 +80,12 @@ const
   NSCollectionViewScrollPositionNearestHorizontalEdge: NSUInteger = 1 shl 9;
 
 type
+  NSCollectionViewScrollDirection = NSInteger; { available in 10_11 }
+const
+  NSCollectionViewScrollDirectionVertical:   NSInteger = 0;
+  NSCollectionViewScrollDirectionHorizontal: NSInteger = 1;
+
+type
   NSUserInterfaceItemIdentifier = NSString; { available in 10_12 }
   NSCollectionViewSupplementaryElementKind = NSString; { available in 10_11 }
 
@@ -95,6 +101,10 @@ type
     function itemSize: NSSize; message 'itemSize'; { available in 10_11 }
     procedure setItemSize( newValue:NSSize );
       message 'setItemSize:'; { available in 10_11 }
+    function scrollDirection:  NSCollectionViewScrollDirection;
+      message 'scrollDirection'; { available in 10_11 }
+    procedure setScrollDirection( newValue: NSCollectionViewScrollDirection );
+      message 'setScrollDirection:'; { available in 10_11 }
   end;
 
   NSCollectionViewGridLayout = objcclass external (NSCollectionViewLayout)
