@@ -1109,9 +1109,7 @@ begin
       begin
         frame:= item.textField.frame;
         frame:= item.view.convertRect_toView( frame, _collectionView );
-        frame.origin.x:= frame.origin.x + 1;
-        frame.size.width:= frame.size.width - 2;
-        frame.size.height:= frame.size.height + 8;
+        _collectionView.styleHandler.onAdjustTextEditorRect( frame );
       end;
     drIcon:
       begin
@@ -2079,7 +2077,7 @@ begin
     _backendControl:= AllocCocoaTableListView;
     _WSHandler:= TCocoaWSListView_TableViewHandler.Create( self );
   end else begin
-    _backendControl:= AllocCocoaCollectionView;
+    _backendControl:= AllocCocoaCollectionView( _viewStyle );
     _WSHandler:= TCocoaWSListView_CollectionViewHandler.Create( self );
   end;
 
