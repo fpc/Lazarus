@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, contnrs, math, AVL_Tree,
   // LCL
   FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
-  ExtCtrls, ComCtrls,
+  ExtCtrls, ComCtrls, LCLType,
   // LazUtils
   AvgLvlTree, LazUTF8,
   // BuildIntf
@@ -121,6 +121,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LinkedFilesTreeViewDblClick(Sender: TObject);
     procedure UnitsStringGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -317,6 +318,16 @@ begin
   FreeAndNil(FItems);
   FDlgLinkedFiles.FreeAndClear;
   FreeAndNil(FDlgLinkedFiles);
+end;
+
+procedure TPPUListDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    Close;
+    Key := 0;
+  end;
 end;
 
 procedure TPPUListDialog.LinkedFilesTreeViewDblClick(Sender: TObject);
