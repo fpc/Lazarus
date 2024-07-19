@@ -1439,8 +1439,10 @@ end;
 
 function TSynPasSyn.Func35: TtkTokenKind;
 begin
-  if KeyComp('Nil') then
-    Result := tkKey
+  if KeyComp('Nil') then begin
+    Result := tkKey;
+    fRange := fRange + [rsAfterIdentifierOrValueAdd];
+  end
   else
   if KeyComp('To') then
     Result := tkKey
