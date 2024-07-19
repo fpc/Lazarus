@@ -1,67 +1,68 @@
 object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Left = 341
-  Height = 420
+  Height = 472
   Top = 318
-  Width = 645
+  Width = 726
   Caption = 'Compiler Options'
-  ClientHeight = 420
-  ClientWidth = 645
-  Constraints.MinHeight = 194
-  Constraints.MinWidth = 390
+  ClientHeight = 472
+  ClientWidth = 726
+  Constraints.MinHeight = 218
+  Constraints.MinWidth = 439
+  DesignTimePPI = 108
+  Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poOwnerFormCenter
-  LCLVersion = '2.1.0.0'
   object CloseButton: TBitBtn
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 564
-    Height = 29
-    Top = 385
-    Width = 75
+    Left = 635
+    Height = 38
+    Top = 427
+    Width = 84
     Anchors = [akRight, akBottom]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 7
     Cancel = True
     Caption = '&Close'
-    Constraints.MinHeight = 22
-    Constraints.MinWidth = 75
+    Constraints.MinHeight = 25
+    Constraints.MinWidth = 84
     Default = True
     Kind = bkClose
     TabOrder = 1
   end
   object PageControl1: TPageControl
     AnchorSideBottom.Control = CloseButton
-    Left = 6
-    Height = 373
-    Top = 6
-    Width = 633
+    Left = 7
+    Height = 413
+    Top = 7
+    Width = 712
     ActivePage = CmdLineParamsTabSheet
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 7
     TabIndex = 0
     TabOrder = 0
     object CmdLineParamsTabSheet: TTabSheet
       Caption = 'CmdLineParams'
-      ClientHeight = 342
-      ClientWidth = 629
+      ClientHeight = 381
+      ClientWidth = 702
       object CmdLineMemo: TMemo
         AnchorSideBottom.Control = RelativePathsCheckBox
-        Left = 6
-        Height = 306
-        Top = 6
-        Width = 617
+        Left = 7
+        Height = 344
+        Top = 7
+        Width = 688
         Align = alTop
         Anchors = [akTop, akLeft, akRight, akBottom]
-        BorderSpacing.Around = 6
+        BorderSpacing.Around = 7
         Lines.Strings = (
           'CmdLineMemo'
         )
+        ReadOnly = True
         ScrollBars = ssAutoVertical
         TabOrder = 0
       end
@@ -69,55 +70,55 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         AnchorSideTop.Side = asrCenter
         AnchorSideBottom.Control = CmdLineParamsTabSheet
         AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 24
-        Top = 318
-        Width = 184
+        Left = 7
+        Height = 23
+        Top = 358
+        Width = 182
         Anchors = [akLeft, akBottom]
         Caption = 'RelativePathsCheckBox'
         Checked = True
-        OnChange = RelativePathsCheckBoxChange
         State = cbChecked
         TabOrder = 1
+        OnChange = RelativePathsCheckBoxChange
       end
       object MultilineCheckBox: TCheckBox
         AnchorSideLeft.Control = RelativePathsCheckBox
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = RelativePathsCheckBox
         AnchorSideBottom.Side = asrBottom
-        Left = 205
-        Height = 24
-        Top = 318
+        Left = 206
+        Height = 23
+        Top = 358
         Width = 151
-        BorderSpacing.Left = 15
+        BorderSpacing.Left = 17
         Caption = 'MultilineCheckBox'
         Checked = True
-        OnChange = MultilineCheckBoxChange
         State = cbChecked
         TabOrder = 2
+        OnChange = MultilineCheckBoxChange
       end
     end
     object InheritedParamsTabSheet: TTabSheet
       Caption = 'InheritedParams'
-      ClientHeight = 342
-      ClientWidth = 629
+      ClientHeight = 381
+      ClientWidth = 702
       object InhTreeView: TTreeView
         Left = 0
-        Height = 287
+        Height = 306
         Top = 0
-        Width = 477
+        Width = 702
         Align = alClient
         ReadOnly = True
         RightClickSelect = True
         TabOrder = 0
-        OnSelectionChanged = InhTreeViewSelectionChanged
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        OnSelectionChanged = InhTreeViewSelectionChanged
       end
       object InhItemMemo: TMemo
         Left = 0
-        Height = 61
-        Top = 292
-        Width = 477
+        Height = 69
+        Top = 312
+        Width = 702
         Align = alBottom
         ReadOnly = True
         ScrollBars = ssAutoVertical
@@ -126,9 +127,9 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
       object InhSplitter: TSplitter
         Cursor = crVSplit
         Left = 0
-        Height = 5
-        Top = 287
-        Width = 477
+        Height = 6
+        Top = 306
+        Width = 702
         Align = alBottom
         ResizeAnchor = akBottom
       end
