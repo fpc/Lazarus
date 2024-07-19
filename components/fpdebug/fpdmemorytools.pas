@@ -1,6 +1,7 @@
 unit FpdMemoryTools;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$HINT 5024 OFF}
 
@@ -63,11 +64,19 @@ type
   PFpDbgValueSize = ^TFpDbgValueSize;
 
   TDbgAddressClass = byte;
+
+  { TFpDbgMemLocation }
+
   TFpDbgMemLocation = packed record
     Address: TDbgPtr;
     MType: TFpDbgMemLocationType;
     BitOffset: TBitAddr;
     AddressClass: TDbgAddressClass;  // Used by AVR. 0 = data (or unspecified), 1 = progmem, 2 = EEPROM
+    class operator = (a, b: TFpDbgMemLocation): boolean; inline;
+
+    // for sorting as key in lists
+    class operator < (a, b: TFpDbgMemLocation): boolean; inline;
+    class operator > (a, b: TFpDbgMemLocation): boolean; inline;
   end;
   PFpDbgMemLocation = ^TFpDbgMemLocation;
 
@@ -573,8 +582,6 @@ function IsByteSize(const ASize: TFpDbgValueSize): Boolean; inline;
 function SizeToFullBytes(const ASize: TFpDbgValueSize): Int64; inline;  // Bytes needed to contain this size
 function SizeToBits(const ASize: TFpDbgValueSize): Int64; inline;  // Bytes needed to contain this size
 
-operator =  (const a,b: TFpDbgMemLocation): Boolean; inline;
-
 operator =  (const a,b: TFpDbgValueSize): Boolean; inline;
 operator =  (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
 operator >  (const a: TFpDbgValueSize; b: Int64): Boolean; inline;
@@ -789,11 +796,6 @@ function SizeToBits(const ASize: TFpDbgValueSize): Int64;
 begin
   assert((ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) ), '(ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) )');
   Result := ASize.Size * 8 + ASize.BitSize;
-end;
-
-operator = (const a, b: TFpDbgMemLocation): Boolean;
-begin
-  Result := (a.Address = b.Address) and (a.MType = b.MType) and (a.BitOffset = b.BitOffset);
 end;
 
 operator = (const a, b: TFpDbgValueSize): Boolean;
@@ -1802,6 +1804,39 @@ begin
 
   FCaches.RemovePointer(ACache);
   ACache.Free;
+end;
+
+{ TFpDbgMemLocation }
+
+class operator TFpDbgMemLocation. = (a, b: TFpDbgMemLocation): boolean;
+begin
+  Result := (a.Address = b.Address) and
+            (a.MType = b.MType) and (a.BitOffset = b.BitOffset) and
+            (a.AddressClass = b.AddressClass);
+end;
+
+class operator TFpDbgMemLocation.<(a, b: TFpDbgMemLocation): boolean;
+begin
+  Result := (a.Address < b.Address) or
+            ( (a.Address = b.Address) and
+              ( (a.MType < b.MType) or
+                ( (a.MType = b.MType) and
+                  (a.BitOffset < b.BitOffset) or
+                  ( (a.BitOffset = b.BitOffset) and (a.AddressClass < b.AddressClass) )
+                )
+             ) );
+end;
+
+class operator TFpDbgMemLocation.>(a, b: TFpDbgMemLocation): boolean;
+begin
+  Result := (a.Address > b.Address) or
+            ( (a.Address = b.Address) and
+              ( (a.MType > b.MType) or
+                ( (a.MType = b.MType) and
+                  (a.BitOffset > b.BitOffset) or
+                  ( (a.BitOffset = b.BitOffset) and (a.AddressClass > b.AddressClass) )
+                )
+             ) );
 end;
 
 { TFpDbgMemManager }

@@ -283,6 +283,8 @@ type
   public
     procedure Init(AScopeListPtr: PDwarfScopeList);
 
+    function IsEqual(AnOther: TDwarfScopeInfo): Boolean;
+
     function IsValid: Boolean; inline;
     property Index: Integer read FIndex write SetIndex;
     property Entry: Pointer read GetEntry;
@@ -416,6 +418,7 @@ type
     function  ReadStartScope(out AStartScope: TDbgPtr): Boolean; inline;
     function  IsAddressInStartScope(AnAddress: TDbgPtr): Boolean; inline;
     function  IsArtificial: Boolean; inline;
+    function  IsEqual(AnOther: TDwarfInformationEntry): Boolean; inline;
   public
     // Scope
     procedure GoParent; inline;
@@ -523,6 +526,8 @@ type
     destructor Destroy; override;
 
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
+
+    function IsEqual(AnOther: TFpSymbol): Boolean; override;
 
     property CompilationUnit: TDwarfCompilationUnit read FCU;
     property InformationEntry: TDwarfInformationEntry read FInformationEntry;
@@ -1701,6 +1706,11 @@ procedure TDwarfScopeInfo.Init(AScopeListPtr: PDwarfScopeList);
 begin
   FIndex := -1;
   FScopeListPtr := AScopeListPtr;
+end;
+
+function TDwarfScopeInfo.IsEqual(AnOther: TDwarfScopeInfo): Boolean;
+begin
+  Result := IsValid and AnOther.IsValid and (FIndex = AnOther.FIndex);
 end;
 
 function TDwarfScopeInfo.IsValid: Boolean;
@@ -3511,6 +3521,14 @@ begin
   if Result then Result := Val <> 0;
 end;
 
+function TDwarfInformationEntry.IsEqual(AnOther: TDwarfInformationEntry): Boolean;
+begin
+  Result := (FCompUnit = AnOther.FCompUnit) and (
+              ( (FInformationData <> nil) and (FInformationData = AnOther.FInformationData) ) or
+              ( FScope.IsEqual(AnOther.FScope) )
+            );
+end;
+
 { TDWarfLineMap }
 
 procedure TDWarfLineMap.Init;
@@ -4462,6 +4480,12 @@ function TDbgDwarfSymbolBase.CreateSymbolScope(
   ): TFpDbgSymbolScope;
 begin
   Result := nil;
+end;
+
+function TDbgDwarfSymbolBase.IsEqual(AnOther: TFpSymbol): Boolean;
+begin
+  Result := (AnOther is TDbgDwarfSymbolBase) and
+            FInformationEntry.IsEqual(TDbgDwarfSymbolBase(AnOther).FInformationEntry);
 end;
 
 { TFpSymbolDwarfDataLineInfo }

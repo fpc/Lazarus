@@ -352,6 +352,7 @@ var
   Cache: TFpDbgMemCacheBase;
   Dummy: QWord;
   MLoc: TFpDbgMemLocation;
+  ForceVariant: Boolean;
 begin
   Result := True;
 
@@ -453,6 +454,8 @@ begin
     end;
     MemberValue.ReleaseReference;
 
+    ForceVariant := vfArrayOfVariant in AnFpValue.Flags;
+
     inc(FTotalArrayCnt, Cnt);
     for i := StartIdx to StartIdx + Cnt - 1 do begin
       if (FRecurseCnt < 0) and (FTotalArrayCnt > MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH) then
@@ -482,10 +485,14 @@ begin
       end;
 
       EntryRes := AnResData.SetNextArrayData;
-      if MemberValue = nil then
-        EntryRes.CreateError('Error: Could not get member')
-      else
+      if MemberValue = nil then begin
+        EntryRes.CreateError('Error: Could not get member');
+      end
+      else begin
+        if ForceVariant and not (vfVariant in MemberValue.Flags) then // vfVariant => variant will be created
+          EntryRes := EntryRes.CreateVariantValue;
         DoWritePointerWatchResultData(MemberValue, EntryRes, Addr);
+      end;
 
       if (i = StartIdx) and (MemberValue <> nil) and FEncounteredError and
          (ti <> nil) and (ti.Flags * [sfDynArray, sfStatArray] <> [])
@@ -881,7 +888,8 @@ begin
     //skRegister: ;
     //skAddress: ;
     else begin
-        AnResData.CreateError('Unknown data');
+        if IsError(AnFpValue.LastError) then  // will be handled after the case
+          AnResData.CreateError('Unknown data');
         Result := True;
       end;
   end;
