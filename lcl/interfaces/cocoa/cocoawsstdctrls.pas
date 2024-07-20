@@ -1101,8 +1101,9 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
+  if NOT TCocoaTextField(field).fixedBorderStyle then
+    TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   UpdateFocusRing(field, TCustomEdit(AWinControl).BorderStyle);
 
   Result:=TLCLHandle(field);

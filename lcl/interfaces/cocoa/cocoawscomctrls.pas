@@ -227,8 +227,6 @@ type
     function documentView: NSView; message 'documentView';
     function scrollView: TCocoaScrollView; message 'scrollView';
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
-    procedure addSubview(aView: NSView); override;
-    procedure setScrollView(aView: TCocoaScrollView); message 'setScrollView:';
     function initializing: Boolean; message 'isinitializing';
   end;
 
@@ -2041,17 +2039,6 @@ begin
   Result:= _WSHandler;
 end;
 
-procedure TCocoaListView.addSubview(aView: NSView);
-begin
-  self.documentView.addSubview(aView);
-end;
-
-procedure TCocoaListView.setScrollView(aView: TCocoaScrollView);
-begin
-  _scrollView:= aView;
-  Inherited addSubview(aView);
-end;
-
 function TCocoaListView.initializing: Boolean;
 begin
   Result:= _initializing;
@@ -2087,7 +2074,7 @@ begin
   _scrollView.setDocumentView( _backendControl );
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
   _scrollView.callback:= self.callback;
-  self.setScrollView( _scrollView );
+  self.addSubView( _scrollView );
   ScrollViewSetBorderStyle( _scrollView, callback.getBorderStyle );
 
   backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);

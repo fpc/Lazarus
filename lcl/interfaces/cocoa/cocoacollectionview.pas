@@ -67,6 +67,7 @@ type
     procedure backend_onInit;
   public
     procedure dealloc; override;
+    procedure addSubview(aView: NSView); override;
   public
     procedure updateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem );
       message 'updateItemValue:cocoaItem:';
@@ -118,6 +119,8 @@ type
     procedure collectionView_didDeselectItemsAtIndexPaths(
       collectionView: NSCollectionView; indexPaths:NSSet );
       message 'collectionView:didDeselectItemsAtIndexPaths:';
+
+    procedure mouseDown(theEvent: NSEvent); override;
   end;
 
 function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
@@ -285,9 +288,8 @@ end;
 procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
-  aFrame.origin.x:= aFrame.origin.x + 1;
-  aFrame.size.width:= aFrame.size.width - 2;
-  aFrame.size.height:= aFrame.size.height + 8;
+  aFrame.origin.x:= aFrame.origin.x + 2;
+  aFrame.size.width:= aFrame.size.width - 4;
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
@@ -362,9 +364,7 @@ end;
 procedure TCocoaListView_CollectionView_SmallIconHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
-  aFrame.origin.y:= aFrame.origin.y - 4;
   aFrame.size.width:= aFrame.size.width + 4;
-  aFrame.size.height:= aFrame.size.height + 8;
 end;
 
 { TCocoaListView_CollectionView_ListHandler }
@@ -424,10 +424,9 @@ end;
 procedure TCocoaListView_CollectionView_ListHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
-  aFrame.origin.x:= aFrame.origin.x - 3;
-  aFrame.origin.y:= aFrame.origin.y - 3;
-  aFrame.size.width:= aFrame.size.width + 6;
-  aFrame.size.height:= aFrame.size.height + 6;
+  aFrame.origin.x:= aFrame.origin.x - 2;
+  aFrame.origin.y:= aFrame.origin.y - 2;
+  aFrame.size.width:= aFrame.size.width + 4;
 end;
 
 { TCocoaCollectionItem }
@@ -525,6 +524,18 @@ procedure TCocoaCollectionView.dealloc;
 begin
   inherited dealloc;
   FreeAndNil( self.styleHandler );
+end;
+
+procedure TCocoaCollectionView.addSubview(aView: NSView);
+var
+  field: TCocoaTextField;
+begin
+  if aView.isKindOfClass(TCocoaTextField) then begin
+    field:= TCocoaTextField( aView );
+    field.setBezeled( False );
+    field.fixedBorderStyle:= True;
+  end;
+  inherited addSubview(aView);
 end;
 
 procedure TCocoaCollectionView.updateItemValue(
@@ -705,6 +716,11 @@ begin
     if Assigned(self.callback) then
       self.callback.selectOne( indexPath.item, False );
   end;
+end;
+
+procedure TCocoaCollectionView.mouseDown(theEvent: NSEvent);
+begin
+  inherited mouseDown(theEvent);
 end;
 
 end.
