@@ -10208,13 +10208,16 @@ instance.
 </element>
 
 <element name="TButtonControl.Checked">
-<short>Indicates the checked state for the control.</short>
+<short>
+Indicates the checked state for the control as a Boolean value.
+</short>
 <descr>
 <p>
 <var>Checked</var> is a <var>Boolean</var> property which indicates if the 
 control is displayed using its "checked" or "unchecked" state. The value for 
 the property is always <b>False</b> in <var>TButtonControl</var>, and is 
-overridden in descendent classes like TCustomCheckBox.
+overridden in descendent classes like 
+<var>TCustomCheckBox</var>/<var>TCheckBox</var>.
 </p>
 </descr>
 </element>
@@ -10243,9 +10246,9 @@ property in a linked button action is updated. This prevents duplicate OnChange 
 </p>
 </descr>
 <seealso>
-<link id="TButtonControl.DoOnChange"/>
 <link id="TCustomCheckBox.DoClickOnChange"/>
 <link id="TCustomCheckBox.Click"/>
+<link id="TButtonControl.DoOnChange"/>
 <link id="TButtonActionLink.SetChecked"/>
 <link id="TButtonActionLink.IsCheckedLinked"/>
 </seealso>
@@ -10253,7 +10256,7 @@ property in a linked button action is updated. This prevents duplicate OnChange 
 
 <element name="TButtonControl.OnChange">
 <short>
-Event handler for signalled when the button control is clicked.
+Event handler signalled when the button control is clicked.
 </short>
 <descr>
 <p>
@@ -11921,7 +11924,67 @@ enables auto-sizing of the text displayed for the control instance.
 <element name="TCheckBox.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TCheckBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TCheckBox.Caption" link="#lcl.controls.TControl.Caption"/>
-<element name="TCheckBox.Checked" link="#lcl.stdctrls.TButtonControl.Checked"/>
+
+<element name="TCheckBox.Checked">
+<short>
+Indicates the checked state for the control as a Boolean value.
+</short>
+<descr>
+<p>
+<var>Checked</var> is a <var>Boolean</var> property which indicates if the 
+control is displayed using its "checked" or "unchecked" state. The default 
+value for the property is <b>False</b> and indicates the control uses its 
+unchecked state.
+</p>
+<p>
+Checked is a published property in TCheckBox and uses the overridden read and 
+write access specifiers from TCustomCheckBox (GetChecked and SetChecked). The 
+property value is read from and written to the State property using one of 
+the TCheckBoxState enumeration values. For example:
+</p>
+<table>
+<tr>
+<td><b>State</b> value</td>
+<td><b>Checked</b> value</td>
+</tr>
+<tr>
+<td><var>cbUnchecked</var></td>
+<td><b>False</b></td>
+</tr>
+<tr>
+<td><var>cbChecked</var></td>
+<td><b>True</b></td>
+</tr>
+<tr>
+<td><var>cbGrayed</var></td>
+<td>The value in Checked is not significant.</td>
+</tr>
+</table>
+<p>
+Changing the value in Checked causes State to be updated with the corresponding 
+TCheckBoxState value, which in turn, calls either the Click method or the 
+OnChange event handler.
+</p>
+<p>
+See <link id="TCheckBox.State">State</link> and 
+<link id="TButtonControl.ClicksDisabled">ClicksDisabled</link> for more information.
+</p>
+</descr>
+<seealso>
+<link id="TCheckBox.State"/>
+<link id="TCheckBox.Action"/>
+<link id="TCheckBox.OnClick"/>
+<link id="TCheckBox.OnChange"/>
+<link id="TCustomCheckBox.GetChecked"/>
+<link id="TCustomCheckBox.SetChecked"/>
+<link id="TCheckBoxState"/>
+<link id="TButtonControl.Checked"/>
+<link id="TButtonControl.ClicksDisabled"/>
+<link id="TButtonControl.Click"/>
+<link id="TButtonControl.DoOnChange"/>
+</seealso>
+</element>
+
 <element name="TCheckBox.Color" link="#lcl.controls.TControl.Color"/>
 <element name="TCheckBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TCheckBox.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
@@ -11940,8 +12003,8 @@ enables auto-sizing of the text displayed for the control instance.
 <element name="TCheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TCheckBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
 <element name="TCheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TCheckBox.TabStop">
 
+<element name="TCheckBox.TabStop">
 <short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
 <descr>
 <p>
@@ -11958,7 +12021,7 @@ TCheckBox.
 <element name="TCheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCheckBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
 <element name="TCheckBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-
+<element name="TCheckBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TCheckBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TCheckBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TCheckBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -11966,8 +12029,8 @@ TCheckBox.
 <element name="TCheckBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
 <element name="TCheckBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TCheckBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TCheckBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
 <element name="TCheckBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TCheckBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
 <element name="TCheckBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
 <element name="TCheckBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TCheckBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
