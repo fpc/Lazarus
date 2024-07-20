@@ -41,7 +41,8 @@ interface
 
 uses
   {$IFDEF WINDOWS} Windows, {$ENDIF}
-  Classes, SysUtils, fgl, math, LazUTF8, lazCollections, UTF8Process, LazLoggerBase,
+  Classes, SysUtils, fgl, math, LazUTF8, lazCollections, UTF8Process,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   DbgIntfDebuggerBase, FpdMemoryTools, LazDebuggerUtils, syncobjs;
 
 type
