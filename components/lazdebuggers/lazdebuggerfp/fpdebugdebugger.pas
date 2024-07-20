@@ -1924,7 +1924,8 @@ end;
 procedure TFPBreakpoint.SetBreak;
 begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-  assert((FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) ), 'TFPBreakpoint.SetBreak: (FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) )');
+  //Wrong assert. If the editor is not locked and lines are removed, then breakpoints can move several times.
+  //assert((FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) ), 'TFPBreakpoint.SetBreak: (FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) )');
   assert((FInternalBreakpoint=nil) or FLocationChanged, 'TFPBreakpoint.SetBreak: (FInternalBreakpoint=nil) or FLocationChanged');
   MaybeAbortWorker;
 
