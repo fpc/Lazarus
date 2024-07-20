@@ -2212,6 +2212,8 @@ end;
 constructor TFpValueDwarf.Create(ADwarfTypeSymbol: TFpSymbolDwarfType);
 begin
   FTypeSymbol := ADwarfTypeSymbol;
+  if FTypeSymbol <> nil then
+    FTypeSymbol.AddReference;
   inherited Create;
 end;
 
@@ -2220,6 +2222,7 @@ begin
   FTypeCastSourceValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeCastSourceValue, ClassName+'.FTypeCastSourceValue'){$ENDIF};
   FStructureValue.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FStructureValue, 'TDbgDwarfSymbolValue'){$ENDIF};
   FDataSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FDataSymbol, ClassName+'.FDataSymbol'){$ENDIF};
+  FTypeSymbol.ReleaseReference;
   inherited Destroy;
 end;
 
