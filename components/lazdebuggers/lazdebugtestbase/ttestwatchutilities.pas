@@ -26,7 +26,7 @@ type
     rkMatch, rkInteger, rkCardinal, rkFloat, rkBool, rkSizedBool, rkEnum, rkSet,
     rkChar, rkAnsiString, rkShortString, rkWideString, rkPointer, rkPointerAddr,
     rkClass, rkObject, rkRecord, rkInterface, rkField,
-    rkStatArray, rkDynArray
+    rkArray, rkStatArray, rkDynArray
   );
 
   TWatchExpErrorHandlingFlag =
@@ -347,6 +347,7 @@ function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String=''): TWat
 function wePointerAddr(AExpVal: Pointer; ATypeName: String=''): TWatchExpectationResult;
 function wePointerAddr(AExpVal: Pointer; AExpSubVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
 
+function weArray(const AExpVal: Array of TWatchExpectationResult; AExpFullLen: Integer; ATypeName: String=''): TWatchExpectationResult; overload;
 function weStatArray(const AExpVal: Array of TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult; overload;
 function weStatArray(const AExpVal: Array of TWatchExpectationResult; AExpFullLen: Integer; ATypeName: String=''): TWatchExpectationResult; overload;
 function weDynArray(const AExpVal: Array of TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult; overload;
@@ -667,6 +668,21 @@ begin
   Result.ExpPointerValue := AExpVal;
   SetLength(Result.ExpSubResults, 1);
   Result.ExpSubResults[0] := AExpSubVal;
+end;
+
+function weArray(const AExpVal: array of TWatchExpectationResult; AExpFullLen: Integer;
+  ATypeName: String): TWatchExpectationResult;
+var
+  i: Integer;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkArray;
+  Result.ExpSymKind := skArray;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFullArrayLen := AExpFullLen;
+  SetLength(Result.ExpSubResults, Length(AExpVal));
+  for i := 0 to high(AExpVal) do
+    Result.ExpSubResults[i] := AExpVal[i];
 end;
 
 function weStatArray(const AExpVal: array of TWatchExpectationResult;
@@ -1554,6 +1570,9 @@ begin
   ehf := AContext.Expectation.ExpErrorHandlingFlags[Compiler.SymbolType];
   AContext.IsNested := AnIsNested;
 
+  if (AContext.WatchRes.ValueKind = rdkVariant) and (AContext.WatchRes.DerefData <> nil) then
+    AContext.WatchRes := AContext.WatchRes.DerefData;
+
   // TODO: can be pre-printed for an error
   if not ASkipErrCheck then begin
     if ehExpectError in ehf then begin
@@ -1585,6 +1604,7 @@ begin
     rkObject:      Result := CheckResultObject(AContext, AnIgnoreRsn);
     rkRecord:      Result := CheckResultRecord(AContext, AnIgnoreRsn);
     rkInterface:   Result := CheckResultInterface(AContext, AnIgnoreRsn);
+    rkArray:       Result := CheckResultArray(AContext, AnIgnoreRsn);
     rkStatArray:   Result := CheckResultArray(AContext, AnIgnoreRsn);
     rkDynArray:    Result := CheckResultArray(AContext, AnIgnoreRsn);
   end;
