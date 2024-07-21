@@ -893,7 +893,7 @@ begin
     {$ELSE}
     AWindowManager := 'Nil';
     {$ENDIF}
-    if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') then
+    if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') or (AWindowManager = 'xfwm4') then
       fLockTopLevelWindowResizeOnNativeCall := 1
     else
       fLockTopLevelWindowResizeOnNativeCall := 0;
