@@ -1351,6 +1351,9 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
   lclcb.selectionIndexSet.removeAllIndexes;
   _collectionView.reloadData();
 end;
