@@ -223,7 +223,7 @@ procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
 const
   NSFocusRing : array [TBorderStyle] of NSBorderType = (
     NSFocusRingTypeNone,   // bsNone
-    NSFocusRingTypeDefault // bsSingle  s
+    NSFocusRingTypeDefault // bsSingle
   );
 begin
   if Assigned(v) and CocoaHideFocusNoBorder then

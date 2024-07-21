@@ -274,11 +274,12 @@ type
     function GetImageFromIndex(imgIdx: Integer): NSImage; virtual;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual;
     procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
-    procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet); virtual;
-    function shouldTableSelectionChange(NewSel: Integer): Boolean; virtual;
+    procedure selectionChanged(ARow: Integer; Added, Removed: NSIndexSet); virtual;
+    function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
+    function GetBorderStyle: TBorderStyle;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -676,7 +677,7 @@ begin
   // do nothing
 end;
 
-procedure TLCLListBoxCallback.tableSelectionChange(ARow: Integer; Added,
+procedure TLCLListBoxCallback.selectionChanged(ARow: Integer; Added,
   Removed: NSIndexSet);
 begin
   // do not notify about selection changes while clearing
@@ -684,7 +685,7 @@ begin
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
-function TLCLListBoxCallback.shouldTableSelectionChange(NewSel: Integer
+function TLCLListBoxCallback.shouldSelectionChange(NewSel: Integer
   ): Boolean;
 begin
   Result:= true;
@@ -712,6 +713,11 @@ procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
 begin
   if TCustomListBox(Target).Style = lbOwnerDrawVariable then
     TCustomListBox(Target).MeasureItem(rowidx, h);
+end;
+
+function TLCLListBoxCallback.GetBorderStyle: TBorderStyle;
+begin
+  Result:= TCustomListBox(Target).BorderStyle;
 end;
 
 { TLCLCheckBoxCallback }
@@ -1095,8 +1101,9 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
+  if NOT TCocoaTextField(field).fixedBorderStyle then
+    TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   UpdateFocusRing(field, TCustomEdit(AWinControl).BorderStyle);
 
   Result:=TLCLHandle(field);

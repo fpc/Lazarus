@@ -31,7 +31,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate, CocoaConst, CocoaConfig,
   // LCL
-  LCLType;
+  LCLType, Controls;
 
 type
 
@@ -45,11 +45,12 @@ type
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
-    procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
-    function shouldTableSelectionChange(NewSel: Integer): Boolean;
+    procedure selectionChanged(ARow: Integer; Added, Removed: NSIndexSet);
+    function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
+    function GetBorderStyle: TBorderStyle;
   end;
 
   { TCocoaStringList }
@@ -196,22 +197,6 @@ type
     procedure setButtonType(aType: NSButtonType); override;
   end;
 
-  { TCellCocoaTableListView }
-
-  TCellCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-  public
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
-    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
-    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
-    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
-    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
-  end;
-
-  TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-    // overriding the highlight color for dark theme
-    procedure highlightSelectionInClipRect(clipRect: NSRect); override;
-  end;
-
   // View based NSTableView
 
   TCocoaTableListItem = objcclass(NSView)
@@ -241,6 +226,45 @@ type
   end;
 
 
+function AllocCocoaTableListView: TCocoaTableListView;
+
+function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
+function LCLGetTopRow(tbl: NSTableView): Integer;
+
+const
+  DefaultRowHeight = 16; // per "rowHeight" property docs
+
+implementation
+
+uses
+  CocoaWSComCtrls, CocoaWSCommon;
+
+type
+  { TCellCocoaTableListView }
+
+  TCellCocoaTableListView = objcclass(
+    TCocoaTableListView,
+    NSTableViewDelegateProtocol,
+    NSTableViewDataSourceProtocol,
+    TCocoaListViewBackendControlProtocol )
+  public
+    procedure backend_setCallback( cb: TLCLListViewCallback );
+    procedure backend_reloadData;
+    procedure backend_onInit;
+  public
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
+    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
+    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
+    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
+  end;
+
+  TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+    // overriding the highlight color for dark theme
+    procedure highlightSelectionInClipRect(clipRect: NSRect); override;
+  end;
+
   { TViewCocoaTableListView }
 
   TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
@@ -255,17 +279,6 @@ type
     function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; override;
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
-
-function AllocCocoaTableListView: TCocoaTableListView;
-
-function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
-function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
-function LCLGetTopRow(tbl: NSTableView): Integer;
-
-const
-  DefaultRowHeight = 16; // per "rowHeight" property docs
-
-implementation
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 var
@@ -655,7 +668,7 @@ end;
 function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
   row: NSInteger): Boolean;
 begin
-  Result:= callback.shouldTableSelectionChange( row );
+  Result:= callback.shouldSelectionChange( row );
 end;
 
 procedure TCocoaTableListView.tableView_didClickTableColumn(
@@ -856,7 +869,7 @@ begin
     CompareIndexSets(beforeSel, selectedRowIndexes, rm, ad);
 
     NewSel := Self.selectedRow();
-    callback.tableSelectionChange(NewSel, ad, rm);
+    callback.selectionChanged(NewSel, ad, rm);
 
     beforeSel.release;
     beforeSel := nil;
@@ -984,6 +997,33 @@ begin
   if not Assigned(acolumn) then Exit;
   NSCell(acolumn.headerCell).setAlignment( aalignment );
   NSCell(acolumn.dataCell).setAlignment( aalignment );
+end;
+
+procedure TCellCocoaTableListView.backend_setCallback(cb: TLCLListViewCallback);
+begin
+  self.callback:= cb;
+end;
+
+procedure TCellCocoaTableListView.backend_reloadData;
+begin
+  self.reloadData;
+end;
+
+procedure TCellCocoaTableListView.backend_onInit;
+var
+  sz: NSSize;
+begin
+  self.setDataSource(self);
+  self.setDelegate(self);
+  self.setAllowsColumnReordering(False);
+  self.setAllowsColumnSelection(False);
+
+  UpdateFocusRing( self, self.callback.getBorderStyle );
+
+  sz := self.intercellSpacing;
+  // Windows compatibility. on Windows there's no extra space between columns
+  sz.width := 0;
+  self.setIntercellSpacing(sz);
 end;
 
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
