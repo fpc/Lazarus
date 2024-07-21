@@ -1142,6 +1142,7 @@ begin
   APasExpr := TFpPascalExpression.Create(AnExpression, FExpressionScope, True);
   APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
   APasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
+  APasExpr.GlobalCache := FDebugger.DbgController.CurrentProcess.GlobalCache;
   APasExpr.Parse;
   try
     if FAllowFunctions and (dfEvalFunctionCalls in FDebugger.EnabledFeatures) then
@@ -1181,6 +1182,7 @@ begin
         PasExpr2 := TFpPascalExpression.Create(CastName+'('+AnExpression+')', FExpressionScope, True);
         PasExpr2.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
         PasExpr2.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
+        PasExpr2.GlobalCache := FDebugger.DbgController.CurrentProcess.GlobalCache;
         PasExpr2.Parse;
         PasExpr2.ResultValue;
         if PasExpr2.Valid then begin

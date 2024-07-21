@@ -90,18 +90,21 @@ type
   private
     FAnAddress: TDBGPtr;
     FAutoFillRegisters: boolean;
+    FContext: TFpDbgSimpleLocationContext;
     FFrameAdress: TDBGPtr;
     FThread: TDbgThread;
     FIsSymbolResolved: boolean;
     FSymbol: TFpSymbol;
     FRegisterValueList: TDbgRegisterValueList;
     FIndex: integer;
+    function GetContext: TFpDbgSimpleLocationContext;
     function GetFunctionName: string;
     function GetProcSymbol: TFpSymbol;
     function GetLine: integer;
     function GetRegisterValueList: TDbgRegisterValueList;
     function GetSourceFile: string;
     function GetSrcClassName: string;
+    procedure SetContext(AValue: TFpDbgSimpleLocationContext);
   public
     constructor create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
     destructor Destroy; override;
@@ -115,6 +118,7 @@ type
     property ProcSymbol: TFpSymbol read GetProcSymbol;
     property Index: integer read FIndex;
     property AutoFillRegisters: boolean read FAutoFillRegisters write FAutoFillRegisters;
+    property Context: TFpDbgSimpleLocationContext read GetContext write SetContext;
   end;
 
   { TDbgCallstackEntryList }
@@ -850,6 +854,8 @@ type
 
   TDebugOutputEvent = procedure(Sender: TObject; ProcessId, ThreadId: Integer; AMessage: String) of object;
 
+  TFpDbgDataCache = class(specialize TFPGMapObject<Pointer, TObject>);
+
   { TDbgProcess }
 
   TDbgProcess = class(TDbgInstance)
@@ -867,6 +873,7 @@ type
     FWatchPointData: TFpWatchPointData;
     FProcessConfig: TDbgProcessConfig;
     FConfig: TDbgConfig;
+    FGlobalCache: TFpDbgDataCache;
     function DoGetCfiFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function DoGetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function GetDisassembler: TDbgAsmDecoder;
@@ -1041,6 +1048,7 @@ type
     property Disassembler: TDbgAsmDecoder read GetDisassembler;
     property ThreadMap: TThreadMap read FThreadMap;
     property Config: TDbgConfig read FConfig;
+    property GlobalCache: TFpDbgDataCache read FGlobalCache write FGlobalCache;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
@@ -1843,6 +1851,11 @@ begin
     result := '';
 end;
 
+function TDbgCallstackEntry.GetContext: TFpDbgSimpleLocationContext;
+begin
+  Result := FContext;
+end;
+
 function TDbgCallstackEntry.GetLine: integer;
 var
   Symbol: TFpSymbol;
@@ -1893,6 +1906,17 @@ begin
   end;
 end;
 
+procedure TDbgCallstackEntry.SetContext(AValue: TFpDbgSimpleLocationContext);
+begin
+  if FContext = AValue then
+    exit;
+  if FContext <> nil then
+    FContext.ReleaseReference;
+  FContext := AValue;
+  if FContext <> nil then
+    FContext.AddReference;
+end;
+
 constructor TDbgCallstackEntry.create(AThread: TDbgThread; AnIndex: integer; AFrameAddress, AnAddress: TDBGPtr);
 begin
   FThread := AThread;
@@ -1906,6 +1930,7 @@ destructor TDbgCallstackEntry.Destroy;
 begin
   FreeAndNil(FRegisterValueList);
   ReleaseRefAndNil(FSymbol);
+  FContext.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -2534,6 +2559,7 @@ begin
   FOSDbgClasses := AnOsClasses;
   FProcessConfig := AProcessConfig;
 
+  FGlobalCache := TFpDbgDataCache.Create;
   FBreakpointList := TFpInternalBreakpointList.Create(False);
   FWatchPointList := TFpInternalBreakpointList.Create(False);
   FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
@@ -2594,6 +2620,7 @@ begin
   FreeItemsInMap(FLibMap);
   FLibMap.ClearAddedAndRemovedLibraries;
 
+  FGlobalCache.Free;
   FreeAndNil(FWatchPointData);
   FBreakTargetHandler.BreakMap := nil;
   FreeAndNil(FBreakMap);
@@ -2665,9 +2692,16 @@ begin
 
       if Frame <> nil then begin
         Addr := Frame.AnAddress;
-        Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
-        Ctx.SetFrameBaseCallback(@DoGetFrameBase);
-        Ctx.SetCfaFrameBaseCallback(@DoGetCfiFrameBase);
+        Ctx := Frame.Context;
+        if Ctx <> nil then begin
+          Ctx.AddReference;
+        end
+        else begin
+          Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
+          Ctx.SetFrameBaseCallback(@DoGetFrameBase);
+          Ctx.SetCfaFrameBaseCallback(@DoGetCfiFrameBase);
+          Frame.Context := Ctx;
+        end;
         sym := Frame.ProcSymbol;
         if sym <> nil then
           Result := sym.CreateSymbolScope(Ctx);
@@ -2956,6 +2990,7 @@ var
   t: TDbgThread;
 begin
   ClearAddedAndRemovedLibraries;
+  FGlobalCache.Clear;
 
   for t in FThreadMap do
     t.DoBeforeProcessLoop;
@@ -3030,6 +3065,7 @@ var
   Iterator: TMapIterator;
   Thread: TDbgThread;
 begin
+  GlobalCache.Clear;
   Iterator := TLockedMapIterator.Create(FThreadMap);
   try
     Iterator.First;
