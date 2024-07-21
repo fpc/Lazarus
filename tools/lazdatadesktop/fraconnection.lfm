@@ -15,7 +15,9 @@ object ConnectionFrame: TConnectionFrame
     Width = 300
     Align = alLeft
     Images = ImgDatamodule.AppImages
+    ReadOnly = True
     TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnSelectionChanged = DoSelectNode
   end
   object FSplit: TSplitter
@@ -36,13 +38,13 @@ object ConnectionFrame: TConnectionFrame
     OnChange = DoTabChange
     object FTSDisplay: TTabSheet
       Caption = 'Selected Object'
-      ClientHeight = 370
-      ClientWidth = 342
+      ClientHeight = 368
+      ClientWidth = 340
       object FDisplay: TPanel
         Left = 0
-        Height = 370
+        Height = 368
         Top = 0
-        Width = 342
+        Width = 340
         Align = alClient
         TabOrder = 0
       end
