@@ -652,9 +652,10 @@ begin
     Result := 0;
 end;
 
+// TListView in LCL already supports editing, return False to avoid conflicts
 function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
-  Result := not readOnly;
+  Result:= False;
 end;
 
 function TCocoaTableListView.selectionShouldChangeInTableView(
