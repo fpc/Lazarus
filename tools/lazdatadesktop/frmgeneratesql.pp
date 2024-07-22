@@ -34,10 +34,21 @@ type
   { TGenerateSQLForm }
 
   TGenerateSQLForm = class(TForm)
+    BCopyAllToClipboard1: TButton;
+    BCopyCreateSQLToClipboard: TButton;
+    BCopySelectToClipboard: TButton;
+    BCopyInsertSQLToClipboard: TButton;
+    BCopyUpdateSQLToClipboard: TButton;
+    BCopyDeleteSQLToClipboard1: TButton;
     BGenerate: TButton;
+    BCopyAllToClipboard: TButton;
     ButtonPanel: TButtonPanel;
     CBTables: TComboBox;
     CBIgnoreSelection: TCheckBox;
+    CBQuoteSQL: TCheckBox;
+    CBPreserveLineFeeds: TCheckBox;
+    CBAddConst: TCheckBox;
+    GBCode: TGroupBox;
     LBKeyFields: TListBox;
     LCBTables: TLabel;
     Label2: TLabel;
@@ -50,10 +61,15 @@ type
     MUpdate: TMemo;
     MInsert: TMemo;
     MSelect: TMemo;
+    pSQLSelect: TPanel;
     PKeyFields: TPanel;
     POptions: TPanel;
     PSelectFields: TPanel;
     PCSQL: TPageControl;
+    pSQLSelect1: TPanel;
+    pSQLSelect2: TPanel;
+    pSQLSelect3: TPanel;
+    pSQLSelect4: TPanel;
     SELineLength: TTISpinEdit;
     SEIndent: TTISpinEdit;
     CLBOptions: TTICheckGroup;
@@ -63,6 +79,12 @@ type
     TSInsert: TTabSheet;
     TSUpdate: TTabSheet;
     TSDelete: TTabSheet;
+    procedure BCopyCreateSQLToClipboardClick(Sender: TObject);
+    procedure BCopyDeleteSQLToClipboard1Click(Sender: TObject);
+    procedure BCopyInsertSQLToClipboardClick(Sender: TObject);
+    procedure BCopySelectToClipboardClick(Sender: TObject);
+    procedure BCopyAllToClipboardClick(Sender: TObject);
+    procedure BCopyUpdateSQLToClipboardClick(Sender: TObject);
     procedure BGenerateClick(Sender: TObject);
     procedure CBTablesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -71,10 +93,12 @@ type
     FTableDefs : TDDTableDefs;
     FGenerator : TFPDDSQLEngine;
     FSQLGenerated : Boolean;
+    procedure CopySQLToClipBoard(aSelectedMemo: TMemo);
     function GetAS: Boolean;
     function GetSQLStatement(Index: integer): TStrings;
     function GetTableDef: TDDTableDef;
     function GetTableName: String;
+    procedure PostProcess(SQL: TStrings; aConstName: string; Dest: TStrings);
     procedure SetAS(AValue: Boolean);
     procedure SetTableDefs(const AValue: TDDTableDefs);
     procedure SetTableName(const AValue: String);
@@ -102,6 +126,8 @@ var
 
 
 implementation
+
+uses Clipbrd;
 
 Class Function TGenerateSQLFOrm.GenerateSQLDialog(TDS : TDDTableDefs; TN : String; AllowChangeTable : Boolean = True) : Boolean;
 
@@ -142,7 +168,7 @@ end;
 
 function TGenerateSQLForm.GetTableName: String;
 begin
-  Result:=CBTables.Text;
+  Result:=Trim(CBTables.Text);
 end;
 
 procedure TGenerateSQLForm.SetAS(AValue: Boolean);
@@ -181,13 +207,13 @@ Var
   TN : String;
   I : Integer;
 begin
-  TN:=CBTables.Text;
+  TN:=GetTableName;
   With CBTables.Items do
     begin
     Clear;
     If Assigned(FTableDefs) then
       For I:=0 to FTableDefs.Count-1 do
-        AddObject(FTableDefs[i].TableName,FTableDefs[i]);
+        AddObject(Trim(FTableDefs[i].TableName),FTableDefs[i]);
     end;
   With CBTables do
     If (TN<>'') then
@@ -203,8 +229,61 @@ begin
   MDelete.Clear;
   MCreate.Clear;
   FSQLGenerated:=False;
+  BCopyAllToClipboard.Enabled:=False;
+
   ButtonPanel.OKButton.Default:=False;
   BGenerate.Default:=True;
+end;
+
+procedure TGenerateSQLForm.PostProcess(SQL: TStrings; aConstName : string; Dest : TStrings);
+
+Var
+  lIndent : String;
+  i : Integer;
+  lLine,lConst : String;
+  lAddConst,lPreserveLF : Boolean;
+
+begin
+  lIndent:='  ';
+  Dest.BeginUpdate;
+  try
+    Dest.Clear;
+    lAddConst:=CBAddConst.Checked;
+    lPreserveLF:=CBPreserveLineFeeds.Checked;
+    if not CBQuoteSQL.Checked then
+      Dest.Assign(SQL)
+    else
+      begin
+      if lAddConst then
+        begin
+        lConst:='SQL'+aConstName+GetTableName;
+        Dest.Add('  '+lConst+' = ');
+        lIndent:=lIndent+'  ';
+        end;
+      For I:=0 to SQL.Count-1 do
+        begin
+        lLine:=SQL[I];
+        lLine:=''''+StringReplace(lLine,'''','''''',[rfReplaceAll]);
+        if I=SQL.Count-1 then
+          begin
+          lLine:=lLine+'''';
+          if lAddConst then
+            lLine:=lLine+';';
+          end
+        else
+          begin
+          if lPreserveLF then
+            lLine:=lLine+''' + sLineBreak+'
+          else
+            lLine:=lLine+' '' + ';
+          end;
+        Dest.Add(lIndent+lLine);
+        end;
+      end;
+    SQL.Clear;
+  finally
+    Dest.EndUpdate;
+  end;
 end;
 
 procedure TGenerateSQLForm.GenerateSQL;
@@ -225,11 +304,11 @@ procedure TGenerateSQLForm.GenerateSQL;
       Result.Free;
       Raise;
     end;
-
   end;
 
 Var
   KL,FL : TFPDDFieldList;
+  lSQL : TStringList;
   
 begin
   ClearSQL;
@@ -237,30 +316,38 @@ begin
     Raise Exception.Create(SErrSelectTable);
   If (LBFields.SelCount=0) then
     Raise Exception.Create(SErrSelectFields);
+  lSQL:=Nil;
+  FL:=Nil;
   KL:=CreateFieldListFromLB(LBKeyFields);
   try
+    lSQL:=TStringList.Create;
     FL:=CreateFieldListFromLB(LBFields);
-    try
       With FGenerator do
         begin
         TableDef:=Self.TableDef;
-        CreateSelectSQLStrings(FL,KL,MSelect.Lines);
-        CreateInsertSQLStrings(FL,MInsert.Lines);
-        CreateUpdateSQLStrings(FL,KL,MUpdate.Lines);
-        CreateDeleteSQLStrings(KL,MDelete.Lines);
+        TableDef.TableName:=Trim(TableDef.TableName);
+        CreateSelectSQLStrings(FL,KL,lSQL);
+        PostProcess(lSQL,'Select',MSelect.Lines);
+        CreateInsertSQLStrings(FL,lSQL);
+        PostProcess(lSQL,'Insert',MInsert.Lines);
+        CreateUpdateSQLStrings(FL,KL,lSQL);
+        PostProcess(lSQL,'Update',MUpdate.Lines);
+        CreateDeleteSQLStrings(KL,lSQL);
+        PostProcess(lSQL,'Delete',MDelete.Lines);
         If CBIgnoreSelection.Checked  then
-          CreateTableSQLStrings(MCreate.Lines)
+          CreateTableSQLStrings(lSQL)
         else
-          CreateCreateSQLStrings(FL,KL,MCreate.Lines);
+          CreateCreateSQLStrings(FL,KL,lSQL);
+        PostProcess(lSQL,'Create',MCreate.Lines);
         end;
       FSQLGenerated:=True;
+      BCopyAllToClipboard.Enabled:=True;
       BGenerate.Default:=False;
       ButtonPanel.OKButton.Default:=True;
       PCSQL.ActivePage:=TSSelect;
-    finally
-      FL.Free;
-    end;
   finally
+    lSQL.Free;
+    FL.Free;
     KL.Free;
   end;
 end;
@@ -270,7 +357,7 @@ procedure TGenerateSQLForm.SetTableName(const AValue: String);
 begin
   With CBTables do
     begin
-    ItemIndex:=Items.IndexOf(AValue);
+    ItemIndex:=Items.IndexOf(Trim(AValue));
     CBTablesChange(CBTables);
     end;
 end;
@@ -346,6 +433,73 @@ end;
 procedure TGenerateSQLForm.BGenerateClick(Sender: TObject);
 begin
   GenerateSQL;
+end;
+
+procedure TGenerateSQLForm.BCopyAllToClipboardClick(Sender: TObject);
+
+begin
+  CopySQLToClipBoard(Nil);
+end;
+
+procedure TGenerateSQLForm.BCopyUpdateSQLToClipboardClick(Sender: TObject);
+begin
+  CopySQLToClipBoard(MUpdate);
+end;
+
+procedure TGenerateSQLForm.BCopySelectToClipboardClick(Sender: TObject);
+begin
+  CopySQLToClipBoard(MSelect);
+end;
+
+procedure TGenerateSQLForm.BCopyInsertSQLToClipboardClick(Sender: TObject);
+begin
+  CopySQLToClipBoard(MInsert);
+end;
+
+procedure TGenerateSQLForm.BCopyDeleteSQLToClipboard1Click(Sender: TObject);
+begin
+  CopySQLToClipBoard(MDelete);
+end;
+
+procedure TGenerateSQLForm.BCopyCreateSQLToClipboardClick(Sender: TObject);
+begin
+  CopySQLToClipBoard(MCreate);
+end;
+
+Procedure TGenerateSQLForm.CopySQLToClipBoard(aSelectedMemo: TMemo);
+
+Var
+  L: TStrings;
+
+  procedure AddLines(M : TMemo; aComment : string);
+
+  begin
+    if (aSelectedMemo<>Nil) and (M<>aSelectedMemo) then
+      Exit;
+    if not CBQuoteSQL.Checked  then
+      L.Add('-- '+GetTableName+': '+aComment)
+    else if not CBAddConst.Checked then
+      L.Add('// '+GetTableName+': '+aComment);
+    L.Add('');
+    L.AddStrings(M.Lines);
+  end;
+
+begin
+  L:=TStringList.Create;
+  try
+    AddLines(MSelect,'Select');
+    L.Add('');
+    AddLines(MInsert,'Insert');
+    L.Add('');
+    AddLines(MUpdate,'Update');
+    L.Add('');
+    AddLines(MDelete,'Delete');
+    L.Add('');
+    AddLines(MCreate,'Create');
+    Clipboard.AsText:=L.Text;
+  finally
+    L.Free;
+  end;
 end;
 
 

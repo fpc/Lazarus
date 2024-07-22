@@ -1,19 +1,18 @@
 object GenerateSQLForm: TGenerateSQLForm
   Left = 364
-  Height = 423
+  Height = 529
   Top = 295
-  Width = 812
-  ActiveControl = PCSQL
+  Width = 914
   Caption = 'Generate SQL statements'
-  ClientHeight = 423
-  ClientWidth = 812
-  OnCreate = FormCreate
+  ClientHeight = 529
+  ClientWidth = 914
   LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
   object PCSQL: TPageControl
     Left = 6
-    Height = 371
+    Height = 473
     Top = 6
-    Width = 800
+    Width = 902
     ActivePage = TSFields
     Align = alClient
     BorderSpacing.Around = 6
@@ -26,17 +25,17 @@ object GenerateSQLForm: TGenerateSQLForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       OnResize = TSResize
       object POptions: TPanel
         Left = 0
-        Height = 343
+        Height = 443
         Top = 0
         Width = 254
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 343
+        ClientHeight = 443
         ClientWidth = 254
         Constraints.MinWidth = 180
         TabOrder = 0
@@ -77,30 +76,30 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object CBTables: TComboBox
           Left = 4
-          Height = 23
+          Height = 30
           Top = 26
           Width = 238
           Anchors = [akTop, akLeft, akRight]
-          ItemHeight = 15
-          OnChange = CBTablesChange
+          ItemHeight = 0
           Sorted = True
           Style = csDropDownList
           TabOrder = 0
+          OnChange = CBTablesChange
         end
         object BGenerate: TButton
           Left = 4
           Height = 25
-          Top = 314
+          Top = 414
           Width = 238
           Anchors = [akLeft, akRight, akBottom]
           BorderSpacing.InnerBorder = 4
           Caption = '&Generate SQL'
-          OnClick = BGenerateClick
           TabOrder = 1
+          OnClick = BGenerateClick
         end
         object SEindent: TTISpinEdit
           Left = 184
-          Height = 23
+          Height = 28
           Top = 216
           Width = 56
           Anchors = [akTop, akRight]
@@ -109,7 +108,7 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object SELineLength: TTISpinEdit
           Left = 184
-          Height = 23
+          Height = 28
           Top = 245
           Width = 56
           Anchors = [akTop, akRight]
@@ -122,7 +121,7 @@ object GenerateSQLForm: TGenerateSQLForm
           Top = 61
           Width = 234
           Anchors = [akTop, akLeft, akRight]
-          Caption = 'Options'
+          Caption = 'SQL Options'
           Link.TIPropertyName = 'Options'
           Link.AliasValuesStrings = (
             'eoLineFeedAfterField=Linefeed after each field'
@@ -135,11 +134,50 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object CBIgnoreSelection: TCheckBox
           Left = 4
-          Height = 19
+          Height = 23
           Top = 272
-          Width = 171
+          Width = 202
           Caption = 'Create full table creation SQL'
           TabOrder = 5
+        end
+        object GBCode: TGroupBox
+          AnchorSideLeft.Control = CLBOptions
+          AnchorSideRight.Control = CLBOptions
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 105
+          Top = 301
+          Width = 234
+          Anchors = [akTop, akLeft, akRight]
+          Caption = 'Code options'
+          ClientHeight = 88
+          ClientWidth = 232
+          TabOrder = 6
+          object CBQuoteSQL: TCheckBox
+            Left = 16
+            Height = 23
+            Top = 8
+            Width = 91
+            Caption = 'Quote SQL'
+            TabOrder = 0
+          end
+          object CBPreserveLineFeeds: TCheckBox
+            Left = 16
+            Height = 23
+            Top = 56
+            Width = 136
+            Caption = 'Preserve linefeeds'
+            TabOrder = 1
+          end
+          object CBAddConst: TCheckBox
+            AnchorSideLeft.Control = CBQuoteSQL
+            Left = 16
+            Height = 23
+            Top = 32
+            Width = 152
+            Caption = 'Constant declaration'
+            TabOrder = 2
+          end
         end
       end
       object PKeyFields: TPanel
@@ -147,19 +185,19 @@ object GenerateSQLForm: TGenerateSQLForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = PSelectFields
         Left = 254
-        Height = 343
+        Height = 443
         Top = 0
-        Width = 250
+        Width = 294
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 343
-        ClientWidth = 250
+        ClientHeight = 443
+        ClientWidth = 294
         TabOrder = 1
         object LLBKeyFields: TLabel
           Left = 0
           Height = 26
           Top = 0
-          Width = 250
+          Width = 294
           Align = alTop
           Alignment = taCenter
           AutoSize = False
@@ -169,32 +207,42 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object LBKeyFields: TListBox
           Left = 2
-          Height = 298
+          Height = 374
           Top = 34
-          Width = 244
+          Width = 288
           Anchors = [akTop, akLeft, akRight, akBottom]
           ItemHeight = 0
           MultiSelect = True
           ScrollWidth = 252
           Sorted = True
           TabOrder = 0
+          TopIndex = -1
+        end
+        object BCopyAllToClipboard: TButton
+          Left = 0
+          Height = 25
+          Top = 414
+          Width = 195
+          Caption = 'Copy all SQLs to clipboard'
+          TabOrder = 1
+          OnClick = BCopyAllToClipboardClick
         end
       end
       object PSelectFields: TPanel
-        Left = 504
-        Height = 343
+        Left = 548
+        Height = 443
         Top = 0
-        Width = 288
+        Width = 344
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 343
-        ClientWidth = 288
+        ClientHeight = 443
+        ClientWidth = 344
         TabOrder = 2
         object Label2: TLabel
           Left = 0
           Height = 26
           Top = 0
-          Width = 288
+          Width = 344
           Align = alTop
           Alignment = taCenter
           AutoSize = False
@@ -204,78 +252,148 @@ object GenerateSQLForm: TGenerateSQLForm
         end
         object LBFields: TListBox
           Left = 12
-          Height = 298
+          Height = 374
           Top = 34
-          Width = 266
+          Width = 322
           Anchors = [akTop, akLeft, akRight, akBottom]
           ItemHeight = 0
           MultiSelect = True
           ScrollWidth = 264
           Sorted = True
           TabOrder = 0
+          TopIndex = -1
         end
       end
     end
     object TSSelect: TTabSheet
       Caption = '&Select'
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       object MSelect: TMemo
         Left = 8
-        Height = 327
+        Height = 385
         Top = 8
-        Width = 776
+        Width = 876
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
           ''
         )
         TabOrder = 0
+      end
+      object pSQLSelect: TPanel
+        Left = 0
+        Height = 42
+        Top = 401
+        Width = 892
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 42
+        ClientWidth = 892
+        TabOrder = 1
+        object BCopyAllToClipboard1: TButton
+          Left = 8
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy all SQLs to clipboard'
+          TabOrder = 0
+          OnClick = BCopyAllToClipboardClick
+        end
+        object BCopySelectToClipboard: TButton
+          Left = 224
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy Select SQL to clipboard'
+          TabOrder = 1
+          OnClick = BCopySelectToClipboardClick
+        end
       end
     end
     object TSInsert: TTabSheet
       Caption = '&Insert'
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       object MInsert: TMemo
         Left = 8
-        Height = 327
+        Height = 385
         Top = 8
-        Width = 776
+        Width = 876
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
           ''
         )
         TabOrder = 0
+      end
+      object pSQLSelect1: TPanel
+        Left = 0
+        Height = 42
+        Top = 401
+        Width = 892
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 42
+        ClientWidth = 892
+        TabOrder = 1
+        object BCopyInsertSQLToClipboard: TButton
+          Left = 10
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy Insert SQL to clipboard'
+          TabOrder = 0
+          OnClick = BCopyInsertSQLToClipboardClick
+        end
       end
     end
     object TSUpdate: TTabSheet
       Caption = '&Update'
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       object MUpdate: TMemo
         Left = 8
-        Height = 327
+        Height = 385
         Top = 8
-        Width = 776
+        Width = 876
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
           ''
         )
         TabOrder = 0
+      end
+      object pSQLSelect2: TPanel
+        Left = 0
+        Height = 42
+        Top = 401
+        Width = 892
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 42
+        ClientWidth = 892
+        TabOrder = 1
+        object BCopyUpdateSQLToClipboard: TButton
+          Left = 10
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy Update SQL to clipboard'
+          TabOrder = 0
+          OnClick = BCopyUpdateSQLToClipboardClick
+        end
       end
     end
     object TSDelete: TTabSheet
       Caption = '&Delete'
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       object MDelete: TMemo
         Left = 8
-        Height = 327
+        Height = 385
         Top = 8
-        Width = 776
+        Width = 876
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
@@ -283,30 +401,70 @@ object GenerateSQLForm: TGenerateSQLForm
         )
         TabOrder = 0
       end
+      object pSQLSelect3: TPanel
+        Left = 0
+        Height = 42
+        Top = 401
+        Width = 892
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 42
+        ClientWidth = 892
+        TabOrder = 1
+        object BCopyDeleteSQLToClipboard1: TButton
+          Left = 10
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy Delete SQL to clipboard'
+          TabOrder = 0
+          OnClick = BCopyDeleteSQLToClipboard1Click
+        end
+      end
     end
     object TSCreate: TTabSheet
       Caption = 'Create table'
-      ClientHeight = 343
-      ClientWidth = 792
+      ClientHeight = 443
+      ClientWidth = 892
       object MCreate: TMemo
         Left = 8
-        Height = 327
+        Height = 385
         Top = 8
-        Width = 776
+        Width = 876
         Align = alClient
         BorderSpacing.Around = 8
         Lines.Strings = (
           ''
         )
         TabOrder = 0
+      end
+      object pSQLSelect4: TPanel
+        Left = 0
+        Height = 42
+        Top = 401
+        Width = 892
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 42
+        ClientWidth = 892
+        TabOrder = 1
+        object BCopyCreateSQLToClipboard: TButton
+          Left = 10
+          Height = 25
+          Top = 8
+          Width = 195
+          Caption = 'Copy Create SQL to clipboard'
+          TabOrder = 0
+          OnClick = BCopyCreateSQLToClipboardClick
+        end
       end
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 383
-    Width = 800
+    Height = 38
+    Top = 485
+    Width = 902
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
