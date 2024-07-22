@@ -61,9 +61,11 @@ type
   TFpIntrinsicFunc = (
     ifErrorNotFound,
     ifChildClass,
+    ifTry, ifTryN,
     ifFlatten, ifFlattenPlaceholder,
     ifLength, ifRefCount, ifPos, ifSubStr, ifLower, ifUpper,
-    ifRound, ifTrunc
+    ifOrd,
+    ifRound, ifTrunc, ifSqrt, ifPi, ifLn, ifLog, ifSin, ifCos, ifTan
   );
 
   TFpPascalParserGetSymbolForIdentProc = function(APart: TFpPascalExpressionPart; AnIdent: String): TFpValue of object;
@@ -271,6 +273,9 @@ type
     function GetArg(AParams: TFpPascalExpressionPartBracketArgumentList; ANum: Integer; out AValue: TFpValue;
                     AnErr: String = ''): Boolean;
   protected
+    function DoTry(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoTryN(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoOrd(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoFlatten(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -282,6 +287,13 @@ type
     function DoUpper(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoRound(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoTrunc(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoSqrt(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoPi(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoLn(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoLog(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoSin(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoCos(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoTan(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 
     function DoGetResultValue: TFpValue; override;
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -2231,6 +2243,92 @@ begin
   end;
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoTry(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Expr: TFpPascalExpressionPart;
+  HighIdx, i: Integer;
+begin
+  Result := nil;
+  if IsError(FExpression.Error) then
+    exit;
+  if not CheckArgumentCount(AParams, 2, 999) then
+    exit;
+
+  HighIdx := AParams.Count-1;
+  for i := 1 to HighIdx-1 do begin
+    Expr := AParams.Items[i];
+    Result := Expr.GetResultValue;
+    if (Result <> nil) and (not IsError(FExpression.Error)) then begin
+      Result.AddReference;
+      exit;
+    end;
+
+    Expr.ResetEvaluationRecursive;
+    FExpression.FValid := True;
+    FExpression.FError := nil;
+  end;
+
+  Expr := AParams.Items[HighIdx];
+  Result := Expr.GetResultValue;
+  Result.AddReference;
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoTryN(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Expr: TFpPascalExpressionPart;
+  HighIdx, i: Integer;
+begin
+  Result := nil;
+  if IsError(FExpression.Error) then
+    exit;
+  if not CheckArgumentCount(AParams, 2, 999) then
+    exit;
+
+  HighIdx := AParams.Count-1;
+  for i := 1 to HighIdx-1 do begin
+    Expr := AParams.Items[i];
+    Result := Expr.GetResultValue;
+    if (Result <> nil) and (not IsError(FExpression.Error)) then begin
+      if ( (not (svfAddress in Result.FieldFlags))     or (not IsNilLoc(Result.Address))     ) and
+         ( (not (svfDataAddress in Result.FieldFlags)) or (not IsNilLoc(Result.DataAddress)) )
+      then begin
+        Result.AddReference;
+        exit;
+      end;
+    end;
+
+    Expr.ResetEvaluationRecursive;
+    FExpression.FValid := True;
+    FExpression.FError := nil;
+  end;
+
+  Expr := AParams.Items[HighIdx];
+  Result := Expr.GetResultValue;
+  Result.AddReference;
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoOrd(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if Arg.FieldFlags * [svfOrdinal, svfCardinal] <> [] then
+    Result := TFpValueConstNumber.Create(Arg.AsCardinal, False)
+  else
+  if Arg.FieldFlags * [svfInteger] <> [] then
+    Result := TFpValueConstNumber.Create(Arg.AsInteger, True)
+  else
+    SetError('Can''t get ordinal value of argument');
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoLength(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
@@ -3071,12 +3169,171 @@ begin
   Result := TFpValueConstNumber.Create(QWord(trunc(Arg.AsFloat)), True);
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoSqrt(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sqrt(Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sqrt(Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sqrt(Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoPi(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+begin
+  if not CheckArgumentCount(AParams, 0) then
+    exit;
+
+  Result := TFpValueConstFloat.Create(Pi)
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoLn(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Ln(Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Ln(Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Ln(Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoLog(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+  n: Extended;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 2) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    n := Arg.AsFloat
+  else
+  if Arg.FieldFlags * [svfInteger, svfCardinal] <> [] then
+    n := Arg.AsCardinal
+  else
+    SetError('Argument not numeric');
+
+  if not GetArg(AParams, 2, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(LogN(n,Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(LogN(n,Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(LogN(n,Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoSin(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sin(Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sin(Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Sin(Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoCos(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Cos(Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Cos(Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Cos(Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoTan(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  if svfFloat in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Tan(Arg.AsFloat))
+  else
+  if svfInteger in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Tan(Arg.AsInteger))
+  else
+  if svfCardinal in Arg.FieldFlags then
+    Result := TFpValueConstFloat.Create(Tan(Arg.AsInteger))
+  else
+    SetError('Argument not numeric');
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
 var
   p: TFpPascalExpressionPartBracketArgumentList;
 begin
   Result := nil;
-  if FIntrinsic <> ifFlattenPlaceholder then begin
+  if not (FIntrinsic in [ifFlattenPlaceholder, ifPi]) then begin
     // this gets called, if an intrinsic has no () after it. I.e. no arguments and no empty brackets
     SetError('wrong argument count');
     exit;
@@ -3094,6 +3351,9 @@ function TFpPascalExpressionPartIntrinsic.DoGetResultValue(
 begin
   Result := nil;
   case FIntrinsic of
+    ifTry:        Result := DoTry(AParams);
+    ifTryN:       Result := DoTryN(AParams);
+    ifOrd:        Result := DoOrd(AParams);
     ifLength:     Result := DoLength(AParams);
     ifChildClass: Result := DoChildClass(AParams);
     ifRefCount:   Result := DoRefCnt(AParams);
@@ -3105,6 +3365,13 @@ begin
     ifUpper:      Result := DoUpper(AParams);
     ifRound:      Result := DoRound(AParams);
     ifTrunc:      Result := DoTrunc(AParams);
+    ifSqrt:       Result := DoSqrt(AParams);
+    ifPi:         Result := DoPi(AParams);
+    ifLn:         Result := DoLn(AParams);
+    ifLog:        Result := DoLog(AParams);
+    ifSin:        Result := DoSin(AParams);
+    ifCos:        Result := DoCos(AParams);
+    ifTan:        Result := DoTan(AParams);
   end;
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if Result <> nil then
@@ -3747,17 +4014,36 @@ begin
         if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass
         else
         if strlicomp(AStart, 'F_', 2) = 0     then Result := ifFlatten
+        else
+        if strlicomp(AStart, 'PI', 2) = 0     then Result := ifPi
+        else
+        if strlicomp(AStart, 'LN', 2) = 0     then Result := ifLn
         ;
     end;
     3: case AStart^ of
-        'l', 'L': if strlicomp(AStart, 'LEN', 3) = 0 then Result := ifLength;
+        'l', 'L': if strlicomp(AStart, 'LEN', 3) = 0 then Result := ifLength
+                  else
+                  if strlicomp(AStart, 'LOG', 3) = 0 then Result := ifLog;
         'p', 'P': if strlicomp(AStart, 'POS', 3) = 0 then Result := ifPos;
+        'o', 'O': if strlicomp(AStart, 'ORD', 3) = 0 then Result := ifOrd;
+        't', 'T': if strlicomp(AStart, 'TRY', 3) = 0 then Result := ifTry
+                  else
+                  if strlicomp(AStart, 'TAN', 3) = 0 then Result := ifTan;
+        's', 'S': if strlicomp(AStart, 'SIN', 3) = 0 then Result := ifSin;
+        'c', 'C': if strlicomp(AStart, 'COS', 3) = 0 then Result := ifCos;
+    end;
+    4: case AStart^ of
+        's', 'S': if strlicomp(AStart, 'SQRT', 4) = 0 then Result := ifSqrt;
+        'l', 'L': if strlicomp(AStart, 'LOGN', 4) = 0 then Result := ifLog;
+        't', 'T': if strlicomp(AStart, 'TRYN', 4) = 0 then Result := ifTryN;
     end;
     5: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LOWER', 5) = 0 then Result := ifLower;
         'u', 'U': if strlicomp(AStart, 'UPPER', 5) = 0 then Result := ifUpper;
         'r', 'R': if strlicomp(AStart, 'ROUND', 5) = 0 then Result := ifRound;
-        't', 'T': if strlicomp(AStart, 'TRUNC', 5) = 0 then Result := ifTrunc;
+        't', 'T': if strlicomp(AStart, 'TRUNC', 5) = 0 then Result := ifTrunc
+                  else
+                  if strlicomp(AStart, 'TRYNN', 5) = 0 then Result := ifTryN;
        end;
     6: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
