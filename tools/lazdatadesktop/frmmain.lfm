@@ -1,21 +1,21 @@
 object MainForm: TMainForm
   Left = 450
-  Height = 480
+  Height = 384
   Top = 226
   Width = 666
   ActiveControl = PCRecent
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 480
+  ClientHeight = 384
   ClientWidth = 666
   Menu = MainMenu1
+  Position = poScreenCenter
+  SessionProperties = 'Height;Left;Top;Width;WindowState'
+  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  Position = poScreenCenter
-  SessionProperties = 'Height;Left;Top;Width;WindowState'
-  LCLVersion = '3.99.0.0'
   object TBMain: TToolBar
     Left = 0
     Height = 26
@@ -134,7 +134,7 @@ object MainForm: TMainForm
   end
   object PCRecent: TPageControl
     Left = 0
-    Height = 434
+    Height = 338
     Top = 26
     Width = 460
     ActivePage = TSAll
@@ -144,12 +144,12 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 404
+      ClientHeight = 308
       ClientWidth = 450
       ImageIndex = 38
       object LVConnections: TListView
         Left = 0
-        Height = 404
+        Height = 308
         Top = 0
         Width = 450
         Align = alClient
@@ -182,12 +182,12 @@ object MainForm: TMainForm
     end
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 404
+      ClientHeight = 308
       ClientWidth = 450
       ImageIndex = 32
       object LVDicts: TListView
         Left = 0
-        Height = 404
+        Height = 308
         Top = 0
         Width = 450
         Align = alClient
@@ -217,12 +217,12 @@ object MainForm: TMainForm
     end
     object TSAll: TTabSheet
       Caption = 'Connections/Dictionaries'
-      ClientHeight = 404
+      ClientHeight = 308
       ClientWidth = 450
       ImageIndex = 29
       object TVAll: TTreeView
         Left = 0
-        Height = 404
+        Height = 308
         Top = 0
         Width = 450
         Align = alClient
@@ -230,15 +230,15 @@ object MainForm: TMainForm
         PopupMenu = PMAll
         ReadOnly = True
         TabOrder = 0
-        OnDblClick = TVAllDblClick
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        OnDblClick = TVAllDblClick
       end
     end
   end
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 460
+    Top = 364
     Width = 666
     Align = alBottom
     BevelOuter = bvNone
@@ -267,18 +267,18 @@ object MainForm: TMainForm
   end
   object PCItems: TPageControl
     Left = 466
-    Height = 434
+    Height = 338
     Top = 26
     Width = 200
     Align = alRight
     Images = ImgDatamodule.AppImages
+    Options = [nboShowCloseButtons, nboKeyboardTabSwitch]
     TabOrder = 3
     OnCloseTabClicked = DoCloseTabClick
-    Options = [nboShowCloseButtons, nboKeyboardTabSwitch]
   end
   object SRecent: TSplitter
     Left = 460
-    Height = 434
+    Height = 338
     Top = 26
     Width = 6
     Align = alRight
@@ -405,41 +405,41 @@ object MainForm: TMainForm
       Caption = '&Save'
       Hint = 'Save Data Dictionary'
       ImageIndex = 14
+      ShortCut = 16467
       OnExecute = ASaveExecute
       OnUpdate = HaveDDEditor
-      ShortCut = 16467
     end
     object ANew: TAction
       Category = 'File'
       Caption = '&New'
       Hint = 'Create a new Data Dictionary'
       ImageIndex = 13
-      OnExecute = ANewExecute
       ShortCut = 16462
+      OnExecute = ANewExecute
     end
     object AExit: TAction
       Category = 'File'
       Caption = 'E&xit'
       Hint = 'Quit this program'
       ImageIndex = 33
-      OnExecute = AExitExecute
       ShortCut = 16465
+      OnExecute = AExitExecute
     end
     object AOpen: TAction
       Category = 'File'
       Caption = '&Open...'
       HelpKeyword = 'Open a new Data Dictionary'
       ImageIndex = 12
-      OnExecute = AOpenExecute
       ShortCut = 16463
+      OnExecute = AOpenExecute
     end
     object AClose: TAction
       Category = 'File'
       Caption = '&Close'
       Hint = 'Close current Data Dictionary'
+      ShortCut = 16471
       OnExecute = ACloseExecute
       OnUpdate = HaveTab
-      ShortCut = 16471
     end
     object ACut: TEditCut
       Category = 'Edit'
@@ -466,27 +466,27 @@ object MainForm: TMainForm
       Category = 'File'
       Caption = 'Close &All'
       Hint = 'Close all Data Dictionaries'
+      ShortCut = 49239
       OnExecute = ACloseAllExecute
       OnUpdate = HaveTabs
-      ShortCut = 49239
     end
     object ANewTable: TAction
       Category = 'Dictionary'
       Caption = 'New &table'
       Hint = 'Create a new table'
       ImageIndex = 17
+      ShortCut = 16468
       OnExecute = ANewTableExecute
       OnUpdate = HaveDataDict
-      ShortCut = 16468
     end
     object ANewField: TAction
       Category = 'Dictionary'
       Caption = 'New &field'
       Hint = 'Create a new field in the current table'
       ImageIndex = 18
+      ShortCut = 16454
       OnExecute = ANewFieldExecute
       OnUpdate = ANewFieldUpdate
-      ShortCut = 16454
     end
     object ADeleteObject: TAction
       Category = 'Dictionary'
@@ -501,9 +501,9 @@ object MainForm: TMainForm
       Caption = '&Generate SQL'
       Hint = 'Generate SQL statements for the current table'
       ImageIndex = 20
+      ShortCut = 16455
       OnExecute = AGenerateSQLExecute
       OnUpdate = AllowSQL
-      ShortCut = 16455
     end
     object ASaveAs: TAction
       Category = 'File'
@@ -517,16 +517,16 @@ object MainForm: TMainForm
       Category = 'Connections'
       Caption = '&New connection'
       ImageIndex = 31
-      OnExecute = ANewConnectionExecute
       ShortCut = 49230
+      OnExecute = ANewConnectionExecute
     end
     object ADeleteConnection: TAction
       Category = 'Connections'
       Caption = '&Delete connection'
       ImageIndex = 48
+      ShortCut = 49220
       OnExecute = ADeleteConnectionExecute
       OnUpdate = HaveRecentConnection
-      ShortCut = 49220
     end
     object ACopyConnection: TAction
       Category = 'Connections'
