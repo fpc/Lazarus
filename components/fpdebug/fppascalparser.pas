@@ -2618,7 +2618,7 @@ var
   Seen: TAddrSeenList;
   HighParam: integer;
   ShowNil, ShowNoMember, ShowRecurse, ShowSeen, ShowErrAny, DerefPtr: Boolean;
-  MaxCnt: integer;
+  MaxCnt, ExpandArrayDepth: integer;
   TpSym: TFpSymbol;
   CacheKey: TFpPascalExpressionCacheFlattenKey;
 
@@ -2631,15 +2631,124 @@ var
     E.ReleaseReference
   end;
 
+  function FlattenRecurse(ACurrentVal: TFpValue): boolean; forward;
+  function FlattenArray(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean; forward;
+
+  function AddFlatValue(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean;
+  var
+    s, ResIdx, SeenIdx, ValIdx: Integer;
+    PrevVal, TmpAutoDereVal: TFpValue;
+    DA: TFpDbgMemLocation;
+    r, DoExpArray: Boolean;
+  begin
+    Result := True;
+    if DerefPtr and (ACurrentVal.Kind = skPointer) and
+      (ACurrentVal.TypeInfo <> nil) and (ACurrentVal.TypeInfo.TypeInfo <> nil) and
+      (ACurrentVal.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
+    then begin
+      if (svfDataAddress in ACurrentVal.FieldFlags) and (IsReadableLoc(ACurrentVal.DerefAddress)) and // TODO, what if Not readable addr
+         (ACurrentVal.TypeInfo <> nil) //and (ACurrentVal.TypeInfo.TypeInfo <> nil)
+      then begin
+        TmpAutoDereVal := ACurrentVal.Member[0];
+        if TmpAutoDereVal <> nil then begin
+          ACurrentVal.ReleaseReference;
+          ACurrentVal := TmpAutoDereVal;
+        end;
+      end;
+    end;
+
+    DA := ACurrentVal.DataAddress;
+    if (not ShowNil) and IsNilLoc(DA) then begin
+      ReleaseRefAndNil(ACurrentVal);
+      exit;
+    end;
+
+    DoExpArray := (AnExpandDepth > 0) and (ACurrentVal.Kind = skArray);
+
+    if IsReadableLoc(DA) then begin
+      SeenIdx := Seen.IndexOf(DA);
+      if (SeenIdx >= 0) then begin
+        ValIdx := Seen.Data[SeenIdx];
+        if (not DoExpArray) and (not (ACurrentVal.Kind in [skClass, skInterface])) then begin
+          PrevVal := TFpValue(Res.FList[ValIdx]);
+          if (ACurrentVal.TypeInfo = nil) or (PrevVal.TypeInfo = nil) or
+             (not ACurrentVal.TypeInfo.IsEqual(PrevVal.TypeInfo))
+          then
+            SeenIdx := -1;
+        end;
+        if (SeenIdx >= 0) then begin
+          if ShowRecurse and (ValIdx >= 0) then begin
+            if DoExpArray then
+              AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for array at member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
+            else
+              AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
+          end
+          else
+          if ShowSeen then begin
+            if ValIdx < 0 then ValIdx := -(ValIdx + 1);
+            if DoExpArray then
+              AddErrToList(CreateError(fpErrAnyError, [Format('Array for member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
+            else
+              AddErrToList(CreateError(fpErrAnyError, [Format('Member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
+          end;
+          ReleaseRefAndNil(ACurrentVal);
+          exit;
+        end;
+      end;
+    end;
+
+    if not DoExpArray then begin
+      ResIdx := Res.FList.Add(ACurrentVal);
+      if (ACurrentVal.TypeInfo = nil) or (not ACurrentVal.TypeInfo.IsEqual(TpSym)) then
+        Res.Flags := Res.Flags + [vfArrayOfVariant];
+
+      if not IsReadableLoc(DA) then begin
+        ReleaseRefAndNil(ACurrentVal);
+        exit;
+      end;
+    end
+    else
+      ResIdx := Res.FList.Count; // the index for the firs element of the array (if any)
+
+    s := Seen.Add(DA, ResIdx);
+    if DoExpArray then
+      Result := FlattenArray(ACurrentVal, AnExpandDepth)
+    else
+      Result := FlattenRecurse(ACurrentVal);
+
+    ReleaseRefAndNil(ACurrentVal);
+    if ShowSeen then
+      Seen.Data[s] := -1-ResIdx
+    else
+      Seen.Delete(s);
+  end;
+
+  function FlattenArray(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean;
+  var
+    Idx: Integer;
+    TmpNew: TFpValue;
+  begin
+    for Idx := 0 to ACurrentVal.MemberCount - 1 do begin
+      if Res.FList.Count >= MaxCnt then
+        exit(False);
+      TmpNew := ACurrentVal.Member[Idx];
+      Result := AddFlatValue(TmpNew, Max(0, AnExpandDepth-1));
+      if not Result then
+        exit;
+    end;
+    Result := True;
+  end;
+
   function FlattenRecurse(ACurrentVal: TFpValue): boolean;
   var
-    i, s, ResIdx, SeenIdx, ValIdx: Integer;
-    OrigVal, AutoDereVal, TmpNew, PrevVal, TmpAutoDereVal: TFpValue;
-    DA: TFpDbgMemLocation;
-    r: Boolean;
+    i: Integer;
+    OrigVal, AutoDereVal, TmpNew: TFpValue;
     Expr: TFpPascalExpressionPart;
+    r: Boolean;
   begin
-    Result := False;
+    Result := True;
+    if HighParam < 2 then
+      exit;
 
     AutoDereVal := nil;
     OrigVal := ACurrentVal;
@@ -2707,73 +2816,9 @@ var
             if TmpNew = nil then
               Continue;
 
-            if DerefPtr and (TmpNew.Kind = skPointer) and
-              (TmpNew.TypeInfo <> nil) and (TmpNew.TypeInfo.TypeInfo <> nil) and
-              (TmpNew.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
-            then begin
-              if (svfDataAddress in TmpNew.FieldFlags) and (IsReadableLoc(TmpNew.DerefAddress)) and // TODO, what if Not readable addr
-                 (TmpNew.TypeInfo <> nil) //and (TmpNew.TypeInfo.TypeInfo <> nil)
-              then begin
-                TmpAutoDereVal := TmpNew.Member[0];
-                if TmpAutoDereVal <> nil then begin
-                  TmpNew.ReleaseReference;
-                  TmpNew := TmpAutoDereVal;
-                end;
-              end;
-            end;
-
-            DA := TmpNew.DataAddress;
-            if (not ShowNil) and IsNilLoc(DA) then begin
-              ReleaseRefAndNil(TmpNew);
-              continue;
-            end;
-
-            if IsReadableLoc(DA) then begin
-              SeenIdx := Seen.IndexOf(DA);
-              if (SeenIdx >= 0) then begin
-                ValIdx := Seen.Data[SeenIdx];
-                if  not (TmpNew.Kind in [skClass, skInterface]) then begin
-                  PrevVal := TFpValue(Res.FList[ValIdx]);
-                  if (TmpNew.TypeInfo = nil) or (PrevVal.TypeInfo = nil) or
-                     (not TmpNew.TypeInfo.IsEqual(PrevVal.TypeInfo))
-                  then
-                    SeenIdx := -1;
-                end;
-                if (SeenIdx >= 0) then begin
-                  if ShowRecurse and (ValIdx >= 0) then begin
-                    AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
-                  end
-                  else
-                  if ShowSeen then begin
-                    if ValIdx < 0 then ValIdx := -(ValIdx + 1);
-                    AddErrToList(CreateError(fpErrAnyError, [Format('Member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
-                  end;
-                  ReleaseRefAndNil(TmpNew);
-                  Continue;
-                end;
-              end;
-            end;
-
-            ResIdx := Res.FList.Add(TmpNew);
-            if (TmpNew.TypeInfo = nil) or (not TmpNew.TypeInfo.IsEqual(TpSym)) then
-              Res.Flags := Res.Flags + [vfArrayOfVariant];
-
-
-            if not IsReadableLoc(DA) then begin
-              ReleaseRefAndNil(TmpNew);
-              continue;
-            end;
-
-            s := Seen.Add(DA, ResIdx);
-            r := FlattenRecurse(TmpNew);
-            ReleaseRefAndNil(TmpNew);
-            if ShowSeen then
-              Seen.Data[s] := -1-ResIdx
-            else
-              Seen.Delete(s);
-
+            r := AddFlatValue(TmpNew, ExpandArrayDepth);
             if not r then
-              exit;
+              exit(False);
           end;
 
         end;
@@ -2791,7 +2836,7 @@ var
   end;
 
 var
-  TmpVal: TFpValue;
+  FirstVal: TFpValue;
   DA: TFpDbgMemLocation;
   LastParam, Itm: TFpPascalExpressionPart;
   OptSet: TFpPascalExpressionPartBracketSet absolute LastParam;
@@ -2802,10 +2847,13 @@ var
   ListCache: TFpPascalExpressionCacheFlatten;
 begin
   Result := nil;
-  if not CheckArgumentCount(AParams, 2, 999) then
+  if not CheckArgumentCount(AParams, 1, 999) then
     exit;
 
-  if not GetArg(AParams, 1, TmpVal, 'Value required')  then exit;
+  if not GetArg(AParams, 1, FirstVal, 'Value required')  then exit;
+
+  if (FirstVal.Kind <> skArray) and (not CheckArgumentCount(AParams, 2, 999)) then
+    exit;
 
   ListCache := nil;
   if (FExpression.GlobalCache <> nil) then begin
@@ -2831,66 +2879,77 @@ begin
   ShowSeen     := True;
   ShowErrAny   := True;
   DerefPtr     := True;
+  ExpandArrayDepth  := 0;
   MaxCnt       := 1000;
   CustomMaxCnt := False;
 
   HighParam := AParams.Count - 1;
-  LastParam := AParams.Items[HighParam];
+  if HighParam > 0 then begin
+    LastParam := AParams.Items[HighParam];
 
-  LastParamNeg := False;
-  if (LastParam is TFpPascalExpressionPartOperatorUnaryPlusMinus) and
-     (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Count = 1) and
-     (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0] is TFpPascalExpressionPartBracketSet)
-  then begin
-    LastParamNeg := LastParam.GetText = '-';
-    LastParam := TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0];
-  end;
-
-  if LastParam is TFpPascalExpressionPartBracketSet then begin
-    dec(HighParam);
-    if HighParam < 2 then begin
-      SetError('Not enough parameter');
-      exit;
+    LastParamNeg := False;
+    if (LastParam is TFpPascalExpressionPartOperatorUnaryPlusMinus) and
+       (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Count = 1) and
+       (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0] is TFpPascalExpressionPartBracketSet)
+    then begin
+      LastParamNeg := LastParam.GetText = '-';
+      LastParam := TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0];
     end;
 
-    ShowNil      := LastParamNeg;
-    ShowNoMember := LastParamNeg;
-    ShowRecurse  := LastParamNeg;
-    ShowSeen     := LastParamNeg;
-    ShowErrAny   := LastParamNeg;
-    DerefPtr     := LastParamNeg;
+    if LastParam is TFpPascalExpressionPartBracketSet then begin
+      if (FirstVal.Kind <> skArray) and (not CheckArgumentCount(AParams, 3, 999)) then
+        exit;
 
-    for i := 0 to OptSet.Count - 1 do begin
-      Itm := OptSet.Items[i];
-      OName := '';
-      OVal := True;
-      if (Itm is TFpPascalExpressionPartIdentifier) then
-        OName := Itm.GetText
-      else
-      if (Itm is TFpPascalExpressionPartOperatorCompare) and (Itm.GetText = '=') and
-         (TFpPascalExpressionPartOperatorCompare(Itm).Count = 2) and
-         (TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue <> nil)
-      then begin
-        OName := TFpPascalExpressionPartOperatorCompare(Itm).Items[0].GetText;
-        if LowerCase(OName)= 'max' then begin
-          MaxCnt := TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue.AsInteger;
-          CustomMaxCnt := True;
-          Continue;
-        end;
-        OVal := TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue.AsBool;
+      dec(HighParam);
+      if HighParam < 2 then begin
+        SetError('Not enough parameter');
+        exit;
       end;
 
-      OVal := OVal xor LastParamNeg;
-      case LowerCase(OName) of
-        'nil':             ShowNil      := OVal;
-        'field', 'fld':    ShowNoMember := OVal;
-        'loop', 'recurse': ShowRecurse  := OVal;
-        'seen', 'dup':     ShowSeen     := OVal;
-        'err', 'error':    ShowErrAny   := OVal;
-        'ptr', 'deref':    DerefPtr     := OVal;
-        else begin
-          SetError('Unknown flag: '+Itm.GetText);
-          exit;
+      ShowNil      := LastParamNeg;
+      ShowNoMember := LastParamNeg;
+      ShowRecurse  := LastParamNeg;
+      ShowSeen     := LastParamNeg;
+      ShowErrAny   := LastParamNeg;
+      DerefPtr     := LastParamNeg;
+
+      for i := 0 to OptSet.Count - 1 do begin
+        Itm := OptSet.Items[i];
+        OName := '';
+        OVal := True;
+        if (Itm is TFpPascalExpressionPartIdentifier) then
+          OName := Itm.GetText
+        else
+        if (Itm is TFpPascalExpressionPartOperatorCompare) and (Itm.GetText = '=') and
+           (TFpPascalExpressionPartOperatorCompare(Itm).Count = 2) and
+           (TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue <> nil)
+        then begin
+          OName := TFpPascalExpressionPartOperatorCompare(Itm).Items[0].GetText;
+          if LowerCase(OName)= 'max' then begin
+            MaxCnt := TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue.AsInteger;
+            CustomMaxCnt := True;
+            Continue;
+          end;
+          if LowerCase(OName)= 'array' then begin
+            ExpandArrayDepth := TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue.AsInteger;
+            Continue;
+          end;
+          OVal := TFpPascalExpressionPartOperatorCompare(Itm).Items[1].ResultValue.AsBool;
+        end;
+
+        OVal := OVal xor LastParamNeg;
+        case LowerCase(OName) of
+          'nil':             ShowNil      := OVal;
+          'field', 'fld':    ShowNoMember := OVal;
+          'loop', 'recurse': ShowRecurse  := OVal;
+          'seen', 'dup':     ShowSeen     := OVal;
+          'err', 'error':    ShowErrAny   := OVal;
+          'array':           ExpandArrayDepth  := 1;
+          'ptr', 'deref':    DerefPtr     := OVal;
+          else begin
+            SetError('Unknown flag: '+Itm.GetText);
+            exit;
+          end;
         end;
       end;
     end;
@@ -2921,17 +2980,23 @@ begin
   Result := TFpValueFlatteArray.Create(0);
   Seen := TAddrSeenList.Create;
   Seen.Capacity := 256;
-  TpSym := TmpVal.TypeInfo;
+  TpSym := FirstVal.TypeInfo;
   try
-    Res.FList.Add(TmpVal);
-    DA := TmpVal.DataAddress;
-    if not IsReadableLoc(DA) then
-      exit;
-    if IsError(Expression.Error) then
-      exit;
-
+    DA := FirstVal.DataAddress;
     Seen.Add(DA);
-    Res.FFullEvaluated := FlattenRecurse(TmpVal);
+
+    if (FirstVal.Kind = skArray) then begin
+      FlattenArray(FirstVal, Max(1, ExpandArrayDepth));
+    end
+    else begin
+      Res.FList.Add(FirstVal);
+      if not IsReadableLoc(DA) then
+        exit;
+      if IsError(Expression.Error) then
+        exit;
+
+      Res.FFullEvaluated := FlattenRecurse(FirstVal);
+    end;
   finally
     Seen.Free;
   end;
