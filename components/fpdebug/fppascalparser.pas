@@ -461,6 +461,7 @@ type
   protected
     function HasAllOperands: Boolean; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
+    function IsValidAfterPartWithPrecedence(APrevPart: TFpPascalExpressionPart): Boolean; virtual;
   public
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
@@ -506,6 +507,30 @@ type
   protected
     procedure Init; override;
     function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartOperatorQuestionMark }
+
+  TFpPascalExpressionPartOperatorQuestionMark = class(TFpPascalExpressionPartBinaryOperator)  // ? :
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence
+      ): TFpPascalExpressionPart; override;
+    function IsValidAfterPartWithPrecedence(APrevPart: TFpPascalExpressionPart): Boolean; override;
+    procedure DoHandleEndOfExpression; override;
+  end;
+
+  { TFpPascalExpressionPartOperatorColon }
+
+  TFpPascalExpressionPartOperatorColon = class(TFpPascalExpressionPartBinaryOperator)  // ? :
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+    function FindLeftSideOperandByPrecedence(AnOperator: TFpPascalExpressionPartWithPrecedence
+      ): TFpPascalExpressionPart; override;
+    function IsValidAfterPartWithPrecedence(APrevPart: TFpPascalExpressionPart): Boolean; override;
+    procedure DoHandleEndOfExpression; override;
   end;
 
   { TFpPascalExpressionPartOperatorPlusMinus }
@@ -661,6 +686,7 @@ const
   PRECEDENCE_OR         = 13;        // a OR b  // XOR
   PRECEDENCE_IN         = 19;        // enum IN set // officially the same as PRECEDENCE_COMPARE
   PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
+  PRECEDENCE_QUEST_COLON= 27;        // ? :
   PRECEDENCE_ARRAY_SLICE= 30;        // array[5..9] // array slice
 
 type
@@ -3902,13 +3928,24 @@ begin
       AddIntrinsic;
     end
     else
-    if (FIntrinsicPrefix = ipColon) and (CurPtr^ = ':') then begin
-      inc(CurPtr);
-      AddIntrinsic;
+    if (CurPtr^ = ':') then begin
+      if (CurPart <> nil) and CurPart.CanHaveOperatorAsNext then begin
+        AddPart(TFpPascalExpressionPartOperatorColon);
+      end
+      else
+      if (FIntrinsicPrefix = ipColon) then begin
+        inc(CurPtr);
+        AddIntrinsic;
+      end
+      else begin
+        SetParserError(fpErrPasParserUnexpectedToken_p);
+        break;
+      end;
     end
     else
     case CurPtr^ of
       '@' :      AddPart(TFpPascalExpressionPartOperatorAddressOf);
+      '?' :      AddPart(TFpPascalExpressionPartOperatorQuestionMark);
       '^':       AddRefOperator; // ^A may be #$01
       '.':       HandleDot;
       '+', '-' : AddPlusMinus;
@@ -4750,7 +4787,14 @@ begin
     exit;
 
   Result := APrevPart.CanHaveOperatorAsNext;
+  if Result then
+    Result := IsValidAfterPartWithPrecedence(APrevPart);
+end;
 
+function TFpPascalExpressionPartBinaryOperator.IsValidAfterPartWithPrecedence(
+  APrevPart: TFpPascalExpressionPart): Boolean;
+begin
+  Result := True;
   (*
    BinaryOperator...
      # (e.g. Self = "+")
@@ -4763,10 +4807,8 @@ begin
    If new operator has a higher precedence, it go down to the child again and replace it
   *)
   // precedence: 1 = highest
-  if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) and
-     (Precedence >= APrevPart.Parent.Precedence)
-  then
-    Result := False;
+  Result := (APrevPart.Parent = nil) or not (APrevPart.Parent.HasPrecedence) or
+            (Precedence < APrevPart.Parent.Precedence)
 end;
 
 function TFpPascalExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -4982,6 +5024,160 @@ begin
   {$POP}
 
   ForwardError(Result, tmp1);
+end;
+
+{ TFpPascalExpressionPartOperatorQuestionMark }
+
+procedure TFpPascalExpressionPartOperatorQuestionMark.Init;
+begin
+  FPrecedence := PRECEDENCE_QUEST_COLON;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorQuestionMark.DoGetResultValue: TFpValue;
+var
+  tmp: TFpValue;
+  ff: TFpValueFieldFlags;
+  b: Boolean;
+begin
+  Result := nil;
+  if (Count <> 2) or not (Items[1] is TFpPascalExpressionPartOperatorColon) or
+     (TFpPascalExpressionPartOperatorColon(Items[1]).Count <> 2)
+  then begin
+    SetError('internal error ?:');
+    exit;
+  end;
+
+  tmp := Items[0].ResultValue;
+  ff := tmp.FieldFlags;
+  if      (ff * [svfBoolean] <> [])               then b := tmp.AsBool
+  else if (ff * [svfCardinal, svfOrdinal] <> [])  then b := tmp.AsCardinal <> 0
+  else if (ff * [svfString, svfWideString] <> []) then b := Length(tmp.AsString) <> 0
+  else begin
+    SetError('"?" needs an input than can be cast to bool');
+    exit;
+  end;
+
+  if b
+  then Result := TFpPascalExpressionPartOperatorColon(Items[1]).Items[0].ResultValue
+  else Result := TFpPascalExpressionPartOperatorColon(Items[1]).Items[1].ResultValue;
+
+  if Result = nil then
+    exit;
+  Result.AddReference;
+end;
+
+function TFpPascalExpressionPartOperatorQuestionMark.FindLeftSideOperandByPrecedence(
+  AnOperator: TFpPascalExpressionPartWithPrecedence): TFpPascalExpressionPart;
+begin
+  Result := Self;
+
+  if (not HasAllOperands) or (LastItem = nil) then begin
+    Result := nil;
+    exit
+  end;
+
+  (* If precedence is equal, APart can be
+    - a :  - we don't have one yet => Return from LastItem
+           - we have a : => return self
+    - a ?  - => Return from LastItem
+  *)
+  if (Precedence = AnOperator.Precedence) then begin
+    if (Count = 2) and (Items[1] is TFpPascalExpressionPartOperatorColon)
+      and (AnOperator is TFpPascalExpressionPartOperatorColon)
+    then
+      Result := Self
+    else
+      Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator);
+  end
+  else
+  // precedence: 1 = highest
+  if Precedence >= AnOperator.Precedence then
+    Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator);
+end;
+
+function TFpPascalExpressionPartOperatorQuestionMark.IsValidAfterPartWithPrecedence(
+  APrevPart: TFpPascalExpressionPart): Boolean;
+begin
+  Result := (APrevPart.Parent = nil) or not (APrevPart.Parent.HasPrecedence) or
+            (Precedence <= APrevPart.Parent.Precedence);
+  (* inherited only checks for "<" instead of "<="
+     Other operators at the same precedence must have the 2nd (in left to right
+     reading order) operator become the parent, so that it executes the entire
+     left operation first.
+     ? : act as nested constructs. The right part is a nested operation
+     Therefore at same precedence, the new "?" is valid after any ongoing ? or :
+  *)
+end;
+
+procedure TFpPascalExpressionPartOperatorQuestionMark.DoHandleEndOfExpression;
+begin
+  inherited DoHandleEndOfExpression;
+  if (Count <> 2) or not(Items[1] is TFpPascalExpressionPartOperatorColon) then
+    SetError('Missing ":"');
+end;
+
+{ TFpPascalExpressionPartOperatorColon }
+
+procedure TFpPascalExpressionPartOperatorColon.Init;
+begin
+  FPrecedence := PRECEDENCE_QUEST_COLON;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorColon.DoGetResultValue: TFpValue;
+begin
+  raise Exception.Create('invalid call to ":"');
+end;
+
+function TFpPascalExpressionPartOperatorColon.FindLeftSideOperandByPrecedence(
+  AnOperator: TFpPascalExpressionPartWithPrecedence): TFpPascalExpressionPart;
+begin
+  Result := Self;
+
+  if (not HasAllOperands) or (LastItem = nil) then begin
+    Result := nil;
+    exit
+  end;
+
+  (* If precedence is equal
+    - a : => must be outer => return self
+    - a ? => LastItem
+  *)
+
+  if (Precedence = AnOperator.Precedence) then begin
+    if AnOperator is TFpPascalExpressionPartOperatorQuestionMark then
+      Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator)
+    else
+      Result := Self;
+  end
+  else
+  // precedence: 1 = highest
+  if Precedence > AnOperator.Precedence then
+    Result := LastItem.FindLeftSideOperandByPrecedence(AnOperator);
+end;
+
+function TFpPascalExpressionPartOperatorColon.IsValidAfterPartWithPrecedence(
+  APrevPart: TFpPascalExpressionPart): Boolean;
+var
+  Prev: TFpPascalExpressionPartOperatorQuestionMark absolute APrevPart;
+begin
+  Result := (APrevPart.Parent = nil) or not (APrevPart.Parent.HasPrecedence) or
+            (Precedence <= APrevPart.Parent.Precedence);
+  if not Result then
+    exit;
+
+  // A colon is valid only after a questionmark that does not yet have its ":"
+  // Otherwise it belongs to an outer question mark
+  Result := (APrevPart is TFpPascalExpressionPartOperatorQuestionMark) and
+            ( (Prev.Count = 2) and not(Prev.Items[1] is TFpPascalExpressionPartOperatorColon) )
+end;
+
+procedure TFpPascalExpressionPartOperatorColon.DoHandleEndOfExpression;
+begin
+  inherited DoHandleEndOfExpression;
+  if not(Parent is TFpPascalExpressionPartOperatorQuestionMark) then
+    SetError('No "?" for ":"');
 end;
 
 { TFpPascalExpressionPartOperatorPlusMinus }

@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser,
-  FpErrorMessages, FpDbgInfo, FpdMemoryTools,
-  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
+  FpErrorMessages, FpDbgInfo, FpdMemoryTools, LazLogger;
 
 type
 
@@ -555,6 +554,84 @@ begin
     //
     TestExpr([0,0,1], TFpPascalExpressionPartConstantNumber, '9', 0);
 
+    CreateExpr('a ? b : c', True);
+    TestExpr([], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);
+    TestExpr([0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([1], TFpPascalExpressionPartOperatorColon, ':', 2);
+    TestExpr([1,0], TFpPascalExpressionPartIdentifier, 'b', 0);
+    TestExpr([1,1], TFpPascalExpressionPartIdentifier, 'c', 0);
+
+
+    CreateExpr('(a ? d : e)      ?      b*1 ? x+1 : y?r:s+2      :      c+9  ?  -m?+k:+j  :  not n?o:p ', True);
+    TestExpr([], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);
+    TestExpr([0], TFpPascalExpressionPartBracketSubExpression, '(', 1);
+      TestExpr([0,0], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);
+      TestExpr([0,0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+      TestExpr([0,0,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([0,0,1,0], TFpPascalExpressionPartIdentifier, 'd', 0);
+      TestExpr([0,0,1,1], TFpPascalExpressionPartIdentifier, 'e', 0);
+
+    TestExpr([1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([1,0], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);  // b*1 ?
+      TestExpr([1,0,0], TFpPascalExpressionPartOperatorMulDiv, '*', 2);
+      TestExpr([1,0,0,0], TFpPascalExpressionPartIdentifier, 'b', 0);
+      TestExpr([1,0,0,1], TFpPascalExpressionPartConstantNumber, '1', 0);
+      TestExpr([1,0,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([1,0,1,0], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);  // x+1
+      TestExpr([1,0,1,0,0], TFpPascalExpressionPartIdentifier, 'x', 0);
+      TestExpr([1,0,1,0,1], TFpPascalExpressionPartConstantNumber, '1', 0);
+      TestExpr([1,0,1,1], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);  // y?r:s+2
+      TestExpr([1,0,1,1,0], TFpPascalExpressionPartIdentifier, 'y', 0);
+      TestExpr([1,0,1,1,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([1,0,1,1,1,0], TFpPascalExpressionPartIdentifier, 'r', 0);
+      TestExpr([1,0,1,1,1,1], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+      TestExpr([1,0,1,1,1,1,0], TFpPascalExpressionPartIdentifier, 's', 0);
+      TestExpr([1,0,1,1,1,1,1], TFpPascalExpressionPartConstantNumber, '2', 0);
+
+      // c+9  ?
+      TestExpr([1,1], TFpPascalExpressionPartOperatorQuestionMark, '?', 2); // c+9  ?
+      TestExpr([1,1,0], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+      TestExpr([1,1,0,0], TFpPascalExpressionPartIdentifier, 'c', 0);
+      TestExpr([1,1,0,1], TFpPascalExpressionPartConstantNumber, '9', 0);
+      TestExpr([1,1,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      //  -m?+k:+j
+      TestExpr([1,1,1,0], TFpPascalExpressionPartOperatorQuestionMark, '?', 2); // -m ?
+      TestExpr([1,1,1,0,0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '-', 1);
+      TestExpr([1,1,1,0,0,0], TFpPascalExpressionPartIdentifier, 'm', 0);
+      TestExpr([1,1,1,0,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([1,1,1,0,1,0], TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
+      TestExpr([1,1,1,0,1,0,0], TFpPascalExpressionPartIdentifier, 'k', 0);
+      TestExpr([1,1,1,0,1,1], TFpPascalExpressionPartOperatorUnaryPlusMinus, '+', 1);
+      TestExpr([1,1,1,0,1,1,0], TFpPascalExpressionPartIdentifier, 'j', 0);
+
+      //  not n?o:p
+      TestExpr([1,1,1,1], TFpPascalExpressionPartOperatorQuestionMark, '?', 2); // not n ?
+      TestExpr([1,1,1,1,0], TFpPascalExpressionPartOperatorUnaryNot, 'not', 1);
+      TestExpr([1,1,1,1,0,0], TFpPascalExpressionPartIdentifier, 'n', 0);
+      TestExpr([1,1,1,1,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+      TestExpr([1,1,1,1,1,0], TFpPascalExpressionPartIdentifier, 'o', 0);
+      TestExpr([1,1,1,1,1,1], TFpPascalExpressionPartIdentifier, 'p', 0);
+
+
+
+    CreateExpr('x[a ? b : c .. d ? e : f]', True);
+    TestExpr([], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifier, 'x', 0);
+    TestExpr([0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+
+    TestExpr([0,1,0], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);
+    TestExpr([0,1,0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([0,1,0,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+    TestExpr([0,1,0,1,0], TFpPascalExpressionPartIdentifier, 'b', 0);
+    TestExpr([0,1,0,1,1], TFpPascalExpressionPartIdentifier, 'c', 0);
+
+    TestExpr([0,1,1], TFpPascalExpressionPartOperatorQuestionMark, '?', 2);
+    TestExpr([0,1,1,0], TFpPascalExpressionPartIdentifier, 'd', 0);
+    TestExpr([0,1,1,1], TFpPascalExpressionPartOperatorColon, ':', 2);
+    TestExpr([0,1,1,1,0], TFpPascalExpressionPartIdentifier, 'e', 0);
+    TestExpr([0,1,1,1,1], TFpPascalExpressionPartIdentifier, 'f', 0);
+
 
   finally
     CurrentTestExprObj.Free;
@@ -673,6 +750,27 @@ begin
 
   //TestExpr('@''ab''',      fpErrCannotCastToPointer_p);
   ///TestExpr('^T(''ab'')',      fpErrCannotCastToPointer_p);
+
+
+  CreateExpr('a ? b ', False);
+  CreateExpr('a ? b :', False);
+  CreateExpr('a ? : c', False);
+  CreateExpr('a ? ', False);
+  CreateExpr(' ? b : c', False);
+  CreateExpr('b : c', False);
+  CreateExpr('a ? b ? d : c', False);
+  CreateExpr('a ? b : c ? d', False);
+  CreateExpr('a ? b : c : d', False);
+
+  CreateExpr('(a ? b )+1', False);
+  CreateExpr('(a ? b :)+1', False);
+  CreateExpr('(a ? : c)+1', False);
+  CreateExpr('(a ? )+1', False);
+  CreateExpr('( ? b : c)+1', False);
+  CreateExpr('(b : c)+1', False);
+  CreateExpr('(a ? b ? d : c)+1', False);
+  CreateExpr('(a ? b : c ? d)+1', False);
+  CreateExpr('(a ? b : c : d)+1', False);
 
 end;
 
