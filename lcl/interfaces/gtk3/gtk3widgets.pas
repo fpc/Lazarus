@@ -7584,7 +7584,6 @@ begin
     // cannot gtk_widget_realize(Result), because that needs a valid widget parent
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
-  Result^.set_size_request(Params.Width, Params.Height);
   Text := Params.Caption;
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
@@ -8171,7 +8170,7 @@ begin
     { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
       so this is backward mapping of properties }
     sfamily:=pfd^.get_family();
-    sface:=lowercase(pch^.get_font_face()^.get_face_name());
+    sface:=lowercase(pfc^.get_face_name());
 
     sz:=pch^.get_font_size() div PANGO_SCALE;
     fnt.Name:=sfamily;
