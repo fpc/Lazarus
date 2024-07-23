@@ -29,7 +29,7 @@ object RestDataModule: TRestDataModule
     EnforceLimit = 0
     CORSMaxAge = 86400
     CORSAllowCredentials = True
-    LogOptions = [rloUser, rtloHTTP, rloResource, rloConnection, rloAuthentication, rloResultStatus]
+    LogOptions = [rloUser, rloHTTP, rloResource, rloConnection, rloAuthentication, rloResultStatus]
     LogSQLOptions = [detCustom, detPrepare, detExecute, detFetch, detCommit, detRollBack, detActualSQL]
     OnLog = DispatcherLog
     left = 72
