@@ -62,6 +62,11 @@ begin
   if FileExists(Cfg) then
     Dispatcher.LoadFromFile('server.ini',[]);
   // Manual config
+  {$IF FPC_FULLVERSION>=30301}
+  Dispatcher.LogOptions := [rloUser, rloHTTP, rloResource, rloConnection, rloAuthentication, rloResultStatus];
+  {$else}
+  Dispatcher.LogOptions := [rloUser, rtloHTTP, rloResource, rloConnection, rloAuthentication, rloResultStatus];
+  {$endif}
   if CustomApplication.Hasoption('b','basedir') then
     Dispatcher.BasePath:=CustomApplication.GetoptionValue('b','basedir');
   if CustomApplication.HasOption('q','quiet') then
@@ -71,6 +76,7 @@ begin
     end
   else if CustomApplication.HasOption('v','verbose') then
     Dispatcher.LogOptions:=Dispatcher.LogOptions+[rloSQL];
+
   // Activate
   Dispatcher.Active:=True;
 end;
