@@ -171,6 +171,7 @@ type
     function DebugText(AIndent: String; {%H-}AWithResults: Boolean): String; virtual; // Self desc only
     function DebugDump(AIndent: String; AWithResults: Boolean): String; virtual;
   protected
+    FPrecedence: Integer;
     procedure Init; virtual;
     function  DoGetIsTypeCast: Boolean; virtual; deprecated;
     function  DoGetResultValue: TFpValue; virtual;
@@ -207,6 +208,7 @@ type
     property EndChar: PChar read FEndChar write SetEndChar;
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
+    property Precedence: Integer read FPrecedence;
     property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingOpenBracket; // incl self
     property ResultValue: TFpValue read GetResultValue;
     property Expression: TFpPascalExpression read FExpression;
@@ -334,10 +336,7 @@ type
 
   TFpPascalExpressionPartWithPrecedence = class(TFpPascalExpressionPartContainer)
   protected
-    FPrecedence: Integer;
     function HasPrecedence: Boolean; override;
-  public
-    property Precedence: Integer read FPrecedence;
   end;
 
   { TFpPascalExpressionPartBracket }
@@ -4737,13 +4736,21 @@ begin
 
   Result := APrevPart.CanHaveOperatorAsNext;
 
-  // BinaryOperator...
-  //   foo
-  //   Identifier
-  // "Identifier" can hane a binary-op next. But it must be applied to the parent.
-  // So it is not valid here.
-  // If new operator has a higher precedence, it go down to the child again and replace it
-  if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) then
+  (*
+   BinaryOperator...
+     # (e.g. Self = "+")
+     # APrevPart = Identifier
+     # APrevPart.Parent = "*" or "-"
+       foo * Identifier +
+       foo - Identifier +
+   The binary-op "+" after "Identifier" must be applied to the parent.
+   So, if SELF is the "+", then it is not valid after "Identifier".
+   If new operator has a higher precedence, it go down to the child again and replace it
+  *)
+  // precedence: 1 = highest
+  if (APrevPart.Parent <> nil) and (APrevPart.Parent.HasPrecedence) and
+     (Precedence >= APrevPart.Parent.Precedence)
+  then
     Result := False;
 end;
 
