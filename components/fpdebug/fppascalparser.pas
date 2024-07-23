@@ -2248,6 +2248,7 @@ function TFpPascalExpressionPartIntrinsic.DoTry(AParams: TFpPascalExpressionPart
 var
   Expr: TFpPascalExpressionPart;
   HighIdx, i: Integer;
+  ff: TFpValueFieldFlags;
 begin
   Result := nil;
   if IsError(FExpression.Error) then
@@ -2260,8 +2261,12 @@ begin
     Expr := AParams.Items[i];
     Result := Expr.GetResultValue;
     if (Result <> nil) and (not IsError(FExpression.Error)) then begin
-      Result.AddReference;
-      exit;
+      ff := Result.FieldFlags;
+      if ( (not (svfAddress in ff))     or (IsValidLoc(Result.Address))     )
+      then begin
+        Result.AddReference;
+        exit;
+      end;
     end;
 
     Expr.ResetEvaluationRecursive;
@@ -2279,6 +2284,7 @@ function TFpPascalExpressionPartIntrinsic.DoTryN(
 var
   Expr: TFpPascalExpressionPart;
   HighIdx, i: Integer;
+  ff: TFpValueFieldFlags;
 begin
   Result := nil;
   if IsError(FExpression.Error) then
@@ -2291,8 +2297,9 @@ begin
     Expr := AParams.Items[i];
     Result := Expr.GetResultValue;
     if (Result <> nil) and (not IsError(FExpression.Error)) then begin
-      if ( (not (svfAddress in Result.FieldFlags))     or (not IsNilLoc(Result.Address))     ) and
-         ( (not (svfDataAddress in Result.FieldFlags)) or (not IsNilLoc(Result.DataAddress)) )
+      ff := Result.FieldFlags;
+      if ( (not (svfAddress in ff))     or (IsReadableLoc(Result.Address))     ) and
+         ( (not (svfDataAddress in ff)) or (IsReadableLoc(Result.DataAddress)) )
       then begin
         Result.AddReference;
         exit;
