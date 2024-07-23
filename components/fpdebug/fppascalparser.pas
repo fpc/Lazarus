@@ -229,7 +229,7 @@ type
     function DebugDump(AIndent: String; AWithResults: Boolean): String; override;
   public
     destructor Destroy; override;
-    function GetFullText(AMaxLen: Integer=0): String; virtual; // including children
+    function GetFullText(AMaxLen: Integer=0): String; override; // including children
     function Add(APart: TFpPascalExpressionPart): Integer;
     function IndexOf(APart: TFpPascalExpressionPart): Integer;
     procedure Clear;
