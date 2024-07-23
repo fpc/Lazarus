@@ -2724,9 +2724,11 @@ end;
 function TLCLListViewCallback.GetItemTextAt(ARow, ACol: Integer;
   var Text: String): Boolean;
 begin
-  Result := (ACol>=0) and (ACol<listView.ColumnCount)
+  Result := (ACol>=0) and ( (ACol<listView.ColumnCount) or (ACol=0) )
     and (ARow >= 0) and (ARow < listView.Items.Count);
+
   if not Result then Exit;
+
   if ACol = 0 then
     Text := listView.Items[ARow].Caption
   else
@@ -2753,7 +2755,7 @@ end;
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
   var imgIdx: Integer): Boolean;
 begin
-  Result := (ACol >= 0) and (ACol < listView.ColumnCount)
+  Result := (ACol >= 0) and ( (ACol<listView.ColumnCount) or ( ACol=0) )
     and (ARow >= 0) and (ARow < listView.Items.Count);
 
   if not Result then Exit;
