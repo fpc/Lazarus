@@ -346,6 +346,7 @@ type
   private
     FIsClosed: boolean;
     FIsClosing: boolean;
+    FIsSeparatorChecking: boolean;
     FAfterComma: Integer;
     FFullEndChar: PChar;
     function GetAfterComma: Boolean;
@@ -358,8 +359,9 @@ type
     procedure SetAfterCommaFlag;
     property AfterComma: Boolean read GetAfterComma;
     procedure GetFirstLastChar(out AFirst, ALast: PChar); override;
+    procedure CheckBeforeSeparator(APart: TFpPascalExpressionPart);
   public
-    procedure CloseBracket(AStartChar: PChar; AnEndChar: PChar = nil);
+    procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar; AnEndChar: PChar = nil);
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     procedure HandleEndOfExpression; override;
     property IsClosed: boolean read FIsClosed;
@@ -1836,6 +1838,7 @@ begin
 
   Result := (Count > FAfterComma) and (Count > 1); // First element is name of array (in front of "[")
   if Result then begin
+    CheckBeforeSeparator(APart);
     SetAfterCommaFlag;
     APart := Self;
   end;
@@ -1871,6 +1874,7 @@ begin
 
   Result := (Count > FAfterComma) and (Count > 0);
   if Result then begin
+    CheckBeforeSeparator(APart);
     SetAfterCommaFlag;
     APart := Self;
   end;
@@ -2054,6 +2058,7 @@ begin
 
   Result := (Count > FAfterComma) and (Count > 1); // First element is name of function (in front of "(")
   if Result then begin
+    CheckBeforeSeparator(APart);
     SetAfterCommaFlag;
     APart := Self;
   end;
@@ -3673,7 +3678,7 @@ var
       SetParserError(fpErrPasParserWrongOpenBracket_p, [GetFirstToken(CurPtr), PosFromPChar(BracketPart.StartChar), BracketPart.GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
     end
     else begin
-      TFpPascalExpressionPartBracket(BracketPart).CloseBracket(CurPtr, TokenEndPtr-1);
+      TFpPascalExpressionPartBracket(BracketPart).CloseBracket(CurPart, CurPtr, TokenEndPtr-1);
       CurPart := BracketPart;
     end;
   end;
@@ -4587,7 +4592,17 @@ begin
     inherited GetFirstLastChar(AFirst, ALast);
 end;
 
-procedure TFpPascalExpressionPartBracket.CloseBracket(AStartChar: PChar; AnEndChar: PChar);
+procedure TFpPascalExpressionPartBracket.CheckBeforeSeparator(APart: TFpPascalExpressionPart);
+begin
+  if APart = nil then
+    exit;
+  FIsSeparatorChecking := True;
+  APart.HandleEndOfExpression;
+  FIsSeparatorChecking := False;
+end;
+
+procedure TFpPascalExpressionPartBracket.CloseBracket(ALastAddedPart: TFpPascalExpressionPart;
+  AStartChar: PChar; AnEndChar: PChar);
 begin
   FFullEndChar := AnEndChar;
   if AfterComma then begin
@@ -4595,8 +4610,8 @@ begin
     exit;
   end;
   FIsClosing := True;
-  if LastItem <> nil then
-    LastItem.HandleEndOfExpression;
+  if ALastAddedPart <> nil then
+    ALastAddedPart.HandleEndOfExpression;
   FIsClosing := False;
   FIsClosed := True;
 end;
@@ -4620,7 +4635,7 @@ end;
 
 procedure TFpPascalExpressionPartBracket.HandleEndOfExpression;
 begin
-  if not FIsClosing then
+  if not (FIsClosing or FIsSeparatorChecking) then
     inherited HandleEndOfExpression;
 end;
 

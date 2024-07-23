@@ -615,6 +615,21 @@ begin
   AssertFalse('self test format error msg', pos('Internal Error:', s) < 1);
 
 
+  //TestExpr('(a+2*)',     fpErrPasParser);
+  CreateExpr('a+', False);
+  CreateExpr('a*', False);
+  CreateExpr('*a', False);
+  CreateExpr('a+2*', False);
+  CreateExpr('a*2+', False);
+  CreateExpr('(a+2*)', False);
+  CreateExpr('(a+2*)', False);
+  CreateExpr('f(a+2*)', False);
+  CreateExpr('f(1,a+2*)', False);
+  CreateExpr('f(1,a+2*)', False);
+  CreateExpr('f(a+2*)', False);
+  CreateExpr('f(a+2*,1)', False);
+  CreateExpr('f(a+2*,1)', False);
+
   TestExpr('£',        fpErrPasParserUnexpectedToken_p);
   TestExpr(':foobar',  fpErrPasParserUnknownIntrinsic_p);
 
