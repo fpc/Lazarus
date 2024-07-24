@@ -6587,6 +6587,7 @@ begin
 
   FSlicePart.FCurrentIndex := FSlicePart.StartValue;
   FSlicePart.FTouched := False;
+  ResetEvaluationForIndex;
   Result := Items[0].ResultValue;
 
   if not FSlicePart.FTouched then begin
@@ -6594,6 +6595,13 @@ begin
     Result.AddReference;
     exit;
   end;
+
+  // Need to return an array, the array itself should not set an error (the 1st (or any) member may do)
+  // We need to get the error again later, when we get the first member
+  if IsError(Expression.FError) then
+    Items[0].ResetEvaluation;
+  Expression.FValid := True;
+  Expression.FError := nil;
 
   if not FCheckedForVariantPart then begin
     FSlicePart.CheckForVariantExpressionParts;
