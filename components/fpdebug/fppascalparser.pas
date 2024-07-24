@@ -519,6 +519,8 @@ type
       ): TFpPascalExpressionPart; override;
     function IsValidAfterPartWithPrecedence(APrevPart: TFpPascalExpressionPart): Boolean; override;
     procedure DoHandleEndOfExpression; override;
+  public
+    function ReturnsVariant: boolean; override;
   end;
 
   { TFpPascalExpressionPartOperatorColon }
@@ -3433,7 +3435,8 @@ end;
 function TFpPascalExpressionPartIntrinsic.ReturnsVariant: boolean;
 begin
   Result := (inherited ReturnsVariant) or
-            (FIntrinsic = ifChildClass);
+            (FIntrinsic in [ifChildClass, ifTry, ifTryN]);
+            // TODO: compare types of each argument for ifTry/N
 end;
 
 procedure TFpPascalExpressionPartIntrinsic.HandleNewParam(AParamPart: TFpPascalExpressionPart;
@@ -5115,6 +5118,11 @@ begin
   inherited DoHandleEndOfExpression;
   if (Count <> 2) or not(Items[1] is TFpPascalExpressionPartOperatorColon) then
     SetError('Missing ":"');
+end;
+
+function TFpPascalExpressionPartOperatorQuestionMark.ReturnsVariant: boolean;
+begin
+  Result := True; // TODO: compare types of each argument
 end;
 
 { TFpPascalExpressionPartOperatorColon }
