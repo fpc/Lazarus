@@ -2467,11 +2467,24 @@ type
   end;
   PFpValueFlatteArray = ^TFpValueFlatteArray;
 
+  TFpPascalExpressionFlattenFlag = (
+    iffShowNil,
+    iffShowNoMember,
+    iffShowRecurse,
+    iffShowSeen,
+    iffShowErrAny,
+    iffDerefPtr
+  );
+  TFpPascalExpressionFlattenFlags = set of TFpPascalExpressionFlattenFlag;
+
   { TFpPascalExpressionCacheFlattenKey }
 
   TFpPascalExpressionCacheFlattenKey = record
-    Ctx: TFpDbgLocationContext;
+    CtxThread, CtxStack: Integer;
     Key: String;
+    Flags: TFpPascalExpressionFlattenFlags;
+    ExpandArrayDepth: integer;
+
     class operator = (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
     class operator < (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
     class operator > (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
@@ -2496,7 +2509,11 @@ type
 class operator TFpPascalExpressionCacheFlattenKey. = (a, b: TFpPascalExpressionCacheFlattenKey
   ): boolean;
 begin
-  Result := (a.Ctx = b.Ctx) and (a.Key = b.Key);
+  Result := (a.CtxThread = b.CtxThread) and
+            (a.CtxStack  = b.CtxStack) and
+            (a.Flags     = b.Flags) and
+            (a.ExpandArrayDepth  = b.ExpandArrayDepth) and
+            (a.Key = b.Key);
 end;
 
 class operator TFpPascalExpressionCacheFlattenKey.<(a, b: TFpPascalExpressionCacheFlattenKey
@@ -2617,7 +2634,7 @@ var
   Res: TFpValueFlatteArray absolute Result;
   Seen: TAddrSeenList;
   HighParam: integer;
-  ShowNil, ShowNoMember, ShowRecurse, ShowSeen, ShowErrAny, DerefPtr: Boolean;
+  Flags: TFpPascalExpressionFlattenFlags;
   MaxCnt, ExpandArrayDepth: integer;
   TpSym: TFpSymbol;
   CacheKey: TFpPascalExpressionCacheFlattenKey;
@@ -2642,7 +2659,7 @@ var
     r, DoExpArray: Boolean;
   begin
     Result := True;
-    if DerefPtr and (ACurrentVal.Kind = skPointer) and
+    if (iffDerefPtr in Flags) and (ACurrentVal.Kind = skPointer) and
       (ACurrentVal.TypeInfo <> nil) and (ACurrentVal.TypeInfo.TypeInfo <> nil) and
       (ACurrentVal.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
     then begin
@@ -2658,7 +2675,7 @@ var
     end;
 
     DA := ACurrentVal.DataAddress;
-    if (not ShowNil) and IsNilLoc(DA) then begin
+    if (not (iffShowNil in Flags)) and IsNilLoc(DA) then begin
       ReleaseRefAndNil(ACurrentVal);
       exit;
     end;
@@ -2677,14 +2694,14 @@ var
             SeenIdx := -1;
         end;
         if (SeenIdx >= 0) then begin
-          if ShowRecurse and (ValIdx >= 0) then begin
+          if (iffShowRecurse in Flags) and (ValIdx >= 0) then begin
             if DoExpArray then
               AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for array at member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
             else
               AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
           end
           else
-          if ShowSeen then begin
+          if (iffShowSeen in Flags) then begin
             if ValIdx < 0 then ValIdx := -(ValIdx + 1);
             if DoExpArray then
               AddErrToList(CreateError(fpErrAnyError, [Format('Array for member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
@@ -2717,7 +2734,7 @@ var
       Result := FlattenRecurse(ACurrentVal);
 
     ReleaseRefAndNil(ACurrentVal);
-    if ShowSeen then
+    if (iffShowSeen in Flags) then
       Seen.Data[s] := -1-ResIdx
     else
       Seen.Delete(s);
@@ -2765,7 +2782,7 @@ var
           ACurrentVal := AutoDereVal;
         end;
         if (ACurrentVal = nil) then begin
-          //if ShowErrAny then
+          //if (iffShowErrAny in Flags) then
           //  AddErrToList(CreateError(fpErrAnyError, ['Can't flatten nil pointer']));
           exit;
         end;
@@ -2794,7 +2811,7 @@ var
               if TmpNew <> nil then TmpNew.AddReference;
 
               if (not FFlattenMemberNotFound) and IsError(FExpression.Error) then begin
-                if ShowErrAny then
+                if (iffShowErrAny in Flags) then
                   AddErrToList(CreateError(fpErrAnyError, ['Failed eval for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
                 ReleaseRefAndNil(TmpNew);
               end;
@@ -2808,7 +2825,7 @@ var
             end;
 
             if FFlattenMemberNotFound then begin
-              if ShowNoMember then
+              if (iffShowNoMember in Flags) then
                 AddErrToList(CreateError(fpErrAnyError, ['Member not found: ' + FFlattenMemberName]));
               ReleaseRefAndNil(TmpNew);
             end;
@@ -2824,7 +2841,7 @@ var
         end;
         //skArray: begin end;
         else begin
-          //if ShowErrAny then
+          //if (iffShowErrAny in Flags) then
           //  AddErrToList(CreateError(fpErrAnyError, ['Can''t flatten value']));
         end;
       end;
@@ -2855,30 +2872,7 @@ begin
   if (FirstVal.Kind <> skArray) and (not CheckArgumentCount(AParams, 2, 999)) then
     exit;
 
-  ListCache := nil;
-  if (FExpression.GlobalCache <> nil) then begin
-    CacheKey.Ctx := FExpression.Scope.LocationContext;
-    CacheKey.Key := Parent.GetFullText;
-    i := FExpression.GlobalCache.IndexOf(Pointer(TFpPascalExpressionPartIntrinsic));
-    if i >= 0 then begin
-      ListCache := TFpPascalExpressionCacheFlatten(FExpression.GlobalCache.Data[i]);
-      i := ListCache.IndexOf(CacheKey);
-      if i >= 0 then begin
-        Result := ListCache.Data[i];
-        if Res.FFullEvaluated then begin
-          Res.AddReference;
-          exit;
-        end;
-      end;
-    end;
-  end;
-
-  ShowNil      := True;
-  ShowNoMember := True;
-  ShowRecurse  := True;
-  ShowSeen     := True;
-  ShowErrAny   := True;
-  DerefPtr     := True;
+  Flags := [iffShowNil, iffShowNoMember, iffShowRecurse, iffShowSeen, iffShowErrAny, iffDerefPtr];
   ExpandArrayDepth  := 0;
   MaxCnt       := 1000;
   CustomMaxCnt := False;
@@ -2906,12 +2900,8 @@ begin
         exit;
       end;
 
-      ShowNil      := LastParamNeg;
-      ShowNoMember := LastParamNeg;
-      ShowRecurse  := LastParamNeg;
-      ShowSeen     := LastParamNeg;
-      ShowErrAny   := LastParamNeg;
-      DerefPtr     := LastParamNeg;
+      if not LastParamNeg then
+        Flags := [];
 
       for i := 0 to OptSet.Count - 1 do begin
         Itm := OptSet.Items[i];
@@ -2939,17 +2929,38 @@ begin
 
         OVal := OVal xor LastParamNeg;
         case LowerCase(OName) of
-          'nil':             ShowNil      := OVal;
-          'field', 'fld':    ShowNoMember := OVal;
-          'loop', 'recurse': ShowRecurse  := OVal;
-          'seen', 'dup':     ShowSeen     := OVal;
-          'err', 'error':    ShowErrAny   := OVal;
+          'nil':             if OVal then include(Flags, iffShowNil)      else exclude(Flags, iffShowNil);
+          'field', 'fld':    if OVal then include(Flags, iffShowNoMember) else exclude(Flags, iffShowNoMember);
+          'loop', 'recurse': if OVal then include(Flags, iffShowRecurse)  else exclude(Flags, iffShowRecurse);
+          'seen', 'dup':     if OVal then include(Flags, iffShowSeen)     else exclude(Flags, iffShowSeen);
+          'err', 'error':    if OVal then include(Flags, iffShowErrAny)   else exclude(Flags, iffShowErrAny);
           'array':           ExpandArrayDepth  := 1;
-          'ptr', 'deref':    DerefPtr     := OVal;
+          'ptr', 'deref':    if OVal then include(Flags, iffDerefPtr)     else exclude(Flags, iffDerefPtr);
           else begin
             SetError('Unknown flag: '+Itm.GetText);
             exit;
           end;
+        end;
+      end;
+    end;
+  end;
+
+  ListCache := nil;
+  if (FExpression.GlobalCache <> nil) then begin
+    CacheKey.CtxThread := FExpression.Scope.LocationContext.ThreadId;
+    CacheKey.CtxStack := FExpression.Scope.LocationContext.StackFrame;
+    CacheKey.Flags := Flags;
+    CacheKey.ExpandArrayDepth := ExpandArrayDepth;
+    CacheKey.Key := Parent.GetFullText;
+    i := FExpression.GlobalCache.IndexOf(Pointer(TFpPascalExpressionPartIntrinsic));
+    if i >= 0 then begin
+      ListCache := TFpPascalExpressionCacheFlatten(FExpression.GlobalCache.Data[i]);
+      i := ListCache.IndexOf(CacheKey);
+      if i >= 0 then begin
+        Result := ListCache.Data[i];
+        if Res.FFullEvaluated then begin
+          Res.AddReference;
+          exit;
         end;
       end;
     end;
