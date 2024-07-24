@@ -635,12 +635,15 @@ type
 
   TFpPascalExpressionPartOperatorArraySliceController = class(TFpPascalExpressionPartContainer)    // enum in set
   private
+    FDisableSlice: boolean;
     FSlicePart: TFpPascalExpressionPartOperatorArraySlice;
     FInResetEvaluationForIndex: Boolean;
     FHasVariantPart: Boolean;
     FCheckedForVariantPart: Boolean;
+    function GetCanDisableSlice: boolean;
   protected
     function DoGetResultValue: TFpValue; override;
+    procedure ResetEvaluation;
     procedure ResetEvaluationForIndex;
     procedure ResetEvaluationForAnchestors; override;
   public
@@ -649,6 +652,8 @@ type
       ATopPart: TFpPascalExpressionPart;
       AStartChar: PChar; AnEndChar: PChar = nil);
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
+    property DisableSlice: boolean read FDisableSlice write FDisableSlice;
+    property CanDisableSlice: boolean read GetCanDisableSlice;
   end;
 
   { TFpPascalExpressionPartOperatorArraySlice }
@@ -656,6 +661,7 @@ type
   TFpPascalExpressionPartOperatorArraySlice = class(TFpPascalExpressionPartBinaryOperator)    // enum in set
   private
     FCurrentIndex: Int64;
+    FController: TFpPascalExpressionPartOperatorArraySliceController;
   protected
     FTouched: boolean;
     procedure Init; override;
@@ -664,6 +670,8 @@ type
     function StartValue: Int64;
     function EndValue: Int64;
     procedure CheckForVariantExpressionParts;
+  public
+    property Controller: TFpPascalExpressionPartOperatorArraySliceController read FController;
   end;
 
 implementation
@@ -1684,8 +1692,10 @@ begin
         end;
       skString, skAnsiString: begin
           //TODO: move to FpDwarfValue.member ??
-          if (Count = 2) and (Items[1] is TFpPascalExpressionPartOperatorArraySlice)
+          if (Count = 2) and (Items[1] is TFpPascalExpressionPartOperatorArraySlice) and
+             TFpPascalExpressionPartOperatorArraySlice(Items[1]).Controller.CanDisableSlice
           then begin
+            TFpPascalExpressionPartOperatorArraySlice(Items[1]).Controller.DisableSlice := True;
             Offs := TFpPascalExpressionPartOperatorArraySlice(Items[1]).StartValue;
             Len  := TFpPascalExpressionPartOperatorArraySlice(Items[1]).EndValue - Offs + 1;
             TmpVal.GetSubString(Offs, Len, v);
@@ -6566,33 +6576,25 @@ begin
   Result := Self;
 end;
 
+function TFpPascalExpressionPartOperatorArraySliceController.GetCanDisableSlice: boolean;
+begin
+  Result := (not FResultValDone);
+end;
+
 function TFpPascalExpressionPartOperatorArraySliceController.DoGetResultValue: TFpValue;
 var
   tmp: TFpValue;
 begin
-  if (FSlicePart.Parent <> nil) and
-     (FSlicePart.Parent is TFpPascalExpressionPartBracketIndex) and
-     (FSlicePart.Parent.Count = 2) // variable and ONE index
-  then begin
-    tmp := FSlicePart.Parent.Items[0].ResultValue;
-    if (tmp <> nil) and (Tmp.Kind in [skString, skAnsiString, skWideString])
-    then begin
-      // Handled in TFpPascalExpressionPartBracketIndex.DoGetResultValue
-      Result := Items[0].ResultValue;
-      if Result <> nil then
-        Result.AddReference;
-      exit;
-    end;
-  end;
-
   FSlicePart.FCurrentIndex := FSlicePart.StartValue;
   FSlicePart.FTouched := False;
   ResetEvaluationForIndex;
   Result := Items[0].ResultValue;
 
-  if not FSlicePart.FTouched then begin
+  if (not FSlicePart.FTouched) or DisableSlice then begin
     // The array slice is not part of the expression ("? :" or Try)
-    Result.AddReference;
+    // Or already handled.
+    if Result <> nil then
+      Result.AddReference;
     exit;
   end;
 
@@ -6609,6 +6611,12 @@ begin
   end;
 
   Result := TFpPasParserValueSlicedArray.Create(Self);
+end;
+
+procedure TFpPascalExpressionPartOperatorArraySliceController.ResetEvaluation;
+begin
+  inherited ResetEvaluation;
+  FDisableSlice := False;
 end;
 
 procedure TFpPascalExpressionPartOperatorArraySliceController.ResetEvaluationForIndex;
@@ -6651,7 +6659,7 @@ procedure TFpPascalExpressionPartOperatorArraySlice.SetParent(
   AValue: TFpPascalExpressionPartContainer);
 begin
   if (Parent = nil) and (AValue <> nil) then
-    TFpPascalExpressionPartOperatorArraySliceController.Create(FExpression,
+    FController := TFpPascalExpressionPartOperatorArraySliceController.Create(FExpression,
       Self, AValue.TopParent, FStartChar, FEndChar);
 
   inherited SetParent(AValue);
