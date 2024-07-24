@@ -657,6 +657,7 @@ type
   private
     FCurrentIndex: Int64;
   protected
+    FTouched: boolean;
     procedure Init; override;
     procedure SetParent(AValue: TFpPascalExpressionPartContainer); override;
     function DoGetResultValue: TFpValue; override;
@@ -6584,6 +6585,16 @@ begin
     end;
   end;
 
+  FSlicePart.FCurrentIndex := FSlicePart.StartValue;
+  FSlicePart.FTouched := False;
+  Result := Items[0].ResultValue;
+
+  if not FSlicePart.FTouched then begin
+    // The array slice is not part of the expression ("? :" or Try)
+    Result.AddReference;
+    exit;
+  end;
+
   if not FCheckedForVariantPart then begin
     FSlicePart.CheckForVariantExpressionParts;
     FCheckedForVariantPart := True;
@@ -6640,6 +6651,7 @@ end;
 
 function TFpPascalExpressionPartOperatorArraySlice.DoGetResultValue: TFpValue;
 begin
+  FTouched := True;
   Result := TFpValueConstNumber.Create(QWord(FCurrentIndex), True);
 end;
 
