@@ -895,23 +895,38 @@ procedure TCocoaWSListView_TableViewHandler.SetDefaultItemHeight(
   const AValue: Integer);
 begin
   if AValue > 0 then
-    _tableView.setRowHeight(AValue);
+    _tableView.CustomRowHeight:= AValue;
   // setRowSizeStyle could be used here but is available only in 10.7+
 end;
 
 procedure TCocoaWSListView_TableViewHandler.SetImageList(
   const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
+  lclcb: TLCLListViewCallback;
+  lvil: TListViewImageList;
   spacing: NSSize;
 begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if NOT lclcb.GetImageListType(lvil) then
+    Exit;
+
+  if AList <> lvil then
+    Exit;
+
   _tableView.lclSetImagesInCell(Assigned(AValue));
 
   if NOT Assigned(AValue) then
     Exit;
-  if AValue.Height < _tableView.rowHeight-2 then
-    Exit;
+
   spacing:= _tableView.intercellSpacing;
-  spacing.height:= _tableView.rowHeight / 3 + 2;
+  spacing.height:= AValue.Height / 3 + 2;
+  if spacing.height < 6 then
+    spacing.height:= 6
+  else if spacing.height > 12 then
+    spacing.height:= 12;
   _tableView.setIntercellSpacing( spacing );
 end;
 
