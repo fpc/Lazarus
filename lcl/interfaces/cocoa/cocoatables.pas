@@ -475,13 +475,23 @@ end;
 function TCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
   const BoundsRect: TRect): TRect;
 begin
-  Result := BoundsRect;
+  Result:= BoundsRect;
+  Result.Top:= Result.Top - 2;
+  Result.Height:= Result.Height + 4;
+  if self.isImagesInCell then begin
+    Result.Left:= Result.Left + BoundsRect.Height;
+  end;
 end;
 
 function TCocoaTableListView.lclGetIconRect(ARow, ACol: Integer;
   const BoundsRect: TRect): TRect;
 begin
-  Result := BoundsRect;
+  if self.isImagesInCell then begin
+    Result:= BoundsRect;
+    Result.Width:= Result.Height;
+  end else begin
+    Result:= TRect.Empty;
+  end;
 end;
 
 procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
