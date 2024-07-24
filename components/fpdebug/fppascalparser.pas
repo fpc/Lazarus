@@ -175,7 +175,7 @@ type
     procedure Init; virtual;
     function  DoGetIsTypeCast: Boolean; virtual; deprecated;
     function  DoGetResultValue: TFpValue; virtual;
-    procedure ResetEvaluation;
+    procedure ResetEvaluation; virtual;
     procedure ResetEvaluationRecursive; virtual;
     procedure ResetEvaluationForAnchestors; virtual;
 
@@ -207,6 +207,7 @@ type
     property StartChar: PChar read FStartChar write SetStartChar;
     property EndChar: PChar read FEndChar write SetEndChar;
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
+    function FindInParents(APart: TFpPascalExpressionPart): Boolean;
     property TopParent: TFpPascalExpressionPart read GetTopParent; // or self
     property Precedence: Integer read FPrecedence;
     property SurroundingBracket: TFpPascalExpressionPartBracket read GetSurroundingOpenBracket; // incl self
@@ -643,7 +644,7 @@ type
     function GetCanDisableSlice: boolean;
   protected
     function DoGetResultValue: TFpValue; override;
-    procedure ResetEvaluation;
+    procedure ResetEvaluation; override;
     procedure ResetEvaluationForIndex;
     procedure ResetEvaluationForAnchestors; override;
   public
@@ -652,6 +653,7 @@ type
       ATopPart: TFpPascalExpressionPart;
       AStartChar: PChar; AnEndChar: PChar = nil);
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
+    property SlicePart: TFpPascalExpressionPartOperatorArraySlice read FSlicePart;
     property DisableSlice: boolean read FDisableSlice write FDisableSlice;
     property CanDisableSlice: boolean read GetCanDisableSlice;
   end;
@@ -2258,6 +2260,9 @@ end;
 function TFpPascalExpressionPartIntrinsic.DoGetMemberForFlattenExpr(
   APart: TFpPascalExpressionPart; AnIdent: String): TFpValue;
 begin
+  if FFlattenCurrentVal = nil then
+    exit(nil);
+
   Result := FFlattenCurrentVal.MemberByName[AnIdent];
   if Result = nil then begin
     SetError(fpErrNoMemberWithName, [AnIdent]);
@@ -2859,7 +2864,7 @@ var
   OptSet: TFpPascalExpressionPartBracketSet absolute LastParam;
   i: Integer;
   OName: String;
-  OVal, CustomMaxCnt, LastParamNeg: Boolean;
+  OVal, CustomMaxCnt, LastParamNeg, SkipCache: Boolean;
   PParent: TFpPascalExpressionPartContainer;
   ListCache: TFpPascalExpressionCacheFlatten;
 begin
@@ -2946,7 +2951,17 @@ begin
   end;
 
   ListCache := nil;
+  SkipCache := False;
   if (FExpression.GlobalCache <> nil) then begin
+    Itm := TopParent;
+    while (not SkipCache) and (Itm is TFpPascalExpressionPartOperatorArraySliceController)
+    do begin
+      SkipCache := TFpPascalExpressionPartOperatorArraySliceController(Itm).SlicePart.FindInParents(Self.Parent);
+      Itm := TFpPascalExpressionPartContainer(Itm).Items[0];
+    end;
+  end;
+
+  if (not SkipCache) and (FExpression.GlobalCache <> nil) then begin
     CacheKey.CtxThread := FExpression.Scope.LocationContext.ThreadId;
     CacheKey.CtxStack := FExpression.Scope.LocationContext.StackFrame;
     CacheKey.Flags := Flags;
@@ -3012,7 +3027,7 @@ begin
     Seen.Free;
   end;
 
-  if (FExpression.GlobalCache <> nil) then begin
+  if (not SkipCache) and (FExpression.GlobalCache <> nil) then begin
     if ListCache = nil then begin
       ListCache := TFpPascalExpressionCacheFlatten.Create;
       FExpression.GlobalCache[Pointer(TFpPascalExpressionPartIntrinsic)] := ListCache;
@@ -4350,6 +4365,20 @@ begin
   Result := False;
   if FResultValue <> nil then
     Result := (FResultValue.Flags * [vfVariant, vfArrayOfVariant] <> []);
+end;
+
+function TFpPascalExpressionPart.FindInParents(APart: TFpPascalExpressionPart): Boolean;
+var
+  p: TFpPascalExpressionPart;
+begin
+  p := Self;
+  while p <> nil do begin
+    Result := APart = p;
+    if Result then
+      exit;
+    p := p.Parent;
+  end;
+  Result := False;
 end;
 
 procedure TFpPascalExpressionPart.SetError(AMsg: String);
