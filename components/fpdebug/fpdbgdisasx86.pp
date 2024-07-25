@@ -529,6 +529,7 @@ type
     FInstruction: TInstruction;
     FInstrLen: Integer;
     FFlags: set of (diCodeRead, diCodeReadError, diDisAss);
+    function GetCodeMem: Pointer;
   protected
     procedure ReadCode; inline;
     procedure Disassemble; inline;
@@ -544,6 +545,7 @@ type
     function InstructionLength: Integer; override;
     function X86OpCode: TOpCode;
     property X86Instruction: TInstruction read FInstruction; // only valid after call to X86OpCode
+    property CodeMem: Pointer read GetCodeMem;
   end;
 
   { TX86AsmDecoder }
@@ -4810,6 +4812,11 @@ begin
 end;
 
 { TX86AsmInstruction }
+
+function TX86AsmInstruction.GetCodeMem: Pointer;
+begin
+  Result := @FCodeBin[0];
+end;
 
 procedure TX86AsmInstruction.ReadCode;
 begin

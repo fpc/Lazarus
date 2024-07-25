@@ -2145,6 +2145,13 @@ begin
         weMatch('Value *:?=? ?4', skClass),
         weMatch('rec',skNone).ExpectError()
       ], 5)).IgnTypeName();
+
+
+    t.Add('i2o', ':i2o(AnIntf1)', weClass([
+        weInteger(123).N('a'), weInteger(987).N('b'), weInteger(551177).N('c') ], 'TIntf1'));
+    t.Add('i2o', ':i2o(AnIntf2)', weClass([
+        weInteger(321).N('x'), weInteger(789).N('y'), weInteger(441188).N('c') ], 'TIntf2'));
+
     t.EvaluateWatches;
     t.CheckResults;
 

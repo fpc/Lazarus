@@ -50,7 +50,7 @@ uses
   DbgIntfBaseTypes, FpDbgClasses, FpDbgUtil, FPDbgController, FpPascalBuilder,
   FpdMemoryTools, FpDbgInfo, FpPascalParser, FpErrorMessages,
   FpDebugDebuggerBase, FpDebuggerResultData, FpDbgCallContextInfo, FpDbgDwarf,
-  FpDbgDwarfDataClasses, FpWatchResultData, LazDebuggerIntf,
+  FpDbgDwarfDataClasses, FpWatchResultData, FpDbgDwarfFreePascal, FpDbgDisasX86, LazDebuggerIntf,
   LazDebuggerValueConverter, Forms, fgl, math, Classes, sysutils, LazClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
@@ -226,6 +226,8 @@ type
     FAllowFunctions, FAllowFunctionsAllThread: Boolean;
     FExpressionScope: TFpDbgSymbolScope;
 
+    function DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar; ALen: Integer
+      ): TFpPascalExpressionPartIntrinsicBase;
     function DoWatchFunctionCall(AnExpressionPart: TFpPascalExpressionPart;
       AFunctionValue, ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
       out AResult: TFpValue; var AnError: TFpError): boolean;
@@ -1113,6 +1115,18 @@ begin
 
 end;
 
+function TFpThreadWorkerEvaluate.DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar;
+  ALen: Integer): TFpPascalExpressionPartIntrinsicBase;
+begin
+  if (ALen = 3) and (strlicomp(AStart, pchar('i2o'), 3) = 0) and
+     (FDebugger.DbgController.CurrentProcess.Disassembler is TX86AsmDecoder)
+  then
+    Result := TFpPascalExpressionPartIntrinsicIntfToObj.Create(AnExpression,
+      AStart, AStart+ALen,
+      TX86AsmDecoder(FDebugger.DbgController.CurrentProcess.Disassembler)
+    );
+end;
+
 function TFpThreadWorkerEvaluate.EvaluateExpression(const AnExpression: String;
   AStackFrame, AThreadId: Integer; ARepeatCnt: Integer; AnEvalFlags: TWatcheEvaluateFlags;
   out AResText: String; out ATypeInfo: TDBGType): Boolean;
@@ -1143,6 +1157,7 @@ begin
   APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
   APasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
   APasExpr.GlobalCache := FDebugger.DbgController.CurrentProcess.GlobalCache;
+  APasExpr.OnFindIntrinsc := @DoFindIntrinsic;
   APasExpr.Parse;
   try
     if FAllowFunctions and (dfEvalFunctionCalls in FDebugger.EnabledFeatures) then

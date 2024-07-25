@@ -9,9 +9,10 @@ interface
 uses
   Classes, SysUtils, Types, math,
   FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
-  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, FpDbgClasses,
+  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, FpDbgClasses, FpPascalParser, FpDbgDisasX86,
   DbgIntfBaseTypes,
-  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils;
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
+  LazStringUtils, LazClasses;
 
 type
 
@@ -344,6 +345,21 @@ type
 
   TFpSymbolDwarfFreePascalDataParameter = class(TFpSymbolDwarfDataParameter)
     procedure NameNeeded; override;
+  end;
+
+  { TFpPascalExpressionPartIntrinsicIntfToObj }
+
+  TFpPascalExpressionPartIntrinsicIntfToObj = class(TFpPascalExpressionPartIntrinsicBase)
+  private
+    FDisAssembler: TX86AsmDecoder;
+    FChildClassCastType: TFpValue;
+  protected
+    function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue; override;
+    function ReturnsVariant: boolean; override;
+  public
+    constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar;
+      ADisAssembler: TX86AsmDecoder);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -2427,6 +2443,152 @@ begin
   inherited NameNeeded;
   if InformationEntry.IsArtificial and (Name = 'this') then
     SetName('self');
+end;
+
+{ TFpPascalExpressionPartIntrinsicIntfToObj }
+
+function TFpPascalExpressionPartIntrinsicIntfToObj.DoGetResultValue(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+  function IsRegister(Val, Reg: String): boolean;
+  begin
+    Result := (Length(Val) = Length(Reg) + 1) and (Length(val) >= 2) and (val[1] in ['r', 'e']) and (strlcomp(@Val[2], PChar(Reg), Length(Reg)) = 0);
+  end;
+var
+  Arg: TFpValue;
+  ctx: TFpDbgLocationContext;
+  Addr, CodeAddr: TDBGPtr;
+  DataLoc: TFpDbgMemLocation;
+  instr: TX86AsmInstruction;
+  O1, O2: TInstructionOperand;
+  OpVal: Int64;
+  CompVer: Integer;
+  Sym: TFpSymbol;
+  AClassName, AUnitName: AnsiString;
+  AnErr: TFpError;
+  R: Boolean;
+  TmpAddr: TFpValueConstAddress;
+  reg: String;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+  if (Arg.Kind <> skInterface) or (Arg.AsCardinal = 0)
+  then
+    exit;
+
+  ctx := Expression.Scope.LocationContext;
+  Addr := Arg.AsCardinal;
+  if Addr = 0 then begin
+    Result := Arg;
+    exit;
+  end;
+
+  ctx.ReadAddress(TargetLoc(Addr), SizeVal(ctx.SizeOfAddress), DataLoc);
+  if not IsTargetNotNil(DataLoc) then begin
+    if IsError(ctx.LastMemError) then SetError(ctx.LastMemError)
+    else SetError('Could not get memory address');
+    exit;
+  end;
+  ctx.ReadAddress(DataLoc, SizeVal(ctx.SizeOfAddress), DataLoc);
+  if not IsTargetNotNil(DataLoc) then begin
+    if IsError(ctx.LastMemError) then SetError(ctx.LastMemError)
+    else SetError('Could not get memory address');
+    exit;
+  end;
+
+  CodeAddr := DataLoc.Address;
+  instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr));
+
+  if instr.X86OpCode = OPsub then begin
+    if (instr.X86Instruction.OperCnt <> 2) then begin
+      SetError('Unknown asm code');
+      exit;
+    end;
+
+    O1 := instr.X86Instruction.Operand[1];
+    O2 := instr.X86Instruction.Operand[2];
+    // Check the offset
+    if (ofMemory in O2.Flags) or (O2.Value <> '%s') then begin
+      SetError('Unknown asm code');
+      exit;
+    end;
+    // check the register, or stack-var
+    // 0000000000401A70 836C240418               sub dword ptr [esp+$04],$18
+    // sub eax, $18
+    // sub ecx, $18
+    // sub rdi, $18 // linux
+
+    if (ofMemory in O1.Flags) then begin
+      if not ( IsRegister(O1.Value, 'sp%s') ) then begin // relative to stack
+        SetError('Unknown asm code');
+        exit;
+      end;
+    end
+    else begin
+      if not ( IsRegister(O1.Value, 'cx') or IsRegister(O1.Value, 'ax') or IsRegister(O1.Value, 'di') ) then begin
+        SetError('Unknown asm code');
+        exit;
+      end;
+    end;
+
+    OpVal := ValueFromMem((instr.CodeMem + O2.CodeIndex)^, O2.ByteCount, O2.FormatFlags);
+
+    instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr + instr.InstructionLength));
+    if instr.X86OpCode <> OPjmp then begin
+      SetError('Unknown asm code');
+      exit;
+    end;
+
+    CompVer := $030300;
+    Sym := Expression.Scope.SymbolAtAddress;
+    if (Sym <> nil) and (Sym is TFpSymbolDwarf) and (TFpSymbolDwarf(Sym).CompilationUnit <> nil)
+    then
+      CompVer := TFpDwarfFreePascalSymbolClassMap(TFpSymbolDwarf(Sym).CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
+
+    Addr := Addr - OpVal;
+    R := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt
+      (Addr, ctx, ctx.SizeOfAddress,
+       @AClassName, @AUnitName, AnErr,
+       0, CompVer
+      );
+    if R then begin
+
+      FChildClassCastType.ReleaseReference;
+      FChildClassCastType := Expression.GetDbgSymbolForIdentifier(AClassName);
+      if (FChildClassCastType = nil) or (FChildClassCastType.DbgSymbol = nil) or
+         (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
+         (FChildClassCastType.DbgSymbol.Kind <> skClass)
+      then begin
+        ReleaseRefAndNil(FChildClassCastType);
+        exit;
+      end;
+
+      TmpAddr := TFpValueConstAddress.Create(ConstDerefLoc(Addr));
+      Result := FChildClassCastType.GetTypeCastedValue(TmpAddr);
+      TmpAddr.ReleaseReference;
+    end;
+  end;
+end;
+
+function TFpPascalExpressionPartIntrinsicIntfToObj.ReturnsVariant: boolean;
+begin
+  Result := True;
+end;
+
+constructor TFpPascalExpressionPartIntrinsicIntfToObj.Create(AExpression: TFpPascalExpression;
+  AStartChar: PChar; AnEndChar: PChar; ADisAssembler: TX86AsmDecoder);
+begin
+  FDisAssembler := ADisAssembler;
+  inherited Create(AExpression, AStartChar, AnEndChar);
+end;
+
+destructor TFpPascalExpressionPartIntrinsicIntfToObj.Destroy;
+begin
+  inherited Destroy;
+  FChildClassCastType.ReleaseReference;
 end;
 
 initialization

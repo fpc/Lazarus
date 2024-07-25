@@ -1,4 +1,5 @@
 program intrinsic;
+uses Classes;
 
 type
   TDummy = packed record a: integer; end;
@@ -23,6 +24,40 @@ var
   f1, f2, f3, f4, f5, f6, f7, f8: TFoo;
   fa: array [0..9] of TFoo;
 
+
+type
+{$Interfaces COM}
+  IIntf1 = interface ['{5CD5BFCA-3865-4CE9-916C-775E0DFB6BF5}']
+    procedure Foo;
+    procedure Bar;
+  end;
+
+  TIntf1 = class(TInterfacedObject, IIntf1)
+    a,b,c: integer;
+    procedure Foo;
+    procedure Bar;
+  end;
+
+type
+{$Interfaces CORBA}
+  IIntf2 = interface ['{C3E936EE-479B-404E-AEE8-C94CB6DDE462}']
+    procedure Foo;
+    procedure Bar;
+  end;
+  TIntf2 = class(TObject, IIntf2)
+    x,y,c: integer;
+    procedure Foo;
+    procedure Bar;
+  end;
+
+procedure TIntf2.Foo; begin  WriteLn(5); end;
+procedure TIntf2.Bar; begin  WriteLn(6); end;
+procedure TIntf1.Foo; begin  WriteLn(1); end;
+procedure TIntf1.Bar; begin  WriteLn(2); end;
+
+var
+  AnIntf1: IIntf1;  AnIntf2: IIntf2;
+  AnObj1:  TIntf1;  AnObj2:  TIntf2;
 
 begin
   f1 := TFoo.Create; f1.Value := 1; f1.Dummy.a := 991; f1.Dummy2.a.a := 1991;
@@ -56,9 +91,15 @@ begin
   fa[5] := f3;  f3.Idx := 0;
   fa[0] := f4;  f4.Idx := 0;  // recurse self
 
+  AnObj1 := TIntf1.Create; AnObj1.a := 123; AnObj1.b := 987; AnObj1.c := 551177;
+  AnObj2 := TIntf2.Create; AnObj2.x := 321; AnObj2.y := 789; AnObj2.c := 441188;
+  AnIntf1 := AnObj1;
+  AnIntf2 := AnObj2;
+
 
 
   fa[9] := fa[8]; // TEST_BREAKPOINT=Prg
   fa[9] := fa[8];
 
 end.
+
