@@ -366,7 +366,7 @@ begin
     exit;
 
   // Only AnsiStrings in fpc 3.0.0 and higher have a dynamic codepage.
-  v := TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
+  v := TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
   if (v >= $030000) then begin
     // Too bad the debug-information does not deliver this information. So we
     // use these hardcoded information, and hope that FPC does not change and
@@ -2268,8 +2268,8 @@ begin
     exit;
 
   assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.CalcBounds: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
-  if (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
-     (TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
+  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
+     (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
   then begin
     if t.Kind = skWideString then begin
       if (t2 is TFpSymbolDwarfTypeSubRange) and (FLowBound = 1) then begin
