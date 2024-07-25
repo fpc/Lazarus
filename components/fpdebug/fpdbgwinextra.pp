@@ -132,6 +132,9 @@ type
    PWOW64_CONTEXT = ^WOW64_CONTEXT;
 
 {$ifdef cpui386}
+{$ifNdef windows}
+  _FLOATING_SAVE_AREA = WOW64_FLOATING_SAVE_AREA; // just define it, on non-windows it is not used
+{$endif}
      TCONTEXT = record
           ContextFlags : DWORD;
           Dr0 : DWORD;
