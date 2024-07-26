@@ -2741,9 +2741,15 @@ var
     s, ResIdx, SeenIdx, ValIdx: Integer;
     PrevVal, TmpAutoDereVal: TFpValue;
     DA: TFpDbgMemLocation;
-    r, DoExpArray: Boolean;
+    r, DoExpArray, HasDtAddr: Boolean;
   begin
     Result := True;
+    if ACurrentVal = nil then begin
+      if (iffShowErrAny in Flags) then
+        AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
+      exit;
+    end;
+
     if (iffDerefPtr in Flags) and (ACurrentVal.Kind = skPointer) and
       (ACurrentVal.TypeInfo <> nil) and (ACurrentVal.TypeInfo.TypeInfo <> nil) and
       (ACurrentVal.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
@@ -2759,6 +2765,7 @@ var
       end;
     end;
 
+    HasDtAddr := (svfDataAddress in ACurrentVal.FieldFlags);
     DA := ACurrentVal.DataAddress;
     if (not (iffShowNil in Flags)) and IsNilLoc(DA) then begin
       ReleaseRefAndNil(ACurrentVal);
@@ -2799,7 +2806,7 @@ var
       end;
     end;
 
-    if not DoExpArray then begin
+    if (not DoExpArray) or (HasDtAddr and not IsReadableLoc(DA)) then begin
       ResIdx := InternalAdd(ACurrentVal, ACurDepth, ACurKeyIdx, ACurKey);
       if (ACurrentVal.TypeInfo = nil) or (not ACurrentVal.TypeInfo.IsEqual(TpSym)) then
         Res.Flags := Res.Flags + [vfArrayOfVariant];
@@ -2830,11 +2837,13 @@ var
   var
     Idx: Integer;
     TmpNew: TFpValue;
+    LBnd: Int64;
   begin
+    LBnd := ACurrentVal.OrdLowBound;
     for Idx := 0 to ACurrentVal.MemberCount - 1 do begin
       if Res.FList.Count >= MaxCnt then
         exit(False);
-      TmpNew := ACurrentVal.Member[Idx];
+      TmpNew := ACurrentVal.Member[Idx+LBnd];
       Result := AddFlatValue(TmpNew, ACurDepth, ACurKeyIdx, ACurKey+'['+IntToStr(Idx)+']', Max(0, AnExpandDepth-1));
       if not Result then
         exit;
