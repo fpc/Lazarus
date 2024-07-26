@@ -220,6 +220,7 @@ type
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     sfGutterResized,
     sfAfterLoadFromFileNeeded,
+    sfAfterHandleCreatedNeeded,
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
     sfInClick, sfDblClicked, sfTripleClicked, sfQuadClicked,
@@ -772,6 +773,9 @@ type
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
   protected
+    function  WaitingForInitialSize: boolean; inline;
+    procedure DoHandleInitialSizeFinished;
+    procedure DoAllAutoSize; override;
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -2596,7 +2600,7 @@ begin
     // FTrimmedLinesView sets the highlighter to modified. Until fixed, must be done before ScanRanges
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
 
-    if (FPaintLock=1) and HandleAllocated then begin
+    if (FPaintLock=1) and (not WaitingForInitialSize) then begin
       ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
         AfterLoadFromFile;
@@ -2621,7 +2625,7 @@ begin
     *)
 
     Dec(FPaintLock);
-    if (FPaintLock = 0) and HandleAllocated then begin
+    if (FPaintLock = 0) and (not WaitingForInitialSize) then begin
       ScrollAfterTopLineChanged;
       if sfScrollbarChanged in fStateFlags then
         UpdateScrollbars;
@@ -3703,7 +3707,16 @@ end;
 
 procedure TCustomSynEdit.UpdateShowing;
 begin
+  if (sfAfterHandleCreatedNeeded in fStateFlags) and (not AutoSizeDelayed) and HandleAllocated then begin
+    DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
+    try
+      DoHandleInitialSizeFinished;
+    finally
+      DoDecPaintLock(nil); // run UpdateScrollBars
+    end;
+  end;
   inherited UpdateShowing;
+
   if fMarkupManager <> nil then
     fMarkupManager.DoVisibleChanged(IsVisible);
   if HandleAllocated then
@@ -4849,7 +4862,7 @@ end;
 function TCustomSynEdit.CurrentMaxLeftChar(AIncludeCharsInWin: Boolean
   ): Integer;
 begin
-  if not HandleAllocated then // don't know chars in window yet
+  if WaitingForInitialSize then // don't know chars in window yet
     exit(MaxInt);
 
   Result := FTheLinesView.LengthOfLongestLine + 1;
@@ -4870,7 +4883,7 @@ end;
 
 function TCustomSynEdit.CurrentMaxLineLen: Integer; // called by TSynEditCaret
 begin
-  if not HandleAllocated then // don't know chars in window yet
+  if WaitingForInitialSize then // don't know chars in window yet
     exit(MaxInt);
   if (eoScrollPastEolAutoCaret in Options2) then
     exit(MaxInt);
@@ -4889,7 +4902,7 @@ begin
   //{BUG21996} DebugLn(['TCustomSynEdit.SetLeftChar=',Value,'  Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   Value := Min(Value, CurrentMaxLeftChar);
   Value := Max(Value, 1);
-  if not HandleAllocated then
+  if WaitingForInitialSize then
     Include(fStateFlags, sfExplicitLeftChar);
   if Value <> FTextArea.LeftChar then begin
     FTextArea.LeftChar := Value;
@@ -4931,32 +4944,64 @@ begin
     Text := Value;
 end;
 
+function TCustomSynEdit.WaitingForInitialSize: boolean;
+begin
+  Result := (sfAfterHandleCreatedNeeded in fStateFlags) or AutoSizeDelayed or (not HandleAllocated);
+end;
+
+procedure TCustomSynEdit.DoHandleInitialSizeFinished;
+begin
+  Exclude(fStateFlags, sfAfterHandleCreatedNeeded);
+  Application.RemoveOnIdleHandler(@IdleScanRanges);
+  fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
+  UpdateScrollBars; // just set sfScrollbarChanged
+
+  inc(FDoingResizeLock);
+  try
+  FLeftGutter.RecalcBounds;
+  FRightGutter.RecalcBounds;
+  finally
+    dec(FDoingResizeLock);
+    if sfGutterResized in fStateFlags then begin
+      Exclude(fStateFlags, sfGutterResized);
+      RecalcCharsAndLinesInWin(False);
+      UpdateScrollBars;
+    end
+    else
+    if sfScrollbarChanged in fStateFlags then
+      UpdateScrollBars;
+  end;
+end;
+
+procedure TCustomSynEdit.DoAllAutoSize;
+begin
+  if (sfAfterHandleCreatedNeeded in fStateFlags) and (not AutoSizeDelayed) and HandleAllocated then begin
+    DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
+    try
+      inherited DoAllAutoSize;
+      DoHandleInitialSizeFinished;
+    finally
+      DoDecPaintLock(nil); // run UpdateScrollBars
+    end;
+  end
+  else
+    inherited DoAllAutoSize;
+end;
+
 procedure TCustomSynEdit.CreateHandle;
 begin
-  Application.RemoveOnIdleHandler(@IdleScanRanges);
-  DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
-  try
-    inherited CreateHandle;   //SizeOrFontChanged will be called
-    fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
-    UpdateScrollBars; // just set sfScrollbarChanged
-  finally
-    DoDecPaintLock(nil); // run UpdateScrollBars
-
-    inc(FDoingResizeLock);
+  if (not AutoSizeDelayed) then begin
+    DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
     try
-    FLeftGutter.RecalcBounds;
-    FRightGutter.RecalcBounds;
+      inherited CreateHandle;   //SizeOrFontChanged will be called
+      DoHandleInitialSizeFinished;
     finally
-      dec(FDoingResizeLock);
-      if sfGutterResized in fStateFlags then begin
-        Exclude(fStateFlags, sfGutterResized);
-        RecalcCharsAndLinesInWin(False);
-        UpdateScrollBars;
-      end
-      else
-      if sfScrollbarChanged in fStateFlags then
-        UpdateScrollBars;
+      DoDecPaintLock(nil); // run UpdateScrollBars
     end;
+  end
+  else begin
+    Include(fStateFlags, sfAfterHandleCreatedNeeded);
+    inherited CreateHandle;   //SizeOrFontChanged will be called
   end;
 end;
 
@@ -5025,7 +5070,7 @@ begin
   if not FTheLinesView.IsTextIdxVisible(ToIdx(Value)) then
     Value := FindNextUnfoldedLine(Value, False);
 
-  if not HandleAllocated then
+  if WaitingForInitialSize then
     Include(fStateFlags, sfExplicitTopLine);
   NewTopView := ToPos(FTheLinesView.TextToViewIndex(ToIdx(Value)));
   if NewTopView <> TopView then begin
@@ -5038,7 +5083,7 @@ var
   Delta: Integer;
   srect: TRect;
 begin
-  if (sfPainting in fStateFlags) or (fPaintLock <> 0) or (not HandleAllocated) then
+  if (sfPainting in fStateFlags) or (fPaintLock <> 0) or WaitingForInitialSize then
     exit;
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
@@ -5095,7 +5140,7 @@ begin
   if (sfEnsureCursorPos in fStateFlags) then
     debugln('SynEdit. skip MoveCaretToVisibleArea');
   {$ENDIF}
-  if (not HandleAllocated) or (sfEnsureCursorPos in fStateFlags) then
+  if WaitingForInitialSize or (sfEnsureCursorPos in fStateFlags) then
     exit;
 
   NewCaretXY:=CaretXY;
@@ -5133,7 +5178,7 @@ procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
 var
   p: TPoint;
 begin
-  if ( (PaintLock <> 0) and not IgnorePaintLock ) or (not HandleAllocated)
+  if ( (PaintLock <> 0) and not IgnorePaintLock ) or WaitingForInitialSize
   then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
@@ -5151,7 +5196,7 @@ procedure TCustomSynEdit.UpdateScrollBars;
 var
   ScrollInfo: TScrollInfo;
 begin
-  if (not HandleAllocated) or (PaintLock <> 0) or (FDoingResizeLock <> 0) then
+  if WaitingForInitialSize or (PaintLock <> 0) or (FDoingResizeLock <> 0) then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
     Exclude(fStateFlags, sfScrollbarChanged);
@@ -5369,7 +5414,7 @@ end;
 procedure TCustomSynEdit.DoOnResize;
 begin
   inherited;
-  if (not HandleAllocated) then
+  if WaitingForInitialSize then
     exit;
   inc(FDoingResizeLock);
   FScreenCaret.Lock;
@@ -5513,7 +5558,7 @@ end;
 
 procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
 begin
-  if not HandleAllocated then begin
+  if WaitingForInitialSize then begin
     Application.RemoveOnIdleHandler(@IdleScanRanges); // avoid duplicate add
     if assigned(FHighlighter) then
       Application.AddOnIdleHandler(@IdleScanRanges, False);
@@ -5674,7 +5719,7 @@ begin
   AValue := Min(AValue, CurrentMaxTopView);
   AValue := Max(AValue, 1);
 
-  if not HandleAllocated then
+  if WaitingForInitialSize then
     Include(fStateFlags, sfExplicitTopLine);
 
   (* ToDo: FFoldedLinesView.TopLine := AValue;
@@ -6788,7 +6833,7 @@ begin
   then
     exit;
 
-  if (not HandleAllocated) or (fPaintLock > 0) or
+  if WaitingForInitialSize or (fPaintLock > 0) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
   then begin
     include(fStateFlags, sfEnsureCursorPos);
@@ -7831,7 +7876,7 @@ end;
 
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
-  if (not HandleAllocated) or
+  if WaitingForInitialSize or
      ( (FPaintLock > 0) and not((FPaintLock = 1) and FIsInDecPaintLock) )
   then begin
     Include(fStateFlags, sfAfterLoadFromFileNeeded);
@@ -8056,7 +8101,7 @@ begin
     exit
   end;
 
-  if HandleAllocated then begin
+  if not WaitingForInitialSize then begin
     RecalcCharsAndLinesInWin(False);
     UpdateScrollBars;
     Invalidate;
@@ -8483,9 +8528,9 @@ begin
     TopView := TopView;
   end;
   // (un)register HWND as drop target
-  if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
+  if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and (not WaitingForInitialSize) then
     ; // ToDo DragAcceptFiles
-  if (ChangedOptions * [eoPersistentCaret, eoNoCaret] <> []) and HandleAllocated then begin
+  if (ChangedOptions * [eoPersistentCaret, eoNoCaret] <> []) and (not WaitingForInitialSize) then begin
     UpdateCaret;
     UpdateScreenCaret;
   end;
@@ -8610,7 +8655,7 @@ end;
 
 procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
-  if HandleAllocated then begin
+  if not WaitingForInitialSize then begin
     LastMouseCaret:=Point(-1,-1);
     //DebugLn('TCustomSynEdit.SizeOrFontChanged LinesInWindow=',dbgs(LinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(LineHeight));
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' CharWidth=',dbgs(CharWidth),' CharsInWindow=',dbgs(CharsInWindow),' Width=',dbgs(Width));
@@ -8992,7 +9037,7 @@ begin
   {$ENDIF}
   SurrenderPrimarySelection;
   if FFoldedLinesView <> nil then
-    FFoldedLinesView.LinesInWindow := -1; // Mark as "not HandleAllocated"
+    FFoldedLinesView.LinesInWindow := -1; // Mark as "not HandleAllocated" / WaitingForInitialSize;
   inherited DestroyWnd;
 end;
 
