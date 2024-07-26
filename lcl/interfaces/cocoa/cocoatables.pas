@@ -73,9 +73,8 @@ type
   public
     callback: IListViewCallback;
 
+    selectingByProgram: Boolean;
     readOnly: Boolean;
-
-    beforeSel : NSIndexSet;
 
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
@@ -93,6 +92,8 @@ type
     // Own methods, mostly convenience methods
     function getIndexOfColumn(ACol: NSTableColumn): Integer; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
+    procedure selectRowIndexesByProgram( indexes: NSIndexSet );
+      message 'selectRowIndexesByProgram:';
 
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
@@ -525,7 +526,6 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   //if Assigned(Items) then FreeAndNil(Items);
-  if Assigned(beforeSel) then beforeSel.release;
   if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
 end;
@@ -583,6 +583,13 @@ begin
   lRowSet := NSIndexSet.indexSetWithIndex(ARow);
   lColSet := NSIndexSet.indexSetWithIndex(ACol);
   reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
+end;
+
+procedure TCocoaTableListView.selectRowIndexesByProgram( indexes: NSIndexSet );
+begin
+  self.selectingByProgram:= True;
+  self.selectRowIndexes_byExtendingSelection( indexes, False );
+  self.selectingByProgram:= False;
 end;
 
 function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;
@@ -671,8 +678,6 @@ end;
 function TCocoaTableListView.selectionShouldChangeInTableView(
   tableView: NSTableView): Boolean;
 begin
-  if Assigned(beforeSel) then beforeSel.release;
-  beforeSel := (NSIndexSet.alloc).initWithIndexSet(selectedRowIndexes);
   Result := true;
 end;
 
@@ -874,16 +879,26 @@ var
   Unsel : NSIndexSet;
   rm : NSIndexSet;
   ad : NSIndexSet;
+  selectionIndexSet: NSMutableIndexSet;
+  lclcb: TLCLListViewCallback;
 begin
-  if Assigned(callback) then
-  begin
-    CompareIndexSets(beforeSel, selectedRowIndexes, rm, ad);
+  if NOT Assigned(callback) then
+    Exit;
 
-    NewSel := Self.selectedRow();
-    callback.selectionChanged(NewSel, ad, rm);
+  lclcb:= TLCLListViewCallback( callback.GetCallbackObject );
 
-    beforeSel.release;
-    beforeSel := nil;
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  selectionIndexSet:= lclcb.selectionIndexSet;
+  CompareIndexSets(selectionIndexSet, selectedRowIndexes, rm, ad);
+
+  NewSel := Self.selectedRow();
+  callback.selectionChanged(NewSel, ad, rm);
+
+  if NOT self.selectingByProgram then begin
+    selectionIndexSet.removeAllIndexes;
+    selectionIndexSet.addIndexes( self.selectedRowIndexes );
   end;
 end;
 
@@ -1016,8 +1031,14 @@ begin
 end;
 
 procedure TCellCocoaTableListView.backend_reloadData;
+var
+  lclcb: TLCLListViewCallback;
 begin
   self.reloadData;
+  if Assigned(self.callback) then begin
+    lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
+    self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  end;
 end;
 
 procedure TCellCocoaTableListView.backend_onInit;
