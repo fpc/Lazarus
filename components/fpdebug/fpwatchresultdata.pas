@@ -750,8 +750,8 @@ begin
       end;
 
       sym := MemberValue.DbgSymbol;
+      MbName := MemberValue.Name;
       if sym <> nil then begin
-        MbName := sym.Name;
         case sym.MemberVisibility of
           svPrivate:   MBVis := dfvPrivate;
           svProtected: MBVis := dfvProtected;
@@ -760,7 +760,6 @@ begin
         end;
       end
       else begin
-        MbName := '';
         MBVis := dfvUnknown;
       end;
 

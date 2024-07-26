@@ -119,8 +119,11 @@ type
     FFlags: TFpValueFlags;
     FLastError: TFpError;
     FSize: TFpDbgValueSize;
+    FName: String;
     procedure SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
   protected
+    procedure SetName(AValue: String); virtual;
+    function GetName: String; virtual;
     function GetKind: TDbgSymbolKind; virtual;
     function GetFieldFlags: TFpValueFieldFlags; virtual;
 
@@ -179,6 +182,7 @@ type
     function GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; virtual;
 
     // Kind: determines which types of value are available
+    property Name: String read GetName write SetName;
     property Kind: TDbgSymbolKind read GetKind;
     property Flags: TFpValueFlags read FFlags write FFlags;
     property FieldFlags: TFpValueFieldFlags read GetFieldFlags;
@@ -406,7 +410,7 @@ type
 
   TFpValueConstEnumValue = class(TFpValueConstWithType)
   private
-    FName: String;
+    FEnumName: String;
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
@@ -428,6 +432,22 @@ type
   public
     constructor Create(ANames: TStrings);
     destructor Destroy; override;
+  end;
+
+  { TFpValueConstStruct }
+
+  TFpValueConstStruct = class(TFpValueConstWithType)
+  private
+    FList: TRefCntObjList;
+  protected
+    function GetKind: TDbgSymbolKind; override;
+    function GetMember(AIndex: Int64): TFpValue; override;
+    function GetMemberByName(const AnIndex: String): TFpValue; override;
+    function GetMemberCount: Integer; override;
+  protected
+  public
+    destructor Destroy; override;
+    procedure AddMember(AName: String; AMember: TFpValue);
   end;
 
   TFpDbgSymbolScope = class;
@@ -1204,6 +1224,24 @@ begin
 
 end;
 
+procedure TFpValue.SetName(AValue: String);
+begin
+  FName := AValue;
+end;
+
+function TFpValue.GetName: String;
+var
+  sym: TFpSymbol;
+begin
+  if FName <> '' then
+    exit(FName);
+  sym := DbgSymbol;
+  if sym <> nil then
+    Result := sym.Name
+  else
+    Result := '';
+end;
+
 procedure TFpValue.Reset;
 begin
   FEvalFlags := [];
@@ -1551,13 +1589,13 @@ end;
 
 function TFpValueConstEnumValue.GetAsString: AnsiString;
 begin
-  Result := FName;
+  Result := FEnumName;
 end;
 
 constructor TFpValueConstEnumValue.Create(AName: String);
 begin
   inherited Create;
-  FName := AName;
+  FEnumName := AName;
 end;
 
 { TFpValueConstSet }
@@ -1593,6 +1631,61 @@ destructor TFpValueConstSet.Destroy;
 begin
   inherited Destroy;
   FNames.Free;
+end;
+
+{ TFpValueConstStruct }
+
+function TFpValueConstStruct.GetKind: TDbgSymbolKind;
+begin
+  Result := skRecord;
+end;
+
+function TFpValueConstStruct.GetMember(AIndex: Int64): TFpValue;
+begin
+  if (FList = nil) or (AIndex >= FList.Count) then
+    exit(nil);
+  Result := TFpValue(FList[AIndex]);
+  Result.AddReference;
+end;
+
+function TFpValueConstStruct.GetMemberByName(const AnIndex: String): TFpValue;
+var
+  n: String;
+  i: Integer;
+begin
+  n := LowerCase(AnIndex);
+  if (FList = nil) then
+    exit(nil);
+  for i := 0 to FList.Count - 1 do begin
+    Result := TFpValue(FList[i]);
+    if LowerCase(Result.Name) = n then begin
+      Result.AddReference;
+      exit;
+    end;
+  end;
+  Result := nil;
+end;
+
+function TFpValueConstStruct.GetMemberCount: Integer;
+begin
+  if FList <> nil then
+    Result := FList.Count
+  else
+    Result := 0;
+end;
+
+destructor TFpValueConstStruct.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TFpValueConstStruct.AddMember(AName: String; AMember: TFpValue);
+begin
+  if FList = nil then
+    FList := TRefCntObjList.Create;
+  AMember.Name := AName;
+  FList.Add(AMember);
 end;
 
 { TFpValueConstArray }

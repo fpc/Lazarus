@@ -2506,7 +2506,8 @@ type
     iffShowRecurse,
     iffShowSeen,
     iffShowErrAny,
-    iffDerefPtr
+    iffDerefPtr,
+    iffObj1, iffObj2, iffObj3, iffObj4
   );
   TFpPascalExpressionFlattenFlags = set of TFpPascalExpressionFlattenFlag;
 
@@ -2672,6 +2673,7 @@ var
   TpSym: TFpSymbol;
   CacheKey: TFpPascalExpressionCacheFlattenKey;
 
+
   procedure AddErrToList(AnErr: TFpError);
   var
     E: TFpValueConstError;
@@ -2681,10 +2683,60 @@ var
     E.ReleaseReference
   end;
 
-  function FlattenRecurse(ACurrentVal: TFpValue): boolean; forward;
-  function FlattenArray(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean; forward;
+  function FlattenRecurse(ACurrentVal: TFpValue; ACurDepth: integer; ACurKey: String): boolean; forward;
+  function FlattenArray(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
+                        AnExpandDepth: integer): boolean; forward;
 
-  function AddFlatValue(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean;
+  function InternalAdd(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String): Integer;
+  var
+    TmpVal: TFpValueConstStruct;
+    TmpVal2: TFpValue;
+  begin
+    if iffObj1 in Flags then begin
+      TmpVal := TFpValueConstStruct.Create;
+      TmpVal2 := TFpValueConstNumber.Create(ACurDepth, False);
+      TmpVal.AddMember('d', TmpVal2);
+      TmpVal2.ReleaseReference;
+
+      TmpVal2 := TFpValueConstString.Create(ACurKey);
+      TmpVal.AddMember('k', TmpVal2);
+      TmpVal2.ReleaseReference;
+
+      TmpVal.AddMember('v', ACurrentVal);
+      Result := Res.FList.Add(TmpVal);
+      TmpVal.ReleaseReference;
+    end
+    else
+    if iffObj2 in Flags then begin
+      TmpVal := TFpValueConstStruct.Create;
+      TmpVal2 := TFpValueConstNumber.Create(ACurDepth, False);
+      TmpVal.AddMember('d', TmpVal2);
+      TmpVal2.ReleaseReference;
+
+      TmpVal2 := TFpValueConstNumber.Create(QWord(ACurKeyIdx), True);
+      TmpVal.AddMember('k', TmpVal2);
+      TmpVal2.ReleaseReference;
+
+      TmpVal.AddMember('v', ACurrentVal);
+      Result := Res.FList.Add(TmpVal);
+      TmpVal.ReleaseReference;
+    end
+    else
+    if Flags * [iffObj3, iffObj4] <> [] then begin
+      TmpVal := TFpValueConstStruct.Create;
+      TmpVal2 := TFpValueConstString.Create(ACurKey);
+      TmpVal.AddMember('k', TmpVal2);
+      TmpVal2.ReleaseReference;
+
+      TmpVal.AddMember('v', ACurrentVal);
+      Result := Res.FList.Add(TmpVal);
+      TmpVal.ReleaseReference;
+    end
+    else
+      Result := Res.FList.Add(ACurrentVal);
+  end;
+
+  function AddFlatValue(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String; AnExpandDepth: integer): boolean;
   var
     s, ResIdx, SeenIdx, ValIdx: Integer;
     PrevVal, TmpAutoDereVal: TFpValue;
@@ -2748,7 +2800,7 @@ var
     end;
 
     if not DoExpArray then begin
-      ResIdx := Res.FList.Add(ACurrentVal);
+      ResIdx := InternalAdd(ACurrentVal, ACurDepth, ACurKeyIdx, ACurKey);
       if (ACurrentVal.TypeInfo = nil) or (not ACurrentVal.TypeInfo.IsEqual(TpSym)) then
         Res.Flags := Res.Flags + [vfArrayOfVariant];
 
@@ -2762,9 +2814,9 @@ var
 
     s := Seen.Add(DA, ResIdx);
     if DoExpArray then
-      Result := FlattenArray(ACurrentVal, AnExpandDepth)
+      Result := FlattenArray(ACurrentVal, ACurDepth + 1, ACurKeyIdx, ACurKey, AnExpandDepth)
     else
-      Result := FlattenRecurse(ACurrentVal);
+      Result := FlattenRecurse(ACurrentVal, ACurDepth+1, ACurKey);
 
     ReleaseRefAndNil(ACurrentVal);
     if (iffShowSeen in Flags) then
@@ -2773,7 +2825,8 @@ var
       Seen.Delete(s);
   end;
 
-  function FlattenArray(ACurrentVal: TFpValue; AnExpandDepth: integer): boolean;
+  function FlattenArray(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
+    AnExpandDepth: integer): boolean;
   var
     Idx: Integer;
     TmpNew: TFpValue;
@@ -2782,19 +2835,20 @@ var
       if Res.FList.Count >= MaxCnt then
         exit(False);
       TmpNew := ACurrentVal.Member[Idx];
-      Result := AddFlatValue(TmpNew, Max(0, AnExpandDepth-1));
+      Result := AddFlatValue(TmpNew, ACurDepth, ACurKeyIdx, ACurKey+'['+IntToStr(Idx)+']', Max(0, AnExpandDepth-1));
       if not Result then
         exit;
     end;
     Result := True;
   end;
 
-  function FlattenRecurse(ACurrentVal: TFpValue): boolean;
+  function FlattenRecurse(ACurrentVal: TFpValue; ACurDepth: integer; ACurKey: String): boolean;
   var
     i: Integer;
     OrigVal, AutoDereVal, TmpNew: TFpValue;
     Expr: TFpPascalExpressionPart;
     r: Boolean;
+    NxtKey: String;
   begin
     Result := True;
     if HighParam < 2 then
@@ -2863,10 +2917,24 @@ var
               ReleaseRefAndNil(TmpNew);
             end;
 
-            if TmpNew = nil then
+            if TmpNew = nil then begin
+              if (iffShowErrAny in Flags) then
+                AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
               Continue;
+            end;
 
-            r := AddFlatValue(TmpNew, ExpandArrayDepth);
+            if (iffObj4 in Flags) and (Length(ACurKey) < 1000) then begin
+              if (ACurKey = '') then
+                NxtKey := IntToStr(i-2)
+              else
+                NxtKey := ACurKey + '.' + IntToStr(i-2);
+            end
+            else begin
+              NxtKey := Expr.GetFullText;
+              if (iffObj3 in Flags) and (ACurKey <> '') and (Length(ACurKey) < 1000) then
+                NxtKey := ACurKey + '.' + NxtKey
+            end;
+            r := AddFlatValue(TmpNew, ACurDepth, i-2, NxtKey, ExpandArrayDepth);
             if not r then
               exit(False);
           end;
@@ -2919,9 +2987,13 @@ begin
        (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Count = 1) and
        (TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0] is TFpPascalExpressionPartBracketSet)
     then begin
+      // Add or Sub from defaults
       LastParamNeg := LastParam.GetText = '-';
       LastParam := TFpPascalExpressionPartOperatorUnaryPlusMinus(LastParam).Items[0];
-    end;
+    end
+    else
+    if LastParam is TFpPascalExpressionPartBracketSet then
+      Flags := [];  // NO +/- => Start with empty,
 
     if LastParam is TFpPascalExpressionPartBracketSet then begin
       if (FirstVal.Kind <> skArray) and (not CheckArgumentCount(AParams, 3, 999)) then
@@ -2932,9 +3004,8 @@ begin
         SetError('Not enough parameter');
         exit;
       end;
-
-      if not LastParamNeg then
-        Flags := [];
+      if (HighParam > 2) and (Flags <> []) then
+        Flags := Flags + [iffObj1];
 
       for i := 0 to OptSet.Count - 1 do begin
         Itm := OptSet.Items[i];
@@ -2969,13 +3040,36 @@ begin
           'err', 'error':    if OVal then include(Flags, iffShowErrAny)   else exclude(Flags, iffShowErrAny);
           'array':           ExpandArrayDepth  := 1;
           'ptr', 'deref':    if OVal then include(Flags, iffDerefPtr)     else exclude(Flags, iffDerefPtr);
+          'obj':           begin
+                             Flags := Flags - [iffObj1, iffObj2, iffObj3, iffObj4];
+                             if OVal then include(Flags, iffObj1);
+                           end;
+          'o1', 'obj1':    begin
+                             if Oval then Flags := Flags - [iffObj1, iffObj2, iffObj3, iffObj4];
+                             if OVal then include(Flags, iffObj1)         else exclude(Flags, iffObj1);
+                           end;
+          'o2', 'obj2':    begin
+                             if Oval then Flags := Flags - [iffObj1, iffObj2, iffObj3, iffObj4];
+                             if OVal then include(Flags, iffObj2)         else exclude(Flags, iffObj2);
+                           end;
+          'o3', 'obj3':    begin
+                             if Oval then Flags := Flags - [iffObj1, iffObj2, iffObj3, iffObj4];
+                             if OVal then include(Flags, iffObj3)         else exclude(Flags, iffObj3);
+                           end;
+          'o4', 'obj4':    begin
+                             if Oval then Flags := Flags - [iffObj1, iffObj2, iffObj3, iffObj4];
+                             if OVal then include(Flags, iffObj4)         else exclude(Flags, iffObj4);
+                           end;
           else begin
             SetError('Unknown flag: '+Itm.GetText);
             exit;
           end;
         end;
       end;
-    end;
+    end
+    else
+    if HighParam > 2 then
+      Flags := Flags + [iffObj1];
   end;
 
   ListCache := nil;
@@ -3040,16 +3134,16 @@ begin
     Seen.Add(DA);
 
     if (FirstVal.Kind = skArray) then begin
-      FlattenArray(FirstVal, Max(1, ExpandArrayDepth));
+      FlattenArray(FirstVal, 0, -1, '', Max(1, ExpandArrayDepth));
     end
     else begin
-      Res.FList.Add(FirstVal);
+      InternalAdd(FirstVal, 0, -1, '');
       if not IsReadableLoc(DA) then
         exit;
       if IsError(Expression.Error) then
         exit;
 
-      Res.FFullEvaluated := FlattenRecurse(FirstVal);
+      Res.FFullEvaluated := FlattenRecurse(FirstVal, 0, '');
     end;
   finally
     Seen.Free;

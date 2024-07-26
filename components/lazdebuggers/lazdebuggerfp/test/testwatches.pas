@@ -2037,7 +2037,7 @@ begin
         weMatch('rec',skNone).ExpectError()
       ], 5)).IgnTypeName();
 
-    t.Add('flatten', ':flatten(f1, Next, Value, [loop, nil])',     weArray([
+    t.Add('flatten', ':flatten(f1, Next, Value, [loop, nil, obj=false])',     weArray([
         weMatch('Value *:?=? ?1', skClass),
          weMatch('Value *:?=? ?2', skClass),
           weMatch('Value *:?=? ?3', skClass),
@@ -2048,7 +2048,7 @@ begin
          weInteger(2),
         weInteger(1)
       ], 9)).IgnTypeName();
-    t.Add('flatten', ':flatten(f1, Next, Value)',     weArray([
+    t.Add('flatten', ':flatten(f1, Next, Value, -[obj])',     weArray([
         weMatch('Value *:?=? ?1', skClass),
          weMatch('Value *:?=? ?2', skClass),
           weMatch('Value *:?=? ?3', skClass),
@@ -2060,7 +2060,7 @@ begin
         weInteger(1)
       ], 9)).IgnTypeName();
 
-    t.Add('flatten', ':flatten(f1, Next, Dummy)',     weArray([
+    t.Add('flatten', ':flatten(f1, Next, Dummy, -[obj, err])',     weArray([
         weMatch('Value *:?=? ?1', skClass),
          weMatch('Value *:?=? ?2', skClass),
           weMatch('Value *:?=? ?3', skClass),
@@ -2086,11 +2086,11 @@ begin
         weInteger(991)
       ], 3)).IgnTypeName();
 
-    t.Add('flatten', ':flatten(f1.Dummy, (:_.a), [loop])',     weArray([
+    t.Add('flatten', ':flatten(f1.Dummy, (:_.a), [loop, obj=false])',     weArray([
         weRecord(weInteger(991).N('a')),
         weInteger(991)
       ], 2)).IgnTypeName();
-    t.Add('flatten', ':flatten(f1.Dummy, (TDummy(:_.a)), [loop])',     weArray([
+    t.Add('flatten', ':flatten(f1.Dummy, (TDummy(:_.a)), [loop, obj=false])',     weArray([
         weRecord(weInteger(991).N('a')),
         weRecord(weInteger(991).N('a')), // the typecast => diff location
         weMatch('err',skNone).ExpectError()   // rec
