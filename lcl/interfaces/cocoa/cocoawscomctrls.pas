@@ -163,7 +163,6 @@ type
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
   public
     listView: TCustomListView;
-    tempItemsCountDelta : Integer;
 
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
@@ -382,10 +381,12 @@ type
   private
     _listView: TCocoaListView;
     _tableView: TCocoaTableListView;
+  private
+    function getCallback: TLCLListViewCallback;
+    procedure doReloadDataAfterDelete( AIndex: PtrInt );
   public
     constructor Create( listView: TCocoaListView );
     function getColumnFromIndex( const AIndex: Integer ): NSTableColumn;
-    function getCallback: TLCLListViewCallback;
   public
     // Column
     procedure ColumnDelete( const AIndex: Integer ); override;
@@ -439,7 +440,7 @@ type
     _collectionView: TCocoaCollectionView;
   private
     function getCallback: TLCLListViewCallback;
-    procedure doReloadDataAfterDelete( AIndex: PtrInt);
+    procedure doReloadDataAfterDelete( AIndex: PtrInt );
   public
     constructor Create( listView: TCocoaListView );
   public
@@ -521,6 +522,20 @@ end;
 function TCocoaWSListView_TableViewHandler.getCallback: TLCLListViewCallback;
 begin
   Result:= TLCLListViewCallback( _tableView.lclGetCallback.GetCallbackObject );
+end;
+
+procedure TCocoaWSListView_TableViewHandler.doReloadDataAfterDelete( AIndex: PtrInt);
+var
+  lclcb : TLCLListViewCallback;
+begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
+  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
+  _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  _tableView.lclInsDelRow(AIndex, false);
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ColumnDelete(
@@ -715,17 +730,8 @@ end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemDelete(const AIndex: Integer
   );
-var
-  lclcb : TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.tempItemsCountDelta:= -1;
-  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
-  _tableView.lclInsDelRow(AIndex, false);
-  lclcb.tempItemsCountDelta := 0;
+  Application.QueueAsyncCall( doReloadDataAfterDelete, AIndex );
 end;
 
 function TCocoaWSListView_TableViewHandler.ItemDisplayRect(const AIndex,
@@ -783,8 +789,13 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
+  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   _tableView.lclInsDelRow(AIndex, true);
+  _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
   _tableView.sizeToFit();
 end;
 
@@ -828,7 +839,7 @@ begin
     begin
       isSel := _tableView.selectedRowIndexes.containsIndex(row);
       if AIsSet and not isSel then
-        _tableView.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(row),false)
+        _tableView.selectRowIndexesByProgram( NSIndexSet.indexSetWithIndex(row) )
       else if not AIsSet and isSel then
         _tableView.deselectRow(row);
     end;
@@ -895,23 +906,38 @@ procedure TCocoaWSListView_TableViewHandler.SetDefaultItemHeight(
   const AValue: Integer);
 begin
   if AValue > 0 then
-    _tableView.setRowHeight(AValue);
+    _tableView.CustomRowHeight:= AValue;
   // setRowSizeStyle could be used here but is available only in 10.7+
 end;
 
 procedure TCocoaWSListView_TableViewHandler.SetImageList(
   const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
+  lclcb: TLCLListViewCallback;
+  lvil: TListViewImageList;
   spacing: NSSize;
 begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if NOT lclcb.GetImageListType(lvil) then
+    Exit;
+
+  if AList <> lvil then
+    Exit;
+
   _tableView.lclSetImagesInCell(Assigned(AValue));
 
   if NOT Assigned(AValue) then
     Exit;
-  if AValue.Height < _tableView.rowHeight-2 then
-    Exit;
+
   spacing:= _tableView.intercellSpacing;
-  spacing.height:= _tableView.rowHeight / 3 + 2;
+  spacing.height:= AValue.Height / 3 + 2;
+  if spacing.height < 6 then
+    spacing.height:= 6
+  else if spacing.height > 12 then
+    spacing.height:= 12;
   _tableView.setIntercellSpacing( spacing );
 end;
 
@@ -981,8 +1007,12 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
   if Assigned(lclcb.checkedIdx) then
     lclcb.checkedIdx.removeAllIndexes;
+  lclcb.selectionIndexSet.removeAllIndexes;
   _tableView.reloadData();
   { //todo:
     lNSColumn.setSortDescriptorPrototype(
@@ -1079,7 +1109,7 @@ begin
   Application.QueueAsyncCall( doReloadDataAfterDelete, AIndex );
 end;
 
-procedure TCocoaWSListView_CollectionViewHandler.doReloadDataAfterDelete( AIndex: PtrInt);
+procedure TCocoaWSListView_CollectionViewHandler.doReloadDataAfterDelete( AIndex: PtrInt );
 var
   lclcb : TLCLListViewCallback;
 begin
@@ -2718,7 +2748,7 @@ end;
 
 function TLCLListViewCallback.ItemsCount: Integer;
 begin
-  Result:=listView.Items.Count + tempItemsCountDelta;
+  Result:= listView.Items.Count;
 end;
 
 function TLCLListViewCallback.GetItemTextAt(ARow, ACol: Integer;
