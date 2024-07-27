@@ -4509,6 +4509,25 @@ enabled menu item. The normal drawing effect is used instead.
 <seealso/>
 </element>
 
+<element name="TPopupMenu.SetPopupPoint">
+<short>
+Sets the value for the PopupPoint property.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TPopUpMenu.PopupPoint"/>
+<link id="TPopUpMenu.Popup"/>
+</seealso>
+</element>
+<element name="TPopupMenu.SetPopupPoint.APopupPoint">
+<short>
+New value for the PopupPoint property.
+</short>
+</element>
+
 <element name="TPopupMenu.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -4548,22 +4567,29 @@ Displays the pop-up menu.
 <p>
 <var>PopUp</var> is an overloaded method used to display the pop-up menu. An 
 overloaded variant is provided which includes <var>X</var> and <var>Y</var> 
-coordinates where the pop-up menu is displayed. The parameterless version 
+coordinates where the pop-up menu is displayed. The parameter-less variant 
 calls the overloaded variant using the current position for the mouse pointer 
 in the X and Y arguments.
 </p>
 <p>
-No actions are performed in the method if a value has already been assigned 
-to the <var>ActivePopupMenu</var> variable. <var>DoPopUp</var> is called to 
-signal the <var>OnPopup</var> event handler (when assigned). No additional 
-actions are performed in the method if menu items have not been defined in 
-the Items property.
+No actions are performed in the method if a pop-up menu has already been 
+assigned to the <var>ActivePopupMenu</var> variable.
 </p>
 <p>
-PopUp sets the value in ActivePopupMenu to the current class instance. The 
-<var>InitiateActions</var> method is called for the menu <var>Items</var> to 
-ensure that the <var>ActionLink</var> for the component is updated. The 
-handles for the menu and its sub-items are recreated, and the 
+PopUp updates the <var>PopupPoint</var> property with the coordinates specified 
+in X and Y and releases the current mouse capture in the widgetset. 
+<var>DoPopUp</var> is called to signal the <var>OnPopup</var> event handler 
+(when assigned).
+</p>
+<p>
+No additional actions are performed in the method if menu items have not been 
+defined in the <var>Items</var> property.
+</p>
+<p>
+PopUp sets the value in <var>ActivePopupMenu</var> to the current class 
+instance. The <var>InitiateActions</var> method is called for the menu 
+<var>Items</var> to ensure that the <var>ActionLink</var> for the component is 
+updated. The handles for the menu and its sub-items are recreated, and the
 <var>OnMenuPopupHandler</var> event handler is signalled (when assigned).
 </p>
 <p>
@@ -4571,9 +4597,15 @@ PopUpMenu calls the corresponding method in the widgetset class prior to
 exiting from the method.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the protected SetPopupPoint method to update 
+the location for the pop-up menu.
+</version>
 <seealso>
 <link id="TPopUpMenu.DoPopUp"/>
 <link id="TPopUpMenu.OnPopup"/>
+<link id="TPopUpMenu.PopupPoint"/>
+<link id="TPopUpMenu.SetPopupPoint"/>
 <link id="TMenu.Items"/>
 <link id="TMenuItem.InitiateActions"/>
 <link id="TMenuItem.ActionLink"/>
@@ -4607,13 +4639,19 @@ TPoint instance with the coordinates where the pop-up menu is displayed.
 </short>
 <descr>
 <p>
-<var>PopupPoint</var> is a read-only <var>TPoint</var> property which 
+<var>PopupPoint</var> is a <var>TPoint</var> property which 
 contains the coordinates where the pop-up menu is displayed. The value in 
-PopupPoint is updated when the PopUp method is called.
+PopupPoint is updated when the PopUp method is called, and contains the 
+position for the mouse pointer when the pop-up menu was activated.
 </p>
 </descr>
 <seealso>
+<version>
+Modified in LCL version 4.0 to make PopupPoint a writable property. Provides 
+code compatibility with the Delphi VCL.
+</version>
 <link id="TPopupMenu.PopUp"/>
+<link id="TPopupMenu.SetPopupPoint"/>
 </seealso>
 </element>
 
