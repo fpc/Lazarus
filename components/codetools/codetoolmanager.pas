@@ -2990,11 +2990,10 @@ function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
   end;
 
 var
-  ANode, ANode2: TAVLTreeNode;
-  CurCodePos, LastCodePos: PCodeXYPosition;
+  ANode: TAVLTreeNode;
+  CurCodePos: PCodeXYPosition;
   IdentStartPos: integer;
-  IdentLen, IdentLenDiff: Integer;
-  SameLineCount: Integer;
+  IdentLen: Integer;
   i: Integer;
   Code: TCodeBuffer;
 begin
@@ -3009,10 +3008,7 @@ begin
   ClearCurCodeTool;
   SourceChangeCache.Clear;
   CurCodePos := nil;
-  LastCodePos := nil;
-  SameLineCount := 0;
   IdentLen:=length(OldIdentifier);
-  IdentLenDiff := length(NewIdentifier) - IdentLen;
   if DeclarationCode = nil then
     DeclarationCaretXY := nil;
   if DeclarationCaretXY = nil then
@@ -3056,37 +3052,11 @@ begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
          IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
-
-      if (DeclarationCode = Code) and (CurCodePos^.Y = DeclarationCaretXY^.Y) and
-         (CurCodePos^.X < DeclarationCaretXY^.X)
-      then
-        DeclarationCaretXY^.X := DeclarationCaretXY^.X + IdentLenDiff;
-
-      if (LastCodePos <> nil) and (CurCodePos^.Y = LastCodePos^.Y) and
-         (CurCodePos^.Code = LastCodePos^.Code)
-      then
-        inc(SameLineCount);
-
     end else begin
       DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdent(@Code.Source[IdentStartPos]));
     end;
 
-    LastCodePos := CurCodePos;
-    ANode2 := ANode;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
-
-    if (ANode = nil) or (PCodeXYPosition(ANode.Data)^.Code <> LastCodePos^.Code) or
-       (PCodeXYPosition(ANode.Data)^.Y <> LastCodePos^.Y)
-    then begin
-      // todo: check if this is needed, the tree is sorted, so it should not be needed
-      if (SameLineCount > 0) then begin
-        for i := 1 to SameLineCount do begin
-          ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode2);
-          PCodeXYPosition(ANode2.Data)^.X := PCodeXYPosition(ANode2.Data)^.X + i * IdentLenDiff;
-        end;
-      end;
-      SameLineCount := 0;
-    end;
   end;
 
   // apply
