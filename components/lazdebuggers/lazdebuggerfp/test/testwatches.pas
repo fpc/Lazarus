@@ -2147,6 +2147,61 @@ begin
       ], 5)).IgnTypeName();
 
 
+    t.Add('flatten', ':flatten(f1, more[3..9]!,  [array])',     weArray([
+      weMatch('Value *:?=? ?1', skClass),
+        weMatch('Value *:?=? ?100004', skClass),
+        weMatch('Value *:?=? ?100005', skClass),
+        weMatch('Value *:?=? ?100006', skClass),
+        weMatch('Value *:?=? ?100007', skClass),
+        weMatch('Value *:?=? ?2', skClass),
+          weMatch('Value *:?=? ?4', skClass),
+            weMatch('Value *:?=? ?400003', skClass),
+            weMatch('Value *:?=? ?400004', skClass),
+          weMatch('Value *:?=? ?200004', skClass),
+          weMatch('Value *:?=? ?200005', skClass),
+          weMatch('Value *:?=? ?200006', skClass),
+        weMatch('Value *:?=? ?3', skClass),
+          weMatch('Value *:?=? ?300003', skClass),
+          weMatch('Value *:?=? ?300004', skClass),
+          weMatch('Value *:?=? ?300005', skClass)
+      ], 16)).IgnTypeName();
+
+
+    t.Add('flatten', ':flatten(f2, more2[0..1][3..5]!!, moreidx[1..2]!, [array=2])',     weArray([
+      weMatch('Value *:?=? ?2', skClass),
+        weMatch('Value *:?=? ?4', skClass),  //[0,3]
+          weMatch('Value *:?=? ?10400003', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?10400004', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?20400003', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?20400004', skClass),
+            weInteger(1),weInteger(2),
+          weInteger(1),weInteger(2),
+        weMatch('Value *:?=? ?10200004', skClass), //[0,4]
+          weInteger(1),weInteger(2),
+        weMatch('Value *:?=? ?10200005', skClass), //[0,5]
+          weInteger(1),weInteger(2),
+
+        weMatch('Value *:?=? ?4', skClass),  //[1,0]
+          weMatch('Value *:?=? ?10400003', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?10400004', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?20400003', skClass),
+            weInteger(1),weInteger(2),
+          weMatch('Value *:?=? ?20400004', skClass),
+            weInteger(1),weInteger(2),
+          weInteger(1),weInteger(2),
+        weMatch('Value *:?=? ?20200004', skClass), //[1,4]
+          weInteger(1),weInteger(2),
+        weMatch('Value *:?=? ?20200005', skClass), //[1,5]
+          weInteger(1),weInteger(2),
+        weInteger(1),weInteger(2)
+      ], 45)).IgnTypeName();
+
+
     t.Add('i2o', ':i2o(AnIntf1)', weClass([
         weInteger(123).N('a'), weInteger(987).N('b'), weInteger(551177).N('c') ], 'TIntf1'));
     t.Add('i2o', ':i2o(AnIntf2)', weClass([

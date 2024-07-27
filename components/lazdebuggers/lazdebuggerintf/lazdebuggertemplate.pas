@@ -36,10 +36,10 @@ type
     FUpdateCount: Integer;
     function GetIsUpdating: boolean; inline;
   protected
+    procedure SetSliceIndexPos(APos, ALen: Integer);    (* IDbgWatchValueIntf *)
     procedure AddNotification(AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
     procedure RemoveNotification(AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
     procedure CallNotifications(AnEventType: TDbgDataRequestEventType; AnEventData: TDbgDataRequestEventData);
-
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DoBeginUpdating; virtual;
@@ -163,6 +163,11 @@ implementation
 function TDbgDataRequestTemplateBase.GetIsUpdating: boolean;
 begin
   Result := FUpdateCount > 0;
+end;
+
+procedure TDbgDataRequestTemplateBase.SetSliceIndexPos(APos, ALen: Integer);
+begin
+  //
 end;
 
 procedure TDbgDataRequestTemplateBase.AddNotification(

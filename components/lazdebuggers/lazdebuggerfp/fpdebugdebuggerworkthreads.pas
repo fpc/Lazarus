@@ -759,6 +759,8 @@ begin
   finally
     APasExpr.Free;
     ExpressionScope.ReleaseReference;
+    if FDebugger.DbgController.CurrentProcess.GlobalCache <> nil then
+      FDebugger.DbgController.CurrentProcess.GlobalCache.Clear;
     Queue(@DoCallback_DecRef);
   end;
 end;
@@ -916,7 +918,7 @@ begin
           ExprParamVal := AParams.Items[FoundIdx].ResultValue;
           if (ExprParamVal = nil) then begin
             DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for arg %d ', [FoundIdx]);
-            AnError := AnExpressionPart.Expression.Error;
+            AnError := AnExpressionPart.ExpressionData.Error;
             if not IsError(AnError) then
               AnError := CreateError(fpErrAnyError, ['internal error, computing parameter']);
             exit;
@@ -1122,7 +1124,7 @@ begin
   if (ALen = 3) and (strlicomp(AStart, pchar('i2o'), 3) = 0) and
      (FDebugger.DbgController.CurrentProcess.Disassembler is TX86AsmDecoder)
   then
-    Result := TFpPascalExpressionPartIntrinsicIntfToObj.Create(AnExpression,
+    Result := TFpPascalExpressionPartIntrinsicIntfToObj.Create(AnExpression.SharedData,
       AStart, AStart+ALen,
       TX86AsmDecoder(FDebugger.DbgController.CurrentProcess.Disassembler)
     );
@@ -1213,6 +1215,17 @@ begin
         ResValue.ResetError; // in case GetInstanceClassName did set an error
         // TODO: indicate that typecasting to instance failed
       end;
+    end;
+
+    if FWatchValue <> nil then begin
+      if ResValue is TFpPasParserValueSlicedArray then begin
+        FWatchValue.SetSliceIndexPos(
+          TFpPasParserValueSlicedArray(ResValue).SliceBracketStartOffs,
+          TFpPasParserValueSlicedArray(ResValue).SliceBracketLength
+        );
+      end
+      else
+        FWatchValue.SetSliceIndexPos(-1,-1);
     end;
 
     if StopRequested then begin

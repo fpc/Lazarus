@@ -593,6 +593,7 @@ type
     FChildWatches: TIdeWatches;
     FDisplayName: String;
     FParentWatch: TIdeWatch;
+    FSliceIndexStartPos, FSliceIndexLen: Integer;
 
     function GetChildWatch(ADispName, AnExpr: String): TIdeWatch;
     function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TIdeWatch;
@@ -770,6 +771,7 @@ type
     function ResData: IDbgWatchDataIntf;
     function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
     function GetIntfEvaluateFlags: TWatcheEvaluateFlags;
+    procedure SetSliceIndexPos(APos, ALen: Integer);
     function IDbgWatchValueIntf.GetEvaluateFlags = GetIntfEvaluateFlags;
   private
     FOnValidityChanged: TNotifyEvent;
@@ -4147,6 +4149,13 @@ begin
     Result := Result + [defMemDump];
 end;
 
+procedure TCurrentWatchValue.SetSliceIndexPos(APos, ALen: Integer);
+begin
+  if Watch = nil then exit;
+  Watch.FSliceIndexStartPos := APos;
+  Watch.FSliceIndexLen := ALen;
+end;
+
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
@@ -6845,10 +6854,21 @@ end;
 
 function TIdeWatch.GetChildrenByNameAsArrayEntry(AName: Int64;
   DerefCount: Integer): TIdeWatch;
+var
+  s: String;
 begin
-  Result := GetChildWatch(StringOfChar('^', DerefCount) + IntToStr(AName),
-    GetExpressionForArrayElement(Expression + StringOfChar('^', DerefCount), AName)
-  );
+  if FSliceIndexStartPos > 0 then begin
+    s := copy(Expression, 1, FSliceIndexStartPos-1) +
+         IntToStr(AName) +
+         copy(Expression, FSliceIndexStartPos+FSliceIndexLen, Length(Expression)) +
+         StringOfChar('^', DerefCount);
+  end
+  else
+  if FSliceIndexStartPos < 0 then
+    s := Expression + StringOfChar('^', DerefCount) + '[' + IntToStr(AName) + ']' // Do not replace any slice
+  else
+    s := GetExpressionForArrayElement(Expression + StringOfChar('^', DerefCount), AName);
+  Result := GetChildWatch(StringOfChar('^', DerefCount) + IntToStr(AName), s);
 end;
 
 function TIdeWatch.GetChildrenByNameAsField(AName, AClassName: String;

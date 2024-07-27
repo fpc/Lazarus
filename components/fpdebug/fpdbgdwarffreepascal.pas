@@ -357,7 +357,7 @@ type
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue; override;
     function ReturnsVariant: boolean; override;
   public
-    constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar; AnEndChar: PChar;
+    constructor Create(AnExpressionData: TFpPascalExpressionSharedData; AStartChar: PChar; AnEndChar: PChar;
       ADisAssembler: TX86AsmDecoder);
     destructor Destroy; override;
   end;
@@ -2479,7 +2479,7 @@ begin
   then
     exit;
 
-  ctx := Expression.Scope.LocationContext;
+  ctx := ExpressionData.Scope.LocationContext;
   Addr := Arg.AsCardinal;
   if Addr = 0 then begin
     Result := Arg;
@@ -2543,7 +2543,7 @@ begin
     end;
 
     CompVer := $030300;
-    Sym := Expression.Scope.SymbolAtAddress;
+    Sym := ExpressionData.Scope.SymbolAtAddress;
     if (Sym <> nil) and (Sym is TFpSymbolDwarf) and (TFpSymbolDwarf(Sym).CompilationUnit <> nil)
     then
       CompVer := TFpDwarfFreePascalSymbolClassMap(TFpSymbolDwarf(Sym).CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
@@ -2557,7 +2557,7 @@ begin
     if R then begin
 
       FChildClassCastType.ReleaseReference;
-      FChildClassCastType := Expression.GetDbgSymbolForIdentifier(AClassName);
+      FChildClassCastType := ExpressionData.GetDbgSymbolForIdentifier(AClassName);
       if (FChildClassCastType = nil) or (FChildClassCastType.DbgSymbol = nil) or
          (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
          (FChildClassCastType.DbgSymbol.Kind <> skClass)
@@ -2578,11 +2578,12 @@ begin
   Result := True;
 end;
 
-constructor TFpPascalExpressionPartIntrinsicIntfToObj.Create(AExpression: TFpPascalExpression;
-  AStartChar: PChar; AnEndChar: PChar; ADisAssembler: TX86AsmDecoder);
+constructor TFpPascalExpressionPartIntrinsicIntfToObj.Create(
+  AnExpressionData: TFpPascalExpressionSharedData; AStartChar: PChar; AnEndChar: PChar;
+  ADisAssembler: TX86AsmDecoder);
 begin
   FDisAssembler := ADisAssembler;
-  inherited Create(AExpression, AStartChar, AnEndChar);
+  inherited Create(AnExpressionData, AStartChar, AnEndChar);
 end;
 
 destructor TFpPascalExpressionPartIntrinsicIntfToObj.Destroy;

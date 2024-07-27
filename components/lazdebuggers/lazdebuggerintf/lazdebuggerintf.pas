@@ -248,6 +248,7 @@ type
     function GetValidity: TDebuggerDataState;
     procedure SetTypeInfo(AValue: TDBGTypeBase); // Must not be used by MemDump
     procedure SetValidity(AValue: TDebuggerDataState);
+    procedure SetSliceIndexPos(APos, ALen: Integer);
 
     property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
     property FirstIndexOffs: Int64 read GetFirstIndexOffs;
