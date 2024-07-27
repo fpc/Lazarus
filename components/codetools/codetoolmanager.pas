@@ -57,6 +57,12 @@ uses
 type
   TCodeToolManager = class;
   TCodeTool = TEventsCodeTool;
+  TCodeToolPos = record
+    Tool: TCodeTool;
+    CleanPos: integer;
+  end;
+  PCodeToolPos = ^TCodeToolPos;
+
   TDirectivesTool = TCompilerDirectivesTree;
 
   TOnBeforeApplyCTChanges = procedure(Manager: TCodeToolManager;
@@ -408,6 +414,9 @@ type
     function CreateTreeOfPCodeXYPosition: TAVLTree;
     procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
           DestTree: TAVLTree; ClearList, CreateCopies: boolean);
+    function CreateTreeOfPCodeToolPos: TAVLTree;
+    procedure FreeTreeOfPCodeToolPos(var Tree: TAVLTree);
+    procedure RemoveDuplicatesInTreeOfPCodeToolPos(Tree: TAVLTree);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -576,6 +585,8 @@ type
        var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
        TreeOfPCodeXYPosition: TAVLTree // positions in this unit are processed and removed from the tree
        ): boolean;
+    procedure ConvertTreeOf_CodeXYPosToToolCleanPos(TreeOfPCodeXYPosition: TAVLTree;
+      out TreeOfPCodeToolPos: TAVLTree);
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -936,7 +947,7 @@ var CodeToolBoss: TCodeToolManager;
 
 function CreateDefinesForFPCMode(const Name: string;
                                  CompilerMode: TCompilerMode): TDefineTemplate;
-
+function ComparePCodeToolPos(ToolPos1, ToolPos2: PCodeToolPos): integer;
 
 implementation
 
@@ -1003,6 +1014,18 @@ begin
   NewMode:=CompilerModeVars[CompilerMode];
   Result.AddChild(TDefineTemplate.Create(NewMode,
     NewMode,NewMode,'1',da_Define));
+end;
+
+function ComparePCodeToolPos(ToolPos1, ToolPos2: PCodeToolPos): integer;
+begin
+  Result:=ComparePointer(ToolPos1^.Tool,ToolPos2^.Tool);
+  if Result<>0 then exit;
+  if ToolPos1^.CleanPos<ToolPos2^.CleanPos then
+    Result:=1
+  else if ToolPos1^.CleanPos>ToolPos2^.CleanPos then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 { ECodeToolManagerError }
@@ -1863,6 +1886,50 @@ procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
   DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 begin
   CodeCache.AddListToTreeOfPCodeXYPosition(SrcList,DestTree,ClearList,CreateCopies);
+end;
+
+function TCodeToolManager.CreateTreeOfPCodeToolPos: TAVLTree;
+begin
+  Result:=TAVLTree.Create(TListSortCompare(@ComparePCodeToolPos));
+end;
+
+procedure TCodeToolManager.FreeTreeOfPCodeToolPos(var Tree: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  ToolPos: PCodeToolPos;
+begin
+  if Tree=nil then exit;
+  ANode:=Tree.FindLowest;
+  while ANode<>nil do begin
+    ToolPos:=PCodeToolPos(ANode.Data);
+    if ToolPos<>nil then
+      Dispose(ToolPos);
+    ANode:=Tree.FindSuccessor(ANode);
+  end;
+  Tree.Free;
+  Tree:=nil;
+end;
+
+procedure TCodeToolManager.RemoveDuplicatesInTreeOfPCodeToolPos(Tree: TAVLTree);
+var
+  ANode, DelNode: TAVLTreeNode;
+  ToolPos, LastToolPos: PCodeToolPos;
+begin
+  if Tree=nil then exit;
+  ANode:=Tree.FindLowest;
+  LastToolPos:=nil;
+  while ANode<>nil do begin
+    ToolPos:=PCodeToolPos(ANode.Data);
+    if (LastToolPos<>nil) and (ComparePCodeToolPos(ToolPos,LastToolPos)=0) then begin
+      DelNode:=ANode;
+      ANode:=Tree.FindSuccessor(ANode);
+      Dispose(ToolPos);
+      Tree.Delete(DelNode);
+    end else begin
+      LastToolPos:=ToolPos;
+      ANode:=Tree.FindSuccessor(ANode);
+    end;
+  end;
 end;
 
 function TCodeToolManager.Explore(Code: TCodeBuffer;
@@ -2935,7 +3002,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
   {$ENDIF}
-  if TreeOfPCodeXYPosition=nil then
+  if (TreeOfPCodeXYPosition=nil) or (TreeOfPCodeXYPosition.Count=0) then
     exit(true);
   if not LazIsValidIdent(NewIdentifier,True,True) then exit;
 
@@ -3011,6 +3078,7 @@ begin
     if (ANode = nil) or (PCodeXYPosition(ANode.Data)^.Code <> LastCodePos^.Code) or
        (PCodeXYPosition(ANode.Data)^.Y <> LastCodePos^.Y)
     then begin
+      // todo: check if this is needed, the tree is sorted, so it should not be needed
       if (SameLineCount > 0) then begin
         for i := 1 to SameLineCount do begin
           ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode2);
@@ -3020,6 +3088,7 @@ begin
       SameLineCount := 0;
     end;
   end;
+
   // apply
   DebugLn('TCodeToolManager.RenameIdentifier Apply');
   if not SourceChangeCache.Apply then exit;
@@ -3126,6 +3195,59 @@ begin
   except
     on e: Exception do HandleException(e);
   end;
+end;
+
+procedure TCodeToolManager.ConvertTreeOf_CodeXYPosToToolCleanPos(TreeOfPCodeXYPosition: TAVLTree;
+  out TreeOfPCodeToolPos: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  CurCodePos: PCodeXYPosition;
+  Code, MainCode, LastCode, LastMainCode: TCodeBuffer;
+  ToolPos: PCodeToolPos;
+  Tool, LastTool: TCodeTool;
+  CleanPos: integer;
+begin
+  TreeOfPCodeToolPos:=nil;
+  // the tree is sorted for descending line code positions
+  LastCode:=nil;
+  LastMainCode:=nil;
+  LastTool:=nil;
+  ANode:=TreeOfPCodeXYPosition.FindLowest;
+  while ANode<>nil do begin
+    CurCodePos:=PCodeXYPosition(ANode.Data);
+    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+    Code:=CurCodePos^.Code;
+    if Code=LastCode then
+    begin
+      MainCode:=LastMainCode;
+      Tool:=LastTool;
+    end else begin
+      MainCode:=GetMainCode(Code);
+      if MainCode=nil then continue;
+      if MainCode=LastMainCode then begin
+        Tool:=LastTool;
+      end else begin
+        Tool:=TCodeTool(GetCodeToolForSource(MainCode,false,false));
+        if Tool=nil then continue;
+      end;
+    end;
+
+    LastCode:=Code;
+    LastMainCode:=MainCode;
+    LastTool:=Tool;
+
+    if Tool.CaretToCleanPos(CurCodePos^,CleanPos)<>0 then continue;
+
+    New(ToolPos);
+    ToolPos^.Tool:=Tool;
+    ToolPos^.CleanPos:=CleanPos;
+    if TreeOfPCodeToolPos=nil then
+      TreeOfPCodeToolPos:=CreateTreeOfPCodeToolPos;
+    TreeOfPCodeToolPos.Add(ToolPos);
+  end;
+
+  // remove duplicates
+  RemoveDuplicatesInTreeOfPCodeToolPos(TreeOfPCodeToolPos);
 end;
 
 function TCodeToolManager.GatherResourceStringSections(Code: TCodeBuffer;

@@ -195,6 +195,7 @@ function IsDottedIdentifier(const Identifier: string): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareDottedIdentifiersCaseSens(Identifier1, Identifier2: PChar): integer;
 function ChompDottedIdentifier(const Identifier: string): string;
+function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -5340,6 +5341,24 @@ begin
   p:=length(Identifier);
   while (p>0) and (Identifier[p]<>'.') do dec(p);
   Result:=LeftStr(Identifier,p-1);
+end;
+
+function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
+var
+  c: Char;
+begin
+  c:=Identifier^;
+  if (c='&') and (IsIdentStartChar[Identifier[1]]) then
+    inc(Identifier,2)
+  else if IsIdentStartChar[c] then
+    inc(Identifier)
+  else
+    exit(false);
+  while IsIdentChar[Identifier^] do
+    inc(Identifier);
+  if Identifier^='.' then
+    inc(Identifier);
+  Result:=true;
 end;
 
 function TrimCodeSpace(const ACode: string): string;
