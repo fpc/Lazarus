@@ -689,6 +689,8 @@ type
       ATopPart: TFpPascalExpressionPart;
       AStartChar: PChar; AnEndChar: PChar = nil);
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
+    function GetFullText(AMaxLen: Integer = 0): String; override;
+    function DebugText(AIndent: String; AWithResults: Boolean): String; override;
     property SlicePart: TFpPascalExpressionPartOperatorArraySlice read FSlicePart;
     property DisableSlice: boolean read FDisableSlice write FDisableSlice;
     property CanDisableSlice: boolean read GetCanDisableSlice;
@@ -7061,6 +7063,20 @@ begin
   Result := Self;
 end;
 
+function TFpPascalExpressionPartOperatorArraySliceController.GetFullText(AMaxLen: Integer): String;
+begin
+  Result := '';
+  if FSlicePart <> nil then
+    Result := FSlicePart.GetFullText(AMaxLen);
+end;
+
+function TFpPascalExpressionPartOperatorArraySliceController.DebugText(AIndent: String;
+  AWithResults: Boolean): String;
+begin
+  Result := inherited DebugText(AIndent, AWithResults) +
+            AIndent +'// '+ GetFullText+LineEnding;
+end;
+
 function TFpPascalExpressionPartOperatorArraySliceController.GetCanDisableSlice: boolean;
 begin
   Result := (not FResultValDone);
@@ -7071,6 +7087,7 @@ var
   tmp: TFpValue;
 begin
   FSlicePart.FCurrentIndex := FSlicePart.StartValue;
+  FSlicePart.EndValue; // needs to be touched
   FSlicePart.FTouched := False;
   ResetEvaluationForIndex;
   Result := Items[0].ResultValue;
@@ -7126,7 +7143,11 @@ begin
   inherited Create(AExpression, AStartChar, AnEndChar);
   FSlicePart := ASlicePart;
 
-  while ATopPart is TFpPascalExpressionPartOperatorArraySliceController do
+  while (ATopPart is TFpPascalExpressionPartOperatorArraySliceController) and
+        (not FSlicePart.FindInParents(
+          TFpPascalExpressionPartOperatorArraySliceController(ATopPart).FSlicePart)
+        )
+  do
     ATopPart := TFpPascalExpressionPartOperatorArraySliceController(ATopPart).Items[0];
   ATopPart.ReplaceInParent(Self);
   Add(ATopPart);
@@ -7143,11 +7164,13 @@ end;
 procedure TFpPascalExpressionPartOperatorArraySlice.SetParent(
   AValue: TFpPascalExpressionPartContainer);
 begin
-  if (Parent = nil) and (AValue <> nil) then
+  if (Parent = nil) and (AValue <> nil) then begin
+    inherited SetParent(AValue);
     FController := TFpPascalExpressionPartOperatorArraySliceController.Create(FExpression,
       Self, AValue.TopParent, FStartChar, FEndChar);
-
-  inherited SetParent(AValue);
+  end
+  else
+    inherited SetParent(AValue);
 end;
 
 function TFpPascalExpressionPartOperatorArraySlice.DoGetResultValue: TFpValue;
