@@ -464,13 +464,14 @@ type
     class procedure WSRegisterClass; override;
     procedure DoPopup(Sender: TObject); virtual;
     procedure DoClose; virtual;
+    procedure SetPopupPoint(APopupPoint: TPoint);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure PopUp;
     procedure PopUp(X, Y: Integer); virtual;
     property PopupComponent: TComponent read FPopupComponent write FPopupComponent;
-    property PopupPoint: TPoint read FPopupPoint;
+    property PopupPoint: TPoint read FPopupPoint write SetPopupPoint;
     procedure Close;
   published
     property Alignment: TPopupAlignment read FAlignment write FAlignment default paLeft;

@@ -69,7 +69,7 @@ end;
 procedure TPopupMenu.PopUp(X, Y: Integer);
 begin
   if ActivePopupMenu <> nil then ActivePopupMenu.Close;
-  FPopupPoint := Point(X, Y);
+  SetPopupPoint(Point(X, Y));
   ReleaseCapture;
   DoPopup(Self);
   if Items.Count = 0 then exit;
@@ -78,7 +78,12 @@ begin
   DestroyHandle;
   CreateHandle;
   if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
-  TWSPopupMenuClass(WidgetSetClass).Popup(Self, X, Y);
+  TWSPopupMenuClass(WidgetSetClass).Popup(Self, FPopupPoint.X, FPopupPoint.Y);
+end;
+
+procedure TPopupMenu.SetPopupPoint(APopupPoint: TPoint);
+begin
+  FPopupPoint := APopupPoint;
 end;
 
 procedure TPopupMenu.Close;
