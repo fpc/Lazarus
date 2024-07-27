@@ -18,7 +18,8 @@ uses
   CocoaWSDialogs,
   CocoaWSSpin,
   CocoaWSCheckLst,
-  CocoaWSDatePicker;
+  CocoaWSDatePicker,
+  CocoaWSListView;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;

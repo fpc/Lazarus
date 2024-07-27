@@ -1,7 +1,6 @@
 unit CocoaCollectionView;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
 {$include cocoadefines.inc}
@@ -9,9 +8,14 @@ unit CocoaCollectionView;
 interface
 
 uses
-  Classes, SysUtils, Controls, ComCtrls,
-  MacOSAll, CocoaAll, CocoaPrivate, Cocoa_Extra, CocoaUtils,
-  CocoaWSComCtrls, CocoaTextEdits;
+  // rtl+ftl
+  Classes, SysUtils,
+  // Libs
+  MacOSAll, CocoaAll,
+  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaUtils,
+  CocoaListView, CocoaTextEdits,
+  // LCL
+  LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
 
@@ -123,6 +127,62 @@ type
     procedure mouseDown(theEvent: NSEvent); override;
   end;
 
+  { TCocoaWSListView_CollectionViewHandler }
+
+  TCocoaWSListView_CollectionViewHandler = class(TCocoaWSListViewHandler)
+  private
+    _listView: TCocoaListView;
+    _collectionView: TCocoaCollectionView;
+  private
+    function getCallback: TLCLListViewCallback;
+    procedure doReloadDataAfterDelete( AIndex: PtrInt );
+  public
+    constructor Create( listView: TCocoaListView );
+  public
+    // Column
+    procedure ColumnDelete( const AIndex: Integer ); override;
+    function  ColumnGetWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; override;
+    procedure ColumnInsert( const AIndex: Integer; const AColumn: TListColumn); override;
+    procedure ColumnMove( const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
+    procedure ColumnSetAlignment( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAlignment: TAlignment); override;
+    procedure ColumnSetAutoSize( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAutoSize: Boolean); override;
+    procedure ColumnSetCaption( const AIndex: Integer; const {%H-}AColumn: TListColumn; const ACaption: String); override;
+    procedure ColumnSetMaxWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMaxWidth: Integer); override;
+    procedure ColumnSetMinWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMinWidth: integer); override;
+    procedure ColumnSetWidth( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AWidth: Integer); override;
+    procedure ColumnSetVisible( const AIndex: Integer; const {%H-}AColumn: TListColumn; const AVisible: Boolean); override;
+    procedure ColumnSetSortIndicator( const AIndex: Integer; const AColumn: TListColumn; const ASortIndicator: TSortIndicator); override;
+
+    // Item
+    procedure ItemDelete( const AIndex: Integer); override;
+    function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    function  ItemGetChecked( const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; override;
+    function  ItemGetPosition( const AIndex: Integer): TPoint; override;
+    function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); override;
+    procedure ItemSetChecked( const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
+    procedure ItemSetImage( const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
+    procedure ItemSetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
+    procedure ItemSetText( const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String); override;
+    procedure ItemShow( const AIndex: Integer; const {%H-}AItem: TListItem; const PartialOK: Boolean); override;
+
+    function GetFocused: Integer; override;
+    function GetItemAt( x,y: integer): Integer; override;
+    function GetSelCount: Integer; override;
+    function GetSelection: Integer; override;
+    function GetTopItem: Integer; override;
+    function GetVisibleRowCount: Integer; override;
+
+    procedure SelectAll( const AIsSet: Boolean); override;
+    procedure SetDefaultItemHeight( const AValue: Integer); override;
+    procedure SetImageList( const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
+    procedure SetItemsCount( const Avalue: Integer); override;
+    procedure SetProperty( const AProp: TListViewProperty; const AIsSet: Boolean); override;
+    procedure SetScrollBars( const AValue: TScrollStyle); override;
+    procedure SetSort( const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
+      const {%H-}ASortDirection: TSortDirection); override;
+  end;
+
 function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
 function indexPathsWithOneIndex( cv: NSCollectionView; AIndex: Integer ): NSSet;
 function realVisibleItems( cv: NSCollectionView ): NSArray;
@@ -130,7 +190,8 @@ function realVisibleItems( cv: NSCollectionView ): NSArray;
 implementation
 
 type
-  
+  TCustomListViewAccess = class(TCustomListView);
+
   { TCocoaListView_CollectionView_LargeIconHandler }
   TCocoaListView_CollectionView_LargeIconHandler = class(TCocoaListView_CollectionView_StyleHandler)
     procedure onInit; override;
@@ -721,6 +782,370 @@ end;
 procedure TCocoaCollectionView.mouseDown(theEvent: NSEvent);
 begin
   inherited mouseDown(theEvent);
+end;
+
+{ TCocoaWSListView_CollectionViewHandler }
+
+constructor TCocoaWSListView_CollectionViewHandler.Create(
+   listView: TCocoaListView );
+begin
+  _listView:= listView;
+  _collectionView:= TCocoaCollectionView(listView.documentView);
+end;
+
+function TCocoaWSListView_CollectionViewHandler.getCallback: TLCLListViewCallback;
+begin
+  Result:= _collectionView.callback;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnDelete(
+  const AIndex: Integer);
+begin
+end;
+
+function TCocoaWSListView_CollectionViewHandler.ColumnGetWidth(
+  const AIndex: Integer; const AColumn: TListColumn): Integer;
+begin
+  Result:= -1;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnInsert(
+  const AIndex: Integer; const AColumn: TListColumn);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnMove(const AOldIndex,
+  ANewIndex: Integer; const AColumn: TListColumn);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetAlignment(
+  const AIndex: Integer; const AColumn: TListColumn;
+  const AAlignment: TAlignment);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetAutoSize(
+  const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetCaption(
+  const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetMaxWidth(
+  const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetMinWidth(
+  const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetWidth(
+  const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetVisible(
+  const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ColumnSetSortIndicator(
+  const AIndex: Integer; const AColumn: TListColumn;
+  const ASortIndicator: TSortIndicator);
+begin
+end;
+
+// when LCL call ItemDelete, the Item isn't Deleted at LCL
+// delayed reload is necessary
+procedure TCocoaWSListView_CollectionViewHandler.ItemDelete(
+  const AIndex: Integer);
+begin
+  Application.QueueAsyncCall( @doReloadDataAfterDelete, AIndex );
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.doReloadDataAfterDelete( AIndex: PtrInt );
+var
+  lclcb : TLCLListViewCallback;
+begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
+  _collectionView.reloadData;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.ItemDisplayRect(const AIndex,
+  ASubItem: Integer; ACode: TDisplayCode): TRect;
+var
+  item: NSCollectionViewItem;
+  frame: NSRect;
+begin
+  Result:= Bounds(0,0,0,0);
+  item:= _collectionView.itemAtIndex( AIndex );
+  if NOT Assigned(item) then
+    Exit;
+
+  case ACode of
+    drLabel:
+      begin
+        frame:= item.textField.frame;
+        frame:= item.view.convertRect_toView( frame, _collectionView );
+        _collectionView.styleHandler.onAdjustTextEditorRect( frame );
+      end;
+    drIcon:
+      begin
+        frame:= item.imageView.frame;
+        frame:= item.view.convertRect_toView( frame, _collectionView );
+      end
+    else
+      frame:= item.view.frame;
+  end;
+
+  Result:= NSRectToRect( frame );
+end;
+
+function TCocoaWSListView_CollectionViewHandler.ItemGetChecked(
+  const AIndex: Integer; const AItem: TListItem): Boolean;
+begin
+  Result:= False;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.ItemGetPosition(
+  const AIndex: Integer): TPoint;
+var
+  rect: TRect;
+begin
+  rect:= self.ItemDisplayRect( AIndex, 0, drBounds );
+  Result:= rect.TopLeft;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.ItemGetState(
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  out AIsSet: Boolean): Boolean;
+var
+  lclcb : TLCLListViewCallback;
+begin
+  Result:= false;
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  case AState of
+    lisSelected: begin
+      Result:= (AIndex>=0) and (AIndex < _collectionView.numberOfItemsInSection(0));
+      AIsSet:= lclcb.getItemStableSelection( AIndex );
+    end;
+  end;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemInsert(
+  const AIndex: Integer; const AItem: TListItem);
+var
+  lclcb: TLCLListViewCallback;
+begin
+  lclcb:= self.getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
+  _collectionView.reloadData;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemSetChecked(
+  const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemSetImage(
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex,
+  AImageIndex: Integer);
+begin
+  _collectionView.reloadData;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemSetState(
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  const AIsSet: Boolean);
+var
+  lclcb: TLCLListViewCallback;
+begin
+  lclcb:= self.getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  case AState of
+    lisSelected: begin
+      if lclcb.getItemStableSelection(AIndex) <> AIsSet then begin
+        _collectionView.selectOneItemByIndex( AIndex, AIsSet );
+        _collectionView.redrawVisibleItems;
+      end;
+    end;
+  end;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemSetText(
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
+  const AText: String);
+begin
+  _collectionView.reloadData;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.ItemShow(
+  const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+var
+  indexPaths: NSSet;
+begin
+  indexPaths:= CocoaCollectionView.indexPathsWithOneIndex( _collectionView, AIndex );
+  _collectionView.scrollToItemsAtIndexPaths_scrollPosition(
+    indexPaths, NSCollectionViewScrollPositionTop );
+end;
+
+// what is the function?
+// never be called ???
+function TCocoaWSListView_CollectionViewHandler.GetFocused: Integer;
+begin
+  Result:= self.GetSelection;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.GetItemAt(x, y: integer
+  ): Integer;
+var
+  cocoaPoint: NSPoint;
+  indexPath: NSIndexPath;
+begin
+  Result:= -1;
+  cocoaPoint.x:= x;
+  cocoaPoint.y:= y;
+  indexPath:= _collectionView.indexPathForItemAtPoint( cocoaPoint );
+  if Assigned(indexPath) then
+    Result:= indexPath.item;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.GetSelCount: Integer;
+begin
+  Result:= _collectionView.selectionIndexPaths.count;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.GetSelection: Integer;
+var
+  lclListView: TCustomListView;
+  lclItem: TListItem;
+begin
+  Result:= -1;
+  lclListView:= TCustomListView(_collectionView.lclGetTarget);
+  if Assigned(lclListView) then begin
+    lclItem:= lclListView.LastSelected;
+    if Assigned(lclItem) then
+      Result:= lclItem.Index;
+  end;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.GetTopItem: Integer;
+var
+  items: NSArray;
+  item: NSCollectionViewItem;
+begin
+  Result:= -1;
+  items:= CocoaCollectionView.realVisibleItems( _collectionView );
+  if items.count > 0 then begin
+    item:= NSCollectionViewItem(items.firstObject);
+    Result:= _collectionView.indexPathForItem(item).item;
+  end;
+end;
+
+function TCocoaWSListView_CollectionViewHandler.GetVisibleRowCount: Integer;
+begin
+  Result:= CocoaCollectionView.realVisibleItems(_collectionView).count;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SelectAll(const AIsSet: Boolean
+  );
+begin
+  if AIsSet then
+    _collectionView.selectAll( _collectionView )
+  else
+    _collectionView.deselectAll( _collectionView );
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SetDefaultItemHeight(
+  const AValue: Integer);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SetImageList(
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
+var
+  lclcb: TLCLListViewCallback;
+  lvil: TListViewImageList;
+  iconSize: NSSize;
+begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if NOT lclcb.GetImageListType(lvil) then
+    Exit;
+
+  if AList <> lvil then
+    Exit;
+
+  iconSize.Width:= AValue.Width;
+  iconSize.Height:= AValue.Height;
+  _collectionView.updateItemSize( iconSize );
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SetItemsCount(
+  const Avalue: Integer);
+begin
+  _collectionView.reloadData;
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SetProperty(
+  const AProp: TListViewProperty; const AIsSet: Boolean);
+begin
+  case AProp of
+    {lvpHideSelection,
+    lvpHotTrack,}
+    lvpMultiSelect: _collectionView.setAllowsMultipleSelection(AIsSet);
+    {lvpOwnerDraw,
+    lvpReadOnly:
+    lvpShowWorkAreas,
+    lvpWrapText,
+    lvpToolTips}
+  end;
+end;
+
+// scrollBars auto handled by NSCollectionView
+procedure TCocoaWSListView_CollectionViewHandler.SetScrollBars(
+  const AValue: TScrollStyle);
+begin
+end;
+
+procedure TCocoaWSListView_CollectionViewHandler.SetSort(
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
+var
+  lclcb : TLCLListViewCallback;
+begin
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  lclcb.selectionIndexSet.removeAllIndexes;
+  _collectionView.reloadData();
 end;
 
 end.

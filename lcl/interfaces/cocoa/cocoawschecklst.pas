@@ -29,8 +29,8 @@ uses
   // Widgetset
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaWSStdCtrls, CocoaTables,
-  CocoaScrollers, CocoaWSScrollers;
+  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaWSStdCtrls,
+  CocoaTables, CocoaScrollers, CocoaWSScrollers;
 
 type
 

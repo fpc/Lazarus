@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="537">
+    <Files Count="540">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2653,6 +2653,21 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoacollectionview"/>
       </Item537>
+      <Item538>
+        <Filename Value="cocoa/cocoalistview.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaListView"/>
+      </Item538>
+      <Item539>
+        <Filename Value="cocoa/cocoawslistview.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSListView"/>
+      </Item539>
+      <Item540>
+        <Filename Value="cocoa/cocoacallback.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaCallback"/>
+      </Item540>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

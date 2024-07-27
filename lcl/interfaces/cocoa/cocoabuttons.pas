@@ -26,7 +26,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate, CocoaCallback,
   // LCL
   Graphics;
 

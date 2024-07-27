@@ -33,7 +33,7 @@ uses
   // darwin bindings
   MacOSAll,
   // private
-  CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaUtils, Cocoa_Extra,
+  CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils, Cocoa_Extra,
   CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,

@@ -34,7 +34,7 @@ uses
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaConst, CocoaConfig,
-  CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
+  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaGDIObjects, CocoaButtons,
   CocoaTables, CocoaTextEdits, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
 
 type
@@ -368,8 +368,6 @@ procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
 procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
 procedure ObjSetTextHint(obj: NSObject; const str: string);
 
-procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
-
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
@@ -383,37 +381,6 @@ procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
 procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 
 implementation
-
-const
-  VerticalScrollerVisible: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } false,
- {ssVertical      } true,
- {ssBoth          } true,
- {ssAutoHorizontal} false,
- {ssAutoVertical  } true,
- {ssAutoBoth      } true
-  );
-
-  HorizontalScrollerVisible: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } true,
- {ssVertical      } false,
- {ssBoth          } true,
- {ssAutoHorizontal} true,
- {ssAutoVertical  } false,
- {ssAutoBoth      } true
-  );
-
-  ScrollerAutoHide: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } false,
- {ssVertical      } false,
- {ssBoth          } false,
- {ssAutoHorizontal} true,
- {ssAutoVertical  } true,
- {ssAutoBoth      } true
-  );
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 begin
@@ -508,13 +475,6 @@ begin
   end
   else
     btn.setState(buttonState[NewState]);
-end;
-
-procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
-begin
-  AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
-  AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
-  AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
 end;
 
 procedure TextFieldSetTextHint(txt: NSTextField; const str: string);

@@ -25,7 +25,6 @@ function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaS
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 function EmbedInManualScrollHost(AView: TCocoaManualScrollView): TCocoaManualScrollHost;
 
-procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 procedure LCLScrollViewAdjustSize(control: TWinControl);
 
 var
@@ -126,17 +125,6 @@ begin
   AView.setHidden(false);
   {$endif}
   SetViewDefaults(Result);
-end;
-
-procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
-const
-  NSBorderStyle : array [TBorderStyle] of NSBorderType = (
-    NSNoBorder,   // bsNone
-    NSBezelBorder // bsSingle     (NSLineBorder is too thick)
-  );
-begin
-  if not Assigned(sv) then Exit;
-  sv.setBorderType( NSBorderStyle[astyle] );
 end;
 
 procedure LCLScrollViewAdjustSize(control: TWinControl);

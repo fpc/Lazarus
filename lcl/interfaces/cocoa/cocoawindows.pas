@@ -27,7 +27,7 @@ uses
   Types, Classes, SysUtils,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
-  cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
+  cocoa_extra, CocoaPrivate, CocoaCallback, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,
   LCLType, LCLProc;
