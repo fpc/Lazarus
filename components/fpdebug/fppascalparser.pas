@@ -205,6 +205,13 @@ type
     function  HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; virtual;
     procedure HandleEndOfExpression; virtual;
 
+    // AcceptParamAsSeparator: called on the first Item in TFpPascalExpressionPartBracketArgumentList
+    function AcceptParamAsSeparator(AParamPart: TFpPascalExpressionPart;
+      ABracketsPart: TFpPascalExpressionPartContainer;
+      var AResult: TFpPascalExpressionPart): boolean; virtual;
+    // HandleNewParameterInList: called on the first Item in TFpPascalExpressionPartBracketArgumentList
+    procedure HandleNewParameterInList(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer); virtual;
+
     function GetText(AMaxLen: Integer=0): String;
     function GetPos: Integer;
     function GetFullText(AMaxLen: Integer=0): String; virtual; // including children
@@ -320,7 +327,10 @@ type
       AnEndChar: PChar; AnIntrinsic: TFpIntrinsicFunc);
     destructor Destroy; override;
     function ReturnsVariant: boolean; override;
-    procedure HandleNewParam(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer);
+    function AcceptParamAsSeparator(AParamPart: TFpPascalExpressionPart;
+      ABracketsPart: TFpPascalExpressionPartContainer; var AResult: TFpPascalExpressionPart
+      ): boolean; override;
+    procedure HandleNewParameterInList(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer); override;
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -377,7 +387,7 @@ type
     procedure GetFirstLastChar(out AFirst, ALast: PChar); override;
     procedure CheckBeforeSeparator(APart: TFpPascalExpressionPart);
   public
-    procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar; AnEndChar: PChar = nil);
+    procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar; AnEndChar: PChar = nil); virtual;
     function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     procedure HandleEndOfExpression; override;
     property IsClosed: boolean read FIsClosed;
@@ -396,6 +406,9 @@ type
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function DoGetResultValue: TFpValue; override;
     function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
+  public
+    procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar;
+      AnEndChar: PChar = nil); override;
   end;
 
   { TFpPascalExpressionPartBracketArgumentList }
@@ -478,6 +491,7 @@ type
     function HasAllOperands: Boolean; override;
     function IsValidAfterPart(APrevPart: TFpPascalExpressionPart): Boolean; override;
     function IsValidAfterPartWithPrecedence(APrevPart: TFpPascalExpressionPart): Boolean; virtual;
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
   public
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
@@ -716,6 +730,7 @@ const
   PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
   PRECEDENCE_QUEST_COLON= 27;        // ? :
   PRECEDENCE_ARRAY_SLICE= 30;        // array[5..9] // array slice
+  PRECEDENCE_SEPARATOR_COLON= MaxInt; // : used as separator in intrinsics // Operator used to hold both sides
 
 type
 
@@ -879,6 +894,86 @@ type
   end;
 
   {%endregion  DebugSymbolValue }
+
+  {%region  Intrinsic Flatten}
+
+  { TFpValueFlatteArray }
+
+  TFpValueFlatteArray = class(TFpValueConstArray)
+  private
+    FList: TRefCntObjList;
+    FFullEvaluated: boolean;
+  protected
+    function GetOrdHighBound: Int64; override;
+  public
+    constructor Create(ALowBound: Integer);
+    destructor Destroy; override;
+
+    function GetMember(AIndex: Int64): TFpValue; override;
+    function GetMemberCount: Integer; override;
+  end;
+  PFpValueFlatteArray = ^TFpValueFlatteArray;
+
+  TFpPascalExpressionFlattenFlag = (
+    iffShowNil,
+    iffShowNoMember,
+    iffShowRecurse,
+    iffShowSeen,
+    iffShowErrAny,
+    iffDerefPtr,
+    iffObj1, iffObj2, iffObj3, iffObj4
+  );
+  TFpPascalExpressionFlattenFlags = set of TFpPascalExpressionFlattenFlag;
+
+  { TFpPascalExpressionCacheFlattenKey }
+
+  TFpPascalExpressionCacheFlattenKey = record
+    CtxThread, CtxStack: Integer;
+    Key: String;
+    Flags: TFpPascalExpressionFlattenFlags;
+    ExpandArrayDepth: integer;
+
+    class operator = (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
+    class operator < (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
+    class operator > (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
+  end;
+  PFpPascalExpressionCacheFlattenKey = ^TFpPascalExpressionCacheFlattenKey;
+
+  { TFpPascalExpressionCacheFlatten }
+
+  TFpPascalExpressionCacheFlatten = class(specialize TFPGMap<TFpPascalExpressionCacheFlattenKey, TFpValueFlatteArray>)
+  private
+    function DoKeyPtrComp(Key1, Key2: Pointer): Integer;
+  protected
+    procedure Deref(Item: Pointer); override;
+  public
+    constructor Create;
+    function Add(const AKey: TFpPascalExpressionCacheFlattenKey; const AData: TFpValueFlatteArray): Integer; inline;
+    function Replace(const AKey: TFpPascalExpressionCacheFlattenKey; const AData: TFpValueFlatteArray): Integer; inline;
+  end;
+
+  { TAddrSeenList }
+
+  TAddrSeenList = class(specialize TFPGMap<TFpDbgMemLocation, Integer>)
+  private
+    function DoKeyPtrComp(Key1, Key2: Pointer): Integer;
+  public
+    constructor Create;
+  end;
+
+  {%endregion  Intrinsic Flatten}
+
+  {%region  Intrinsic Separator ":" }
+
+  { TFpPascalExpressionPartOperatorColonAsSeparator }
+
+  TFpPascalExpressionPartOperatorColonAsSeparator = class(TFpPascalExpressionPartBinaryOperator)  // + -
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+  end;
+
+  {%endregion  Intrinsic Separator ":" }
 
 function DbgsResultValue(AVal: TFpValue; AIndent: String): String;
 begin
@@ -1509,6 +1604,133 @@ begin
   FTypeInfo.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FTypeInfo, 'TPasParserAddressOfSymbolValue'){$ENDIF};
 end;
 
+{ TFpValueFlatteArray }
+
+function TFpValueFlatteArray.GetOrdHighBound: Int64;
+begin
+  Result := FList.Count - 1;
+end;
+
+constructor TFpValueFlatteArray.Create(ALowBound: Integer);
+begin
+  inherited Create(ALowBound);
+  FList := TRefCntObjList.Create;
+  Flags := Flags + [vfArrayUpperBoundLimit];
+end;
+
+destructor TFpValueFlatteArray.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TFpValueFlatteArray.GetMember(AIndex: Int64): TFpValue;
+begin
+  if AIndex >= FList.Count then
+    exit(nil);
+  Result := TFpValue(FList[AIndex]);
+  Result.AddReference;
+end;
+
+function TFpValueFlatteArray.GetMemberCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+{ TFpPascalExpressionCacheFlattenKey }
+
+class operator TFpPascalExpressionCacheFlattenKey. = (a, b: TFpPascalExpressionCacheFlattenKey
+  ): boolean;
+begin
+  Result := (a.CtxThread = b.CtxThread) and
+            (a.CtxStack  = b.CtxStack) and
+            (a.Flags     = b.Flags) and
+            (a.ExpandArrayDepth  = b.ExpandArrayDepth) and
+            (a.Key = b.Key);
+end;
+
+class operator TFpPascalExpressionCacheFlattenKey.<(a, b: TFpPascalExpressionCacheFlattenKey
+  ): boolean;
+begin
+  raise Exception.Create('not supported');
+end;
+
+class operator TFpPascalExpressionCacheFlattenKey.>(a, b: TFpPascalExpressionCacheFlattenKey
+  ): boolean;
+begin
+  raise Exception.Create('not supported');
+end;
+
+{ TFpPascalExpressionCacheFlatten }
+
+function TFpPascalExpressionCacheFlatten.DoKeyPtrComp(Key1, Key2: Pointer): Integer;
+begin
+  if PFpPascalExpressionCacheFlattenKey(Key1)^ = PFpPascalExpressionCacheFlattenKey(Key2)^
+  then Result := 0
+  else Result := -1; // no sorting needed
+end;
+
+procedure TFpPascalExpressionCacheFlatten.Deref(Item: Pointer);
+begin
+  Finalize(TFpPascalExpressionCacheFlattenKey(Item^));
+  PFpValueFlatteArray(Pointer(PByte(Item)+KeySize))^.ReleaseReference;
+end;
+
+constructor TFpPascalExpressionCacheFlatten.Create;
+begin
+  inherited Create;
+  OnKeyPtrCompare := @DoKeyPtrComp;
+end;
+
+function TFpPascalExpressionCacheFlatten.Add(const AKey: TFpPascalExpressionCacheFlattenKey;
+  const AData: TFpValueFlatteArray): Integer;
+begin
+  while Count >= 5 do
+    Delete(0);
+  AData.AddReference;
+  Result := inherited Add(AKey, AData);
+end;
+
+function TFpPascalExpressionCacheFlatten.Replace(const AKey: TFpPascalExpressionCacheFlattenKey;
+  const AData: TFpValueFlatteArray): Integer;
+var
+  i: Integer;
+begin
+  i := IndexOf(AKey);
+  if i >= 0 then
+    Delete(i);
+  Result := Add(AKey, AData);
+end;
+
+{ TAddrSeenList }
+
+function TAddrSeenList.DoKeyPtrComp(Key1, Key2: Pointer): Integer;
+begin
+  if PFpDbgMemLocation(Key1)^ = PFpDbgMemLocation(Key2)^
+  then Result := 0
+  else Result := -1; // no sorting needed
+end;
+
+constructor TAddrSeenList.Create;
+begin
+  inherited Create;
+  OnKeyPtrCompare := @DoKeyPtrComp;
+end;
+
+{ TFpPascalExpressionPartOperatorColonAsSeparator }
+
+procedure TFpPascalExpressionPartOperatorColonAsSeparator.Init;
+begin
+  FPrecedence := PRECEDENCE_SEPARATOR_COLON;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorColonAsSeparator.DoGetResultValue: TFpValue;
+begin
+  assert(False, 'TFpPascalExpressionPartOperatorColonAsSeparator.DoGetResultValue: False');
+  Result := nil;
+end;
+
 { TPasParserSymbolArrayDeIndex }
 
 function TPasParserSymbolArrayDeIndex.GetNestedSymbolCount: Integer;
@@ -2056,13 +2278,12 @@ begin
     APart.Free;
     exit;
   end;
+
+  if Items[0].AcceptParamAsSeparator(APart, Self, Result) then // Must "Add" APart
+    exit;
+
   if (Count > 1) and (not AfterComma) then begin // Todo a,b,c
     SetError(APart, 'Comma or closing ")" expected: '+GetText+': ');
-    APart.Free;
-    exit;
-  end;
-  if not IsValidNextPart(APart) then begin
-    SetError(APart, 'Invalid operand in () '+GetText+': ');
     APart.Free;
     exit;
   end;
@@ -2070,8 +2291,7 @@ begin
   Add(APart);
   Result := APart;
 
-  if Items[0] is TFpPascalExpressionPartIntrinsic then // only flatten
-    TFpPascalExpressionPartIntrinsic(Items[0]).HandleNewParam(APart, Self);
+  Items[0].HandleNewParameterInList(APart, Self);
 end;
 
 function TFpPascalExpressionPartBracketArgumentList.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
@@ -2225,6 +2445,16 @@ begin
   else
     Result := False;
 end;
+
+procedure TFpPascalExpressionPartBracketSubExpression.CloseBracket(
+  ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar; AnEndChar: PChar);
+begin
+  if (Count <> 1) then
+    SetError('Empty brackets')
+  else
+    inherited CloseBracket(ALastAddedPart, AStartChar, AnEndChar);
+end;
+
 
 { TFpPascalExpressionPartIdentifier }
 
@@ -2481,187 +2711,6 @@ begin
   end;
 end;
 
-type
-
-  { TFpValueFlatteArray }
-
-  TFpValueFlatteArray = class(TFpValueConstArray)
-  private
-    FList: TRefCntObjList;
-    FFullEvaluated: boolean;
-  protected
-    function GetOrdHighBound: Int64; override;
-  public
-    constructor Create(ALowBound: Integer);
-    destructor Destroy; override;
-
-    function GetMember(AIndex: Int64): TFpValue; override;
-    function GetMemberCount: Integer; override;
-  end;
-  PFpValueFlatteArray = ^TFpValueFlatteArray;
-
-  TFpPascalExpressionFlattenFlag = (
-    iffShowNil,
-    iffShowNoMember,
-    iffShowRecurse,
-    iffShowSeen,
-    iffShowErrAny,
-    iffDerefPtr,
-    iffObj1, iffObj2, iffObj3, iffObj4
-  );
-  TFpPascalExpressionFlattenFlags = set of TFpPascalExpressionFlattenFlag;
-
-  { TFpPascalExpressionCacheFlattenKey }
-
-  TFpPascalExpressionCacheFlattenKey = record
-    CtxThread, CtxStack: Integer;
-    Key: String;
-    Flags: TFpPascalExpressionFlattenFlags;
-    ExpandArrayDepth: integer;
-
-    class operator = (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
-    class operator < (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
-    class operator > (a,b: TFpPascalExpressionCacheFlattenKey): boolean;
-  end;
-  PFpPascalExpressionCacheFlattenKey = ^TFpPascalExpressionCacheFlattenKey;
-
-  { TFpPascalExpressionCacheFlatten }
-
-  TFpPascalExpressionCacheFlatten = class(specialize TFPGMap<TFpPascalExpressionCacheFlattenKey, TFpValueFlatteArray>)
-  private
-    function DoKeyPtrComp(Key1, Key2: Pointer): Integer;
-  protected
-    procedure Deref(Item: Pointer); override;
-  public
-    constructor Create;
-    function Add(const AKey: TFpPascalExpressionCacheFlattenKey; const AData: TFpValueFlatteArray): Integer; inline;
-    function Replace(const AKey: TFpPascalExpressionCacheFlattenKey; const AData: TFpValueFlatteArray): Integer; inline;
-  end;
-
-{ TFpPascalExpressionCacheFlattenKey }
-
-class operator TFpPascalExpressionCacheFlattenKey. = (a, b: TFpPascalExpressionCacheFlattenKey
-  ): boolean;
-begin
-  Result := (a.CtxThread = b.CtxThread) and
-            (a.CtxStack  = b.CtxStack) and
-            (a.Flags     = b.Flags) and
-            (a.ExpandArrayDepth  = b.ExpandArrayDepth) and
-            (a.Key = b.Key);
-end;
-
-class operator TFpPascalExpressionCacheFlattenKey.<(a, b: TFpPascalExpressionCacheFlattenKey
-  ): boolean;
-begin
-  raise Exception.Create('not supported');
-end;
-
-class operator TFpPascalExpressionCacheFlattenKey.>(a, b: TFpPascalExpressionCacheFlattenKey
-  ): boolean;
-begin
-  raise Exception.Create('not supported');
-end;
-
-{ TFpPascalExpressionCacheFlatten }
-
-function TFpPascalExpressionCacheFlatten.DoKeyPtrComp(Key1, Key2: Pointer): Integer;
-begin
-  if PFpPascalExpressionCacheFlattenKey(Key1)^ = PFpPascalExpressionCacheFlattenKey(Key2)^
-  then Result := 0
-  else Result := -1; // no sorting needed
-end;
-
-procedure TFpPascalExpressionCacheFlatten.Deref(Item: Pointer);
-begin
-  Finalize(TFpPascalExpressionCacheFlattenKey(Item^));
-  PFpValueFlatteArray(Pointer(PByte(Item)+KeySize))^.ReleaseReference;
-end;
-
-constructor TFpPascalExpressionCacheFlatten.Create;
-begin
-  inherited Create;
-  OnKeyPtrCompare := @DoKeyPtrComp;
-end;
-
-function TFpPascalExpressionCacheFlatten.Add(const AKey: TFpPascalExpressionCacheFlattenKey;
-  const AData: TFpValueFlatteArray): Integer;
-begin
-  while Count >= 5 do
-    Delete(0);
-  AData.AddReference;
-  Result := inherited Add(AKey, AData);
-end;
-
-function TFpPascalExpressionCacheFlatten.Replace(const AKey: TFpPascalExpressionCacheFlattenKey;
-  const AData: TFpValueFlatteArray): Integer;
-var
-  i: Integer;
-begin
-  i := IndexOf(AKey);
-  if i >= 0 then
-    Delete(i);
-  Result := Add(AKey, AData);
-end;
-
-{ TFpValueFlatteArray }
-
-function TFpValueFlatteArray.GetOrdHighBound: Int64;
-begin
-  Result := FList.Count - 1;
-end;
-
-constructor TFpValueFlatteArray.Create(ALowBound: Integer);
-begin
-  inherited Create(ALowBound);
-  FList := TRefCntObjList.Create;
-  Flags := Flags + [vfArrayUpperBoundLimit];
-end;
-
-destructor TFpValueFlatteArray.Destroy;
-begin
-  FList.Free;
-  inherited Destroy;
-end;
-
-function TFpValueFlatteArray.GetMember(AIndex: Int64): TFpValue;
-begin
-  if AIndex >= FList.Count then
-    exit(nil);
-  Result := TFpValue(FList[AIndex]);
-  Result.AddReference;
-end;
-
-function TFpValueFlatteArray.GetMemberCount: Integer;
-begin
-  Result := FList.Count;
-end;
-
-type
-
-  { TAddrSeenList }
-
-  TAddrSeenList = class(specialize TFPGMap<TFpDbgMemLocation, Integer>)
-  private
-    function DoKeyPtrComp(Key1, Key2: Pointer): Integer;
-  public
-    constructor Create;
-  end;
-
-{ TAddrSeenList }
-
-function TAddrSeenList.DoKeyPtrComp(Key1, Key2: Pointer): Integer;
-begin
-  if PFpDbgMemLocation(Key1)^ = PFpDbgMemLocation(Key2)^
-  then Result := 0
-  else Result := -1; // no sorting needed
-end;
-
-constructor TAddrSeenList.Create;
-begin
-  inherited Create;
-  OnKeyPtrCompare := @DoKeyPtrComp;
-end;
-
 function TFpPascalExpressionPartIntrinsic.DoFlatten(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
@@ -2674,17 +2723,8 @@ var
   CacheKey: TFpPascalExpressionCacheFlattenKey;
 
 
-  procedure AddErrToList(AnErr: TFpError);
-  var
-    E: TFpValueConstError;
-  begin
-    E := TFpValueConstError.Create(AnErr);
-    Res.FList.Add(E);
-    E.ReleaseReference
-  end;
-
   function FlattenRecurse(ACurrentVal: TFpValue; ACurDepth: integer; ACurKey: String): boolean; forward;
-  function FlattenArray(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
+  function FlattenArray(ACurrentVal: TFpValue; AMapExpr: TFpPascalExpressionPart; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
                         AnExpandDepth: integer): boolean; forward;
 
   function InternalAdd(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String): Integer;
@@ -2736,103 +2776,195 @@ var
       Result := Res.FList.Add(ACurrentVal);
   end;
 
-  function AddFlatValue(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String; AnExpandDepth: integer): boolean;
+  procedure AddErrToList(AnErr: TFpError; ACurDepth, ACurKeyIdx: integer; ACurKey: String);
+  var
+    E: TFpValueConstError;
+  begin
+    E := TFpValueConstError.Create(AnErr);
+    InternalAdd(E, ACurDepth, ACurKeyIdx, ACurKey);
+    E.ReleaseReference
+  end;
+
+  function EvalExression(AnExpr: TFpPascalExpressionPart; ACurrentVal, AnOrigVal: TFpValue;
+    ShowMemberNotFoundErr: boolean; ACurDepth, ACurKeyIdx: integer; ACurKey: String): TFpValue;
+  var
+    s: String;
+    Err: TFpError;
+  begin
+    Result := nil;
+    Err := NoError;
+    if AnExpr is TFpPascalExpressionPartIdentifier then begin
+      FFlattenMemberNotFound := not(ACurrentVal.Kind in [skClass, skInterface, skRecord, skObject]);
+      if not FFlattenMemberNotFound then begin
+        FFlattenMemberName := AnExpr.GetText;
+        Result := ACurrentVal.MemberByName[FFlattenMemberName];
+        FFlattenMemberNotFound := (Result = nil) and ShowMemberNotFoundErr;
+      end;
+    end
+    else begin
+      FFlattenCurrentVal := ACurrentVal;
+      FFlattenCurrentValOrig := AnOrigVal; // for :_
+      FFlattenMemberNotFound := False;
+      FFlattenMemberName := '';
+      Result := AnExpr.GetResultValue;
+      if Result <> nil then Result.AddReference;
+
+      if not ShowMemberNotFoundErr then
+        FFlattenMemberNotFound := False; // show general error instead
+
+      Err := Expression.Error;
+      AnExpr.ResetEvaluationRecursive;
+      FExpression.FValid := True;
+      FExpression.FError := nil;
+
+      if (not FFlattenMemberNotFound) and IsError(Err) then begin
+        if (iffShowErrAny in Flags) then
+          AddErrToList(CreateError(fpErrAnyError, ['Failed eval for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(Err)]), ACurDepth, ACurKeyIdx, ACurKey);
+        ReleaseRefAndNil(Result);
+        exit
+      end;
+
+      if (not FFlattenMemberNotFound) and AnExpr.ReturnsVariant then
+        Res.Flags := Res.Flags + [vfArrayOfVariant];
+    end;
+
+    if FFlattenMemberNotFound then begin
+      if (iffShowNoMember in Flags) then
+        AddErrToList(CreateError(fpErrAnyError, ['Member not found: ' + FFlattenMemberName]), ACurDepth, ACurKeyIdx, ACurKey);
+      ReleaseRefAndNil(Result);
+      exit;
+    end;
+
+    if Result = nil then begin
+      if (iffShowErrAny in Flags) then begin
+        s := '';
+        if IsError(Err) then
+          s := ErrorHandler.ErrorAsString(Err);
+        AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+s]), ACurDepth, ACurKeyIdx, ACurKey);
+      end;
+      exit;
+    end;
+  end;
+
+  function AddFlatValue(ACurrentVal: TFpValue; AMapExpr: TFpPascalExpressionPart; ACurDepth, ACurKeyIdx: integer; ACurKey: String; AnExpandDepth: integer): boolean;
   var
     s, ResIdx, SeenIdx, ValIdx: Integer;
-    PrevVal, TmpAutoDereVal: TFpValue;
+    PrevVal, TmpAutoDereVal, DisplayVal, OrigVal: TFpValue;
     DA: TFpDbgMemLocation;
     r, DoExpArray, HasDtAddr: Boolean;
   begin
     Result := True;
     if ACurrentVal = nil then begin
       if (iffShowErrAny in Flags) then
-        AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
+        AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]), ACurDepth, ACurKeyIdx, ACurKey);
       exit;
     end;
 
-    if (iffDerefPtr in Flags) and (ACurrentVal.Kind = skPointer) and
-      (ACurrentVal.TypeInfo <> nil) and (ACurrentVal.TypeInfo.TypeInfo <> nil) and
-      (ACurrentVal.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
-    then begin
-      if (svfDataAddress in ACurrentVal.FieldFlags) and (IsReadableLoc(ACurrentVal.DerefAddress)) and // TODO, what if Not readable addr
-         (ACurrentVal.TypeInfo <> nil) //and (ACurrentVal.TypeInfo.TypeInfo <> nil)
+    OrigVal := ACurrentVal;
+    OrigVal.AddReference;
+    DisplayVal := nil;
+    ResIdx := -1;
+    try
+      if (iffDerefPtr in Flags) and (ACurrentVal.Kind = skPointer) and
+        (ACurrentVal.TypeInfo <> nil) and (ACurrentVal.TypeInfo.TypeInfo <> nil) and
+        (ACurrentVal.TypeInfo.TypeInfo.Kind in [skClass, skInterface, skRecord, skObject])
       then begin
-        TmpAutoDereVal := ACurrentVal.Member[0];
-        if TmpAutoDereVal <> nil then begin
-          ACurrentVal.ReleaseReference;
-          ACurrentVal := TmpAutoDereVal;
-        end;
-      end;
-    end;
-
-    HasDtAddr := (svfDataAddress in ACurrentVal.FieldFlags);
-    DA := ACurrentVal.DataAddress;
-    if (not (iffShowNil in Flags)) and IsNilLoc(DA) then begin
-      ReleaseRefAndNil(ACurrentVal);
-      exit;
-    end;
-
-    DoExpArray := (AnExpandDepth > 0) and (ACurrentVal.Kind = skArray);
-
-    if IsReadableLoc(DA) then begin
-      SeenIdx := Seen.IndexOf(DA);
-      if (SeenIdx >= 0) then begin
-        ValIdx := Seen.Data[SeenIdx];
-        if (not DoExpArray) and (not (ACurrentVal.Kind in [skClass, skInterface])) then begin
-          PrevVal := TFpValue(Res.FList[ValIdx]);
-          if (ACurrentVal.TypeInfo = nil) or (PrevVal.TypeInfo = nil) or
-             (not ACurrentVal.TypeInfo.IsEqual(PrevVal.TypeInfo))
-          then
-            SeenIdx := -1;
-        end;
-        if (SeenIdx >= 0) then begin
-          if (iffShowRecurse in Flags) and (ValIdx >= 0) then begin
-            if DoExpArray then
-              AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for array at member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
-            else
-              AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
-          end
-          else
-          if (iffShowSeen in Flags) then begin
-            if ValIdx < 0 then ValIdx := -(ValIdx + 1);
-            if DoExpArray then
-              AddErrToList(CreateError(fpErrAnyError, [Format('Array for member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]))
-            else
-              AddErrToList(CreateError(fpErrAnyError, [Format('Member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]));
+        if (svfDataAddress in ACurrentVal.FieldFlags) and (IsReadableLoc(ACurrentVal.DerefAddress)) and // TODO, what if Not readable addr
+           (ACurrentVal.TypeInfo <> nil) //and (ACurrentVal.TypeInfo.TypeInfo <> nil)
+        then begin
+          TmpAutoDereVal := ACurrentVal.Member[0];
+          if TmpAutoDereVal <> nil then begin
+            ACurrentVal.ReleaseReference;
+            ACurrentVal := TmpAutoDereVal;
           end;
-          ReleaseRefAndNil(ACurrentVal);
-          exit;
         end;
       end;
-    end;
 
-    if (not DoExpArray) or (HasDtAddr and not IsReadableLoc(DA)) then begin
-      ResIdx := InternalAdd(ACurrentVal, ACurDepth, ACurKeyIdx, ACurKey);
-      if (ACurrentVal.TypeInfo = nil) or (not ACurrentVal.TypeInfo.IsEqual(TpSym)) then
-        Res.Flags := Res.Flags + [vfArrayOfVariant];
+      DoExpArray := (AnExpandDepth > 0) and (ACurrentVal.Kind = skArray);
 
-      if not IsReadableLoc(DA) then begin
+      HasDtAddr := (svfDataAddress in ACurrentVal.FieldFlags);
+      DA := ACurrentVal.DataAddress;
+      if IsReadableLoc(DA) then begin
+        SeenIdx := Seen.IndexOf(DA);
+        if (SeenIdx >= 0) then begin
+          ValIdx := Seen.Data[SeenIdx];
+          if (not DoExpArray) and (not (ACurrentVal.Kind in [skClass, skInterface])) then begin
+            PrevVal := TFpValue(Res.FList[ValIdx]);
+            if (ACurrentVal.TypeInfo = nil) or (PrevVal.TypeInfo = nil) or
+               (not ACurrentVal.TypeInfo.IsEqual(PrevVal.TypeInfo))
+            then
+              SeenIdx := -1;
+          end;
+          if (SeenIdx >= 0) then begin
+            if (iffShowRecurse in Flags) and (ValIdx >= 0) then begin
+              if DoExpArray then
+                AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for array at member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]), ACurDepth, ACurKeyIdx, ACurKey)
+              else
+                AddErrToList(CreateError(fpErrAnyError, [Format('Recursion detected for member: %s (At Index %d)', [FFlattenMemberName, ValIdx])]), ACurDepth, ACurKeyIdx, ACurKey);
+            end
+            else
+            if (iffShowSeen in Flags) then begin
+              if ValIdx < 0 then ValIdx := -(ValIdx + 1);
+              if DoExpArray then
+                AddErrToList(CreateError(fpErrAnyError, [Format('Array for member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]), ACurDepth, ACurKeyIdx, ACurKey)
+              else
+                AddErrToList(CreateError(fpErrAnyError, [Format('Member already shown: %s (At Index %d)', [FFlattenMemberName, ValIdx])]), ACurDepth, ACurKeyIdx, ACurKey);
+            end;
+            ReleaseRefAndNil(ACurrentVal);
+            exit;
+          end;
+        end;
+      end;
+
+      if ( (not DoExpArray) or
+           (HasDtAddr and not IsReadableLoc(DA))
+         ) and
+         ( (iffShowNil in Flags) or (not IsNilLoc(DA))
+         )
+      then begin
+        // not an array, or array can not be expanded => show value
+        if (AMapExpr = nil) then begin
+          DisplayVal := ACurrentVal;
+          DisplayVal.AddReference;
+        end
+        else
+          DisplayVal := EvalExression(AMapExpr, ACurrentVal, OrigVal, False, ACurDepth, ACurKeyIdx, ACurKey);
+
+        if (DisplayVal <> nil) then begin
+          ResIdx := InternalAdd(DisplayVal, ACurDepth, ACurKeyIdx, ACurKey);
+          if (DisplayVal.TypeInfo = nil) or (not DisplayVal.TypeInfo.IsEqual(TpSym)) then
+            Res.Flags := Res.Flags + [vfArrayOfVariant];
+        end;
+      end;
+      if ResIdx < 0 then
+        ResIdx := Res.FList.Count; // the index for the firs element of the array (if any)
+
+      if IsNilLoc(DA) or
+         ( (not IsReadableLoc(DA)) and ((not DoExpArray) or HasDtAddr) )
+      then begin
         ReleaseRefAndNil(ACurrentVal);
         exit;
       end;
-    end
-    else
-      ResIdx := Res.FList.Count; // the index for the firs element of the array (if any)
 
-    s := Seen.Add(DA, ResIdx);
-    if DoExpArray then
-      Result := FlattenArray(ACurrentVal, ACurDepth + 1, ACurKeyIdx, ACurKey, AnExpandDepth)
-    else
-      Result := FlattenRecurse(ACurrentVal, ACurDepth+1, ACurKey);
+      s := Seen.Add(DA, ResIdx);
+      if DoExpArray then
+        Result := FlattenArray(ACurrentVal, AMapExpr, ACurDepth + 1, ACurKeyIdx, ACurKey, AnExpandDepth)
+      else
+        Result := FlattenRecurse(ACurrentVal, ACurDepth+1, ACurKey);
 
-    ReleaseRefAndNil(ACurrentVal);
-    if (iffShowSeen in Flags) then
-      Seen.Data[s] := -1-ResIdx
-    else
-      Seen.Delete(s);
+      ReleaseRefAndNil(ACurrentVal);
+      if (iffShowSeen in Flags) then
+        Seen.Data[s] := -1-ResIdx
+      else
+        Seen.Delete(s);
+
+    finally
+      DisplayVal.ReleaseReference;
+      OrigVal.ReleaseReference;
+    end;
   end;
 
-  function FlattenArray(ACurrentVal: TFpValue; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
+  function FlattenArray(ACurrentVal: TFpValue; AMapExpr: TFpPascalExpressionPart; ACurDepth, ACurKeyIdx: integer; ACurKey: String;
     AnExpandDepth: integer): boolean;
   var
     Idx: Integer;
@@ -2844,7 +2976,8 @@ var
       if Res.FList.Count >= MaxCnt then
         exit(False);
       TmpNew := ACurrentVal.Member[Idx+LBnd];
-      Result := AddFlatValue(TmpNew, ACurDepth, ACurKeyIdx, ACurKey+'['+IntToStr(Idx)+']', Max(0, AnExpandDepth-1));
+      // AddFlatValue will release TmpNew
+      Result := AddFlatValue(TmpNew, AMapExpr, ACurDepth, ACurKeyIdx, ACurKey+'['+IntToStr(Idx)+']', Max(0, AnExpandDepth-1));
       if not Result then
         exit;
     end;
@@ -2855,7 +2988,8 @@ var
   var
     i: Integer;
     OrigVal, AutoDereVal, TmpNew: TFpValue;
-    Expr: TFpPascalExpressionPart;
+    Expr, MapExpr, TmpExpr: TFpPascalExpressionPart;
+    Expr_as_ColSep: TFpPascalExpressionPartOperatorColonAsSeparator absolute Expr;
     r: Boolean;
     NxtKey: String;
   begin
@@ -2879,7 +3013,7 @@ var
         end;
         if (ACurrentVal = nil) then begin
           //if (iffShowErrAny in Flags) then
-          //  AddErrToList(CreateError(fpErrAnyError, ['Can't flatten nil pointer']));
+          //  AddErrToList(CreateError(fpErrAnyError, ['Can't flatten nil pointer']), ACurDepth, -1, ACurKey);
           exit;
         end;
       end;
@@ -2892,44 +3026,34 @@ var
               exit(False);
 
             Expr := AParams.Items[i];
-            if Expr is TFpPascalExpressionPartIdentifier then begin
-              FFlattenMemberName := Expr.GetText;
-              TmpNew := ACurrentVal.MemberByName[FFlattenMemberName];
-              FFlattenMemberNotFound := TmpNew = nil;
-            end
-            else begin
-              FFlattenCurrentVal := ACurrentVal;
-              FFlattenCurrentValOrig := OrigVal; // for :_
-              FFlattenMemberNotFound := False;
-              FFlattenMemberName := '';
-              TmpNew := Expr.GetResultValue;
-
-              if TmpNew <> nil then TmpNew.AddReference;
-
-              if (not FFlattenMemberNotFound) and IsError(FExpression.Error) then begin
-                if (iffShowErrAny in Flags) then
-                  AddErrToList(CreateError(fpErrAnyError, ['Failed eval for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
-                ReleaseRefAndNil(TmpNew);
+            MapExpr := nil;
+            if Expr is TFpPascalExpressionPartOperatorColonAsSeparator then begin
+              if Expr_as_ColSep.Count <> 2 then begin
+                SetError('Internal erorr');
+                exit(false);
               end;
+              MapExpr := Expr_as_ColSep.Items[1];
+              Expr    := Expr_as_ColSep.Items[0];
 
-              if (not FFlattenMemberNotFound) and Expr.ReturnsVariant then
-                Res.Flags := Res.Flags + [vfArrayOfVariant];
-
-              Expr.ResetEvaluationRecursive;
-              FExpression.FValid := True;
-              FExpression.FError := nil;
-            end;
-
-            if FFlattenMemberNotFound then begin
-              if (iffShowNoMember in Flags) then
-                AddErrToList(CreateError(fpErrAnyError, ['Member not found: ' + FFlattenMemberName]));
-              ReleaseRefAndNil(TmpNew);
-            end;
-
-            if TmpNew = nil then begin
-              if (iffShowErrAny in Flags) then
-                AddErrToList(CreateError(fpErrAnyError, ['Internal error for member: ' + FFlattenMemberName + ' '+ErrorHandler.ErrorAsString(FExpression.Error)]));
-              Continue;
+              if MapExpr is TFpPascalExpressionPartConstantNumber then begin
+                TmpNew := MapExpr.ResultValue;
+                if (TmpNew is TFpValueConstNumber) then begin
+                  TmpExpr := AParams.Items[1+TmpNew.AsInteger];
+                  if (not (TmpExpr is TFpPascalExpressionPartOperatorColonAsSeparator)) or
+                     (TFpPascalExpressionPartOperatorColonAsSeparator(TmpExpr).Count <> 2)
+                  then begin
+                    SetError('Incorrect reference to map-expression');
+                    exit(false);
+                  end;
+                  MapExpr := TFpPascalExpressionPartOperatorColonAsSeparator(TmpExpr).Items[1];
+                  if (MapExpr is TFpPascalExpressionPartConstantNumber) and
+                     (MapExpr.ResultValue is TFpValueConstNumber)
+                  then begin
+                    SetError('Incorrect reference to map-expression');
+                    exit(false);
+                  end;
+                end;
+              end;
             end;
 
             if (iffObj4 in Flags) and (Length(ACurKey) < 1000) then begin
@@ -2943,7 +3067,13 @@ var
               if (iffObj3 in Flags) and (ACurKey <> '') and (Length(ACurKey) < 1000) then
                 NxtKey := ACurKey + '.' + NxtKey
             end;
-            r := AddFlatValue(TmpNew, ACurDepth, i-2, NxtKey, ExpandArrayDepth);
+
+            TmpNew := EvalExression(Expr, ACurrentVal, OrigVal, True, ACurDepth, i-2, NxtKey);
+            if TmpNew = nil then
+              Continue;
+
+            // AddFlatValue will release TmpNew
+            r := AddFlatValue(TmpNew, MapExpr, ACurDepth, i-2, NxtKey, ExpandArrayDepth);
             if not r then
               exit(False);
           end;
@@ -2952,7 +3082,7 @@ var
         //skArray: begin end;
         else begin
           //if (iffShowErrAny in Flags) then
-          //  AddErrToList(CreateError(fpErrAnyError, ['Can''t flatten value']));
+          //  AddErrToList(CreateError(fpErrAnyError, ['Can''t flatten value']), ACurDepth, -1, ACurKey);
         end;
       end;
     finally
@@ -3143,7 +3273,7 @@ begin
     Seen.Add(DA);
 
     if (FirstVal.Kind = skArray) then begin
-      FlattenArray(FirstVal, 0, -1, '', Max(1, ExpandArrayDepth));
+      FlattenArray(FirstVal, nil, 0, -1, '', Max(1, ExpandArrayDepth));
     end
     else begin
       InternalAdd(FirstVal, 0, -1, '');
@@ -3674,7 +3804,28 @@ begin
             // TODO: compare types of each argument for ifTry/N
 end;
 
-procedure TFpPascalExpressionPartIntrinsic.HandleNewParam(AParamPart: TFpPascalExpressionPart;
+function TFpPascalExpressionPartIntrinsic.AcceptParamAsSeparator(
+  AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer;
+  var AResult: TFpPascalExpressionPart): boolean;
+var
+  LastItm: TFpPascalExpressionPart;
+begin
+  Result := False;
+  LastItm := ABracketsPart.LastItem;
+  if (FIntrinsic = ifFlatten) and (ABracketsPart.Count >= 3) and // only for keys / not for the initial value
+     (AParamPart is TFpPascalExpressionPartOperatorColon) and
+     (TFpPascalExpressionPartOperatorColon(AParamPart).Count = 0) and
+     not(LastItm is TFpPascalExpressionPartOperatorColonAsSeparator)
+  then begin
+    // Handle ":" as separator
+    AResult := TFpPascalExpressionPartOperatorColonAsSeparator.Create(FExpression, AParamPart.FStartChar, AParamPart.FEndChar);
+    AParamPart.Free;
+    LastItm.HandleNextPart(AResult);
+    Result := True;
+  end;
+end;
+
+procedure TFpPascalExpressionPartIntrinsic.HandleNewParameterInList(AParamPart: TFpPascalExpressionPart;
   ABracketsPart: TFpPascalExpressionPartContainer);
 begin
   if (FIntrinsic = ifFlatten) and (ABracketsPart.Count > 2) then begin
@@ -4701,6 +4852,18 @@ begin
   Result := Self;
 end;
 
+function TFpPascalExpressionPart.AcceptParamAsSeparator(AParamPart: TFpPascalExpressionPart;
+  ABracketsPart: TFpPascalExpressionPartContainer; var AResult: TFpPascalExpressionPart): boolean;
+begin
+  Result := False;
+end;
+
+procedure TFpPascalExpressionPart.HandleNewParameterInList(AParamPart: TFpPascalExpressionPart;
+  ABracketsPart: TFpPascalExpressionPartContainer);
+begin
+  //
+end;
+
 procedure TFpPascalExpressionPart.HandleEndOfExpression;
 begin
   DoHandleEndOfExpression;
@@ -4913,13 +5076,6 @@ begin
     exit;
   end;
 
-  if not IsValidNextPart(APart) then begin
-    SetError(APart, 'Invalid operand in () '+GetText+': ');
-    Result := self;
-    APart.Free;
-    exit;
-  end;
-
   Result := HandleNextPartInBracket(APart);
 end;
 
@@ -5062,6 +5218,14 @@ begin
   // precedence: 1 = highest
   Result := (APrevPart.Parent = nil) or not (APrevPart.Parent.HasPrecedence) or
             (Precedence < APrevPart.Parent.Precedence)
+end;
+
+function TFpPascalExpressionPartBinaryOperator.HandleNextPart(APart: TFpPascalExpressionPart
+  ): TFpPascalExpressionPart;
+begin
+  if Count = 0 then
+    SetError('Missing operand');
+  Result := inherited HandleNextPart(APart);
 end;
 
 function TFpPascalExpressionPartBinaryOperator.MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
