@@ -8,7 +8,7 @@ unit idefilebrowser;
 interface
 
 uses
-  frmFileBrowser, RegIDEFileBrowser, frmConfigFileBrowser, LazarusPackageIntf;
+  frmFileBrowser, RegIDEFileBrowser, fraconfigfilebrowser, ctrlfilebrowser, filebrowsertypes, LazarusPackageIntf;
 
 implementation
 

@@ -1,0 +1,134 @@
+object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
+  Left = 0
+  Height = 430
+  Top = 0
+  Width = 803
+  ClientHeight = 430
+  ClientWidth = 803
+  TabOrder = 0
+  DesignLeft = 413
+  DesignTop = 362
+  object GBStartDir1: TGroupBox
+    Left = 0
+    Height = 191
+    Top = 0
+    Width = 803
+    Align = alTop
+    Caption = 'Root directory'
+    ClientHeight = 174
+    ClientWidth = 801
+    TabOrder = 0
+    object DERootDir: TDirectoryEdit
+      Left = 38
+      Height = 28
+      Top = 128
+      Width = 754
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object RBRootThisDir: TRadioButton
+      Left = 16
+      Height = 23
+      Top = 96
+      Width = 175
+      Caption = 'Always use this directory'
+      TabOrder = 1
+    end
+    object RBRootFileSystemRoot: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 36
+      Width = 118
+      Caption = 'Filesystem root'
+      TabOrder = 2
+    end
+    object RBRootUseProjectDir: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 9
+      Width = 197
+      Caption = 'Use current project directory'
+      Checked = True
+      TabOrder = 3
+      TabStop = True
+    end
+    object RBRootUserDir: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 64
+      Width = 110
+      Caption = 'User directory'
+      TabOrder = 4
+    end
+  end
+  object GBStartDir: TGroupBox
+    Left = 0
+    Height = 152
+    Top = 191
+    Width = 803
+    Align = alTop
+    Caption = 'Initial directory'
+    ClientHeight = 135
+    ClientWidth = 801
+    TabOrder = 1
+    object DEStartDir: TDirectoryEdit
+      Left = 38
+      Height = 28
+      Top = 89
+      Width = 752
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object RBThisDir: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 65
+      Width = 175
+      Caption = 'Always use this directory'
+      TabOrder = 1
+    end
+    object RBLastDir: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 36
+      Width = 179
+      Caption = 'Use last opened directory'
+      TabOrder = 2
+    end
+    object RBUseProjectDir: TRadioButton
+      Left = 14
+      Height = 23
+      Top = 8
+      Width = 197
+      Caption = 'Use current project directory'
+      Checked = True
+      TabOrder = 3
+      TabStop = True
+    end
+  end
+  object CBShowFilesInline: TCheckBox
+    Left = 24
+    Height = 23
+    Top = 355
+    Width = 191
+    Caption = 'Show files in main tree view'
+    TabOrder = 2
+    OnChange = CBShowFilesInlineChange
+  end
+  object CBShowDirectoriesBeforeFiles: TCheckBox
+    Left = 52
+    Height = 23
+    Top = 376
+    Width = 191
+    Caption = 'Show files in main tree view'
+    TabOrder = 3
+  end
+end
