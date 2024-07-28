@@ -3176,7 +3176,8 @@ begin
   f := Parent;
   while (f <> nil) and
         not( (f is TFpPascalExpressionPartBracketArgumentList) and
-             (f.Count > 1) and (f.Items[0] is TFpPascalExpressionPartIntrinsic)
+             (f.Count > 1) and (f.Items[0] is TFpPascalExpressionPartIntrinsic) and
+             (TFpPascalExpressionPartIntrinsic(f.Items[0]).FIntrinsic = ifFlatten)
            )
   do
     f := f.Parent;
@@ -3189,7 +3190,8 @@ begin
     exit;
 
   Result := TFpPascalExpressionPartIntrinsic(f.Items[0]).FFlattenCurrentValOrig;
-  Result.AddReference;
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoRefCnt(
