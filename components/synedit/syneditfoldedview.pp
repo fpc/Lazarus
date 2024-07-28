@@ -3426,10 +3426,9 @@ begin
   if ( (fLockCount > 0) and
        ((not FInTopLineChanged) or (fvfNeedCalcMaps in FFlags)) // TODO: Scan now, to avoid invalidate later
      ) or
-     ( (HighLighter <> nil) and HighLighter.NeedScan )
+     ( (HighLighter <> nil) and HighLighter.NeedScan ) // SynEdit.DoHighlightChanged will call FixFolding, which does CalculateMaps
      // TODO: HighLighter.CurrentRanges.NeedsReScanStartIndex < "last line in windows"
   then begin
-    assert(fLockCount > 0, 'TSynEditFoldedView.CalculateMaps: fLockCount > 0');
     Include(FFlags, fvfNeedCalcMaps);
     exit;
   end;
