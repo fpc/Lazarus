@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, LCLType, Controls, Forms,
-  CocoaAll, MacOSAll, CocoaPrivate, CocoaScrollers, CocoaUtils, cocoa_extra;
+  CocoaAll, CocoaPrivate, CocoaScrollers, CocoaUtils;
 
 type
   { ASyncLCLControlAdjustSizer }

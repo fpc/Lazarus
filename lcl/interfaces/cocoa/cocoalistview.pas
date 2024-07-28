@@ -11,12 +11,9 @@ uses
   MacOSAll, CocoaAll,
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
-  Math,
-  // WS
-  WSComCtrls,
   // Cocoa WS
-  CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers, CocoaTabControls, CocoaUtils,
-  CocoaWSCommon, cocoa_extra, CocoaGDIObjects, CocoaButtons;
+  CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers,
+  CocoaWSCommon, cocoa_extra, CocoaGDIObjects;
 
 type
   { TLCLListViewCallback }

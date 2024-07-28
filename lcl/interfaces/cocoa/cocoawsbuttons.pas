@@ -28,8 +28,7 @@ uses
   // widgetset
   WSButtons, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaUtils,
-  cocoa_extra, CocoaButtons;
+  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, cocoa_extra, CocoaButtons;
 
 type
 

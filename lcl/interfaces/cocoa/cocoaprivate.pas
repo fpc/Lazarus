@@ -31,7 +31,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils, Forms,
   // Libs
-  MacOSAll, CocoaAll, CocoaCallback, CocoaGDIObjects, CocoaCursor, cocoa_extra,
+  MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra,
   CocoaUtils,
   // LCL
   LCLType,

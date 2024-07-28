@@ -10,7 +10,7 @@ uses
   Classes, SysUtils, LCLType,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   WSComCtrls,
-  MacOSAll, CocoaAll, CocoaPrivate, CocoaWSCommon,
+  CocoaAll, CocoaPrivate, CocoaWSCommon,
   CocoaListView, CocoaTables, CocoaCollectionView;
 
 type
