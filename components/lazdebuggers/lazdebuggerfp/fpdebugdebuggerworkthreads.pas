@@ -1118,6 +1118,7 @@ end;
 function TFpThreadWorkerEvaluate.DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar;
   ALen: Integer): TFpPascalExpressionPartIntrinsicBase;
 begin
+  Result := nil;
   if (ALen = 3) and (strlicomp(AStart, pchar('i2o'), 3) = 0) and
      (FDebugger.DbgController.CurrentProcess.Disassembler is TX86AsmDecoder)
   then
