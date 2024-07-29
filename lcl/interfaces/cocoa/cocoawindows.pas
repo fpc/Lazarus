@@ -23,13 +23,9 @@ unit CocoaWindows;
 interface
 
 uses
-  // rtl+ftl
   Types, Classes, SysUtils,
-  // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
   cocoa_extra, CocoaPrivate, CocoaCallback, CocoaTextEdits, CocoaScrollers,
-  // LCL
-  //Forms,
   LCLType, LCLProc;
 
 type

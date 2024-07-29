@@ -24,14 +24,11 @@ unit CocoaTables;
 interface
 
 uses
-  // rtl+ftl
   Classes, SysUtils,
-  // Libs
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConst, CocoaConfig,
   CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
   CocoaListView,
-  // LCL
   LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type

@@ -28,14 +28,8 @@ unit CocoaPrivate;
 interface
 
 uses
-  // rtl+ftl
-  Types, Classes, SysUtils, Forms,
-  // Libs
-  MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra,
-  CocoaUtils,
-  // LCL
-  LCLType,
-  LazUTF8;
+  Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
+  MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra, CocoaUtils;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;

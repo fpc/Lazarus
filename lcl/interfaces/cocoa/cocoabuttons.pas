@@ -23,12 +23,9 @@ unit CocoaButtons;
 interface
 
 uses
-  // rtl+ftl
-  Types, Classes, SysUtils,
-  // Libs
-  MacOSAll, CocoaAll, CocoaPrivate, CocoaCallback,
-  // LCL
-  Graphics;
+  Types, Classes, SysUtils, Graphics,
+  MacOSAll, CocoaAll, CocoaPrivate, CocoaCallback;
+
 
 const
   // these heights were received from Xcode interface builder,

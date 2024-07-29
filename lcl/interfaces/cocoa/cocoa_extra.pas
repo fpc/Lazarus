@@ -21,9 +21,7 @@ unit Cocoa_Extra;
 interface
 
 uses
-  // rtl+ftl
   Classes, SysUtils,
-  // Libs
   MacOSAll, CocoaAll;
 
 {$define HASObjCBOOL}

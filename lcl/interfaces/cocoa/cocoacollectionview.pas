@@ -8,13 +8,10 @@ unit CocoaCollectionView;
 interface
 
 uses
-  // rtl+ftl
   Classes, SysUtils,
-  // Libs
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaUtils,
   CocoaListView, CocoaTextEdits,
-  // LCL
   LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type

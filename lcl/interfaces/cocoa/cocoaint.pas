@@ -26,18 +26,12 @@ unit CocoaInt;
 interface
 
 uses
-  // rtl+ftl
   Types, Classes, SysUtils, Math, GraphMath,
-  // interfacebase
   LCLPlatformDef, InterfaceBase, GraphType,
-  // darwin bindings
-  MacOSAll,
-  // private
-  CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils, Cocoa_Extra,
-  CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
+  MacOSAll, CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
+  CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,
-  // LCL
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
   IntfGraphics, Graphics;

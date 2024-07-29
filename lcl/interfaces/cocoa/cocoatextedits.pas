@@ -27,12 +27,9 @@ unit CocoaTextEdits;
 interface
 
 uses
-  // rtl+ftl
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaPrivate, CocoaCallback,
-  // LCL
   LCLType;
 
 const
