@@ -744,15 +744,18 @@ begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
   if SelectAButton(TSpeedButton(Sender)) and (Selected<>nil) then begin
     if FormEditingHook<>nil then begin
-      TypeClass:=Selected.ComponentClass;
-      if assigned(Selected.OnGetCreationClass) then
-        Selected.OnGetCreationClass(Self,TypeClass);
+
+      // get component class (e.g. display dialog to select TFrame)
+      TypeClass:=Selected.GetCreationClass;
       if TypeClass=nil then exit;
+
       ParentComp:=FormEditingHook.GetDefaultComponentParent(TypeClass);
       if ParentComp=nil then exit;
+
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentComp,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
+
       DisableAutoSize:=true;
       AComponent:=FormEditingHook.CreateComponent(ParentComp,TypeClass,'',X,Y,0,0,
         DisableAutoSize);
