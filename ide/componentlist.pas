@@ -302,10 +302,8 @@ begin
   if CurDesigner = nil then
     Exit;
 
-  // get component class
-  TypeClass:=AComponent.ComponentClass;
-  if assigned(AComponent.OnGetCreationClass) then
-    AComponent.OnGetCreationClass(Self,TypeClass);
+  // get component class (e.g. display dialog to select TFrame)
+  TypeClass := AComponent.GetCreationClass;
   if TypeClass = nil then
     Exit;
 
