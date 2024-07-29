@@ -32,7 +32,7 @@ uses
   CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
   CocoaListView,
   // LCL
-  LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
+  LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
 
@@ -50,13 +50,17 @@ type
     procedure Clear; override;
   end;
 
+  TCocoaTalbeListView_onSelectionChanged = procedure( tv: NSTableView );
+
   { TCocoaTableListView }
 
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
     callback: IListViewCallback;
 
+    onSelectionChanged: TCocoaTalbeListView_onSelectionChanged;
     selectingByProgram: Boolean;
+
     readOnly: Boolean;
 
     isImagesInCell: Boolean;
@@ -267,6 +271,7 @@ type
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
+procedure TListView_onSelectionChanged( tv: NSTableView );
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
@@ -714,7 +719,7 @@ end;
 function TCocoaTableListView.selectionShouldChangeInTableView(
   tableView: NSTableView): Boolean;
 begin
-  Result := true;
+  Result:= true;
 end;
 
 function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
@@ -909,33 +914,113 @@ begin
   end;
 end;
 
-procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
+procedure sendSelectionChangedMsgToLCL(
+  lclListView: TCustomListView;
+  NewSel: Integer; Added, Removed: NSIndexSet);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+
+  procedure RunIndex(idx: NSIndexSet);
+  var
+    buf : array [0..256-1] of NSUInteger;
+    rng : NSRange;
+    cnt : Integer;
+    i   : Integer;
+    itm : NSUInteger;
+  begin
+    rng.location := idx.firstIndex;
+    repeat
+      rng.length := idx.lastIndex - rng.location + 1;
+      cnt := idx.getIndexes_maxCount_inIndexRange(@buf[0], length(buf), @rng);
+      for i := 0 to cnt - 1 do begin
+        NMLV.iItem := buf[i];
+        LCLMessageGlue.DeliverMessage(lclListView, Msg);
+      end;
+      if cnt < length(buf) then cnt := 0
+      else rng.location := buf[cnt-1]+1;
+    until cnt = 0;
+  end;
+
+begin
+  {$IFDEF COCOA_DEBUG_LISTVIEW}
+  WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
+  {$ENDIF}
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := lclListView.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.iSubItem := 0;
+  NMLV.uChanged := LVIF_STATE;
+  Msg.NMHdr := @NMLV.hdr;
+
+  if Removed.count>0 then
+  begin
+    NMLV.uNewState := 0;
+    NMLV.uOldState := LVIS_SELECTED;
+    RunIndex( Removed );
+  end;
+  if Added.count > 0 then begin
+    NMLV.uNewState := LVIS_SELECTED;
+    NMLV.uOldState := 0;
+    RunIndex( Added );
+  end;
+
+  {if NewSel >= 0 then
+  begin
+    NMLV.iItem := NewSel;
+    NMLV.uNewState := LVIS_SELECTED;
+  end
+  else
+  begin
+    NMLV.iItem := 0;
+    NMLV.uNewState := 0;
+    NMLV.uOldState := LVIS_SELECTED;
+  end;
+
+  LCLMessageGlue.DeliverMessage(lclListView, Msg);}
+end;
+
+procedure TListView_onSelectionChanged( tv: NSTableView );
 var
   NewSel: Integer;
-  Unsel : NSIndexSet;
   rm : NSIndexSet;
   ad : NSIndexSet;
   selectionIndexSet: NSMutableIndexSet;
+
+  lclListView: TCustomListView;
+  cocoaTLV: TCocoaTableListView Absolute tv;
   lclcb: TLCLListViewCallback;
 begin
-  if NOT Assigned(callback) then
+  if NOT Assigned(cocoaTLV.callback) then
     Exit;
 
-  lclcb:= TLCLListViewCallback( callback.GetCallbackObject );
+  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+  lclListView:= TCustomListView( lclcb.Target );
 
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
   selectionIndexSet:= lclcb.selectionIndexSet;
-  CompareIndexSets(selectionIndexSet, selectedRowIndexes, rm, ad);
+  CompareIndexSets(selectionIndexSet, cocoaTLV.selectedRowIndexes, rm, ad);
 
-  NewSel := Self.selectedRow();
-  callback.selectionChanged(NewSel, ad, rm);
+  NewSel := cocoaTLV.selectedRow();
+  sendSelectionChangedMsgToLCL( lclListView, NewSel, ad, rm );
 
-  if NOT self.selectingByProgram then begin
+  if NOT cocoaTLV.selectingByProgram then begin
     selectionIndexSet.removeAllIndexes;
-    selectionIndexSet.addIndexes( self.selectedRowIndexes );
+    selectionIndexSet.addIndexes( cocoaTLV.selectedRowIndexes );
   end;
+end;
+
+procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
+begin
+  if Assigned(onSelectionChanged) then
+    onSelectionChanged( self );
 end;
 
 { TCocoaStringList }

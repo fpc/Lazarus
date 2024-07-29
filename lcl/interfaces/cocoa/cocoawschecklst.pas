@@ -219,6 +219,7 @@ begin
     Result := 0;
     Exit;
   end;
+  list.onSelectionChanged:= @TListBox_selectionChanged;
   list.callback := TLCLCheckboxListCallback.CreateWithView(list, AWinControl);
   list.lclSetFirstColumCheckboxes(true);
   //list.list := TCocoaStringList.Create(list);

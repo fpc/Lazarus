@@ -98,7 +98,6 @@ type
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
-    procedure selectionChanged(ARow: Integer; Added, Removed: NSIndexSet);
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
     procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);

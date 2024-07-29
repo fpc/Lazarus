@@ -97,6 +97,7 @@ var
 begin
   if viewStyle = vsReport then begin
     backendControl:= AllocCocoaTableListView;
+    TCocoaTableListView(backendControl).onSelectionChanged:= CocoaTables.TListView_onSelectionChanged;
     WSHandler:= TCocoaWSListView_TableViewHandler.Create( cocoaListView );
   end else begin
     backendControl:= AllocCocoaCollectionView( viewStyle );

@@ -38,7 +38,6 @@ type
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
     function getItemStableSelection(ARow: Integer): Boolean;
-    procedure selectionChanged(NewSel: Integer; Added, Removed: NSIndexSet);
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
@@ -458,75 +457,6 @@ end;
 function TLCLListViewCallback.getItemStableSelection(ARow: Integer): Boolean;
 begin
   Result:= selectionIndexSet.containsIndex( ARow );
-end;
-
-procedure TLCLListViewCallback.selectionChanged(NewSel: Integer; Added, Removed: NSIndexSet);
-var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-
-  procedure RunIndex(idx: NSIndexSet);
-  var
-    buf : array [0..256-1] of NSUInteger;
-    rng : NSRange;
-    cnt : Integer;
-    i   : Integer;
-    itm : NSUInteger;
-  begin
-    rng.location := idx.firstIndex;
-    repeat
-      rng.length := idx.lastIndex - rng.location + 1;
-      cnt := idx.getIndexes_maxCount_inIndexRange(@buf[0], length(buf), @rng);
-      for i := 0 to cnt - 1 do begin
-        NMLV.iItem := buf[i];
-        LCLMessageGlue.DeliverMessage(ListView, Msg);
-      end;
-      if cnt < length(buf) then cnt := 0
-      else rng.location := buf[cnt-1]+1;
-    until cnt = 0;
-  end;
-
-begin
-  {$IFDEF COCOA_DEBUG_LISTVIEW}
-  WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
-  {$ENDIF}
-
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
-
-  Msg.Msg := CN_NOTIFY;
-
-  NMLV.hdr.hwndfrom := ListView.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-  NMLV.iSubItem := 0;
-  NMLV.uChanged := LVIF_STATE;
-  Msg.NMHdr := @NMLV.hdr;
-
-  if Removed.count>0 then
-  begin
-    NMLV.uNewState := 0;
-    NMLV.uOldState := LVIS_SELECTED;
-    RunIndex( Removed );
-  end;
-  if Added.count > 0 then begin
-    NMLV.uNewState := LVIS_SELECTED;
-    NMLV.uOldState := 0;
-    RunIndex( Added );
-  end;
-
-  {if NewSel >= 0 then
-  begin
-    NMLV.iItem := NewSel;
-    NMLV.uNewState := LVIS_SELECTED;
-  end
-  else
-  begin
-    NMLV.iItem := 0;
-    NMLV.uNewState := 0;
-    NMLV.uOldState := LVIS_SELECTED;
-  end;
-
-  LCLMessageGlue.DeliverMessage(ListView, Msg);}
 end;
 
 procedure TLCLListViewCallback.selectOne(ARow: Integer; isSelected: Boolean);
