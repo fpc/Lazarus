@@ -279,6 +279,7 @@ var
   NewParent: TComponent;
   CurDesigner: TDesigner;
   lOldEvent: TOnComponentAdded;
+  TypeClass: TComponentClass;
 begin
   AComponent := GetSelectedComponent;
   NewParent := GetSelectedDesignComponent;
@@ -301,8 +302,15 @@ begin
   if CurDesigner = nil then
     Exit;
 
+  // get component class
+  TypeClass:=AComponent.ComponentClass;
+  if assigned(AComponent.OnGetCreationClass) then
+    AComponent.OnGetCreationClass(Self,TypeClass);
+  if TypeClass = nil then
+    Exit;
+
   // check parent
-  CurDesigner.AddComponentCheckParent(NewParent, NewParent, nil, AComponent.ComponentClass);
+  CurDesigner.AddComponentCheckParent(NewParent, NewParent, nil, TypeClass);
   if NewParent = nil then
     Exit;
 
@@ -321,10 +329,10 @@ begin
   begin
     lOldEvent := CurDesigner.OnComponentAdded; // save event
     CurDesigner.OnComponentAdded := nil;       // clear event
-    CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
+    CurDesigner.AddComponent(AComponent, TypeClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
     CurDesigner.OnComponentAdded := lOldEvent; // restore event
   end else begin
-    CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
+    CurDesigner.AddComponent(AComponent, TypeClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
   end;
 
 end;
