@@ -1203,9 +1203,17 @@ end;
   Makes a menuItem the default item (BOLD).
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetDefault(AValue: Boolean);
+var
+  i: Integer;
 begin
-  FDefault := AValue;
-  //TODO: Add runtime code here
+  if FDefault = AValue then exit;
+  if AValue and (FParent <> nil) then
+    // Only one item in a menu or submenu can be default.
+    for i:=0 to FParent.Count-1 do
+      if FParent[i].Default then
+        FParent[i].FDefault := False;
+  FDefault:= AValue;
+  MenuChanged(True);
 end;
 
 {------------------------------------------------------------------------------
