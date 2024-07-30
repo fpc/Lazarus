@@ -984,35 +984,13 @@ begin
   Result:=CallBackDefaultReturn;
 end;
 
-function GtkEntryDelayClearCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
-var
-  Info: PWidgetInfo;
-  p: Pgchar;
-  AStart,AEnd: gint;
-begin
-  Result := (AGtkWidget <> nil) and (GTK_IS_WIDGET(AGtkWidget));
-  if Result then
-  begin
-    g_idle_remove_by_data(AGtkWidget);
-    Info := GetWidgetInfo(AGtkWidget);
-    if Info <> nil then
-    begin
-      gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
-      p := gtk_editable_get_chars(PGtkEditable(AGtkWidget), AStart, AEnd);
-      if (AStart <> AEnd) then
-        gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
-      gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
-      g_free(p);
-    end;
-  end;
-end;
-
 function GTKKillFocusCBAfter({%H-}widget: PGtkWidget; {%H-}event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMessage;
   Info: PWidgetInfo;
-  AStart,AEnd: gint;
+  AStart, AEnd: gint;
+  p: Pgchar;
   AForm: TCustomForm;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
@@ -1071,9 +1049,8 @@ begin
       exit;
     end;
 
-    g_idle_add(@GtkEntryDelayClearCursorPos, Widget);
     //save now CursorPos and SelStart in WidgetInfo
-    if (Widget <> nil) then
+    if Widget <> nil then
     begin
       Info := GetWidgetInfo(Widget);
       if Info <> nil then
@@ -1083,6 +1060,13 @@ begin
           gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
           Info^.CursorPos := Min(AStart, AEnd);
           Info^.SelLength := Abs(AEnd - AStart);
+          // Copy text to X-clipboard (paste = middle mouse button).
+          p := gtk_editable_get_chars(PGtkEditable(Widget), AStart, AEnd);
+          if AStart <> AEnd then
+            gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
+          g_free(p);
+          // Show the text properly when tabbing between controls.
+          gtk_editable_select_region(PGtkEditable(Widget), 0, 0);
         end;
       end;
     end;
