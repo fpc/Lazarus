@@ -391,7 +391,7 @@ begin
   // Note: CompareIdentifiers expects identifiers or empty.
   // Feeding non identifiers like numbers 1 or octal &1 is not defined.
   t(nil,nil,0);
-  t(nil,#0,1);
+  t(nil,#0,1); // current implementation gives 1, but it could be 0, in fact 0 would be better to make sure the empty string is the same
   t(#0,#0,0);
   t(#0,#1,0);
   t(#1,#2,0);
@@ -407,6 +407,10 @@ begin
   t('ab;','ab',0);
   t('ab;','ab,',0);
   t('aAa;','aaA',0);
+  t('a',';',-1);
+  t('1','2',1); // current implementation gives 1, but it could be 0, does not matter
+  t(',',',',0);
+  t(',',';',0);
 end;
 
 procedure TTestBasicCodeTools.TestDateToCfgStr;
