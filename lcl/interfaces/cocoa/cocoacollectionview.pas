@@ -121,7 +121,10 @@ type
       collectionView: NSCollectionView; indexPaths:NSSet );
       message 'collectionView:didDeselectItemsAtIndexPaths:';
 
-    procedure mouseDown(theEvent: NSEvent); override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
   end;
 
   { TCocoaWSListView_CollectionViewHandler }
@@ -776,9 +779,28 @@ begin
   end;
 end;
 
-procedure TCocoaCollectionView.mouseDown(theEvent: NSEvent);
+procedure TCocoaCollectionView.mouseDown(event: NSEvent);
 begin
-  inherited mouseDown(theEvent);
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaCollectionView.mouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaCollectionView.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaCollectionView.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
 end;
 
 { TCocoaWSListView_CollectionViewHandler }
