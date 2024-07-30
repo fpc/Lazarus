@@ -116,7 +116,15 @@ begin
   if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
 end;
 
-
+procedure TPageControl.UpdateDockCaption(Exclude: TControl = nil);
+var
+  i:integer;
+begin
+  for i:=0 to Self.PageCount-1 do
+    with Pages[i] do
+      if ControlCount>0 then
+        Caption:=Controls[0].Caption;
+end;
 
 function TPageControl.FindNextPage(CurPage: TTabSheet; GoForward,
   CheckTabVisible: Boolean): TTabSheet;

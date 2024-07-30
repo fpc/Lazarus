@@ -592,6 +592,7 @@ type
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    procedure UpdateDockCaption(Exclude: TControl = nil); override;
   public
     procedure Clear;
     function FindNextPage(CurPage: TTabSheet;
