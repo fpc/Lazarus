@@ -2979,14 +2979,31 @@ Indicates if the menu item is the default selection.
 <descr>
 <p>
 When <var>Default</var> is set to <b>True</b>, the menu item is normally 
-displayed in boldface and can be executed by pressing the <b>Enter</b> key.
+displayed using a bold typeface and can be executed by pressing the 
+<b>Enter</b> key. The default value for the property is <b>False</b> and 
+indicates that the menu item is <b>not</b> the default menu item.
+</p>
+<p>
+Only one item in the Items hierarchy for TMenuItem can be the default menu 
+item. Changing the value for the property causes items on the parent menu item 
+to be visited and updated (when assigned). Another TMenuItem instance with its 
+Default property enabled is changed to <b>False</b> prior to updating Default 
+in the class instance. In addition, MenuChanged is called to signal the 
+OnChange event handler (when assigned). This allows a parent menu item to be 
+updated or rebuilt after the menu item has been changed.
 </p>
 <remark>
 The Default property is not supported for the GTK2, GTK3, QT4, QT5, and QT6 
 widgetsets.
 </remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TMenuItem.Menu"/>
+<link id="TMenuItem.Items"/>
+<link id="TMenuItem.MenuChanged"/>
+<link id="TMenuItem.OnChange"/>
+<link id="TMenu.Items"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.Enabled">
@@ -2994,8 +3011,10 @@ widgetsets.
 Indicates if the menu item can be selected and executed.
 </short>
 <descr>
+<p>
 When Enabled is set to <b>False</b>, the menu item is normally displayed 
 using a "greyed" style.
+</p>
 </descr>
 <seealso/>
 </element>
