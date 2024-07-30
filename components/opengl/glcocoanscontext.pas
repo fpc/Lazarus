@@ -23,9 +23,10 @@ unit GLCocoaNSContext;
 interface
 
 uses
-  Classes, SysUtils, types, CocoaWSCommon, CocoaPrivate, CocoaUtils, LCLType, Cocoa_Extra,
-  LMessages, LCLMessageGlue,
-  Controls, LazLoggerBase, WSLCLClasses, MacOSAll, CocoaAll;
+  Classes, SysUtils, Types, LCLType, Controls,
+  LMessages, LCLMessageGlue, WSLCLClasses, LazLoggerBase,
+  MacOSAll, CocoaAll,
+  CocoaWSCommon, CocoaPrivate, cocoacallback, CocoaUtils, Cocoa_Extra;
 
 function LBackingScaleFactor(Handle: HWND): single;
 procedure LSetWantsBestResolutionOpenGLSurface(const AValue: boolean; Handle: HWND);
