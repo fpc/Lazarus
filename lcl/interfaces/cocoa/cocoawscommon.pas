@@ -1144,8 +1144,12 @@ begin
   DeliverMessage(Msg);
   // 1. for MouseMove Event, it has been processed by LCL,
   //    and does not need Cocoa to continue processing.
-  // 2. for MouseDragged Event, it needs Cocoa to continue processing.
-  Result := Event.type_ = NSMouseMoved;
+  // 2. for MouseDragged Event, it needs Cocoa to continue processing
+  //    (when not Dragging yet)
+  if Event.type_ = NSMouseMoved then
+    Result:= True
+  else
+    Result:= Target.Dragging;
 
   // if Screen.Cursor set, LCL won't call TCocoaWSWinControl.SetCursor().
   // we need to set the cursor ourselves
