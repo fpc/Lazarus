@@ -64,6 +64,7 @@ type
     ifErrorNotFound,
     ifChildClass,
     ifTry, ifTryN,
+    ifObj,
     ifFlatten, ifFlattenPlaceholder,
     ifLength, ifRefCount, ifPos, ifSubStr, ifLower, ifUpper,
     ifOrd,
@@ -211,6 +212,7 @@ type
       var AResult: TFpPascalExpressionPart): boolean; virtual;
     // HandleNewParameterInList: called on the first Item in TFpPascalExpressionPartBracketArgumentList
     procedure HandleNewParameterInList(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer); virtual;
+    procedure HandleEndOfParameterInList(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer); virtual;
 
     function GetText(AMaxLen: Integer=0): String;
     function GetPos: Integer;
@@ -300,6 +302,7 @@ type
   protected
     function DoTry(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoTryN(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoObj(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoOrd(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoLength(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoChildClass(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -331,6 +334,8 @@ type
       ABracketsPart: TFpPascalExpressionPartContainer; var AResult: TFpPascalExpressionPart
       ): boolean; override;
     procedure HandleNewParameterInList(AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer); override;
+    procedure HandleEndOfParameterInList(AParamPart: TFpPascalExpressionPart;
+      ABracketsPart: TFpPascalExpressionPartContainer); override;
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -425,6 +430,8 @@ type
       var AResult: TFpPascalExpressionPart): Boolean; override;
     function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   public
+    procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar;
+      AnEndChar: PChar = nil); override;
     function ReturnsVariant: boolean; override;
   end;
 
@@ -2336,8 +2343,17 @@ begin
   if Result then begin
     CheckBeforeSeparator(APart);
     SetAfterCommaFlag;
+    Items[0].HandleEndOfParameterInList(APart, Self);
     APart := Self;
   end;
+end;
+
+procedure TFpPascalExpressionPartBracketArgumentList.CloseBracket(
+  ALastAddedPart: TFpPascalExpressionPart; AStartChar: PChar; AnEndChar: PChar);
+begin
+  inherited CloseBracket(ALastAddedPart, AStartChar, AnEndChar);
+  if FExpression.Valid then
+    Items[0].HandleEndOfParameterInList(ALastAddedPart, Self);
 end;
 
 function TFpPascalExpressionPartBracketArgumentList.ReturnsVariant: boolean;
@@ -2620,6 +2636,42 @@ begin
   Expr := AParams.Items[HighIdx];
   Result := Expr.GetResultValue;
   Result.AddReference;
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoObj(AParams: TFpPascalExpressionPartBracketArgumentList
+  ): TFpValue;
+var
+  Res: TFpValueConstStruct absolute Result;
+  i: Integer;
+  p: TFpPascalExpressionPart;
+  p_c: TFpPascalExpressionPartOperatorColonAsSeparator absolute p;
+  rv: TFpValue;
+begin
+  Result := TFpValueConstStruct.Create;
+  for i := 1 to AParams.Count - 1 do begin
+    p := AParams.Items[i];
+    if not (p is TFpPascalExpressionPartOperatorColonAsSeparator) then begin
+      ReleaseRefAndNil(Result);
+      exit;
+    end;
+
+    rv := p_c.Items[1].ResultValue;
+    if (rv = nil) or IsError(Expression.Error) then begin
+      if IsError(Expression.Error) then
+        rv := TFpValueConstError.Create(Expression.Error)
+      else
+        rv := TFpValueConstError.Create(CreateError(fpErrAnyError, ['internal error']));
+      FExpression.FValid := True;
+      FExpression.FError := nil;
+
+      Res.AddMember(p_c.Items[0].GetText, rv);
+      rv.ReleaseReference;
+    end
+    else
+      Res.AddMember(p_c.Items[0].GetText, rv);
+
+    p_c.Items[1].ResetEvaluationRecursive;
+  end;
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoOrd(AParams: TFpPascalExpressionPartBracketArgumentList
@@ -3757,6 +3809,7 @@ begin
   case FIntrinsic of
     ifTry:        Result := DoTry(AParams);
     ifTryN:       Result := DoTryN(AParams);
+    ifObj:        Result := DoObj(AParams);
     ifOrd:        Result := DoOrd(AParams);
     ifLength:     Result := DoLength(AParams);
     ifChildClass: Result := DoChildClass(AParams);
@@ -3812,7 +3865,9 @@ var
 begin
   Result := False;
   LastItm := ABracketsPart.LastItem;
-  if (FIntrinsic = ifFlatten) and (ABracketsPart.Count >= 3) and // only for keys / not for the initial value
+  if ( ((FIntrinsic = ifFlatten) and (ABracketsPart.Count >= 3)) or // only for keys / not for the initial value
+       ((FIntrinsic = ifObj) and (ABracketsPart.Count >= 2))
+     ) and
      (AParamPart is TFpPascalExpressionPartOperatorColon) and
      (TFpPascalExpressionPartOperatorColon(AParamPart).Count = 0) and
      not(LastItm is TFpPascalExpressionPartOperatorColonAsSeparator)
@@ -3834,6 +3889,25 @@ begin
     if AParamPart is TFpPascalExpressionPartIdentifier then begin
       TFpPascalExpressionPartIdentifier(AParamPart).OnGetSymbol := @DoGetMemberForFlattenExpr;
     end;
+  end;
+end;
+
+procedure TFpPascalExpressionPartIntrinsic.HandleEndOfParameterInList(
+  AParamPart: TFpPascalExpressionPart; ABracketsPart: TFpPascalExpressionPartContainer);
+var
+  n: TFpPascalExpressionPart;
+begin
+  inherited HandleEndOfParameterInList(AParamPart, ABracketsPart);
+  if FIntrinsic = ifObj then begin
+    if (ABracketsPart.Count > 1) and
+       (not (ABracketsPart.LastItem is TFpPascalExpressionPartOperatorColonAsSeparator))
+    then begin
+      SetError('Argument must be "key:name"');
+      exit;
+    end;
+    n := TFpPascalExpressionPartOperatorColonAsSeparator(ABracketsPart.LastItem).Items[0];
+    if (not (n is TFpPascalExpressionPartIdentifier)) then
+      SetError('Argument must be "key" must be identifier');
   end;
 end;
 
@@ -4456,7 +4530,9 @@ begin
                   else
                   if strlicomp(AStart, 'LOG', 3) = 0 then Intr := ifLog;
         'p', 'P': if strlicomp(AStart, 'POS', 3) = 0 then Intr := ifPos;
-        'o', 'O': if strlicomp(AStart, 'ORD', 3) = 0 then Intr := ifOrd;
+        'o', 'O': if strlicomp(AStart, 'ORD', 3) = 0 then Intr := ifOrd
+                  else
+                  if strlicomp(AStart, 'OBJ', 3) = 0 then Intr := ifObj;
         't', 'T': if strlicomp(AStart, 'TRY', 3) = 0 then Intr := ifTry
                   else
                   if strlicomp(AStart, 'TAN', 3) = 0 then Intr := ifTan;
@@ -4859,6 +4935,12 @@ begin
 end;
 
 procedure TFpPascalExpressionPart.HandleNewParameterInList(AParamPart: TFpPascalExpressionPart;
+  ABracketsPart: TFpPascalExpressionPartContainer);
+begin
+  //
+end;
+
+procedure TFpPascalExpressionPart.HandleEndOfParameterInList(AParamPart: TFpPascalExpressionPart;
   ABracketsPart: TFpPascalExpressionPartContainer);
 begin
   //

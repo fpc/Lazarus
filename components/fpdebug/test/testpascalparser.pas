@@ -633,6 +633,8 @@ begin
     TestExpr([0,1,1,1,1], TFpPascalExpressionPartIdentifier, 'f', 0);
 
 
+    CreateExpr(':obj(b:3)', True);
+    CreateExpr(':obj(b:3,c:-4)', True);
   finally
     CurrentTestExprObj.Free;
   end;
@@ -787,6 +789,9 @@ begin
   CreateExpr('(a ? b : c ? d)+1', False);
   CreateExpr('(a ? b : c : d)+1', False);
 
+  CreateExpr(':obj(1)', False);
+  CreateExpr(':obj(b)', False);
+  CreateExpr(':obj(b+1:3)', False);
 end;
 
 
