@@ -5858,6 +5858,44 @@ Class reference used to create instances if the child control.
 </short>
 </element>
 
+<element name="TPageControl.UpdateDockCaption">
+<short>
+Updates page captions to reflect the captions for docked clients controls.
+</short>
+<descr>
+<p>
+<var>UpdateDockCaption</var> is an overridden method in <var>TPageControl</var> 
+which implements the method defined in the TWinControl ancestor. It ensures 
+that the Caption for each of the Pages (TTabSheet) is updated with the Caption 
+from the first child control on each page.
+</p>
+<p>
+UpdateDockCaption is called when the control has an assigned HostDockSite, and 
+either the list of docked clients has changed or one of their captions has 
+changed.
+</p>
+<p>
+In TPageControl, the Exclude argument is not used.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TPageControl.Pages"/>
+<link id="TTabSheet.Caption"/>
+<link id="#lcl.controls.TWinControl.UpdateDockCaption"/>
+<link id="#lcl.controls.TWinControl.Controls"/>
+<link id="#lcl.controls.TControl.HostDockSite"/>
+<link id="#lcl.controls.TControl.Text"/>
+</seealso>
+</element>
+<element name="TPageControl.UpdateDockCaption.Exclude">
+<short>
+Not used in TPageControl.
+</short>
+</element>
+
 <element name="TPageControl.FindNextPage">
 <short>
 Gets the next tab sheet in the specified direction.
