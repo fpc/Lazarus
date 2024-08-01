@@ -958,11 +958,11 @@ begin
   if Removed.count>0 then
   begin
     NMLV.uNewState := 0;
-    NMLV.uOldState := LVIS_SELECTED;
+    NMLV.uOldState := LVIS_FOCUSED or LVIS_SELECTED;
     RunIndex( Removed );
   end;
   if Added.count > 0 then begin
-    NMLV.uNewState := LVIS_SELECTED;
+    NMLV.uNewState := LVIS_FOCUSED or LVIS_SELECTED;;
     NMLV.uOldState := 0;
     RunIndex( Added );
   end;
@@ -1840,8 +1840,8 @@ begin
   if (row < 0) or (row >= _tableView.numberOfRows) then Exit;
 
   case AState of
-    lisSelected:
-    begin
+    lisFocused,
+    lisSelected: begin
       isSel := _tableView.selectedRowIndexes.containsIndex(row);
       if AIsSet and not isSel then
         _tableView.selectRowIndexesByProgram( NSIndexSet.indexSetWithIndex(row) )

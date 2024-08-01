@@ -1003,6 +1003,7 @@ begin
     Exit;
 
   case AState of
+    lisFocused,
     lisSelected: begin
       if lclcb.getItemStableSelection(AIndex) <> AIsSet then begin
         _collectionView.selectOneItemByIndex( AIndex, AIsSet );

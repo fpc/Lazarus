@@ -477,11 +477,11 @@ procedure TLCLListViewCallback.selectOne(ARow: Integer; isSelected: Boolean);
     Msg.NMHdr := @NMLV.hdr;
 
     if isSelected then begin
-      NMLV.uNewState := LVIS_SELECTED;
+      NMLV.uNewState := LVIS_FOCUSED or LVIS_SELECTED;;
       NMLV.uOldState := 0;
     end else begin
       NMLV.uNewState := 0;
-      NMLV.uOldState := LVIS_SELECTED;
+      NMLV.uOldState := LVIS_FOCUSED or LVIS_SELECTED;;
     end;
 
     NMLV.iItem := ARow;
