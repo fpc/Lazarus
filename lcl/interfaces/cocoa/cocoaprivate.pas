@@ -1491,7 +1491,7 @@ end;
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
 var
   P: NSPoint;
-
+  scrollView: NSScrollView;
 begin
   // 1. convert to window base
   // Convert from View-lcl to View-cocoa
@@ -1500,6 +1500,11 @@ begin
     p.y := Y
   else
     P.y := frame.size.height-y;   // convert to Cocoa system
+
+  scrollView:= self.enclosingScrollView;
+  if Assigned(scrollView) and (scrollView.documentView=self) then begin
+    P.y:= P.y + Round(scrollView.documentVisibleRect.origin.y);
+  end;
 
   // Convert from View-cocoa to Window-cocoa
   P := convertPoint_ToView(P, nil);
