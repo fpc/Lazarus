@@ -2999,7 +2999,6 @@ widgetsets.
 <link id="TMenuItem.Menu"/>
 <link id="TMenuItem.Items"/>
 <link id="TMenuItem.MenuChanged"/>
-<link id="TMenuItem.OnChange"/>
 <link id="TMenu.Items"/>
 </seealso>
 </element>
