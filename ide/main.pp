@@ -4644,9 +4644,8 @@ end;
 
 procedure TMainIDE.mnuCleanUpAndBuildProjectClicked(Sender: TObject);
 begin
-  if PrepareForCompileWithMsg<>mrOk then exit;
-  if ShowBuildProjectDialog(Project1)<>mrOk then exit;
-  DoBuildProject(crBuild,[]);
+  if ShowBuildProjectDialog(Project1) = mrOk then
+    DoBuildProject(crBuild, []);
 end;
 
 procedure TMainIDE.mnuBuildManyModesClicked(Sender: TObject);
