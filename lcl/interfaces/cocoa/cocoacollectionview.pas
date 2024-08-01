@@ -284,6 +284,7 @@ begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 64;
   minSize.height:= 68;
+  TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 4 );
   layout.setMinimumLineSpacing( 4 );
@@ -363,6 +364,7 @@ begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 150;
   minSize.height:= 28;
+  TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 10 );
   layout.setMinimumLineSpacing( 0 );
@@ -432,12 +434,14 @@ end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onInit;
 var
+  cv: TCocoaCollectionView;
   layout: NSCollectionViewFlowLayout;
   minSize: NSSize;
 begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 146;
   minSize.height:= 24;
+  TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 0 );
   layout.setMinimumLineSpacing( 10 );
@@ -460,12 +464,7 @@ end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onUpdateItemSize(
   baseSize: NSSize);
-var
-  cv: TCocoaCollectionView;
 begin
-  cv:= TCocoaCollectionView(_collectionView);
-  cv.itemSize.Width:= 146;
-  cv.itemSize.Height:= 24;
 end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onUpdateItemLayout(
