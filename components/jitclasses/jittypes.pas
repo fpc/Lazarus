@@ -898,14 +898,13 @@ begin
 end;
 
 function TJitDeclarationParser.Next(AContext: TParseContext): TJitParserTkKind;
-  type TCSet = set of char;
   var  NxtTok: PChar;
   procedure SetResult(ATokenKind: TJitParserTkKind; ALen: Integer = 1);
   begin
     DAT.FCurTokenKind := ATokenKind;
     Inc(NxtTok, ALen);
   end;
-  procedure SetResultForSet(ATokenKind: TJitParserTkKind; const cs: TCSet; ASkip: Integer = 0);
+  procedure SetResultForSet(ATokenKind: TJitParserTkKind; const cs: TSysCharset; ASkip: Integer = 0);
   begin
     DAT.FCurTokenKind := ATokenKind;
     NxtTok := NxtTok + ASkip;
