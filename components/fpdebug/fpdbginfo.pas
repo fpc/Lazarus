@@ -1455,7 +1455,9 @@ end;
 
 function TFpValueConstNumber.GetAsInteger: Int64;
 begin
+  {$push}{$R-}{$Q-}
   Result := Int64(FValue);
+  {$pop}
 end;
 
 function TFpValueConstNumber.GetAsFloat: Extended;

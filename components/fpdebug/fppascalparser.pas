@@ -4146,7 +4146,7 @@ begin
   if FStartChar^ in ['0'..'9'] then
     Result := TFpValueConstNumber.Create(i, False)
   else
-    Result := TFpValueConstNumber.Create(Int64(i), True); // hex,oct,bin values default to signed
+    Result := TFpValueConstNumber.Create(i, True); // hex,oct,bin values default to signed
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -6855,6 +6855,8 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
       skInteger:  Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsInteger) xor AReverse);
       skCardinal: Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsCardinal) xor AReverse);
       skFloat:    Result := TFpValueConstBool.Create((AIntVal.AsInteger = AOtherVal.AsFloat) xor AReverse);
+      skPointer, skAddress:
+                  Result := TFpValueConstBool.Create((AIntVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse)
       else SetError('= not supported');
     end;
   end;
@@ -6865,6 +6867,8 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
       skInteger:  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsInteger) xor AReverse);
       skCardinal: Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse);
       skFloat:    Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsFloat) xor AReverse);
+      skPointer, skAddress:
+                  Result := TFpValueConstBool.Create((ACardinalVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse)
       else SetError('= not supported');
     end;
   end;
@@ -6881,7 +6885,9 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
   function AddressPtrEqualToValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
     Result := nil;
-    if AOtherVal.Kind in [skClass,skInterface,skAddress,skPointer] then
+    if (AOtherVal.Kind in [skClass,skInterface,skAddress,skPointer]) or
+       ((AIntVal.Kind in [skPointer, skAddress]) and (AOtherVal.Kind in [skInteger,skCardinal]))
+    then
       Result := TFpValueConstBool.Create((AIntVal.AsCardinal = AOtherVal.AsCardinal) xor AReverse)
     else
       SetError('= not supported');
