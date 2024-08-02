@@ -107,8 +107,6 @@ type
 
   TUpdateProjectFileEvent = procedure(Sender: TObject; AnUpdates: TSrcEditProjectUpdatesNeeded) of object;
 
-  TCharSet = set of Char;
-
   // for TSourcEditor.CenterCursorHoriz
   TSourceEditHCenterMode =
   ( hcmCenter,          // Center X-Caret to exact middle of Screen

@@ -1507,7 +1507,7 @@ function TFileOpener.GetFilenameAtRowCol(XY: TPoint): string;
 var
   Line: string;
   Len, Stop: integer;
-  StopChars: set of char;
+  StopChars: TSysCharSet;
 begin
   Result := '';
   FIsIncludeDirective:=false;
