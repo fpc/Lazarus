@@ -525,7 +525,7 @@ begin
   {$IFDEF JIT_REFCNT_DEBUG}
   debuglnEnter(['> TRefCountedJitReference.Destroy ',dbgs(self),' ' ]); try
   {$ENDIF}
-  if FRefCount > 0 then raise
+  if FRefCount > 0 then
     raise exception.Create('destroy while referrenced');
 
   DoRefCountZero;
