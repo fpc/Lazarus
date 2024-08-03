@@ -48,7 +48,7 @@ uses
   IDEOptionsIntf, NewItemIntf, ComponentReg,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf, InputHistory,
-  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEOptEditorIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEOptEditorIntf, SrcEditorIntf,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
@@ -210,6 +210,7 @@ type
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
+    procedure FilterEditAfterFilter(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FindInFilesMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -278,6 +279,7 @@ type
     FOptionsShownOfFile: TPkgFile;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
+    procedure ActiveEditorChanged(Sender: TObject);
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
@@ -320,6 +322,7 @@ type
     procedure RegisteredListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
                                         ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
+    procedure SelectFileNode(const AFileName: string);
   protected
     fFlags: TPEFlags;
     procedure SetLazPackage(const AValue: TLazPackage); override;
@@ -1474,12 +1477,16 @@ begin
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
   if OPMInterface <> nil then
     OPMInterface.AddPackageListNotification(@PackageListAvailable);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
 end;
 
 procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 begin
   if OPMInterface <> nil then
     OPMInterface.RemovePackageListNotification(@PackageListAvailable);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   IdleConnected:=false;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
@@ -1538,6 +1545,52 @@ end;
 procedure TPackageEditorForm.SaveBitBtnClick(Sender: TObject);
 begin
   DoSave(false);
+end;
+
+procedure TPackageEditorForm.SelectFileNode(const AFileName: string);
+  function _FindInChildren(_Parent: TTreeNode): TTreeNode;
+  var
+    TVNode: TTreeNode;
+    NodeData: TPENodeData;
+    Item: TObject;
+    PFile: TPkgFile;
+  begin
+    Result := nil;
+
+    TVNode:=_Parent.GetFirstChild;
+    while Assigned(TVNode) do
+    begin
+      if GetNodeDataItem(TVNode,NodeData,Item) and (Item is TPkgFile) then
+      begin
+        PFile := TPkgFile(Item);
+        if SameFileName(PFile.GetFullFilename, AFileName) then
+          Exit(TVNode);
+      end;
+      if TVNode.HasChildren then
+      begin
+        Result := _FindInChildren(TVNode);
+        if Assigned(Result) then
+          Exit;
+      end;
+      TVNode := TVNode.GetNextSibling;
+    end;
+  end;
+var
+  FileNode: TTreeNode;
+begin
+  if not Assigned(FFilesNode) then
+    Exit;
+  FileNode := _FindInChildren(FFilesNode);
+  if Assigned(FileNode) then
+  begin
+    ItemsTreeView.BeginUpdate;
+    try
+      ItemsTreeView.ClearSelection;
+      ItemsTreeView.Selected := FileNode;
+    finally
+      ItemsTreeView.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TPackageEditorForm.SaveAsClick(Sender: TObject);
@@ -3038,6 +3091,11 @@ begin
   Result:=LazPackage.ReadOnly;
 end;
 
+procedure TPackageEditorForm.FilterEditAfterFilter(Sender: TObject);
+begin
+  ActiveEditorChanged(Sender)
+end;
+
 function TPackageEditorForm.FirstRequiredDependency: TPkgDependency;
 begin
   Result:=LazPackage.FirstRequiredDependency;
@@ -3243,6 +3301,12 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+end;
+
+procedure TPackageEditorForm.ActiveEditorChanged(Sender: TObject);
+begin
+  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
+    SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
 end;
 
 destructor TPackageEditorForm.Destroy;

@@ -11,12 +11,12 @@ object PackageEditorForm: TPackageEditorForm
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
   KeyPreview = True
+  LCLVersion = '3.99.0.0'
   OnClose = PackageEditorFormClose
   OnCloseQuery = PackageEditorFormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '3.99.0.0'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -32,19 +32,19 @@ object PackageEditorForm: TPackageEditorForm
   object PropsGroupBox: TGroupBox
     Left = 0
     Height = 216
-    Top = 222
+    Top = 216
     Width = 464
     Align = alBottom
     Caption = 'PropsGroupBox'
-    ClientHeight = 200
-    ClientWidth = 462
+    ClientHeight = 196
+    ClientWidth = 460
     ParentFont = False
     TabOrder = 3
     object PropsPageControl: TPageControl
       Left = 0
-      Height = 200
+      Height = 196
       Top = 0
-      Width = 462
+      Width = 460
       ActivePage = CommonOptionsTabSheet
       Align = alClient
       ParentFont = False
@@ -59,8 +59,8 @@ object PackageEditorForm: TPackageEditorForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 17
-    Top = 438
+    Height = 23
+    Top = 432
     Width = 464
     Panels = <>
     ParentFont = False
@@ -69,7 +69,7 @@ object PackageEditorForm: TPackageEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 217
+    Top = 211
     Width = 464
     Align = alBottom
     ResizeAnchor = akBottom
@@ -102,10 +102,10 @@ object PackageEditorForm: TPackageEditorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 1
-      OnClick = DirectoryHierarchyButtonClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False
+      OnClick = DirectoryHierarchyButtonClick
     end
     object SortAlphabeticallyButton: TSpeedButton
       AnchorSideLeft.Control = DirectoryHierarchyButton
@@ -123,10 +123,10 @@ object PackageEditorForm: TPackageEditorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       GroupIndex = 2
-      OnClick = SortAlphabeticallyButtonClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False
+      OnClick = SortAlphabeticallyButtonClick
     end
     object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = MoveDownBtn
@@ -135,9 +135,10 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 163
-      Height = 32
-      Top = -2
+      Height = 23
+      Top = 3
       Width = 300
+      OnAfterFilter = FilterEditAfterFilter
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 11
@@ -163,10 +164,10 @@ object PackageEditorForm: TPackageEditorForm
       BorderSpacing.Left = 3
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
-      OnClick = OpenButtonClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False
+      OnClick = OpenButtonClick
     end
     object MoveUpBtn: TSpeedButton
       AnchorSideLeft.Control = SortAlphabeticallyButton
@@ -181,10 +182,10 @@ object PackageEditorForm: TPackageEditorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       Enabled = False
-      OnClick = MoveUpBtnClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False
+      OnClick = MoveUpBtnClick
     end
     object MoveDownBtn: TSpeedButton
       AnchorSideLeft.Control = MoveUpBtn
@@ -199,15 +200,15 @@ object PackageEditorForm: TPackageEditorForm
       Constraints.MinHeight = 25
       Constraints.MinWidth = 25
       Enabled = False
-      OnClick = MoveDownBtnClick
       ShowHint = True
       ParentFont = False
       ParentShowHint = False
+      OnClick = MoveDownBtnClick
     end
   end
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 140
+    Height = 134
     Top = 77
     Width = 464
     Align = alClient
@@ -220,13 +221,13 @@ object PackageEditorForm: TPackageEditorForm
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 2
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
     OnDragDrop = ItemsTreeViewDragDrop
     OnDragOver = ItemsTreeViewDragOver
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup

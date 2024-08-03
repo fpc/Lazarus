@@ -69,7 +69,7 @@ uses
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  IdeIntfStrConsts, MenuIntf, FormEditingIntf, InputHistory,
+  IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
   // IDE
@@ -140,6 +140,7 @@ type
     procedure AddPopupMenuPopup(Sender: TObject);
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
+    procedure FilterEditAfterFilter(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -202,6 +203,7 @@ type
     ImageIndexDirectory: integer;
     FFlags: TPEFlags;
     FPropGui: TProjPackFilePropGui;
+    procedure ActiveEditorChanged(Sender: TObject);
     procedure AddMenuItemClick(Sender: TObject);
     function AddOneFile(aFilename: string): TModalResult;
     procedure DoAddMoreDialog;
@@ -230,6 +232,7 @@ type
     procedure UpdateProperties(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
     procedure UpdatePending;
+    procedure SelectFileNode(const AFileName: string);
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
@@ -848,12 +851,16 @@ begin
   end;
   if OPMInterface <> nil then
     OPMInterface.AddPackageListNotification(@PackageListAvailable);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
 end;
 
 procedure TProjectInspectorForm.FormDestroy(Sender: TObject);
 begin
   if OPMInterface <> nil then
     OPMInterface.RemovePackageListNotification(@PackageListAvailable);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
 end;
 
 procedure TProjectInspectorForm.FormActivate(Sender: TObject);
@@ -1190,6 +1197,52 @@ begin
     end;
   finally
     EndUpdate;
+  end;
+end;
+
+procedure TProjectInspectorForm.SelectFileNode(const AFileName: string);
+  function _FindInChildren(_Parent: TTreeNode): TTreeNode;
+  var
+    TVNode: TTreeNode;
+    NodeData: TPENodeData;
+    Item: TObject;
+    UInfo: TUnitInfo;
+  begin
+    Result := nil;
+
+    TVNode:=_Parent.GetFirstChild;
+    while Assigned(TVNode) do
+    begin
+      if GetNodeDataItem(TVNode,NodeData,Item) and (Item is TUnitInfo) then
+      begin
+        UInfo := TUnitInfo(Item);
+        if SameFileName(UInfo.GetFullFilename, AFileName) then
+          Exit(TVNode);
+      end;
+      if TVNode.HasChildren then
+      begin
+        Result := _FindInChildren(TVNode);
+        if Assigned(Result) then
+          Exit;
+      end;
+      TVNode := TVNode.GetNextSibling;
+    end;
+  end;
+var
+  FileNode: TTreeNode;
+begin
+  if not Assigned(FFilesNode) then
+    Exit;
+  FileNode := _FindInChildren(FFilesNode);
+  if Assigned(FileNode) then
+  begin
+    ItemsTreeView.BeginUpdate;
+    try
+      ItemsTreeView.ClearSelection;
+      ItemsTreeView.Selected := FileNode;
+    finally
+      ItemsTreeView.EndUpdate;
+    end;
   end;
 end;
 
@@ -1591,6 +1644,12 @@ begin
   ShowDirectoryHierarchy := EnvironmentOptions.ProjInspShowDirHierarchy;
 end;
 
+procedure TProjectInspectorForm.ActiveEditorChanged(Sender: TObject);
+begin
+  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
+    SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
+end;
+
 destructor TProjectInspectorForm.Destroy;
 begin
   IdleConnected:=false;
@@ -1642,6 +1701,11 @@ end;
 function TProjectInspectorForm.FilesOwnerReadOnly: boolean;
 begin
   Result:=false;
+end;
+
+procedure TProjectInspectorForm.FilterEditAfterFilter(Sender: TObject);
+begin
+  ActiveEditorChanged(Sender);
 end;
 
 function TProjectInspectorForm.FirstRequiredDependency: TPkgDependency;
