@@ -51,7 +51,11 @@ type
   TCocoaCollectionItemView = objcclass(NSView)
   private
     item: TCocoaCollectionItem;
+    trackingArea: NSTrackingArea;
   public
+    procedure updateTrackingAreas; override;
+    procedure mouseEntered(theEvent: NSEvent); override;
+    procedure mouseExited(theEvent: NSEvent); override;
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
@@ -385,8 +389,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 15;
-    aFrame.size.height:= 15;
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2 + 5;
     checkBox.setFrame( aFrame );
@@ -483,8 +487,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 15;
-    aFrame.size.height:= 15;
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
     checkBox.setFrame( aFrame );
@@ -555,8 +559,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 15;
-    aFrame.size.height:= 15;
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
     checkBox.setFrame( aFrame );
@@ -577,6 +581,7 @@ procedure TCocoaCollectionItem.createCheckBox;
 begin
   if NOT Assigned(_checkBox) then begin
     _checkBox:= NSButton.alloc.init;
+    _checkBox.setHidden( True );
     _checkBox.setButtonType( NSSwitchButton );
     _checkBox.setTitle( CocoaConst.NSSTR_EMPTY );
     _checkBox.setTarget( self );
@@ -649,6 +654,42 @@ begin
 end;
 
 { TCocoaCollectionItemView }
+
+procedure TCocoaCollectionItemView.updateTrackingAreas;
+const
+  options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
+                                or NSTrackingActiveAlways;
+begin
+  if Assigned(self.trackingArea) then begin
+    removeTrackingArea(self.trackingArea);
+    self.trackingArea.release;
+  end;
+
+  self.trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
+    self.bounds,
+    options,
+    self,
+    nil );
+  self.addTrackingArea( self.trackingArea );
+end;
+
+procedure TCocoaCollectionItemView.mouseEntered(theEvent: NSEvent);
+begin
+  if Assigned(self.item.checkBox) then
+    self.item.checkBox.setHidden( False );
+end;
+
+procedure TCocoaCollectionItemView.mouseExited(theEvent: NSEvent);
+var
+  checkBox: NSButton;
+begin
+  checkBox:= self.item.checkBox;
+  if NOT Assigned(checkBox) then
+    Exit;
+  if checkBox.state = NSOnState then
+    Exit;
+  checkBox.setHidden( True );
+end;
 
 procedure TCocoaCollectionItemView.drawRect(dirtyRect: NSRect);
 begin
@@ -750,6 +791,7 @@ begin
   if Assigned(checkBox) then begin
     self.callback.GetItemCheckedAt( row, 0, checkedValue );
     checkBox.setState( checkedValue );
+    checkBox.setHidden( checkedValue<> NSOnState );
   end;
   isSelected:= self.callback.getItemStableSelection( row );
   cocoaItem.setSelected( isSelected );
