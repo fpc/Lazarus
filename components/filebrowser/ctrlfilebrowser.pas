@@ -295,7 +295,8 @@ constructor TFileBrowserController.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   FDirectoriesBeforeFiles:=DefaultDirectoriesBeforeFiles;
   FFilesInTree:=DefaultFilesInTree;
   ReadConfig;
@@ -303,7 +304,8 @@ end;
 
 destructor TFileBrowserController.Destroy;
 begin
-  LazarusIDE.RemoveAllHandlersOfObject(Self);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   if FNeedSave then
     WriteConfig;
   inherited;
