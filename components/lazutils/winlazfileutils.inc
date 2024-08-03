@@ -3,9 +3,58 @@
 
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string;
+const
+  MaxDepth = 20;
+var
+  URec: TUnicodeSymlinkRec;
+  US: UnicodeString;
+  Depth: Integer;
+
+  //FileGetSymlinkTarget raises an EDirectoryNotFoundException if the target of the link does not exist.
+  //This is OK if ExceptionOnError is True, but unwanted if it is False, in which case we simply want to return False
+  //Unfortunately due to this behaviou, we cannot return the value for Target if Target does not exists
+  //(not without re-implementing FileGetSymlinkTarget)
+  function TryGetSymlinkTarget(Fn: UnicodeString; out SymlinkRec: TUnicodeSymlinkRec): Boolean;
+  begin
+    if ExceptionOnError then
+      Result := FileGetSymlinkTarget(Fn, SymlinkRec)
+    else
+    try
+      Result := FileGetSymlinkTarget(Fn, SymlinkRec);
+    except
+      on E: EDirectoryNotFoundException do Result := False;
+    end
+  end;
+
 begin
-  // not supported under Windows
-  Result:=Filename;
+  Result := '';
+  if not TryGetSymlinkTarget(Utf8ToUtf16(Filename), URec) then
+  begin
+    if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a junction or a symbolic link',[Filename]);
+    Exit;
+  end;
+  Depth := 1;
+  Result := Utf16ToUtf8(URec.TargetName);
+  while ((URec.Attr and faSymlink{%H-}) = faSymlink{%H-}) do  //target is a symlink or junction in itself
+  begin
+    Inc(Depth);
+    //debugln(['Depth=',Depth]);
+    if (Depth > MaxDepth) then
+    begin
+      if ExceptionOnError then raise EFOpenError.CreateFmt('To many links in %s, probably an endless loop',[Filename]);
+      Result := '';
+      Exit;
+    end;
+    US := URec.TargetName;
+    if not FileGetSymlinkTarget(US, URec) then
+    begin
+      if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a junction or a symbolic link',[Filename]);
+      Result := '';
+      Exit;
+    end;
+  end;
+  if (Depth > 1) then
+    Result := Utf16ToUtf8(URec.TargetName);
 end;
 
 function GetPhysicalFilename(const Filename: string;
