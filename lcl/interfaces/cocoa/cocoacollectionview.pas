@@ -592,12 +592,16 @@ end;
 
 procedure TCocoaCollectionItem.checkboxAction(sender: NSButton);
 var
+  row: Integer;
   cv: TCocoaCollectionView;
   indexPath: NSIndexPath;
 begin
   cv:= TCocoaCollectionView( self.collectionView );
   indexPath:= cv.indexPathForItem( self );
-  cv.callback.SetItemCheckedAt( indexPath.item, 0, sender.state );
+  row:= indexPath.item;
+  cv.callback.SetItemCheckedAt( row, 0, sender.state );
+  if sender.state = NSOnState then
+    cv.selectOneItemByIndex( row, True );
 end;
 
 procedure TCocoaCollectionItem.loadView;
@@ -687,6 +691,8 @@ begin
   if NOT Assigned(checkBox) then
     Exit;
   if checkBox.state = NSOnState then
+    Exit;
+  if self.item.isSelected then
     Exit;
   checkBox.setHidden( True );
 end;
@@ -787,14 +793,15 @@ begin
   self.styleHandler.onUpdateItemValue( indexPath, cocoaItem );
 
   row:= indexPath.item;
+  isSelected:= self.callback.getItemStableSelection( row );
+  cocoaItem.setSelected( isSelected );
+
   checkBox:= cocoaItem.checkBox;
   if Assigned(checkBox) then begin
     self.callback.GetItemCheckedAt( row, 0, checkedValue );
     checkBox.setState( checkedValue );
-    checkBox.setHidden( checkedValue<> NSOnState );
+    checkBox.setHidden( NOT ((checkedValue=NSOnState) or isSelected) );
   end;
-  isSelected:= self.callback.getItemStableSelection( row );
-  cocoaItem.setSelected( isSelected );
 end;
 
 procedure TCocoaCollectionView.updateItemSize( baseSize: NSSize );
@@ -932,6 +939,8 @@ begin
     if Assigned(item) then begin
       item.setSelected( True );
       item.textField.setToolTip( item.textField.stringValue );
+      if Assigned(item.checkBox) then
+        item.checkBox.setHidden( False );
       item.view.setNeedsDisplay_(True);
     end;
     if Assigned(self.callback) then
@@ -956,6 +965,8 @@ begin
     if Assigned(item) then begin
       item.setSelected( False );
       item.textField.setToolTip( nil );
+      if Assigned(item.checkBox) then
+        item.checkBox.setHidden( item.checkBox.state<>NSOnState );
       item.view.setNeedsDisplay_(True);
     end;
     if Assigned(self.callback) then
