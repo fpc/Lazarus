@@ -317,12 +317,14 @@ class function TCocoaWSCustomListView.ItemGetChecked(
   const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem
   ): Boolean;
 var
-  WSHandler: TCocoaWSListViewHandler;
+  lclcb : TLCLListViewCallback;
 begin
   Result:= False;
-  WSHandler:= getWSHandler( ALV );
-  if Assigned(WSHandler) then
-    Result:= WSHandler.ItemGetChecked( AIndex, AItem );
+  lclcb:= getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  Result := lclcb.checkedIdx.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -553,7 +555,19 @@ class procedure TCocoaWSCustomListView.SetSort(const ALV: TCustomListView;
   const ASortDirection: TSortDirection);
 var
   WSHandler: TCocoaWSListViewHandler;
+  lclcb: TLCLListViewCallback;
 begin
+  lclcb:= getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  if Assigned(lclcb.checkedIdx) then
+    lclcb.checkedIdx.removeAllIndexes;
+  lclcb.selectionIndexSet.removeAllIndexes;
+
   WSHandler:= getWSHandler( ALV );
   if Assigned(WSHandler) then
     WSHandler.SetSort( AType, AColumn, ASortDirection );

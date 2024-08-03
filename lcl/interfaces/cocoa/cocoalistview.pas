@@ -71,7 +71,6 @@ type
     // Item
     procedure ItemDelete( const AIndex: Integer); virtual; abstract;
     function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual; abstract;
-    function  ItemGetChecked( const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; virtual; abstract;
     function  ItemGetPosition( const AIndex: Integer): TPoint; virtual; abstract;
     function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; abstract; // returns True if supported
     procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); virtual; abstract;
