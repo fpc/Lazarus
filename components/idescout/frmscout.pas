@@ -122,8 +122,7 @@ Type
     procedure LBMatchesClick(Sender: TObject);
     procedure LBMatchesDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
-    procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
-      );
+    procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
   private
     FRefresh,
     FHighlights: TScoutTerrains;
@@ -131,6 +130,7 @@ Type
     FMatchColor: TColor;
     FShowCategory: Boolean;
     FSearchItems: TStringListUTF8Fast;
+    FSelectedIdx: Integer;
     FOrgCaption : String;
     FShowShortCutKey: Boolean;
     procedure ClearRefreshableItems;
@@ -138,6 +138,7 @@ Type
     Procedure RefreshList;
     procedure FillRecent(aType: TIDERecentHandler);
     Procedure Initialize;
+    procedure ExecuteOnIdle(Sender: TObject; var Done: Boolean);
     procedure ExecuteSelected;
     Procedure FillCommands;
     procedure FilterList(aSearchTerm: String);
@@ -534,6 +535,8 @@ procedure TIDEScoutForm.FormCreate(Sender: TObject);
 begin
   FSearchItems:=TStringListUTF8Fast.Create;
   FSearchItems.OwnsObjects:=True;
+  FSelectedIdx:=-1;
+  Application.AddOnIdleHandler(@ExecuteOnIdle);
   Caption:=isrsIDEScout;
   FOrgCaption:=Caption;
   ESearch.TextHint:=isrsTypeSearchTerms;
@@ -626,25 +629,30 @@ begin
     end;
 end;
 
-procedure TIDEScoutForm.ExecuteSelected;
-
+procedure TIDEScoutForm.ExecuteOnIdle(Sender: TObject; var Done: Boolean);
 Var
-  idx: Integer;
-  itm : TSearchItem;
-
+  Itm : TSearchItem;
 begin
-  Idx:=LBMatches.ItemIndex;
-  if (Idx>=0) then
-    begin
+  if FSelectedIdx=-1 then exit;
+  Itm:=LBMatches.Items.Objects[FSelectedIdx] as TSearchItem;
+  if Itm.Source is TIDECommand then
+    TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor)
+  else if Itm.Source is TComponentItem then
+    TComponentItem(Itm.Source).Execute
+  else if Itm.Source is TOpenFileItem then
+    TOpenFileItem(Itm.Source).Execute;
+  FSelectedIdx:=-1;
+  Done:=True;
+end;
+
+procedure TIDEScoutForm.ExecuteSelected;
+begin
+  FSelectedIdx:=LBMatches.ItemIndex;
+  if FSelectedIdx>=0 then
+  begin
     Hide;
-    Itm:=LBMatches.Items.Objects[Idx] as TSearchItem;
-    if Itm.Source is TIDECommand then
-      TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor)
-    else if Itm.Source is TComponentItem then
-      TComponentItem(Itm.Source).Execute
-    else if Itm.Source is TOpenFileItem then
-      TOpenFileItem(Itm.Source).Execute;
-    end;
+    sleep(10);
+  end;
 end;
 
 
