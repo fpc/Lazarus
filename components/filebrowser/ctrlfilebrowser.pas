@@ -5,7 +5,7 @@ unit ctrlfilebrowser;
 interface
 
 uses
-  Classes, SysUtils, frmFileBrowser, forms, filebrowsertypes,
+  Classes, SysUtils, frmFileBrowser, forms, filebrowsertypes, SrcEditorIntf,
   LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
 
 Type
@@ -22,7 +22,9 @@ Type
       FCustomRootDir : string;
       FNeedSave: Boolean;
       FSplitterPos: integer;
-
+      FCurrentEditorFile : String;
+      FSyncCurrentEditor: Boolean;
+      procedure ActiveEditorChanged(Sender: TObject);
       function DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
       procedure DoSelectDir(Sender: TObject);
       function GetProjectDir: String;
@@ -36,6 +38,7 @@ Type
       procedure SetRoootDir(AValue: TRootDir);
       procedure SetSplitterPos(AValue: integer);
       procedure SetStartDir(AValue: TStartDir);
+      procedure SetSyncCurrentEditor(AValue: Boolean);
       procedure WriteConfig; virtual;
       procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     protected
@@ -43,6 +46,7 @@ Type
       procedure DoOpenFile(Sender: TObject; const AFileName: string); virtual;
       { Called by file browser window }
       procedure DoConfig(Sender: TObject);
+      procedure SyncCurrentFile;
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -55,7 +59,7 @@ Type
       property CustomStartDir: string read FCustomStartDir write SetCustomStartDir;
       property CustomRootDir: string read FCustomRootDir write SetCustomRootDir;
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
-
+      property SyncCurrentEditor : Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
       property SplitterPos: integer read FSplitterPos write SetSplitterPos;
       Property FilesInTree : Boolean Read FFilesInTree Write SetFilesInTree;
       Property DirectoriesBeforeFiles : Boolean Read FDirectoriesBeforeFiles Write SetDirectoriesBeforeFiles;
@@ -83,6 +87,7 @@ begin
       FSplitterPos:=GetValue(KeySplitterPos, DefaultSplitterPos);
       FFilesInTree:=GetValue(KeyFilesInTree, DefaultFilesInTree);
       FDirectoriesBeforeFiles:=GetValue(KeyDirectoriesBeforeFiles,DefaultDirectoriesBeforeFiles);
+      FSyncCurrentEditor:=GetValue(KeySyncCurrentEditor,DefaultSyncCurrentEditor);
     finally
       Free;
     end;
@@ -145,6 +150,15 @@ begin
   FNeedSave:=True;
 end;
 
+procedure TFileBrowserController.SetSyncCurrentEditor(AValue: Boolean);
+begin
+  if FSyncCurrentEditor=AValue then Exit;
+  FSyncCurrentEditor:=AValue;
+  FNeedSave:=True;
+  if aValue and (FCurrentEditorFile<>'') then
+    SyncCurrentFile;
+end;
+
 procedure TFileBrowserController.WriteConfig;
 var
   Storage : TConfigStorage;
@@ -159,6 +173,7 @@ begin
       SetDeleteValue(KeySplitterPos, FSplitterPos, DefaultSplitterPos);
       SetDeleteValue(KeyFilesInTree, FFilesInTree, DefaultFilesInTree);
       SetDeleteValue(KeyDirectoriesBeforeFiles, FDirectoriesBeforeFiles, DefaultDirectoriesBeforeFiles);
+      SetDeleteValue(KeySyncCurrentEditor,FSyncCurrentEditor, DefaultSyncCurrentEditor);
       FNeedSave := False;
     finally
       Free;
@@ -180,6 +195,8 @@ begin
   aForm.CurrentDirectory := GetResolvedStartDir;
   aForm.FilesInTree:=FilesInTree;
   aForm.DirectoriesBeforeFiles:=DirectoriesBeforeFiles;
+  if FCurrentEditorFile<>'' then
+    SyncCurrentFile;
 end;
 
 function TFileBrowserController.GetProjectDir : String;
@@ -249,6 +266,24 @@ begin
 
 end;
 
+procedure TFileBrowserController.ActiveEditorChanged(Sender: TObject);
+
+
+begin
+  if not Assigned(SourceEditorManagerIntf.ActiveEditor) then
+    exit;
+  FCurrentEditorFile:=SourceEditorManagerIntf.ActiveEditor.FileName;
+  SyncCurrentFile;
+end;
+
+procedure TFileBrowserController.SyncCurrentFile;
+
+begin
+  if Not (Assigned(FileBrowserForm) and SyncCurrentEditor) then
+    exit;
+  FileBrowserForm.CurrentFile:=FCurrentEditorFile
+end;
+
 procedure TFileBrowserController.DoConfig(Sender: TObject);
 begin
   // Maybe later some reconfiguration of FWindow is needed after ShowConfig ?
@@ -260,6 +295,7 @@ constructor TFileBrowserController.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   FDirectoriesBeforeFiles:=DefaultDirectoriesBeforeFiles;
   FFilesInTree:=DefaultFilesInTree;
   ReadConfig;
@@ -267,6 +303,7 @@ end;
 
 destructor TFileBrowserController.Destroy;
 begin
+  LazarusIDE.RemoveAllHandlersOfObject(Self);
   if FNeedSave then
     WriteConfig;
   inherited;

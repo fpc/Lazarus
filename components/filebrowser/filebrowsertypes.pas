@@ -89,6 +89,7 @@ const
   DefaultRootDir = sdProjectDir;
   DefaultFilesInTree = False;
   DefaultDirectoriesBeforeFiles = True;
+  DefaultSyncCurrentEditor = False;
   DefaultSplitterPos = 150;
 
   SConfigFile         = 'idebrowserwin.xml';
@@ -99,6 +100,7 @@ const
   KeySplitterPos      = 'SplitterPos';
   KeyFilesInTree      = 'FilesInTree';
   KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
+  KeySyncCurrentEditor = 'SyncCurrentEditor';
 
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';

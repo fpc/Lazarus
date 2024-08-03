@@ -17,6 +17,7 @@ type
   TFileBrowserOptionsFrame = class(TAbstractIDEOptionsEditor)
     CBShowFilesInline: TCheckBox;
     CBShowDirectoriesBeforeFiles: TCheckBox;
+    CBSyncCurrentEditor: TCheckBox;
     DEStartDir: TDirectoryEdit;
     DERootDir: TDirectoryEdit;
     GBStartDir: TGroupBox;
@@ -98,6 +99,7 @@ begin
   RB.Checked := True;
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
+  CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
   CheckDirsBeforeFiles;
 end;
 
@@ -137,6 +139,7 @@ begin
   else
     C.CustomStartDir:='';
   C.FilesInTree:=CBShowFilesInline.Checked;
+  C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
 end;
 
 class function TFileBrowserOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -63,8 +63,10 @@ type
     procedure ConfigNode(aNode: TTreeNode; aEntry: TFileSystemEntry);
     function FindNode(aNodePath: String): TTreeNode;
     function GetAbsolutePath(Node: TTreeNode): string;
+    function GetCurrentFile: string;
     function GetTreeFileMask: String;
     function NodeToEntry(aNode: TTreeNode): TFileSystemEntry;
+    procedure SetCurrentFile(AValue: string);
     procedure SetDir(const Value: string);
     procedure SetDirectoriesBeforeFiles(AValue: Boolean);
     procedure SetFilesIntree(AValue: Boolean);
@@ -81,6 +83,8 @@ type
     procedure ShowStartDir;
     { return the selected directory }
     function SelectedDir: string;
+    { The selected/opened directory }
+    property CurrentFile: string read GetCurrentFile write SetCurrentFile;
     { The selected/opened directory }
     property CurrentDirectory: string read FCurrentDir write SetDir;
     { Directory the treeview starts from }
@@ -316,6 +320,28 @@ begin
   end;
 end;
 
+function TFileBrowserForm.GetCurrentFile: string;
+
+var
+  N : TTreeNode;
+  E : TFileSystemEntry;
+
+begin
+  Result:='';
+  if FilesInTree then
+    begin
+    N:=TV.Selected;
+    if Assigned(N) then
+      E:=NodeToEntry(N);
+    if Assigned(E) and (E.EntryType=etFile) then
+      Result:=E.AbsolutePath;
+    end
+  else
+    With FileListBox do
+      if FileName<>'' then
+        Result:=IncludeTrailingPathDelimiter(Directory)+FileName;
+end;
+
 function TFileBrowserForm.GetTreeFileMask: String;
 begin
   if Assigned(FSelectedMask) then
@@ -346,6 +372,8 @@ begin
   if SubDir[0] = #0 then
     SubDir := @SubDir[1];
   Node := TV.Items.GetFirstNode;
+  if Node=Nil then
+    exit;
   while SubDir[0] <> #0 do
   begin
     Node := Node.GetFirstChild;
@@ -532,6 +560,28 @@ begin
   Result:=Nil;
   if Assigned(aNode) then
     Result:=TFileSystemEntry(aNode.Data);
+end;
+
+procedure TFileBrowserForm.SetCurrentFile(AValue: string);
+
+var
+  Dir : String;
+  Node : TTreeNode;
+
+begin
+  if FilesInTree then
+    begin
+    Node:=FindNode(aValue);
+    if Assigned(Node) then
+      TV.Selected:=Node;
+    end
+  else
+    begin
+    Dir:=ExtractFilePath(aValue);
+    CurrentDirectory:=Dir;
+    FileListBox.Directory:=Dir;
+    FileListBox.FileName:=ExtractFileName(aValue);
+    end
 end;
 
 function TFileBrowserForm.SelectedDir: string;
