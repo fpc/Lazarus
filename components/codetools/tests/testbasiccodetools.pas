@@ -368,37 +368,42 @@ procedure TTestBasicCodeTools.TestCompareIdentifiers;
   procedure Test(A, B: PChar; Expected: integer);
   var
     Actual: Integer;
-    //AmpA: string;
+    AmpA, AmpB: string;
   begin
     Actual:=CompareIdentifiers(A,B);
     if Actual<>Expected then
       Fail('A='+GetStr(A)+' B='+GetStr(B)+', expected '+dbgs(Expected)+', but got '+dbgs(Actual));
 
-    //if (A<>nil) and (IsIdentStartChar[A^]) then begin
-    //  AmpA:='&'+A;
-    //  Test(PChar(AmpA),B,Expected);
-    //end;
+    if (A<>nil) and (IsIdentStartChar[A^]) then begin
+      AmpA:='&'+A;
+      Test(PChar(AmpA),B,Expected);
+      if (B<>nil) and (IsIdentStartChar[B^]) then begin
+        AmpB:='&'+B;
+        Test(PChar(AmpA),PChar(AmpB),Expected);
+      end;
+    end;
   end;
 
   procedure t(A, B: PChar; Expected: integer);
   begin
     Test(A,B,Expected);
-    if A<>B then
-      Test(B,A,-Expected)
+    Test(B,A,-Expected);
   end;
 
 begin
-  // Note: CompareIdentifiers expects identifiers or empty.
-  // Feeding non identifiers like numbers 1 or octal &1 is not defined.
   t(nil,nil,0);
-  t(nil,#0,1); // current implementation gives 1, but it could be 0, in fact 0 would be better to make sure the empty string is the same
+  t(nil,#0,0);
+  t(nil,#1,0);
   t(#0,#0,0);
   t(#0,#1,0);
   t(#1,#2,0);
   t('a',nil,-1);
   t('a',#0,-1);
   t('a','a',0);
+  t('a','A',0);
   t('aa','aa',0);
+  t('aa','Aa',0);
+  t('aa','AA',0);
   t('aa','a',-1);
   t('ab','a',-1);
   t('ab','a;',-1);
@@ -407,10 +412,16 @@ begin
   t('ab;','ab',0);
   t('ab;','ab,',0);
   t('aAa;','aaA',0);
+  t('i','I',0);
   t('a',';',-1);
-  t('1','2',1); // current implementation gives 1, but it could be 0, does not matter
+  t('1','2',0);
   t(',',',',0);
   t(',',';',0);
+  t('&',nil,0);
+  t('&',#0,0);
+  t('&','&',0);
+  t('&a','&',-1);
+  t('&a','&;',-1);
 end;
 
 procedure TTestBasicCodeTools.TestDateToCfgStr;

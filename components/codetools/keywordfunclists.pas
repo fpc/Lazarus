@@ -221,8 +221,18 @@ end;
 
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 begin
-  if (Identifier1<>nil) then begin
-    if (Identifier2<>nil) then begin
+  if (Identifier1<>nil)
+      and (IsIdentStartChar[Identifier1^]
+         or ((Identifier1^='&') and IsIdentStartChar[Identifier1[1]])) then
+  begin
+    if Identifier1[0]='&' then inc(Identifier1);
+
+    if (Identifier2<>nil)
+        and (IsIdentStartChar[Identifier2^]
+           or ((Identifier2^='&') and IsIdentStartChar[Identifier2[1]])) then
+    begin
+      if Identifier2[0]='&' then inc(Identifier2);
+
       while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
         if (IsIdentChar[Identifier1[0]]) then begin
           inc(Identifier1);
@@ -251,7 +261,10 @@ begin
       Result:=-1; // for example  'aaa' nil
     end;
   end else begin
-    if (Identifier2<>nil) then begin
+    if (Identifier2<>nil)
+        and (IsIdentStartChar[Identifier2^]
+           or ((Identifier2^='&') and IsIdentStartChar[Identifier2[1]])) then
+    begin
       Result:=1; // for example  nil 'bbb'
     end else begin
       Result:=0; // for example  nil nil
