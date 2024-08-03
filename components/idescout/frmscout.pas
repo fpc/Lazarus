@@ -544,14 +544,7 @@ end;
 
 procedure TIDEScoutForm.FormDestroy(Sender: TObject);
 begin
-  With IDEEnvironmentOptions  do
-    begin
-    RemoveHandlerAddToRecentOpenFiles(@PackageOpened);
-    RemoveHandlerAddToRecentProjectFiles(@FileOpened);
-    RemoveHandlerAddToRecentPackageFiles(@ProjectOpened);
-    end;
   FreeAndNil(FSearchItems);
-  ScoutForm:=Nil;
 end;
 
 procedure TIDEScoutForm.FormShow(Sender: TObject);
