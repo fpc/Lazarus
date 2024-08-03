@@ -46,7 +46,7 @@ begin
       Exit;
     end;
     US := URec.TargetName;
-    if not FileGetSymlinkTarget(US, URec) then
+    if not TryGetSymlinkTarget(US, URec) then
     begin
       if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a junction or a symbolic link',[Filename]);
       Result := '';
