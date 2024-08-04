@@ -1048,6 +1048,7 @@ begin
     Add('MS_ABI_DEFAULT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MS_ABI_CDECL'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
