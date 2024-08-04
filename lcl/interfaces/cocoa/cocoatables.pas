@@ -240,7 +240,6 @@ type
     // Item
     procedure ItemDelete( const AIndex: Integer); override;
     function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
-    function  ItemGetChecked( const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; override;
     function  ItemGetPosition( const AIndex: Integer): TPoint; override;
     function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); override;
@@ -1749,19 +1748,6 @@ begin
   end;
 end;
 
-function TCocoaWSListView_TableViewHandler.ItemGetChecked(
-  const AIndex: Integer; const AItem: TListItem): Boolean;
-var
-  lclcb : TLCLListViewCallback;
-begin
-  Result:= False;
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  Result := lclcb.checkedIdx.containsIndex(AIndex);
-end;
-
 function TCocoaWSListView_TableViewHandler.ItemGetPosition(
   const AIndex: Integer): TPoint;
 var
@@ -1806,20 +1792,8 @@ end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemSetChecked(
   const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
-var
-  lclcb: TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.addIndex(AIndex);
-    _tableView.reloadDataForRow_column(AIndex, 0);
-  end else if not AChecked and lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.removeIndex(AIndex);
-    _tableView.reloadDataForRow_column(AIndex, 0);
-  end;
+  _tableView.reloadDataForRow_column(AIndex, 0);
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemSetImage(
@@ -2005,19 +1979,7 @@ end;
 
 procedure TCocoaWSListView_TableViewHandler.SetSort(const AType: TSortType;
   const AColumn: Integer; const ASortDirection: TSortDirection);
-var
-  lclcb: TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  if TCocoaListView(lclcb.Owner).initializing then
-    Exit;
-
-  if Assigned(lclcb.checkedIdx) then
-    lclcb.checkedIdx.removeAllIndexes;
-  lclcb.selectionIndexSet.removeAllIndexes;
   _tableView.reloadData();
   { //todo:
     lNSColumn.setSortDescriptorPrototype(

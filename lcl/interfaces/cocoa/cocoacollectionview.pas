@@ -10,11 +10,25 @@ interface
 uses
   Classes, SysUtils,
   MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaUtils,
+  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaConst, CocoaUtils,
   CocoaListView, CocoaTextEdits,
   LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
+
+  { TCocoaCollectionItem }
+  TCocoaCollectionItem = objcclass(NSCollectionViewItem)
+  private
+    _checkBox: NSButton;
+  private
+    procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
+  public
+    procedure loadView; override;
+    function checkBox: NSButton; message 'checkBox';
+    procedure createCheckBox; message 'createCheckBox';
+    procedure prepareForReuse; message 'prepareForReuse';
+    procedure dealloc; override;
+  end;
 
   { TCocoaListView_CollectionView_StyleHandler }
   TCocoaListView_CollectionView_StyleHandler = class
@@ -22,28 +36,26 @@ type
     _collectionView: NSCollectionView;
   public
     constructor Create( collectionView: NSCollectionView ); virtual;
+    function hasCheckBoxes: Boolean;
   public
-    procedure onInit; virtual; abstract;
+    procedure resetSize; virtual; abstract;
+    procedure onInit; virtual;
     procedure onUpdateItemValue( indexPath:NSIndexPath;
-      cocoaItem:NSCollectionViewItem ); virtual; abstract;
+      cocoaItem:TCocoaCollectionItem ); virtual; abstract;
     procedure onUpdateItemSize( baseSize: NSSize ); virtual; abstract;
-    procedure onUpdateItemLayout( item:NSCollectionViewItem ); virtual; abstract;
+    procedure onUpdateItemLayout( cocoItem: TCocoaCollectionItem ); virtual; abstract;
     procedure onAdjustTextEditorRect( var aFrame: NSRect ); virtual; abstract;
-  end;
-
-  { TCocoaCollectionItem }
-  TCocoaCollectionItem = objcclass(NSCollectionViewItem)
-  public
-    procedure loadView; override;
-    procedure prepareForReuse; message 'prepareForReuse';
-    procedure dealloc; override;
   end;
 
   { TCocoaCollectionItemView }
   TCocoaCollectionItemView = objcclass(NSView)
   private
     item: TCocoaCollectionItem;
+    trackingArea: NSTrackingArea;
   public
+    procedure updateTrackingAreas; override;
+    procedure mouseEntered(theEvent: NSEvent); override;
+    procedure mouseExited(theEvent: NSEvent); override;
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
@@ -53,10 +65,15 @@ type
     NSCollectionViewDataSourceProtocol,
     NSCollectionViewDelegateProtocol_1011,
     TCocoaListViewBackendControlProtocol )
+  private
+    _checkBoxes: Boolean;
   public
     styleHandler: TCocoaListView_CollectionView_StyleHandler;
     iconSize: NSSize;
     itemSize: NSSize;
+
+    procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
+    function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
   public
     callback: TLCLListViewCallback;
     function lclGetCallback: ICommonCallback; override;
@@ -156,7 +173,6 @@ type
     // Item
     procedure ItemDelete( const AIndex: Integer); override;
     function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
-    function  ItemGetChecked( const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; override;
     function  ItemGetPosition( const AIndex: Integer): TPoint; override;
     function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); override;
@@ -194,28 +210,28 @@ type
 
   { TCocoaListView_CollectionView_LargeIconHandler }
   TCocoaListView_CollectionView_LargeIconHandler = class(TCocoaListView_CollectionView_StyleHandler)
-    procedure onInit; override;
-    procedure onUpdateItemValue(indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem); override;
+    procedure resetSize; override;
+    procedure onUpdateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem ); override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
-    procedure onUpdateItemLayout(item: NSCollectionViewItem); override;
+    procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
     procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
   end;
 
   { TCocoaListView_CollectionView_SmallIconHandler }
   TCocoaListView_CollectionView_SmallIconHandler = class(TCocoaListView_CollectionView_StyleHandler)
-    procedure onInit; override;
-    procedure onUpdateItemValue(indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem); override;
+    procedure resetSize; override;
+    procedure onUpdateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem ); override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
-    procedure onUpdateItemLayout(item: NSCollectionViewItem); override;
+    procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
     procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
   end;
 
   { TCocoaListView_CollectionView_ListHandler }
   TCocoaListView_CollectionView_ListHandler = class(TCocoaListView_CollectionView_StyleHandler)
-    procedure onInit; override;
-    procedure onUpdateItemValue(indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem); override;
+    procedure resetSize; override;
+    procedure onUpdateItemValue( indexPath:NSIndexPath; cocoaItem:TCocoaCollectionItem ); override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
-    procedure onUpdateItemLayout(item: NSCollectionViewItem); override;
+    procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
     procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
   end;
 
@@ -274,9 +290,19 @@ begin
   _collectionView:= collectionView;
 end;
 
+function TCocoaListView_CollectionView_StyleHandler.hasCheckBoxes: Boolean;
+begin
+  Result:= TCocoaCollectionView(_collectionView).lclHasCheckBoxes;
+end;
+
+procedure TCocoaListView_CollectionView_StyleHandler.onInit;
+begin
+  self.resetSize;
+end;
+
 { TCocoaListView_CollectionView_LargeIconHandler }
 
-procedure TCocoaListView_CollectionView_LargeIconHandler.onInit;
+procedure TCocoaListView_CollectionView_LargeIconHandler.resetSize;
 var
   layout: NSCollectionViewFlowLayout;
   minSize: NSSize;
@@ -284,6 +310,10 @@ begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 64;
   minSize.height:= 68;
+
+  if self.hasCheckBoxes then
+    minSize.width:= minSize.width + 24;
+
   TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 4 );
@@ -291,19 +321,21 @@ begin
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onUpdateItemValue(
-  indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem);
+  indexPath: NSIndexPath; cocoaItem: TCocoaCollectionItem);
 var
+  row: NSInteger;
   cv: TCocoaCollectionView;
   cocoaImage: NSImage;
   lclImageIndex: Integer;
   lclText: String;
 begin
+  row:= indexPath.item;
   cv:= TCocoaCollectionView(_collectionView);
-  cv.callback.GetItemImageAt( indexPath.item, 0, lclImageIndex );
+  cv.callback.GetItemImageAt( row, 0, lclImageIndex );
   cocoaImage:= cv.callback.GetImageFromIndex( lclImageIndex );
   cocoaItem.imageView.setImage( cocoaImage );
 
-  cv.callback.GetItemTextAt( indexPath.item, 0, lclText );
+  cv.callback.GetItemTextAt( row, 0, lclText );
   cocoaItem.textField.setStringValue( StrToNSString(lclText) );
 end;
 
@@ -325,26 +357,44 @@ begin
     cv.itemSize.Width:= 64;
   if cv.itemSize.Height < 68 then
     cv.itemSize.Height:= 68;
+
+  if self.hasCheckBoxes then
+    cv.itemSize.Width:= cv.itemSize.Width + 24;
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onUpdateItemLayout(
-  item: NSCollectionViewItem);
+  cocoaItem: TCocoaCollectionItem);
 var
   cv: TCocoaCollectionView;
   aFrame: NSRect;
+  checkBox: NSButton;
 begin
+  checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
+
   aFrame.origin.x:= (cv.itemSize.Width - cv.iconSize.Width) / 2;
   aFrame.origin.y:= cv.itemSize.Height - cv.iconSize.Height - 10;
   aFrame.size:= cv.iconSize;
-  item.imageView.setFrame( aFrame );
+  if Assigned(checkBox) then
+    aFrame.origin.x:= aFrame.origin.x + 12;
+  cocoaItem.imageView.setFrame( aFrame );
 
   aFrame.origin.x:= 0;
   aFrame.origin.y:= 9;
-  aFrame.size.width:= cv.itemSize.Width;
   aFrame.size.height:= 15;
-  item.textField.setAlignment( NSTextAlignmentCenter );
-  item.textField.setFrame( aFrame );
+  if Assigned(checkBox) then
+    aFrame.origin.x:= aFrame.origin.x + 24;
+  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
+  cocoaItem.textField.setAlignment( NSTextAlignmentCenter );
+  cocoaItem.textField.setFrame( aFrame );
+
+  if Assigned(checkBox) then begin
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
+    aFrame.origin.x:= 6;
+    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2 + 5;
+    checkBox.setFrame( aFrame );
+  end;
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditorRect(
@@ -356,7 +406,7 @@ end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
 
-procedure TCocoaListView_CollectionView_SmallIconHandler.onInit;
+procedure TCocoaListView_CollectionView_SmallIconHandler.resetSize;
 var
   layout: NSCollectionViewFlowLayout;
   minSize: NSSize;
@@ -364,6 +414,9 @@ begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 150;
   minSize.height:= 28;
+  if self.hasCheckBoxes then
+    minSize.width:= minSize.width + 24;
+
   TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 10 );
@@ -371,19 +424,21 @@ begin
 end;
 
 procedure TCocoaListView_CollectionView_SmallIconHandler.onUpdateItemValue(
-  indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem);
+  indexPath: NSIndexPath; cocoaItem: TCocoaCollectionItem);
 var
+  row: NSInteger;
   cv: TCocoaCollectionView;
   cocoaImage: NSImage;
   lclImageIndex: Integer;
   lclText: String;
 begin
+  row:= indexPath.item;
   cv:= TCocoaCollectionView(_collectionView);
-  cv.callback.GetItemImageAt( indexPath.item, 0, lclImageIndex );
+  cv.callback.GetItemImageAt( row, 0, lclImageIndex );
   cocoaImage:= cv.callback.GetImageFromIndex( lclImageIndex );
   cocoaItem.imageView.setImage( cocoaImage );
 
-  cv.callback.GetItemTextAt( indexPath.item, 0, lclText );
+  cv.callback.GetItemTextAt( row, 0, lclText );
   cocoaItem.textField.setStringValue( StrToNSString(lclText) );
 end;
 
@@ -403,25 +458,41 @@ begin
   cv.itemSize.Height:= 4 + baseSize.Height + 4;
   if cv.itemSize.Height < 28 then
     cv.itemSize.Height:= 28;
+
+  if self.hasCheckBoxes then
+    cv.itemSize.width:= cv.itemSize.width + 24;
 end;
 
 procedure TCocoaListView_CollectionView_SmallIconHandler.onUpdateItemLayout(
-  item: NSCollectionViewItem);
+  cocoaItem: TCocoaCollectionItem);
 var
   cv: TCocoaCollectionView;
   aFrame: NSRect;
+  checkBox: NSButton;
 begin
+  checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
+
   aFrame.origin.x:= 6;
   aFrame.origin.y:= (cv.itemSize.Height - cv.iconSize.Height) / 2;
   aFrame.size:= cv.iconSize;
-  item.imageView.setFrame( aFrame );
+  if Assigned(checkBox) then
+    aFrame.origin.x:= aFrame.origin.x + 24;
+  cocoaItem.imageView.setFrame( aFrame );
 
   aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 2;
   aFrame.origin.y:= (cv.itemSize.Height - 15) / 2;
   aFrame.size.width:= 120;
   aFrame.size.height:= 15;
-  item.textField.setFrame( aFrame );
+  cocoaItem.textField.setFrame( aFrame );
+
+  if Assigned(checkBox) then begin
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
+    aFrame.origin.x:= 6;
+    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    checkBox.setFrame( aFrame );
+  end;
 end;
 
 procedure TCocoaListView_CollectionView_SmallIconHandler.onAdjustTextEditorRect(
@@ -432,7 +503,7 @@ end;
 
 { TCocoaListView_CollectionView_ListHandler }
 
-procedure TCocoaListView_CollectionView_ListHandler.onInit;
+procedure TCocoaListView_CollectionView_ListHandler.resetSize;
 var
   cv: TCocoaCollectionView;
   layout: NSCollectionViewFlowLayout;
@@ -441,6 +512,9 @@ begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
   minSize.width:= 146;
   minSize.height:= 24;
+  if self.hasCheckBoxes then
+    minSize.width:= minSize.width + 24;
+
   TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
   layout.setMinimumInteritemSpacing( 0 );
@@ -450,7 +524,7 @@ begin
 end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onUpdateItemValue(
-  indexPath: NSIndexPath; cocoaItem: NSCollectionViewItem);
+  indexPath: NSIndexPath; cocoaItem: TCocoaCollectionItem);
 var
   cv: TCocoaCollectionView;
   cocoaImage: NSImage;
@@ -468,17 +542,29 @@ begin
 end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onUpdateItemLayout(
-  item: NSCollectionViewItem);
+  cocoaItem: TCocoaCollectionItem);
 var
+  checkBox: NSButton;
   cv: TCocoaCollectionView;
   aFrame: NSRect;
 begin
+  checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
   aFrame.origin.x:= 4;
   aFrame.origin.y:= (cv.itemSize.Height - 15) / 2;
   aFrame.size.width:= 138;
   aFrame.size.height:= 15;
-  item.textField.setFrame( aFrame );
+  if Assigned(checkBox) then
+    aFrame.origin.x:= aFrame.origin.x + 24;
+  cocoaItem.textField.setFrame( aFrame );
+
+  if Assigned(checkBox) then begin
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
+    aFrame.origin.x:= 6;
+    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    checkBox.setFrame( aFrame );
+  end;
 end;
 
 procedure TCocoaListView_CollectionView_ListHandler.onAdjustTextEditorRect(
@@ -490,6 +576,33 @@ begin
 end;
 
 { TCocoaCollectionItem }
+
+procedure TCocoaCollectionItem.createCheckBox;
+begin
+  if NOT Assigned(_checkBox) then begin
+    _checkBox:= NSButton.alloc.init;
+    _checkBox.setHidden( True );
+    _checkBox.setButtonType( NSSwitchButton );
+    _checkBox.setTitle( CocoaConst.NSSTR_EMPTY );
+    _checkBox.setTarget( self );
+    _checkBox.setAction( ObjCSelector('checkboxAction:') );
+    self.View.addSubview( _checkBox );
+  end;
+end;
+
+procedure TCocoaCollectionItem.checkboxAction(sender: NSButton);
+var
+  row: Integer;
+  cv: TCocoaCollectionView;
+  indexPath: NSIndexPath;
+begin
+  cv:= TCocoaCollectionView( self.collectionView );
+  indexPath:= cv.indexPathForItem( self );
+  row:= indexPath.item;
+  cv.callback.SetItemCheckedAt( row, 0, sender.state );
+  if sender.state = NSOnState then
+    cv.selectOneItemByIndex( row, True );
+end;
 
 procedure TCocoaCollectionItem.loadView;
 var
@@ -516,6 +629,11 @@ begin
   self.setView( itemView );
 end;
 
+function TCocoaCollectionItem.checkBox: NSButton;
+begin
+  Result:= _checkBox;
+end;
+
 procedure TCocoaCollectionItem.prepareForReuse;
 begin
   self.view.removeFromSuperview;
@@ -524,15 +642,60 @@ end;
 procedure TCocoaCollectionItem.dealloc;
 begin
   self.imageView.removeFromSuperview;
-  self.textField.removeFromSuperview;
-  self.view.removeFromSuperview;
   self.imageView.release;
+
+  self.textField.removeFromSuperview;
   self.textField.release;
+
+  if Assigned(_checkBox) then begin
+    _checkBox.removeFromSuperview;
+    _checkBox.release;
+  end;
+
+  self.view.removeFromSuperview;
   self.view.release;
   inherited dealloc;
 end;
 
 { TCocoaCollectionItemView }
+
+procedure TCocoaCollectionItemView.updateTrackingAreas;
+const
+  options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
+                                or NSTrackingActiveAlways;
+begin
+  if Assigned(self.trackingArea) then begin
+    removeTrackingArea(self.trackingArea);
+    self.trackingArea.release;
+  end;
+
+  self.trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
+    self.bounds,
+    options,
+    self,
+    nil );
+  self.addTrackingArea( self.trackingArea );
+end;
+
+procedure TCocoaCollectionItemView.mouseEntered(theEvent: NSEvent);
+begin
+  if Assigned(self.item.checkBox) then
+    self.item.checkBox.setHidden( False );
+end;
+
+procedure TCocoaCollectionItemView.mouseExited(theEvent: NSEvent);
+var
+  checkBox: NSButton;
+begin
+  checkBox:= self.item.checkBox;
+  if NOT Assigned(checkBox) then
+    Exit;
+  if checkBox.state = NSOnState then
+    Exit;
+  if self.item.isSelected then
+    Exit;
+  checkBox.setHidden( True );
+end;
 
 procedure TCocoaCollectionItemView.drawRect(dirtyRect: NSRect);
 begin
@@ -544,6 +707,21 @@ begin
 end;
 
 { TCocoaCollectionView }
+
+procedure TCocoaCollectionView.lclSetCheckBoxes(checkBoxes: Boolean);
+begin
+  if _checkBoxes = checkBoxes then
+    Exit;
+
+  _checkBoxes:= checkBoxes;
+  self.styleHandler.resetSize;
+  self.reloadData;
+end;
+
+function TCocoaCollectionView.lclHasCheckBoxes: Boolean;
+begin
+  Result:= _checkBoxes;
+end;
 
 function TCocoaCollectionView.lclGetCallback: ICommonCallback;
 begin
@@ -601,15 +779,29 @@ end;
 procedure TCocoaCollectionView.updateItemValue(
   indexPath:NSIndexPath; cocoaItem: TCocoaCollectionItem );
 var
+  row: Integer;
+  checkBox: NSButton;
+  checkedValue: Integer;
   isSelected: Boolean;
 begin
   if NOT Assigned(self.callback) then
     Exit;
 
+  if _checkBoxes then
+    cocoaItem.createCheckBox;
+
   self.styleHandler.onUpdateItemValue( indexPath, cocoaItem );
 
-  isSelected:= self.callback.getItemStableSelection(indexPath.item);
+  row:= indexPath.item;
+  isSelected:= self.callback.getItemStableSelection( row );
   cocoaItem.setSelected( isSelected );
+
+  checkBox:= cocoaItem.checkBox;
+  if Assigned(checkBox) then begin
+    self.callback.GetItemCheckedAt( row, 0, checkedValue );
+    checkBox.setState( checkedValue );
+    checkBox.setHidden( NOT ((checkedValue=NSOnState) or isSelected) );
+  end;
 end;
 
 procedure TCocoaCollectionView.updateItemSize( baseSize: NSSize );
@@ -747,6 +939,8 @@ begin
     if Assigned(item) then begin
       item.setSelected( True );
       item.textField.setToolTip( item.textField.stringValue );
+      if Assigned(item.checkBox) then
+        item.checkBox.setHidden( False );
       item.view.setNeedsDisplay_(True);
     end;
     if Assigned(self.callback) then
@@ -771,6 +965,8 @@ begin
     if Assigned(item) then begin
       item.setSelected( False );
       item.textField.setToolTip( nil );
+      if Assigned(item.checkBox) then
+        item.checkBox.setHidden( item.checkBox.state<>NSOnState );
       item.view.setNeedsDisplay_(True);
     end;
     if Assigned(self.callback) then
@@ -929,12 +1125,6 @@ begin
   Result:= NSRectToRect( frame );
 end;
 
-function TCocoaWSListView_CollectionViewHandler.ItemGetChecked(
-  const AIndex: Integer; const AItem: TListItem): Boolean;
-begin
-  Result:= False;
-end;
-
 function TCocoaWSListView_CollectionViewHandler.ItemGetPosition(
   const AIndex: Integer): TPoint;
 var
@@ -982,6 +1172,7 @@ end;
 procedure TCocoaWSListView_CollectionViewHandler.ItemSetChecked(
   const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
 begin
+  _collectionView.reloadData;
 end;
 
 procedure TCocoaWSListView_CollectionViewHandler.ItemSetImage(
@@ -1133,6 +1324,8 @@ procedure TCocoaWSListView_CollectionViewHandler.SetProperty(
   const AProp: TListViewProperty; const AIsSet: Boolean);
 begin
   case AProp of
+    {lvpAutoArrange,}
+    lvpCheckboxes: _collectionView.lclSetCheckBoxes(AIsSet);
     {lvpHideSelection,
     lvpHotTrack,}
     lvpMultiSelect: _collectionView.setAllowsMultipleSelection(AIsSet);
@@ -1153,17 +1346,7 @@ end;
 procedure TCocoaWSListView_CollectionViewHandler.SetSort(
   const AType: TSortType; const AColumn: Integer;
   const ASortDirection: TSortDirection);
-var
-  lclcb : TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  if TCocoaListView(lclcb.Owner).initializing then
-    Exit;
-
-  lclcb.selectionIndexSet.removeAllIndexes;
   _collectionView.reloadData();
 end;
 

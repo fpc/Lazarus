@@ -18,6 +18,8 @@ type
 
   TCocoaWSCustomListView = class(TWSCustomListView)
   private
+    class var _settingLCLDirectly: Boolean;
+  private
     class function getWSHandler( const lclListView: TCustomListView ):
       TCocoaWSListViewHandler;
     class function getCallback( const lclListView: TCustomListView ):
@@ -317,12 +319,14 @@ class function TCocoaWSCustomListView.ItemGetChecked(
   const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem
   ): Boolean;
 var
-  WSHandler: TCocoaWSListViewHandler;
+  lclcb : TLCLListViewCallback;
 begin
   Result:= False;
-  WSHandler:= getWSHandler( ALV );
-  if Assigned(WSHandler) then
-    Result:= WSHandler.ItemGetChecked( AIndex, AItem );
+  lclcb:= getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  Result := lclcb.checkedIdx.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -363,10 +367,34 @@ class procedure TCocoaWSCustomListView.ItemSetChecked(
   const AChecked: Boolean);
 var
   WSHandler: TCocoaWSListViewHandler;
+  lclcb: TLCLListViewCallback;
+  cocoaListView: TCocoaListView;
+  needsUpdate: Boolean = False;
 begin
-  WSHandler:= getWSHandler( ALV );
-  if Assigned(WSHandler) then
-    WSHandler.ItemSetChecked( AIndex, AItem, AChecked );
+  if _settingLCLDirectly then
+    Exit;
+
+  lclcb:= self.getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
+    lclcb.checkedIdx.addIndex(AIndex);
+    needsUpdate:= True;
+  end else if not AChecked and lclcb.checkedIdx.containsIndex(AIndex) then begin
+    lclcb.checkedIdx.removeIndex(AIndex);
+    needsUpdate:= True;
+  end;
+
+  if needsUpdate then begin
+    WSHandler:= getWSHandler( ALV );
+    if Assigned(WSHandler) then
+      WSHandler.ItemSetChecked( AIndex, AItem, AChecked );
+  end;
+
+  _settingLCLDirectly:= True;
+  AItem.Checked:= AChecked;
+  _settingLCLDirectly:= False;
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetImage(const ALV: TCustomListView;
@@ -553,7 +581,19 @@ class procedure TCocoaWSCustomListView.SetSort(const ALV: TCustomListView;
   const ASortDirection: TSortDirection);
 var
   WSHandler: TCocoaWSListViewHandler;
+  lclcb: TLCLListViewCallback;
 begin
+  lclcb:= getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  if Assigned(lclcb.checkedIdx) then
+    lclcb.checkedIdx.removeAllIndexes;
+  lclcb.selectionIndexSet.removeAllIndexes;
+
   WSHandler:= getWSHandler( ALV );
   if Assigned(WSHandler) then
     WSHandler.SetSort( AType, AColumn, ASortDirection );
