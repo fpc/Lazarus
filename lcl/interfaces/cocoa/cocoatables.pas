@@ -1792,20 +1792,8 @@ end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemSetChecked(
   const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
-var
-  lclcb: TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.addIndex(AIndex);
-    _tableView.reloadDataForRow_column(AIndex, 0);
-  end else if not AChecked and lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.removeIndex(AIndex);
-    _tableView.reloadDataForRow_column(AIndex, 0);
-  end;
+  _tableView.reloadDataForRow_column(AIndex, 0);
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemSetImage(

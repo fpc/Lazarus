@@ -18,6 +18,8 @@ type
 
   TCocoaWSCustomListView = class(TWSCustomListView)
   private
+    class var _settingLCLDirectly: Boolean;
+  private
     class function getWSHandler( const lclListView: TCustomListView ):
       TCocoaWSListViewHandler;
     class function getCallback( const lclListView: TCustomListView ):
@@ -365,10 +367,34 @@ class procedure TCocoaWSCustomListView.ItemSetChecked(
   const AChecked: Boolean);
 var
   WSHandler: TCocoaWSListViewHandler;
+  lclcb: TLCLListViewCallback;
+  cocoaListView: TCocoaListView;
+  needsUpdate: Boolean = False;
 begin
-  WSHandler:= getWSHandler( ALV );
-  if Assigned(WSHandler) then
-    WSHandler.ItemSetChecked( AIndex, AItem, AChecked );
+  if _settingLCLDirectly then
+    Exit;
+
+  lclcb:= self.getCallback( ALV );
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
+    lclcb.checkedIdx.addIndex(AIndex);
+    needsUpdate:= True;
+  end else if not AChecked and lclcb.checkedIdx.containsIndex(AIndex) then begin
+    lclcb.checkedIdx.removeIndex(AIndex);
+    needsUpdate:= True;
+  end;
+
+  if needsUpdate then begin
+    WSHandler:= getWSHandler( ALV );
+    if Assigned(WSHandler) then
+      WSHandler.ItemSetChecked( AIndex, AItem, AChecked );
+  end;
+
+  _settingLCLDirectly:= True;
+  AItem.Checked:= AChecked;
+  _settingLCLDirectly:= False;
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetImage(const ALV: TCustomListView;
