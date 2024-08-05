@@ -1562,7 +1562,7 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
-  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
+  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
   _tableView.lclInsDelRow(AIndex, false);
@@ -1809,7 +1809,7 @@ begin
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
-  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
+  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by(AIndex, 1);
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   _tableView.lclInsDelRow(AIndex, true);
   _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );

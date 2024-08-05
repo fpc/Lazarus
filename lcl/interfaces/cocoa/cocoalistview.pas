@@ -25,8 +25,8 @@ type
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
     selectionIndexSet: NSMutableIndexSet;
-    checkedIdx : NSMutableIndexSet;
-    ownerData  : Boolean;
+    checkedIndexSet: NSMutableIndexSet;
+    ownerData: Boolean;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
@@ -286,15 +286,15 @@ constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl; 
 begin
   inherited Create(AOwner, ATarget, AHandleView);
   selectionIndexSet:= NSMutableIndexSet.new;
-  checkedIdx:= NSMutableIndexSet.new;
+  checkedIndexSet:= NSMutableIndexSet.new;
 end;
 
 destructor TLCLListViewCallback.Destroy;
 begin
   selectionIndexSet.release;
   selectionIndexSet:= nil;
-  checkedIdx.release;
-  checkedIdx:= nil;
+  checkedIndexSet.release;
+  checkedIndexSet:= nil;
   inherited Destroy;
 end;
 
@@ -330,7 +330,7 @@ begin
   if ownerData and Assigned(listView) and (ARow>=0) and (ARow < listView.Items.Count) then
     IsChecked := BoolState[listView.Items[ARow].Checked]
   else
-    IsChecked := BoolState[checkedIdx.containsIndex(ARow)];
+    IsChecked := BoolState[checkedIndexSet.containsIndex(ARow)];
   Result := true;
 end;
 
@@ -435,8 +435,8 @@ var
   NMLV: TNMListView;
 begin
   if IsChecked = NSOnState
-    then checkedIdx.addIndex(ARow)
-    else checkedIdx.removeIndex(ARow);
+    then checkedIndexSet.addIndex(ARow)
+    else checkedIndexSet.removeIndex(ARow);
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);

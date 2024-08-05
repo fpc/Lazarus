@@ -326,7 +326,7 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
-  Result := lclcb.checkedIdx.containsIndex(AIndex);
+  Result := lclcb.checkedIndexSet.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -378,11 +378,11 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
-  if AChecked and not lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.addIndex(AIndex);
+  if AChecked and not lclcb.checkedIndexSet.containsIndex(AIndex) then begin
+    lclcb.checkedIndexSet.addIndex(AIndex);
     needsUpdate:= True;
-  end else if not AChecked and lclcb.checkedIdx.containsIndex(AIndex) then begin
-    lclcb.checkedIdx.removeIndex(AIndex);
+  end else if not AChecked and lclcb.checkedIndexSet.containsIndex(AIndex) then begin
+    lclcb.checkedIndexSet.removeIndex(AIndex);
     needsUpdate:= True;
   end;
 
@@ -553,7 +553,7 @@ begin
 
   lclcb.ownerData := AValue;
   if lclcb.ownerData then
-    lclcb.checkedIdx.removeAllIndexes; // releasing memory
+    lclcb.checkedIndexSet.removeAllIndexes; // releasing memory
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
@@ -590,8 +590,8 @@ begin
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
-  if Assigned(lclcb.checkedIdx) then
-    lclcb.checkedIdx.removeAllIndexes;
+  if Assigned(lclcb.checkedIndexSet) then
+    lclcb.checkedIndexSet.removeAllIndexes;
   lclcb.selectionIndexSet.removeAllIndexes;
 
   WSHandler:= getWSHandler( ALV );
