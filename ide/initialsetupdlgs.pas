@@ -41,7 +41,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, pkgglobals, fpmkunit,
+  Classes, SysUtils, fgl, pkgglobals, fpmkunit,
   // LCL
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   // CodeTools
@@ -53,15 +53,25 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
-  GDBMIDebugger,
+  GDBMIDebugger, DividerBevel,
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDEProcs,
   // IDE
   LazarusIDEStrConsts, IDETranslations, BaseBuildManager, InitialSetupProc,
-  GenerateFppkgConfigurationDlg, InitialSetupDlgDebuggerFrame, IdeDebuggerOpts;
+  GenerateFppkgConfigurationDlg, LazarusPackageIntf, InitialSetupDlgDebuggerFrame, IdeDebuggerOpts;
   
 type
   TInitialSetupDialog = class;
+
+  TSetupFrameInfo = record
+    Node: TTreeNode;
+    Page: TTabSheet;
+    State: TInitSetupDlgFrameState;
+    Action: TInitSetupDlgFrameAction;
+    Group: String;
+  end;
+  TSetupDlgFrameMap = specialize TFPGMap<Pointer{ISetupDlgFrame}, TSetupFrameInfo>;
+  TGroupMap = specialize TFPGMap<string, TSetupFrameInfo>;
 
   { TSearchFpcSourceThread }
 
@@ -88,7 +98,7 @@ type
 
   { TInitialSetupDialog }
 
-  TInitialSetupDialog = class(TForm)
+  TInitialSetupDialog = class(TForm, ISetupDlgProvider)
     BtnPanel: TPanel;
     CompilerBrowseButton: TButton;
     CompilerComboBox: TComboBox;
@@ -149,6 +159,8 @@ type
     procedure FppkgWriteConfigButtonClick(Sender: TObject);
   private
     FInitDebuggerFrame: TInitDebuggerFrame;
+    FSetupDlgFrameMap: TSetupDlgFrameMap;
+    FSetupDlgGroupMap: TGroupMap;
     FFlags: TSDFlags;
     FLastParsedLazDir: string;
     fLastParsedCompiler: string;
@@ -156,16 +168,21 @@ type
     fLastParsedMakeExe: string;
     fLastParsedFppkgConfigFile: string;
     FIdleConnected: boolean;
+    ImgIDFatal: LongInt;
     ImgIDError: LongInt;
     ImgIDWarning: LongInt;
+    ImgIDNote: LongInt;
     ImgIDHint: LongInt;
+    ImgIDInfo: LongInt;
     FHeadGraphic: TPortableNetworkGraphic;
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TSDFileInfoList; // list of TSDFileInfo
     fSearchFpcSourceThread: TSearchFpcSourceThread;
     procedure DoDbgFrameStateChanged(AState: TSDFilenameQuality);
+    procedure FrameStateChanged(AnSender: ISetupDlgFrame; AState: TInitSetupDlgFrameState; AnAction: TInitSetupDlgFrameAction);
+    procedure SetGroupCaption(AGroupId, AName: String);
     procedure UpdateCaptions;
-    procedure SelectPage(const NodeText: string);
+    procedure SelectPage(const ATreeNode: TTreeNode; AnUserSelect: Boolean = False);
     function SelectDirectory(aTitle: string): string;
     function SelectDirectory(aTitle: string; aPathFileName: string;
                              aEnvOptParseType: TEnvOptParseType): string; overload;
@@ -200,6 +217,7 @@ type
     TVNodeDebugger: TTreeNode;
     TVNodeFppkg: TTreeNode;
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Init; //Check for config errors, find and show alternatives
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
@@ -242,6 +260,15 @@ begin
 end;
 
 { TSearchFpcSourceThread }
+
+function DoCompFrameList(const Item1, Item2: ISetupDlgFrame): Integer;
+begin
+  Result := Item1.SortOrder - Item2.SortOrder;
+  if Result = 0 then begin
+    if Item1.UniqueId < Item2.UniqueId then Result := -1;
+    if Item1.UniqueId > Item2.UniqueId then Result := 1;
+  end;
+end;
 
 constructor TSearchFpcSourceThread.Create(aSetupDialog: TInitialSetupDialog);
 begin
@@ -397,6 +424,17 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
+var
+  FrameList: TSetupDlgFrameList;
+  i, GrpIdx: Integer;
+  NewNode: TTreeNode;
+  NewTab: TTabSheet;
+  ScrollBox: TScrollBox;
+  NewParent: TWinControl;
+  CurFrame: ISetupDlgFrame;
+  Info, GrpInfo: TSetupFrameInfo;
+  Grp: String;
+  NewDiv: TDividerBevel;
 begin
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
@@ -413,14 +451,113 @@ begin
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
   TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
+
+  LazarusTabSheet.Tag    := PtrUInt(Pointer(TVNodeLazarus));
+  CompilerTabSheet.Tag   := PtrUInt(Pointer(TVNodeCompiler));
+  FPCSourcesTabSheet.Tag := PtrUInt(Pointer(TVNodeFPCSources));
+  MakeExeTabSheet.Tag    := PtrUInt(Pointer(TVNodeMakeExe));
+  DebuggerTabSheet.Tag   := PtrUInt(Pointer(TVNodeDebugger));
+
+
   FppkgTabSheet.TabVisible := EnvironmentOptions.FppkgCheck;
-  if FppkgTabSheet.TabVisible then
+  if FppkgTabSheet.TabVisible then begin
     TVNodeFppkg:=PropertiesTreeView.Items.Add(nil,FppkgTabSheet.Caption);
-  ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
+    FppkgTabSheet.Tag      := PtrUInt(Pointer(TVNodeFppkg));
+  end;
+  ImgIDFatal   := Imagelist1.AddResourceName(HInstance, 'state_fatal');
+  ImgIDError   := Imagelist1.AddResourceName(HInstance, 'state_error');
   ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
-  ImgIDHint := Imagelist1.AddResourceName(HInstance, 'state_hint');
+  ImgIDNote    := Imagelist1.AddResourceName(HInstance, 'state_note');
+  ImgIDHint    := Imagelist1.AddResourceName(HInstance, 'state_hint');
+  ImgIDInfo    := Imagelist1.AddResourceName(HInstance, 'state_information');
 
   IDEImages.AssignImage(StopScanButton, 'menu_stop');
+
+  FrameList := SetupDlgFrameList;
+  FrameList.Sort(@DoCompFrameList);
+  DisableAutoSizing;
+  try
+    for i := 0 to FrameList.Count - 1 do begin
+      CurFrame := FrameList[i];
+      Grp    := CurFrame.GroupId;
+      GrpIdx := -1;
+      NewNode := nil;
+      if Grp <> '' then begin
+        GrpIdx := FSetupDlgGroupMap.IndexOf(Grp);
+        if GrpIdx >= 0 then begin
+          GrpInfo := FSetupDlgGroupMap.Data[GrpIdx];
+          NewNode := GrpInfo.Node;
+          NewTab  := GrpInfo.Page;
+          ScrollBox := NewTab.Controls[0] as TScrollBox;
+        end;
+      end;
+
+      if NewNode = nil then begin
+        NewNode := PropertiesTreeView.Items.Add(nil, CurFrame.Caption);
+
+        NewTab := PropertiesPageControl.AddTabSheet;
+        NewTab.Caption := CurFrame.Caption;
+        NewTab.Tag := PtrUInt(NewNode);
+
+        ScrollBox := TScrollBox.Create(Self);
+        ScrollBox.Parent := NewTab;
+        ScrollBox.Align := alClient;
+        ScrollBox.HorzScrollBar.Visible := False;
+        NewParent := ScrollBox;
+
+        if (GrpIdx < 0) and (Grp <> '') then begin
+          GrpInfo.Node   := NewNode;
+          GrpInfo.Page   := NewTab;
+          GrpInfo.State  := issOk;
+          GrpInfo.Action := isaReady;
+          GrpIdx := FSetupDlgGroupMap.Add(Grp, GrpInfo);
+        end;
+      end;
+      if GrpIdx >= 0 then begin
+        NewDiv := TDividerBevel.Create(Self);
+        NewDiv.Parent := ScrollBox;
+        if ScrollBox.ControlCount > 1 then begin
+          NewDiv.AnchorSide[akTop].Side := asrBottom;
+          NewDiv.AnchorSide[akTop].Control := ScrollBox.Controls[ScrollBox.ControlCount - 2];
+        end
+        else begin
+          NewDiv.AnchorSide[akTop].Side := asrTop;
+          NewDiv.AnchorSide[akTop].Control := ScrollBox;
+        end;
+        NewDiv.AnchorSide[akLeft].Side := asrTop;
+        NewDiv.AnchorSide[akLeft].Control := ScrollBox;
+        NewDiv.AnchorSide[akRight].Side := asrBottom;
+        NewDiv.AnchorSide[akRight].Control := ScrollBox;
+        NewDiv.Anchors := [akTop, akLeft, akRight];
+
+        NewDiv.Caption := CurFrame.Caption;
+        NewParent := TPanel.Create(Self);
+
+        TPanel(NewParent).Parent := ScrollBox;
+        TPanel(NewParent).AnchorSide[akTop].Side := asrBottom;
+        TPanel(NewParent).AnchorSide[akTop].Control := NewDiv;
+        TPanel(NewParent).AnchorSide[akLeft].Side := asrTop;
+        TPanel(NewParent).AnchorSide[akLeft].Control := ScrollBox;
+        TPanel(NewParent).AnchorSide[akRight].Side := asrBottom;
+        TPanel(NewParent).AnchorSide[akRight].Control := ScrollBox;
+        TPanel(NewParent).Anchors := [akTop, akLeft, akRight];
+        TPanel(NewParent).AutoSize := True;
+        TPanel(NewParent).BevelInner := bvNone;
+        TPanel(NewParent).BevelOuter := bvNone;
+      end;
+
+      Info.Node   := NewNode;
+      Info.Page   := NewTab;
+      Info.State  := issOk;
+      Info.Action := isaReady;
+      Info.Group  := Grp;
+      FSetupDlgFrameMap.Add(Pointer(CurFrame), Info);
+
+      CurFrame.AddToDialog(Self, NewParent, Self);
+    end;
+  finally
+    EnableAutoSizing;
+  end;
 
   UpdateCaptions;
 
@@ -573,22 +710,22 @@ end;
 
 procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
 var
-  s: String;
   i: Integer;
+  t: PtrInt;
 begin
   if PropertiesPageControl.ActivePage=nil then exit;
-  s:=PropertiesPageControl.ActivePage.Caption;
+  t:=PropertiesPageControl.ActivePage.tag;
   for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
-    if PropertiesTreeView.Items.TopLvlItems[i].Text=s then
-      PropertiesTreeView.Selected:=PropertiesTreeView.Items.TopLvlItems[i];
+    if PtrUInt(PropertiesTreeView.Items.TopLvlItems[i])=t then
+      SelectPage(PropertiesTreeView.Items.TopLvlItems[i], True);
 end;
 
 procedure TInitialSetupDialog.PropertiesTreeViewSelectionChanged(Sender: TObject);
 begin
   if PropertiesTreeView.Selected=nil then
-    SelectPage(TVNodeLazarus.Text)
+    SelectPage(TVNodeLazarus)
   else
-    SelectPage(PropertiesTreeView.Selected.Text);
+    SelectPage(PropertiesTreeView.Selected, True);
 end;
 
 procedure TInitialSetupDialog.StartIDEBitBtnClick(Sender: TObject);
@@ -596,6 +733,7 @@ var
   Node: TTreeNode;
   s: String;
   MsgResult: TModalResult;
+  i: Integer;
 begin
   Node:=FirstErrorNode;
   s:='';
@@ -628,6 +766,8 @@ begin
   if s<>'' then
     EnvironmentOptions.MakeFilename:=s;
   FInitDebuggerFrame.ApplySelection;
+  for i := 0 to SetupDlgFrameList.Count - 1 do
+    SetupDlgFrameList[i].ApplySelection;
   ModalResult:=mrOk;
 end;
 
@@ -650,7 +790,11 @@ begin
 end;
 
 procedure TInitialSetupDialog.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  f: Boolean;
+  i: Integer;
 begin
+  f := FFlags <> [];
   if sdfCompilerFilenameNeedsUpdate in FFlags then begin
     UpdateCompilerFilenameCandidates;
     UpdateCompilerNote;
@@ -670,6 +814,11 @@ begin
     UpdateFppkgNote;
   end else
     IdleConnected:=false;
+
+  if f then begin
+    for i := 0 to SetupDlgFrameList.Count - 1 do
+      SetupDlgFrameList[i].UpdateState;
+  end;
 end;
 
 procedure TInitialSetupDialog.UpdateCaptions;
@@ -727,21 +876,87 @@ begin
   TVNodeDebugger.SelectedIndex:=ImageIndex;
 end;
 
-procedure TInitialSetupDialog.SelectPage(const NodeText: string);
+procedure TInitialSetupDialog.FrameStateChanged(AnSender: ISetupDlgFrame;
+  AState: TInitSetupDlgFrameState; AnAction: TInitSetupDlgFrameAction);
+var
+  ImageIndex, i, j: Integer;
+  nd: TTreeNode;
+  info, info2: TSetupFrameInfo;
+begin
+  i := FSetupDlgFrameMap.IndexOf(Pointer(AnSender));
+  if i < 0 then exit;
+  info := FSetupDlgFrameMap.Data[i];
+  nd := info.Node;
+
+  info.State := AState;
+  info.Action := AnAction;
+  FSetupDlgFrameMap.Data[i] := info;
+
+  if info.Group <> '' then begin
+    for j := 0 to FSetupDlgFrameMap.Count - 1 do begin
+      info2 := FSetupDlgFrameMap.Data[j];
+      if (info2.Group = info.Group) then begin
+        if (info2.State > AState) then AState := info2.State;
+      end;
+    end;
+  end;
+
+  ImageIndex := -1;
+  case AState of
+    issOk:      ImageIndex := -1;
+    issInfo:    ImageIndex := ImgIDInfo;
+    issHint:    ImageIndex := ImgIDHint;
+    issNote:    ImageIndex := ImgIDNote;
+    issWarning: ImageIndex := ImgIDWarning;
+    issError:   ImageIndex := ImgIDError;
+    issFatal:   ImageIndex := ImgIDFatal;
+  end;
+
+
+  nd.ImageIndex:=ImageIndex;
+  nd.SelectedIndex:=ImageIndex;
+end;
+
+procedure TInitialSetupDialog.SetGroupCaption(AGroupId, AName: String);
+var
+  GrpIdx: Integer;
+  GrpInfo: TSetupFrameInfo;
+begin
+  GrpIdx := FSetupDlgGroupMap.IndexOf(AGroupId);
+  if GrpIdx >= 0 then begin
+    GrpInfo := FSetupDlgGroupMap.Data[GrpIdx];
+    GrpInfo.Page.Caption := AName;
+    GrpInfo.Node.Text := AName;
+  end;
+end;
+
+procedure TInitialSetupDialog.SelectPage(const ATreeNode: TTreeNode; AnUserSelect: Boolean);
 var
   i: Integer;
   Node: TTreeNode;
+  info: TSetupFrameInfo;
 begin
   if FSelectingPage then exit;
   FSelectingPage:=true;
   try
     for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do begin
       Node:=PropertiesTreeView.Items.TopLvlItems[i];
-      if Node.Text=NodeText then begin
+      if Node=ATreeNode then begin
         PropertiesTreeView.Selected:=Node;
+        break;
+      end;
+    end;
+    for i:=0 to PropertiesPageControl.PageCount-1 do begin
+      if PropertiesPageControl.Pages[i].Tag=PtrUInt(ATreeNode) then begin
         PropertiesPageControl.ActivePageIndex:=i;
         break;
       end;
+    end;
+
+    for i := 0 to FSetupDlgFrameMap.Count - 1 do begin
+      info := FSetupDlgFrameMap.Data[i];
+      if info.Node = ATreeNode then
+        ISetupDlgFrame(FSetupDlgFrameMap.Keys[i]).PageSelected(AnUserSelect);
     end;
   finally
     FSelectingPage:=false;
@@ -1052,6 +1267,11 @@ begin
   for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
   begin
     Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDFatal then exit;
+  end;
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
     if Result.ImageIndex=ImgIDError then exit;
   end;
   Result:=FirstWarningNode;
@@ -1065,6 +1285,24 @@ begin
   begin
     Result:=PropertiesTreeView.Items.TopLvlItems[i];
     if Result.ImageIndex=ImgIDWarning then
+      exit;
+  end;
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDNote then
+      exit;
+  end;
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDHint then
+      exit;
+  end;
+  for i:=0 to PropertiesTreeView.Items.TopLvlCount-1 do
+  begin
+    Result:=PropertiesTreeView.Items.TopLvlItems[i];
+    if Result.ImageIndex=ImgIDInfo then
       exit;
   end;
   Result:=nil;
@@ -1131,12 +1369,26 @@ end;
 constructor TInitialSetupDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FSetupDlgFrameMap := TSetupDlgFrameMap.Create;
+  FSetupDlgGroupMap := TGroupMap.Create;
 
   FInitDebuggerFrame := TInitDebuggerFrame.Create(Self);
   FInitDebuggerFrame.Parent := DebuggerTabSheet;
   FInitDebuggerFrame.Align := alClient;
   FInitDebuggerFrame.OnStateChanged := @DoDbgFrameStateChanged;
   FInitDebuggerFrame.Init;
+end;
+
+destructor TInitialSetupDialog.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to SetupDlgFrameList.Count - 1 do
+    SetupDlgFrameList[i].Done;
+
+  inherited Destroy;
+  FSetupDlgFrameMap.Free;
+  FSetupDlgGroupMap.Free;
 end;
 
 procedure TInitialSetupDialog.Init;
@@ -1148,6 +1400,7 @@ var
   SecondaryFilename: String;
   PrimaryEnvs: TStringList;
   SecondaryEnvs: TStringList;
+  i: Integer;
 begin
   IsFirstStart:=not FileExistsCached(EnvironmentOptions.Filename);
   if not IsFirstStart then begin
@@ -1235,7 +1488,7 @@ begin
       {$IFNDEF LCLCarbon}
       // carbon interface does not support Synchronize outside Application.Run
       StartFPCSrcThread;
-      SelectPage(TVNodeFPCSources.Text);
+      SelectPage(TVNodeFPCSources);
       {$ENDIF}
     end;
   end;
@@ -1276,11 +1529,16 @@ begin
     UpdateFppkgNote;
   end;
 
+  for i := 0 to SetupDlgFrameList.Count - 1 do
+    SetupDlgFrameList[i].Init;
+  for i := 0 to SetupDlgFrameList.Count - 1 do
+    SetupDlgFrameList[i].UpdateState;
+
   // select first error
   Node:=FirstErrorNode;
   if Node=nil then
     Node:=TVNodeLazarus;
-  PropertiesTreeView.Selected:=Node;
+  SelectPage(Node);
 end;
 
 procedure TInitialSetupDialog.UpdateFppkgNote;

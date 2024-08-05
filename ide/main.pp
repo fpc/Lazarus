@@ -108,7 +108,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv, IdeDebuggerBase,
   // packager
-  PackageSystem, PkgManager, BasePkgManager, LPKCache,
+  PackageSystem, PkgManager, BasePkgManager, LPKCache, LazarusPackageIntf,
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs,
   CodeToolsDefines, DiffDialog, UnitInfoDlg, EditorOptions,
@@ -1436,6 +1436,7 @@ var
   Note: string;
   ConfigFile: string;
   SkipAllTests: Boolean;
+  i: Integer;
 begin
   {$IFDEF DebugSearchFPCSrcThread}
   ShowSetupDialog:=true;
@@ -1518,6 +1519,11 @@ begin
   then begin
     debugln('Warning: (lazarus) fppkg not properly configured.');
     ShowSetupDialog:=true;
+  end;
+
+  for i := 0 to SetupDlgFrameList.Count - 1 do begin
+    if ShowSetupDialog then break;
+    ShowSetupDialog := SetupDlgFrameList[i].RequireSetup;
   end;
 
   // show setup dialog

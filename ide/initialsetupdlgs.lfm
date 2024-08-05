@@ -7,10 +7,10 @@ object InitialSetupDialog: TInitialSetupDialog
   Caption = 'InitialSetupDialog'
   ClientHeight = 450
   ClientWidth = 620
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object PropertiesTreeView: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = WelcomePaintBox
@@ -32,8 +32,8 @@ object InitialSetupDialog: TInitialSetupDialog
     ShowLines = False
     ShowRoot = False
     TabOrder = 0
-    OnSelectionChanged = PropertiesTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
+    OnSelectionChanged = PropertiesTreeViewSelectionChanged
   end
   object Splitter1: TSplitter
     AnchorSideTop.Control = PropertiesTreeView
@@ -68,9 +68,9 @@ object InitialSetupDialog: TInitialSetupDialog
       AutoSize = True
       Caption = 'StartIDEBitBtn'
       Constraints.MinWidth = 100
-      OnClick = StartIDEBitBtnClick
       ParentFont = False
       TabOrder = 0
+      OnClick = StartIDEBitBtnClick
     end
   end
   object PropertiesPageControl: TPageControl
@@ -88,11 +88,11 @@ object InitialSetupDialog: TInitialSetupDialog
     ActivePage = DebuggerTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
+    Options = [nboHidePageListPopup]
     ParentFont = False
     TabIndex = 4
     TabOrder = 3
     OnChange = PropertiesPageControlChange
-    Options = [nboHidePageListPopup]
     object LazarusTabSheet: TTabSheet
       Caption = 'LazarusTabSheet'
       ChildSizing.LeftRightSpacing = 6
@@ -125,10 +125,10 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 424
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 15
-        OnChange = LazDirComboBoxChange
         ParentFont = False
         TabOrder = 0
         Text = 'LazDirComboBox'
+        OnChange = LazDirComboBoxChange
       end
       object LazDirMemo: TMemo
         AnchorSideTop.Control = LazDirBrowseButton
@@ -161,9 +161,9 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 132
         AutoSize = True
         Caption = 'LazDirBrowseButton'
-        OnClick = LazDirBrowseButtonClick
         ParentFont = False
         TabOrder = 2
+        OnClick = LazDirBrowseButtonClick
       end
     end
     object CompilerTabSheet: TTabSheet
@@ -198,10 +198,10 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 424
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 15
-        OnChange = CompilerComboBoxChange
         ParentFont = False
         TabOrder = 0
         Text = 'CompilerComboBox'
+        OnChange = CompilerComboBoxChange
       end
       object CompilerBrowseButton: TButton
         AnchorSideLeft.Control = CompilerTabSheet
@@ -213,9 +213,9 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 149
         AutoSize = True
         Caption = 'CompilerBrowseButton'
-        OnClick = CompilerBrowseButtonClick
         ParentFont = False
         TabOrder = 1
+        OnClick = CompilerBrowseButtonClick
       end
       object CompilerMemo: TMemo
         AnchorSideLeft.Control = CompilerTabSheet
@@ -268,10 +268,10 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 424
         Align = alTop
         ItemHeight = 15
-        OnChange = FPCSrcDirComboBoxChange
         ParentFont = False
         TabOrder = 0
         Text = 'FPCSrcDirComboBox'
+        OnChange = FPCSrcDirComboBoxChange
       end
       object FPCSrcDirBrowseButton: TButton
         AnchorSideLeft.Control = FPCSourcesTabSheet
@@ -283,9 +283,9 @@ object InitialSetupDialog: TInitialSetupDialog
         Width = 152
         AutoSize = True
         Caption = 'FPCSrcDirBrowseButton'
-        OnClick = FPCSrcDirBrowseButtonClick
         ParentFont = False
         TabOrder = 1
+        OnClick = FPCSrcDirBrowseButtonClick
       end
       object FPCSrcDirMemo: TMemo
         AnchorSideTop.Control = FPCSrcDirBrowseButton
@@ -346,9 +346,9 @@ object InitialSetupDialog: TInitialSetupDialog
         Top = 56
         Width = 78
         Caption = 'Stop'
-        OnClick = StopScanButtonClick
         ParentFont = False
         TabOrder = 4
+        OnClick = StopScanButtonClick
       end
     end
     object MakeExeTabSheet: TTabSheet
@@ -364,10 +364,10 @@ object InitialSetupDialog: TInitialSetupDialog
         Align = alTop
         BorderSpacing.Around = 6
         ItemHeight = 15
-        OnChange = MakeExeComboBoxChange
         ParentFont = False
         TabOrder = 0
         Text = 'MakeExeComboBox'
+        OnChange = MakeExeComboBoxChange
       end
       object MakeExeLabel: TLabel
         Left = 6
@@ -392,9 +392,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'MakeExeBrowseButton'
-        OnClick = MakeExeBrowseButtonClick
         ParentFont = False
         TabOrder = 1
+        OnClick = MakeExeBrowseButtonClick
       end
       object MakeExeMemo: TMemo
         AnchorSideTop.Control = MakeExeBrowseButton
@@ -434,10 +434,10 @@ object InitialSetupDialog: TInitialSetupDialog
         Align = alTop
         BorderSpacing.Around = 6
         ItemHeight = 15
-        OnChange = FppkgComboBoxChange
         ParentFont = False
         TabOrder = 0
         Text = 'FppkgComboBox'
+        OnChange = FppkgComboBoxChange
       end
       object FppkgLabel: TLabel
         Left = 6
@@ -462,9 +462,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'FppkgBrowseButton'
-        OnClick = FppkgBrowseButtonClick
         ParentFont = False
         TabOrder = 1
+        OnClick = FppkgBrowseButtonClick
       end
       object FppkgMemo: TMemo
         AnchorSideTop.Control = FppkgWriteConfigButton
@@ -499,9 +499,9 @@ object InitialSetupDialog: TInitialSetupDialog
         BorderSpacing.Around = 6
         Caption = 'FppkgWriteConfigButton'
         Enabled = False
-        OnClick = FppkgWriteConfigButtonClick
         ParentFont = False
         TabOrder = 3
+        OnClick = FppkgWriteConfigButtonClick
       end
     end
   end
