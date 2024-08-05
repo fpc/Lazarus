@@ -636,6 +636,12 @@ end;
 
 procedure TCocoaCollectionItem.prepareForReuse;
 begin
+  if Assigned(_checkBox) then begin
+    _checkBox.removeFromSuperview;
+    _checkBox.release;
+    _checkBox:= nil;
+  end;
+
   self.view.removeFromSuperview;
 end;
 
