@@ -52,6 +52,7 @@ type
     procedure TestReadNextPascalAtom;
     procedure TestCompareIdentifiers;
     procedure TestCompareDottedIdentifiers;
+    procedure TestCompareDottedIdentifiersCase;
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
@@ -496,6 +497,8 @@ begin
   t('&a','&;',-1);
 
   // dotted
+  t('a','a.',1); // compares 'a' and 'a.'
+  t('a','a&',0); // compares 'a' and 'a'
   t('a','a.b',1);
   t('a.b','a.b',0);
   t('a.b','a.b.c',1);
@@ -508,6 +511,94 @@ begin
   t('a.&B','A.c',1);
   t('a.&B','A.&c',1);
   t('a.&B','A.&b',0);
+  t('a.&','a.c',1); // compares 'a.' and 'a.c'
+  t('a.&','a.&c',1); // compares 'a.' and 'a.&c'
+  t('a.&','a.&1',0); // compares 'a.' and 'a.'
+end;
+
+procedure TTestBasicCodeTools.TestCompareDottedIdentifiersCase;
+
+  function GetStr(A: PChar): string;
+  begin
+    if A=nil then
+      Result:='nil'
+    else if A^=#0 then
+      Result:='#0'
+    else
+      Result:='"'+A+'"';
+  end;
+
+  procedure Test(A, B: PChar; Expected: integer);
+  var
+    Actual: Integer;
+    AmpA, AmpB: string;
+  begin
+    Actual:=CompareDottedIdentifiersCase(A,B);
+    if Actual<>Expected then
+      Fail('A='+GetStr(A)+' B='+GetStr(B)+', expected '+dbgs(Expected)+', but got '+dbgs(Actual));
+
+    if (A<>nil) and (IsIdentStartChar[A^]) then begin
+      AmpA:='&'+A;
+      Test(PChar(AmpA),B,Expected);
+      if (B<>nil) and (IsIdentStartChar[B^]) then begin
+        AmpB:='&'+B;
+        Test(PChar(AmpA),PChar(AmpB),Expected);
+      end;
+    end;
+  end;
+
+  procedure t(A, B: PChar; Expected: integer);
+  begin
+    Test(A,B,Expected);
+    Test(B,A,-Expected);
+  end;
+
+begin
+  t(nil,nil,0);
+  t(nil,#0,0);
+  t(nil,#1,0);
+  t(#0,#0,0);
+  t(#0,#1,0);
+  t(#1,#2,0);
+  t('a',nil,-1);
+  t('a',#0,-1);
+  t('a','a',0);
+  t('a','A',-1);
+  t('aa','aa',0);
+  t('aa','a',-1);
+  t('ab','a',-1);
+  t('ab','a;',-1);
+  t('ab','aa',-1);
+  t('ab','aaa',-1);
+  t('ab;','ab',0);
+  t('ab;','ab,',0);
+  t('aaa;','aaa',0);
+  t('i','i',0);
+  t('a',';',-1);
+  t('1','2',0);
+  t(',',',',0);
+  t(',',';',0);
+  t('&',nil,0);
+  t('&',#0,0);
+  t('&','&',0);
+  t('&a','&',-1);
+  t('&a','&;',-1);
+
+  // dotted
+  t('a','a.',1); // compares 'a' and 'a.'
+  t('a','a&',0); // compares 'a' and 'a'
+  t('a','a.b',1);
+  t('a.b','a.b',0);
+  t('a.b','a.b.c',1);
+  t('a.b','a.b',0);
+  t('a.&b','a.b',0);
+  t('a..b','a..b',0); // compares only A.
+  t('a..&b','a..b',0); // compares only A.
+  t('a..b','a..c',0); // compares only A.
+  t('a..&b','a..c',0); // compares only A.
+  t('a.&b','a.c',1);
+  t('a.&b','a.&c',1);
+  t('a.&b','a.&b',0);
   t('a.&','a.c',1); // compares 'a.' and 'a.c'
   t('a.&','a.&c',1); // compares 'a.' and 'a.&c'
   t('a.&','a.&1',0); // compares 'a.' and 'a.'
