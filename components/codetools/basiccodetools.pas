@@ -193,7 +193,7 @@ function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
 function IsDottedIdentifier(const Identifier: string): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer; // compares both to maximum dotted identifier
-function CompareDottedIdentifiersCase(Identifier1, Identifier2: PChar): integer; // case sensitive CompareDottedIdentifiers
+function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer; // case sensitive CompareDottedIdentifiers
 function ChompDottedIdentifier(const Identifier: string): string;
 function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
 
@@ -4438,20 +4438,30 @@ end;
 
 function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 begin
-  if (Identifier1<>nil) then begin
-    if (Identifier2<>nil) then begin
-      while (Identifier1[0]=Identifier2[0]) do begin
-        if (IsIdentChar[Identifier1[0]]) then begin
+  if (Identifier1<>nil)
+      and (IsIdentStartChar[Identifier1^]
+         or ((Identifier1^='&') and IsIdentStartChar[Identifier1[1]])) then
+  begin
+    if Identifier1^='&' then inc(Identifier1);
+
+    if (Identifier2<>nil)
+        and (IsIdentStartChar[Identifier2^]
+           or ((Identifier2^='&') and IsIdentStartChar[Identifier2[1]])) then
+    begin
+      if Identifier2^='&' then inc(Identifier2);
+
+      while Identifier1^=Identifier2^ do begin
+        if IsIdentChar[Identifier1^] then begin
           inc(Identifier1);
           inc(Identifier2);
         end else begin
-          Result:=0; // for example  'aaA;' 'aAa;'
+          Result:=0; // for example  'aa;' 'aa;'
           exit;
         end;
       end;
-      if (IsIdentChar[Identifier1[0]]) then begin
-        if (IsIdentChar[Identifier2[0]]) then begin
-          if Identifier1[0]>Identifier2[0] then
+      if IsIdentChar[Identifier1^] then begin
+        if IsIdentChar[Identifier2^] then begin
+          if Identifier1^>Identifier2^ then
             Result:=-1 // for example  'aab' 'aaa'
           else
             Result:=1; // for example  'aaa' 'aab'
@@ -4459,7 +4469,7 @@ begin
           Result:=-1; // for example  'aaa' 'aa;'
         end;
       end else begin
-        if (IsIdentChar[Identifier2[0]]) then
+        if IsIdentChar[Identifier2^] then
           Result:=1 // for example  'aa;' 'aaa'
         else
           Result:=0; // for example  'aa;' 'aa,'
@@ -4468,7 +4478,10 @@ begin
       Result:=-1; // for example  'aaa' nil
     end;
   end else begin
-    if (Identifier2<>nil) then begin
+    if (Identifier2<>nil)
+        and (IsIdentStartChar[Identifier2^]
+           or ((Identifier2^='&') and IsIdentStartChar[Identifier2[1]])) then
+    begin
       Result:=1; // for example  nil 'bbb'
     end else begin
       Result:=0; // for example  nil nil
@@ -5341,7 +5354,7 @@ begin
   end;
 end;
 
-function CompareDottedIdentifiersCase(Identifier1, Identifier2: PChar): integer;
+function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 var
   c: Char;
 begin

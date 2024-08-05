@@ -3045,7 +3045,7 @@ begin
     end;
     // change if needed
     if DottedIdents then
-      i:=CompareDottedIdentifiersCase(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)))
+      i:=CompareDottedIdentifiersCaseSensitive(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)))
     else
       i:=CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)));
     if i<>0 then begin
