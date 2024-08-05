@@ -76,6 +76,8 @@ type
     // Own methods, mostly convenience methods
     function getIndexOfColumn(ACol: NSTableColumn): Integer; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
+    procedure selectOneItemByIndex( index: Integer; isSelected: Boolean );
+      message 'selectOneItemByIndex:isSelected:';
     procedure selectRowIndexesByProgram( indexes: NSIndexSet );
       message 'selectRowIndexesByProgram:';
 
@@ -620,6 +622,30 @@ begin
   lRowSet := NSIndexSet.indexSetWithIndex(ARow);
   lColSet := NSIndexSet.indexSetWithIndex(ACol);
   reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
+end;
+
+procedure TCocoaTableListView.selectOneItemByIndex( index: Integer; isSelected: Boolean );
+var
+  lclcb: TLCLListViewCallback;
+  selection: NSMutableIndexSet;
+begin
+  if (index < 0) or (index >= self.numberOfRows) then
+    Exit;
+
+  lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
+  selection:= NSMutableIndexSet.alloc.initWithIndexSet( lclcb.selectionIndexSet );
+  if isSelected then begin
+    if NOT self.allowsMultipleSelection then
+      selection.removeAllIndexes;
+    selection.addIndex( index );
+  end else begin
+    selection.removeIndex( index );
+  end;
+
+  if NOT selection.isEqualToIndexSet(lclcb.selectionIndexSet) then
+    self.selectRowIndexes_byExtendingSelection( selection, False );
+
+  selection.release;
 end;
 
 procedure TCocoaTableListView.selectRowIndexesByProgram( indexes: NSIndexSet );
@@ -1807,20 +1833,18 @@ procedure TCocoaWSListView_TableViewHandler.ItemSetState(
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
 var
-  row: Integer;
-  isSel: Boolean;
+  lclcb: TLCLListViewCallback;
 begin
-  row := AItem.Index;
-  if (row < 0) or (row >= _tableView.numberOfRows) then Exit;
+  lclcb:= self.getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
 
   case AState of
     lisFocused,
     lisSelected: begin
-      isSel := _tableView.selectedRowIndexes.containsIndex(row);
-      if AIsSet and not isSel then
-        _tableView.selectRowIndexesByProgram( NSIndexSet.indexSetWithIndex(row) )
-      else if not AIsSet and isSel then
-        _tableView.deselectRow(row);
+      if lclcb.getItemStableSelection(AIndex) <> AIsSet then begin
+        _tableView.selectOneItemByIndex( AIndex, AIsSet );
+      end;
     end;
   end;
 end;
