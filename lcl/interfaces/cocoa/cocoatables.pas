@@ -633,7 +633,7 @@ begin
     Exit;
 
   lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-  selection:= NSMutableIndexSet.alloc.initWithIndexSet( lclcb.selectionIndexSet );
+  selection:= NSMutableIndexSet.alloc.initWithIndexSet( self.selectedRowIndexes );
   if isSelected then begin
     if NOT self.allowsMultipleSelection then
       selection.removeAllIndexes;
@@ -642,8 +642,11 @@ begin
     selection.removeIndex( index );
   end;
 
-  if NOT selection.isEqualToIndexSet(lclcb.selectionIndexSet) then
-    self.selectRowIndexes_byExtendingSelection( selection, False );
+  if NOT selection.isEqualToIndexSet(self.selectedRowIndexes) then begin
+    lclcb.selectionIndexSet.removeAllIndexes;
+    lclcb.selectionIndexSet.addIndexes( selection );
+    self.selectRowIndexesByProgram( selection );
+  end;
 
   selection.release;
 end;
@@ -2004,6 +2007,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.SetSort(const AType: TSortType;
   const AColumn: Integer; const ASortDirection: TSortDirection);
 begin
+  _tableView.deselectAll(nil);
   _tableView.reloadData();
   { //todo:
     lNSColumn.setSortDescriptorPrototype(
