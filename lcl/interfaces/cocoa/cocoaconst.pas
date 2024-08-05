@@ -6,7 +6,11 @@ unit CocoaConst;
 interface
 
 uses
-  CocoaAll, LCLStrConsts;
+  SysUtils, LCLStrConsts, LCLType, LCLProc,
+  CocoaAll;
+
+var
+  BUTTON_CAPTION_ARRAY: Array [idButtonOk..idButtonNoToAll] of NSString;
 
 function NSSTR_EMPTY: NSString;
 
@@ -191,6 +195,37 @@ begin
   Result:= _NSSTR_EDIT_MENU_SELECTALL;
 end;
 
+function StringToNSString( s:String ): NSString;
+begin
+  Result:= NSString.alloc.initWithUTF8String( pchar(s) );
+end;
+
+function StringRemoveAcceleration(const str: String): String;
+var
+  posAmp: Integer;
+  posRight: Integer;
+  posLeft: Integer;
+begin
+  Result:= str;
+  posAmp:= DeleteAmpersands(Result);
+  if posAmp < 0 then
+    Exit;
+
+  posRight:= str.IndexOf( ')' );
+  if (posRight<0) or (posRight<posAmp) then
+    Exit;
+
+  posLeft:= str.IndexOf( '(' );
+  if (posLeft<0) or (posLeft>posAmp) then
+    Exit;
+
+  Result:= str.Substring(0,posLeft).Trim;
+end;
+
+function LclTitleToNSString( title:String ): NSString;
+begin
+  Result:= StringToNSString( StringRemoveAcceleration(title) );
+end;
 
 initialization
   _NSSTR_EMPTY:= NSString.string_;
@@ -200,16 +235,29 @@ initialization
 
   _NSSTR_LINE_FEED:= NSSTR(#10);
   _NSSTR_CARRIAGE_RETURN:= NSSTR(#13);
-  _NSSTR_LINE_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A8);
-  _NSSTR_PARAGRAPH_SEPARATOR:= NSString.alloc.initWithUTF8String(#$E2#$80#$A9);
+  _NSSTR_LINE_SEPARATOR:= StringToNSString(#$E2#$80#$A8);
+  _NSSTR_PARAGRAPH_SEPARATOR:= StringToNSString(#$E2#$80#$A9);
 
   _NSSTR_KEY_ENTER:= NSSTR(#13);
   _NSSTR_KEY_ESC:= NSSTR(#27);
   _NSSTR_KEY_EQUALS:= NSSTR('=');
   _NSSTR_KEY_PLUS:= NSSTR('+');
 
-  _NSSTR_TABCONTROL_PREV_ARROW:= NSString.alloc.initWithUTF8String('◀');
-  _NSSTR_TABCONTROL_NEXT_ARROW:= NSString.alloc.initWithUTF8String('▶');
+  _NSSTR_TABCONTROL_PREV_ARROW:= StringToNSString('◀');
+  _NSSTR_TABCONTROL_NEXT_ARROW:= StringToNSString('▶');
+
+  BUTTON_CAPTION_ARRAY[idButtonOk]:= LclTitleToNSString( rsMbOK );
+  BUTTON_CAPTION_ARRAY[idButtonCancel]:= LclTitleToNSString( rsMbCancel );
+  BUTTON_CAPTION_ARRAY[idButtonHelp]:= LclTitleToNSString( rsMbHelp );
+  BUTTON_CAPTION_ARRAY[idButtonYes]:= LclTitleToNSString( rsMbYes );
+  BUTTON_CAPTION_ARRAY[idButtonNo]:= LclTitleToNSString( rsMbNo );
+  BUTTON_CAPTION_ARRAY[idButtonClose]:= LclTitleToNSString( rsMbClose );
+  BUTTON_CAPTION_ARRAY[idButtonAbort]:= LclTitleToNSString( rsMbAbort );
+  BUTTON_CAPTION_ARRAY[idButtonRetry]:= LclTitleToNSString( rsMbRetry );
+  BUTTON_CAPTION_ARRAY[idButtonIgnore]:= LclTitleToNSString( rsMbIgnore );
+  BUTTON_CAPTION_ARRAY[idButtonAll]:= LclTitleToNSString( rsMbAll );
+  BUTTON_CAPTION_ARRAY[idButtonYesToAll]:= LclTitleToNSString( rsMbYesToAll );
+  BUTTON_CAPTION_ARRAY[idButtonNoToAll]:= LclTitleToNSString( rsMbNoToAll );
 
 finalization;
   _NSSTR_LINE_SEPARATOR.release;

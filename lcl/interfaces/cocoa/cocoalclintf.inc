@@ -225,11 +225,6 @@ function CocoaPromptUser(const DialogCaption : string;
                                            EscapeResult  : LongInt;
   sheetOfWindow : NSWindow; modalSheet: Boolean) : LongInt;
 {Implements MessageDlg.}
-
-const
-  ButtonCaption: Array [idButtonOk..idButtonNoToAll] of PChar =
-    ('OK', 'Cancel', ''{Help}, 'Yes', 'No', 'Close', 'Abort', 'Retry', 'Ignore',
-     'All', 'Yes To All', 'No To All');
 var
   anAlert: NSAlert;
   informativeText: NSString;
@@ -280,13 +275,13 @@ begin
         end
         else
         begin
-          if (Buttons[I] < Low(ButtonCaption)) or (Buttons[I] > High(ButtonCaption)) then
+          if (Buttons[I] < Low(BUTTON_CAPTION_ARRAY)) or (Buttons[I] > High(BUTTON_CAPTION_ARRAY)) then
           begin
             DebugLn('TCocoaWidgetSet.PromptUser Invalid button ID: ' + DbgS(Buttons[I]));
             Continue;
           end;
 
-          aButton := anAlert.addButtonWithTitle(NSSTR(ButtonCaption[Buttons[I]]));
+          aButton := anAlert.addButtonWithTitle(BUTTON_CAPTION_ARRAY[Buttons[I]]);
           aButton.setKeyEquivalentModifierMask(0);
 
           if I = DefaultIndex then
