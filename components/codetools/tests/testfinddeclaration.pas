@@ -149,6 +149,7 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
     procedure TestFindDeclaration_ProcRef;
+    procedure TestFindDeclaration_Ampersand;
 
     // unit/include search
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
@@ -1340,6 +1341,25 @@ begin
   '  Foo.Test{declaration:TFoo.Test} := @Foo.TestProc{declaration:TFoo.TestProc};',
   '  with Foo do',
   '    Test{declaration:TFoo.Test} := @TestProc{declaration:TFoo.TestProc};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Ampersand;
+begin
+  StartUnit;
+  Add([
+  'const',
+  '  &true = 1;',
+  'type',
+  '  TBird = record',
+  '    &type: word;',
+  '  end;',
+  'var',
+  '  Bird: TBird;',
+  'implementation',
+  'initialization',
+  '  Bird.&Type{declaration:test1.TBird.Type} = &True{declaration:test1.True};',
   'end.']);
   FindDeclarations(Code);
 end;
