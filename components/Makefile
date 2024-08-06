@@ -1961,6 +1961,9 @@ bigide:
 	$(MAKE) -C exampleswindow
 	$(MAKE) -C charactermap
 	$(MAKE) -C charactermap/design
+	$(MAKE) -C dockedformeditor
+	$(MAKE) -C anchordocking
+	$(MAKE) -C anchordocking/design
 all: lazbuildlclpackages idepackages bigide
 clean:
 	$(MAKE) -C lazutils clean
@@ -2020,6 +2023,9 @@ clean:
 	$(MAKE) -C exampleswindow clean
 	$(MAKE) -C charactermap clean
 	$(MAKE) -C charactermap/design clean
+	$(MAKE) -C dockedformeditor clean
+	$(MAKE) -C anchordocking clean
+	$(MAKE) -C anchordocking/design clean
 cleanall: clean
 distclean:
 	$(MAKE) -C lazutils distclean
@@ -2076,8 +2082,9 @@ distclean:
 	$(MAKE) -C simplewebservergui distclean
 	$(MAKE) -C projectgroups distclean
 	$(MAKE) -C pas2js distclean
-	$(MAKE) -C anchordocking/design distclean
-	$(MAKE) -C anchordocking distclean
 	$(MAKE) -C exampleswindow distclean
 	$(MAKE) -C charactermap distclean
 	$(MAKE) -C charactermap/design distclean
+	$(MAKE) -C dockedformeditor distclean
+	$(MAKE) -C anchordocking distclean
+	$(MAKE) -C anchordocking/design distclean

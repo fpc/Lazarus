@@ -80,6 +80,7 @@ uses
     EditorMacroScript, ExampleProjects,
     OnlinePackageManager,
     SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn, charactermap_ide_pkg,
+    AnchorDockingDsgn, DockedFormEditor,
   {$ENDIF}
   MainBase,
   ColorTTY;
