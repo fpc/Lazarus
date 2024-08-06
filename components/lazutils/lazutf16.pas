@@ -1003,7 +1003,7 @@ function UnicodeLowercase(u: cardinal): cardinal;
 begin
   if u<$00C0 then begin
     // most common
-    if (u>=$0041) and (u<=$0061) then
+    if (u>=$0041) and (u<=$005A) then
       Result:=u+32
     else
       Result:=u;
