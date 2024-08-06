@@ -9,8 +9,10 @@ uses
   SysUtils, LCLStrConsts, LCLType, LCLProc,
   CocoaAll;
 
-var
-  BUTTON_CAPTION_ARRAY: Array [idButtonOk..idButtonNoToAll] of NSString;
+type
+  TNSStringArray = Array of NSString;
+
+function BUTTON_CAPTION_ARRAY: TNSStringArray;
 
 function NSSTR_EMPTY: NSString;
 
@@ -43,6 +45,9 @@ implementation
 const
   DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
   DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
+
+var
+  _BUTTON_CAPTION_ARRAY: TNSStringArray;
 
 var
   _NSSTR_EMPTY: NSString;
@@ -195,7 +200,7 @@ begin
   Result:= _NSSTR_EDIT_MENU_SELECTALL;
 end;
 
-function StringToNSString( s:String ): NSString;
+function StringToNSString( const s:String ): NSString;
 begin
   Result:= NSString.alloc.initWithUTF8String( pchar(s) );
 end;
@@ -222,9 +227,29 @@ begin
   Result:= str.Substring(0,posLeft).Trim;
 end;
 
-function LclTitleToNSString( title:String ): NSString;
+function LclTitleToNSString( const title:String ): NSString;
 begin
   Result:= StringToNSString( StringRemoveAcceleration(title) );
+end;
+
+function BUTTON_CAPTION_ARRAY: TNSStringArray;
+begin
+  if length(_BUTTON_CAPTION_ARRAY)=0 then begin
+    setlength( _BUTTON_CAPTION_ARRAY, idButtonNoToAll );
+    _BUTTON_CAPTION_ARRAY[idButtonOk]:= LclTitleToNSString( rsMbOK );
+    _BUTTON_CAPTION_ARRAY[idButtonCancel]:= LclTitleToNSString( rsMbCancel );
+    _BUTTON_CAPTION_ARRAY[idButtonHelp]:= LclTitleToNSString( rsMbHelp );
+    _BUTTON_CAPTION_ARRAY[idButtonYes]:= LclTitleToNSString( rsMbYes );
+    _BUTTON_CAPTION_ARRAY[idButtonNo]:= LclTitleToNSString( rsMbNo );
+    _BUTTON_CAPTION_ARRAY[idButtonClose]:= LclTitleToNSString( rsMbClose );
+    _BUTTON_CAPTION_ARRAY[idButtonAbort]:= LclTitleToNSString( rsMbAbort );
+    _BUTTON_CAPTION_ARRAY[idButtonRetry]:= LclTitleToNSString( rsMbRetry );
+    _BUTTON_CAPTION_ARRAY[idButtonIgnore]:= LclTitleToNSString( rsMbIgnore );
+    _BUTTON_CAPTION_ARRAY[idButtonAll]:= LclTitleToNSString( rsMbAll );
+    _BUTTON_CAPTION_ARRAY[idButtonYesToAll]:= LclTitleToNSString( rsMbYesToAll );
+    _BUTTON_CAPTION_ARRAY[idButtonNoToAll]:= LclTitleToNSString( rsMbNoToAll );
+  end;
+  Result:= _BUTTON_CAPTION_ARRAY;
 end;
 
 initialization
@@ -245,19 +270,6 @@ initialization
 
   _NSSTR_TABCONTROL_PREV_ARROW:= StringToNSString('◀');
   _NSSTR_TABCONTROL_NEXT_ARROW:= StringToNSString('▶');
-
-  BUTTON_CAPTION_ARRAY[idButtonOk]:= LclTitleToNSString( rsMbOK );
-  BUTTON_CAPTION_ARRAY[idButtonCancel]:= LclTitleToNSString( rsMbCancel );
-  BUTTON_CAPTION_ARRAY[idButtonHelp]:= LclTitleToNSString( rsMbHelp );
-  BUTTON_CAPTION_ARRAY[idButtonYes]:= LclTitleToNSString( rsMbYes );
-  BUTTON_CAPTION_ARRAY[idButtonNo]:= LclTitleToNSString( rsMbNo );
-  BUTTON_CAPTION_ARRAY[idButtonClose]:= LclTitleToNSString( rsMbClose );
-  BUTTON_CAPTION_ARRAY[idButtonAbort]:= LclTitleToNSString( rsMbAbort );
-  BUTTON_CAPTION_ARRAY[idButtonRetry]:= LclTitleToNSString( rsMbRetry );
-  BUTTON_CAPTION_ARRAY[idButtonIgnore]:= LclTitleToNSString( rsMbIgnore );
-  BUTTON_CAPTION_ARRAY[idButtonAll]:= LclTitleToNSString( rsMbAll );
-  BUTTON_CAPTION_ARRAY[idButtonYesToAll]:= LclTitleToNSString( rsMbYesToAll );
-  BUTTON_CAPTION_ARRAY[idButtonNoToAll]:= LclTitleToNSString( rsMbNoToAll );
 
 finalization;
   _NSSTR_LINE_SEPARATOR.release;
