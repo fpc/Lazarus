@@ -1328,13 +1328,26 @@ end;
 
 procedure TCocoaWSListView_CollectionViewHandler.SetProperty(
   const AProp: TListViewProperty; const AIsSet: Boolean);
+var
+  lclListView: TCustomListView;
+  index: Integer;
 begin
   case AProp of
     {lvpAutoArrange,}
     lvpCheckboxes: _collectionView.lclSetCheckBoxes(AIsSet);
     {lvpHideSelection,
     lvpHotTrack,}
-    lvpMultiSelect: _collectionView.setAllowsMultipleSelection(AIsSet);
+    lvpMultiSelect: begin
+      _collectionView.setAllowsMultipleSelection( AIsSet );
+      if NOT AIsSet and (_collectionView.selectionIndexPaths.count>1) then begin
+        lclListView:= TCustomListView( _listView.lclGetTarget );
+        if Assigned(lclListView.ItemFocused) then begin
+          index:= lclListView.ItemFocused.Index;
+          _collectionView.deselectAll( nil );
+          _collectionView.selectOneItemByIndex( index, True );
+        end;
+      end;
+    end;
     {lvpOwnerDraw,
     lvpReadOnly:
     lvpShowWorkAreas,
