@@ -89,6 +89,15 @@ resourcestring
   adrsFloatingWindowsOnTopHint = 'Show floating windows on top of main form';
   adrsFlatHeadersButtons = 'Flat header buttons';
   adrsFlatHeadersButtonsHint = 'Flat buttons in headers of docked controls';
+  setupMultiWindowIDEDisplayIndi = 'Multi Window IDE: Display individual separate Windows'
+    +' in the IDE';
+  setupSingleWindowIDEDisplayASi = 'Single Window IDE: Display a single Window holding '
+    +'all parts of the IDE (Docked)';
+  setupSingleWindowModeAllowsYou = 'Single Window mode allows you to undock individual '
+    +'Windows and have several group of Windows. The IDE will show additional "Dock-Handles" in '
+    +'each Window, which will allow you to change layout, but also require additional space.';
+  SDisable = 'Disabled (requires restart)';
+  SIDELayout = 'IDE Layout';
 
 implementation
 

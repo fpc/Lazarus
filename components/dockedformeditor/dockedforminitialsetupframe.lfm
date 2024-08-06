@@ -1,0 +1,68 @@
+object DockedFormEditSetupFrame: TDockedFormEditSetupFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ChildSizing.LeftRightSpacing = 5
+  ChildSizing.TopBottomSpacing = 5
+  ChildSizing.HorizontalSpacing = 2
+  ChildSizing.VerticalSpacing = 5
+  ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+  ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+  ChildSizing.Layout = cclLeftToRightThenTopToBottom
+  ChildSizing.ControlsPerLine = 2
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 348
+  DesignTop = 3
+  object rbFloat: TRadioButton
+    Left = 5
+    Height = 17
+    Top = 5
+    Width = 25
+    Constraints.MaxWidth = 25
+    TabOrder = 0
+    OnChange = rbDockedChange
+  end
+  object lbFloat: TLabel
+    Left = 32
+    Height = 17
+    Top = 5
+    Width = 283
+    Caption = 'lbFloat'
+    WordWrap = True
+    OnClick = lbFloatClick
+  end
+  object rbDocked: TRadioButton
+    Left = 5
+    Height = 17
+    Top = 27
+    Width = 25
+    TabOrder = 1
+    OnChange = rbDockedChange
+  end
+  object lbDocked: TLabel
+    Left = 32
+    Height = 17
+    Top = 27
+    Width = 283
+    Caption = 'lbDocked'
+    WordWrap = True
+    OnClick = lbDockedClick
+  end
+  object Label1: TLabel
+    Left = 5
+    Height = 15
+    Top = 49
+    Width = 25
+  end
+  object lbInfo: TLabel
+    Left = 32
+    Height = 15
+    Top = 49
+    Width = 283
+    Caption = 'lbInfo'
+    WordWrap = True
+  end
+end

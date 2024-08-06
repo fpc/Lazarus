@@ -54,6 +54,15 @@ resourceString
   STabPositionRight           = 'Right';
 
   SArgumentOutOfRange         = 'Argument out of range.';
+  setupDisplayTheFormEditorDesig = 'Display the form editor (Designer) as a separate '
+    +'floating form.';
+  setupDisplayDockTheFormEditorA = 'Display/Dock the form editor as part of the source-'
+    +'editors.';
+  setupWithTheDockedDesignerYouW = 'With the docked designer you will have a tab to '
+    +'toggle the source and the design view. You can open a 2nd source-edit window to see both at'
+    +' the same time.';
+  SDisableRequiresRestart = 'Disabled (requires restart)';
+  SIDELayout = 'IDE Layout';
 
 const
   STabPosition: array [Low(TTabPosition)..High(TTabPosition)] of String = (

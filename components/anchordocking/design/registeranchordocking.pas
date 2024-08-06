@@ -89,9 +89,12 @@ type
   { TAnchorDockIDEFrame }
 
   TAnchorDockIDEFrame = class(TAbstractIDEOptionsEditor)
+    cbDisable: TCheckBox;
     NoteLabel: TLabel;
+    procedure cbDisableChange(Sender: TObject);
   private
     FSettings: TAnchorDockSettings;
+    FDisabledChanged: boolean;
   public
     OptionsFrame: TAnchorDockOptionsFrame;
     constructor Create(TheOwner: TComponent); override;
@@ -103,11 +106,15 @@ type
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
+  TAnchorDockIDEDisabledFrame = class(TAnchorDockIDEFrame)
+  end;
+
 var
   IDEAnchorDockMaster: TIDEAnchorDockMaster = nil;
   AnchorDockOptionsID: integer = 1000;
 
 procedure Register;
+procedure ProvideIDEDockMaster;
 
 implementation
 
@@ -115,7 +122,16 @@ implementation
 
 procedure Register;
 begin
-  if not (IDEDockMaster is TIDEAnchorDockMaster) then exit;
+  AnchorDockGlobalOptions.LoadSafe;
+  if not AnchorDockGlobalOptions.EnableAnchorDock then begin
+    AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEDisabledFrame,
+                                                  AnchorDockOptionsID)^.Index;
+    exit;
+  end;
+
+  // Calling IDEDockMaster will create it, if it hasn't already been created.
+  if not (IDEDockMaster is TIDEAnchorDockMaster) then
+    exit;
 
   // add options frame
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
@@ -418,6 +434,11 @@ end;
 
 { TAnchorDockIDEFrame }
 
+procedure TAnchorDockIDEFrame.cbDisableChange(Sender: TObject);
+begin
+  FDisabledChanged := True;
+end;
+
 constructor TAnchorDockIDEFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -442,6 +463,11 @@ end;
 
 procedure TAnchorDockIDEFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  cbDisable.Caption := SDisable;
+  if self is TAnchorDockIDEDisabledFrame then begin
+    NoteLabel.Visible := False;
+    exit;
+  end;
   if ADialog=nil then ;
   if IDEDockMaster=IDEAnchorDockMaster then begin
     NoteLabel.Visible:=false;
@@ -460,6 +486,10 @@ end;
 
 procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  cbDisable.Checked := not AnchorDockGlobalOptions.EnableAnchorDock;
+  FDisabledChanged := False;
+  if self is TAnchorDockIDEDisabledFrame then exit;
+
   if not (AOptions is SupportedOptionsClass) then exit;
   DockMaster.SaveSettings(FSettings);
   OptionsFrame.LoadFromSettings(FSettings);
@@ -467,6 +497,13 @@ end;
 
 procedure TAnchorDockIDEFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  AnchorDockGlobalOptions.EnableAnchorDock := not cbDisable.Checked;
+  if FDisabledChanged then
+    AnchorDockGlobalOptions.DoneAskUserEnableAnchorDock := True;
+  AnchorDockGlobalOptions.SaveSafe;
+
+  if self is TAnchorDockIDEDisabledFrame then exit;
+
   if not (AOptions is SupportedOptionsClass) then exit;
   OptionsFrame.SaveToSettings(FSettings);
   if (not DockMaster.SettingsAreEqual(FSettings))
@@ -481,17 +518,23 @@ begin
   Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;
 
-initialization
-  // create the dockmaster in the initialization section, so that it is ready
-  // when the Register procedures of the packages are called.
-  if IDEDockMaster<>nil then begin
-    debugln('WARNING: there is already another IDEDockMaster installed: ',DbgSName(IDEDockMaster));
-    TIDEAnchorDockMaster.Create;
-  end else
+procedure ProvideIDEDockMaster;
+begin
+  OnIDEDockMasterNeeded := nil;
+
+  AnchorDockGlobalOptions.LoadSafe;
+  if AnchorDockGlobalOptions.EnableAnchorDock then
     IDEDockMaster:=TIDEAnchorDockMaster.Create;
+end;
+
+initialization
+  AnchorDockGlobalOptions := TAnchorDockGlobalOptions.Create;
+
+  if OnIDEDockMasterNeeded = nil then OnIDEDockMasterNeeded := @ProvideIDEDockMaster;
 
 finalization
   FreeAndNil(IDEAnchorDockMaster);
+  FreeAndNil(AnchorDockGlobalOptions);
 
 end.
 

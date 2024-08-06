@@ -466,7 +466,12 @@ type
   end;
 
 var
-  IDEDockMaster: TIDEDockMaster = nil; // can be set by a package
+  OnIDEDockMasterNeeded: procedure = nil;
+
+procedure SetIDEDockMaster(AnIDEDockMaster: TIDEDockMaster);
+function  GetIDEDockMaster: TIDEDockMaster;
+
+property IDEDockMaster: TIDEDockMaster read GetIDEDockMaster write SetIDEDockMaster;
 
 procedure MakeIDEWindowDockable(AControl: TWinControl);
 procedure MakeIDEWindowDockSite(AForm: TCustomForm);
@@ -484,6 +489,7 @@ uses
 
 var
   FIDEWindowsGlobalOptions: TIDEWindowsGlobalOptions = nil;
+  TheIDEDockMaster: TIDEDockMaster = nil; // can be set by a package
 
 procedure SetPopupModeParentForPropertyEditor(const AEditorDlg: TCustomForm);
 begin
@@ -498,6 +504,18 @@ begin
   for Result:=Low(TIDEWindowState) to High(TIDEWindowState) do
     if CompareText(s,IDEWindowStateNames[Result])=0 then exit;
   Result:=iwsNormal;
+end;
+
+procedure SetIDEDockMaster(AnIDEDockMaster: TIDEDockMaster);
+begin
+  TheIDEDockMaster := AnIDEDockMaster;
+end;
+
+function GetIDEDockMaster: TIDEDockMaster;
+begin
+  if (TheIDEDockMaster = nil) and Assigned(OnIDEDockMasterNeeded) then
+    OnIDEDockMasterNeeded;
+  Result := TheIDEDockMaster;
 end;
 
 procedure MakeIDEWindowDockable(AControl: TWinControl);

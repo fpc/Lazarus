@@ -299,3 +299,23 @@ msgstr "Bağlantıyı kullanmak için önce %s öğesini kaldırmanız gerekir"
 msgid "Undock"
 msgstr "Yuvadan ayır"
 
+#: anchordockstr.sdisable
+msgid "Disabled (requires restart)"
+msgstr ""
+
+#: anchordockstr.setupmultiwindowidedisplayindi
+msgid "Multi Window IDE: Display individual separate Windows in the IDE"
+msgstr ""
+
+#: anchordockstr.setupsinglewindowidedisplayasi
+msgid "Single Window IDE: Display a single Window holding all parts of the IDE (Docked)"
+msgstr ""
+
+#: anchordockstr.setupsinglewindowmodeallowsyou
+msgid "Single Window mode allows you to undock individual Windows and have several group of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
+msgstr ""
+
+#: anchordockstr.sidelayout
+msgid "IDE Layout"
+msgstr ""
+

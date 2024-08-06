@@ -120,6 +120,22 @@ msgstr "Від'єднати боки елемента керування"
 msgid "Detach Control Side"
 msgstr "Від'єднати бік елемента керування"
 
+#: dockedstrconsts.sdisablerequiresrestart
+msgid "Disabled (requires restart)"
+msgstr ""
+
+#: dockedstrconsts.setupdisplaydocktheformeditora
+msgid "Display/Dock the form editor as part of the source-editors."
+msgstr ""
+
+#: dockedstrconsts.setupdisplaytheformeditordesig
+msgid "Display the form editor (Designer) as a separate floating form."
+msgstr ""
+
+#: dockedstrconsts.setupwiththedockeddesigneryouw
+msgid "With the docked designer you will have a tab to toggle the source and the design view. You can open a 2nd source-edit window to see both at the same time."
+msgstr ""
+
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
 msgstr "Примусове оновлення при зміні розміру"
@@ -127,6 +143,10 @@ msgstr "Примусове оновлення при зміні розміру"
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
 msgstr "Примусове оновлення форми, коли користувач змінює її розміри"
+
+#: dockedstrconsts.sidelayout
+msgid "IDE Layout"
+msgstr ""
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"

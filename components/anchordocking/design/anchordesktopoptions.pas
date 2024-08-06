@@ -51,6 +51,29 @@ type
     procedure Assign(Source: TAbstractDesktopDockingOpt); override;
   end;
 
+  { TAnchorDockGlobalOptions }
+
+  TAnchorDockGlobalOptions = class
+  private
+    FDoneAskUserEnableAnchorDock: boolean;
+    FEnableAnchorDock: boolean;
+  public
+    constructor Create;
+    procedure SaveSafe;
+    procedure LoadSafe;
+    procedure SaveToFile(AFilename: String);
+    procedure LoadFromFile(AFilename: String);
+  public
+    property EnableAnchorDock: boolean read FEnableAnchorDock write FEnableAnchorDock default False;
+    property DoneAskUserEnableAnchorDock: boolean read FDoneAskUserEnableAnchorDock write FDoneAskUserEnableAnchorDock default False;
+  end;
+
+const
+  AnchorDockedGlobalOptionsFileName = 'anchordockingoptions.xml';
+
+var
+  AnchorDockGlobalOptions: TAnchorDockGlobalOptions = nil;
+
 implementation
 
 { TAnchorDesktopOpt }
@@ -295,6 +318,59 @@ end;
 function TAnchorDesktopOpt.RestoreDesktop: Boolean;
 begin
   Result := DockMaster.FullRestoreLayout(FTree,True);
+end;
+
+{ TAnchorDockGlobalOptions }
+
+constructor TAnchorDockGlobalOptions.Create;
+begin
+//
+end;
+
+procedure TAnchorDockGlobalOptions.SaveSafe;
+begin
+  try
+    SaveToFile(AnchorDockedGlobalOptionsFileName);
+  except
+    on E: Exception do
+      LazLoggerBase.DebugLn(['Error: (lazarus) [TAnchorDockGlobalOptions.SaveSafe] ', E.Message]);
+  end;
+end;
+
+procedure TAnchorDockGlobalOptions.LoadSafe;
+begin
+  try
+    LoadFromFile(AnchorDockedGlobalOptionsFileName);
+  except
+    on E: Exception do
+      LazLoggerBase.DebugLn(['Error: (lazarus) [TAnchorDockGlobalOptions.LoadSafe] ', E.Message]);
+  end;
+end;
+
+procedure TAnchorDockGlobalOptions.SaveToFile(AFilename: String);
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg := GetIDEConfigStorage(AFilename, False);
+  try
+    Cfg.SetDeleteValue('EnableAnchorDock/Value',             EnableAnchorDock,            False);
+    Cfg.SetDeleteValue('DoneAskUserEnableAnchorDock/Value',  DoneAskUserEnableAnchorDock, False);
+  finally
+    Cfg.Free;
+  end;
+end;
+
+procedure TAnchorDockGlobalOptions.LoadFromFile(AFilename: String);
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg := GetIDEConfigStorage(AFilename, True);
+  try
+    EnableAnchorDock            := Cfg.GetValue('EnableAnchorDock/Value',             False);
+    DoneAskUserEnableAnchorDock := Cfg.GetValue('DoneAskUserEnableAnchorDock/Value',  False);
+  finally
+    Cfg.Free;
+  end;
 end;
 
 initialization

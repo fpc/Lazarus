@@ -11,11 +11,22 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
   object NoteLabel: TLabel
     Left = 6
     Height = 15
-    Top = 6
+    Top = 31
     Width = 483
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'NoteLabel'
     ParentColor = False
+  end
+  object cbDisable: TCheckBox
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 483
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'cbDisable'
+    TabOrder = 0
+    OnChange = cbDisableChange
   end
 end

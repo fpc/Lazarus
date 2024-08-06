@@ -8,7 +8,7 @@ unit AnchorDockingDsgn;
 interface
 
 uses
-  RegisterAnchorDocking, AnchorDesktopOptions, LazarusPackageIntf;
+  RegisterAnchorDocking, AnchorDesktopOptions, AnchorDockDsgnInitialSetupFrame, LazarusPackageIntf;
 
 implementation
 

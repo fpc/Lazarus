@@ -1340,9 +1340,6 @@ begin
     end;
   end;
 
-  Application.ShowButtonGlyphs := EnvironmentGuiOpts.ShowButtonGlyphs;
-  Application.ShowMenuGlyphs := EnvironmentGuiOpts.ShowMenuGlyphs;
-
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=LazarusVersionStr;
   //debugln(['TMainIDE.LoadGlobalOptions ',FEnvOptsCfgExisted,' diff=',OldVer<>NowVer,' Now=',NowVer,' Old=',OldVer,' Comp=',CompareLazarusVersion(NowVer,OldVer)]);
@@ -1571,8 +1568,6 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
   MainBuildBoss.SetupTransferMacros;
-  EnvironmentGuiOpts := TEnvGuiOptions.Create;
-  EnvironmentOptions.RegisterSubConfig(EnvironmentGuiOpts, '/');
   EnvironmentDebugOpts := TEnvDebuggerOptions.Create;
   EnvironmentOptions.RegisterSubConfig(EnvironmentDebugOpts, 'EnvironmentOptions/');
 
@@ -1584,9 +1579,6 @@ begin
   StartProtocol;
   LoadGlobalOptions;
   if Application.Terminated then exit;
-
-  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton then
-    Application.TaskBarBehavior := tbSingleButton;
 
   // setup code templates
   SetupCodeMacros;
@@ -1600,6 +1592,14 @@ begin
   // setup interactive if neccessary
   SetupInteractive;
   if Application.Terminated then exit;
+
+  EnvironmentGuiOpts := TEnvGuiOptions.Create;
+  EnvironmentOptions.RegisterSubConfig(EnvironmentGuiOpts, '/',True);
+
+  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton then
+    Application.TaskBarBehavior := tbSingleButton;
+  Application.ShowButtonGlyphs := EnvironmentGuiOpts.ShowButtonGlyphs;
+  Application.ShowMenuGlyphs := EnvironmentGuiOpts.ShowMenuGlyphs;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 

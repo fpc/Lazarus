@@ -119,6 +119,22 @@ msgstr "分离控制面板"
 msgid "Detach Control Side"
 msgstr "分离控制面板"
 
+#: dockedstrconsts.sdisablerequiresrestart
+msgid "Disabled (requires restart)"
+msgstr ""
+
+#: dockedstrconsts.setupdisplaydocktheformeditora
+msgid "Display/Dock the form editor as part of the source-editors."
+msgstr ""
+
+#: dockedstrconsts.setupdisplaytheformeditordesig
+msgid "Display the form editor (Designer) as a separate floating form."
+msgstr ""
+
+#: dockedstrconsts.setupwiththedockeddesigneryouw
+msgid "With the docked designer you will have a tab to toggle the source and the design view. You can open a 2nd source-edit window to see both at the same time."
+msgstr ""
+
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
 msgstr "强制刷新大小"
@@ -126,6 +142,10 @@ msgstr "强制刷新大小"
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
 msgstr "用户调整大小时强制刷新窗体"
+
+#: dockedstrconsts.sidelayout
+msgid "IDE Layout"
+msgstr ""
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"

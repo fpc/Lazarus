@@ -8,11 +8,10 @@ unit DockedFormEditor;
 interface
 
 uses
-  DockedRegister, DockedStrConsts, DockedFormAccesses, DockedMainIDE, 
-  DockedResizer, DockedOptionsIDE, DockedOptionsFrame, DockedTools, 
-  DockedDesignForm, DockedSourcePageControl, DockedSourceWindow, 
-  DockedAnchorDesigner, DockedBasicAnchorDesigner, DockedAnchorControl, 
-  DockedGrip, DockedResizeControl, LazarusPackageIntf;
+  DockedRegister, DockedStrConsts, DockedFormAccesses, DockedMainIDE, DockedResizer, 
+  DockedOptionsIDE, DockedOptionsFrame, DockedTools, DockedDesignForm, DockedSourcePageControl, 
+  DockedSourceWindow, DockedAnchorDesigner, DockedBasicAnchorDesigner, DockedAnchorControl, 
+  DockedGrip, DockedResizeControl, DockedFormInitialSetupFrame, LazarusPackageIntf;
 
 implementation
 

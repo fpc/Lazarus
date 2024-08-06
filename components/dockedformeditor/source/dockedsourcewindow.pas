@@ -467,9 +467,6 @@ begin
           LPageCtrl.ShowCode;
 end;
 
-initialization
-  SourceWindows := TSourceWindows.CreateNew;
-
 finalization
   SourceWindows.Free;
 

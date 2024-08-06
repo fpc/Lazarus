@@ -368,7 +368,7 @@ type
     procedure DoAfterWrite(Restore: boolean); override;
     // SubConfig
     function GetSubConfigObj(ASubConfigClass: TIDESubOptionsClass): TIDESubOptions;
-    procedure RegisterSubConfig(ASubConfig: TIDESubOptions; APath: String);
+    procedure RegisterSubConfig(ASubConfig: TIDESubOptions; APath: String; ALoadConf: Boolean = False);
     procedure UnRegisterSubConfig(ASubConfig: TIDESubOptions);
     function SubConfigCount: integer;
     property SubConfig[Index: Integer]: TIDESubOptions read GetSubConfig;
@@ -818,8 +818,8 @@ begin
     Result := Nil;
 end;
 
-procedure TEnvironmentOptions.RegisterSubConfig(ASubConfig: TIDESubOptions;
-  APath: String);
+procedure TEnvironmentOptions.RegisterSubConfig(ASubConfig: TIDESubOptions; APath: String;
+  ALoadConf: Boolean);
 //var
 //  i: Integer;
 begin
@@ -835,7 +835,11 @@ begin
   fRegisteredSubConfig.Add(ASubConfig);
   ASubConfig.FTopPath := APath;
   ASubConfig.FXMLCfg := FXMLCfg;
-  // ASubConfig.ReadFromXml;
+  if ALoadConf then begin
+    ASubConfig.InitConfig;
+    ASubConfig.FVersion:=FFileVersion;
+    ASubConfig.ReadFromXml(False);
+  end;
 end;
 
 procedure TEnvironmentOptions.UnRegisterSubConfig(ASubConfig: TIDESubOptions);

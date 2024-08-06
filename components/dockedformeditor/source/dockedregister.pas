@@ -24,7 +24,7 @@ uses
   SrcEditorIntf, IDEWindowIntf, PropEdits, ComponentEditors, IDEOptEditorIntf,
   IDEOptionsIntf,
   // DockedFormEditor
-  DockedMainIDE, DockedDesignForm, DockedOptionsIDE, DockedOptionsFrame;
+  DockedMainIDE, DockedDesignForm, DockedOptionsIDE, DockedOptionsFrame, DockedSourceWindow;
 
 var
   DockedOptionsFrameID: Integer = 1000;
@@ -35,35 +35,44 @@ implementation
 
 procedure Register;
 begin
-  Screen.AddHandlerFormAdded(TDockedMainIDE.Screen_FormAdded);
-  Screen.AddHandlerRemoveForm(TDockedMainIDE.Screen_FormDel);
-  Screen.AddHandlerNewFormCreated(TDesignForm.Screen_NewFormCreated);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TDockedMainIDE.WindowCreate);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TDockedMainIDE.WindowDestroy);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, TDockedMainIDE.WindowShow);
-  SourceEditorManagerIntf.RegisterChangeEvent(semWindowHide, TDockedMainIDE.WindowHide);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivated);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, TDockedMainIDE.EditorDestroyed);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, TDockedMainIDE.EditorCreate);
-
-  LazarusIDE.AddHandlerOnShowDesignerFormOfSource(TDockedMainIDE.OnShowDesignerForm);
-  LazarusIDE.AddHandlerOnShowSourceOfActiveDesignerForm(TDockedMainIDE.OnShowSrcEditor);
-
-  GlobalDesignHook.AddHandlerShowMethod(TDockedMainIDE.OnDesignShowMethod);
-  GlobalDesignHook.AddHandlerModified(TDockedMainIDE.OnDesignModified);
-  GlobalDesignHook.AddHandlerPersistentAdded(TDockedMainIDE.OnDesignPersistentAdded);
-  GlobalDesignHook.AddHandlerPersistentDeleted(TDockedMainIDE.OnDesignPersistentDeleted);
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(TDockedMainIDE.OnDesignRefreshPropertyValues);
-  GlobalDesignHook.AddHandlerDesignerMouseDown(TDockedMainIDE.OnDesignMouseDown);
-  GlobalDesignHook.AddHandlerSetSelection(TDockedMainIDE.OnDesignSetSelection);
-
-  DockedOptions := TDockedOptions.Create;
-  DockedOptionsFrameID := RegisterIDEOptionsEditor(GroupEnvironment, TFrameDockedOptions, DockedOptionsFrameID)^.Index;
   DockedOptions.LoadSafe;
+  if DockedOptions.EnableDockedDesigner then begin
+    SourceWindows := TSourceWindows.CreateNew;
 
-  IDETabMaster := TDockedTabMaster.Create;
-  DesignForms := TDesignForms.Create;
+    Screen.AddHandlerFormAdded(TDockedMainIDE.Screen_FormAdded);
+    Screen.AddHandlerRemoveForm(TDockedMainIDE.Screen_FormDel);
+    Screen.AddHandlerNewFormCreated(TDesignForm.Screen_NewFormCreated);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TDockedMainIDE.WindowCreate);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TDockedMainIDE.WindowDestroy);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, TDockedMainIDE.WindowShow);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowHide, TDockedMainIDE.WindowHide);
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivated);
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, TDockedMainIDE.EditorDestroyed);
+    SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, TDockedMainIDE.EditorCreate);
+
+    LazarusIDE.AddHandlerOnShowDesignerFormOfSource(TDockedMainIDE.OnShowDesignerForm);
+    LazarusIDE.AddHandlerOnShowSourceOfActiveDesignerForm(TDockedMainIDE.OnShowSrcEditor);
+
+    GlobalDesignHook.AddHandlerShowMethod(TDockedMainIDE.OnDesignShowMethod);
+    GlobalDesignHook.AddHandlerModified(TDockedMainIDE.OnDesignModified);
+    GlobalDesignHook.AddHandlerPersistentAdded(TDockedMainIDE.OnDesignPersistentAdded);
+    GlobalDesignHook.AddHandlerPersistentDeleted(TDockedMainIDE.OnDesignPersistentDeleted);
+    GlobalDesignHook.AddHandlerRefreshPropertyValues(TDockedMainIDE.OnDesignRefreshPropertyValues);
+    GlobalDesignHook.AddHandlerDesignerMouseDown(TDockedMainIDE.OnDesignMouseDown);
+    GlobalDesignHook.AddHandlerSetSelection(TDockedMainIDE.OnDesignSetSelection);
+
+    DockedOptionsFrameID := RegisterIDEOptionsEditor(GroupEnvironment, TFrameDockedOptions, DockedOptionsFrameID)^.Index;
+
+    IDETabMaster := TDockedTabMaster.Create;
+    DesignForms := TDesignForms.Create;
+  end
+  else begin
+    DockedOptionsFrameID := RegisterIDEOptionsEditor(GroupEnvironment, TFrameDisabledDockedOptions, DockedOptionsFrameID)^.Index;
+  end;
 end;
+
+initialization
+  DockedOptions := TDockedOptions.Create;
 
 finalization
   Screen.RemoveHandlerNewFormCreated(TDesignForm.Screen_NewFormCreated);
