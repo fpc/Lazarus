@@ -2916,18 +2916,44 @@ Resolves a symbolic link to an actual file name.
 <descr>
 <p>
 <var>ReadAllLinks</var> is a <var>String</var> function used to resolve a 
-symbolic link to an actual file name. It does not resolve symbolic links in 
-parent (or ancestor) directories. 
+symbolic link to an actual file name. The implementation is platform-specific.
 </p>
 <p>
-If a symlink cannot be resolved, and ExceptionOnError is <b>False</b>, the 
-function returns an empty string (''). If ExceptionOnError is <b>True</b>, it 
-raises an EFOpenError with a message containing more details. For the Windows 
-platform, it simply returns the value in the Filename argument.
+For UNIX-like platforms, fpReadLink (RTL) is used to recursively follow 
+symbolic links starting at FileName (to a maximum depth of 12) until it is 
+resolved to a path on the local file system. No actions are performed in the 
+routine if FileName is a regular file and not a symbolic link.
+</p>
+<p>
+The return value contains the resolved path to the file on the local file 
+system. This includes calling ResolveDots for a file name with a relative path.
+If the return value is empty when an error is detected, the error message is 
+captured and used in an EFOpenError exception raised when ExceptionOnError is 
+enabled. If ExceptionOnError is <b>False</b>, the function returns an empty 
+string ('') for an invalid link.
+</p>
+<p>
+For the Windows platform, FileGetSymLinkTarget (RTL) is recursively called (to 
+a maximum depth of 20) to get the reparse point with the target file name. The 
+return value contains the UTF-8-encoded path to the file on the local file 
+system, or an empty string if FileName is not a valid symbolic link. 
+ExceptionOnError indicates whether an EFOpenError exception is raised for an 
+invalid link in FileName. If ExceptionOnError is <b>False</b>, the function 
+returns an empty string ('') and the exception is <b>not</b> raised for an 
+invalid link.
+</p>
+<p>
+For the Amiga platform, the return value is always an empty string ('').
 </p>
 </descr>
+<version>
+Modified in LazUtils version 3.6 to implement the routine on the Windows 
+platform.
+</version>
 </element>
 <element name="ReadAllLinks.Result">
+<element name="#rtl.sysutils.FileGetSymLinkTarget">FileGetSymLinkTarget (RTL)</element>
+<link id="#rtl.baseunix.fpReadLink">fpReadLnk (RTL)</link>
 <short>
 Resolved path to the specified file name, or an exception message when 
 link(s) could not be resolved.
@@ -2938,14 +2964,14 @@ link(s) could not be resolved.
 </element>
 <element name="ReadAllLinks.ExceptionOnError">
 <short>
-<b>True</b> to raise an exception for unresolved links. <b>False</b> to 
-handle the exception internally and return the error message.
+<b>True</b> to raise an exception for unresolved or broken links. <b>False</b> 
+to handle the error internally without raising an exception.
 </short>
 </element>
 
 <element name="TryReadAllLinks">
 <short>
-Resolves a symlink to the real file.
+Resolves a symlink to a real file name.
 </short>
 <descr>
 <p>
@@ -2953,6 +2979,9 @@ If a symlink can not be resolved it returns Filename. It calls the
 ReadAllLinks function in its implementation.
 </p>
 </descr>
+<seealso>
+<link id="ReadAllLinks"/>
+</seealso>
 </element>
 
 <element name="GetShellLinkTarget">
