@@ -792,9 +792,8 @@ begin
     cb.window := win;
 
     win.setDelegate(win);
-    ns := NSStringUtf8(AWinControl.Caption);
+    ns := ControlTitleToNSStr( AWinControl.Caption );
     win.setTitle(ns);
-    ns.release;
     {$ifdef BOOLFIX}
     win.setReleasedWhenClosed_(Ord(False)); // do not release automatically
     win.setAcceptsMouseMovedEvents_(Ord(True));
@@ -939,12 +938,11 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
   win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-  ns := NSStringUtf8(AText);
+  ns := ControlTitleToNSStr( AText );
   if Assigned(win) then
     NSwindow(win).setTitle(ns)
   else
     TCocoaWindowContent(AWinControl.Handle).setStringValue(ns);
-  ns.release;
 end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
