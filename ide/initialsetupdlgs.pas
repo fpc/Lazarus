@@ -519,6 +519,7 @@ begin
         if ScrollBox.ControlCount > 1 then begin
           NewDiv.AnchorSide[akTop].Side := asrBottom;
           NewDiv.AnchorSide[akTop].Control := ScrollBox.Controls[ScrollBox.ControlCount - 2];
+          NewDiv.BorderSpacing.Top := 10;
         end
         else begin
           NewDiv.AnchorSide[akTop].Side := asrTop;

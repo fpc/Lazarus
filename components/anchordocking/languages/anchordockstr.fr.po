@@ -301,19 +301,35 @@ msgstr "Désamarrer"
 msgid "Disabled (requires restart)"
 msgstr ""
 
-#: anchordockstr.setupmultiwindowidedisplayindi
-msgid "Multi Window IDE: Display individual separate Windows in the IDE"
+#: anchordockstr.setupmultiwindowideclassic
+msgid "Classic IDE (Multi-Window):"
 msgstr ""
 
-#: anchordockstr.setupsinglewindowidedisplayasi
-msgid "Single Window IDE: Display a single Window holding all parts of the IDE (Docked)"
+#: anchordockstr.setupmultiwindowideinfo
+msgid "The \"modern\" single Window mode still allows you to undock individual Windows and have several groups of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
 msgstr ""
 
-#: anchordockstr.setupsinglewindowmodeallowsyou
-msgid "Single Window mode allows you to undock individual Windows and have several group of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
+#: anchordockstr.setupmultiwindowidemodern
+msgid "Modern IDE (Single-Window):"
+msgstr ""
+
+#: anchordockstr.setupmultiwindowideoption
+msgid "You can change this in the IDE options under: \"Anchordocking\""
+msgstr ""
+
+#: anchordockstr.setupmultiwindowideseperatewindows
+msgid "There are separate windows for each part of the IDE (Editor, Components, Debug,...). They can all be individually moved around on the screen."
+msgstr ""
+
+#: anchordockstr.setupmultiwindowidesinglewindow
+msgid "The IDE consists out of a single Window. Different parts of the IDE are shown in panels of that Window. Some can be reached through a tabbed interface."
 msgstr ""
 
 #: anchordockstr.sidelayout
 msgid "IDE Layout"
+msgstr ""
+
+#: anchordockstr.ssinglemultiwindow
+msgid "Single/Multi Window"
 msgstr ""
 

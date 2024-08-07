@@ -15,8 +15,8 @@ type
   { TAnchorDockSetupFrame }
 
   TAnchorDockSetupFrame = class(TFrame)
-    Label1: TLabel;
     lbInfo: TLabel;
+    lbInfo1: TLabel;
     lbMulti: TLabel;
     lbSingle: TLabel;
     rbMulti: TRadioButton;
@@ -83,9 +83,12 @@ end;
 
 procedure TAnchorDockSetupFrame.Init;
 begin
-  lbMulti.Caption := setupMultiWindowIDEDisplayIndi;
-  lbSingle.Caption := setupSingleWindowIDEDisplayASi;
-  lbInfo.Caption := setupSingleWindowModeAllowsYou;
+  rbMulti.Caption := setupMultiWindowIDEClassic;
+  lbMulti.Caption := setupMultiWindowIDESeperateWindows;
+  rbSingle.Caption := setupMultiWindowIDEModern;
+  lbSingle.Caption := setupMultiWindowIDESingleWindow;
+  lbInfo.Caption := setupMultiWindowIDEInfo;
+  lbInfo1.Caption := setupMultiWindowIDEOption;
 end;
 
 { TAnchorDockDsgnSetup }
@@ -129,7 +132,7 @@ end;
 
 function TAnchorDockDsgnSetup.Caption: String;
 begin
-  Result := 'Single/Multi Window';
+  Result := SSingleMultiWindow;
 end;
 
 function TAnchorDockDsgnSetup.SortOrder: Integer;

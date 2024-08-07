@@ -3,66 +3,106 @@ object AnchorDockSetupFrame: TAnchorDockSetupFrame
   Height = 240
   Top = 0
   Width = 320
-  ChildSizing.LeftRightSpacing = 5
-  ChildSizing.TopBottomSpacing = 5
-  ChildSizing.HorizontalSpacing = 2
-  ChildSizing.VerticalSpacing = 5
-  ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-  ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
-  ChildSizing.Layout = cclLeftToRightThenTopToBottom
-  ChildSizing.ControlsPerLine = 2
+  ChildSizing.LeftRightSpacing = 2
+  ChildSizing.TopBottomSpacing = 2
+  ChildSizing.ControlsPerLine = 1
   ClientHeight = 240
   ClientWidth = 320
   TabOrder = 0
-  DesignLeft = 342
-  DesignTop = 289
+  DesignLeft = 366
+  DesignTop = 286
   object rbMulti: TRadioButton
-    Left = 5
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 2
     Height = 17
-    Top = 5
-    Width = 25
-    Constraints.MaxWidth = 25
+    Top = 2
+    Width = 316
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 0
     OnChange = rbMultiChange
   end
   object lbMulti: TLabel
-    Left = 32
-    Height = 17
-    Top = 5
-    Width = 283
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rbMulti
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 20
+    Height = 15
+    Top = 19
+    Width = 298
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 20
     Caption = 'lbMulti'
     WordWrap = True
     OnClick = lbMultiClick
   end
   object rbSingle: TRadioButton
-    Left = 5
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbMulti
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 2
     Height = 17
-    Top = 27
-    Width = 25
+    Top = 34
+    Width = 316
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 1
     OnChange = rbMultiChange
   end
   object lbSingle: TLabel
-    Left = 32
-    Height = 17
-    Top = 27
-    Width = 283
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rbSingle
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 20
+    Height = 15
+    Top = 51
+    Width = 298
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 20
     Caption = 'lbSingle'
     WordWrap = True
     OnClick = lbSingleClick
   end
-  object Label1: TLabel
-    Left = 5
-    Height = 15
-    Top = 49
-    Width = 25
-  end
   object lbInfo: TLabel
-    Left = 32
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbSingle
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 2
     Height = 15
-    Top = 49
-    Width = 283
+    Top = 72
+    Width = 316
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Caption = 'lbInfo'
+    WordWrap = True
+  end
+  object lbInfo1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbInfo
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 2
+    Height = 15
+    Top = 88
+    Width = 316
+    Alignment = taCenter
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 1
+    Caption = 'lbInfo1'
     WordWrap = True
   end
 end

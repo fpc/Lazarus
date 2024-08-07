@@ -123,16 +123,28 @@ msgstr "Détacher le côté du contrôle"
 msgid "Disabled (requires restart)"
 msgstr ""
 
-#: dockedstrconsts.setupdisplaydocktheformeditora
-msgid "Display/Dock the form editor as part of the source-editors."
+#: dockedstrconsts.setupdesignerclassic
+msgid "Classic Form Editor (floating):"
 msgstr ""
 
-#: dockedstrconsts.setupdisplaytheformeditordesig
-msgid "Display the form editor (Designer) as a separate floating form."
+#: dockedstrconsts.setupdesignerdocked
+msgid "The form editor is part of the IDE's source editor (tabbed interface)."
 msgstr ""
 
-#: dockedstrconsts.setupwiththedockeddesigneryouw
-msgid "With the docked designer you will have a tab to toggle the source and the design view. You can open a 2nd source-edit window to see both at the same time."
+#: dockedstrconsts.setupdesignerfloat
+msgid "The form editor shows the edited form as a normal window."
+msgstr ""
+
+#: dockedstrconsts.setupdesignerinfo
+msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
+msgstr ""
+
+#: dockedstrconsts.setupdesignermodern
+msgid "Modern Form Editor (docked/tabbed):"
+msgstr ""
+
+#: dockedstrconsts.setupmultiwindowideoption
+msgid "You can change this in the IDE options under: \"Docked Form Editor\""
 msgstr ""
 
 #: dockedstrconsts.sforcerefreshingcaption
@@ -142,6 +154,10 @@ msgstr "Forcer le rafraîchissement lors du redimensionnement"
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
 msgstr "Forcer l'actualisation de la fiche lorsque l'utilisateur la dimensionne"
+
+#: dockedstrconsts.sformeditor
+msgid "Form editor / Designer"
+msgstr ""
 
 #: dockedstrconsts.sidelayout
 msgid "IDE Layout"

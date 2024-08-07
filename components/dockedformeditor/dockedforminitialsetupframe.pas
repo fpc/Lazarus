@@ -15,8 +15,8 @@ type
   { TDockedFormEditSetupFrame }
 
   TDockedFormEditSetupFrame = class(TFrame)
-    Label1: TLabel;
     lbInfo: TLabel;
+    lbInfo1: TLabel;
     lbFloat: TLabel;
     lbDocked: TLabel;
     rbFloat: TRadioButton;
@@ -82,9 +82,12 @@ end;
 
 procedure TDockedFormEditSetupFrame.Init;
 begin
-  lbFloat.Caption := setupDisplayTheFormEditorDesig;
-  lbDocked.Caption := setupDisplayDockTheFormEditorA;
-  lbInfo.Caption := setupWithTheDockedDesignerYouW;
+  rbFloat.Caption := setupDesignerClassic;
+  lbFloat.Caption := setupDesignerFloat;
+  rbDocked.Caption := setupDesignerModern;
+  lbDocked.Caption := setupDesignerDocked;
+  lbInfo.Caption := setupDesignerInfo;
+  lbInfo1.Caption := setupMultiWindowIDEOption;
 end;
 
 { TDockedFormEditSetup }
@@ -127,7 +130,7 @@ end;
 
 function TDockedFormEditSetup.Caption: String;
 begin
-  Result := 'Embed form editor';
+  Result := SFormEditor;
 end;
 
 function TDockedFormEditSetup.SortOrder: Integer;
