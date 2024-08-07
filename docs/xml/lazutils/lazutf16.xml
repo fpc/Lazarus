@@ -344,21 +344,57 @@ Number of replacements performed in the routine.
 
 <element name="UnicodeLowercase">
 <short>
-Converts a Unicode character value to its lowercase equivalent.
+Converts the specified Unicode (UTF-16) codepoint to its lowercase equivalent.
 </short>
 <descr>
 <p>
-Uses internal tables to map Unicode character ranges common to both UTF-16 
-and UTF-32.
+<var>UnicodeLowercase</var> ensures the character (16-bit codepoint) is 
+converted to lowercase using the case conversion logic for the UTF-16 encoding. 
+Characters in the following Unicode blocks are handled:
 </p>
+<dl>
+<dt>$0041..$005A</dt>
+<dd>Capital letters in the C0 Latin block</dd>
+<dt>$00C0..$00DE</dt>
+<dd>Capital letters in the C1 Latin-1 Supplement block</dd>
+<dt>$0100..$024E</dt>
+<dd>Capital letters in the Latin Extended-A block</dd>
+<dt>$0386..$03AB</dt>
+<dd>Capital letters in the Greek and Coptic block</dd>
+<dt>$03D8..$042F</dt>
+<dd>Archaic letters in the Greek and Coptic block</dd>
+<dt>$0460..$0512</dt>
+<dd>Historic letters in Cyrillic block</dd>
+<dt>$0531..$0556</dt>
+<dd>Capital letters in the Armenian block</dd>
+<dt>$10A0..$10C5</dt>
+<dd>Capital letters in the Georgian block</dd>
+<dt>$1E00..$1FFC</dt>
+<dd>Capital letters in the Latin Extended Additional block</dd>
+<dt>$2126..$2183</dt>
+<dd>Characters in the Letter-like Symbols block</dd>
+<dt>$24B6..$24CF</dt>
+<dd>Parenthesized Latin letters in the Enclosed Alphanumerics block</dd>
+<dt>$2C00..$2C2E</dt>
+<dd>Capital letters in the Glagolitic block (precursor of Cyrillic)</dd>
+<dt>$2C60..$2CE2</dt>
+<dd>Capital letters in the Latin Extended-C block</dd>
+<dt>$FF21..$FF3A</dt>
+<dd>ASCII variants in the Halfwidth and Fullwidth Forms block</dd>
+</dl>
 </descr>
 <seealso/>
 </element>
 <element name="UnicodeLowercase.Result">
-<short>Cardinal value for the lowercase equivalent of u.</short>
+<short>
+Cardinal value with the lowercase equivalent for <var>u</var>, or the value in 
+<var>u</var> when conversion is not needed.
+</short>
 </element>
 <element name="UnicodeLowercase.u">
-<short>Unicode character vale converted to lowercase in the routine.</short>
+<short>
+Cardinal value for the Unicode character converted to lowercase in the routine.
+</short>
 </element>
 
 <element name="UTF8LowerCaseViaTables">
