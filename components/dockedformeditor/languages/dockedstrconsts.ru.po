@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
@@ -120,31 +120,31 @@ msgstr "Отвязать сторону компонента"
 
 #: dockedstrconsts.sdisablerequiresrestart
 msgid "Disabled (requires restart)"
-msgstr ""
+msgstr "Отключено (требуется перезапуск)"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"
-msgstr ""
+msgstr "Классический редактор форм (плавающий):"
 
 #: dockedstrconsts.setupdesignerdocked
 msgid "The form editor is part of the IDE's source editor (tabbed interface)."
-msgstr ""
+msgstr "Редактор форм является частью редактора исходного кода IDE (интерфейс со вкладками)."
 
 #: dockedstrconsts.setupdesignerfloat
 msgid "The form editor shows the edited form as a normal window."
-msgstr ""
+msgstr "Редактор форм отображает редактируемую форму в обычном окне."
 
 #: dockedstrconsts.setupdesignerinfo
 msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
-msgstr ""
+msgstr "\"Классический\" редактор форм может размещаться на экране независимо от других частей IDE. \"Современный\" редактор форм будет встроен в окно редактора исходного кода, а переключение между ними будет производиться через вкладки. Чтобы видеть их оба одновременно, можно открыть отдельное окно редактора исходного кода."
 
 #: dockedstrconsts.setupdesignermodern
 msgid "Modern Form Editor (docked/tabbed):"
-msgstr ""
+msgstr "Современный редактор форм (встроенный / со вкладками):"
 
 #: dockedstrconsts.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Docked Form Editor\""
-msgstr ""
+msgstr "Это поведение можно изменить в параметрах IDE на вкладке \"Встроенный редактор форм\""
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
@@ -156,11 +156,11 @@ msgstr "Принудительно обновлять форму при изме
 
 #: dockedstrconsts.sformeditor
 msgid "Form editor / Designer"
-msgstr ""
+msgstr "Редактор форм"
 
 #: dockedstrconsts.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "Вид интерфейса IDE"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
