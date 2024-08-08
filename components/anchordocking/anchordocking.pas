@@ -364,8 +364,11 @@ type
     procedure SimplifyOneControl;
     function GetOneControl: TControl;
     function GetSiteCount: integer;
+    function GetParentHostSite: TAnchorDockHostSite;
     function IsOneSiteLayout(out Site: TAnchorDockHostSite): boolean;
     function IsTwoSiteLayout(out Site1, Site2: TAnchorDockHostSite): boolean;
+    function IsDockedPage: boolean;
+    function NestedDockedPageCount: integer; // Nested anchor-page-controls (with no other controls in between)
     function GetUniqueSplitterName: string;
     function MakeSite(AControl: TControl): TAnchorDockHostSite;
     procedure MoveAllControls(dx, dy: integer);
@@ -402,6 +405,8 @@ type
     procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
                           MousePos: TPoint; var CanDock: Boolean); override;
     function GetPageArea: TRect;
+    function PointInOuterBorderArea(APoint: TPoint; AnAlign: TAlign; AWantedAreaCount: integer;
+                                    out AnAreaIdx, AnAreaCount: integer): Boolean;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer;
                            KeepBase: boolean); override;
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
@@ -444,6 +449,7 @@ type
     FDockSite: TAnchorDockHostSite;
     FInsideDockingAllowed: boolean;
     FPreferredSiteSizeAsSiteMinimum: boolean;
+    FRedirectToHostSite: TAnchorDockHostSite;
     FResizePolicy: TADMResizePolicy;
     FStoredConstraints: TRect;
     FSite: TWinControl;
@@ -472,6 +478,7 @@ type
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
     property DockableSites: TAnchors read FDockableSites write FDockableSites; // at which sides can be docked
+    property RedirectToHostSite: TAnchorDockHostSite read FRedirectToHostSite;
     property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed; // if true allow to put a site into the custom dock site
     function GetChildSite: TAnchorDockHostSite; // get first child TAnchorDockHostSite
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
@@ -501,6 +508,8 @@ type
     FHeaderHighlightFocused: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FMultiLinePages: boolean;
+    FOuterBorderAreaInPercent: integer;
+    FOuterBorderAreaMaxPixel: integer;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
@@ -519,6 +528,8 @@ type
     procedure SetHeaderStyle(AValue: THeaderStyleName);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
     procedure SetMultiLinePages(AValue: boolean);
+    procedure SetOuterBorderAreaInPercent(AValue: integer);
+    procedure SetOuterBorderAreaMaxPixel(AValue: integer);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowHeader(AValue: boolean);
@@ -534,6 +545,8 @@ type
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
     property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin;
     property PageAreaInPercent: integer read FPageAreaInPercent write SetPageAreaInPercent;
+    property OuterBorderAreaMaxPixel: integer read FOuterBorderAreaMaxPixel write SetOuterBorderAreaMaxPixel default 50;
+    property OuterBorderAreaInPercent: integer read FOuterBorderAreaInPercent write SetOuterBorderAreaInPercent default 10;
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop;
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft;
     property HeaderHint: string read FHeaderHint write SetHeaderHint;
@@ -618,6 +631,8 @@ type
     FOnOptionsChanged: TNotifyEvent;
     FOnShowOptions: TADShowDockMasterOptionsEvent;
     FOptionsChangeStamp: int64;
+    FOuterBorderAreaInPercent: integer;
+    FOuterBorderAreaMaxPixel: integer;
     FPageAreaInPercent: integer;
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
@@ -662,6 +677,8 @@ type
     procedure ScreenRemoveForm(Sender: TObject; Form: TCustomForm);
     procedure SetMainDockForm(AValue: TCustomForm);
     procedure SetMinimizedState(Tree: TAnchorDockLayoutTree);
+    procedure SetOuterBorderAreaInPercent(AValue: integer);
+    procedure SetOuterBorderAreaMaxPixel(AValue: integer);
     procedure UpdateHeaders;
     procedure SetNodeMinimizedState(ANode: TAnchorDockLayoutTreeNode);
     procedure EnableAllAutoSizing;
@@ -806,6 +823,8 @@ type
     property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin default 10; // max distance for snap to parent
     property FloatingWindowsOnTop: boolean read FFloatingWindowsOnTop write SetFloatingWindowsOnTop default false;
     property PageAreaInPercent: integer read FPageAreaInPercent write SetPageAreaInPercent default 40; // size of inner mouse snapping area for page docking
+    property OuterBorderAreaMaxPixel: integer read FOuterBorderAreaMaxPixel write SetOuterBorderAreaMaxPixel default 50; // size of area for docking to the outside of a paged area (on each border)
+    property OuterBorderAreaInPercent: integer read FOuterBorderAreaInPercent write SetOuterBorderAreaInPercent default 10; // size of area for docking to the outside of a paged area (percent of total size)
     property ShowHeader: boolean read FShowHeader write SetShowHeader default true; // set to false to hide all headers
     property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write SetShowMenuItemShowHeader default false;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
@@ -1432,6 +1451,20 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetOuterBorderAreaInPercent(AValue: integer);
+begin
+  if FOuterBorderAreaInPercent = AValue then Exit;
+  FOuterBorderAreaInPercent := AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetOuterBorderAreaMaxPixel(AValue: integer);
+begin
+  if FOuterBorderAreaMaxPixel = AValue then Exit;
+  FOuterBorderAreaMaxPixel := AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetPageAreaInPercent(AValue: integer);
 begin
   if FPageAreaInPercent=AValue then Exit;
@@ -1523,6 +1556,8 @@ begin
   FHideHeaderCaptionFloatingControl := Source.FHideHeaderCaptionFloatingControl;
   FMultiLinePages                   := Source.FMultiLinePages;
   FPageAreaInPercent                := Source.FPageAreaInPercent;
+  FOuterBorderAreaMaxPixel          := Source.FOuterBorderAreaMaxPixel;
+  FOuterBorderAreaInPercent         := Source.FOuterBorderAreaInPercent;
   FScaleOnResize                    := Source.FScaleOnResize;
   FShowHeader                       := Source.FShowHeader;
   FShowHeaderCaption                := Source.FShowHeaderCaption;
@@ -1553,6 +1588,8 @@ begin
   HideHeaderCaptionFloatingControl := Config.GetValue('HideHeaderCaptionFloatingControl',true);
   MultiLinePages                   := Config.GetValue('MultiLinePages',false);
   PageAreaInPercent                := Config.GetValue('PageAreaInPercent',40);
+  OuterBorderAreaMaxPixel          := Config.GetValue('OuterBorderAreaMaxPixel',50);
+  OuterBorderAreaInPercent         := Config.GetValue('OuterBorderAreaInPercent',10);
   ScaleOnResize                    := Config.GetValue('ScaleOnResize',true);
   ShowHeader                       := Config.GetValue('ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue('ShowHeaderCaption',true);
@@ -1578,6 +1615,8 @@ begin
   Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue(Path+'MultiLinePages',MultiLinePages,false);
   Config.SetDeleteValue(Path+'PageAreaInPercent',PageAreaInPercent,40);
+  Config.SetDeleteValue(Path+'OuterBorderAreaMaxPixel',OuterBorderAreaMaxPixel,50);
+  Config.SetDeleteValue(Path+'OuterBorderAreaInPercent',OuterBorderAreaInPercent,10);
   Config.SetDeleteValue(Path+'ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
   Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
@@ -1603,6 +1642,8 @@ begin
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('MultiLinePages',MultiLinePages,false);
   Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
+  Config.SetDeleteValue('OuterBorderAreaMaxPixel',OuterBorderAreaMaxPixel,50);
+  Config.SetDeleteValue('OuterBorderAreaInPercent',OuterBorderAreaInPercent,10);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
@@ -1629,6 +1670,8 @@ begin
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
       and (MultiLinePages=Settings.MultiLinePages)
       and (PageAreaInPercent=Settings.PageAreaInPercent)
+      and (OuterBorderAreaMaxPixel=Settings.OuterBorderAreaMaxPixel)
+      and (OuterBorderAreaInPercent=Settings.OuterBorderAreaInPercent)
       and (ScaleOnResize=Settings.ScaleOnResize)
       and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
@@ -1655,6 +1698,8 @@ begin
   HideHeaderCaptionFloatingControl := Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
   MultiLinePages                   := Config.GetValue(Path+'MultiLinePages',false);
   PageAreaInPercent                := Config.GetValue(Path+'PageAreaInPercent',40);
+  OuterBorderAreaMaxPixel          := Config.GetValue(Path+'OuterBorderAreaMaxPixel',50);
+  OuterBorderAreaInPercent         := Config.GetValue(Path+'OuterBorderAreaInPercent',10);
   ScaleOnResize                    := Config.GetValue(Path+'ScaleOnResize',true);
   ShowHeader                       := Config.GetValue(Path+'ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue(Path+'ShowHeaderCaption',true);
@@ -2303,6 +2348,20 @@ end;
 procedure TAnchorDockMaster.SetMinimizedState(Tree: TAnchorDockLayoutTree);
 begin
   SetNodeMinimizedState(Tree.Root);
+end;
+
+procedure TAnchorDockMaster.SetOuterBorderAreaInPercent(AValue: integer);
+begin
+  if FOuterBorderAreaInPercent = AValue then Exit;
+  FOuterBorderAreaInPercent := AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetOuterBorderAreaMaxPixel(AValue: integer);
+begin
+  if FOuterBorderAreaMaxPixel = AValue then Exit;
+  FOuterBorderAreaMaxPixel := AValue;
+  OptionsChanged;
 end;
 
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
@@ -3163,6 +3222,8 @@ begin
   FDockParentMargin:=10;
   FFloatingWindowsOnTop:=false;
   FPageAreaInPercent:=40;
+  FOuterBorderAreaMaxPixel:=50;
+  FOuterBorderAreaInPercent:=10;
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
   FHeaderHint:='';
@@ -3879,6 +3940,8 @@ begin
   DragTreshold                     := Settings.DragTreshold;
   FloatingWindowsOnTop             := Settings.FloatingWindowsOnTop;
   PageAreaInPercent                := Settings.PageAreaInPercent;
+  OuterBorderAreaMaxPixel          := Settings.OuterBorderAreaMaxPixel;
+  OuterBorderAreaInPercent         := Settings.OuterBorderAreaInPercent;
   HeaderAlignLeft                  := Settings.HeaderAlignLeft;
   HeaderAlignTop                   := Settings.HeaderAlignTop;
   HeaderFilled                     := Settings.HeaderFilled;
@@ -3903,6 +3966,8 @@ begin
   Settings.DragTreshold                     := DragTreshold;
   Settings.FloatingWindowsOnTop             := FloatingWindowsOnTop;
   Settings.PageAreaInPercent                := PageAreaInPercent;
+  Settings.OuterBorderAreaMaxPixel          := OuterBorderAreaMaxPixel;
+  Settings.OuterBorderAreaInPercent         := OuterBorderAreaInPercent;
   Settings.HeaderAlignLeft                  := HeaderAlignLeft;
   Settings.HeaderAlignTop                   := HeaderAlignTop;
   Settings.HeaderFilled                     := HeaderFilled;
@@ -4408,8 +4473,13 @@ function TAnchorDockHostSite.DoDockClientMsg(DragDockObject: TDragDockObject;
   aPosition: TPoint): boolean;
 begin
   if aPosition.X=0 then ;
-  Result:=ExecuteDock(DragDockObject.Control,DragDockObject.DropOnControl,
-                      DragDockObject.DropAlign);
+  if (DockManager <> nil) and (DockManager is TAnchorDockManager) and
+     ((DockManager as TAnchorDockManager).RedirectToHostSite <> nil)
+  then
+    Result := (DockManager as TAnchorDockManager).RedirectToHostSite.DoDockClientMsg(DragDockObject, aPosition)
+  else
+    Result:=ExecuteDock(DragDockObject.Control,DragDockObject.DropOnControl,
+                        DragDockObject.DropAlign);
 end;
 
 function TAnchorDockHostSite.ExecuteDock(NewControl, DropOnControl: TControl;
@@ -4461,8 +4531,13 @@ begin
             // create layout
             Result:=DockSecondControl(NewControl,DockAlign,DropOnControl<>nil);
         end else if SiteType=adhstLayout then
+        begin
           // add site as sibling
           Result:=DockAnotherControl(nil,NewControl,DockAlign,DropOnControl<>nil);
+        end else if SiteType=adhstPages then
+        begin
+          Result:=DockSecondControl(NewControl,DockAlign,DropOnControl<>nil);
+        end;
       end;
 
       NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock NewControl'){$ENDIF};
@@ -4505,7 +4580,7 @@ begin
   {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.DockSecondControl Self="',Caption,'" AControl=',DbgSName(NewControl),' Align=',dbgs(DockAlign),' Inside=',Inside]);
   {$ENDIF}
-  if SiteType<>adhstOneControl then
+  if not (SiteType in [adhstOneControl, adhstPages]) then
     RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: not adhstOneControl');
   if not (DockAlign in [alLeft,alTop,alRight,alBottom]) then
     RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: DockAlign='+dbgs(DockAlign));
@@ -4518,7 +4593,9 @@ begin
   // put the OldControl into a site of its own (OldSite) and dock OldSite
   OldControl:=GetOneControl;
   OldSite:=MakeSite(OldControl);
+  OldSite.FPages := FPages;
   AddCleanControl(OldSite);
+  FPages := nil;
   if not(OldControl is TAnchorDockHostSite) then
     OldSite.Header.FHeaderPosition:=Header.FHeaderPosition;
   OldSite.AnchorClient(0);
@@ -5331,6 +5408,20 @@ begin
   end;
 end;
 
+function TAnchorDockHostSite.GetParentHostSite: TAnchorDockHostSite;
+var
+  p: TWinControl;
+begin
+  if IsDockedPage then
+    p := Parent.Parent.Parent
+  else
+    p := Parent;
+  if p is TAnchorDockHostSite then
+    Result := TAnchorDockHostSite(p)
+  else
+    Result := nil;
+end;
+
 function TAnchorDockHostSite.IsOneSiteLayout(out Site: TAnchorDockHostSite
   ): boolean;
 var
@@ -5368,6 +5459,25 @@ begin
       exit(false);
   end;
   Result:=Site2<>nil;
+end;
+
+function TAnchorDockHostSite.IsDockedPage: boolean;
+begin
+  Result := (Parent is TAnchorDockPage)
+    and (Parent.Parent is TAnchorDockPageControl )
+    and (Parent.Parent.Parent is TAnchorDockHostSite);
+end;
+
+function TAnchorDockHostSite.NestedDockedPageCount: integer;
+var
+  p: TAnchorDockHostSite;
+begin
+  Result := 0;
+  p := Self;
+  while (p <> nil) and p.IsDockedPage do begin
+    inc(Result);
+    p := p.GetParentHostSite;
+  end;
 end;
 
 function TAnchorDockHostSite.GetUniqueSplitterName: string;
@@ -6271,6 +6381,40 @@ begin
                Height*DockMaster.PageAreaInPercent div 100);
   Types.OffsetRect(Result,(Width*(100-DockMaster.PageAreaInPercent)) div 200,
                          (Height*(100-DockMaster.PageAreaInPercent)) div 200);
+end;
+
+function TAnchorDockHostSite.PointInOuterBorderArea(APoint: TPoint; AnAlign: TAlign;
+  AWantedAreaCount: integer; out AnAreaIdx, AnAreaCount: integer): Boolean;
+var
+  DistX, DistY, MaxPix, MaxX, MaxY: Integer;
+begin
+  DistX := Min(abs(APoint.x), abs(ClientWidth-APoint.x));
+  DistY := Min(abs(APoint.y), abs(ClientHeight-APoint.y));
+
+  if AWantedAreaCount > 1 then
+    MaxPix := DockMaster.OuterBorderAreaMaxPixel * 3
+  else
+    MaxPix := DockMaster.OuterBorderAreaMaxPixel * 2;
+  MaxX := Min(MaxPix, ClientWidth*DockMaster.OuterBorderAreaInPercent div 100);
+  MaxY := Min(MaxPix, ClientHeight*DockMaster.OuterBorderAreaInPercent div 100);
+
+  AnAreaIdx := 0;
+  AnAreaCount := 1;
+  Result := (DistX<MaxX) or (DistY<MaxY);
+
+  if Result and (AWantedAreaCount > 1) then begin
+    MaxPix := DockMaster.OuterBorderAreaMaxPixel;
+    case AnAlign of
+      alLeft, alRight: begin
+        AnAreaCount := Max(2, Min(AWantedAreaCount, MaxX div Max(MaxPix div 3, 10)));
+        AnAreaIdx   := AnAreaCount - (DistX * 64 -1) div (MaxX * 64 div AnAreaCount) - 1;
+      end;
+      else begin
+        AnAreaCount := Max(2, Min(AWantedAreaCount, MaxY div Max(MaxPix div 3, 10)));
+        AnAreaIdx   := AnAreaCount - (DistY * 64 -1) div (MaxY * 64 div AnAreaCount) - 1;
+      end;
+    end;
+  end;
 end;
 
 procedure TAnchorDockHostSite.ChangeBounds(ALeft, ATop, AWidth,
@@ -7244,6 +7388,7 @@ procedure TAnchorDockManager.PositionDockRect(Client, DropCtl: TControl;
 var
   Offset: TPoint;
   Inside: Boolean;
+  TmpSite: TWinControl;
 begin
   if (DropAlign=alClient) and (DockSite<>nil) and (DockSite.Pages<>nil) then begin
     // dock into pages
@@ -7283,29 +7428,32 @@ begin
     exit;
   end;
 
+  TmpSite:=Site;
+  if RedirectToHostSite <> nil then
+    TmpSite:=RedirectToHostSite;
   case DropAlign of
   alLeft:
     if Inside then
-      DockRect:=Rect(0,0,Min(Client.Width,Site.ClientWidth div 2),Site.ClientHeight)
+      DockRect:=Rect(0,0,Min(Client.Width,TmpSite.ClientWidth div 2),TmpSite.ClientHeight)
     else
-      DockRect:=Rect(-Client.Width,0,0,Site.ClientHeight);
+      DockRect:=Rect(-Client.Width,0,0,TmpSite.ClientHeight);
   alRight:
     if Inside then begin
-      DockRect:=Rect(0,0,Min(Client.Width,Site.Width div 2),Site.ClientHeight);
-      Types.OffsetRect(DockRect,Site.ClientWidth-DockRect.Right,0);
+      DockRect:=Rect(0,0,Min(Client.Width,TmpSite.Width div 2),TmpSite.ClientHeight);
+      Types.OffsetRect(DockRect,TmpSite.ClientWidth-DockRect.Right,0);
     end else
-      DockRect:=Bounds(Site.ClientWidth,0,Client.Width,Site.ClientHeight);
+      DockRect:=Bounds(TmpSite.ClientWidth,0,Client.Width,TmpSite.ClientHeight);
   alTop:
     if Inside then
-      DockRect:=Rect(0,0,Site.ClientWidth,Min(Client.Height,Site.ClientHeight div 2))
+      DockRect:=Rect(0,0,TmpSite.ClientWidth,Min(Client.Height,TmpSite.ClientHeight div 2))
     else
-      DockRect:=Rect(0,-Client.Height,Site.ClientWidth,0);
+      DockRect:=Rect(0,-Client.Height,TmpSite.ClientWidth,0);
   alBottom:
     if Inside then begin
-      DockRect:=Rect(0,0,Site.ClientWidth,Min(Client.Height,Site.ClientHeight div 2));
-      Types.OffsetRect(DockRect,0,Site.ClientHeight-DockRect.Bottom);
+      DockRect:=Rect(0,0,TmpSite.ClientWidth,Min(Client.Height,TmpSite.ClientHeight div 2));
+      Types.OffsetRect(DockRect,0,TmpSite.ClientHeight-DockRect.Bottom);
     end else
-      DockRect:=Bounds(0,Site.ClientHeight,Site.ClientWidth,Client.Height);
+      DockRect:=Bounds(0,TmpSite.ClientHeight,TmpSite.ClientWidth,Client.Height);
   alClient:
     begin
       // paged docking => show center
@@ -7315,7 +7463,7 @@ begin
   else
     exit; // use default
   end;
-  Offset:=Site.ClientOrigin;
+  Offset:=TmpSite.ClientOrigin;
   Types.OffsetRect(DockRect,Offset.X,Offset.Y);
 end;
 
@@ -7508,8 +7656,12 @@ var
   p: TPoint;
   LastTabRect: TRect;
   TabIndex: longint;
+  Inside: Boolean;
+  AreaIdx, AreaCnt: integer;
+  ph: TAnchorDockHostSite;
 begin
   //debugln(['TAnchorDockManager.GetDockEdge ',DbgSName(Site),' ',DbgSName(DockSite),' DockableSites=',dbgs(DockableSites)]);
+  FRedirectToHostSite := nil;
   if DockableSites=[] then begin
     ADockObject.DropAlign:=alNone;
     exit(false);
@@ -7547,12 +7699,30 @@ begin
     if akTop in DockableSites then FindMinDistance(alTop,p.Y);
     if akBottom in DockableSites then FindMinDistance(alBottom,Site.ClientHeight-p.Y);
 
-    // check inside
-    if InsideDockingAllowed
-    and ( ((ADockObject.DropAlign=alLeft) and (p.X>=0))
+    Inside :=( ((ADockObject.DropAlign=alLeft) and (p.X>=0))
        or ((ADockObject.DropAlign=alTop) and (p.Y>=0))
        or ((ADockObject.DropAlign=alRight) and (p.X<Site.ClientWidth))
-       or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight)) )
+       or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight)) );
+    if Inside and
+       (Site is TAnchorDockHostSite) and
+       (Site as TAnchorDockHostSite).IsDockedPage and
+       DockSite.PointInOuterBorderArea(p, ADockObject.DropAlign, DockSite.NestedDockedPageCount, AreaIdx, AreaCnt) and
+       ((Site as TAnchorDockHostSite).GetParentHostSite <> nil)
+    then begin
+      FRedirectToHostSite:=(Site as TAnchorDockHostSite).GetParentHostSite;
+      if AreaIdx = AreaCnt-1 then AreaIdx := MaxInt;
+      while (AreaIdx > 0) and (FRedirectToHostSite <> nil) and FRedirectToHostSite.IsDockedPage do begin
+        ph := FRedirectToHostSite.GetParentHostSite;
+        if ph = nil then break;
+        FRedirectToHostSite := ph;
+        dec(AreaIdx);
+      end;
+
+      ADockObject.DropOnControl:=FRedirectToHostSite;
+    end
+    else
+    // check inside
+    if InsideDockingAllowed and Inside
     then
       ADockObject.DropOnControl:=Site
     else
