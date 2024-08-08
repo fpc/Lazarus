@@ -51,7 +51,11 @@ type
 
   { TCocoaTableListView }
 
-  TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+  TCocoaTableListView = objcclass(
+    NSTableView,
+    NSTableViewDelegateProtocol,
+    NSTableViewDataSourceProtocol,
+    TCocoaListViewBackendControlProtocol )
   public
     callback: IListViewCallback;
 
@@ -68,6 +72,10 @@ type
     ScrollWidth: Integer;
 
     smallimages : NSMutableDictionary;
+  public
+    procedure backend_setCallback( cb:TLCLListViewCallback );
+    procedure backend_reloadData;
+    procedure backend_onInit;
 
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -153,36 +161,6 @@ type
     procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
-
-  { NSImageAndTextCell }
-
-  NSImageAndTextCell = objcclass(NSTextFieldCell)
-    drawImage : NSImage;
-    procedure drawWithFrame_inView(cellFrame: NSRect; controlView_: NSView); override;
-  end;
-
-  { NSTableButtonCell }
-
-  // NSButtonCell would handle a click on a checkbox caption as a click on
-  // the checkbox itself.  (You can experience that by clicking on TCheckBox)
-  // This is the expected behavior for a standalone checkbox control.
-  // However, for a checkbox is in a table, it's not desired to have checkbox
-  // triggered, by clicking on its caption.
-  // (You can try it in macOS "System Preferences"->"Keyboard"->"Shortcuts")
-  // Since a checkbox and the text are put in the same NSTableView column
-  // using NSButtonCell, there's an override for hitTesting function.
-  // IF a user hits caption, then hitTest returns "none" suppressing the hit.
-  // Thus a checkbox in a table can only be checked if clicked directly into
-  // the checkbox.
-  //
-  // todo: add support for images. (For TListView with checkboxes and images)
-  //       It's rarely used (if ever), yet it's possible
-
-  NSTableButtonCell = objcclass (NSButtonCell)
-    _type: NSButtonType;
-    function hitTestForEvent_inRect_ofView(event: NSEvent; cellFrame: NSRect; controlView_: NSView): NSUInteger; override;
-    procedure setButtonType(aType: NSButtonType); override;
-  end;
 
   // View based NSTableView
 
@@ -286,23 +264,11 @@ type
   TCellCocoaTableListView = objcclass(
     TCocoaTableListView,
     NSTableViewDelegateProtocol,
-    NSTableViewDataSourceProtocol,
-    TCocoaListViewBackendControlProtocol )
-  public
-    procedure backend_setCallback( cb:TLCLListViewCallback );
-    procedure backend_reloadData;
-    procedure backend_onInit;
+    NSTableViewDataSourceProtocol )
   public
     function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
-    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
-    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
-  end;
-
-  TCellCocoaTableListView1013 = objcclass(TCellCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-    // overriding the highlight color for dark theme
-    procedure highlightSelectionInClipRect(clipRect: NSRect); override;
   end;
 
   { TViewCocoaTableListView }
@@ -372,76 +338,9 @@ begin
   end;
 end;
 
-// not yet!
-{.$DEFINE DYNAMIC_NSTABLEVIEW_BASE}
-
 function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
-  {$IFDEF DYNAMIC_NSTABLEVIEW_BASE}
-  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
-    Result := TViewCocoaTableListView.alloc
-  else
-    Result := TCellCocoaTableListView.alloc;
-  {$ELSE}
-
-  // this is required for "dark theme" support on 10.13
-  if (NSAppkitVersionNumber >= NSAppKitVersionNumber10_13)
-    and (NSAppkitVersionNumber < NSAppKitVersionNumber10_14)
-  then
-    Result := TCellCocoaTableListView1013.alloc
-  else
-    Result := TCellCocoaTableListView.alloc;
-  {$ENDIF}
-end;
-
-{ NSTableButtonCell }
-
-function NSTableButtonCell.hitTestForEvent_inRect_ofView(event: NSEvent;
-  cellFrame: NSRect; controlView_: NSView): NSUInteger;
-var
-  r  : NSRect;
-  pt : NSPoint;
-begin
-  Result := inherited hitTestForEvent_inRect_ofView(event, cellFrame, controlView_);
-  if _type = NSSwitchButton then
-  begin
-    pt := event.locationInWindow;
-    if Assigned(controlView_) then
-      pt := controlView_.convertPoint_fromView(pt, nil);
-    r := titleRectForBounds(cellFrame);
-
-    // todo: pt.y seems to be off by some amount
-    if ((pt.x >= r.origin.x) and (pt.x<=r.origin.x + r.size.width)) then
-      Result := NSCellHitNone;
-  end;
-end;
-
-procedure NSTableButtonCell.setButtonType(aType: NSButtonType);
-begin
-  _type := aType;
-  inherited setButtonType(aType);
-end;
-
-{ NSImageAndTextCell }
-
-procedure NSImageAndTextCell.drawWithFrame_inView(cellFrame: NSRect;
-  controlView_: NSView);
-var
-  r : NSRect;
-  srcsz : NSSize;
-begin
-  r:=cellFrame;
-  cellFrame.origin.x:=cellFrame.origin.x+cellFrame.size.height;
-  cellFrame.size.width:=cellFrame.size.width-cellFrame.size.height;
-  inherited drawWithFrame_inView(cellFrame, controlView_);
-  if Assigned(drawImage) then
-  begin
-    r.size.width:=r.size.height;
-    srcsz := drawImage.size;
-    drawImage.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
-      r, NSMakeRect(0,0, srcsz.width, srcsz.height), NSCompositeSourceOver, 1, true, nil
-    );
-  end;
+  Result := TViewCocoaTableListView.alloc
 end;
 
 { TCocoaTableListView }
@@ -545,6 +444,39 @@ procedure TCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
   aalignment: NSTextAlignment);
 begin
 
+end;
+
+procedure TCocoaTableListView.backend_setCallback(cb: TLCLListViewCallback);
+begin
+  self.callback:= cb;
+end;
+
+procedure TCocoaTableListView.backend_reloadData;
+var
+  lclcb: TLCLListViewCallback;
+begin
+  self.reloadData;
+  if Assigned(self.callback) then begin
+    lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
+    self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  end;
+end;
+
+procedure TCocoaTableListView.backend_onInit;
+var
+  sz: NSSize;
+begin
+  self.setDataSource(self);
+  self.setDelegate(self);
+  self.setAllowsColumnReordering(False);
+  self.setAllowsColumnSelection(False);
+
+  UpdateFocusRing( self, self.callback.getBorderStyle );
+
+  sz := self.intercellSpacing;
+  // Windows compatibility. on Windows there's no extra space between columns
+  sz.width := 0;
+  self.setIntercellSpacing(sz);
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
@@ -1074,90 +1006,6 @@ end;
 
 { TCellCocoaTableListView }
 
-procedure TCellCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
-  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
-  row: NSInteger);
-var
-  lColumnIndex: NSInteger;
-  lNewValue: NSString;
-  isSel: Integer;
-begin
-  if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
-    lColumnIndex := getIndexOfColumn(tableColumn);
-    if Assigned(callback) and (lColumnIndex = 0) then
-      callback.SetItemCheckedAt(row, lColumnIndex, NSNumber(object_).integerValue);
-
-    Exit;
-  end;
-
-  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
-  if not NSObject(object_).isKindOfClass(NSString) then Exit;
-  lNewValue := NSString(object_);
-  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');}
-  if ReadOnly then Exit;
-
-  lColumnIndex := getIndexOfColumn(tableColumn);
-  if Assigned(callback) then
-  begin
-    callback.SetItemTextAt(row, lColumnIndex, lNewValue.UTF8String);
-    reloadDataForRow_column(lColumnIndex, row);
-  end;
-end;
-
-function TCellCocoaTableListView.tableView_dataCellForTableColumn_row(
-  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
-var
-  chk : Boolean;
-  txt : string;
-  col : Integer;
-  nstxt : NSString;
-  idx  : Integer;
-  img  : NSImage;
-  btn  : NSTableButtonCell;
-  colorTitle : NSMutableAttributedString;
-begin
-  Result:=nil;
-  if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
-
-  col := getIndexOfColumn(tableColumn);
-  if (col <> 0) then Exit;
-
-  if not isFirstColumnCheckboxes and isImagesInCell then begin
-    img := lclGetItemImageAt(row, col);
-
-    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR_EMPTY);
-    NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
-    Exit;
-  end;
-  txt := '';
-  chk := false;
-
-  callback.GetItemTextAt(row, col, txt);
-
-  if txt = '' then nstxt := NSString.string_
-  else nstxt := NSString.stringWithUTF8String(@txt[1]);
-
-  btn := NSTableButtonCell.alloc.init.autorelease;
-  //Result.setAllowsMixedState(True);
-  btn.setButtonType(NSSwitchButton);
-  btn.setTitle(nstxt);
-
-  // forced "controlTextColor" provides a better result on unfocused
-  // nstablelist view with checkboxes
-  colorTitle := NSMutableAttributedString.alloc.initWithAttributedString(btn.attributedTitle);
-  colorTitle.addAttribute_value_range(NSForegroundColorAttributeName
-   , NSColor.controlTextColor
-   , NSMakeRange(0, colorTitle.length));
-  btn.setAttributedTitle(colorTitle);
-  colorTitle.release;
-
-  if chk then begin
-    btn.setIntValue(1);
-    btn.setCellAttribute_to(NSCellState, NSOnState);
-  end;
-  Result := btn;
-end;
-
 procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
 begin
   noteNumberOfRowsChanged;
@@ -1169,39 +1017,6 @@ begin
   if not Assigned(acolumn) then Exit;
   NSCell(acolumn.headerCell).setAlignment( aalignment );
   NSCell(acolumn.dataCell).setAlignment( aalignment );
-end;
-
-procedure TCellCocoaTableListView.backend_setCallback(cb: TLCLListViewCallback);
-begin
-  self.callback:= cb;
-end;
-
-procedure TCellCocoaTableListView.backend_reloadData;
-var
-  lclcb: TLCLListViewCallback;
-begin
-  self.reloadData;
-  if Assigned(self.callback) then begin
-    lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-    self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
-  end;
-end;
-
-procedure TCellCocoaTableListView.backend_onInit;
-var
-  sz: NSSize;
-begin
-  self.setDataSource(self);
-  self.setDelegate(self);
-  self.setAllowsColumnReordering(False);
-  self.setAllowsColumnSelection(False);
-
-  UpdateFocusRing( self, self.callback.getBorderStyle );
-
-  sz := self.intercellSpacing;
-  // Windows compatibility. on Windows there's no extra space between columns
-  sz.width := 0;
-  self.setIntercellSpacing(sz);
 end;
 
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
@@ -1496,42 +1311,6 @@ begin
     insertRowsAtIndexes_withAnimation(rows, 0)
   else
     removeRowsAtIndexes_withAnimation(rows, 0);
-end;
-
-{ TCellCocoaTableListView1013 }
-
-procedure TCellCocoaTableListView1013.highlightSelectionInClipRect(clipRect: NSRect
-  );
-var
-  r   : NSInteger;
-  rows : NSRange;
-  cnt  : integer;
-  focused: Boolean;
-  hicolor: NSColor;
-begin
-  if not IsPaintDark then begin
-    inherited highlightSelectionInClipRect(clipRect);
-    Exit;
-  end;
-
-
-  focused := Assigned(window) and (window.firstResponder = Self);
-  if focused then
-    hicolor := NSColor.alternateSelectedControlColor
-  else
-    // the default color is NSColor.secondarySelectedControlColor;
-    hicolor := NSColor.darkGrayColor;
-
-  rows := rowsInRect(clipRect);
-  cnt := rows.length;
-  r := rows.location;
-  hicolor.setFill;
-  while cnt>0 do
-  begin
-    if isRowSelected(r) then NSRectFill(rectOfRow(r));
-    inc(r);
-    dec(cnt);
-  end;
 end;
 
 { TCocoaWSListView_TableViewHandler }
