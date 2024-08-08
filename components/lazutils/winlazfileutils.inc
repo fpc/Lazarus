@@ -10,6 +10,8 @@ var
   US: UnicodeString;
   Depth: Integer;
 
+  //ToDo: remove this workaround when minimal fpc version is increased to fpc 3.4
+  {$if fpc_fullversion < 30301}
   //FileGetSymlinkTarget raises an EDirectoryNotFoundException if the target of the link does not exist.
   //This is OK if ExceptionOnError is True, but unwanted if it is False, in which case we simply want to return False
   //Unfortunately due to this behaviou, we cannot return the value for Target if Target does not exists
@@ -25,12 +27,19 @@ var
       on E: EDirectoryNotFoundException do Result := False;
     end
   end;
-
+  {$else}
+  //since commit 025ad39ef0fc0c1e7624a10fd4299f73f7f65750 the function does not raise an excpeion anymore if the linktarget
+  //does not exist, but just returns false
+  function TryGetSymlinkTarget(Fn: UnicodeString; out SymlinkRec: TUnicodeSymlinkRec): Boolean; inline;
+  begin
+    Result := FileGetSymlinkTarget(Fn, SymlinkRec);
+  end;
+  {$endif}
 begin
   Result := '';
   if not TryGetSymlinkTarget(Utf8ToUtf16(Filename), URec) then
   begin
-    if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a junction or a symbolic link',[Filename]);
+    if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a valid junction or a symbolic link',[Filename]);
     Exit;
   end;
   Depth := 1;
@@ -48,7 +57,7 @@ begin
     US := URec.TargetName;
     if not TryGetSymlinkTarget(US, URec) then
     begin
-      if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a junction or a symbolic link',[Filename]);
+      if ExceptionOnError then raise EFOpenError.CreateFmt('%s is not a valid junction or a symbolic link',[Filename]);
       Result := '';
       Exit;
     end;
