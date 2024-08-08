@@ -121,12 +121,12 @@ type
   end;
 
 var
-  IsKeyWordMethodSpecifier,
-  IsKeyWordProcedureSpecifier,
-  IsKeyWordProcedureAnonymousSpecifier,
-  IsKeyWordProcedureTypeSpecifier,
+  IsKeyWordMethodSpecifier, // all specifiers for a method
+  IsKeyWordProcedureSpecifier, // all specifiers for a procedure (not method, not anonymous, not type)
+  IsKeyWordProcedureAnonymousSpecifier, // all specifiers for an anonymous function
+  IsKeyWordProcedureTypeSpecifier, // all specifiers for a procedure type
   IsKeyWordProcedureBracketSpecifier,
-  IsKeyWordCallingConvention,
+  IsKeyWordCallingConvention, // all fpc calling conventions
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
   AllKeyWords,
