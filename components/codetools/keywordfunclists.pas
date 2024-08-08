@@ -125,7 +125,7 @@ var
   IsKeyWordProcedureSpecifier, // all specifiers for a procedure (not method, not anonymous, not type)
   IsKeyWordProcedureAnonymousSpecifier, // all specifiers for an anonymous function
   IsKeyWordProcedureTypeSpecifier, // all specifiers for a procedure type
-  IsKeyWordProcedureBracketSpecifier,
+  IsKeyWordProcedureBracketSpecifier, // all specifiers for fpc's procedure bracket specifier
   IsKeyWordCallingConvention, // all fpc calling conventions
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
