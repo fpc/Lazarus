@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -299,37 +299,37 @@ msgstr "Расстыковать"
 
 #: anchordockstr.sdisable
 msgid "Disabled (requires restart)"
-msgstr ""
+msgstr "Отключено (требуется перезапуск)"
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"
-msgstr ""
+msgstr "Классическая IDE (многооконная):"
 
 #: anchordockstr.setupmultiwindowideinfo
 msgid "The \"modern\" single Window mode still allows you to undock individual Windows and have several groups of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
-msgstr ""
+msgstr "\"Современный\" однооконный режим позволяет отстыковывать отдельные окна и иметь несколько групп окон. IDE отобразит дополнительные заголовки в каждом окне, которые позволят менять порядок окон, но в то же время потребуют дополнительного пространства."
 
 #: anchordockstr.setupmultiwindowidemodern
 msgid "Modern IDE (Single-Window):"
-msgstr ""
+msgstr "Современная IDE (однооконная):"
 
 #: anchordockstr.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Anchordocking\""
-msgstr ""
+msgstr "Это поведение можно изменить в параметрах IDE на вкладке \"Стыковка / Anchordocking\""
 
 #: anchordockstr.setupmultiwindowideseperatewindows
 msgid "There are separate windows for each part of the IDE (Editor, Components, Debug,...). They can all be individually moved around on the screen."
-msgstr ""
+msgstr "Все части IDE (например, редактор, палитра компонентов, окна отладки) будут в отдельных окнах, которые можно независимо перемещать на экране."
 
 #: anchordockstr.setupmultiwindowidesinglewindow
 msgid "The IDE consists out of a single Window. Different parts of the IDE are shown in panels of that Window. Some can be reached through a tabbed interface."
-msgstr ""
+msgstr "IDE состоит из одного окна, в панелях которого отображаются её части. К некоторым из них можно получить доступ, выбирая нужную вкладку."
 
 #: anchordockstr.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "Вид интерфейса IDE"
 
 #: anchordockstr.ssinglemultiwindow
 msgid "Single/Multi Window"
-msgstr ""
+msgstr "Режим многооконности"
 
