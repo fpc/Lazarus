@@ -4575,6 +4575,7 @@ function TAnchorDockHostSite.DockSecondControl(NewControl: TControl;
 var
   OldSite: TAnchorDockHostSite;
   OldControl: TControl;
+  OldSiteType: TAnchorDockHostSiteType;
 begin
   Result:=true;
   {$IFDEF VerboseAnchorDocking}
@@ -4585,6 +4586,7 @@ begin
   if not (DockAlign in [alLeft,alTop,alRight,alBottom]) then
     RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: DockAlign='+dbgs(DockAlign));
 
+  OldSiteType := FSiteType;
   FSiteType:=adhstLayout;
 
   // remove header (keep it for later use)
@@ -4594,6 +4596,7 @@ begin
   OldControl:=GetOneControl;
   OldSite:=MakeSite(OldControl);
   OldSite.FPages := FPages;
+  OldSite.FSiteType := OldSiteType;
   AddCleanControl(OldSite);
   FPages := nil;
   if not(OldControl is TAnchorDockHostSite) then
