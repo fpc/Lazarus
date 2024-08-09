@@ -365,10 +365,12 @@ type
     function GetOneControl: TControl;
     function GetSiteCount: integer;
     function GetParentHostSite: TAnchorDockHostSite;
+    function GetParentHostSiteOfTabbed(ASide: TAlign): TAnchorDockHostSite;
     function IsOneSiteLayout(out Site: TAnchorDockHostSite): boolean;
     function IsTwoSiteLayout(out Site1, Site2: TAnchorDockHostSite): boolean;
-    function IsDockedPage: boolean;
-    function NestedDockedPageCount: integer; // Nested anchor-page-controls (with no other controls in between)
+    function ControlHasSplitter(AControl: TControl; ASide: TAlign): boolean;
+    function IsDockedPage(ASide: TAlign = alNone): boolean;
+    function NestedDockedPageCount(ASide: TAlign = alNone): integer; // Nested anchor-page-controls (with no other controls in between)
     function GetUniqueSplitterName: string;
     function MakeSite(AControl: TControl): TAnchorDockHostSite;
     procedure MoveAllControls(dx, dy: integer);
@@ -5425,6 +5427,28 @@ begin
     Result := nil;
 end;
 
+function TAnchorDockHostSite.GetParentHostSiteOfTabbed(ASide: TAlign): TAnchorDockHostSite;
+var
+  p: TWinControl;
+  h: TAnchorDockHostSite;
+begin
+  h := Self;
+  if ASide in [alTop,alBottom,alLeft,alRight] then
+    while (h.Parent <> nil) and (h.Parent is TAnchorDockHostSite) and
+          (not (h.Parent as TAnchorDockHostSite).ControlHasSplitter(h, ASide))
+    do
+      h := h.Parent as TAnchorDockHostSite;
+
+  if h.IsDockedPage then
+    p := h.Parent.Parent.Parent
+  else
+    p := Self.Parent;
+  if p is TAnchorDockHostSite then
+    Result := TAnchorDockHostSite(p)
+  else
+    Result := nil;
+end;
+
 function TAnchorDockHostSite.IsOneSiteLayout(out Site: TAnchorDockHostSite
   ): boolean;
 var
@@ -5464,22 +5488,40 @@ begin
   Result:=Site2<>nil;
 end;
 
-function TAnchorDockHostSite.IsDockedPage: boolean;
+function TAnchorDockHostSite.ControlHasSplitter(AControl: TControl; ASide: TAlign): boolean;
+var
+  Sibling: TControl;
 begin
-  Result := (Parent is TAnchorDockPage)
-    and (Parent.Parent is TAnchorDockPageControl )
-    and (Parent.Parent.Parent is TAnchorDockHostSite);
+  Sibling:=AControl.AnchorSide[MainAlignAnchor[ASide]].Control;
+  Result := (Sibling <> nil) and (Sibling is TAnchorDockSplitter);
 end;
 
-function TAnchorDockHostSite.NestedDockedPageCount: integer;
+function TAnchorDockHostSite.IsDockedPage(ASide: TAlign): boolean;
+var
+  h: TWinControl;
+begin
+  h := Parent;
+  h := Self;
+  if ASide in [alTop,alBottom,alLeft,alRight] then
+    while (h.Parent <> nil) and (h.Parent is TAnchorDockHostSite) and
+          (not (h.Parent as TAnchorDockHostSite).ControlHasSplitter(h, ASide))
+    do
+      h := h.Parent;
+
+  Result := (h.Parent is TAnchorDockPage)
+    and (h.Parent.Parent is TAnchorDockPageControl )
+    and (h.Parent.Parent.Parent is TAnchorDockHostSite);
+end;
+
+function TAnchorDockHostSite.NestedDockedPageCount(ASide: TAlign): integer;
 var
   p: TAnchorDockHostSite;
 begin
   Result := 0;
   p := Self;
-  while (p <> nil) and p.IsDockedPage do begin
+  while (p <> nil) and p.IsDockedPage(ASide) do begin
     inc(Result);
-    p := p.GetParentHostSite;
+    p := p.GetParentHostSiteOfTabbed(ASide);
   end;
 end;
 
@@ -6418,6 +6460,7 @@ begin
       end;
     end;
   end;
+  {$IFDEF VerboseAnchorDocking}debugln('TAnchorDockHostSite.PointInOuterBorderArea %s: %s in %s - X: %d of %d Y: %d of %d - Area-Wanted: %d Got: %d of %d', [dbgs(AnAlign), dbgs(APoint), dbgs(ClientRect), DistX, MaxX, DistY, MaxY, AWantedAreaCount, AnAreaIdx, AnAreaCount]);{$ENDIF}
 end;
 
 procedure TAnchorDockHostSite.ChangeBounds(ALeft, ATop, AWidth,
@@ -7708,14 +7751,14 @@ begin
        or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight)) );
     if Inside and
        (Site is TAnchorDockHostSite) and
-       (Site as TAnchorDockHostSite).IsDockedPage and
-       DockSite.PointInOuterBorderArea(p, ADockObject.DropAlign, DockSite.NestedDockedPageCount, AreaIdx, AreaCnt) and
-       ((Site as TAnchorDockHostSite).GetParentHostSite <> nil)
+       (Site as TAnchorDockHostSite).IsDockedPage(ADockObject.DropAlign) and
+       DockSite.PointInOuterBorderArea(p, ADockObject.DropAlign, DockSite.NestedDockedPageCount(ADockObject.DropAlign), AreaIdx, AreaCnt) and
+       ((Site as TAnchorDockHostSite).GetParentHostSiteOfTabbed(ADockObject.DropAlign) <> nil)
     then begin
-      FRedirectToHostSite:=(Site as TAnchorDockHostSite).GetParentHostSite;
+      FRedirectToHostSite:=(Site as TAnchorDockHostSite).GetParentHostSiteOfTabbed(ADockObject.DropAlign);
       if AreaIdx = AreaCnt-1 then AreaIdx := MaxInt;
-      while (AreaIdx > 0) and (FRedirectToHostSite <> nil) and FRedirectToHostSite.IsDockedPage do begin
-        ph := FRedirectToHostSite.GetParentHostSite;
+      while (AreaIdx > 0) and (FRedirectToHostSite <> nil) and FRedirectToHostSite.IsDockedPage(ADockObject.DropAlign) do begin
+        ph := FRedirectToHostSite.GetParentHostSiteOfTabbed(ADockObject.DropAlign);
         if ph = nil then break;
         FRedirectToHostSite := ph;
         dec(AreaIdx);
