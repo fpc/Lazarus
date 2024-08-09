@@ -1987,7 +1987,8 @@ begin
     Exit;
   if not ADroppedDown then exit;
   comboBox:= TCocoaComboBox(ACustomComboBox.Handle);
-  comboBox.cell.performSelector_withObject_afterDelay( ObjCSelector('moveDown:'), nil, 0 );
+  if comboBox.cell.respondsToSelector(ObjCSelector('moveDown:')) then
+    comboBox.cell.performSelector_withObject_afterDelay( ObjCSelector('moveDown:'), nil, 0 );
 end;
 
 
