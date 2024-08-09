@@ -3507,7 +3507,7 @@ begin
   while CurPos.Flag=cafWord do begin
     if Result<>'' then
       Result:=Result+'.';
-    Result:=Result+GetAtom;
+    Result:=Result+GetAtomIdentifier;
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;

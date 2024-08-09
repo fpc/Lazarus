@@ -265,6 +265,7 @@ type
     function GetUpAtom(const Atom: TAtomPosition): string;
     function FreeUpAtomIs(const FreeAtomPos: TAtomPosition;
         const AnAtom: shortstring): boolean;
+    function GetAtomIdentifier: string;
     
     // identifiers
     function CompareNodeIdentChars(ANode: TCodeTreeNode;
@@ -1044,6 +1045,13 @@ begin
     inc(p);
   end;
   Result:=true;
+end;
+
+function TCustomCodeTool.GetAtomIdentifier: string;
+begin
+  Result:=copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+  if (Result<>'') and (Result[1]='&') then
+    System.Delete(Result,1,1);
 end;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
@@ -3177,8 +3185,9 @@ end;
 function TCustomCodeTool.ExtractIdentifier(CleanStartPos: integer): string;
 var len: integer;
 begin
-  if (CleanStartPos>=1) then begin
+  if (CleanStartPos>=1) and (CleanStartPos<=SrcLen) then begin
     len:=0;
+    if Src[CleanStartPos]='&' then inc(CleanStartPos);
     while (CleanStartPos<=SrcLen)
     and (IsIdentChar[Src[CleanStartPos+len]]) do
       inc(len);
