@@ -739,6 +739,9 @@ procedure TlrPdfExportFilter.DrawRect(X, Y, W, H: TPDFFloat; ABorderColor,
 var
   fX, fY, fW, fH: Extended;
 begin
+  if AFrames = [] then
+    ABorderColor := clNone;
+
   if (AFillColor = clNone) and (ABorderColor = clNone) then exit;
 
   if ABorderColor <> clNone then
@@ -753,9 +756,10 @@ begin
   fY:= ConvetUnits(Y);
   ABorderWidth:=ConvetUnits(ABorderWidth);
 
-  if AFrames = [frbLeft, frbTop, frbRight, frbBottom] then
-    FCurPage.DrawRect(fX, fY + fH, fW, fH, ABorderWidth, (AFillColor <> clNone), (ABorderColor <> clNone))
-  else
+  if (AFrames = [frbLeft, frbTop, frbRight, frbBottom]) or (AFillColor <> clNone) then
+    FCurPage.DrawRect(fX, fY + fH, fW, fH, ABorderWidth, (AFillColor <> clNone), ((ABorderColor <> clNone) and (AFrames = [frbLeft, frbTop, frbRight, frbBottom])));
+
+  if not (AFrames = [frbLeft, frbTop, frbRight, frbBottom]) then
   begin
     if frbLeft in AFrames then
       FCurPage.DrawLine(fX, fY, fX, fY + fH, ABorderWidth);
@@ -773,8 +777,7 @@ end;
 
 procedure TlrPdfExportFilter.DrawRectView(AView: TfrView);
 begin
-  if AView.Frames <> [] then
-    DrawRect(AView.Left, AView.Top, AView.Width, AView.Height, AView.FrameColor, AView.FillColor, AView.Frames, AView.FrameWidth);
+  DrawRect(AView.Left, AView.Top, AView.Width, AView.Height, AView.FrameColor, AView.FillColor, AView.Frames, AView.FrameWidth);
 end;
 
 procedure TlrPdfExportFilter.WriteURL(X, Y, W, H: TPDFFloat; AUrlText: string);
