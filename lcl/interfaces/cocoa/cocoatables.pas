@@ -143,12 +143,6 @@ type
     function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
     function lclGetItemImageAt(ARow, ACol: Integer): NSImage; message 'lclGetItemImageAt::';
 
-    // BoundsRect - is the rectangle of the cell, speciifed of aRow, acol.
-    // so the function lclGetLabelRect, lclGetIconRect should only adjust "BoundsRect"
-    // and return the adjusted rectangle
-    function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetLabelRect:::';
-    function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
-
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
 
@@ -406,28 +400,6 @@ begin
   end else
     img := nil;
   Result := img;
-end;
-
-function TCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
-  const BoundsRect: TRect): TRect;
-begin
-  Result:= BoundsRect;
-  Result.Top:= Result.Top - 2;
-  Result.Height:= Result.Height + 4;
-  if self.isImagesInCell then begin
-    Result.Left:= Result.Left + BoundsRect.Height;
-  end;
-end;
-
-function TCocoaTableListView.lclGetIconRect(ARow, ACol: Integer;
-  const BoundsRect: TRect): TRect;
-begin
-  if self.isImagesInCell then begin
-    Result:= BoundsRect;
-    Result.Width:= Result.Height;
-  end else begin
-    Result:= TRect.Empty;
-  end;
 end;
 
 procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
@@ -1498,12 +1470,32 @@ end;
 
 function TCocoaWSListView_TableViewHandler.ItemDisplayRect(const AIndex,
   ASubItem: Integer; ACode: TDisplayCode): TRect;
+var
+  item: TCocoaTableListItem;
+  frame: NSRect;
 begin
-  LCLGetItemRect(_tableView, AIndex, ASubItem, Result);
+  Result:= Bounds(0,0,0,0);
+  item:= _tableView.viewAtColumn_row_makeIfNecessary( ASubItem, AIndex, True );
+  if NOT Assigned(item) then
+    Exit;
+
   case ACode of
-    drLabel: Result:= _tableView.lclGetLabelRect(AIndex, ASubItem, Result);
-    drIcon:  Result:= _tableView.lclGetIconRect(AIndex, ASubItem, Result);
+    drLabel:
+      begin
+        frame:= item.textField.frame;
+        frame.origin.y:= frame.origin.y + 2;
+        frame:= item.convertRect_toView( frame, _tableView );
+      end;
+    drIcon:
+      begin
+        frame:= item.imageView.frame;
+        frame:= item.convertRect_toView( frame, _tableView );
+      end
+    else
+      frame:= item.frame;
   end;
+
+  Result:= NSRectToRect( frame );
 end;
 
 function TCocoaWSListView_TableViewHandler.ItemGetPosition(
