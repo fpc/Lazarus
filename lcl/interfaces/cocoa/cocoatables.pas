@@ -69,6 +69,7 @@ type
     procedure updateItemLayout( row: NSInteger; col: NSInteger );
       message 'updateItemLayout:col:';
 
+    procedure prepareForReuse; override;
     procedure dealloc; override;
   end;
 
@@ -81,6 +82,8 @@ type
     NSTableViewDelegateProtocol,
     NSTableViewDataSourceProtocol,
     TCocoaListViewBackendControlProtocol )
+  private
+    _checkBoxes: Boolean;
   public
     iconSize: NSSize;
 
@@ -91,7 +94,6 @@ type
 
     readOnly: Boolean;
 
-    isFirstColumnCheckboxes: Boolean;
     isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
@@ -101,6 +103,9 @@ type
     procedure backend_setCallback( cb:TLCLListViewCallback );
     procedure backend_reloadData;
     procedure backend_onInit;
+
+    procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
+    function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
 
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -133,7 +138,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     // key
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
-    procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
 
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
@@ -338,11 +342,18 @@ begin
   wantAllKeys := false;
 end;
 
-procedure TCocoaTableListView.lclSetFirstColumCheckboxes(acheckboxes: Boolean);
+procedure TCocoaTableListView.lclSetCheckBoxes(checkBoxes: Boolean);
 begin
-  if isFirstColumnCheckboxes = acheckboxes then Exit;
-  isFirstColumnCheckboxes := acheckboxes;
-  reloadData();
+  if _checkBoxes = checkBoxes then
+    Exit;
+
+  _checkBoxes:= checkBoxes;
+  self.reloadData;
+end;
+
+function TCocoaTableListView.lclHasCheckBoxes: Boolean;
+begin
+  Result:= _checkBoxes;
 end;
 
 procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
@@ -1006,7 +1017,7 @@ begin
       self.createImageView;
   end;
 
-  if (col=0) and tv.isFirstColumnCheckboxes then
+  if (col=0) and tv.lclHasCheckBoxes then
     self.createCheckBox;
 end;
 
@@ -1081,6 +1092,15 @@ begin
   end;
 end;
 
+procedure TCocoaTableListItem.prepareForReuse;
+begin
+  if Assigned(_checkBox) then begin
+    _checkBox.removeFromSuperview;
+    _checkBox.release;
+    _checkBox:= nil;
+  end;
+end;
+
 procedure TCocoaTableListItem.dealloc;
 begin
   self.textField.removeFromSuperview;
@@ -1112,26 +1132,25 @@ var
   txt: String;
 begin
   Result:= nil;
-  if row>=numberOfRowsInTableView(self) then
+  if row >= numberOfRowsInTableView(self) then
     Exit;
 
-  frameRect.origin := GetNSPoint(0,0);
-  frameRect.size := GetNSSize(tableColumn.width, rowHeight);
+  frameRect.origin:= GetNSPoint(0,0);
+  frameRect.size:= GetNSSize(tableColumn.width, rowHeight);
 
-  item := TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
+  item:= TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
   if item = nil then begin
-    item := TCocoaTableListItem.alloc.initWithFrame(frameRect);
+    item:= TCocoaTableListItem.alloc.initWithFrame(frameRect);
     item.setidentifier(NSSTR('tblview'));
   end;
 
-  col := tableColumns.indexOfObject(tableColumn);
-
+  col:= tableColumns.indexOfObject (tableColumn );
   item.setColumn( tableColumn );
   item.loadView( row, col );
   item.updateItemValue( row, col );
   item.updateItemLayout( row, col );
 
-  Result := item;
+  Result:= item;
 end;
 
 procedure TViewCocoaTableListView.textFieldAction(sender: NSTextField);
@@ -1616,7 +1635,7 @@ const
 begin
   case AProp of
     {lvpAutoArrange,}
-    lvpCheckboxes: _tableView.lclSetFirstColumCheckboxes(AIsSet);
+    lvpCheckboxes: _tableView.lclSetCheckboxes(AIsSet);
    // lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
   {  lvpFlatScrollBars,
     lvpFullDrag,}
