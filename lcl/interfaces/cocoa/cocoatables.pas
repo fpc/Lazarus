@@ -47,6 +47,51 @@ type
     procedure Clear; override;
   end;
 
+  { TCocoaTableListItem }
+
+  TCocoaTableListItem = objcclass(NSTableCellView)
+  private
+    _tableView: NSTableView;
+    _checkBox: NSButton;
+  private
+    column: NSTableColumn;
+    checkedSubView: NSButton;
+    imageSubView: NSImageView;
+    textSubView: NSTextField;
+    idStr: NSString;
+  private
+    procedure createTextField; message 'createTextField';
+    procedure createImageView; message 'createImageView';
+    procedure createCheckBox; message 'createCheckBox';
+  public
+    procedure setTableView( tableView: NSTableView ); message 'setTableView:';
+    function checkBox: NSButton; message 'checkBox';
+
+    procedure loadView( row: Integer; col: Integer );
+      message 'loadView:col:';
+    procedure updateItemValue( row: NSInteger; col: NSInteger );
+      message 'updateItemValue:col:';
+    procedure updateItemLayout( row: NSInteger; col: NSInteger );
+      message 'updateItemLayout:col:';
+  public
+    function initWithFrame(frameRect: NSRect): id; override;
+    procedure dealloc; override;
+    procedure setColumn(AColumn: NSTableColumn); message 'setColumn:';
+    procedure setImage(AImage: NSImage); message 'setImage:';
+    procedure setCheckState(AState: NSInteger); message 'setCheckState:';
+    procedure setStringValue(AString: NSString); message 'setStringValue:';
+    procedure setEditable(flag: Boolean); message 'setEditable:';
+    procedure setFont(AFont: NSFont); message 'setFont:';
+    procedure setTarget(ATarget: id); message 'setTarget:';
+    procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
+    procedure setTextAction(aSelector: SEL); message 'setTextAction:';
+    procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
+    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; override;
+    function identifier: NSString; message 'identifier'; override;
+    function textFrame: NSRect; message 'textFrame';
+    procedure lclSetEnabled(AEnabled: Boolean); override;
+  end;
+
   TCocoaTalbeListView_onSelectionChanged = procedure( tv: NSTableView );
 
   { TCocoaTableListView }
@@ -57,6 +102,8 @@ type
     NSTableViewDataSourceProtocol,
     TCocoaListViewBackendControlProtocol )
   public
+    iconSize: NSSize;
+
     callback: IListViewCallback;
 
     onSelectionChanged: TCocoaTalbeListView_onSelectionChanged;
@@ -156,39 +203,13 @@ type
     function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
     function tableView_shouldReorderColumn_toColumn(tableView: NSTableView; columnIndex: NSInteger; newColumnIndex: NSInteger): Boolean; message 'tableView:shouldReorderColumn:toColumn:';}
     procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
-    {procedure tableViewColumnDidMove(notification: NSNotification); message 'tableViewColumnDidMove:';
+    {procedure tableViewColumnDidMove(notification: NSNotification); message 'tableViewColumnDidMove:';}
     procedure tableViewColumnDidResize(notification: NSNotification); message 'tableViewColumnDidResize:';
-    procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
+    {procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
 
   // View based NSTableView
-
-  TCocoaTableListItem = objcclass(NSView)
-  private
-    column: NSTableColumn;
-    checkedSubView: NSButton;
-    imageSubView: NSImageView;
-    textSubView: NSTextField;
-    idStr: NSString;
-  public
-    function initWithFrame(frameRect: NSRect): id; override;
-    procedure dealloc; override;
-    procedure setColumn(AColumn: NSTableColumn); message 'setColumn:';
-    procedure setImage(AImage: NSImage); message 'setImage:';
-    procedure setCheckState(AState: NSInteger); message 'setCheckState:';
-    procedure setStringValue(AString: NSString); message 'setStringValue:';
-    procedure setEditable(flag: Boolean); message 'setEditable:';
-    procedure setFont(AFont: NSFont); message 'setFont:';
-    procedure setTarget(ATarget: id); message 'setTarget:';
-    procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
-    procedure setTextAction(aSelector: SEL); message 'setTextAction:';
-    procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
-    procedure setIdentifier(identifier_: NSString); message 'setIdentifier:'; override;
-    function identifier: NSString; message 'identifier'; override;
-    function textFrame: NSRect; message 'textFrame';
-    procedure lclSetEnabled(AEnabled: Boolean); override;
-  end;
 
   { TCocoaWSListView_TableViewHandler }
 
@@ -266,7 +287,6 @@ type
     NSTableViewDelegateProtocol,
     NSTableViewDataSourceProtocol )
   public
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
   end;
@@ -274,9 +294,6 @@ type
   { TViewCocoaTableListView }
 
   TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-    // todo: this should be "override" for 10.7 and later
-    //       on the other hand, it doesn't call "inherited" so there's no need
-    //       to do an actual override
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView; message 'tableView:viewForTableColumn:row:';
 
     procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
@@ -340,7 +357,8 @@ end;
 
 function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
-  Result := TViewCocoaTableListView.alloc
+  Result := TViewCocoaTableListView.alloc;
+  Result.setRowSizeStyle( NSTableViewRowSizeStyleCustom );
 end;
 
 { TCocoaTableListView }
@@ -980,6 +998,12 @@ begin
     onSelectionChanged( self );
 end;
 
+procedure TCocoaTableListView.tableViewColumnDidResize(
+  notification: NSNotification);
+begin
+  self.reloadData;
+end;
+
 { TCocoaStringList }
 
 procedure TCocoaStringList.Changed;
@@ -1019,52 +1043,155 @@ begin
   NSCell(acolumn.dataCell).setAlignment( aalignment );
 end;
 
-function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
-  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
-var
-  lStringList: TStringList;
-  col: NSInteger;
-  StrResult: NSString;
-  chk : Integer;
-  txt : string;
+{ TCocoaTableListItem }
+
+function TCocoaTableListItem.checkBox: NSButton;
 begin
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
-    [col, row, Items.Count]));
-  {$ENDIF}
-
-  Result := nil;
-  if not Assigned(callback) then Exit;
-  col := getIndexOfColumn(tableColumn);
-  if (col = 0) and isFirstColumnCheckboxes then begin
-    chk := 0;
-    callback.GetItemCheckedAt(row, col, chk);
-    Result := NSNumber.numberWithInt(chk);
-    Exit;
-  end;
-
-  txt := '';
-  if callback.GetItemTextAt(row, col, txt) then begin
-    if txt = '' then Result := NSString.string_
-    else Result := NSString.stringWithUTF8String(@txt[1])
-  end;
-  (*
-  if row > Items.Count-1 then begin
-    Result := nil;
-    Exit;
-  end;
-  if col = 0 then
-    StrResult := NSStringUTF8(Items.Strings[row])
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
-  end;
-  Result := StrResult;
-  *)
+  Result:= _checkBox;
 end;
 
-{ TCocoaTableListItem }
+procedure TCocoaTableListItem.createTextField;
+var
+  fieldControl: NSTextField;
+begin
+  if Assigned(self.textField) then
+    Exit;
+
+  fieldControl:= NSTextField.alloc.initWithFrame(NSZeroRect);
+  fieldControl.setBordered( False );
+  fieldControl.setDrawsBackground( False );
+  fieldControl.setEditable( False );
+  fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
+  self.setTextField( fieldControl );
+  self.addSubview( fieldControl );
+end;
+
+procedure TCocoaTableListItem.createImageView;
+var
+  imageControl: NSImageView;
+begin
+  if Assigned(self.imageView) then
+    Exit;
+
+  imageControl:= NSImageView.alloc.initWithFrame( NSZeroRect );
+  imageControl.cell.setImageScaling( NSImageScaleProportionallyUpOrDown );
+  self.setImageView( imageControl );
+  self.addSubview( imageControl );
+end;
+
+procedure TCocoaTableListItem.createCheckBox;
+begin
+  if Assigned(_checkBox) then
+    Exit;
+
+  _checkBox:= NSButton.alloc.init;
+  _checkBox.setButtonType( NSSwitchButton );
+  _checkBox.setTitle( CocoaConst.NSSTR_EMPTY );
+  _checkBox.setTarget( _tableView );
+  _checkBox.setAction( ObjCSelector('checkboxAction:') );
+  self.addSubview( _checkBox );
+end;
+
+procedure TCocoaTableListItem.setTableView(tableView: NSTableView);
+begin
+  _tableView:= tableView;
+end;
+
+procedure TCocoaTableListItem.loadView( row: Integer; col: Integer );
+var
+  tv: TCocoaTableListView;
+  lclcb: TLCLListViewCallback;
+  lclImageIndex: Integer;
+  lvil: TListViewImageList;
+begin
+  tv:= TCocoaTableListView( _tableView );
+  lclcb:= TLCLListViewCallback( tv.callback.GetCallbackObject );
+
+  self.createTextField;
+
+  if col=0 then begin
+    if lclcb.GetImageListType(lvil) then
+      self.createImageView;
+  end else begin
+    lclcb.GetItemImageAt( row, col, lclImageIndex );
+    if lclImageIndex >= 0 then
+      self.createImageView;
+  end;
+
+  if (col=0) and tv.isFirstColumnCheckboxes then
+    self.createCheckBox;
+end;
+
+procedure TCocoaTableListItem.updateItemValue(row: NSInteger; col: NSInteger );
+var
+  tv: TCocoaTableListView;
+  lclcb: IListViewCallback;
+  checkedValue: Integer;
+  cocoaImage: NSImage;
+  lclImageIndex: Integer;
+  lclText: String;
+begin
+  tv:= TCocoaTableListView( _tableView );
+  lclcb:= tv.callback;
+
+  if Assigned(_checkBox) then begin
+    lclcb.GetItemCheckedAt( row, 0, checkedValue );
+    _checkBox.setState( checkedValue );
+  end;
+
+  if Assigned(self.imageView) then begin
+    lclcb.GetItemImageAt( row, col, lclImageIndex );
+    if lclImageIndex >= 0 then begin
+      cocoaImage:= lclcb.GetImageFromIndex( lclImageIndex );
+      self.imageView.setImage( cocoaImage );
+    end;
+  end;
+
+  lclcb.GetItemTextAt( row, col, lclText );
+  self.textField.setStringValue( StrToNSString(lclText) );
+end;
+
+procedure TCocoaTableListItem.updateItemLayout(row: NSInteger; col: NSInteger );
+var
+  tv: TCocoaTableListView;
+  lclcb: TLCLListViewCallback;
+  aFrame: NSRect;
+  rowHeight: CGFloat;
+begin
+  tv:= TCocoaTableListView( _tableView );
+  lclcb:= TLCLListViewCallback( tv.callback.GetCallbackObject );
+
+  aFrame:= NSZeroRect;
+  rowHeight:= tv.tableView_heightOfRow( tv, row );
+
+  if Assigned(_checkBox) then begin
+    aFrame.size.width:= 18;
+    aFrame.size.height:= 18;
+    aFrame.origin.x:= 0;
+    aFrame.origin.y:= (rowHeight - aFrame.size.height ) / 2;
+    _checkBox.setFrame( aFrame );
+
+    aFrame.origin.x:= 4;
+  end;
+
+  if Assigned(self.imageView) then begin
+    aFrame.origin.x:= aFrame.origin.x + aFrame.size.width;
+    aFrame.origin.y:= (rowHeight - tv.iconSize.Height) / 2;
+    aFrame.size:= tv.iconSize;
+    self.imageView.setFrame( aFrame );
+  end;
+
+  if Assigned(self.textField) then begin
+    aFrame.size.height:= self.textField.frame.size.height;
+    aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 4;
+    aFrame.origin.y:= (rowHeight - 15) / 2;
+    aFrame.size.width:= self.column.width - aFrame.origin.x;
+    if aFrame.size.width < 16 then
+      aFrame.size.width:= 16;
+    aFrame.size.height:= 15;
+    self.textField.setFrame( aFrame );
+  end;
+end;
 
 function TCocoaTableListItem.initWithFrame(frameRect: NSRect): id;
 var
@@ -1073,6 +1200,10 @@ var
   Img: NSImage;
 begin
   Result := inherited initWithFrame(frameRect);
+
+  /////
+  EXIT;
+
   {$ifdef BOOLFIX}
   Result.setAutoresizesSubviews_(Ord(True));
   {$else}
@@ -1234,38 +1365,28 @@ var
   chkst: Integer;
   txt: String;
 begin
+  Result:= nil;
+  if row>=numberOfRowsInTableView(self) then
+    Exit;
+
   frameRect.origin := GetNSPoint(0,0);
   frameRect.size := GetNSSize(tableColumn.width, rowHeight);
 
   item := TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
   if item = nil then begin
     item := TCocoaTableListItem.alloc.initWithFrame(frameRect);
-    //todo: should be system font :?
-    //item.setfont(TCocoaFont(ListView.Font.Handle).Font);
-    item.setTarget(self);
-    item.setCheckAction(ObjCSelector('checkboxAction:'));
-    item.setTextAction(ObjCSelector('textFieldAction:'));
     item.setidentifier(NSSTR('tblview'));
   end;
 
-  item.setFrame(frameRect);
-  item.setColumn(tableColumn);
   col := tableColumns.indexOfObject(tableColumn);
-  if (col = 0) and isFirstColumnCheckboxes then begin
-    callback.GetItemCheckedAt(row, col, chkst);
-    item.setCheckState(chkst)
-  end
-  else
-    item.setCheckState(-1);
 
-  item.setImage(lclGetItemImageAt(row, col));
+  item.setTableView( self );
+  item.setColumn( tableColumn );
+  item.loadView( row, col );
+  item.updateItemValue( row, col );
+  item.updateItemLayout( row, col );
 
-  txt := '';
-  if not callback.GetItemTextAt(row, col, txt) then txt := '';
-
-  item.setStringValue(NSStringUtf8(txt));
-  item.lclSetEnabled(isEnabled);
-  Result := item
+  Result := item;
 end;
 
 procedure TViewCocoaTableListView.textFieldAction(sender: NSTextField);
@@ -1286,8 +1407,11 @@ var
 begin
   if not Assigned(callback) then Exit;
 
-  row := rowForView(sender);
+  row := rowForView(sender.superview);
   callback.SetItemCheckedAt(row, 0, sender.state);
+  if sender.state = NSOnState then begin
+    self.selectOneItemByIndex(row, True);
+  end;
   reloadDataForRow_column(row, 0);
 end;
 
@@ -1717,13 +1841,11 @@ begin
   if NOT Assigned(AValue) then
     Exit;
 
-  spacing:= _tableView.intercellSpacing;
-  spacing.height:= AValue.Height / 3 + 2;
-  if spacing.height < 6 then
-    spacing.height:= 6
-  else if spacing.height > 12 then
-    spacing.height:= 12;
-  _tableView.setIntercellSpacing( spacing );
+  _tableView.iconSize.Width:= AValue.Width;
+  _tableView.iconSize.Height:= AValue.Height;
+  _tableView.CustomRowHeight:= AValue.Height + 8;
+
+  _tableView.reloadData;
 end;
 
 procedure TCocoaWSListView_TableViewHandler.SetItemsCount(
