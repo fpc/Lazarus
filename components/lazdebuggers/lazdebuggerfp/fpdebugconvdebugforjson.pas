@@ -147,7 +147,7 @@ begin
   if CurProc = nil then
     exit;
 
-  ProcSymVal := AnExpressionScope.FindSymbol(FFunctionName);
+  ProcSymVal := AnExpressionScope.FindSymbol(FFunctionName, '', [fsfIgnoreEnumVals]);
   if ProcSymVal <> nil then begin
     if (ProcSymVal.Kind = skProcedure) and IsTargetAddr(ProcSymVal.DataAddress)
     //and

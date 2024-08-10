@@ -110,7 +110,8 @@ type
       AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
     function FindExportedSymbolInUnits(const AName: String;
       const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit;
-      out ADbgValue: TFpValue; const OnlyUnitNameLower: String = ''): Boolean;
+      out ADbgValue: TFpValue; const OnlyUnitNameLower: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean;
       override;
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; override;
@@ -693,10 +694,9 @@ begin
   end;
 end;
 
-function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(
-  const AName: String; const ANameInfo: TNameSearchInfo;
-  SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
-  const OnlyUnitNameLower: String): Boolean;
+function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(const AName: String;
+  const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
+  const OnlyUnitNameLower: String; AFindFlags: TFindExportedSymbolsFlags): Boolean;
 var
   i: Integer;
   CU: TDwarfCompilationUnit;
@@ -719,7 +719,7 @@ begin
   FInAllUnitSearch := True;
   FFoundSystemInfoEntry := nil;
   Result := inherited FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit,
-    ADbgValue, OnlyUnitNameLower);
+    ADbgValue, OnlyUnitNameLower, AFindFlags);
   FInAllUnitSearch := False;
 
   if (not Result) and (FFoundSystemInfoEntry <> nil) then
@@ -881,7 +881,7 @@ begin
     MangledNameInfo := NameInfoForSearch(StaticName);
 
     if CU.KnownNameHashes^[MangledNameInfo.NameHash and KnownNameHashesBitMask] then begin
-      if FindExportedSymbolInUnit(CU, MangledNameInfo, FoundInfoEntry, IsExternal) then begin
+      if FindExportedSymbolInUnit(CU, MangledNameInfo, FoundInfoEntry, IsExternal, [fsfIgnoreEnumVals]) then begin
         if {(IsExternal) and} (FoundInfoEntry.ReadName(FoundName)) then begin
           if FoundName = StaticName then begin // must be case-sensitive
             ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));

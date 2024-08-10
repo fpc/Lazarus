@@ -104,7 +104,7 @@ type
     constructor Create(ATextExpression: String; AScope: TFpDbgSymbolScope);
     destructor Destroy; override;
 
-    function GetDbgSymbolForIdentifier({%H-}AnIdent: String): TFpValue;
+    function GetDbgSymbolForIdentifier({%H-}AnIdent: String; AFindFlags: TFindExportedSymbolsFlags = []): TFpValue;
     function GetRegisterValue({%H-}AnIdent: String): TFpValue;
 
     procedure SetError(AMsg: String);  // deprecated;
@@ -2366,6 +2366,9 @@ begin
     exit;
   end;
 
+  (* If Itm0 is an identifer we could use [fsfIgnoreEnumVals]
+     But then alTop(1) would give "identifer not found", rather than a proper error
+  *)
   tmp := Itm0.ResultValue;
   if (tmp = nil) or (not ExpressionData.Valid) then
     exit;
@@ -2936,7 +2939,7 @@ begin
     exit;
 
   FChildClassCastType.ReleaseReference;
-  FChildClassCastType := ExpressionData.GetDbgSymbolForIdentifier(CastName);
+  FChildClassCastType := ExpressionData.GetDbgSymbolForIdentifier(CastName, [fsfIgnoreEnumVals]);
   if (FChildClassCastType = nil) or (FChildClassCastType.DbgSymbol = nil) or
      (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
      (FChildClassCastType.DbgSymbol.Kind <> skClass)
@@ -4289,10 +4292,11 @@ begin
   SetExceptionMask(FFpuMask);
 end;
 
-function TFpPascalExpressionSharedData.GetDbgSymbolForIdentifier(AnIdent: String): TFpValue;
+function TFpPascalExpressionSharedData.GetDbgSymbolForIdentifier(AnIdent: String;
+  AFindFlags: TFindExportedSymbolsFlags): TFpValue;
 begin
   if FScope <> nil then
-    Result := FScope.FindSymbol(AnIdent)
+    Result := FScope.FindSymbol(AnIdent, '', AFindFlags)
   else
     Result := nil;
 end;

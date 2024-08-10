@@ -523,7 +523,7 @@ begin
     //U_$SYSTEM_$$_VARIANTMANAGER
     //SYSTEM_$$_GETVARIANTMANAGER$TVARIANTMANAGER
 
-    ProcVal := AnExpressionScope.FindSymbol('sysvartolstr', 'variants');
+    ProcVal := AnExpressionScope.FindSymbol('sysvartolstr', 'variants', [fsfIgnoreEnumVals]);
     if ProcVal <> nil then begin
       ProcSym := ProcVal.DbgSymbol;
       if ProcSym <> nil then

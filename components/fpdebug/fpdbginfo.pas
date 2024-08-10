@@ -111,6 +111,9 @@ type
   );
   TFpValueFlags = set of TFpValueFlag;
 
+  TFindExportedSymbolsFlag = (fsfIgnoreEnumVals, fsfMatchUnitName);
+  TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
+
   { TFpValue }
 
   TFpValue = class(TRefCountedObject)
@@ -656,7 +659,8 @@ type
     property SymbolAtAddress: TFpSymbol read GetSymbolAtAddress;
     property ProcedureAtAddress: TFpValue read GetProcedureAtAddress;
     // search this, and all parent context
-    function FindSymbol(const {%H-}AName: String; const OnlyUnitName: String = ''): TFpValue; virtual;
+    function FindSymbol(const {%H-}AName: String; const OnlyUnitName: String = '';
+      AFindFlags: TFindExportedSymbolsFlags = []): TFpValue; virtual;
     property MemManager: TFpDbgMemManager read GetMemManager;
     property MemModel: TFpDbgMemModel read GetMemModel;
     property SizeOfAddress: Integer read GetSizeOfAddress;
@@ -1785,8 +1789,8 @@ begin
   Result := nil;
 end;
 
-function TFpDbgSymbolScope.FindSymbol(const AName: String;
-  const OnlyUnitName: String): TFpValue;
+function TFpDbgSymbolScope.FindSymbol(const AName: String; const OnlyUnitName: String;
+  AFindFlags: TFindExportedSymbolsFlags): TFpValue;
 begin
   Result := nil;
 end;

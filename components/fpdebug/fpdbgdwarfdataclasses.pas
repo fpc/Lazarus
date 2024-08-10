@@ -344,6 +344,7 @@ type
     FInformationEntry: Pointer; // pointer to the LEB128 Abbrev at the start of an Information entry in debug_info
     FInformationData: Pointer;  // poinetr after the LEB128
     FScope: TDwarfScopeInfo;
+    FScopeCurrentInfoPtr: PDwarfScopeInfoRec; // only valid after GoNext/Child[Fast]
     FAbbrev: PDwarfAbbrev;
     FAbbrevData: PDwarfAbbrevEntry;
     FAbstractOrigin: TDwarfInformationEntry;
@@ -376,7 +377,7 @@ type
 
     procedure ComputeKnownHashes(AKNownHashes: PKnownNameHashesArray);
 
-    function GoNamedChild(const AName: String): Boolean;
+    function GoNamedChild(const ANameInfo: TNameSearchInfo): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
     function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False; ASkipEnumMembers: Boolean = False): Boolean;
     // GoNamedChildMatchCaseEx will use
@@ -384,7 +385,6 @@ type
     // - LowerName for compare
     // GoNamedChildMatchCaseEx does not search in enums
     function GoNamedChildMatchCaseEx(const ANameInfo: TNameSearchInfo): Boolean;
-    function GoNamedChildEx(const AName: String): Boolean; inline;
 
     function FindNamedChild(const AName: String): TDwarfInformationEntry;
     function FindChildByTag(ATag: Cardinal): TDwarfInformationEntry;
@@ -424,6 +424,8 @@ type
     procedure GoParent; inline;
     procedure GoNext; inline;
     procedure GoChild; inline;
+    procedure GoNextFast; inline;  // Only if we know we have a valid scope
+    procedure GoChildFast; inline; // Only if we know we have a valid scope
     function HasValidScope: Boolean; inline;
     property ScopeIndex: Integer read GetScopeIndex write SetScopeIndex;
 
@@ -2717,7 +2719,11 @@ end;
 
 procedure TDwarfInformationEntry.ScopeChanged;
 begin
-  FInformationEntry := FScope.Entry;
+  FScopeCurrentInfoPtr := FScope.Current;
+  if FScopeCurrentInfoPtr <> nil then
+    FInformationEntry := FScopeCurrentInfoPtr^.Entry
+  else
+    FInformationEntry := nil;
   FFlags := [];
   FInformationData := nil;
   if FAbstractOrigin <> nil then
@@ -2798,6 +2804,18 @@ begin
   if not MaybeSearchScope then
     exit;
   FScope.GoNext;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoNextFast;
+begin
+  FScope.GoNext;
+  ScopeChanged;
+end;
+
+procedure TDwarfInformationEntry.GoChildFast;
+begin
+  FScope.GoChild;
   ScopeChanged;
 end;
 
@@ -2929,38 +2947,41 @@ begin
   ScopeChanged;
 end;
 
-function TDwarfInformationEntry.GoNamedChild(const AName: String): Boolean;
+function TDwarfInformationEntry.GoNamedChild(const ANameInfo: TNameSearchInfo): Boolean;
 var
   EntryName: PChar;
-  s1, s2: String;
 begin
   Result := False;
-  if AName = '' then
+  if ANameInfo.NameUpper = '' then
     exit;
   GoChild;
   if not HasValidScope then
     exit;
-  s1 := UTF8UpperCaseFast(AName);
-  s2 := UTF8LowerCaseFast(AName);
+
   while HasValidScope do begin
-    PrepareAbbrev;
-    if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
-      GoNext;
-      Continue;
-    end;
-    if not ReadValue(DW_AT_name, EntryName) then begin
-      GoNext;
+    if FScopeCurrentInfoPtr^.NameHash <> ANameInfo.NameHash then begin
+      GoNextFast;
       Continue;
     end;
 
-    if CompareUtf8BothCase(@s1[1], @s2[1], EntryName) then begin
+    PrepareAbbrev;
+    if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
+      GoNextFast;
+      Continue;
+    end;
+    if not ReadValue(DW_AT_name, EntryName) then begin
+      GoNextFast;
+      Continue;
+    end;
+
+    if CompareUtf8BothCase(PChar(ANameInfo.NameUpper), PChar(ANameInfo.nameLower), EntryName) then begin
       // TODO: check DW_AT_start_scope;
-      DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', AName]);
+      DebugLn(FPDBG_DWARF_SEARCH, ['GoNamedChild found ', dbgs(FScope, FCompUnit), '  Result=', DbgSName(Self), '  FOR ', ANameInfo.NameUpper]);
       Result := True;
       exit;
     end;
 
-    GoNext;
+    GoNextFast;
   end;
 end;
 
@@ -2983,29 +3004,37 @@ begin
     exit;
   while true do begin
     while HasValidScope do begin
-      sc := FScope.Current;
-      if sc^.NameHash = 0 then begin
-        GoNext;
-        Continue;
+      sc := FScopeCurrentInfoPtr;
+      if ASkipEnumMembers then begin
+        if (sc^.NameHash <> ANameInfo.NameHash) then begin
+          GoNextFast;
+          Continue;
+        end;
+      end
+      else begin
+        if sc^.NameHash = 0 then begin
+          GoNextFast;
+          Continue;
+        end;
       end;
 
       PrepareAbbrev;
       if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
         assert(false);
-        GoNext;
+        GoNextFast;
         Continue;
       end;
 
       if (sc^.NameHash <> ANameInfo.NameHash) and
          ( ASkipEnumMembers or (FAbbrev^.tag <> DW_TAG_enumeration_type) )
       then begin
-        GoNext;
+        GoNextFast;
         Continue;
       end;
 
       if ASkipArtificial and (dafHasArtifical in FAbbrev^.flags) then begin
         if ReadValue(DW_AT_artificial, Val) and (Val <> 0) then begin
-          GoNext;
+          GoNextFast;
           Continue;
         end;
       end;
@@ -3013,7 +3042,7 @@ begin
 
       if (sc^.NameHash = ANameInfo.NameHash) then begin
         if not ReadValue(DW_AT_name, EntryName) then begin
-          GoNext;
+          GoNextFast;
           Continue;
         end;
 
@@ -3029,17 +3058,17 @@ begin
         assert(not InEnum, 'nested enum');
         InEnum := True;
         ParentScopIdx := ScopeIndex;
-        GoChild;
+        GoChildFast;
         Continue;
       end;
 
-      GoNext;
+      GoNextFast;
     end;
 
     if InEnum then begin
       InEnum := False;
       ScopeIndex := ParentScopIdx;
-      GoNext;
+      GoNextFast;
       continue;
     end;
     break;
@@ -3050,7 +3079,6 @@ function TDwarfInformationEntry.GoNamedChildMatchCaseEx(
   const ANameInfo: TNameSearchInfo): Boolean;
 var
   EntryName: PChar;
-  sc: PDwarfScopeInfoRec;
 begin
   Result := False;
   if ANameInfo.NameUpper = '' then
@@ -3060,22 +3088,21 @@ begin
     exit;
 
   while HasValidScope do begin
-    sc := FScope.Current;
-    if sc^.NameHash = 0 then begin
-      GoNext;
+    if FScopeCurrentInfoPtr^.NameHash = 0 then begin
+      GoNextFast;
       Continue;
     end;
 
     PrepareAbbrev;
     if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
       Assert(false);
-      GoNext;
+      GoNextFast;
       Continue;
     end;
 
-    if (sc^.NameHash = ANameInfo.NameHash) then begin
+    if (FScopeCurrentInfoPtr^.NameHash = ANameInfo.NameHash) then begin
       if not ReadValue(DW_AT_name, EntryName) then begin
-        GoNext;
+        GoNextFast;
         Continue;
       end;
 
@@ -3087,16 +3114,8 @@ begin
       end;
     end;
 
-    GoNext;
+    GoNextFast;
   end;
-end;
-
-function TDwarfInformationEntry.GoNamedChildEx(const AName: String): Boolean;
-begin
-  Result := False;
-  if AName = '' then
-    exit;
-  Result := GoNamedChildEx(NameInfoForSearch(AName));
 end;
 
 constructor TDwarfInformationEntry.Create(ACompUnit: TDwarfCompilationUnit;
@@ -3173,7 +3192,7 @@ begin
 
   Result := TDwarfInformationEntry.Create(FCompUnit, FScope);
 // TODO: parent
-  if Result.GoNamedChild(AName) then
+  if Result.GoNamedChild(NameInfoForSearch(AName)) then
     exit;
   ReleaseRefAndNil(Result);
 end;
