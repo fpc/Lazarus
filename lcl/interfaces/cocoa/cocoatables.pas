@@ -91,14 +91,12 @@ type
 
     readOnly: Boolean;
 
-    isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
     isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
     ScrollWidth: Integer;
 
-    smallimages : NSMutableDictionary;
   public
     procedure backend_setCallback( cb:TLCLListViewCallback );
     procedure backend_reloadData;
@@ -117,7 +115,6 @@ type
       message 'selectRowIndexesByProgram:';
 
     function initWithFrame(frameRect: NSRect): id; override;
-    procedure dealloc; override;
     function fittingSize: NSSize; override;
 
     procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
@@ -137,11 +134,6 @@ type
     // key
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
-    procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
-
-    procedure lclRegisterSmallImage(idx: Integer; img: NSImage); message 'lclRegisterSmallImage::';
-    function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
-    function lclGetItemImageAt(ARow, ACol: Integer): NSImage; message 'lclGetItemImageAt::';
 
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
@@ -353,55 +345,6 @@ begin
   reloadData();
 end;
 
-procedure TCocoaTableListView.lclSetImagesInCell(aimagesInCell: Boolean);
-begin
-  if isImagesInCell = aimagesInCell then Exit;
-  isImagesInCell := aimagesInCell;
-  reloadData();
-end;
-
-procedure TCocoaTableListView.lclRegisterSmallImage(idx: Integer; img: NSImage);
-begin
-  if not Assigned(smallimages) then
-    smallimages := (NSMutableDictionary.alloc).init;
-
-  if Assigned(img) then
-    smallimages.setObject_forKey(img, NSNumber.numberWithInt(idx) )
-  else
-    smallimages.removeObjectForKey( NSNumber.numberWithInt(idx) );
-end;
-
-function TCocoaTableListView.lclGetSmallImage(idx: INteger): NSImage;
-begin
-  if not Assigned(smallimages) then Result := nil;
-  Result := NSImage(smallimages.objectForKey( NSNumber.numberWithInt(idx) ) );
-end;
-
-function TCocoaTableListView.lclGetItemImageAt(ARow, ACol: Integer): NSImage;
-var
-  idx : Integer;
-  img : NSimage;
-begin
-  if not Assigned(callback) then
-  begin
-    Result := nil;
-    Exit;
-  end;
-
-  idx := -1;
-  callback.GetItemImageAt(ARow, ACol, idx);
-  if idx>=0 then
-  begin
-    img := lclGetSmallImage(idx);
-    if not Assigned(img) then begin
-      img := callback.GetImageFromIndex(idx);
-      if Assigned(img) then lclRegisterSmallImage(idx, img);
-    end;
-  end else
-    img := nil;
-  Result := img;
-end;
-
 procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
 begin
   // a row has been inserted or removed
@@ -461,13 +404,6 @@ end;
 procedure TCocoaTableListView.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaTableListView.dealloc;
-begin
-  //if Assigned(Items) then FreeAndNil(Items);
-  if Assigned(smallimages) then smallimages.release; // all contents is released automatically
-  inherited dealloc;
 end;
 
 function TCocoaTableListView.fittingSize: NSSize;
@@ -1653,8 +1589,6 @@ begin
 
   if AList <> lvil then
     Exit;
-
-  _tableView.lclSetImagesInCell(Assigned(AValue));
 
   if NOT Assigned(AValue) then
     Exit;
