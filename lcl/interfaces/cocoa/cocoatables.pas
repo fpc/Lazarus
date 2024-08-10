@@ -73,7 +73,10 @@ type
     procedure dealloc; override;
   end;
 
-  TCocoaTalbeListView_onSelectionChanged = procedure( tv: NSTableView );
+  TCocoaTableViewProcessor = class
+    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
+    procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
+  end;
 
   { TCocoaTableListView }
 
@@ -83,17 +86,13 @@ type
     NSTableViewDataSourceProtocol,
     TCocoaListViewBackendControlProtocol )
   private
+    _processor: TCocoaTableViewProcessor;
     _checkBoxes: Boolean;
   public
     iconSize: NSSize;
-
     callback: IListViewCallback;
-
-    onSelectionChanged: TCocoaTalbeListView_onSelectionChanged;
     selectingByProgram: Boolean;
-
     readOnly: Boolean;
-
     isOwnerDraw : Boolean;
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
@@ -104,6 +103,7 @@ type
     procedure backend_reloadData;
     procedure backend_onInit;
 
+    procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
     function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
 
@@ -178,9 +178,6 @@ type
     {procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
-
-  // View based NSTableView
-
   { TCocoaWSListView_TableViewHandler }
 
   TCocoaWSListView_TableViewHandler = class(TCocoaWSListViewHandler)
@@ -237,8 +234,14 @@ type
       const {%H-}ASortDirection: TSortDirection); override;
   end;
 
+  { TCocoaTableListViewProcessor }
+
+  TCocoaTableListViewProcessor = class( TCocoaTableViewProcessor )
+    procedure onSelectOneItem( tv: NSTableView;  selection: NSIndexSet ); override;
+    procedure onSelectionChanged( tv: NSTableView ); override;
+  end;
+
 function AllocCocoaTableListView: TCocoaTableListView;
-procedure TListView_onSelectionChanged( tv: NSTableView );
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
@@ -402,6 +405,11 @@ begin
   self.setIntercellSpacing(sz);
 end;
 
+procedure TCocoaTableListView.lclSetProcessor( processor: TCocoaTableViewProcessor);
+begin
+  _processor:= processor;
+end;
+
 function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := NSViewCanFocus(Self);
@@ -474,13 +482,11 @@ end;
 
 procedure TCocoaTableListView.selectOneItemByIndex( index: Integer; isSelected: Boolean );
 var
-  lclcb: TLCLListViewCallback;
   selection: NSMutableIndexSet;
 begin
   if (index < 0) or (index >= self.numberOfRows) then
     Exit;
 
-  lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
   selection:= NSMutableIndexSet.alloc.initWithIndexSet( self.selectedRowIndexes );
   if isSelected then begin
     if NOT self.allowsMultipleSelection then
@@ -491,8 +497,8 @@ begin
   end;
 
   if NOT selection.isEqualToIndexSet(self.selectedRowIndexes) then begin
-    lclcb.selectionIndexSet.removeAllIndexes;
-    lclcb.selectionIndexSet.addIndexes( selection );
+    if Assigned(_processor) then
+      _processor.onSelectOneItem( self, selection );
     self.selectRowIndexesByProgram( selection );
   end;
 
@@ -858,42 +864,10 @@ begin
   LCLMessageGlue.DeliverMessage(lclListView, Msg);}
 end;
 
-procedure TListView_onSelectionChanged( tv: NSTableView );
-var
-  NewSel: Integer;
-  rm : NSIndexSet;
-  ad : NSIndexSet;
-  selectionIndexSet: NSMutableIndexSet;
-
-  lclListView: TCustomListView;
-  cocoaTLV: TCocoaTableListView Absolute tv;
-  lclcb: TLCLListViewCallback;
-begin
-  if NOT Assigned(cocoaTLV.callback) then
-    Exit;
-
-  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
-  lclListView:= TCustomListView( lclcb.Target );
-
-  if TCocoaListView(lclcb.Owner).initializing then
-    Exit;
-
-  selectionIndexSet:= lclcb.selectionIndexSet;
-  CompareIndexSets(selectionIndexSet, cocoaTLV.selectedRowIndexes, rm, ad);
-
-  NewSel := cocoaTLV.selectedRow();
-  sendSelectionChangedMsgToLCL( lclListView, NewSel, ad, rm );
-
-  if NOT cocoaTLV.selectingByProgram then begin
-    selectionIndexSet.removeAllIndexes;
-    selectionIndexSet.addIndexes( cocoaTLV.selectedRowIndexes );
-  end;
-end;
-
 procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
 begin
-  if Assigned(onSelectionChanged) then
-    onSelectionChanged( self );
+  if Assigned(_processor) then
+    _processor.onSelectionChanged( self );
 end;
 
 procedure TCocoaTableListView.tableViewColumnDidResize(
@@ -999,12 +973,12 @@ end;
 procedure TCocoaTableListItem.loadView( row: Integer; col: Integer );
 var
   tv: TCocoaTableListView;
-  lclcb: TLCLListViewCallback;
+  lclcb: IListViewCallback;
   lclImageIndex: Integer;
   lvil: TListViewImageList;
 begin
   tv:= TCocoaTableListView( _tableView );
-  lclcb:= TLCLListViewCallback( tv.callback.GetCallbackObject );
+  lclcb:= tv.callback;
 
   self.createTextField;
 
@@ -1053,12 +1027,10 @@ end;
 procedure TCocoaTableListItem.updateItemLayout(row: NSInteger; col: NSInteger );
 var
   tv: TCocoaTableListView;
-  lclcb: TLCLListViewCallback;
   aFrame: NSRect;
   rowHeight: CGFloat;
 begin
   tv:= TCocoaTableListView( _tableView );
-  lclcb:= TLCLListViewCallback( tv.callback.GetCallbackObject );
 
   aFrame:= NSZeroRect;
   rowHeight:= tv.tableView_heightOfRow( tv, row );
@@ -1078,11 +1050,13 @@ begin
     aFrame.origin.y:= (rowHeight - tv.iconSize.Height) / 2;
     aFrame.size:= tv.iconSize;
     self.imageView.setFrame( aFrame );
+
+    aFrame.origin.x:= aFrame.origin.x + 4;
   end;
 
   if Assigned(self.textField) then begin
     aFrame.size.height:= self.textField.frame.size.height;
-    aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 4;
+    aFrame.origin.x:= aFrame.origin.x + aFrame.size.width;
     aFrame.origin.y:= (rowHeight - 15) / 2;
     aFrame.size.width:= _column.width - aFrame.origin.x;
     if aFrame.size.width < 16 then
@@ -1689,6 +1663,51 @@ begin
       objcselector('none:')
     )
   );}
+end;
+
+{ TCocoaTableListViewProcessor }
+
+procedure TCocoaTableListViewProcessor.onSelectOneItem(tv: NSTableView;
+  selection: NSIndexSet);
+var
+  cocoaTLV: TCocoaTableListView Absolute tv;
+  lclcb: TLCLListViewCallback;
+begin
+  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+  lclcb.selectionIndexSet.removeAllIndexes;
+  lclcb.selectionIndexSet.addIndexes( selection );
+end;
+
+procedure TCocoaTableListViewProcessor.onSelectionChanged(tv: NSTableView);
+var
+  NewSel: Integer;
+  rm : NSIndexSet;
+  ad : NSIndexSet;
+  selectionIndexSet: NSMutableIndexSet;
+
+  lclListView: TCustomListView;
+  cocoaTLV: TCocoaTableListView Absolute tv;
+  lclcb: TLCLListViewCallback;
+begin
+  if NOT Assigned(cocoaTLV.callback) then
+    Exit;
+
+  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+  lclListView:= TCustomListView( lclcb.Target );
+
+  if TCocoaListView(lclcb.Owner).initializing then
+    Exit;
+
+  selectionIndexSet:= lclcb.selectionIndexSet;
+  CompareIndexSets(selectionIndexSet, cocoaTLV.selectedRowIndexes, rm, ad);
+
+  NewSel := cocoaTLV.selectedRow();
+  sendSelectionChangedMsgToLCL( lclListView, NewSel, ad, rm );
+
+  if NOT cocoaTLV.selectingByProgram then begin
+    selectionIndexSet.removeAllIndexes;
+    selectionIndexSet.addIndexes( cocoaTLV.selectedRowIndexes );
+  end;
 end;
 
 end.

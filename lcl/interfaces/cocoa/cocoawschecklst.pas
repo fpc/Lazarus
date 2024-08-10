@@ -212,6 +212,7 @@ class function TCocoaWSCustomCheckListBox.CreateHandle(
 var
   list: TCocoaTableListView;
   scroll: TCocoaScrollView;
+  processor: TCocoaTableViewProcessor;
 begin
   list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
@@ -219,7 +220,8 @@ begin
     Result := 0;
     Exit;
   end;
-  list.onSelectionChanged:= @TListBox_selectionChanged;
+  processor:= TCocoaTableListBoxProcessor.Create;
+  list.lclSetProcessor( processor );
   list.callback := TLCLCheckboxListCallback.CreateWithView(list, AWinControl);
   list.lclSetCheckboxes(true);
   //list.list := TCocoaStringList.Create(list);

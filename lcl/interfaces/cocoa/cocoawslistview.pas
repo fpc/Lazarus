@@ -96,10 +96,12 @@ type
 procedure CocoaListViewAllocFuncImpl(const listView: NSView; const viewStyle: TViewStyle; out backendControl: NSView; out WSHandler: TCocoaWSListViewHandler );
 var
   cocoaListView: TCocoaListView Absolute listView;
+  processor: TCocoaTableViewProcessor;
 begin
   if viewStyle = vsReport then begin
     backendControl:= AllocCocoaTableListView;
-    TCocoaTableListView(backendControl).onSelectionChanged:= CocoaTables.TListView_onSelectionChanged;
+    processor:= TCocoaTableListViewProcessor.Create;
+    TCocoaTableListView(backendControl).lclSetProcessor( processor );
     WSHandler:= TCocoaWSListView_TableViewHandler.Create( cocoaListView );
   end else begin
     backendControl:= AllocCocoaCollectionView( viewStyle );

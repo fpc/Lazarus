@@ -31,6 +31,7 @@ type
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
     function ItemsCount: Integer;
+    function GetImageListType( out lvil: TListViewImageList ): Boolean;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
@@ -45,7 +46,6 @@ type
       state: TOwnerDrawState);
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
-    function GetImageListType( out lvil: TListViewImageList ): Boolean;
     procedure callTargetInitializeWnd;
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
