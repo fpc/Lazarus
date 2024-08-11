@@ -121,14 +121,15 @@ type
     procedure WriteTextRectJustify(AExportFont: TExportFontItem; X, Y, W, H: TPDFFloat; const Text: string; Trimmed: boolean);
     procedure WriteTextRect(AExportFont:TExportFontItem; X, Y, W{, H}:TPDFFloat; AText:string; AHAlign:TAlignment; angle: TPDFFloat);
     procedure DrawRect(X, Y, W, H: TPDFFloat; ABorderColor, AFillColor: TColor;
-      AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
+      AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
     procedure DrawRectView(AView: TfrView);
     procedure WriteURL(X, Y, W, H: TPDFFloat; AUrlText:string);
-    procedure DrawLine(X1, Y1, X2, Y2: TPDFFloat; ABorderColor: TColor; ABorderWidth: TPDFFloat);
+    procedure DrawLine(X1, Y1, X2, Y2: TPDFFloat; ABorderColor: TColor; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
     procedure DrawEllipse(X, Y, W, H: TPDFFloat; ABorderColor, AFillColor: TColor;
-      AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
+      AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
     procedure DrawImage(X, Y, W, H: integer; ABmp:TLazreportBitmap);
     procedure DrawLRObjectInternal(View:TfrView);
+    procedure SetFrameStyle(ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
   private
     procedure DoMemoView(View:TfrMemoView);
     procedure DoImageView(View:TfrPictureView);
@@ -536,7 +537,7 @@ end;
 
 procedure TlrPdfExportFilter.DoLineView(View: TfrLineView);
 begin
-  DrawRect(View.Left, View.Top, View.Width, View.Height, View.FrameColor, clNone, View.Frames, View.FrameWidth);
+  DrawRect(View.Left, View.Top, View.Width, View.Height, View.FrameColor, clNone, View.Frames, View.FrameWidth, View.FrameStyle);
 end;
 
 procedure TlrPdfExportFilter.DoCheckBoxView(View: TfrCheckBoxView);
@@ -561,7 +562,8 @@ begin
       View.X + View.DX - GX * 2,
       View.Y + View.DY - GY * 2,
       View.FrameColor,
-      ConvetUnits1(3)
+      ConvetUnits1(3),
+      View.FrameStyle
     );
 
     DrawLine(
@@ -570,7 +572,8 @@ begin
       View.X + GX * 2,
       View.Y + View.DY - GY * 2,
       View.FrameColor,
-      ConvetUnits1(3)
+      ConvetUnits1(3),
+      View.FrameStyle
     );
   end;
 end;
@@ -579,17 +582,17 @@ procedure TlrPdfExportFilter.DoShapeView(View: TfrShapeView);
 begin
  case View.ShapeType of
     frstRectangle:
-      DrawRect(View.X, View.Y, View.DX, View.DY, View.FrameColor, View.FillColor, [frbLeft, frbTop, frbRight, frbBottom], View.FrameWidth);
+      DrawRect(View.X, View.Y, View.DX, View.DY, View.FrameColor, View.FillColor, [frbLeft, frbTop, frbRight, frbBottom], View.FrameWidth, View.FrameStyle);
     frstRoundRect:
       DrawLRObjectInternal(View);
     frstEllipse:
-      DrawEllipse(View.X, View.Y, View.DX, View.DY, View.FrameColor, View.FillColor, View.Frames, View.FrameWidth);
+      DrawEllipse(View.X, View.Y, View.DX, View.DY, View.FrameColor, View.FillColor, View.Frames, View.FrameWidth, View.FrameStyle);
     frstTriangle:
       DrawLRObjectInternal(View);
     frstDiagonal1:
-      DrawLine( View.X, View.Y, View.X + View.DX, View.Y + View.DY, View.FrameColor,View.FrameWidth);
+      DrawLine( View.X, View.Y, View.X + View.DX, View.Y + View.DY, View.FrameColor, View.FrameWidth, View.FrameStyle);
     frstDiagonal2:
-      DrawLine( View.X + View.DX, View.Y, View.X, View.Y + View.DY, View.FrameColor,View.FrameWidth);
+      DrawLine( View.X + View.DX, View.Y, View.X, View.Y + View.DY, View.FrameColor, View.FrameWidth, View.FrameStyle);
  end;
 end;
 
@@ -735,7 +738,7 @@ begin
 end;
 
 procedure TlrPdfExportFilter.DrawRect(X, Y, W, H: TPDFFloat; ABorderColor,
-  AFillColor: TColor; AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
+  AFillColor: TColor; AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
 var
   fX, fY, fW, fH: Extended;
 begin
@@ -755,6 +758,9 @@ begin
   fX:= ConvetUnits(X);
   fY:= ConvetUnits(Y);
   ABorderWidth:=ConvetUnits(ABorderWidth);
+
+  if AFrames <> [] then
+    SetFrameStyle(ABorderWidth, AFrameStyle);
 
   if (AFrames = [frbLeft, frbTop, frbRight, frbBottom]) or (AFillColor <> clNone) then
     FCurPage.DrawRect(fX, fY + fH, fW, fH, ABorderWidth, (AFillColor <> clNone), ((ABorderColor <> clNone) and (AFrames = [frbLeft, frbTop, frbRight, frbBottom])));
@@ -777,7 +783,7 @@ end;
 
 procedure TlrPdfExportFilter.DrawRectView(AView: TfrView);
 begin
-  DrawRect(AView.Left, AView.Top, AView.Width, AView.Height, AView.FrameColor, AView.FillColor, AView.Frames, AView.FrameWidth);
+  DrawRect(AView.Left, AView.Top, AView.Width, AView.Height, AView.FrameColor, AView.FillColor, AView.Frames, AView.FrameWidth, AView.FrameStyle);
 end;
 
 procedure TlrPdfExportFilter.WriteURL(X, Y, W, H: TPDFFloat; AUrlText: string);
@@ -790,24 +796,27 @@ begin
 end;
 
 procedure TlrPdfExportFilter.DrawLine(X1, Y1, X2, Y2: TPDFFloat;
-  ABorderColor: TColor; ABorderWidth: TPDFFloat);
+  ABorderColor: TColor; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
 begin
   if (ABorderColor = clNone) then exit;
 
   if ABorderColor <> clNone then
     FCurPage.SetColor(ColorToPdfColor(ABorderColor), true);
 
+  ABorderWidth := ConvetUnits(ABorderWidth);
+
+  SetFrameStyle(ABorderWidth, AFrameStyle);
 
   FCurPage.DrawLine(
     ConvetUnits(X1),
     ConvetUnits(Y1),
     ConvetUnits(X2),
     ConvetUnits(Y2),
-    ConvetUnits(ABorderWidth));
+    ABorderWidth);
 end;
 
 procedure TlrPdfExportFilter.DrawEllipse(X, Y, W, H: TPDFFloat; ABorderColor,
-  AFillColor: TColor; AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat);
+  AFillColor: TColor; AFrames: TfrFrameBorders; ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
 var
   fX, fY, fW, fH: Extended;
 begin
@@ -824,6 +833,8 @@ begin
   fX:= ConvetUnits(X);
   fY:= ConvetUnits(Y);
   ABorderWidth:=ConvetUnits(ABorderWidth);
+
+  SetFrameStyle(ABorderWidth, AFrameStyle);
 
   FCurPage.DrawEllipse(fX, fY + fH, fW, fH, ABorderWidth, (AFillColor <> clNone), (ABorderColor <> clNone))
 end;
@@ -871,6 +882,18 @@ begin
     DrawImage(X, Y, FBmp.Width, FBmp.Height, FBmp);
   finally
     FBmp.Free;
+  end;
+end;
+
+procedure TlrPdfExportFilter.SetFrameStyle(ABorderWidth: TPDFFloat; AFrameStyle: TfrFrameStyle);
+begin
+  case AFrameStyle of
+    frsDash: FCurPage.SetPenStyle(ppsDash, ABorderWidth);
+    frsDot: FCurPage.SetPenStyle(ppsDot, ABorderWidth);
+    frsDashDot: FCurPage.SetPenStyle(ppsDashDot, ABorderWidth);
+    frsDashDotDot: FCurPage.SetPenStyle(ppsDashDotDot, ABorderWidth);
+    else
+      FCurPage.SetPenStyle(ppsSolid, ABorderWidth)
   end;
 end;
 
