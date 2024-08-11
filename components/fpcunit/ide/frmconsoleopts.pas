@@ -72,10 +72,17 @@ end;
 procedure TConsoleTestRunnerOptionsForm.TranslateForm;
 
 begin
+  Caption:=sNewFPCUnitProgramToR;
   cbRunAllTests.Caption:=sRunAllTests;
   cbTestInsight.Caption:=sUseTextInsight;
   cbCreateTestCase.Caption:=sCreateFirstTestCase;
   lblFormat.caption:=sDefaultOutputFormat;
+
+  cbFormat.Items[0]:=sDefault;
+  cbFormat.Items[1]:=sXML;
+  cbFormat.Items[2]:=sPlainText;
+  cbFormat.Items[3]:=sPlainTextWithoutTimi;
+  cbFormat.Items[4]:=sLaTeX;
 end;
 
 procedure TConsoleTestRunnerOptionsForm.LoadForm;

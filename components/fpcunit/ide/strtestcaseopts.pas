@@ -18,6 +18,8 @@ resourcestring
   schkTear = 'Create TearDown method';
   sbtnCreate = 'Create unit';
 
+  sNewFPCUnitProgramToR = 'New FPCUnit console testrunner program';
+
   sFPCUnTestApp = 'FPCUnit Test Application';
   sFPCUnTestAppDesc = 'An application to run FPCUnit test cases.';
   sFPCUnTestCase = 'FPCUnit Test Case';
@@ -30,6 +32,11 @@ resourcestring
   sUseTextInsight = 'Use &Test Insight to communicate results to the IDE';
   sCreateFirstTestCase = '&Create first test case';
   sDefaultOutputFormat = 'Default output &format';
+  sDefault = 'Default';
+  sXML = 'XML';
+  sPlainText = 'Plain text';
+  sPlainTextWithoutTimi = 'Plain text without timings';
+  sLaTeX = 'LaTeX';
 
   rsTestInsightTitle = 'Test Insight';
   rsServerPort = 'Server port';
