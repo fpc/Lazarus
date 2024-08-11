@@ -135,7 +135,7 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
-    procedure lclCustomDrawRow(row: NSInteger; clipRect: NSRect);
+    function lclCustomDrawRow(row: NSInteger; clipRect: NSRect): Boolean;
       message 'lclCustomDrawRow:clipRect:';
 
     // mouse
@@ -337,9 +337,21 @@ begin
 end;
 
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
+var
+  view: NSView;
+  done: Boolean;
 begin
   inherited drawRect(dirtyRect);
-  self.tableView.lclCustomDrawRow( row , dirtyRect );
+
+  done:= self.tableView.lclCustomDrawRow( row , dirtyRect );
+  if done then begin
+    // the Cocoa default drawing cannot be skipped in NSTableView,
+    // we can only hide the CellViews to get the same effect.
+    // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
+    // it's a case where the default drawing must be skipped.
+    for view in self.subviews do
+      view.setHidden( True );
+  end;
 end;
 
 { TCocoaTableListView }
@@ -443,12 +455,13 @@ begin
   Result:= NSZeroSize;
 end;
 
-procedure TCocoaTableListView.lclCustomDrawRow(row: NSInteger; clipRect: NSRect
-  );
+function TCocoaTableListView.lclCustomDrawRow(row: NSInteger; clipRect: NSRect
+  ): Boolean;
 var
   ctx: TCocoaContext;
   ItemState: TOwnerDrawState;
 begin
+  Result:= False;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(bounds.size.width), Round(bounds.size.height));
@@ -459,7 +472,7 @@ begin
     if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
       Include(ItemState, odFocused);
 
-    callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
+    Result:= callback.DrawRow(row, ctx, NSRectToRect(clipRect), ItemState);
   finally
     ctx.Free;
   end;

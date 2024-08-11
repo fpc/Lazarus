@@ -42,8 +42,8 @@ type
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
-      state: TOwnerDrawState);
+    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+      state: TOwnerDrawState): Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
     procedure callTargetInitializeWnd;
@@ -524,14 +524,16 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
-procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState);
+function TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState): Boolean;
 var
   ALV: TCustomListViewAccess;
+  drawResult: TCustomDrawResult;
 begin
   ALV:= TCustomListViewAccess(self.listView);
   ALV.Canvas.Handle:= HDC(ctx);
-  ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
+  drawResult:= ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
+  Result:= cdrSkipDefault in drawResult;
   ALV.Canvas.Handle:= 0;
 end;
 

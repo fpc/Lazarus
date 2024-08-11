@@ -287,7 +287,7 @@ type
     procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
-    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
+    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean; virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
     function GetBorderStyle: TBorderStyle;
   end;
@@ -664,17 +664,21 @@ begin
   // not needed
 end;
 
-procedure TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState);
+function TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState): Boolean;
 var
   DrawStruct: TDrawListItemStruct;
 begin
-  if not listview.isOwnerDraw then Exit;
+  Result:= False;
+  if NOT listview.isOwnerDraw then
+    Exit;
+
   DrawStruct.ItemState := state;
   DrawStruct.Area := r;
   DrawStruct.DC := HDC(ctx);
   DrawStruct.ItemID :=  rowIdx;
   LCLSendDrawListItemMsg(Target, @DrawStruct);
+  Result:= True;
 end;
 
 procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
