@@ -110,6 +110,10 @@ type
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
     function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
 
+    function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
+    function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
+
+    procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -146,8 +150,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     // key
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
-
-    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -265,25 +267,6 @@ const
 implementation
 
 type
-  { TCellCocoaTableListView }
-
-  TCellCocoaTableListView = objcclass(
-    TCocoaTableListView,
-    NSTableViewDelegateProtocol,
-    NSTableViewDataSourceProtocol )
-  public
-    procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
-  end;
-
-  { TViewCocoaTableListView }
-
-  TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-    function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
-    function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
-
-    procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
-  end;
-
   { TCocoaTableRowView }
 
   TCocoaTableRowView = objcclass(NSTableRowView)
@@ -348,7 +331,7 @@ end;
 
 function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
-  Result := TViewCocoaTableListView.alloc;
+  Result := TCocoaTableListView.alloc;
   Result.setRowSizeStyle( NSTableViewRowSizeStyleCustom );
 end;
 
@@ -382,12 +365,6 @@ end;
 function TCocoaTableListView.lclHasCheckBoxes: Boolean;
 begin
   Result:= _checkBoxes;
-end;
-
-procedure TCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
-  aalignment: NSTextAlignment);
-begin
-
 end;
 
 procedure TCocoaTableListView.backend_setCallback(cb: TLCLListViewCallback);
@@ -951,16 +928,6 @@ begin
   end;
 end;
 
-{ TCellCocoaTableListView }
-
-procedure TCellCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
-  aalignment: NSTextAlignment);
-begin
-  if not Assigned(acolumn) then Exit;
-  NSCell(acolumn.headerCell).setAlignment( aalignment );
-  NSCell(acolumn.dataCell).setAlignment( aalignment );
-end;
-
 { TCocoaTableListItem }
 
 function TCocoaTableListItem.checkBox: NSButton;
@@ -1149,9 +1116,7 @@ begin
   inherited dealloc;
 end;
 
-{ TViewCocoaTableListView }
-
-function TViewCocoaTableListView.tableView_viewForTableColumn_row(tableView: NSTableView;
+function TCocoaTableListView.tableView_viewForTableColumn_row(tableView: NSTableView;
   tableColumn: NSTableColumn; row: NSInteger): NSView;
 var
   col: NSInteger;
@@ -1183,7 +1148,7 @@ begin
   Result:= item;
 end;
 
-function TViewCocoaTableListView.tableView_rowViewForRow(
+function TCocoaTableListView.tableView_rowViewForRow(
   tableView: NSTableView; row: NSInteger): NSTableRowView;
 var
   rowView: TCocoaTableRowView Absolute Result;
@@ -1193,7 +1158,7 @@ begin
   rowView.row:= row;
 end;
 
-procedure TViewCocoaTableListView.checkboxAction(sender: NSButton);
+procedure TCocoaTableListView.checkboxAction(sender: NSButton);
 var
   row: NSInteger;
 begin
@@ -1300,19 +1265,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.ColumnSetAlignment(
   const AIndex: Integer; const AColumn: TListColumn;
   const AAlignment: TAlignment);
-var
-  cocoaColumn: NSTableColumn;
-const
-  txtAlign : array[TAlignment] of NSTextAlignment = (
-    NSLeftTextAlignment, NSRightTextAlignment, NSCenterTextAlignment
-  );
 begin
-  cocoaColumn:= getColumnFromIndex( AIndex );
-  if NOT Assigned(cocoaColumn) then
-    Exit;
-  _tableView.lclSetColumnAlign(cocoaColumn, txtAlign[AAlignment]);
-  _tableView.setNeedsDisplayInRect(_tableView.rectOfColumn(AIndex));
-  _tableView.headerView.setNeedsDisplayInRect( _tableView.headerView.headerRectOfColumn(AIndex) );
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ColumnSetAutoSize(

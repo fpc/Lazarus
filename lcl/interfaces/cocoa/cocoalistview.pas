@@ -180,7 +180,6 @@ var
   controlFrame: NSRect;
   backendControlAccess: TCocoaListViewBackendControlProtocol;
 begin
-  Writeln( HexStr(@_allocFunc) );
   _allocFunc( self, _viewStyle, _backendControl, _WSHandler );
 
   controlFrame:= self.bounds;
