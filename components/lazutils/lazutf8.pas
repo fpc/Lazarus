@@ -103,8 +103,8 @@ function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar; deprecate
 // find the byte index of the n-th UTF8 codepoint, ignoring BIDI (byte len of substr)
 function UTF8CodepointToByteIndex(UTF8Str: PChar; Len, CodepointIndex: PtrInt): PtrInt;
 function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt; deprecated 'Use UTF8CodepointToByteIndex instead.';
-procedure UTF8FixBroken(P: PChar); overload;
-procedure UTF8FixBroken(var S: string); overload;
+procedure UTF8FixBroken(P: PChar; ReplaceChar: char = #$20); overload;
+procedure UTF8FixBroken(var S: string; ReplaceChar: char = #$20);
 function UTF8CodepointStrictSize(P: PChar): integer;
 function UTF8CharacterStrictLength(P: PChar): integer; deprecated 'Use UTF8CodepointStrictSize instead.';
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
@@ -864,8 +864,8 @@ begin
   Result := UTF8CodepointToByteIndex(UTF8Str, Len, CharIndex);
 end;
 
-{ fix any broken UTF8 sequences with spaces }
-procedure UTF8FixBroken(P: PChar);
+{ fix any broken UTF8 sequences with the specified character }
+procedure UTF8FixBroken(P: PChar; ReplaceChar: char = #$20);
 var
   b: byte;
   c: cardinal;
@@ -879,19 +879,19 @@ begin
     end
     else if b<%11000000 then begin
       // invalid
-      p^:=' ';
+      p^:=ReplaceChar;
       inc(p);
     end
     else if (b and %11100000) = %11000000 then begin
       // starts with %110 => should be 2 byte character
       if ((ord(p[1]) and %11000000) = %10000000) then begin
         if b<%11000010 then
-          p^:=' '  // fix XSS attack
+          p^:=ReplaceChar  // fix XSS attack
         else
           inc(p,2)
       end
       else
-        p^:=' ';
+        p^:=ReplaceChar;
     end
     else if (b and %11110000) = %11100000 then begin
       // starts with %1110 => should be 3 byte character
@@ -901,11 +901,11 @@ begin
            or ((ord(p[1]) and %00111111) shl 6);
            //or (ord(p[2]) and %00111111);
         if c<(1 shl 11) then
-          p^:=' '  // fix XSS attack
+          p^:=ReplaceChar  // fix XSS attack
         else
           inc(p,3);
       end else
-        p^:=' ';
+        p^:=ReplaceChar;
     end
     else if (b and %11111000) = %11110000 then begin
       // starts with %11110 => should be 4 byte character
@@ -917,27 +917,27 @@ begin
            or ((ord(p[2]) and %00111111) shl 6);
            //or (ord(p[3]) and %00111111);
         if c<(1 shl 16) then
-          p^:=' ' // fix XSS attack
+          p^:=ReplaceChar // fix XSS attack
         else if (c>$10FFFF) then
-          p^:=' ' // out of range U+10FFFF
+          p^:=ReplaceChar // out of range U+10FFFF
         else
           inc(p,4)
       end else
-        p^:=' ';
+        p^:=ReplaceChar;
     end
     else begin
-      p^:=' ';
+      p^:=ReplaceChar;
       inc(p);
     end;
   end;
 end;
 
-procedure UTF8FixBroken(var S: string);
+procedure UTF8FixBroken(var S: string; ReplaceChar: char = #$20);
 begin
   if S='' then exit;
   if FindInvalidUTF8Codepoint(PChar(S),length(S))<0 then exit;
   UniqueString(S);
-  UTF8FixBroken(PChar(S));
+  UTF8FixBroken(PChar(S), ReplaceChar);
 end;
 
 function UTF8CodepointStrictSize(P: PChar): integer;
