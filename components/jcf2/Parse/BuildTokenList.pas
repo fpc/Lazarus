@@ -496,7 +496,7 @@ end;
 { delphi 12 multiline string }
 function TBuildTokenList.TryMultiLineLiteralString(const pcToken: TSourceToken): boolean;
 var
-  liCount:integer;
+  liCount,liAux:integer;
   liCountEnd:integer;
 begin
   Result := False;
@@ -506,6 +506,11 @@ begin
 
   if (liCount>=3) and ((liCount and 1)= 1) then
   begin
+    liAux := liCount + 1;
+    while ForwardChar(liAux) in NativeTabSpace do
+      inc(liAux);
+    if not CharIsReturn(ForwardChar(liAux)) then
+      exit(False);
     Result := True;
     { read the opening '''  odd number  of single quotes }
     pcToken.SourceCode := pcToken.SourceCode + CurrentChars(liCount);
