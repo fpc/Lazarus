@@ -74,6 +74,8 @@ type
   end;
 
   TCocoaTableViewProcessor = class
+    function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
+    procedure onReloadData( tv: NSTableView ); virtual; abstract;
     procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
     procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
   end;
@@ -114,7 +116,11 @@ type
 
     // Own methods, mostly convenience methods
     function getIndexOfColumn(ACol: NSTableColumn): Integer; message 'getIndexOfColumn:';
+
+    procedure restoreFromStableSelection; message 'restoreFromStableSelection';
+    procedure reloadData; override;
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
+
     procedure selectOneItemByIndex( index: Integer; isSelected: Boolean );
       message 'selectOneItemByIndex:isSelected:';
     procedure selectRowIndexesByProgram( indexes: NSIndexSet );
@@ -141,7 +147,6 @@ type
     // key
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
 
-    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); message 'lclSetColumn:Align:';
 
     // NSTableViewDataSourceProtocol
@@ -239,6 +244,11 @@ type
   { TCocoaTableListViewProcessor }
 
   TCocoaTableListViewProcessor = class( TCocoaTableViewProcessor )
+  private
+    function getCallback( tv: NSTableView ): TLCLListViewCallback;
+  public
+    function isInitializing( tv: NSTableView ): Boolean; override;
+    procedure onReloadData( tv: NSTableView ); override;
     procedure onSelectOneItem( tv: NSTableView;  selection: NSIndexSet ); override;
     procedure onSelectionChanged( tv: NSTableView ); override;
   end;
@@ -262,7 +272,6 @@ type
     NSTableViewDelegateProtocol,
     NSTableViewDataSourceProtocol )
   public
-    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
     procedure lclSetColumnAlign(acolumn: NSTableColumn; aalignment: NSTextAlignment); override;
   end;
 
@@ -272,10 +281,7 @@ type
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
     function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
 
-    procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
-
-    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
   { TCocoaTableRowView }
@@ -376,13 +382,6 @@ end;
 function TCocoaTableListView.lclHasCheckBoxes: Boolean;
 begin
   Result:= _checkBoxes;
-end;
-
-procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
-begin
-  // a row has been inserted or removed
-  // the following rows needs to be invalidated
-  // as well as number of total items in the table should be marked as modified
 end;
 
 procedure TCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
@@ -499,6 +498,28 @@ begin
     Result := -1
   else
     Result := Integer(idx);
+end;
+
+procedure TCocoaTableListView.restoreFromStableSelection;
+var
+  lclcb: TLCLListViewCallback;
+begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
+  self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+end;
+
+procedure TCocoaTableListView.reloadData;
+begin
+  if NOT Assigned(_processor) then
+    Exit;
+  if _processor.isInitializing(self) then
+    Exit;
+
+  inherited reloadData;
+  _processor.onReloadData( self );
 end;
 
 procedure TCocoaTableListView.reloadDataForRow_column(ARow, ACol: NSInteger);
@@ -932,11 +953,6 @@ end;
 
 { TCellCocoaTableListView }
 
-procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
-begin
-  noteNumberOfRowsChanged;
-end;
-
 procedure TCellCocoaTableListView.lclSetColumnAlign(acolumn: NSTableColumn;
   aalignment: NSTextAlignment);
 begin
@@ -1177,18 +1193,6 @@ begin
   rowView.row:= row;
 end;
 
-procedure TViewCocoaTableListView.textFieldAction(sender: NSTextField);
-var
-  column, row: NSInteger;
-begin
-  if not Assigned(callback) then Exit;
-
-  column := columnForView(sender);
-  row := rowForView(sender);
-  callback.SetItemTextAt(row, column, NSStringToString(sender.stringValue));
-  reloadDataForRow_column(row, column);
-end;
-
 procedure TViewCocoaTableListView.checkboxAction(sender: NSButton);
 var
   row: NSInteger;
@@ -1201,17 +1205,6 @@ begin
     self.selectOneItemByIndex(row, True);
   end;
   reloadDataForRow_column(row, 0);
-end;
-
-procedure TViewCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
-var
-  rows: NSIndexSet;
-begin
-  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(Arow,1));
-  if inserted then
-    insertRowsAtIndexes_withAnimation(rows, 0)
-  else
-    removeRowsAtIndexes_withAnimation(rows, 0);
 end;
 
 { TCocoaWSListView_TableViewHandler }
@@ -1248,7 +1241,7 @@ begin
   lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
-  _tableView.lclInsDelRow(AIndex, false);
+  _tableView.reloadData;
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ColumnDelete(
@@ -1514,10 +1507,10 @@ begin
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
-  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by(AIndex, 1);
+  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
-  _tableView.lclInsDelRow(AIndex, true);
   _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  _tableView.reloadData;
   _tableView.sizeToFit();
 end;
 
@@ -1719,13 +1712,40 @@ end;
 
 { TCocoaTableListViewProcessor }
 
+function TCocoaTableListViewProcessor.getCallback( tv: NSTableView ): TLCLListViewCallback;
+var
+  cocoaTLV: TCocoaTableListView Absolute tv;
+begin
+  Result:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+end;
+
+function TCocoaTableListViewProcessor.isInitializing( tv: NSTableView ): Boolean;
+var
+  cocoaTLV: TCocoaTableListView Absolute tv;
+begin
+  Result:= False;
+  if NOT Assigned(cocoaTLV.callback) then
+    Exit;
+  Result:= TCocoaListView( self.getCallback(tv).Owner).initializing;
+end;
+
+procedure TCocoaTableListViewProcessor.onReloadData( tv: NSTableView );
+begin
+  tv.cancelPreviousPerformRequestsWithTarget_selector_object(
+    tv, ObjcSelector('restoreFromStableSelection'), nil );
+  tv.performSelector_withObject_afterDelay(
+    ObjcSelector('restoreFromStableSelection'), nil, 0 );
+end;
+
 procedure TCocoaTableListViewProcessor.onSelectOneItem(tv: NSTableView;
   selection: NSIndexSet);
 var
-  cocoaTLV: TCocoaTableListView Absolute tv;
   lclcb: TLCLListViewCallback;
 begin
-  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+  lclcb:= self.getCallback(tv);
+  if NOT Assigned(lclcb) then
+    Exit;
+
   lclcb.selectionIndexSet.removeAllIndexes;
   lclcb.selectionIndexSet.addIndexes( selection );
 end;
@@ -1744,10 +1764,10 @@ begin
   if NOT Assigned(cocoaTLV.callback) then
     Exit;
 
-  lclcb:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
+  lclcb:= self.getCallback( tv );
   lclListView:= TCustomListView( lclcb.Target );
 
-  if TCocoaListView(lclcb.Owner).initializing then
+  if self.isInitializing(tv) then
     Exit;
 
   selectionIndexSet:= lclcb.selectionIndexSet;

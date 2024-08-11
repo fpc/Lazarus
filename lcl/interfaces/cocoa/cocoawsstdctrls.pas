@@ -132,6 +132,8 @@ type
   { TCocoaTableListBoxProcessor }
 
   TCocoaTableListBoxProcessor = class( TCocoaTableViewProcessor )
+    function isInitializing( tv: NSTableView ): Boolean; override;
+    procedure onReloadData(tv: NSTableView); override;
     procedure onSelectOneItem( tv: NSTableView;  selection: NSIndexSet ); override;
     procedure onSelectionChanged(tv: NSTableView); override;
   end;
@@ -2395,6 +2397,15 @@ begin
   view := GetListBoxWithCb(ACustomListBox, cb);
   if not Assigned(view) or not Assigned(cb) then Exit;
   cb.BlockCocoaMouseMove:=true;
+end;
+
+function TCocoaTableListBoxProcessor.isInitializing(tv: NSTableView): Boolean;
+begin
+  Result:= False;
+end;
+
+procedure TCocoaTableListBoxProcessor.onReloadData(tv: NSTableView);
+begin
 end;
 
 procedure TCocoaTableListBoxProcessor.onSelectOneItem(tv: NSTableView;
