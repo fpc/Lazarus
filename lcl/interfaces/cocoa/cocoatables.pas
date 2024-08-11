@@ -105,6 +105,7 @@ type
     procedure backend_onInit;
   public
     procedure addSubview(aView: NSView); override;
+    procedure dealloc; override;
 
     procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
@@ -329,10 +330,10 @@ begin
   end;
 end;
 
-function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
+function AllocCocoaTableListView: TCocoaTableListView;
 begin
+  // init will happen outside
   Result := TCocoaTableListView.alloc;
-  Result.setRowSizeStyle( NSTableViewRowSizeStyleCustom );
 end;
 
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
@@ -410,6 +411,11 @@ begin
     field.fixedBorderStyle:= True;
   end;
   inherited addSubview(aView);
+end;
+
+procedure TCocoaTableListView.dealloc;
+begin
+  FreeAndNil( _processor );
 end;
 
 procedure TCocoaTableListView.lclSetProcessor( processor: TCocoaTableViewProcessor);
