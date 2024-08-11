@@ -1005,15 +1005,16 @@ end;
 
 function UnicodeLowercase(u: cardinal): cardinal;
 begin
-  if not UnicodeTablesInitialized then
-    InitUnicodeTables;      // Initialize only when needed.
   if u<$00C0 then begin
     // most common
     if (u>=$0041) and (u<=$005A) then
       Result:=u+32
     else
       Result:=u;
-  end else
+  end
+  else begin
+    if not UnicodeTablesInitialized then
+      InitUnicodeTables;      // Initialize only when needed.
     case u of
     $00C0..$00DE: Result:=UnicodeLower00C0_00DE[u];
     $0100..$024E: Result:=UnicodeLower0100_024E[u];
@@ -1029,6 +1030,7 @@ begin
     $2C60..$2CE2: Result:=UnicodeLower2C60_2CE2[u];
     $FF21..$FF3A: Result:=u+32;
     else          Result:=u;
+    end;
   end;
 end;
 
