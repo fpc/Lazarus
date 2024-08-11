@@ -122,8 +122,9 @@ type
     function initWithFrame(frameRect: NSRect): id; override;
     function fittingSize: NSSize; override;
 
-    procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure lclCustomDrawRow(row: NSInteger; clipRect: NSRect);
+      message 'lclCustomDrawRow:clipRect:';
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -267,12 +268,23 @@ type
   { TViewCocoaTableListView }
 
   TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-    function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView; message 'tableView:viewForTableColumn:row:';
+    function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
+    function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
 
     procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
 
     procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
+  end;
+
+  { TCocoaTableRowView }
+
+  TCocoaTableRowView = objcclass(NSTableRowView)
+  public
+    tableView: TCocoaTableListView;
+    row: Integer;
+  public
+    procedure drawRect(dirtyRect: NSRect); override;
   end;
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
@@ -331,6 +343,12 @@ function AllocCocoaTableListView: TCocoaTableListView; // init will happen outsi
 begin
   Result := TViewCocoaTableListView.alloc;
   Result.setRowSizeStyle( NSTableViewRowSizeStyleCustom );
+end;
+
+procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
+begin
+  inherited drawRect(dirtyRect);
+  self.tableView.lclCustomDrawRow( row , dirtyRect );
 end;
 
 { TCocoaTableListView }
@@ -430,13 +448,12 @@ begin
   Result:= NSZeroSize;
 end;
 
-procedure TCocoaTableListView.drawRow_clipRect(row: NSInteger; clipRect: NSRect
+procedure TCocoaTableListView.lclCustomDrawRow(row: NSInteger; clipRect: NSRect
   );
 var
   ctx: TCocoaContext;
   ItemState: TOwnerDrawState;
 begin
-  inherited;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(bounds.size.width), Round(bounds.size.height));
@@ -1068,11 +1085,21 @@ end;
 
 procedure TCocoaTableListItem.prepareForReuse;
 begin
+  Inherited;
+
+  if Assigned(self.imageView) then begin
+    self.imageView.removeFromSuperview;
+    self.imageView.release;
+    self.setImageView(nil);
+  end;
+
   if Assigned(_checkBox) then begin
     _checkBox.removeFromSuperview;
     _checkBox.release;
     _checkBox:= nil;
   end;
+
+  self.removeFromSuperview;
 end;
 
 procedure TCocoaTableListItem.dealloc;
@@ -1125,6 +1152,16 @@ begin
   item.updateItemLayout( row, col );
 
   Result:= item;
+end;
+
+function TViewCocoaTableListView.tableView_rowViewForRow(
+  tableView: NSTableView; row: NSInteger): NSTableRowView;
+var
+  rowView: TCocoaTableRowView Absolute Result;
+begin
+  Result:= TCocoaTableRowView.alloc.init;
+  rowView.tableView:= self;
+  rowView.row:= row;
 end;
 
 procedure TViewCocoaTableListView.textFieldAction(sender: NSTextField);
@@ -1408,6 +1445,7 @@ begin
   if NOT Assigned(item) then
     Exit;
 
+  frame:= item.frame;
   case ACode of
     drLabel:
       begin
@@ -1417,11 +1455,12 @@ begin
       end;
     drIcon:
       begin
-        frame:= item.imageView.frame;
-        frame:= item.convertRect_toView( frame, _tableView );
-      end
-    else
-      frame:= item.frame;
+        if Assigned(item.imageView) then begin
+          frame:= item.imageView.frame;
+          frame.origin.x:= frame.origin.x + item.frame.origin.x;
+          frame.origin.y:= frame.origin.y + item.frame.origin.y;
+        end;
+      end;
   end;
 
   Result:= NSRectToRect( frame );
