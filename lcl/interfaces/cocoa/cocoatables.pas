@@ -28,7 +28,7 @@ uses
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConst, CocoaConfig,
   CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
-  CocoaListView,
+  CocoaListView, CocoaTextEdits,
   LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
@@ -97,11 +97,12 @@ type
     isDynamicRowHeight: Boolean;
     CustomRowHeight: Integer;
     ScrollWidth: Integer;
-
   public
     procedure backend_setCallback( cb:TLCLListViewCallback );
     procedure backend_reloadData;
     procedure backend_onInit;
+  public
+    procedure addSubview(aView: NSView); override;
 
     procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
@@ -421,6 +422,18 @@ begin
   // Windows compatibility. on Windows there's no extra space between columns
   sz.width := 0;
   self.setIntercellSpacing(sz);
+end;
+
+procedure TCocoaTableListView.addSubview(aView: NSView);
+var
+  field: TCocoaTextField;
+begin
+  if aView.isKindOfClass(TCocoaTextField) then begin
+    field:= TCocoaTextField( aView );
+    field.setBezeled( False );
+    field.fixedBorderStyle:= True;
+  end;
+  inherited addSubview(aView);
 end;
 
 procedure TCocoaTableListView.lclSetProcessor( processor: TCocoaTableViewProcessor);
