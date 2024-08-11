@@ -9,7 +9,7 @@ uses
   FpDebugDebugger, TestDbgControl, TestDbgTestSuites, TestOutputLogger,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon,
+  DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon, FpDbgDwarfFreePascal, FpdMemoryTools,
   IdeDebuggerWatchValueIntf, Forms, IdeDebuggerBase, IdeDebuggerWatchResult,
   IdeDebuggerBackendValueConv, FpDebugStringConstants, FpDebugDebuggerUtils;
 
@@ -39,6 +39,7 @@ type
     procedure TestWatchesModify;
     procedure TestWatchesErrors;
     procedure TestClassRtti;
+    procedure TestClassMangled;
   end;
 
 implementation
@@ -47,7 +48,7 @@ var
   ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue, ControlTestWatchIntrinsic, ControlTestWatchIntrinsic2,
   ControlTestWatchFunct, ControlTestWatchFunct2, ControlTestWatchFunctStr, ControlTestWatchFunctRec,
   ControlTestWatchFunctVariant, ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
-  ControlTestExpression, ControlTestErrors, ControlTestRTTI: Pointer;
+  ControlTestExpression, ControlTestErrors, ControlTestRTTI, ControlTestMangled: Pointer;
 
 procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint;
   ADisableBreak: Boolean);
@@ -4869,6 +4870,106 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestClassMangled;
+var
+  ExeName: String;
+  Src: TCommonSource;
+  BrkPrg: TDBGBreakPoint;
+  fp: TFpDebugDebugger;
+  AnExpressionScope: TFpDbgSymbolScope;
+  APasExpr: TFpPascalExpression;
+  ResValue: TFpValue;
+  InstClass, AnUnitName: String;
+  r: Boolean;
+  a: TFpDbgMemLocation;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestMangled) then exit;
+  if Compiler.Version < 030000 then exit;
+
+  Src := GetCommonSourceFor('WatchesScopePrg.pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+
+  AnExpressionScope := nil;
+  try
+    BrkPrg   := Debugger.SetBreakPoint(Src, 'WatchesScopeUnit2.pas', 'MethodMainBaseBase');
+    AssertDebuggerNotInErrorState;
+    RunToPause(BrkPrg);
+
+{$IFDEF FPDEBUG_THREAD_CHECK}
+    ClearCurrentFpDebugThreadIdForAssert;
+{$ENDIF}
+
+  fp := TFpDebugDebugger(Debugger.LazDebugger);
+  AnExpressionScope := fp.DbgController.CurrentProcess.FindSymbolScope(fp.DbgController.CurrentThread.ID, 0);
+  TestTrue('got scope', AnExpressionScope <> nil);
+
+  if AnExpressionScope <> nil then begin
+
+    APasExpr := TFpPascalExpression.Create('MethodMainBaseBase', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+    TestTrue('got inst class ', ResValue is TFpValueDwarfFreePascalSubroutine);
+    if ResValue is TFpValueDwarfFreePascalSubroutine then begin
+      a := TFpValueDwarfFreePascalSubroutine(ResValue).GetMangledAddress;
+      TestTrue('method - got addr ' + dbgs(a), IsTargetAddr(a) );
+    end;
+    APasExpr.Free;
+
+    APasExpr := TFpPascalExpression.Create('Self.MethodMainBaseBase', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+    TestTrue('got inst class ', ResValue is TFpValueDwarfFreePascalSubroutine);
+    if ResValue is TFpValueDwarfFreePascalSubroutine then begin
+      a := TFpValueDwarfFreePascalSubroutine(ResValue).GetMangledAddress;
+      TestTrue('self - got addr ' + dbgs(a), IsTargetAddr(a) );
+    end;
+    APasExpr.Free;
+
+    APasExpr := TFpPascalExpression.Create('MethodMainBase', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+    TestTrue('got inst class ', ResValue is TFpValueDwarfFreePascalSubroutine);
+    if ResValue is TFpValueDwarfFreePascalSubroutine then begin
+      a := TFpValueDwarfFreePascalSubroutine(ResValue).GetMangledAddress;
+      TestTrue('method other - got addr ' + dbgs(a), IsTargetAddr(a) );
+    end;
+    APasExpr.Free;
+
+    APasExpr := TFpPascalExpression.Create('Self.MethodMainBase', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+    TestTrue('got inst class ', ResValue is TFpValueDwarfFreePascalSubroutine);
+    if ResValue is TFpValueDwarfFreePascalSubroutine then begin
+      a := TFpValueDwarfFreePascalSubroutine(ResValue).GetMangledAddress;
+      TestTrue('self other - got addr ' + dbgs(a), IsTargetAddr(a) );
+    end;
+    APasExpr.Free;
+
+    APasExpr := TFpPascalExpression.Create('Unit2Init', AnExpressionScope);
+    ResValue := APasExpr.ResultValue;
+    TestTrue('got inst class ', ResValue is TFpValueDwarfFreePascalSubroutine);
+    if ResValue is TFpValueDwarfFreePascalSubroutine then begin
+      a := TFpValueDwarfFreePascalSubroutine(ResValue).GetMangledAddress;
+      TestTrue('function - got addr '+dbgs(a), IsTargetAddr(a) );
+    end;
+    APasExpr.Free;
+
+
+  end
+  else
+    TestTrue('scope ', False);
+
+
+  finally
+    AnExpressionScope.ReleaseReference;
+
+    Debugger.RunToNextPause(dcStop);
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
@@ -4887,7 +4988,8 @@ initialization
   ControlTestModify         := TestControlRegisterTest('Modify', ControlTestWatch);
   ControlTestExpression     := TestControlRegisterTest('Expression', ControlTestWatch);
   ControlTestErrors         := TestControlRegisterTest('Errors', ControlTestWatch);
-  ControlTestRTTI         :=   TestControlRegisterTest('Rtti', ControlTestWatch);
+  ControlTestRTTI           :=   TestControlRegisterTest('Rtti', ControlTestWatch);
+  ControlTestMangled        :=   TestControlRegisterTest('Mangled', ControlTestWatch);
 
 end.
 

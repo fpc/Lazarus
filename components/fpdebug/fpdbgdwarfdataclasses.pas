@@ -527,7 +527,7 @@ type
                        AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation); overload;
     destructor Destroy; override;
 
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
 
     function IsEqual(AnOther: TFpSymbol): Boolean; override;
 
@@ -577,7 +577,7 @@ type
     constructor Create(ACU: TDwarfCompilationUnit; AHelperData: Pointer); virtual;
     function IgnoreCfiStackEnd: boolean; virtual;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; virtual; abstract;
-    function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
                                  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; virtual; abstract;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
                                     AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; virtual; abstract;
@@ -822,7 +822,7 @@ type
   public
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); override;
     destructor Destroy; override;
-    function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
+    function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
     function FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
@@ -3847,7 +3847,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpDwarfInfo.FindSymbolScope(ALocationContext: TFpDbgLocationContext;
+function TFpDwarfInfo.FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext;
   AAddress: TDbgPtr): TFpDbgSymbolScope;
 var
   Proc, UnitSym: TDbgDwarfSymbolBase;
@@ -4495,7 +4495,7 @@ begin
 end;
 
 function TDbgDwarfSymbolBase.CreateSymbolScope(
-  ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo
+  ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo
   ): TFpDbgSymbolScope;
 begin
   Result := nil;

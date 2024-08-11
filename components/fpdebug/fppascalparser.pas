@@ -826,13 +826,13 @@ type
 
   TFpPasParserValue = class(TFpValue)
   private
-    FContext: TFpDbgLocationContext;
+    FContext: TFpDbgSimpleLocationContext;
     FExpressionPart: TFpPascalExpressionPart;
   protected
     function DebugText(AIndent: String): String; virtual;
   public
     constructor Create(AnExpressionPart: TFpPascalExpressionPart);
-    property Context: TFpDbgLocationContext read FContext;
+    property Context: TFpDbgSimpleLocationContext read FContext;
   end;
 
   { TFpPasParserValueSlicedArray }

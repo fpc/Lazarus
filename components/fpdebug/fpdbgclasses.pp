@@ -2700,6 +2700,7 @@ begin
           Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
           Ctx.SetFrameBaseCallback(@DoGetFrameBase);
           Ctx.SetCfaFrameBaseCallback(@DoGetCfiFrameBase);
+          Ctx.SymbolTableInfo := SymbolTableInfo;
           Frame.Context := Ctx;
         end;
         sym := Frame.ProcSymbol;

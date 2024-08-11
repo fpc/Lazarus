@@ -46,7 +46,7 @@ type
   protected
     function GetSizeOfAddress: Integer; override;
   public
-    constructor Create(ALocationContext: TFpDbgLocationContext; AFpSymbolInfo: TFpSymbolInfo);
+    constructor Create(ALocationContext: TFpDbgSimpleLocationContext; AFpSymbolInfo: TFpSymbolInfo);
     function FindSymbol(const AName: String; const OnlyUnitName: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): TFpValue; override;
   end;
@@ -57,13 +57,18 @@ type
   private
     FSymbolList: TfpSymbolList;
     FLibName: String;
+    function GetSymbols(AnIndex: integer): TFpSymbol;
   public
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel); override; overload;
     constructor Create(ALoaderList: TDbgImageLoaderList; AMemManager: TFpDbgMemManager; ALibName: String; AMemModel: TFpDbgMemModel); overload;
     destructor Destroy; override;
-    function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
+    function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindProcSymbol(const AName: String; AIgnoreCase: Boolean = False): TFpSymbol; override; overload;
     function FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol; overload;
+
+    // for debugdump
+    function SymbolCount: integer;
+    property Symbols[AnIndex: integer]: TFpSymbol read GetSymbols;
   end;
 
 implementation
@@ -133,7 +138,7 @@ begin
   result := FSizeOfAddress;
 end;
 
-constructor TFpSymbolContext.Create(ALocationContext: TFpDbgLocationContext;
+constructor TFpSymbolContext.Create(ALocationContext: TFpDbgSimpleLocationContext;
   AFpSymbolInfo: TFpSymbolInfo);
 begin
   inherited create(ALocationContext);
@@ -159,6 +164,11 @@ begin
 end;
 
 { TFpSymbolInfo }
+
+function TFpSymbolInfo.GetSymbols(AnIndex: integer): TFpSymbol;
+begin
+  Result := TFpSymbolTableProc.Create(FSymbolList.Keys[AnIndex], FSymbolList.DataPtr[AnIndex]^.Addr);
+end;
 
 constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
   AMemManager: TFpDbgMemManager; AMemModel: TFpDbgMemModel);
@@ -189,7 +199,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpSymbolInfo.FindSymbolScope(ALocationContext: TFpDbgLocationContext;
+function TFpSymbolInfo.FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext;
   AAddress: TDbgPtr): TFpDbgSymbolScope;
 begin
   assert(False, 'TFpSymbolInfo.FindSymbolScope: False');
@@ -257,6 +267,11 @@ begin
   if NearestIdx >= 0 then begin
     Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[NearestIdx], FSymbolList.DataPtr[NearestIdx]^.Addr);
   end;
+end;
+
+function TFpSymbolInfo.SymbolCount: integer;
+begin
+  Result := FSymbolList.Count;
 end;
 
 end.

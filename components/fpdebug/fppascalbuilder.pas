@@ -120,7 +120,7 @@ function GetParamsAsString(
 var
   ProcVal: TFpValue;
   ProcSymbol: TFpSymbol;
-  AContext: TFpDbgLocationContext;
+  AContext: TFpDbgSimpleLocationContext;
   m: TFpValue;
   v: String;
   i: Integer;

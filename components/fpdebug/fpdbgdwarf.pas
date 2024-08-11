@@ -69,7 +69,7 @@ type
   public
     //function CanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
-    function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
       AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase; override;
     function CreateUnitSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -136,7 +136,7 @@ type
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
     procedure Init; virtual;
   public
-    constructor Create(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
+    constructor Create(ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
     destructor Destroy; override;
     function FindSymbol(const AName: String; const OnlyUnitName: String = '';
       AFindFlags: TFindExportedSymbolsFlags = []): TFpValue; override;
@@ -155,11 +155,11 @@ type
 
   TFpValueDwarfBase = class(TFpValue)
   strict private
-    FLocContext: TFpDbgLocationContext;
-    procedure SetContext(AValue: TFpDbgLocationContext);
+    FLocContext: TFpDbgSimpleLocationContext;
+    procedure SetContext(AValue: TFpDbgSimpleLocationContext);
   public
     destructor Destroy; override;
-    property Context: TFpDbgLocationContext read FLocContext write SetContext;
+    property Context: TFpDbgSimpleLocationContext read FLocContext write SetContext;
   end;
 
   { TFpValueDwarfTypeDefinition }
@@ -1103,8 +1103,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope; override;
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext): TFpDbgSymbolScope; override;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
     function GetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDbgPtr;
@@ -1173,8 +1173,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope; override;
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext): TFpDbgSymbolScope; override;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
   end;
 {%endregion Symbol objects }
 
@@ -1192,7 +1192,7 @@ end;
 
 { TFpValueDwarfBase }
 
-procedure TFpValueDwarfBase.SetContext(AValue: TFpDbgLocationContext);
+procedure TFpValueDwarfBase.SetContext(AValue: TFpDbgSimpleLocationContext);
 begin
   if FLocContext = AValue then Exit;
   if FLocContext <> nil then
@@ -1318,7 +1318,7 @@ begin
 end;
 
 function TFpDwarfDefaultSymbolClassMap.CreateScopeForSymbol(
-  ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
   ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
 begin
   Result := TFpDwarfInfoSymbolScope.Create(ALocationContext,ASymbol, ADwarf);
@@ -1727,7 +1727,7 @@ begin
 end;
 
 constructor TFpDwarfInfoSymbolScope.Create(
-  ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
+  ALocationContext: TFpDbgSimpleLocationContext; ASymbol: TFpSymbol;
   ADwarf: TFpDwarfInfo);
 begin
   assert((ASymbol=nil) or (ASymbol is TFpSymbolDwarf), 'TFpDwarfInfoSymbolScope.Create: (ASymbol=nil) or (ASymbol is TFpSymbolDwarf)');
@@ -6733,7 +6733,7 @@ begin
 end;
 
 function TFpSymbolDwarfDataProc.CreateSymbolScope(
-  ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext): TFpDbgSymbolScope;
 begin
   Result := nil;
   if FDwarf <> nil then
@@ -6742,7 +6742,7 @@ begin
 end;
 
 function TFpSymbolDwarfDataProc.CreateSymbolScope(
-  ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo
+  ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo
   ): TFpDbgSymbolScope;
 begin
   Result := CompilationUnit.DwarfSymbolClassMap.CreateScopeForSymbol
@@ -7298,7 +7298,7 @@ begin
 end;
 
 function TFpSymbolDwarfUnit.CreateSymbolScope(
-  ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope;
+  ALocationContext: TFpDbgSimpleLocationContext): TFpDbgSymbolScope;
 begin
   Result := nil;
   if FDwarf <> nil then
@@ -7307,7 +7307,7 @@ begin
 end;
 
 function TFpSymbolDwarfUnit.CreateSymbolScope(
-  ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo
+  ALocationContext: TFpDbgSimpleLocationContext; ADwarfInfo: TFpDwarfInfo
   ): TFpDbgSymbolScope;
 begin
   Result := CompilationUnit.DwarfSymbolClassMap.CreateScopeForSymbol

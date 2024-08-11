@@ -114,6 +114,9 @@ type
   TFindExportedSymbolsFlag = (fsfIgnoreEnumVals, fsfMatchUnitName);
   TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
 
+  TDbgInfo = class;
+  TFpDbgSimpleLocationContext = class;
+
   { TFpValue }
 
   TFpValue = class(TRefCountedObject)
@@ -576,7 +579,7 @@ type
     // Returns a reference to caller / caller must release
     function TypeCastValue({%H-}AValue: TFpValue): TFpValue; virtual;
 
-    function CreateSymbolScope(ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope; virtual;
+    function CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext): TFpDbgSymbolScope; virtual;
     function IsEqual(AnOther: TFpSymbol): Boolean; virtual;
   end;
 
@@ -646,7 +649,7 @@ type
 
   TFpDbgSymbolScope = class(TRefCountedObject)
   private
-    FLocationContext: TFpDbgLocationContext;
+    FLocationContext: TFpDbgSimpleLocationContext;
   protected
     function GetSymbolAtAddress: TFpSymbol; virtual;
     function GetProcedureAtAddress: TFpValue; virtual;
@@ -654,7 +657,7 @@ type
     function GetMemModel: TFpDbgMemModel; virtual;
     function GetSizeOfAddress: Integer; virtual;
   public
-    constructor Create(ALocationContext: TFpDbgLocationContext);
+    constructor Create(ALocationContext: TFpDbgSimpleLocationContext);
     destructor Destroy; override;
     property SymbolAtAddress: TFpSymbol read GetSymbolAtAddress;
     property ProcedureAtAddress: TFpValue read GetProcedureAtAddress;
@@ -664,7 +667,7 @@ type
     property MemManager: TFpDbgMemManager read GetMemManager;
     property MemModel: TFpDbgMemModel read GetMemModel;
     property SizeOfAddress: Integer read GetSizeOfAddress;
-    property LocationContext: TFpDbgLocationContext read FLocationContext;
+    property LocationContext: TFpDbgSimpleLocationContext read FLocationContext;
   end;
 
   { TFpDbgSimpleLocationContext }
@@ -674,6 +677,7 @@ type
     FMemManager: TFpDbgMemManager;
     FMemModel: TFpDbgMemModel;
     FAddress: TDbgPtr;
+    FSymbolTableInfo: TDbgInfo;
     FThreadId: Integer;
     FStackFrame: Integer;
     FSizeOfAddr: Integer;
@@ -686,6 +690,7 @@ type
     function GetSizeOfAddress: Integer; override;
   public
     constructor Create(AMemManager: TFpDbgMemManager; AnAddress: TDbgPtr; AnSizeOfAddr, AThreadId: Integer; AStackFrame: Integer);
+    property SymbolTableInfo: TDbgInfo read FSymbolTableInfo write FSymbolTableInfo;
   end;
 
   { TFpDbgCallMemReader }
@@ -720,21 +725,12 @@ type
 
   { TFpDbgAbstractCallContext }
 
-  TFpDbgAbstractCallContext = class(TFpDbgLocationContext)
+  TFpDbgAbstractCallContext = class(TFpDbgSimpleLocationContext)
   private
     FBaseContext: TFpDbgLocationContext;
-    FMemManager: TFpDbgMemManager;
-    FMemModel: TFpDbgMemModel;
     FMemReader: TFpDbgCallMemReader;
     FIsValid: Boolean;
     FMessage: string;
-  protected
-    function GetMemManager: TFpDbgMemManager; override;
-    function GetMemModel: TFpDbgMemModel; override;
-    function GetAddress: TDbgPtr; override;
-    function GetThreadId: Integer; override;
-    function GetStackFrame: Integer; override;
-    function GetSizeOfAddress: Integer; override;
   public
     constructor Create(const ABaseContext: TFpDbgLocationContext;
       AMemReader: TFpDbgMemReaderBase; AMemModel: TFpDbgMemModel; AMemConverter: TFpDbgMemConvertor);
@@ -764,7 +760,7 @@ type
        However a different Address may be froced.
        TODO: for now address may be needed, as stack decoding is not done yet
     *)
-    function FindSymbolScope(ALocationContext: TFpDbgLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
+    function FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String; AIgnoreCase: Boolean = False): TFpSymbol; virtual; overload;
     function FindLineInfo(AAddress: TDbgPtr): TFpSymbol; virtual;
@@ -859,13 +855,11 @@ begin
   FBaseContext:=ABaseContext;
   FBaseContext.AddReference;
 
-  FMemModel := AMemModel;
   FMemReader := TFpDbgCallMemReader.Create(AMemReader);
-  FMemManager := TFpDbgMemManager.Create(FMemReader, AMemConverter, FMemModel);
-
   FIsValid := True;
 
-  Inherited Create;
+  Inherited Create(TFpDbgMemManager.Create(FMemReader, AMemConverter, AMemModel),
+                   FBaseContext.Address, FBaseContext.SizeOfAddress, FBaseContext.ThreadId, FBaseContext.StackFrame);
 end;
 
 destructor TFpDbgAbstractCallContext.Destroy;
@@ -874,36 +868,6 @@ begin
   FMemReader.Free;
   FBaseContext.ReleaseReference;
   inherited Destroy;
-end;
-
-function TFpDbgAbstractCallContext.GetAddress: TDbgPtr;
-begin
-  Result := FBaseContext.Address;
-end;
-
-function TFpDbgAbstractCallContext.GetMemManager: TFpDbgMemManager;
-begin
-  Result := FMemManager;
-end;
-
-function TFpDbgAbstractCallContext.GetMemModel: TFpDbgMemModel;
-begin
-  Result := FMemModel;
-end;
-
-function TFpDbgAbstractCallContext.GetSizeOfAddress: Integer;
-begin
-  Result := FBaseContext.SizeOfAddress;
-end;
-
-function TFpDbgAbstractCallContext.GetStackFrame: Integer;
-begin
-  Result := FBaseContext.StackFrame;
-end;
-
-function TFpDbgAbstractCallContext.GetThreadId: Integer;
-begin
-  Result := FBaseContext.ThreadId;
 end;
 
 procedure TFpDbgAbstractCallContext.SetRegisterValue(ARegNum: Cardinal; AValue: TDbgPtr);
@@ -1755,7 +1719,7 @@ begin
   Result := LocationContext.MemModel;
 end;
 
-constructor TFpDbgSymbolScope.Create(ALocationContext: TFpDbgLocationContext);
+constructor TFpDbgSymbolScope.Create(ALocationContext: TFpDbgSimpleLocationContext);
 begin
   FLocationContext := ALocationContext;
   FLocationContext.AddReference;
@@ -1901,7 +1865,7 @@ begin
   Result := nil;
 end;
 
-function TFpSymbol.CreateSymbolScope(ALocationContext: TFpDbgLocationContext
+function TFpSymbol.CreateSymbolScope(ALocationContext: TFpDbgSimpleLocationContext
   ): TFpDbgSymbolScope;
 begin
   Result := nil;
@@ -2358,7 +2322,7 @@ begin
   inherited Create;
 end;
 
-function TDbgInfo.FindSymbolScope(ALocationContext: TFpDbgLocationContext;
+function TDbgInfo.FindSymbolScope(ALocationContext: TFpDbgSimpleLocationContext;
   AAddress: TDbgPtr): TFpDbgSymbolScope;
 begin
   Result := nil;
