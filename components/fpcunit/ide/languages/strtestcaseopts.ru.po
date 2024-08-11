@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
@@ -148,6 +148,10 @@ msgstr "Создать завершающий метод"
 msgid "&Create first test case"
 msgstr "&Создавать первый тест"
 
+#: strtestcaseopts.sdefault
+msgid "Default"
+msgstr "По умолчанию"
+
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
 msgstr "&Формат вывода по умолчанию"
@@ -192,6 +196,10 @@ msgstr "Общие методы"
 msgid "Names"
 msgstr "Имена"
 
+#: strtestcaseopts.slatex
+msgid "LaTeX"
+msgstr "LaTeX"
+
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Имя теста по умолчанию"
@@ -220,6 +228,10 @@ msgstr "Тесты"
 msgid "Source navigation not available."
 msgstr "Перемещение по исходному коду недоступно."
 
+#: strtestcaseopts.snewfpcunitprogramtor
+msgid "New FPCUnit console testrunner program"
+msgstr "Новая консольная программа FPCUnit для запуска тестов"
+
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
@@ -228,6 +240,14 @@ msgstr "Исполнимый файл тестов недоступен: \"%s\""
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
 msgstr "Не задан тестовый проект."
+
+#: strtestcaseopts.splaintext
+msgid "Plain text"
+msgstr "Простой текст"
+
+#: strtestcaseopts.splaintextwithouttimi
+msgid "Plain text without timings"
+msgstr "Простой текст без меток времени"
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
@@ -240,4 +260,8 @@ msgstr "Передавать результаты в IDE через сведен
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
 msgstr "Напишите ваш тест"
+
+#: strtestcaseopts.sxml
+msgid "XML"
+msgstr "XML"
 

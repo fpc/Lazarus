@@ -149,6 +149,10 @@ msgstr "Bontási eljárás létrehozása"
 msgid "&Create first test case"
 msgstr ""
 
+#: strtestcaseopts.sdefault
+msgid "Default"
+msgstr ""
+
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
 msgstr ""
@@ -199,6 +203,10 @@ msgstr "Kellékek"
 msgid "Names"
 msgstr "Nevek"
 
+#: strtestcaseopts.slatex
+msgid "LaTeX"
+msgstr ""
+
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Alapértelmezett teszt neve"
@@ -227,6 +235,10 @@ msgstr ""
 msgid "Source navigation not available."
 msgstr ""
 
+#: strtestcaseopts.snewfpcunitprogramtor
+msgid "New FPCUnit console testrunner program"
+msgstr ""
+
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
@@ -234,6 +246,14 @@ msgstr ""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
+msgstr ""
+
+#: strtestcaseopts.splaintext
+msgid "Plain text"
+msgstr ""
+
+#: strtestcaseopts.splaintextwithouttimi
+msgid "Plain text without timings"
 msgstr ""
 
 #: strtestcaseopts.srunalltests
@@ -247,4 +267,8 @@ msgstr ""
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
 msgstr "Saját teszt írása"
+
+#: strtestcaseopts.sxml
+msgid "XML"
+msgstr ""
 

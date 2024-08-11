@@ -149,6 +149,10 @@ msgstr "创建 TearDown 方法"
 msgid "&Create first test case"
 msgstr ""
 
+#: strtestcaseopts.sdefault
+msgid "Default"
+msgstr ""
+
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
 msgstr ""
@@ -193,6 +197,10 @@ msgstr "初始化设置"
 msgid "Names"
 msgstr "名称"
 
+#: strtestcaseopts.slatex
+msgid "LaTeX"
+msgstr ""
+
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "默认测试名称"
@@ -221,6 +229,10 @@ msgstr ""
 msgid "Source navigation not available."
 msgstr ""
 
+#: strtestcaseopts.snewfpcunitprogramtor
+msgid "New FPCUnit console testrunner program"
+msgstr ""
+
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
@@ -228,6 +240,14 @@ msgstr ""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
+msgstr ""
+
+#: strtestcaseopts.splaintext
+msgid "Plain text"
+msgstr ""
+
+#: strtestcaseopts.splaintextwithouttimi
+msgid "Plain text without timings"
 msgstr ""
 
 #: strtestcaseopts.srunalltests
@@ -241,4 +261,8 @@ msgstr ""
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
 msgstr "编写您自己的测试"
+
+#: strtestcaseopts.sxml
+msgid "XML"
+msgstr ""
 

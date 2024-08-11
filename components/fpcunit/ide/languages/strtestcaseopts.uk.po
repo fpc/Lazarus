@@ -148,6 +148,10 @@ msgstr "Створити метод демонтажу"
 msgid "&Create first test case"
 msgstr ""
 
+#: strtestcaseopts.sdefault
+msgid "Default"
+msgstr ""
+
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
 msgstr ""
@@ -192,6 +196,10 @@ msgstr "Пристосування"
 msgid "Names"
 msgstr "Назви"
 
+#: strtestcaseopts.slatex
+msgid "LaTeX"
+msgstr ""
+
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
 msgstr "Типова назва тесту"
@@ -220,6 +228,10 @@ msgstr ""
 msgid "Source navigation not available."
 msgstr ""
 
+#: strtestcaseopts.snewfpcunitprogramtor
+msgid "New FPCUnit console testrunner program"
+msgstr ""
+
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
@@ -227,6 +239,14 @@ msgstr ""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
+msgstr ""
+
+#: strtestcaseopts.splaintext
+msgid "Plain text"
+msgstr ""
+
+#: strtestcaseopts.splaintextwithouttimi
+msgid "Plain text without timings"
 msgstr ""
 
 #: strtestcaseopts.srunalltests
@@ -240,4 +260,8 @@ msgstr ""
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
 msgstr "Напишіть ваш власний тест"
+
+#: strtestcaseopts.sxml
+msgid "XML"
+msgstr ""
 
