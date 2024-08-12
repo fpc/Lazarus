@@ -31,6 +31,7 @@ type
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
     function ItemsCount: Integer;
+    function GetImageListType( out lvil: TListViewImageList ): Boolean;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
@@ -41,11 +42,10 @@ type
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
-      state: TOwnerDrawState);
+    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+      state: TOwnerDrawState): Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
-    function GetImageListType( out lvil: TListViewImageList ): Boolean;
     procedure callTargetInitializeWnd;
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
@@ -180,7 +180,6 @@ var
   controlFrame: NSRect;
   backendControlAccess: TCocoaListViewBackendControlProtocol;
 begin
-  Writeln( HexStr(@_allocFunc) );
   _allocFunc( self, _viewStyle, _backendControl, _WSHandler );
 
   controlFrame:= self.bounds;
@@ -337,6 +336,7 @@ end;
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
   var imgIdx: Integer): Boolean;
 begin
+  imgIdx:= -1;
   Result := (ACol >= 0) and ( (ACol<listView.ColumnCount) or ( ACol=0) )
     and (ARow >= 0) and (ARow < listView.Items.Count);
 
@@ -524,14 +524,16 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
-procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState);
+function TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState): Boolean;
 var
   ALV: TCustomListViewAccess;
+  drawResult: TCustomDrawResult;
 begin
   ALV:= TCustomListViewAccess(self.listView);
   ALV.Canvas.Handle:= HDC(ctx);
-  ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
+  drawResult:= ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
+  Result:= cdrSkipDefault in drawResult;
   ALV.Canvas.Handle:= 0;
 end;
 

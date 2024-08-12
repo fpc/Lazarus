@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LclType, Controls,
+  LclType, Controls, ComCtrls,
   MacOSAll, CocoaAll, CocoaGDIObjects;
 
 type
@@ -92,6 +92,7 @@ type
 
   IListViewCallBack = interface(ICommonCallback)
     function ItemsCount: Integer;
+    function GetImageListType( out lvil: TListViewImageList ): Boolean;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var CheckState: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
@@ -100,7 +101,7 @@ type
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
+    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean;
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
     function GetBorderStyle: TBorderStyle;
   end;
