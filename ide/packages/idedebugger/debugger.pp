@@ -4517,7 +4517,7 @@ begin
        TryStrToInt64(Watch.DisplayName, i) and
        (i >= ASrcValue.FResultData.LowBound) and (i < ASrcValue.FResultData.Count)
     then begin
-      ASrcValue.FResultData.SetSelectedIndex(i);
+      ASrcValue.FResultData.SetSelectedIndex(i-ASrcValue.FResultData.LowBound);
       // TODO: mark this as a copy / or don't store it, then no copy is needed
       FResultData := ASrcValue.FResultData.SelectedEntry.CreateCopy;
       exit;
