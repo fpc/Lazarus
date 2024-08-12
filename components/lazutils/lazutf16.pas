@@ -128,14 +128,6 @@ begin
     Result:=nil;
 end;
 
-function IndexOfWideChar(Const Buf: PWideChar; Len: PtrInt; b: WideChar): PtrInt;
-begin
-  for Result:=0 to len-1 do
-    if buf[Result]=b then
-      Exit;
-  Result:=-1;
-end;
-
 // Helper used by UTF16Pos
 function UTF16PosP(SearchForText: PWideChar; SearchForTextLen: PtrInt;
   SearchInText: PWideChar; SearchInTextLen: PtrInt): PWideChar;
@@ -148,7 +140,7 @@ begin
   if (SearchForText=nil) or (SearchForTextLen=0) or (SearchInText=nil) then
     exit;
   while SearchInTextLen>0 do begin
-    p:=IndexOfWideChar(SearchInText,SearchInTextLen,SearchForText^);
+    p:=IndexWord(SearchInText, SearchInTextLen,Word(SearchForText^));
     if p<0 then exit;
     inc(SearchInText, p);
     dec(SearchInTextLen, p);
