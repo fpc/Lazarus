@@ -12,7 +12,7 @@ uses
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
-  CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers,
+  CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers, CocoaTextEdits,
   CocoaWSCommon, cocoa_extra, CocoaGDIObjects;
 
 type
@@ -46,6 +46,7 @@ type
       state: TOwnerDrawState): Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
+    function onAddSubview(aView: NSView): Boolean;
     procedure callTargetInitializeWnd;
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
@@ -188,7 +189,7 @@ begin
   _scrollView.setDocumentView( _backendControl );
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
   _scrollView.callback:= self.callback;
-  self.addSubView( _scrollView );
+  self.addSubview_positioned_relativeTo( _scrollView, NSWindowBelow, nil );
   ScrollViewSetBorderStyle( _scrollView, callback.getBorderStyle );
 
   backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);
@@ -199,26 +200,6 @@ end;
 type
   TWinControlAccess = class(TWinControl);
 
-// LCL has built-in editing functionality in TListItem.EditCaption(),
-// which creates a TextEditor to Edit Caption. at the Cocoa level,
-// it will be loaded into TCocoaListView.TCocoaScrollView.backendControl.
-// because TCocoaScrollView and backendControl will be rebuilt when
-// switching the viewStyle, the Editor handle needs to be destroyed at Cocoa,
-// so that the Editor can be recreated normally when needed after the switch.
-procedure releaseCaptionEditor( container:NSView );
-var
-  view: NSView;
-  control: TWinControlAccess;
-begin
-  for view in container.subviews do begin
-    control:= TWinControlAccess( view.lclGetTarget );
-    if Assigned(control) then begin
-      control.Hide;
-      control.DestroyHandle;
-    end;
-  end;
-end;
-
 procedure TCocoaListView.releaseControls;
 begin
   if not Assigned(_backendControl) then
@@ -228,7 +209,6 @@ begin
   _scrollView.setDocumentView( nil );
   _scrollView.release;
   _scrollView:= nil;
-  releaseCaptionEditor( _backendControl );
   _backendControl.release;
   _backendControl:= nil;
 end;
@@ -545,6 +525,21 @@ end;
 function TLCLListViewCallback.GetBorderStyle: TBorderStyle;
 begin
   Result:= TCustomListView(Target).BorderStyle;
+end;
+
+function TLCLListViewCallback.onAddSubview(aView: NSView): Boolean;
+var
+  field: TCocoaTextField;
+begin
+  Result:= False;
+  if NOT aView.isKindOfClass(TCocoaTextField) then
+    Exit;
+
+  field:= TCocoaTextField( aView );
+  field.setBezeled( False );
+  field.fixedBorderStyle:= True;
+  NSView(self.Owner).addSubview( field );  // add to TCococListView
+  Result:= True;
 end;
 
 function TLCLListViewCallback.GetImageListType( out lvil: TListViewImageList ): Boolean;

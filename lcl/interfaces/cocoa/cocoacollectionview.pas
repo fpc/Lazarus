@@ -771,14 +771,11 @@ begin
 end;
 
 procedure TCocoaCollectionView.addSubview(aView: NSView);
-var
-  field: TCocoaTextField;
 begin
-  if aView.isKindOfClass(TCocoaTextField) then begin
-    field:= TCocoaTextField( aView );
-    field.setBezeled( False );
-    field.fixedBorderStyle:= True;
-  end;
+  if NOT Assigned(self.callback) then
+    Exit;
+  if self.callback.onAddSubview(aView) then
+    Exit;
   inherited addSubview(aView);
 end;
 
@@ -1106,26 +1103,30 @@ function TCocoaWSListView_CollectionViewHandler.ItemDisplayRect(const AIndex,
 var
   item: NSCollectionViewItem;
   frame: NSRect;
+  rect: TRect;
 begin
   Result:= Bounds(0,0,0,0);
   item:= _collectionView.itemAtIndex( AIndex );
   if NOT Assigned(item) then
     Exit;
 
+  frame:= item.view.frame;
   case ACode of
     drLabel:
       begin
         frame:= item.textField.frame;
-        frame:= item.view.convertRect_toView( frame, _collectionView );
         _collectionView.styleHandler.onAdjustTextEditorRect( frame );
+        NSToLCLRect( frame, item.view.frame.size.height, rect );
+        item.view.lclLocalToScreen( rect.left, rect.top );
+        _listView.lclScreenToLocal( rect.left, rect.top );
+        frame.origin.x:= rect.left;
+        frame.origin.y:= rect.top;
       end;
     drIcon:
       begin
         frame:= item.imageView.frame;
         frame:= item.view.convertRect_toView( frame, _collectionView );
       end
-    else
-      frame:= item.view.frame;
   end;
 
   Result:= NSRectToRect( frame );

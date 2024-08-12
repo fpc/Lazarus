@@ -104,6 +104,7 @@ type
     function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean;
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
     function GetBorderStyle: TBorderStyle;
+    function onAddSubview( aView:NSView ): Boolean;
   end;
 
   { TCocoaStatusBar }

@@ -290,6 +290,7 @@ type
     function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean; virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
     function GetBorderStyle: TBorderStyle;
+    function onAddSubview(aView: NSView): Boolean;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -690,6 +691,11 @@ end;
 function TLCLListBoxCallback.GetBorderStyle: TBorderStyle;
 begin
   Result:= TCustomListBox(Target).BorderStyle;
+end;
+
+function TLCLListBoxCallback.onAddSubview(aView: NSView): Boolean;
+begin
+  Result:= False;
 end;
 
 { TLCLCheckBoxCallback }
