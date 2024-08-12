@@ -1062,8 +1062,6 @@ var
   Changed: Boolean;
   p: PChar;
 begin
-  if not UnicodeTablesInitialized then
-    InitUnicodeTables;      // Initialize only when needed.
   Result:=s;
   if Result='' then exit;
   Changed:=false;
