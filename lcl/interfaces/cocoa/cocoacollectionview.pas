@@ -384,7 +384,7 @@ begin
   aFrame.size.height:= 15;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
-  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
+  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x - 4;
   cocoaItem.textField.setAlignment( NSTextAlignmentCenter );
   cocoaItem.textField.setFrame( aFrame );
 
@@ -400,8 +400,8 @@ end;
 procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
-  aFrame.origin.x:= aFrame.origin.x + 2;
-  aFrame.size.width:= aFrame.size.width - 4;
+  aFrame.origin.y:= aFrame.origin.y - 1;
+  aFrame.size.width:= aFrame.size.width + 2;
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
@@ -446,6 +446,7 @@ procedure TCocoaListView_CollectionView_SmallIconHandler.onUpdateItemSize(
   baseSize: NSSize);
 var
   cv: TCocoaCollectionView;
+  textWidth: Integer;
 begin
   cv:= TCocoaCollectionView(_collectionView);
   cv.iconSize:= baseSize;
@@ -454,8 +455,11 @@ begin
   if cv.iconSize.Height < 16 then
     cv.iconSize.Height:= 16;
 
-  cv.itemSize.Width:= 6 + baseSize.Width + 2 + 120 + 6;
-  cv.itemSize.Height:= 4 + baseSize.Height + 4;
+  textWidth:= Round( cv.iconSize.Width * 3 );
+  if textWidth < 128 then
+    textWidth:= 128;
+  cv.itemSize.Width:= 6 + cv.iconSize.Width + 2 + textWidth + 6;
+  cv.itemSize.Height:= 4 + cv.iconSize.Height + 4;
   if cv.itemSize.Height < 28 then
     cv.itemSize.Height:= 28;
 
@@ -482,7 +486,7 @@ begin
 
   aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 2;
   aFrame.origin.y:= (cv.itemSize.Height - 15) / 2;
-  aFrame.size.width:= 120;
+  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x - 4;
   aFrame.size.height:= 15;
   cocoaItem.textField.setFrame( aFrame );
 
@@ -498,7 +502,8 @@ end;
 procedure TCocoaListView_CollectionView_SmallIconHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
-  aFrame.size.width:= aFrame.size.width + 4;
+  aFrame.origin.y:= aFrame.origin.y + 2;
+  aFrame.size.width:= aFrame.size.width + 2;
 end;
 
 { TCocoaListView_CollectionView_ListHandler }
@@ -570,8 +575,8 @@ end;
 procedure TCocoaListView_CollectionView_ListHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
+  aFrame.origin.y:= aFrame.origin.y + 2;
   aFrame.origin.x:= aFrame.origin.x - 2;
-  aFrame.origin.y:= aFrame.origin.y - 2;
   aFrame.size.width:= aFrame.size.width + 4;
 end;
 
@@ -721,6 +726,7 @@ begin
 
   _checkBoxes:= checkBoxes;
   self.styleHandler.resetSize;
+  self.updateItemSize( self.iconSize );
   self.reloadData;
 end;
 
