@@ -504,7 +504,7 @@ begin
   while ForwardChar(liCount)=NativeSingleQuote do
     Inc(liCount);
 
-  if (liCount>=3) and ((liCount and 1)= 1) then
+  if (liCount>=3) and Odd(liCount) then
   begin
     liAux := liCount + 1;
     while ForwardChar(liAux) in NativeTabSpace do
