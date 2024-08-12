@@ -866,6 +866,7 @@ begin
   if Destroying or (AUnitinfo = nil) then exit;
   Filename := AUnitinfo.LocationFullFile;
   Result := Filename <> '';
+  if Result then exit;
 
   if (dlfSearchByFunctionName in AUnitinfo.Flags) and (AUnitinfo.FunctionName<>'')
   and FindFullFilenameSrc(AUnitinfo) then
