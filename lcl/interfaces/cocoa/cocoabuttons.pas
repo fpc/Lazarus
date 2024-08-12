@@ -24,7 +24,7 @@ interface
 
 uses
   Types, Classes, SysUtils, Graphics,
-  MacOSAll, CocoaAll, CocoaPrivate, CocoaCallback;
+  MacOSAll, CocoaAll, CocoaConst, CocoaPrivate, CocoaCallback;
 
 
 const
@@ -120,7 +120,22 @@ type
     procedure lclClearCallback; override;
   end;
 
+function adjustButtonSizeIfNecessary( button: NSButton; aSize: NSSize ): NSSize;
+
 implementation
+
+function adjustButtonSizeIfNecessary(button: NSButton; aSize: NSSize): NSSize;
+begin
+  Result:= aSize;
+  if button.bezelStyle = NSRegularSquareBezelStyle then begin
+    // if the height of NSButton with NSRegularSquareBezelStyle is too small,
+    // a strange rectangular color block will be shown in the Button,
+    // in dark mode.
+    // FYI: https://github.com/doublecmd/doublecmd/issues/1775
+    if Result.Height < BUTTON_MIN_HEIGHT_NSRegularSquareBezelStyle then
+      Result.Height:= BUTTON_MIN_HEIGHT_NSRegularSquareBezelStyle;
+  end;
+end;
 
 { TCocoaStepper }
 
@@ -215,6 +230,8 @@ procedure TCocoaButton.lclSetFrame(const r: TRect);
 var
   lBtnHeight, lDiff: Integer;
   lRoundBtnSize: NSSize;
+  newFrame: TRect;
+  size: NSSize;
 begin
   // NSTexturedRoundedBezelStyle should be the preferred style, but it has a fixed height!
   // fittingSize is 10.7+
@@ -231,9 +248,17 @@ begin
   else
     setBezelStyle(NSTexturedSquareBezelStyle);
   }
+  Size.width:= r.Width;
+  Size.height:= r.Height;
+  Size:= adjustButtonSizeIfNecessary( self, Size );
+
+  newFrame:= r;
+  newFrame.Width:= Round( Size.width );
+  newFrame.Height:= Round( Size.height );
+
   if (miniHeight<>0) or (smallHeight<>0) then
-    SetNSControlSize(Self,r.Bottom-r.Top,miniHeight, smallHeight, adjustFontToControlSize);
-  inherited lclSetFrame(r);
+    SetNSControlSize(Self,newFrame.Bottom-newFrame.Top,miniHeight, smallHeight, adjustFontToControlSize);
+  inherited lclSetFrame(newFrame);
 end;
 
 procedure TCocoaButton.lclCheckMixedAllowance;

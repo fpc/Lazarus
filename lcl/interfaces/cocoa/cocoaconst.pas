@@ -40,6 +40,12 @@ function NSSTR_EDIT_MENU_COPY: NSSTRING;
 function NSSTR_EDIT_MENU_PASTE: NSSTRING;
 function NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
 
+const
+  // if the height of NSButton with NSRegularSquareBezelStyle is too small,
+  // a strange rectangular color block will be shown in the Button,
+  // in dark mode.
+  BUTTON_MIN_HEIGHT_NSRegularSquareBezelStyle = 26;
+
 implementation
 
 const

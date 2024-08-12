@@ -98,15 +98,13 @@ begin
   if not AWinControl.HandleAllocated then Exit;
 
   lButtonHandle := TCocoaButton(AWinControl.Handle);
-  // fittingSize is 10.7+
-  if lButtonHandle.respondsToSelector(objcselector('fittingSize')) then
-  begin
-    Size := lButtonHandle.fittingSize();
-    if lButton.Glyph <> nil then
-      Size.Height := Max(Size.Height, lButton.Glyph.Height + 6); // This nr is arbitrary
-    PreferredWidth := Round(Size.Width);
-    PreferredHeight := Round(Size.Height);
-  end;
+  Size := lButtonHandle.fittingSize();
+  if lButton.Glyph <> nil then
+    Size.Height := Max(Size.Height, lButton.Glyph.Height + 6); // This nr is arbitrary
+
+  Size:= adjustButtonSizeIfNecessary( lButtonHandle, Size );
+  PreferredWidth := Round(Size.Width);
+  PreferredHeight := Round(Size.Height);
 end;
 
 {------------------------------------------------------------------------------
