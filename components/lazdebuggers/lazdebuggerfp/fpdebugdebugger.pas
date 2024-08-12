@@ -594,6 +594,7 @@ type
     FBrkLogStackLimit: Integer;
     FBrkLogStackResult: array of String;
     FBrkLogExpr, FBrkLogResult: String;
+    FNeedCheckChangeFlags: boolean;
     procedure MaybeAbortWorker(AWait: Boolean = false);
     procedure SetBreak;
     procedure ResetBreak;
@@ -605,6 +606,8 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); override;
     procedure DoChanged; override;
+    procedure DoEndUpdate; override;
+    procedure CheckChangeFlags;
     property  Validity: TValidState write SetValid;
   public
     destructor Destroy; override;
@@ -2076,12 +2079,12 @@ begin
     if (Enabled and not FIsSet) or FLocationChanged then
       begin
       FSetBreakFlag:=true;
-      Changed;
+      CheckChangeFlags;
       end
     else if (not enabled) and FIsSet then
       begin
       FResetBreakFlag:=true;
-      Changed;
+      CheckChangeFlags;
       end;
     end
   else if Debugger.State = dsStop then
@@ -2138,6 +2141,23 @@ end;
 
 procedure TFPBreakpoint.DoChanged;
 begin
+  CheckChangeFlags;
+  inherited DoChanged;
+end;
+
+procedure TFPBreakpoint.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  CheckChangeFlags; // in case DoChange is not called
+end;
+
+procedure TFPBreakpoint.CheckChangeFlags;
+begin
+  FNeedCheckChangeFlags := IsUpdating and not IsUpdateEnding;
+  if FNeedCheckChangeFlags then
+    exit;
+
+
   if FResetBreakFlag and not FSetBreakFlag then
     ResetBreak
   else
@@ -2146,8 +2166,6 @@ begin
 
   FSetBreakFlag := false;
   FResetBreakFlag := false;
-
-  inherited DoChanged;
 end;
 
 { TFPDBGDisassembler }

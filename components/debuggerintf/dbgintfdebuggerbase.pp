@@ -399,11 +399,17 @@ type
 
   TBaseBreakPoints = class(TCollection)
   private
+    FIgnoreUpdate: boolean;
+    FAutoBeginUpdate: boolean;
   protected
+    procedure Update(Item: TCollectionItem); override;
+    property IgnoreUpdate: boolean read FIgnoreUpdate;
+    property AutoBeginUpdate: boolean read FAutoBeginUpdate;
   public
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
     destructor Destroy; override;
     procedure Clear; reintroduce;
+    function Add(AnUpdating: Boolean = False): TBaseBreakPoint; reintroduce; overload;
     function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
     function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
@@ -3174,6 +3180,8 @@ end;
 
 constructor TBaseBreakPoint.Create(ACollection: TCollection);
 begin
+  if (ACollection <> nil) and TBaseBreakPoints(ACollection).AutoBeginUpdate then
+    BeginUpdate;
   FPropertiesChanged := [ciCreated];
   FAddress := 0;
   FSource := '';
@@ -3298,8 +3306,10 @@ begin
   if FBreakHitCount <> AValue
   then begin
     FBreakHitCount := AValue;
+    BeginUpdate;
     Changed;
     MarkPropertyChanged(ciHitCount);
+    EndUpdate;
   end;
 end;
 
@@ -3341,8 +3351,10 @@ begin
   if (FSource = ASource) and (FLine = ALine) then exit;
   FSource := ASource;
   FLine := ALine;
+  BeginUpdate;
   Changed;
   MarkPropertyChanged(ciLocation);
+  EndUpdate;
 end;
 
 procedure TBaseBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
@@ -3352,8 +3364,10 @@ begin
   FWatchData := AData;
   FWatchScope := AScope;
   FWatchKind := AKind;
+  BeginUpdate;
   Changed;
   MarkPropertyChanged(ciLocation);
+  EndUpdate;
 end;
 
 procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
@@ -3547,13 +3561,24 @@ end;
 { TBaseBreakPoints }
 { =========================================================================== }
 
+function TBaseBreakPoints.Add(AnUpdating: Boolean): TBaseBreakPoint;
+begin
+  FAutoBeginUpdate := AnUpdating;
+  Result := TBaseBreakPoint(inherited Add);
+  FAutoBeginUpdate := False;
+end;
+
 function TBaseBreakPoints.Add(const ASource: String; const ALine: Integer;
   AnUpdating: Boolean): TBaseBreakPoint;
 begin
+  FIgnoreUpdate := True;
+  FAutoBeginUpdate := True;
   Result := TBaseBreakPoint(inherited Add);
-  Result.BeginUpdate;
+
+  FAutoBeginUpdate := False;
   Result.SetKind(bpkSource);
   Result.SetLocation(ASource, ALine);
+  FIgnoreUpdate := False;
   if not AnUpdating then
     Result.EndUpdate;
 end;
@@ -3561,10 +3586,14 @@ end;
 function TBaseBreakPoints.Add(const AAddress: TDBGPtr; AnUpdating: Boolean
   ): TBaseBreakPoint;
 begin
+  FIgnoreUpdate := True;
+  FAutoBeginUpdate := True;
   Result := TBaseBreakPoint(inherited Add);
-  Result.BeginUpdate;
+  FAutoBeginUpdate := False;
+
   Result.SetKind(bpkAddress);
   Result.SetAddress(AAddress);
+  FIgnoreUpdate := False;
   if not AnUpdating then
     Result.EndUpdate;
 end;
@@ -3573,12 +3602,22 @@ function TBaseBreakPoints.Add(const AData: String;
   const AScope: TDBGWatchPointScope; const AKind: TDBGWatchPointKind;
   AnUpdating: Boolean): TBaseBreakPoint;
 begin
+  FIgnoreUpdate := True;
+  FAutoBeginUpdate := True;
   Result := TBaseBreakPoint(inherited Add);
-  Result.BeginUpdate;
+  FAutoBeginUpdate := False;
+
   Result.SetKind(bpkData);
   Result.SetWatch(AData, AScope, AKind);
+  FIgnoreUpdate := False;
   if not AnUpdating then
     Result.EndUpdate;
+end;
+
+procedure TBaseBreakPoints.Update(Item: TCollectionItem);
+begin
+  if not FIgnoreUpdate then
+    inherited Update(Item);
 end;
 
 constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
@@ -3594,7 +3633,10 @@ end;
 
 procedure TBaseBreakPoints.Clear;
 begin
+  FIgnoreUpdate := True;
+  // TODO, if anything else has a reference...
   while Count > 0 do TBaseBreakPoint(GetItem(0)).ReleaseReference;
+  FIgnoreUpdate := False;
 end;
 
 function TBaseBreakPoints.Find(const ASource: String; const ALine: Integer): TBaseBreakPoint;

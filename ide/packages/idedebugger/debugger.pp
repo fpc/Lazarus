@@ -5698,7 +5698,6 @@ procedure TIDEBreakPoint.SetAutoContinueTime(const AValue: Cardinal);
 begin
   if FAutoContinueTime = AValue then Exit;
   FAutoContinueTime := AValue;
-  //Changed;
   DoUserChanged;
 end;
 
@@ -5707,7 +5706,6 @@ begin
   if FLogEvalExpression <> AValue then
   begin
     FLogEvalExpression := AValue;
-    //Changed;
     DoUserChanged;
   end;
 end;
@@ -5717,7 +5715,6 @@ begin
   if FLogMessage <> AValue then
   begin
     FLogMessage := AValue;
-    //Changed;
     DoUserChanged;
   end;
 end;
@@ -5737,7 +5734,6 @@ begin
   if FLogCallStackLimit <> AValue then
   begin
     FLogCallStackLimit := AValue;
-    //Changed;
     DoUserChanged;
   end;
 end;
@@ -5789,7 +5785,7 @@ end;
 procedure TIDEBreakPoint.DoUserChanged;
 begin
   FUserModified := True;
-  DoChanged;
+  Changed;
 end;
 
 function TIDEBreakPoint.GetHitCount: Integer;
@@ -5910,7 +5906,6 @@ end;
 
 procedure TIDEBreakPoint.DoActionChange;
 begin
-  //Changed;
   DoUserChanged;
 end;
 
@@ -6138,7 +6133,6 @@ begin
     then begin
       FGroup.Add(Self);
     end;
-    //Changed;
     DoUserChanged;
   end;
 end;
@@ -6174,23 +6168,29 @@ end;
 function TIDEBreakPoints.Add(const ASource: String; const ALine: Integer;
   AnUpdating: Boolean): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(ASource, ALine, AnUpdating));
+  Result := TIDEBreakPoint(inherited Add(ASource, ALine, True));
   NotifyAdd(Result);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
 function TIDEBreakPoints.Add(const AAddress: TDBGPtr; AnUpdating: Boolean
   ): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(AAddress, AnUpdating));
+  Result := TIDEBreakPoint(inherited Add(AAddress, True));
   NotifyAdd(Result);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
 function TIDEBreakPoints.Add(const AData: String;
   const AScope: TDBGWatchPointScope; const AKind: TDBGWatchPointKind;
   AnUpdating: Boolean): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(AData, AScope, AKind, AnUpdating));
+  Result := TIDEBreakPoint(inherited Add(AData, AScope, AKind, True));
   NotifyAdd(Result);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
 procedure TIDEBreakPoints.AddNotification(
@@ -6290,12 +6290,14 @@ begin
     if Assigned(Notification.FOnAdd)
     then Notification.FOnAdd(Self, ABreakPoint);
   end;
+  ABreakPoint.ClearChanged; // we did send "Add" instead
 
   if FMaster <> nil
   then begin
     // create without data. it will be set in assign (but during Begin/EndUpdate)
-    BP :=  TBaseBreakPoint(FMaster.Add);
+    BP :=  TBaseBreakPoint(FMaster.Add(True));
     BP.Assign(ABreakPoint); // will set ABreakPoint.FMaster := BP;
+    BP.EndUpdate;
   end;
 end;
 
@@ -6345,23 +6347,30 @@ begin
         begin
           BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
           if BreakPoint = nil then
-            BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
+            BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line, True)
+          else
+            BreakPoint.BeginUpdate;
         end;
       bpkAddress:
         begin
           BreakPoint := Find(LoadBreakPoint.Address, LoadBreakPoint);
           if BreakPoint = nil then
-            BreakPoint := Add(LoadBreakPoint.Address);
+            BreakPoint := Add(LoadBreakPoint.Address, True)
+          else
+            BreakPoint.BeginUpdate;
         end;
       bpkData:
         begin
           BreakPoint := Find(LoadBreakPoint.WatchData, LoadBreakPoint.WatchScope, LoadBreakPoint.WatchKind, LoadBreakPoint);
           if BreakPoint = nil then
-            BreakPoint := Add(LoadBreakPoint.WatchData, LoadBreakPoint.WatchScope, LoadBreakPoint.WatchKind);
+            BreakPoint := Add(LoadBreakPoint.WatchData, LoadBreakPoint.WatchScope, LoadBreakPoint.WatchKind, True)
+          else
+            BreakPoint.BeginUpdate;
         end;
     end;
 
     BreakPoint.Assign(LoadBreakPoint);
+    BreakPoint.EndUpdate;
     ReleaseRefAndNil(LoadBreakPoint)
   end;
 end;
@@ -6395,6 +6404,8 @@ var
   n: Integer;
   Notification: TIDEBreakPointsNotification;
 begin
+  if IgnoreUpdate then
+    exit;
   // Note: Item will be nil in case all items need to be updated
   for n := 0 to FNotificationList.Count - 1 do
   begin

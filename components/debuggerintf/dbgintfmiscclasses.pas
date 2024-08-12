@@ -114,6 +114,7 @@ type
   TDelayedUdateItem = class(TCollectionItem)
   private
     FUpdateCount: Integer;
+    FInEndUpdate: Integer;
     FDoChanged: Boolean;
   protected
     procedure Changed;
@@ -122,9 +123,10 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure BeginUpdate; virtual;
-    constructor Create(ACollection: TCollection); override;
     procedure EndUpdate;
+    procedure ClearChanged;
     function IsUpdating: Boolean;
+    function IsUpdateEnding: Boolean;
   end;
 
   { TRefCountedColectionItem }
@@ -498,12 +500,6 @@ begin
   else DoChanged;
 end;
 
-constructor TDelayedUdateItem.Create(ACollection: TCollection);
-begin
-  inherited Create(ACollection);
-  FUpdateCount := 0;
-end;
-
 procedure TDelayedUdateItem.DoChanged;
 begin
   inherited Changed(False);
@@ -516,20 +512,34 @@ end;
 
 procedure TDelayedUdateItem.EndUpdate;
 begin
+  if FUpdateCount <= 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
+
+  if (FUpdateCount = 1) then begin
+    inc(FInEndUpdate);
+    DoEndUpdate;
+    dec(FInEndUpdate);
+  end;
+
   Dec(FUpdateCount);
-  if FUpdateCount < 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
-  if (FUpdateCount = 0)
-  then DoEndUpdate;
-  if (FUpdateCount = 0) and FDoChanged
-  then begin
+  if (FUpdateCount = 0) and FDoChanged then begin
     DoChanged;
     FDoChanged := False;
   end;
 end;
 
+procedure TDelayedUdateItem.ClearChanged;
+begin
+  FDoChanged := False;
+end;
+
 function TDelayedUdateItem.IsUpdating: Boolean;
 begin
-  Result := FUpdateCount > 0;
+  Result := (FUpdateCount > 0) and (FInEndUpdate = 0);
+end;
+
+function TDelayedUdateItem.IsUpdateEnding: Boolean;
+begin
+  Result := FInEndUpdate > 0;
 end;
 
 

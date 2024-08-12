@@ -610,6 +610,8 @@ end;
 
 procedure TManagedBreakPoints.Update(Item: TCollectionItem);
 begin
+  if IgnoreUpdate then
+    exit;
   inherited Update(Item);
   if (Project1 <> nil) and (Item is TIDEBreakPoint) and (TIDEBreakPoint(Item).UserModified)
   then begin
