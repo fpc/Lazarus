@@ -135,7 +135,7 @@ begin
       AParams := Trim(Copy(S, P+1, MaxInt));
     end;
   end;
-  AParams := Utf16StringReplace(AParams, '%1', '%s', []);
+  AParams := UnicodeStringReplace(AParams, '%1', '%s', []);
 end;
 {$ENDIF WinCE}
 

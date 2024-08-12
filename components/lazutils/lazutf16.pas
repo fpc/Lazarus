@@ -45,8 +45,13 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UnicodeString;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
 function IsUTF16StringValid(AStr: UnicodeString): Boolean;
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString; Flags: TReplaceFlags): UnicodeString; Inline;
-function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString; Flags: TReplaceFlags; out Count: Integer): UnicodeString;
+// Deprecated in Lazarus 3.99 in August 2024.
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
+  Flags: TReplaceFlags): UnicodeString;
+  deprecated 'Use SysUtils.StringReplace or UnicodeStringReplace instead.';
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
+  Flags: TReplaceFlags; out Count: Integer): UnicodeString;
+  deprecated 'Use SysUtils.StringReplace or UnicodeStringReplace instead.';
 
 // The following functions use UnicodeTables which are initialized
 //  only when the functions are called.
@@ -251,52 +256,14 @@ end;
 
 function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
   Flags: TReplaceFlags): UnicodeString;
-var
-  DummyCount: Integer;
 begin
-  Result := Utf16StringReplace(S, OldPattern, NewPattern, Flags, DummyCount);
+  Result:=UnicodeStringReplace(S, OldPattern, NewPattern, Flags);
 end;
 
-//Same as SysUtil.StringReplace but for WideStrings/UnicodeStrings, since it's not available in fpc yet
 function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
   Flags: TReplaceFlags; out Count: Integer): UnicodeString;
-var
-  Srch, OldP, RemS: UnicodeString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
-  P: Integer;
 begin
-  Srch:=S;
-  OldP:=OldPattern;
-  Count := 0;
-  if rfIgnoreCase in Flags then
-  begin
-    Srch:=WideUpperCase(Srch);
-    OldP:=WideUpperCase(OldP);
-  end;
-  RemS:=S;
-  Result:='';
-  while (Length(Srch)<>0) do
-  begin
-    P:=Pos(OldP, Srch);
-    if P=0 then
-    begin
-      Result:=Result+RemS;
-      Srch:='';
-    end
-    else
-    begin
-      Inc(Count);
-      Result:=Result+Copy(RemS,1,P-1)+NewPattern;
-      P:=P+Length(OldP);
-      RemS:=Copy(RemS,P,Length(RemS)-P+1);
-      if not (rfReplaceAll in Flags) then
-      begin
-        Result:=Result+RemS;
-        Srch:='';
-      end
-      else
-        Srch:=Copy(Srch,P,Length(Srch)-P+1);
-    end;
-  end;
+  Result:=UnicodeStringReplace(S, OldPattern, NewPattern, Flags, Count);
 end;
 
 
