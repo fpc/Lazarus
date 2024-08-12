@@ -369,16 +369,22 @@ Unicode string examined in the routine.
 
 <element name="Utf16StringReplace">
 <short>
-Replaces a pattern in a Unicode string with another Unicode pattern.
+Deprecated. Replaces a pattern in a Unicode string with another Unicode pattern.
 </short>
 <descr>
 <p>
-Same as <var>SysUtil.StringReplace</var> but for WideStrings and 
-UnicodeStrings, since it is not available in FPC yet.
+Utf16StringReplace is the same as <var>SysUtil.StringReplace</var> but for 
+WideStrings and UnicodeStrings. It has been deprecated in LazUtils; use 
+StringReplace (sysutils) or UnicodeStringReplace (sysutils) instead.
 </p>
 </descr>
+<version>
+Deprecated in LazUtils version 4.0; use StringReplace or UnicodeStringReplace 
+from the SysUtils unit instead.
+</version>
 <seealso>
 <link id="#rtl.sysutils.StringReplace">StringReplace</link>
+<link id="#rtl.sysutils.UnicodeStringReplace">UnicodeStringReplace</link>
 <link id="#rtl.sysutils.TReplaceFlags">TReplaceFlags</link>
 </seealso>
 </element>
