@@ -31,3 +31,6 @@ tspineditex_200.png
 ttreefilteredit.png
 ttreefilteredit_150.png
 ttreefilteredit_200.png
+tlazintegeredit.png
+tlazintegeredit_150.png
+tlazintegeredit_200.png

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="LazControls"/>
     <Type Value="RunAndDesignTime"/>
@@ -19,7 +19,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="checkboxthemed.pas"/>
         <UnitName Value="CheckBoxThemed"/>
@@ -68,7 +68,12 @@
         <Filename Value="smallorderedseteditor.pas"/>
         <UnitName Value="SmallOrderedSetEditor"/>
       </Item12>
+      <Item13>
+        <Filename Value="laznumedit.pas"/>
+        <UnitName Value="laznumedit"/>
+      </Item13>
     </Files>
+    <CompatibilityMode Value="True"/>
     <LazDoc Paths="docs"/>
     <RequiredPkgs Count="1">
       <Item1>
@@ -80,7 +85,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <CustomOptions Items="ExternHelp" Version="2">
       <_ExternHelp Items="Count"/>

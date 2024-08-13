@@ -8,9 +8,9 @@ unit LazControls;
 interface
 
 uses
-  CheckBoxThemed, DividerBevel, ExtendedNotebook, ListFilterEdit, 
-  ListViewFilterEdit, TreeFilterEdit, ShortPathEdit, LvlGraphCtrl, 
-  ExtendedTabControls, SpinEx, SmallOrderedSetEditor, LazarusPackageIntf;
+  CheckBoxThemed, DividerBevel, ExtendedNotebook, ListFilterEdit, ListViewFilterEdit, 
+  TreeFilterEdit, ShortPathEdit, LvlGraphCtrl, ExtendedTabControls, SpinEx, 
+  SmallOrderedSetEditor, LazNumEdit, LazarusPackageIntf;
 
 implementation
 
