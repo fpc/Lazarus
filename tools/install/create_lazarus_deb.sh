@@ -7,6 +7,7 @@
 #   Options:
 #     gtk1              compile IDE and programs for gtk1.
 #     qt                compile IDE and programs for qt.
+#     qt5                compile IDE and programs for qt5.
 #     append-revision   append the svn revision to the .deb version
 #     chmhelp           add package chmhelp and add chm,kwd files in docs/chm
 #     pas2jszip <pas2js-linux-version.zip>
@@ -43,6 +44,16 @@ while [ $# -gt 0 ]; do
     LazVersionPostfix=${LazVersionPostfix}-qt
     ;;
 
+  qt5)
+    echo "Compile for qt5"
+    if [ -n "$LCLWidgetset" ]; then
+      echo "widgetset already set to $LCLWidgetset"
+      exit -1
+    fi
+    LCLWidgetset=qt5
+    LazVersionPostfix=${LazVersionPostfix}-qt5
+    ;;
+
   append-revision)
     LazRevision=$(./get_svn_revision_number.sh .)
     if [ -n "$LazRevision" ]; then
@@ -75,7 +86,7 @@ while [ $# -gt 0 ]; do
 
   *)
     echo "invalid parameter $1"
-    echo "Usage: ./create_lazarus_deb.sh [chmhelp] [gtk1] [qt] [qtlib=<dir>] [release=YourPostfix] "
+    echo "Usage: ./create_lazarus_deb.sh [chmhelp] [gtk1] [qt] [qt5] [qtlib=<dir>] [release=YourPostfix] "
     exit 1
     ;;
   esac
@@ -90,25 +101,16 @@ ChangeLogDate=`date --rfc-822`
 Arch=`dpkg --print-architecture`
 echo "debian architecture=$Arch"
 targetos=$Arch
-if [  "$Arch" = i386 ]; then
-  ppcbin=ppc386
-else
-  if [ "$Arch" = amd64 ]; then 
-    ppcbin=ppcx64 
-    targetos=x86_64
-  else
-    if [  "$Arch" = powerpc ]; then 
-      ppcbin=ppcppc 
-    else
-      if [  "$Arch" = sparc ]; then 
-        ppcbin=ppcsparc 
-      else
-        echo "$Arch is not supported." 
-        exit -1 
-      fi 
-    fi 
-  fi 
-fi
+case "$Arch" in
+  i386)    ppcbin=ppc386;;
+  amd64)   ppcbin=ppcx64; targetos=x86_64;;
+  powerpc) ppcbin=ppcppc;;
+  sparc)   ppcbin=ppcsparc;;
+  arm)     ppcbin=ppcarm;;
+  arm64)   ppcbin=ppca64;;
+  *)    echo "$Arch is not supported."
+        exit -1;;
+esac
 FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 
 # get Lazarus version
