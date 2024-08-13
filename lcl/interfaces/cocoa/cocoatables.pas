@@ -345,6 +345,7 @@ var
   view: NSView;
   done: Boolean;
 begin
+  self.tableView.lclCallDrawItem( row , dirtyRect );
   inherited drawRect(dirtyRect);
 
   done:= self.tableView.lclCallDrawItem( row , dirtyRect );
@@ -463,9 +464,12 @@ var
   ItemState: TOwnerDrawState;
 begin
   Result:= False;
+  if NOT self.isOwnerDraw then
+    Exit;
+
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  ctx.InitDraw(Round(bounds.size.width), Round(bounds.size.height));
+  ctx.InitDraw(Round(clipRect.size.width), Round(clipRect.size.height));
   try
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
@@ -1697,7 +1701,7 @@ begin
     {lvpHideSelection,
     lvpHotTrack,}
     lvpMultiSelect: _tableView.setAllowsMultipleSelection(AIsSet);
-    {lvpOwnerDraw,}
+    lvpOwnerDraw: _tableView.isOwnerDraw:= AIsSet;
     lvpReadOnly: _tableView.readOnly := AIsSet;
   {  lvpRowSelect,}
     lvpShowColumnHeaders:

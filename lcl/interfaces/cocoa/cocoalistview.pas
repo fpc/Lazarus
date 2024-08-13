@@ -567,7 +567,18 @@ end;
 
 function TLCLListViewCallback.commonDrawItem( row: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState ): Boolean;
+var
+  Mess: TLMDrawListItem;
+  DrawStruct: TDrawListItemStruct;
 begin
+  DrawStruct.ItemState := state;
+  DrawStruct.Area := r;
+  DrawStruct.DC := HDC(ctx);
+  DrawStruct.ItemID := row;
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := CN_DRAWITEM;
+  Mess.DrawListItemStruct := @DrawStruct;
+  self.DeliverMessage( Mess );
   Result:= False;
 end;
 
