@@ -351,8 +351,8 @@ begin
   if cv.iconSize.Height < 32 then
     cv.iconSize.Height:= 32;
 
-  cv.itemSize.Width:= 10 + baseSize.Width + 10;
-  cv.itemSize.Height:= 10 + baseSize.Height + 2 + 14 + 10;
+  cv.itemSize.Width:= 10 + cv.iconSize.Width + 10;
+  cv.itemSize.Height:= 10 + cv.iconSize.Height + 2 + 14 + 10;
   if cv.itemSize.Width < 64 then
     cv.itemSize.Width:= 64;
   if cv.itemSize.Height < 68 then
@@ -384,7 +384,7 @@ begin
   aFrame.size.height:= 15;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
-  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x - 4;
+  aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
   cocoaItem.textField.setAlignment( NSTextAlignmentCenter );
   cocoaItem.textField.setFrame( aFrame );
 
@@ -401,7 +401,8 @@ procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditorRect(
   var aFrame: NSRect);
 begin
   aFrame.origin.y:= aFrame.origin.y - 1;
-  aFrame.size.width:= aFrame.size.width + 2;
+  aFrame.origin.x:= aFrame.origin.x + 2;
+  aFrame.size.width:= aFrame.size.width - 4;
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
@@ -605,8 +606,10 @@ begin
   indexPath:= cv.indexPathForItem( self );
   row:= indexPath.item;
   cv.callback.SetItemCheckedAt( row, 0, sender.state );
-  if sender.state = NSOnState then
+  if sender.state = NSOnState then begin
     cv.selectOneItemByIndex( row, True );
+    self.view.window.makeFirstResponder( self.collectionView );
+  end;
 end;
 
 procedure TCocoaCollectionItem.loadView;
@@ -619,7 +622,7 @@ begin
   itemView.item:= self;
 
   imageControl:= NSImageView.alloc.initWithFrame( NSZeroRect );
-  imageControl.cell.setImageScaling( NSImageScaleProportionallyUpOrDown );
+  imageControl.setImageScaling( NSImageScaleProportionallyUpOrDown );
   self.setImageView( imageControl );
   itemView.addSubview( imageControl );
 
@@ -647,6 +650,7 @@ begin
     _checkBox:= nil;
   end;
 
+  self.imageView.setImage( nil );
   self.view.removeFromSuperview;
 end;
 

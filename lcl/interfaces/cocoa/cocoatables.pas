@@ -975,7 +975,7 @@ begin
     Exit;
 
   imageControl:= NSImageView.alloc.initWithFrame( NSZeroRect );
-  imageControl.cell.setImageScaling( NSImageScaleProportionallyUpOrDown );
+  imageControl.setImageScaling( NSImageScaleProportionallyUpOrDown );
   self.setImageView( imageControl );
   self.addSubview( imageControl );
 end;
@@ -1184,8 +1184,8 @@ begin
   callback.SetItemCheckedAt(row, 0, sender.state);
   if sender.state = NSOnState then begin
     self.selectOneItemByIndex(row, True);
+    self.window.makeFirstResponder( self );
   end;
-  reloadDataForRow_column(row, 0);
 end;
 
 { TCocoaWSListView_TableViewHandler }
