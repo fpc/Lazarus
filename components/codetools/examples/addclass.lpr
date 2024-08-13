@@ -57,7 +57,7 @@ begin
   end;
   SourceChangeCache:=CodeToolBoss.SourceChangeCache;
   // find a nice insert position (behind the uses section)
-  UsesSection:=Tool.FindMainUsesSection(false);
+  UsesSection:=Tool.FindMainUsesNode(false);
   InsertPos:=UsesSection.EndPos;
   // use the same indentation as the start of the uses section
   Indent:=GetLineIndent(Tool.Src,UsesSection.StartPos);
