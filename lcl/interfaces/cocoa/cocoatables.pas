@@ -975,7 +975,7 @@ begin
     Exit;
 
   imageControl:= NSImageView.alloc.initWithFrame( NSZeroRect );
-  imageControl.cell.setImageScaling( NSImageScaleProportionallyUpOrDown );
+  imageControl.setImageScaling( NSImageScaleProportionallyUpOrDown );
   self.setImageView( imageControl );
   self.addSubview( imageControl );
 end;

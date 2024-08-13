@@ -619,7 +619,7 @@ begin
   itemView.item:= self;
 
   imageControl:= NSImageView.alloc.initWithFrame( NSZeroRect );
-  imageControl.cell.setImageScaling( NSImageScaleProportionallyUpOrDown );
+  imageControl.setImageScaling( NSImageScaleProportionallyUpOrDown );
   self.setImageView( imageControl );
   itemView.addSubview( imageControl );
 
@@ -647,6 +647,7 @@ begin
     _checkBox:= nil;
   end;
 
+  self.imageView.setImage( nil );
   self.view.removeFromSuperview;
 end;
 
