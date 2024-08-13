@@ -496,17 +496,30 @@ begin
     if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
       Include(ItemState, odFocused);
 
-    Result:= callback.listViewCustomDraw(row, col, ctx );
+    Result:= callback.listViewCustomDraw(row, col, ctx);
   finally
     ctx.Free;
   end;
 end;
 
 procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
+var
+  done: Boolean;
+  view: NSView;
 begin
-  inherited drawRect(dirtyRect);
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+
+  done:= self.lclCallCustomDraw( -1, -1, dirtyRect );
+
+  if done then begin
+    // the Cocoa default drawing cannot be skipped in NSTableView,
+    // we can only hide the SubviewViews to get the same effect.
+    for view in self.subviews do
+      view.setHidden( True );
+  end else begin
+    inherited drawRect(dirtyRect);
+  end;
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;

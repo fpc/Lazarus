@@ -13,7 +13,7 @@ uses
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers, CocoaTextEdits,
-  CocoaWSCommon, cocoa_extra, CocoaGDIObjects;
+  CocoaWSCommon, cocoa_extra, CocoaGDIObjects, CocoaUtils;
 
 type
   { TLCLListViewCallback }
@@ -577,18 +577,21 @@ var
   ALV: TCustomListViewAccess;
   drawTarget: TCustomDrawTarget;
   drawResult: TCustomDrawResult;
+  rect: TRect;
 begin
+  ALV:= TCustomListViewAccess(self.listView);
+  rect:= NSRectToRect( self.Owner.lclContentView.bounds );
   if col=0 then
     drawTarget:= dtItem
   else if col>0 then
     drawTarget:= dtSubItem
   else
     drawTarget:= dtControl;
-  ALV:= TCustomListViewAccess(self.listView);
+
   ALV.Canvas.Handle:= HDC(ctx);
-  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, [], nil );
-  Result:= cdrSkipDefault in drawResult;
+  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, [], @rect );
   ALV.Canvas.Handle:= 0;
+  Result:= cdrSkipDefault in drawResult;
 end;
 
 end.
