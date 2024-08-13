@@ -605,8 +605,10 @@ begin
   indexPath:= cv.indexPathForItem( self );
   row:= indexPath.item;
   cv.callback.SetItemCheckedAt( row, 0, sender.state );
-  if sender.state = NSOnState then
+  if sender.state = NSOnState then begin
     cv.selectOneItemByIndex( row, True );
+    self.view.window.makeFirstResponder( self.collectionView );
+  end;
 end;
 
 procedure TCocoaCollectionItem.loadView;
