@@ -85,7 +85,7 @@ getBINUTILSPREFIX() {
 #------------------------------------------------------------------------------
 # retrieve the version information
 
-echo -n "getting FPC version from local svn ..."
+echo -n "getting FPC version from local git ..."
 VersionFile="$FPCSrcDir/compiler/version.pas"
 CompilerVersion=$(cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g')
 CompilerRelease=$(cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g')
@@ -148,7 +148,7 @@ then
 fi
 
 #------------------------------------------------------------------------------
-# download/export fpc svn if needed
+# download/export fpc git if needed
 
 SrcTGZ=$(pwd)/fpc-$FPCVersion-$FPCRelease.tar.gz
 
@@ -156,8 +156,8 @@ if [ ! -f $SrcTGZ ]; then
   ./create_fpc_export_tgz.sh $FPCSrcDir $SrcTGZ
 fi
 
-# optional: svn/fpcbuild/trunk/install under ../install
-FPCManDir=$FPCSrcDir/../install/man
+# optional: https://gitlab.com/freepascal.org/fpc/build under ../build
+FPCManDir=$FPCSrcDir/../build/man
 
 #------------------------------------------------------------------------------
 # create a temporary copy of the fpc sources to patch it

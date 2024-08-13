@@ -31,12 +31,15 @@ if [ "x$Download" = "xyes" ]; then
   rm -rf $TmpFPCDir
   mkdir -p $TmpDir
   cd $TmpDir
-  svn export http://svn.freepascal.org/svn/fpc/trunk $TmpFPCDir
+  git clone https://gitlab.com/freepascal.org/fpc/build.git $TmpFPCDir
   cd -
 else
-  echo "extracting fpc from local svn ..."
+  echo "extracting fpc from local git ..."
   rm -rf $TmpFPCDir
-  svn export $SourceDir $TmpFPCDir
+  mkdir -p $TmpFPCDir
+  cp -a $SourceDir/.git $TmpFPCDir/
+  git -C $TmpFPCDir restore .
+  rm -rf $TmpFPCDir/.git*
 fi
 
 cd $TmpDir
