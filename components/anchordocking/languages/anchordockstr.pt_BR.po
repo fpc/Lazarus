@@ -94,6 +94,14 @@ msgstr "Cada janela ancorada tem um cabeçalho que permite arrastá-la, tem um m
 msgid "Empty name: "
 msgstr "Nome vazio:"
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -296,10 +304,6 @@ msgstr "Para usar a ancoragem, deve-se primeiro desinstalar %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Desancorar"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

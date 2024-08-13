@@ -119,8 +119,8 @@ msgstr "分离控制面板"
 msgid "Detach Control Side"
 msgstr "分离控制面板"
 
-#: dockedstrconsts.sdisablerequiresrestart
-msgid "Disabled (requires restart)"
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
 msgstr ""
 
 #: dockedstrconsts.setupdesignerclassic

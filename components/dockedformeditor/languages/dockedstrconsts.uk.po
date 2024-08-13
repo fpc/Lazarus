@@ -120,8 +120,8 @@ msgstr "Від'єднати боки елемента керування"
 msgid "Detach Control Side"
 msgstr "Від'єднати бік елемента керування"
 
-#: dockedstrconsts.sdisablerequiresrestart
-msgid "Disabled (requires restart)"
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
 msgstr ""
 
 #: dockedstrconsts.setupdesignerclassic

@@ -96,6 +96,14 @@ msgstr "Ogni finestra \"docked\" ha un'intestazione che consente il trascinament
 msgid "Empty name: "
 msgstr "Nome vuoto: "
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -298,10 +306,6 @@ msgstr "Per usare l'anchordocking dovete prima disinstallare %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Libera"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

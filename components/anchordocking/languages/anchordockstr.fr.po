@@ -94,6 +94,14 @@ msgstr "Chaque fenêtre amarrée possède un en-tête qui permet son déplacemen
 msgid "Empty name: "
 msgstr "Nom vide : "
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -296,10 +304,6 @@ msgstr "Pour utiliser l'amarrage par ancres vous devez tout d'abord désinstalle
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Désamarrer"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

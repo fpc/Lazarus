@@ -118,8 +118,8 @@ msgstr "Desanexar lados do controle"
 msgid "Detach Control Side"
 msgstr "Desanexar lado do controle"
 
-#: dockedstrconsts.sdisablerequiresrestart
-msgid "Disabled (requires restart)"
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
 msgstr ""
 
 #: dockedstrconsts.setupdesignerclassic

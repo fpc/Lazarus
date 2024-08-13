@@ -8,21 +8,21 @@ object FrameDockedOptions: TFrameDockedOptions
   TabOrder = 0
   DesignLeft = 336
   DesignTop = 249
-  object cbDisableDockFormEd: TCheckBox
-    AnchorSideLeft.Control = LabelTabPosition
+  object cbEnableDockFormEd: TCheckBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
     Height = 19
     Top = 0
-    Width = 137
+    Width = 134
     BorderSpacing.Left = 6
-    Caption = 'cbDisableDockFormEd'
+    Caption = 'cbEnableDockFormEd'
     TabOrder = 0
-    OnChange = cbDisableDockFormEdChange
+    OnChange = cbEnableDockFormEdChange
   end
   object Panel1: TPanel
-    AnchorSideLeft.Control = LabelTabPosition
-    AnchorSideTop.Control = cbDisableDockFormEd
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableDockFormEd
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom

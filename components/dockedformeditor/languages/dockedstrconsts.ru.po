@@ -118,9 +118,9 @@ msgstr "Отвязать стороны компонента"
 msgid "Detach Control Side"
 msgstr "Отвязать сторону компонента"
 
-#: dockedstrconsts.sdisablerequiresrestart
-msgid "Disabled (requires restart)"
-msgstr "Отключено (требуется перезапуск)"
+#: dockedstrconsts.senabledockeddsgner
+msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
+msgstr ""
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"

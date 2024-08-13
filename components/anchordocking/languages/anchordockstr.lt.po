@@ -96,6 +96,14 @@ msgstr "Kiekvienas pritvirtintas langas turi antraštę tempimui, kurioje pateik
 msgid "Empty name: "
 msgstr "Tuščias pavadinimas: "
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -298,10 +306,6 @@ msgstr "Norint naudoti prieraišų pritvirtinimą, būtina išdiegti „%s“"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Naikinti pritvirtinimą"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

@@ -89,9 +89,9 @@ type
   { TAnchorDockIDEFrame }
 
   TAnchorDockIDEFrame = class(TAbstractIDEOptionsEditor)
-    cbDisable: TCheckBox;
+    cbEnableAnchorDocking: TCheckBox;
     NoteLabel: TLabel;
-    procedure cbDisableChange(Sender: TObject);
+    procedure cbEnableAnchorDockingChange(Sender: TObject);
   private
     FSettings: TAnchorDockSettings;
     FDisabledChanged: boolean;
@@ -434,7 +434,7 @@ end;
 
 { TAnchorDockIDEFrame }
 
-procedure TAnchorDockIDEFrame.cbDisableChange(Sender: TObject);
+procedure TAnchorDockIDEFrame.cbEnableAnchorDockingChange(Sender: TObject);
 begin
   FDisabledChanged := True;
 end;
@@ -463,7 +463,8 @@ end;
 
 procedure TAnchorDockIDEFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  cbDisable.Caption := SDisable;
+  cbEnableAnchorDocking.Caption := adrsEnableAnchorDock;
+  cbEnableAnchorDocking.Hint := adrsEnableAnchorDockHint;
   if self is TAnchorDockIDEDisabledFrame then begin
     NoteLabel.Visible := False;
     exit;
@@ -486,7 +487,7 @@ end;
 
 procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  cbDisable.Checked := not AnchorDockGlobalOptions.EnableAnchorDock;
+  cbEnableAnchorDocking.Checked := AnchorDockGlobalOptions.EnableAnchorDock;
   FDisabledChanged := False;
   if self is TAnchorDockIDEDisabledFrame then exit;
 
@@ -497,7 +498,7 @@ end;
 
 procedure TAnchorDockIDEFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  AnchorDockGlobalOptions.EnableAnchorDock := not cbDisable.Checked;
+  AnchorDockGlobalOptions.EnableAnchorDock := cbEnableAnchorDocking.Checked;
   if FDisabledChanged then
     AnchorDockGlobalOptions.DoneAskUserEnableAnchorDock := True;
   AnchorDockGlobalOptions.SaveSafe;

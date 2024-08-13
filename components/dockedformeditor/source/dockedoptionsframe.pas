@@ -29,7 +29,7 @@ type
   { TFrameDockedOptions }
 
   TFrameDockedOptions = class(TAbstractIDEOptionsEditor)
-    cbDisableDockFormEd: TCheckBox;
+    cbEnableDockFormEd: TCheckBox;
     CheckBoxAnchorTabVisible: TCheckBox;
     CheckBoxForceRefreshing: TCheckBox;
     CheckBoxTreatAlign: TCheckBox;
@@ -49,7 +49,7 @@ type
     Panel1: TPanel;
     SpinEditCaptureDistance: TSpinEdit;
     SpinEditMouseBorderFactor: TSpinEdit;
-    procedure cbDisableDockFormEdChange(Sender: TObject);
+    procedure cbEnableDockFormEdChange(Sender: TObject);
     procedure CheckBoxAnchorTabVisibleChange(Sender: TObject);
     procedure AnchorsColorBoxChange(Sender: TObject);
     procedure AnchorsColorListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
@@ -106,7 +106,7 @@ begin
   SpinEditMouseBorderFactor.Enabled := CheckBoxAnchorTabVisible.Checked;
 end;
 
-procedure TFrameDockedOptions.cbDisableDockFormEdChange(Sender: TObject);
+procedure TFrameDockedOptions.cbEnableDockFormEdChange(Sender: TObject);
 begin
   FDisableChanged := True;
 end;
@@ -160,7 +160,7 @@ begin
   LabelTabPosition.Caption         := STabPositionCaption;
   LabelCaptureDistance.Caption     := SCaptureDistanceCaption;
   LabelMouseBorderFactor.Caption   := SMouseBorderFactorCaption;
-  cbDisableDockFormEd.Caption      := SDisableRequiresRestart;
+  cbEnableDockFormEd.Caption       := SEnableDockedDsgner;
 
   CheckBoxAllowSizing.Hint       := SAllowSizingHint;
   CheckBoxAnchorTabVisible.Hint  := SAnchorTabVisibleHint;
@@ -191,7 +191,7 @@ begin
   FLastTabPosition        := DockedOptions.TabPosition;
   FLastTreatAlign         := DockedOptions.TreatAlign;
   FLastTreatBorder        := DockedOptions.TreatBorder;
-  cbDisableDockFormEd.Checked := not DockedOptions.EnableDockedDesigner;
+  cbEnableDockFormEd.Checked := DockedOptions.EnableDockedDesigner;
   FDisableChanged := False;
   RestoreSettings(AOptions);
   FReady := true;
@@ -217,7 +217,7 @@ begin
   DockedOptions.TreatBorder        := CheckBoxTreatBorder.Checked;
   if FDisableChanged then
     DockedOptions.DoneAskUserEnableDockedDesigner := True;
-  DockedOptions.EnableDockedDesigner            := not cbDisableDockFormEd.Checked;
+  DockedOptions.EnableDockedDesigner            := cbEnableDockFormEd.Checked;
 
   if DockedOptions.Modified then
   begin

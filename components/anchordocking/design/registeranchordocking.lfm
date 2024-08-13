@@ -18,15 +18,15 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
     Caption = 'NoteLabel'
     ParentColor = False
   end
-  object cbDisable: TCheckBox
+  object cbEnableAnchorDocking: TCheckBox
     Left = 6
     Height = 19
     Top = 6
     Width = 483
     Align = alTop
     BorderSpacing.Around = 6
-    Caption = 'cbDisable'
+    Caption = 'cbEnableAnchorDocking'
     TabOrder = 0
-    OnChange = cbDisableChange
+    OnChange = cbEnableAnchorDockingChange
   end
 end

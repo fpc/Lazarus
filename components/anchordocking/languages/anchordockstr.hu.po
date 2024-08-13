@@ -94,6 +94,14 @@ msgstr "Minden dokkolt ablaknak van fejléce, amely lehetővé teszi a húzást,
 msgid "Empty name: "
 msgstr "Üres név:"
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -296,10 +304,6 @@ msgstr "Az ablakok rögzítésének használatához először el kell távolíta
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Rögzítés feloldása"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

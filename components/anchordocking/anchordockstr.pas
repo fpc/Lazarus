@@ -102,7 +102,9 @@ resourcestring
     'individual Windows and have several groups of Windows. The IDE will show additional "Dock-Handles" ' +
     'in each Window, which will allow you to change layout, but also require additional space.';
   setupMultiWindowIDEOption = 'You can change this in the IDE options under: "Anchordocking"';
-  SDisable = 'Disabled (requires restart)';
+  adrsEnableAnchorDock = 'Enable docking of IDE Windows (Requires IDE restart)';
+  adrsEnableAnchorDockHint = 'This option allows to organize groups of windows (or all windows) ' +
+    'into a single window. For a "classic" IDE with only floating windows turn the option off.';
   SSingleMultiWindow = 'Single/Multi Window';
 
 implementation

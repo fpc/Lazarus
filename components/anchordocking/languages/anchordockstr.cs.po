@@ -97,6 +97,14 @@ msgstr "Každé dokované okno má hlavičku, která umožňuje přetahování, 
 msgid "Empty name: "
 msgstr "Prázdné jméno:"
 
+#: anchordockstr.adrsenableanchordock
+msgid "Enable docking of IDE Windows (Requires IDE restart)"
+msgstr ""
+
+#: anchordockstr.adrsenableanchordockhint
+msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
+msgstr ""
+
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
 msgid "Enlarge %s side"
@@ -299,10 +307,6 @@ msgstr "K použití anchordicking musíte nejdříve odinstalovat %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Uvolnit"
-
-#: anchordockstr.sdisable
-msgid "Disabled (requires restart)"
-msgstr ""
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"

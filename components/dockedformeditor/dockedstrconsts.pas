@@ -63,7 +63,7 @@ resourceString
     'source-edit window, and you will have a tab to toggle between source and form. ' +
     'You can open a 2nd source-edit window to see both at the same time.';
   setupMultiWindowIDEOption = 'You can change this in the IDE options under: "Docked Form Editor"';
-  SDisableRequiresRestart = 'Disabled (requires restart)';
+  SEnableDockedDsgner = 'Show the form-editor as (docked) tab in the editor window (Requires IDE restart)';
   SIDELayout = 'IDE Layout';
   SFormEditor = 'Form editor / Designer';
 
