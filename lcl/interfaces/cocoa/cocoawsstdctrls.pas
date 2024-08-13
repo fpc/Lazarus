@@ -287,7 +287,10 @@ type
     procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
-    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean; virtual;
+    function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
+      state: TOwnerDrawState ): Boolean; virtual;
+    function listViewCustomDraw( row: Integer; col: Integer;
+      ctx: TCocoaContext ): Boolean; virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -665,8 +668,8 @@ begin
   // not needed
 end;
 
-function TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState): Boolean;
+function TLCLListBoxCallback.commonDrawItem( row: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState ): Boolean;
 var
   DrawStruct: TDrawListItemStruct;
 begin
@@ -677,9 +680,15 @@ begin
   DrawStruct.ItemState := state;
   DrawStruct.Area := r;
   DrawStruct.DC := HDC(ctx);
-  DrawStruct.ItemID :=  rowIdx;
+  DrawStruct.ItemID := row;
   LCLSendDrawListItemMsg(Target, @DrawStruct);
   Result:= True;
+end;
+
+function TLCLListBoxCallback.listViewCustomDraw(row: Integer; col: Integer;
+  ctx: TCocoaContext): Boolean;
+begin
+  Result:= False;
 end;
 
 procedure TLCLListBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);

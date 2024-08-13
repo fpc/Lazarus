@@ -101,7 +101,8 @@ type
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean;
+    function commonDrawItem(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState): Boolean;
+    function listViewCustomDraw( row: Integer; col: Integer; ctx: TCocoaContext ): Boolean;
     procedure GetRowHeight(rowidx: Integer; var height: Integer);
     function GetBorderStyle: TBorderStyle;
     function onAddSubview( aView:NSView ): Boolean;

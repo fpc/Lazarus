@@ -42,8 +42,10 @@ type
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+    function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState): Boolean;
+    function listViewCustomDraw( row: Integer; col: Integer;
+      ctx: TCocoaContext ): Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -504,19 +506,6 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
-function TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState): Boolean;
-var
-  ALV: TCustomListViewAccess;
-  drawResult: TCustomDrawResult;
-begin
-  ALV:= TCustomListViewAccess(self.listView);
-  ALV.Canvas.Handle:= HDC(ctx);
-  drawResult:= ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
-  Result:= cdrSkipDefault in drawResult;
-  ALV.Canvas.Handle:= 0;
-end;
-
 procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
 begin
 
@@ -574,6 +563,32 @@ end;
 procedure TLCLListViewCallback.callTargetInitializeWnd;
 begin
   TCustomListViewAccess(Target).InitializeWnd;
+end;
+
+function TLCLListViewCallback.commonDrawItem( row: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState ): Boolean;
+begin
+  Result:= False;
+end;
+
+function TLCLListViewCallback.listViewCustomDraw(row: Integer; col: Integer;
+  ctx: TCocoaContext): Boolean;
+var
+  ALV: TCustomListViewAccess;
+  drawTarget: TCustomDrawTarget;
+  drawResult: TCustomDrawResult;
+begin
+  if col=0 then
+    drawTarget:= dtItem
+  else if col>0 then
+    drawTarget:= dtSubItem
+  else
+    drawTarget:= dtControl;
+  ALV:= TCustomListViewAccess(self.listView);
+  ALV.Canvas.Handle:= HDC(ctx);
+  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, [], nil );
+  Result:= cdrSkipDefault in drawResult;
+  ALV.Canvas.Handle:= 0;
 end;
 
 end.

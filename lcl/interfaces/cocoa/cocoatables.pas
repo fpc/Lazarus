@@ -62,6 +62,8 @@ type
     procedure setColumn( column: NSTableColumn ); message 'setColumn:';
     function checkBox: NSButton; message 'checkBox';
 
+    procedure drawRect(dirtyRect: NSRect); override;
+
     procedure loadView( row: Integer; col: Integer );
       message 'loadView:col:';
     procedure updateItemValue( row: NSInteger; col: NSInteger );
@@ -135,8 +137,10 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
-    function lclCustomDrawRow(row: NSInteger; clipRect: NSRect): Boolean;
-      message 'lclCustomDrawRow:clipRect:';
+    function lclCallDrawItem(row: NSInteger; clipRect: NSRect): Boolean;
+      message 'lclCallCustomDrawItem:clipRect:';
+    function lclCallCustomDraw( row: Integer; col: Integer; clipRect: NSRect): Boolean;
+      message 'lclCallCustomDraw:col:clipRect:';
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -343,7 +347,7 @@ var
 begin
   inherited drawRect(dirtyRect);
 
-  done:= self.tableView.lclCustomDrawRow( row , dirtyRect );
+  done:= self.tableView.lclCallDrawItem( row , dirtyRect );
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the CellViews to get the same effect.
@@ -452,7 +456,7 @@ begin
   Result:= NSZeroSize;
 end;
 
-function TCocoaTableListView.lclCustomDrawRow(row: NSInteger; clipRect: NSRect
+function TCocoaTableListView.lclCallDrawItem(row: NSInteger; clipRect: NSRect
   ): Boolean;
 var
   ctx: TCocoaContext;
@@ -469,7 +473,30 @@ begin
     if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
       Include(ItemState, odFocused);
 
-    Result:= callback.DrawRow(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= callback.commonDrawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+  finally
+    ctx.Free;
+  end;
+end;
+
+function TCocoaTableListView.lclCallCustomDraw(row: Integer; col: Integer;
+  clipRect: NSRect): Boolean;
+var
+  ctx: TCocoaContext;
+  ItemState: TOwnerDrawState;
+begin
+  Result:= False;
+  if not Assigned(callback) then Exit;
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  ctx.InitDraw(Round(clipRect.size.width), Round(clipRect.size.height));
+  try
+    ItemState := [];
+    if isRowSelected(row) then Include(ItemState, odSelected);
+    if lclIsEnabled then Include(ItemState, odDisabled);
+    if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
+      Include(ItemState, odFocused);
+
+    Result:= callback.listViewCustomDraw(row, col, ctx );
   finally
     ctx.Free;
   end;
@@ -949,6 +976,29 @@ end;
 function TCocoaTableListItem.checkBox: NSButton;
 begin
   Result:= _checkBox;
+end;
+
+procedure TCocoaTableListItem.drawRect(dirtyRect: NSRect);
+var
+  row: Integer;
+  col: Integer;
+  done: Boolean;
+  view: NSView;
+begin
+  row:= _tableView.rowForView( self );
+  col:= _tableView.columnForView( self );
+  done:= TCocoaTableListView(_tableView).lclCallCustomDraw( row, col, dirtyRect );
+
+  if done then begin
+    // the Cocoa default drawing cannot be skipped in NSTableView,
+    // we can only hide the CellViews to get the same effect.
+    // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
+    // it's a case where the default drawing must be skipped.
+    for view in self.subviews do
+      view.setHidden( True );
+  end else begin
+    inherited drawRect(dirtyRect);
+  end;
 end;
 
 procedure TCocoaTableListItem.createTextField;
@@ -1437,8 +1487,6 @@ begin
       begin
         if Assigned(item.imageView) then begin
           frame:= item.imageView.frame;
-          frame.origin.x:= frame.origin.x + item.frame.origin.x;
-          frame.origin.y:= frame.origin.y + item.frame.origin.y;
         end;
       end;
   end;
