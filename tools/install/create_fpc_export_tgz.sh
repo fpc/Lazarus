@@ -27,11 +27,12 @@ fi
 TmpFPCDir=$TmpDir/fpc
 FPCTGZ=$TmpDir/fpc.tgz
 if [ "x$Download" = "xyes" ]; then
-  echo "downloading fpc svn ..."
+  echo "downloading fpc git ..."
   rm -rf $TmpFPCDir
   mkdir -p $TmpDir
   cd $TmpDir
-  git clone https://gitlab.com/freepascal.org/fpc/build.git $TmpFPCDir
+  git clone https://gitlab.com/freepascal.org/fpc/source.git $TmpFPCDir
+  rm -rf $TmpFPCDir/.git*
   cd -
 else
   echo "extracting fpc from local git ..."
