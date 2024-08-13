@@ -115,20 +115,18 @@ NOTE:
 
 Creating the debian fpc and fpc-src packages:
 
-  There are two versions of the compiler: the stable 2.0.x and the unstable
-  developer version 2.1.x. To build them, you must install fpc first. Install
-  the stable fpc release (2.0.x). Note: The 2.0.x can not be built with a 2.1.x
-  compiler.
-  The create_fpc_deb.sh works nearly automatically. Become root and execute it.
-  For 2.0.x: ./create_fpc_deb.sh stable
-  For 2.1.x: ./create_fpc_deb.sh devel
+  The create_fpc_deb.sh works nearly automatically. Required packaged:
+    apt install fakeroot libgpm-dev libncurses-dev
+  Become root and execute it:
+  ./create_fpc_deb.sh fpc /path/to/fpc-git
 
   What it does: First it checks if the fpc source tgz is already created and
-  if not, it automatically downloads it. The script does not use the current
-  version, but the latest known to work with lazarus. Then it unpacks the
-  source, compiles it and builds the debs. Normally you can find the debs under
-  /usr/src/ and the current directory.
+  if not, it automatically downloads it. Then it unpacks the
+  source, compiles it and builds the deb. You can find the deb under
+  in the current directory.
 
+  Then do the same for fpc source deb:
+  ./create_fpc_deb.sh fpc-src /path/to/fpc-git
 
 Creating the debian lazarus package:
 
