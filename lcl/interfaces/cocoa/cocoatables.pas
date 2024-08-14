@@ -774,9 +774,16 @@ var
 
   row: Integer;
   item: TCocoaTableListItem;
+  tableColumn: NSTableColumn;
   currentWidth: CGFloat;
 begin
-  Result:= 20;
+  Result:= CocoaConfig.CocoaTableColumnAutoFitWidthMin;
+  tableColumn:= NSTableColumn( self.tableColumns.objectAtIndex(column) );
+  tableColumn.sizeToFit;
+  currentWidth:= tableColumn.width + 4;
+  if currentWidth > Result then
+    Result:= currentWidth;
+
   totalCount:= self.numberOfRows;
   if totalCount = 0 then
     Exit;
@@ -1321,7 +1328,7 @@ begin
     item.setidentifier(NSSTR('tblview'));
   end;
 
-  col:= tableColumns.indexOfObject (tableColumn );
+  col:= self.getIndexOfColumn( tableColumn );
   item.setColumn( tableColumn );
   item.loadView( row, col );
   item.updateItemValue( row, col );

@@ -100,6 +100,8 @@ var
   // calculate the column width, the maximum number of rows calculated
   CocoaTableColumnAutoFitWidthCalcRows : Integer = 100;
 
+  // min Column Width when the column divider is double-clicked
+  CocoaTableColumnAutoFitWidthMin: Double = 20;
 
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
