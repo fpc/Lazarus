@@ -5580,6 +5580,7 @@ begin
     NewPageCaption:=FPageName;
   if IsLocked then NewPageCaption:='#'+NewPageCaption;
   if Modified then NewPageCaption:='*'+NewPageCaption;
+  NewPageCaption := StringReplace(NewPageCaption, '&', '', [rfReplaceAll]);
   if SourceNotebook.NoteBookPages[p] <> NewPageCaption then begin
     SourceNotebook.NoteBookPages[p] := NewPageCaption;
     SourceNotebook.UpdateTabsAndPageTitle;
