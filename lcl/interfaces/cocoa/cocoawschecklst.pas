@@ -54,8 +54,8 @@ type
   public
     checklist: TCustomCheckListBox;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
-    function GetItemCheckedAt(ARow, ACol: Integer; var CheckState: Integer): Boolean; override;
-    procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer); override;
+    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; override;
+    procedure SetItemCheckedAt( row: Integer; CheckState: Integer); override;
 
     function GetCheckState(Index: Integer; var AState: Integer): Boolean;
     function SetCheckState(Index: Integer; AState: Integer; InvalidateCocoa: Boolean = true): Boolean;
@@ -151,19 +151,19 @@ begin
     checklist := TCustomCheckListBox(ATarget);
 end;
 
-function TLCLCheckboxListCallback.GetItemCheckedAt(ARow, ACol: Integer;
+function TLCLCheckboxListCallback.GetItemCheckedAt( row: Integer;
   var CheckState: Integer): Boolean;
 begin
-  Result := GetCheckState(Arow, CheckState);
+  Result := GetCheckState(row, CheckState);
 end;
 
-procedure TLCLCheckboxListCallback.SetItemCheckedAt(ARow, ACol: Integer;
+procedure TLCLCheckboxListCallback.SetItemCheckedAt( row: Integer;
   CheckState: Integer);
 var
   changed : Boolean;
 begin
-  changed := SetCheckState(ARow, CheckState, false); // returns true, if changed!s
-  if changed then LCLSendChangedMsg(Target, ARow);
+  changed := SetCheckState(row, CheckState, false); // returns true, if changed!s
+  if changed then LCLSendChangedMsg(Target, row);
 end;
 
 function TLCLCheckboxListCallback.GetCheckState(Index: Integer; var AState: Integer): Boolean;

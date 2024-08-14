@@ -13,7 +13,7 @@ uses
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers, CocoaTextEdits,
-  CocoaWSCommon, cocoa_extra, CocoaGDIObjects;
+  CocoaWSCommon, cocoa_extra, CocoaGDIObjects, CocoaUtils;
 
 type
   { TLCLListViewCallback }
@@ -33,17 +33,20 @@ type
     function ItemsCount: Integer;
     function GetImageListType( out lvil: TListViewImageList ): Boolean;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
+    function GetItemCheckedAt( row: Integer; var IsChecked: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
+    procedure SetItemCheckedAt( row: Integer; IsChecked: Integer);
     function getItemStableSelection(ARow: Integer): Boolean;
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    function DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+    function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState): Boolean;
+    function customDraw( row: Integer; col: Integer;
+      ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
+    function isCustomDrawSupported: Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -301,15 +304,17 @@ begin
   end;
 end;
 
-function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
+function TLCLListViewCallback.GetItemCheckedAt( row: Integer;
   var IsChecked: Integer): Boolean;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
+  indexSet: NSIndexSet;
 begin
-  if ownerData and Assigned(listView) and (ARow>=0) and (ARow < listView.Items.Count) then
-    IsChecked := BoolState[listView.Items[ARow].Checked]
+  indexSet:= self.checkedIndexSet;
+  if ownerData and Assigned(listView) and (row>=0) and (row < listView.Items.Count) then
+    IsChecked := BoolState[listView.Items[row].Checked]
   else
-    IsChecked := BoolState[checkedIndexSet.containsIndex(ARow)];
+    IsChecked := BoolState[checkedIndexSet.containsIndex(row)];
   Result := true;
 end;
 
@@ -408,15 +413,15 @@ begin
 
 end;
 
-procedure TLCLListViewCallback.SetItemCheckedAt(ARow, ACol: Integer;
+procedure TLCLListViewCallback.SetItemCheckedAt( row: Integer;
   IsChecked: Integer);
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
   if IsChecked = NSOnState
-    then checkedIndexSet.addIndex(ARow)
-    else checkedIndexSet.removeIndex(ARow);
+    then checkedIndexSet.addIndex(row)
+    else checkedIndexSet.removeIndex(row);
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
@@ -425,7 +430,7 @@ begin
 
   NMLV.hdr.hwndfrom := ListView.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGED;
-  NMLV.iItem := ARow;
+  NMLV.iItem := row;
   NMLV.iSubItem := 0;
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
@@ -504,19 +509,6 @@ begin
   LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
-function TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
-  const r: TRect; state: TOwnerDrawState): Boolean;
-var
-  ALV: TCustomListViewAccess;
-  drawResult: TCustomDrawResult;
-begin
-  ALV:= TCustomListViewAccess(self.listView);
-  ALV.Canvas.Handle:= HDC(ctx);
-  drawResult:= ALV.IntfCustomDraw( dtItem, cdPrePaint, rowidx, 0, [], nil );
-  Result:= cdrSkipDefault in drawResult;
-  ALV.Canvas.Handle:= 0;
-end;
-
 procedure TLCLListViewCallback.GetRowHeight(rowidx: Integer; var h: Integer);
 begin
 
@@ -574,6 +566,51 @@ end;
 procedure TLCLListViewCallback.callTargetInitializeWnd;
 begin
   TCustomListViewAccess(Target).InitializeWnd;
+end;
+
+function TLCLListViewCallback.drawItem( row: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState ): Boolean;
+var
+  Mess: TLMDrawListItem;
+  DrawStruct: TDrawListItemStruct;
+begin
+  DrawStruct.ItemState := state;
+  DrawStruct.Area := r;
+  DrawStruct.DC := HDC(ctx);
+  DrawStruct.ItemID := row;
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := CN_DRAWITEM;
+  Mess.DrawListItemStruct := @DrawStruct;
+  self.DeliverMessage( Mess );
+  Result:= False;
+end;
+
+function TLCLListViewCallback.customDraw(row: Integer; col: Integer;
+  ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
+var
+  ALV: TCustomListViewAccess;
+  drawTarget: TCustomDrawTarget;
+  drawResult: TCustomDrawResult;
+  rect: TRect;
+begin
+  ALV:= TCustomListViewAccess(self.listView);
+  rect:= NSRectToRect( self.Owner.lclContentView.bounds );
+  if col=0 then
+    drawTarget:= dtItem
+  else if col>0 then
+    drawTarget:= dtSubItem
+  else
+    drawTarget:= dtControl;
+
+  ALV.Canvas.Handle:= HDC(ctx);
+  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, state, @rect );
+  ALV.Canvas.Handle:= 0;
+  Result:= cdrSkipDefault in drawResult;
+end;
+
+function TLCLListViewCallback.isCustomDrawSupported: Boolean;
+begin
+  Result:= True;
 end;
 
 end.

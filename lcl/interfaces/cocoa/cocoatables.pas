@@ -62,6 +62,8 @@ type
     procedure setColumn( column: NSTableColumn ); message 'setColumn:';
     function checkBox: NSButton; message 'checkBox';
 
+    procedure drawRect(dirtyRect: NSRect); override;
+
     procedure loadView( row: Integer; col: Integer );
       message 'loadView:col:';
     procedure updateItemValue( row: NSInteger; col: NSInteger );
@@ -72,6 +74,17 @@ type
     procedure prepareForReuse; override;
     procedure dealloc; override;
   end;
+
+  {
+    1. TCocoaTableListView related need to support
+       TListView/TListBox/TCheckListBox, etc.
+    2. the differences between these controls can be considered to be
+       implemented in the callback.
+    3. however, after careful consideration, we tried to keep the original
+       intention of the callback, and added TCocoaTableViewProcessor to
+       isolate these differences.
+  }
+  { TCocoaTableViewProcessor }
 
   TCocoaTableViewProcessor = class
     function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
@@ -135,8 +148,10 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
-    function lclCustomDrawRow(row: NSInteger; clipRect: NSRect): Boolean;
-      message 'lclCustomDrawRow:clipRect:';
+    function lclCallDrawItem( row: NSInteger; ctxSize: NSSize; clipRect: NSRect): Boolean;
+      message 'lclCallDrawItem:ctxSize:clipRect:';
+    function lclCallCustomDraw( row: Integer; col: Integer; ctxSize: NSSize; clipRect: NSRect): Boolean;
+      message 'lclCallCustomDraw:col:ctxSize:clipRect:';
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -336,21 +351,28 @@ begin
   Result := TCocoaTableListView.alloc;
 end;
 
-procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
+procedure hideAllSubviews( parent: NSView );
 var
   view: NSView;
+begin
+  for view in parent.subviews do
+    view.setHidden( True );
+end;
+
+procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
+var
   done: Boolean;
 begin
-  inherited drawRect(dirtyRect);
+  done:= self.tableView.lclCallDrawItem( row , self.bounds.size, dirtyRect );
 
-  done:= self.tableView.lclCustomDrawRow( row , dirtyRect );
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the CellViews to get the same effect.
     // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
     // it's a case where the default drawing must be skipped.
-    for view in self.subviews do
-      view.setHidden( True );
+    hideAllSubviews( self );
+  end else begin
+    inherited drawRect( dirtyRect );
   end;
 end;
 
@@ -452,34 +474,102 @@ begin
   Result:= NSZeroSize;
 end;
 
-function TCocoaTableListView.lclCustomDrawRow(row: NSInteger; clipRect: NSRect
-  ): Boolean;
+function isFocused( tv: TCocoaTableListView ; row: NSInteger ): Boolean;
+begin
+  Result:= False;
+  if Assigned(tv.window) and (tv.window.firstResponder = tv) then begin
+    if row < 0 then
+      Result:= True
+    else if tv.isRowSelected(row) then
+      Result:= True;
+  end;
+end;
+
+function isChecked( tv: TCocoaTableListView ; row: NSInteger ): Boolean;
+var
+  checked: Integer;
+begin
+  Result:= False;
+  if row < 0 then
+    Exit;
+
+  tv.callback.GetItemCheckedAt( row, checked );
+  Result:= checked=NSOnState;
+end;
+
+function TCocoaTableListView.lclCallDrawItem(row: NSInteger;
+  ctxSize: NSSize; clipRect: NSRect ): Boolean;
 var
   ctx: TCocoaContext;
   ItemState: TOwnerDrawState;
 begin
   Result:= False;
+  if NOT self.isOwnerDraw then
+    Exit;
+
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  ctx.InitDraw(Round(bounds.size.width), Round(bounds.size.height));
+  ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
   try
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
-    if lclIsEnabled then Include(ItemState, odDisabled);
-    if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
+    if NOT lclIsEnabled then Include(ItemState, odDisabled);
+    if isFocused(self,row) then
       Include(ItemState, odFocused);
+    if isChecked(self,row) then
+      Include(ItemState, odChecked);
 
-    Result:= callback.DrawRow(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+  finally
+    ctx.Free;
+  end;
+end;
+
+function TCocoaTableListView.lclCallCustomDraw(row: Integer; col: Integer;
+  ctxSize: NSSize; clipRect: NSRect): Boolean;
+var
+  ctx: TCocoaContext;
+  state: TCustomDrawState;
+begin
+  Result:= False;
+  if NOT Assigned(callback) then
+    Exit;
+  if NOT callback.isCustomDrawSupported then
+    Exit;
+
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
+  try
+    state := [];
+    if isRowSelected(row) then Include(state, cdsSelected);
+    if NOT lclIsEnabled then Include(state, cdsDisabled);
+    if isFocused(self,row) then
+      Include(state, cdsFocused);
+    if isChecked(self,row) then
+      Include(state, cdsChecked);
+
+    Result:= callback.customDraw(row, col, ctx, state);
   finally
     ctx.Free;
   end;
 end;
 
 procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
+var
+  done: Boolean;
 begin
-  inherited drawRect(dirtyRect);
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+
+  done:= self.lclCallCustomDraw( -1, -1, self.bounds.size, dirtyRect );
+
+  if done then begin
+    // the Cocoa default drawing cannot be skipped in NSTableView,
+    // we can only hide the SubviewViews to get the same effect.
+    hideAllSubviews( self );
+  end else begin
+    inherited drawRect( dirtyRect );
+  end;
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): Integer;
@@ -951,6 +1041,28 @@ begin
   Result:= _checkBox;
 end;
 
+procedure TCocoaTableListItem.drawRect(dirtyRect: NSRect);
+var
+  row: Integer;
+  col: Integer;
+  done: Boolean;
+begin
+  row:= _tableView.rowForView( self );
+  col:= _tableView.columnForView( self );
+  done:= TCocoaTableListView(_tableView).lclCallCustomDraw(
+            row, col, self.bounds.size, dirtyRect );
+
+  if done then begin
+    // the Cocoa default drawing cannot be skipped in NSTableView,
+    // we can only hide the CellViews to get the same effect.
+    // in the Lazarus IDE, there is a ListView with OnCustomDrawItem
+    // in Perferences-Component Palette.
+    hideAllSubviews( self );
+  end else begin
+    inherited drawRect(dirtyRect);
+  end;
+end;
+
 procedure TCocoaTableListItem.createTextField;
 var
   fieldControl: NSTextField;
@@ -1037,7 +1149,7 @@ begin
   lclcb:= tv.callback;
 
   if Assigned(_checkBox) then begin
-    lclcb.GetItemCheckedAt( row, 0, checkedValue );
+    lclcb.GetItemCheckedAt( row, checkedValue );
     _checkBox.setState( checkedValue );
   end;
 
@@ -1181,7 +1293,7 @@ begin
   if not Assigned(callback) then Exit;
 
   row := rowForView(sender.superview);
-  callback.SetItemCheckedAt(row, 0, sender.state);
+  callback.SetItemCheckedAt(row, sender.state);
   if sender.state = NSOnState then begin
     self.selectOneItemByIndex(row, True);
     self.window.makeFirstResponder( self );
@@ -1437,8 +1549,6 @@ begin
       begin
         if Assigned(item.imageView) then begin
           frame:= item.imageView.frame;
-          frame.origin.x:= frame.origin.x + item.frame.origin.x;
-          frame.origin.y:= frame.origin.y + item.frame.origin.y;
         end;
       end;
   end;
@@ -1636,7 +1746,7 @@ begin
     {lvpHideSelection,
     lvpHotTrack,}
     lvpMultiSelect: _tableView.setAllowsMultipleSelection(AIsSet);
-    {lvpOwnerDraw,}
+    lvpOwnerDraw: _tableView.isOwnerDraw:= AIsSet;
     lvpReadOnly: _tableView.readOnly := AIsSet;
   {  lvpRowSelect,}
     lvpShowColumnHeaders:
