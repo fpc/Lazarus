@@ -92,6 +92,15 @@ var
   // always Presented.
   CocoaAlwaysPresentNotification : Boolean = True;
 
+
+  // default NSTableViewStyle
+  CocoaTableViewStyle : NSTableViewStyle = NSTableViewStyleAutomatic;
+
+  // for performance, when the column divider is double-clicked to automatically
+  // calculate the column width, the maximum number of rows calculated
+  CocoaTableColumnAutoFitWidthCalcRows : Integer = 100;
+
+
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
 
@@ -105,9 +114,6 @@ var
 
   // some localized named might be too long to be returned properly by APIs
   CocoaUseLocalizedFontName : Boolean = false;
-
-  // default NSTableViewStyle
-  CocoaTableViewStyle : NSTableViewStyle = NSTableViewStyleAutomatic;
 
   // default Image Name for MenuItem
   CocoaDefaultCheckMenuImageName : NSString;

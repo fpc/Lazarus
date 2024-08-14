@@ -61,6 +61,7 @@ type
   public
     procedure setColumn( column: NSTableColumn ); message 'setColumn:';
     function checkBox: NSButton; message 'checkBox';
+    function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
 
@@ -194,9 +195,9 @@ type
     function tableView_shouldTrackCell_forTableColumn_row(tableView: NSTableView; cell: NSCell; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldTrackCell:forTableColumn:row:';
     }
     {
-    function tableView_isGroupRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:isGroupRow:';
-    function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
-    function tableView_shouldReorderColumn_toColumn(tableView: NSTableView; columnIndex: NSInteger; newColumnIndex: NSInteger): Boolean; message 'tableView:shouldReorderColumn:toColumn:';}
+    function tableView_isGroupRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:isGroupRow:';}
+    function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat;
+    {function tableView_shouldReorderColumn_toColumn(tableView: NSTableView; columnIndex: NSInteger; newColumnIndex: NSInteger): Boolean; message 'tableView:shouldReorderColumn:toColumn:';}
     procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
     {procedure tableViewColumnDidMove(notification: NSNotification); message 'tableViewColumnDidMove:';}
     procedure tableViewColumnDidResize(notification: NSNotification); message 'tableViewColumnDidResize:';
@@ -764,6 +765,46 @@ begin
   Result := h;
 end;
 
+function TCocoaTableListView.tableView_sizeToFitWidthOfColumn(
+  tableView: NSTableView; column: NSInteger): CGFloat;
+var
+  totalCount: Integer;
+  startIndex: Integer;
+  endIndex: Integer;
+
+  row: Integer;
+  item: TCocoaTableListItem;
+  currentWidth: CGFloat;
+begin
+  Result:= 20;
+  totalCount:= self.numberOfRows;
+  if totalCount = 0 then
+    Exit;
+
+  if totalCount <= CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows then begin
+    startIndex:= 0;
+    endIndex:= totalCount - 1;
+  end else begin
+    startIndex:= self.rowsInRect(self.visibleRect).location;
+    endIndex:= startIndex + CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows div 2;
+    if endIndex > totalCount - 1 then
+      endIndex:= totalCount - 1;
+    startIndex:= endIndex - CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows + 1;
+    if startIndex < 0 then
+      startIndex:= 0;
+    endIndex:= startIndex + CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows - 1;
+  end;
+
+  for row:=startIndex to endIndex do begin
+    item:= TCocoaTableListItem( self.viewAtColumn_row_makeIfNecessary( column, row , True ) );
+    if Assigned(item) then begin
+      currentWidth:= item.fittingSize.width;
+      if currentWidth > Result then
+        Result:= currentWidth;
+    end;
+  end;
+end;
+
 type
   TCompareData = record
     rmved : NSMutableIndexSet;
@@ -1039,6 +1080,19 @@ end;
 function TCocoaTableListItem.checkBox: NSButton;
 begin
   Result:= _checkBox;
+end;
+
+function TCocoaTableListItem.fittingSize: NSSize;
+var
+  width: CGFloat;
+begin
+  width:= self.textField.fittingSize.width;
+  if Assigned(_checkBox) then
+    width:= width + _checkBox.frame.size.width + 4;
+  if Assigned(self.imageView) then
+    width:= width + self.imageView.frame.size.width + 4;
+  Result.width:= width;
+  Result.height:= self.frame.size.height;
 end;
 
 procedure TCocoaTableListItem.drawRect(dirtyRect: NSRect);
