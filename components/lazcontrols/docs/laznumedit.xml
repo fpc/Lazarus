@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="LazControls">
+
+<!--
+================================================================================
+laznumedit
+================================================================================
+-->
+
+<!-- TODO: Needs content. -->
+<module name="laznumedit">
+<short>
+Implements an edit control specialized for Integer values with a specific 
+numeric base.
+</short>
+<descr/>
+
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Math"/>
+<element name="StdCtrls"/>
+<element name="LCLType"/>
+<element name="Controls"/>
+<element name="Clipbrd"/>
+<element name="StrUtils"/>
+
+<element name="Min_limit">
+<short>
+Lower limit for the value in an Integer edit control.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="Max_limit">
+<short>
+Upper limit for the value in an Integer edit control.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditBaseChangeEvent">
+<short>
+Specified an event handler signalled when the numeric base for an Integer edit control is changed.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEditBaseChangeEvent.ASender">
+<short>
+Control for the event notification.
+</short>
+</element>
+<element name="TLazIntegerEditBaseChangeEvent.ACurrentBase">
+<short/>
+</element>
+<element name="TLazIntegerEditBaseChangeEvent.ANewBase">
+<short/>
+</element>
+<element name="TLazIntegerEditBaseChangeEvent.APrefix">
+<short/>
+</element>
+
+<element name="TLazIntegerEditGen">
+<short>
+Defines the base class for an Integer edit control using a specified numeric 
+base.
+</short>
+<descr/>
+<seealso>
+<link id="TLazIntegerEdit"/>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TLazIntegerEditGen.FAllowMinus"/>
+<element name="TLazIntegerEditGen.FAllowPlus"/>
+<element name="TLazIntegerEditGen.FOnBaseChange"/>
+<element name="TLazIntegerEditGen.FDisplayBase"/>
+<element name="TLazIntegerEditGen.FBinIndicator"/>
+<element name="TLazIntegerEditGen.FHexIndicator"/>
+<element name="TLazIntegerEditGen.FOctIndicator"/>
+<element name="TLazIntegerEditGen.FSetBinKeys"/>
+<element name="TLazIntegerEditGen.FSetDecimalKeys"/>
+<element name="TLazIntegerEditGen.FSetHexKeys"/>
+<element name="TLazIntegerEditGen.FSetOctKeys"/>
+<element name="TLazIntegerEditGen.FToggleBinKeys"/>
+<element name="TLazIntegerEditGen.FToggleHexKeys"/>
+<element name="TLazIntegerEditGen.FToggleOctKeys"/>
+<element name="TLazIntegerEditGen.FValue"/>
+<element name="TLazIntegerEditGen.FMinValue"/>
+<element name="TLazIntegerEditGen.FMaxValue"/>
+<element name="TLazIntegerEditGen.FCurrentBasePrefix"/>
+<element name="TLazIntegerEditGen.FCurrentPrefix"/>
+<element name="TLazIntegerEditGen.FLastDecodeWasEmpty"/>
+<element name="TLazIntegerEditGen.GetCurrentValue"/>
+<element name="TLazIntegerEditGen.GetCurrentValue.Result"/>
+<element name="TLazIntegerEditGen.GetValid"/>
+<element name="TLazIntegerEditGen.GetValid.Result"/>
+<element name="TLazIntegerEditGen.SetBinIndicator"/>
+<element name="TLazIntegerEditGen.SetBinIndicator.AValue"/>
+<element name="TLazIntegerEditGen.SetDisplayBase"/>
+<element name="TLazIntegerEditGen.SetDisplayBase.AValue"/>
+<element name="TLazIntegerEditGen.SetHexIndicator"/>
+<element name="TLazIntegerEditGen.SetHexIndicator.AValue"/>
+<element name="TLazIntegerEditGen.SetMaxValue"/>
+<element name="TLazIntegerEditGen.SetMaxValue.AValue"/>
+<element name="TLazIntegerEditGen.SetMinValue"/>
+<element name="TLazIntegerEditGen.SetMinValue.AValue"/>
+<element name="TLazIntegerEditGen.SetOctIndicator"/>
+<element name="TLazIntegerEditGen.SetOctIndicator.AValue"/>
+<element name="TLazIntegerEditGen.SetSetDecimalKeys"/>
+<element name="TLazIntegerEditGen.SetSetDecimalKeys.AValue"/>
+<element name="TLazIntegerEditGen.SetValue"/>
+<element name="TLazIntegerEditGen.SetValue.AValue"/>
+<element name="TLazIntegerEditGen.UpdateText"/>
+<element name="TLazIntegerEditGen.UpdateText.ANewText"/>
+<element name="TLazIntegerEditGen.UpdateText.AnAdjustPos"/>
+<element name="TLazIntegerEditGen.UpdateText.AnAdjustOffset"/>
+<element name="TLazIntegerEditGen.UpdateText.AWasEmpty"/>
+<element name="TLazIntegerEditGen.ReEncodeText"/>
+<element name="TLazIntegerEditGen.ReEncodeText.Result"/>
+<element name="TLazIntegerEditGen.ReEncodeText.ACheckLimit"/>
+<element name="TLazIntegerEditGen.ReEncodeText.ANewBase"/>
+<element name="TLazIntegerEditGen.ReEncodeText.ANewPrefix"/>
+<element name="TLazIntegerEditGen.DecodeText"/>
+<element name="TLazIntegerEditGen.DecodeText.Result"/>
+<element name="TLazIntegerEditGen.DecodeText.APrefix"/>
+<element name="TLazIntegerEditGen.DecodeText.AVal"/>
+<element name="TLazIntegerEditGen.DecodeText.ACheckLimit"/>
+<element name="TLazIntegerEditGen.EncodeText"/>
+<element name="TLazIntegerEditGen.EncodeText.Result"/>
+<element name="TLazIntegerEditGen.EncodeText.APrefix"/>
+<element name="TLazIntegerEditGen.EncodeText.AVal"/>
+<element name="TLazIntegerEditGen.EncodeText.APrefixOnly"/>
+
+<!-- protected -->
+<element name="TLazIntegerEditGen._KeyDown">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEditGen._KeyDown.Key">
+<short/>
+</element>
+<element name="TLazIntegerEditGen._KeyDown.Shift">
+<short/>
+</element>
+
+<element name="TLazIntegerEditGen._KeyPress">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEditGen._KeyPress.Key">
+<short/>
+</element>
+
+<element name="TLazIntegerEditGen._Utf8KeyPress">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEditGen._Utf8KeyPress.UTF8Key">
+<short/>
+</element>
+
+<element name="TLazIntegerEditGen._InitializeWnd">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen._RealGetText">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEditGen._RealGetText.Result">
+<short/>
+</element>
+
+<element name="TLazIntegerEditGen._FinalizeWnd">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen._DoExit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen._EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen._Init">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- public -->
+<element name="TLazIntegerEditGen.Value">
+<short>
+Integer value for the control as an Int64 type.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.CurrentValue">
+<short>
+Value for the control before EditingDone is called or the focused control is 
+changed.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.Valid">
+<short>
+Indicates whether the value in the CurrentValue property is valid.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.MinValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.MaxValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.DisplayBase">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.SetDecimalKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.HexIndicator">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.SetHexKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.ToggleHexKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.OctIndicator">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.SetOctKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.ToggleOctKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.BinIndicator">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.SetBinKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.ToggleBinKeys">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.OnBaseChange">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.AllowMinus">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.AllowPlus">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!--
+<element name="TLazIntegerEditGen.DisplayQWord">
+<short/>
+<descr/>
+<seealso/>
+</element>
+ -->
+
+<element name="TLazIntegerEdit">
+<short>
+Implements an edit control for Integer values using a specified numeric base.
+</short>
+<descr/>
+<seealso>
+<link id="TLazIntegerEditGenEdit"/>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
+</seealso>
+</element>
+
+<!-- protected -->
+<element name="TLazIntegerEdit.KeyDown">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEdit.KeyDown.Key">
+<short/>
+</element>
+<element name="TLazIntegerEdit.KeyDown.Shift">
+<short/>
+</element>
+
+<element name="TLazIntegerEdit.KeyPress">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEdit.KeyPress.Key">
+<short/>
+</element>
+
+<element name="TLazIntegerEdit.Utf8KeyPress">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEdit.Utf8KeyPress.UTF8Key">
+<short/>
+</element>
+
+<element name="TLazIntegerEdit.RealGetText">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEdit.RealGetText.Result">
+<short/>
+</element>
+
+<element name="TLazIntegerEdit.InitializeWnd">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEdit.FinalizeWnd">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEdit.DoExit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEdit.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- 
+<element name="TLazIntegerEdit.DoEnter">
+<short/>
+<descr/>
+<seealso/>
+</element>
+-->
+
+<!-- public -->
+<element name="TLazIntegerEdit.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLazIntegerEdit.Create.AOwner">
+<short>
+Owner of the class instance.
+</short>
+</element>
+
+<!-- published -->
+<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.Value"/>
+
+<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.MinValue"/>
+
+<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.MaxValue"/>
+
+<!-- public -->
+<!-- TODO: replicate inherited content or link to topic -->
+<element name="TLazIntegerEdit.AutoSelected">
+<short/>
+<descr>
+<p>
+<var>AutoSelected</var> is a public property in <var>TLazIntegerEdit</var>.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.stdctrls.TCustomEdit.AutoSelected">TCustomEdit.AutoSelected</link>
+</seealso>
+</element>
+
+<!-- published -->
+<!-- TODO: Needs links to inherited topics -->
+<element name="TLazIntegerEdit.Align" link="#"/>
+<element name="TLazIntegerEdit.Alignment" link="#"/>
+<element name="TLazIntegerEdit.Anchors" link="#"/>
+<element name="TLazIntegerEdit.AutoSize" link="#"/>
+<element name="TLazIntegerEdit.AutoSelect" link="#"/>
+<element name="TLazIntegerEdit.BidiMode" link="#"/>
+<element name="TLazIntegerEdit.BorderSpacing" link="#"/>
+<element name="TLazIntegerEdit.BorderStyle" link="#"/>
+<element name="TLazIntegerEdit.CharCase" link="#"/>
+<element name="TLazIntegerEdit.Color" link="#"/>
+<element name="TLazIntegerEdit.Constraints" link="#"/>
+<element name="TLazIntegerEdit.DoubleBuffered" link="#"/>
+<element name="TLazIntegerEdit.DragCursor" link="#"/>
+<element name="TLazIntegerEdit.DragKind" link="#"/>
+<element name="TLazIntegerEdit.DragMode" link="#"/>
+<element name="TLazIntegerEdit.EchoMode" link="#"/>
+<element name="TLazIntegerEdit.Enabled" link="#"/>
+<element name="TLazIntegerEdit.Font" link="#"/>
+<element name="TLazIntegerEdit.HideSelection" link="#"/>
+<element name="TLazIntegerEdit.MaxLength" link="#"/>
+<element name="TLazIntegerEdit.NumbersOnly" link="#"/>
+<element name="TLazIntegerEdit.ParentBidiMode" link="#"/>
+<element name="TLazIntegerEdit.ParentColor" link="#"/>
+<element name="TLazIntegerEdit.ParentDoubleBuffered" link="#"/>
+<element name="TLazIntegerEdit.ParentFont" link="#"/>
+<element name="TLazIntegerEdit.ParentShowHint" link="#"/>
+<element name="TLazIntegerEdit.PasswordChar" link="#"/>
+<element name="TLazIntegerEdit.PopupMenu" link="#"/>
+<element name="TLazIntegerEdit.ReadOnly" link="#"/>
+<element name="TLazIntegerEdit.ShowHint" link="#"/>
+<element name="TLazIntegerEdit.TabStop" link="#"/>
+<element name="TLazIntegerEdit.TabOrder" link="#"/>
+<element name="TLazIntegerEdit.Text" link="#"/>
+<element name="TLazIntegerEdit.TextHint" link="#"/>
+<element name="TLazIntegerEdit.Visible" link="#"/>
+<element name="TLazIntegerEdit.OnChange" link="#"/>
+<element name="TLazIntegerEdit.OnChangeBounds" link="#"/>
+<element name="TLazIntegerEdit.OnClick" link="#"/>
+<element name="TLazIntegerEdit.OnContextPopup" link="#"/>
+<element name="TLazIntegerEdit.OnDblClick" link="#"/>
+<element name="TLazIntegerEdit.OnDragDrop" link="#"/>
+<element name="TLazIntegerEdit.OnDragOver" link="#"/>
+<element name="TLazIntegerEdit.OnEditingDone" link="#"/>
+<element name="TLazIntegerEdit.OnEndDrag" link="#"/>
+<element name="TLazIntegerEdit.OnEnter" link="#"/>
+<element name="TLazIntegerEdit.OnExit" link="#"/>
+<element name="TLazIntegerEdit.OnKeyDown" link="#"/>
+<element name="TLazIntegerEdit.OnKeyPress" link="#"/>
+<element name="TLazIntegerEdit.OnKeyUp" link="#"/>
+<element name="TLazIntegerEdit.OnMouseDown" link="#"/>
+<element name="TLazIntegerEdit.OnMouseEnter" link="#"/>
+<element name="TLazIntegerEdit.OnMouseLeave" link="#"/>
+<element name="TLazIntegerEdit.OnMouseMove" link="#"/>
+<element name="TLazIntegerEdit.OnMouseUp" link="#"/>
+<element name="TLazIntegerEdit.OnMouseWheel" link="#"/>
+<element name="TLazIntegerEdit.OnMouseWheelDown" link="#"/>
+<element name="TLazIntegerEdit.OnMouseWheelUp" link="#"/>
+<element name="TLazIntegerEdit.OnResize" link="#"/>
+<element name="TLazIntegerEdit.OnStartDrag" link="#"/>
+<element name="TLazIntegerEdit.OnUTF8KeyPress" link="#"/>
+
+<element name="Str2QWord">
+<short>
+Converts the specified string to a word value using the specified numeric base.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Str2QWord.Result">
+<short/>
+</element>
+<element name="Str2QWord.S">
+<short/>
+</element>
+<element name="Str2QWord.Base">
+<short/>
+</element>
+
+<element name="QWord2Str">
+<short>
+<short>
+Converts a Word value using the specified numeric base to its string 
+representation.
+</short>  
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="QWord2Str.Result">
+<short/>
+</element>
+<element name="QWord2Str.N">
+<short/>
+</element>
+<element name="QWord2Str.Base">
+<short/>
+</element>
+
+</module>
+<!-- laznumedit -->
+
+</package>
+</fpdoc-descriptions>

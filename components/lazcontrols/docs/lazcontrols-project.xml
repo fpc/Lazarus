@@ -31,6 +31,7 @@
         <unit file="../shortpathedit.pas"/>
         <unit file="../spinex.pp"/>
         <unit file="../treefilteredit.pas"/>
+        <unit file="../laznumedit.pas"/>
         <!--
           omit to avoid fcl-passrc errors
           <unit file="../extendedtabcontrols.pas"/>
@@ -46,6 +47,7 @@
         <description file="shortpathedit.xml"/>
         <description file="spinex.xml"/>
         <description file="treefilteredit.xml"/>
+        <description file="laznumedit.xml"/>
         <!--
           omit to avoid fcl-passrc errors
           <description file="extendedtabcontrols.xml"/>
