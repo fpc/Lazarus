@@ -287,10 +287,11 @@ type
     procedure SetItemCheckedAt( row: Integer; isChecked: Integer); virtual;
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
-    function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
+    function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState ): Boolean; virtual;
-    function listViewCustomDraw( row: Integer; col: Integer;
+    function customDraw( row: Integer; col: Integer;
       ctx: TCocoaContext; state: TCustomDrawState ): Boolean; virtual;
+    function isCustomDrawSupported: Boolean; virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -668,7 +669,7 @@ begin
   // not needed
 end;
 
-function TLCLListBoxCallback.commonDrawItem( row: Integer; ctx: TCocoaContext;
+function TLCLListBoxCallback.drawItem( row: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState ): Boolean;
 var
   DrawStruct: TDrawListItemStruct;
@@ -685,8 +686,13 @@ begin
   Result:= True;
 end;
 
-function TLCLListBoxCallback.listViewCustomDraw(row: Integer; col: Integer;
+function TLCLListBoxCallback.customDraw(row: Integer; col: Integer;
   ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
+begin
+  Result:= False;
+end;
+
+function TLCLListBoxCallback.isCustomDrawSupported: Boolean;
 begin
   Result:= False;
 end;

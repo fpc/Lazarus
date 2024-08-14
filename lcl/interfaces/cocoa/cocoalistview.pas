@@ -42,10 +42,11 @@ type
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
     procedure ColumnClicked(ACol: Integer);
-    function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
+    function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState): Boolean;
-    function listViewCustomDraw( row: Integer; col: Integer;
+    function customDraw( row: Integer; col: Integer;
       ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
+    function isCustomDrawSupported: Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -567,7 +568,7 @@ begin
   TCustomListViewAccess(Target).InitializeWnd;
 end;
 
-function TLCLListViewCallback.commonDrawItem( row: Integer; ctx: TCocoaContext;
+function TLCLListViewCallback.drawItem( row: Integer; ctx: TCocoaContext;
   const r: TRect; state: TOwnerDrawState ): Boolean;
 var
   Mess: TLMDrawListItem;
@@ -584,7 +585,7 @@ begin
   Result:= False;
 end;
 
-function TLCLListViewCallback.listViewCustomDraw(row: Integer; col: Integer;
+function TLCLListViewCallback.customDraw(row: Integer; col: Integer;
   ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
 var
   ALV: TCustomListViewAccess;
@@ -605,6 +606,11 @@ begin
   drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, state, @rect );
   ALV.Canvas.Handle:= 0;
   Result:= cdrSkipDefault in drawResult;
+end;
+
+function TLCLListViewCallback.isCustomDrawSupported: Boolean;
+begin
+  Result:= True;
 end;
 
 end.

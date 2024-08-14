@@ -75,6 +75,17 @@ type
     procedure dealloc; override;
   end;
 
+  {
+    1. TCocoaTableListView related need to support
+       TListView/TListBox/TCheckListBox, etc.
+    2. the differences between these controls can be considered to be
+       implemented in the callback.
+    3. however, after careful consideration, we tried to keep the original
+       intention of the callback, and added TCocoaTableViewProcessor to
+       isolate these differences.
+  }
+  { TCocoaTableViewProcessor }
+
   TCocoaTableViewProcessor = class
     function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
     procedure onReloadData( tv: NSTableView ); virtual; abstract;
@@ -502,7 +513,7 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= callback.commonDrawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
   finally
     ctx.Free;
   end;
@@ -515,7 +526,11 @@ var
   state: TCustomDrawState;
 begin
   Result:= False;
-  if not Assigned(callback) then Exit;
+  if NOT Assigned(callback) then
+    Exit;
+  if NOT callback.isCustomDrawSupported then
+    Exit;
+
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(clipRect.size.width), Round(clipRect.size.height));
   try
@@ -527,7 +542,7 @@ begin
     if isChecked(self,row) then
       Include(state, cdsChecked);
 
-    Result:= callback.listViewCustomDraw(row, col, ctx, state);
+    Result:= callback.customDraw(row, col, ctx, state);
   finally
     ctx.Free;
   end;
