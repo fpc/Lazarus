@@ -33,11 +33,11 @@ type
     function ItemsCount: Integer;
     function GetImageListType( out lvil: TListViewImageList ): Boolean;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
+    function GetItemCheckedAt( row: Integer; var IsChecked: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
+    procedure SetItemCheckedAt( row: Integer; IsChecked: Integer);
     function getItemStableSelection(ARow: Integer): Boolean;
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     function shouldSelectionChange(NewSel: Integer): Boolean;
@@ -45,7 +45,7 @@ type
     function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState): Boolean;
     function listViewCustomDraw( row: Integer; col: Integer;
-      ctx: TCocoaContext ): Boolean;
+      ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
     procedure GetRowHeight(rowidx: Integer; var h: Integer);
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -303,15 +303,17 @@ begin
   end;
 end;
 
-function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
+function TLCLListViewCallback.GetItemCheckedAt( row: Integer;
   var IsChecked: Integer): Boolean;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
+  indexSet: NSIndexSet;
 begin
-  if ownerData and Assigned(listView) and (ARow>=0) and (ARow < listView.Items.Count) then
-    IsChecked := BoolState[listView.Items[ARow].Checked]
+  indexSet:= self.checkedIndexSet;
+  if ownerData and Assigned(listView) and (row>=0) and (row < listView.Items.Count) then
+    IsChecked := BoolState[listView.Items[row].Checked]
   else
-    IsChecked := BoolState[checkedIndexSet.containsIndex(ARow)];
+    IsChecked := BoolState[checkedIndexSet.containsIndex(row)];
   Result := true;
 end;
 
@@ -410,15 +412,15 @@ begin
 
 end;
 
-procedure TLCLListViewCallback.SetItemCheckedAt(ARow, ACol: Integer;
+procedure TLCLListViewCallback.SetItemCheckedAt( row: Integer;
   IsChecked: Integer);
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
   if IsChecked = NSOnState
-    then checkedIndexSet.addIndex(ARow)
-    else checkedIndexSet.removeIndex(ARow);
+    then checkedIndexSet.addIndex(row)
+    else checkedIndexSet.removeIndex(row);
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
@@ -427,7 +429,7 @@ begin
 
   NMLV.hdr.hwndfrom := ListView.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGED;
-  NMLV.iItem := ARow;
+  NMLV.iItem := row;
   NMLV.iSubItem := 0;
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
@@ -583,7 +585,7 @@ begin
 end;
 
 function TLCLListViewCallback.listViewCustomDraw(row: Integer; col: Integer;
-  ctx: TCocoaContext): Boolean;
+  ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
 var
   ALV: TCustomListViewAccess;
   drawTarget: TCustomDrawTarget;
@@ -600,7 +602,7 @@ begin
     drawTarget:= dtControl;
 
   ALV.Canvas.Handle:= HDC(ctx);
-  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, [], @rect );
+  drawResult:= ALV.IntfCustomDraw( drawTarget, cdPrePaint, row, col, state, @rect );
   ALV.Canvas.Handle:= 0;
   Result:= cdrSkipDefault in drawResult;
 end;

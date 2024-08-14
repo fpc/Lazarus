@@ -605,7 +605,7 @@ begin
   cv:= TCocoaCollectionView( self.collectionView );
   indexPath:= cv.indexPathForItem( self );
   row:= indexPath.item;
-  cv.callback.SetItemCheckedAt( row, 0, sender.state );
+  cv.callback.SetItemCheckedAt( row, sender.state );
   if sender.state = NSOnState then begin
     cv.selectOneItemByIndex( row, True );
     self.view.window.makeFirstResponder( self.collectionView );
@@ -811,7 +811,7 @@ begin
 
   checkBox:= cocoaItem.checkBox;
   if Assigned(checkBox) then begin
-    self.callback.GetItemCheckedAt( row, 0, checkedValue );
+    self.callback.GetItemCheckedAt( row, checkedValue );
     checkBox.setState( checkedValue );
     checkBox.setHidden( NOT ((checkedValue=NSOnState) or isSelected) );
   end;

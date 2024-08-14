@@ -457,6 +457,29 @@ begin
   Result:= NSZeroSize;
 end;
 
+function isFocused( tv: TCocoaTableListView ; row: NSInteger ): Boolean;
+begin
+  Result:= False;
+  if Assigned(tv.window) and (tv.window.firstResponder = tv) then begin
+    if row < 0 then
+      Result:= True
+    else if tv.isRowSelected(row) then
+      Result:= True;
+  end;
+end;
+
+function isChecked( tv: TCocoaTableListView ; row: NSInteger ): Boolean;
+var
+  checked: Integer;
+begin
+  Result:= False;
+  if row < 0 then
+    Exit;
+
+  tv.callback.GetItemCheckedAt( row, checked );
+  Result:= checked=NSOnState;
+end;
+
 function TCocoaTableListView.lclCallDrawItem(row: NSInteger; clipRect: NSRect
   ): Boolean;
 var
@@ -473,9 +496,11 @@ begin
   try
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
-    if lclIsEnabled then Include(ItemState, odDisabled);
-    if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
+    if NOT lclIsEnabled then Include(ItemState, odDisabled);
+    if isFocused(self,row) then
       Include(ItemState, odFocused);
+    if isChecked(self,row) then
+      Include(ItemState, odChecked);
 
     Result:= callback.commonDrawItem(row, ctx, NSRectToRect(clipRect), ItemState);
   finally
@@ -487,20 +512,22 @@ function TCocoaTableListView.lclCallCustomDraw(row: Integer; col: Integer;
   clipRect: NSRect): Boolean;
 var
   ctx: TCocoaContext;
-  ItemState: TOwnerDrawState;
+  state: TCustomDrawState;
 begin
   Result:= False;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(clipRect.size.width), Round(clipRect.size.height));
   try
-    ItemState := [];
-    if isRowSelected(row) then Include(ItemState, odSelected);
-    if lclIsEnabled then Include(ItemState, odDisabled);
-    if Assigned(window) and (window.firstResponder = self) and (odSelected in ItemState) then
-      Include(ItemState, odFocused);
+    state := [];
+    if isRowSelected(row) then Include(state, cdsSelected);
+    if NOT lclIsEnabled then Include(state, cdsDisabled);
+    if isFocused(self,row) then
+      Include(state, cdsFocused);
+    if isChecked(self,row) then
+      Include(state, cdsChecked);
 
-    Result:= callback.listViewCustomDraw(row, col, ctx);
+    Result:= callback.listViewCustomDraw(row, col, ctx, state);
   finally
     ctx.Free;
   end;
@@ -1104,7 +1131,7 @@ begin
   lclcb:= tv.callback;
 
   if Assigned(_checkBox) then begin
-    lclcb.GetItemCheckedAt( row, 0, checkedValue );
+    lclcb.GetItemCheckedAt( row, checkedValue );
     _checkBox.setState( checkedValue );
   end;
 
@@ -1248,7 +1275,7 @@ begin
   if not Assigned(callback) then Exit;
 
   row := rowForView(sender.superview);
-  callback.SetItemCheckedAt(row, 0, sender.state);
+  callback.SetItemCheckedAt(row, sender.state);
   if sender.state = NSOnState then begin
     self.selectOneItemByIndex(row, True);
     self.window.makeFirstResponder( self );

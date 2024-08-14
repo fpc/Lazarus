@@ -280,17 +280,17 @@ type
     function ItemsCount: Integer; virtual;
     function GetImageListType(out lvil: TListViewImageList): Boolean; virtual;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; virtual;
-    function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Integer): Boolean; virtual;
+    function GetItemCheckedAt( row: Integer; var isChecked: Integer): Boolean; virtual;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; virtual;
     function GetImageFromIndex(imgIdx: Integer): NSImage; virtual;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual;
-    procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
+    procedure SetItemCheckedAt( row: Integer; isChecked: Integer); virtual;
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
     procedure ColumnClicked(ACol: Integer); virtual;
     function commonDrawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
       state: TOwnerDrawState ): Boolean; virtual;
     function listViewCustomDraw( row: Integer; col: Integer;
-      ctx: TCocoaContext ): Boolean; virtual;
+      ctx: TCocoaContext; state: TCustomDrawState ): Boolean; virtual;
     procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
     function GetBorderStyle: TBorderStyle;
     function onAddSubview(aView: NSView): Boolean;
@@ -628,7 +628,7 @@ begin
   if Result then Text := strings[ARow];
 end;
 
-function TLCLListBoxCallback.GetItemCheckedAt(ARow, ACol: Integer;
+function TLCLListBoxCallback.GetItemCheckedAt( row: Integer;
   var isChecked: Integer): Boolean;
 begin
   Result := false;
@@ -651,7 +651,7 @@ begin
   // todo:
 end;
 
-procedure TLCLListBoxCallback.SetItemCheckedAt(ARow, ACol: Integer;
+procedure TLCLListBoxCallback.SetItemCheckedAt( row: Integer;
   isChecked: Integer);
 begin
   // do nothing
@@ -686,7 +686,7 @@ begin
 end;
 
 function TLCLListBoxCallback.listViewCustomDraw(row: Integer; col: Integer;
-  ctx: TCocoaContext): Boolean;
+  ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
 begin
   Result:= False;
 end;
