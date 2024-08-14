@@ -96,11 +96,11 @@ msgstr "Имя пусто: "
 
 #: anchordockstr.adrsenableanchordock
 msgid "Enable docking of IDE Windows (Requires IDE restart)"
-msgstr ""
+msgstr "Включить стыковку окон IDE (требует перезапуска)"
 
 #: anchordockstr.adrsenableanchordockhint
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
-msgstr ""
+msgstr "Этот параметр позволяет объединить все окна (или их группы) в рамках одного окна. Отключите его, чтобы получить \"классическую\" IDE с плавающими окнами."
 
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
