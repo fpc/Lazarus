@@ -317,6 +317,8 @@ type
   { TCocoaReadOnlyComboBox }
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
+  private
+    _textColorAttribs: NSDictionary;
   public
     //Owner: TCustomComboBox;
     callback: IComboboxCallBack;
@@ -336,6 +338,8 @@ type
     function stringValue: NSString; override;
     // drawing
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure setTextColor(newValue: NSColor); message 'setTextColor:';
+    function colorTitle(ATitle: NSString): NSAttributedString; message 'colorTitle:';
     // mouse
     function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -510,6 +514,7 @@ begin
     inc(FId);
   end;
   mn.setTitle(astr);
+  mn.setAttributedTitle( FOwner.colorTitle(astr) );
   astr.release;
 
   if FOwner.isOwnerDrawn then
@@ -1585,6 +1590,7 @@ end;
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
   FreeAndNil( list );
+  _textColorAttribs.release;
   if resultNS <> nil then resultNS.release;
   inherited dealloc;
 end;
@@ -1695,6 +1701,29 @@ begin
       ctx.Free;
     end;
   end;
+end;
+
+procedure TCocoaReadOnlyComboBox.setTextColor(newValue: NSColor);
+var
+  item: NSMenuItem;
+begin
+  if Assigned(_textColorAttribs) then
+    _textColorAttribs.release;
+  _textColorAttribs:= NSMutableDictionary.alloc.initWithCapacity(1);
+  _textColorAttribs.setValue_forKey( newValue, NSForegroundColorAttributeName );
+
+  for item in self.itemArray do begin
+    item.setAttributedTitle( self.colorTitle(item.title) );
+  end;
+end;
+
+function TCocoaReadOnlyComboBox.colorTitle(ATitle: NSString
+  ): NSAttributedString;
+begin
+  Result:= NSMutableAttributedString.alloc.initWithString_attributes(
+             ATitle,
+             _textColorAttribs );
+  Result.autorelease;
 end;
 
 function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
