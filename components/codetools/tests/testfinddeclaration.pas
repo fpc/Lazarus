@@ -150,6 +150,7 @@ type
     procedure TestFindDeclaration_VarArgsOfType;
     procedure TestFindDeclaration_ProcRef;
     procedure TestFindDeclaration_Ampersand;
+    procedure TestFindDeclaration_Ampersand_UnitName;
 
     // unit/include search
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
@@ -289,15 +290,13 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
 var
   CommentP: Integer;
   p: Integer;
-  ExpectedPath: String;
+  Src, ExpectedPath, FoundPath: String;
   PathPos: Integer;
   CursorPos, FoundCursorPos: TCodeXYPosition;
   FoundTopLine: integer;
   FoundTool: TFindDeclarationTool;
   FoundCleanPos: Integer;
   FoundNode: TCodeTreeNode;
-  FoundPath: String;
-  Src: String;
   NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpexctedCompletion, ExpexctedTerm,
@@ -1360,6 +1359,27 @@ begin
   'implementation',
   'initialization',
   '  Bird.&Type{declaration:test1.TBird.Type} = &True{declaration:test1.True};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Ampersand_UnitName;
+var
+  UnitType: TCodeBuffer;
+begin
+  UnitType:=CodeToolBoss.CreateFile('type.pas');
+  UnitType.Source:=
+    'unit &Type;'+sLineBreak
+    +'interface'+sLineBreak
+    +'var r: word;'+sLineBreak
+    +'implementation'+sLineBreak
+    +'end.';
+
+  StartProgram;
+  Add([
+  'uses &Type;',
+  'begin',
+  '  r{declaration:&type.r}:=3;',
   'end.']);
   FindDeclarations(Code);
 end;
