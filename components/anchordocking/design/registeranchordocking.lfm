@@ -10,8 +10,8 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
   DesignTop = 295
   object NoteLabel: TLabel
     Left = 6
-    Height = 15
-    Top = 31
+    Height = 16
+    Top = 35
     Width = 483
     Align = alTop
     BorderSpacing.Around = 6
@@ -20,12 +20,14 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
   end
   object cbEnableAnchorDocking: TCheckBox
     Left = 6
-    Height = 19
+    Height = 23
     Top = 6
     Width = 483
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'cbEnableAnchorDocking'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     OnChange = cbEnableAnchorDockingChange
   end
