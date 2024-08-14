@@ -11,6 +11,10 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.2.4\n"
 
+#: idedebuggerstringconstants.arrnavenforcebounds
+msgid "Enforce bounds"
+msgstr ""
+
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
 msgstr "- Добавить новую группу -"

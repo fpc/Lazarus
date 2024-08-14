@@ -5,7 +5,7 @@ unit ArrayNavigationFrame;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, SpinEx,
+  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, LCLType, SpinEx, LazNumEdit,
   IDEImagesIntf, IdeDebuggerStringConstants;
 
 type
@@ -23,14 +23,18 @@ type
     btnArrayPageDec: TSpeedButton;
     btnArrayPageInc: TSpeedButton;
     btnArrayStart: TSpeedButton;
-    edArrayPageSize: TSpinEditEx;
-    edArrayStart: TSpinEditEx;
+    cbEnforceBound: TCheckBox;
     Label1: TLabel;
+    edArrayPageSize: TLazIntegerEdit;
+    edArrayStart: TLazIntegerEdit;
     lblBounds: TLabel;
     procedure BtnChangePageClicked(Sender: TObject);
     procedure BtnChangeSizeClicked(Sender: TObject);
+    procedure cbEnforceBoundChange(Sender: TObject);
     procedure edArrayPageSizeEditingDone(Sender: TObject);
+    procedure edArrayPageSizeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edArrayStartEditingDone(Sender: TObject);
+    procedure edArrayStartKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FHardLimits: Boolean;
     FHighBound: int64;
@@ -134,16 +138,122 @@ begin
     FOnPageSize(Self, edArrayStart.Value);
 end;
 
+procedure TArrayNavigationBar.cbEnforceBoundChange(Sender: TObject);
+begin
+  UpdateBoundsInfo;
+end;
+
 procedure TArrayNavigationBar.edArrayPageSizeEditingDone(Sender: TObject);
 begin
   if (FOnPageSize <> nil) then
     FOnPageSize(Self, edArrayStart.Value);
 end;
 
+procedure TArrayNavigationBar.edArrayPageSizeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  v: Int64;
+begin
+  if not edArrayPageSize.Valid then
+    exit;
+  v := edArrayPageSize.CurrentValue;
+
+  case Key of
+    VK_UP: begin
+        if ssCtrl in Shift then
+          edArrayPageSize.Value := Min(5000, v + 5)
+        else
+          edArrayPageSize.Value := Min(5000, v + 1);
+      end;
+    VK_DOWN: begin
+        if ssCtrl in Shift then
+          edArrayPageSize.Value := Max(10, v - 5)
+        else
+          edArrayPageSize.Value := Max(10, v - 1);
+      end;
+    VK_PRIOR: begin
+        if ssCtrl in Shift then
+          edArrayPageSize.Value := Min(5000, FHighBound - FLowBound+1)
+        else
+          edArrayPageSize.Value := Min(5000, v + 10);
+      end;
+    VK_NEXT: begin
+        if ssCtrl in Shift then
+          edArrayPageSize.Value := 10
+        else
+          edArrayPageSize.Value := Max(10, v - 10);
+      end;
+  end;
+end;
+
 procedure TArrayNavigationBar.edArrayStartEditingDone(Sender: TObject);
 begin
   if (FOnIndexChanged <> nil) then
     FOnIndexChanged(Self, edArrayStart.Value);
+end;
+
+procedure TArrayNavigationBar.edArrayStartKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  v, PgSz: Int64;
+  OutOfBnd: Boolean;
+
+  function MaxVal(v: int64): integer;
+  begin
+    if OutOfBnd then
+      Result := Min(high(Integer), v)
+    else
+      Result := Min(FHighBound, v);
+  end;
+  function MinVal(v: int64): integer;
+  begin
+    if OutOfBnd then
+      Result := Max(low(Integer)+1, v)
+    else
+      Result := Max(FLowBound, v);
+  end;
+begin
+  if not edArrayStart.Valid then
+    exit;
+
+  if (not FHardLimits) and (ssAlt in Shift) then
+    cbEnforceBound.Checked := False;
+
+  OutOfBnd := (not FHardLimits) and (not cbEnforceBound.Checked);
+
+  v := edArrayStart.CurrentValue;
+  PgSz := edArrayPageSize.CurrentValue;
+  case Key of
+    VK_UP: begin
+        if ssCtrl in Shift then
+          edArrayStart.Value := MaxVal(v + Max(2, PgSz div 2))
+        else
+          edArrayStart.Value := MaxVal(v + 1);
+        Key := 0;
+      end;
+    VK_DOWN: begin
+        if ssCtrl in Shift then
+          edArrayStart.Value := MinVal(v - Max(2, PgSz div 2))
+        else
+          edArrayStart.Value := MinVal(v - 1);
+        Key := 0;
+      end;
+    VK_PRIOR: begin
+        if ssCtrl in Shift then
+          edArrayStart.Value :=  Max(FLowBound,
+                                     FHighBound + 1 - PgSz)
+        else
+          edArrayStart.Value := MaxVal(v + PgSz);
+        Key := 0;
+      end;
+    VK_NEXT: begin
+        if ssCtrl in Shift then
+          edArrayStart.Value := FLowBound
+        else
+          edArrayStart.Value := MinVal(v - PgSz);
+        Key := 0;
+      end;
+  end;
 end;
 
 function TArrayNavigationBar.GetIndex: int64;
@@ -173,8 +283,11 @@ end;
 
 procedure TArrayNavigationBar.SetHardLimits(AValue: Boolean);
 begin
+  if FHardLimits = AValue then
+    exit;
   FHardLimits := AValue;
   UpdateBoundsInfo;
+  cbEnforceBound.Visible := not FHardLimits;
 end;
 
 procedure TArrayNavigationBar.SetIndex(AValue: int64);
@@ -211,7 +324,7 @@ end;
 
 procedure TArrayNavigationBar.UpdateBoundsInfo;
 begin
-  if FHardLimits then begin
+  if FHardLimits or cbEnforceBound.Checked then begin
     edArrayPageSize.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
     btnArrayPageInc.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
     btnArrayPageDec.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
@@ -222,8 +335,8 @@ begin
     edArrayPageSize.Visible := True;
     btnArrayPageInc.Visible := True;
     btnArrayPageDec.Visible := True;
-    edArrayStart.MaxValue := 0;
-    edArrayStart.MinValue := 0;
+    edArrayStart.MaxValue := High(Integer)+1;
+    edArrayStart.MinValue := Low(Integer);
   end;
 
   if FShowBoundInfo then
@@ -270,9 +383,9 @@ begin
   btnArrayPageInc.ImageIndex := IDEImages.LoadImage('NavPlus');
   btnArrayPageInc.Caption    := '';
 
-
   btnArrayFastDown.Caption := '';
 
+  cbEnforceBound.Caption := arrnavEnforceBounds;
 end;
 
 end.

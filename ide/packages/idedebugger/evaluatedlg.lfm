@@ -62,36 +62,6 @@ object EvaluateDlg: TEvaluateDlg
         ClientHeight = 23
         ClientWidth = 253
         TabOrder = 1
-        inherited btnArrayFastDown: TSpeedButton
-          Height = 23
-        end
-        inherited btnArrayFastUp: TSpeedButton
-          Height = 23
-        end
-        inherited edArrayStart: TSpinEditEx
-          Height = 23
-        end
-        inherited btnArrayStart: TSpeedButton
-          Height = 23
-        end
-        inherited btnArrayEnd: TSpeedButton
-          Height = 23
-        end
-        inherited Label1: TLabel
-          Height = 23
-        end
-        inherited btnArrayPageDec: TSpeedButton
-          Height = 23
-        end
-        inherited edArrayPageSize: TSpinEditEx
-          Height = 23
-        end
-        inherited btnArrayPageInc: TSpeedButton
-          Height = 23
-        end
-        inherited lblBounds: TLabel
-          Height = 23
-        end
       end
       inherited tbDivArray: TToolButton
         Left = 254

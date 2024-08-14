@@ -12,6 +12,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: pt_BR\n"
 
+#: idedebuggerstringconstants.arrnavenforcebounds
+msgid "Enforce bounds"
+msgstr ""
+
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
 msgstr ""

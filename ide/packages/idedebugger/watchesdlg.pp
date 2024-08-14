@@ -48,15 +48,15 @@ uses
   //SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf, IDEDialogs,
+  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
   // LazDebuggerIntf
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
-  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, ArrayNavigationFrame, IdeDebuggerUtils,
-  IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions, IdeDebuggerValueFormatter,
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, IdeDebuggerUtils,
+  IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions,
   IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink;
 
 type

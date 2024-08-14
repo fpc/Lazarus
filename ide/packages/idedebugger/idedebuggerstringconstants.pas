@@ -509,6 +509,7 @@ resourcestring
   dbgDoNotShowThisMessageAgain = 'Do not ask again';
   optDispGutterCustomDisplayformat = 'Custom Display Format';
   dbgConvertOrdinalToName = 'Conversion of ordinal to name';
+  arrnavEnforceBounds = 'Enforce bounds';
 
 implementation
 

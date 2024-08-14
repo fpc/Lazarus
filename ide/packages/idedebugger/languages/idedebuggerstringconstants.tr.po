@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.2\n"
 
+#: idedebuggerstringconstants.arrnavenforcebounds
+msgid "Enforce bounds"
+msgstr ""
+
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
 msgstr ""

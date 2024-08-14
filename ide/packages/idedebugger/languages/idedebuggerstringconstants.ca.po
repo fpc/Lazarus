@@ -5,6 +5,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.arrnavenforcebounds
+msgid "Enforce bounds"
+msgstr ""
+
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
 msgstr ""
