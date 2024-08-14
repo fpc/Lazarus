@@ -191,7 +191,7 @@ function dbgsDiff(Expected, Actual: string): string; overload;
 // dotted identifiers
 function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
-function IsDottedIdentifier(const Identifier: string): boolean;
+function IsDottedIdentifier(const Identifier: string; WithAmp: boolean = false): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer; // compares both to maximum dotted identifier
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer; // case sensitive CompareDottedIdentifiers
 function ChompDottedIdentifier(const Identifier: string): string;
@@ -5249,7 +5249,7 @@ begin
     System.Move(Identifier^,Result[1],l);
 end;
 
-function IsDottedIdentifier(const Identifier: string): boolean;
+function IsDottedIdentifier(const Identifier: string; WithAmp: boolean): boolean;
 var
   p: PChar;
 begin
@@ -5257,6 +5257,8 @@ begin
   if Identifier='' then exit;
   p:=PChar(Identifier);
   repeat
+    if WithAmp and (p^='&') then
+      inc(p);
     if not IsIdentStartChar[p^] then exit;
     repeat
       inc(p);
