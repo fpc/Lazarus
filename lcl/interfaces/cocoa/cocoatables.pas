@@ -351,10 +351,17 @@ begin
   Result := TCocoaTableListView.alloc;
 end;
 
+procedure hideAllSubviews( parent: NSView );
+var
+  view: NSView;
+begin
+  for view in parent.subviews do
+    view.setHidden( True );
+end;
+
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
-  view: NSView;
 begin
   done:= self.tableView.lclCallDrawItem( row , self.bounds.size, dirtyRect );
 
@@ -363,10 +370,9 @@ begin
     // we can only hide the CellViews to get the same effect.
     // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
     // it's a case where the default drawing must be skipped.
-    for view in self.subviews do
-      view.setHidden( True );
+    hideAllSubviews( self );
   end else begin
-    inherited drawRect(dirtyRect);
+    inherited drawRect( dirtyRect );
   end;
 end;
 
@@ -551,7 +557,6 @@ end;
 procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
-  view: NSView;
 begin
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
@@ -561,10 +566,9 @@ begin
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the SubviewViews to get the same effect.
-    for view in self.subviews do
-      view.setHidden( True );
+    hideAllSubviews( self );
   end else begin
-    inherited drawRect(dirtyRect);
+    inherited drawRect( dirtyRect );
   end;
 end;
 
@@ -1042,7 +1046,6 @@ var
   row: Integer;
   col: Integer;
   done: Boolean;
-  view: NSView;
 begin
   row:= _tableView.rowForView( self );
   col:= _tableView.columnForView( self );
@@ -1052,10 +1055,9 @@ begin
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the CellViews to get the same effect.
-    // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
-    // it's a case where the default drawing must be skipped.
-    for view in self.subviews do
-      view.setHidden( True );
+    // in the Lazarus IDE, there is a ListView with OnCustomDrawItem
+    // in Perferences-Component Palette.
+    hideAllSubviews( self );
   end else begin
     inherited drawRect(dirtyRect);
   end;
