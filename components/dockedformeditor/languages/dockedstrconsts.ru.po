@@ -120,7 +120,7 @@ msgstr "Отвязать сторону компонента"
 
 #: dockedstrconsts.senabledockeddsgner
 msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
-msgstr ""
+msgstr "Показывать редактор форм в виде вкладки окна редактора исходного кода (требует перезапуска IDE)"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"
