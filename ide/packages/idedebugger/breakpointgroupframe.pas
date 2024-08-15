@@ -59,6 +59,7 @@ type
   protected
     procedure SetVisible(Value: Boolean); reintroduce;
     procedure VisibleChanged; override;
+    procedure BoundsChanged; override;
     procedure CreateWnd; override;
   public
     constructor Create(TheOwner: TBreakPointsDlgBase; ATree: TDbgTreeView; ANode: PVirtualNode;
@@ -276,21 +277,27 @@ end;
 procedure TBreakpointGroupFrame.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if IsVisible then
-    FTree.NodeHeight[FNode] := min(40, Max(15, ToolBar1.Height));
+  if HandleAllocated and IsVisible then
+    FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
+end;
+
+procedure TBreakpointGroupFrame.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  if HandleAllocated and IsVisible then
+    FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
 end;
 
 procedure TBreakpointGroupFrame.CreateWnd;
 begin
   inherited CreateWnd;
-  FTree.NodeHeight[FNode] := min(40, Max(15, ToolBar1.Height));
+  FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
 end;
 
 constructor TBreakpointGroupFrame.Create(TheOwner: TBreakPointsDlgBase;
   ATree: TDbgTreeView; ANode: PVirtualNode; ABrkGroup: TIDEBreakPointGroup;
   AGroupKind: TBreakpointGroupFrameKind);
 begin
-  inherited Create(nil);
   FOwner    := TheOwner;
   FTree     := ATree;
   FNode     := ANode;
@@ -301,6 +308,8 @@ begin
   else
   if AGroupKind = bgfGroup then
     FGroupKind := bgfUngrouped;
+
+  inherited Create(nil);
 
   ToolBar1.Images := IDEImages.Images_16;
 
