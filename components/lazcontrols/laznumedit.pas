@@ -346,18 +346,24 @@ procedure TLazIntegerEditGen.UpdateText(ANewText: string; AnAdjustPos: Integer;
   AnAdjustOffs: Integer; AWasEmpty: boolean);
 var
   sb, se, m: Integer;
+  ToEnd: Boolean;
 begin
   sb := SelStart;
   se := sb+SelLength;
+  ToEnd := se = Length(Text);
   Text := ANewText;
 
   if AnAdjustOffs <> 0 then begin
     m := AnAdjustPos;
     if AnAdjustOffs < 0 then m := m + AnAdjustOffs;
-    if sb >= AnAdjustPos then sb := Max(m, sb + AnAdjustOffs);
-    if se >= AnAdjustPos then se := Max(m, se + AnAdjustOffs);
+    if (sb >= AnAdjustPos) and
+       not((sb=0) and ToEnd)
+    then
+      sb := Max(m, sb + AnAdjustOffs);
+    if se >= AnAdjustPos then
+      se := Max(m, se + AnAdjustOffs);
   end;
-  if AWasEmpty then
+  if AWasEmpty or ToEnd then
     se := Length(ANewText);
 
   SelStart := sb;
@@ -597,13 +603,17 @@ begin
   else
   if FAllowMinus and (key = '-') then begin
     DecodeText(p, v, False);
-    UpdateText(EncodeText(p, -v, FLastDecodeWasEmpty));
+    if v > 0 then
+      UpdateText(EncodeText(p, -v, FLastDecodeWasEmpty), 0, 1)
+    else
+    if v < 0 then
+      UpdateText(EncodeText(p, -v, FLastDecodeWasEmpty), 1, -1);
   end
   else
   if FAllowPlus and (key = '+') then begin
     DecodeText(p, v, False);
     if v < 0 then
-      UpdateText(EncodeText(p, -v, FLastDecodeWasEmpty));
+      UpdateText(EncodeText(p, -v, FLastDecodeWasEmpty), 1, -1);
   end;
 
   Key := #0;
