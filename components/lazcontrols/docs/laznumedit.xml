@@ -26,25 +26,9 @@ numeric base.
 <element name="Clipbrd"/>
 <element name="StrUtils"/>
 
-<element name="Min_limit">
-<short>
-Lower limit for the value in an Integer edit control.
-</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="Max_limit">
-<short>
-Upper limit for the value in an Integer edit control.
-</short>
-<descr/>
-<seealso/>
-</element>
-
 <element name="TLazIntegerEditBaseChangeEvent">
 <short>
-Specified an event handler signalled when the numeric base for an Integer edit control is changed.
+Specifies an event handler signalled when the numeric base (radix) for an Integer edit control is changed.
 </short>
 <descr/>
 <seealso/>
@@ -55,13 +39,19 @@ Control for the event notification.
 </short>
 </element>
 <element name="TLazIntegerEditBaseChangeEvent.ACurrentBase">
-<short/>
+<short>
+Current numeric base for the notification.
+</short>
 </element>
 <element name="TLazIntegerEditBaseChangeEvent.ANewBase">
-<short/>
+<short>
+New numeric base for the notification.
+</short>
 </element>
 <element name="TLazIntegerEditBaseChangeEvent.APrefix">
-<short/>
+<short>
+Optional prefix for the new numeric base.
+</short>
 </element>
 
 <element name="TLazIntegerEditGen">
@@ -74,6 +64,23 @@ base.
 <link id="TLazIntegerEdit"/>
 <link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
 </seealso>
+</element>
+
+<!-- protected -->
+<element name="TLazIntegerEditGen.Min_limit">
+<short>
+Lower limit for the Int64 value in the control.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLazIntegerEditGen.Max_limit">
+<short>
+Upper limit for the Int64 value in the control.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- private -->
@@ -436,11 +443,39 @@ Owner of the class instance.
 </element>
 
 <!-- published -->
-<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.Value"/>
+<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.Value"/>
 
-<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.MinValue"/>
+<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.MinValue"/>
 
-<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumeduit.TLazIntegerEditGenEdit.MaxValue"/>
+<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.MaxValue"/>
+
+<element name="TLazIntegerEdit.DisplayBase" link="#lazcontrols.laznumedit.TLazIntegerEditGen.DisplayBase"/>
+
+<element name="TLazIntegerEdit.SetDecimalKeys" link="#lazcontrols.TLazIntegerEditGen.SetDecimalKeys"/>
+
+<element name="TLazIntegerEdit.HexIndicator" link="#lazcontrols.TLazIntegerEditGen.HexIndicator"/>
+
+<element name="TLazIntegerEdit.SetHexKeys" link="#lazcontrols.TLazIntegerEditGen.SetHexKeys"/>
+
+<element name="TLazIntegerEdit.ToggleHexKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleHexKeys"/>
+
+<element name="TLazIntegerEdit.OctIndicator" link="#lazcontrols.TLazIntegerEditGen.OctIndicator"/>
+
+<element name="TLazIntegerEdit.SetOctKeys" link="#lazcontrols.TLazIntegerEditGen.SetOctKeys"/>
+
+<element name="TLazIntegerEdit.ToggleOctKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleOctKeys"/>
+
+<element name="TLazIntegerEdit.BinIndicator" link="#lazcontrols.TLazIntegerEditGen.BinIndicator"/>
+
+<element name="TLazIntegerEdit.SetBinKeys" link="#lazcontrols.TLazIntegerEditGen.SetBinKeys"/>
+
+<element name="TLazIntegerEdit.ToggleBinKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleBinKeys"/>
+
+<element name="TLazIntegerEdit.OnBaseChange" link="#lazcontrols.TLazIntegerEditGen.OnBaseChange"/>
+
+<element name="TLazIntegerEdit.AllowMinus" link="#lazcontrols.TLazIntegerEditGen.AllowMinus"/>
+
+<element name="TLazIntegerEdit.AllowPlus" link="#lazcontrols.TLazIntegerEditGen.AllowPlus"/>
 
 <!-- public -->
 <!-- TODO: replicate inherited content or link to topic -->
