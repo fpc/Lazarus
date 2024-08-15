@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, LMessages, Controls,
-  ImgList, LCLIntf;
+  ImgList, LCLIntf, Graphics;
 
 type
 
@@ -46,6 +46,11 @@ type
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
     ImageIndex: Array of Integer;
     CachedText: Array of String;
+    CachedColumnData: array of record
+      ShortenWidth1, ShortenWidth2: integer;
+      ShortenResText: string;
+      ColWidth: integer;
+    end;
     Control: TControl;
     PrevControlNode, NextControlNode: PVirtualNode;
   end;
@@ -90,9 +95,11 @@ type
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var AText: String); override;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
-    function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-      Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer
-      ): TCustomImageList; override;
+    function DoGetNodeWidth(ANode: PVirtualNode; AColumn: TColumnIndex; ACanvas: TCanvas =
+      nil): Integer; override;
+    function DoShortenString(ACanvas: TCanvas; ANode: PVirtualNode; AColumn: TColumnIndex;
+      const S: String; AWidth: Integer; AnEllipsisWidth: Integer = 0): String; override;
+    procedure DoNodeMoved(ANode: PVirtualNode); override;
   public
     function GetNodeData(Node: PVirtualNode): PDbgTreeNodeData; reintroduce;
     function GetFocusedNode(OnlySelected: Boolean = True; AnIncludeControlNodes: Boolean = False): PVirtualNode;
@@ -292,9 +299,14 @@ var
 begin
   Data := GetNodeData(Node);
   if Data <> nil then begin
-    if AColumn >= Length(Data^.CachedText) then
+    if AColumn >= Length(Data^.CachedText) then begin
       SetLength(Data^.CachedText, AColumn + 1);
+      SetLength(Data^.CachedColumnData, AColumn + 1);
+    end;
     Data^.CachedText[AColumn] := AValue;
+    Data^.CachedColumnData[AColumn].ColWidth := -1;
+    Data^.CachedColumnData[AColumn].ShortenWidth1 := -1;
+    Data^.CachedColumnData[AColumn].ShortenResText := '';
   end;
 end;
 
@@ -547,14 +559,69 @@ begin
   inherited DoPaintNode(PaintInfo);
 end;
 
-function TDbgTreeView.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
-  Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer
-  ): TCustomImageList;
+function TDbgTreeView.DoGetNodeWidth(ANode: PVirtualNode; AColumn: TColumnIndex; ACanvas: TCanvas
+  ): Integer;
+var
+  NData: PDbgTreeNodeData;
 begin
-  Result := nil;
-  Ghosted := False;
-  Index := GetNodeImageIndex(Node, Column);
+  NData := GetNodeData(ANode);
+  if (AColumn > 0) and (AColumn < Length(NData^.CachedText)) then begin
+    Result := NData^.CachedColumnData[AColumn].ColWidth;
+    if Result > 0 then
+      exit;
+
+    Result := inherited DoGetNodeWidth(ANode, AColumn, ACanvas);
+    NData^.CachedColumnData[AColumn].ColWidth := Result;
+    exit;
+  end;
+
+
+  Result := inherited DoGetNodeWidth(ANode, AColumn, ACanvas);
 end;
+
+function TDbgTreeView.DoShortenString(ACanvas: TCanvas; ANode: PVirtualNode;
+  AColumn: TColumnIndex; const S: String; AWidth: Integer; AnEllipsisWidth: Integer): String;
+var
+  NData: PDbgTreeNodeData;
+begin
+  NData := GetNodeData(ANode);
+  if (AColumn < Length(NData^.CachedText)) and (s = NData^.CachedText[AColumn]) then begin
+    if (AWidth = NData^.CachedColumnData[AColumn].ShortenWidth1) and (AnEllipsisWidth = NData^.CachedColumnData[AColumn].ShortenWidth2) then begin
+      Result := NData^.CachedColumnData[AColumn].ShortenResText;
+      exit;
+    end;
+
+    Result := inherited DoShortenString(ACanvas, ANode, AColumn, S, AWidth, AnEllipsisWidth);
+    NData^.CachedColumnData[AColumn].ShortenWidth1 := AWidth;
+    NData^.CachedColumnData[AColumn].ShortenWidth2 := AnEllipsisWidth;
+    NData^.CachedColumnData[AColumn].ShortenResText := Result;
+    exit;
+  end;
+
+  Result := inherited DoShortenString(ACanvas, ANode, AColumn, S, AWidth, AnEllipsisWidth);
+end;
+
+procedure TDbgTreeView.DoNodeMoved(ANode: PVirtualNode);
+var
+  NData: PDbgTreeNodeData;
+  i: Integer;
+  N: PVirtualNode;
+begin
+  inherited DoNodeMoved(ANode);
+
+  NData := GetNodeData(ANode);
+  for i := 0 to Length(NData^.CachedColumnData) - 1 do begin
+    NData^.CachedColumnData[i].ShortenResText := '';
+    NData^.CachedColumnData[i].ShortenWidth1 := -1;
+    NData^.CachedColumnData[i].ColWidth := -1;
+  end;
+
+  N := GetFirstChildNoInit(ANode);
+  if N <> nil then DoNodeMoved(N);
+  N := GetNextSiblingNoInit(ANode);
+  if N <> nil then DoNodeMoved(N);
+end;
+
 
 function TDbgTreeView.GetNodeData(Node: PVirtualNode): PDbgTreeNodeData;
 begin
