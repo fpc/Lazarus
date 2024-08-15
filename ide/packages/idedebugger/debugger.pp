@@ -7397,7 +7397,7 @@ begin
      TryStrToInt64(DisplayName, i) and
      (i >= ParentVal.FValue.LowBound) and (i < ParentVal.FValue.Count)
   then begin
-    ParentVal.FValue.SetSelectedIndex(i);
+    ParentVal.FValue.SetSelectedIndex(i-ParentVal.FValue.LowBound);
     // TODO: mark this as a copy / or don't store it, then no copy is needed
     FValue := ParentVal.FValue.SelectedEntry.CreateCopy;
     Result := True;
