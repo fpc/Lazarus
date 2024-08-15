@@ -11,10 +11,6 @@ uses
    and redirect the calls
 *)
 
-const
-  Min_Limit = low(Int64);
-  Max_Limit = High(Int64);
-
 type
 
   TLazIntegerEditBaseChangeEvent = procedure(ASender: TObject; ACurrentBase: Integer; var ANewBase: integer; var APrefix) of object;
@@ -22,6 +18,9 @@ type
   { TLazIntegerEditGen }
 
   generic TLazIntegerEditGen<T: TCustomEdit> = class(T)
+  protected const
+    Min_Limit = low(Int64);
+    Max_Limit = High(Int64);
   private
     FAllowMinus: Boolean;
     FAllowPlus: Boolean;
@@ -191,6 +190,7 @@ function QWord2Str(N: QWord; Base: Byte): string;
 
 implementation
 
+// from StrUtils.Dec2Numb / Numb2Dec
 function QWord2Str(N: QWord; Base: Byte): string;
 var
   C: Integer;
