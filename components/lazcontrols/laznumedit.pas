@@ -120,6 +120,20 @@ type
     property Value;
     property MinValue;
     property MaxValue;
+    property DisplayBase;
+    property SetDecimalKeys;
+    property HexIndicator;
+    property SetHexKeys;
+    property ToggleHexKeys;
+    property OctIndicator;
+    property SetOctKeys;
+    property ToggleOctKeys;
+    property BinIndicator;
+    property SetBinKeys;
+    property ToggleBinKeys;
+    property OnBaseChange;
+    property AllowMinus;
+    property AllowPlus;
   public
     property AutoSelected;
   published
@@ -508,7 +522,7 @@ procedure TLazIntegerEditGen._KeyPress(var Key: Char);
      ) ) );
   end;
 const
-  AllowedControlChars = [#8,#9,^C,^Z];
+  AllowedControlChars = [#8,#9,^A,^C,^Z];
 var
   Utf8Key: TUtf8Char;
   p: String;
@@ -551,7 +565,10 @@ begin
       val(Clipboard.AsText, v, e);
       if e = 0 then begin
         FValue := v;
-        Text := EncodeText(FCurrentBasePrefix, FValue);
+        s := EncodeText(FCurrentBasePrefix, FValue);
+        Text := s;
+        SelStart := Length(s);
+        SelLength := 0;
       end;
     end
     else
