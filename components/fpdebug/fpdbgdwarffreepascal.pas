@@ -2604,7 +2604,7 @@ var
   Arg: TFpValue;
   ctx: TFpDbgLocationContext;
   Addr, CodeAddr: TDBGPtr;
-  DataLoc: TFpDbgMemLocation;
+  DataLoc, DataLoc2: TFpDbgMemLocation;
   instr: TX86AsmInstruction;
   O1, O2: TInstructionOperand;
   OpVal: Int64;
@@ -2639,14 +2639,14 @@ begin
     else SetError('Could not get memory address');
     exit;
   end;
-  ctx.ReadAddress(DataLoc, SizeVal(ctx.SizeOfAddress), DataLoc);
-  if not IsTargetNotNil(DataLoc) then begin
+  ctx.ReadAddress(DataLoc, SizeVal(ctx.SizeOfAddress), DataLoc2);
+  if not IsTargetNotNil(DataLoc2) then begin
     if IsError(ctx.LastMemError) then SetError(ctx.LastMemError)
     else SetError('Could not get memory address');
     exit;
   end;
 
-  CodeAddr := DataLoc.Address;
+  CodeAddr := DataLoc2.Address;
   instr := TX86AsmInstruction(FDisAssembler.GetInstructionInfo(CodeAddr));
 
   if instr.X86OpCode = OPsub then begin
