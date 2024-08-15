@@ -120,6 +120,7 @@ type
     PgDown: TSpeedButton;
     PgUp: TSpeedButton;
     PopupMenu1: TPopupMenu;
+    ScrollBox1: TPanel;
     SettingsBtn: TBitBtn;
     prnDialog: TPrintDialog;
     ProcMenu: TPopupMenu;
@@ -140,7 +141,6 @@ type
     N6: TMenuItem;
     N7: TMenuItem;
     PreviewPanel: TPanel;
-    ScrollBox1: TScrollBox;
     RPanel: TPanel;
     BtPgFirst: TSpeedButton;
     BtPgLast: TSpeedButton;

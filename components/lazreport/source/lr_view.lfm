@@ -797,15 +797,13 @@ object frPreviewForm: TfrPreviewForm
     ClientWidth = 687
     FullRepaint = False
     TabOrder = 1
-    object ScrollBox1: TScrollBox
+    object ScrollBox1: TPanel
       Left = 1
       Height = 469
       Top = 1
       Width = 666
-      HorzScrollBar.Page = 1
-      VertScrollBar.Page = 1
       Align = alClient
-      BorderStyle = bsNone
+      BevelOuter = bvNone
       TabOrder = 0
     end
     object BPanel: TPanel
