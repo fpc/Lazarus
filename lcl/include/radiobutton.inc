@@ -115,6 +115,8 @@ begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then
   begin
     SetFocus;
+    if Focused then
+      Checked := True;
     Result := True;
   end else
     Result := inherited;
