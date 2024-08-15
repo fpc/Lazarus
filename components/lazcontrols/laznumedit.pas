@@ -411,6 +411,7 @@ var
   s: String;
   n: Boolean;
 begin
+  Result := True;
   APrefix := '';
   AVal := 0;
   s := RealGetText;
@@ -433,6 +434,7 @@ begin
       AVal := -AVal;
     {$POP}
   except
+    Result := False;
     if n then
       AVal := Min_Limit
     else
