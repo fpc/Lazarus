@@ -748,6 +748,7 @@ type
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
       procedure InitializeWidget; override;
+      procedure UpdateWidgetConstraints; override;
       function getClientRect: TRect; override;
       function getHorizontalScrollbar: PGtkScrollbar; override;
       function getVerticalScrollbar: PGtkScrollbar; override;
@@ -886,8 +887,6 @@ type
   public
     procedure Update({%H-}ARect: PRect); override;
   end;
-
-
 
 {main event filter for all widgets, also called from widgetset main eventfilter}
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
@@ -7226,6 +7225,11 @@ begin
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   else
     FWidgetType := [wtWidget, wtContainer, wtTabControl, wtScrollingWin, wtCustomControl];
+
+  // this hack is requred for controls without custom WS classes
+  if LCLObject is TUpDown then
+    include(FWidgetType,wtSpinEdit);
+
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   if FUseLayout then
@@ -7263,6 +7267,11 @@ begin
   inherited InitializeWidget;
   SetScrollBarsSignalHandlers;
   g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
+end;
+
+procedure TGtk3CustomControl.UpdateWidgetConstraints;
+begin
+  ;
 end;
 
 function TGtk3CustomControl.getClientRect: TRect;
