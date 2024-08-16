@@ -173,6 +173,7 @@ type
   end;
 
 procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
+procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 
@@ -221,6 +222,9 @@ implementation
 uses
   Math;
 
+type
+  TWinControlAccess = class(TWinControl);
+
 var
   LastMouse: TLastMouseInfo;
 
@@ -262,6 +266,30 @@ const
 begin
   if Assigned(v) and CocoaHideFocusNoBorder then
     v.setFocusRingType( NSFocusRing[astyle] );
+end;
+
+procedure UpdateControlFocusRing(cocoaControl: NSView; lclControl: TWinControl);
+const
+  NSFocusRing : array [TBorderStyle] of NSBorderType = (
+    NSFocusRingTypeNone,   // bsNone
+    NSFocusRingTypeDefault // bsSingle
+  );
+var
+  frs: CocoaConfig.TCocoaFocusRingStrategy;
+  borderStyle: TBorderStyle;
+begin
+  frs:= CocoaConfig.getCocoaControlFocusRingStrategry( cocoaControl.className );
+  case frs of
+    TCocoaFocusRingStrategy.none:
+      cocoaControl.setFocusRingType( NSFocusRingTypeNone );
+    TCocoaFocusRingStrategy.required:
+      cocoaControl.setFocusRingType( NSFocusRingTypeExterior );
+    TCocoaFocusRingStrategy.border: begin
+      borderStyle:= TWinControlAccess(lclControl).BorderStyle;
+      cocoaControl.setFocusRingType( NSFocusRing[borderStyle] );
+    end;
+ // TCocoaFocusRingStrategy.default: no need to set FocusRing
+  end;
 end;
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
