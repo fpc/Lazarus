@@ -360,10 +360,11 @@ procedure TLazIntegerEditGen.UpdateText(ANewText: string; AnAdjustPos: Integer;
   AnAdjustOffs: Integer; AWasEmpty: boolean);
 var
   sb, se, m: Integer;
-  ToEnd: Boolean;
+  ToEnd, NoSel: Boolean;
 begin
   sb := SelStart;
   se := sb+SelLength;
+  NoSel := se=sb;
   ToEnd := se = Length(Text);
   Text := ANewText;
 
@@ -379,6 +380,8 @@ begin
   end;
   if AWasEmpty or ToEnd then
     se := Length(ANewText);
+  if NoSel then
+    sb := se;
 
   SelStart := sb;
   SelLength := se-sb;
