@@ -172,7 +172,6 @@ type
       const ABorderStyle: TBorderStyle); override;
   end;
 
-procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
 procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
@@ -255,17 +254,6 @@ begin
   if AMouseButtons and (1 shl 2) <> 0 then Include(Result, ssMiddle);
   if AMouseButtons and (1 shl 3) <> 0 then Include(Result, ssExtra1);
   if AMouseButtons and (1 shl 4) <> 0 then Include(Result, ssExtra2);
-end;
-
-procedure UpdateFocusRing(v: NSView; astyle: TBorderStyle);
-const
-  NSFocusRing : array [TBorderStyle] of NSBorderType = (
-    NSFocusRingTypeNone,   // bsNone
-    NSFocusRingTypeDefault // bsSingle
-  );
-begin
-  if Assigned(v) and CocoaHideFocusNoBorder then
-    v.setFocusRingType( NSFocusRing[astyle] );
 end;
 
 procedure UpdateControlFocusRing(cocoaControl: NSView; lclControl: TWinControl);
