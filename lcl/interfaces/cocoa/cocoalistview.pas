@@ -16,6 +16,68 @@ uses
   CocoaWSCommon, cocoa_extra, CocoaGDIObjects, CocoaUtils;
 
 type
+  {
+    1. Key Features
+       1.1 currently ListView supports all ViewStyles of TListView
+           (vsReport/vsIcon/vsSmallIcon/vsList)
+       1.2 supports MultiSelection, supports checkBoxes
+       1.3 supports keeping the selection and checkBox unchanged after
+           inserting/deleting/sorting/switching ViewStyle
+       1.4 supports OwnerData
+       1.5 supports OwnerDraw(OnDrawItem)
+       1.6 supports CustomDraw(OnCustomDraw/OnCustomDrawItem/OnCustomDrawSubItem)
+
+    2. the Overall Structure of ListView
+       since Cocoa does not have a single control corresponding to TListView,
+       multiple controls need to be combined to implement TListView.
+       at the same time, in order to avoid RecreateWnd when switching ViewStyle,
+       a three-layers structure is used:
+       2.1 Stability layer
+           TCocoaListView is a simple NSView, corresponding to the Handle
+           returned to LCL. it remains unchanged when switching ViewStyle.
+       2.2 Scrolling Layer
+           TCocoaScrollView is a simple NSScrollView that provides scrolling
+           support for the underlying control. it will be recreated when
+           switching ViewStyle.
+       2.3 Implementation layer
+           control that implement real functions. it will be recreated when
+           switching ViewStyle.
+         2.3.1 vsReport corresponds to TCocoaTableListView (NSTableView)
+         2.3.2 other styles correspond to TCocoaCollectionView (NSCollectionView)
+
+    3. TCocoaWSListViewHandler
+       LCL interacts with TCocoaListView through TWSCustomListView. in order to
+       isolate the codes of two different underlying controls,
+       TCocoaWSListViewHandler and its subclasses are added:
+       3.1 in TCocoaWSCustomListView (TWSCustomListView), forward to the
+           corresponding subclass of TCocoaWSListViewHandler according to
+           ViewStyle
+       3.2 vsReport corresponds to TCocoaWSListView_TableViewHandler
+           (implemented in CocoaTables unit)
+       3.3 other styles correspond to TCocoaWSListView_CollectionViewHandler
+           (implemented in CocoaCollectionView unit)
+
+    4. TLCLListViewCallback
+       TCocoaListView interacts with LCL through IListViewCallback (TLCLListViewCallback)
+       4.1 since TListView is a whole control in LCL, TLCLListViewCallback
+           does not need to be customized for different ViewStyles
+       4.2 however, it should be noted that TCocoaTableListView is not only the
+           underlying control of TListView, but also the corresponding control of
+           TListBox/TCheckListBox.
+           therefore, the callback contained in TCocoaTableListView is
+           IListViewCallback. there are three implementation classes:
+           TLCLListViewCallback/TLCLListBoxCallback/TLCLCheckboxListCallback
+
+    5. TCocoaListView_CollectionView_StyleHandler
+       TCocoaCollectionView supports three ViewStyles. in order to isolate the
+       code of different ViewStyles, TCocoaListView_CollectionView_StyleHandler
+       and its subclasses are added.
+       5.1 vsIcon corresponds to TCocoaListView_CollectionView_LargeIconHandler
+       5.2 vsSmallIcon corresponds to TCocoaListView_CollectionView_SmallIconHandler
+       5.3 vsList corresponds to TCocoaListView_CollectionView_ListHandler
+           (it uses a horizontal scroll bar)
+  }
+
   { TLCLListViewCallback }
 
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
