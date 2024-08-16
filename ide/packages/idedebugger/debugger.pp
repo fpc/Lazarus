@@ -7602,8 +7602,8 @@ end;
 
 destructor TIdeLocalsValue.Destroy;
 begin
-  inherited Destroy;
   FSubLocals.Free;
+  inherited Destroy;
 end;
 
 { =========================================================================== }
@@ -7722,6 +7722,8 @@ begin
     end;
 
     FCurrentResData.Done;
+    if FValue <> FCurrentResData.FNewResultData then
+      FValue.Free;
     FValue := FCurrentResData.FNewResultData;
     FreeAndNil(FCurrentResData);
 
@@ -7753,8 +7755,7 @@ begin
 
   if(DebugBossManager <> nil) and
      (FValidity = ddsUnknown) and
-     (TSubLocals(Owner).TopOwner is TCurrentLocals) and
-     (inherited GetResultData = nil)
+     (TSubLocals(Owner).TopOwner is TCurrentLocals)
   then begin
     FValidity := ddsRequested;
     DebugBossManager.RequestWatchData(Self);

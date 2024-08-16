@@ -660,16 +660,14 @@ begin
       VN2 := VNode;
     end;
 
-
+    // remove top-level nodes for locals-items that do no longer exist
     VNode := vtLocals.GetFirstNoInit;
     while VNode <> nil do begin
-      if (vtLocals.NodeItem[VNode] = nil) and (vtLocals.NodeControl[VNode] = nil) then begin
-        VN2 := VNode;
-        VNode := vtLocals.GetNextVisibleSiblingNoInit(VNode);
+      VN2 := VNode;
+      VNode := vtLocals.GetNextSiblingNoInit(VNode);
+      if (vtLocals.NodeItem[VN2] = nil) then begin
         vtLocals.DeleteNode(VN2);
-      end
-      else
-        VNode := vtLocals.GetNextVisibleNoInit(VNode);
+      end;
     end;
   finally
     EndUpdate;
