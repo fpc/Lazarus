@@ -162,7 +162,7 @@ begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   cocoaListView:= TCocoaListView(AWinControl.Handle);
   ScrollViewSetBorderStyle(cocoaListView.scrollView, ABorderStyle);
-  UpdateFocusRing(cocoaListView.documentView, ABorderStyle);
+  UpdateControlFocusRing(cocoaListView.documentView, AWinControl);
 end;
 
 class procedure TCocoaWSCustomListView.ColumnDelete(const ALV: TCustomListView;

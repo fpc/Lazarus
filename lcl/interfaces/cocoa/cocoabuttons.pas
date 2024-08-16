@@ -23,8 +23,8 @@ unit CocoaButtons;
 interface
 
 uses
-  Types, Classes, SysUtils, Graphics,
-  MacOSAll, CocoaAll, CocoaConst, CocoaPrivate, CocoaCallback;
+  Types, Classes, SysUtils, Graphics, Controls,
+  MacOSAll, CocoaAll, CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaCallback;
 
 
 const
@@ -92,6 +92,8 @@ type
     procedure setState(astate: NSInteger); override;
   end;
 
+  TCocoaButtonNeedFocusRing = objcclass(TCocoaButton)
+  end;
 
   IStepperCallback = interface(ICommonCallback)
     procedure BeforeChange(var Allowed: Boolean);
@@ -360,6 +362,7 @@ begin
   begin
     setTarget(Self);
     setAction(objcselector('actionButtonClick:'));
+    UpdateControlFocusRing( self, TWinControl(lclGetTarget) );
   //  todo: find a way to release notifications below
   //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('boundsDidChange:'), NSViewBoundsDidChangeNotification, Result);
   //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('frameDidChange:'), NSViewFrameDidChangeNotification, Result);

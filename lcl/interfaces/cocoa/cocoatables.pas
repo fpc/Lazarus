@@ -428,8 +428,6 @@ begin
   self.setAllowsColumnReordering(False);
   self.setAllowsColumnSelection(False);
 
-  UpdateFocusRing( self, self.callback.getBorderStyle );
-
   sz := self.intercellSpacing;
   // Windows compatibility. on Windows there's no extra space between columns
   sz.width := 0;

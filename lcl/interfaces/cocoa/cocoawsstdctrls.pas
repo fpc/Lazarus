@@ -399,9 +399,17 @@ implementation
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 begin
-  Result := TCocoaButton.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
+  case btnType of
+    NSMomentaryLightButton,
+    NSMomentaryChangeButton,
+    NSMomentaryPushInButton:
+      Result:= TCocoaButton.alloc;
+    else
+      Result:= TCocoaButtonNeedFocusRing.alloc;
+  end;
+
+  if Assigned(Result) then begin
+    Result:= Result.lclInitWithCreateParams(AParams);
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
 
     Result.setTitle(ControlTitleToNSStr(AParams.Caption));
@@ -848,7 +856,7 @@ class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
 var
   btn: TCocoaButton;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryLightButton);
   btn.smallHeight := PUSHBTN_SMALL_HEIGHT;
   btn.miniHeight := PUSHBTN_MINI_HEIGHT;
   btn.adjustFontToControlSize:=true;
@@ -1082,12 +1090,12 @@ end;
 
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
-  field : NSTextField;
+  field : TCocoaTextField;
   cell  : NSTextFieldCell;
 begin
   if TCustomEdit(AWinControl).PasswordChar=#0
-    then field:=NSTextField(AllocTextField(AWinControl, AParams))
-    else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
+    then field:=TCocoaTextField(AllocTextField(AWinControl, AParams))
+    else field:=TCocoaTextField(AllocSecureTextField(AWinControl, AParams));
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
     cell := NSTextFieldCell(field.cell);
@@ -1097,7 +1105,8 @@ begin
   if NOT TCocoaTextField(field).fixedBorderStyle then
     TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  UpdateFocusRing(field, TCustomEdit(AWinControl).BorderStyle);
+  if NOT field.fixedBorderStyle then
+    UpdateControlFocusRing( field, AWinControl );
 
   Result:=TLCLHandle(field);
 end;
@@ -1142,7 +1151,7 @@ begin
   field.setBordered( ABorderStyle <> bsNone );
   field.setBezeled( ABorderStyle <> bsNone );
   {$endif}
-  UpdateFocusRing(field, ABorderStyle);
+  UpdateControlFocusRing( field, AWinControl );
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -1637,7 +1646,7 @@ begin
   scr.setDrawsBackground(false);
 
   ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
-  UpdateFocusRing(txt, TCustomMemo(AWinControl).BorderStyle);
+  scr.setFocusRingType( NSFocusRingTypeExterior );
 
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
@@ -1660,7 +1669,7 @@ begin
   // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
   txt.setTextColor(NSColor.textColor);
   txt.setBackgroundColor(NSColor.textBackgroundColor);
-  scr.setFocusRingType(NSFocusRingTypeExterior);
+  UpdateControlFocusRing(txt, AWinControl);
 
   lcl := TLCLCommonCallback.Create(txt, AWinControl);
   lcl.ForceReturnKeyDown := true;
@@ -1730,7 +1739,7 @@ begin
   if not Assigned(sv) then Exit;
 
   ScrollViewSetBorderStyle(sv, ABorderStyle);
-  UpdateFocusRing(NSView(sv.documentView), ABorderStyle);
+  UpdateControlFocusRing(sv.documentView, AWinControl);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -2512,7 +2521,7 @@ begin
   scroll.setHasHorizontalScroller(true);
   scroll.setAutohidesScrollers(true);
   ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
-  UpdateFocusRing(list, lclListBox.BorderStyle);
+  UpdateControlFocusRing(list, lclListBox);
 
   Result := TLCLHandle(scroll);
 end;
@@ -2634,7 +2643,7 @@ begin
   if not Assigned(list) then Exit;
 
   ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
-  UpdateFocusRing(list, ABorderStyle);
+  UpdateControlFocusRing(list, AWinControl);
 end;
 
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);

@@ -194,6 +194,8 @@ begin
   _scrollView.callback:= self.callback;
   self.addSubview_positioned_relativeTo( _scrollView, NSWindowBelow, nil );
   ScrollViewSetBorderStyle( _scrollView, callback.getBorderStyle );
+  _scrollView.setFocusRingType( NSFocusRingTypeExterior );
+  UpdateControlFocusRing( _backendControl, TWinControl(self.lclGetTarget) );
 
   backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);
   backendControlAccess.backend_setCallback( self.callback );
@@ -529,6 +531,7 @@ begin
 
   field:= TCocoaTextField( aView );
   field.setBezeled( False );
+  field.setFocusRingType( NSFocusRingTypeExterior );
   field.fixedBorderStyle:= True;
   NSView(self.Owner).addSubview( field );  // add to TCococListView
   Result:= True;
