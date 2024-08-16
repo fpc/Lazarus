@@ -244,7 +244,6 @@ var
   win: TCocoaPanel;
   cnt: TCocoaWindowContent;
   R: NSRect;
-  Form: TCustomForm absolute AWinControl;
   cb: TLCLWindowCallback;
   doc: TCocoaWindowContentDocument;
 const

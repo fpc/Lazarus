@@ -815,7 +815,7 @@ end;
 class procedure TCocoaWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean);
 var
   lTabControl: TCocoaTabControl = nil;
-  lOldTabStyle, lTabStyle: NSTabViewType;
+  lTabStyle: NSTabViewType;
 var
   pr : TRect;
   ar : TRect;
@@ -826,7 +826,6 @@ begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
-  lOldTabStyle := lTabControl.tabViewType();
   lTabStyle := LCLTabPosToNSTabStyle(AShowTabs, ATabControl.BorderWidth, ATabControl.TabPosition);
   pr := lTabControl.lclGetFrameToLayoutDelta;
   lTabControl.setTabViewType(lTabStyle);

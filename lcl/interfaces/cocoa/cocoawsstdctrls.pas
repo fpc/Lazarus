@@ -985,16 +985,13 @@ class procedure TCocoaWSCustomCheckBox.GetPreferredSize(
   WithThemeSpace: Boolean);
 var
   lButton: NSButton;
-  lOldSize: NSSize;
 begin
   if not AWinControl.HandleAllocated then Exit;
   lButton := NSButton(AWinControl.Handle);
 
-  lOldSize := lButton.bounds.size;
   lButton.sizeToFit();
   PreferredWidth := round(lButton.bounds.size.width);
   PreferredHeight := round(lButton.bounds.size.height);
-  //lButton.setBoundsSize(lOldSize); This causes problems in SetText
 end;
 
 class procedure TCocoaWSCustomCheckBox.SetText(const AWinControl: TWinControl;

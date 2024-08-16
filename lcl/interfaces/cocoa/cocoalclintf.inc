@@ -698,7 +698,6 @@ end;
 function TCocoaWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   CBC: TCocoaBitmapContext absolute ADC;
-  Desc: TRawImageDescription absolute ARawImage.Description;
   displayID: CGDirectDisplayID;
   ScreenImage: CGImageRef;
 begin
