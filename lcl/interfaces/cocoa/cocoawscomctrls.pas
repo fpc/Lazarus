@@ -478,6 +478,7 @@ begin
     TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
     lControl.callback := tv.callback;
     lControl.setView(tv);
+    UpdateControlFocusRing( tabview, AWinControl );
 
     Result := TLCLHandle(tv);
   end;
