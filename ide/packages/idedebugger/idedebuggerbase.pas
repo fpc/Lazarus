@@ -537,7 +537,10 @@ end;
 
 procedure TWatchValue.SetResultData(AResultData: TWatchResultData);
 begin
-  ResultData.Free;
+  if FResultData = AResultData then
+    exit;
+  ClearDisplayData;
+  FResultData.Free;
   FResultData := AResultData;
 end;
 
