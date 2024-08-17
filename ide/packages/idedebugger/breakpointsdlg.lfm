@@ -45,39 +45,39 @@ object BreakpointsDlg: TBreakpointsDlg
       Action = actDeleteSelected
     end
     object ToolSep1: TToolButton
-      Left = 131
+      Left = 134
       Height = 22
       Top = 2
       Style = tbsDivider
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 146
+      Left = 139
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 169
+      Left = 162
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 108
+      Left = 111
       Top = 2
       Action = actDeleteAll
     end
     object ToolSep2: TToolButton
-      Left = 192
+      Left = 185
       Height = 22
       Top = 2
       Style = tbsDivider
     end
     object ToolButtonProperties: TToolButton
-      Left = 197
+      Left = 190
       Top = 2
       Action = actProperties
     end
     object tbGroupByBrkGroup: TToolButton
-      Left = 220
+      Left = 213
       Top = 2
       Caption = 'Grp'
       Style = tbsCheck
@@ -136,7 +136,7 @@ object BreakpointsDlg: TBreakpointsDlg
         Text = 'Group'
         Width = 80
       end>
-    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    Header.Options = [hoColumnResize, hoShowSortGlyphs, hoVisible]
     PopupMenu = mnuPopup
     TabOrder = 1
     TreeOptions.AutoOptions = [toAutoScroll, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]

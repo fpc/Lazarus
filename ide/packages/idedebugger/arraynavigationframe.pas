@@ -5,8 +5,8 @@ unit ArrayNavigationFrame;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, LCLType, SpinEx, LazNumEdit,
-  IDEImagesIntf, IdeDebuggerStringConstants;
+  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, LCLType, ExtCtrls, SpinEx,
+  LazNumEdit, IDEImagesIntf, laz.VirtualTrees, IdeDebuggerStringConstants, DebuggerTreeView;
 
 type
 
@@ -44,6 +44,8 @@ type
     FOnSizeChanged: TNotifyEvent;
     FOwnerData: pointer;
     FShowBoundInfo: Boolean;
+    FTree: TDbgTreeView;
+    FNode: PVirtualNode;
     function GetIndex: int64;
     function GetIndexOffs: int64;
     function GetLimitedPageSize: int64;
@@ -56,9 +58,17 @@ type
     procedure SetShowBoundInfo(AValue: Boolean);
     procedure UpdateBoundsInfo;
     procedure DoOnSizeChanged;
+    function  EnforceBounds: boolean;
+    procedure DoParentResized(Sender: TObject);
+  protected
+    procedure BoundsChanged; override;
+    procedure VisibleChanged; override;
+    procedure CreateWnd; override;
+    procedure SetParent(AParent: TWinControl); override;
   public
-    constructor Create(TheOwner: TComponent); override;
-    procedure Loaded; override;
+    constructor Create(TheOwner: TComponent; ATree: TDbgTreeView; ANode: PVirtualNode); reintroduce;
+    destructor Destroy; override;
+    function PreferredHeight: integer;
     property LowBound: int64 read FLowBound write SetLowBound;
     property HighBound: int64 read FHighBound write SetHighBound;
     property ShowBoundInfo: Boolean read FShowBoundInfo write SetShowBoundInfo;
@@ -98,7 +108,7 @@ begin
     edArrayStart.Value := FLowBound
   else
   if Sender = btnArrayFastDown then begin
-    if (v < FLowBound) or (v > FHighBound) then
+    if not EnforceBounds then
       edArrayStart.Value := edArrayStart.Value - edArrayPageSize.Value
     else
       edArrayStart.Value := max(edArrayStart.Value - edArrayPageSize.Value,
@@ -106,7 +116,7 @@ begin
   end
   else
   if Sender = btnArrayFastUp then begin
-    if (v < FLowBound) or (v > FHighBound) then
+    if not EnforceBounds then
       edArrayStart.Value := edArrayStart.Value + edArrayPageSize.Value
     else
       edArrayStart.Value := min(edArrayStart.Value + edArrayPageSize.Value,
@@ -167,9 +177,9 @@ begin
       end;
     VK_DOWN: begin
         if ssCtrl in Shift then
-          edArrayPageSize.Value := Max(10, v - 5)
+          edArrayPageSize.Value := Max(1, v - 5)
         else
-          edArrayPageSize.Value := Max(10, v - 1);
+          edArrayPageSize.Value := Max(1, v - 1);
       end;
     VK_PRIOR: begin
         if ssCtrl in Shift then
@@ -181,7 +191,10 @@ begin
         if ssCtrl in Shift then
           edArrayPageSize.Value := 10
         else
-          edArrayPageSize.Value := Max(10, v - 10);
+        if v > 10 then
+          edArrayPageSize.Value := Max(10, v - 10)
+        else
+          edArrayPageSize.Value := 1;
       end;
   end;
 end;
@@ -219,7 +232,7 @@ begin
   if (not FHardLimits) and (ssAlt in Shift) then
     cbEnforceBound.Checked := False;
 
-  OutOfBnd := (not FHardLimits) and (not cbEnforceBound.Checked);
+  OutOfBnd := not EnforceBounds;
 
   v := edArrayStart.CurrentValue;
   PgSz := edArrayPageSize.CurrentValue;
@@ -272,7 +285,7 @@ var
 begin
   Result := edArrayPageSize.Value;
   idx := edArrayStart.Value;
-  if (idx >= FLowBound) and (idx <= FHighBound) then
+  if EnforceBounds then
     Result := Max(1, Min(Result, FHighBound + 1 - idx));
 end;
 
@@ -307,10 +320,13 @@ begin
   edArrayPageSize.Value := AValue;
 end;
 
-procedure TArrayNavigationBar.Loaded;
+function TArrayNavigationBar.PreferredHeight: integer;
+var
+  w, h: Integer;
 begin
-  inherited Loaded;
-  Constraints.MinWidth := btnArrayPageInc.Left + btnArrayPageInc.Width;
+  cbEnforceBound.GetPreferredSize(w, Result);
+  edArrayStart.GetPreferredSize(w, h);
+  Result := max(Result, h);
 end;
 
 procedure TArrayNavigationBar.SetShowBoundInfo(AValue: Boolean);
@@ -324,7 +340,7 @@ end;
 
 procedure TArrayNavigationBar.UpdateBoundsInfo;
 begin
-  if FHardLimits or cbEnforceBound.Checked then begin
+  if EnforceBounds then begin
     edArrayPageSize.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
     btnArrayPageInc.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
     btnArrayPageDec.Visible := FHighBound + 1 - FLowBound > edArrayPageSize.MinValue;
@@ -350,8 +366,89 @@ begin
     FOnSizeChanged(Self);
 end;
 
-constructor TArrayNavigationBar.Create(TheOwner: TComponent);
+function TArrayNavigationBar.EnforceBounds: boolean;
 begin
+  Result := FHardLimits or cbEnforceBound.Checked;
+end;
+
+procedure TArrayNavigationBar.DoParentResized(Sender: TObject);
+begin
+  if (edArrayStart = nil) or (Parent = nil) or (not HandleAllocated) or (not IsVisible) then
+    exit;
+
+  if (edArrayStart.Left+edArrayStart.Width + Left < 1) or
+     (edArrayStart.Left+ Left > Parent.ClientWidth - 1) or
+     (edArrayStart.Top+Top > Parent.ClientHeight + FTree.Header.Height - 1) or
+     (not Visible)
+  then
+    edArrayStart.BorderSpacing.Top := 1
+  else
+    edArrayStart.BorderSpacing.Top := 0;
+
+  if (edArrayPageSize.Left+edArrayPageSize.Width + Left < 1) or
+     (edArrayPageSize.Left+ Left > Parent.ClientWidth - 1) or
+     (edArrayPageSize.Top+Top > Parent.ClientHeight + FTree.Header.Height - 1) or
+     (not Visible)
+  then
+    edArrayPageSize.BorderSpacing.Top := 1
+  else
+    edArrayPageSize.BorderSpacing.Top := 0;
+
+  if (cbEnforceBound.Left+cbEnforceBound.Width + Left < 1) or
+     (cbEnforceBound.Left+ Left > Parent.ClientWidth - 1) or
+     (cbEnforceBound.Top+Top > Parent.ClientHeight + FTree.Header.Height - 1) or
+     (not Visible)
+  then
+    cbEnforceBound.BorderSpacing.Top := 1
+  else
+    cbEnforceBound.BorderSpacing.Top := 0;
+
+end;
+
+procedure TArrayNavigationBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  if HandleAllocated and IsVisible then begin
+    DoParentResized(nil);
+  end;
+
+  //if btnToggle <> nil then
+  //  btnToggle.Width := btnToggle.Height;
+end;
+
+procedure TArrayNavigationBar.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if HandleAllocated and IsVisible then begin
+    FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
+    DoParentResized(nil);
+  end;
+end;
+
+procedure TArrayNavigationBar.CreateWnd;
+begin
+  inherited CreateWnd;
+    FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
+  DoParentResized(nil);
+end;
+
+procedure TArrayNavigationBar.SetParent(AParent: TWinControl);
+begin
+  if (AParent = nil) and (Parent <> nil) then
+    Parent.RemoveHandlerOnResize(@DoParentResized);
+  inherited SetParent(AParent);
+  if Parent <> nil then begin
+    Parent.AddHandlerOnResize(@DoParentResized);
+    if HandleAllocated and IsVisible then
+      DoParentResized(nil);
+  end;
+end;
+
+constructor TArrayNavigationBar.Create(TheOwner: TComponent; ATree: TDbgTreeView;
+  ANode: PVirtualNode);
+begin
+  FTree := ATree;
+  FNode := ANode;
   inherited Create(TheOwner);
   Name := '';
   Constraints.MinWidth := btnArrayPageInc.Left + btnArrayPageInc.Width;
@@ -386,6 +483,13 @@ begin
   btnArrayFastDown.Caption := '';
 
   cbEnforceBound.Caption := arrnavEnforceBounds;
+end;
+
+destructor TArrayNavigationBar.Destroy;
+begin
+  if (Parent <> nil) then
+    Parent.RemoveHandlerOnResize(@DoParentResized);
+  inherited Destroy;
 end;
 
 end.

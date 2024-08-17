@@ -49,30 +49,28 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       Caption = 'ToolButtonDivider1'
       Style = tbsDivider
     end
-    object StaticText1: TStaticText
+    object StaticText1: TLabel
       Left = 60
-      Height = 16
+      Height = 15
       Top = 2
-      Width = 57
-      AutoSize = True
+      Width = 56
       BorderSpacing.Left = 5
       BorderSpacing.Right = 5
       Caption = 'StaticText1'
-      TabOrder = 0
+      Layout = tlCenter
       OnDragDrop = FrameDragDrop
       OnDragOver = FrameDragOver
       OnMouseDown = StaticText1MouseDown
     end
-    object StaticText2: TStaticText
-      Left = 117
-      Height = 16
+    object StaticText2: TLabel
+      Left = 116
+      Height = 15
       Top = 2
-      Width = 57
-      AutoSize = True
+      Width = 56
       BorderSpacing.Left = 5
       BorderSpacing.Right = 5
       Caption = 'StaticText2'
-      TabOrder = 1
+      Layout = tlCenter
       OnDragDrop = FrameDragDrop
       OnDragOver = FrameDragOver
       OnMouseDown = StaticText1MouseDown
@@ -80,7 +78,6 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
   end
   object Panel1: TPanel
     AnchorSideTop.Control = ToolBar1
-    AnchorSideRight.Control = ToolBar1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ToolBar1
     AnchorSideBottom.Side = asrBottom
@@ -88,10 +85,9 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     Height = 22
     Top = 1
     Width = 23
-    Anchors = [akTop, akRight, akBottom]
+    Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Top = 1
-    BorderSpacing.Right = 2
     BorderSpacing.Bottom = 2
     BevelOuter = bvNone
     ClientHeight = 22
@@ -101,13 +97,12 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     TabOrder = 1
     object BtnDelete: TSpeedButton
       AnchorSideTop.Control = Panel1
-      AnchorSideBottom.Control = Panel1
+      AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Side = asrBottom
       Left = 0
       Height = 22
       Top = 0
       Width = 23
-      Anchors = [akTop, akLeft, akBottom]
       OnClick = BtnDeleteClick
     end
   end

@@ -2,34 +2,47 @@ object ArrayNavigationBar: TArrayNavigationBar
   Left = 0
   Height = 24
   Top = 0
-  Width = 457
-  AutoSize = True
+  Width = 436
   ClientHeight = 24
-  ClientWidth = 457
+  ClientWidth = 436
   TabOrder = 0
   DesignLeft = 518
   DesignTop = 777
   object btnArrayStart: TSpeedButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '|<'
     Flat = True
     OnClick = BtnChangePageClicked
   end
   object btnArrayFastDown: TSpeedButton
+    AnchorSideLeft.Control = btnArrayStart
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 23
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '<<'
     Flat = True
     OnClick = BtnChangePageClicked
   end
   object edArrayStart: TLazIntegerEdit
+    AnchorSideLeft.Control = btnArrayFastDown
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 46
     Height = 24
     Top = 0
@@ -37,52 +50,85 @@ object ArrayNavigationBar: TArrayNavigationBar
     Value = 0
     MinValue = -9223372036854775808
     MaxValue = 9223372036854775807
-    Align = alLeft
+    SetDecimalKeys = '#'
+    HexIndicator = '$'
+    ToggleHexKeys = '$x'
+    OctIndicator = '&'
+    ToggleOctKeys = '&'
+    BinIndicator = '%'
+    ToggleBinKeys = '%'
     Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akBottom]
+    AutoSize = False
     TabOrder = 1
     Text = '0'
     OnEditingDone = edArrayStartEditingDone
     OnKeyDown = edArrayStartKeyDown
   end
   object btnArrayFastUp: TSpeedButton
+    AnchorSideLeft.Control = edArrayStart
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 106
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '>>'
     Flat = True
     OnClick = BtnChangePageClicked
   end
   object btnArrayEnd: TSpeedButton
+    AnchorSideLeft.Control = btnArrayFastUp
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 129
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '>|'
     Flat = True
     OnClick = BtnChangePageClicked
   end
   object Label1: TLabel
+    AnchorSideLeft.Control = btnArrayEnd
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 152
     Height = 24
     Top = 0
     Width = 4
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     AutoSize = False
   end
   object btnArrayPageDec: TSpeedButton
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 156
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '-'
     Flat = True
     OnClick = BtnChangeSizeClicked
   end
   object edArrayPageSize: TLazIntegerEdit
+    AnchorSideLeft.Control = btnArrayPageDec
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 179
     Height = 24
     Top = 0
@@ -90,38 +136,63 @@ object ArrayNavigationBar: TArrayNavigationBar
     Value = 10
     MinValue = 1
     MaxValue = 5000
-    Align = alLeft
+    SetDecimalKeys = '#'
+    HexIndicator = '$'
+    ToggleHexKeys = '$x'
+    OctIndicator = '&'
+    ToggleOctKeys = '&'
+    BinIndicator = '%'
+    ToggleBinKeys = '%'
+    AllowMinus = False
     Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akBottom]
+    AutoSize = False
     TabOrder = 0
     Text = '10'
     OnEditingDone = edArrayPageSizeEditingDone
     OnKeyDown = edArrayPageSizeKeyDown
   end
   object btnArrayPageInc: TSpeedButton
+    AnchorSideLeft.Control = edArrayPageSize
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 219
     Height = 24
     Top = 0
     Width = 23
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     Caption = '+'
     Flat = True
     OnClick = BtnChangeSizeClicked
   end
   object lblBounds: TLabel
+    AnchorSideLeft.Control = btnArrayPageInc
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 252
     Height = 24
     Top = 0
     Width = 1
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 10
+    Layout = tlCenter
     Visible = False
   end
   object cbEnforceBound: TCheckBox
+    AnchorSideLeft.Control = lblBounds
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 263
     Height = 24
     Top = 0
     Width = 106
-    Align = alLeft
+    Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 10
     Caption = 'cbEnforceBound'
     Checked = True

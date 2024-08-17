@@ -435,12 +435,12 @@ begin
 
     PVNode := tvBreakPoints.AddChild(nil, nil);
     FUngroupedHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, PVNode, nil);
-    FUngroupedHeader.Visible := tbGroupByBrkGroup.Down;
+    FUngroupedHeader.NodeVisible:= tbGroupByBrkGroup.Down;
     tvBreakPoints.NodeControl[PVNode] := FUngroupedHeader;
 
     PVNode := tvBreakPoints.AddChild(nil, nil);
     FAddGroupedHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, PVNode, nil, bgfAddNewGroup);
-    FAddGroupedHeader.Visible := False;
+    FAddGroupedHeader.NodeVisible := False;
     tvBreakPoints.NodeControl[PVNode] := FAddGroupedHeader;
   finally
     EndUpdate;
@@ -473,7 +473,7 @@ begin
   try
     Result := tvBreakPoints.AddChild(nil, nil);
     GrpHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, Result, ABrkGroup);
-    GrpHeader.Visible := tbGroupByBrkGroup.Down;
+    GrpHeader.NodeVisible := tbGroupByBrkGroup.Down;
     GrpHeader.OnDeleteGroup := @DoGroupDeleteBtnClicked;
     tvBreakPoints.NodeControl[Result] := GrpHeader;
   finally
@@ -1189,7 +1189,7 @@ begin
       AcceptGroupHeaderDrop(TBreakpointGroupFrame(TToolBar(Source).Owner), TargetNd);
     end;
 
-    FAddGroupedHeader.Visible := False;
+    FAddGroupedHeader.NodeVisible:= False;
     FDragSource := False;
   finally
     EndUpdate;
@@ -1206,7 +1206,7 @@ var
 begin
   Accept := False;
   if FDragSource and tbGroupByBrkGroup.Down then
-    FAddGroupedHeader.Visible := True;
+    FAddGroupedHeader.NodeVisible := True;
 
   TargetNd := tvBreakPoints.GetNodeAt(Pt);
   if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
@@ -1251,7 +1251,7 @@ end;
 procedure TBreakPointsDlg.tvBreakPointsEndDrag(Sender, Target: TObject; X,
   Y: Integer);
 begin
-  FAddGroupedHeader.Visible := False;
+  FAddGroupedHeader.NodeVisible := False;
   FDragSource := False;
 end;
 
@@ -1551,7 +1551,7 @@ begin
           LastAbandoned := nil;
         end;
         if GrpHeader.GroupKind in [bgfGroup, bgfUngrouped] then
-          GrpHeader.Visible := tbGroupByBrkGroup.Down;
+          GrpHeader.NodeVisible := tbGroupByBrkGroup.Down;
         if GrpHeader.GroupKind = bgfAbandoned then
           LastAbandoned := VNode;
       end

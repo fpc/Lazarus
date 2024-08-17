@@ -29,8 +29,8 @@ type
   TBreakpointGroupFrame = class(TFrame)
     BtnDelete: TSpeedButton;
     Panel1: TPanel;
-    StaticText1: TStaticText;
-    StaticText2: TStaticText;
+    StaticText1: TLabel;
+    StaticText2: TLabel;
     ToolBar1: TToolBar;
     ToolButtonEnableAll: TToolButton;
     ToolButtonDisableAll: TToolButton;
@@ -53,14 +53,15 @@ type
     FNode: PVirtualNode;
     FBrkGroup: TIDEBreakPointGroup;
     procedure DoBrkGroupFreed(Sender: TObject);
+    procedure DoParentResized(Sender: TObject);
     function GetCount: Integer;
     function GetName: String;
-    function GetVisible: boolean;
+    procedure SetNodeVisible(AValue: boolean);
   protected
-    procedure SetVisible(Value: Boolean); reintroduce;
     procedure VisibleChanged; override;
     procedure BoundsChanged; override;
     procedure CreateWnd; override;
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TBreakPointsDlgBase; ATree: TDbgTreeView; ANode: PVirtualNode;
       ABrkGroup: TIDEBreakPointGroup;
@@ -70,7 +71,7 @@ type
     procedure UpdateButtons;
     function Compare(AnOther: TBreakpointGroupFrame): integer;
 
-    property Visible: boolean read GetVisible write SetVisible;
+    property NodeVisible: boolean write SetNodeVisible;
     property GroupKind: TBreakpointGroupFrameKind read FGroupKind;
     property BrkGroup: TIDEBreakPointGroup read FBrkGroup;
     property Tree: TDbgTreeView read FTree;
@@ -186,8 +187,8 @@ begin
 
     if (Source = FTree) and (FTree.SelectedCount > 0) then begin
       for VNode in FTree.SelectedNodes(True) do begin
-        if Brk = nil then Continue; // Header row selected
         Brk := TIDEBreakPoint(FTree.NodeItem[VNode]);
+        if Brk = nil then Continue; // Header row selected
         Brk.Group := NewGroup;
       end;
     end;
@@ -252,46 +253,57 @@ begin
   UpdateButtons;
 end;
 
+procedure TBreakpointGroupFrame.DoParentResized(Sender: TObject);
+begin
+  if (Panel1 <> nil) and HandleAllocated and IsVisible and (Parent <> nil) then
+    Panel1.Left := Min(Parent.ClientWidth - Left, ClientWidth) - Panel1.Width - 1;
+end;
+
 function TBreakpointGroupFrame.GetName: String;
 begin
   Result := StaticText1.Caption;
 end;
 
-function TBreakpointGroupFrame.GetVisible: boolean;
+procedure TBreakpointGroupFrame.SetNodeVisible(AValue: boolean);
 begin
-  Result := inherited Visible;
-end;
-
-procedure TBreakpointGroupFrame.SetVisible(Value: Boolean);
-begin
-  if (Value = Visible) or
-     (Value and (FGroupKind = bgfAbandoned))
-  then
-    exit;
-
-  if not Value then
-    inherited SetVisible(Value);
-  FTree.IsVisible[FNode] := Value;
+  FTree.IsVisible[FNode] := AValue;
 end;
 
 procedure TBreakpointGroupFrame.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if HandleAllocated and IsVisible then
-    FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
+  if HandleAllocated and IsVisible then begin
+    FTree.NodeControlHeight[FNode] := Max(15, ToolBar1.Height);
+    DoParentResized(nil);
+  end;
 end;
 
 procedure TBreakpointGroupFrame.BoundsChanged;
 begin
   inherited BoundsChanged;
-  if HandleAllocated and IsVisible then
-    FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
+  if HandleAllocated and IsVisible then begin
+    FTree.NodeControlHeight[FNode] := Max(15, ToolBar1.Height);
+    DoParentResized(nil);
+  end;
 end;
 
 procedure TBreakpointGroupFrame.CreateWnd;
 begin
   inherited CreateWnd;
-  FTree.NodeHeight[FNode] := Max(15, ToolBar1.Height);
+  FTree.NodeControlHeight[FNode] := Max(15, ToolBar1.Height);
+  DoParentResized(nil);
+end;
+
+procedure TBreakpointGroupFrame.SetParent(AParent: TWinControl);
+begin
+  if (AParent = nil) and (Parent <> nil) then
+    Parent.RemoveHandlerOnResize(@DoParentResized);
+  inherited SetParent(AParent);
+  if Parent <> nil then begin
+    Parent.AddHandlerOnResize(@DoParentResized);
+    if HandleAllocated and IsVisible then
+      DoParentResized(nil);
+  end;
 end;
 
 constructor TBreakpointGroupFrame.Create(TheOwner: TBreakPointsDlgBase;
@@ -330,6 +342,8 @@ end;
 
 destructor TBreakpointGroupFrame.Destroy;
 begin
+  if (Parent <> nil) then
+    Parent.RemoveHandlerOnResize(@DoParentResized);
   if FBrkGroup <> nil then
     FBrkGroup.RemoveFreeNotification(@DoBrkGroupFreed);
   inherited Destroy;

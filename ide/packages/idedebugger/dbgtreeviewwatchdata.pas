@@ -28,6 +28,7 @@ type
     FTreeView: TDbgTreeView;
     FExpandingWatchAbleResult: TObject;
 
+    procedure TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure TreeViewExpanded(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure TreeViewInitChildren(Sender: TBaseVirtualTree;
       Node: PVirtualNode; var ChildCount: Cardinal);
@@ -82,12 +83,9 @@ begin
   FTreeView.OnItemRemoved := nil;
   FTreeView.NodeItem[VNode] := nil;
 
-  if FTreeView.ChildCount[VNode] > 0 then begin
-    VNode := FTreeView.GetFirstVisible(VNode);
-    Nav := FTreeView.NodeControl[VNode];
-    if (Nav <> nil) and (Nav is TArrayNavigationBar) then
-      TArrayNavigationBar(Nav).OwnerData := nil;
-  end;
+  Nav := FTreeView.NodeControl[VNode];
+  if (Nav <> nil) and (Nav is TArrayNavigationBar) then
+    TArrayNavigationBar(Nav).OwnerData := nil;
 
   FTreeView.OnItemRemoved := @DoItemRemovedFromView;
 end;
@@ -154,27 +152,32 @@ begin
     exit;
   end;
 
-  ResData := AWatchAbleResult.ResultData;
-  while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
-    ResData := ResData.DerefData;
+  FTreeView.BeginUpdate;
+  try
+    ResData := AWatchAbleResult.ResultData;
+    while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
+      ResData := ResData.DerefData;
 
-  if (ResData <> nil) and
-     (ResData.FieldCount > 0) and
-     (ResData.ValueKind <> rdkConvertRes)
-  then
-    DoUpdateStructSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount)
-  else
-  if (ResData <> nil) and
-     //(ResData.ValueKind = rdkArray) and
-     (ResData.ArrayLength > 0)
-  then
-    DoUpdateArraySubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount)
-  else
-  if (AWatchAbleResult.TypeInfo <> nil) and (AWatchAbleResult.TypeInfo.Fields <> nil) then
-    // Old Interface
-    DoUpdateOldSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount);
+    if (ResData <> nil) and
+       (ResData.FieldCount > 0) and
+       (ResData.ValueKind <> rdkConvertRes)
+    then
+      DoUpdateStructSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount)
+    else
+    if (ResData <> nil) and
+       //(ResData.ValueKind = rdkArray) and
+       (ResData.ArrayLength > 0)
+    then
+      DoUpdateArraySubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount)
+    else
+    if (AWatchAbleResult.TypeInfo <> nil) and (AWatchAbleResult.TypeInfo.Fields <> nil) then
+      // Old Interface
+      DoUpdateOldSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount);
 
-  FTreeView.ChildCount[AVNode] := ChildCount;
+    FTreeView.ChildCount[AVNode] := ChildCount;
+  finally
+    FTreeView.EndUpdate;
+  end;
   FTreeView.Invalidate;
 end;
 
@@ -204,15 +207,9 @@ begin
   if (ResData.ValueKind <> rdkArray) or (TotalCount = 0) then
     TotalCount := ResData.Count;
 
-  ExistingNode := FTreeView.GetFirstChildNoInit(AVNode);
-  if ExistingNode = nil then
-    ExistingNode := FTreeView.AddChild(AVNode, nil)
-  else
-    FTreeView.NodeItem[ExistingNode] := nil;
-
-  Nav := TArrayNavigationBar(FTreeView.NodeControl[ExistingNode]);
+  Nav := TArrayNavigationBar(FTreeView.NodeControl[AVNode]);
   if Nav = nil then begin
-    Nav := TArrayNavigationBar.Create(nil);
+    Nav := TArrayNavigationBar.Create(nil, FTreeView, AVNode);
     Nav.ParentColor := False;
     Nav.ParentBackground := False;
     Nav.Color := FTreeView.Colors.BackGroundColor;
@@ -224,9 +221,8 @@ begin
     Nav.OnIndexChanged := @WatchNavChanged;
     Nav.OnPageSize := @WatchNavChanged;
     Nav.HardLimits := not(ResData.ValueKind = rdkArray);
-    FTreeView.NodeControl[ExistingNode] := Nav;
-    FTreeView.NodeText[ExistingNode, 0] := ' ';
-    FTreeView.NodeText[ExistingNode, 1] := ' ';
+    FTreeView.NodeControl[AVNode] := Nav;
+    FTreeView.NodeControlHeight[AVNode] := Nav.PreferredHeight;
   end
   else begin
     ForceIdx := (Nav.LowBound <> ResData.LowBound) or
@@ -239,10 +235,17 @@ begin
       Nav.Index := ResData.LowBound;
     Nav.HardLimits := not(ResData.ValueKind = rdkArray);
   end;
+  FTreeView.NodeControlVisible[AVNode] := True;
   Nav.OwnerData := AWatchAble;
   ChildCount := Nav.LimitedPageSize;
 
-  ExistingNode := FTreeView.GetNextSiblingNoInit(ExistingNode);
+  if ChildCount > 0 then begin
+    ExistingNode := FTreeView.GetFirstChildNoInit(AVNode);
+    if ExistingNode = nil then
+      ExistingNode := FTreeView.AddChild(AVNode, nil)
+    else
+      FTreeView.NodeItem[ExistingNode] := nil;
+  end;
 
   Offs := Nav.Index;
   for i := 0 to ChildCount - 1 do begin
@@ -265,8 +268,6 @@ begin
     (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
     UpdateWatchData(NewWatchAble, nd, nil, True);
   end;
-
-  inc(ChildCount); // for the nav row
 
   KeepCnt := Nav.PageSize;
   KeepBelow := KeepCnt;
@@ -298,8 +299,6 @@ begin
     exit;
 
   ExistingNode := FTreeView.GetFirstChildNoInit(AVNode);
-  if ExistingNode <> nil then
-    FTreeView.NodeControl[ExistingNode] := nil;
 
   AnchClass := '';
   if ResData.StructType <> dstRecord then
@@ -375,6 +374,9 @@ procedure TDbgTreeViewWatchDataMgr.TreeViewExpanded(Sender: TBaseVirtualTree;
 var
   AWatchAble: TObject;
 begin
+  if TArrayNavigationBar(FTreeView.NodeControl[Node]) <> nil then
+    FTreeView.NodeControlVisible[Node] := True;
+
   Node := FTreeView.GetFirstChildNoInit(Node);
   while Node <> nil do begin
     AWatchAble := FTreeView.NodeItem[Node];
@@ -382,6 +384,11 @@ begin
       UpdateWatchData(AWatchAble, Node);
     Node := FTreeView.GetNextSiblingNoInit(Node);
   end;
+end;
+
+procedure TDbgTreeViewWatchDataMgr.TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
+begin
+  FTreeView.NodeControlVisible[Node] := False;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.TreeViewInitChildren(
@@ -400,7 +407,9 @@ begin
   end;
 
   FExpandingWatchAbleResult := AWatchAble;
+  FTreeView.BeginUpdate;
   UpdateSubItemsLocked(AWatchAble, AWatchAbleResult, Node, ChildCount);
+  FTreeView.EndUpdate;
   FExpandingWatchAbleResult := nil;
 end;
 
@@ -419,6 +428,7 @@ begin
   FTreeView := ATreeView;
   FTreeView.OnItemRemoved  := @DoItemRemovedFromView;
   FTreeView.OnExpanded     := @TreeViewExpanded;
+  FTreeView.OnCollapsed    := @TreeViewCollapsed;
   FTreeView.OnInitChildren := @TreeViewInitChildren;
 end;
 
@@ -428,22 +438,27 @@ begin
   if AWatchAble = nil then
     exit;
 
-  if (AVNode <> nil) then begin
-    FTreeView.NodeItem[AVNode] := AWatchAble;
-    FTreeView.SelectNode(AVNode);
-    (AWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
-  end
-  else begin
-    AVNode := FTreeView.FindNodeForItem(AWatchAble);
-    if AVNode = nil then begin
-      AVNode := FTreeView.AddChild(nil, AWatchAble);
+  FTreeView.BeginUpdate;
+  try
+    if (AVNode <> nil) then begin
+      FTreeView.NodeItem[AVNode] := AWatchAble;
       FTreeView.SelectNode(AVNode);
       (AWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+    end
+    else begin
+      AVNode := FTreeView.FindNodeForItem(AWatchAble);
+      if AVNode = nil then begin
+        AVNode := FTreeView.AddChild(nil, AWatchAble);
+        FTreeView.SelectNode(AVNode);
+        (AWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+      end;
     end;
-  end;
-  Result := AVNode;
+    Result := AVNode;
 
-  UpdateWatchData(AWatchAble, AVNode, AWatchAbleResult);
+    UpdateWatchData(AWatchAble, AVNode, AWatchAbleResult);
+  finally
+    FTreeView.EndUpdate;
+  end;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateWatchData(AWatchAble: TObject;
@@ -461,48 +476,55 @@ begin
   if AWatchAbleResult = nil then
     AWatchAbleResult := WatchAbleResultFromObject(AWatchAble);
 
-  UpdateColumnsText(AWatchAble, AWatchAbleResult, AVNode);
-  FTreeView.Invalidate;
+  FTreeView.BeginUpdate;
+  try
+    UpdateColumnsText(AWatchAble, AWatchAbleResult, AVNode);
+    FTreeView.Invalidate;
 
-  if AWatchAbleResult = nil then
-    exit;
+    if AWatchAbleResult = nil then
+      exit;
 
-  // some debuggers may have run Application.ProcessMessages
-  if CancelUpdate then
-    exit;
+    // some debuggers may have run Application.ProcessMessages
+    if CancelUpdate then
+      exit;
 
-  (* If the watch is ddsRequested or ddsEvaluating => keep any expanded tree-nodes. (Avoid flicker)
-     > ddsEvaluating includes "not HasAllValidParents"
-     If the debugger is running => keey any expanded tree-nodes
-  *)
+    (* If the watch is ddsRequested or ddsEvaluating => keep any expanded tree-nodes. (Avoid flicker)
+       > ddsEvaluating includes "not HasAllValidParents"
+       If the debugger is running => keey any expanded tree-nodes
+    *)
 
-  if (not(AWatchAbleResult.Validity in [ddsRequested, ddsEvaluating])) and
-     ((DebugBoss = nil) or (DebugBoss.State <> dsRun))
-  then begin
-    TypInfo := AWatchAbleResult.TypeInfo;
-    ResData := AWatchAbleResult.ResultData;
-    while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
-      ResData := ResData.DerefData;
-    HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
-                   ( (ResData <> nil) and
-                     ( ( (ResData.FieldCount > 0) and (ResData.ValueKind <> rdkConvertRes) )
-                       or
-                       //( (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0) )
-                       (ResData.ArrayLength > 0)
-                   ) );
-    FTreeView.HasChildren[AVNode] := HasChildren;
+    if (not(AWatchAbleResult.Validity in [ddsRequested, ddsEvaluating])) and
+       ((DebugBoss = nil) or (DebugBoss.State <> dsRun))
+    then begin
+      TypInfo := AWatchAbleResult.TypeInfo;
+      ResData := AWatchAbleResult.ResultData;
+      while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
+        ResData := ResData.DerefData;
+      HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
+                     ( (ResData <> nil) and
+                       ( ( (ResData.FieldCount > 0) and (ResData.ValueKind <> rdkConvertRes) )
+                         or
+                         //( (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0) )
+                         (ResData.ArrayLength > 0)
+                     ) );
+      FTreeView.HasChildren[AVNode] := HasChildren;
 
-    if HasChildren and FTreeView.Expanded[AVNode] then begin
-      if (AWatchAbleResult.Validity = ddsValid) then begin
-        (* The current "AWatchAbleResult" should be done. Allow UpdateItem for nested entries *)
+      if HasChildren and FTreeView.Expanded[AVNode] then begin
+        if (AWatchAbleResult.Validity = ddsValid) then begin
+          (* The current "AWatchAbleResult" should be done. Allow UpdateItem for nested entries *)
 
-        UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, c);
+          UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, c);
+        end;
+      end
+      else
+      if AWatchAble <> FExpandingWatchAbleResult then begin
+        FTreeView.DeleteChildren(AVNode, False);
+        FTreeView.NodeControl[AVNode] := nil
       end;
     end
-    else
-    if AWatchAble <> FExpandingWatchAbleResult then
-      FTreeView.DeleteChildren(AVNode, False);
-  end
+  finally
+    FTreeView.EndUpdate;
+  end;
 end;
 
 function TDbgTreeViewWatchDataMgr.GetAsText(AScope: TTreeViewDataScope;
