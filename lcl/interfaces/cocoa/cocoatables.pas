@@ -33,20 +33,6 @@ uses
 
 type
 
-  { TCocoaStringList }
-
-  TCocoaStringList = class(TStringList)
-  protected
-    procedure Changed; override;
-  public
-    Owner: NSTableView;
-    // some notificaitons (i.e. selection change)
-    // should not be passed to LCL while clearing
-    isClearing: Boolean;
-    constructor Create(AOwner: NSTableView);
-    procedure Clear; override;
-  end;
-
   { TCocoaTableListItem }
 
   TCocoaTableListItem = objcclass(NSTableCellView)
@@ -1049,30 +1035,6 @@ procedure TCocoaTableListView.tableViewColumnDidResize(
   notification: NSNotification);
 begin
   self.reloadData;
-end;
-
-{ TCocoaStringList }
-
-procedure TCocoaStringList.Changed;
-begin
-  inherited Changed;
-  Owner.reloadData;
-end;
-
-constructor TCocoaStringList.Create(AOwner: NSTableView);
-begin
-  Owner:=AOwner;
-  inherited Create;
-end;
-
-procedure TCocoaStringList.Clear;
-begin
-  isClearing := true;
-  try
-    inherited Clear;
-  finally
-    isClearing := false;
-  end;
 end;
 
 { TCocoaTableListItem }

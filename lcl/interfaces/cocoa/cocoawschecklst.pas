@@ -30,13 +30,13 @@ uses
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaWSStdCtrls,
-  CocoaTables, CocoaScrollers, CocoaWSScrollers;
+  CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
 
 type
 
   { TCocoaCheckStringList }
 
-  TCocoaCheckStringList = class(TCocoaStringList)
+  TCocoaCheckStringList = class(TCocoaListControlStringList)
   protected
     procedure ExchangeItems(Index1, Index2: Integer); override;
   public
@@ -50,7 +50,7 @@ type
 
   TLCLCheckboxListCallback = class(TLCLListBoxCallback)
   protected
-    function AllocStrings(ATable: NSTableView): TCocoaStringList; override;
+    function AllocStrings(ATable: NSTableView): TCocoaListControlStringList; override;
   public
     checklist: TCustomCheckListBox;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
@@ -70,8 +70,6 @@ type
     class function GetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState; override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer; const AState: TCheckBoxState); override;
   end;
-
-function CtrlToCheckList(ctrl: TWinControl; out tbl: TCocoaTableListView; out cb: TLCLCheckboxListCallback): Boolean;
 
 implementation
 
@@ -139,7 +137,7 @@ end;
 
 { TLCLCheckboxListCallback }
 
-function TLCLCheckboxListCallback.AllocStrings(ATable: NSTableView): TCocoaStringList;
+function TLCLCheckboxListCallback.AllocStrings(ATable: NSTableView): TCocoaListControlStringList;
 begin
   Result:=TCocoaCheckStringList.Create(ATable);
 end;

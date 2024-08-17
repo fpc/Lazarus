@@ -272,10 +272,10 @@ type
 
   TLCLListBoxCallback = class(TLCLListControlCallback)
   protected
-    function AllocStrings(ATable: NSTableView): TCocoaStringList; virtual;
+    function AllocStrings(ATable: NSTableView): TCocoaListControlStringList; virtual;
   public
     listview : TCocoaTableListView;
-    strings  : TCocoaStringList;
+    strings  : TCocoaListControlStringList;
     constructor CreateWithView(AOwner: TCocoaTableListView; ATarget: TWinControl);
     destructor Destroy; override;
     function ItemsCount: Integer; override;
@@ -601,9 +601,9 @@ end;
 { TLCLListBoxCallback }
 
 function TLCLListBoxCallback.AllocStrings(ATable: NSTableView
-  ): TCocoaStringList;
+  ): TCocoaListControlStringList;
 begin
-  Result := TCocoaStringList.Create(ATable);
+  Result := TCocoaListControlStringList.Create(ATable);
 end;
 
 constructor TLCLListBoxCallback.CreateWithView(AOwner: TCocoaTableListView;

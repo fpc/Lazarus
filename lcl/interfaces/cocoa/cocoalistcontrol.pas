@@ -82,6 +82,19 @@ type
     function isCustomDrawSupported: Boolean; virtual; abstract;
   end;
 
+  { TCocoaListControlStringList }
+
+  TCocoaListControlStringList = class(TStringList)
+  protected
+    procedure Changed; override;
+  public
+    Owner: NSTableView;
+    // some notificaitons (i.e. selection change)
+    // should not be passed to LCL while clearing
+    isClearing: Boolean;
+    constructor Create(AOwner: NSTableView);
+    procedure Clear; override;
+  end;
 
 implementation
 
@@ -110,6 +123,30 @@ end;
 function TLCLListControlCallback.checkedIndexSet: NSMutableIndexSet;
 begin
   Result:= _checkedIndexSet;
+end;
+
+{ TCocoaListControlStringList }
+
+procedure TCocoaListControlStringList.Changed;
+begin
+  inherited Changed;
+  Owner.reloadData;
+end;
+
+constructor TCocoaListControlStringList.Create(AOwner: NSTableView);
+begin
+  Owner:=AOwner;
+  inherited Create;
+end;
+
+procedure TCocoaListControlStringList.Clear;
+begin
+  isClearing := true;
+  try
+    inherited Clear;
+  finally
+    isClearing := false;
+  end;
 end;
 
 end.
