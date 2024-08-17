@@ -363,7 +363,12 @@ procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
 var
   showNext : Boolean;
   showPrev : Boolean;
+  responder: NSResponder;
 begin
+  responder:= nil;
+  if Assigned(aview.window) then
+    responder:= aview.window.firstResponder;
+
   ReviseTabs(aview, showPrev, showNExt);
   aview.updateVariousIndex;
   if Assigned(aview.prevarr) then
@@ -383,6 +388,11 @@ begin
     {$else}
     aview.nextarr.setHidden(not showNext);
     {$endif}
+  end;
+
+  if Assigned(aview.window) then begin
+    if Assigned(responder) and (responder<>aview.window.firstResponder) then
+      aview.window.makeFirstResponder(responder);
   end;
 end;
 
