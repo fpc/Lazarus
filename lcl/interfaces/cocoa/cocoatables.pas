@@ -98,6 +98,7 @@ type
 
     procedure lclInsertItem(const AIndex: Integer); message 'lclInsertItem:';
     procedure lclDeleteItem(const AIndex: Integer); message 'lclDeleteItem:';
+    procedure lclExchangeItem(const AIndex1: Integer; const AIndex2: Integer); message 'lclExchangeItem:AIndex2:';
     procedure lclClearItem; message 'lclClearItem';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
     function acceptsFirstResponder: LCLObjCBoolean; override;
@@ -1320,6 +1321,38 @@ begin
   self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
+  self.reloadData;
+end;
+
+procedure ExchangeIndexSetItem( indexSet: NSMutableIndexSet;
+  const AIndex1: Integer; const AIndex2: Integer );
+var
+  hasIndex1: Boolean;
+  hasIndex2: Boolean;
+begin
+  hasIndex1:= indexSet.containsIndex(AIndex1);
+  hasIndex2:= indexSet.containsIndex(AIndex2);
+  if hasIndex1 = hasIndex2 then
+    Exit;
+
+  if hasIndex1 then begin
+    indexSet.removeIndex( AIndex1 );
+    indexSet.addIndex( AIndex2 );
+  end;
+  if hasIndex2 then begin
+    indexSet.removeIndex( AIndex2 );
+    indexSet.addIndex( AIndex1 );
+  end;
+end;
+
+procedure TCocoaTableListView.lclExchangeItem(const AIndex1: Integer;
+  const AIndex2: Integer);
+begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  ExchangeIndexSetItem( self.callback.checkedIndexSet, AIndex1, AIndex2 );
+  ExchangeIndexSetItem( self.callback.selectionIndexSet, AIndex1, AIndex2 );
   self.reloadData;
 end;
 

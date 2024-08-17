@@ -38,6 +38,7 @@ type
     function selectionIndexSet: NSMutableIndexSet;
     function checkedIndexSet: NSMutableIndexSet;
     function shouldSelectionChange(NewSel: Integer): Boolean;
+    function getItemStableSelection(ARow: Integer): Boolean;
 
     procedure ColumnClicked(ACol: Integer);
     function onAddSubview( aView:NSView ): Boolean;
@@ -56,8 +57,11 @@ type
   public
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); override;
     destructor Destroy; override;
-    function selectionIndexSet: NSMutableIndexSet;
-    function checkedIndexSet: NSMutableIndexSet;
+    function selectionIndexSet: NSMutableIndexSet; virtual;
+    function checkedIndexSet: NSMutableIndexSet; virtual;
+    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; virtual;
+    procedure SetItemCheckedAt( row: Integer; CheckState: Integer); virtual;
+    function getItemStableSelection(ARow: Integer): Boolean; virtual;
   public
     function ItemsCount: Integer; virtual; abstract;
     procedure GetRowHeight(rowidx: Integer; var height: Integer); virtual; abstract;
@@ -65,15 +69,11 @@ type
 
     function GetImageListType( out lvil: TListViewImageList ): Boolean; virtual; abstract;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; virtual; abstract;
-    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; virtual; abstract;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; virtual; abstract;
     function GetImageFromIndex(imgIdx: Integer): NSImage; virtual; abstract;
-
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual; abstract;
-    procedure SetItemCheckedAt( row: Integer; CheckState: Integer); virtual; abstract;
 
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual; abstract;
-
     procedure ColumnClicked(ACol: Integer); virtual; abstract;
     function onAddSubview( aView:NSView ): Boolean; virtual; abstract;
 
@@ -151,6 +151,29 @@ end;
 function TLCLListControlCallback.checkedIndexSet: NSMutableIndexSet;
 begin
   Result:= _checkedIndexSet;
+end;
+
+function TLCLListControlCallback.GetItemCheckedAt(row: Integer;
+  var CheckState: Integer): Boolean;
+var
+  BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
+begin
+  CheckState := BoolState[self.checkedIndexSet.containsIndex(row)];
+  Result := true;
+end;
+
+procedure TLCLListControlCallback.SetItemCheckedAt(row: Integer;
+  CheckState: Integer);
+begin
+  if CheckState = NSOnState then
+    self.checkedIndexSet.addIndex( row )
+  else
+    self.checkedIndexSet.removeIndex( row );
+end;
+
+function TLCLListControlCallback.getItemStableSelection(ARow: Integer): Boolean;
+begin
+  Result:= selectionIndexSet.containsIndex( ARow );
 end;
 
 { TCocoaTableListControlProcessor }

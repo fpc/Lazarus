@@ -108,7 +108,6 @@ type
     function GetBorderStyle: TBorderStyle; override;
     function onAddSubview(aView: NSView): Boolean; override;
 
-    function getItemStableSelection(ARow: Integer): Boolean;
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     procedure callTargetInitializeWnd;
   end;
@@ -354,13 +353,11 @@ function TLCLListViewCallback.GetItemCheckedAt( row: Integer;
   var IsChecked: Integer): Boolean;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
-  indexSet: NSIndexSet;
 begin
-  indexSet:= self.checkedIndexSet;
   if ownerData and Assigned(listView) and (row>=0) and (row < listView.Items.Count) then
     IsChecked := BoolState[listView.Items[row].Checked]
   else
-    IsChecked := BoolState[checkedIndexSet.containsIndex(row)];
+    Inherited GetItemCheckedAt( row, IsChecked );
   Result := true;
 end;
 
@@ -465,9 +462,7 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
-  if IsChecked = NSOnState
-    then checkedIndexSet.addIndex(row)
-    else checkedIndexSet.removeIndex(row);
+  Inherited;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
@@ -482,11 +477,6 @@ begin
   Msg.NMHdr := @NMLV.hdr;
 
   LCLMessageGlue.DeliverMessage(ListView, Msg);
-end;
-
-function TLCLListViewCallback.getItemStableSelection(ARow: Integer): Boolean;
-begin
-  Result:= selectionIndexSet.containsIndex( ARow );
 end;
 
 procedure TLCLListViewCallback.selectOne(ARow: Integer; isSelected: Boolean);
