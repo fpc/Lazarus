@@ -883,11 +883,9 @@ Numeric base (or radix) for the QWord value in the result.
 
 <element name="QWord2Str">
 <short>
-<short>
 Converts a QWord value using the specified numeric base to its string 
 representation.
 </short>  
-</short>
 <descr/>
 <seealso/>
 </element>
