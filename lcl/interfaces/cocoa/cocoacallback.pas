@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LclType, Controls, ComCtrls,
+  LclType,
   MacOSAll, CocoaAll, CocoaGDIObjects;
 
 type
@@ -86,34 +86,6 @@ type
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
     property CocoaOnlyState: Boolean read IsCocoaOnlyState write SetCocoaOnlyState;
-  end;
-
-  {
-    currently the following callbacks implement IListViewCallBack,
-    need to be considered before modification:
-    1. TLCLListViewCallback
-    2. TLCLListBoxCallback
-    3. TLCLCheckboxListCallback
-  }
-  { IListViewCallBack }
-
-  IListViewCallBack = interface(ICommonCallback)
-    function ItemsCount: Integer;
-    function GetImageListType( out lvil: TListViewImageList ): Boolean;
-    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean;
-    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
-    function GetImageFromIndex(imgIdx: Integer): NSImage;
-    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt( row: Integer; CheckState: Integer);
-    function shouldSelectionChange(NewSel: Integer): Boolean;
-    procedure ColumnClicked(ACol: Integer);
-    function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState ): Boolean;
-    function customDraw( row: Integer; col: Integer; ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
-    function isCustomDrawSupported: Boolean;
-    procedure GetRowHeight(rowidx: Integer; var height: Integer);
-    function GetBorderStyle: TBorderStyle;
-    function onAddSubview( aView:NSView ): Boolean;
   end;
 
   { TCocoaStatusBar }

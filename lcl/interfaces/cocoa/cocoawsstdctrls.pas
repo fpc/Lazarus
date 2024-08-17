@@ -34,9 +34,10 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaConst, CocoaConfig,
-  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaGDIObjects, CocoaButtons,
-  CocoaTables, CocoaTextEdits, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
+  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables,
+  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils,
+  CocoaGDIObjects, CocoaButtons, CocoaTextEdits,
+  CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
 
 type
 
@@ -269,7 +270,7 @@ type
 
   { TLCLListBoxCallback }
 
-  TLCLListBoxCallback = class(TLCLCommonCallback, IListViewCallBack)
+  TLCLListBoxCallback = class(TLCLListControlCallback)
   protected
     function AllocStrings(ATable: NSTableView): TCocoaStringList; virtual;
   public
@@ -277,24 +278,24 @@ type
     strings  : TCocoaStringList;
     constructor CreateWithView(AOwner: TCocoaTableListView; ATarget: TWinControl);
     destructor Destroy; override;
-    function ItemsCount: Integer; virtual;
-    function GetImageListType(out lvil: TListViewImageList): Boolean; virtual;
-    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; virtual;
-    function GetItemCheckedAt( row: Integer; var isChecked: Integer): Boolean; virtual;
-    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; virtual;
-    function GetImageFromIndex(imgIdx: Integer): NSImage; virtual;
-    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual;
-    procedure SetItemCheckedAt( row: Integer; isChecked: Integer); virtual;
-    function shouldSelectionChange(NewSel: Integer): Boolean; virtual;
-    procedure ColumnClicked(ACol: Integer); virtual;
+    function ItemsCount: Integer; override;
+    function GetImageListType(out lvil: TListViewImageList): Boolean; override;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; override;
+    function GetItemCheckedAt( row: Integer; var isChecked: Integer): Boolean; override;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; override;
+    function GetImageFromIndex(imgIdx: Integer): NSImage; override;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); override;
+    procedure SetItemCheckedAt( row: Integer; isChecked: Integer); override;
+    function shouldSelectionChange(NewSel: Integer): Boolean; override;
+    procedure ColumnClicked(ACol: Integer); override;
     function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
-      state: TOwnerDrawState ): Boolean; virtual;
+      state: TOwnerDrawState ): Boolean; override;
     function customDraw( row: Integer; col: Integer;
-      ctx: TCocoaContext; state: TCustomDrawState ): Boolean; virtual;
-    function isCustomDrawSupported: Boolean; virtual;
-    procedure GetRowHeight(rowidx: integer; var h: Integer); virtual;
-    function GetBorderStyle: TBorderStyle;
-    function onAddSubview(aView: NSView): Boolean;
+      ctx: TCocoaContext; state: TCustomDrawState ): Boolean; override;
+    function isCustomDrawSupported: Boolean; override;
+    procedure GetRowHeight(rowidx: integer; var h: Integer); override;
+    function GetBorderStyle: TBorderStyle; override;
+    function onAddSubview(aView: NSView): Boolean; override;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 

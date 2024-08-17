@@ -48,7 +48,7 @@ type
 
   { TLCLCheckboxListCallback }
 
-  TLCLCheckboxListCallback = class(TLCLListBoxCallback, IListViewCallback)
+  TLCLCheckboxListCallback = class(TLCLListBoxCallback)
   protected
     function AllocStrings(ATable: NSTableView): TCocoaStringList; override;
   public

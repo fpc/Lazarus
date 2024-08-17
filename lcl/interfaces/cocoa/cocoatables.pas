@@ -26,8 +26,8 @@ interface
 uses
   Classes, SysUtils,
   MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConst, CocoaConfig,
-  CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
+  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaListControl,
+  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits,
   LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
@@ -106,7 +106,7 @@ type
     _checkBoxes: Boolean;
   public
     iconSize: NSSize;
-    callback: IListViewCallback;
+    callback: TLCLListControlCallback;
     selectingByProgram: Boolean;
     readOnly: Boolean;
     isOwnerDraw : Boolean;
@@ -409,13 +409,10 @@ begin
 end;
 
 procedure TCocoaTableListView.backend_reloadData;
-var
-  lclcb: TLCLListViewCallback;
 begin
   self.reloadData;
   if Assigned(self.callback) then begin
-    lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-    self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+    self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   end;
 end;
 
@@ -505,8 +502,9 @@ begin
   Result:= False;
   if NOT self.isOwnerDraw then
     Exit;
+  if not Assigned(self.callback) then
+    Exit;
 
-  if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
   try
@@ -518,7 +516,7 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= self.callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
   finally
     ctx.Free;
   end;
@@ -531,9 +529,9 @@ var
   state: TCustomDrawState;
 begin
   Result:= False;
-  if NOT Assigned(callback) then
+  if NOT Assigned(self.callback) then
     Exit;
-  if NOT callback.isCustomDrawSupported then
+  if NOT self.callback.isCustomDrawSupported then
     Exit;
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
@@ -547,7 +545,7 @@ begin
     if isChecked(self,row) then
       Include(state, cdsChecked);
 
-    Result:= callback.customDraw(row, col, ctx, state);
+    Result:= self.callback.customDraw(row, col, ctx, state);
   finally
     ctx.Free;
   end;
@@ -557,8 +555,8 @@ procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
 begin
-  if CheckMainThread and Assigned(callback) then
-    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  if CheckMainThread and Assigned(self.callback) then
+    self.callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 
   done:= self.lclCallCustomDraw( -1, -1, self.bounds.size, dirtyRect );
 
@@ -583,14 +581,11 @@ begin
 end;
 
 procedure TCocoaTableListView.restoreFromStableSelection;
-var
-  lclcb: TLCLListViewCallback;
 begin
   if NOT Assigned(self.callback) then
     Exit;
 
-  lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-  self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
 end;
 
 procedure TCocoaTableListView.reloadData;
@@ -716,8 +711,8 @@ end;
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
   ): NSInteger;
 begin
-  if Assigned(callback) then
-    Result := callback.ItemsCount
+  if Assigned(self.callback) then
+    Result := self.callback.ItemsCount
   else
     Result := 0;
 end;
@@ -737,14 +732,14 @@ end;
 function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
   row: NSInteger): Boolean;
 begin
-  Result:= callback.shouldSelectionChange( row );
+  Result:= self.callback.shouldSelectionChange( row );
 end;
 
 procedure TCocoaTableListView.tableView_didClickTableColumn(
   tableView: NSTableView; tableColumn: NSTableColumn);
 begin
-  if Assigned(callback) then
-    callback.ColumnClicked(getIndexOfColumn(tableColumn));
+  if Assigned(self.callback) then
+    self.callback.ColumnClicked(getIndexOfColumn(tableColumn));
 end;
 
 function TCocoaTableListView.tableView_heightOfRow(tableView: NSTableView;
@@ -755,9 +750,9 @@ begin
   h := CustomRowHeight;
   if h = 0 then h := DefaultRowHeight;
 
-  if isDynamicRowHeight and Assigned(callback) then
+  if isDynamicRowHeight and Assigned(self.callback) then
   begin
-    callback.GetRowHeight(Integer(row), h);
+    self.callback.GetRowHeight(Integer(row), h);
     if h<=0 then h:=1; // must be positive (non-zero)
   end;
   Result := h;
@@ -1349,10 +1344,10 @@ procedure TCocoaTableListView.checkboxAction(sender: NSButton);
 var
   row: NSInteger;
 begin
-  if not Assigned(callback) then Exit;
+  if not Assigned(self.callback) then Exit;
 
   row := rowForView(sender.superview);
-  callback.SetItemCheckedAt(row, sender.state);
+  self.callback.SetItemCheckedAt(row, sender.state);
   if sender.state = NSOnState then begin
     self.selectOneItemByIndex(row, True);
     self.window.makeFirstResponder( self );
@@ -1869,7 +1864,7 @@ begin
   Result:= False;
   if NOT Assigned(cocoaTLV.callback) then
     Exit;
-  Result:= TCocoaListView( self.getCallback(tv).Owner).initializing;
+  Result:= TCocoaListView( self.getCallback(tv).Owner ).initializing;
 end;
 
 procedure TCocoaTableListViewProcessor.onReloadData( tv: NSTableView );
