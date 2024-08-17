@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils,
   LclType, Controls, ComCtrls,
-  CocoaAll, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
+  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
 
 type
   {
@@ -82,6 +82,34 @@ type
     function isCustomDrawSupported: Boolean; virtual; abstract;
   end;
 
+  {
+    1. TCocoaTableListView related need to support
+       TListView/TListBox/TCheckListBox, etc.
+    2. the differences between these controls can be considered to be
+       implemented in the callback.
+    3. however, after careful consideration, we tried to keep the original
+       intention of the callback, and added TCocoaTableViewProcessor to
+       isolate these differences.
+  }
+  { TCocoaTableViewProcessor }
+
+  TCocoaTableViewProcessor = class
+    function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
+    procedure onReloadData( tv: NSTableView ); virtual; abstract;
+    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
+    procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
+  end;
+
+  { TCocoaTableListControlProcessor }
+
+  TCocoaTableListControlProcessor = class( TCocoaTableViewProcessor )
+  protected
+    function getCallback( tv: NSTableView ): TLCLListControlCallback;
+  public
+    procedure onReloadData( tv: NSTableView ); override;
+    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); override;
+  end;
+
   { TCocoaListControlStringList }
 
   TCocoaListControlStringList = class(TStringList)
@@ -103,7 +131,7 @@ implementation
 constructor TLCLListControlCallback.Create(AOwner: NSObject;
   ATarget: TWinControl; AHandleFrame: NSView);
 begin
-  inherited;// Create(AOwner, ATarget, AHandleView);
+  inherited;
   _selectionIndexSet:= NSMutableIndexSet.new;
   _checkedIndexSet:= NSMutableIndexSet.new;
 end;
@@ -123,6 +151,35 @@ end;
 function TLCLListControlCallback.checkedIndexSet: NSMutableIndexSet;
 begin
   Result:= _checkedIndexSet;
+end;
+
+{ TCocoaTableListControlProcessor }
+
+function TCocoaTableListControlProcessor.getCallback(tv: NSTableView
+  ): TLCLListControlCallback;
+begin
+  Result:= TLCLListControlCallback( tv.lclGetCallback.GetCallbackObject );
+end;
+
+procedure TCocoaTableListControlProcessor.onReloadData( tv: NSTableView );
+begin
+  tv.cancelPreviousPerformRequestsWithTarget_selector_object(
+    tv, ObjcSelector('restoreFromStableSelection'), nil );
+  tv.performSelector_withObject_afterDelay(
+    ObjcSelector('restoreFromStableSelection'), nil, 0 );
+end;
+
+procedure TCocoaTableListControlProcessor.onSelectOneItem(tv: NSTableView;
+  selection: NSIndexSet);
+var
+  lclcb: TLCLListControlCallback;
+begin
+  lclcb:= self.getCallback(tv);
+  if NOT Assigned(lclcb) then
+    Exit;
+
+  lclcb.selectionIndexSet.removeAllIndexes;
+  lclcb.selectionIndexSet.addIndexes( selection );
 end;
 
 { TCocoaListControlStringList }

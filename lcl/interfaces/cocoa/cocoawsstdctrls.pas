@@ -132,10 +132,8 @@ type
 
   { TCocoaTableListBoxProcessor }
 
-  TCocoaTableListBoxProcessor = class( TCocoaTableViewProcessor )
+  TCocoaTableListBoxProcessor = class( TCocoaTableListControlProcessor )
     function isInitializing( tv: NSTableView ): Boolean; override;
-    procedure onReloadData(tv: NSTableView); override;
-    procedure onSelectOneItem( tv: NSTableView;  selection: NSIndexSet ); override;
     procedure onSelectionChanged(tv: NSTableView); override;
   end;
 
@@ -298,6 +296,15 @@ type
     function onAddSubview(aView: NSView): Boolean; override;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
+
+  { TCocoaListBoxStringList }
+
+  TCocoaListBoxStringList = class( TCocoaListControlStringList )
+  public
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+    procedure Delete(Index: Integer); override;
+    procedure Clear; override;
+  end;
 
   { TCocoaWSButton }
 
@@ -603,7 +610,7 @@ end;
 function TLCLListBoxCallback.AllocStrings(ATable: NSTableView
   ): TCocoaListControlStringList;
 begin
-  Result := TCocoaListControlStringList.Create(ATable);
+  Result := TCocoaListBoxStringList.Create(ATable);
 end;
 
 constructor TLCLListBoxCallback.CreateWithView(AOwner: TCocoaTableListView;
@@ -720,6 +727,27 @@ end;
 function TLCLListBoxCallback.onAddSubview(aView: NSView): Boolean;
 begin
   Result:= False;
+end;
+
+{ TCocoaListBoxStringList }
+
+procedure TCocoaListBoxStringList.InsertItem(Index: Integer; const S: string;
+  O: TObject);
+begin
+  inherited InsertItem(Index, S, O);
+  TCocoaTableListView(self.Owner).lclInsertItem(Index);
+end;
+
+procedure TCocoaListBoxStringList.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  TCocoaTableListView(self.Owner).lclDeleteItem(Index);
+end;
+
+procedure TCocoaListBoxStringList.Clear;
+begin
+  inherited Clear;
+  TCocoaTableListView(self.Owner).lclClearItem();
 end;
 
 { TLCLCheckBoxCallback }
@@ -2436,30 +2464,21 @@ begin
   Result:= False;
 end;
 
-procedure TCocoaTableListBoxProcessor.onReloadData(tv: NSTableView);
-begin
-end;
-
-procedure TCocoaTableListBoxProcessor.onSelectOneItem(tv: NSTableView;
-  selection: NSIndexSet);
-begin
-end;
-
 procedure TCocoaTableListBoxProcessor.onSelectionChanged(tv: NSTableView);
 var
-  lclListView: TCustomListView;
+  lclListBox: TCustomListBox;
   cocoaTLV: TCocoaTableListView Absolute tv;
   lclcb: TLCLListBoxCallback;
 begin
   if NOT Assigned(cocoaTLV.callback) then
     Exit;
 
-  lclcb:= TLCLListBoxCallback( cocoaTLV.callback.GetCallbackObject );
-  lclListView:= TCustomListView( lclcb.Target );
+  lclcb:= TLCLListBoxCallback( cocoaTLV.callback );
+  lclListBox:= TCustomListBox( lclcb.Target );
 
   // do not notify about selection changes while clearing
   if Assigned(lclcb.strings) and (lclcb.strings.isClearing) then Exit;
-  SendSimpleMessage(lclListView, LM_SELCHANGE);
+  SendSimpleMessage(lclListBox, LM_SELCHANGE);
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;

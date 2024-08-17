@@ -11,7 +11,7 @@ uses
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   WSComCtrls,
   CocoaAll, CocoaPrivate, CocoaWSCommon,
-  CocoaListView, CocoaTables, CocoaCollectionView;
+  CocoaListControl, CocoaListView, CocoaTables, CocoaCollectionView;
 
 type
   { TCocoaWSCustomListView }

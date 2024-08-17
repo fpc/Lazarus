@@ -36,7 +36,7 @@ type
 
   { TCocoaCheckStringList }
 
-  TCocoaCheckStringList = class(TCocoaListControlStringList)
+  TCocoaCheckStringList = class(TCocoaListBoxStringList)
   protected
     procedure ExchangeItems(Index1, Index2: Integer); override;
   public
