@@ -2678,6 +2678,12 @@ begin
     RecogniseType;
   end;
 
+  if (aVarType=vtInline) and (fcTokenList.FirstSolidTokenType=ttAssign) then
+  begin
+    Recognise(ttAssign);
+    RecogniseExpr(True);
+  end;
+
   lc := fcTokenList.FirstSolidToken;
   CheckNilInstance(lc, fcRoot.LastLeaf);
 
