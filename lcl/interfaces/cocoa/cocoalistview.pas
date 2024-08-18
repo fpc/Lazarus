@@ -12,8 +12,9 @@ uses
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
-  CocoaPrivate, CocoaCallback, CocoaScrollers, CocoaWSScrollers, CocoaTextEdits,
-  CocoaWSCommon, cocoa_extra, CocoaGDIObjects, CocoaUtils;
+  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaWSCommon,
+  CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils,
+  cocoa_extra;
 
 type
   {
@@ -80,38 +81,34 @@ type
 
   { TLCLListViewCallback }
 
-  TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
+  TLCLListViewCallback = class(TLCLListControlCallback)
   public
     listView: TCustomListView;
 
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
-    selectionIndexSet: NSMutableIndexSet;
-    checkedIndexSet: NSMutableIndexSet;
     ownerData: Boolean;
 
-    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
-    destructor Destroy; override;
-    function ItemsCount: Integer;
-    function GetImageListType( out lvil: TListViewImageList ): Boolean;
-    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt( row: Integer; var IsChecked: Integer): Boolean;
-    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
-    function GetImageFromIndex(imgIdx: Integer): NSImage;
-    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt( row: Integer; IsChecked: Integer);
-    function getItemStableSelection(ARow: Integer): Boolean;
-    procedure selectOne(ARow: Integer; isSelected:Boolean );
-    function shouldSelectionChange(NewSel: Integer): Boolean;
-    procedure ColumnClicked(ACol: Integer);
+    function ItemsCount: Integer; override;
+    function GetImageListType( out lvil: TListViewImageList ): Boolean; override;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; override;
+    function GetItemCheckedAt( row: Integer; var IsChecked: Integer): Boolean; override;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; override;
+    function GetImageFromIndex(imgIdx: Integer): NSImage; override;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); override;
+    procedure SetItemCheckedAt( row: Integer; IsChecked: Integer); override;
+    function shouldSelectionChange(NewSel: Integer): Boolean; override;
+    procedure ColumnClicked(ACol: Integer); override;
     function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect;
-      state: TOwnerDrawState): Boolean;
+      state: TOwnerDrawState): Boolean; override;
     function customDraw( row: Integer; col: Integer;
-      ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
-    function isCustomDrawSupported: Boolean;
-    procedure GetRowHeight(rowidx: Integer; var h: Integer);
-    function GetBorderStyle: TBorderStyle;
-    function onAddSubview(aView: NSView): Boolean;
+      ctx: TCocoaContext; state: TCustomDrawState ): Boolean; override;
+    function isCustomDrawSupported: Boolean; override;
+    procedure GetRowHeight(rowidx: Integer; var h: Integer); override;
+    function GetBorderStyle: TBorderStyle; override;
+    function onAddSubview(aView: NSView): Boolean; override;
+
+    procedure selectOne(ARow: Integer; isSelected:Boolean );
     procedure callTargetInitializeWnd;
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
@@ -328,22 +325,6 @@ end;
 
 { TLCLListViewCallback }
 
-constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
-begin
-  inherited Create(AOwner, ATarget, AHandleView);
-  selectionIndexSet:= NSMutableIndexSet.new;
-  checkedIndexSet:= NSMutableIndexSet.new;
-end;
-
-destructor TLCLListViewCallback.Destroy;
-begin
-  selectionIndexSet.release;
-  selectionIndexSet:= nil;
-  checkedIndexSet.release;
-  checkedIndexSet:= nil;
-  inherited Destroy;
-end;
-
 function TLCLListViewCallback.ItemsCount: Integer;
 begin
   Result:= listView.Items.Count;
@@ -372,13 +353,11 @@ function TLCLListViewCallback.GetItemCheckedAt( row: Integer;
   var IsChecked: Integer): Boolean;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
-  indexSet: NSIndexSet;
 begin
-  indexSet:= self.checkedIndexSet;
   if ownerData and Assigned(listView) and (row>=0) and (row < listView.Items.Count) then
     IsChecked := BoolState[listView.Items[row].Checked]
   else
-    IsChecked := BoolState[checkedIndexSet.containsIndex(row)];
+    Inherited GetItemCheckedAt( row, IsChecked );
   Result := true;
 end;
 
@@ -483,9 +462,7 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
-  if IsChecked = NSOnState
-    then checkedIndexSet.addIndex(row)
-    else checkedIndexSet.removeIndex(row);
+  Inherited;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
@@ -500,11 +477,6 @@ begin
   Msg.NMHdr := @NMLV.hdr;
 
   LCLMessageGlue.DeliverMessage(ListView, Msg);
-end;
-
-function TLCLListViewCallback.getItemStableSelection(ARow: Integer): Boolean;
-begin
-  Result:= selectionIndexSet.containsIndex( ARow );
 end;
 
 procedure TLCLListViewCallback.selectOne(ARow: Integer; isSelected: Boolean);

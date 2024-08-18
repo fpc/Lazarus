@@ -30,37 +30,20 @@ uses
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaWSStdCtrls,
-  CocoaTables, CocoaScrollers, CocoaWSScrollers;
+  CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
 
 type
 
-  { TCocoaCheckStringList }
-
-  TCocoaCheckStringList = class(TCocoaStringList)
-  protected
-    procedure ExchangeItems(Index1, Index2: Integer); override;
-  public
-    ChkState : array of SInt8;
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
-    procedure Delete(Index: Integer); override;
-    procedure Clear; override;
-  end;
-
   { TLCLCheckboxListCallback }
 
-  TLCLCheckboxListCallback = class(TLCLListBoxCallback, IListViewCallback)
+  TLCLCheckboxListCallback = class(TLCLListBoxCallback)
   protected
-    function AllocStrings(ATable: NSTableView): TCocoaStringList; override;
+    function AllocStrings(ATable: NSTableView): TCocoaListControlStringList; override;
   public
     checklist: TCustomCheckListBox;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
-    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; override;
     procedure SetItemCheckedAt( row: Integer; CheckState: Integer); override;
-
-    function GetCheckState(Index: Integer; var AState: Integer): Boolean;
-    function SetCheckState(Index: Integer; AState: Integer; InvalidateCocoa: Boolean = true): Boolean;
   end;
-
 
   { TCocoaWSCustomCheckListBox }
 
@@ -71,77 +54,13 @@ type
     class procedure SetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
-function CtrlToCheckList(ctrl: TWinControl; out tbl: TCocoaTableListView; out cb: TLCLCheckboxListCallback): Boolean;
-
 implementation
-
-function CtrlToCheckList(ctrl: TWinControl; out tbl: TCocoaTableListView; out cb: TLCLCheckboxListCallback): Boolean;
-begin
-  Result := Assigned(ctrl) and (ctrl.HandleAllocated) and (ctrl.Handle <> 0);
-  if not Result then begin
-    tbl := nil;
-    cb := nil;
-    Exit;
-  end;
-  tbl:=TCocoaTableListView(NSSCrollView(ctrl.Handle).documentView);
-  Result := Assigned(tbl);
-  if Result then
-    cb := TLCLCheckboxListCallback(tbl.lclGetCallback.GetCallbackObject)
-  else
-    cb := nil;
-end;
-
-{ TCocoaCheckStringList }
-
-procedure TCocoaCheckStringList.ExchangeItems(Index1, Index2: Integer);
-var
-  t : Integer;
-begin
-  inherited ExchangeItems(Index1, Index2);
-  t := ChkState[Index1];
-  ChkState[Index1] := ChkState[Index2];
-  ChkState[Index2] := t;
-end;
-
-procedure TCocoaCheckStringList.InsertItem(Index: Integer; const S: string;
-  O: TObject);
-var
-  cnt : integer;
-  sz : integer;
-begin
-  cnt := Count;
-  inherited InsertItem(Index, S, O);
-
-  if length(ChkState)<Capacity then
-    SetLength(ChkState, Capacity);
-
-  sz := (cnt - Index) * sizeof(SInt8);
-  if sz>0 then System.Move(ChkState[Index], ChkState[Index+1], sz);
-
-  ChkState[Index] := 0;
-end;
-
-procedure TCocoaCheckStringList.Delete(Index: Integer);
-var
-  sz  : Integer;
-begin
-  inherited Delete(Index);
-  sz := (Count - Index) * sizeof(SInt8);
-  if (sz>0) and (Index < Count) then
-    System.Move(ChkState[Index+1], ChkState[Index], sz);
-end;
-
-procedure TCocoaCheckStringList.Clear;
-begin
-  inherited Clear;
-  SetLength(ChkState, 0);
-end;
 
 { TLCLCheckboxListCallback }
 
-function TLCLCheckboxListCallback.AllocStrings(ATable: NSTableView): TCocoaStringList;
+function TLCLCheckboxListCallback.AllocStrings(ATable: NSTableView): TCocoaListControlStringList;
 begin
-  Result:=TCocoaCheckStringList.Create(ATable);
+  Result:=TCocoaListBoxStringList.Create(ATable);
 end;
 
 constructor TLCLCheckboxListCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
@@ -151,50 +70,11 @@ begin
     checklist := TCustomCheckListBox(ATarget);
 end;
 
-function TLCLCheckboxListCallback.GetItemCheckedAt( row: Integer;
-  var CheckState: Integer): Boolean;
-begin
-  Result := GetCheckState(row, CheckState);
-end;
-
 procedure TLCLCheckboxListCallback.SetItemCheckedAt( row: Integer;
   CheckState: Integer);
-var
-  changed : Boolean;
 begin
-  changed := SetCheckState(row, CheckState, false); // returns true, if changed!s
-  if changed then LCLSendChangedMsg(Target, row);
-end;
-
-function TLCLCheckboxListCallback.GetCheckState(Index: Integer; var AState: Integer): Boolean;
-var
-  chkstr : TCocoaCheckStringList;
-begin
-  Result := Assigned(strings) and (Index>=0) and (Index<strings.Count);
-  if Result then
-  begin
-    chkstr := TCocoaCheckStringList(strings);
-    AState := chkstr.ChkState[Index];
-  end
-  else
-    ASTate := 0;
-end;
-
-function TLCLCheckboxListCallback.SetCheckState(Index: Integer; AState: Integer;
-  InvalidateCocoa: Boolean = true): Boolean;
-var
-  chkstr : TCocoaCheckStringList;
-begin
-  Result := Assigned(Strings) and (Index>=0) and (Index<strings.Count);
-  if not Result then Exit;
-  chkstr := TCocoaCheckStringList(strings);
-  Result := chkstr.ChkState[Index] <> AState;
-  if Result then
-  begin
-    chkstr.ChkState[Index] := AState;
-    if InvalidateCocoa and Assigned(listview) then
-      listview.reloadDataForRow_column(Index, 0);
-  end;
+  Inherited;
+  LCLSendChangedMsg( self.Target, row );
 end;
 
 { TCocoaWSCustomCheckListBox }
@@ -213,6 +93,7 @@ var
   list: TCocoaTableListView;
   scroll: TCocoaScrollView;
   processor: TCocoaTableViewProcessor;
+  lclCheckListBox: TCustomCheckListBox absolute AWinControl;
 begin
   list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
@@ -229,10 +110,11 @@ begin
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
+  list.setAllowsMultipleSelection(lclCheckListBox.MultiSelect);
   list.readOnly := true;
   //todo:
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
-  list.isOwnerDraw := TCustomCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isOwnerDraw := lclCheckListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -244,7 +126,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
 
-  ScrollViewSetBorderStyle(scroll, TCustomCheckListBox(AWinControl).BorderStyle);
+  ScrollViewSetBorderStyle(scroll, lclCheckListBox.BorderStyle);
   UpdateControlFocusRing(list, AWinControl);
 
   Result := TLCLHandle(scroll);
@@ -260,23 +142,19 @@ end;
 class function TCocoaWSCustomCheckListBox.GetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState;
 var
-  tbl: TCocoaTableListView;
-  cb : TLCLCheckboxListCallback;
-  cocoaSt: Integer;
+  lclcb : TLCLCheckboxListCallback;
+  checkState: Integer;
 begin
-  if not CtrlToCheckList(ACheckListBox, tbl, cb) then begin
-    Result := cbUnchecked;
+  Result:= cbUnchecked;
+
+  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  if NOT Assigned(lclcb) then
     Exit;
+
+  if lclcb.GetItemCheckedAt(AIndex, checkState) then begin
+    if checkState <> NSOffState then
+      Result:= cbChecked;
   end;
-  if cb.GetCheckState(AIndex, cocoaSt) then
-    case cocoaSt of
-      NSOnState : Result := cbChecked;
-      NSMixedState : Result := cbGrayed;
-    else
-      Result := cbUnchecked;
-    end
-  else
-    Result := cbUnchecked;
 end;
 
 {------------------------------------------------------------------------------
@@ -292,19 +170,23 @@ class procedure TCocoaWSCustomCheckListBox.SetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
   const AState: TCheckBoxState);
 var
-  tbl: TCocoaTableListView;
-  cb : TLCLCheckboxListCallback;
-  cocoaSt: Integer;
+  cocoaTLV: TCocoaTableListView;
+  lclcb : TLCLCheckboxListCallback;
+  checkState: Integer;
 begin
-  if not CtrlToCheckList(ACheckListBox, tbl, cb) then Exit;
+  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  if NOT Assigned(lclcb) then
+    Exit;
 
-  case AState of
-    cbChecked: cocoaSt := NSOnState;
-    cbGrayed:  cocoaSt := NSMixedState;
+  if AState <> cbUnchecked then
+    checkState:= NSOnState
   else
-    cocoaSt := NSOffState;
-  end;
-  cb.SetCheckState(AIndex, cocoaSt, true);
+    checkState:= NSOffState;
+
+  lclcb.SetItemCheckedAt( AIndex, checkState );
+
+  cocoaTLV:= getTableViewFromLCLListBox( ACheckListBox );
+  cocoaTLV.reloadDataForRow_column( AIndex, 0 );
 end;
 
 end.

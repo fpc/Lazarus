@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="540">
+    <Files Count="541">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2668,6 +2668,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCallback"/>
       </Item540>
+      <Item541>
+        <Filename Value="cocoa/cocoalistcontrol.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoalistcontrol"/>
+      </Item541>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

@@ -25,27 +25,13 @@ interface
 
 uses
   Classes, SysUtils,
-  MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConst, CocoaConfig,
-  CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
+  MacOSAll, CocoaAll, LazLogger,
+  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaListControl,
+  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits,
   LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
-
-  { TCocoaStringList }
-
-  TCocoaStringList = class(TStringList)
-  protected
-    procedure Changed; override;
-  public
-    Owner: NSTableView;
-    // some notificaitons (i.e. selection change)
-    // should not be passed to LCL while clearing
-    isClearing: Boolean;
-    constructor Create(AOwner: NSTableView);
-    procedure Clear; override;
-  end;
 
   { TCocoaTableListItem }
 
@@ -76,24 +62,6 @@ type
     procedure dealloc; override;
   end;
 
-  {
-    1. TCocoaTableListView related need to support
-       TListView/TListBox/TCheckListBox, etc.
-    2. the differences between these controls can be considered to be
-       implemented in the callback.
-    3. however, after careful consideration, we tried to keep the original
-       intention of the callback, and added TCocoaTableViewProcessor to
-       isolate these differences.
-  }
-  { TCocoaTableViewProcessor }
-
-  TCocoaTableViewProcessor = class
-    function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
-    procedure onReloadData( tv: NSTableView ); virtual; abstract;
-    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
-    procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
-  end;
-
   { TCocoaTableListView }
 
   TCocoaTableListView = objcclass(
@@ -106,7 +74,7 @@ type
     _checkBoxes: Boolean;
   public
     iconSize: NSSize;
-    callback: IListViewCallback;
+    callback: TLCLListControlCallback;
     selectingByProgram: Boolean;
     readOnly: Boolean;
     isOwnerDraw : Boolean;
@@ -128,6 +96,10 @@ type
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
     function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
 
+    procedure lclInsertItem(const AIndex: Integer); message 'lclInsertItem:';
+    procedure lclDeleteItem(const AIndex: Integer); message 'lclDeleteItem:';
+    procedure lclExchangeItem(const AIndex1: Integer; const AIndex2: Integer); message 'lclExchangeItem:AIndex2:';
+    procedure lclClearItem; message 'lclClearItem';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -262,13 +234,9 @@ type
 
   { TCocoaTableListViewProcessor }
 
-  TCocoaTableListViewProcessor = class( TCocoaTableViewProcessor )
-  private
-    function getCallback( tv: NSTableView ): TLCLListViewCallback;
+  TCocoaTableListViewProcessor = class( TCocoaTableListControlProcessor )
   public
     function isInitializing( tv: NSTableView ): Boolean; override;
-    procedure onReloadData( tv: NSTableView ); override;
-    procedure onSelectOneItem( tv: NSTableView;  selection: NSIndexSet ); override;
     procedure onSelectionChanged( tv: NSTableView ); override;
   end;
 
@@ -409,13 +377,10 @@ begin
 end;
 
 procedure TCocoaTableListView.backend_reloadData;
-var
-  lclcb: TLCLListViewCallback;
 begin
   self.reloadData;
   if Assigned(self.callback) then begin
-    lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-    self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+    self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   end;
 end;
 
@@ -505,8 +470,9 @@ begin
   Result:= False;
   if NOT self.isOwnerDraw then
     Exit;
+  if not Assigned(self.callback) then
+    Exit;
 
-  if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
   try
@@ -518,7 +484,7 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= self.callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
   finally
     ctx.Free;
   end;
@@ -531,9 +497,9 @@ var
   state: TCustomDrawState;
 begin
   Result:= False;
-  if NOT Assigned(callback) then
+  if NOT Assigned(self.callback) then
     Exit;
-  if NOT callback.isCustomDrawSupported then
+  if NOT self.callback.isCustomDrawSupported then
     Exit;
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
@@ -547,7 +513,7 @@ begin
     if isChecked(self,row) then
       Include(state, cdsChecked);
 
-    Result:= callback.customDraw(row, col, ctx, state);
+    Result:= self.callback.customDraw(row, col, ctx, state);
   finally
     ctx.Free;
   end;
@@ -557,8 +523,8 @@ procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
 begin
-  if CheckMainThread and Assigned(callback) then
-    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  if CheckMainThread and Assigned(self.callback) then
+    self.callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 
   done:= self.lclCallCustomDraw( -1, -1, self.bounds.size, dirtyRect );
 
@@ -583,14 +549,11 @@ begin
 end;
 
 procedure TCocoaTableListView.restoreFromStableSelection;
-var
-  lclcb: TLCLListViewCallback;
 begin
   if NOT Assigned(self.callback) then
     Exit;
 
-  lclcb:= TLCLListViewCallback( self.callback.GetCallbackObject );
-  self.selectRowIndexesByProgram( lclcb.selectionIndexSet );
+  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
 end;
 
 procedure TCocoaTableListView.reloadData;
@@ -716,8 +679,8 @@ end;
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
   ): NSInteger;
 begin
-  if Assigned(callback) then
-    Result := callback.ItemsCount
+  if Assigned(self.callback) then
+    Result := self.callback.ItemsCount
   else
     Result := 0;
 end;
@@ -737,14 +700,14 @@ end;
 function TCocoaTableListView.tableView_shouldSelectRow(tableView: NSTableView;
   row: NSInteger): Boolean;
 begin
-  Result:= callback.shouldSelectionChange( row );
+  Result:= self.callback.shouldSelectionChange( row );
 end;
 
 procedure TCocoaTableListView.tableView_didClickTableColumn(
   tableView: NSTableView; tableColumn: NSTableColumn);
 begin
-  if Assigned(callback) then
-    callback.ColumnClicked(getIndexOfColumn(tableColumn));
+  if Assigned(self.callback) then
+    self.callback.ColumnClicked(getIndexOfColumn(tableColumn));
 end;
 
 function TCocoaTableListView.tableView_heightOfRow(tableView: NSTableView;
@@ -755,9 +718,9 @@ begin
   h := CustomRowHeight;
   if h = 0 then h := DefaultRowHeight;
 
-  if isDynamicRowHeight and Assigned(callback) then
+  if isDynamicRowHeight and Assigned(self.callback) then
   begin
-    callback.GetRowHeight(Integer(row), h);
+    self.callback.GetRowHeight(Integer(row), h);
     if h<=0 then h:=1; // must be positive (non-zero)
   end;
   Result := h;
@@ -1045,39 +1008,29 @@ begin
 end;
 
 procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
+var
+  selectionIndexSet: NSMutableIndexSet;
 begin
-  if Assigned(_processor) then
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  if Assigned(_processor) then begin
+    if _processor.isInitializing(self) then
+      Exit;
     _processor.onSelectionChanged( self );
+  end;
+
+  if NOT self.selectingByProgram then begin
+    selectionIndexSet:= self.callback.selectionIndexSet;
+    selectionIndexSet.removeAllIndexes;
+    selectionIndexSet.addIndexes( self.selectedRowIndexes );
+  end;
 end;
 
 procedure TCocoaTableListView.tableViewColumnDidResize(
   notification: NSNotification);
 begin
   self.reloadData;
-end;
-
-{ TCocoaStringList }
-
-procedure TCocoaStringList.Changed;
-begin
-  inherited Changed;
-  Owner.reloadData;
-end;
-
-constructor TCocoaStringList.Create(AOwner: NSTableView);
-begin
-  Owner:=AOwner;
-  inherited Create;
-end;
-
-procedure TCocoaStringList.Clear;
-begin
-  isClearing := true;
-  try
-    inherited Clear;
-  finally
-    isClearing := false;
-  end;
 end;
 
 { TCocoaTableListItem }
@@ -1345,14 +1298,79 @@ begin
   rowView.row:= row;
 end;
 
+procedure TCocoaTableListView.lclInsertItem(const AIndex: Integer);
+begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  if _processor.isInitializing(self) then
+    Exit;
+
+  self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
+  self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
+  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
+  self.reloadData;
+  self.sizeToFit();
+end;
+
+procedure TCocoaTableListView.lclDeleteItem(const AIndex: Integer);
+begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
+  self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
+  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
+  self.reloadData;
+end;
+
+procedure ExchangeIndexSetItem( indexSet: NSMutableIndexSet;
+  const AIndex1: Integer; const AIndex2: Integer );
+var
+  hasIndex1: Boolean;
+  hasIndex2: Boolean;
+begin
+  hasIndex1:= indexSet.containsIndex(AIndex1);
+  hasIndex2:= indexSet.containsIndex(AIndex2);
+  if hasIndex1 = hasIndex2 then
+    Exit;
+
+  if hasIndex1 then begin
+    indexSet.removeIndex( AIndex1 );
+    indexSet.addIndex( AIndex2 );
+  end;
+  if hasIndex2 then begin
+    indexSet.removeIndex( AIndex2 );
+    indexSet.addIndex( AIndex1 );
+  end;
+end;
+
+procedure TCocoaTableListView.lclExchangeItem(const AIndex1: Integer;
+  const AIndex2: Integer);
+begin
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  ExchangeIndexSetItem( self.callback.checkedIndexSet, AIndex1, AIndex2 );
+  ExchangeIndexSetItem( self.callback.selectionIndexSet, AIndex1, AIndex2 );
+  self.reloadData;
+end;
+
+procedure TCocoaTableListView.lclClearItem;
+begin
+  self.callback.checkedIndexSet.removeAllIndexes;
+  self.callback.selectionIndexSet.removeAllIndexes;
+  self.reloadData;
+end;
+
 procedure TCocoaTableListView.checkboxAction(sender: NSButton);
 var
   row: NSInteger;
 begin
-  if not Assigned(callback) then Exit;
+  if not Assigned(self.callback) then Exit;
 
   row := rowForView(sender.superview);
-  callback.SetItemCheckedAt(row, sender.state);
+  self.callback.SetItemCheckedAt(row, sender.state);
   if sender.state = NSOnState then begin
     self.selectOneItemByIndex(row, True);
     self.window.makeFirstResponder( self );
@@ -1383,17 +1401,8 @@ begin
 end;
 
 procedure TCocoaWSListView_TableViewHandler.doReloadDataAfterDelete( AIndex: PtrInt);
-var
-  lclcb : TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
-  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
-  _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
-  _tableView.reloadData;
+  _tableView.lclDeleteItem( AIndex );
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ColumnDelete(
@@ -1640,21 +1649,8 @@ end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemInsert(
   const AIndex: Integer; const AItem: TListItem);
-var
-  lclcb: TLCLListViewCallback;
 begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  if TCocoaListView(lclcb.Owner).initializing then
-    Exit;
-
-  lclcb.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
-  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
-  _tableView.selectRowIndexesByProgram( lclcb.selectionIndexSet );
-  _tableView.reloadData;
-  _tableView.sizeToFit();
+  _tableView.lclInsertItem( AIndex );
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemSetChecked(
@@ -1855,13 +1851,6 @@ end;
 
 { TCocoaTableListViewProcessor }
 
-function TCocoaTableListViewProcessor.getCallback( tv: NSTableView ): TLCLListViewCallback;
-var
-  cocoaTLV: TCocoaTableListView Absolute tv;
-begin
-  Result:= TLCLListViewCallback( cocoaTLV.callback.GetCallbackObject );
-end;
-
 function TCocoaTableListViewProcessor.isInitializing( tv: NSTableView ): Boolean;
 var
   cocoaTLV: TCocoaTableListView Absolute tv;
@@ -1869,28 +1858,8 @@ begin
   Result:= False;
   if NOT Assigned(cocoaTLV.callback) then
     Exit;
-  Result:= TCocoaListView( self.getCallback(tv).Owner).initializing;
-end;
 
-procedure TCocoaTableListViewProcessor.onReloadData( tv: NSTableView );
-begin
-  tv.cancelPreviousPerformRequestsWithTarget_selector_object(
-    tv, ObjcSelector('restoreFromStableSelection'), nil );
-  tv.performSelector_withObject_afterDelay(
-    ObjcSelector('restoreFromStableSelection'), nil, 0 );
-end;
-
-procedure TCocoaTableListViewProcessor.onSelectOneItem(tv: NSTableView;
-  selection: NSIndexSet);
-var
-  lclcb: TLCLListViewCallback;
-begin
-  lclcb:= self.getCallback(tv);
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.selectionIndexSet.removeAllIndexes;
-  lclcb.selectionIndexSet.addIndexes( selection );
+  Result:= TCocoaListView( self.getCallback(tv).Owner ).initializing;
 end;
 
 procedure TCocoaTableListViewProcessor.onSelectionChanged(tv: NSTableView);
@@ -1902,27 +1871,16 @@ var
 
   lclListView: TCustomListView;
   cocoaTLV: TCocoaTableListView Absolute tv;
-  lclcb: TLCLListViewCallback;
+  lclcb: TLCLListControlCallback;
 begin
-  if NOT Assigned(cocoaTLV.callback) then
-    Exit;
-
   lclcb:= self.getCallback( tv );
   lclListView:= TCustomListView( lclcb.Target );
-
-  if self.isInitializing(tv) then
-    Exit;
 
   selectionIndexSet:= lclcb.selectionIndexSet;
   CompareIndexSets(selectionIndexSet, cocoaTLV.selectedRowIndexes, rm, ad);
 
   NewSel := cocoaTLV.selectedRow();
   sendSelectionChangedMsgToLCL( lclListView, NewSel, ad, rm );
-
-  if NOT cocoaTLV.selectingByProgram then begin
-    selectionIndexSet.removeAllIndexes;
-    selectionIndexSet.addIndexes( cocoaTLV.selectedRowIndexes );
-  end;
 end;
 
 end.
