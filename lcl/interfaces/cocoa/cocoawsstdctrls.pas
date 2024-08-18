@@ -134,6 +134,7 @@ type
 
   TCocoaTableListBoxProcessor = class( TCocoaTableListControlProcessor )
     function isInitializing( tv: NSTableView ): Boolean; override;
+    function getLCLControlCanvas(tv: NSTableView): TCanvas; override;
     procedure onSelectionChanged(tv: NSTableView); override;
   end;
 
@@ -2464,6 +2465,12 @@ end;
 function TCocoaTableListBoxProcessor.isInitializing(tv: NSTableView): Boolean;
 begin
   Result:= False;
+end;
+
+function TCocoaTableListBoxProcessor.getLCLControlCanvas(tv: NSTableView
+  ): TCanvas;
+begin
+  Result:= TCustomListBox(tv.lclGetTarget).Canvas;
 end;
 
 procedure TCocoaTableListBoxProcessor.onSelectionChanged(tv: NSTableView);

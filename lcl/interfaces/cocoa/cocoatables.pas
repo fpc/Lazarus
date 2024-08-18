@@ -25,11 +25,12 @@ interface
 
 uses
   Classes, SysUtils,
-  MacOSAll, CocoaAll, LazLogger,
+  LCLType, LCLMessageGlue, LMessages, Controls, Graphics,
+  ComCtrls, StdCtrls, ImgList, Forms,
+  MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaListControl,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
-  CocoaListView, CocoaTextEdits,
-  LCLType, LCLMessageGlue, LMessages, Controls, ComCtrls, StdCtrls, ImgList, Forms;
+  CocoaListView, CocoaTextEdits;
 
 type
 
@@ -92,6 +93,7 @@ type
     procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
     function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
+    function lclGetCanvas: TCanvas; message 'lclGetCanvas';
 
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
     function tableView_rowViewForRow(tableView: NSTableView; row: NSInteger): NSTableRowView;
@@ -237,6 +239,7 @@ type
   TCocoaTableListViewProcessor = class( TCocoaTableListControlProcessor )
   public
     function isInitializing( tv: NSTableView ): Boolean; override;
+    function getLCLControlCanvas( tv: NSTableView ): TCanvas; override;
     procedure onSelectionChanged( tv: NSTableView ); override;
   end;
 
@@ -328,6 +331,52 @@ begin
     view.setHidden( True );
 end;
 
+
+procedure updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont );
+var
+  saveFontColor: TColor;
+  cocoaFont: NSFont;
+  cocoaColor: NSColor;
+begin
+  saveFontColor:= lclFont.Color;
+
+  lclFont.Color:= clDefault;
+  if NOT lclFont.isDefault then begin
+    cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
+    cocoaField.setFont( cocoaFont );
+  end;
+
+  lclFont.Color:= saveFontColor;
+  if lclFont.Color <> clDefault then begin
+    cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
+    cocoaField.setTextColor( cocoaColor );
+  end;
+
+end;
+
+procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
+var
+  ctx: TCocoaContext;
+  cocoaBrush: TCocoaBrush;
+  width: Integer;
+  height: Integer;
+begin
+  if lclBrush.Color = clWindow then
+    Exit;
+
+  width:= Round( view.bounds.size.width );
+  height:= Round( view.bounds.size.height );
+
+  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
+  ctx.InitDraw( width, height );
+  try
+    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
+    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
+  finally
+    ctx.Free;
+  end;
+end;
+
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
@@ -341,6 +390,7 @@ begin
     // it's a case where the default drawing must be skipped.
     hideAllSubviews( self );
   end else begin
+    drawNSViewBackground( self, tableView.lclGetCanvas.Brush );
     inherited drawRect( dirtyRect );
   end;
 end;
@@ -406,6 +456,11 @@ begin
   if self.callback.onAddSubview(aView) then
     Exit;
   inherited addSubview(aView);
+end;
+
+function TCocoaTableListView.lclGetCanvas: TCanvas;
+begin
+  Result:= _processor.getLCLControlCanvas( self );
 end;
 
 procedure TCocoaTableListView.dealloc;
@@ -523,8 +578,16 @@ procedure TCocoaTableListView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
 begin
-  if CheckMainThread and Assigned(self.callback) then
+  if NOT Assigned(self.callback) then
+    Exit;
+
+  if CheckMainThread then
     self.callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+
+  if NOT self.callback.isCustomDrawSupported then begin
+    inherited;
+    Exit;
+  end;
 
   done:= self.lclCallCustomDraw( -1, -1, self.bounds.size, dirtyRect );
 
@@ -533,7 +596,8 @@ begin
     // we can only hide the SubviewViews to get the same effect.
     hideAllSubviews( self );
   end else begin
-    inherited drawRect( dirtyRect );
+    drawNSViewBackground( self, self.lclGetCanvas.Brush );
+    inherited;
   end;
 end;
 
@@ -1058,11 +1122,21 @@ var
   row: Integer;
   col: Integer;
   done: Boolean;
+  cocoaTLV: TCocoaTableListView;
 begin
+  cocoaTLV:= TCocoaTableListView( _tableView );
+
+  if NOT Assigned(cocoaTLV.callback) then
+    Exit;
+
+  if NOT cocoaTLV.callback.isCustomDrawSupported then begin
+    inherited;
+    Exit;
+  end;
+
   row:= _tableView.rowForView( self );
   col:= _tableView.columnForView( self );
-  done:= TCocoaTableListView(_tableView).lclCallCustomDraw(
-            row, col, self.bounds.size, dirtyRect );
+  done:= cocoaTLV.lclCallCustomDraw( row, col, self.bounds.size, dirtyRect );
 
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
@@ -1071,6 +1145,7 @@ begin
     // in Perferences-Component Palette.
     hideAllSubviews( self );
   end else begin
+    updateNSTextFieldWithTFont( self.textField, cocoaTLV.lclGetCanvas.Font );
     inherited drawRect(dirtyRect);
   end;
 end;
@@ -1860,6 +1935,12 @@ begin
     Exit;
 
   Result:= TCocoaListView( self.getCallback(tv).Owner ).initializing;
+end;
+
+function TCocoaTableListViewProcessor.getLCLControlCanvas(tv: NSTableView
+  ): TCanvas;
+begin
+  Result:= TCustomListView(tv.lclGetTarget).Canvas;
 end;
 
 procedure TCocoaTableListViewProcessor.onSelectionChanged(tv: NSTableView);

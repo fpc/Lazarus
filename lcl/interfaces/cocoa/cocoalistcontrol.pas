@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LclType, Controls, ComCtrls,
+  LCLType, Graphics, Controls, ComCtrls,
   CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
 
 type
@@ -95,6 +95,7 @@ type
 
   TCocoaTableViewProcessor = class
     function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
+    function getLCLControlCanvas( tv:NSTableView ): TCanvas; virtual; abstract;
     procedure onReloadData( tv: NSTableView ); virtual; abstract;
     procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
     procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
