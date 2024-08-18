@@ -27,6 +27,8 @@ type
 // Use when target information not yet loaded - assumes that debug target is the same as host
 function hostDescriptor: TTargetDescriptor;
 
+function TargetFormatDescriptor(const aTargetDescriptor: TTargetDescriptor): String;
+
 function dbgs(AMachineType: TMachineType): String; overload;
 function dbgs(ABitness: TBitness): String; overload;
 function dbgs(AByteOrder: TByteOrder): String; overload;
@@ -69,6 +71,24 @@ begin
                    {$elseif defined(UNIX)} osUnix
                    {$elseif defined(MSWINDOWS)} osWindows {$endif};
   end;
+end;
+
+function TargetFormatDescriptor(const aTargetDescriptor: TTargetDescriptor): String;
+const
+  machineNames: array[TMachineType] of string = (
+    'none', 'sparc', 'i386', 'm68K', 'ppc', 'ppc64', 'arm', 'aarch64',
+    'old-alpha', 'ia_64', 'x86_64', 'avr', 'alpha',
+    'mips', 'mipsel', 'loongarch64', 'xtensa', 'riscv');
+  OSname: array[TOperatingSystem] of string = (
+    'none', 'bsd', 'darwin', 'embedded', 'linux', 'unix', 'mac', 'win');
+begin
+  Result := machineNames[aTargetDescriptor.machineType] + '-' +
+            OSname[aTargetDescriptor.OS];
+  if aTargetDescriptor.OS = osWindows then
+    case aTargetDescriptor.bitness of
+      b32: Result := Result + '32';
+      b64: Result := Result + '64';
+    end;
 end;
 
 function dbgs(AMachineType: TMachineType): String;
