@@ -1269,7 +1269,7 @@ begin
   if Assigned(_checkBox) then begin
     _checkBox.sizeToFit;
     aFrame.size:= _checkBox.frame.size;
-    aFrame.origin.y:= (rowHeight - aFrame.size.height ) / 2;
+    aFrame.origin.y:= round( (rowHeight - aFrame.size.height ) / 2 );
     _checkBox.setFrameOrigin( aFrame.origin );
 
     aFrame.origin.x:= 4;
@@ -1277,7 +1277,7 @@ begin
 
   if Assigned(self.imageView) then begin
     aFrame.origin.x:= aFrame.origin.x + aFrame.size.width;
-    aFrame.origin.y:= (rowHeight - tv.iconSize.Height) / 2;
+    aFrame.origin.y:= round( (rowHeight - tv.iconSize.Height) / 2 );
     aFrame.size:= tv.iconSize;
     self.imageView.setFrame( aFrame );
 
@@ -1287,7 +1287,7 @@ begin
   if Assigned(self.textField) then begin
     self.textField.sizeToFit;
     aFrame.origin.x:= aFrame.origin.x + aFrame.size.width;
-    aFrame.origin.y:= (rowHeight - self.textField.frame.size.height) / 2;
+    aFrame.origin.y:= round( (rowHeight - self.textField.frame.size.height) / 2 );
     aFrame.size.width:= _column.width - aFrame.origin.x;
     aFrame.size.height:= self.textField.frame.size.height;
     if aFrame.size.width < 16 then
@@ -1683,8 +1683,9 @@ begin
     drLabel:
       begin
         _listView.setCaptionFont( item.textField.font );
+        _listView.setCaptionAlignment( NSTextAlignmentLeft );
         // to do: completely restore TFont
-        _tableView.lclGetCanvas.Font.Height:= Round(item.textField.font.pointSize);
+        _listView.getLCLControlCanvas.Font.Height:= Round(item.textField.font.pointSize);
         frame:= item.textField.frame;
         NSToLCLRect( frame, item.frame.size.height, rect );
         item.lclLocalToScreen( rect.left, rect.top );

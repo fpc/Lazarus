@@ -202,6 +202,8 @@ type
     function scrollView: TCocoaScrollView; message 'scrollView';
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
     function initializing: Boolean; message 'isinitializing';
+
+    function getLCLControlCanvas: TCanvas; message 'getLCLControlCanvas';
     procedure setCaptionEditor( captionEditor: NSTextField ); message 'setCaptionEditor:';
     procedure setCaptionFont( captionFont: NSFont ); message 'setCaptionFont:';
     procedure setCaptionAlignment( alignment: NSTextAlignment ); message 'setCaptionAlignment:';
@@ -231,6 +233,11 @@ end;
 function TCocoaListView.initializing: Boolean;
 begin
   Result:= _initializing;
+end;
+
+function TCocoaListView.getLCLControlCanvas: TCanvas;
+begin
+  Result:= TCustomListView(self.callback.Target).Canvas;
 end;
 
 procedure TCocoaListView.setCaptionEditor(captionEditor: NSTextField);

@@ -357,7 +357,7 @@ begin
   checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
 
-  aFrame.origin.x:= (cv.itemSize.Width - cv.iconSize.Width) / 2;
+  aFrame.origin.x:= round( (cv.itemSize.Width - cv.iconSize.Width) / 2 );
   aFrame.origin.y:= cv.itemSize.Height - cv.iconSize.Height - 10;
   aFrame.size:= cv.iconSize;
   if Assigned(checkBox) then
@@ -366,7 +366,7 @@ begin
 
   cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= 0;
-  aFrame.origin.y:= 9;
+  aFrame.origin.y:= 6;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
   aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
@@ -378,7 +378,7 @@ begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2 + 5;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 + 5 );
     checkBox.setFrame( aFrame );
   end;
 end;
@@ -444,7 +444,7 @@ begin
   cv:= TCocoaCollectionView(_collectionView);
 
   aFrame.origin.x:= 6;
-  aFrame.origin.y:= (cv.itemSize.Height - cv.iconSize.Height) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cv.iconSize.Height) / 2 );
   aFrame.size:= cv.iconSize;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
@@ -452,7 +452,7 @@ begin
 
   cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 2;
-  aFrame.origin.y:= (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2 );
   aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x - 4;
   aFrame.size.height:= cocoaItem.textField.frame.size.height;
   cocoaItem.textField.setFrame( aFrame );
@@ -461,7 +461,7 @@ begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
   end;
 end;
@@ -510,7 +510,7 @@ begin
 
   cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= 4;
-  aFrame.origin.y:= (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2 );
   aFrame.size.width:= 138;
   aFrame.size.height:= cocoaItem.textField.frame.size.height;
   if Assigned(checkBox) then
@@ -521,7 +521,7 @@ begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
   end;
 end;
@@ -1085,6 +1085,8 @@ begin
     drLabel:
       begin
         _listView.setCaptionFont( item.textField.font );
+        // to do: completely restore TFont
+        _listView.getLCLControlCanvas.Font.Height:= Round(item.textField.font.pointSize);
         _collectionView.styleHandler.onAdjustTextEditor( _listView );
         frame:= item.textField.frame;
         NSToLCLRect( frame, item.view.frame.size.height, rect );
