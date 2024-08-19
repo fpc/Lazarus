@@ -452,12 +452,17 @@ begin
 end;
 
 procedure TCocoaTableListView.addSubview(aView: NSView);
+var
+  textField: TCocoaTextField Absolute aView;
 begin
+  inherited;
+  if NOT aView.isKindOfClass(TCocoaTextField) then
+    Exit;
   if NOT Assigned(self.callback) then
     Exit;
-  if self.callback.onAddSubview(aView) then
+  if NOT (self.callback.Owner.isKindOfClass(TCocoaListView)) then
     Exit;
-  inherited addSubview(aView);
+  TCocoaListView(self.callback.Owner).setCaptionEditor( textField );
 end;
 
 function TCocoaTableListView.lclGetCanvas: TCanvas;
@@ -1671,7 +1676,6 @@ function TCocoaWSListView_TableViewHandler.ItemDisplayRect(const AIndex,
 var
   item: TCocoaTableListItem;
   frame: NSRect;
-  rect: TRect;
 begin
   Result:= Bounds(0,0,0,0);
   item:= _tableView.viewAtColumn_row_makeIfNecessary( ASubItem, AIndex, True );
@@ -1687,11 +1691,7 @@ begin
         // to do: completely restore TFont
         _listView.getLCLControlCanvas.Font.Height:= Round(item.textField.font.pointSize);
         frame:= item.textField.frame;
-        NSToLCLRect( frame, item.frame.size.height, rect );
-        item.lclLocalToScreen( rect.left, rect.top );
-        _listView.lclScreenToLocal( rect.left, rect.top );
-        frame.origin.x:= rect.left;
-        frame.origin.y:= rect.top;
+        frame:= item.convertRect_toView( frame, _tableView );
       end;
     drIcon:
       begin

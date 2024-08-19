@@ -292,7 +292,6 @@ type
     function isCustomDrawSupported: Boolean; override;
     procedure GetRowHeight(rowidx: integer; var h: Integer); override;
     function GetBorderStyle: TBorderStyle; override;
-    function onAddSubview(aView: NSView): Boolean; override;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -715,11 +714,6 @@ end;
 function TLCLListBoxCallback.GetBorderStyle: TBorderStyle;
 begin
   Result:= TCustomListBox(Target).BorderStyle;
-end;
-
-function TLCLListBoxCallback.onAddSubview(aView: NSView): Boolean;
-begin
-  Result:= False;
 end;
 
 { TCocoaListBoxStringList }

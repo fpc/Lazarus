@@ -41,7 +41,6 @@ type
     function getItemStableSelection(ARow: Integer): Boolean;
 
     procedure ColumnClicked(ACol: Integer);
-    function onAddSubview( aView:NSView ): Boolean;
 
     function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState ): Boolean;
     function customDraw( row: Integer; col: Integer; ctx: TCocoaContext; state: TCustomDrawState ): Boolean;
@@ -75,7 +74,6 @@ type
 
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual; abstract;
     procedure ColumnClicked(ACol: Integer); virtual; abstract;
-    function onAddSubview( aView:NSView ): Boolean; virtual; abstract;
 
     function drawItem( row: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState ): Boolean; virtual; abstract;
     function customDraw( row: Integer; col: Integer; ctx: TCocoaContext; state: TCustomDrawState ): Boolean; virtual; abstract;
