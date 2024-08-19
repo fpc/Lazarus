@@ -182,6 +182,7 @@ type
     _initializing: Boolean;
     _captionEditor: NSTextField;
     _captionFont: NSFont;
+    _captionAlignment: NSTextAlignment;
   private
     procedure createControls; message 'createControls';
     procedure releaseControls; message 'releaseControls';
@@ -203,6 +204,7 @@ type
     function initializing: Boolean; message 'isinitializing';
     procedure setCaptionEditor( captionEditor: NSTextField ); message 'setCaptionEditor:';
     procedure setCaptionFont( captionFont: NSFont ); message 'setCaptionFont:';
+    procedure setCaptionAlignment( alignment: NSTextAlignment ); message 'setCaptionAlignment:';
   end;
 
 implementation
@@ -236,6 +238,7 @@ begin
   _captionEditor:= captionEditor;
   if Assigned(_captionFont) then
     _captionEditor.setFont( _captionFont );
+  _captionEditor.setAlignment( _captionAlignment );
 end;
 
 procedure TCocoaListView.setCaptionFont(captionFont: NSFont);
@@ -244,6 +247,12 @@ begin
     _captionFont.release;
   _captionFont:= captionFont.retain;
   _captionEditor.setFont( _captionFont );
+end;
+
+procedure TCocoaListView.setCaptionAlignment( alignment: NSTextAlignment );
+begin
+  _captionAlignment:= alignment;
+  _captionEditor.setAlignment( _captionAlignment );
 end;
 
 procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);

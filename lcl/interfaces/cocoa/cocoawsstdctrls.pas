@@ -1127,11 +1127,11 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
-  if NOT TCocoaTextField(field).fixedInitSetting then
+  if NOT field.fixedInitSetting then begin
     TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
-  TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  if NOT field.fixedInitSetting then
+    TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
     UpdateControlFocusRing( field, AWinControl );
+  end;
 
   Result:=TLCLHandle(field);
 end;
@@ -1213,7 +1213,10 @@ var
   field: TCocoaTextField;
 begin
   field := GetTextField(ACustomEdit);
-  if not Assigned(field) then Exit;
+  if not Assigned(field) then
+    Exit;
+  if field.fixedInitSetting then
+    Exit;
   TextFieldSetAllignment(field, NewAlignment);
 end;
 
