@@ -339,6 +339,7 @@ begin
   FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
   FLocolsTreeMgr.FLocalsDlg := Self;
   ToolBar1.Images := IDEImages.Images_16;
+  vtLocals.LazImages := IDEImages.Images_16;
 
   Caption:= lisLocals;
   vtLocals.Header.Columns[0].Text:= lisName;

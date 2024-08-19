@@ -23,6 +23,7 @@ type
     btnArrayPageDec: TSpeedButton;
     btnArrayPageInc: TSpeedButton;
     btnArrayStart: TSpeedButton;
+    btnHide: TSpeedButton;
     cbEnforceBound: TCheckBox;
     Label1: TLabel;
     edArrayPageSize: TLazIntegerEdit;
@@ -30,6 +31,7 @@ type
     lblBounds: TLabel;
     procedure BtnChangePageClicked(Sender: TObject);
     procedure BtnChangeSizeClicked(Sender: TObject);
+    procedure btnHideClick(Sender: TObject);
     procedure cbEnforceBoundChange(Sender: TObject);
     procedure edArrayPageSizeEditingDone(Sender: TObject);
     procedure edArrayPageSizeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -46,6 +48,7 @@ type
     FShowBoundInfo: Boolean;
     FTree: TDbgTreeView;
     FNode: PVirtualNode;
+    FNavBarVisible: Boolean;
     function GetIndex: int64;
     function GetIndexOffs: int64;
     function GetLimitedPageSize: int64;
@@ -69,6 +72,10 @@ type
     constructor Create(TheOwner: TComponent; ATree: TDbgTreeView; ANode: PVirtualNode); reintroduce;
     destructor Destroy; override;
     function PreferredHeight: integer;
+    procedure HideNavBar;
+    procedure ShowNavBar;
+    procedure UpdateCollapsedExpanded;
+    property  NavBarVisible: boolean read FNavBarVisible;
     property LowBound: int64 read FLowBound write SetLowBound;
     property HighBound: int64 read FHighBound write SetHighBound;
     property ShowBoundInfo: Boolean read FShowBoundInfo write SetShowBoundInfo;
@@ -146,6 +153,11 @@ begin
   ;
   if (FOnPageSize <> nil) and (edArrayPageSize.Value <> v) then
     FOnPageSize(Self, edArrayStart.Value);
+end;
+
+procedure TArrayNavigationBar.btnHideClick(Sender: TObject);
+begin
+  HideNavBar;
 end;
 
 procedure TArrayNavigationBar.cbEnforceBoundChange(Sender: TObject);
@@ -329,6 +341,37 @@ begin
   Result := max(Result, h);
 end;
 
+procedure TArrayNavigationBar.HideNavBar;
+begin
+  FNavBarVisible := False;
+  FTree.NodeRightButtonImgIdx[FNode] := IDEImages.LoadImage('NavArrow_Show');
+  FTree.NodeControlVisible[FNode] := False;
+end;
+
+procedure TArrayNavigationBar.ShowNavBar;
+begin
+  Constraints.MinWidth := Max(Max(cbEnforceBound.Left + btnHide.Width + btnHide.Width,
+                                  FTree.RangeX
+                                 ), FTree.ClientWidth);
+  FNavBarVisible := True;
+  FTree.NodeRightButtonImgIdx[FNode] := -1;
+  FTree.NodeControlVisible[FNode] := True;
+end;
+
+procedure TArrayNavigationBar.UpdateCollapsedExpanded;
+begin
+  if FTree.Expanded[FNode] then begin
+    if FNavBarVisible then
+      ShowNavBar
+    else
+      HideNavBar;
+  end
+  else begin
+    FTree.NodeRightButtonImgIdx[FNode] := -1;
+    FTree.NodeControlVisible[FNode] := False;
+  end;
+end;
+
 procedure TArrayNavigationBar.SetShowBoundInfo(AValue: Boolean);
 begin
   if FShowBoundInfo = AValue then Exit;
@@ -403,6 +446,11 @@ begin
   else
     cbEnforceBound.BorderSpacing.Top := 0;
 
+  if FNavBarVisible then begin
+    Constraints.MinWidth := Max(Max(cbEnforceBound.Left + btnHide.Width + btnHide.Width,
+                                    FTree.RangeX
+                                   ), FTree.ClientWidth);
+  end;
 end;
 
 procedure TArrayNavigationBar.BoundsChanged;
@@ -411,16 +459,15 @@ begin
   if HandleAllocated and IsVisible then begin
     DoParentResized(nil);
   end;
-
-  //if btnToggle <> nil then
-  //  btnToggle.Width := btnToggle.Height;
 end;
 
 procedure TArrayNavigationBar.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if HandleAllocated and IsVisible then begin
-    FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
+  if HandleAllocated then begin
+    if Visible then
+      FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
+    UpdateCollapsedExpanded;
     DoParentResized(nil);
   end;
 end;
@@ -428,7 +475,9 @@ end;
 procedure TArrayNavigationBar.CreateWnd;
 begin
   inherited CreateWnd;
+  if Visible then
     FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
+  UpdateCollapsedExpanded;
   DoParentResized(nil);
 end;
 
@@ -451,7 +500,7 @@ begin
   FNode := ANode;
   inherited Create(TheOwner);
   Name := '';
-  Constraints.MinWidth := btnArrayPageInc.Left + btnArrayPageInc.Width;
+  Constraints.MinWidth := cbEnforceBound.Left + btnHide.Width + btnHide.Width;
 
   edArrayStart.Hint := dlgInspectIndexOfFirstItemToShow;
   edArrayPageSize.Hint := dlgInspectAmountOfItemsToShow;
@@ -483,6 +532,10 @@ begin
   btnArrayFastDown.Caption := '';
 
   cbEnforceBound.Caption := arrnavEnforceBounds;
+
+  FNavBarVisible := True;
+  btnHide.Images     := IDEImages.Images_16;
+  btnHide.ImageIndex := IDEImages.LoadImage('NavArrow_Hide');
 end;
 
 destructor TArrayNavigationBar.Destroy;

@@ -28,6 +28,7 @@ type
     FTreeView: TDbgTreeView;
     FExpandingWatchAbleResult: TObject;
 
+    procedure TreeNodeRightButtonClicked(Sender: TDbgTreeView; ANode: PVirtualNode);
     procedure TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure TreeViewExpanded(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure TreeViewInitChildren(Sender: TBaseVirtualTree;
@@ -372,10 +373,12 @@ end;
 procedure TDbgTreeViewWatchDataMgr.TreeViewExpanded(Sender: TBaseVirtualTree;
   Node: PVirtualNode);
 var
+  Nav: TArrayNavigationBar;
   AWatchAble: TObject;
 begin
-  if TArrayNavigationBar(FTreeView.NodeControl[Node]) <> nil then
-    FTreeView.NodeControlVisible[Node] := True;
+  Nav := TArrayNavigationBar(FTreeView.NodeControl[Node]);
+  if Nav <> nil then
+    Nav.UpdateCollapsedExpanded;
 
   Node := FTreeView.GetFirstChildNoInit(Node);
   while Node <> nil do begin
@@ -387,8 +390,22 @@ begin
 end;
 
 procedure TDbgTreeViewWatchDataMgr.TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Nav: TArrayNavigationBar;
 begin
   FTreeView.NodeControlVisible[Node] := False;
+  Nav := TArrayNavigationBar(FTreeView.NodeControl[Node]);
+  if Nav <> nil then
+    Nav.UpdateCollapsedExpanded;
+end;
+
+procedure TDbgTreeViewWatchDataMgr.TreeNodeRightButtonClicked(Sender: TDbgTreeView;
+  ANode: PVirtualNode);
+var
+  Nav: TControl;
+begin
+  Nav := FTreeView.NodeControl[ANode];
+  if Nav <> nil then TArrayNavigationBar(Nav).ShowNavBar;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.TreeViewInitChildren(
@@ -430,6 +447,7 @@ begin
   FTreeView.OnExpanded     := @TreeViewExpanded;
   FTreeView.OnCollapsed    := @TreeViewCollapsed;
   FTreeView.OnInitChildren := @TreeViewInitChildren;
+  FTreeView.OnNodeRightButtonClick:= @TreeNodeRightButtonClicked;
 end;
 
 function TDbgTreeViewWatchDataMgr.AddWatchData(AWatchAble: TObject;

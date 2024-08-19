@@ -5,7 +5,7 @@ unit DebuggerTreeView;
 interface
 
 uses
-  Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, LMessages, Controls,
+  Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, GraphType, LMessages, Controls,
   ImgList, LCLIntf, Graphics;
 
 type
@@ -45,6 +45,10 @@ type
   TDbgTreeNodeData = record
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
     ImageIndex: Array of Integer;
+    RightSideButton: record
+      ImageIndex: integer;
+      Rect: TRect;
+    end;
     CachedText: Array of String;
     CachedColumnData: array of record
       ShortenWidth1, ShortenWidth2: integer;
@@ -61,6 +65,7 @@ type
 
   TItemRemovedEvent = procedure (Sender: TDbgTreeView; AnItem: TObject; ANode: PVirtualNode) of object;
   TDetermineDropModeEvent = procedure (const P: TPoint; var HitInfo: THitInfo; var NodeRect: TRect; var DropMode: TDropMode) of object;
+  TDbgTreeRightButtonClickEvent = procedure (Sender: TDbgTreeView; ANode: PVirtualNode) of object;
 
   { TDbgTreeView }
 
@@ -70,14 +75,19 @@ type
     FCheckControlsVisibleRunning, FCheckControlsVisibleAgain: Boolean;
     FInToggle: boolean;
     FFirstControlNode: PVirtualNode; // not ordered
+    FLazImages: TCustomImageList;
     FOnDetermineDropMode: TDetermineDropModeEvent;
     FOnItemRemoved: TItemRemovedEvent;
+    FOnNodeRightButtonClick: TDbgTreeRightButtonClickEvent;
 
     // Text/Image
     function  GetNodeImageIndex(Node: PVirtualNode; AColumn: integer): Integer;
     function  GetNodeText(Node: PVirtualNode; AColumn: integer): String;
+    function  GetNodeRightButtonImgIdx(Node: PVirtualNode): Integer;
+    function  GetNodeRightButtonRect(Node: PVirtualNode): TRect;
     procedure SetNodeImageIndex(Node: PVirtualNode; AColumn: integer; AValue: Integer);
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
+    procedure SetNodeRightButtonImgIdx(Node: PVirtualNode; AValue: Integer);
     // Item
     procedure SetNodeItem(Node: PVirtualNode; AValue: TObject);
     function GetNodeItem(Node: PVirtualNode): TObject;
@@ -173,6 +183,11 @@ type
     property OnItemRemoved: TItemRemovedEvent read FOnItemRemoved write FOnItemRemoved;
     property OnDetermineDropMode: TDetermineDropModeEvent read FOnDetermineDropMode write FOnDetermineDropMode;
     property LastDropMode;
+
+    property LazImages: TCustomImageList read FLazImages write FLazImages;
+    property NodeRightButtonImgIdx[Node: PVirtualNode]: Integer read GetNodeRightButtonImgIdx write SetNodeRightButtonImgIdx;
+    property NodeRightButtonRect[Node: PVirtualNode]: TRect read GetNodeRightButtonRect;
+    property OnNodeRightButtonClick: TDbgTreeRightButtonClickEvent read FOnNodeRightButtonClick write FOnNodeRightButtonClick;
   end;
 
 implementation
@@ -268,6 +283,27 @@ begin
     Result := Data^.CachedText[AColumn];
 end;
 
+function TDbgTreeView.GetNodeRightButtonImgIdx(Node: PVirtualNode): Integer;
+var
+  Data: PDbgTreeNodeData;
+begin
+  Result := -1;
+  Data := GetNodeData(Node);
+  if (Data <> nil) then
+    Result := Data^.RightSideButton.ImageIndex - 1;
+end;
+
+function TDbgTreeView.GetNodeRightButtonRect(Node: PVirtualNode): TRect;
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  if (Data <> nil) then
+    Result := Data^.RightSideButton.Rect
+  else
+    Result := Rect(-1,-1,-1,-1);
+end;
+
 procedure TDbgTreeView.SetNodeImageIndex(Node: PVirtualNode; AColumn: integer;
   AValue: Integer);
 var
@@ -296,6 +332,19 @@ begin
     Data^.CachedColumnData[AColumn].ColWidth := -1;
     Data^.CachedColumnData[AColumn].ShortenWidth1 := -1;
     Data^.CachedColumnData[AColumn].ShortenResText := '';
+  end;
+end;
+
+procedure TDbgTreeView.SetNodeRightButtonImgIdx(Node: PVirtualNode; AValue: Integer);
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  if Data <> nil then begin
+    if Data^.RightSideButton.ImageIndex <> AValue then begin
+      InvalidateNode(Node);
+      Data^.RightSideButton.ImageIndex := AValue + 1;
+    end;
   end;
 end;
 
@@ -767,7 +816,6 @@ end;
 procedure TDbgTreeView.DoPaintNode(var PaintInfo: TVTPaintInfo);
 var
   NData: PDbgTreeNodeData;
-  r: TRect;
   b: LongInt;
 begin
   NData := GetNodeData(PaintInfo.Node);
@@ -778,6 +826,23 @@ begin
     PaintInfo.ContentRect.Bottom := NData^.ControlTop;
 
   inherited DoPaintNode(PaintInfo);
+
+  if (PaintInfo.Column=0) and (FLazImages <> nil) and (NData^.RightSideButton.ImageIndex > 0) then begin
+    NData^.RightSideButton.Rect := PaintInfo.ContentRect;
+    NData^.RightSideButton.Rect.Left := Max(
+      PaintInfo.ContentRect.Right - FLazImages.Width,
+      PaintInfo.ContentRect.Left + FLazImages.Width
+    );
+    //if PaintInfo.;
+    //DrawEffect := gdeNormal
+    //DrawEffect := gdeShadowed;
+    FLazImages.Draw(PaintInfo.Canvas,
+       NData^.RightSideButton.Rect.Left,
+       (NData^.RightSideButton.Rect.Bottom - NData^.RightSideButton.Rect.Top - FLazImages.Height) div 2,
+       NData^.RightSideButton.ImageIndex - 1,
+       gdeNormal);
+  end;
+
   PaintInfo.ContentRect.Bottom := b;
 end;
 
@@ -915,17 +980,36 @@ end;
 
 procedure TDbgTreeView.HandleMouseDown(var Message: TLMMouse;
   var HitInfo: THitInfo);
+var
+  NData: PDbgTreeNodeData;
 begin
   if Message.Msg = LM_LBUTTONDOWN then
     DragMode := dmAutomatic
   else
     DragMode := dmManual;
+
+  if (HitInfo.HitColumn = 0) then begin
+    NData := GetNodeData(HitInfo.HitNode);
+    if (NData^.RightSideButton.ImageIndex > 0) and
+       (NData^.RightSideButton.Rect.Top >= 0) and
+       (HitInfo.HitPoint.X >= NData^.RightSideButton.Rect.Left) and
+       (HitInfo.HitPoint.X < NData^.RightSideButton.Rect.Right)
+    then begin
+      if FOnNodeRightButtonClick <> nil then
+        FOnNodeRightButtonClick(Self, HitInfo.HitNode);
+      exit;
+    end;
+  end;
+
   inherited HandleMouseDown(Message, HitInfo);
 end;
 
 procedure TDbgTreeView.HandleMouseDblClick(var Message: TLMMouse;
   const HitInfo: THitInfo);
 begin
+  if hiOnItemButton in HitInfo.HitPositions then
+    exit;
+
   inherited HandleMouseDblClick(Message, HitInfo);
   if (HitInfo.HitNode = nil) and (HitInfo.HitColumn < 0) then
     DoNodeDblClick(HitInfo);

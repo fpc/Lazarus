@@ -200,4 +200,22 @@ object ArrayNavigationBar: TArrayNavigationBar
     TabOrder = 2
     OnChange = cbEnforceBoundChange
   end
+  object btnHide: TSpeedButton
+    AnchorSideLeft.Control = cbEnforceBound
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 384
+    Height = 22
+    Top = 1
+    Width = 4
+    Anchors = [akTop, akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 15
+    BorderSpacing.Top = 1
+    BorderSpacing.Bottom = 1
+    Flat = True
+    OnClick = btnHideClick
+  end
 end
