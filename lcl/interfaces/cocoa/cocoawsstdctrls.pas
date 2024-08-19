@@ -292,7 +292,6 @@ type
     function isCustomDrawSupported: Boolean; override;
     procedure GetRowHeight(rowidx: integer; var h: Integer); override;
     function GetBorderStyle: TBorderStyle; override;
-    function onAddSubview(aView: NSView): Boolean; override;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -445,7 +444,8 @@ begin
   Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
-    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    if NOT Result.fixedInitSetting then
+      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSControlValue(Result, AParams.Caption);
   end;
@@ -714,11 +714,6 @@ end;
 function TLCLListBoxCallback.GetBorderStyle: TBorderStyle;
 begin
   Result:= TCustomListBox(Target).BorderStyle;
-end;
-
-function TLCLListBoxCallback.onAddSubview(aView: NSView): Boolean;
-begin
-  Result:= False;
 end;
 
 { TCocoaListBoxStringList }
@@ -1126,11 +1121,11 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
-  if NOT TCocoaTextField(field).fixedBorderStyle then
+  if NOT field.fixedInitSetting then begin
     TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
-  TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  if NOT field.fixedBorderStyle then
+    TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
     UpdateControlFocusRing( field, AWinControl );
+  end;
 
   Result:=TLCLHandle(field);
 end;
@@ -1212,7 +1207,10 @@ var
   field: TCocoaTextField;
 begin
   field := GetTextField(ACustomEdit);
-  if not Assigned(field) then Exit;
+  if not Assigned(field) then
+    Exit;
+  if field.fixedInitSetting then
+    Exit;
   TextFieldSetAllignment(field, NewAlignment);
 end;
 

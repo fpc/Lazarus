@@ -106,7 +106,6 @@ type
     function isCustomDrawSupported: Boolean; override;
     procedure GetRowHeight(rowidx: Integer; var h: Integer); override;
     function GetBorderStyle: TBorderStyle; override;
-    function onAddSubview(aView: NSView): Boolean; override;
 
     procedure selectOne(ARow: Integer; isSelected:Boolean );
     procedure callTargetInitializeWnd;
@@ -180,6 +179,9 @@ type
     _WSHandler: TCocoaWSListViewHandler;
     _needsCallLclInit: Boolean;
     _initializing: Boolean;
+    _captionEditor: TCocoaTextField;
+    _captionFont: NSFont;
+    _captionAlignment: NSTextAlignment;
   private
     procedure createControls; message 'createControls';
     procedure releaseControls; message 'releaseControls';
@@ -199,6 +201,11 @@ type
     function scrollView: TCocoaScrollView; message 'scrollView';
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
     function initializing: Boolean; message 'isinitializing';
+
+    function getLCLControlCanvas: TCanvas; message 'getLCLControlCanvas';
+    procedure setCaptionEditor( captionEditor: TCocoaTextField ); message 'setCaptionEditor:';
+    procedure setCaptionFont( captionFont: NSFont ); message 'setCaptionFont:';
+    procedure setCaptionAlignment( alignment: NSTextAlignment ); message 'setCaptionAlignment:';
   end;
 
 implementation
@@ -225,6 +232,44 @@ end;
 function TCocoaListView.initializing: Boolean;
 begin
   Result:= _initializing;
+end;
+
+function TCocoaListView.getLCLControlCanvas: TCanvas;
+begin
+  Result:= TCustomListView(self.callback.Target).Canvas;
+end;
+
+procedure TCocoaListView.setCaptionEditor(captionEditor: TCocoaTextField);
+begin
+  if Assigned(_captionEditor) then
+    _captionEditor.release;
+
+  _captionEditor:= captionEditor.retain;
+  _captionEditor.setBezeled( False );
+  _captionEditor.setFocusRingType( NSFocusRingTypeExterior );
+  _captionEditor.setAlignment( _captionAlignment );
+  _captionEditor.fixedInitSetting:= True;
+
+  if Assigned(_captionFont) then
+    _captionEditor.setFont( _captionFont );
+end;
+
+procedure TCocoaListView.setCaptionFont(captionFont: NSFont);
+begin
+  if Assigned(_captionFont) then
+    _captionFont.release;
+  _captionFont:= captionFont.retain;
+  if Assigned(_captionEditor) then begin
+    _captionEditor.removeFromSuperview;
+    _backendControl.addSubview_positioned_relativeTo( _captionEditor, NSWindowAbove, nil );
+    _captionEditor.setFont( _captionFont );
+  end;
+end;
+
+procedure TCocoaListView.setCaptionAlignment( alignment: NSTextAlignment );
+begin
+  _captionAlignment:= alignment;
+  _captionEditor.setAlignment( _captionAlignment );
 end;
 
 procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);
@@ -315,6 +360,8 @@ end;
 procedure TCocoaListView.dealloc;
 begin
   self.releaseControls;
+  _captionEditor.release;
+  _captionFont.release;
   inherited dealloc;
 end;
 
@@ -553,22 +600,6 @@ end;
 function TLCLListViewCallback.GetBorderStyle: TBorderStyle;
 begin
   Result:= TCustomListView(Target).BorderStyle;
-end;
-
-function TLCLListViewCallback.onAddSubview(aView: NSView): Boolean;
-var
-  field: TCocoaTextField;
-begin
-  Result:= False;
-  if NOT aView.isKindOfClass(TCocoaTextField) then
-    Exit;
-
-  field:= TCocoaTextField( aView );
-  field.setBezeled( False );
-  field.setFocusRingType( NSFocusRingTypeExterior );
-  field.fixedBorderStyle:= True;
-  NSView(self.Owner).addSubview( field );  // add to TCococListView
-  Result:= True;
 end;
 
 function TLCLListViewCallback.GetImageListType( out lvil: TListViewImageList ): Boolean;

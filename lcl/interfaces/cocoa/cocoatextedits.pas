@@ -60,7 +60,7 @@ type
   TCocoaTextField = objcclass(NSTextField, NSTextField_LCLExt)
     callback: ICommonCallback;
     maxLength: Integer;
-    fixedBorderStyle: Boolean;
+    fixedInitSetting: Boolean;
 
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;

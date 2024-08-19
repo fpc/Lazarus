@@ -42,8 +42,8 @@ type
     procedure onInit; virtual;
     function isSupportIcon: Boolean; virtual;
     procedure onUpdateItemSize( baseSize: NSSize ); virtual; abstract;
-    procedure onUpdateItemLayout( cocoItem: TCocoaCollectionItem ); virtual; abstract;
-    procedure onAdjustTextEditorRect( var aFrame: NSRect ); virtual; abstract;
+    procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); virtual; abstract;
+    procedure onAdjustTextEditor( lv: TCocoaListView ); virtual;
   end;
 
   { TCocoaCollectionItemView }
@@ -210,7 +210,7 @@ type
     procedure resetSize; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
-    procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
+    procedure onAdjustTextEditor( lv: TCocoaListView ); override;
   end;
 
   { TCocoaListView_CollectionView_SmallIconHandler }
@@ -218,7 +218,6 @@ type
     procedure resetSize; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
-    procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
   end;
 
   { TCocoaListView_CollectionView_ListHandler }
@@ -227,7 +226,6 @@ type
     function isSupportIcon: Boolean; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
-    procedure onAdjustTextEditorRect( var aFrame: NSRect ); override;
   end;
 
 function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
@@ -300,6 +298,12 @@ begin
   Result:= True;
 end;
 
+procedure TCocoaListView_CollectionView_StyleHandler.onAdjustTextEditor(
+  lv: TCocoaListView );
+begin
+  lv.setCaptionAlignment( NSTextAlignmentLeft );
+end;
+
 { TCocoaListView_CollectionView_LargeIconHandler }
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.resetSize;
@@ -353,19 +357,20 @@ begin
   checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
 
-  aFrame.origin.x:= (cv.itemSize.Width - cv.iconSize.Width) / 2;
+  aFrame.origin.x:= round( (cv.itemSize.Width - cv.iconSize.Width) / 2 );
   aFrame.origin.y:= cv.itemSize.Height - cv.iconSize.Height - 10;
   aFrame.size:= cv.iconSize;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 12;
   cocoaItem.imageView.setFrame( aFrame );
 
+  cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= 0;
-  aFrame.origin.y:= 9;
-  aFrame.size.height:= 15;
+  aFrame.origin.y:= 6;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
   aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
+  aFrame.size.height:= cocoaItem.textField.frame.size.height;
   cocoaItem.textField.setAlignment( NSTextAlignmentCenter );
   cocoaItem.textField.setFrame( aFrame );
 
@@ -373,17 +378,15 @@ begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2 + 5;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 + 5 );
     checkBox.setFrame( aFrame );
   end;
 end;
 
-procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditorRect(
-  var aFrame: NSRect);
+procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditor(
+  lv: TCocoaListView );
 begin
-  aFrame.origin.y:= aFrame.origin.y - 1;
-  aFrame.origin.x:= aFrame.origin.x + 2;
-  aFrame.size.width:= aFrame.size.width - 4;
+  lv.setCaptionAlignment( NSTextAlignmentCenter );
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
@@ -441,32 +444,26 @@ begin
   cv:= TCocoaCollectionView(_collectionView);
 
   aFrame.origin.x:= 6;
-  aFrame.origin.y:= (cv.itemSize.Height - cv.iconSize.Height) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cv.iconSize.Height) / 2 );
   aFrame.size:= cv.iconSize;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
   cocoaItem.imageView.setFrame( aFrame );
 
+  cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= aFrame.origin.x + aFrame.size.width + 2;
-  aFrame.origin.y:= (cv.itemSize.Height - 15) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2 );
   aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x - 4;
-  aFrame.size.height:= 15;
+  aFrame.size.height:= cocoaItem.textField.frame.size.height;
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
   end;
-end;
-
-procedure TCocoaListView_CollectionView_SmallIconHandler.onAdjustTextEditorRect(
-  var aFrame: NSRect);
-begin
-  aFrame.origin.y:= aFrame.origin.y + 2;
-  aFrame.size.width:= aFrame.size.width + 2;
 end;
 
 { TCocoaListView_CollectionView_ListHandler }
@@ -510,10 +507,12 @@ var
 begin
   checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
+
+  cocoaItem.textField.sizeToFit;
   aFrame.origin.x:= 4;
-  aFrame.origin.y:= (cv.itemSize.Height - 15) / 2;
+  aFrame.origin.y:= round( (cv.itemSize.Height - cocoaItem.textField.frame.size.height) / 2 );
   aFrame.size.width:= 138;
-  aFrame.size.height:= 15;
+  aFrame.size.height:= cocoaItem.textField.frame.size.height;
   if Assigned(checkBox) then
     aFrame.origin.x:= aFrame.origin.x + 24;
   cocoaItem.textField.setFrame( aFrame );
@@ -522,17 +521,9 @@ begin
     aFrame.size.width:= 18;
     aFrame.size.height:= 18;
     aFrame.origin.x:= 6;
-    aFrame.origin.y:= (cv.itemSize.Height - aFrame.size.height ) / 2;
+    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
   end;
-end;
-
-procedure TCocoaListView_CollectionView_ListHandler.onAdjustTextEditorRect(
-  var aFrame: NSRect);
-begin
-  aFrame.origin.y:= aFrame.origin.y + 2;
-  aFrame.origin.x:= aFrame.origin.x - 2;
-  aFrame.size.width:= aFrame.size.width + 4;
 end;
 
 { TCocoaCollectionItem }
@@ -571,6 +562,7 @@ var
   itemView: TCocoaCollectionItemView;
   fieldControl: NSTextField;
   imageControl: NSImageView;
+  cell: NSTextFieldCell;
 begin
   itemView:= TCocoaCollectionItemView.alloc.initWithFrame( NSZeroRect);
   itemView.item:= self;
@@ -585,6 +577,10 @@ begin
   fieldControl.setDrawsBackground( False );
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
+  fieldControl.setBezeled( False );
+  cell := NSTextFieldCell(fieldControl.cell);
+  cell.setWraps(false);
+  cell.setScrollable(false);
   self.setTextField( fieldControl );
   itemView.addSubview( fieldControl );
 
@@ -735,12 +731,15 @@ begin
 end;
 
 procedure TCocoaCollectionView.addSubview(aView: NSView);
+var
+  textField: TCocoaTextField Absolute aView;
 begin
+  inherited;
+  if NOT aView.isKindOfClass(TCocoaTextField) then
+    Exit;
   if NOT Assigned(self.callback) then
     Exit;
-  if self.callback.onAddSubview(aView) then
-    Exit;
-  inherited addSubview(aView);
+  TCocoaListView(self.callback.Owner).setCaptionEditor( textField );
 end;
 
 procedure TCocoaCollectionView.updateItemValue(
@@ -1077,7 +1076,6 @@ function TCocoaWSListView_CollectionViewHandler.ItemDisplayRect(const AIndex,
 var
   item: NSCollectionViewItem;
   frame: NSRect;
-  rect: TRect;
 begin
   Result:= Bounds(0,0,0,0);
   item:= _collectionView.itemAtIndex( AIndex );
@@ -1088,13 +1086,12 @@ begin
   case ACode of
     drLabel:
       begin
+        _listView.setCaptionFont( item.textField.font );
+        // to do: completely restore TFont
+        _listView.getLCLControlCanvas.Font.Height:= Round(item.textField.font.pointSize);
+        _collectionView.styleHandler.onAdjustTextEditor( _listView );
         frame:= item.textField.frame;
-        _collectionView.styleHandler.onAdjustTextEditorRect( frame );
-        NSToLCLRect( frame, item.view.frame.size.height, rect );
-        item.view.lclLocalToScreen( rect.left, rect.top );
-        _listView.lclScreenToLocal( rect.left, rect.top );
-        frame.origin.x:= rect.left;
-        frame.origin.y:= rect.top;
+        frame:= item.view.convertRect_toView( frame, _collectionView );
       end;
     drIcon:
       begin
