@@ -180,6 +180,8 @@ type
     _WSHandler: TCocoaWSListViewHandler;
     _needsCallLclInit: Boolean;
     _initializing: Boolean;
+    _captionEditor: NSTextField;
+    _captionFont: NSFont;
   private
     procedure createControls; message 'createControls';
     procedure releaseControls; message 'releaseControls';
@@ -199,6 +201,8 @@ type
     function scrollView: TCocoaScrollView; message 'scrollView';
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
     function initializing: Boolean; message 'isinitializing';
+    procedure setCaptionEditor( captionEditor: NSTextField ); message 'setCaptionEditor:';
+    procedure setCaptionFont( captionFont: NSFont ); message 'setCaptionFont:';
   end;
 
 implementation
@@ -225,6 +229,21 @@ end;
 function TCocoaListView.initializing: Boolean;
 begin
   Result:= _initializing;
+end;
+
+procedure TCocoaListView.setCaptionEditor(captionEditor: NSTextField);
+begin
+  _captionEditor:= captionEditor;
+  if Assigned(_captionFont) then
+    _captionEditor.setFont( _captionFont );
+end;
+
+procedure TCocoaListView.setCaptionFont(captionFont: NSFont);
+begin
+  if Assigned(_captionFont) then
+    _captionFont.release;
+  _captionFont:= captionFont.retain;
+  _captionEditor.setFont( _captionFont );
 end;
 
 procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);
@@ -315,6 +334,7 @@ end;
 procedure TCocoaListView.dealloc;
 begin
   self.releaseControls;
+  _captionFont.release;
   inherited dealloc;
 end;
 
@@ -566,8 +586,9 @@ begin
   field:= TCocoaTextField( aView );
   field.setBezeled( False );
   field.setFocusRingType( NSFocusRingTypeExterior );
-  field.fixedBorderStyle:= True;
-  NSView(self.Owner).addSubview( field );  // add to TCococListView
+  field.fixedInitSetting:= True;
+  TCocoaListView(self.Owner).addSubview( field );  // add to TCocoaListView
+  TCocoaListView(self.Owner).setCaptionEditor( field );  // add to TCocoaListView
   Result:= True;
 end;
 

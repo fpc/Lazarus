@@ -332,18 +332,21 @@ begin
 end;
 
 
-procedure updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont );
+function updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont ):
+  Boolean;
 var
   saveFontColor: TColor;
   cocoaFont: NSFont;
   cocoaColor: NSColor;
 begin
+  Result:= False;
   saveFontColor:= lclFont.Color;
 
   lclFont.Color:= clDefault;
   if NOT lclFont.isDefault then begin
     cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
     cocoaField.setFont( cocoaFont );
+    Result:= True;
   end;
 
   lclFont.Color:= saveFontColor;
@@ -351,7 +354,6 @@ begin
     cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
     cocoaField.setTextColor( cocoaColor );
   end;
-
 end;
 
 procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
@@ -1145,7 +1147,8 @@ begin
     // in Perferences-Component Palette.
     hideAllSubviews( self );
   end else begin
-    updateNSTextFieldWithTFont( self.textField, cocoaTLV.lclGetCanvas.Font );
+    if updateNSTextFieldWithTFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
+      updateItemLayout( row, col );
     inherited drawRect(dirtyRect);
   end;
 end;
@@ -1264,11 +1267,10 @@ begin
   rowHeight:= tv.tableView_heightOfRow( tv, row );
 
   if Assigned(_checkBox) then begin
-    aFrame.size.width:= 18;
-    aFrame.size.height:= 18;
-    aFrame.origin.x:= 0;
+    _checkBox.sizeToFit;
+    aFrame.size:= _checkBox.frame.size;
     aFrame.origin.y:= (rowHeight - aFrame.size.height ) / 2;
-    _checkBox.setFrame( aFrame );
+    _checkBox.setFrameOrigin( aFrame.origin );
 
     aFrame.origin.x:= 4;
   end;
@@ -1283,13 +1285,13 @@ begin
   end;
 
   if Assigned(self.textField) then begin
-    aFrame.size.height:= self.textField.frame.size.height;
+    self.textField.sizeToFit;
     aFrame.origin.x:= aFrame.origin.x + aFrame.size.width;
-    aFrame.origin.y:= (rowHeight - 15) / 2;
+    aFrame.origin.y:= (rowHeight - self.textField.frame.size.height) / 2;
     aFrame.size.width:= _column.width - aFrame.origin.x;
+    aFrame.size.height:= self.textField.frame.size.height;
     if aFrame.size.width < 16 then
       aFrame.size.width:= 16;
-    aFrame.size.height:= 15;
     self.textField.setFrame( aFrame );
   end;
 end;
@@ -1680,8 +1682,10 @@ begin
   case ACode of
     drLabel:
       begin
+        _listView.setCaptionFont( item.textField.font );
+        // to do: completely restore TFont
+        _tableView.lclGetCanvas.Font.Height:= Round(item.textField.font.pointSize);
         frame:= item.textField.frame;
-        frame.origin.y:= frame.origin.y + 2;
         NSToLCLRect( frame, item.frame.size.height, rect );
         item.lclLocalToScreen( rect.left, rect.top );
         _listView.lclScreenToLocal( rect.left, rect.top );

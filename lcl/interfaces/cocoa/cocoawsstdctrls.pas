@@ -445,7 +445,8 @@ begin
   Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
-    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    if NOT Result.fixedInitSetting then
+      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSControlValue(Result, AParams.Caption);
   end;
@@ -1126,10 +1127,10 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
-  if NOT TCocoaTextField(field).fixedBorderStyle then
+  if NOT TCocoaTextField(field).fixedInitSetting then
     TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-  if NOT field.fixedBorderStyle then
+  if NOT field.fixedInitSetting then
     UpdateControlFocusRing( field, AWinControl );
 
   Result:=TLCLHandle(field);
