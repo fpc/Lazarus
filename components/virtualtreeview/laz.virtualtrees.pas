@@ -30850,15 +30850,12 @@ begin
                 // Adjust height of temporary node bitmap.
                 with NodeBitmap do
                 begin
-                  {$ifdef LCLCocoa}
-                  if Height <> PaintInfo.Node.NodeHeight then
-                  {$else}
                   if Height < PaintInfo.Node.NodeHeight then
-                  {$endif}
                   begin
                     // Avoid that the VCL copies the bitmap while changing its height.
                     {$ifdef LCLCocoa}
-                    Height := Round(PaintInfo.Node.NodeHeight * sc);
+                    if Height > 0 then SetSize(1,1); // can't go to 0, must keep canvas
+                    SetSize(Round(PaintWidth*sc), Round(PaintInfo.Node.NodeHeight * sc));
                     cg := TCocoaBitmapContext(NodeBitmap.Canvas.Handle).CGContext;
                     if cglast <> cg then
                     begin
@@ -31200,7 +31197,7 @@ begin
                       Window.Left,
                       Round(YCorrect * sc),
                       NodeBitmap.Width,
-                      NodeBitmap.Height - Round(YCorrect * sc),
+                      Round(PaintInfo.Node.NodeHeight * sc) - Round(YCorrect * sc),
                       SRCCOPY
                     );
                     {$else}
