@@ -4459,9 +4459,9 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaContextMenu:
             AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveNever);
         mbaContextMenuDebug:
-            AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 1);
+            AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 1);
         mbaContextMenuTab:
-            AddCommand(emcContextMenu, True,       AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
+            AddCommand(emcContextMenu, False,      AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectionCaretMoveOutside, 0, 2);
         mbaMultiCaretToggle:
           begin
             AddCommand(emcPluginMultiCaretToggleCaret, False, AButton, AClickCount, ADir, AShift, AShiftMask);
