@@ -375,8 +375,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 18;
-    aFrame.size.height:= 18;
+    checkBox.sizeToFit;
+    aFrame.size:= checkBox.frame.size;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 + 5 );
     checkBox.setFrame( aFrame );
@@ -458,8 +458,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 18;
-    aFrame.size.height:= 18;
+    checkBox.sizeToFit;
+    aFrame.size:= checkBox.frame.size;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
@@ -518,8 +518,8 @@ begin
   cocoaItem.textField.setFrame( aFrame );
 
   if Assigned(checkBox) then begin
-    aFrame.size.width:= 18;
-    aFrame.size.height:= 18;
+    checkBox.sizeToFit;
+    aFrame.size:= checkBox.frame.size;
     aFrame.origin.x:= 6;
     aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 );
     checkBox.setFrame( aFrame );
