@@ -9,17 +9,22 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
-  TCocoaConfigVSReportRow = record
+  TCocoaConfigSize = record
+    width: Double;
+    height: Double;
+  end;
+
+  TCocoaConfigTableRow = record
     defaultHeight: Integer;
     imageLineSpacing: Integer;
   end;
 
-  TCocoaConfigVSReportColumn = record
+  TCocoaConfigTableColumn = record
     controlSpacing: Integer;
     textFieldMinWidth: Integer;
   end;
 
-  TCocoaConfigVSReportColumnAutoFit = record
+  TCocoaConfigTableColumnAutoFit = record
     // for performance, when the column divider is double-clicked to automatically
     // calculate the column width, the maximum number of rows calculated
     maxCalcRows: Integer;
@@ -29,16 +34,33 @@ type
     headerAdditionalWidth: Double;
   end;
 
-  TCocoaConfigVSReport = record
+  TCocoaConfigTable = record
     // default NSTableViewStyle
     tableViewStyle: NSTableViewStyle;
-    row: TCocoaConfigVSReportRow;
-    column: TCocoaConfigVSReportColumn;
-    columnAutoFit: TCocoaConfigVSReportColumnAutoFit;
+    row: TCocoaConfigTableRow;
+    column: TCocoaConfigTableColumn;
+    columnAutoFit: TCocoaConfigTableColumnAutoFit;
+  end;
+
+  TCocoaConfigCollectionItem = record
+    minSize: TCocoaConfigSize;
+    minIconSize: TCocoaConfigSize;
+    iconPadding: Double;
+    controlSpacing: Double;
+    textFieldDefaultHeight: Double;
+    textFieldAlignment: NSTextAlignment;
+    checkBoxOccupiedWidth: Double;
+  end;
+
+  TCocoaConfigCollection = record
+    interitemSpacing: Double;
+    lineSpacing: Double;
+    item: TCocoaConfigCollectionItem;
   end;
 
   TCocoaConfigListView = record
-    vsReport: TCocoaConfigVSReport;
+    vsReport: TCocoaConfigTable;
+    vsIcon: TCocoaConfigCollection;
   end;
 
 var
@@ -48,6 +70,18 @@ var
       row: ( defaultHeight: 16; imageLineSpacing: 4*2 );
       column: ( controlSpacing: 4; textFieldMinWidth: 16 );
       columnAutoFit: ( maxCalcRows: 100; minWidth: 20; headerAdditionalWidth: 4 );
+    );
+    vsIcon: (
+      interitemSpacing: 4;
+      lineSpacing: 4;
+      item: (
+        minSize: ( width:64; height:68 );
+        minIconSize: ( width:32; height:32 );
+        iconPadding: 10; controlSpacing: 2;
+        textFieldDefaultHeight: 15;
+        textFieldAlignment: 1;       // NSTextAlignmentCenter
+        checkBoxOccupiedWidth: 24
+      );
     )
   );
 

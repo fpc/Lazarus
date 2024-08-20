@@ -312,16 +312,17 @@ var
   minSize: NSSize;
 begin
   layout:= NSCollectionViewFlowLayout(_collectionView.collectionViewLayout);
-  minSize.width:= 64;
-  minSize.height:= 68;
+  minSize.width:= CocoaConfigListView.vsIcon.item.minSize.width;
+  minSize.height:= CocoaConfigListView.vsIcon.item.minSize.height;
 
   if self.hasCheckBoxes then
-    minSize.width:= minSize.width + 24;
+    minSize.width:= minSize.width +
+                    CocoaConfigListView.vsIcon.item.checkBoxOccupiedWidth;
 
   TCocoaCollectionView(_collectionView).itemSize:= minSize;
   layout.setItemSize( minSize );
-  layout.setMinimumInteritemSpacing( 4 );
-  layout.setMinimumLineSpacing( 4 );
+  layout.setMinimumInteritemSpacing( CocoaConfigListView.vsIcon.interitemSpacing );
+  layout.setMinimumLineSpacing( CocoaConfigListView.vsIcon.lineSpacing );
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onUpdateItemSize(
@@ -331,20 +332,25 @@ var
 begin
   cv:= TCocoaCollectionView(_collectionView);
   cv.iconSize:= baseSize;
-  if cv.iconSize.Width < 32 then
-    cv.iconSize.Width:= 32;
-  if cv.iconSize.Height < 32 then
-    cv.iconSize.Height:= 32;
+  if cv.iconSize.Width < CocoaConfigListView.vsIcon.item.minIconSize.width then
+    cv.iconSize.Width:= CocoaConfigListView.vsIcon.item.minIconSize.width;
+  if cv.iconSize.Height < CocoaConfigListView.vsIcon.item.minIconSize.height then
+    cv.iconSize.Height:= CocoaConfigListView.vsIcon.item.minIconSize.height;
 
-  cv.itemSize.Width:= 10 + cv.iconSize.Width + 10;
-  cv.itemSize.Height:= 10 + cv.iconSize.Height + 2 + 14 + 10;
-  if cv.itemSize.Width < 64 then
-    cv.itemSize.Width:= 64;
-  if cv.itemSize.Height < 68 then
-    cv.itemSize.Height:= 68;
+  cv.itemSize.Width:= cv.iconSize.Width +
+                      CocoaConfigListView.vsIcon.item.iconPadding * 2;
+  cv.itemSize.Height:= cv.iconSize.Height +
+                       CocoaConfigListView.vsIcon.item.iconPadding * 2 +
+                       CocoaConfigListView.vsIcon.item.controlSpacing +
+                       CocoaConfigListView.vsIcon.item.textFieldDefaultHeight;
+  if cv.itemSize.Width < CocoaConfigListView.vsIcon.item.minSize.width then
+    cv.itemSize.Width:= CocoaConfigListView.vsIcon.item.minSize.width;
+  if cv.itemSize.Height < CocoaConfigListView.vsIcon.item.minSize.height then
+    cv.itemSize.Height:= CocoaConfigListView.vsIcon.item.minSize.height;
 
   if self.hasCheckBoxes then
-    cv.itemSize.Width:= cv.itemSize.Width + 24;
+    cv.itemSize.Width:= cv.itemSize.Width +
+                        CocoaConfigListView.vsIcon.item.checkBoxOccupiedWidth;
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onUpdateItemLayout(
@@ -352,33 +358,40 @@ procedure TCocoaListView_CollectionView_LargeIconHandler.onUpdateItemLayout(
 var
   cv: TCocoaCollectionView;
   aFrame: NSRect;
+  textField: NSTextField;
+  imageView: NSImageView;
   checkBox: NSButton;
 begin
+  textField:= cocoaItem.textField;
+  imageView:= cocoaItem.imageView;
   checkBox:= cocoaItem.checkBox;
   cv:= TCocoaCollectionView(_collectionView);
 
   aFrame.origin.x:= round( (cv.itemSize.Width - cv.iconSize.Width) / 2 );
-  aFrame.origin.y:= cv.itemSize.Height - cv.iconSize.Height - 10;
+  aFrame.origin.y:= cv.itemSize.Height - cv.iconSize.Height -
+                    CocoaConfigListView.vsIcon.item.iconPadding;
   aFrame.size:= cv.iconSize;
   if Assigned(checkBox) then
-    aFrame.origin.x:= aFrame.origin.x + 12;
-  cocoaItem.imageView.setFrame( aFrame );
+    aFrame.origin.x:= aFrame.origin.x +
+                      CocoaConfigListView.vsIcon.item.checkBoxOccupiedWidth / 2;
+  imageView.setFrame( aFrame );
 
-  cocoaItem.textField.sizeToFit;
+  textField.sizeToFit;
+  aFrame.size.height:= textField.frame.size.height;
+  aFrame.origin.y:= round( (aFrame.origin.y-aFrame.size.height) / 2 );
   aFrame.origin.x:= 0;
-  aFrame.origin.y:= 6;
   if Assigned(checkBox) then
-    aFrame.origin.x:= aFrame.origin.x + 24;
+    aFrame.origin.x:= aFrame.origin.x + CocoaConfigListView.vsIcon.item.checkBoxOccupiedWidth;
   aFrame.size.width:= cv.itemSize.Width - aFrame.origin.x;
-  aFrame.size.height:= cocoaItem.textField.frame.size.height;
-  cocoaItem.textField.setAlignment( NSTextAlignmentCenter );
-  cocoaItem.textField.setFrame( aFrame );
+  textField.setFrame( aFrame );
+  textField.setAlignment( CocoaConfigListView.vsIcon.item.textFieldAlignment );
 
   if Assigned(checkBox) then begin
     checkBox.sizeToFit;
     aFrame.size:= checkBox.frame.size;
-    aFrame.origin.x:= 6;
-    aFrame.origin.y:= round( (cv.itemSize.Height - aFrame.size.height ) / 2 + 5 );
+    aFrame.origin.x:= CocoaConfigListView.vsIcon.item.checkBoxOccupiedWidth -
+                      checkBox.frame.size.width;
+    aFrame.origin.y:= round( (cv.itemSize.Height-aFrame.size.height) / 2 );
     checkBox.setFrame( aFrame );
   end;
 end;
@@ -386,7 +399,7 @@ end;
 procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditor(
   lv: TCocoaListView );
 begin
-  lv.setCaptionAlignment( NSTextAlignmentCenter );
+  lv.setCaptionAlignment( CocoaConfigListView.vsIcon.item.textFieldAlignment );
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
