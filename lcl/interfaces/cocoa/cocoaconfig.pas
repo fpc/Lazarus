@@ -42,25 +42,43 @@ type
     columnAutoFit: TCocoaConfigTableColumnAutoFit;
   end;
 
-  TCocoaConfigCollectionItem = record
+  TCocoaConfigCollectionItem = object
     minSize: TCocoaConfigSize;
     minIconSize: TCocoaConfigSize;
     iconPadding: Double;
     controlSpacing: Double;
-    textFieldDefaultHeight: Double;
     textFieldAlignment: NSTextAlignment;
     checkBoxOccupiedWidth: Double;
   end;
 
-  TCocoaConfigCollection = record
+  TCocoaConfigCollection = object
     interitemSpacing: Double;
     lineSpacing: Double;
     item: TCocoaConfigCollectionItem;
   end;
 
+  TCocoaConfigCollectionIconTextField = record
+    defaultHeight: Double;
+  end;
+
+  TCocoaConfigCollectionSmallIconTextField = record
+    iconWidthFactor: Double;
+    baseWidth: Double;
+    minWidth: Double;
+  end;
+
+  TCocoaConfigCollectionIcon = object( TCocoaConfigCollection )
+    textField: TCocoaConfigCollectionIconTextField;
+  end;
+
+  TCocoaConfigCollectionSmallIcon = object( TCocoaConfigCollection )
+    textField: TCocoaConfigCollectionSmallIconTextField;
+  end;
+
   TCocoaConfigListView = record
     vsReport: TCocoaConfigTable;
-    vsIcon: TCocoaConfigCollection;
+    vsIcon: TCocoaConfigCollectionIcon;
+    vsSmallIcon: TCocoaConfigCollectionSmallIcon;
   end;
 
 var
@@ -78,11 +96,23 @@ var
         minSize: ( width:64; height:68 );
         minIconSize: ( width:32; height:32 );
         iconPadding: 10; controlSpacing: 2;
-        textFieldDefaultHeight: 15;
         textFieldAlignment: 1;       // NSTextAlignmentCenter
         checkBoxOccupiedWidth: 24
       );
-    )
+      textField: ( defaultHeight: 15 );
+    );
+    vsSmallIcon: (
+      interitemSpacing: 10;
+      lineSpacing: 0;
+      item: (
+        minSize: ( width:150; height:28 );
+        minIconSize: ( width:16; height:16 );
+        iconPadding: 4; controlSpacing: 2;
+        textFieldAlignment: 0;       // NSTextAlignmentLeft
+        checkBoxOccupiedWidth: 24
+      );
+      textField: ( iconWidthFactor: 3; baseWidth: 0; minWidth: 128 );
+    );
   );
 
 type
