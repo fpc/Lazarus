@@ -9,6 +9,50 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaConfigVSReportRow = record
+    defaultHeight: Integer;
+    imageLineSpacing: Integer;
+  end;
+
+  TCocoaConfigVSReportColumn = record
+    controlSpacing: Integer;
+    textFieldMinWidth: Integer;
+  end;
+
+  TCocoaConfigVSReportColumnAutoFit = record
+    // for performance, when the column divider is double-clicked to automatically
+    // calculate the column width, the maximum number of rows calculated
+    maxCalcRows: Integer;
+    // min Column Width when the column divider is double-clicked
+    minWidth: Double;
+    // additional width for header
+    headerAdditionalWidth: Double;
+  end;
+
+  TCocoaConfigVSReport = record
+    // default NSTableViewStyle
+    tableViewStyle: NSTableViewStyle;
+    row: TCocoaConfigVSReportRow;
+    column: TCocoaConfigVSReportColumn;
+    columnAutoFit: TCocoaConfigVSReportColumnAutoFit;
+  end;
+
+  TCocoaConfigListView = record
+    vsReport: TCocoaConfigVSReport;
+  end;
+
+var
+  CocoaConfigListView: TCocoaConfigListView = (
+    vsReport: (
+      tableViewStyle: NSTableViewStyleAutomatic;
+      row: ( defaultHeight: 16; imageLineSpacing: 4*2 );
+      column: ( controlSpacing: 4; textFieldMinWidth: 16 );
+      columnAutoFit: ( maxCalcRows: 100; minWidth: 20; headerAdditionalWidth: 4 );
+    )
+  );
+
+type
+
   // on macOS, the FocusRing takes up extra space, which may cause strange
   // display in some cases. it may block other controls, or be partially cut off.
   // for example, in the Lazarus IDE - About dialog, the FocusRing of the
@@ -115,16 +159,6 @@ var
   // always Presented.
   CocoaAlwaysPresentNotification : Boolean = True;
 
-
-  // default NSTableViewStyle
-  CocoaTableViewStyle : NSTableViewStyle = NSTableViewStyleAutomatic;
-
-  // for performance, when the column divider is double-clicked to automatically
-  // calculate the column width, the maximum number of rows calculated
-  CocoaTableColumnAutoFitWidthCalcRows : Integer = 100;
-
-  // min Column Width when the column divider is double-clicked
-  CocoaTableColumnAutoFitWidthMin: Double = 20;
 
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
