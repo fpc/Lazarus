@@ -2,6 +2,7 @@ unit CocoaConfig;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 interface
 
@@ -9,6 +10,132 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaConfigSize = record
+    width: Double;
+    height: Double;
+  end;
+
+  TCocoaConfigTableRow = record
+    defaultHeight: Integer;
+    imageLineSpacing: Integer;
+  end;
+
+  TCocoaConfigTableColumn = record
+    controlSpacing: Integer;
+    textFieldMinWidth: Integer;
+  end;
+
+  TCocoaConfigTableColumnAutoFit = record
+    // for performance, when the column divider is double-clicked to automatically
+    // calculate the column width, the maximum number of rows calculated
+    maxCalcRows: Integer;
+    // min Column Width when the column divider is double-clicked
+    minWidth: Double;
+    // additional width for header
+    headerAdditionalWidth: Double;
+  end;
+
+  TCocoaConfigTable = record
+    // default NSTableViewStyle
+    tableViewStyle: NSTableViewStyle;
+    row: TCocoaConfigTableRow;
+    column: TCocoaConfigTableColumn;
+    columnAutoFit: TCocoaConfigTableColumnAutoFit;
+  end;
+
+  TCocoaConfigCollectionItem = record
+    minSize: TCocoaConfigSize;
+    controlSpacing: Double;
+    textFieldAlignment: NSTextAlignment;
+    checkBoxOccupiedWidth: Double;
+  end;
+
+  TCocoaConfigCollection = object
+    interitemSpacing: Double;
+    lineSpacing: Double;
+    item: TCocoaConfigCollectionItem;
+  end;
+
+  TCocoaConfigCollectionIconImageView = record
+    minSize: TCocoaConfigSize;
+    padding: Double;
+  end;
+
+  TCocoaConfigCollectionLargeIconTextField = record
+    defaultHeight: Double;
+  end;
+
+  TCocoaConfigCollectionSmallIconTextField = record
+    iconWidthFactor: Double;
+    baseWidth: Double;
+    minWidth: Double;
+  end;
+
+  TCocoaConfigCollectionIcon = object( TCocoaConfigCollection )
+    imageView: TCocoaConfigCollectionIconImageView;
+  end;
+
+  TCocoaConfigCollectionLargeIcon = object( TCocoaConfigCollectionIcon )
+    textField: TCocoaConfigCollectionLargeIconTextField;
+  end;
+
+  TCocoaConfigCollectionSmallIcon = object( TCocoaConfigCollectionIcon )
+    textField: TCocoaConfigCollectionSmallIconTextField;
+  end;
+
+  TCocoaConfigListView = record
+    vsReport: TCocoaConfigTable;
+    vsIcon: TCocoaConfigCollectionLargeIcon;
+    vsSmallIcon: TCocoaConfigCollectionSmallIcon;
+    vsList: TCocoaConfigCollection;
+  end;
+
+var
+  CocoaConfigListView: TCocoaConfigListView = (
+    vsReport: (
+      tableViewStyle: NSTableViewStyleAutomatic;
+      row: ( defaultHeight: 16; imageLineSpacing: 4*2 );
+      column: ( controlSpacing: 4; textFieldMinWidth: 16 );
+      columnAutoFit: ( maxCalcRows: 100; minWidth: 20; headerAdditionalWidth: 4 );
+    );
+    vsIcon: (
+      interitemSpacing: 4;
+      lineSpacing: 4;
+      item: (
+        minSize: ( width:64; height:68 );
+        controlSpacing: 2;
+        textFieldAlignment: {$ifdef USE_IOS_VALUES}1{$else}2{$endif}; // NSTextAlignmentCenter
+        checkBoxOccupiedWidth: 24
+      );
+      imageView: ( minSize: ( width: 32; height: 32 ); padding: 10; );
+      textField: ( defaultHeight: 15 );
+    );
+    vsSmallIcon: (
+      interitemSpacing: 10;
+      lineSpacing: 0;
+      item: (
+        minSize: ( width:150; height:28 );
+        controlSpacing: 2;
+        textFieldAlignment: 0;       // NSTextAlignmentLeft
+        checkBoxOccupiedWidth: 24
+      );
+      imageView: ( minSize: ( width: 16; height: 16 ); padding: 4; );
+      textField: ( iconWidthFactor: 3; baseWidth: 0; minWidth: 128 );
+    );
+    vsList: (
+      interitemSpacing: 0;
+      lineSpacing: 10;
+      item: (
+        minSize: ( width:146; height:24 );
+        controlSpacing: 4;
+        textFieldAlignment: 0;       // NSTextAlignmentLeft
+        checkBoxOccupiedWidth: 24
+      );
+    );
+  );
+
+type
+
   // on macOS, the FocusRing takes up extra space, which may cause strange
   // display in some cases. it may block other controls, or be partially cut off.
   // for example, in the Lazarus IDE - About dialog, the FocusRing of the
@@ -115,16 +242,6 @@ var
   // always Presented.
   CocoaAlwaysPresentNotification : Boolean = True;
 
-
-  // default NSTableViewStyle
-  CocoaTableViewStyle : NSTableViewStyle = NSTableViewStyleAutomatic;
-
-  // for performance, when the column divider is double-clicked to automatically
-  // calculate the column width, the maximum number of rows calculated
-  CocoaTableColumnAutoFitWidthCalcRows : Integer = 100;
-
-  // min Column Width when the column divider is double-clicked
-  CocoaTableColumnAutoFitWidthMin: Double = 20;
 
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;

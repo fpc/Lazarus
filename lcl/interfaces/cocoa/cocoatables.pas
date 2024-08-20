@@ -249,9 +249,6 @@ function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
 function LCLGetTopRow(tbl: NSTableView): Integer;
 
-const
-  DefaultRowHeight = 16; // per "rowHeight" property docs
-
 implementation
 
 type
@@ -683,7 +680,7 @@ function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
   if NSAppkitVersionNumber >= NSAppKitVersionNumber11_0 then
-    setStyle( CocoaConfig.CocoaTableViewStyle );
+    setStyle( CocoaConfigListView.vsReport.tableViewStyle );
 end;
 
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
@@ -784,17 +781,18 @@ end;
 function TCocoaTableListView.tableView_heightOfRow(tableView: NSTableView;
   row: NSInteger): CGFloat;
 var
-  h : integer;
+  h: Integer;
 begin
-  h := CustomRowHeight;
-  if h = 0 then h := DefaultRowHeight;
+  h:= self.CustomRowHeight;
+  if h = 0 then
+    h:= CocoaConfigListView.vsReport.row.defaultHeight;
 
-  if isDynamicRowHeight and Assigned(self.callback) then
-  begin
-    self.callback.GetRowHeight(Integer(row), h);
+  if isDynamicRowHeight and Assigned(self.callback) then begin
+    self.callback.GetRowHeight( row, h );
     if h<=0 then h:=1; // must be positive (non-zero)
   end;
-  Result := h;
+
+  Result:= h;
 end;
 
 function TCocoaTableListView.tableView_sizeToFitWidthOfColumn(
@@ -809,10 +807,11 @@ var
   tableColumn: NSTableColumn;
   currentWidth: CGFloat;
 begin
-  Result:= CocoaConfig.CocoaTableColumnAutoFitWidthMin;
+  Result:= CocoaConfigListView.vsReport.columnAutoFit.minWidth;
   tableColumn:= NSTableColumn( self.tableColumns.objectAtIndex(column) );
   tableColumn.sizeToFit;
-  currentWidth:= tableColumn.width + 4;
+  currentWidth:= tableColumn.width +
+                 CocoaConfigListView.vsReport.columnAutoFit.headerAdditionalWidth;
   if currentWidth > Result then
     Result:= currentWidth;
 
@@ -820,18 +819,18 @@ begin
   if totalCount = 0 then
     Exit;
 
-  if totalCount <= CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows then begin
+  if totalCount <= CocoaConfigListView.vsReport.columnAutoFit.maxCalcRows then begin
     startIndex:= 0;
     endIndex:= totalCount - 1;
   end else begin
     startIndex:= self.rowsInRect(self.visibleRect).location;
-    endIndex:= startIndex + CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows div 2;
+    endIndex:= startIndex + CocoaConfigListView.vsReport.columnAutoFit.maxCalcRows div 2;
     if endIndex > totalCount - 1 then
       endIndex:= totalCount - 1;
-    startIndex:= endIndex - CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows + 1;
+    startIndex:= endIndex - CocoaConfigListView.vsReport.columnAutoFit.maxCalcRows + 1;
     if startIndex < 0 then
       startIndex:= 0;
-    endIndex:= startIndex + CocoaConfig.CocoaTableColumnAutoFitWidthCalcRows - 1;
+    endIndex:= startIndex + CocoaConfigListView.vsReport.columnAutoFit.maxCalcRows - 1;
   end;
 
   for row:=startIndex to endIndex do begin
@@ -1117,9 +1116,11 @@ var
 begin
   width:= self.textField.fittingSize.width;
   if Assigned(_checkBox) then
-    width:= width + _checkBox.frame.size.width + 4;
+    width:= width + _checkBox.frame.size.width +
+            CocoaConfigListView.vsReport.column.controlSpacing;
   if Assigned(self.imageView) then
-    width:= width + self.imageView.frame.size.width + 4;
+    width:= width + self.imageView.frame.size.width +
+            CocoaConfigListView.vsReport.column.controlSpacing;
   Result.width:= width;
   Result.height:= self.frame.size.height;
 end;
@@ -1277,7 +1278,7 @@ begin
     aFrame.origin.y:= round( (rowHeight - aFrame.size.height ) / 2 );
     _checkBox.setFrameOrigin( aFrame.origin );
 
-    aFrame.origin.x:= 4;
+    aFrame.origin.x:= CocoaConfigListView.vsReport.column.controlSpacing;
   end;
 
   if Assigned(self.imageView) then begin
@@ -1286,7 +1287,7 @@ begin
     aFrame.size:= tv.iconSize;
     self.imageView.setFrame( aFrame );
 
-    aFrame.origin.x:= aFrame.origin.x + 4;
+    aFrame.origin.x:= aFrame.origin.x + CocoaConfigListView.vsReport.column.controlSpacing;
   end;
 
   if Assigned(self.textField) then begin
@@ -1295,8 +1296,8 @@ begin
     aFrame.origin.y:= round( (rowHeight - self.textField.frame.size.height) / 2 );
     aFrame.size.width:= _column.width - aFrame.origin.x;
     aFrame.size.height:= self.textField.frame.size.height;
-    if aFrame.size.width < 16 then
-      aFrame.size.width:= 16;
+    if aFrame.size.width < CocoaConfigListView.vsReport.column.textFieldMinWidth then
+      aFrame.size.width:= CocoaConfigListView.vsReport.column.textFieldMinWidth;
     self.textField.setFrame( aFrame );
   end;
 end;
@@ -1852,7 +1853,8 @@ begin
 
   _tableView.iconSize.Width:= AValue.Width;
   _tableView.iconSize.Height:= AValue.Height;
-  _tableView.CustomRowHeight:= AValue.Height + 8;
+  _tableView.CustomRowHeight:= AValue.Height +
+     CocoaConfigListView.vsReport.row.imageLineSpacing;
 
   _tableView.reloadData;
 end;
