@@ -42,10 +42,8 @@ type
     columnAutoFit: TCocoaConfigTableColumnAutoFit;
   end;
 
-  TCocoaConfigCollectionItem = object
+  TCocoaConfigCollectionItem = record
     minSize: TCocoaConfigSize;
-    minIconSize: TCocoaConfigSize;
-    iconPadding: Double;
     controlSpacing: Double;
     textFieldAlignment: NSTextAlignment;
     checkBoxOccupiedWidth: Double;
@@ -57,7 +55,12 @@ type
     item: TCocoaConfigCollectionItem;
   end;
 
-  TCocoaConfigCollectionIconTextField = record
+  TCocoaConfigCollectionIconImageView = record
+    minSize: TCocoaConfigSize;
+    padding: Double;
+  end;
+
+  TCocoaConfigCollectionLargeIconTextField = record
     defaultHeight: Double;
   end;
 
@@ -68,17 +71,22 @@ type
   end;
 
   TCocoaConfigCollectionIcon = object( TCocoaConfigCollection )
-    textField: TCocoaConfigCollectionIconTextField;
+    imageView: TCocoaConfigCollectionIconImageView;
   end;
 
-  TCocoaConfigCollectionSmallIcon = object( TCocoaConfigCollection )
+  TCocoaConfigCollectionLargeIcon = object( TCocoaConfigCollectionIcon )
+    textField: TCocoaConfigCollectionLargeIconTextField;
+  end;
+
+  TCocoaConfigCollectionSmallIcon = object( TCocoaConfigCollectionIcon )
     textField: TCocoaConfigCollectionSmallIconTextField;
   end;
 
   TCocoaConfigListView = record
     vsReport: TCocoaConfigTable;
-    vsIcon: TCocoaConfigCollectionIcon;
+    vsIcon: TCocoaConfigCollectionLargeIcon;
     vsSmallIcon: TCocoaConfigCollectionSmallIcon;
+    vsList: TCocoaConfigCollection;
   end;
 
 var
@@ -94,11 +102,11 @@ var
       lineSpacing: 4;
       item: (
         minSize: ( width:64; height:68 );
-        minIconSize: ( width:32; height:32 );
-        iconPadding: 10; controlSpacing: 2;
+        controlSpacing: 2;
         textFieldAlignment: 1;       // NSTextAlignmentCenter
         checkBoxOccupiedWidth: 24
       );
+      imageView: ( minSize: ( width: 32; height: 32 ); padding: 10; );
       textField: ( defaultHeight: 15 );
     );
     vsSmallIcon: (
@@ -106,12 +114,22 @@ var
       lineSpacing: 0;
       item: (
         minSize: ( width:150; height:28 );
-        minIconSize: ( width:16; height:16 );
-        iconPadding: 4; controlSpacing: 2;
+        controlSpacing: 2;
         textFieldAlignment: 0;       // NSTextAlignmentLeft
         checkBoxOccupiedWidth: 24
       );
+      imageView: ( minSize: ( width: 16; height: 16 ); padding: 4; );
       textField: ( iconWidthFactor: 3; baseWidth: 0; minWidth: 128 );
+    );
+    vsList: (
+      interitemSpacing: 0;
+      lineSpacing: 10;
+      item: (
+        minSize: ( width:146; height:24 );
+        controlSpacing: 4;
+        textFieldAlignment: 0;       // NSTextAlignmentLeft
+        checkBoxOccupiedWidth: 24
+      );
     );
   );
 
