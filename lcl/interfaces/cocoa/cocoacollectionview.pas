@@ -43,7 +43,7 @@ type
     function isSupportIcon: Boolean; virtual;
     procedure onUpdateItemSize( baseSize: NSSize ); virtual; abstract;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); virtual; abstract;
-    procedure onAdjustTextEditor( lv: TCocoaListView ); virtual;
+    procedure onAdjustTextEditor( lv: TCocoaListView; var aFrame: NSRect ); virtual; abstract;
   end;
 
   { TCocoaCollectionItemView }
@@ -210,7 +210,7 @@ type
     procedure resetSize; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
-    procedure onAdjustTextEditor( lv: TCocoaListView ); override;
+    procedure onAdjustTextEditor( lv: TCocoaListView; var aFrame: NSRect ); override;
   end;
 
   { TCocoaListView_CollectionView_SmallIconHandler }
@@ -218,6 +218,7 @@ type
     procedure resetSize; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
+    procedure onAdjustTextEditor( lv: TCocoaListView; var aFrame: NSRect ); override;
   end;
 
   { TCocoaListView_CollectionView_ListHandler }
@@ -226,6 +227,7 @@ type
     function isSupportIcon: Boolean; override;
     procedure onUpdateItemSize( baseSize: NSSize ); override;
     procedure onUpdateItemLayout( cocoaItem: TCocoaCollectionItem ); override;
+    procedure onAdjustTextEditor( lv: TCocoaListView; var aFrame: NSRect ); override;
   end;
 
 function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
@@ -296,12 +298,6 @@ end;
 function TCocoaListView_CollectionView_StyleHandler.isSupportIcon: Boolean;
 begin
   Result:= True;
-end;
-
-procedure TCocoaListView_CollectionView_StyleHandler.onAdjustTextEditor(
-  lv: TCocoaListView );
-begin
-  lv.setCaptionAlignment( NSTextAlignmentLeft );
 end;
 
 { TCocoaListView_CollectionView_LargeIconHandler }
@@ -397,9 +393,17 @@ begin
 end;
 
 procedure TCocoaListView_CollectionView_LargeIconHandler.onAdjustTextEditor(
-  lv: TCocoaListView );
+  lv: TCocoaListView; var aFrame: NSRect );
+var
+  offset: Double;   // FocusRing Occupied
 begin
   lv.setCaptionAlignment( CocoaConfigListView.vsIcon.item.textFieldAlignment );
+
+  offset:= 1;
+  if NOT hasCheckBoxes then
+    offset:= offset + 1;
+  aFrame.origin.x:= aFrame.origin.x + offset;
+  aFrame.size.Width:= aFrame.size.Width - offset*2;
 end;
 
 { TCocoaListView_CollectionView_SmallIconHandler }
@@ -493,6 +497,13 @@ begin
                       CocoaConfigListView.vsSmallIcon.item.controlSpacing;
   aFrame.size.height:= textField.frame.size.height;
   textField.setFrame( aFrame );
+  textField.setAlignment( CocoaConfigListView.vsSmallIcon.item.textFieldAlignment );
+end;
+
+procedure TCocoaListView_CollectionView_SmallIconHandler.onAdjustTextEditor(
+  lv: TCocoaListView; var aFrame: NSRect );
+begin
+  lv.setCaptionAlignment( CocoaConfigListView.vsSmallIcon.item.textFieldAlignment );
 end;
 
 { TCocoaListView_CollectionView_ListHandler }
@@ -558,6 +569,13 @@ begin
                       CocoaConfigListView.vsList.item.controlSpacing;
   aFrame.size.height:= textField.frame.size.height;
   textField.setFrame( aFrame );
+  textField.setAlignment( CocoaConfigListView.vsList.item.textFieldAlignment );
+end;
+
+procedure TCocoaListView_CollectionView_ListHandler.onAdjustTextEditor(
+  lv: TCocoaListView; var aFrame: NSRect );
+begin
+  lv.setCaptionAlignment( CocoaConfigListView.vsList.item.textFieldAlignment );
 end;
 
 { TCocoaCollectionItem }
@@ -1123,9 +1141,9 @@ begin
         _listView.setCaptionFont( item.textField.font );
         // to do: completely restore TFont
         _listView.getLCLControlCanvas.Font.Height:= Round(item.textField.font.pointSize);
-        _collectionView.styleHandler.onAdjustTextEditor( _listView );
         frame:= item.textField.frame;
         frame:= item.view.convertRect_toView( frame, _collectionView );
+        _collectionView.styleHandler.onAdjustTextEditor( _listView, frame );
       end;
     drIcon:
       begin
