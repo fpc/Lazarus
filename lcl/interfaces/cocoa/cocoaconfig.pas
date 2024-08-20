@@ -2,6 +2,7 @@ unit CocoaConfig;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 interface
 
@@ -103,7 +104,7 @@ var
       item: (
         minSize: ( width:64; height:68 );
         controlSpacing: 2;
-        textFieldAlignment: 1;       // NSTextAlignmentCenter
+        textFieldAlignment: {$ifdef USE_IOS_VALUES}1{$else}2{$endif}; // NSTextAlignmentCenter
         checkBoxOccupiedWidth: 24
       );
       imageView: ( minSize: ( width: 32; height: 32 ); padding: 10; );
