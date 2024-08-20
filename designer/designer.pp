@@ -2844,7 +2844,14 @@ begin
       VK_RETURN:
         if Shift = [] then
           DoShowObjectInspector
-        else
+        else if Shift = [ssCtrl] then
+        begin
+          // ToDo: create an event for each selected control (currently
+          // GetComponentEditorForSelection returns nil if more than one is selected)
+          PopupMenuComponentEditor := GetComponentEditorForSelection;
+          if assigned(PopupMenuComponentEditor) then
+            PopupMenuComponentEditor.Edit;
+        end else
           Handled := False;
 
       VK_A:
