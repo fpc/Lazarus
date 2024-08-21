@@ -164,7 +164,7 @@ end;
 function BUTTON_CAPTION_ARRAY: TNSStringArray;
 begin
   if length(_BUTTON_CAPTION_ARRAY)=0 then begin
-    setlength( _BUTTON_CAPTION_ARRAY, idButtonNoToAll );
+    setlength( _BUTTON_CAPTION_ARRAY, idButtonNoToAll+1 );
     _BUTTON_CAPTION_ARRAY[idButtonOk]:= LclTitleToNSString( rsMbOK );
     _BUTTON_CAPTION_ARRAY[idButtonCancel]:= LclTitleToNSString( rsMbCancel );
     _BUTTON_CAPTION_ARRAY[idButtonHelp]:= LclTitleToNSString( rsMbHelp );
