@@ -266,12 +266,6 @@ Represents the node type for DOM Document Type Declarations (DTD).
 <descr></descr>
 </element>
 
-<!-- set type Visibility: default -->
-<element name="TSetOfChar">
-<short>Defines a set with values using the Char type.</short>
-<descr></descr>
-</element>
-
 <!-- alias type Visibility: default -->
 <element name="DOMString">
 <short>Type used for String values in DOM interfaces.</short>
