@@ -135,6 +135,58 @@ var
   );
 
 type
+  NSColorFunction = Function(): NSColor;
+  function getCocoaScrollerDefaultKnobColor: NSColor;
+
+type
+  TCocoaConfgiScrollerKnob = object
+    radius: Double;
+    color: NSColorFunction;
+    pos: Double;
+    shrunkSize: Double;
+  end;
+
+  TCocoaConfgiScrollerLegacyKnob = object( TCocoaConfgiScrollerKnob )
+    alpha: Double;
+    alphaBlack: Double;
+    fadeStep: Double;
+  end;
+
+  TCocoaConfigScrollerLegacy = record
+    knob: TCocoaConfgiScrollerLegacyKnob;
+  end;
+
+  TCocoaConfigScroller = record
+    preferredStyle: NSScrollerStyle;
+    fadeTimeInterval: Double;
+    legacy: TCocoaConfigScrollerLegacy;
+  end;
+
+var
+  CocoaConfigScroller: TCocoaConfigScroller = (
+    // the style of the TCocoaScrollBar managed by TCocoaManualScrollView,
+    // the default value is System Preferred.
+    // note: TCocoaScrollBar not managed by TCocoaManualScrollView is always
+    //       Legacy Style.
+    preferredStyle: -1;
+
+    // fade in/out time interval, in Seconds
+    fadeTimeInterval: 0.02;
+
+    legacy: (
+      knob: (
+        radius: 4;               // Knob Radius, in Dots
+        color: @getCocoaScrollerDefaultKnobColor;
+        pos: 3;                  // Knob Position, in Dots
+        shrunkSize: 5;           // Knob Shrunk Size, in Dots
+        alpha: 0.25;             // Knob Alpha in Normal
+        alphaBlack: 0.5;         // Knob Alpha when mouse enters
+        fadeStep: 0.05;          // Knob Alpha Step when fading in/out
+      );
+    );
+  );
+
+type
 
   // on macOS, the FocusRing takes up extra space, which may cause strange
   // display in some cases. it may block other controls, or be partially cut off.
@@ -159,17 +211,7 @@ type
   // getCocoaControlFocusRingStrategy() is mainly used internally by Cocoa WidgetSet
   function getCocoaControlFocusRingStrategry( AClassName: NSString ): TCocoaFocusRingStrategy;
 
-type
-  NSColorFunction = Function(): NSColor;
-  function getCocoaScrollerDefaultKnobColor: NSColor;
-
 var
-  // the style of the TCocoaScrollBar managed by TCocoaManualScrollView,
-  // the default value is System Preferred.
-  // note: TCocoaScrollBar not managed by TCocoaManualScrollView is always
-  //       Legacy Style.
-  CocoaScrollerPreferredStyle : NSScrollerStyle = -1;
-
   // Scroller Knob Fade in/out time interval, in Seconds
   CocoaScrollerKnobFadeTimeInterval : Double = 0.02;
 
