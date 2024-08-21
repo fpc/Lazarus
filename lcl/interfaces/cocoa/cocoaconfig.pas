@@ -152,14 +152,34 @@ type
     fadeStep: Double;
   end;
 
+  TCocoaConfgiScrollerOverlayKnob = object( TCocoaConfgiScrollerKnob )
+    minSize: Double;
+  end;
+
   TCocoaConfigScrollerLegacy = record
     knob: TCocoaConfgiScrollerLegacyKnob;
+  end;
+
+  TCocoaConfigScrollerOverlayBar = record
+    autoShowDelayTime: Double;
+    autoHideDelayTime: Double;
+    alpha: Double;
+    alphaFadeStep: Double;
+    alphaFadeTo: Double;
+    expandTimeInterval: Double;
+    expandSize: Double;
+  end;
+
+  TCocoaConfigScrollerOverlay = record
+    bar: TCocoaConfigScrollerOverlayBar;
+    knob: TCocoaConfgiScrollerOverlayKnob;
   end;
 
   TCocoaConfigScroller = record
     preferredStyle: NSScrollerStyle;
     fadeTimeInterval: Double;
     legacy: TCocoaConfigScrollerLegacy;
+    overlay: TCocoaConfigScrollerOverlay;
   end;
 
 var
@@ -183,6 +203,31 @@ var
         alphaBlack: 0.5;         // Knob Alpha when mouse enters
         fadeStep: 0.05;          // Knob Alpha Step when fading in/out
       );
+    );
+
+    overlay: (
+      bar: (
+        // Overly Style Scroller Auto Show Delay Time, in Seconds
+        // used when the Scroller is triggered by double-finger tapping the touchpad
+        autoShowDelayTime: 0.2;
+        autoHideDelayTime: 0.9;    // Bar Auto Hide Delay Time, in Seconds
+        alpha: 0.5;                // Bar Alpha in Normal
+        alphaFadeStep: -0.1;       // Bar Alpha Step when fading out
+        alphaFadeTo: 0;            // Bar Alpha when fade out ends
+        expandTimeInterval: 0.03;  // Bar Expands time interval, in Seconds
+        expandSize: 4;             // Bar Expands when the mouse enters, in Dots
+      );
+      knob: (
+        radius: 4;                 // Knob Radius, in Dots
+        color: @getCocoaScrollerDefaultKnobColor;
+        pos: 5;                    // Knob Position, in Dots
+        shrunkSize: 6;             // Knob Shrunk Size, in Dots
+        // in extreme cases, the normally calculated Knob size of Overlay Scroller
+        // may be too small, keep the min size.
+        // min height for the Knob of VerticalScroller
+        // min width for the Knob of HorizontalScroller
+        minSize: 25;
+      )
     );
   );
 
