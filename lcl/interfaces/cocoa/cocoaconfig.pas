@@ -145,6 +145,12 @@ type
   end;
 
 type
+  TCocoaConfigMenu = record
+    defaultCheckImageName: NSString;
+    defaultRadioImageName: NSString;
+  end;
+
+type
   TCocoaConfigNotification = record
     alwaysPresent: Boolean;
   end;
@@ -186,10 +192,6 @@ var
   // some localized named might be too long to be returned properly by APIs
   CocoaUseLocalizedFontName : Boolean = false;
 
-  // default Image Name for MenuItem
-  CocoaDefaultCheckMenuImageName : NSString;
-  CocoaDefaultRadioMenuImageName : NSString;
-
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
   // The flag is checked in Menus to avoid "double" Cmd+Q menu
@@ -197,6 +199,10 @@ var
   {$endif}
 
 {$include cocoaconfig.inc}
+
+var
+  CocoaConfigMenu: TCocoaConfigMenu = (
+  );
 
 implementation
 
@@ -246,8 +252,8 @@ begin
 end;
 
 initialization
-  CocoaDefaultCheckMenuImageName:= NSSTR('NSMenuCheckmark');
-  CocoaDefaultRadioMenuImageName:= NSSTR('NSDatePickerCalendarHome');
+  CocoaConfigMenu.defaultCheckImageName:= NSSTR('NSMenuCheckmark');
+  CocoaConfigMenu.defaultRadioImageName:= NSSTR('NSDatePickerCalendarHome');
   initDefaultFoucsRingSetting;
 end.
 
