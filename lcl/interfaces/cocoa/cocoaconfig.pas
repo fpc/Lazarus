@@ -139,6 +139,12 @@ type
   end;
 
 type
+  TCocoaConfigToggleBox = record
+    bezelStyle: NSBezelStyle;
+    buttonType: NSButtonType;
+  end;
+
+type
   TCocoaConfigNotification = record
     alwaysPresent: Boolean;
   end;
@@ -174,8 +180,6 @@ var
   // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
   // The icon would have to be changed manually. By default LCL behaviour is used
   CocoaIconUse: Boolean = false;
-  CocoaToggleBezel : NSBezelStyle = NSRoundedBezelStyle;
-  CocoaToggleType  : NSButtonType = NSPushOnPushOffButton;
 
   CocoaHideFocusNoBorder : Boolean = true;
 

@@ -87,8 +87,14 @@ var
         // min height for the Knob of VerticalScroller
         // min width for the Knob of HorizontalScroller
         minSize: 25;
-      )
+      );
     );
+  );
+
+var
+  CocoaConfigToggleBox: TCocoaConfigToggleBox = (
+    bezelStyle: NSRoundedBezelStyle;
+    buttonType: NSPushOnPushOffButton;
   );
 
 var
