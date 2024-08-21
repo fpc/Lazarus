@@ -202,7 +202,7 @@ begin
     message.setSoundName( NSUserNotificationDefaultSoundName );
 
   nc:= NSUserNotificationCenter.defaultUserNotificationCenter;
-  if CocoaConfig.CocoaAlwaysPresentNotification then begin
+  if CocoaConfigNotification.alwaysPresent then begin
     if NOT Assigned(nc.delegate) then
       nc.setDelegate( TCocoaUserNotificationCenterDelegate.new );
   end;

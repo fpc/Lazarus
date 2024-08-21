@@ -91,3 +91,11 @@ var
     );
   );
 
+var
+  CocoaConfigNotification: TCocoaConfigNotification = (
+    // by default on macOS, Notification is only Presented when the APP is
+    // in the background.
+    // when CocoaAlwaysPresentNotification is set to True, Notification is
+    // always Presented.
+    alwaysPresent: True;
+  );

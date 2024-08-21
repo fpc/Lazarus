@@ -139,7 +139,11 @@ type
   end;
 
 type
+  TCocoaConfigNotification = record
+    alwaysPresent: Boolean;
+  end;
 
+type
   // on macOS, the FocusRing takes up extra space, which may cause strange
   // display in some cases. it may block other controls, or be partially cut off.
   // for example, in the Lazarus IDE - About dialog, the FocusRing of the
@@ -164,13 +168,6 @@ type
   function getCocoaControlFocusRingStrategry( AClassName: NSString ): TCocoaFocusRingStrategy;
 
 var
-  // by default on macOS, Notification is only Presented when the APP is
-  // in the background.
-  // when CocoaAlwaysPresentNotification is set to True, Notification is
-  // always Presented.
-  CocoaAlwaysPresentNotification : Boolean = True;
-
-
   // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
   CocoaBasePPI : Integer = 96;
 
