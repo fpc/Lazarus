@@ -3994,24 +3994,28 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
-    FDbgController.AttachToPid := 0;
-    if ACommand = dcAttach then begin
-      FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
-      Result := FDbgController.AttachToPid <> 0;
-      if not Result then begin
-        FileName := '';
-        Exit;
+    // Check if CreateDbgProcess returns a valid TDbgProcess
+    if Assigned(FDbgController.CurrentProcess) then begin
+      FDbgController.AttachToPid := 0;
+      if ACommand = dcAttach then begin
+        FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
+        Result := FDbgController.AttachToPid <> 0;
+        if not Result then begin
+          FileName := '';
+          Exit;
+        end;
       end;
+      FWorkQueue.Clear;
+      FWorkQueue.ThreadCount := 1;
+      {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}
+      WorkItem := TFpThreadWorkerControllerRun.Create(Self);
+      FWorkQueue.PushItem(WorkItem);
+      FWorkQueue.WaitForItem(WorkItem, True);
+      Result := WorkItem.StartSuccesfull;
+      FWorkerThreadId := WorkItem.WorkerThreadId;
+      WorkItem.DecRef;
     end;
-    FWorkQueue.Clear;
-    FWorkQueue.ThreadCount := 1;
-    {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}
-    WorkItem := TFpThreadWorkerControllerRun.Create(Self);
-    FWorkQueue.PushItem(WorkItem);
-    FWorkQueue.WaitForItem(WorkItem, True);
-    Result := WorkItem.StartSuccesfull;
-    FWorkerThreadId := WorkItem.WorkerThreadId;
-    WorkItem.DecRef;
+
     if not result then begin
       // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
       // that dcRun could be requested. Reset the filename so that the state
