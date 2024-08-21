@@ -163,28 +163,38 @@ type
   end;
 
 type
+  
+  { TCocoaConfigFocusRing }
+
   // on macOS, the FocusRing takes up extra space, which may cause strange
   // display in some cases. it may block other controls, or be partially cut off.
   // for example, in the Lazarus IDE - About dialog, the FocusRing of the
   // Tab of TPageControl is partially cut off.
   // by providing a configurable infrastructure, FocusRing can be controlled
   // for different control types.
-  {$scopedEnums on}
-  TCocoaFocusRingStrategy = (
-    default,   // by macOS Default
-    none,      // no FoucsRing
-    required,  // have FocusRing
-    border     // by LCL Control Border
-  );
+  TCocoaConfigFocusRing = class
+    {$scopedEnums on}
+    type Strategy = (
+      default,   // by macOS Default
+      none,      // no FoucsRing
+      required,  // have FocusRing
+      border     // by LCL Control Border
+    );
+  private
+    _strategies: NSMutableDictionary;
+  public
+    constructor Create;
+    destructor Destroy; override;
 
-  // set the FocusRing strategy of the control according to ClassName
-  // (eg. 'TCocoaTabControl')
-  // APP can change the default setting of Cocoa WidgetSet
-  // by calling setCocoaControlFocusRingStrategy() too.
-  procedure setCocoaControlFocusRingStrategry( frs: TCocoaFocusRingStrategy; AClassName: NSString );
+    // set the FocusRing strategy of the control according to ClassName
+    // (eg. 'TCocoaTabControl')
+    // APP can change the default setting of Cocoa WidgetSet
+    // by calling setStrategy() too.
+    procedure setStrategy( frs: Strategy; AClassName: NSString );
 
-  // getCocoaControlFocusRingStrategy() is mainly used internally by Cocoa WidgetSet
-  function getCocoaControlFocusRingStrategry( AClassName: NSString ): TCocoaFocusRingStrategy;
+    // getStrategy() is mainly used internally by Cocoa WidgetSet
+    function getStrategy( AClassName: NSString ): Strategy;
+  end;
 
 var
   CocoaHideFocusNoBorder : Boolean = true;
@@ -201,46 +211,40 @@ var
   CocoaConfigMenu: TCocoaConfigMenu = (
   {%H-});
 
+  CocoaConfigFocusRing: TCocoaConfigFocusRing;
+
 implementation
 
-var
-  FocusRingStrategySetting: NSMutableDictionary;
+constructor TCocoaConfigFocusRing.Create;
+begin
+  _strategies:= NSMutableDictionary.alloc.initWithCapacity( 16 );
+  {$include cocoaconfigfocusring.inc}
+end;
 
-procedure setCocoaControlFocusRingStrategry( frs: TCocoaFocusRingStrategy; AClassName: NSString );
+destructor TCocoaConfigFocusRing.Destroy;
+begin
+  inherited Destroy;
+  _strategies.release;
+end;
+
+procedure TCocoaConfigFocusRing.setStrategy(
+  frs: Strategy; AClassName: NSString);
 var
   valueObject: NSNumber;
 begin
   valueObject:= NSNumber.numberWithInt( Ord(frs) );
-  FocusRingStrategySetting.setValue_forKey( valueObject , AClassName );
+  _strategies.setValue_forKey( valueObject , AClassName );
 end;
 
-function getCocoaControlFocusRingStrategry( AClassName: NSString ): TCocoaFocusRingStrategy;
+function TCocoaConfigFocusRing.getStrategy(
+  AClassName: NSString): Strategy;
 var
   valueObject: NSNumber;
 begin
-  Result:= TCocoaFocusRingStrategy.default;
-  valueObject:= NSNumber( FocusRingStrategySetting.valueForKey(AClassName) );
+  Result:= TCocoaConfigFocusRing.Strategy.default;
+  valueObject:= NSNumber( _strategies.valueForKey(AClassName) );
   if Assigned(valueObject) then
-    Result:= TCocoaFocusRingStrategy(valueObject.intValue);
-  if Result = TCocoaFocusRingStrategy.required then
-    Writeln( 'required' );
-end;
-
-// no need to set TCocoaFocusRingStrategy.default control
-// the controls not in FocusRingStrategySetting are TCocoaFocusRingStrategy.default
-procedure initDefaultFoucsRingSetting;
-begin
-  FocusRingStrategySetting:= NSMutableDictionary.alloc.initWithCapacity( 16 );
-
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaTabControl') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaButton') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaTextField') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaComboBox') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaReadOnlyComboBox') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaTableListView') );
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.none, NSSTR('TCocoaCollectionView') );
-
-  setCocoaControlFocusRingStrategry( TCocoaFocusRingStrategy.border, NSSTR('TCocoaTextView') );
+    Result:= TCocoaConfigFocusRing.Strategy(valueObject.intValue);
 end;
 
 function getCocoaScrollerDefaultKnobColor: NSColor;
@@ -251,6 +255,6 @@ end;
 initialization
   CocoaConfigMenu.defaultCheckImageName:= NSSTR('NSMenuCheckmark');
   CocoaConfigMenu.defaultRadioImageName:= NSSTR('NSDatePickerCalendarHome');
-  initDefaultFoucsRingSetting;
+  CocoaConfigFocusRing:= TCocoaConfigFocusRing.Create;
 end.
 
