@@ -354,6 +354,12 @@ var
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
 
+  {$ifdef COCOALOOPHIJACK}
+  // The flag is set to true once hi-jacked loop is finished (at the end of app)
+  // The flag is checked in Menus to avoid "double" Cmd+Q menu
+  LoopHiJackEnded : Boolean = false;
+  {$endif}
+
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
 function NSViewIsLCLEnabled(v: NSView): Boolean;

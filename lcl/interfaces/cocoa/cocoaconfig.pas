@@ -196,15 +196,7 @@ type
     function getStrategy( AClassName: NSString ): Strategy;
   end;
 
-var
-  CocoaHideFocusNoBorder : Boolean = true;
-
-  {$ifdef COCOALOOPHIJACK}
-  // The flag is set to true once hi-jacked loop is finished (at the end of app)
-  // The flag is checked in Menus to avoid "double" Cmd+Q menu
-  LoopHiJackEnded : Boolean = false;
-  {$endif}
-
+// config data is stored in CocoaConfig.inc
 {$include cocoaconfig.inc}
 
 var
@@ -218,6 +210,7 @@ implementation
 constructor TCocoaConfigFocusRing.Create;
 begin
   _strategies:= NSMutableDictionary.alloc.initWithCapacity( 16 );
+  // FocusRing config data is stored in CocoaConfigFocusRing.inc
   {$include cocoaconfigfocusring.inc}
 end;
 
