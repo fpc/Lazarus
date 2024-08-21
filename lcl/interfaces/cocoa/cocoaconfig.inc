@@ -1,3 +1,10 @@
+{%MainUnit cocoaconfig.pas}
+
+{
+  default config of Cocoa.
+  we can modify the default config in the APP.
+}
+
 var
   CocoaConfigGlobal: TCocoaConfigGlobal = (
     // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
