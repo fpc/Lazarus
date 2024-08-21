@@ -786,7 +786,7 @@ begin
         // See apple's documentation for "availableMembersOfFontFamily:"
         // for the contents of "sub" NSArray
         sysname := NSString(sub.objectAtIndex(1));
-        if CocoaUseLocalizedFontName then
+        if CocoaConfigGlobal.useLocalizedFontName then
         begin
           nm := fm.localizedNameForFamily_face(fname, sysname);
           if not Assigned(nm) then

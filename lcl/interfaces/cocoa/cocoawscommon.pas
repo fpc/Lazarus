@@ -263,16 +263,16 @@ const
     NSFocusRingTypeDefault // bsSingle
   );
 var
-  frs: CocoaConfig.TCocoaFocusRingStrategy;
+  frs: TCocoaConfigFocusRing.Strategy;
   borderStyle: TBorderStyle;
 begin
-  frs:= CocoaConfig.getCocoaControlFocusRingStrategry( cocoaControl.className );
+  frs:= CocoaConfigFocusRing.getStrategy( cocoaControl.className );
   case frs of
-    TCocoaFocusRingStrategy.none:
+    TCocoaConfigFocusRing.Strategy.none:
       cocoaControl.setFocusRingType( NSFocusRingTypeNone );
-    TCocoaFocusRingStrategy.required:
+    TCocoaConfigFocusRing.Strategy.required:
       cocoaControl.setFocusRingType( NSFocusRingTypeExterior );
-    TCocoaFocusRingStrategy.border: begin
+    TCocoaConfigFocusRing.Strategy.border: begin
       borderStyle:= TWinControlAccess(lclControl).BorderStyle;
       cocoaControl.setFocusRingType( NSFocusRing[borderStyle] );
     end;

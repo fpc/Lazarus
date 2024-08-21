@@ -612,7 +612,7 @@ var
 begin
   oldManager:= _manager;
 
-  style:= CocoaConfig.CocoaScrollerPreferredStyle;
+  style:= CocoaConfigScroller.preferredStyle;
   if style < 0 then
     style:= NSScroller.preferredScrollerStyle;
 
@@ -1460,7 +1460,7 @@ begin
   self.stepAlpha:= inc;
   self.maxAlpha:= max;
   self.alphaTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-    CocoaConfig.CocoaScrollerKnobFadeTimeInterval,
+    CocoaConfigScroller.fadeTimeInterval,
     self,
     ObjCSelector('onAlphaTimer:'),
     nil,
@@ -1486,8 +1486,8 @@ end;
 procedure TCocoaScrollBarEffectOverlay.onDelayHidingTimer( timer:NSTimer );
 begin
   self.delayTimer:= nil;
-  self.fade( CocoaConfig.CocoaScrollerOverlayStyleFadeStep,
-             CocoaConfig.CocoaScrollerOverlayStyleFadeTo );
+  self.fade( CocoaConfigScroller.overlay.bar.alphaFadeStep,
+             CocoaConfigScroller.overlay.bar.alphaFadeTo );
 end;
 
 procedure TCocoaScrollBarEffectOverlay.onExpandTimer(timer: NSTimer);
@@ -1499,7 +1499,7 @@ begin
     Exit;
   end;
 
-  if self.expandedSize < CocoaConfig.CocoaScrollerOverlayStyleExpandSize then begin
+  if self.expandedSize < CocoaConfigScroller.overlay.bar.expandSize then begin
     self.expandedSize:= self.expandedSize + 1;
   end else begin
     done:= True;
@@ -1534,14 +1534,14 @@ end;
 procedure TCocoaScrollBarEffectOverlay.setDelayShowingTimer;
 begin
   self.setDelayTimer(
-    CocoaScrollerOverlayStyleAutoShowDelayTime,
+    CocoaConfigScroller.overlay.bar.autoShowDelayTime,
     ObjCSelector('onDelayShowingTimer:') );
 end;
 
 procedure TCocoaScrollBarEffectOverlay.setDelayHidingTimer;
 begin
   self.setDelayTimer(
-    CocoaConfig.CocoaScrollerOverlayStyleAutoHideDelayTime,
+    CocoaConfigScroller.overlay.bar.autoHideDelayTime,
     ObjCSelector('onDelayHidingTimer:') );
 end;
 
@@ -1553,7 +1553,7 @@ begin
     self.expandTimer.invalidate;
 
   self.expandTimer:= NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-    CocoaConfig.CocoaScrollerOverlayStyleExpandTimeInterval,
+    CocoaConfigScroller.overlay.bar.expandTimeInterval,
     self,
     ObjCSelector('onExpandTimer:'),
     nil,
@@ -1683,7 +1683,7 @@ begin
   effect:= TCocoaScrollBarEffectAlpha.alloc.Init;
   effect.scroller:= scroller;
   effect.manager:= self;
-  effect.currentAlpha:= CocoaConfig.CocoaScrollerLegacyStyleAlpha;
+  effect.currentAlpha:= CocoaConfigScroller.legacy.knob.alpha;
   Result:= effect;
 end;
 
@@ -1745,19 +1745,19 @@ begin
   rect:= scrollBar.rectForPart(NSScrollerKnob);
   rect:= NSInsetRect(rect, 1, 1);
   if scrollBar.IsHorizontal then begin
-    rect.origin.y:= rect.origin.y + CocoaConfig.CocoaScrollerLegacyStyleKnobPos;
-    rect.size.height:= rect.size.height - CocoaConfig.CocoaScrollerLegacyStyleKnobShrunkSize;
+    rect.origin.y:= rect.origin.y + CocoaConfigScroller.legacy.knob.pos;
+    rect.size.height:= rect.size.height - CocoaConfigScroller.legacy.knob.shrunkSize;
   end else begin
-    rect.origin.x:= rect.origin.x + CocoaConfig.CocoaScrollerLegacyStyleKnobPos;
-    rect.size.width:= rect.size.width - CocoaConfig.CocoaScrollerLegacyStyleKnobShrunkSize;
+    rect.origin.x:= rect.origin.x + CocoaConfigScroller.legacy.knob.pos;
+    rect.size.width:= rect.size.width - CocoaConfigScroller.legacy.knob.shrunkSize;
   end;
 
   alpha:= TCocoaScrollBarEffectAlpha(scrollBar.effect).currentAlpha;
   path:= NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius(
          rect,
-         CocoaConfig.CocoaScrollerKnobRadius,
-         CocoaConfig.CocoaScrollerKnobRadius );
-  color:= CIColor.alloc.initWithColor( CocoaConfig.CocoaScrollerLegacyStyleKnobColor() );
+         CocoaConfigScroller.legacy.knob.radius,
+         CocoaConfigScroller.legacy.knob.radius );
+  color:= CIColor.alloc.initWithColor( CocoaConfigScroller.legacy.knob.color() );
   NSColor.colorWithRed_green_blue_alpha(
     color.red,
     color.green,
@@ -1788,8 +1788,8 @@ var
   effect: TCocoaScrollBarEffectAlpha;
 begin
   effect:= TCocoaScrollBarEffectAlpha(TCocoaScrollBar(scroller).effect);
-  effect.fade( CocoaConfig.CocoaScrollerLegacyStyleFadeStep,
-               CocoaConfig.CocoaScrollerLegacyStyleAlphaBlack );
+  effect.fade( CocoaConfigScroller.legacy.knob.fadeStep,
+               CocoaConfigScroller.legacy.knob.alphaBlack );
 end;
 
 procedure TCocoaScrollStyleManagerLegacy.onMouseExited(scroller: NSScroller
@@ -1798,8 +1798,8 @@ var
   effect: TCocoaScrollBarEffectAlpha;
 begin
   effect:= TCocoaScrollBarEffectAlpha(TCocoaScrollBar(scroller).effect);
-  effect.fade( -CocoaConfig.CocoaScrollerLegacyStyleFadeStep,
-               CocoaConfig.CocoaScrollerLegacyStyleAlpha );
+  effect.fade( -CocoaConfigScroller.legacy.knob.fadeStep,
+               CocoaConfigScroller.legacy.knob.alpha );
 end;
 
 { TCocoaScrollStyleManagerOverlay }
@@ -1825,23 +1825,23 @@ begin
   rect:= NSInsetRect(rect, 1, 1);
   if scrollBar.IsHorizontal then begin
     rect.origin.y:= rect.origin.y
-                  + CocoaConfig.CocoaScrollerOverlayStyleKnobPos
+                  + CocoaConfigScroller.overlay.knob.pos
                   - effect.expandedSize;
     rect.size.height:= rect.size.height
-                     - CocoaConfig.CocoaScrollerOverlayStyleKnobShrunkSize
+                     - CocoaConfigScroller.overlay.knob.shrunkSize
                      + effect.expandedSize;
   end else begin
     rect.origin.x:= rect.origin.x
-                  + CocoaConfig.CocoaScrollerOverlayStyleKnobPos
+                  + CocoaConfigScroller.overlay.knob.pos
                   - effect.expandedSize;
     rect.size.width:= rect.size.width
-                    - CocoaConfig.CocoaScrollerOverlayStyleKnobShrunkSize
+                    - CocoaConfigScroller.overlay.knob.shrunkSize
                     + effect.expandedSize;
   end;
 
-  radius:= CocoaConfig.CocoaScrollerKnobRadius + effect.expandedSize/2;
+  radius:= CocoaConfigScroller.overlay.knob.radius + effect.expandedSize/2;
   path:= NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius( rect, radius, radius );
-  CocoaConfig.CocoaScrollerOverlayStyleKnobColor().set_;
+  CocoaConfigScroller.overlay.knob.color().set_;
   path.fill;
 
   if scroller.knobProportion < 1 then
@@ -1879,11 +1879,11 @@ begin
   else
     slotSize:= slotRect.size.height;
 
-  if knobProportion*slotSize <= CocoaConfig.CocoaScrollerOverlayStyleKnobMinSize then begin
-    if slotSize<=CocoaConfig.CocoaScrollerOverlayStyleKnobMinSize then
+  if knobProportion*slotSize <= CocoaConfigScroller.overlay.knob.minSize then begin
+    if slotSize<=CocoaConfigScroller.overlay.knob.minSize then
       knobProportion:= 0.99
     else
-      knobProportion:= CocoaConfig.CocoaScrollerOverlayStyleKnobMinSize/slotSize;
+      knobProportion:= CocoaConfigScroller.overlay.knob.minSize/slotSize;
   end;
 
   if (effect.currentKnobPosition=knobPosition) and (effect.currentKnobProportion=knobProportion) then
@@ -1929,7 +1929,7 @@ begin
   effect.manager:= self;
   effect.currentKnobPosition:= -1;
   effect.currentKnobProportion:= -1;
-  effect.currentAlpha:= CocoaConfig.CocoaScrollerOverlayStyleAlpha;
+  effect.currentAlpha:= CocoaConfigScroller.overlay.bar.alpha;
   Result:= effect;
 end;
 
@@ -1976,7 +1976,7 @@ begin
   // on old versions of macOS, alpha=0 is considered hidden.
   // that is, to be truly visible, not only Hidden=false, but Alpha must also be set.
   // otherwise it is considered hidden and setNeedsDisplay() does not take effect.
-  effect.currentAlpha:= CocoaConfig.CocoaScrollerOverlayStyleAlpha;
+  effect.currentAlpha:= CocoaConfigScroller.overlay.bar.alpha;
   scroller.setAlphaValue( effect.currentAlpha );
   scroller.setHidden( False );
   scroller.setNeedsDisplay_( true );

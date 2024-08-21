@@ -32,8 +32,8 @@ begin
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
   WakeMainThread := @OnWakeMainThread;
-  ScreenInfo.PixelsPerInchX := CocoaBasePPI;
-  ScreenInfo.PixelsPerInchY := CocoaBasePPI;
+  ScreenInfo.PixelsPerInchX := CocoaConfigGlobal.basePPI;
+  ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
   { Creates the application NSApp object }
   FNSApp := InitApplication;
