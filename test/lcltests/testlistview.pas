@@ -2173,5 +2173,10 @@ initialization
   FTestMouseInput := MouseAndKeyInput.MouseInput;
 {$ENDIF}
 
+finalization;
+{$IFDEF WINDOWS}
+  FTestMouseInput.Free;
+{$ENDIF}
+
 end.
 
