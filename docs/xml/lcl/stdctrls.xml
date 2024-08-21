@@ -12238,7 +12238,9 @@ changed.
 </element>
 
 <element name="TRadioButton.DialogChar">
-<short>Implements support for an accelerator key in the control.</short>
+<short>
+Implements support for an accelerator key in the control.
+</short>
 <descr>
 <p>
 <var>DialogChar</var> is an overridden <var>Boolean</var> function in 
@@ -12248,10 +12250,13 @@ successfully toggled in the method.
 </p>
 <p>
 <var>Message</var> is the TLMKey instance with the key code examined in the 
-method. When the key code matches the accelerator key in <var>Caption</var>, 
-the control is focused and the return value is set to <b>True</b>. If the 
-control cannot be focused, or Message does not represent an accelerator key 
-code, the inherited method is called to get the return value.
+method. If the key code matches the accelerator key in <var>Caption</var>, 
+the control is focused, its Checked state is enabled, and the return value is 
+set to <b>True</b>. 
+</p>
+<p>
+If the control cannot be focused, or Message does not represent the accelerator 
+for the control, the inherited method is called to get the return value.
 </p>
 <p>
 This method is called even if the control is disabled or hidden. Provided for 
@@ -12259,12 +12264,16 @@ Delphi VCL compatibility.
 </p>
 </descr>
 <seealso>
+<link id="TRadioButton.Caption"/>
+<link id="TRadioButton.Checked"/>
 <link id="TCustomCheckBox.DialogChar"/>
+<link id="#lcl.forms.IsAccel">IsAccel</link>
+<link id="#lcl.controls.TWinControl.Focused">TWinControl.Focused</link>
 </seealso>
 </element>
 <element name="TRadioButton.DialogChar.Result">
 <short>
-<b>True</b> when the message is handled and the control is focused.
+<b>True</b> when the message is handled and the control is focused and checked.
 </short>
 </element>
 <element name="TRadioButton.DialogChar.Message">
