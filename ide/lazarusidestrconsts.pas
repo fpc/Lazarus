@@ -1950,10 +1950,12 @@ resourcestring
   dlgMarkupWordFullLen = 'Match whole words, if length is less or equal to:';
   dlgMarkupWordNoKeyword = 'Ignore keywords';
   dlgMarkupWordTrim = 'Trim spaces (when highlighting current selection)';
-  dlgMarkupWordNoTimer = 'Disable timer for markup current word';
+  dlgMarkupWordOnCaretMove = 'Automatically markup current word on caret move';
+  dlgMarkupWordKeyCombo = 'Markup current word by key: %s';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   dlgAutoDisplayFuncProto = 'Auto Display Function Prototypes';
   lisShowDeclarationHints = 'Show declaration hints';
+  dlgMarkupCurrentWordDelayInSec = '(%s sec delay after caret move)';
   dlgEdDelayInSec = '(%s sec delay)';
   lisDelayForCompletionBox = 'Delay for completion box';
   lisDelayForHints = 'Delay for hints';

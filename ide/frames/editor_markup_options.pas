@@ -35,7 +35,7 @@ uses
   // SynEdit
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, SourceMarks, SynEditMarkupBracket, SynEditTypes,
+  EditorOptions, LazarusIDEStrConsts, SourceMarks, KeyMapping, SynEditMarkupBracket, SynEditTypes,
   editor_color_options, editor_general_options, editor_keymapping_options,
   editor_codefolding_options;
 
@@ -57,6 +57,7 @@ type
     divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
+    MarkupCurrentWordKeys: TLabel;
     lbMarkupWarnNoColor: TLabel;
     LanguageComboBox: TComboBox;
     LanguageLabel: TLabel;
@@ -64,7 +65,7 @@ type
     MarkupColorLink: TLabel;
     MarkupKeyLink: TLabel;
     MarkupWordDelayLabel: TLabel;
-    MarkupWordNoTimerCheckBox: TCheckBox;
+    MarkupWordByTimerCheckBox: TCheckBox;
     MarkupWordFullLenSpin: TSpinEdit;
     MarkupWordFullLenLabel: TLabel;
     MarkupWordNoKeyword: TCheckBox;
@@ -105,6 +106,7 @@ type
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     procedure UpdateMarkupCheckBoxes;
     procedure UpdateOutlineColorWarning;
+    procedure UpdateMarkupCurrentWordKeyCombo;
   protected
     procedure VisibleChanged; override;
   public
@@ -130,7 +132,7 @@ end;
 procedure TEditorMarkupOptionsFrame.AutoDelayTrackBarChange(Sender: TObject);
 begin
   MarkupWordDelayLabel.Caption :=
-    Format(dlgEdDelayInSec, [FormatFloat('0.00', MarkupWordTimeTrackBar.Position/1000)]);
+    Format(dlgMarkupCurrentWordDelayInSec, [FormatFloat('0.00', MarkupWordTimeTrackBar.Position/1000)]);
 end;
 
 procedure TEditorMarkupOptionsFrame.BracketComboExit(Sender: TObject);
@@ -434,10 +436,36 @@ begin
   lbMarkupWarnNoColor.Visible := cbMarkupOutline.Checked and not r;
 end;
 
+procedure TEditorMarkupOptionsFrame.UpdateMarkupCurrentWordKeyCombo;
+var
+  col: TEditorKeymappingOptionsFrame;
+  s: String;
+  K: TKeyCommandRelation;
+begin
+  s := '';
+  col := TEditorKeymappingOptionsFrame(FDialog.FindEditor(TEditorKeymappingOptionsFrame));
+  if (col <> nil) and (col.EditingKeyMap <> nil) then
+    K := col.EditingKeyMap.FindByCommand(EcToggleMarkupWord)
+  else
+    K := EditorOpts.KeyMap.FindByCommand(EcToggleMarkupWord);
+
+  if k <> nil then begin
+    if k.ShortcutA.Key1 <> VK_UNKNOWN then
+      s := s + KeyAndShiftStateToEditorKeyString(k.ShortcutA);
+    if k.ShortcutB.Key1 <> VK_UNKNOWN then begin
+      if s <> '' then s := s + ' / ';
+      s := s + KeyAndShiftStateToEditorKeyString(k.ShortcutB);
+    end;
+  end;
+  MarkupCurrentWordKeys.Caption := Format(dlgMarkupWordKeyCombo, [s]);
+end;
+
 procedure TEditorMarkupOptionsFrame.VisibleChanged;
 begin
-  if HandleAllocated then
+  if HandleAllocated then begin
     UpdateOutlineColorWarning;
+    UpdateMarkupCurrentWordKeyCombo;
+  end;
   inherited VisibleChanged;
 end;
 
@@ -457,9 +485,10 @@ begin
   MarkupWordFullLenLabel.Caption := dlgMarkupWordFullLen;
   MarkupWordNoKeyword.Caption := dlgMarkupWordNoKeyword;
   MarkupWordTrim.Caption := dlgMarkupWordTrim;
-  MarkupWordNoTimerCheckBox.Caption := dlgMarkupWordNoTimer;
+  MarkupWordByTimerCheckBox.Caption := dlgMarkupWordOnCaretMove;
   MarkupColorLink.Caption := dlgColorLink;
   MarkupKeyLink.Caption := dlgKeyLink;
+  MarkupCurrentWordKeys.Caption := Format(dlgMarkupWordKeyCombo, ['']);
 
   divMatchingBrackets.Caption := dlgBracketMatchGroup;
   BracketLabel.Caption := dlgBracketHighlight;
@@ -498,6 +527,9 @@ begin
 end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  s: String;
+  K: TKeyCommandRelation;
 begin
   with AOptions as TEditorOptions do
   begin
@@ -505,7 +537,19 @@ begin
     MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
     MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
     MarkupWordTrim.Checked := MarkupCurWordTrim;
-    MarkupWordNoTimerCheckBox.Checked := MarkupCurWordNoTimer;
+    MarkupWordByTimerCheckBox.Checked := not MarkupCurWordNoTimer;
+
+    s := '';
+    K := KeyMap.FindByCommand(EcToggleMarkupWord);
+    if k <> nil then begin
+      if k.ShortcutA.Key1 <> VK_UNKNOWN then
+        s := s + KeyAndShiftStateToEditorKeyString(k.ShortcutA);
+      if k.ShortcutB.Key1 <> VK_UNKNOWN then begin
+        if s <> '' then s := s + ' / ';
+        s := s + KeyAndShiftStateToEditorKeyString(k.ShortcutB);
+      end;
+    end;
+    MarkupCurrentWordKeys.Caption := Format(dlgMarkupWordKeyCombo, [s]);
 
     if eoBracketHighlight in SynEditOptions then
       BracketCombo.ItemIndex := Ord(BracketHighlightStyle) + 1
@@ -535,7 +579,7 @@ begin
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
     MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;
     MarkupCurWordTrim := MarkupWordTrim.Checked;
-    MarkupCurWordNoTimer := MarkupWordNoTimerCheckBox.Checked;
+    MarkupCurWordNoTimer := not MarkupWordByTimerCheckBox.Checked;
 
     if BracketCombo.ItemIndex = 0 then
       SynEditOptions := SynEditOptions - [eoBracketHighlight]
