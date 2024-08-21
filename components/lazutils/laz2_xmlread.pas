@@ -163,7 +163,7 @@ uses
   URIParser, Laz2_XMLUtils, LazUTF8;
 
 const
-  PubidChars: TSetOfChar = [' ', #13, #10, 'a'..'z', 'A'..'Z', '0'..'9',
+  PubidChars: TSysCharSet = [' ', #13, #10, 'a'..'z', 'A'..'Z', '0'..'9',
     '-', '''', '(', ')', '+', ',', '.', '/', ':', '=', '?', ';', '!', '*',
     '#', '@', '$', '_', '%'];
 var
@@ -228,7 +228,7 @@ type
     constructor Create(const AData: DOMString);
     procedure NextChar;
     procedure NewLine; virtual;
-    function SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSetOfChar;
+    function SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSysCharSet;
       wsflag: PBoolean = nil; {%H-}AllowSpecialChars: boolean = false): DOMChar; virtual;
     procedure Initialize; virtual;
     function SetEncoding(const {%H-}AEncoding: string): Boolean; virtual;
@@ -256,7 +256,7 @@ type
     destructor Destroy; override;
     function SetEncoding(const AEncoding: string): Boolean; override;
     procedure NewLine; override;
-    function SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSetOfChar;
+    function SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSysCharSet;
       wsflag: PBoolean = nil; AllowSpecialChars: boolean = false): DOMChar; override;
     procedure Initialize; override;
   end;
@@ -407,7 +407,7 @@ type
     procedure StandaloneError(LineOffs: Integer = 0);
     procedure CallErrorHandler(E: EXMLReadError);
     function  FindOrCreateElDef: TDOMElementDef;
-    function  SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar; c2: DOMChar = #0;
+    function  SkipUntilSeq(const Delim: TSysCharSet; c1: DOMChar; c2: DOMChar = #0;
       AllowSpecialChars: boolean = false): Boolean;
     procedure CheckMaxChars;
   protected
@@ -1032,7 +1032,7 @@ begin
   LFPos := FBuf;
 end;
 
-function TXMLCharSource.SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSetOfChar;
+function TXMLCharSource.SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSysCharSet;
   wsflag: PBoolean; AllowSpecialChars: boolean): DOMChar;
 var
   old: DOMPChar;
@@ -1954,11 +1954,11 @@ begin
 end;
 
 const
-  AttrDelims: array[boolean] of TSetOfChar = (
+  AttrDelims: array[boolean] of TSysCharSet = (
     [#0, '<', '&', '''', '"', #9, #10, #13], // false: default
     [#0, '<', '&', '''', '"'] // true: xrfAllowSpecialCharsInAttributeValue
     );
-  GT_Delim: TSetOfChar = [#0, '>'];
+  GT_Delim: TSysCharSet = [#0, '>'];
 
 procedure TXMLReader.ExpectAttValue;
 var
@@ -2228,7 +2228,7 @@ begin
 end;
 
 const
-  LiteralDelims: array[TLiteralType] of TSetOfChar = (
+  LiteralDelims: array[TLiteralType] of TSysCharSet = (
     [#0, '''', '"'],                          // ltPlain
     [#0, '<', '&', '''', '"', #9, #10, #13],  // ltAttr
     [#0, '<', '&', '''', '"', #9, #10, #13],  // ltTokAttr
@@ -2299,7 +2299,7 @@ begin
     Normalize(ToFill, Normalized);
 end;
 
-function TXMLReader.SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar;
+function TXMLReader.SkipUntilSeq(const Delim: TSysCharSet; c1: DOMChar;
   c2: DOMChar; AllowSpecialChars: boolean): Boolean;
 var
   wc: DOMChar;
@@ -3116,7 +3116,7 @@ end;
 // The code below does the bulk of the parsing, and must be as fast as possible.
 // To minimize CPU cache effects, methods from different classes are kept together
 
-function TXMLDecodingSource.SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSetOfChar;
+function TXMLDecodingSource.SkipUntil(var ToFill: TDOMCharBuf; const Delim: TSysCharSet;
   wsflag: PBoolean; AllowSpecialChars: boolean): DOMChar;
 var
   old: DOMPChar;
@@ -3218,7 +3218,7 @@ begin
 end;
 
 const
-  TextDelims: array[Boolean] of TSetOfChar = (
+  TextDelims: array[Boolean] of TSysCharSet = (
     [#0, '<', '&', '>'],
     [#0, '>']
   );

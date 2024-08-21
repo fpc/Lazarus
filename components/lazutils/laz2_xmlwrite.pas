@@ -96,7 +96,7 @@ type
     procedure wrtChr(c: DOMChar); {$IFDEF HAS_INLINE} inline; {$ENDIF}
     procedure wrtIndent; {$IFDEF HAS_INLINE} inline; {$ENDIF}
     procedure wrtQuotedLiteral(const ws: DOMString);
-    procedure ConvWrite(const s: DOMString; const SpecialChars: TSetOfChar;
+    procedure ConvWrite(const s: DOMString; const SpecialChars: TSysCharSet;
       const SpecialCharCallback: TSpecialCharCallback);
     procedure WriteNSDef(B: TBinding);
     procedure NamespaceFixup(Element: TDOMElement);
@@ -191,7 +191,7 @@ end;
   ---------------------------------------------------------------------}
 
 const
-  AttrSpecialChars : array[boolean] of TSetOfChar = (
+  AttrSpecialChars : array[boolean] of TSysCharSet = (
     ['<', '"', '''', '&', #0..#31], // false: default
     ['<', '"', '''', '&', #0]  // true: write special characters
     );
@@ -355,7 +355,7 @@ begin
   if FIndentCount>0 then dec(FIndentCount);
 end;
 
-procedure TXMLWriter.ConvWrite(const s: DOMString; const SpecialChars: TSetOfChar;
+procedure TXMLWriter.ConvWrite(const s: DOMString; const SpecialChars: TSysCharSet;
   const SpecialCharCallback: TSpecialCharCallback);
 var
   StartPos, EndPos: Integer;

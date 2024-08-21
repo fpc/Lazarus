@@ -31,9 +31,6 @@ const
   BUFSIZE=1024;
   MAXGROW = 1 shl 29;
 
-type
-  TSoc = set of char;
-
 procedure LoadFromCSVStream(AStream: TStream; AProc: TCSVRecordProc;
   ADelimiter:Char; CSVEncoding: TCSVEncoding);
 var
@@ -42,13 +39,13 @@ var
   leadPtr, tailPtr, wordPtr, X:Pchar;
   Line: TStringList = nil;
 
-  function SkipSet(const aSet: TSoc): boolean;
+  function SkipSet(const aSet: TSysCharSet): boolean;
   begin
     while (leadPtr<tailPtr) and (leadPtr^ in aSet) do Inc(leadPtr);
     result := leadPtr<tailPtr;
   end;
 
-  function FindSet(const aSet: TSoc): boolean;
+  function FindSet(const aSet: TSysCharSet): boolean;
   begin
     while (leadPtr<tailPtr) and (not (leadPtr^ in ASet)) do Inc(leadPtr);
     result := leadPtr<tailPtr;
