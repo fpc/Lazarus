@@ -10,6 +10,13 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaConfigGlobal = record
+    basePPI: Integer;
+    useIcon: Boolean;
+    useLocalizedFontName: Boolean;
+  end;
+
+type
   TCocoaConfigSize = record
     width: Double;
     height: Double;
@@ -180,17 +187,7 @@ type
   function getCocoaControlFocusRingStrategry( AClassName: NSString ): TCocoaFocusRingStrategy;
 
 var
-  // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
-  CocoaBasePPI : Integer = 96;
-
-  // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
-  // The icon would have to be changed manually. By default LCL behaviour is used
-  CocoaIconUse: Boolean = false;
-
   CocoaHideFocusNoBorder : Boolean = true;
-
-  // some localized named might be too long to be returned properly by APIs
-  CocoaUseLocalizedFontName : Boolean = false;
 
   {$ifdef COCOALOOPHIJACK}
   // The flag is set to true once hi-jacked loop is finished (at the end of app)
@@ -202,7 +199,7 @@ var
 
 var
   CocoaConfigMenu: TCocoaConfigMenu = (
-  );
+  {%H-});
 
 implementation
 

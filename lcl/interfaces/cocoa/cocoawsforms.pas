@@ -657,17 +657,17 @@ begin
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 
-  if not CocoaConfig.CocoaIconUse then
+  if CocoaConfigGlobal.useIcon then
+    Exit;
+
+  btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
+  url := nil;
+  if isIconVisible[ABorderStyle] then
   begin
-    btn := AWindow.standardWindowButton(NSWindowDocumentIconButton);
-    url := nil;
-    if isIconVisible[ABorderStyle] then
-    begin
-      b := NSBundle.mainBundle;
-      if Assigned(b) then url := b.bundleURL;
-    end;
-    AWindow.setRepresentedURL(url);
+    b := NSBundle.mainBundle;
+    if Assigned(b) then url := b.bundleURL;
   end;
+  AWindow.setRepresentedURL(url);
 end;
 
 class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
@@ -1078,7 +1078,7 @@ var
   trg : NSImage;
   btn : NSButton;
 begin
-  if CocoaConfig.CocoaIconUse then Exit;
+  if CocoaConfigGlobal.useIcon then Exit;
   if not AForm.HandleAllocated then Exit;
 
   win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;

@@ -1,4 +1,17 @@
 var
+  CocoaConfigGlobal: TCocoaConfigGlobal = (
+    // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
+    basePPI: 96;
+
+    // if set to true, then WS would not assign icons via TCocoaWSForm SetIcon
+    // The icon would have to be changed manually. By default LCL behaviour is used
+    useIcon: False;
+
+    // some localized named might be too long to be returned properly by APIs
+    useLocalizedFontName: False;
+  );
+
+var
   CocoaConfigListView: TCocoaConfigListView = (
     vsReport: (
       tableViewStyle: NSTableViewStyleAutomatic;
