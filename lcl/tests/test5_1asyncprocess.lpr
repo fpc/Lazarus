@@ -29,7 +29,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, Math, Classes, SysUtils, Process, LCLProc, DynQueue, FileUtil,
-  Forms, Controls, AsyncProcess;
+  LazFileUtils, LazLoggerBase, Forms, Controls, AsyncProcess;
 
 type
 
