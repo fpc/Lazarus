@@ -4123,40 +4123,44 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
-    FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
-    FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;
-    FDbgController.CurrentProcess.Config.UseConsoleWinBuffer := FUseConsoleWinBuffer;
-    FDbgController.CurrentProcess.Config.ConsoleWinPos    := FConsoleWinPos;
-    FDbgController.CurrentProcess.Config.ConsoleWinSize   := FConsoleWinSize;
-    FDbgController.CurrentProcess.Config.ConsoleWinBuffer := FConsoleWinBuffer;
+    // Check if CreateDbgProcess returns a valid TDbgProcess
+    if Assigned(FDbgController.CurrentProcess) then begin
+      FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
+      FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;
+      FDbgController.CurrentProcess.Config.UseConsoleWinBuffer := FUseConsoleWinBuffer;
+      FDbgController.CurrentProcess.Config.ConsoleWinPos    := FConsoleWinPos;
+      FDbgController.CurrentProcess.Config.ConsoleWinSize   := FConsoleWinSize;
+      FDbgController.CurrentProcess.Config.ConsoleWinBuffer := FConsoleWinBuffer;
 
-    FDbgController.CurrentProcess.Config.StdInRedirFile      := FileNameStdIn;
-    FDbgController.CurrentProcess.Config.FileOverwriteStdIn  := FileOverwriteStdIn;
-    FDbgController.CurrentProcess.Config.StdOutRedirFile     := FileNameStdOut;
-    FDbgController.CurrentProcess.Config.FileOverwriteStdOut := FileOverwriteStdOut;
-    FDbgController.CurrentProcess.Config.StdErrRedirFile     := FileNameStdErr;
-    FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
+      FDbgController.CurrentProcess.Config.StdInRedirFile      := FileNameStdIn;
+      FDbgController.CurrentProcess.Config.FileOverwriteStdIn  := FileOverwriteStdIn;
+      FDbgController.CurrentProcess.Config.StdOutRedirFile     := FileNameStdOut;
+      FDbgController.CurrentProcess.Config.FileOverwriteStdOut := FileOverwriteStdOut;
+      FDbgController.CurrentProcess.Config.StdErrRedirFile     := FileNameStdErr;
+      FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
 
-    FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
+      FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
 
-    FDbgController.AttachToPid := 0;
-    if ACommand = dcAttach then begin
-      FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
-      Result := FDbgController.AttachToPid <> 0;
-      if not Result then begin
-        FileName := '';
-        Exit;
+      FDbgController.AttachToPid := 0;
+      if ACommand = dcAttach then begin
+        FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
+        Result := FDbgController.AttachToPid <> 0;
+        if not Result then begin
+          FileName := '';
+          Exit;
+        end;
       end;
+      FWorkQueue.Clear;
+      FWorkQueue.ThreadCount := 1;
+      {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}
+      WorkItem := TFpThreadWorkerControllerRun.Create(Self);
+      FWorkQueue.PushItem(WorkItem);
+      FWorkQueue.WaitForItem(WorkItem, True);
+      Result := WorkItem.StartSuccesfull;
+      FWorkerThreadId := WorkItem.WorkerThreadId;
+      WorkItem.DecRef;
     end;
-    FWorkQueue.Clear;
-    FWorkQueue.ThreadCount := 1;
-    {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}
-    WorkItem := TFpThreadWorkerControllerRun.Create(Self);
-    FWorkQueue.PushItem(WorkItem);
-    FWorkQueue.WaitForItem(WorkItem, True);
-    Result := WorkItem.StartSuccesfull;
-    FWorkerThreadId := WorkItem.WorkerThreadId;
-    WorkItem.DecRef;
+
     if not result then begin
       // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
       // that dcRun could be requested. Reset the filename so that the state

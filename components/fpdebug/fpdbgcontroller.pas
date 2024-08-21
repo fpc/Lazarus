@@ -16,7 +16,8 @@ uses
   {$ifdef windows}  FpDbgWinClasses,  {$endif}
   {$ifdef darwin}  FpDbgDarwinClasses,  {$endif}
   {$ifdef linux}  FpDbgLinuxClasses,  {$endif}
-  FpDbgInfo, FpDbgDwarf, FpdMemoryTools, FpErrorMessages;
+  FpDbgInfo, FpDbgDwarf, FpdMemoryTools, FpErrorMessages,
+  FpDbgCommon;
 
 type
 
@@ -303,7 +304,7 @@ type
     procedure SetOnThreadDebugOutputEvent(AValue: TDebugOutputEvent);
     procedure SetParams(AValue: TStringList);
 
-    procedure CheckExecutableAndLoadClasses;
+    procedure CheckExecutableAndLoadClasses(out ATargetInfo: TTargetDescriptor);
   protected
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
@@ -431,7 +432,7 @@ type
 implementation
 
 uses
-  FpImgReaderBase, FpDbgCommon;
+  FpImgReaderBase;
 
 var
   DBG_VERBOSE, DBG_WARNINGS, FPDBG_COMMANDS, FPDBG_FUNCCALL: PLazLoggerLogGroup;
@@ -1520,13 +1521,14 @@ begin
   FParams.Assign(AValue);
 end;
 
-procedure TDbgController.CheckExecutableAndLoadClasses;
+procedure TDbgController.CheckExecutableAndLoadClasses(out
+  ATargetInfo: TTargetDescriptor);
 var
   source: TDbgFileLoader;
   imgReader: TDbgImageReader;
-  ATargetInfo: TTargetDescriptor;
+  //ATargetInfo: TTargetDescriptor;
 begin
-  ATargetInfo := hostDescriptor;
+  ATargetInfo := Default(TTargetDescriptor);
   if (FExecutableFilename <> '') and FileExists(FExecutableFilename) then
   begin
     DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
@@ -2151,6 +2153,8 @@ begin
 end;
 
 function TDbgController.CreateDbgProcess: TDbgProcess;
+var
+  TargetDescriptor: TTargetDescriptor;
 begin
   Result := nil;
   assert(FMainProcess = nil, 'TDbgController.CreateDbgProcess: FMainProcess = nil');
@@ -2167,10 +2171,11 @@ begin
   end;
 
   // Get exe info, load classes
-  CheckExecutableAndLoadClasses;
+  CheckExecutableAndLoadClasses(TargetDescriptor);
   if not Assigned(OsDbgClasses) then begin
     DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
-    FLastError := CreateError(fpInternalErr, ['Unknown target for file: ' + FExecutableFilename]);
+    FLastError := CreateError(fpInternalErr, ['Unsupported target for file: ' + FExecutableFilename+'.'#13#10 +
+      'Target: ' + TargetFormatDescriptor(TargetDescriptor)]);
     Exit;
   end;
 
