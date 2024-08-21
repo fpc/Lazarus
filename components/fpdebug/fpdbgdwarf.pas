@@ -3263,8 +3263,6 @@ begin
 end;
 
 procedure TFpValueDwarfSet.SetAsString(AValue: AnsiString);
-type
-  TCharSet = set of char;
   function CheckAndConsumeChar(var p: PChar; c: Char): Boolean;
   begin
     Result := p^ = c;
