@@ -37,7 +37,7 @@ uses
   CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils,
   CocoaGDIObjects, CocoaButtons, CocoaTextEdits,
-  CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
+  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
 
 type
 

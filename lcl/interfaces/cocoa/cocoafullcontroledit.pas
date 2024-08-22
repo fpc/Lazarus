@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils,
   LazUTF8,
-  CocoaAll, CocoaPrivate, CocoaUtils;
+  CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaUtils;
 
 type
   { ICocoaIMEControl }

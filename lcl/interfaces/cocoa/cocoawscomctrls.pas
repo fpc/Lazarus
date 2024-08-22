@@ -15,7 +15,7 @@ uses
   WSComCtrls,
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects, CocoaUtils,
-  CocoaTabControls, CocoaButtons;
+  CocoaTabControls, CocoaButtons, CocoaStatusBar;
 
 type
 
