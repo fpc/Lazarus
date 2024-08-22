@@ -19,14 +19,6 @@ uses
 
 type
 
-  { TStatusBarCallback }
-
-  TStatusBarCallback = class(TLCLCommonCallback, IStatusBarCallback, ICommonCallback)
-    function GetBarsCount: Integer;
-    function GetBarItem(idx: Integer; var txt: String; var width: Integer; var align: TAlignment): Boolean;
-    procedure DrawPanel(idx: Integer; const r: TRect);
-  end;
-
   { TCocoaWSStatusBar }
 
   TCocoaWSStatusBar = class(TWSStatusBar)
@@ -268,72 +260,6 @@ class procedure TCocoaWSCustomUpDown.SetWrap(const AUpDown: TCustomUpDown;
 begin
   if not Assigned(AUpDown) or not AUpDown.HandleAllocated then Exit;
   TCocoaStepper(AUpDown.Handle).setValueWraps(ADoWrap);
-end;
-
-{ TStatusBarCallback }
-
-function TStatusBarCallback.GetBarsCount: Integer;
-begin
-  if  TStatusBar(Target).SimplePanel
-    then Result := 1
-    else Result := TStatusBar(Target).Panels.Count;
-end;
-
-function TStatusBarCallback.GetBarItem(idx: Integer; var txt: String;
-  var width: Integer; var align: TAlignment): Boolean;
-var
-  sb : TStatusBar;
-begin
-  sb := TStatusBar(Target);
-  if sb.SimplePanel then begin
-    Result := idx = 0;
-    if not Result then Exit;
-    txt := sb.SimpleText;
-    width := sb.Width;
-    align := taLeftJustify; // todo: RTL?
-  end else begin
-    Result := (idx >= 0) and (idx < sb.Panels.Count);
-    if not Result then Exit;
-    if sb.Panels[idx].Style = psOwnerDraw
-      then txt := ''
-      else txt := sb.Panels[idx].Text;
-    width := sb.Panels[idx].Width;
-    align := sb.Panels[idx].Alignment;
-  end;
-end;
-
-procedure TStatusBarCallback.DrawPanel(idx: Integer; const r: TRect);
-var
-  sb  : TStatusBar;
-  msg : TLMDrawItems;
-  ctx : TCocoaContext;
-  dr  : TDrawItemStruct;
-  fr  : TRect;
-  sv  : Integer;
-begin
-  sb := TStatusBar(Target);
-  if sb.SimplePanel then Exit;
-  if (idx<0) or (idx >= sb.Panels.Count) then Exit;
-  if sb.Panels[idx].Style <> psOwnerDraw then Exit;
-
-  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  sv := ctx.SaveDC;
-  try
-    FillChar(msg, sizeof(msg), 0);
-    FillChar(dr, sizeof(dr), 0);
-    msg.Ctl := Target.Handle;
-    msg.Msg := LM_DRAWITEM;
-    msg.DrawItemStruct := @dr;
-    dr.itemID := idx;
-    dr._hDC := HDC(ctx);
-    dr.rcItem := r;
-    fr := NSView(Owner).lclFrame;
-    ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
-    LCLMessageGlue.DeliverMessage(Target, msg);
-  finally
-    ctx.RestoreDC(sv);
-    ctx.Free;
-  end;
 end;
 
 { TLCLTabControlCallback }
