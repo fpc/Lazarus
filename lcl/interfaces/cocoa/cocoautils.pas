@@ -72,6 +72,8 @@ function StringRemoveAcceleration(const str: String): String;
 
 function GetNSObjectWindow(obj: NSObject): NSWindow;
 
+function getNSStringObject( const aString: id ) : NSString;
+
 procedure SetNSText(text: NSText; const s: String); inline;
 function GetNSText(text: NSText): string; inline;
 
@@ -957,6 +959,14 @@ begin
     Exit;
 
   Result:= str.Substring(0,posLeft).Trim;
+end;
+
+function getNSStringObject( const aString: id ) : NSString;
+begin
+  if aString.isKindOfClass( NSAttributedString ) then
+    Result:= NSAttributedString( aString ).string_
+  else
+    Result:= NSString( aString );
 end;
 
 procedure SetNSText(text: NSText; const s: String); inline;

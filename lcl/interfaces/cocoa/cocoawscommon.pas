@@ -12,7 +12,7 @@ uses
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   StdCtrls,
   CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
-  CocoaScrollers, CocoaWSScrollers,
+  CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
   CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
 
 type
