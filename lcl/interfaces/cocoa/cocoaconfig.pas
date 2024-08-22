@@ -7,7 +7,38 @@ unit CocoaConfig;
 interface
 
 uses
+  Menus,
   CocoaAll, Cocoa_Extra, CocoaConst;
+
+type
+  TCocoaConfigMenuItem = record
+    defaultCheckImageName: NSString;
+    defaultRadioImageName: NSString;
+  end;
+
+  // Application interface provided to facilitate APP to operate App Menu.
+  // it's easy to set About, Preferences, and customized menus,
+  // only the LCL TMenuItem is needed to pass in.
+  // and we can control whether Cocoa is needed to automatically add
+  // Hide, Hide Others, Show All, and Quit menu items.
+  TCocoaConfigAppMenu = record
+    aboutItem: TMenuItem;
+    preferencesItem: TMenuItem;
+    customMenus: TMenuItem;
+    dontAutoCreateItems: Boolean;
+  end;
+
+  // Application interface provided to facilitate APP to operate Dock Menu.
+  // only the LCL TMenuItem is needed to pass in.
+  TCocoaConfigDockMenu = record
+    customMenus: TMenuItem;
+  end;
+
+  TCocoaConfigMenu = record
+    menuItem: TCocoaConfigMenuItem;
+    appMenu: TCocoaConfigAppMenu;
+    dockMenu: TCocoaConfigDockMenu;
+  end;
 
 type
   TCocoaConfigGlobal = record
@@ -152,12 +183,6 @@ type
   end;
 
 type
-  TCocoaConfigMenu = record
-    defaultCheckImageName: NSString;
-    defaultRadioImageName: NSString;
-  end;
-
-type
   TCocoaConfigNotification = record
     alwaysPresent: Boolean;
   end;
@@ -200,9 +225,6 @@ type
 {$include cocoaconfig.inc}
 
 var
-  CocoaConfigMenu: TCocoaConfigMenu = (
-  {%H-});
-
   CocoaConfigFocusRing: TCocoaConfigFocusRing;
 
 implementation
@@ -246,8 +268,9 @@ begin
 end;
 
 initialization
-  CocoaConfigMenu.defaultCheckImageName:= NSSTR('NSMenuCheckmark');
-  CocoaConfigMenu.defaultRadioImageName:= NSSTR('NSDatePickerCalendarHome');
+  CocoaConfigMenu.menuItem.defaultCheckImageName:= NSSTR('NSMenuCheckmark');
+  CocoaConfigMenu.menuItem.defaultRadioImageName:= NSSTR('NSDatePickerCalendarHome');
+
   CocoaConfigFocusRing:= TCocoaConfigFocusRing.Create;
 end.
 

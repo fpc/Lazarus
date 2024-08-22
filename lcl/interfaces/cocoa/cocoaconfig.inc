@@ -6,6 +6,32 @@
 }
 
 var
+  CocoaConfigMenu: TCocoaConfigMenu = (
+    menuItem: (
+      defaultCheckImageName: nil;     // set in cocoaconfig.pas
+      defaultRadioImageName: nil      // set in cocoaconfig.pas
+    );
+
+    // Application interface provided to facilitate APP to operate App Menu.
+    // it's easy to set About, Preferences, and customized menus,
+    // only the LCL TMenuItem is needed to pass in.
+    // and we can control whether Cocoa is needed to automatically add
+    // Hide, Hide Others, Show All, and Quit menu items.
+    appMenu: (
+      aboutItem: nil;
+      preferencesItem: nil;
+      customMenus: nil;
+      dontAutoCreateItems: False;
+    );
+
+    // Application interface provided to facilitate APP to operate Dock Menu.
+    // only the LCL TMenuItem is needed to pass in.
+    dockMenu: (
+      customMenus: nil;
+    );
+  );
+
+var
   CocoaConfigGlobal: TCocoaConfigGlobal = (
     // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
     basePPI: 96;

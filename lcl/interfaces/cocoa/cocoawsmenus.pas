@@ -161,12 +161,12 @@ end;
 // used from the MenuMadness example
 class function TCocoaWSMenuItem.NSMenuCheckmark: NSImage;
 begin
-  Result:=NSImage.imageNamed(CocoaConfigMenu.defaultCheckImageName);
+  Result:=NSImage.imageNamed(CocoaConfigMenu.menuItem.defaultCheckImageName);
 end;
 
 class function TCocoaWSMenuItem.NSMenuRadio: NSImage;
 begin
-  Result:=NSImage.imageNamed(CocoaConfigMenu.defaultRadioImageName);
+  Result:=NSImage.imageNamed(CocoaConfigMenu.menuItem.defaultRadioImageName);
 end;
 
 class function TCocoaWSMenuItem.isSeparator(const ACaption: AnsiString): Boolean;

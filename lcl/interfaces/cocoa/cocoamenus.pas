@@ -12,7 +12,7 @@ uses
   // LCL
   Forms, Menus, LCLType, Classes, LCLStrConsts,
   // LCL Cocoa
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaConst;
+  CocoaAll, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
 
 type
   IMenuItemCallback = interface(ICommonCallBack)
@@ -63,38 +63,12 @@ type
     function worksWhenModal: LCLObjCBoolean; message 'worksWhenModal';
   end;
 
-  { TMacOS_AppMenuIntf }
-
-  // Application interface provided to facilitate APP to operate App Menu.
-  // it's easy to set About, Preferences, and customized menus,
-  // only the LCL TMenuItem is needed to pass in.
-  // and we can control whether Cocoa is needed to automatically add
-  // Hide, Hide Others, Show All, and Quit menu items.
-  TMacOS_AppMenuIntf = class
-  public
-    aboutItem: TMenuItem;
-    preferencesItem: TMenuItem;
-    customMenus: TMenuItem;
-    dontAutoCreateAppMenuItems: Boolean;
-  end;
-
-  { TMacOS_DockMenuIntf }
-
-  // Application interface provided to facilitate APP to operate Dock Menu.
-  // only the LCL TMenuItem is needed to pass in.
-  TMacOS_DockMenuIntf = class
-  public
-    customMenus: TMenuItem;
-  end;
-
   TMenuItemHandleCreateFunc = function(const AMenuItem: TMenuItem): NSMenuItem;
 
 const
   isMenuEnabled : Boolean = true;
 
 var
-  macOS_AppMenuIntf: TMacOS_AppMenuIntf;
-  macOS_DockMenuIntf: TMacOS_DockMenuIntf;
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
 procedure MenuTrackStarted(mn: NSMenu);
@@ -533,24 +507,24 @@ begin
   attachedAppleMenuItems := True;
 
   if NOT Assigned(self.FMenuItemTarget) then
-    self.FMenuItemTarget:= macOS_AppMenuIntf.customMenus;
+    self.FMenuItemTarget:= CocoaConfigMenu.appMenu.customMenus;
 
   // APP Custom
-  NSMenuAddItemsFromLCLMenu(self.submenu, macOS_AppMenuIntf.customMenus);
+  NSMenuAddItemsFromLCLMenu(self.submenu, CocoaConfigMenu.appMenu.customMenus);
 
   // About
   attachSpecialMenuItem(
-    macOS_AppMenuIntf.aboutItem,
+    CocoaConfigMenu.appMenu.aboutItem,
     Format(rsMacOSMenuAbout, [Application.Title]) );
 
   // Preferences
   attachSpecialMenuItem(
-    macOS_AppMenuIntf.preferencesItem,
+    CocoaConfigMenu.appMenu.preferencesItem,
     rsMacOSMenuPreferences,
     VK_OEM_COMMA, [ssMeta]);
 
   // Auto Create App Menu below?
-  if macOS_AppMenuIntf.dontAutoCreateAppMenuItems then
+  if CocoaConfigMenu.appMenu.dontAutoCreateItems then
     Exit;
 
   // Separator
@@ -723,15 +697,9 @@ begin
   menuTrack.removeAllObjects;
 end;
 
-initialization
-  macOS_AppMenuIntf:= TMacOS_AppMenuIntf.Create;
-  macOS_DockMenuIntf:= TMacOS_DockMenuIntf.Create;
-
 finalization
   MenuTrackCancelAll;
   if menuTrack <> nil then menuTrack.release;
-  FreeAndNil(macOS_AppMenuIntf);
-  FreeAndNil(macOS_DockMenuIntf);
 
 end.
 
