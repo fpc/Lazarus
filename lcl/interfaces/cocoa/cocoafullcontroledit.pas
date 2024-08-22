@@ -46,7 +46,7 @@ type
   // Key Class for Cocoa IME support
   // 1. obtain IME capability from Cocoa by implementing NSTextInputClientProtocol
   // 2. synchronize IME data with LCL via ICocoaIMEControl
-  TCocoaFullControlEdit = objcclass(TCocoaCustomControl)
+  TCocoaFullControlEdit = objcclass(TCocoaCustomControl, NSTextInputClientProtocol)
   private
     _currentParams: TCocoaIMEParameters;
     _currentMarkedText: NSString;
@@ -58,13 +58,17 @@ type
     procedure mouseUp(event: NSEvent); override;
     function resignFirstResponder: ObjCBOOL; override;
 
-    procedure setMarkedText_selectedRange_replacementRange (aString: id; newRange: NSRange; replacementRange: NSRange); override;
-    procedure insertText_replacementRange (aString: id; replacementRange: NSRange); override;
-    procedure unmarkText; override;
-    function markedRange: NSRange; override;
-    function selectedRange: NSRange; override;
-    function hasMarkedText: LCLObjCBoolean; override;
-    function firstRectForCharacterRange_actualRange ({%H-}aRange: NSRange; {%H-}actualRange: NSRangePointer): NSRect; override;
+    procedure insertText_replacementRange (aString: id; replacementRange: NSRange);
+    procedure setMarkedText_selectedRange_replacementRange (aString: id; newRange: NSRange; replacementRange: NSRange);
+    procedure unmarkText;
+    function selectedRange: NSRange;
+    function markedRange: NSRange;
+    function hasMarkedText: LCLObjCBoolean;
+    function firstRectForCharacterRange_actualRange ({%H-}aRange: NSRange; {%H-}actualRange: NSRangePointer): NSRect;
+
+    function attributedSubstringForProposedRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
+    function validAttributesForMarkedText: NSArray;
+    function characterIndexForPoint (aPoint: NSPoint): NSUInteger;
   end;
 
 implementation
@@ -289,6 +293,23 @@ end;
 function TCocoaFullControlEdit.hasMarkedText: LCLObjCBoolean;
 begin
   Result:= ( _currentParams.textNSLength > 0 );
+end;
+
+function TCocoaFullControlEdit.attributedSubstringForProposedRange_actualRange(
+  aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
+begin
+  Result := nil;
+end;
+
+function TCocoaFullControlEdit.validAttributesForMarkedText: NSArray;
+begin
+  Result := nil;
+end;
+
+function TCocoaFullControlEdit.characterIndexForPoint(aPoint: NSPoint
+  ): NSUInteger;
+begin
+  Result := 0;
 end;
 
 end.

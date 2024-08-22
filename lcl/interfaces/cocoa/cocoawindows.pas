@@ -184,7 +184,7 @@ type
 
   { TCocoaWindowContentDocument }
 
-  TCocoaWindowContentDocument = objcclass(TCocoaCustomControl)
+  TCocoaWindowContentDocument = objcclass(TCocoaCustomControlWithBaseInputClient)
   protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
