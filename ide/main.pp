@@ -74,7 +74,7 @@ uses
   GraphType, LazStringUtils, LazTracer,
   LCLExceptionStacktrace,
   {$IFDEF LCLWin} Win32Proc, {$ENDIF}
-  {$IFDEF LCLCocoa} CocoaMenus, {$ENDIF}
+  {$IFDEF LCLCocoa} CocoaConfig, {$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter, SynHighlighterPas,
   // BuildIntf
@@ -2641,8 +2641,8 @@ begin
   SetupWindowsMenu;
   SetupHelpMenu;
   {$ifdef LCLCocoa}
-  macOS_AppMenuIntf.aboutItem:= MainIDEBar.itmHelpAboutLazarus.MenuItem;
-  macOS_AppMenuIntf.preferencesItem:= MainIDEBar.itmEnvGeneralOptions.MenuItem;
+  CocoaConfigMenu.appMenu.aboutItem:= MainIDEBar.itmHelpAboutLazarus.MenuItem;
+  CocoaConfigMenu.appMenu.preferencesItem:= MainIDEBar.itmEnvGeneralOptions.MenuItem;
   {$endif}
 end;
 
