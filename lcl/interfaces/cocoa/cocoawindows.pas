@@ -24,9 +24,9 @@ interface
 
 uses
   Types, Classes, SysUtils,
-  MacOSAll, CocoaAll, CocoaUtils, CocoaCursor,
-  cocoa_extra, CocoaPrivate, CocoaCallback, CocoaTextEdits, CocoaScrollers,
-  LCLType, LCLProc;
+  LCLType, LCLProc,
+  MacOSAll, CocoaAll, CocoaPrivate, CocoaCallback, cocoa_extra, CocoaUtils,
+  CocoaCursor, CocoaCustomControl, CocoaTextEdits, CocoaScrollers;
 
 type
 
@@ -184,7 +184,7 @@ type
 
   { TCocoaWindowContentDocument }
 
-  TCocoaWindowContentDocument = objcclass(TCocoaCustomControl)
+  TCocoaWindowContentDocument = objcclass(TCocoaCustomControlWithBaseInputClient)
   protected
     procedure didBecomeKeyNotification(sender: NSNotification); message 'didBecomeKeyNotification:';
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';

@@ -88,16 +88,6 @@ type
     property CocoaOnlyState: Boolean read IsCocoaOnlyState write SetCocoaOnlyState;
   end;
 
-  { TCocoaStatusBar }
-
-  IStatusBarCallback = interface {(ICommonCallback) // not needed to inherit from ICommonCallback}
-    function GetBarsCount: Integer;
-    //todo: consider the use Cocoa native types, instead of FPC TAlignment
-    function GetBarItem(idx: Integer; var txt: String;
-      var width: Integer; var align: TAlignment): Boolean;
-    procedure DrawPanel(idx: Integer; const r: TRect);
-  end;
-
 implementation
 
 end.

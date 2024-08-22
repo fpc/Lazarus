@@ -12,7 +12,7 @@ uses
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   StdCtrls,
   CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
-  CocoaScrollers, CocoaWSScrollers,
+  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
   CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
 
 type
@@ -1978,13 +1978,13 @@ begin
     ctrl := TCocoaFullControlEdit.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLFullControlEditCallback.Create(ctrl, AWinControl);
     TCocoaFullControlEdit(ctrl).imeHandler := imeHandler;
-    ctrl.unmarkText;
+    TCocoaFullControlEdit(ctrl).unmarkText;
   end
   else
   begin
     // AWinControl not implements ICocoaIMEControl
     // AWinControl is a normal Custom Control
-    ctrl := TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams);
+    ctrl := TCocoaCustomControlWithBaseInputClient.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   end;
   lcl.BlockCocoaUpDown := true;

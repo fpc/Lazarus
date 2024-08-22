@@ -37,7 +37,7 @@ uses
   CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils,
   CocoaGDIObjects, CocoaButtons, CocoaTextEdits,
-  CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
+  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
 
 type
 
@@ -2375,7 +2375,7 @@ begin
 
     // set a content view in order to be able to customize drawing for labels/color
     ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
-    lGroupBoxContents := TCocoaCustomControl(TCocoaCustomControl.alloc.initWithFrame(ns));
+    lGroupBoxContents := TCocoaCustomControl.alloc.initWithFrame(ns);
     lGroupBoxContents.callback := box.callback; //TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
     //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);
     lGroupBoxContents.autorelease;

@@ -21,7 +21,7 @@ unit LazSynCocoaIMM;
 interface
 
 uses
-  CocoaPrivate,
+  CocoaFullControlEdit,
   Classes, SysUtils,
   SynEditMiscClasses, LazSynIMMBase, SynEditKeyCmds, SynEditTextBase;
 
