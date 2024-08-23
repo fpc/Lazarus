@@ -625,13 +625,17 @@ end;
 
 procedure TIDEProjectGroupManager.UpdateRecentProjectGroupMenu;
 var
-  i: Integer;
+  i, l: Integer;
   Item: TIDEMenuItem;
   aFilename: String;
 begin
   i:=0;
-  while i<Options.RecentProjectGroups.Count do begin
-    aFilename:=Options.RecentProjectGroups[i];
+  l:=0;
+  while l<Options.RecentProjectGroups.Count do begin
+    aFilename:=Options.RecentProjectGroups[l];
+    inc(l);
+    if not FileExists(aFilename) then
+      continue;
     if i<PGOpenRecentSubMenu.Count then begin
       Item:=PGOpenRecentSubMenu[i];
       Item.Caption:=aFilename;

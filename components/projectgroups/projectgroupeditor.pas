@@ -1746,13 +1746,17 @@ end;
 
 procedure TProjectGroupEditorForm.UpdateRecentProjectGroupMenu;
 var
-  i: Integer;
+  i, l: Integer;
   Item: TMenuItem;
   aFilename: String;
 begin
   i:=0;
-  while i<IDEProjectGroupManager.Options.RecentProjectGroups.Count do begin
-    aFilename:=IDEProjectGroupManager.Options.RecentProjectGroups[i];
+  l:=0;
+  while l<IDEProjectGroupManager.Options.RecentProjectGroups.Count do begin
+    aFilename:=IDEProjectGroupManager.Options.RecentProjectGroups[l];
+    inc(l);
+    if not FileExists(aFilename) then
+      continue;
     if i<PopupMenuOpen.Items.Count then begin
       Item:=PopupMenuOpen.Items[i];
     end
