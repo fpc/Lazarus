@@ -360,7 +360,7 @@ var
   width: Integer;
   height: Integer;
 begin
-  if lclBrush.Color = clWindow then
+  if (lclBrush.Color=clWindow) or (lclBrush.Color=clDefault) then
     Exit;
 
   width:= Round( view.bounds.size.width );
@@ -380,6 +380,11 @@ procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
 begin
+  if NOT self.tableView.isOwnerDraw then begin
+    inherited drawRect( dirtyRect );
+    Exit;
+  end;
+
   done:= self.tableView.lclCallDrawItem( row , self.bounds.size, dirtyRect );
 
   if done then begin
