@@ -114,7 +114,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
-    TabOrder = 0
+    TabOrder = 4
   end
   object MarkupWordNoKeyword: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -143,7 +143,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     MaxValue = 300
-    TabOrder = 2
+    TabOrder = 3
   end
   object MarkupWordByTimerCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -156,7 +156,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordByTimerCheckBox'
-    TabOrder = 3
+    TabOrder = 0
   end
   object MarkupWordTrim: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -169,7 +169,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'MarkupWordTrim'
-    TabOrder = 4
+    TabOrder = 2
   end
   object BracketCombo: TComboBox
     AnchorSideLeft.Control = Owner
@@ -325,7 +325,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Around = 6
     Constraints.MinHeight = 150
     ItemHeight = 0
-    TabOrder = 8
+    TabOrder = 13
     OnClick = chkKWGroupsClick
     OnClickCheck = chkKWGroupsClickCheck
     OnExit = chkKWGroupsClickCheck
@@ -343,7 +343,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Top = 6
     ItemHeight = 15
     Style = csDropDownList
-    TabOrder = 9
+    TabOrder = 10
     OnChange = LanguageComboBoxChange
     OnExit = LanguageComboBoxExit
     OnKeyDown = LanguageComboBoxKeyDown
@@ -371,7 +371,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     Width = 72
     BorderSpacing.Left = 6
     Caption = 'cbMarkup'
-    TabOrder = 10
+    TabOrder = 11
     OnChange = cbMarkupChange
   end
   object cbOutline: TCheckBox
@@ -386,7 +386,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'cbOutline'
-    TabOrder = 11
+    TabOrder = 12
     OnChange = cbMarkupChange
   end
   object cbMarkupWordBracket: TCheckBox
@@ -399,7 +399,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     Width = 140
     BorderSpacing.Around = 6
     Caption = 'cbMarkupWordBracket'
-    TabOrder = 12
+    TabOrder = 8
     OnChange = cbMarkupWordBracketChange
   end
   object cbMarkupOutline: TCheckBox
@@ -412,7 +412,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     Width = 111
     BorderSpacing.Around = 6
     Caption = 'cbMarkupOutline'
-    TabOrder = 13
+    TabOrder = 9
     OnChange = cbMarkupOutlineChange
   end
   object lbMarkupWarnNoColor: TLabel
