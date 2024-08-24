@@ -264,6 +264,7 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
     BlockSize : integer;
     NewIndex : integer;
     WrapOffset: integer;
+    Butt: TRadioButton;
   begin
     Count := FButtonList.Count;
     if FColumnLayout=clHorizontalThenVertical then begin
@@ -287,9 +288,11 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
         while NewIndex >= Count do
            NewIndex := (NewIndex + StepSize) mod BlockSize;
       end;
-    until (NewIndex = ItemIndex) or TRadioButton(FButtonList[NewIndex]).Enabled;
+      Butt := TRadioButton(FButtonList[NewIndex]);
+    until (NewIndex = ItemIndex) or (Butt.Visible and Butt.Enabled);
     ItemIndex := NewIndex;
-    TRadioButton(FButtonList[ItemIndex]).SetFocus;
+    if Butt.CanSetFocus then  // ItemIndex = NewIndex, Butt is still valid.
+      Butt.SetFocus;
     Key := 0;
   end;
   
