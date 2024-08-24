@@ -316,7 +316,7 @@ begin
      (FCurrentWatchValue.ResultData <> nil)
   then
     r := FCurrentWatchValue.ResultData.ValueKind;
-  d := TWatchPropertyDlg.Create(Self.Owner, FDisplayFormat, r, FAllowMemDump);
+  d := TWatchPropertyDlg.Create(Self.Owner, FDisplayFormat, r, FAllowMemDump, False);
   if d.ShowModal = mrOK then begin
     FDisplayFormat := d.DisplayFormat;
     // DoDisplaySettingsUpdated;

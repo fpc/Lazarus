@@ -62,6 +62,7 @@ begin
   btnLocals.Down  := False;
   btnInspect.Down := False;
   btnEvalMod.Down := False;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := True;
   lblChangingDescr.Caption := DispFormatOptChangingDescrAll;
   SaveButtonStates;
   ApplyConfigs;
@@ -80,6 +81,7 @@ begin
     btnInspect.Down := Sender = btnInspect;
     btnEvalMod.Down := Sender = btnEvalMod;
   end;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := btnWatches.Down or btnLocals.Down or btnGlobal.Down;
   lblChangingDescr.Caption := DispFormatOptChangingDescrSome;
   SaveButtonStates;
   ApplyConfigs;
@@ -167,6 +169,7 @@ begin
   DisplayFormatFrame1.ShowMemDump := False;
   DisplayFormatFrame1.SelectDefaultButton;
   DisplayFormatFrame1.ShowExtraSettings := True;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := True;
   DisplayFormatFrame1.ShowFullAddressInMulti := True;
   DisplayFormatFrame1.ShowOverrideChecks := FShowOverrideChecks;
 

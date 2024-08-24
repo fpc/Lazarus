@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, LCLType, ExtCtrls, SpinEx,
-  LazNumEdit, IDEImagesIntf, laz.VirtualTrees, IdeDebuggerStringConstants, DebuggerTreeView;
+  LazNumEdit, IDEImagesIntf, IdeDebuggerWatchValueIntf, laz.VirtualTrees,
+  IdeDebuggerStringConstants, DebuggerTreeView, Debugger, IdeDebuggerWatchResPrinter;
 
 type
 
@@ -25,6 +26,7 @@ type
     btnArrayStart: TSpeedButton;
     btnHide: TSpeedButton;
     cbEnforceBound: TCheckBox;
+    cbAutoHide: TCheckBox;
     Label1: TLabel;
     edArrayPageSize: TLazIntegerEdit;
     edArrayStart: TLazIntegerEdit;
@@ -32,12 +34,16 @@ type
     procedure BtnChangePageClicked(Sender: TObject);
     procedure BtnChangeSizeClicked(Sender: TObject);
     procedure btnHideClick(Sender: TObject);
+    procedure cbAutoHideChange(Sender: TObject);
     procedure cbEnforceBoundChange(Sender: TObject);
     procedure edArrayPageSizeEditingDone(Sender: TObject);
     procedure edArrayPageSizeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edArrayStartEditingDone(Sender: TObject);
     procedure edArrayStartKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FArrayNavConfig: IArrayNavSettings;
+    FDisplayFormatResolver: TDisplayFormatResolver;
+    FState: (anNew, anBoundsAllowHide, anBoundsNeedNav);
     FHardLimits: Boolean;
     FHighBound: int64;
     FLowBound: int64;
@@ -75,6 +81,7 @@ type
     procedure HideNavBar;
     procedure ShowNavBar;
     procedure UpdateCollapsedExpanded;
+    procedure UpdateForNewBounds;
     property  NavBarVisible: boolean read FNavBarVisible;
     property LowBound: int64 read FLowBound write SetLowBound;
     property HighBound: int64 read FHighBound write SetHighBound;
@@ -86,6 +93,8 @@ type
     property LimitedPageSize: int64 read GetLimitedPageSize;
 
     property OwnerData: pointer read FOwnerData write FOwnerData;
+    property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver write FDisplayFormatResolver;
+    property ArrayNavConfig: IArrayNavSettings read FArrayNavConfig write FArrayNavConfig;
   published
     property OnIndexChanged: TArrayNavChangeEvent read FOnIndexChanged write FOnIndexChanged;
     property OnPageSize: TArrayNavChangeEvent read FOnPageSize write FOnPageSize;
@@ -160,9 +169,29 @@ begin
   HideNavBar;
 end;
 
+procedure TArrayNavigationBar.cbAutoHideChange(Sender: TObject);
+var
+  df: TWatchDisplayFormat;
+  opts: TWatchDisplayFormatArrayNav;
+begin
+  if (OwnerData <> nil) and (FArrayNavConfig <> nil) then begin
+    df := FArrayNavConfig.GetDisplayFormat;
+    if FDisplayFormatResolver <> nil then
+      opts := FDisplayFormatResolver.ResolveArrayNavBar(df)
+    else
+      opts := df.ArrayNavBar;
+
+    opts.UseInherited := False;
+    opts.AutoHideNavBar := cbAutoHide.Checked;
+    opts.EnforceBounds := cbEnforceBound.Checked;
+    FArrayNavConfig.SetArrayNavOpts(opts);
+  end;
+end;
+
 procedure TArrayNavigationBar.cbEnforceBoundChange(Sender: TObject);
 begin
   UpdateBoundsInfo;
+  cbAutoHideChange(nil);
 end;
 
 procedure TArrayNavigationBar.edArrayPageSizeEditingDone(Sender: TObject);
@@ -372,6 +401,59 @@ begin
   end;
 end;
 
+procedure TArrayNavigationBar.UpdateForNewBounds;
+
+  function AllowAutoHide: boolean;
+  begin
+    Result := (FLowBound = edArrayStart.Value) and
+              (FHighBound - FLowBound + 1 <= edArrayPageSize.Value);
+  end;
+
+var
+  df: TWatchDisplayFormat;
+  opts: TWatchDisplayFormatArrayNav;
+begin
+  if (OwnerData = nil) then
+    exit;
+
+  case FState of
+    anNew: begin
+        if FArrayNavConfig <> nil then
+          df := FArrayNavConfig.GetDisplayFormat
+        else
+          df := DefaultWatchDisplayFormat;
+        if FDisplayFormatResolver <> nil then
+          opts := FDisplayFormatResolver.ResolveArrayNavBar(df)
+        else
+          opts := df.ArrayNavBar;
+
+        edArrayPageSize.Value := opts.PageSize;
+        cbEnforceBound.Checked := opts.EnforceBounds;
+        cbAutoHide.Checked := opts.AutoHideNavBar;
+
+        if cbAutoHide.Checked then begin
+          if AllowAutoHide then
+            HideNavBar
+          else
+            ShowNavBar;
+        end;
+      end;
+    anBoundsAllowHide: begin
+        if cbAutoHide.Checked and not AllowAutoHide then
+          ShowNavBar;
+      end;
+    anBoundsNeedNav: begin
+        if cbAutoHide.Checked and AllowAutoHide then
+          HideNavBar;
+      end;
+  end;
+
+  if AllowAutoHide then
+    FState := anBoundsAllowHide
+  else
+    FState := anBoundsNeedNav;
+end;
+
 procedure TArrayNavigationBar.SetShowBoundInfo(AValue: Boolean);
 begin
   if FShowBoundInfo = AValue then Exit;
@@ -446,8 +528,17 @@ begin
   else
     cbEnforceBound.BorderSpacing.Top := 0;
 
+  if (cbAutoHide.Left+cbAutoHide.Width + Left < 1) or
+     (cbAutoHide.Left+ Left > Parent.ClientWidth - 1) or
+     (cbAutoHide.Top+Top > Parent.ClientHeight + FTree.Header.Height - 1) or
+     (not Visible)
+  then
+    cbAutoHide.BorderSpacing.Top := 1
+  else
+    cbAutoHide.BorderSpacing.Top := 0;
+
   if FNavBarVisible then begin
-    Constraints.MinWidth := Max(Max(cbEnforceBound.Left + btnHide.Width + btnHide.Width,
+    Constraints.MinWidth := Max(Max(cbAutoHide.Left + cbAutoHide.Width,
                                     FTree.RangeX
                                    ), FTree.ClientWidth);
   end;

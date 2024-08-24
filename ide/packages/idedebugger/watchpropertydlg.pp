@@ -89,7 +89,7 @@ type
     FDisplayFormat: TWatchDisplayFormat;
   public
     constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown); overload;
-    constructor Create(AOWner: TComponent; const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind; AShowMemDump: boolean = False); overload;
+    constructor Create(AOWner: TComponent; const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind; AShowMemDump: boolean = False; AShowArrayNav: boolean = False); overload;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     destructor Destroy; override;
   end;
@@ -196,6 +196,7 @@ begin
   ButtonPanel.HelpButton.Visible := True;
   DisplayFormatFrame1.Setup;
   DisplayFormatFrame1.BeginUdpate;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := True;
   try
     if FWatch = nil
     then begin
@@ -286,7 +287,7 @@ end;
 
 constructor TWatchPropertyDlg.Create(AOWner: TComponent;
   const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind;
-  AShowMemDump: boolean);
+  AShowMemDump: boolean; AShowArrayNav: boolean);
 begin
   FMode := wpmDispFormat;
   inherited Create(AOWner);
@@ -296,6 +297,7 @@ begin
 
   Caption:= dlgDisplayFormatDebugOptions;
   DisplayFormatFrame1.Setup;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := AShowArrayNav;
   DisplayFormatFrame1.ShowMemDump := AShowMemDump;
   DisplayFormatFrame1.BeginUdpate;
   DisplayFormatFrame1.DisplayFormat := FDisplayFormat;

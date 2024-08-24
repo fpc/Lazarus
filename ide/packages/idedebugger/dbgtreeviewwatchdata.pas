@@ -5,10 +5,10 @@ unit DbgTreeViewWatchData;
 interface
 
 uses
-  Classes, SysUtils, Math, IdeDebuggerBase, DebuggerTreeView,
-  IdeDebuggerWatchResult, ArrayNavigationFrame, BaseDebugManager,
-  laz.VirtualTrees, DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf, Controls,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  Classes, SysUtils, Math, IdeDebuggerBase, DebuggerTreeView, IdeDebuggerWatchResult,
+  ArrayNavigationFrame, BaseDebugManager, IdeDebuggerWatchResPrinter, Debugger, laz.VirtualTrees,
+  DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf, Controls, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes;
 
 type
 
@@ -25,6 +25,7 @@ type
   TDbgTreeViewWatchDataMgr = class
   private
     FCancelUpdate: Boolean;
+    FDisplayFormatResolver: TDisplayFormatResolver;
     FTreeView: TDbgTreeView;
     FExpandingWatchAbleResult: TObject;
 
@@ -64,6 +65,7 @@ type
       AFields: TTreeViewDataToTextFields;
       AnOpts: TTreeViewDataToTextOptions): String;
 
+    property DisplayFormatResolver: TDisplayFormatResolver read FDisplayFormatResolver write FDisplayFormatResolver;
     property CancelUpdate: Boolean read FCancelUpdate write FCancelUpdate;
     property TreeView: TDbgTreeView read FTreeView;
   end;
@@ -193,6 +195,7 @@ var
   Nav: TArrayNavigationBar;
   Offs, KeepCnt, KeepBelow: Int64;
   ForceIdx: Boolean;
+  intfArrayNav: IArrayNavSettings;
 begin
   ChildCount := 0;
   ResData := AWatchAbleResult.ResultData;
@@ -238,6 +241,10 @@ begin
   end;
   FTreeView.NodeControlVisible[AVNode] := True;
   Nav.OwnerData := AWatchAble;
+  Nav.DisplayFormatResolver := FDisplayFormatResolver;
+  AWatchAble.GetInterface(IArrayNavSettings, intfArrayNav);
+  Nav.ArrayNavConfig := intfArrayNav;
+  Nav.UpdateForNewBounds;
   ChildCount := Nav.LimitedPageSize;
 
   if ChildCount > 0 then begin

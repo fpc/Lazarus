@@ -32,6 +32,7 @@
 unit Debugger;
 
 {$mode objfpc}{$H+}
+{$Interfaces CORBA}
 
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
@@ -495,6 +496,14 @@ type
 
 type
 
+  { IArrayNavSettings }
+
+  IArrayNavSettings = interface ['{37109E8D-F7EA-4B09-9B95-1DD3770A45F0}']
+    function  GetDisplayFormat: TWatchDisplayFormat;
+    procedure SetArrayNavOpts(const AValue: TWatchDisplayFormatArrayNav);
+  end;
+
+
   TWatchesEvent =
        procedure(const ASender: TIdeWatches; const AWatch: TIdeWatch) of object;
 
@@ -588,7 +597,7 @@ type
 
   { TIdeWatch }
 
-  TIdeWatch = class(TWatch, IWatchAbleDataIntf, IFreeNotifyingIntf)
+  TIdeWatch = class(TWatch, IWatchAbleDataIntf, IArrayNavSettings, IFreeNotifyingIntf)
   private
     FChildWatches: TIdeWatches;
     FDisplayName: String;
@@ -605,6 +614,8 @@ type
     procedure SetDisplayName(AValue: String); reintroduce;
     function GetEnabled: Boolean;
     function GetExpression: String;
+  // IArrayNavSettings
+    procedure SetArrayNavOpts(const AValue: TWatchDisplayFormatArrayNav);
   protected
     procedure InitChildWatches;
     function CreateChildWatches: TIdeWatches; virtual;
@@ -930,7 +941,7 @@ type
 
   { TIdeLocalsValue }
 
-  TIdeLocalsValue = class(TLocalsValue, IWatchAbleResultIntf, IWatchAbleDataIntf, IFreeNotifyingIntf)
+  TIdeLocalsValue = class(TLocalsValue, IWatchAbleResultIntf, IWatchAbleDataIntf, IArrayNavSettings, IFreeNotifyingIntf)
   private
     FSubLocals: TSubLocals;
     FDisplayName: String;
@@ -949,6 +960,8 @@ type
     function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TObject;
     function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject;
 
+  // IArrayNavSettings
+    procedure SetArrayNavOpts(const AValue: TWatchDisplayFormatArrayNav);
   protected
     function FindParentValue: TIdeLocalsValue; virtual;
     function MaybeCopyResultForChild: boolean;
@@ -6812,6 +6825,13 @@ begin
   Result := inherited Expression;
 end;
 
+procedure TIdeWatch.SetArrayNavOpts(const AValue: TWatchDisplayFormatArrayNav);
+begin
+  if FParentWatch = nil then
+    FDisplayFormat.ArrayNavBar := AValue;
+  // else ignore
+end;
+
 procedure TIdeWatch.SetParentWatch(AValue: TIdeWatch);
 begin
   if FParentWatch = AValue then Exit;
@@ -7521,6 +7541,11 @@ begin
   //  Expr := AClassName + '(' + Expr + ')';
   Expr := Expr + '.' + AName;
   Result := GetSubLocal(StringOfChar('^', DerefCount) + AName, Expr);
+end;
+
+procedure TIdeLocalsValue.SetArrayNavOpts(const AValue: TWatchDisplayFormatArrayNav);
+begin
+  // ignore
 end;
 
 function TIdeLocalsValue.FindParentValue: TIdeLocalsValue;

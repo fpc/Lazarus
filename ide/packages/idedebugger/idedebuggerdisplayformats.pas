@@ -173,6 +173,10 @@ begin
    ADisplayFormat.Pointer.Address.NoLeadZero := AConfig.GetValue(APath + 'PointerLeadZero', DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
   ADisplayFormat.MultiLine.UseInherited := AConfig.GetValue(APath + 'MultiLineInherit', DefaultWatchDisplayFormat.MultiLine.UseInherited);
    ADisplayFormat.MultiLine.MaxMultiLineDepth := AConfig.GetValue(APath + 'MultiLineMaxWrapDepth', DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
+  ADisplayFormat.ArrayNavBar.UseInherited := AConfig.GetValue(APath + 'ArrayNavBarInherit', DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);
+   ADisplayFormat.ArrayNavBar.PageSize       := AConfig.GetValue(APath + 'ArrayNavBarPageSize', DefaultWatchDisplayFormat.ArrayNavBar.PageSize);
+   ADisplayFormat.ArrayNavBar.EnforceBounds  := AConfig.GetValue(APath + 'ArrayNavBarEnforceBounds', DefaultWatchDisplayFormat.ArrayNavBar.EnforceBounds);
+   ADisplayFormat.ArrayNavBar.AutoHideNavBar := AConfig.GetValue(APath + 'ArrayNavBarAutoHideNavBar', DefaultWatchDisplayFormat.ArrayNavBar.AutoHideNavBar);
   ADisplayFormat.MemDump := AConfig.GetValue(APath + 'IsMemDump', DefaultWatchDisplayFormat.MemDump);
 end;
 
@@ -234,6 +238,10 @@ begin
    AConfig.SetDeleteValue(APath + 'PointerLeadZero',   ADisplayFormat.Pointer.Address.NoLeadZero,   DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
   AConfig.SetDeleteValue(APath + 'MultiLineInherit',   ADisplayFormat.MultiLine.UseInherited,       DefaultWatchDisplayFormat.MultiLine.UseInherited);
    AConfig.SetDeleteValue(APath + 'MultiLineMaxWrapDepth',ADisplayFormat.MultiLine.MaxMultiLineDepth, DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
+  AConfig.SetDeleteValue(APath + 'ArrayNavBarInherit',   ADisplayFormat.ArrayNavBar.UseInherited,       DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);
+   AConfig.SetDeleteValue(APath + 'ArrayNavBarPageSize',ADisplayFormat.ArrayNavBar.PageSize, DefaultWatchDisplayFormat.ArrayNavBar.PageSize);
+   AConfig.SetDeleteValue(APath + 'ArrayNavBarEnforceBounds',ADisplayFormat.ArrayNavBar.EnforceBounds, DefaultWatchDisplayFormat.ArrayNavBar.EnforceBounds);
+   AConfig.SetDeleteValue(APath + 'ArrayNavBarAutoHideNavBar',ADisplayFormat.ArrayNavBar.AutoHideNavBar, DefaultWatchDisplayFormat.ArrayNavBar.AutoHideNavBar);
   AConfig.SetDeleteValue(APath + 'IsMemDump',          ADisplayFormat.MemDump, False);
 end;
 

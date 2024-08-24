@@ -49,6 +49,7 @@ type
     cbEnumValSign: TCheckBox;
     cbMemDump: TCheckBox;
     cbOverrideEnumVal: TCheckBox;
+    cbOverrideArrayNavBar: TCheckBox;
     cbOverrideNum2Base: TCheckBox;
     cbOverridePointerDeref: TCheckBox;
     cbOverrideAddressFormat: TCheckBox;
@@ -63,6 +64,8 @@ type
     cbEnumSign: TCheckBox;
     cbStructAddrTyped: TCheckBox;
     cbPointerAddrTyped: TCheckBox;
+    cbArrayNavAutoHide: TCheckBox;
+    cbArrayNavEnforceBounds: TCheckBox;
     DigitSpacer3: TLabel;
     DigitSpacer4: TLabel;
     DividerBevelEnumVal: TDividerBevel;
@@ -74,10 +77,13 @@ type
     DividerBevelEnum: TDividerBevel;
     DividerBevelFloat: TDividerBevel;
     DividerBevelPointerDeref1: TDividerBevel;
+    DividerBevelArrayNavBar: TDividerBevel;
     DividerBevelStruct: TDividerBevel;
     Label1: TLabel;
+    lbPageSize: TLabel;
     lbMaxWrapLvl: TLabel;
     lbOverrideIndent: TLabel;
+    lbOverrideArrayNavBar: TLabel;
     lbStructAddrTypedFiller: TLabel;
     Label3: TLabel;
     lbEnumValBaseSpace: TLabel;
@@ -110,6 +116,8 @@ type
     PanelNum2SepGroup: TPanel;
     PanelIndent: TPanel;
     PanelIndentMax: TPanel;
+    PanelArrayNavBar: TPanel;
+    PanelArrayNavBarOpts: TPanel;
     rbClear: TRadioButton;
     rbClear1: TRadioButton;
     rbClear10: TRadioButton;
@@ -222,7 +230,9 @@ type
     Spacer16: TLabel;
     Spacer17: TLabel;
     Spacer18: TLabel;
+    Spacer19: TLabel;
     Spacer2: TLabel;
+    Spacer20: TLabel;
     Spacer3: TLabel;
     Spacer4: TLabel;
     Spacer5: TLabel;
@@ -230,6 +240,7 @@ type
     Spacer7: TLabel;
     Spacer8: TLabel;
     Spacer9: TLabel;
+    SpinPageSize: TSpinEdit;
     SpinIndentMaxWrap: TSpinEdit;
     SpinFloatDigits: TSpinEdit;
     SpinDigits: TSpinEdit;
@@ -255,6 +266,7 @@ type
     tbFloat: TSpeedButton;
     ToolButton5: TToolButton;
     procedure cbAddrNoLeadZeroChange(Sender: TObject);
+    procedure cbArrayNavEnforceBoundsChange(Sender: TObject);
     procedure cbMemDumpChange(Sender: TObject);
     procedure cbNum2VisibleCheckedChange(Sender: TObject);
     procedure CheckLabelClicked(Sender: TObject);
@@ -277,6 +289,7 @@ type
     FAllowMultiTabs: boolean;
     FHighlightModifiedTabs: boolean;
     FShowAll: boolean;
+    FShowArrayNavBarOpts: boolean;
     FShowCurrent: boolean;
 
     FDisplayFormatCount: integer;
@@ -303,6 +316,7 @@ type
     procedure SetDisplayFormats(AIndex: integer; AValue: TWatchDisplayFormat);
     procedure SetHighlightModifiedTabs(AValue: boolean);
     procedure SetShowAll(AValue: boolean);
+    procedure SetShowArrayNavBarOpts(AValue: boolean);
     procedure SetShowCurrent(AValue: boolean);
     procedure SetShowExtraSettings(AValue: boolean);
     procedure SetShowMemDump(AValue: boolean);
@@ -343,6 +357,7 @@ type
     property ShowMemDump: boolean read FShowMemDump write SetShowMemDump;
     property ShowMultiRadio: boolean read FShowMultiRadio write SetShowMultiRadio;
     property ShowOverrideChecks: boolean read FShowOverrideChecks write SetShowOverrideChecks;
+    property ShowArrayNavBarOpts: boolean read FShowArrayNavBarOpts write SetShowArrayNavBarOpts;
     // ShowExtraSettings: Show PanelEnumVal  (project and global opts)
     property ShowExtraSettings: boolean read FShowExtraSettings write SetShowExtraSettings;
     property ShowFullAddressInMulti: boolean read FShowFullAddressInMulti write FShowFullAddressInMulti;
@@ -535,6 +550,16 @@ begin
   UpdateDisplay;
 end;
 
+procedure TDisplayFormatFrame.cbArrayNavEnforceBoundsChange(Sender: TObject);
+begin
+  if FUpdatingDisplay > 0 then
+    exit;
+  TControl(Sender).Tag := 0;
+  EnableParentOverride(TControl(Sender));
+  UpdateFormat;
+  UpdateDisplay;
+end;
+
 procedure TDisplayFormatFrame.cbNum2VisibleCheckedChange(Sender: TObject);
 begin
   if FUpdatingDisplay > 0 then
@@ -636,6 +661,7 @@ begin
   TControl(Sender).Tag := 0;
   EnableParentOverride(TControl(Sender), True);
   UpdateFormat;
+  UpdateDisplay;
 end;
 
 procedure TDisplayFormatFrame.OverrideCheckChanged(Sender: TObject);
@@ -915,6 +941,12 @@ begin
   ToolButton4.Visible := FShowCurrent;
 end;
 
+procedure TDisplayFormatFrame.SetShowArrayNavBarOpts(AValue: boolean);
+begin
+  if FShowArrayNavBarOpts = AValue then Exit;
+  FShowArrayNavBarOpts := AValue;
+end;
+
 procedure TDisplayFormatFrame.SetShowCurrent(AValue: boolean);
 begin
   if FShowCurrent = AValue then Exit;
@@ -955,6 +987,7 @@ begin
   cbOverridePointerDeref.Visible  := FShowOverrideChecks;
   cbOverrideAddressFormat.Visible := FShowOverrideChecks;
   cbOverrideIndent.Visible        := FShowOverrideChecks;
+  cbOverrideArrayNavBar.Visible   := FShowOverrideChecks;
 end;
 
 procedure TDisplayFormatFrame.ClearRadios(APanel: TWinControl; ARecursive: Boolean;
@@ -1122,6 +1155,7 @@ begin
   PanelPointer.Visible       := tbPointer.Down;
   PanelAddressFormat.Visible := (tbPointer.Down or tbStruct.Down) and (not CheckAddrFormatVis);
   PanelIndent.Visible        := tbIndent.Down;
+  PanelArrayNavBar.Visible   := tbIndent.Down and FShowArrayNavBarOpts;
 
   lbStructAddrTypedFiller.Visible := CheckAddrFormatVis;
   cbStructAddrTyped.Visible       := CheckAddrFormatVis;
@@ -1268,6 +1302,8 @@ begin
     end;
     if FButtonStates[bsIndent] then begin
       BoolFromCBState(cbOverrideIndent.State, FDisplayFormat[i].MultiLine.UseInherited);
+      if FShowArrayNavBarOpts then
+        BoolFromCBState(cbOverrideArrayNavBar.State, FDisplayFormat[i].ArrayNavBar.UseInherited);
     end;
   end;
 end;
@@ -1478,6 +1514,13 @@ begin
     if FButtonStates[bsIndent] then begin
       if (SpinIndentMaxWrap.Tag = 0) then
         FDisplayFormat[i].MultiLine.MaxMultiLineDepth := SpinIndentMaxWrap.Value;
+
+      if FShowArrayNavBarOpts then begin
+        BoolFromCB(cbArrayNavAutoHide, FDisplayFormat[i].ArrayNavBar.AutoHideNavBar, False);
+        BoolFromCB(cbArrayNavEnforceBounds, FDisplayFormat[i].ArrayNavBar.EnforceBounds, False);
+        if (SpinPageSize.Tag = 0) then
+          FDisplayFormat[i].ArrayNavBar.PageSize := SpinPageSize.Value;
+      end;
     end;
 
     BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
@@ -1499,7 +1542,7 @@ end;
 procedure TDisplayFormatFrame.UpdateDisplay;
 var
   InherhitNum, InherhitNum2, InherhitEnum, InherhitEnumVal, InherhitFloat,
-  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent: TBoolSet;
+  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitArrayNav: TBoolSet;
 
   FormatNumBase:       TValueDisplayFormats;
   FormatNumSign:       TValueDisplayFormats;
@@ -1537,6 +1580,10 @@ var
 
   FormatIndentMaxWrap: integer;
 
+  FormatArrayNavAutoHide:    TBoolSet;
+  FormatArrayNavForceBounds: TBoolSet;
+  FormatPageSize:     integer;
+
   FormatIsMemDump: TBoolSet;
 
   i: Integer;
@@ -1563,6 +1610,7 @@ begin
     InherhitPtr     := [];
     InherhitAddress := [];
     InherhitIndent  := [];
+    InherhitArrayNav:= [];
 
     FormatNumBase       := [];
     FormatNumSign       := [];
@@ -1597,6 +1645,10 @@ begin
     FormatAddressBase   := [];
     FormatAddressSign   := [];
     FormatAddressLead   := [];
+
+    FormatArrayNavAutoHide    := [];
+    FormatArrayNavForceBounds := [];
+    FormatPageSize:= INT_UNK;
 
     FormatIndentMaxWrap := INT_UNK;
 
@@ -1699,6 +1751,11 @@ begin
       if FButtonStates[bsIndent] then begin
         include(InherhitIndent,  FDisplayFormat[i].MultiLine.UseInherited);
         UpdateIntSetting(FormatIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
+
+        include(InherhitArrayNav,  FDisplayFormat[i].ArrayNavBar.UseInherited);
+        include(FormatArrayNavAutoHide,    FDisplayFormat[i].ArrayNavBar.AutoHideNavBar);
+        include(FormatArrayNavForceBounds, FDisplayFormat[i].ArrayNavBar.EnforceBounds);
+        UpdateIntSetting(FormatPageSize, FDisplayFormat[i].ArrayNavBar.PageSize);
       end;
     end;
 
@@ -1712,6 +1769,7 @@ begin
       cbOverridePointerDeref.State  := BoolsetToCBState(InherhitPtr);
       cbOverrideAddressFormat.State := BoolsetToCBState(InherhitAddress);
       cbOverrideIndent.State        := BoolsetToCBState(InherhitIndent);
+      cbOverrideArrayNavBar.State   := BoolsetToCBState(InherhitArrayNav);
     end
     else begin
       InherhitNum     := [False];
@@ -1723,6 +1781,7 @@ begin
       InherhitPtr     := [False];
       InherhitAddress := [False];
       InherhitIndent  := [False];
+      InherhitArrayNav:= [False];
     end;
 
 
@@ -1837,10 +1896,21 @@ begin
     end;
 
     if InherhitIndent = [True] then begin
-      SetSpinEditToInherit(SpinIndentMaxWrap)
+      SetSpinEditToInherit(SpinIndentMaxWrap);
     end
     else begin
       IntToSpinEdit(SpinIndentMaxWrap, FormatIndentMaxWrap);
+    end;
+
+    if InherhitArrayNav = [True] then begin
+      cbArrayNavAutoHide.State := cbGrayed;
+      cbArrayNavEnforceBounds.State := cbGrayed;
+      SetSpinEditToInherit(SpinPageSize)
+    end
+    else begin
+      cbArrayNavAutoHide.State := BoolsetToCBState(FormatArrayNavAutoHide, False);
+      cbArrayNavEnforceBounds.State := BoolsetToCBState(FormatArrayNavForceBounds, False);
+      IntToSpinEdit(SpinPageSize, FormatPageSize);
     end;
 
     UpdateNumDigitPanel;
@@ -1858,6 +1928,7 @@ begin
     FormatSpinChanged(Spin2Digits);
     FormatSpinChanged(SpinFloatDigits);
     FormatSpinChanged(SpinIndentMaxWrap);
+    FormatSpinChanged(SpinPageSize);
 
     dec(FUpdatingDisplay);
   end;
@@ -1982,7 +2053,7 @@ begin
   tbFloat.Caption   := DispFormatDlgBtnFloat;
   tbStruct.Caption  := DispFormatDlgBtnStruct;
   tbPointer.Caption := DispFormatDlgBtnPointer;
-  tbIndent.Caption := DispFormatDlgBtnIndent;
+  tbIndent.Caption  := DispFormatDlgBtnOptions;
 
 
   lbOverrideNumBase.Caption       := DispFormatDlgBtnNumber;
@@ -2076,9 +2147,13 @@ begin
   cbStructAddrTyped.Caption  := DispFormatPointerAddressTyped;
   cbPointerAddrTyped.Caption := DispFormatPointerAddressTyped;
 
-  lbOverrideIndent.Caption := DispFormatDlgBtnIndent;
+  lbOverrideIndent.Caption := DispFormatDlgIndent;
   lbMaxWrapLvl.Caption     := DispFormatIndentMaxWrap;
 
+  lbOverrideArrayNavBar.Caption   := DispFormatDlgArrayNav;
+  cbArrayNavAutoHide.Caption      := DispFormatArrayNavAutoHide;
+  cbArrayNavEnforceBounds.Caption := DispFormatArrayNavEnforceBounds;
+  lbPageSize.Caption              := DispFormatArrayNavPageSize;
 
   DividerBevelMemDump.Caption       := '';
   cbMemDump.Caption             := DispFormatCategoryMemDump;

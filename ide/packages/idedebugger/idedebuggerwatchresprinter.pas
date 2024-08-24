@@ -50,6 +50,8 @@ type
     function ResolveDispFormat(const ADispFormat: TWatchDisplayFormat;
       const AResValue: TWatchResultData
     ): TResolvedDisplayFormat;
+    function ResolveMultiLine(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatMultiline;
+    function ResolveArrayNavBar(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatArrayNav;
     // Resolving from FallBackFormats[n] to FallBackFormats[0]
     // [0] must be the IDE global format, and will be used regardless of UseInherited
     property FallBackFormats: TWatchDisplayFormatList read FFallBackFormats;
@@ -391,6 +393,36 @@ begin
   end;
 end;
 
+function TDisplayFormatResolver.ResolveMultiLine(const ADispFormat: TWatchDisplayFormat
+  ): TWatchDisplayFormatMultiline;
+var
+  i: Integer;
+begin
+  Result := ADispFormat.MultiLine;
+  i := FFallBackFormats.Count-1;
+  while (Result.UseInherited) and (i > 0) do begin
+    Result := FFallBackFormats[i].MultiLine;
+    dec(i);
+  end;
+  if (Result.UseInherited) then
+    Result := DefaultWatchDisplayFormat.MultiLine;
+end;
+
+function TDisplayFormatResolver.ResolveArrayNavBar(const ADispFormat: TWatchDisplayFormat
+  ): TWatchDisplayFormatArrayNav;
+var
+  i: Integer;
+begin
+  Result := ADispFormat.ArrayNavBar;
+  i := FFallBackFormats.Count-1;
+  while (Result.UseInherited) and (i > 0) do begin
+    Result := FFallBackFormats[i].ArrayNavBar;
+    dec(i);
+  end;
+  if (Result.UseInherited) then
+    Result := DefaultWatchDisplayFormat.ArrayNavBar;
+end;
+
 { TWatchResultPrinter }
 
 procedure TWatchResultPrinter.StoreSetting(var AStorage: TWatchResStoredSettings);
@@ -556,6 +588,7 @@ var
   i: Integer;
   sep, tn: String;
   SepHasBreak, SepUsed, OldHasLineBreak: Boolean;
+  MultiLine: TWatchDisplayFormatMultiline;
 begin
   if (AResValue.ArrayType = datDynArray) then begin
     tn := AResValue.TypeName;
@@ -579,7 +612,8 @@ begin
   sep := ', ';
   SepHasBreak := False;
   SepUsed := False;
-  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < ADispFormat.MultiLine.MaxMultiLineDepth ) then begin
+  MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
+  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < MultiLine.MaxMultiLineDepth ) then begin
     sep := ',' + FLineSeparator;
     SepHasBreak := True;
     if (rpfIndent in FFormatFlags) then begin
@@ -635,6 +669,7 @@ var
   FldOwner: TWatchResultData;
   vis, sep, tn, Header, we: String;
   InclVisSect, SepUsed, OldHasLineBreak: Boolean;
+  MultiLine: TWatchDisplayFormatMultiline;
 begin
   Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
   Result := '';
@@ -668,7 +703,8 @@ begin
 
   sep := '';
   SepUsed := False;
-  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < ADispFormat.MultiLine.MaxMultiLineDepth ) then begin
+  MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
+  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < MultiLine.MaxMultiLineDepth ) then begin
     sep := FLineSeparator;
     if (rpfIndent in FFormatFlags) then begin
       sep := sep + FIndentString;

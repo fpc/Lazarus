@@ -338,6 +338,8 @@ begin
   FWatchPrinter.FormatFlags := [rpfClearMultiLine];
   FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
   FLocolsTreeMgr.FLocalsDlg := Self;
+  FLocolsTreeMgr.DisplayFormatResolver := FWatchPrinter.DisplayFormatResolver;
+
   ToolBar1.Images := IDEImages.Images_16;
   vtLocals.LazImages := IDEImages.Images_16;
 

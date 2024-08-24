@@ -12,6 +12,7 @@ msgstr ""
 "X-Generator: Poedit 2.3.1\n"
 
 #: idedebuggerstringconstants.arrnavenforcebounds
+msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"
 msgstr "Соблюдать границы"
 
@@ -48,6 +49,20 @@ msgstr "Преобразование значения простого типа 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
 msgstr "Больше не спрашивать"
+
+#: idedebuggerstringconstants.dispformatarraynavautohide
+msgid "Auto-hide"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatarraynavenforcebounds
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatarraynavenforcebounds"
+msgid "Enforce bounds"
+msgstr "Соблюдать границы"
+
+#: idedebuggerstringconstants.dispformatarraynavpagesize
+msgid "Page-size"
+msgstr ""
 
 #: idedebuggerstringconstants.dispformatbasebin
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -111,6 +126,10 @@ msgctxt "idedebuggerstringconstants.dispformatcharord"
 msgid "Ordinal"
 msgstr "Числовое значение"
 
+#: idedebuggerstringconstants.dispformatdlgarraynav
+msgid "Array Navigation"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address"
 msgstr "Адрес"
@@ -147,10 +166,6 @@ msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
 msgid "Float"
 msgstr "Вещественный"
 
-#: idedebuggerstringconstants.dispformatdlgbtnindent
-msgid "Multiline"
-msgstr "Многострочный"
-
 #: idedebuggerstringconstants.dispformatdlgbtnnum2visible
 msgid "Show value in a second format"
 msgstr "Показывать значение во вторичном формате"
@@ -162,6 +177,10 @@ msgstr "Число"
 #: idedebuggerstringconstants.dispformatdlgbtnnumber2
 msgid "Number (2nd)"
 msgstr "Число (вторичный)"
+
+#: idedebuggerstringconstants.dispformatdlgbtnoptions
+msgid "Options"
+msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnord
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
@@ -200,6 +219,12 @@ msgstr "(Знаковый)"
 #: idedebuggerstringconstants.dispformatdlgcaptiontyped
 msgid "(Typed)"
 msgstr "(Типизированный)"
+
+#: idedebuggerstringconstants.dispformatdlgindent
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatdlgindent"
+msgid "Multiline"
+msgstr "Многострочный"
 
 #: idedebuggerstringconstants.dispformatenumname
 msgctxt "idedebuggerstringconstants.dispformatenumname"

@@ -100,6 +100,7 @@ begin
   DisplayFormatFrame1.ShowAll := True;
   DisplayFormatFrame1.AllowMultiTabs := True;
   DisplayFormatFrame1.ShowExtraSettings := False;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := True;
   DisplayFormatFrame1.ShowMemDump := False;
   DisplayFormatFrame1.ShowOverrideChecks := True;
 

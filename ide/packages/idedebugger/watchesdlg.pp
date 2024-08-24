@@ -289,6 +289,8 @@ begin
   FStateFlags := [];
   nbInspect.Visible := False;
 
+  FWatchTreeMgr.DisplayFormatResolver := FWatchPrinter.DisplayFormatResolver;
+
   WatchesNotification.OnAdd       := @WatchAdd;
   WatchesNotification.OnUpdate    := @WatchUpdate;
   WatchesNotification.OnRemove    := @WatchRemove;

@@ -218,4 +218,20 @@ object ArrayNavigationBar: TArrayNavigationBar
     Flat = True
     OnClick = btnHideClick
   end
+  object cbAutoHide: TCheckBox
+    AnchorSideLeft.Control = btnHide
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 394
+    Height = 24
+    Top = 0
+    Width = 82
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    Caption = 'cbAutoHide'
+    TabOrder = 3
+    OnChange = cbAutoHideChange
+  end
 end
