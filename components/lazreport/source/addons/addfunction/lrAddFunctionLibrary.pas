@@ -56,9 +56,9 @@ end;
 { TAddFunctionLibrary }
 
 {--------------------------------------------------------------------}
-{ Convert from typeString into type TfrCharSet                       }
+{ Convert from typeString into type TSysCharSet                       }
 {--------------------------------------------------------------------}
-function ConvCS(cStr :String) :TfrCharSet;
+function ConvCS(cStr :String) :TSysCharSet;
 var
   i :Integer;
 begin

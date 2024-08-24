@@ -31,14 +31,11 @@ interface
 uses
   SysUtils;
 
-type
-  TfrCharSet = set of Char;
-
  // RxLib
- function frWordPosition(const N: Integer; const S: string; const WordDelims: TfrCharSet): Integer;
- function frExtractWord(N: Integer; const S: string; const WordDelims: TfrCharSet): string;
- function frWordCount(const S: string; const WordDelims: TfrCharSet): Integer;
- function frIsWordPresent(const W, S: string; const WordDelims: TfrCharSet): Boolean;
+ function frWordPosition(const N: Integer; const S: string; const WordDelims: TSysCharSet): Integer;
+ function frExtractWord(N: Integer; const S: string; const WordDelims: TSysCharSet): string;
+ function frWordCount(const S: string; const WordDelims: TSysCharSet): Integer;
+ function frIsWordPresent(const W, S: string; const WordDelims: TSysCharSet): Boolean;
  function frNPos(const C: string; S: string; N: Integer): Integer;
  function frReplaceStr(const S, Srch, Replace: string): string;
 
@@ -64,7 +61,7 @@ uses LazUTF8;
 { Return position first character N words in string S, use           }
 { const WordDelims (type TCharSet) as delimiter between words        }
 {--------------------------------------------------------------------}
-function frWordPosition(const N: Integer; const S: string; const WordDelims: TfrCharSet): Integer;
+function frWordPosition(const N: Integer; const S: string; const WordDelims: TSysCharSet): Integer;
 var
   Count, I: Integer;
 
@@ -90,7 +87,7 @@ end; { frWordPosition }
 { Extract N word from string S, use WordDelims as                    }
 { delimiter between words                                            }
 {--------------------------------------------------------------------}
-function frExtractWord(N: Integer; const S: string; const WordDelims: TfrCharSet): string;
+function frExtractWord(N: Integer; const S: string; const WordDelims: TSysCharSet): string;
 var
   I: Integer;
   Len: Integer;
@@ -116,7 +113,7 @@ end; { frExtractWord }
 { Count words in string S, use WordDelims as delimiter               }
 { between words                                                      }
 {--------------------------------------------------------------------}
-function frWordCount(const S: string; const WordDelims: TfrCharSet): Integer;
+function frWordCount(const S: string; const WordDelims: TSysCharSet): Integer;
 var
   SLen, I: Cardinal;
 
@@ -137,7 +134,7 @@ end; { frWordCount }
 { Check existing word W in string S, use                             }
 { WordDelims as possible delimiters between words                    }
 {--------------------------------------------------------------------}
-function frIsWordPresent(const W, S: string; const WordDelims: TfrCharSet): Boolean;
+function frIsWordPresent(const W, S: string; const WordDelims: TSysCharSet): Boolean;
 var
   Count, I: Integer;
 
