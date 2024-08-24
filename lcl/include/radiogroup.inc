@@ -227,7 +227,6 @@ begin
       begin
         ARadioButton := TRadioButton(FButtonList[i]);
         ARadioButton.Checked := (i = FItemIndex);
-        ARadioButton.Visible := true;
       end;
 
       //FHiddenButton must remain the last item in Controls[], so that Controls[] is in sync with Items[]
